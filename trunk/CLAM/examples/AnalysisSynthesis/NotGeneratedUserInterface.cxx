@@ -25,6 +25,7 @@ void UserInterface::Update()
 	mAnalysisSynthesisExample->SetHaveConfig(true);
  	mAnalysisSynthesisExample->InitConfigs();
 	LoadSound();
+	DetachDisplays();
 }
 
 
@@ -44,19 +45,25 @@ void UserInterface::LoadConfiguration(void)
 		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
 			mSynthesize->activate();
 		Fl::redraw();
+		DetachDisplays();
 
-		if( mAudioInputDisplay!=NULL ){
-//			mSmartTile->close( mAudioInputDisplay );
-			Detach( mAudioInputDisplay );
-//			mSmartTile->equalize();
-		}
-		if( mAudioOutputDisplay!=NULL )
-			Detach( mAudioOutputDisplay );
-		if( mAudioOutputResidualDisplay!=NULL )
-			Detach( mAudioOutputResidualDisplay );
-		if( mAudioOutputSinusoidalDisplay!=NULL )
-			Detach( mAudioOutputSinusoidalDisplay );
 	}		
+}
+
+void UserInterface::DetachDisplays()
+{
+	if( mAudioInputDisplay!=NULL ){
+//			mSmartTile->close( mAudioInputDisplay );
+		Detach( mAudioInputDisplay );
+//			mSmartTile->equalize();
+	}
+	if( mAudioOutputDisplay!=NULL )
+		Detach( mAudioOutputDisplay );
+	if( mAudioOutputResidualDisplay!=NULL )
+		Detach( mAudioOutputResidualDisplay );
+	if( mAudioOutputSinusoidalDisplay!=NULL )
+		Detach( mAudioOutputSinusoidalDisplay );
+
 }
 
 void UserInterface::LoadSound(void)
