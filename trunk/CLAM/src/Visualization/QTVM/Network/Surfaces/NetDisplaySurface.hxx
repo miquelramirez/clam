@@ -30,13 +30,14 @@ namespace CLAM
 
 			protected:
 				void resizeEvent(QResizeEvent* re);
-		                void paintEvent(QPaintEvent* pe);
 
 			private:
 				NetPlotController* _controller;
 
 				GLThread _thread;
 				QTimer _timer;
+				double _left, _right, _bottom, _top;
+				double _r, _g, _b;
 				
 				void InitView();
 		};
