@@ -23,6 +23,8 @@
 #ifndef _SMSPitchDiscretization_
 #define _SMSPitchDiscretization_
 
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "SMSPitchShift.hxx"
 #include "SpectrumAdder2.hxx"
 #include "FrameTransformation.hxx"
@@ -34,13 +36,29 @@ namespace CLAM{
 
 	class SMSPitchDiscretization: public FrameTransformation
 	{
+		InPort<SpectralPeakArray> mInPeaks;
+		InPort<Fundamental> mInFund;
+		InPort<Spectrum> mInSpectrum;
+		OutPort<SpectralPeakArray> mOutPeaks;
+		OutPort<Fundamental> mOutFund;
+		OutPort<Spectrum> mOutSpectrum;
 
 		SMSPitchShift mPitchShift;
 		FrameTransformationConfig mConfig;
 
 	public:
 
-		SMSPitchDiscretization() {}
+		SMSPitchDiscretization()
+		:
+		mInPeaks("In SpectralPeaks", this),
+		mInFund("In Fundamental", this),
+		mInSpectrum("In Spectrum", this),
+		mOutPeaks("Out SpectralPeaks", this),
+		mOutFund("Out Fundamental", this),
+		mOutSpectrum("Out Spectrum", this)
+		{
+			Configure( SegmentTransformationConfig() );
+		}
 
 		const ProcessingConfig& GetConfig() const { return mConfig; }
 
@@ -49,11 +67,23 @@ namespace CLAM{
  		~SMSPitchDiscretization() {}
 
 		bool Do()
-		{
-			CLAM_ASSERT(false, "Do with ports not implemented");
-			return false;
+		{	return Do(mInPeaks.GetData(), 
+					  mInFund.GetData(), 
+					  mInSpectrum.GetData(), 
+					  mOutPeaks.GetData(), 
+					  mOutFund.GetData(),
+				      mOutSpectrum.GetData() 
+					 );
 		}
+
 		bool Do(const Frame& in, Frame& out);
+
+		bool Do(    const SpectralPeakArray& inPeaks,                                                                                                            const Fundamental& inFund,
+		                                    const Spectrum& inSpectrum,
+											SpectralPeakArray& outPeaks,
+											Fundamental& outFund,
+											Spectrum& outSpectrum
+										);
 
 	private:
 

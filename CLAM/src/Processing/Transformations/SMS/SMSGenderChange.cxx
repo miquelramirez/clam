@@ -24,39 +24,40 @@
 
 using namespace CLAM;
 
-
-bool SMSGenderChange::Do(const Frame& in, Frame& out)
+bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks, 
+				const Fundamental& inFund,
+				const Spectrum& inSpectrum, 
+				SpectralPeakArray& outPeaks,
+				Fundamental& outFund,
+				Spectrum& outSpectrum)
 {
-	if(in.GetFundamental().GetFreq(0))//we only transform voiced frames
-	{	
-		
-		Frame tmpFrame;
-		tmpFrame=in;
 
-		TData minPitch=100;
-		TData maxPitch=500;
+	if(inFund.GetFreq(0))//we only transform voiced frames
+	{	
+		TData minPitch = 100;
+		TData maxPitch = 500;
 
 		//Maximum spectral shift
-		TData maxSss=200;
+		TData maxSss = 200;
 
 		//amount for spectral shape shift
-		TData sss;
+		TData sssAmount;
 
-		TData pitch=in.GetFundamentalFreq();
+		TData pitch = inFund.GetFreq(0);
 
-		if(pitch<minPitch) sss=0;
-		else if (pitch>maxPitch) sss=maxSss;
-		else sss=(pitch-minPitch)/((maxPitch-minPitch)/maxSss);
+		if(pitch<minPitch) sssAmount = 0;
+		else if (pitch>maxPitch) sssAmount = maxSss;
+		else sssAmount = (pitch-minPitch) / ( (maxPitch-minPitch)/maxSss);
 
 		
 		//if amount is zero it means from male to female, else from female to male
-		TData amount=mAmountCtrl.GetLastValue();
+		TData amount=mGenderFactor.GetLastValue();
 
 		TData pitchTransposition;
 
 		if(amount) //female to male
 		{
-			sss=-sss;
+			sssAmount=-sssAmount;
 			pitchTransposition=0.5;
 		}
 		else //male to female
@@ -64,18 +65,29 @@ bool SMSGenderChange::Do(const Frame& in, Frame& out)
 			pitchTransposition=2;
 		}
 
-		
-		
-		//mPO_SpectralShapeShift.mAmountCtrl.DoControl(sss);
-		mPO_SpectralShapeShift.GetInControl("Amount").DoControl(sss);
+		mSpectralShapeShift.GetInControl("Shift Amount").DoControl(sssAmount);
 
-		//mPO_PitchShift.mAmountCtrl.DoControl(pitchTransposition);
-		mPO_PitchShift.GetInControl("Amount").DoControl(pitchTransposition);
+		mPitchShift.GetInControl("Shift Amount").DoControl(pitchTransposition);
 
-		mPO_SpectralShapeShift.Do(in.GetSpectralPeakArray(),tmpFrame.GetSpectralPeakArray());
-		mPO_PitchShift.Do(tmpFrame,out);
+		SpectralPeakArray tmpSpectralPeaks;
+		mSpectralShapeShift.Do(inPeaks,tmpSpectralPeaks);
+
+		mPitchShift.Do( tmpSpectralPeaks, inFund, inSpectrum, outPeaks, outFund, outSpectrum );
 	}
-	return true;
+}
+
+bool SMSGenderChange::Do(const Frame& in, Frame& out)
+{
+	out=in;	// TODO most likely this copy is not necessary
+
+	return Do( in.GetSpectralPeakArray(),
+				in.GetFundamental(), 
+				in.GetResidualSpec(), 
+				out.GetSpectralPeakArray(),
+				out.GetFundamental(), 
+				out.GetResidualSpec() 
+				);
+
 }
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;

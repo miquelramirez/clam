@@ -27,7 +27,29 @@ using namespace CLAM;
 
 bool SMSPitchDiscretization::Do(const Frame& in, Frame& out)
 {
-	TData pitch=in.GetFundamentalFreq();
+	return Do( in.GetSpectralPeakArray(), 
+		in.GetFundamental(), 
+		in.GetSpectrum(), 
+		out.GetSpectralPeakArray(), 
+		out.GetFundamental(), 
+		out.GetSpectrum() 
+	);
+}
+
+bool SMSPitchDiscretization::Do( 	const SpectralPeakArray& inPeaks, 
+									const Fundamental& inFund, 
+									const Spectrum& inSpectrum, 
+									SpectralPeakArray& outPeaks, 
+									Fundamental& outFund,
+									Spectrum& outSpectrum
+								)
+{
+	outPeaks = inPeaks;
+	outFund = inFund;
+	outSpectrum = inSpectrum;
+	
+	TData pitch = inFund.GetFreq();
+
 	if (pitch>0)
 	{
 		TData log2=0.69314718f;
@@ -39,13 +61,20 @@ bool SMSPitchDiscretization::Do(const Frame& in, Frame& out)
 		TData amount=discPitch/pitch;
 
 		mPitchShift.GetInControl("Shift Amount").DoControl(amount);
-		mPitchShift.Do(in,out);
+		mPitchShift.Do( inPeaks, 
+						inFund, 
+						inSpectrum, 
+						outPeaks, 
+						outFund, 
+						outSpectrum 
+					);
 		
 		Fundamental tmpFund;
 		tmpFund.AddElem(discPitch);
-		out.SetFundamental(tmpFund);
+		outFund = tmpFund;
 	}
 	return true;
+
 }
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
