@@ -24,7 +24,70 @@
 
 #include "XercesDomDocumentHandler.hxx"
 
-#ifdef CLAM_USE_XML
+#ifndef CLAM_USE_XML
+
+// Dummy implementation that will fail when used
+
+#include <sstream>
+#include <list>
+#include <string>
+
+namespace CLAM 
+{
+
+/**
+ * Keeps the booking when loading one Xerces-C DOM single element into CLAM data.
+ */
+class XercesDomReadingContext
+{
+	std::stringstream _plainContentToParse;
+
+public:
+	XercesDomReadingContext(XercesDomDocumentHandler & docHandler)
+	{
+		CLAM_ASSERT(false, "Using XML with CLAM_USE_XML disabled");
+	}
+	XercesDomReadingContext(XercesDomReadingContext * oldContext, const char * name)
+	{
+		CLAM_ASSERT(false, "Using XML with CLAM_USE_XML disabled");
+	}
+	bool findElement(const char * name)
+	{
+		return false;
+	}
+
+	XercesDomReadingContext * release()
+	{
+		return this;
+	}
+
+	bool extractAttribute(const char * attributeName, std::ostream & os)
+	{
+		return false;
+	}
+
+	std::istream & reachableContent()
+	{
+		return _plainContentToParse;
+	}
+
+	std::list<std::string> errors()
+	{
+		static std::list<std::string> errors;
+		return errors;
+	}
+
+	std::string getPath()
+	{
+		return "Bad Path";
+	}
+
+};
+
+} // Namespace CLAM
+
+#else//CLAM_USE_XML
+
 
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
@@ -219,66 +282,6 @@ public:
 		path += '/';
 		path += L(_context->getNodeName());
 		return path;
-	}
-
-};
-
-} // Namespace CLAM
-
-#else//CLAM_USE_XML
-
-#include <sstream>
-#include <list>
-#include <string>
-
-namespace CLAM 
-{
-
-/**
- * Keeps the booking when loading one Xerces-C DOM single element into CLAM data.
- */
-class XercesDomReadingContext
-{
-	std::stringstream _plainContentToParse;
-
-public:
-	XercesDomReadingContext(XercesDomDocumentHandler & docHandler)
-	{
-		CLAM_ASSERT(false, "Using XML with CLAM_USE_XML disabled");
-	}
-	XercesDomReadingContext(XercesDomReadingContext * oldContext, const char * name)
-	{
-		CLAM_ASSERT(false, "Using XML with CLAM_USE_XML disabled");
-	}
-	bool findElement(const char * name)
-	{
-		return false;
-	}
-
-	XercesDomReadingContext * release()
-	{
-		return this;
-	}
-
-	bool extractAttribute(const char * attributeName, std::ostream & os)
-	{
-		return false;
-	}
-
-	std::istream & reachableContent()
-	{
-		return _plainContentToParse;
-	}
-
-	std::list<std::string> errors()
-	{
-		static std::list<std::string> errors;
-		return errors;
-	}
-
-	std::string getPath()
-	{
-		return "Bad Path";
 	}
 
 };

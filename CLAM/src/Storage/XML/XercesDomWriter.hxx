@@ -21,17 +21,14 @@
 #ifndef _XERCES_DOM_WRITER_HXX_
 #define _XERCES_DOM_WRITER_HXX_
 
-#include "XercesEncodings.hxx"
-#include "XercesInitializer.hxx"
+#include <xercesc/util/XercesDefs.hpp>
+#include <iosfwd>
 
-#include <xercesc/dom/DOMImplementation.hpp>
-#include <xercesc/dom/DOMImplementationLS.hpp>
-#include <xercesc/dom/DOMImplementationRegistry.hpp>
-#include <xercesc/dom/DOMWriter.hpp>
-#include <xercesc/framework/MemBufFormatTarget.hpp>
-#include <string>
-#include <sstream>
 
+namespace XERCES_CPP_NAMESPACE
+{
+	class DOMNode;
+}
 namespace xercesc = XERCES_CPP_NAMESPACE;
 
 namespace CLAM
@@ -45,29 +42,9 @@ class XercesDomWriter
 			mShouldIndent=false;
 			mShouldCanonicalize=false;
 		}
-		void write(std::ostream & target, xercesc::DOMNode * node)
-		{
-			XercesInitializer::require();
-			const XMLCh * propertyCanonical = xercesc::XMLUni::fgDOMWRTCanonicalForm;
-			const XMLCh * propertyPrettyPrint = xercesc::XMLUni::fgDOMWRTFormatPrettyPrint;
-			xercesc::DOMImplementation *impl = 
-				xercesc::DOMImplementationRegistry::getDOMImplementation(X("LS"));
-			xercesc::DOMWriter *xercesWriter = 
-				((xercesc::DOMImplementationLS*)impl)->createDOMWriter();
 
-			if (xercesWriter->canSetFeature(propertyPrettyPrint, mShouldIndent))
-				xercesWriter->setFeature(propertyPrettyPrint, mShouldIndent);
-			if (xercesWriter->canSetFeature(propertyCanonical, mShouldCanonicalize))
-				xercesWriter->setFeature(propertyCanonical, mShouldCanonicalize);
+		void write(std::ostream & target, xercesc::DOMNode * node);
 
-			xercesc::MemBufFormatTarget * xercesTarget = new xercesc::MemBufFormatTarget();
-			xercesWriter->writeNode(xercesTarget, *node);
-			const char * buffer = (char *) xercesTarget->getRawBuffer();
-			const unsigned bufferLen = xercesTarget->getLen();
-			target << std::string(buffer,bufferLen);
-			delete xercesWriter;
-			delete xercesTarget;
-		}
 		void DoCanonicalFormat(bool shouldDo = true)
 		{
 			mShouldCanonicalize=shouldDo;
