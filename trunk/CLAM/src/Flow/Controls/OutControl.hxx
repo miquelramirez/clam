@@ -45,7 +45,7 @@ private:
 	Processing * mParent;
 //Constructor/Destructor
 public:
-	~OutControl();
+	virtual ~OutControl();
 	/**
 	* Constructor of the OutControl.
 	* 
