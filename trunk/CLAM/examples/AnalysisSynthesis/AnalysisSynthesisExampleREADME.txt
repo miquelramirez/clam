@@ -82,7 +82,7 @@ Recommended: as sinusoidal spectrum is synthesized using the transform of the Bl
 is necessary to use that window in the analysis of the residual component.
 
 <AnalysisHopSize>: hop size in number of samples. It is the same both for the sinusoidal
-and residual component. If -1, it is taken as half the residual window size (recommended)
+and residual component. If -1, it is taken as half the residual window size -1 (recommended)
 
 <AnalysisZeroPaddingFactor> Zero padding factor applied to sinusoidal component. 0 means that zeros will be added
 to the input audio frame till it reaches the next power of two, 1 means that zeros will be added to
@@ -118,8 +118,6 @@ for <AnalysisPeakDetectMagThreshold> (i.e. -120).
 (ResAnalysisWindowSize-1)/2. If any other number is used you are bound to get synthesis artifacts.
 
 <SynthesisWindowType>: type of window used for the residual analysis. Available: Same as in sinusoidal.
-
-<SynthesisHopSize>: synthesis hop size in number of samples. If -1 it is half the synthesis frame size (recommended)
 
 <SynthesisPhaseManagementType>: type of phase management to be applied to the sinusoidal synthesis.
 Available: Continuation, Align, Random. Recommended: Continuation.
