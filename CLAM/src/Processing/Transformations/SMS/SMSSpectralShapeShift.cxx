@@ -24,9 +24,14 @@
 
 using namespace CLAM;
 
-bool SMSSpectralShapeShift::Do(const SpectralPeakArray& inPeaks,SpectralPeakArray& outPeaks)
+bool SMSSpectralShapeShift::Do(const SpectralPeakArray& 
+			inPeaks,SpectralPeakArray& outPeaks,
+			bool preserveOutput)
 {
-	outPeaks = inPeaks; //TODO big cludge for streaming
+	if (!preserveOutput)
+	{
+		outPeaks = inPeaks; //TODO big cludge for streaming
+	}
 
 	mSpectralEnvelope.SetSpectralRange(mSpectralRange);
  	
