@@ -204,6 +204,16 @@ namespace CLAM
 		{
 		    ((MultiPlotController*)_controller)->SetDialColor(c);
 		}
+
+	        void QtMultiPlot::KeyPressEvent(QKeyEvent* e)
+		{
+		    keyPressEvent(e);
+		}
+
+	        void QtMultiPlot::KeyReleaseEvent(QKeyEvent* e)
+		{
+		    keyReleaseEvent(e);
+		}
 	}
 }
 

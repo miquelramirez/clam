@@ -224,6 +224,16 @@ namespace CLAM
 		{
 			((FundPlotController*)_controller)->SetMarksColor(c);
 		}
+
+	        void QtFundFreqPlot::KeyPressEvent(QKeyEvent* e)
+		{
+		    keyPressEvent(e);
+		}
+
+		void QtFundFreqPlot::KeyReleaseEvent(QKeyEvent* e)
+		{
+		    keyReleaseEvent(e);
+		}
 	}	
 }
 

@@ -47,6 +47,10 @@ namespace CLAM
 	    void SetForegroundColor(Color c);
 	    void SetVLineColor(Color c);
 
+        public slots:
+	    void KeyPressEvent(QKeyEvent* );
+	    void KeyReleaseEvent(QKeyEvent* );
+
         protected slots:
             void updateMagLabel(TData);
 	    void updateFreqLabel(TData);

@@ -53,6 +53,10 @@ namespace CLAM
 				void SetDialColor(Color c);
 				void SetRegionColor(Color c);
 
+                        public slots:
+                                void KeyPressEvent(QKeyEvent* );
+		                void KeyReleaseEvent(QKeyEvent* );
+
 			protected slots:
 				void updateRegion(MediaTime);
 
