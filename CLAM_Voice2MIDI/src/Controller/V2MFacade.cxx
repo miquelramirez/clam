@@ -244,12 +244,13 @@ const std::list<DisplayData> V2MFacade::GetDisplayData(bool audio)
 		values.SetSize(nSamples);  
 		TData max = 0.0;
 		displayData.top = 0.0;
+		int k=0;
 		for(i=0;i < mSegment.GetnFrames();i++)
 		{
 			energy = descriptors.GetFrameD(i).GetSpectrumD().GetEnergy();
 			for(j = 0; j < step;j++)
 			{
-				values[j]=energy;
+				values[k++]=energy;
 			} 
 			max = (max < energy) ? energy : max;
 		}
@@ -261,12 +262,13 @@ const std::list<DisplayData> V2MFacade::GetDisplayData(bool audio)
 		// fundamental
 		TData freq = 0.0;
 		max = 0.0;
+		k=0;
 		for(i=0;i < nFrames;i++)
 		{
 			freq = mSegment.GetFrame(i).GetFundamental().GetFreq(0);
 			for(j = 0; j < step;j++)
 			{
-				values[j]=freq;
+				values[k++]=freq;
 			}
 			max = (max < freq) ? freq : max;
 		}
