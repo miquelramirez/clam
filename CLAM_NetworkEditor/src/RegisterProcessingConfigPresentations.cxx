@@ -57,23 +57,7 @@
 #include "FlagControl.hxx"
 #include "Random.hxx"
 #include "OneOverF.hxx"
-#include "OutControlSender.hxx"
 #include "SquareWave.hxx"
-
-// plots
-#include "PortMonitor.hxx"
-#include "AudioPlotProcessing.hxx"
-#include "SpectrumPlotProcessing.hxx"
-#include "PeaksPlotProcessing.hxx"
-#include "FundPlotProcessing.hxx"
-#include "SinTracksPlotProcessing.hxx"
-#include "FundTrackPlotProcessing.hxx"
-#include "SpecgramPlotProcessing.hxx"
-#include "AudioBuffPlotProcessing.hxx"
-
-//SMSTransformations
-#include "FrameTransformationConfig.hxx"
-#include "SMSSineFilter.hxx"
 
 // Controls
 #include "Fundamental2Control.hxx"
@@ -138,12 +122,6 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MultiChannelAudioFileWriterConfigPresentation> 
 	regtMultiChannelAudioFileWriterCfg( "MultiChannelAudioFileWriterConfig" );
 
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSAnalysisConfig> > 
-	regtSMSAnalysisCfg( "SMSAnalysisConfig" );
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSSynthesisConfig> > 
-	regtSMSSynthesisCfg( "SMSSynthesisConfig" );
-
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::SpectralPeakDetectConfig> > 
 	regtSpectralPeakDetectCfg( "SpectralPeakDetectConfig" );
 
@@ -177,43 +155,6 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SquareWaveConfig> > 
 	regtSquareWaveCfg( "SquareWaveConfig" );
-
-static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::OutControlSenderConfig> > 
-	regtOutControlSenderCfg( "OutControlSenderConfig" );
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::PortMonitorConfig> >
-       regtPortMonitorCfg("PortMonitorConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioPlotProcessingConfig> >
-	regtAudioPlotProcessingCfg("AudioPlotProcessingConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SpectrumPlotProcessingConfig> >
-	regtSpectrumPlotProcessingCfg("SpectrumPlotProcessingConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::PeaksPlotProcessingConfig> >
-       regtPeaksPlotProcessingCfg("PeaksPlotProcessingConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FundPlotProcessingConfig> >
-       regtFundPlotProcessingCfg("FundPlotProcessingConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SinTracksPlotProcessingConfig> >
-       regtSinTracksPlotProcessingCfg("SinTracksPlotProcessingConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FundTrackPlotProcessingConfig> >
-       regtFundTrackPlotProcessingCfg("FundTrackPlotProcessingConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SpecgramPlotProcessingConfig> >
-       regtSpecgramPlotProcessingCfg("SpecgramPlotProcessingConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioBuffPlotProcessingConfig> >
-       regtAudioBuffPlotProcessingCfg("AudioBuffPlotProcessingConfig");
- 
-// SMS Transformations	   
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FrameTransformationConfig> >
-       regtSMSTransformationConfig("FrameTransformationConfig");
-
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSSineFilterConfig> >
-       regtSMSSineFilterConfig("SMSSineFilterConfig");
 
 // Controls
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::Fundamental2ControlConfig> >
