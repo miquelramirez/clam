@@ -36,7 +36,8 @@ namespace CLAM
 	    if(CanSendData())
 	    {
 		SetCanGetData(false);
-		_renderer.SetDataPtr(_cachedData.GetPtr(),_cachedData.Size(), (unsigned)_index);
+		_renderer.SetIndexes(TIndex(_index),TIndex(_cachedData.Size()),0,TIndex(_index),0);
+		_renderer.SetDataPtr(_cachedData.GetPtr());
 		SetCanGetData(true);
 	    }
 	    _renderer.Render();
