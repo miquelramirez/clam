@@ -9,35 +9,32 @@
 #----------------------------------------------------------------------
 # begin configuration
 
-enableSendMail = False
+enableSendMail = True
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
 updateLevelForCLAM = 1 
-updateLevelForExamples = 0
-updateLevelForTestData = 0 
+updateLevelForExamples = 1
+updateLevelForTestData = 1 
 
 # When false keeps already compiled objects
-doCleanMake = False
+doCleanMake = True
 # When false does not run autoconf and configure unless a new checkout
-doAutoconf = False
+doAutoconf = True
 configureOptions = '--without-portmidi  --without-portaudio'
 # Non-test are runned those seconds and then killed
 executionTime = 15
 
 configurations = ['debug', 'release'] 
-configurations = ['debug'] 
+#configurations = ['debug'] 
 
 # Mail report settings
 publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
 privateAddress = 'parumi@iua.upf.es' # To know the test has been runned
 subject = 'nightly tests report'
 
-
 #this will be used only when it's not set in the environment
-CVSROOT = ':ext:parumi@iua-share.upf.es:/mnt/cvsroot'
-
-
+#CVSROOT = ':ext:parumi@iua-share.upf.es:/mnt/cvsroot'
 
 import commands
 import os
@@ -192,7 +189,7 @@ testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
 
 # uncomment only for testing purposes: 
-testsToRun = [( 'UnitTests', unitTestsPath ),( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/') ]
+#testsToRun = [( 'UnitTests', unitTestsPath ),( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/') ]
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
