@@ -1,6 +1,6 @@
 #include "WaveFileIO.hxx"
 #include "AIFFFileIO.hxx"
-#include "SoundFileIOError.hxx"
+#include "ErrSoundFileIO.hxx"
 
 #include <math.h>
 
@@ -50,7 +50,7 @@ main(int argc,char* argv_[])
 			file.Close();
 		}
 	}
-	catch (SoundFileIOError err)
+	catch (ErrSoundFileIO err)
 	{
 		printf(err.mStr);
 	}
@@ -100,7 +100,7 @@ main(int argc,char* argv_[])
 		outfile.Close();
 		infile.Close();
 	}
-	catch (SoundFileIOError err)
+	catch (ErrSoundFileIO err)
 	{
 		printf(err.mStr);
 	}
@@ -166,7 +166,7 @@ main(int argc,char* argv_[])
 		}
 		wavefile.Close();
 	}
-	catch (SoundFileIOError err)
+	catch (ErrSoundFileIO err)
 	{
 		printf(err.mStr);
 	}
