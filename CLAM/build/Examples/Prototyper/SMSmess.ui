@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>606</width>
-            <height>412</height>
+            <width>623</width>
+            <height>501</height>
         </rect>
     </property>
     <property name="caption">
@@ -44,104 +44,117 @@
             <property name="frameShadow">
                 <enum>Raised</enum>
             </property>
-            <grid>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="CLAM::VM::NetPeaksPlot" row="0" column="0">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>OutPort__SMSPitchShift_11__Out___SpectralPeaks</cstring>
+                        <cstring>layout5</cstring>
                     </property>
-                    <property name="cursor">
-                        <cursor>13</cursor>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>NoFocus</enum>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>hola</string>
-                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="CLAM::VM::NetAudioPlot" row="1" column="1">
+                            <property name="name">
+                                <cstring>OutPort__SMSSynthesis_3__OutputAudio</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Synthetized Audio</string>
+                            </property>
+                        </widget>
+                        <widget class="CLAM::VM::NetPeaksPlot" row="1" column="0">
+                            <property name="name">
+                                <cstring>OutPort__SMSPitchShift_11__Out___SpectralPeaks</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Transformed Peaks</string>
+                            </property>
+                        </widget>
+                        <widget class="CLAM::VM::NetSpectrumPlot" row="0" column="1">
+                            <property name="name">
+                                <cstring>OutPort__SMSSynthesis_3__OutputSpectrum</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Synthetized Spectrum</string>
+                            </property>
+                        </widget>
+                        <widget class="CLAM::VM::NetPeaksPlot" row="0" column="0">
+                            <property name="name">
+                                <cstring>OutPort__SMSAnalysisCore_2__Sinusoidal___Peaks</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Detected Peaks</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
-                <widget class="CLAM::VM::NetAudioPlot" row="1" column="0">
-                    <property name="name">
-                        <cstring>OutPort__SMSSynthesis_3__OutputAudio</cstring>
-                    </property>
-                </widget>
-                <widget class="CLAM::VM::NetSpectrumPlot" row="1" column="1">
-                    <property name="name">
-                        <cstring>OutPort__SMSSynthesis_3__OutputSpectrum</cstring>
-                    </property>
-                </widget>
-                <widget class="CLAM::VM::NetFundPlot" row="0" column="1">
+                <widget class="CLAM::VM::NetFundPlot">
                     <property name="name">
                         <cstring>OutPort__SMSAnalysisCore_2__Fundamental</cstring>
                     </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>46</height>
+                        </size>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Detected Fundamental Frequency</string>
+                    </property>
                 </widget>
-            </grid>
+            </vbox>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout2</cstring>
+                <cstring>layout13</cstring>
             </property>
             <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <widget class="QLabel" row="0" column="3">
+                    <property name="name">
+                        <cstring>textLabel1_4</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>%</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="3">
+                    <property name="name">
+                        <cstring>textLabel1_4_3</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>%</string>
+                    </property>
+                </widget>
                 <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>SMS Residual Gain</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>InControlFloat__SMSResidualGain_5__Amount</cstring>
-                    </property>
-                </widget>
-                <widget class="QSlider" row="0" column="1">
-                    <property name="name">
-                        <cstring>InControlFloat__SMSResidualGain_5__Amount</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                </widget>
-                <widget class="QLCDNumber" row="0" column="2">
-                    <property name="name">
-                        <cstring>lCDNumber1</cstring>
-                    </property>
-                    <property name="numDigits">
-                        <number>3</number>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>SMS Sinusoidal Gain</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>InControlFloat__SMSSinusoidalGain_1__Amount</cstring>
-                    </property>
-                </widget>
-                <widget class="QSlider" row="1" column="1">
-                    <property name="name">
-                        <cstring>InControlFloat__SMSSinusoidalGain_1__Amount</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                </widget>
-                <widget class="QLCDNumber" row="1" column="2">
-                    <property name="name">
-                        <cstring>lCDNumber1_2</cstring>
-                    </property>
-                    <property name="numDigits">
-                        <number>3</number>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0">
                     <property name="name">
                         <cstring>textLabel1_3</cstring>
                     </property>
@@ -152,26 +165,225 @@
                         <cstring>InControl__SMSPitchShift_11__Amount</cstring>
                     </property>
                 </widget>
-                <widget class="QSlider" row="2" column="1">
+                <widget class="QSlider" row="0" column="1">
                     <property name="name">
-                        <cstring>InControl__SMSPitchShift_11__Amount</cstring>
+                        <cstring>InControlFloat__SMSPitchShift_11__Amount</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>199</number>
+                    </property>
+                    <property name="value">
+                        <number>100</number>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
                 </widget>
-                <widget class="QLCDNumber" row="2" column="2">
+                <widget class="QSlider" row="2" column="1">
                     <property name="name">
-                        <cstring>lCDNumber1_2_2</cstring>
+                        <cstring>InControlFloat__SMSSinusoidalGain_1__Amount</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>199</number>
+                    </property>
+                    <property name="value">
+                        <number>100</number>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLCDNumber" row="1" column="2">
+                    <property name="name">
+                        <cstring>lCDNumber1</cstring>
+                    </property>
+                    <property name="paletteForegroundColor">
+                        <color>
+                            <red>85</red>
+                            <green>255</green>
+                            <blue>127</blue>
+                        </color>
+                    </property>
+                    <property name="paletteBackgroundColor">
+                        <color>
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
                     </property>
                     <property name="numDigits">
                         <number>3</number>
                     </property>
+                    <property name="segmentStyle">
+                        <enum>Filled</enum>
+                    </property>
+                </widget>
+                <widget class="QSlider" row="1" column="1">
+                    <property name="name">
+                        <cstring>InControlFloat__SMSResidualGain_5__Amount</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>199</number>
+                    </property>
+                    <property name="value">
+                        <number>100</number>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="3">
+                    <property name="name">
+                        <cstring>textLabel1_4_2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>%</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>SMS Residual Gain</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>InControlFloat__SMSResidualGain_5__Amount</cstring>
+                    </property>
+                </widget>
+                <widget class="QLCDNumber" row="0" column="2">
+                    <property name="name">
+                        <cstring>lCDNumber1_2_2</cstring>
+                    </property>
+                    <property name="paletteForegroundColor">
+                        <color>
+                            <red>85</red>
+                            <green>255</green>
+                            <blue>127</blue>
+                        </color>
+                    </property>
+                    <property name="paletteBackgroundColor">
+                        <color>
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="numDigits">
+                        <number>3</number>
+                    </property>
+                    <property name="segmentStyle">
+                        <enum>Filled</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>SMS Sinusoidal Gain</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>InControlFloat__SMSSinusoidalGain_1__Amount</cstring>
+                    </property>
+                </widget>
+                <widget class="QLCDNumber" row="2" column="2">
+                    <property name="name">
+                        <cstring>lCDNumber1_2</cstring>
+                    </property>
+                    <property name="paletteForegroundColor">
+                        <color>
+                            <red>85</red>
+                            <green>255</green>
+                            <blue>127</blue>
+                        </color>
+                    </property>
+                    <property name="paletteBackgroundColor">
+                        <color>
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="numDigits">
+                        <number>3</number>
+                    </property>
+                    <property name="segmentStyle">
+                        <enum>Filled</enum>
+                    </property>
                 </widget>
             </grid>
         </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout4</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>PlayButton</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Play</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>StopButton</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Stop</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>CloseButton</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Close</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>InControlFloat__SMSSinusoidalGain_1__Amount</sender>
@@ -186,23 +398,45 @@
         <slot>display(int)</slot>
     </connection>
     <connection>
-        <sender>InControl__SMSPitchShift_11__Amount</sender>
+        <sender>InControlFloat__SMSPitchShift_11__Amount</sender>
         <signal>valueChanged(int)</signal>
         <receiver>lCDNumber1_2_2</receiver>
         <slot>display(int)</slot>
     </connection>
+    <connection>
+        <sender>CloseButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SMS_Mess</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>StopButton</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>PlayButton</receiver>
+        <slot>toggle()</slot>
+    </connection>
+    <connection>
+        <sender>PlayButton</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>StopButton</receiver>
+        <slot>toggle()</slot>
+    </connection>
 </connections>
 <tabstops>
-    <tabstop>OutPort__SMSPitchShift_11__Out___SpectralPeaks</tabstop>
+    <tabstop>InControlFloat__SMSPitchShift_11__Amount</tabstop>
     <tabstop>InControlFloat__SMSResidualGain_5__Amount</tabstop>
-    <tabstop>InControl__SMSPitchShift_11__Amount</tabstop>
     <tabstop>InControlFloat__SMSSinusoidalGain_1__Amount</tabstop>
+    <tabstop>PlayButton</tabstop>
+    <tabstop>StopButton</tabstop>
+    <tabstop>CloseButton</tabstop>
+    <tabstop>OutPort__SMSPitchShift_11__Out___SpectralPeaks</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>NetPeaksPlot.hxx</includehint>
     <includehint>NetAudioPlot.hxx</includehint>
+    <includehint>NetPeaksPlot.hxx</includehint>
     <includehint>NetSpectrumPlot.hxx</includehint>
+    <includehint>NetPeaksPlot.hxx</includehint>
     <includehint>NetFundPlot.hxx</includehint>
 </includehints>
 </UI>

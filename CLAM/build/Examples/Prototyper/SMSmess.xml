@@ -160,14 +160,6 @@
     </OverlapAddGlobal>
     <prSamplingRate>0</prSamplingRate>
   </processing>
-  <processing type="SpectrumPlotProcessing" id="SpectrumPlotProcessing_12" >
-    <Name>SpectrumPlotProcessing</Name>
-    <Caption>Spectrum</Caption>
-    <xpos>100</xpos>
-    <ypos>100</ypos>
-    <width>200</width>
-    <height>75</height>
-  </processing>
   <port_connection>
     <out>MonoAudioFileReader_0.Samples Read</out>
     <in>SMSAnalysisCore_2.Input Audio</in>
