@@ -1,16 +1,11 @@
 #include "AIFFFileIO.hxx"
 #include "ErrSoundFileIO.hxx"
 
-
-#ifndef macintosh
-extern "C" {
-	void ConvertToIeeeExtended(double num, char* bytes);
-	double ConvertFromIeeeExtended(unsigned char *bytes);
+extern "C"
+{
+	int tenbytefloat2int (unsigned char *bytes);
+	void uint2tenbytefloat (unsigned int num, unsigned char *bytes);
 }
-#else
-	void ConvertToIeeeExtended(double num, char* bytes);
-	double ConvertFromIeeeExtended(unsigned char *bytes);
-# endif
 
 using namespace CLAM;
 
@@ -88,7 +83,7 @@ void AIFFFileIO::ReadHeader(void)
 			mHeader.mSampleWidth = fmt.sampleWidth;
 			mHeader.mBytesPerSample = (mHeader.mSampleWidth+7)>>3;
 			mHeader.mChannels = fmt.channels;
-			mHeader.mSamplerate = (int)ConvertFromIeeeExtended(fmt.samplerate.bytes);
+			mHeader.mSamplerate = tenbytefloat2int(fmt.samplerate.bytes);
 			mSize = fmt.numSampleFrames;
 			fmtFound = true;
 		}
@@ -134,7 +129,7 @@ void AIFFFileIO::WriteHeader(void)
 		sizeof(dataHeader) + dataHeader.len;
 
 	fmtChunk.channels = mHeader.mChannels;
-	ConvertToIeeeExtended(mHeader.mSamplerate,(char*)fmtChunk.samplerate.bytes);
+	uint2tenbytefloat(mHeader.mSamplerate,fmtChunk.samplerate.bytes);
 	fmtChunk.numSampleFrames = mSize;
 	fmtChunk.sampleWidth = 16;
 	
