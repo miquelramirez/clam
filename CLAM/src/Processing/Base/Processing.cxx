@@ -23,8 +23,10 @@
 #include "Processing.hxx"
 #include "ProcessingComposite.hxx"
 #include "TopLevelProcessing.hxx"
-#include "ErrDynamicType.hxx"
 #include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 
 #include <cstring>
 #include <string>
@@ -32,21 +34,53 @@
 
 namespace CLAM {
 
-	const Processing::iterator 
-	Processing::null_iterator = Processing::iterator(0);
-
+	void ConnectPorts(
+			Processing & sender, const std::string & outPortName, 
+			Processing & receiver, const std::string & inPortName )
+	{
+		OutPortBase & out = sender.GetOutPort(outPortName);
+		InPortBase & in = receiver.GetInPort(inPortName);
+		out.ConnectToIn(in);
+	}
+	
+	void ConnectControls(
+			Processing & sender, const std::string & outControlName, 
+			Processing & receiver, const std::string & inControlName )
+	{
+		OutControl & out = sender.GetOutControls().Get(outControlName);
+		InControl & in = receiver.GetInControls().Get(inControlName);
+		out.AddLink(&in);
+	}
+	void ConnectPorts(
+			Processing & sender, unsigned outPortNumber, 
+			Processing & receiver, unsigned inPortNumber )
+	{
+		OutPortBase & out = sender.GetOutPorts().GetByNumber(outPortNumber);
+		InPortBase & in = receiver.GetInPorts().GetByNumber(inPortNumber);
+		out.ConnectToIn(in);
+	}
+	
+	void ConnectControls(
+			Processing & sender, unsigned outControlNumber, 
+			Processing & receiver, unsigned inControlNumber )
+	{
+		OutControl & out = sender.GetOutControls().GetByNumber(outControlNumber);
+		InControl & in = receiver.GetInControls().GetByNumber(inControlNumber);
+		out.AddLink(&in);
+	}
+	
 	Processing::Processing() 
 		: mpParent(0),
 		mPreconfigureExecuted( false )
 	{
-		mState = Unconfigured;
+		mExecState = Unconfigured;
 	}
 
 	void Processing::PreConcreteConfigure( const ProcessingConfig& c )
 	{
-		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
-		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
-		mStatus = "";
+		CLAM_ASSERT(mExecState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(mExecState != Disabled, "Configuring a disabled Processing.");
+		mConfigErrorMessage = "";
 
 		if (!mpParent) 
 			TopLevelProcessing::GetInstance().Insert(*this);
@@ -56,12 +90,12 @@ namespace CLAM {
 
 	void Processing::PostConcreteConfigure()
 	{
-		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
-		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
+		CLAM_ASSERT(mExecState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(mExecState != Disabled, "Configuring a disabled Processing.");
 		CLAM_ASSERT(mPreconfigureExecuted, "PreConcreteConfigure was not being called" );
 
-		mState=Ready;
-		mStatus="Ready to be started";
+		mExecState=Ready;
+		mConfigErrorMessage="Ready to be started";
 
 	}
 
@@ -74,21 +108,21 @@ namespace CLAM {
 
 			if (!ConcreteConfigure(c)) 
 			{
-				mState=Unconfigured;
+				mExecState=Unconfigured;
 				mPreconfigureExecuted = false;
-				mStatus+=" Configuration failed.";
-				mState = Unconfigured;
+				mConfigErrorMessage+=" Configuration failed.";
+				mExecState = Unconfigured;
 				return false;
 			}
 		}
-		catch( CLAM::Err& error )
+		catch( ErrProcessingObj& error ) ///TODO we should use here an ErrConfiguring class. PA
 		{
-			mState = Unconfigured;
+			mExecState = Unconfigured;
 			mPreconfigureExecuted = false;
-			mStatus += "Exception thrown during ConcreteConfigure:\n";
-			mStatus += error.what();
-			mStatus += "\n";
-			mStatus += "Configuration failed.";
+			mConfigErrorMessage += "Exception thrown during ConcreteConfigure:\n";
+			mConfigErrorMessage += error.what();
+			mConfigErrorMessage += "\n";
+			mConfigErrorMessage += "Configuration failed.";
 
 			return false;
 		}
@@ -97,19 +131,6 @@ namespace CLAM {
 		
 		return true;
 	}
-
-	void Processing::ConfigureOrphan(const ProcessingConfig &c)
-	{
-
-		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
-		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
-
-		if (ConcreteConfigure(c))
-			mState=Ready;
-		else
-			mState=Unconfigured;
-	}
-
 
 	Processing::~Processing()
 	{
@@ -120,37 +141,38 @@ namespace CLAM {
 
 	void Processing::Start(void) 
 	{
-		CLAM_ASSERT(mState==Ready,
-			    ComposeAssertMessage(AddStatus( "Start(): Object not ready" )).c_str() );
+		AddConfigErrorMessage( GetClassName() );
+		AddConfigErrorMessage( "::Start() Object not ready" );
+		CLAM_ASSERT( mExecState==Ready, GetConfigErrorMessage().c_str() );
 		try {
 			if (ConcreteStart())
-				mState = Running;
+				mExecState = Running;
 		}
-		catch (Err &e) {
-			mStatus += "Start(): Object failed to start properly.\n";
-			mStatus += e.what();
+		catch (ErrProcessingObj &e) {
+			mConfigErrorMessage += "Start(): Object failed to start properly.\n";
+			mConfigErrorMessage += e.what();
 		}
 	}
 	
 	void Processing::Stop(void)
 	{
-		CLAM_ASSERT( mState==Running ||	mState==Disabled, "Stop(): Object not running." );
+		CLAM_ASSERT( mExecState==Running ||	mExecState==Disabled, "Stop(): Object not running." );
 
 		try {
 			if(ConcreteStop())
-				mState = Ready;
+				mExecState = Ready;
 		}
-		catch (Err &e) {
-			mStatus += "Stop(): Object failed to stop properly.\n";
-			mStatus += e.what();
+		catch (ErrProcessingObj &e) {
+			mConfigErrorMessage += "Stop(): Object failed to stop properly.\n";
+			mConfigErrorMessage += e.what();
 		}
 	}
 
-	void Processing::PublishOutPort(OutPort* out) 
+	void Processing::PublishOutPort(OutPortBase* out) 
 	{
 		mPublishedOutPorts.Publish(out);
 	}
-	void Processing::PublishInPort(InPort* in)
+	void Processing::PublishInPort(InPortBase* in)
 	{
 		mPublishedInPorts.Publish(in);
 	}
@@ -164,49 +186,6 @@ namespace CLAM {
 		mPublishedInControls.Publish(in);
 	}
 	
-//	void Processing::LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const
-//	{ //.at(unsigned) can throw an "out_of_range" exception.
-//#ifdef HAVE_STANDARD_VECTOR_AT
-//		mPublishedOutControls.at(outId)->AddLink(inProc->GetInControl(inId));
-//#else
-//		mPublishedOutControls[outId]->AddLink(inProc->GetInControl(inId));
-//#endif
-//	}
-//	int Processing::DoControl(unsigned id, TControlData val) const
-//	{//.at(unsigned) can throw an "out_of_range" exception.	
-//#ifdef HAVE_STANDARD_VECTOR_AT
-//		return mPublishedInControls.at(id)->DoControl(val);
-//#else
-//		return mPublishedInControls[id]->DoControl(val);
-//#endif
-//	}
-//	int Processing::SendControl(unsigned id, TControlData val) const
-//	{//.at(unsigned) can throw an "out_of_range" exception.
-//#ifdef HAVE_STANDARD_VECTOR_AT
-//		return mPublishedOutControls.at(id)->SendControl(val);
-//#else
-//		return mPublishedOutControls[id]->SendControl(val);
-//#endif
-//	}
-
-//	InControl* Processing::GetInControl(unsigned inId) const
-//	{//.at(unsigned) can throw an "out_of_range" exception.
-//#ifdef HAVE_STANDARD_VECTOR_AT
-//		return mPublishedInControls.at(inId);
-//#else
-//		return mPublishedInControls[inId];
-//#endif
-//	}
-
-//	OutControl* Processing::GetOutControl(unsigned inId) const
-//	{//.at(unsigned) can throw an "out_of_range" exception.
-//#ifdef HAVE_STANDARD_VECTOR_AT
-//		return mPublishedOutControls.at(inId);
-//#else
-//		return mPublishedOutControls[inId];
-//#endif
-//	}
-
 	void Processing::SetParent(Processing *o)
 	{
 		ProcessingComposite *p;
@@ -229,55 +208,18 @@ namespace CLAM {
 		mpParent->Insert(*this);
 	}
 
-	void Processing::SetOrphan()
+	void Processing::AddConfigErrorMessage( const std::string& msg )
 	{
-		if (mpParent==0)
-			return;
-
-		if (mpParent)
-			mpParent->Remove(*this);
-
-		mpParent=0;
+		mConfigErrorMessage += msg;
+	}
+	
+	bool Processing::CanConsumeAndProduce()
+	{	
+		if(GetExecState()!=Running)
+			return false;
+		return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
 	}
 
-	std::string Processing::ComposeAssertMessage( std::string msg )
-	{
-		std::string assertMessage = GetClassName();
-		assertMessage += "::";
-		assertMessage += msg;
 
-		return assertMessage;
-	}
-
-	const char* Processing::AddStatus(const std::string& a)
-	{
-		return AddStatus(a.c_str());
-	}
-
-	const char* Processing::AddStatus(const char* a)
-	{
-		static char ret[256];
-		int len_a = strlen(a);
-		int len_b = mStatus.length();
-		char* truncated_str = "[truncated]...";
-		int space_left = 255-strlen(truncated_str);
-		bool truncated = false;
-		if (len_a > space_left) {
-			len_a = space_left;
-			truncated = true;
-		}
-		space_left -= len_a; 
-		strncpy(ret,a,len_a);
-		if (len_b > space_left) {
-			len_b = space_left;
-			truncated = true;
-		}
-		strncpy(ret + len_a,mStatus.c_str(),len_b);
-		if (truncated)
-		{
-			strcpy(ret + len_a + len_b,truncated_str);
-		}
-		return ret;
-	}
 };//namespace CLAM
 

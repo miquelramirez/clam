@@ -95,12 +95,6 @@ public:
 /** returns ZeroPaddingFactor being used.*/
 	int GetZeroPadding() const;
 
-/** An alternative way to set zeroPadding factor directly using FFTSize
- *	Note that if you use this setter, zero padding factor is not synchronized because it could
- *	be that the resulting factor is not an integer
- */
-	void SetFFTSize(int s);
-
 /** Sets Analysis Hop size in number of samples. This setter only changes attribute but
  *  does not change configurations accordingly! VIP: It assumes that a SetWindowSize is
  *  called afterwards.

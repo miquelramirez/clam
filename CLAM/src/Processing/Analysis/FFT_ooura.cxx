@@ -22,7 +22,6 @@
 
 #include "FFT_ooura.hxx"
 
-#include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
@@ -37,9 +36,7 @@ namespace CLAM {
 	FFT_base::ConcreteConfigure(c);
 	if ( !isPowerOfTwo( mSize ) )
 	{
-		mStatus = "Configure failed: FFT Ooura algorithm only works for input buffers";
-		mStatus += "that are a power of two!";
-
+		AddConfigErrorMessage("Configure failed: FFT Ooura algorithm only works for input buffers that are a power of two!");
 		return false;
 	}
 	if (mSize>0) {
@@ -88,9 +85,14 @@ namespace CLAM {
 	ReleaseMemory();
   }
 
-  bool FFT_ooura::Do() {
-	return Do(mInput.GetData(),mOutput.GetData());
-  };
+  bool FFT_ooura::Do() 
+  {
+	mOutput.GetData().SetSize( mInput.GetSize()/2+1);
+	bool toReturn = Do(mInput.GetAudio(), mOutput.GetData());
+	mInput.Consume();
+	mOutput.Produce();
+	return toReturn;
+  }
 
   bool FFT_ooura::Do(const Audio& in, Spectrum &out){
 	TData *inbuffer;
@@ -102,6 +104,8 @@ namespace CLAM {
 
 	if (GetExecState() == Disabled)
 	  return true;
+
+	out.SetSpectralRange(in.GetSampleRate()/2);
 
 	switch(mState) {
 	case sComplex:
@@ -137,9 +141,9 @@ namespace CLAM {
 	  ToOther(out);
 	  break;
 	default:
-	  throw(ErrProcessingObj("FFT_ooura: Do(): Inconsistent state",this));
+	  CLAM_ASSERT(false, "FFT_ooura: Do(): Inconsistent state");
 	}
-	out.SetSpectralRange(in.GetSampleRate()/2);
+
 	return true;
   }
 

@@ -24,9 +24,9 @@
 
 #include "ProcessingComposite.hxx"
 #include "DynamicType.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
 #include "Frame.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "SpectrumInterpolator.hxx"
 #include "SpectralPeakArrayInterpolator.hxx"
 
@@ -103,11 +103,13 @@ namespace CLAM {
 		FrameInterpolatorCtl mIsHarmonicCtl;
 
 		/** Ports */
-		InPortTmpl<Frame> mIn1;
-		InPortTmpl<Frame> mIn2;
-		OutPortTmpl<Frame> mOut;
+		InPort<Frame> mIn1;
+		InPort<Frame> mIn2;
+		OutPort<Frame> mOut;
 
-		InPortTmpl<Spectrum> mSpectralShape;
+		void AttachSpectralShape(Spectrum& spec) { mpSpectralShape = &spec; }
+		
+		Spectrum* mpSpectralShape;
 	private:
 		/** children processings */
 		SpectrumInterpolator mPO_SpectrumInterpolator;

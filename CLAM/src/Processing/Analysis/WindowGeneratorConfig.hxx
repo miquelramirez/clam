@@ -33,12 +33,9 @@ namespace CLAM {
 
 	class EWindowNormalize : public Enum {
 	public:
-
-		static tEnumValue sEnumValues[];
-		static tValue sDefault;
-		EWindowNormalize() : Enum(sEnumValues, sDefault) {}
-		EWindowNormalize(tValue v) : Enum(sEnumValues, v) {};
-		EWindowNormalize(std::string s) : Enum(sEnumValues, s) {};
+		EWindowNormalize() : Enum(ValueTable(), eAnalysis) {}
+		EWindowNormalize(tValue v) : Enum(ValueTable(), v) {};
+		EWindowNormalize(std::string s) : Enum(ValueTable(), s) {};
 
 		typedef enum {
 			eNone,
@@ -51,6 +48,17 @@ namespace CLAM {
 		{
 			return (Component*) new EWindowNormalize(eAnalysis);
 		};
+		static tEnumValue * ValueTable()
+		{
+			static tEnumValue sEnumValues[] = {
+				{eNone,"NoNormalization"},
+				{eAnalysis,"NormalizationForAnalysis"},
+				{eEnergy,"NormalizationForConstantEnergy"},
+				{eMax,"NormalizationForMaximizingMagnitude"},
+				{0,NULL}
+			};
+			return sEnumValues;
+		}
 	};
 
 	class WindowGeneratorConfig: public ProcessingConfig

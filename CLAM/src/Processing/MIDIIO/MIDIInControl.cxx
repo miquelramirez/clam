@@ -1,4 +1,6 @@
+
 #include "MIDIInControl.hxx"
+#include "OutControl.hxx"
 
 namespace CLAM {
 
@@ -128,28 +130,27 @@ void MIDIInControl::Handle(unsigned char* msg,int size)
 		}
 		else
 		{
-			if (mMsgByteIdToControlId[i] != 0xFF)
+			if (mMsgByteIdToControlId[i] == 0xFF) continue;
+
+			if (i==1 && (msg[0]&0xF0)==0xE0)
 			{
-				if (i==1 && (msg[0]&0xF0)==0xE0)
 				/* we make an exception for pitchbend: instead of putting
 				 * out to values (LSB, MSB), we prefer 1 14bit value.
 				 * see also the code in ConcreteConfigure
 				*/
-				{
-					GetOutControls().GetByNumber(mMsgByteIdToControlId[1]).
-						SendControl(msg[1] + (msg[2]<<7));
-				}
-				else
-				if (i==0)
-				{
-					GetOutControls().GetByNumber(mMsgByteIdToControlId[0]).
-						SendControl((msg[0]&0x0F)+1);
-				}
-				else
-				{	
-					GetOutControls().GetByNumber(mMsgByteIdToControlId[i]).
-						SendControl(msg[i]);
-				}
+				GetOutControls().GetByNumber(mMsgByteIdToControlId[1]).
+					SendControl(msg[1] + (msg[2]<<7));
+			}
+			else
+			if (i==0)
+			{
+				GetOutControls().GetByNumber(mMsgByteIdToControlId[0]).
+					SendControl((msg[0]&0x0F)+1);
+			}
+			else
+			{	
+				GetOutControls().GetByNumber(mMsgByteIdToControlId[i]).
+					SendControl(msg[i]);
 			}
 		}
 	}

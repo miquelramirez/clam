@@ -25,19 +25,6 @@
 namespace CLAM
 {
 
-// Oscillator controls enumeration
-
-Enum::tEnumValue EOscillatorControls::sEnumValues[] =
-	{
-		{ EOscillatorControls::pitch, "pitch" },
-		{ EOscillatorControls::amplitude, "amplitude" },
-		{ EOscillatorControls::modidx, "modidx" },
-		{ EOscillatorControls::phase, "phase" },
-		{ 0, NULL }
-	};
-
-Enum::tValue EOscillatorControls::sDefault = EOscillatorControls::pitch;
-
 // OscillatorConfig method definition
 void SimpleOscillatorConfig::DefaultInit(void)
 {
@@ -57,7 +44,7 @@ void SimpleOscillatorConfig::DefaultInit(void)
 
 // Oscillator method definition
 SimpleOscillator::SimpleOscillator()
-	:mOutput("Audio Output",this,1),
+	:mOutput("Audio Output", this),
 	mFreqUpdated( false ),
 	mAmpUpdated( false ),
 	mFreqCtl(0),
@@ -73,7 +60,7 @@ SimpleOscillator::SimpleOscillator()
 }
 
 SimpleOscillator::SimpleOscillator( const SimpleOscillatorConfig& cfg )
-	:mOutput("Audio Output",this,1),
+	:mOutput("Audio Output", this),
 	mFreqUpdated( false ),
 	mAmpUpdated( false ),
 	mFreqCtl(0),
@@ -106,8 +93,8 @@ bool SimpleOscillator::ConcreteConfigure( const ProcessingConfig& c )
 bool SimpleOscillator::Do()
 {
 	bool res = false;
-	res = Do(mOutput.GetData());
-	mOutput.LeaveData();
+	res = Do(mOutput.GetAudio());
+	mOutput.Produce();
 	return res;
 }
 

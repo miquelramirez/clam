@@ -1,237 +1,132 @@
-#include <string>
-#include <map>
-#include <typeinfo>
+#ifndef _Pool_hxx_
+#define _Pool_hxx_
 
-#include "Assert.hxx"
-#include "DataTypes.hxx"
-
-/**
- * @group Descriptors Pool
- */
-
-
+#include "ScopePool.hxx"
+#include "DescriptionScheme.hxx"
 
 namespace CLAM
 {
-	class AbstractAttribute
+	/**
+	 * Contains the extracted data for a given description process.
+	 * Its structure conforms the one defined by a DescriptionScheme
+	 * specified when constructed.
+	 *
+	 * Data is stored for each attribute as a C array.
+	 *
+	 * The values can be dumped and restored to and from an XML file.
+	 * @ingroup SemanticalAnalysis
+	 */
+	class DescriptionDataPool : public Component
 	{
 	public:
-		virtual ~AbstractAttribute() {}
-		virtual void * Allocate(unsigned size) = 0;
-		virtual void Deallocate(void * data) = 0;
-		template <typename TypeToCheck>
-		void CheckType() const
+		/**
+		 * Constructs a desciption data pool.
+		 * By default all the scopes are size 0 and no attributes are instanciated.
+		 * @param scheme the DescriptionScheme to be taken as specification.
+		 */
+		DescriptionDataPool(const DescriptionScheme & scheme)
+			: _scheme(scheme), _scopePools(_scheme.GetNScopes(),(ScopePool*)0)
 		{
-			CLAM_ASSERT(typeid(TypeToCheck)==TypeInfo(),
-				"Type Missmatch using a pool");
-		}
-	protected:
-		virtual const std::type_info & TypeInfo() const = 0;
-	};
-
-	template <typename AttributeType>
-	class Attribute : public AbstractAttribute
-	{
-	public:
-		typedef TData DataType;
-		virtual void * Allocate(unsigned size)
+			}
+			~DescriptionDataPool()
 		{
-			return new AttributeType[size];
-		}
-		virtual void Deallocate(void * data)
-		{
-			delete [] (AttributeType*)data;
-		}
-	protected:
-		virtual const std::type_info & TypeInfo() const
-		{
-			return typeid(AttributeType);
-		}
-	};
-
-	class AttributeScope
-	{
-	public:
-		typedef std::map<std::string, unsigned> NamesMap;
-		typedef std::vector<AbstractAttribute *> Attributes;
-	private:
-		NamesMap _nameMap;
-		Attributes _attributes;
-	public:
-		~AttributeScope()
-		{
-			Attributes::iterator it = _attributes.begin();
-			Attributes::iterator end = _attributes.end();
-			for (; it!=end; it++)
-				delete *it;
+			ScopePools::iterator it = _scopePools.begin();
+			ScopePools::iterator end = _scopePools.end();
+			for (; it != end; it++)
+				if (*it) delete *it;
 		}
 
+		/**
+		 * Sets how many values will the attributes on the specified scope have.
+		 * Sets the number of contexts (ie. number of notes) for the given Scope (Note), 
+		 * so that every attribute registered for that scope will have a single value 
+		 * for each context.
+		 */
+		void SetNumberOfContexts(const std::string & scopeName, unsigned size)
+		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
+			_scopePools[scopeIndex] = new ScopePool(scope, size);
+		}
+
+		unsigned GetNumberOfContexts(const std::string & scopeName) const
+		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			CLAM_ASSERT(_scopePools[scopeIndex],"Getting the Scope size but it is not populated");
+			return _scopePools[scopeIndex]->GetSize();
+		}
+
+		/** @todo Should this method be deprecated?? */
+		void InstantiateAttribute(const std::string & scopeName, const std::string & attributeName)
+		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
+			scope.GetIndex(attributeName);
+			CLAM_ASSERT(_scopePools[scopeIndex], "Instantianting an attribute inside an unpopulated scope");
+		}
+		/**
+		 * Returns a pointer to the C array of data
+		 * with all the values for the specified attribute.
+		 * The C array lenght will be the GetScopeSize(scope) long.
+		 * This methods allocates the array value the first time is invoqued for an attribute.
+		 * @pre Such attribute in such scope exists and the type is the one in the template.
+		 */
 		template <typename AttributeType>
-		void Add(const std::string & name)
+		AttributeType * GetWritePool(const std::string & scopeName, const std::string & attributeName)
 		{
-			unsigned pos = _nameMap.size();
-			bool inserted = 
-				_nameMap.insert(std::make_pair(name,pos)).second;
-			CLAM_ASSERT(inserted,"ScopeSpec::Add, Attribute already present");
-			_attributes.push_back(new Attribute<AttributeType>);
-		}
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
 
-		unsigned GetIndex(const std::string & name) const
-		{
-			NamesMap::const_iterator it = _nameMap.find(name);
-			CLAM_ASSERT(it!=_nameMap.end(),
-				"Not such descriptor name on this descriptor scope");
-			return it->second;
-		}
+			CLAM_ASSERT(_scopePools[scopeIndex],"Accessing attribute data inside an unpopulated scope");
 
-		unsigned GetNAttributes() const
-		{
-			return _nameMap.size();
+			return _scopePools[scopeIndex]->template GetWritePool<AttributeType>(attributeName);
 		}
-
-		void * Allocate(unsigned attribute, unsigned size) const
-		{
-			return _attributes[attribute]->Allocate(size);
-		}
-		void Deallocate(unsigned attribute, void * buffer) const
-		{
-			_attributes[attribute]->Deallocate(buffer);
-		}
-
+		/**
+		 * Returns a pointer to the C array of data
+		 * with all the values for the specified attribute.
+		 * The C array lenght will be the GetScopeSize(scope) long.
+		 * @pre Such attribute in such scope exists and the type is the one in the template.
+		 * @pre GetWritePool, which allocates the data,
+		 * 	has been previously called for this attribute and pool object.
+		 */
 		template <typename AttributeType>
-		void CheckType(unsigned pos, AttributeType *) const
+		const AttributeType * GetReadPool(const std::string & scopeName, const std::string & attributeName) const
 		{
-			_attributes[pos]->CheckType<AttributeType>();
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+
+			CLAM_ASSERT(_scopePools[scopeIndex],"Accessing attribute data inside an unpopulated scope");
+
+			return _scopePools[scopeIndex]->template GetReadPool<AttributeType>(attributeName);
 		}
+	// Component Interface
+
+		const char * GetClassName() const { return "DescriptionDataPool"; }
+		void StoreOn(Storage & storage) const
+		{
+			for (unsigned i = 0; i<_scopePools.size(); i++)
+			{
+				XMLComponentAdapter adapter(*(_scopePools[i]), "ScopePool", true);
+				storage.Store(adapter);
+			}
+		}
+		void LoadFrom(Storage & storage)
+		{
+			for (unsigned i = 0; i<_scopePools.size(); i++)
+			{
+				const DescriptionScope & scope = _scheme.GetScope(i);
+				_scopePools[i] = new ScopePool(scope,0);
+				XMLComponentAdapter adapter(*(_scopePools[i]), "ScopePool", true);
+				storage.Load(adapter);
+			}
+		}
+
+	private:
+		const DescriptionScheme & _scheme;
+		typedef std::vector<ScopePool*> ScopePools;
+		ScopePools _scopePools;
 	};
 
-	class Pool
-	{
-	public:
-		typedef std::vector<void*> Attributes;
-	private:
-		unsigned _size;
-		Attributes _attributes;
-		const AttributeScope & _spec;
-	public:
-		Pool(const AttributeScope & spec, unsigned size=0)
-			: _size(0), _spec(spec)
-		{
-			_attributes.resize(_spec.GetNAttributes());
-			Allocate(size);
-		}
-		~Pool()
-		{
-			Deallocate();
-		}
-	private:
-		void Deallocate()
-		{
-			if (!_size) return;
-			Attributes::iterator it = _attributes.begin();
-			Attributes::iterator end = _attributes.end();
-			for (unsigned i=0; it!=end; i++, it++)
-				_spec.Deallocate(i, *it);
-			_size=0;
-		}
-		void Allocate(unsigned newSize)
-		{
-			if (!newSize) return;
-			_size = newSize;
-			for (unsigned i = 0; i<_spec.GetNAttributes(); i++)
-				_attributes[i]=_spec.Allocate(i,_size);
-		}
-	public:
-		unsigned GetNAttributes()
-		{
-			return _spec.GetNAttributes();
-		}
-		unsigned GetSize()
-		{
-			return _size;
-		}
-		void SetSize(unsigned newSize)
-		{
-			Deallocate();
-			Allocate(newSize);
-		}
-
-		template <typename AttributeType>
-		const AttributeType * Get(const std::string & name) const
-		{
-			CLAM_ASSERT(_size,"Getting an attribute from a zero size pool");
-			unsigned attribPos = _spec.GetIndex(name);
-			_spec.CheckType(attribPos,(AttributeType*)0);
-			return (const AttributeType*) _attributes[attribPos];
-		}
-
-		template <typename AttributeType>
-		AttributeType * Get(const std::string & name)
-		{
-			CLAM_ASSERT(_size,"Getting an attribute from a zero size pool");
-			unsigned attribPos = _spec.GetIndex(name);
-			_spec.CheckType(attribPos,(AttributeType*)0);
-			return (AttributeType*) _attributes[attribPos];
-		}
-	};
-
-	class ScopeRegistry
-	{
-	private:
-		typedef std::map<std::string, unsigned> SpecMap;
-		typedef std::vector<AttributeScope *> Specs;
-	private:
-		Specs _specs;
-		SpecMap _specMap;
-	public:
-		ScopeRegistry()
-		{
-		}
-
-		~ScopeRegistry()
-		{
-			Specs::iterator it = _specs.begin();
-			Specs::iterator end = _specs.end();
-			for (; it!=end; it++)
-				delete *it;
-		}
-
-		template < typename AttributeSpec >
-		void AddAttribute(const std::string &scope, const std::string & name)
-		{
-			typedef typename AttributeSpec::DataType DataType;
-			AttributeScope & theSpec = SearchScopeOrAdd(scope);
-			theSpec.template Add<DataType>(name);
-		}
-
-		AttributeScope & SearchScopeOrAdd(const std::string scopeName)
-		{
-			const unsigned nSpecs = _specs.size();
-			std::pair<SpecMap::iterator,bool> result = 
-				_specMap.insert(std::make_pair(scopeName,nSpecs));
-
-			// Already inserted
-			if (!result.second) return *_specs[result.first->second];
-
-			AttributeScope * theSpec = new AttributeScope;
-			_specs.push_back(theSpec);
-			return *theSpec;
-		}
-
-		const AttributeScope & GetSpec(const std::string & name) const
-		{
-			SpecMap::const_iterator it = _specMap.find(name);
-			CLAM_ASSERT(it!=_specMap.end(), "No scope registered with that name");
-			return *_specs[it->second];
-		}
-
-		Pool * CreatePool(const std::string & scope)
-		{
-			return new Pool(GetSpec(scope));
-			
-		}
-	};
 }
 
 
+#endif// _Pool_hxx_
 

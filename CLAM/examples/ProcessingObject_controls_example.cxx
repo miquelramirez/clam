@@ -19,14 +19,20 @@
  *
  */
 
+
+/**
+ * @example  ProcessingObject_controls_example.cxx
+ * This example shows several things about using controls
+ *  - How to connect controls each other
+ *  - How to explicitly propagate a value from an output control using SendControl
+ *  - How to explicitly set a value to a input control using DoControl
+ *  - How to associate processing callbacks to an input control
+ */
+
 ///////////////////////////////////////////////////////////////////////////////////
 // class MyProcObj
 // Just a test class.
 //
-
-#ifndef _MyProcObj_
-#define _MyProcObj_
-
 
 #include "Processing.hxx"
 #include "InControl.hxx"
@@ -38,25 +44,29 @@
 
 using namespace CLAM;
 
+// Empty configuration for our processing
 class MyProcConf : public ProcessingConfig {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (MyProcConf, 0,ProcessingConfig);
 };
 
+
+// A processing with some controls
 class MyProcObj : public Processing
 {
-// Attributes
-	MyProcConf mConfig;
 private:
+	MyProcConf mConfig;
 	InControlTmpl<MyProcObj> mInPitch;
 	InControlTmpl<MyProcObj> mInAmplitude;
 	
 	OutControl mOutNoteOn;
 	OutControl mOutNoteOff;
+private:
 	bool ConcreteConfigure(const ProcessingConfig &c) {return true;}
 // Constructor/Destructor
 public:
 	MyProcObj(const MyProcConf &c) :
+		// Asocciating callbacks to the control receiving
 		mInPitch("Pitch", this, &MyProcObj::DoInPitchControl),
 		mInAmplitude("Amplitude", this, &MyProcObj::DoInAmplitudeControl),
 
@@ -68,10 +78,8 @@ public:
 	virtual ~MyProcObj(){}
 	const char * GetClassName() const {return "CLAMTest_MyProcObj";}
 	
-	TControlData mState;
 public:
-	
-
+	// Callbacks to receive controls
 	int DoInPitchControl(TControlData val) 
 	{ 
 		std::cout << GetClassName() << ": DoInPitchControl activated. Value="<< val << std::endl;  
@@ -82,7 +90,8 @@ public:
 		std::cout << GetClassName() << ": DoInAmplitudeControl activated. Value="<< val << std::endl;  
 		return 2; 
 	}
-	
+
+	// The do
 	bool Do() 
 	{
 		std::cout << GetClassName() << ": doing my Do()... " << std::endl;
@@ -93,29 +102,39 @@ public:
 	virtual bool Stop(void) {return true;};
 };
 
-#endif // _MyProcObj_
-
 
 int main(void)
 {
 	try {
-	MyProcConf conf1;
-	conf1.UpdateData();
-	MyProcObj proc1(conf1);
-	MyProcObj proc2(conf1);
-	MyProcObj proc3(conf1);
+		MyProcConf conf1;
+		conf1.UpdateData();
+		MyProcObj proc1(conf1);
+		MyProcObj proc2(conf1);
+		MyProcObj proc3(conf1);
 
-	proc1.GetOutControls().GetByNumber(0).AddLink(&proc2.GetInControls().GetByNumber(0));
-	proc1.GetOutControls().GetByNumber(1).AddLink(&proc2.GetInControls().GetByNumber(1));
-	proc1.GetOutControls().GetByNumber(0).AddLink(&proc3.GetInControls().GetByNumber(0));
-	proc1.GetOutControls().GetByNumber(0).AddLink(&proc3.GetInControls().GetByNumber(1));
+		// Connection by number.
+		// Its also possible to connect them using control
+		// names: "Pitch", "Amplitude", "NoteOn" and "NoteOff"
 
-	proc1.Do();
-	proc2.Do();
-	proc1.GetOutControls().GetByNumber(0).SendControl(44);
-	proc1.GetOutControls().GetByNumber(1).SendControl(555);
+		CLAM::ConnectControls( proc1, "NoteOn",  proc2, "Amplitude");
+		CLAM::ConnectControls( proc1, "NoteOff", proc2, "Pitch");
+		CLAM::ConnectControls( proc1, "NoteOn",  proc3, "Amplitude");
+		CLAM::ConnectControls( proc1, "NoteOn",  proc3, "Pitch");
 
-	proc1.GetInControls().GetByNumber(0).DoControl(222.2f); 
+		// SendControl propagates the value from an output control
+		// to its connected in controls.
+
+		// From proc1:Out[0] to proc2:In[0], proc3:In[0] and proc3:In[1]
+		proc1.GetOutControls().Get("NoteOn").SendControl(44);
+		// From proc1:Out[1] to proc2:In[1]
+		proc1.GetOutControls().Get("NoteOff").SendControl(555);
+
+		// 
+		proc1.GetInControls().GetByNumber(0).DoControl(222.2f); 
+
+		// Useless Do's, they are not necessary for the example
+		proc1.Do();
+		proc2.Do();
 
 
 	}catch(std::out_of_range e)

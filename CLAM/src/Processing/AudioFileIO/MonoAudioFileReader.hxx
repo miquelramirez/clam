@@ -24,7 +24,7 @@
 
 #include "Processing.hxx" // For CLAM::Processing interface
 #include "MonoAudioFileReaderConfig.hxx"
-#include "AudioOutPortTmpl.hxx"
+#include "AudioOutPort.hxx"
 
 namespace CLAM
 {
@@ -38,6 +38,7 @@ namespace CLAM
    
 		virtual const char* GetClassName() const;
 		virtual const ProcessingConfig& GetConfig() const;
+		virtual bool Do( Audio & outputSamples );
 		virtual bool Do();	
 
 		virtual ~MonoAudioFileReader();
@@ -52,7 +53,7 @@ namespace CLAM
 	protected: // attributes
 		
 		MonoAudioFileReaderConfig mConfig;
-		OutPortTmpl<Audio>        mOutput;
+		AudioOutPort	          mOutput;
 		AudioCodecs::Stream*      mNativeStream;
 		TTime                     mCurrentBeginTime;
 		TTime                     mDeltaTime;

@@ -1,11 +1,11 @@
 #ifndef _SynthSineSpectrumConfig_
 #define _SynthSineSpectrumConfig_
 
+#include "ProcessingConfig.hxx"
+
 namespace CLAM {
 
-	#include "ProcessingConfig.hxx"
-
-	/**
+/**
 	 * Config class for the SynthSineSpectrum Processing
 	 */
 class SynthSineSpectrumConfig:public ProcessingConfig

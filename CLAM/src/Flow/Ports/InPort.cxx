@@ -1,21 +1,49 @@
+
 #include "InPort.hxx"
 #include "OutPort.hxx"
+#include "Processing.hxx"
 
 namespace CLAM
 {
 
-InPort::InPort(const std::string &n,
-			   Processing *o,
-			   int length,
-			   int hop,
-			   bool inplace) : 
-	Port(n,o,length,hop),
-	mCanDoInplace(inplace)
-{}
-
-bool InPort::IsConnectedTo( OutPort& out )
+InPortBase::InPortBase( const std::string & name, Processing * proc )
+	: mAttachedOutPort(0),
+	  mName(name),
+	  mProcessing(proc)
 {
-	return out.IsConnectedTo( *this );
+	if(proc)
+		proc->PublishInPort(this);
 }
 
-} // namespace
+InPortBase::~InPortBase()
+{
+}
+
+OutPortBase * InPortBase::GetAttachedOutPort() 
+{
+	return mAttachedOutPort;
+}
+
+void InPortBase::SetAttachedOutPort( OutPortBase* out )
+{
+	mAttachedOutPort = out;
+}
+
+const std::string & InPortBase::GetName()
+{
+	return mName;
+}
+
+Processing * InPortBase::GetProcessing()
+{
+	return mProcessing;
+}
+
+void InPortBase::Disconnect()
+{	
+	CLAM_DEBUG_ASSERT(mAttachedOutPort, "InPortBase::Disconnect() - InPort is not connected" );
+	mAttachedOutPort->DisconnectFromIn( *this );
+}
+
+} // namespace CLAM
+

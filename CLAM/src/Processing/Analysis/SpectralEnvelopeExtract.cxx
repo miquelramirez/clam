@@ -21,7 +21,6 @@
 
 #include "Complex.hxx"
 #include "SpectralEnvelopeExtract.hxx"
-#include "ErrProcessingObj.hxx"
 #include "Spectrum.hxx"
 #include "SpecTypeFlags.hxx"
 #include "SpectralPeakArray.hxx"
@@ -102,7 +101,6 @@ namespace CLAM {
 	{
 		output.SetScale(input.GetScale());
 		
-		int i;
 		TSize nPeaks=input.GetnPeaks();
 				
 		if (nPeaks<4) return false; //cannot extract an envelope out of only 3 peaks!
@@ -120,7 +118,7 @@ namespace CLAM {
 		magPointArray.SetSize(nPeaks+1);
 		phasePointArray.Resize(nPeaks+1);
 		phasePointArray.SetSize(nPeaks+1);
-		for(i=0;i<nPeaks;i++)
+		for(int i=0;i<nPeaks;i++)
 		{
 			magPointArray[i+1].SetX(freqBuffer[i]);
 			magPointArray[i+1].SetY(magBuffer[i]);

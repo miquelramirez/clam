@@ -6,10 +6,10 @@ namespace CLAM
 		//InControlTmplArray(int size, const std::string &name, Processing* parent=0,
 		//TPtrMemberFuncId f, const bool publish);
 MyProcessingWithControlArray::MyProcessingWithControlArray() :
-	mIn(12, "my_name", this, CallbackId),
-	mIn2("my_name", this, Callback),
-	mInArray(10, "array_control_name", this, CallbackId),
-	mVoiceControl(NVoices, "VoiceControl", this, VoiceControlCallbackId),
+	mIn(12, "my_name", this, &MyProcessingWithControlArray::CallbackId),
+	mIn2("my_name", this, &MyProcessingWithControlArray::Callback),
+	mInArray(10, "array_control_name", this, &MyProcessingWithControlArray::CallbackId),
+	mVoiceControl(NVoices, "VoiceControl", this, &MyProcessingWithControlArray::VoiceControlCallbackId),
 	mSubPOsTransformation( NVoices )
 {
 	for(int i=0; i<NVoices; i++)

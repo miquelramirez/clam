@@ -68,7 +68,44 @@ void addQtGenDirsToIncludepaths()
 	}
 }
 
-
+void check_use_has_consistency(void)
+{
+	listkey *k = config->first;
+	listkey *k_has = 0;
+	while (k)
+	{
+		if (strncmp(k->str,"USE_",4)==0)
+		{
+			char tmp[256];
+			strncpy(tmp,k->str,256);
+			memcpy(tmp,"HAS_",4);
+			k_has = listhash_find(config,tmp);
+			/*fprintf(stderr,"%s=%s %s=%s\n",
+						k->str,k->l->first->str,
+						tmp,k_has ? k_has->l->first->str : "[undefined]");
+			*/			
+			if (strcmp(k->l->first->str,"1")==0)
+			{
+				if (k_has)
+				{
+					if (strcmp(k_has->l->first->str,"1"))
+					{
+						fprintf(stderr,
+"srcdeps: error: configuration specifies %s=1, but %s!=1\n"
+							,k->str,tmp);
+						exit(-1);						
+					}
+				}else{
+					fprintf(stderr,
+"srcdeps: error: configuration specifies %s=1, but %s was undefined\n"
+							,k->str,tmp);
+					exit(-1);
+				}
+			}
+		}
+		k = k->next;
+	}
+}
 
 int main(int argc,char** argv)
 {
@@ -122,6 +159,9 @@ int main(int argc,char** argv)
 #endif
 
 	config_parse( settings.settingsfile );
+
+	check_use_has_consistency();
+
 	sprintf(dspFileToWrite,"%s.dsp", program->first->str);
 	sprintf(vcprojFileToWrite, "%s.vcproj", program->first->str);
 
@@ -170,7 +210,7 @@ int main(int argc,char** argv)
 
 	if (platform == windows_platform )
 	{
-		dsp_parse( dspFileToWrite );
+//		dsp_parse( dspFileToWrite );  disabled since CLAM 0.7
 		vcproj_parse( vcprojFileToWrite);
 	}
 

@@ -23,11 +23,6 @@ namespace CLAM
     Configure( cfg );
   }
   
-  CepstralTransform::~CepstralTransform()
-  {
-    
-  }
-  
   bool CepstralTransform::ConcreteConfigure( const ProcessingConfig& cfg )
   {
     CopyAsConcreteConfig( mConfig, cfg );
@@ -37,7 +32,7 @@ namespace CLAM
   
   bool CepstralTransform::Do()
   {
-    return true;
+     CLAM_ASSERT(false, "Supervised Do() not implemented");
   }
   
   bool CepstralTransform::ConcreteStart()
@@ -47,12 +42,7 @@ namespace CLAM
     
     return true;
   }
-  
-  bool CepstralTransform::ConcreteStop()
-  {
-    return true;
-  }
-  
+   
   bool CepstralTransform::Do( const MelSpectrum& melSpec, MelCepstrum& melCeps )
   {
     if ( !AbleToExecute() ) return false; // object was disabled

@@ -1,13 +1,15 @@
 #ifndef _TransformationDummy_hxx_
 #define _TransformationDummy_hxx_
 
-#include "InControl.hxx"
 #include <iostream>
+
+#include "InControl.hxx"
+#include "Processing.hxx"
 
 namespace CLAM 
 {
 
-class TransformationDummy
+class TransformationDummy : public Processing
 {
 public:
 	InControlTmpl<TransformationDummy> voiceInControl;
@@ -21,6 +23,10 @@ public:
 	
 	virtual ~TransformationDummy() {}
 
+	bool Do(){return 0;}
+	const ProcessingConfig& GetConfig() const {throw 0;}
+	const char* GetClassName() const {return "TransformationDummy";}
+	bool ConcreteConfigure(const ProcessingConfig& c) {return true;}
 
 	// this is only because we are pretending that this class is a Processing
 	void PublishInControl(InControl* i) {};
@@ -38,3 +44,4 @@ private:
 
 
 #endif
+

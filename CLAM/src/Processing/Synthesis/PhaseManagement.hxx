@@ -6,17 +6,14 @@
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
 #include "Processing.hxx"
+#include "InControl.hxx"
 
 
 #include "PhaseManagementConfig.hxx"
 
-namespace CLAM{
-
-
+namespace CLAM
+{
 	/* PhaseManagementConfig moved to PhaseManagementConfig.hxx */
-
-
-
 /** 
 * The  PhaseManagement Class takes care about either
 * <ol>
@@ -80,5 +77,6 @@ private:
 
 };
 
-};//CLAM namespace
+} //CLAM namespace
 #endif
+

@@ -27,31 +27,6 @@
 #define MINUSINFINITY -99 //Value for an infinitely negative number
 
 namespace CLAM {
-
-	Enum::tEnumValue EFDFilterGenControls::sEnumValues[] =
-	{
-		{ EFDFilterGenControls::gain, "gain" },
-		{ EFDFilterGenControls::highcutoff, "highcutoff" },
-		{ EFDFilterGenControls::lowcutoff, "lowcutoff" },
-		{ EFDFilterGenControls::passbandslope, "passbandslope" },
-		{ EFDFilterGenControls::stopbandslope, "stopbandslope" },
-		{ 0, NULL }
-	};
-	
-	Enum::tValue EFDFilterGenControls::sDefault = EFDFilterGenControls::gain;
-	
-	
-	Enum::tEnumValue EFDFilterType::sEnumValues[] = {
-		{EFDFilterType::eLowPass,"Low-pass"},
-		{EFDFilterType::eHighPass,"High-pass"},
-		{EFDFilterType::eBandPass,"Band-pass"},
-		{EFDFilterType::eStopBand,"Stop-Band"},
-		{0,NULL}
-	};
-	
-	Enum::tValue EFDFilterType::sDefault = EFDFilterType::eLowPass;
-	
-	
 	void FDFilterGenConfig::DefaultInit(void)
 	{
 		AddAll();
@@ -72,7 +47,7 @@ namespace CLAM {
 	
 
 	FDFilterGen::FDFilterGen() :
-		Output("Output",this,1),
+		Output("Output",this),
 		Gain("Gain",this, &FDFilterGen::UpdateControlChangedFlag), 
 		HighCutOff( "High Cutoff Frequency",this, &FDFilterGen::UpdateControlChangedFlag),
 		LowCutOff( "Low Cutoff Frequency",this, &FDFilterGen::UpdateControlChangedFlag),
@@ -87,7 +62,7 @@ namespace CLAM {
 	};
 
 	FDFilterGen::FDFilterGen( const FDFilterGenConfig& c) :
-		Output("Output",this,1),
+		Output("Output",this),
 		SpectralRange(0),
 		mControlChanged( false ),
 		Type( EFDFilterType::eLowPass ),

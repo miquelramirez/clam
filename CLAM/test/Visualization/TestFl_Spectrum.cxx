@@ -19,7 +19,7 @@ using CLAMVM::LogMagSpectrumAdapter;
 using CLAMVM::Fl_Spectrum;
 using CLAM::XMLStorage;
 
-static const char* sPathToData= "./Datasets/";
+static const char* sPathToData= "../../../../../CLAM-TestData/spectralData/";
 
 bool TestKnownSineFreqUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
@@ -89,16 +89,13 @@ bool TestKnownSineFreqUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& present
 
 bool TestWindowedUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
-		XMLStorage  x;
-		Spectrum    specObj;
-
 		std::string filename = "Spectrum_sine.xml";
 		std::string pathToFile = sPathToData;
 
 		pathToFile+=filename;
 
-
-		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
+		Spectrum    specObj;
+		XMLStorage::Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
 		view.BindTo( specObj );
 
@@ -109,7 +106,6 @@ bool TestWindowedUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation 
 
 		tk.Run();
 
-
 		return true;
 
 }
@@ -117,16 +113,12 @@ bool TestWindowedUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation 
 
 bool TestPureComplexUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
-		XMLStorage  x;
-		Spectrum    specObj;
-
 		std::string filename = "SpectrumOnlyComplex.xml";
 		std::string pathToFile = sPathToData;
-
 		pathToFile+=filename;
 
-
-		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
+		Spectrum    specObj;
+		XMLStorage::Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
 		view.BindTo( specObj );
 
@@ -144,21 +136,18 @@ bool TestPureComplexUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentati
 
 bool TestPurePolarUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation)
 {
-		XMLStorage  x;
-		Spectrum    specObj;
-
 		std::string filename = "SpectrumOnlyPolar.xml";
 		std::string pathToFile = sPathToData;
 
 		pathToFile+=filename;
 
 
-		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
+		Spectrum    specObj;
+		XMLStorage::Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
 		view.BindTo( specObj );
 
 		view.Publish();
-
 		presentation.Show();
 
 		WidgetTKWrapper& tk = WidgetTKWrapper::GetWrapperFor("FLTK");
@@ -172,16 +161,13 @@ bool TestPurePolarUseCase(LogMagSpectrumAdapter& view, Fl_Spectrum& presentation
 
 bool TestPureBPFUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
-		XMLStorage  x;
-		Spectrum    specObj;
-
 		std::string filename = "SpectrumOnlyBPF.xml";
 		std::string pathToFile = sPathToData;
 
 		pathToFile+=filename;
 
-
-		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
+		Spectrum    specObj;
+		XMLStorage::Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
 		view.BindTo( specObj );
 
@@ -197,16 +183,13 @@ bool TestPureBPFUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& presentation 
 
 bool TestBasicUseCase( LogMagSpectrumAdapter& view, Fl_Spectrum& presentation )
 {
-		XMLStorage  x;
-		Spectrum    specObj;
-
 		std::string filename = "Spectrum.xml";
 		std::string pathToFile = sPathToData;
 
 		pathToFile+=filename;
 
-
-		x.Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
+		Spectrum    specObj;
+		XMLStorage::Restore( specObj, pathToFile );  // Spectrum has been incorporated into the system
 		
 		view.BindTo( specObj );
 

@@ -174,10 +174,12 @@ extern void vcproj_parse(const char* outFilename)
 				fprintf(outfile, line, definesbuf);
 				strend();
 			}
+			/* TODO: use pre_includes var but only the basename
 			else if(strstr(line,"\tForcedIncludeFiles=" ) )
 			{ 
 				fprintf(outfile, line, pre_includes->first->str);
 			}
+			*/
 			else if ( strstr(line,"\tAdditionalDependencies=") )
 			{
 				char libsbuf[4096];
@@ -223,10 +225,12 @@ extern void vcproj_parse(const char* outFilename)
 				fprintf(outfile, line, definesbuf);
 				strend();
 			}
+			/* TODO use pre_includes var, but only the basename
 			else if(strstr(line,"\tForcedIncludeFiles=" ) )
 			{ 
 				fprintf(outfile, line, pre_includes->first->str);
 			}
+			*/
 			else if ( strstr(line,"\tAdditionalDependencies=") )
 			{
 				char libsbuf[4096];

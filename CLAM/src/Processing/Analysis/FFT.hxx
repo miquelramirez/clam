@@ -25,8 +25,8 @@
 
 #include <typeinfo> // for bad_cast definition
 #include "Processing.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "OutPort.hxx"
 #include <string>
 #include "FFTConfig.hxx"
 #include "SpecTypeFlags.hxx"
@@ -84,8 +84,8 @@ namespace CLAM {
 	 */
 	FFTState mBackupState;
 
-	InPortTmpl<Audio>     mInput;
-	OutPortTmpl<Spectrum> mOutput;
+	AudioInPort     mInput;
+	OutPort<Spectrum> mOutput;
 
 	// Control change callback function
 	void ChangeSize(int n);
@@ -104,8 +104,6 @@ namespace CLAM {
 	
 	const char *GetClassName() const {return "FFT";}
 	
-	virtual void Attach(Audio& in, Spectrum &out);
-
 	/** Supervised-mode Do function.
 	 */
 	virtual bool Do(void) = 0;

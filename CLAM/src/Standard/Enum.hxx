@@ -42,55 +42,53 @@ class IllegalValue : public std::exception {
 /**
  * Instances of this class represents objects that can adquire 
  * a symbolic value from a limited set of symbolic values.
- * <p>
- * Enum provides more features that the C <tt>enum</tt> with a
+ *
+ * Enum provides more features that the C \c enum with a
  * very little overhead:
- * </p>
- * <ul>
- * <li>Run-time symbolic representation
- * <li>Assignment to both simbolic and numeric values
- * <li>Run-time checking of values on debug mode
- * <li>Formated input and output to an std::stream as symbol
- * <li>Implements the Component interface
- * </ul>
- * <p>
+ *
+ * - Run-time symbolic representation
+ * - Assignment to both simbolic and numeric values
+ * - Run-time checking of values on debug mode
+ * - Formated input and output to an std::stream as symbol
+ * - Implements the Component interface
+ * 
  * The way to define an enumerated type is by subclassing 
- * <tt>Enum</tt>.
+ * Enum.
+ *
  * The subclass MUST redefine its constructors by 
  * providing the Enum constructor an array of tEnumValue's,
  * which defines the mapping between numeric and symbolic 
  * values, and an initialization value, than can be both a 
  * symbol (char* or std::string) or an integer.
- * </p>
- * <pre>
+ * 
+ * @code
  * // EMyEnum.hxx
  *	class EMyEnum : public CLAM::Enum {
  *	public:
- *		static tEnumValue sEnumValues[];
- *		static tValue sDefault;
- *		EMyEnum() : CLAM::Enum(sEnumValues, sDefault) {}
- *		EMyEnum(tValue v) : CLAM::Enum(sEnumValues, v) {};
- *		EMyEnum(std::string s) : CLAM::Enum(sEnumValues, s) {};
+ *		EMyEnum() : CLAM::Enum(ValueTable(), eTwo) {}
+ *		EMyEnum(tValue v) : CLAM::Enum(ValueTable(), v) {};
+ *		EMyEnum(const std::string & s) : CLAM::Enum(ValueTable(), s) {};
  *
  *		virtual CLAM::Component * Species() const {return new EMyEnum();}
  *
  *		typedef enum {
- *			zero=0,
- *			two=2,
- *			hundred=100
+ *			eZero=0,
+ *			eTwo=2,
+ *			eHundred=100
  *		} tEnum;
+ *		static tEnumValue * ValueTable()
+ *		{
+ *			static tEnumValue sValueTable[] = 
+ *			{
+ *				{eZero,"zero"},
+ *				{eTwo,"two"},
+ *				{eHundred,"hundred"},
+ *				{0,NULL}
+ *			};
+ *			return sValueTable;
+ *		}
  *	};
- *
- * // EMyEnum.cxx
- *	CLAM::Enum::tEnumValue EMyEnum::sEnumValues[] = {
- *		{EMyEnum::zero,"zero"},
- *		{EMyEnum::two,"two"},
- *		{EMyEnum::hundred,"hundred"},
- *		{0,NULL}
- *	};
- *
- *	CLAM::Enum::tValue EMyEnum::sDefault = MyEnum::two;
- * </pre>
+ * @endcode
  */
 class Enum : public Component {
 
@@ -289,7 +287,7 @@ public:
 
 	/** 
 	 * Stores component's subitems on the given Storage
-	 * @param store The given storage where the subitem will be stored
+	 * @param storage The given storage where the subitem will be stored
 	 * @see Storage
 	 * TODO: This method can throw and IllegalValue exception
 	 */
@@ -298,7 +296,7 @@ public:
 
 	/** 
 	 * Loads component's subitems from the given Storage
-	 * @param store The given storage where the subitem will be stored
+	 * @param storage The given storage where the subitem will be stored
 	 * @see Storage
 	 * TODO: This method can throw and IllegalValue exception
 	 */

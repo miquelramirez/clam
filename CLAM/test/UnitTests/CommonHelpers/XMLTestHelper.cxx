@@ -41,7 +41,7 @@ private:
 	void copyUntilDoubleQuote();
 
 private:
-	int m_index;
+	unsigned m_index;
 	std::string m_xml;
 	std::string m_stripped;
 };
@@ -49,7 +49,7 @@ private:
 
 int notEqualIndex( std::string expectedXml, std::string actualXml )
 {
-	int index = 0;
+	unsigned index = 0;
 	while ( index < actualXml.length()  &&
 			index < expectedXml.length()  &&
 			actualXml[index] == expectedXml[index] )

@@ -223,7 +223,7 @@ namespace AudioCodecs
 
 	void OggVorbisAudioStream::ConsumeDecodedSamples()
 	{
-		CLAM_ASSERT( mDecodeBuffer.size() >= mInterleavedData.Size(),
+		CLAM_ASSERT( mDecodeBuffer.size() >= unsigned(mInterleavedData.Size()),
 			     "This method cannot be called if the decode buffer"
 			     " has less samples than requested by the upper level");
 
@@ -246,7 +246,7 @@ namespace AudioCodecs
 		TSize nBytes = 0;
 		unsigned samplesRead = 0;
 
-		while ( mDecodeBuffer.size() < mInterleavedData.Size() )
+		while ( mDecodeBuffer.size() < unsigned(mInterleavedData.Size()) )
 		{
 			mLastBytesRead = ov_read( &mNativeFileParams, 
 						  (char*)mBlockBuffer.GetPtr(), 
@@ -272,7 +272,7 @@ namespace AudioCodecs
 		if ( !mDecodeBuffer.empty() )
 		{
 
-			if ( mDecodeBuffer.size() < mInterleavedData.Size() )
+			if ( mDecodeBuffer.size() < unsigned(mInterleavedData.Size()) )
 			{
 				mDecodeBuffer.insert( mDecodeBuffer.end(),
 						      mInterleavedData.Size() - mDecodeBuffer.size(),

@@ -42,14 +42,15 @@ typedef Search < List < Frame >, Frame> FrameSearch;
  *	named Children. These are usually smaller segments that result from applying some sort of
  *	segmentation algorithm to the original Segment. These children do not hold data (namely
  *	Frames and Audio. The boolean value HoldsData gives account whether the segment has data
- *	(i.e. is the parent) or not. Finally the child segments also have a pointer to their
+ *	(i.e. is the parent) or not. The Id string may be used for different purposes such as classifying
+ *  different kinds of segments. Finally the child segments also have a pointer to their
  *	parent to be able to access the data.
  *	@see Audio, Frame, ProcessingData, List*/
 
 class Segment : public ProcessingData
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (Segment, 7, ProcessingData);
+	DYNAMIC_TYPE_USING_INTERFACE (Segment, 8, ProcessingData);
 	/** Begin time in miliseconds*/
 	DYN_ATTRIBUTE (0, public, TTime, BeginTime);
 	/** End time in miliseconds */
@@ -59,6 +60,7 @@ public:
 	DYN_ATTRIBUTE (4, public, Audio, Audio);
 	DYN_ATTRIBUTE (5, public, List<Segment>, Children);
 	DYN_ATTRIBUTE (6, public, TData, SamplingRate);
+	DYN_ATTRIBUTE (7, public, std::string, Id);	
 	
 private:
 	/**	Auxiliary class for performing searches in ordered list of frames*/

@@ -41,7 +41,7 @@ namespace CLAM {
 OutControl::OutControl(std::string name, Processing* parent, const bool publish) :
 	mName(name), mParent(parent)
 {
-	if (parent && publish) 	parent->PublishOutControl(this);
+	if (parent && publish) 	parent->GetOutControls().Publish(this);
 }
 		
 /*OutControl::OutControlIterator()()

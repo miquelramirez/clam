@@ -24,8 +24,8 @@
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "Spectrum.hxx"
 
 namespace CLAM {
@@ -124,9 +124,9 @@ namespace CLAM {
 
 	public:
 
-		InPortTmpl<Spectrum> Input1;
-		InPortTmpl<Spectrum> Input2;
-		OutPortTmpl<Spectrum> Output;
+		InPort<Spectrum> Input1;
+		InPort<Spectrum> Input2;
+		OutPort<Spectrum> Output;
 
 		SpectrumProduct();
 

@@ -90,9 +90,7 @@ namespace CLAM {
 
 	bool Do();
 
-	void Attach(Spectrum& in, Audio &out);
-
-	bool Do(Spectrum& in, Audio &out) const;
+	bool Do(const Spectrum& in, Audio &out) const;
 
 	// Port interfaces.
 

@@ -3,11 +3,6 @@
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
- * This program is free s/*
- * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
- *
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -29,8 +24,9 @@
 
 
 #include "Control2Data.hxx"
+#include "Array.hxx"
 #include "MIDIMelody.hxx"
-#include "OutPortTmpl.hxx"
+#include "OutPort.hxx"
 
 namespace CLAM {
 
@@ -41,11 +37,11 @@ namespace CLAM {
 class MIDI2Melody:public Control2Data
 {
 public:
-    MIDI2Melody();
-    virtual  ~MIDI2Melody(){};
+	MIDI2Melody();
+	virtual  ~MIDI2Melody(){};
     
 	/** Concrete output port of type MIDIMelody */
-	OutPortTmpl<MIDIMelody> mOutput;
+	OutPort<MIDIMelody> mOutput;
 	/** Special input control for keeping trace of the time*/
 	InControl mTime;
     
@@ -53,37 +49,37 @@ protected:
 
 	/** Particular implementation of this operation to generate data from enqueued controls*/
 	bool GenerateOutputData(int id, TControlData val);
-    /** Concrete configuration, we hardcode the number of controls to use and pass it to the
+	/** Concrete configuration, we hardcode the number of controls to use and pass it to the
 	 *	configuration of the base Control2Data configuration method.
 	 *	@see Control2Data::ConcreteConfigure
 	 */
 	bool ConcreteConfigure(const ProcessingConfig& c);
-    /** Finds the given note (according to key number) in internal container.
+	/** Finds the given note (according to key number) in internal container.
 	 *	@return the index of the given note in internal container
 	 */
 	int FindNote(int key);
-    /** Adds a note to internal container.
+	/** Adds a note to internal container.
 	 *	@param key note (MIDI key)
 	 *	@param velocity is MIDI velocity
 	 *	@param time is time in milliseconds
 	 */
 	void AddNote(int key, int velocity,int time);
-    /** Deletes note from internal container using MIDI key */
+	/** Deletes note from internal container using MIDI key */
 	void DeleteNote(int key);
-    /** Deletes note in given position in internal container */
+	/** Deletes note in given position in internal container */
 	void DeleteNoteFromIndex(int index);
-    /** Modifies midi velocity for given midi note*/
+	/** Modifies midi velocity for given midi note*/
 	void ModifyVelocity(int key,int newVelocity);
 protected:
 //protected member attributes and containers
-    /** Contains an array of midi keys active at a given moment*/
+	/** Contains an array of midi keys active at a given moment*/
 	Array<int> mKeys;
 	/** Array of Midi velocities corresponding to the active midi notes*/
-    Array<int> mVelocities;
+	Array<int> mVelocities;
 	/** Array of begin times in milliseconds corresponding to the active midi notes*/
-    Array<int> mBeginTimes;
+	Array<int> mBeginTimes;
 	/** Last key added to internal container*/
-    int mLastKey;
+	int mLastKey;
     
   };
 

@@ -35,11 +35,9 @@ namespace CLAM {
 	// Class EPitch
 	class EPitch : public Enum	{
 	public:
-		static tEnumValue sEnumValues[];
-		static tValue sDefault;
-		EPitch() : Enum(sEnumValues, sDefault) {}
-		EPitch(tValue v) : Enum(sEnumValues, v) {};
-		EPitch(std::string s) : Enum(sEnumValues, s) {};
+		EPitch() : Enum(ValueTable(), eNone) {}
+		EPitch(tValue v) : Enum(ValueTable(), v) {};
+		EPitch(std::string s) : Enum(ValueTable(), s) {};
 		
 		typedef enum {
 			eC,eDb,eD,eEb,eE,eF,eGb,eG,eAb,eA,eBb,eB,eNone
@@ -49,6 +47,26 @@ namespace CLAM {
 		{
 			return (Component*) new EPitch();
 		};
+		static tEnumValue * ValueTable()
+		{
+			static tEnumValue sEnumValues[] = {	
+				{eC, "C"},
+				{eDb,"Db"},
+				{eD, "D"},
+				{eEb,"Eb"},
+				{eE, "E"},
+				{eF, "F"},
+				{eGb,"Gb"},
+				{eG, "G"},
+				{eAb,"Ab"},
+				{eA, "A"},
+				{eBb,"Bb"},
+				{eB, "B"},
+				{eNone,"NotSet"},
+				{0,NULL}
+			};
+			return sEnumValues;
+		}
 	};
 	
 

@@ -68,6 +68,7 @@ Enum::tValue EScale::sDefault = EScale::eLinear;
 		{EWindowType::eBlackmanHarris92TransMainLobe,"BlackmanHarris92 MainLobe"},
 		{EWindowType::eGaussian,"Gaussian"},
 		{EWindowType::eBlackmanHarrisLike,"BlackmanHarrisLike"},
+		{EWindowType::eSine,"Sine"},
 		{0,NULL}
 	};
 

@@ -30,7 +30,6 @@
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Err.hxx"
-#include "ErrProcessingObj.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
 #include "InControl.hxx"
@@ -43,6 +42,10 @@
 #include "SpectralSynthesis.hxx"
 #include "SpectrumAdder2.hxx"
 #include "SMSAnalysis.hxx"
+
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "AudioOutPort.hxx"
 
 #include <stdlib.h>
 
@@ -62,16 +65,16 @@ private:
 		 * for residual synthesis. In principle we could use the same one
 		 * but we may want to synthesize both components separately.
 		 */
-		SpectralSynthesis		mPO_SinSpectralSynthesis;
-		SpectralSynthesis		mPO_ResSpectralSynthesis;
-		SpectralSynthesis		mPO_SpectralSynthesis;
-		SynthSineSpectrum		mPO_SynthSineSpectrum;
-		PhaseManagement			mPO_PhaseMan;
-		SpectrumAdder2			mPO_SpectrumAdder;
+		SpectralSynthesis		mSinSpectralSynthesis;
+		SpectralSynthesis		mResSpectralSynthesis;
+		SpectralSynthesis		mSpectralSynthesis;
+		SynthSineSpectrum		mSynthSineSpectrum;
+		PhaseManagement			mPhaseMan;
+		SpectrumAdder2			mSpectrumAdder;
 		
-		OverlapAdd				mPO_OverlapAddSin;
-		OverlapAdd				mPO_OverlapAddRes;
-		OverlapAdd				mPO_OverlapAddGlobal;
+		OverlapAdd				mOverlapAddSin;
+		OverlapAdd				mOverlapAddRes;
+		OverlapAdd				mOverlapAddGlobal;
 
 
 
@@ -102,11 +105,6 @@ private:
 
 		const ProcessingConfig &GetConfig() const {return mConfig;}
 
-		/** Method used to attach a Processing Data to input and output ports */
-		void Attach(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum,
-			Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
-			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio);
-		
 		/** Supervised mode execution */
 		bool Do(void);
 
@@ -139,13 +137,13 @@ private:
 		void InitFrame(Frame& in);
 
 		/** Ports */
-		InPortTmpl<SpectralPeakArray>     mInputSinSpectralPeaks;
-		InPortTmpl<Spectrum>     mInputResSpectrum;
-		OutPortTmpl<Spectrum>     mOutputSinSpectrum;
-		OutPortTmpl<Spectrum>     mOutputSpectrum;
-		OutPortTmpl<Audio> mOutputAudio;
-		OutPortTmpl<Audio> mOutputResAudio;
-		OutPortTmpl<Audio> mOutputSinAudio;
+		InPort<SpectralPeakArray>     mInputSinSpectralPeaks;
+		InPort<Spectrum>     mInputResSpectrum;
+		OutPort<Spectrum>     mOutputSinSpectrum;
+		OutPort<Spectrum>     mOutputSpectrum;
+		AudioOutPort mOutputAudio;
+		AudioOutPort mOutputResAudio;
+		AudioOutPort mOutputSinAudio;
 
 	public:
 		//Controls

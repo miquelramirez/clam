@@ -24,8 +24,8 @@
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 
 #include "Spectrum.hxx"
 
@@ -85,7 +85,7 @@ namespace CLAM {
 		/** Input pointer vector 
 		 * \todo should use InPortArrayTmpl
 		 */
-		InPortTmpl<Spectrum> **mInputs;
+		InPort<Spectrum> **mInputs;
 
 		/** Aux. Structures 
 		*/
@@ -95,7 +95,7 @@ namespace CLAM {
 		TData **phase_bufs;
 		bool *remove;
 
-		OutPortTmpl<Spectrum> mOut;
+		OutPort<Spectrum> mOut;
 
 		/** Possible configuration/prototype states */
 		typedef enum {

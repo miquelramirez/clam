@@ -1,10 +1,11 @@
+
 #include "PublishedOutPorts.hxx"
 #include "OutPort.hxx"
 
 namespace CLAM
 {
 
-OutPort& PublishedOutPorts::GetByNumber(int index) const
+OutPortBase & PublishedOutPorts::GetByNumber(int index) const
 {
 	CLAM_ASSERT(index>=0, "index for Port must be >=0");
 	CLAM_ASSERT(index<Size(), "index for Port must be < than Size");
@@ -17,10 +18,10 @@ OutPort& PublishedOutPorts::GetByNumber(int index) const
 	}
 	CLAM_ASSERT(false, "PublishedOutPorts::GetByNumber() index out of range");
 	
-	return *(OutPort*)NULL; // just to get rid of warnings
+	return *(OutPortBase*)NULL; // just to get rid of warnings
 }
 	
-OutPort& PublishedOutPorts::Get(const std::string & name) const
+OutPortBase & PublishedOutPorts::Get(const std::string & name) const
 {
 	ConstIterator it;
 	for (it=mOutPorts.begin(); it!=mOutPorts.end(); it++)
@@ -30,7 +31,7 @@ OutPort& PublishedOutPorts::Get(const std::string & name) const
 	error += name;
 	CLAM_ASSERT( false, error.c_str() );
 	
-	return *(OutPort*)NULL; // just to get rid of warnings
+	return *(OutPortBase*)NULL; // just to get rid of warnings
 }
 int PublishedOutPorts::Size() const
 {
@@ -41,7 +42,7 @@ bool PublishedOutPorts::AreReadyForWriting()
 {
 	Iterator out;
 	for ( out=mOutPorts.begin(); out!=mOutPorts.end(); out++)
-		if (!(*out)->IsReadyForWriting()) return false;
+		if (!(*out)->CanProduce()) return false;
 	
 	return true;
 }
@@ -66,7 +67,7 @@ PublishedOutPorts::ConstIterator PublishedOutPorts::End() const
 	return mOutPorts.end();
 }
 
-void PublishedOutPorts::Publish( OutPort * out )
+void PublishedOutPorts::Publish( OutPortBase * out )
 {
 	mOutPorts.push_back( out );
 }

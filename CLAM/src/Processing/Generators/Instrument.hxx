@@ -13,6 +13,7 @@ namespace CLAM
 	class Instrument: public ProcessingComposite
 	{
 	private:
+		AudioOutPort	mOut;
 		enum Status {
 			eDone = 0,
 			eBusy = 1
@@ -35,17 +36,16 @@ namespace CLAM
 		void SetId(int id) { mId = id; }
 
 		Instrument():
-		  mStatus( eDone ),
+			mOut("AudioOut",this),	
+			mStatus( eDone ),
+			mStateIn( "StateIn", this, &Instrument::UpdateState ),
+			mNoteIn( "Note", this, &Instrument::UpdateNote ),
+			mVelocityIn( "Velocity", this, &Instrument::UpdateVel ),
 
-  		mStateIn( "StateIn", this, &Instrument::UpdateState ),
-		  mNoteIn( "Note", this, &Instrument::UpdateNote ),
-		  mVelocityIn( "Velocity", this, &Instrument::UpdateVel ),
-
-		  mStateOut( "State", this ),
-		  mNoteOut( "NoteOut", this ),
-		  mVelocityOut( "VelocityOut", this )
+			mStateOut( "State", this ),
+			mNoteOut( "NoteOut", this ),
+			mVelocityOut( "VelocityOut", this )
 		{
-		
 		}
 		
  		void LinkStateOutWithInControl(Processing* inProc, unsigned inId)
@@ -83,6 +83,12 @@ namespace CLAM
 
 	public:
 		virtual bool Do(Audio& audio) = 0;
+		bool Do(void)
+		{
+			bool ret = Do(mOut.GetAudio());
+			mOut.Produce();
+			return ret;
+		}
 		const char * GetClassName() const {return "Instrument";}
 	};
 }

@@ -46,7 +46,6 @@ private:
 	void AddNewPossibleProcessingsToDo( Processing * father, 
 					    std::list<Processing*> &,
 					    std::list<Processing*> & );
-	bool AreAllProducersExecuted( Processing * aProcessing, std::list<Processing*> & executedList );
 	std::list< Processing* > mGenerators;
 
 

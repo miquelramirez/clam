@@ -26,24 +26,15 @@
 namespace CLAMVM
 {
 
-Enum::tEnumValue EWidgetTK::sEnumValues[] =
+WidgetTKWrapper::WidgetTKWrapper()
 {
-	{ EWidgetTK::FLTK, "FLTK" },
-	{ EWidgetTK::Qt,   "Qt" },
-	{ 0, NULL }
-};
+}
 
-Enum::tValue EWidgetTK::sDefault = EWidgetTK::FLTK;
+WidgetTKWrapper::~WidgetTKWrapper()
+{
+}
 
-		WidgetTKWrapper::WidgetTKWrapper()
-		{
-		}
-
-		WidgetTKWrapper::~WidgetTKWrapper()
-		{
-		}
-
-WidgetTKWrapper& WidgetTKWrapper::GetWrapperFor( std::string toolkit )
+WidgetTKWrapper& WidgetTKWrapper::GetWrapperFor(const std::string & toolkit )
 {
 	EWidgetTK requestedTK( toolkit );
 

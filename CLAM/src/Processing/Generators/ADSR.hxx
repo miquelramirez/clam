@@ -25,10 +25,10 @@
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
 #include "Audio.hxx"
-#include "AudioManager.hxx"
 #include "OSDefines.hxx"
 #include "InControl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioOutPort.hxx"
+#include "OutControl.hxx"
 
 namespace CLAM
 {
@@ -40,7 +40,7 @@ namespace CLAM
 		DYN_ATTRIBUTE (1, public, TData, DecayTime);
 		DYN_ATTRIBUTE (2, public, TData, SustainLevel);
 		DYN_ATTRIBUTE (3, public, TData , ReleaseTime);
-		DYN_ATTRIBUTE (4, public, TData , SamplingRate);
+		DYN_ATTRIBUTE (4, public, TData , SampleRate);
 	protected:
 		void DefaultInit(void);
 	};
@@ -69,7 +69,7 @@ namespace CLAM
 		} mStatus;
 
 	protected:
-		OutPortTmpl<Audio> mOutput;
+		AudioOutPort mOutput;
 
 		void HandleAttack(void);
 

@@ -23,8 +23,9 @@
 #define _EnvelopeModulator_
 
 #include "Processing.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "AudioOutPort.hxx"
+#include "AudioInPort.hxx"
 #include "Envelope.hxx"
 #include "Audio.hxx"
 
@@ -47,9 +48,9 @@ namespace CLAM
 	{
 	public:
 
-		InPortTmpl<Envelope> InputEnvelope;
-		InPortTmpl<Audio>    InputAudio;
-		OutPortTmpl<Audio>   Output;
+		InPort<Envelope> InputEnvelope;
+		InPort<Audio> InputAudio;
+		OutPort<Audio> Output;
 
 	private:
 		EnvModulatorConfig mConfig;

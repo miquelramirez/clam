@@ -1,19 +1,19 @@
-
 #include "Factory.hxx"
 #include "Oscillator.hxx"
 #include "SimpleOscillator.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioAdder.hxx"
-#include "AudioFileOut.hxx"
-#include "AudioFileIn.hxx"
+#include "AudioMixer.hxx"
 #include "AutoPanner.hxx"
 #include "FFT_rfftw.hxx"
+#include "IFFT_rfftw.hxx"
 #include "AudioOut.hxx"
 #include "Controller.hxx"
 #include "ADSR.hxx"
 // VC6 needs to see the whole types
 #include "Audio.hxx"
 #include "Spectrum.hxx"
+
 
 /**
  * In this cxx are defined the objects that will be in the factory by default. Including it 
@@ -30,11 +30,11 @@ static ProcessingFactory::Registrator<CLAM::SimpleOscillator> regtSimpleOscillat
 static ProcessingFactory::Registrator<CLAM::Oscillator> regtOscillator( "Oscillator" );
 static ProcessingFactory::Registrator<CLAM::AudioMultiplier> regtAudioMultiplier( "AudioMultiplier" );
 static ProcessingFactory::Registrator<CLAM::AudioAdder> regtAudioAdder( "AudioAdder" );
+static ProcessingFactory::Registrator<CLAM::AudioMixer> regtAudioMixer( "AudioMixer" );
 static ProcessingFactory::Registrator<CLAM::FFT_rfftw> regtFFT_rfftw( "FFT_rfftw" );
+static ProcessingFactory::Registrator<CLAM::IFFT_rfftw> regtIFFT_rfftw( "IFFT_rfftw" );
 static ProcessingFactory::Registrator<CLAM::AutoPanner> regtAutoPanner( "AutoPanner" );
 static ProcessingFactory::Registrator<CLAM::AudioOut> regtAudioOut( "AudioOut" );
 static ProcessingFactory::Registrator<CLAM::Controller> regtController( "Controller" );
-static ProcessingFactory::Registrator<CLAM::AudioFileIn> regtAudioFileIn( "AudioFileIn" );
-static ProcessingFactory::Registrator<CLAM::AudioFileOut> regtAudioFileOut( "AudioFileOut" );
 static ProcessingFactory::Registrator<CLAM::ADSR> regtADSR( "ADSR" );
 

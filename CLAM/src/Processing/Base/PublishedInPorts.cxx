@@ -1,10 +1,11 @@
+
 #include "PublishedInPorts.hxx"
 #include "InPort.hxx"
 
 namespace CLAM
 {
 
-InPort& PublishedInPorts::GetByNumber(int index) const
+InPortBase& PublishedInPorts::GetByNumber(int index) const
 {
 	CLAM_ASSERT(index>=0, "index for Port must be >=0");
 	CLAM_ASSERT(index<Size(), "index for Port must be < than Size");
@@ -17,10 +18,10 @@ InPort& PublishedInPorts::GetByNumber(int index) const
 
 	CLAM_ASSERT(false, "PublishedInPorts::GetByNumber() index out of range");
 
-	return *(InPort*)NULL; // just to get rid of warnings
+	return *(InPortBase*)NULL; // just to get rid of warnings
 }
 	
-InPort& PublishedInPorts::Get(const std::string & name) const
+InPortBase& PublishedInPorts::Get(const std::string & name) const
 {
 	ConstIterator it;
 	for (it=mInPorts.begin(); it!=mInPorts.end(); it++)
@@ -28,10 +29,10 @@ InPort& PublishedInPorts::Get(const std::string & name) const
 			return **it;
 
 	std::string error( "name not found in InPorts collection: " );
-	error += name;
+	error += "'" +  name + "'" + std::string(". In ports availables: ") + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
-	return *(InPort*)NULL; // just to get rid of warnings
+	return *(InPortBase*)NULL; // just to get rid of warnings
 }
 
 int PublishedInPorts::Size() const
@@ -64,15 +65,33 @@ bool PublishedInPorts::AreReadyForReading()
 {
 	Iterator in;
 	for ( in=mInPorts.begin(); in!=mInPorts.end(); in++)
-		if (!(*in)->IsReadyForReading()) return false;
+		if (!(*in)->CanConsume()) return false;
 
 	return true;
 }
 
-void PublishedInPorts::Publish( InPort * in )
+void PublishedInPorts::Publish( InPortBase * in )
 {
 	mInPorts.push_back( in );
 }
 	
+std::string PublishedInPorts::AvailableNames() const
+{
+	std::string result;
+	ConstIterator it;
+	bool first=true;
+	for (it=mInPorts.begin(); it!=mInPorts.end(); it++)
+	{
+		if (!first) 
+			result += ", ";
+		else 
+			first = false;
+		InPortBase & port = *(*it);
+		result += "'";
+		result += port.GetName();
+		result += "'";
+	}
+	return result;
+}
 } // namespace CLAM
 

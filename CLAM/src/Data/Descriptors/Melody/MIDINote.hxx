@@ -9,7 +9,6 @@
 #include "Err.hxx"
 #include "ProcessingData.hxx"
 
-#include "Enum.hxx"
 #include "MediaTime.hxx"
 #include "PitchNote.hxx"
 

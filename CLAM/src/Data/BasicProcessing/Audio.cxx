@@ -65,12 +65,12 @@ void Audio::SetDuration(TTime duration)
 
 TTime Audio::GetTimeFromIndex(TIndex index) const
 {
-	return (TTime)(index*1000/GetSampleRate());
+	return (TTime)((TTime)index / GetSampleRate()*1000.0  );
 }
 
 TIndex Audio::GetIndexFromTime(TTime time) const
 {
-	return (TIndex) (time/1000*GetSampleRate());
+        return (TIndex) (time*((TData)GetSampleRate()/1000.0));
 }
 
 void Audio::GetAudioChunk(TTime beginTime, TTime endTime,Audio& chunk, bool configureChunk) const

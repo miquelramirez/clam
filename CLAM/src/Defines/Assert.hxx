@@ -237,10 +237,10 @@ typedef void (*AssertFailedHandlerType) (const char* message, const char* filena
 * <pre>
 * void MyHandler (const char* message, const char* filename, int lineNumber);
 * </pre>
-* @param The new handler
+* @param handler The new handler
 * @return The old handler, for restoring purposes.
 */
-AssertFailedHandlerType SetAssertFailedHandler(AssertFailedHandlerType);
+AssertFailedHandlerType SetAssertFailedHandler(AssertFailedHandlerType handler);
 
 /**
 * (Don't use directly, use the CLAM_ASSERT macro instead) Execute the assert failed handler.
@@ -260,10 +260,10 @@ typedef void (*WarningHandlerType) (const char* message, const char* filename, i
 * <pre>
 * void MyHandler (const char* message, const char* filename, int lineNumber);
 * </pre>
-* @param The new handler
+* @param handler The new handler
 * @return The old handler, for restoring purposes.
 */
-WarningHandlerType SetWarningHandler(WarningHandlerType);
+WarningHandlerType SetWarningHandler(WarningHandlerType handler);
 
 /**
 * (Don't use directly, use the CLAM_WARNING macro instead) Execute the assert failed handler.

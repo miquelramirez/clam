@@ -27,31 +27,45 @@
 
 namespace CLAM {
 
-template <class TX, class TY> class ArrayToBPFCnv
-{
-public:
-/*Constructors*/
-	ArrayToBPFCnv()
-	{
-	}
-	
 /*Conversion Routines*/
 
 	//Convert values array (supposed to be equidistant) to BPF
-	void ConvertToBPF(BPFTmpl<TX,TY>& newBPF,const Array<TY>& originalArray) const
+	template <class TX, class TY> 
+	void ConvertToBPF(BPFTmpl<TX,TY>& newBPF,const Array<TY>& originalArray)
 	{
 		CLAM_ASSERT(originalArray.Size()>=1, "Zero lenght array.");
 		CLAM_ASSERT(originalArray.Size()==newBPF.Size(), "Different array dimensions");
 
 		for(int i=0;i<originalArray.Size();i++)
 		{
-			newBPF.SetValue((TX)i,originalArray[i]);
+			newBPF.SetXValue( i, (TX)i );
+			newBPF.SetValue( i,originalArray[i]);
 		}
 	}
 
+	template <class TX, class TY> 
+	void ConvertToBPF( BPFTmpl<TX,TY>& newBPF, TX X0, TX deltaX, const Array<TY>& originalArray )
+	{
+		CLAM_ASSERT( originalArray.Size() >= 1, 
+			     "ArrayToBPFCnv::ConvertToBPF(): Array to be converted into a BPF must have a positive non-zero length!" );
+
+		CLAM_ASSERT(originalArray.Size()==newBPF.Size(), "Different array dimensions on write");
+		
+		TX currentX = X0;
+
+		for ( int i = 0; i < originalArray.Size(); i++ )
+		{
+			newBPF.SetXValue( i, currentX );
+			newBPF.SetValue( i, originalArray[i] );
+			currentX += deltaX;
+		}
+
+	}
+
 	//Convert X and Y values arrays to BPF
+	template <class TX, class TY> 
 	void ConvertToBPF(BPFTmpl<TX,TY>& newBPF,const Array<TX>& originalXArray,
-		const Array<TY>& originalYArray) const
+		const Array<TY>& originalYArray)
 	{
 		CLAM_ASSERT(originalXArray.Size()>=1, "Zero lenght X array.");
 		CLAM_ASSERT(originalYArray.Size()>=1, "Zero lenght Y array.");
@@ -66,8 +80,9 @@ public:
 	}
 	
 	//Convert BPF to X and Y values arrays
+	template <class TX, class TY> 
 	void ConvertToArray(const BPFTmpl<TX,TY>& originalBPF,Array<TX>& 
-		newXArray,Array<TY>& newYArray) const
+		newXArray,Array<TY>& newYArray)
 	{
 		for(int i=0;i<originalBPF.Size();i++)
 		{
@@ -78,6 +93,7 @@ public:
 	
 	/*Convert BPF to values array (points are supposed to be equidistant in the 
 	X axis)*/
+	template <class TX, class TY> 
 	void ConvertToArray(const BPFTmpl<TX,TY>& originalBPF,
 		Array<TY>& newArray)
 	{
@@ -86,9 +102,7 @@ public:
 			 newYArray.AddElem(originalBPF.GetValueFromIndex(i));
 		}
 	}
-};
 
-typedef ArrayToBPFCnv<TData,TData> ArrayToBPFCnv_;
 
 }
 

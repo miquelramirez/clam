@@ -6,16 +6,25 @@
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Slider.H>
 #include <FL/Fl_Box.H>
+#include "Mutex.hxx"
 
-class Fl_Progress {
+class Fl_Progress 
+{
 public:
-  Fl_Progress();
-  Fl_Window *mWindow;
-  Fl_Slider *mSlider;
-  Fl_Box *mLabel;
-  ~Fl_Progress();
-  static void s_timeout(void* ptr);
-  void timeout(void);
-  float mValue;
+	Fl_Progress();
+	Fl_Window *mWindow;
+	Fl_Slider *mSlider;
+	Fl_Box *mLabel;
+	~Fl_Progress();
+	static void s_timeout(void* ptr);
+	void timeout(void);
+	
+	void  setValue( float newValue );
+	float getValue( ) const;
+
+protected:
+	float              mValue;
+	CLAM::Mutex        mValueGuard;
+	static CLAM::Mutex smInstanceGuard;
 };
 #endif

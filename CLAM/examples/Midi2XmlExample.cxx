@@ -27,6 +27,8 @@
 #include "MIDIMelody.hxx"
 #include "TraverseDirectory.hxx"
 #include "XMLStorage.hxx"
+#include "OutControl.hxx"
+#include "InPort.hxx"
 
 #include <iostream>
 
@@ -107,20 +109,15 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	MIDI2Melody converter;
 
 	/** Key for Note Off*/
-	inNoteOff.GetOutControls().GetByNumber(1).AddLink(
-		&converter.GetInControls().GetByNumber(2));
+	CLAM::ConnectControls(inNoteOff, 1, converter, 2);
 	/** Velocity for Note Off */
-	inNoteOff.GetOutControls().GetByNumber(1).AddLink(
-		&converter.GetInControls().GetByNumber(3));
+	CLAM::ConnectControls(inNoteOff, 1, converter, 3);
 	/** Key for Note On */
-	inNoteOn.GetOutControls().GetByNumber(1).AddLink(
-		&converter.GetInControls().GetByNumber(4));
+	CLAM::ConnectControls(inNoteOn, 1, converter, 4);
 	 /** Velocity for Note On */
-	inNoteOn.GetOutControls().GetByNumber(2).AddLink(
-		&converter.GetInControls().GetByNumber(5));
-  
-	inStop.GetOutControls().GetByNumber(0).AddLink(
-		&converter.GetInControls().GetByNumber(0));
+	CLAM::ConnectControls(inNoteOn, 2, converter, 5);
+
+	CLAM::ConnectControls(inStop, 0, converter, 0);
   
 	//We start the MIDI manager and initialize loop variables	
 	manager.Start();
@@ -128,8 +125,9 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	TTime curTime=0;
 
 	//We attach our melody object to the output of the converter
-	MIDIMelody outputMelody;
-	converter.mOutput.Attach(outputMelody);
+	CLAM::InPort<MIDIMelody> outputMelodyWrapper;
+	converter.mOutput.ConnectToIn( outputMelodyWrapper );
+	
 
 	do{//Converter loop
 		
@@ -142,12 +140,14 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 			//we send the timing control to converter
 			converter.mTime.DoControl(curTime);
 	}while (converter.Do());//we call the converter
-
+	
+	converter.mOutput.Produce();
+	MIDIMelody & outputMelody = outputMelodyWrapper.GetData();
+	
 	//we change the extension of the filename to .xml
 	std::string outputFilename=ChangeExtension(filename,"xml");
 	//we store the output melody
-	XMLStorage s;
-	s.Dump(outputMelody,"MidiMelody",outputFilename);
+	XMLStorage::Dump(outputMelody,"MidiMelody",outputFilename);
 	std::cout<<"Wrote succesfully "<<outputFilename<<"\n";
 
 }

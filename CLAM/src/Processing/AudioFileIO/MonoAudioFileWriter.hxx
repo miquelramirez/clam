@@ -24,7 +24,7 @@
 
 #include "Processing.hxx"
 #include "MonoAudioFileWriterConfig.hxx"
-#include "AudioInPortTmpl.hxx"
+#include "AudioInPort.hxx"
 
 namespace CLAM
 {
@@ -38,6 +38,7 @@ namespace CLAM
 		virtual const char* GetClassName() const;
 		virtual const ProcessingConfig& GetConfig() const;
 		virtual bool Do();
+		virtual bool Do( const CLAM::Audio & data );
 
 		virtual ~MonoAudioFileWriter();
 
@@ -50,7 +51,7 @@ namespace CLAM
 	protected: // attributes
 		
 		MonoAudioFileWriterConfig      mConfig;
-		InPortTmpl<Audio>              mInput;
+		AudioInPort 		       mInput;
 		AudioCodecs::Stream*           mOutStream;
 	};
 }

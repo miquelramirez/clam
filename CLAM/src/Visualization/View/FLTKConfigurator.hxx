@@ -54,43 +54,45 @@
 
 #include "CBL.hxx"
 
-#define HorPos fl_width(name)
-#define VerPos 0
-
 namespace CLAM{
-	class FLTKConfigurator;
 
-	class ConfigurationHolderBase
-	{
-	protected:
-		ConfigurationHolderBase(DynamicType & holded)
-			: mConfiguration(holded)
-		{}
-		DynamicType & mConfiguration;
-	public:
-		virtual void ApplyDataTo(FLTKConfigurator & configurator)=0;
-		virtual ~ConfigurationHolderBase() {}
-	};
-
-	template <class HoldedType>
-	class ConfigurationHolder : public ConfigurationHolderBase
-	{
-	public:
-		ConfigurationHolder(HoldedType & configuration)
-			: ConfigurationHolderBase(configuration)
-		{}
-		void ApplyDataTo(FLTKConfigurator & configurator)
-		{
-			configurator.SetConfig(static_cast<HoldedType&>(mConfiguration));
-		}
-	};
-
-
+	/**
+	 * A generic DynamicType edition dialog for FLTK.
+	 * @ingroup Configurators
+	 * @see DynamicType, QTConfigurator
+	 */
 	class FLTKConfigurator : public Fl_Window {
+	// Inner classes
+	private:
+		class ConfigurationHolderBase
+		{
+		protected:
+			ConfigurationHolderBase(DynamicType & holded)
+				: mConfiguration(holded)
+			{}
+			DynamicType & mConfiguration;
+		public:
+			virtual void ApplyDataTo(FLTKConfigurator & configurator)=0;
+			virtual ~ConfigurationHolderBase() {}
+		};
 
+		template <class HoldedType>
+		class ConfigurationHolder : public ConfigurationHolderBase
+		{
+		public:
+			ConfigurationHolder(HoldedType & configuration)
+				: ConfigurationHolderBase(configuration)
+			{}
+			void ApplyDataTo(FLTKConfigurator & configurator)
+			{
+				configurator.SetConfig(static_cast<HoldedType&>(mConfiguration));
+			}
+		};
+	// Own types
 		typedef Fl_Window super;
 		typedef std::map<std::string, Fl_Widget*> tWidgets;
 		typedef std::list<ConfigurationHolderBase *> tConfigHolders;
+
 	public:
 		FLTKConfigurator()
 			: super(360, 540, "Edit the configuration")
@@ -408,11 +410,14 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, DynamicType *foo, T&value) {
+			const unsigned int verPos = 0;
+			const unsigned int nameWidth = (int) fl_width(name) + 1;
+			const unsigned int detailsWidth = (int) fl_width( "Details..." ) + 1;
 			fl_font(FL_HELVETICA,12);
 
 			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
-			Fl_Box * mBox = new Fl_Box(HorPos, VerPos, fl_width(name), 20);
-			Fl_Button * mInput = new Fl_Button( 330-55-fl_width( "Details..." ), VerPos, fl_width( "Details..." )+55, 20, "Details...");
+			Fl_Box * mBox = new Fl_Box(nameWidth, verPos, nameWidth, 20);
+			Fl_Button * mInput = new Fl_Button( 330-55-detailsWidth, verPos, detailsWidth + 55, 20, "Details...");
 			o->end();
 
 			mInput->labelsize(12);

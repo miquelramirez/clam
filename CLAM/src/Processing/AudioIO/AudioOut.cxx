@@ -25,14 +25,14 @@
 using namespace CLAM;
 
 AudioOut::AudioOut() 
-	: Input("Input",this,1) 
+	: mInput( "Audio Input", this )
 { 
 	mpDevice = 0; 
 	Configure(AudioIOConfig()); 
 }
 
-AudioOut::AudioOut(const AudioIOConfig &c) 
-	: Input("Input",this,1) 
+AudioOut::AudioOut(const AudioIOConfig &c)
+	: mInput( "Audio Input", this )
 { 
 	mpDevice = 0; 
 	Configure(c); 
@@ -68,16 +68,15 @@ bool AudioOut::ConcreteConfigure(const ProcessingConfig& c)
 		res = m->Register(*this);
 	}
 	catch (Err &e) {
-		mStatus += e.what();
+		AddConfigErrorMessage( e.what() );
 		res = false;
 	}
 
 	if (res == false)
-		mStatus += "AudioOut::ConcreteConfigure(): "
-			       "Failed to register in AudioManager.";
+		AddConfigErrorMessage( "AudioOut::ConcreteConfigure(): "
+		       "Failed to register in AudioManager.") ;
 
-	Input.SetParams(mConfig.GetFrameSize());
-
+	mInput.SetSize(mConfig.GetFrameSize());
 	return res;
 }
 
@@ -99,7 +98,7 @@ void AudioOut::GetDeviceInfo(AudioDevice::TInfo &info) const
 
 bool AudioOut::Do()
 {
-	bool res = Do(Input.GetData());
-	Input.LeaveData();
+	bool res = Do(mInput.GetAudio());
+	mInput.Consume();;
 	return res;
 }

@@ -26,13 +26,13 @@
 namespace CLAM
 {
 	MonoAudioFileWriter::MonoAudioFileWriter()
-		: mInput( "Samples to write", this, 1 ),
+		: mInput( "Samples Write", this ),
 		  mOutStream( NULL )
 	{
 	}
 
 	MonoAudioFileWriter::MonoAudioFileWriter( const ProcessingConfig& cfg )
-		: mInput( "Samples to write", this, 1 ),
+		: mInput( "Samples Write", this ),
 		  mOutStream( NULL )
 	{
 		Configure( cfg );
@@ -60,11 +60,14 @@ namespace CLAM
 
 	bool MonoAudioFileWriter::Do()
 	{
-		Audio& data = mInput.GetData();
-
-		mOutStream->WriteData( 0, data.GetBuffer().GetPtr(), data.GetSize() );
+		bool result = Do( mInput.GetAudio() );
+		mInput.Consume();
+		return result;		
+	}
 	
-		mInput.LeaveData();
+	bool MonoAudioFileWriter::Do( const Audio & data )
+	{
+		mOutStream->WriteData( 0, data.GetBuffer().GetPtr(), data.GetSize() );
 		return true;
 	}
 
@@ -79,24 +82,22 @@ namespace CLAM
 
 		if ( targetFile.GetHeader().GetChannels() != 1 ) // this is the 'mono' file writer...
 		{
-			mStatus = "Too many channels!";
+			AddConfigErrorMessage("Too many channels!");
 			return false;
 		}
 
 		if ( !targetFile.IsWritable() )
 		{
-			mStatus = "There is an incompatibility between the ";
-			mStatus += "'Format', 'Encoding' and 'Endianess'  ";
-			mStatus += "configuration parameter values";
-			
+			AddConfigErrorMessage("There is an incompatibility between the 'Format', 'Encoding' and 'Endianess'  "
+				"configuration parameter values");
 			return false;
 		}
 
 		if ( FileSystem::GetInstance().IsFileLocked( mConfig.GetTargetFile().GetLocation() ) )
 		{
-			mStatus = "File: ";
-			mStatus += mConfig.GetTargetFile().GetLocation();
-			mStatus += " has been locked by another Processing";
+			AddConfigErrorMessage("File: ");
+			AddConfigErrorMessage(mConfig.GetTargetFile().GetLocation() );
+			AddConfigErrorMessage(" has been locked by another Processing");
 
 			return false;
 		}
@@ -107,7 +108,7 @@ namespace CLAM
 
 		if ( !mOutStream )
 		{
-			mStatus = "Could not get a valid audio file stream!";
+			AddConfigErrorMessage("Could not get a valid audio file stream!");
 			return false;			
 		}
 

@@ -1,3 +1,7 @@
+#if USE_OGGVORBIS != 1
+#error USE_OGGVORBIS was not set to 1 in your settings.cfg file, but you are including files that require this. Please fix your settings.cfg
+#endif
+
 #include <cstdio>
 #include <string>
 #include <algorithm>

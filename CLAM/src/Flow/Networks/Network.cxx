@@ -74,8 +74,8 @@ namespace CLAM
 			     itOutPort!=proc->GetOutPorts().End(); 
 			     itOutPort++)
 			{
-				if (!(*itOutPort)->GetNode())
-					break;
+				if (!(*itOutPort)->HasConnections())
+					continue;
 	
 				std::string outPortName(name);
 				outPortName += ".";
@@ -93,10 +93,6 @@ namespace CLAM
 				}
 			}
 		}
-
-		// third iteration to store ports. 
-		// XR: maybe it should be all in one iteration but this way
-		// the xml file is clearer.
 
 		for(it=BeginProcessings();it!=EndProcessings();it++)
 		{
@@ -141,11 +137,6 @@ namespace CLAM
 			
 			AddProcessing(procDefinitionAdapter.GetName(), procDefinitionAdapter.GetProcessing()); 
 		}
-
-		// second iteration to load ports. 
-		// XR: maybe it should be all in one iteration but this way
-		// the xml file is clearer.
-
 
 		while(1)
 		{
@@ -221,30 +212,30 @@ namespace CLAM
 
 		ProcessingsMap::const_iterator i = mProcessings.find( name );
 		if(i==mProcessings.end())
-			CLAM_ASSERT(false, "Network::RemoveProcessing() Trying to remove a processing that is not included in the network" );
-		
+		{
+			std::string msg("Network::RemoveProcessing() Trying to remove a processing that is not included in the network:");
+			msg += name;
+			CLAM_ASSERT(false, msg.c_str() );
+		}
 		Processing * proc = i->second;
 		mProcessings.erase( name );
 
 		PublishedInPorts::Iterator itInPort;
-		for(itInPort=proc->GetInPorts().Begin(); 
-		    itInPort!=proc->GetInPorts().End();
-		    itInPort++)
+		for(itInPort=proc->GetInPorts().Begin(); itInPort!=proc->GetInPorts().End(); itInPort++)
 		{
-			(*itInPort)->Unattach();
+			if((*itInPort)->GetAttachedOutPort())
+				(*itInPort)->Disconnect();
 		}
 
 		PublishedOutPorts::Iterator itOutPort;
-		for(itOutPort=proc->GetOutPorts().Begin(); 
-		    itOutPort!=proc->GetOutPorts().End();
-		    itOutPort++)
+		for(itOutPort=proc->GetOutPorts().Begin(); itOutPort!=proc->GetOutPorts().End(); itOutPort++)
 		{
-			(*itOutPort)->Unattach();
+			if((*itOutPort)->HasConnections())
+				(*itOutPort)->DisconnectFromAll();
 		}
 
 		mFlowControl->ProcessingRemovedFromNetwork(*proc);
-		delete proc;
-		
+		delete proc;		
 	}
 
 	bool Network::HasProcessing( const std::string & name ) const
@@ -268,20 +259,19 @@ namespace CLAM
 		AssertFlowControlNotNull();
 		mFlowControl->NetworkTopologyChanged();
 
-		OutPort & outport = GetOutPortByCompleteName(producer);
-		InPort & inport = GetInPortByCompleteName(consumer);
+		OutPortBase & outport = GetOutPortByCompleteName(producer);
+		InPortBase & inport = GetInPortByCompleteName(consumer);
 
-		if ( outport.IsConnectedTo(inport) ) 
+		if ( outport.IsDirectlyConnectedTo(inport) ) 
 			return false;
 			
 		if ( !outport.IsConnectableTo(inport) ) //they have different type
 			return false;
 
-		if( inport.IsAttached())
+		if( inport.GetAttachedOutPort())
 			return false;
 
-		inport.Attach(GetNodeAttachedTo(outport));
-		
+		outport.ConnectToIn( inport );
 		return true;
 	}
 
@@ -304,19 +294,15 @@ namespace CLAM
 		AssertFlowControlNotNull();
 		mFlowControl->NetworkTopologyChanged();
 
-		OutPort & outport = GetOutPortByCompleteName(producer);
-		InPort & inport = GetInPortByCompleteName(consumer);
+		OutPortBase & outport = GetOutPortByCompleteName(producer);
+		InPortBase & inport = GetInPortByCompleteName(consumer);
 
-		if ( !outport.IsConnectedTo(inport) ) 
+		if ( !outport.IsDirectlyConnectedTo(inport))
 			return false;
 
-		inport.Unattach();
-		
-
+		outport.DisconnectFromIn( inport );
 		return true;
 	}
-
-
 
 	bool Network::DisconnectControls( const std::string & producer, const std::string & consumer)
 	{
@@ -347,7 +333,7 @@ namespace CLAM
 			for(iteratorInPorts=proc->GetInPorts().Begin();
 			    iteratorInPorts!=proc->GetInPorts().End();
 			    iteratorInPorts++)
-				(*iteratorInPorts)->Unattach();
+				(*iteratorInPorts)->Disconnect();
 		}
 	}
 
@@ -381,13 +367,13 @@ namespace CLAM
 		return str.substr( PositionOfProcessingIdentifier(str), length);
 	}
 
-	InPort & Network::GetInPortByCompleteName( const std::string & name ) const
+	InPortBase & Network::GetInPortByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetInPorts().Get( GetLastIdentifier(name) );
 	}
 
-	OutPort & Network::GetOutPortByCompleteName( const std::string & name ) const
+	OutPortBase & Network::GetOutPortByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetOutPorts().Get( GetLastIdentifier(name) );
@@ -405,47 +391,12 @@ namespace CLAM
 		return proc.GetOutControls().Get( GetLastIdentifier(name) );
 	}
 
-	NodeBase & Network::GetNodeAttachedTo( OutPort & out )
-	{
-			if (!out.GetNode())
-			{
-				NodeBase * node = CreateAudioNodeWithDefaultStreamBuffer();
-				out.Attach(*node);
-				mNodes.push_back(node);
-				mFlowControl->NetworkTopologyChanged();
-			}
-			return *out.GetNode();
-	}
-
-	NodeBase* Network::CreateAudioNodeWithDefaultStreamBuffer()
-	{
-		//@todo
-		typedef CircularStreamImpl<TData> DefaultStreamBuffer;
-		NodeBase * node = new NodeTmpl<Audio, DefaultStreamBuffer>;
-		mNodesToConfigure.push_back( node );
-		return node;
-		//return new AudioNodeTmpl;
-	}
-	
-	void Network::ConfigureAllNodes()
-	{
-		AssertFlowControlNotNull();
-
-		Nodes::iterator it = mNodesToConfigure.begin();
-		while ( it!=mNodesToConfigure.end() )
-			mFlowControl->ConfigureNode(**it++);
-		
-		mNodesToConfigure.clear();
-	}
-
 	void Network::Start()
 	{
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
 			if (it->second->GetExecState() == Processing::Ready)
 				it->second->Start();		
-
-		ConfigureAllNodes(); // todo: provisional till refactoring of Nodes configuration finished.
 
 	}
 	void Network::Stop()
@@ -466,18 +417,9 @@ namespace CLAM
 	void Network::Clear()
 	{
 		Stop();
-		// TODO: nodes destruction is really inestable at this moment, in supervised-mode-2004 it will be solved.
-//		Nodes::iterator itNodes;
-//		for(itNodes=BeginNodes();itNodes!=EndNodes();itNodes++)
-//			delete *itNodes;
-		mNodes.clear();
 		
-		ProcessingsMap::iterator it;
-		for( it=mProcessings.begin(); it!=mProcessings.end(); it++ )
-		{
-			RemoveProcessing( it->first );
-		}
-		mProcessings.clear();	
+		while( !mProcessings.empty() )
+			RemoveProcessing( mProcessings.begin()->first );
 	}
 
 	Network::ProcessingsMap::iterator Network::BeginProcessings()
@@ -499,45 +441,21 @@ namespace CLAM
 		return mProcessings.end();
 	}
 
-	Network::Nodes::iterator Network::BeginNodes()
-	{
-		return mNodes.begin();
-	}
-
-	Network::Nodes::iterator Network::EndNodes()
-	{
-		return mNodes.end();
-	}
-
-	Network::Nodes::const_iterator Network::BeginNodes() const
-	{
-		return mNodes.begin();
-	}
-
-	Network::Nodes::const_iterator Network::EndNodes() const
-	{
-		return mNodes.end();
-	}
-
 	Network::NamesList  Network::GetInPortsConnectedTo( const std::string & producer ) const
 	{		
-		OutPort & out = GetOutPortByCompleteName( producer );
-//		CLAM_ASSERT( out.GetNode(), "Trying to access a node from an outport without connections");
+		OutPortBase & out = GetOutPortByCompleteName( producer );
 		NamesList consumers;
 
-		if(!out.GetNode())
+		if(!out.HasConnections())
 			return consumers;
 
-		NodeBase::ReaderIterator it;
-		for(it=out.GetNode()->BeginReaders();
-		    it!=out.GetNode()->EndReaders();
-		    it++)
+		OutPortBase::InPortsList::iterator it;
+		for(it=out.BeginConnectedInPorts(); it!=out.EndConnectedInPorts(); it++)
 		{
 			std::string completeName(GetNetworkId((*it)->GetProcessing()));
 			completeName += ".";
 			completeName += (*it)->GetName();
 			consumers.push_back(completeName);
-
 		}
 		return consumers;
 	}
@@ -560,13 +478,11 @@ namespace CLAM
 		return consumers;
 	}
 
-	Network::InPortsList Network::GetInPortsConnectedTo( OutPort & producer ) const
+	Network::InPortsList Network::GetInPortsConnectedTo( OutPortBase & producer ) const
 	{		
-		CLAM_ASSERT( producer.GetNode(), "Trying to access a node from an outport without connections");
 		InPortsList consumers;
-
-		NodeBase::ReaderIterator it;
-		for(it=producer.GetNode()->BeginReaders(); it!=producer.GetNode()->EndReaders(); it++)
+		OutPortBase::InPortsList::iterator it;
+		for(it=producer.BeginConnectedInPorts(); it!=producer.EndConnectedInPorts(); it++)
 			consumers.push_back(*it);
 		return consumers;
 	}
@@ -593,3 +509,4 @@ namespace CLAM
 		mProcessings.insert( ProcessingsMap::value_type( newName, proc ) );
 	}
 }
+

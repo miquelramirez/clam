@@ -4,8 +4,8 @@
 #include "Processing.hxx"
 #include "ProcessingConfig.hxx"
 #include "Audio.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 
 namespace CLAM
 {
@@ -21,8 +21,8 @@ namespace CLAM
 
 		ZeroPadderConfig   mConfig;
 
-		InPortTmpl< Audio >    mInput;
-		OutPortTmpl< Audio >   mOutput;
+		AudioInPort mInput;
+		AudioOutPort mOutput;
 
 		bool ConcreteStart();
 		bool ConcreteStop();

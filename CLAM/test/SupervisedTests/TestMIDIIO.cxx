@@ -2,16 +2,18 @@
 #include "MIDIInControl.hxx"
 #include "MIDIOutControl.hxx"
 #include "MIDIClocker.hxx"
+#include "OutControl.hxx"
+#include "InControl.hxx"
 #include <vector>
 
 using namespace CLAM;
 
 void ConfigureAndCheck(Processing& p,ProcessingConfig& cfg)
 {
-	CLAM_ASSERT(p.Configure(cfg),p.GetStatus().c_str());
+	CLAM_ASSERT( p.Configure(cfg), p.GetConfigErrorMessage().c_str() );
 }
 
-main()
+int main()
 {
 	char* indevice = "file:test.mid";
 	char* outdevice = "textfile:test.txt";
@@ -52,9 +54,8 @@ main()
 	ConfigureAndCheck(inStop,inStopCfg);
 	InControl stopReceiver("stop-receiver");
 
-	inStop.GetOutControls().GetByNumber(0).AddLink(
-			&stopReceiver);
 	
+	inStop.GetOutControls().GetByNumber(0).AddLink(&stopReceiver);
 	inNote.GetOutControls().GetByNumber(0).AddLink(
 			&outNote.GetInControls().GetByNumber(0));
 	inNote.GetOutControls().GetByNumber(1).AddLink(
@@ -78,4 +79,5 @@ main()
 		//we increment the time counter
 		curTime ++;
 	}
+	return 0;
 }

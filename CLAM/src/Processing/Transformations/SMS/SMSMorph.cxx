@@ -40,7 +40,7 @@ SMSMorph::SMSMorph():
 	mHybResSpectralShape("ResShape", this),
 	mHybResShapeW1("ResShapeW1", this),
 	mHybResShapeW2("ResShapeW2", this),
-	mInput2("Input2",this,1)
+	mpInput2(0)
 	
 {
 		mHaveInternalSegment=false;
@@ -69,7 +69,7 @@ SMSMorph::SMSMorph(const SMSMorphConfig &c):
 	mHybResSpectralShape("ResShape", this),
 	mHybResShapeW1("ResShapeW1", this),
 	mHybResShapeW2("ResShapeW2", this),
-	mInput2("Input2",this,1)	
+	mpInput2(0)
 
 {
 	mHaveInternalSegment=false;
@@ -96,7 +96,7 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c)
 	{
 		if(LoadSDIF(mConfig.GetFileName(),mSegment))
 		{
-			mInput2.Attach(mSegment);
+			mpInput2=&mSegment;
 			mHaveInternalSegment=true;
 		}
 	}
@@ -106,10 +106,12 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c)
 	type.bMagPhase=false;
 	type.bMagPhaseBPF=true;
 	cfg.SetType(type);
-	cfg.SetSpectralRange(mSegment.GetFrame(0).GetResidualSpec().GetSpectralRange());
+	cfg.SetSpectralRange(mConfig.GetSamplingRate()/2);
 
-	mSpectralShape.Configure(cfg);
-	mResSpectralShape.Configure(cfg);
+	mUseSinSpectralShape=mConfig.GetUseSpectralShapes();
+	mUseResSpectralShape=mConfig.GetUseSpectralShapes();
+
+	
 	
 	InitializeFactorsToUse();
 
@@ -118,14 +120,14 @@ bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c)
 	if(mUseSinSpectralShape)
 	{
 		frIntCfg.SetUseSpectralShape(true);
-		mPO_FrameInterpolator.mSpectralShape.Attach(mSpectralShape);
+		mPO_FrameInterpolator.AttachSpectralShape(mSpectralShape);
+		mSpectralShape.Configure(cfg);
+		mResSpectralShape.Configure(cfg);
 	}
 
 	CLAM_ASSERT( mPO_FrameInterpolator.Configure(frIntCfg),
 				 "Failed to configure Frame interpolator in SMSMorph::ConcreteConfigure" );
 	
-
-
 	return UpdateControlValueFromBPF(0);
 }
 
@@ -152,7 +154,7 @@ void SMSMorph::UpdateFrameInterpolatorFactors(bool useFrameFactor=false)
 
 bool SMSMorph::Do(const Frame& in1, Frame& out)
 {
-	TSize nFrames2=mInput2.GetData().GetnFrames();
+	TSize nFrames2=mpInput2->GetnFrames();
 	TData synchroTimeFactor=mSynchronizeTime.GetLastValue()*nFrames2;
 	
 	if(mSynchronizeTime.GetLastValue()<0.0001||mSynchronizeTime.GetLastValue()>0.9999)
@@ -178,7 +180,7 @@ bool SMSMorph::Do(const Frame& in1, Frame& out)
 	else
 	{
 		UpdateFrameInterpolatorFactors();
-		mPO_FrameInterpolator.Do(in1,mInput2.GetData().GetFrame(int(synchroTimeFactor)),out);
+		mPO_FrameInterpolator.Do(in1,mpInput2->GetFrame(int(synchroTimeFactor)),out);
 
 	}
 					
@@ -189,11 +191,11 @@ bool SMSMorph::Do(const Frame& in1, Frame& out)
 
 bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
 {
-	TSize nFrames2=mInput2.GetData().GetnFrames();
+	TSize nFrames2=mpInput2->GetnFrames();
 	TData synchroTimeFactor=mSynchronizeTime.GetLastValue()*nFrames2;
 	
 	//Initializes interpolated frame 
-	interpolatedFrame=mInput2.GetData().GetFrame(mInput2.GetData().mCurrentFrameIndex);
+	interpolatedFrame=mpInput2->GetFrame(mpInput2->mCurrentFrameIndex);
 	//Interpolation data
 	int frameNo1=floor(synchroTimeFactor);
 	int frameNo2=ceil(synchroTimeFactor);
@@ -202,7 +204,7 @@ bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
 	TData frameFactor=synchroTimeFactor-frameNo1;
 	mHybBPF.DoControl(frameFactor);
 	UpdateFrameInterpolatorFactors(true);
-	return mPO_FrameInterpolator.Do(mInput2.GetData().GetFrame(frameNo1) , mInput2.GetData().GetFrame(frameNo2) , interpolatedFrame);			
+	return mPO_FrameInterpolator.Do(mpInput2->GetFrame(frameNo1) , mpInput2->GetFrame(frameNo2) , interpolatedFrame);			
 }
 
 bool SMSMorph::Do(const Segment& in1, Segment& out)
@@ -213,7 +215,9 @@ bool SMSMorph::Do(const Segment& in1, Segment& out)
 
 bool SMSMorph::Do(const Segment& in1,Segment& in2, Segment& out)
 {
-	mInput2.Attach(in2);
+	if(!mpInput2)
+		mpInput2 = &in2;
+	mHaveInternalSegment = true;
 	return Do(in1,out);
 }
 
@@ -267,7 +271,11 @@ bool SMSMorph::UpdateControlValueFromBPF(TData pos)
 	if(mUseSinSpectralShape)
 	{
 		mHybSinSpectralShape.DoControl(mConfig.GetHybSinSpectralShape().GetValue(pos));
-		UpdateSpectralShape(mConfig.GetHybSinShapeW1(),mConfig.GetHybSinShapeW2(),mHybSinSpectralShape.GetLastValue(),mSpectralShape);
+		UpdateSpectralShape(
+				mConfig.GetHybSinShapeW1(),
+				mConfig.GetHybSinShapeW2(),
+				mHybSinSpectralShape.GetLastValue(),
+				mSpectralShape );
 	}
 
 	return ret;
@@ -287,20 +295,12 @@ void SMSMorph::InitializeFactorsToUse()
 		mUseSinFreq=true;
 	if(mConfig.HasHybResAmp() && mConfig.GetHybResAmp().Size() )
 		mUseResAmp=true;
-	if(mConfig.HasHybResSpectralShape() && mConfig.GetHybResSpectralShape().Size()&&
-		mConfig.HasHybResShapeW1() && mConfig.GetHybResShapeW1().Size()&&
-		mConfig.HasHybResShapeW2() && mConfig.GetHybResShapeW2().Size())
+	if(mConfig.GetUseSpectralShapes())
 	{
 			mUseResSpectralShape=true;
 			mUseResAmp=false;
-	}
-	//Updating spectral shapes
-	if(mConfig.HasHybSinSpectralShape() && mConfig.GetHybSinSpectralShape().Size()&&
-		mConfig.HasHybSinShapeW1() && mConfig.GetHybSinShapeW1().Size()&&
-		mConfig.HasHybSinShapeW2() && mConfig.GetHybSinShapeW2().Size())
-	{
-		mUseSinSpectralShape=true;
-		mUseSinAmp=false;
+			mUseSinSpectralShape=true;
+			mUseSinAmp=false;
 	}
 
 }
@@ -355,18 +355,23 @@ bool SMSMorph::LoadSDIF( std::string fileName, Segment& segment )
 		
 	segment.AddAll(  );
 	segment.UpdateData(  );
-	mSDIFReader.Output.Attach( segment );
-
+	
 	try{
 		mSDIFReader.Start(  );}
 	catch (Err)
 	{
 		return false;//wrong filename or non-existing sdif
 	}
-	while( mSDIFReader.Do() ) {  }
+	while( mSDIFReader.Do(segment) ) {  }
 	mSDIFReader.Stop(  );
 	
 	return true;
+}
+
+void SMSMorph::SetSegmentToMorph(Segment& segmentToMorph)
+{
+	mpInput2 = &segmentToMorph;
+	mHaveInternalSegment=true;
 }
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;

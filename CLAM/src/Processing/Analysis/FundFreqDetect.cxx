@@ -1,52 +1,26 @@
 #include "Complex.hxx"
 #include "FundFreqDetect.hxx"
 #include "Fundamental.hxx"
-#include "ErrProcessingObj.hxx"
 #include "SpectralPeakArray.hxx"
 #include <cmath>
 
 #define INFINITE_MAGNITUD 1000000
 
-namespace CLAM {
-
-	/* The Configuration object has at least to have a name */
-
-	void FundFreqDetectConfig::DefaultInit()
-	{
-		AddAll();
-		/* All Attributes are added */
-		UpdateData();
-		/* Set default values */
-		DefaultValues();
-	}
-	
-	void FundFreqDetectConfig::DefaultValues()
-	{		
-		SetReferenceFundFreq(1000);
-		SetLowestFundFreq(35);
-		SetHighestFundFreq(2000);
-		SetMaxCandMagDiff(30);
-		SetMaxFundFreqError(10); 
-		SetNInt(5);
-		SetPMp(0.5);
-		SetPMq(TData(1.4));
-		SetPMr(TData(0.5));
-		SetMPp(0.5);
-		SetMPq(TData(1.4));
-		SetMPr(0.5);
-		SetPMnPeaks(10);
-		SetMPnPeaks(10);
-		SetPMCont(1.0);
-		SetMPCont(1.0);
-		SetNMaxCandidates(60);
-	}
+namespace CLAM 
+{
 
 	FundFreqDetect::FundFreqDetect()
+		: mInput( "Input", this),
+		  mOutput( "Output", this ),
+		  mFundFreqValue( "Fund Freq Value", this )
 	{
 		Configure(FundFreqDetectConfig());
 	}
 
 	FundFreqDetect::FundFreqDetect(const FundFreqDetectConfig &c )
+		: mInput( "Input", this),
+		  mOutput( "Output", this ),
+		  mFundFreqValue( "Fund Freq Value", this )
 	{
 		Configure(c);
 	}
@@ -111,15 +85,20 @@ namespace CLAM {
 	/* The supervised Do() function */
 	bool FundFreqDetect::Do(void) 
 	{
-		CLAM_ASSERT(false, "Do(): Supervised mode not implemented");
-		return false;
+		mOutput.GetData().SetnMaxCandidates(1);
+
+		bool result = Do( mInput.GetData(), mOutput.GetData() );
+		mInput.Consume();
+		mOutput.Produce();
+
+		return result;
 	}
 
 	/* The unsupervised Do() function */
 	bool FundFreqDetect::Do(SpectralPeakArray& peaks,Fundamental& outFreq)
 	{
 		outFreq.Init();
-		
+
 		// Check Number of Candidates required
 		CLAM_ASSERT (outFreq.GetnMaxCandidates() > 0, 
 			"FundFreqDet::Detection: negative number of candidates wanted");
@@ -137,7 +116,11 @@ namespace CLAM {
 		tmpFreq.SetnMaxCandidates(int(mnMaxCandidates));
 
 		// not enough peak information available for fundamental frequency detection");
-		if (peaks.GetnPeaks() <= 0) return false;
+		if (peaks.GetnPeaks() <= 0)
+		{
+			mFundFreqValue.SendControl(0.0f);
+			return false;
+		}
 
 		// Calculate Maximun Magnitude Peak
 		TIndex nMaxMagPeak = peaks.GetMaxMagPos();
@@ -164,13 +147,15 @@ namespace CLAM {
 		
 		TData lowestFundFreqBinPos = mLowestFundFreq/spectralRes;
 		TIndex z=0;
-		while((z<peaks.GetnPeaks()) && (peakBinPosBuffer[z]<lowestFundFreqBinPos)) {
+		while((z<peaks.GetnPeaks()) && (peakBinPosBuffer[z]<lowestFundFreqBinPos)) 
+		{
 			peaks.DeleteIndex(z);
 			z++;
 		}
 
 		// Before the maximum magnitude peak
-		for(int i=z; i<nMaxMagPeak; i++) {
+		for(int i=z; i<nMaxMagPeak; i++) 
+		{
 			if(peakMagBuffer[i] < maxMag - 30)
 				peaks.DeleteIndex(i);
 		}
@@ -178,7 +163,8 @@ namespace CLAM {
 		// Delete peaks above 3000
 		z = peaks.GetnPeaks()-1;
 		TData peaklimitBinPos = 3000.0/spectralRes;
-		while ((z > nMaxMagPeak) && (peakBinPosBuffer[z] > peaklimitBinPos)) {
+		while ((z > nMaxMagPeak) && (peakBinPosBuffer[z] > peaklimitBinPos)) 
+		{
 			peaks.DeleteIndex(z);
 			z--;
 		}
@@ -187,37 +173,41 @@ namespace CLAM {
 		TData x,y,a,b;
 		a = - 10*spectralRes/TData(1000.0);
 		b = maxMag - 50 - a*(double)peakBinPosBuffer[nMaxMagPeak];
-		for(int i=nMaxMagPeak+1; i<z; i++) {
+		for(int i=nMaxMagPeak+1; i<z; i++) 
+		{
 			y = peakMagBuffer[i];
 			x = peakBinPosBuffer[i];
-			if(y < (a*x+b)) {
+			if(y < (a*x+b)) 
+			{
 				peaks.DeleteIndex(i);
 			}
 		}		
 
 		// If there no valid peaks for calculate a fundamental frequency
 		if (peaks.GetIndexArray().Size() <= 0)
+		{
+			mFundFreqValue.SendControl(0.0f);
 			return false;
-		
+		}
+	  
 		// Find maximun magnitude peak from the selected ones
 		nMaxMagPeak = peaks.GetMaxMagIndex(); // only indexed peaks
 		maxMag      = peaks.GetThruIndexMag(nMaxMagPeak);
 
 		// 2.- FIND mnMaxCandidates CANDIDATES
-		
+	  
 		// 2.0.- Reference Fundamental Frequency
 		if( IsGoodCandidate(mReferenceFundFreq) ) 
 			tmpFreq.AddElem(mReferenceFundFreq);
-		
+	  
 		// 2.1.- Three maximum magnitude peaks and its integer ratios
 		TIndex nMaxMagPeak2 = nMaxMagPeak;
 		TIndex nMaxMagPeak3 = nMaxMagPeak;
 		if(peaks.GetIndexArray().Size() >= 2)
 		{
-			// find second max magnitude peak
-			peaks.SetThruIndexMag(nMaxMagPeak,-2000);
-			
-			nMaxMagPeak2 = peaks.GetMaxMagIndex();
+	  		// find second max magnitude peak
+		  	peaks.SetThruIndexMag(nMaxMagPeak,-2000);
+		      	nMaxMagPeak2 = peaks.GetMaxMagIndex();
 			if(peaks.GetIndexArray().Size() >= 3)
 			{
 				double aux;
@@ -237,12 +227,11 @@ namespace CLAM {
 			
 			// restore first peak information
 			peaks.SetThruIndexMag(nMaxMagPeak,maxMag);
-		}		
-	
+		}	  
 		// Add peaks as candidates
 		if ( IsGoodCandidate(peaks.GetThruIndexFreq(nMaxMagPeak)) )
 			tmpFreq.AddElem(peaks.GetThruIndexFreq(nMaxMagPeak));	
-		
+	  
 		// 2.2.- Peaks below the maximum magnitude peak (except for the 3 max peaks)
 		for (int i=0; (i < nMaxMagPeak) && (tmpFreq.GetnCandidates() < mnMaxCandidates); i++ ) // be careful not to exceed the maximun permitted
 		{
@@ -252,7 +241,7 @@ namespace CLAM {
 			if (! IsGoodCandidate(peaks.GetThruIndexFreq(i)) ) continue;
 			tmpFreq.AddElem(peaks.GetThruIndexFreq(i));
 		}
-		
+	  	
 		// 2.3.- Frequency offset between peaks above the maximun magnitude peak and the maximun magnitude peak
 		double freq;
 		for (int i = nMaxMagPeak+1; (i<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates); i++)
@@ -277,8 +266,8 @@ namespace CLAM {
 				j++;
 			}
 		}
-		
-		// 2.5.- Frequencies related to peaks by integer ratios (before: except for the 3 maximun peaks. not now)
+	  
+		// 2.5.- Frequencies related to peaks by integer ratios (before: except for the 3 maximun peaks. not now)	
 		for (int i=0; (i<peaks.GetIndexArray().Size()) && (tmpFreq.GetnCandidates()<mnMaxCandidates); i++ )
 		{
 			j=1;
@@ -291,9 +280,12 @@ namespace CLAM {
 				j++;
 			}
 		}
-
+	
 		if(tmpFreq.GetnCandidates() <= 0)
+		{
+			mFundFreqValue.SendControl(0.0f);
 			return false;
+		}
 
 		// 3.- CALCULATE ERRORS (TMW procedure)
 		double myf=0, mye=0; 
@@ -309,7 +301,6 @@ namespace CLAM {
 			for (j=i+1; j<tmpFreq.GetnCandidates(); j++)
 				if (tmpFreq.GetErr(i) > tmpFreq.GetErr(j))
 					tmpFreq.Exchange(i,j);
-		
 		Fundamental tmpFreq2;
 		tmpFreq2.SetnMaxCandidates(tmpFreq.GetnCandidates());
 
@@ -366,23 +357,27 @@ namespace CLAM {
 				if (tmpFreq2.GetErr(i) > tmpFreq2.GetErr(j))
 					tmpFreq2.Exchange(i,j);
 
-			TIndex nCandidates = std::min(outFreq.GetnMaxCandidates(),tmpFreq2.GetnCandidates());
+		TIndex nCandidates = std::min(outFreq.GetnMaxCandidates(),tmpFreq2.GetnCandidates());
 		for(int i=0; i<nCandidates; i++)
 			if(tmpFreq2.GetErr(i) <= mMaxFundFreqError)
 				outFreq.AddElem(tmpFreq2.GetFreq(i), tmpFreq2.GetErr(i));
 
 		if(outFreq.GetnCandidates() == 0)
+		{
+			mFundFreqValue.SendControl(0.0f);
 			return false;
+		}
 
 		// Added to get into account fundamental frequency for consecutive frames
 		// Set Reference fundFreq to last FundFreq
 		mReferenceFundFreq = outFreq.GetFreq(0);
+		mFundFreqValue.SendControl( mReferenceFundFreq );
+
 		return true;
 	}
 	
 	double FundFreqDetect::WeightCandidate(double freq, double MaxMag, SpectralPeakArray& peaks) const
 	{
-		
 		TData Tmp;
 		const int nPeaks = peaks.GetIndexArray().Size();
 		
@@ -391,7 +386,6 @@ namespace CLAM {
 		int MaxNPM = 10;
 		if (nPeaks > 4)
 			MaxNPM = std::min(mPMnPeaks,nPeaks);
-		
 		TData Harmonic = TData(freq);
 		TSize nPM = MaxNPM;
 		int Peak =0;
@@ -443,13 +437,14 @@ namespace CLAM {
 			nMP =	Peak+1;
 			break;
 		}
-		
+	
+
 		// total error
 		if (ErrorPM > 20)
 			ErrorPM = 20 + (ErrorPM-20)*(ErrorPM-20);
 		if (ErrorMP > 20)
 			ErrorMP = 20 + (ErrorMP-20)*(ErrorMP-20);
-	
+
 		return (mPMCont * ErrorPM/nPM + mMPCont * ErrorMP/nMP);
 	}
 
@@ -475,6 +470,8 @@ int FundFreqDetect::GetClosestPeak(double freq, int firstPeak, SpectralPeakArray
 /* Get Closest Harmonic */
 double FundFreqDetect::GetClosestHarmonic(double peak, double fundfreq) const
 {
+	if(peak<fundfreq)
+		return fundfreq;
 	return floor(peak/fundfreq+.5)*fundfreq;
 }
 
@@ -483,4 +480,5 @@ bool FundFreqDetect::IsGoodCandidate(double freq) const
 	return (freq >= mLowestFundFreq)  && (freq <= mHighestFundFreq);
 }
 
-}; // namespace CLAM
+} // namespace CLAM
+

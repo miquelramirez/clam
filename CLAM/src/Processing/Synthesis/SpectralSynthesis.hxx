@@ -29,7 +29,6 @@
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Err.hxx"
-#include "ErrProcessingObj.hxx"
 #include "IFFT.hxx"
 #include "IFFT_rfftw.hxx"
 #include "Frame.hxx"
@@ -52,6 +51,9 @@
 #include <stdlib.h>
 
 #include "SpectralSynthesisConfig.hxx"
+
+#include "AudioOutPort.hxx"
+#include "InPort.hxx"
 
 namespace CLAM {
 
@@ -104,9 +106,7 @@ private:
 		SpectralSynthesis();
 		~SpectralSynthesis();
 
-		void Attach(Spectrum& in, Audio &out);
-		
-// Processing Object compliance methods.
+		// Processing Object compliance methods.
 		const char *GetClassName() const {return "SpectralSynthesis";}
 
 
@@ -123,12 +123,12 @@ private:
 
 
 		/** Ports */
-		InPortTmpl<Spectrum>     mInput;
-		OutPortTmpl<Audio> mOutput;
+		InPort<Spectrum>     mInput;
+		AudioOutPort mOutput;
 
 
 	};
 
-}; //end of namespace
+} //end of namespace
 
 #endif //_SpectralSynthesis_

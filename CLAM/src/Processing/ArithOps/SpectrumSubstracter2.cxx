@@ -21,7 +21,6 @@
 
 #include "Complex.hxx"
 #include "SpectrumSubstracter2.hxx"
-#include "ErrProcessingObj.hxx"
 #include "BPF.hxx"
 #include "Point.hxx"
 #include "SpecTypeFlags.hxx"
@@ -30,9 +29,9 @@ namespace CLAM {
 
 	SpectrumSubstracter2::SpectrumSubstracter2()
 		: mSize(0),
-		  mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
+		  mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
 		  mProtoState(SOther)
 	{
 		Configure(SpecSubstracter2Config());
@@ -40,9 +39,9 @@ namespace CLAM {
 
 	SpectrumSubstracter2::SpectrumSubstracter2(const SpecSubstracter2Config &c)
 		: mSize(0),
-		  mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
+		  mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
 		  mProtoState(SOther)
 	{
 		Configure(c);
@@ -120,9 +119,15 @@ namespace CLAM {
 
 	bool SpectrumSubstracter2::Do(void)
 	{
-		CLAM_ASSERT(false,"SpectrumSubstracter2::Do(): Not implemented");
-
-		return true;
+		mOut.GetData().SetSize( mIn1.GetData().GetSize() );
+		mOut.GetData().SetSpectralRange( mIn1.GetData().GetSpectralRange() );
+		bool result = Do( mIn1.GetData(), mIn2.GetData(), mOut.GetData() );
+		
+		mIn1.Consume();
+		mIn2.Consume();
+		mOut.Produce();
+		
+		return result;
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 

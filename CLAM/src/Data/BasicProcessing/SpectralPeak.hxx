@@ -49,7 +49,7 @@ namespace CLAM{
 
 
 /**
-* Class <b>SpectralPeak<b> is a basic spectral domain Processing Data class. 
+* Class SpectralPeak is a basic spectral domain Processing Data class. 
 * Contains frequency, magnitude, phase, bin position and bin width of a given
 * spectral peak. An array of Spectral Peaks is created by means of the 
 * SpectralPeakArray class
@@ -85,30 +85,33 @@ public:
 	{
 		return (Abs(GetFreq()-a.GetFreq()));
 	}
-/** Operator for multiplying a spectral peak by a given factor, just influences
+/** Operator for multiplying a spectral peak by a given factor, 
+ * just influences
 * its magnitude
 * TODO: does not take into account if the scale is logarithmic or not, should it?
-* @param A reference to the peak
-* @param the multiplying factor
+* @param peak A reference to the peak
+* @param factor the multiplying factor
 */
-	friend  SpectralPeak operator * (const SpectralPeak& a,int factor)
+	friend  SpectralPeak operator * (const SpectralPeak& peak,int factor)
 	{
 		SpectralPeak ret;
-		ret.SetFreq(a.GetFreq());
-		ret.SetMag(a.GetMag()*factor);
-		ret.SetPhase(a.GetPhase());
-		ret.SetBinPos(a.GetBinPos());
-		ret.SetBinWidth(a.GetBinWidth());
-		ret.SetScale(a.GetScale());
+		ret.SetFreq(peak.GetFreq());
+		ret.SetMag(peak.GetMag()*factor);
+		ret.SetPhase(peak.GetPhase());
+		ret.SetBinPos(peak.GetBinPos());
+		ret.SetBinWidth(peak.GetBinWidth());
+		ret.SetScale(peak.GetScale());
 		return ret;
 	}
 
 
 };
 
-/** Function for changing the scale of a peak to linear, conserving data consistency
-* @param inPeak: incoming peak
-* @param factor to apply in the logarithmic conversion (default 20)
+/** Function for changing the scale of a peak to linear, 
+* conserving data consistency
+* @param inPeak  incoming peak
+* @param scalingFactor factor to apply in the logarithmic conversion 
+* (default 20)
 */
 inline SpectralPeak Lin(SpectralPeak &inPeak,int scalingFactor)
 {

@@ -85,7 +85,6 @@ void SegmentDescriptors::SetFramePrototype(const FrameDescriptors& proto, int nF
 		GetMinD().SetPrototype(proto);
 	if(HasVarianceD())
 		GetVarianceD().SetPrototype(proto);
-
 }
 
 void SegmentDescriptors::Compute()
@@ -110,8 +109,9 @@ void SegmentDescriptors::ConcreteCompute()
 		SetMaxD(mSegmentStats->GetMax());
 	if(HasMinD())
 		SetMinD(mSegmentStats->GetMin());
-	if(HasVarianceD())
+	if(HasVarianceD()) {
 		SetVarianceD(mSegmentStats->GetVariance());
+	}
 }
 
 } // namespace CLAM

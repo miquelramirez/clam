@@ -44,11 +44,8 @@ namespace CLAM {
 	 */
 	class TopLevelProcessing : public ProcessingComposite
 	{
-		TopLevelProcessing(const TopLevelProcessingConfig &c);
 
 		TopLevelProcessing(  );
-
-		TopLevelProcessingConfig mConfig;
 
 	protected:
 
@@ -60,9 +57,14 @@ namespace CLAM {
 		/** Singleton accessor */
 		static TopLevelProcessing& GetInstance();
 
-		const ProcessingConfig &GetConfig() const {return mConfig;}
+		const ProcessingConfig &GetConfig() const 
+		{
+			static TopLevelProcessingConfig config;
+			return config;
+		}
 
 		bool Do(void);
+
 		
 	};
 

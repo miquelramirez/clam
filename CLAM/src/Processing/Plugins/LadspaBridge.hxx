@@ -1,27 +1,39 @@
 
-#ifndef __LadspaBrige_hxx__
+#ifndef __LadspaBridge_hxx__
 #define __LadspaBridge_hxx__
 
 #include <ladspa.h>
 #include <vector>
 
 #include "Audio.hxx"
+#include "AudioOutPort.hxx"
+#include "AudioInPort.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
+
+namespace CLAM
+{
+	class PublishedOutPorts;
+}
 
 class LadspaBridge
 {
-public:
+public:	
+	std::vector<CLAM::TData *> mLocationsList;
+	std::vector<CLAM::TData *> mInLocationsList;
+
+	std::vector<CLAM::AudioOutPort*> mWrappersList;
 	std::vector<LADSPA_Data*> mInControlsList;
 	std::vector<LADSPA_Data*> mOutControlsList;
-	std::vector<CLAM::Audio> mInAudioList;
-	std::vector<CLAM::Audio> mOutAudioList;
 	int mId;
-
+	virtual void AddWrapperPort( CLAM::TData * DataLocation ) = 0;
+	virtual void AddLocation( CLAM::TData * DataLocation ) = 0;
 public:
 
 	virtual void Start() = 0;
 	virtual void Stop() = 0;
 	virtual void DoProc() = 0;
-	
+	virtual bool CanDo() = 0;
 	virtual int GetInControlsSize()=0;
 	virtual int GetOutControlsSize()=0;
 	virtual int GetInPortsSize()=0;
@@ -60,30 +72,55 @@ public:
 	int GetOutPortsIndex();
 	void DoControls();
 	bool DoSizeCheck(int size);
+	bool CanDo();
 	
 	LadspaBridgeTmpl(int id)
 		: LadspaBridge(id)
 	{
 	}
+
+	void AddWrapperPort( CLAM::TData * DataLocation )
+	{
+		mInLocationsList.push_back(DataLocation);
+
+		CLAM::AudioOutPort * out = new CLAM::AudioOutPort("out", 0 );
+		mWrappersList.push_back(out);
+	}
 	
+	void AddLocation( CLAM::TData * DataLocation )
+	{
+		mLocationsList.push_back(DataLocation);
+	}
+
 	void Start()
 	{
-		for(int i=0;i<GetInPorts().Size();i++)
-			GetInPorts().GetByNumber(i).Attach(mInAudioList[i]);
-
-		for(int i=0;i<GetOutPorts().Size();i++)
-			GetOutPorts().GetByNumber(i).Attach(mOutAudioList[i]);
-	
+		for(int i=0;i<GetInPorts().Size();i++)	
+			mWrappersList[i]->ConnectToIn( GetInPorts().GetByNumber(i) );
 		Proc::Start();
 	}
+
 	void Stop()
 	{
 		Proc::Stop();
 	}
 	void DoProc()
 	{
-		if(CanDo())
-			Do();
+		for(int i=0;i<GetInPorts().Size();i++)
+		{
+			memcpy( &(mWrappersList[i]->GetData()), mInLocationsList[i], GetInPorts().GetByNumber(i).GetSize()*sizeof(CLAM::TData) );
+			mWrappersList[i]->Produce();
+		}
+
+		std::vector<CLAM::TData*> mDataList;
+		for(int i=0;i<GetOutPorts().Size();i++)
+		{
+			CLAM::AudioOutPort & out = (CLAM::AudioOutPort&)(GetOutPorts().GetByNumber(i));
+			mDataList.push_back( &(out.GetData()));
+		}
+
+		Do();	
+		for(int i=0;i<GetOutPorts().Size();i++)
+			memcpy(mLocationsList[i], mDataList[i], GetOutPorts().GetByNumber(i).GetSize()*sizeof(CLAM::TData) );		
 	}
 	const char* GetClassName()
 	{
@@ -130,18 +167,6 @@ public:
 	{
 		return GetOutPorts().Size();
 	}
-
-	bool CanDo()
-	{
-		for(int i=0;i<GetInPorts().Size();i++)
-			if(!GetInPorts().GetByNumber(i).IsAttached())
-				return false;	
-
-		for(int i=0;i<GetOutPorts().Size();i++)
-			if(!GetOutPorts().GetByNumber(i).IsAttached())
-				return false;	
-		return true;
-	}
 };
 
 template<class Proc>
@@ -179,12 +204,19 @@ template<class Proc>
 bool LadspaBridgeTmpl<Proc>::DoSizeCheck(int size)
 {		
 	for(int i=0;i<GetInPorts().Size();i++)
-		if(mInAudioList[i].GetBuffer().Size() != size )
-			mInAudioList[i].GetBuffer().SetSize(size);
-
+	{
+		if(GetInPorts().GetByNumber(i).GetSize() != size )
+		{
+			GetInPorts().GetByNumber(i).SetSize( size );
+			mWrappersList[i]->SetSize( size );
+		}
+	}
+		
 	for(int i=0;i<GetOutPorts().Size();i++)
-		if(mOutAudioList[i].GetBuffer().Size() != size )
-			mOutAudioList[i].GetBuffer().SetSize(size);
+	{
+		if(GetOutPorts().GetByNumber(i).GetSize() != size )
+			GetOutPorts().GetByNumber(i).SetSize( size );
+	}
 }
 
 #endif // __LadspaBridge_hxx__

@@ -40,7 +40,6 @@ int main(int argc,char** argv)
 #include"FundFreqDetect.hxx"
 #include"XMLStorage.hxx"
 #include"DataTypes.hxx"
-#include "ErrProcessingObj.hxx"
 #include"WindowGenerator.hxx"
 
 #include<cmath>

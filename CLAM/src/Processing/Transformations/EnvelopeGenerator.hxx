@@ -26,6 +26,8 @@
 #include "ProcessingData.hxx"
 #include "ProcessingData.hxx"
 #include "Envelope.hxx"
+#include "AudioOutPort.hxx"
+#include "InPort.hxx"
 
 namespace CLAM
 {
@@ -73,17 +75,17 @@ public:
 	EnvelopeGenerator(const EnvelopeGeneratorConfig& c = EnvelopeGeneratorConfig())
 		:
 		mEnvelopePos("EnvelopePosition",this, &EnvelopeGenerator::UpdateEnvelopePosition),
-		Input("Input",this,1),
-		Output("Output",this,1)
+		Input("Input",this),
+		Output("Output",this)
 	{
 		Configure(c);
 	}
 
 	const char * GetClassName() const { return "EnvelopeGenerator";}
 
-	InPortTmpl<Envelope> Input;
+	InPort<Envelope> Input;
 
-	OutPortTmpl<Audio>   Output;
+	AudioOutPort   Output;
 
 	const ProcessingConfig &GetConfig() const { return mConfig;}
 
@@ -109,8 +111,8 @@ public:
 	bool Do(void)
 	{
 		bool res = Do(Input.GetData(),Output.GetData());
-		Input.LeaveData();
-		Output.LeaveData();
+		Input.Consume();
+		Output.Produce();
 		return res;
 	}
 

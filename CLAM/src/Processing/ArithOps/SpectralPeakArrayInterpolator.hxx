@@ -24,9 +24,11 @@
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "SpectralPeakArray.hxx"
+#include "InControl.hxx"
+#include "Spectrum.hxx"
 
 namespace CLAM {
 
@@ -91,11 +93,12 @@ namespace CLAM {
 		SpectralPeakArrayInterpolatorCtl mIsHarmonicCtl;
 
 		/** Ports */
-		InPortTmpl<SpectralPeakArray> mIn1;
-		InPortTmpl<SpectralPeakArray> mIn2;
-		OutPortTmpl<SpectralPeakArray> mOut;
+		InPort<SpectralPeakArray> mIn1;
+		InPort<SpectralPeakArray> mIn2;
+		OutPort<SpectralPeakArray> mOut;
 
-		InPortTmpl<Spectrum> mSpectralShape;
+		Spectrum* mpSpectralShape;
+		void AttachSpectralShape( Spectrum& spec ) { mpSpectralShape = &spec; }
 	private:
 		bool FindHarmonic(const IndexArray& indexArray,int index,int& lastPosition);
 

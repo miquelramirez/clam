@@ -29,6 +29,7 @@
 #include "FFT_rfftw.hxx"
 #include "XMLStorage.hxx"
 #include "BasicFlowControl.hxx"
+#include "cppUnitHelper.hxx"
 
 namespace CLAMTest {
 
@@ -58,12 +59,7 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 public: // TestFixture interface
 	void setUp()
 	{
-		char* pathToTestData = getenv("CLAM_TEST_DATA");
-		if ( !pathToTestData )
-			mPathToTestData ="../../../../CLAM-TestData"; 
-		else
-			mPathToTestData = pathToTestData;
-		mPathToTestData += "/networkTestsData/";
+		mPathToTestData = GetTestDataDirectory("networkTestsData/");
 	}
 private:
 	void TestLoadEmptyNetwork()
@@ -191,7 +187,7 @@ private:
 
 		storage.Restore(foo, mPathToTestData+"networkwithportconnections.xml");
 		
-		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("oscillator").GetOutPorts().Get("Audio Output").IsConnectedTo( 
+		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("oscillator").GetOutPorts().Get("Audio Output").IsDirectlyConnectedTo( 
 					      foo.GetProcessing("multiplier").GetInPorts().Get("First Audio Input")));
 	}
 

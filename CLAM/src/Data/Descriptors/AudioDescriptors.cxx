@@ -49,10 +49,6 @@ AudioDescriptors::AudioDescriptors(TData initVal):DescriptorAbs(eNumAttr)
 	SetZeroCrossingRate(initVal);
 	SetRiseTime(initVal);
 	SetLogAttackTime(initVal);
-	SetAttack(initVal);
-	SetDecay(initVal);
-	SetSustain(initVal);
-	SetRelease(initVal);
 	SetDecrease(initVal);
 }
 
@@ -96,32 +92,26 @@ void AudioDescriptors::ConcreteCompute()
 		SetLogAttackTime(ComputeLogAttackTime());
 	if(HasDecrease())
 		SetDecrease(ComputeDecrease());
-/*
-		Not implemented yet;
-
-		DYN_ATTRIBUTE (3, public, TData, Attack);
-		DYN_ATTRIBUTE (4, public, TData, Decay);
-		DYN_ATTRIBUTE (5, public, TData, Sustain);
-		DYN_ATTRIBUTE (6, public, TData, Release);
-*/
 }
 
 TData AudioDescriptors::ComputeZeroCrossingRate()
 {
 	DataArray& data = mpAudio->GetBuffer();
 
-	int sum = 0;
+	int signChangeCount = 0;
 	const TSize size = data.Size();
+	bool wasPositive = data[0] > 0.0;
 
-	// Detect zero-crossings
 	for (int i=1; i<size; i++)
 	{
-		if (((data[i] < 0.0) && (data[i-1] > 0.0)) ||
-		  ((data[i] > 0.0) && (data[i-1] < 0.0)))
-			sum++;
+		const bool isPositive = (data[i] > 0.0);
+		if (wasPositive ==  isPositive) continue;
+
+		signChangeCount++;
+		wasPositive = isPositive;
 	}
 	// Average
-	return ((TData)sum)/size;
+	return ((TData)signChangeCount)/size;
 }
 
 TData AudioDescriptors::ComputeAttackTime()
@@ -143,11 +133,11 @@ TData AudioDescriptors::ComputeAttackTime()
 	const TData a1 = -alpha;
 
 	// Find maximum value
-	energyEnv[0] = b0*fabsf(data[0]);
+	energyEnv[0] = b0*CLAM::Abs(data[0]);
 	TData maxVal = energyEnv[0];
 
 	for (TIndex i=1; i<dataSize; i++) {
-		energyEnv[i] = b0*(fabsf(data[i]) + fabsf(data[i-1])) - a1*energyEnv[i-1];
+		energyEnv[i] = b0*(CLAM::Abs(data[i]) + CLAM::Abs(data[i-1])) - a1*energyEnv[i-1];
 		if (energyEnv[i] > maxVal) maxVal = energyEnv[i];
 	}
 
@@ -193,7 +183,7 @@ TData AudioDescriptors::ComputeDecrease()
 	const double a1 = -alpha;
 
 	// Find maximum value
-	double y = b0*fabsf(data[0]);
+	double y = b0*CLAM::Abs(data[0]);
 	TData correctedY = y<mEpsilon ? mEpsilon : y;
 	double logEnv = log10(correctedY);
 
@@ -205,7 +195,7 @@ TData AudioDescriptors::ComputeDecrease()
 
 	for (TIndex i=1; i<dataSize; i++)
 	{
-		y = b0*(fabsf(data[i-1]) + fabsf(data[i])) - a1*y;
+		y = b0*(CLAM::Abs(data[i-1]) + CLAM::Abs(data[i])) - a1*y;
 		correctedY = y<mEpsilon ? mEpsilon : y;
 		const double logEnv = log10(correctedY);
 
@@ -266,22 +256,6 @@ AudioDescriptors operator * (const AudioDescriptors& a,TData mult)
 	{
 		tmpD.SetLogAttackTime(a.GetLogAttackTime()*mult);
 	}
-	if(a.HasAttack())
-	{
-		tmpD.SetAttack(a.GetAttack()*mult);
-	}
-	if(a.HasDecay())
-	{
-		tmpD.SetDecay(a.GetDecay()*mult);
-	}
-	if(a.HasSustain())
-	{
-		tmpD.SetSustain(a.GetSustain()*mult);
-	}
-	if(a.HasRelease())
-	{
-		tmpD.SetRelease(a.GetRelease()*mult);
-	}
 	if(a.HasDecrease())
 	{
 		tmpD.SetDecrease(a.GetDecrease()*mult);
@@ -340,30 +314,6 @@ AudioDescriptors operator * (const AudioDescriptors& a,const AudioDescriptors& b
 		tmpD.UpdateData();
 		tmpD.SetLogAttackTime(a.GetLogAttackTime()*b.GetLogAttackTime() );
 	}
-	if(a.HasAttack() && b.HasAttack() )
-	{
-		tmpD.AddAttack();
-		tmpD.UpdateData();
-		tmpD.SetAttack(a.GetAttack()*b.GetAttack() );
-	}
-	if(a.HasDecay() && b.HasDecay() )
-	{
-		tmpD.AddDecay();
-		tmpD.UpdateData();
-		tmpD.SetDecay(a.GetDecay()*b.GetDecay() );
-	}
-	if(a.HasSustain() && b.HasSustain() )
-	{
-		tmpD.AddSustain();
-		tmpD.UpdateData();
-		tmpD.SetSustain(a.GetSustain()*b.GetSustain() );
-	}
-	if(a.HasRelease() && b.HasRelease() )
-	{
-		tmpD.AddRelease();
-		tmpD.UpdateData();
-		tmpD.SetRelease(a.GetRelease()*b.GetRelease() );
-	}
 	if(a.HasDecrease() && b.HasDecrease() )
 	{
 		tmpD.AddDecrease();
@@ -418,30 +368,6 @@ AudioDescriptors operator + (const AudioDescriptors& a,const AudioDescriptors& b
 		tmpD.AddLogAttackTime();
 		tmpD.UpdateData();
 		tmpD.SetLogAttackTime(a.GetLogAttackTime()+b.GetLogAttackTime() );
-	}
-	if(a.HasAttack() && b.HasAttack() )
-	{
-		tmpD.AddAttack();
-		tmpD.UpdateData();
-		tmpD.SetAttack(a.GetAttack()+b.GetAttack() );
-	}
-	if(a.HasDecay() && b.HasDecay() )
-	{
-		tmpD.AddDecay();
-		tmpD.UpdateData();
-		tmpD.SetDecay(a.GetDecay()+b.GetDecay() );
-	}
-	if(a.HasSustain() && b.HasSustain() )
-	{
-		tmpD.AddSustain();
-		tmpD.UpdateData();
-		tmpD.SetSustain(a.GetSustain()+b.GetSustain() );
-	}
-	if(a.HasRelease() && b.HasRelease() )
-	{
-		tmpD.AddRelease();
-		tmpD.UpdateData();
-		tmpD.SetRelease(a.GetRelease()+b.GetRelease() );
 	}
 	if(a.HasDecrease() && b.HasDecrease() )
 	{

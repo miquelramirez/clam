@@ -26,8 +26,7 @@
 #include "ProcessingData.hxx"
 #include "OSDefines.hxx"
 #include "Audio.hxx"
-#include "OutPortTmpl.hxx"
-#include "InPortTmpl.hxx"
+#include "AudioOutPort.hxx"
 #include "InControl.hxx"
 #include "Enum.hxx"
 #include <string>
@@ -39,41 +38,34 @@ class EOscillatorControls : public Enum
 {
 public:
 
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	
-	EOscillatorControls() 
-		: Enum(sEnumValues, sDefault) 
-	{
-	}
-	
-	EOscillatorControls(tValue v) 
-		: Enum(sEnumValues, v) 
-	{
-	}
-	
-	EOscillatorControls(std::string s) 
-		: Enum(sEnumValues, s) 
-	{
-	}
-	
-	~EOscillatorControls() 
-	{
-	};
+	EOscillatorControls() : Enum(ValueTable(), pitch) { } 
+	EOscillatorControls(tValue v) : Enum(ValueTable(), v) { } 
+	EOscillatorControls(std::string s) : Enum(ValueTable(), s) { }
+	~EOscillatorControls() { };
 
 	Component * Species() const 
 	{ 
 		return new EOscillatorControls;
 	}
-
 	typedef enum 
-		{
-			pitch=0,
-			amplitude,
-			modidx,
-			phase
-		} tEnum;
-
+	{
+		pitch=0,
+		amplitude,
+		modidx,
+		phase
+	} tEnum;
+	static tEnumValue * ValueTable()
+	{
+		static tEnumValue sEnumValues[] =
+			{
+				{ pitch, "pitch" },
+				{ amplitude, "amplitude" },
+				{ modidx, "modidx" },
+				{ phase, "phase" },
+				{ 0, NULL }
+			};
+		return sEnumValues;
+	}
 };
 
 class SimpleOscillatorConfig: public ProcessingConfig
@@ -92,7 +84,7 @@ protected:
 class SimpleOscillator : public Processing
 {
 protected:
-	OutPortTmpl<Audio> mOutput;
+	AudioOutPort mOutput;
 	SimpleOscillatorConfig mConfig;
 	TData mAmp;
 	TData mPhase;
@@ -101,11 +93,10 @@ protected:
 
 	typedef InControlTmpl<SimpleOscillator> SimpleOscillatorCtrl;
 
-	SimpleOscillatorCtrl* mAmpCtl;
-	SimpleOscillatorCtrl* mFreqCtl;
-	
 	bool           mFreqUpdated;
 	bool           mAmpUpdated;
+	SimpleOscillatorCtrl* mFreqCtl;
+	SimpleOscillatorCtrl* mAmpCtl;
 
 protected:	
 

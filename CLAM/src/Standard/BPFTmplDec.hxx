@@ -57,8 +57,8 @@ namespace CLAM
 * Constructor from a given interpolation type and an initial size. The initial size is used
 * to allocate the member mArray. Is the one to use for efficiency whenever a maximum size of
 * the BPF is known beforehand.
-* @param size: Allocation size for the member array of points.
-* @param Interpolation Type: EInterpolation (linear, polynomical, spline...)
+* @param size Allocation size for the member array of points.
+* @param eInterpolation Kind of interpolation: (linear, polynomical, spline...)
 */
 		BPFTmpl(TSize size);
 
@@ -67,7 +67,7 @@ namespace CLAM
 
 /**
 * Copy Constructor.
-* @param originalBPF
+* @param orig BPF to be copied
 */
 		BPFTmpl(const BPFTmpl<TX,TY>& orig);
 
@@ -84,7 +84,7 @@ namespace CLAM
 
 /**
 * Allocated Size of the member array of points
-* @return : allocated size of the array
+* @return allocated size of the array
 * @see Size
 */
 		TSize AllocatedSize(void) const {return mArray.AllocatedSize();}
@@ -92,34 +92,34 @@ namespace CLAM
 /**
 * Size of the member array of points, points with a higher index may be allocated but are
 * not used
-* @return : size of the array
-* @see : AllocatedSize
+* @return size of the array
+* @see AllocatedSize
 */
 		TSize Size(void) const {return mArray.Size();}
 
 /**
 * Sets the size of the member array of points, points with a higher index may be 
 * allocated but are not used. Actual allocated size is left untouched
-* @param: new logical size
-* @see : Resize
-* @see : CLAM::Array::SetSize
+* @param newSize new logical size
+* @see Resize
+* @see CLAM::Array::SetSize
 */
 		void SetSize (TSize newSize){mArray.SetSize(newSize);}
 
 /**
 * Sets the allocated size of the member array of points, points with a higher index may be 
 * allocated but are not used. Actually does a new memory allocation
-* @param : new allocated size
-* @see : SetSize
-* @see : CLAM::Array::Resize
+* @param newSize new allocated size
+* @see SetSize
+* @see CLAM::Array::Resize
 */
 		void Resize (TSize newSize){mArray.Resize(newSize);}
 
 /**
 * Inserts a point in the correct position. Note that points in the array are always sorted
 * according to their X value. Must therefore perform a previous serch.
-* @param : point to insert
-* @see : CLAM::SearchArray 
+* @param point the point to be inserted
+* @see CLAM::SearchArray 
 */
 		TIndex Insert(const PointTmpl<TX,TY> &point);
 
@@ -127,42 +127,42 @@ namespace CLAM
 * Inserts a point made of an X and a Y value in the correct position. Note that 
 * points in the array are always sorted according to their X value. Must therefore 
 * perform a previous serch.
-* @param : X value
-* @param : Y value
-* @see : Insert
+* @param x X value
+* @param y Y value
+* @see Insert
 */
 		TIndex Insert(const TX &x,const TX &y);
 
 /**
 * Deletes the point found at the given index
-* @param : index of the point to delete
+* @param index Index of the point to delete
 */
 		void DeleteIndex(TIndex index);
 
 /**
 * Deletes the point with a closest X value to the one given
-* @param : X value of the point to delete
+* @param x X value of the point to delete
 */
 		void DeleteThroughXValue(const TX& x);
 
 /**
 * Deletes the points between indices given
-* @param : left index
-* @param : right index
+* @param leftIndex left index
+* @param rightIndex right index
 */
 		void DeleteBetweenIndex(TIndex leftIndex,TIndex rightIndex);
 	
 /**
 * Deletes the points having an X value in between the ones given
-* @param : left X value
-* @param : right X value
+* @param leftX left X value
+* @param rightX right X value
 */
 		void DeleteBetweenXValues(const TX& leftX,const TX& rightX);
 
 /** 
 * Setting Y value of a point
-* @param : index where the point is found
-* @param: new value for the Y
+* @param index The index where the point is found
+* @param y The new value for the Y
 */
 		void SetValue(TIndex index,const TY &y)
 		{
@@ -178,27 +178,27 @@ namespace CLAM
 /** 
 * Setting a different interpolation type. Auxiliary member arrays mc and md are resized if
 * necessary.
-* @param : new interpolation type
+* @param new interpolation type
 */
 		void SetIntpType(const EInterpolation& eInterpolation);
 		
 /** 
 * Setting Step for resizing the array when needed
-* @param : step value
-* @see : CLAM::Array:mStep
+* @param step Allocation step value
+* @see CLAM::Array::mStep
 */
 		void SetStep(TSize step){mArray.SetStep(step);}
 /** 
 * Querying for step used for resizing the array when needed
-* @return : step size
-* @see : CLAM::Array:mStep
+* @return Allocation step size
+* @see CLAM::Array::mStep
 */
 		TSize GetStep() {return mArray.GetStep();}
 
 /** 
 * Getting the value of the point located at a given position
-* @param : index
-* @see : GetValue
+* @param index
+* @see GetValue
 */
 		TY GetValueFromIndex(TIndex index) const {
 			return mArray[index].GetY();
@@ -207,9 +207,9 @@ namespace CLAM
 /** 
 * Getting the value of a point from the value of its X component. Performs the kind
 * of interpolation set at that moment
-* @param : X value
-* @see : GetValueFromIndex
-* @see: meInterpolation
+* @param x X value
+* @see GetValueFromIndex
+* @see meInterpolation
 */
 		TY GetValue(const TX& x)	const {
 			return GetValue(x,meInterpolation);
@@ -218,9 +218,9 @@ namespace CLAM
 /** 
 * Getting the value of a point from the value of its X component. Performs the kind
 * of interpolation passed as parameter
-* @param : X value
-* @param : interpolation type 
-* @see : GetValueFromIndex
+* @param x X value
+* @param eInterpolation interpolation type 
+* @see GetValueFromIndex
 */
 		TY GetValue (const TX& x,const EInterpolation& eInterpolation) const;
 
@@ -236,8 +236,8 @@ namespace CLAM
 
 /** 
 * Get point position in BPf from X value
-* @param : X value
-* @return : index position
+* @param x X value
+* @return index position
 */
 		TIndex GetPosition(const TX& x) const;
 

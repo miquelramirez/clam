@@ -21,7 +21,6 @@
 
 
 #include "FFT.hxx"
-#include "ErrProcessingObj.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
@@ -40,14 +39,15 @@ namespace CLAM {
 
 	FFT_base::FFT_base() :
 		mSize(0),
-		mInput("Input",this,1),
-		mOutput("Output",this,1),
+		mInput("Audio Input",this),
+		mOutput("Spectrum Output",this),
 		fftbuffer( NULL )
 	{
 	};
 
 	FFT_base::~FFT_base()
 	{
+		if (fftbuffer) delete [] fftbuffer;
 	}
 
 	void FFT_base::ChangeSize(int n)
@@ -65,7 +65,7 @@ namespace CLAM {
 		// Input object checking
 		if (in.GetSize()!=mSize) { 
 			std::stringstream ss;
-			ss << "FFT_rfftw::Do: Wrong size in FFT Audio input\n"
+			ss << "FFT::Do: Wrong size in FFT Audio input\n"
 			   << "  Expected: " << mSize << ", used " << in.GetSize();
 			CLAM_ASSERT(0,ss.str().c_str());
 		}
@@ -73,7 +73,7 @@ namespace CLAM {
 			CLAM_ASSERT(0,"FFT Do: Float attribute required for Audio object.");
 		if (out.GetSize() != mSize/2+1 ) { // ALGORITHM DEPENDENT CHECKING
 			std::stringstream ss;
-			ss << "FFT_rfftw::Do: wrong size  Spectrum.\n"
+			ss << "FFT::Do: wrong size  Spectrum.\n"
 			   << "  Expected: " << mSize/2+1 << ", used " << out.GetSize();
 			CLAM_ASSERT(0,ss.str().c_str());
 		}
@@ -97,7 +97,7 @@ namespace CLAM {
 			if (flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF)
 				mState=sOther;
 			else
-				throw(ErrProcessingObj("FFT_numrec: SetPrototypes(): Spectrum with no attributes!",this));
+				CLAM_ASSERT(false,"FFT_numrec: SetPrototypes(): Spectrum with no attributes!");
 
 		return true;
 	}
@@ -110,6 +110,11 @@ namespace CLAM {
 		if (mConfig.HasAudioSize()) {
 			CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
 			mSize = mConfig.GetAudioSize();
+			if(mSize>0)
+			{
+				mInput.SetSize( mSize );
+				mInput.SetHop( mSize );
+			}
 		}
 
 		CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
@@ -145,12 +150,6 @@ namespace CLAM {
 		return true;
 	}
 
-	void FFT_base::Attach(Audio& in, Spectrum &out)
-	{
-		mInput.Attach(in);
-		mOutput.Attach(out);
-	}
-	
 	void FFT_base::ToOther(Spectrum &out)
 	{
 		if(out.HasComplexArray()) {
@@ -161,8 +160,5 @@ namespace CLAM {
 			ToComplex(mComplexSpectrum);
 			out.SynchronizeTo(mComplexSpectrum);
 		}
-
 	}	
-		
-
 };//namespace CLAM

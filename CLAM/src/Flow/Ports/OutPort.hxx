@@ -1,27 +1,337 @@
-#ifndef _OutPort_hxx_
-#define _OutPort_hxx_
+#ifndef __OutPort_hxx__
+#define __OutPort_hxx__
 
-#include "Port.hxx"
+#include "WritingRegion.hxx"
+#include <list>
 #include <string>
+#include "InPort.hxx"
+#include "InPortPublisher.hxx"
 
 namespace CLAM
 {
 
 class Processing;
-class InPort;
-class NodeBase;
 
-class OutPort: public Port {
+class OutPortBase
+{
 public:
-	OutPort(const std::string &n, Processing *o, int length, int hop = 0);
-	virtual bool IsConnectableTo(InPort & ) = 0;
-	bool IsConnectedTo( InPort &in );
-	virtual bool IsReadyForWriting() = 0;
-	virtual ~OutPort() {}
+	typedef std::list<InPortBase*> InPortsList;
+	OutPortBase( const std::string & name = "unnamed in port", Processing * proc = 0 );
+	virtual ~OutPortBase();
+	const std::string & GetName();
+	Processing * GetProcessing();
+	InPortsList::iterator BeginConnectedInPorts();
+	InPortsList::iterator EndConnectedInPorts();
 	
+	virtual void ConnectToIn(InPortBase& in) = 0;
+	virtual void DisconnectFromIn(InPortBase & in) = 0;
+	virtual void DisconnectFromAll()=0;
+	virtual bool IsDirectlyConnectedTo(InPortBase & in) = 0;
+	virtual bool IsConnectableTo(InPortBase & ) = 0;
+	virtual bool CanProduce()=0;
+	virtual int GetSize()=0;
+	virtual void SetSize(int newSize)=0;
+	virtual int GetHop()=0;
+	virtual void SetHop(int newHop)=0;
+	bool HasConnections(){return mConnectedInPortsList.size()!=0;}
+	virtual void CenterEvenRegions()=0;
+
+protected:
+	
+	InPortsList mConnectedInPortsList;	
+	std::string mName;
+	Processing * mProcessing;
 };
 
 
+template<typename Token>
+class OutPort : public OutPortBase
+{
+	typedef OutPort<Token> ProperOutPort;
+	typedef InPort<Token> ProperInPort;
+	typedef WritingRegion<Token> ProperWritingRegion;
+public:
+	OutPort( const std::string & name = "unnamed in port", Processing * proc = 0 );
+	virtual ~OutPort();
+
+	void DisconnectFromAll();
+	void ConnectToIn( InPortBase& in);
+	void ConnectToConcreteIn(InPort<Token>& in);
+	void DisconnectFromIn( InPortBase& in);
+	void DisconnectFromConcreteIn(InPort<Token>& in);
+	bool IsConnectableTo(InPortBase & in);
+	bool IsDirectlyConnectedTo(InPortBase & in);
+	bool IsPhysicallyConnectedToIn(InPort<Token>& ); 
+	InPortPublisher<Token>* GetPublisherContaining(InPort<Token>&);
+
+	Token & GetData(int offset=0);	
+	void SetSize( int newSize );
+	int GetSize();
+	int GetHop();
+	void SetHop( int hop );	
+	void Produce();
+	bool CanProduce();
+	void CenterEvenRegions();
+	
+	static Token & GetLastWrittenData( OutPortBase &, int offset = 0);
+
+protected:	
+	bool TryConnectToPublisher( InPortBase & in );
+	bool TryConnectToConcreteIn( InPortBase & in );
+
+	bool TryDisconnectFromPublisher( InPortBase & in );
+	bool TryDisconnectFromConcreteIn( InPortBase & in );
+
+	Token & GetLastWrittenData( int offset = 0 );
+	ProperWritingRegion mRegion;
+
+};
+
+template<class Token>
+OutPort<Token>::OutPort( const std::string & name, Processing * proc )
+	: OutPortBase(name,proc)
+{
+}
+
+template<class Token>
+void OutPort<Token>::DisconnectFromAll()
+{
+	InPortsList::iterator it = mConnectedInPortsList.begin();
+	for( it=BeginConnectedInPorts(); it!=EndConnectedInPorts(); it++ )	
+	{ 
+		(*it)->UnAttachRegion();
+	}
+	mConnectedInPortsList.clear();
+}
+
+template<class Token>
+OutPort<Token>::~OutPort()
+{
+	DisconnectFromAll();
+}
+
+template<class Token>
+bool OutPort<Token>::TryConnectToConcreteIn( InPortBase & in )
+{
+	try
+	{
+		ConnectToConcreteIn( dynamic_cast<ProperInPort&>(in) );
+	}
+	catch(...)
+	{
+		return false;
+	}
+	return true;
+}
+
+template<class Token>
+bool OutPort<Token>::TryConnectToPublisher( InPortBase & in )
+{
+	InPortPublisher<Token> * publisher =  dynamic_cast< InPortPublisher<Token> *>(&in);
+	if (!publisher) 
+		return false;
+	
+	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
+	mConnectedInPortsList.push_back( &in );
+	for( it=publisher->BeginPublishedInPortsList(); it!=publisher->EndPublishedInPortsList(); it++)
+		(*it)->AttachRegionToOutPort(this, mRegion );
+
+	in.SetAttachedOutPort(this);
+
+	return true;
+}
+
+template<class Token>
+void OutPort<Token>::ConnectToIn( InPortBase& in)
+{
+	CLAM_ASSERT( TryConnectToConcreteIn( in ) || TryConnectToPublisher( in ),
+		     "OutPort<Token>::connectToIn coudn't connect to inPort "
+   		     "because was not templatized by the same Token type as outPort" );
+}
+
+template<class Token>
+void OutPort<Token>::ConnectToConcreteIn(InPort<Token>& in)
+{
+	CLAM_ASSERT( !in.GetAttachedOutPort(), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an inport "
+						    "already connected to another out port" );
+	CLAM_ASSERT( !IsDirectlyConnectedTo(in), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an in port "
+					"already connected to this out port" );
+	mConnectedInPortsList.push_back(&in);
+	in.AttachRegionToOutPort(this, mRegion );
+}
+
+template<class Token>
+void OutPort<Token>::DisconnectFromIn( InPortBase& in)
+{
+	
+	CLAM_ASSERT( TryDisconnectFromConcreteIn( in ) || TryDisconnectFromPublisher( in ),
+		     "OutPort<Token>::DisconnectFromIn coudn't discconnect from inPort "
+   		     "because was not templatized by the same Token type as outPort" );
+}
+
+template<class Token>
+bool OutPort<Token>::TryDisconnectFromConcreteIn( InPortBase & in )
+{
+	ProperInPort * concreteIn = dynamic_cast<ProperInPort*>(&in);
+	if (!concreteIn)
+		return false;
+	
+	DisconnectFromConcreteIn( *concreteIn );
+	return true;
+}
+
+template<class Token>
+bool OutPort<Token>::TryDisconnectFromPublisher( InPortBase & in )
+{
+	InPortPublisher<Token> *publisher = dynamic_cast<InPortPublisher<Token> *>(&in);
+	if (!publisher)
+		return false;
+	
+	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
+	mConnectedInPortsList.remove( &in );
+	for( it=publisher->BeginPublishedInPortsList(); it!=publisher->EndPublishedInPortsList(); it++)
+	{
+		if( (*it)->GetAttachedOutPort())
+			(*it)->UnAttachRegion();
+	}
+	return true;
+}
+
+template<class Token>
+void OutPort<Token>::DisconnectFromConcreteIn(InPort<Token>& in)
+{
+	CLAM_DEBUG_ASSERT( IsDirectlyConnectedTo(in) || IsPhysicallyConnectedToIn(in), 
+			"OutPort::DisconnectFromConcreteIn() in port is not directly neither physically connected" );
+	if (IsDirectlyConnectedTo(in) )
+	{
+		// is directly connected
+		mConnectedInPortsList.remove(&in);
+	}
+	else // then IsPhysicallyConnected()
+	{
+		InPortPublisher<Token> *pub = GetPublisherContaining(in);
+		CLAM_DEBUG_ASSERT(0!=pub, "in port should be published");
+		pub->UnPublishInPort(in);
+	}
+	in.UnAttachRegion();
+}
+
+template<class Token>
+Token & OutPort<Token>::GetData(int offset )
+{
+	return mRegion[offset];
+}
+
+template<class Token>
+void OutPort<Token>::SetSize( int newSize )
+{
+	mRegion.Size( newSize );
+}
+
+template<class Token>
+int OutPort<Token>::GetSize()
+{
+	return mRegion.Size();
+}
+
+template<class Token>
+int OutPort<Token>::GetHop()
+{
+	return mRegion.Hop();
+}
+
+template<class Token>
+void OutPort<Token>::SetHop( int hop )
+{
+	mRegion.Hop(hop);
+}
+
+template<class Token>
+void OutPort<Token>::Produce()
+{
+	mRegion.Produce();
+}
+
+template<class Token>
+bool OutPort<Token>::CanProduce()
+{
+	return mRegion.CanProduce();
+}
+
+template<class Token>
+bool OutPort<Token>::IsConnectableTo(InPortBase & in)
+{	
+	return ( dynamic_cast< ProperInPort* >(&in) || 
+		dynamic_cast< InPortPublisher<Token> *>(&in));
+}
+
+template<class Token>
+bool OutPort<Token>::IsPhysicallyConnectedToIn(InPort<Token>& in)
+{ 
+	if (IsDirectlyConnectedTo(in))
+		return true;
+	
+	return ( 0!=GetPublisherContaining(in) );
+	
+}
+
+template<class Token>
+InPortPublisher<Token>* OutPort<Token>::GetPublisherContaining(InPort<Token>& in)
+{
+	
+	InPortPublisher<Token> *result=0;
+	InPortsList::iterator it;
+	for( it=mConnectedInPortsList.begin(); it!=mConnectedInPortsList.end(); it++ )
+		if ( (*it)->IsPublisherOf(in) )
+		{
+			result=dynamic_cast<InPortPublisher<Token> *>(*it);
+			CLAM_DEBUG_ASSERT( result, "OutPort::GetPublisherContaining(in) IsPublisher but dynamic_cast failed");
+			return result;
+		}
+
+	return 0;
+		
+}
+
+template<class Token>
+bool OutPort<Token>::IsDirectlyConnectedTo(InPortBase & in)
+{
+	InPortsList::iterator it;
+	for( it=mConnectedInPortsList.begin(); it!=mConnectedInPortsList.end(); it++ )
+		if(*it == &in) return true;
+	return false;
+}
+	
+template<class Token>
+void OutPort<Token>::CenterEvenRegions()
+{
+	mRegion.CenterEvenRegions();
+}
+
+template<class Token>
+Token & OutPort<Token>::GetLastWrittenData( int offset )
+{
+	CLAM_DEBUG_ASSERT( 0 <= offset <= GetSize(), "OutPort<Token>::GetLastWrittenData - Index out of bounds" );
+	return mRegion.GetLastWrittenData( offset );
+}
+
+template<class Token>
+Token & OutPort<Token>::GetLastWrittenData( OutPortBase & out, int offset )
+{
+	try
+	{
+		OutPort<Token>& concreteOut = dynamic_cast< OutPort<Token>& >(out);
+		return concreteOut.GetLastWrittenData( offset );
+	}
+	catch(...)
+	{
+		CLAM_ASSERT( false, "OutPort<Token>::GetLastWrittenData - Passed an outport of wrong type" );
+	}
+	return *(Token *)NULL;
+		
+}
+
 } // namespace CLAM
 
-#endif
+#endif // __OutPort_hxx__
+

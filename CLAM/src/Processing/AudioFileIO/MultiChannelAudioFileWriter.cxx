@@ -23,6 +23,8 @@
 #include <sstream>
 #include "AudioCodecs_Stream.hxx"
 #include "FileSystem.hxx"
+#include "AudioInPort.hxx"
+#include "Audio.hxx"
 
 namespace CLAM
 {
@@ -64,6 +66,44 @@ namespace CLAM
 		return mConfig;
 	}
 
+	bool MultiChannelAudioFileWriter::Do( std::vector<Audio>& inputs )
+	{
+		typedef std::vector<Audio> InputVec;
+
+		if ( !AbleToExecute() )
+			return false;
+
+		// Checking that all inputs have the same size
+		bool  allInputsSameSize = true;
+		TSize inputsSize = 0;
+
+		inputsSize = inputs[0].GetSize();
+
+		for ( InputVec::iterator i = inputs.begin();
+		      i!= inputs.end() && allInputsSameSize;
+		      i++ )
+		  {
+		    allInputsSameSize = ( inputsSize == (*i).GetSize() );
+		  }
+
+
+		CLAM_ASSERT( allInputsSameSize, "Input sizes differ!" );
+
+		// Now, let's build the samples matrix
+
+		int j = 0;
+
+		for( InputVec::iterator i = inputs.begin();
+		     i != inputs.end(); i++ )
+		  mSamplesMatrix[ j++ ] = (*i).GetBuffer().GetPtr();
+
+		mNativeStream->WriteData( mChannelsToWrite.GetPtr(), mChannelsToWrite.Size(),
+					 mSamplesMatrix.GetPtr(), inputsSize );
+
+		return true;
+
+	}
+
 	bool MultiChannelAudioFileWriter::Do()
 	{
 		if ( !AbleToExecute() )
@@ -78,7 +118,7 @@ namespace CLAM
 		for ( VectorOfInputs::iterator i = mInputs.begin();
 		      i!= mInputs.end(); i++ )
 		  {
-		    inputsRef.push_back( &((*i)->GetData()) );
+		    inputsRef.push_back( &((*i)->GetAudio()) );
 		  }
 
 		inputsSize = inputsRef[0]->GetSize();
@@ -107,7 +147,7 @@ namespace CLAM
 		for( VectorOfInputs::iterator i = mInputs.begin();
 		     i!=mInputs.end(); i++ )
 		  {
-		    (*i)->LeaveData();
+		    (*i)->Consume();
 		  }
 
 		return true;
@@ -125,31 +165,30 @@ namespace CLAM
 
 		if ( !targetFile.GetHeader().HasChannels() )
 		{
-			mStatus = "Channels field was not added to header";
+			AddConfigErrorMessage("Channels field was not added to header");
 			return false;
 		}
 
 		if ( targetFile.GetHeader().GetChannels() < 2 )
 		{
-			mStatus = "Too few channels. This processing is meant for handling ";
-			mStatus+= "files with two or more channels.";
+			AddConfigErrorMessage("Too few channels. This processing is meant for handling files with two or more channels.");
 			return false;
 		}
 
 		if ( !targetFile.IsWritable() )
 		{
-			mStatus = "Settings were not supported by selected output format. ";
-			mStatus += "Check that the sample rate, endianess and number of ";
-			mStatus += "channels conform the format specification.";
+			AddConfigErrorMessage("Settings were not supported by selected output format. "
+				"Check that the sample rate, endianess and number of "
+				"channels conform the format specification.");
 
 			return false;
 		}
 
 		if ( FileSystem::GetInstance().IsFileLocked( mConfig.GetTargetFile().GetLocation() ) )
 		{
-			mStatus = "File: ";
-			mStatus += mConfig.GetTargetFile().GetLocation();
-			mStatus += " has been locked by another Processing";
+			AddConfigErrorMessage("File: ");
+			AddConfigErrorMessage( mConfig.GetTargetFile().GetLocation() );
+			AddConfigErrorMessage(" has been locked by another Processing");
 
 			return false;
 		}
@@ -173,14 +212,14 @@ namespace CLAM
 			sstr << i;
 			
 			mInputs.push_back( 
-				new InPortTmpl<Audio>( "Channel #" + sstr.str(), this, 1 ) );
+				new AudioInPort( "Channel #" + sstr.str(), this) );
 		}
 
 		mNativeStream = targetFile.GetStream();
 
 		if ( !mNativeStream )
 		{
-			mStatus = "Could not acquire an audio file stream!";
+			AddConfigErrorMessage("Could not acquire an audio file stream!");
 			return false;
 		}
 

@@ -5,6 +5,7 @@ namespace CLAM
 	void SMSMorphConfig::DefaultInit()
 	{
 		AddAll();
+		RemoveFileName();
 		UpdateData();
 		DefaultValues();
 	}
@@ -44,5 +45,9 @@ namespace CLAM
 
 		SetHybSinSpectralShape( defaultShapeWeights );
 		SetHybResSpectralShape( defaultShapeWeights );
+
+		SetUseSpectralShapes ( false );
+
+		SetSamplingRate(44100);
 	}
 }

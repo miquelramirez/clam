@@ -1,0 +1,22 @@
+#####################################################################
+# Give a warning when $$package is disabled
+#
+# source: $$filename 
+#####################################################################
+if test x$enabled_$$package_esc = x
+then
+	AC_MSG_ERROR('$$package with/without checking not done')
+fi
+if test x$enabled_$$package_esc = xno
+then
+	AC_MSG_WARN([without $$package
+======================================================================
+You deactivated usage of package $$package. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
+
+srcdeps: configuration specifies USE_$$uc_package=1, but HAS_$$uc_package=0
+======================================================================])
+fi
+#####################################################################
+

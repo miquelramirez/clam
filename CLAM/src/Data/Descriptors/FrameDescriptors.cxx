@@ -128,6 +128,9 @@ void FrameDescriptors::ConcreteCompute()
 		GetResidualAudioFrameD().Compute();
 	if(mpFrame->HasSynthAudioFrame())
 		GetSynthAudioFrameD().Compute();
+	if(HasCenterTime())
+		SetCenterTime(mpFrame->GetCenterTime());	
+
 
 }
 

@@ -193,9 +193,9 @@ namespace CLAM {
 			throw Err("ALSAAudioDevice::Read(): Device not configured.");
 		
 		if (mReadBufSize==0) mReadBufSize=audio.GetSize();
-		else if (mReadBufSize!=audio.GetSize())
-			throw Err("Inconsistent Audio size");
-		
+		else{
+			CLAM_ASSERT(mReadBufSize==audio.GetSize(),"Inconsistent Audio size");
+		}
 		if (mReadBufSize>sndpcm->latency) 
 			throw Err("You are trying to read audio in blocks bigger than the latency");
 		
@@ -233,8 +233,9 @@ namespace CLAM {
 		int i,n;
 
 		if (mWriteBufSize==0) mWriteBufSize=audio.GetSize();
-		else if (mWriteBufSize!=audio.GetSize())
-			throw Err("Inconsistent Audio size");
+		else{
+			CLAM_ASSERT(mWriteBufSize==audio.GetSize(),"Inconsistent Audio size");
+		}
 			
 		if (mWriteBufSize>sndpcm->latency) 
 			throw Err("You are trying to write audio in blocks bigger than the latency");

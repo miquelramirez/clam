@@ -6,7 +6,7 @@
 #include "Processing.hxx"
 #include "ProcessingConfig.hxx"
 #include "Audio.hxx"
-#include "InPortTmpl.hxx"
+#include "AudioInPort.hxx"
 #include "InControl.hxx"
 #include <string>
 
@@ -30,15 +30,15 @@ class Oscillator : public SimpleOscillator
 {
 	OscillatorConfig mConfig;
 
-	InPortTmpl<Audio> mInputPhaseMod;
-	InPortTmpl<Audio> mInputFreqMod;
+	AudioInPort mInputPhaseMod;
+	AudioInPort mInputFreqMod;
 	TData mModIndex;
 
 	typedef InControlTmpl<Oscillator> OscillatorCtrl;
 
+	bool mModIdxUpdated;
 	Oscillator::OscillatorCtrl * mModIdxCtl;
 
-	bool           mModIdxUpdated;
 	
 	inline void ApplyControls()
 	{

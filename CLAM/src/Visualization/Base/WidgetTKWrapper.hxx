@@ -28,12 +28,6 @@
 
 #include <string>
 
-using std::string;
-
-using CLAM::Component;
-using CLAM::Enum;
-
-
 namespace CLAMVM
 {
 
@@ -44,41 +38,33 @@ namespace CLAMVM
  *  able to wrap. 
  */
 class EWidgetTK
-	: public Enum
+	: public CLAM::Enum
 {
 public:
-	static tEnumValue sEnumValues[];
-	static tValue     sDefault;
+	EWidgetTK() : CLAM::Enum( ValueTable(), FLTK ) { } 
+	EWidgetTK( tValue v ) : CLAM::Enum( ValueTable(), v ) { } 
+	EWidgetTK( std::string s ) : CLAM::Enum( ValueTable(), s ) { } 
+	~EWidgetTK() { }
 
-	EWidgetTK()
-		: Enum( sEnumValues, sDefault )
-	{
-	}
-
-	EWidgetTK( tValue v )
-		: Enum( sEnumValues, v )
-	{
-	}
-
-	EWidgetTK( string s )
-		: Enum( sEnumValues, s )
-	{
-	}
-
-	~EWidgetTK()
-	{
-	}
-
-	Component* Species() const
+	CLAM::Component* Species() const
 	{
 		return new EWidgetTK;
 	}
-
 	typedef enum 
 	{ 
 		FLTK = 0,
 		Qt
 	} tEnum;
+	static tEnumValue * ValueTable()
+	{
+		static tEnumValue sEnumValues[] =
+		{
+			{ FLTK, "FLTK" },
+			{ Qt,   "Qt" },
+			{ 0, NULL }
+		};
+		return sEnumValues;
+	}
 };
 
 		/**  \class WidgetTKWrapper
@@ -106,7 +92,7 @@ public:
 		 *  \params   The string that identifies the toolkit for which a Wrapper is requested
 		 *  \returns  A reference to a toolkit wrapper
 		 */
-		static WidgetTKWrapper& GetWrapperFor( std::string toolkit );
+		static WidgetTKWrapper& GetWrapperFor( const std::string & toolkit );
 		
 		/** \brief Destructor
 		 *

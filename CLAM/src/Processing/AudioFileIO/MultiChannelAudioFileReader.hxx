@@ -25,13 +25,14 @@
 #include "Processing.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
 #include "Audio.hxx"
-#include "AudioOutPortTmpl.hxx"
 #include <vector>
 
 namespace CLAM
 {
-	class MultiChannelAudioFileReader 
-		: public Processing
+
+	class AudioOutPort;
+	
+	class MultiChannelAudioFileReader : public Processing
 	{
 	public:
 		MultiChannelAudioFileReader();
@@ -42,6 +43,7 @@ namespace CLAM
 		virtual const char* GetClassName() const;
 		virtual const ProcessingConfig& GetConfig() const;
 		virtual bool Do();
+		virtual bool Do( std::vector<Audio>& outputs );
 		bool ModifiesPortsAndControlsAtConfiguration();
 	
 	protected: // methods
@@ -54,8 +56,8 @@ namespace CLAM
 		
 	protected: // attributes
 
-		typedef std::vector< OutPortTmpl<Audio>* >  OutputVector;
-	  typedef std::vector< Audio* > OutRefsVector;
+		typedef std::vector< AudioOutPort* >  OutputVector;
+		typedef std::vector< Audio* > OutRefsVector;
 
 		MultiChannelAudioFileReaderConfig   mConfig;
 		OutputVector                        mOutputs;

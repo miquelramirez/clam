@@ -26,7 +26,7 @@
 #include "ErrSoundFileIO.hxx"
 #include "AudioFileConfig.hxx"
 #include "Processing.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioOutPort.hxx"
 
 namespace CLAM {
 
@@ -53,7 +53,7 @@ class SoundFileIO;
 
 
 	private:
-		OutPortTmpl<Audio> mOutput;
+		AudioOutPort mOutput;
 
 		const char *GetClassName() const {return "AudioFileIn";}
 
@@ -78,8 +78,6 @@ class SoundFileIO;
 		/** Configuration access:
 		 */
 		const ProcessingConfig &GetConfig() const { return mConfig;}
-
-		void Attach(Audio& out) {mOutput.Attach(out);}
 
 		/** Supervised-mode Do function.
 		 */

@@ -27,7 +27,7 @@
 #include "Processing.hxx"
 #include "Audio.hxx"
 #include "AudioDevice.hxx"
-#include "InPortTmpl.hxx"
+#include "AudioInPort.hxx"
 
 namespace CLAM{
 
@@ -42,7 +42,7 @@ private:
 	AudioIOConfig mConfig;
 	AudioDevice* mpDevice;
 
-	InPortTmpl<Audio> Input;
+	AudioInPort mInput;
 public:
 
 	/** Configuration method interface. The Processing base class forces all the concrete classes derived from it to implement this method, which must actually perform the specific configuration tasks.  

@@ -12,13 +12,10 @@ extern "C"
 LADSPA_Handle Instantiate(const struct _LADSPA_Descriptor * Descriptor,  unsigned long SampleRate)
 {
 	LadspaBridge * test = Instance();
-	
 
 	(test->mInControlsList).resize(test->GetInControlsSize());
 	(test->mOutControlsList).resize(test->GetOutControlsSize());
-
-	(test->mInAudioList).resize(test->GetInPortsSize());
-	(test->mOutAudioList).resize(test->GetOutPortsSize());
+	
 	return test;
 }
 
@@ -38,12 +35,16 @@ void ConnectPort(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data * DataL
 	}
 	if(Port < test->GetInPortsIndex() + test->GetInPortsSize())
 	{
-		test->mInAudioList[Port-test->GetInPortsIndex()].GetBuffer().SetPtr((CLAM::TData*)DataLocation, 1);
+		std::cout << "connect in port" << std::endl;
+
+		test->AddWrapperPort( (CLAM::TData*)DataLocation );
 		return;
 	}
+
 	if(Port < test->GetOutPortsIndex() + test->GetOutPortsSize()) 
 	{
-		test->mOutAudioList[Port-test->GetOutPortsIndex()].GetBuffer().SetPtr((CLAM::TData*)DataLocation, 1);
+		std::cout << "connect out port" << std::endl;
+		test->AddLocation( (CLAM::TData*)DataLocation );
 		return;
 	}
 	CLAM_ASSERT(false, "port out of range");

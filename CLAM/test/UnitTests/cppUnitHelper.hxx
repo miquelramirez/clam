@@ -28,6 +28,13 @@
 #include <cppunit/TestAssert.h>
 
 
+#ifndef CPPUNIT_NS_BEGIN
+#define CPPUNIT_NS_BEGIN namespace CppUnit {
+#endif
+#ifndef CPPUNIT_NS_END
+#define CPPUNIT_NS_END }
+#endif
+
 namespace CLAMTest
 {
 	class Helper
@@ -63,70 +70,81 @@ namespace CLAMTest
 		}
 	};
 
-#define CLAMTEST_ASSERT_EQUAL_RTTYPES( expected, actual ) \
-	CPPUNIT_ASSERT_EQUAL( \
-		typeid(expected), \
-		typeid(actual) )
+	inline std::string GetTestDataDirectory(std::string postfix = "")
+	{
+		char* pathToTestData = getenv("CLAM_TEST_DATA");
+		if ( pathToTestData ) return std::string(pathToTestData)+postfix;
+		return std::string("../../../../CLAM-TestData/")+postfix;
+	}
 
 } //namespace CLAMTest
 
 
-// Helper traits for assertions
-namespace CppUnit
-{
+
+CPPUNIT_NS_BEGIN
+
+// KLUDGE: until cppunit 1.10 Win binaries are available
+#if defined( _MSC_VER )
+namespace TestAssert {
+#endif // MSVC 6
+
 
 	// Colorizing string diferences
-	namespace TestAssert
+	inline int firstMismatch(const std::string & one, const std::string & other)
 	{
-		inline int firstMismatch(const std::string & one, const std::string & other)
-		{
-			int minLen=one.length()<other.length()?
-				one.length():other.length();
-			for ( int index = 0; index < minLen; index++ )
-					if (one[index] != other[index]) return index;
-			return minLen;
-		}
+		int minLen=one.length()<other.length()?
+			one.length():other.length();
+		for ( int index = 0; index < minLen; index++ )
+			if (one[index] != other[index]) return index;
+		return minLen;
+	}
 
 #if !defined( _MSC_VER ) || _MSC_VER > 1310
 // MRJ: This causes all CPPUNIT_ASSERT_EQUALS not to compile under VC6
 #ifdef CPPUNIT_ENABLE_SOURCELINE_DEPRECATED
-		template <>
-		inline void assertEquals( const std::string& expected,
-		                   const std::string& actual,
-		                   long lineNumber,
-		                   std::string fileName )
-    	{
-			if ( !assertion_traits<std::string>::equal(expected,actual) )
-			{
-				unsigned int index = firstMismatch(expected, actual);
-				assertNotEqualImplementation(
-					expected.substr(0,index)+"\033[32;1m"+expected.substr(index)+"\033[0m",
-					actual.substr(0,index)+"\033[31;1m"+actual.substr(index)+"\033[0m",
-					lineNumber,
-					fileName );
-			}
-		}
-#else
-		template <>
-		inline void assertEquals( const std::string& expected,
-		                   const std::string& actual,
-		                   SourceLine sourceLine,
-		                   const std::string &message)
+	template <>
+	inline void assertEquals( const std::string& expected,
+			   const std::string& actual,
+			   long lineNumber,
+			   std::string fileName )
+	{
+		if ( !assertion_traits<std::string>::equal(expected,actual) )
 		{
-			if ( !assertion_traits<std::string>::equal(expected,actual) )
-			{
-				unsigned int index = firstMismatch(expected, actual);
-				Asserter::failNotEqual(
-					expected.substr(0,index)+"\033[32;1m"+expected.substr(index)+"\033[0m",
-					actual.substr(0,index)+"\033[31;1m"+actual.substr(index)+"\033[0m",
-					sourceLine,
-					message );
-			}
+			unsigned int index = firstMismatch(expected, actual);
+			assertNotEqualImplementation(
+				expected.substr(0,index)+"\033[32;1m"+expected.substr(index)+"\033[0m",
+				actual.substr(0,index)+"\033[31;1m"+actual.substr(index)+"\033[0m",
+				lineNumber,
+				fileName );
 		}
+	}
+#else
+	template <>
+	inline void assertEquals( const std::string& expected,
+			   const std::string& actual,
+			   SourceLine sourceLine,
+			   const std::string &message)
+	{
+		if ( !assertion_traits<std::string>::equal(expected,actual) )
+		{
+			unsigned int index = firstMismatch(expected, actual);
+			::CppUnit::Asserter::failNotEqual(
+				expected.substr(0,index)+"\033[32;1m"+expected.substr(index)+"\033[0m",
+				actual.substr(0,index)+"\033[31;1m"+actual.substr(index)+"\033[0m",
+				sourceLine,
+				message );
+		}
+	}
 #endif
 
 #endif // end of VC6 guard 'ifdef'
-	}
+
+// KLUDGE: until cppunit 1.10 Win binaries are available
+#if defined( _MSC_VER )
+} // namespace TestAssert
+#endif // MSVC
+
+// Helper traits for assertions
 
 	// type_info traits
 	template<>
@@ -145,8 +163,13 @@ namespace CppUnit
 			return ost.str();
 		}
 	};
+#define CLAMTEST_ASSERT_EQUAL_RTTYPES( expected, actual ) \
+	CPPUNIT_ASSERT_EQUAL( \
+		typeid(expected), \
+		typeid(actual) )
 
-	// traits for avoiding warning message.
+
+	// traits for avoiding warning messages with size_t
 	template<>
 	struct assertion_traits< std::size_t >
 	{
@@ -180,6 +203,7 @@ namespace CppUnit
 			return ost.str();
 		}
 	};
-} //namespace CppUnit
+
+CPPUNIT_NS_END
 
 #endif

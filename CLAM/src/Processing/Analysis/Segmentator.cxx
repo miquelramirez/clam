@@ -94,16 +94,6 @@ std::ostream& operator << (std::ostream& myStream, const TDescriptorsParams& a)
 			myStream << "SpectralMoment6";
 			break;
 		}
-		case SpectralIrregularityId:
-		{
-			myStream << "SpectralIrregularity";
-			break;
-		}
-		case SpectralTiltId:
-		{
-			myStream << "SpectralTilt";
-			break;
-		}
 		case SpectralFlatnessId :
 		{
 			myStream << "SpectralFlatness";
@@ -112,11 +102,6 @@ std::ostream& operator << (std::ostream& myStream, const TDescriptorsParams& a)
 		case SpectralKurtosisId  :
 		{
 			myStream << "SpectralKurtosis";
-			break;
-		}
-		case SpectralStrongPeakId  :
-		{
-			myStream << "SpectralStrongPeak";
 			break;
 		}
 		case FundamentalId  :
@@ -322,22 +307,6 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment, SegmentDescr
 			else descriptorsValues.SetAt(z,i,0);
 			z++;
 		}
-		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralIrregularityId)
-		{
-			value=descriptors.GetFrameD(i).GetSpectrumD().GetIrregularity();
-			if(value>mConfig.GetDescriptorsParams()[z].threshold)
-				descriptorsValues.SetAt(z,i,value);
-			else descriptorsValues.SetAt(z,i,0);
-			z++;
-		}
-		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralTiltId)
-		{
-			value=descriptors.GetFrameD(i).GetSpectrumD().GetTilt();
-			if(value>mConfig.GetDescriptorsParams()[z].threshold)
-				descriptorsValues.SetAt(z,i,value);
-			else descriptorsValues.SetAt(z,i,0);
-			z++;
-		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralFlatnessId )
 		{
 			value=descriptors.GetFrameD(i).GetSpectrumD().GetFlatness();
@@ -348,15 +317,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment, SegmentDescr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralKurtosisId  )
 		{
-			value=descriptors.GetFrameD(i).GetSpectrumD().GetKurtosis();
-			if(value>mConfig.GetDescriptorsParams()[z].threshold)
-				descriptorsValues.SetAt(z,i,value);
-			else descriptorsValues.SetAt(z,i,0);
-			z++;
-		}
-		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralStrongPeakId  )
-		{
-			value=descriptors.GetFrameD(i).GetSpectrumD().GetStrongPeak();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetMagnitudeKurtosis();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);

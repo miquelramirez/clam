@@ -24,11 +24,14 @@
 
 #include "MultiChannelAudioFileWriterConfig.hxx"
 #include "Processing.hxx"
-#include "AudioOutPortTmpl.hxx"
 #include <vector>
+#include "Array.hxx"
 
 namespace CLAM
 {
+	class AudioInPort;
+	class Audio;
+
 	class MultiChannelAudioFileWriter
 		: public Processing
 	{
@@ -41,6 +44,7 @@ namespace CLAM
 		virtual const char* GetClassName() const;
 		virtual const ProcessingConfig& GetConfig() const;
 		virtual bool  Do();
+		virtual bool  Do( std::vector<Audio>& inputs );
 		bool ModifiesPortsAndControlsAtConfiguration();
 
 	protected: 
@@ -52,8 +56,8 @@ namespace CLAM
 		void DestroyOldInputs();
 
 	protected:
-		typedef std::vector< InPortTmpl<Audio>* > VectorOfInputs;
-	  typedef std::vector< Audio* > InputsRefVector;
+		typedef std::vector< AudioInPort* > VectorOfInputs;
+		typedef std::vector< const Audio* > InputsRefVector;
 		
 		MultiChannelAudioFileWriterConfig    mConfig;
 		VectorOfInputs                       mInputs;

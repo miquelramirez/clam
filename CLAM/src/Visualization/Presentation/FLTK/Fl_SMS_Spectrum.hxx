@@ -52,6 +52,7 @@ namespace CLAMVM
 		std::string                 mTooltipFmtStr;
 		double                      mMinMag;
 		double                      mMaxMag;
+		bool                        mFirstTime;
 
 	protected:
 		

@@ -25,14 +25,14 @@
 namespace CLAM
 {
 	MonoAudioFileReader::MonoAudioFileReader()
-		: mOutput( "Samples read", this, 1 ),
+		: mOutput( "Samples Read", this  ),
 		  mNativeStream( NULL )
 	{
 		
 	}
 
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )
-		: mOutput( "Samples read", this, 1 ),
+		: mOutput( "Samples Read", this ),
 		  mNativeStream( NULL )
 	{
 		Configure( cfg );
@@ -60,16 +60,14 @@ namespace CLAM
 
 		if ( !mConfig.HasSourceFile() )
 		{
-			mStatus = "The provided config object lacked the field ";
-			mStatus += "'SourceFile'";
-
+			AddConfigErrorMessage("The provided config object lacked the field 'SourceFile'");
 			return false;
 		}
 
 		// Check that the given file can be opened
 		if ( ! mConfig.GetSourceFile().IsReadable() )
 		{
-			mStatus = "The Source file could not be opened";
+			AddConfigErrorMessage("The Source file could not be opened");
 			return false;
 		}
 
@@ -77,7 +75,7 @@ namespace CLAM
 		if ( mConfig.GetSelectedChannel() < 0
 		     || mConfig.GetSelectedChannel() >= mConfig.GetSourceFile().GetHeader().GetChannels() )
 		{
-			mStatus = "The channel selected for reading does not exist";
+			AddConfigErrorMessage("The channel selected for reading does not exist");
 			return false;
 		}
 
@@ -86,7 +84,7 @@ namespace CLAM
 
 		if ( !mNativeStream ) // For some reason a stream could not be acquired
 		{
-			mStatus = "Could not get a valid audio file stream!";
+			AddConfigErrorMessage("Could not get a valid audio file stream!");
 			return false;
 		}
 
@@ -110,16 +108,22 @@ namespace CLAM
 		
 		return true;
 	}
-
+	
 	bool MonoAudioFileReader::Do()
+	{
+		bool result = Do( mOutput.GetAudio() );
+		mOutput.Produce();
+
+		return result;
+	}
+
+	bool MonoAudioFileReader::Do( Audio & outputSamples )		
 	{
 		if ( !AbleToExecute() )
 			return false;
 
 		if ( mEOFReached )
 			return false;
-
-		Audio& outputSamples = mOutput.GetData();
 
 		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(),
 						       outputSamples.GetBuffer().GetPtr(),
@@ -133,10 +137,7 @@ namespace CLAM
 			outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
 		}
 
-		mOutput.LeaveData();
-		
 		return mNativeStream->WasSomethingRead();
-		
 	}
 	
 }

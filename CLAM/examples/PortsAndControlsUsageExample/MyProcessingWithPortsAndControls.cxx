@@ -5,10 +5,9 @@ namespace CLAM
 {
 
 MyProcessingWithPortsAndControls::MyProcessingWithPortsAndControls()
-	// we specify for each port its name, the processing parent and the number of data token to receive
-	// each "Do" (one audio instance, each time).
-	: mInput( "Audio Input", this, 1 ), 
-	  mOutput( "Audio Output", this, 1 ),
+	// we specify for each port its name, and the processing parent
+	: mInput( "Audio Input", this ), 
+	  mOutput( "Audio Output", this ),
 	  // for the control, just the name and the processing
 	  mModControl( "Modulation", this )
 {
@@ -17,8 +16,8 @@ MyProcessingWithPortsAndControls::MyProcessingWithPortsAndControls()
 }
 	
 MyProcessingWithPortsAndControls::MyProcessingWithPortsAndControls( const MyProcessingWithPortsAndControlsConfig & cfg )
-	: mInput( "Audio Input", this, 1 ),
-	  mOutput( "Audio Output", this, 1 ),
+	: mInput( "Audio Input", this ),
+	  mOutput( "Audio Output", this ),
 	  mModControl( "Modulation", this )
 {
 	Configure( cfg );
@@ -50,12 +49,12 @@ bool MyProcessingWithPortsAndControls::Do(const Audio & in, Audio & out)
 	return true;
 }
 
-// the automatic Do gets the data from the ports and process it. After this, notify the ports that it is finished (with LeaveData method)
+// the automatic Do gets the data from the ports and process it. After this, notify the ports that it is finished (with Consume and Produce methods)
 bool MyProcessingWithPortsAndControls::Do()
 {
-	bool res = Do( mInput.GetData(), mOutput.GetData() );
-	mInput.LeaveData();
-	mOutput.LeaveData();
+	bool res = Do( mInput.GetAudio(), mOutput.GetAudio() );
+	mInput.Consume();
+	mOutput.Produce();
 	return res;
 }
 

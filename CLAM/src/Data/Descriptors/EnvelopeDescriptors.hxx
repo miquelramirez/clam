@@ -22,8 +22,8 @@
 #ifndef __EnvelopeDescriptors__
 #define __EnvelopeDescriptors__
 
-#include "Flags.hxx"
-#include "DynamicType.hxx"
+
+
 #include "ProcessingData.hxx"
 #include "DataTypes.hxx"
 

@@ -1,6 +1,10 @@
 #ifndef __MpegBitstream__
 #define __MpegBitstream__
 
+#if USE_MAD != 1
+#error USE_MAD was not set to 1 in your settings.cfg file, but you are including files that require this. Please fix your settings.cfg
+#endif
+
 #include <mad.h>
 #include <cstdio>
 #include "DataTypes.hxx"

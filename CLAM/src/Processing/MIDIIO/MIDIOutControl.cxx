@@ -132,7 +132,7 @@ int MIDIOutControl::DoControl(int id,TControlData val)
 		{
 			/* for the first byte, we need to keep the status, and
 			 * modify the channel */
-		    mStatusByte = (mStatusByte&0xF0) | ((unsigned char)(val)-1);
+			mStatusByte = (mStatusByte&0xF0) | ((unsigned char)(val)-1);
 		}else{
 			mMessage[i] = (unsigned char) val;
 		}

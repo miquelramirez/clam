@@ -55,6 +55,20 @@ namespace CLAM
 	AudioFile::~AudioFile()
 	{
 	}
+	
+	void AudioFile::OpenExisting( const std::string& uri )
+	{
+		mLocation = uri;
+		VerifyLocation();
+
+	}
+
+	bool AudioFile::CreateNew( const std::string& uri, const AudioFileHeader& header ) 
+	{
+		mLocation = uri;
+		return SetHeader( header );
+	}
+
 	void AudioFile::ResolveCodec()
 	{
 		mActiveCodec = NULL;
@@ -82,12 +96,6 @@ namespace CLAM
 		}
 		else
 			SetKind( EAudioFileKind::eUnknown );
-	}
-
-	void AudioFile::SetLocation( std::string uri )
-	{
-		mLocation = uri;
-		VerifyLocation();
 	}
 
 	void AudioFile::VerifyLocation()

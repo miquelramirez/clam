@@ -25,7 +25,7 @@
 #include "Processing.hxx"
 #include "DynamicType.hxx"
 #include "Spectrum.hxx"
-
+#include "InControl.hxx"
 
 namespace CLAM {
 

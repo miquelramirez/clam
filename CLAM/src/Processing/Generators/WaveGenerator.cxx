@@ -21,17 +21,9 @@
 
 #include "OSDefines.hxx"
 #include "WaveGenerator.hxx"
-#include "ErrProcessingObj.hxx"
 #include "CLAM_Math.hxx"
 
 namespace CLAM {
-
-	Enum::tEnumValue EWaveType::sEnumValues[] = {
-		{EWaveType::eSine,"Sine wave"},
-		{0,NULL}
-	};
-
-	Enum::tValue EWaveType::sDefault = EWaveType::eSine;
 
 	void WaveGeneratorConfig::DefaultInit()
 	{
@@ -56,13 +48,13 @@ namespace CLAM {
 
 
 	WaveGenerator::WaveGenerator()
-		: Output("Output",this,1)
+		: Output("Output",this)
 	{
 		Configure(WaveGeneratorConfig());
 	};
 
 	WaveGenerator::WaveGenerator(const WaveGeneratorConfig &c)
-		: Output("Output",this,1)
+		: Output("Output",this)
 	{ 
 		Configure(c);
 	};
@@ -81,7 +73,7 @@ namespace CLAM {
 
 		mType = mConfig.GetWaveType();
 		
-		Output.SetParams(mConfig.GetFrameSize());
+		Output.SetSize(mConfig.GetFrameSize());
 
 		return true;
 	}
@@ -108,7 +100,7 @@ namespace CLAM {
 	bool WaveGenerator::Do(void)
 	{
 		bool res = Do(Output.GetData());
-		Output.LeaveData();
+		Output.Produce();
 		return res;
 	}
 

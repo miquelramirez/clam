@@ -25,7 +25,7 @@
 #include "Audio.hxx"
 #include "AudioFileConfig.hxx"
 #include "Processing.hxx"
-#include "InPortTmpl.hxx"
+#include "AudioInPort.hxx"
 
 
 
@@ -43,7 +43,7 @@ namespace CLAM {
 	private:
 
 
-		InPortTmpl<Audio> Input;
+		AudioInPort	mInput;
 
 		const char *GetClassName() const {return "AudioFileOut";}
 
@@ -68,8 +68,6 @@ namespace CLAM {
 		/** Configuration access:
 		 */
 		const ProcessingConfig &GetConfig() const { return mConfig;}
-
-		void Attach(Audio& out) {Input.Attach(out);}
 
 		/** Supervised-mode Do function.
 		 */

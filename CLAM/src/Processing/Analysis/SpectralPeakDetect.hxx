@@ -23,8 +23,8 @@
 #define _SpectralPeakDetect_
 
 #include "Processing.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "SpectralPeakDetectConfig.hxx"
 
 namespace CLAM
@@ -50,8 +50,8 @@ namespace CLAM
 	protected: // attributes
 		SpectralPeakDetectConfig mConfig;
 
-		InPortTmpl< Spectrum >           mInput;
-		OutPortTmpl< SpectralPeakArray > mOutput;
+		InPort< Spectrum >           mInput;
+		OutPort< SpectralPeakArray > mOutput;
 
 	protected: // methods
 		/** This method returns the name of the object
@@ -77,7 +77,6 @@ namespace CLAM
 		/** Destructor of the class*/
  		virtual ~SpectralPeakDetect();
 
-		virtual void Attach( Spectrum& in, SpectralPeakArray& out );
 
 	       /** This method allows to obtain the SpectralPeakDetectConfig object of the class
 		*  @return The configuration of the class

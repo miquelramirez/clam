@@ -61,7 +61,7 @@ void PushFlowControl::DoProcessings()
 		Processing * next = *(toDo.begin()); // the first
 		toDo.pop_front();
 
-		if(next->CanDoUsingPorts())
+		if(next->CanConsumeAndProduce())
 		{
 			next->Do();
 			done.push_back(next);
@@ -84,9 +84,6 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 	     itOutPort!=producer->GetOutPorts().End(); 
 	     itOutPort++)
 	{
-		if (!(*itOutPort)->GetNode())
-			break;
-
 		Network::InPortsList consumers;
 		consumers = mNetwork->GetInPortsConnectedTo( **itOutPort );
 		
@@ -95,36 +92,10 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 		for (itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++)
 		{
 			Processing * proc = (*itInPort)->GetProcessing();
-			if (AreAllProducersExecuted( proc, executed ))
+			if (proc->CanConsumeAndProduce())				
 				toDo.push_back( proc );
 		}
 	}
-}
-
-bool PushFlowControl::AreAllProducersExecuted( Processing * son, std::list<Processing*> & done)
-{
-	PublishedInPorts::Iterator itInPort;
-	for (itInPort=son->GetInPorts().Begin(); 
-	     itInPort!=son->GetInPorts().End(); 
-	     itInPort++)
-	{
-		if (!(*itInPort)->GetNode())
-			break;
-		
-		OutPort * oneWriter = (OutPort*)(*itInPort)->GetNode()->GetWriter();
-		Processing * oneFather = (Processing*)oneWriter->GetProcessing();
-
-		std::list< Processing* >::iterator itProcessingDone;
-		bool isFatherDone = false;
-		for (itProcessingDone=done.begin(); itProcessingDone!=done.end(); itProcessingDone++)
-		{
-				if ((*itProcessingDone) == oneFather)
-					isFatherDone = true;
-		}
-		if (!isFatherDone)
-			return false;
-	}
-	return true;
 }
 
 } // namespace CLAM

@@ -35,14 +35,30 @@
 	} // namespace std
 #endif // MSVC++ 6
 
+#if defined _MSC_VER // MSVC++7
+	namespace std
+	{
+		template <typename T>
+		bool isnan(T data)
+		{
+			return _isnan(data) == 1;
+		}
+		template <typename T>
+		bool isinf(T data)
+		{
+			return _isnan(data) == 1;
+		}
+	}
+#endif // MSVC++ 7
+
 #ifndef __USE_ISOC99
 #ifndef __APPLE__
 inline double  round(double _X)
         {return (floor(_X+0.5)); }
 inline float  round(float _X)
         {return (floorf(_X+0.5f)); }
-#endif
-#endif
+#endif // __APPLE__
+#endif // __USE_ISOC99
 
 
 /** Fast "pow" for converting a logarithmic value into linear value ( assumes a log
@@ -91,7 +107,6 @@ namespace CLAM
 /*Non member function, returns absolute value of class T*/
 template <class T> inline T Abs(T value)
 {
-
 	return ( value < 0 ) ? -value : value;
 }
 
@@ -121,8 +136,6 @@ T CLAM_max(const T& x, const T& y)
 template<class T> inline
 T CLAM_min(const T& x, const T& y)
 	{return (x > y ? y : x); }
-
-
 }
 
 #endif // CLAM_Math.hxx

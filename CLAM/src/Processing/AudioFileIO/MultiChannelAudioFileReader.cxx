@@ -21,6 +21,7 @@
 
 #include "MultiChannelAudioFileReader.hxx"
 #include "AudioCodecs_Stream.hxx"
+#include "AudioOutPort.hxx"
 #include <sstream>
 #include <iostream>
 
@@ -60,6 +61,76 @@ namespace CLAM
 		return mConfig;
 	}
 
+	bool MultiChannelAudioFileReader::Do( std::vector<Audio>& outputs )
+	{
+		typedef std::vector<Audio> OutputVec;
+
+		if ( !AbleToExecute() )
+			return false;
+
+		if ( mEOFReached )
+			return false;
+		
+		// Check all outputs sizes
+		bool allOutputsSameSize = true;
+		
+		TSize sizeTmp = 0;
+
+		// MRJ: We have to keep internally references to
+		// the Audio objects yield by Flow Control, since
+		// the GetData operation not just returns a reference
+		// to writable/readable data, but also performs
+		// several checks ( as well as advancing reading/writing
+		// zones, etc. )
+		// TODO: update this code, because GetData doesn't modifies state anymore
+		
+		sizeTmp = outputs[0].GetSize();	
+		
+		for( OutputVec::iterator i = outputs.begin();
+		     i!= outputs.end(); i++ )
+		  {
+		    allOutputsSameSize = ( sizeTmp == (*i).GetSize() );
+		  }
+
+
+		CLAM_ASSERT( allOutputsSameSize, "Outputs sizes differ!" );
+
+		// build the samples matrix
+
+		int j = 0;
+		for ( OutputVec::iterator i = outputs.begin();
+		      i != outputs.end(); i++ )
+			mSamplesMatrix[ j++ ] = (*i).GetBuffer().GetPtr();
+
+		// read the data
+		
+		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannels().GetPtr(),
+						       mConfig.GetSelectedChannels().Size(),
+						       mSamplesMatrix.GetPtr(),
+						       sizeTmp );
+
+		if ( mNativeStream->WasSomethingRead() )
+		{
+			// Audio 'simple meta-data' setup
+			
+			for ( OutputVec::iterator i = outputs.begin();
+			      i != outputs.end(); i++ )
+			{
+				(*i).SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+				(*i).SetBeginTime( mCurrentBeginTime );
+			}
+			
+			
+			mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
+			mCurrentBeginTime += mDeltaTime;
+			
+		}
+		
+		return mNativeStream->WasSomethingRead();
+
+		
+	}
+
 	bool MultiChannelAudioFileReader::Do()
 	{
 		if ( !AbleToExecute() )
@@ -79,12 +150,13 @@ namespace CLAM
 		// to writable/readable data, but also performs
 		// several checks ( as well as advancing reading/writing
 		// zones, etc. )
+		// TODO: update this code, because GetData doesn't modifies state anymore
 		OutRefsVector outRefs;
 
 		for ( OutputVector::iterator i = mOutputs.begin();
 		      i!= mOutputs.end();
 		      i++ )
-		  outRefs.push_back( &((*i)->GetData()) );
+		  outRefs.push_back( &((*i)->GetAudio()) );
 		
 		
 		sizeTmp = outRefs[0]->GetSize();	
@@ -132,7 +204,7 @@ namespace CLAM
 		for ( OutputVector::iterator i = mOutputs.begin();
 		      i!= mOutputs.end(); i++ )
 		{	
-			(*i)->LeaveData();
+			(*i)->Produce();
 		}
 
 		return mNativeStream->WasSomethingRead();
@@ -144,14 +216,14 @@ namespace CLAM
 
 		if ( !mConfig.HasSourceFile() )			
 		{
-			mStatus = "No 'source file' was specified in the configuration!";
+			AddConfigErrorMessage("No 'source file' was specified in the configuration!");
 
 			return false;
 		}
 
 		if ( !mConfig.GetSourceFile().IsReadable() )
 		{
-			mStatus = "The source file could not be opened!";
+			AddConfigErrorMessage("The source file could not be opened!");
 
 			return false;
 		}
@@ -174,7 +246,7 @@ namespace CLAM
 				sstr << i;
 
 				mOutputs.push_back(
-					new OutPortTmpl<Audio>( "Channel #" + sstr.str() , this, 1  )
+					new AudioOutPort( "Channel #" + sstr.str(), this )
 					);
 
 				channelsToRead[ i ] = i;
@@ -192,9 +264,7 @@ namespace CLAM
 
 			if ( channelsToRead.Size() != mConfig.GetSourceFile().GetHeader().GetChannels() )
 			{
-				mStatus = "There are not so many channels in the source file ";
-				mStatus += "check configuration";
-
+				AddConfigErrorMessage("There are not so many channels in the source file. Check configuration");
 				return false;
 			}
 
@@ -204,7 +274,7 @@ namespace CLAM
 				if ( channelsToRead[i] < 0
 				     || channelsToRead[i] >= maxChannels )
 				{
-					mStatus = "Invalid channel index in configuration!";
+					AddConfigErrorMessage("Invalid channel index in configuration!");
 					return false;
 				}
 				     
@@ -217,7 +287,7 @@ namespace CLAM
 				sstr << channelsToRead[i];
 
 				mOutputs.push_back(
-					new OutPortTmpl<Audio>( "Channel #" + sstr.str(), this, 1 )
+					new AudioOutPort( "Channel #" + sstr.str(), this )
 					);
 			}
 
@@ -229,7 +299,7 @@ namespace CLAM
 
 		if (!mNativeStream )
 		{
-			mStatus = "Could not get a valid audio file stream!";
+			AddConfigErrorMessage("Could not get a valid audio file stream!");
 			return false;
 		}
 
