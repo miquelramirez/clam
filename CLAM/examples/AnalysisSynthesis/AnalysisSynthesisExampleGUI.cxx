@@ -544,7 +544,7 @@ void UserInterface::Transform(void)
 	mAnalysisSynthesisExample->Transform();
 }
 
-void UserInterface::Attach(Fl_Group* canvas)
+void UserInterface::Attach(Fl_Window* canvas)
 {
 /*
 	MyGroup** aux = (MyGroup**) mT->array();
