@@ -88,6 +88,7 @@ namespace NetworkGUI
 		setDockEnabled( mDockProcMenu, Qt::DockTop, false );
 		setDockEnabled( mDockProcMenu, Qt::DockBottom, false );
 
+		mpAboutDlg = new AboutDialog( this, "NetworkEditor_AboutDialog", true );
 
 		ProcessingTree * procTree = new ProcessingTree( mNetwork, mDockProcMenu );
 		mDockProcMenu->setWidget( procTree );
@@ -97,8 +98,7 @@ namespace NetworkGUI
 
 	void MainWindow::ShowAboutDlg()
 	{
-		AboutDialog* aboutDlg = new AboutDialog( this, "NetworkEditor_AboutDialog", true );
-		aboutDlg->show();
+		mpAboutDlg->show();
 	}
 
 	MainWindow::~MainWindow()
