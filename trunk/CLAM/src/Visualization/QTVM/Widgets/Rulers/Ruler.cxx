@@ -15,7 +15,7 @@ namespace CLAM
 	    mFont.setStyleHint(QFont::Courier,QFont::NoAntialias);
 
 	    QFontMetrics font_metrics(mFont);
-	    mMaxLabelWidth = font_metrics.width("999999.99");
+	    mMaxLabelWidth = font_metrics.width("9999999.99");
 	    mLabelHeight = font_metrics.height();
 
 	    if(mPosition==CLAM::VM::Left || mPosition==CLAM::VM::Right) setFixedWidth(mMaxLabelWidth+10);
@@ -84,6 +84,7 @@ namespace CLAM
 
 	    QPainter painter(this);
 	    painter.setPen(pen);
+	    painter.setFont(mFont);
 
 	    int x0 = rect().right()-8;
 	    int x1 = rect().right()-3;
@@ -113,6 +114,7 @@ namespace CLAM
 
 	    QPainter painter(this);
 	    painter.setPen(pen);
+	    painter.setFont(mFont);
 
 	    int x0 = rect().left()+3;
 	    int x1 = rect().left()+8;
@@ -142,6 +144,7 @@ namespace CLAM
 
 	    QPainter painter(this);
 	    painter.setPen(pen);
+	    painter.setFont(mFont);
 
 	    int x0 = rect().left();
 	    int x1;
@@ -172,6 +175,7 @@ namespace CLAM
 
 	    QPainter painter(this);
 	    painter.setPen(pen);
+	    painter.setFont(mFont);
 
 	    int x0 = rect().left();
 	    int x1;
