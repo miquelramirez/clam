@@ -35,10 +35,6 @@ namespace CLAM{
 
 	class SMSFreqShift: public FrameTransformation
 	{
-		
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
@@ -49,7 +45,7 @@ namespace CLAM{
 		{
 			return "SMSFreqShift";
 		}
-		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
+
 		SMSFreqShift() 
 			: 
 			mIn("In SpectralPeaks", this), 
@@ -72,7 +68,6 @@ namespace CLAM{
 
 		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
 
-		// Note that overriding this method breaks the processing chain functionality. 
 		bool Do()
 		{
 			bool result = Do(mIn.GetData(), mOut.GetData());
