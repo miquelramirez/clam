@@ -34,12 +34,12 @@
 
 namespace CLAM {
 
-    class FFT_rfftw;
     class Storage;
     class ProcessingConfig;
     class Audio;
     class Spectrum;
-	
+    class FFT_rfftw;
+
     /** Default FFT implemntation. 
      * In order to use it, only the FFT.hxx file needs to be included;
      * it will include any other necesary header.
@@ -51,16 +51,13 @@ namespace CLAM {
     {
     protected:
 
-	/** Internal output buffer */
-	TData* fftbuffer;
-
 	/** Auxiliary flags structure, used to add the complex attribute. */
 	static SpecTypeFlags mComplexflags;
 
 	/** Auxiliary spectrum used if output spectrum does not have complex array */
 	Spectrum mComplexSpectrum;
 	
-    /** FFT Configuration */
+	/** FFT Configuration */
 	FFTConfig mConfig;
 	/** FFT size */
 	int mSize;
@@ -76,7 +73,7 @@ namespace CLAM {
 	/** I/O Prototype state of the FFT object. */
 	FFTState mState;
 	
-    /** When the object enters "Disabled" mode, it stores the
+	/** When the object enters "Disabled" mode, it stores the
 	 * previoius state here. It would have been easier to use a
 	 * single state variable, and a "Disabled" flag outside of the
 	 * state, but this way we can implement Do()s with a single
@@ -86,6 +83,9 @@ namespace CLAM {
 
 	AudioInPort     mInput;
 	OutPort<Spectrum> mOutput;
+
+	/** Internal output buffer */
+	TData* fftbuffer;
 
 	// Control change callback function
 	void ChangeSize(int n);
