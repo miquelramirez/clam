@@ -210,6 +210,7 @@ namespace CLAM
 	    if(!mMouseOverDisplay)
 	    {
 		mHit = false;
+		mProcessingSelection=false;
 		QCursor acursor(Qt::ArrowCursor);
 		emit cursorChanged(acursor);
 		emit labelsText(QString(""),QString(""));
