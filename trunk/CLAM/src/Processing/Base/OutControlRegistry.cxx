@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2005 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -45,6 +45,16 @@ OutControl& OutControlRegistry::Get(const std::string & name) const
 	CLAM_ASSERT( false, error.c_str() );
 
 	return *(OutControl*)NULL; // Just to get rid of warnings
+}
+
+bool OutControlRegistry::Has(const std::string& name) const
+{
+	ConstIterator it;
+	for (it=mOutControls.begin(); it!=mOutControls.end(); it++)
+		if(name == (*it)->GetName()) 
+			return true;
+
+	return false;
 }
 
 int OutControlRegistry::Size() const

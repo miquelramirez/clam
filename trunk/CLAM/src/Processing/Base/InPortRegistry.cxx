@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2005 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -53,6 +53,16 @@ InPortBase& InPortRegistry::Get(const std::string & name) const
 	CLAM_ASSERT( false, error.c_str() );
 
 	return *(InPortBase*)NULL; // just to get rid of warnings
+}
+
+bool InPortRegistry::Has(const std::string& name) const
+{
+	ConstIterator it;
+	for (it=mInPorts.begin(); it!=mInPorts.end(); it++)
+		if(name == (*it)->GetName()) 
+			return true;
+
+	return false;
 }
 
 int InPortRegistry::Size() const

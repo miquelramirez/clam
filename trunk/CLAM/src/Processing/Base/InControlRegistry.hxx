@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2005 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -38,6 +38,7 @@ public:
 
 	InControl& GetByNumber(int index) const;
 	InControl& Get(const std::string & name) const;
+	bool Has(const std::string& name) const;
 	int Size() const;
 	void Publish(InControl *);
 	void Clear(){ mInControls.clear(); }

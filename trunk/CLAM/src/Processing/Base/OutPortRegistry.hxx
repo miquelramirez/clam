@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2005 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -40,6 +40,7 @@ public:
 
 	OutPortBase & GetByNumber(int index) const;
 	OutPortBase & Get(const std::string & name) const;
+	bool Has(const std::string& name) const;
 	int Size() const;
 	bool AreReadyForWriting();
 	void Publish( OutPortBase * );

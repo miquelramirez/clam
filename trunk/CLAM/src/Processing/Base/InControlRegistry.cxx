@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2005 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -45,6 +45,17 @@ InControl& InControlRegistry::Get(const std::string & name) const
 
 	return *(InControl*)NULL; // just to get rid of warnings
 }
+
+bool InControlRegistry::Has(const std::string& name) const
+{
+	ConstIterator it;
+	for (it=mInControls.begin(); it!=mInControls.end(); it++)
+		if(name == (*it)->GetName()) 
+			return true;
+
+	return false;
+}
+
 std::string InControlRegistry::AvailableNames() const
 {
 	std::string result;

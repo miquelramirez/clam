@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2005 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -53,6 +53,17 @@ OutPortBase & OutPortRegistry::Get(const std::string & name) const
 	
 	return *(OutPortBase*)NULL; // just to get rid of warnings
 }
+
+bool OutPortRegistry::Has(const std::string& name) const
+{
+	ConstIterator it;
+	for (it=mOutPorts.begin(); it!=mOutPorts.end(); it++)
+		if(name == (*it)->GetName()) 
+			return true;
+
+	return false;
+}
+
 int OutPortRegistry::Size() const
 {
 	return mOutPorts.size();
