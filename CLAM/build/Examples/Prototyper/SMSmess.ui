@@ -58,7 +58,7 @@
                         </property>
                         <widget class="CLAM::VM::NetAudioPlot" row="1" column="1">
                             <property name="name">
-                                <cstring>OuPort__SMSSynthesis__OutputAudio</cstring>
+                                <cstring>OutPort__SMSSynthesis__OutputAudio</cstring>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Synthetized Audio</string>
