@@ -21,7 +21,6 @@
 
 #include "Factory.hxx"
 #include "MIDIDispatcher.hxx"
-#include "MyInstrument.hxx"
 
 namespace CLAM 
 {
