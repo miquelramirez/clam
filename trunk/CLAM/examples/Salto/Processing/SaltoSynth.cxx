@@ -28,7 +28,8 @@ void SaltoSynthConfig::DefaultInit(void)
 }
 
 SaltoSynth::SaltoSynth()
-	: mpSynthFrame(NULL), mpCurrPeakArrayTarget(NULL), mpTransitionFrameBase(NULL),
+	: 
+	  mpSynthFrame(NULL), mpCurrPeakArrayTarget(NULL), mpTransitionFrameBase(NULL),
 	  mpTransitionFrameTarget(NULL), mpCurrSpectralFrameBase(NULL),	mpCurrSpectralFrameResidual(NULL),
 	  mEventSample(0), mLoopStart(0), mLoopEnd(0),
 	  mLimitLoopStart(0), mLimitLoopEnd(0), mInterpolEnd(0), mInterpolStart(0),	mResFadeStart(0), mResFadeEnd(0),
@@ -39,7 +40,7 @@ SaltoSynth::SaltoSynth()
 	  mIndividualGain(50.0), mLastPitchCorrectionFactor(0),
 	  mState( Idle ), mSampleStepping( 0 ),
 	  mStateIn( "StateIn", this, &SaltoSynth::UpdateState ),
-  	  mInLastAlignedFrame( "Last Aligned Frame InControl", this, &SaltoSynth::UpdateLastAlignedFrame ),
+	  mInLastAlignedFrame( "Last Aligned Frame InControl", this, &SaltoSynth::UpdateLastAlignedFrame ),
 	  mInBreathOnlySound( "Breath Only Sound InControl", this, &SaltoSynth::UpdateBreathOnlySound ),
 	  mOut_InLoopSynthesis( "In Loop Synthesis", this ),
 	  mOutUseRandomLoop( "Use Random Loop", this ),
@@ -51,7 +52,7 @@ SaltoSynth::SaltoSynth()
 	  mOutMagGain( "Magnitude Gain", this ),
 	  mOutFreqInterpolFactor( "Frequency Interpolation Factor", this ),
 	  mOutMagInterpolFactor2( "Magnitude Interpolation Factor", this ),
-  	  mOutBreathOnlySound( "Breath Only Sound Out Control", this ),
+	  mOutBreathOnlySound( "Breath Only Sound Out Control", this ),
 	  mOutAttackTimbreLevel( "Attack Timbre Level Out Control", this ),
 	  mOutUsePhaseAlignment( "Use Phase Alignment Out Control", this ),
 	  mOutLastAlignedFrame( "Last Aligned Frame Out Control", this ),

@@ -76,7 +76,7 @@ public:
 
 	virtual ~SineSynthesis();
 
-	virtual const char* GetClassName()
+	const char* GetClassName() const
 	{
 		return "SALTO::SineSynthesis";
 	}

@@ -42,7 +42,7 @@ namespace SALTO
 
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
-		virtual const char* GetClassName()
+		const char* GetClassName() const
 		{
 			return " SALTO::SynthesisProcessor ";
 		}
