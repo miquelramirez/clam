@@ -22,7 +22,6 @@
 #include "Complex.hxx"
 #include "SpecTypeFlags.hxx"
 #include "SpectrumInterpolator.hxx"
-#include "ErrProcessingObj.hxx"
 #include "BPF.hxx"
 #include "Point.hxx"
 
@@ -37,9 +36,9 @@ namespace CLAM {
 
 	SpectrumInterpolator::SpectrumInterpolator()
 		: mSize(0),
-		  mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
+		  mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
 		  mProtoState(SOther),
 		  mInterpolationFactorCtl("InterpolationFactor",this)
 	{
@@ -48,9 +47,9 @@ namespace CLAM {
 
 	SpectrumInterpolator::SpectrumInterpolator(const SpecInterpConfig &c)
 		: mSize(0),
-		  mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
+		  mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
 		  mProtoState(SOther),
 		  mInterpolationFactorCtl("InterpolationFactor",this)
 	{

@@ -67,13 +67,7 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			char* pathToTestData = getenv("CLAM_TEST_DATA");
-
-			if ( !pathToTestData )
-				mPathToTestData ="../../../../../CLAM-TestData/"; 
-			else
-				mPathToTestData = pathToTestData;
-
+			mPathToTestData = GetTestDataDirectory("spectralData/");
 		}
 
 		void tearDown()
@@ -85,7 +79,7 @@ namespace CLAMTest
 		void testConfigure_ReturnsTrueWithJustFilename()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "Elvis.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
 
@@ -112,7 +106,7 @@ namespace CLAMTest
 		void testConfigure_ReturnsTrueWhenFileExists()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
 
@@ -126,7 +120,7 @@ namespace CLAMTest
 		void testConfigure_ReturnsFalseWhenFileDoesNotExist()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile-false.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile-false.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
 
@@ -140,7 +134,7 @@ namespace CLAMTest
 		void  testConfigure_DefaultChannelSelection_ChannelsOK()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
 
@@ -173,7 +167,7 @@ namespace CLAMTest
 		void testConfigure_DefaultChannelSelection_PortNumberIsOK()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
 
@@ -191,7 +185,7 @@ namespace CLAMTest
 		void testConfigure_ManualChannelSelection_ChannelsOK()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.AddSelectedChannels();
 			cfg.UpdateData();
@@ -230,7 +224,7 @@ namespace CLAMTest
 		void testConfigure_ManualChannelSelection_PortNumberIsOK()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 
@@ -257,7 +251,7 @@ namespace CLAMTest
 		void testConfigure_ReturnsFalse_ManualChannelSelection_TooMany()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.AddSelectedChannels();
 			cfg.UpdateData();
@@ -280,7 +274,7 @@ namespace CLAMTest
 		void testConfigure_ReturnsFalse_ManualChannelSelection_InvalidChannel()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.AddSelectedChannels();
 			cfg.UpdateData();
@@ -303,7 +297,7 @@ namespace CLAMTest
 		void testDo_PCM_JustOneFrame ()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -337,7 +331,7 @@ namespace CLAMTest
 		void testDo_PCM_JustTwoFrames()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -403,7 +397,7 @@ namespace CLAMTest
 		void testDo_JustOneFrame_SampleRateIsOK()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -434,7 +428,7 @@ namespace CLAMTest
 		void testDo_JustTwoFrames_BeginTimesAreOK()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "StereoTestFile.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -485,7 +479,7 @@ namespace CLAMTest
 		void testDo_OggVorbis_JustOneFrame ()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
+			file.OpenExisting( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -519,7 +513,7 @@ namespace CLAMTest
 		void testDo_OggVorbis_JustTwoFrames()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
+			file.OpenExisting( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -591,10 +585,18 @@ namespace CLAMTest
 		void test_MpegAudioFiles_128kbps_44kHz_AreDecoded_OK()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-128_44.mp3" ) );
+
+			inputFile.OpenExisting( mPathToTestData + "trumpet.wav");
+			CLAM_ASSERT( inputFile.IsReadable(), "collons, amb wav tampoc");
+			
+			inputFile.OpenExisting(std::string(mPathToTestData+"test-stereo-decoding-128_44.mp3"));
+			CLAM_ASSERT( inputFile.IsReadable(), "absolute path to : test-stereo-decoding-128_44.mp3" );
+
+			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-128_44.mp3" ) );
+			CLAM_ASSERT( inputFile.IsReadable(), "can't find: test-stereo-decoding-128_44.mp3" );
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "test-mp3-128-44.wav" );			
+			outputFile.OpenExisting( "test-mp3-128-44.wav" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
@@ -602,14 +604,12 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-128-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -653,7 +653,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "test-mp3-128-44.wav" );
+			inputFile.OpenExisting( "test-mp3-128-44.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -762,25 +762,22 @@ namespace CLAMTest
 		void test_MpegAudioFiles_192kbps_44kHz_AreDecoded_OK()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-192_44.mp3" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-192_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "test-mp3-192-44.wav" );			
+			outputFile.OpenExisting( "test-mp3-192-44.wav" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
-					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-192-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -823,7 +820,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "test-mp3-192-44.wav" );
+			inputFile.OpenExisting( "test-mp3-192-44.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -933,10 +930,10 @@ namespace CLAMTest
 		void test_MpegAudioFiles_64kbps_44kHz_AreDecoded_OK()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-64_44.mp3" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-64_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "test-mp3-64-44.wav" );			
+			outputFile.OpenExisting( "test-mp3-64-44.wav" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
@@ -944,14 +941,12 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-64-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -994,7 +989,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "test-mp3-64-44.wav" );
+			inputFile.OpenExisting( "test-mp3-64-44.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -1103,25 +1098,22 @@ namespace CLAMTest
 		void test_MpegAudioFiles_320kbps_44kHz_AreDecoded_OK()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-320_44.mp3" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-320_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "test-mp3-320-44.wav" );			
+			outputFile.OpenExisting( "test-mp3-320-44.wav" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
-	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-320-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -1164,7 +1156,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "test-mp3-320-44.wav" );
+			inputFile.OpenExisting( "test-mp3-320-44.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -1273,10 +1265,10 @@ namespace CLAMTest
 		void test_MpegAudioFiles_LowVBR_44kHz_AreDecoded_OK()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-LowVBR_44.mp3" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-LowVBR_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "test-mp3-LowVBR-44.wav" );			
+			outputFile.OpenExisting( "test-mp3-LowVBR-44.wav" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
@@ -1284,14 +1276,12 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-LowVBR-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -1334,7 +1324,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "test-mp3-LowVBR-44.wav" );
+			inputFile.OpenExisting( "test-mp3-LowVBR-44.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -1443,10 +1433,11 @@ namespace CLAMTest
 		void test_MpegAudioFiles_HighVBR_44kHz_AreDecoded_OK()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-HighVBR_44.mp3" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-HighVBR_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "test-mp3-HighVBR-44.wav" );			
+			outputFile.OpenExisting( "test-mp3-HighVBR-44.wav" );			
+>>>>>>> 1.1.4.10
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
@@ -1454,14 +1445,12 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-HighVBR-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -1504,7 +1493,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "test-mp3-HighVBR-44.wav" );
+			inputFile.OpenExisting( "test-mp3-HighVBR-44.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
@@ -1614,10 +1603,10 @@ namespace CLAMTest
 		void test_MpegAudioFiles_AvgVBR_44kHz_AreDecoded_OK()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "test-stereo-decoding-AvgVBR_44.mp3" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-AvgVBR_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "test-mp3-AvgVBR-44.wav" );			
+			outputFile.OpenExisting( "test-mp3-AvgVBR-44.wav" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
@@ -1625,14 +1614,12 @@ namespace CLAMTest
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "test-mp3-AvgVBR-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MultiChannelAudioFileReader procReader;
@@ -1675,7 +1662,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.SetLocation( "test-mp3-AvgVBR-44.wav" );
+			inputFile.OpenExisting( "test-mp3-AvgVBR-44.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 

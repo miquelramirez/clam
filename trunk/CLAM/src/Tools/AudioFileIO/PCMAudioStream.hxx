@@ -22,6 +22,10 @@
 #ifndef __PCMAudioStream__
 #define __PCMAudioStream__
 
+#if USE_SNDFILE != 1
+#error USE_SNDFILE was not set to 1 in your settings.cfg file, but you are including files that require this. Please fix your settings.cfg
+#endif
+
 #include "AudioCodecs_Stream.hxx"
 #include <sndfile.h>
 #include <string>

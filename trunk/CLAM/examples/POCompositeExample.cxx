@@ -57,9 +57,9 @@ class BigProcessing : public ProcessingComposite {
 	// And the interfaces with the outside world.
 
 	/** Global input port */
-	InPortTmpl<Audio> InputAudio;
+	AudioInPort InputAudio;
 	/** Global output port */
-	OutPortTmpl<Audio> OutputAudio;
+	AudioInPort OutputAudio;
 
 	// Internal convenience methods.
 
@@ -97,16 +97,16 @@ void BigProcessing::AdoptChildren()
 }
 
 BigProcessing::BigProcessing() :
-	InputAudio("Input Audio",this,1),
-	OutputAudio("Output Audio",this,1)
+	InputAudio("Input Audio",this),
+	OutputAudio("Output Audio",this)
 {
 	AdoptChildren();
 	Configure(BigConfiguration());
 }
 
 BigProcessing::BigProcessing(BigConfiguration& cfg) :
-	InputAudio("Input Audio",this,1),
-	OutputAudio("Output Audio",this,1)
+	InputAudio("Input Audio",this),
+	OutputAudio("Output Audio",this)
 {
 	AdoptChildren();
 	Configure(cfg);

@@ -26,8 +26,8 @@
 #include <typeinfo> // for bad_cast definition
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "AudioOutPort.hxx"
 #include "DataTypes.hxx"
 
 
@@ -62,8 +62,8 @@ namespace CLAM {
 	/** IFFT size */
 	int mSize;
 
-	InPortTmpl<Spectrum> mInput;
-	OutPortTmpl<Audio>   mOutput;
+	InPort<Spectrum> mInput;
+	AudioOutPort   mOutput;
 
 	// Control change callback function
 	void ChangeSize(int n);
@@ -87,12 +87,10 @@ namespace CLAM {
 	 */
 	virtual bool Do(void) = 0;
 
-	virtual void Attach(Spectrum& in, Audio &out) = 0;
-
 	/** Standard IFFT Do function, with storage class references as
 	 * arguments. This method implements the old conversor routines.
 	 */
-	virtual bool Do(Spectrum& in, Audio &out) const = 0;
+	virtual bool Do(const Spectrum& in, Audio &out) const = 0;
 
 	// Input/Output configuration methods
 

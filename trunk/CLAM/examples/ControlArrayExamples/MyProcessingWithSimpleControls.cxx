@@ -46,8 +46,8 @@ void MyProcessingWithSimpleControls::InitAInControlArray()
 
 MyProcessingWithSimpleControls::MyProcessingWithSimpleControls() :
 	// init single in controls
-	cSingleControl ("CSingleControl", this, SimpleCallback),
-	dSingleControl ("CSingleControl", this,	SimpleCallback)
+	cSingleControl ("CSingleControl", this, &MyProcessingWithSimpleControls::SimpleCallback),
+	dSingleControl ("CSingleControl", this,	&MyProcessingWithSimpleControls::SimpleCallback)
 {
 	
 	// init sub POs transformation

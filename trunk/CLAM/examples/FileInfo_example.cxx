@@ -33,7 +33,7 @@ int main( int argc, char** argv )
 	// program ) as the 'File Location'
 
 	CLAM::AudioFile  file;
-	file.SetLocation( argv[1] );
+	file.OpenExisting( argv[1] );
 
 	// Once set the location, the AudioFile object internally does several things:
 	//   + It checks that the file exists and is readable ( it conforms to one of

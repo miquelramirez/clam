@@ -30,7 +30,7 @@
 #include "Processing.hxx"
 #include "WindowGeneratorConfig.hxx"
 #include "Array.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioOutPort.hxx"
 
 namespace CLAM {
 
@@ -120,7 +120,7 @@ class ProcessingConfig;
 		}
 
 	protected:
-		OutPortTmpl< Audio >  mOutput;
+		AudioOutPort  mOutput;
 
 	private:
 		InControl   mSize;
@@ -142,6 +142,8 @@ class ProcessingConfig;
 		void Triangular(long size,DataArray& window) const;
 		void BlackmanHarris92TransMainLobe(long size,DataArray& window) const;
 		void Gaussian(long size,DataArray& window) const;
+	        void Sine(long size,DataArray& window) const;
+	  
 		void InvertWindow(const DataArray& originalWindow,
 		                  DataArray& invertedWindow) const;
 		void InvertWindow(DataArray& window) const;

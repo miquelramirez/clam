@@ -7,15 +7,30 @@
 #include <ladspa.h>
 #include <dlfcn.h>
 #include <string>
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
-#include "InControl.hxx"
-#include "OutControl.hxx"
-#include "Audio.hxx"
 #include "Filename.hxx"
 
 namespace CLAM
 {
+	class AudioInPort;
+	class AudioOutPort;
+	class InControl;
+	class OutControl;
+
+/**
+ * This class is a helper provided to know which plugins are located inside a shared object.
+ */
+class LadspaPluginExaminer
+{
+public:
+	typedef std::list< std::string > NamesList;
+
+	LadspaPluginExaminer( const std::string & library );
+	NamesList::iterator BeginDescriptors(){return mDescriptorsList.begin();}
+	NamesList::iterator EndDescriptors(){return mDescriptorsList.end();}
+	int GetIndex( const std::string & descriptor );
+private:
+	NamesList mDescriptorsList;
+};
 
 class LadspaLoaderConfig : public ProcessingConfig
 {
@@ -45,10 +60,8 @@ class LadspaLoader : public Processing
 	const LADSPA_Descriptor * mDescriptor;
 	SOPointer mSharedObject;
 
-	std::vector<Audio> mInputAudio;
-	std::vector<Audio> mOutputAudio;
-	std::vector< InPortTmpl<Audio>* > mInputPorts;
-	std::vector< OutPortTmpl<Audio>* > mOutputPorts;
+	std::vector< AudioInPort* > mInputPorts;
+	std::vector< AudioOutPort* > mOutputPorts;
 
 	std::vector< InControl* > mInputControls;
 	std::vector< OutControl* > mOutputControls;
@@ -56,6 +69,8 @@ class LadspaLoader : public Processing
 	std::vector< LADSPA_Data > mOutputControlValues;
 
 	void ConfigurePortsAndControls();
+	void RemovePortsAndControls();
+	void UpdatePointers();
 	
 public:
 	LadspaLoader();

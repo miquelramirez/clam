@@ -3,6 +3,7 @@
 
 #include "InControl.hxx"
 #include "TransformationDummy.hxx"
+#include "Processing.hxx"
 
 #include <vector>
 #include <iostream>
@@ -14,7 +15,7 @@ namespace CLAM
  * This is just a dummy class for playing with with arrays of controls.
  * In this case we'll use a std container of simple InControls.
  */
-class MyProcessingWithSimpleControls
+class MyProcessingWithSimpleControls : public Processing
 {
 public:
 	enum { eVoice0=0, eVoice1, eVoice2, eVoice3, eVoice4 };
@@ -41,6 +42,10 @@ public:
 	MyProcessingWithSimpleControls();
 	virtual ~MyProcessingWithSimpleControls();
 
+	bool Do(){return 0;}
+	const ProcessingConfig& GetConfig() const {throw 0;}
+	const char* GetClassName() const {return "MyProcessingWithControlArray";}
+	bool ConcreteConfigure(const ProcessingConfig& c) {return true;}
 private:
 	void InitChildrenPOs();
 	void InitAInControlArray();
@@ -71,3 +76,4 @@ private:
 }; //namespace
 
 #endif
+

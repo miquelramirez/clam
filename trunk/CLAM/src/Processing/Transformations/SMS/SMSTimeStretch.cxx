@@ -163,7 +163,7 @@ Frame& SMSTimeStretch::UnwrapProcessingData(Segment& out,Frame*)
 
 bool SMSTimeStretch::HaveFinished()
 {
-	return mCurrentInputFrame>mInput.GetData().GetnFrames();
+	return mCurrentInputFrame>mInput->GetnFrames();
 }
 
 bool SMSTimeStretch::IsLastFrame()
@@ -171,9 +171,9 @@ bool SMSTimeStretch::IsLastFrame()
 	bool isLast=HaveFinished();
 	if(isLast)
 	{
-		while(mOutput.GetData().GetnFrames()>mnSynthesisFrames-1)
+		while(mOutput->GetnFrames()>mnSynthesisFrames-1)
 		{
-			mOutput.GetData().DeleteFrame(mOutput.GetData().GetnFrames()-1);
+			mOutput->DeleteFrame(mOutput->GetnFrames()-1);
 		}
 	}
 	return isLast;

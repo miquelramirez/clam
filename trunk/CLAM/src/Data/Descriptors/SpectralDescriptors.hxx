@@ -25,7 +25,7 @@
 
 #include "Array.hxx"
 #include "Descriptor.hxx"
-
+#include "Spectrum.hxx"
 
 /*
  * This class holds Descriptors computed from Spectral data 
@@ -35,56 +35,88 @@
 
 namespace CLAM {
 
-	class Spectrum;
-
-	class SpectralDescriptors : public Descriptor {
+  	class SpectralDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 27, Descriptor);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 21, Descriptor);
 		
+		/** The spectral power mean value.
+		 *  The unit of this measure can be dB
+		 *  or none, depending on the scale set for the
+		 *  measured Spectrum object.
+		 *  @see Spectrum::SetScale
+		 *  @see EScale
+		 *  @see Stats::GetMean
+		 */
 		DYN_ATTRIBUTE (0, public, TData, Mean);
+		/**
+		 * The geometric mean for the spectral power values sequence.
+		 * See <a href="http://mathworld.wolfram.com/GeometricMean.html">this</a> for a definition of
+		 * this pythagorean mean. Note that computing this measurement over long sequences of
+		 * small real numbers ( as the ones one usually founds in spectral power distributions derived
+		 * of audio windowed with a normalized window function ) pose a numerical problem. To avoid
+		 * this, computation of Geometric mean is restricted to Log scale Spectral Power Distributions 
+		 * since this allows to change the product for a summation.
+		 *
+		 * This measure is expressed in dBs.
+		 * @see Stats::GetGeometricMean
+		 */
 		DYN_ATTRIBUTE (1, public, TData, GeometricMean);
+		/**
+		 *  The squared sum of spectral power distribution values.
+		 *  This measure comes in the same units as the distribution
+		 *  values.
+		 *  @see Stats::GetEnergy
+		 */
 		DYN_ATTRIBUTE (2, public, TData, Energy);
+		/**
+		 *  The frequency where the center of mass of the spectral power
+		 *  distribution lies.
+		 *  This measure is expressed in Hz.
+		 * 
+		 *  @see Stats::GetCentroid
+		 */
 		DYN_ATTRIBUTE (3, public, TData, Centroid);
 		DYN_ATTRIBUTE (4, public, TData, Moment2);
 		DYN_ATTRIBUTE (5, public, TData, Moment3);
 		DYN_ATTRIBUTE (6, public, TData, Moment4);
 		DYN_ATTRIBUTE (7, public, TData, Moment5);
 		DYN_ATTRIBUTE (8, public, TData, Moment6);
-		DYN_ATTRIBUTE (9, public, TData, Irregularity);
-		DYN_ATTRIBUTE (10,public, TData, Tilt);
-		DYN_ATTRIBUTE (11,public, TData, Flatness);
-		DYN_ATTRIBUTE (12,public, TData, Kurtosis);
-		DYN_ATTRIBUTE (13,public, TData, StrongPeak);
-		DYN_ATTRIBUTE (14,public, TData, HFC);
-		DYN_ATTRIBUTE (15,public, Array<TData>, MFCC);
-		DYN_ATTRIBUTE (16,public, Array<TData>, BandEnergy);
-		DYN_ATTRIBUTE (17,public, TData, MaxMagFreq); 
-		/** Frequency of the maximun of the spectrum normalized by the spectral range */
-		DYN_ATTRIBUTE (18,public, TData, LowFreqEnergyRelation); 
+		DYN_ATTRIBUTE (9, public, TData, Flatness);
+		DYN_ATTRIBUTE (10,public, TData, MagnitudeKurtosis);
+		DYN_ATTRIBUTE (11,public, Array<TData>, MFCC);
+		DYN_ATTRIBUTE (12,public, TData, MaxMagFreq); 
+		/**
+		 * Frequency of the maximum magnitude of the spectrum 
+		 * normalized by the spectral range
+		 */
+		DYN_ATTRIBUTE (13,public, TData, LowFreqEnergyRelation); 
 		/**
 		 * The spectral spread is the variation of the spectrum
 		 * around its mean value. It's computed from the second
 		 * order moment.
 		 */
-		DYN_ATTRIBUTE (19,public, TData, Spread);
-		DYN_ATTRIBUTE (20,public, TData, Skewness);
+		DYN_ATTRIBUTE (14,public, TData, Spread);
+		DYN_ATTRIBUTE (15,public, TData, MagnitudeSkewness);
 		/**
-		 * The spectral roll-off point is the frequency so that 85%
-		 * of the signal energy is contained below this
-		 * frequency. Returns -1 if the rolloff point can't be
-		 * found. Measured in Hz.
+		 * The spectral roll-off point is the frequency value 
+		 * so that the 85% of the spectral energy is contained below 
+		 * it. For silences this is 0Hz. Measured in Hz.
+		 *
+		 * \f[
+		 * Rolloff / \sum_{f=0}^{RollOff} {a_f^2} = 0.85 \times \sum_{f=0}^{SpectralRange} {a_f^2}
+		 * \f]
 		 */
-		DYN_ATTRIBUTE (21,public, TData, Rolloff); 
+		DYN_ATTRIBUTE (16,public, TData, Rolloff); 
 		/**
 		 * The spectral slope represents the amount of decreasing of
 		 * the spectral magnitude. Measured in ??.
+		 * @see Stats::Slope
 		 */
-	    DYN_ATTRIBUTE (22,public, TData, Slope); 
-		DYN_ATTRIBUTE (23,public, TData, HighFrequencyCoefficient);
-		DYN_ATTRIBUTE (24,public, Array<SpectralDescriptors>, BandDescriptors);
+		DYN_ATTRIBUTE (17,public, TData, Slope); 
+		DYN_ATTRIBUTE (18,public, TData, HighFrequencyCoefficient);
+		DYN_ATTRIBUTE (19,public, Array<SpectralDescriptors>, BandDescriptors);
 
-		DYN_ATTRIBUTE (25,public, Array<TData>,PCP);
-		DYN_ATTRIBUTE (26, public, Array<TData>,MFCCDerivative);
+		DYN_ATTRIBUTE (20,public, Array<TData>,PCP);
 
 	public:
 		SpectralDescriptors(Spectrum* pSpectrum);
@@ -98,7 +130,6 @@ namespace CLAM {
 		void DefaultInit();
 		void CopyInit(const SpectralDescriptors & copied);
 		
-		TData ComputeSpectralTilt();
 		TData ComputeSpectralFlatness();
 		TData ComputeHighFrequencyCoefficient();
 		TData ComputeMaxMagFreq();
@@ -108,10 +139,9 @@ namespace CLAM {
 		TData ComputeSlope();
 
 	private:
-		Spectrum* mpSpectrum;
-		
+		const Spectrum* mpSpectrum;
 		/** Conversion from index to frequency, needed for many descriptors */
-		TData mDeltaFreq;
+		double mDeltaFreq; // double because a lot of computations depends on its precission
 };
 
 SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult);
@@ -169,35 +199,15 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 		if(b.GetMoment6()>a.GetMoment6())
 			tmpD.SetMoment6(b.GetMoment6());
 	}
-	if(a.HasIrregularity() && b.HasIrregularity() )
-	{
-		if(b.GetIrregularity()>a.GetIrregularity())
-			tmpD.SetIrregularity(b.GetIrregularity());
-	}
-	if(a.HasTilt() && b.HasTilt() )
-	{
-		if(b.GetTilt()>a.GetTilt())
-			tmpD.SetTilt(b.GetTilt());
-	}
 	if(a.HasFlatness() && b.HasFlatness() )
 	{
 		if(b.GetFlatness()>a.GetFlatness())
 			tmpD.SetFlatness(b.GetFlatness());
 	}
-	if(a.HasKurtosis() && b.HasKurtosis() )
+	if(a.HasMagnitudeKurtosis() && b.HasMagnitudeKurtosis() )
 	{
-		if(b.GetKurtosis()>a.GetKurtosis())
-			tmpD.SetKurtosis(b.GetKurtosis());
-	}
-	if(a.HasStrongPeak() && b.HasStrongPeak() )
-	{
-		if(b.GetStrongPeak()>a.GetStrongPeak())
-			tmpD.SetStrongPeak(b.GetStrongPeak());
-	}
-	if(a.HasHFC() && b.HasHFC() )
-	{
-		if(b.GetHFC()>a.GetHFC())
-			tmpD.SetHFC(b.GetHFC());
+		if(b.GetMagnitudeKurtosis()>a.GetMagnitudeKurtosis())
+			tmpD.SetMagnitudeKurtosis(b.GetMagnitudeKurtosis());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{
@@ -214,10 +224,10 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 		if(b.GetSpread()>a.GetSpread())
 			tmpD.SetSpread(b.GetSpread());
 	}
-	if(a.HasSkewness() && b.HasSkewness() )
+	if(a.HasMagnitudeSkewness() && b.HasMagnitudeSkewness() )
 	{
-		if(b.GetSkewness()>a.GetSkewness())
-			tmpD.SetSkewness(b.GetSkewness());
+		if(b.GetMagnitudeSkewness()>a.GetMagnitudeSkewness())
+			tmpD.SetMagnitudeSkewness(b.GetMagnitudeSkewness());
 	}
 	if(a.HasRolloff() && b.HasRolloff() )
 	{
@@ -247,13 +257,6 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 		if(b.GetMFCC()>a.GetMFCC())
 			tmpD.SetMFCC(b.GetMFCC());*/
 	}
-	if(a.HasBandEnergy() && b.HasBandEnergy() )
-	{
-		/* Array does not have these operators
-		if(b.GetBandEnergy()>a.GetBandEnergy())
-			tmpD.SetBandEnergy(b.GetBandEnergy());*/
-	}
-		
 	return tmpD;
 
 }
@@ -307,35 +310,15 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 		if(b.GetMoment6()<a.GetMoment6())
 			tmpD.SetMoment6(b.GetMoment6());
 	}
-	if(a.HasIrregularity() && b.HasIrregularity() )
-	{
-		if(b.GetIrregularity()<a.GetIrregularity())
-			tmpD.SetIrregularity(b.GetIrregularity());
-	}
-	if(a.HasTilt() && b.HasTilt() )
-	{
-		if(b.GetTilt()<a.GetTilt())
-			tmpD.SetTilt(b.GetTilt());
-	}
 	if(a.HasFlatness() && b.HasFlatness() )
 	{
 		if(b.GetFlatness()<a.GetFlatness())
 			tmpD.SetFlatness(b.GetFlatness());
 	}
-	if(a.HasKurtosis() && b.HasKurtosis() )
+	if(a.HasMagnitudeKurtosis() && b.HasMagnitudeKurtosis() )
 	{
-		if(b.GetKurtosis()<a.GetKurtosis())
-			tmpD.SetKurtosis(b.GetKurtosis());
-	}
-	if(a.HasStrongPeak() && b.HasStrongPeak() )
-	{
-		if(b.GetStrongPeak()<a.GetStrongPeak())
-			tmpD.SetStrongPeak(b.GetStrongPeak());
-	}
-	if(a.HasHFC() && b.HasHFC() )
-	{
-		if(b.GetHFC()<a.GetHFC())
-			tmpD.SetHFC(b.GetHFC());
+		if(b.GetMagnitudeKurtosis()<a.GetMagnitudeKurtosis())
+			tmpD.SetMagnitudeKurtosis(b.GetMagnitudeKurtosis());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{
@@ -352,10 +335,10 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 		if(b.GetSpread()<a.GetSpread())
 			tmpD.SetSpread(b.GetSpread());
 	}
-	if(a.HasSkewness() && b.HasSkewness() )
+	if(a.HasMagnitudeSkewness() && b.HasMagnitudeSkewness() )
 	{
-		if(b.GetSkewness()<a.GetSkewness())
-			tmpD.SetSkewness(b.GetSkewness());
+		if(b.GetMagnitudeSkewness()<a.GetMagnitudeSkewness())
+			tmpD.SetMagnitudeSkewness(b.GetMagnitudeSkewness());
 	}
 	if(a.HasRolloff() && b.HasRolloff() )
 	{
@@ -384,13 +367,7 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 		if(b.GetMFCC()<a.GetMFCC())
 			tmpD.SetMFCC(b.GetMFCC());*/
 	}
-	if(a.HasBandEnergy() && b.HasBandEnergy() )
-	{
-		/* Array does not have these operators
-		if(b.GetBandEnergy()<a.GetBandEnergy())
-			tmpD.SetBandEnergy(b.GetBandEnergy());*/
-	}
-		
+
 	return tmpD;
 
 }

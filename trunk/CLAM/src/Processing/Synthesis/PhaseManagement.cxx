@@ -2,32 +2,10 @@
 #include "Err.hxx"
 #include "SpectralPeakArray.hxx"
 
-using namespace CLAM;
-
-Enum::tEnumValue EPhaseGeneration::sEnumValues[] = {
-		{EPhaseGeneration::eAlign,"Align"},
-		{EPhaseGeneration::eRandom,"Random"},
-		{EPhaseGeneration::eContinuation,"Continuation"},
-		{0,NULL}
-	};
-
-Enum::tValue EPhaseGeneration::sDefault = EPhaseGeneration::eAlign;
-
-void PhaseManagementConfig::DefaultInit()
+namespace CLAM
 {
-	AddSamplingRate();
-	AddMaxSines();
-	AddType();
-	UpdateData();
-	DefaultValues();
-}
 
-void PhaseManagementConfig::DefaultValues()
-{
-	SetSamplingRate(44100);
-	SetMaxSines(100);
-	SetType(EPhaseGeneration::eContinuation);
-}
+
 
 PhaseManagement::PhaseManagement():
 	mCurrentTime("CurrentTime",this),mCurrentPitch("CurrentPitch",this)
@@ -302,5 +280,6 @@ PhaseManagement::SetLastPhasesAndFreqs(SpectralPeakArray& peakArray)
 	mLastPeakArray.SetIsIndexUpToDate(true);
 
 }
-//----------------------------------------------------------------------------//
-//----------------------------------------------------------------------------//
+
+} // namespace CLAM
+

@@ -22,7 +22,6 @@
 
 #include "IFFT.hxx"
 #include <string>
-#include "ErrProcessingObj.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 
@@ -37,8 +36,8 @@ namespace CLAM {
 
 	IFFT_base::IFFT_base() :
 		mSize(CLAM_DEFAULT_IFFT_SIZE),
-		mInput("Input",this,1),
-		mOutput("Output",this,1)
+		mInput("Spectrum Input",this),
+		mOutput("Audio Output",this)
 	{
 	}
 
@@ -52,7 +51,4 @@ namespace CLAM {
 
 		CLAM_ASSERT(false,"Controls not yet implemented.");
 	}
-
-
-
 }

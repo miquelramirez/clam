@@ -30,7 +30,6 @@
  */
 
 #include "XMLAdapter.hxx"
-#include "XMLStaticAdapter.hxx"
 #include "XMLArrayAdapter.hxx"
 #include "XMLComponentAdapter.hxx"
 #include "XMLIterableAdapter.hxx"
@@ -301,32 +300,6 @@ public:
 	}
 };
 
-/**
- * A Component that is a test case for testing XMLStaticAdapters of
- * some basic types.
- * This one is much like the SimpleAdapterTestCase but the
- * Store procedure use static adapters.
- * @attention Static adapters cannot be uses for loading so we use
- * the non static adapters for this purpose.
- */
-class StaticAdapterTestCase : public SimpleAdapterTestCase {
-public:
-	StaticAdapterTestCase() : SimpleAdapterTestCase() {}
-	StaticAdapterTestCase(bool b) : SimpleAdapterTestCase(b) {}
-	static char * kind() {return "Simple type Static Adapter";}
-	void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
-		CLAM_ASSERT(!(asContent && asElement),
-			"Testing logic calling in AdaptToStore");
-		XMLStaticAdapter intAdapter(i, asContent?0:"myInt", asElement);
-		storer.Store(intAdapter);
-		XMLStaticAdapter doubleAdapter(d, asContent?0:"myDouble", asElement);
-		storer.Store(doubleAdapter);
-		XMLStaticAdapter charAdapter(c, asContent?0:"myChar", asElement);
-		storer.Store(charAdapter);
-		XMLStaticAdapter strAdapter(s, asContent?0:"myString", asElement);
-		storer.Store(strAdapter);
-	}
-};
 
 /**
  * A Component that is a test case for testing IterableAdapters of
@@ -356,7 +329,8 @@ public:
 	void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
 		CLAM_ASSERT(!(asContent && asElement),
 			"Testing logic calling in AdaptToStore");
-		XMLStaticAdapter separator("", "Separator", true);
+		std::string dummy;
+		XMLAdapter<std::string> separator(dummy, "Separator", true);
 		XMLIterableAdapter<std::vector<int> > intAdapter(iv, "elemi", asContent?0:"myInt", asElement);
 		storer.Store(intAdapter);
 		if (asContent) storer.Store(separator);
@@ -601,7 +575,6 @@ public:
 	CPPUNIT_TEST_SUITE (CLAMTest::XmlAdaptersTest);
 	CPPUNIT_TEST (testXmlAdapter);
 	CPPUNIT_TEST (testXmlArrayAdapter);
-	CPPUNIT_TEST (testXmlStaticAdapter);
 	CPPUNIT_TEST (testXmlIterableAdapter);
 	CPPUNIT_TEST (testXmlComponentAdapter);
 	CPPUNIT_TEST (testXmlComponentArray);
@@ -628,16 +601,6 @@ private:
 		GenericAdaptersTester<ArrayAdapterTestCase> tester;
 		bool match = XMLInputOutputMatches(tester,__FILE__"Array.xml");
 		CLAM_ASSERT(match, "Store/Load mismatch using basic type arrays adapters");
-	}
-
-/**
- * Tests the deprecated XMLStaticAdapter class
- */
-	void testXmlStaticAdapter()
-	{
-		GenericAdaptersTester<StaticAdapterTestCase> tester;
-		bool match = XMLInputOutputMatches(tester,__FILE__"Array.xml");
-		CLAM_ASSERT(match, "Store/Load mismatch using basic type static adapters");
 	}
 
 /**

@@ -1,3 +1,7 @@
+#if USE_SNDFILE != 1
+#error USE_SNDFILE was not set to 1 in your settings.cfg file, but you are including files that require this. Please fix your settings.cfg
+#endif
+
 #include "PCMCodec.hxx"
 #include "AudioFileFormats.hxx"
 #include "AudioFile.hxx"

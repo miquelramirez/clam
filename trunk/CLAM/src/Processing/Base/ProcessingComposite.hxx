@@ -70,6 +70,9 @@ namespace CLAM {
 
 		void Remove(Processing& o);
 
+		/** Processing object composite iterator */
+		typedef std::list<Processing*>::iterator iterator;
+
 		iterator composite_begin() {return mObjects.begin();}
 
 		iterator composite_end() {return mObjects.end();}

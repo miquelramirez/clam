@@ -22,9 +22,9 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // needed for assertion_traits<bool>
 #include "InPort.hxx"
-#include "InPortTmpl.hxx"
+#include "InPort.hxx"
 #include "OutPort.hxx"
-#include "OutPortTmpl.hxx"
+#include "OutPort.hxx"
 #include "Processing.hxx"
 #include "DummyProcessingData.hxx"
 
@@ -93,7 +93,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WithAudioOutPort_WhenInPortIsDifferentType );
 	CPPUNIT_TEST( testOutPort_IsConnectableTo_WithGeneralTemplate_WhenInPortIsDifferentType );
 
-	// Tests for the concrete PortTmpl classes
+	// Tests for the concrete Port classes
 	CPPUNIT_TEST_SUITE_END();
 
 	// Testing pattern: Self Shunt
@@ -106,8 +106,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	///////////////// TESTING IN PORTS /////////////////
 	void testInPort_Attach_WithGeneralTemplateInPort_UpdatesConcretePortState()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<DummyProcessingData> concreteInPort("in-port", this);
 		DummyProcessingData attachedData;
 		attachedData.SetState(1);
 		CLAM::InPort &baseInPort = concreteInPort;
@@ -118,8 +117,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testInPort_Attach_WithAudioInPort_UpdatesConcretePortState()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::Audio attachedAudio;
 		CLAM::InPort &baseInPort = concreteInPort;
 		baseInPort.Attach( attachedAudio );
@@ -129,8 +127,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testInPort_Attach_WithGeneralTemplateInPort_BadTypeAssertionFails()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<DummyProcessingData> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
 		CLAM::Audio attachedAudio;
 		try {
@@ -141,8 +138,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testInPort_Attach_WithAudioInPort_BadTypeAssertionFails()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
 		DummyProcessingData attachedDummy;
 		try {
@@ -153,24 +149,21 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testInPort_IsAttached_WithAudioInPort_AfterConstruction()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
 		CPPUNIT_ASSERT_EQUAL( false, baseInPort.IsAttached() );
 	}
 
 	void testInPort_IsAttached_WithGeneralTemplateInPort_AfterConstruction()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<DummyProcessingData> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
 		CPPUNIT_ASSERT_EQUAL( false, baseInPort.IsAttached() );
 	}
 
 	void testInPort_IsAttached_WithGeneralTemplateInPort_AfterAttach()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<DummyProcessingData> concreteInPort("in-port", this);
 		DummyProcessingData attached;
 		CLAM::InPort &baseInPort = concreteInPort;
 		baseInPort.Attach( attached );	
@@ -179,8 +172,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	}
 	void testInPort_IsAttached_WithAudioInPort_AfterAttach()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::Audio attached;
 		CLAM::InPort &baseInPort = concreteInPort;
 		baseInPort.Attach( attached );	
@@ -190,8 +182,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testInPort_IsAttached_WithAudioInPort_AfterUnattach()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::Audio attached;
 		CLAM::InPort &baseInPort = concreteInPort;
 		baseInPort.Attach( attached );	
@@ -200,8 +191,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	}
 	void testInPort_IsAttached_WithGeneralTemplateInPort_AfterUnattach()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<DummyProcessingData> concreteInPort("in-port", this);
 		DummyProcessingData attached;
 		CLAM::InPort &baseInPort = concreteInPort;
 		
@@ -211,8 +201,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	}
 	void testInPort_UnAttach_WithAudioInPort_WhenIsNotAttached()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
 
 		baseInPort.Unattach();
@@ -220,8 +209,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	}
 	void testInPort_UnAttach_WithGeneralTemplateInPort_WhenIsNotAttached()
 	{
-		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<DummyProcessingData> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
 
 		baseInPort.Unattach();
@@ -232,8 +220,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	
 	void testOutPort_Attach_WithGeneralTemplateOutPort_UpdatesConcretePortState()
 	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<DummyProcessingData> concreteOutPort("out-port", this);
 		DummyProcessingData attachedData;
 		attachedData.SetState(1);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
@@ -244,8 +231,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testOutPort_Attach_WithAudioOutPort_UpdatesConcretePortState()
 	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<CLAM::Audio> concreteOutPort("out-port", this);
 		CLAM::Audio attachedAudio;
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 		baseOutPort.Attach( attachedAudio );
@@ -255,8 +241,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testOutPort_Attach_WithGeneralTemplateOutPort_BadTypeAssertionFails()
 	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<DummyProcessingData> concreteOutPort("out-port", this);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 		CLAM::Audio attachedAudio;
 		try {
@@ -267,8 +252,6 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testOutPort_Attach_WithAudioOutPort_BadTypeAssertionFails()
 	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 		DummyProcessingData attachedDummy;
 		try {
@@ -279,24 +262,21 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testOutPort_IsAttached_WithAudioOutPort_AfterConstruction()
 	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<CLAM::Audio> concreteOutPort("out-port", this);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 		CPPUNIT_ASSERT_EQUAL( false, baseOutPort.IsAttached() );
 	}
 
 	void testOutPort_IsAttached_WithGeneralTemplateOutPort_AfterConstruction()
 	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<DummyProcessingData> concreteOutPort("out-port", this);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 		CPPUNIT_ASSERT_EQUAL( false, baseOutPort.IsAttached() );
 	}
 
 	void testOutPort_IsAttached_WithGeneralTemplateOutPort_AfterAttach()
 	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<DummyProcessingData> concreteOutPort("out-port", this);
 		DummyProcessingData attached;
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 		baseOutPort.Attach( attached );	
@@ -305,8 +285,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	}
 	void testOutPort_IsAttached_WithAudioOutPort_AfterAttach()
 	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<CLAM::Audio> concreteOutPort("out-port", this);
 		CLAM::Audio attached;
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 		baseOutPort.Attach( attached );	
@@ -316,8 +295,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	void testOutPort_IsAttached_WithAudioOutPort_AfterUnattach()
 	{
-		const int dummyLength = 0;
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<CLAM::Audio> concreteOutPort("out-port", this);
 		CLAM::Audio attached;
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 		baseOutPort.Attach( attached );	
@@ -327,7 +305,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_IsAttached_WithGeneralTemplateOutPort_AfterUnattach()
 	{
 		const int dummyLength = 0;
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<DummyProcessingData> concreteOutPort("out-port", this);
 		DummyProcessingData attached;
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 		
@@ -338,7 +316,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_UnAttach_WithAudioOutPort_WhenIsNotAttached()
 	{
 		const int dummyLength = 0;
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<CLAM::Audio> concreteOutPort("out-port", this);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 
 		baseOutPort.Unattach();
@@ -347,7 +325,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_UnAttach_WithGeneralTemplateOutPort_WhenIsNotAttached()
 	{
 		const int dummyLength = 0;
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<DummyProcessingData> concreteOutPort("out-port", this);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 
 		baseOutPort.Unattach();
@@ -359,7 +337,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testPort_GetProcessingData_WithAudioPort_AfterAttach()
 	{
 		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::Port &basePort = concreteInPort;
 		CLAM::Audio attached;
 		
@@ -370,7 +348,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testPort_GetProcessingData_WithGeneralTemplatePort_AfterAttach()
 	{
 		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<DummyProcessingData> concreteInPort("in-port", this);
 		CLAM::Port &basePort = concreteInPort;
 		DummyProcessingData attached;
 
@@ -381,7 +359,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testPort_GetProcessingData_WithAudioPort_AfterConstruction()
 	{
 		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::Port &basePort = concreteInPort;
 		CLAM::ProcessingData* p = 0;
 		CPPUNIT_ASSERT_EQUAL( p , basePort.GetProcessingData() );	
@@ -390,7 +368,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testPort_GetProcessingData_WithGeneralTemplatePort_AfterConstruction()
 	{
 		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<DummyProcessingData> concreteInPort("in-port", this);
 		CLAM::Port &basePort = concreteInPort;
 		CLAM::ProcessingData* p = 0;
 		CPPUNIT_ASSERT_EQUAL( p , basePort.GetProcessingData() );
@@ -401,9 +379,9 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreConnected()
 	{
 		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<CLAM::Audio> concreteOutPort("out-port", this);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 
 		CLAM::Audio attached;
@@ -415,9 +393,9 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreConnected()
 	{
 		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<DummyProcessingData> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<DummyProcessingData> concreteOutPort("out-port", this);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 		
 		DummyProcessingData attached;
@@ -429,9 +407,9 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreNotConnected()
 	{
 		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<CLAM::Audio> concreteOutPort("out-port", this);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 
 		CPPUNIT_ASSERT_EQUAL( false, baseInPort.IsConnectedTo(baseOutPort) );
@@ -440,9 +418,9 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testInPort_IsConnectedTo_DelegatesToOutPort()
 	{
 		const int dummyLength = 0;
-		CLAM::InPortTmpl<CLAM::Audio> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<CLAM::Audio> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
-		CLAM::OutPortTmpl<CLAM::Audio> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<CLAM::Audio> concreteOutPort("out-port", this);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 
 		CPPUNIT_ASSERT_EQUAL( false, baseInPort.IsConnectedTo(baseOutPort) );
@@ -451,9 +429,9 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreNotConnected()
 	{
 		const int dummyLength = 0;
-		CLAM::InPortTmpl<DummyProcessingData> concreteInPort("in-port", this, dummyLength);
+		CLAM::InPort<DummyProcessingData> concreteInPort("in-port", this);
 		CLAM::InPort &baseInPort = concreteInPort;
-		CLAM::OutPortTmpl<DummyProcessingData> concreteOutPort("out-port", this, dummyLength);
+		CLAM::OutPort<DummyProcessingData> concreteOutPort("out-port", this);
 		CLAM::OutPort &baseOutPort = concreteOutPort;
 
 		CPPUNIT_ASSERT_EQUAL( false, baseInPort.IsConnectedTo(baseOutPort) );
@@ -463,8 +441,8 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_IsConnectableTo_WithAudioOutPort_WhenInPortIsTheSameType()
 	{
 		const int dummyLength = 0;
-		CLAM::OutPortTmpl<CLAM::Audio> out("out-port", this, dummyLength );
-		CLAM::InPortTmpl<CLAM::Audio> in("in-port", this, dummyLength );
+		CLAM::OutPort<CLAM::Audio> out("out-port", this );
+		CLAM::InPort<CLAM::Audio> in("in-port", this );
 
 		CLAM::OutPort & baseOutPort = out;
 		CLAM::InPort & baseInPort = in;
@@ -475,8 +453,8 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_IsConnectableTo_WithGeneralTemplate_WhenInPortIsTheSameType()
 	{
 		const int dummyLength = 0;
-		CLAM::OutPortTmpl<DummyProcessingData> out("out-port", this, dummyLength );
-		CLAM::InPortTmpl<DummyProcessingData> in("in-port", this, dummyLength );
+		CLAM::OutPort<DummyProcessingData> out("out-port", this );
+		CLAM::InPort<DummyProcessingData> in("in-port", this );
 
 		CLAM::OutPort & baseOutPort = out;
 		CLAM::InPort & baseInPort = in;
@@ -487,8 +465,8 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_IsConnectableTo_WithAudioOutPort_WhenInPortIsDifferentType()
 	{
 		const int dummyLength = 0;
-		CLAM::OutPortTmpl<CLAM::Audio> out("out-port", this, dummyLength );
-		CLAM::InPortTmpl<DummyProcessingData> in("in-port", this, dummyLength );
+		CLAM::OutPort<CLAM::Audio> out("out-port", this );
+		CLAM::InPort<DummyProcessingData> in("in-port", this );
 
 		CLAM::OutPort & baseOutPort = out;
 		CLAM::InPort & baseInPort = in;
@@ -499,8 +477,8 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 	void testOutPort_IsConnectableTo_WithGeneralTemplate_WhenInPortIsDifferentType()
 	{
 		const int dummyLength = 0;
-		CLAM::OutPortTmpl<DummyProcessingData> out("out-port", this, dummyLength );
-		CLAM::InPortTmpl<CLAM::Audio> in("in-port", this, dummyLength );
+		CLAM::OutPort<DummyProcessingData> out("out-port", this );
+		CLAM::InPort<CLAM::Audio> in("in-port", this );
 
 		CLAM::OutPort & baseOutPort = out;
 		CLAM::InPort & baseInPort = in;

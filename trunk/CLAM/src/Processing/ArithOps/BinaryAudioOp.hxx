@@ -26,9 +26,8 @@
 #include "DynamicType.hxx"
 #include "Audio.hxx"
 #include <typeinfo> // std::bad_cast
-#include "ErrProcessingObj.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 
 #include <iostream>
 
@@ -64,25 +63,25 @@ namespace CLAM
 			
 		}
 		
-		InPortTmpl<Audio> mFirstInput;
-		InPortTmpl<Audio> mSecondInput;
-		OutPortTmpl<Audio> mOutput;
+		AudioInPort mFirstInput;
+		AudioInPort mSecondInput;
+		AudioOutPort mOutput;
 		
 
 	public:
 
 		BinaryAudioOp()
-			:mFirstInput("First Audio Input",this,1)
-			 ,mSecondInput("Second Audio Input",this,1)
-			 ,mOutput("Audio Output",this,1)
+			:mFirstInput("First Audio Input",this),
+			 mSecondInput("Second Audio Input",this),
+			 mOutput("Audio Output",this)
 		{
 			Configure( BinaryAudioOpConfig() );
 		}
 		
 		BinaryAudioOp(const BinaryAudioOpConfig &c)
-			:mFirstInput("First Audio Input",this,1)
-			 ,mSecondInput("Second Audio Input",this,1)
-			 ,mOutput("Audio Output",this,1)
+			:mFirstInput("First Audio Input",this),
+			 mSecondInput("Second Audio Input",this),
+			 mOutput("Audio Output",this)
 									                 
 		{
 				Configure( c );
@@ -106,12 +105,12 @@ namespace CLAM
 
 		bool Do(void)
 		{
-			bool res = Do(mFirstInput.GetData(),
-				      mSecondInput.GetData(),
-				      mOutput.GetData());
-			mFirstInput.LeaveData();
-			mSecondInput.LeaveData();
-			mOutput.LeaveData();
+			bool res = Do(mFirstInput.GetAudio(),
+				      mSecondInput.GetAudio(),
+				      mOutput.GetAudio());
+			mFirstInput.Consume();
+			mSecondInput.Consume();
+			mOutput.Produce();
 			return res;
 		}
 

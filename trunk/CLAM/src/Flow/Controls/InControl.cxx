@@ -29,7 +29,7 @@ InControl::InControl(const std::string &name, Processing* parent, const bool pub
 	mLastValue(0), mName(name), mParent(parent)
 
 {
-	if (parent && publish) parent->PublishInControl(this);
+	if (parent && publish) parent->GetInControls().Publish(this);
 }
 
 

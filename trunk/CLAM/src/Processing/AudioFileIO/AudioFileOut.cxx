@@ -30,14 +30,14 @@ namespace CLAM {
 
 	AudioFileOut::AudioFileOut() :
 		mpSoundFileIO(0),
-		Input("Input",this,1)
+		mInput("Input",this)
 	{
 		Configure(AudioFileConfig());
 	};
 
 	AudioFileOut::AudioFileOut(const AudioFileConfig &c) :
 		mpSoundFileIO(0),
-		Input("Input",this,1)
+		mInput("Input",this)
 	{ 
 		Configure(c);
 	};
@@ -48,11 +48,11 @@ namespace CLAM {
 		
 		if (mConfig.HasFilename()) {
 			if (mConfig.GetFilename()=="") {
-				mStatus += "Empty filename specified in config\n";
+				AddConfigErrorMessage("Empty filename specified in config");
 				return false;
 			}
 		}else{
-			mStatus += "No filename specified in config\n";
+			AddConfigErrorMessage("No filename specified in config");
 			return false;
 		}
 
@@ -74,7 +74,7 @@ namespace CLAM {
 				mpSoundFileIO = new AIFFFileIO;;
 				break;			
 			default:
-				mStatus += "Unknown file type specified in config\n";
+				AddConfigErrorMessage("Unknown file type specified in config");
 				return false;
 		}
 
@@ -87,7 +87,8 @@ namespace CLAM {
 
 		ConcreteStop();
 
-		Input.SetParams(mConfig.GetFrameSize());
+		mInput.SetSize(mConfig.GetFrameSize());
+		mInput.SetHop(mConfig.GetFrameSize());
 		return true;
 	}
 
@@ -117,9 +118,8 @@ namespace CLAM {
 		}
 		catch (ErrSoundFileIO& err)
 		{
-			mStatus += "Error opening file: ";
-			mStatus += err.what();
-			mStatus += "\n";
+			AddConfigErrorMessage("Error opening file: ");
+			AddConfigErrorMessage("err.what()");
 			return false;
 		}
 		return true;
@@ -227,8 +227,8 @@ namespace CLAM {
 
 	bool AudioFileOut::Do(void)
 	{
-		bool res = Do(Input.GetData());
-		Input.LeaveData();
+		bool res = Do(mInput.GetAudio());
+		mInput.Consume();
 		return res;		
 	}
 };//namespace CLAM

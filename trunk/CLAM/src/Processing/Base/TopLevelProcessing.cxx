@@ -26,26 +26,15 @@ namespace CLAM {
 
 	TopLevelProcessing::TopLevelProcessing()
 	{
-		SetOrphan();
-		ConfigureOrphan( TopLevelProcessingConfig() );
+		mpParent=0;
+		mExecState=Ready;
 	}
 
 
-	TopLevelProcessing::
-	TopLevelProcessing(const TopLevelProcessingConfig &c)
+	bool TopLevelProcessing::ConcreteConfigure(const ProcessingConfig&c)
 	{
-		// Hack: mpParent must be set before calling Configure, because
-		// otherwise Configure will try to get the TopLevel instance.
-		SetOrphan();
-
-		ConfigureOrphan(c);
-	}
-	
-	bool TopLevelProcessing::
-	ConcreteConfigure(const ProcessingConfig&c)
-	{
-		CopyAsConcreteConfig(mConfig,c);
-		return true;
+		CLAM_ASSERT(false, "Singleton TopLevelProcessing can't be configured");
+		return false;
 	}
 
 	TopLevelProcessing& TopLevelProcessing::GetInstance()
@@ -57,7 +46,7 @@ namespace CLAM {
 
 	bool TopLevelProcessing::Do()
 	{
-		CLAM_ASSERT(0,"TopLevelProcessing::Do(): Not implemented\n");
+		CLAM_ASSERT(false,"TopLevelProcessing::Do(): Not implemented\n");
 		return false;
 	}
 

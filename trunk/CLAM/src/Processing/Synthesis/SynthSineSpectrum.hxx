@@ -11,6 +11,8 @@
 #include "Complex.hxx"
 #include "Processing.hxx"
 #include "SynthSineSpectrumConfig.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 
 namespace CLAM{
 
@@ -32,6 +34,10 @@ namespace CLAM{
  */
 class SynthSineSpectrum:public Processing
 {
+
+	InPort<SpectralPeakArray> mInput;
+	OutPort<Spectrum> mOutput;
+	
 public:
 	/* constructor/destructor */
 	SynthSineSpectrum();
@@ -40,9 +46,8 @@ public:
 	const char * GetClassName() const {return "SynthSineSpectrum";}
 
 	/* public member functions */
-	bool Do(const SpectralPeakArray& peakArray,Spectrum& residualSpectrumOut,
-	        double gain=1.0);
-	bool Do(void){ return false;}
+	bool Do(const SpectralPeakArray& peakArray,Spectrum& residualSpectrumOut, double gain=1.0);
+	bool Do(void);
 
 	/** Configuration method */
 	bool ConcreteConfigure(const ProcessingConfig&);

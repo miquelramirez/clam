@@ -26,6 +26,13 @@ namespace CLAMTest
 		CPPUNIT_TEST( test_Ooura_WithNonPowerOfTwoInput );
 		CPPUNIT_TEST( test_NumRec_WithComplex );
 		CPPUNIT_TEST( test_NumRec_WithPolar );
+		CPPUNIT_TEST( test_NumRec_WithBPF );
+		CPPUNIT_TEST( test_Ooura_WithComplex );
+		CPPUNIT_TEST( test_Ooura_WithPolar );
+		CPPUNIT_TEST( test_Ooura_WithBPF );
+		CPPUNIT_TEST( test_FFTW_WithComplex );
+		CPPUNIT_TEST( test_FFTW_WithPolar );
+		CPPUNIT_TEST( test_FFTW_WithBPF );
 		CPPUNIT_TEST_SUITE_END();
 
 	protected:
@@ -120,16 +127,7 @@ namespace CLAMTest
 	public:
 		void setUp()
 		{
-			char* pathToTestData = getenv("CLAM_TEST_DATA");
-
-			if ( !pathToTestData )
-			{
-				mPathToTestData ="../../../../../CLAM-TestData/"; 
-			}
-			else
-				mPathToTestData = pathToTestData;
-
-			mPathToTestData += "spectralData/";
+			mPathToTestData = GetTestDataDirectory("spectralData/");
 			loadBack2BackDataset( mPathToTestData );
 		}
 
@@ -154,13 +152,13 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
+			//processing.Attach( input, output );
 			
 			processing.Configure( processingConfig );
 			
 			processing.Start();
 			
-			processing.Do();
+			processing.Do( input, output );
 
 			processing.Stop();
 
@@ -173,6 +171,47 @@ namespace CLAMTest
 			// "Output spectrum magnitude buffer suspicious!" );
 		}
 		
+		void test_NumRec_WithBPF()
+		{
+			CLAM::Audio     input;
+			CLAM::SpecTypeFlags flg;
+			flg.bMagPhase=0;
+			flg.bMagPhaseBPF=1;
+			CLAM::Spectrum  output;
+			output.SetType(flg);
+
+			CLAM::FFTConfig processingConfig;
+			CLAM::FFT_base&      processing = createFFTObject( "NumRec" );
+
+			setupSine_F0400Hz_SR8kHz_1024samples( input );
+			//setupSpectrumToStoreFFTOutput( output );
+
+			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
+
+			processingConfig.SetAudioSize( input.GetSize() );
+
+			
+			processing.Configure( processingConfig );
+			processing.Start();
+			processing.Do(input,output);
+			processing.Stop();
+
+			flg.bMagPhase=1;
+			output.SetTypeSynchronize(flg);
+			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
+								output.GetMagBuffer() );
+
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+					== output.GetSpectralRange() );
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSize() 
+					== output.GetSize() );
+			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
+			
+
+			// "Output spectrum magnitude buffer suspicious!" );
+			
+		}
+
 		void test_NumRec_WithPolar()
 		{
 			CLAM::Audio     input;
@@ -192,14 +231,9 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
-			
 			processing.Configure( processingConfig );
-			
 			processing.Start();
-			
-			processing.Do();
-
+			processing.Do( input, output );
 			processing.Stop();
 
 			flg.bMagPhase=1;
@@ -233,14 +267,10 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
-			
 			processing.Configure( processingConfig );
 			
 			processing.Start();
-			
-			processing.Do();
-
+			processing.Do( input, output );
 			processing.Stop();
 
 			flg.bMagPhase=1;
@@ -271,14 +301,9 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
-			
 			processing.Configure( processingConfig );
-			
 			processing.Start();
-			
-			processing.Do();
-
+			processing.Do( input, output );
 			processing.Stop();
 
 			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
@@ -291,6 +316,121 @@ namespace CLAMTest
 			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
+
+		void test_Ooura_WithBPF()
+		{
+			CLAM::Audio     input;
+			CLAM::SpecTypeFlags flg;
+			flg.bMagPhase=0;
+			flg.bMagPhaseBPF=1;
+			CLAM::Spectrum  output;
+			output.SetType(flg);
+
+			CLAM::FFTConfig processingConfig;
+			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
+
+			setupSine_F0400Hz_SR8kHz_1024samples( input );
+			//setupSpectrumToStoreFFTOutput( output );
+
+			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
+
+			processingConfig.SetAudioSize( input.GetSize() );
+
+			processing.Configure( processingConfig );
+			
+			processing.Start();
+			processing.Do(input,output);
+			processing.Stop();
+
+			flg.bMagPhase=1;
+			output.SetTypeSynchronize(flg);
+			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
+								output.GetMagBuffer() );
+
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+					== output.GetSpectralRange() );
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSize() 
+					== output.GetSize() );
+			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
+			
+
+			// "Output spectrum magnitude buffer suspicious!" );
+			
+		}
+
+		void test_Ooura_WithPolar()
+		{
+			CLAM::Audio     input;
+			CLAM::SpecTypeFlags flg;
+			flg.bMagPhase=0;
+			flg.bPolar=1;
+			CLAM::Spectrum  output;
+			output.SetType(flg);
+
+			CLAM::FFTConfig processingConfig;
+			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
+
+			setupSine_F0400Hz_SR8kHz_1024samples( input );
+			//setupSpectrumToStoreFFTOutput( output );
+
+			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
+
+			processingConfig.SetAudioSize( input.GetSize() );
+
+			processing.Configure( processingConfig );
+			processing.Start();
+			processing.Do(input,output);
+			processing.Stop();
+
+			flg.bMagPhase=1;
+			output.SetTypeSynchronize(flg);
+			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
+								output.GetMagBuffer() );
+
+			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+					== output.GetSpectralRange() );
+
+			// "Output spectrum magnitude buffer suspicious!" );
+			
+		}
+		void test_Ooura_WithComplex()
+		{
+			CLAM::Audio     input;
+			CLAM::SpecTypeFlags flg;
+			flg.bMagPhase=0;
+			flg.bComplex=1;
+			CLAM::Spectrum  output;
+			output.SetType(flg);
+
+			CLAM::FFTConfig processingConfig;
+			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
+
+			setupSine_F0400Hz_SR8kHz_1024samples( input );
+			//setupSpectrumToStoreFFTOutput( output );
+
+			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
+
+			processingConfig.SetAudioSize( input.GetSize() );
+
+			processing.Configure( processingConfig );
+			processing.Start();
+			processing.Do(input,output);
+			processing.Stop();
+
+			flg.bMagPhase=1;
+			output.SetTypeSynchronize(flg);
+			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
+								output.GetMagBuffer() );
+
+			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+					== output.GetSpectralRange() );
+
+			// "Output spectrum magnitude buffer suspicious!" );
+			
+		}
+		
 
 		void test_Ooura_WithPowerOfTwoInput()
 		{
@@ -307,14 +447,10 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
-			
 			processing.Configure( processingConfig );
 			
 			processing.Start();
-			
-			processing.Do();
-
+			processing.Do( input, output );
 			processing.Stop();
 
 			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
@@ -326,6 +462,122 @@ namespace CLAMTest
 
 			// "Output spectrum magnitude buffer suspicious!" );
 
+		}
+
+		void test_FFTW_WithBPF()
+		{
+			CLAM::Audio     input;
+			CLAM::SpecTypeFlags flg;
+			flg.bMagPhase=0;
+			flg.bMagPhaseBPF=1;
+			CLAM::Spectrum  output;
+			output.SetType(flg);
+
+			CLAM::FFTConfig processingConfig;
+			CLAM::FFT_base&      processing = createFFTObject( "FFTW" );
+
+			setupSine_F0400Hz_SR8kHz_1024samples( input );
+			//setupSpectrumToStoreFFTOutput( output );
+
+			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
+
+			processingConfig.SetAudioSize( input.GetSize() );
+
+			processing.Configure( processingConfig );
+			
+			processing.Start();
+			processing.Do(input,output);
+			processing.Stop();
+
+			flg.bMagPhase=1;
+			output.SetTypeSynchronize(flg);
+			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
+								output.GetMagBuffer() );
+
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+					== output.GetSpectralRange() );
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSize() 
+					== output.GetSize() );
+			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
+			
+
+			// "Output spectrum magnitude buffer suspicious!" );
+			
+		}
+
+		void test_FFTW_WithPolar()
+		{
+			CLAM::Audio     input;
+			CLAM::SpecTypeFlags flg;
+			flg.bMagPhase=0;
+			flg.bPolar=1;
+			CLAM::Spectrum  output;
+			output.SetType(flg);
+
+			CLAM::FFTConfig processingConfig;
+			CLAM::FFT_base&      processing = createFFTObject( "FFTW" );
+
+			setupSine_F0400Hz_SR8kHz_1024samples( input );
+			//setupSpectrumToStoreFFTOutput( output );
+
+			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
+
+			processingConfig.SetAudioSize( input.GetSize() );
+
+			processing.Configure( processingConfig );
+			
+			processing.Start();
+			processing.Do(input,output);
+			processing.Stop();
+
+			flg.bMagPhase=1;
+			output.SetTypeSynchronize(flg);
+			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
+								output.GetMagBuffer() );
+
+			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+					== output.GetSpectralRange() );
+
+			// "Output spectrum magnitude buffer suspicious!" );
+			
+		}
+		void test_FFTW_WithComplex()
+		{
+			CLAM::Audio     input;
+			CLAM::SpecTypeFlags flg;
+			flg.bMagPhase=0;
+			flg.bComplex=1;
+			CLAM::Spectrum  output;
+			output.SetType(flg);
+
+			CLAM::FFTConfig processingConfig;
+			CLAM::FFT_base&      processing = createFFTObject( "FFTW" );
+
+			setupSine_F0400Hz_SR8kHz_1024samples( input );
+			//setupSpectrumToStoreFFTOutput( output );
+
+			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
+
+			processingConfig.SetAudioSize( input.GetSize() );
+
+			processing.Configure( processingConfig );
+			
+			processing.Start();
+			processing.Do(input,output);
+			processing.Stop();
+
+			flg.bMagPhase=1;
+			output.SetTypeSynchronize(flg);
+			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
+								output.GetMagBuffer() );
+
+			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+					== output.GetSpectralRange() );
+
+			// "Output spectrum magnitude buffer suspicious!" );
+			
 		}
 
 		void test_FFTW_WithNonPowerOfTwoInput()
@@ -343,14 +595,10 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
-			
 			processing.Configure( processingConfig );
 			
 			processing.Start();
-			
-			processing.Do();
-
+			processing.Do( input, output );
 			processing.Stop();
 
 			double similarity = evaluateSimilarity( smReferenceNP2Spectrum.GetMagBuffer(),
@@ -379,8 +627,6 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
-			
 			CPPUNIT_ASSERT_EQUAL( false, processing.Configure( processingConfig ) );
 			
 		}
@@ -400,8 +646,6 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Attach( input, output );
-			
 			CPPUNIT_ASSERT_EQUAL( false, processing.Configure( processingConfig ) );	
 		}
 	};

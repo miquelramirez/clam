@@ -29,17 +29,16 @@
 
 #include "XMLStorage.hxx"
 #include "Network.hxx"
-#include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "Err.hxx"
 #include "SimpleOscillator.hxx"
+#include "Oscillator.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioAdder.hxx"
 #include "AudioIO.hxx"
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
-#include "AudioFileIn.hxx" 
-#include "AudioFileOut.hxx" 
+
 #include "AudioFile.hxx"
 #include <iostream>
 #include <FL/fl_file_chooser.H>
@@ -56,36 +55,6 @@ int main( int argc, char** argv )
 		int size = 512;
 		int sampleRate = 44100;
 
-		// we will let the user choose file names for loading and saving audio.
-		
-		const char* fileName = fl_file_chooser( "Please, select a mono .wav file sampled to 44100 Hz", "*.wav", NULL );
-		if ( fileName == NULL )
-		{
-			std::cout << "User cancelled" << std::endl;
-			exit(0);
-		}
-
-		CLAM::AudioFileConfig audioFileInCfg;
-		audioFileInCfg.SetKeepFrameSizes( true );
-		audioFileInCfg.SetFilename( fileName );
-		audioFileInCfg.SetFrameSize( size );
-		audioFileInCfg.SetFiletype( CLAM::EAudioFileType::eWave );
-		
-		const char* outputFileName = fl_file_chooser(  "Please, specify the wav where result will be stored", "*.wav", NULL );
-		if ( outputFileName == NULL )
-		{
-			std::cout << "User cancelled" << std::endl;
-			exit(0);
-		}
-			
-		CLAM::AudioFileConfig audioFileOutCfg;
-		audioFileOutCfg.SetFilename( outputFileName );
-		audioFileOutCfg.SetKeepFrameSizes( true );
-		audioFileOutCfg.SetFrameSize( size );
-		audioFileOutCfg.SetSampleRate( sampleRate );
-		audioFileOutCfg.SetFiletype( CLAM::EAudioFileType::eWave );
-
-
 		// network initialization
 
 		CLAM::AudioManager audioManager( sampleRate, size );
@@ -95,40 +64,41 @@ int main( int argc, char** argv )
 
 
 		CLAM::SimpleOscillatorConfig osc1Cfg;
-		osc1Cfg.SetFrequency(440.0);
+		osc1Cfg.SetFrequency(220.0);
 		osc1Cfg.SetSamplingRate( sampleRate );
 
 		CLAM::SimpleOscillatorConfig osc2Cfg;
-		osc2Cfg.SetFrequency(40.0);
+		osc2Cfg.SetFrequency(10.0);
+		osc2Cfg.SetPhase(0.5);
+		osc2Cfg.SetAmplitude(0.5);
 		osc2Cfg.SetSamplingRate( sampleRate );
 
-		CLAM::BinaryAudioOpConfig audioMultiplierCfg;
+		CLAM::SimpleOscillatorConfig osc3Cfg;
+		osc3Cfg.SetFrequency(880.0);		
+		osc3Cfg.SetAmplitude(0.5);
+		osc3Cfg.SetSamplingRate( sampleRate );
 
-		CLAM::BinaryAudioOpConfig audioAdderCfg;
-			
+		CLAM::OscillatorConfig osc4Cfg;
+		osc4Cfg.SetFrequency(440.0);
+		
+
 		CLAM::AudioIOConfig audioOutCfg;
 		audioOutCfg.SetFrameSize( size );
 		audioOutCfg.SetSampleRate( sampleRate );
 		audioOutCfg.SetChannelID( 0 );
 
-		// in this example we will have an audio file signal added to an oscillator, the result
-		// multiplied in order to modulate it. Finally we will store the signal on another 
-		// audio file while we hear it.
-
-		network->AddProcessing( "File In", new CLAM::AudioFileIn( audioFileInCfg ) );
 		network->AddProcessing( "Generator", new CLAM::SimpleOscillator( osc1Cfg ) );
-		network->AddProcessing( "Modulator", new CLAM::SimpleOscillator( osc2Cfg ) );
-		network->AddProcessing( "Audio Multiplier", new CLAM::AudioMultiplier( audioMultiplierCfg ) );
-		network->AddProcessing( "Audio Adder", new CLAM::AudioAdder( audioAdderCfg ) );
-		network->AddProcessing( "Audio Mono Out", new CLAM::AudioOut( audioOutCfg ) );
-		network->AddProcessing( "File Out", new CLAM::AudioFileOut( audioFileOutCfg ) );
+		network->AddProcessing( "Modulated Generator", new CLAM::Oscillator( osc4Cfg ) );
+		network->AddProcessing( "Phase Modulator", new CLAM::SimpleOscillator( osc2Cfg ) );
+		network->AddProcessing( "Frequency Modulator", new CLAM::SimpleOscillator( osc3Cfg ) );
+		network->AddProcessing( "multiplier", new CLAM::AudioMultiplier );
+		network->AddProcessing( "audio out", new CLAM::AudioOut( audioOutCfg ) );
 
-		network->ConnectPorts( "Generator.Audio Output", "Audio Adder.First Audio Input" );
-		network->ConnectPorts( "File In.Output", "Audio Adder.Second Audio Input" );
-		network->ConnectPorts( "Audio Adder.Audio Output", "Audio Multiplier.First Audio Input" );
-		network->ConnectPorts( "Modulator.Audio Output", "Audio Multiplier.Second Audio Input" );
-		network->ConnectPorts( "Audio Multiplier.Audio Output", "Audio Mono Out.Input" );
-		network->ConnectPorts( "Audio Multiplier.Audio Output", "File Out.Input" );
+		network->ConnectPorts( "Generator.Audio Output", "multiplier.First Audio Input" );
+		network->ConnectPorts( "Modulated Generator.Audio Output", "multiplier.Second Audio Input" );
+		network->ConnectPorts( "multiplier.Audio Output", "audio out.Audio Input" );
+		network->ConnectPorts( "Phase Modulator.Audio Output", "Modulated Generator.Input Phase Modulation" );
+		network->ConnectPorts( "Frequency Modulator.Audio Output", "Modulated Generator.Input Frequency Modulation" );
 
 		// Now that we have the network created with our desired processing and connections, we will store it to an xml file.
 
@@ -140,10 +110,7 @@ int main( int argc, char** argv )
 		}
 
 		// the first step to passivate the network is create an storage object
-		CLAM::XMLStorage savingObject;
-		// now we can store the network to the file choosed before. Before this step, we set indentation to create a file user-readable
-		savingObject.UseIndentation( true );
-		savingObject.Dump( *network, "network", networkFileName );
+		CLAM::XMLStorage::Dump( *network, "network", networkFileName );
 
 		// ok, we just stored it. You can take a look to the file you specified, read the contents and modify it if you want
 		// (to your own risk, of course).
@@ -156,8 +123,7 @@ int main( int argc, char** argv )
 		network2->SetName("Network Loaded");
 		network2->AddFlowControl( new CLAM::PushFlowControl( size ));
 
-		CLAM::XMLStorage loadingObject;
-		loadingObject.Restore( *network2, outputFileName );
+		CLAM::XMLStorage::Restore( *network2, networkFileName );
 
 		// With these few lines we have in "network2" the same connections and processings (with his configs) that we had in "network".
 

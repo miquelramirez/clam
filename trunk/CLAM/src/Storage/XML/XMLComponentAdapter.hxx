@@ -32,10 +32,12 @@
 namespace CLAM {
 
 /**
+ * @ingroup XmlAdapters
+ * @brief
  * This class adapts to the XMLable interface any object that is 
- * a Component but is not defined as XMLable.
+ * a CLAM::Component.
  *
- * <P>The XMLComponent adapter implements both the XMLable
+ * The XMLComponent adapter implements both the XMLable
  * and the Component interface. So, implements the retrieval of
  * XML properties (naming, being Element, Atribute or Simple 
  * content...) and implements the StoreOn function that is called
@@ -43,18 +45,16 @@ namespace CLAM {
  * The StoreOn is implemented in XMLComponentAdapter simply by
  * forwarding the call to de Adaptee.
  * 
- * <P>You should use XMLComponentAdapter when: 
- * <UL>
- * <LI>You have a Component that you don't want always to overload
- * with the XML stuff, but in some cases you need to store it as
- * XML content.
- * </UL>
+ * You should use XMLComponentAdapter when: 
+ * - You have a Component that you don't want always to overload
+ *   with the XML stuff, but in some cases you need to store it as
+ *   XML content.
  * 
- * <P>Note: Simple content, (XMLable::XMLContent() implementation)
+ * Note: Simple content, (XMLable::XMLContent() implementation)
  * returns an empty string.
  * 
- * <P><B>Pay attention to the management of the name memory</B>
- * (@see BasicXMLable).
+ * <B>Pay attention to the management of the name memory</B>
+ * (see CLAM::BasicXMLable).
  * 
  * @see XMLable
  * @see Component

@@ -37,11 +37,34 @@ int config_parse(const char* filename);
 
 int var_true(char* subst,const char* filename,int line)
 {
-	listkey* n = listhash_find(config,subst);
+	listkey* n;
+
+	{
+		char* definedkw = ":defined";
+		int l1 = strlen(subst);
+		int l2 = strlen(definedkw);
+
+		if (l1>l2)
+		{
+			if (strcmp(subst+l1-l2,definedkw)==0)
+			{
+				subst[l1-l2] = '\0';
+				if (listhash_find(config,subst))
+				{
+					return 1;
+				}else{
+					return 0;
+				}
+			}
+		}
+	}
+	
+	n= listhash_find(config,subst);
+
 	if (n==0)
 	{
 		fprintf(stderr,
-		"Variable \"%s\" not found in line %s:%d\n",subst,filename,line);
+		"Condition-variable \"%s\" not found in line %s:%d\n",subst,filename,line);
 		exit(-1);
 	}
 	list_add_str_once(used_vars,n->str);
@@ -205,7 +228,7 @@ void config_parse_line_sub(config_data* d,int insidecond,int cond)
 				ENDOUT(d);
 				d->in++;
 
-				/* evuluate variable */				
+				/* evuluate variable */
 				subcond = var_true(var,d->filename,d->line);
 
 				/* reset the token string pointer to where we encountered the 
@@ -550,8 +573,10 @@ void config_init(void)
 	listhash_add_key_once(config,"DEFINES")->l = list_new();
 	listhash_add_key_once(config,"SEARCH_INCLUDES")->l = list_new();
 	listhash_add_key_once(config,"SEARCH_RECURSE_INCLUDES")->l = list_new();
+	listhash_add_key_once(config,"IS_LIBRARY")->l = list_new();
 
 	list_add_str_once(used_vars,"UI_FILES");
+	list_add_str_once(used_vars,"IS_LIBRARY");
 	list_add_str_once(used_vars,"LIBRARIES_DEBUG");
 	list_add_str_once(used_vars,"LIBRARIES_RELEASE");
 	list_add_str_once(used_vars,"VC7_LIBRARIES_DEBUG");
@@ -596,7 +621,10 @@ void config_check(void)
 	{
 		if (!list_find(used_vars,n->str) && !list_find(ignore_unused,n->str))
 		{
-			fprintf(stderr,"Warning: unused variable %s\n",n->str);
+			if (strncmp("HAS_",n->str,4))
+			{
+				fprintf(stderr,"Warning: unused variable %s\n",n->str);
+			}
 		}
 		n = n->next;
 	}

@@ -20,6 +20,7 @@
  */
 
 #include "EnvelopeModulator.hxx"
+#include "CLAM_Math.hxx"
 
 
 namespace CLAM {
@@ -35,9 +36,9 @@ namespace CLAM {
 
 
 	EnvelopeModulator::EnvelopeModulator(const EnvModulatorConfig& c)
-		: InputEnvelope("Input Envelope",this,1),
-		  InputAudio("Input Audio",this,1),
-		  Output("Output Audio",this,1)
+		: InputEnvelope("Input Envelope",this),
+		  InputAudio("Input Audio",this),
+		  Output("Output Audio",this)
 	{
 		Configure(c);
 	}
@@ -50,8 +51,8 @@ namespace CLAM {
 
 		mCompress = mConfig.GetEnvelopeCompression();
 
-		InputAudio.SetParams(mConfig.GetFrameSize());
-		Output.SetParams(mConfig.GetFrameSize());
+		InputAudio.SetSize(mConfig.GetFrameSize());
+		Output.SetSize(mConfig.GetFrameSize());
 		return true;
 	}
 
@@ -69,9 +70,9 @@ namespace CLAM {
 		bool res = Do(InputEnvelope.GetData(),
 					  InputAudio.GetData(),
 					  Output.GetData());
-		InputEnvelope.LeaveData();
-		InputAudio.LeaveData();
-		Output.LeaveData();	  
+		InputEnvelope.Consume();
+		InputAudio.Consume();
+		Output.Produce();	  
 		return res;
 	}
 
@@ -81,7 +82,7 @@ namespace CLAM {
 		Array<TData> &outputArray = out.GetBuffer();
 		BPFTmpl<TTime,TData> &amplitudeBpf = env.GetAmplitudeBPF();
 		TTime pos = 0.0;
-		const int size = MIN(inp.GetSize(), out.GetSize());
+		const int size = std::min(inp.GetSize(), out.GetSize());
 		if (mCompress)
 			for (int i=0;i<size;i++) {
 				outputArray[i]=inputArray[i]*amplitudeBpf.GetValue(pos);
@@ -93,13 +94,6 @@ namespace CLAM {
 				pos += mDeltaX;
 			}
 		return true;
-	}
-
-	void EnvelopeModulator::Attach(Envelope& env, Audio& inp, Audio& out)
-	{
-		InputEnvelope.Attach(env);
-		InputAudio.Attach(inp);
-		Output.Attach(out);
 	}
 
 

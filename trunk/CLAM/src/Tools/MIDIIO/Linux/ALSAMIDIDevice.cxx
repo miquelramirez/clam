@@ -80,22 +80,15 @@ namespace CLAM {
 			snd_rawmidi_close(mHandleIn);
 			snd_rawmidi_status_free(mStatusIn);
 		}
-
-                if (mHandleOut) {
-			snd_rawmidi_drain(mHandleOut);
-			snd_rawmidi_close(mHandleOut);
+                
+                if(mHandleOut){
+		    snd_rawmidi_drain(mHandleOut);
+                    snd_rawmidi_close(mHandleOut);
 		}
 	}
 
 	void ALSAMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
 	{
-		printf("ALSAMIDIDevice::Write:");
-		for (int i=0;i<size;i++)
-		{
-			printf(" %02x",msg[i]);
-		}
-		printf("\n");
-
 		int err = snd_rawmidi_write(mHandleOut,msg,size);
 		snd_rawmidi_drain(mHandleOut);
 	}

@@ -3,11 +3,6 @@
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
- * This program is free s/*
- * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
- *
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -28,8 +23,9 @@
 
 namespace CLAM {
 
-MIDI2Melody::MIDI2Melody():mOutput("Output",this,1),
-							mTime("time",this)
+MIDI2Melody::MIDI2Melody()
+	: mOutput("Output",this),
+	  mTime("time",this)
 {
 	ConcreteConfigure(Control2DataConfig());
 }

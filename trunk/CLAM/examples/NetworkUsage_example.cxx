@@ -94,7 +94,7 @@ int main( int argc, char** argv )
 		network.ConnectPorts( "Modulator.Audio Output", "Audio Multiplier.Second Audio Input" );
 		// as you can see, the interface is ("processing_producer.out_port", "processing_consumer.in_port").
 		// Now the final connection from the multiplier to the audio output:
-		network.ConnectPorts( "Audio Multiplier.Audio Output", "Audio Mono Out.Input" );
+		network.ConnectPorts( "Audio Multiplier.Audio Output", "Audio Mono Out.Audio Input" );
 
 		network.Start();
 		// we begin a loop in which DoProcessings() method of network is called in order to execute the processings,
@@ -103,6 +103,8 @@ int main( int argc, char** argv )
 			network.DoProcessings();
 
 		network.Stop();
+
+//		network.Clear();
 
 		std::cout << "ok, now I know how the CLAM network works!" << std::endl;
 	}

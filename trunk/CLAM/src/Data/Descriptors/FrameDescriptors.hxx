@@ -43,7 +43,7 @@ class Frame;
 class FrameDescriptors : public Descriptor
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 9, Descriptor);
+	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 10, Descriptor);
 	/** Spectrum analyzed from the Audio input  */
 	DYN_ATTRIBUTE (0, public, SpectralDescriptors, SpectrumD);
 	/** Vector of peaks in spectral analysis  */
@@ -66,6 +66,9 @@ public:
 
 	/** Morphological descriptors */
 	DYN_ATTRIBUTE (8, public, MorphologicalFrameDescriptors, MorphologicalFrameD);
+
+	/** Frame Center Time is some times interesting to also have it in descriptors */	
+	DYN_ATTRIBUTE (9, public, TTime, CenterTime);	
 
 	//Note: some specific frame descriptors should be added
 public:

@@ -30,7 +30,6 @@
 #include "Err.hxx"
 #include "Assert.hxx"
 #include "ErrOutOfMemory.hxx"
-#include "EDataFormat.hxx"
 #include "Storage.hxx"
 #include "Component.hxx"
 #include "TypeInfo.hxx"
@@ -45,7 +44,7 @@
 
 namespace CLAM {
 
-#ifndef CLAM_USE_STL_ARRAY
+
 
 template <class T> class Array:public Component
 {
@@ -57,8 +56,7 @@ private:
 public:
 	Array(TSize size = 0,TSize step = 1)
 	{
-		mSize = 0;
-		mAllocSize = 0;
+		mSize = mAllocSize = 0;
 		mStep = step;
 		mpData = NULL;
 		Resize(size);
@@ -70,6 +68,9 @@ public:
 
 	Array(T* ptr,int size = 0)
 	{
+		CLAM_ASSERT( ptr!=NULL,
+			     "Array::Array( T*, int) : you cannot create a not-owning memory array "
+			     "without specifying a valid data pointer. ");
 		mSize = mAllocSize = size;
 		mStep = -1;
 		mpData = ptr;
@@ -91,6 +92,7 @@ public:
 	const char * GetClassName() const {return NULL;}
 
 	bool OwnsMemory() const {return mStep>=0; }
+	bool Empty() const { return mSize==0; }
 
 	TSize Size(void) const { return mSize; }
 	TSize SizeInBytes(void) const { return mSize*sizeof(T); }
@@ -99,7 +101,7 @@ public:
 
 	void SetSize(TSize size)
 	{
-		CLAM_ASSERT(size <= mAllocSize || !OwnsMemory(), msgSetSizeOutOfRange);
+		CLAM_ASSERT(size <= AllocatedSize() || !OwnsMemory(), msgSetSizeOutOfRange);
 		if (OwnsMemory())
 		{
 			if (size > mSize)
@@ -116,7 +118,12 @@ public:
 
 	void Resize(TSize newAllocSize)
 	{
-		CLAM_ASSERT(OwnsMemory(),"Array::Resize(): The array does not own its memory.");
+		CLAM_ASSERT(OwnsMemory(),
+			    "Array::Resize(): You cannot invoke this method on an array that "
+			    "does not own any memory" );
+		CLAM_ASSERT( newAllocSize >= 0,
+			     "Array::Resize(): You are trying to allocate a negative amount of "
+			     "space, which is a weird thing to do, isn't it?");
 
 		/* calculate the amount of bytes to allocate */
 		/* effectively resize the array by allocating more memory */
@@ -138,8 +145,8 @@ public:
 		
 		/* if the pointer to the end of the array is over then you're out of memory */
 		/* and an error message will be sent to the console */
-		if (mAllocSize && !mpData)
-			throw ErrOutOfMemory(mAllocSize*sizeof(T));
+		CLAM_ASSERT( AllocatedSize()==0 || mpData!=NULL,
+			     "Array::Resize() : Memory Allocation failed!" );
 	}
 
 	const T* GetPtr(void) const { return mpData; }
@@ -147,8 +154,9 @@ public:
 	
 	void SetPtr(T* ptr, int size = 0)
 	{
-		CLAM_ASSERT( !OwnsMemory() || mAllocSize==0, 
-					 "Array: SetPtr: the array is not empty. (mAllocSize>0)");
+		CLAM_ASSERT( !OwnsMemory() || mAllocSize == 0,
+			     "Array::SetPtr() : You are not allowed to invoke SetPtr() on"
+			     " an Array that owns memory or is not empty" );
 
 		mSize = mAllocSize = size;
 		mpData = ptr;
@@ -162,8 +170,6 @@ public:
 	inline void GiveChunk(int pos, int size, Array<T>&) const;
 
 	inline void CopyChunk(int pos, int size, Array<T>&) const;
-
-	EDataFormat Format() { return eFmtDefault; }
 
 	const T& operator [](const int& i) const
 	{
@@ -213,23 +219,33 @@ public:
 
 	Array<T>& operator = (const Array<T>& src)
 	{
-		int tocopy;
-		if (OwnsMemory())
+
+		if ( OwnsMemory() )
 		{
-			if (Size() != src.Size())
-				Resize(src.Size());
-			mStep = src.mStep;
-		} else {
-			CLAM_ASSERT(src.Size()<=mAllocSize,
-					"Cannot copy a larger array to an array that does not own it's memory!");
-			// important to leave mStep untouched: it indicates that the array !OwnsMemory
+			if ( Size() != src.Size() )
+				Resize( src.Size() );
+			if ( src.OwnsMemory() )
+				mStep = src.mStep;
+			else
+				mStep = 1;
 		}
-		tocopy = (src.Size()<Size())?src.Size():Size();
-		CopyDataBlock(0,tocopy,src.mpData);
-		InitializeCopyDataBlock(tocopy,src.Size(),src.mpData);
+		else
+		{
+			CLAM_ASSERT( AllocatedSize() >= src.Size(),
+				     "Array::RegionWrite() : source size exceeds the Region bounds" );
+			CLAM_ASSERT( GetPtr() != NULL, 
+				     "Array::operator= : if you want to create a not memory owning array "
+				     "from one that does own memory, use instead Array::SetPtr() method");
+		}
+
+		int tocopy = (src.Size()<Size())?src.Size():Size();
+		CopyDataBlock(0,tocopy,src.GetPtr());
+		InitializeCopyDataBlock(tocopy,src.Size(),src.GetPtr());
 		mSize=src.Size();
+
 		return *this;
-	}
+
+	}      
 
 	Array<T>& operator += (const Array<T>& src)
 	{
@@ -451,29 +467,11 @@ void Array<T>::InitializeCopyDataBlock(int first, int last, int src_first, const
 		new (&mpData[i]) T(src[j++]);
 }
 
-#define CLAM_NUMERIC_ARRAY_INITIALIZATION(Type)          \
-template<>                                              \
-inline void Array<Type>::InitializeElement(int i)              \
-{                                                       \
-    mpData[i]=0;                                        \
-}                                                       \
-
-
-CLAM_NUMERIC_ARRAY_INITIALIZATION(unsigned long)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(unsigned int)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(unsigned short)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(unsigned char)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(signed long)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(signed int)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(signed short)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(signed char)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(double)
-CLAM_NUMERIC_ARRAY_INITIALIZATION(float)
 
 template<class T>
 void Array<T>::DestroyDataBuffer()
 {
-	if (mStep!=-1)
+	if (OwnsMemory())
 	{
 		UninitializeDataBlock(0,mSize);
 		free(mpData);
@@ -531,63 +529,6 @@ void Array<T>::DeleteElemInDataBuffer(int position)
 	(&mpData[mSize-1])->~T();
 }
 
-/** And fast spetialization for basic types */
-
-#define CLAM_FAST_ARRAY_SPECIALIZATIONS(TYPE)                           \
-template<>                                                             \
-inline void Array<TYPE >::CopyDataBlock(int first, int last,                  \
-                                 const TYPE *src)                      \
-{                                                                      \
-    if (last>first)                                                    \
-        memcpy(&mpData[first],&src[first],                             \
-               sizeof(TYPE)*(last-first));                             \
-}                                                                      \
-template<>                                                             \
-inline void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
-                                           const TYPE *src)            \
-{                                                                      \
-    if (last>first)                                                    \
-        memcpy(&mpData[first],&src[first],                             \
-               sizeof(TYPE)*(last-first));                             \
-}                                                                      \
-template<>                                                             \
-inline void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
-                                           int src_first,              \
-                                           const TYPE *src)            \
-{                                                                      \
-    if (last>first)                                                    \
-        memcpy(&mpData[first],&src[src_first],                         \
-               sizeof(TYPE)*(last-first));                             \
-}                                                                      \
-template<>                                                             \
-inline void Array<TYPE >::ResizeDataBuffer(int new_size)                      \
-{                                                                      \
-    mpData = (TYPE*) realloc(mpData,new_size*sizeof(TYPE));            \
-}                                                                      \
-template<>                                                             \
-inline void Array<TYPE >::InsertElemInDataBuffer(int where)                   \
-{                                                                      \
-    memmove(&mpData[where+1],&mpData[where],                           \
-            (mSize-where)*sizeof(TYPE));                               \
-}                                                                      \
-template<>                                                             \
-inline void Array<TYPE >::DeleteElemInDataBuffer(int where)                   \
-{                                                                      \
-    memmove(&mpData[where],&mpData[where+1],                           \
-            (mSize-where-1)*sizeof(TYPE));                             \
-}                                                                      \
-
-CLAM_FAST_ARRAY_SPECIALIZATIONS(unsigned long)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(unsigned int)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(unsigned short)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(unsigned char)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(signed long)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(signed int)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(signed short)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(signed char)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(double)
-CLAM_FAST_ARRAY_SPECIALIZATIONS(float)
-
 
 template <class T> inline Array<T> operator + (
 	const Array<T>& a,const Array<T>& b)
@@ -608,278 +549,7 @@ template <class T> inline bool operator == (
 	return true;
 }
 
-// Format specializations. Based on EDataFormat.hxx
-// Warning: This should be architecture dependent code.
-template<> inline EDataFormat Array<int>::Format() { return eFmtS32L; }
-template<> inline EDataFormat Array<short>::Format() { return eFmtS16L; }
-template<> inline EDataFormat Array<float>::Format() { return eFmtF32B; }
-template<> inline EDataFormat Array<double>::Format() { return eFmtF64B; }
 
-
-
-#else // CLAM_USE_STL_ARRAY
-
-	#include <vector>
-
-
-	template<class T>
-	class Array : public Component, public std::vector<T> {
-	public:
-		typedef std::vector<T>::iterator iterator;
-		typedef std::vector<T>::const_iterator const_iterator;
-		Array(TSize size = 0);
-		Array(T* ptr,int size = 0);
-		inline void  Init();
-
-		inline bool  OwnsMemory() const;
-		inline TSize Size() const;
-		inline TSize SizeInBytes() const;
-		inline TSize AllocatedSize() const;
-		inline TSize AllocatedSizeInBytes() const;
-
-		inline void  SetSize(TSize size);
-		inline void  Resize(TSize size);
-
-		inline const T& operator [](const int& i) const;
-		inline T& operator [](const int& i);
-
-		inline const T* GetPtr(void) const;
-		inline T* GetPtr(void);
-		inline void SetPtr(T* ptr);
-
-		inline TSize GetStep();
-		inline void SetStep(TSize step);
-
-		inline void AddElem(const T& elem);
-		inline void InsertElem(int pos, const T& elem);
-		inline void DeleteElem(int where);
-		inline Array<T>& operator += (const Array<T>& src);
-
-		inline void Apply( T (*f)(T,int),int parameter );
-
-		void StoreOn(Storage & storage) const;
-		void LoadFrom(Storage & storage);
-
-		// Error messages, to ease tests a little while we decide
-		// about error codes.
-		static const char *msgSetSizeOutOfRange;
-		static const char *msgIndexOutOfRange;
-		static const char *msgInsertOutOfRange;
-		static const char *msgDeleteOutOfRange;
-
-	private:
-
-	void StoreMemberOn(void * item, Storage & storage) const;
-	void StoreMemberOn(Component * item, Storage & storage) const;
-	bool LoadMemberFrom(void * item, Storage & storage);
-	bool LoadMemberFrom(Component * item, Storage & storage);
-
-	};
-
-template<class T>
-Array<T>::Array(TSize size)
-{ 
-	if (size)
-		reserve(size); 
-}
-
-template<class T>
-void Array<T>::Init()
-{
-	reserve(0);
-	resize(0);
-}
-
-template<class T>
-Array<T>::Array(T* ptr,int size) 
-{
-	CLAM_ASSERT(false,"Array::Array(T*): Not implemented");
-}
-
-template<class T>
-bool Array<T>::OwnsMemory() const 
-{
-	return true; 
-}
-
-template<class T>
-TSize Array<T>::Size() const 
-{
-	return size(); 
-}
-
-template<class T>
-TSize Array<T>::SizeInBytes() const 
-{
-	return size() * sizeof(T); 
-}
-
-template<class T>
-TSize Array<T>::AllocatedSize() const 
-{
-	return capacity(); 
-}
-
-template<class T>
-TSize Array<T>::AllocatedSizeInBytes() const 
-{
-	return capacity() * sizeof(T); 
-}
-
-template<class T>
-void Array<T>::SetSize(TSize size) 
-{
-	CLAM_ASSERT(size <= ((signed)capacity()) ,msgSetSizeOutOfRange);
-	resize(size); 
-}
-
-template<class T>
-void Array<T>::Resize(TSize size) 
-{
-//	CLAM_ASSERT(mStep != -1,"Array::Resize(): Array does not own its memory");
-	reserve(size); 
-}
-
-template<class T>
-const T& Array<T>::operator [](const int& i) const
-{	
-	CLAM_DEBUG_ASSERT(i>=0 && i<(signed)Size(),msgIndexOutOfRange);
-	return std::vector<T>::operator[](i); 
-}
-
-template<class T>
-T& Array<T>::operator [](const int& i) 
-{	
-	CLAM_DEBUG_ASSERT(i>=0 && i<(signed)size(),msgIndexOutOfRange);
-	return std::vector<T>::operator[](i); 
-}
-
-template<class T>
-const T* Array<T>::GetPtr(void) const 
-{
-	return &(*this)[0];
-}
-
-template<class T>
-T* Array<T>::GetPtr(void) 
-{
-	return &(*this)[0];
-}
-
-template<class T>
-void Array<T>::SetPtr(T* ptr) 
-{
-	CLAM_ASSERT(false,"Array::SetPtr(T*): Not implemented");
-}
-
-template<class T>
-TSize Array<T>::GetStep() 
-{
-	CLAM_ASSERT(false,"Array::GetStep(): Not implemented");
-}
-
-template<class T>
-void Array<T>::SetStep(TSize step) 
-{
-	CLAM_ASSERT(false,"Array::SetStep(int): Not implemented");
-}
-
-template<class T>
-void Array<T>::AddElem(const T& elem) 
-{
-//	CLAM_ASSERT(mStep != -1,"Array::AddElem(): Array does not own its memory");
-	push_back(elem);
-}
-
-template<class T>
-void Array<T>::InsertElem(int pos, const T& elem) 
-{
-	CLAM_ASSERT( (pos>=0) && (pos<(signed)size()) ,msgInsertOutOfRange);
-//	CLAM_ASSERT(mStep != -1,"Array::InsertElem(): Array does not own its memory");
-	insert(iterator(&(operator[](pos))),elem);
-}
-
-template<class T>
-void Array<T>::DeleteElem(int where) 
-{
-	CLAM_ASSERT( (where>=0) && (where < ((signed)size())) ,msgDeleteOutOfRange);
-	erase(iterator(&(operator[](where))));
-}
-
-template<class T>
-Array<T>& Array<T>::operator += (const Array<T>& src) 
-{
-//	CLAM_ASSERT(mStep != -1,"Array::+=(): Array does not own its memory");
-	insert(end(),src.begin(),src.end());
-	return *this;
-}
-
-template<class T>
-void Array<T>::Apply( T (*f)(T,int),int parameter )
-{
-	int i; 
-	int s=size();
-	for (i=0; i<s; i++)
-		(*this)[i] = f( (*this)[i], parameter );
-}
-
-template<class T>
-void Array<T>::StoreOn(Storage & storage) const
-{
-//	CLAM_ASSERT(mpData,"Array contains no buffer")
-	int mSize = Size();
-	T* mpData = GetPtr();
-	for (int i=0; i<mSize; i++) {
-		StoreMemberOn(&(mpData[i]), storage);
-	}
-}
-
-template <class T>
-void Array<T>::LoadFrom(Storage & storage)
-{
-//	CLAM_ASSERT(mpData,"Array contains no buffer")
-	while (true) {
-		T elem;
-		if (!LoadMemberFrom(&(elem), storage)) return;
-		AddElem(elem);
-	}
-}
-
-
-template<class T>
-void Array<T>::StoreMemberOn(void * item, Storage & storage) const
-{
-	XMLAdapter<T> adapter(*(T*)item);
-	storage.Store(adapter);
-}
-
-template<class T>
-void Array<T>::StoreMemberOn(Component * item, Storage & storage) const
-{
-	const char* className = item->GetClassName();
-	const char* label = className? className : "Element";
-	XMLComponentAdapter adapter(*item, label, true);
-	storage.Store(adapter);
-}
-
-template<class T>
-bool Array<T>::LoadMemberFrom(void * item, Storage & storage) 
-{
-	XMLAdapter<T> adapter(*(T*)item);
-	return storage.Load(adapter);
-}
-
-template<class T>
-bool Array<T>::LoadMemberFrom(Component * item, Storage & storage) 
-{
-	const char* className = item->GetClassName();
-	const char* label = className? className : "Element";
-	XMLComponentAdapter adapter(*item, label, true);
-	return storage.Load(adapter);
-}
-
-
-#endif // CLAM_USE_STL_ARRAY
 
 typedef Array<TData> DataArray;
 

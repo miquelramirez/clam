@@ -1,9 +1,9 @@
 #ifndef _SinTrackingConfig_
 #define _SinTrackingConfig_
 
-namespace CLAM {
+#include "ProcessingConfig.hxx"
 
-	#include "ProcessingConfig.hxx"
+namespace CLAM {
 
 	/**
 	 * Config class for the SinTracking Processing

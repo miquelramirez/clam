@@ -1,10 +1,14 @@
+#if USE_OGGVORBIS != 1
+#error USE_OGGVORBIS was not set to 1 in your settings.cfg file, but you are including files that require this. Please fix your settings.cfg
+#endif
+
 #ifndef __OGGVORBISAUDIOSTREAM__
 #define __OGGVORBISAUDIOSTREAM__
 
 #include <string>
 #include <vorbis/vorbisfile.h>
 #include <vorbis/vorbisenc.h>
-#include "CLAM_deque.hxx"
+#include <deque>
 #include <vector>
 #include "AudioCodecs_Stream.hxx"
 #include "DataTypes.hxx"

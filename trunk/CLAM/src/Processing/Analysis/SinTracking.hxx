@@ -6,6 +6,9 @@
 #include "SpectralPeakArray.hxx"
 #include "Array.hxx"
 #include "SinTrackingConfig.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
 
 namespace CLAM {
 
@@ -45,6 +48,10 @@ namespace CLAM {
 		 */
 		virtual bool ConcreteConfigure(const ProcessingConfig&);
 
+		InPort<SpectralPeakArray> mInput;
+		OutPort<SpectralPeakArray> mOutput;
+		InControl mFundFreqValue;
+
 	public:
 
 		SinTracking();
@@ -56,8 +63,6 @@ namespace CLAM {
 
 		//Peak Continuation for one frame
 		bool Do(const SpectralPeakArray& iPeakArray, SpectralPeakArray& oPeakArray);
-        bool Do(const SpectralPeakArray& iPeakArray, SpectralPeakArray& oPeakArray, TData fn);
-        
 		bool Do(void);
 
 		int GetnTracks() const {return mNextTrackId;};

@@ -4,14 +4,14 @@ namespace CLAM
 {
 	SMSTransformation::SMSTransformation()
 		: mAmountCtrl("Amount",this), mOnCtrl("On",this), 
-		mInput("Input",this,1), mOutput("Output",this,1), mUseTemporalBPF( false )
+		mInput(0), mOutput(0), mUseTemporalBPF( false )
 	{
 		mCurrentInputFrame=0;
 	}
 
 	SMSTransformation::SMSTransformation(const SMSTransformationConfig& c)
 		:mAmountCtrl("Amount",this),mOnCtrl("On",this),
-		mInput("Input",this,1),mOutput("Output",this,1), mUseTemporalBPF( false )
+		mInput(0),mOutput(0), mUseTemporalBPF( false )
 	{
 		mCurrentInputFrame=0;
 		Configure(c);
@@ -43,12 +43,13 @@ namespace CLAM
 
 	bool SMSTransformation::IsLastFrame()
 	{
-		bool isLast=mInput.GetData().mCurrentFrameIndex>=mInput.GetData().GetnFrames();
+		bool isLast=mInput->mCurrentFrameIndex >= mInput->GetnFrames();
+		
 		if(isLast)
 		{
-			while(mOutput.GetData().GetnFrames()>=mOutput.GetData().mCurrentFrameIndex)
+			while(mOutput->GetnFrames()>=mOutput->mCurrentFrameIndex)
 			{
-				mOutput.GetData().DeleteFrame(mOutput.GetData().GetnFrames()-1);
+				mOutput->DeleteFrame(mOutput->GetnFrames()-1);
 			}
 		}
 		return isLast;

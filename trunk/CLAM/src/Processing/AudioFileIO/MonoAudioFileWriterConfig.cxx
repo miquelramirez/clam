@@ -26,5 +26,7 @@ namespace CLAM
 
 	void MonoAudioFileWriterConfig::DefaultInit()
 	{
+		AddAll();
+		UpdateData();
 	}
 }

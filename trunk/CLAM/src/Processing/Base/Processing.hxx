@@ -24,10 +24,6 @@
 #define _Processing_hxx_
 
 
-#include "DynamicType.hxx"
-#include "Component.hxx"
-#include "InControl.hxx"
-#include "OutControl.hxx"
 #include "ErrProcessingObj.hxx"
 #include "PublishedInControls.hxx"
 #include "PublishedOutControls.hxx"
@@ -36,7 +32,6 @@
 #include "ProcessingConfig.hxx"
 
 
-#include <vector>
 #include <list>
 #include <typeinfo>
 #include <string>
@@ -44,40 +39,145 @@
 namespace CLAM {
 
 	class Processing;
-	class Port;
-	class InPort;
-	class OutPort;
+	class InPortBase;
+	class OutPortBase;
+	class InControl;
+	class OutControl;
 	class ProcessingComposite;
 
 	/**
-	 * This is the base of all the CLAM processing object classes.
+	 * Connects two ports of two processings selecting them by the port name.
+	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
+	 */
+	void ConnectPorts(
+			Processing & sender, const std::string & outPortName, 
+			Processing & receiver, const std::string & inPortName );
+	/**
+	 * Connects two ports of two processings selecting them by the port number.
+	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
+	 */
+	void ConnectPorts(
+			Processing & sender, unsigned outPortNumber, 
+			Processing & receiver, unsigned inPortNumber );
+	/**
+	 * Free function that connects two controls.
+	 * Short hand for sender.GetOutControls().GetByNumber(outControlNumber).AddLink(&receiver.GetOutControls().GetByNumber(inControlNumber))
+	 */
+	void ConnectControls(
+			Processing & sender, unsigned outControlNumber, 
+			Processing & receiver, unsigned inControlNumber );
+	/**
+	 * Connects two controls of two processings selecting them by the control name.
+	 * Short hand for sender.GetOutControls().GetByName(outControlName).AddLink(&receiver.GetOutControls().GetByName(inControlName))
+	 */
+	void ConnectControls(
+			Processing & sender, const std::string & outControlName, 
+			Processing & receiver, const std::string & inControlName );
+		
+	/**
+	 * The base class for all the CLAM processing object classes.
+	 *
+	 * Processing is the base class for all the CLAM processing object classes.
+	 * It defines their shared interface and contains common infrastructure.
+	 * Processings are the building blocks for any CLAM system,
+	 * they are an abstraction of an audio/music processing step.
 	 * 
-	 * It holds common information to all processings: lists of ports,
-	 * lists of controls, name, etc.  */
-	class Processing: public Component {
+	 * Whenever the Do method is called, the processing consumes
+	 * data tokens from its input ports and produces data tokens 
+	 * for its output ports performing a single processing step.
+	 * Each port is related to a given C++ data type and the number
+	 * of tokens that are seen/consumed/produced at every Do step
+	 * is flexible, even at running mode.
+	 *
+	 * A processing can also receive an event from another one in an
+	 * asyncronous way in order to change the way the processing is
+	 * done. 
+	 * Asyncronous comunication is done using the Control abstraction.
+	 * 
+	 * @see InPortBase, OutPortBase, InControl, OutControl
+	 *
+	 * An initial setup is needed before using any processing.
+	 * You can specify this initial setup by providing the
+	 * procesing with a configuration object (an instance of the
+	 * proper ProcessingConfig subclass) containing all the
+	 * parameters.
+	 *
+	 * @see ProcessingConfig
+	 *
+	 * @dot
+	 * digraph example
+	 * {
+	 * 	bgcolor="#ffffaa";
+	 * 	rankdir=LR;
+	 * 	node [shape=ellipse, style=filled, fillcolor="#ccffcc", color="#558855", fontname=Arial, fontsize=10];
+	 * 	edge [color=red ];
+	 * 	Ready        -> Running [ label="Start"     URL="\ref Start" ];
+	 * 	Unconfigured -> Ready   [ label="Configure" URL="\ref Configure" ];
+	 * 	Running      -> Ready   [ label="Stop"      URL="\ref Stop" ];
+	 * 	Running      -> Running [ label="Do"        URL="\ref Do" ];
+	 * }
+	 * @enddot
+	 */
+	class Processing {
 	public:
-		/* Processing Object possible execution states.
-		 */
+		/** Processing Object possible execution states. */
 		typedef enum {
 			Unconfigured=0,
-			Disabled,
+			Disabled, ///< @deprecated The disabled state is not used any more
 			Ready,
 			Running
 		} ExecState;
 
-// Attributes:
-	private:
-		/** Pointer to the parent (composite) processing object, or 0 */
-		ProcessingComposite *mpParent;
+// Basic usage interface:
 
-		/** Processing object execution state */
-		ExecState mState;
+	public:
 
-	protected:
+		/** Configuration change method.
+		 *  This is the method to be used in order to update the
+		 *  configuration of a processing object. Note that the object
+		 *  must NOT be running when calling this method.
+		 *  This method performs some execution state checkings and
+		 *  updates, and calls the ConcreteConfigure method of the
+		 *  concrete class to perform the actual configuration.
+		 *  @param config Reference to the configuration object.
+		 *  @throw ErrProcessingObj if the processing object is in
+		 *  running or disabled state, or if the argument is not
+		 *  an object of the configuration class matching the concrete
+		 *  processing class of the processing object.
+		 */
+		bool Configure(const ProcessingConfig& config);
 
-		/** Status description, for debugging */
-		std::string mStatus;
-	protected:
+		/** Method to turn the object into running state.
+		 * This method must be called before any call to Do() methods.
+		 * @pre the processing object is in ready state
+		 */
+		void Start(void);
+
+		/**
+		 * Supervised mode execution method (using ports)
+		 * @return A boolean telling whether it has been output
+		 */
+		virtual bool Do(void)=0;
+
+		/** Method to put the object out of running state When in
+		 * execution mode, this method must be called before any
+		 * further call to Configure() methods
+		 * @pre The processing object is in runnig state (or disabled).
+		 */
+		void Stop(void);
+
+		Processing();
+		virtual ~Processing();
+
+// Overridable interface:
+	public:
+
+		/** Override it in every subclass and retur the name of that class */
+		virtual const char * GetClassName() const = 0;
+		
+		/** Override this method if your processing cannot process inplace*/
+		virtual bool CanProcessInplace() { return true; }
+
 		/** Configuration method interface.
 		 * The Processing base class forces all the concrete
 		 * classes derived from it to implement this method, which
@@ -96,30 +196,17 @@ namespace CLAM {
 		 * consistent state, and can be executed.
 		 * @throw This method must throw a bad_cast exception if the
 		 * argument is not an object of the expected configuration class.
+		 * @todo ConcreteConfig should be protected
 		 * */
-		virtual bool ConcreteConfigure(const ProcessingConfig&) = 0;
-
+		virtual bool ConcreteConfigure(const ProcessingConfig&) = 0; //TODO should be protected
+		
+	protected:
 		/**
 		 * Processing objects have to redefine this method when starting
 		 * them implies some internal changes. ie: adquiring resources.
 		 * @returns Whether start changes have been successful
 		 */
 		virtual bool ConcreteStart() {return true;};
-
-
-		/**
-		 * Helper template to convert a reference to a ProcessingConfig to the concrete
-		 * ProcessingConfig specified on the first parameter.
-		 * @param concrete The copy destination (it forces the runtime type for abstract)
-		 * @param abstract A reference to the configuration to be copied
-		 * @pre The object runtime type must be exactly the type required by the first parameter
-		 */
-		template <typename ConcreteConfig>
-		void CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const {
-			CLAM_ASSERT(typeid(ConcreteConfig)==typeid(abstract), 
-				"Configuring a Processing with a configuration not being the proper type.");
-			concrete = static_cast<const ConcreteConfig &>(abstract);
-		}
 
 		/**
 		 * Processing objects have to redefine this method when stoping
@@ -128,98 +215,28 @@ namespace CLAM {
 		 */
 		virtual bool ConcreteStop() {return true;};
 
-		void SetOrphan();
-
-		/**
-		 * An special Configure case for TopLevelProcessing.
-		 * @todo review its utility and refactor code duplication
-		 */
-		void ConfigureOrphan(const ProcessingConfig &c);
-
-		bool AbleToExecute(void) const
-		{
-			/* this looks more complicated than what it is, but that's because
-			 * we have to work around a gcc bug where the running operator +
-			 * is called for string + string. ideally, we would just use
-			 * CLAM_DEBUG_ASSERT
-			 */
-			CLAM_BEGIN_DEBUG_CHECK
-				if (GetExecState() == Unconfigured ||
-				    GetExecState() == Ready)
-				{
-					std::string err(GetClassName());
-					err += ": Do(): Not in execution mode - did you call Start on this "
-							"object, the composite it is in, or the ToplevelProcessing singleton?";
-
-					CLAM_DEBUG_ASSERT( false, err.c_str() );
-				}
-			CLAM_END_DEBUG_CHECK
-
-			return GetExecState() != Disabled;
-		}
-
-
+// Public interface:	
 	public:
-		Processing();
-
-		virtual ~Processing();
-
-		/** Method to turn the object into running state.
-		 * This method must be called before any call to Do() methods.
-		 * @pre the processing object is in ready state
-		 */
-		void Start(void);
-
-		/** Method to put the object out of running state When in
-		 * execution mode, this method must be called before any
-		 * further call to Configure() methods
-		 * @pre The processing object is in runnig state (or disabled).
-		 */
-		void Stop(void);
-	
-
-	public:
-		bool CanDoUsingPorts()
-		{	
-			if(GetExecState()!=Running)
-				return false;
-			return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
-		}
-
-		/** Override this method if your processing cannot process inplace*/
-		virtual bool CanProcessInplace() {return true;}
-		
+		/** Check that Supervised Do() can be safely called */
+		bool CanConsumeAndProduce();
 
 		/**
-		 * Supervised mode execution method (using ports)
-		 * @return A boolean telling whether it has been output
-		 */
-		virtual bool Do(void)=0;
-
-		/** Configuration change method.
-		 *  This is the method to be used in order to update the
-		 *  configuration of a processing object. Note that the object
-		 *  must NOT be running when calling this method.
-		 *  This method performs some execution state checkings and
-		 *  updates, and calls the ConcreteConfigure method of the
-		 *  concrete class to perform the actual configuration.
-		 *  @param Reference to the configuration object.
-		 *  @throw ErrProcessingObj if the processing object is in
-		 *  running or disabled state, or if the argument is not
-		 *  an object of the configuration class matching the concrete
-		 *  processing class of the processing object.
-		 */
-		bool Configure(const ProcessingConfig&);
-
-		/**
-		 *  These two methods, are temporary, very prone to disappear
+		 *  This method, is temporary, very prone to disappear
 		 *  soon, for enabling clients that know concrete Processing object
 		 *  type to call safely the ConcreteConfigure(). See the functional
 		 *  test of AudioFileIn and and its usage example for more details
 		 *  on when and how to use them.
 		 */
-		void PreConcreteConfigure( const ProcessingConfig& c);
-		void PostConcreteConfigure();
+		void PreConcreteConfigure( const ProcessingConfig& c); //TODO depracate it
+		
+		/**
+		 *  This method, is temporary, very prone to disappear
+		 *  soon, for enabling clients that know concrete Processing object
+		 *  type to call safely the ConcreteConfigure(). See the functional
+		 *  test of AudioFileIn and and its usage example for more details
+		 *  on when and how to use them.
+		 */
+		void PostConcreteConfigure(); //TODO depracate it
 
 		/** Configuration getter.
 		 * Gets the configuration parameters used to create the object.
@@ -230,183 +247,130 @@ namespace CLAM {
 		 */
 		virtual const ProcessingConfig &GetConfig() const = 0;
 
-		/* State getter.
+		/** State getter.
 		 * Returns the object execution state. This may be used for
 		 * debugging purposes, and should also be used inside the
 		 * execution (Do) methods to confirm that the object is either
 		 * in running or in disabled state.
 		 */
-		ExecState GetExecState() const {return mState;}
+		ExecState GetExecState() const {return mExecState;}
+		
 
-		void SetExecState( const ExecState& s ) { mState = s; }
-
-		void PublishOutPort(OutPort* out);
-		void PublishInPort(InPort* in);
+		void PublishOutPort(OutPortBase* out);
+		void PublishInPort(InPortBase* in);
 		void PublishOutControl(OutControl* out);
 		void PublishInControl(InControl* in);
-//		void LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const;// throw out_of_range;
-//		int DoControl(unsigned id, TControlData val) const; // throw out_of_range;
-//		int SendControl(unsigned id, TControlData val) const; // throw out_of_range;
-//		InControl* GetInControl(unsigned inId) const;
-//		OutControl* GetOutControl(unsigned inId) const;
 
-		/** Processing object composite iterator */
-		typedef std::list<Processing*>::iterator iterator;
-
-		/** Null iterator, returned by default by non-composite POs. */
-		static const iterator null_iterator;
-
-		/** Processing object agregate iterator interface.
-		 * <p> Default "leaf" implementation.
-		 * <p> This method is overriden in the ProcessingComposite
-		 * class.
-		 */
-		virtual iterator composite_begin() {return null_iterator;}
-
-		/** Processing object agregate iterator interface.
-		 * <p> Default "leaf" implementation.
-		 * <p> This method is overriden in the ProcessingComposite
-		 * class.
-		 */
-		virtual iterator composite_end() {return null_iterator;}
-
-		virtual void FlattenObjects(std::list<Processing*> &l) {l.push_back(this);}
-
-		/** Attribute access method */
-		ProcessingComposite *GetParent() const {return mpParent;}
-		/** Attribute access method */
 		void SetParent(Processing *p);
 
-		/** Accesor */
-		const std::string &GetStatus() const {return mStatus;}
-
-		// Input Output related methods.
-		// They are not mandatory; a default implementation is given.
-		// Most of them need only be implemented to allow certain
-		// optimisations in the processing object code.
-
-		/** Method used by ports to notify an externally requested
-		 * change in their prototype.
-		 */
-		virtual bool SetPrototypes() {return false;}
-
-		/** Method which tells the object to forget all the input/output
-		 * prototypes, and to revert to the default unoptimised state.
-		 */
-		virtual bool UnsetPrototypes() {return false;}
-
-		/** This method returns true if the processing object may be
-		 * disabled for a certain amount of time. This usually happens
-		 * if the object execution methods do not change its
-		 * internal state.
-		 * @todo: Ports will use this method to know if they may
-		 * propagate the disable request to other objects connected to
-		 * the inputs of this one.
-		 */
-		virtual bool MayDisableExecution() const {return false;}
-
-		/** Method used by output ports to notify an external
-		 *  execution-disable message.
-		 */
-		bool DisableExecution() {return false;}
-
-		/** Method used by output ports to notify an external
-		    execution-enable message. */
-		bool EnableExecution() {return false;}
-
-		/** This is just a  DRAFT.
-		 * For some reason the last written data was lost and someone
-		 * has requested it to be re-sent. The processing object may:
-		 *   - Resend the previous data
-		 *   - Ask its inputs for their previous outputs
-		 *   - Ignore the request.
-		 *   - throw an exception
-		 */
-		virtual bool LostData(int PortID) {return false;}
-
-		/**
-		 * Processings must redefine this function in order to save
-		 * its running state.
-		 * By defining StoreOn and LoadFrom properly in every Processing
-		 * of your system you can freeze the whole processing network
-		 * execution status onto an Storage in order to later resume its
-		 * execution.
-		 * You must to store any variable that is kept as status inside
-		 * the processing: ie. control values, history buffers...
-		 * @see Storage
-		 * @see Component::StoreOn
-		 */
-		virtual void StoreOn(Storage & store) const
-		{
-			CLAM_ASSERT(false, "Processing::StoreOn() not yet implemented");
-		}
-
-		/**
-		 * Processings must redefine this function in order to restore
-		 * its running state.
-		 * By defining StoreOn and LoadFrom properly in every Processing
-		 * of your system you can freeze the whole processing network
-		 * execution status onto an Storage in order to later resume its
-		 * execution.
-		 * You must to load any variable that is kept as status inside
-		 * the processing: ie. control values, history buffers...
-		 * @see Storage
-		 * @see Component::LoadFrom
-		 */
-		virtual void LoadFrom(Storage & store)
-		{
-			CLAM_ASSERT(false, "Processing::LoadFrom() not yet implemented");
-		}
-
-	public:
 		/**
 		 * This method is used to determine if a given processing can change its interface of ports/controls after
 		 * its construction (i.e. changing the name of ports in ConcreteConfigure). If a concrete processing
 		 * can do this, it should reimplement the method returning true, in order to notify networks, graphical
 		 * interfaces, etc.
 		 */
-		virtual bool ModifiesPortsAndControlsAtConfiguration()
-		{ 
-			return false;
-		}
-		
-		PublishedInControls& GetInControls()
-		{
-			return mPublishedInControls;
-		}
-		
-		PublishedOutControls& GetOutControls()
-		{
-			return mPublishedOutControls;
-		}
+		virtual bool ModifiesPortsAndControlsAtConfiguration()	{ return false;	}
 	
-		PublishedInPorts& GetInPorts()
+		InPortBase & GetInPort( const std::string & name )
 		{
-			return mPublishedInPorts;
+			return mPublishedInPorts.Get(name);
 		}
-		PublishedOutPorts& GetOutPorts()
+		OutPortBase & GetOutPort( const std::string & name )
 		{
-			return mPublishedOutPorts;
+			return mPublishedOutPorts.Get(name);
 		}
+		InControl & GetInControl( const std::string & name )
+		{
+			return mPublishedInControls.Get(name);
+		}		
+		OutControl & GetOutControl( const std::string & name )
+		{
+			return mPublishedOutControls.Get(name);
+		}
+
+		/** Accessor to published Controls manager */
+		PublishedInControls& GetInControls() { return mPublishedInControls; }
+		
+		/** Accessor to published Controls manager */
+		PublishedOutControls& GetOutControls() { return mPublishedOutControls; }
+		
+		/** Accessor to published Ports manager */
+		PublishedInPorts& GetInPorts() { return mPublishedInPorts; }
+		
+		/** Accessor to published Portss manager */
+		PublishedOutPorts& GetOutPorts() { return mPublishedOutPorts; }
+
+		/** Returns a string describing configuration errors if any */
+		const std::string& GetConfigErrorMessage() const { return mConfigErrorMessage; }
+	
+// Helpers only for subclasses
+	protected:
+		
+		/** Method to prepend a message to mConfigErrorMessage
+		* CLAM_ASSERT */
+		void AddConfigErrorMessage( const std::string& msg );
+	
+		/** In debug-mode checks that the processing is configured and started. 
+		 * And always checks it's not disabled */
+		bool AbleToExecute(void) const;
+
+		/**
+		 * Helper template to convert a reference to a ProcessingConfig to the concrete
+		 * ProcessingConfig specified on the first parameter.
+		 * @param concrete The copy destination (it forces the runtime type for abstract)
+		 * @param abstract A reference to the configuration to be copied
+		 * @pre The object runtime type must be exactly the type required by the first parameter
+		 */
+		template <typename ConcreteConfig>
+		void CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const;
+
+// Attributes:
+	protected:
+		/** Pointer to the parent (composite) processing object, or 0 */
+		ProcessingComposite *mpParent;
+
+		/** Processing object execution state */
+		ExecState mExecState;
+
+		/** Status description, for debugging */
+		std::string mConfigErrorMessage;
+
 
 	private:
 		PublishedInControls mPublishedInControls;
 		PublishedOutControls mPublishedOutControls;
 		PublishedInPorts mPublishedInPorts;
 		PublishedOutPorts mPublishedOutPorts;
-
-	private:
-		/* Methods to prepend a message to mStatus, truncate if necesary,
-		** and return a static char [] , used for passing the status to
-		** CLAM_ASSERT 
-		*/
-		const char* AddStatus(const char* a);
-		const char* AddStatus(const std::string& a);
-		std::string ComposeAssertMessage( std::string msg );
-
 		bool  mPreconfigureExecuted;
 	};
 
+	
+
+// -----------------------------------------------------------------------------------------------	
+// Inline implementations
+
+inline bool Processing::AbleToExecute(void) const
+{
+	CLAM_BEGIN_DEBUG_CHECK
+		if (GetExecState() == Unconfigured ||
+		    GetExecState() == Ready)
+		{
+			std::string err(GetClassName());
+			err += ": Do(): Not in execution mode - did you call Start on this "
+					"object, the composite it is in, or the ToplevelProcessing singleton?";
+				CLAM_DEBUG_ASSERT( false, err.c_str() );
+		}
+	CLAM_END_DEBUG_CHECK
+	return GetExecState() != Disabled;
+}
+
+template <typename ConcreteConfig>
+inline void Processing::CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const 
+{
+	CLAM_ASSERT(typeid(ConcreteConfig)==typeid(abstract), 
+		"Configuring a Processing with a configuration not being the proper type.");
+	concrete = static_cast<const ConcreteConfig &>(abstract);
+}
 
 };//namespace CLAM
 

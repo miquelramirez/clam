@@ -18,12 +18,14 @@ namespace CLAMTest
 	{
 		CPPUNIT_TEST_SUITE( AudioFileTest );
 
-		CPPUNIT_TEST( testSetLocation_FileExists_and_Is_PCM );
-		CPPUNIT_TEST( testSetLocation_FileExists_and_Is_OggVorbis );
-		CPPUNIT_TEST( testSetLocation_FileExists_and_Is_Mpeg );
-		CPPUNIT_TEST( testSetLocation_FileExists_NotSpurious_Mpeg );
+		CPPUNIT_TEST( testOpenExisting_FileExists_and_Is_PCM );
+		CPPUNIT_TEST( testOpenExisting_FileExists_and_Is_OggVorbis );
+		CPPUNIT_TEST( testOpenExisting_FileExists_and_Is_Mpeg );
+		CPPUNIT_TEST( testOpenExisting_FileExists_NotSpurious_Mpeg );
 		
-		CPPUNIT_TEST( testSetLocation_FileDoesNotExist_UnrecognizedFormat );
+		CPPUNIT_TEST( testOpenExisting_FileDoesNotExist_UnrecognizedFormat );
+
+		CPPUNIT_TEST( testIsReadable_with_strangeThings );
 
 		CPPUNIT_TEST( testGetHeader_HeaderIsRight_PCM );
 		CPPUNIT_TEST( testGetHeader_HeaderIsRight_OggVorbis );
@@ -32,19 +34,19 @@ namespace CLAMTest
 		CPPUNIT_TEST( testGetHeader_NoHeaderWhenFileIsUnreadable );
 		CPPUNIT_TEST( testGetHeader_NoHeaderWhenFileIsUnreadable_AfterOneSuccessful );
 
-		CPPUNIT_TEST( testSetHeader_UserDefinesHeaderForWriting_PCM_RightCodecIsDeduced );
-		CPPUNIT_TEST( testSetHeader_UserDefinesHeaderForWriting_Ogg_RightCodecIsDeduced );
-		CPPUNIT_TEST( testSetHeader_WithoutSampleRate_Fails );
-		CPPUNIT_TEST( testSetHeader_WithoutChannels_IsOK );
-		CPPUNIT_TEST( testSetHeader_WithoutFormat_Fails );
+		CPPUNIT_TEST( testCreateNew_UserDefinesHeaderForWriting_PCM_RightCodecIsDeduced );
+		CPPUNIT_TEST( testCreateNew_UserDefinesHeaderForWriting_Ogg_RightCodecIsDeduced );
+		CPPUNIT_TEST( testCreateNew_WithoutSampleRate_Fails );
+		CPPUNIT_TEST( testCreateNew_WithoutChannels_IsOK );
+		CPPUNIT_TEST( testCreateNew_WithoutFormat_Fails );
 	
-		CPPUNIT_TEST( testSetHeader_SetValues_WAV );
-		CPPUNIT_TEST( testSetHeader_SetValues_AIFF );
-		CPPUNIT_TEST( testSetHeader_SetValues_OggVorbis );
+		CPPUNIT_TEST( testCreateNew_SetValues_WAV );
+		CPPUNIT_TEST( testCreateNew_SetValues_AIFF );
+		CPPUNIT_TEST( testCreateNew_SetValues_OggVorbis );
 
-		CPPUNIT_TEST( testSetHeader_SetValues_WAV_AreWritable );
-		CPPUNIT_TEST( testSetHeader_SetValues_AIFF_AreWritable );
-		CPPUNIT_TEST( testSetHeader_SetValues_OggVorbis_AreWritable );
+		CPPUNIT_TEST( testCreateNew_SetValues_WAV_AreWritable );
+		CPPUNIT_TEST( testCreateNew_SetValues_AIFF_AreWritable );
+		CPPUNIT_TEST( testCreateNew_SetValues_OggVorbis_AreWritable );
 
 		CPPUNIT_TEST( testIsWritable_ReturnsTrue_PCM_WithReasonableHeader );
 		CPPUNIT_TEST( testIsWritable_ReturnsFalse_PCM_TooManyChannels );
@@ -58,13 +60,7 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			char* pathToTestData = getenv( "CLAM_TEST_DATA" );
-
-			if ( !pathToTestData )
-				mPathToTestData = "../../../../CLAM-TestData/";
-			else
-				mPathToTestData = pathToTestData;
-
+			mPathToTestData = GetTestDataDirectory();
 		}
 
 		void tearDown()
@@ -76,12 +72,22 @@ namespace CLAMTest
 
 	private: // test cases
 
+		void testIsReadable_with_strangeThings()
+		{
+			CLAM::AudioFile file;
+			
+			file.OpenExisting( std::string( mPathToTestData + "Image.jpg" ) );
+
+			CPPUNIT_ASSERT_EQUAL( false,
+					      file.IsReadable() );
+				
+		}
+
 
 		void testIsWritable_ReturnsTrue_PCM_WithReasonableHeader()
 		{
 			CLAM::AudioFile file;
 
-			file.SetLocation( std::string( "NewFile.wav" ) );
 
 			CLAM::AudioFileHeader header;
 
@@ -93,17 +99,14 @@ namespace CLAMTest
 			header.SetEncoding( CLAM::EAudioFileEncoding::ePCM_24 );
 			header.SetEndianess( CLAM::EAudioFileEndianess::eDefault );
 
-			file.SetHeader( header );
-
-			CPPUNIT_ASSERT_EQUAL( true,
-					      file.IsWritable() );
+			file.CreateNew( "NewFile.wav", header );
+			CPPUNIT_ASSERT_EQUAL( true, file.IsWritable() );
 		}
 
 		void testIsWritable_ReturnsFalse_PCM_TooManyChannels()
 		{
 			CLAM::AudioFile file;
 
-			file.SetLocation( std::string( "NewFile.wav" ) );
 
 			CLAM::AudioFileHeader header;
 
@@ -115,17 +118,15 @@ namespace CLAMTest
 			header.SetEncoding( CLAM::EAudioFileEncoding::ePCM_24 );
 			header.SetEndianess( CLAM::EAudioFileEndianess::eDefault );
 
-			file.SetHeader( header );
-
-			CPPUNIT_ASSERT_EQUAL( false,
-					      file.IsWritable() );		
+			file.CreateNew( "NewFile.wav", header );
+			
+			CPPUNIT_ASSERT_EQUAL( false, file.IsWritable() );		
 		}
 
 		void testIsWritable_ReturnsFalse_PCM_TooFewChannels()
 		{
 			CLAM::AudioFile file;
 
-			file.SetLocation( std::string( "NewFile.wav" ) );
 			
 			CLAM::AudioFileHeader header;
 
@@ -137,7 +138,7 @@ namespace CLAMTest
 			header.SetEncoding( CLAM::EAudioFileEncoding::ePCM_24 );
 			header.SetEndianess( CLAM::EAudioFileEndianess::eDefault );
 
-			file.SetHeader( header );
+			file.CreateNew( "NewFile.wav", header  );
 			
 			CPPUNIT_ASSERT_EQUAL( false,
 					      file.IsWritable() );		
@@ -145,28 +146,28 @@ namespace CLAMTest
 		}
 
 
-		void testSetLocation_FileExists_and_Is_PCM()
+		void testOpenExisting_FileExists_and_Is_PCM()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "Elvis.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string("Elvis.wav") );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("PCM"),
 					      file.GetKind().GetString() );
 		}
 
-		void testSetLocation_FileExists_and_Is_OggVorbis()
+		void testOpenExisting_FileExists_and_Is_OggVorbis()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "Elvis.ogg" ) );
+			file.OpenExisting( mPathToTestData + std::string( "Elvis.ogg" ) );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("Ogg/Vorbis"),
 					      file.GetKind().GetString() );			
 		}
 
-		void testSetLocation_FileDoesNotExist_UnrecognizedFormat()
+		void testOpenExisting_FileDoesNotExist_UnrecognizedFormat()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string("nikora") );
+			file.OpenExisting( mPathToTestData + std::string("nikora") );
 
 			CPPUNIT_ASSERT_EQUAL( std::string( "Unknown" ),
 					      file.GetKind().GetString() );
@@ -175,7 +176,7 @@ namespace CLAMTest
 		void testGetHeader_HeaderIsRight_PCM()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "Elvis.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
@@ -202,7 +203,7 @@ namespace CLAMTest
 		void testGetHeader_HeaderIsRight_OggVorbis()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "Elvis.ogg" ) );
+			file.OpenExisting( mPathToTestData + std::string( "Elvis.ogg" ) );
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
@@ -224,7 +225,7 @@ namespace CLAMTest
 		void testGetHeader_NoHeaderWhenFileIsUnreadable()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( "momonga" );
+			file.OpenExisting( "momonga" );
 			
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
@@ -235,9 +236,9 @@ namespace CLAMTest
 		void testGetHeader_NoHeaderWhenFileIsUnreadable_AfterOneSuccessful()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "Elvis.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 	
-			file.SetLocation( "Momonga" );
+			file.OpenExisting( "Momonga" );
 			
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
@@ -245,12 +246,10 @@ namespace CLAMTest
 					      header.HasSampleRate() );
 		}
 
-		void testSetHeader_UserDefinesHeaderForWriting_PCM_RightCodecIsDeduced()
+		void testCreateNew_UserDefinesHeaderForWriting_PCM_RightCodecIsDeduced()
 		{
 			CLAM::AudioFile file;
 			
-			file.SetLocation( std::string( "newFile.wav" ) );
-
 			CLAM::AudioFileHeader fileHeader;
 
 			fileHeader.AddAll();
@@ -261,17 +260,16 @@ namespace CLAMTest
 			fileHeader.SetEncoding( CLAM::EAudioFileEncoding( "signed 24-bit" ) );
 			fileHeader.SetEndianess( CLAM::EAudioFileEndianess( "Format Default" ) );
 
-			file.SetHeader( fileHeader );		
+			file.CreateNew( "newFile.wav", fileHeader );		
 
 			CPPUNIT_ASSERT_EQUAL( std::string( "PCM" ),
 					      file.GetKind().GetString() );
 		}
 
-		void testSetHeader_UserDefinesHeaderForWriting_Ogg_RightCodecIsDeduced()
+		void testCreateNew_UserDefinesHeaderForWriting_Ogg_RightCodecIsDeduced()
 		{
 			CLAM::AudioFile file;
 			
-			file.SetLocation( std::string( "newFile.wav" ) );
 
 			CLAM::AudioFileHeader fileHeader;
 
@@ -283,18 +281,17 @@ namespace CLAMTest
 			fileHeader.SetEncoding( CLAM::EAudioFileEncoding( "Format Default" ) );
 			fileHeader.SetEndianess( CLAM::EAudioFileEndianess( "Format Default" ) );
 
-			file.SetHeader( fileHeader );		
+			file.CreateNew( "newFile.wav", fileHeader );		
 
 			CPPUNIT_ASSERT_EQUAL( std::string( "Ogg/Vorbis" ),
 					      file.GetKind().GetString() );
 
 		}
 
-		void testSetHeader_WithoutSampleRate_Fails()
+		void testCreateNew_WithoutSampleRate_Fails()
 		{
 			CLAM::AudioFile file;
 			
-			file.SetLocation( std::string( "newFile.wav" ) );
 
 			CLAM::AudioFileHeader fileHeader;
 
@@ -309,17 +306,14 @@ namespace CLAMTest
 			fileHeader.SetEndianess( CLAM::EAudioFileEndianess( "Format Default" ) );
 
 
-			CPPUNIT_ASSERT_EQUAL( false,
-					      file.SetHeader(fileHeader) );
+			CPPUNIT_ASSERT_EQUAL( false, file.CreateNew( std::string( "newFile.wav" ), fileHeader ));
 
 		}
 
-		void testSetHeader_WithoutChannels_IsOK()
+		void testCreateNew_WithoutChannels_IsOK()
 		{
 			CLAM::AudioFile file;
 			
-			file.SetLocation( std::string( "newFile.wav" ) );
-
 			CLAM::AudioFileHeader fileHeader;
 
 			fileHeader.AddSampleRate();
@@ -331,17 +325,14 @@ namespace CLAMTest
 			fileHeader.SetEncoding( CLAM::EAudioFileEncoding( "Format Default" ) );
 			fileHeader.SetEndianess( CLAM::EAudioFileEndianess( "Format Default" ) );
 
-			CPPUNIT_ASSERT_EQUAL( true,
-					      file.SetHeader(fileHeader) );
+			CPPUNIT_ASSERT_EQUAL( true, file.CreateNew("newFile.wav", fileHeader) );
 
 		}
 
-		void testSetHeader_WithoutFormat_Fails()
+		void testCreateNew_WithoutFormat_Fails()
 		{
 			CLAM::AudioFile file;
 			
-			file.SetLocation( std::string( "newFile.wav" ) );
-
 			CLAM::AudioFileHeader fileHeader;
 
 			fileHeader.AddSampleRate();
@@ -350,106 +341,89 @@ namespace CLAMTest
 			fileHeader.AddEndianess();
 			fileHeader.UpdateData();
 
-			CPPUNIT_ASSERT_EQUAL( false,
-					      file.SetHeader(fileHeader) );
+			CPPUNIT_ASSERT_EQUAL( false, file.CreateNew("newFile.wav", fileHeader) );
 
 		}
 
-		void testSetHeader_SetValues_WAV()
+		void testCreateNew_SetValues_WAV()
 		{
 			CLAM::AudioFile file;
 
-			file.SetLocation( std::string( "newFile.wav" ) );
-			
 			CLAM::AudioFileHeader fileHeader;
 			
 			fileHeader.SetValues( 44100., 2, "WAV" );
 
-			CPPUNIT_ASSERT_EQUAL( true,
-					      file.SetHeader(fileHeader) );
+			CPPUNIT_ASSERT_EQUAL( true, file.CreateNew("newFile.wav", fileHeader) );
 		}
 
-		void testSetHeader_SetValues_AIFF()
+		void testCreateNew_SetValues_AIFF()
 		{
 			CLAM::AudioFile file;
 
-			file.SetLocation( std::string( "newFile.wav" ) );
-			
 			CLAM::AudioFileHeader fileHeader;
 			
 			fileHeader.SetValues( 44100., 2, "AIFF" );
 
-			CPPUNIT_ASSERT_EQUAL( true,
-					      file.SetHeader(fileHeader) );
+			CPPUNIT_ASSERT_EQUAL( true, file.CreateNew("newFile.wav", fileHeader) );
 		}
 
-		void testSetHeader_SetValues_OggVorbis()
+		void testCreateNew_SetValues_OggVorbis()
 		{
 			CLAM::AudioFile file;
 
-			file.SetLocation( std::string( "newFile.wav" ) );
-			
 			CLAM::AudioFileHeader fileHeader;
 			
 			fileHeader.SetValues( 44100., 2, "VorbisMk1" );
 
-			CPPUNIT_ASSERT_EQUAL( true,
-					      file.SetHeader(fileHeader) );
+			CPPUNIT_ASSERT_EQUAL( true, file.CreateNew("newFile.wav", fileHeader) );
 		}
 
-		void testSetHeader_SetValues_WAV_AreWritable()
+		void testCreateNew_SetValues_WAV_AreWritable()
 		{
 			CLAM::AudioFile file;
 
-			file.SetLocation( std::string( "newFile.wav" ) );
-			
 			CLAM::AudioFileHeader fileHeader;
 			
 			fileHeader.SetValues( 44100., 2, "WAV" );
 
-			file.SetHeader( fileHeader );
-
-			CPPUNIT_ASSERT_EQUAL( true,
-					      file.IsWritable() );
+			file.CreateNew( "newFile.wav", fileHeader );
+			
+			CPPUNIT_ASSERT_EQUAL( true, file.IsWritable() );
 		}
 
 
-		void testSetHeader_SetValues_AIFF_AreWritable()
+		void testCreateNew_SetValues_AIFF_AreWritable()
 		{
 			CLAM::AudioFile file;
 
-			file.SetLocation( std::string( "newFile.aiff" ) );
-			
 			CLAM::AudioFileHeader fileHeader;
 			
 			fileHeader.SetValues( 44100., 2, "AIFF" );
 
-			file.SetHeader( fileHeader );
+			file.CreateNew( "newFile.aiff", fileHeader );
 
 			CPPUNIT_ASSERT_EQUAL( true,
 					      file.IsWritable() );
 		}
 
-		void testSetHeader_SetValues_OggVorbis_AreWritable()
+		void testCreateNew_SetValues_OggVorbis_AreWritable()
 		{
 			CLAM::AudioFile file;
 
-			file.SetLocation( std::string( "newFile.ogg" ) );
-			
 			CLAM::AudioFileHeader fileHeader;
 			
 			fileHeader.SetValues( 44100., 2, "VorbisMk1" );
 
-			file.SetHeader( fileHeader );
+			file.CreateNew( "newFile.ogg", fileHeader );
 
 			CPPUNIT_ASSERT_EQUAL( true,
 					      file.IsWritable() );
 		}
 
-		void testSetLocation_FileExists_and_Is_Mpeg()
+		void testOpenExisting_FileExists_and_Is_Mpeg()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "trumpet.mp3" ) );
+			file.OpenExisting( mPathToTestData + std::string( "trumpet.mp3" ) );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio"),
 					      file.GetKind().GetString() );			
@@ -457,10 +431,10 @@ namespace CLAMTest
 		}
 
 
-		void testSetLocation_FileExists_NotSpurious_Mpeg()
+		void testOpenExisting_FileExists_NotSpurious_Mpeg()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "ElvisStereo.wav" ) );
+			file.OpenExisting( mPathToTestData + std::string( "ElvisStereo.wav" ) );
 
 			CPPUNIT_ASSERT( std::string("Mpeg Audio") != file.GetKind().GetString() );						
 		}
@@ -468,28 +442,28 @@ namespace CLAMTest
 		void testGetHeader_HeaderIsRight_Mpeg()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "trumpet.mp3" ) );
+			file.OpenExisting( mPathToTestData + std::string( "trumpet.mp3" ) );
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
 			
-			/*
-			std::cout << std::endl;
-			std::cout << header.GetSampleRate() << std::endl;
-			std::cout << header.GetChannels() << std::endl;
-			std::cout << header.GetLength() << std::endl;
-			std::cout << header.GetFormat().GetString() << std::endl;
-			std::cout << header.GetEncoding().GetString() << std::endl;
-			std::cout << header.GetEndianess().GetString() << std::endl;
-			std::cout << std::endl;
-			*/
+
+// 			std::cout << std::endl;
+// 			std::cout << header.GetSampleRate() << std::endl;
+// 			std::cout << header.GetChannels() << std::endl;
+// 			std::cout << header.GetLength() << std::endl;
+// 			std::cout << header.GetFormat().GetString() << std::endl;
+// 			std::cout << header.GetEncoding().GetString() << std::endl;
+// 			std::cout << header.GetEndianess().GetString() << std::endl;
+// 			std::cout << std::endl;
+
 
 
 			CPPUNIT_ASSERT_EQUAL( int(22050),
 					      (int)header.GetSampleRate() );
 			CPPUNIT_ASSERT_EQUAL( int(1),
 					      (int)header.GetChannels() );
-			CPPUNIT_ASSERT_EQUAL( int(2560),
+			CPPUNIT_ASSERT_EQUAL( int(2430),
 					      (int)header.GetLength() );
 			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio Layer 3"),
 					      header.GetFormat().GetString() );
@@ -503,7 +477,7 @@ namespace CLAMTest
 		void testTextDescriptorsExtraction_From_OggVorbis()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + std::string( "Elvis.ogg" ) );
+			file.OpenExisting( mPathToTestData + std::string( "Elvis.ogg" ) );
 
 			const CLAM::AudioTextDescriptors& txtDesc = file.GetTextDescriptors();
 			
@@ -541,7 +515,7 @@ namespace CLAMTest
 		void testTextDescriptorsExtraction_From_Mpeg()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( mPathToTestData + CLAM::Text( "trumpet.mp3" ) );
+			file.OpenExisting( mPathToTestData + CLAM::Text( "trumpet.mp3" ) );
 
 			std::ofstream outputFile( "AudioFile_0001.xml" );
 			outputFile << "<?xml version=\"1.0\" ?>" << std::endl;

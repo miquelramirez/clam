@@ -42,6 +42,11 @@
 #include <qcombobox.h>
 
 namespace CLAM{
+	/**
+	 * A generic DynamicType edition dialog for Qt.
+	 * @ingroup Configurators
+	 * @see DynamicType, FLTKConfigurator
+	 */
 	class QTConfigurator : public QDialog {
 		Q_OBJECT
 		typedef QDialog super;

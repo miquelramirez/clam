@@ -32,22 +32,17 @@ namespace CLAM {
 	 * Handles errors in Processing Object Routines
 	 */
 
-	// TODO: remove this define, which is only for temporal backward
-	// compatibility, and change the filename
-
-	#define ErrProcessingObj ProcessingErr
-
 	// WARNING: This class has been renamed for ErrProcessingObj
 	// Keeping a define for backwards compatibility
-	class ProcessingErr : public Err {
+	class ErrProcessingObj : public Err {
 
 	public:
 
-		ProcessingErr();
+		ErrProcessingObj();
 
-		ProcessingErr(const char* msg,const Processing *o=0);
+		ErrProcessingObj(const char* msg,const Processing *o=0);
 
-		~ProcessingErr() throw() {} 
+		~ErrProcessingObj() throw() {} 
 
 	};
 

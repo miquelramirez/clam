@@ -22,7 +22,6 @@
 
 #include "FFT_numrec.hxx"
 
-#include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
@@ -41,8 +40,8 @@ namespace CLAM {
 		FFT_base::ConcreteConfigure(c);
 		if ( !isPowerOfTwo( mSize ) )
 		{
-			mStatus = "Configure failed: Numerical Recipes FFT algorithm does not\n";
-			mStatus += "accept non power of two buffers";
+			AddConfigErrorMessage("Configure failed: Numerical Recipes FFT algorithm does not"
+				"accept non power of two buffers");
 
 			return false;
 		}
@@ -68,7 +67,11 @@ namespace CLAM {
 
 	bool FFT_numrec::Do()
 	{
-		return Do(mInput.GetData(),mOutput.GetData());
+		mOutput.GetData().SetSize( mInput.GetSize()/2+1);
+		bool toReturn = Do(mInput.GetAudio(), mOutput.GetData());
+		mInput.Consume();
+		mOutput.Produce();
+		return toReturn;
 	};
 
 	bool FFT_numrec::Do(const Audio& in, Spectrum &out)
@@ -82,6 +85,8 @@ namespace CLAM {
 
 		if (GetExecState() == Disabled)
 			return true;
+
+		out.SetSpectralRange(in.GetSampleRate()/2);
 
 		switch(mState) {
 		case sComplex:
@@ -119,7 +124,7 @@ namespace CLAM {
 		default:
 			CLAM_ASSERT(false, "FFT_numrec: Do(): Inconsistent state");
 		}
-		out.SetSpectralRange(in.GetSampleRate()/2);
+	
 		return true;
 
 	}

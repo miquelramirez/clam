@@ -23,13 +23,290 @@
 	+ Multitype Pool::Get
 	+ Spec::AssertType
 	+ Pool::Get check for type
-- Select the scope specification by name
-	- ScopeSpecFactory
-- Consider using a iterator/vector interface
-- Multilevel pools
-- XML for the Pool
-- XML for the Pool Spec
-- Multitype XML loading
++ Set size a posteriori
+	+ Size 0 by default
+	+ Assert on Getting attributes when 0 size
++ Resize del scope
+- DescriptionScheme
+	+ Indexed interface
+- DescriptionDataPool
+	+ Populate Unexisting Scope -> Fail
+	+ Instanciating Attribute inside Unexisting -> Fail
+	+ Instanciating Attribute inside Unpopulated -> Fail
+	+ Instanciating Unexisting Attribute -> Fail
+	+ Instanciating Unexisting Attribute inside populated -> Fail
+	+ Getting an attribute from an unpopulated scope -> Fail
+	- Populate an already populated Scope -> ??
+	- Instantiate an already instantiated attribute -> Fail
+	- Get from an unpopulated scope -> Fail
+	- ScopePool::InstantiateAttribute
+	- ScopePool::Get(index)
+	+ Const Getter
+	+ Accessing an uninstantiated attribute -> Fail
+	- Getting with different type -> Fail
+	- Change a GetWrite idiom to a Instantiate idiom
+	- Populate a defined scope -> Instanciating attribute -> Accessing -> 
+	+ Rename Populate -> SetNContexts
+- Scope Attribute instantiation
+	+ Refactor to instanciate only write getters
+	+ Accessing an non instantiated on  a scope pool
+	+ no const Get -> GetWritePool
+	+ const Get -> GetReadPool
+	+ Change test names for Get
+- The binder adopting the final data type
+- Checking the binder type matches the extractor binded hook
+- Zero size pools and instantiation
+- Consider using iterator/vector interface
+- Consider Using the type instead the Attribute<type> as template
+- Prepare: Determinar attributos necesarios
++ Multilevel pools
++ XML for the Pool
+	+ Dumping an empty scope
+	+ Dumping a zero size scope
+	+ Dumping sized scope with one attribute
+		+ Create a proxy object
+	+ Removing the number of attributes attribute
+	+ Attribute dump
+	+ Multitype XML loading
+	+ Component type attribute
+	+ Consider a solution for the helper classes
+	+ Adding the scope name attribute
+	+ Full data pool
++ Getting names from index
+	+ Getting valid scope indexes names
+	+ Getting invalid scope indexes names
+	+ getting valid attribute indexes names
+	+ getting invalid attribute indexes names
+	+ Refactor to include the name inside as spec member
+- XML for the Extraction Scheme
+- Pool XML with non populated attributes, zero-sized attributes...
+- Selecting which attributes should be serialized
+
+- Errors en l'ús d'identificadors irregulars.
+- WriteGet an attribute on an already writegetted attribute -> fails
+- Rename writeget attribute
+- Consider adding a updateget attribute
+
++ SameContextBinder::GetForRead
++ SameContextBinder::Init
++ SameContextBinder::Next
+	+ It updates the pointer
++ SameContextBinder::IsInsideScope
+	+ It returns true while valid
+	+ It returns false when out of scope
++ Convert Binder into a template class
++ Convert current Binder into the Hook class
++ WriterHook
++ Separate Pool init and binding
++ Move HookTests to their own tests
++ Create a test Extractor test
++ Indirect Binding
+	+ Init
+	+ Next
+	+ IsInsideScope
+	+ Invalid references
+	+ Refactor to base class
+	+ Use it with an extractor
++ Move the current up
++ Remove the GetIterationSize
+- Ranged Binding
+	+ A fast implementation deriving from ReadIndirectHook
+	- Check for outside access (though the begining is inside)
+- Ranged Bindings with variable range
+- Constant Binder
+- Ortogonalize hocks
+- Named hooks
+- Hide Hooks building inside extractors
+- Relative Bindings
+- Associar al schema durante el bind o antes
+- Comprobaciones de nombres en el bind
+- Read Accessing AttributeScopes that are not written
+- Read Accessing AttributeScopes that are not populated
+- Different sizes of Binders
+- Extract search and retrieval from Hooks
+- Enhance exception messages with names
++ Load of an Attribute Pool
+	+ Load a simple attribute pool
+	+ Load a component attribute pool
+	+ When the name mismatches fails
++ Load an Scope pool
++ Load a full pool
+- Clearing the pool before loading
+- Load/Store with Uninstanciated scopes
+- Load Name mismatch error in XML should be a catchable runtime error not an assertion
+- Testing the size of the loaded scopes
+- Load/Store Umpopulated scopes and attributes
+- Load/Store Unordered scopes and attributes
+- Load/Store of a DescriptionScheme
+- Load/Store of a ExtractionScheme
+
+
+
+* How is the binding project related to extractor-scheme adding
+	- Asociacion con el scheme
+		- Validacion del camino del binder
+	- Asociacion con el extractor
+		- Validacion del tipo del binder
+		- Validacion del scope de salida del binder
+	- Asociacion con el Pool
+		- Obtencion de los datos
+
++ Proof of Concept working directly with the pool
+	+ Write a dummy audio
+	+ Write the centers 
+	+ Make the spectrum
+
+
+
+- Mirar especificaciones MyDMS
+- Mirar codigo de QMUL
++ Preguntar a vegard que descriptores son confiables -> Los testeados solo
+- Preguntar a AudioClas que descriptores han corregido o comprovado
+- Planificar la revision de lo no revisados
+- Plantear un conjunto de pruebas
+- Hacer que pasen las pruebas
+
+
+
+void testSubGoal()
+{
+	CLAM::DescriptionScheme scheme;
+	scheme.AddScope("Frame");
+	scheme.AddSignalScope("AudioSample");
+	scheme.AddAttribute<SignalLevel>   ("AudioSample","Level");
+	scheme.AddAttribute<SampleDuration>("Frame","Center");
+	scheme.AddAttribute<Spectrum>      ("Frame","SpectralDistribution");
+
+	CLAM::Scoper * loader = CLAM::Extractor::Create("SoundLoader");
+	loader.BindOutputHook("AudioSample",);
+
+	CLAM::Scoper * frametizer = CLAM::Extractor::Create("Frametizer");
+	frametizer.BindOutputHook("Output","Frame");
+	frametizer.BindOutputHook("Center","");
+	frametizer.BindInputHook("Output")
+
+	
+	CLAM::Extractor * fft = CLAM::Extractor::Create("SpectralAnalysis");
+	fft.BindOutputHook("Output","Frame","SpectralDistribution");
+	fft.BindInputHook("Input",
+		CurrentContext().Attribute("Center").Indirect("AudioSample")
+			.RelativeRange(-framesize/2,+framesize/2).Attribute("Level")
+		);
+
+	scheme.AddExtractor(fft);
+}
+
+void testExtractionGoal()
+{
+	std::string fileName("mysong.mpg");
+}
+
+void testGoal()
+{
+	CLAM::DescriptionScheme scheme("DescriptionScheme.xml");
+	scheme.AddPlugin("DescriptionSchemeExtension.xml");
+	scheme.SetParameter("FrameSize",256);
+	CLAM::DescriptionDataPool pool(scheme);
+	pool.ExtractFrom("mysong.mp3");
+	CLAM::XmlStorage::Dump(pool,"Description.xml","SimacDescription");
+}
+
+
+
+CLAM::DescriptionScheme scheme("DescriptionScheme.xml");
+scheme.setParameter("FrameSize",256);
+CLAM::DescriptionDataPool pool(scheme);
+pool.ExtractFrom("mysong.mp3");
+CLAM::XmlStorage::Dump(pool,"Description.xml","SimacDescription");
+
+
+----------- DescriptionScheme.xml
+<Parameter name="FrameSize" type="Integer" units="SampleRange" />
+...
+<Attribute scope="Frame" name="Center" type="SamplePosition" />
+<Attribute scope="Frame" name="SpectralDistribution" type="Spectrum" />
+....
+<Extractor name="SpectralAnalysis" >
+	<Target scope="Frame" attribute="SpectralDistribution" />
+	<Dependency 
+		type="Indirect" 
+		scope="Sample" 
+		attribute="Signal" 
+		indirectAttribute="Center"
+		size = "$FrameSize"
+	/>
+</Extractor>
+...
+
+
+An example of description data pool dump
+
+
+<DescriptionDataPool NumberOfScopes='3'>
+	<DescriptionScheme>
+		<ImportScheme
+			uri='http://www.semanticaudio.org/RecomenderDS.xml'/>
+		<Attribute scope="Sample" name="Level" type="Signal" />
+		<Attribute scope="Frame" name="Center" type="SamplePosition" />
+		<Attribute scope="Frame" name="SpectralDistribution" type="Spectrum" />
+	</DescriptionScheme>
+	<ScopePool name='Sample' size='2000'>
+		<AttributePool name='Level'>
+			0.0 0.0 .342161 ....
+		</AttributePool>"
+	</ScopePool>
+	<ScopePool name='Frame' size='8'>
+		<AttributePool name='Center'>
+			0 256 512 768 1024 1280 1536 1792
+		</AttributePool>
+		<AttributePool name='SpectralDistribution'>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			....
+		</AttributePool>
+	</ScopePool>
+</DescriptionDataPool>
+
+<DescriptionDataPool NumberOfScopes='3'>
+	<DescriptionScheme>
+		<ImportScheme
+			uri='http://www.semanticaudio.org/RecomenderDS.xml'/>
+		<Attribute scope="Sample" name="Level" type="Signal" />
+		<Attribute scope="Frame" name="Center" type="SamplePosition" />
+		<Attribute scope="Frame" name="SpectralDistribution" type="Spectrum" />
+	</DescriptionScheme>
+	<Sample size='2000'>
+		<Level>
+			0.0 0.0 .342161 ....
+		</Level>
+	</Sample>
+	<Frame size='8'>
+		<Center>
+			0 256 512 768 1024 1280 1536 1792
+		</Center>
+		<SpectralDistribution>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			<Spectrum>
+				0 0.7256 0.4512 0.8768 ....
+			</Spectrum>
+			....
+		</SpectralDistribution>
+	</Frame>
+</DescriptionDataPool>
+
+
 
 
 

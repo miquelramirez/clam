@@ -57,14 +57,7 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			char* pathToTestData = getenv("CLAM_TEST_DATA");
-
-			if ( !pathToTestData )
-				mPathToTestData ="../../../../../CLAM-TestData/"; 
-			else
-				mPathToTestData = pathToTestData;
-
-			mPathToTestData +="spectralData/";
+			mPathToTestData = GetTestDataDirectory("spectralData/");
 			loadBack2BackDataset( mPathToTestData );
 		}
 
@@ -87,12 +80,12 @@ namespace CLAMTest
 
 			processing.Configure( processingConfig );
 
-			(*processing.GetInPorts().Begin())->Attach( smReferenceSpectrum );
-			(*processing.GetOutPorts().Begin())->Attach( detectedPeaks );
+	//		(*processing.GetInPorts().Begin())->Attach( smReferenceSpectrum );
+	//		(*processing.GetOutPorts().Begin())->Attach( detectedPeaks );
 			
 			processing.Start();
 
-			processing.Do();
+			processing.Do( smReferenceSpectrum, detectedPeaks );
 
 			processing.Stop();
 

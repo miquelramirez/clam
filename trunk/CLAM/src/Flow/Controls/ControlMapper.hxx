@@ -25,6 +25,8 @@
 #include "Mapping.hxx"
 #include "Array.hxx"
 #include "Processing.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 #include <iosfwd>
 #include <string>
 

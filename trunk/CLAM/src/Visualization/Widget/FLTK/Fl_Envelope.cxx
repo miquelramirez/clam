@@ -1,4 +1,4 @@
-/*****************************************************************************h
+/*
 Fl_Envelope Widgets
 
 Filename:   Fl_Envelope.cxx
@@ -12,10 +12,10 @@ either version 2 of the License, or (at your option) any later version.
 ******************************************************************************/
 #include <FL/fl_draw.H>
 #include <FL/Fl_Window.H>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
 #include "Fl_Envelope.H"
 #include <iostream>
 
@@ -41,7 +41,7 @@ void Fl_PointMover::calc_formatstr(char* str,float grid,float max)
 
 	m=10.;
 	d=1;
-	while (fabs((float(int(grid*m))/m)-grid)>grid/100.) {
+	while (std::fabs((float(int(grid*m))/m)-grid)>grid/100.) {
 		d++;
 		m=m*10.;
 	}
@@ -58,12 +58,12 @@ void Fl_PointMover::calc_formatstr(char* str,float grid,float max)
 void Fl_PointMover::calc_formatstr(void)
 {
 	if (hformatstr[0]=='\0' && griddx_>0) {
-		float v=(fabs(xmin_) > fabs(xmax_) ) ? fabs(xmin_) : fabs(xmax_);
+		float v = std::max( std::fabs(xmin_), std::fabs(xmax_) );
 		calc_formatstr(hformatstr,griddx_,v);
 	}
 
 	if (vformatstr[0]=='\0' && griddy_>0) {
-		float v=(fabs(ymin_) > fabs(ymax_) ) ? fabs(ymin_) : fabs(ymax_);
+		float v = std::max( std::fabs(ymin_), std::fabs(ymax_) );
 		calc_formatstr(vformatstr,griddy_,v);
 	}
 }

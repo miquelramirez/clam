@@ -243,15 +243,8 @@ if [[ "1.1" == "$FLTK_API_VERSION" ]]
 		AC_MSG_ERROR([Currently CLAM only supports FLTK API version 1.1])
 fi;
 
-FLTK_API_VERSION=`$FLTKCONFIG --version`
-if [[ "1.1.4" == "$FLTK_API_VERSION" ]]
-then
-	RAW_FLTK_CFLAGS=`$FLTKCONFIG --use-gl --use-images --cxxflags`
-	RAW_FLTK_LDFLAGS=`$FLTKCONFIG --use-gl --use-images --ldflags`
-else
-	RAW_FLTK_CFLAGS=`$FLTKCONFIG --cxxflags`
-	RAW_FLTK_LDFLAGS=`$FLTKCONFIG --ldflags`
-fi
+RAW_FLTK_CFLAGS=`$FLTKCONFIG --use-gl --use-images --cxxflags`
+RAW_FLTK_LDFLAGS=`$FLTKCONFIG --use-gl --use-images --ldflags`
 
 for incpath in $RAW_FLTK_CFLAGS
 	do
@@ -731,6 +724,58 @@ AC_DEFUN(CLAM_LIB_OGGVORBIS,
 
 ])
 dnl End of Vorbis I SDK checking procedure
+
+
+dnl Start of libresample checking procedure
+AC_DEFUN(CLAM_LIB_RESAMPLE,
+[
+	AC_MSG_NOTICE([Checking that libresample is installed])
+	
+	AC_CHECK_LIB(resample,
+		     resample_open,
+		     [LIBRESAMPLE_PRESENT="yes";RESAMPLE_LIBS="resample"],
+		     [LIBRESAMPLE_PRESENT="no"])
+	
+	
+	AC_CHECK_HEADER(libresample.h,
+			[HDRRESAMPLE_PRESENT="yes"],
+			[HDRRESAMPLE_PRESENT="no"] )
+	
+	
+	if test "$LIBRESAMPLE_PRESENT" = no || test "$HDRRESAMPLE_PRESENT" = no;
+	then
+		AC_MSG_NOTICE([libresample seems not to be present on your system.])
+	fi
+
+	RESAMPLE_LIBS="$RESAMPLE_LIBS"
+	RESAMPLE_LIB_PATH=""
+	RESAMPLE_INCLUDES=""
+	
+	AC_PATH_TOOL( RESAMPLE_LIB_PATH,
+		      libresample.a,
+		      [],
+		      [/usr/lib:/usr/local/lib:/opt/lib])
+
+	RESAMPLE_LIB_PATH=${RESAMPLE_LIB_PATH%/libresample.a}
+
+	if test "$RESAMPLE_LIB_PATH" = "/usr/lib";
+	then
+		RESAMPLE_LIB_PATH=""
+	fi
+
+	AC_PATH_TOOL( RESAMPLE_INCLUDES,
+		      libresample.h,
+		      [],
+		      [/usr/include:/usr/local/include])
+
+	RESAMPLE_INCLUDES=${RESAMPLE_INCLUDES%/libresample.h}
+	
+	if test "$RESAMPLE_INCLUDES" = "/usr/include" || test "$RESAMPLE_INCLUDES" = "/usr/local/include";
+	then
+		RESAMPLE_INCLUDES=""
+	fi
+
+])
 
 
 dnl Start of LADSPA SDK checking procedure

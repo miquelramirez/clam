@@ -106,7 +106,7 @@ private:
 
 friend class MIDIDevice;
 
-	static const int MIDI::sNBytesPerSysMsg[16];
+	static const int sNBytesPerSysMsg[16];
 
 };
 

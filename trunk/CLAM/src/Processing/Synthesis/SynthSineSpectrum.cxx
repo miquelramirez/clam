@@ -6,27 +6,6 @@ using namespace CLAM;
 
 
 /******************************************************************/
-/************* SynthSineSpectrum CONFIGURATION ********************/
-
-
-void SynthSineSpectrumConfig::DefaultInit()
-{
-	AddSpectrumSize();
-	AddSamplingRate();
-	AddZeroPadding();
-	UpdateData();
-
-	DefaultValues();
-}
-
-void SynthSineSpectrumConfig::DefaultValues()
-{
-	SetSpectrumSize(1024);
-	SetSamplingRate(44100);
-	SetZeroPadding(0);
-}
-
-/******************************************************************/
 /************************ SynthSineSpectrum ***********************/
 
 double SynthSineSpectrum::mBlackHarris92TransMainLobe[] = {6.558602e-021, 
@@ -619,11 +598,15 @@ double SynthSineSpectrum::mBlackHarris92TransMainLobe[] = {6.558602e-021,
 
 
 SynthSineSpectrum::SynthSineSpectrum()
+	: mInput( "Input", this ),
+	  mOutput("Output", this )
 {
 	Configure(SynthSineSpectrumConfig());
 }
 
 SynthSineSpectrum::SynthSineSpectrum(SynthSineSpectrumConfig& cfg)
+	: mInput( "Input", this ),
+	  mOutput("Output", this )
 {
 	Configure(cfg);
 }
@@ -649,14 +632,24 @@ SynthSineSpectrum::~SynthSineSpectrum()
 {
 }
 
+bool SynthSineSpectrum::Do()
+{
+	bool result = Do( mInput.GetData(), mOutput.GetData());
+	mInput.Consume();
+	mOutput.Produce();
+	return result;
+}
+
+
 //-------------------------------------------------------------------//
 // note : for now we first fill the mSynthsineSpectrum. Then we convert this 
 // to a  Spectrum. Its more cpu expensive, but as we dont know which processes
 // has to be applied the mSynthSineSpectrum, we use it like this
 // COULD BE OPTIMIZED LATER !!!! JO 
-bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residualSpectrumOut,
-                            double gain)
+bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residualSpectrumOut, double gain)
 {
+	CLAM_DEBUG_ASSERT( AbleToExecute(), "SynthSineSpectrum::Do - processing is not running" );
+
 	InitSynthSpec(mConfig.GetSpectrumSize());		// could be optimised with memset
 	FillSynthSineSpectrum(peakArray,gain);
 
@@ -750,14 +743,14 @@ void SynthSineSpectrum::FillSynthSineSpectrum	(	const SpectralPeakArray& peakArr
 		{
 			if (l > 0 && l < mConfig.GetSpectrumSize()-1) // we are inside the spectrum limits
 			{
-	            mSynthSineSpectrum[l] += SpecPeakEnvelope[k]; 
-		    }    
+		        	mSynthSineSpectrum[l] += SpecPeakEnvelope[k]; 
+			}    
         
 			else if (l < 0) // part of peaklobe is below zero frequency, mirror it back 
 			{
-	            b = -l;
-		        mSynthSineSpectrum[b].SetReal(mSynthSineSpectrum[b].Real()+SpecPeakEnvelope[k].Real());
-			    mSynthSineSpectrum[b].SetImag(mSynthSineSpectrum[b].Imag()-SpecPeakEnvelope[k].Imag());
+				b = -l;
+			        mSynthSineSpectrum[b].SetReal(mSynthSineSpectrum[b].Real()+SpecPeakEnvelope[k].Real());
+				mSynthSineSpectrum[b].SetImag(mSynthSineSpectrum[b].Imag()-SpecPeakEnvelope[k].Imag());
 			}
         
 			else if (l == 0) //  only real part, no phase

@@ -4,11 +4,12 @@
 #include <vector>
 #include "TransformationDummy.hxx"
 #include "InControlTmplArray.hxx"
+#include "Processing.hxx"
 
 namespace CLAM
 {
 
-class MyProcessingWithControlArray
+class MyProcessingWithControlArray : public Processing
 {
 private:
 	//typedef InControlArray ControlsWithoutCallback;
@@ -26,7 +27,11 @@ public:
 
 	InControlTmplArray<ThisProc> mVoiceControl;
 
-	
+	bool Do(){return 0;}
+	const ProcessingConfig& GetConfig() const {throw 0;}
+	const char* GetClassName() const {return "MyProcessingWithControlArray";}
+	bool ConcreteConfigure(const ProcessingConfig& c) {return true;}
+
 	MyProcessingWithControlArray();
 	~MyProcessingWithControlArray();
 	int CallbackId(int id, TControlData val );

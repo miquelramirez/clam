@@ -22,7 +22,6 @@
 #include "Complex.hxx"
 #include "SpecTypeFlags.hxx"
 #include "SpectrumAdder2.hxx"
-#include "ErrProcessingObj.hxx"
 #include "BPF.hxx"
 #include "Point.hxx"
 
@@ -30,9 +29,9 @@ namespace CLAM {
 
 	SpectrumAdder2::SpectrumAdder2()
 		: mSize(0),
-		  mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
+		  mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
 		  mProtoState(SOther)
 	{
 		Configure(SpecAdder2Config());
@@ -40,9 +39,9 @@ namespace CLAM {
 
 	SpectrumAdder2::SpectrumAdder2(const SpecAdder2Config &c)
 		: mSize(0),
-		  mIn1("Input 1",this,1),
-		  mIn2("Input 2",this,1),
-		  mOut("Output",this,1),
+		  mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
 		  mProtoState(SOther)
 	{
 		Configure(c);
@@ -121,9 +120,11 @@ namespace CLAM {
 
 	bool SpectrumAdder2::Do(void)
 	{
-		CLAM_ASSERT(false,"SpectrumAdder2::Do(): Not implemented");
-		
-		return true;
+		bool result = Do( mIn1.GetData(), mIn2.GetData(), mOut.GetData() );
+		mIn1.Consume();
+		mIn2.Consume();
+		mOut.Produce();
+		return result;
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 
@@ -139,11 +140,9 @@ namespace CLAM {
 		out.GetType(to);
 
 		// Sanity check:
-		if (!(t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF) ||
-			!(t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF) ||
-			!(to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF) )
-			throw(ErrProcessingObj("SpectrumAdder2s:"
-								   " Spectrum object with no attributes"));
+		CLAM_ASSERT(t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF, "SpectrumAdder2: Spectrum object with no attributes");
+		CLAM_ASSERT(t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF, "SpectrumAdder2: Spectrum object with no attributes");
+		CLAM_ASSERT(to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF, "SpectrumAdder2: Spectrum object with no attributes");
 
 		// Adder size. "pure" BPFs are not considered here.
 		mSize = 0;
@@ -235,8 +234,7 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			throw(ErrProcessingObj("SpectrumAdder2::SetPrototypes:"
-								   " Data flags internal inconsistency",this));
+			CLAM_ASSERT(false, "SpectrumAdder2::SetPrototypes: Data flags internal inconsistency");
 		}
 		if (i2BPF) {
 			// States with direct BPF implementation.
@@ -265,9 +263,7 @@ namespace CLAM {
 				mProtoState=SPolarBPF;
 				return true;
 			}
-			// Should never get here:
-			throw(ErrProcessingObj("SpectrumAdder2::SetPrototypes:"
-								   " invalid data flags",this));
+			CLAM_ASSERT(false, "SpectrumAdder2::SetPrototypes: invalid data flags");
 		}
 		// Direct non-BPF states.
 		if (t1.bMagPhase && t2.bMagPhase &&	to.bMagPhase) {
@@ -309,7 +305,7 @@ namespace CLAM {
 
 	bool SpectrumAdder2::SetPrototypes()
 	{
-		throw(ErrProcessingObj("SpectrumAdder2::SetPrototypes(): Not implemented"),this);
+		CLAM_ASSERT(false, "SetPrototypes not implemented ");
 	}
 
 	bool SpectrumAdder2::UnsetPrototypes()
@@ -567,7 +563,7 @@ namespace CLAM {
 			AddBPFMagPhaseLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("AddBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SpectrumAdder2::AddBPFMagPhase(LinLog): Not implemented");
 			break;
 		case Sloglin:
 			AddBPFMagPhaseLogLin(in1,in2,out);
@@ -588,7 +584,7 @@ namespace CLAM {
 			AddBPFMagPhaseLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("AddBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SpectrumAdder2::AddMagPhaseBPF(LinLog): Not implemented");
 			break;
 		}
 	}
@@ -717,7 +713,7 @@ namespace CLAM {
 			AddBPFComplexLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("AddBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SpectrumAdder2::AddBPFMagPhase(LinLog): Not implemented");
 			break;
 		case Sloglin:
 			AddBPFComplexLogLin(in1,in2,out);
@@ -738,7 +734,7 @@ namespace CLAM {
 			AddBPFComplexLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("AddBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SpectrumAdder2::AddBPFMagPhase(LinLog): Not implemented");
 			break;
 		}
 	}
@@ -862,7 +858,7 @@ namespace CLAM {
 			AddBPFPolarLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("AddBPFPolarLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SpectrumAdder2::AddBPFPolar(LinLog): Not implemented");
 			break;
 		case Sloglin:
 			AddBPFPolarLogLin(in1,in2,out);
@@ -883,7 +879,7 @@ namespace CLAM {
 			AddBPFPolarLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("AddBPFPolarLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SpectrumAdder2::AddBPFPolar(LinLog): Not implemented");
 			break;
 		}
 	}

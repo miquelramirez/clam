@@ -61,7 +61,7 @@ int main( int argc, char** argv )
 		// "AudioFileReading" example
 
 		CLAM::AudioFile file;
-		file.SetLocation( argv[1] );
+		file.OpenExisting( argv[1] );
 		
 		// And now check that the given file can be read
 		if ( !file.IsReadable() )
@@ -82,12 +82,6 @@ int main( int argc, char** argv )
 		
 		reader.Configure( cfg );
 		
-		for( unsigned i = 0; i < incomingAudioChannels.size(); i++ )
-		{
-			reader.GetOutPorts().GetByNumber(i).Attach( incomingAudioChannels[i] );
-		}
-
-
 		// Once we made sure we can start playing the file, it's time to access and configure the audio hardware devices
 		// present in our computer. We will do this through the 'AudioManager': a global, unique object that
 		// mediates between your program and the underlying Operating System sound hardware services.
@@ -138,18 +132,16 @@ int main( int argc, char** argv )
 			audioOutCfg.SetChannelID( i );
 			// and we configure the left channel audio object
 			audioOutputs[i].Configure( audioOutCfg );
-			// We attach each AudioOut to the channel data we want it to read
-			audioOutputs[i].GetInPorts().GetByNumber(0).Attach( incomingAudioChannels[i] );
 			// We start it
 			audioOutputs[i].Start();
 		}
 
 		reader.Start();
 		
-		while( reader.Do() )
+		while( reader.Do( incomingAudioChannels ) )
 		{
 			for ( int i = 0; i < audioOutputs.Size(); i++ )
-				audioOutputs[i].Do();
+				audioOutputs[i].Do( incomingAudioChannels[i] );
 		}
 
 		

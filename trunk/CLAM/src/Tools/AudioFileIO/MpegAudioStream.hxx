@@ -4,7 +4,7 @@
 
 #include "AudioCodecs_Stream.hxx"
 #include "MpegBitstream.hxx"
-#include "CLAM_deque.hxx"
+#include <deque>
 #include "Array.hxx"
 
 namespace CLAM

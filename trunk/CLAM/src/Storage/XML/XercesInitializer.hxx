@@ -21,6 +21,8 @@
 #ifndef _XercesInitializer_hxx_
 #define _XercesInitializer_hxx_
 //#include <iostream>
+namespace CLAM
+{
 
 class XercesInitializer
 {
@@ -41,5 +43,7 @@ public:
 		return initializer;
 	}
 };
+
+}
 
 #endif//_XercesInitializer_hxx_

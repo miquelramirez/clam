@@ -42,7 +42,7 @@ int main( int argc, char** argv )
 	// Now we are pretty sure that argv[1] holds a parameter. We set the file 
 	// location:
 	CLAM::AudioFile file;
-	file.SetLocation( argv[1] );
+	file.OpenExisting( argv[1] );
 
 	// And now check that the given file can be read
 	if ( !file.IsReadable() )
@@ -82,14 +82,6 @@ int main( int argc, char** argv )
 
 	reader.Configure( cfg );
 
-	// And now we must attach each of the expected outputs to each of
-	// the outports of this processing
-
-	for( unsigned i = 0; i < outputs.size(); i++ )
-	{
-		reader.GetOutPorts().GetByNumber(i).Attach( outputs[i] );
-	}
-
 	// Now we can safely Start() the processing
 	reader.Start();
 
@@ -108,7 +100,7 @@ int main( int argc, char** argv )
 
 	// When will the loop end? Whenever the EOF is reached ;) i.e. when the Processing
 	// cannot generate any more Audio objects.
-	while ( reader.Do() )
+	while ( reader.Do( outputs ) )
 	{
 
 		std::cout << "At frame #" << frameCount << std::endl;

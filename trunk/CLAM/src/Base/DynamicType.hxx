@@ -232,7 +232,7 @@ protected:
 	inline void        SetPreAllocateAllAttributes() { bPreAllocateAllAttributes=true; }
 
 
-
+public:
 	// Developing tools:
 	void Debug();
 
@@ -292,11 +292,11 @@ private:
 	bool bPreAllocateAllAttributes;
 
 public:
-	virtual void StoreOn(CLAM::Storage & s) const {
-		this->StoreDynAttributes(s);
+	virtual void StoreOn(CLAM::Storage & storage) const {
+		this->StoreDynAttributes(storage);
 	}
-	virtual void LoadFrom(CLAM::Storage & s) {
-		this->LoadDynAttributes(s);
+	virtual void LoadFrom(CLAM::Storage & storage) {
+		this->LoadDynAttributes(storage);
 	}
 	template <unsigned int NAttrib> 
 	class AttributePositionBase { 

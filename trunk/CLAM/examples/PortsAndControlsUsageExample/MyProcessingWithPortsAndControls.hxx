@@ -4,8 +4,8 @@
 
 #include "Processing.hxx"
 #include "ProcessingConfig.hxx"
-#include "OutPortTmpl.hxx"
-#include "InPortTmpl.hxx"
+#include "AudioOutPort.hxx"
+#include "AudioInPort.hxx"
 #include "InControl.hxx"
 #include "Audio.hxx"
 #include <string>
@@ -29,8 +29,8 @@ private:
 	InControl mModControl;
 	// Two ports: one for the input data and one for the output after the processing is done. Note that
 	// the instances are templatized by the type of data they receive.
-	InPortTmpl<Audio> mInput;
-	OutPortTmpl<Audio> mOutput;
+	AudioInPort mInput;
+	AudioOutPort mOutput;
 
 public:
 	MyProcessingWithPortsAndControls();

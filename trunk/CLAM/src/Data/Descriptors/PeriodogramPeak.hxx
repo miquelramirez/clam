@@ -24,11 +24,7 @@
 #ifndef _PeriodogramPeak_
 #define _PeriodogramPeak_
 
-#include "DynamicType.hxx"
-#include "Array.hxx"
 #include "DataTypes.hxx"
-#include "OSDefines.hxx"
-#include "Err.hxx"
 #include "ProcessingData.hxx"
 
 

@@ -46,7 +46,6 @@ namespace CLAM
     
     CepstralTransform( const CepstralTransformConfig& cfg );
     
-    ~CepstralTransform();
     
     bool Do();
     
@@ -76,7 +75,6 @@ namespace CLAM
     
     bool ConcreteConfigure( const ProcessingConfig& cfg );
     bool ConcreteStart();
-    bool ConcreteStop();
     
   private:
     CepstralTransformConfig mConfig;

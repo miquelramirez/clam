@@ -7,16 +7,21 @@
 namespace CLAM
 {
 /**
- * @defgroup XmlScoped Scoped Xml Document Writting
- * 
- * This module contains classes to write an XML document
- * following a "open on create - close on destroy" paradigm.
+ * @defgroup XmlScoped Scoped XML: A quick way to write XML (write only)
+ * @ingroup Xml
+ * @brief This module contains classes to write an XML document
+ * following a "open on create - close on destroy" idiom.
+ *
  * That means that by simply creating an element object
  * you are opening a tag and
  * when the element object goes out of scope the element
  * is automatically closed.
  * The C++ stack frame managing rules assure that the XML
  * will be well balanced.
+ *
+ * This system only provides writing XML and
+ * has no mapping to CLAM data as CLAM::XmlStorage has.
+ * See @link XmlDump the XmlStorage way @endlink.
  * 
  * Two  aproaches can be convined to generate XML with
  * scoped objects:
@@ -166,9 +171,8 @@ class XmlElement
 		}
 
 	private:
-		const std::string mName;
-
 		XmlWriteContext & context;
+		const std::string mName;
 		
 };
 

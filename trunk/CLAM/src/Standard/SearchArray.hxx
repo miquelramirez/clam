@@ -56,15 +56,12 @@ public:
 		return Hunt(value,prevIndex);
 	}
 	TIndex Hunt(const T& value,TIndex prevIndex=0) const;
-	/*{
-		return Hunt(prevIndex,value);
-	}
-	TIndex Hunt(TIndex guessIndex,const T& value) const;*/
 
 	TIndex Bisection(const T& value) const
 	{
 		return Bisection(value,0,mpArray->Size());
 	}
+
 	TIndex Bisection(const T& value,TIndex lowerLimit) const
 	{
 		return Bisection(value,lowerLimit,mpArray->Size());
@@ -79,41 +76,55 @@ template <class T>
 {
 	TIndex result;
 	TIndex n = mpArray->Size();
+
 	if (guessIndex<0 || guessIndex>=n)
 	{
 		return Bisection(value);
 	}
+
 	bool ascending = (*mpArray)[n-1] >= (*mpArray)[0];
 	TIndex inc = 1;
 	TIndex upperLimit;
+
 	if ( value >= (*mpArray)[guessIndex] == ascending)
 	{
 		if (guessIndex == n-1)
 			return -1;//X.A. changed to -1 for consistency
+
 		upperLimit = guessIndex+1;
 		while (	value >= (*mpArray)[upperLimit] == ascending)
 		{
 			guessIndex = upperLimit;
 			inc += inc;
 			upperLimit += inc;
-			if (upperLimit >= n) {
-	result=Bisection(value,guessIndex);
-				if(result==n-1) return -1;
-	else return result;
+			if (upperLimit >= n) 
+			{
+				result=Bisection(value,guessIndex);
+				if(result==n-1) 
+					return -1;
+				else 
+					return result;
 			}
 		}
-	} else {
+	} 
+	else 
+	{
 		if (guessIndex==0) 
 			return -1;
+		
 		upperLimit = guessIndex--;
 		while (	value < (*mpArray)[guessIndex] == ascending)
 		{
 			upperLimit = guessIndex;
 			inc += inc;
-			if (inc >= upperLimit) {
+			if (inc >= upperLimit) 
+			{
 				result = Bisection(value,0,upperLimit);
-	if(result==0) return -1;
-	else return result;
+
+				if(result==0) 
+					return -1;
+				else 
+					return result;
 			}
 			guessIndex = upperLimit-inc;
 		}

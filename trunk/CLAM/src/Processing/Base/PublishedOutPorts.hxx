@@ -7,21 +7,21 @@
 namespace CLAM
 {
 
-//foward declarations:
-class OutPort;
+//forward declarations:
+class OutPortBase;
 
 class PublishedOutPorts
 {
-	std::vector<OutPort*> mOutPorts;
+	std::vector<OutPortBase*> mOutPorts;
 public:
-	typedef std::vector<OutPort*>::iterator Iterator;
-	typedef std::vector<OutPort*>::const_iterator ConstIterator;
+	typedef std::vector<OutPortBase*>::iterator Iterator;
+	typedef std::vector<OutPortBase*>::const_iterator ConstIterator;
 
-	OutPort& GetByNumber(int index) const;
-	OutPort& Get(const std::string & name) const;
+	OutPortBase & GetByNumber(int index) const;
+	OutPortBase & Get(const std::string & name) const;
 	int Size() const;
 	bool AreReadyForWriting();
-	void Publish( OutPort * );
+	void Publish( OutPortBase * );
 	void Clear(){ mOutPorts.clear(); }
 	Iterator Begin();
 	Iterator End();

@@ -182,13 +182,6 @@ namespace CLAM {
 
 	void PortMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
 	{
-		printf("PortMIDIDevice::Write:");
-		for (int i=0;i<size;i++)
-		{
-			printf(" %02x",msg[i]);
-		}
-		printf("\n");
-
 		int m = msg[0]&0xff;
 
 		if(m == 0xf0) // SysEx

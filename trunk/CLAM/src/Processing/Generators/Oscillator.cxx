@@ -23,8 +23,8 @@ void OscillatorConfig::DefaultInit(void)
 
 
 Oscillator::Oscillator()
-	:mInputPhaseMod("Input Phase Modulation", this, 1),
-	mInputFreqMod("Input Frequency Modulation", this, 1),
+	:mInputPhaseMod("Input Phase Modulation", this ),
+	mInputFreqMod("Input Frequency Modulation", this ),
 	mModIdxUpdated( false ),
 	mModIdxCtl(0)
 {
@@ -35,8 +35,8 @@ Oscillator::Oscillator()
 }
 
 Oscillator::Oscillator(const OscillatorConfig& c )
-	: mInputPhaseMod("Input Phase Modulation", this, 1),
-	mInputFreqMod("Input Frequency Modulation", this, 1),
+	: mInputPhaseMod("Input Phase Modulation", this ),
+	mInputFreqMod("Input Frequency Modulation", this ),
 	mModIdxUpdated( false ),
 	mModIdxCtl(0)
 {	
@@ -71,10 +71,10 @@ bool Oscillator::ConcreteConfigure( const ProcessingConfig& c )
 
 bool Oscillator::Do()
 {
-	bool res =Do(mInputFreqMod.GetData(),mInputPhaseMod.GetData(),mOutput.GetData());			
-	mInputFreqMod.LeaveData();
-	mInputPhaseMod.LeaveData();
-	mOutput.LeaveData();
+	bool res =Do(mInputFreqMod.GetAudio(),mInputPhaseMod.GetAudio(),mOutput.GetAudio());
+	mInputFreqMod.Consume();
+	mInputPhaseMod.Consume();
+	mOutput.Produce();
 	return res;
 }
 

@@ -25,7 +25,8 @@
 
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
-#include "OutPortTmpl.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
 #include "DataTypes.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
@@ -33,47 +34,42 @@
 
 namespace CLAM {
 
-class EFDFilterGenControls
-	: public Enum
+class EFDFilterGenControls : public Enum
 {
 public:
+	
+	EFDFilterGenControls() : Enum(ValueTable(), gain) { }
+	EFDFilterGenControls(tValue v) : Enum(ValueTable(), v) { }
+	EFDFilterGenControls(std::string s) : Enum(ValueTable(), s) { }
+	~EFDFilterGenControls() { };
 
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	
-	EFDFilterGenControls() 
-		: Enum(sEnumValues, sDefault) 
-	{
-	}
-	
-	EFDFilterGenControls(tValue v) 
-		: Enum(sEnumValues, v) 
-	{
-	}
-	
-	EFDFilterGenControls(std::string s) 
-		: Enum(sEnumValues, s) 
-	{
-	}
-	
-	~EFDFilterGenControls() 
-	{
-	};
-	
 	Component * Species() const 
 	{ 
 		return new EFDFilterGenControls;
 	}
 
 	typedef enum 
-		{
-			gain=0,
-			highcutoff,
-			lowcutoff,
-			passbandslope,
-			stopbandslope
-		} tEnum;
+	{
+		gain=0,
+		highcutoff,
+		lowcutoff,
+		passbandslope,
+		stopbandslope
+	} tEnum;
 
+	static tEnumValue * ValueTable()
+	{
+		static tEnumValue sEnumValues[] =
+		{
+			{ gain, "gain" },
+			{ highcutoff, "highcutoff" },
+			{ lowcutoff, "lowcutoff" },
+			{ passbandslope, "passbandslope" },
+			{ stopbandslope, "stopbandslope" },
+			{ 0, NULL }
+		};
+		return sEnumValues;
+	}
 };
 
 /** Simple filter types, more to be added*/
@@ -81,17 +77,15 @@ class EFDFilterType : public Enum
 {
 public:
 	
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	EFDFilterType() : Enum(sEnumValues, sDefault) {}
-	EFDFilterType(tValue v) : Enum(sEnumValues, v) {};
-	EFDFilterType(std::string s) : Enum(sEnumValues, s) {};
+	EFDFilterType() : Enum(ValueTable(), eLowPass) {}
+	EFDFilterType(tValue v) : Enum(ValueTable(), v) {};
+	EFDFilterType(std::string s) : Enum(ValueTable(), s) {};
 
 	typedef enum {
 		eLowPass,
 		eHighPass,
 		eBandPass,
-		eStopBand,
+		eStopBand
 	};
 
 	virtual Component* Species() const
@@ -99,6 +93,17 @@ public:
 		// TODO: This is a xapusa. I want a default constructor!
 		return (Component*) new EFDFilterType(eLowPass);
 	};
+	static tEnumValue * ValueTable()
+	{
+		static tEnumValue sEnumValues[] = {
+			{eLowPass,"Low-pass"},
+			{eHighPass,"High-pass"},
+			{eBandPass,"Band-pass"},
+			{eStopBand,"Stop-Band"},
+			{0,NULL}
+		};
+		return sEnumValues;
+	}
 };
 
 
@@ -125,7 +130,7 @@ private:
 	typedef InControlTmpl<FDFilterGen> FDFilterGenCtrl;
 
 public:
-	OutPortTmpl<Spectrum> Output;
+	OutPort<Spectrum> Output;
 	
 	FDFilterGenCtrl Gain;
 	FDFilterGenCtrl HighCutOff;
@@ -177,9 +182,6 @@ public:
 	/** Definition of the Processing virtual method */
 	const ProcessingConfig &GetConfig() const { return mConfig; };
 		
-	bool Start(){return 0;};
-	bool Stop(){return 0;};
-	
 private:
 	
 	const char *GetClassName() const {return "FDFilterGen";}

@@ -8,8 +8,10 @@
 #include "SDIFFrame.hxx"
 #include "SDIFMatrix.hxx"
 
-using namespace CLAM;
 using std::iterator;
+
+namespace CLAM
+{
 
 void SDIFInConfig::DefaultInit()
 {
@@ -29,7 +31,7 @@ void SDIFInConfig::DefaultInit()
 }
 
 SDIFIn::SDIFIn():
-	Output("Output",this,1),
+	mOutput("Output",this),
 	mPrevIndexArray(0)
 { 
 	mpFile=NULL;
@@ -38,7 +40,7 @@ SDIFIn::SDIFIn():
 }
 
 SDIFIn::SDIFIn(const SDIFInConfig& c):
-	Output("Output",this,1),
+	mOutput("Output",this),
 	mPrevIndexArray(0)
 { 
 	mpFile=NULL;
@@ -264,15 +266,18 @@ bool SDIFIn::Do( CLAM::Segment& segment )
 {
 	bool thereIsMoreData = false;
 	
-	while( ( thereIsMoreData = LoadSDIFDataIntoSegment( segment ) ) );
+//TODO	while( ( thereIsMoreData = LoadSDIFDataIntoSegment( segment ) ) );
+	return LoadSDIFDataIntoSegment( segment );
 
 	return true;
 }
 
 bool SDIFIn::Do(void)
 {
-	return LoadSDIFDataIntoSegment( Output.GetData() );
-
-
+	bool result = LoadSDIFDataIntoSegment( mOutput.GetData() );
+	//mOutput.Produce();
+	return result;
 }
+
+} // namespace CLAM
 

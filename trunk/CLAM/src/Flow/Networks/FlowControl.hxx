@@ -30,7 +30,6 @@ namespace CLAM
 {
 
 class Network;
-class NodeBase;
 class Processing;
 
 class FlowControl
@@ -47,8 +46,6 @@ public:
 	virtual void ProcessingRemovedFromNetwork( Processing& removed );
 	void ProcessingConfigured( Processing & configured );
 
-	void ConfigureNode( NodeBase& toConfigure ) const;
-	
 	// to implement in each type of flowcontrol
 	virtual void DoProcessings() = 0;
 

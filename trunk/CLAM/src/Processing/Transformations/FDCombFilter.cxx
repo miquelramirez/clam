@@ -21,7 +21,6 @@
 
 #include "Complex.hxx"
 #include "FDCombFilter.hxx"
-#include "ErrProcessingObj.hxx"
 
 #define CLASS "FDCombFilter"
 

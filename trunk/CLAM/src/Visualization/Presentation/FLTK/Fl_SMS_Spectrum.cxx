@@ -74,6 +74,8 @@ namespace CLAMVM
 		mWorldSpaceCoords.mRight = 1.0;
 		mWorldSpaceCoords.mTop = mMaxMag;
 		mWorldSpaceCoords.mBottom = mMinMag;
+
+		mFirstTime = true;
 	
 	}
 
@@ -164,16 +166,33 @@ namespace CLAMVM
 	void Fl_SMS_Spectrum::OnNewSpectrum( const DataArray& array, TData spectralRange )
 	{
 		mDrawMgr.CacheData( array );
-		mWorldSpaceCoords.mRight = array.Size() - 2;
-		mWorldSpaceCoords.mLeft = 0;
-		mWorldSpaceCoords.mTop = mMaxMag;
-		mWorldSpaceCoords.mBottom = mMinMag;
-		mXAxis->minimum( 0 );
-		mXAxis->maximum( spectralRange );
-		mYAxis->minimum( mMinMag );
-		mYAxis->maximum( mMaxMag );
-		if ( mDisplay )
-			mDisplay->redraw();
+
+		if ( mFirstTime )
+		{
+
+			mWorldSpaceCoords.mRight = array.Size() - 2;
+			mWorldSpaceCoords.mLeft = 0;
+			mWorldSpaceCoords.mTop = mMaxMag;
+			mWorldSpaceCoords.mBottom = mMinMag;
+			mXAxis->minimum( 0 );
+			mXAxis->maximum( spectralRange );
+			mYAxis->minimum( mMinMag );
+			mYAxis->maximum( mMaxMag );
+			if ( mDisplay )
+			{
+				mDisplay->SetWorldSpace( mWorldSpaceCoords.mRight,
+							 mWorldSpaceCoords.mLeft,
+							 mWorldSpaceCoords.mTop, 
+							 mWorldSpaceCoords.mBottom );
+				
+				
+			}
+			mFirstTime = false;
+
+		}
+
+		if ( mDisplay ) mDisplay->redraw();
+
 		redraw();
 	}
 

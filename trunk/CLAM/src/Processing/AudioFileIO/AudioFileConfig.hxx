@@ -35,11 +35,9 @@ namespace CLAM {
 	{
 	public:
 
-		static tEnumValue sEnumValues[];
-		static tValue sDefault;
-		EAudioFileType() : Enum(sEnumValues, sDefault) {}
-		EAudioFileType(tValue v) : Enum(sEnumValues, v) {};
-		EAudioFileType(std::string s) : Enum(sEnumValues, s) {};
+		EAudioFileType() : Enum(ValueTable(), eRaw) {}
+		EAudioFileType(tValue v) : Enum(ValueTable(), v) {};
+		EAudioFileType(std::string s) : Enum(ValueTable(), s) {};
 
 		typedef enum {
 			eRaw,
@@ -54,7 +52,19 @@ namespace CLAM {
 			// TODO: This is a xapusa, see also FDFilterGen.hxx
 			return (Component*) new EAudioFileType(eRaw);
 		};
-		
+		static tEnumValue * ValueTable()
+		{
+			static tEnumValue sEnumValues[] = {
+				{EAudioFileType::eRaw,"Raw"},
+				{EAudioFileType::eWave,"Wave"},
+				{EAudioFileType::eAIFF,"AIFF"},
+				{EAudioFileType::eAuto,"Auto"},
+				{EAudioFileType::eUnknown,"Unknown"},
+				{0,NULL}
+			};
+			return sEnumValues;
+		}
+
 	};
 
 	/** Configuration class for AudioFileIn/Out classes

@@ -9,12 +9,11 @@ namespace CLAM
 /**
 * This class tells which formats are instantiated in a Spectrum.
 * It could be:
-* <ul>
-* <li> Complex: Array of Complex objects
-* <li> Polar: Array of Polar objects
-* <li> MagPhase: Array of magnitude/phase pairs
-* <li> MagPhaseBPF: BPF of magnitude/phase pairs
-* </ul>
+* - Complex: Array of Complex objects
+* - Polar: Array of Polar objects
+* - MagPhase: Array of magnitude/phase pairs
+* - MagPhaseBPF: BPF of magnitude/phase pairs
+* 
 * It can be used as any other class derived from Flags: you can
 * use the std::bit interface and Flags added functionalities.
 * @see Flags

@@ -27,7 +27,7 @@ Makefile.vars: Makefile $(SRCDEPS) settings.cfg
 	@echo Generating SOURCES, OBJECTS, DEPENDS and INCLUDES definitions
 	$(SRCDEPS) settings.cfg > Makefile.vars
 
-ifeq ($(ISDARWIN),1)
+ifeq ($(OS_MACOSX),1)
 PROGRAMPATH = $(PROGRAM).app/Contents/MacOS/
 PROGRAMEXTRAS = $(PROGRAM).app $(PROGRAM).app/Contents $(PROGRAM).app/Contents/MacOS $(PROGRAM).app/Contents/Resources $(PROGRAM).app/Contents/Resources/CLAM.icns $(PROGRAM).app/Contents/Info.plist  
 
@@ -53,8 +53,8 @@ endif
 
 program: $(PROGRAMPATH)$(PROGRAM)
 
-tags:
-	ctags-exuberant --excmd=number $(SOURCES) src/*.h
+tags: .FORCE
+	ctags $(SOURCES) `cat dep/*.d | grep -v \.o: | grep -v \.d: | sed -e 's/\\\\//' | sort | uniq`
 
 ifeq ($(CONFIG),debug)
 LIBRARIES = $(LIBRARIES_DEBUG)
@@ -63,9 +63,9 @@ CXXFLAGS = $(CXXFLAGS_DEBUG)
 
 $(PROGRAMPATH)$(PROGRAM): $(PROGRAMEXTRAS) $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
-	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
-ifeq ($(ISDARWIN),1)
-	@$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
+	$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
+ifeq ($(OS_MACOSX),1)
+	$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
 endif
 
 %.o:
@@ -98,7 +98,7 @@ CXXFLAGS = $(CXXFLAGS_RELEASE)
 $(PROGRAMPATH)$(PROGRAM): $(PROGRAMEXTRAS) $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
 	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
-ifeq ($(ISDARWIN),1)
+ifeq ($(OS_MACOSX),1)
 	@$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
 endif
 

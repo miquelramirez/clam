@@ -26,8 +26,8 @@
 
 #include "Processing.hxx"
 #include "InControl.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "Component.hxx"
 #include "Enum.hxx"
 #include <string>
@@ -85,8 +85,8 @@ private:
 	/** TokenDelay Configuration */
 	TokenDelayConfig mConfig;
 	// Ports and control
-	InPortTmpl<T> mInput;
-	OutPortTmpl<T> mOutput;
+	InPort<T> mInput;
+	OutPort<T> mOutput;
 	InControl mDelayControl;
 
 public:
@@ -296,28 +296,10 @@ class ETokenDelayControls
 {
 
 public:
-	static tEnumValue sEnumValues[];
-	static tValue     sDefault;
-
-	ETokenDelayControls()
-		: Enum( sEnumValues, sDefault )
-	{
-	}
-
-	ETokenDelayControls( tValue v )
-		: Enum( sEnumValues, v )
-	{
-	}
-	
-	ETokenDelayControls( string s )
-		: Enum( sEnumValues, s )
-	{
-	}
-
-	~ETokenDelayControls()
-	{
-	}
-
+	ETokenDelayControls() : Enum( ValueTable(), delay ) { } 
+	ETokenDelayControls( tValue v ) : Enum( ValueTable(), v ) { } 
+	ETokenDelayControls( string s ) : Enum( ValueTable(), s ) { } 
+	~ETokenDelayControls() { } 
 	Component* Species() const
 	{
 		return new ETokenDelayControls;
@@ -327,6 +309,15 @@ public:
 	{ 
 		delay = 0
 	} tEnum;
+	static tEnumValue * ValueTable()
+	{
+		static tEnumValue sEnumValues[] =
+		{
+			{ delay, "delay" },
+			{ 0, NULL }
+		};
+		return sEnumValues;
+	}
 
 };
 

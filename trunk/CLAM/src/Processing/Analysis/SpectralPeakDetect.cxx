@@ -23,42 +23,23 @@
 #include "Spectrum.hxx"
 #include "SpectralPeakArray.hxx"
 #include "SpectralPeakDetect.hxx"
-#include "ErrProcessingObj.hxx"
 
-#define CLASS "SpectralPeakDetect"
+
 
 namespace CLAM {
-
-	/* The  Configuration object has at least to have a name */
-
-	void SpectralPeakDetectConfig::DefaultInit()
-	{
-		AddAll();
-		UpdateData();
-		DefaultValues();
-	}
-
-	
-	void SpectralPeakDetectConfig::DefaultValues()
-	{
-		SetMagThreshold(-80.f);
-		SetMaxPeaks(1000);
-		SetMaxFreq(10000.f);
-	}
-
 
 	/* Processing  object Method  implementations */
 
 	SpectralPeakDetect::SpectralPeakDetect()
-		: mInput( "Input spectrum", this, 1 ),
-		  mOutput( "Output spectral peak array", this, 1 )
+		: mInput( "Input spectrum", this ),
+		  mOutput( "Output spectral peak array", this )
 	{
 		Configure(SpectralPeakDetectConfig());
 	}
 
 	SpectralPeakDetect::SpectralPeakDetect(const SpectralPeakDetectConfig &c = SpectralPeakDetectConfig())
-		: mInput( "Input spectrum", this, 1 ),
-		  mOutput( "Output spectral peak array", this, 1 )
+		: mInput( "Input spectrum", this ),
+		  mOutput( "Output spectral peak array", this )
 	{
 		Configure(c);
 	}
@@ -93,18 +74,20 @@ namespace CLAM {
 		return true;
 	}
 
-	void SpectralPeakDetect::Attach( Spectrum& in, SpectralPeakArray& out )
-	{
-		mInput.Attach( in );
-		mOutput.Attach( out );
-	}
-
 	/* The supervised Do() function */
-
 	bool  SpectralPeakDetect::Do(void)
 	{
+		if (mInput.GetData().GetScale() != EScale::eLog)
+		{
+			mInput.GetData().ToDB();
+		}
+		mOutput.GetData().SetScale( EScale::eLog );
 
-		return Do( mInput.GetData(), mOutput.GetData() );
+		bool result = Do( mInput.GetData(), mOutput.GetData() );
+		mInput.GetData().ToLinear();
+		mInput.Consume();
+		mOutput.Produce();
+		return result;
 	}
 
 	/* The  unsupervised Do() function */

@@ -102,6 +102,9 @@ int gendepend = 0;
 */
 hash* extmap = 0;
 
+
+static int library_mode = 0;
+
 static void generate_outputs_for_ui_files();
 
 void extmap_exit(void)
@@ -297,7 +300,7 @@ int parser_include(const char* filename,int shouldrecurse)
 		}
 		list_add_str_once(guessed_headers,tmp);
 
-		if (recursesrcs)
+		if (recursesrcs && !library_mode )
 		{
 			char* ext = extension(tmp);
 			char  headerext[16];
@@ -698,6 +701,15 @@ void generate_outputs_for_ui_files()
 
 void parser_init(void)
 {
+	listkey* lk = listhash_find( config, "IS_LIBRARY" );
+
+	if ( lk )
+		if ( strcmp( lk->l->first->str, "1" ) == 0 )
+		{
+			library_mode = 1;
+			fprintf( stderr, "srcdeps parser running in library mode...\n" );
+		}
+	
 	guessed_sources = list_new();
 
 	guessed_headers = list_new();

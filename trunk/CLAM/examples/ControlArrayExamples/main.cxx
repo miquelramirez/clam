@@ -3,7 +3,7 @@
 
 using namespace CLAM;
 
-void main()
+int main()
 {
 	TControlData c1(1), c2(2), c3(3);
 
@@ -31,12 +31,10 @@ void main()
 	std::cout << " expected: from id 0 to 9, val 3.14\n";
 	
 	int NVoices = MyProcessingWithControlArray::NVoices;
-    for (int i=0; i<NVoices; i++)
+	for (int i=0; i<NVoices; i++)
 		withControlArray.mVoiceControl[i].DoControl( TControlData(2) );
 	std::cout << " expected: from id 0 to " << NVoices << " val 2\n";
 
 
-
-
-	
+	return 0;
 }

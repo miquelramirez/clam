@@ -54,7 +54,7 @@ namespace CLAM {
 	 */
 	class SMSTransformationChain:public ProcessingChain<Segment>
 	{
-	public:
+		public:
 				
 		/** Default constructor. */
 		SMSTransformationChain(){}
@@ -73,14 +73,58 @@ namespace CLAM {
 			NextFrame();
 			return ProcessingChain<Segment>::Do();
 		}
+		bool Previously_ProcessingChainConcreteStart()
+		{
+			iterator obj;
+			
+			int i;
+			// init temp data
+			for(i=0;i<mpTmpDataArray.Size();i++)
+				if(mpTmpDataArray[i])
+				{
+					delete mpTmpDataArray[i];
+					mpTmpDataArray[i]=NULL;
+				}
+			mpTmpDataArray.SetSize(0);
+			
+			Segment* pCurrentData;
+			pCurrentData=new Segment(*mpChainInput);
+			mpTmpDataArray.AddElem(pCurrentData);
+			for(obj=composite_begin();obj!=composite_end();obj++)
+			{
+				//connecting ports for non-supervised mode
+				Processing & processing = *(*(obj));
+				SMSTransformation &concreteObj = dynamic_cast<SMSTransformation&>(processing);
+				
+				concreteObj.AttachIn(*pCurrentData);
+				if(!(*obj)->CanProcessInplace())
+				{
+					pCurrentData=new Segment(*mpChainInput);
+					mpTmpDataArray.AddElem(pCurrentData);
+				}
+				concreteObj.AttachOut(*pCurrentData);
+			}
+			obj=composite_begin();
+			SMSTransformation& concreteObj = dynamic_cast<SMSTransformation&>( *(*(obj)) );
+			concreteObj.AttachIn(*mpChainInput);
+			obj=composite_end();
+			obj--;
+			SMSTransformation& concreteObj2 = dynamic_cast<SMSTransformation&>( *(*(obj)) );
 
+			concreteObj2.AttachOut( *mpChainOutput);
+			return ProcessingComposite::ConcreteStart();
+
+		}
+		
 		bool ConcreteStart()
 		{
-			bool ret= ProcessingChain<Segment>::ConcreteStart();
+//			bool ret= ProcessingChain<Segment>::ConcreteStart();
+			bool ret= Previously_ProcessingChainConcreteStart();
+			
 			int i;
 			for(i=0;i<mpTmpDataArray.Size();i++)
 				mpTmpDataArray[i]->mCurrentFrameIndex=0;
-			mChainInput.GetData().mCurrentFrameIndex=0;
+			mpChainInput->mCurrentFrameIndex=0;
 			return ret;
 		}
 
@@ -88,7 +132,7 @@ namespace CLAM {
 		/** Helper method for updating frame counters both in ports and in internal data*/
 		void NextFrame()
 		{
-			mChainInput.GetData().mCurrentFrameIndex++;
+			mpChainInput->mCurrentFrameIndex++;
 		}
 		/** Returns true if current frame pointer at input port is pointing past the last
 		 *	frame in the segment
@@ -96,7 +140,8 @@ namespace CLAM {
 		bool IsLastFrame()
 		{
 			iterator obj;
-			for(obj=composite_begin();obj!=composite_end();obj++)
+			int i=0;
+			for(obj=composite_begin(); obj!=composite_end(); i++, obj++)
 			{
 				SMSTransformation* transf=static_cast<SMSTransformation*>((*obj));
 				if(!transf->IsLastFrame()) return false;

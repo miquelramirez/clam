@@ -78,8 +78,8 @@ bool SDIFOut::ConcreteConfigure(const ProcessingConfig& c)
 	}
 	catch ( ErrOpenFile& e )
 	{
-		mStatus = "Inner exception thrown: File could not be opened\n";
-		mStatus += e.what();
+		AddConfigErrorMessage("Inner exception thrown: File could not be opened");
+		AddConfigErrorMessage( e.what() );
 
 		return false;
 	}

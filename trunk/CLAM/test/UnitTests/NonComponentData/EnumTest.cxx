@@ -35,11 +35,10 @@ namespace CLAMTest {
 
 	class MyEnum : public Enum {
 	public:
-		static tEnumValue sEnumValues[];
 		static tValue sDefault;
-		MyEnum() : Enum(sEnumValues, sDefault) {}
-		MyEnum(tValue v) : Enum(sEnumValues, v) {};
-		MyEnum(std::string s) : Enum(sEnumValues, s) {};
+		MyEnum() : Enum(EnumValues(), sDefault) {}
+		MyEnum(tValue v) : Enum(EnumValues(), v) {};
+		MyEnum(std::string s) : Enum(EnumValues(), s) {};
 		virtual ~MyEnum() {};
 		Component * Species() const { return new MyEnum;};
 
@@ -48,13 +47,16 @@ namespace CLAMTest {
 			dos=2,
 			cent=100
 		} tEnum;
-		static void TestClass ();
-	};
-	Enum::tEnumValue MyEnum::sEnumValues[] = {
-		{MyEnum::zero,"zero"},
-		{MyEnum::dos,"dos"},
-		{MyEnum::cent,"cent"},
-		{0,NULL}
+		static Enum::tEnumValue * EnumValues()
+		{
+			static Enum::tEnumValue sEnumValues[] = {
+				{MyEnum::zero,"zero"},
+				{MyEnum::dos,"dos"},
+				{MyEnum::cent,"cent"},
+				{0,NULL}
+			};
+			return sEnumValues;
+		}
 	};
 
 	Enum::tValue MyEnum::sDefault = MyEnum::dos;

@@ -58,19 +58,17 @@ namespace CLAM {
 
 	void IntervalAmplitudeAverages::AdvanceFrame()
 	{
-		int i;
-		for ( i = -mCurrentPos; i<=0; i++)
+		for (int i = -mCurrentPos; i<=0; i++)
 			Current(i) = Current(i+mPointsPerFrame);
 	}
 
 	void IntervalAmplitudeAverages::Compute(int interval,
-										   Array<TData> &audio,
-										   int interval_start,
-										   int interval_end)
+						Array<TData> &audio,
+						int interval_start,
+						int interval_end)
 	{
-		int i;
 		TData interval_mean = 0.0;
-		for (i=interval_start; i<interval_end; i++)
+		for (int i=interval_start; i<interval_end; i++)
 			interval_mean += fabs(audio[i]);
 		interval_mean /= interval_end - interval_start;
 		Current(interval) = interval_mean;
@@ -83,9 +81,8 @@ namespace CLAM {
 
 	TData IntervalAmplitudeAverages::Acumulated(int ipoint)
 	{
-		int i;
 		TData res =0.0;
-		for (i=0; i< mNMemoryPoints; i++)
+		for (unsigned i=0; i< mNMemoryPoints; i++)
 			res += AcumulationShape(i) * Current(ipoint-i);
 		return res;
 	}
@@ -126,8 +123,8 @@ namespace CLAM {
 		  CONTROL(IntegrationLength),
 		  CONTROL(NormalLevel),
 		  CONTROL(SilenceLevel),
-		  Input("Input",this,1),
-		  Output("Output",this,1),
+		  Input("Input",this),
+		  Output("Output",this),
 		  mPointsPerFrame(0),
 		  mNMemoryPoints(0),
 		  mNormalLevel(0.0),
@@ -259,7 +256,7 @@ namespace CLAM {
 
 		if (!mFrameSize)
 		{
-			mStatus += "FrameSize must be non-zero\n";
+			AddConfigErrorMessage("FrameSize must be non-zero");
 			return false;
 		}
 
@@ -273,14 +270,14 @@ namespace CLAM {
 		{
 			if (!SetInterpolationPeriod(mConfig.GetInterpolationPeriod().GetInitValue()))
 			{
-				mStatus += "The interpolation period requested in config would require\n"
-				           "less than one interpolation point per frame\n";
+				AddConfigErrorMessage("The interpolation period requested in config would require\n"
+				           "less than one interpolation point per frame");
 				return false;
 			}
 		}
 		else {
-			mStatus += "Neither the number of interpolation points per frame nor the \n"
-			           "interpolation period requested in configuration are valid.";
+			AddConfigErrorMessage("Neither the number of interpolation points per frame nor the \n"
+			           "interpolation period requested in configuration are valid.");
 			return false;
 		}
 
@@ -292,15 +289,15 @@ namespace CLAM {
 		{
 			if (!SetIntegrationLength(mConfig.GetIntegrationLength().GetInitValue()))
 			{
-				mStatus += "The integration length requested leads\n"
-				           "to a non-positive number of memory points.\n";
+				AddConfigErrorMessage("The integration length requested leads"
+				           "to a non-positive number of memory points.");
 				return false;
 			}
 		}
 		else
 		{
-			mStatus += "Neither the integration length nor the number of memory points\n"
-			           "requested in configuration are valid.";
+			AddConfigErrorMessage("Neither the integration length nor the number of memory points"
+			           "requested in configuration are valid.");
 			return false;
 		}
 
@@ -314,7 +311,7 @@ namespace CLAM {
 
 		InitializeControls();
 
-		Input.SetParams(mFrameSize);
+		Input.SetSize(mFrameSize);
 		return true;
 	}
 
@@ -368,11 +365,6 @@ namespace CLAM {
 	}
 
 
-	void EnvelopeExtractor::Attach(Audio& inp, Envelope& env)
-	{
-		Input.Attach(inp);
-		Output.Attach(env);
-	}
 
 
 	int EnvelopeExtractor::InterpolationPeriodChange(TControlData val)
@@ -430,8 +422,8 @@ namespace CLAM {
 	bool EnvelopeExtractor::Do()
 	{ 
 		bool res = Do(Input.GetData(),Output.GetData()); 
-		Input.LeaveData();
-		Output.LeaveData();
+		Input.Consume();
+		Output.Produce();
 		return res;
 	}
 

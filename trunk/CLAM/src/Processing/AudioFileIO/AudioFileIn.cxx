@@ -31,14 +31,14 @@ using namespace CLAM;
 
 AudioFileIn::AudioFileIn() :
 	mpSoundFileIO(0),
-	mOutput("Output",this,1)
+	mOutput("Output",this)
 {
 	Configure(AudioFileConfig());
 };
 
 AudioFileIn::AudioFileIn(const AudioFileConfig &c) :
 	mpSoundFileIO(0),
-	mOutput("Output",this,1)
+	mOutput("Output",this)
 { 
 	Configure(c);
 };
@@ -48,11 +48,11 @@ bool AudioFileIn::ConcreteConfigure(const ProcessingConfig& c)
 	CopyAsConcreteConfig(mConfig, c);
 		
 	if (!mConfig.HasFilename()) {
-		mStatus += "No filename specified in config\n";
+		AddConfigErrorMessage("No filename specified in config");
 		return false;
 	}
 	if (mConfig.GetFilename()=="") {
-		mStatus += "Empty filename specified in config\n";
+		AddConfigErrorMessage("Empty filename specified in config");
 		return false;
 	}
 	
@@ -74,7 +74,7 @@ bool AudioFileIn::ConcreteConfigure(const ProcessingConfig& c)
 		mpSoundFileIO = new AIFFFileIO;;
 		break;			
 	default:
-		mStatus += "Unknown file type specified in config\n";
+		AddConfigErrorMessage("Unknown file type specified in config");
 		CLAM_DEBUG_ASSERT( false, "Unknown file type specified in config object");
 		return false;
 	}
@@ -88,9 +88,10 @@ bool AudioFileIn::ConcreteConfigure(const ProcessingConfig& c)
 	
 	mKeepFrameSizes = mConfig.GetKeepFrameSizes();
 	
-	mOutput.SetParams(mConfig.GetFrameSize());
+	mOutput.SetSize(mConfig.GetFrameSize());
+	mOutput.SetHop(mConfig.GetFrameSize());
 
-	mConfig.SetSampleRate( mpSoundFileIO->Header().mSamplerate );
+	mConfig.SetSampleRate( (TData)mpSoundFileIO->Header().mSamplerate );
 	mConfig.SetChannels( mpSoundFileIO->Header().mChannels );
 	
 	return true;
@@ -236,8 +237,8 @@ bool AudioFileIn::Do(Audio& inL,Audio& inR)
 
 bool AudioFileIn::Do(void)
 {
-	bool res = Do(mOutput.GetData());
-	mOutput.LeaveData();
+	bool res = Do(mOutput.GetAudio());
+	mOutput.Produce();
 	return res;
 }
 
@@ -251,30 +252,24 @@ bool AudioFileIn::CheckSoundFile() throw( ErrSoundFileIO )
 	}
 	catch ( UnavailableSoundFile& err )
 	{
-		mStatus += "An UnavailableSoundFile exception was thrown\n";
-		SetExecState( Unconfigured );
+		AddConfigErrorMessage("An UnavailableSoundFile exception was thrown");
 		throw err;
 	}
 	catch ( UnsupportedSoundFileSampleEncoding& err )
 	{
-		mStatus += "An UnsupportedSoundFileSampleEncoding exception was thrown\n";
-		SetExecState( Unconfigured );
+		AddConfigErrorMessage("An UnsupportedSoundFileSampleEncoding exception was thrown");
 		throw err;
 	}
 	catch ( UnsupportedSoundFileFormat& err )
 	{
-		mStatus += "An UnsupportedSoundFileFormat exception was thrown\n";
-		SetExecState( Unconfigured );
+		AddConfigErrorMessage("An UnsupportedSoundFileFormat exception was thrown");
 		throw err;
 	}
 	catch (ErrSoundFileIO& err)
 	{
-		mStatus += "Unknown file error exception was thrown  ";
-		mStatus += err.what();
-		mStatus += "\n";
+		AddConfigErrorMessage("Unknown file error exception was thrown\n");
+		AddConfigErrorMessage(err.what());
 			
-		SetExecState( Unconfigured );
-
 		throw err;
 	}
 		
@@ -283,7 +278,7 @@ bool AudioFileIn::CheckSoundFile() throw( ErrSoundFileIO )
 		mConfig.GetChannels()!=mpSoundFileIO->Header().mChannels
 		)
 	{
-		mStatus += "AudioFileIn: File does not have the requested number of channels";
+		AddConfigErrorMessage("AudioFileIn: File does not have the requested number of channels");
 		return false;
 	}
 		
@@ -293,8 +288,7 @@ bool AudioFileIn::CheckSoundFile() throw( ErrSoundFileIO )
 	}
 	catch (ErrSoundFileIO& e)
 	{
-		mStatus = "Error seeking frame\n";
-		SetExecState( Unconfigured );
+		AddConfigErrorMessage("Error seeking frame");
 
 		throw e;
 	}	

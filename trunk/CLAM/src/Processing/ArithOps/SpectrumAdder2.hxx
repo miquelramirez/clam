@@ -24,8 +24,8 @@
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "Spectrum.hxx"
 
 namespace CLAM {
@@ -76,9 +76,9 @@ namespace CLAM {
 		/** Size of the input/output vectors */
 		int mSize;
 
-		InPortTmpl<Spectrum> mIn1;
-		InPortTmpl<Spectrum> mIn2;
-		OutPortTmpl<Spectrum> mOut;
+		InPort<Spectrum> mIn1;
+		InPort<Spectrum> mIn2;
+		OutPort<Spectrum> mOut;
 
 		/** Possible configuration/prototype states */
 		typedef enum {

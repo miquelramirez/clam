@@ -33,21 +33,24 @@
 namespace CLAM {
 
 /**
- * This class adapts to the XMLable interface any object that has 
- * the insertion (&lt;&lt;) operator defined to an ostream, and
- * calculates the XML content with such operator on storage time.
- * The content is the same one which the insertion operator 
- * generates.
+ * @ingroup XmlAdapters
+ * @brief This class adapts to the XMLable interface any basic object.
+ *
+ * A basic object is that one that has
+ * the insertion (<<) and extractor (>>) operators defined to streams
+ * and there exists a TypeInfo struct for it (see CLAM_TYPE_INFO_GROUP).
+ * The adapter uses such operators to calculate the XML content on writing
+ * and reconstruct the object on reading.
  * 
- * <P>During the construction, the adapter stores a reference to
+ * During the construction, the adapter stores a reference to
  * the adaptee. The content string extracted on demand when the
  * adapter is stored on a XMLStorage, so the adapter is sensitive
  * to the adaptee changes after the construction. 
  *
- * <P><B>Important:</B> At storage time, the adaptee must exist in
+ * <B>Important:</B> At storage time, the adaptee must exist in
  * order to follow the reference.
  *
- * <P><B>Pay attention to the management of the name memory</B>
+ * <B>Pay attention to the management of the name memory</B>
  * @see BasicXMLable
  * @see XMLable
  */
@@ -63,7 +66,7 @@ private:
 public:
 	/**
 	 * Constructs a XMLAdapter
-	 * @param adaptee The object to be adapted (where the 
+	 * @param anAdaptee The object to be adapted (where the 
 	 * XML content will be extracted from)
 	 * @param name A pointer to a 0 terminated string 
 	 * containing the xml name (for elements and attributes)

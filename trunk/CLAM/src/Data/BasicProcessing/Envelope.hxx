@@ -28,7 +28,6 @@
 #include "DataTypes.hxx"
 #include "OSDefines.hxx"
 #include "Err.hxx"
-#include "Enum.hxx"
 #include "ProcessingDataConfig.hxx"
 #include "ProcessingData.hxx"
 #include "GlobalEnums.hxx"

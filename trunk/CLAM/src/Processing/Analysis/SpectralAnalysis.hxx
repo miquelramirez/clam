@@ -31,6 +31,8 @@
 #include "ProcessingComposite.hxx"
 #include "FFT.hxx"
 #include "Spectrum.hxx"
+#include "AudioInPort.hxx"
+#include "OutPort.hxx"
 
 namespace CLAM {
 
@@ -75,11 +77,6 @@ public:
  *  in the segment and increments that index.
  *  @see Segment*/
 	bool Do(Segment& in);
-
-
-	virtual void Attach(Audio& in, Spectrum &out);
-
-
 private:
 
 /**	Internal Configuration data */
@@ -131,8 +128,8 @@ private:
 	bool ConcreteConfigure(const ProcessingConfig&);
 
 	/** Ports */
-	InPortTmpl<Audio>     mInput;
-	OutPortTmpl<Spectrum> mOutput;
+	AudioInPort     mInput;
+	OutPort<Spectrum> mOutput;
 
 };
 

@@ -25,8 +25,8 @@
 #include "BasicFlowControl.hxx"
 #include <string>
 #include "BaseLoggable.hxx" // also includes <sstream>
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "DummyProcessingData.hxx"
@@ -34,8 +34,6 @@
 #include "Oscillator.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioFileIn.hxx"
-#include "InPort.hxx"
-#include "OutPort.hxx"
 
 namespace CLAMTest {
 
@@ -120,6 +118,7 @@ class NetworkTest : public CppUnit::TestFixture
 
 	class DummyProcessing : public CLAM::Processing
 	{
+		CLAM::InPort<int> mIn;
 		const char* GetClassName() const
 		{
 			return "DummyProcessing";
@@ -136,6 +135,11 @@ class NetworkTest : public CppUnit::TestFixture
 		{
 			return false;
 		}
+	public:
+		DummyProcessing() : mIn("Dummy In", this)
+		{
+		}
+		
 
 	};
 
@@ -237,11 +241,11 @@ class NetworkTest : public CppUnit::TestFixture
 	class NetworkProtectedInterfacePublisher : public CLAM::Network
 	{
 	public:
-		CLAM::InPort & GetInPortByCompleteName( const std::string& name )
+		CLAM::InPortBase & GetInPortByCompleteName( const std::string& name )
 		{	
 			return Network::GetInPortByCompleteName( name );
 		}
-		CLAM::OutPort & GetOutPortByCompleteName( const std::string& name )
+		CLAM::OutPortBase & GetOutPortByCompleteName( const std::string& name )
 		{	
 			return Network::GetOutPortByCompleteName( name );
 		}	
@@ -272,26 +276,21 @@ class NetworkTest : public CppUnit::TestFixture
 
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
-		const int dummyLength = 1;
-		CLAM::InPort* expectedInPort = 
-			new CLAM::InPortTmpl<DummyProcessingData>( std::string("theOnlyInPort"), theProc, dummyLength );
-	
+		CLAM::InPortBase * expectedInPort = new CLAM::InPort<DummyProcessingData>( std::string("theOnlyInPort"), theProc );
+		
 		// exercice and test
 		CPPUNIT_ASSERT_EQUAL( 
 			expectedInPort, 
 			&net.GetInPortByCompleteName( std::string("theOnlyProcessing.theOnlyInPort") ) 
 		);
-
-		// tear down
-		delete expectedInPort;
 	}
 
 	void testGetInPortByCompleteName_WhenPortDoesntExist()
 	{
 		//set up
 		NetworkProtectedInterfacePublisher net;
-		const int nodeSize=1;
-		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+		const int size=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(size) );
 
 		net.AddProcessing( "theOnlyProcessing", new DummyProcessing );
 
@@ -302,7 +301,8 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in InPorts collection: NonExistingPort" ), 
+				std::string( "name not found in InPorts collection: 'NonExistingPort'. "
+					"In ports availables: 'Dummy In'"),
 				std::string( expected.what() ) );
 
 		}
@@ -354,18 +354,13 @@ class NetworkTest : public CppUnit::TestFixture
 		
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
-		const int dummyLength = 1;
-		CLAM::InPort* expectedInPort = 
-			new CLAM::InPortTmpl<DummyProcessingData>( std::string("theOnlyInPort"), theProc, dummyLength );
-	
+		CLAM::InPortBase * expectedInPort = new CLAM::InPort<DummyProcessingData>( std::string("theOnlyInPort"), theProc );
+		
 		// exercice and test
 		CPPUNIT_ASSERT_EQUAL( 
 			expectedInPort, 
 			&net.GetInPortByCompleteName( std::string("nonExistingNetwork.theOnlyProcessing.theOnlyInPort") ) 
 		);
-
-		// tear down
-		delete expectedInPort;
 	}
 
 	///////////////////////////////////////////
@@ -382,18 +377,12 @@ class NetworkTest : public CppUnit::TestFixture
 
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
-		const int dummyLength = 1;
-		CLAM::OutPort* expectedOutPort = 
-			new CLAM::OutPortTmpl<DummyProcessingData>( std::string("theOnlyOutPort"), theProc, dummyLength );
-	
+		CLAM::OutPortBase * expectedOutPort = new CLAM::OutPort<DummyProcessingData>( std::string("theOnlyOutPort"), theProc );
 		// exercice and test
 		CPPUNIT_ASSERT_EQUAL( 
 			expectedOutPort, 
 			&net.GetOutPortByCompleteName( std::string("theOnlyProcessing.theOnlyOutPort") ) 
 		);
-
-		// tear down
-		delete expectedOutPort;
 	}
 
 	void testGetOutPortByCompleteName_WhenPortDoesntExist()
@@ -463,18 +452,12 @@ class NetworkTest : public CppUnit::TestFixture
 
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
-		const int dummyLength = 1;
-		CLAM::OutPort* expectedOutPort = 
-			new CLAM::OutPortTmpl<DummyProcessingData>( std::string("theOnlyOutPort"), theProc, dummyLength );
-	
+		CLAM::OutPortBase * expectedOutPort = new CLAM::OutPort<DummyProcessingData>( std::string("theOnlyOutPort"), theProc );
 		// exercice and test
 		CPPUNIT_ASSERT_EQUAL( 
 			expectedOutPort, 
 			&net.GetOutPortByCompleteName( std::string("nonExistingNetwork.theOnlyProcessing.theOnlyOutPort") ) 
 		);
-
-		// tear down
-		delete expectedOutPort;
 	}
 
 
@@ -692,11 +675,6 @@ class NetworkTest : public CppUnit::TestFixture
 		delete expectedOutControl;
 	}
 
-
-
-
-
-
 	void testUseOfString_substr()
 	{
 		std::string today("today it rains");
@@ -715,17 +693,13 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "first", firstProc );
 		net.AddProcessing( "second", secondProc );
 
-		const int dummyLength = 1;
-		CLAM::OutPort* outPortOfFirstProc = 
-			new CLAM::OutPortTmpl<CLAM::Audio>
-			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
-
-		CLAM::InPort* inPortOfSecondProc = 
-			new CLAM::InPortTmpl<CLAM::Audio>
-			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
+		CLAM::OutPortBase * outPortOfFirstProc = 
+			new CLAM::OutPort<DummyProcessingData>( std::string("outPortOfFirstProc"), firstProc );
+		CLAM::InPortBase * inPortOfSecondProc = 
+			new CLAM::InPort<DummyProcessingData>( std::string("inPortOfSecondProc"), secondProc );
 		
 		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
-		CPPUNIT_ASSERT_EQUAL( true, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );
+		CPPUNIT_ASSERT_EQUAL( true, outPortOfFirstProc->IsDirectlyConnectedTo(*inPortOfSecondProc) );
 	}
 
 	void testConnectPorts_WhenConnectionIsNotValid()
@@ -739,16 +713,11 @@ class NetworkTest : public CppUnit::TestFixture
 
 		net.AddProcessing( "first", firstProc );
 		net.AddProcessing( "second", secondProc );
-
-		const int dummyLength = 1;
-		CLAM::OutPort* outPortOfFirstProc = 
-			new CLAM::OutPortTmpl<DummyProcessingData>
-			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
-
-		CLAM::InPort* inPortOfSecondProc = 
-			new CLAM::InPortTmpl<CLAM::Audio>
-			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
-
+	
+		CLAM::OutPortBase * outPortOfFirstProc = 
+			new CLAM::OutPort<DummyProcessingData>( std::string("outPortOfFirstProc"), firstProc );
+		CLAM::InPortBase * inPortOfSecondProc = 
+			new CLAM::InPort<int>( std::string("inPortOfSecondProc"), secondProc );
 		
 		CPPUNIT_ASSERT_EQUAL( false, net.ConnectPorts(
 					      "first.outPortOfFirstProc","second.inPortOfSecondProc") );
@@ -765,16 +734,11 @@ class NetworkTest : public CppUnit::TestFixture
 
 		net.AddProcessing( "first", firstProc );
 		net.AddProcessing( "second", secondProc );
-
-		const int dummyLength = 1;
-		CLAM::OutPort* outPortOfFirstProc = 
-			new CLAM::OutPortTmpl<CLAM::Audio>
-			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
-
-		CLAM::InPort* inPortOfSecondProc = 
-			new CLAM::InPortTmpl<CLAM::Audio>
-			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
-
+	
+		CLAM::OutPortBase * outPortOfFirstProc = 
+			new CLAM::OutPort<DummyProcessingData>( std::string("outPortOfFirstProc"), firstProc );
+		CLAM::InPortBase * inPortOfSecondProc = 
+			new CLAM::InPort<DummyProcessingData>( std::string("inPortOfSecondProc"), secondProc );
 		
 		CPPUNIT_ASSERT_EQUAL( false, net.DisconnectPorts(
 					      "first.outPortOfFirstProc","second.inPortOfSecondProc") );
@@ -792,18 +756,14 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "first", firstProc );
 		net.AddProcessing( "second", secondProc );
 
-		const int dummyLength = 1;
-		CLAM::OutPort* outPortOfFirstProc = 
-			new CLAM::OutPortTmpl<CLAM::Audio>
-			( std::string("outPortOfFirstProc"), firstProc, dummyLength );
-
-		CLAM::InPort* inPortOfSecondProc = 
-			new CLAM::InPortTmpl<CLAM::Audio>
-			( std::string("inPortOfSecondProc"), secondProc, dummyLength );
-		
+		CLAM::OutPortBase * outPortOfFirstProc = 
+			new CLAM::OutPort<DummyProcessingData>( std::string("outPortOfFirstProc"), firstProc );
+		CLAM::InPortBase * inPortOfSecondProc = 
+			new CLAM::InPort<DummyProcessingData>( std::string("inPortOfSecondProc"), secondProc );
+			
 		net.ConnectPorts("first.outPortOfFirstProc","second.inPortOfSecondProc");
 		net.DisconnectPorts( "first.outPortOfFirstProc","second.inPortOfSecondProc");
-		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsConnectedTo(*inPortOfSecondProc) );
+		CPPUNIT_ASSERT_EQUAL( false, outPortOfFirstProc->IsDirectlyConnectedTo(*inPortOfSecondProc) );
 
 	}
 
@@ -1001,3 +961,4 @@ class NetworkTest : public CppUnit::TestFixture
 };
    
 } // namespace 
+

@@ -12,12 +12,9 @@ namespace CLAM{
 class EPhaseGeneration: public Enum
 {
 public:
-	
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	EPhaseGeneration() : Enum(sEnumValues, sDefault) {}
-	EPhaseGeneration(tValue v) : Enum(sEnumValues, v) {};
-	EPhaseGeneration(std::string s) : Enum(sEnumValues, s) {};
+	EPhaseGeneration() : Enum(ValueTable(), eAlign) {}
+	EPhaseGeneration(tValue v) : Enum(ValueTable(), v) {};
+	EPhaseGeneration(std::string s) : Enum(ValueTable(), s) {};
 
 	typedef enum {
 		eAlign,
@@ -29,6 +26,16 @@ public:
 	{
 		return (Component*) new EPhaseGeneration;
 	};
+	static tEnumValue * ValueTable()
+	{
+		static tEnumValue sEnumValues[] = {
+			{eAlign,"Align"},
+			{eRandom,"Random"},
+			{eContinuation,"Continuation"},
+			{0,NULL}
+		};
+		return sEnumValues;
+	}
 };
 
 }

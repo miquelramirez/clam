@@ -22,10 +22,3 @@
 #include "TokenDelay.hxx"
 using namespace CLAM;
 
-Enum::tEnumValue ETokenDelayControls::sEnumValues[] =
-  {
-    { ETokenDelayControls::delay, "delay" },
-    { 0, NULL }
-  };
-
-Enum::tValue ETokenDelayControls::sDefault = ETokenDelayControls::delay;

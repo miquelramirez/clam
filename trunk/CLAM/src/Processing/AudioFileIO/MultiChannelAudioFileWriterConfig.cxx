@@ -25,5 +25,7 @@ namespace CLAM
 {
 	void MultiChannelAudioFileWriterConfig::DefaultInit()
 	{
+		AddAll();
+		UpdateData();
 	}
 }

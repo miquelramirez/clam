@@ -128,7 +128,7 @@ namespace AudioCodecs
 						       mInterleavedData.GetPtr(),
 						       mFramesToRead );
 
-		mFramesLastRead = framesRead;
+		mFramesLastRead = (TSize)framesRead;
 		
 		if ( framesRead == 0 ) // No more data to read - EOF reached
 		{

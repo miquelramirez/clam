@@ -27,7 +27,7 @@
 #include "AudioIO.hxx"
 #include "Processing.hxx"
 #include "Audio.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioOutPort.hxx"
 #include "AudioDevice.hxx"
 
 
@@ -44,8 +44,7 @@ private:
 	AudioIOConfig mConfig;
 	AudioDevice* mpDevice;
 public:
-
-	OutPortTmpl<Audio> Output;
+	AudioOutPort mOutput;
 
 	/** Configuration method interface. The Processing base class forces all the concrete classes derived from it to implement this method, which must actually perform the specific configuration tasks.  
 	 *  Note that the user can not call this method directly. He will use Configure instead. The argument is expected to be an object of the necesary concrete configuration class.
@@ -61,13 +60,12 @@ public:
 
 	/** Default constructor for the class. Sets the configuration to the default values, calling the base constructor of the AudioIOConfig object
 	*/
-	AudioIn() : Output("Output",this,1) { mpDevice = 0; Configure(AudioIOConfig()); }
+	AudioIn() :mOutput( "Audio Output",this ) { mpDevice = 0; Configure(AudioIOConfig()); }
 
 	/** Constructor of the class with an AudioIOConfig object constructed by the user as parameter.
 	 *  @param c The concrete AudioIOConfig that will be used for this construction
 	 */
-	AudioIn(const AudioIOConfig &c) : Output("Output",this,1)  { mpDevice = 0; Configure(c); }
-	
+	AudioIn(const AudioIOConfig &c) : mOutput( "Audio Output",this )  { mpDevice = 0; Configure(c); }
 	/** Destructor method of the class*/
 	~AudioIn() { if (mpDevice) mpDevice->Unregister(*this); }
 

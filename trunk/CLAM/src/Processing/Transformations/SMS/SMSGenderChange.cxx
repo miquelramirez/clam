@@ -28,7 +28,8 @@ using namespace CLAM;
 bool SMSGenderChange::Do(const Frame& in, Frame& out)
 {
 	if(in.GetFundamental().GetFreq(0))//we only transform voiced frames
-	{
+	{	
+		
 		Frame tmpFrame;
 		tmpFrame=in;
 

@@ -25,6 +25,9 @@
 #include "DataTypes.hxx"
 #include "Processing.hxx"
 #include "FundFreqDetectConfig.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "OutControl.hxx"
 
 namespace CLAM {
 
@@ -49,6 +52,10 @@ namespace CLAM {
 		const char *GetClassName() const {return "FundFreqDetect";}
 
 		bool ConcreteConfigure(const ProcessingConfig&);
+
+		InPort<SpectralPeakArray> mInput;
+		OutPort<Fundamental> mOutput;
+		OutControl mFundFreqValue;
 
 	public:
 		FundFreqDetect();
@@ -103,3 +110,4 @@ namespace CLAM {
 } // namespace CLAM
 
 #endif // _FUNFREQ_DETECT_
+

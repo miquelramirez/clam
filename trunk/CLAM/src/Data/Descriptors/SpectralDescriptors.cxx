@@ -25,9 +25,83 @@
 #include <algorithm>
 
 namespace CLAM{
+	
+DataArray	Add(DataArray &a, DataArray &b) {
+	TIndex i;
+	TSize sizea=a.Size(); 
+	TSize sizeb=b.Size();
+	TSize size;
+	DataArray result;
+	
+	// One has size==0 (optimized with respect to the following case?)
+	if (sizea==0) {
+		result=b;
+		return result;
+	}
+	if (sizeb==0) {
+		result=a;
+		return result;
+	}
+	
+	// Different sizes
+	if(sizea != sizeb) {
+		if (sizea < sizeb) {
+			size=sizeb;
+			result.Resize(size);
+			result.SetSize(size);
+			for (i=0; i<sizea; i++)
+				result[i]=a[i]+b[i];
+			for (i=sizea; i<sizeb; i++)
+				result[i]=b[i];
+			return result;
+		}
+		else {  // sizea>sizeb
+			size=sizea;
+			result.Resize(size);
+			result.SetSize(size);
+			for (i=0; i<sizeb; i++)
+				result[i]=a[i]+b[i];
+			for (i=sizeb; i<sizea; i++)
+				result[i]=a[i];
+			return result;
+		}
+	}
+	// Equal size
+	size=sizea;
+	result.Resize(size);
+	result.SetSize(size);
+	for (i=0; i<size; i++)
+		result[i]=a[i]+b[i];
+	return result;
+}
+
+DataArray Multiply(TData &factor, DataArray &a) {
+	TIndex i;
+	TSize size=a.Size(); 
+	DataArray result;
+	result.Resize(size);
+	result.SetSize(size);
+	for (i=0; i<size; i++)
+	 	result[i]=factor*a[i];
+	return result;
+}
+
+/* Scalar product of two vectors */
+DataArray Multiply(DataArray &a, DataArray &b) {
+	TIndex i;
+	TSize size=a.Size(); 
+	DataArray result;
+	result.Resize(size);
+	result.SetSize(size);
+	for (i=0; i<size; i++)
+	 	result[i]=a[i]*b[i];
+	return result;
+}
 
 SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum):Descriptor(eNumAttr)
 {
+	CLAM_ASSERT(pSpectrum->GetScale()==EScale::eLinear,
+		"Spectral Descriptors require a linear magnitude Spectrum");
 	MandatoryInit();
 	mpSpectrum=pSpectrum;
 }
@@ -47,18 +121,14 @@ SpectralDescriptors::SpectralDescriptors(TData initVal):Descriptor(eNumAttr)
 	SetMoment5(initVal);
 	SetMoment6(initVal);
 	SetSpread(initVal);
-	SetSkewness(initVal);
-	SetKurtosis(initVal);
-	SetTilt(initVal);
+	SetMagnitudeSkewness(initVal);
+	SetMagnitudeKurtosis(initVal);
 	SetFlatness(initVal);
 	SetHighFrequencyCoefficient(initVal);
 	SetMaxMagFreq(initVal);
 	SetLowFreqEnergyRelation(initVal);
 	SetRolloff(initVal);
 	SetSlope(initVal);
-	SetIrregularity(initVal);
-	SetStrongPeak(initVal);
-	SetHFC(initVal);
 }
 
 void SpectralDescriptors::DefaultInit() {
@@ -67,22 +137,28 @@ void SpectralDescriptors::DefaultInit() {
 	//Warning: no attributes are added by default, the user is in charge of adding the ones he is interested in
 }
 
-void SpectralDescriptors::CopyInit(const SpectralDescriptors & copied) {
+void SpectralDescriptors::CopyInit(const SpectralDescriptors & copied) 
+{
 	mpSpectrum=copied.mpSpectrum;
 	mpStats=0;
 }
 
-const Spectrum* SpectralDescriptors::GetpSpectrum() const {
+const Spectrum* SpectralDescriptors::GetpSpectrum() const 
+{
 	return mpSpectrum;
 }
 
-void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum) {
+void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum) 
+{
+	
+	CLAM_ASSERT(pSpectrum->GetScale()==EScale::eLinear,
+		"Spectral Descriptors require a linear magnitude Spectrum");
 	mpSpectrum=pSpectrum;
 	//TODO: we are asuming Spectrum is in MagBuffer
 	//TODO: it may give problems because pointer passed
 	InitStats(&mpSpectrum->GetMagBuffer());
 
-	mDeltaFreq=mpSpectrum->GetSpectralRange()/mpSpectrum->GetSize();
+	mDeltaFreq=double(mpSpectrum->GetSpectralRange())/(mpSpectrum->GetSize()-1);
 	
 }
 
@@ -91,7 +167,12 @@ void SpectralDescriptors::ConcreteCompute()
 	if (HasMean())
 		SetMean(mpStats->GetMean());
 	if (HasGeometricMean())
+	{
+		CLAM_ASSERT( mpSpectrum->GetScale() == CLAM::EScale::eLinear,
+			     "The Geometric Mean, as implemented in CLAM, can only"
+			     " be computed over Linar Spectral Power distirbutions");
 		SetGeometricMean(mpStats->GetGeometricMean());
+	}
 	if (HasEnergy())
 		SetEnergy(mpStats->GetEnergy());
 	if (HasCentroid())
@@ -107,13 +188,11 @@ void SpectralDescriptors::ConcreteCompute()
 	if(HasMoment6())
 		SetMoment6(mpStats->GetMoment((O<6>*)(0)));
 	if (HasSpread())
-	        SetSpread(ComputeSpread());
-	if(HasSkewness())
-		SetSkewness(mpStats->GetSkew());
-	if(HasKurtosis())	
-		SetKurtosis(mpStats->GetKurtosis());
-	if(HasTilt())
-		SetTilt(mpStats->GetTilt());
+	        SetSpread(mpStats->GetSpread()*mDeltaFreq*mDeltaFreq);
+	if(HasMagnitudeSkewness())
+		SetMagnitudeSkewness(mpStats->GetSkew());
+	if(HasMagnitudeKurtosis())	
+ 		SetMagnitudeKurtosis(mpStats->GetKurtosis());
 	if(HasFlatness())
 		SetFlatness(ComputeSpectralFlatness());
 	if(HasHighFrequencyCoefficient())
@@ -126,15 +205,6 @@ void SpectralDescriptors::ConcreteCompute()
 		SetRolloff(ComputeRolloff());
 	if(HasSlope())
 		SetSlope(mpStats->GetSlope()/mDeltaFreq);
-	if(HasIrregularity())
-		//not implemented
-		SetIrregularity(0);
-	if(HasStrongPeak())
-		//not implemented
-		SetStrongPeak(0);
-	if(HasHFC())
-		//not implemented
-		SetHFC(0);
 }
 
 
@@ -157,25 +227,31 @@ TData SpectralDescriptors::ComputeHighFrequencyCoefficient()
 	return WeightedPoweredSum<2>()(mpSpectrum->GetMagBuffer());
 }
 
-/*this has been mostly copied and pasted from cuidado and should be checked and some of
-it promoted into basicOps*/
+/**
+ * It computes the frequency where the spectrum has its maximum value
+ *
+ * It there are more than one frequency with the same magnitude, 
+ * it takes the lower one.
+ *
+ * @todo Promote MaxPosition to Stats
+ */
 TData SpectralDescriptors::ComputeMaxMagFreq()
 { 
-	// Frequency of the spectrum maxima 
-	// Note: it is supposing the spectrum is in dB?
+	// Zero is not enough for spectrums in dB's
 	TData max = -1000.0;
 	TIndex index = -1;
 	
-	DataArray& data=mpSpectrum->GetMagBuffer();
-	int size=mpSpectrum->GetSize();
+	const DataArray& data=mpSpectrum->GetMagBuffer();
+	const unsigned size=mpSpectrum->GetSize();
 	for(unsigned i=0; i<size; i++) 
 		if(data[i] > max )
 		{
 			max = data[i];
 			index = i;
 		} 
-	// Normalized by the spectral range
-	return (TData) index* (mpSpectrum->GetSpectralRange()/(TData)(size-1));
+
+	// Convert from index to frequency value in Hz
+	return (TData) index * mDeltaFreq;
 }
 
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
@@ -184,7 +260,7 @@ TData SpectralDescriptors::ComputeLowFreqEnergyRelation()
 { 
 	// Energy(0-100 Hz) / Total Energy
 	int size=mpSpectrum->GetSize();
-	TIndex index = Round(100.0/(mpSpectrum->GetSpectralRange()/(TData)size));
+	TIndex index = Round(100.0/mDeltaFreq);
 	
 	DataArray data=mpSpectrum->GetMagBuffer();
 	
@@ -197,8 +273,6 @@ TData SpectralDescriptors::ComputeLowFreqEnergyRelation()
 	return result;
 }
 
-/*this has been mostly copied and pasted from cuidado and should be checked and some of
-it promoted into basicOps*/
 TData SpectralDescriptors::ComputeRolloff() 
 { 
 	DataArray& mags     = mpSpectrum->GetMagBuffer();
@@ -209,35 +283,11 @@ TData SpectralDescriptors::ComputeRolloff()
 	for (TIndex i=0; i<magsSize; i++)
 	{
 		cumEnergy += mags[i]*mags[i];
-		if (cumEnergy < eThreshold) continue;
-		return (i * mpSpectrum->GetSpectralRange() / (TData)magsSize);
+		if (cumEnergy <= eThreshold) continue;
+		return i * mDeltaFreq;
 	}
-	// Return -1 if no rolloff point could be found (e.g. digital silence)
-	return -1;
+	return 0.0;
 }
-
-
-TData SpectralDescriptors::ComputeSpread() 
-{ 
-	DataArray& mags     = mpSpectrum->GetMagBuffer();
-	TSize      magsSize = mpSpectrum->GetSize();
-
-	TData centroid = mpStats->GetCentroid()*mDeltaFreq;
-
-	// Compute spectrum variance around centroid frequency
-	TData variance = 0;
-	TData sumMags  = 0;
-	for (TIndex i=0; i<magsSize; i++)
-	{
-		variance += pow((i*mDeltaFreq - centroid), 2) * mags[i];
-		sumMags  += mags[i];
-	}
-	variance /= sumMags;
-
-	// Return std.dev. normalized by centroid frequency
-	return sqrt(variance) / centroid;
-}
-
 
 
 SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
@@ -261,26 +311,18 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 		tmpD.SetMoment5(a.GetMoment5()*mult);
 	if(a.HasMoment6())
 		tmpD.SetMoment6(a.GetMoment6()*mult);
-	if(a.HasIrregularity())
-		tmpD.SetIrregularity(a.GetIrregularity()*mult);
-	if(a.HasTilt())
-		tmpD.SetTilt(a.GetTilt()*mult);
 	if(a.HasFlatness())
 		tmpD.SetFlatness(a.GetFlatness()*mult);
-	if(a.HasKurtosis())
-		tmpD.SetKurtosis(a.GetKurtosis()*mult);
-	if(a.HasStrongPeak())
-		tmpD.SetStrongPeak(a.GetStrongPeak()*mult);
-	if(a.HasHFC())
-		tmpD.SetHFC(a.GetHFC()*mult);
+	if(a.HasMagnitudeKurtosis())
+		tmpD.SetMagnitudeKurtosis(a.GetMagnitudeKurtosis()*mult);
 	if(a.HasMaxMagFreq())
 		tmpD.SetMaxMagFreq(a.GetMaxMagFreq()*mult);
 	if(a.HasLowFreqEnergyRelation())
 		tmpD.SetLowFreqEnergyRelation(a.GetLowFreqEnergyRelation()*mult);
 	if(a.HasSpread())
 		tmpD.SetSpread(a.GetSpread()*mult);
-	if(a.HasSkewness())
-		tmpD.SetSkewness(a.GetSkewness()*mult);
+	if(a.HasMagnitudeSkewness())
+		tmpD.SetMagnitudeSkewness(a.GetMagnitudeSkewness()*mult);
 	if(a.HasRolloff())
 		tmpD.SetRolloff(a.GetRolloff()*mult);
 	if(a.HasSlope())
@@ -293,12 +335,9 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 	if(a.HasMFCC())
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetMFCC(a.GetMFCC());
-	if(a.HasBandEnergy())
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetBandEnergy(a.GetBandEnergy());
 	if(a.HasPCP())
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetPCP(a.GetPCP());
+		tmpD.SetPCP(Multiply(mult,a.GetPCP()));
+
 	return tmpD;
 }
 
@@ -359,41 +398,17 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.UpdateData();
 		tmpD.SetMoment6(a.GetMoment6()*b.GetMoment6());
 	}
-	if(a.HasIrregularity() && b.HasIrregularity() )
-	{
-		tmpD.AddIrregularity();
-		tmpD.UpdateData();
-		tmpD.SetIrregularity(a.GetIrregularity()*b.GetIrregularity());
-	}
-	if(a.HasTilt() && b.HasTilt() )
-	{
-		tmpD.AddTilt();
-		tmpD.UpdateData();
-		tmpD.SetTilt(a.GetTilt()*b.GetTilt());
-	}
 	if(a.HasFlatness() && b.HasFlatness() )
 	{
 		tmpD.AddFlatness();
 		tmpD.UpdateData();
 		tmpD.SetFlatness(a.GetFlatness()*b.GetFlatness());
 	}
-	if(a.HasKurtosis() && b.HasKurtosis() )
+	if(a.HasMagnitudeKurtosis() && b.HasMagnitudeKurtosis() )
 	{
-		tmpD.AddKurtosis();
+		tmpD.AddMagnitudeKurtosis();
 		tmpD.UpdateData();
-		tmpD.SetKurtosis(a.GetKurtosis()*b.GetKurtosis());
-	}
-	if(a.HasStrongPeak() && b.HasStrongPeak() )
-	{
-		tmpD.AddStrongPeak();
-		tmpD.UpdateData();
-		tmpD.SetStrongPeak(a.GetStrongPeak()*b.GetStrongPeak());
-	}
-	if(a.HasHFC() && b.HasHFC() )
-	{
-		tmpD.AddHFC();
-		tmpD.UpdateData();
-		tmpD.SetHFC(a.GetHFC()*b.GetHFC());
+		tmpD.SetMagnitudeKurtosis(a.GetMagnitudeKurtosis()*b.GetMagnitudeKurtosis());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{
@@ -413,11 +428,11 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.UpdateData();
 		tmpD.SetSpread(a.GetSpread()*b.GetSpread());
 	}
-	if(a.HasSkewness() && b.HasSkewness() )
+	if(a.HasMagnitudeSkewness() && b.HasMagnitudeSkewness() )
 	{
-		tmpD.AddSkewness();
+		tmpD.AddMagnitudeSkewness();
 		tmpD.UpdateData();
-		tmpD.SetSkewness(a.GetSkewness()*b.GetSkewness());
+		tmpD.SetMagnitudeSkewness(a.GetMagnitudeSkewness()*b.GetMagnitudeSkewness());
 	}
 	if(a.HasRolloff() && b.HasRolloff() )
 	{
@@ -451,19 +466,11 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetMFCC(a.GetMFCC() /** b.GetMFCC() */);
 	}
-	if(a.HasBandEnergy() && b.HasBandEnergy() )
-	{
-		tmpD.AddBandEnergy();
-		tmpD.UpdateData();
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetBandEnergy(a.GetBandEnergy() /* * b.GetBandEnergy() */);
-	}
 	if(a.HasPCP() && b.HasPCP() )
 	{
 		tmpD.AddPCP();
 		tmpD.UpdateData();
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetPCP(a.GetPCP() /* * b.GetPCP() */);
+		tmpD.SetPCP(Multiply(a.GetPCP(),b.GetPCP()));
 	}	
 	return tmpD;
 }
@@ -531,41 +538,17 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.UpdateData();
 		tmpD.SetMoment6(a.GetMoment6()+b.GetMoment6());
 	}
-	if(a.HasIrregularity() && b.HasIrregularity() )
-	{
-		tmpD.AddIrregularity();
-		tmpD.UpdateData();
-		tmpD.SetIrregularity(a.GetIrregularity()+b.GetIrregularity());
-	}
-	if(a.HasTilt() && b.HasTilt() )
-	{
-		tmpD.AddTilt();
-		tmpD.UpdateData();
-		tmpD.SetTilt(a.GetTilt()+b.GetTilt());
-	}
 	if(a.HasFlatness() && b.HasFlatness() )
 	{
 		tmpD.AddFlatness();
 		tmpD.UpdateData();
 		tmpD.SetFlatness(a.GetFlatness()+b.GetFlatness());
 	}
-	if(a.HasKurtosis() && b.HasKurtosis() )
+	if(a.HasMagnitudeKurtosis() && b.HasMagnitudeKurtosis() )
 	{
-		tmpD.AddKurtosis();
+		tmpD.AddMagnitudeKurtosis();
 		tmpD.UpdateData();
-		tmpD.SetKurtosis(a.GetKurtosis()+b.GetKurtosis());
-	}
-	if(a.HasStrongPeak() && b.HasStrongPeak() )
-	{
-		tmpD.AddStrongPeak();
-		tmpD.UpdateData();
-		tmpD.SetStrongPeak(a.GetStrongPeak()+b.GetStrongPeak());
-	}
-	if(a.HasHFC() && b.HasHFC() )
-	{
-		tmpD.AddHFC();
-		tmpD.UpdateData();
-		tmpD.SetHFC(a.GetHFC()+b.GetHFC());
+		tmpD.SetMagnitudeKurtosis(a.GetMagnitudeKurtosis()+b.GetMagnitudeKurtosis());
 	}
 	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
 	{
@@ -585,11 +568,11 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.UpdateData();
 		tmpD.SetSpread(a.GetSpread()+b.GetSpread());
 	}
-	if(a.HasSkewness() && b.HasSkewness() )
+	if(a.HasMagnitudeSkewness() && b.HasMagnitudeSkewness() )
 	{
-		tmpD.AddSkewness();
+		tmpD.AddMagnitudeSkewness();
 		tmpD.UpdateData();
-		tmpD.SetSkewness(a.GetSkewness()+b.GetSkewness());
+		tmpD.SetMagnitudeSkewness(a.GetMagnitudeSkewness()+b.GetMagnitudeSkewness());
 	}
 	if(a.HasRolloff() && b.HasRolloff() )
 	{
@@ -623,19 +606,11 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetMFCC(a.GetMFCC() /* + b.GetMFCC() */);
 	}
-	if(a.HasBandEnergy() && b.HasBandEnergy() )
-	{
-		tmpD.AddBandEnergy();
-		tmpD.UpdateData();
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetBandEnergy(a.GetBandEnergy() /* + b.GetBandEnergy() */);
-	}
 	if(a.HasPCP() && b.HasPCP() )
 	{
 		tmpD.AddPCP();
 		tmpD.UpdateData();
-		//todo!!! We are not multiplying because we would need the operator implemented in the array
-		tmpD.SetPCP(a.GetPCP() /* + b.GetPCP() */);
+		tmpD.SetPCP(Add(a.GetPCP(),b.GetPCP()));
 	}
 		
 	return tmpD;
@@ -650,5 +625,4 @@ SpectralDescriptors operator * (TData mult,const SpectralDescriptors& a)
 
 
 };
-
 

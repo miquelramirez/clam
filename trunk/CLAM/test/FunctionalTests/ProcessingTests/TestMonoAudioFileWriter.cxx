@@ -7,6 +7,7 @@
 #include "Audio.hxx"
 #include "similarityHelper.hxx"
 #include <deque>
+#include "CLAM_Math.hxx"
 
 namespace CLAMTest
 {
@@ -20,7 +21,6 @@ namespace CLAMTest
 		CPPUNIT_TEST_SUITE( MonoAudioFileWriterFunctionalTest );
 		
 		CPPUNIT_TEST( testDo_DoubleWriting_Is_Not_Allowed );
-		CPPUNIT_TEST( testConfigure_ReturnsFalse_WithJustFilename );
 		CPPUNIT_TEST( testDo_PCM_WritesTheSameItWasRead );
 		CPPUNIT_TEST( testDo_OggVorbis_WritesTheSameItWasRead );
 
@@ -33,13 +33,7 @@ namespace CLAMTest
 	public:
 		void setUp()
 		{
-			char* pathToTestData = getenv("CLAM_TEST_DATA");
-
-			if ( !pathToTestData )
-				mPathToTestData ="../../../../../CLAM-TestData/"; 
-			else
-				mPathToTestData = pathToTestData;
-
+			mPathToTestData = GetTestDataDirectory();
 		}
 
 		void tearDown()
@@ -48,11 +42,12 @@ namespace CLAMTest
 
 	private:
 		
-
 		void testConfigure_ReturnsFalse_WithJustFilename()
 		{
 			CLAM::AudioFile file;
-			file.SetLocation( std::string( "NewFile.wav" ) );
+			CLAM::AudioFileHeader header;
+
+			file.CreateNew( std::string( "NewFile.wav" ), header );
 
 			CLAM::MonoAudioFileWriterConfig cfg;
 			cfg.AddTargetFile();
@@ -69,41 +64,26 @@ namespace CLAMTest
 		void testDo_DoubleWriting_Is_Not_Allowed()
 		{
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "twosines-stereo.wav" );			
-
 			CLAM::AudioFileHeader outputFileHeader;
-						
 			outputFileHeader.SetValues( 44100, 1, "WAV" );
-
-			outputFile.SetHeader( outputFileHeader );
-
+			outputFile.CreateNew( "twosines-stereo.wav", outputFileHeader );			
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
-			
 
 			CLAM::MonoAudioFileWriter procWriter;
-			
 			CLAM::MonoAudioFileWriter procWriter2;
-
-			
 			procWriter.Configure( cfgWriter );
 
 			CPPUNIT_ASSERT_EQUAL( false, procWriter2.Configure( cfgWriter ) );
-
 		}
-
-
 
 		void testDo_PCM_WritesTheSameItWasRead()
 		{
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "Elvis.wav" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "CopyOfElvis.wav.wav" );
 
 			CLAM::AudioFileHeader outputFileHeader;
 
@@ -116,15 +96,13 @@ namespace CLAMTest
 			outputFileHeader.SetEncoding( inputFile.GetHeader().GetEncoding() );
 			outputFileHeader.SetEndianess( inputFile.GetHeader().GetEndianess() );
 
-			outputFile.SetHeader( outputFileHeader );
+			outputFile.CreateNew( "CopyOfElvis.wav.wav", outputFileHeader );
 
 			CLAM::MonoAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 			cfgReader.SetSelectedChannel( 0 );
 
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MonoAudioFileReader procReader;
@@ -138,18 +116,15 @@ namespace CLAMTest
 			CLAM::Audio readSamples;
 			readSamples.SetSize( 256 );
 
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamples );
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamples );
-
 			procReader.Start();
 			procWriter.Start();
 
 			int  frameCounter = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(readSamples) )
 			{
 				frameCounter++;
-				procWriter.Do();
+				procWriter.Do(readSamples);
 			}
 
 			procReader.Stop();
@@ -159,21 +134,19 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MonoAudioFileReader procReader2;
-			inputFile.SetLocation( "CopyOfElvis.wav.wav" );
+			inputFile.OpenExisting( "CopyOfElvis.wav.wav" );
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
 			CLAM::Audio readSamples2;
 			readSamples2.SetSize( 256 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamples2 );
-		
 			procReader.Start();
 			procReader2.Start();
 
 			frameCounter = 0;
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(readSamples) && procReader2.Do(readSamples2) )
 			{
 				double sim = evaluateSimilarity( readSamples.GetBuffer(), readSamples2.GetBuffer() );
 
@@ -192,28 +165,23 @@ namespace CLAMTest
 
 
 			CLAM::AudioFile inputFile;
-			inputFile.SetLocation( mPathToTestData + std::string( "Elvis.wav" ) );
+			inputFile.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 
 
 			CLAM::AudioFile outputFile;
-			outputFile.SetLocation( "CopyOfElvis.ogg" );
-
 			CLAM::AudioFileHeader outputFileHeader;
 
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    inputFile.GetHeader().GetChannels(),
 						    "VorbisMk1" );
 
-			outputFile.SetHeader( outputFileHeader );
-
+			outputFile.CreateNew( "CopyOfElvis.ogg", outputFileHeader );
 
 			CLAM::MonoAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( inputFile );
 			cfgReader.SetSelectedChannel( 0 );
 
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.AddTargetFile();
-			cfgWriter.UpdateData();
 			cfgWriter.SetTargetFile( outputFile );
 			
 			CLAM::MonoAudioFileReader procReader;
@@ -227,18 +195,15 @@ namespace CLAMTest
 			CLAM::Audio readSamples;
 			readSamples.SetSize( 256 );
 
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamples );
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamples );
-
 			procReader.Start();
 			procWriter.Start();
 
 			int  framesRead = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(readSamples) )
 			{
 				framesRead++;
-				procWriter.Do();
+				procWriter.Do(readSamples);
 			}
 
 			procReader.Stop();
@@ -248,7 +213,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MonoAudioFileReader procReader2;
-			inputFile.SetLocation( "CopyOfElvis.ogg" );
+			inputFile.OpenExisting( "CopyOfElvis.ogg" );
 			cfgReader.SetSourceFile( inputFile );
 
 
@@ -258,8 +223,6 @@ namespace CLAMTest
 
 			readSamples2.SetSize( 256 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamples2 );
-		
 			procReader.Start();
 			procReader2.Start();
 
@@ -271,7 +234,7 @@ namespace CLAMTest
 			int    minSimFrame = 0;
 			double averageSim = 0.0;
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(readSamples) && procReader2.Do(readSamples2) )
 			{
 				double sim = evaluateSimilarity( readSamples.GetBuffer(), readSamples2.GetBuffer() );
 

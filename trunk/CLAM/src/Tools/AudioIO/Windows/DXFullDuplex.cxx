@@ -242,7 +242,7 @@ HRESULT DXFullDuplex::Read( short* buf, TSize size)
 	return S_OK;
 }
 
-HRESULT DXFullDuplex::Write(short* buf,int size)
+HRESULT DXFullDuplex::Write(short* buf,TSize size)
 {
 	HRESULT hr;
 	VOID*        pDSLockedBuffer1 = NULL;

@@ -2,8 +2,8 @@
 #define __CLAMVM_OLD_PLOTS_HXX
 
 /**
- * @deprecated 
  * @file OldPlots.hxx
+ * @deprecated 
  *
  * Plots provide a means of visual inspecting the content 
  * of ProcessingData by means of plotting them. Their main 

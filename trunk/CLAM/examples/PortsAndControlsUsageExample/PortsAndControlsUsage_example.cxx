@@ -34,9 +34,7 @@
 #include "SimpleOscillator.hxx"
 #include "AudioManager.hxx"
 #include "AudioOut.hxx"
-#include "CircularStreamImpl.hxx"
 #include "Audio.hxx"
-#include "NodeTmpl.hxx"
 
 #include "MyProcessingWithPortsAndControls.hxx" // this is our new processing, created with ports and controls
 
@@ -53,9 +51,6 @@ int main( int argc, char** argv )
 		CLAM::AudioManager manager(samplerate, size);
 		manager.Start();
 
-		// we define the type of node we will use to store the data that ports produces/consumes.
-		typedef CLAM::NodeTmpl<CLAM::Audio, CLAM::CircularStreamImpl<CLAM::TData> > AudioNode;
-		
 		// In this example, we will produce a sine signal with an oscillator. The data produced will be 
 		// processed by our new processing (see MyProcessingWithPortsAndControls.hxx/cxx for more details), and finally
 		// passed to the audio out. Our processing will have control signals from autopanner (that sends an LFO signal).
@@ -65,33 +60,27 @@ int main( int argc, char** argv )
 		CLAM::AudioOut audioOut;
 		CLAM::MyProcessingWithPortsAndControls myProc;
 
-		// one node for each outport
-		AudioNode oscOutput;
-		AudioNode myProcOutput;
-
 		// we need to configure the ports with the correct size in order to get the data automatically.
 		// the way of accessing the ports is by name, specifying before which kind of port you need.
-		osc.GetOutPorts().Get("Audio Output").SetParams( size );
-		audioOut.GetInPorts().Get("Input").SetParams( size );
-		myProc.GetInPorts().Get("Audio Input").SetParams( size );
-		myProc.GetOutPorts().Get("Audio Output").SetParams( size );
+		osc.GetOutPort("Audio Output").SetSize( size );
+		osc.GetOutPort("Audio Output").SetHop( size );
+		audioOut.GetInPort("Audio Input").SetSize( size );
+		audioOut.GetInPort("Audio Input").SetHop( size );
+		myProc.GetInPort("Audio Input").SetSize( size );
+		myProc.GetInPort("Audio Input").SetHop( size );
+		myProc.GetOutPort("Audio Output").SetSize( size );
+		myProc.GetOutPort("Audio Output").SetHop( size );
 		
 
-		// after this, is needed to attach the different ports to their respective nodes.
-		osc.GetOutPorts().Get("Audio Output").Attach( oscOutput );
-		myProc.GetInPorts().Get("Audio Input").Attach( oscOutput );
-
-		myProc.GetOutPorts().Get("Audio Output").Attach( myProcOutput );		
-		audioOut.GetInPorts().Get("Input").Attach( myProcOutput );
+		// after this, is needed to connect the different ports
+		CLAM::ConnectPorts(osc, "Audio Output", myProc, "Audio Input");
+		CLAM::ConnectPorts(myProc, "Audio Output", audioOut, "Audio Input");
 
 		// we link one of the out controls of autopanner to our processing, too.
-		autoPanner.GetOutControls().Get( "Left Control" ).AddLink( &myProc.GetInControls().Get( "Modulation" ) );
+		CLAM::ConnectControls(autoPanner, "Left Control", myProc, "Modulation" );
 
-		// the last configuration step: configure the size of nodes.
-		oscOutput.Configure( size );
-		myProcOutput.Configure( size );
-
-		// this is the easy part: after the configuration, we can start, call do and stop the processings without any complication
+		// this is the easy part: after the configuration, we can start, 
+		// call do and stop the processings without any complication
 		// related to intermediate data.
 
 		autoPanner.Start();

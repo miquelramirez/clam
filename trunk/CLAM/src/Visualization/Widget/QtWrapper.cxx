@@ -2,7 +2,7 @@
 #include "QtAppSignaler.hxx"
 #include <qapplication.h>
 
-using namespace CLAMGUI;
+using namespace CLAMVM;
 
 
 

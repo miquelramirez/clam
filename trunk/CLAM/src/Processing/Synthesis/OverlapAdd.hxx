@@ -24,16 +24,14 @@
 
 #include "Array.hxx"
 #include "Audio.hxx"
-//#include "AudioCircularBuffer.hxx"
-#include "StreamBuffer.hxx"
-#include "CircularStreamImpl.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Processing.hxx"
 #include "Storage.hxx"
-
-
+ 
 #include "OverlapAddConfig.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 
 namespace CLAM {
 
@@ -82,27 +80,11 @@ namespace CLAM {
 		bool Do(void);
 
 		/** Do method 
-		 *  @param in: input Data Array (size must be buffer size).
-		 *  @param out: output Data Array (size must be frame size).
-		 */
-		bool Do(DataArray &in, DataArray &out);
-		/** Do method 
 		 *  @param in: input Audio (size must be buffer size).
 		 *  @param out: output Audio (size must be frame size).
 		 */
-		bool Do(Audio &in, Audio &out);
+		bool Do( const Audio &in, Audio &out);
 
-
-		/* prototype methods */
-
-		bool SetPrototypes();
-
-		bool UnsetPrototypes();
-
-		bool MayDisableExecution() const {return true;}
-
-
-				
 	private:
 
 		const char *GetClassName() const {return "OverlapAdd";}
@@ -115,17 +97,11 @@ namespace CLAM {
 		/* protected methods */
 	protected:
 		OverlapAddConfig   mConfig;
-		/** member stream buffer. TODO: this stream buffer should probably be outside the
-		overlap add config and act like a port. As a matter of fact the whole OLA processing
-		could probably just become a node. */
-		StreamBuffer<TData, CircularStreamImpl<TData> > *mStreamBuffer;
-		ReadStreamRegion *mReader;
-		WriteStreamRegion *mWriter;
-		/** This add stream region should become an inplace region whenever inplace regions
-		 *	are completely implemented and tested */
-		AddStreamRegion *mAdder;
-		Array<TData> mBuffer;
-	
+
+		AudioInPort mInput;
+		AudioOutPort mOutput;
+
+		Audio mTmp;
 	};
 } //end of namespace CLAM
 

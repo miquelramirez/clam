@@ -21,7 +21,6 @@
 
 #include "Complex.hxx"
 #include "SpectralEnvelopeApply.hxx"
-#include "ErrProcessingObj.hxx"
 
 #define CLASS "SpectralEnvelopeApply"
 

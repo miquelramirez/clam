@@ -37,40 +37,50 @@ namespace CLAM {
 
 	class AudioDescriptors : public DescriptorAbs {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 12, DescriptorAbs);
+		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 8, DescriptorAbs);
+		
+		/** The mean value of the absolute value of the audio samples amplitude. 
+		 *  The result is in signal units.
+		 *  @see Stats::GetMean
+		 */
 		DYN_ATTRIBUTE (0, public, TData, Mean);
+		/** The variance of audio samples amplitude. 
+		 * The result is in signal difference squared units.
+		 *  @see Stats::GetVariance
+		 */
 		DYN_ATTRIBUTE (1, public, TData, Variance);
-
 		/**
-		 * The temporal centroid is the time averaged over the
-		 * energy envelope. What is the effect of a silent signal?
-		 * Measured in ???.
+		 * The temporal centroid is time where signal energy
+		 * is "concentrated". For a "silence" signal the centroid will be 
+		 * placed in the middle of the signal.
+		 * It is computed by computing the statistical centroid over
+		 * the absolute value of the signal.
+		 * Measured in seconds.
+		 * @see Stats::GetCentroid
 		 */
 		DYN_ATTRIBUTE (2, public, TData, TemporalCentroid);
-		DYN_ATTRIBUTE (3, public, TData, Attack);
-		DYN_ATTRIBUTE (4, public, TData, Decay);
-		DYN_ATTRIBUTE (5, public, TData, Sustain);
-		DYN_ATTRIBUTE (6, public, TData, Release);
-
+		
 		/**
 		 * The log-attack time is the (base 10) logarithm of the
 		 * rise time. For a silent signal, log-attack time is
 		 * -5 (approx. silence). Measured in log10(seconds).
 		 */
-		DYN_ATTRIBUTE (7, public, TData, LogAttackTime);
+		DYN_ATTRIBUTE (3, public, TData, LogAttackTime);
 
 		/**
-		 * The total energy estimates the signal power at a given
-		 * time. Measured in energy.
+		 * The squared sum of audio samples amplitudes. 
+		 * This measure is not limited to the range [0,1].
+		 * Measured in squared signal units.
+		 * @see Stats::GetEnergy
 		 */
-		DYN_ATTRIBUTE (8, public, TData, Energy);
+		DYN_ATTRIBUTE (4, public, TData, Energy);
 
 		/**
 		 * The zero-crossing rate is a measure of the number of time
 		 * the signal value cross the zero axe, averaged over the
 		 * whole signal. Measured in crossings/second.
 		 */
-		DYN_ATTRIBUTE (9, public, TData, ZeroCrossingRate);
+		DYN_ATTRIBUTE (5, public, TData, ZeroCrossingRate);
 
 		/**
 		 * The rise time is the time duration between the signal
@@ -78,14 +88,14 @@ namespace CLAM {
 		 * of its maximum value. For a silent signal, rise time is
 		 * 0. Measured in seconds.
 		 */
-		DYN_ATTRIBUTE (10,public, TData, RiseTime);
+		DYN_ATTRIBUTE (6, public, TData, RiseTime);
 
 		/**
 		 * The temporal decrease is a measure of the amount of
 		 * decrease in the signal energy. Measured in dB per
 		 * seconds??
 		 */
-		DYN_ATTRIBUTE (11,public, TData, Decrease);
+		DYN_ATTRIBUTE (7, public, TData, Decrease);
 
 	public:
 
@@ -107,7 +117,7 @@ namespace CLAM {
 
 		
 	private:
-		Audio* mpAudio;
+		const Audio* mpAudio;
 		static const TData mEpsilon;
 		
 		bool mIsAttackTimeComputed;
@@ -163,26 +173,6 @@ inline AudioDescriptors CLAM_min (const AudioDescriptors & a,const AudioDescript
 		if(b.GetLogAttackTime()<a.GetLogAttackTime())
 			tmpD.SetLogAttackTime(b.GetLogAttackTime() );
 	}
-	if(a.HasAttack() && b.HasAttack() )
-	{
-		if(b.GetAttack()<a.GetAttack())
-			tmpD.SetAttack(b.GetAttack() );
-	}
-	if(a.HasDecay() && b.HasDecay() )
-	{
-		if(b.GetDecay()<a.GetDecay())
-			tmpD.SetDecay(b.GetDecay() );
-	}
-	if(a.HasSustain() && b.HasSustain() )
-	{
-		if(b.GetSustain()<a.GetSustain())
-			tmpD.SetSustain(b.GetSustain() );
-	}
-	if(a.HasRelease() && b.HasRelease() )
-	{
-		if(b.GetRelease()<a.GetRelease())
-			tmpD.SetRelease(b.GetRelease() );
-	}
 	if(a.HasDecrease() && b.HasDecrease() )
 	{
 		if(b.GetDecrease()<a.GetDecrease())
@@ -232,26 +222,6 @@ inline AudioDescriptors CLAM_max (const AudioDescriptors & a,const AudioDescript
 	{
 		if(b.GetLogAttackTime()>a.GetLogAttackTime())
 			tmpD.SetLogAttackTime(b.GetLogAttackTime() );
-	}
-	if(a.HasAttack() && b.HasAttack() )
-	{
-		if(b.GetAttack()>a.GetAttack())
-			tmpD.SetAttack(b.GetAttack() );
-	}
-	if(a.HasDecay() && b.HasDecay() )
-	{
-		if(b.GetDecay()>a.GetDecay())
-			tmpD.SetDecay(b.GetDecay() );
-	}
-	if(a.HasSustain() && b.HasSustain() )
-	{
-		if(b.GetSustain()>a.GetSustain())
-			tmpD.SetSustain(b.GetSustain() );
-	}
-	if(a.HasRelease() && b.HasRelease() )
-	{
-		if(b.GetRelease()>a.GetRelease())
-			tmpD.SetRelease(b.GetRelease() );
 	}
 	if(a.HasDecrease() && b.HasDecrease() )
 	{

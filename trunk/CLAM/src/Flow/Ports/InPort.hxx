@@ -1,35 +1,151 @@
-#ifndef _InPort_hxx_
-#define _InPort_hxx_
+#ifndef __InPort_hxx__
+#define __InPort_hxx__
 
-#include "Port.hxx"
+#include "WritingRegion.hxx"
+#include "ReadingRegion.hxx"
 #include <string>
 
 namespace CLAM
 {
-
-class Processing;
-class OutPort;
-
-/** Input port */
-class InPort: public Port
-{
-	/** True if the processing object may use the storage object
-	 * in this port to write on it the data of an output port
-	 */
-	bool mCanDoInplace;
-
-public:
-	InPort(const std::string &n, Processing *o, int length, int hop = 0, bool inplace=false);
-	virtual ~InPort() {}
-
-	bool CanDoInplace(void)  {return mCanDoInplace;}
 	
-	bool IsConnectedTo( OutPort& out );
-	virtual bool IsReadyForReading() = 0;
+class OutPortBase; 
+class Processing;
+
+class InPortBase
+{
+public:
+	InPortBase( const std::string & name = "unnamed in port", Processing * proc = 0 );
+	virtual ~InPortBase();
+	OutPortBase * GetAttachedOutPort(); 
+	void SetAttachedOutPort( OutPortBase* );
+	const std::string & GetName();
+	Processing * GetProcessing();
+	virtual bool CanConsume()=0;
+	virtual int GetSize()=0;
+	virtual void SetSize(int newSize)=0;
+	virtual int GetHop()=0;
+	virtual void SetHop(int newHop)=0;
+	virtual void UnAttachRegion()=0;
+	void Disconnect();	
+	virtual bool IsPublisherOf( InPortBase& ) { return false; }
+protected:
+	OutPortBase * mAttachedOutPort;
+	std::string mName;
+	Processing * mProcessing;
 };
 
 
+template<typename Token>
+class InPort : public InPortBase
+{
+	typedef WritingRegion<Token> ProperWritingRegion;
+	typedef typename ProperWritingRegion::ProperReadingRegion ProperReadingRegion;
+
+public:
+	InPort( const std::string & name = "unnamed in port", Processing * proc = 0 );
+	virtual ~InPort();
+
+	// XR: BIG TODO: make this method const!
+	/*const*/ Token & GetData(int offset=0);
+	
+	
+	void SetSize( int newSize );
+	int GetSize();
+	int GetHop();
+	void SetHop( int hop );
+	void Consume();
+	bool CanConsume();
+
+	/**
+	 *  This method is intended to be used only for the OutPort. A user shouldn't call it directly. 
+	 *  Instead , use ConnectToIn method in OutPortBase.
+	 */
+	void AttachRegionToOutPort( OutPortBase * out, ProperWritingRegion & writer );
+	/**
+	 *  This method is intended to be used only for the OutPort. A user shouldn't call it directly. 
+	 *  Instead , use DisconnectFromIn method in OutPortBase.
+	 */
+	void UnAttachRegion();
+protected:
+
+	ProperReadingRegion mRegion;
+};
+
+
+/////// Implementation ////////
+
+template<class Token>
+InPort<Token>::InPort( const std::string & name, Processing * proc )
+	: InPortBase( name,proc )
+{
+}
+
+template<class Token> 
+InPort<Token>::~InPort()
+{
+	if(mAttachedOutPort)
+		Disconnect();
+}
+
+template<class Token>
+// XR BIG TODO: make this method const!
+/*const*/ Token & InPort<Token>::GetData( int offset )
+{
+	return mRegion[offset];
+}
+
+template<class Token>
+void InPort<Token>::SetSize( int newSize )
+{
+	mRegion.Size( newSize );
+}
+
+template<class Token>
+int InPort<Token>::GetSize()
+{
+	return mRegion.Size();
+}
+
+template<class Token>
+int InPort<Token>::GetHop()
+{
+	return mRegion.Hop();
+}
+
+template<class Token>
+void InPort<Token>::SetHop( int hop )
+{
+	mRegion.Hop(hop);
+}
+
+template<class Token>
+void InPort<Token>::Consume() 
+{
+	mRegion.Consume();
+}
+
+template<class Token>
+bool InPort<Token>::CanConsume()
+{
+	return mRegion.CanConsume();
+}
+
+template<class Token>
+void InPort<Token>::AttachRegionToOutPort( OutPortBase * out, ProperWritingRegion & writer )
+{
+	writer.LinkRegions( mRegion );
+	mAttachedOutPort = out;
+}
+
+template<class Token>
+void InPort<Token>::UnAttachRegion()
+{
+	CLAM_DEBUG_ASSERT( mAttachedOutPort, "InPort<T>::UnAttachRegion() - InPort is not connected" );
+	mRegion.ProducerRegion()->RemoveRegion( mRegion );
+	mAttachedOutPort = 0;
+}
 
 } // namespace CLAM
 
-#endif
+#endif // __InPort_hxx__
+

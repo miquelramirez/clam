@@ -26,8 +26,8 @@
 #include "Processing.hxx"
 #include "CircularShiftConfig.hxx"
 #include "InControl.hxx"
-#include "InPortTmpl.hxx"
-#include "OutPortTmpl.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 
 namespace CLAM {
 
@@ -44,8 +44,8 @@ namespace CLAM {
 	protected:
 		CircularShiftConfig mConfig;
 
-		InPortTmpl< Audio > mInput;
-		OutPortTmpl< Audio > mOutput;
+		AudioInPort  mInput;
+		AudioOutPort mOutput;
 
 	protected:
 
@@ -67,9 +67,9 @@ namespace CLAM {
 
 		bool Do(void);
 
-		bool Do(DataArray& input, DataArray& out);
+		bool Do( const DataArray& input, DataArray& out);
 		bool Do(Spectrum& input, Spectrum& out);
-		bool Do(Audio& input, Audio& out);
+		bool Do( const Audio& input, Audio& out);
 
 		// Port interfaces.
 

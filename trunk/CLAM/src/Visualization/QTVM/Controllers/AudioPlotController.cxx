@@ -1,0 +1,248 @@
+#include <algorithm>
+#include "CLAMGL.hxx"
+#include "CLAM_Math.hxx"
+#include "AudioPlotController.hxx"
+
+namespace CLAM
+{
+	namespace VM
+	{
+		AudioPlotController::AudioPlotController() 
+		{
+			_mustProcessData = false;
+			_hugeArrayCondition = false;
+			SetVMin(TData(0.2));
+		}
+
+		AudioPlotController::~AudioPlotController()
+		{
+		}
+
+		void AudioPlotController::SetData(const Audio& audio)
+		{
+			_audio = audio;
+			_sampleRate = _audio.GetSampleRate();
+			FullView();
+			SetnSamples(_audio.GetBuffer().Size());
+			SetvRange(TData(2.0));
+			InitialRegionTime();
+			_duration = TData(GetnSamples())/_sampleRate;
+			_mustProcessData = true;
+		}
+
+		void AudioPlotController::SetDataColor(Color c)
+		{
+			_dRenderer.SetColor(c);
+		}
+
+		void AudioPlotController::Draw()
+		{
+			if(_mustProcessData) ProcessData();
+			_dRenderer.Render();
+			DrawAxis();
+			SelTimeRegionPlotController::Draw();
+		}
+
+		void AudioPlotController::FullView()
+		{
+			_view.left = TData(0.0);
+			_view.right = TData(_audio.GetBuffer().Size());
+			_view.top = TData(2.0);
+			_view.bottom = TData(0.0);
+			SetHBounds(_view.left,_view.right);
+			SetVBounds(_view.bottom,_view.top);
+			emit sendView(_view);
+		}
+
+		void AudioPlotController::SetHBounds(const TData& left,const TData& right)
+		{
+			SelTimeRegionPlotController::SetHBounds(left,right);
+			_mustProcessData = true;
+			
+			double lBound = double(GetLeftBound()/_sampleRate);
+			double hBound = double(GetRightBound()/_sampleRate);
+			QwtScaleDiv div; 
+			div.rebuild(lBound,hBound,GetXMaxMajStep(_viewport.w),3,false);
+			emit xRulerScaleDiv(div);	
+		}
+
+		void AudioPlotController::SetVBounds(const TData& bottom,const TData& top)
+		{
+			SelTimeRegionPlotController::SetVBounds(bottom,top);
+			
+			double bBound = double(GetBottomBound()-1.0);
+			double tBound = double(GetTopBound()-1.0);
+			QwtScaleDiv div;
+			div.rebuild(bBound,tBound,20,0,false,GetYStep(_viewport.h));
+			emit yRulerScaleDiv(div);
+		}
+
+		void AudioPlotController::SurfaceDimensions(int w,int h)
+		{
+			PlotController::SurfaceDimensions(w,h);
+			_mustProcessData = true;
+			
+			double lBound = double(GetLeftBound()/_sampleRate);
+		    double hBound = double(GetRightBound()/_sampleRate);
+			QwtScaleDiv div;
+			div.rebuild(lBound,hBound,GetXMaxMajStep(w),3,false);
+			emit xRulerScaleDiv(div);
+
+			double bBound = double(GetBottomBound()-1.0);
+			double tBound = double(GetTopBound()-1.0);
+			div.rebuild(bBound,tBound,20,0,false,GetYStep(h));
+			emit yRulerScaleDiv(div);
+		}
+
+		int AudioPlotController::GetXMaxMajStep(int ref) const
+		{
+			if(ref > 1024) ref = 1024;
+			int step = ref*40/1024;
+			if(step < 4 || _view.right <= _sampleRate/TData(100.0)*TData(2.0)) step = 4;
+			return step;
+		}
+
+		double AudioPlotController::GetYStep(int ref) const
+		{
+			double step = 768.0*0.1/double(ref);
+			int tmp = int(step*10.0);
+			step = double(tmp)/10.0;
+			if(step < 0.1) step = 0.1;
+			return step;
+		}
+
+		void AudioPlotController::DrawAxis()
+		{
+			Color c = _dRenderer.GetColor();
+			glColor3ub(c.r,c.g,c.b);
+			glBegin(GL_LINES);
+				glVertex3f(0.0f,1.0,-1.0f);
+				glVertex3f(GetCurrent(),1.0f,-1.0f);
+			glEnd();
+		}
+
+		void AudioPlotController::ProcessData()
+		{
+			DetermineVisibleSamples();
+			if(_hugeArrayCondition)
+			{
+				_dRenderer.SetArrays(_maxs.GetPtr(), _mins.GetPtr(), _maxs.Size());
+				_dRenderer.SetVBounds(_view.top,_view.bottom);
+				return;
+			}
+
+			for(int i=0;i < _processedData.Size();i++) _processedData[i] += TData(1.0);
+
+			TData range = GetRightBound()-GetLeftBound();
+			TData threshold = GetHMin()*TData(2.0);
+			int mode = (range < threshold) ? DetailMode : NormalMode;
+			_dRenderer.SetDataPtr(_processedData.GetPtr(),_processedData.Size(),mode);	
+			_mustProcessData = false;
+		}
+
+		void AudioPlotController::DetermineVisibleSamples()
+		{
+			TSize offset = TSize(GetLeftBound());
+			TSize len = TSize(GetRightBound() - GetLeftBound())+1;
+
+			if(len/5 >= _viewport.w)
+			{
+				_hugeArrayCondition = true;
+				BuildMaxMinArrays(offset,len);
+				return;
+			}
+					
+			_hugeArrayCondition = false;
+							
+			if(_processedData.Size() <= len)
+				_processedData.Resize(len+1);
+
+			_processedData.SetSize(len+1);
+
+			std::copy(_audio.GetBuffer().GetPtr()+offset,_audio.GetBuffer().GetPtr()+offset+len+1,_processedData.GetPtr());
+		}
+
+		void AudioPlotController::BuildMaxMinArrays(TSize offset,TSize len)
+		{
+			TSize startSearch, endSearch, searchIntervalLen, searchRemIntervalLen;
+			TSize maxs = _viewport.w;
+
+			if(_maxs.Size() < maxs) _maxs.Resize(maxs);
+			if(_mins.Size() < maxs)	_mins.Resize(maxs);
+
+			_maxs.SetSize(maxs);
+			_mins.SetSize(maxs);
+
+			searchIntervalLen = len / maxs;
+			searchRemIntervalLen = len % maxs;
+			
+			int firstPassIterations = (searchRemIntervalLen) ? maxs-1 : maxs;
+
+			startSearch = offset;
+			endSearch = startSearch + searchIntervalLen;				
+
+			for(int i = 0; i < firstPassIterations; i++)
+			{
+				_maxs[i] = *std::max_element(_audio.GetBuffer().GetPtr()+startSearch, _audio.GetBuffer().GetPtr()+endSearch)+TData(1.0);
+				_mins[i] = *std::min_element(_audio.GetBuffer().GetPtr()+startSearch, _audio.GetBuffer().GetPtr()+endSearch)+TData(1.0);
+							
+				startSearch = endSearch;
+				endSearch += searchIntervalLen;	
+			}
+			if(searchRemIntervalLen)
+			{
+				_maxs[maxs-1] = *std::max_element(_audio.GetBuffer().GetPtr()+startSearch, _audio.GetBuffer().GetPtr()+startSearch+searchRemIntervalLen)+TData(1.0);
+				_mins[maxs-1] = *std::min_element(_audio.GetBuffer().GetPtr()+startSearch, _audio.GetBuffer().GetPtr()+startSearch+searchRemIntervalLen)+TData(1.0);
+			}
+		}
+
+		TData AudioPlotController::GetAmp(TData t) const
+		{
+			TIndex index = TIndex(t*_sampleRate);
+			TData value = _audio.GetBuffer()[index];
+			return (fabs(value) >= 0.002) ? value : TData(0.0);
+		}
+
+		void AudioPlotController::InitialRegionTime()
+		{
+			MediaTime time;
+			time.SetBegin(TData(0.0));
+			time.SetEnd(TData(GetnSamples())/_sampleRate);
+			emit selectedRegion(time);
+		}
+
+		bool AudioPlotController::MustProcessData() const
+		{
+			return _mustProcessData;
+		}
+
+		void AudioPlotController::SetMousePos(TData x,TData y)
+		{
+			TData tbound = GetTopBound()-GetBottomBound();
+			TData bBound = GetBottomBound()-TData(1.0);
+			TData ycoord=y;
+			ycoord *= tbound;
+			ycoord /= TData(_viewport.h);
+			ycoord += bBound;
+			PlotController::SetMousePos(x,ycoord);
+			TData t=GetMouseXPos()/_sampleRate;
+			TData amp=GetMouseYPos();
+			QString s;
+			s = "t="+(s.setNum(t,'f',3))+"s amp="+(s.setNum(amp,'f',3));
+			emit toolTip(s);
+		}
+
+		void AudioPlotController::SetSelPos(const TData& value)
+		{
+			if(GetDialPos() != value)
+			{
+				SelTimeRegionPlotController::SetSelPos(value);
+				emit requestRefresh();
+				emit selPos(value);
+			}
+		}
+	}
+}
+
+// END
+

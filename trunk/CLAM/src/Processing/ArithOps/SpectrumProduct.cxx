@@ -21,7 +21,6 @@
 
 #include "Complex.hxx"
 #include "SpectrumProduct.hxx"
-#include "ErrProcessingObj.hxx"
 #include "SpectrumConfig.hxx"
 
 namespace CLAM {
@@ -29,9 +28,9 @@ namespace CLAM {
 	SpectrumProduct::SpectrumProduct()
 		: mSize(0),
 		  mProtoState(SOther),
-		  Input1("Input 1",this,1),
-		  Input2("Input 2",this,1),
-		  Output("Output",this,1)
+		  Input1("Input 1",this),
+		  Input2("Input 2",this),
+		  Output("Output",this)
 	{
 		Configure(SpecProductConfig());
 	}
@@ -39,9 +38,9 @@ namespace CLAM {
 	SpectrumProduct::SpectrumProduct(const SpecProductConfig &c)
 		: mSize(0),
 		  mProtoState(SOther),
-		  Input1("Input 1",this,1),
-		  Input2("Input 2",this,1),
-		  Output("Output",this,1)
+		  Input1("Input 1",this),
+		  Input2("Input 2",this),
+		  Output("Output",this)
 	{
 		Configure(c);
 	}
@@ -120,9 +119,9 @@ namespace CLAM {
 	bool SpectrumProduct::Do(void)
 	{
 		bool res = Do(Input1.GetData(),Input2.GetData(),Output.GetData());
-		Input1.LeaveData();
-		Input2.LeaveData();
-		Output.LeaveData();
+		Input1.Consume();
+		Input2.Consume();
+		Output.Produce();
 		return res;
 	}
 

@@ -23,6 +23,8 @@
 #define __BINARYCONTROLOP__
 
 #include "Processing.hxx"
+#include "InControl.hxx" // MRJ: For the TControlData definition :D
+#include "OutControl.hxx"
 #include <iosfwd>
 
 namespace CLAM {

@@ -19,65 +19,27 @@
  *
  */
 
-#include "Processing.hxx"
 #include "ProcessingData.hxx"
 #include "DataTypes.hxx"
-#include "Enum.hxx"
-#include "Array.hxx"
-#include "ErrProcessingObj.hxx"
 #include "Spectrum.hxx"
 #include "Audio.hxx"
 #include "WindowGenerator.hxx"
 
-#define CLASS "WindowGenerator"
-
-using namespace CLAM;
-
-	Enum::tEnumValue EWindowNormalize::sEnumValues[] = {
-		{EWindowNormalize::eNone,"NoNormalization"},
-		{EWindowNormalize::eAnalysis,"NormalizationForAnalysis"},
-		{EWindowNormalize::eEnergy,"NormalizationForConstantEnergy"},
-		{EWindowNormalize::eMax,"NormalizationForMaximizingMagnitude"},
-		{0,NULL}
-	};
-
-	Enum::tValue EWindowNormalize::sDefault = EWindowNormalize::eAnalysis;
-
-	void WindowGeneratorConfig::DefaultInit()
-	{
-		/* All Attributes are added */
-		AddType();
-		AddSize();
-		AddMaxSize();
-		AddUseTable();
-		AddNormalize();
-		AddInvert();
-
-		UpdateData();
-		DefaultValues();
-	}
-
-	void WindowGeneratorConfig::DefaultValues()
-	{
-		SetUseTable(true);
-		SetSize(4097);
-		SetNormalize(EWindowNormalize::eAnalysis);
-		SetInvert(false);
-		SetType(EWindowType::eHamming);
-	}
+namespace CLAM
+{
 
 	/* Processing  object Method  implementations */
 
 	WindowGenerator::WindowGenerator():
 		mSize("Size",this),
-		mOutput( "Generated window function samples", this, 1 )
+		mOutput( "Generated window function samples", this )
 	{
 		Configure(WindowGeneratorConfig());
 	}
 
 	WindowGenerator::WindowGenerator(const WindowGeneratorConfig &c) :
 		mSize("Size",this),
-		mOutput( "Generated window function samples", this, 1 )
+		mOutput( "Generated window function samples", this )
 	{
 		Configure(c);
 	}
@@ -137,7 +99,9 @@ using namespace CLAM;
 	{
 		CLAM_ASSERT( AbleToExecute(), "This processing is not ready to do anything" );
 		
-		return Do( mOutput.GetData() );
+		bool result = Do( mOutput.GetAudio() );
+		mOutput.Produce();
+		return result;
 	}
 
 	/* The  unsupervised Do() function */
@@ -188,7 +152,7 @@ using namespace CLAM;
 	{
 
 		CLAM_ASSERT(out.HasMagBuffer(),
-			CLASS"::Do(): Spectral Window exists only for type MagPhase");
+			    "WindowGenerator::Do(): Spectral Window exists only for type MagPhase");
 
 		Do(out.GetMagBuffer());
 		return true;
@@ -282,6 +246,11 @@ using namespace CLAM;
 					BlackmanHarrisLike(windowsize,table);
 					break;
 				}
+			case EWindowType::eSine:
+			        {
+				  Sine(windowsize, table);
+				  break;
+			        }
 
 			}
 	}
@@ -483,14 +452,30 @@ void WindowGenerator::BlackmanHarris92TransMainLobe(long size,DataArray& window)
 void WindowGenerator::Gaussian(long size,DataArray& window) const
 {
 	double  s = 0.15;
+	double scale = 1.0 / ( 2.0 * M_PI * 0.15 * 0.15 );
+
 	if(size%2 !=0)
-		window[size/2] = 1;
+		window[size/2] = scale;
 	for(int i = 0; i < size/2; i++)
 	{
 		TData x = (TData)(i-(TData)size/2.)/(TData)(size-1);
-		window[i] = window[size-i-1]= exp(-(x*x)/(2*s*s));
+		window[i] = window[size-i-1]= scale * exp(-(x*x)/(2*s*s));
 	}
 }
+
+/* function to design a Sine window*/
+void WindowGenerator::Sine(long size,DataArray& window) const
+{
+	int     i;
+	
+	double tmp1 = PI/(2.0*float(size));
+	double tmp2 = 0.5*(2.0*float(size));
+
+	for (int i=0;i<size;i++) 
+	  window[i] = (float)(1+tmp2*sin(tmp1*(i+1)));
+
+}
+
 
 void WindowGenerator::InvertWindow(const DataArray& originalWindow,
 		DataArray& invertedWindow) const
@@ -565,11 +550,4 @@ void WindowGenerator::NormalizeWindow(DataArray& window) const
 	return (sin ((N/2) * x) / sin (x/2));
 }
 
-
-
-
-
-
-
-
-
+}

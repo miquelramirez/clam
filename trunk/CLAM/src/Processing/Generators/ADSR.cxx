@@ -21,7 +21,6 @@
 
 
 #include "ADSR.hxx"
-#include "AudioManager.hxx"
 
 using namespace CLAM;
 
@@ -31,23 +30,15 @@ void ADSRConfig::DefaultInit(void)
 	AddDecayTime(),
 	AddSustainLevel();
 	AddReleaseTime();
-	AddSamplingRate();
+	AddSampleRate();
 
 	UpdateData();
 
-	try
-	{
-		SetSamplingRate( AudioManager::Current().SampleRate() );
-	}
-	catch(Err)
-	{
-		SetSamplingRate( 8000 );
-	}
-
+	SetSampleRate( 8000 );
 }
 
 ADSR::ADSR():
-mOutput("Audio Output",this,1),
+mOutput("Audio Output",this),
 mAmpValue(0),
 mLevel(0),
 mDLevel(0),
@@ -61,7 +52,7 @@ mAmplitude( "Amplitude", this, &ADSR::UpdateAmp )
 }
 
 ADSR::ADSR( const ADSRConfig& cfg ):
-mOutput("Audio Output",this,1),
+mOutput("Audio Output",this),
 mAmpValue(0),
 mLevel(0),
 mDLevel(0),
@@ -80,7 +71,7 @@ bool ADSR::ConcreteConfigure( const ProcessingConfig& c )
 	mDecayTime = mConfig.GetDecayTime();
 	mSustainLevel = mConfig.GetSustainLevel();
 	mReleaseTime = mConfig.GetReleaseTime();
-	mSamplingRate = mConfig.GetSamplingRate();
+	mSamplingRate = mConfig.GetSampleRate();
 
 	return true;
 }
@@ -212,8 +203,8 @@ bool ADSR::Do( Audio& out)
 bool ADSR::Do()
 {	
 	bool res = false;
-	res = Do(mOutput.GetData());
-	mOutput.LeaveData();
+	res = Do(mOutput.GetAudio());
+	mOutput.Produce();
 	return res;
 
 

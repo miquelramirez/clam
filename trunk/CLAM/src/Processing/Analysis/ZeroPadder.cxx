@@ -3,8 +3,8 @@
 namespace CLAM
 {
 	ZeroPadder::ZeroPadder()
-		: mInput( "Input samples", this, 1 ),
-		  mOutput( "Zero-padded samples", this, 1 )
+		: mInput( "Input samples", this ),
+		  mOutput( "Zero-padded samples", this )
 	{
 	}
 
@@ -34,8 +34,8 @@ namespace CLAM
 		CLAM_ASSERT( AbleToExecute(), 
 			     "This processing is not Ready to Do() anything" );
 		
-		CLAM::DataArray& src = mInput.GetData().GetBuffer();
-		CLAM::DataArray& dst = mOutput.GetData().GetBuffer();
+		CLAM::DataArray& src = mInput.GetAudio().GetBuffer();
+		CLAM::DataArray& dst = mOutput.GetAudio().GetBuffer();
 
 		int j = 0;
 		int i = 0;
