@@ -33,24 +33,18 @@ namespace CLAM{
 
 	class SMSPitchDiscretization: public FrameTransformation
 	{
-		
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
-		const char *GetClassName() const {return "SMSPitchDiscretization";}
 
+		SMSPitchShift mPitchShift;
 
 	public:
-		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
+
 		SMSPitchDiscretization() {}
 
 		const ProcessingConfig& GetConfig() const { throw 0; }
 
 		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
-		/** Destructor of the class*/
- 		~SMSPitchDiscretization()
-		{}
+ 		~SMSPitchDiscretization() {}
 
 		bool Do()
 		{
@@ -58,11 +52,13 @@ namespace CLAM{
 			return false;
 		}
 		bool Do(const Frame& in, Frame& out);
+
 	private:
-		SMSPitchShift mPitchShift;
+
+		const char *GetClassName() const {return "SMSPitchDiscretization";}
 		
 	};		
-};//namespace CLAM
+} //namespace CLAM
 
 #endif // _SMSPitchDiscretization_
 

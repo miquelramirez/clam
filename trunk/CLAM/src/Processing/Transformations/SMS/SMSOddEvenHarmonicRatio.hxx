@@ -37,10 +37,6 @@ namespace CLAM{
 
 	class SMSOddEvenHarmonicRatio: public FrameTransformation
 	{
-		
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
 		const char *GetClassName() const {return "SMSOddEvenHarmonicRatio";}
 
 		InPort<SpectralPeakArray> mIn;
@@ -49,7 +45,7 @@ namespace CLAM{
 		InControl mOddFactor;
 
 	public:
-		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
+
 		SMSOddEvenHarmonicRatio() 
 			: 
 			mIn("In SpectralPeaks", this), 
@@ -60,11 +56,8 @@ namespace CLAM{
 
 		}
 
-		/** Destructor of the class*/
- 		~SMSOddEvenHarmonicRatio()
-		{}
+ 		~SMSOddEvenHarmonicRatio() {}
 	
-
 		const ProcessingConfig& GetConfig() const { throw 0; }
 
 		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
