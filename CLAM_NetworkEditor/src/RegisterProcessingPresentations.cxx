@@ -1,5 +1,3 @@
-
-
 #include "Factory.hxx"
 #include "Qt_ProcessingPresentation.hxx"
 #include "Qt_OutControlSenderPresentation.hxx"
@@ -56,6 +54,8 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation> 
 	regtSMSSynthesis( "SMSSynthesis" );
 
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtFundamental2Control( "Fundamental2Control" );
 
 // Plot Processings
 
