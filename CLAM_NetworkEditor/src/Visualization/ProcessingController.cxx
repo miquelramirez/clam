@@ -38,6 +38,12 @@ ProcessingController::ProcessingController()
 	SlotSendOutControlValue.Wrap( this, &ProcessingController::SendOutControlValue );
 }
 
+const std::string & ProcessingController::GetProcessingStatus()
+{
+	return mObserved->GetConfigErrorMessage();
+}
+
+
 void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & cfg) 
 {
 	// HasMutableInterface!
@@ -52,7 +58,7 @@ void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & c
 	}
 
 	SignalConfigureProcessing.Emit( mObserved, cfg );
-	SignalChangeState.Emit( mObserved->GetExecState(), mObserved->GetStatus() );
+	SignalChangeState.Emit( mObserved->GetExecState(), mObserved->GetConfigErrorMessage() );
 
 	if(mObserved->ModifiesPortsAndControlsAtConfiguration())
 	{

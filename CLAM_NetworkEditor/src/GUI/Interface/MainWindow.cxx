@@ -138,7 +138,15 @@ void MainWindow::SaveNetwork()
 		"Choose a file to save network" );
 
 	if (s!=QString::null)
+	{
+		//TODO code for saving positions
+		//  call method to mNetwork : SaveNetwork passing filename
+		//  QtNetworkPresentation::SaveNetwork (slot) :
+		//     execute Signal SaveNetworkTo passing ref to stream
+		//     add elem with positions: (name, xpos, ypos) tuples
+		//     save doc
 		mNetwork.SignalSaveNetworkTo.Emit(std::string(s.ascii()));
+	}
 }
 
 void MainWindow::SaveAsNetwork()

@@ -19,9 +19,8 @@
  *
  */
 
-#include "MonoAudioFileWriterConfigPresentation.hxx"
+#include "LadspaLoaderConfigPresentation.hxx"
 #include "ProcessingConfig.hxx"
-#include "AudioFileHeader.hxx"
 #include <qhbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -34,53 +33,46 @@
 namespace NetworkGUI
 {
 
-MonoAudioFileWriterConfigPresentation::MonoAudioFileWriterConfigPresentation( QWidget * parent )
+LadspaLoaderConfigPresentation::LadspaLoaderConfigPresentation( QWidget * parent )
 	: Qt_ProcessingConfigPresentation( parent , "config"  ),
-	mLocation(0),
 	mLayout(0),
+	mLocation(0),
+	mPluginsList(0),	
 	mSampleRate(0),
-	mFormat(0)
+	mFrameSize(0)
 {
 }
 
-MonoAudioFileWriterConfigPresentation::~MonoAudioFileWriterConfigPresentation()
+LadspaLoaderConfigPresentation::~LadspaLoaderConfigPresentation()
 {
 }
 
 
-void MonoAudioFileWriterConfigPresentation::ConfigureProcessing()
+void LadspaLoaderConfigPresentation::ConfigureProcessing()
 {
-	CLAM::AudioFileHeader header;
-	header.AddAll();
-	header.UpdateData();
-
-	mConfig.GetTargetFile().SetLocation( mLocation->text().latin1() );
+	mConfig.SetSharedObjectName( mLocation->text().latin1() );
+	mConfig.SetIndex( mPluginsList->currentItem() );
 	
-	CLAM::TData convertedValue = 0;
+	unsigned long sampleRate = 0;
 	const char * readValueSampleRate = mSampleRate->text().latin1();
 	std::stringstream s(readValueSampleRate);
-	s >> convertedValue ;
-
-	header.SetSampleRate( convertedValue );
-	header.SetChannels( 1 ); // just a mono file
-
-	const CLAM::Enum::tEnumValue * mapping = header.GetFormat().GetSymbolMap();
-	header.SetFormat( mapping[mFormat->currentItem()].value );
-
-	mConfig.GetTargetFile().SetHeader( header );
+	s >> sampleRate;
+	mConfig.SetSampleRate( sampleRate );
+	
+	unsigned long frameSize = 0;
+	const char * readValueFrameSize = mFrameSize->text().latin1();
+	std::stringstream s2(readValueFrameSize);
+	s2 >> frameSize ;
+	mConfig.SetSize( frameSize );
 
 	SignalConfigureProcessing.Emit(mConfig);
 }
 
-void MonoAudioFileWriterConfigPresentation::SetConfig( const CLAM::ProcessingConfig & cfg )
+void LadspaLoaderConfigPresentation::SetConfig( const CLAM::ProcessingConfig & cfg )
 {
-	mConfig = static_cast<const CLAM::MonoAudioFileWriterConfig &>(cfg);
+	mConfig = static_cast<const CLAM::LadspaLoaderConfig &>(cfg);
 	mConfig.AddAll();
 	mConfig.UpdateData();
-	CLAM::AudioFileHeader header;
-	header.AddAll();
-	header.UpdateData();
-	mConfig.GetTargetFile().SetHeader(header);
 	CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
 
 	mLayout = mAttributeContainer;
@@ -93,58 +85,79 @@ void MonoAudioFileWriterConfigPresentation::SetConfig( const CLAM::ProcessingCon
 }
 
 
-void MonoAudioFileWriterConfigPresentation::CreateGUI()
+void LadspaLoaderConfigPresentation::CreateGUI()
 {
 	CreateLocation();
+	CreatePluginsList();
 	CreateSampleRate();
-	CreateFormat();
+	CreateFrameSize();
 }
 
-void MonoAudioFileWriterConfigPresentation::CreateLocation()
+void LadspaLoaderConfigPresentation::CreateLocation()
 {	
 	QHBox * cell = new QHBox(mLayout);
 	cell->setSpacing(5);
-	QLabel * label = new QLabel("TargetFile", cell);
+	QLabel * label = new QLabel("Shared Object to Load", cell);
 	
-	mLocation = new QLineEdit(QString(mConfig.GetTargetFile().GetLocation().c_str()), cell); 
+	mLocation = new QLineEdit(QString(mConfig.GetSharedObjectName().c_str()), cell); 
 	mLocation->setMinimumWidth(300);
 
 	QPushButton * fileBrowserLauncher = new QPushButton("...",cell);
 	fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 	QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
-	fd->setMode( QFileDialog::AnyFile );
+	QString types("Shared Objects (*.so)" );   
+	fd->setFilters( types );
+	fd->setMode( QFileDialog::ExistingFile );
 
 	connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
 	connect( fd, SIGNAL(fileSelected( const QString & )), mLocation, SLOT( setText( const QString & )));
+	connect( mLocation, SIGNAL( textChanged( const QString & )), this, SLOT( UpdatePluginsList( const QString & )) );
 }
 
-void MonoAudioFileWriterConfigPresentation::CreateSampleRate()
+void LadspaLoaderConfigPresentation::CreatePluginsList()
+{
+	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
+	new QLabel("Plugins List", cell);
+	mPluginsList = new QComboBox(false, cell); // false editable
+	UpdatePluginsList( QString( mConfig.GetSharedObjectName().c_str() ) );
+
+}
+
+void LadspaLoaderConfigPresentation::UpdatePluginsList( const QString & sharedObject )
+{
+	mPluginsList->clear();
+	CLAM::LadspaPluginExaminer examiner( sharedObject.latin1() );
+	
+	CLAM::LadspaPluginExaminer::NamesList::iterator it;
+	for( it=examiner.BeginDescriptors(); it!=examiner.EndDescriptors(); it++ ) 
+		mPluginsList->insertItem( (*it).c_str() );
+	mPluginsList->setCurrentItem( 0 );
+}
+
+void LadspaLoaderConfigPresentation::CreateSampleRate()
 {
 	QHBox * cell = new QHBox(mLayout);
 	cell->setSpacing(5);
 	new QLabel("SampleRate", cell);
 	std::stringstream val;
-	val << mConfig.GetTargetFile().GetHeader().GetSampleRate() << std::ends;
+	val << mConfig.GetSampleRate() << std::ends;
 	mSampleRate = new QLineEdit(QString(val.str().c_str()), cell);
 	mSampleRate->setAlignment(Qt::AlignRight);
 	mSampleRate->setValidator(new QDoubleValidator(mSampleRate));
 
 }
 
-void MonoAudioFileWriterConfigPresentation::CreateFormat()
+void LadspaLoaderConfigPresentation::CreateFrameSize()
 {
 	QHBox * cell = new QHBox(mLayout);
 	cell->setSpacing(5);
-	new QLabel("Format", cell);
-	mFormat = new QComboBox(false, cell); // false editable
-	
-	const CLAM::Enum::tEnumValue * mapping = mConfig.GetTargetFile().GetHeader().GetFormat().GetSymbolMap();
-	for (unsigned i = 0; mapping[i].name; i++) 
-	{
-		mFormat->insertItem( mapping[i].name );
-		if (mapping[i].value==mConfig.GetTargetFile().GetHeader().GetFormat().GetValue()) 
-			mFormat->setCurrentItem(i);
-	}
+	new QLabel("FrameSize", cell);
+	std::stringstream val;
+	val << mConfig.GetSize() << std::ends;
+	mFrameSize = new QLineEdit(QString(val.str().c_str()), cell);
+	mFrameSize->setAlignment(Qt::AlignRight);
+	mFrameSize->setValidator(new QDoubleValidator(mFrameSize));
 
 }
 

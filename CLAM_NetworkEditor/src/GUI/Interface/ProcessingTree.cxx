@@ -46,24 +46,32 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * adsr = new ProcessingItem( gen, "ADSR");
 	ProcessingItem * squarewave = new ProcessingItem( gen, "SquareWave" );	
 	
-	QListViewItem * binops = new QListViewItem( this,"Binary Operations" );
-	ProcessingItem * multiplier = new ProcessingItem( binops, "AudioMultiplier" );
-	ProcessingItem * adder = new ProcessingItem( binops, "AudioAdder" );
+	QListViewItem * aritops = new QListViewItem( this,"Arithmetic operations" );
+	ProcessingItem * multiplier = new ProcessingItem( aritops, "AudioMultiplier" );
+	ProcessingItem * adder = new ProcessingItem( aritops, "AudioAdder" );
+	ProcessingItem * mixer = new ProcessingItem( aritops, "AudioMixer" );
 	
 	QListViewItem * controls = new QListViewItem( this, "Controls" );
 	ProcessingItem * autopanner = new ProcessingItem( controls, "AutoPanner" );	
 	ProcessingItem * flagcontrol = new ProcessingItem( controls, "FlagControl" );	
 	ProcessingItem * random = new ProcessingItem( controls, "Random" );	
 	ProcessingItem * oneoverf = new ProcessingItem( controls, "OneOverF" );	
-
+	
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
-	ProcessingItem * audiofilein = new ProcessingItem( inputoutput, "AudioFileIn" );
-	ProcessingItem * audiofileout = new ProcessingItem( inputoutput, "AudioFileOut" );
 	ProcessingItem * audioout = new ProcessingItem( inputoutput, "AudioOut" );
-	ProcessingItem * monoaudiofilereader = new ProcessingItem( inputoutput, "MonoAudioFileReader" );
-	ProcessingItem * monoaudiofilewriter = new ProcessingItem( inputoutput, "MonoAudioFileWriter" );
-	ProcessingItem * multichannelaudiofilereader = new ProcessingItem( inputoutput, "MultiChannelAudioFileReader" );
-	ProcessingItem * multichannelaudiofilewriter = new ProcessingItem( inputoutput, "MultiChannelAudioFileWriter" );
+	
+	QListViewItem * files = new QListViewItem( this,"Audio File I/O" );
+	ProcessingItem * monoaudiofilereader = new ProcessingItem( files, "MonoAudioFileReader" );
+	ProcessingItem * monoaudiofilewriter = new ProcessingItem( files, "MonoAudioFileWriter" );
+	ProcessingItem * multichannelaudiofilereader = new ProcessingItem( files, "MultiChannelAudioFileReader" );
+	ProcessingItem * multichannelaudiofilewriter = new ProcessingItem( files, "MultiChannelAudioFileWriter" );
+
+	QListViewItem * analysis= new QListViewItem( this,"Analysis" );	
+	ProcessingItem * fft = new ProcessingItem( analysis, "FFT_rfftw" );	
+	ProcessingItem * smsanalysiscore = new ProcessingItem( analysis, "SMSAnalysisCore" );	
+	QListViewItem * synthesis = new QListViewItem( this,"Synthesis" );
+	ProcessingItem * ifft = new ProcessingItem( synthesis, "IFFT_rfftw" );	
+	ProcessingItem * smssynthesis = new ProcessingItem( synthesis, "SMSSynthesis" );	
 	
 	QListViewItem * utils = new QListViewItem( this, "Utils" );
 	ProcessingItem * ladspaloader = new ProcessingItem( utils, "LadspaLoader" );

@@ -20,8 +20,6 @@
  */
 
 #include "SquareWave.hxx"
-#include <iostream>
-
 
 namespace CLAM
 {
@@ -107,8 +105,7 @@ bool SquareWave::ConcreteConfigure( const ProcessingConfig& c )
 
 bool SquareWave::Do()
 {
-	bool res = false;
-	res = Do(mOutput.GetAudio());
+	bool res = Do(mOutput.GetAudio());
 	mOutput.Produce();
 	return res;
 }

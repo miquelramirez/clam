@@ -52,6 +52,8 @@ void MultiChannelAudioFileWriterConfigPresentation::ConfigureProcessing()
 	CLAM::AudioFileHeader header;
 	header.AddAll();
 	header.UpdateData();
+
+	mConfig.GetTargetFile().SetLocation( mLocation->text().latin1() );
 	
 	CLAM::TData convertedValue = 0;
 	const char * readValueSampleRate = mSampleRate->text().latin1();
@@ -64,7 +66,8 @@ void MultiChannelAudioFileWriterConfigPresentation::ConfigureProcessing()
 	const CLAM::Enum::tEnumValue * mapping = header.GetFormat().GetSymbolMap();
 	header.SetFormat( mapping[mFormat->currentItem()].value );
 
-	mConfig.GetTargetFile().CreateNew( mLocation->text().latin1(), header );
+	mConfig.GetTargetFile().SetHeader( header );
+
 
 	// finally we add all of the information to the multi config and pass it to the processing 
 	mMultiConfig.AddAll();

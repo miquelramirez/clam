@@ -96,6 +96,7 @@ protected:
 	ConnectionPointPresentation & GetOutControlPresentationByCompleteName(const std::string &);
 	ConnectionPointPresentation & GetInControlPresentationByCompleteName(const std::string &);
 
+	/** TODO all this methods are repeated from the Network: To Refactor! */
 	ProcessingPresentation& GetProcessingPresentation( const std::string & );
 	std::string GetProcessingIdentifier( const std::string& );
 	static char NamesIdentifiersSeparator();
