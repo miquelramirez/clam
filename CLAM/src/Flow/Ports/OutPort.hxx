@@ -138,7 +138,7 @@ bool OutPort<Token>::TryConnectToConcreteIn( InPortBase & in )
 	{
 		ConnectToConcreteIn( dynamic_cast<ProperInPort&>(in) );
 	}
-	catch(...)
+	catch(std::bad_cast & e)
 	{
 		return false;
 	}
@@ -165,7 +165,8 @@ bool OutPort<Token>::TryConnectToPublisher( InPortBase & in )
 template<class Token>
 void OutPort<Token>::ConnectToIn( InPortBase& in)
 {
-	CLAM_ASSERT( TryConnectToConcreteIn( in ) || TryConnectToPublisher( in ),
+	bool successfullConnection = TryConnectToConcreteIn( in ) || TryConnectToPublisher( in );
+	CLAM_ASSERT( successfullConnection,
 		     "OutPort<Token>::connectToIn coudn't connect to inPort "
    		     "because was not templatized by the same Token type as outPort" );
 }
