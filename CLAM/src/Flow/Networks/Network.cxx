@@ -40,8 +40,7 @@ namespace CLAM
 	Network::~Network()
 	{
 		Clear();
-		if (mFlowControl)
-			delete mFlowControl;
+		if (mFlowControl) delete mFlowControl;
 	}
 
 	void Network::StoreOn( Storage & storage) const
@@ -160,7 +159,9 @@ namespace CLAM
 
 	/** Gets the ownership of the FlowControl passed. So it will be deleted by the destructor */
 	void Network::AddFlowControl(FlowControl* flowControl)
-	{		
+	{
+
+		if (mFlowControl) delete mFlowControl;
 		mFlowControl = flowControl;
 		mFlowControl->AttachToNetwork(this);
 	}
@@ -495,6 +496,7 @@ namespace CLAM
 				return it->first;
 
 		CLAM_ASSERT(false, "Trying to get a network id from a processing not present in it");
+		throw 0; // To avoid warning message
 	}
 
 	void Network::ChangeKeyMap( const std::string & oldName, const std::string & newName )
