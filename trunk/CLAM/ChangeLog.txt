@@ -1,9 +1,24 @@
+2002-11-26  CLAM_0_4_0-rel 
+'Fly examples, fly to seattle' release
   * General:
+      ** Directory reorganization
       ** CLAM_WARNING macros with customizable behaviour
+      ** New integrated examples: Salto and Rappid
+  * AnalisysSysthesis:
+      ** Major rework
+  * SpectralDelay:
+      ** Stability and performance enhancements
+      ** New filter control interface
   * Dynamic Types:
       ** Attribute visitors
   * Standard:
       ** Enum method to get the symbol mapping
+      ** Added TabFunct to deal with precalculed function tables
+  * SDIF:
+      ** Added SDIF support for storing analysis result in a binary format
+  * Visualization Module( GUI )
+      ** Automatic user interface generation for editing configurations
+      ** A lot of bug fixes (see Mantis)
   * XML:
       ** Now a given order between sibling xml elements is always required to
          boost the performance a little
@@ -12,6 +27,17 @@
       ** DOMPrint is not used anymore
       ** XMLStorage internal refactoring to improve mantainability, clearness
          and future improvements
+  * LADSPA
+      ** Added support for writing LASDPA plug-ins
+  * Examples
+      ** The following examples are now running and fairly debugged: SALTO, 
+         AnalysisSynthesis, SpectralDelay and Rappid
+  * Unix build system
+      ** Selective clean
+      ** Include paths not shown on the command line
+  * Windows build system
+      ** Workspaces reorganization
+
 
 
 2002-04-26  CLAM_0_3_0-rel
@@ -60,7 +86,7 @@
       ** Automatic Generic Snapshot Generation first attempt. It works
          for sure for Spectrum's, Audio's and Segment's.
       ** New GUI folder organisation: now it contains several subfolders
-	         + src/GUI/Core - Visualization Module Core Classes 
+	         + src/GUI/Core - Visualization Module Core Classes
 	         + src/GUI/GL   - OpenGL renderers
 	         + src/GUI/View - Set of actually implemented System Views
               ( Views Processings and PDs offered by CLAM )
@@ -78,7 +104,7 @@
       ** More reliable projects have been provided
       ** Tests projects now share .obj files between them, thus making
          faster the build process
-	
+
 2002-04-19  CLAM_0_2_2-rel
 
   * DynamicType class:
