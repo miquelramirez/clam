@@ -1,8 +1,8 @@
 
 #include "Qt_OutControlSenderPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
+#include "CLAM_Math.hxx"
 
-#include <cmath>
 #include <qslider.h>
 #include <qdial.h>
 #include <qspinbox.h>
