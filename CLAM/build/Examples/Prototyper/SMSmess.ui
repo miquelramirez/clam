@@ -1,0 +1,135 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>Form2</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>Form2</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>606</width>
+            <height>412</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form2</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="CLAM::VM::NetPeaksPlot">
+            <property name="name">
+                <cstring>OutPort::SMSPitchShift_11::Out_SpectralPeaks</cstring>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>SMS Residual Gain</string>
+                    </property>
+                </widget>
+                <widget class="QSlider" row="0" column="1">
+                    <property name="name">
+                        <cstring>InControlFloat::SMSResidualGain_5::Amount</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>SMS Sinusoidal Gain</string>
+                    </property>
+                </widget>
+                <widget class="QLCDNumber" row="2" column="2">
+                    <property name="name">
+                        <cstring>lCDNumber1_2_2</cstring>
+                    </property>
+                    <property name="numDigits">
+                        <number>3</number>
+                    </property>
+                </widget>
+                <widget class="QSlider" row="2" column="1">
+                    <property name="name">
+                        <cstring>InControl::SMSPitchShift_11::Amount</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLCDNumber" row="1" column="2">
+                    <property name="name">
+                        <cstring>lCDNumber1_2</cstring>
+                    </property>
+                    <property name="numDigits">
+                        <number>3</number>
+                    </property>
+                </widget>
+                <widget class="QSlider" row="1" column="1">
+                    <property name="name">
+                        <cstring>InControlFloat::SMSSinusoidalGain_1::Amount</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>SMS Pitch Shift</string>
+                    </property>
+                </widget>
+                <widget class="QLCDNumber" row="0" column="2">
+                    <property name="name">
+                        <cstring>lCDNumber1</cstring>
+                    </property>
+                    <property name="numDigits">
+                        <number>3</number>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>InControl::SMSPitchShift_11::Amount</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>lCDNumber1_2_2</receiver>
+        <slot>display(int)</slot>
+    </connection>
+    <connection>
+        <sender>InControlFloat::SMSSinusoidalGain_1::Amount</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>lCDNumber1_2</receiver>
+        <slot>display(int)</slot>
+    </connection>
+    <connection>
+        <sender>InControlFloat::SMSResidualGain_5::Amount</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>lCDNumber1</receiver>
+        <slot>display(int)</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>NetPeaksPlot.hxx</includehint>
+</includehints>
+</UI>
