@@ -19,6 +19,8 @@
  *
  */
 
+/* WARNING WARNING WARNING: This test will only pass if CLAM_DOUBLE is defined */
+
 #include <fstream>
 #include <cstdlib> //rand()
 #include "SpectrumProduct.hxx"
