@@ -192,15 +192,6 @@ void ProcessingTree::contentsMouseReleaseEvent ( QMouseEvent * e )
 void ProcessingTree::startDrag()
 {
 	std::string className(mSelectedItem->text(0).ascii());
-
-//	std::stringstream completeName;
-//	completeName.str("");
-
-//  in the format "classname.concretename", like "Oscillator.Oscillator_3"
-//	completeName << className << ".";
-
-//	completeName << className << "_" << mNumProc;
-
 	QDragObject *d = new QTextDrag( className.c_str(), this );
 	d->dragCopy();
 }
