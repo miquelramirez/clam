@@ -15,6 +15,8 @@
 #define SOUNDFILEIO_LITTLE_ENDIAN
 #endif
 
+namespace CLAM{
+
 class SoundFileIO
 {
 public:
@@ -95,4 +97,5 @@ protected:
 	}
 };
 
+};//CLAM
 #endif

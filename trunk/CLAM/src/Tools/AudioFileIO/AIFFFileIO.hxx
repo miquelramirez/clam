@@ -3,6 +3,8 @@
 
 #include "SoundFileIO.hxx"
 
+namespace CLAM{
+
 class AIFFFileIO:public SoundFileIO
 {
 public:
@@ -60,4 +62,5 @@ private:
 	void InitSelf(void);
 };
 
+};//CLAM
 #endif

@@ -1,6 +1,8 @@
 #include "SoundFileIO.hxx"
 #include "ErrSoundFileIO.hxx"
 
+using namespace CLAM;
+
 SoundFileIO::SoundFileIO()
 {
 	mMode = eNone;

@@ -12,6 +12,8 @@ extern "C" {
 	double ConvertFromIeeeExtended(unsigned char *bytes);
 # endif
 
+using namespace CLAM;
+
 void AIFFFileIO::InitSelf(void)
 {
 #ifdef SOUNDFILEIO_LITTLE_ENDIAN

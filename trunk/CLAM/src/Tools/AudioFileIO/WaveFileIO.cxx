@@ -7,6 +7,8 @@
 #define SWAP(var)
 #endif
 
+using namespace CLAM;
+
 void WaveFileIO::InitSelf(void)
 {
 #ifdef SOUNDFILEIO_BIG_ENDIAN
