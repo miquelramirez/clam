@@ -217,12 +217,14 @@ int SndPcm::setparams_stream(snd_pcm_t *handle,
 		cat_error("Channels count (%i) not available for %s: %s\n", channels, id, snd_strerror(err));
 		return err;
 	}
+setrate:
 	err = snd_pcm_hw_params_set_rate_near(handle, params, rate, 0);
 	if (err < 0) {
 		cat_error("Rate %iHz not available for %s: %s\n", rate, id, snd_strerror(err));
 		return err;
 	}
-	if (abs(err-rate) > 2) {
+	if (err != rate) {
+		if (abs(err-rate)<3) { rate = err; goto setrate; }
 		cat_error("Rate doesn't match (requested %iHz, get %iHz)\n", rate, err);
 		return -EINVAL;
 	}
