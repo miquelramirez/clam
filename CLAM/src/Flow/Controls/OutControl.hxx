@@ -65,7 +65,7 @@ public:
 	
 //Methods
 public:
-	void AddLink(InControl* in);
+	void AddLink(InControl* in); //TODO think if should be renamed to Connect
 	void RemoveLink(InControl* in);
 
 	std::list<InControl*>::iterator BeginInControlsConnected();
