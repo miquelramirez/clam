@@ -55,7 +55,7 @@ class SpectralAnalysisConfig:public ProcessingConfig
 
 	friend class SpectralAnalysis;
 
-	DYNAMIC_TYPE_USING_INTERFACE (SpectralAnalysisConfig,8,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (SpectralAnalysisConfig,9,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 /** Configuration for children Processing Objects*/
 	DYN_ATTRIBUTE(1,public,WindowGeneratorConfig, WindowGenerator);
@@ -65,6 +65,7 @@ class SpectralAnalysisConfig:public ProcessingConfig
 	DYN_ATTRIBUTE(5,protected,int, prZeroPadding);
 	DYN_ATTRIBUTE(6,protected,int, prSamplingRate);
 	DYN_ATTRIBUTE(7,protected,int, prFFTSize);
+	DYN_ATTRIBUTE(8,public,int, BufferSize);
 
 public:
 	~SpectralAnalysisConfig(){};

@@ -132,9 +132,13 @@ namespace CLAM {
 		DataArray& outBinPosBuffer=out.GetBinPosBuffer();
 		DataArray& outBinWidthBuffer=out.GetBinWidthBuffer();
 
+		TSize maxPeaks=mConfig.GetMaxPeaks();
+
 		// detection loop 
 		for (i=1;i<NumBands-2;i++) {
 			
+			if (out.GetnPeaks()>maxPeaks) break;
+
 			leftMag 	= inMagBuffer[i];
 			middleMag	= inMagBuffer[i+1];
 			rightMag 	= inMagBuffer[i+2];

@@ -44,8 +44,6 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 /** Synthesis **/
 	SetSynthesisFrameSize(256);
 	SetSynthesisWindowType(EWindowType::eTriangular);
-	/* by default (if -1) will take (WindowSize-1)/2*/
-	SetSynthesisHopSize(-1);
 	SetSynthesisPhaseManagementType(EPhaseGeneration::eContinuation);
 
 }

@@ -4,8 +4,6 @@
 
 #define CLASS "FundFreqDetect"
 
-#define MIN(a,b) ((a<=b)?(a):(b))
-#define MAX(a,b) ((a>=b)?(a):(b))
 #define INFINITE_MAGNITUD 1000000
 
 namespace CLAM {
@@ -119,6 +117,8 @@ namespace CLAM {
   /* The  unsupervised Do() function */
 	bool  FundFreqDetect::Do(SpectralPeakArray& peaks,Fundamental& outFreq)
 	{
+		outFreq.Init();
+		
 		// Check Number of Candidates required
 		if (outFreq.GetnMaxCandidates() <= 0)
 		throw Err("FundFreqDet::Detection: negative number of candidates wanted");

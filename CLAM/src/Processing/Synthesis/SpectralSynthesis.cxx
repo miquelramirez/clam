@@ -231,7 +231,7 @@ void SpectralSynthesis::ConfigureData()
 	//intantiate audio used as temporary data
 	mAudio0.SetSize(mConfig.GetIFFT().GetAudioSize());//audio used as output of the IFFT
 
-	mAudio1.SetSize(mConfig.GetAnalWindowSize());//audio without zeropadding
+	mAudio1.SetSize(mConfig.GetAnalWindowSize()-1);//audio without zeropadding
 	
 	mAudio2.SetSize(mConfig.GetHopSize()*2);//audio used as input of the inverse + triangular windowing 
 	
@@ -307,10 +307,10 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 //Undoing Synthesis circular shift
 	mPO_CircularShift.Do(mAudio0,mAudio0);
 //Undoing zero padding by hand seems a bit ugly but...
-	mAudio0.GetAudioChunk(0,mConfig.GetAnalWindowSize(),mAudio1,false);//XA_New
+	mAudio0.GetAudioChunk(0,mConfig.GetAnalWindowSize()-1,mAudio1,false);
 //Now we take the central samples to multiply with the window
 	int centerSample=mAudio1.GetSize()/2;
-	mAudio1.GetAudioChunk(centerSample-mConfig.GetHopSize(),centerSample+mConfig.GetHopSize()-1,mAudio2,false);//XA_New
+	mAudio1.GetAudioChunk(centerSample-mConfig.GetHopSize(),centerSample+mConfig.GetHopSize()-1,mAudio2,false);
 //Aplying inverse window
 	mPO_AudioProduct.Do(mAudio2, mSynthWindow,mAudio3);
 //Finally the overlap and add is accomplished

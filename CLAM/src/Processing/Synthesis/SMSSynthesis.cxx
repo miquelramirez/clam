@@ -264,6 +264,17 @@ bool SMSSynthesis::Do(SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio)
 
 bool SMSSynthesis::Do(Frame& in)
 {
+	in.AddSinusoidalAudioFrame();
+	in.AddResidualAudioFrame();
+	in.AddSynthAudioFrame();
+	in.UpdateData();
+
+	in.GetSinusoidalAudioFrame().SetSize(mConfig.GetFrameSize());
+	in.GetResidualAudioFrame().SetSize(mConfig.GetFrameSize());
+	in.GetSynthAudioFrame().SetSize(mConfig.GetFrameSize());
+		
+	if(in.GetCenterTime()<0) return false;//such frames should not be synthesized
+
 	mPO_PhaseMan.Do(in);
 
 	SpectrumConfig tmpcfg;

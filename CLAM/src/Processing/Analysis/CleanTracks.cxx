@@ -20,7 +20,7 @@
  */
 #include "CleanTracks.hxx"
 #include "ErrProcessingObj.hxx"
-#include <iostream.h>
+#include <iostream>
 
 
 namespace CLAM {

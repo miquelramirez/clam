@@ -124,6 +124,14 @@ public:
 	/** Sort the arrays by estimated error*/
 	void SortByError();
 
+	/** Initializes data */
+	void Init()
+	{
+		GetCandidatesFreq().SetSize(0);
+		GetCandidatesErr().SetSize(0);
+		SetnCandidates(0);
+	}
+
 };
 
 }; // namespace CLAM

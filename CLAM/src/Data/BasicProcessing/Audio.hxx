@@ -108,6 +108,26 @@ namespace CLAM {
 		 *  @param configureChunk Optional parameter to set the configuration of the chunk. True by default.
 		*/
 		void GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool configureChunk=true) const;
+
+		/** Method for copying an audio "slice" out of the existing data. The difference between slices
+		 *  and chunks is that slices don't own any memory.
+		 *  @param beginTime Beginning of the chunk in time measure.
+		 *  @param endTime Ending of the chunk in time measure.
+		 *  @param slice The Audio data slice
+		 *  @param configureSlice Optional parameter to set the configuration of the slice. True by default.
+		*/
+		void GetAudioSlice(TTime beginTime, TTime endTime,Audio& slice,bool configureSlice=true) const;
+
+
+		/** Method for getting an audio "slice" out of the existing data. The difference between slices
+		 *  and chunks is that slices don't own any memory.
+		 *  @param beginIndex Beginning of the chunk inside the Buffer.
+		 *  @param endIndex Ending of the chunk inside the Buffer
+		 *  @param slice The Audio slice
+		 *  @param configureSlice Optional parameter to set the configuration of the slice. True by default.
+		*/
+		void GetAudioSlice( TIndex beginIndex, TIndex endIndex, Audio& slice, bool configureSlice=true) const;
+
 		/**Method for setting an audio chunk of the audio out of an existing chunk
 		 *  @param beginTime Beginning location of the chunk in the Buffer in time measure.
 		 *  @param chunk The Audio data chunk to insert
