@@ -123,6 +123,7 @@ int Test(FDFilterGen &gen)
 	f.bMagPhaseBPF=true;
 	f.bMagPhase=false;
 	sets.SetType(f);
+	sets.SetScale(EScale::eLinear);
 	Spectrum spec(sets);
 	FDFilterGenConfig cfg,cfg2;
 	Enum::tValue i;
