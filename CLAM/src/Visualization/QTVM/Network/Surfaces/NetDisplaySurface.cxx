@@ -24,7 +24,9 @@ namespace CLAM
 
 		void NetDisplaySurface::SetBackgroundColor(double r, double g, double b)
 		{
-			_thread.setBackgColor(r, g, b);
+			_r = r;
+			_g = g;
+			_b = b;
 		}
 
 		void NetDisplaySurface::SetController(NetPlotController* controller)
@@ -57,19 +59,20 @@ namespace CLAM
 		    _thread.resizeViewport(w,h);
 		}
 
-	        void NetDisplaySurface::paintEvent(QPaintEvent* pe)
-		{
-			// handled by the GLThread
-		}
-
 		void NetDisplaySurface::receivedView(SView v)
 		{
-			_thread.setView(v.left, v.right, v.bottom, v.top);
+			_left = v.left;
+			_right = v.right;
+			_bottom = v.bottom;
+			_top = v.top;
 		}
 
 		void NetDisplaySurface::InitView()
 		{
-			_thread.setView(0.0, 1.0, -1.0, 1.0);
+			_left = 0.0;
+			_right = 1.0;
+			_bottom = -1.0;
+			_top = 1.0;
 		}
 	}
 }
