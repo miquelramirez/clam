@@ -47,18 +47,46 @@ namespace CLAM {
 
 	/**
 	 * Connects two ports of two processings selecting them by the port name.
-	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
+	 * Short hand for sender.GetOutPorts().Get(outPortName).ConnectToIn(receiver.GetOutPorts().Get(inPortName))
 	 */
 	void ConnectPorts(
 			Processing & sender, const std::string & outPortName, 
 			Processing & receiver, const std::string & inPortName );
 	/**
 	 * Connects two ports of two processings selecting them by the port number.
-	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
+	 * Short hand for sender.GetOutPorts().Get(outPortName).ConnectToIn(receiver.GetOutPorts().Get(inPortName))
 	 */
 	void ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
 			Processing & receiver, unsigned inPortNumber );
+	/**
+	 * Connects a free out port to an in port inside a processing selected by the port name.
+	 * Short hand for sender.ConnectToIn(receiver.GetOutPorts().Get(inPortName))
+	 */
+	void ConnectPorts(
+			OutPortBase & sender,
+			Processing & receiver, const std::string & inPortName );
+	/**
+	 * Connects a free in port to an out port inside a processing selected by the port name.
+	 * Short hand for sender.GetOutPorts().Get(outPortName).ConnectToIn(receiver)
+	 */
+	void ConnectPorts(
+			Processing & sender, const std::string & outPortName, 
+			InPortBase & receiver);
+	/**
+	 * Connects a free out port to an in port inside a processing selected by the port number.
+	 * Short hand for sender.ConnectToIn(receiver.GetOutPorts().GetByNumber(inPortNumber))
+	 */
+	void ConnectPorts(
+			OutPortBase & sender,
+			Processing & receiver, unsigned inPortNumber );
+	/**
+	 * Connects a free in port to an out port inside a processing selected by the port number.
+	 * Short hand for sender.GetOutPorts().GetByNumber(outPortNumber).ConnectToIn(receiver)
+	 */
+	void ConnectPorts(
+			Processing & sender, unsigned outPortNumber, 
+			InPortBase & receiver);
 	/**
 	 * Free function that connects two controls.
 	 * Short hand for sender.GetOutControls().GetByNumber(outControlNumber).AddLink(&receiver.GetOutControls().GetByNumber(inControlNumber))
