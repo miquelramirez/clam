@@ -435,11 +435,9 @@ public:
 		double b = 10.5;
 		double c = 0.71;
 
-		for ( int i = 0; i < 10000000000; i++)
+		for ( int i = 0; i < 1000000L; i++)
 		{
 			double a = b / c;
-			if ( i% 1000000000 == 0 )
-				cout << "." ;
 		}
 	}
 };

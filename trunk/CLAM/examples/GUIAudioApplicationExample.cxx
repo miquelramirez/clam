@@ -25,7 +25,7 @@
 #include "AudioManager.hxx"
 
 #include "Oscillator.hxx"
-#include "Multiplier.hxx"
+#include "AudioMultiplier.hxx"
 #include "GUIAudioApplication.hxx"
 
 #include <iostream>
@@ -92,7 +92,7 @@ void MyAudioApplication::AudioMain(void)
 
 		testtoneCfg.SetFrequency(440);
 
-		Multiplier mul;
+		AudioMultiplier mul;
 
 		Oscillator oscL(oscRcfg);
 		Oscillator oscR(oscLcfg);

@@ -88,9 +88,9 @@ public:
 
 	const ProcessingConfig &GetConfig() const { return mConfig;}
 
-	bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+	bool ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const EnvelopeGeneratorConfig&>(cfg);
+		CopyAsConcreteConfig(mConfig, c);
 
 		mXFrameReset = mConfig.GetFrameEnvelopes();
 		mX = 0;

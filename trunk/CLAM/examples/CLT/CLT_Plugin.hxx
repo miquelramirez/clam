@@ -3,7 +3,9 @@
 
 #include "ladspa_types.h"
 #include "ProcessingComposite.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+
 #include "CLT_Descriptor.hxx"
 #include "Audio.hxx"
 
@@ -53,8 +55,7 @@ protected:
 public:
 		
 		
-		virtual bool ConcreteConfigure(const ProcessingConfig& cfg) 
-				throw(std::bad_cast);
+		virtual bool ConcreteConfigure(const ProcessingConfig& c);
 		virtual const ProcessingConfig &GetConfig() const { return mConfig; }
 //to implement in son classes
 		virtual bool Do(void){return true;} //a implementar pels fills

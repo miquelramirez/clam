@@ -25,7 +25,7 @@
 #include "Audio.hxx"
 #include "AudioFile.hxx"
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "OutPortTmpl.hxx"
 
 namespace CLAM {
 
@@ -51,6 +51,7 @@ class SoundFileIO;
 		bool ConcreteStop();
 
 	private:
+		OutPortTmpl<Audio> mOutput;
 
 		const char *GetClassName() const {return "AudioFileIn";}
 
@@ -61,15 +62,13 @@ class SoundFileIO;
 		 * bad_cast exception when the argument is not an FFTConfig
 		 * object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 
 		AudioFileIn();
 
 		AudioFileIn(const AudioFileConfig &c);
-
-		OutPortTmpl<Audio> mOutput;
 
 		virtual ~AudioFileIn();
 

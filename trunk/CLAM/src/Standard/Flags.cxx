@@ -40,7 +40,7 @@ using namespace CLAM;
 * @param whichOne The position of the selected flag
 * @returns The symbolic name of the selected flag as stream
 */
-std::string FlagsBase::GetFlagString(unsigned int whichOne) throw (IllegalValue) {
+std::string FlagsBase::GetFlagString(unsigned int whichOne) const throw (IllegalValue) {
 	for (unsigned int i = 0; mFlagValues[i].name; i++) {
 		if (whichOne==mFlagValues[i].value) 
 			return mFlagValues[i].name;
@@ -53,7 +53,7 @@ std::string FlagsBase::GetFlagString(unsigned int whichOne) throw (IllegalValue)
 * @param whichOne The string containing the simbolic name
 * @returns The symbolic name of the selected flag as stream
 */
-unsigned int FlagsBase::GetFlagPosition(const std::string & whichOne) throw (IllegalValue) {
+unsigned int FlagsBase::GetFlagPosition(const std::string & whichOne) const throw (IllegalValue) {
 	for (int i = 0; mFlagValues[i].name; i++) {
 		if (whichOne==mFlagValues[i].name) 
 			return mFlagValues[i].value;
@@ -144,7 +144,7 @@ std::istream & CLAM::operator >> (std::istream & is, FlagsBase & f) {
 	return is;
 }
 
-std::ostream & CLAM::operator << (std::ostream & os, FlagsBase & f) {
+std::ostream & CLAM::operator << (std::ostream & os, const FlagsBase & f) {
 	const unsigned int N = f.GetNFlags();
 	bool first = true;
 	os << "{";

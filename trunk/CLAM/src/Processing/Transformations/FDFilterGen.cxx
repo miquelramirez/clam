@@ -74,8 +74,8 @@ namespace CLAM {
 	FDFilterGen::FDFilterGen() :
 		Output("Output",this,1),
 		Gain("Gain",this, &FDFilterGen::UpdateControlChangedFlag), 
-		HighCutOff( "High Cutoff Frecuency",this, &FDFilterGen::UpdateControlChangedFlag),
-		LowCutOff( "Low Cutoff Frecuency",this, &FDFilterGen::UpdateControlChangedFlag),
+		HighCutOff( "High Cutoff Frequency",this, &FDFilterGen::UpdateControlChangedFlag),
+		LowCutOff( "Low Cutoff Frequency",this, &FDFilterGen::UpdateControlChangedFlag),
 		PassBandSlope("Pass Band Slope",this, &FDFilterGen::UpdateControlChangedFlag),
 		StopBandSlope( "Stop Band Slope",this, &FDFilterGen::UpdateControlChangedFlag),
 		SpectralRange(0),
@@ -102,10 +102,10 @@ namespace CLAM {
 
 
 	
-	bool FDFilterGen::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool FDFilterGen::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const FDFilterGenConfig&>(c);
-		
+		CopyAsConcreteConfig(mConfig, c);
+
 		mControlChanged=true; //we want the next Do to perform an action
 		if (mConfig.HasSpectralRange())
 			SpectralRange=mConfig.GetSpectralRange();

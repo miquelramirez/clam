@@ -26,11 +26,11 @@
 #include "CLAM_Math.hxx"
 
 #include "Segment.hxx"
-#include "SegmentAnalysisSystem.hxx"
+//#include "SegmentAnalysisSystem.hxx"
  
 #include "Vector.hxx"
 
-#include "SnapshotGenerator.hxx"
+//#include "SnapshotGenerator.hxx"
 
 
 using namespace MTG;

@@ -65,9 +65,9 @@ namespace SALTO
 	TransitionHandler::~TransitionHandler()
 	{}
 
-	bool TransitionHandler::ConcreteConfigure( const ProcessingConfig &cfg ) throw ( std::bad_cast )
+	bool TransitionHandler::ConcreteConfigure( const ProcessingConfig &c )
 	{
-		mConfig = dynamic_cast< const TransitionHandlerConfig & > ( cfg );
+		CopyAsConcreteConfig(mConfig, c);
 
 		return true;
 	}

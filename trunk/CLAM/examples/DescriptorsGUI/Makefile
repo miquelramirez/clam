@@ -2,6 +2,6 @@ PROGRAMS=\
 	DescriptorsGUI
 
 
-TOP=../../../
+TOP=../../
 
 include $(TOP)/unix_tools/make.rules

@@ -43,10 +43,10 @@ namespace CLAM {
 
   /* Configure the Processing Object according to the Config object */
 
-	bool SpectralDescriptorsGen::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool SpectralDescriptorsGen::ConcreteConfigure(const ProcessingConfig& c)
 	{
-	    mConfig = dynamic_cast<const SpectralDescriptorsGenConfig&>(c);	    
-	     		return true;
+		CopyAsConcreteConfig(mConfig, c);
+		return true;
 	}
 
   /* Setting Prototypes for faster processing */

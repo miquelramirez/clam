@@ -129,7 +129,7 @@ public:
 	{ 
 		T sum = 0;
 		for (int i=0; i<GetDimension(); i++)
-			sum+= pow ( (*this)[i], 2);
+			sum+= pow ( (*this)[i], (T)2);
 		return sqrt(sum); 
 	}
 	

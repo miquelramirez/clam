@@ -25,6 +25,9 @@
 #include "Processing.hxx"
 #include "MIDIInControl.hxx"
 #include "ControlMapper.hxx"
+#include "MIDIManager.hxx"
+
+#include <algorithm>
 
 using std::for_each;
 using std::string;
@@ -41,6 +44,11 @@ namespace CLAM
 		void StoreOn (Storage & store);
 		void LoadFrom (Storage & store);
 		bool operator== (MIDIRelation  r);
+
+		const char* GetClassName() const
+		{
+			return "MIDIRelation";
+		}
 
 //	private:
 
@@ -103,8 +111,7 @@ namespace CLAM
 		 const int numByte=0);
 		
 	private:
-		virtual bool ConcreteConfigure(const ProcessingConfig& cfg) 
-			throw(std::bad_cast);
+		virtual bool ConcreteConfigure(const ProcessingConfig& c);
 		ControlMapperConfig GetMapper(string mapName);
 		MIDIInConfig GetMIDI(string midiName);
 		MIDIInControl* CreateMIDICtrl(const MIDIInConfig &cfg);

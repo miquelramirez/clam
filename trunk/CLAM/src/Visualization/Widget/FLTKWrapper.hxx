@@ -28,7 +28,7 @@
 
 class Fl_Widget;
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 class FLTKWrapper

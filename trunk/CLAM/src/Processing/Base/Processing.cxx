@@ -24,6 +24,7 @@
 #include "ProcessingComposite.hxx"
 #include "TopLevelProcessing.hxx"
 #include "ErrDynamicType.hxx"
+#include "InPort.hxx"
 
 #include "mtgsstream.h" // An alias for <sstream>
 #include <cstring>
@@ -35,7 +36,11 @@ namespace CLAM {
 	Processing::null_iterator = Processing::iterator(0);
 
 	Processing::Processing() 
-		: mpParent(0)
+		: mpParent(0),
+		mInControls(this),
+		mOutControls(this),
+		mOutPorts(this),
+		mInPorts(this)
 	{
 		mState = Unconfigured;
 	}
@@ -148,19 +153,11 @@ namespace CLAM {
 		
 	}
 
-	void Processing::Start(void) throw(ErrProcessingObj)
+	void Processing::Start(void)
 	{
-		if (mState==Ready)
-			mState=Running;
-		else {
-			std::string msg = "Start(): Object not ready";
-			if (mStatus != "") {
-				msg += ": ";
-				msg += mStatus;
-			}
-			throw ErrProcessingObj(msg.c_str(),this);
-		}
-
+		CLAM_ASSERT(mState==Ready,"Start(): Object not ready");
+		mState=Running;
+		
 		try {
 			if (!ConcreteStart())
 				mState=Unconfigured;
@@ -169,18 +166,15 @@ namespace CLAM {
 			ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
 			mState=Unconfigured;
 			new_e.Embed(e);
-			throw(new_e);
+			CLAM_ASSERT( false, new_e.what() );
 		}
 	}
 	
-	void Processing::Stop(void) throw(ErrProcessingObj)
+	void Processing::Stop(void)
 	{
-		if (mState==Running ||
-			mState==Disabled)
-			mState=Ready;
-		else
-			throw(ErrProcessingObj("Stop(): Object not running.",this));
+		CLAM_ASSERT( mState==Running ||	mState==Disabled, "Stop(): Object not running." );
 
+		mState=Ready;
 		ConcreteStop();
 	}
 

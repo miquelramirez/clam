@@ -68,9 +68,8 @@ namespace CLAM {
 	};
 
 	bool WaveGenerator::ConcreteConfigure(const ProcessingConfig& c)
-		throw(std::bad_cast)
 	{
-		mConfig = dynamic_cast<const WaveGeneratorConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 
 		mAmplitude = mConfig.GetAmplitude();
 

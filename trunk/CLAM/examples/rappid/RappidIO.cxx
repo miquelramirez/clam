@@ -136,9 +136,9 @@ CLAM::AudioManager *RappidIOBase::AudioManagerSingleton()
 	return pAudioManager;
 }
 
-void RappidIOBase::BaseConfigure(const ProcessingConfig &cfg)
+void RappidIOBase::BaseConfigure(const ProcessingConfig &c)
 {
-	mConfig = dynamic_cast<const RappidIOConfig&>(cfg);
+	CopyAsConcreteConfig(mConfig, c);
 
 	mSampleRate = mConfig.GetGlobalConfig().GetSampleRate();
 

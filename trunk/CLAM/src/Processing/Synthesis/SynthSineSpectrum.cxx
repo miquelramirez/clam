@@ -628,9 +628,9 @@ SynthSineSpectrum::SynthSineSpectrum(SynthSineSpectrumConfig& cfg)
 }
 
 
-bool SynthSineSpectrum::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool SynthSineSpectrum::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig=dynamic_cast<const SynthSineSpectrumConfig&> (cfg);
+	CopyAsConcreteConfig(mConfig, c);
 	WindowGeneratorConfig wcfg;
 	wcfg.SetNormalize(EWindowNormalize::eNone);
 	wcfg.SetSize(MAINLOBE_TABLE_SIZE);
@@ -663,9 +663,9 @@ bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residual
  	Scfg.SetScale(EScale::eLinear);
 	SpecTypeFlags sflags;
    	sflags.bComplex = 1;
- 		sflags.bPolar = 0;
- 		sflags.bMagPhase = 0;
- 		sflags.bMagPhaseBPF = 0;
+	sflags.bPolar = 0;
+	sflags.bMagPhase = 0;
+	sflags.bMagPhaseBPF = 0;
  	Scfg.SetType(sflags);
  	Scfg.SetSize(mSynthSineSpectrum.Size());
  	Scfg.SetSpectralRange(residualSpectrumOut.GetSpectralRange());

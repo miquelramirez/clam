@@ -24,7 +24,6 @@
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
-#include "Port.hxx"
 #include "Spectrum.hxx"
 #include "SpectralPeak.hxx"
 #include "SpectralPeakArray.hxx"
@@ -55,6 +54,8 @@ namespace CLAM {
 
 	/**
 	 * Applies an existing spectral envelope to incoming spectral peaks or spectrum
+	 * @todo: the spline interpolation gets a bit out of hand in the ends of the spectral envelope
+	 *	so you may get artifacts in the higher frequencies!!!
 	 */
 	class SpectralEnvelopeApply: public Processing {
 		SpectralEnvelopeApplyConfig mConfig;
@@ -69,7 +70,7 @@ namespace CLAM {
 		 *  @throw bad_cast exception when the argument is not an SpectralEnvelopeApplyConfig object.
 		 *  @return True if the cast has been commited correctly		 
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SpectralEnvelopeApplyConfig initialised by default*/
@@ -106,7 +107,6 @@ namespace CLAM {
 		 */
 		bool Do(const Spectrum& input,const Spectrum& spectralEnvelope,Spectrum& output);
 
-		// Port interfaces.
 
 		/** Change the internal type state.  
 		 */

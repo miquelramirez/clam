@@ -25,38 +25,70 @@
 #include "Connection.hxx"
 #include <list>
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
-/**
- * An Slot is something you may connect with a signal.
- * @see Signal
+/** \class Slot
+ *  \brief The receiver of a Signal
+ *
+ *  If the Signal represents the concept of Event Notifying, the Slot represents
+ *  the 'Event handler'
+ *
+ *  \see Signal
  */
-	class Slot
-	{
-		typedef std::list<Connection>        tConnectionList;
-		typedef tConnectionList::iterator    tConnectionIterator;
-  
-	public:
-  
-		void Bind(const Connection& conn );
-  
-		void Unbind();
-
-		void Unbind( Connection::tConnectionId conn );
-  
-		unsigned  ActiveConnections() const
+		class Slot
 		{
-			return mActiveConnections.size();
-		}
-  
-		~Slot();
-  
-	private:
-  
-		tConnectionList     mActiveConnections;
-	};
-
+				typedef std::list<Connection>        tConnectionList;
+				typedef tConnectionList::iterator    tConnectionIterator;
+				
+		public:
+		
+				/** \brief Binds the Slot with a Signal
+				 *
+				 *  This method keeps the Slot bound to a given Signal ( identified by a
+				 *  Connection ).
+				 *
+				 *  \param The connection to establish
+				 */
+				void Bind(const Connection& conn );
+				
+				/** \brief Disconnects the Slot
+				 *
+				 *  Calling this method severs all the existing connections between
+				 *  the present slot and any signal.
+				 */
+				void Unbind();
+				
+				/** \brief Disconnects the Slot
+				 *
+				 *  Calling this method severs the connection between the Slot and the
+				 *  Signal identified by the connection Id number.
+				 *  \param The connection to be severed.
+				 */
+				void Unbind( Connection::tConnectionId conn );
+				
+				/** \brief Tells how many signals are connected
+				 *
+				 *  This method tells the client how many connections are already established
+				 *  with Signals for the present Slot.
+				 *  \return The number of Signals connected to the Slot
+				 */
+				unsigned  ActiveConnections() const
+				{
+						return mActiveConnections.size();
+				}
+				
+				/** \brief Destructor
+				 *
+				 *  Destructor method.
+				 */
+				~Slot();
+				
+		private:
+				
+				tConnectionList     mActiveConnections;
+		};
+		
 }
 
 #endif // Slot.hxx

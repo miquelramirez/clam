@@ -26,19 +26,6 @@
 #include "CLAM_Math.hxx"
 
 
-/* roundInt Implementation */
-#ifdef __unix__
-// on linux, rint exists in math.h
-#define roundInt(var) int(rint(var))
-#else
-// on mac and windows it doesn't
-static int roundInt(double in)
-{
-	double f = floor(in);
-	return int((in-f)<=0.5 ? f : f+1);
-}
-#endif
-
 # define M_1_2PI         0.15915494309189533577  /* 1/(2pi) */
 
 #if defined _MSC_VER

@@ -40,9 +40,9 @@ namespace SALTO
 		return true;
 	}
 
-	bool AttackResidualSynthesis::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast )
+	bool AttackResidualSynthesis::ConcreteConfigure( const ProcessingConfig& c )
 	{
-		mConfig = dynamic_cast< const AttackResidualSynthesisConfig& > ( cfg );
+		CopyAsConcreteConfig(mConfig, c);
 
 		return true;
 	}

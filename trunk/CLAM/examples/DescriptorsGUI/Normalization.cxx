@@ -52,9 +52,9 @@ Normalization::Normalization(NormalizationConfig& c)
 Normalization::~Normalization() {}
 
 
-bool Normalization::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool Normalization::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const NormalizationConfig&> (c);
+	CopyAsConcreteConfig(mConfig, c);
 
 	mType=mConfig.GetType();
 	mFrameSize=mConfig.GetFrameSize();

@@ -68,6 +68,10 @@ public:
 	
 	bool Do(void){ return false;}
 	bool Do(Frame& currentFrame);
+	
+	/** Basic non-supervised Do.@todo: the way the algorithms are now, they just allow inplace
+	 *	processing. This should be changed.*/
+	bool Do(SpectralPeakArray& in);
 
 	/** Configuration method */
 	bool ConcreteConfigure(const ProcessingConfig&);
@@ -76,17 +80,21 @@ public:
 
 	void Init();
 
+	//Controls
+	InControlTmpl<PhaseManagement> mCurrentTime;
+	InControlTmpl<PhaseManagement> mCurrentPitch;
 
-/* testing for SALTO!! private:*/
-	
 public:
 	void ResetPhaseAlignment();	
 
-	void DoPhaseAlignment (SpectralPeakArray& peakArray,double currentTime,double fundFreq);
+	void DoPhaseAlignment (SpectralPeakArray& peakArray);
 	void DoRandomPhases	(SpectralPeakArray& peakArray);
-	void DoPhaseContinuation(SpectralPeakArray& p,TData t);
+	void DoPhaseContinuation(SpectralPeakArray& p);
 	void SetLastPhasesAndFreqs (SpectralPeakArray& peakArray);
 	void GenerateRandomPhases(DataArray& a);
+
+
+
 
 private:
 	double	mFrameTime,
@@ -100,6 +108,7 @@ private:
 	
 	/* private configuration*/
 	PhaseManagementConfig mConfig;
+
 
 };
 

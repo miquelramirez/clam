@@ -249,9 +249,9 @@ namespace CLAM {
 		mSilenceLevel = slevel;
 	}
 
-	bool EnvelopeExtractor::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+	bool EnvelopeExtractor::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const EnvExtractorConfig&>(cfg);
+		CopyAsConcreteConfig(mConfig, c);
 
 		mIsSpline = (mConfig.GetInterpolationType() == EInterpolation::eSpline);
 

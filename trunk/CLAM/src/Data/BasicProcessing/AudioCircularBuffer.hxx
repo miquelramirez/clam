@@ -53,6 +53,11 @@ namespace CLAM {
 		{
 			CircularBuffer<TData>::Read(in.GetBuffer());
 		}
+
+		void NonCopyReadAudio(Audio& in)
+		{
+			CircularBuffer<TData>::NonCopyRead(in.GetBuffer());
+		}
 	
 		void WriteAudio(const Audio& in)
 		{

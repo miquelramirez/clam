@@ -103,7 +103,7 @@ private:
 	Segment*   mpSpectralSegResidual;
 	
 	Frame     mEmptySpectralFrame;
-	TIndex			   mFrameCounter[MAX_SPECTRAL_SEGMENTS];
+	TIndex		*mFrameCounter;
 	
 	Array<CSaltoStatTmplData>* mpStatTemplDataArray;
 	TIndex                        mnStatTemplArrays;

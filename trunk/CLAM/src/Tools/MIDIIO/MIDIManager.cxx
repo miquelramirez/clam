@@ -23,6 +23,7 @@
 #include "MIDIDevice.hxx"
 #include "MIDIDeviceList.hxx"
 #include "MIDIIn.hxx"
+#include "MIDIClocker.hxx"
 #include <algorithm>
 using std::find ;
 
@@ -144,10 +145,24 @@ MIDIDevice* MIDIManager::FindOrCreateDevice(const std::string& name)
 
 	/** Checking if the device is an avalaible device for the architecture
 	*/
-	if (find(list->AvailableDevices().begin(),
+
+	std::vector<std::string>::const_iterator it;
+
+	for (
+		it = list->AvailableDevices().begin(); 
+		it != list->AvailableDevices().end();
+		it++)
+	{
+		if (*it == device) break;
+		break;
+	}
+	
+/*	if (find(list->AvailableDevices().begin(),
 			 list->AvailableDevices().end(),
 			 device) == 
 		list->AvailableDevices().end())
+*/
+	if (it == list->AvailableDevices().end())
 	{
 		std::string errstr;
 		errstr = "MIDIManager::FindOrCreateDevice(): "
@@ -156,7 +171,6 @@ MIDIDevice* MIDIManager::FindOrCreateDevice(const std::string& name)
 	}
 
 	std::string real_name = arch+":"+device;
-
 
 	/** Verifing if the device is just created
 	*/
@@ -190,6 +204,15 @@ bool MIDIManager::Register(MIDIIn& in)
 	 */
 	MIDIDevice* device = FindOrCreateDevice(in.mConfig.GetDevice());
 	return device->Register(this,in);
+}
+
+bool MIDIManager::Register(MIDIClocker& cl)
+{
+	/** Getting the device for the MIDIIn object 
+	 *  and registering the object as an input of the device
+	 */
+	MIDIDevice* device = FindOrCreateDevice(cl.mConfig.GetDevice());
+	return device->Register(this,cl);
 }
 
 /*

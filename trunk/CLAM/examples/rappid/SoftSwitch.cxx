@@ -90,9 +90,9 @@ namespace CLAM {
 		Configure(c);
 	}
 
-	bool SoftSwitch::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+	bool SoftSwitch::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const SoftSwitchConfig&>(cfg);
+		CopyAsConcreteConfig(mConfig, c);
 
 		mType = mConfig.GetFadeType();
 

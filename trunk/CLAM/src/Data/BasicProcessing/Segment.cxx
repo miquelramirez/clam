@@ -34,7 +34,7 @@ using namespace CLAM;
 void Segment::DefaultInit()
 {
 	pParent=NULL;
-	mCurrentFrameIndex=-1;
+	mCurrentFrameIndex=0;
 	AddprHoldsData();
 	AddBeginTime();
 	AddEndTime();
@@ -49,11 +49,16 @@ void Segment::DefaultValues()
 	SetBeginTime(0);
 	SetEndTime(0);
 	SetSamplingRate(44100);
+	SetHoldsData( true );
+
 }
  
 void Segment::CopyInit(const Segment& prototype)
 {
 	pParent=prototype.pParent;
+	mFramesSearch=prototype.mFramesSearch;
+	mFramesSearch.Set(GetFramesArray());
+	mCurrentFrameIndex=prototype.mCurrentFrameIndex;
 }
 
 
@@ -66,7 +71,7 @@ void Segment::CopyDataFromParent()
 	TTime endTime=GetEndTime();
 	GetAudio().SetDuration(endTime-beginTime);
 	GetpParent()->GetAudio().GetAudioChunk(beginTime,endTime,GetAudio());
-	
+
 	/*TODO: right now frames with center after beginning of segment are added so
 	they may include samples outside of range: is this correct?*/
 	TIndex position=0;
@@ -83,69 +88,71 @@ void Segment::CopyDataFromParent()
 
 int Segment::GetnFrames() const
 {
-//Second method could always be used but is much slower
+	// Faster method when available
 	if(GetHoldsData())
-	{
 		return GetFramesArray().Size();
-	}
-	else
-	{
-		/*TODO: if GetBeginTime()==0 Find in Search Array returns -1!!
-		but, will it happen the same with the last one*/
-		if (GetBeginTime()==0)
-			return FindFrame(GetEndTime());
-		else return FindFrame(GetEndTime())-FindFrame(GetBeginTime());
-	}
+
+	/* TODO: if GetBeginTime()==0 Find in Search Array returns -1!!
+	but, will it happen the same with the last one*/
+	if (GetBeginTime()==0)
+		return FindFrame(GetEndTime());
+
+	return FindFrame(GetEndTime())-FindFrame(GetBeginTime());
 }
 
 
 const Frame& Segment::GetFrame(TIndex pos) const
 {
+	CLAM_ASSERT(GetHoldsData()||pParent,
+		"Segment::GetFrame: No available frames");
+
 	if(GetHoldsData())
-	{
 		return GetFramesArray()[pos];
-	}
-	else if(pParent!=NULL) 
-		return pParent->GetFrame(pos);
-	else throw Err("Segment::GetFrame:No available frames");
+
+	return pParent->GetFrame(pos);
+
 }
 
 Frame& Segment::GetFrame(TIndex pos)
 {
+	CLAM_ASSERT(GetHoldsData()||pParent,
+		"Segment::GetFrame:No available frames");
+
 	if(GetHoldsData())
-	{
 		return GetFramesArray()[pos];
-	}
-	else if(pParent!=NULL) 
-		return pParent->GetFrame(pos);
-	else throw Err("Segment::GetFrame:No available frames");
+
+	return pParent->GetFrame(pos);
+
 }
 
 void Segment::AddFrame(Frame& newFrame)
 {
+	CLAM_ASSERT(GetHoldsData()||pParent,
+		"Segment::AddFrame: No available frame array attribute");
+
 	if(GetHoldsData())
-	{
 		GetFramesArray().AddElem(newFrame);
-	}
-	else if(pParent!=NULL)
+	else
 		pParent->GetFramesArray().AddElem(newFrame);
-	else throw Err("Segment::AddFrame:No available frame array attribute");
+
 	SetEndTime(newFrame.GetCenterTime());
-	
+
 }
 
 void Segment::DeleteFrame(TIndex pos)
 {
-	CLAM_ASSERT(pos<=GetnFrames(),"Segment::DeleteFrame:Index out of bounds")
+	CLAM_ASSERT(pos<=GetnFrames(),"Segment::DeleteFrame: Index out of bounds")
+	CLAM_ASSERT(GetHoldsData()||pParent,
+		"Segment::DeleteFrame: No available frame array attribute");
+
 	if(GetHoldsData())
-	{
 		GetFramesArray().DeleteElem(pos);
-	}
-	else if(pParent!=NULL)
+	else
 		pParent->GetFramesArray().DeleteElem(pos);
-	else throw Err("Segment::DeleteFrame:No available frame array attribute");
+
 	if(pos==GetnFrames())//it was the last frame
 		SetEndTime(GetFrame(GetnFrames()-1).GetCenterTime());
+
 	if(pos==0)//it was first frame
 		SetBeginTime(GetFrame(0).GetCenterTime());
 
@@ -153,15 +160,15 @@ void Segment::DeleteFrame(TIndex pos)
 
 TIndex Segment::FindFrame(TTime time) const
 {
-	if(GetHoldsData())
-	{	
-		Frame tmpFrame;
-		tmpFrame.SetCenterTime(time);
-		return GetFramesSearch().Find(tmpFrame);
-	}
-	else if(pParent!=NULL) 
+	CLAM_ASSERT(GetHoldsData()||pParent,
+		"Segment::FindFrame:No available frame array attribute");
+
+	if(!GetHoldsData())
 		return pParent->FindFrame(time);
-	else throw Err("Segment::FindFrame:No available frame array attribute");
+	Frame tmpFrame;
+	tmpFrame.SetCenterTime(time);
+	return GetFramesSearch().Find(tmpFrame);
+
 }
 
 Frame& Segment::GetFrame(TTime time)
@@ -188,14 +195,14 @@ void Segment::SetHoldsData(bool holdsData)
 		AddFramesArray();
 		AddAudio();
 		UpdateData();
-		
+
 		//Initializing some atributes
 		GetFramesSearch().Set(GetFramesArray());
 		if(pParent!=NULL)
-		{ 
+		{
 			CopyDataFromParent();
+			pParent=NULL;
 		}
-		pParent=NULL;
 	}
 	else
 	{

@@ -14,10 +14,10 @@ namespace CLAM {
 		Configure(c);
 	}
 
-	bool MIDIInControl::ConcreteConfigure(const ProcessingConfig& cfg)
+	bool MIDIInControl::ConcreteConfigure(const ProcessingConfig& c)
 		throw(ErrProcessingObj)
 	{
-		bool ret = MIDIIn::ConcreteConfigure(cfg);
+		bool ret = MIDIIn::ConcreteConfigure(c);
 		if (ret==false) return false;
 
 #ifdef DEBUGGING_MIDIIO

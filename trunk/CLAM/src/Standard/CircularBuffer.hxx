@@ -98,7 +98,7 @@ namespace CLAM
 		 */
 		TSize GetBufferSize() const
 		{
-			return mBuffer.Size();
+			return mBuffer.Size()-GetReadSize();
 		}
 
 		/**
@@ -108,8 +108,8 @@ namespace CLAM
 		 */
 		void SetBufferSize(TSize size)
 		{
-			mBuffer.Resize(size);
-			mBuffer.SetSize(size);
+			mBuffer.Resize(size+GetReadSize());
+			mBuffer.SetSize(size+GetReadSize());
 			InitPointers();
 		}
 
@@ -209,6 +209,21 @@ namespace CLAM
 			IncreaseReadIndex();
 		}
 
+		
+		void NonCopyRead(Array<T>& buffer)
+		{
+			TSize limit;
+			if((limit=mReadIndex+mReadSize)>GetBufferSize())
+			{
+				//will have to use phantom zone	
+				memcpy(mBuffer.GetPtr()+GetBufferSize(),mBuffer.GetPtr(),mReadSize*sizeof(T));
+			}
+			buffer.SetPtr(mBuffer.GetPtr()+mReadIndex,mReadSize);
+			IncreaseReadIndex(mReadSize);
+
+
+		}
+		
 		/**
 		 * Reads read size number of elements starting at the 
 		 * current read index into buffer. If the read size + 
@@ -390,12 +405,8 @@ namespace CLAM
 		 */
 		T& GetPtrToElement(int absPos)
 		{
-			int index = absPos; // XXX: unnecessary copy.
-			if(index >= GetBufferSize())
-				index -= GetBufferSize();
-			if(index < 0)
-				index += GetBufferSize();
-
+			int index = absPos%GetBufferSize(); // XXX: unnecessary copy.
+			
 			return mBuffer[index];
 		}
 		
@@ -428,7 +439,9 @@ namespace CLAM
 		void SetReadSize(TSize size)
 		{
 			CLAM_ASSERT(size>=0&&size<=GetBufferSize(),"AudioCircularBuffer:SetReadSize: ReadSize has to be larger than zero");
+			TSize previousBufferSize=GetBufferSize();
 			mReadSize = size;
+			SetBufferSize(previousBufferSize);
 		}
 
 		/**

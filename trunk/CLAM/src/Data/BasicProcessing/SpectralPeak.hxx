@@ -42,6 +42,7 @@
 #include "Err.hxx"
 #include "ProcessingData.hxx"
 #include "GlobalEnums.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAM{
 
@@ -109,7 +110,7 @@ public:
 * @param inPeak: incoming peak
 * @param factor to apply in the logarithmic conversion (default 20)
 */
-inline SpectralPeak Lin(SpectralPeak &inPeak,int scalingFactor=20)
+inline SpectralPeak Lin(SpectralPeak &inPeak,int scalingFactor)
 {
 	if (inPeak.GetScale()!=EScale::eLinear){
 		TData currMag = inPeak.GetMag();
@@ -118,6 +119,17 @@ inline SpectralPeak Lin(SpectralPeak &inPeak,int scalingFactor=20)
 	}
 	return inPeak;
 }
+
+inline SpectralPeak Lin(SpectralPeak &inPeak)
+{
+	if (inPeak.GetScale()!=EScale::eLinear){
+		TData currMag = inPeak.GetMag();
+		inPeak.SetMag(log2lin(currMag));
+		inPeak.SetScale(EScale::eLinear);
+	}
+	return inPeak;
+}
+
 
 /** Function for changing the scale of a peak to log, conserving data consistency
 * @param inPeak: incoming peak

@@ -1,0 +1,199 @@
+<html>
+<head>
+	<title>Flow control examples to-do's</title>
+	<link rel="StyleSheet" href="to-do_list.css" type="text/css" media="screen">
+</head>
+<body>
+	<h1>
+		Flow control examples to-do's
+	</h1>
+	
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h2>+ Non supervised system	</h2>
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h3>milestone 1</h3>
+	<ul>
+		<li class='done'>IterationsMethods for:
+		<ol>
+			<li>OscilatorToFileOut</li>
+			<li>ModulatedFileIn</li>
+			<li>ModulatedOscillator</li>
+			<li>ModulatedFileInPlusFileIn</li>
+			<li>FileInFileOut</li>
+		</ol> 
+		</li>
+		<li class='done'>AudioOut of the resulting processed file</li>
+		<li class='done'>Generate controls, and use them</li>
+		<li class='done'>Remove duplicated class Multiplier. Dependecies following:
+		<ul>
+			<li><tt>\examples\AudioApplicationExample.cxx(28):#include "Multiplier.hxx"</tt></li>
+			<li><tt>\test\AudioPlayer.cxx(27):#include "Multiplier.hxx"</tt></li>
+			<li><tt>\test\TestAudioFileIO.cxx(25):#include "Multiplier.hxx"</tt></li>
+			<li><tt>\examples\GUIAudioApplicationExample.cxx(28):#include "Multiplier.hxx"</tt></li>
+		</ul>
+		</li>
+	</ul>
+	
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h2>+ Non supervised system with ports</h2>
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h3>milestone 2</h3>
+	<ul>
+		<li class='done'>unify ports attribute nomenclature (audioout...). Is it worth? No</li>
+		<li class='done'>make ports private. Thus use the base ports for attaching</li>
+		<ul>
+			<li class='done'>
+			Define Attach in port[in/out] base class. i.e: <tt>myProc.GetPort("audioIn").Attach( 
+			myAdudio);</tt>
+			</li>
+		</ul>
+		<li class='done'>
+		Processing / Ports / Controls small refactoring, regarding accessing 
+		ports/controls by name
+		</li>
+		<li class='done'>Dont use Do(..) with arguments. Thus make all iterations use ports</li>
+		<li class='done'>
+		Convert SystemWithProts methods (do, attach, name) to a classes deriving from: 
+		NetworkConfiguration
+		</li>
+		<li class='done'>
+			Extract <em>network definition</em> from the system. (i.e. for GUI porpouses
+			<ul>
+				<li class='done'>
+				define free function bool AreConnected( const Port&amp;, const Port&amp;) that 
+				works (only) for ports attached to single ProcessingData
+				</li>
+				<li class='done'>note: it is just a provisionaly way to do it</li>
+			</ul>
+		</li>
+	</ul>
+	
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h2>+ System with Nodes</h2>
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h3>milestone 3</h3>
+	<ul>
+		<li class='done'>Create new system class</li>
+		<li class='done'>Use nodes instead of audios</li>
+		<li class='done'>Test GetData And LeaveData whenregion_size==hop_size==buffer_size</li>
+		<li class='done'>Test Attach-Unattach ports with nodes</li>
+	</ul>
+	
+	<h3>
+		+ To-dos set aside</h3>
+	<ul>
+		<li class='todo'>
+			Ports-Nodes refactorings
+			<ul>
+				<li class='todo'>
+				encapsulate NodeParams(hop, length). It should be a port ctr, optional 
+				parameter
+				<li class='done'>
+				extract InPort/OutPort/Tmpl version in different source files
+				<li class='todo'>
+				Try to separate Ports logic regarding connection to Node or ProcessingData 
+				(subclasses, strategy?)
+				<li class='todo'>
+					<tt>NodeTmpl &lt; Data , BufferImpl &lt; Data &gt; &gt;&nbsp;</tt> Should not 
+					repeat argument
+				</li>
+				<li class='todo'>
+					<tt>NodeTmpl &lt; CLAM::Audio , BufferImpl &lt; CLAM::TData &gt; &gt;&nbsp;</tt>
+					Should not expose second template argument
+				</li>
+				<li class='todo'>
+					Avoid speciatlizations that duplicate code, such as : NodeTmpl - AudioNode, 
+					PortTmpl - AudioPort, StreamBuffer - AudioStreamBuffer
+				</li>
+				<li class='todo'>
+					AudioStreamBuffer repeats partial specialization</li>
+				<li>Revise the asserts conditions (not use FullfilsInvariant)</li>
+				<li>Test Node::GetData returns an Audio with the correct SampleRate (re-set 
+					AudioMixer asserts)</li>
+			</ul>
+		<li>
+			New features on nodes</li>
+		<ul>
+			<li>Node::Reset</li>
+			<li>Unatach individual ports (when the port is writter, should reset the whole node)</li>
+			<li>Thus, nodes should know ports</li>
+			<li>New interface to help extracting the network</li>
+		</ul>
+		<li>Design decisions to re-think</li>
+		<ul>
+			<li>Configuration of nodes (not to mandate configure after attach)</li>
+			<li>Management of synchronized regions</li>
+		</ul>
+		</li>
+	</ul>
+	
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h2>+ Simple Network and FlowControl</h2>
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h3>milestone 4</h3>
+	<ul>
+		<li class='todo'>
+			Network class with the following protocols: (clients: GUI, FlowControl and 
+			custom-Code)
+			<ol>
+			<li class='done'>Processing graph definition (used by GUI and Code clients)</li>
+			<li class='todo'>Processing graph extraction (used by GUI and FlowControl</li>
+			<li class='current'>Processing/Ports interface for polling if its ready for Do()</li>
+			<li class='done'>Plug FlowControl (by FlowControl. Who, else?)</li>
+			<li class='done'>Nodes access is needed? No</li>
+			</ol> 
+		</li>
+		<li class='done'>a System class that configure a number of different Networks and runs them</li>
+		<li class='done'>FlowControl stub customized for each network configuration</li>
+	</ul>
+	<h3> +Todos set aside</h3>
+	<ul>
+		<li class='todo'>remove nodes fake-factory-method from Network and push it to OutPorts. 
+		This requires solving some VC6 portability issue with AudioNodes (partial inst template).</li>
+		<li class='todo'>Finish Processing Ports-Controls-Interface refactoring. </li>
+		<li class='todo'>big refactoring: homogenize audio-nodes and general-template-nodes.
+		Pushing the audio-wrapper to the higher possible level.</li>
+		
+	</ul>
+	
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h2>+ Network activation/deactivation and processing factories</h2>
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h3>milestone 5</h3>
+	<ul>
+		<li class='done'>Have a Processing (or generic) factory</li>
+		<li class='todo'>Add registrator for each used processing</li>
+	</ul>
+
+<!-- ------------------------------------------------------------------------------------------------ -->	
+	<h2>+ A true FlowControl</h2>
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h3>milestone 6</h3>
+	
+<!-- ------------------------------------------------------------------------------------------------ -->
+	<h1>General milestones</h1>
+	<P>&nbsp;</P>
+	<PRE>
+	<TABLE id=Table1 borderColor=#999999 cellSpacing=1 cellPadding=2 width=800 border=1>
+	<TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 1</FONT></B>
+	</TD>
+	<TD borderColor=#999999 width=631 bgColor=#fefae7>Non-supervised processing system with AudioIn/Out + Time Domain processings
+	</TD></TR>
+	<TR><TD width=161 bgColor=#996699><PRE><B><FONT color=#ffffff>    Sub milestone</FONT></B></PRE></TD>
+	<TD borderColor=#999999 width=631 bgColor=#fefae7>First step with AudioFileIn/Out, instead (no multithreading)</TD></TR>
+	<TR><TD width=161 bgColor=#996699 height=21><B><FONT color=#ffffff>Milestone 2</FONT></B></TD>
+	<TD borderColor=#999999 width=631 bgColor=#fefae7 height=21>Only use supervised ::Do() and Ports to ProcessingDatas</TD></TR>
+	<TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 3</FONT></B></TD>
+	<TD borderColor=#999999 width=631 bgColor=#fefae7>Use Nodes that wrapps ProcessingDatas. Connections between Ports and Nodes</TD></TR>
+	<TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 4</FONT></B></TD>
+	<TD borderColor=#999999 width=631 bgColor=#fefae7>Network class that holds (owns) Processings, Nodes and connections. It comunicates with an <I>stub</I> FlowControl (implements the ::Do() )</TD></TR>
+	<TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff>Milestone 5</FONT></B></TD>
+	<TD borderColor=#999999 width=631 bgColor=#fefae7>ProcessingFactories and Network with (de)serialization: XML definition, and Network activation using the ProcessingFactory</TD></TR>
+	<TR><TD width=161 bgColor=#996699 height=39><B><FONT color=#ffffff>Milestone 6</FONT></B></TD>
+	<TD borderColor=#999999 width=631 bgColor=#fefae7 height=39>A true FlowControl that 1) sets up the Nodes during Network activation and 2) does the Do's firing scheduling.</TD></TR>
+	<TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff></FONT></B></TD>
+	<TD borderColor=#999999 width=631 bgColor=#fefae7>&nbsp;</TD></TR>
+	<TR><TD width=161 bgColor=#996699><B><FONT color=#ffffff></FONT></B></TD>
+	<TD borderColor=#999999 width=631 bgColor=#fefae7>&nbsp;</TD></TR></TABLE></PRE>
+</body>
+</html>

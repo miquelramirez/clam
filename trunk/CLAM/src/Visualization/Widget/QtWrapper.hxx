@@ -27,7 +27,7 @@
 
 class QApplication;
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 class QtAppSignaler;

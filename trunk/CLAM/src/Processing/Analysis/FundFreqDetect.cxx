@@ -53,9 +53,9 @@ namespace CLAM {
 	FundFreqDetect::~FundFreqDetect()	{}
 
   /* Configure the Processing Object according to the Config object */
-	bool FundFreqDetect::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool FundFreqDetect::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const FundFreqDetectConfig&>(c);	    
+		CopyAsConcreteConfig(mConfig, c);
 
 		mReferenceFundFreq = mConfig.GetReferenceFundFreq();
 		mLowestFundFreq    = mConfig.GetLowestFundFreq();
@@ -463,25 +463,25 @@ namespace CLAM {
    there's another parameter, peak, that contains the last peak taken   */
 int FundFreqDetect::GetClosestPeak(double freq, int peak,SpectralPeakArray& peaks) const
 {
-  int bestpeak = peak;
-  bool found = false;
-  double distance = INFINITE_MAGNITUD, nextdistance = 0;
-  int size=peaks.GetIndexArray().Size();
-  while ( (peak < size) && (!found) )
-    {
-      nextdistance = fabs(freq-peaks.GetThruIndexFreq(peak));
-      if (nextdistance >= distance)
-	{ 
-	  bestpeak = peak-1;
-	  found = true;
+	int bestpeak = peak;
+	bool found = false;
+	double distance = INFINITE_MAGNITUD, nextdistance = 0;
+	int size=peaks.GetIndexArray().Size();
+	while ( (peak < size) && (!found) )
+	{
+		nextdistance = fabs(freq-peaks.GetThruIndexFreq(peak));
+		if (nextdistance >= distance)
+		{ 
+			bestpeak = peak-1;
+			found = true;
+		}
+		else {
+			bestpeak = peak; 
+			distance=nextdistance;
+			peak++;
+		}
 	}
-      else {
-	bestpeak = peak; 
-	distance=nextdistance;
-	peak++;
-      }
-    }
-  return bestpeak;
+	return bestpeak;
 }
 
 /* Get Closest Harmonic */

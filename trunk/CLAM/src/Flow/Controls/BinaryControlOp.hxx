@@ -54,7 +54,7 @@ namespace CLAM {
 		BinaryControlOpConfig mConfig;
 		BinOp mOperation;
 
-		const char *GetClassName() const { return "BinaryControlOperation"; }
+		inline const char *GetClassName() const;
 
 		int HandleFirst( TControlData incoming_parm )
 		{
@@ -99,15 +99,9 @@ namespace CLAM {
 			Configure(cfg);
 		}
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg)
-			throw(ErrProcessingObj)
+		bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			try {
-				mConfig = dynamic_cast<const BinaryControlOpConfig&>(cfg);
-			}
-			catch (std::bad_cast) {
-				throw(ErrProcessingObj("ControlMapper::ConcreteConfigure(): Wrong argument type.",this));
-			}
+			CopyAsConcreteConfig(mConfig, c);
 			return true;
 		}
 
@@ -124,6 +118,9 @@ namespace CLAM {
 			return true ;
 		}
 	};
+
+	template < typename BinOp >
+	const char *BinaryControlOp<BinOp>::GetClassName() const { return "BinaryControlOperation"; }
 
 }
 

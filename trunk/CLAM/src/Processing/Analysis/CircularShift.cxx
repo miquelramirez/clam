@@ -23,12 +23,10 @@
 #include "CircularShift.hxx"
 #include "ErrProcessingObj.hxx"
 
-#define CLASS "CircularShift"
-
 namespace CLAM {
 
-	
-	
+
+
 	/* The  Configuration object has at least to have a name */
 
 	void CircularShiftConfig::DefaultInit()
@@ -39,19 +37,19 @@ namespace CLAM {
 		/* All Attributes are added */
 		UpdateData();
 		SetAmount(0);
-	 
+
 	}
 
 
 	/* Processing  object Method  implementations */
 
-	CircularShift::CircularShift() 
+	CircularShift::CircularShift()
 		: mAmount("Amount",this)
 	{
 		Configure(CircularShiftConfig());
 	}
 
-	CircularShift::CircularShift(const CircularShiftConfig &c) 
+	CircularShift::CircularShift(const CircularShiftConfig &c)
 		: mAmount("Amount",this)
 	{
 		Configure(c);
@@ -63,9 +61,9 @@ namespace CLAM {
 
 	/* Configure the Processing Object according to the Config object */
 
-	bool CircularShift::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool CircularShift::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const CircularShiftConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		mAmount.DoControl(TData(mConfig.GetAmount()));
 
 		return true;
@@ -74,10 +72,10 @@ namespace CLAM {
 	/* Setting Prototypes for faster processing */
 
 	bool CircularShift::SetPrototypes(Spectrum& inputs,const Spectrum& out)
-	{ 
+	{
 		return false;
 	}
-	
+
 	bool CircularShift::SetPrototypes()
 	{
 		return false;
@@ -90,9 +88,8 @@ namespace CLAM {
 
 	/* The supervised Do() function */
 
-	bool CircularShift::Do(void) 
+	bool CircularShift::Do(void)
 	{
-		
 		return false;
 	}
 
@@ -100,7 +97,7 @@ namespace CLAM {
 
 	bool CircularShift::Do(DataArray& in, DataArray& out)
 	{
-		
+
 		int i;
 		TData amount = mAmount.GetLastValue();
 		int size = in.Size();
@@ -108,8 +105,9 @@ namespace CLAM {
 		TData* outp = out.GetPtr();
 		TData* tmp;
 
-		CLAM_ASSERT(size == out.Size(),"CircularShift::Do(): input and output vectors do not  match");
-		
+		CLAM_ASSERT(size == out.Size(),
+			"CircularShift::Do(): input and output vectors do not  match");
+
 		if (amount > 0) {
 			int ia = (int)amount;
 			tmp = new TData[ia];
@@ -136,13 +134,10 @@ namespace CLAM {
 
 	bool CircularShift::Do(Spectrum& in, Spectrum& out)
 	{
-		if (in.HasMagBuffer())
-			Do(in.GetMagBuffer(),out.GetMagBuffer());
-		else if (in.HasComplexArray())
-			throw(ErrProcessingObj(CLASS"::Do(): only implemented for MagBuf"),this);
+		CLAM_ASSERT(!in.HasMagBuffer(),
+			"CircularShift::Do(): only implemented for Spectrums with MagBuffer");
 
-
-		return true;
+		return Do(in.GetMagBuffer(),out.GetMagBuffer());
 	}
 
 	bool CircularShift::Do(Audio& in, Audio& out)

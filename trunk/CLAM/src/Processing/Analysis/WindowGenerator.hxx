@@ -122,7 +122,7 @@ namespace CLAM {
 		 * bad_cast exception when the argument is not an SpecAdderConfig
 		 * object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 

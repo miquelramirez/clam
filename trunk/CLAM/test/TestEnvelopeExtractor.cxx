@@ -171,7 +171,6 @@ namespace CLAMTest {
 	bool EnvelopeExtractorTest::TestExecution()
 	{
 		Envelope envelope1,envelope2;
-		int i;
 
 		mGenerator.Output.Attach(mInputNode);
 		mpExtractor1->Input.Attach(mInputNode);
@@ -184,10 +183,10 @@ namespace CLAMTest {
 		mpGenerator2->Input.Attach(envelope2);
 
 		mpGenerator1->Output.Attach(mOutputNode1);
-		mOutput1.Input.Attach(mOutputNode1);
+		mOutput1.GetInPorts().GetByNumber(0).Attach(mOutputNode1);
 
 		mpGenerator2->Output.Attach(mOutputNode2);
-		mOutput2.Input.Attach(mOutputNode2);
+		mOutput2.GetInPorts().GetByNumber(0).Attach(mOutputNode2);
 
 		mInputNode.Configure(5*mFrameSize);
 		mOutputNode1.Configure(5*mFrameSize);
@@ -201,7 +200,7 @@ namespace CLAMTest {
 		mOutput1.Start();
 		mOutput2.Start();
 
-		for (i=0; i<mIterations; i++)
+		for (int i=0; i<mIterations; i++)
 		{
 
 			mGenerator.Do();

@@ -27,7 +27,7 @@ using CLAM::TData;
 using namespace CLAMGUI;
 
 GLWaveRenderer::GLWaveRenderer( unsigned char red, unsigned char green, unsigned char blu )
-		: GLArrayRenderer( red, green, blu ), mPixelColorSize(0), mPixelColor(0)
+		: GLArrayRenderer( red, green, blu ), mPixelColor(0), mPixelColorSize(0)
 {
 }
 

@@ -48,8 +48,7 @@ public:
 		bool ConfigureChildren();
 		bool ConfigureData(int size);
 		void AdoptChildren();
-		bool ConcreteConfigure(const ProcessingConfig &c)
-				throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig &c);
 
 		static LADSPA_Handle Instantiate
 		( const struct _LADSPA_Descriptor* Descriptor, 

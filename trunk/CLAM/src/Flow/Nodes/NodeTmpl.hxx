@@ -39,14 +39,15 @@ namespace CLAM {
 		void Configure(int max_window_size=0) { mStream.Configure(max_window_size); }
 
 		WriteStreamRegion *NewWriter (OutPort *port,
-									  unsigned int hop,
-									  unsigned int length);
+					      unsigned int hop,
+					      unsigned int length);
 	
 		ReadStreamRegion  *NewReader (InPort *port,
-									  unsigned int hop,
-									  unsigned int length,
-									  SourceStreamRegion* source = 0);
+					      unsigned int hop,
+					      unsigned int length,
+					      SourceStreamRegion* source = 0);
 
+		void RemoveInPortConnection( InPort * port , ReadStreamRegion *  reader);	
 		void GetAndActivate(WriteStreamRegion* r, Array<DATA> &a);
 		void GetAndActivate(ReadStreamRegion* r, Array<DATA> &a);
 		void GetAndActivate(DelayStreamRegion* r, Array<DATA> &a);
@@ -56,6 +57,13 @@ namespace CLAM {
 		void LeaveAndAdvance(ReadStreamRegion *r);
 		void LeaveAndAdvance(DelayStreamRegion *r);
 		void LeaveAndAdvance(InplaceStreamRegion *r);
+
+		bool CanActivateRegion(SourceStreamRegion &toActivate) {
+			return mStream.CanActivateRegion( toActivate );
+		}
+		bool CanActivateRegion(ReadStreamRegion &toActivate) {
+			return mStream.CanActivateRegion( toActivate );
+		}
 
 };
 
@@ -67,25 +75,33 @@ namespace CLAM {
 
 
 	template<class DATA, class BUFFER>
-	WriteStreamRegion *NodeTmpl<DATA,BUFFER>::NewWriter (OutPort *port,
-														 unsigned int hop,
-														 unsigned int length)
+	WriteStreamRegion *NodeTmpl<DATA,BUFFER>::NewWriter (OutPort *port, unsigned int hop,
+							     unsigned int length)
 	{
-		mpDriver = port;
+	
+		Node<DATA>::mpDriver = port;
 		return mStream.NewWriter(hop,length);
 	}
 	
 	
 	template<class DATA, class BUFFER>
-	ReadStreamRegion *NodeTmpl<DATA,BUFFER>::NewReader (InPort *port,
-														unsigned int hop,
-														unsigned int length,
-														SourceStreamRegion* source = 0)
+	ReadStreamRegion *NodeTmpl<DATA,BUFFER>::NewReader (InPort *port, unsigned int hop,
+							    unsigned int length,
+							    SourceStreamRegion* source)
 	{
-		mInputs.AddElem(port);
+		Node<DATA>::mInputs.push_back(port);
 		return mStream.NewReader(hop,length,source);
 	}
 
+	template<class DATA, class BUFFER>
+	void NodeTmpl<DATA,BUFFER>::RemoveInPortConnection(
+		InPort * port , ReadStreamRegion *  reader)
+	{
+		CLAM_ASSERT( port->GetNode() == this, "NodeTmpl::RemoveInPort() "
+			     "InPort to remove connection is not attached to the node" );
+		Node<DATA>::mInputs.remove(port);
+		mStream.RemoveReader( reader );
+	}
 
 	template<class DATA, class BUFFER>
 	void NodeTmpl<DATA,BUFFER>::GetAndActivate(WriteStreamRegion* r, Array<DATA> &a)

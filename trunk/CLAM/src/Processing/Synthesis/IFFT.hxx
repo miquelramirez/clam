@@ -23,13 +23,14 @@
 #ifndef _IFFT_
 #define _IFFT_
 
-#include<typeinfo> // for bad_cast definition
-#include"Processing.hxx"
-#include"ProcessingData.hxx"
-#include"Port.hxx"
-#include"DataTypes.hxx"
-#include"Audio.hxx"
-#include"Spectrum.hxx"
+#include <typeinfo> // for bad_cast definition
+#include "Processing.hxx"
+#include "ProcessingData.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+#include "DataTypes.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
 
 
 namespace CLAM {

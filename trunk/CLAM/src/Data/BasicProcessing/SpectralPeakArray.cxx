@@ -504,7 +504,7 @@ void SpectralPeakArray::ToLinear()
 		for (i=0; i<nPeaks; i++)
 		{
 			if(mag[i]==0.0001) mag[i]=0;
-			mag[i]= pow(TData(10),TData(mag[i]/20)); 
+			mag[i]= log2lin(mag[i]); 
 		}
 		SetScale(EScale::eLinear);
 	}
@@ -512,6 +512,68 @@ void SpectralPeakArray::ToLinear()
 
 }
 
+
+SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
+{
+	SpectralPeakArray tmp(in);
+	tmp.SetnMaxPeaks(GetnMaxPeaks()+in.GetnMaxPeaks());
+	tmp.SetnPeaks(0);
+	int origIndex=0,inIndex=0;
+	SpectralPeak currentOrigPeak,currentInPeak;
+	bool finished=false,finishedOrig=false, finishedIn=false;
+	TSize origSize,inSize;
+	origSize=GetnPeaks();
+	inSize=in.GetnPeaks();
+	while(!finished)
+	{
+		if(origIndex>=origSize-1) finishedOrig=true;
+		if(inIndex>=inSize-1) finishedIn=true;
+		//add always peak with lower freq. If both are equal, add magnitudes (and take original phase?)
+		if(finishedOrig)
+		{
+			if(!finishedIn)
+			{
+				currentInPeak=in.GetSpectralPeak(inIndex);
+				tmp.AddSpectralPeak(currentInPeak,true,inIndex*2+1);
+				inIndex++;
+			}
+			else finished=true;
+		}
+		else if(finishedIn)
+		{
+			if(!finishedOrig)
+			{
+				currentOrigPeak=GetSpectralPeak(origIndex);
+				tmp.AddSpectralPeak(currentOrigPeak,true,origIndex*2);
+				origIndex++;
+			}
+			else finished=true;
+		}
+		else
+		{
+			currentOrigPeak=GetSpectralPeak(origIndex);
+			currentInPeak=in.GetSpectralPeak(inIndex);
+			if(currentOrigPeak.GetFreq()<currentInPeak.GetFreq())
+			{
+				tmp.AddSpectralPeak(currentOrigPeak,true,origIndex*2);
+				origIndex++;
+			}
+			if(currentOrigPeak.GetFreq()>currentInPeak.GetFreq())
+			{
+				tmp.AddSpectralPeak(currentInPeak,true,inIndex*2+1);
+				inIndex++;
+			}
+			else
+			{
+				tmp.AddSpectralPeak(currentOrigPeak,true,origIndex*2);
+				origIndex++;
+				tmp.AddSpectralPeak(currentInPeak,true,inIndex*2+1);
+				inIndex++;
+			}
+		}
+	}
+	return tmp;
+}
 
 };//namespace
 

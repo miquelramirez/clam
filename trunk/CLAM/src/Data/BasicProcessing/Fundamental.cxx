@@ -37,7 +37,7 @@ namespace CLAM{
 void Fundamental::DefaultInit()
 {
 	//Initializing minimum set of attributes
-	AddnMaxCandidates();
+	AddprnMaxCandidates();
 	AddnCandidates();
 	AddCandidatesFreq();
 	AddCandidatesErr();
@@ -84,7 +84,7 @@ void Fundamental::SetErr(TIndex pos,TData err)//inefficient Set, for efficiency 
 void Fundamental::AddElem (double freq, double err)
 {
 	CLAM_DEBUG_ASSERT(HasCandidatesFreq(),"Fundamental::AddElem::Fundamental not initialized");
-	CLAM_ASSERT(GetnCandidates()<GetnMaxCandidates(),
+	CLAM_ASSERT(GetnCandidates()<GetprnMaxCandidates(),
 	           "Fundamental::AddElem::Number of Candidates exceeds maximum");
 	GetCandidatesFreq().AddElem(freq);
 	GetCandidatesErr().AddElem(err);
@@ -94,7 +94,7 @@ void Fundamental::AddElem (double freq, double err)
 void Fundamental::InsertElem (TIndex pos, double freq, double err)
 {
 	CLAM_DEBUG_ASSERT(HasCandidatesFreq(),"Fundamental::InsertElem::Fundamental not initialized");
-	CLAM_ASSERT(GetnCandidates()<GetnMaxCandidates(),
+	CLAM_ASSERT(GetnCandidates()<GetprnMaxCandidates(),
 	           "Fundamental::InsertElem::Number of Candidates exceeds maximum");
 	GetCandidatesFreq().InsertElem(pos,freq);
 	GetCandidatesErr().InsertElem(pos,err);

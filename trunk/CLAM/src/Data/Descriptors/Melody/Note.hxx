@@ -42,7 +42,7 @@ namespace CLAM {
 		*/
 		int GetNoteNumber()
 		{
-			return 69+roundInt(log(GetFundFreq()/440)*17.31234);
+			return 69+Round(log(GetFundFreq()/440)*17.31234);
 		}
 		int GetVelocity()
 		{

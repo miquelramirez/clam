@@ -27,7 +27,7 @@ namespace CLAM {
 	                                     unsigned int length,
 	                                     SourceStreamRegion *src)
 		: ReadStreamRegion(hop,length,src),
-		  SourceStreamRegion(hop,length,0)
+		  SourceStreamRegion(hop,length)
 	{}
 
 

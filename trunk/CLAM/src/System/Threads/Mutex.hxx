@@ -5,11 +5,21 @@
 #include "Lock.hxx"
 #include <errno.h>
 
+//! http://www.boost.org/libs/thread/doc/mutex_concept.html
+
 namespace CLAM
 {
 
 struct xtime;
-
+/** From the www.boost.org docs:
+ * A mutex (short for mutual-exclusion) object is used to serializes access to a resource 
+ * shared between multiple threads. The Mutex concept, with TryMutex and TimedMutex  refinements, 
+ * formalize the requirements. A model that implements Mutex and its refinements has two states: 
+ * locked and unlocked. Before using a shared resource, a thread locks a Boost.Threads mutex object 
+ * (an object whose type is a model of Mutex or one of it's refinements), insuring thread-safe  
+ * access to the shared resource. When use of the shared resource is complete, the thread unlocks 
+ * the mutex object, allowing another thread to acquire the lock and use the shared resource.
+ */
 class Mutex
 {
 public:

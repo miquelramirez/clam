@@ -153,61 +153,53 @@ public:
 /** Accessory setter . Note: for efficiency you need to work directly on the buffer
 * @param Position in the array
 * @param new value for bin width of the peak in the given position
-*/ 
-	void SetBinWidth(TIndex pos,int newBinWidth){GetBinWidthBuffer()[pos]=TData(newBinWidth);}
-	
-
-/** Additional interface !!Depracated method please use GetMaxMagPos or GetMaxMagIndex
-* @return the position of the peak array where the maximum amplitude is found
 */
-	TIndex GetMaxMagPosition(bool processOnlyIndexedPeaks=false)
-	{
-		throw Err("SpectralPeakArray::method GetMaxMagPosition has been substituted by GetMaxMagPos and GetMaxMagIndex, please update your code");
-	}
-/** Additional interface 
+	void SetBinWidth(TIndex pos,int newBinWidth){GetBinWidthBuffer()[pos]=TData(newBinWidth);}
+
+/** Additional interface
 * @return the position of the peak array where the maximum amplitude is found
 */
 	TIndex GetMaxMagPos() const;
 
-/** Additional interface 
+/** Additional interface
 * @return the position of the index array containing the index of the peak ewhere the maximum amplitude is found
 */
 	TIndex GetMaxMagIndex() const;
-	
 
-/** Accessory method offering interface for working with SpectralPeak class. 
+
+/** Accessory method offering interface for working with SpectralPeak class.
 * Note: for efficiency you need to work directly on the buffer
 * Initializes a given peak structure according to structure of array instantiating
 * the needed dynamic attributes
 * @param SpectralPeak to be initialized
-*/   
+*/
 	void InitSpectralPeak(SpectralPeak& spectralPeak) const;
-/** Accessory method offering interface for working with SpectralPeak class. 
+/** Accessory method offering interface for working with SpectralPeak class.
 * Note: for efficiency you need to work directly on the buffer
 * Checks that spectral peak prototype is consistent with spectral array structure
 * @param SpectralPeak to be checked
-*/   
+*/
 	bool IsCorrectPrototype(const SpectralPeak& spectralPeak) const;
-/** Accessory getter offering interface for working with SpectralPeak class. 
+/** Accessory getter offering interface for working with SpectralPeak class.
 * Note: for efficiency you need to work directly on the buffer
 * @return SpectralPeak in the given position
 * @param position in the array
-*/   
+*/
 	SpectralPeak GetSpectralPeak(TIndex pos) const;
-/** Accessory getter offering interface for working with SpectralPeak class. 
+/** Accessory getter offering interface for working with SpectralPeak class.
 * Note: for efficiency you need to work directly on the buffer
 * @return SpectralPeak in the position given by the value of the index in the given position
 * @param index position in the index array
-*/ 
+*/
 	SpectralPeak GetThruIndexSpectralPeak(TIndex pos) const;
-/** Accessory setter offering interface for working with SpectralPeak class. 
+/** Accessory setter offering interface for working with SpectralPeak class.
 * Note: for efficiency you need to work directly on the buffer
 * @param position in the array
 * @param SpectralPeak to set in the given position
 * @param Index value of the given SpectralPeak, set by default to -1
-*/   
+*/
 	void SetSpectralPeak(TIndex pos,const SpectralPeak& spectralPeak,TIndex index=-1);
-/** Accessory method offering interface for working with SpectralPeak class. 
+/** Accessory method offering interface for working with SpectralPeak class.
 * Note: for efficiency you need to work directly on the buffer
 * Inserts a peak (or rather the values of its attributes) at the given position
 * moving the ones in next positions
@@ -215,16 +207,16 @@ public:
 * @param SpectralPeak to set in the given position
 * @param boolean value indicating if the index array should be modified or not
 * @param Index value of the given SpectralPeak, set by default to -1
-*/   
+*/
 	void InsertSpectralPeak(TIndex pos,const SpectralPeak& spectralPeak,
 	                        bool insertIndex=false,TIndex index=-1);
-/** Accessory method offering interface for working with SpectralPeak class. 
+/** Accessory method offering interface for working with SpectralPeak class.
 * Note: for efficiency you need to work directly on the buffer
 * Adds a peak (or rather the values of its attributes) at the end of the array
 * @param SpectralPeak to add
 * @param boolean value indicating if the index array should be modified or not
 * @param Index value of the given SpectralPeak, set by default to -1
-*/   
+*/
 	void AddSpectralPeak(const SpectralPeak& spectralPeak,bool addIndex=false,TIndex index=-1);
 /** Accessory method offering interface for working with SpectralPeak class. 
 * Note: for efficiency you need to work directly on the buffer
@@ -414,6 +406,8 @@ public:
 	void TodB();
 	/** Converts dB magnitude data to linear*/
 	void ToLinear();
+	
+	SpectralPeakArray operator+(const SpectralPeakArray& in);
 
 };
 

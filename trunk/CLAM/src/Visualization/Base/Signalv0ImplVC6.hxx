@@ -26,7 +26,7 @@
 #error "This is an internal implementation header. You are not allowed to include it directly!"
 #endif
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 	class Signalv0 

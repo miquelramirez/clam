@@ -27,18 +27,13 @@
 #include "mtgsstream.h" // An alias for <sstream>
 #include <iostream>
 #include "XMLStorage.hxx"
-#include "DOMPrint.hpp"
 #include "XMLable.hxx"
 #include "Component.hxx"
+#include "XercesDomPrinter.hxx"
 
-// MRJ: See the comments in DOMPrint.hpp
-#ifndef WIN32
-#include <util/PlatformUtils.hpp>
-#include <dom/DOM.hpp>
-#else
 #include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/parsers/DOMParser.hpp>
 #include <xercesc/dom/DOM.hpp>
-#endif
 
 #include <list>
 #include <deque>
@@ -69,10 +64,15 @@ namespace CLAM
 
 	class XMLStorageImplementation {
 		public:
-			XMLStorageImplementation() {}
+			XMLStorageImplementation() {
+				mUseIndentation=false;
+			}
 			virtual ~XMLStorageImplementation() {}
 		// Write methods
 		public:
+			void UseIndentation(bool useIndentation) {
+				mUseIndentation=useIndentation;
+			}
 			/**
 			 * Starts a new Document Object Model for dumping contents on it
 			 * @param rootName The name of the root element
@@ -163,6 +163,9 @@ namespace CLAM
 
 		// Factory methods
 			static XMLStorageImplementation * NewDefaultXMLImplementation();
+		// members
+		protected:
+			bool mUseIndentation;
 	};
 
 	class XercesXMLStorageImplementation : public XMLStorageImplementation
@@ -238,7 +241,9 @@ namespace CLAM
 				mCurrentPath.push_back(rootName);
 			}
 			virtual void WriteDOM(std::ostream & os) {
-				PrintDoc(os,DOMDoc);
+				XercesDomPrinter printer;
+				printer.UseIndentation(mUseIndentation);
+				printer.Print(os,DOMDoc);
 			}
 			void AddAttribute(const char * name, const char * content) {
 				mWrittingNode.setAttribute(name, content);
@@ -561,6 +566,12 @@ XMLStorage::~XMLStorage()
 	delete mPM;
 }
 
+
+void XMLStorage::UseIndentation(bool useIndentation) 
+{
+	mPM->UseIndentation(useIndentation);
+}
+	
 //////////////////////////////////////////////////////////////////////
 // Member Functions
 //////////////////////////////////////////////////////////////////////

@@ -1,8 +1,7 @@
 #ifndef __TOKENDELAYVIEW__
 #define __TOKENDELAYVIEW__
 
-#include "GView.hxx"
-#include "ViewConfiguration.hxx"
+#include "ModelAdapter.hxx"
 #include "Component.hxx"
 #include "Enum.hxx"
 #include "InControlView.hxx"
@@ -15,10 +14,10 @@ using CLAM::Component;
 
 typedef CLAM::TokenDelay<CLAM::Spectrum> SpectralDelay;
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
-class TokenDelayView : public View
+class TokenDelayAdapter : public ModelAdapter
 {
 	typedef CBL::Functor1< unsigned >    PublishUCb;
 public:
@@ -86,12 +85,12 @@ public:
 	virtual void NotifyUpdate()
 	{
 		if ( HasServicesLocked() && HasModelLocked() )
-			{
-				mDelayCtlView.NotifyUpdate();
-			}
+		{
+			mDelayCtlView.NotifyUpdate();
+		}
 	}
 
-	virtual void Refresh();
+	virtual void Publish();
 
 	virtual void Release();
 

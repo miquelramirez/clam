@@ -26,7 +26,7 @@
 #include "CBL.hxx"
 //#include "Assert.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 	class Slotv0 : public Slot

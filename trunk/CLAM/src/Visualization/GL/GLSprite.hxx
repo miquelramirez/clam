@@ -22,8 +22,7 @@
 #ifndef _GLSPRITE_
 #define _GLSPRITE_
 
-#include <FL/gl.h>
-#include <GL/glu.h>
+#include "CLAMGL.hxx"
 #include "DataTypes.hxx"
 #include <vector>
 #include "Pixel.hxx"

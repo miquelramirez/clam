@@ -54,7 +54,7 @@ namespace CLAM
 	const PolarTmpl<T>& PolarTmpl<T>::operator -= (const PolarTmpl<T>& a)
 	{
 		T r1,i1,r2,i2,r3,i3;
-		
+
 		r1 = fabs(a.mMag) * cos(a.mAng); 
 		i1 = fabs(a.mMag) * sin(a.mAng); 
 		r2 = fabs(mMag) * cos(mAng);
@@ -106,7 +106,8 @@ namespace CLAM
 	}
 
 	template <class T>
-	inline std::istream& operator >> (std::istream & is, PolarTmpl<T> & a)
+	inline std::istream& operator >> (std::istream & is,
+			PolarTmpl<T> & a)
 	{
 		if (is.flags() & std::ios::skipws) {
 			char c = '\0';
@@ -122,31 +123,34 @@ namespace CLAM
 //			std::cerr << "A polar starting with '" << c << "'" << std::endl;
 			return is;
 		}
-		std::string content;
-		std::getline(is,content,'}');
-		std::stringstream ss(content);
 		T m;
 		T p; 
-		if ((ss >> m) && (ss >> p)) {
-				a.SetMag(m);
-				a.SetAng(p);
+		if (!(is >> m)) return is;
+		if (!(is >> p)) return is;
+		if (is.flags() & std::ios::skipws) {
+			char c = '\0';
+			do
+				is.get(c);
+			while (is && isspace(c));
+			if (is) is.putback(c);
 		}
-//		else std::cerr << "Error reading polar components" << std::endl;
+		if (!is.get(c) || c!='}') return is;
+
+		a.SetMag(m);
+		a.SetAng(p);
 		return is;
 	}
-	
-	template <class T> std::ostream& operator << (std::ostream& myStream, const PolarTmpl<T>& a)
+
+	template <class T> 
+	std::ostream& operator << (std::ostream& myStream, const PolarTmpl<T>& a)
 	{
 		return myStream 
 			<< "{"
-//			<< "{Mag="
 			<< a.Mag()
 			<< " "
-//			<< ",Phase="
 			<< a.Ang()
 			<< "}";
-
-	};
+	}
 
 } // namespace CLAM
 

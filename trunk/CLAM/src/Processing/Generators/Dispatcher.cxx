@@ -2,9 +2,9 @@
 
 using namespace CLAM;
 
-bool Dispatcher::ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast)
+bool Dispatcher::ConcreteConfigure( const ProcessingConfig& c )
 {
-	mConfig = dynamic_cast< const DispatcherConfig& >(cfg);
+	CopyAsConcreteConfig(mConfig, c);
 	int i,j,k;
 
 	mInstruments = mConfig.GetInstruments();
@@ -63,6 +63,7 @@ void Dispatcher::Dispatch(void)
 			{
 				InstrStatus status = (*it);
 				(*it).mVelocity = 0;
+//				printf("SENDING NOTE OFF TO %d\n",(*it).mId);
 				mValuesOut[ (*it).mId * mNInValues + 1]->SendControl( mVelocity );
 				return;
 			}
@@ -75,6 +76,8 @@ void Dispatcher::Dispatch(void)
 		status.mNote = int(mNote);
 		status.mVelocity = int(mVelocity);
 		mInstrStatusList.push_back(status);
+
+//		printf("SENDING NOTE ON TO %d\n",status.mId);
 
 		mValuesOut[ status.mId * mNInValues + 1 ]->SendControl( mVelocity );
 		mValuesOut[ status.mId * mNInValues ]->SendControl( mNote );

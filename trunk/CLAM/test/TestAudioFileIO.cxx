@@ -22,7 +22,7 @@
 #include "AudioFileIn.hxx"
 #include "AudioFileOut.hxx"
 #include "Oscillator.hxx"
-#include "Multiplier.hxx"
+#include "AudioMultiplier.hxx"
 #include "EnvelopeGenerator.hxx"
 #include <iostream>
 
@@ -229,7 +229,7 @@ void TestOSC(void)
 	OscillatorConfig carcfg;
 	OscillatorConfig modcfg;
 	OscillatorConfig ampmodcfg;
-	Multiplier mul;
+	AudioMultiplier mul;
 
 	bufA.SetSize(256);
 	bufB.SetSize(256);
@@ -289,7 +289,7 @@ void TestEnv(void)
 	EnvelopeGeneratorConfig envgencfg2;
 	EnvelopeConfig envcfg;
 
-	Multiplier mul;
+	AudioMultiplier mul;
 
 	envcfg.SetBPFSize(3);
 	Envelope env(envcfg),env2(envcfg);

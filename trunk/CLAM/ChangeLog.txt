@@ -1,4 +1,67 @@
-2003-02-28  CLAM_0_4_2
+2003-06-11 CLAM_0_4_3
+''
+  * Build system:
+      ** New flashing build system, fast, crossplatform and easy to use
+      ** Configuration file for each binary is shared between platforms
+      ** Automatic detection of binaries dependencies
+      ** Automatic generation of dsp's and make dependencies
+      ** See the documentation for more details
+      ** Depends on FLTK 1.1.3 instead 1.0.X
+  * Processing - All:
+      ** Concreteconfigure should  asserts false instead throwing bad_cast
+         exceptions when a wrong type of configuration is provided.
+      ** Provided  a  helper  template  function  'CopyAsConcreteConfig()' to be
+         used in ConcreteConfigure instead using slow dynamic_cast's.
+      ** Most Processing in CLAM adapted to use 'CopyAsConcreteConfig'.
+  * Processing - Generator:
+      ** Oscillator had a heavy compilation dependency since it used AudioManager
+         for initializing sample-rate. Now it doesn't (uses 44100 as default)
+  * Processing - Analysis and Synthesis:
+      ** SMSAnalysis uses a StreamBuffer with one write region and two read regions
+      ** SpectralAnalysis does not have an internal CircularBuffer anymore
+      ** SpectralSynthesis does not have OverlapAdd as an internal Processing anymore
+      ** Now SMSSynthesis has three OverlapAdd Processings for each component: global,
+         sinusoidal and residual.
+      ** OverlapAdd now uses a StreamBuffer with one WriteRegion, one AddRegion and
+         one ReadRegion.
+      ** CleanTracks is much more faster, (and then usable)
+  * Flow - Nodes:
+      ** A new AddStreamRegion has been introduced (used for overlap and add).
+      ** StreamRegions can be now used using center position logic.
+      ** StreamRegions belonging to a StreamBuffer are now automatically initialized
+         so the center time is zero and the first half of the biggest read region is
+         already written with zeros.
+  * Standard:
+      ** Added the Filename type to be used in configurations instead of
+         std::string. Configurators detect them and use a suited widget.
+      ** Flags: Flags derived classes should define the copy constructors explicitly.
+         One parameter template constructors is not enough (it never was)
+      ** Array: debugged the copy constructor when array does not own memory and
+         introduced a CopyChunk method, similar to GiveChunk but with memory copying.
+  * DynamicTypes:
+      ** Fix:  Definition  of  DynamicTypes  on  foreign  namespaces  leaded  to
+         compilation problems if you don't use the ugly 'using namespace CLAM;'.
+  * Examples - SMS (old SMSAnalysisSynthesis):
+      ** Renamed as SMS. GUI is now SMSTools.
+      ** Applies chained SMS transformations
+      ** Menu reorganization
+      ** New views: sinusoidal tracks, spectrum & peaks
+      ** Frame navigator
+      ** Fixes and performance enhancements
+  * Examples - Other:
+      ** Fix:  The Tutorial4 didn't compile (used Complex in an old fashioned
+         way).
+  * XML:
+      ** New method XMLStorage::UseIndentation to enable pretty XML formatting
+      ** Obsoleted constructor receiving the root tag as parameter
+      ** Obsoleted _restoreFrom and dumpOn, use Dump and Restore instead
+  * Visualizatiom:
+      ** Final Visualization Module design using SigSlot library. (see Documentation)
+      ** New FLTK presentations
+      ** Plots substitutes Snapshots
+      ** Configurators: New types suported: 'Filename', 'BPF'.
+
+2003-03-05  CLAM_0_4_2
 'Cuidado merge update'
 
   * General
@@ -61,7 +124,7 @@
   * SpectralDelay
       ** QT dependencies removed from the .dsp. That includes build configurations and .cxx files.
   * Tests:
-      ** New cppunit based infraestructured enabled and some tests ported
+      ** New cppunit based infraestructure enabled and some tests ported
       ** Better DynamicType tests
       ** Better (non-cppunit) XMLAdapters tests
   * Misc:
@@ -71,21 +134,29 @@
 2003-01-23 CLAM_0_4_1
 'Analysis Synthesis debuggin'
 
-  *In AnalysisSynthesisExampleBase:
-    **default HopSize is now computed from residual window size
-    **SynthHopSize has disappeared: only frameSize is used (affects also SMSAnalysisSynthesisConfig.hxx)
-    **Max number of sines of Peak Detect and SineTracking are now configured using configuration value
-  *In Audio:
-    **GetAudioChunk now allows to ask for a chunk with begin time beyond the original audio limits. It just
-      returns zeros but configures the chunk if necessary.
-  *In SMSAnalysisConfig:
-    **Buffer Size of both spectral analysis (sinusoidal and residual) is configured after the largest window
-      size (this condition is necessary for handling different window sizes in both components).
-  *In SpectralPeakDetect:
-    **Added a condition so the loop breaks whenever we have more peaks than those indicated in MaxPeaks
-      (Note: here the algorithm should be changed to decide what are the n best peaks, not the n first peaks: TODO)
-  *In SMSAnalysis:
-    **Sample rate was not correctly initialized under some conditions
+  * General:
+     ** Fix: Component::GetClassName has changed the signature to const (#0111)
+     ** GetClassName gets pure virtual on Component to reveal misredeclarations
+  * Unix build system:
+     ** Better support for external projects
+     ** $(CLAM_PATH)/ prefix needs to be added on for each filename on '.files' files
+  * Spectral Analysis:
+      ** Fix: WindowGenerator Enums symbols had illegal spaces on their inside
+  * AnalysisSynthesisExampleBase:
+     ** default HopSize is now computed from residual window size
+     ** SynthHopSize has disappeared: only frameSize is used (affects also SMSAnalysisSynthesisConfig.hxx)
+     ** Max number of sines of Peak Detect and SineTracking are now configured using configuration value
+  * Audio:
+     ** GetAudioChunk now allows to ask for a chunk with begin time beyond the original audio limits. It just
+        returns zeros but configures the chunk if necessary.
+  * SMSAnalysisConfig:
+     ** Buffer Size of both spectral analysis (sinusoidal and residual) is configured after the largest window
+        size (this condition is necessary for handling different window sizes in both components).
+  * SpectralPeakDetect:
+     ** Added a condition so the loop breaks whenever we have more peaks than those indicated in MaxPeaks
+        (Note: here the algorithm should be changed to decide what are the n best peaks, not the n first peaks: TODO)
+  * SMSAnalysis:
+     ** Sample rate was not correctly initialized under some conditions
 
 2002-12-10
 'Zero padding move'

@@ -66,11 +66,11 @@ namespace CLAM {
 		return name.str();
 	}
 
-	bool SpectrumAdder2::ConcreteConfigure(const ProcessingConfig&c) throw(std::bad_cast)
+	bool SpectrumAdder2::ConcreteConfigure(const ProcessingConfig&c)
 	{
 		// Nothing specific to configure here...
-		mConfig = dynamic_cast<const SpecAdder2Config&>(c);
-		
+		CopyAsConcreteConfig(mConfig, c);
+
 		return true;
 	}
 

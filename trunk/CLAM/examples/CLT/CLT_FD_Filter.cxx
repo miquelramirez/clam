@@ -101,9 +101,8 @@ bool CLT_FD_Filter::ConfigureData(int size)
 }
 
 bool CLT_FD_Filter::ConcreteConfigure(const ProcessingConfig &c)
-		throw(std::bad_cast)
 {
-		mConfig = dynamic_cast<const CLT_PluginConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		ConfigureChildren();
 		ConfigureData(1024);
 		return true;

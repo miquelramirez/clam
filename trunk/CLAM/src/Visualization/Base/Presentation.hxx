@@ -22,55 +22,44 @@
 #ifndef __PRESENTATION__
 #define __PRESENTATION__
 
-#include "GView.hxx"
-#include "GeometryKit.hxx"
-#include "Assert.hxx"
-
-namespace CLAMGUI
+namespace CLAMVM
 {
 
+/** \class Presentation
+ *  \brief Base class for concept representations
+ *
+ *  A Presentation presents some information, contained in the application
+ *  model objects, to the user. This "information presentation" is accomplished,
+ *  typically, through some sort of graphical metaphor.
+ */
 class Presentation
 {
-
 public:
+		
+		/** \brief Destructor
+		 *
+		 *  Class destructor
+		 */
+		virtual ~Presentation();
 
-	Presentation()
-	{
-	}
+		/** \brief 'Activates' presentation
+		 *   
+		 *  This methods makes the presentation to become visible to the user. If it
+		 *  is a widget, then this method shows the widget on the screen.
+		 */
+		virtual void Show() = 0;
 
-
-	virtual void LinkWithView( View* v )
-	{
-		mLinkedView = v;
-
-		PublishCallbacks();
-	}
-
-	View* GetLinkedView(void)
-	{
-		return mLinkedView;
-	}
-
-	virtual void PublishCallbacks()
-	{
-		CLAM_ASSERT( false, " Base presentation class PublishCallbacks() invoked. It is mandatory to overwrite this method" );
-	}
-
-	virtual ~Presentation()
-	{
-		mLinkedView->Release();
-	}
-
-protected:
-
-	virtual void Init( const Geometry& g, const char* label = 0 )
-	{
-	}
-
-	View* mLinkedView;
+		/**  \brief 'Deactivates' presentation
+		 *
+		 *   This method makes the presentation to become hidden to the user. If we
+		 *   are talking about widgets, this makes the widget to disappear from the screen.
+		 */
+		virtual void Hide() = 0;
 
 };
 
 }
+
+
 
 #endif // Presentation.hxx

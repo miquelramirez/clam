@@ -44,9 +44,9 @@ namespace CLAM {
 	}
 
 	template<int N>
-	bool AudioMixer<N>::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+	bool AudioMixer<N>::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const AudioMixerConfig&>(cfg);
+		CopyAsConcreteConfig(mConfig, c);
 
 		mFrameSize = mConfig.GetFrameSize();
 

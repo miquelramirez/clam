@@ -21,7 +21,6 @@
 
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
-#include "Port.hxx"
 #include "DataTypes.hxx"
 #include "Enum.hxx"
 #include "Array.hxx"
@@ -88,9 +87,9 @@ using namespace CLAM;
 
 	/* Configure the Processing Object according to the Config object */
 
-	bool WindowGenerator::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool WindowGenerator::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const WindowGeneratorConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		mSize.DoControl(TControlData(mConfig.GetSize()));
 
 		if (mConfig.HasUseTable())
@@ -321,7 +320,7 @@ double WindowGenerator::BesselFunction(double x) const
 	for(i=2; i<50; i++)
 	{
 		Factorial *= i;
-		Sum += pow( pow(HalfX,i) / Factorial, 2);
+		Sum += pow( pow(HalfX, (double)i) / Factorial, 2.0);
 	}
 	return Sum;
 }
@@ -346,7 +345,7 @@ void WindowGenerator::KaiserBessel(long size,DataArray& window,
 	{
 		window[i] = window[windowsize-i-1] =TData(
 		   BesselFunction(PiAlpha * sqrt(1.0 - pow((double)(i-iHalfsize) /
-		   dHalfsize, 2))) / BesselFunction(PiAlpha) );
+		   dHalfsize, 2.0))) / BesselFunction(PiAlpha) );
 	}
 
 }
@@ -418,7 +417,7 @@ void WindowGenerator::BlackmanHarrisLike(long size, DataArray& window) const
 {
 	int i;
 	TData fSum=0;
-	float a0 = .51, a1 = .42, a2 = -0.04, a3 = .03, a4=0.03, a5=0.05;
+	float a0 = .51f, a1 = .42f, a2 = -0.04f, a3 = .03f, a4=0.03f, a5=0.05f;
 	for(i=0; i<size; i++)
 		fSum += window[i] = 
 			0.47 - 0.45*cos(TData(TWO_PI/(size-1.0)*i)) - 0.01*cos(TData(TWO_PI/(size-1.0)*i*2.0)) - 0.01*cos(TData(TWO_PI/(size-1.0)*i*3.0));

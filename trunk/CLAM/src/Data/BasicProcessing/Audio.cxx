@@ -117,15 +117,23 @@ void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool c
 	           "Audio::GetAudioChunk: Incorrect index boundaries for audio chunk");
 	TSize nBytesToCopy,offset=0;
 	
+	if(beginIndex>=GetSize()){
+		TIndex size=endIndex-beginIndex;
+		if(configureChunk) chunk.SetSize(size);
+		//make sure that 0's are set in non written part of audio
+		memset(chunk.GetBuffer().GetPtr(),0,size*sizeof(TData));
+		return;
+	}
+	
+	chunk.SetBeginTime(GetTimeFromIndex(beginIndex));
+
 	if(configureChunk)
 	{
-		chunk.SetBeginTime(GetTimeFromIndex(beginIndex));
-	 	TIndex size=endIndex-beginIndex;
+		TIndex size=endIndex-beginIndex;
 		chunk.SetSize(size);
 	}
 	
-	if(beginIndex>=GetSize()) return;
-	
+		
 	CLAM_ASSERT(HasBuffer(),"Audio::GetAudioChunk: Buffer not initialized") 
 	
 	/*Whenever trying to copy samples before the beginning or after end of 
@@ -135,8 +143,16 @@ void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool c
 	{
 		offset=-beginIndex;
 		beginIndex=0;
+		//make sure that 0's are set in non written part of audio
+		memset(chunk.GetBuffer().GetPtr(),0,offset*sizeof(TData));
 	}
-	if(endIndex>=GetSize()) endIndex=GetSize();
+	if(endIndex>=GetSize())
+	{ 
+		TSize ending=endIndex-GetSize();
+		memset(chunk.GetBuffer().GetPtr()+GetSize()-beginIndex ,0,ending*sizeof(TData));
+		endIndex=GetSize();
+	}
+
 
 	nBytesToCopy=(endIndex-beginIndex)*sizeof(TData);
 	

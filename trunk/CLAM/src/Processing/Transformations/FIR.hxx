@@ -111,10 +111,10 @@ namespace CLAM
 		 * bad_cast exception when the argument is not an SpecAdderConfig
 		 * object.
 		 */
-		virtual bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+		virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		{
 			// Copy the configuration locally
-			mConfig = dynamic_cast<const FIRConfig&>(c);
+			CopyAsConcreteConfig(mConfig, c);
 			// Then use the configuration to adapt the processing inners
 			if (mConfig.HasCoeficients) {
 				const Array<TData> & convolutionKernel = mConfig.GetConvolutionKernel();

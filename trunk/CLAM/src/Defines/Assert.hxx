@@ -64,6 +64,7 @@ namespace CLAM
 #define CLAM_USE_RELEASE_ASSERTS
 #endif
 
+
 /// Macro used when an assert fails
 #if defined(CLAM_USE_RELEASE_ASSERTS)
 #define CLAM_ABORT(description) \
@@ -73,8 +74,12 @@ namespace CLAM
 #else
 #define CLAM_ABORT(description) \
 	{ \
-		CLAM::ExecuteAssertFailedHandler ( description, __FILE__, __LINE__); \
-		CLAM_BREAKPOINT; \
+		if ( !CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled ) { \
+			throw CLAM::ErrAssertionFailed( description, __FILE__, __LINE__); \
+		} else { \
+			CLAM::ExecuteAssertFailedHandler ( description, __FILE__, __LINE__); \
+			CLAM_BREAKPOINT; \
+		} \
 	}
 #endif
 
@@ -200,6 +205,12 @@ namespace CLAM
 
 class ErrAssertionFailed : public Err {
 public:
+	/** this bool is used for automatic-tesing CLAM asserts.
+	 * by default is defined to true. But can be set to false where we
+	 * want to test that a CLAM_ASSERT has occurred.
+	 */
+	static bool breakpointInCLAMAssertEnabled;
+
 	ErrAssertionFailed(const char* message, const char* filename, int linenumber);
 	virtual ~ErrAssertionFailed() throw () {}
 };

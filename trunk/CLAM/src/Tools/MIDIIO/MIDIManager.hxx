@@ -45,6 +45,7 @@ namespace CLAM{
 class MIDIManager
 {
 	friend class MIDIIn;
+	friend class MIDIClocker;
 //		friend class MIDIOut;
 	friend class MIDIDeviceList;
 private:
@@ -145,6 +146,9 @@ protected:
 	/** Register an MIDIIn object. This is done by the MIDIIn object itself
 	*/
 	bool Register(MIDIIn& in);
+
+	bool Register(MIDIClocker& cl);
+
 	/** Register an MIDIOut object. This is done by the MIDIOut object itself
 	*/
 //		bool Register(MIDIOut& out);

@@ -24,7 +24,6 @@
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
 #include "Oscillator.hxx"
-#include "Multiplier.hxx"
 #include "AudioApplication.hxx"
 #include "ThreadedBuffer.hxx"
 #include "AudioFileIn.hxx"

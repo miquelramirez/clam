@@ -33,7 +33,7 @@ using CLAM::ErrDynamicType;
 using CLAM::ErrProcessingObj;
 using CLAM::ErrOpenFile;
 using CLAM::ErrOutOfMemory;
-using CLAMGUI::ErrGUI;
+using CLAMVM::ErrGUI;
 
 namespace CLAMTest {
 

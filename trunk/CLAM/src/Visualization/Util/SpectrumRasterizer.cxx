@@ -112,7 +112,6 @@ void SpectrumRasterizer::BuildSegment(int LUTstartIdx, int segmentSize, const Pi
 	mColorLUT[LUTstartIdx + segmentSize - 1].b = colorbuff2[2];
 
 	float step = 0.0f;
-	float dx = 0.0f;
 
 	unsigned int offset = LUTstartIdx + 1;
 

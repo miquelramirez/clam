@@ -26,6 +26,9 @@
 #include <string>
 #include "mtgsstream.h" // An alias for <sstream>
 
+// remove me
+#include <iostream>
+
 namespace CLAM
 {
 
@@ -37,7 +40,7 @@ namespace CLAM
 			do
 				is.get(c);
 			while (is && isspace(c));
-			if (is)	is.putback(c);
+			if (is) is.putback(c);
 		}
 		char c = '\0';
 		is >> c;
@@ -46,22 +49,36 @@ namespace CLAM
 	//			std::cerr << "A complex starting with '" << c << "'" << std::endl;
 			return is;
 		}
-		std::string content;
-		std::getline(is,content,'}');
-		std::stringstream ss(content);
-		T x; 
-		T y; 
-		if ((ss >> x) && (ss >> y)) {
-				a.SetReal(x);
-				a.SetImag(y);
+		T x;
+		T y;
+		if (!(is >> x)) return is;
+		if (!(is >> y)) return is;
+		if (is.flags() & std::ios::skipws) {
+			char c = '\0';
+			do
+				is.get(c);
+			while (is && isspace(c));
+			if (is) is.putback(c);
 		}
+		if (!is.get(c) || c!='i') return is;
+		if (is.flags() & std::ios::skipws) {
+			char c = '\0';
+			do
+				is.get(c);
+			while (is && isspace(c));
+			if (is) is.putback(c);
+		}
+		if (!is.get(c) || c!='}') return is;
+
+		a.SetReal(x);
+		a.SetImag(y);
 		return is;
 	}
-	
+
 	template <class T>
 	inline std::ostream& operator << (std::ostream & os, const ComplexTmpl<T> & a)
 	{
-		return os 
+		return os
 			<< "{"
 			<< a.Real()
 			<< " "

@@ -23,11 +23,4 @@
 
 namespace CLAM {
 
-	bool WriteStreamRegion::FulfilsInvariant() const
-	{
-		bool ok = true;
-		ok &= SourceStreamRegion::FulfilsInvariant();
-		return ok;
-	}
-
 }

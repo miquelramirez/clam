@@ -39,8 +39,7 @@ namespace CLAM {
 	
 	void SpectralEnvelopeApplyConfig::DefaultValues()
 	{
-		SetName("SpectralEnvelopeApply");
-		
+				
 	}
 
 
@@ -62,10 +61,10 @@ namespace CLAM {
 
 	/* Configure the Processing Object according to the Config object */
 
-	bool SpectralEnvelopeApply::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool SpectralEnvelopeApply::ConcreteConfigure(const ProcessingConfig& c)
 	{
 
-		mConfig = dynamic_cast<const SpectralEnvelopeApplyConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		return true;
 	}
 
@@ -119,10 +118,8 @@ namespace CLAM {
 		for(i=0;i<nPeaks;i++)
 		{
 			ophaseBuffer[i]=iphaseBuffer[i];
-			ofreqBuffer[i]=ifreqBuffer[i];
 			omagBuffer[i]=spectralEnvelope.GetMag((TData)ifreqBuffer[i]);
-			CLAM_ASSERT(omagBuffer[i]<0,"Error");
-
+			ofreqBuffer[i]=ifreqBuffer[i];
 		}
 		
 		return true;

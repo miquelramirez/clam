@@ -20,16 +20,21 @@
  */
 
 
-#ifndef _PROCESING_OBJECT_H
-#define _PROCESING_OBJECT_H
+#ifndef _Processing_hxx_
+#define _Processing_hxx_
 
-// CLAM Processing Object prototype.
 
 #include "DynamicType.hxx"
 #include "Component.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "ErrProcessingObj.hxx"
+#include "PublishedInControls.hxx"
+#include "PublishedOutControls.hxx"
+#include "PublishedInPorts.hxx"
+#include "PublishedOutPorts.hxx"
+
+
 #include <vector>
 #include <list>
 #include <typeinfo>
@@ -38,6 +43,7 @@
 namespace CLAM {
 
 	class Processing;
+	class Port;
 	class InPort;
 	class OutPort;
 	class ProcessingComposite;
@@ -95,8 +101,8 @@ namespace CLAM {
 
 	/**
 	 * This is the base of all the CLAM processing object classes.
-	 * <p>
-	 * It holds information common to all objects: lists of ports,
+	 * 
+	 * It holds common information to all processings: lists of ports,
 	 * lists of controls, name, etc.  */
 	class Processing: public Component {
 	public:
@@ -317,6 +323,21 @@ namespace CLAM {
 		 */
 		virtual bool ConcreteStart() {return true;};
 
+
+		/**
+		 * Helper template to convert a reference to a ProcessingConfig to the concrete
+		 * ProcessingConfig specified on the first parameter.
+		 * @param concrete The copy destination (it forces the runtime type for abstract)
+		 * @param abstract A reference to the configuration to be copied
+		 * @pre The object runtime type must be exactly the type required by the first parameter
+		 */
+		template <typename ConcreteConfig>
+		void CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const {
+			CLAM_ASSERT(typeid(ConcreteConfig)==typeid(abstract), 
+				"Configuring a Processing with a configuration not being the proper type.");
+			concrete = static_cast<const ConcreteConfig &>(abstract);
+		}
+
 		/**
 		 * Processing objects have to redefine this method when stoping
 		 * them implies some internal changes. ie: releasing resources.
@@ -358,19 +379,25 @@ namespace CLAM {
 
 		/** Method to turn the object into running state.
 		 * This method must be called before any call to Do() methods.
-		 * @throw ErrProcessingObj if the processing object is already
-		 * running (or disabled).
+		 * @asserts that the processing object is ready
 		 */
-		void Start(void) throw(ErrProcessingObj);
+		void Start(void);
 
 		/** Method to put the object out of running state When in
 		 * execution mode, this method must be called before any
 		 * further call to Configure() methods
-		 * @throw ErrProcessingObj if the processing object is not
+		 * @asserts that the processing object is
 		 * runnig (or disabled).
 		 */
-		void Stop(void) throw(ErrProcessingObj);
+		void Stop(void);
+	
 
+	public:
+		bool CanDoUsingPorts()
+		{	
+			return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
+		}
+		
 
 		/**
 		 * Supervised mode execution method (using ports)
@@ -518,7 +545,7 @@ namespace CLAM {
 		 */
 		virtual void StoreOn(Storage & store)
 		{
-
+			CLAM_ASSERT(false, "Processing::StoreOn() not yet implemented");
 		}
 
 		/**
@@ -535,11 +562,46 @@ namespace CLAM {
 		 */
 		virtual void LoadFrom(Storage & store)
 		{
-
+			CLAM_ASSERT(false, "Processing::LoadFrom() not yet implemented");
 		}
+
+		//---------
+		// refactoring ports/controls in progress
+		// begin
+	public:
+		
+		PublishedInControls& GetInControls()
+		{
+			return mInControls;
+		}
+		
+		PublishedOutControls& GetOutControls()
+		{
+			return mOutControls;
+		}
+	
+		PublishedInPorts& GetInPorts()
+		{
+			return mInPorts;
+		}
+		PublishedOutPorts& GetOutPorts()
+		{
+			return mOutPorts;
+		}
+
+	private:
+		PublishedInControls mInControls;
+		PublishedOutControls mOutControls;
+		PublishedInPorts mInPorts;
+		PublishedOutPorts mOutPorts;
+
+		// end refactoring in progress
+		// ---------
+
 	};
+
 
 };//namespace CLAM
 
-#endif//_PROCESING_OBJECT_H
+#endif
 

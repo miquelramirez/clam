@@ -253,9 +253,9 @@ bool EnvelopeMorpher::ConfigureChildren()
 	return true;
 }
 
-bool EnvelopeMorpher::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool EnvelopeMorpher::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const EnvelopeMorpherConfig&>(cfg);
+	CopyAsConcreteConfig(mConfig, c);
 
 	bool res = true;
 

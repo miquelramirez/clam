@@ -70,7 +70,7 @@ class Tremolo: public Processing {
 	TData mTremoloAmplitude;
 	const char* GetClassName() const {return "Tremolo";}
 	bool ConcreteStart();
-	bool ConcreteConfigure(const ProcessingConfig &cfg) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig &c);
 public:
 	Tremolo(const TremoloConfig& cfg=TremoloConfig());
 	const ProcessingConfig &GetConfig() const {return mConfig;}
@@ -89,9 +89,9 @@ bool Tremolo::ConcreteStart()
 	return true;
 }
 
-bool Tremolo::ConcreteConfigure(const ProcessingConfig &cfg) throw(std::bad_cast)
+bool Tremolo::ConcreteConfigure(const ProcessingConfig &c)
 {
-	mConfig = dynamic_cast<const TremoloConfig&>(cfg);
+	CopyAsConcreteConfig(mConfig,c);
 	mMidAmplitude = (1.0+mConfig.GetMaxAtenuation())/2.0;
 	mTremoloAmplitude = (1.0-mMidAmplitude)*0.99;
 	mPhaseDelta = 0.0;

@@ -54,9 +54,9 @@ void Rappid::Reconfigure()
 	Configure(cfg);
 }
 
-bool Rappid::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool Rappid::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const RappidConfig&>(cfg);
+	CopyAsConcreteConfig(mConfig, c);
 
 	mConfig.Synchronise();
 

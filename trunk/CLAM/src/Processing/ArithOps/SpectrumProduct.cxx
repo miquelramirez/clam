@@ -64,11 +64,11 @@ namespace CLAM {
 		return name.str();
 	}
 
-	bool SpectrumProduct::ConcreteConfigure(const ProcessingConfig&c) throw(std::bad_cast)
+	bool SpectrumProduct::ConcreteConfigure(const ProcessingConfig&c)
 	{
 		// Nothing specific to configure here...
-		mConfig = dynamic_cast<const SpecProductConfig&>(c);
-		
+		CopyAsConcreteConfig(mConfig, c);
+
 		return true;
 	}
 

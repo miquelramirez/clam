@@ -21,9 +21,9 @@ namespace SALTO
 	{
 	}
 
-	bool AttackHandler::ConcreteConfigure( const ProcessingConfig &cfg ) throw ( std::bad_cast )
+	bool AttackHandler::ConcreteConfigure( const ProcessingConfig &c )
 	{
-		mConfig = dynamic_cast< const StationaryHandlerConfig& >( cfg );
+		CopyAsConcreteConfig(mConfig, c);
 
 		return true;
 	}

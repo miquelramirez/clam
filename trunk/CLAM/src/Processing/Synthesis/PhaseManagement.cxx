@@ -30,13 +30,15 @@ void PhaseManagementConfig::DefaultValues()
 	SetType(EPhaseGeneration::eContinuation);
 }
 
-PhaseManagement::PhaseManagement()
+PhaseManagement::PhaseManagement():
+	mCurrentTime("CurrentTime",this),mCurrentPitch("CurrentPitch",this)
 {
 	Configure(PhaseManagementConfig());
 	Init();
 }
 
-PhaseManagement::PhaseManagement(PhaseManagementConfig& c)
+PhaseManagement::PhaseManagement(PhaseManagementConfig& c):
+	mCurrentTime("CurrentTime",this),mCurrentPitch("CurrentPitch",this)
 {
 	Configure(c);
 	Init();
@@ -44,7 +46,7 @@ PhaseManagement::PhaseManagement(PhaseManagementConfig& c)
 
 bool PhaseManagement::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig=dynamic_cast<const PhaseManagementConfig&> (c);
+	CopyAsConcreteConfig(mConfig, c);
 	return true;
 }
 
@@ -80,28 +82,35 @@ PhaseManagement::~PhaseManagement()
 
 }
 
-
-bool PhaseManagement::Do(Frame& currentFrame)
+bool PhaseManagement::Do(SpectralPeakArray& in)
 {
 	switch(mConfig.GetType())
 	{
 		case (EPhaseGeneration::eAlign):
 		{
-			DoPhaseAlignment(currentFrame.GetSpectralPeakArray(),currentFrame.GetCenterTime(),currentFrame.GetFundamental().GetFreq(0));
+			DoPhaseAlignment(in);
 			break;
 		}
 		case (EPhaseGeneration::eContinuation):
 		{
-			DoPhaseContinuation(currentFrame.GetSpectralPeakArray(),currentFrame.GetCenterTime());
+			DoPhaseContinuation(in);
 			break;
 		}
 		case (EPhaseGeneration::eRandom):
 		{
-			DoRandomPhases(currentFrame.GetSpectralPeakArray());
+			DoRandomPhases(in);
 			break;
 		}
 	}
 	return true;
+}
+
+bool PhaseManagement::Do(Frame& currentFrame)
+{
+	mCurrentTime.DoControl(currentFrame.GetCenterTime());
+	mCurrentPitch.DoControl(currentFrame.GetFundamental().GetFreq(0));
+	
+	return Do(currentFrame.GetSpectralPeakArray());
 }
 
 //----------------------------------------------------------------------------//
@@ -116,24 +125,25 @@ PhaseManagement::ResetPhaseAlignment()
 //----------------------------------------------------------------------------//
 
 void
-PhaseManagement::DoPhaseAlignment(SpectralPeakArray& peakArray, double currentTime, double fundFreq)
+PhaseManagement::DoPhaseAlignment(SpectralPeakArray& peakArray)
 {
 
 	TIndex numPeaks	= peakArray.GetnPeaks();
 	double					phase,freq;
   
+	TData t=mCurrentTime.GetLastValue();
 	//phaseAlignment 
-	if (fundFreq>0)	// use phase align only when fundfreq is existing 
+	if (mCurrentPitch.GetLastValue()>0)	// use phase align only when mCurrentPitch.GetLastValue() is existing 
 	{
-		double newPeriodDuration = 1/fundFreq;
+		double newPeriodDuration = 1/mCurrentPitch.GetLastValue();
 		
-		if ((mLastPeriodTime!=0.0) && (mLastPeriodTime<currentTime))
+		if ((mLastPeriodTime!=0.0) && (mLastPeriodTime<mCurrentTime.GetLastValue()))
 		{
 			double lastPeriodDuration = mNextPeriodTime - mLastPeriodTime;
 			mNextPeriodTime = mLastPeriodTime + newPeriodDuration;
 			double averagePeriodDuration = 0.5*lastPeriodDuration + 0.5*newPeriodDuration;
 
-			double timeDiff = currentTime-mLastPeriodTime;
+			double timeDiff = t-mLastPeriodTime;
 
 			TIndex nPeriodsElapsed = (TIndex)floor(timeDiff/averagePeriodDuration);    		
 		
@@ -163,8 +173,8 @@ PhaseManagement::DoPhaseAlignment(SpectralPeakArray& peakArray, double currentTi
 		}
 		else
 		{
-			mLastPeriodTime = currentTime;
-			mNextPeriodTime = currentTime + newPeriodDuration;
+			mLastPeriodTime = t;
+			mNextPeriodTime = t + newPeriodDuration;
 		}
 	}			 
  	else
@@ -235,9 +245,10 @@ void PhaseManagement::DoRandomPhases(SpectralPeakArray& peakArray)
 }
 
 
-void PhaseManagement::DoPhaseContinuation(SpectralPeakArray& p,TData t)
+void PhaseManagement::DoPhaseContinuation(SpectralPeakArray& p)
 {
 	int i;
+	TData t=mCurrentTime.GetLastValue();
 	for(i=0;i<p.GetnPeaks();i++)
 	{
 		TIndex currentIndex=p.GetIndex(i);

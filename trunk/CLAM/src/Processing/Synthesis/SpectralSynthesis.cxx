@@ -58,9 +58,9 @@ void SpectralSynthesisConfig::DefaultValues()
 	GetSynthWindowGenerator().SetType(EWindowType::eTriangular);
 	GetSynthWindowGenerator().SetNormalize(EWindowNormalize::eNone);
 	GetSynthWindowGenerator().SetSize(GetHopSize()*2+1);
+
+	SetResidual(false);
 	
-	/* Default frame size is 256*/
-	SetFrameSize(256);
 
 }
 
@@ -115,24 +115,13 @@ int SpectralSynthesisConfig::GetZeroPadding() const
 void SpectralSynthesisConfig::SetHopSize(TSize h)
 {
 	GetSynthWindowGenerator().SetSize(2*h+1);
-	GetOverlapAdd().SetHopSize(h);
-	GetOverlapAdd().SetBufferSize(GetFrameSize()+h);
-}
-
-void SpectralSynthesisConfig::SetFrameSize(TSize f)
-{
-	GetOverlapAdd().SetFrameSize(f);
-	GetOverlapAdd().SetBufferSize(f+GetHopSize());
-}
-
-TSize SpectralSynthesisConfig::GetFrameSize()
-{
-	return GetOverlapAdd().GetFrameSize();
+	//GetOverlapAdd().SetHopSize(h);
+	//GetOverlapAdd().SetBufferSize(GetFrameSize()+h);
 }
 
 TSize SpectralSynthesisConfig::GetHopSize() const
 {
-	return GetOverlapAdd().GetHopSize();
+	return (GetSynthWindowGenerator().GetSize()-1)>>1;
 }
 
 void SpectralSynthesisConfig::SetSamplingRate(TData sr)
@@ -172,17 +161,18 @@ void SpectralSynthesis::AttachChildren()
 	mPO_AudioProduct.SetParent(this);
 	mPO_CircularShift.SetParent(this);
 	mPO_IFFT.SetParent(this);
-	mPO_OverlapAdd.SetParent(this);
-
+	
 }
 
-SpectralSynthesis::SpectralSynthesis() 
+SpectralSynthesis::SpectralSynthesis():mInput("Input",this,1),
+		mOutput("Output",this,1)
 {
 	Configure(SpectralSynthesisConfig());
 	AttachChildren();
 }
 
-SpectralSynthesis::SpectralSynthesis(const SpectralSynthesisConfig& cfg)
+SpectralSynthesis::SpectralSynthesis(const SpectralSynthesisConfig& cfg):mInput("Input",this,1),
+		mOutput("Output",this,1)
 {
 	Configure(cfg);
 	AttachChildren();
@@ -191,6 +181,12 @@ SpectralSynthesis::SpectralSynthesis(const SpectralSynthesisConfig& cfg)
 SpectralSynthesis::~SpectralSynthesis()
 {
 	
+}
+
+void SpectralSynthesis::Attach(Spectrum& in, Audio &out)
+{
+	mInput.Attach(in);
+	mOutput.Attach(out);
 }
 
 bool SpectralSynthesis::ConfigureChildren()
@@ -208,9 +204,6 @@ bool SpectralSynthesis::ConfigureChildren()
 	if(!mPO_CircularShift.Configure(mConfig.GetCircularShift()))
 		return false;		
 
-	//Overlap and add PO
-	if(!mPO_OverlapAdd.Configure(mConfig.GetOverlapAdd()))
-		return false;
 
 	//instantiate IFFT
 	IFFTConfig IFFTCFG;
@@ -234,8 +227,6 @@ void SpectralSynthesis::ConfigureData()
 	mAudio1.SetSize(mConfig.GetAnalWindowSize()-1);//audio without zeropadding
 	
 	mAudio2.SetSize(mConfig.GetHopSize()*2);//audio used as input of the inverse + triangular windowing 
-	
-	mAudio3.SetSize(mConfig.GetHopSize()*2);//audio used as input of the overlap and add
 	
 	mSynthWindow.SetSize(mConfig.GetHopSize()*2+1);
 
@@ -274,9 +265,9 @@ void SpectralSynthesis::ConfigureData()
 }
 
 
-bool SpectralSynthesis::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool SpectralSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const SpectralSynthesisConfig&>(c);
+	CopyAsConcreteConfig(mConfig, c);
 
 	//CONFIGURE CHILDREN AND DATA
 	ConfigureChildren();
@@ -287,7 +278,7 @@ bool SpectralSynthesis::ConcreteConfigure(const ProcessingConfig& c) throw(std::
 
 bool SpectralSynthesis::Do(void)
 {
-	return false;
+	return Do(mInput.GetData(),mOutput.GetData());
 }
 
 
@@ -312,25 +303,23 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 	int centerSample=mAudio1.GetSize()/2;
 	mAudio1.GetAudioChunk(centerSample-mConfig.GetHopSize(),centerSample+mConfig.GetHopSize()-1,mAudio2,false);
 //Aplying inverse window
-	mPO_AudioProduct.Do(mAudio2, mSynthWindow,mAudio3);
-//Finally the overlap and add is accomplished
-	mPO_OverlapAdd.Do(mAudio3, out);
+	mPO_AudioProduct.Do(mAudio2, mSynthWindow,out);
 	
 	return true;
 }
 
 
-bool SpectralSynthesis::Do(Frame& in,bool residual)//this bool could be set in configuration
+bool SpectralSynthesis::Do(Frame& in)
 {
-	if(!residual)
+	if(mConfig.GetResidual())
 		return Do(in.GetSpectrum(),in.GetAudioFrame());
 	else
 		return Do(in.GetResidualSpec(),in.GetResidualAudioFrame());
 }
 
-bool SpectralSynthesis::Do(Segment& in,bool residual)
+bool SpectralSynthesis::Do(Segment& in)
 {
-	return Do(in.GetFrame(in.mCurrentFrameIndex++),residual);
+	return Do(in.GetFrame(in.mCurrentFrameIndex++));
 }
 
 TInt32 SpectralSynthesis::CalculatePowerOfTwo(TInt32 size)

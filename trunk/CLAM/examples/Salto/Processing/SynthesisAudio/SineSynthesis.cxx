@@ -66,9 +66,9 @@ bool SineSynthesis::ConcreteStop()
 	return true;
 }
 
-bool SineSynthesis::ConcreteConfigure( const ProcessingConfig& cfg ) throw ( std::bad_cast )
+bool SineSynthesis::ConcreteConfigure( const ProcessingConfig& c )
 {
-	mConfig = dynamic_cast< const SineSynthesisConfig& > ( cfg );
+	CopyAsConcreteConfig(mConfig, c);
 
 	CLAM_ASSERT( mConfig.HasFrameTime(), "Configuration Object hasn't FrameTime Attribute instantiated" );
 
@@ -146,9 +146,9 @@ bool SineSynthesis::Do( CSaltoSynthFrame& synthFrame )
 {
 	if (mPhaseAlignmentEnabled && !mSwitchToRandomPhases)
 	{
-		mPhaseManagerPO.DoPhaseAlignment( *synthFrame.GetPeakArrayPtr(),
-                                  		  synthFrame.GetSynthTime(),
-                                  		  synthFrame.GetFundFreq());
+		mPhaseManagerPO.mCurrentPitch.DoControl(synthFrame.GetFundFreq());
+		mPhaseManagerPO.mCurrentTime.DoControl(synthFrame.GetSynthTime());
+		mPhaseManagerPO.DoPhaseAlignment( *synthFrame.GetPeakArrayPtr());
     
 		if( mLastAlignedFrame )
 		{	
@@ -198,10 +198,10 @@ void SineSynthesis::DoSineSynthesis( CSaltoSynthFrame &synthFrame, Parameters* m
 
 	if (mpParameter->GetUsePhaseAlignment() && !mSwitchToRandomPhases)
 	{
-		mPhaseManagerPO.DoPhaseAlignment( *synthFrame.GetPeakArrayPtr(),
-                                  		  synthFrame.GetSynthTime(),
-                                  		  synthFrame.GetFundFreq());
-    
+		mPhaseManagerPO.mCurrentPitch.DoControl(synthFrame.GetFundFreq());
+		mPhaseManagerPO.mCurrentTime.DoControl(synthFrame.GetSynthTime());
+		mPhaseManagerPO.DoPhaseAlignment( *synthFrame.GetPeakArrayPtr());
+        
 		if(mpParameter->GetLastAlignedFrame())
 		{	
 			// if this is the last aligned frame, fill the 

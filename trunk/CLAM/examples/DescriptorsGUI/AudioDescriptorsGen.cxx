@@ -38,9 +38,9 @@ namespace CLAM {
 
   /* Configure the Processing Object according to the Config object */
 
-	bool AudioDescriptorsGen::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool AudioDescriptorsGen::ConcreteConfigure(const ProcessingConfig& c)
 	{
-	    mConfig = dynamic_cast<const AudioDescriptorsGenConfig&>(c);	    
+		CopyAsConcreteConfig(mConfig, c);
 	    return true;
 	}
 

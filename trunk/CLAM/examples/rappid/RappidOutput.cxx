@@ -77,11 +77,11 @@ bool RappidOutput::ConfigureChildren()
 	return res;
 }
 
-bool RappidOutput::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool RappidOutput::ConcreteConfigure(const ProcessingConfig& c)
 {
 	bool res;
 
-	BaseConfigure(cfg);
+	BaseConfigure(c);
 
 	CLAM_ASSERT(Type() != ERappidIOType::eWaveform,
 				"RappidOutput::Configure(): Waveform type not implemented");

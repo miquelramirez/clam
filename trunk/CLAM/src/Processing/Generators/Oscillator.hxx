@@ -26,6 +26,7 @@
 #include "ProcessingData.hxx"
 #include "OSDefines.hxx"
 #include "Audio.hxx"
+#include "OutPortTmpl.hxx"
 #include "InControl.hxx"
 #include "Enum.hxx"
 #include <string>
@@ -90,7 +91,10 @@ protected:
 	
 class Oscillator: public Processing
 {
+
 private:
+	OutPortTmpl<Audio> mOutput;
+
 	OscillatorConfig mConfig;
 	TData mModIndex;
 	TData mAmp;
@@ -110,7 +114,7 @@ private:
 	bool           mModIdxUpdated;
 	bool           mAmpUpdated;
 
-protected:
+protected:	
 
 	inline void ApplyControls()
 	{
@@ -156,10 +160,11 @@ public:
 	
 	inline const ProcessingConfig &GetConfig() const { return mConfig;}
 	
-	bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig& c);
 	
 	// Unsupervised mode Do
-	bool Do(void) { return true; }
+	// now it works only for an audio output and no inputs
+	bool Do(void); //{ return true; }
 
 	// "Generative Do"
 	bool Do(Audio& out);

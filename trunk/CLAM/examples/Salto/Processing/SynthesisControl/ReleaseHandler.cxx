@@ -71,9 +71,9 @@ namespace SALTO
 	ReleaseHandler::~ReleaseHandler()
 	{}
 
-	bool ReleaseHandler::ConcreteConfigure( const ProcessingConfig &cfg ) throw( std::bad_cast )
+	bool ReleaseHandler::ConcreteConfigure( const ProcessingConfig &c )
 	{
-		mConfig = dynamic_cast< const ReleaseHandlerConfig& >( cfg );
+		CopyAsConcreteConfig(mConfig, c);
 
 		return true;
 	}

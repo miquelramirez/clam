@@ -127,7 +127,7 @@ int SoundFileIO::Read(short *data,int size)
 	if (mHeader.mSampleWidth !=16)
 		throw ErrSoundFileIO("Samplewidth doesn't match");
 		
-	int n = fread(data,2,size,mFile);
+	int n = int( fread(data,2,size,mFile) );
 	mPos += n;
 	if (n!=size) throw ErrSoundFileIO("Could not read requested size");
 
@@ -153,13 +153,13 @@ int SoundFileIO::Write(const short *data,int size)
 				tmp[i]=data[i]; 
 				Swap(tmp[i]);
 			}
-			m = fwrite(tmp,2,m,mFile);
+			m = int( fwrite(tmp,2,m,mFile) );
 			if (m<-1) 
 				throw ErrSoundFileIO("Could not write requested size");
 			n += m;
 		}
 	}else{
-		n = fwrite(data,2,size,mFile);
+		n = int( fwrite(data,2,size,mFile) );
 	}
 	mPos += n;
 	if (mPos>mSize) mSize = mPos;
@@ -169,7 +169,7 @@ int SoundFileIO::Write(const short *data,int size)
 
 int SoundFileIO::Read(int *data,int size)
 {
-	int n = fread(data,mHeader.mBytesPerSample,size,mFile);
+	int n = int( fread(data,mHeader.mBytesPerSample,size,mFile) );
 	mPos += n;
 	if (n!=size) throw ErrSoundFileIO("Could not read requested size");
 

@@ -23,7 +23,9 @@
 #define _SOFT_SWITCH_HXX
 
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+
 #include "Audio.hxx"
 #include "Enum.hxx"
 
@@ -120,13 +122,15 @@ namespace CLAM
 
 		void CheckControl();
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig& c);
 
 		bool ConcreteStart();
 
 	public:
 
 		SoftSwitch(const SoftSwitchConfig& c = SoftSwitchConfig());
+
+		const char* GetClassName() const {return "SoftSwitch";}
 
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 

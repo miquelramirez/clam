@@ -61,7 +61,7 @@ namespace CLAMTest {
 		class Leaf1 : public Processing {
 			LeafConfig mConfig;
 		protected:
-			bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+			bool ConcreteConfigure(const ProcessingConfig&);
 		public:
 			Leaf1();
 			Leaf1(LeafConfig&);
@@ -74,7 +74,7 @@ namespace CLAMTest {
 		class Leaf2 : public Processing {
 			LeafConfig mConfig;
 		protected:
-			bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+			bool ConcreteConfigure(const ProcessingConfig&);
 		public:
 			Leaf2();
 			Leaf2(LeafConfig&);
@@ -94,7 +94,7 @@ namespace CLAMTest {
 			Processing* CreateNewLeafChild();
 			ProcessingComposite *CreateNewCompositeChild();
 		protected:
-			bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+			bool ConcreteConfigure(const ProcessingConfig&);
 		public:
 			Composite(CompositeConfig&);
 			const char * GetClassName() const {return "CLAMTest_Composite";}
@@ -162,9 +162,9 @@ namespace CLAMTest {
 		Configure(cfg);
 	}
 	bool POCompositeTest::Leaf1::
-	ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const LeafConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		return true;
 	}
 	POCompositeTest::Leaf2::Leaf2()
@@ -176,15 +176,15 @@ namespace CLAMTest {
 		Configure(cfg);
 	}
 	bool POCompositeTest::Leaf2::
-	ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const LeafConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		return true;
 	}
 	bool POCompositeTest::Composite::
-	ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const CompositeConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		Processing *child;
 		int e = mConfig.GetNElements();
 

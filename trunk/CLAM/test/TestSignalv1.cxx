@@ -1,13 +1,8 @@
-#include "Signalv1.hxx"
-#include "Slot.hxx"
 #include "TestSignalv1Classes.hxx"
 #include <iostream>
 
 namespace CLAMTest
 {
-	using CLAMGUI::Signalv1;
-	using CLAMGUI::Slot;
-
 
 	void Check( SlottedBase& s )
 	{

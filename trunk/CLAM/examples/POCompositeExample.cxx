@@ -73,7 +73,7 @@ class BigProcessing : public ProcessingComposite {
 	const char *GetClassName() const {return "BigProcessing";}
 
 	/** Configuration method */
-	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 public:
 	BigProcessing(BigConfiguration&);
@@ -153,9 +153,9 @@ void BigProcessing::ConfigureData(int audio_size)
 }
 
 
-bool BigProcessing::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool BigProcessing::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const BigConfiguration&>(c);
+	CopyAsConcreteConfig(mConfig, c);
 
 	int size=0;
 	if (mConfig.HasAudioSize())

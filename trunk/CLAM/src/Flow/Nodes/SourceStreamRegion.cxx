@@ -46,9 +46,8 @@ namespace CLAM {
 	}
 
 	SourceStreamRegion::SourceStreamRegion(unsigned int hop,
-	                                       unsigned int length,
-	                                       unsigned int offset)
-		: StreamRegion(hop,length,offset)
+	                                       unsigned int length)
+		: StreamRegion(hop,length)
 	{}
 
 	bool SourceStreamRegion::IsSourceOf(const ReadStreamRegion* reader) const
@@ -66,18 +65,87 @@ namespace CLAM {
 					"SourceStreamRegion::AddReader(): reader already added");
 		mReaders.push_back(reader);
 	}
+	void SourceStreamRegion::RemoveReader(ReadStreamRegion * reader)
+	{
+		CLAM_ASSERT(IsSourceOf(reader),  "SourceStreamRegion::RemoveReader(): "
+			    "this region is not source of the reader region to remove");
+		mReaders.remove(reader);
+	}
 
 
 	bool SourceStreamRegion::FulfilsInvariant() const
 	{
-		reader_const_iterator rit;
-		for (rit=readers_begin();
-			 rit != readers_end();
-			 rit++)
-			if (!Preceeds(*rit))
+		return AllReadersPreceedsThisWithNoOverlap();
+	}
+
+	bool SourceStreamRegion::AllReadersPreceedsThisWithNoOverlap() const
+	{
+		reader_const_iterator actualReadingRegion;
+		for (actualReadingRegion=readers_begin();
+			 actualReadingRegion != readers_end();
+			 actualReadingRegion++)
+			if ( !(*actualReadingRegion)->PreceedsWithNoOverlap(this) )
 				return false;
 
 		return true;
 	}
 
-}
+	bool SourceStreamRegion::CanActivate() const
+	{
+		CLAM_DEBUG_ASSERT( AllReadersPreceedsThisWithNoOverlap(), 
+			"In CanActivate() found a reader that don't preceeds this writer." );
+		
+		return true;
+	}
+
+	void SourceStreamRegion::InitReaders(unsigned int offset) 
+	{
+		reader_iterator it;
+		for (it=readers_begin(); it!=readers_end(); it++)
+			(*it)->Init(offset);
+	}
+	
+	void SourceStreamRegion::Init(unsigned int offset)
+	{
+		unsigned int realOffset = Chop( FindLargestReadRegionLength()*0.5f ) + offset;
+		unsigned int hopsInHalfWindow = realOffset / mHop;
+
+		for(unsigned int i=0; i<hopsInHalfWindow; i++)
+		{
+			Activate();
+			//Would have to make sure that zeros are here
+			LeaveAndAdvance();
+		}
+		mOffset= realOffset;
+		InitReaders(realOffset);
+	}
+
+	unsigned int SourceStreamRegion::FindLargestReadRegionLength()
+	{
+		unsigned int len=0;
+
+		reader_const_iterator rit;
+
+		for (rit=readers_begin();  rit != readers_end();  rit++)
+				if ((*rit)->Len() >len)
+						len=(*rit)->Len();
+		
+		return len;
+	}
+	
+	const ReadStreamRegion& SourceStreamRegion::GetLastReading() const
+	{
+		CLAM_DEBUG_ASSERT( HasReaders(), "GetLastReading(): Source region doesn't have its correspondant reading region" );
+
+		reader_const_iterator it;
+		const ReadStreamRegion* actual = *readers_begin();
+
+		for( it=readers_begin();  it != readers_end();  it++ )
+				if ( (*it)->Pos() < actual->Pos() )
+						actual = *it;
+		
+		return *actual;
+	}
+
+
+} // namespace

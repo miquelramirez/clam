@@ -28,7 +28,6 @@
 #include "ArrayToBPFCnv.hxx"
 #include "ComplexToPolarCnv.hxx"
 #include "DataTypes.hxx"
-#include "Flags.hxx"
 #include "OSDefines.hxx"
 #include "Err.hxx"
 #include "Enum.hxx"

@@ -1,0 +1,71 @@
+<!-- This is a transformation score for the SMS Analysis Synthesis Application that comes with the CLAM framework (http://www.iua.upf.es/mtg/clam. You may find an explanation of the AnalysisSynthesis scheme and most of these transformations in chapter 10 of Udo Zoelzer's (ed.) DAFX. Digital Audio Effects (Wiley 2002). Of course you can also access the source code of the
+example and the comments therein.
+This configuration file is basically a composition of concrete configurations that affect specific transformations. You may change the
+order, activate/deactivate or configure any of them. The way the configuration affects a concrete transformation may vary, you should
+read the comments before each transformation for learning the particularities of every transformation.
+All transformations share some common fields. First they need to define the kind of concrete transformation in the ConcreteClassName attribute. Then you need to specify the values for the transformation. This can usually be done in two different ways: using a single-value Amount attribute or a breakpoint function BPFAmount attribute in which you declare a function as a set of points and an interpolation type (note: this function may represent a time envelope or a spectral envelope depending on the transformation).
+In any transformation chain there need to be two special transformations called SMSTransformationChainIO as first and last transformation to the chain. These transformations act as input and output, are mandatory but do not affect the result.
+After each particular transformation there is an 'OnArray' where you have the same number of 1's or 0's as transformations in the Chain. 1 means active and 0 means bypassed (SMSTransformationChainIO's are not affected by this).-->
+<SMSTransformationChainConfig>
+	<Configurations>
+		<!-- Input to the transformation chain -->
+		<Config>
+			<ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
+		</Config>
+		<!-- Pitch shift with timbre preservation. You can define a single-value amount or a time envelope. 1 means no change and 0.5 means multiplying current pitch by 0.5-->
+		<Config>
+			<ConcreteClassName>SMSPitchShift</ConcreteClassName>
+			<BPFAmount>
+				<Interpolation>Linear</Interpolation>
+				<Points>{0 1.5} {1 1.5}</Points>
+			</BPFAmount>
+		</Config>
+		<!-- Gender change. If amount is 0 it means from male to female. If it is 1 it means from female to male. -->
+		<Config>
+			<ConcreteClassName>SMSGenderChange</ConcreteClassName>
+			<Amount>0</Amount>
+		</Config>
+		<!-- Pitch discretization to temparate scale. If active it rounds the pitch to nearest note according to temperate musical scale.-->
+		<Config>
+			<ConcreteClassName>SMSPitchDiscretization</ConcreteClassName>
+		</Config>
+		<Config>
+			<ConcreteClassName>SMSOddEvenHarmonicRatio</ConcreteClassName>
+			<Amount>12</Amount>
+		</Config>
+		<Config>
+			<ConcreteClassName>SMSFreqShift</ConcreteClassName>
+			<Amount>100</Amount>
+		</Config>
+		<Config>
+			<ConcreteClassName>SMSSineFilter</ConcreteClassName>
+			<BPFAmount>
+				<Interpolation>Step</Interpolation>
+				<Points>{0 6} {1 0} {2 0} {100 0} </Points>
+			</BPFAmount>
+		</Config>
+		<Config>
+			<ConcreteClassName>SMSResidualGain</ConcreteClassName>
+			<Amount>6</Amount>
+		</Config>
+		<Config>
+			<ConcreteClassName>SMSSinusoidalGain</ConcreteClassName>
+			<Amount>3</Amount>
+		</Config>
+		<Config>
+			<ConcreteClassName>SMSHarmonizer</ConcreteClassName>
+			<BPFAmount>
+				<Interpolation>Step</Interpolation>
+				<Points>{-3 1.3} {-3 1.5} {-3 1.7}</Points>
+			</BPFAmount>
+		</Config>
+		<Config>
+			<ConcreteClassName>SMSSpectralShapeShift</ConcreteClassName>
+			<Amount>50</Amount>
+		</Config>
+		<Config>
+			<ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
+		</Config>
+	</Configurations>
+	<OnArray>1 0 0 0 0 0 0 0 1 0 0 1</OnArray>
+</SMSTransformationChainConfig>

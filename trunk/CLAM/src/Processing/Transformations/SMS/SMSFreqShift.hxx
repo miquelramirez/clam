@@ -29,7 +29,7 @@
 namespace CLAM{
 
 
-	class SMSFreqShift: public SMSTransformation
+	class SMSFreqShift: public SMSTransformationTmpl<SpectralPeakArray>
 	{
 		
 		/** This method returns the name of the object
@@ -46,7 +46,7 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSFreqShift(const SMSTransformationConfig &c):SMSTransformation(c)
+		SMSFreqShift(const SMSTransformationConfig &c):SMSTransformationTmpl<SpectralPeakArray>(c)
 		{
 		}
 
@@ -54,9 +54,7 @@ namespace CLAM{
  		~SMSFreqShift()
 		{}
 
-		bool Do(const Segment& in, Segment& out);
 		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
-		bool Do(const Frame& in, Frame& out);
 	
 	};		
 };//namespace CLAM

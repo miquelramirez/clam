@@ -49,9 +49,9 @@ namespace CLAM {
 	}
 	
 	bool TopLevelProcessing::
-	ConcreteConfigure(const ProcessingConfig&c) throw(std::bad_cast)
+	ConcreteConfigure(const ProcessingConfig&c)
 	{
-		mConfig = dynamic_cast<const TopLevelProcessingConfig&>(c);
+		CopyAsConcreteConfig(mConfig,c);
 		return true;
 	}
 

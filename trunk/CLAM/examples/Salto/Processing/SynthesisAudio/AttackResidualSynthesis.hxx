@@ -60,7 +60,7 @@ namespace SALTO
 
 		bool ConcreteStop();
 
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast );
+		bool ConcreteConfigure( const ProcessingConfig& c );
 
 		int AttackResGainCB( TControlData value );
 

@@ -115,7 +115,7 @@ namespace CLAM {
 
 		iterator composite_end() {return mObjects.end();}
 
-		TSize composite_size() {return mObjects.size();}
+		std::size_t composite_size() {return mObjects.size();}
 
 	};
 

@@ -114,6 +114,8 @@ void Thread::LaunchThreadCleanup( void* pvoid )
 	Thread* pSelf = (Thread*)pvoid;
 	if ( pSelf->mHasCleanup )
 		pSelf->mCleanUpCode();
+
+	pthread_join( pSelf->mThreadID, NULL );
 }
 
 void Thread::Sleep( unsigned int milliseconds )

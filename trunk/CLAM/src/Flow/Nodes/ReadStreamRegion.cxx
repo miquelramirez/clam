@@ -30,17 +30,21 @@ namespace CLAM {
 							   SourceStreamRegion *src)
 		: StreamRegion(hop,length),
 		  mSource(src)
-	{}
+	{ 
+		mPos = mEnd = src->Pos();
+	}
 	
 	bool ReadStreamRegion::FulfilsInvariant() const
 	{
-		if (!mSource)
-			return false;
-		if (!Follows(mSource))
-			return false;
-		return true;
+		return mSource && PreceedsWithNoOverlap(mSource);
+
 	}
 
+	bool ReadStreamRegion::CanActivate() const
+	{
+		CLAM_ASSERT(mSource, "mSource can't be null because it's a ReadStreamRegion");
+		return  Pos()+Len() <= mSource->Pos(); // Thus, after activate the region will PreceedsWithNoOverlapp(mSource);
+	}
 }
 
 

@@ -21,7 +21,8 @@
 #ifndef __AudioDevice__
 #define __AudioDevice__
 
-#include "AudioIO.hxx"
+#include "AudioManager.hxx"
+#include "Audio.hxx"
 
 namespace CLAM{
 

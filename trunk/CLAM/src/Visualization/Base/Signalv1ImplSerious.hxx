@@ -28,60 +28,59 @@
 
 #include "ConnectionHandler.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
-	template < typename ParmType1 >
+template < typename ParmType1 >
 	class Signalv1 : public Signal
+{
+public:
+	typedef typename CBL::Functor1<ParmType1>                    tCallbackType;
+
+public:
+
+	virtual ~Signalv1() 
 	{
-	public:
-		typedef typename CBL::Functor1<ParmType1>                    tCallbackType;
-  
-	public:
-  
-		virtual ~Signalv1() 
-		{
-			mSuper.DestroyConnections();
-		}
-  
-		void Connect( Slotv1<ParmType1>& slot )
-		{
-			Connection c( AssignConnection(), this );
-    
-			mSuper.AddCallback( c.GetID(), &slot, slot.GetMethod() );
-    
-			slot.Bind(c);
-		}
-  
-		void Emit( ParmType1 parm )
-		{
-			if ( mSuper.HasNoCallbacks() )
-				return;
-    
-			typename tSuperType::tCallList calls = mSuper.GetCalls();
-			typename tSuperType::tCallIterator i = calls.begin();
-			typename tSuperType::tCallIterator end = calls.end();
-    
-			while ( i != end )
+		mSuper.DestroyConnections();
+	}
+
+	void Connect( Slotv1<ParmType1>& slot )
+	{
+		Connection c( AssignConnection(), this );
+
+		mSuper.AddCallback( c.GetID(), &slot, slot.GetMethod() );
+
+		slot.Bind(c);
+	}
+
+	void Emit( ParmType1 parm )
+	{
+		if ( mSuper.HasNoCallbacks() )
+			return;
+
+		typename tSuperType::tCallList calls = mSuper.GetCalls();
+		typename tSuperType::tCallIterator i = calls.begin();
+		typename tSuperType::tCallIterator end = calls.end();
+
+		while ( i != end )
 			{
 				(*(*i))( parm );
 				i++;
 			}
-    
-		}
-  
-		void FreeConnection( Connection* pConnection )
-		{
-			mSuper.RemoveCall( pConnection->GetID() );
-			FreeConnectionId( pConnection->GetID() );
-		}
 
-	private:
-		typedef Signalv1<ParmType1>                 tSignalType;
-		typedef ConnectionHandler<tSignalType >     tSuperType;
-  
-		tSuperType  mSuper;
-	};
+	}
+
+	void FreeConnection( Connection* pConnection )
+	{
+		mSuper.RemoveCall( pConnection->GetID() );
+		FreeConnectionId( pConnection->GetID() );
+	}
+private:
+	typedef Signalv1<ParmType1>                 tSignalType;
+	typedef ConnectionHandler<tSignalType >     tSuperType;
+
+	tSuperType  mSuper;
+};
 
 }
 

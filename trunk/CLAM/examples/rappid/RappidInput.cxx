@@ -91,11 +91,11 @@ bool RappidInput::ConfigureChildren()
 	return res;
 }
 
-bool RappidInput::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool RappidInput::ConcreteConfigure(const ProcessingConfig& c)
 {
 	bool res;
 
-	BaseConfigure(cfg);
+	BaseConfigure(c);
 
 	CLAM_ASSERT(Type() != ERappidIOType::eRealTimeAndFile,
 	            "RappidInput::Configure(): RealTimeAndFile type not implemented");

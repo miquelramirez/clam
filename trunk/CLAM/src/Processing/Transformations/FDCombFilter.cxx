@@ -39,7 +39,6 @@ namespace CLAM {
 	
 	void FDCombFilterConfig::DefaultValues()
 	{
-		SetName("FDCombFilter");
 		
 	}
 
@@ -64,10 +63,10 @@ namespace CLAM {
 
 	/* Configure the Processing Object according to the Config object */
 
-	bool FDCombFilter::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool FDCombFilter::ConcreteConfigure(const ProcessingConfig& c)
 	{
 
-		mConfig = dynamic_cast<const FDCombFilterConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		return true;
 	}
 

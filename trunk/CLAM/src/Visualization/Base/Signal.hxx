@@ -26,29 +26,45 @@
 #include <map>
 #include <stack>
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
 	class Connection;
 
-/**
- * A signal represents an event to be signaled to a group of Slots.
+/** \class Signal
+ *  \brief Abstract 'Event Dispatcher'
  *
- * This class is an abstract one, it only defines the common interface
- * for signals and some common implementation.
+ * Sometimes, is very useful that when an object is subject of a certain message,
+ * or state change, must notify this change to a number of listeners. This situation,
+ * albeit it can be modeled quite neatly in OOP suffers a major drawback: coupling. Coupling
+ * tipically risks the possibility of reusing a certain object due to the fact that the caller
+ * must know to some extent the callee interface.
+ *
+ * However there exist some solutions to this known problem. One of them is the 'Signal and Slot'
+ * idiom, which features an extremely low coupling between callers and callees. For more details,
+ * take a look on the CLAM Signal & Slot Library.
+ *
+ * This class is an abstract one, already implementing common behaviour, the signal
+ * and slot connection handling issues.
  */
-
 	class Signal
 	{
 	public:
 		typedef unsigned  tConnectionId;
   
-		virtual ~Signal(){}
+			/** \brief Destructor
+			 *
+			 *  Class destructor
+			 */
+			virtual ~Signal();
   
-		/**
-		 * Undoes the given Conection
-		 */
-		virtual void FreeConnection( Connection* ) = 0;
+			/** \brief Removes a connection
+			 *
+			 *  Removes the given connections, so the Signal does not
+			 *  notify anymore the Slot behind that Connection.
+			 *  \param The connection to be freed
+			 */
+			virtual void FreeConnection( Connection* ) = 0;
   
 	protected:
 		void FreeConnectionId( tConnectionId );

@@ -29,8 +29,8 @@ void SDIFInConfig::DefaultInit()
 }
 
 SDIFIn::SDIFIn():
-mPrevIndexArray(0),
-Output("Output",this,1)
+	Output("Output",this,1),
+	mPrevIndexArray(0)
 { 
 	mpFile=NULL;
 	mLastCenterTime=-1;
@@ -38,8 +38,8 @@ Output("Output",this,1)
 }
 
 SDIFIn::SDIFIn(const SDIFInConfig& c):
-mPrevIndexArray(0),
-Output("Output",this,1)
+	Output("Output",this,1),
+	mPrevIndexArray(0)
 { 
 	mpFile=NULL;
 	mLastCenterTime=-1;
@@ -54,7 +54,7 @@ SDIFIn::~SDIFIn()
 
 bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast< const SDIFInConfig& > ( c );
+	CopyAsConcreteConfig(mConfig, c);
 	if(mpFile) delete mpFile;
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eInput);
 	return true;

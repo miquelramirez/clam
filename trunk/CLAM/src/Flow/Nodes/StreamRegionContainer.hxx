@@ -27,6 +27,7 @@
 #include "ReadStreamRegion.hxx"
 #include "WriteStreamRegion.hxx"
 #include "DelayStreamRegion.hxx"
+#include "AddStreamRegion.hxx"
 #include "InplaceStreamRegion.hxx"
 
 namespace CLAM {
@@ -88,6 +89,7 @@ namespace CLAM {
 		source_const_iterator sources_end()   const;
 
 		void SetWriter  (WriteStreamRegion   *writer);
+		void SetAdder  (AddStreamRegion   *adder);
 
 		void AddDelay   (DelayStreamRegion   *new_delay,
 		                 SourceStreamRegion  *source=0);
@@ -95,9 +97,12 @@ namespace CLAM {
 		                 SourceStreamRegion  *source=0);
 		void AddReader  (ReadStreamRegion    *new_reader,
 		                 SourceStreamRegion  *source=0);
+		void RemoveReader(ReadStreamRegion * reader);
 
 		WriteStreamRegion *Writer();
 		const WriteStreamRegion *Writer() const;
+		AddStreamRegion *Adder();
+		const AddStreamRegion *Adder() const;
 		const SourceStreamRegion *LastSource() const;
 
  		bool Contains(const StreamRegion*);
@@ -108,6 +113,10 @@ namespace CLAM {
 
 
 		bool FulfilsInvariant() const;
+
+		//XA:
+		void Init();
+		unsigned int FindLargestReadRegionLength() const;
 	};
 };
 

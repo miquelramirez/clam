@@ -26,15 +26,16 @@
 
 namespace CLAM {
 
+	/**
+	* Uses FullfilsInvariant of its base: SourceStreamRegion
+	*/
 	class WriteStreamRegion : public SourceStreamRegion {
 	public:
 		WriteStreamRegion(unsigned int hop,
-		                  unsigned int length,
-		                  unsigned int offset = 0)
-			: SourceStreamRegion(hop,length,offset)
+		                  unsigned int length)
+			: SourceStreamRegion(hop,length)
 		{}
-
-		virtual bool FulfilsInvariant() const;
+		
 		virtual bool Accept(RegionVisitor& v) const { return v.Visit(*this); }
 
 	};

@@ -57,6 +57,8 @@ CSaltoDataManagment::CSaltoDataManagment(Parameters* pParams)
   mSpectralSeg(MAX_SPECTRAL_SEGMENTS)
 {
 
+	mFrameCounter = new TIndex[MAX_SPECTRAL_SEGMENTS];
+
 /*  mpFileIO = NULL;
   mpSpectralSegResidual = NULL;
   mpSpectralSegEdit = NULL;
@@ -158,9 +160,11 @@ CSaltoDataManagment::~CSaltoDataManagment()
 {
 	
 	//delete mpStatTemplDataArray;
-
+	
 	if (mpFileIO!=NULL)
 		delete mpFileIO;
+	
+	delete mFrameCounter;
 	
 	for(int i=0;i<MAX_SPECTRAL_SEGMENTS;i++)
 	{

@@ -24,7 +24,8 @@
 
 #include "Audio.hxx"
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "OutPortTmpl.hxx"
+#include "Enum.hxx"
 
 namespace CLAM {
 
@@ -94,7 +95,7 @@ namespace CLAM {
 		 * bad_cast exception when the argument is not an FFTConfig
 		 * object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		inline TData Sine(TTime pos);
 

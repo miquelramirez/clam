@@ -65,7 +65,7 @@ namespace CLAM {
 		 * bad_cast exception when the argument is not an SpecAdderConfig
 		 * object.
 		 */
-		virtual bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		virtual bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 
@@ -133,6 +133,8 @@ namespace CLAM {
 		/** Kills track identified by trackId and assigns pPeakArray as its last peak array
 		* (spectral frame)*/
 		void KillTrack(int trackPosition) const;
+
+		void KillAll();
   
 		
   
@@ -155,12 +157,14 @@ namespace CLAM {
 	//Member variables
 		TData mThreshold;
 		mutable bool mInitialized;
-		SpectralPeakArray* mpPreviousPeakArray;
+		SpectralPeakArray mPreviousPeakArray;
 		mutable Array<TGuide> mGuideArray;
 		int mnMaxSines;
 		mutable int mnActiveGuides;		
 		mutable int mNextTrackId;
 		bool mHarmonic;//TODO: this should be a runtime modificable control
+
+		bool mLastHarmonic;
 
 	};
 

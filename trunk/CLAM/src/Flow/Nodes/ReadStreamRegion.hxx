@@ -41,6 +41,7 @@ namespace CLAM {
 		const SourceStreamRegion *Source() const {return mSource;}
 
 		virtual bool FulfilsInvariant() const;
+		bool CanActivate() const;
 		virtual bool Accept(RegionVisitor& v) const { return v.Visit(*this); }
 
 	};

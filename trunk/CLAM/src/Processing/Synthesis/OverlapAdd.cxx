@@ -49,9 +49,9 @@ void OverlapAddConfig::DefaultInit()
 void OverlapAddConfig::DefaultValues()
 {
 	/* set default values */
-	SetHopSize(0);
-	SetFrameSize(0);
-	SetBufferSize(0);
+	SetHopSize(256);
+	SetFrameSize(256);
+	SetBufferSize(768);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -64,27 +64,52 @@ void OverlapAddConfig::DefaultValues()
 
 OverlapAdd::OverlapAdd(void)
 {
+	mStreamBuffer=NULL;
+	mReader=NULL;
+	mWriter=NULL;
+	mAdder=NULL;
 	Configure(OverlapAddConfig());
 }
 
 OverlapAdd::OverlapAdd(const OverlapAddConfig &c)
 {
+	mStreamBuffer=NULL;
+	mReader=NULL;
+	mWriter=NULL;
+	mAdder=NULL;
 	Configure(c);
 }
 
 OverlapAdd::~OverlapAdd()
 {
+	if (mStreamBuffer) delete mStreamBuffer;
+	if(mWriter) delete mWriter;
+	if(mAdder) delete mAdder;
+	if(mReader) delete mReader;
+	
 }
 
 
 /* configure the processing object according to the config object */
 
-bool OverlapAdd::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool OverlapAdd::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const OverlapAddConfig&>(c);
-	mCircBuffer.SetBufferSize(mConfig.GetBufferSize());
-	mCircBuffer.SetReadSize(mConfig.GetFrameSize());
-	mCircBuffer.SetWriteSize(mConfig.GetHopSize());
+	CopyAsConcreteConfig(mConfig, c);
+
+	int hopSize=mConfig.GetHopSize();
+	int frameSize=mConfig.GetFrameSize();
+
+	if (mStreamBuffer) delete mStreamBuffer;
+	mStreamBuffer= new StreamBuffer<TData, CircularStreamImpl<TData> >;
+	if(mWriter) delete mWriter;
+	mWriter=mStreamBuffer->NewWriter(hopSize,frameSize);
+	if(mAdder) delete mAdder;
+	mAdder=mStreamBuffer->NewAdder(hopSize,frameSize);
+	if(mReader) delete mReader;
+	mReader=mStreamBuffer->NewReader(hopSize,frameSize, mAdder);
+	mStreamBuffer->Configure(hopSize*3);
+	
+	mStreamBuffer->LeaveAndAdvance(mWriter);
 	return true;
 }
 
@@ -112,15 +137,30 @@ bool OverlapAdd::Do(void)
 
 bool OverlapAdd::Do(DataArray &in, DataArray &out)
 {
-	mCircBuffer.Add(in);
-	mCircBuffer.Write(in,mConfig.GetHopSize());
+	int hopSize=mConfig.GetHopSize();
+	DataArray inToAdd,inToWrite;
+	
+	mStreamBuffer->GetAndActivate(mWriter,inToWrite);
+	mStreamBuffer->GetAndActivate(mAdder,inToAdd);
 
-	//modify write pointer
-	mCircBuffer.DecreaseWriteIndex(mConfig.GetHopSize());
+	in.CopyChunk(0,hopSize,inToAdd);
+	in.CopyChunk(hopSize,hopSize,inToWrite);
 
-	//read frame from buffer
-	mCircBuffer.Read(out);
-	return true;
+	mStreamBuffer->LeaveAndAdvance(mWriter);
+	mStreamBuffer->LeaveAndAdvance(mAdder);
+
+	if(mStreamBuffer->GetAndActivate(mReader,mBuffer))
+	{
+		mStreamBuffer->LeaveAndAdvance(mReader);
+		out=mBuffer;
+		return true;
+	}
+	else
+	{
+		mStreamBuffer->Leave(mReader);
+		return false;
+	}
+
 } 
 
 bool OverlapAdd::Do(Audio &in, Audio &out)

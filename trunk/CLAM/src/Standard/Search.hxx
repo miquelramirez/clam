@@ -41,6 +41,10 @@ public:
 	{
 		Set(array);
 	}
+	~Search()
+	{
+
+	}
 	void Set(const U& array)
 	{
 		mpData = &array;

@@ -1,5 +1,6 @@
 #include "SaltoSynth.hxx"
 #include "CSaltoEditor.hxx"
+#include "EditorCallbacks.hxx"
 #include "CSaltoDisplay.hxx"
 #include "CSaltoSpectralDisplay.hxx"
 #include "CSaltoSpectrumDisplay.hxx"

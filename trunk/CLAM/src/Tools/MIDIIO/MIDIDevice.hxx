@@ -26,6 +26,7 @@
 #include <string>
 #include <vector>
 #include "Err.hxx"
+#include "InControl.hxx"
 
 
 namespace CLAM{
@@ -44,6 +45,7 @@ namespace CLAM{
 class MIDIDevice
 {
 	friend class MIDIIn;
+	friend class MIDIClocker;
 //		friend class MIDIOut;
 	friend class MIDIManager;
 public:
@@ -108,6 +110,8 @@ public:
 	 */
 	void GetInfo(TInfo&);
 
+	virtual void SetClock(TControlData val) { }
+
 	/** Reads the information given by this Device and passes data to an Audio chunk. Must be implemented by any Device derived from this class. Not implemented yet
 	 */
 	virtual void Read(void) throw(Err) = 0;
@@ -117,6 +121,9 @@ protected:
 //		bool Register(MIDIManager* mm,MIDIOut& out);
 	void Unregister(MIDIIn& in);
 //		void Unregister(MIDIOut& out);
+
+	bool Register(MIDIManager* mm,MIDIClocker& in);
+	void Unregister(MIDIClocker& in);
 
 	int GetMessageLength(unsigned char byte);
 

@@ -28,7 +28,9 @@
 #include "EnvelopeExtractor.hxx"
 #include "EnvelopeGenerator.hxx"
 #include "RappidTypes.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+
 
 using namespace CLAM;
 
@@ -89,7 +91,7 @@ private:
 
 	void InitializeData();
 
-	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 	bool ConcreteStart();
 

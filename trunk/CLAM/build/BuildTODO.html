@@ -1,0 +1,587 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>CLAM Build Status</TITLE>
+<META NAME="Generator" CONTENT="EditPlus">
+<META NAME="Author" CONTENT="">
+<META NAME="Keywords" CONTENT="">
+<META NAME="Description" CONTENT="">
+</HEAD>
+
+<BODY>
+<TABLE border=1>
+<TR>
+	<TD>&nbsp;</TD>
+	<TD colspan='3'>Windows</TD>
+	<TD colspan='3'>Linux</TD>
+	<TD rowspan='2'>Observations</TD>
+</TR>
+<TR>
+	<TD>Program</TD>
+	<TD>settings OK?</TD>
+	<TD>Built?</TD>
+	<TD>Executed?</TD>
+	<TD>settings OK?</TD>
+	<TD>Built?</TD>
+	<TD>Executed?</TD>
+</TR>
+<TR>
+	<TD>AnalysisSynthesis_Batch</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>Lots of warnings due to usage of boost::dir_it (VC6)
+	<br />dir_it version is not portable (GCC)
+	</TD>
+</TR>
+<TR>
+	<TD>AnalysisSynthesis_Console</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>AnalysisSynthesis_GUI</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Some</TD>
+</TR>
+<TR>
+	<TD>SpectralDelay</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Buggy</TD>
+	<TD>On linux the sound stop noisely when you drag the filter.
+	</TD>
+</TR>
+<TR>
+	<TD>Salto</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>AudioApplicationExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>AudioIOExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Does not work. Tries to load a WAVE file which is not in the repository.</TD>
+</TR>
+<TR>
+	<TD>AutoCorrelationExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>ConfiguratorExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Only FLTK version tried.</TD>
+</TR>
+<TR>
+	<TD>ControlsExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>DescriptorsGUI</TD>
+	<TD><FONT COLOR="#FF0000">Broken</FONT></TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>This example has not been ported to new CLAM VM</TD>
+</TR>
+<TR>
+	<TD>FDFilterExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>FFTExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>LPCExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>POCompositeExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>SnapshotExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>FltkNetworkGUI</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Filename clash between draft/FltkNetworkGUI/connection.cxx and src/Visualization/Base/Connection.cxx</TD>
+</TR>
+<TR>
+	<TD>NonSupervisedSystemExample</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Crashes because it is unable to find some file.</TD>
+</TR>
+<TR>
+	<TD>NonSupervisedSystemWithPortsExample</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Compiler complains about accesses to private members. Pau and Xavi R. should review the code.</TD>
+</TR>
+<TR>
+	<TD>NonSupervisedSystemWithNodesExample</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Two problems: the issue with AudioNodeTmpl.hxx which is not compiling under VC6 and again, problems
+	with accesses to private members. Xavi R. and Pau should review the code.</TD>
+</TR>
+<TR>
+	<TD>ArrayTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>ArrayTest2</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>ComplexTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>This test is not very informative to decide if the class is working or not.</TD>
+</TR>
+<TR>
+	<TD>BPFTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Weird thing here: The release version loaded the BPF fine, but the debug version didn't, without signaling any kind of error condition.</TD>
+</TR>
+<TR>
+	<TD>FlagsTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>ListTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>PointTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Another of the not much informative tests...</TD>
+</TR>
+<TR>
+	<TD>PolarTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Another of the not much informative tests...</TD>
+</TR>
+<TR>
+	<TD>AudioFileIOTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Seems to work fine, but it is not very informative...</TD>
+</TR>
+<TR>
+	<TD>AudioPlayerTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Supervised test.</TD>
+</TR>
+<TR>
+	<TD>DelayPoolTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>It seemed to work: is not informative enough ( it did not prompt any kind of message at all, thing I suppose means 'OK').</TD>
+</TR>
+<TR>
+	<TD>EnvelopeExtractorTest</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>File AudioNodeTmpl.hxx does not compile under VC6</TD>
+</TR>
+<TR>
+	<TD>FDFilterGenTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>See mantis bug ID#0000112</TD>
+</TR>
+<TR>
+	<TD>FFTTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Unable to execute since regression data is not available at CVS ( at least ). See mantis ID#0000194.</TD>
+</TR>
+<TR>
+	<TD>IFFTTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Unable to execute since regression data is not available at CVS ( at least ). See mantis ID#0000194.</TD>
+</TR>
+<TR>
+	<TD>MIDIIOTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Unable to execute due to hardware problems ( my board chipset has to be told to enable the MIDI port... )</TD>
+</TR>
+<TR>
+	<TD>POCompositeTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Not very informative.</TD>
+</TR>
+<TR>
+	<TD>SpectrumAdderTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Only passes when CLAM_DOUBLE is activated</TD>
+</TR>
+<TR>
+	<TD>SpectrumAdder2Test</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Only passes when CLAM_DOUBLE is activated</TD>
+</TR>
+<TR>
+	<TD>SegmentTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Not working.</TD>
+</TR>
+<TR>
+	<TD>SpectrumTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>ControlMapperTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Not very informative.</TD>
+</TR>
+<TR>
+	<TD>ControlsTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>PhantomBufferTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Not very informative.</TD>
+</TR>
+<TR>
+	<TD>AssertTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>The message 'casca el false' is not meaningful for all foreeseable users ( I don't think finns know anything about Spanish slang)</TD>
+</TR>
+<TR>
+	<TD>ErrorTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>AudioPresentationTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Supervised test.</TD>
+</TR>
+<TR>
+	<TD>ControlAdapterTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Should be easily converted into a CppUnit Unit Test</TD>
+</TR>
+<TR>
+	<TD>FDFilterControllerTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>The test fails</TD>
+</TR>
+<TR>
+	<TD>ModelControllerTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>TestSignalv1</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>SpectralPeaksPresentationTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes, but not OK</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Supervised. There is a problem with the regression datasets, since newer XML cannot load them well. They should be regenerated ASAP.</TD>
+</TR>
+<TR>
+	<TD>SpectrumPresentationTest</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>Supervised.</TD>
+</TR>
+<TR>
+	<TD>TestTokenDelayController</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+
+
+
+<TR>
+	<TD></TD>
+	<TD>Yes</TD>
+	<TD>Yes</TD>
+	<TD>No</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD>?</TD>
+	<TD></TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

@@ -1,0 +1,142 @@
+<html>
+	<head>
+		<title>Test Driven Development example</title>
+		<link rel="StyleSheet" href="to-do_list.css" type="text/css" media="screen">
+	</head>
+	<body>
+		<h1>
+			Example of TDD to-do list
+		</h1>
+		<h2>
+			Developing a Processing Factory</h2>
+		<ul>
+			<li class='done'>
+			Query "Oscillator" to the factory and the returned Processing* type_id == 
+			Oscillator
+			<li class='done'>
+			Processing* p = CreateOscillator(); type_id of p is Oscillator
+			<li class='done'>
+				Registry :
+				<ul>
+					<li class='done'>
+						Get a creator method when registry is empty
+						<ul>
+							<li class='done'>
+							Unsafe version with CLAM_ASSERT
+							<li class='done'>
+								Safe version rises Err</li>
+						</ul>
+					<li class='done'>
+					Having added a single creator method, ask for the correct key
+					<li class='done'>
+					Having added a single creator method, ask for the wrong key
+					<li class='done'>
+					Having added two elements, ask for one of the keys
+					<li class='done'>
+					Having added two elements, ask for an incorrect key
+					<li class='done'>
+						Add a repeated key
+						<ul>
+							<li class='done'>
+							Unsafe version: CLAM_ASSERT
+							<li class='done'>
+								Safe version: rises ErrFactory</li>
+						</ul>
+					<li class='done'>
+						Automatic registry
+						<ul>
+							<li class='done'>
+								FactoryRegistrator&lt Dummy &gt Create() returns a Dummy;
+							</li>
+							<li class='done'>
+								create a Oscillator after having constructed the FactoryRegistrator with 
+								factory. (two versions: passing explicitly the key, and using GetClassName)
+							</li>
+							<li class='done'>
+								The same after FactoryRegistrator without an explcit factory (so using 
+								singleton)
+							</li>
+							<li class='done'>
+								Make Registrator inner class of Factory
+							</li>
+						</ul>
+					<li class='done'>
+						AddCreator should return bool ? <b>No</b>. do it evident
+					<li class='done'>
+						separate FactoryRegistry tests. Thus simplifying the names
+					</li>
+					<li class='done'>
+						RemoveAllCreators (since Factory is singleton and we want to tear tests down)
+						<ul>
+							<li class='done'>
+								when empty, when non empty
+							</li>
+						</ul>
+					</li>
+					<li class='done'>
+						Count when empty and non empty.
+					</li>
+					<li class='done'>
+						Make Registry a Factory inner class
+					</li>
+				</ul>
+			<li class='done'>
+			Avoid #include bottleneck in Factory
+			<li class='done'>
+			Create custom assert for typeid
+			<li class='done'>
+			ProcessingFactory singleton
+			<li class='to-do'>
+			Arrange documentation
+			<li class="done">
+				Split into hxx and cxx
+			</li>
+			<li class="done">
+				Make Factory::GetRegistry private.
+				<ul>
+					<li class="to-do">
+						Pass RegistryKey (string) params by ref.
+					</li>
+				</ul>
+			</li>
+			<li class='done'>
+				ProcessingFactory::MakeProcessingSafe with a bad key
+			</li>
+			<li class='to-do'>
+				Speciallise Factory errors
+			</li>
+			<li class='to-do'>
+				decide -Safe or -Safely
+			</li>
+			<li class='to-do'>
+				Processsings with static GetClassName
+			</li>
+			<li class='current'>
+				Generic Factory (Templates)
+				<ul>
+					<li class='done'>
+					Use typedefs instead of Processing dependent types
+					</li>
+					<li class='done'>
+					Use typedefs in tests wherever possible
+					</li>
+					<li class='done'>
+					Jump Factory code to Templatized tests
+					</li>
+					<li class='done'>
+					Create dummy products hierarchy
+					</li>
+					<li class='done'>
+					Adapt FactoryRegistryTest to use DummyProducts
+					</li>
+					<li class='done'>
+					Adapt FactoryRegistratorTest to use DummyProducts
+					</li>
+					<li class='done'>
+					Adapt FactoryTest to use DummyProducts
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</body>
+</html>

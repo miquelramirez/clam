@@ -1,0 +1,319 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0104 
+header_name {.hxx} 
+code_name {.cxx}
+decl {\#include <FL/Fl_Tile.H>} {public
+} 
+
+decl {\#include "Fl_Smart_Tile.hxx"} {public
+} 
+
+decl {class Fl_Smart_Tile;} {public
+} 
+
+decl {\#include "ForwardDeclarations.hxx"} {public
+} 
+
+decl {\#include "SMSAnalysisSynthesisConfig.hxx"} {} 
+
+class UserInterface {open
+} {
+  decl {public: CLAMGUI::SMSTools* mSMS;} {public
+  }
+  Function {UserInterface()} {open
+  } {
+    Fl_Window mWindow {
+      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
+      xywh {276 191 872 548} resizable
+      code0 {mWindow2=NULL;} visible
+    } {
+      Fl_Group {} {open
+        xywh {0 0 872 21}
+      } {}
+      Fl_Menu_Bar mMenuBar {open
+        private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
+      } {
+        submenu mFileMenuItem {
+          label File
+          private xywh {5 5 100 20} labelsize 12
+        } {
+          submenu mConfigurationOpsMenuItem {
+            label Configuration open
+            private xywh {0 0 100 20} labelsize 12
+          } {
+            menuitem mLoadCfgMenuItem {
+              label Load
+              callback {LoadConfiguration();}
+              private xywh {10 10 100 20} labelsize 12
+            }
+            menuitem mEditCfgMenuItem {
+              label Edit
+              callback {EditConfiguration();}
+              private xywh {20 20 100 20} labelsize 12
+            }
+            menuitem mStoreCfgMenuItem {
+              label Save
+              callback {StoreConfiguration();}
+              private xywh {20 20 100 20} labelsize 12
+            }
+          }
+          submenu mAnalysisFileOpsMenuItem {
+            label {SMS Analysis}
+            private xywh {0 0 100 20} labelsize 12
+          } {
+            menuitem mLoadAnalysisMenuItem {
+              label {Load Analysis Data...}
+              callback {LoadAnalysisData();}
+              private xywh {50 50 100 20} labelsize 12
+            }
+            menuitem mStoreAnalysisMenuItem {
+              label {Store Analysis Data...}
+              callback {StoreAnalysisData();}
+              private xywh {50 50 100 20} labelsize 12 deactivate
+            }
+          }
+          submenu mMelodyFileOpsMenuItem {
+            label Melody
+            private xywh {30 30 100 20} labelsize 12
+          } {
+            menuitem mStoreMelodyMenuItem {
+              label {Save Extracted Melody...}
+              callback {StoreMelody();}
+              private xywh {80 80 100 20} labelsize 12
+            }
+          }
+          submenu mSMSTransFileOpsMenuItem {
+            label {SMS Transformation}
+            private xywh {0 0 100 20} labelsize 12
+          } {
+            menuitem mLoadSMSTransScoreMenuItem {
+              label {Load Score...}
+              callback {LoadTransformation();}
+              private xywh {65 65 100 20} labelsize 12
+            }
+          }
+          submenu mSMSSynthesisFileOpsMenuItem {
+            label {SMS Synthesis} open
+            private xywh {20 20 100 20} labelsize 12
+          } {
+            menuitem mStoreSMSSynthSoundMenuItem {
+              label {Save synthesized sound...}
+              callback {StoreOutputSound();}
+              private xywh {40 40 100 20} labelsize 12
+            }
+            menuitem mStoreSMSSynthSinusoidalMenuItem {
+              label {Save synthesized sinusoidal...}
+              callback {StoreOutputSoundSinusoidal();}
+              private xywh {70 70 100 20} labelsize 12
+            }
+            menuitem mStoreSMSSynthResidualMenuItem {
+              label {Save synthesized residual...}
+              callback {StoreOutputSoundResidual();}
+              private xywh {75 75 100 20} labelsize 12
+            }
+          }
+          menuitem mAppExitMenuItem {
+            label Exit
+            callback {if(mWindow2!=NULL) delete mWindow2;
+Exit();}
+            private xywh {20 20 100 20} shortcut 0x40071 labelsize 12
+          }
+        }
+        submenu mSMSAnalysisMenuItem {
+          label {SMS Analysis}
+          private xywh {0 0 100 20} labelsize 12
+        } {
+          menuitem mDoSMSAnalysisMenuItem {
+            label Analyze
+            callback {Analyze();}
+            private xywh {40 40 100 20} shortcut 0x40061 labelsize 12 deactivate
+          }
+          menuitem mMelodyExtractionMenuItem {
+            label {Melody Extraction}
+            callback {AnalyzeMelody();}
+            private xywh {80 80 100 20} labelsize 12
+          }
+        }
+        submenu mSMSTransformationMenuItem {
+          label {SMS Transformation} open
+          private xywh {20 20 100 20} labelsize 12
+        } {
+          menuitem mDoSMSTransMenuItem {
+            label Apply
+            callback {Transform();}
+            private xywh {60 60 100 20} labelsize 12 deactivate
+          }
+          menuitem mUndoTransMenuItem {
+            label {Undo Transformation}
+            callback {UndoTransform();} selected
+            private xywh {0 0 100 20} labelsize 12
+          }
+        }
+        submenu mSMSSynthesisMenuItem {
+          label {SMS Synthesis}
+          private xywh {0 0 100 20} labelsize 12
+        } {
+          menuitem mDoSMSSynthesisMenuItem {
+            label Synthesize
+            callback {Synthesize();}
+            private xywh {30 30 100 20} shortcut 0x40073 labelsize 12
+          }
+        }
+        submenu mViewMenuItem {
+          label View
+          private xywh {0 0 100 20} labelsize 12
+        } {
+          menuitem mShowOriginalAudioMenuItem {
+            label {Original Audio}
+            callback {DisplayInputSound();}
+            private xywh {0 0 100 20} labelsize 12
+          }
+          submenu mShowAnalysisResultsMenuItem {
+            label {Analysis Results} open
+            private xywh {0 0 100 20} labelsize 12
+          } {
+            menuitem mShowSinTracksMenuItem {
+              label SinusoidalTracks
+              callback {DisplaySinusoidalTracks();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            submenu mViewFrameDataMenuItem {
+              label {Frame Data}
+              private xywh {0 0 100 20} labelsize 12
+            } {
+              menuitem mShowSpectrumAndPeaksMenuItem {
+                label {Spectrum and Peaks}
+                callback {DisplaySpectrumAndPeaks();}
+                private xywh {0 0 100 20} labelsize 12
+              }
+              menuitem mShowSinusoidalSpectrumMenuItem {
+                label {Sinusoidal Spectrum}
+                callback {DisplaySinusoidalSpectrum();}
+                private xywh {0 0 100 20} labelsize 12 deactivate
+              }
+              menuitem mShowResidualSpectrumMenuItem {
+                label {Residual Spectrum}
+                callback {DisplayResidualSpectrum();}
+                private xywh {0 0 100 20} labelsize 12
+              }
+            }
+          }
+          submenu mViewSynthesisResultsMenuItem {
+            label {Synthesis Results} open
+            private xywh {0 0 100 20} labelsize 12
+          } {
+            menuitem mShowSynthesizedAudioMenuItem {
+              label {Synthesized Audio}
+              callback {DisplaySynthesizedAudio();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            menuitem mShowSynthesizedSinusoidalMenuItem {
+              label {Synthesized Sinusoidal}
+              callback {DisplaySynthesizedSinusoidal();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            menuitem mShowSynthesizedResidualMenuItem {
+              label {Synthesized Residual Sound}
+              callback {DisplaySynthesizedResidual();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+          }
+        }
+        submenu mHelpMenuItem {
+          label Help
+          xywh {0 0 100 20} labelsize 12
+        } {
+          menuitem {} {
+            label About
+            callback {AboutWindow()}
+            private xywh {15 15 100 20} labelsize 12
+          }
+        }
+      }
+      Fl_Counter mCounter {
+        label {Frame }
+        callback {ChangeFrame();}
+        xywh {330 525 190 20} box THIN_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
+      }
+      Fl_Group {} {open
+        xywh {0 25 870 495} resizable
+      } {
+        Fl_Box mSmartTile {
+          private xywh {0 25 870 495}
+          code0 {o->minsize(80);}
+          class Fl_Smart_Tile
+        }
+      }
+    }
+  }
+  Function {AboutWindow()} {private return_type void
+  } {
+    Fl_Window mWindow2 {
+      label {About this program...}
+      callback {delete mWindow2;
+mWindow2=NULL;} open
+      private xywh {837 547 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10 hide
+      code0 {mWindow2->show();} modal
+    } {
+      Fl_Box {} {
+        label {SMS Analysis/Synthesis Application}
+        private xywh {85 15 265 20} labelfont 3 labelsize 12
+      }
+      Fl_Box {} {
+        label {by MTG - IUA - UPF (Barcelona, Spain)}
+        private xywh {85 40 265 20} labelfont 2 labelsize 12
+      }
+      Fl_Box {} {
+        private image {logos/iua.xpm} xywh {360 15 50 60}
+      }
+      Fl_Box {} {
+        label {please visit us at http://www.iua.upf.es/mtg for more info}
+        private xywh {90 65 260 20} labelfont 2 labelsize 11
+      }
+      Fl_Box {} {
+        private image {logos/mtg.xpm} xywh {10 20 75 55}
+      }
+    }
+  }
+  decl {void Init(void);} {public
+  }
+  decl {void LoadConfiguration(void);} {}
+  decl {void EditConfiguration(void);} {}
+  decl {void StoreConfiguration(void);} {}
+  decl {void Analyze(void);} {}
+  decl {void LoadAnalysisData(void);} {}
+  decl {void StoreAnalysisData(void);} {}
+  decl {void Synthesize(void);} {}
+  decl {void AnalyzeMelody(void);} {}
+  decl {void StoreMelody(void);} {}
+  decl {void StoreOutputSound(void);} {}
+  decl {void StoreOutputSoundResidual(void);} {}
+  decl {void StoreOutputSoundSinusoidal(void);} {}
+  decl {void LoadTransformation(void);} {}
+  decl {void Transform(void);} {}
+  decl {void Exit(void);} {}
+  decl {bool LoadSound();} {}
+  decl {void ChangeFrame();} {}
+  decl {void ChangeTimeTag(double tag);} {}
+  decl {void DisplayInputSound();} {}
+  decl {void Update();} {}
+  decl {void DisplaySinusoidalTracks();} {}
+  decl {void DisplaySpectrumAndPeaks();} {}
+  decl {void DisplaySinusoidalSpectrum();} {}
+  decl {void DisplayResidualSpectrum();} {}
+  decl {void DisplaySynthesizedAudio();} {}
+  decl {void DisplaySynthesizedSinusoidal();} {}
+  decl {void DisplaySynthesizedResidual();} {}
+  decl {void ApplyInitialState();} {}
+  decl {void ApplyReadyToAnalyzeState();} {}
+  decl {void ApplyAnalysisAvailableState();} {}
+  decl {void ApplyMelodyAvailableState();} {}
+  decl {void ApplyTransformationReadyState();} {}
+  decl {void ApplySynthesisAvailableState();} {}
+  decl {void ApplyTransformationPerformedState();} {}
+  decl {void DeactivateFrameDataMenuItems();} {}
+  decl {bool mFrameDataAvailable;} {}
+  decl {bool FrameDataAvailable();} {public
+  }
+  decl {void UndoTransform();} {}
+} 
