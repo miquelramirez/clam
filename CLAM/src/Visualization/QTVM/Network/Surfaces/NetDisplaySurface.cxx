@@ -31,7 +31,6 @@ namespace CLAM
 		{
 			_controller = controller;
 			connect(_controller,SIGNAL(sendView(SView)),this,SLOT(receivedView(SView)));
-			_thread.setController(_controller);
 		}
 
 		void NetDisplaySurface::startRendering()
