@@ -62,6 +62,12 @@ bool ControlMapper::ConcreteConfigure( const ProcessingConfig& c )
 	{
 		mMappingPtr->Set(mConfig.GetArguments());
 	}
+	else 
+		{ 
+			AddConfigErrorMessage( "Unknown mapping");
+			return false;
+		}
+
 	return true;
 }
 
