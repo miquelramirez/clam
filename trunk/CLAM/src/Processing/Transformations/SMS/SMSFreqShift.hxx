@@ -59,8 +59,7 @@ namespace CLAM{
 			Configure( SegmentTransformationConfig() );
 		}
 
- 		~SMSFreqShift()
-		{}	
+ 		~SMSFreqShift() {}	
 		
 		const ProcessingConfig& GetConfig() const { throw 0; }
 
