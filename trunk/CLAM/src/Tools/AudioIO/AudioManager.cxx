@@ -72,7 +72,8 @@ void AudioManager::Start(void) throw(Err)
 	unsigned int i;
 	for (i=0;i<mDevices.size();i++)
 	{
-		mDevices[i]->Start();
+		if (mDevices[i]->mInputs.size() || mDevices[i]->mOutputs.size())
+			mDevices[i]->Start();
 	}
 }
 

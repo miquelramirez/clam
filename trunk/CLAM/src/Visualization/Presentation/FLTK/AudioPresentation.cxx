@@ -94,7 +94,7 @@ void ProcDataPresentation<Audio>::Init( const Geometry& g, const char* l )
 
 	// Linking the port and the renderer...
 
-	mPort->SetCullingCallback( makeMemberFunctor3( float, float, unsigned, *mRenderer, GLWaveRenderer, PerformCulling ) );
+	mPort->SetCullingCallback( makeMemberFunctor4( float, float, unsigned, unsigned, *mRenderer, GLWaveRenderer, PerformCulling ) );
 	mPort->SetDrawingCallback( makeMemberFunctor0( *mRenderer, GLWaveRenderer, Draw) );
 	mPort->Configure( new AudioPresGLState, makeMemberFunctor0( *mRenderer, GLWaveRenderer, Draw) );
 

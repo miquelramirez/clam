@@ -29,7 +29,17 @@ using std::vector;
 
 namespace CLAM
 {
-
+/**
+ * Precalculated (tabulated) functor, for dealing with efficient version of 
+ * expensive functions (with its associated cost in space and precision).
+ * The original function is passed as the template argument, requiring from 
+ * the template, the same operator interface as the one that TabFunct offers:
+ * TData operator() (const TData).
+ * 
+ * The only constructor available takes three parameters : table size, lower bound
+ * and upper bound.
+ * 
+ */
 template <class OriginalFunction> class TabFunct : public OriginalFunction
 {
 private:

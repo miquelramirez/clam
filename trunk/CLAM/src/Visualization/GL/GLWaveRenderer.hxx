@@ -32,10 +32,9 @@ namespace CLAMGUI
 	{
 	public:
 
-		GLWaveRenderer( unsigned char r = 0, unsigned char g = 255, unsigned char b = 0 )
-			: GLArrayRenderer( r, g, b ), mSampRate( 0 ), mXConversionFactor(1)
-		{
-		}
+			GLWaveRenderer( unsigned char r = 0, unsigned char g = 255, unsigned char b = 0 );
+
+			virtual ~GLWaveRenderer();
 
 		void SetSamplingRate( TData value );
 
@@ -44,17 +43,32 @@ namespace CLAMGUI
 			return mSampRate;
 		}
 
+			virtual void CacheData( const DataArray& array );
+			virtual void Draw();
+			virtual void PerformCulling( float left, float right, unsigned pixel_width, unsigned extraparams );
+
+
 	protected:
-		virtual void InitArray( unsigned int nelems );
-		virtual void XaxisTransform( TData left, TData right, TData& transleft, TData& transright, bool& integer );
-		virtual void YaxisTransform( TData top, TData bottom, TData& transtop, TData& transbottom, bool& integer );
-		virtual float GetXConversionFactor()
-		{
-			return mXConversionFactor;
-		}
-
-
+			void DrawVerticalLine(float x,float top,float bottom);
+			
+			virtual void InitArray( unsigned int nelems );
+			virtual void XaxisTransform( TData left, TData right, TData& transleft, TData& transright, bool& integer );
+			virtual void YaxisTransform( TData top, TData bottom, TData& transtop, TData& transbottom, bool& integer );
+			virtual float GetXConversionFactor()
+			{
+					return mXConversionFactor;
+			}
+			
+			
 	private:
+			DataArray mDataArray;
+			DataArray mDataArrayTop;
+			DataArray mDataArrayBottom;
+			DataArray mDataArrayTop2;
+			DataArray mDataArrayBottom2;
+			float Index2Pixel,X2Pixel,Y2Pixel;
+			float *mPixelColor;
+			int mPixelColorSize;
 
 		void ArrangeXScale();
 

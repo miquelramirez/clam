@@ -340,9 +340,8 @@ namespace CLAM {
 					// this const_cast is Ugly, but i do not have time to make
 					// all GetClassName's const
 					std::string err(const_cast<Processing*>(this)->GetClassName());
-					err +=
-": Do(): Not in execution mode - did you call Start on this "
-"object, the composite it is in, or the ToplevelProcessing singleton?";
+					err += ": Do(): Not in execution mode - did you call Start on this "
+							"object, the composite it is in, or the ToplevelProcessing singleton?";
 
 					CLAM_DEBUG_ASSERT( false, err.c_str() );
 				}
