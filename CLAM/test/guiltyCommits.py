@@ -18,12 +18,15 @@ def placeTestsOkTags(module) :
 	ok, out = getstatusoutput(cmd)
 #	assert ok==0, "command: "+cmd+" returned false\n\n"+out
 
-def queryDiffs(module) :
-	cmd = "cvs rdiff -r%s -r%s  %s" % (okTag, candidateTag, module)
+def queryDiffsFrom(fromTag, module) :
+	cmd = "cvs rdiff -r%s -r%s  %s" % (fromTag, candidateTag, module)
 	filename = "cvsdiff-%s" % module
 	print "issuing: ",cmd
 	out = getoutput(cmd)
 	open(filename, "w").write( out )
+
+def queryDiffs(module) :
+	queryDiffsFrom( okTag, module )
 
 
 NewFile = -1
@@ -96,10 +99,17 @@ def chaseTheGuiltyCommits(module):
 	return pattern % (module, authors, commitlogs)
 	
 
-def testcvs() :
-	diffs = queryDiffs("CLAM")
+
+def printGuiltyCommitsFrom( fromTag ) :
+	diffs = queryDiffsFrom( fromTag, "CLAM")
 	authors, logs = queryLogs("CLAM")
 	print "authors: %s\n logs:\n%s" % (authors, logs)
+	
+def printGuiltyCommits() :
+	printGuiltyCommitsFrom(okTag)
+
+
 
 if __name__ == '__main__':
-	testcvs()
+	pass
+#	testcvs()
