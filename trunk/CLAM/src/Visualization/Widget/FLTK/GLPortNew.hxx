@@ -28,6 +28,8 @@
 #include "Range.hxx"
 #include "CBL.hxx"
 #include "FLMultiDisplay.hxx"
+#include "FLTKWrapper.hxx"
+
 
 namespace CLAMGUI
 {
@@ -52,6 +54,10 @@ public:
 
 	~GLPort()
 	{
+		FLTKWrapper* tk = dynamic_cast<FLTKWrapper*>(WidgetTKWrapper::GetWrapperFor("FLTK" ));
+		
+		tk->CancelAsynchronousRefresh( mRefreshSlot );
+		
 		delete mRenderingState;
 
 	}
@@ -86,10 +92,11 @@ protected:
 	void ApplyProjection();
 	
 private:
-	CBL::Functor0         mDrawCb;
-	bool                  mIsConf;
-	bool                  mTimerLaunched;
+	CBL::Functor0    mDrawCb;
+	bool             mIsConf;
+	bool             mTimerLaunched;
 	GLState*         mRenderingState;
+	unsigned         mRefreshSlot;
 };
 
 }

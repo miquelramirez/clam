@@ -21,8 +21,12 @@
 
 #include "FLTKWrapper.hxx"
 #include <FL/Fl.H>
+#include <FL/Fl_Widget.H>
+#include <algorithm>
 
-using namespace CLAMGUI;
+
+namespace CLAMGUI
+{
 
 FLTKWrapper* FLTKWrapper::GetInstance()
 {
@@ -65,4 +69,86 @@ void FLTKWrapper::Tick() const
 void FLTKWrapper::Run() const
 {
 	Fl::run();
+}
+
+void FLTKWrapper::SetFPS( unsigned desired_fps )
+{
+	mTimeoutInterval = 1.0 / float( desired_fps ); 
+}
+
+unsigned FLTKWrapper::RequestAsynchronousRefresh( Fl_Widget* pWidget )
+{
+	unsigned assigned_slot;
+	
+	// determine if there are freed slots
+	if ( mFreedSlots.empty() ) // no available slots
+		{
+			assigned_slot = mNextSlot;
+			mNextSlot++;
+		}
+	else
+		{
+			assigned_slot = mFreedSlots.top();
+			mFreedSlots.pop();
+		}
+
+	Refreshee new_refreshee = { pWidget, assigned_slot };
+
+	mWidgetsToBeRefreshed.push_back( new_refreshee );
+
+	return assigned_slot;
+}
+
+void FLTKWrapper::CancelAsynchronousRefresh( unsigned freed_slot ) 
+{
+	// Find wether the supplied slot is actually a valid one
+	
+	std::list<Refreshee>::iterator i = mWidgetsToBeRefreshed.begin();
+	bool found = false;
+
+	while ( i != mWidgetsToBeRefreshed.end() && !found )
+		{
+			if ( (*i).mSlotAssigned == freed_slot )
+				found = true;
+			else
+				i++;
+		}
+
+	if ( found )
+		{
+			mWidgetsToBeRefreshed.erase(i);
+			mFreedSlots.push( freed_slot );
+		}
+}
+
+void FLTKWrapper::ActivateAsynchronousRefresh()
+{
+	Fl::add_timeout( mTimeoutInterval, FLTKWrapper::sRefreshingCallback, this );
+}
+
+void FLTKWrapper::CancelAllAsynchronousRefresh()
+{
+	mWidgetsToBeRefreshed.erase( mWidgetsToBeRefreshed.begin(), mWidgetsToBeRefreshed.end() );
+}
+
+void FLTKWrapper::sRefreshingCallback( void* data )
+{
+	FLTKWrapper* pFl = ( FLTKWrapper* ) data;
+
+	if ( !pFl->mWidgetsToBeRefreshed.empty() )
+		{
+
+			std::list<Refreshee>::iterator i = pFl->mWidgetsToBeRefreshed.begin();
+
+			while ( i != pFl->mWidgetsToBeRefreshed.end() )
+				{
+					(*i).mpWidget->redraw();
+					i++;
+				}
+		}
+
+	Fl::repeat_timeout( pFl->mTimeoutInterval, FLTKWrapper::sRefreshingCallback, pFl );
+}
+
+
 }
