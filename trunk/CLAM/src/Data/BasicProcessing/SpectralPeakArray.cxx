@@ -253,9 +253,8 @@ TIndex SpectralPeakArray::GetPositionFromIndex(TIndex index) const
 	
 	//Note: cannot use searching routines because index may not be sorted
 
-	int i;
 	IndexArray& indexArray=GetIndexArray();
-	for(i=0;i<indexArray.Size();i++)
+	for(int i=0;i<indexArray.Size();i++)
 	{
 		if(indexArray[i]==index) return	i;//index found
 	}
@@ -265,13 +264,13 @@ TIndex SpectralPeakArray::GetPositionFromIndex(TIndex index) const
 
 TIndex SpectralPeakArray::GetMaxMagPos() const// returns position of mag maximum
 { 
-	TIndex i,maxPos=0;
+	TIndex maxPos=0;
 	double mag, max;
 	DataArray peakMagBuffer=GetMagBuffer();
 	// initialize to the first element
 	max = peakMagBuffer[0];
 	maxPos = 0;
-	for (i=1;i<GetnPeaks();i++)
+	for (TIndex i=1;i<GetnPeaks();i++)
 	{
 		mag = peakMagBuffer[i];
 		if (mag>max)
