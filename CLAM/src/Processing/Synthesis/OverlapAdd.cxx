@@ -84,20 +84,26 @@ bool OverlapAdd::Do( const Audio &in, Audio & out)
 	int halfSize = in.GetSize()/2;
 	CLAM_DEBUG_ASSERT( out.GetSize() == halfSize, "OverlapAdd::Do - Audio Out size must be half the input size" );
 	CLAM_DEBUG_ASSERT( mConfig.GetFrameSize() == halfSize, "OverlapAdd::Do - Config FrameSize must be half the input size" );
+
+	CLAM::DataArray & inBuffer = in.GetBuffer();
+	CLAM::DataArray & outBuffer = out.GetBuffer();
+	CLAM::DataArray & tmpBuffer = mTmp.GetBuffer();
+	const TSize outSize = out.GetSize();
+	const TSize inSize = in.GetSize();
 	
 	for( int i=0;i<halfSize;i++)
 	{
-		mTmp.GetBuffer()[i] = mTmp.GetBuffer()[i+halfSize] + in.GetBuffer()[i];
+		tmpBuffer[i] = tmpBuffer[i+halfSize] + inBuffer[i];
 	}
 	
-	for( int i=halfSize;i<in.GetSize();i++)
+	for( int i=halfSize;i<inSize;i++)
 	{
-		mTmp.GetBuffer()[i] = in.GetBuffer()[i];
+		tmpBuffer[i] = inBuffer[i];
 	}
 
-	for( int i=0;i<out.GetSize();i++)
+	for( int i=0;i<outSize;i++)
 	{
-		out.GetBuffer()[i] = mTmp.GetBuffer()[i];
+		outBuffer[i] = tmpBuffer[i];
 	}
 
 	return true;
