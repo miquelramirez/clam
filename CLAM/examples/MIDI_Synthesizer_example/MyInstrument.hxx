@@ -1,12 +1,10 @@
 #ifndef _MyInstrument_hxx_
 #define _MyInstrument_hxx_
 
-#include "Instrument.hxx"
-
 namespace CLAM
 {
-	
 
+	
 class MyInstrumentConfig: public ProcessingConfig
 {
 public:
@@ -84,6 +82,95 @@ public:
 
 		bool Do(Audio& out) ;
 };
+
+void MyInstrumentConfig::DefaultInit(void)
+{
+	AddName();
+	AddAttackTime();
+	AddDecayTime(),
+	AddSustainLevel();
+	AddReleaseTime();
+	AddSampleRate();
+
+	UpdateData();
+
+	try
+	{
+		SetSampleRate( AudioManager::Current().SampleRate() );
+	}
+	catch(Err)
+	{
+		SetSampleRate( 8000 );
+	}
+
+}
+
+
+bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
+{
+	CopyAsConcreteConfig(mConfig, c);
+
+	ADSRConfig ADSRCfg;
+	std::string tmp = mConfig.GetName() + ".ADSR";
+
+	ADSRCfg.SetAttackTime( mConfig.GetAttackTime() );
+	ADSRCfg.SetDecayTime( mConfig.GetDecayTime() );
+	ADSRCfg.SetSustainLevel( mConfig.GetSustainLevel() );
+	ADSRCfg.SetReleaseTime( mConfig.GetReleaseTime() );
+	ADSRCfg.SetSampleRate( mConfig.GetSampleRate() );
+
+	mADSR.Configure( ADSRCfg );
+
+	ControlMapperConfig MapperVelCfg;
+
+	MapperVelCfg.SetMapping( "linear" );
+	TData ptr1[] = {0.0 ,127.0 ,0.0 ,1.0};
+ 	MapperVelCfg.SetArguments( DataArray( ptr1, 4 ) );
+	mMapperVel.Configure( MapperVelCfg );
+
+	ControlMapperConfig MapperNoteCfg;
+	
+	MapperNoteCfg.SetMapping( "NoteToFreq" );
+	TData ptr2[] = {69.0,440.0} ;
+	MapperNoteCfg.SetArguments( DataArray( ptr2, 2 ) );
+
+	mMapperNote.Configure( MapperNoteCfg );
+
+
+	ControlMapperConfig MapperPBendCfg;
+	MapperPBendCfg.SetMapping( "ValueToRatio" );
+	TData ptr3[] = { 12 } ;							
+	MapperPBendCfg.SetArguments( DataArray( ptr3, 1 ) );
+
+	mMapperPitchBend.Configure( MapperPBendCfg );
+
+	LinkControls();
+
+	return true;
+}
+
+bool MyInstrument::ConcreteStart()
+{
+	mOscillator.Start();
+	mADSR.Start();
+	mSampleMultiplier.Start();
+
+	return true;
+}
+
+bool MyInstrument::Do( Audio& out )
+{
+	mEnvelope.SetSize( out.GetSize() );
+
+	mOscillator.Do( out );
+	mADSR.Do( mEnvelope );
+	mSampleMultiplier.Do( out, mEnvelope, out );
+
+	return true;
+}
+
+
+
 
 } //namespace
 #endif
