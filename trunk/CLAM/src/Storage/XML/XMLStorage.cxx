@@ -459,8 +459,8 @@ namespace CLAM
 
 	};
 
-	typedef XercesOrderedXMLStorageImplementation CurrentXMLStorageImplementation;
-//	typedef XercesUnorderedXMLStorageImplementation CurrentXMLStorageImplementation;
+//	typedef XercesOrderedXMLStorageImplementation CurrentXMLStorageImplementation;
+	typedef XercesUnorderedXMLStorageImplementation CurrentXMLStorageImplementation;
 
 }
 
