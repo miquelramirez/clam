@@ -536,7 +536,7 @@ private:
 	}
 	void testHighFrequencyContent()
 	{
-		CLAM::TData tolerance = 0.07; //increased by PA. it was: 0.008;  // Due to numerical inaccuracies
+		CLAM::TData tolerance = 0.00000000000008;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
 		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0; // Magnitude * 0
@@ -546,10 +546,10 @@ private:
 		data["ConstantHalfSize-Spectrum.xml"]= 526336.0; 
 		data["DeltasAtExtremeBins-Spectrum.xml"]= 512.0; // 1.0^2 * 512
 		data["DeltaAtCenterBin-Spectrum.xml"]= 3.0; // 1.0^2 * 3 (the 4th bin)
-		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 1470.23278808594;
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 1470.23229980469;
 		data["Balance000.600.wav"] = 35030.921875;
 		data["Balance000.992.wav"] = 35163.140625;
-		data["Balance001.988.wav"] = 112741.8203125;
+		data["Balance001.988.wav"] = 112741.8125;
 		data["Balance010.910.wav"] = 67255.7421875;
 		data["Cello_A2.wav"] = 442392.4375;
 		data["Cello_C2.wav"] = 0.0; // Silence
@@ -560,7 +560,7 @@ private:
 		data["Time002.624.wav"] = 660661.875;
 		data["bell_A3.wav"] = 557884.6875;
 		data["gamelan-gong.wav"] = 722027.0625;
-		data["gt_E4.wav"] = 5.25229263305664;
+		data["gt_E4.wav"] = 5.25228691101074;
 		data["pno_Eb1.wav"] = 0.000000;  // Silence
 		data["silence.wav"] = 0.000000; // Silence
 		data["vln_A3.wav"] = 0.000000; // Silence
