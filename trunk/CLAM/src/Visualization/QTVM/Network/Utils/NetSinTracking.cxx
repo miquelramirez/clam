@@ -1,4 +1,3 @@
-#include "SinTracking.hxx"
 #include "NetSinTracking.hxx"
 
 namespace CLAM
@@ -17,22 +16,17 @@ namespace CLAM
 
 	std::vector< std::vector<SinTrackNode> >& NetSinTracking::GetTracks(const Array<SpectralPeakArray>& peakMtx, int index)
 	{
+	    _table.clear();
+	    _tracks.clear();
 	    _time=0;
-	    SinTracking tracking;
-	    tracking.Start();
 	    for(int i=index; i < peakMtx.Size();i++)
 	    {
-		SpectralPeakArray outPeaks;
-		tracking.Do(peakMtx[i],outPeaks);
-		AddNodes(outPeaks);
+		AddNodes(peakMtx[i]);
 	    }
 	    for(int i=0; i < index;i++)
 	    {
-		SpectralPeakArray outPeaks;
-		tracking.Do(peakMtx[i],outPeaks);
-		AddNodes(outPeaks);
+		AddNodes(peakMtx[i]);
 	    }
-	    tracking.Stop();
 	    return _tracks;
 	}
 

@@ -5,6 +5,7 @@
 #include "NetSinTracksRenderer.hxx"
 #include "NetPlotController.hxx"
 #include "PortMonitor.hxx"
+#include "SinTracking.hxx"
 
 namespace CLAM
 {
@@ -30,6 +31,7 @@ namespace CLAM
 	    NetSinTracksRenderer _renderer;
 	    SigSlot::Slotv0 mSlotNewData;
 	    int _index;
+	    SinTracking mSinTracking;
 
 	    void AddData(const SpectralPeakArray& data);
 	  
