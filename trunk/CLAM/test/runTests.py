@@ -1,4 +1,5 @@
 #! /usr/bin/python
+# -*- coding: iso-8859-15 -*-
 
 #TODO: 
 # - filter out ling srcdeps output in compilation errors
@@ -8,23 +9,24 @@
 #----------------------------------------------------------------------
 # begin configuration
 
-enableSendMail = True
+enableSendMail = False
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
 updateLevelForCLAM = 1 
-updateLevelForExamples = 1
-updateLevelForTestData = 1 
+updateLevelForExamples = 0
+updateLevelForTestData = 0 
 
 # When false keeps already compiled objects
-doCleanMake = True
+doCleanMake = False
 # When false does not run autoconf and configure unless a new checkout
-doAutoconf = True
+doAutoconf = False
 configureOptions = '--without-portmidi  --without-portaudio'
 # Non-test are runned those seconds and then killed
 executionTime = 15
 
 configurations = ['debug', 'release'] 
+configurations = ['debug'] 
 
 # Mail report settings
 publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
@@ -189,16 +191,15 @@ testsToRun[-1:-1] = simpleExamples
 testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
 
-#TODO remove:
-#testsToRun = [( 'UnitTests', unitTestsPath ),
-#	( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/') ]
+# uncomment only for testing purposes: 
+testsToRun = [( 'UnitTests', unitTestsPath ),( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/') ]
 
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
 # end configuration
 #--------------------------------------------------------------------
 
-from testResult import TestResult
+from testResult import TestResult, TestResultSet
 
 # global vars. ugly, yes.
 foundCompilationErrors = False 
@@ -335,7 +336,7 @@ def compileAndRun(name, path) :
 	# compilation phase
 	summaryText = ['']
 	testResult = TestResult()
-	testResult.name(name)
+	testResult.name = name
 	
 	details = ''
 	for configuration in configurations :
@@ -350,14 +351,14 @@ def compileAndRun(name, path) :
 		else :
 			compilationSumary = 'compilation OK'
 		
-		testResult.compilationStatus(configuration, ok)
-		testResult.nWarnings(configuration, getNWarnings(output) )
+		testResult.compilationOk(configuration, ok)
+#		testResult.nWarnings(configuration, getNWarnings(output) )
 		
 		compilationSumary += parseCompilationWarnings( output )
 		summaryText.append(formatSummary(name, configuration, compilationSumary) )
 		detailsFormat = '\n\n%s\n-----------------------------\n%s\n'
 		if not ok :
-			testResult.reportError(configuration, output)
+#			testResult.reportError(configuration, output)
 			details += detailsFormat % (name, output)
 			continue 
 			
@@ -370,7 +371,7 @@ def compileAndRun(name, path) :
 			ok, output = getStatusOutput( execcmd )
 			foundTestsFailues = foundTestsFailures or not ok
 			runMessages, d = parseTestsFailures( output )
-			testResult.nFailures(1)
+#			testResult.nFailures(1)
 		else :
 			# print 'isTest no\nexecuting application for a while'
 			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
@@ -404,6 +405,7 @@ DETAILS (only if finds errors/failures)
 -----------------------------------------------------------
 // Powered by Python //
 '''
+from guiltyCommits import placeTestsOkCandidateTags, placeTestsOkTags, chaseTheGuiltyCommits
 
 import time, string, signal
 def runInBackgroundForAWhile(path, command, sleeptime=10) :
@@ -486,15 +488,13 @@ def deployClamBuildSystem() :
 			continue
 		executeMandatory('echo \'CLAM_PATH = %s%s\' > %s' %(CLAM_SANDBOXES, SANDBOX_NAME, clamlocationfile))
 
-
-	
 #-------------------------------------------------------------------------------------  
 #  Aplication Logic
 #
 def runTests() :
 	totalSummary = [''] # TODO depracate
 	totalDetails = [''] # TODO depracate
-	totalResults = []
+	resultSet = TestResultSet()
 	subj = [subject]
 	if 'CVSROOT' not in os.environ :
 		print 'warning: CVSROOT not found in environ'
@@ -506,6 +506,10 @@ def runTests() :
 	if SANDBOX_NAME in ['devel','CLAM'] : 
 		sendError( 'ups, trying to remove devel sandbox !!' )
 		sys.exit(-1)
+
+	placeTestsOkCandidateTags("CLAM")
+	placeTestsOkCandidateTags("CLAM_NetworkEditor")
+	placeTestsOkCandidateTags("CLAM_SMSTools")
 
 	updateSandboxes()
 	totalSummary.append(checkPaths())
@@ -521,10 +525,26 @@ def runTests() :
 		aSummary, aDetail, aTestResult  = compileAndRun(name, path)
 		totalSummary.append(aSummary)
 		totalDetails.append(aDetail)
-		totalResults.append(aTestResult)
+		resultSet.add( aTestResult )
+		print "test name: %s \t passed: %i " % (aTestResult.name, aTestResult.passed() )
 		print aSummary     # for console monitoring purposes
+	print "\nGlobal test result: %i ( %i tests) " % (resultSet.passed(), resultSet.nTests() )
 
-	mailBody = mailTemplate  % ( MODULE_TAG, "".join(totalSummary), "".join(totalDetails) )
+	
+	if resultSet.passed() :
+	
+		placeTestsOkTags("CLAM")
+		placeTestsOkTags("CLAM_NetworkEditor")
+		placeTestsOkTags("CLAM_SMSTools")
+		guiltyReport = ''
+	else :
+		guiltyReport = chaseTheGuiltyCommits("CLAM")
+		guiltyReport += chaseTheGuiltyCommits("CLAM_NetworkEditor")
+		guiltyReport += chaseTheGuiltyCommits("CLAM_SMSTools")
+	
+	mailBody = guiltyReport + mailTemplate  % ( MODULE_TAG, "".join(totalSummary), "".join(totalDetails) )
+
+	#TODO depracate. use resultSet instead
 	if foundCompilationErrors : 
 		subj.append(' - compilation err!')
 	if foundTestsFailures :
@@ -547,8 +567,7 @@ def runTests() :
 	#write log
 	results = file(CLAM_SANDBOXES + "RunTestResults.txt", "w")
 	results.write("".join(subj))
-	results.write("".join(totalSummary))
-	results.write("".join(totalDetails))
+	results.write(mailBody)
 	results.close()
 #--------------------------------------------------------------
 #
