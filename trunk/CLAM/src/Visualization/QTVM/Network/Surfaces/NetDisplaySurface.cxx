@@ -10,6 +10,7 @@ namespace CLAM
 			setAutoBufferSwap(false);
 			SetBackgroundColor(0.0,0.0,0.0);
 			InitView();
+			_doResize = false;
 
 			_controller = NULL;
 		}
