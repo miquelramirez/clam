@@ -158,6 +158,11 @@ namespace CLAM
 	public:
 		const char * GetClassName() const {return "SpectrumPortMonitor";}
 	};
+        class SpecgramPortMonitor : public PortMonitor<Spectrum>
+	{
+	public:
+	        const char * GetClassName() const {return "SpecgramPortMonitor";}
+	};
 	class FundamentalPortMonitor : public PortMonitor <Fundamental>
 	{
 	public:
