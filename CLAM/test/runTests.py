@@ -19,7 +19,7 @@ updateLevelForTestData = 1
 # When false keeps already compiled objects
 doCleanMake = True
 # When false does not run autoconf and configure unless a new checkout
-doAutoconf = False
+doAutoconf = True
 configureOptions = '--without-portmidi  --without-portaudio'
 # Non-test are runned those seconds and then killed
 executionTime = 15

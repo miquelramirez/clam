@@ -30,6 +30,8 @@
 #include <qcursor.h>
 #include <math.h>
 
+namespace CLAM 
+{
 
 static const float MIN_ZOOM=0.2;
 static const float ZOOM_ADJUST_MARGIN_MIN=0; //percent of screen
@@ -78,8 +80,8 @@ void Envelope_Point_Editor::move_mouse_to_selected_node() {
 	if (cur_height<=0)
 		return;
 
-        float env_normalize=-envelope->get_min_value();
-	float env_total=envelope->get_max_value()-envelope->get_min_value();
+        float env_normalize=-envelope->get_minY_value();
+	float env_total=envelope->get_maxY_value()-envelope->get_minY_value();
 	if (env_total==0)
 		return; //canut be draw, broken envelope
 	int center=int(env_normalize*(float)cur_height/env_total);
@@ -108,8 +110,8 @@ bool Envelope_Point_Editor::event ( QEvent * e ) {
 		return true;
 
 
-        float env_normalize=-envelope->get_min_value();
-	float env_total=envelope->get_max_value()-envelope->get_min_value();
+        float env_normalize=-envelope->get_minY_value();
+	float env_total=envelope->get_maxY_value()-envelope->get_minY_value();
 	if (env_total==0)
 		return QWidget::event( e ); //canut be draw, broken envelope
 	int center=int(env_normalize*(float)cur_height/env_total);
@@ -269,10 +271,11 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 	if (cur_height<=0)
 		return;
 
-        float env_normalize=-envelope->get_min_value();
-	float env_total=envelope->get_max_value()-envelope->get_min_value();
+	float env_normalize=-envelope->get_minY_value();
+	float env_total=envelope->get_maxY_value()-envelope->get_minY_value();
 
-	if (envelope->is_loop_enabled()) {
+	if (envelope->is_loop_enabled()) 
+	{
 
 		float node_begin,node_end;
 
@@ -285,7 +288,8 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
         	painter.drawLine((int)node_end,0,(int)node_end,cur_height);
 	}
 
-	if (envelope->is_sustain_loop_enabled()) {
+	if (envelope->is_sustain_loop_enabled()) 
+	{
 
 		float node_begin,node_end;
 
@@ -374,8 +378,8 @@ void Envelope_Point_Editor::draw_envelope_pos(int p_x,QPainter &painter) {
 	if (cur_height<=0)
 		return;
 
-        float env_normalize=-envelope->get_min_value();
-	float env_total=envelope->get_max_value()-envelope->get_min_value();
+        float env_normalize=-envelope->get_minY_value();
+	float env_total=envelope->get_maxY_value()-envelope->get_minY_value();
 	if (env_total==0)
 		return; //canut be draw, broken envelope
 	int center=int(env_normalize*(float)cur_height/env_total);
@@ -575,3 +579,5 @@ Envelope_Point_Editor::Envelope_Point_Editor(QWidget *p_parent) : QWidget(p_pare
 Envelope_Point_Editor::~Envelope_Point_Editor()
 {
 }
+
+} // namespace CLAM

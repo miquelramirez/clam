@@ -51,7 +51,7 @@ namespace CLAM
 		OutControl                    mNoteOut;
 		OutControl                    mVelocityOut;
 
-	protected:
+	public:
 		friend class Dispatcher;
 		
 		void SetId(int id) { mId = id; }

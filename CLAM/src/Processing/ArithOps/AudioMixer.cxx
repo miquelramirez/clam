@@ -26,8 +26,7 @@ namespace CLAM
 
 AudioMixer::AudioMixer() : mOutputPort("Output Audio",this)
 {
-	AudioMixerConfig cfg;
-	Configure( cfg );
+	Configure( mConfig );
 }
 
 

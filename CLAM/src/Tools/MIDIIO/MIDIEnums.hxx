@@ -29,7 +29,7 @@ class MIDI
 public:
 	/**
 	* Channel message IDs. This corresponds with the 4 most significant 
-	* Masks of the MIDI Channel message.
+	* bits of the MIDI Channel message.
 	*/
 	enum Message {
 		eNoteOff = 0,
@@ -53,7 +53,7 @@ public:
 
 	/**
 	* System message IDs. This corresponds with the 4 least significant 
-	* Masks of the MIDI System message (#Fx).
+	* bits of the MIDI System message (#Fx).
 	*/
 	enum SysMsg {
 		eExclusiveStart = 0,

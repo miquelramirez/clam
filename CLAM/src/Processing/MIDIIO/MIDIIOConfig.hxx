@@ -87,7 +87,6 @@ protected:
 	}
 };
 
-
 } // namespace CLAM
 
 #endif // __MIDIIOConfig__

@@ -63,10 +63,7 @@ namespace CLAM{
 		mGenderFactor("Gender Factor", this)
 		{}
 
-		const ProcessingConfig& GetConfig() const 
-		{ 
-			return mConfig;
-			throw 0; }
+		const ProcessingConfig& GetConfig() const { return mConfig; }
 
 		virtual bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 

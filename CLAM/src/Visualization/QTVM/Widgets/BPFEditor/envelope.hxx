@@ -47,6 +47,10 @@ and interface
 ********************************/
 
 #include <vector>
+#include "DataTypes.hxx"
+
+namespace CLAM
+{
 
 struct Envelope {
 
@@ -81,8 +85,10 @@ private:
 
 	int fadeout;
 
-	int max_value;
-	int min_value;
+	int maxY_value;
+	int minY_value;
+	int maxX_value;
+	int minX_value;
 
 	int max_nodes; //-1 for infinite
 	int min_nodes;
@@ -94,18 +100,28 @@ public:
 
 
 	//max and min height for nodes
-	void set_max_value(int p_max) { max_value=p_max; }
-	void set_min_value(int p_min) { min_value=p_min; }
+	void set_maxY_value(int py_max) { maxY_value=py_max; }
+	void set_minY_value(int py_min) { minY_value=py_min; }
+	void set_maxX_value(int px_max) { maxX_value=px_max; }
+	void set_minX_value(int px_min) { minX_value=px_min; }
 
-	int get_max_value() { return max_value; }
-	int get_min_value() { return min_value; }
+	int get_maxY_value() { return maxY_value; }
+	int get_minY_value() { return minY_value; }
+	int get_maxX_value() { return maxX_value; }
+	int get_minX_value() { return minX_value; }
 	int get_max_nodes() { return max_nodes; }
 	int get_min_nodes() { return min_nodes; }
 
 	//node management
 	int get_node_count();
-	void set_node_offset(int p_node,int p_x,int p_y);
-	int add_node_at_offset(int p_x,int p_y);
+
+	/* TODO:
+	 * p_x and p_y were originally ints
+	 * - changed to TData to match with CLAM
+	 * comparisons for equality are now dangerous
+	 */ 
+	void set_node_offset(int p_node,int p_x, int p_y);
+	int add_node_at_offset(int p_x, int p_y);
 	void delete_node(int p_node);
 	int get_node_height(int p_node);
 	int get_node_offset(int p_node);
@@ -142,4 +158,6 @@ public:
 	Envelope();
 
 };
+
+} // namespace CLAM
 #endif

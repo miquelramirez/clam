@@ -40,7 +40,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 		outRes = inRes;
 	}
 
-	TSize spectralRange = 22050; // default for SampleRate = 44100;
+	TData spectralRange = 22050; // default for SampleRate = 44100;
 
 	TData amount=mShiftAmount.GetLastValue();
 	if(amount==1)//no pitch shift
@@ -96,7 +96,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 
 bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
-//	out=in;	// TODO most likely this copy is not necessary
+	out=in;	// TODO most likely this copy is not necessary
 
 	return Do( in.GetSpectralPeakArray(),
 			in.GetFundamental(), 

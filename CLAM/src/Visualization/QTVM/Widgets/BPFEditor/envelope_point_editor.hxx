@@ -27,6 +27,10 @@
  *
  * Juan Linietsky
  **/
+
+namespace CLAM 
+{
+
 class Envelope_Point_Editor : public QWidget {
 
 Q_OBJECT
@@ -90,5 +94,7 @@ public:
 
 
 };
+
+} // namespace CLAM
 
 #endif
