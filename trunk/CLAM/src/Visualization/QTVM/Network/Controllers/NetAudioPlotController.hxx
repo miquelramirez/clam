@@ -26,8 +26,6 @@ namespace CLAM
 			void FullView();
 
 		private:
-			Audio _cachedData;
-
 			DataRenderer _dRenderer;
 
 			MonitorType * mMonitor;

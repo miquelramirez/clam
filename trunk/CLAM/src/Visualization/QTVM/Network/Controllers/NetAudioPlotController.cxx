@@ -7,7 +7,6 @@ namespace CLAM
 		NetAudioPlotController::NetAudioPlotController() 
 		{
 			SetvRange(TData(-1.0),TData(1.0));
-			_cachedData.SetSize(256);
 			mMonitor = 0;
 		}
 
@@ -40,7 +39,8 @@ namespace CLAM
 				_dRenderer.Render();
 				return;
 			}
-			const Audio & audio = mMonitor->FreezeAndGetData();
+		      
+			const Audio& audio = mMonitor->FreezeAndGetData();
 
 			// TODO: Because we have exclusive right for
 			// to the data we could remove some of this copies
