@@ -70,6 +70,8 @@ public:
 			std::cout << "Destructor CompWithBasics8 at "<< this << std::endl;
 	}
 
+	const char * GetClassName() const {return "CompWithBasics8";}
+
 	void StoreOn(Storage & storage)
 	{
 #ifdef CLAM_USE_XML
@@ -144,6 +146,8 @@ public:
 			std::cout << "Destructor CompWithBasics9 at "
 			          << this << std::endl;
 	}
+
+	const char * GetClassName() const {return "CompWithBasics8";}
 
 	void StoreOn(CLAM::Storage & storage)
 	{

@@ -65,6 +65,7 @@ namespace CLAMTest {
 		public:
 			Leaf1();
 			Leaf1(LeafConfig&);
+			const char * GetClassName() const {return "CLAMTest_Leaf1";}
 			const ProcessingConfig &GetConfig() const {return mConfig;}
 			bool Do(void) {return true;}
 		};
@@ -77,9 +78,9 @@ namespace CLAMTest {
 		public:
 			Leaf2();
 			Leaf2(LeafConfig&);
+			const char * GetClassName() const {return "CLAMTest_Leaf2";}
 			const ProcessingConfig &GetConfig() const {return mConfig;}
 			bool Do(void) {return true;}
-			const char *GetClassName() {return "Leaf2";}
 		};
 
 		// Named composite object.
@@ -96,9 +97,9 @@ namespace CLAMTest {
 			bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
 		public:
 			Composite(CompositeConfig&);
+			const char * GetClassName() const {return "CLAMTest_Composite";}
 			const ProcessingConfig &GetConfig() const {return mConfig;}
 			bool Do(void) {return true;}
-			const char *GetClassName() {return "Composite";}
 		};
 
 		// Test methods.

@@ -1,21 +1,20 @@
 PROGRAMS = \
            TestSnapshots \
-           TestEnum \
-           TestComplex \
-           TestPoint \
-           TestPolar \
            BPFTest \
            ListTest \
-           TestAudioFileIO \
            TestMIDIIO \
            TestAudioIO \
            TestControlMapper \
-           TestControls \
            AudioPlayer \
            TestPOComposite \
            SegmentTest \
+           TestAudioFileIO \
 
 TESTS = \
+	AllUnitTests \
+        TestComplex \
+        TestPoint \
+        TestPolar \
         TestXMLAdapters \
         TestConfig \
         TestFlags \
@@ -28,14 +27,15 @@ TESTS = \
         TestIFFT \
         TestSpectrum \
         TestSpectrumAdder \
-        TestSpectrumAdder2 \
-        TestSpectrumProduct \
         TestWindowing \
         PhantomBufferTest \
         TestStreamRegions \
         TestStreamBuffer \
         TestEnvelopeExtractor \
         TestWaveGenerator \
+        TestSpectrumAdder2 \
+        TestSpectrumProduct \
+        TestSignalv1 \
 
 TOP=..
 

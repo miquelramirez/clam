@@ -20,7 +20,8 @@
  */
 
 #include "Enum.hxx"
-#include <iostream>
+#include <cppunit/extensions/HelperMacros.h>
+
 
 using namespace CLAM;
 
@@ -28,6 +29,10 @@ using namespace CLAM;
 // Test Class
 /////////////////////////////////////////////////////////////////////
 namespace CLAMTest {
+	
+	class EnumTest;
+	CPPUNIT_TEST_SUITE_REGISTRATION( EnumTest );
+
 	class MyEnum : public Enum {
 	public:
 		static tEnumValue sEnumValues[];
@@ -54,71 +59,75 @@ namespace CLAMTest {
 
 	Enum::tValue MyEnum::sDefault = MyEnum::dos;
 
-	void MyEnum::TestClass () {
-		bool the_test_is_passed = true;
-		std::cout << "-- Testing Enum" << std::endl;
+	class EnumTest : public CppUnit::TestFixture {
+
+		CPPUNIT_TEST_SUITE (CLAMTest::EnumTest);
+
+		CPPUNIT_TEST (testDefaultConstructor);
+		CPPUNIT_TEST (testValueConstructor);
+		CPPUNIT_TEST (testStringConstructor);
+		CPPUNIT_TEST (testSetValue);
+		CPPUNIT_TEST (testSetValueWithString);
+		CPPUNIT_TEST (testSetValueSafely_With_IllegalString);
+		CPPUNIT_TEST (testSetValueSafely_With_IllegalValue);
+
+		CPPUNIT_TEST_SUITE_END();
+	private:
+		void testDefaultConstructor()
 		{
-			std::cout << "+ Default constructor" << std::endl;
 			MyEnum e;
-			std::cout << e.GetString() << std::endl;
+			CPPUNIT_ASSERT_EQUAL_MESSAGE("Default constructor didn't get the expected value 'dos'",
+					std::string("dos"),e.GetString());
 		}
+		void testValueConstructor()
 		{
-			std::cout << "+ Value constructor" << std::endl;
 			MyEnum e(MyEnum::cent);
-			std::cout << e.GetString() << std::endl;
+			CLAM_ASSERT (e.GetString()=="cent", "Value constructor didn't get the expected value 'cent'");
 		}
+		void testStringConstructor()
 		{
-			std::cout << "+ String constructor" << std::endl;
 			MyEnum e("cent");
-			std::cout << e.GetString() << std::endl;
+			CLAM_ASSERT (e.GetString()=="cent", "String constructor didn't get the expected value 'cent'");
 		}
+		void testSetValue()
 		{
-			std::cout << "+ Value Set" << std::endl;
 			MyEnum e;
 			e.SetValue(0);
-			std::cout << e.GetString() << std::endl;
+			CLAM_ASSERT (e.GetString()=="zero", "SetValue(enum) didn't change the value to 'zero'");
 		}
+		void testSetValueWithString()
 		{
-			std::cout << "+ String Set" << std::endl;
 			MyEnum e;
 			e.SetValue("dos");
-			std::cout << e.GetString() << std::endl;
+			CLAM_ASSERT (e.GetString()=="dos", "SetValue(string) didn't change the value to 'dos'");
 		}
+		void testSetValueSafely_With_IllegalString()
 		{
-			std::cout << "+ Illegal String Set" << std::endl;
 			MyEnum e;
 			try {
 				e.SetValueSafely("dros");
-				the_test_is_passed &= false;
-				std::cout << e.GetString() << std::endl;
+				CLAM_ASSERT (false, "Exception not thrown, when setting an illegal string symbol");
 			} 
 			catch (IllegalValue e) {
-				std::cerr << "Exception thrown: " << e.msg << std::endl;
+				// That's ok
 			}
 		}
+		void testSetValueSafely_With_IllegalValue()
 		{
-			std::cout << "+ Illegal Value Set" << std::endl;
 			MyEnum e;
 			try {
 				e.SetValueSafely(4);
-				the_test_is_passed &= false;
-				std::cout << e.GetString() << std::endl;
+				CLAM_ASSERT (false, "Exception not thrown, when setting an illegal integer value");
 			} 
 			catch (IllegalValue e) {
-				std::cerr << "Exception thrown: " << e.msg << std::endl;
+				// That's ok
 			}
 		}
-		if ( the_test_is_passed )
-			std::cout << "Test Passed." << std::endl;
-		else
-			std::cout << "Test Failed." << std::endl;
-	}
+	};
+
+
 }
 
 
-int main () {
-	CLAMTest::MyEnum::TestClass();
-	return 0;
-}
 
 

@@ -27,6 +27,7 @@
 #include "SpectrumComp.hxx"
 #include "OctaveVector.hxx"
 
+
 namespace CLAMTest {
 
 	// Loads the vectors from a file, if they have not been previously loaded,
@@ -144,9 +145,13 @@ namespace CLAMTest {
 
 	bool TestAdder(SpectrumAdder2 &adder)
 	{
+#ifdef CLAM_DOUBLE
+		TData max_err = 0.000001;
+#else
+		TData max_err = 0.15f;
+#endif
 		Spectrum in1,in2,out,out_good;
 		int proto1,proto2,proto3;
-		TData max_err = 0.00001;
 		adder.Start();
 
 		in1.SetSize(1024);

@@ -46,10 +46,10 @@ void TestBasics()
 
 	if (receiver.in1.GetLastValue() != 11.11f) 
 		throw Err();
-		else if (receiver.in2.GetLastValue() != 22.33f) 
-			throw Err();
-			else if (receiver.in3.GetLastValue() != 22.33f) 
-				throw Err();
+	if (receiver.in2.GetLastValue() != 22.33f) 
+		throw Err();
+	if (receiver.in3.GetLastValue() != 22.33f) 
+		throw Err();
 	// test static-controls publication order:
 	for (int i=3; i<=7; i++) {
 		InControl* ic = sender.GetInControl(i);

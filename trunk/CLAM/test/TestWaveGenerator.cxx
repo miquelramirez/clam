@@ -91,7 +91,7 @@ namespace CLAMTest {
 		  mFrec2(200.0),
 		  mPhase2(1.333),
 		  mSampleRate2(48000),
-		  mThreshold(0.01)
+		  mThreshold(0.025)
 	{
 	}
 

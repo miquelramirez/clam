@@ -1,5 +1,6 @@
 #include "Signalv1.hxx"
 #include "Slot.hxx"
+#include "TestSignalv1Classes.hxx"
 #include <iostream>
 
 namespace CLAMTest
@@ -7,85 +8,10 @@ namespace CLAMTest
 	using CLAMGUI::Signalv1;
 	using CLAMGUI::Slot;
 
-	class Signaler
+
+	void Check( SlottedBase& s )
 	{
-	public:
-		void Simulate()
-		{
-			mNewInteger.Emit( 33 );
-		}
-
-		Signalv1<int>& GetNewIntegerSignal()
-		{
-			return mNewInteger;
-		}
-
-	private:
-
-		Signalv1<int> mNewInteger;
-	};
-	
-	class SlottedBase
-	{
-	public:
-		virtual void PureVirtualReact( int value ) = 0;
-
-		virtual ~SlottedBase()
-		{
-		}
-	};
-
-	class Slotted
-		: public SlottedBase
-	{
-	public:
-
-		static void sReact( int value )
-		{
-			smNotified = true;
-			std::cout << "Value received " << value << std::endl;
-		}
-
-		void PureVirtualReact( int value )
-		{
-			mPureVirtualNotified = true;
-			std::cout << "Value received" << value << std::endl;
-		}
-
-		void React( int value )
-		{
-			mNotified = true;
-			std::cout << "Value received " << value << std::endl;
-		}
-
-		void LinkWith( Signaler& sig )
-		{
-			mSignalSlot = sig.GetNewIntegerSignal().Connect( this, &Slotted::React );
-			mStaticSignalSlot = sig.GetNewIntegerSignal().Connect( &Slotted::sReact );
-			mPureVirtualSignalSlot = sig.GetNewIntegerSignal().Connect( this, &Slotted::PureVirtualReact );
-		}
-
-		bool WasNotified()
-		{
-			return mNotified && smNotified && mPureVirtualNotified;
-		}
-
-	private:
-
-		bool mNotified;
-		bool mPureVirtualNotified;
-		static bool smNotified;
-		Slot mSignalSlot;
-		Slot mStaticSignalSlot;
-		Slot mPureVirtualSignalSlot;
-
-	};
-
-	bool Slotted::smNotified = false;
-
-	void Check( Slotted& s )
-	{
-		if ( s.WasNotified() )
+		if ( s.WasCorrectlyNotified() )
 		{
 
 			std::cout << "Test Passed" << std::endl;
@@ -114,6 +40,31 @@ namespace CLAMTest
 		std::cout << "Basic Functionality test passed" << std::endl;
 	}
 
+	void MultipleSignalsConnectedTest()
+	{
+		tSignalerVector emitterVector;
+		int k = 0;
+		int signalCardinal = 10;
+
+		for ( k = 0; k < signalCardinal; k++ )
+		{
+			emitterVector.push_back( Signaler() );
+		}
+
+		SlottedMultipleSignals receiver;
+
+		receiver.LinkWith( emitterVector );
+
+		for ( k = 0; k < signalCardinal; k++ )
+		{
+			emitterVector[k].Simulate();
+		}
+
+		Check( receiver );
+
+		std::cout << "Multiple Signals connected to same slot test passed" << std::endl;
+	}
+
 }
 
 
@@ -123,7 +74,7 @@ using namespace CLAMTest;
 	{
 
 		BasicTest();
-
+		MultipleSignalsConnectedTest();
 		
 		return 0;
 	}
