@@ -45,7 +45,6 @@ namespace CLAM
 		void NetPlot::Hide()
 		{
 			hide();
-			_surf->stopRendering();
 		}
 
 		void NetPlot::SetController(NetPlotController* controller)

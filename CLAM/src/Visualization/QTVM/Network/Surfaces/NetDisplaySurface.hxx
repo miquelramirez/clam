@@ -28,8 +28,7 @@ namespace CLAM
 
 			protected:
 				void resizeEvent(QResizeEvent* re);
-				void paintEvent(QPaintEvent* pe);
-				void closeEvent(QCloseEvent* ce);
+		                void paintEvent(QPaintEvent* pe);
 
 			private:
 				NetPlotController* _controller;
