@@ -1,0 +1,7 @@
+800 600
+AudioOut_0	490 165	71 52
+AudioOut_1	496 257	71 52
+CrossMixer_1	320 186	75 52
+ICA_0	302 25	54 52
+MonoAudioFileReader_0	47 73	110 52
+MonoAudioFileReader_1	65 171	110 52

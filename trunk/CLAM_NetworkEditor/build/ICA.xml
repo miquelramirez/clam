@@ -1,0 +1,90 @@
+<network id="CLAM" >
+  <processing type="AudioOut" id="AudioOut_0" >
+    <Device>default:default</Device>
+    <ChannelID>0</ChannelID>
+    <FrameSize>512</FrameSize>
+    <SampleRate>8000</SampleRate>
+  </processing>
+  <processing type="AudioOut" id="AudioOut_1" >
+    <Device>default:default</Device>
+    <ChannelID>1</ChannelID>
+    <FrameSize>512</FrameSize>
+    <SampleRate>8000</SampleRate>
+  </processing>
+  <processing type="CrossMixer" id="CrossMixer_1" >
+    <NChannels>2</NChannels>
+    <FrameSize>256</FrameSize>
+  </processing>
+  <processing type="ICA" id="ICA_0" >
+    <LearningRate>0.001</LearningRate>
+    <Iteration>100</Iteration>
+    <Number>2</Number>
+    <NL_Func>0</NL_Func>
+    <TrainFlag>0</TrainFlag>
+    <OnlineFlag>1</OnlineFlag>
+    <InitWFlag>1</InitWFlag>
+    <BatchSize>256</BatchSize>
+  </processing>
+  <processing type="MonoAudioFileReader" id="MonoAudioFileReader_0" >
+    <SourceFile>
+      <URI>/home/vokimon/011000000mix1.wav</URI>
+      <Header>
+        <SampleRate>8000</SampleRate>
+        <Samples>50000</Samples>
+        <Channels>2</Channels>
+        <Length>6250</Length>
+        <Format>WAV</Format>
+        <Encoding>unsigned 8-bit</Encoding>
+        <Endianess>Format Default</Endianess>
+      </Header>
+      <TextualDescriptors/>
+    </SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
+  </processing>
+  <processing type="MonoAudioFileReader" id="MonoAudioFileReader_1" >
+    <SourceFile>
+      <URI>/home/vokimon/011000000mix2.wav</URI>
+      <Header>
+        <SampleRate>8000</SampleRate>
+        <Samples>50000</Samples>
+        <Channels>1</Channels>
+        <Length>6250</Length>
+        <Format>WAV</Format>
+        <Encoding>unsigned 8-bit</Encoding>
+        <Endianess>Format Default</Endianess>
+      </Header>
+      <TextualDescriptors/>
+    </SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
+  </processing>
+  <port_connection>
+    <out>CrossMixer_1.Output 0</out>
+    <in>AudioOut_0.Audio Input</in>
+  </port_connection>
+  <port_connection>
+    <out>CrossMixer_1.Output 1</out>
+    <in>AudioOut_1.Audio Input</in>
+  </port_connection>
+  <port_connection>
+    <out>ICA_0.Weights</out>
+    <in>CrossMixer_1.Weights</in>
+  </port_connection>
+  <port_connection>
+    <out>MonoAudioFileReader_0.Samples Read</out>
+    <in>ICA_0.Input 0</in>
+  </port_connection>
+  <port_connection>
+    <out>MonoAudioFileReader_0.Samples Read</out>
+    <in>CrossMixer_1.Input 0</in>
+  </port_connection>
+  <port_connection>
+    <out>MonoAudioFileReader_1.Samples Read</out>
+    <in>ICA_0.Input 1</in>
+  </port_connection>
+  <port_connection>
+    <out>MonoAudioFileReader_1.Samples Read</out>
+    <in>CrossMixer_1.Input 1</in>
+  </port_connection>
+</network>
