@@ -252,6 +252,13 @@ SOURCE=..\..\..\test\UnitTests\XMLAdaptersTests\AdaptersTest.cxx
 SOURCE=..\..\..\test\UnitTests\ToolsTests\AudioFileTest.cxx
 # End Source File
 # End Group
+# Begin Group "StandardTests Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\test\UnitTests\StandardTests\StatsTest.cxx
+# End Source File
+# End Group
 # Begin Group "CommonHelpers Sources"
 
 # Begin Source File
@@ -610,11 +617,15 @@ SOURCE=..\..\..\src\Standard\BPF.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Standard\Text.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Standard\Flags.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\Text.cxx
+SOURCE=..\..\..\src\Standard\Order.cxx
 # End Source File
 # End Group
 # Begin Group "Tools Sources"
@@ -902,10 +913,6 @@ SOURCE=..\..\..\src\Errors\ErrSystem.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Defines\Assert.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\mtgsstream.h
 # End Source File
 # Begin Source File
 
@@ -1223,6 +1230,10 @@ SOURCE=..\..\..\src\Standard\CommonOps.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Standard\Text.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Standard\Filename.hxx
 # End Source File
 # Begin Source File
@@ -1231,7 +1242,15 @@ SOURCE=..\..\..\src\Standard\Flags.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\Text.hxx
+SOURCE=..\..\..\src\Standard\Order.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\BasicOps.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\Stats.hxx
 # End Source File
 # Begin Source File
 
@@ -1562,7 +1581,7 @@ SOURCE=..\..\..\externals\CbLib\CBL.hxx
 # End Group
 # Begin Source File
 
-SOURCE=..\..\..\externals\deque
+SOURCE=..\..\..\externals\CLAM_deque.hxx
 # End Source File
 # End Group
 # Begin Group "fftw Headers"
@@ -1962,31 +1981,34 @@ SOURCE=..\..\..\..\id3lib\include\id3\tag.h
 # End Group
 # End Group
 # End Group
+# Begin Group "Qt .ui Files"
+
+# End Group
 # Begin Source File
 
 SOURCE=settings.cfg
 
 !IF  "$(CFG)" == "AllUnitTests - Win32 Release"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "AllUnitTests.dsp"
-	srcdeps.exe settings.cfg AllUnitTests.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)"
+	srcdeps.exe settings.cfg
 
 # End Custom Build
-# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "AllUnitTests - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "AllUnitTests.dsp"
-	srcdeps.exe settings.cfg AllUnitTests.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)"
+	srcdeps.exe settings.cfg
 
 # End Custom Build
-# PROP Exclude_From_Build 1
 
 !ENDIF 
 

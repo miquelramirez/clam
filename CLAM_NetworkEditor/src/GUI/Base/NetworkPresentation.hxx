@@ -42,7 +42,7 @@ namespace CLAMVM
 {
 	class NetworkController;
 	class ProcessingController;
-	class ConnectionAdapter;
+//	class ConnectionAdapter;
 }
 
 namespace NetworkGUI
@@ -56,7 +56,6 @@ class NetworkPresentation: public CLAMVM::Presentation
 {
 protected:
 	std::string mName;
-	bool mNetworkState;
 	std::list<ProcessingPresentation*> mProcessingPresentations;
 	std::list<ProcessingPresentation*> mProcessingPresentationsToRemove;
 	typedef std::list<ProcessingPresentation*>::iterator ProcessingPresentationIterator;
@@ -71,6 +70,7 @@ public:
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 	void UpdatePresentations();
+	void Clear( );
 
 protected:
 	virtual void SetName(const std::string& name) = 0; 
@@ -82,17 +82,15 @@ protected:
 	void RebuildProcessingPresentationAttachedTo( const std::string &, CLAMVM::ProcessingController * );
 	void ChangeConnectionPresentationNames( const std::string &, const std::string & );
 	
-	virtual void CreatePortConnectionPresentation( CLAMVM::ConnectionAdapter * ) = 0;
-	virtual void CreateControlConnectionPresentation( CLAMVM::ConnectionAdapter * ) = 0;
+	virtual void CreatePortConnectionPresentation( const std::string &, const std::string & ) = 0;
+	virtual void CreateControlConnectionPresentation( const std::string &, const std::string & ) = 0;
 	void RemovePortConnection( ConnectionPresentation * );
 	void RemoveControlConnection( ConnectionPresentation * );
 	void CreatePortConnection( const std::string &, const std::string & );
 	void CreateControlConnection( const std::string &, const std::string & );
 
 	void RemoveConnectionPresentation( const std::string &, const std::string & );
-	
-	virtual void Clear( );
-	
+
 	ConnectionPointPresentation & GetOutPortPresentationByCompleteName(const std::string &);
 	ConnectionPointPresentation & GetInPortPresentationByCompleteName(const std::string &);
 	ConnectionPointPresentation & GetOutControlPresentationByCompleteName(const std::string &);
@@ -126,7 +124,7 @@ public:
 	SigSlot::Slotv2< const std::string &, const std::string & > SlotCreatePortConnection;
 	SigSlot::Signalv2< const std::string &, const std::string &  > SignalRemovePortConnection;
 	SigSlot::Slotv1< ConnectionPresentation * > SlotRemovePortConnection;
-	SigSlot::Slotv1< CLAMVM::ConnectionAdapter * > SlotCreatePortConnectionPresentation;	
+	SigSlot::Slotv2< const std::string &, const std::string & > SlotCreatePortConnectionPresentation;	
 	
 	SigSlot::Slotv2< const std::string &, const std::string &> SlotRemoveConnectionPresentation;
 
@@ -134,7 +132,7 @@ public:
 	SigSlot::Slotv2< const std::string &, const std::string & > SlotCreateControlConnection;
 	SigSlot::Signalv2< const std::string &, const std::string & > SignalRemoveControlConnection;
 	SigSlot::Slotv1< ConnectionPresentation *> SlotRemoveControlConnection;
-	SigSlot::Slotv1< CLAMVM::ConnectionAdapter * > SlotCreateControlConnectionPresentation;
+	SigSlot::Slotv2< const std::string &, const std::string & > SlotCreateControlConnectionPresentation;
 
 	SigSlot::Slotv2< const std::string &, const std::string & > SlotChangeConnectionPresentationNames;
 };

@@ -72,13 +72,14 @@ namespace CLAM {
 	class WaveGenerator: public Processing
 	{
 	protected:
-		WaveGeneratorConfig mConfig;
-	private:
-
+		WaveGeneratorConfig mConfig;	
+		
+	public:
 		// MRJ: Convenience type for template thingies to work
 		class EWaveType_eSine
 		{
 		};
+	private:
 
 		TData mAmplitude;
 

@@ -320,6 +320,8 @@ namespace CLAM{
 			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
 			Fl_Box * b = new Fl_Box(0, 0, 250, 20, name);
 			Fl_Int_Input * mInput = new Fl_Int_Input(250, 0, 75, 20);
+			Fl_Box * padding = new Fl_Box(325, 0, 5, 20);
+			padding->box(FL_FLAT_BOX);
 			o->end();
 
 			std::stringstream val;
@@ -371,6 +373,8 @@ namespace CLAM{
 			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
 			Fl_Box * b = new Fl_Box(0, 0, 180, 20, name);
 			Fl_Choice* mChoice = new Fl_Choice(180, 0, 145, 20);
+			Fl_Box * padding = new Fl_Box(325, 0, 5, 20);
+			padding->box(FL_FLAT_BOX);
 			o->end();
 
 			b->labelsize(12);

@@ -36,30 +36,20 @@ public:
 		eNoteOn = 1,
 		ePolyAftertouch = 2,
 		eControlChange = 3,
-		eModeChange = 4,
+		eProgramChange = 4,
 		eAftertouch = 5,
 		ePitchbend = 6,
-		eSystem = 7
+		eSystem = 7,
+		// and some special stuff
+		eNoteOnOff = 8
 	};
 
 	struct MessageInfo
 	{
-		unsigned short mask;
 		int length;
 		char* name;
-		char* field[2];
+		char* field[3];
 	};
-
-	/** Shorthand for GetMessageInfo(msg).mask */
-	static const unsigned short MessageMask(Message msg)
-	{
-		return GetMessageInfo(msg).mask;
-	}
-
-	static const unsigned short MessageMask(int msg)
-	{
-		return GetMessageInfo(msg).mask;
-	}
 
 	/**
 	* System message IDs. This corresponds with the 4 least significant 
@@ -102,21 +92,6 @@ public:
 		return (SysMsg)(b&15);
 	}
 
-	static const unsigned short sAllChannelMask;
-	static const unsigned short sAllMessageMask;
-	
-	static unsigned short ChannelMask(int channel)
-	{
-		/* The following can be nasty... Note that you should pass a midi channel
-		in the range 1-16 here. 0 will result in all*/
-		if (channel<=0) return sAllChannelMask;
-		return sChannelMask[channel-1];
-	}
-	static unsigned short SysMsgMask(int sysmsg)
-	{
-		return sChannelMask[sysmsg];
-	}
-	
 	static const MessageInfo& GetMessageInfo(Message msg)
 	{
 		return sMessageInfo[int(msg)];
@@ -127,8 +102,7 @@ public:
 		return sMessageInfo[msg];
 	}
 private:
-	static const MessageInfo sMessageInfo[8];
-	static const unsigned short sChannelMask[16];
+	static const MessageInfo sMessageInfo[9];
 
 friend class MIDIDevice;
 

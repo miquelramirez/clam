@@ -798,12 +798,12 @@ UserInterface::UserInterface() {
     { Fl_Group* o = new Fl_Group(0, 25, 870, 495);
       { Fl_Smart_Tile* o = mSmartTile = new Fl_Smart_Tile(0, 30, 870, 490);
         o->box(FL_NO_BOX);
-        o->color(49);
-        o->selection_color(49);
+        o->color(FL_BACKGROUND_COLOR);
+        o->selection_color(FL_BACKGROUND_COLOR);
         o->labeltype(FL_NORMAL_LABEL);
         o->labelfont(0);
         o->labelsize(14);
-        o->labelcolor(56);
+        o->labelcolor(FL_BLACK);
         o->align(FL_ALIGN_CENTER);
         o->when(FL_WHEN_RELEASE);
         Fl_Group::current()->resizable(o);
@@ -827,7 +827,7 @@ void UserInterface::AboutWindow() {
       o->box(FL_FLAT_BOX);
       o->labelfont(1);
       o->labelsize(16);
-      o->labelcolor(0);
+      o->labelcolor(FL_FOREGROUND_COLOR);
     }
     new Fl_Box(110, 45, 230, 25, "MTG - IUA - UPF");
     { Fl_Box* o = new Fl_Box(345, 40, 100, 100);
@@ -839,7 +839,7 @@ void UserInterface::AboutWindow() {
     }
     { Fl_Box* o = new Fl_Box(110, 95, 230, 20, "http://www.iua.upf.es/mtg/");
       o->labelfont(4);
-      o->labelcolor(4);
+      o->labelcolor((Fl_Color)4);
     }
     new Fl_Box(110, 115, 230, 20, "for more information");
     mWindow2->position(mWindow->x()+(mWindow->w()-mWindow2->w())/2,mWindow->y()+(mWindow->h()-mWindow2->h())/2);

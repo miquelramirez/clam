@@ -256,13 +256,11 @@ void PhaseManagement::DoPhaseContinuation(SpectralPeakArray& p)
 		{
 			SpectralPeak tmpPeak=mLastPeakArray.GetSpectralPeak(lastPos);
 			p.SetPhase(i,tmpPeak.GetPhase()+TData(TWO_PI)*TData(0.5)*(tmpPeak.GetFreq()+p.GetFreq(i))*(t-mFrameTime));
-//			mLastPeakArray.SetSpectralPeak(lastPos,p.GetSpectralPeak(i));
 			
 		}
 		else
 		{
-			p.SetPhase(i,/*testing mpLastPhase[i]+*/TData(TWO_PI)*p.GetFreq(i)*(t-mFrameTime));
-//			mLastPeakArray.AddSpectralPeak(p.GetSpectralPeak(i));
+			p.SetPhase(i,TData(TWO_PI)*p.GetFreq(i)*(t-mFrameTime));
 		}
 		p.SetPhase(i,p.GetPhase(i)-floor((TData)(p.GetPhase(i)/TData(TWO_PI)))*TData(TWO_PI));
 		

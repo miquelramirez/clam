@@ -20,9 +20,7 @@
  */
 
 #include "Assert.hxx"
-#include "mtgsstream.h"
 #include "ProcessingComposite.hxx"
-#include <string>
 
 namespace CLAM {
 

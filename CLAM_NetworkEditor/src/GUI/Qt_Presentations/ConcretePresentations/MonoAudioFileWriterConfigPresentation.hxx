@@ -55,6 +55,10 @@ protected:
 public:
 	MonoAudioFileWriterConfigPresentation( QWidget * parent = 0 );
 	virtual ~MonoAudioFileWriterConfigPresentation();
+	CLAM::ProcessingConfig * GetConfig()
+	{
+		return &mConfig;
+	}
 };
 
 } // namespace NetworkGUI

@@ -52,19 +52,19 @@ namespace SigSlot
 	public:
 		typedef unsigned  tConnectionId;
   
-			/** \brief Destructor
-			 *
-			 *  Class destructor
-			 */
-			virtual ~Signal();
-  
-			/** \brief Removes a connection
-			 *
-			 *  Removes the given connections, so the Signal does not
-			 *  notify anymore the Slot behind that Connection.
-			 *  \param conn The connection to be freed
-			 */
-			virtual void FreeConnection( Connection* conn ) = 0;
+		/** \brief Destructor
+		 *
+		 *  Class destructor
+		 */
+		virtual ~Signal();
+ 
+		/** \brief Removes a connection
+		 *
+		 *  Removes the given connections, so the Signal does not
+		 *  notify anymore the Slot behind that Connection.
+		 *  \param conn The connection to be freed
+		 */
+		virtual void FreeConnection( Connection* conn ) = 0;
   
 	protected:
 		void FreeConnectionId( tConnectionId );

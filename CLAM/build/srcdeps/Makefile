@@ -1,7 +1,8 @@
-OBJECTS=listhash.o objdepname.o parser.o config_parser.o strptr.o includepaths.o recursedir.o list.o strfuncs.o hash.o stack.o conditions.o linmain.o
+OBJECTS=listhash.o objdepname.o parser.o config_parser.o strptr.o includepaths.o recursedir.o list.o strfuncs.o hash.o stack.o conditions.o main.o makegen.o dsp_parser.o vcproj_parser.o tree.o emptydsp.o emptyvcproj.o
+
 DEPENDS=$(OBJECTS:.o=.d)
 PROGRAM=srcdeps
-CFLAGS=-Wall -O6
+CFLAGS=-Wall -g
 
 all: $(PROGRAM)
 

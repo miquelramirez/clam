@@ -23,7 +23,8 @@
 
 
 
-using namespace CLAM;
+namespace CLAM
+{
 
 ///////////////////////////////////////////////////////
 //
@@ -219,3 +220,6 @@ void Segment::SetHoldsData(bool holdsData)
 		UpdateData();
 	}
 }
+
+} // namespace CLAM
+

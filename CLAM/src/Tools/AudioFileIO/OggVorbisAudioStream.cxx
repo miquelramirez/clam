@@ -267,14 +267,20 @@ namespace AudioCodecs
 					      mBlockBuffer.GetPtr() + samplesRead);				
 		}
 
-		if ( mDecodeBuffer.size() < mInterleavedData.Size() )
+		mFramesLastRead = mDecodeBuffer.size();
+
+		if ( !mDecodeBuffer.empty() )
 		{
-			mDecodeBuffer.insert( mDecodeBuffer.end(),
-					      mInterleavedData.Size() - mDecodeBuffer.size(),
-					      0);
+
+			if ( mDecodeBuffer.size() < mInterleavedData.Size() )
+			{
+				mDecodeBuffer.insert( mDecodeBuffer.end(),
+						      mInterleavedData.Size() - mDecodeBuffer.size(),
+						      0);
+			}
+			
+			ConsumeDecodedSamples();
 		}
-		
-		ConsumeDecodedSamples();
 
 		mEOFReached = ( mLastBytesRead == 0) && (mDecodeBuffer.empty());
 	

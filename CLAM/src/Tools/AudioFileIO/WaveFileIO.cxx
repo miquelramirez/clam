@@ -95,6 +95,8 @@ void WaveFileIO::ReadHeader(void)
 			SWAP(fmt.samplerate);
 			SWAP(fmt.sampleWidth);
 
+			mHeader.mChannels = fmt.channels;
+			mHeader.mSamplerate = fmt.samplerate;
 			mHeader.mSampleWidth = fmt.sampleWidth;
 			mHeader.mBytesPerSample = (mHeader.mSampleWidth+7)>>3;
 			mHeader.mFormatTag = fmt.formatTag;

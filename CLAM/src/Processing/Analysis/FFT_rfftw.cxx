@@ -22,9 +22,6 @@
 
 #include "FFT_rfftw.hxx"
 
-#include <string>
-#include "mtgsstream.h" // An alias for <sstream>
-
 #include "ErrProcessingObj.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"

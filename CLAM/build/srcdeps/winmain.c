@@ -46,23 +46,19 @@ str_copy_path_from_file(char* destbuf, char* file, int max)
 
 int main(int argc,char** argv)
 {
-	char* settingsFile;
-	
-	char* dspFileToRead = 0;
+	char* settingsFile;	
 	char dspFileToWrite[250];
 	
 
 	// TODO pass dsp file as option (no normal arg)
-	if (argc!=3 && argc!=2)
+	if ( argc < 2 )
 	{
-		fprintf(stderr,"Usage srcdeps SETTINGSFILE DSPFILE\n"
-			"or, if you're generating a new dsp, srcdeps SETTINGSFILE\n" );
+		fprintf(stderr,"ERROR: Missing parameters!\n""Usage: srcdeps.exe <settings file> \n" );
 		exit(-1);
+
 	}
 	
 	settingsFile = argv[1];
-	if (argc==3) // dsp file is passed.
-		dspFileToRead = argv[2];	
 
 	// by default we'll use the emptydsp which is preloaded as a C variable
 
@@ -84,7 +80,6 @@ int main(int argc,char** argv)
 	sprintf(dspFileToWrite,"%s.dsp", program->first->str);
 	
 	printf("\n\t settingsFile: \t%s \n", settingsFile);
-	printf("\t dspFileToRead: \t%s \n", dspFileToRead);
 	printf("\t dspFileToWrite: \t%s \n", dspFileToWrite);
 
 	parser_init();
@@ -105,18 +100,44 @@ int main(int argc,char** argv)
 		}
 	}
 
-	if(dspFileToRead)
+	/*Create moc-generated and uic-generated files folders*/	
 	{
-//		if (files is equal to dspFileToWrite)
-//			dsp_parse_inline(dspFileToWrite);
-//		else
-//			dsp_parse_from_file(dspFileToRead, dspFileToWrite);
-		
-		//provisionally, since is thw way Visual use it:
-		dsp_parse_inplace(dspFileToRead);
+		listkey* h = NULL;
+		if ( ( h = listhash_find( config, "USE_QT" ) ) != NULL )
+		{
+			if ( !strcmp(h->l->first->str,"1") )
+			{
+				fprintf( stderr, "Creating .\\moc folder...\n" );
+				system( "mkdir moc" );
+				fprintf( stderr, "Creating .\\uic folder...\n" );
+				system( "mkdir uic" );
+			}
+						
+		}
+
+		h = listhash_find( config, "UI_FILES" );
+
+		if ( h )
+		{
+			item* current = h->l->first;
+			fprintf( stderr, "Files that need to be uic'ed\n" );
+
+			if ( current )
+			{
+				list_add_str_once( includepaths, "./uic" );
+				list_add_str_once( needed_includepaths, "./uic");
+			}
+			
+			while( current != NULL )
+			{
+				fprintf( stderr, "%s \n", current->str );
+				current = current->next;
+			}
+		}
 	}
-	else
-		dsp_parse_from_empty(dspFileToWrite);
+	
+	dsp_parse( dspFileToWrite );
+
 
 	parser_exit();
 	config_exit();

@@ -70,7 +70,7 @@ namespace CLAM {
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 
-		bool ConcreteStart();
+		void AttachChildren();
 
 	public:
 		FrameInterpolator();

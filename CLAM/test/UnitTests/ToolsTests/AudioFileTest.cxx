@@ -179,6 +179,9 @@ namespace CLAMTest
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
+			CPPUNIT_ASSERT_EQUAL( int(133888),
+					      int(header.GetSamples()) );
+
 			CPPUNIT_ASSERT_EQUAL( int(22050),
 					      int(header.GetSampleRate()) );
 			CPPUNIT_ASSERT_EQUAL( 1,
@@ -486,7 +489,7 @@ namespace CLAMTest
 					      (int)header.GetSampleRate() );
 			CPPUNIT_ASSERT_EQUAL( int(1),
 					      (int)header.GetChannels() );
-			CPPUNIT_ASSERT_EQUAL( int(2298),
+			CPPUNIT_ASSERT_EQUAL( int(2560),
 					      (int)header.GetLength() );
 			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio Layer 3"),
 					      header.GetFormat().GetString() );

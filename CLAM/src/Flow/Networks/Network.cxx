@@ -27,17 +27,10 @@
 #include "ConnectionDefinitionAdapter.hxx"
 #include "Factory.hxx"
 
+
 namespace CLAM
 {	
 	typedef Factory<CLAM::Processing> ProcessingFactory;
-	
-	namespace HelperFunctions
-	{
-		void DeleteProcessing( Network::ProcessingsMap::value_type& mapElem ) {
-			delete mapElem.second;
-		}
-	}
-	// constructor / destructor
 
 	Network::Network() :
 		mName("Unnamed Network"),
@@ -46,10 +39,9 @@ namespace CLAM
 	
 	Network::~Network()
 	{
+		Clear();
 		if (mFlowControl)
 			delete mFlowControl;
-
-		Clear();
 	}
 
 	void Network::StoreOn( Storage & storage) const
@@ -224,6 +216,9 @@ namespace CLAM
 
 	void Network::RemoveProcessing ( const std::string & name)
 	{
+		CLAM_ASSERT( mFlowControl, 
+			     "Network::RemoveProcessing() - Network should have an attached flow control at this state.");
+
 		ProcessingsMap::const_iterator i = mProcessings.find( name );
 		if(i==mProcessings.end())
 			CLAM_ASSERT(false, "Network::RemoveProcessing() Trying to remove a processing that is not included in the network" );
@@ -246,6 +241,7 @@ namespace CLAM
 		{
 			(*itOutPort)->Unattach();
 		}
+
 		mFlowControl->ProcessingRemovedFromNetwork(*proc);
 		delete proc;
 		
@@ -255,6 +251,15 @@ namespace CLAM
 	{
 		ProcessingsMap::const_iterator i = mProcessings.find( name );
 		return i!=mProcessings.end();
+	}
+	
+	void Network::ConfigureProcessing( const std::string & name, const ProcessingConfig & newConfig )	
+	{
+		AssertFlowControlNotNull();
+		ProcessingsMap::iterator it = mProcessings.find( name );
+		Processing * proc = it->second;
+		proc->Configure( newConfig );
+		mFlowControl->ProcessingConfigured(*proc);
 	}
 
 
@@ -467,7 +472,11 @@ namespace CLAM
 //			delete *itNodes;
 		mNodes.clear();
 		
-		std::for_each( 	mProcessings.begin(), mProcessings.end(), HelperFunctions::DeleteProcessing );
+		ProcessingsMap::iterator it;
+		for( it=mProcessings.begin(); it!=mProcessings.end(); it++ )
+		{
+			RemoveProcessing( it->first );
+		}
 		mProcessings.clear();	
 	}
 

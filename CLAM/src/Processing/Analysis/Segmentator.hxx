@@ -78,7 +78,7 @@ class Segmentator:public Processing
 public:
 	Segmentator();
 	Segmentator(const SegmentatorConfig& c);
-	~Segmentator();
+	virtual ~Segmentator();
 	const char * GetClassName() const {return "Segmentator";}
 	const ProcessingConfig& GetConfig() const {return mConfig;}
 	bool Do();
@@ -97,6 +97,7 @@ protected:
 	virtual void UnwrapDescriptors(const Segment& originalSegment,SegmentDescriptors& descriptors ,Matrix& descriptorsValues);
 };
 
-};//namespace CLAM
+} //namespace CLAM
 
-#endif
+#endif // Segmentator
+

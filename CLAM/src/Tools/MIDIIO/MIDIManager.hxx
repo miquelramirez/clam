@@ -46,7 +46,7 @@ class MIDIManager
 {
 	friend class MIDIIn;
 	friend class MIDIClocker;
-//		friend class MIDIOut;
+	friend class MIDIOut;
 	friend class MIDIDeviceList;
 private:
 	std::vector<MIDIDevice*> mDevices;
@@ -144,14 +144,17 @@ public:
 
 protected:
 	/** Register an MIDIIn object. This is done by the MIDIIn object itself
-	*/
+	 */
 	bool Register(MIDIIn& in);
 
+	/** Register an MIDIClocker object. This is done by the MIDIClocker
+	 * object itself
+	 */
 	bool Register(MIDIClocker& cl);
 
 	/** Register an MIDIOut object. This is done by the MIDIOut object itself
-	*/
-//		bool Register(MIDIOut& out);
+	 */
+	bool Register(MIDIOut& out);
 };
 
 

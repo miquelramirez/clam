@@ -27,7 +27,7 @@
 #define _XMLArrayAdapter_h
 
 #include "BasicXMLable.hxx"
-#include "mtgsstream.h" // An alias for <sstream>
+#include <sstream>
 
 namespace CLAM {
 
@@ -102,7 +102,7 @@ public:
 		std::stringstream str(s);
 		for (unsigned int i=0; i<size; i++) {
 			str << mAdaptee[i];
-			if (i != size-1) str << " ";
+			if (i < size-1) str << " ";
 		}
 		str << std::ends;
 		return str.str();

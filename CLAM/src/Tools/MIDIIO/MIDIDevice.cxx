@@ -21,12 +21,12 @@
 
 #include "MIDIDevice.hxx"
 #include "MIDIIn.hxx"
+#include "MIDIOut.hxx"
 #include "MIDIClocker.hxx"
 #include "MIDIEnums.hxx"
 #include <algorithm>
-using std::find;
 
-//#define DEBUGGING_MIDIIO
+using std::find;
 
 using namespace CLAM;
 
@@ -64,23 +64,14 @@ bool MIDIDevice::Register(MIDIManager* mm,MIDIClocker& in)
 	return true;
 }
 
-/*
-
-bool MIDIDevice::Register(MIDIOut& out)
+bool MIDIDevice::Register(MIDIManager* mm,MIDIOut& out)
 {
-	unsigned int i;
-	for (i=0; i<mOutputs.size(); i++)
-		if (dynamic_cast<const MIDIIOConfig&>(mOutputs[i]->GetConfig()).GetChannelID() ==
-			dynamic_cast<const MIDIIOConfig&>(out.GetConfig()).GetChannelID())
-		{
-			out.mpDevice = 0;
-			return false;
-		}
 	mOutputs.push_back(&out);
+	_SetMIDIManager(mm);
 	out.mpDevice = this;
 	return true;
 }
-*/
+
 void MIDIDevice::Unregister(MIDIIn& in)
 {
 	if (in.mpDevice != this)
@@ -117,13 +108,8 @@ void MIDIDevice::Unregister(MIDIClocker& in)
 }
 
 
-/*	
 void MIDIDevice::Unregister(MIDIOut& out)
 {
-	if (out.mpDevice != this)
-	{
-		throw(Err("MIDIDevice::Unregister(): I am not this MIDIOut object's device."));
-	}
 	std::vector<MIDIOut*>::iterator it = std::find(mOutputs.begin(),mOutputs.end(),&out);
 	if (it == mOutputs.end())
 	{
@@ -132,11 +118,53 @@ void MIDIDevice::Unregister(MIDIOut& out)
 	mOutputs.erase(it);
 	out.mpDevice = 0;
 }
-*/
+
 
 void MIDIDevice::GetInfo(MIDIDevice::TInfo &info)
 {
 	info.mName = mName;
+}
+
+void MIDIDevice::SetTarget(
+	MIDI::Message msg,
+	unsigned char chn,unsigned char firstData,
+	MIDIIn* inp)
+{
+	if (msg==MIDI::eNoteOnOff)
+	{
+		SetTarget(MIDI::eNoteOn, chn, firstData, inp);
+		SetTarget(MIDI::eNoteOff,chn, firstData, inp);
+		return;
+	}
+
+	if (firstData==0x80)
+	{
+		for (firstData=0;firstData<128;firstData++)
+		{
+			SetTarget(msg,chn,firstData,inp);
+		}
+		return;
+	}
+
+	if (msg==MIDI::eSystem)
+	{
+		if (chn==0)
+		{
+			fprintf(stderr,"SysEx not	yet implemented\n");
+			exit(-1);
+		}
+	}else{
+		if (chn==0)
+		{
+			for (chn = 1;chn<=16;chn++)
+			{
+				SetTarget(msg,chn,firstData,inp);
+			}
+			return;
+		}
+		chn--;
+	}
+	target[msg][chn][firstData] = inp;
 }
 
 void MIDIDevice::Start(void)
@@ -156,66 +184,18 @@ void MIDIDevice::Start(void)
 		}
 	}
 	
-	/** Now we'll assign each input object to the target table
-	*/
-	for (status = 0;status<8;status++)
+	for (unsigned int i=0; i<mInputs.size(); i++)
 	{
-		for (int channel = 0;channel<16;channel++)
-		{	
-			for (unsigned int i=0; i<mInputs.size(); i++)
-			{
-				const MIDIInConfig &cfg = 
-					dynamic_cast<const MIDIInConfig&>(mInputs[i]->GetConfig());
-				
-#ifdef DEBUGGING_MIDIIO
-				printf("%04x & %04x , %04x & %04x\n",
-					cfg.GetChannelMask(),MIDI::ChannelMask(channel+1),
-					cfg.GetMessageMask(),MIDI::MessageMask(status));
-#endif
-				
-				if (
-					(cfg.GetChannelMask()&MIDI::ChannelMask(channel+1)) &&
-					(cfg.GetMessageMask()&MIDI::MessageMask(status))
-				)
-				{
-					if (cfg.GetFilter()!=0xFF)
-					{
-						if (target[status][channel][cfg.GetFilter()])
-						{
-							printf("Already have a handler for %d %d\n",status,channel);
-						}
-#ifdef DEBUGGING_MIDIIO
-						printf("status=%d channel=%d %d -> %x\n",status,channel,cfg.GetFilter(),mInputs[i]);
-#endif
-						/** In the case that the input has a concret filter
-						 *  we'll assign the input only in one position of 
-						 *  the target table. First data byte will have a
-						 *  certain value
-						 */
-						target[status][channel][cfg.GetFilter()] = mInputs[i];
-					}else{
-						for (int byte=0;byte<128;byte++)
-						{
-							if (target[status][channel][byte])
-							{
-								printf("Already have a handler for %d %d %d\n",
-									status,channel,byte);
-							}
+		const MIDIIOConfig &cfg = 
+			dynamic_cast<const MIDIIOConfig&>(mInputs[i]->GetConfig());
 
-							/** In the case that the input hasn't a concret filter
-							 *  we'll assign the input to all the bytes.
-							 *  First data byte could have any value.
-							 */
-							target[status][channel][byte] = mInputs[i];
-						}
-#ifdef DEBUGGING_MIDIIO
-						printf("status=%d channel=%d ALL -> %x\n",status,channel,mInputs[i]);
-#endif
-					}
-				}
-			}
-		}
+		SetTarget(
+			MIDI::Message(cfg.GetMessage()),
+			cfg.GetChannel(),
+			cfg.GetFirstData(),
+			mInputs[i]);
 	}
+
 	ConcreteStart();
 }
 

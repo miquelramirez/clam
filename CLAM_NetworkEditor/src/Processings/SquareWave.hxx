@@ -54,8 +54,8 @@ public:
 	{
 	}
 	
-	ESquareWaveControls(std::string s) 
-		: Enum(sEnumValues, s) 
+	ESquareWaveControls(std::string s)
+		: Enum(sEnumValues, s)
 	{
 	}
 	
@@ -81,13 +81,11 @@ public:
 class SquareWaveConfig: public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (SquareWaveConfig, 6, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, TData, Frequency);
-	DYN_ATTRIBUTE (2, public, TData, Amplitude);
-	DYN_ATTRIBUTE (3, public, TData, ModIndex);
-	DYN_ATTRIBUTE (4, public, TData , Phase);
-	DYN_ATTRIBUTE (5, public, TData , SamplingRate);
+	DYNAMIC_TYPE_USING_INTERFACE (SquareWaveConfig, 4, ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, TData, Frequency);
+	DYN_ATTRIBUTE (1, public, TData, Amplitude);
+	DYN_ATTRIBUTE (2, public, TData, Phase);
+	DYN_ATTRIBUTE (3, public, TData, SamplingRate);
 protected:
 	void DefaultInit(void);
 };
@@ -96,9 +94,7 @@ class SquareWave: public Processing
 {
 protected:
 	OutPortTmpl<Audio> mOutput;
-private:
 	SquareWaveConfig mConfig;
-	TData mModIndex;
 	TData mAmp;
 	TData mPhase;
 	TData mDeltaPhase;
@@ -107,16 +103,12 @@ private:
 	typedef InControlTmpl<SquareWave> SquareWaveCtrl;
 
 	SquareWaveCtrl* mAmpCtl;
-	SquareWaveCtrl* mPhaseCtl;
 	SquareWaveCtrl* mFreqCtl;
-	SquareWaveCtrl* mModIdxCtl;
-	
+
 	bool           mFreqUpdated;
-	bool           mPhaseUpdated;
-	bool           mModIdxUpdated;
 	bool           mAmpUpdated;
 
-protected:	
+protected:
 
 	inline void ApplyControls()
 	{
@@ -130,23 +122,9 @@ protected:
 				mAmp = mAmpCtl->GetLastValue();
 				mAmpUpdated = false;
 			}
-		if ( mModIdxUpdated )
-			{
-				mModIndex = mModIdxCtl->GetLastValue();
-				mModIdxUpdated = false;
-			}
-		if ( mPhaseUpdated )
-			{
-				mPhase = mPhaseCtl->GetLastValue();
-				mPhaseUpdated = false;
-			}
 	}
 
 	int UpdateFreq( TControlData );
-
-	int UpdatePhase( TControlData );
-	
-	int UpdateModIdx( TControlData );
 
 	int UpdateAmp( TControlData );
 
@@ -160,39 +138,14 @@ public:
 
 	const char * GetClassName() const {return "SquareWave";}
 	
-	inline const ProcessingConfig &GetConfig() const { return mConfig;}
+	virtual const ProcessingConfig &GetConfig() const { return mConfig;}
 	
-	bool ConcreteConfigure(const ProcessingConfig& c);
-	
-	// Unsupervised mode Do
-	// now it works only for an audio output and no inputs
-	virtual bool Do(void); //{ return true; }
+	virtual bool ConcreteConfigure(const ProcessingConfig& c);
+
+	virtual bool Do(void);
 
 	// "Generative Do"
 	bool Do(Audio& out);
-	
-	bool Do(const Audio& pitchModIn,const Audio& phaseModIn,Audio& out);
-	
-	bool Do(const Audio& pitchModIn,const int& dum ,Audio& out);
-		
-	bool Do(const int& dum ,const Audio& phaseModIn,Audio& out);
-	
-	/*
-	bool Do(const Audio& modIn,Audio& out)
-	{
-		TData* ptr = out.GetBuffer().GetPtr();
-		TData* modptr = modIn.GetBuffer().GetPtr();
-		for (int i=0;i<out.GetSize();i++)
-		{
-			(*ptr++) = SGN(sin(mPhase + mModIndex*(*modptr++)));
-			mPhase += mDeltaPhase;
-			if (mDeltaPhase>2.*PI) mDeltaPhase-=2.*PI;
-			if (mDeltaPhase<0) mDeltaPhase+=2.*PI;
-		}
-		return true;
-	}
-	*/
-
 };
 
 }

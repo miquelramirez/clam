@@ -116,66 +116,53 @@ protected:
 		{
 			bool not_finished = true;
 			Audio* synthbuffer = NULL;
-
+			char * midideviceStr = "default:default";
 			ConfigureSampleBasedIO();
 
 			pDSP->BindWithGUI( pGUI );
 			pDSP->Start();
 
-			MIDIInConfig inNoteCfg;
+			MIDIIOConfig inNoteCfg;
 
-			inNoteCfg.SetDevice("default:default");
-			inNoteCfg.SetChannelMask(MIDI::ChannelMask(1));
-			inNoteCfg.SetMessageMask(
-				MIDI::MessageMask(MIDI::eNoteOn)|
-				MIDI::MessageMask(MIDI::eNoteOff)
-			);
+			inNoteCfg.SetDevice(midideviceStr);
+			inNoteCfg.SetMessage(MIDI::eNoteOnOff);
+			
 			MIDIInControl keyboardNote( inNoteCfg );
 
-			MIDIInConfig inPitchBendCfg;
+			MIDIIOConfig inPitchBendCfg;
 			
-			inPitchBendCfg.SetDevice("default:default");
-			inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
-			inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
+			inPitchBendCfg.SetDevice(midideviceStr);
+			inPitchBendCfg.SetMessage(MIDI::ePitchbend);
 
-			MIDIInControl pitchBend( inPitchBendCfg );
+			MIDIInControl pitchBend;
 
-			MIDIInConfig inBreathNoteCfg;
-
-			inBreathNoteCfg.SetDevice("default:default");
-			inBreathNoteCfg.SetChannelMask( 				
-				MIDI::ChannelMask(3) |
-				MIDI::ChannelMask(4)
-			);
-
-			inBreathNoteCfg.SetMessageMask(
-				MIDI::MessageMask(MIDI::eNoteOn)|
-				MIDI::MessageMask(MIDI::eNoteOff)
-			);
-
-			MIDIInConfig inCtrlCfg;
+			bool configOk = pitchBend.Configure( inPitchBendCfg );
+			CLAM_ASSERT(configOk, pitchBend.GetStatus().c_str() );
 			
-			inCtrlCfg.SetDevice("default:default");
-			inCtrlCfg.SetChannelMask(MIDI::ChannelMask(1));
-			inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
-			inCtrlCfg.SetFilter(11);
+
+			MIDIIOConfig inBreathNoteCfg;
+
+			inBreathNoteCfg.SetDevice(midideviceStr);
+
+			inBreathNoteCfg.SetMessage(MIDI::eNoteOnOff);
+			MIDIIOConfig inCtrlCfg;
+			
+			inCtrlCfg.SetDevice(midideviceStr);
+			inCtrlCfg.SetMessage(MIDI::eControlChange);
+			inCtrlCfg.SetFirstData(11);
 
 			SALTO::BreathController breathController( inBreathNoteCfg, inCtrlCfg );
 
-			pitchBend.GetOutControls().GetByNumber(0).AddLink( &(mMIDIHandler.GetInControls().GetByNumber(2)));
+			pitchBend.GetOutControls().GetByNumber(1).AddLink( &(mMIDIHandler.GetInControls().GetByNumber(2)));
 
-			keyboardNote.GetOutControls().GetByNumber(0).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(1)));
-			keyboardNote.GetOutControls().GetByNumber(1).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(0)));
-			keyboardNote.GetOutControls().GetByNumber(2).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(1)));
-			keyboardNote.GetOutControls().GetByNumber(3).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(0)));		
+			keyboardNote.GetOutControls().GetByNumber(1).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(1)));
+			keyboardNote.GetOutControls().GetByNumber(2).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(0)));
 
-			breathController.mInNote.GetOutControls().GetByNumber(0).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(1)));
-			breathController.mInNote.GetOutControls().GetByNumber(1).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(0)));
-			breathController.mInNote.GetOutControls().GetByNumber(2).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(1)));
-			breathController.mInNote.GetOutControls().GetByNumber(3).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(0)));
+			breathController.mInNote.GetOutControls().GetByNumber(1).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(1)));
+			breathController.mInNote.GetOutControls().GetByNumber(2).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(0)));
 
 
-			breathController.mAirSpeed.GetOutControls().GetByNumber(0).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(3)));
+			breathController.mAirSpeed.GetOutControls().GetByNumber(1).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(3)));
 
 			mFileAudioOut.Start();
 			mMIDIManager.Start();

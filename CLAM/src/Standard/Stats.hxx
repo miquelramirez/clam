@@ -54,16 +54,15 @@ public:
 	}
 	~StatsTmpl()
 	{
-		int i;
-		for (i=0;i<mMoments.Size();i++)
+		for (unsigned i=0;i<mMoments.Size();i++)
 		{
 			if(mMoments[i]) delete mMoments[i];
 		}
-		for (i=0;i<mCentralMoments.Size();i++)
+		for (unsigned i=0;i<mCentralMoments.Size();i++)
 		{
 			if(mCentralMoments[i]) delete mCentralMoments[i];
 		}
-		for (i=0;i<mCenterOfGravities.Size();i++)
+		for (unsigned i=0;i<mCenterOfGravities.Size();i++)
 		{
 			if(mCenterOfGravities[i]) delete mCenterOfGravities[i];
 		}
@@ -220,16 +219,124 @@ public:
 		return mMinElement(*mData);
 	}
 
+	/**
+	 * Computes and returns the Slope.
+	 *
+	 * The slope gives an idea of the mean pendent on the array:
+	 * - Less than zero means that is decreasing
+	 * - More than zero means that is increasing
+	 * - Zero means that any tendency is the dominant
+	 * 
+	 * The Slope is defined as:
+	 * \f[
+	 * 	{1 \over \sum{x_i}}
+	 * 	{ N \sum{i x_i } - \sum{i} \sum{x_i}
+	 * 		\over
+	 * 	{N \sum{i^2} - (\sum{i})^2 }}
+	 * \f]
+	 *
+	 * We can transform this formula into one depending on the Centroid
+	 * which is already calculated in order to obtain other stats:
+	 * \f[
+	 * 	6 {
+	 * 		{ 2 Centroid - N + 1}
+	 * 			\over
+	 * 		{ N (N-1) (N+1)}
+	 * 	}
+	 * \f]
+	 * 
+	 * The slope is relative to the array position index.
+	 * If you want to give to the array position a dimentional meaning,
+	 * (p.e. frequency or time) then you should divide by the gap between array positions.
+	 * for example GetSlope/BinFreq for a FFT or GetSlope*SampleRate for an audio
+	 *
+	 */
+
+	U GetSlope()
+	{
+		// TODO: Sums where Y is used can be taken from Mean and Centroid
+
+		const Array<T>& Y = *mData;
+		const TSize size  = mData->Size();
+
+		// \sum^{i=0}_{N-1}(x_i)
+//		const TData sumY = GetMean()*size;
+		// \sum^{i=0}_{N-1}(i x_i)
+//		const TData sumXY = GetCentroid()*GetMean()*size;
+		// \sum^{i=0}_{N-1}(i)
+//		const TData sumX = (size-1)*size/2.0;
+		// \sum^{i=0}_{N-1}(i^2)
+//		const TData sumXX = (size-1)*(size)*(size+size-1)/6.0;
+
+		//TData num = size*sumXY - sumX*sumY; 
+		// = size Centroid Mean size - (size-1)(size)(size)Mean/2
+		// = size^2 mean (Centroid - (size-1)/2)
+		//num = size*size*GetMean()*(GetCentroid()-(size-1)/2.0);
+
+		// size*sumXX - sumX*sumX =
+		// = size (size-1) size (size+size-1)/6 - (size-1)^2(size)^2/4
+		// = size^2 ( (size-1)(size+size-1)/6 - (size-1)^2/4 )
+		// = size^2 (size-1)( (size+size-1)/6 - (size-1)/4 )
+		// = size^2 (size-1)( (4*size-2) - (3*size-3) )/12
+		// = size^2 (size-1) (size+1)/12
+
+		//TData denum = (size*sumXX - sumX*sumX)*sumY;
+		// = size mean size^2 (size-1) (size+1) / 12
+		// = size^3 mean (size-1) (size+1) / 12
+		//denum = size*size*size * GetMean() * (size-1) * (size+1) /12.0;
+
+		// return num/denum;
+		// = size^2 mean (Centroid - (size-1)/2) / (size^3 mean (size-1) (size+1) / 12)
+		// = (Centroid - (size-1)/2) / (size (size-1) (size+1) /12)
+		// = ( 12*centroid - 6*size + 6 ) / ( size (size-1) (size+1) )
+		// = 6 (2*centroid - size + 1)) / ( size (size-1) (size+1) )
+		return 6*(2*GetCentroid() - size + 1) / (size * (size-1) * (size+1));
+
+	}
+	U GetTilt()
+	{
+		const Array<T>& Y = *mData;
+		const TSize size  = mData->Size();
+		const U m1 = GetMoment(FirstOrder);
+
+		TData d1=0;
+		TData d2=0;
+		for (unsigned i=0;i<size;i++)
+		{
+			d1 += i/Y[i];
+			d2 += 1/Y[i];
+		}
+
+		// ti = m1/ai *(n - (d1/d2))
+		// SpecTilt = m1²/ti² * SUM[1/ai *(i-d1/d2)]
+
+		TData SumTi2 = 0;
+		TData Tilt = 0;
+		for (unsigned i=0;i<size;i++) 
+		{
+			Tilt += (1/Y[i] *(i-d1/d2));
+			TData ti = m1/Y[i]*(i - (d1/d2));
+			SumTi2 += ti*ti;
+		}
+
+		Tilt*= (m1*m1/SumTi2);
+		return Tilt;
+	}
+
+	U GetFlatness()
+	{
+		return 10*log10(GetGeometricMean()/GetMean());
+	}
+
 	/** Reset all previously computed values */
 	void Reset()
 	{
 		//Note: we keep previously allocated data, we just reset computations
-		int i;
-		for(i=0;i<mMoments.Size();i++)
+		for (unsigned i=0;i<mMoments.Size();i++)
 			if(mMoments[i]!=NULL) mMoments[i]->Reset();
-		for(i=0;i<mCentralMoments.Size();i++)
+		for (unsigned i=0;i<mCentralMoments.Size();i++)
 			if(mCentralMoments[i]!=NULL) mCentralMoments[i]->Reset();
-		for(i=0;i<mCenterOfGravities.Size();i++)
+		for (unsigned i=0;i<mCenterOfGravities.Size();i++)
 			if(mCenterOfGravities[i]!=NULL) mCenterOfGravities[i]->Reset();
 
 		mKurtosis.Reset();
@@ -402,6 +509,7 @@ private:
 	{
 		(*pTmpArray)[0]=GetCenterOfGravity((O<1>*)(0));
 	}
+
 
 	Array<BaseMemOp*> mMoments;
 	Array<BaseMemOp*> mCentralMoments;

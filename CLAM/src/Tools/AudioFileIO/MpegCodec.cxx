@@ -18,6 +18,80 @@ namespace AudioCodecs
 {
 
 
+/* XING parsing is from the MAD winamp input plugin */
+/* Ripped mercilessly from mpg321 */
+
+	struct xing {
+		int flags;
+		unsigned long frames;
+		unsigned long bytes;
+		unsigned char toc[100];
+		long scale;
+	};
+	
+	enum {
+		XING_FRAMES = 0x0001,
+		XING_BYTES  = 0x0002,
+		XING_TOC    = 0x0004,
+		XING_SCALE  = 0x0008
+	};
+	
+# define XING_MAGIC     (('X' << 24) | ('i' << 16) | ('n' << 8) | 'g')
+	
+	static
+	int parse_xing(struct xing *xing, struct mad_bitptr ptr, unsigned int bitlen)
+	{
+		if (bitlen < 64 || mad_bit_read(&ptr, 32) != XING_MAGIC)
+			goto fail;
+		
+		xing->flags = mad_bit_read(&ptr, 32);
+		bitlen -= 64;
+		
+		if (xing->flags & XING_FRAMES) {
+			if (bitlen < 32)
+				goto fail;
+			
+			xing->frames = mad_bit_read(&ptr, 32);
+			bitlen -= 32;
+		}
+		
+		if (xing->flags & XING_BYTES) {
+			if (bitlen < 32)
+				goto fail;
+			
+			xing->bytes = mad_bit_read(&ptr, 32);
+			bitlen -= 32;
+		}
+		
+		if (xing->flags & XING_TOC) {
+			int i;
+			
+			if (bitlen < 800)
+				goto fail;
+			
+			for (i = 0; i < 100; ++i)
+				xing->toc[i] = mad_bit_read(&ptr, 8);
+			
+			bitlen -= 800;
+		}
+		
+		if (xing->flags & XING_SCALE) {
+			if (bitlen < 32)
+				goto fail;
+			
+			xing->scale = mad_bit_read(&ptr, 32);
+			bitlen -= 32;
+		}
+		
+		return 1;
+		
+	fail:
+		xing->flags = 0;
+		return 0;
+	}
+
+
+
 	MpegCodec::MpegCodec()
 	{
 
@@ -94,20 +168,92 @@ namespace AudioCodecs
 		bitstream.Init();
 
 		int frameCount = 0;
+		struct xing xingHeader;
+		bool   hasXingHeader = false;
+		bool   isVBR = false;
+		int    bitrate = 0;
 		
+		/* There are three ways of calculating the length of an mp3:
+		   1) Constant bitrate: One frame can provide the information
+		   needed: # of frames and duration. Just see how long it
+		   is and do the division.
+		   2) Variable bitrate: Xing tag. It provides the number of 
+		   frames. Each frame has the same number of samples, so
+		   just use that.
+		   3) All: Count up the frames and duration of each frames
+		   by decoding each one. We do this if we've no other
+		   choice, i.e. if it's a VBR file with no Xing tag.
+		*/
+		
+
 		while ( !bitstream.FatalError() && bitstream.NextFrame() )
 		{
-			if ( frameCount == 0 ) // first frame
+			if ( frameCount == 0 ) // first frame, for retrieving info about encoding
 			{
 				RetrieveMPEGFrameInfo( bitstream.CurrentFrame(),
 						       hdr );
+				if ( parse_xing( &xingHeader, 
+						 bitstream.StreamState().anc_ptr, 
+						 bitstream.StreamState().anc_bitlen ) )
+				{
+					isVBR = true;
+					
+					if ( xingHeader.flags & XING_FRAMES )
+					{
+						/* We use the Xing tag only for frames. If it doesn't have that
+						   information, it's useless to us and we have to treat it as a
+						   normal VBR file */
+						hasXingHeader = true;
+						break;					
+					}
+				}	
+				bitrate = bitstream.CurrentFrame().header.bitrate;
 			}
+			
+			if ( frameCount <= 20 )
+			{
+				if ( bitstream.CurrentFrame().header.bitrate != bitrate )
+					isVBR = true;
+				else
+					bitrate = bitstream.CurrentFrame().header.bitrate;
+			}		       
+			
+			if ( !isVBR && frameCount > 20 )
+				break;
+			
 			frameCount++;
 		}
 
-		TTime length = bitstream.Finish();
+		long numFrames = 0;
+		mad_timer_t   madFmtTime;
 
-		hdr.SetLength( length );
+		if ( !isVBR )
+		{
+			double time = ( 40. * 8192. ) / bitstream.CurrentFrame().header.bitrate;
+			double timeFrac = (double)time - ((long)(time));
+			long   nsamples = 32 * MAD_NSBSAMPLES(&bitstream.CurrentFrame().header); // samples per frame
+			numFrames = ( long) ( time * bitstream.CurrentFrame().header.samplerate / nsamples );
+			
+			mad_timer_set( &madFmtTime, (long)time, (long)(timeFrac*100), 100 );
+
+			if ( hasXingHeader )
+			{
+				mad_timer_multiply( &bitstream.CurrentFrame().header.duration,
+						    numFrames );
+				madFmtTime = bitstream.CurrentFrame().header.duration;
+			}
+
+			bitstream.Finish();
+
+			hdr.SetLength( (TTime)mad_timer_count( madFmtTime, MAD_UNITS_MILLISECONDS ) );
+		}
+		else
+		{ 
+
+			TTime decodedFramesLength = bitstream.Finish();
+			hdr.SetLength( decodedFramesLength );
+		}
+
 		hdr.SetEndianess( EAudioFileEndianess::eDefault );
 
 		fclose( handle );
@@ -168,7 +314,10 @@ namespace AudioCodecs
 			ID3_Field* artistStr = artistFrame->GetField( ID3FN_TEXT );
 			
 			if ( artistStr != NULL )
-				txt.SetArtist( artistStr->GetRawText() );
+			{
+				if ( artistStr->GetRawText() != NULL )
+					txt.SetArtist( artistStr->GetRawText() );
+			}
 		}
 
 		ID3_Frame* titleFrame = fileTag.Find( ID3FID_TITLE );
@@ -180,7 +329,8 @@ namespace AudioCodecs
 			ID3_Field* titleStr = titleFrame->GetField( ID3FN_TEXT );
 
 			if ( titleStr!=NULL )
-				txt.SetTitle( titleStr->GetRawText() );
+				if ( titleStr->GetRawText() != NULL )
+					txt.SetTitle( titleStr->GetRawText() );
 		}
 
 		ID3_Frame* albumFrame = fileTag.Find( ID3FID_ALBUM );
@@ -192,7 +342,8 @@ namespace AudioCodecs
 			ID3_Field* albumStr = albumFrame->GetField( ID3FN_TEXT );
 
 			if ( albumStr != NULL )
-				txt.SetAlbum( albumStr->GetRawText() );
+				if ( albumStr->GetRawText() != NULL )
+					txt.SetAlbum( albumStr->GetRawText() );
 		}
 
 		ID3_Frame* tracknumFrame = fileTag.Find( ID3FID_TRACKNUM );
@@ -205,7 +356,8 @@ namespace AudioCodecs
 			ID3_Field* tracknumStr = tracknumFrame->GetField( ID3FN_TEXT );
 			
 			if ( tracknumStr != NULL )
-				txt.SetTrackNumber( tracknumStr->GetRawText() );
+				if ( tracknumStr->GetRawText() != NULL )
+					txt.SetTrackNumber( tracknumStr->GetRawText() );
 		}
 
 		ID3_Frame* composerFrame = fileTag.Find( ID3FID_COMPOSER );
@@ -218,7 +370,8 @@ namespace AudioCodecs
 			ID3_Field* composerStr = composerFrame->GetField( ID3FN_TEXT );
 
 			if ( composerStr != NULL )
-				txt.SetComposer( composerStr->GetRawText() );
+				if ( composerStr->GetRawText() != NULL )
+					txt.SetComposer( composerStr->GetRawText() );
 		}
 
 		ID3_Frame* performerFrame = fileTag.Find( ID3FID_CONDUCTOR );
@@ -231,7 +384,8 @@ namespace AudioCodecs
 			ID3_Field* performerStr = performerFrame->GetField( ID3FN_TEXT );
 
 			if ( performerStr != NULL )
-				txt.SetPerformer( performerStr->GetRawText() );
+				if ( performerStr->GetRawText() != NULL )
+					txt.SetPerformer( performerStr->GetRawText() );
 		}
 #endif
 	}

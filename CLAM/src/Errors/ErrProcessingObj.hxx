@@ -31,15 +31,23 @@ namespace CLAM {
 	/** Derived class of the Err base class
 	 * Handles errors in Processing Object Routines
 	 */
-	class ErrProcessingObj : public Err {
+
+	// TODO: remove this define, which is only for temporal backward
+	// compatibility, and change the filename
+
+	#define ErrProcessingObj ProcessingErr
+
+	// WARNING: This class has been renamed for ErrProcessingObj
+	// Keeping a define for backwards compatibility
+	class ProcessingErr : public Err {
 
 	public:
 
-		ErrProcessingObj();
+		ProcessingErr();
 
-		ErrProcessingObj(const char* msg,const Processing *o=0);
+		ProcessingErr(const char* msg,const Processing *o=0);
 
-		~ErrProcessingObj() throw() {} 
+		~ProcessingErr() throw() {} 
 
 	};
 

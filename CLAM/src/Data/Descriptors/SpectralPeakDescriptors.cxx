@@ -173,20 +173,18 @@ TData SpectralPeakDescriptors::ComputeThirdTristimulus()
 
 TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 {
-	TData num=0,denom=0,SE=0;
 	int size=mpSpectralPeakArray->GetnPeaks();
 	if(size<4) return 0;//is it really necessary to have 4 or with 2 is enough
 	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
-	int i;
-	for (i=1;i<size-1;i++)
+	TData num = data[0]-(data[0]+data[1])/2;
+	TData denom = data[0];
+	for (int i=1; i<size-1; i++)
 	{
-		SE=(data[i-1]+data[i]+data[i+1])/3;
+		TData SE=(data[i-1]+data[i]+data[i+1])/3;
 		num+=data[i]-SE;
 		denom+=data[i];
 	}
 	//we add first and last point by hand
-	num+=data[0]-(data[0]+data[1])/2;
-	denom+=data[0];
 	num+=data[size-1]-(data[size-2]+data[size-1])/2;
 	denom+=data[size-1];
 	return num/denom;

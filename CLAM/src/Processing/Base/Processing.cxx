@@ -26,7 +26,6 @@
 #include "ErrDynamicType.hxx"
 #include "InPort.hxx"
 
-#include "mtgsstream.h" // An alias for <sstream>
 #include <cstring>
 #include <string>
 

@@ -20,7 +20,7 @@
  */
 
 #include "ConnectionPresentation.hxx"
-#include "ConnectionAdapter.hxx"
+//#include "ConnectionAdapter.hxx"
 #include "Processing.hxx"
 
 namespace NetworkGUI
@@ -38,10 +38,10 @@ ConnectionPresentation::~ConnectionPresentation()
 {
 }
 
-void ConnectionPresentation::AttachTo( CLAMVM::ConnectionAdapter & adapter )
+void ConnectionPresentation::AttachTo( const std::string & out, const std::string & in )
 {
-	SetOutName( adapter.GetOutName() );
-	SetInName( adapter.GetInName() );
+	SetOutName( out );
+	SetInName( in );
 }
 
 void ConnectionPresentation::SetOutName( const std::string & out )

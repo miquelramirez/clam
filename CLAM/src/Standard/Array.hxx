@@ -286,7 +286,7 @@ private:
 	void StoreBufferOn(StaticFalse* asLeave, const Component * polymorphicSelector, Storage & storage) const
 	{
 		if (mSize<=0) return;
-		const char* className = mpData[1].GetClassName();
+		const char* className = mpData[0].GetClassName();
 		const char* label = className? className : "Element";
 		for (int i=0; i<mSize; i++)
 		{
@@ -399,10 +399,9 @@ void Array<T>::CopyChunk(int pos, int size, Array<T>& a) const
 	int last=pos+size;
 	CLAM_ASSERT(last <= mSize,
 	            "Array::CopyChunk(): Chunk out of bounds.");
-	CLAM_ASSERT(pos <= a.mSize,
-	            "Array::GiveChunk(): destination array does not have enough memory");
-	int i;
-	for (i=pos;i<last;i++)
+	CLAM_ASSERT(size <= a.mSize,
+	            "Array::CopyChunk(): destination array does not have enough memory");
+	for (int i=pos;i<last;i++)
 		a.mpData[i-pos]=mpData[i];
 }
 

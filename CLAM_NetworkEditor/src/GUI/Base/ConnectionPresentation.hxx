@@ -32,10 +32,12 @@ namespace CLAM
 	class Processing;
 }
 
+/*
 namespace CLAMVM
 {
 	class ConnectionAdapter;
 }
+*/
 
 namespace NetworkGUI
 {
@@ -45,7 +47,7 @@ class ConnectionPresentation : public CLAMVM::Presentation
 public:
 	ConnectionPresentation();
 	virtual ~ConnectionPresentation();
-	virtual void AttachTo(CLAMVM::ConnectionAdapter & );
+	virtual void AttachTo( const std::string &, const std::string & );
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 	void SetOutName( const std::string & );

@@ -21,13 +21,15 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include "BaseLoggable.hxx" // also includes <sstream>
+#include "ProcessingPresentation.hxx"
 #include "ProcessingController.hxx"
 #include "Oscillator.hxx"
-#include "PushFlowControl.hxx"
-#include "Processing.hxx"
-#include "Signalv1.hxx"
-
-#include <iostream>
+#include "AutoPanner.hxx"
+#include "MultiChannelAudioFileReader.hxx"
+#include "MultiChannelAudioFileReaderConfig.hxx"
+#include "AudioFile.hxx"
+#include <string>
+#include <stdlib.h>
 
 namespace CLAMTest 
 {
@@ -36,51 +38,158 @@ class ProcessingControllerTest;
 CPPUNIT_TEST_SUITE_REGISTRATION( ProcessingControllerTest );
 
 
-class ProcessingControllerTest : public CppUnit::TestFixture, public CLAMVM::ProcessingController
+class ProcessingControllerTest : public CppUnit::TestFixture, public NetworkGUI::ProcessingPresentation
 {
+protected:
+	void SetObservedClassName( const std::string& )
+	{
+	}
+	
+	void SetInPort( const std::string & )
+	{
+	}
+	
+	void SetOutPort( const std::string & )
+	{
+	}
+	
+	void SetInControl( const std::string & )
+	{
+	}
+	
+	void SetOutControl( const std::string & )
+	{
+	}
+	
+	void UpdatePresentation()
+	{
+	}
+	
+	void Show()
+	{
+	}
+	
+	void Hide()
+	{
+	}
+
+		
 	CPPUNIT_TEST_SUITE( ProcessingControllerTest );
 		
-	CPPUNIT_TEST( testPublishCreatesPortsAndControls );
-	CPPUNIT_TEST( testConfigureProcessingExecutesConfigureOfObservedProcessing );
-		
+	CPPUNIT_TEST( testPublishThrowsAssert_whenControllerNotBinded );
+	CPPUNIT_TEST( testBindToProcessingAttachesControllerToProcessing );
+	CPPUNIT_TEST( testUpdateListOfPortsAndControlsRegistersItsNames );
+	CPPUNIT_TEST( testSlotSendOutControlValueSendsValue_whenSignalEmittedFromPresentation );
 	CPPUNIT_TEST_SUITE_END();
 
-	CLAM::Oscillator * mProc;
 public:
-	ProcessingControllerTest() : mProc(0)		
+	void testPublishThrowsAssert_whenControllerNotBinded()
 	{
-		mProc = new CLAM::Oscillator;
-		BindTo(*mProc);
-	}
-
-	~ProcessingControllerTest()
-	 {
-		 delete mProc;
-	 }
-	
-	void testPublishCreatesPortsAndControls()
-	{
-		Publish();
-		CPPUNIT_ASSERT_EQUAL( 2, (int)mInPortNames.size() );
-		CPPUNIT_ASSERT_EQUAL( 1, (int)mOutPortNames.size() );
-		CPPUNIT_ASSERT_EQUAL( 3, (int)mInControlNames.size() );
-		CPPUNIT_ASSERT_EQUAL( 0, (int)mOutControlNames.size() );
-
+		CLAMVM::ProcessingController proc;
+		try
+		{
+			proc.Publish();
+			CPPUNIT_FAIL(  "Assert expected, but no exception was thrown" );
+		}
+		catch(...)
+		{
+		}
 	}
 	
-	void testConfigureProcessingExecutesConfigureOfObservedProcessing()
+	void testBindToProcessingAttachesControllerToProcessing()
 	{
-		CLAM::OscillatorConfig cfg;
-		cfg.SetFrequency(880.0);
-		cfg.SetAmplitude(0.5);
-		cfg.SetSamplingRate(22050);
+		CLAMVM::ProcessingController proc;
+		CLAM::Oscillator osc;
+		proc.BindTo( osc );
+		try
+		{
+			proc.Publish();
+		}
+		catch(...)
+		{
+			CPPUNIT_FAIL( "exception should not be thrown, processing not binded correctly to controller" );
+		}
+		CPPUNIT_ASSERT_EQUAL( std::string("Oscillator"), proc.GetObservedClassName() );
 
-		ConfigureProcessing(cfg);
+		CLAMVM::ProcessingController::NamesList::iterator it;
+		it = proc.BeginInPortNames();
+		CPPUNIT_ASSERT_EQUAL( std::string("Input Phase Modulation"), *(it++) );
+		CPPUNIT_ASSERT_EQUAL( std::string("Input Frequency Modulation"), *(it++) );
+		CPPUNIT_ASSERT_MESSAGE("Can't be more than two in ports", (it==proc.EndInPortNames()) );
 
-		CLAM::OscillatorConfig & cfg2 ((CLAM::OscillatorConfig&)(mProc->GetConfig()));
-		CPPUNIT_ASSERT_EQUAL( 880.0f, cfg2.GetFrequency() );
-		CPPUNIT_ASSERT_EQUAL( 0.5f, cfg2.GetAmplitude() );
-		CPPUNIT_ASSERT_EQUAL( 22050.0f, cfg2.GetSamplingRate() );
+		it = proc.BeginOutPortNames();
+		CPPUNIT_ASSERT_EQUAL( std::string("Audio Output"), *(it++) );
+		CPPUNIT_ASSERT_MESSAGE("Can't be more than one out port", (it==proc.EndOutPortNames()) );
+		
+		it = proc.BeginInControlNames();
+		CPPUNIT_ASSERT_EQUAL( std::string("Pitch"), *(it++) );
+		CPPUNIT_ASSERT_EQUAL( std::string("Amplitude"), *(it++) );
+		CPPUNIT_ASSERT_EQUAL( std::string("ModIndex"), *(it++) );
+		CPPUNIT_ASSERT_MESSAGE("Can't be more than three in controls", (it==proc.EndInControlNames()) );
+	
+		CPPUNIT_ASSERT_MESSAGE("Shouldn't exist any out control", (proc.BeginOutControlNames()==proc.EndOutControlNames()) );
+
+	}
+	
+	void testUpdateListOfPortsAndControlsRegistersItsNames()
+	{
+		// get name of file to read
+		char* pathToTestData = getenv("CLAM_TEST_DATA");
+		std::string fileToRead("");
+		if ( !pathToTestData )
+			fileToRead = "../../../../../CLAM-TestData/"; 
+		else
+			fileToRead = pathToTestData;
+		fileToRead += "ElvisStereo.ogg";
+
+		// create the processing and configure it
+		CLAM::AudioFile audioFile;
+		audioFile.SetLocation( fileToRead );
+		CLAM::MultiChannelAudioFileReaderConfig cfg;
+		cfg.AddSourceFile();
+		cfg.UpdateData();
+		cfg.SetSourceFile( audioFile );
+		CLAM::MultiChannelAudioFileReader reader;
+		
+		// bind to a controller
+		CLAMVM::ProcessingController proc;
+		proc.BindTo( reader );
+		proc.Publish();
+
+		CPPUNIT_ASSERT_MESSAGE("Shouldn't exist any in port", (proc.BeginInPortNames()==proc.EndInPortNames()) );
+		CPPUNIT_ASSERT_MESSAGE("Shouldn't exist any out port", (proc.BeginOutPortNames()==proc.EndOutPortNames()) );
+		CPPUNIT_ASSERT_MESSAGE("Shouldn't exist any in control", (proc.BeginInControlNames()==proc.EndInControlNames()) );
+		CPPUNIT_ASSERT_MESSAGE("Shouldn't exist any out control", (proc.BeginOutControlNames()==proc.EndOutControlNames()) );
+		
+
+		reader.Configure( cfg );
+		proc.UpdateListOfPortsAndControls();
+
+		CLAMVM::ProcessingController::NamesList::iterator it;
+
+		CPPUNIT_ASSERT_MESSAGE("Shouldn't exist any in port", (proc.BeginInPortNames()==proc.EndInPortNames()) );
+		CPPUNIT_ASSERT_MESSAGE("Shouldn't exist any in control", (proc.BeginInControlNames()==proc.EndInControlNames()) );
+		CPPUNIT_ASSERT_MESSAGE("Shouldn't exist any out control", (proc.BeginOutControlNames()==proc.EndOutControlNames()) );
+		
+		it = proc.BeginOutPortNames();
+		CPPUNIT_ASSERT_EQUAL( std::string("Channel #0"), *(it++) );
+		CPPUNIT_ASSERT_EQUAL( std::string("Channel #1"), *(it++) );
+		CPPUNIT_ASSERT_MESSAGE("Can't be more than two out ports", (it==proc.EndOutPortNames()) );
+	}
+	
+	void testSlotSendOutControlValueSendsValue_whenSignalEmittedFromPresentation()
+	{
+		CLAMVM::ProcessingController proc;
+		CLAM::Oscillator osc;
+		CLAM::AutoPanner panner;
+		panner.GetOutControls().Get( "Left Control" ).AddLink( &(osc.GetInControls().Get( "Pitch")) );
+		proc.BindTo( panner );
+		proc.Publish();
+		CLAM::TControlData newValue = 24.3f;
+		SignalSendOutControlValue.Connect( proc.SlotSendOutControlValue );
+		SignalSendOutControlValue.Emit( "Left Control", newValue );
+		CPPUNIT_ASSERT_EQUAL( osc.GetInControls().Get("Pitch").GetLastValue(), 24.3f );
+		
 	}
 };
 

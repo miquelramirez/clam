@@ -15,21 +15,21 @@ using std::inner_product;
 using std::mem_fun;
 
 
-/** @todo: 
+/** 
+ @file BasicOps.cxx
+ @todo 
 - There a lot of hacks because of Visual C++ compiler, could be optimized and cleaned-up
 	making use of partial specialization. 
 - It is still not clear whether the "abs" aspect should be promoted later on to the argument
 	list.
-*/
-
-namespace CLAM{
-
-
-
-/** Note: the "abs" aspect present in many of the operations means whether the statistic should
+ * Note: the "abs" aspect present in many of the operations means whether the statistic should
  *	be performed directly on the values (by default or when abs=false) or whether the statistic
  *	should be computed on the absolute value
  */
+
+namespace CLAM {
+
+
 
 template <int o> struct Pow
 {
@@ -638,7 +638,7 @@ public:
 
 	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,O<2>*)
 	{
-		/* -m1² + m2 */ 
+		// -m1² + m2
 		U m1 = (*(dynamic_cast<Moment<1,abs,T,U>*>(moments[0])))(a);
 		U m2 = (*(dynamic_cast<Moment<2,abs,T,U>*>(moments[1])))(a);
 		return (-1)*m1*m1 + m2;
@@ -646,8 +646,8 @@ public:
 
 	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,O<3>*)
 	{
-	  /* 2*m1³ - 3*m1*m2 + m3 =   ... 5 Mult  
-	 m1*(2*m1² - 3*m2) + m3   ... 4 Mult */
+		// 2*m1³ - 3*m1*m2 + m3 =   ... 5 Mult  
+		// m1*(2*m1² - 3*m2) + m3   ... 4 Mult
 		U m1 = (*(dynamic_cast<Moment<1,abs,T,U>*>(moments[0])))(a);
 		U m2 = (*(dynamic_cast<Moment<2,abs,T,U>*>(moments[1])))(a);
 		U m3 = (*(dynamic_cast<Moment<3,abs,T,U>*>(moments[2])))(a);
@@ -656,8 +656,8 @@ public:
 
 	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,O<4>*)
 	{
-		/* -3*m1^4 + 6*m1²*m2 - 4*m1*m3 + m4   = ... 9 Mult 
-			 m1*(m1*((-3)*m1² + 6*m2) - 4*m3) + m4 ... 6 Mult */
+		// -3*m1^4 + 6*m1²*m2 - 4*m1*m3 + m4     ... 9 Mult
+		// m1*(m1*((-3)*m1² + 6*m2) - 4*m3) + m4 ... 6 Mult
 		U m1 = (*(dynamic_cast<Moment<1,abs,T,U>*>(moments[0])))(a);
 		U m2 = (*(dynamic_cast<Moment<2,abs,T,U>*>(moments[1])))(a);
 		U m3 = (*(dynamic_cast<Moment<3,abs,T,U>*>(moments[2])))(a);
@@ -667,8 +667,8 @@ public:
 
 	U operator()(const Array<T>& a,Array<BaseMemOp*>& moments,O<5>*)
 	{
-	  /* 4*u1^5 - 10*u1³*u2 + 10*u1²*u3 - 5*u1*u4+u5    = .... 14 Mult
-		 u1*(u1*(u1*(4*u1² - 10*u2) + 10*u3) - 5*u4) + u5 .... 8 Mult   */
+		// 4*u1^5 - 10*u1³*u2 + 10*u1²*u3 - 5*u1*u4+u5    = .... 14 Mult
+		// u1*(u1*(u1*(4*u1² - 10*u2) + 10*u3) - 5*u4) + u5 .... 8 Mult
 		U m1 = (*(dynamic_cast<Moment<1,abs,T,U>*>(moments[0])))(a);
 		U m2 = (*(dynamic_cast<Moment<2,abs,T,U>*>(moments[1])))(a);
 		U m3 = (*(dynamic_cast<Moment<3,abs,T,U>*>(moments[2])))(a);
@@ -695,7 +695,7 @@ public:
 	{
 		if(!useMemory)
 		{
-			return pow(centralMoment2(a),0.5);
+			return sqrt(centralMoment2(a));
 		}
 		else
 		{

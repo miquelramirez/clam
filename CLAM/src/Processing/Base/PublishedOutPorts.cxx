@@ -24,11 +24,8 @@ OutPort& PublishedOutPorts::Get(const std::string & name) const
 {
 	ConstIterator it;
 	for (it=mOutPorts.begin(); it!=mOutPorts.end(); it++)
-	{
-		std::string actualName( (*it)->GetName() );
-		if (name == (*it)->GetName()) return *(*it);
-	}
-
+		if (name == (*it)->GetName()) 
+			return **it;
 	std::string error( "name not found in OutPorts collection: " );
 	error += name;
 	CLAM_ASSERT( false, error.c_str() );

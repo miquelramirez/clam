@@ -96,13 +96,13 @@ class SoundFileIO;
 		/** @todo there should be a more generic interface to specify that a P.O. 
 		 * has reached the end of its purpose
 		 */
-		bool Done(void);
+		bool Done(void) const;
 
 		/**
 		 * Particular method to Access the Size of the file,TODO: should be implemented in a
 		 * more generic way for all Processing Objects to handle information requests
 		*/
-		int Size();
+		int Size() const;
 
 		/**
 		 * Particular method to Access the Sample rate of the file.

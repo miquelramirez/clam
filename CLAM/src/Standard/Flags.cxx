@@ -25,7 +25,7 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
-#include "mtgsstream.h" // An alias for <sstream>
+#include <sstream>
 #include "Component.hxx"
 #include "XMLAdapter.hxx"
 
@@ -115,6 +115,7 @@ std::istream & CLAM::operator >> (std::istream & is, FlagsBase & f) {
 	if (c!='{') {
 		if (is)	is.putback(c);
 		std::cerr << "A flag starting with '" << c << "'" << std::endl;
+		delete [] bs;
 		return is;
 	}
 	std::string flagContent;
@@ -127,12 +128,13 @@ std::istream & CLAM::operator >> (std::istream & is, FlagsBase & f) {
 			bs[i]=true;
 		}
 		catch (IllegalValue) {
+			delete [] bs;
 			throw IllegalValue(std::string("Invalid flag name: '")+
 				flagName+"'");
 		}
 	}
 	for (unsigned i=N; i--;) f.SetFlag(i, bs[i]);
-	delete bs;
+	delete [] bs;
 	return is;
 }
 

@@ -20,7 +20,6 @@
  */
 
 #include "SMSBase.hxx"
-#include "Plot.hxx"
 #include <iostream>
 #include "StdOutProgress.hxx"
 #include "StdOutWaitMessage.hxx"
@@ -53,7 +52,7 @@ void SMSStdio::Run(void)
 		std::cout << "MTG - UPF (Barcelona, Spain)"<<"\n" << "\n";
 		std::cout << "Please choose one of the following options:" << "\n" << "\n";
 		std::cout << "1. Load Analysis/Synthesis configuration file" << "\n";
-		std::cout << "2. Load previously analyzed SMSBase file" << "\n";
+		std::cout << "2. Load previously analyzed file" << "\n";
 		std::cout << "3. Analyze" << "\n";
 		std::cout << "4. Store Analysis File" << "\n";
 		std::cout << "5. Analyze Melody" << "\n";
@@ -61,6 +60,7 @@ void SMSStdio::Run(void)
 		std::cout << "7. Load Transformation Score" << "\n";
 		std::cout << "8. Transform" << "\n";
 		std::cout << "9. Synthesize" << "\n";
+		std::cout << "10. Store Output Sound" << "\n";
 		std::cout << "0. Finish" << "\n" << "\n";
 
 		int option;
@@ -86,20 +86,19 @@ void SMSStdio::Run(void)
 			}
 			case 3://Analyze
 			{
-				if(!mHaveConfig)
+				if(!GetState().GetHasConfig())
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis/synthesis configuration"<<"\n";
 					std::cout<<"\n"<<"Please select option 1 of the menu first"<<"\n";
 				       	break;
 				}
 				LoadInputSound();
-				CLAMVM::plot(mOriginalSegment.GetAudio(), "Input Audio");
 				Analyze();
 				break;
 			}
 			case 4://Store analysis data
 			{
-				if(!mHaveAnalysis)
+				if(!GetState().GetHasAnalysis())
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis"<<"\n";
 					std::cout<<"\n"<<"Please select option 2 or 3 of the menu first"<<"\n";
@@ -114,32 +113,32 @@ void SMSStdio::Run(void)
 			}
 			case 5: //Analyze melody
 			{
-				if(!mHaveConfig)
+				if(!GetState().GetHasConfig())
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis/synthesis configuration"<<"\n";
 					std::cout<<"\n"<<"Please select option 1 of the menu first"<<"\n";
 					break;
 				}
-				if(!mHaveAnalysis)
+				if(!GetState().GetHasAnalysis())
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis"<<"\n";
 					std::cout<<"\n"<<"Please select option 2 or 3 of the menu first"<<"\n";
 					break;
 				}
-				if(!mHaveSpectrum)
+				if(!GetState().GetHasSpectrum())
 				{
 					std::cout<<"\n"<<"\n"<<"Error, cannot analyze melody from loaded data"<<"\n";
 					std::cout<<"\n"<<"Please select option 2 of the menu first"<<"\n";
 					break;
 				}
 				//tmpSegment=mySegment;
-				mHaveMelody=true;
+				GetState().SetHasMelody(true);
 				AnalyzeMelody();
 				break;
 			}
 			case 6://Store melody
 			{
-				if(!mHaveMelody)
+				if(!GetState().GetHasMelody())
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available melody"<<"\n";
 					std::cout<<"\n"<<"Please select option 5 of the menu first"<<"\n";
@@ -155,18 +154,18 @@ void SMSStdio::Run(void)
 				std::cout<<"\n"<<"\n"<<"Enter Input XML File Name: \n";
 				std::cin>>inputXMLFileName;
 				LoadTransformationScore(inputXMLFileName);
-				mHaveTransformationScore = true;
+				GetState().SetHasTransformationScore(true);
 				break;
 			}
 			case 8://Transform
 			{
-				if(!mHaveTransformationScore)
+				if(!GetState().GetHasTransformationScore())
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available transformation score"<<"\n";
 					std::cout<<"\n"<<"Please select option 7 of the menu first"<<"\n";
 					break;
 				}
-				if(!mHaveAnalysis)
+				if(!GetState().GetHasAnalysis())
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis"<<"\n";
 					std::cout<<"\n"<<"Please select option 2 or 3 of the menu first"<<"\n";
@@ -178,13 +177,13 @@ void SMSStdio::Run(void)
 
 			case 9://Synthesize
 			{
-				if(!mHaveAnalysis)
+				if(!GetState().GetHasAnalysis())
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis"<<"\n";
 					std::cout<<"\n"<<"Please select option 2 or 3 of the menu first"<<"\n";
 					break;
 				}
-				if(!mHaveConfig)
+				if(!GetState().GetHasConfig())
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis/synthesis configuration"<<"\n";
 					std::cout<<"\n"<<"Please select option 1 of the menu first"<<"\n";
@@ -192,9 +191,19 @@ void SMSStdio::Run(void)
 				}
 				Synthesize();
 				
-				CLAMVM::plot(mAudioOut, "Output Sound");
-				CLAMVM::plot(mAudioOutSin, "Sinusoidal Component");
-				CLAMVM::plot(mAudioOutRes, "Residual Component");
+				break;
+			}
+			case 10://Store Synthesized Sounds
+			{
+				if(!GetState().GetHasAudioOut())
+				{
+					std::cout<<"\n"<<"\n"<<"Error, there is no available synthesis"<<"\n";
+					std::cout<<"\n"<<"Please select option 9 of the menu first"<<"\n";
+					break;
+				}
+				StoreOutputSound();
+				StoreOutputSoundSinusoidal();
+				StoreOutputSoundResidual();
 				break;
 			}
 			case 0://Exit

@@ -134,5 +134,5 @@ protected:
 
 
 
-};//CLAM
+} // namespace CLAM
 #endif

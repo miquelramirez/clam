@@ -30,7 +30,7 @@ namespace CLAM
 	class SMSTimeStretchConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SMSTimeStretchConfig, 5,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (SMSTimeStretchConfig, 7,ProcessingConfig);
 		/** Type of transformation, for the time being just a string, should become
 		* an enumeration of known transformation types??*/
 		DYN_ATTRIBUTE (0, public, std::string, Type);
@@ -40,6 +40,8 @@ namespace CLAM
 		DYN_ATTRIBUTE (2, public, BPF, BPFAmount);
 		DYN_ATTRIBUTE (3, public, TData, SamplingRate);
 		DYN_ATTRIBUTE (4, public, TData, HopSize);
+		DYN_ATTRIBUTE (5, public, bool, Harmonic);
+		DYN_ATTRIBUTE (6, public, bool, UseBPF);
 		
 	protected:
 		void DefaultInit();

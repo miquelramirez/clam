@@ -96,8 +96,16 @@ void SndPcm::Start(void)
 	int err;
 	char buffer[1024];
 	
-	int nSilentBlockSamples = snd_pcm_bytes_to_samples(phandle,1024);
-	int nSilentBlockFrames = snd_pcm_bytes_to_frames(phandle,1024);
+	int nSilentBlockSamples = 0;
+	int nSilentBlockFrames = 0;
+	if (phandle)
+	{
+		nSilentBlockSamples = snd_pcm_bytes_to_samples(phandle,1024);
+		nSilentBlockFrames = snd_pcm_bytes_to_frames(phandle,1024);
+	}else{
+		nSilentBlockSamples = snd_pcm_bytes_to_samples(chandle,1024);
+		nSilentBlockFrames = snd_pcm_bytes_to_frames(chandle,1024);
+	}
 	
 	if (chandle && phandle)
 	{
@@ -110,16 +118,20 @@ void SndPcm::Start(void)
 		cat_error("silence error\n");
 		throw SndPcmError(error_str);
 	}
-	int n = latency*2; // write two silent buffers
-	while (n)
+
+	if (phandle)
 	{
-		int m = n;
-		if (m>nSilentBlockFrames) m = nSilentBlockFrames;
-		if (writebuf(phandle, buffer, m) < 0) {
-			cat_error("write error\n");
-			throw SndPcmError(error_str);
+		int n = latency*2; // write two silent buffers
+		while (n)
+		{
+			int m = n;
+			if (m>nSilentBlockFrames) m = nSilentBlockFrames;
+			if (writebuf(phandle, buffer, m) < 0) {
+				cat_error("write error\n");
+				throw SndPcmError(error_str);
+			}
+			n -= m;
 		}
-		n -= m;
 	}
 
 	if (chandle)
@@ -446,9 +458,17 @@ int SndPcm::setparams(snd_pcm_t *phandle, snd_pcm_t *chandle, int *bufsize)
 		return -1;;
 	}
 
-	if ((err = snd_pcm_prepare(phandle)) < 0) {
-		cat_error("Prepare error: %s\n", snd_strerror(err));
-		return -1;;
+	if (phandle)
+	{
+		if ((err = snd_pcm_prepare(phandle)) < 0) {
+			cat_error("Prepare error: %s\n", snd_strerror(err));
+			return -1;;
+		}
+	}else if (chandle) {
+		if ((err = snd_pcm_prepare(chandle)) < 0) {
+			cat_error("Prepare error: %s\n", snd_strerror(err));
+			return -1;;
+		}
 	}
 
 	fflush(stdout);

@@ -23,9 +23,6 @@
 #ifndef _ComplexTmplDef_
 #define _ComplexTmplDef_
 
-#include <string>
-#include "mtgsstream.h" // An alias for <sstream>
-
 // remove me
 #include <iostream>
 

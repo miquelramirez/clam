@@ -25,10 +25,28 @@ char* stradd(const char* a)
 	return cur;
 }
 
-char* strend(void)
+char* stradd_range( const char* begin, const char* end )
 {
-	char* ret = cur;
+	if ( begin )
+		while ( begin != end && curn-- )
+			*cur++ = *begin++;
+	*cur = 0;
+	return cur;
+}
+
+void strend(void)
+{
 	*cur = 0;
 	cur = 0;
-	return ret;
 }
+
+// change slashes to backslashes
+void winstyle(char* str)
+{
+	while (*str)
+	{
+		if (*str=='/') *str='\\';
+		str++;
+	}
+}
+

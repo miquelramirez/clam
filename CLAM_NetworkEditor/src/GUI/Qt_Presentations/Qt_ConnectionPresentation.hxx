@@ -40,6 +40,7 @@ public:
 	void Show();
 	void Hide();
 	void UnSelectConnectionPresentation();
+	void SelectConnectionPresentation();
 
 protected:    
 	virtual void paintEvent( QPaintEvent * ) = 0;
@@ -63,8 +64,6 @@ public: //slots
 	SigSlot::Signalv1< Qt_ConnectionPresentation * > SignalConnectionPresentationSelected;
 	SigSlot::Signalv1< Qt_ConnectionPresentation * > SignalConnectionPresentationAddedToSelection;
 	SigSlot::Signalv1< const QPoint & > SignalMovingMouseWithButtonPressed;
-
-	
 };
 
 } // namespace NetworkGUI

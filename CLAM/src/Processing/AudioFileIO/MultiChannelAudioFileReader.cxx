@@ -112,28 +112,30 @@ namespace CLAM
 						       mSamplesMatrix.GetPtr(),
 						       sizeTmp );
 
-		// Audio 'simple meta-data' setup
+		if ( mNativeStream->WasSomethingRead() )
+		{
+			// Audio 'simple meta-data' setup
+			
+			for ( OutRefsVector::iterator i = outRefs.begin();
+			      i != outRefs.end(); i++ )
+			{
+				(*i)->SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+				(*i)->SetBeginTime( mCurrentBeginTime );
+			}
+			
+			
+			mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
+			mCurrentBeginTime += mDeltaTime;
+			
+		}
 		
-		for ( OutRefsVector::iterator i = outRefs.begin();
-		      i != outRefs.end(); i++ )
-		  {
-			(*i)->SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
-			(*i)->SetBeginTime( mCurrentBeginTime );
-		  }
-
-
-		mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
-		mCurrentBeginTime += mDeltaTime;
-
 		for ( OutputVector::iterator i = mOutputs.begin();
 		      i!= mOutputs.end(); i++ )
 		{	
 			(*i)->LeaveData();
 		}
 
-
-
-		return true;
+		return mNativeStream->WasSomethingRead();
 	}
 
 	bool MultiChannelAudioFileReader::ConcreteConfigure( const ProcessingConfig& cfgObj )

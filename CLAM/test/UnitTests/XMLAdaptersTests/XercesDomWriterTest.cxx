@@ -30,6 +30,7 @@ class XercesDomWriterTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testNonEmptyElementWithAttribute);
 	CPPUNIT_TEST(testEmptyDocument);
 	CPPUNIT_TEST(testDocumentWithFullContent);
+	CPPUNIT_TEST(testDocumentWithFullContentAndIndentation);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -184,6 +185,33 @@ private:
 					"<InnerElement/>"
 				"</Element>"
 			"</TestDoc>"
+			), mTargetStream.str());
+	}
+
+	void testDocumentWithFullContentAndIndentation()
+	{
+		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * domInnerElement = mDocument->createElement(X("InnerElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		domElement->setAttribute(X("attribute"),X("Attribute value"));
+		domElement->appendChild(domContent);
+		domElement->appendChild(domInnerElement);
+		mDocument->getDocumentElement()->appendChild(domElement);
+		
+		XercesDomWriter writer;
+		writer.DoIndentedFormat(true);
+		writer.write(mTargetStream, mDocument);
+
+		// Xerces does a very weird indentation!!
+
+		CPPUNIT_ASSERT_EQUAL(std::string(
+			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n"
+			"<TestDoc xmlns=\"2003-04.clam05.iua.mtg.upf.es\">\n\n"
+			"  <Element attribute=\"Attribute value\">"
+				"Content\n"
+			"    <InnerElement/>\n"
+			"  </Element>\n\n"
+			"</TestDoc>\n"
 			), mTargetStream.str());
 	}
 

@@ -43,9 +43,9 @@ namespace CLAM
 		EAudioFileKind( std::string s );
 
 		typedef enum {
-			ePCM,  /* Some variant of good ol' Pulse Code Modulation */
-			eOggVorbis, /* Compressed with OggVorbis scheme */
-			eMpeg,        /* Compressed with MPEG-1 Layer 3 scheme */			
+			ePCM,  /* String value: "PCM". Some variant of good ol' Pulse Code Modulation */
+			eOggVorbis, /* String value: "Ogg/Vorbis". Compressed with OggVorbis scheme */
+			eMpeg,        /* String value: "Mpeg Audio". Compressed with MPEG-1 Layer 3 scheme */			
 			eUnknown /* For error handling */
 		};
 

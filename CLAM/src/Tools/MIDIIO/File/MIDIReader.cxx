@@ -1,3 +1,26 @@
+/*
+ * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
+ * UNIVERSITAT POMPEU FABRA
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ * MIDIFileReader C++ classes
+ * This code is part of the CLAM library, but also usable stand-alone.
+ * Maarten de Boer <mdeboer@iua.upf.es>
+ *
+ */
 #include "MIDIReader.hxx"
 #include "MIDISong.hxx"
 #include "MIDITrack.hxx"
@@ -11,31 +34,11 @@ namespace MIDI
 		static int nbytesPerChnMsg[7] =
 		{ 3,3,3,3,2,3,3 };
 
-		{
-			/* do some overly paranoid safety check, to see if endianity
-			** got determined correctly. this should really not be necesary,
-			** we should have some standard tests for that, but hey! it won't
-			** hurt
-			*/
-			unsigned int tmpi = 0x4D546864;
-			#ifdef MIDI_FILE_NEEDS_SWAP
-			char tmps[4] = {0x64,0x68,0x54,0x4D};
-			#else
-			char tmps[4] = {0x4D,0x54,0x68,0x64};
-			#endif
-						
-			if (*((int*)tmps)!=tmpi)
-			{
-				printf("Determined endianity seems wrong\n");
-				throw Error("Determined endianity seems wrong");
-			}
-		}
-
-		unsigned int chnkType = GetInt();
+		ChunkType chnkType = GetChunkType();
 		unsigned int length;
 		unsigned short format,ntrcks;
 		
-		if (chnkType!=0x4D546864) throw Error("Expected a header chunk\n");
+		if (chnkType!="MThd") throw Error("Expected a header chunk\n");
 
 		length = GetInt();
 		if (length!=6)
@@ -51,8 +54,8 @@ namespace MIDI
 
 		for (int i=0;i<ntrcks;i++)
 		{
-			chnkType = GetInt();
-			if (chnkType!=0x4D54726B) throw Error("Expected a track chunk\n");
+			chnkType = GetChunkType();
+			if (chnkType!="MTrk") throw Error("Expected a track chunk\n");
 
 			int chnkLength = GetInt();
 

@@ -1,0 +1,33 @@
+# Begin Source File
+
+SOURCE="..\..\CLAM-devel\examples\NetworkEditor\GUI\Interface\MainWindow.hxx"
+
+!IF  "$(CFG)" == "Dummy_1 - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing MainWindow.hxx...
+InputDir=\AGNULA_Sandbox\CLAM-devel\examples\NetworkEditor\GUI\Interface
+InputPath=..\..\CLAM-devel\examples\NetworkEditor\GUI\Interface\MainWindow.hxx
+InputName=MainWindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).hxx -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Dummy_1 - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing MainWindow.hxx...
+InputDir=\AGNULA_Sandbox\CLAM-devel\examples\NetworkEditor\GUI\Interface
+InputPath=..\..\CLAM-devel\examples\NetworkEditor\GUI\Interface\MainWindow.hxx
+InputName=MainWindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%qtdir%\bin\moc.exe $(InputDir)\$(InputName).hxx -o $(InputDir)\moc_$(InputName).cpp
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File

@@ -6,7 +6,7 @@ namespace CLAM
 namespace AudioCodecs
 {
 	Stream::Stream()
-		: mStrictStreaming( true )
+		: mStrictStreaming( true ), mFramesLastRead( 0 )
 	{
 	}
 
@@ -103,17 +103,24 @@ namespace AudioCodecs
 	bool Stream::ReadData( int channel, TData* ptr, TSize howmany )
 	{
 		CheckForFileReading( howmany );
-		// Actual data reading
-		int channelCount = mChannels;
 
-		const TData* end = mInterleavedData.GetPtr() + mInterleavedData.Size();
-		const int stride = channelCount;
-
-		for ( TData* i = mInterleavedData.GetPtr() + channel;
-		      i < end; i+=stride, ptr++ )
-			*ptr = *i;
-
-		mChannelsConsumed[ channel ] = true;
+		if ( mFramesLastRead != 0 )
+		{
+			
+			
+			// Actual data reading
+			int channelCount = mChannels;
+			
+			const TData* end = mInterleavedData.GetPtr() + mInterleavedData.Size();
+			const int stride = channelCount;
+			
+			for ( TData* i = mInterleavedData.GetPtr() + channel;
+			      i < end; i+=stride, ptr++ )
+				*ptr = *i;
+			
+			mChannelsConsumed[ channel ] = true;
+			
+		}
 		
 		return mEOFReached;
 		       
@@ -123,32 +130,37 @@ namespace AudioCodecs
 			       TData** samples, TSize howmany )
 	{
 		CheckForFileReading( howmany );
-		// Actual data reading
-		int channelCount = mChannels;
 
-		const TData*  end = mInterleavedData.GetPtr() + mInterleavedData.Size();
-		TData** const samplesEnd = samples + nchannels;
-		const int* endChannels = channels + nchannels;
-		std::vector<bool>::iterator cIt = mChannelsConsumed.begin();
-
-		for( int* currentChannel = channels;
-		     currentChannel != endChannels;
-		     currentChannel++ )
+		if ( mFramesLastRead != 0 )
 		{
-			const int channelIndex = *currentChannel;
-			// mark channel as consumed
-			*(cIt + channelIndex ) = true;
-			const int stride = channelCount;
-			TData* pSamples = *(samples + channelIndex);
-
-			for ( const TData* i = mInterleavedData.GetPtr() + channelIndex;
-			      i<end;
-			      i+=stride, pSamples++ )
+			
+			// Actual data reading
+			int channelCount = mChannels;
+			
+			const TData*  end = mInterleavedData.GetPtr() + mInterleavedData.Size();
+			TData** const samplesEnd = samples + nchannels;
+			const int* endChannels = channels + nchannels;
+			std::vector<bool>::iterator cIt = mChannelsConsumed.begin();
+			
+			for( int* currentChannel = channels;
+			     currentChannel != endChannels;
+			     currentChannel++ )
 			{
-				*pSamples = *i;
-
+				const int channelIndex = *currentChannel;
+				// mark channel as consumed
+				*(cIt + channelIndex ) = true;
+				const int stride = channelCount;
+				TData* pSamples = *(samples + channelIndex);
+				
+				for ( const TData* i = mInterleavedData.GetPtr() + channelIndex;
+				      i<end;
+				      i+=stride, pSamples++ )
+				{
+					*pSamples = *i;
+					
+				}
+				
 			}
-
 		}
 
 

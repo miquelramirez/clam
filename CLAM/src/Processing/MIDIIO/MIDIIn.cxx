@@ -19,20 +19,19 @@
  *
  */
 
-
-
 #include "MIDIIn.hxx"
 #include "MIDIManager.hxx"
 
-using namespace CLAM;
+namespace CLAM {
 
 bool MIDIIn::ConcreteConfigure(const ProcessingConfig& c)
 	throw(ErrProcessingObj)
 {
 	CopyAsConcreteConfig(mConfig, c);
 
-	/** Unregistering a possible device already assigned to the MIDIIn object
-	*/
+	/** Unregistering a possible device already associated with this
+	 *  MIDIOut object
+	 */
 	if (mpDevice)
 		mpDevice->Unregister(*this);
 
@@ -84,3 +83,5 @@ void MIDIIn::GetDeviceInfo(MIDIDevice::TInfo &info) const
 	else
 		info.Reset();
 }
+
+} // namespace CLAM

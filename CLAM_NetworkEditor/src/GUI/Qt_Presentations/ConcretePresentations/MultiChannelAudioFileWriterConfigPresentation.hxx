@@ -45,7 +45,11 @@ protected:
 	void CreateChannels();
 public:
 	MultiChannelAudioFileWriterConfigPresentation( QWidget * parent = 0 );
-	virtual ~MultiChannelAudioFileWriterConfigPresentation();
+	virtual ~MultiChannelAudioFileWriterConfigPresentation();	
+	CLAM::ProcessingConfig * GetConfig()
+	{
+		return &mConfig;
+	}
 };
 
 } // namespace NetworkGUI

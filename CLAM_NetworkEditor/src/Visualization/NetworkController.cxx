@@ -45,7 +45,8 @@ NetworkController::NetworkController()
 	SlotRemoveControlConnection.Wrap( this, &NetworkController::RemoveControlConnection );
 	
 	SlotRemoveProcessing.Wrap( this, &NetworkController::RemoveProcessing );
-//	SlotProcessingControllerNeedsRebuild.Wrap( this, &NetworkController::ProcessingControllerNeedsRebuild );
+	SlotConfigureProcessing.Wrap( this, &NetworkController::ConfigureProcessing );
+
 	SlotRebuildProcessingPresentationAttachedTo.Wrap( this, &NetworkController::RebuildProcessingPresentationAttachedTo );
 	SlotRemoveAllConnections.Wrap( this, &NetworkController::RemoveAllConnections );
 	SlotAddProcessing.Wrap( this, &NetworkController::AddProcessing );
@@ -62,34 +63,41 @@ NetworkController::NetworkController()
 }
 
 void NetworkController::ExecuteEvents()
-{
+{	
+	ConnectionsList::iterator it;
 	if ( mPortsToConnect.size() != 0)
 	{
-		ConnectionsMap::iterator it;
 		for (it=mPortsToConnect.begin(); it!=mPortsToConnect.end(); it++)
-			ExecuteCreatePortConnection( it->second, it->first );
+			ExecuteCreatePortConnection( (*it).GetOut(), (*it).GetIn() );
 		mPortsToConnect.clear();
-
+	}
+	
+	if( mControlsToConnect.size() != 0 )
+	{
 		for (it=mControlsToConnect.begin(); it!=mControlsToConnect.end(); it++)
-			ExecuteCreateControlConnection( it->second, it->first );
+			ExecuteCreateControlConnection( (*it).GetOut(), (*it).GetIn() );
 		mControlsToConnect.clear();
 	}
+	
 	if ( mPortsToDisconnect.size() != 0)
 	{
-		ConnectionsMap::iterator it;
 		for (it=mPortsToDisconnect.begin(); it!=mPortsToDisconnect.end(); it++)
-			ExecuteRemovePortConnection( it->second, it->first );
+			ExecuteRemovePortConnection( (*it).GetOut(), (*it).GetIn() );
 		mPortsToDisconnect.clear();		
+	}
+	
+	if( mControlsToDisconnect.size() != 0 )
+	{
 
 		for (it=mControlsToDisconnect.begin(); it!=mControlsToDisconnect.end(); it++)
-			ExecuteRemoveControlConnection( it->second, it->first );
+			ExecuteRemoveControlConnection( (*it).GetOut(), (*it).GetIn() );
 		mControlsToDisconnect.clear();		
 	}
 	if( mProcessingsToRemove.size() != 0)
 	{
-		ProcessingsList::iterator it;
-		for(it=mProcessingsToRemove.begin(); it!=mProcessingsToRemove.end(); it++)
-			ExecuteRemoveProcessing( *it );
+		ProcessingsList::iterator itp;
+		for(itp=mProcessingsToRemove.begin(); itp!=mProcessingsToRemove.end(); itp++)
+			ExecuteRemoveProcessing( *itp );
 		mProcessingsToRemove.clear();
 	}
 }
@@ -106,7 +114,7 @@ void NetworkController::ProcessingLoop()
 void NetworkController::ProcessingNameChanged( const std::string & newName, ProcessingController * controller )
 {
 	std::string oldName("");
-	ProcessingControllersMapIterator it;
+	ProcessingControllersMap::iterator it;
 	for( it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++ )
 	{
 		if( it->second == controller )
@@ -132,7 +140,7 @@ bool NetworkController::ChangeKeyMap( const std::string & oldName, const std::st
 	if( mProcessingControllers.find( newName ) != mProcessingControllers.end() ) // newName is being used
 		return false;
 	
-	ProcessingControllersMapIterator it = mProcessingControllers.find( oldName );
+	ProcessingControllersMap::iterator it = mProcessingControllers.find( oldName );
 	ProcessingController * controller = it->second;
 	mProcessingControllers.erase( it );
 	mProcessingControllers.insert( ProcessingControllersMap::value_type( newName, controller ) );
@@ -150,9 +158,10 @@ void NetworkController::ChangeState( bool state)
 		mLoopCondition = true;
 		
 		mThread.Start();
-		ProcessingControllersMapIterator it;
+		ProcessingControllersMap::iterator it;
 		for( it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++ )
-			it->second->SignalChangeState.Emit( it->second->GetProcessingExecState(), it->second->GetProcessingStatus() );	
+			it->second->SignalChangeState.Emit( it->second->GetProcessingExecState(), 
+						            it->second->GetProcessingStatus() );	
 	}
 	else // stop the network
 	{		
@@ -163,9 +172,10 @@ void NetworkController::ChangeState( bool state)
 		mThread.Stop();
 		mObserved->Stop();
 
-		ProcessingControllersMapIterator it;
+		ProcessingControllersMap::iterator it;
 		for( it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++ )
-			it->second->SignalChangeState.Emit( it->second->GetProcessingExecState(), it->second->GetProcessingStatus() );	
+			it->second->SignalChangeState.Emit( it->second->GetProcessingExecState(), 
+							    it->second->GetProcessingStatus() );	
 
 	}
 }
@@ -173,7 +183,7 @@ void NetworkController::ChangeState( bool state)
 void NetworkController::CreatePortConnection( const std::string & out, const std::string& in)
 {	
 	if (mLoopCondition)
-		mPortsToConnect.insert( ConnectionsMap::value_type( in, out ) );
+		mPortsToConnect.push_back( Connection( out, in ));
 	else
 		ExecuteCreatePortConnection(out, in);
 }
@@ -181,7 +191,7 @@ void NetworkController::CreatePortConnection( const std::string & out, const std
 void NetworkController::CreateControlConnection( const std::string & out, const std::string& in)
 {	
 	if (mLoopCondition)
-		mControlsToConnect.insert( ConnectionsMap::value_type( in, out ) );
+		mControlsToConnect.push_back( Connection( out, in ));
 	else
 		ExecuteCreateControlConnection(out, in);
 }
@@ -189,132 +199,54 @@ void NetworkController::CreateControlConnection( const std::string & out, const 
 void NetworkController::ExecuteCreatePortConnection( const std::string & out , const std::string & in )
 {
 	if(mObserved->ConnectPorts(out, in))
-	{
-		ConnectionAdapter * connection = CreatePortConnectionAdapter( mObserved->GetOutPortByCompleteName(out), mObserved->GetInPortByCompleteName(in)); 
-		SignalCreatePortConnectionPresentation.Emit( (ConnectionAdapter*)connection );
-	}
+		RegisterPortConnection( out, in );
 }
 
-ConnectionAdapter * NetworkController::CreatePortConnectionAdapter( const CLAM::OutPort & out, const CLAM::InPort & in )
+void NetworkController::RegisterPortConnection( const std::string & out, const std::string & in )
 {
-	ConnectionAdapterTmpl< CLAM::OutPort, CLAM::InPort> * adapter = new ConnectionAdapterTmpl< CLAM::OutPort, CLAM::InPort >;
-	adapter->BindTo( out, in, (const CLAM::Network&)*mObserved );
-	mConnectionAdapters.push_back( (ConnectionAdapter*)adapter );
-	return adapter;
+	mPortConnections.push_back( Connection( out, in ));
+	SignalCreatePortConnectionPresentation.Emit( out, in );
 }
 
 void NetworkController::ExecuteCreateControlConnection( const std::string & out , const std::string & in )
-{
+{	
 	if(mObserved->ConnectControls(out, in))
-	{	
-		ConnectionAdapter * connection = CreateControlConnectionAdapter( mObserved->GetOutControlByCompleteName(out), mObserved->GetInControlByCompleteName(in)); 
-		SignalCreateControlConnectionPresentation.Emit( (ConnectionAdapter*)connection );
-	}
+		RegisterControlConnection( out, in );
 }
 
-ConnectionAdapter * NetworkController::CreateControlConnectionAdapter( const CLAM::OutControl & out, const CLAM::InControl & in )
-{
-	ConnectionAdapterTmpl< CLAM::OutControl, CLAM::InControl> * adapter = new ConnectionAdapterTmpl< CLAM::OutControl, CLAM::InControl >;
-	adapter->BindTo( out, in, (const CLAM::Network&)*mObserved );
-	mConnectionAdapters.push_back( (ConnectionAdapter*)adapter );
-	return adapter;
+void NetworkController::RegisterControlConnection( const std::string & out , const std::string & in )
+{	
+	mControlConnections.push_back( Connection( out, in ));
+	SignalCreateControlConnectionPresentation.Emit( out, in );
 }
 
-void NetworkController::RemovePortConnection( const std::string & outPort, 
-						       const std::string & inPort )
+void NetworkController::RemovePortConnection( const std::string & outPort, const std::string & inPort )
 {
 	if (mLoopCondition)
-	{
-		if (!mPortsToDisconnect.insert( ConnectionsMap::value_type( inPort, outPort ) ).second )
-			CLAM_ASSERT(false, "NetworkController::RemovePortConnection() Trying to remove connection with repeated key" );
-	}
+		mPortsToDisconnect.push_back( Connection( outPort, inPort ));
 	else
-	{
 		ExecuteRemovePortConnection(outPort, inPort);
-	}
-
 }
 
 
-void NetworkController::RemoveControlConnection( const std::string & outControl, 
-						       const std::string & inControl )
+void NetworkController::RemoveControlConnection( const std::string & outControl, const std::string & inControl )
 {
 	if (mLoopCondition)
-	{
-		if (!mControlsToDisconnect.insert( ConnectionsMap::value_type( inControl, outControl ) ).second )
-			CLAM_ASSERT(false, "NetworkController::RemoveControlConnection() Trying to remove connection with repeated key" );
-	}
+		mControlsToDisconnect.push_back( Connection( outControl, inControl ));
 	else
-	{
 		ExecuteRemoveControlConnection(outControl, inControl);
-	}
-
 }
 
 void NetworkController::LoadNetwork( const std::string & file)
 {
+	Clear();
+	SignalClearPresentation.Emit();
 	CLAM::XMLStorage storage;
 	storage.Restore( *mObserved, file );
 
 	BindTo( *mObserved );
 
-	ProcessingControllersMapIterator itp;
-	for (itp=BeginProcessingControllers(); itp!=EndProcessingControllers(); itp++)
-	{
-		SignalCreateProcessingPresentation.Emit( itp->first, itp->second);
-	}
-
-	CLAM::Network::ProcessingsMap::const_iterator it;
-	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
-	{
-		CLAM::Processing * producer = it->second;
-		CLAM::PublishedOutPorts::Iterator itOutPort;
-	
-		for (itOutPort=producer->GetOutPorts().Begin(); itOutPort!=producer->GetOutPorts().End(); itOutPort++)
-		{	
-			if (!(*itOutPort)->GetNode())
-				break;
-
-			std::string completeOutName( it->first );
-			completeOutName += ".";
-			completeOutName += (*itOutPort)->GetName();
-
-			CLAM::Network::NamesList connected = mObserved->GetInPortsConnectedTo( completeOutName );
-			CLAM::Network::NamesList::iterator namesIn;
-			for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
-			{
-				ConnectionAdapter * connection = CreatePortConnectionAdapter( mObserved->GetOutPortByCompleteName(completeOutName), 
-												 mObserved->GetInPortByCompleteName(*namesIn)); 
-				SignalCreatePortConnectionPresentation.Emit( (ConnectionAdapter*)connection );
-			}
-
-		}
-
-		CLAM::PublishedOutControls::Iterator itOutControl;
-	
-		for (itOutControl=producer->GetOutControls().Begin(); itOutControl!=producer->GetOutControls().End(); itOutControl++)
-		{	
-			if(!((*itOutControl)->IsConnected()))
-				break;
-
-			std::string completeOutName( it->first );
-			completeOutName += ".";
-			completeOutName += (*itOutControl)->GetName();
-
-			CLAM::Network::NamesList connected = mObserved->GetInControlsConnectedTo( completeOutName );
-			CLAM::Network::NamesList::iterator namesIn;
-			for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
-			{
-				ConnectionAdapter * connection = CreateControlConnectionAdapter( mObserved->GetOutControlByCompleteName(completeOutName), 
-												 mObserved->GetInControlByCompleteName(*namesIn)); 
-				SignalCreateControlConnectionPresentation.Emit( (ConnectionAdapter*)connection );
-			}
-
-		}
-
-	}
 	Publish();
-	
 }
 
 void NetworkController::SaveNetwork( const std::string & file)
@@ -332,18 +264,13 @@ void NetworkController::RemoveProcessing(const std::string & name )
 
 void NetworkController::RemoveAllPortConnections( const std::string & name )
 {	
-	ProcessingControllersMapIterator it = mProcessingControllers.find( name );
+	ProcessingControllersMap::iterator it = mProcessingControllers.find( name );
 	ProcessingController * proc = it->second;
-
-
+	
 	ProcessingController::NamesList::iterator namesIt;	
 	for(namesIt=proc->BeginOutPortNames(); namesIt!=proc->EndOutPortNames(); namesIt++)
 	{
-		std::string completeOutName("");
-		completeOutName += name;
-		completeOutName += ".";
-		completeOutName += *namesIt;
-		
+		std::string completeOutName( name + "." + *namesIt );
 		CLAM::Network::NamesList connected = mObserved->GetInPortsConnectedTo( completeOutName );
 		CLAM::Network::NamesList::iterator namesIn;
 		for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
@@ -354,11 +281,7 @@ void NetworkController::RemoveAllPortConnections( const std::string & name )
 	}
 	for(namesIt=proc->BeginInPortNames(); namesIt!=proc->EndInPortNames(); namesIt++)
 	{
-		std::string completeInName("");
-		completeInName += name;
-		completeInName += ".";
-		completeInName += *namesIt;
-
+		std::string completeInName( name + "." + *namesIt );
 		CLAM::InPort & inPort = mObserved->GetInPortByCompleteName( completeInName );
 		if(inPort.IsAttached())
 		{
@@ -376,16 +299,13 @@ void NetworkController::RemoveAllPortConnections( const std::string & name )
 
 void NetworkController::RemoveAllControlConnections( const std::string & name )
 {
-	ProcessingControllersMapIterator it = mProcessingControllers.find( name );
+	ProcessingControllersMap::iterator it = mProcessingControllers.find( name );
 	ProcessingController * proc = it->second;
 
 	ProcessingController::NamesList::iterator namesIt;	
 	for(namesIt=proc->BeginOutControlNames(); namesIt!=proc->EndOutControlNames(); namesIt++)
 	{	
-		std::string completeOutName("");
-		completeOutName += name;
-		completeOutName += ".";
-		completeOutName += *namesIt;
+		std::string completeOutName( name + "." + *namesIt );
 		
 		CLAM::Network::NamesList connected = mObserved->GetInControlsConnectedTo( completeOutName );
 		CLAM::Network::NamesList::iterator namesIn;
@@ -398,30 +318,18 @@ void NetworkController::RemoveAllControlConnections( const std::string & name )
 
 	for(namesIt=proc->BeginInControlNames(); namesIt!=proc->EndInControlNames(); namesIt++)
 	{	
-		std::string completeInName("");
-		completeInName += name;
-		completeInName += ".";
-		completeInName += *namesIt;
+		std::string completeInName( name + "." + *namesIt);
 
-
-		// in controls should have references to its connected out controls
-		std::list< ConnectionAdapter* > connectionsToRemove;
-		ConnectionAdapterIterator connectionIt;
-		for( connectionIt=mConnectionAdapters.begin(); connectionIt!=mConnectionAdapters.end(); connectionIt++)
-		{
-			if( (*connectionIt)->GetInName() == completeInName )
-			{	
+		ConnectionsList connectionsToRemove;
+		ConnectionsList::iterator connectionIt;
+		for( connectionIt=mControlConnections.begin(); connectionIt!=mControlConnections.end(); connectionIt++)
+			if( ((*connectionIt).GetIn()) == completeInName )
 				connectionsToRemove.push_back( *connectionIt );
-			}
-		}
 		
 		for( connectionIt=connectionsToRemove.begin(); connectionIt!=connectionsToRemove.end(); connectionIt++)
 		{
-			std::string completeOutName("");
-			completeOutName += (*connectionIt)->GetOutName();
-			RemoveControlConnection( completeOutName, completeInName );
-			SignalRemoveConnectionPresentation.Emit( completeOutName, completeInName); 
-
+			RemoveControlConnection( (*connectionIt).GetOut(), (*connectionIt).GetIn() );
+			SignalRemoveConnectionPresentation.Emit( (*connectionIt).GetOut(), (*connectionIt).GetIn() ); 
 		}
 	}
 }
@@ -429,7 +337,7 @@ void NetworkController::RemoveAllControlConnections( const std::string & name )
 void NetworkController::ExecuteRemoveProcessing( const std::string & name )
 {
 
-	ProcessingControllersMapIterator it = mProcessingControllers.find( name );
+	ProcessingControllersMap::iterator it = mProcessingControllers.find( name );
 	if(it==mProcessingControllers.end())
 			CLAM_ASSERT(false, "NetworkControllers::ExecuteRemoveProcessing() Trying to remove a processing controller that is not included in the network controller" );
 
@@ -447,61 +355,53 @@ void NetworkController::ExecuteRemoveProcessing( const std::string & name )
 void NetworkController::RemoveAllConnections(  CLAM::Processing * proc )
 {
 	std::string name = mObserved->GetNetworkId( proc );
-
-	// remove all connections to processing and communicate it to gui
 	RemoveAllPortConnections( name );
 	RemoveAllControlConnections( name );
 }
 
 void NetworkController::RebuildProcessingPresentationAttachedTo( ProcessingController * controller, CLAM::Processing * proc )
 {
-	std::string name = mObserved->GetNetworkId( proc );
+	SignalRebuildProcessingPresentationAttachedTo.Emit(  mObserved->GetNetworkId( proc ), controller );
+}
 
-	// emit signal to delete processing presentation 
-	SignalRebuildProcessingPresentationAttachedTo.Emit( name, controller );
+void NetworkController::ConfigureProcessing( CLAM::Processing * proc, const CLAM::ProcessingConfig & cfg )
+{
+	mObserved->ConfigureProcessing( mObserved->GetNetworkId( proc ), cfg );
 }
 
 void NetworkController::ExecuteRemovePortConnection( const std::string & out , const std::string & in )
 {
 	if(mObserved->DisconnectPorts(out, in))
 	{
-		//remove connection from inport
-		CLAM::InPort & inPort = mObserved->GetInPortByCompleteName(in);
-		ConnectionAdapterIterator itc;
-		for ( itc=mConnectionAdapters.begin(); itc!=mConnectionAdapters.end(); itc++)
-		{
-			ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort> * con = (ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>*)(*itc);
-			if (con->ConnectsInElement(inPort))
+		ConnectionsList::iterator it;
+		for(it=mPortConnections.begin(); it!=mPortConnections.end(); it++)
+			if( ((*it).GetIn() == in) && ((*it).GetOut()== out) )
 			{
-				mConnectionAdapters.remove(con);
-				delete con;
-				return;   
+				mPortConnections.erase(it);
+				return;
 			}
-		}
 	}
+			
+	CLAM_ASSERT(false, "NetworkController::ExecuteRemovePortConnection()"
+			"Trying to remove a port connection that has not been created" );
 }
 
 void NetworkController::ExecuteRemoveControlConnection( const std::string & out , const std::string & in )
-{
+{	
 	if(mObserved->DisconnectControls(out, in))
 	{
-		//remove connection from inport
-		CLAM::InControl & inControl = mObserved->GetInControlByCompleteName(in);
-		ConnectionAdapterIterator itc;
-		for ( itc=mConnectionAdapters.begin(); itc!=mConnectionAdapters.end(); itc++)
-		{
-			ConnectionAdapterTmpl<CLAM::OutControl, CLAM::InControl> * con = (ConnectionAdapterTmpl<CLAM::OutControl, CLAM::InControl>*)(*itc);
-			if (con && con->ConnectsInElement(inControl))
-			{				
-				mConnectionAdapters.erase( itc );
-				delete con;
-				return;   
+		ConnectionsList::iterator it;
+		for(it=mControlConnections.begin(); it!=mControlConnections.end(); it++)
+			if( ((*it).GetIn() == in) && ((*it).GetOut()== out) )
+			{
+				mControlConnections.erase(it);
+				return;
 			}
-		}
 	}
+			
+	CLAM_ASSERT(false, "NetworkController::ExecuteRemoveControlConnection()"
+			"Trying to remove a port connection that has not been created" );	
 }
-
-
 
 NetworkController::~NetworkController()
 {
@@ -513,12 +413,11 @@ void NetworkController::AddProcessing( const std::string & name,
 {
 	mObserved->AddProcessing(name, proc);
 	SignalCreateProcessingPresentation.Emit( name, CreateProcessingController(name, proc));
-	
 }
 
 ProcessingController* NetworkController::CreateProcessingController( const std::string & name, CLAM::Processing * proc )
 {
-	ProcessingControllersMapIterator i = mProcessingControllers.find( name );
+	ProcessingControllersMap::iterator i = mProcessingControllers.find( name );
 	if(i!=mProcessingControllers.end())
 		CLAM_ASSERT(false, "NetworkController::CreateProcessingController() Trying to add a processing controller with a repeated name (key)" );
 
@@ -526,6 +425,7 @@ ProcessingController* NetworkController::CreateProcessingController( const std::
 	controller->SignalProcessingNameChanged.Connect( SlotProcessingNameChanged );
 	controller->SignalRemoveAllConnections.Connect( SlotRemoveAllConnections );
 	controller->SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
+	controller->SignalConfigureProcessing.Connect( SlotConfigureProcessing );
 
 	controller->BindTo(*proc);
 	mProcessingControllers.insert( ProcessingControllersMap::value_type( name, controller));
@@ -554,9 +454,42 @@ bool NetworkController::BindTo( CLAM::Network& obj )
 
 	CLAM::Network::ProcessingsMap::const_iterator it;
 	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
+		CreateProcessingController( it->first,  it->second );
+
+	ProcessingControllersMap::iterator itp;
+	for (itp=BeginProcessingControllers(); itp!=EndProcessingControllers(); itp++)
+		SignalCreateProcessingPresentation.Emit( itp->first, itp->second);
+
+	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
 	{
 		CLAM::Processing * producer = it->second;
-		CreateProcessingController( it->first,  it->second );
+		CLAM::PublishedOutPorts::Iterator itOutPort;
+		for (itOutPort=producer->GetOutPorts().Begin(); itOutPort!=producer->GetOutPorts().End(); itOutPort++)
+		{	
+			if ((*itOutPort)->GetNode())
+			{
+				std::string completeOutName( it->first + "." + (*itOutPort)->GetName() );
+
+				CLAM::Network::NamesList connected = mObserved->GetInPortsConnectedTo( completeOutName );
+				CLAM::Network::NamesList::iterator namesIn;
+				for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
+					RegisterPortConnection( completeOutName, *namesIn);
+			}
+		}
+
+		CLAM::PublishedOutControls::Iterator itOutControl;
+		for (itOutControl=producer->GetOutControls().Begin(); itOutControl!=producer->GetOutControls().End(); itOutControl++)
+		{	
+			if((*itOutControl)->IsConnected())
+			{
+				std::string completeOutName( it->first + "." + (*itOutControl)->GetName());
+
+				CLAM::Network::NamesList connected = mObserved->GetInControlsConnectedTo( completeOutName );
+				CLAM::Network::NamesList::iterator namesIn;
+				for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
+					RegisterControlConnection( completeOutName, *namesIn);
+			}
+		}
 	}
 	return true;
 }
@@ -568,29 +501,18 @@ bool NetworkController::Update()
 
 void NetworkController::Clear()
 {
-
-	if(mThread.IsRunning())
-	{
-		mLoopCondition = false;
-		mThread.Stop();
-	}
-
-	ProcessingControllersMapIterator it;
+	ChangeState( false );
+	ProcessingControllersMap::iterator it;
 	for(it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++)
-	{
-		CLAMVM::ProcessingController * controller = it->second;
-		delete controller;
-	}
-
+		delete it->second;
 	mProcessingControllers.clear();
 
-	ConnectionAdapterIterator itc;
-	for ( itc=mConnectionAdapters.begin(); itc!=mConnectionAdapters.end(); itc++)
-		delete *itc;
-	mConnectionAdapters.clear();
+	mControlConnections.clear();
+	mPortConnections.clear();
 
 	if(mObserved)
 		mObserved->Clear();
 }
 
 } // namespace CLAMVM
+

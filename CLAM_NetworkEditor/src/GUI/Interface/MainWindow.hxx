@@ -44,12 +44,8 @@ public:
 
 private:
 	void SendMessageToStatus( const std::string & );
-	void Start();
-	void Stop();
-
 	Qt_NetworkPresentation mNetwork;
 	QDockWindow * mDockProcMenu;
-
 public: //slots
 	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
 

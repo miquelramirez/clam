@@ -24,7 +24,7 @@
 #include "MIDIClocker.hxx"
 #include "MIDIManager.hxx"
 
-using namespace CLAM;
+namespace CLAM {
 
 bool MIDIClocker::ConcreteConfigure(const ProcessingConfig& c)
 	throw(ErrProcessingObj)
@@ -84,3 +84,5 @@ void MIDIClocker::GetDeviceInfo(MIDIDevice::TInfo &info) const
 	else
 		info.Reset();
 }
+
+} // namespace CLAM

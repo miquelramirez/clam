@@ -23,6 +23,7 @@
 #include "MIDIDevice.hxx"
 #include "MIDIDeviceList.hxx"
 #include "MIDIIn.hxx"
+#include "MIDIOut.hxx"
 #include "MIDIClocker.hxx"
 #include <algorithm>
 using std::find ;
@@ -38,28 +39,30 @@ MIDIManager::MIDIManager() throw(Err)
 
 MIDIManager::~MIDIManager()
 {
-	unsigned int i;
-	for (i=0;i<mDevices.size(); i++)
+	std::vector<MIDIDevice*>::iterator it;
+
+	it = mDevices.begin();
+	
+	while (it!=mDevices.end())
 	{
-		delete mDevices[i];
+		MIDIDevice* d = *it;
+
+		it = mDevices.erase(it);
+		delete d;
 	}
+
 	_Current(true,0);
 }
 
 MIDIDevice* MIDIManager::FindDevice(const std::string& name)
 {
-	unsigned int i;
+	/* Find a created device */
+	std::vector<MIDIDevice*>::iterator it;
 
-	/** Finding a created device
-	*/
-	for (i=0;i<mDevices.size();i++)
+	for (it = mDevices.begin(); it!=mDevices.end(); it++)
 	{
-		if (mDevices[i]->mName == name)
-		{
-			return mDevices[i];
-		}
+		if ((*it)->mName == name ) return *it;
 	}
-
 	return 0;
 }
 
@@ -67,36 +70,56 @@ void MIDIManager::Start(void) throw(Err)
 {
 	unsigned int i;
 
+	std::vector<MIDIDevice*>::iterator it;
+
+	it = mDevices.begin();
+	
+	/** Remove created but unused devices
+	*/
+	while (it!=mDevices.end())
+	{
+		MIDIDevice* d = *it;
+
+		if (d->mInputs.size()==0 && 
+		    d->mOutputs.size()==0)
+		{
+			it = mDevices.erase(it);
+			delete d;
+		}else{
+			it++;
+		}
+	}	
+	
 	/** Starting all the created devices
 	*/
-	for (i=0;i<mDevices.size();i++)
+	for (it = mDevices.begin(); it!=mDevices.end(); it++)
 	{
-		mDevices[i]->Start();
+		(*it)->Start();
 	}
 }
 
 void MIDIManager::Stop(void) throw(Err)
 {
-	unsigned int i;
+	std::vector<MIDIDevice*>::iterator it;
 
 	/** Stoping all the created devices
 	*/
-	for (i=0;i<mDevices.size();i++)
+	for (it = mDevices.begin(); it!=mDevices.end(); it++)
 	{
-		mDevices[i]->Stop();
+		(*it)->Stop();
 	}
 }
 
 
 void MIDIManager::Check(void)
 {
-	unsigned int i;
+	std::vector<MIDIDevice*>::iterator it;
 
 	/** Force all created devices to read data
 	*/
-	for (i=0;i<mDevices.size();i++)
+	for (it = mDevices.begin(); it!=mDevices.end(); it++)
 	{
-		mDevices[i]->Read();
+		(*it)->Read();
 	}
 }
 
@@ -215,13 +238,11 @@ bool MIDIManager::Register(MIDIClocker& cl)
 	return device->Register(this,cl);
 }
 
-/*
 bool MIDIManager::Register(MIDIOut& out)
 {
 	MIDIDevice* device = FindOrCreateDevice(out.mConfig.GetDevice());
-	return device->Register(out);
+	return device->Register(this,out);
 }
-*/
 
 MIDIDeviceList* MIDIManager::FindList(const std::string& arch)
 {

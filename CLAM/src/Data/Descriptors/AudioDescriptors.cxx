@@ -182,8 +182,8 @@ TData AudioDescriptors::ComputeLogAttackTime()
 
 TData AudioDescriptors::ComputeDecrease()
 {
-	DataArray&  data     = mpAudio->GetBuffer();
-	const TSize dataSize = mpAudio->GetSize();
+	const DataArray& data = mpAudio->GetBuffer();
+	const TSize dataSize  = mpAudio->GetSize();
 
 	// Compute 20Hz lowpass filter coefficients
 	const double omega_c = 2*PI*20/mpAudio->GetSampleRate();

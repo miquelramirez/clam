@@ -32,7 +32,7 @@
 #include "MIDIMelody.hxx"
 #include "OutPortTmpl.hxx"
 
-namespace CLAM{
+namespace CLAM {
 
 /** This processing is a particular control-to-data converter that takes in MIDI control events
  *	and converts them into a MIDIMelody processing data
@@ -87,24 +87,6 @@ protected:
     
   };
 
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+} // namespace CLAM
 
 #endif

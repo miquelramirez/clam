@@ -26,7 +26,7 @@
 
 #include "MIDI2Melody.hxx"
 
-namespace CLAM{
+namespace CLAM {
 
 MIDI2Melody::MIDI2Melody():mOutput("Output",this,1),
 							mTime("time",this)
@@ -140,4 +140,4 @@ void MIDI2Melody::ModifyVelocity(int key,int newVelocity)
 	mVelocities[index]=newVelocity;
 }
 
-}; //namespace CLAM
+} // namespace CLAM

@@ -127,6 +127,14 @@ namespace AudioCodecs
 		sf_count_t framesRead = CLAM_sf_read( mFileHandle, 
 						       mInterleavedData.GetPtr(),
 						       mFramesToRead );
+
+		mFramesLastRead = framesRead;
+		
+		if ( framesRead == 0 ) // No more data to read - EOF reached
+		{
+			mEOFReached = true;
+			return;
+		}
 		
 		if ( framesRead < mFramesToRead ) // EOF reached
 		{

@@ -88,6 +88,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\cmdline_parser.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\conditions.c
 # End Source File
 # Begin Source File
@@ -113,13 +117,10 @@ SOURCE=.\dsp_parser.h
 # Begin Source File
 
 SOURCE=.\emptydsp.c
+# End Source File
+# Begin Source File
 
-!IF  "$(CFG)" == "srcdeps - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "srcdeps - Win32 Debug"
-
-!ENDIF 
-
+SOURCE=.\emptyvcproj.c
 # End Source File
 # Begin Source File
 
@@ -152,6 +153,18 @@ SOURCE=.\listhash.c
 # Begin Source File
 
 SOURCE=.\listhash.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\main.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\makegen.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\makegen.h
 # End Source File
 # Begin Source File
 
@@ -215,7 +228,11 @@ SOURCE=.\tree.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\winmain.c
+SOURCE=.\vcproj_parser.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\vcproj_parser.h
 # End Source File
 # End Group
 # Begin Group "Header Files"

@@ -149,7 +149,7 @@ namespace CLAM {
 
 		IndexArray& in1Index=tmpIn1.GetIndexArray();
 		IndexArray& in2Index=tmpIn2.GetIndexArray();
-		
+		IndexArray& outIndex=out.GetIndexArray();
 		
 		
 		TData factor2=(TData)nPeaks2/nPeaks1;
@@ -164,14 +164,32 @@ namespace CLAM {
 		{
 			if(!mIsHarmonicCtl.GetLastValue())
 			{
-				outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[i*factor2]*magFactor;
+				TIndex id=in1.GetIndex(i);
+				int posIn2=in2.GetPositionFromIndex(id);
+				if(posIn2>0)//found matching peak
+				{
+					outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[posIn2]*magFactor;
+					outFreq[i]=in1Freq[i]*(1-freqFactor)+in2Freq[posIn2]*freqFactor;
+					outIndex[i]=id;
+					lastFreq=outFreq[i];
+				}
+				else
+				{
+					outMag[i]=in1Mag[i]*(1-magFactor);
+					outFreq[i]=in1Freq[i];
+					outIndex[i]=id;
+					lastFreq=outFreq[i];
+
+				}
+					
+				/*outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[i*factor2]*magFactor;
 				outFreq[i]=in1Freq[i]*(1-freqFactor)+in2Freq[i*factor2]*freqFactor;
 				CLAM_DEBUG_ASSERT(outFreq[i]>=lastFreq,"Error");
 				lastFreq=outFreq[i];
 				CLAM_DEBUG_ASSERT(outMag[i]<1,"Error");
 				CLAM_DEBUG_ASSERT(outMag[i]>-1,"Error");
 				CLAM_DEBUG_ASSERT(outFreq[i]<22000,"Error");
-				CLAM_DEBUG_ASSERT(outFreq[i]>=0,"Error");
+				CLAM_DEBUG_ASSERT(outFreq[i]>=0,"Error");*/
 			}
 			else if(FindHarmonic(in2Index,in1Index[i],pos))
 			{

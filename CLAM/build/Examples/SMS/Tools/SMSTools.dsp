@@ -740,15 +740,15 @@ SOURCE=..\..\..\..\src\Standard\BPF.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Standard\Text.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Standard\Order.cxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\Flags.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Text.cxx
 # End Source File
 # Begin Source File
 
@@ -860,7 +860,23 @@ SOURCE=..\..\..\..\src\Data\Descriptors\SpectralPeakDescriptors.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Data\Descriptors\PeriodogramPeak.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\MorphologicalFrameDescriptors.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Data\Descriptors\FrameDescriptors.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\EnvelopeDescriptors.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\MorphologicalSegmentDescriptors.cxx
 # End Source File
 # Begin Source File
 
@@ -1270,10 +1286,6 @@ SOURCE=..\..\..\..\src\Defines\Assert.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Defines\mtgsstream.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Defines\StaticBool.hxx
 # End Source File
 # Begin Source File
@@ -1488,6 +1500,10 @@ SOURCE=..\..\..\..\src\Standard\Search.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Standard\Text.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Standard\Filename.hxx
 # End Source File
 # Begin Source File
@@ -1505,10 +1521,6 @@ SOURCE=..\..\..\..\src\Standard\Stats.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\Flags.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Text.hxx
 # End Source File
 # Begin Source File
 
@@ -1602,6 +1614,10 @@ SOURCE=..\..\..\..\examples\SMS\Progress.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\SMS\WaitMessage.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\SMS\SMSAppState.hxx
 # End Source File
 # Begin Source File
 
@@ -1830,7 +1846,23 @@ SOURCE=..\..\..\..\src\Data\Descriptors\SpectralPeakDescriptors.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Data\Descriptors\PeriodogramPeak.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\MorphologicalFrameDescriptors.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Data\Descriptors\FrameDescriptors.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\EnvelopeDescriptors.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\MorphologicalSegmentDescriptors.hxx
 # End Source File
 # Begin Source File
 
@@ -2462,23 +2494,7 @@ SOURCE=..\..\..\..\src\Tools\AudioFileIO\MpegAudioStream.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Export.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Enumerations.H
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Widget.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Group.H
 # End Source File
 # Begin Source File
 
@@ -2486,7 +2502,7 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Tile.H
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Window.H
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Group.H
 # End Source File
 # Begin Source File
 
@@ -2494,23 +2510,7 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Double_Window.H
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Image.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Menu_Item.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Menu_.H
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Menu_Bar.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Valuator.H
 # End Source File
 # Begin Source File
 
@@ -2522,23 +2522,23 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Box.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Window.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Slider.H
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Scrollbar.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\fl_draw.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Shared_Image.H
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Widget.H
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Help_View.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\fl_draw.H
 # End Source File
 # Begin Source File
 
@@ -2550,67 +2550,7 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Tooltip.H
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Choice.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Menu_Button.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Button.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Preferences.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Browser_.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Browser.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_File_Icon.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\filename.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\dirent.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_File_Browser.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Light_Button.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Check_Button.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Input_.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Input.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_File_Input.H
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Return_Button.H
+SOURCE=..\..\..\..\..\fltk\include\FL\fl_file_chooser.H
 # End Source File
 # Begin Source File
 
@@ -2618,7 +2558,7 @@ SOURCE=..\..\..\..\..\fltk\include\FL\fl_ask.H
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fltk\include\FL\fl_file_chooser.H
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Valuator.H
 # End Source File
 # Begin Source File
 
@@ -2630,11 +2570,31 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Scroll.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Return_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Input.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Float_Input.H
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Int_Input.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Light_Button.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Choice.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Menu_Item.H
 # End Source File
 # Begin Source File
 
@@ -2646,11 +2606,23 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Help_Dialog.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Scrollbar.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Check_Button.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Round_Button.H
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Select_Browser.H
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Button.H
 # End Source File
 # Begin Source File
 
@@ -3072,7 +3044,7 @@ SOURCE=..\..\..\..\externals\CbLib\CBL.hxx
 # End Group
 # Begin Source File
 
-SOURCE=..\..\..\..\externals\deque
+SOURCE=..\..\..\..\externals\CLAM_deque.hxx
 # End Source File
 # End Group
 # Begin Group "pthreads Headers"
@@ -3149,22 +3121,6 @@ SOURCE=..\..\..\..\..\dxsdk\include\basetsd.h
 
 SOURCE=..\..\..\..\..\xercesc\include\xercesc\util\XMLString.hpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\util\XercesDefs.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\util\XMLUni.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\util\XMemory.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\util\PlatformUtils.hpp
-# End Source File
 # End Group
 # Begin Group "parsers Headers"
 
@@ -3181,39 +3137,11 @@ SOURCE=..\..\..\..\..\xercesc\include\xercesc\framework\MemBufInputSource.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\framework\XMLFormatter.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\..\xercesc\include\xercesc\framework\MemBufFormatTarget.hpp
 # End Source File
 # End Group
 # Begin Group "sax Headers"
 
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\sax\DocumentHandler.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\sax\DTDHandler.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\sax\EntityResolver.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\sax\ErrorHandler.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\sax\SAXException.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\sax\SAXParseException.hpp
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\..\xercesc\include\xercesc\sax\HandlerBase.hpp
@@ -3223,19 +3151,11 @@ SOURCE=..\..\..\..\..\xercesc\include\xercesc\sax\HandlerBase.hpp
 
 # Begin Source File
 
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMImplementationLS.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMException.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMRangeException.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMImplementation.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMImplementationLS.hpp
 # End Source File
 # Begin Source File
 
@@ -3243,31 +3163,7 @@ SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMImplementationRegistry.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMNode.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMNodeFilter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMWriterFilter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMErrorHandler.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMWriter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMDocumentRange.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMDocumentTraversal.hpp
 # End Source File
 # Begin Source File
 
@@ -3276,10 +3172,6 @@ SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMDocument.hpp
 # Begin Source File
 
 SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMElement.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMCharacterData.hpp
 # End Source File
 # Begin Source File
 
@@ -3303,10 +3195,6 @@ SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMNodeList.hpp
 
 # Begin Source File
 
-SOURCE=..\..\..\..\..\fftw\include\fftw.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\..\fftw\include\rfftw.h
 # End Source File
 # End Group
@@ -3325,23 +3213,8 @@ SOURCE=..\..\..\..\..\libsndfile\include\sndfile.h
 
 # Begin Group "include Headers No. 6"
 
-# Begin Group "ogg Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\..\oggvorbis\include\ogg\os_types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\oggvorbis\include\ogg\ogg.h
-# End Source File
-# End Group
 # Begin Group "vorbis Headers"
 
-# Begin Source File
-
-SOURCE=..\..\..\..\..\oggvorbis\include\vorbis\codec.h
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\..\oggvorbis\include\vorbis\vorbisfile.h
@@ -3349,6 +3222,10 @@ SOURCE=..\..\..\..\..\oggvorbis\include\vorbis\vorbisfile.h
 # Begin Source File
 
 SOURCE=..\..\..\..\..\oggvorbis\include\vorbis\vorbisenc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\oggvorbis\include\vorbis\codec.h
 # End Source File
 # End Group
 # End Group
@@ -3371,39 +3248,14 @@ SOURCE=..\..\..\..\..\libmad\include\mad.h
 
 # Begin Source File
 
-SOURCE=..\..\..\..\..\id3lib\include\id3\sized_types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\id3lib\include\id3\globals.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\id3lib\include\id3\id3lib_frame.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\id3lib\include\id3\field.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\id3lib\include\id3\id3lib_streams.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\id3lib\include\id3\id3lib_strings.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\id3lib\include\id3\utils.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\..\id3lib\include\id3\tag.h
 # End Source File
 # End Group
 # End Group
 # End Group
+# End Group
+# Begin Group "Qt .ui Files"
+
 # End Group
 # Begin Source File
 
@@ -3411,25 +3263,25 @@ SOURCE=settings.cfg
 
 !IF  "$(CFG)" == "SMSTools - Win32 Release"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "SMSTools.dsp"
-	srcdeps.exe settings.cfg SMSTools.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)"
+	srcdeps.exe settings.cfg
 
 # End Custom Build
-# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "SMSTools - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "SMSTools.dsp"
-	srcdeps.exe settings.cfg SMSTools.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)"
+	srcdeps.exe settings.cfg
 
 # End Custom Build
-# PROP Exclude_From_Build 1
 
 !ENDIF 
 

@@ -24,7 +24,7 @@ class UserInterface {open
   } {
     Fl_Window mWindow {
       label {SMS Tools 2 | MTG-UPF (Barcelona)} open
-      xywh {153 51 870 550} type Double resizable
+      xywh {263 269 870 550} type Double resizable
       code0 {mWindow2=NULL;} visible
     } {
       Fl_Menu_Bar mMenuBar {open
@@ -255,7 +255,7 @@ Exit();}
           callback {ChangeFrame();}
           xywh {60 525 190 20} labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
         }
-        Fl_Box {} {selected
+        Fl_Box {} {
           xywh {253 520 616 30} resizable
         }
       }
@@ -338,13 +338,6 @@ mWindow2=NULL;} open
   decl {void DisplaySynthesizedSinusoidal();} {}
   decl {void DisplaySynthesizedResidual();} {}
   decl {void ApplyInitialState();} {}
-  decl {void ApplyReadyToAnalyzeState();} {}
-  decl {void ApplyAnalysisAvailableState();} {}
-  decl {void ApplyMelodyAvailableState();} {}
-  decl {void ApplyTransformationReadyState();} {public
-  }
-  decl {void ApplySynthesisAvailableState();} {}
-  decl {void ApplyTransformationPerformedState();} {}
   decl {void DeactivateFrameDataMenuItems();} {}
   decl {bool mFrameDataAvailable;} {}
   decl {bool FrameDataAvailable();} {public
@@ -355,4 +348,8 @@ mWindow2=NULL;} open
   decl {void SaveTransformScore();} {}
   decl {SMSScoreEditor* mScoreEditor;} {}
   decl {void DisplayLicense();} {}
+  decl {void InitCounter();} {public
+  }
+  decl {void UpdateState();} {selected public
+  }
 } 

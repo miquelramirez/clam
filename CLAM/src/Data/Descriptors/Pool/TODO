@@ -1,0 +1,41 @@
+- Construcció del frame a partir de una definició
+- centerOfGravity<n>(X) = div( sum( mult(index(X),pow<n>(X))), sum(pow<n>(X)) )
+- SV summatory(X) = accomulate(sum,X)
+- VV powered<n>(X) = vectorize(pow<b>,X)
+- ponderedSum(X) = accomulate(sum, productindex(I),I))
+
+
++ Getting the attribute index
+	+ When empty
+	+ When added
+	+ When two added
+	+ When wrong name
++ Place data inside the Scope
++ Split definition and data
+	+ remove Pool::GetIndex
+	+ remove Pool::Add
+	+ posar el atributo spec com a const
++ duplicated attribute names
++ Separate Pool and PoolSpec tests in two fixtures
++ Move attribute pool allocation and deallocation to the spec
+* Introduce multiple types
+	+ Multitype Spec::Add
+	+ Multitype Pool::Get
+	+ Spec::AssertType
+	+ Pool::Get check for type
+- Select the scope specification by name
+	- ScopeSpecFactory
+- Consider using a iterator/vector interface
+- Multilevel pools
+- XML for the Pool
+- XML for the Pool Spec
+- Multitype XML loading
+
+
+
+
+
+
+
+
+

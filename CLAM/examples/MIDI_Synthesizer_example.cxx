@@ -47,6 +47,7 @@ class MyAudioApplication:public AudioApplication
 private:
 	const char* mMidiDeviceStr;
 	const char* mAudioDeviceStr;
+	void ConfigureAndCheck(Processing& p,ProcessingConfig& cfg);
 public:
 	void AudioMain(void);	
 	MyAudioApplication(const char* midiDeviceStr,const char* audioDeviceStr)
@@ -225,6 +226,11 @@ bool MyInstrument::Do( Audio& out )
 	return true;
 }
 
+void MyAudioApplication::ConfigureAndCheck(Processing& p,ProcessingConfig& cfg)
+{
+	CLAM_ASSERT(p.Configure(cfg),p.GetStatus().c_str());
+}
+
 void MyAudioApplication::AudioMain(void)
 {
 	TControlData curTime = 0.;
@@ -235,7 +241,7 @@ void MyAudioApplication::AudioMain(void)
 		unsigned int buffersize = 256;
 
 		// Audio and MIDI managers
-		AudioManager audioManager(48000,768);
+		AudioManager audioManager(44100,4096);
 		MIDIManager midiManager;
 
 		// AudioIn
@@ -271,36 +277,35 @@ void MyAudioApplication::AudioMain(void)
 		Audio bufR;
 		bufR.SetSize(buffersize);
 
-
+		// If we pass a non-existant device, an error gets thrown somewhere
+		// deep done, which gets cought in Configure, and added to the Status.
+		// The ConfigureAndCheck will assert on this.
+		
 		// MIDIInControls
-		MIDIInConfig inNoteCfg;
+		MIDIIOConfig inNoteCfg;
 		
 		inNoteCfg.SetDevice(mMidiDeviceStr);
-		inNoteCfg.SetChannelMask(MIDI::ChannelMask(-1)); //all
-
-		inNoteCfg.SetMessageMask(
-			MIDI::MessageMask(MIDI::eNoteOn)|
-			MIDI::MessageMask(MIDI::eNoteOff)
-		);
+		inNoteCfg.SetMessage(MIDI::eNoteOnOff);
 		
-		MIDIInControl inNote(inNoteCfg);
+		MIDIInControl inNote;
+		ConfigureAndCheck(inNote,inNoteCfg);
 
-		MIDIInConfig inCtrlCfg;
+		MIDIIOConfig inCtrlCfg;
 		
 		inCtrlCfg.SetDevice(mMidiDeviceStr);
-		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(-1)); // all
-		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
-		inCtrlCfg.SetFilter(0x0a);
+		inCtrlCfg.SetMessage(MIDI::eControlChange);
+		inCtrlCfg.SetFirstData(0x0a);
 		
-		MIDIInControl inCtrl(inCtrlCfg);
+		MIDIInControl inCtrl;
+		ConfigureAndCheck(inCtrl,inCtrlCfg);
 
-		MIDIInConfig inPitchBendCfg;
+		MIDIIOConfig inPitchBendCfg;
 		
 		inPitchBendCfg.SetDevice(mMidiDeviceStr);
-		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(-1)); //all
-		inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
+		inPitchBendCfg.SetMessage(MIDI::ePitchbend);
 		
-		MIDIInControl inPitchBend(inPitchBendCfg);
+		MIDIInControl inPitchBend;
+		ConfigureAndCheck(inPitchBend,inPitchBendCfg);
 
 		MIDIClockerConfig clockerCfg;
 
@@ -369,22 +374,16 @@ void MyAudioApplication::AudioMain(void)
 		}
 		mixer.GetOutPorts().Get("Output Audio").Attach(out);
 
-		/** Key for Note Off */
-		inNote.GetOutControls().GetByNumber(0).AddLink(&dispatcher.GetInControls().GetByNumber(0));
-		/** Velocity for Note Off */
+		/** Ignoring channel, which is OutControl 0 */
+		
+		/** Key for Note On/Off */
 		inNote.GetOutControls().GetByNumber(1).AddLink(&dispatcher.GetInControls().GetByNumber(1));
-		/** Key for Note On */
+		/** Velocity for Note On/Off */
 		inNote.GetOutControls().GetByNumber(2).AddLink(&dispatcher.GetInControls().GetByNumber(2));
-		/** Velocity for Note On */
-		inNote.GetOutControls().GetByNumber(3).AddLink(&dispatcher.GetInControls().GetByNumber(3));
 		
 		for( i = 0; i < nVoices; i++ )
-			inPitchBend.GetOutControls().GetByNumber(0).AddLink(&instruments[i]->GetInControls().GetByNumber(3));
-
-		midiManager.Start();
-
-		audioManager.Start();
-
+			inPitchBend.GetOutControls().GetByNumber(1).AddLink(&instruments[i]->GetInControls().GetByNumber(3));
+		
 		mixer.Start();
 
 		inL.Start();
@@ -392,17 +391,16 @@ void MyAudioApplication::AudioMain(void)
 		outL.Start();
 		outR.Start();
 
+		midiManager.Start();
+
+		audioManager.Start();
+
 		for ( i = 0; i < nVoices; i++ )
 		{
 			instruments[ i ]->Start();
 		}
 
-
-
 		curTimeInc = TData(buffersize)*1000./audioManager.SampleRate();
-		std::cout << "before" << std::endl;
-//		TopLevelProcessing::GetInstance().Start();
-		std::cout << "after" << std::endl;			
 
 		do
 		{
@@ -411,9 +409,9 @@ void MyAudioApplication::AudioMain(void)
 
 			clocker.GetInControls().GetByNumber(0).DoControl(curTime);
 			curTime += curTimeInc;
-
+			
 			midiManager.Check();
-
+			
 			for ( i = 0; i < nVoices; i++ )
 			{
 				instruments[ i ]->Do( audioArray[ i ] );
@@ -445,7 +443,7 @@ void MyAudioApplication::AudioMain(void)
 
 int main(int argc,char** argv)
 {
-	char* midiDeviceStr = "default";
+	char* midiDeviceStr = "alsa:hw:1,0"; // TODO: but back to default
 	char* audioDeviceStr = "default";
 	
 	try

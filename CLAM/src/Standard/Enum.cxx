@@ -48,12 +48,6 @@ std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalVal
 	return os;
 }
 
-/**
- * Loads a symbolic value from the input stream onto an Enum.
- * @param os The input stream
- * @param e The Enum
- * @returns The input stream
- */
 std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue) {
 	std::string s;
 	os >> s;

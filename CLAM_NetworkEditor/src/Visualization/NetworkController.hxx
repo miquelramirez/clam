@@ -24,8 +24,8 @@
 
 #include "ModelController.hxx"
 #include "ProcessingController.hxx"
-#include "ConnectionAdapter.hxx"
 
+#include "Signalv0.hxx"
 #include "Signalv1.hxx"
 #include "Signalv2.hxx"
 #include "Slotv0.hxx"
@@ -52,10 +52,22 @@ namespace CLAMVM
 {
 	class NetworkController : public ModelController
 	{
+
+		class Connection
+		{
+		public:
+			Connection( const std::string & out, const std::string & in ) : mIn(in), mOut(out){}
+			const std::string & GetIn(){return mIn;}
+			const std::string & GetOut(){return mOut;}
+		private:
+			std::string mIn;
+			std::string mOut;
+		};
 	public:		
-		typedef std::map< std::string , std::string  > ConnectionsMap;
+		//typedef std::map< std::string , std::string  > ConnectionsList;
+		typedef std::list<Connection> ConnectionsList;
 		typedef std::map< std::string , ProcessingController*  > ProcessingControllersMap;
-		typedef ProcessingControllersMap::iterator ProcessingControllersMapIterator;
+		//typedef ProcessingControllersMap::iterator ProcessingControllersMapIterator;
 		typedef std::list< std::string > ProcessingsList;
 	protected:		
 	
@@ -69,17 +81,18 @@ namespace CLAMVM
 		
 		bool mLoopCondition;
 		
-		ConnectionsMap mPortsToConnect;
-		ConnectionsMap mPortsToDisconnect;
-		ConnectionsMap mControlsToConnect;
-		ConnectionsMap mControlsToDisconnect;
+		ConnectionsList mPortsToConnect;
+		ConnectionsList mPortsToDisconnect;
+		ConnectionsList mControlsToConnect;
+		ConnectionsList mControlsToDisconnect;
+		
+		ConnectionsList mPortConnections;
+		ConnectionsList mControlConnections;
 
 		ProcessingsList mProcessingsToRemove;
 
 		CLAM::Network* mObserved;
 		ProcessingControllersMap mProcessingControllers;
-		std::list<ConnectionAdapter*> mConnectionAdapters;
-		typedef std::list<ConnectionAdapter*>::iterator ConnectionAdapterIterator;
 
 		/** 
 		 * This method creates a processing controller for a concrete Processing and returns it in order to
@@ -91,13 +104,12 @@ namespace CLAMVM
 		 * This method creates a port connection adapter for a link between ports and returns it in order to
 		 * create a port connection presentation attached to this instance of adapter
 		 */
-		ConnectionAdapter * CreatePortConnectionAdapter( const CLAM::OutPort & out, const CLAM::InPort & in );
+		void RegisterPortConnection( const std::string &, const std::string & );
 		/** 
 		 * This method creates a control connection adapter for a link between controls and returns it in order to
 		 * create a control connection presentation attached to this instance of adapter
 		 */
-		ConnectionAdapter * CreateControlConnectionAdapter( const CLAM::OutControl & out, const CLAM::InControl & in );
-
+		void RegisterControlConnection( const std::string &, const std::string & );
 		/** 
 		 * When a connection is created from GUI, this method is called. It leaves the event in a list to execute if the 
 		 * audio thread is running, or executes the creation, calling ExecuteCreatePortConnection.
@@ -209,6 +221,9 @@ namespace CLAMVM
 
 		void RemoveAllConnections( CLAM::Processing * );
 		void RebuildProcessingPresentationAttachedTo( ProcessingController *, CLAM::Processing * );
+		
+		void ConfigureProcessing( CLAM::Processing * , const CLAM::ProcessingConfig & );
+	
 
 	public:
 		NetworkController();
@@ -219,11 +234,11 @@ namespace CLAMVM
 		}
 		std::string GetName();
 
-		ProcessingControllersMapIterator BeginProcessingControllers()
+		ProcessingControllersMap::iterator BeginProcessingControllers()
 		{
 			return mProcessingControllers.begin();
 		}
-		ProcessingControllersMapIterator EndProcessingControllers()
+		ProcessingControllersMap::iterator EndProcessingControllers()
 		{
 			return mProcessingControllers.end();
 		}
@@ -235,17 +250,18 @@ namespace CLAMVM
 	public:
 		SigSlot::Slotv1< bool > SlotChangeState;
 		
-		SigSlot::Signalv1< CLAMVM::ConnectionAdapter * > SignalCreatePortConnectionPresentation;
+		SigSlot::Signalv2< const std::string &, const std::string & > SignalCreatePortConnectionPresentation;
 		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemovePortConnection;
 		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreatePortConnection;
 		
 		SigSlot::Signalv2< const std::string &, const std::string & > SignalRemoveConnectionPresentation;
 		
-		SigSlot::Signalv1< CLAMVM::ConnectionAdapter * > SignalCreateControlConnectionPresentation;
+		SigSlot::Signalv2< const std::string &, const std::string & > SignalCreateControlConnectionPresentation;
 		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemoveControlConnection;
 		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreateControlConnection;
 
 		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddProcessing;
+		SigSlot::Slotv2< CLAM::Processing *, const CLAM::ProcessingConfig &  > SlotConfigureProcessing;
 		SigSlot::Slotv1< const std::string & > SlotRemoveProcessing;
 		SigSlot::Slotv2< const std::string &, ProcessingController * > SlotProcessingNameChanged;
 		SigSlot::Signalv2< const std::string &, const std::string & > SignalChangeConnectionPresentationNames;
@@ -258,6 +274,7 @@ namespace CLAMVM
 		SigSlot::Slotv1< const std::string & > SlotLoadNetwork;
 		SigSlot::Slotv1< const std::string & > SlotSaveNetwork;
 		SigSlot::Slotv0 SlotClear;
+		SigSlot::Signalv0 SignalClearPresentation;
 		
 	};
 } // namespace CLAMVM

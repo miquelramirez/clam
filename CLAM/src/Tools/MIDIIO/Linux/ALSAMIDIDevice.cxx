@@ -31,6 +31,7 @@ namespace CLAM {
 	private:
 		std::string mDevice;
 		snd_rawmidi_t *mHandleIn;
+		snd_rawmidi_t *mHandleOut;
 		snd_rawmidi_status_t *mStatusIn;
 	public:
 		ALSAMIDIDevice(const std::string& name,const std::string& device);
@@ -40,17 +41,27 @@ namespace CLAM {
 		void ConcreteStop(void) throw(Err);
 
 		void Read(void) throw(Err);
+		void Write(unsigned char* msg,int size) throw(Err);
 	};
 
 	ALSAMIDIDevice::ALSAMIDIDevice(const std::string& name,const std::string& device): 
 		MIDIDevice(name)
 	{
+		mHandleIn = NULL;
+		mHandleOut = NULL;
+		mStatusIn = NULL;
 		mDevice = device;
 	}
 
 	void ALSAMIDIDevice::ConcreteStart(void) throw(Err)
 	{
-			int err = snd_rawmidi_open(&mHandleIn,NULL,mDevice.c_str(),
+			snd_rawmidi_t** handleInRef = NULL;
+			snd_rawmidi_t** handleOutRef = NULL;
+			
+			if (mInputs.size()) handleInRef = &mHandleIn;
+			if (mOutputs.size()) handleOutRef = &mHandleOut;
+			
+			int err = snd_rawmidi_open(handleInRef,handleOutRef,mDevice.c_str(),
 									   SND_RAWMIDI_NONBLOCK);
 			if (err)
 			{
@@ -69,6 +80,19 @@ namespace CLAM {
 			snd_rawmidi_close(mHandleIn);
 			snd_rawmidi_status_free(mStatusIn);
 		}
+	}
+
+	void ALSAMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
+	{
+		printf("ALSAMIDIDevice::Write:");
+		for (int i=0;i<size;i++)
+		{
+			printf(" %02x",msg[i]);
+		}
+		printf("\n");
+
+		int err = snd_rawmidi_write(mHandleOut,msg,size);
+		snd_rawmidi_drain(mHandleOut);
 	}
 
 	void ALSAMIDIDevice::Read(void) throw(Err)

@@ -37,7 +37,7 @@ namespace CLAM
 namespace CLAMVM
 {
 	class ProcessingController;
-	class ConnectionAdapter;
+//	class ConnectionAdapter;
 }
 
 namespace NetworkGUI
@@ -61,8 +61,8 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	void AttachConnectionToControlPresentations( Qt_ControlConnectionPresentation * );
 	void SetName(const std::string& name); 
 	void CreateProcessingPresentation( const std::string &, CLAMVM::ProcessingController * );
-	void CreatePortConnectionPresentation(CLAMVM::ConnectionAdapter* );
-	void CreateControlConnectionPresentation(CLAMVM::ConnectionAdapter* );
+	void CreatePortConnectionPresentation( const std::string &, const std::string & );
+	void CreateControlConnectionPresentation( const std::string &,const std::string & );
 	
 	void SetInPortClicked( Qt_InPortPresentation *);
 	void SetOutPortClicked( Qt_OutPortPresentation *);
@@ -71,7 +71,6 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 
 	void ProcessingPresentationSelected( Qt_ProcessingPresentation * );
 	void ConnectionPresentationSelected( Qt_ConnectionPresentation * );
-//	void ProcessingPresentationUnselected( Qt_ProcessingPresentation * );
 	void ProcessingPresentationAddedToSelection( Qt_ProcessingPresentation * );
 	void ConnectionPresentationAddedToSelection( Qt_ConnectionPresentation * );
 
@@ -83,7 +82,11 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	void dropEvent(QDropEvent* event);
 	void dragEnterEvent(QDragEnterEvent* event);
 	void MovingMouseWithButtonPressed( const QPoint & );
-
+	void DrawSelectionRectangle();
+	void CheckSelectionRectangle();
+	bool CheckPortsSelection( QMouseEvent *m );
+	bool CheckControlsSelection(QMouseEvent *m );
+	
 	void SendMessageToStatus( const std::string & );		
 	
 	Qt_InPortPresentation* mInPortSelected;
@@ -91,6 +94,8 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	Qt_InControlPresentation* mInControlSelected;
 	Qt_OutControlPresentation* mOutControlSelected;
 	QPoint mMousePos;
+	QPoint mSelectionPos;
+
 	QtProcessingList mSelectedProcessingPresentations;
 	QtConnectionList mSelectedConnectionPresentations;
 public:
@@ -108,7 +113,6 @@ public:
 	SigSlot::Slotv1< Qt_ProcessingPresentation * > SlotProcessingPresentationAddedToSelection;
 	SigSlot::Slotv1< Qt_ConnectionPresentation * > SlotConnectionPresentationSelected;
 	SigSlot::Slotv1< Qt_ConnectionPresentation * > SlotConnectionPresentationAddedToSelection;
-//	SigSlot::Slotv1< Qt_ProcessingPresentation *> SlotProcessingPresentationUnSelected;
 
 	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
 	SigSlot::Slotv1< const QPoint & > SlotMovingMouseWithButtonPressed;
@@ -120,7 +124,6 @@ public:
 	SigSlot::Signalv1< const QPoint & > SignalAcquireInControlAfterClickOutControl;
 	SigSlot::Signalv1< const std::string& > SignalSendMessageToStatus;
 	SigSlot::Signalv0 SignalProcessingCreated;
-//	SigSlot::Signalv0 SignalUnselectProcessingPresentation;
 
 private:
 	const std::string GetCompleteNameFromInPortSelected();

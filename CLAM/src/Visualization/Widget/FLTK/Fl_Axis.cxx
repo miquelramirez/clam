@@ -169,7 +169,7 @@ int Fl_Axis::next_tick(int &tick_index, double &tick_value, int &tick_order, dou
             }
             tick_index=number_per_order;
             tick_order--;
-            tick_value=pow(10,tick_order);
+            tick_value=pow(10.0,tick_order);
             interval*=tick_value;
             
             if(!number_per_order){
@@ -218,11 +218,11 @@ int Fl_Axis::next_tick(int &tick_index, double &tick_value, int &tick_order, dou
             }else{
                 if(_tick_interval!=0){
                     tick_order=(int)floor(log10(fabs(max_-min_)/minor_number_));
-                    interval= pow(10,tick_order) * _tick_interval;
+                    interval= pow(10.0,tick_order) * _tick_interval;
                 }else
                     for(int i=NO_LIN_DEFAULTS-1;i>=0;i--){
                         tick_order=(int)floor(log10(fabs(max_-min_)/minor_number_));
-                        interval= pow(10,tick_order)*(_tick_interval=default_lin_intervals[i]);
+                        interval= pow(10.0,tick_order)*(_tick_interval=default_lin_intervals[i]);
                         major_step_=default_lin_major_steps[i];
                         label_step_=default_lin_label_steps[i];
                         if(((max_-min_)/interval)>=minor_number_)

@@ -56,7 +56,7 @@ namespace CLAMTest {
 			XMLStorage::Dump(inObject, "Object", in);
 		}
 #endif//CLAM_USE_XML
-		CPPUNIT_ASSERT_EQUAL(in.str(),out.str());
+		CPPUNIT_ASSERT_EQUAL(out.str(),in.str());
 		return in.str()==out.str();
 	}
 

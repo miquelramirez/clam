@@ -27,6 +27,7 @@
 #include <vector>
 #include "Err.hxx"
 #include "InControl.hxx"
+#include "MIDIEnums.hxx"
 
 
 namespace CLAM{
@@ -45,10 +46,11 @@ namespace CLAM{
 class MIDIDevice
 {
 	friend class MIDIIn;
+	friend class MIDIOut;
+	friend class MIDIOutControl;
 	friend class MIDIClocker;
-//		friend class MIDIOut;
 	friend class MIDIManager;
-public:
+protected:
 	/** This class is used to respond to device information
 	 *  request using the GetInfo method.
 	 */
@@ -69,7 +71,7 @@ public:
 	MIDIIn* target[8][16][128];
 
 	std::vector<MIDIIn*> mInputs;
-//		std::vector<MIDIOut*> mOutputs;
+	std::vector<MIDIOut*> mOutputs;
 
 	std::string mName;
 
@@ -116,11 +118,13 @@ public:
 	 */
 	virtual void Read(void) throw(Err) = 0;
 
+	virtual void Write(unsigned char* msg,int size) throw(Err) = 0;
+
 protected:
 	bool Register(MIDIManager* mm,MIDIIn& in);
-//		bool Register(MIDIManager* mm,MIDIOut& out);
+	bool Register(MIDIManager* mm,MIDIOut& out);
 	void Unregister(MIDIIn& in);
-//		void Unregister(MIDIOut& out);
+	void Unregister(MIDIOut& out);
 
 	bool Register(MIDIManager* mm,MIDIClocker& in);
 	void Unregister(MIDIClocker& in);
@@ -133,6 +137,11 @@ private:
 	MIDIManager* mMIDIManager;
 	MIDIManager& _MIDIManager(void);
 	void _SetMIDIManager(MIDIManager* mm);
+
+	void SetTarget(
+		MIDI::Message msg,
+		unsigned char chn,unsigned char firstData,
+		MIDIIn* inp);
 };
 
 };//CLAM

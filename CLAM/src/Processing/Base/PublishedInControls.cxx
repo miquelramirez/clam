@@ -15,10 +15,9 @@ InControl& PublishedInControls::Get(const std::string & name) const
 {
 	ConstIterator it;
 	for (it=mInControls.begin(); it!=mInControls.end(); it++)
-	{
-		std::string actualName( (*it)->GetName() );
-		if (name == (*it)->GetName()) return *(*it);
-	}
+		if (name == (*it)->GetName()) 
+			return **it;
+
 	std::string error( "name not found in InControls collection: " );
 	error += name;
 	CLAM_ASSERT( false, error.c_str() );

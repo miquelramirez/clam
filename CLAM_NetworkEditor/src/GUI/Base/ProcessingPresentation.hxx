@@ -89,6 +89,8 @@ public:	//signals & slots
 	SigSlot::Signalv1< ProcessingPresentation* > SignalRemoveProcessing;
 	SigSlot::Signalv1< const CLAM::ProcessingConfig & > SignalConfigureProcessing;
 	SigSlot::Signalv1< const std::string & > SignalProcessingNameChanged;
+	SigSlot::Signalv2< const std::string &, CLAM::TControlData> SignalSendOutControlValue;
+
 	SigSlot::Slotv1< const CLAM::ProcessingConfig &> SlotConfigureProcessing;
 	SigSlot::Slotv1< const std::string & > SlotChangeProcessingPresentationName;
 	SigSlot::Slotv2< CLAMVM::ProcessingController::ProcessingExecState, const std::string & > SlotChangeState; 

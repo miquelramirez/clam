@@ -60,6 +60,7 @@ namespace CLAM {
 		  mPitch1Ctl("Pitch1",this,&FrameInterpolator::DoPitch1Control),
 		  mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control)
 	{
+		AttachChildren();
 		Configure(FrameInterpConfig());
 	}
 
@@ -77,6 +78,7 @@ namespace CLAM {
 		  mPitch1Ctl("Pitch1",this,&FrameInterpolator::DoPitch1Control),
 		  mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control)
 	{
+		AttachChildren();
 		Configure(c);
 	}
 
@@ -115,12 +117,12 @@ namespace CLAM {
 		return true;
 	}
 
-	bool FrameInterpolator::ConcreteStart()
+	void FrameInterpolator::AttachChildren()
 	{
-		mPO_SpectrumInterpolator.Start();
-		mPO_PeaksInterpolator.Start();
-		return true;
+		mPO_SpectrumInterpolator.SetParent(this);
+		mPO_PeaksInterpolator.SetParent(this);
 	}
+
 
 	// Unsupervised Do() function.
 	bool FrameInterpolator::Do(const Frame& in1, const Frame& in2, Frame& out)
@@ -132,7 +134,7 @@ namespace CLAM {
 		if (GetExecState() == Disabled)
 			return true;
 
-		if(in1.GetFundamentalFreq()!=0 && in2.GetFundamentalFreq()!=0 )
+		if(in1.GetFundamentalFreq()!=0 && in2.GetFundamentalFreq()!=0 && mConfig.GetHarmonic())
 			mIsHarmonicCtl.DoControl(1);
 		else mIsHarmonicCtl.DoControl(0);
 

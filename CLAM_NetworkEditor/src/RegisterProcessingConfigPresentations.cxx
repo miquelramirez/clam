@@ -36,55 +36,73 @@
 #include "Oscillator.hxx"
 #include "ADSR.hxx"
 #include "LadspaLoader.hxx"
-
-#include "FlagControl.hxx"
-#include "Random.hxx"
-#include "OneOverF.hxx"
-
 #include "MonoAudioFileReaderConfig.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
 
+// local processings
+#include "FlagControl.hxx"
+#include "Random.hxx"
+#include "OneOverF.hxx"
+#include "OutControlSender.hxx"
+#include "SquareWave.hxx"
+
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SimpleOscillatorConfig> > 
+	regtSimpleOscillatorCfg( "SimpleOscillatorConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::OscillatorConfig> > 
+	regtOscillatorCfg( "OscillatorConfig" );
 
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::OscillatorConfig> OscillatorConfigPresentationTmpl;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::SimpleOscillatorConfig> SimpleOscillatorConfigPresentationTmpl;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AutoPannerConfig> AutoPannerConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioFileConfig> AudioFileConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioIOConfig> AudioIOConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::BinaryAudioOpConfig> BinaryAudioOpConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::ADSRConfig> ADSRConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AutoPannerConfig> AutoPannerConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioMultiplierConfig> AudioMultiplierConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioAdderConfig> AudioAdderConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::LadspaLoaderConfig> LadspaLoaderConfigPresentation;
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ADSRConfig> > 
+	regtADSRCfg( "ADSRConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AutoPannerConfig> > 
+	regtAutoPannerCfg( "AutoPannerConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioFileConfig> > 
+	regtAudioFileInCfg( "AudioFileConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioIOConfig> > 
+	regtAudioOutCfg( "AudioIOConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioAdderConfig> > 
+	regAudioAdderCfg( "AudioAdderConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::BinaryAudioOpConfig> > 
+	regtBinaryAudioOpCfg( "BinaryAudioOpConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioMultiplierConfig> > 
+	regtAudioMultiplierCfg( "AudioMultiplierConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::LadspaLoaderConfig> > 
+	regtLadspaLoaderCfg( "LadspaLoaderConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MonoAudioFileReaderConfig> > 
+	regtMonoAudioFileReaderCfg( "MonoAudioFileReaderConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MonoAudioFileWriterConfigPresentation> 
+	regtMonoAudioFileWriterCfg( "MonoAudioFileWriterConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MultiChannelAudioFileReaderConfig> > 
+	regtMultiChannelAudioFileReaderCfg( "MultiChannelAudioFileReaderConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MultiChannelAudioFileWriterConfigPresentation> 
+	regtMultiChannelAudioFileWriterCfg( "MultiChannelAudioFileWriterConfig" );
+
 // in draft
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::FlagControlConfig> FlagControlConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::RandomConfig> RandomConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::OneOverFConfig> OneOverFConfigPresentation;
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FlagControlConfig> > 
+	regtFlagControlCfg( "FlagControlConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::RandomConfig> > 
+	regtRandomCfg( "RandomConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::OneOverFConfig> > 
+	regtOneOverFCfg( "OneOverFConfig" );
 
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::MonoAudioFileReaderConfig> MonoAudioFileReaderConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::MultiChannelAudioFileReaderConfig> MultiChannelAudioFileReaderConfigPresentation;
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SquareWaveConfig> > 
+	regtSquareWaveCfg( "SquareWaveConfig" );
 
-
-static ProcessingConfigPresentationFactory::Registrator<SimpleOscillatorConfigPresentationTmpl> regtSimpleOscillatorCfg( "SimpleOscillatorConfig" );
-static ProcessingConfigPresentationFactory::Registrator<OscillatorConfigPresentationTmpl> regtOscillatorCfg( "OscillatorConfig" );
-static ProcessingConfigPresentationFactory::Registrator<AutoPannerConfigPresentation> regtAutoPannerCfg( "AutoPannerConfig" );
-static ProcessingConfigPresentationFactory::Registrator<AudioFileConfigPresentation> regtAudioFileInCfg( "AudioFileConfig" );
-static ProcessingConfigPresentationFactory::Registrator<AudioIOConfigPresentation> regtAudioOutCfg( "AudioIOConfig" );
-static ProcessingConfigPresentationFactory::Registrator<AudioAdderConfigPresentation> regAudioAdderCfg( "AudioAdderConfig" );
-static ProcessingConfigPresentationFactory::Registrator<BinaryAudioOpConfigPresentation> regtBinaryAudioOpCfg( "BinaryAudioOpConfig" );
-static ProcessingConfigPresentationFactory::Registrator<ADSRConfigPresentation> regtADSRCfg( "ADSRConfig" );
-static ProcessingConfigPresentationFactory::Registrator<AudioMultiplierConfigPresentation> regtAudioMultiplierCfg( "AudioMultiplierConfig" );
-static ProcessingConfigPresentationFactory::Registrator<LadspaLoaderConfigPresentation> regtLadspaLoaderCfg( "LadspaLoaderConfig" );
-
-// in draft
-static ProcessingConfigPresentationFactory::Registrator<FlagControlConfigPresentation> regtFlagControlCfg( "FlagControlConfig" );
-static ProcessingConfigPresentationFactory::Registrator<RandomConfigPresentation> regtRandomCfg( "RandomConfig" );
-static ProcessingConfigPresentationFactory::Registrator<OneOverFConfigPresentation> regtOneOverFCfg( "OneOverFConfig" );
-
-static ProcessingConfigPresentationFactory::Registrator<MonoAudioFileReaderConfigPresentation> regtMonoAudioFileReaderCfg( "MonoAudioFileReaderConfig" );
-static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MonoAudioFileWriterConfigPresentation> regtMonoAudioFileWriterCfg( "MonoAudioFileWriterConfig" );
-static ProcessingConfigPresentationFactory::Registrator<MultiChannelAudioFileReaderConfigPresentation> regtMultiChannelAudioFileReaderCfg( "MultiChannelAudioFileReaderConfig" );
-static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MultiChannelAudioFileWriterConfigPresentation> regtMultiChannelAudioFileWriterCfg( "MultiChannelAudioFileWriterConfig" );
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::OutControlSenderConfig> > 
+	regtOutControlSenderCfg( "OutControlSenderConfig" );
 

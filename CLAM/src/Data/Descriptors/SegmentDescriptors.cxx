@@ -19,16 +19,11 @@
  *
  */
 
-
-
-
-#include "ProcessingData.hxx"
 #include "SegmentDescriptors.hxx"
 #include "Segment.hxx"
 
-using namespace CLAM;
-
-
+namespace CLAM
+{
 
 SegmentDescriptors::SegmentDescriptors(Segment* pSegment): Descriptor(eNumAttr)
 {
@@ -39,6 +34,7 @@ SegmentDescriptors::SegmentDescriptors(Segment* pSegment): Descriptor(eNumAttr)
 void SegmentDescriptors::DefaultInit() {
 	mpSegment=0;
 	mpStats=0;
+	mSegmentStats=0;
 	AddFramesD();
 	UpdateData();
 }
@@ -46,17 +42,25 @@ void SegmentDescriptors::DefaultInit() {
 void SegmentDescriptors::CopyInit(const SegmentDescriptors & copied) {
 	mpSegment=copied.mpSegment;
 	mpStats=0;
+	mSegmentStats=0;
 }
 
 const Segment* SegmentDescriptors::GetpSegment() const {
 	return mpSegment;
 }
 
-void SegmentDescriptors::SetpSegment(Segment* pSegment) {
+void SegmentDescriptors::SetpSegment(const Segment* pSegment) {
+	if (HasFramesD())
+		CLAM_ASSERT(mSegmentStats,"SegmentDescriptors::SetpSegment: Frame Prototype must be set before, please call SetFramePrototype");
 	mpSegment=pSegment;
 	if(mpSegment->HasAudio())
+	{
+		//with this operation we may lose pointer reference in Stats!
 		AddAudioD();
-	UpdateData();
+		UpdateData();
+		if(HasFramesD())
+			mSegmentStats->SetArray(&GetFramesD());
+	}
 	if(mpSegment->HasAudio())
 		GetAudioD().SetpAudio(&mpSegment->GetAudio());
 	int nFrames=mpSegment->GetnFrames();
@@ -68,9 +72,9 @@ void SegmentDescriptors::SetpSegment(Segment* pSegment) {
 void SegmentDescriptors::SetFramePrototype(const FrameDescriptors& proto, int nFrames)
 {
 	int i;
-	FrameDescriptors tmpFrD;
+	GetFramesD().Resize(nFrames);
+	GetFramesD().SetSize(nFrames);
 	for (i=0;i<nFrames;i++){
-		GetFramesD().AddElem(tmpFrD);
 		GetFramesD()[i].SetPrototype(proto);}
 	mSegmentStats= new StatsTmpl<false,FrameDescriptors,FrameDescriptors>(&GetFramesD());
 	if(HasMeanD())
@@ -109,4 +113,6 @@ void SegmentDescriptors::ConcreteCompute()
 	if(HasVarianceD())
 		SetVarianceD(mSegmentStats->GetVariance());
 }
+
+} // namespace CLAM
 

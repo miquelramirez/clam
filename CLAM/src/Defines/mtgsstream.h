@@ -6,6 +6,7 @@ strstream.h
 */
 #ifndef stringstream_h
 #define stringstream_h
+#warning Including mtgsstream.h which is depracated, use <sstream> instead
 
 #ifdef HAVE_STANDARD_SSTREAM
 #include <sstream>

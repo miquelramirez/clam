@@ -47,7 +47,7 @@ void SpectralAnalysisConfig::DefaultValues()
 {
 
 	SetprSamplingRate(44100);
-/** FFTSize will be next power of two of the window size*/
+/** prFFTSize will be next power of two of the window size*/
 	SetprZeroPadding(0);
 
 	SetprHopSize(0);//for preventing reading uninitialized memory
@@ -90,6 +90,13 @@ const EWindowType& SpectralAnalysisConfig::GetWindowType() const
 {
 	return GetWindowGenerator().GetType();
 }
+
+void SpectralAnalysisConfig::SetFFTSize(int s)
+{
+	SetprFFTSize(s);
+	GetFFT().SetAudioSize(s);
+}
+
 
 /** Zero padding factor*/
 void SpectralAnalysisConfig::SetZeroPadding(int z)
