@@ -1,4 +1,5 @@
 PROGRAMS = \
+           TestSnapshots \
            TestMoc \
            TestEnum \
            TestComplex \
@@ -7,7 +8,6 @@ PROGRAMS = \
            BPFTest \
            ListTest \
            TestAudioFileIO \
-           TestXMLAdapters \
            TestMIDIIO \
            TestAudioIO \
            TestControlMapper \
@@ -15,8 +15,10 @@ PROGRAMS = \
            AudioPlayer \
            TestPOComposite \
            SegmentTest \
+           TestSignalv1 \
 
 TESTS = \
+        TestXMLAdapters \
         TestConfig \
         TestFlags \
         TestArray \
