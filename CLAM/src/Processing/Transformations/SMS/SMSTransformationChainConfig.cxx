@@ -19,7 +19,7 @@
  *
  */
 
-#include "ProcessingChain.hxx"
+#include "SMSTransformationChain.hxx"
 
 //We should avoid having to include all SMS Transformations here: factory needed
 #include "SMSTransformationConfig.hxx"
@@ -28,16 +28,16 @@
 
 namespace CLAM
 {
-	// ProcessingChaineeConfig method definition
+	// SMSTransformationChaineeConfig method definition
 
-	ProcessingChaineeConfig::~ProcessingChaineeConfig()
+	SMSTransformationChaineeConfig::~SMSTransformationChaineeConfig()
 	{
 		if(mpConcreteConfig) 
 			delete mpConcreteConfig;
 	}
 
 
-	void ProcessingChaineeConfig::DefaultInit( )
+	void SMSTransformationChaineeConfig::DefaultInit( )
 	{
 		AddAll();
 		UpdateData();
@@ -45,7 +45,7 @@ namespace CLAM
 		mpConcreteConfig=NULL;
 	}
 
-	void ProcessingChaineeConfig::CopyInit(const ProcessingChaineeConfig& originalConfig)
+	void SMSTransformationChaineeConfig::CopyInit(const SMSTransformationChaineeConfig& originalConfig)
 	{
 		AddAll();
 		UpdateData();
@@ -53,20 +53,20 @@ namespace CLAM
 		SetConcreteConfig(*(originalConfig.mpConcreteConfig));
 	}
 
-	void ProcessingChaineeConfig::StoreOn(Storage & s) const
+	void SMSTransformationChaineeConfig::StoreOn(Storage & s) const
 	{
 		ProcessingConfig::StoreOn(s);
 		mpConcreteConfig->StoreOn(s);
 	}
 	
-	void ProcessingChaineeConfig::LoadFrom(Storage& s)
+	void SMSTransformationChaineeConfig::LoadFrom(Storage& s)
 	{
 		ProcessingConfig::LoadFrom(s);
 		mpConcreteConfig=InstantiateConcreteConfig();
 		const_cast<ProcessingConfig*>(mpConcreteConfig)->LoadFrom(s);
 	}
 
-	ProcessingConfig* ProcessingChaineeConfig::InstantiateConcreteConfig(const std::string& type)
+	ProcessingConfig* SMSTransformationChaineeConfig::InstantiateConcreteConfig(const std::string& type)
 	{
 		if(type=="SMSDummyTransformation"||type=="SMSFreqShift"||type=="SMSPitchShift"||
 		   type=="SMSOddEvenHarmonicRatio"||type=="SMSSineFilter"||type=="SMSResidualGain"||
@@ -85,27 +85,23 @@ namespace CLAM
 		CLAM_ASSERT(type!="Unknown",
 			"Before instantiating a concrete configuration, you have to set its class name");
 
-		std::string error="ProcessingChaineeConfig::InstantiateConcreteConfig: "
+		std::string error="SMSTransformationChaineeConfig::InstantiateConcreteConfig: "
 			"Trying to instantiate a non-valid Configuration: ";
 		error+=type;
 		CLAM_ASSERT(false,error.c_str());
 		return 0;
 	}
 	
-	// ProcessingChainConfig method definition
-	void ProcessingChainConfig::DefaultInit()
+	// SMSTransformationChainConfig method definition
+	void SMSTransformationChainConfig::DefaultInit()
 	{
 		AddAll();
 		UpdateData();
 	}
 
-	ProcessingChainConfig::~ProcessingChainConfig()
+	void SMSTransformationChainConfig::AddConfiguration(const ProcessingConfig& newConcreteConfig,const std::string& className)
 	{
-	}
-	
-	void ProcessingChainConfig::AddConfiguration(const ProcessingConfig& newConcreteConfig,const std::string& className)
-	{
-		ProcessingChaineeConfig newChaineeConfig;
+		SMSTransformationChaineeConfig newChaineeConfig;
 		newChaineeConfig.SetConcreteClassName(className);
 		newChaineeConfig.SetConcreteConfig(newConcreteConfig);
 			

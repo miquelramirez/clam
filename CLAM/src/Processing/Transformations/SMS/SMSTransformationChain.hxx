@@ -23,8 +23,8 @@
 #define _SMSTransformationChain_
 
 
-#include "ProcessingChain.hxx"
 #include "SMSTransformation.hxx"
+#include "SMSTransformationChainConfig.hxx"
 #include "ProcessingComposite.hxx"
 #include "ProcessingData.hxx"
 #include "InPort.hxx"
@@ -35,24 +35,6 @@
 
 namespace CLAM {
 
-
-	/** SMSTransformationChain configuration. Right now it does not add any 
-	 *	behaviour to its base class but will probably in the future.
-	 *	@see ProcessingChainConfig
-	 */
-	class SMSTransformationChainConfig: public ProcessingChainConfig
-	{
-	public:
-		virtual ~SMSTransformationChainConfig(){}
-		bool AddSMSConfiguration(const SMSTransformationConfig& cfg,std::string type)
-		{
-			AddConfiguration(cfg,type);
-			return true;
-		}
-		
-	};
-
-		
 	/** Using Segment as the type for *	input and output ports. 
 	 * It implements the supervised Do and a helper method for
 	 *	updating the frame counter in the Segment.
@@ -65,7 +47,7 @@ namespace CLAM {
 		/** Temporal ProcessingData used as an internal node for intermediate Processing */
 		Array<Segment*> mpTmpDataArray;
 		/** Internal configuration. A pointer is used because polymorphism may be used on it */
-		ProcessingChainConfig* mpConfig;
+		SMSTransformationChainConfig* mpConfig;
 		Segment* mpChainInput;
 		Segment* mpChainOutput;
 
@@ -101,7 +83,7 @@ namespace CLAM {
 		{
 			CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
 		                  GetExecState() != Ready,
-		                  "ProcessingChain: Do(): Not in execution mode");
+		                  "SMSTransformationChain: Do(): Not in execution mode");
 
 			if (GetExecState() == Disabled)	return true;
 			
@@ -121,11 +103,12 @@ namespace CLAM {
 			}
 			return result;
 		}
+
 		bool Do()
 		{
 			if(IsLastFrame())
 			{
-				printf("TransCHain::Do() is last frame\n");
+				printf("TransChain::Do() is last frame\n");
 				return false;
 			}
 			NextFrame();
@@ -209,7 +192,7 @@ namespace CLAM {
 
 		bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			mpConfig=new ProcessingChainConfig(dynamic_cast<const ProcessingChainConfig&>(c));
+			mpConfig=new SMSTransformationChainConfig(dynamic_cast<const SMSTransformationChainConfig&>(c));
 			bool result=true;
 			iterator obj;
 			
@@ -221,7 +204,7 @@ namespace CLAM {
 				obj=composite_begin();
 			}
 			
-			ProcessingChainConfig::iterator cfg;
+			SMSTransformationChainConfig::iterator cfg;
 			for(cfg=mpConfig->ConfigList_begin();cfg!=mpConfig->ConfigList_end();cfg++)
 			{
 				AddChainee((*cfg).GetConcreteClassName());
@@ -232,7 +215,7 @@ namespace CLAM {
 			CLAM_ASSERT(mpConfig->GetConfigurations().size()==composite_size(),"Number of configurations should be the same as number of children");
 		
 			//TODO: right now there is no way to add or remove controls than to instantiate control array again
-			CLAM_ASSERT(mpConfig->GetOnArray().Size()==(int)composite_size(),"ProcessingChain::ConcreteConfigure: On array does not have same size as number of configurations");
+			CLAM_ASSERT(mpConfig->GetOnArray().Size()==(int)composite_size(),"SMSTransformationChain::ConcreteConfigure: On array does not have same size as number of configurations");
 			TSize nControls=composite_size();
 			if(mpOnCtrlArray) delete mpOnCtrlArray;
 			mpOnCtrlArray= new InControlTmplArray<SMSTransformationChain>(nControls,"OnControlArray",this,NULL);
