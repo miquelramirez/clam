@@ -90,7 +90,7 @@ int Fl_PointMover::nearest(float px,float py)
 {
 	float min=distance(0,px,py);
 	int retid=0;
-	for (int i=1;i<npoints_;i++) {
+	for (int i=1;i<points_.Size();i++) {
 		float d=distance(i,px,py);
 		if (d<min) {
 			min = d;
@@ -104,7 +104,7 @@ int Fl_PointMover::cnearest(float cx,float cy)
 {
 	float min=cdistance(0,cx,cy);
 	int retid=0;
-	for (int i=1;i<npoints_;i++) {
+	for (int i=1;i<points_.Size();i++) {
 		float d=cdistance(i,cx,cy);
 		if (d<min) {
 			min = d;
@@ -116,40 +116,35 @@ int Fl_PointMover::cnearest(float cx,float cy)
 
 void Fl_PointMover::add_point(float px,float py,void* puser_data)
 {
-	points_=(FLPOINT*) realloc(points_,(npoints_+1) * sizeof(FLPOINT));
 	FLPOINT p;
 	p.x=px;
 	p.y=py;
 	p.user_data=puser_data;
-	points_[npoints_++]=p;
+	points_.AddElem( p );
 }
 
 void Fl_PointMover::remove_point(int id)
 {
-	if (npoints_>id) {
-		memmove(&points_[id],&points_[id+1],(npoints_-id-1)* sizeof(FLPOINT));
-	}
-	points_=(FLPOINT*) realloc(points_,(npoints_-1) * sizeof(FLPOINT));
-	npoints_--;
+	points_.DeleteElem( id );
 }
 
 void Fl_PointMover::remove_points(int id,int n)
 {
-	if (npoints_>id) {
-		memmove(&points_[id],&points_[id+n],(npoints_-id-n)* sizeof(FLPOINT));
+	for ( int j = id + n; j < points_.Size(); j++ )
+	{
+		points_[ j - n ] = points_[j];
 	}
-	points_=(FLPOINT*) realloc(points_,(npoints_-n) * sizeof(FLPOINT));
-	npoints_-=n;
+
+	int oldSize = points_.Size();
+	points_.Resize( oldSize - n );
+	points_.SetSize( oldSize - n );
+
 }
 
 void Fl_PointMover::clear()
 {
-	if ( points_ )
-	{		
-		free( points_ );
-		points_ = NULL;
-	}
-	npoints_ = 0;
+	points_.Resize(0);
+	points_.SetSize(0);
 }
 
 
@@ -192,7 +187,7 @@ int Fl_PointMover::handle(int event) {
 				/** The user has added a point*/
 				PointAdded.Emit( snapx(px), snapy(py) );
 
-				dragid_=npoints_-1;
+				dragid_=points_.Size()-1;
 				do_callback();
 				damage(FL_DAMAGE_EXPOSE,
 					Fl::event_x()-1,
@@ -201,7 +196,7 @@ int Fl_PointMover::handle(int event) {
 					Fl::event_y()+1);					
 				dragid_=-1;
 			} else {
-				if (npoints_>0) {
+				if (points_.Size()>0) {
 					dragid_=cnearest(Fl::event_x(),Fl::event_y());
 					dragdx = coorx(points_[dragid_].x)-Fl::event_x();
 					dragdy = coory(points_[dragid_].y)-Fl::event_y();
@@ -372,11 +367,11 @@ int Fl_PointMover::handle(int event) {
 				case 'V'^0x40:
 				{
 					selection_.Clear();
-					int from=npoints_;
+					int from=points_.Size();
 					for (int i=0;i<copysize;i++) {
 						add_point(copy[i].x,copy[i].y);
 					}
-					selection_.Add(from,npoints_);
+					selection_.Add(from,points_.Size());
 					redraw();
 					return 1;
 				}
@@ -446,7 +441,7 @@ int Fl_PointMover::handle(int event) {
 				}
 				case 'A'^0x40:
 				{
-					selection_.Add(0,npoints_);
+					selection_.Add(0,points_.Size());
 					redraw();
 				}
 			}
@@ -529,8 +524,8 @@ void Fl_PointMover::ybound(float min,float max)
 Fl_PointMover::Fl_PointMover(int x,int y,int w,int h)
 	:Fl_Widget(x,y,w,h)
 {
-	points_ = 0;
-	npoints_ = 0;
+	points_.Resize(0);
+	points_.SetSize(0);
 	xscale(0.,1.);	
 	yscale(0.,1.);	
 	xbound(0.,1.);
@@ -554,7 +549,7 @@ void Fl_PointMover::get_selection(void)
 	float xm=float(w()-1.-hmargin())/(xmax_-xmin_);
 	float ym=float(h()-1.-vmargin())/(ymax_-ymin_);
 	
-	for (int i=0;i<npoints_;i++) {
+	for (int i=0;i<points_.Size();i++) {
 		int xnew = int (x()+leftmargin_+(points_[i].x-xmin_)*xm+0.5);
 		int ynew = int (y()+h()-1.-bottommargin_-(points_[i].y-ymin_)*ym+0.5);		
 		if (xnew>=selectx_ && xnew<=selectx_+selectw_ &&
@@ -582,7 +577,7 @@ void Fl_PointMover::draw(void)
 	
 	fl_color(FL_BLACK);
 		
-	for (int i=0;i<npoints_;i++) {
+	for (int i=0;i<points_.Size();i++) {
 		int xnew = int (x()+(points_[i].x-xmin_)*xm+0.5);
 		int ynew = int (y()+h()-1-bottommargin_-(points_[i].y-ymin_)*ym+0.5);		
 		fl_line(xnew-1,ynew,xnew+1,ynew);
@@ -599,7 +594,7 @@ int point_x_compar(const void* a,const void* b)
 
 void Fl_Envelope::sort(void)
 {
-	qsort((void*) points_,npoints_,sizeof(FLPOINT),point_x_compar);
+	qsort((void*) points_.GetPtr(),points_.Size(),sizeof(FLPOINT),point_x_compar);
 }
 
 Fl_Envelope::Fl_Envelope(int x,int y,int w,int h)
@@ -628,7 +623,7 @@ int Fl_Envelope::handle(int e)
 					}
 					i=idto;
 					idto--;
-					while (i<npoints_ && points_[i].x<points_[idto].x) {
+					while (i<points_.Size() && points_[i].x<points_[idto].x) {
 						points_[i].x=points_[idto].x;
 						i++;
 					}
@@ -714,7 +709,7 @@ void Fl_Envelope::draw(void)
 		fl_color(FL_DARK1);	
 	}
 	
-	for (int i=0;i<npoints_;i++) {
+	for (int i=0;i<points_.Size();i++) {
 		float fx = float(x()+leftmargin_)+(points_[i].x-xmin_)*xm;
 		float fy = float(y()+h()-1-bottommargin_)-(points_[i].y-ymin_)*ym;
 		float xextra = fx<0 ? -0.5 : 0.5;
@@ -733,7 +728,7 @@ void Fl_Envelope::draw(void)
 		yprev=ynew;
 	}
 	
-	for (int i=0;i<npoints_;i++) {
+	for (int i=0;i<points_.Size();i++) {
 		int xnew = int(x()+leftmargin_+(points_[i].x-xmin_)*xm+0.5);
 		int ynew = int(y()+h()-1-bottommargin_-(points_[i].y-ymin_)*ym+0.5);		
 
