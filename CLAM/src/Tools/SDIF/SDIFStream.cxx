@@ -4,7 +4,7 @@
 namespace SDIF
 {
 
-	Stream::Stream(TypeId typeId, TInt32 streamId)
+	Stream::Stream(TypeId typeId, CLAM::TInt32 streamId)
 	:mType(typeId),mStreamId(streamId)
 	{
 	}

@@ -30,13 +30,10 @@ namespace CLAM {
 	class CircularShiftConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (CircularShiftConfig, 2,ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (CircularShiftConfig, 1,ProcessingConfig);
 		/* Right now you can change the amount any time but it will only be taken into
 		account if Type is set to eCustom */
-		DYN_ATTRIBUTE (1, public, TData, Amount);
-
-		~CircularShiftConfig(){};
+		DYN_ATTRIBUTE (0, public, TData, Amount);
 	protected:
 		void DefaultInit();
 	};

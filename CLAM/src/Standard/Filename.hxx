@@ -27,9 +27,6 @@
 #include "Assert.hxx"
 #include "Component.hxx"
 #include "TypeInfo.hxx"
-#ifdef CLAM_USE_XML
-	#include "XMLAdapter.hxx"
-#endif//CLAM_USE_XML
 
 namespace CLAM {
 

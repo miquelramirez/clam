@@ -19,35 +19,24 @@
  *
  */
 
-#ifndef __PROCESSINGCONFIGPRESENTATION_HXX__
-#define __PROCESSINGCONFIGPRESENTATION_HXX__
+#ifndef __ProcessingConfigPresentation_hxx__
+#define __ProcessingConfigPresentation_hxx__
 
 #include "Presentation.hxx"
 #include "Signalv1.hxx"
-#include "Slotv1.hxx"
-
-namespace CLAM
-{
-	class ProcessingConfig;
-}
+#include "ProcessingConfig.hxx"
 
 namespace NetworkGUI
 {
 
 class ProcessingConfigPresentation : public CLAMVM::Presentation
 {
-protected:
-//	CLAM::ProcessingConfig * mConfig;
 
-	virtual void OnNewConfig( CLAM::ProcessingConfig* ) = 0;
 public:
-	ProcessingConfigPresentation();       
-	virtual ~ProcessingConfigPresentation(){}
-	
+	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
 
 public: // signals
-	SigSlot::Signalv1< CLAM::ProcessingConfig* > ApplyConfig;
-	SigSlot::Slotv1< CLAM::ProcessingConfig* > SetConfig;
+	SigSlot::Signalv1< const CLAM::ProcessingConfig & > SignalConfigureProcessing;
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 
@@ -55,4 +44,5 @@ public: // signals
 
 } // namespace NetworkGUI
 
-#endif // __PROCESSINGCONFIGPRESENTATION_HXX__
+#endif // __ProcessingConfigPresentation_hxx__
+

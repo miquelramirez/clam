@@ -13,12 +13,12 @@ namespace SDIF
 	class OpeningsFrame {
 	public:
 		FrameHeader mHeader;
-		TInt32 mSpecVersion;
-		TInt32 mStandardTypesVersion;
+		CLAM::TInt32 mSpecVersion;
+		CLAM::TInt32 mStandardTypesVersion;
 	public:	
 		/** Create the frame */
 		OpeningsFrame():
-			mHeader("SDIF",sizeof(TInt32)+sizeof(TInt32)),
+			mHeader("SDIF",sizeof(CLAM::TInt32)+sizeof(CLAM::TInt32)),
 			mSpecVersion(3),mStandardTypesVersion(1)
 		{
 		}
@@ -43,7 +43,7 @@ namespace SDIF
 		* @param id Stream ID
 		*/
 		Frame(const TypeId& type = TypeId::sDefault,
-			TFloat64 time =0.,TInt32 streamId = 0);
+			CLAM::TFloat64 time =0.,CLAM::TInt32 streamId = 0);
 		~Frame();
 
 		/** Add a SDIFMatrix to the frame
@@ -61,7 +61,7 @@ namespace SDIF
 		MatrixIterator Begin(void) const { return mMatrixList.begin(); }
 		MatrixIterator End(void) const { return mMatrixList.end(); }
 		
-		TFloat64 Time(void) { return mHeader.mTime; }
+		CLAM::TFloat64 Time(void) { return mHeader.mTime; }
 		TypeId Type(void) {return mHeader.mType;}
 		
 	};

@@ -74,7 +74,8 @@ bool SDIFSerializer::DoStore( const char* fileName, Segment& segment )
 	cfg.SetFileName( fileName );
 	cfg.SetEnableResidual( true );
 
-	CLAM_DEBUG_ASSERT(mSDIFWriter.Configure( cfg ), "Error storing temporal SDIF for Morph" );
+	bool configOk = mSDIFWriter.Configure( cfg );
+	CLAM_DEBUG_ASSERT(configOk, "Error storing temporal SDIF for Morph" );
 
 	mSDIFWriter.Start(  );
 	for( i=0; i<nFrames; i++ )

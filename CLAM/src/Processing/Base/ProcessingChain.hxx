@@ -19,11 +19,9 @@ namespace CLAM{
 	class ProcessingChaineeConfig:public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ProcessingChaineeConfig, 2,ProcessingConfig);
-		/** Name of the ProcessingChainConfig object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (ProcessingChaineeConfig, 1,ProcessingConfig);
 		/** Name of concrete Config class */
-		DYN_ATTRIBUTE (1, public, std::string, ConcreteClassName);
+		DYN_ATTRIBUTE (0, public, std::string, ConcreteClassName);
 	public:
 		/** Initialization for default constructor. All attributes are added, ConcreteClassName is
 		 *	set to "Unknown" and pointer to concrete configuration is set to null. 
@@ -36,7 +34,7 @@ namespace CLAM{
 		/** Overriding virtual method in base class to store concrete configuration by hand as it
 		 *	is not a dynamic attribute.
 		 */
-		void StoreOn(Storage & s); 
+		void StoreOn(Storage & s) const; 
 		/** Overriding virtual method in base class to load concrete configuration by hand as it
 		 *	is not a dynamic attribute.
 		 */
@@ -99,13 +97,11 @@ namespace CLAM{
 		typedef std::list<ProcessingChaineeConfig>::iterator iterator;
 		typedef std::list<ProcessingChaineeConfig>::const_iterator const_iterator;
 		
-		DYNAMIC_TYPE_USING_INTERFACE (ProcessingChainConfig, 3,ProcessingConfig);
-		/** Name of the ProcessingChainConfig object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (ProcessingChainConfig, 2,ProcessingConfig);
 		/** List of children configurations, a list of pointers to base class is kept */
-		DYN_CONTAINER_ATTRIBUTE (1, public, std::list<ProcessingChaineeConfig>, Configurations,Config);
+		DYN_CONTAINER_ATTRIBUTE (0, public, std::list<ProcessingChaineeConfig>, Configurations,Config);
 		/** Array of On/off initial values for control*/
-		DYN_ATTRIBUTE (2, public, Array<bool>,OnArray);
+		DYN_ATTRIBUTE (1, public, Array<bool>,OnArray);
 
 		
 		/** By default all attributes are added. */
@@ -243,7 +239,7 @@ namespace CLAM{
 			//We iterate through all chainees and call their Do()
 			for (obj=composite_begin(); obj!=composite_end(); obj++,i++)
 			{
-				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==composite_size()-1)
+				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==int(composite_size())-1)
 				//Note: First and last chainee's will always be active regartheless the value
 				//of their On control.
 				{
@@ -294,7 +290,7 @@ namespace CLAM{
 			CLAM_ASSERT(mpConfig->GetConfigurations().size()==composite_size(),"Number of configurations should be the same as number of children");
 		
 			//TODO: right now there is no way to add or remove controls than to instantiate control array again
-			CLAM_ASSERT(mpConfig->GetOnArray().Size()==composite_size(),"ProcessingChain::ConcreteConfigure: On array does not have same size as number of configurations");
+			CLAM_ASSERT(mpConfig->GetOnArray().Size()==(int)composite_size(),"ProcessingChain::ConcreteConfigure: On array does not have same size as number of configurations");
 			TSize nControls=composite_size();
 			if(mpOnCtrlArray) delete mpOnCtrlArray;
 			mpOnCtrlArray= new InControlTmplArray<ProcessingChain>(nControls,"OnControlArray",this,NULL);
@@ -326,7 +322,8 @@ protected:
 
 			// Factory::CreateSafe throws an ErrFactory exception if the key is not
 			// valid
-			InsertAndGiveName( *( ProcessingFactory::GetInstance().CreateSafe( type ) ) );
+			//InsertAndGiveName( *( ProcessingFactory::GetInstance().CreateSafe( type ) ) );
+			Insert( *( ProcessingFactory::GetInstance().CreateSafe( type ) ) );
 						
 			return true;
 			

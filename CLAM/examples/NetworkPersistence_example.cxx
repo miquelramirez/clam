@@ -27,7 +27,7 @@
  *      -> Activate an XML to get a fully functional network again.
  */
 
-#include "Storage.hxx"
+#include "XMLStorage.hxx"
 #include "Network.hxx"
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
@@ -66,7 +66,6 @@ int main( int argc, char** argv )
 		}
 
 		CLAM::AudioFileConfig audioFileInCfg;
-		audioFileInCfg.SetName( "File_In" );
 		audioFileInCfg.SetKeepFrameSizes( true );
 		audioFileInCfg.SetFilename( fileName );
 		audioFileInCfg.SetFrameSize( size );
@@ -80,7 +79,6 @@ int main( int argc, char** argv )
 		}
 			
 		CLAM::AudioFileConfig audioFileOutCfg;
-		audioFileOutCfg.SetName( "File_Out" );
 		audioFileOutCfg.SetFilename( outputFileName );
 		audioFileOutCfg.SetKeepFrameSizes( true );
 		audioFileOutCfg.SetFrameSize( size );
@@ -97,23 +95,18 @@ int main( int argc, char** argv )
 
 
 		CLAM::OscillatorConfig osc1Cfg;
-		osc1Cfg.SetName("Generator");
 		osc1Cfg.SetFrequency(440.0);
 		osc1Cfg.SetSamplingRate( sampleRate );
 
 		CLAM::OscillatorConfig osc2Cfg;
-		osc2Cfg.SetName("Modulator");
 		osc2Cfg.SetFrequency(40.0);
 		osc1Cfg.SetSamplingRate( sampleRate );
 
 		CLAM::BinaryAudioOpConfig audioMultiplierCfg;
-		audioMultiplierCfg.SetName("Audio_Multiplier");
 
 		CLAM::BinaryAudioOpConfig audioAdderCfg;
-		audioAdderCfg.SetName("Audio_Adder");
 			
 		CLAM::AudioIOConfig audioOutCfg;
-		audioOutCfg.SetName("Audio_Mono_Out");
 		audioOutCfg.SetFrameSize( size );
 		audioOutCfg.SetSampleRate( sampleRate );
 		audioOutCfg.SetChannelID( 0 );

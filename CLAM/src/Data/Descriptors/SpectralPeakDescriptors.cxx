@@ -27,13 +27,45 @@
 #include "SpectralPeakArray.hxx"
 #include "CLAM_Math.hxx"
 
-using namespace CLAM;
+namespace CLAM{
 
 
 SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray): Descriptor(eNumAttr)
 {
 	MandatoryInit();
 	mpSpectralPeakArray=pSpectralPeakArray;
+}
+
+SpectralPeakDescriptors::SpectralPeakDescriptors(TData initVal):Descriptor(eNumAttr)
+{
+	MandatoryInit();
+	AddAll();
+	UpdateData();
+	
+	SetMagnitudeMean(initVal);
+	SetHarmonicCentroid(initVal);
+	SetSpectralTilt(initVal);
+	SetFirstTristimulus(initVal);
+	SetSecondTristimulus(initVal);
+	SetThirdTristimulus(initVal);
+	SetHarmonicDeviation(initVal);
+	SetOddHarmonics(initVal);
+	SetEvenHarmonics(initVal);
+	SetOddToEvenRatio(initVal);
+}
+
+void SpectralPeakDescriptors::DefaultInit() {
+	mpSpectralPeakArray=0;
+	mpStats=0;
+}
+
+void SpectralPeakDescriptors::CopyInit(const SpectralPeakDescriptors & copied) {
+	mpSpectralPeakArray=copied.mpSpectralPeakArray;
+	mpStats=0;
+}
+
+const SpectralPeakArray* SpectralPeakDescriptors::GetpSpectralPeakArray() const {
+	return mpSpectralPeakArray;
 }
 
 void SpectralPeakDescriptors::SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray) {
@@ -115,12 +147,15 @@ TData SpectralPeakDescriptors::ComputeSpectralTilt()
 
 TData SpectralPeakDescriptors::ComputeFirstTristimulus()
 {
+	if(mpSpectralPeakArray->GetnPeaks()<=0) return 0;
 	TData firstHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[0];
 	return firstHarmonicMag*firstHarmonicMag/mpStats->GetEnergy();
 }
 
 TData SpectralPeakDescriptors::ComputeSecondTristimulus()
 {
+	if(mpSpectralPeakArray->GetnPeaks()<=4) return 0;
+
 	TData secondHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[1];
 	TData thirdHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[2];
 	TData fourthHarmonicMag=mpSpectralPeakArray->GetMagBuffer()[3];
@@ -131,14 +166,16 @@ TData SpectralPeakDescriptors::ComputeSecondTristimulus()
 
 TData SpectralPeakDescriptors::ComputeThirdTristimulus()
 {
+	if(mpSpectralPeakArray->GetnPeaks()<=5) return 0;
 	DataArray& a=mpSpectralPeakArray->GetMagBuffer();
-	return accumulate(a.GetPtr()+4,a.GetPtr()+a.Size(),0,PowerTmpl<2,TData>())/mpStats->GetEnergy();	
+	return accumulate(a.GetPtr()+4,a.GetPtr()+a.Size(),0.,Power<2,false,TData>())/mpStats->GetEnergy();	
 }
 
 TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 {
 	TData num=0,denom=0,SE=0;
 	int size=mpSpectralPeakArray->GetnPeaks();
+	if(size<4) return 0;//is it really necessary to have 4 or with 2 is enough
 	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
 	int i;
 	for (i=1;i<size-1;i++)
@@ -158,6 +195,7 @@ TData SpectralPeakDescriptors::ComputeHarmonicDeviation()
 TData SpectralPeakDescriptors::ComputeOddHarmonics()
 {
 	int size=mpSpectralPeakArray->GetnPeaks();
+	if(size<4) return 0;
 	DataArray& data=mpSpectralPeakArray->GetMagBuffer();
 	int i;
 	DataArray odd;
@@ -193,3 +231,199 @@ TData SpectralPeakDescriptors::ComputeOddToEvenRatio()
 	
 	return odd/even;
 }
+
+SpectralPeakDescriptors operator * (const SpectralPeakDescriptors& a,TData mult) 
+{
+	SpectralPeakDescriptors tmpD(a);
+
+	if (a.HasMagnitudeMean())
+	{
+		tmpD.SetMagnitudeMean(a.GetMagnitudeMean()*mult);
+	}
+	if (a.HasHarmonicCentroid())
+	{
+		tmpD.SetHarmonicCentroid(a.GetHarmonicCentroid()*mult);
+	}
+	if (a.HasSpectralTilt())
+	{
+		tmpD.SetSpectralTilt(a.GetSpectralTilt()*mult);
+	}
+	if (a.HasFirstTristimulus())
+	{
+		tmpD.SetFirstTristimulus(a.GetFirstTristimulus()*mult);
+	}
+	if (a.HasSecondTristimulus())
+	{
+		tmpD.SetSecondTristimulus(a.GetSecondTristimulus()*mult);
+	}
+	if (a.HasThirdTristimulus())
+	{
+		tmpD.SetThirdTristimulus(a.GetThirdTristimulus()*mult);
+	}
+	if (a.HasHarmonicDeviation())
+	{
+		tmpD.SetHarmonicDeviation(a.GetHarmonicDeviation()*mult);
+	}
+	if (a.HasOddHarmonics())
+	{
+		tmpD.SetOddHarmonics(a.GetOddHarmonics()*mult);
+	}
+	if (a.HasEvenHarmonics())
+	{
+		tmpD.SetEvenHarmonics(a.GetEvenHarmonics()*mult);
+	}
+	if (a.HasOddToEvenRatio())
+	{
+		tmpD.SetOddToEvenRatio(a.GetOddToEvenRatio()*mult);
+	}
+	
+	return tmpD;
+}
+
+SpectralPeakDescriptors operator * (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b) 
+{
+	SpectralPeakDescriptors tmpD;
+
+	if (a.HasMagnitudeMean() && b.HasMagnitudeMean())
+	{
+		tmpD.AddMagnitudeMean();
+		tmpD.UpdateData();
+		tmpD.SetMagnitudeMean(a.GetMagnitudeMean()*b.GetMagnitudeMean());
+	}
+	if (a.HasHarmonicCentroid() && b.HasHarmonicCentroid())
+	{
+		tmpD.AddHarmonicCentroid();
+		tmpD.UpdateData();
+		tmpD.SetHarmonicCentroid(a.GetHarmonicCentroid()*b.GetHarmonicCentroid());
+	}
+	if (a.HasSpectralTilt() && b.HasSpectralTilt())
+	{
+		tmpD.AddSpectralTilt();
+		tmpD.UpdateData();
+		tmpD.SetSpectralTilt(a.GetSpectralTilt()*b.GetSpectralTilt());
+	}
+	if (a.HasFirstTristimulus() && b.HasFirstTristimulus())
+	{
+		tmpD.AddFirstTristimulus();
+		tmpD.UpdateData();
+		tmpD.SetFirstTristimulus(a.GetFirstTristimulus()*b.GetFirstTristimulus());
+	}
+	if (a.HasSecondTristimulus() && b.HasSecondTristimulus())
+	{
+		tmpD.AddSecondTristimulus();
+		tmpD.UpdateData();
+		tmpD.SetSecondTristimulus(a.GetSecondTristimulus()*b.GetSecondTristimulus());
+	}
+	if (a.HasThirdTristimulus() && b.HasThirdTristimulus())
+	{
+		tmpD.AddThirdTristimulus();
+		tmpD.UpdateData();
+		tmpD.SetThirdTristimulus(a.GetThirdTristimulus()*b.GetThirdTristimulus());
+	}
+	if (a.HasHarmonicDeviation() && b.HasHarmonicDeviation())
+	{
+		tmpD.AddHarmonicDeviation();
+		tmpD.UpdateData();
+		tmpD.SetHarmonicDeviation(a.GetHarmonicDeviation()*b.GetHarmonicDeviation());
+	}
+	if (a.HasOddHarmonics() && b.HasOddHarmonics())
+	{
+		tmpD.AddOddHarmonics();
+		tmpD.UpdateData();
+		tmpD.SetOddHarmonics(a.GetOddHarmonics()*b.GetOddHarmonics());
+	}
+	if (a.HasEvenHarmonics() && b.HasEvenHarmonics())
+	{
+		tmpD.AddEvenHarmonics();
+		tmpD.UpdateData();
+		tmpD.SetEvenHarmonics(a.GetEvenHarmonics()*b.GetEvenHarmonics());
+	}
+	if (a.HasOddToEvenRatio() && b.HasOddToEvenRatio())
+	{
+		tmpD.AddOddToEvenRatio();
+		tmpD.UpdateData();
+		tmpD.SetOddToEvenRatio(a.GetOddToEvenRatio()*b.GetOddToEvenRatio());
+	}
+	
+	return tmpD;
+}
+
+SpectralPeakDescriptors operator + (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b)
+{
+	SpectralPeakDescriptors tmpD;
+
+	if (a.HasMagnitudeMean() && b.HasMagnitudeMean())
+	{
+		tmpD.AddMagnitudeMean();
+		tmpD.UpdateData();
+		tmpD.SetMagnitudeMean(a.GetMagnitudeMean()+b.GetMagnitudeMean());
+	}
+	if (a.HasHarmonicCentroid() && b.HasHarmonicCentroid())
+	{
+		tmpD.AddHarmonicCentroid();
+		tmpD.UpdateData();
+		tmpD.SetHarmonicCentroid(a.GetHarmonicCentroid()+b.GetHarmonicCentroid());
+	}
+	if (a.HasSpectralTilt() && b.HasSpectralTilt())
+	{
+		tmpD.AddSpectralTilt();
+		tmpD.UpdateData();
+		tmpD.SetSpectralTilt(a.GetSpectralTilt()+b.GetSpectralTilt());
+	}
+	if (a.HasFirstTristimulus() && b.HasFirstTristimulus())
+	{
+		tmpD.AddFirstTristimulus();
+		tmpD.UpdateData();
+		tmpD.SetFirstTristimulus(a.GetFirstTristimulus()+b.GetFirstTristimulus());
+	}
+	if (a.HasSecondTristimulus() && b.HasSecondTristimulus())
+	{
+		tmpD.AddSecondTristimulus();
+		tmpD.UpdateData();
+		tmpD.SetSecondTristimulus(a.GetSecondTristimulus()+b.GetSecondTristimulus());
+	}
+	if (a.HasThirdTristimulus() && b.HasThirdTristimulus())
+	{
+		tmpD.AddThirdTristimulus();
+		tmpD.UpdateData();
+		tmpD.SetThirdTristimulus(a.GetThirdTristimulus()+b.GetThirdTristimulus());
+	}
+	if (a.HasHarmonicDeviation() && b.HasHarmonicDeviation())
+	{
+		tmpD.AddHarmonicDeviation();
+		tmpD.UpdateData();
+		tmpD.SetHarmonicDeviation(a.GetHarmonicDeviation()+b.GetHarmonicDeviation());
+	}
+	if (a.HasOddHarmonics() && b.HasOddHarmonics())
+	{
+		tmpD.AddOddHarmonics();
+		tmpD.UpdateData();
+		tmpD.SetOddHarmonics(a.GetOddHarmonics()+b.GetOddHarmonics());
+	}
+	if (a.HasEvenHarmonics() && b.HasEvenHarmonics())
+	{
+		tmpD.AddEvenHarmonics();
+		tmpD.UpdateData();
+		tmpD.SetEvenHarmonics(a.GetEvenHarmonics()+b.GetEvenHarmonics());
+	}
+	if (a.HasOddToEvenRatio() && b.HasOddToEvenRatio())
+	{
+		tmpD.AddOddToEvenRatio();
+		tmpD.UpdateData();
+		tmpD.SetOddToEvenRatio(a.GetOddToEvenRatio()+b.GetOddToEvenRatio());
+	}
+	
+	return tmpD;
+}
+
+SpectralPeakDescriptors operator / (const SpectralPeakDescriptors& a,TData div) 
+{
+	return a*(1/div);
+}
+
+SpectralPeakDescriptors operator * (TData mult, const SpectralPeakDescriptors& a) 
+{
+	return a*mult;
+}
+
+}//CLAM

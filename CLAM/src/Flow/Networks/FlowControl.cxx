@@ -44,22 +44,27 @@ void FlowControl::AttachToNetwork( Network* network)
 
 void FlowControl::ConfigurePorts(Processing& toConfigure) const
 {
-		Processing::InPortIterator itin; // todo : should be a typdef of PublishedInPorts
-		for (itin = toConfigure.GetInPorts().Begin(); 
-		     itin != toConfigure.GetInPorts().End(); 
-		     itin++)
-			(*itin)->SetParams(mFrameSize);
+	PublishedInPorts::Iterator itin; // todo : should be a typdef of PublishedInPorts
+	for (itin = toConfigure.GetInPorts().Begin(); 
+	     itin != toConfigure.GetInPorts().End(); 
+	     itin++)
+		(*itin)->SetParams(mFrameSize);
 		
-		Processing::OutPortIterator itout; // todo: idem
-		for (itout = toConfigure.GetOutPorts().Begin(); 
-		     itout != toConfigure.GetOutPorts().End(); 
-		     itout++)
-			(*itout)->SetParams(mFrameSize);		
+	PublishedOutPorts::Iterator itout; // todo: idem
+	for (itout = toConfigure.GetOutPorts().Begin(); 
+	     itout != toConfigure.GetOutPorts().End(); 
+	     itout++)
+		(*itout)->SetParams(mFrameSize);		
 }
 
 void FlowControl::ProcessingAddedToNetwork( Processing& added )
 {
 	ConfigurePorts( added );
+	NetworkTopologyChanged();
+}
+
+void FlowControl::ProcessingRemovedFromNetwork( Processing& removed )
+{
 	NetworkTopologyChanged();
 }
 

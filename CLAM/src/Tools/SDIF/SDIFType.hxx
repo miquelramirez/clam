@@ -5,8 +5,6 @@
 #include <string.h>
 #include "DataTypes.hxx"
 
-using namespace CLAM;
-
 namespace SDIF
 {
 
@@ -19,7 +17,7 @@ namespace SDIF
 	friend class File;
 	protected:
 		/** The 4-byte identifier */
-		TByte mData[4];
+		CLAM::TByte mData[4];
 	public:
 		/** Create a new Type
 		* @param str String containing the 4-byte identifier
@@ -71,12 +69,12 @@ namespace SDIF
 		char c;
 	};
 	
-	template <> class GetType<TFloat32>{public:static DataType Get(void){return eFloat32;}};
-	template <> class GetType<TFloat64>{public:static DataType Get(void){return eFloat64;}};
-	template <> class GetType<TInt32>{public:static DataType Get(void){return eInt32;}};
-	template <> class GetType<TInt64>{public:static DataType Get(void){return eInt64;}};
+	template <> class GetType<CLAM::TFloat32>{public:static DataType Get(void){return eFloat32;}};
+	template <> class GetType<CLAM::TFloat64>{public:static DataType Get(void){return eFloat64;}};
+	template <> class GetType<CLAM::TInt32>{public:static DataType Get(void){return eInt32;}};
+	template <> class GetType<CLAM::TInt64>{public:static DataType Get(void){return eInt64;}};
 	template <> class GetType<TUTF8byte>{public:static DataType Get(void){return eUTF8byte;}};
-	template <> class GetType<TByte>{public:static DataType Get(void){return eByte;}};
+	template <> class GetType<CLAM::TByte>{public:static DataType Get(void){return eByte;}};
 
 }
 #endif

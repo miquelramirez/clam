@@ -59,12 +59,9 @@ public:
 	// For subclassing a given DynamicType you must use the following macro, where
 	// the first parameter is the name of the concrete class, the second parameter
 	// the number of attributes it will have, and finally, the name of the base class.
-	DYNAMIC_TYPE_USING_INTERFACE( DummyProcessingConfig, 2, CLAM::ProcessingConfig );
-	// We declare the first dynamic attribute, the name for the Processing object once
-	// it is configured.
-	DYN_ATTRIBUTE( 0, public, std::string, Name );
+	DYNAMIC_TYPE_USING_INTERFACE( DummyProcessingConfig, 1, CLAM::ProcessingConfig );
 	// The second attribute is just a floating-point 'magic' number
-	DYN_ATTRIBUTE( 1, public, CLAM::TData, MagicNumber );
+	DYN_ATTRIBUTE( 0, public, CLAM::TData, MagicNumber );
 
 	// Another rather peculiar thing about DynamicTypes is that you can't write a constructor
 	// for them, as you would do for normal C++ classes. This is because the DynamicType macros
@@ -83,7 +80,6 @@ void DummyProcessingConfig::DefaultInit()
 	// documentation on CLAM manual.
 	AddAll();
 	UpdateData();
-	SetName( "a_dummy_processing" );
 	SetMagicNumber( 0.5 );
 }
 
@@ -212,7 +208,6 @@ bool DummyProcessing::ConcreteConfigure( const CLAM::ProcessingConfig& configObj
 	CopyAsConcreteConfig( mCurrentConfig, configObject );
 
 	// We store the values present in the configuration
-	SetName( mCurrentConfig.GetName() );
 	mMagicNumber = mCurrentConfig.GetMagicNumber();
 
 	return true;
@@ -267,7 +262,6 @@ int main( int argc, char** argv )
 		// We instantiate the configuration object and initialize
 		// its values to whatever we may fancy
 		DummyProcessingConfig cfg;
-		cfg.SetName( "A dummy processing" );
 		cfg.SetMagicNumber( 0.52 );
 
 		// We instantiate the processing

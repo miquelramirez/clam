@@ -37,18 +37,15 @@ friend class SMSSynthesis;
 
 public:
 	
-	DYNAMIC_TYPE_USING_INTERFACE(SMSSynthesisConfig,8,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
+	DYNAMIC_TYPE_USING_INTERFACE(SMSSynthesisConfig,7,ProcessingConfig);
 /** Configuration for children Processing Objects*/
-	DYN_ATTRIBUTE(1,public, SynthSineSpectrumConfig,SynthSineSpectrum);
-	DYN_ATTRIBUTE(2,public, PhaseManagementConfig,PhaseMan);
-	DYN_ATTRIBUTE(3,public, SpectralSynthesisConfig,SpectralSynth);
-
-	DYN_ATTRIBUTE(4,public,OverlapAddConfig,OverlapAddSin);
-	DYN_ATTRIBUTE(5,public,OverlapAddConfig,OverlapAddRes);
-	DYN_ATTRIBUTE(6,public,OverlapAddConfig,OverlapAddGlobal);
-
-	DYN_ATTRIBUTE(7,protected,int,prSamplingRate);
+	DYN_ATTRIBUTE(0,public, SynthSineSpectrumConfig,SynthSineSpectrum);
+	DYN_ATTRIBUTE(1,public, PhaseManagementConfig,PhaseMan);
+	DYN_ATTRIBUTE(2,public, SpectralSynthesisConfig,SpectralSynth);
+	DYN_ATTRIBUTE(3,public,OverlapAddConfig,OverlapAddSin);
+	DYN_ATTRIBUTE(4,public,OverlapAddConfig,OverlapAddRes);
+	DYN_ATTRIBUTE(5,public,OverlapAddConfig,OverlapAddGlobal);
+	DYN_ATTRIBUTE(6,protected,int,prSamplingRate);
 
 
 //Config shortcuts
@@ -76,8 +73,6 @@ public:
 /** Frame Size **/
 	void SetFrameSize(TSize f);
 	TSize GetFrameSize();
-
-	~SMSSynthesisConfig(){};
 
 private:
 

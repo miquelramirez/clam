@@ -44,6 +44,13 @@ void PushFlowControl::ProcessingAddedToNetwork( Processing & added )
 		mGenerators.push_back( &added );
 }
 
+void PushFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
+{
+	NetworkTopologyChanged();
+
+	if (removed.GetInPorts().Size() == 0) // if it's a generator
+		mGenerators.remove( &removed );
+}
 void PushFlowControl::DoProcessings()
 {
 	std::list< Processing* > toDo(mGenerators);
@@ -73,7 +80,7 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 {
 	
 	// for each out port of the processing already executed
-	Processing::OutPortIterator itOutPort;
+	PublishedOutPorts::Iterator itOutPort;
 	
 	for (itOutPort=producer->GetOutPorts().Begin(); 
 	     itOutPort!=producer->GetOutPorts().End(); 
@@ -98,7 +105,7 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 
 bool PushFlowControl::AreAllProducersExecuted( Processing * son, std::list<Processing*> & done)
 {
-	Processing::InPortIterator itInPort;
+	PublishedInPorts::Iterator itInPort;
 	for (itInPort=son->GetInPorts().Begin(); 
 	     itInPort!=son->GetInPorts().End(); 
 	     itInPort++)

@@ -184,6 +184,7 @@ public: // Inner classes. Public for better testing
 		static AbstractProduct* Create() {
 			return new ConcreteProductType;
 		}
+
 	};
 
 private:

@@ -24,14 +24,12 @@
 #include <qtextedit.h>
 #include <qgroupbox.h>  
 #include "ProcessingConfig.hxx"
-#include "Oscillator.hxx"
 
 namespace NetworkGUI
 {
 
 OscillatorConfigPresentation::OscillatorConfigPresentation( QWidget * parent )
-	: Qt_ProcessingConfigPresentation( parent , "config" ),
-	  mConfig(0)
+	: Qt_ProcessingConfigPresentation( parent , "config" )
 {	
 
 	resize( QSize(209, 220).expandedTo(minimumSizeHint()) );
@@ -72,17 +70,14 @@ OscillatorConfigPresentation::~OscillatorConfigPresentation()
 
 void OscillatorConfigPresentation::Show()
 {	
-	if (mConfig)
-		setCaption( "Oscillator Configuration" );
-	else
-		setCaption( "Unconfigured" );
+	setCaption( "Oscillator Configuration" );
 
 	QString str;
-	mFrequencyEdit->setText(str.sprintf("%7.2f", mConfig->GetFrequency()) );
-	mAmplitudeEdit->setText(str.sprintf("%7.2f", mConfig->GetAmplitude()) );
-	mModIndexEdit->setText(str.sprintf("%7.2f", mConfig->GetModIndex()) );
-	mPhaseEdit->setText(str.sprintf("%7.2f", mConfig->GetPhase()) );
-	mSamplingRateEdit->setText(str.sprintf("%7.2f", mConfig->GetSamplingRate()) );
+	mFrequencyEdit->setText(str.sprintf("%7.2f", mConfig.GetFrequency()) );
+	mAmplitudeEdit->setText(str.sprintf("%7.2f", mConfig.GetAmplitude()) );
+	mModIndexEdit->setText(str.sprintf("%7.2f", mConfig.GetModIndex()) );
+	mPhaseEdit->setText(str.sprintf("%7.2f", mConfig.GetPhase()) );
+	mSamplingRateEdit->setText(str.sprintf("%7.2f", mConfig.GetSamplingRate()) );
 
 	show();
 }
@@ -92,21 +87,21 @@ void OscillatorConfigPresentation::Hide()
 	hide();
 }
 
-void OscillatorConfigPresentation::ApplyChangesToConfig()
+void OscillatorConfigPresentation::ConfigureProcessing()
 {
 
-	mConfig->SetFrequency( mFrequencyEdit->text().toFloat());
-	mConfig->SetAmplitude( mAmplitudeEdit->text().toFloat());
-	mConfig->SetModIndex( mModIndexEdit->text().toFloat());
-	mConfig->SetPhase( mPhaseEdit->text().toFloat());
-	mConfig->SetSamplingRate( mSamplingRateEdit->text().toFloat());
+	mConfig.SetFrequency( mFrequencyEdit->text().toFloat());
+	mConfig.SetAmplitude( mAmplitudeEdit->text().toFloat());
+	mConfig.SetModIndex( mModIndexEdit->text().toFloat());
+	mConfig.SetPhase( mPhaseEdit->text().toFloat());
+	mConfig.SetSamplingRate( mSamplingRateEdit->text().toFloat());
 	
-	ApplyConfig.Emit(mConfig);
+	SignalConfigureProcessing.Emit(mConfig);
 }
 
-void OscillatorConfigPresentation::OnNewConfig( CLAM::ProcessingConfig* cfg)
+void OscillatorConfigPresentation::SetConfig( const CLAM::ProcessingConfig & cfg)
 {
-	mConfig = (CLAM::OscillatorConfig*)cfg;
+	mConfig = static_cast<const CLAM::OscillatorConfig&>(cfg);
 }
 
 } // namespace NetworkGUI

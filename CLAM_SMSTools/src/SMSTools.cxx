@@ -224,7 +224,7 @@ namespace CLAMGUI
 		// Initialization of the processing data objects :
 		CLAM::TSize fileSize=myAudioFileIn.Size();
 
-		SetSamplingRate(myAudioFileIn.SampleRate());
+		SetSamplingRate(int(myAudioFileIn.SampleRate()));
 		
 		// Spectral Segment that will actually hold data
 		float duration=fileSize/mSamplingRate;
@@ -331,7 +331,7 @@ namespace CLAMGUI
 	bool SMSTools::DoLoadAnalysis()
 	{
 
-		char* fileName = fl_file_chooser("Choose file to load...", "*.xml|*.sdif", "");
+		char* fileName = fl_file_chooser("Choose file to load...", "*.{xml|sdif}", "");
 
 		if ( !fileName )
 			return false;
@@ -385,15 +385,32 @@ namespace CLAMGUI
 
 	bool SMSTools::DoStoreAnalysis()
 	{
-		char* fileName = fl_file_chooser("Choose file to store on...", "*.xml|*.sdif", "");
+		char* fileName = 0;
+		bool ok = false;
+		
+		do
+		{
+			fileName = fl_file_chooser("Choose file to store in...", "*.{xml|sdif}", "");
 
-		if ( !fileName )
-			return false;
+			if ( !fileName )
+				return false;
+			
+			if (strlen(fileName)>4 && strcmp(fileName+strlen(fileName)-4,".xml")==0)
+			{
+				ok = true;
+			}
+			else if (strlen(fileName)>5 && strcmp(fileName+strlen(fileName)-5,".sdif")==0)
+			{
+				ok = true;
+			}else
+			{
+				fl_alert("filename should end in .xml or .sdif\n");
+			}
+		} while (!ok);
 
 		SetAnalysisOutputFile( fileName );
 
 		mCurrentWaitMessage = CreateWaitMessage("Storing analysis data, please wait");
-
 
 		ExecuteMethodOnThreadKeepingScreenUpToDate( 
 			makeMemberFunctor0( *this, SMSTools, StoreAnalysis ) );
@@ -417,17 +434,14 @@ namespace CLAMGUI
 
 	void SMSTools::StoreAnalysis()
 	{
-
 		GetSerializer().DoSerialization( GetSerializer().Store, 
 						 GetOriginalSegment(), 
 						 GetAnalysisOutputFile().c_str() );	
-
-		
 	}
 
 	void SMSTools::StoreSound(const CLAM::Audio& audio)
 	{
-		char* fileName = fl_file_chooser("Choose file to store on...", "*.wav", "");
+		char* fileName = fl_file_chooser("Choose file to store in...", "*.wav", "");
 
 		if ( !fileName )
 			return;

@@ -1,7 +1,7 @@
 #ifndef _NonSupervisedSystem_hxx_
 #define _NonSupervisedSystem_hxx_
 
-#include "Oscillator.hxx"
+#include "SimpleOscillator.hxx"
 #include "AudioFileOut.hxx"
 #include "AudioFileIn.hxx"
 #include "AudioMultiplier.hxx"
@@ -139,8 +139,8 @@ public: // just for convenience
 	CLAM::AudioManager mAudioManager;
 
 	// processings
-	CLAM::Oscillator mOscillator;
-	CLAM::Oscillator mModulator;
+	CLAM::SimpleOscillator mOscillator;
+	CLAM::SimpleOscillator mModulator;
 	CLAM::AudioFileIn mFileIn;
 	CLAM::AudioFileOut mFileOut;
 	CLAM::AudioMultiplier mMultiplier;

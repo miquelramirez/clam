@@ -108,6 +108,19 @@ inline double Lin(double logData, int scaling=20 )
 	return (pow(double(10),(logData/scaling)) ); 
 }
 
+/** Definition of CLAM_min and CLAM_max. Note1: we are not returning a const reference 
+ *	because in some specializations this is not possible. Note2: we are not using std::max and 
+ *	std::min by default because in Windows these functions are implemented with different names
+ */
+template<class T> inline
+T CLAM_max(const T& x, const T& y)
+	{return (x < y ? y : x); }
+
+template<class T> inline
+T CLAM_min(const T& x, const T& y)
+	{return (x > y ? y : x); }
+
+
 }
 
 #endif // CLAM_Math.hxx

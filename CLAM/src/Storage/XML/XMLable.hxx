@@ -50,15 +50,17 @@ public:
 // Redifinible methods
 public:
 	//* @return A pointer to the XMLName
-	virtual const char * XMLName()=0;
+	virtual const char * XMLName() const =0;
 	//* @return A string with the extracted XML content
-	virtual std::string XMLContent()=0;
+	virtual std::string XMLContent() const =0;
 	//* @TODO Implement this
 	virtual bool XMLContent(std::istream & contentHolder)=0;
 	//* @return Whether the object represents an XML attribute or not
-	virtual bool IsXMLAttribute()=0;
+	virtual bool IsXMLAttribute() const =0;
 	//* @return Whether the object represents an XML element or not
-	virtual bool IsXMLElement()=0;
+	virtual bool IsXMLElement() const =0;
+	//* @return Whether the object represents an XML text or not
+	virtual bool IsXMLText() const =0;
 };
 
 }

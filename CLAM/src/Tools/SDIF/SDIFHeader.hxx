@@ -20,18 +20,18 @@ namespace SDIF
 		//* Identifier indicating the kind of frame */
 		TypeId mType;
 		//* Size in bytes, of the frame, not including the type or size
-		TInt32 mSize;
+		CLAM::TInt32 mSize;
 	public:
 		/** Create a new FrameHeader
 		* @param type Identifier specifying the frame type
 		*/
-		FrameHeader(const TypeId& type,TInt32 size);
+		FrameHeader(const TypeId& type, CLAM::TInt32 size);
 
-		static TInt32 SizeInFile(void)
+		static CLAM::TInt32 SizeInFile(void)
 		{
 			return 
 				sizeof(TypeId)+ // mType
-				sizeof(TInt32); // mSize
+				sizeof(CLAM::TInt32); // mSize
 		}
 	};
 
@@ -43,25 +43,25 @@ namespace SDIF
 	{
 	public:
 		 //* Timestamp
-		TFloat64 mTime;
+		CLAM::TFloat64 mTime;
 		//* Stream ID @see Stream
-		TInt32 mStreamId;
+		CLAM::TInt32 mStreamId;
 		//* Number of data matrixes in the frame. @see Matrix
-		TInt32 mnMatrices;
+		CLAM::TInt32 mnMatrices;
 	public:
 		/** Create a new DataFrameHeader
 		* @param type Identifier specifying the frame type
 		* @param time Timestamp of the frame
 		* @param id Stream ID
 		*/
-		DataFrameHeader(const TypeId& type,TFloat64 time=0.,TInt32 id=0);
+		DataFrameHeader(const TypeId& type,CLAM::TFloat64 time=0.,CLAM::TInt32 id=0);
 
-		static TInt32 SizeInFile(void)
+		static CLAM::TInt32 SizeInFile(void)
 		{
 			return 
-				sizeof(TFloat64)+ // mTime
-				sizeof(TInt32)+   // mStreamId
-				sizeof(TInt32);   // mnMatrices
+				sizeof(CLAM::TFloat64)+ // mTime
+				sizeof(CLAM::TInt32)+   // mStreamId
+				sizeof(CLAM::TInt32);   // mnMatrices
 		}
 	};
 
@@ -76,9 +76,9 @@ namespace SDIF
 		//* Identifier indicating the type of data in the matrix
 		DataType mDataType;
 		//* Number of rows in the matrix
-		TInt32 mnRows;
+		CLAM::TInt32 mnRows;
 		//* Number of columns in the matrix
-		TInt32 mnColumns;
+		CLAM::TInt32 mnColumns;
 
 	public:
 		/** Create a new MatrixHeader
@@ -88,13 +88,13 @@ namespace SDIF
 		* @param nColumns Number of rows in the matrix
 		*/
 		
-		static TInt32 SizeInFile(void)
+		static CLAM::TInt32 SizeInFile(void)
 		{
 			return 
 				sizeof(TypeId)+
-				sizeof(TInt32)+ // mDataType
-				sizeof(TInt32)+ // mnRows
-				sizeof(TInt32); // mnColumns
+				sizeof(CLAM::TInt32)+ // mDataType
+				sizeof(CLAM::TInt32)+ // mnRows
+				sizeof(CLAM::TInt32); // mnColumns
 		}
 		
 		MatrixHeader()
@@ -104,7 +104,7 @@ namespace SDIF
 		MatrixHeader(
 			const TypeId& type,
 			DataType dataType,
-			TInt32 nRows, TInt32 nColumns);
+			CLAM::TInt32 nRows, CLAM::TInt32 nColumns);
 	};
 
 }

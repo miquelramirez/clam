@@ -17,16 +17,7 @@ namespace CLAM
 class MyProcessingWithPortsAndControlsConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (MyProcessingWithPortsAndControlsConfig, 1, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name );
-protected:
-	void DefaultInit(void)
-	{
-		AddAll();
-		UpdateData();
-		SetName( "unnamed" );
-	}
-
+	DYNAMIC_TYPE_USING_INTERFACE (MyProcessingWithPortsAndControlsConfig, 0, ProcessingConfig);
 };
 
 class MyProcessingWithPortsAndControls : public Processing
@@ -53,8 +44,6 @@ public:
 
 	bool Do(const Audio & in, Audio & out);
 	bool Do();
-
-	void StoreOn(Storage &s) {};	
 
 };
 

@@ -34,12 +34,11 @@ namespace CLAM
 		: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE( LPCConfig, 2, ProcessingConfig );
-		DYN_ATTRIBUTE( 0, public, std::string, Name  );
+		DYNAMIC_TYPE_USING_INTERFACE( LPCConfig, 1, ProcessingConfig );
 		/**
 		 *  The order of the polynomial used to fit the analyzed signal spectrum
 		 */
-		DYN_ATTRIBUTE( 1, public, unsigned,       Order );
+		DYN_ATTRIBUTE( 0, public, unsigned, Order );
 	protected:
 		void DefaultInit();
 	};

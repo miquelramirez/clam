@@ -11,7 +11,6 @@ using namespace CLAM;
 
 void SynthSineSpectrumConfig::DefaultInit()
 {
-	AddName();
 	AddSpectrumSize();
 	AddSamplingRate();
 	AddZeroPadding();

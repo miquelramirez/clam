@@ -31,10 +31,7 @@ namespace CLAM {
 	class TopLevelProcessingConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (TopLevelProcessingConfig, 1, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-	protected:
-		void DefaultInit(void);
+		DYNAMIC_TYPE_USING_INTERFACE (TopLevelProcessingConfig, 0, ProcessingConfig);
 	};
 
 

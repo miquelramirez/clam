@@ -70,8 +70,6 @@ public:
 
 	bool Do(Audio& in);
 
-	void StoreOn(Storage &s) {};
-
 };
 
 

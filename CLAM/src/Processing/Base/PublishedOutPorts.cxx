@@ -1,20 +1,15 @@
 #include "PublishedOutPorts.hxx"
-#include "Processing.hxx"
 #include "OutPort.hxx"
 
 namespace CLAM
 {
 
-PublishedOutPorts::PublishedOutPorts(Processing* parent) :
-		mParent(*parent)
-{}
-
 OutPort& PublishedOutPorts::GetByNumber(int index) const
 {
 	CLAM_ASSERT(index>=0, "index for Port must be >=0");
-	Processing::OutPortIterator it;
+	ConstIterator it;
 	int i;
-	for (it=mParent.FirstOutput(), i=0; it!=mParent.LastOutput(); it++, i++)
+	for (it=mOutPorts.begin(), i=0; it!=mOutPorts.end(); it++, i++)
 	{
 		if (i==index) return *(*it);
 	}
@@ -23,10 +18,10 @@ OutPort& PublishedOutPorts::GetByNumber(int index) const
 	return *(OutPort*)NULL; // just to get rid of warnings
 }
 	
-OutPort& PublishedOutPorts::Get(std::string name) const
+OutPort& PublishedOutPorts::Get(const std::string & name) const
 {
-	Processing::OutPortIterator it;
-	for (it=mParent.FirstOutput(); it!=mParent.LastOutput(); it++)
+	ConstIterator it;
+	for (it=mOutPorts.begin(); it!=mOutPorts.end(); it++)
 	{
 		std::string actualName( (*it)->GetName() );
 		if (name == (*it)->GetName()) return *(*it);
@@ -37,29 +32,41 @@ OutPort& PublishedOutPorts::Get(std::string name) const
 }
 int PublishedOutPorts::Size() const
 {
-	Processing::OutPortIterator it;
-	int count=0;
-	for (it=mParent.FirstOutput(); it!=mParent.LastOutput(); it++)
-		++count;
-	return count;
+	return mOutPorts.size();
+}
+
+bool PublishedOutPorts::AreReadyForWriting()
+{
+	Iterator out;
+	for ( out=mOutPorts.begin(); out!=mOutPorts.end(); out++)
+		if (!(*out)->IsReadyForWriting()) return false;
+	
+	return true;
 }
 
 PublishedOutPorts::Iterator  PublishedOutPorts::Begin()
 {
-	return mParent.FirstOutput();
+	return mOutPorts.begin();
 }
 
 PublishedOutPorts::Iterator PublishedOutPorts::End()
 {
-	return mParent.LastOutput();
+	return mOutPorts.end();
 }
-bool PublishedOutPorts::AreReadyForWriting()
+
+PublishedOutPorts::ConstIterator  PublishedOutPorts::Begin() const
 {
-	Iterator out;
-	for ( out=Begin(); out!=End(); out++)
-		if (!(*out)->IsReadyForWriting()) return false;
-	
-	return true;
+	return mOutPorts.begin();
+}
+
+PublishedOutPorts::ConstIterator PublishedOutPorts::End() const
+{
+	return mOutPorts.end();
+}
+
+void PublishedOutPorts::Publish( OutPort * out )
+{
+	mOutPorts.push_back( out );
 }
 
 }// namespace CLAM

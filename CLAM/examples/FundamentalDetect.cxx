@@ -109,14 +109,12 @@ int main(int argc, char* argv[])
 		// Processing object configuration
 
 		FFTConfig fconfig;
-		fconfig.SetName("FFT");
 		fconfig.SetAudioSize(Size);
 		FFT_rfftw fft(fconfig);
 
 		// PeakDetection
 
 		PeakDetectConfig  spconfig;
-		spconfig.SetName("Peak");
 		spconfig.SetNumBands(Size/2+1);
 		PeakDetect peakproc(spconfig);
 
@@ -126,7 +124,6 @@ int main(int argc, char* argv[])
 
 		AudioFileConfig  afconfig;
 		afconfig.SetFilename("test.wav");
-		afconfig.SetName("AFConfig");
 		afconfig.SetFiletype(EAudioFileType::eWave);
 		AudioFileIn  audioIn(afconfig);
 

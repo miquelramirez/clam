@@ -82,7 +82,7 @@ private: \
 	} \
 protected: \
 	/** Store all Dynamic Attributes */ \
-	virtual void StoreDynAttributes(CLAM::Storage & s) { \
+	virtual void StoreDynAttributes(CLAM::Storage & s) const { \
 		StoreChainedAttr((AttributePosition<0>*)NULL,s); \
 	} \
 	/** Load all Dynamic Attributes */ \
@@ -144,7 +144,7 @@ private: \
 	}\
 	/** Undefined link on the method chain (Store) */ \
 	template <unsigned int NAttrib> \
-	void StoreChainedAttr (AttributePosition<NAttrib>*a,CLAM::Storage & s) { \
+	void StoreChainedAttr (AttributePosition<NAttrib>*a,CLAM::Storage & s) const { \
 		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
 		CheckAttribute ((InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
@@ -171,7 +171,7 @@ private: \
 	void InformChainedAttr (AttributePosition<N>*) { \
 	} \
 	/** Method chain terminator */ \
-	void StoreChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) { \
+	void StoreChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) const { \
 	} \
 	/** Method chain terminator */ \
 	void LoadChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) { \
@@ -299,7 +299,7 @@ private: \
 		Inform##NAME(); \
 		InformChainedAttr((AttributePosition<(N)+1>*)NULL); \
 	} \
-	void StoreChainedAttr(AttributePosition<N>*, CLAM::Storage & s) { \
+	void StoreChainedAttr(AttributePosition<N>*, CLAM::Storage & s) const { \
 		Store##NAME(s); \
 		StoreChainedAttr((AttributePosition<(N)+1>*)NULL,s); \
 	} \
@@ -312,7 +312,7 @@ private: \
 #define DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
 	__COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
 protected: \
-	void Store##NAME(CLAM::Storage & s) { \
+	void Store##NAME(CLAM::Storage & s) const { \
 		if (Has##NAME()) { \
 			StoreAttribute((CLAM::TypeInfo<TYPE >::StorableAsLeaf*)NULL, s, Get##NAME(), #NAME); \
 		} \
@@ -332,7 +332,7 @@ ACCESS: \
 #define DYN_CONTAINER_ATTRIBUTE(N,ACCESS,TYPE,NAME,ENAME) \
 	__COMMON_DYN_ATTRIBUTE(N,ACCESS,TYPE,NAME) \
 protected: \
-	void Store##NAME(CLAM::Storage & s) { \
+	void Store##NAME(CLAM::Storage & s) const { \
 		if (Has##NAME()) { \
 			StoreIterableAttribute(s, Get##NAME(), #NAME, #ENAME); \
 		} \

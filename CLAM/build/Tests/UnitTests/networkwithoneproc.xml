@@ -1,6 +1,5 @@
 <network id="FooNetwork" >
        <processing id="oscillator" type="Oscillator" >
-                <Name></Name>
 		<Frequency>440</Frequency>
 		<Amplitude>1</Amplitude>
 		<ModIndex>1</ModIndex>

@@ -50,23 +50,19 @@ Qt_ProcessingConfigPresentation::Qt_ProcessingConfigPresentation( QWidget *paren
 	mOkButton->setText( tr( "Ok" ) );
 	mCancelButton->setText( tr( "Cancel" ) );
 
-	resize( QSize(209, 275).expandedTo(minimumSizeHint()) );
+	resize( QSize(400, 275).expandedTo(minimumSizeHint()) );
 
-	mOkButtonIsPressed.Wrap( this, &Qt_ProcessingConfigPresentation::Ok );
-	mCancelButtonIsPressed.Wrap( this, &Qt_ProcessingConfigPresentation::Cancel );
+	SlotOk.Wrap( this, &Qt_ProcessingConfigPresentation::Ok );
+	SlotCancel.Wrap( this, &Qt_ProcessingConfigPresentation::Cancel );
 
-	mOkButton->Pressed.Connect( mOkButtonIsPressed );
-	mCancelButton->Pressed.Connect( mCancelButtonIsPressed );
+	mOkButton->Pressed.Connect( SlotOk );
+	mCancelButton->Pressed.Connect( SlotCancel );
 
 }
 	
-Qt_ProcessingConfigPresentation::~Qt_ProcessingConfigPresentation()
-{
-}
-
 void Qt_ProcessingConfigPresentation::Ok( bool )
 {
-	ApplyChangesToConfig();
+	ConfigureProcessing();
 	close();
 }
 

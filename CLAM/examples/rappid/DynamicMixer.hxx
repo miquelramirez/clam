@@ -102,8 +102,6 @@ namespace CLAM
 		bool Do(void);
 
 		bool Do(const Array<Audio*>& inp, Audio& out);
-
-		void StoreOn(Storage &s) {};
 	};
 	
 }

@@ -27,7 +27,7 @@
 #include "AudioMultiplier.hxx"
 #include "AutoPanner.hxx"
 #include "FFT_rfftw.hxx"
-#include "Storage.hxx"
+#include "XMLStorage.hxx"
 #include "BasicFlowControl.hxx"
 
 namespace CLAMTest {
@@ -110,7 +110,6 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		std::string result(
 			"<network id=\"FooNetworkWithOneProcessing\">"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
-			"<Name></Name>"
 			"<Frequency>440</Frequency>"
 			"<Amplitude>1</Amplitude>"
 			"<ModIndex>1</ModIndex>"
@@ -150,14 +149,10 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		std::string result(
 			"<network id=\"FooNetworkWithMoreThanOneProcessing\">"
 			"<processing id=\"fftw\" type=\"FFT_rfftw\">"
-			"<Name></Name>"
 			"<AudioSize>0</AudioSize>"
 			"</processing>"
-			"<processing id=\"multiplier\" type=\"AudioMultiplier\">"
-			"<Name></Name>"
-			"</processing>"
+			"<processing id=\"multiplier\" type=\"AudioMultiplier\"/>"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
-			"<Name></Name>"
 			"<Frequency>440</Frequency>"
 			"<Amplitude>1</Amplitude>"
 			"<ModIndex>1</ModIndex>"
@@ -201,11 +196,8 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		
 		std::string result(
 			"<network id=\"FooNetworkWithPortsConnection\">"
-			"<processing id=\"multiplier\" type=\"AudioMultiplier\">"
-			"<Name></Name>"
-			"</processing>"
+			"<processing id=\"multiplier\" type=\"AudioMultiplier\"/>"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
-			"<Name></Name>"
 			"<Frequency>440</Frequency>"
 			"<Amplitude>1</Amplitude>"
 			"<ModIndex>1</ModIndex>"
@@ -242,7 +234,7 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("panner").GetOutControls().Get("Left Control").IsConnectedTo( 
 					      foo.GetProcessing("oscillator").GetInControls().Get("ModIndex")));
 		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("panner").GetOutControls().Get("Right Control").IsConnectedTo( 
-					      foo.GetProcessing("oscillator").GetInControls().Get("Phase")));
+					      foo.GetProcessing("oscillator").GetInControls().Get("Amplitude")));
 
 	}
 
@@ -257,7 +249,6 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		std::string result(
 			"<network id=\"FooNetworkWithControlsConnection\">"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
-			"<Name></Name>"
 			"<Frequency>440</Frequency>"
 			"<Amplitude>1</Amplitude>"
 			"<ModIndex>1</ModIndex>"
@@ -265,7 +256,6 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 			"<SamplingRate>44100</SamplingRate>"
 			"</processing>"
 			"<processing id=\"panner\" type=\"AutoPanner\">"
-			"<Name>AutoPanner</Name>"
 			"<Frequency>440</Frequency>"
 			"<SamplingRate>44100</SamplingRate>"
 			"<Phase>0</Phase>"

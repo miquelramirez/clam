@@ -27,18 +27,14 @@
 
 namespace CLAM
 {
+	typedef BinaryAudioOp< Add<TData> > AudioAdder;
+	typedef BinaryAudioOpConfig         AudioAdderConfig;
 
-		
-
-		template<>
-		inline const char* BinaryAudioOp< Add<TData> >::GetClassName() const
-		{
-				return "AudioAdder";
-		}
-		
-		typedef BinaryAudioOp< Add<TData> > AudioAdder;
-
-		typedef BinaryAudioOpConfig         AudioAdderConfig;
+	template<>
+	inline const char* BinaryAudioOp< Add<TData> >::GetClassName() const
+	{
+		return "AudioAdder";
+	}
 }
 
 #endif // AudioAdder.hxx

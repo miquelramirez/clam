@@ -30,6 +30,7 @@
 #include <cstring>
 #include <string>
 
+
 namespace CLAM {
 
 	const Processing::iterator 
@@ -37,11 +38,7 @@ namespace CLAM {
 
 	Processing::Processing() 
 		: mpParent(0),
-		mInControls(this),
-		mOutControls(this),
-		  mInPorts(this),
-		mOutPorts(this),
-		  mPreconfigureExecuted( false )
+		mPreconfigureExecuted( false )
 	{
 		mState = Unconfigured;
 	}
@@ -50,36 +47,10 @@ namespace CLAM {
 	{
 		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
 		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
-		std::string config_name;
-		std::string old_name = mName;
 		mStatus = "";
 
-		// As we have no acces to the actual dynamic configuration object
-		// but via its abstract interface, we have no way to do apriori an
-		// ExistAttr check, so we have to catch the possible exceptions.
-		if (c.HasName())
-			config_name = c.GetName();
-
-		bool name_change_requested = config_name != ""     && 
-		                             config_name != mName;
-		if (name_change_requested)
-			mName = config_name;
-
-
-		if (!mpParent) {
-			mpParent =  &(TopLevelProcessing::GetInstance());
-
-			if (mName == "")
-				mName = mpParent->InsertAndGiveName(*this);
-			else
-				mpParent->Insert(*this);
-		}
-		else if (name_change_requested) 
-			// if Processing name is duplicated it is changed silently to something
-			// acceptable
-			if (!mpParent->NameChanged(*this,old_name)) 
-				mName = mpParent->InsertAndGiveName( *this );
-
+		if (!mpParent) 
+			TopLevelProcessing::GetInstance().Insert(*this);
 		mPreconfigureExecuted = true;
 
 	}
@@ -129,23 +100,9 @@ namespace CLAM {
 
 	void Processing::ConfigureOrphan(const ProcessingConfig &c)
 	{
-		std::string config_name;
-		std::string old_name = mName;
 
 		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
 		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
-
-		// As we have no acces to the actual dynamic configuration object
-		// but via its abstract interface, we have no way to do apriori an
-		// ExistAttr check, so we have to catch the possible exceptions.
-		CLAM_ASSERT(c.HasName(), "There is no name in a Processing Configuration");
-
-		config_name = c.GetName();
-
-		bool name_change_requested = config_name != ""     && 
-		                             config_name != mName;
-		if (name_change_requested)
-			mName = config_name;
 
 		if (ConcreteConfigure(c))
 			mState=Ready;
@@ -161,106 +118,94 @@ namespace CLAM {
 		
 	}
 
-	void Processing::Start(void) throw ( ErrProcessingObj )
+	void Processing::Start(void) 
 	{
-		CLAM_ASSERT(mState==Ready,AddStatus("Start(): Object not ready"));
 		
+		CLAM_ASSERT(mState==Ready,AddStatus("Start(): Object not ready"));
 		try {
-			if (!ConcreteStart())
-				mState=Unconfigured;
+			if (ConcreteStart())
+				mState = Running;
 		}
 		catch (Err &e) {
-			//ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
-			//new_e.Embed(e);
-			//CLAM_ASSERT( false, AddStatus(new_e.what()) );
-			
-			mState=Unconfigured;
-
-			AddStatus( "Start(): Object failed to start properly.\n" );
-			AddStatus( e.what() );
-			throw e; // Propagate exception
+			mStatus += "Start(): Object failed to start properly.\n";
+			mStatus += e.what();
 		}
-
-		mState = Running;
-
 	}
 	
 	void Processing::Stop(void)
 	{
 		CLAM_ASSERT( mState==Running ||	mState==Disabled, "Stop(): Object not running." );
 
-		mState=Ready;
-		ConcreteStop();
+		try {
+			if(ConcreteStop())
+				mState = Ready;
+		}
+		catch (Err &e) {
+			mStatus += "Stop(): Object failed to stop properly.\n";
+			mStatus += e.what();
+		}
 	}
 
 	void Processing::PublishOutPort(OutPort* out) 
 	{
-		mPublishedOutPorts.push_back(out);
+		mPublishedOutPorts.Publish(out);
 	}
 	void Processing::PublishInPort(InPort* in)
 	{
-		mPublishedInPorts.push_back(in);
+		mPublishedInPorts.Publish(in);
 	}
 
 	void Processing::PublishOutControl(OutControl* out) 
 	{
-		mPublishedOutControls.push_back(out);
+		mPublishedOutControls.Publish(out);
 	}
 	void Processing::PublishInControl(InControl* in)
 	{
-		mPublishedInControls.push_back(in);
+		mPublishedInControls.Publish(in);
 	}
-	void Processing::LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const
-	{ //.at(unsigned) can throw an "out_of_range" exception.
-#ifdef HAVE_STANDARD_VECTOR_AT
-		mPublishedOutControls.at(outId)->AddLink(inProc->GetInControl(inId));
-#else
-		mPublishedOutControls[outId]->AddLink(inProc->GetInControl(inId));
-#endif
-	}
-	int Processing::DoControl(unsigned id, TControlData val) const
-	{//.at(unsigned) can throw an "out_of_range" exception.	
-#ifdef HAVE_STANDARD_VECTOR_AT
-		return mPublishedInControls.at(id)->DoControl(val);
-#else
-		return mPublishedInControls[id]->DoControl(val);
-#endif
-	}
-	int Processing::SendControl(unsigned id, TControlData val) const
-	{//.at(unsigned) can throw an "out_of_range" exception.
-#ifdef HAVE_STANDARD_VECTOR_AT
-		return mPublishedOutControls.at(id)->SendControl(val);
-#else
-		return mPublishedOutControls[id]->SendControl(val);
-#endif
-	}
+	
+//	void Processing::LinkOutWithInControl(unsigned outId, Processing* inProc, unsigned inId) const
+//	{ //.at(unsigned) can throw an "out_of_range" exception.
+//#ifdef HAVE_STANDARD_VECTOR_AT
+//		mPublishedOutControls.at(outId)->AddLink(inProc->GetInControl(inId));
+//#else
+//		mPublishedOutControls[outId]->AddLink(inProc->GetInControl(inId));
+//#endif
+//	}
+//	int Processing::DoControl(unsigned id, TControlData val) const
+//	{//.at(unsigned) can throw an "out_of_range" exception.	
+//#ifdef HAVE_STANDARD_VECTOR_AT
+//		return mPublishedInControls.at(id)->DoControl(val);
+//#else
+//		return mPublishedInControls[id]->DoControl(val);
+//#endif
+//	}
+//	int Processing::SendControl(unsigned id, TControlData val) const
+//	{//.at(unsigned) can throw an "out_of_range" exception.
+//#ifdef HAVE_STANDARD_VECTOR_AT
+//		return mPublishedOutControls.at(id)->SendControl(val);
+//#else
+//		return mPublishedOutControls[id]->SendControl(val);
+//#endif
+//	}
 
-	InControl* Processing::GetInControl(unsigned inId) const
-	{//.at(unsigned) can throw an "out_of_range" exception.
-#ifdef HAVE_STANDARD_VECTOR_AT
-		return mPublishedInControls.at(inId);
-#else
-		return mPublishedInControls[inId];
-#endif
-	}
+//	InControl* Processing::GetInControl(unsigned inId) const
+//	{//.at(unsigned) can throw an "out_of_range" exception.
+//#ifdef HAVE_STANDARD_VECTOR_AT
+//		return mPublishedInControls.at(inId);
+//#else
+//		return mPublishedInControls[inId];
+//#endif
+//	}
 
-	OutControl* Processing::GetOutControl(unsigned inId) const
-	{//.at(unsigned) can throw an "out_of_range" exception.
-#ifdef HAVE_STANDARD_VECTOR_AT
-		return mPublishedOutControls.at(inId);
-#else
-		return mPublishedOutControls[inId];
-#endif
-	}
-
-
-	std::string Processing::GetFullName() const 
-	{
-		if (mpParent && mpParent != this)
-			return mpParent->GetFullName()+"."+mName;
-		else
-			return mName;
-	}
+//	OutControl* Processing::GetOutControl(unsigned inId) const
+//	{//.at(unsigned) can throw an "out_of_range" exception.
+//#ifdef HAVE_STANDARD_VECTOR_AT
+//		return mPublishedOutControls.at(inId);
+//#else
+//		return mPublishedOutControls[inId];
+//#endif
+//	}
 
 	void Processing::SetParent(Processing *o)
 	{
@@ -281,10 +226,7 @@ namespace CLAM {
 
 		mpParent=p;
 
-		if (GetConfig().GetName() == "")
-			mName = mpParent->InsertAndGiveName(*this);
-		else
-			mpParent->Insert(*this);
+		mpParent->Insert(*this);
 	}
 
 	void Processing::SetOrphan()
@@ -296,9 +238,6 @@ namespace CLAM {
 			mpParent->Remove(*this);
 
 		mpParent=0;
-
-		if (GetConfig().GetName() == "")
-			mName = "";
 	}
 
 	const char* Processing::AddStatus(const std::string& a)
@@ -332,3 +271,4 @@ namespace CLAM {
 		return ret;
 	}
 };//namespace CLAM
+

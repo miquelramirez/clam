@@ -82,7 +82,6 @@ private:
 		controlSender.GetOutControls().Get("Right Control").AddLink(&mReceiverRight);		
 
 		CLAM::AutoPannerConfig cfg;
-		cfg.SetName("autopanner config");
 		cfg.SetFrequency( freq );
 		cfg.SetSamplingRate( samplingRate );
 		cfg.SetPhase( phase );
@@ -114,7 +113,6 @@ private:
 		controlSender.GetOutControls().Get("Right Control").AddLink(&mReceiverRight);		
 
 		CLAM::AutoPannerConfig cfg;
-		cfg.SetName("autopanner config");
 		cfg.SetFrequency( freq );
 		cfg.SetSamplingRate( samplingRate );
 		cfg.SetPhase( phase );
@@ -148,7 +146,6 @@ private:
 		controlSender.GetOutControls().Get("Right Control").AddLink(&mReceiverRight);		
 
 		CLAM::AutoPannerConfig cfg;
-		cfg.SetName("autopanner config");
 		cfg.SetFrequency( freq );
 		cfg.SetSamplingRate( samplingRate );
 		cfg.SetPhase( phase );
@@ -178,7 +175,6 @@ private:
 		controlSender.GetOutControls().Get("Right Control").AddLink(&mReceiverRight);		
 
 		CLAM::AutoPannerConfig cfg;
-		cfg.SetName("autopanner config");
 		cfg.SetFrequency( freq );
 		cfg.SetSamplingRate( samplingRate );
 		cfg.SetPhase( phase );
@@ -211,7 +207,6 @@ private:
 		controlSender.GetOutControls().Get("Right Control").AddLink(&mReceiverRight);		
 
 		CLAM::AutoPannerConfig cfg;
-		cfg.SetName("autopanner config");
 		cfg.SetFrequency( freq );
 		cfg.SetSamplingRate( samplingRate );
 		cfg.SetPhase( phase );

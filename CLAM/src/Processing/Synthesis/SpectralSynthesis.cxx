@@ -45,7 +45,6 @@ void SpectralSynthesisConfig::DefaultValues()
 	SetSamplingRate(44100);
 
 	/** Default analysis window size corresponds to 512*/
-	GetAnalWindowGenerator().SetName("AnalysisWG");
 	SetAnalWindowSize(513);
 	SetAnalWindowType(EWindowType::eBlackmanHarris92);
 	GetAnalWindowGenerator().SetInvert(true);
@@ -54,7 +53,6 @@ void SpectralSynthesisConfig::DefaultValues()
 	SetHopSize((GetAnalWindowSize()-1)/2);
 
 	/** Synthesis Window Type is set to triangular*/
-	GetSynthWindowGenerator().SetName("SynthesisWG");
 	GetSynthWindowGenerator().SetType(EWindowType::eTriangular);
 	GetSynthWindowGenerator().SetNormalize(EWindowNormalize::eNone);
 	GetSynthWindowGenerator().SetSize(GetHopSize()*2+1);
@@ -207,7 +205,6 @@ bool SpectralSynthesis::ConfigureChildren()
 
 	//instantiate IFFT
 	IFFTConfig IFFTCFG;
-	IFFTCFG.SetName("ifft_name");
 	IFFTCFG.SetAudioSize(mConfig.GetIFFT().GetAudioSize());
 	if(!mPO_IFFT.Configure(IFFTCFG))
 		return false;		

@@ -51,8 +51,7 @@ void CSaltoFileIO::ReadSaltoDataFile(const char* fileName,Array<CSaltoSegData> &
 {
   DataFileIO  *mpFileIO = NULL;
   mpFileIO = new DataFileIO(fileName,eInput);
-  if (mpFileIO == NULL) throw
-    Err("CSaltoFileIO::ReadSaltoDataFile cant construct FileIO");
+  CLAM_ASSERT(mpFileIO, "CSaltoFileIO::ReadSaltoDataFile cant construct FileIO");
     
   mpFileIO->Open();
   mpFileIO->Read(saltoData);
@@ -66,8 +65,7 @@ void CSaltoFileIO::WriteSaltoDataFile(const char* fileName,Array<CSaltoSegData> 
   DataFileIO  *mpFileIO = NULL;
   
   mpFileIO = new DataFileIO(fileName,eOutput);
-  if (mpFileIO == NULL) throw
-    Err("CSaltoFileIO::WriteSaltoDataFile cant construct FileIO");
+  CLAM_ASSERT (mpFileIO,"CSaltoFileIO::WriteSaltoDataFile cant construct FileIO");
   mpFileIO->Open();
   
   mpFileIO->Write(saltoData);
@@ -82,8 +80,7 @@ void CSaltoFileIO::ReadStatTmplDataFile(const char* fileName,Array<CSaltoStatTmp
 {
   DataFileIO  *mpFileIO = NULL;
   mpFileIO = new DataFileIO(fileName,eInput);
-  if (mpFileIO == NULL) throw
-    Err("CSaltoFileIO::ReadStatTmplDataFile cant construct FileIO");
+  CLAM_ASSERT (mpFileIO,"CSaltoFileIO::ReadSaltoDataFile cant construct FileIO");
     
   mpFileIO->Open();
   mpFileIO->Read(statData);
@@ -99,8 +96,7 @@ void CSaltoFileIO::WriteStatTmplDataFile(const char* fileName,Array<CSaltoStatTm
 {
   DataFileIO  *mpFileIO = NULL;
   mpFileIO = new DataFileIO(fileName,eOutput);
-  if (mpFileIO == NULL) throw
-    Err("CSaltoFileIO::WriteStatTmplDataFile cant construct FileIO");
+  CLAM_ASSERT(mpFileIO, "CSaltoFileIO::WriteStatTmplDataFile cant construct FileIO");
   mpFileIO->Open();
   mpFileIO->Write(statData);
   mpFileIO->Close();
@@ -112,9 +108,7 @@ void CSaltoFileIO::WriteStatTmplDataFileToText(const char* fileName,Array<CSalto
 {
   int i,j,nPeaks,nTempl;
   mFout.open(fileName,std::ios::out);  
-  if (!mFout.is_open())
-      throw Err(
-        "CSaltoFileIO::WriteStatTmplDataFileToText could not be opened");
+  CLAM_ASSERT(mFout.is_open(), "CSaltoFileIO::WriteStatTmplDataFileToText could not be opened");
   
   nTempl=statData.Size();
   mFout<<nTempl<<std::endl;
@@ -142,8 +136,8 @@ void CSaltoFileIO::ReadStatTmplDataFileFromText(const char* fileName,Array<CSalt
 	printf("GODVER %s\n\n",fileName);
 	
   mFout.open(fileName,std::ios::in);  
-  if (!mFout.is_open())
-      throw Err("CSaltoFileIO::ReadStatTmplDataFileFromText File could not be opened");
+  CLAM_ASSERT(mFout.is_open(), 
+      "CSaltoFileIO::ReadStatTmplDataFileFromText File could not be opened");
   
   SpectralPeak tempPeak;
   tempPeak.AddAll();
@@ -176,8 +170,7 @@ void CSaltoFileIO::WriteSaltoDataFileToText(const char* fileName,Array<CSaltoSeg
 {
   int i,nSegments;
   mFout.open(fileName,std::ios::out);  
-  if (!mFout.is_open())
-      throw Err(
+  CLAM_ASSERT(mFout.is_open())
         "CSaltoFileIO::WriteSaltoDataFileToText could not be opened");
 
   nSegments = saltoData.Size();
@@ -206,8 +199,7 @@ void CSaltoFileIO::ReadSaltoDataFileFromText(const char* fileName,Array<CSaltoSe
   int i,iVal,nSegments;
   double dVal;
   mFout.open(fileName,std::ios::in);  
-  if (!mFout.is_open())
-      throw Err(
+  CLAM_ASSERT(mFout.is_open(),
         "CSaltoFileIO::ReadStatTmplDataFileFromText File could not be opened");
 
   mFout>>nSegments;

@@ -81,7 +81,7 @@ public:
 	 * @see Storage
 	 * @todo TODO: This method can throw and IllegalValue exception
 	 */
-	virtual void StoreOn (Storage & storage);
+	virtual void StoreOn (Storage & storage) const;
 
 	/*
 	 * Loads component's subitems from the given Storage

@@ -69,22 +69,26 @@ public:
 // Accessors
 public:
 	//* @return A pointer to the XMLName
-	const char * XMLName() 
+	const char * XMLName() const
 	{
 		return myXMLName;
 	}
 	//* @return Whether the object represents an XML element or not
-	bool IsXMLElement() 
+	bool IsXMLElement() const
 	{
 		return myXMLName && amIXMLElement;
 	}
 	//* @return Whether the object represents an XML attribute or not
-	bool IsXMLAttribute() 
+	bool IsXMLAttribute() const
 	{
 		return myXMLName && !amIXMLElement;
 	}
+	bool IsXMLText() const
+	{
+		return myXMLName==0;
+	}
 	//* @return A string with the XML content
-	virtual std::string XMLContent()=0;
+	virtual std::string XMLContent() const=0;
 // Testing
 public:
 	//* Check the internal status for a class instance is valid

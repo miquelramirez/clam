@@ -7,28 +7,29 @@
 
 int main( int argc, char** argv )
 {
-	CLAM::XMLStorage s;
 	CLAM::Segment segment;
 
 	CLAMVM::FileChooserDialog dlg;
 
 	dlg.SetTitle( "Please select an XML analysis file" );
 	dlg.AddFileType( "*.xml" );
-	
+
 	if ( !dlg.Show() )
 	{
 		std::cerr << "No analuysis file was selected!" << std::endl;
 		exit(0);
 	}
 
-	
+
 	std::cout<<"Loading Analysis File. Please Wait."<<"\n";
-	s.Restore(segment, dlg.GetSelectedFilename() );
+	CLAM::XMLStorage::Restore(segment, dlg.GetSelectedFilename() );
 	std::cout<<"Analysis File Loaded Successfully"<<"\n";
 
 	std::cout<<"Computing Descriptors. Please Wait."<<"\n";
-				
+
 	CLAM::SegmentDescriptors segmentDescriptors;
+	segmentDescriptors.AddAll();
+	segmentDescriptors.UpdateData();
 
 	CLAM::SpectralDescriptors specProto;
 	specProto.AddAll();
@@ -70,10 +71,10 @@ int main( int argc, char** argv )
 	
 
 	std::cout<<"Storing Results into xml file. Please Wait."<<"\n";
-	s.Dump(segmentDescriptors,"segmentDescriptors",outFilename);
-		
+	CLAM::XMLStorage::Dump(segmentDescriptors,"segmentDescriptors",outFilename);
+
 	std::cout<<"Program finished Successfully"<<"\n";
 	return 0;
 }
 
-  
+

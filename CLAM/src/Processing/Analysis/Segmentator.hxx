@@ -84,9 +84,6 @@ public:
 	bool Do();
 	bool Do(Segment& originalSegment,SegmentDescriptors& descriptors); //for the time being only inplace processing is enabled
 
-	void StoreOn(Storage &s) {};
-
-		
 protected:
 	SegmentatorConfig  mConfig;
 private:

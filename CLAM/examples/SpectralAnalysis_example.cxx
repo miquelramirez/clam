@@ -118,9 +118,9 @@ int main( int argc, char** argv )
 		inputBuffer.SetSize( 256 );
 		inputBuffer.SetSampleRate( fileLoader.SampleRate() );
 
-		(*fileLoader.FirstOutput())->Attach( inputBuffer );
-		(*analyzer.FirstInput())->Attach( inputBuffer );
-		(*analyzer.FirstOutput())->Attach( resultingAnalysis );
+		(*fileLoader.GetOutPorts().Begin())->Attach( inputBuffer );
+		(*analyzer.GetInPorts().Begin())->Attach( inputBuffer );
+		(*analyzer.GetOutPorts().Begin())->Attach( resultingAnalysis );
 
 		fileLoader.Start();
 		analyzer.Start();

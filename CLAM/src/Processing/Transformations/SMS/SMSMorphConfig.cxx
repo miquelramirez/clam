@@ -2,10 +2,6 @@
 
 namespace CLAM
 {
-	SMSMorphConfig::~SMSMorphConfig()
-	{
-	}
-
 	void SMSMorphConfig::DefaultInit()
 	{
 		AddAll();

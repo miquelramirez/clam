@@ -2,10 +2,6 @@
 
 namespace CLAM
 {
-	SMSTimeStretchConfig::~SMSTimeStretchConfig()
-	{
-	}
-
 	void SMSTimeStretchConfig::DefaultInit()
 	{
 		AddAll();

@@ -19,11 +19,14 @@
  *
  */
 
-#ifndef _PROCESSINGCONTROLLER_
-#define _PROCESSINGCONTROLLER_
+#ifndef __ProcessingController_hxx__
+#define __ProcessingController_hxx__
 
 #include "ModelController.hxx"
-#include "ProcessingModel.hxx"
+#include "Slotv1.hxx"
+
+#include <string>
+#include <list>
 
 namespace CLAM
 {
@@ -34,39 +37,53 @@ namespace CLAM
 namespace CLAMVM
 {
 
-class InPortAdapter;
-class OutPortAdapter;
-class InControlAdapter;
-class OutControlAdapter;
-
-class ProcessingController : public ModelController, public ProcessingModel
+class ProcessingController : public ModelController 
 {
+public:
+	typedef std::list<std::string> NamesList;
+		
 private:
 	CLAM::Processing* mObserved;
-	CLAM::ProcessingConfig* mConfig;
-	std::list<InPortAdapter*> mInPortAdapters;
-	std::list<OutPortAdapter*> mOutPortAdapters;
-	std::list<InControlAdapter*> mInControlAdapters;
-	std::list<OutControlAdapter*> mOutControlAdapters;
-	typedef std::list<OutPortAdapter*>::iterator OutPortAdapterIterator;
-	typedef std::list<InPortAdapter*>::iterator InPortAdapterIterator;
-	typedef std::list<OutControlAdapter*>::iterator OutControlAdapterIterator;
-	typedef std::list<InControlAdapter*>::iterator InControlAdapterIterator;
 
 protected:
-	void OnUpdateConfigFromGUI( CLAM::ProcessingConfig* );
+	
+	NamesList mInPortNames;
+	NamesList mOutPortNames;
+	NamesList mInControlNames;
+	NamesList mOutControlNames;
+	
+	void ConfigureProcessing( const CLAM::ProcessingConfig & );
 public:
 	ProcessingController();
-	virtual ~ProcessingController();
-	virtual const char* GetClassName() const
+	std::string GetObservedClassName();
+	const CLAM::ProcessingConfig & GetObservedConfig();
+	const char* GetClassName() const
 	{
 		return "ProcessingController";
 	}
-	virtual bool Publish();
-	virtual bool BindTo( CLAM::Processing& obj );
-	virtual bool Update();
+	bool Update()
+	{
+		return true;
+	}
+	bool Publish();
+	bool BindTo( CLAM::Processing& obj );
+
+	NamesList::iterator BeginInPortNames();
+	NamesList::iterator EndInPortNames();
+	
+	NamesList::iterator BeginOutPortNames();
+	NamesList::iterator EndOutPortNames();
+	
+	NamesList::iterator BeginInControlNames();
+	NamesList::iterator EndInControlNames();
+	
+	NamesList::iterator BeginOutControlNames();
+	NamesList::iterator EndOutControlNames();
+	
+	SigSlot::Slotv1< const CLAM::ProcessingConfig & > SlotConfigureProcessing;
+
 };
 
 } // namespace CLAMVM
 
-#endif // __PROCESSINGCONTROLLER__
+#endif // __ProcessingController_hxx__ 

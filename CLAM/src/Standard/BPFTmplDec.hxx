@@ -369,7 +369,7 @@ protected:
 		TData &errorEstimate) const;
 	void CreateSplineTable();
 	TY BPFSplineInt(const TX& x) const;
-	void StoreOn(Storage & storage);
+	void StoreOn(Storage & storage) const;
 	void LoadFrom(Storage & storage);
 
 	};

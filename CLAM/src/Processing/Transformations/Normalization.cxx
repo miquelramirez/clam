@@ -30,7 +30,6 @@ using namespace CLAM;
 
 void NormalizationConfig::DefaultInit()
 {
-	AddName();
 	AddType();
 	AddFrameSize();
 	UpdateData();
@@ -75,12 +74,12 @@ bool Normalization::Do(Audio &in){
 	TIndex p=0, m=0;
 	DataArray energy;
 	TData totEnergy=0;
-	TData scalFactor;
+	TData scalFactor = 0;
 
 	do
 	{
 		in.GetAudioChunk(p, p+mFrameSize, chunk);
-		TSize size = chunk.GetSize();
+		/* unused: TSize size = chunk.GetSize(); */
 		DataArray moments(4);
 		moments.SetSize(4);
 		Stats myStats(&chunk.GetBuffer());
@@ -105,14 +104,14 @@ bool Normalization::Do(Audio &in){
 	if (mType==1) scalFactor=sqrt(max/mFrameSize);
 
 	//normalizes according to the average energy
-	if (mType==2)
+	else if (mType==2)
 	{
 		scalFactor=sqrt(totEnergy/in.GetSize());		
 	}
 
 	//normalizes according to the threshold under which lies percent% of
 	//the energy values that are not silence
-	if (mType==3)
+	else if (mType==3)
 	{
 		//find the threshold under which lies percent% of the energy values
 		//that are not silence

@@ -708,34 +708,20 @@ namespace CLAM
 	}
 
 	template <class TX,class TY>
-	void BPFTmpl<TX,TY>::StoreOn(Storage & storage)
+	void BPFTmpl<TX,TY>::StoreOn(Storage & storage) const
 	{
-#		ifdef CLAM_USE_XML
-		// This condition is not needed because storing an XML adapter
-		// onto a non XML storage has no effect but it enhances performance.
-		if (dynamic_cast < XMLStorage* > (&storage))
-		{
-			XMLComponentAdapter adapterInt(meInterpolation,"Interpolation",true);
-			storage.Store(&adapterInt);
-			XMLComponentAdapter adapter(mArray, "Points", true);
-			storage.Store(&adapter);
-		}
-#		endif//CLAM_USE_XML
+		XMLComponentAdapter adapterInt(meInterpolation,"Interpolation",true);
+		storage.Store(adapterInt);
+		XMLComponentAdapter adapter(mArray, "Points", true);
+		storage.Store(adapter);
 	}
 	template <class TX,class TY>
 	void BPFTmpl<TX,TY>::LoadFrom(Storage & storage)
 	{
-#		ifdef CLAM_USE_XML
-		// This condition is not needed because storing an XML adapter
-		// onto a non XML storage has no effect but it enhances performance.
-		if (dynamic_cast < XMLStorage* > (&storage))
-		{
-			XMLComponentAdapter adapterInt(meInterpolation,"Interpolation",true);
-			storage.Load(&adapterInt);
-			XMLComponentAdapter adapter(mArray, "Points", true);
-			storage.Load(&adapter);
-		}
-#		endif//CLAM_USE_XML
+		XMLComponentAdapter adapterInt(meInterpolation,"Interpolation",true);
+		storage.Load(adapterInt);
+		XMLComponentAdapter adapter(mArray, "Points", true);
+		storage.Load(adapter);
 	}
 
 } // namespace CLAM

@@ -27,21 +27,6 @@
 
 namespace CLAM {
 
-	/* The  Configuration object has at least to have a name */
-
-	void FDCombFilterConfig::DefaultInit()
-	{
-		AddAll();
-		UpdateData();
-		DefaultValues();
-	}
-
-	
-	void FDCombFilterConfig::DefaultValues()
-	{
-		
-	}
-
 
 	/* Processing  object Method  implementations */
 

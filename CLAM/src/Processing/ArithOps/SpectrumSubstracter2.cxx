@@ -28,15 +28,6 @@
 
 namespace CLAM {
 
-	void SpecSubstracter2Config::DefaultInit()
-	{
-		if (!HasName()) {
-			AddName();
-			UpdateData();
-		}
-	}
-
-
 	SpectrumSubstracter2::SpectrumSubstracter2()
 		: mSize(0),
 		  mIn1("Input 1",this,1),

@@ -100,7 +100,7 @@ public:
 };
 
 class NotSupportedType : public Component {
-	void StoreOn(Storage &) { }
+	void StoreOn(Storage &) const { }
 	void LoadFrom(Storage &) { }
 	const char * GetClassName() const { return "NotSupportedType"; }
 };

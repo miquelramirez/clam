@@ -35,13 +35,15 @@ namespace CLAM
 	{
 	}
 
-	void ConnectionDefinitionAdapter::StoreOn (Storage & store)	
+	void ConnectionDefinitionAdapter::StoreOn (Storage & store) const
 	{
-		XMLAdapter<Text> outAdapter( mOut, "out", true);
-		XMLAdapter<Text> inAdapter( mIn, "in", true);
+		Text out(mOut);
+		Text in(mIn);
+		XMLAdapter<Text> outAdapter( out, "out", true);
+		XMLAdapter<Text> inAdapter( in, "in", true);
 
-		store.Store(&outAdapter);
-		store.Store(&inAdapter);
+		store.Store(outAdapter);
+		store.Store(inAdapter);
 	}
 
 	void ConnectionDefinitionAdapter::LoadFrom (Storage & store) 
@@ -49,7 +51,7 @@ namespace CLAM
 		XMLAdapter<Text> outAdapter( mOut, "out", true);
 		XMLAdapter<Text> inAdapter( mIn, "in", true);	
 		
-		store.Load(&outAdapter);
-		store.Load(&inAdapter);
+		store.Load(outAdapter);
+		store.Load(inAdapter);
 	}
 } // namespace CLAM

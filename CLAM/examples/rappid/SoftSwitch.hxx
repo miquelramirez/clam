@@ -138,7 +138,6 @@ namespace CLAM
 
 		bool Do(const Audio& inp, Audio& out);
 
-		void StoreOn(Storage &s) {};
 	};
 	
 }

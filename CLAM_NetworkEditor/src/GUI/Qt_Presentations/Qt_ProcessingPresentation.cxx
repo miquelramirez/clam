@@ -20,14 +20,10 @@
  */
 
 #include "Qt_ProcessingPresentation.hxx"
-#include "InPortAdapter.hxx"
-#include "OutPortAdapter.hxx"
 #include "Qt_InPortPresentation.hxx"
 #include "Qt_OutPortPresentation.hxx"
 #include "Qt_ProcessingConfigPresentation.hxx"
 
-#include "InControlAdapter.hxx"
-#include "OutControlAdapter.hxx"
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
 #include <qtooltip.h> 
@@ -58,23 +54,19 @@ Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwor
 	move(position);
 
 	// port slots
-	SetInPortClicked.Wrap( this, &Qt_ProcessingPresentation::OnNewInPortClicked);
-	SetOutPortClicked.Wrap( this, &Qt_ProcessingPresentation::OnNewOutPortClicked);
-	SetOutPortAfterClickInPort.Wrap(this, &Qt_ProcessingPresentation::OnNewOutPortAfterClickInPort);
-	SetInPortAfterClickOutPort.Wrap(this, &Qt_ProcessingPresentation::OnNewInPortAfterClickOutPort);
+	SlotSetInPortClicked.Wrap( this, &Qt_ProcessingPresentation::SetInPortClicked);
+	SlotSetOutPortClicked.Wrap( this, &Qt_ProcessingPresentation::SetOutPortClicked);
+	SlotSetOutPortAfterClickInPort.Wrap(this, &Qt_ProcessingPresentation::SetOutPortAfterClickInPort);
+	SlotSetInPortAfterClickOutPort.Wrap(this, &Qt_ProcessingPresentation::SetInPortAfterClickOutPort);
 
 	// control slots
-	SetInControlClicked.Wrap( this, &Qt_ProcessingPresentation::OnNewInControlClicked);
-	SetOutControlClicked.Wrap( this, &Qt_ProcessingPresentation::OnNewOutControlClicked);
-	SetOutControlAfterClickInControl.Wrap(this, &Qt_ProcessingPresentation::OnNewOutControlAfterClickInControl);
-	SetInControlAfterClickOutControl.Wrap(this, &Qt_ProcessingPresentation::OnNewInControlAfterClickOutControl);
+	SlotSetInControlClicked.Wrap( this, &Qt_ProcessingPresentation::SetInControlClicked);
+	SlotSetOutControlClicked.Wrap( this, &Qt_ProcessingPresentation::SetOutControlClicked);
+	SlotSetOutControlAfterClickInControl.Wrap(this, &Qt_ProcessingPresentation::SetOutControlAfterClickInControl);
+	SlotSetInControlAfterClickOutControl.Wrap(this, &Qt_ProcessingPresentation::SetInControlAfterClickOutControl);
 }
 
-Qt_ProcessingPresentation::~Qt_ProcessingPresentation()
-{
-}
-
-void Qt_ProcessingPresentation::OnNewInPortAfterClickOutPort( const QPoint & p)
+void Qt_ProcessingPresentation::SetInPortAfterClickOutPort( const QPoint & p)
 {
 	if (!geometry().contains(p))
 		return;
@@ -83,16 +75,16 @@ void Qt_ProcessingPresentation::OnNewInPortAfterClickOutPort( const QPoint & p)
 	if (real.x() >= 10) // must be minor to be an inport
 		return;
 
-	InPortPresentationIterator itin;
-	for ( itin=mInPortPresentations.begin(); itin!=mInPortPresentations.end(); itin++)
+	ConnectionPointPresentationsList::iterator it;
+	for ( it=mInPortPresentations.begin(); it!=mInPortPresentations.end(); it++)
 	{
-		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*itin);
+		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*it);
 		if (in->geometry().contains(real))
-			in->AcquireInPortClicked.Emit(in);
+			in->SignalAcquireInPortClicked.Emit(in);
 	}
 }
 
-void Qt_ProcessingPresentation::OnNewOutPortAfterClickInPort( const QPoint & p)
+void Qt_ProcessingPresentation::SetOutPortAfterClickInPort( const QPoint & p)
 {
 	if (!geometry().contains(p))
 		return;
@@ -100,27 +92,27 @@ void Qt_ProcessingPresentation::OnNewOutPortAfterClickInPort( const QPoint & p)
 	if (real.x() <width()- 10) // must be major to be an outport
 		return;
 	
-	OutPortPresentationIterator itout;
-	for ( itout=mOutPortPresentations.begin(); itout!=mOutPortPresentations.end(); itout++)
+	ConnectionPointPresentationsList::iterator it;
+	for ( it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end(); it++)
 	{
-		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*itout);
+		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*it);
 		if (out->geometry().contains(real))
-			out->AcquireOutPortClicked.Emit(out);
+			out->SignalAcquireOutPortClicked.Emit(out);
 	}
 }	
 
-void Qt_ProcessingPresentation::OnNewInPortClicked( Qt_InPortPresentation * inport)
+void Qt_ProcessingPresentation::SetInPortClicked( Qt_InPortPresentation * inport)
 {
-	AcquireInPortClicked.Emit( inport );
+	SignalAcquireInPortClicked.Emit( inport );
 }
 
-void Qt_ProcessingPresentation::OnNewOutPortClicked( Qt_OutPortPresentation * outport)
+void Qt_ProcessingPresentation::SetOutPortClicked( Qt_OutPortPresentation * outport)
 {
-	AcquireOutPortClicked.Emit( outport );
+	SignalAcquireOutPortClicked.Emit( outport );
 }
 
 
-void Qt_ProcessingPresentation::OnNewInControlAfterClickOutControl( const QPoint & p)
+void Qt_ProcessingPresentation::SetInControlAfterClickOutControl( const QPoint & p)
 {
 	if (!geometry().contains(p))
 		return;
@@ -129,16 +121,16 @@ void Qt_ProcessingPresentation::OnNewInControlAfterClickOutControl( const QPoint
 	if (real.y() >= 5) // must be minor to be an inport
 		return;
 
-	InControlPresentationIterator itin;
-	for ( itin=mInControlPresentations.begin(); itin!=mInControlPresentations.end(); itin++)
+	ConnectionPointPresentationsList::iterator it;
+	for ( it=mInControlPresentations.begin(); it!=mInControlPresentations.end(); it++)
 	{
-		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itin);
+		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*it);
 		if (in->geometry().contains(real))
-			in->AcquireInControlClicked.Emit(in);
+			in->SignalAcquireInControlClicked.Emit(in);
 	}
 }
 
-void Qt_ProcessingPresentation::OnNewOutControlAfterClickInControl( const QPoint & p)
+void Qt_ProcessingPresentation::SetOutControlAfterClickInControl( const QPoint & p)
 {
 	if (!geometry().contains(p))
 		return;
@@ -146,107 +138,100 @@ void Qt_ProcessingPresentation::OnNewOutControlAfterClickInControl( const QPoint
 	if (real.y() <height()- 5) // must be major to be an outport
 		return;
 	
-	OutControlPresentationIterator itout;
-	for ( itout=mOutControlPresentations.begin(); itout!=mOutControlPresentations.end(); itout++)
+	ConnectionPointPresentationsList::iterator it;
+	for ( it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end(); it++)
 	{
-		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itout);
+		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*it);
 		if (out->geometry().contains(real))
-			out->AcquireOutControlClicked.Emit(out);
+			out->SignalAcquireOutControlClicked.Emit(out);
 	}
 }	
 
-void Qt_ProcessingPresentation::OnNewInControlClicked( Qt_InControlPresentation * incontrol)
+void Qt_ProcessingPresentation::SetInControlClicked( Qt_InControlPresentation * incontrol)
 {
-	AcquireInControlClicked.Emit( incontrol );
+	SignalAcquireInControlClicked.Emit( incontrol );
 }
 
-void Qt_ProcessingPresentation::OnNewOutControlClicked( Qt_OutControlPresentation * outcontrol)
+void Qt_ProcessingPresentation::SetOutControlClicked( Qt_OutControlPresentation * outcontrol)
 {
-	AcquireOutControlClicked.Emit( outcontrol );
+	SignalAcquireOutControlClicked.Emit( outcontrol );
 }
 
-
-
-
-void Qt_ProcessingPresentation::OnNewObservedClassName(const std::string& name)
+void Qt_ProcessingPresentation::SetObservedClassName(const std::string& name)
 {
 	mObservedClassName = name;
 	QToolTip::add( this, QString( mObservedClassName.c_str() ));
 }
 
-void Qt_ProcessingPresentation::OnNewInPort( CLAMVM::InPortAdapter* adapter )
+void Qt_ProcessingPresentation::SetInPort( const std::string & name )
 {
 	Qt_InPortPresentation* presentation = 
 		new Qt_InPortPresentation( mInPortPresentations.size(),this );
 
-	presentation->AttachTo(*adapter);
-	presentation->AcquireInPortClicked.Connect( SetInPortClicked );
-	adapter->Publish();
+	presentation->SetName(name);
+	presentation->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
 	mInPortPresentations.push_back(presentation);
 	int heightPorts = mInPortPresentations.size()*7+14;
 	if (height() < heightPorts)
 	{
 		setFixedSize(width(),heightPorts);
-		updateOutControlsPosition();
+		UpdateOutControlsPosition();
 	}
 }
 
-void Qt_ProcessingPresentation::OnNewOutPort( CLAMVM::OutPortAdapter* adapter )
+void Qt_ProcessingPresentation::SetOutPort( const std::string & name )
 {
 	Qt_OutPortPresentation* presentation = 
 		new Qt_OutPortPresentation( mOutPortPresentations.size(), this );
 
-	presentation->AttachTo(*adapter);
-	presentation->AcquireOutPortClicked.Connect( SetOutPortClicked );
-	adapter->Publish();
+	presentation->SetName(name);
+	presentation->SignalAcquireOutPortClicked.Connect( SlotSetOutPortClicked );
 	mOutPortPresentations.push_back(presentation);
 	int heightPorts = mOutPortPresentations.size()*7+14;
 	if (height() < heightPorts)
 	{
 		setFixedSize(width(),heightPorts);
-		updateOutControlsPosition();
+		UpdateOutControlsPosition();
 	}
 }
 
 
 
-void Qt_ProcessingPresentation::OnNewInControl( CLAMVM::InControlAdapter* adapter )
+void Qt_ProcessingPresentation::SetInControl( const std::string & name )
 {
 	Qt_InControlPresentation* presentation = 
 		new Qt_InControlPresentation( mInControlPresentations.size(),this );
 
-	presentation->AttachTo(*adapter);
-	presentation->AcquireInControlClicked.Connect( SetInControlClicked );
-	adapter->Publish();
+	presentation->SetName(name);
+	presentation->SignalAcquireInControlClicked.Connect( SlotSetInControlClicked );
 	mInControlPresentations.push_back(presentation);
 	int widthControls = mInControlPresentations.size()*13+24;
 	if (width() < widthControls)
 	{
 		setFixedSize(widthControls, height());
-		updateOutPortsPosition();
+		UpdateOutPortsPosition();
 	}
 }
 
-void Qt_ProcessingPresentation::OnNewOutControl( CLAMVM::OutControlAdapter* adapter )
+void Qt_ProcessingPresentation::SetOutControl(  const std::string & name )
 {
 	Qt_OutControlPresentation* presentation = 
 		new Qt_OutControlPresentation( mOutControlPresentations.size(), this );
 
-	presentation->AttachTo(*adapter);
-	presentation->AcquireOutControlClicked.Connect( SetOutControlClicked );
-	adapter->Publish();
+	presentation->SetName(name);
+	presentation->SignalAcquireOutControlClicked.Connect( SlotSetOutControlClicked );
 	mOutControlPresentations.push_back(presentation);
 	int widthControls = mOutControlPresentations.size()*13+24;
 	if (width() < widthControls)
 	{
 		setFixedSize(widthControls, height());
-		updateOutPortsPosition();
+		UpdateOutPortsPosition();
 	}
 }
 
-void Qt_ProcessingPresentation::updateOutPortsPosition()
+void Qt_ProcessingPresentation::UpdateOutPortsPosition()
 {
-	OutPortPresentationIterator it;
+	ConnectionPointPresentationsList::iterator it;
 	for(it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end(); it++)
 	{
 		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*it);
@@ -254,9 +239,9 @@ void Qt_ProcessingPresentation::updateOutPortsPosition()
 	}
 }
 
-void Qt_ProcessingPresentation::updateOutControlsPosition()
+void Qt_ProcessingPresentation::UpdateOutControlsPosition()
 {
-	OutControlPresentationIterator it;
+	ConnectionPointPresentationsList::iterator it;
 	for(it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end(); it++)
 	{
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*it);
@@ -267,44 +252,32 @@ void Qt_ProcessingPresentation::updateOutControlsPosition()
 
 void Qt_ProcessingPresentation::Show()
 {
+	Hide();
 
-	InPortPresentationIterator itInPort;
-	for ( itInPort=mInPortPresentations.begin(); itInPort!=mInPortPresentations.end(); itInPort++)
-		(*itInPort)->Show();
-
-	OutPortPresentationIterator itOutPort;
-	for ( itOutPort=mOutPortPresentations.begin(); itOutPort!=mOutPortPresentations.end(); itOutPort++)
-		(*itOutPort)->Show();
-
-	InControlPresentationIterator itInControl;
-	for ( itInControl=mInControlPresentations.begin(); itInControl!=mInControlPresentations.end(); itInControl++)
-		(*itInControl)->Show();
-
-	OutControlPresentationIterator itOutControl;
-	for ( itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end(); itOutControl++)
-		(*itOutControl)->Show();
+	ConnectionPointPresentationsList::iterator it;
+	for ( it=mInPortPresentations.begin(); it!=mInPortPresentations.end(); it++)
+		(*it)->Show();
+	for ( it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end(); it++)
+		(*it)->Show();
+	for ( it=mInControlPresentations.begin(); it!=mInControlPresentations.end(); it++)
+		(*it)->Show();
+	for ( it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end(); it++)
+		(*it)->Show();
 	show();
 
 }
 
 void Qt_ProcessingPresentation::Hide()
 {
-	InPortPresentationIterator itInPort;
-	for ( itInPort=mInPortPresentations.begin(); itInPort!=mInPortPresentations.end(); itInPort++)
-		(*itInPort)->Hide();
-
-	OutPortPresentationIterator itOutPort;
-	for ( itOutPort=mOutPortPresentations.begin(); itOutPort!=mOutPortPresentations.end(); itOutPort++)
-		(*itOutPort)->Hide();
-
-	InControlPresentationIterator itInControl;
-	for ( itInControl=mInControlPresentations.begin(); itInControl!=mInControlPresentations.end(); itInControl++)
-		(*itInControl)->Hide();
-
-	OutControlPresentationIterator itOutControl;
-	for ( itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end(); itOutControl++)
-		(*itOutControl)->Hide();
-
+	ConnectionPointPresentationsList::iterator it;
+	for ( it=mInPortPresentations.begin(); it!=mInPortPresentations.end(); it++)
+		(*it)->Hide();
+	for ( it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end(); it++)
+		(*it)->Hide();
+	for ( it=mInControlPresentations.begin(); it!=mInControlPresentations.end(); it++)
+		(*it)->Hide();
+	for ( it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end(); it++)
+		(*it)->Hide();
 	hide();
 
 	if(mConfig)
@@ -321,28 +294,25 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 
 
 	QRegion reg(12,7,width()-24, height()-14);
-	InPortPresentationIterator itInPort;
-	for (itInPort=mInPortPresentations.begin(); itInPort!=mInPortPresentations.end();itInPort++)
+	ConnectionPointPresentationsList::iterator it;
+	for (it=mInPortPresentations.begin(); it!=mInPortPresentations.end();it++)
 	{
-		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*itInPort);
+		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*it);
 		reg += in->geometry();
 	}
-	OutPortPresentationIterator itOutPort;
-	for (itOutPort=mOutPortPresentations.begin(); itOutPort!=mOutPortPresentations.end();itOutPort++)
+	for (it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end();it++)
 	{
-		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*itOutPort);
+		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*it);
 		reg += out->geometry();
 	}
-	InControlPresentationIterator itInControl;
-	for (itInControl=mInControlPresentations.begin(); itInControl!=mInControlPresentations.end();itInControl++)
+	for (it=mInControlPresentations.begin(); it!=mInControlPresentations.end();it++)
 	{
-		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl)
-;		reg += in->GetRegion();
+		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*it);
+		reg += in->GetRegion();
 	}
-	OutControlPresentationIterator itOutControl;
-	for (itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end();itOutControl++)
+	for (it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end();it++)
 	{
-		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itOutControl);
+		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*it);
 		reg += out->GetRegion();
 	}
 
@@ -391,37 +361,34 @@ void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 	move(difference);
 	
 	// emit movement to update connections
-	InPortPresentationIterator itInPort;
-	for (itInPort=mInPortPresentations.begin(); itInPort!=mInPortPresentations.end();itInPort++)
+	ConnectionPointPresentationsList::iterator it;
+	for (it=mInPortPresentations.begin(); it!=mInPortPresentations.end();it++)
 	{
-		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*itInPort);
+		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*it);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->AcquirePos.Emit( difference.x()+ posX, difference.y()+posY);
+		in->SignalAcquirePos.Emit( difference.x()+ posX, difference.y()+posY);
 	}
-	OutPortPresentationIterator itOutPort;
-	for (itOutPort=mOutPortPresentations.begin(); itOutPort!=mOutPortPresentations.end();itOutPort++)
+	for (it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end();it++)
 	{	
-		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*itOutPort);
+		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*it);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->AcquirePos.Emit( difference.x() + posX , difference.y()+ posY );
+		out->SignalAcquirePos.Emit( difference.x() + posX , difference.y()+ posY );
 	}
-	InControlPresentationIterator itInControl;
-	for (itInControl=mInControlPresentations.begin(); itInControl!=mInControlPresentations.end();itInControl++)
+	for (it=mInControlPresentations.begin(); it!=mInControlPresentations.end();it++)
 	{
-		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl);
+		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*it);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->AcquirePos.Emit( difference.x()+ posX +5  , difference.y()+posY -2 );
+		in->SignalAcquirePos.Emit( difference.x()+ posX +5  , difference.y()+posY -2 );
 	}
-	OutControlPresentationIterator itOutControl;
-	for (itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end();itOutControl++)
+	for (it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end();it++)
 	{	
-		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itOutControl);
+		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*it);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->AcquirePos.Emit( difference.x() + posX - 4, difference.y()+ posY +2 );
+		out->SignalAcquirePos.Emit( difference.x() + posX - 4, difference.y()+ posY +2 );
 	}
 	QWidget * parent = parentWidget();
 	parent->repaint();
@@ -429,37 +396,34 @@ void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 
 void Qt_ProcessingPresentation::EmitPositionOfChildren()
 {		
-	InPortPresentationIterator itInPort;
-	for (itInPort=mInPortPresentations.begin(); itInPort!=mInPortPresentations.end();itInPort++)
+	ConnectionPointPresentationsList::iterator it;
+	for (it=mInPortPresentations.begin(); it!=mInPortPresentations.end();it++)
 	{
-		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*itInPort);
+		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*it);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->AcquirePos.Emit( pos().x() + posX, pos().y() + posY);
+		in->SignalAcquirePos.Emit( pos().x() + posX, pos().y() + posY);
 	}
-	OutPortPresentationIterator itOutPort;
-	for (itOutPort=mOutPortPresentations.begin(); itOutPort!=mOutPortPresentations.end();itOutPort++)
+	for (it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end();it++)
 	{	
-		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*itOutPort);
+		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*it);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->AcquirePos.Emit( pos().x() + posX , pos().y() + posY );
+		out->SignalAcquirePos.Emit( pos().x() + posX , pos().y() + posY );
 	}
-	InControlPresentationIterator itInControl;
-	for (itInControl=mInControlPresentations.begin(); itInControl!=mInControlPresentations.end();itInControl++)
+	for (it=mInControlPresentations.begin(); it!=mInControlPresentations.end();it++)
 	{
-		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl);
+		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*it);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->AcquirePos.Emit( pos().x() + posX + 5, pos().y() + posY - 2 );
+		in->SignalAcquirePos.Emit( pos().x() + posX + 5, pos().y() + posY - 2 );
 	}
-	OutControlPresentationIterator itOutControl;
-	for (itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end();itOutControl++)
+	for (it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end();it++)
 	{	
-		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itOutControl);
+		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*it);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->AcquirePos.Emit( pos().x() + posX - 4 , pos().y() + posY +2);
+		out->SignalAcquirePos.Emit( pos().x() + posX - 4 , pos().y() + posY +2);
 	}
 }
 
@@ -469,7 +433,7 @@ void Qt_ProcessingPresentation::keyPressEvent( QKeyEvent *k )
 	{
         case 'x': 
 
-		RemoveProcessing.Emit( this );
+		SignalRemoveProcessing.Emit( this );
 		Hide();
 		mDown = false;
 		releaseKeyboard();

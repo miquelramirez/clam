@@ -42,18 +42,27 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	addColumn( "Processing" );
 	setRootIsDecorated( TRUE );
 	QListViewItem * gen = new QListViewItem( this,"Generators" );
-	ProcessingItem * osc = new ProcessingItem( gen, "Oscillator");
+	ProcessingItem * osc = new ProcessingItem( gen, "SimpleOscillator");
+	ProcessingItem * osc2 = new ProcessingItem( gen, "Oscillator");
+	ProcessingItem * adsr = new ProcessingItem( gen, "ADSR");
+
 	QListViewItem * binops = new QListViewItem( this,"Binary Operations" );
 	ProcessingItem * multiplier = new ProcessingItem( binops, "AudioMultiplier" );
 	ProcessingItem * adder = new ProcessingItem( binops, "AudioAdder" );
-//	ProcessingItem * mixer_2 = new ProcessingItem( binops, "Mixer 2" );
-	QListViewItem * analysis = new QListViewItem( this,"Analysis" );
-	ProcessingItem * fft_rfftw = new ProcessingItem( analysis, "FFT_rfftw" );
+	
+	QListViewItem * controls = new QListViewItem( this, "Controls" );
+	ProcessingItem * autopanner = new ProcessingItem( controls, "AutoPanner" );	
+	ProcessingItem * flagcontrol = new ProcessingItem( controls, "FlagControl" );	
+	ProcessingItem * random = new ProcessingItem( controls, "Random" );	
+	ProcessingItem * oneoverf = new ProcessingItem( controls, "OneOverF" );	
+	
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	ProcessingItem * audiofilein = new ProcessingItem( inputoutput, "AudioFileIn" );
 	ProcessingItem * audiofileout = new ProcessingItem( inputoutput, "AudioFileOut" );
 	ProcessingItem * audioout = new ProcessingItem( inputoutput, "AudioOut" );
 
+	QListViewItem * externals = new QListViewItem( this, "Externals" );
+	ProcessingItem * ladspaloader = new ProcessingItem( externals, "LadspaLoader" );
 	show();
 	header()->hide();
 
@@ -62,10 +71,10 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	connect( this, SIGNAL( pressed(QListViewItem *) ),
 		 this, SLOT( PressProcessing(QListViewItem *) ));
 
-	ProcessingCreated.Wrap( this, &ProcessingTree::IncreaseNumProc );
+	SlotProcessingCreated.Wrap( this, &ProcessingTree::IncreaseNumProc );
 
-	AddNewProcessing.Connect( network.AddNewProcessing );	
-	network.ProcessingCreated.Connect( ProcessingCreated );
+	SignalAddNewProcessing.Connect( network.SlotAddProcessing );	
+	network.SignalProcessingCreated.Connect( SlotProcessingCreated );
 }
 
 ProcessingTree::~ProcessingTree()
@@ -93,7 +102,7 @@ void ProcessingTree::CreateProcessing(QListViewItem * item)
 
 	ProcessingFactory & factory = ProcessingFactory::GetInstance();
 
-	AddNewProcessing.Emit( name.str(), factory.Create(className) );
+	SignalAddNewProcessing.Emit( name.str(), factory.Create(className) );
 	
 }
 

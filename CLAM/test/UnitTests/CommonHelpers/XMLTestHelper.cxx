@@ -10,60 +10,57 @@ namespace CLAMTest
 
 
 /*! Uniformise an XML string.
- *
- * Strips spaces between attribut in Element.
- * \warning Attribute values must be double-quoted (att="value").
- * No support for embedded DTD declaration
- */
+* Strips spaces between attribut in Element.
+* \warning Attribute values must be double-quoted (att="value").
+* No support for embedded DTD declaration
+*/
+
 class XmlUniformiser
 {
 public:
-  XmlUniformiser( const std::string &xml );
-  std::string stripped();
+	XmlUniformiser( const std::string &xml );
+	std::string stripped();
 
 private:
-  void skipSpaces();
-  bool isValidIndex();
-  void skipNext( int count =1 );
-  void copyNext( int count =1 );
-  void skipProcessed();
-  void skipComment();
-  void copyElement();
-  void copyElementContent();
-  bool isSpace( char c );
-  bool isSpace();
-  bool startsWith( std::string expected );
-  void copyElementName();
-  void copyElementAttributes();
-  void copyAttributeName();
-  bool isEndOfAttributeName();
-  void copyAttributeValue();
-  void copyUntilDoubleQuote();
+	void skipSpaces();
+	bool isValidIndex();
+	void skipNext( int count =1 );
+	void copyNext( int count =1 );
+	void skipProcessed();
+	void skipComment();
+	void copyElement();
+	void copyElementContent();
+	bool isSpace( char c );
+	bool isSpace();
+	bool startsWith( std::string expected );
+	void copyElementName();
+	void copyElementAttributes();
+	void copyAttributeName();
+	bool isEndOfAttributeName();
+	void copyAttributeValue();
+	void copyUntilDoubleQuote();
 
 private:
-  int m_index;
-  std::string m_xml;
-  std::string m_stripped;
+	int m_index;
+	std::string m_xml;
+	std::string m_stripped;
 };
 
 
-int 
-notEqualIndex( std::string expectedXml,
-               std::string actualXml )
+int notEqualIndex( std::string expectedXml, std::string actualXml )
 {
-  int index = 0;
-  while ( index < actualXml.length()  &&  
-          index < expectedXml.length()  &&
-          actualXml[index] == expectedXml[index] )
-    ++index;
+	int index = 0;
+	while ( index < actualXml.length()  &&
+			index < expectedXml.length()  &&
+			actualXml[index] == expectedXml[index] )
+		++index;
 
-  return index;
+	return index;
 }
 
 
 /// Asserts that two XML string are equivalent.
-void
-checkXmlEqual( std::string expectedXml,
+void checkXmlEqual( std::string expectedXml,
                std::string actualXml,
                CppUnit::SourceLine sourceLine )
 {
@@ -87,184 +84,183 @@ checkXmlEqual( std::string expectedXml,
 
 
 XmlUniformiser::XmlUniformiser( const std::string &xml ) :
-    m_xml( xml ),
-    m_index( 0 )
+	m_xml( xml ),
+	m_index( 0 )
 {
 }
 
 
-std::string
-XmlUniformiser::stripped()
+std::string XmlUniformiser::stripped()
 {
-  while ( isValidIndex() )
-  {
-    skipSpaces();
-    if ( startsWith( "<?" ) )
-      skipProcessed();
-    else if ( startsWith( "<!--" ) )
-      skipComment();
-    else if ( startsWith( "<" ) )
-      copyElement();
-    else
-      copyElementContent();
-  }
-  return m_stripped;
+	while ( isValidIndex() )
+	{
+		skipSpaces();
+		if ( startsWith( "<?" ) )
+			skipProcessed();
+		else if ( startsWith( "<!--" ) )
+			skipComment();
+		else if ( startsWith( "<" ) )
+			copyElement();
+		else
+			copyElementContent();
+	}
+	return m_stripped;
 }
 
 
-void 
+void
 XmlUniformiser::skipSpaces()
 {
-  while ( isSpace() )
-    skipNext();
+	while ( isSpace() )
+		skipNext();
 }
 
 
-bool 
+bool
 XmlUniformiser::isSpace( char c )
 {
-  return c < 33;
+	return c < 33;
 }
 
 
-bool 
+bool
 XmlUniformiser::isSpace()
 {
-  return isValidIndex()  &&  isSpace( m_xml[m_index] );
+	return isValidIndex()  &&  isSpace( m_xml[m_index] );
 }
 
 
-bool 
+bool
 XmlUniformiser::isValidIndex()
 {
-  return m_index < m_xml.length();
+	return m_index < m_xml.length();
 }
 
 
-void 
+void
 XmlUniformiser::skipNext( int count )
 {
-  while ( count-- > 0 )
-    ++m_index;
+	while ( count-- > 0 )
+		++m_index;
 }
 
 
-void 
+void
 XmlUniformiser::copyNext( int count )
 {
-  while ( count-- > 0  &&  isValidIndex() )
-    m_stripped += m_xml[ m_index++ ];
+	while ( count-- > 0  &&  isValidIndex() )
+		m_stripped += m_xml[ m_index++ ];
 }
 
 
-bool 
+bool
 XmlUniformiser::startsWith( std::string expected )
 {
-  std::string actual = m_xml.substr( m_index, expected.length() );
-  return actual == expected;
+	std::string actual = m_xml.substr( m_index, expected.length() );
+	return actual == expected;
 }
 
 
-void 
+void
 XmlUniformiser::skipProcessed()
 {
-  while ( isValidIndex()  &&  !startsWith( "?>" ) )
-    skipNext();
-  if ( isValidIndex() )
-    skipNext( 2 );
+	while ( isValidIndex()  &&  !startsWith( "?>" ) )
+		skipNext();
+	if ( isValidIndex() )
+		skipNext( 2 );
 }
 
 
-void 
+void
 XmlUniformiser::skipComment()
 {
-  while ( isValidIndex()  &&  !startsWith( "-->" ) )
-    skipNext();
-  if ( isValidIndex() )
-    skipNext( 3 );
+	while ( isValidIndex()  &&  !startsWith( "-->" ) )
+		skipNext();
+	if ( isValidIndex() )
+		skipNext( 3 );
 }
 
 
-void 
+void
 XmlUniformiser::copyElement()
 {
-  copyElementName();
-  copyElementAttributes();
+	copyElementName();
+	copyElementAttributes();
 }
 
 
-void 
+void
 XmlUniformiser::copyElementName()
 {
-  while ( isValidIndex()  &&
-          !( isSpace()  ||  startsWith( ">" ) ) )
-    copyNext();
+	while ( isValidIndex()  &&
+			!( isSpace()  ||  startsWith( ">" ) ) )
+		copyNext();
 }
 
 
-void 
+void
 XmlUniformiser::copyElementAttributes()
 {
-  do
-  {
-    skipSpaces();
-    if ( startsWith( ">" ) )
-      break;
-    m_stripped += ' ';
+	do
+	{
+		skipSpaces();
+		if ( startsWith( ">" ) )
+			break;
+		m_stripped += ' ';
 
-    copyAttributeName();
-    skipSpaces();
-    if ( startsWith( "=" ) )
-    {
-      copyNext();
-      copyAttributeValue();
-    }
-    else    // attribute should always be valued, ne ?
-      m_stripped += ' ';
-  }
-  while ( isValidIndex() );
-  copyNext();
+		copyAttributeName();
+		skipSpaces();
+		if ( startsWith( "=" ) )
+		{
+			copyNext();
+			copyAttributeValue();
+		}
+		else    // attribute should always be valued, ne ?
+			m_stripped += ' ';
+	}
+	while ( isValidIndex() );
+	copyNext();
 }
 
 
-void 
+void
 XmlUniformiser::copyAttributeName()
 {
-  while ( isValidIndex()  &&  !isEndOfAttributeName() )
-    copyNext();
+	while ( isValidIndex()  &&  !isEndOfAttributeName() )
+		copyNext();
 }
 
 
-bool 
+bool
 XmlUniformiser::isEndOfAttributeName()
 {
-  return isSpace()  ||  startsWith( ">" )  ||  startsWith( "=" );
+	return isSpace()  ||  startsWith( ">" )  ||  startsWith( "=" );
 }
 
 
-void 
+void
 XmlUniformiser::copyAttributeValue()
 {
-  skipSpaces();
-  copyUntilDoubleQuote();
-  copyUntilDoubleQuote();
+	skipSpaces();
+	copyUntilDoubleQuote();
+	copyUntilDoubleQuote();
 }
 
 
-void 
+void
 XmlUniformiser::copyUntilDoubleQuote()
 {
-  while ( isValidIndex()  &&  !startsWith("\"") )
-    copyNext();
-  copyNext();   // '"'
+	while ( isValidIndex()  &&  !startsWith("\"") )
+		copyNext();
+	copyNext();   // '"'
 }
 
 
-void 
+void
 XmlUniformiser::copyElementContent()
 {
-  while ( isValidIndex()  &&  !startsWith( "<" ) )
-    copyNext();
+	while ( isValidIndex()  &&  !startsWith( "<" ) )
+		copyNext();
 }
 
 

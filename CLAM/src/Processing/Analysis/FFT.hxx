@@ -56,8 +56,6 @@ namespace CLAM {
 	InPortTmpl<Audio>     mInput;
 	OutPortTmpl<Spectrum> mOutput;
 
-	const char *GetClassName() const {return "FFT";}
-
 	// Control change callback function
 	void ChangeSize(int n);
 	int GetSize() {return mSize;}
@@ -72,7 +70,9 @@ namespace CLAM {
 	/** Configuration access:
 	 */
 	const ProcessingConfig &GetConfig() const { return mConfig;}
-
+	
+	const char *GetClassName() const {return "FFT";}
+	
 	virtual void Attach(Audio& in, Spectrum &out) = 0;
 
 	/** Supervised-mode Do function.
@@ -106,13 +106,6 @@ namespace CLAM {
 	virtual bool DisableExecution() {return false;}
 
 	virtual bool EnableExecution() {return false;}
-
-	// COMPONENT Methods
-
-	/** @todo Not yet implemented. */
-	virtual void StoreOn(Storage &s) {};
-	/** @todo Not yet implemented. */
-	virtual void LoadFrom(Storage &s) {};
 
     };
 };//namespace CLAM

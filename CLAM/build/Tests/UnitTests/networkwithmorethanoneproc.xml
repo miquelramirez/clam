@@ -1,13 +1,10 @@
 <network id="FooNetworkWithMoreThanOneProcessing">
 	<processing id="fftw" type="FFT_rfftw">
-		<Name></Name>
 		<AudioSize>0</AudioSize>
 	</processing>
 	<processing id="multiplier" type="AudioMultiplier">
-		<Name></Name>
 	</processing>
 	<processing id="oscillator" type="Oscillator">
-		<Name></Name>
 		<Frequency>440</Frequency>
 		<Amplitude>1</Amplitude>
 		<ModIndex>1</ModIndex>

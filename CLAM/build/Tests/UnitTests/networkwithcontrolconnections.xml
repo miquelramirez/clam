@@ -1,6 +1,5 @@
 <network id="FooNetworkWithPortsConnection">
 	<processing id="oscillator" type="Oscillator">
-		<Name></Name>
 		<Frequency>440</Frequency>
 		<Amplitude>1</Amplitude>
 		<ModIndex>1</ModIndex>
@@ -8,7 +7,6 @@
 		<SamplingRate>44100</SamplingRate>
 	</processing>
 	<processing id="panner" type="AutoPanner">
-		<Name></Name>
 		<Frequency>440</Frequency>
 		<SamplingRate>44100</SamplingRate>
 		<Phase>0</Phase>
@@ -21,7 +19,7 @@
 	</control_connection>
 	<control_connection>
 		<out>panner.Right Control</out>
-		<in>oscillator.Phase</in>
+		<in>oscillator.Amplitude</in>
 	</control_connection>
 </network> 
 

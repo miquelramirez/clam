@@ -46,12 +46,12 @@ MainWindow::MainWindow()
 	setCaption( "CLAM Network Editor" );
 	resize( 800, 600 );
 	
-	NewMessageToStatus.Wrap( this, &MainWindow::OnNewMessageToStatus );
-	mNetwork.SendNewMessageToStatus.Connect( NewMessageToStatus );
-	NewNetworkSignal.Connect( mNetwork.Clear );
+	SlotNewMessageToStatus.Wrap( this, &MainWindow::OnNewMessageToStatus );
+	mNetwork.SignalSendNewMessageToStatus.Connect( SlotNewMessageToStatus );
+	SignalNewNetworkSignal.Connect( mNetwork.SlotClear );
 	statusBar()->message( "Ready to edit" );
 
-	ChangeNetworkState.Connect( mNetwork.ChangeState );
+	SignalChangeNetworkState.Connect( mNetwork.SlotChangeState );
 
 
 	QPopupMenu * file = new QPopupMenu( this );
@@ -118,18 +118,11 @@ void MainWindow::Stop()
 void MainWindow::NewNetwork()
 {
 	std::cout << "new network" << std::endl;
-	NewNetworkSignal.Emit();
+	SignalNewNetworkSignal.Emit();
 }
 
 void MainWindow::LoadNetwork()
 {
-/*
-	QFileDialog* fd = new QFileDialog( this, "file dialog", TRUE );
-	fd->setMode( QFileDialog::AnyFile);
-	fd->addFilter( "XML Files (*.xml)" );
-	fd->show();
-*/
-
 	QString s = QFileDialog::getOpenFileName(
 		"",
 		"XML Files (*.xml)",
@@ -137,9 +130,9 @@ void MainWindow::LoadNetwork()
 		"open file dialog"
 		"Choose a file to load network" );
 
-	NewNetworkSignal.Emit();
+	SignalNewNetworkSignal.Emit();
 	if (s!=QString::null)
-		mNetwork.LoadNetworkFrom.Emit(std::string(s.ascii()));
+		mNetwork.SignalLoadNetworkFrom.Emit(std::string(s.ascii()));
 }
 
 
@@ -153,7 +146,7 @@ void MainWindow::SaveNetwork()
 		"Choose a file to save network" );
 
 	if (s!=QString::null)
-		mNetwork.SaveNetworkTo.Emit(std::string(s.ascii()));
+		mNetwork.SignalSaveNetworkTo.Emit(std::string(s.ascii()));
 }
 
 void MainWindow::SaveAsNetwork()
@@ -164,14 +157,14 @@ void MainWindow::SaveAsNetwork()
 
 void MainWindow::StartNetwork()
 {
-	ChangeNetworkState.Emit(true);
+	SignalChangeNetworkState.Emit(true);
 	
 		
 }
 
 void MainWindow::StopNetwork()
 {
-	ChangeNetworkState.Emit(false);
+	SignalChangeNetworkState.Emit(false);
 }
 
 void MainWindow::ShowProcMenu()

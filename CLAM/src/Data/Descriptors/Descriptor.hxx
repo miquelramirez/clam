@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+
 #ifndef __Descriptor_H__
 #define __Descriptor_H__
 
@@ -26,16 +27,18 @@
 #include "DataTypes.hxx"
 #include "Stats.hxx"
 
+
 namespace CLAM{
 
-	
+
 /** Abstract class for all descriptors */
 //todo: this class could abstract more common behaviour from subclasses by becoming template
-class Descriptor:public ProcessingData
+template <bool abs>
+class DescriptorTmpl:public ProcessingData
 {
 public:
-	Descriptor(int n):ProcessingData(n){mpStats=0;}
-	Descriptor(const Descriptor& prototype, bool shareData=false, bool deep=true)
+	DescriptorTmpl(int n):ProcessingData(n){mpStats=0;}
+	DescriptorTmpl(const DescriptorTmpl<abs>& prototype, bool shareData=false, bool deep=true)
 		: ProcessingData(prototype, shareData, deep)
 	{
 		mpStats=0;
@@ -46,7 +49,7 @@ public:
 		ConcreteCompute();
 	}
 	virtual void ConcreteCompute()=0;
-	void SetPrototype(const Descriptor& proto)
+	void SetPrototype(const DescriptorTmpl<abs>& proto)
 	{
 		*this=proto;
 		if(mpStats)
@@ -59,14 +62,21 @@ protected:
 	void InitStats(DataArray* pData)
 	{
 		if(mpStats) delete mpStats;
-		mpStats=new Stats(pData);
+		mpStats=new StatsTmpl<abs>(pData);
 	}
 protected:
-	Stats* mpStats;
+	StatsTmpl<abs>* mpStats;
 	
 };
 
+typedef DescriptorTmpl<false> Descriptor;
+typedef DescriptorTmpl<true> DescriptorAbs;
+
 };
 
+
+
 #endif // Descriptor.hxx
+
+
 

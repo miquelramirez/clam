@@ -11,13 +11,11 @@ namespace CLAM {
 	 */
 class PhaseManagementConfig:public ProcessingConfig
 {
-	DYNAMIC_TYPE_USING_INTERFACE (PhaseManagementConfig,4,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
-	DYN_ATTRIBUTE(1,public,TSize,MaxSines);
-	DYN_ATTRIBUTE(2,public,TData,SamplingRate);
-	DYN_ATTRIBUTE(3,public,EPhaseGeneration,Type);
+	DYNAMIC_TYPE_USING_INTERFACE (PhaseManagementConfig,3,ProcessingConfig);
+	DYN_ATTRIBUTE(0,public,TSize,MaxSines);
+	DYN_ATTRIBUTE(1,public,TData,SamplingRate);
+	DYN_ATTRIBUTE(2,public,EPhaseGeneration,Type);
 public:
-	~PhaseManagementConfig(){};
 	void DefaultInit();
 	void DefaultValues();
 };

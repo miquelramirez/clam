@@ -46,10 +46,9 @@ namespace CLAM
 class TokenDelayConfig : public ProcessingConfig 
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (TokenDelayConfig, 3, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, unsigned, Delay);
-	DYN_ATTRIBUTE (2, public, unsigned, MaxDelay );
+	DYNAMIC_TYPE_USING_INTERFACE (TokenDelayConfig, 2, ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, unsigned, Delay);
+	DYN_ATTRIBUTE (1, public, unsigned, MaxDelay );
 protected:
 	/** 
 	* Dynamic type initialization: all attributes are instantiated.
@@ -58,7 +57,6 @@ protected:
 	*/
 	void DefaultInit(void)
 	{
-		AddName();
 		AddDelay();
 		AddMaxDelay();
 		UpdateData();
@@ -270,7 +268,7 @@ void TokenDelay<T>::Debug() const
 	unsigned size = mVector.size();
 	unsigned cap = mVector.capacity();
 
-	std::cout << "\n-- " << mConfig.GetName() << "\n-- (first,last)=(" << mFirst <<","<< mLast <<")\n-- "\
+	std::cout << "\n-- " << mConfig.GetClassName() << "\n-- (first,last)=(" << mFirst <<","<< mLast <<")\n-- "\
 		<< "(given,real delay)=("<< mGivenDelay <<"," << real << ")\n-- (vector size,capacity;mCapacity)=("\
 		<< size <<","<< cap <<";"<< mCapacity <<")\n-- (mInstantToken,mVector[mFirst])=("<< mInstantToken\
 		<<","<< mVector[mFirst] <<")\n";

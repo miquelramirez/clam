@@ -27,7 +27,7 @@
 #include "Frame.hxx"
 
 
-using namespace CLAM;
+namespace CLAM{
 
 FrameDescriptors::FrameDescriptors(Frame* pFrame): Descriptor(eNumAttr)
 {
@@ -35,6 +35,32 @@ FrameDescriptors::FrameDescriptors(Frame* pFrame): Descriptor(eNumAttr)
 	mpFrame=pFrame;
 }
 
+FrameDescriptors::FrameDescriptors(TData initVal): Descriptor(eNumAttr)
+{
+	MandatoryInit();
+	AddAll();
+	UpdateData();
+	SetSpectralPeakD(SpectralPeakDescriptors(initVal));
+	SetSpectrumD(SpectralDescriptors(initVal));
+	SetResidualSpecD(SpectralDescriptors(initVal));
+	SetSinusoidalSpecD(SpectralDescriptors(initVal));
+	SetAudioFrameD(AudioDescriptors(initVal));
+	SetSinusoidalAudioFrameD(AudioDescriptors(initVal));
+	SetResidualAudioFrameD(AudioDescriptors(initVal));
+	SetSynthAudioFrameD(AudioDescriptors(initVal));
+}
+
+void FrameDescriptors::DefaultInit() {
+	mpFrame=0;
+}
+
+void FrameDescriptors::CopyInit(const FrameDescriptors & copied) {
+	mpFrame=copied.mpFrame;
+}
+
+const Frame* FrameDescriptors::GetpFrame() const {
+	return mpFrame;
+}
 
 void FrameDescriptors::SetpFrame(Frame* pFrame) {
 	mpFrame=pFrame;
@@ -104,3 +130,172 @@ void FrameDescriptors::ConcreteCompute()
 		GetSynthAudioFrameD().Compute();
 
 }
+
+FrameDescriptors operator * (const FrameDescriptors& a,const FrameDescriptors& b)
+{
+	FrameDescriptors tmpD;
+	if(a.HasSpectralPeakD() && b.HasSpectralPeakD())
+	{
+		tmpD.AddSpectralPeakD();
+		tmpD.UpdateData();
+		tmpD.SetSpectralPeakD(a.GetSpectralPeakD()*b.GetSpectralPeakD());
+	}
+	if(a.HasSpectrumD() && b.HasSpectrumD())
+	{
+		tmpD.AddSpectrumD();
+		tmpD.UpdateData();
+		tmpD.SetSpectrumD(a.GetSpectrumD()*b.GetSpectrumD());
+	}
+	if(a.HasResidualSpecD() && b.HasResidualSpecD() )
+	{
+		tmpD.AddResidualSpecD();
+		tmpD.UpdateData();
+		tmpD.SetResidualSpecD(a.GetResidualSpecD()*b.GetResidualSpecD());
+	}
+	if(a.HasSinusoidalSpecD() && b.HasSinusoidalSpecD())
+	{
+		tmpD.AddSinusoidalSpecD();
+		tmpD.UpdateData();
+		tmpD.SetSinusoidalSpecD(a.GetSinusoidalSpecD()*b.GetSinusoidalSpecD());
+	}
+	if(a.HasAudioFrameD() && b.HasAudioFrameD() )
+	{
+		tmpD.AddAudioFrameD();
+		tmpD.UpdateData();
+		tmpD.SetAudioFrameD(a.GetAudioFrameD()*b.GetAudioFrameD());
+	}
+	if(a.HasSinusoidalAudioFrameD() && b.HasSinusoidalAudioFrameD() )
+	{
+		tmpD.AddSinusoidalAudioFrameD();
+		tmpD.UpdateData();
+		tmpD.SetSinusoidalAudioFrameD(a.GetSinusoidalAudioFrameD()*b.GetSinusoidalAudioFrameD());
+	}
+	if(a.HasResidualAudioFrameD() && b.HasResidualAudioFrameD() )
+	{
+		tmpD.AddResidualAudioFrameD();
+		tmpD.UpdateData();
+		tmpD.SetResidualAudioFrameD(a.GetResidualAudioFrameD()*b.GetResidualAudioFrameD());
+	}
+	if(a.HasSynthAudioFrameD() && b.HasSynthAudioFrameD() )
+	{
+		tmpD.AddSynthAudioFrameD();
+		tmpD.UpdateData();
+		tmpD.SetSynthAudioFrameD(a.GetSynthAudioFrameD()*b.GetSynthAudioFrameD());
+	}
+
+	return tmpD;
+}
+
+
+FrameDescriptors operator + (const FrameDescriptors& a,const FrameDescriptors& b) 
+{
+	FrameDescriptors tmpD;
+	if(a.HasSpectralPeakD() && b.HasSpectralPeakD())
+	{
+		tmpD.AddSpectralPeakD();
+		tmpD.UpdateData();
+		tmpD.SetSpectralPeakD(a.GetSpectralPeakD()+b.GetSpectralPeakD());
+	}
+	if(a.HasSpectrumD() && b.HasSpectrumD())
+	{
+		tmpD.AddSpectrumD();
+		tmpD.UpdateData();
+		tmpD.SetSpectrumD(a.GetSpectrumD()+b.GetSpectrumD());
+	}
+	if(a.HasResidualSpecD() && b.HasResidualSpecD() )
+	{
+		tmpD.AddResidualSpecD();
+		tmpD.UpdateData();
+		tmpD.SetResidualSpecD(a.GetResidualSpecD()+b.GetResidualSpecD());
+	}
+	if(a.HasSinusoidalSpecD() && b.HasSinusoidalSpecD())
+	{
+		tmpD.AddSinusoidalSpecD();
+		tmpD.UpdateData();
+		tmpD.SetSinusoidalSpecD(a.GetSinusoidalSpecD()+b.GetSinusoidalSpecD());
+	}
+	if(a.HasAudioFrameD() && b.HasAudioFrameD() )
+	{
+		tmpD.AddAudioFrameD();
+		tmpD.UpdateData();
+		tmpD.SetAudioFrameD(a.GetAudioFrameD()+b.GetAudioFrameD());
+	}
+	if(a.HasSinusoidalAudioFrameD() && b.HasSinusoidalAudioFrameD() )
+	{
+		tmpD.AddSinusoidalAudioFrameD();
+		tmpD.UpdateData();
+		tmpD.SetSinusoidalAudioFrameD(a.GetSinusoidalAudioFrameD()+b.GetSinusoidalAudioFrameD());
+	}
+	if(a.HasResidualAudioFrameD() && b.HasResidualAudioFrameD() )
+	{
+		tmpD.AddResidualAudioFrameD();
+		tmpD.UpdateData();
+		tmpD.SetResidualAudioFrameD(a.GetResidualAudioFrameD()+b.GetResidualAudioFrameD());
+	}
+	if(a.HasSynthAudioFrameD() && b.HasSynthAudioFrameD() )
+	{
+		tmpD.AddSynthAudioFrameD();
+		tmpD.UpdateData();
+		tmpD.SetSynthAudioFrameD(a.GetSynthAudioFrameD()+b.GetSynthAudioFrameD());
+	}
+
+	return tmpD;
+}
+
+
+FrameDescriptors operator * (const FrameDescriptors& a,TData mult)
+{
+	FrameDescriptors tmpD(a);
+	if(a.HasSpectralPeakD())
+	{
+		tmpD.SetSpectralPeakD(a.GetSpectralPeakD()*mult);
+	}
+	if(a.HasSpectrumD())
+	{
+		tmpD.SetSpectrumD(a.GetSpectrumD()*mult);
+	}
+	if(a.HasResidualSpecD())
+	{
+		tmpD.SetResidualSpecD(a.GetResidualSpecD()*mult);
+	}
+	if(a.HasSinusoidalSpecD())
+	{
+		tmpD.SetSinusoidalSpecD(a.GetSinusoidalSpecD()*mult);
+	}
+	if(a.HasAudioFrameD())
+	{
+		tmpD.SetAudioFrameD(a.GetAudioFrameD()*mult);
+	}
+	if(a.HasSinusoidalAudioFrameD())
+	{
+		tmpD.SetSinusoidalAudioFrameD(a.GetSinusoidalAudioFrameD()*mult);
+	}
+	if(a.HasResidualAudioFrameD())
+	{
+		tmpD.SetResidualAudioFrameD(a.GetResidualAudioFrameD()*mult);
+	}
+	if(a.HasSynthAudioFrameD())
+	{
+		tmpD.SetSynthAudioFrameD(a.GetSynthAudioFrameD()*mult);
+	}
+
+	return tmpD;
+
+}
+
+FrameDescriptors operator * (TData mult,const FrameDescriptors& a)
+{
+	return a*mult;
+}
+
+FrameDescriptors operator - (const FrameDescriptors& a,const FrameDescriptors& b)
+{
+	return a+((-1.0)*b);
+}
+FrameDescriptors operator / (const FrameDescriptors& a,TData div) 
+{ 
+	return a*(1/div);
+}
+
+
+}//CLAM

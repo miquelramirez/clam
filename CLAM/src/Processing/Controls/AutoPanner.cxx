@@ -10,7 +10,6 @@ void AutoPannerConfig::DefaultInit(void)
 {
 	AddAll();       
 	UpdateData();	
-	SetName("AutoPanner");
 	SetFrequency(440.0);
 	SetPhase(0.0);
 	SetSamplingRate( 44100 );

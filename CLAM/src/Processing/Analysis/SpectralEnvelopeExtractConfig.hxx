@@ -12,11 +12,9 @@ namespace CLAM {
 	class SpectralEnvelopeExtractConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralEnvelopeExtractConfig, 2,ProcessingConfig);
-		/** Name of the SpectralEnvelopeExtract object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralEnvelopeExtractConfig, 1,ProcessingConfig);
 		/** Type of interpolation for resultant Spectrum BPF*/
-		DYN_ATTRIBUTE (1, public, EInterpolation, InterpolationType);
+		DYN_ATTRIBUTE (0, public, EInterpolation, InterpolationType);
 		
 	protected:
 		void DefaultInit();

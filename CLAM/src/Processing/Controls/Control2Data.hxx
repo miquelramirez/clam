@@ -42,11 +42,10 @@ namespace CLAM {
 class Control2DataConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (Control2DataConfig, 4, ProcessingConfig);
-	DYN_ATTRIBUTE          (0, public, std::string, Name);
-	DYN_ATTRIBUTE          (1, public, unsigned, NumControls);
-	DYN_CONTAINER_ATTRIBUTE (2, public, std::vector<TControlData>, MinValues, foo);
-	DYN_CONTAINER_ATTRIBUTE (3, public, std::vector<TControlData>, MaxValues, foo);
+	DYNAMIC_TYPE_USING_INTERFACE (Control2DataConfig, 3, ProcessingConfig);
+	DYN_ATTRIBUTE          (0, public, unsigned, NumControls);
+	DYN_CONTAINER_ATTRIBUTE (1, public, std::vector<TControlData>, MinValues, foo);
+	DYN_CONTAINER_ATTRIBUTE (2, public, std::vector<TControlData>, MaxValues, foo);
 protected:
 	/** Dynamic type initialization */
 	void DefaultInit(void);
@@ -76,9 +75,6 @@ public:
 	bool Do();
 	/** Returns internal configuration method */
 	const ProcessingConfig&  GetConfig() const;	
-	/** Not implemented */
-	void StoreOn( Storage& s) {}
-
 protected:
 
 	//typedefs

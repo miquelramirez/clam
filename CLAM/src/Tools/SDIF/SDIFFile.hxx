@@ -34,8 +34,6 @@
 *       the operating system is not BIG ENDIANm, @see CLAMByteOrder
 */
 
-using namespace CLAM;
-
 namespace SDIF
 {
 
@@ -61,10 +59,10 @@ private:
 	char* mpName;
 	Mode mMode;
 	int mFile;
-	TSize mSize;
+	CLAM::TSize mSize;
 
-	TIndex Pos(void);
-	TIndex Pos(TIndex pos);
+	CLAM::TIndex Pos(void);
+	CLAM::TIndex Pos(CLAM::TIndex pos);
 
 /*	
   template <class T> void ReadArray(Array<T>& data)					//read from data file
@@ -87,25 +85,25 @@ private:
   }
 */
 
-	void Read(TByte* ptr,int n);
+	void Read(CLAM::TByte* ptr,int n);
 
 	template <class T> void TRead(T& t)
 	{
-		Read((TByte*) &t,sizeof(T));
-		FixByteOrder((TByte*) &t,1,sizeof(T));
+		Read((CLAM::TByte*) &t,sizeof(T));
+		FixByteOrder((CLAM::TByte*) &t,1,sizeof(T));
 	}
 
-	void Write(const TByte* ptr,int n);
+	void Write(const CLAM::TByte* ptr,int n);
 
 	template <class T> void TWrite(const T& t)
 	{
 		T tmp(t);
-		FixByteOrder((TByte*) &tmp,1,sizeof(T));
-		Write((TByte*) &tmp,sizeof(T));
+		FixByteOrder((CLAM::TByte*) &tmp,1,sizeof(T));
+		Write((CLAM::TByte*) &tmp,sizeof(T));
 	}
 
-	inline void FixByteOrder(TByte* ptr,
-		TUInt32 nElems,TUInt32 elemSize);
+	inline void FixByteOrder(CLAM::TByte* ptr,
+		CLAM::TUInt32 nElems,CLAM::TUInt32 elemSize);
 	
 	void Read(DataFrameHeader& header);
 	void Write(const DataFrameHeader& header);
@@ -138,20 +136,20 @@ public:
 
 private:
 	void _FixByteOrder(
-		TByte* ptr,TUInt32 nElems,TUInt32 elemSize);
+		CLAM::TByte* ptr,CLAM::TUInt32 nElems,CLAM::TUInt32 elemSize);
 };
 
-inline void File::Read(TByte* ptr,int n)
+inline void File::Read(CLAM::TByte* ptr,int n)
 {
 	if (read(mFile,(char*)ptr,n)!=n) {
-  		throw Err("DataFileIO read error");
+  		throw CLAM::Err("DataFileIO read error");
 	}
 }
 
-inline void File::Write(const TByte* ptr,int n)
+inline void File::Write(const CLAM::TByte* ptr,int n)
 {
 	if (write(mFile,(const char*)ptr,n)!=n) {
-  		throw Err("DataFileIO read error");
+  		throw CLAM::Err("DataFileIO read error");
 	}
 }
 
@@ -171,8 +169,8 @@ inline bool File::Done(void)
 	return Pos()>=mSize;
 }
 
-inline void File::FixByteOrder(TByte* ptr,
-	TUInt32 nElems,TUInt32 elemSize)
+inline void File::FixByteOrder(CLAM::TByte* ptr,
+	CLAM::TUInt32 nElems,CLAM::TUInt32 elemSize)
 {
 #ifdef CLAM_LITTLE_ENDIAN
 	_FixByteOrder(ptr,nElems,elemSize);

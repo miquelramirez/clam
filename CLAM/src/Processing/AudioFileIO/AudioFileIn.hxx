@@ -114,10 +114,6 @@ class SoundFileIO;
 		*/
 		int Channels();
 
-		// COMPONENT Methods
-		/** @todo Not yet implemented. */
-		void StoreOn(Storage &s) {};
- 	
 	};
 }//namespace CLAM
 

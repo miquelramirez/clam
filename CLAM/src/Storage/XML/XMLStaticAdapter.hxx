@@ -96,7 +96,7 @@ public:
 	 * @param isXMLElement Tells whether the object is an
 	 * element or an attribute when the name is defined.
 	 */
-	template <class T> XMLStaticAdapter (T & adaptee, const char * name=NULL, bool isXMLElement=false)
+	template <class T> XMLStaticAdapter (const T & adaptee, const char * name=NULL, bool isXMLElement=false)
 		: BasicXMLable(name, isXMLElement)
 	{
 		std::stringstream str;
@@ -109,7 +109,7 @@ public:
 // Accessors
 public:
 	//* @return A string with the extracted XML content
-	virtual std::string XMLContent() 
+	virtual std::string XMLContent() const
 	{
 		return mContent;
 	}

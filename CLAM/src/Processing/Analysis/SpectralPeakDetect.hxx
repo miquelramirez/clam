@@ -108,9 +108,6 @@ namespace CLAM
 
 		bool MayDisableExecution() const {return true;}
 
-		/** Not implemented yet*/
-		void StoreOn(Storage &s) {};
-
 	private:
 		/** Not implemented yet*/
 		inline void Detect(Spectrum& inputs, Spectrum& out);

@@ -34,11 +34,10 @@ namespace CLAM
 	class EnvModulatorConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (EnvModulatorConfig, 4, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, TData, SampleRate);
-		DYN_ATTRIBUTE (2, public, int,  FrameSize);
-		DYN_ATTRIBUTE (3, public, bool, EnvelopeCompression);
+		DYNAMIC_TYPE_USING_INTERFACE (EnvModulatorConfig, 3, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, TData, SampleRate);
+		DYN_ATTRIBUTE (1, public, int,  FrameSize);
+		DYN_ATTRIBUTE (2, public, bool, EnvelopeCompression);
 	protected:
 
 		void DefaultInit(void);
@@ -72,9 +71,8 @@ namespace CLAM
 
 		bool Do(void);
 
-		bool Do(const Envelope& env, const Audio& inp, Audio& out) throw(ErrProcessingObj);
+		bool Do(const Envelope& env, const Audio& inp, Audio& out);
 
-		void StoreOn(Storage &s) {};
 	};
 	
 }

@@ -21,18 +21,14 @@
 
 
 #include "FFT.hxx"
-#include <string>
 #include "ErrProcessingObj.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 
 namespace CLAM {
 
-	const std::string UnnamedFFT("UnnamedFFT");
-
 	void FFTConfig::DefaultInit(void)
 	{
-		AddName();
 		AddAudioSize();
 		UpdateData();
 		SetAudioSize(0);

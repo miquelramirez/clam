@@ -1,7 +1,7 @@
 
 #include "Factory.hxx"
 #include "Oscillator.hxx"
-//#include "AudioMixer.hxx"
+#include "SimpleOscillator.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioAdder.hxx"
 #include "AudioFileOut.hxx"
@@ -10,7 +10,7 @@
 #include "FFT_rfftw.hxx"
 #include "AudioOut.hxx"
 #include "Controller.hxx"
-
+#include "ADSR.hxx"
 // VC6 needs to see the whole types
 #include "Audio.hxx"
 #include "Spectrum.hxx"
@@ -27,6 +27,7 @@
  */
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
+static ProcessingFactory::Registrator<CLAM::SimpleOscillator> regtSimpleOscillator( "SimpleOscillator" );
 static ProcessingFactory::Registrator<CLAM::Oscillator> regtOscillator( "Oscillator" );
 static ProcessingFactory::Registrator<CLAM::AudioMultiplier> regtAudioMultiplier( "AudioMultiplier" );
 static ProcessingFactory::Registrator<CLAM::AudioAdder> regtAudioAdder( "AudioAdder" );
@@ -36,3 +37,5 @@ static ProcessingFactory::Registrator<CLAM::AudioOut> regtAudioOut( "AudioOut" )
 static ProcessingFactory::Registrator<CLAM::Controller> regtController( "Controller" );
 static ProcessingFactory::Registrator<CLAM::AudioFileIn> regtAudioFileIn( "AudioFileIn" );
 static ProcessingFactory::Registrator<CLAM::AudioFileOut> regtAudioFileOut( "AudioFileOut" );
+static ProcessingFactory::Registrator<CLAM::ADSR> regtADSR( "ADSR" );
+

@@ -383,7 +383,7 @@ CSaltoSegData Parameters::GetSegDataByPos(TIndex pos)
     return mSegData[pos];
   else
     return mSegData[0]; // return no error ! Check when this happens !!!!
-    //throw Err("CSaltoDataManagment::GetSegDataByPos out of Bounds ");
+    //CLAM_ASSERT(false,"CSaltoDataManagment::GetSegDataByPos out of Bounds ");
 }
 
 //----------------------------------------------------------------------------//
@@ -393,7 +393,7 @@ void Parameters::SetSegDataByPos(TIndex pos,CSaltoSegData segData)
   if (pos>=0 && pos <SPECTRAL_SEGMENTS_IN_USE)
     mSegData[pos] = segData;
   else
-    throw Err("CSaltoDataManagment::SetSegDataByPos out of Bounds");
+    CLAM_ASSERT(false,"CSaltoDataManagment::SetSegDataByPos out of Bounds");
 }
 //----------------------------------------------------------------------------//
 // there is a much nicer way to do this, but right now we can't save template
@@ -546,7 +546,7 @@ InstrumentValues& InstrumentValues::_GetInstance(int instr,char* dataFolder)
 	{
 		instance.mInstrument = instr;
 		if (instr==-1)
-			throw CLAM::Err("InstrumentValues has not been instantiated yet\n");
+			CLAM_ASSERT(false,"InstrumentValues has not been instantiated yet\n");
 		else if (instr==0)
 		{
     	strcpy(instance.mSALTO_DATA_FILE_NAME,dataFolder);
@@ -615,7 +615,7 @@ InstrumentValues& InstrumentValues::_GetInstance(int instr,char* dataFolder)
   		instance.mMAX_SMOOTHNESS_VALUE			= 1;
   		instance.mLOWEST_PITCH              = 233.08;  // A#2;
 		}else{
-			throw CLAM::Err("Invalid instrument while instatiating InstrumentValues\n");
+			CLAM_ASSERT(false,"Invalid instrument while instatiating InstrumentValues\n");
 		}
 	}
 	return instance;

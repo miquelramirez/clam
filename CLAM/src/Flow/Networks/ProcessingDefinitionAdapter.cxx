@@ -41,30 +41,31 @@ namespace CLAM
 	{
 	}
 
-	void ProcessingDefinitionAdapter::StoreOn (Storage & store)	
+	void ProcessingDefinitionAdapter::StoreOn (Storage & store) const
 	{
-		XMLAdapter<Text> nameAdapter( mName, "id");
+		Text nameCopy(mName);
+		XMLAdapter<Text> nameAdapter( nameCopy, "id");
 		Text className(mAdaptee->GetClassName());
 		XMLAdapter<Text> classNameAdapter( className, "type");
-		store.Store(&nameAdapter);
-		store.Store(&classNameAdapter);
+		store.Store(nameAdapter);
+		store.Store(classNameAdapter);
 
 		XMLComponentAdapter configAdapter((ProcessingConfig&)mAdaptee->GetConfig());
-		store.Store(&configAdapter);
+		store.Store(configAdapter);
 	}
 
 	void ProcessingDefinitionAdapter::LoadFrom (Storage & store) 
 	{	
 		XMLAdapter<Text> nameAdapter( mName, "id");
-		store.Load(&nameAdapter);
+		store.Load(nameAdapter);
 		Text className("");
 		XMLAdapter<Text> classNameAdapter( className, "type");
-		store.Load(&classNameAdapter);
+		store.Load(classNameAdapter);
 
 		mAdaptee = ProcessingFactory::GetInstance().Create(className);
 		ProcessingConfig&  cfg = (ProcessingConfig&)mAdaptee->GetConfig();
 		XMLComponentAdapter configAdapter( cfg );
-		store.Load(&configAdapter);
+		store.Load(configAdapter);
 		mAdaptee->Configure(cfg);
 	}
 } // namespace CLAM

@@ -28,15 +28,6 @@
 
 namespace CLAM {
 
-	void SpecAdder2Config::DefaultInit()
-	{
-		if (!HasName()) {
-			AddName();
-			UpdateData();
-		}
-	}
-
-
 	SpectrumAdder2::SpectrumAdder2()
 		: mSize(0),
 		  mIn1("Input 1",this,1),

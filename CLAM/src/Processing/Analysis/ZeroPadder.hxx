@@ -12,16 +12,10 @@ namespace CLAM
 	class ZeroPadderConfig
 		: public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( ZeroPadderConfig, 1, ProcessingConfig );
-		DYN_ATTRIBUTE( 0, public, std::string,   Name );
-
-	protected:
-
-		void DefaultInit();
+		DYNAMIC_TYPE_USING_INTERFACE( ZeroPadderConfig, 0, ProcessingConfig );
 	};
 
-	class ZeroPadder
-		: public Processing
+	class ZeroPadder : public Processing
 	{
 	protected: // attributes
 

@@ -13,72 +13,97 @@ class XmlMockUpBasic : public BasicXMLable
 {
 	public:
 		XmlMockUpBasic(const char * name=0, bool isElement=false)
-			: BasicXMLable(name, isElement) {}
+			: BasicXMLable(name, isElement) 
+		{
+			_loadOk=true;
+		}
 		void setContent(const std::string & content)
 		{
-			_content = content;	
+			_content = content;
 		}
 		std::string XMLContent() const
 		{
 			return _content;
 		}
 
-	       //* Extracts the content from the stream.
+		//* Extracts the content from the stream.
 		bool XMLContent(std::istream & str)
 		{
+			_content="";
 			str >> _content;
 			return str!=NULL;
+		
 		}
 		virtual std::string structureTrace(unsigned level)
 		{
-			return std::string(level,'.')+"B'"+_content+"'\n";
+			return std::string(level,'.')+"B'"+_content+"'"+(_loadOk?"":"[unloaded]")+"\n";
+		}
+		void setLoadOk(bool storageLoadReturnValue)
+		{
+			_loadOk = storageLoadReturnValue;
 		}
 	protected:
 		std::string _content;
+		bool _loadOk;
 };
 
-class XmlMockUpComponent : public XmlMockUpBasic, public Component 
+class CompositeOfXmlables : public Component
 {
 	public:
-		XmlMockUpComponent(const char * name=0, bool isElement=false)
-			: XmlMockUpBasic(name, isElement) {}
-		void add(XMLable & part)
+		CompositeOfXmlables() {}
+		virtual ~CompositeOfXmlables() {}
+		void add(XmlMockUpBasic & part)
 		{
 			_parts.push_back(&part);
 		}
-		const char * GetClassName() const { return "CLAMTest::XmlMockUpComponent";}
+		const char * GetClassName() const { return "CLAMTest::CompositeOfXmlables";}
 		void StoreOn(Storage & store) const
 		{
-			std::list<XMLable *>::const_iterator it = _parts.begin();
+			std::list<XmlMockUpBasic*>::const_iterator it = _parts.begin();
 			for (; it!= _parts.end();it++)
 				store.Store(**it);
 		}
 		void LoadFrom(Storage & store)
 		{
-		}
-
-		virtual std::string structureTrace(unsigned level)
-		{
-			std::string indentation(level,'.');
-			return 
-				indentation+"C'"+_content+"'\n"+
-				indentation+"{\n"+
-				childStructureTrace(level+1) +
-				indentation+"}\n";
+			std::list<XmlMockUpBasic *>::const_iterator it = _parts.begin();
+			for (; it!= _parts.end();it++)
+			{
+				bool result = store.Load(**it);
+				(*it)->setLoadOk(result);
+			}
 		}
 		std::string childStructureTrace(unsigned childLevel)
 		{
 			std::string result;
-			std::list<XMLable *>::iterator it = _parts.begin();
+			std::list<XmlMockUpBasic*>::iterator it = _parts.begin();
 			for (;it!=_parts.end();it++)
 			{
-				result+=dynamic_cast<XmlMockUpBasic*>(*it)->structureTrace(childLevel);
+				result+=(*it)->structureTrace(childLevel);
 			}
 			return result;
 		}
 	private:
-		std::list<XMLable *> _parts;
+		std::list<XmlMockUpBasic *> _parts;
 };
+
+
+class XmlMockUpComponent : public XmlMockUpBasic, public CompositeOfXmlables 
+{
+	public:
+		XmlMockUpComponent(const char * name=0, bool isElement=false)
+			: XmlMockUpBasic(name, isElement) {}
+		const char * GetClassName() const { return "CLAMTest::XmlMockUpComponent";}
+		virtual std::string structureTrace(unsigned level)
+		{
+			std::string indentation(level,'.');
+			return 
+				indentation+"C'"+_content+"'"+(_loadOk?"":"[unloaded]")+"\n"+
+				indentation+"{\n"+
+				childStructureTrace(level+1) +
+				indentation+"}\n";
+		}
+};
+
 
 } // namespace Test
 } // namespace Cuidado

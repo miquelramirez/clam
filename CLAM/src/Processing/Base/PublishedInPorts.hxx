@@ -8,25 +8,26 @@ namespace CLAM
 {
 	
 //forward declarations:
-class Processing;
 class InPort;
 
 class PublishedInPorts
 {
+	std::vector<InPort*> mInPorts;
 public:
 	typedef std::vector<InPort*>::iterator Iterator;
-	PublishedInPorts(Processing* parent);
+	typedef std::vector<InPort*>::const_iterator ConstIterator;
 
 	InPort& GetByNumber(int index) const;
-	InPort& Get( std::string name ) const;
+	InPort& Get( const std::string & name ) const;
 	int Size() const;
+	bool AreReadyForReading();
+	void Publish(InPort *);
+	void Clear(){ mInPorts.clear(); }
 	Iterator Begin();
 	Iterator End();
-	
-	bool AreReadyForReading();
-	
-private:
-	Processing& mParent;
+	ConstIterator Begin() const;
+	ConstIterator End() const;
+
 };
 
 } // namespace CLAM

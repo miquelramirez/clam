@@ -37,19 +37,7 @@ namespace CLAM {
 	class SpectralEnvelopeApplyConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralEnvelopeApplyConfig, 1,ProcessingConfig);
-		/** Name of the SpectralEnvelopeApply object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		
-		
-	protected:
-		void DefaultInit();
-	public:
-	  /** Initialize configuration object with default values (name 'SpectralEnvelopeApply', 513 bands, Magnitude treshold set to -80 and MaxSpectralPeaks setted to 100
-	   */
-		void DefaultValues();
-		~SpectralEnvelopeApplyConfig(){};
-		
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralEnvelopeApplyConfig, 0,ProcessingConfig);
  	}; 
 
 	/**
@@ -119,11 +107,6 @@ namespace CLAM {
 
 		bool MayDisableExecution() const {return true;}
 
-		/** Not implemented yet*/
-		void StoreOn(Storage &s) {};
-
-	
-		
  	}; 
 
 };//namespace CLAM

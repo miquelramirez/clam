@@ -38,15 +38,12 @@ int main(int argc,char** argv)
 		AudioFileConfig infilecfg;
 		AudioFileConfig outfilecfgL,outfilecfgR;
 
-		infilecfg.SetName("filein");
 		infilecfg.SetFilename(argv[1]);
 		infilecfg.SetFiletype(EAudioFileType::eWave);
 
-		outfilecfgL.SetName("fileoutL");
 		outfilecfgL.SetFilename(argv[2]);
 		outfilecfgL.SetFiletype(EAudioFileType::eWave);
 
-		outfilecfgR.SetName("fileoutR");
 		outfilecfgR.SetFilename(argv[3]);
 		outfilecfgR.SetFiletype(EAudioFileType::eWave);
 

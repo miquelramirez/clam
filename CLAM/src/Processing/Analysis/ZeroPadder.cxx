@@ -2,12 +2,6 @@
 
 namespace CLAM
 {
-	void ZeroPadderConfig::DefaultInit()
-	{
-		AddAll();
-		UpdateData();
-	}
-
 	ZeroPadder::ZeroPadder()
 		: mInput( "Input samples", this, 1 ),
 		  mOutput( "Zero-padded samples", this, 1 )

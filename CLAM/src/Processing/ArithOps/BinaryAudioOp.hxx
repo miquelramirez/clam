@@ -38,21 +38,7 @@ namespace CLAM
 	class BinaryAudioOpConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (BinaryAudioOpConfig, 1, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-	protected:
-		void DefaultInit()
-		{
-			/* the dynamic type takes care if we add an existing attr .. */
-			
-			AddName();
-			
-			
-			/* All Attributes are added */
-			UpdateData();
-			
-		}
-		
+		DYNAMIC_TYPE_USING_INTERFACE (BinaryAudioOpConfig, 0, ProcessingConfig);
 	};
 	
 	template < typename BinOp >
@@ -62,8 +48,6 @@ namespace CLAM
 		BinaryAudioOpConfig mConfig;
 		BinOp	     mOperation;
 		
-		const char *GetClassName() const {return "BinaryAudioOperation";}
-
 		/** Config change method
 		 * @pre argument should be an SpecAdderConfig object.
 		 */
@@ -110,6 +94,7 @@ namespace CLAM
 
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
+		const char *GetClassName() const {return "BinaryAudioOperation";}
 		void Check(const Audio& in1, const Audio& in2, const Audio& out)
 		{
 			CLAM_ASSERT(in1.GetSize() <= in2.GetSize(),
@@ -169,8 +154,6 @@ namespace CLAM
 		}
 
 		bool MayDisableExecution() const {return true;}
-
-		void StoreOn(Storage &s) {};
 
 	private:
 	};

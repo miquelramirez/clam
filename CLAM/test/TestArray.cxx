@@ -24,7 +24,7 @@
 #include "Complex.hxx"
 #include "Component.hxx"
 #include "DynamicType.hxx"
-#include "XMLStaticAdapter.hxx"
+#include "XMLAdapter.hxx"
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
@@ -97,23 +97,15 @@ public:
 	{
 	}
 
-	void StoreOn(CLAM::Storage & storage)
+	void StoreOn(CLAM::Storage & storage) const
 	{
-#ifdef CLAM_USE_XML
-		if (dynamic_cast < XMLStorage* > (&storage))
-		{
-			XMLable * adaptera = new XMLStaticAdapter(a, "Aa", true);
-			XMLable * adapterb = new XMLStaticAdapter(b, "Ab", true);
-			XMLable * adapterc = new XMLStaticAdapter(c, "Ac", true);
+		XMLAdapter<int> adaptera(a, "Aa", true);
+		XMLAdapter<float> adapterb(b, "Ab", true);
+		XMLAdapter<double> adapterc(c, "Ac", true);
 
-			storage.Store(adaptera);
-			storage.Store(adapterb);
-			storage.Store(adapterc);
-			delete adaptera;
-			delete adapterb;
-			delete adapterc;
-		}
-#endif//CLAM_USE_XML
+		storage.Store(adaptera);
+		storage.Store(adapterb);
+		storage.Store(adapterc);
 	}
 
 
@@ -146,23 +138,15 @@ public:
 	{
 	}
 
-	void StoreOn(CLAM::Storage & storage)
+	void StoreOn(CLAM::Storage & storage) const
 	{
-#ifdef CLAM_USE_XML
-		if (dynamic_cast < XMLStorage* > (&storage))
-		{
-			XMLable * adaptera = new XMLStaticAdapter(a, "Ba", true);
-			XMLable * adapterb = new XMLStaticAdapter(b, "Bb", true);
-			XMLable * adapterc = new XMLStaticAdapter(c, "Bc", true);
+		XMLAdapter<int> adaptera(a, "Ba", true);
+		XMLAdapter<float> adapterb(b, "Bb", true);
+		XMLAdapter<double> adapterc(c, "Bc", true);
 
-			storage.Store(adaptera);
-			storage.Store(adapterb);
-			storage.Store(adapterc);
-			delete adaptera;
-			delete adapterb;
-			delete adapterc;
-		}
-#endif // CLAM_USE_XML
+		storage.Store(adaptera);
+		storage.Store(adapterb);
+		storage.Store(adapterc);
 	}
 
 

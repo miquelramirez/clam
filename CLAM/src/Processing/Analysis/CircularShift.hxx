@@ -82,7 +82,6 @@ namespace CLAM {
 		/** Not implemented yet */
 		bool MayDisableExecution() const {return true;}
 
-		void StoreOn(Storage &s) {};
 		void SetAmount(TSize amount) { mAmount.DoControl(TControlData(amount)); }
 
 

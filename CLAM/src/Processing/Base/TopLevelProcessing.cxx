@@ -24,13 +24,6 @@
 
 namespace CLAM {
 
-	void TopLevelProcessingConfig::DefaultInit(void)
-	{ 
-		AddName(); 
-		UpdateData();
-		SetName("TopLevel");
-	}
-
 	TopLevelProcessing::TopLevelProcessing()
 	{
 		SetOrphan();

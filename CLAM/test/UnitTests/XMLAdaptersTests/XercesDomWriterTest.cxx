@@ -2,7 +2,9 @@
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
 #include "XercesDomWriter.hxx"
+#include "XercesInitializer.hxx"
 #include "XercesEncodings.hxx"
+#include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMText.hpp>
 
@@ -34,7 +36,7 @@ public:
 	/// Common initialization, executed before each test method
 	void setUp() 
 	{
-		xercesc::XMLPlatformUtils::Initialize();
+		XercesInitializer::require();
 		mTargetStream.str("");
 		xercesc::DOMImplementation * imp = 
 			xercesc::DOMImplementation::getImplementation();
@@ -49,7 +51,6 @@ public:
 	void tearDown()
 	{
 		mDocument->release();
-		xercesc::XMLPlatformUtils::Terminate();
 	}
 
 private:
@@ -57,26 +58,11 @@ private:
 	std::stringstream mTargetStream;
 	xercesc::DOMDocument * mDocument;
 
-	void testCurrentContext_whenNoContextDefinedFails()
-	{
-		try
-		{
-			XmlWriteContext::CurrentContext();
-			CPPUNIT_FAIL("Assertion should have failed");
-		}
-		catch (CLAM::ErrAssertionFailed e)
-		{
-			CPPUNIT_ASSERT_EQUAL(
-				std::string("XML generation context not created"),
-				std::string(e.what()));
-		}
-	}
-
 	void testPlainContent()
 	{
 		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
-		XercesDomWriter writer(mTargetStream);
-		writer.write(domContent);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, domContent);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("Content"), mTargetStream.str());
 		domContent->release();
@@ -86,8 +72,8 @@ private:
 	void testEmptyElement()
 	{
 		xercesc::DOMElement * domElement = mDocument->createElement(X("EmptyElement"));
-		XercesDomWriter writer(mTargetStream);
-		writer.write(domElement);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, domElement);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("<EmptyElement/>"), mTargetStream.str());
 
@@ -98,8 +84,8 @@ private:
 		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
 		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
 		domElement->appendChild(domContent);
-		XercesDomWriter writer(mTargetStream);
-		writer.write(domElement);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, domElement);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("<Element>Content</Element>"), mTargetStream.str());
 
@@ -112,8 +98,8 @@ private:
 		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
 		domInnerElement->appendChild(domContent);
 		domElement->appendChild(domInnerElement);
-		XercesDomWriter writer(mTargetStream);
-		writer.write(domElement);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, domElement);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("<Element><InnerElement>Content</InnerElement></Element>"), mTargetStream.str());
 
@@ -123,8 +109,8 @@ private:
 	{
 		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
 		domElement->setAttribute(X("attribute"),X("Attribute value"));
-		XercesDomWriter writer(mTargetStream);
-		writer.write(domElement);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, domElement);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("<Element attribute=\"Attribute value\"/>"), mTargetStream.str());
 
@@ -135,8 +121,8 @@ private:
 		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
 		domElement->setAttribute(X("attribute1"),X("Attribute 1 value"));
 		domElement->setAttribute(X("attribute2"),X("Attribute 2 value"));
-		XercesDomWriter writer(mTargetStream);
-		writer.write(domElement);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, domElement);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("<Element attribute1=\"Attribute 1 value\" attribute2=\"Attribute 2 value\"/>"), mTargetStream.str());
 
@@ -147,8 +133,8 @@ private:
 		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
 		domElement->setAttribute(X("attribute2"),X("Attribute 2 value"));
 		domElement->setAttribute(X("attribute1"),X("Attribute 1 value"));
-		XercesDomWriter writer(mTargetStream);
-		writer.write(domElement);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, domElement);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("<Element attribute1=\"Attribute 1 value\" attribute2=\"Attribute 2 value\"/>"), mTargetStream.str());
 
@@ -160,16 +146,16 @@ private:
 		xercesc::DOMElement * domInnerElement = mDocument->createElement(X("InnerElement"));
 		domElement->setAttribute(X("attribute"),X("Attribute value"));
 		domElement->appendChild(domInnerElement);
-		XercesDomWriter writer(mTargetStream);
-		writer.write(domElement);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, domElement);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("<Element attribute=\"Attribute value\"><InnerElement/></Element>"), mTargetStream.str());
 	}
 	
 	void testEmptyDocument()
 	{
-		XercesDomWriter writer(mTargetStream);
-		writer.write(mDocument);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, mDocument);
 
 		CPPUNIT_ASSERT_EQUAL(std::string(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
@@ -187,8 +173,8 @@ private:
 		domElement->appendChild(domInnerElement);
 		mDocument->getDocumentElement()->appendChild(domElement);
 		
-		XercesDomWriter writer(mTargetStream);
-		writer.write(mDocument);
+		XercesDomWriter writer;
+		writer.write(mTargetStream, mDocument);
 
 		CPPUNIT_ASSERT_EQUAL(std::string(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"

@@ -40,7 +40,4 @@ namespace CLAM
 		return true;
 	}
 
-	void DescriptorComputation::StoreOn( Storage& s )
-	{
-	}
 }

@@ -24,7 +24,7 @@ void System::ConfigureProcessings()
 {
 
 	// oscillators
-	CLAM::OscillatorConfig oscilCfg;
+	CLAM::SimpleOscillatorConfig oscilCfg;
 	oscilCfg.SetFrequency(440.0);
 	oscilCfg.SetAmplitude(0.5);
 

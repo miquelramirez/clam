@@ -42,20 +42,17 @@ class SpectralAnalysisConfig:public ProcessingConfig
 {
 	friend class SpectralAnalysis;
 
-	DYNAMIC_TYPE_USING_INTERFACE (SpectralAnalysisConfig,8,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
+	DYNAMIC_TYPE_USING_INTERFACE (SpectralAnalysisConfig,7,ProcessingConfig);
 /** Configuration for children Processing Objects*/
-	DYN_ATTRIBUTE(1,public,WindowGeneratorConfig, WindowGenerator);
-	DYN_ATTRIBUTE(2,public,CircularShiftConfig,CircularShift);
-	DYN_ATTRIBUTE(3,public,FFTConfig, FFT);
-	DYN_ATTRIBUTE(4,protected,int, prHopSize);
-	DYN_ATTRIBUTE(5,protected,int, prZeroPadding);
-	DYN_ATTRIBUTE(6,protected,int, prSamplingRate);
-	DYN_ATTRIBUTE(7,protected,int, prFFTSize);
+	DYN_ATTRIBUTE(0,public,WindowGeneratorConfig, WindowGenerator);
+	DYN_ATTRIBUTE(1,public,CircularShiftConfig,CircularShift);
+	DYN_ATTRIBUTE(2,public,FFTConfig, FFT);
+	DYN_ATTRIBUTE(3,protected,int, prHopSize);
+	DYN_ATTRIBUTE(4,protected,int, prZeroPadding);
+	DYN_ATTRIBUTE(5,protected,int, prSamplingRate);
+	DYN_ATTRIBUTE(6,protected,int, prFFTSize);
 
 public:
-	~SpectralAnalysisConfig(){};
-
 //Config shortcuts
 
 /** Sets Analysis Window size in num. of samples. 

@@ -47,7 +47,7 @@ public:
 	 * @param storage The given storage where the subitem will be stored
 	 * @see Storage
 	 */
-	virtual void StoreOn (Storage & storage)=0;
+	virtual void StoreOn (Storage & storage) const =0;
 	/**
 	 * Loads component's subitems from the given Storage
 	 * @param storage The given storage where the subitem will be loaded from

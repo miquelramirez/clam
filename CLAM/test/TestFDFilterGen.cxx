@@ -147,11 +147,11 @@ int Test(FDFilterGen &gen)
 	
 	FDControlsGenerator controls;
 
-	controls.LinkOutWithInControl(0, &gen, 0);
-	controls.LinkOutWithInControl(1, &gen, 1);
-	controls.LinkOutWithInControl(2, &gen, 2);
-	controls.LinkOutWithInControl(3, &gen, 3);
-	controls.LinkOutWithInControl(4, &gen, 4);
+	controls.GetOutControls().GetByNumber(0).AddLink(&gen.GetInControls().GetByNumber(0));
+	controls.GetOutControls().GetByNumber(1).AddLink(&gen.GetInControls().GetByNumber(1));
+	controls.GetOutControls().GetByNumber(2).AddLink(&gen.GetInControls().GetByNumber(2));
+	controls.GetOutControls().GetByNumber(3).AddLink(&gen.GetInControls().GetByNumber(3));
+	controls.GetOutControls().GetByNumber(4).AddLink(&gen.GetInControls().GetByNumber(4));
 
 	for (i=0; i<4; i++) {
 		std::cout << " " << EFDFilterType::sEnumValues[i].name << std::endl;
@@ -186,12 +186,13 @@ int TestContrChanges(FDFilterGen &gen)
 	Spectrum spec(sets);
 	FDControlsGenerator controls;
 
-	controls.LinkOutWithInControl(0, &gen, 0);
-	controls.LinkOutWithInControl(1, &gen, 1);
-	controls.LinkOutWithInControl(2, &gen, 2);
-	controls.LinkOutWithInControl(3, &gen, 3);
-	controls.LinkOutWithInControl(4, &gen, 4);
-	
+	controls.GetOutControls().GetByNumber(0).AddLink(&gen.GetInControls().GetByNumber(0));
+	controls.GetOutControls().GetByNumber(1).AddLink(&gen.GetInControls().GetByNumber(1));
+	controls.GetOutControls().GetByNumber(2).AddLink(&gen.GetInControls().GetByNumber(2));
+	controls.GetOutControls().GetByNumber(3).AddLink(&gen.GetInControls().GetByNumber(3));
+	controls.GetOutControls().GetByNumber(4).AddLink(&gen.GetInControls().GetByNumber(4));
+
+
 
 	// Sequence of control-changes and Do's of the generator
 	// Available controls: Gain, HighCutOff, LowCutOff, PassBandSlope, StopBandSlope
@@ -216,9 +217,7 @@ int main()
 	try {
 		int res=0;
 
-		FDFilterGenConfig conf;
-		conf.SetName("Generador de filtros");
-		FDFilterGen gen(conf);
+		FDFilterGen gen;
 
 		res = Test(gen);
 		if (!res) res = TestContrChanges(gen);

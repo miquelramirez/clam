@@ -25,11 +25,9 @@
 #ifndef _DynamicType_
 #define _DynamicType_
 
-#ifdef CLAM_USE_XML
-	#include "XMLAdapter.hxx"
-	#include "XMLIterableAdapter.hxx"
-	#include "XMLComponentAdapter.hxx"
-#endif //CLAM_USE_XML
+#include "XMLAdapter.hxx"
+#include "XMLIterableAdapter.hxx"
+#include "XMLComponentAdapter.hxx"
 
 #include "DynamicTypeMacros.hxx"  //this file is not included anywhere but here.
 
@@ -293,7 +291,7 @@ private:
 	bool bPreAllocateAllAttributes;
 
 public:
-	virtual void StoreOn(CLAM::Storage & s) {
+	virtual void StoreOn(CLAM::Storage & s) const {
 		this->StoreDynAttributes(s);
 	}
 	virtual void LoadFrom(CLAM::Storage & s) {
@@ -306,56 +304,41 @@ public:
 	};
 	
 protected:
-	virtual void StoreDynAttributes(CLAM::Storage & s);
-	virtual void LoadDynAttributes(CLAM::Storage & s);
+	virtual void StoreDynAttributes(CLAM::Storage & s) const=0;
+	virtual void LoadDynAttributes(CLAM::Storage & s)=0;
 	template <typename AttribType>
-	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
-#ifdef CLAM_USE_XML
+	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) const 
+	{
 		CLAM::XMLAdapter<AttribType> adapter(object, name, true);
-		s.Store (&adapter);
-#endif//CLAM_USE_XML
+		s.Store (adapter);
 	}
 	template <typename AttribType>
-	void StoreAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
-#ifdef CLAM_USE_XML
+	void StoreAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) const
+	{
 		CLAM::XMLComponentAdapter adapter(object, name, true);
-		s.Store (&adapter);
-#endif//CLAM_USE_XML
+		s.Store (adapter);
 	} 
 	template <typename AttribType>
-	void StoreIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) {
-#ifdef CLAM_USE_XML
+	void StoreIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) const
+	{
 		CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
-		s.Store (&adapter);
-#endif//CLAM_USE_XML
+		s.Store (adapter);
 	} 
 
 	template <typename AttribType>
 	bool LoadAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
-#ifdef CLAM_USE_XML
 		CLAM::XMLAdapter<AttribType> adapter(object, name, true);
-		return s.Load (&adapter);	
-#else 
-		return false;
-#endif//CLAM_USE_XML
+		return s.Load (adapter);	
 	}
 	template <typename AttribType>
 	bool LoadAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
-#ifdef CLAM_USE_XML
 		CLAM::XMLComponentAdapter adapter(object, name, true);
-		return s.Load (&adapter);	
-#else 
-		return false;
-#endif//CLAM_USE_XML
+		return s.Load (adapter);	
 	} 
 	template <typename AttribType>
 	bool LoadIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) {
-#ifdef CLAM_USE_XML
 		CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
-		return s.Load (&adapter);
-#else 
-		return false;
-#endif//CLAM_USE_XML
+		return s.Load (adapter);
 	} 
 };
 

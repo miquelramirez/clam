@@ -20,16 +20,9 @@
  */
 
 #include "ProcessingPresentation.hxx"
-#include "InPortPresentation.hxx"
-#include "OutPortPresentation.hxx"
-#include "InControlPresentation.hxx"
-#include "OutControlPresentation.hxx"
-#include "InPortAdapter.hxx"
-#include "OutPortAdapter.hxx"
-#include "InControlAdapter.hxx"
-#include "OutControlAdapter.hxx"
-#include "ProcessingModel.hxx"
+#include "ProcessingController.hxx"
 #include "ProcessingConfig.hxx"
+#include "ConnectionPointPresentation.hxx"
 #include "Factory.hxx"
 
 #include <iostream>
@@ -43,50 +36,36 @@ ProcessingPresentation::ProcessingPresentation(const std::string& nameFromNetwor
 	: mNameFromNetwork(nameFromNetwork),
 	  mConfig(0)
 {
-	SetConfig.Wrap( this, &ProcessingPresentation::OnNewConfig );
-	SetConfigFromGUI.Wrap( this, &ProcessingPresentation::OnNewUpdateConfig );
-	SetInPort.Wrap( this, &ProcessingPresentation::OnNewInPort );
-	SetOutPort.Wrap( this, &ProcessingPresentation::OnNewOutPort );
-	SetInControl.Wrap( this, &ProcessingPresentation::OnNewInControl );
-	SetOutControl.Wrap( this, &ProcessingPresentation::OnNewOutControl );
-
-	SetObservedClassName.Wrap( this, &ProcessingPresentation::OnNewObservedClassName );
+	SlotConfigureProcessing.Wrap( this, &ProcessingPresentation::ConfigureProcessing );
 }
 
-void ProcessingPresentation::OnNewConfig( CLAM::ProcessingConfig * cfg)
+void ProcessingPresentation::SetConfig( const CLAM::ProcessingConfig & cfg)
 {
 	if (!mConfig)
 	{
 		ProcessingConfigPresentationFactory & factory =  ProcessingConfigPresentationFactory::GetInstance();
-		mConfig = factory.Create(cfg->GetClassName());
-		NewConfig.Connect( mConfig->SetConfig );
-		mConfig->ApplyConfig.Connect( SetConfigFromGUI );
-
+		mConfig = factory.Create(cfg.GetClassName());
+		mConfig->SignalConfigureProcessing.Connect( SlotConfigureProcessing );
 	}
-
-	NewConfig.Emit( cfg );
-
+	mConfig->SetConfig( cfg );
 }
 
-void ProcessingPresentation::OnNewUpdateConfig( CLAM::ProcessingConfig * cfg)
+void ProcessingPresentation::ConfigureProcessing( const CLAM::ProcessingConfig & cfg)
 {
-	UpdateConfig.Emit( cfg );
+	SignalConfigureProcessing.Emit( cfg );
 }
 
 ProcessingPresentation::~ProcessingPresentation()
 {
-	InPortPresentationIterator itInPort;
-	for ( itInPort=mInPortPresentations.begin(); itInPort!=mInPortPresentations.end(); itInPort++)
-		delete *itInPort;
-	OutPortPresentationIterator itOutPort;
-	for ( itOutPort=mOutPortPresentations.begin(); itOutPort!=mOutPortPresentations.end(); itOutPort++)
-		delete *itOutPort;
-	InControlPresentationIterator itInControl;
-	for ( itInControl=mInControlPresentations.begin(); itInControl!=mInControlPresentations.end(); itInControl++)
-		delete *itInControl;
-	OutControlPresentationIterator itOutControl;
-	for ( itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end(); itOutControl++)
-		delete *itOutControl;
+	ConnectionPointPresentationsList::iterator it;
+	for ( it=mInPortPresentations.begin(); it!=mInPortPresentations.end(); it++)
+		delete *it;
+	for ( it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end(); it++)
+		delete *it;
+	for ( it=mInControlPresentations.begin(); it!=mInControlPresentations.end(); it++)
+		delete *it;
+	for ( it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end(); it++)
+		delete *it;
 
 	if (mConfig)
 	{
@@ -95,52 +74,62 @@ ProcessingPresentation::~ProcessingPresentation()
 	}
 }
 
-void ProcessingPresentation::AttachTo(CLAMVM::ProcessingModel & m)
+void ProcessingPresentation::AttachTo(CLAMVM::ProcessingController & controller)
 {
-	m.AcquireClassName.Connect(SetObservedClassName);
-	m.AcquireInPort.Connect(SetInPort);
-	m.AcquireOutPort.Connect(SetOutPort);
-	m.AcquireInControl.Connect(SetInControl);
-	m.AcquireOutControl.Connect(SetOutControl);
-	m.AcquireConfig.Connect(SetConfig);
-	UpdateConfig.Connect( m.SetNewConfig );
+	CLAMVM::ProcessingController::NamesList::iterator it;
+	for( it=controller.BeginInPortNames();it!=controller.EndInPortNames();it++)
+		SetInPort(*it);
+	
+	for( it=controller.BeginOutPortNames();it!=controller.EndOutPortNames();it++)
+		SetOutPort(*it);
+	
+	for( it=controller.BeginInControlNames();it!=controller.EndInControlNames();it++)
+		SetInControl(*it);
+	
+	for( it=controller.BeginOutControlNames();it!=controller.EndOutControlNames();it++)
+		SetOutControl(*it);
+
+	SetObservedClassName( controller.GetObservedClassName() );
+	SetConfig( controller.GetObservedConfig() );
+	
+	SignalConfigureProcessing.Connect( controller.SlotConfigureProcessing );
 }
 
-OutPortPresentation & ProcessingPresentation::GetOutPortPresentation( const std::string& name)
+ConnectionPointPresentation & ProcessingPresentation::GetOutPortPresentation( const std::string& name)
 {
-	OutPortPresentationIterator itout;
-	for ( itout=mOutPortPresentations.begin(); itout!=mOutPortPresentations.end(); itout++)
-		if((*itout)->GetName() == name)
-			return **itout;
+	ConnectionPointPresentationsList::iterator it;
+	for ( it=mOutPortPresentations.begin(); it!=mOutPortPresentations.end(); it++)
+		if((*it)->GetName() == name)
+			return **it;
 }
 
-InPortPresentation & ProcessingPresentation::GetInPortPresentation( const std::string& name)
+ConnectionPointPresentation & ProcessingPresentation::GetInPortPresentation( const std::string& name)
 {
-	InPortPresentationIterator itin;
-	for ( itin=mInPortPresentations.begin(); itin!=mInPortPresentations.end(); itin++)
-		if((*itin)->GetName() == name)
-			return **itin;	
+	ConnectionPointPresentationsList::iterator it; 
+	for ( it=mInPortPresentations.begin(); it!=mInPortPresentations.end(); it++)
+		if((*it)->GetName() == name)
+			return **it;	
 }
 
-OutControlPresentation & ProcessingPresentation::GetOutControlPresentation( const std::string& name)
+ConnectionPointPresentation & ProcessingPresentation::GetOutControlPresentation( const std::string& name)
 {
-	OutControlPresentationIterator itout;
-	for ( itout=mOutControlPresentations.begin(); itout!=mOutControlPresentations.end(); itout++)
-		if((*itout)->GetName() == name)
-			return **itout;
+	ConnectionPointPresentationsList::iterator it;
+	for ( it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end(); it++)
+		if((*it)->GetName() == name)
+			return **it;
 }
 
-InControlPresentation & ProcessingPresentation::GetInControlPresentation( const std::string& name)
+ConnectionPointPresentation & ProcessingPresentation::GetInControlPresentation( const std::string& name)
 {
-	InControlPresentationIterator itin;
-	for ( itin=mInControlPresentations.begin(); itin!=mInControlPresentations.end(); itin++)
-		if((*itin)->GetName() == name)
-			return **itin;
+	ConnectionPointPresentationsList::iterator it;
+	for ( it=mInControlPresentations.begin(); it!=mInControlPresentations.end(); it++)
+		if((*it)->GetName() == name)
+			return **it;
 }
 
 bool ProcessingPresentation::HasInPort( const std::string& name)
 {
-	InPortPresentationIterator itin;
+	ConnectionPointPresentationsList::iterator itin;
 	for ( itin=mInPortPresentations.begin(); itin!=mInPortPresentations.end(); itin++)
 		if((*itin)->GetName() == name)
 			return true;
@@ -149,7 +138,7 @@ bool ProcessingPresentation::HasInPort( const std::string& name)
 
 bool ProcessingPresentation::HasOutPort( const std::string& name)
 {
-	OutPortPresentationIterator itout;
+	ConnectionPointPresentationsList::iterator itout;
 	for ( itout=mOutPortPresentations.begin(); itout!=mOutPortPresentations.end(); itout++)
 		if((*itout)->GetName() == name)
 			return true;

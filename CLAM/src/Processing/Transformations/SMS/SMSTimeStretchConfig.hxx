@@ -30,25 +30,21 @@ namespace CLAM
 	class SMSTimeStretchConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SMSTimeStretchConfig, 6,ProcessingConfig);
-		/** Name of the SMSTransformation object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (SMSTimeStretchConfig, 5,ProcessingConfig);
 		/** Type of transformation, for the time being just a string, should become
 		* an enumeration of known transformation types??*/
-		DYN_ATTRIBUTE (1, public, std::string, Type);
+		DYN_ATTRIBUTE (0, public, std::string, Type);
 		/** Single Value Parameter */
-		DYN_ATTRIBUTE (2, public, TData, Amount);
+		DYN_ATTRIBUTE (1, public, TData, Amount);
 		/** BPF (envelope-like) Parameter */
-		DYN_ATTRIBUTE (3, public, BPF, BPFAmount);
-		DYN_ATTRIBUTE (4, public, TData, SamplingRate);
-		DYN_ATTRIBUTE (5, public, TData, HopSize);
+		DYN_ATTRIBUTE (2, public, BPF, BPFAmount);
+		DYN_ATTRIBUTE (3, public, TData, SamplingRate);
+		DYN_ATTRIBUTE (4, public, TData, HopSize);
 		
 	protected:
 		void DefaultInit();
 
 		void DefaultValues();
-	public:
-		~SMSTimeStretchConfig();
 	};
 	
 }

@@ -6,24 +6,24 @@
 
 namespace CLAM
 {
-//foward declaration:
-class Processing;
 class InControl;
 
 class PublishedInControls
 {
+	std::vector<InControl*> mInControls;
 public:
 	typedef std::vector<InControl*>::iterator Iterator;
-	PublishedInControls(Processing* parent);
+	typedef std::vector<InControl*>::const_iterator ConstIterator;
 
 	InControl& GetByNumber(int index) const;
-	InControl& Get(std::string name) const;
+	InControl& Get(const std::string & name) const;
 	int Size() const;
+	void Publish(InControl *);
+	void Clear(){ mInControls.clear(); }
         Iterator Begin();
 	Iterator End();
-
-private:
-	Processing& mParent;
+	ConstIterator Begin() const;
+	ConstIterator End() const;
 };
 
 

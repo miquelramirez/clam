@@ -52,7 +52,7 @@ private:
 	QDockWindow * mDockProcMenu;
 
 public: //slots
-	SigSlot::Slotv1< const std::string & > NewMessageToStatus;
+	SigSlot::Slotv1< const std::string & > SlotNewMessageToStatus;
 
  public slots:
  void LoadNetwork();
@@ -64,8 +64,8 @@ public: //slots
 	void ShowProcMenu();
 
 public: // CLAM signals
-	SigSlot::Signalv1 < bool > ChangeNetworkState;
-	SigSlot::Signalv0 NewNetworkSignal;
+	SigSlot::Signalv1 < bool > SignalChangeNetworkState;
+	SigSlot::Signalv0 SignalNewNetworkSignal;
 
 };
 

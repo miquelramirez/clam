@@ -29,9 +29,8 @@ namespace CLAM {
 	 */
 	struct FFTConfig: public ProcessingConfig {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (FFTConfig, 2, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, int, AudioSize);
+		DYNAMIC_TYPE_USING_INTERFACE (FFTConfig, 1, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, int, AudioSize);
 	protected:
 		/** Dynamic type initialization: All attributes are
 		 *   instantiated.

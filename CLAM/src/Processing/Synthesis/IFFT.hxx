@@ -68,9 +68,6 @@ namespace CLAM {
 	// Control change callback function
 	void ChangeSize(int n);
 	int GetSize() {return mSize;}
-
-	std::string NewUniqueName();
-
 		
 	virtual bool ConcreteConfigure(const ProcessingConfig&) = 0;
 
@@ -113,13 +110,6 @@ namespace CLAM {
 	// probably be always memoryless.
 
 	virtual bool MayDisableExecution() const {return false;}
-
-	// COMPONENT Methods
-
-	/** @todo Not yet implemented. */
-	virtual void StoreOn(Storage &s) {};
-	/** @todo Not yet implemented. */
-	virtual void LoadFrom(Storage &s) {};
 
     };
 }

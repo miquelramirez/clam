@@ -123,12 +123,9 @@ bool BigProcessing::ConfigureChildren(int size)
 	IFFTConfig cfg_ifft;
 
 	cfg_fft.SetAudioSize(size);
-	cfg_fft.SetName(fft_name);
 
-	cfg_prod.SetName(filter_name);
 
 	cfg_ifft.SetAudioSize(size);
-	cfg_ifft.SetName(ifft_name);
 
 	if (!InputFFT.Configure(cfg_fft))
 		return false;

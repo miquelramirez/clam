@@ -20,7 +20,7 @@
  */
 
 #include "ConnectionPresentation.hxx"
-#include "ConnectionModel.hxx"
+#include "ConnectionAdapter.hxx"
 #include "Processing.hxx"
 
 namespace NetworkGUI
@@ -29,25 +29,21 @@ namespace NetworkGUI
 ConnectionPresentation::ConnectionPresentation()
 	: mInName( "unnamed inport" ),
 	  mOutName( "unnamed outport" )
-//	  mOutProc(0),
-//	  mInProc(0)
 {
-	SetNames.Wrap( this, &ConnectionPresentation::OnNewNames );
+	SlotSetNames.Wrap( this, &ConnectionPresentation::SetNames );
 }
 
 ConnectionPresentation::~ConnectionPresentation()
 {
 }
 
-void ConnectionPresentation::AttachTo( CLAMVM::ConnectionModel & m )
+void ConnectionPresentation::AttachTo( CLAMVM::ConnectionAdapter & adapter )
 {
-	m.AcquireNames.Connect(SetNames);
+	adapter.SignalAcquireNames.Connect(SlotSetNames);
 }
 
-void ConnectionPresentation::OnNewNames( const std::string & portOut, const std::string & portIn )
+void ConnectionPresentation::SetNames( const std::string & portOut, const std::string & portIn )
 {
-//	mInProc = in;
-//	mOutProc = out;
 	mInName = portIn;
 	mOutName = portOut;
 }

@@ -24,10 +24,9 @@
 
 #include "Processing.hxx"
 #include "DescriptorComputationConfig.hxx"
+#include "Descriptor.hxx"
 
 namespace CLAM {
-
-	class Descriptor;
 
 	
 	/** This Processing class only calls the Compute operation of Descriptor passed to the Do 
@@ -54,8 +53,6 @@ namespace CLAM {
 		bool Do(void);
 
 		bool Do(Descriptor& input);
-			
-		void StoreOn(Storage &s);
 	protected:
 		DescriptorComputationConfig mConfig;
 	
