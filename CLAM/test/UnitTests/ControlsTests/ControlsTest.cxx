@@ -255,7 +255,6 @@ private:
 		publisherBaseRef.AddLink( &in );
 		out.SendControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
-
 	}
 
 	
