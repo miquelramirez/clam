@@ -22,42 +22,55 @@
 #include "GLPortNew.hxx"
 #include "CLAMGL.hxx"
 #include <iostream>
+#include <FL/Fl.H>
 
 using std::cerr;
 using std::endl;
 
-using namespace CLAMGUI;
+namespace CLAMGUI
+{
+
+void refreshingCallback( void* ptr_to_port )
+{
+	GLPort* goodPtr = ( GLPort* ) ptr_to_port;
+	goodPtr->redraw();
+	Fl::repeat_timeout(0.083,refreshingCallback, ptr_to_port);
+}
 
 void GLPort::DrawSelf()
 {
-	if ( mIsConf )
-	{
+	static bool first_time_called = false;
+
 //		make_current();
 //		if ( !valid() )
 	//	{
-			ApplyProjection(); // Window has been resized or something so projection must change
+	ApplyProjection(); // Window has been resized or something so projection must change
 	//	}
 		
-		glPushAttrib( GL_ALL_ATTRIB_BITS );
+	glPushAttrib( GL_ALL_ATTRIB_BITS );
 		
-		mRenderingState->Apply(); // We apply our selected rendering environment onto the OpenGL stack
+	mRenderingState->Apply(); // We apply our selected rendering environment onto the OpenGL stack
 			
-		mDrawCb();  // We make here the call to the rendering code
+	mDrawCb();  // We make here the call to the rendering code
 			
-		glPopAttrib();
+	glPopAttrib();
 	
+	if ( !mTimerLaunched )
+	{
+
+		Fl::add_timeout(0.166,refreshingCallback,this);
+		mTimerLaunched = true;
+	}
+
+
 		//	swap_buffers();
 		
-	}
-	else
-	{
-		cerr << "Nothing drawn because GLPort wasn't properly configured" << endl;
-	}
 
 }
 
 void GLPort::draw()
 {
+
 
 	if ( mInMultiDisplay )
 	{
@@ -85,3 +98,4 @@ void GLPort::ApplyProjection()
 	glOrtho( mHorRange.mPosition, mHorRange.mPosition + mHorRange.mSize, mVerRange.mPosition - mVerRange.mSize, mVerRange.mPosition, -1.0f, 1.0f );
 }
 
+}

@@ -23,6 +23,7 @@
 #include "ErrGUI.hxx"
 #include <FL/fl_draw.H>
 #include <cstddef>
+#include <iostream>
 
 using namespace CLAMGUI;
 
@@ -51,7 +52,6 @@ void FLMultiDisplay::draw(void)
 				port->mInMultiDisplay = this;
 				port->mHorRange = mHorRange;
 				port->mVerRange = mVerRange;
-
 				port->DrawSelf();
 			}
 		}

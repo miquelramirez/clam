@@ -28,6 +28,7 @@
 #include <windows.h>
 #undef GetClassName
 #endif
+#include "AudioManager.hxx"
 
 namespace CLAM {
 

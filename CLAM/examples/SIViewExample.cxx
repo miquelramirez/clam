@@ -81,12 +81,12 @@ int main(int argc, char* argv[])
 		std::cout << myspectrum.GetComplexArray()[0] << std::endl;
 		
 		SpectrumView specView;
-		SpectrumPresentation pres(	Geometry( 562, 100, 512, 384 ),
+		SpectrumPresentation spectrum_pres(	Geometry( 562, 100, 512, 384 ),
 									"An Spectrum Processing Data Presentation" );
 		//SpectrumPresentation pres;
 
 		specView.BindTo( &myspectrum );
-		pres.LinkWithView( &specView );
+		spectrum_pres.LinkWithView( &specView );
 
 		// Processing object configuration
 		CLAM::FFTConfig fconfig;
@@ -104,15 +104,15 @@ int main(int argc, char* argv[])
 		audioView.Refresh();
 		specView.Refresh();
 
-		pres.Show();
+		spectrum_pres.Show();
 		audio_pres.Show();
 
 		cout << "GUI Loop. Close the window to Exit" << endl;
 
 		do
 		{
-			pres.Do();
-			audio_pres.Do();
+//			spectrum_pres.Do();
+//			audio_pres.Do();
 			toolkit->Tick();
 		} while ( !toolkit->IsClosing() );
 		

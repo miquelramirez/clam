@@ -22,9 +22,9 @@
 #ifndef __MIDIIn__
 #define __MIDIIn__
 
-#include "MIDIIO.hxx"
-
-
+#include "Processing.hxx"
+#include "MIDIDevice.hxx"
+#include "MIDIEnums.hxx"
 
 namespace CLAM{
 

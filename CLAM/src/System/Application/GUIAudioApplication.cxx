@@ -28,9 +28,6 @@
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Light_Button.H>
-#ifdef WIN32
-#include "DXFullDuplex.hxx"
-#endif
 
 #ifdef CreateWindow
 	#undef CreateWindow
@@ -76,15 +73,8 @@ namespace CLAM {
 
 	void GUIAudioApplication::Run(int argc,char** argv)
 	{
-#ifdef WIN32
-		if (DXFullDuplex::shMainWnd == 0) {
-#endif
-			Fl_Window* w = CreateWindow(argc,argv);
-			w->show(argc,argv);
-#ifdef WIN32
-			DXFullDuplexHook( fl_xid(w) );
-		}
-#endif
+		Fl_Window* w = CreateWindow(argc,argv);
+		w->show(argc,argv);
 		UserMain();	
 	}
 	

@@ -56,9 +56,9 @@ int test1() {
 	try
 		{
 		fprintf(stdout, "Spectrum Test\n");
-		Array<Complex_> *pData=new Array<Complex_>(SIZE);
+		Array<Complex> *pData=new Array<Complex>(SIZE);
 		for (i=0; i<SIZE; i++)
-			pData->AddElem(Complex<TData>(2,5) );
+			pData->AddElem(Complex(2,5) );
 
 /*****Constructing diferent types of spectrums*****/
 

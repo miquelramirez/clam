@@ -20,7 +20,7 @@
  */
 
 #include "Oscillator.hxx"
-#include "AudioIO.hxx"
+#include "AudioManager.hxx"
 #include <iostream>
 using std::cout;
 using std::endl;

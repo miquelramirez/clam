@@ -20,10 +20,12 @@
  */
 
 #include "MIDIInControl.hxx"
+#include "MIDIManager.hxx"
 #include "PrintControl.hxx"
 #include "ControlMapper.hxx"
 #include "Oscillator.hxx"
 #include "ControlMultiplier.hxx"
+#include <iostream>
 
 using namespace CLAM;
 using namespace std;

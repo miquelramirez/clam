@@ -20,12 +20,18 @@
  */
 
 #include "MIDIManager.hxx"
+#include "MIDIDevice.hxx"
+#include "MIDIDeviceList.hxx"
+#include "MIDIIn.hxx"
 #include <algorithm>
 using std::find ;
 
 using namespace CLAM;
 
 MIDIManager* MIDIManager::pSingleton = 0;
+
+MIDIDeviceList* sAlsaMIDIDeviceList = 0;
+MIDIDeviceList* sPortMidiMIDIDeviceList = 0;
 
 MIDIManager::MIDIManager() throw(Err)
 {

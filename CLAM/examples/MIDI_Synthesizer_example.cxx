@@ -25,13 +25,15 @@ A FLOW DIAGRAM TO DEMONSTRATE THIS EXAMPLE CAN BE FOUND IN
 CLAM-Docs/MIDI_Synthesizer_example (development-branch)
 */
 
-#include "AudioIO.hxx"
+#include "AudioIn.hxx"
+#include "AudioOut.hxx"
 #include "Oscillator.hxx"
 #include "AudioApplication.hxx"
-#include "MIDIIO.hxx"
+#include "MIDIManager.hxx"
 #include "MIDIInControl.hxx"
 #include "Dispatcher.hxx"
 #include "Mixer.hxx"
+#include "AudioManager.hxx"
 #include <vector>
 #include <iostream>
 

@@ -22,6 +22,17 @@
 #ifndef __MIDIManager__
 #define __MIDIManager__
 
+#include <vector>
+
+#include "MIDIDevice.hxx"
+#include "MIDIDeviceList.hxx"
+
+#ifdef WIN32
+#define DEFAULT_MIDI_ARCH "portmidi"
+#else
+#define DEFAULT_MIDI_ARCH "alsa"
+#endif
+
 namespace CLAM{
 
 /** This class takes care of all the creation of the registration of 
@@ -29,6 +40,8 @@ namespace CLAM{
  * It's a singleton class (only must be an instantiation of this class) because and unique object manages all the Devices, MIDIOut and MIDIIn objects provided by the system
  * @see MIDIIn, MIDIOut, MIDIDevice
  */
+
+
 class MIDIManager
 {
 	friend class MIDIIn;
