@@ -55,66 +55,6 @@
 namespace CLAM {
 
 
-/**
-* Flags that are used to decide which Snapshots will be shown
-*/
-class SpectralSynthesisSnapshotsFlags : public Flags<7> {
-public:
-	static tFlagValue sFlagValues[];
-	virtual CLAM::Component * Species() const {
-		return new SpectralSynthesisSnapshotsFlags();
-	}
-	typedef enum {
-		eInputFrameSpectrum=0,
-		eIFFTOutput=1,
-		eAudioFrameNoCircularShift=2,
-		eAudioFrameNoZeroPadding=3,
-		eWindowedAudioFrame=4,
-		eOutputAudioFrame=5,
-		eSynthesisWindow=6
-	} tFlag;
-	SpectralSynthesisSnapshotsFlags () :
-		CLAM::Flags<7>(sFlagValues),
-		bInputFrameSpectrum(operator[](eInputFrameSpectrum)),
-		bIFFTOutput(operator[](eIFFTOutput)),
-		bAudioFrameNoCircularShift(operator[](eAudioFrameNoCircularShift)),
-		bAudioFrameNoZeroPadding(operator[](eAudioFrameNoZeroPadding)),
-		bWindowedAudioFrame(operator[](eWindowedAudioFrame)),
-		bOutputAudioFrame(operator[](eOutputAudioFrame)),
-		bSynthesisWindow(operator[](eSynthesisWindow))
-	{};
-	template <class T> SpectralSynthesisSnapshotsFlags(const T &t) : 
-		CLAM::Flags<7>(sFlagValues,t),
-		bInputFrameSpectrum(operator[](eInputFrameSpectrum)),
-		bIFFTOutput(operator[](eIFFTOutput)),
-		bAudioFrameNoCircularShift(operator[](eAudioFrameNoCircularShift)),
-		bAudioFrameNoZeroPadding(operator[](eAudioFrameNoZeroPadding)),
-		bWindowedAudioFrame(operator[](eWindowedAudioFrame)),
-		bOutputAudioFrame(operator[](eOutputAudioFrame)),
-		bSynthesisWindow(operator[](eSynthesisWindow))
-	{};
-	template <class T1, class T2> SpectralSynthesisSnapshotsFlags(const T1 &t1, const T2 &t2) : 
-		CLAM::Flags<7>(sFlagValues,t1,t2),
-		bInputFrameSpectrum(operator[](eInputFrameSpectrum)),
-		bIFFTOutput(operator[](eIFFTOutput)),
-		bAudioFrameNoCircularShift(operator[](eAudioFrameNoCircularShift)),
-		bAudioFrameNoZeroPadding(operator[](eAudioFrameNoZeroPadding)),
-		bWindowedAudioFrame(operator[](eWindowedAudioFrame)),
-		bOutputAudioFrame(operator[](eOutputAudioFrame)),
-		bSynthesisWindow(operator[](eSynthesisWindow))
-	{};
-
-	reference bInputFrameSpectrum;
-	reference bIFFTOutput;
-	reference bAudioFrameNoCircularShift;
-	reference bAudioFrameNoZeroPadding;
-	reference bWindowedAudioFrame;
-	reference bOutputAudioFrame;
-	reference bSynthesisWindow;
-	
-
-};
-
 
 
 class SpectralSynthesisConfig:public ProcessingConfig
@@ -124,7 +64,7 @@ friend class SpectralSynthesis;
 
 public:
 	
-	DYNAMIC_TYPE_USING_INTERFACE(SpectralSynthesisConfig,9,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE(SpectralSynthesisConfig,8,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 /** Configuration for children Processing Objects*/
 	DYN_ATTRIBUTE(1,public,WindowGeneratorConfig,AnalWindowGenerator);
@@ -135,8 +75,6 @@ public:
 	DYN_ATTRIBUTE(6,protected,int, prZeroPadding);
 	DYN_ATTRIBUTE(7,protected,int,prSamplingRate);
 
-/** Flags that are used in order to decide what debug display is shown TODO?*/
-	DYN_ATTRIBUTE(8,public, SpectralSynthesisSnapshotsFlags,DisplayFlags);
 
 //Config shortcuts
 
@@ -189,7 +127,7 @@ private:
 
 
 		//internal Processing Data
-		Audio                     mAudio1, mAudio2,mAudio3;
+		Audio                     mAudio0,mAudio1, mAudio2,mAudio3;
 		//Spectrum                  Spec;
 		Audio                    mSynthWindow;
 

@@ -24,18 +24,6 @@
 using namespace CLAM;
 
 
-Flags<7>::tFlagValue SpectralSynthesisSnapshotsFlags::sFlagValues[] = {
- 	{SpectralSynthesisSnapshotsFlags::eInputFrameSpectrum,"InputFrameSpectrum"},
-	{SpectralSynthesisSnapshotsFlags::eIFFTOutput,"IFFTOutput"},
-	{SpectralSynthesisSnapshotsFlags::eAudioFrameNoCircularShift,"AudioFrameNoCircularShift"},
-	{SpectralSynthesisSnapshotsFlags::eAudioFrameNoZeroPadding,"AudioFrameNoZeroPadding"},
-	{SpectralSynthesisSnapshotsFlags::eWindowedAudioFrame,"InverseWindowedAudioFrame"},
-	{SpectralSynthesisSnapshotsFlags::eOutputAudioFrame,"OutputAudioFrame"},
-	{SpectralSynthesisSnapshotsFlags::eSynthesisWindow,"SynthesisWindow"},
-	{0,NULL}
-}; 
-
-
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 /*					SpectralSYNTHESIS CONFIGURATION						*/
@@ -73,12 +61,6 @@ void SpectralSynthesisConfig::DefaultValues()
 	/**/
 
 	SetFrameSize(256);
-
-	SpectralSynthesisSnapshotsFlags tmpfl;
-	tmpfl.bInputFrameSpectrum=tmpfl.bIFFTOutput=tmpfl.bAudioFrameNoCircularShift=tmpfl.bAudioFrameNoZeroPadding=
-		tmpfl.bWindowedAudioFrame=tmpfl.bOutputAudioFrame=tmpfl.bSynthesisWindow=false;
-	SetDisplayFlags(tmpfl);
-	
 
 }
 
@@ -257,7 +239,9 @@ void SpectralSynthesis::ConfigureData()
 	///////////////////////////////////
 
 	//intantiate audio
-	mAudio1.SetSize(mConfig.GetIFFT().GetAudioSize());//audio used as output of the IFFT
+	mAudio0.SetSize(mConfig.GetIFFT().GetAudioSize());//audio used as output of the IFFT
+
+	mAudio1.SetSize(mConfig.GetAnalWindowSize());//audio without zeropadding
 	
 	mAudio2.SetSize(mConfig.GetHopSize()*2);//audio used as input of the inverse + triangular windowing 
 	
@@ -284,7 +268,6 @@ void SpectralSynthesis::ConfigureData()
 	/*Now we generate triangular synthesis window*/
 	tmpWindow.SetSize(mConfig.GetHopSize()*2+1);
 
-//	CLAMGUI::showPDSnapshot(&tmpWindow);
 	mPO_SynthWindowGen.Start();
 	mPO_SynthWindowGen.Do(tmpWindow);
 	mPO_SynthWindowGen.Stop();
@@ -323,47 +306,43 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 
 	SpecTypeFlags tmpFlags;
 	in.GetType(tmpFlags);
-	if(mConfig.GetDisplayFlags().bInputFrameSpectrum)
-		tmpFlags.bMagPhase=1;
 	if(!tmpFlags.bComplex)
 	{
 		tmpFlags.bComplex=1;
 	}
 	in.SetTypeSynchronize(tmpFlags); //convert MagPhase data to ComplexData
-//	if(mConfig.GetDisplayFlags().bInputFrameSpectrum)
-//		CLAMGUI::showPDSnapshot(&in);
+//	CLAMGUI::showPDSnapshot(&in);
 	
-	mPO_IFFT.Do(in, mAudio1);
+	mPO_IFFT.Do(in, mAudio0);
 
-//	if(mConfig.GetDisplayFlags().bIFFTOutput)
-//		CLAMGUI::showPDSnapshot(&mAudio1,"Output of the IFFT");
+//	CLAMGUI::showPDSnapshot(&mAudio1,"Output of the IFFT");
 	
-	mPO_CircularShift.Do(mAudio1,mAudio1);//Undoing Synthesis circular shift
+	mPO_CircularShift.Do(mAudio0,mAudio0);//Undoing Synthesis circular shift
 
-//	if(mConfig.GetDisplayFlags().bAudioFrameNoCircularShift)
-//		CLAMGUI::showPDSnapshot(&mAudio1,"Audio Frame without circular shift");
+//	CLAMGUI::showPDSnapshot(&mAudio1,"Audio Frame without circular shift");
 
 //Undoing zero padding by hand seems a bit ugly but...
-	mAudio1.GetAudioChunk(0,mConfig.GetHopSize()*2,mAudio2,false);
+	mAudio0.GetAudioChunk(0,mConfig.GetAnalWindowSize()*2,mAudio1,false);//XA_New
 
-//	if(mConfig.GetDisplayFlags().bAudioFrameNoZeroPadding)
-//		CLAMGUI::showPDSnapshot(&mAudio2,"Audio Frame Without Zero Padding");
+//	CLAMGUI::showPDSnapshot(&mAudio2,"Audio Frame Without Zero Padding");
 	
-//	if(mConfig.GetDisplayFlags().bSynthesisWindow)
-//		CLAMGUI::showPDSnapshot(&mSynthWindow, "Synthesis Window");
+//	CLAMGUI::showPDSnapshot(&mSynthWindow, "Synthesis Window");
+
+	//Now we take the central samples to multiply with the window
+	int centerSample=mAudio1.GetSize()/2;
+	mAudio1.GetAudioChunk(centerSample-mConfig.GetHopSize(),centerSample+mConfig.GetHopSize()-1,mAudio2,false);//XA_New
 
 	mPO_AudioProduct.Do(mAudio2, mSynthWindow,mAudio3);//Aplying inverse window
 	
-//	if(mConfig.GetDisplayFlags().bWindowedAudioFrame)
-//		CLAMGUI::showPDSnapshot(&mAudio3,"Audio frame with inverse windowing");
+//	CLAMGUI::showPDSnapshot(&mAudio3,"Audio frame with inverse windowing");
 
 	mPO_OverlapAdd.Do(mAudio3, out);//overlapp and add
 	
-//	if(mConfig.GetDisplayFlags().bOutputAudioFrame)
-//		CLAMGUI::showPDSnapshot(&out,"Output of the SpectralSynthesis");
+//	CLAMGUI::showPDSnapshot(&out,"Output of the SpectralSynthesis");
 
 	return true;
 }
+
 
 bool SpectralSynthesis::Do(Frame& in,bool residual)//this bool could be set in configuration
 {
