@@ -93,6 +93,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem( utils, "LadspaLoader" );
 #endif
 	new ProcessingItem( utils, "OutControlSender" );	
+	new ProcessingItem( utils, "Fundamental2Control" );	
 
 	QListViewItem* winplots = new QListViewItem(this,"Plots in new windows");
 	new ProcessingItem(winplots, "AudioPlotProcessing");

@@ -21,6 +21,7 @@
 
 #include "MainWindow.hxx"
 #include "ProcessingTree.hxx"
+#include <qaction.h>
 #include <qstatusbar.h>
 #include <qtoolbar.h>
 #include <qbutton.h>
@@ -42,7 +43,8 @@ namespace NetworkGUI
 	MainWindow::MainWindow() :
 		  QMainWindow( 0, "", WGroupLeader ),
 		  mNetworkPresentation(this),
-		  mDockProcMenu(0)
+		  mDockProcMenu(0),
+		  mNetworkIsRunning(false)
 	{
 		setCentralWidget( &mNetworkPresentation );
 		setCaption( "CLAM Network Editor" );
@@ -60,12 +62,13 @@ namespace NetworkGUI
 		QPopupMenu * view = new QPopupMenu( this );
 		QPopupMenu * networkActions = new QPopupMenu( this );
 //TODO		QPopupMenu * outControlActions = new QPopupMenu( this );
-		menuBar()->insertItem( "File", file );
-		menuBar()->insertItem( "View", view );
-		menuBar()->insertItem( "Network Actions", networkActions );
+		menuBar()->insertItem( "&File", file );
+		menuBar()->insertItem( "&View", view );
+		menuBar()->insertItem( "Network &Actions", networkActions );
 		menuBar()->insertItem( "About", this, SLOT(ShowAboutDlg()));
 		setCentralWidget(&mNetworkPresentation);
  
+
 		file->insertItem("New", this, SLOT(NewNetwork()));
 		file->insertItem("Load", this, SLOT(LoadNetwork()));
 		file->insertItem("Save", this, SLOT(SaveNetwork()));
@@ -74,6 +77,18 @@ namespace NetworkGUI
 		file->insertItem("Exit", qApp, SLOT(quit()));
 
 		view->insertItem("Processing Menu", this, SLOT(ShowProcMenu()));
+
+		QAction* startNetwork = new QAction( this, "StartNetwork" );
+		startNetwork->addTo( networkActions );
+	    startNetwork->setMenuText( tr( "&Start Network" ) );
+		startNetwork->setAccel( tr( "Space" ) );
+		connect( startNetwork, SIGNAL( activated() ), this, SLOT( StartNetwork() ) );
+
+		QAction* stopNetwork = new QAction( this, "StopNetwork" );
+		stopNetwork->addTo( networkActions );
+	    stopNetwork->setMenuText( tr( "&Stop Network" ) );
+		stopNetwork->setAccel( tr( "Esc" ) );
+		connect( stopNetwork, SIGNAL( activated() ), this, SLOT( StopNetwork() ) );
 
 		networkActions->insertItem("Start", this, SLOT(StartNetwork()));
 		networkActions->insertItem("Stop", this, SLOT(StopNetwork()));	

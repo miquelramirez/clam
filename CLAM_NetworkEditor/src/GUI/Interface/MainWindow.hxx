@@ -49,6 +49,7 @@ private:
 	QDockWindow * mDockProcMenu;
 	AboutDialog* mpAboutDlg;
 	QString mCurrentNetwork;
+	bool mNetworkIsRunning;
 
 public: //slots
 	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
