@@ -30,6 +30,7 @@ namespace CLAM {
 
 	void PeaksInterpConfig::DefaultInit()
 	{
+		//test
 		AddAll();
 		UpdateData();
 		DefaultValues();
