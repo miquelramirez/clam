@@ -54,6 +54,8 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 	regtSMSAnalysisCore( "SMSAnalysisCore" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation> 
 	regtSMSSynthesis( "SMSSynthesis" );
+
+// Plot Processings
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
 	regtAudioPlotProcessing( "AudioPlotProcessing" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
@@ -62,6 +64,8 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
         regtPeaksPlotProcessing( "PeaksPlotProcessing" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtFundPlotProcessing( "FundPlotProcessing" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtSinTracksPlotProcessing( "SinTracksPlotProcessing" );
 
 // SMS Processings
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
@@ -73,5 +77,6 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtSMSSinusoidalGain( "SMSSinusoidalGain" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
-        regtSMSSpectralShapeShift( "SMSSpectralShapeShift" );
-		
+        regtSMSSpectralShapeShift( "SMSSpectralShapeShift" );	
+
+
