@@ -71,6 +71,7 @@ namespace CLAM{
 		bool Do()
 		{
 			CLAM_ASSERT(false, "Do with ports not implemented");
+			return false;
 		}
 	
 		virtual bool UpdateControlValueFromBPF(TData pos);

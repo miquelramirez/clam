@@ -33,6 +33,9 @@
 #include "ProcessingFactory.hxx"
 #include "Array.hxx"
 
+//TODO !!!! remove
+#include "SMSFreqShift.hxx"
+
 namespace CLAM {
 
 	/** Using Segment as the type for *	input and output ports. 
@@ -232,18 +235,21 @@ namespace CLAM {
 
 	private:
 
-		void AddChainee(const std::string& type)
+		void AddChainee(const std::string& classname)
 		{
-//			if ( type=="SMSFreqShift") 
-//			{
-//				SMSTransformation* wrapper = new SMSTransformation;	
-//				Insert( *wrapper );
-//				return;
-//			}
-	//			//smsshift = GetInstance ..
-	//			wrapper.wrapp(smsshift)
+			Factory<Processing> & theFactory = ProcessingFactory::GetInstance();
 			
-			Insert( *( ProcessingFactory::GetInstance().Create( type ) ) );
+			if ( classname=="SMSFreqShift") 
+			{
+				SMSTransformation* wrapper = new SMSTransformation;	
+				Processing * proc = theFactory.Create(classname);
+				SMSFreqShift* freqshift = dynamic_cast<SMSFreqShift*>(proc); 
+				wrapper->Wrap(freqshift);
+				Insert( *wrapper );
+				return;
+			}
+			
+			Insert( *( theFactory.Create( classname ) ) );
 		}
 		/** Helper method for updating frame counters both in ports and in internal data*/
 		void NextFrame()
