@@ -140,7 +140,7 @@ namespace CLAM {
 		{
 			mpChainInput->mCurrentFrameIndex++;
 			int i = mpChainInput->mCurrentFrameIndex++;
-			printf("TransChain::NextFrame input frame index=%d at=%x\t", i, int(&(mpChainInput->GetFramesArray()[i]) ));
+			printf("TransChain::NextFrame input frame index=%d at=%x\t \n", i, int(&(mpChainInput->GetFramesArray()[i]) ));
 		}
 		/** Returns true if current frame pointer at input port is pointing past the last
 		 *	frame in the segment

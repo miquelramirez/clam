@@ -44,12 +44,13 @@ namespace CLAM{
 		 *  @return Char pointer with the name of object
 		 */
 		const char *GetClassName() const {return "SMSFreqShift";}
+
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSFreqShift() : mIn("In SpectralPreaks", this), mOut("Out SpectralPeaks", this)
+		SMSFreqShift() : mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this)
 		{
 		}
 		/** Constructor with an object of SMSTransformationConfig class by parameter
@@ -57,7 +58,7 @@ namespace CLAM{
 		*/
 		SMSFreqShift(const SMSTransformationConfig &c):
 			SMSTransformation(c),
-			mIn("In SpectralPreaks", this), mOut("Out SpectralPeaks", this)
+			mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this)
 
 		{
 		}

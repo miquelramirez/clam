@@ -82,6 +82,7 @@ bool SMSTimeStretch::ConcreteStart()
 /**TODO: This method does not work if called directly! it must be called from the Segment overload*/
 bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 {
+	printf( "SMSTimeStretch.Do( const Frame& in, Frame& out)\n");  
 	TData interpFactor= (mAnalysisTime-mLeftFrame.GetCenterTime())/(mConcreteConfig.GetHopSize()/mConcreteConfig.GetSamplingRate());
 	out.SetCenterTime(mSynthesisTime);
 	mSynthesisTime+=(TData)mConcreteConfig.GetHopSize()/mConcreteConfig.GetSamplingRate();
@@ -111,17 +112,23 @@ bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 
 bool SMSTimeStretch::Do(const Segment& in, Segment& out)
 {
-	bool ret =false;
+	printf( "SMSTimeStretch.Do( const Segment& in, Segment& out)\n");  
+
 	if(mCurrentInputFrame>-1)
 	{
 		while(mCurrentInputFrame<in.mCurrentFrameIndex&&!HaveFinished())
 		{
 			if(mConcreteConfig.GetUseBPF())
+			{
+				printf( "if(mConcreteConfig.GetUseBPF())\n" );
 				UpdateControlValueFromBPF(((TData)mCurrentInputFrame)/in.GetnFrames());
+			}
 			TData previousAnalysisTime=mAnalysisTime;
 			UpdateTimeAndIndex(in);
 			if(mCurrentInputFrame>=in.mCurrentFrameIndex)
 			{
+				printf( "if(mCurrentInputFrame>=in.mCurrentFrameIndex)\n" );
+				UpdateControlValueFromBPF(((TData)mCurrentInputFrame)/in.GetnFrames());
 				mCurrentInputFrame=in.mCurrentFrameIndex-2;
 				if(mCurrentInputFrame<0) mCurrentInputFrame=0;//I don't know why but this happens sometimes
 				mLeftFrame=in.GetFrame(mCurrentInputFrame);
@@ -129,7 +136,6 @@ bool SMSTimeStretch::Do(const Segment& in, Segment& out)
 				return true;
 			}
 			Do(GetCurrentFrame(in),GetCurrentFrame(out));
-			ret=true;//we are actually getting some output!
 			CLAM_DEBUG_ASSERT(mCurrentInputFrame<in.mCurrentFrameIndex,"Error");
 			out.mCurrentFrameIndex++;
 		}

@@ -51,7 +51,7 @@ namespace CLAM{
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSPitchShift():mIsHarmonic("Harmonic",this)
+		SMSPitchShift():mIsHarmonic("Harmonic",this), mInPeaks("In SpectralPeaks", this), mOutPeaks("Out SpectralPeaks", this), mInSpectrum("In Spectrum", this), mOutSpectrum("Out Spectrum", this)
 		{
 			mSpectralRange=22050;//default
 		}
@@ -74,8 +74,10 @@ namespace CLAM{
 		bool Do()
 		{
 			bool result = Do(mInPeaks.GetData(), mInSpectrum.GetData(), mOutPeaks.GetData(), mOutSpectrum.GetData());
-			mIn.Consume();
-			mOut.Produce();
+			mInPeaks.Consume();
+			mOutPeaks.Produce();
+			mInSpectrum.Consume();
+			mOutSpectrum.Produce();
 			return result;
 		}
 
