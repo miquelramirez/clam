@@ -14,12 +14,13 @@ namespace CLAM
 	    NetSpecgramRenderer();
 	    virtual ~NetSpecgramRenderer();
 
-	    void SetData(std::vector< std::vector<Color> >& data);
+	    void SetData(std::vector< std::vector<Color> >& data, int index);
 
 	    void Render();
 
 	private:
 	    std::vector< std::vector<Color> > _data;
+	    int _index;
 
 	};
     }

@@ -20,7 +20,6 @@ namespace CLAM
 	    if(!spec.GetMagBuffer().Size()) return;
 	    if(_first) Init(spec.GetMagBuffer().Size());
 	    AddData(spec);
-	    ProcessData();
 	    FullView();
 	}
 
@@ -50,27 +49,7 @@ namespace CLAM
 		_cachedData[_index++]=v;
 		if(_index == (int)_cachedData.size()) _index = 0;
 	    }
-	}
-
-	void NetSpecgramPlotController::ProcessData()
-	{
-	    if((int)_cachedData.size() < GetnSamples())
-	    {
-		_renderer.SetData(_cachedData);
-	    }
-	    else
-	    {
-		int i,j=0;
-		for(i = _index; i < (int)_cachedData.size(); i++)
-		{
-		    _processedData[j++]=_cachedData[i];
-		}
-		for(i = 0; i < _index; i++)
-		{
-		    _processedData[j++]=_cachedData[i];
-		}
-		 _renderer.SetData(_processedData);
-	    }
+	    _renderer.SetData(_cachedData,_index);
 	}
 
 	void NetSpecgramPlotController::FullView()
@@ -111,7 +90,6 @@ namespace CLAM
 	{
 	    _specSize = specSize;
 	    SetvRange(TData(0.0),TData(_specSize));
-	    _processedData.resize(GetnSamples());
 	    _first = false;
 	}
 
