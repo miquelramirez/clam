@@ -307,7 +307,7 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 //Undoing Synthesis circular shift
 	mPO_CircularShift.Do(mAudio0,mAudio0);
 //Undoing zero padding by hand seems a bit ugly but...
-	mAudio0.GetAudioChunk(0,mConfig.GetAnalWindowSize()*2,mAudio1,false);//XA_New
+	mAudio0.GetAudioChunk(0,mConfig.GetAnalWindowSize(),mAudio1,false);//XA_New
 //Now we take the central samples to multiply with the window
 	int centerSample=mAudio1.GetSize()/2;
 	mAudio1.GetAudioChunk(centerSample-mConfig.GetHopSize(),centerSample+mConfig.GetHopSize()-1,mAudio2,false);//XA_New
