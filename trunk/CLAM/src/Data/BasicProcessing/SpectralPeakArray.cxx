@@ -558,7 +558,7 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 				tmp.AddSpectralPeak(currentOrigPeak,true,origIndex*2);
 				origIndex++;
 			}
-			if(currentOrigPeak.GetFreq()>currentInPeak.GetFreq())
+			else if(currentOrigPeak.GetFreq()>currentInPeak.GetFreq())
 			{
 				tmp.AddSpectralPeak(currentInPeak,true,inIndex*2+1);
 				inIndex++;
