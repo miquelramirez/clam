@@ -1,4 +1,16 @@
-
+  * XML Storage Error Handling:
+     ** Catchable CLAM::XmlStorageErr excepetions are thrown whenever:
+        *** I/O error happens
+        *** Malformed XML is readed
+        *** Read elements or contents does not match with CLAM objects
+            structure
+        *** CLAM objects detect some semantic constraints.
+  * XPath (like) navegation:
+     ** The implementation of XmlStorage::Select allows using:
+        *** XmlStorage::AppendToDocument(object,path,iostream)
+        *** XmlStorage::RestorePartialDocument(object, path, istream)
+        *** Using atomic primitives for doing some similar hacks like writing
+            fragments of the XML for an object to disk.
 
 2004-11-18 CLAM_0_7_0
 'Easier deployment, better plots and Processing Networks'
