@@ -16,6 +16,7 @@
 #include "Pool.hxx"
 
 #include "SongFiles.hxx"
+#include "Project.hxx"
 
 namespace CLAM {
 		namespace VM 
@@ -43,13 +44,16 @@ class Annotator : public AnnotatorBase
 		void initEditMenu();
 
                 void initProject();
+                void initInterface();
 	public slots:
 		void descriptorsTableChanged( int, int);
 		void fileNew();			
 		void fileOpen();
 		void addSongsToProject();
 		void addSongs( const AnnotatorDataFacade::StringList & );
-		void deleteSongsFromProject();
+		void deleteAllSongsFromProject();
+
+                void deleteSongsFromProject();
 		void fileSaveAs();
 		void fileSave();
 		void fileMenuAboutToShow();
@@ -90,6 +94,7 @@ class Annotator : public AnnotatorBase
                 void languageChange();
                 void initAudioWidget();
                 void initLLDescriptorsWidgets();
+                void removeLLDTabs();
 		void drawAudio(QListViewItem * item);
 		void loadAudioFile(const char* filename);
   
@@ -108,6 +113,8 @@ class Annotator : public AnnotatorBase
 		AnnotatorDataFacade* mpData;
 		
                 SongFiles mSongFiles;
+                Project mProject;
+                std::string mProjectFileName;
 
                 typedef std::map< std::string, int > SongDescriptorsIndex;
 		SongDescriptorsIndex mSongDescriptorsIndex;
@@ -133,6 +140,8 @@ class Annotator : public AnnotatorBase
                 CLAM::DescriptionDataPool* mpDescriptorPool;
 
                 QProgressDialog* mpProgressDialog;
+
+               
 };
 
 #endif

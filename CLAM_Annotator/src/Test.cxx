@@ -2,6 +2,7 @@
 #include "DescriptionScheme.hxx"
 #include "Pool.hxx"
 #include "SongFiles.hxx"
+#include "Project.hxx"
 
 #include "XMLStorage.hxx"
 
@@ -10,6 +11,13 @@ void FillSongNames(SongFiles& songFiles);
 
 int main()
 {
+  //Create and store Project
+  Project myProject;
+  myProject.SetSongs("Songs.xml");
+  myProject.SetDescriptorPool("DescriptorsPool.xml");
+  myProject.SetLLDSchema("LLDSchema.xml");
+  CLAM::XMLStorage::Dump(myProject,"Project","Project.xml");
+
   //Create and store SongList
   SongFiles songFiles;
   FillSongNames(songFiles);
@@ -33,6 +41,12 @@ int main()
   //Load LLDschema
   CLAM::LLDSchema loadedSchema;
   CLAM::XMLStorage::Restore(loadedSchema, "LLDSchema.xml");
+
+
+  //Create and store custom HLDSchema
+  CLAM::HLDSchema hTestSchema;
+  CLAM HLD testHDesc;
+  testHDesc
 
   //Create Descriptors Pool Scheme and add attributes following loaded LLD schema
   CLAM::DescriptionScheme scheme;

@@ -109,8 +109,9 @@ void AnnotatorDataFacade::getDescriptorsFromFile( const std::string & file, Desc
 {
 	if ( std::find( mFiles.begin(), mFiles.end(), file) == mFiles.end() )
 	{
-		std::cout<<"no files"<<std::endl;
-		return;
+	  ASSERT(false);
+	  std::cout<<"no files"<<std::endl;
+	  return;
 	}
 	Descriptors::const_iterator it = mFilesAndAttributes[file].begin();
 	Descriptors::const_iterator itEnd = mFilesAndAttributes[file].end();

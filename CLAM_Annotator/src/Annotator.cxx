@@ -10,6 +10,7 @@
 #include <qprogressdialog.h>
 #include <qapplication.h>
 #include <qeventloop.h>
+#include <qfiledialog.h>
 
 #include "AnalyzeWindow.hxx"
 #include "OpenProjectDialog.hxx"
@@ -42,28 +43,38 @@ Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade
 {
   //I should try to get rid of this constructor and pass things to the new one(see below)	
   setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
-  initProject();
-	
+  mpDescriptorPool = NULL;
+  mpAudioPlot = NULL;
+  initInterface();
+  initAudioWidget();
 }
 
 Annotator::Annotator():AnnotatorBase( 0, "annotator", WDestructiveClose),mEnvelopes(0),mFunctionEditors(0),mCurrentIndex(0),mpTabLayout(0)
 {
-  initDataFacade();
+  mpDescriptorPool = NULL;
+  mpAudioPlot = NULL;
+  initInterface();
+  initAudioWidget();
 }
 
-void Annotator::initProject()
+void Annotator::initInterface()
 {
-  mpAudioPlot = NULL;
+  //  if (mpAudioPlot) delete mpAudioPlot;
+  if (mpAudioPlot) mpAudioPlot->Hide();
   mProjectOverview->setSorting(-1);
   initView();
   initFileMenu();
   initEditMenu();
   makeDescriptorTable();
   makeConnections();
-  initDataFacade();
+  
+}
+
+void Annotator::initProject()
+{
+  CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
   initSongs(name(), mSongFiles.GetFileNames());
   initLLDescriptorsWidgets();
-  initAudioWidget();
   initEnvelopes();
   languageChange();
   mChanges = false;
@@ -75,8 +86,7 @@ void Annotator::initDataFacade()
   TXTSongParser songParser( "DataTest/", data );
   mpData = new AnnotatorDataFacade( data );
 
-  //this should go elsewhere
-  CLAM::XMLStorage::Restore(mSongFiles,"Songs.xml");
+  
 }
 
 bool Annotator::somethingIsSelected() const
@@ -153,7 +163,7 @@ void Annotator::createListOfTonalKeys( QStringList & list, const QString & value
 
 void Annotator::initAudioWidget()
 {
-        mpAudioPlot = NULL;
+        if(mpAudioPlot) delete mpAudioPlot;
 	mpAudioPlot = new QtAudioPlot(frame3);
 	mpTabLayout = new QVBoxLayout(frame3);
 	mpTabLayout->addWidget(mpAudioPlot);
@@ -164,18 +174,18 @@ void Annotator::initAudioWidget()
 	mpAudioPlot->SetToggleColorOn(true);
 	mpAudioPlot->switchColors();
 	mpAudioPlot->setFocus();
-	mpAudioPlot->Show();
+	mpAudioPlot->Hide();
 }
 
 void Annotator::initLLDescriptorsWidgets()
 {
   
-
-  LoadDescriptorPool();
+  removeLLDTabs();
+  
 
   int nTabs = mLLDSchema.GetLLDNames().size();
         
-        mTabPages.resize(nTabs);
+  mTabPages.resize(nTabs);
 	std::vector<QWidget*>::iterator it0;
 	std::string baseTabString("TabPage");
 	std::ostringstream tabString;
@@ -206,6 +216,18 @@ void Annotator::initLLDescriptorsWidgets()
 	  tabLayout->addWidget(*it);
 	}
 
+}
+
+void Annotator::removeLLDTabs()
+{
+  int nPages = mTabPages.size();
+  mTabPages.resize(0);
+  while(nPages>1)
+  {
+    tabWidget2->removePage(tabWidget2->page(nPages-1));
+    nPages--;
+  }
+  tabWidget2->changeTab(tabWidget2->page(0), tr("") );
 }
 
 void Annotator::initView()
@@ -349,7 +371,8 @@ void Annotator::descriptorsTableChanged(int row, int column)
 
 void Annotator::addSongs( const AnnotatorDataFacade::StringList & list)
 {
-	std::vector< std::string > songs;
+  deleteAllSongsFromProject();
+        std::vector< std::string > songs;
 	QListViewItemIterator it( mProjectOverview );
 	while ( it.current() )
 	{
@@ -388,14 +411,6 @@ void Annotator::closeEvent ( QCloseEvent * e )
 	e->accept();
 }
 
-void Annotator::fileSaveAs()
-{
-	SaveProjectAsDialog * dialog = new SaveProjectAsDialog(this, "Save as dialog", WDestructiveClose);
-	connect(dialog, SIGNAL(nameToBeSaveEmited(const QString &) ), this, SLOT(setCaption(const QString & ) ) );
-	dialog->show();
-	fileSave();
-}
-
 void Annotator::markAllNoChanges()
 {
 	QListViewItemIterator it (mProjectOverview);
@@ -405,10 +420,17 @@ void Annotator::markAllNoChanges()
 	}
 }
 
-void Annotator::fileSave()
+void Annotator::deleteAllSongsFromProject()
 {
-	mChanges = false;
-	markAllNoChanges();
+  	std::vector< QListViewItem * > toBeDeleted;
+	QListViewItemIterator it( mProjectOverview );
+	while ( it.current() )
+	{
+		toBeDeleted.push_back(*it);
+		++it;
+	}
+	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin() ; it != toBeDeleted.end() ; it++)
+		delete *it;
 }
 
 void Annotator::deleteSongsFromProject()
@@ -433,14 +455,51 @@ void Annotator::addSongsToProject()
 
 void Annotator::fileOpen()
 {
-	OpenProjectDialog * dialog = new OpenProjectDialog(this, *mpData, 0, "open project dialog", WDestructiveClose );
-	dialog->show();
+  QString qFileName;
+  qFileName = QFileDialog::getOpenFileName(QString::null,"*.xml");
+  if(qFileName != QString::null)
+  {
+    mProjectFileName = std::string(qFileName.ascii());
+    CLAM::XMLStorage::Restore(mProject,mProjectFileName);
+    LoadDescriptorPool();
+    initDataFacade();
+    initInterface();
+    initProject();
+  }
 }
 
 void Annotator::fileNew()
 {
-	NewProjectDialog * dialog = new NewProjectDialog( *mpData, 0, "new dialog", WDestructiveClose );
-	dialog->show();
+  mProjectFileName = "";
+  mSongFiles.GetFileNames().resize(0);
+  mLLDSchema.GetLLDNames().resize(0);
+  initInterface();
+  initProject();
+  mChanges = true;
+}
+
+void Annotator::fileSave()
+{
+	mChanges = false;
+	markAllNoChanges();
+	if(mProjectFileName=="") fileSaveAs();
+	else
+	{
+	  CLAM::XMLStorage::Dump(mProject,"Project",mProjectFileName);
+	  CLAM::XMLStorage::Dump(mSongFiles, "Songs", mProject.GetSongs());
+	  CLAM::XMLStorage::Dump(*mpDescriptorPool, "DescriptorPool",mProject.GetDescriptorPool());
+	}
+
+}
+
+void Annotator::fileSaveAs()
+{
+  QString qFileName = QFileDialog::getSaveFileName(QString::null,"*.xml");
+  if(qFileName != QString::null)
+  {
+    mProjectFileName = std::string(qFileName.ascii());
+    fileSave();
+  }
 }
 
 void Annotator::initSongs( const std::string & nameProject, const std::vector<std::string> & files)
@@ -620,7 +679,6 @@ void Annotator::drawLLDescriptors(int index)
  
   int i;
 
-  //generateRandomEnvelopes();
   generateEnvelopesFromDescriptors();
 
   for(it=mFunctionEditors.begin(),it2=mEnvelopes.begin();it!=mFunctionEditors.end();it++,it2++)
@@ -787,21 +845,24 @@ void Annotator::languageChange()
 void Annotator::LoadDescriptorPool()
 {
   //TODO: The user should select this schema
-  CLAM::XMLStorage::Restore(mLLDSchema,"LLDSchema.xml");
+  CLAM::XMLStorage::Restore(mLLDSchema,mProject.GetLLDSchema());
+
   //Create Descriptors Pool Scheme and add attributes following loaded LLD schema
   
   std::list<std::string>::iterator it;
   std::list<std::string>& descriptorsNames = mLLDSchema.GetLLDNames();
+  mDescriptionScheme = CLAM::DescriptionScheme();//we need to initialize everything
   for(it = descriptorsNames.begin(); it != descriptorsNames.end(); it++)
   {
     mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
   }
  
   //Create Descriptors Pool
+  if(mpDescriptorPool) delete mpDescriptorPool;
   mpDescriptorPool = new CLAM::DescriptionDataPool(mDescriptionScheme);
 
   //Load Descriptors Pool
-  CLAM::XMLStorage::Restore((*mpDescriptorPool),"DescriptorsPool.xml");
+  CLAM::XMLStorage::Restore((*mpDescriptorPool),mProject.GetDescriptorPool());
   
 }
 
