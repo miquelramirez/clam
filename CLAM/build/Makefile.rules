@@ -10,7 +10,7 @@ clean:
 distclean: clean
 	rm -rf dep/
 
-depend: .FORCE
+depend: $(SRCDEPS) .FORCE
 	@echo Generating SOURCES, OBJECTS, DEPENDS and INCLUDES definitions
 	$(SRCDEPS) settings.cfg > Makefile.vars
 
@@ -107,5 +107,12 @@ endif
 	@mkdir -p dep
 	@echo Generating dependency information for $<
 	@$(SRCDEPS) -d settings.cfg $< > $@
+
+$(SRCDEPS):
+	@echo ===============================================================
+	@echo srcdeps is missing. Please go to the $(CLAM_PATH)/build/srcdeps 
+	@echo directory and run make
+	@echo ===============================================================
+	@exit -1
 
 .SUFFIXES:
