@@ -576,15 +576,18 @@ void Qt_NetworkPresentation::dropEvent(QDropEvent* event)
 	
 	if ( QTextDrag::decode(event, text) ) 
 	{
-		ProcessingFactory & factory = ProcessingFactory::GetInstance();
-		std::string completeName(text.ascii());
+//		ProcessingFactory& factory = ProcessingFactory::GetInstance();
+//		std::string completeName(text.ascii());
 		
-		std::string className(GetProcessingIdentifier(completeName));
-		std::string concreteName(GetLastIdentifier(completeName));
-		AddProcessing( concreteName, factory.Create(className) );
-		SignalProcessingCreated.Emit();
+//		std::string className(GetProcessingIdentifier(completeName));
+//		std::string concreteName(GetLastIdentifier(completeName));
+//		AddProcessing( concreteName, factory.Create(className) );
+		std::string key = text.ascii();
+		std::string name = AddProcessing( key );	
+		SignalProcessingCreated.Emit(); 		// TODO: Get rid of this signal
 
-		Qt_ProcessingPresentation & proc = (Qt_ProcessingPresentation&)GetProcessingPresentation(concreteName);
+
+		Qt_ProcessingPresentation& proc = (Qt_ProcessingPresentation&)GetProcessingPresentation( name );
 		proc.move(event->pos());
 	}
 	setFocus();

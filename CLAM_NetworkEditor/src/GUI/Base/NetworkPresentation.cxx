@@ -41,7 +41,7 @@ NetworkPresentation::NetworkPresentation() : mNetworkController(0)
 //	SlotCreateControlConnectionPresentation.Wrap( this, &NetworkPresentation::CreateControlConnectionPresentation);
 //	SlotCreateControlConnection.Wrap( this, &NetworkPresentation::CreateControlConnection);
 //	SlotCreateProcessingPresentation.Wrap( this, &NetworkPresentation::CreateProcessingPresentation );
-	SlotAddProcessing.Wrap( this, &NetworkPresentation::AddProcessing );
+	SlotAddProcessing.Wrap( this, &NetworkPresentation::AddProcessing2Remove );
 	SlotRemoveProcessing.Wrap( this, &NetworkPresentation::RemoveProcessing );
 //	SlotRebuildProcessingPresentationAttachedTo.Wrap( this, &NetworkPresentation::RebuildProcessingPresentationAttachedTo );
 	SlotChangeState.Wrap( this, &NetworkPresentation::ChangeState );
@@ -273,10 +273,15 @@ void NetworkPresentation::CreatePortConnection( const std::string & out, const s
 	GetNetworkController().CreatePortConnection(out, in);
 }
 
-void NetworkPresentation::AddProcessing( const std::string & name, CLAM::Processing * proc)
+void NetworkPresentation::AddProcessing2Remove( const std::string & name, CLAM::Processing * proc)
 {
 	//SignalAddProcessing.Emit(name,proc);
-	GetNetworkController().AddProcessing(name, proc);
+	GetNetworkController().AddProcessing2Remove(name, proc);
+}
+
+std::string NetworkPresentation::AddProcessing( const std::string& key )
+{
+	return GetNetworkController().AddProcessing( key );
 }
 
 void NetworkPresentation::Clear()
