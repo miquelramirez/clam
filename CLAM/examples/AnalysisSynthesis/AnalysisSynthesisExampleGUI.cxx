@@ -214,6 +214,9 @@ Fl_WaitMessage* WaitMessageGUI::delRequested = 0;
 const char* WaitMessageGUI::requestedTitle = 0;
 pthread_t WaitMessageGUI::flThread;
 
+/** This class adds FLTK GUI to AnalysisSynthesisExampleBase.
+ *	@see AnalysisSynthesisExampleBase
+ */
 class AnalysisSynthesisExampleGUI:public AnalysisSynthesisExampleBase
 {
 public:

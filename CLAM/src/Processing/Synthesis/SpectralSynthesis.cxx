@@ -173,6 +173,7 @@ void SpectralSynthesis::AttachChildren()
 	mPO_CircularShift.SetParent(this);
 	mPO_IFFT.SetParent(this);
 	mPO_OverlapAdd.SetParent(this);
+
 }
 
 SpectralSynthesis::SpectralSynthesis() 
