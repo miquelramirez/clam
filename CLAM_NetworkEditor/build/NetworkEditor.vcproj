@@ -1898,6 +1898,7 @@ $(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
 		<File
 			RelativePath=".\moc\Qt_ProcessingPresentation_moc.cxx">
 		</File>
+<!-- commented because we modified the vcproj by hand (we added the files at the moc and ui directories)
 		<File
 			RelativePath="settings.cfg">
 			<FileConfiguration
@@ -1917,6 +1918,7 @@ $(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
 					Outputs="buildstamp"/>
 			</FileConfiguration>
 		</File>
+-->
 	</Files>
 	<Globals>
 	</Globals>
