@@ -11,18 +11,18 @@ namespace CLAM
 		class NetAudioPlot : public NetPlot
 		{
 			Q_OBJECT
-			public:
-				NetAudioPlot(QWidget* parent=0);
-				virtual ~NetAudioPlot();
+		public:
+			NetAudioPlot(QWidget* parent = 0, const char * name = 0);
+			virtual ~NetAudioPlot();
 
-				void SetData(const Audio& audio);
-				void SetDataColor(Color c);
+			void SetData(const Audio& audio);
+			void SetDataColor(Color c);
 
-			protected:
-				virtual void SetPlotController();
+		protected:
+			virtual void SetPlotController();
 
-			private:
-				void InitNetAudioPlot();
+		private:
+			void InitNetAudioPlot();
 		};
 	}
 }

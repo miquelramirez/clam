@@ -5,8 +5,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		NetFundPlot::NetFundPlot(QWidget* parent)
-		    : NetPlot(parent)
+		NetFundPlot::NetFundPlot(QWidget* parent, const char * name)
+			: NetPlot(parent,name)
 		{
 			InitNetFundPlot();
 		}

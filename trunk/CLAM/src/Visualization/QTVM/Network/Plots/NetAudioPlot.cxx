@@ -5,8 +5,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		NetAudioPlot::NetAudioPlot(QWidget* parent)
-		    : NetPlot(parent)
+		NetAudioPlot::NetAudioPlot(QWidget* parent, const char * name)
+			: NetPlot(parent,name)
 		{
 			InitNetAudioPlot();
 		}

@@ -6,25 +6,25 @@
 
 namespace CLAM
 {
-    namespace VM
-    {
-	class NetPeaksPlot : public NetPlot
+	namespace VM
 	{
-	Q_OBJECT
-	public:
-	    NetPeaksPlot(QWidget* parent=0);
-	    virtual ~NetPeaksPlot();
+		class NetPeaksPlot : public NetPlot
+		{
+			Q_OBJECT
+		public:
+			NetPeaksPlot(QWidget* parent=0, const char * name=0);
+			virtual ~NetPeaksPlot();
 
-	    void SetData(const SpectralPeakArray& peaks);
-	    void SetPeaksColor(Color cline, Color cpoint);
+			void SetData(const SpectralPeakArray& peaks);
+			void SetPeaksColor(Color cline, Color cpoint);
 
-	protected:
-	    virtual void SetPlotController();
+		protected:
+			virtual void SetPlotController();
 
-	private:
-	    void InitNetPeaksPlot();
-	};
-    }
+		private:
+			void InitNetPeaksPlot();
+		};
+	}
 }
 
 #endif
