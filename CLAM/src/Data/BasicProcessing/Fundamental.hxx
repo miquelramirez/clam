@@ -141,18 +141,18 @@ namespace CLAM
 		void DeleteElem (TIndex pos);
 
   
-		/** Exchange two array elements
-		 *  @param pos1 Element to be changed
-		 *  @param pos2 The other element of the exchange
-		 */
-		void Exchange(TIndex pos1, TIndex pos2); // Exchange two array elements
-  
 		// Ordering functions
 
-		/** Sort the arrays by frequency*/
+		/**
+		 * Sort the arrays by frequency
+		 * @todo It uses a bubble sort, not so efficient
+		 **/
 		void SortByFrequency();
 
-		/** Sort the arrays by estimated error*/
+		/**
+		 * Sort the arrays by estimated error
+		 * @todo It uses a bubble sort, not so efficient
+		 **/
 		void SortByError();
 
 		/** Initializes data */
