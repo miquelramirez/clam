@@ -10,7 +10,7 @@ int main(int argc,char** argv)
 #else
 
 /*
- * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
