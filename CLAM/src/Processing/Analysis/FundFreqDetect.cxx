@@ -260,7 +260,7 @@ namespace CLAM
 		for (int i=0; i < nMaxMagPeak; i++ )
 		{ 
 			// be careful not to exceed the maximun permitted
-			if (candidatesFrequency.Size() < mnMaxCandidates) break;
+			if (candidatesFrequency.Size() >= mnMaxCandidates) break;
 			if (i==nMaxMagPeak2) continue;
 			if (i==nMaxMagPeak3) continue;
 			if (peakMagnitudes[peakIndexes[i]] <= maxMag - mMaxCandMagDiff ) continue;
@@ -273,7 +273,7 @@ namespace CLAM
 		for (int i = nMaxMagPeak+1; i<peakIndexes.Size(); i++)
 		{
 			// be careful not to exceed the maximun permitted
-			if (candidatesFrequency.Size() < mnMaxCandidates) break;
+			if (candidatesFrequency.Size() >= mnMaxCandidates) break;
 			freq = peakFrequencies[peakIndexes[i]] - peakFrequencies[peakIndexes[nMaxMagPeak]];
 			if (freq >= peakFrequencies[peakIndexes[nMaxMagPeak]]*1.1) continue;
 			if (!IsGoodCandidate(freq)) continue;
@@ -283,11 +283,11 @@ namespace CLAM
 		// 2.4.- Frequency offset between peaks
 		for (int i = 0; i<peakIndexes.Size(); i++ )
 		{
-			// be careful not to exceed the maximun permitted
-			if (candidatesFrequency.Size() < mnMaxCandidates) break;
 			if (i==nMaxMagPeak) continue;
-			for (int j = i+1; (j<peakIndexes.Size()) && (candidatesFrequency.Size()<mnMaxCandidates); j++)
+			for (int j = i+1; j<peakIndexes.Size(); j++)
 			{
+				// be careful not to exceed the maximun permitted
+				if (candidatesFrequency.Size() >= mnMaxCandidates) break;
 				freq = peakFrequencies[peakIndexes[j]] - peakFrequencies[peakIndexes[i]];
 				if (freq < peakFrequencies[peakIndexes[nMaxMagPeak]]*1.1)
 					if (IsGoodCandidate(freq))
@@ -301,7 +301,7 @@ namespace CLAM
 			for (int j=1; j <= mnInt; j++)
 			{
 				// be careful not to exceed the maximun permitted
-				if (candidatesFrequency.Size() < mnMaxCandidates) break;
+				if (candidatesFrequency.Size() >= mnMaxCandidates) break;
 				freq = peakFrequencies[peakIndexes[i]]/j;
 				if (freq < peakFrequencies[peakIndexes[nMaxMagPeak]]*1.1)
 					if (IsGoodCandidate(freq))
