@@ -68,7 +68,11 @@ namespace CLAM{
 		bool Do(const Segment& in1, Segment& out);
 		bool Do(const Segment& in1,Segment& in2, Segment& out);
 		bool Do(const Frame& in1, Frame& out);
-		
+		bool Do()
+		{
+			CLAM_ASSERT(false, "Do with ports not implemented");
+		}
+	
 		virtual bool UpdateControlValueFromBPF(TData pos);
 	
 		void SetSegmentToMorph(Segment&segmentToMorph);

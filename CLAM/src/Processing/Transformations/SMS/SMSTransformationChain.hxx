@@ -93,12 +93,15 @@ namespace CLAM {
 			for (iterator obj=composite_begin(); obj!=composite_end(); obj++,i++)
 			{
 				Processing & proc = *(*obj);
+				SMSTransformation & trans = dynamic_cast<SMSTransformation&>(proc);
+				//TODO have a list instead of being a composite
+				
 				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==int(composite_size())-1)
 				//Note: First and last chainee's will always be active regartheless the value
 				//of their On control.
 				{
 					CLAM_DEBUG_ASSERT(proc.GetExecState()==Running, "child is not running" );
-					result &= proc.Do();
+					result &= trans.DoWithSegments();
 				}
 			}
 			return result;
@@ -234,12 +237,12 @@ namespace CLAM {
 		 */
 		bool AddChainee(const std::string& type)
 		{
-			if (es smsshift)
+/*			if (es smsshift)
 				SMSTransformation * wrapper = new ...;
 				smsshift = GetInstance ..
 				wrapper.wrapp(smsshift)
 				Insert(wrapper)
-			
+*/			
 			Insert( *( ProcessingFactory::GetInstance().Create( type ) ) );
 						
 			return true;

@@ -65,6 +65,12 @@ namespace CLAM{
  		~SMSGenderChange()
 		{}
 
+		
+		bool Do() 
+		{
+			CLAM_ASSERT(false, "Do with ports not implemented");
+		};
+		
 		bool Do(const Frame& in, Frame& out);
 	private:
 		SMSPitchShift mPO_PitchShift;
