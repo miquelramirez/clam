@@ -31,7 +31,7 @@ void CheckArgs( int argc, char* argv[] )
 	       		std::cerr << "No transformation score" << std::endl;
 				Usage( argv[0] );
 	            exit ( -1 );
-	 }
+	}
 
 	if ( argc > 4 ) 
 			{

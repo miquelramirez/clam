@@ -455,7 +455,7 @@ void SMSScoreEditor::InsertConfigurationIntoChain( const char* name, const CLAM:
 	else
 		givenName = name;
 
-	CLAM::ProcessingChaineeConfig cfg;
+	CLAM::SMSTransformationChaineeConfig cfg;
 	cfg.SetConcreteClassName( givenName.c_str() );
 	cfg.SetConcreteConfig( userConfig );
 
@@ -664,7 +664,7 @@ void SMSScoreEditor::ApplyChangesIntoChain()
 	newChainConfig.GetOnArray().Resize(0);
 	newChainConfig.GetOnArray().SetSize(0);
 
-	CLAM::ProcessingChaineeConfig cfg;
+	CLAM::SMSTransformationChaineeConfig cfg;
 	cfg.SetConcreteClassName( "SMSTransformationChainIO" );
 	cfg.AddConcreteConfig();
 
