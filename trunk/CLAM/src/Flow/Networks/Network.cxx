@@ -185,7 +185,6 @@ namespace CLAM
 	{
 		AssertFlowControlNotNull();
 
-		std::cerr << "Adding processing (string, *proc): " << name << std::endl;
 		// returns false if the key was repeated.
 		if (!mProcessings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
@@ -195,7 +194,6 @@ namespace CLAM
 
 	void Network::AddProcessing( const std::string & name, const std::string & key)
 	{
-		std::cout << "void Network::AddProcessing( const std::string & name, const std::string & key)" << std::endl;
 		AssertFlowControlNotNull();
 
 		Processing * proc = ProcessingFactory::GetInstance().Create( key );
@@ -214,7 +212,6 @@ namespace CLAM
 		std::string name = GetUnusedName( key ); // this won't be needed in the future
 		
 		Processing * proc = ProcessingFactory::GetInstance().Create( key );
-		std::cerr << "Adding processing (key): " << name << std::endl;
 
 		// returns false if the key was repeated.
 		if (!mProcessings.insert( ProcessingsMap::value_type( name , proc ) ).second )
