@@ -19,6 +19,7 @@
  *
  */
 
+#include <qlayout.h>
 #include <qlabel.h>
 #include <qtooltip.h>
 #include "TimeSegmentLabelsGroup.hxx"
@@ -39,6 +40,10 @@ namespace CLAM
 
 		void TimeSegmentLabelsGroup::InitLabelsGroup()
 		{
+		        QBoxLayout* layout = new QHBoxLayout(this);
+			layout->setMargin(0);
+			layout->setSpacing(0);
+			
 			QFont f("Sans",8);
 			f.setBold(true);
 
@@ -46,31 +51,31 @@ namespace CLAM
 			_beginTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			_beginTimeLab->setLineWidth(2);
 			_beginTimeLab->setFixedHeight(20);
-			_beginTimeLab->setGeometry(0,3,62,20);
 			_beginTimeLab->setFont(f);
 			_beginTimeLab->setText("00:00,000");
 			_beginTimeLab->setAlignment(Qt::AlignCenter);
 			QToolTip::add(_beginTimeLab,"Begin Time");
+			layout->addWidget(_beginTimeLab);
 
 			_endTimeLab = new QLabel(this);
 			_endTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			_endTimeLab->setLineWidth(2);
 			_endTimeLab->setFixedHeight(20);
-			_endTimeLab->setGeometry(_beginTimeLab->width(),_beginTimeLab->y(),62,20);
 			_endTimeLab->setFont(f);
 			_endTimeLab->setText("");
 			_endTimeLab->setAlignment(Qt::AlignCenter);
 			QToolTip::add(_endTimeLab,"End Time");
+			layout->addWidget(_endTimeLab);
 
 			_durTimeLab = new QLabel(this);
 			_durTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			_durTimeLab->setLineWidth(2);
 			_durTimeLab->setFixedHeight(20);
-			_durTimeLab->setGeometry(_endTimeLab->x()+_endTimeLab->width(),_beginTimeLab->y(),62,20);
 			_durTimeLab->setFont(f);
 			_durTimeLab->setText("");
 			_durTimeLab->setAlignment(Qt::AlignCenter);
 			QToolTip::add(_durTimeLab,"Duration");
+			layout->addWidget(_durTimeLab);
 		}
 
 		QString TimeSegmentLabelsGroup::GetText(const TData& value)
