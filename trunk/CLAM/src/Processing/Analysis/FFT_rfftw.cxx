@@ -146,12 +146,7 @@ namespace CLAM {
 	{
 		TData *inbuffer;
 
-		CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-		                 GetExecState() != Ready,
-		                 "FFT_rfftw: Do(): Not in execution mode");
-
-		if (GetExecState() == Disabled)
-			return true;
+		if (!AbleToExecute()) return true; // object was disabled
 
 		switch(mState) {
 		case sComplex:

@@ -494,6 +494,7 @@ namespace CLAM
 					it=nodesLeft.erase(it);
 					EatSpacesFromContent();
 				}
+				return true;
 			}
 			/**
 			* Fetchs from the first not space on the content stream

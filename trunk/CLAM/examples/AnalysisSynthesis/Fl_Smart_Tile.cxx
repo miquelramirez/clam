@@ -41,7 +41,7 @@ Fl_Smart_Tile::Fl_Smart_Tile(int X,int Y,int W,int H)
 :Fl_Group(X,Y,W,H) {
 	Fl_Group::resizable();
 	init(40,20);
-	color(FL_BLACK);
+	//color(FL_BLACK);
 }
 
 void Fl_Smart_Tile::draw(void)

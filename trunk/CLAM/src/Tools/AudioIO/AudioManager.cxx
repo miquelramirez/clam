@@ -169,7 +169,6 @@ AudioDeviceList* AudioManager::FindList(const std::string& arch)
 
 	if (tmp == "default")
 		tmp = DEFAULT_AUDIO_ARCH;
-
 	for (i=0;i<DeviceLists().size();i++)
 	{
 		if (DeviceLists()[i]->ArchName() == tmp)

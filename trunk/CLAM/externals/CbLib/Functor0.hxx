@@ -25,7 +25,7 @@ protected:
 	
 	typedef void (*Thunk) (const FunctorBase&);
 	
-	Functor0( Thunk t, const void* c, const void* f, _CSTD::size_t sz )
+	Functor0( Thunk t, const void* c, const void* f, size_t sz )
 		: FunctorBase( c, f, sz ), thunk( t )
 	{
 	}
@@ -46,7 +46,7 @@ class FunctionTranslator0 : public Functor0
 public:
 
 	FunctionTranslator0 ( Func f )
-		: Functor0( thunk, NULL, (void*)f, _CSTD::size_t(0) )
+		: Functor0( thunk, NULL, (void*)f, size_t(0) )
 	{
 	}
 	

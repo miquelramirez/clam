@@ -83,6 +83,8 @@ public:
 	 */
 	bool Do(const Audio& data)
 	{
+		if (!AbleToExecute()) return true; // object was disabled
+		
 		mpDevice->Write(data,mConfig.GetChannelID());
 		return true;
 	}

@@ -26,7 +26,7 @@ protected:
 	
 	typedef TypeOfReturn (*Thunk) (const FunctorBase&, Parm1Type );
 	
-	Functor1R( Thunk t, const void* c, const void* f, _CSTD::size_t sz )
+	Functor1R( Thunk t, const void* c, const void* f, size_t sz )
 		: FunctorBase( c, f, sz), thunk ( t )
 	{
 	}
@@ -47,7 +47,7 @@ class FunctionTranslator1R : public Functor1R< TypeOfReturn, Parm1Type >
 public:
 
 	FunctionTranslator1R( Func f )
-		: Functor1R< TypeOfReturn, Parm1Type >( thunk, NULL, (void*)f, _CSTD::size_t(0))
+		: Functor1R< TypeOfReturn, Parm1Type >( thunk, NULL, (void*)f, size_t(0))
 	{
 	}
 	

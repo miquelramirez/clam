@@ -3,6 +3,10 @@
 
 // Functors without return
 
+#ifdef WIN32
+#define __MSVC__
+#endif
+
 // void foo( void )-like signature
 #include "Functor0.hxx"
 

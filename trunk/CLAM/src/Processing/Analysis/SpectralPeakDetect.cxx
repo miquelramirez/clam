@@ -245,8 +245,6 @@ namespace CLAM {
 
 	bool SpectralPeakDetect::CheckOutputType(SpectralPeakArray& out) 
 	{
-		bool upd = false;
-
 		out.SetScale(EScale::eLog);
 		out.AddBinWidthBuffer();
 		out.AddFreqBuffer();

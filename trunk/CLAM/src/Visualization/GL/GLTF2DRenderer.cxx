@@ -195,7 +195,7 @@ void GLTF2DRenderer::Draw()
 	glLoadIdentity();
 
 	GLSprite::SetOpenGLState( GL_TEXTURE_1D );
-	for (int k=0; k < unsigned(mSprites.size()) ; k++ )
+	for (unsigned int k=0; k < unsigned(mSprites.size()) ; k++ )
 	{
 		(mSprites[k])->ImmediateDisplaySprite( GL_TEXTURE_1D );
 		CLAM_ASSERT( glIsTexture(*(mSprites[k]->GetPixMap())), "That wasn't a valid texture boy!");

@@ -26,7 +26,7 @@ protected:
 
 	typedef void (*Thunk) (const FunctorBase&, Parm1Type, Parm2Type, Parm3Type, Parm4Type );
 	
-	Functor4( Thunk t, const void* c, const void* f, _CSTD::size_t sz )
+	Functor4( Thunk t, const void* c, const void* f, size_t sz )
 		: FunctorBase( c, f, sz ), thunk( t )
 	{
 	}
@@ -46,7 +46,7 @@ class FunctionTranslator4 : public Functor4< Parm1Type, Parm2Type, Parm3Type, Pa
 public:
 	
 	FunctionTranslator4( Func f ) 
-		: Functor4< Parm1Type, Parm2Type, Parm3Type, Parm4Type > ( thunk, NULL, (void*)f, _CSTD::size_t(0) )
+		: Functor4< Parm1Type, Parm2Type, Parm3Type, Parm4Type > ( thunk, NULL, (void*)f, size_t(0) )
 	{
 	}
 	

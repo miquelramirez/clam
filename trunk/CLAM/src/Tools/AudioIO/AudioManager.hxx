@@ -46,6 +46,7 @@ private:
 	unsigned mInternalBuffersNumber;
 
 	std::vector<AudioDevice*> mDevices;
+
 	/** A Meyers-Singleton-style list of all DeviceList */
 	static std::vector<AudioDeviceList*>& DeviceLists(void);
 	
