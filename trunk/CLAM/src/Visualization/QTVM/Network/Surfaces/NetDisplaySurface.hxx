@@ -36,6 +36,7 @@ namespace CLAM
 
 				GLThread _thread;
 				QTimer _timer;
+				int _w, _h;
 				double _left, _right, _bottom, _top;
 				double _r, _g, _b;
 				

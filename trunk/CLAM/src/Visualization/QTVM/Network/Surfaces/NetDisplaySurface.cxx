@@ -54,9 +54,9 @@ namespace CLAM
 
 		void NetDisplaySurface::resizeEvent(QResizeEvent* re)
 		{ 
-		    int w = re->size().width();
-		    int h = re->size().height();
-		    _thread.resizeViewport(w,h);
+		    _w = re->size().width();
+		    _h = re->size().height();
+		    _doResize = true;
 		}
 
 		void NetDisplaySurface::receivedView(SView v)
