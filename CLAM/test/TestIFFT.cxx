@@ -31,6 +31,9 @@
 #include "IFFT_rfftw.hxx"
 //#include "FFT_numrec.hxx"
 #include "OctaveVector.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
 
 using CLAM::IFFT;
 using CLAM::IFFTConfig;

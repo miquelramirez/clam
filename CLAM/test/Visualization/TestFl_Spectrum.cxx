@@ -1,4 +1,5 @@
 #include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
 #include "LogMagSpectrumAdapter.hxx"
 #include "FLTK/Fl_Spectrum.hxx"
 #include "XMLStorage.hxx"

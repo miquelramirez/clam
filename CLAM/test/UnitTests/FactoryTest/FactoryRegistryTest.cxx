@@ -31,6 +31,8 @@ class FactoryRegistryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testRemoveCreators_WhenNotEmtpy );
 	CPPUNIT_TEST( testCount_WhenEmpty );
 	CPPUNIT_TEST( testCount_WithTwoCreators );
+	CPPUNIT_TEST( testGetRegisteredNames_WhenEmpty );
+	CPPUNIT_TEST( testGetRegisteredNames_WhenNotEmpty );
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -231,6 +233,29 @@ private:
 		CPPUNIT_ASSERT_EQUAL( std::size_t(2), reg.Count() );
 	}
 
+
+	void testGetRegisteredNames_WhenEmpty()
+	{
+		MyFactoryType::Registry reg;
+		std::list<std::string> namesList;
+
+		reg.GetRegisteredNames( namesList );
+
+		CPPUNIT_ASSERT_EQUAL( std::size_t(0), namesList.size() );
+	}
+
+	void testGetRegisteredNames_WhenNotEmpty()
+	{
+		MyFactoryType::Registry reg;
+		std::list<MyFactoryType::RegistryKey> namesList;
+
+		reg.AddCreator( "foo", FooCreator() );
+		reg.AddCreator( "bar", BarCreator() );
+
+		reg.GetRegisteredNames( namesList );
+
+		CPPUNIT_ASSERT_EQUAL( reg.Count(), namesList.size() );
+	}
 
 };
 

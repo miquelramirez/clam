@@ -13,11 +13,11 @@ namespace CLAMTest
  */
 class BaseLoggable
 {
-	std::stringstream _log;
+	std::stringstream mLog;
 public:
-	std::string GetLog() const { return _log.str(); }
-	void ClearLog() { _log.str( std::string() ); }
-	std::stringstream& ToLog() { return _log; }
+	std::string GetLog() const { return mLog.str(); }
+	void ClearLog() { mLog.str( std::string() ); }
+	std::stringstream& ToLog() { return mLog; }
 };
 
 } // namespace CLAMTest

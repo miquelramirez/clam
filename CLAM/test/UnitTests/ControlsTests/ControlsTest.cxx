@@ -52,6 +52,14 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable
 	CPPUNIT_TEST( testInControlTmplArray_Constructor_GeneratesCorrectName );
 	CPPUNIT_TEST( testInControlTmplArray_ReceivesControl_HandlerReceivesControlAndId );
 
+	// tests for IsConnected / IsConnectedTo
+
+	CPPUNIT_TEST( testIsConnected_WithOutControl_AfterConnection );
+	CPPUNIT_TEST( testIsConnected_WithOutControl_WithoutConnection );
+	CPPUNIT_TEST( testIsConnectedTo_WithOutControl_WhenControlsAreConnected );
+	CPPUNIT_TEST( testIsConnectedTo_WithOutControl_WhenControlsAreNotConnected );
+	CPPUNIT_TEST( testIsConnectedTo_WithInControl_WhenControlsAreConnected );
+	CPPUNIT_TEST( testIsConnectedTo_WithInControl_WhenControlsAreNotConnected );
 
 	CPPUNIT_TEST_SUITE_END();
 	
@@ -181,6 +189,57 @@ private:
 				"ControlHandler called with id : 1 and value : -1" ),
 			GetLog() );
 	}
+
+
+	void testIsConnected_WithOutControl_AfterConnection()
+	{	
+		CLAM::InControl in("in");
+		CLAM::OutControl out("out");
+		out.AddLink(&in);
+		CPPUNIT_ASSERT_EQUAL( true, out.IsConnected() );
+	}
+
+	void testIsConnected_WithOutControl_WithoutConnection()
+	{	
+		CLAM::OutControl out("out");
+		CPPUNIT_ASSERT_EQUAL(  false, out.IsConnected() );		
+	}
+
+
+	void testIsConnectedTo_WithInControl_WhenControlsAreConnected()
+	{
+		CLAM::InControl in("in");
+		CLAM::OutControl out("out");
+		out.AddLink(&in);
+		CPPUNIT_ASSERT_EQUAL( true, in.IsConnectedTo(out) );
+
+	}
+
+	void testIsConnectedTo_WithInControl_WhenControlsAreNotConnected()
+	{
+		CLAM::InControl in("in");
+		CLAM::OutControl out("out");
+		CPPUNIT_ASSERT_EQUAL( false, in.IsConnectedTo(out) );
+
+	}
+
+
+
+	void testIsConnectedTo_WithOutControl_WhenControlsAreConnected()
+	{
+		CLAM::InControl in("in");
+		CLAM::OutControl out("out");
+		out.AddLink(&in);
+		CPPUNIT_ASSERT_EQUAL( true, out.IsConnectedTo(in) );
+	}
+
+	void testIsConnectedTo_WithOutControl_WhenControlsAreNotConnected()
+	{
+		CLAM::InControl in("in");
+		CLAM::OutControl out("out");
+		CPPUNIT_ASSERT_EQUAL( false, out.IsConnectedTo(in) );
+	}
+
 };
 
 

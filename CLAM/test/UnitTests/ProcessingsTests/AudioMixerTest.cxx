@@ -41,80 +41,80 @@ class AudioMixerTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 	
 	//processing
-	CLAM::OutControl _out1;
-	CLAM::OutControl _out2;
-	CLAM::AudioMixer<2> _mixer;
+	CLAM::OutControl mOut1;
+	CLAM::OutControl mOut2;
+	CLAM::AudioMixer<2> mMixer;
 
 	//data
-	CLAM::Audio _inAudio1;
-	CLAM::Audio _inAudio2;
-	CLAM::Audio _outAudio;
-	const double _delta;
+	CLAM::Audio mInAudio1;
+	CLAM::Audio mInAudio2;
+	CLAM::Audio mOutAudio;
+	const double mDelta;
 
 public:
 	void setUp()
 	{
 
 		//add link to in controls of mixer
-		_out1.AddLink(&_mixer.GetInControls().Get("Input Gain_0"));
-		_out2.AddLink(&_mixer.GetInControls().Get("Input Gain_1"));
+		mOut1.AddLink(&mMixer.GetInControls().Get("Input Gain_0"));
+		mOut2.AddLink(&mMixer.GetInControls().Get("Input Gain_1"));
 
-		_inAudio1.SetSize(1);
-		_inAudio2.SetSize(1);
-		_outAudio.SetSize(1);
+		mInAudio1.SetSize(1);
+		mInAudio2.SetSize(1);
+		mOutAudio.SetSize(1);
 
 		CLAM::AudioMixerConfig mixerCfg;
 		mixerCfg.SetFrameSize(1);
-		_mixer.Configure(mixerCfg);
+		mMixer.Configure(mixerCfg);
 
-		_mixer.GetInPorts().Get("Input Audio_0").Attach(_inAudio1);
-		_mixer.GetInPorts().Get("Input Audio_1").Attach(_inAudio2);
-		_mixer.GetOutPorts().Get("Output Audio").Attach(_outAudio);
+		mMixer.GetInPorts().Get("Input Audio_0").Attach(mInAudio1);
+		mMixer.GetInPorts().Get("Input Audio_1").Attach(mInAudio2);
+		mMixer.GetOutPorts().Get("Output Audio").Attach(mOutAudio);
 	}
 
 public:
 	AudioMixerTest()
-		: _out1("Sender left"),
-		  _out2("Sender right"),
-		  _delta(0.000001)
+		: mOut1("Sender left"),
+		  mOut2("Sender right"),
+		  mDelta(0.000001)
 	{		
 	}
 
 private:
 	void testDo_WhenControlsGivesEqualValue()
 	{
-		_inAudio1.GetBuffer()[0] = 1;
-		_inAudio2.GetBuffer()[0] = 2;
+		mInAudio1.GetBuffer()[0] = 1;
+		mInAudio2.GetBuffer()[0] = 2;
 
-		_mixer.Start();
+		mMixer.Start();
 		const CLAM::TControlData val1(0.3f);
 		const CLAM::TControlData val2(0.3f);
 
-		_out1.SendControl( val1 );
-		_out2.SendControl( val2 );
+		mOut1.SendControl( val1 );
+		mOut2.SendControl( val2 );
 
-		_mixer.Do();
-		_mixer.Do();
+		mMixer.Do();
+		mMixer.Do();
 
 		CPPUNIT_ASSERT_EQUAL( CLAM::TControlData( val1 ), 
-				      _mixer.GetInControls().Get("Input Gain_0").GetLastValue());
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData( (val1*1 + val2*2)/2 ) , _outAudio.GetBuffer()[0], _delta );
+				      mMixer.GetInControls().Get("Input Gain_0").GetLastValue());
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData( (val1*1 + val2*2)/2 ) , mOutAudio.GetBuffer()[0], mDelta );
 	}
 
 	void testDo_WhenControlsGivesDifferentValue()
 	{
-		_inAudio1.GetBuffer()[0] = 3;
-		_inAudio2.GetBuffer()[0] = 2;
+		mInAudio1.GetBuffer()[0] = 3;
+		mInAudio2.GetBuffer()[0] = 2;
 
-		_mixer.Start();
+		mMixer.Start();
 
-		_out1.SendControl(0.5f);
-		_out2.SendControl(0.6f);
+		mOut1.SendControl(0.5f);
+		mOut2.SendControl(0.6f);
 
-		_mixer.Do();
-		_mixer.Do();
+		mMixer.Do();
+		mMixer.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData(1.35) , _outAudio.GetBuffer()[0], _delta );
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData(1.35) , mOutAudio.GetBuffer()[0], mDelta );
 	}
 };
 	

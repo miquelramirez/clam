@@ -35,8 +35,8 @@ public:
 
 	void setUp()
 	{
-		_controlSender.mLeft.AddLink(&_receiverLeft);
-		_controlSender.mRight.AddLink(&_receiverRight);		
+		mControlSender.mLeft.AddLink(&mReceiverLeft);
+		mControlSender.mRight.AddLink(&mReceiverRight);		
 	}
 	void tearDown(){}
 
@@ -54,10 +54,10 @@ private:
 	CPPUNIT_TEST_SUITE_END();
 public:
 	AutoPannerTest()
-		: _receiverLeft("Receiver Left"),
-		  _receiverRight("Receiver Right"),
-		  _controlSender(44100, 44100, 0),
-		  _delta(0.00001)
+		: mReceiverLeft("Receiver Left"),
+		  mReceiverRight("Receiver Right"),
+		  mControlSender(44100, 44100, 0),
+		  mDelta(0.00001)
 		// AutoPanner needs a constructor but we won't use
 		// this configuration
 	{
@@ -65,10 +65,10 @@ public:
 
 private:
 	//fixture attributes
-	CLAM::InControl _receiverLeft;
-	CLAM::InControl _receiverRight;
-	CLAM::AutoPanner _controlSender;
-	const double _delta;
+	CLAM::InControl mReceiverLeft;
+	CLAM::InControl mReceiverRight;
+	CLAM::AutoPanner mControlSender;
+	const double mDelta;
 
 	void testDo_WhenFreqEqualSamplingRateAndNoPhase()
 	{
@@ -77,17 +77,17 @@ private:
 		CLAM::TData phase = 0.0;
 		int frameSize = 1;
 
-		_controlSender.Configure( freq , samplingRate, phase, frameSize );
+		mControlSender.Configure( freq , samplingRate, phase, frameSize );
 
-		_controlSender.Do();
+		mControlSender.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverLeft.GetLastValue(),_delta);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverRight.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta);
 
-		_controlSender.Do();
+		mControlSender.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverLeft.GetLastValue(),_delta);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverRight.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta);
 	}
 
 	void testDo_WhenFreqEqualSamplingRateWithPhase()
@@ -97,18 +97,18 @@ private:
 		CLAM::TData phase = CLAM::TData(M_PI/2);
 		int frameSize = 1;
 
-		_controlSender.Configure( freq , samplingRate, phase, frameSize );
+		mControlSender.Configure( freq , samplingRate, phase, frameSize );
 
-		_controlSender.Do();
+		mControlSender.Do();
 
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverLeft.GetLastValue(),_delta);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverRight.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverLeft.GetLastValue(),mDelta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverRight.GetLastValue(),mDelta);
 
-		_controlSender.Do();
+		mControlSender.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverLeft.GetLastValue(),_delta);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverRight.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverLeft.GetLastValue(),mDelta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverRight.GetLastValue(),mDelta);
 	}
 
 	void testDo_WhenFreqIsQuarterOfSamplingRate()
@@ -118,14 +118,14 @@ private:
 		CLAM::TData phase = 0;
 		int frameSize = 1;
 
-		_controlSender.Configure( freq , samplingRate, phase, frameSize );
+		mControlSender.Configure( freq , samplingRate, phase, frameSize );
 
-		_controlSender.Do();
+		mControlSender.Do();
 		//first Do gives the initial state, already tested
-		_controlSender.Do();
+		mControlSender.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverLeft.GetLastValue(),_delta);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverRight.GetLastValue(),_delta); 
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverLeft.GetLastValue(),mDelta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverRight.GetLastValue(),mDelta); 
 	}
 
 	void testDo_WhenFreqEqualSamplingRateAndFrameSizeIs10()
@@ -135,17 +135,17 @@ private:
 		CLAM::TData phase = 0.0;
 		int frameSize = 10;
 
-		_controlSender.Configure( freq , samplingRate, phase, frameSize );
+		mControlSender.Configure( freq , samplingRate, phase, frameSize );
 
-		_controlSender.Do();
+		mControlSender.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverLeft.GetLastValue(),_delta);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverRight.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta);
 
-		_controlSender.Do();
+		mControlSender.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverLeft.GetLastValue(),_delta);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverRight.GetLastValue(),_delta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta);
 	}
 
 	void testDo_WhenFreqIsQuarterOfSamplingRateAndPhaseAndFrameSizeIs7()
@@ -155,20 +155,20 @@ private:
 		CLAM::TData phase = CLAM::TData(M_PI);
 		int frameSize = 7;
 
-		_controlSender.Configure( freq , samplingRate, phase, frameSize );
+		mControlSender.Configure( freq , samplingRate, phase, frameSize );
 
-		_controlSender.Do();
+		mControlSender.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverLeft.GetLastValue(),_delta);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverRight.GetLastValue(),_delta); 
-		_controlSender.Do();
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta); 
+		mControlSender.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverLeft.GetLastValue(),_delta);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverRight.GetLastValue(),_delta); 
-		_controlSender.Do();
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverLeft.GetLastValue(),mDelta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverRight.GetLastValue(),mDelta); 
+		mControlSender.Do();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , _receiverLeft.GetLastValue(),_delta);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , _receiverRight.GetLastValue(),_delta); 
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta); 
 	}
 
 
