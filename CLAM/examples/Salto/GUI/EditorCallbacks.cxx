@@ -18,7 +18,9 @@
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Dial.H>
 #include <FL/Fl_Value_Output.H>
-
+#ifdef GetClassName
+#undef GetClassName
+#endif
 
 #include "CSaltoSpectralDisplay.hxx"
 #include "Parameters.hxx"
