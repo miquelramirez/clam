@@ -20,6 +20,7 @@
  */
 #ifndef _XercesInitializer_hxx_
 #define _XercesInitializer_hxx_
+#include <xercesc/util/PlatformUtils.hpp>
 //#include <iostream>
 namespace CLAM
 {
