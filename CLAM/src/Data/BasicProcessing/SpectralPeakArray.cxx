@@ -248,7 +248,7 @@ void SpectralPeakArray::DeleteSpectralPeak(TIndex pos,bool deleteIndex)
 TIndex SpectralPeakArray::GetPositionFromIndex(TIndex index) const
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetPositionFromIndex: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::GetPositionFromIndex: Index table is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::GetPositionFromIndex: Index table is not up to date");
 	
 	//Note: cannot use searching routines because index may not be sorted
 
@@ -292,7 +292,7 @@ TIndex SpectralPeakArray::GetMaxMagIndex() const// returns position of mag maxim
 	// only indexed peaks. It returns the max position 
 	
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetMaxMagPosition: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::GetMaxMagPosition: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::GetMaxMagPosition: IndexTable is not up to date");
 	IndexArray indexArray=GetIndexArray();
 	// initialize to the first element
 	max = peakMagBuffer[indexArray[0]];
@@ -323,7 +323,7 @@ void SpectralPeakArray::ResetIndices() // reset all indices
 	indexArray.SetSize(nPeaks);
 
 	indexArray.Reset();
-	SetIsIndexUpToDate(true);
+	mIsIndexUpToDate=true;
 }
 
 void SpectralPeakArray::InitIndices() // Initialize all indices to -1 and set size
@@ -339,7 +339,7 @@ void SpectralPeakArray::InitIndices() // Initialize all indices to -1 and set si
 	{
 		indexArray[i]=-1;
 	}
-	SetIsIndexUpToDate(false);
+	mIsIndexUpToDate=false;
 }
 
 void SpectralPeakArray::SetIndicesTo(TIndex val) // Initialize all indices to -1 without resize
@@ -352,7 +352,7 @@ void SpectralPeakArray::SetIndicesTo(TIndex val) // Initialize all indices to -1
 	{
 		indexArray[i]=-1;
 	}
-	SetIsIndexUpToDate(true);
+	mIsIndexUpToDate=true;
 }
 
 /* Delete an element from the index array, but not deleting the Peak information */
@@ -372,11 +372,10 @@ void SpectralPeakArray::AddIndex(TIndex index)
 
 TIndex SpectralPeakArray::GetFirstNonValidIndexPosition(TIndex beginAt) const
 {	
-	int i;
 	IndexArray& indexArray=GetIndexArray();
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetFirstNonValidIndexPosition: Index array is not instantiated");
 	CLAM_ASSERT(beginAt<indexArray.Size()&&beginAt>=0,"SpectralPeakArray::SetThruIndexFreq: Out of bounds in Index Array");
-	for(i=beginAt;i<indexArray.Size();i++)
+	for(int i=beginAt;i<indexArray.Size();i++)
 	{
 		if(indexArray[i]==-1) return i;
 	}
@@ -400,7 +399,7 @@ int SpectralPeakArray::GetnIndexedPeaks() const
 double SpectralPeakArray::GetThruIndexFreq(TIndex pos) const
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetThruIndexFreq: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::GetThruIndexFreq: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::GetThruIndexFreq: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::GetThruIndexFreq: Out of bounds in Index Array");
 	return GetFreq(GetIndexArray()[pos]);
 }
@@ -408,7 +407,7 @@ double SpectralPeakArray::GetThruIndexFreq(TIndex pos) const
 double SpectralPeakArray::GetThruIndexMag(TIndex pos) const
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetThruIndexMag: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::GetThruIndexMag: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::GetThruIndexMag: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::GetThruIndexMag: Out of bounds in Index Array");
 	return GetMag(GetIndexArray()[pos]);
 }
@@ -416,7 +415,7 @@ double SpectralPeakArray::GetThruIndexMag(TIndex pos) const
 double SpectralPeakArray::GetThruIndexPhase(TIndex pos) const
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetThruIndexPhase: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::GetThruIndexPhase: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::GetThruIndexPhase: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::GetThruIndexPhase: Out of bounds in Index Array");
 	return GetPhase(GetIndexArray()[pos]);
 }
@@ -424,7 +423,7 @@ double SpectralPeakArray::GetThruIndexPhase(TIndex pos) const
 double SpectralPeakArray::GetThruIndexBinPos(TIndex pos) const
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetThruIndexBinPos: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::GetThruIndexBinPos: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::GetThruIndexBinPos: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::GetThruIndexBinPos: Out of bounds in Index Array");
 	return GetBinPos(GetIndexArray()[pos]);
 }
@@ -432,7 +431,7 @@ double SpectralPeakArray::GetThruIndexBinPos(TIndex pos) const
 TSize SpectralPeakArray::GetThruIndexBinWidth(TIndex pos) const
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetThruIndexBinWidth: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::GetThruIndexBinWidth: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::GetThruIndexBinWidth: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::GetThruIndexBinWidth: Out of bounds in Index Array");
 	return GetBinWidth(GetIndexArray()[pos]);
 }
@@ -441,7 +440,7 @@ TSize SpectralPeakArray::GetThruIndexBinWidth(TIndex pos) const
 void SpectralPeakArray::SetThruIndexSpectralPeak(TIndex pos,SpectralPeak& peak) 
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::SetThruIndexSpectralPeak: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::SetThruIndexSpectralPeak: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::SetThruIndexSpectralPeak: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::SetThruIndexSpectralPeak: Out of bounds in Index Array");
 	SetSpectralPeak(GetIndexArray()[pos],peak);
 }
@@ -451,7 +450,7 @@ void SpectralPeakArray::SetThruIndexSpectralPeak(TIndex pos,SpectralPeak& peak)
 void SpectralPeakArray::SetThruIndexFreq(TIndex pos,double freq) 
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::SetThruIndexFreq: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::SetThruIndexFreq: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::SetThruIndexFreq: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::SetThruIndexFreq: Out of bounds in Index Array");
 	SetFreq(GetIndexArray()[pos],freq);
 }
@@ -459,7 +458,7 @@ void SpectralPeakArray::SetThruIndexFreq(TIndex pos,double freq)
 void SpectralPeakArray::SetThruIndexMag(TIndex pos,double mag) 
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::SetThruIndexMag: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::SetThruIndexMag: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::SetThruIndexMag: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::SetThruIndexMag: Out of bounds in Index Array");
 	SetMag(GetIndexArray()[pos],mag);
 }
@@ -467,7 +466,7 @@ void SpectralPeakArray::SetThruIndexMag(TIndex pos,double mag)
 void SpectralPeakArray::SetThruIndexPhase(TIndex pos,double phase) 
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::SetThruIndexPhase: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::SetThruIndexPhase: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::SetThruIndexPhase: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::SetThruIndexPhase: Out of bounds in Index Array");
 	SetPhase(GetIndexArray()[pos],phase);
 }
@@ -475,7 +474,7 @@ void SpectralPeakArray::SetThruIndexPhase(TIndex pos,double phase)
 void SpectralPeakArray::SetThruIndexBinPos(TIndex pos,double binPos)
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::SetThruIndexBinPos: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::SetThruIndexBinPos: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::SetThruIndexBinPos: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::SetThruIndexBinPos: Out of bounds in Index Array");
 	SetBinPos(GetIndexArray()[pos],binPos);
 }
@@ -483,7 +482,7 @@ void SpectralPeakArray::SetThruIndexBinPos(TIndex pos,double binPos)
 void SpectralPeakArray::SetThruIndexBinWidth(TIndex pos,TSize binWidth)
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::SetThruIndexBinWidth: Index array is not instantiated");
-	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::SetThruIndexBinWidth: IndexTable is not up to date");
+	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::SetThruIndexBinWidth: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::SetThruIndexBinWidth: Out of bounds in Index Array");
 	SetBinWidth(GetIndexArray()[pos],binWidth);
 }

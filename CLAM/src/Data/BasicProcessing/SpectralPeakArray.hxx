@@ -68,7 +68,7 @@ namespace CLAM{
 class SpectralPeakArray : public ProcessingData
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakArray, 9, ProcessingData);
+	DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakArray, 8, ProcessingData);
 	DYN_ATTRIBUTE (0, public, EScale, Scale);
 	DYN_ATTRIBUTE (1, public, DataArray, MagBuffer);
 	DYN_ATTRIBUTE (2, public, DataArray, FreqBuffer);
@@ -76,12 +76,11 @@ public:
 	DYN_ATTRIBUTE (4, public, DataArray, BinPosBuffer);
 	DYN_ATTRIBUTE (5, public, DataArray, BinWidthBuffer);
 	DYN_ATTRIBUTE (6, public, IndexArray, IndexArray);
-	DYN_ATTRIBUTE (7, public, bool, IsIndexUpToDate);
-	DYN_ATTRIBUTE (8, public, bool, MinimizeResizes);
+	DYN_ATTRIBUTE (7, public, bool, MinimizeResizes);
 	
 protected:
 	void DefaultInit();
-public:  
+public:
 
 /** Accessory Constructor method 
 * Constructs the spectral peak array given a peak structure used as prototype and instantiating
@@ -233,7 +232,7 @@ public:
 /** Additional interface for working with indices
 * @return the number of non assigned peaks in the array
 */
-  int GetnIndexedPeaks() const;
+	int GetnIndexedPeaks() const;
 
 /** Additional interface for working with indices
 * @return first Position in the index array that holds a given index
@@ -402,12 +401,19 @@ public:
 	void   SetThruIndexBinWidth(TIndex pos,TSize binWidth);
 	void   SetThruIndexSpectralPeak(TIndex pos,SpectralPeak& peak);
 
+	void SetIsIndexUpToDate(bool isUpToDate)
+	{
+		mIsIndexUpToDate = isUpToDate;
+	}
+
 	/** Converts linear magnitude data to dB*/
 	void TodB();
 	/** Converts dB magnitude data to linear*/
 	void ToLinear();
 	
 	SpectralPeakArray operator+(const SpectralPeakArray& in);
+private:
+	bool mIsIndexUpToDate;
 
 };
 
