@@ -3,7 +3,7 @@
 
 
 #include "SMS_Configurator.hxx"
-#include "SMSTransformationConfig.hxx"
+#include "SegmentTransformationConfig.hxx"
 #include "Slotv1.hxx"
 #include "Signalv1.hxx"
 
