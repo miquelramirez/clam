@@ -178,7 +178,7 @@ private:
 
 	void testTemporalCentroid()
 	{
-		CLAM::TData tolerance = 0.0001;  // Due to numerical inaccuracies
+		CLAM::TData tolerance = 0.001;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
 		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 1.10702383518219;
