@@ -57,10 +57,13 @@ protected:
 	std::string mObservedClassName;
 
 	ProcessingConfigPresentation * mConfig;
+	CLAMVM::ProcessingController * mController;
 public:
 	ProcessingPresentation(const std::string& name= "unnamed");
 	virtual ~ProcessingPresentation();
 	void AttachToProcessingController(CLAMVM::ProcessingController & );
+	/// Holywood method to be called at the end of AttachToProcessingController
+	virtual void ProcessingControllerAttached();
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 	const std::string & GetName(){return mName;}

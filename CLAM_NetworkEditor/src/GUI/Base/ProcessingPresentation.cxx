@@ -30,8 +30,9 @@ namespace NetworkGUI
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
 ProcessingPresentation::ProcessingPresentation(const std::string& name )
-	: mName(name),
-	  mConfig(0)
+	: mName(name)
+	, mConfig(0)
+	, mController(0)
 {
 	SlotConfigureProcessing.Wrap( this, &ProcessingPresentation::ConfigureProcessing );
 	SlotChangeProcessingPresentationName.Wrap( this, &ProcessingPresentation::ChangeProcessingPresentationName );
@@ -94,30 +95,36 @@ ProcessingPresentation::~ProcessingPresentation()
 void ProcessingPresentation::AttachToProcessingController(
 		CLAMVM::ProcessingController & controller)
 {
+	mController = & controller;
 	CLAMVM::ProcessingController::NamesList::iterator it;
-	for( it=controller.BeginInPortNames();it!=controller.EndInPortNames();it++)
+	for( it=mController->BeginInPortNames();it!=mController->EndInPortNames();it++)
 		SetInPort(*it);
 	
-	for( it=controller.BeginOutPortNames();it!=controller.EndOutPortNames();it++)
+	for( it=mController->BeginOutPortNames();it!=mController->EndOutPortNames();it++)
 		SetOutPort(*it);
 	
-	for( it=controller.BeginInControlNames();it!=controller.EndInControlNames();it++)
+	for( it=mController->BeginInControlNames();it!=mController->EndInControlNames();it++)
 		SetInControl(*it);
 	
-	for( it=controller.BeginOutControlNames();it!=controller.EndOutControlNames();it++)
+	for( it=mController->BeginOutControlNames();it!=mController->EndOutControlNames();it++)
 		SetOutControl(*it);
 
-	SetObservedClassName( controller.GetObservedClassName() );
-	SetConfig( controller.GetObservedConfig() );	
+	SetObservedClassName( mController->GetObservedClassName() );
+	SetConfig( mController->GetObservedConfig() );	
 	
-	SignalConfigureProcessing.Connect( controller.SlotConfigureProcessing );
-	SignalProcessingNameChanged.Connect( controller.SlotProcessingNameChanged );
-	SignalSendOutControlValue.Connect( controller.SlotSendOutControlValue );
-	controller.SignalChangeProcessingPresentationName.Connect( SlotChangeProcessingPresentationName );
-	controller.SignalChangeState.Connect( SlotChangeState );
+	SignalConfigureProcessing.Connect( mController->SlotConfigureProcessing );
+	SignalProcessingNameChanged.Connect( mController->SlotProcessingNameChanged );
+	SignalSendOutControlValue.Connect( mController->SlotSendOutControlValue );
+	mController->SignalChangeProcessingPresentationName.Connect( SlotChangeProcessingPresentationName );
+	mController->SignalChangeState.Connect( SlotChangeState );
 
-	ChangeState( controller.GetProcessingExecState(), controller.GetProcessingStatus() );
-	SignalControllerAttached.Emit(controller);
+	ChangeState( mController->GetProcessingExecState(), mController->GetProcessingStatus() );
+	ProcessingControllerAttached();
+}
+
+void ProcessingPresentation::ProcessingControllerAttached()
+{
+	SignalControllerAttached.Emit(*mController);
 }
 
 ConnectionPointPresentation & ProcessingPresentation::GetOutPortPresentation( const std::string& name)
@@ -198,16 +205,16 @@ void ProcessingPresentation::UpdateListOfPortsAndControls( CLAMVM::ProcessingCon
  
 // create all ports and controls of processing
 	CLAMVM::ProcessingController::NamesList::const_iterator it;
-	for( it=controller.BeginInPortNames();it!=controller.EndInPortNames();it++)
+	for( it=mController->BeginInPortNames();it!=mController->EndInPortNames();it++)
 		SetInPort(*it);
 	
-	for( it=controller.BeginOutPortNames();it!=controller.EndOutPortNames();it++)
+	for( it=mController->BeginOutPortNames();it!=mController->EndOutPortNames();it++)
 		SetOutPort(*it);
 	
-	for( it=controller.BeginInControlNames();it!=controller.EndInControlNames();it++)
+	for( it=mController->BeginInControlNames();it!=mController->EndInControlNames();it++)
 		SetInControl(*it);
 	
-	for( it=controller.BeginOutControlNames();it!=controller.EndOutControlNames();it++)
+	for( it=mController->BeginOutControlNames();it!=mController->EndOutControlNames();it++)
 		SetOutControl(*it);
 
 	Show(); 	
