@@ -27,6 +27,7 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
+		SetLoop(false);
 		SetSelectedChannel( 0 );
 	}
 }
