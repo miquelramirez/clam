@@ -1,8 +1,8 @@
 #ifndef __NETSINTRACKSRENDERER__
 #define __NETSINTRACKSRENDERER__
 
-#include "QtPalette.hxx"
-#include "SinTracksDef.hxx"
+#include <vector>
+#include "SinTrackNode.hxx"
 #include "Renderer.hxx"
 
 namespace CLAM
@@ -15,15 +15,12 @@ namespace CLAM
 	    NetSinTracksRenderer();
 	    virtual ~NetSinTracksRenderer();
 
-	    void SetData(SineTrackList& data);
+	    void SetData(std::vector< std::vector<SinTrackNode> >& data);
 
 	    void Render();
 
 	private:
-	    SineTrackList _trackList;
-	    QtPalette _palette;
-
-	    float ClampToRange(TData value) const;
+	     std::vector< std::vector<SinTrackNode> > _tracks;
 
 	};
     }
