@@ -94,11 +94,6 @@ void V2MGUI::load_audio()
     QString fn = QFileDialog::getOpenFileName(QString::null,"*.wav",this);
     if (!fn.isEmpty())
     {
-		std::string ext((fn));
-		int lastPos = ext.find_last_of(".");
-		ext = ext.substr(lastPos+1,ext.size());
-		if(ext == "wav")
-		{
 			int err = v2mFacade->LoadAudio((fn));
 			if(err)
 			{
@@ -116,11 +111,6 @@ void V2MGUI::load_audio()
 				analysisDisplay->PlotOriginalAudio();
 				analysisDisplay->show();
 			}
-		}
-		else
-		{
-			Message(QMessageBox::Critical,"file error","Please, use  *.wav  files.");
-		}
     }
     
 }
@@ -130,11 +120,6 @@ void V2MGUI::save_audio()
     QString fn = QFileDialog::getSaveFileName("audio_out.wav","*.wav",this);
     if(!fn.isEmpty()) 
     {
-		std::string ext((fn));
-		int lastPos = ext.find_last_of(".");		
-		ext = ext.substr(lastPos+1,ext.size());
-		if(ext == "wav")
-		{
 			FILE* fp;
 			if((fp=fopen((fn),"w"))==NULL)
 			{
@@ -148,11 +133,6 @@ void V2MGUI::save_audio()
 				else
 					UpdateEnabled(eSaveAudio);
 			}
-		}
-		else
-		{
-			Message(QMessageBox::Critical,"file error","Please, use  *.wav  files.");
-		}
     }
 }
 
@@ -161,11 +141,6 @@ void V2MGUI::save_melody()
     QString fn = QFileDialog::getSaveFileName("melody_out.xml","*.xml",this);
     if(!fn.isEmpty()) 
     {
-		std::string ext((fn));
-		int lastPos = ext.find_last_of(".");		
-		ext = ext.substr(lastPos+1,ext.size());
-		if(ext == "xml")
-		{
 			FILE* fp;
 			if((fp=fopen((fn),"w"))==NULL)
 			{
@@ -174,15 +149,9 @@ void V2MGUI::save_melody()
 			else
 			{
 				if(segmentationEditor->IsModified()) segmentationEditor->SaveMelody();
-				std::string filename((fn));
-				v2mFacade->StoreMelody(filename);
+				v2mFacade->StoreMelody(fn.ascii());
 				UpdateEnabled(eSaveMelody);
 			}
-		}
-		else
-		{
-			Message(QMessageBox::Critical,"file error","Please, use  *.xml  files.");
-		}
     }
 }
 
@@ -191,11 +160,6 @@ void V2MGUI::save_midi_melody()
     QString fn = QFileDialog::getSaveFileName("midi_melody_out.xml","*.xml",this);
     if(!fn.isEmpty()) 
     {
-		std::string ext((fn));
-		int lastPos = ext.find_last_of(".");
-		ext = ext.substr(lastPos+1,ext.size());
-		if(ext == "xml")
-		{
 			FILE* fp;
 			if((fp=fopen((fn),"w"))==NULL)
 			{
@@ -204,15 +168,9 @@ void V2MGUI::save_midi_melody()
 			else
 			{
 				if(pianoRoll->IsModified()) segmentationEditor->SaveMelody();
-				std::string filename((fn));
-				v2mFacade->StoreMIDIMelody(filename);
+				v2mFacade->StoreMIDIMelody(fn.ascii());
 				UpdateEnabled(eSaveMIDIMelody);
 			}
-		}
-		else
-		{
-			Message(QMessageBox::Critical,"file error","Please, use  *.xml  files.");
-		}
     }
 }
 
@@ -221,11 +179,6 @@ void V2MGUI::save_midi()
     QString fn = QFileDialog::getSaveFileName("midi_out.mid","*.mid",this);
     if(!fn.isEmpty()) 
     {
-		std::string ext((fn));
-		int lastPos = ext.find_last_of(".");
-		ext = ext.substr(lastPos+1,ext.size());
-		if(ext == "mid")
-		{
 			FILE* fp;
 			if((fp=fopen((fn),"w"))==NULL)
 			{
@@ -235,15 +188,9 @@ void V2MGUI::save_midi()
 			{
 				fclose(fp);
 				if(pianoRoll->IsModified()) segmentationEditor->SaveMelody();
-				std::string filename((fn));
-				v2mFacade->SaveMIDI(filename,MIDIPrograms->currentItem());
+				v2mFacade->SaveMIDI(fn.ascii(),MIDIPrograms->currentItem());
 				UpdateEnabled(eSaveMIDI);
 			}
-		}
-		else
-		{
-			Message(QMessageBox::Critical,"file error","Please, use  *.mid  files.");
-		}
     }
 }
 
