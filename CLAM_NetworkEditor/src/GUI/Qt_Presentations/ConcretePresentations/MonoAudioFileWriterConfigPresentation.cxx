@@ -30,7 +30,6 @@
 #include <qvalidator.h>
 #include <qpushbutton.h>
 #include <string>
-
 namespace NetworkGUI
 {
 
@@ -53,8 +52,6 @@ void MonoAudioFileWriterConfigPresentation::ConfigureProcessing()
 	CLAM::AudioFileHeader header;
 	header.AddAll();
 	header.UpdateData();
-
-	mConfig.GetTargetFile().SetLocation( mLocation->text().latin1() );
 	
 	CLAM::TData convertedValue = 0;
 	const char * readValueSampleRate = mSampleRate->text().latin1();
@@ -67,7 +64,7 @@ void MonoAudioFileWriterConfigPresentation::ConfigureProcessing()
 	const CLAM::Enum::tEnumValue * mapping = header.GetFormat().GetSymbolMap();
 	header.SetFormat( mapping[mFormat->currentItem()].value );
 
-	mConfig.GetTargetFile().SetHeader( header );
+	mConfig.GetTargetFile().CreateNew( mLocation->text().latin1(), header );
 
 	SignalConfigureProcessing.Emit(mConfig);
 }
@@ -75,12 +72,10 @@ void MonoAudioFileWriterConfigPresentation::ConfigureProcessing()
 void MonoAudioFileWriterConfigPresentation::SetConfig( const CLAM::ProcessingConfig & cfg )
 {
 	mConfig = static_cast<const CLAM::MonoAudioFileWriterConfig &>(cfg);
-	mConfig.AddAll();
-	mConfig.UpdateData();
 	CLAM::AudioFileHeader header;
 	header.AddAll();
 	header.UpdateData();
-	mConfig.GetTargetFile().SetHeader(header);
+	mConfig.GetTargetFile().CreateNew( mLocation->text().latin1(), header);
 	CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
 
 	mLayout = mAttributeContainer;
