@@ -319,8 +319,8 @@ configure with the --disable-xml option.]
 				AC_MSG_ERROR([
 The test program did compile, but failed to link. This probably means that
 the  run-time linker is not able to find libxercesc. You might want to set
-your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to the
-right location.]
+your LD_LIBRARY_PATH (DYLD_LIBRARY_PATH on Mac OS X) variable, or edit 
+/etc/ld/ld.conf to point to the right location.]
 					)
 				],[
 				AC_MSG_ERROR([
@@ -413,9 +413,9 @@ details.]
 	],[
 				AC_MSG_ERROR([
 The test program did compile, but failed to link. This probably means that
-the run-time linker is not able to find libfftw. You might want to set your
-LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to the right
-location.]
+the run-time linker is not able to find libfftw. You might want to set
+your LD_LIBRARY_PATH (DYLD_LIBRARY_PATH on Mac OS X) variable, or edit 
+/etc/ld/ld.conf to point to the right location.]
 					)
 	],[
 		echo $ac_n "cross compiling; assumed OK... $ac_c"
@@ -601,8 +601,8 @@ details.]
 		AC_MSG_ERROR([
 The test program did compile and to link, but failed to run. This
 probably  means that the run-time linker is not able to find libqt.so. You
-might want to set your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to
-point to the right location.]
+might want to set your LD_LIBRARY_PATH (DYLD_LIBRARY_PATH on Mac OS X) 
+variable, or edit /etc/ld/ld.conf to point to the right location.]
 		)
 	],[
 		echo $ac_n "cross compiling; assumed OK... $ac_c"
