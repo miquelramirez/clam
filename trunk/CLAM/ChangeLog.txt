@@ -1,5 +1,5 @@
-2003-06-11 CLAM_0_4_3
-''
+2003-06-11 CLAM_0_5_0
+'flashing new build system and SMSTools'
   * Build system:
       ** New flashing build system, fast, crossplatform and easy to use
       ** Configuration file for each binary is shared between platforms
@@ -25,12 +25,27 @@
       ** OverlapAdd now uses a StreamBuffer with one WriteRegion, one AddRegion and
          one ReadRegion.
       ** CleanTracks is much more faster, (and then usable)
+  * Flow - Network & FlowControl:
+      ** New Network and FlowControls classes that works quite together:
+         Network manages processings ownership, nodes, gives simple interface for 
+         stablishing processing topologies.
+         FlowControls gets the topology from the associated network and does its
+         processing-firing scheadule. The scheaduling algorithm is reimplementable
+       	 now we have a pull-scheadule implementation
+      ** Limitation: only tested for fixed buffer size.
   * Flow - Nodes:
+      ** New pure virtual interface for attaching ports and traversing processings
+      ** Some refactoring simplifying checking logic. Further refactoring in progress
       ** A new AddStreamRegion has been introduced (used for overlap and add).
       ** StreamRegions can be now used using center position logic.
       ** StreamRegions belonging to a StreamBuffer are now automatically initialized
          so the center time is zero and the first half of the biggest read region is
          already written with zeros.
+      ** Limitation: Do using ports (supervised mode) only tested with fixed size buffers.
+  * Factory:
+      ** Added a general purpose factory which is templatized by the abstract product
+         (returned type). Nested class Registrator helps registering concrete classes
+         to the factory.
   * Standard:
       ** Added the Filename type to be used in configurations instead of
          std::string. Configurators detect them and use a suited widget.
@@ -41,7 +56,9 @@
   * DynamicTypes:
       ** Fix:  Definition  of  DynamicTypes  on  foreign  namespaces  leaded  to
          compilation problems if you don't use the ugly 'using namespace CLAM;'.
-  * Examples - SMS (old SMSAnalysisSynthesis):
+      ** Fix: dynamic type self-assignation doesn't modify the object.
+  * Examples - SMS (old AnalysisSynthesisExample):
+      ** FlowControlExamples. Gives examples of use of networks and flow-control.
       ** Renamed as SMS. GUI is now SMSTools.
       ** Applies chained SMS transformations
       ** Menu reorganization
@@ -55,11 +72,25 @@
       ** New method XMLStorage::UseIndentation to enable pretty XML formatting
       ** Obsoleted constructor receiving the root tag as parameter
       ** Obsoleted _restoreFrom and dumpOn, use Dump and Restore instead
-  * Visualizatiom:
-      ** Final Visualization Module design using SigSlot library. (see Documentation)
-      ** New FLTK presentations
-      ** Plots substitutes Snapshots
-      ** Configurators: New types suported: 'Filename', 'BPF'.
+  * Visualization Module:
+      ** Major rework in several areas:
+	 * View concept has now been mapped into two different classes, ModelAdapter's
+           whose mission is to wrap Core CLAM objects so they can have Visualization
+           Module components attached, and ModelController's whose mission consists in
+           allowing Visualization Module components to be controlled indirectly by the
+           user from the GUI. From now on VM interface will be kept stable ( at least until
+           CLAM 1.0 )
+         * Presentation semantics are preserved, but their nature of widgets is emphasized
+           in several ways
+         * Several new graphic representations of DSP concepts such as the sinusoidal tracks
+         * OpenGL data renderers optimized and debugged
+         * Old CbLib interface deprecated in favor of libSigSlot, CLAM own implementation of
+           the C++ idiom of Signals & Slots
+         * New plot's substitute the functionality offered by old snapshots
+         * Most of VM code is now documented with Doxygen comments
+         * Several new FLTK widgets, such as the Fl_Axis, Fl_SmartTile, etc. 	
+      ** Configurators: New type suported: 'Filename'
+      ** 'Formal' documentation will be soon made publicly available
 
 2003-03-05  CLAM_0_4_2
 'Cuidado merge update'

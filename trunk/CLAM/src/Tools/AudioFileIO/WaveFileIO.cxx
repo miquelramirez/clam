@@ -94,7 +94,7 @@ void WaveFileIO::ReadHeader(void)
 			mHeader.mChannels = fmt.channels;
 			mHeader.mSamplerate = fmt.samplerate;
 			fmtFound = true;
-
+			
 			while (j<h.len)
 			{
 				char dum[256];
