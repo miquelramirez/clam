@@ -17,32 +17,23 @@
     </property>
     <widget class="QSlider">
         <property name="name">
-            <cstring>CLAM_IC::SimpleOscillator_0::Amplitude</cstring>
+            <cstring>InControlFloat::SimpleOscillator_0::Amplitude</cstring>
         </property>
         <property name="geometry">
             <rect>
                 <x>70</x>
-                <y>100</y>
-                <width>110</width>
+                <y>120</y>
+                <width>50</width>
                 <height>260</height>
             </rect>
         </property>
-        <property name="minValue">
-            <number>0</number>
-        </property>
-        <property name="maxValue">
-            <number>0</number>
-        </property>
-        <property name="tickmarks">
-            <enum>Both</enum>
-        </property>
-        <property name="tickInterval">
-            <number>3</number>
+        <property name="lineStep">
+            <number>1</number>
         </property>
     </widget>
     <widget class="QDial">
         <property name="name">
-            <cstring>CLAM_IC::SimpleOscillator_0::Pitch</cstring>
+            <cstring>InControl::SimpleOscillator_0::Pitch</cstring>
         </property>
         <property name="geometry">
             <rect>
