@@ -77,6 +77,13 @@ sandboxes = [ # Module, Sandbox name, Tag, Update level
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
 
+def baseDirOf(keyname) :
+	for modulename, sandboxname, _, _  in sandboxes :
+		if modulename.find(keyname) >= 0 : 
+			return CLAM_SANDBOXES+ sandboxname
+	assert False, "in baseDirOf() wrong module keyname"
+
+
 automaticTests = [
 	( 'UnitTests', unitTestsPath ),
 	( 'FunctionalTests', functionalTestsPath ),
@@ -88,15 +95,15 @@ externalApplications = [
 #	( 'SpectralDelay-Offline', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/Offline/'),
 #	( 'SpectralDelay-MultiBandProxyTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/MultiBandProxyTest/'),
 #	( 'SpectralDelay-DelayPoolTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/DelayPoolTest/'),
-	( 'NetworkEditor', CLAM_SANDBOXES+'CLAM_NetworkEditor/build/' ),
-	( 'Voice2MIDI', CLAM_SANDBOXES+'CLAM_Voice2MIDI/build/' ),
-	( 'SMSTools', CLAM_SANDBOXES+'CLAM_SMSTools/build/Tools/' ),
-	( 'SMSBatch', CLAM_SANDBOXES+'CLAM_SMSTools/build/Batch/' ),
-	( 'SMSConsole', CLAM_SANDBOXES+'CLAM_SMSTools/build/Console/' ),
-#	( 'Rappid', CLAM_SANDBOXES+'CLAM_Rappid/build/' ),
-	( 'SDIFDisplay', CLAM_SANDBOXES+'CLAM_SDIFDisplay/build/' )
-#	( 'DescriptorsGUI', CLAM_SANDBOXES+'DescriptorsGUI/build/' ),
-#	( 'Salto', CLAM_SANDBOXES+'CLAM_Salto/build/' ),
+	( 'NetworkEditor', baseDirOf('NetworkEditor')+'/build/' ),
+	( 'Voice2MIDI', baseDirOf('CLAM_Voice2MIDI')+'/build/' ),
+	( 'SMSTools', baseDirOf('SMSTools')+'/build/Tools/' ),
+	( 'SMSBatch', baseDirOf('SMSTools')+'/build/Batch/' ),
+	( 'SMSConsole', baseDirOf('SMSTools')+'/build/Console/' ),
+#	( 'Rappid', baseDirOf('Rappid')+'/build/' ),
+	( 'SDIFDisplay', baseDirOf('SDIFDisplay')+'/build/' )
+#	( 'DescriptorsGUI', baseDirOf('DescriptorsGUI')+'/build/' ),
+#	( 'Salto', baseDirOf('Salto')+'/build/' ),
 ]
 
 supervisedTests = [
