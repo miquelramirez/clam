@@ -48,8 +48,8 @@ MainWindow::MainWindow()
 	setCaption( "CLAM Network Editor" );
 	resize( 800, 600 );
 	
-	SlotNewMessageToStatus.Wrap( this, &MainWindow::OnNewMessageToStatus );
-	mNetwork.SignalSendNewMessageToStatus.Connect( SlotNewMessageToStatus );
+	SlotSendMessageToStatus.Wrap( this, &MainWindow::SendMessageToStatus );
+	mNetwork.SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
 	SignalNewNetworkSignal.Connect( mNetwork.SlotClear );
 	statusBar()->message( "Ready to edit" );
 
@@ -97,7 +97,7 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::OnNewMessageToStatus( const std::string & message)
+void MainWindow::SendMessageToStatus( const std::string & message)
 {
 	statusBar()->message( QString( message.c_str() ), 2000);
 }

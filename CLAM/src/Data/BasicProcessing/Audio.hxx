@@ -64,7 +64,7 @@ namespace CLAM {
 		/** @return the audio buffer size in samples*/
 		int GetSize() const {return GetBuffer().Size();}
 
-		/** Getter for the end time
+		/** Getter for the end time in miliseconds
 		 *  @return The current end time for the buffer size */
 		TTime GetEndTime() const {return GetBeginTime()+GetTimeFromIndex(GetSize());}
 
@@ -78,7 +78,7 @@ namespace CLAM {
 		void SetSize(int s);
 
 		/** Resizes the array buffer to last from the begin time
-		 *  until the specified time position.
+		 *  until the specified time position (time in miliseconds)
 		 *  @todo Document how data in the buffer is discarded
 		 *  @param time End time of the buffer once resized
 		 *  @see SetSize
@@ -86,20 +86,21 @@ namespace CLAM {
 		void SetEndTime(TTime time);
 
 		/** Resizes the array buffer to last the specified
-		 *  time duration.
+		 *  time duration (miliseconds).
 		 *  @todo Document how data in the buffer is discarded
 		 *  @param duration The required duration for the buffer once resized
 		 *  @see SetSize
 		 */
 		void SetDuration(TTime duration);
 
-		/** Method for copying an audio chunk out of the existing data
+		/** Method for copying an audio chunk out of the existing data. Time in milliseconds.
 		 *  @param beginTime Beginning of the chunk in time measure.
 		 *  @param endTime Ending of the chunk in time measure.
 		 *  @param chunk The Audio data chunk
 		 *  @param configureChunk Optional parameter to set the configuration of the chunk. True by default.
 		*/
 		void GetAudioChunk(TTime beginTime, TTime endTime,Audio& chunk,bool configureChunk=true) const;
+
 		/**Method for copying an audio chunk out of the existing data
 		 *  @param beginIndex Beginning of the chunk inside the Buffer.
 		 *  @param endIndex Ending of the chunk inside the Buffer
@@ -109,6 +110,7 @@ namespace CLAM {
 		void GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool configureChunk=true) const;
 
 		/** Method for copying an audio "slice" out of the existing data. The difference between slices
+		 *  Time in miliseconds.
 		 *  and chunks is that slices don't own any memory.
 		 *  @param beginTime Beginning of the chunk in time measure.
 		 *  @param endTime Ending of the chunk in time measure.
@@ -127,23 +129,26 @@ namespace CLAM {
 		*/
 		void GetAudioSlice( TIndex beginIndex, TIndex endIndex, Audio& slice, bool configureSlice=true) const;
 
-		/**Method for setting an audio chunk of the audio out of an existing chunk
+		/**Method for setting an audio chunk of the audio out of an existing chunk. Time in miliseconds.
 		 *  @param beginTime Beginning location of the chunk in the Buffer in time measure.
 		 *  @param chunk The Audio data chunk to insert
 		 */
 		void SetAudioChunk(TTime beginTime,const Audio& chunk);
+
 		/**Method for setting an audio chunk of the audio out of an existing chunk
 		 *  @param beginIndex Beginning location of the chunk in the Buffer.
 		 *  @param chunk The Audio data chunk to insert
 		 */
 		void SetAudioChunk(TIndex beginIndex,const Audio& chunk);
+
 	private:
 		/** Conversion utility for handling indices and time tags
 		 *  @param index Point to get time tag
 		 *  @return  Exact time for the index indicated
 		 */
 		TTime GetTimeFromIndex(TIndex index) const;
-		/** Conversion utility for handling indices and time tags
+
+		/** Conversion utility for handling indices and time tags. Time in miliseconds
 		 *  @param time Point to get index tag
 		 *  @return Index of the position marked in time
 		 */

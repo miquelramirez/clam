@@ -22,16 +22,17 @@
 /**
  *  The goals of this example is to show you how to:
  *      -> Configure Audio devices in your system using CLAM tools
- *      -> Play a WAVE file using CLAM abstraction of your system
- *      -> audio devices
+ *      -> Play a file using CLAM abstraction of audio devices
+ *
  */
 #include "AudioIO.hxx"      // imports CLAM::AudioManager and CLAM::AudioIOConfig declarations
 #include "AudioManager.hxx"
 #include "AudioOut.hxx"     // imports CLAM::AudioOut declaration
-#include "AudioFileIn.hxx"  // this header imports the CLAM::AudioFileIn Processing class interface
+#include "AudioFile.hxx"    // imports CLAM::AudioFile declaration
+#include "MultiChannelAudioFileReader.hxx" // imports CLAM::MultiChannelAudioFileReader
 #include "Audio.hxx"        // imports the CLAM::Audio ProcessingData class interface
 #include "Err.hxx"          // imports CLAM::Err exception class declaration
-#include <FL/fl_file_chooser.H>
+
 #include <iostream>
 
 
@@ -39,61 +40,55 @@ int main( int argc, char** argv )
 {
 	try
 	{
-		// First we will load an audio file, just as shown in the AudioFileIO example, so
-		// refer to that code in order to get a detailed explanation of the code below
-		CLAM::AudioFileIn   fileLoader; 
-		CLAM::AudioFileConfig fileLoaderConfig; 
-		const char* filename = fl_file_chooser( "Please, select a .wav file", "*.wav", NULL );
+		// We take as a parameter from the command line the file to be played back
 		
-		if ( filename == NULL )
+		if ( argc == 1 ) // No input file
 		{
-			std::cout << "User cancelled" << std::endl;
-			exit(0);
+			std::cerr << "No input file" << std::endl;
+			std::cerr << "Usage: AudioFileReading <input file name>" << std::endl;
+			
+			exit( - 1 );
 		}
-		
-		fileLoaderConfig.SetFilename( filename );
-		fileLoaderConfig.SetFiletype( CLAM::EAudioFileType::eWave ); 
-		
-		if ( !fileLoader.Configure( fileLoaderConfig ) )
+		else if ( argc > 2 ) // Too many parameters
 		{
-			std::cerr << "ERROR: could not open " << filename << std::endl;
+			std::cerr << "Too many parameters" << std::endl;
+			std::cerr << "Usage: AudioFileReading <input file name>" << std::endl;
+			
+			exit( -1 );			
+		}
+	
+		// Now we will prepare file playback very similarly as the first half of the
+		// "AudioFileReading" example
+
+		CLAM::AudioFile file;
+		file.SetLocation( argv[1] );
+		
+		// And now check that the given file can be read
+		if ( !file.IsReadable() )
+		{
+			std::cerr << "Error: file " << file.GetLocation() << " cannot be opened ";
+			std::cerr << "or is encoded in an unrecognized format" << std::endl;
 			exit(-1);
 		}
-		
-		CLAM::TSize nSamples = fileLoader.Size();
-		CLAM::TData sampleRate = fileLoader.SampleRate();
 
-		CLAM::Audio   signalLeftChannel;
-		CLAM::Audio   signalRightChannel;
+		std::vector<CLAM::Audio> incomingAudioChannels;
+		incomingAudioChannels.resize( file.GetHeader().GetChannels() );
+			
+		CLAM::MultiChannelAudioFileReaderConfig cfg;
 		
-		signalLeftChannel.SetSize( nSamples );
-		signalLeftChannel.SetSampleRate( sampleRate );
-
-		// Let's check wether the signal is stereo or mono ( it has two channels
-		// or just one )
+		cfg.SetSourceFile( file );
 		
-		if ( fileLoader.Channels() == 2 )
+		CLAM::MultiChannelAudioFileReader reader;
+		
+		reader.Configure( cfg );
+		
+		for( unsigned i = 0; i < incomingAudioChannels.size(); i++ )
 		{
-			signalRightChannel.SetSize( nSamples );
-			signalRightChannel.SetSampleRate( sampleRate );
+			reader.GetOutPorts().GetByNumber(i).Attach( incomingAudioChannels[i] );
 		}
-		else if ( fileLoader.Channels() > 2 )
-		{
-			std::cerr << "Only stereo or mono files playback is supported! " << std::endl;
-			exit(-1);
-		}
-		
-		fileLoader.Start();      
 
-		// We load the samples onto one or two Audio objects, as it is appropiate
-		if ( fileLoader.Channels() == 1 )
-			fileLoader.Do( signalLeftChannel );
-		else if ( fileLoader.Channels() == 2 )
-			fileLoader.Do( signalLeftChannel, signalRightChannel );
-		
-		fileLoader.Stop();
-		
-		// Once we have loaded the sound file, it's time to access and configure the audio hardware devices
+
+		// Once we made sure we can start playing the file, it's time to access and configure the audio hardware devices
 		// present in our computer. We will do this through the 'AudioManager': a global, unique object that
 		// mediates between your program and the underlying Operating System sound hardware services.
 		
@@ -113,114 +108,55 @@ int main( int argc, char** argv )
 		// of reasons, not being the only one the fact it is a power of two :)
 
 		
-		const CLAM::TData playbackSampleRate = 44100;
-		const CLAM::TSize frameSize = 1024;
+		const CLAM::TData playbackSampleRate = file.GetHeader().GetSampleRate();
+		const CLAM::TSize frameSize = 1024; // this is also our read size
+
+		// And now we set the size of each Audio object to our intended 'read size'
+		// in this case ouf frame size
+		for ( unsigned i = 0; i < incomingAudioChannels.size(); i++ )
+		{
+			incomingAudioChannels[i].SetSize( frameSize );
+		}
+
 
 		CLAM::AudioManager theAudioManager( playbackSampleRate, frameSize );
 
-		// Now we will create two AudioOut objects, one for each channel in our card. Note that even
-		// if the sound you are playing is mono, you must write something onto both channels.
+		// Now we will create as many AudioOuts as input channels
 
-		CLAM::AudioOut leftChannel;
-		CLAM::AudioOut rightChannel;
+		CLAM::Array<CLAM::AudioOut > audioOutputs;
+		audioOutputs.Resize( incomingAudioChannels.size() );
+		audioOutputs.SetSize( incomingAudioChannels.size() );
 
 		// And now we will configure them
 		CLAM::AudioIOConfig  audioOutCfg;
-		
-		// We set the channel id. Sound devices channels are numbered from
-		// [0...N] - being N the number of channels your sound device can
-		// support. Usually the channel '0' corresponds to the left channel.
-		audioOutCfg.SetChannelID( 0 );
-		// and we configure the left channel audio object
-		leftChannel.Configure( audioOutCfg );
 
-		// we will use the same config object ( remember that they are copied
-		// internally by Processings ) to set the channel ID for the right
-		// channel object. usually 'right channel' is numbered as '1'
-		audioOutCfg.SetChannelID( 1 );
-		// and we configure the other channel audio object
-		rightChannel.Configure( audioOutCfg );
-
-		// And we may now start them
-		leftChannel.Start();
-		rightChannel.Start();
-	       
-		// Now we can start writing to the sound card. However, things are not
-		// so easy as just calling the AudioOut objects Do passing them the
-		// Audio objects where we store the samples: we must break these big
-		// ones into smaller ones. 
-		// So the task at hand can be detailed as follows:
-		// 1) Partition the big audios loaded from files into smaller audios
-		//    called frames, paying attention to the fact that big audio sizes
-		//    might not be exact multiples of the frameSize we chose before
-		// 2) Pass these frames to the AudioOut objects so they are played by
-		//    our sound card
-		// The second one is quite trivial, but the first one require some more
-		// thought:
-		// i)  What we can do if the big audio size is not a multiple of the frame
-		//     size? One reasonable thing to do is to set those 'missing samples'
-		//     to zero
-		// ii) This problem can be reduced to that of having an sliding window
-		//     moving through the big audio. This 'window' can be represented in
-		//     a variety of ways, such as a pair of indexes. You will see this
-		//     idea of 'sliding window' over a set of data to appear here and there
-		//     in CLAM.
-
-		// So let's instantiate two Audio objects for holding the samples meant
-		// for each channel at each 'step' of our play back algorithm
-		CLAM::Audio leftSamples;
-		CLAM::Audio rightSamples;
-		// We set their sizes to the 'frameSize' and their sample rates to those
-		// of the big audios
-		leftSamples.SetSize( frameSize );
-		rightSamples.SetSize( frameSize );
-		leftSamples.SetSampleRate( sampleRate );
-		rightSamples.SetSampleRate( sampleRate );
-
-		// We will implement the idea of keeping our window as 'a pair of indexes'
-		CLAM::TIndex leftIndex = 0;
-		CLAM::TIndex rightIndex = frameSize;
-
-		// And now let's start the loop
-		while ( leftIndex < nSamples )
-		{
-			// Now it's time to 'extract' the samples bounded by
-			// our window from the big audios. This can be accomplished with
-			// the GetAudioChunk() method present in Audio objects interface,
-			// which is able to solve the 'not multiple of' case
-			// Note that depending wether we are handling a mono or a stereo
-			// signal, the sources of data for our 'temporary' buffers vary.
-			if ( fileLoader.Channels() == 1 )
-			{
-			
-				signalLeftChannel.GetAudioChunk( leftIndex, rightIndex, leftSamples );
-				signalLeftChannel.GetAudioChunk( leftIndex, rightIndex, rightSamples );
-			}
-			else
-			{
-				signalLeftChannel.GetAudioChunk( leftIndex, rightIndex, leftSamples );
-				signalRightChannel.GetAudioChunk( leftIndex, rightIndex, rightSamples );
-			}
-
-			// And now we may wrote to the audio device
-
-			leftChannel.Do( leftSamples );
-			rightChannel.Do( rightSamples );
-
-			leftIndex += frameSize;
-			rightIndex += frameSize;
+		for ( int i = 0; i < audioOutputs.Size(); i++ )
+		{		
+			// We set the channel id. Sound devices channels are numbered from
+			// [0...N] - being N the number of channels your sound device can
+			// support. Usually the channel '0' corresponds to the left channel.
+			audioOutCfg.SetChannelID( i );
+			// and we configure the left channel audio object
+			audioOutputs[i].Configure( audioOutCfg );
+			// We attach each AudioOut to the channel data we want it to read
+			audioOutputs[i].GetInPorts().GetByNumber(0).Attach( incomingAudioChannels[i] );
+			// We start it
+			audioOutputs[i].Start();
 		}
-		
-		// During the file playback you may hear 'cracks' or 'drop-outs'. These artifacts
-		// are called 'buffer underruns' i.e. that your program has not been fast enough
-		// writing to the card - so there are times that the card has no data to play back.
-		// This can be a major problem in production code, and its sources are many and varied
-		// - under Windows, playing back without having underruns from a pure console
-		// application is sort of 'black art' being the frameSize an important factor
 
-		// And finally, we stop the AudioOut's
-		leftChannel.Stop();
-		rightChannel.Stop();
+		reader.Start();
+		
+		while( reader.Do() )
+		{
+			for ( int i = 0; i < audioOutputs.Size(); i++ )
+				audioOutputs[i].Do();
+		}
+
+		
+		for ( int i = 0; i < audioOutputs.Size(); i++ )
+			audioOutputs[i].Stop();
+
+		reader.Stop();
 		
 	}
 	catch ( CLAM::Err& e )

@@ -46,14 +46,16 @@ SpectralDescriptors::SpectralDescriptors(TData initVal):Descriptor(eNumAttr)
 	SetMoment4(initVal);
 	SetMoment5(initVal);
 	SetMoment6(initVal);
-	SetKurtosis(initVal);
+	SetSpread(initVal);
 	SetSkewness(initVal);
+	SetKurtosis(initVal);
 	SetTilt(initVal);
 	SetFlatness(initVal);
 	SetHighFrequencyCoefficient(initVal);
 	SetMaxMagFreq(initVal);
 	SetLowFreqEnergyRelation(initVal);
 	SetRolloff(initVal);
+	SetSlope(initVal);
 	SetIrregularity(initVal);
 	SetStrongPeak(initVal);
 	SetHFC(initVal);
@@ -104,10 +106,12 @@ void SpectralDescriptors::ConcreteCompute()
 		SetMoment5(mpStats->GetMoment(FifthOrder)*mDeltaFreq);
 	if(HasMoment6())
 		SetMoment6(mpStats->GetMoment((O<6>*)(0))*mDeltaFreq);
+	if (HasSpread())
+	        SetSpread(ComputeSpread());
+	if(HasSkewness())
+		SetSkewness(mpStats->GetSkew());
 	if(HasKurtosis())	
 		SetKurtosis(mpStats->GetKurtosis());
-	if(HasSkewness())
-	   SetSkewness(mpStats->GetSkew());
 	if(HasTilt())
 		SetTilt(ComputeSpectralTilt());
 	if(HasFlatness())
@@ -120,6 +124,8 @@ void SpectralDescriptors::ConcreteCompute()
 		SetLowFreqEnergyRelation(ComputeLowFreqEnergyRelation());
 	if(HasRolloff())
 		SetRolloff(ComputeRolloff());
+	if(HasSlope())
+		SetSlope(ComputeSlope());
 	if(HasIrregularity())
 		//not implemented
 		SetIrregularity(0);
@@ -180,7 +186,7 @@ TData SpectralDescriptors::ComputeSpectralTilt()
 it promoted into basicOps*/
 TData SpectralDescriptors::ComputeSpectralFlatness()
 {
-	TData  mean = mpStats->GetMean();;
+	TData  mean = mpStats->GetMean();
 
 	TData geomean = mpStats->GetGeometricMean();
 
@@ -260,6 +266,57 @@ TData SpectralDescriptors::ComputeRolloff()
 }
 
 
+TData SpectralDescriptors::ComputeSpread() 
+{ 
+	DataArray& mags     = mpSpectrum->GetMagBuffer();
+	TSize      magsSize = mpSpectrum->GetSize();
+
+	TData centroid = mpStats->GetCentroid()*mDeltaFreq;
+
+	// Compute spectrum variance around centroid frequency
+	TData variance = 0;
+	TData sumMags  = 0;
+	for (TIndex i=0; i<magsSize; i++)
+	{
+		variance += pow((i*mDeltaFreq - centroid), 2) * mags[i];
+		sumMags  += mags[i];
+	}
+	variance /= sumMags;
+
+	// Return std.dev. normalized by centroid frequency
+	return sqrt(variance) / centroid;
+}
+
+
+TData SpectralDescriptors::ComputeSlope() 
+{ 
+	DataArray& mags     = mpSpectrum->GetMagBuffer();
+	TSize      magsSize = mpSpectrum->GetSize();
+
+	// Compute means and gradient of decay part
+	TData meanX = 0;
+	TData meanY = 0;
+	TData num   = 0;
+	TData denum = 0;
+
+	for (TIndex i=0; i<magsSize; i++)
+	{
+		meanX += (i*mDeltaFreq);
+		meanY += mags[i];
+
+		num   += (i*mDeltaFreq)*mags[i];
+		denum += pow(i*mDeltaFreq, 2);
+	}
+	meanX /= magsSize;
+	meanY /= magsSize;
+
+	num   -= magsSize*meanX*meanY;
+	denum -= magsSize*meanX*meanX;
+
+	// Normalize by the total amplitude
+	return (num/denum) / (meanY*magsSize);
+}
+
 
 SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 {
@@ -283,7 +340,7 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 	if(a.HasMoment6())
 		tmpD.SetMoment6(a.GetMoment6()*mult);
 	if(a.HasIrregularity())
-			tmpD.SetIrregularity(a.GetIrregularity()*mult);
+		tmpD.SetIrregularity(a.GetIrregularity()*mult);
 	if(a.HasTilt())
 		tmpD.SetTilt(a.GetTilt()*mult);
 	if(a.HasFlatness())
@@ -298,10 +355,14 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 		tmpD.SetMaxMagFreq(a.GetMaxMagFreq()*mult);
 	if(a.HasLowFreqEnergyRelation())
 		tmpD.SetLowFreqEnergyRelation(a.GetLowFreqEnergyRelation()*mult);
+	if(a.HasSpread())
+		tmpD.SetSpread(a.GetSpread()*mult);
 	if(a.HasSkewness())
 		tmpD.SetSkewness(a.GetSkewness()*mult);
 	if(a.HasRolloff())
 		tmpD.SetRolloff(a.GetRolloff()*mult);
+	if(a.HasSlope())
+		tmpD.SetSlope(a.GetSlope()*mult);
 	if(a.HasHighFrequencyCoefficient())
 		tmpD.SetHighFrequencyCoefficient(a.GetHighFrequencyCoefficient()*mult);
 	if(a.HasBandDescriptors())
@@ -421,6 +482,12 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.UpdateData();
 		tmpD.SetLowFreqEnergyRelation(a.GetLowFreqEnergyRelation()*b.GetLowFreqEnergyRelation());
 	}
+	if(a.HasSpread() && b.HasSpread() )
+	{
+		tmpD.AddSpread();
+		tmpD.UpdateData();
+		tmpD.SetSpread(a.GetSpread()*b.GetSpread());
+	}
 	if(a.HasSkewness() && b.HasSkewness() )
 	{
 		tmpD.AddSkewness();
@@ -432,6 +499,12 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.AddRolloff();
 		tmpD.UpdateData();
 		tmpD.SetRolloff(a.GetRolloff()*b.GetRolloff());
+	}
+	if(a.HasSlope() && b.HasSlope() )
+	{
+		tmpD.AddSlope();
+		tmpD.UpdateData();
+		tmpD.SetSlope(a.GetSlope()*b.GetSlope());
 	}
 	if(a.HasHighFrequencyCoefficient() && b.HasHighFrequencyCoefficient() )
 	{
@@ -575,6 +648,12 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.UpdateData();
 		tmpD.SetLowFreqEnergyRelation(a.GetLowFreqEnergyRelation()+b.GetLowFreqEnergyRelation());
 	}
+	if(a.HasSpread() && b.HasSpread() )
+	{
+		tmpD.AddSpread();
+		tmpD.UpdateData();
+		tmpD.SetSpread(a.GetSpread()+b.GetSpread());
+	}
 	if(a.HasSkewness() && b.HasSkewness() )
 	{
 		tmpD.AddSkewness();
@@ -586,6 +665,12 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.AddRolloff();
 		tmpD.UpdateData();
 		tmpD.SetRolloff(a.GetRolloff()+b.GetRolloff());
+	}
+	if(a.HasSlope() && b.HasSlope() )
+	{
+		tmpD.AddSlope();
+		tmpD.UpdateData();
+		tmpD.SetSlope(a.GetSlope()+b.GetSlope());
 	}
 	if(a.HasHighFrequencyCoefficient() && b.HasHighFrequencyCoefficient() )
 	{

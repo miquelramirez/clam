@@ -27,6 +27,7 @@
 #include <qpointarray.h>
 #include "ConnectionPresentation.hxx"
 #include "Slotv2.hxx"
+#include "Signalv1.hxx"
 
 namespace NetworkGUI
 {
@@ -38,6 +39,8 @@ public:
 	virtual ~Qt_ConnectionPresentation();
 	void Show();
 	void Hide();
+	void UnSelectConnectionPresentation();
+
 protected:    
 	virtual void paintEvent( QPaintEvent * ) = 0;
 	void SetOutPos(int x, int y);
@@ -46,17 +49,22 @@ protected:
 	void ResolveWireZone(int & position, int & extent,
 		const int origin, const int end,
 		const int wireThickness, const int torsionResistence);
-	void mousePressEvent( QMouseEvent *);
-	void mouseReleaseEvent( QMouseEvent *);
-	void keyPressEvent( QKeyEvent * );
+	void mousePressEvent( QMouseEvent *);	
+	void mouseMoveEvent( QMouseEvent *);
 	QPoint origin;
 	QPoint end;
-	bool mDown;
 	QPointArray mPositions;
-
+	QPoint     mPrevPos;
+	bool mSelected;
 public: //slots
 	SigSlot::Slotv2< int, int > SlotSetOutPos;
 	SigSlot::Slotv2< int, int > SlotSetInPos;
+
+	SigSlot::Signalv1< Qt_ConnectionPresentation * > SignalConnectionPresentationSelected;
+	SigSlot::Signalv1< Qt_ConnectionPresentation * > SignalConnectionPresentationAddedToSelection;
+	SigSlot::Signalv1< const QPoint & > SignalMovingMouseWithButtonPressed;
+
+	
 };
 
 } // namespace NetworkGUI

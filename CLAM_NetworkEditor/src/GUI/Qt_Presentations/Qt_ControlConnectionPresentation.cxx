@@ -59,7 +59,7 @@ void Qt_ControlConnectionPresentation::paintEvent( QPaintEvent * e)
 
 	p.setPen( QPen ( QColor( 0, 0, 0 ), 3));
 	p.drawCubicBezier(mPositions);
-	if (mDown)
+	if (mSelected)
 		p.setPen( QPen ( QColor( 200, 50, 50), 1 ) );
 	else
 		p.setPen( QPen ( QColor( 80, 80, 200), 1 ) );

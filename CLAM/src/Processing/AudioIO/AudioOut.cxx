@@ -24,6 +24,26 @@
 
 using namespace CLAM;
 
+AudioOut::AudioOut() 
+	: Input("Input",this,1) 
+{ 
+	mpDevice = 0; 
+	Configure(AudioIOConfig()); 
+}
+
+AudioOut::AudioOut(const AudioIOConfig &c) 
+	: Input("Input",this,1) 
+{ 
+	mpDevice = 0; 
+	Configure(c); 
+}
+
+AudioOut::~AudioOut()
+{ 
+	if (mpDevice) 
+		mpDevice->Unregister(*this); 
+}
+
 bool AudioOut::ConcreteConfigure(const ProcessingConfig& c)
 	throw(ErrProcessingObj)
 {

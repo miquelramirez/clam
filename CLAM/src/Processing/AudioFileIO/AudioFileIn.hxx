@@ -24,7 +24,7 @@
 
 #include "Audio.hxx"
 #include "ErrSoundFileIO.hxx"
-#include "AudioFile.hxx"
+#include "AudioFileConfig.hxx"
 #include "Processing.hxx"
 #include "OutPortTmpl.hxx"
 

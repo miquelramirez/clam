@@ -20,7 +20,7 @@ public:
 	DYN_ATTRIBUTE (0, public, std::string, Name);
 	DYN_ATTRIBUTE (1, public, int, DelayFactor); // To be improved...
 	DYN_ATTRIBUTE (2, public, int, MinNote); // Tessitura (min)
-	DYN_ATTRIBUTE (3, public, int, MaxNote); // Teesitura (max)
+	DYN_ATTRIBUTE (3, public, int, MaxNote); // Tessitura (max)
 
 protected:
 	void DefaultInit(void);
@@ -55,5 +55,6 @@ public:
 } //namespace CLAM
 
 #endif
+
 
 

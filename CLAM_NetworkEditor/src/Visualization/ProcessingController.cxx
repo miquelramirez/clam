@@ -20,12 +20,12 @@
  */
 
 #include "ProcessingController.hxx"
-#include "Processing.hxx"
-#include "ProcessingConfig.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
+
+#include <iostream> // TODO: remove
 
 namespace CLAMVM
 {
@@ -34,21 +34,41 @@ ProcessingController::ProcessingController()
 	: mObserved(0)
 {
 	SlotConfigureProcessing.Wrap( this, &ProcessingController::ConfigureProcessing );
+	SlotProcessingNameChanged.Wrap( this, &ProcessingController::ProcessingNameChanged );
 }
 
 void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & cfg) 
 {
+	// HasMutableInterface!
+	if(mObserved->ModifiesPortsAndControlsAtConfiguration())
+		SignalRemoveAllConnections.Emit( mObserved );
+
+	bool wasRunning = false;
 	if (mObserved->GetExecState() == CLAM::Processing::Running)
 	{
+		wasRunning = true;
 		mObserved->Stop();
-		mObserved->Configure(cfg);
-		mObserved->Start();
 	}
-	else
-		mObserved->Configure(cfg);
+
+
+	mObserved->Configure(cfg);
+	SignalChangeState.Emit( mObserved->GetExecState(), mObserved->GetStatus() );
+
+	if(mObserved->ModifiesPortsAndControlsAtConfiguration())
+	{
+		UpdateListOfPortsAndControls();
+		SignalRebuildProcessingPresentationAttachedTo.Emit( this, mObserved );
+	}
+
+	if(wasRunning)
+		mObserved->Start();
+}
+
+void ProcessingController::ProcessingNameChanged( const std::string & newName )
+{
+	SignalProcessingNameChanged.Emit( newName, this );
 }
 	
-
 bool ProcessingController::Publish()
 {
 	CLAM_ASSERT( mObserved, "Trying to publish an unbinded processing controller" );
@@ -61,6 +81,31 @@ std::string ProcessingController::GetObservedClassName()
 		return mObserved->GetClassName();
 	return "unbinded processing controller";
 }
+
+void ProcessingController::UpdateListOfPortsAndControls()
+{
+	mInPortNames.clear();
+	mOutPortNames.clear();
+	mInControlNames.clear();
+	mOutControlNames.clear();
+
+	CLAM::PublishedInPorts::ConstIterator itPortIn;
+	for (itPortIn = mObserved->GetInPorts().Begin(); itPortIn != mObserved->GetInPorts().End(); itPortIn++)
+		mInPortNames.push_back((*itPortIn)->GetName());
+		
+	CLAM::PublishedOutPorts::ConstIterator itPortOut;
+	for (itPortOut = mObserved->GetOutPorts().Begin(); itPortOut != mObserved->GetOutPorts().End(); itPortOut++)
+		mOutPortNames.push_back((*itPortOut)->GetName());
+
+	CLAM::PublishedInControls::ConstIterator itCtrlIn;
+	for (itCtrlIn = mObserved->GetInControls().Begin(); itCtrlIn != mObserved->GetInControls().End(); itCtrlIn++)
+		mInControlNames.push_back((*itCtrlIn)->GetName());
+
+	CLAM::PublishedOutControls::ConstIterator itCtrlOut;
+	for (itCtrlOut = mObserved->GetOutControls().Begin(); itCtrlOut != mObserved->GetOutControls().End(); itCtrlOut++)
+		mOutControlNames.push_back((*itCtrlOut)->GetName());
+}
+
 bool ProcessingController::BindTo( CLAM::Processing& obj )
 {
 	mObserved = dynamic_cast< CLAM::Processing* > (&obj);
@@ -131,6 +176,11 @@ ProcessingController::NamesList::iterator ProcessingController::BeginOutControlN
 ProcessingController::NamesList::iterator ProcessingController::EndOutControlNames()
 {
 	return mOutControlNames.end();
+}
+
+void ProcessingController::SetName( const std::string & name )
+{
+	SignalChangeProcessingPresentationName.Emit( name );
 }
 
 } //namespace CLAMVM

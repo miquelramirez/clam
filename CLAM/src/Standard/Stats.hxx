@@ -21,8 +21,10 @@ template <unsigned int x,unsigned int y> StaticBool<(x>y)>  GreaterThan<x,y>::mI
 
 /** Class to hold basic statistics related to an array of arbitrary data. Statistics are computed
  *	efficiently and reusing computations whenever possible.
- *	@param: abs whether the statistics are performed directly on the values (by default or template
+ *	@param abs whether the statistics are performed directly on the values (by default or template
  *	parameter=false) or on the absolute value of the array elements
+ *	@param T the array type
+ *	@param U the type of the resulting statistics
  */
 template <bool abs=false,class T=TData, class U=TData,int initOrder=5> class StatsTmpl
 {
@@ -50,6 +52,22 @@ public:
 		}
 		InitMoment((O<initOrder>*)(0));
 	}
+	~StatsTmpl()
+	{
+		int i;
+		for (i=0;i<mMoments.Size();i++)
+		{
+			if(mMoments[i]) delete mMoments[i];
+		}
+		for (i=0;i<mCentralMoments.Size();i++)
+		{
+			if(mCentralMoments[i]) delete mCentralMoments[i];
+		}
+		for (i=0;i<mCenterOfGravities.Size();i++)
+		{
+			if(mCenterOfGravities[i]) delete mCenterOfGravities[i];
+		}
+	}
 
 	/** Method to change data array and reset all previous computations*/
 	void SetArray(const Array<T>* data)
@@ -58,8 +76,8 @@ public:
 		mData=data;
 	}
 
-	/** 
-	 *	Get order-th raw moment. 
+	/**
+	 *	Get order-th raw moment.
 	 *	This method just acts as a selector, if order is greater than init order, we cannot assure
 	 *	that the pointer has been initialized and we need extra checks (slow downs).
 	 */
@@ -82,8 +100,8 @@ public:
 		pTmpArray=NULL;
 	}
 
-	/** 
-	 *	Get order-th central moment. 
+	/**
+	 *	Get order-th central moment.
 	 *	This method just acts as a selector, if order is greater than init order, we cannot assure
 	 *	that the pointer has been initialized and we need extra checks (slow downs).
 	 */
@@ -93,7 +111,7 @@ public:
 	}
 
 	/** Get all central moments up to the order indicated*/
-	template<int order> void GetCentralMoments(Array<U>& centralMoments, 
+	template<int order> void GetCentralMoments(Array<U>& centralMoments,
 		const O<order>*)
 	{
 		if(centralMoments.Size()<order)
@@ -106,8 +124,8 @@ public:
 		pTmpArray=NULL;
 	}
 
-	/** 
-	 *	Get order-th center of gravity. 
+	/**
+	 *	Get order-th center of gravity.
 	 *	This method just acts as a selector, if order is greater than init order, we cannot assure
 	 *	that the pointer has been initialized and we need extra checks (slow downs).
 	 */
@@ -115,7 +133,7 @@ public:
 	{
 		return GetCenterOfGravity((const O<order>*)(0),GreaterThan<order,initOrder>::mIs);
 	}
-	
+
 	/** Get all center of gravities up to the order indicated*/
 	template<int order> void GetCenterOfGravities(Array<U>& centerOfGravities,
 		const O<order>*)
@@ -138,7 +156,7 @@ public:
 	}
 
 	/** Get centroid, compute it if necessary*/
-	U GetCentroid() 
+	U GetCentroid()
 	{
 		return GetCenterOfGravity(FirstOrder);
 	}
@@ -201,7 +219,7 @@ public:
 	{
 		return mMinElement(*mData);
 	}
-	
+
 	/** Reset all previously computed values */
 	void Reset()
 	{
@@ -249,7 +267,7 @@ private:
 		mMoments[0]=new Moment<1,abs,T,U>;
 		mCentralMoments[0]=new CentralMoment<1,abs,T,U>;
 		mCenterOfGravities[0]= new CenterOfGravity<1,abs,T,U>;
-	}	
+	}
 
 	/** Get order-th raw moment, order is smaller than init order*/
 	template<int order> U GetMoment(const O<order>*,StaticFalse&)
@@ -269,7 +287,7 @@ private:
 			for(i=previousSize;i<order;i++) mMoments[i]=NULL;
 		}
 
-		if(mMoments[order-1]==NULL) 
+		if(mMoments[order-1]==NULL)
 		{
 			mMoments[order-1]=new Moment<order,abs,T,U>;
 		}
@@ -306,9 +324,9 @@ private:
 				break;
 			}
 		}
-		
+
 		if(existRawMoments) //if we do, we will use formula that relates Central Moments with Raw Moments
-			return (*tmpMoment)(*mData,mMoments);	
+			return (*tmpMoment)(*mData,mMoments);
 		else //if we don't, we will have to compute them
 			return (*tmpMoment)(*mData);
 	}
@@ -324,11 +342,11 @@ private:
 			int i;
 			for(i=previousSize;i<order;i++) mCentralMoments[i]=NULL;
 		}
-		if(mCentralMoments[order-1]==NULL) 
+		if(mCentralMoments[order-1]==NULL)
 		{
 			mCentralMoments[order-1]=new CentralMoment<order,abs,T,U>;
 		}
-		
+
 		return GetCentralMoment((const O<order>*)(0),StaticFalse());
 	}
 
@@ -348,13 +366,13 @@ private:
 	}
 
 	/** Get order-th center of gravity, order is smaller than init order*/
-	template<int order> U GetCenterOfGravity(const O<order>*,StaticFalse&)
+	template<int order> U GetCenterOfGravity(const O<order>*,StaticFalse& orderIsGreater)
 	{
 		return (*dynamic_cast<CenterOfGravity<order,abs,T,U>*> (mCenterOfGravities[order-1]))(*mData);
 	}
 
 	/** Get order-th center of gravity, order is greater than init order*/
-	template<int order> U GetCenterOfGravity(const O<order>*,StaticTrue&)
+	template<int order> U GetCenterOfGravity(const O<order>*,StaticTrue& orderIsGreater)
 	{
 		if(order>mCenterOfGravities.Size())
 		{
@@ -364,7 +382,7 @@ private:
 			int i;
 			for(i=previousSize;i<order;i++) mCenterOfGravities[i]=NULL;
 		}
-		if(mCenterOfGravities[order-1]=NULL) 
+		if(mCenterOfGravities[order-1]=NULL)
 		{
 			mCenterOfGravities[order-1]=new CenterOfGravity<order,abs,T,U>;
 		}

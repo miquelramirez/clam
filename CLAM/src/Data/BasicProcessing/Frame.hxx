@@ -56,9 +56,9 @@ class Frame : public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (Frame, 14, ProcessingData);
-	/** Value of time in the center of the frame  */
+	/** Value of time in the center of the frame in miliseconds */
 	DYN_ATTRIBUTE (0, public, TData, CenterTime);
-	/** Duration of the Frame  */
+	/** Duration of the Frame in miliseconds */
 	DYN_ATTRIBUTE (1, public, TData, Duration);
 	/** Spectrum analyzed from the Audio input  (in SMS with Residual Window)*/
 	DYN_ATTRIBUTE (2, public, Spectrum, Spectrum);

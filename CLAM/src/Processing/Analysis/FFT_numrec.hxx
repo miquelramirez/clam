@@ -40,32 +40,10 @@ namespace CLAM {
 	 */
 	class FFT_numrec: public FFT_base
 	{
-		/** Internal output buffer */
-		TData* fftbuffer;
-		/** Auxiliary flags structure, used to add the complex attribute. */
-		static SpecTypeFlags mComplexflags;
+	
+   	
+	  	bool FFTConfigure();
 
-		/* FFT possible prototype states.
-		 */
-		typedef enum {
-			sComplex, // We just need to write the complex array.
-			sComplexSync, // We write the complex array and synchronize.
-			sOther // The complex array is not present.
-		} FFTState;
-
-		FFTState mState;
-
-		/** When the object enters "Disabled" mode, it stores the
-		 * previoius state here. It would have been easier to use a
-		 * single state variable, and a "Disabled" flag outside of the
-		 * state, but this way we can implement Do()s with a single
-		 * switch level, which is slightly faster.
-		 */
-		FFTState mBackupState;
-
-		bool FFTConfigure();
-
-		inline void CheckTypes(const Audio& in, const Spectrum &out) const;
 
 		/** Configuration change method
 		 */
@@ -73,15 +51,13 @@ namespace CLAM {
 
 		// Output conversions
 
-		inline void NumrecToComplex(Spectrum &out) const;
-
-		inline void NumrecToOther(Spectrum &out) const;
+		void ToComplex(Spectrum &out);
 
 	public:
 
 		FFT_numrec();
 
-		FFT_numrec(const FFTConfig &c) throw(ErrDynamicType);
+		FFT_numrec(const FFTConfig &c);
 
 		~FFT_numrec();
 
@@ -91,17 +67,9 @@ namespace CLAM {
 
 		bool Do();
 
-		void Attach(Audio& in, Spectrum &out);
-
-		bool Do(const Audio& in, Spectrum &out) const;
+		bool Do(const Audio& in, Spectrum &out);
 
 		// Port interfaces.
-
-		bool SetPrototypes(const Audio& in, const Spectrum &out);
-
-		bool SetPrototypes();
-
-		bool UnsetPrototypes();
 
 		bool MayDisableExecution() const {return true;}
 

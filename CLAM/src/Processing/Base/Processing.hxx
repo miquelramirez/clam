@@ -77,170 +77,6 @@ namespace CLAM {
 
 		/** Status description, for debugging */
 		std::string mStatus;
-
-//		std::vector<InPort*> mPublishedInPorts;
-//		std::vector<OutPort*> mPublishedOutPorts;
-//		std::vector<OutControl*> mPublishedOutControls;
-//		std::vector<InControl*> mPublishedInControls;
-
-	public:
-		/**
-		 *   Processing Object Input Interator
-		 */
-//		typedef std::vector<InPort*>::iterator InPortIterator;
-		/**
-		 *   Processing Object Output Interator
-		 */
-//		typedef std::vector<OutPort*>::iterator OutPortIterator;
-		/**
-		 *   Processing Object Published In-Controls Interator
-		 */
-//		typedef std::vector<InControl*>::iterator InControlIterator;
-		/**
-		 *   Processing Object Published Out-Controls Interator
-		 */
-//		typedef std::vector<OutControl*>::iterator OutControlIterator;
-
-
-		/**
-		 *   Processing Object Constant Input Iterator
-		 */
-//		typedef std::vector<InPort*>::const_iterator ConstInPortIterator;
-		/**
-		 *   Processing Object Constant Output Iterator
-		 */
-//		typedef std::vector<OutPort*>::const_iterator ConstOutPortIterator;
-		/**
-		 *   Processing Object Published In-Controls Interator
-		 */
-//		typedef std::vector<InControl*>::const_iterator ConstInControlIterator;
-		/**
-		 *   Processing Object Published Out-Controls Interator
-		 */
-//		typedef std::vector<OutControl*>::const_iterator ConstOutControlIterator;
-
-
-		/**
-		 *  Accessor to the first of the Processing Object Inputs
-		 */
-//		InPortIterator FirstInput()
-//		{
-//			return mPublishedInPorts.begin();
-//		}
-
-		/**
-		 *  Accessor to the last of the Processing Object Inputs
-		 */
-//		InPortIterator LastInput()
-//		{
-//			return mPublishedInPorts.end();
-//		}
-
-		/**
-		 *  Accessor to the first of the Processing Object Ouputs
-		 */
-//		OutPortIterator FirstOutput()
-//		{
-//			return mPublishedOutPorts.begin();
-//		}
-
-		/**
-		 *  Accessor to the last of the Processing Object Outputs
-		 */
-//		OutPortIterator LastOutput()
-//		{
-//			return mPublishedOutPorts.end();
-//		}
-
-		/**
-		 *  Accessor to the first of the published In-Controls
-		 */
-//		InControlIterator FirstInControl()
-//		{
-//			return mPublishedInControls.begin();
-//		}
-		/**
-		 *  Accessor to the last of the published In-Controls
-		 */
-//		InControlIterator LastInControl()
-//		{
-//			return mPublishedInControls.end();
-//		}
-		/**
-		 *  Accessor to the first of the published Out-Controls
-		 */
-//		OutControlIterator FirstOutControl()
-//		{
-//			return mPublishedOutControls.begin();
-//		}
-		/**
-		 *  Accessor to the last of the published Out-Controls
-		 */
-//		OutControlIterator LastOutControl()
-//		{
-//			return mPublishedOutControls.end();
-//		}
-
-
-
-		/**
-		 *  Accessor to the first of the Processing Object Inputs (const)
-		 */
-//		ConstInPortIterator FirstInput() const
-//		{
-//			return mPublishedInPorts.begin();
-//		}
-		/**
-		 *  Accessor to the last of the Processing Object inputs (const )
-		 */
-//		ConstInPortIterator LastInput() const
-//		{
-//			return mPublishedInPorts.end();
-//		}
-		/**
-		 *  Accessor to the first of the Processing Object Outputs ( const )
-		 */
-//		ConstOutPortIterator FirstOutput() const
-//		{
-//			return mPublishedOutPorts.begin();
-//		}
-		/**
-		 *  Accessor to the last of the Processing Object Outputs ( const )
-		 */
-//		ConstOutPortIterator LastOutput() const
-//		{
-//			return mPublishedOutPorts.end();
-//		}
-		/**
-		 *  Accessor to the first of the published In-Controls (const)
-		 */
-//		ConstInControlIterator FirstInControl() const
-//		{
-//			return mPublishedInControls.begin();
-//		}
-		/**
-		 *  Accessor to the last of the published In-Controls (const)
-		 */
-//		ConstInControlIterator LastInControl() const
-//		{
-//			return mPublishedInControls.end();
-//		}
-		/**
-		 *  Accessor to the first of the published Out-Controls (const)
-		 */
-//		ConstOutControlIterator FirstOutControl() const
-//		{
-//			return mPublishedOutControls.begin();
-//		}
-		/**
-		 *  Accessor to the last of the published Out-Controls (const)
-		 */
-//		ConstOutControlIterator LastOutControl() const
-//		{
-//			return mPublishedOutControls.end();
-//		}
-
-
 	protected:
 		/** Configuration method interface.
 		 * The Processing base class forces all the concrete
@@ -346,6 +182,8 @@ namespace CLAM {
 	public:
 		bool CanDoUsingPorts()
 		{	
+			if(GetExecState()!=Running)
+				return false;
 			return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
 		}
 
@@ -521,10 +359,17 @@ namespace CLAM {
 			CLAM_ASSERT(false, "Processing::LoadFrom() not yet implemented");
 		}
 
-		//---------
-		// refactoring ports/controls in progress
-		// begin
 	public:
+		/**
+		 * This method is used to determine if a given processing can change its interface of ports/controls after
+		 * its construction (i.e. changing the name of ports in ConcreteConfigure). If a concrete processing
+		 * can do this, it should reimplement the method returning true, in order to notify networks, graphical
+		 * interfaces, etc.
+		 */
+		virtual bool ModifiesPortsAndControlsAtConfiguration()
+		{ 
+			return false;
+		}
 		
 		PublishedInControls& GetInControls()
 		{
@@ -551,9 +396,6 @@ namespace CLAM {
 		PublishedInPorts mPublishedInPorts;
 		PublishedOutPorts mPublishedOutPorts;
 
-		// end refactoring in progress
-		// ---------
-		
 	private:
 		/* Methods to prepend a message to mStatus, truncate if necesary,
 		** and return a static char [] , used for passing the status to
@@ -561,6 +403,8 @@ namespace CLAM {
 		*/
 		const char* AddStatus(const char* a);
 		const char* AddStatus(const std::string& a);
+		std::string ComposeAssertMessage( std::string msg );
+
 		bool  mPreconfigureExecuted;
 	};
 

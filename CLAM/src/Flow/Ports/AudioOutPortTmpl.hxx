@@ -3,7 +3,7 @@
 
 #include "Audio.hxx"
 #include "AudioInPortTmpl.hxx"
-#include "OutPort.hxx"
+#include "OutPortTmpl.hxx"
 #include "Node.hxx"
 
 namespace CLAM

@@ -32,7 +32,7 @@
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "Err.hxx"
-#include "Oscillator.hxx"
+#include "SimpleOscillator.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioOut.hxx"
 #include <iostream>
@@ -63,13 +63,13 @@ int main( int argc, char** argv )
 		// In order to add processings to the network, we will create correct configurations for all of them.
 		// In a lot of cases the default configurations are ok.
 
-		CLAM::OscillatorConfig osc1Cfg;
+		CLAM::SimpleOscillatorConfig osc1Cfg;
 		osc1Cfg.SetFrequency(440.0);
 		osc1Cfg.SetSamplingRate( sampleRate );
 
-		CLAM::OscillatorConfig osc2Cfg;
+		CLAM::SimpleOscillatorConfig osc2Cfg;
 		osc2Cfg.SetFrequency(20.0);
-		osc1Cfg.SetSamplingRate( sampleRate );
+		osc2Cfg.SetSamplingRate( sampleRate );
 
 		CLAM::BinaryAudioOpConfig audioMultiplierCfg;
 			
@@ -81,8 +81,8 @@ int main( int argc, char** argv )
 		// Ok, we have the configurations created. Why not to create the processing that will use them?
 		// Because we will add them directly to the network, in this way:
 
-		network.AddProcessing( "Generator", new CLAM::Oscillator( osc1Cfg ) );
-		network.AddProcessing( "Modulator", new CLAM::Oscillator( osc2Cfg ) );
+		network.AddProcessing( "Generator", new CLAM::SimpleOscillator( osc1Cfg ) );
+		network.AddProcessing( "Modulator", new CLAM::SimpleOscillator( osc2Cfg ) );
 		network.AddProcessing( "Audio Multiplier", new CLAM::AudioMultiplier( audioMultiplierCfg ) );
 		network.AddProcessing( "Audio Mono Out", new CLAM::AudioOut( audioOutCfg ) );
 

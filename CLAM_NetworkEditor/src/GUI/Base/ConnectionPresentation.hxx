@@ -23,7 +23,7 @@
 #define __CONNECTIONPRESENTATION_HXX__
 
 #include "Presentation.hxx"
-//#include "Slotv2.hxx"
+#include "Slotv1.hxx"
 #include "Signalv1.hxx"
 #include <string>
 
@@ -48,6 +48,8 @@ public:
 	virtual void AttachTo(CLAMVM::ConnectionAdapter & );
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
+	void SetOutName( const std::string & );
+	void SetInName( const std::string & );
 
 	const std::string &GetInName()
 	{
@@ -59,14 +61,13 @@ public:
 	}
 
 protected:
-	virtual void SetNames( const std::string &, const std::string &);
-
 	std::string mOutName;
 	std::string mInName;
 	
 public: //slots
-//	SigSlot::Slotv2< const std::string &, const std::string &> SlotSetNames;
 	SigSlot::Signalv1< ConnectionPresentation* > SignalRemoveConnection;
+	SigSlot::Slotv1< const std::string & > SlotSetOutName;
+	SigSlot::Slotv1< const std::string & > SlotSetInName;
 
 };
 

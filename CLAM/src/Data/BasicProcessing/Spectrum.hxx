@@ -113,6 +113,11 @@ public:
 	void SetPhase(TData freq,TData newPhase);
 	/** Synchronizes all data to the one of the specified type */
 	void SynchronizeTo(const SpecTypeFlags& tmpFlags);
+	/** Synchronizes all data to the one of the input spectrum */
+	void SynchronizeTo(const Spectrum& in);
+    /** Actual Synchronization routine */
+	void SynchronizeTo(const SpecTypeFlags& tmpFlags,const Spectrum& in);
+
 
 
 // Config shortcut interface.
@@ -173,8 +178,9 @@ private:
 	/** Returns index from a given frequency */
 	TIndex IndexFromFreq(TData freq) const;
 
-// Converting routines
+
 public:
+// Internal converting routines
 	/** Convert from Complex to Polar Buffer */
 	void Complex2Polar() ;
 	/** Convert from Polar to Complex Buffer */
@@ -191,6 +197,32 @@ public:
 	void MagPhase2BPF() ;
 	/** Convert from BPF to MagPhase*/
 	void BPF2MagPhase();
+
+// Converting routines from a second input spectrum
+/** Convert from Complex to Polar Buffer */
+	void Complex2Polar(const Spectrum& in) ;
+	/** Convert from Polar to Complex Buffer */
+	void Polar2Complex(const Spectrum& in) ;
+	/** Convert from Complex to Mag/Phase buffers */
+	void Complex2MagPhase(const Spectrum& in) ;
+	/** Convert from Polar to Mag/Phase buffers */
+	void Polar2MagPhase(const Spectrum& in) ;
+	/** Convert from Mag/Phase to Polar */
+	void MagPhase2Polar(const Spectrum& in) ;
+	/** Convert from Mag/Phase to Complex */
+	void MagPhase2Complex(const Spectrum& in) ;
+	/** Convert to BPF */
+	void MagPhase2BPF(const Spectrum& in) ;
+	/** Convert from BPF to MagPhase*/
+	void BPF2MagPhase(const Spectrum& in);
+private:
+//Low level converting routines
+	void Polar2MagPhase(const Array<Polar>& polarArray,DataArray& magBuffer, DataArray& phaseBuffer);
+	void Complex2MagPhase(const Array<Complex>& complexArray, DataArray& magBuffer, DataArray& phaseBuffer);
+	void MagPhase2Polar(const DataArray& magBuffer,const DataArray& phaseBuffer,Array<Polar>& polarArray);
+	void MagPhase2Complex(const DataArray& magBuffer,const DataArray& phaseBuffer,Array<Complex>& complexArray);
+	void MagPhase2BPF(const DataArray& magBuffer, const DataArray& phaseBuffer, BPF& magBPF, BPF& phaseBPF);
+	void BPF2MagPhase( const BPF& magBPF, const BPF& phaseBPF, DataArray& magBuffer, DataArray& phaseBuffer);
 
 };
 

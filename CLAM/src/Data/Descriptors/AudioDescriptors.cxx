@@ -24,8 +24,12 @@
 #include <cmath>
 #include "AudioDescriptors.hxx"
 #include "Audio.hxx"
+#include "OSDefines.hxx"
 
 namespace CLAM {
+
+
+const TData AudioDescriptors::mEpsilon = 1e-5;
 
 AudioDescriptors::AudioDescriptors(Audio* pAudio): DescriptorAbs(eNumAttr)
 {
@@ -49,6 +53,7 @@ AudioDescriptors::AudioDescriptors(TData initVal):DescriptorAbs(eNumAttr)
 	SetDecay(initVal);
 	SetSustain(initVal);
 	SetRelease(initVal);
+	SetDecrease(initVal);
 }
 
 void AudioDescriptors::DefaultInit() {
@@ -68,9 +73,9 @@ const Audio* AudioDescriptors::GetpAudio() const {
 
 void AudioDescriptors::SetpAudio(Audio* pAudio) {
 	mpAudio=pAudio;
-    //TODO: it may give problems because pointer passed
+	//TODO: it may give problems because pointer passed
 	InitStats(&mpAudio->GetBuffer());
-	mComputedAttackTime=0;	
+	mIsAttackTimeComputed=false;
 }
 
 void AudioDescriptors::ConcreteCompute()
@@ -78,7 +83,7 @@ void AudioDescriptors::ConcreteCompute()
 	if (HasMean())
 		SetMean(mpStats->GetMean());
 	if (HasTemporalCentroid())
-		SetTemporalCentroid(mpStats->GetCentroid()*mpAudio->GetDuration()/mpAudio->GetSize());
+		SetTemporalCentroid(mpStats->GetCentroid()/mpAudio->GetSampleRate());
 	if (HasEnergy())
 		SetEnergy(mpStats->GetEnergy());
 	if(HasVariance())
@@ -89,6 +94,8 @@ void AudioDescriptors::ConcreteCompute()
 		SetRiseTime(ComputeAttackTime());
 	if(HasLogAttackTime())
 		SetLogAttackTime(ComputeLogAttackTime());
+	if(HasDecrease())
+		SetDecrease(ComputeDecrease());
 /*
 		Not implemented yet;
 
@@ -101,49 +108,128 @@ void AudioDescriptors::ConcreteCompute()
 
 TData AudioDescriptors::ComputeZeroCrossingRate()
 {
+	DataArray& data = mpAudio->GetBuffer();
+
 	int sum = 0;
-	DataArray& data=mpAudio->GetBuffer();
-	int size=data.Size();
-	for (int i=1; i<size; i++) {
-	  if (((data[i] < 0.0) && (data[i-1] > 0.0)) ||
+	const TSize size = data.Size();
+
+	// Detect zero-crossings
+	for (int i=1; i<size; i++)
+	{
+		if (((data[i] < 0.0) && (data[i-1] > 0.0)) ||
 		  ((data[i] > 0.0) && (data[i-1] < 0.0)))
-		sum++;
+			sum++;
 	}
+	// Average
 	return ((TData)sum)/size;
 }
 
 TData AudioDescriptors::ComputeAttackTime()
 {
-	if(mComputedAttackTime) return mComputedAttackTime;
+	if(mIsAttackTimeComputed) return mComputedAttackTime;
 
-	TData max = 0.;
-	TIndex maxindex = -1,offset;
+	const DataArray& data     = mpAudio->GetBuffer();
+	const TSize      dataSize = mpAudio->GetSize();
 
-	//this algorithm is not the first time I see it, should be generalized and optimized
-	int i;
-	int size=mpAudio->GetSize();
-	for (i=0;i<size;i++)
-	   if (data[i] > max) {
-		max = data[i];
-		maxindex = i;
+	DataArray energyEnv;
+	energyEnv.Resize(dataSize);
+	energyEnv.SetSize(dataSize);
+
+	// Compute 20Hz lowpass filter coefficients
+	const TData omega_c = 2*PI*20/mpAudio->GetSampleRate();
+	const TData alpha   = (1-sin(omega_c)) / cos(omega_c);
+
+	const TData b0 = (1-alpha)/2;
+	const TData a1 = -alpha;
+
+	// Find maximum value
+	energyEnv[0] = b0*fabsf(data[0]);
+	TData maxVal = energyEnv[0];
+
+	for (TIndex i=1; i<dataSize; i++) {
+		energyEnv[i] = b0*(fabsf(data[i]) + fabsf(data[i-1])) - a1*energyEnv[i-1];
+		if (energyEnv[i] > maxVal) maxVal = energyEnv[i];
 	}
-	i=0;
-	TData offsetMag=0.02*max;
-	while(true)
-	{
-		if(data[i]>offsetMag){ 
-			offset=i;
-			break;}
-		i++;
+
+	// Locate start and stop of attack
+	const TData startThreshold = 0.02*maxVal;
+	const TData stopThreshold  = 0.80*maxVal;
+
+	TIndex startIdx;
+	for (startIdx=0; startIdx<dataSize; startIdx++) {
+		if (energyEnv[startIdx] > startThreshold) break;
 	}
 
-	mComputedAttackTime=maxindex-offset;
+	TIndex stopIdx;
+	for (stopIdx=startIdx; stopIdx<dataSize; stopIdx++) {
+		if (energyEnv[stopIdx] > stopThreshold) break;
+	}
+
+	mComputedAttackTime=(stopIdx - startIdx) / mpAudio->GetSampleRate();
+	mIsAttackTimeComputed=true;
 	return mComputedAttackTime;
 }
 
+
 TData AudioDescriptors::ComputeLogAttackTime()
 {
-	return log(ComputeAttackTime());
+	ComputeAttackTime();
+	if (mComputedAttackTime==0)
+		return log10(mEpsilon);
+	return log10(mComputedAttackTime);
+}
+
+
+TData AudioDescriptors::ComputeDecrease()
+{
+	DataArray&  data     = mpAudio->GetBuffer();
+	const TSize dataSize = mpAudio->GetSize();
+
+	// Compute 20Hz lowpass filter coefficients
+	const double omega_c = 2*PI*20/mpAudio->GetSampleRate();
+	const double alpha   = (1-sin(omega_c)) / cos(omega_c);
+
+	const double b0 = (1-alpha)/2;
+	const double a1 = -alpha;
+
+	// Find maximum value
+	double y = b0*fabsf(data[0]);
+	TData correctedY = y<mEpsilon ? mEpsilon : y;
+	double logEnv = log10(correctedY);
+
+	TData maxVal = logEnv;
+	TSize maxIdx = 0;
+	double sumXX = 0;
+	double sumY = 0;
+	double sumXY = 0;
+
+	for (TIndex i=1; i<dataSize; i++)
+	{
+		y = b0*(fabsf(data[i-1]) + fabsf(data[i])) - a1*y;
+		correctedY = y<mEpsilon ? mEpsilon : y;
+		const double logEnv = log10(correctedY);
+
+		if (logEnv > maxVal)
+		{
+			maxVal = logEnv;
+			maxIdx = i;
+			sumXX = 0;
+			sumY = 0;
+			sumXY = 0;
+		}
+		sumY += logEnv;
+		sumXY += i*logEnv;
+		sumXX += i*i;
+	}
+
+	// Compute means and gradient of decay part
+	const long N = dataSize - maxIdx;
+	TData sumX = N*(N + 2*maxIdx - 1)/2;
+
+	TData num = N * sumXY - sumX * sumY;
+	TData den = N * sumXX - sumX * sumX;
+
+	return (num / den) * mpAudio->GetSampleRate();
 }
 
 
@@ -195,6 +281,10 @@ AudioDescriptors operator * (const AudioDescriptors& a,TData mult)
 	if(a.HasRelease())
 	{
 		tmpD.SetRelease(a.GetRelease()*mult);
+	}
+	if(a.HasDecrease())
+	{
+		tmpD.SetDecrease(a.GetDecrease()*mult);
 	}
 	return tmpD;
 }
@@ -274,6 +364,12 @@ AudioDescriptors operator * (const AudioDescriptors& a,const AudioDescriptors& b
 		tmpD.UpdateData();
 		tmpD.SetRelease(a.GetRelease()*b.GetRelease() );
 	}
+	if(a.HasDecrease() && b.HasDecrease() )
+	{
+		tmpD.AddDecrease();
+		tmpD.UpdateData();
+		tmpD.SetDecrease(a.GetDecrease()*b.GetDecrease() );
+	}
 	return tmpD;
 }
 
@@ -346,6 +442,12 @@ AudioDescriptors operator + (const AudioDescriptors& a,const AudioDescriptors& b
 		tmpD.AddRelease();
 		tmpD.UpdateData();
 		tmpD.SetRelease(a.GetRelease()+b.GetRelease() );
+	}
+	if(a.HasDecrease() && b.HasDecrease() )
+	{
+		tmpD.AddDecrease();
+		tmpD.UpdateData();
+		tmpD.SetDecrease(a.GetDecrease()+b.GetDecrease() );
 	}
 	return tmpD;
 

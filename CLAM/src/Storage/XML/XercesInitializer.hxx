@@ -20,20 +20,20 @@
  */
 #ifndef _XercesInitializer_hxx_
 #define _XercesInitializer_hxx_
-#include <iostream>
+//#include <iostream>
 
 class XercesInitializer
 {
 	XercesInitializer()
 	{
-		std::cout << "Initializing xerces..." << std::endl;
+//		std::cout << "Initializing xerces..." << std::endl;
 		xercesc::XMLPlatformUtils::Initialize();
 	}
 public:
 	~XercesInitializer()
 	{
 		xercesc::XMLPlatformUtils::Terminate();
-		std::cout << "Terminating xerces..." << std::endl;
+//		std::cout << "Terminating xerces..." << std::endl;
 	}
 	static const XercesInitializer & require()
 	{

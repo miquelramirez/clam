@@ -41,64 +41,38 @@ namespace CLAM {
 	 */
 	class FFT_ooura: public FFT_base
 	{
-		/** Internal output buffer */
-		TData* fftbuffer;
 	  /** Internal bit reversal, cos & sin tables */
 		TData *w;
 		int *ip;
-	  /** Auxiliary flags structure, used to add the complex attribute. */
-		static SpecTypeFlags mComplexflags;
-
-		/* FFT possible prototype states.
-		 */
-		typedef enum {
-			sComplex, // We just need to write the complex array.
-			sComplexSync, // We write the complex array and synchronize.
-			sOther // The complex array is not present.
-		} FFTState;
-
-		FFTState mState;
-
-		/** When the object enters "Disabled" mode, it stores the
-		 * previoius state here. It would have been easier to use a
-		 * single state variable, and a "Disabled" flag outside of the
-		 * state, but this way we can implement Do()s with a single
-		 * switch level, which is slightly faster.
-		 */
-		FFTState mBackupState;
 
 		bool FFTConfigure();
-
-		inline void CheckTypes(const Audio& in, const Spectrum &out) const;
 
 		/** Configuration change method
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 
-	  // Memory Management (for work areas and stuff)
+		// Memory Management (for work areas and stuff)
 
-	  void ReleaseMemory();
+		void ReleaseMemory();
 
-	  void SetupMemory();
+		void SetupMemory();
 
 		// Output conversions
 
-		inline void OouraToComplex(Spectrum &out) const;
+		void ToComplex(Spectrum &out);
 
-		inline void OouraToOther(Spectrum &out) const;
-
-	  // FFTOOURA original fonctions, modified to accept
-	  // TData instead of double
-	  void rdft(int n, int isgn, TData *a, int *ip, TData *w) const;
-	  void makewt(int nw, int *ip, TData *w) const;
-	  void makect(int nc, int *ip, TData *c) const;
-	  void bitrv2(int n, int *ip, TData *a) const;
-	  void cftfsub(int n, TData *a, TData *w) const;
-	  void cftbsub(int n, TData *a, TData *w) const;
-	  void rftfsub(int n, TData *a, int nc, TData *c) const;
-	  void rftbsub(int n, TData *a, int nc, TData *c) const;
-	  void cft1st(int n, TData *a, TData *w) const;
-	  void cftmdl(int n, int l, TData *a, TData *w) const;
+		// FFTOOURA original functions, modified to accept
+		// TData instead of double
+		void rdft(int n, int isgn, TData *a, int *ip, TData *w) const;
+		void makewt(int nw, int *ip, TData *w) const;
+		void makect(int nc, int *ip, TData *c) const;
+		void bitrv2(int n, int *ip, TData *a) const;
+		void cftfsub(int n, TData *a, TData *w) const;
+		void cftbsub(int n, TData *a, TData *w) const;
+		void rftfsub(int n, TData *a, int nc, TData *c) const;
+		void rftbsub(int n, TData *a, int nc, TData *c) const;
+		void cft1st(int n, TData *a, TData *w) const;
+		void cftmdl(int n, int l, TData *a, TData *w) const;
 
 	public:
 
@@ -114,18 +88,9 @@ namespace CLAM {
 
 		bool Do();
 
-		void Attach(Audio& in, Spectrum &out);
+		bool Do(const Audio& in, Spectrum &out);
 
-		bool Do(const Audio& in, Spectrum &out) const;
-
-		// Port interfaces.
-
-		bool SetPrototypes(const Audio& in, const Spectrum &out);
-
-		bool SetPrototypes();
-
-		bool UnsetPrototypes();
-
+		
 		bool MayDisableExecution() const {return true;}
 
 	};

@@ -31,8 +31,11 @@
 namespace CLAM{
 
 
-/** Abstract class for all descriptors */
-//todo: this class could abstract more common behaviour from subclasses by becoming template
+/**
+* Abstract class for all descriptors
+* @param Whether to calculate the descriptors over absolute values or not (signed).
+* @todo This class could abstract more common behaviour from subclasses by becoming template
+*/
 template <bool abs>
 class DescriptorTmpl:public ProcessingData
 {
@@ -43,6 +46,14 @@ public:
 	{
 		mpStats=0;
 	};
+	virtual ~DescriptorTmpl()
+	{
+		if (mpStats)
+		{
+			delete mpStats;
+			mpStats=0;
+		}
+	}
 	virtual void Compute()
 	{
 		CLAM_ASSERT(mpStats,"Descriptor::Compute: Error no valid statistics. This may happen if you forget to set your data after having set the prototype");
@@ -66,7 +77,7 @@ protected:
 	}
 protected:
 	StatsTmpl<abs>* mpStats;
-	
+
 };
 
 typedef DescriptorTmpl<false> Descriptor;

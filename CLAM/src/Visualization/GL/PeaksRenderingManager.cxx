@@ -99,7 +99,7 @@ namespace CLAMVM
 
 		TIndex i = 0;
 
-		if ( mDataCached[0].mFreq > maxFreq )
+		if ( mDataCached.Size() == 0 || mDataCached[0].mFreq > maxFreq )
 		{
 			mNoPeaksToShow = true;
 			return;

@@ -36,6 +36,7 @@ namespace CLAMTest
 	 */
 	void flattenSpectralPeakArray( const CLAM::SpectralPeakArray& in,
 				       CLAM::DataArray& out );
+
 }
 
 #endif // similarityHelper.hxx

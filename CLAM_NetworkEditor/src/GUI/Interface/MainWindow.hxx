@@ -43,7 +43,7 @@ public:
 	Qt_NetworkPresentation & GetNetworkPresentation();
 
 private:
-	void OnNewMessageToStatus( const std::string & );
+	void SendMessageToStatus( const std::string & );
 	void Start();
 	void Stop();
 
@@ -51,7 +51,7 @@ private:
 	QDockWindow * mDockProcMenu;
 
 public: //slots
-	SigSlot::Slotv1< const std::string & > SlotNewMessageToStatus;
+	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
 
  public slots:
  void LoadNetwork();

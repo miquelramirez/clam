@@ -24,18 +24,34 @@ void CSaltoDisplay::draw(void)
 		fl_rectf(x(),y(),w(),h());
 		if (size && ptr)
 		{
+			int maxY = y()+h()-1;
+			int maxX = x()+w()-1;
 			float dx = float(w())/float(size);
 			float cx = x();
-			for (int i=0;i<size;i++)
+			for (int i=0; i<size-1; i++)
 			{
-//				fl_color(8);				
-				fl_color(FL_RED);				
-//				fl_point((int)cx,y()+h()+(int)(ptr[i]*0.001-60));
 				tmp=(int)(ptr[i]*0.006);
-				fl_line((int)cx,y()+h()/2,(int)cx,y()+h()/2+tmp);
+				
+				float currentY = y()+h()/2;
+				float overCurrentY = currentY + tmp;
+				float nextY = y()+h()/2+(int)(ptr[i+1]*0.006);
+
+				int currentX = int(cx);
+				int nextX = int(cx + dx);
+
+				//lets clamp values that overpasses the limit:
+				if (currentY > maxY) currentY = maxY;
+				if (overCurrentY > maxY) overCurrentY = maxY;
+				if (nextY > maxY) nextY = maxY;
+				if (currentX > maxX) currentX = maxX;
+				if (nextX > maxX) nextX = maxX;
+				
+		
+				fl_color(FL_RED);				
+				fl_line(currentX, currentY, currentX, overCurrentY);
+
 				fl_color(FL_WHITE);
-//				fl_point((int)cx,y()+h()+(int)(ptr[i]*0.006-60));
-				fl_line((int)cx,y()+h()/2+tmp,(int)cx+dx,y()+h()/2+(int)(ptr[i+1]*0.006));
+				fl_line(currentX, overCurrentY, nextX,nextY);
 				cx+=dx;
 			}
 		}

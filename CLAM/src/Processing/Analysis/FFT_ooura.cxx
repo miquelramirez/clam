@@ -34,19 +34,10 @@
 
 namespace CLAM {
 
-  SpecTypeFlags FFT_ooura::mComplexflags;
-
+ 
   bool FFT_ooura::ConcreteConfigure(const ProcessingConfig& c) {
-	int oldSize = mSize;
-
-	CopyAsConcreteConfig(mConfig, c);
-
-	if (mConfig.HasAudioSize()) {
-	  CLAM_ASSERT(mConfig.GetAudioSize()>=0, 
-				  "Wrong (negative) Size in FFT Configuration.");
-	  mSize = mConfig.GetAudioSize();
-	}
-
+		  int oldSize=mSize;
+	FFT_base::ConcreteConfigure(c);
 	if ( !isPowerOfTwo( mSize ) )
 	{
 		mStatus = "Configure failed: FFT Ooura algorithm only works for input buffers";
@@ -54,11 +45,6 @@ namespace CLAM {
 
 		return false;
 	}
-
-	mState=sOther;
-	mComplexflags.bComplex=1;
-	mComplexflags.bMagPhase=0;
-
 	if (mSize>0) {
 	  if (mSize != oldSize) {
 		ReleaseMemory();
@@ -71,7 +57,7 @@ namespace CLAM {
   }
 
   void FFT_ooura::ReleaseMemory() {
-	if (fftbuffer) { delete[] fftbuffer; fftbuffer = 0; }
+		  //if (fftbuffer) { delete[] fftbuffer; fftbuffer = 0; }
 	if (ip) { delete[] ip; ip = 0; }
 	if (w) { delete[] w; w = 0; }
   }
@@ -85,17 +71,17 @@ namespace CLAM {
 	w = new TData[wSize];
 	for (int i=0; i<wSize; i++) w[i] = 0;
 
-	fftbuffer = new TData[mSize];
+	//fftbuffer = new TData[mSize];
   }
 
   FFT_ooura::FFT_ooura()
-	: fftbuffer(0), ip(0), w(0)
+	:  ip(0), w(0)
   {
 	Configure(FFTConfig());
   }
 
   FFT_ooura::FFT_ooura(const FFTConfig &c) throw(ErrDynamicType)
-	: fftbuffer(0), ip(0), w(0)
+	: ip(0), w(0)
   { 
 	Configure(c);
   };
@@ -105,62 +91,11 @@ namespace CLAM {
 	ReleaseMemory();
   }
 
-  void FFT_ooura::CheckTypes(const Audio& in, const Spectrum &out) const {
-	CLAM_BEGIN_CHECK
-	// Input object checking
-	if (in.GetSize()!=mSize) { 
-	  std::stringstream ss;
-	  ss << "FFT_ooura::Do: Wrong size in FFT Audio input\n"
-		 << "  Expected: " << mSize << ", used " << in.GetSize();
-	  throw(ErrProcessingObj(ss.str().c_str(),this));
-	}
-	if (!in.HasBuffer())
-	  throw ErrProcessingObj("FFT Do: Float attribute required for Audio object.",this);
-	if (out.GetSize() < mSize/2+1 ) { // ALGORITHM DEPENDENT CHECKING
-	  std::stringstream ss;
-	  ss << "FFT_ooura::Do: not enough memory in out Spectrum.\n"
-		 << "  Expected: " << mSize/2+1 << ", used " << out.GetSize();
-	  throw(ErrProcessingObj(ss.str().c_str(),this));
-	}
-	CLAM_END_CHECK
-  }
-
-
-  bool FFT_ooura::SetPrototypes(const Audio& in,const Spectrum &out) {
-	CheckTypes(in,out);
-
-	SpecTypeFlags flags;
-	out.GetType(flags);
-
-	if (flags.bComplex)
-	  if (flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF)
-		mState=sComplexSync;
-	  else
-		mState=sComplex;
-	else
-	  if (flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF)
-		mState=sOther;
-	  else
-		CLAM_ASSERT(false, "FFT_ooura: SetPrototypes(...): No Spectrum Attributes!");
-
-	return true;
-  }
-
-  bool FFT_ooura::UnsetPrototypes() {
-	mState=sOther;
-	return true;
-  }
-
-  void FFT_ooura::Attach(Audio& in, Spectrum &out) {
-	mInput.Attach(in);
-	mOutput.Attach(out);
-  }
-
   bool FFT_ooura::Do() {
 	return Do(mInput.GetData(),mOutput.GetData());
   };
 
-  bool FFT_ooura::Do(const Audio& in, Spectrum &out) const {
+  bool FFT_ooura::Do(const Audio& in, Spectrum &out){
 	TData *inbuffer;
 	int i;
 
@@ -180,7 +115,7 @@ namespace CLAM {
 	  for (i=0; i<mSize; i++)
 		fftbuffer[i] = inbuffer[i];
 	  rdft(mSize, 1, fftbuffer, ip, w);
-	  OouraToComplex(out);
+	  ToComplex(out);
 	  break;
 	case sComplexSync:
 	  inbuffer = in.GetBuffer().GetPtr();
@@ -190,7 +125,7 @@ namespace CLAM {
 	  for (i=0; i<mSize; i++)
 		fftbuffer[i]=inbuffer[i];
 	  rdft(mSize, 1, fftbuffer, ip, w);
-	  OouraToComplex(out);
+	  ToComplex(out);
 	  out.SynchronizeTo(mComplexflags);
 	  break;
 	case sOther:
@@ -202,7 +137,7 @@ namespace CLAM {
 	  for (i=0; i<mSize; i++)
 		fftbuffer[i]=inbuffer[i];
 	  rdft(mSize, 1, fftbuffer, ip, w);
-	  OouraToOther(out);
+	  ToOther(out);
 	  break;
 	default:
 	  throw(ErrProcessingObj("FFT_ooura: Do(): Inconsistent state",this));
@@ -211,14 +146,8 @@ namespace CLAM {
 	return true;
   }
 
-  bool FFT_ooura::SetPrototypes() {
-	// @todo Check port prototypes, and set the state (or de
-	// backup state if disabled) acordingly.
-	CLAM_ASSERT(false,"FFT_rfftw::SetPrototypes: Not implemented.");
-	return false;
-  }
 
-  inline void FFT_ooura::OouraToComplex(Spectrum &out) const {
+  void FFT_ooura::ToComplex(Spectrum &out) {
 	int i;
 	Array<Complex>& outbuffer = out.GetComplexArray();
 
@@ -235,26 +164,6 @@ namespace CLAM {
 	outbuffer.SetSize(mSize/2+1);
   }
 
-  inline void FFT_ooura::OouraToOther(Spectrum &out) const {
-	bool hadcomplex=true;
-	SpecTypeFlags flags;
-
-	if (!out.HasComplexArray()) {
-	  hadcomplex=false;
-	  out.GetType(flags);
-	  flags.bComplex=1;
-	  out.SetType(flags);
-	}
-
-	OouraToComplex(out);
-	out.SynchronizeTo(mComplexflags);
-
-	// @todo Can we leave the complex attribute just there?
-	if (!hadcomplex) {
-	  out.RemoveComplexArray();
-	  out.UpdateData();
-	}
-  }
 
 
   ////////////////////////////////////

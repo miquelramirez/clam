@@ -21,8 +21,27 @@
 
 #include <iostream>
 #include "Enum.hxx"
+#include "XMLAdapter.hxx"
+#include "Text.hxx"
 
 namespace CLAM {
+
+	void Enum::StoreOn( Storage& storage ) const
+	{
+		std::string s = GetString();
+		XMLAdapter<std::string> adapter(s);
+		storage.Store(adapter);
+	}
+
+	void Enum::LoadFrom( Storage& storage )
+	{
+		Text s;
+		//XMLAdapter<std::string> adapter(s);
+		XMLAdapter<Text> adapter(s);
+		storage.Load(adapter);
+		SetValueSafely(s);
+	
+	}
 
 std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalValue) {
 	os << e.GetString();

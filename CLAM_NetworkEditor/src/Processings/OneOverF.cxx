@@ -25,6 +25,8 @@
 #include <time.h>
 #include <stdlib.h>
 
+#define DEFAULTDELAYFACTOR 10
+
 namespace CLAM
 {
 
@@ -51,7 +53,8 @@ void OneOverF::ResetSeq()
 OneOverF::OneOverF()
 	: mInput("In delay factor", this ),
 	  mOutput("Out frequency", this ),
-	  mMidiToFreq()
+	  mMidiToFreq(),
+	  mCounter(DEFAULTDELAYFACTOR)
 {
 	mInput.DoControl(10);
 	mMidiToFreq.Set(69.0,440.0);
@@ -66,7 +69,8 @@ OneOverF::OneOverF()
 OneOverF::OneOverF( const OneOverFConfig & cfg)
 	: mInput("In delay factor", this ),
 	  mOutput("Out frequency", this ),
-	  mMidiToFreq()
+	  mMidiToFreq(),
+	  mCounter(DEFAULTDELAYFACTOR)
 {
 	Configure(cfg);
 }
@@ -78,11 +82,11 @@ bool OneOverF::Do()
 
 	TData OutValue = 0.0;
 
-	static int Counter = (int)mInput.GetLastValue(); // Sends control from the first call
-	Counter++;
-	if (Counter > (int)mInput.GetLastValue())
+	//static int Counter = (int)mInput.GetLastValue(); // Sends control from the first call
+	mCounter++;
+	if (mCounter > (int)mInput.GetLastValue())
 	{
-	  Counter = 0;
+	  mCounter = 0;
 	  RandomMax = (int)((mMaxNote-mMinNote) / mDices);
 	  if (RandomMax == 0)
 	    RandomMax = 1;
@@ -116,6 +120,7 @@ bool OneOverF::ConcreteConfigure(const ProcessingConfig& c)
 }
 
 } // namespace CLAM
+
 
 
 

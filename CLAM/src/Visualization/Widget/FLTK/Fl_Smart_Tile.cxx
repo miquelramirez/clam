@@ -341,6 +341,9 @@ void Fl_Smart_Tile::recalc(void)
 	int th = 0;
 	int changed = 0;
 	int minsize = minsize_;
+
+	if ( n == 0 )
+		return;
 	
 	int *sizes = new int[n];
 	
@@ -472,7 +475,7 @@ void Fl_Smart_Tile::recalc(void)
 		
 	if (changed) damage(FL_DAMAGE_CHILD);
 
-	delete sizes;
+	delete [] sizes;
 }
 
 void Fl_Smart_Tile::draw(void)

@@ -86,7 +86,13 @@ namespace CLAMTest
 		double leftVariance = evaluateVariance( left, leftAverage );
 		double rightVariance = evaluateVariance( right, rightAverage );
 
-		return covLeftRight/( sqrt(leftVariance)*sqrt(rightVariance) );
+		double stddevX_times_stddevY = ( sqrt(leftVariance)*sqrt(rightVariance) );
+
+		if ( fabs(covLeftRight) < 1e-7 
+		     && fabs( stddevX_times_stddevY ) < 1e-7 ) // two vector of nearly zeros
+			return 1.0;
+
+		return covLeftRight/stddevX_times_stddevY;
 	
 	}
 	
@@ -127,5 +133,6 @@ namespace CLAMTest
 		}
 				
 	}
+
 
 }
