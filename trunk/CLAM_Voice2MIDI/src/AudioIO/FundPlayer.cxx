@@ -59,7 +59,7 @@ void FundPlayer::PlayFundThreadSafe()
 	oscCfg.SetAmplitude(TData(0.6));
 	SimpleOscillator osc(oscCfg);
 	
-	PublishedInControls controls = osc.GetInControls();
+	InControlRegistry controls = osc.GetInControls();
 	InControl& freqControl = controls.Get("Pitch");
 
 	Audio samples;
