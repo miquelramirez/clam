@@ -72,7 +72,7 @@ public:
 	static TypeOfReturn thunk( const FunctorBase& ftor )
 	{
 		Callee* callee = (Callee*) ftor.callee;
-#ifdef __MSVC__
+#ifdef _MSC_VER
 
 		// Microsoft Parser is shit, just because it didn't like MemFunc &memFunc( *(MemFunc*)(void*)(ftor.memFunc) );
 		// I HAD to make this horrible kludge :_(

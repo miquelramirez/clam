@@ -77,7 +77,7 @@ public:
 	static void thunk( const FunctorBase& ftor, Parm1Type param1 )
 	{
 		Callee* callee = (Callee*) ftor.callee;
-#ifdef __MSVC__
+#ifdef _MSC_VER
 
 		// Micro$oft Parser is BIG TIME shit, just because it didn't like MemFunc &memFunc( *(MemFunc*)(void*)(ftor.memFunc) );
 		// I HAD to make this horrible kludge :_(
