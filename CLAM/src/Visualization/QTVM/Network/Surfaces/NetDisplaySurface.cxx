@@ -12,6 +12,7 @@ namespace CLAM
 			SetBackgroundColor(0.0,0.0,0.0);
 			InitView();
 			_doResize = false;
+			_milisecondsPerFrame = 50;
 
 			_controller = NULL;
 			connect(&_timer, SIGNAL(timeout()), SLOT(refresh()));
@@ -40,7 +41,7 @@ namespace CLAM
 
 		void NetDisplaySurface::startRendering()
 		{
-			_timer.start(10);
+			_timer.start(_milisecondsPerFrame);
 		}
 
 		void NetDisplaySurface::stopRendering()
@@ -50,37 +51,36 @@ namespace CLAM
 		void NetDisplaySurface::refresh()
 		{
 			updateGL();
-			_timer.start(10);
 		}
 		void NetDisplaySurface::paintGL()
 		{
-				if (!_controller) return;
-		    makeCurrent();    
-				if(_doResize)
-				{
-					glViewport(0, 0, _w, _h);
-					_doResize = false;
-				}
-				glMatrixMode(GL_PROJECTION);
-				glLoadIdentity();
-				glOrtho(_left, _right, _bottom, _top, -1.0, 1.0);
-				glMatrixMode(GL_MODELVIEW);
-				glShadeModel(GL_FLAT);
-				glClearColor(_r, _g, _b, 1.0);
-				glClear(GL_COLOR_BUFFER_BIT);
+			if (!_controller) return;
+			makeCurrent();    
+			if(_doResize)
+			{
+				glViewport(0, 0, _w, _h);
+				_doResize = false;
+			}
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glOrtho(_left, _right, _bottom, _top, -1.0, 1.0);
+			glMatrixMode(GL_MODELVIEW);
+			glShadeModel(GL_FLAT);
+			glClearColor(_r, _g, _b, 1.0);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-				_controller->Draw();
-				swapBuffers();
-		    doneCurrent();
-				((QWidget*)parent())->update();
-
+			_controller->Draw();
+			swapBuffers();
+			doneCurrent();
+			((QWidget*)parent())->update();
+			_timer.start(_milisecondsPerFrame);
 		}
 
 		void NetDisplaySurface::resizeEvent(QResizeEvent* re)
 		{ 
-		    _w = re->size().width();
-		    _h = re->size().height();
-		    _doResize = true;
+			_w = re->size().width();
+			_h = re->size().height();
+			_doResize = true;
 		}
 
 		void NetDisplaySurface::receivedView(SView v)
