@@ -89,6 +89,9 @@ class Annotator : public AnnotatorBase
                 void generateRandomEnvelopes();
 		CLAM::Envelope* generateRandomEnvelope();
 
+                void generateEnvelopesFromDescriptors();
+                CLAM::Envelope* generateEnvelopeFromDescriptor(const std::string& name);
+
                 void LoadDescriptorPool();
 	private:
 		bool mChanges;
