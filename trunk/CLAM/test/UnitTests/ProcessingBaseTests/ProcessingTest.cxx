@@ -42,14 +42,14 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 public:
 	// void implementation the pure virtual methods of processing
 	ProcessingTest() : 
-		_inControl("in", this), 
-		_inControlTmpl("in tmpl",this,&ProcessingTest::ControlHandler),
-		_outControl1("out1", this),
-		_outControl2("out2", this),
+		mInControl("in", this), 
+		mInControlTmpl("in tmpl",this,&ProcessingTest::ControlHandler),
+		mOutControl1("out1", this),
+		mOutControl2("out2", this),
 		
-		_inPort(std::string("in"),this,0/*length*/),
-		_outPort1("out1",this,0/*length*/),
-		_outPort2("out2",this,0/*length*/)
+		mInPort(std::string("in"),this,0/*length*/),
+		mOutPort1("out1",this,0/*length*/),
+		mOutPort2("out2",this,0/*length*/)
 	{};
 
 private:
@@ -62,14 +62,14 @@ private:
 	const char * GetClassName() const { return "ProcessingTest"; };	
 	int ControlHandler( CLAM::TControlData ) { return 0; };
 	
-	CLAM::InControl _inControl;
-	CLAM::InControlTmpl<ProcessingTest> _inControlTmpl;
-	CLAM::OutControl _outControl1;
-	CLAM::OutControl _outControl2;
+	CLAM::InControl mInControl;
+	CLAM::InControlTmpl<ProcessingTest> mInControlTmpl;
+	CLAM::OutControl mOutControl1;
+	CLAM::OutControl mOutControl2;
 
-	CLAM::InPortTmpl<DummyProcessingData> _inPort;
-	CLAM::OutPortTmpl<DummyProcessingData> _outPort1;
-	CLAM::OutPortTmpl<DummyProcessingData> _outPort2;
+	CLAM::InPortTmpl<DummyProcessingData> mInPort;
+	CLAM::OutPortTmpl<DummyProcessingData> mOutPort1;
+	CLAM::OutPortTmpl<DummyProcessingData> mOutPort2;
 
 	void testGetInControl_GetTheRightControl()
 	{
@@ -124,51 +124,51 @@ private:
 	void testInControls_GetByNumber_GetTheRightControl()
 	{
 		CLAM::InControl* returned = &GetInControls().GetByNumber(0);
-		CLAM::InControl* expected = &_inControl;
+		CLAM::InControl* expected = &mInControl;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 	void testOutControls_GetByNumber_GetTheRightControl()
 	{
 		CLAM::OutControl* returned = &GetOutControls().GetByNumber(1); // get the second control
-		CLAM::OutControl* expected = &_outControl2;
+		CLAM::OutControl* expected = &mOutControl2;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 	void testOutPorts_GetByNumber_GetTheRightPort()
 	{
 		CLAM::OutPort* returnedPort = &GetOutPorts().GetByNumber(1); // get the second port
-		CLAM::OutPort* expectedPort = &_outPort2;
+		CLAM::OutPort* expectedPort = &mOutPort2;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 	void testInPorts_GetByNumber_GetTheRightPort()
 	{
 		CLAM::InPort* returnedPort = &GetInPorts().GetByNumber(0); // get the first port
-		CLAM::InPort* expectedPort = &_inPort;
+		CLAM::InPort* expectedPort = &mInPort;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 
 	void testInControls_GetByName_GetTheRightControl()
 	{
 		CLAM::InControl* returned = &GetInControls().Get("in");
-		CLAM::InControl* expected = &_inControl;
+		CLAM::InControl* expected = &mInControl;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 
 	void testOutControls_GetByName_GetTheRightControl()
 	{
 		CLAM::OutControl* returned = &GetOutControls().Get("out2"); // get the second control
-		CLAM::OutControl* expected = &_outControl2;
+		CLAM::OutControl* expected = &mOutControl2;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 	void testOutPorts_GetByName_GetTheRightPort()
 	{
 		CLAM::OutPort* returnedPort = &GetOutPorts().Get("out2"); // get the second port
-		CLAM::OutPort* expectedPort = &_outPort2;
+		CLAM::OutPort* expectedPort = &mOutPort2;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 	void testInPorts_GetByName_GetTheRightPort()
 	{
 		CLAM::InPort* returnedPort = &GetInPorts().Get("in"); // get the first port
-		CLAM::InPort* expectedPort = &_inPort;
+		CLAM::InPort* expectedPort = &mInPort;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 

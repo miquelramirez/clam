@@ -5,6 +5,7 @@
 
 #include "Factory.hxx"
 
+#include <list>
 
 namespace CLAMTest
 {
@@ -21,22 +22,23 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testCreateSafe_WithABadKey );
 	CPPUNIT_TEST( testAddCreator_WithRepeatedKey );
 	CPPUNIT_TEST( testAddCreatorSafe_WithRepeatedKey );
+	CPPUNIT_TEST( testGetRegisteredNames_WithNoKeys );
 
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
 	typedef CLAM::Factory<DummyProduct> MyFactoryType;
 
-	MyFactoryType* _theFactory;
+	MyFactoryType* mTheFactory;
 
 public:
 	void setUp()
 	{
-		_theFactory = new MyFactoryType;
+		mTheFactory = new MyFactoryType;
 	}
 	void tearDown()
 	{
-		delete _theFactory;
+		delete mTheFactory;
 	}
 
 	// helper methods:
@@ -59,21 +61,21 @@ protected:
 
 	void testCreate_ReturnsAFoo()
 	{
-		_theFactory->AddCreator( "DummyProductFoo", FooCreator() );
+		mTheFactory->AddCreator( "DummyProductFoo", FooCreator() );
 
-		DummyProduct* returned = _theFactory->Create("DummyProductFoo");
+		DummyProduct* returned = mTheFactory->Create("DummyProductFoo");
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *returned );
 
 		// tear down:
 		delete returned;
-		_theFactory->Clear();
+		mTheFactory->Clear();
 
 	}
 
 	void testCreateSafe_WithABadKey()
 	{
 		try{
-			_theFactory->CreateSafe("DummyProductFoo");
+			mTheFactory->CreateSafe("DummyProductFoo");
 			CPPUNIT_FAIL("Should throw an exception");
 		} catch ( CLAM::ErrFactory& ) {}
 	}
@@ -81,9 +83,9 @@ protected:
 
 	void testAddCreator_WithRepeatedKey()
 	{
-		_theFactory->AddCreator("DummyProductFoo", FooCreator() );
+		mTheFactory->AddCreator("DummyProductFoo", FooCreator() );
 		try{
-			_theFactory->AddCreator("DummyProductFoo", FooCreator());
+			mTheFactory->AddCreator("DummyProductFoo", FooCreator());
 			CPPUNIT_FAIL("an assertion should happen");
 		} catch ( CLAM::ErrAssertionFailed& )
 		{}
@@ -91,13 +93,22 @@ protected:
 
 	void testAddCreatorSafe_WithRepeatedKey()
 	{
-		_theFactory->AddCreator("DummyProductFoo", BarCreator() );
+		mTheFactory->AddCreator("DummyProductFoo", BarCreator() );
 		try{
-			_theFactory->AddCreatorSafe("DummyProductFoo", FooCreator());
-			CPPUNIT_FAIL("an ErrFactory should be rised");
+			mTheFactory->AddCreatorSafe("DummyProductFoo", FooCreator());
+			CPPUNIT_FAIL("an ErrFactory should be raised");
 		} catch (CLAM::ErrFactory&) {
 
 		}
+	}
+
+	void testGetRegisteredNames_WithNoKeys()
+	{
+		std::list<std::string> registeredNames;
+
+		mTheFactory->GetRegisteredNames( registeredNames );
+
+		CPPUNIT_ASSERT_EQUAL( (unsigned int )0, registeredNames.size() );
 	}
 
 };
@@ -124,12 +135,12 @@ public:
 
 	void setUp()
 	{
-		_theFactory = &MyFactoryType::GetInstance();
+		mTheFactory = &MyFactoryType::GetInstance();
 	}
 
 	void tearDown()
 	{
-		_theFactory->Clear();
+		mTheFactory->Clear();
 	}
 
 private:
