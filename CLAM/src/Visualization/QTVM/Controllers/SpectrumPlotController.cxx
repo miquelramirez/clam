@@ -47,6 +47,7 @@ namespace CLAM
 			SetvRange(TData(150.0));
 			FullView();
 			_mustProcessData = true;
+			SetSelPos(TData(0.0));
 			emit requestRefresh();
 			emit freq(TData(0.0));
 			emit mag(_magBuffer[0]);
