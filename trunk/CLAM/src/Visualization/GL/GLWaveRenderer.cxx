@@ -50,15 +50,16 @@ void GLWaveRenderer::InitArray( unsigned int n_elems )
 
 void GLWaveRenderer::DrawVerticalLine(float x,float top,float bottom)
 {
-	top = max(mCullingData.bottomY,top);
-	bottom = max(mCullingData.bottomY,bottom);
-	top = min(mCullingData.topY,top);
-	bottom = min(mCullingData.topY,bottom);
+	if (bottom < mCullingData.bottomY)
+		return;
+	if (top > mCullingData.topY)
+		return;
+	top = max(mCullingData.bottomY + 0.1/Y2Pixel,top);
+	bottom = max(mCullingData.bottomY + 0.1/Y2Pixel,bottom);
 	int nPixels = (bottom - top) * Y2Pixel + 1;
 	glRasterPos2f(x,top);
 	glDrawPixels(1,nPixels,GL_GREEN,GL_FLOAT,mPixelColor);
 }
-
 
 void GLWaveRenderer::ArrangeXScale()
 {
