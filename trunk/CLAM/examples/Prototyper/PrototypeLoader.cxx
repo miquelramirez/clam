@@ -17,6 +17,7 @@
 #include "PeaksPlotProcessing.hxx"
 #include "SpectrumPlotProcessing.hxx"
 #include "FundPlotProcessing.hxx"
+#include "PortMonitor.hxx"
 
 
 class NetworkPlayer
@@ -80,6 +81,7 @@ class PrototypeLoader
 	char * _interfaceFile;
 	QWidget * _mainWidget;
 	NetworkPlayer _player;
+	std::list<CLAM::VM::NetPlot * > _portMonitors;
 public:
 	PrototypeLoader(char * networkFile)
 		: _networkFile(networkFile)
@@ -105,9 +107,10 @@ public:
 			("OutPort__.*", "CLAM::VM::NetSpectrumPlot", "Spectrum Input");
 		connectWidgetsWithPorts<CLAM::VM::NetPeaksPlot, CLAM::PeaksPlotProcessing>
 			("OutPort__.*", "CLAM::VM::NetPeaksPlot", "Peaks Input");
-		connectWidgetsWithPorts<CLAM::VM::NetFundPlot, CLAM::FundPlotProcessing>
-			("OutPort__.*", "CLAM::VM::NetFundPlot", "Fundamental Input");
+//		connectWidgetsWithPorts<CLAM::VM::NetFundPlot, CLAM::FundPlotProcessing>
+//			("OutPort__.*", "CLAM::VM::NetFundPlot", "Fundamental Input");
 	}
+public slots:
 	void Start()
 	{
 		_player.Start();
@@ -157,7 +160,7 @@ private:
 		{
 			QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
 			std::string controlName=GetNetworkNameFromWidgetName(aWidget->name() + 16);
-			std::cout << "0:1 Mapped Control: " << controlName << std::endl;
+			std::cout << "100:1 Mapped Control: " << controlName << std::endl;
 
 			CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
 			QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
@@ -178,13 +181,15 @@ private:
 			std::string controlName=GetNetworkNameFromWidgetName(aWidget->name() + 9);
 			std::cout << plotClassName << ": " << controlName << std::endl;
 
-			MonitorClass * monitor = new MonitorClass;
+			typedef typename PlotClass::MonitorType MonitorType;
+			MonitorType * portMonitor = new MonitorType;
+
 			std::string monitorName = "PrototyperMonitor"+getMonitorNumber();
-			network.AddProcessing(monitorName,monitor);
-			network.ConnectPorts(controlName,monitorName+"."+monitorControlName);
+			network.AddProcessing(monitorName,portMonitor);
+
+			network.ConnectPorts(controlName,monitorName+".Input");
 			PlotClass * plot = (PlotClass*) aWidget;
-			monitor->SetPlot(plot);
-			plot->Show();
+			plot->SetMonitor(*portMonitor);
 		}
 	}
 
@@ -204,8 +209,6 @@ int main( int argc, char *argv[] )
 
 	char * networkFile = argv[1]; // "SpectralDelay.clam"
 	char * uiFile = argv[2]; // "SpectralDelay.ui" 
-
-	
 
 	QApplication app( argc, argv );
 
