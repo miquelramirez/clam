@@ -170,7 +170,7 @@ void SpectralDescriptors::ConcreteCompute()
 	{
 		CLAM_ASSERT( mpSpectrum->GetScale() == CLAM::EScale::eLinear,
 			     "The Geometric Mean, as implemented in CLAM, can only"
-			     " be computed over Linar Spectral Power distirbutions");
+			     " be computed over Linear Spectral Power distirbutions");
 		SetGeometricMean(mpStats->GetGeometricMean());
 	}
 	if (HasEnergy())
