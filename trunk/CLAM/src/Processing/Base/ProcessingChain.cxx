@@ -89,6 +89,7 @@ namespace CLAM
 			"Trying to instantiate a non-valid Configuration: ";
 		error+=type;
 		CLAM_ASSERT(false,error.c_str());
+		return 0;
 	}
 	
 	// ProcessingChainConfig method definition

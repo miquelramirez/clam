@@ -30,6 +30,9 @@
 #include "Factory.hxx"
 #include "Array.hxx"
 
+#include "Frame.hxx" //TODO provisional
+#include "SMSTransformation.hxx" //TODO provisional
+
 namespace CLAM{
 
 	/**	Special Processing config that can be used inside a ProcessingChainConfig. It is a
@@ -183,8 +186,7 @@ namespace CLAM{
 		 */
 		virtual ~ProcessingChain()
 		{
-			int i;
-			for(i=0;i<mpTmpDataArray.Size();i++)
+			for(int i=0;i<mpTmpDataArray.Size();i++)
 				if(mpTmpDataArray[i]) delete mpTmpDataArray[i];
 			if (mpConfig) delete mpConfig;
 			iterator obj;
@@ -214,50 +216,16 @@ namespace CLAM{
 		bool ConcreteStart()
 		{
 			return true;
-		/* TODO
-			iterator obj;
-			
-			int i;
-			for(i=0;i<mpTmpDataArray.Size();i++)
-				if(mpTmpDataArray[i]){
-					delete mpTmpDataArray[i];
-					mpTmpDataArray[i]=NULL;}
-			mpTmpDataArray.SetSize(0);
-			U* pCurrentData;
-			pCurrentData=new U(mChainInput.GetData());
-			mpTmpDataArray.AddElem(pCurrentData);
-			for(obj=composite_begin();obj!=composite_end();obj++)
-			{
-				//connecting ports for non-supervised mode
-				(*obj)->GetInPorts().GetByNumber(0).Attach(*pCurrentData);
-				if(!(*obj)->CanProcessInplace())
-				{
-					pCurrentData=new U(mChainInput.GetData());
-					mpTmpDataArray.AddElem(pCurrentData);
 				}
-				(*obj)->GetOutPorts().GetByNumber(0).Attach(*pCurrentData);
-			}
-			obj=composite_begin();
-			(*obj)->GetInPorts().GetByNumber(0).Attach(mChainInput.GetData());
-			obj=composite_end();
-			obj--;
-			(*obj)->GetOutPorts().GetByNumber(0).Attach(mChainOutput.GetData());
-
-			return ProcessingComposite::ConcreteStart();
-		*/
-		}
 		
-		/** Supervised Do method. Iterates through internal Processing and calls each one's
-		 *	Do() method
-		 */
-		virtual bool Do()
+		//TODO provisional
+		virtual bool Do(const Frame& in, Frame& out)
 		{
 			CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
 		                  GetExecState() != Ready,
 		                  "ProcessingChain: Do(): Not in execution mode");
 
-			if (GetExecState() == Disabled)
-				return true;
+			if (GetExecState() == Disabled)	return true;
 			
 			bool result=true;
 			iterator obj;
@@ -265,21 +233,43 @@ namespace CLAM{
 			//We iterate through all chainees and call their Do()
 			for (obj=composite_begin(); obj!=composite_end(); obj++,i++)
 			{
+				Processing & proc = *(*obj);
+				
+				SMSTransformation & trans = dynamic_cast<SMSTransformation&> (proc);
+				
 				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==int(composite_size())-1)
 				//Note: First and last chainee's will always be active regartheless the value
 				//of their On control.
 				{
-					try {
-						result&=(*obj)->Do();
-					}
-					catch (Err &e)
-					{
-						if ((*obj)->GetExecState() != Running)
-							throw(ErrProcessingObj("Do(): Child is not running",this));
-						else
-							throw e;
-					}
-					
+					CLAM_DEBUG_ASSERT(trans.GetExecState()==Running, "child is not running" );
+					result &= trans.Do(in, out);
+				}
+			}
+			return result;
+		}
+		/** Supervised Do method. Iterates through internal Processing and calls each one's Do() method
+		 */
+		virtual bool Do()
+		{
+			CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
+		                  GetExecState() != Ready,
+		                  "ProcessingChain: Do(): Not in execution mode");
+
+			if (GetExecState() == Disabled)	return true;
+			
+			bool result=true;
+			iterator obj;
+			int i=0;
+			//We iterate through all chainees and call their Do()
+			for (obj=composite_begin(); obj!=composite_end(); obj++,i++)
+			{
+				Processing & proc = *(*obj);
+				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==int(composite_size())-1)
+				//Note: First and last chainee's will always be active regartheless the value
+				//of their On control.
+				{
+					CLAM_DEBUG_ASSERT(proc.GetExecState()==Running, "child is not running" );
+					result &= proc.Do();
 				}
 			}
 			return result;
