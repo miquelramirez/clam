@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __ONSET_DETECTOR__
-#define __ONSET_DETECTOR__
+#ifndef __OnsetDetector__
+#define __OnsetDetector__
 
 #include "ProcessingComposite.hxx"
 #include "Segment.hxx"
@@ -60,11 +60,11 @@ namespace CLAM
 		const char *GetClassName() const {return "OnsetDetector";}
 
 	private:
-	
+
 		// Configuration data
 		OnsetDetectorConfig mConfig;       
 		GT_FilterBank	mFilterBank;
-	
+
 		// Internal convenience methods.
 		void AttachChildren();
 		bool ConfigureChildren();
@@ -109,11 +109,9 @@ namespace CLAM
 		TData mBandThreshold;					//Threshold for Band peak picking 
 		TData mMinPeakDist;						//Minimum distance between picked peaks
 		TData mGlobalThreshold;					
-
 		TData mSampleRate;						//Sample Rate after down sampling
 		TData mOffsetThreshold;
 		bool mComputeOffsets;
-
 		Array<float> mWinCoef;						//Smoothing Filter Coefficients
 		//Rescaling factor
 		double        mWinCoefSummation;
