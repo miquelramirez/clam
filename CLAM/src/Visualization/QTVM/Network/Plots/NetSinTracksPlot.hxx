@@ -6,24 +6,24 @@
 
 namespace CLAM
 {
-    namespace VM
-    {
-	class NetSinTracksPlot : public NetPlot
+	namespace VM
 	{
-	    Q_OBJECT
-	public:
-	    NetSinTracksPlot(QWidget* parent = 0, const char * name = 0);
-	    virtual ~NetSinTracksPlot();
+		class NetSinTracksPlot : public NetPlot
+		{
+			Q_OBJECT
+		public:
+			NetSinTracksPlot(QWidget* parent = 0, const char * name = 0);
+			virtual ~NetSinTracksPlot();
 
-	    void SetData(const SpectralPeakArray& peaks);
+			void SetData(const SpectralPeakArray& peaks);
 
-	protected:
-	    virtual void SetPlotController();
+		protected:
+			virtual void SetPlotController();
 
-	private:
-	    void InitNetSinTracksPlot();
-	};
-    }
+		private:
+			void InitNetSinTracksPlot();
+		};
+	}
 }
 
 #endif
