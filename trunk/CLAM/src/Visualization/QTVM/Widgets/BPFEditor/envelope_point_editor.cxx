@@ -350,7 +350,7 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 
 		int real_screen_offset=int((float)i/mZoom);
 
-		sprintf(buf,"%i",(int)i*mTimeFactor);
+		sprintf(buf,"%i",(int)((float)i*mTimeFactor));
 		if (i>0.0f)
 			painter.drawText(real_screen_offset-display_font_metrics.width(buf)/2,cur_height+display_font_metrics.height(),buf);
 	}
