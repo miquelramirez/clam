@@ -15,6 +15,7 @@ either version 2 of the License, or (at your option) any later version.
 
 #include <FL/Fl_Widget.H>
 #include <FL/Fl.H>
+#include "Array.hxx"
 #include "Selection.H"
 #include "Signalv2.hxx"
 #include "Signalv0.hxx"
@@ -32,8 +33,7 @@ typedef struct {
 
 class Fl_PointMover:public Fl_Widget {
 protected:
-	FLPOINT* points_;
-	int	 npoints_;
+	CLAM::Array<FLPOINT> points_;
 	float	 xmin_;
 	float	 xmax_;
 	float	 ymin_;
@@ -106,7 +106,7 @@ public:
 	void remove_point(int id);
 	void remove_points(int id,int n);
 	void clear();
-	int  points() const { return npoints_;}
+	int  points() const { return points_.Size();}
 	
 	void xscale(float min,float max);
 	void yscale(float min,float max);
@@ -114,9 +114,22 @@ public:
 	void xbound(float min,float max);
 	void ybound(float min,float max);
 
-	FLPOINT* point(int id) 
+	const FLPOINT& point(int id) const
 	{ 
-		return id>=0 && id<npoints_ ? &points_[id] : 0; 
+		return points_[id];
+	}
+
+	FLPOINT& point( int id ) 
+	{
+		return points_[id];
+	}
+
+	FLPOINT* getPointPtr( int id )
+	{
+		if ( id < 0 || id >= points_.Size() ) 
+			return NULL;
+		else
+			return &points_[id];
 	}
 
 	float xmin(void) { return xmin_; }

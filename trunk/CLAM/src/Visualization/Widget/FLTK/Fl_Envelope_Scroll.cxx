@@ -110,7 +110,7 @@ void Fl_EnvelopeControl::vvalue(float position, float size, float top, float tot
 
 void Fl_EnvelopeControl::e_cb(Fl_Envelope* ev,Fl_EnvelopeControl* ec)
 {
-	FLPOINT* p=ec->envelope->point(ec->envelope->dragging());
+	FLPOINT* p=ec->envelope->getPointPtr(ec->envelope->dragging());
 	float dx=0;
 	float dy=0;
 	
