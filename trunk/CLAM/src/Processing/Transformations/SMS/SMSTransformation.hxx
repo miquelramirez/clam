@@ -46,10 +46,10 @@ namespace CLAM {
 	class SMSTransformation:public Processing
 	{
 		
-		OutControl mSendAmount;
 		SMSFreqShift * mTransformation;
 
 	protected:
+		OutControl mSendAmount; //TODO privatize
 
 		/** Internally stored configuration */
 		SMSTransformationConfig mConfig;
