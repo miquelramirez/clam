@@ -150,7 +150,6 @@ void NetworkController::ProcessingNameChanged( const std::string & newName, Proc
 
 	// change key map in network
 	mObserved->ChangeKeyMap( oldName, newName );
-//	SignalChangeConnectionPresentationNames.Emit( oldName, newName );
 	mPresentation->ChangeConnectionPresentationNames( oldName, newName );
 }
 
@@ -224,7 +223,6 @@ void NetworkController::ExecuteCreatePortConnection( const std::string & out , c
 void NetworkController::RegisterPortConnection( const std::string & out, const std::string & in )
 {
 	mPortConnections.push_back( Connection( out, in ));
-//	SignalCreatePortConnectionPresentation.Emit( out, in );
 	mPresentation->CreatePortConnectionPresentation(out, in);	
 }
 
@@ -237,7 +235,6 @@ void NetworkController::ExecuteCreateControlConnection( const std::string & out 
 void NetworkController::RegisterControlConnection( const std::string & out , const std::string & in )
 {	
 	mControlConnections.push_back( Connection( out, in ));
-//	SignalCreateControlConnectionPresentation.Emit( out, in );
 	mPresentation->CreateControlConnectionPresentation( out, in );
 }
 
@@ -268,7 +265,6 @@ std::string BaseName(const std::string& xmlfile)
 void NetworkController::LoadNetworkFrom( const std::string & xmlfile)
 {
 	Clear();
-//	SignalClearPresentation.Emit(); 
 	mPresentation->Clear();
 	CLAM::XMLStorage storage;
 	storage.Restore( *mObserved, xmlfile );
@@ -309,7 +305,6 @@ void NetworkController::RemoveAllPortConnections( const std::string & name )
 		for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
 		{
 			RemovePortConnection( completeOutName, *namesIn );
-//			SignalRemoveConnectionPresentation.Emit( completeOutName, *namesIn );	
 			mPresentation->RemoveConnectionPresentation( completeOutName, *namesIn );	
 		}
 	}
@@ -325,7 +320,6 @@ void NetworkController::RemoveAllPortConnections( const std::string & name )
 			outName += inPort.GetAttachedOutPort()->GetName();
 			
 			RemovePortConnection( outName, completeInName );
-//			SignalRemoveConnectionPresentation.Emit( outName, completeInName );	
 			mPresentation->RemoveConnectionPresentation( outName, completeInName );
 		}
 	}	
@@ -346,7 +340,6 @@ void NetworkController::RemoveAllControlConnections( const std::string & name )
 		for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
 		{
 			RemoveControlConnection( completeOutName, *namesIn );
-//			SignalRemoveConnectionPresentation.Emit( completeOutName, *namesIn );	
 			mPresentation->RemoveConnectionPresentation( completeOutName, *namesIn );	
 		}
 	}
@@ -364,7 +357,6 @@ void NetworkController::RemoveAllControlConnections( const std::string & name )
 		for( connectionIt=connectionsToRemove.begin(); connectionIt!=connectionsToRemove.end(); connectionIt++)
 		{
 			RemoveControlConnection( (*connectionIt).GetOut(), (*connectionIt).GetIn() );
-//			SignalRemoveConnectionPresentation.Emit( (*connectionIt).GetOut(), (*connectionIt).GetIn() ); 
 			mPresentation->RemoveConnectionPresentation( (*connectionIt).GetOut(), (*connectionIt).GetIn() ); 
 		}
 	}
@@ -397,7 +389,6 @@ void NetworkController::RemoveAllConnections(  CLAM::Processing * proc )
 
 void NetworkController::RebuildProcessingPresentationAttachedTo( ProcessingController * controller, CLAM::Processing * proc )
 {
-//	SignalRebuildProcessingPresentationAttachedTo.Emit(  mObserved->GetNetworkId( proc ), controller );
 	mPresentation->RebuildProcessingPresentationAttachedTo( 
 			mObserved->GetNetworkId( proc ), controller );
 }
@@ -450,7 +441,6 @@ void NetworkController::AddProcessing( const std::string & name,
 					      CLAM::Processing * proc )
 {
 	mObserved->AddProcessing(name, proc);
-//	SignalCreateProcessingPresentation.Emit( name, CreateProcessingController(name, proc));
 	mPresentation->CreateProcessingPresentation( name, CreateProcessingController(name, proc));
 }
 
@@ -487,7 +477,6 @@ bool NetworkController::BindTo( CLAM::Network& obj )
 
 	ProcessingControllersMap::iterator itp;
 	for (itp=BeginProcessingControllers(); itp!=EndProcessingControllers(); itp++)
-//		SignalCreateProcessingPresentation.Emit( itp->first, itp->second);
 		mPresentation->CreateProcessingPresentation( itp->first, itp->second);
 
 	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
