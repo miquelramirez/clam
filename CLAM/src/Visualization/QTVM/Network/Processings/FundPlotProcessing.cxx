@@ -83,9 +83,6 @@ namespace CLAM
 		if (mOwnedPlot) delete mPlot;
 		mOwnedPlot = false;
 		mPlot = plot;
-		mPlot->Label(mConfig.GetCaption());
-		mPlot->SetBackgroundColor(VM::VMColor::Black());
-		mPlot->SetDataColor(VM::VMColor::Green());
 	}
 
 	void FundPlotProcessing::InitFundPlot()

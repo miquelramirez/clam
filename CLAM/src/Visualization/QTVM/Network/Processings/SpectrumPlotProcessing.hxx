@@ -19,47 +19,46 @@ namespace CLAM
 
 	class SpectrumPlotProcessingConfig : public ProcessingConfig
 	{
-		public:
-			DYNAMIC_TYPE_USING_INTERFACE (SpectrumPlotProcessingConfig, 6, ProcessingConfig);
-			DYN_ATTRIBUTE (0, public, std::string, Name);
-	                DYN_ATTRIBUTE (1, public, std::string, Caption);
-	                DYN_ATTRIBUTE (2, public, int, xpos);
-                        DYN_ATTRIBUTE (3, public, int, ypos);
-                        DYN_ATTRIBUTE (4, public, int, width);
-                        DYN_ATTRIBUTE (5, public, int, height);
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (SpectrumPlotProcessingConfig, 6, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYN_ATTRIBUTE (1, public, std::string, Caption);
+		DYN_ATTRIBUTE (2, public, int, xpos);
+		DYN_ATTRIBUTE (3, public, int, ypos);
+		DYN_ATTRIBUTE (4, public, int, width);
+		DYN_ATTRIBUTE (5, public, int, height);
 
-		protected:
-			void DefaultInit();
+	protected:
+		void DefaultInit();
 	};
-
 
 	class SpectrumPlotProcessing : public Processing
 	{
-		public:
-			SpectrumPlotProcessing();
-			SpectrumPlotProcessing(const SpectrumPlotProcessingConfig& cfg);
-			virtual ~SpectrumPlotProcessing();
+	public:
+		SpectrumPlotProcessing();
+		SpectrumPlotProcessing(const SpectrumPlotProcessingConfig& cfg);
+		virtual ~SpectrumPlotProcessing();
 
-			bool Do();
-			bool Do(const Spectrum& spec);
+		bool Do();
+		bool Do(const Spectrum& spec);
 
-			const char * GetClassName() const {return "SpectrumPlotProcessing";}
-	
-			inline const ProcessingConfig &GetConfig() const { return mConfig;}
-			bool ConcreteConfigure(const ProcessingConfig& c);
-			void SetPlot(VM::NetSpectrumPlot * plot);
+		const char * GetClassName() const {return "SpectrumPlotProcessing";}
 
-		protected:
-			bool ConcreteStart();
-			bool ConcreteStop();
+		inline const ProcessingConfig &GetConfig() const { return mConfig;}
+		bool ConcreteConfigure(const ProcessingConfig& c);
+		void SetPlot(VM::NetSpectrumPlot * plot);
 
-		private:
-			SpectrumPlotProcessingConfig mConfig;
-			VM::NetSpectrumPlot* mPlot;
-			InPort<Spectrum> mInput;
-			bool mOwnedPlot;
-			
-			void InitSpectrumPlot();
+	protected:
+		bool ConcreteStart();
+		bool ConcreteStop();
+
+	private:
+		SpectrumPlotProcessingConfig mConfig;
+		VM::NetSpectrumPlot* mPlot;
+		InPort<Spectrum> mInput;
+		bool mOwnedPlot;
+
+		void InitSpectrumPlot();
 	};
 }
 

@@ -83,9 +83,6 @@ namespace CLAM
 		if (mOwnedPlot) delete mPlot;
 		mOwnedPlot = false;
 		mPlot = plot;
-		mPlot->Label(mConfig.GetCaption());
-		mPlot->SetBackgroundColor(VM::VMColor::Black());
-		mPlot->SetPeaksColor(VM::VMColor::Cyan(), VM::VMColor::Red());
 	}
 
 	void PeaksPlotProcessing::InitPeaksPlot()
