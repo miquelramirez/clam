@@ -44,6 +44,13 @@ then
 			AC_MSG_RESULT([yes: $dir])
 			include_dirs_$$package_esc=$dir
 			lib_dirs_$$package_esc=`echo $dir | sed -e 's=/include=/lib='`
+			if test x"$dir" == x"$QTDIR/include"
+			then
+				setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_$$package_esc"
+			        setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+				AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+
+			fi
 			AC_MSG_RESULT([yes: $dir, assuming lib-dir $lib_dirs_$$package_esc])
 			if test x"$$libs{$$package}" != x
 			then
@@ -98,6 +105,10 @@ $$source{$$package};
 						LDFLAGS=$old_LDFLAGS
 						tmp_libs=""
 						sep=""
+						for tmp in $lib_dirs_$$package_esc
+						do
+							LDFLAGS="$LDFLAGS -L$tmp"
+						done	
 						for tmp in $$alt_libs{$$package}
 						do
 							LDFLAGS="$LDFLAGS -l$tmp"
