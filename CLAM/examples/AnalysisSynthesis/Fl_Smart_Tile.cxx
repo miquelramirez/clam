@@ -108,7 +108,6 @@ void Fl_Smart_Tile::shade(Fl_Widget* c)
 				newsizetotal+=newsize;
 				int inewsize = int(newsizetotal)-inewsizetotal;
 				inewsizetotal+=inewsize;
-				printf("smarttile: sizing child %d to %d\n",i,inewsize);
 				child(i)->size(child(i)->w(),inewsize);
 			}
 		}

@@ -277,7 +277,6 @@ void UserInterface::Detach(Fl_Window *w)
 
 Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data)
 {
-	printf("ATTACH %s\n",title);
 	ProcDataView<Audio>* localView;
 	ProcDataPresentation<Audio>* localPresentation;
 
