@@ -232,21 +232,18 @@ namespace CLAM {
 
 	private:
 
-		/** Adds a Processing chainee at the end of the chain. It instantiates a concrete Processing
-		 *	class using input string as a switch.
-		 */
-		bool AddChainee(const std::string& type)
+		void AddChainee(const std::string& type)
 		{
-	//		if ( type == "SMSFreqShift" )
-	//			SMSTransformation* wrapper = new ...;
+//			if ( type=="SMSFreqShift") 
+//			{
+//				SMSTransformation* wrapper = new SMSTransformation;	
+//				Insert( *wrapper );
+//				return;
+//			}
 	//			//smsshift = GetInstance ..
 	//			wrapper.wrapp(smsshift)
-	//			Insert( wrapper )
 			
 			Insert( *( ProcessingFactory::GetInstance().Create( type ) ) );
-						
-			return true;
-			
 		}
 		/** Helper method for updating frame counters both in ports and in internal data*/
 		void NextFrame()
