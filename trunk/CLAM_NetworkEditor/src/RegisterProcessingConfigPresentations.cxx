@@ -21,6 +21,7 @@
 
 #include "Factory.hxx"
 #include "ProcessingConfigPresentation.hxx"
+#include "ConfigPresentationTmpl.hxx"
 
 // concrete configs
 #include "MonoAudioFileWriterConfigPresentation.hxx"
@@ -28,7 +29,6 @@
 #ifndef WIN32
 #include "LadspaLoaderConfigPresentation.hxx"
 #endif
-#include "ConfigPresentationTmpl.hxx"
 #include "AudioFileConfig.hxx"
 #include "AutoPanner.hxx"
 #include "AudioIO.hxx"
@@ -232,3 +232,4 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
        regtMIDIIOConfig("MIDIIOConfig");
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MIDIDispatcherConfig> >
        regtMIDIDispatcherConfig("MIDIDispatcherConfig");
+
