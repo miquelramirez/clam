@@ -102,7 +102,7 @@ namespace CLAMTest {
 			for (i=0; i<size; i++) {
 				TData real=c2[i].Real()-c1[i].Real();
 				TData imag=c2[i].Imag()-c1[i].Imag();
-				TData diff = fabs(sqrt(pow(real,2.f)+pow(imag,2.f)));
+				TData diff = fabs(sqrt(pow(real,2)+pow(imag,2)));
 				if (diff > max_dif)
 					max_dif=diff;
 			}
@@ -151,7 +151,7 @@ namespace CLAMTest {
 			for (i=0; i<size; i++) {
 				TData real=m2[i]*cos(p2[i])-m1[i]*cos(p1[i]);
 				TData imag=m2[i]*sin(p2[i])-m1[i]*sin(p1[i]);
-				TData diff = fabs(sqrt(pow(real,2.f)+pow(imag,2.f)));
+				TData diff = fabs(sqrt(pow(real,2)+pow(imag,2)));
 				if (diff > max_dif)
 					max_dif=diff;
 			}
@@ -198,7 +198,7 @@ namespace CLAMTest {
 			for (i=0; i<size; i++) {
 				TData real=p2[i].Mag()*cos(p2[i].Ang())-p1[i].Mag()*cos(p1[i].Ang());
 				TData imag=p2[i].Mag()*sin(p2[i].Ang())-p1[i].Mag()*sin(p1[i].Ang());
-				TData diff = fabs(sqrt(pow(real,2.f)+pow(imag,2.f)));
+				TData diff = fabs(sqrt(pow(real,2)+pow(imag,2)));
 				if (diff > max_dif)
 					max_dif=diff;
 			}
