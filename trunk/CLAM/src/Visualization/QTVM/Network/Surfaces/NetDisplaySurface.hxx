@@ -2,6 +2,7 @@
 #define __NETDISPLAYSURFACE__
 
 #include <qgl.h>
+#include <qtimer.h>
 #include "NetPlotController.hxx"
 #include "GLThread.hxx"
 
@@ -25,6 +26,7 @@ namespace CLAM
 
 			private slots:
 				void receivedView(SView);
+				void refresh();
 
 			protected:
 				void resizeEvent(QResizeEvent* re);
@@ -34,6 +36,7 @@ namespace CLAM
 				NetPlotController* _controller;
 
 				GLThread _thread;
+				QTimer _timer;
 				
 				void InitView();
 		};
