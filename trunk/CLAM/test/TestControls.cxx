@@ -72,7 +72,7 @@ void TestDynamicControls()
 	
 	// test dynamic controls connection:
 	for (int i=0; i<sender.outCtrls.size(); i++) 
-		sender.outCtrls.at(i)->SendControl(i);
+		sender.outCtrls[i]->SendControl(i);
 }
 
 
