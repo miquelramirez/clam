@@ -25,6 +25,11 @@ namespace CLAM
 			((NetFundTrackPlotController*)_controller)->SetDataColor(c);
 		}
 
+	    	void NetFundTrackPlot::SetMonitor(MonitorType & monitor)
+		{
+			((NetFundTrackPlotController*)_controller)->SetMonitor(monitor);
+		}
+
 		void NetFundTrackPlot::SetPlotController()
 		{
 			SetController(new NetFundTrackPlotController());
