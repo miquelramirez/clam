@@ -86,6 +86,8 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
         regtSinTracksPlotProcessing( "SinTracksPlotProcessing" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtFundTrackPlotProcessing( "FundTrackPlotProcessing" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtSpecgramPlotProcessing( "SpecgramPlotProcessing" );
 
 // SMS Processings
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
