@@ -65,7 +65,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	QListViewItem * midi = new QListViewItem( this,"MIDI" );
 	new ProcessingItem( midi, "MIDIKeyboard" );
 	new ProcessingItem( midi, "MIDIInControl" );
-//	new ProcessingItem( midi, "MIDIDispatcher" );
+	new ProcessingItem( midi, "MIDIDispatcher" );
 
 	QListViewItem * files = new QListViewItem( this,"Audio File I/O" );
 	new ProcessingItem( files, "MonoAudioFileReader" );
@@ -99,6 +99,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 #endif
 	new ProcessingItem( utils, "OutControlSender" );	
 	new ProcessingItem( utils, "Fundamental2Control" );	
+	new ProcessingItem( utils, "ControlPrinter" );	
 
 	QListViewItem* winplots = new QListViewItem(this,"Plots in new windows");
 	new ProcessingItem(winplots, "AudioPlotProcessing");

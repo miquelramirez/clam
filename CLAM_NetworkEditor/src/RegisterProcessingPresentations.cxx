@@ -54,17 +54,19 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation> 
 	regtSMSSynthesis( "SMSSynthesis" );
 
+// Controls
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtFundamental2Control( "Fundamental2Control" );
-
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtControlPrinter( "ControlPrinter" );
 
 // MIDI
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtMIDIKeyboard( "MIDIKeyboard" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtMIDInControl( "MIDIInControl" );
-//static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
-//        regtMIDIDispatcher( "MIDIDispatcher" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtMIDIDispatcher( "MIDIDispatcher" );
 
 // Plot Processings
 
