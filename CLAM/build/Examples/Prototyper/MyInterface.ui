@@ -15,22 +15,6 @@
     <property name="caption">
         <string>Form2</string>
     </property>
-    <widget class="QSlider">
-        <property name="name">
-            <cstring>InControlFloat::SimpleOscillator_0::Amplitude</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>70</x>
-                <y>120</y>
-                <width>50</width>
-                <height>260</height>
-            </rect>
-        </property>
-        <property name="lineStep">
-            <number>1</number>
-        </property>
-    </widget>
     <widget class="QDial">
         <property name="name">
             <cstring>InControl::SimpleOscillator_0::Pitch</cstring>
@@ -48,6 +32,22 @@
         </property>
         <property name="lineStep">
             <number>300</number>
+        </property>
+    </widget>
+    <widget class="QSlider">
+        <property name="name">
+            <cstring>InControlFloat::SimpleOscillator_0::Amplitude</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>50</x>
+                <y>60</y>
+                <width>300</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="orientation">
+            <enum>Horizontal</enum>
         </property>
     </widget>
 </widget>
