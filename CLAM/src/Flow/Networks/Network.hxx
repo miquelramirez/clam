@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2001-2005 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -81,6 +81,8 @@ public:
 	void AddProcessing( const std::string &, Processing* );
 	//! add method using a key to get the new processing from factory
 	void AddProcessing( const std::string & name, const std::string & key );
+	std::string AddProcessing( const std::string& key );
+	std::string GetUnusedName( const std::string& prefix );
 	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name ) const;
 	/** It configures the processing with the given processing id and config object and
@@ -109,8 +111,8 @@ public:
 	InPortsList GetInPortsConnectedTo( OutPortBase & ) const;
 
 protected:
-  std::string GetLastIdentifier( const std::string& ) const;
-  std::string GetProcessingIdentifier( const std::string& ) const;
+	std::string GetLastIdentifier( const std::string& ) const;
+	std::string GetProcessingIdentifier( const std::string& ) const;
 	
 
 private:
