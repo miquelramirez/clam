@@ -116,15 +116,15 @@ namespace CLAM {
 		bool IsCandidate(const SpectralPeak& fixedPeak,const SpectralPeak& candidate) const;
 
 		/** True if currentFramePeak has a candidate peak in nextFramePeakArray*/
-		bool ThereIsCandidate(const SpectralPeak& currentFramePeak, 
+		bool ThereIsCandidate(TData currentFramePeakFreq, 
                         const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray) const;
 		
 		/** Returns index of candidate and distance to currentFramePeak*/
-		TIndex GetCandidate(const SpectralPeak& currentFramePeak, 
+		TIndex GetCandidate(TData currentFramePeakFreq, 
 						const SpectralPeakArray& nextFramePeakArray,TData& distance) const;
   
 		/** Makes sure that candidate does not match better another peak in currentFramePeakArray*/
-		bool IsBestCandidate(const SpectralPeak& candidate, int nMatchedPeaksIncurrentFrame) const;
+		bool IsBestCandidate(TData candidateFreq, TData currentFreq) const;
 
 		  
 		/** Returns index of first peak not assigned to a track in framePeakArray, beginning
