@@ -56,6 +56,11 @@ namespace CLAM{
 		/** Destructor of the class*/
  		~SMSTimeStretch(){};
 
+		bool Do()
+		{
+			CLAM_ASSERT(false, "Do with ports not implemented");
+		}
+
 		bool Do(const Frame& in, Frame& out);
 		bool Do(const Segment& in, Segment& out);
 		bool CanProcessInplace() {return false;}

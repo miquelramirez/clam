@@ -61,6 +61,11 @@ namespace CLAM{
  		~SMSTransformationChainIO()
 		{}
 
+		bool Do()
+		{
+			CLAM_ASSERT(false, "Do with ports not implemented");
+		}
+
 		bool Do(const Frame& in, Frame& out);
 	
 	

@@ -78,7 +78,7 @@ namespace CLAM {
 		/** Supervised Do() function. It calls the non-supervised Do that receives Segment as
 		 *	input and output.
 		 */
-		virtual bool Do(void)
+		virtual bool DoWithSegments(void)
 		{
 			return Do(*mInput, *mOutput);
 		}

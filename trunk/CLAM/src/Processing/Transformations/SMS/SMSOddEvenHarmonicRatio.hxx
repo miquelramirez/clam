@@ -68,6 +68,7 @@ namespace CLAM{
 		// Note that overriding this method breaks the processing chain functionality. 
 		bool Do()
 		{
+			printf("!!! only for streaming !!!\n");
 			bool result = Do(mIn.GetData(), mOut.GetData());
 			mIn.Consume();
 			mOut.Produce();
