@@ -96,7 +96,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem(plots,"AudioPortMonitor");
 	new ProcessingItem(plots,"SpectrumPortMonitor");
 	new ProcessingItem(plots,"PeaksPortMonitor");
-	new ProcessingItem(plots,"FundPortMonitor");
+	new ProcessingItem(plots,"FundamentalPortMonitor");
 	
 	new ProcessingItem(plots, "AudioPlotProcessing");
 	new ProcessingItem(plots, "SpectrumPlotProcessing");
