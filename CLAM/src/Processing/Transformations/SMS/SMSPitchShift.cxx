@@ -27,6 +27,9 @@ using namespace CLAM;
 
 bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, SpectralPeakArray& outPeaks,Spectrum& outRes)
 {
+	outPeaks = inPeaks; //TODO big cludge for streaming
+	outRes = inRes;
+
 	mSpectralEnvelope.SetSpectralRange(mSpectralRange);
  	
 	bool haveEnvelope=false;

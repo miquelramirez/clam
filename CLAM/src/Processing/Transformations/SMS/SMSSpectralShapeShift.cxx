@@ -24,10 +24,10 @@
 
 using namespace CLAM;
 
-
 bool SMSSpectralShapeShift::Do(const SpectralPeakArray& inPeaks,SpectralPeakArray& outPeaks)
 {
-	int i;
+	outPeaks = inPeaks; //TODO big cludge for streaming
+
 	mSpectralEnvelope.SetSpectralRange(mSpectralRange);
  	
 	mPO_SpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope);
@@ -36,7 +36,7 @@ bool SMSSpectralShapeShift::Do(const SpectralPeakArray& inPeaks,SpectralPeakArra
 	//Shift spectral shape
 	BPF& magBPF=mSpectralEnvelope.GetMagBPF();
 	int nPoints=magBPF.Size();
-	for(i=0;i<nPoints;i++)
+	for(int i=0;i<nPoints;i++)
 	{
 		magBPF.SetXValue(i,magBPF.GetXValue(i)+amount);
 	}

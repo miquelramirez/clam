@@ -27,7 +27,8 @@ using namespace CLAM;
 
 bool SMSSinusoidalGain::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 {
-	int i;
+	out = in; // TODO  big cludge for streaming
+	
 	TSize nPeaks=in.GetnPeaks();
 	out.SetnMaxPeaks(in.GetnMaxPeaks());
 	out.SetnPeaks(nPeaks);
@@ -35,7 +36,7 @@ bool SMSSinusoidalGain::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	TData amount=mAmountCtrl.GetLastValue();
 	SpectralPeak tmpPeak;
 	IndexArray indexArray=in.GetIndexArray();
-	for(i=0;i<nPeaks;i++)
+	for(int i=0;i<nPeaks;i++)
 	{
 		tmpPeak=in.GetSpectralPeak(i);
 		tmpPeak.SetMag(tmpPeak.GetMag()+amount);

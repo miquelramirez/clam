@@ -27,12 +27,12 @@ using namespace CLAM;
 
 bool SMSResidualGain::Do(const Spectrum& in, Spectrum& out)
 {
-	int i;
+	out = in; // TODO big cludge for streaming 
 	TSize spectrumSize=in.GetSize();
 	if(in.GetScale()==EScale::eLinear)
 	{
 		TData amount=Lin(mAmountCtrl.GetLastValue());
-		for(i=0;i<spectrumSize;i++)
+		for(int i=0;i<spectrumSize;i++)
 		{
 			out.SetMag(i,in.GetMag(i)*amount);
 		}
@@ -40,7 +40,7 @@ bool SMSResidualGain::Do(const Spectrum& in, Spectrum& out)
 	else
 	{
 		TData amount=mAmountCtrl.GetLastValue();
-		for(i=0;i<spectrumSize;i++)
+		for(int i=0;i<spectrumSize;i++)
 		{
 			out.SetMag(i,in.GetMag(i)+amount);
 		}

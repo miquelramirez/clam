@@ -43,7 +43,7 @@ namespace CLAM{
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSSinusoidalGain()
+		SMSSinusoidalGain() : mIn("In SpectralPeakArray", this), mOut("Out SpectralPeakArray", this)
 		{
 		}
 		/** Constructor with an object of SMSTransformationConfig class by parameter
@@ -73,9 +73,6 @@ namespace CLAM{
 			mOut.Produce();
 			return result;
 		}
-		}
-
-	
 	};		
 };//namespace CLAM
 
