@@ -172,7 +172,6 @@ bool MyInstrument::ConcreteConfigure( const ProcessingConfig& cfg) throw( std::b
 
 	mMapperVel.Configure( MapperVelCfg );
 
-
 	ControlMapperConfig MapperNoteCfg;
 	
 	MapperNoteCfg.SetMapping( "NoteToFreq" );
@@ -216,8 +215,6 @@ void MyAudioApplication::AudioMain(void)
 		// Audio and MIDI managers
 		AudioManager audioManager(48000,8192);
 		MIDIManager midiManager;
-
-
 
 		// AudioIn
 		AudioIOConfig inCfgL;
