@@ -17,14 +17,14 @@ updateLevelForExamples = 1
 updateLevelForTestData = 1 
 
 # When false keeps already compiled objects
-doCleanMake = False
+doCleanMake = True
 # When false does not run autoconf and configure unless a new checkout
 doAutoconf = False
 configureOptions = '--without-portmidi  --without-portaudio'
 # Non-test are runned those seconds and then killed
 executionTime = 15
 
-configurations = ['debug']# ['debug', 'release'] 
+configurations = ['debug', 'release'] 
 
 # Mail report settings
 publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
@@ -62,16 +62,16 @@ spvTestsPath = BUILDPATH + 'Tests/SupervisedTests/'
 nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
 simpleExamplesPath = BUILDPATH + 'Examples/Simple/'
 
-sandboxes = [ # Module, Sandbox, Tag, Update level
+sandboxes = [ # Module, Sandbox name, Tag, Update level
 	( 'CLAM', SANDBOX_NAME, MODULE_TAG, updateLevelForCLAM),
-	( 'CLAM_DescriptorsGUI', 'CLAM_DescriptorsGUI', '', updateLevelForExamples ),
-	( 'CLAM_NetworkEditor', 'CLAM_NetworkEditor', '', updateLevelForExamples ),
-	( 'CLAM_Rappid', 'CLAM_Rappid', '', updateLevelForExamples ),
-	( 'CLAM_SDIFDisplay', 'CLAM_SDIFDisplay', '', updateLevelForExamples ),
-	( 'CLAM_SpectralDelay', 'CLAM_SpectralDelay', '', updateLevelForExamples ),
-	( 'CLAM_SMSTools', 'CLAM_SMSTools', '', updateLevelForExamples ),
-	( 'CLAM_Salto', 'CLAM_Salto', '', updateLevelForExamples ),
-	( 'CLAM_Voice2MIDI', 'CLAM_Voice2MIDI', '', updateLevelForExamples ),
+	( 'CLAM_DescriptorsGUI', 'clean-CLAM_DescriptorsGUI', '', updateLevelForExamples ),
+	( 'CLAM_NetworkEditor', 'clean-CLAM_NetworkEditor', '', updateLevelForExamples ),
+	( 'CLAM_Rappid', 'clean-CLAM_Rappid', '', updateLevelForExamples ),
+	( 'CLAM_SDIFDisplay', 'clean-CLAM_SDIFDisplay', '', updateLevelForExamples ),
+	( 'CLAM_SpectralDelay', 'clean-CLAM_SpectralDelay', '', updateLevelForExamples ),
+	( 'CLAM_SMSTools', 'clean-CLAM_SMSTools', '', updateLevelForExamples ),
+	( 'CLAM_Salto', 'clean-CLAM_Salto', '', updateLevelForExamples ),
+	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', '', updateLevelForExamples ),
 	( 'CLAM-TestData', 'CLAM-TestData', '', updateLevelForTestData )
 ]
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
