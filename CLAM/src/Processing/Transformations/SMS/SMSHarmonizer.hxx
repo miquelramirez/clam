@@ -25,13 +25,7 @@
 
 #include "SMSPitchShift.hxx"
 #include "SpectrumAdder2.hxx"
-
-#include "InPort.hxx"
-#include "OutPort.hxx"
-#include "InControl.hxx"
-#include "Frame.hxx"
-#include "SMSTransformationConfig.hxx"
-#include "FrameTransformation.hxx"
+#include "SMSTransformation.hxx"
 
 
 // TODO: this transformation needs to be ported to inherit from FrameTransformation instead of SegmentTransformation
@@ -48,7 +42,6 @@ namespace CLAM{
 		 */
 		const char *GetClassName() const {return "SMSHarmonizer";}
 
-		InControl 
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSHarmonizer()

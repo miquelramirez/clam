@@ -282,6 +282,17 @@ namespace CLAM {
 				return;
 			}
 
+			if ( classname=="SMSOddEvenHarmonicRatio") 
+			{
+				SegmentTransformation* wrapper = new SegmentTransformation;	
+				Processing * proc = theFactory.Create(classname);
+				FrameTransformation* oddEvenHarmRatio = dynamic_cast<FrameTransformation*>(proc); 
+				wrapper->WrapFrameTransformation(oddEvenHarmRatio);
+				ConnectControls(*wrapper,"Out Control", *oddEvenHarmRatio, "Odd Harmonics Factor");
+				Insert( *wrapper );
+				return;
+			}
+
 			Insert( *( theFactory.Create( classname ) ) );
 		}
 		/** Helper method for updating frame counters both in ports and in internal data*/
