@@ -28,6 +28,7 @@ namespace CLAM
 	{
 		DataRenderer::DataRenderer()
 		{
+		        _nElems=0;
 			SetStep(TData(1.0));
 			SetColor(VMColor::Blue());
 		}
