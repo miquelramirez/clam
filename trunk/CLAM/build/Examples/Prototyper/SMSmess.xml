@@ -7,7 +7,7 @@
   </processing>
   <processing type="MonoAudioFileReader" id="MonoAudioFileReader_0" >
     <SourceFile>
-      <URI>/home/vokimon/CajitasDeArena/CLAM-TestData/longSounds/daft_mono.wav</URI>
+      <URI>../../../../CLAM-TestData/longSounds/daft_mono.wav</URI>
       <Header>
         <SampleRate>44100</SampleRate>
         <Samples>9936364</Samples>
