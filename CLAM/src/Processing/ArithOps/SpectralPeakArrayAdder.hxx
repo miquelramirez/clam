@@ -33,19 +33,13 @@
 namespace CLAM {
 
 
-	class PeaksInterpConfig: public ProcessingConfig
+	class PeaksAddConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (PeaksInterpConfig, 5,ProcessingConfig);
-		DYN_ATTRIBUTE(0, public, TData, MagInterpolationFactor);
-		DYN_ATTRIBUTE(1, public, TData, FreqInterpolationFactor);
-		DYN_ATTRIBUTE(2, public, TData, PitchInterpolationFactor);
-		DYN_ATTRIBUTE(3, public, bool, Harmonic);
-		DYN_ATTRIBUTE(4,public, bool, UseSpectralShape);
-	protected:
-		void DefaultInit();
-		void DefaultValues();
-
+		DYNAMIC_TYPE_USING_INTERFACE (PeaksAddConfig, 1,ProcessingConfig);
+		//TODO: As a matter of fact I wouldn't even need this attributte
+		DYN_ATTRIBUTE(0, public, std::string, Name);
+		
 	};
 
 /** This class performs the interpolation of two SpectralPeakArray processing data
@@ -55,7 +49,7 @@ namespace CLAM {
 		
 		typedef InControlTmpl<SpectralPeakArrayAdder> SpectralPeakArrayAdderCtl;	
 		
-		PeaksInterpConfig mConfig;
+		PeaksAddConfig mConfig;
 
 		const char *GetClassName() const {return "SpectralPeakArrayAdder";}
 
@@ -68,7 +62,7 @@ namespace CLAM {
 	public:
 		SpectralPeakArrayAdder();
 
-		SpectralPeakArrayAdder(const PeaksInterpConfig &c);
+		SpectralPeakArrayAdder(const PeaksAddConfig &c);
 
 		~SpectralPeakArrayAdder() {};
 

@@ -34,10 +34,10 @@ namespace CLAM {
 		  mIn2("Input 2",this),
 		  mOut("Output",this)
 	{
-		Configure(PeaksInterpConfig());
+		Configure(PeaksAddConfig());
 	}
 
-	SpectralPeakArrayAdder::SpectralPeakArrayAdder(const PeaksInterpConfig &c)
+	SpectralPeakArrayAdder::SpectralPeakArrayAdder(const PeaksAddConfig &c)
 		: mIn1("Input 1",this),
 		  mIn2("Input 2",this),
 		  mOut("Output",this)
