@@ -1,12 +1,6 @@
 
 #include "Qt_PortMonitorPresentation.hxx"
-#include "Qt_OutControlPresentation.hxx"
-#include "CLAM_Math.hxx"
 
-#include <qslider.h>
-#include <qdial.h>
-#include <qspinbox.h>
-#include <qpainter.h>
 #include <qlayout.h>
 
 #include "NetPeaksPlot.hxx"
@@ -30,7 +24,9 @@ Qt_PortMonitorPresentation::Qt_PortMonitorPresentation()
 
 void Qt_PortMonitorPresentation::BindMonitor(CLAMVM::ProcessingController & controller)
 {
-	((CLAM::VM::NetPeaksPlot *)mControlRepresentation)->SetMonitor(dynamic_cast<CLAM::PeaksPortMonitor &>( controller.GetObserved()));
+	CLAM::PeaksPortMonitor & monitor = 
+		dynamic_cast<CLAM::PeaksPortMonitor &>(controller.GetObserved());
+	((CLAM::VM::NetPeaksPlot *)mControlRepresentation)->SetMonitor(monitor);
 }
 
 } // namespace NetworkGUI

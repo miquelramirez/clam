@@ -4,7 +4,7 @@
 
 #include "Qt_ProcessingPresentation.hxx"
 #include "DataTypes.hxx"
-#include "OutControlSender.hxx"
+//#include "OutControlSender.hxx"
 
 class QWidget;
 namespace CLAMVM {
