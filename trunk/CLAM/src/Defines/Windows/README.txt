@@ -1,0 +1,1 @@
+Global definitions and datatypes OS dependant: Windows
