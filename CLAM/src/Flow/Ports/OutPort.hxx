@@ -185,8 +185,8 @@ void OutPort<Token>::ConnectToConcreteIn(InPort<Token>& in)
 template<class Token>
 void OutPort<Token>::DisconnectFromIn( InPortBase& in)
 {
-	
-	CLAM_ASSERT( TryDisconnectFromConcreteIn( in ) || TryDisconnectFromPublisher( in ),
+	bool successfullDisconnection = TryDisconnectFromConcreteIn( in ) || TryDisconnectFromPublisher( in );
+	CLAM_ASSERT( successfullDisconnection,
 		     "OutPort<Token>::DisconnectFromIn coudn't discconnect from inPort "
    		     "because was not templatized by the same Token type as outPort" );
 }
@@ -333,7 +333,8 @@ void OutPort<Token>::CenterEvenRegions()
 template<class Token>
 Token & OutPort<Token>::GetLastWrittenData( int offset )
 {
-	CLAM_DEBUG_ASSERT( 0 <= offset <= GetSize(), "OutPort<Token>::GetLastWrittenData - Index out of bounds" );
+	CLAM_DEBUG_ASSERT( 0 <= offset, "OutPort<Token>::GetLastWrittenData - Index under bounds" );
+	CLAM_DEBUG_ASSERT( offset <= GetSize(), "OutPort<Token>::GetLastWrittenData - Index over bounds" );
 	return mRegion.GetLastWrittenData( offset );
 }
 
