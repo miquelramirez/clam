@@ -1,10 +1,10 @@
-981 792
+1076 776
 AudioOut_2	690 253	95 54
 MonoAudioFileReader_1	-5 126	161 54
-OutControlSender_1	253 39	100 89
-OutControlSender_4	397 267	56 171
+OutControlSender_1	177 4	148 140
+OutControlSender_4	338 340	56 76
 PeaksPortMonitor_2	530 34	242 163
 SMSAnalysisCore_0	116 351	137 54
 SMSFreqShift_0	398 194	119 54
-SMSResidualGain_3	324 461	137 54
-SMSSynthesis_3	565 350	119 54
+SMSResidualGain_3	345 575	137 54
+SMSSynthesis_3	528 293	119 54
