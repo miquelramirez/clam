@@ -23,6 +23,7 @@
 #define _SquareWave_
 
 #include "Processing.hxx"
+#include "ProcessingData.hxx"
 #include "OSDefines.hxx"
 #include "Audio.hxx"
 #include "AudioOutPort.hxx"
