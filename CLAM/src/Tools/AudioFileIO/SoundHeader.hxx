@@ -1,6 +1,8 @@
 #ifndef __SoundHeader__
 #define __SoundHeader__
 
+namespace CLAM {
+
 class SoundHeader
 {
 public:
@@ -11,4 +13,5 @@ public:
 	SoundHeader(int samplerate = 44100,int channels = 1,int sampleWidth = 16);
 };
 
+};//CLAM
 #endif

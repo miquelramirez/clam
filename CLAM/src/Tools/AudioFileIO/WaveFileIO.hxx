@@ -3,6 +3,8 @@
 
 #include "SoundFileIO.hxx"
 
+namespace CLAM{
+
 class WaveFileIO:public SoundFileIO
 {
 public:
@@ -57,5 +59,7 @@ private:
 
 	bool CheckID(const ID& id,const ID& cmp);
 };
+
+};//CLAM
 
 #endif
