@@ -80,6 +80,7 @@ namespace CLAM
 
 	        void AttachStartSlot(SigSlot::Slotv0& slot) {mSigStart.Connect(slot);}
 	        void AttachStopSlot(SigSlot::Slotv0& slot) { mSigStop.Connect(slot);}
+	        void AttachSlotNewData(SigSlot::Slotv0& slot) { mSigNewData.Connect(slot);}
 
 	protected:
 		bool ConcreteConfigure(const ProcessingConfig& c) {return true;}
@@ -96,6 +97,7 @@ namespace CLAM
 
 	        SigSlot::Signalv0 mSigStart;
 	        SigSlot::Signalv0 mSigStop;
+	        SigSlot::Signalv0 mSigNewData;
 	};
 
 	template <typename PortDataType, typename PortType>
@@ -147,6 +149,7 @@ namespace CLAM
 		if(!AbleToExecute()) return true;
 		unsigned whichDataToWrite = mWhichDataToRead?0:1;
 		mData[whichDataToWrite] = mInput.GetData();
+		mSigNewData.Emit();
 		{
 			TryMutex::ScopedTryLock lock(mSwitchMutex,true);
 			if (lock.Locked())
@@ -177,6 +180,11 @@ namespace CLAM
 	{
 	public:
 		const char * GetClassName() const {return "FundamentalPortMonitor";}
+	};
+        class FundTrackPortMonitor : public PortMonitor<Fundamental>
+	{
+	public:
+	        const char * GetClassName() const {return "FundTrackPortMonitor";}
 	};
 
 	template <>

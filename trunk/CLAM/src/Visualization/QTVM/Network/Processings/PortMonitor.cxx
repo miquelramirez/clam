@@ -16,6 +16,7 @@ namespace CLAM
 		if(!AbleToExecute()) return true;
 		unsigned whichDataToWrite = mWhichDataToRead?0:1;
 		mData[whichDataToWrite] = mInput.GetAudio();
+		mSigNewData.Emit();
 		{
 			TryMutex::ScopedTryLock lock(mSwitchMutex,true);
 			if (lock.Locked())
@@ -46,6 +47,7 @@ namespace CLAM
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::FundamentalPortMonitor> regtFundamentalPortMonitor("FundamentalPortMonitor");
         static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::AudioBuffPortMonitor> regtAudioBuffPortMonitor("AudioBuffPortMonitor");
         static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SpecgramPortMonitor> regtSpecgramPortMonitor("SpecgramPortMonitor");
+        static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::FundTrackPortMonitor> regtFundTrackPortMonitor("FundTrackPortMonitor");
 #endif
 	
 }
