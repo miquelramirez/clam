@@ -367,7 +367,7 @@ private:
 
 		try
 		{
-			bool foundElement = context.findElement("Element");
+			context.findElement("Element");
 			CPPUNIT_FAIL("Should have failed an assertion");
 		}
 		catch (ErrAssertionFailed & e)
@@ -417,6 +417,7 @@ private:
 		{
 			xercesc::DOMElement * foundElement = context.fetchElement("Element");
 			CPPUNIT_FAIL("Should have failed an assertion");
+			foundElement = 0; // To stop warnings
 		} 
 		catch (ErrAssertionFailed & e)
 		{
@@ -439,6 +440,7 @@ private:
 		{
 			xercesc::DOMElement * foundElement2 = context.fetchElement("Element");
 			CPPUNIT_FAIL("Should have failed an assertion");
+			foundElement2 = 0; // To stop warnings
 		} 
 		catch (ErrAssertionFailed & e)
 		{
@@ -446,6 +448,7 @@ private:
 				std::string("Accessing beyond DOM nodes"),
 				std::string(e.what()));
 		}
+		foundElement1 = 0; // To stop warnings
 	}
 
 	void testFetchElement_withADifferentName()
@@ -460,6 +463,7 @@ private:
 		{
 			xercesc::DOMElement * foundElement = context.fetchElement("WrongElement");
 			CPPUNIT_FAIL("Should have failed an assertion");
+			foundElement = 0; // To stop warnings
 		} 
 		catch (ErrAssertionFailed & e)
 		{
@@ -482,6 +486,7 @@ private:
 		{
 			xercesc::DOMElement * foundElement = context.fetchElement("Element");
 			CPPUNIT_FAIL("Should have failed an assertion");
+			foundElement = 0; // To stop warnings
 		} 
 		catch (ErrAssertionFailed & e)
 		{
@@ -510,6 +515,7 @@ private:
 		std::getline(context.reachableContent(), content2);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("Content2"),content2);
+		foundElement = 0; // To stop warnings
 	}
 
 	void testFetchContent_whenSecondElement()
@@ -528,6 +534,7 @@ private:
 
 		CPPUNIT_ASSERT_EQUAL(true,stream.fail());
 		CPPUNIT_ASSERT_EQUAL(std::string(""),content);
+		foundElement = 0; // To stop warnings
 	}
 
 	void testFetchContent_afterElementWithSpaces()
@@ -544,6 +551,7 @@ private:
 		std::getline(context.reachableContent(), content2);
 
 		CPPUNIT_ASSERT_EQUAL(std::string("Content"),content2);
+		foundElement = 0; // To stop warnings
 	}
 
 	void testReleaseContext_atRootReturnsNull()
@@ -582,6 +590,7 @@ private:
 		xercesc::DOMElement * foundElement = contextInner.fetchElement("InnerElement");
 
 		CPPUNIT_ASSERT_EQUAL(innerElement, foundElement);
+		foundElement = 0; // To stop warnings
 	}
 
 	void testReleaseContext_whenContentLeft()
@@ -661,6 +670,7 @@ private:
 		stream >> extractedValue;
 
 		CPPUNIT_ASSERT_EQUAL(std::string("AttributeValue"),extractedValue);
+		domAttribute = 0; // To stop
 	}
 
 	void testExtractAttribute_withDifferentAttributeName()
@@ -673,6 +683,7 @@ private:
 		bool result = context.extractAttribute("WrongAttribute", stream);
 		
 		CPPUNIT_ASSERT_MESSAGE("Should have been false",!result);
+		domAttribute = 0; // To stop
 	}
 
 	void testGetPath()
