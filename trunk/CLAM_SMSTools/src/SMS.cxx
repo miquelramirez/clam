@@ -99,12 +99,6 @@ void SMSStdio::Run(void)
 			}
 			case 4://Store analysis data
 			{
-				if(!mHaveConfig)
-				{
-					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis/synthesis configuration"<<"\n";
-					std::cout<<"\n"<<"Please select option 1 of the menu first"<<"\n";
-					break;
-				}
 				if(!mHaveAnalysis)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis"<<"\n";
@@ -112,7 +106,10 @@ void SMSStdio::Run(void)
 					break;
 				}
 				//tmpSegment=mySegment;
-				StoreAnalysis();
+				std::string storeAnalysisFile;
+				std::cout<<"\n"<<"\n"<<"Enter Analysis Output File Name: [.xml|.sdif]  \n";
+				std::cin>> storeAnalysisFile;
+				StoreAnalysis( storeAnalysisFile );
 				break;
 			}
 			case 5: //Analyze melody
