@@ -35,7 +35,8 @@ class Processing;
 typedef float TControlData;
 
 /**
-* @todo Document!
+* \brief Processing in control class.
+* 
 */
 class InControl : public ControlLinker
 {
@@ -47,7 +48,8 @@ private:
 // Methods:
 public:
 	/**
-	 *   TODO: document why is implemented here.
+	 * Stores the incoming control value. It can be retrieved
+	 * using \c GetLastValue
 	 */
 	virtual int DoControl(TControlData val) { mLastValue = val; return 0;};
 	TControlData GetLastValue() const { return mLastValue; };
@@ -58,16 +60,19 @@ public:
 	InControlIterator GetInControls() const;
 //Constructor/Destructor
 	/**
-	 * TODO: document when to use one or the other constructor.
+	 * \todo constructor rework. 
+	 * \argument \c parent Optional. If present, is the processing where to be published.
 	 */
-	InControl(const std::string &name, Processing* whereToPublish);
-	InControl(const std::string &name);
+	InControl(const std::string &name, Processing* parent=0, const bool publish=true);
 	virtual ~InControl();
 	
 };
 
 /**
-* @todo Document!
+* Subclass of InControl that provides the incontrol with a callback method
+* The method must be defined inside the parent \c Processing class.
+* See the \c InControlTmpl constructors for learn how to provide
+* the callback to the \c InControlTmpl
 */
 template<class ProcObj>
 class InControlTmpl : public InControl
@@ -211,11 +216,12 @@ public:
 /////////////////////////////////////////////
 // Implementation
 template <class Processing>
-InControlTmplArray<Processing>::InControlTmplArray(int size, 
-								   const std::string &name,
-								   Processing *parent, 
-								   TPtrMemberFuncId f,
-								   const bool publish)
+InControlTmplArray<Processing>::InControlTmplArray(
+		int size, 
+		const std::string &name,
+		Processing *parent, 
+		TPtrMemberFuncId f,
+		const bool publish)
 {
 	mArray.Resize(size);
 	mArray.SetSize(size);
@@ -223,7 +229,7 @@ InControlTmplArray<Processing>::InControlTmplArray(int size,
 		std::stringstream str;
 		str << name << "_" << i;
 		CLAM_ASSERT(parent, "ArrayControls not being published. TODO: check ctr parameters");
-		mArray[i] = new TInControl(i, str.str(), parent, f, publish);
+		mArray[i] = new TInControl(i, str.str(), parent, f);
 		
 	}
 }

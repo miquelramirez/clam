@@ -96,7 +96,8 @@ namespace CLAM {
 		for (it=mObjects.begin(); it!=mObjects.end(); it++)
 			CLAM_ASSERT( ((*it) != &obj) , "ProcessingComposite::InsertAndGiveName():"
 			                              "Object already inserted\n");
-		std::string name = mNames.GenerateFromPrefix(obj.GetClassName());
+		const char * className = obj.GetClassName();
+		std::string name = mNames.GenerateFromPrefix(className);
 		mObjects.push_back(&obj);
 		return name;
 	}

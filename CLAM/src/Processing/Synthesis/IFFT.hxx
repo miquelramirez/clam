@@ -84,7 +84,7 @@ namespace CLAM {
 
 		virtual ~IFFT_base();
 
-		const char *GetClassName() {return "IFFT";}
+		const char *GetClassName() const {return "IFFT";}
 		
 		/** Config access:
 		 */

@@ -192,7 +192,7 @@ private:
 		
 		// Processing Object compliance methods.
 
-		const char *GetClassName() {return "SpectralSynthesis";}
+		const char *GetClassName() const {return "SpectralSynthesis";}
 
 
 		const ProcessingConfig &GetConfig() const {return mConfig;}

@@ -73,6 +73,8 @@ public:
 	/** Destructor method of the class*/
 	~AudioIn() { if (mpDevice) mpDevice->Unregister(*this); }
 
+	const char * GetClassName() const {return "AudioIn";}
+
 	/** Supervised mode of Do method. Calls the non-supervised method with the Audio data chunk attached before as the parameter where the data will be passed 
 	 */
 	bool Do(void);

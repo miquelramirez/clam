@@ -63,6 +63,8 @@ public:
 	PhaseManagement();
 	PhaseManagement(PhaseManagementConfig& c);
 	~PhaseManagement	();
+
+	const char * GetClassName() const {return "PhaseManagement";}
 	
 	bool Do(void){ return false;}
 	bool Do(Frame& currentFrame);

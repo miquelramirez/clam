@@ -64,6 +64,7 @@ public:
 	typedef T t_adaptee;
 	typedef typename t_adaptee::value_type t_adapteeValues;
 	typedef typename t_adaptee::iterator t_adapteeIterator;
+	typedef typename TypeInfo<t_adapteeValues>::StorableAsLeaf BasicIsStorableAsLeaf;
 // Attributes
 private:
 	t_adaptee & mAdaptee;
@@ -92,19 +93,23 @@ public:
 		mElementsName = elementName;
 	}
 	virtual ~XMLIterableAdapter() {};
+	const char * GetClassName() const {
+		CLAM_ASSERT(false, "You should never call XMLIterableAdapter::GetClassName");
+		return 0;
+	}
 
 // Accessors
 public:
 	//* @return A string with the extracted XML content
 	std::string XMLContent() 
 	{
-		return ContentLeaveOrComponent((TypeInfo<t_adapteeValues>::StorableAsLeaf*)NULL);
+		return ContentLeaveOrComponent((BasicIsStorableAsLeaf*)NULL);
 	}
 
 	//* Extracts the content from the stream.
 	bool XMLContent(std::istream & str) 
 	{
-		return ContentLeaveOrComponent((TypeInfo<t_adapteeValues>::StorableAsLeaf*)NULL, str);
+		return ContentLeaveOrComponent((BasicIsStorableAsLeaf*)NULL, str);
 	}
 
 // Operators (for Component interface)
@@ -119,7 +124,7 @@ public:
 		t_adapteeIterator end=mAdaptee.end();
 		for (; it!=end; it++) {
 			StoreLeaveOrComponent (store, *it, mElementsName,
-			                       (TypeInfo<t_adapteeValues>::StorableAsLeaf*)NULL
+			                       (BasicIsStorableAsLeaf*)NULL
 			                       );
 		}
 	};
@@ -134,7 +139,7 @@ public:
 		while (true) {
 			t_adapteeValues elem;
 			if (!LoadLeaveOrComponent(store, elem, mElementsName,
-						(TypeInfo<t_adapteeValues>::StorableAsLeaf *)NULL)
+						(BasicIsStorableAsLeaf *)NULL)
 					)
 				break;
 			mAdaptee.push_back(elem);

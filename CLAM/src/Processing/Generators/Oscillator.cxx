@@ -122,6 +122,8 @@ bool Oscillator::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::ba
 
 bool Oscillator::Do( Audio& out )
 {
+	if( !AbleToExecute() ) return true;
+	
 	ApplyControls();
 
 	TData* ptr = out.GetBuffer().GetPtr();
@@ -139,6 +141,8 @@ bool Oscillator::Do( Audio& out )
 
 bool Oscillator::Do( const Audio& pitchModIn, const Audio& phaseModIn, Audio& out )
 {
+	if( !AbleToExecute() ) return true;
+
 	ApplyControls();
 
 	TData* ptr = out.GetBuffer().GetPtr();
@@ -162,6 +166,8 @@ bool Oscillator::Do( const Audio& pitchModIn, const Audio& phaseModIn, Audio& ou
 
 bool Oscillator::Do( const Audio& pitchModIn, const int& dum, Audio& out )
 {
+	if( !AbleToExecute() ) return true;
+
 	ApplyControls();
 
 	TData* ptr = out.GetBuffer().GetPtr();
@@ -183,6 +189,8 @@ bool Oscillator::Do( const Audio& pitchModIn, const int& dum, Audio& out )
 
 bool Oscillator::Do( const int& dum, const Audio& phaseModIn, Audio& out )
 {
+	if( !AbleToExecute() ) return true;
+
 	ApplyControls();
 
 	TData* ptr = out.GetBuffer().GetPtr();

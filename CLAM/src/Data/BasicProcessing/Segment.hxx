@@ -96,11 +96,11 @@ public:
 	 *	@see GetFrame(TTime time)
 	 */
 	Frame& GetFrame(TIndex pos);
-	/** Returns a constant reference to the frame found in a given position*/
+	/** Returns a constant reference to the frame found in a given position. */
 	const Frame& GetFrame(TIndex pos) const;
-	/** Adds a new frame at the end of the segment*/
-	void AddFrame(Frame& newFrame);
-	/** Deletes frame in a given position */
+	/** Adds a new frame at the end of the segment. Note that this operation copies the frame. */
+	void AddFrame(Frame& newFrame); // XXX: should really be a const reference as the frame is copied
+	/** Deletes frame in a given position. */
 	void DeleteFrame(TIndex pos);
 	/** Finds frame with center time closest to the one given 
 	 *	@return position of frame in segment 

@@ -83,7 +83,7 @@ namespace CLAM
 		OutPortTmpl<Audio>   OutputAudio;
 
 	public:
-		virtual const char *GetClassName() {return "FIR";}
+		const char *GetClassName() const {return "FIR";}
 
 		FIR() :
 			InputAudio("AudioIn", this),

@@ -61,7 +61,7 @@ namespace CLAM {
 	struct AudioFileConfig: public ProcessingConfig {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE
-			(AudioFileConfig, 7, ProcessingConfig);
+			(AudioFileConfig, 8, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Name);
 		DYN_ATTRIBUTE (1, public, std::string, Filename);
 		DYN_ATTRIBUTE (2, public, EAudioFileType, Filetype);
@@ -69,6 +69,7 @@ namespace CLAM {
 		DYN_ATTRIBUTE (4, public, short, Channels);
 		DYN_ATTRIBUTE (5, public, bool, KeepFrameSizes);
 		DYN_ATTRIBUTE (6, public, int, FrameSize);
+		DYN_ATTRIBUTE (7, public, int, StartFrame);
 	protected:
 		/** Dynamic type initialization: All attributes are
 		 *   instantiated.

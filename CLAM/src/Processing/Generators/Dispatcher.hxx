@@ -121,6 +121,8 @@ namespace CLAM
 
 		~Dispatcher(){}
 
+		const char * GetClassName() const {return "Dispatcher";}
+
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
 		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);

@@ -125,7 +125,6 @@ namespace CLAM{
 
 	void Frame::SetResMag(TData freq, TData newMag)
 	{
-		// BUG
 		GetResidualSpec().SetMag(freq,newMag);
 	}
 	void Frame::SetResMag(TIndex pos, TData newMag)
@@ -134,7 +133,6 @@ namespace CLAM{
 	}
 	void Frame::SetResPhase(TData freq, TData newPhase)
 	{
-		// BUGGGGGG
 		GetResidualSpec().SetPhase(freq,newPhase);
 	}
 	void Frame::SetResPhase(TIndex pos, TData newPhase)

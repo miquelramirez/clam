@@ -93,7 +93,7 @@ namespace CLAMGUI
 		{
 		}
 
-		virtual const char* GetClassName()
+		const char* GetClassName() const
 		{
 			return "BaseView";
 		}

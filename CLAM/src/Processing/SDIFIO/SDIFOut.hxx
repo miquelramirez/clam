@@ -39,6 +39,7 @@ public:
 	SDIFOut();
 	
 	virtual ~SDIFOut();
+	const char * GetClassName() const {return "SDIFOut";}
 	
 	bool GetEnableResidual()        {return mConfig.GetEnableResidual();}
 	bool GetEnablePeakArray()       {return mConfig.GetEnablePeakArray();}

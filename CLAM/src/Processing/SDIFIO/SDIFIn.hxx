@@ -40,6 +40,8 @@ public:
 	SDIFIn();
 	
 	virtual ~SDIFIn();
+
+	const char * GetClassName() const {return "SDIFIn";}
 	
 	bool GetEnableResidual()        {return mConfig.GetEnableResidual();}
 	bool GetEnablePeakArray()       {return mConfig.GetEnablePeakArray();}

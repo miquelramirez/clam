@@ -54,7 +54,7 @@ namespace CLAM {
 		BinaryControlOpConfig mConfig;
 		BinOp mOperation;
 
-		const char *GetClassName() { return "BinaryControlOperation"; }
+		const char *GetClassName() const { return "BinaryControlOperation"; }
 
 		int HandleFirst( TControlData incoming_parm )
 		{

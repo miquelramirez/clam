@@ -56,7 +56,7 @@ namespace CLAM{
 class Frame : public ProcessingData
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (Frame, 11, ProcessingData);
+	DYNAMIC_TYPE_USING_INTERFACE (Frame, 12, ProcessingData);
 	/** Value of time in the center of the frame  */
 	DYN_ATTRIBUTE (0, public, TData, CenterTime);
 	/** Duration of the Frame  */
@@ -81,6 +81,8 @@ public:
 	DYN_ATTRIBUTE (9, public, Audio, ResidualAudioFrame);
 	/** Global synthesized Audio */
 	DYN_ATTRIBUTE (10, public, Audio, SynthAudioFrame);
+	/** Is a harmonic frame or not */
+	DYN_ATTRIBUTE (11, public, bool, IsHarmonic);
 
 protected:
 	void DefaultInit();

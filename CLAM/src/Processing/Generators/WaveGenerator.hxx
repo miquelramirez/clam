@@ -87,7 +87,7 @@ namespace CLAM {
 
 		EWaveType::tValue mType;
 
-		const char *GetClassName() {return "WaveGenerator";}
+		const char *GetClassName() const {return "WaveGenerator";}
 
 		/** Configuration change method
 		 * @throw

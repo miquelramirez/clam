@@ -40,7 +40,7 @@ namespace CLAM {
 		AudioFileConfig mConfig;
 		SoundFileIO* mpSoundFileIO;
 	private:
-		const char *GetClassName() {return "AudioFileOut";}
+		const char *GetClassName() const {return "AudioFileOut";}
 
 		/** Configuration change method
 		 * @throw

@@ -104,7 +104,7 @@ public:
 	{
 	}
 
-	virtual const char* GetClassName()
+	virtual const char* GetClassName() const
 	{
 		return "SpectralDelayView";
 	}

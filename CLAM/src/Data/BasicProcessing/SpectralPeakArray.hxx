@@ -387,7 +387,7 @@ public:
 * interface is used but not if the user resizes buffers directly
 * accessing the arrays.
 */	
-	TSize GetnMaxPeaks()
+	TSize GetnMaxPeaks() const
 	{
 		if(HasMagBuffer()) return GetMagBuffer().AllocatedSize();
 		if(HasFreqBuffer()) return GetFreqBuffer().AllocatedSize();

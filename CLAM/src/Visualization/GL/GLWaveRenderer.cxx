@@ -21,6 +21,8 @@
 
 #include "GLWaveRenderer.hxx"
 #include "DataTypes.hxx"
+#include "CLAM_Math.hxx"
+
 using CLAM::TData;
 using namespace CLAMGUI;
 
@@ -54,8 +56,8 @@ void GLWaveRenderer::DrawVerticalLine(float x,float top,float bottom)
 		return;
 	if (top > mCullingData.topY)
 		return;
-	top = max(mCullingData.bottomY + 0.1f/Y2Pixel,top);
-	bottom = max(mCullingData.bottomY + 0.1f/Y2Pixel,bottom);
+	top = std::max(mCullingData.bottomY + 0.1f/Y2Pixel,top);
+	bottom = std::max(mCullingData.bottomY + 0.1f/Y2Pixel,bottom);
 	int nPixels = (bottom - top) * Y2Pixel + 1;
 	glRasterPos2f(x,top);
 	glDrawPixels(1,nPixels,GL_GREEN,GL_FLOAT,mPixelColor);
@@ -93,8 +95,15 @@ void GLWaveRenderer::XaxisTransform( TData left, TData right, TData& transleft, 
 void GLWaveRenderer::YaxisTransform( TData top, TData bottom, TData& transtop, TData& transbottom, bool& integer )
 {
 
-	transtop = top + 1.0f;
-	transbottom = bottom - 1.0f;
+	if ( fabs( top - bottom ) < 0.01 )
+	{
+		top += TData(0.01);
+		bottom -= TData(0.01);
+	}
+
+
+	transtop = top  + 0.001f;
+	transbottom = bottom  - 0.001f;
 	integer = false;
 }
 
@@ -110,9 +119,9 @@ void GLWaveRenderer::CacheData( const DataArray& array )
 	{
 		int begin = (i-0.5)*10;
 		int end = (i+0.5)*10;
-		begin = max(begin , 0);
-		begin = min(begin , mDataArray.Size()-2);
-		end = min(end , mDataArray.Size());
+		begin = std::max(begin , 0);
+		begin = std::min(begin , mDataArray.Size()-2);
+		end = std::min(end , mDataArray.Size());
 		float top = mDataArray[begin];
 		float bottom = mDataArray[begin];
 		for(int k=begin+1; k<end; k++)
@@ -134,9 +143,9 @@ void GLWaveRenderer::CacheData( const DataArray& array )
 	{
 		int begin = (i-0.5)*10;
 		int end = (i+0.5)*10;
-		begin = max(begin , 0);
-		begin = min(begin , mDataArrayTop.Size()-2);
-		end = min(end , mDataArrayTop.Size());
+		begin = std::max(begin , 0);
+		begin = std::min(begin , mDataArrayTop.Size()-2);
+		end = std::min(end , mDataArrayTop.Size());
 		float top = mDataArrayTop[begin];
 		float bottom = mDataArrayBottom[begin];
 		for(int k=begin+1; k<end; k++)
@@ -164,7 +173,7 @@ void GLWaveRenderer::CacheData( const DataArray& array )
 
 void GLWaveRenderer::Draw()
 {
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glClear( GL_COLOR_BUFFER_BIT );
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 
@@ -190,8 +199,8 @@ void GLWaveRenderer::Draw()
 		{
 			nIndex /= 100;
 			nNextIndex /= 100;
-			nIndex =min(nIndex,mDataArrayTop2.Size()-1);
-			nNextIndex = min(nNextIndex,mDataArrayTop2.Size()-1);
+			nIndex = std::min(nIndex,mDataArrayTop2.Size()-1);
+			nNextIndex = std::min(nNextIndex,mDataArrayTop2.Size()-1);
 			topValue = mDataArrayTop2[nIndex];
 			bottomValue = mDataArrayBottom2[nIndex];
 			if (nNextIndex > nIndex)
@@ -208,8 +217,8 @@ void GLWaveRenderer::Draw()
 		{
 			nIndex /= 10;
 			nNextIndex /= 10;
-			nIndex =min(nIndex,mDataArrayTop.Size()-1);
-			nNextIndex = min(nNextIndex,mDataArrayTop.Size()-1);
+			nIndex =std::min(nIndex,mDataArrayTop.Size()-1);
+			nNextIndex = std::min(nNextIndex,mDataArrayTop.Size()-1);
 			topValue = mDataArrayTop[nIndex];
 			bottomValue = mDataArrayBottom[nIndex];
 			if (nNextIndex > nIndex)
@@ -223,8 +232,8 @@ void GLWaveRenderer::Draw()
 		}
 		else
 		{
-			nIndex =min(nIndex,mDataArray.Size()-1);
-			nNextIndex = min(nNextIndex,mDataArray.Size()-1);
+			nIndex =std::min(nIndex,mDataArray.Size()-1);
+			nNextIndex = std::min(nNextIndex,mDataArray.Size()-1);
 			topValue = mDataArray[nIndex];
 			bottomValue = mDataArray[nIndex];
 			if (nNextIndex > nIndex)

@@ -38,7 +38,7 @@
 
 #define __COMMON_DYNAMIC_TYPE(CLASS_NAME,N) \
 public: \
-	virtual char* GetClassName() const { \
+	virtual const char* GetClassName() const { \
 		return #CLASS_NAME; \
 	}\
 	enum { eNumAttr= N }; \
@@ -73,10 +73,6 @@ public: \
 	/** Add all Dynamic Attributes */ \
 	void AddAll () { \
 		AddChainedAttr((AttributePosition<0>*)NULL); \
-	} \
-	/** Do all Dynamic Attributes */ \
-	void DoAll () { \
-		DoChainedAttr((AttributePosition<0>*)NULL); \
 	} \
 private: \
 	/** Add all Dynamic Attributes */ \
@@ -143,12 +139,6 @@ private: \
 		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
-	/** Undefined link for the Do method chain (Do) */ \
-	template <unsigned int NAttrib> \
-	void DoChainedAttr (AttributePosition<NAttrib>*a) { \
-		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
-		                (AttributePosition<NAttrib>*)NULL); \
-	}\
 	/** Undefined link on the method chain (Store) */ \
 	template <unsigned int NAttrib> \
 	void StoreChainedAttr (AttributePosition<NAttrib>*a,CLAM::Storage & s) { \
@@ -174,9 +164,6 @@ private: \
 	} \
 	/** Method chain terminator */ \
 	void InformChainedAttr (AttributePosition<N>*) { \
-	} \
-	/** Method chain terminator */ \
-	void DoChainedAttr (AttributePosition<N>*) { \
 	} \
 	/** Method chain terminator */ \
 	void StoreChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) { \
@@ -288,8 +275,6 @@ private: \
 	static inline char* GetType##NAME() { return #TYPE; } \
 	static inline int GetId##NAME() { return N;}\
 public: \
-	void Do##NAME() { \
-	} \
 	/*inline TYPE* Get##NAME##Vector(unsigned n) { return Get_##TYPE##Vector(n); }*/ \
 private: \
 	template <typename Visitor> \
@@ -308,10 +293,6 @@ private: \
 	void InformChainedAttr(AttributePosition<N>*) { \
 		Inform##NAME(); \
 		InformChainedAttr((AttributePosition<(N)+1>*)NULL); \
-	} \
-	void DoChainedAttr(AttributePosition<N>*) { \
-		Do##NAME(); \
-		DoChainedAttr((AttributePosition<(N)+1>*)NULL); \
 	} \
 	void StoreChainedAttr(AttributePosition<N>*, CLAM::Storage & s) { \
 		Store##NAME(s); \

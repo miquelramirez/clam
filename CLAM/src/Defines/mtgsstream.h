@@ -22,6 +22,7 @@ inline std::strstream& operator << (std::strstream& out,const std::string& in)
 #else
 #include <strstream.h>
 #include <string>
+#warning You are using a wrapper stringstream
 
 namespace std {
 

@@ -41,7 +41,7 @@ using CLAM::Oscillator;
 namespace CLAMGUI
 {
 
-
+	template <>
 	class ProcObjPresentation<Oscillator>
 		: public Presentation
 	{

@@ -22,7 +22,6 @@
 #include "SMSAnalysis.hxx"
 
 
-
 using namespace CLAM;
 
 /////////////////////////////////////////////////////////////////////
@@ -288,15 +287,14 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 {
 	//Analyzing sinusoidal component
 	mPO_SinSpectralAnalysis.Do(in,outGlobalSpec);
-
+	
 	Do(outGlobalSpec,outPk,outFn);
 
 	
 	//Analyzing residual component
 	//First we synthesize Sinusoidal Spectrum
 	mPO_SynthSineSpectrum.Do(outPk,outSinSpec);
-
-
+	
 	//Then we analyze the spectrum of the whole audio using residual config
 	    
 	outResSpec.SetSize(mSpec.GetSize());
@@ -305,6 +303,10 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 
 	//Finally we substract mSpectrum-SinusoidalSpectrum
 	mPO_SpecSubstract.Do(mSpec,outSinSpec,outResSpec);
+
+	//Synchronizing spectral ranges of other spectrums
+	outSinSpec.SetSpectralRange(outGlobalSpec.GetSpectralRange());
+	outResSpec.SetSpectralRange(outGlobalSpec.GetSpectralRange());
 
 	return true;
 
@@ -341,6 +343,7 @@ bool SMSAnalysis::Do(Frame& in)
 	in.AddFundamental();
 	in.AddSinusoidalSpec();
 	in.AddResidualSpec();
+	in.AddIsHarmonic();
 	in.UpdateData();
 
 	Spectrum tmpSpec;
@@ -348,7 +351,9 @@ bool SMSAnalysis::Do(Frame& in)
 	in.SetSpectrum(tmpSpec);
 	in.SetFundamental(mFund);
 
-	return Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
+	bool result=Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
+	in.SetIsHarmonic(in.GetFundamental().GetFreq(0)>0);
+	return result;
 }
 
 bool SMSAnalysis::Do(Segment& in)

@@ -66,7 +66,7 @@ namespace CLAM {
 	void Err::Embed(const std::exception &e) throw()
 	{
 		static const char* separation = "\n Nested error: ";
-		int len;
+		size_t len;
 		char* msg;
 		len = strlen(mMsg) + strlen(e.what()) + strlen(separation) + 1;
 		msg = new(std::nothrow) char[len];

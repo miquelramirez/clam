@@ -184,7 +184,7 @@ public:
 	
 private:
 	
-	const char *GetClassName() {return "FDFilterGen";}
+	const char *GetClassName() const {return "FDFilterGen";}
 	
 	/** Private method called by the public Configure(cfg) method on the base class*/
 	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);

@@ -29,31 +29,41 @@
 #include "SearchArray.hxx"
 #include "Matrix.hxx"
 #include "SegmentDescriptors.hxx"
+#include "Point.hxx"
 #include <iosfwd>
 
 namespace CLAM{
 
-#define SpectralDescBase 150//for example
-#define	SpectralMeanId SpectralDescBase
-#define	SpectralGeometricMeanId SpectralDescBase+1
-#define	SpectralEnergyId SpectralDescBase+2
-#define	SpectralCentroidId SpectralDescBase+3
-#define	SpectralMoment2Id SpectralDescBase+4
-#define	SpectralMoment3Id SpectralDescBase+5
-#define	SpectralMoment4Id SpectralDescBase+6
-#define	SpectralMoment5Id SpectralDescBase+7
-#define	SpectralMoment6Id SpectralDescBase+8
-#define	SpectralIrregularityId SpectralDescBase+9
-#define	SpectralTiltId SpectralDescBase+10
-#define	SpectralFlatnessId SpectralDescBase+11
-#define	SpectralKurtosisId SpectralDescBase+12
-#define	SpectralStrongPeakId SpectralDescBase+13
+enum {
+	SpectralDescBase=150, //for example
+	SpectralMeanId = SpectralDescBase,
+	SpectralGeometricMeanId = SpectralDescBase+1,
+	SpectralEnergyId = SpectralDescBase+2,
+	SpectralCentroidId = SpectralDescBase+3,
+	SpectralMoment2Id = SpectralDescBase+4,
+	SpectralMoment3Id = SpectralDescBase+5,
+	SpectralMoment4Id = SpectralDescBase+6,
+	SpectralMoment5Id = SpectralDescBase+7,
+	SpectralMoment6Id = SpectralDescBase+8,
+	SpectralIrregularityId = SpectralDescBase+9,
+	SpectralTiltId = SpectralDescBase+10,
+	SpectralFlatnessId = SpectralDescBase+11,
+	SpectralKurtosisId = SpectralDescBase+12,
+	SpectralStrongPeakId = SpectralDescBase+13,
 
-#define FrameDescBase 175 //for example
-#define FundamentalId FrameDescBase
+	FrameDescBase = 175, //for example
+	FundamentalId = FrameDescBase,
 
-#define SegmentatorBase 200 //for example
-#define MinSegmentLenghtId SegmentatorBase
+	SegmentatorBase = 200, //for example
+	MinSegmentLenghtId = SegmentatorBase,
+
+	AudioDescriptorBase = 250,
+	AudioMeanId = AudioDescriptorBase,
+	AudioEnergyId = AudioDescriptorBase + 1,
+	AudioVarianceId = AudioDescriptorBase + 2,
+	AudioCentroidId = AudioDescriptorBase + 3,
+	AudioZeroCrossingRateId = AudioDescriptorBase + 4
+};
 
 
 typedef struct //may need further additions
@@ -61,6 +71,7 @@ typedef struct //may need further additions
 	TIndex id;
 	TData threshold;
 	TData percentil;
+	TData nPreviousFrames;
 }TDescriptorsParams;
 
 inline bool operator<(const TDescriptorsParams& param1,const TDescriptorsParams& param2)
@@ -99,14 +110,14 @@ public:
 	DYNAMIC_TYPE_USING_INTERFACE(SegmentatorConfig,3,ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, std::string, Name);
 	DYN_ATTRIBUTE (1, public, int, MinSegmentLength);
-private:
-	DYN_ATTRIBUTE (2, private, Array<TDescriptorsParams>, DescriptorsParams);
+	DYN_ATTRIBUTE (2, public, Array<TDescriptorsParams>, DescriptorsParams);
 protected:
 	void DefaultInit();
 /*Public Interface*/
 public:
 	void AddDescParams(const TDescriptorsParams& descParams);
 	bool FindDescParams(TDescriptorsParams& descParams);
+	void ClearDescParams();
 
 	void SetDescriptorsSearch (const SearchArray<TDescriptorsParams> & frame) {
 		mDescriptorsSearch=frame;
@@ -128,23 +139,26 @@ public:
 	Segmentator();
 	Segmentator(const SegmentatorConfig& c);
 	~Segmentator();
+	const char * GetClassName() const {return "Segmentator";}
 	const ProcessingConfig& GetConfig() const {return mConfig;}
 	bool Do();
 	bool Do(Segment& originalSegment,SegmentDescriptors& descriptors); //for the time being only inplace processing is enabled
 
 	void StoreOn(Storage &s) {};
 
-private:
 		
+protected:
 	SegmentatorConfig  mConfig;
 
-	void DataFusion(Segment& s,const Array<DataArray>& segmentBoundaries);
+private:
+	void DataFusion(Segment& s,const Array<Array<PointTmpl<int,TData> > >& segmentBoundaries);
 	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
-	void UnwrapDescriptors(const Segment& originalSegment,SegmentDescriptors& descriptors ,Matrix& descriptorsValues);
 	/* All Algorithms should follow this prototype, taking as an input a segment and
 	// a Matrix where the descriptors values are stored
 	*/
-	void MyAlgorithm1(Segment& s,const Matrix& values);
+	virtual void Algorithm(Segment& s,const Matrix& values);
+protected:
+	virtual void UnwrapDescriptors(const Segment& originalSegment,SegmentDescriptors& descriptors ,Matrix& descriptorsValues);
 };
 
 };//namespace CLAM

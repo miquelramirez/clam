@@ -44,5 +44,6 @@ namespace CLAM {
 		SetChannels(0);
 		SetKeepFrameSizes(false);
 		SetFrameSize(512);
+		SetStartFrame(0);
 	}
 };//namespace CLAM

@@ -323,7 +323,7 @@ void Spectrum::ToLinear()
 	}
 }
 
-TData Spectrum::GetMag(TIndex pos)
+TData Spectrum::GetMag(TIndex pos) const
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -339,7 +339,7 @@ TData Spectrum::GetMag(TIndex pos)
 	return 0;
 }
 
-TData Spectrum::GetMag(TData freq)
+TData Spectrum::GetMag(TData freq) const
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -356,7 +356,7 @@ TData Spectrum::GetMag(TData freq)
 	return 0;
 }
 
-TData Spectrum::GetPhase(TIndex pos)
+TData Spectrum::GetPhase(TIndex pos) const
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -372,7 +372,7 @@ TData Spectrum::GetPhase(TIndex pos)
 	return 0;
 }
 
-TData Spectrum::GetPhase(TData freq)
+TData Spectrum::GetPhase(TData freq) const
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -744,7 +744,7 @@ void Spectrum::GetType(SpecTypeFlags& f) const
 	f.bComplex = HasComplexArray();
 }
 
-TIndex Spectrum::IndexFromFreq(TData freq)
+TIndex Spectrum::IndexFromFreq(TData freq) const
 {
 	return roundInt(freq*((GetSize()-1)/GetSpectralRange()));
 }

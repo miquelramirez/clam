@@ -26,121 +26,164 @@
 #include "DataTypes.hxx"
 #include "Err.hxx"
 
-namespace CLAM {
+namespace CLAM
+{
 
+
+	/**
+	 * Generic container-like circular buffer class.
+	 * It can be pre-allocated to a certain capacity and 
+	 * resized at any time (not while doing concurrent 
+	 * reading/writing). This circular buffer is not thread-safe.
+	 * You can either read/write single elements at a time or 
+	 * read/write in blocks. The size of these blocks is specified 
+	 * the read size and write size respectively.
+	 * The circular buffer must be initialized (by calling Init()) 
+	 * prior to being used. An initial read offset can be specified 
+	 * which indicates the index at which the buffer starts reading 
+	 * after it's been initialized (default: 0).
+	 */
 	template <class T> class CircularBuffer
 	{
-	/*testing*/
-	//protected:
-	public:
+	public: // XXX: no encapsulation! danger danger!
 		Array<T> mBuffer;
 		TSize mLogicalSize;
 		TSize mReadSize;
 		TSize mWriteSize;
-		TSize mWriteIndex;
-		TSize mReadIndex;
+		TSize mWriteIndex; // XXX: might want these mutable and read-like methods declared const
+		TSize mReadIndex; // XXX: might want these mutable and read-like methods declared const
 		TSize mInitialReadOffset;
 		TSize mInitialWriteOffset;
 	
 	public:
 	 
-		/** CONSTRUCTION 
-		*/
-		CircularBuffer():mBuffer()
+		/**
+		 * Default constructor.
+		 * Read and write indices will be initialized to 0. Read and write 
+		 * sizes will be initialized to 1. Initial read and write offsets will 
+		 * be initialized to 0. The buffer size will be 0.
+		 */
+		CircularBuffer() : mBuffer()
 		{
 			mWriteIndex = 0;				
 			mReadIndex = 0;
-			mReadSize=mWriteSize=1;
-			mInitialReadOffset=0;
-			mInitialWriteOffset=0;
+			mReadSize = mWriteSize = 1;
+			mInitialReadOffset = 0;
+			mInitialWriteOffset = 0;
 			SetBufferSize(0);
-			mLogicalSize=0;
+			mLogicalSize = 0;
 		}
 		
-		CircularBuffer(TSize bufferSize)
-			:mBuffer(bufferSize)
+		/**
+		 * Constructor which initializes the buffer to a certain capacity.
+		 * This capacity (or buffer size) can be arbitrary (not power-of-two, 
+		 * etc), but must be greater than 0.
+		 */
+		CircularBuffer(TSize bufferSize) : mBuffer(bufferSize)
 		{
-			CLAM_ASSERT(bufferSize > 0,"CircularBuffer:CircularBuffer: BufferSize has to be larger than zero");
+			CLAM_ASSERT(bufferSize > 0, "CircularBuffer:CircularBuffer: BufferSize has to be larger than zero");
 			SetBufferSize(bufferSize);
 			mWriteIndex = 0;				
 			mReadIndex = 0;
-			mReadSize=mWriteSize=1;
-			mInitialReadOffset=0;
-			mInitialWriteOffset=0;
-			mLogicalSize=0;
-		};
+			mReadSize = mWriteSize = 1;
+			mInitialReadOffset = 0;
+			mInitialWriteOffset = 0;
+			mLogicalSize = 0;
+		}
 
+		// Methods for setting up the buffer: -------------------------------------------
 
-		/** GET AND SETTERS
-		*/
-			
-		//get pointer to element
-		T& GetPtrToElement(int absPos)
-		{
-			int index = absPos;
-			if(index >= GetBufferSize())
-				index -= GetBufferSize();
-			if(index < 0)
-				index += GetBufferSize();
-
-			return mBuffer[index];
-		};
-
-		TSize GetBufferSize()
+		/**
+		 * Returns the circular buffer's buffer size.
+		 */
+		TSize GetBufferSize() const
 		{
 			return mBuffer.Size();
-		};
+		}
 
+		/**
+		 * Resizes the buffer to a new capacity (or buffer size). 
+		 * This capacity (or buffer size) can be arbitrary (not power-of-two, 
+		 * etc). If size is set to 0 or less the buffer will be deallocated.
+		 */
 		void SetBufferSize(TSize size)
 		{
 			mBuffer.Resize(size);
 			mBuffer.SetSize(size);
 			InitPointers();
-		};
+		}
 
-
-		TSize GetWriteIndex()
+		/**
+		 * Returns the index of the element that the buffer 
+		 * is about to write (ie. on the next write-like call).
+		 */
+		TSize GetWriteIndex() const
 		{
 			return mWriteIndex;
-		};
+		}
 
-		TSize GetReadIndex()
+		/**
+		 * Returns the index of the element that the buffer 
+		 * is about to read (ie. on the next read-like call).
+		 */
+		TSize GetReadIndex() const
 		{
 			return mReadIndex;
-		};
+		}
 
-		
-		TSize GetInitialReadOffset()
+		/**
+		 * Returns the initial read offset. That is, the 
+		 * index at which the buffer starts reading after it 
+		 * has been initialized.
+		 */
+		TSize GetInitialReadOffset() const
 		{
 			return mInitialReadOffset;
-		};
+		}
 
+		/**
+		 * Sets the initial read offset. That is, the
+		 * index at which the buffer starts reading after it 
+		 * has been initialized. Init() or InitPointers() should be 
+		 * called after this method.
+		 */
 		void SetInitialReadOffset(TSize size)
 		{
 			CLAM_ASSERT((mInitialReadOffset >= 0)&&(mInitialReadOffset < GetBufferSize()-1),
 				"CircularBuffer:SetInitialReadOffset: InitialReadOffset has to be larger than zero");
 			mInitialReadOffsetSize = size;
-		};
+		}
 
-		
-		/** PUBLIC METHODS FOR DATA ACCESS
-		*/
-		
+
+		// XXX: no get/set initial write offset?
+
+		// Methods for data acces: ------------------------------------------------------
+	
+		/**
+		 * Initializes the buffer by setting all elements to 0 and 
+		 * making sure read/write indices are set correctly (taking 
+		 * into account initial read/write offsets).
+		 */
 		void Init()
 		{
 			SetBufferToZero();
 			InitPointers();
-			
-		};
+		}
 
+		/**
+		 * Sets all elements in circular buffer to zero.
+		 */
 		void SetBufferToZero()
 		{
 			T *pBuffer;
 			pBuffer = mBuffer.GetPtr();
 			memset(pBuffer, 0, GetBufferSize()*sizeof(T));
-			
-		};
+		}
 
+		/**
+		 * Initializes read/write indices (taking into account 
+		 * initial read/write offsets).
+		 */
 		void InitPointers()
 		{
 			if(mInitialReadOffset < 0)
@@ -152,21 +195,26 @@ namespace CLAM {
 			else
 				mWriteIndex = mInitialWriteOffset;
 			mLogicalSize=0;
-			
-		};
+		}
 
+		// Methods for reading and writing: ---------------------------------------------
 
-		/**PUBLIC METHODS FOR BUFFER READ AND WRITE
-		*/
-
+		/**
+		 * Reads a single element at the current read index 
+		 * into element.
+		 */
 		void Read(T& element)
 		{
 			element = mBuffer[mReadIndex];
 			IncreaseReadIndex();
-			
-		};
+		}
 
-		
+		/**
+		 * Reads read size number of elements starting at the 
+		 * current read index into buffer. If the read size + 
+		 * read index is out of bounds (ie. past the end of the buffer) 
+		 * the reading will 'wrap-around'.
+		 */
 		void Read(T* buffer)
 		{
 			TSize limit;
@@ -185,30 +233,42 @@ namespace CLAM {
 			IncreaseReadIndex(mReadSize);
 		}
 
-		void Read(Array<T>& in,TSize offset=0) //const
+		/**
+		 * Reads read size number of elements starting at the 
+		 * current read index into the array at the specified offset 
+		 * (default: offset = 0). The destination array must be large 
+		 * enough to hold read size number of elements at the specified 
+		 * offset. If reading is out of bounds it will wrap-around.
+		 * Note: define CLAM_HIGH_OPTIMIZATIONS for this function to be 
+		 * efficient.
+		 */
+		void Read(Array<T>& in, TSize offset = 0) // XXX: maybe call in, out instead?
 		{
-			CLAM_ASSERT(GetReadSize()<=in.Size()+offset,"Error, input buffer is not large enough");
+			CLAM_ASSERT(GetReadSize() <= in.Size()+offset, "Error, input buffer is not large enough"); // XXX: maybe call the input buffer the output buffer?
 
 #ifdef CLAM_HIGH_OPTIMIZATIONS
-			
 			Read(in.GetPtr()+offset);
-		
 #else
 			for(int i=0;i<mReadSize;i++)
 				Read(in[i+offset]);
-#endif		
-		};
+#endif
+		}
 
+		/**
+		 * Writes a single element at the current write index.
+		 */
 		void Write(const T& element)
 		{
 			mBuffer[mWriteIndex] = element;
 			IncreaseWriteIndex();
-			
-		};
+		}
 
-		
-		
-		void Write (const T* buffer)
+		/**
+		 * Writes write size number of elements starting at the 
+		 * current write index from buffer. If it must write out 
+		 * of bounds, it will 'wrap-around'.
+		 */
+		void Write(const T* buffer)
 		{
 			TSize limit;
 			if((limit=mWriteIndex+mWriteSize)>GetBufferSize())
@@ -225,103 +285,165 @@ namespace CLAM {
 			
 			IncreaseWriteIndex(mWriteSize);
 		}
-		
-		void Write(const Array<T>& in,TSize offset=0) 
+
+		/**
+		 * Writes write size number of elements starting at the current 
+		 * write index from the array starting at the specified offset 
+		 * (default: offset = 0). The input array must have atleast write 
+		 * size number of elements from the specified offset onwards.
+		 * Note: define CLAM_HIGH_OPTIMIZATIONS for this method to be efficient.
+		 */
+		void Write(const Array<T>& in, TSize offset = 0) 
 		{
 			CLAM_ASSERT(GetWriteSize()<=in.Size()+offset,"Error, input buffer is not large enough");
 #ifdef CLAM_HIGH_OPTIMIZATIONS
-			
 			Write(in.GetPtr()+offset);
-		
 #else
 			for(int i=0;i<mWriteSize;i++)
 				Write(in[i+offset]);
 #endif
-		};
-		
+		}
+
+		/**
+		 * Does an additive write of a single element at the 
+		 * current write index. It 'mixes' the old element's content 
+		 * with the new one.
+		 */
 		void Add(const T& elem)
 		{
-			mBuffer[mWriteIndex]+=elem;
+			mBuffer[mWriteIndex] += elem;
 			IncreaseWriteIndex();
 		}
 
-		void Add(const Array<T>& in,TSize offset=0)
+		/**
+		 * Does an additive write of write size number of elements 
+		 * at the current write index onwards from the specified 
+		 * input array starting at the specified offset (default: 
+		 * offset = 0) onwards.
+		 * Note: not very efficient.
+		 */
+		void Add(const Array<T>& in, TSize offset = 0)
 		{
 			CLAM_ASSERT(GetWriteSize()<=in.Size()+offset,"Error, input buffer is not large enough");
 			for(int i=0;i<mWriteSize;i++)
 				Add(in[i+offset]);
+			// XXX: might also want a CLAM_HIGH_OPTIMIZATIONS version of this method...
 		}
 
-		
-		void IncreaseReadIndex(TSize step=1)
+		/**
+		 * Increases the read index by the specified number of 
+		 * elements (default: step = 1).
+		 */
+		void IncreaseReadIndex(TSize step = 1)
 		{
 			mReadIndex += step;
 			mReadIndex=mReadIndex%GetBufferSize();
 			mLogicalSize-=step;
 			CLAM_ASSERT(mLogicalSize>=0,"Error:Read Index surpassed Write Index");
-		};
+		}
 
-		void IncreaseWriteIndex(TSize step=1)
+		/**
+		 * Increases the write index by the specified number of 
+		 * elements (default: step = 1).
+		 */
+		void IncreaseWriteIndex(TSize step = 1)
 		{
+			// XXX: might want to assert that step > 0
 			mWriteIndex += step;
 			mWriteIndex =mWriteIndex%GetBufferSize();
 			mLogicalSize+=step;
 			CLAM_ASSERT(mLogicalSize<=GetBufferSize(),"Error:Write Index surpassed Read Index");
-		};
+		}
 
-		void DecreaseReadIndex(TSize step=1)
+		/**
+		 * Decreases the read index by the specified number of 
+		 * elements (default: step = 1).
+		 */
+		void DecreaseReadIndex(TSize step = 1)
 		{
+			// XXX: might want to assert that step > 0
 			mReadIndex -= step;
 			mReadIndex =mReadIndex%GetBufferSize();
 			if(mReadIndex<0) mReadIndex=GetBufferSize()+mReadIndex;
 			mLogicalSize+=step;
 			CLAM_ASSERT(mLogicalSize<=GetBufferSize(),"Error:Write Index surpassed Read Index");
-			
-		};
+		}
 
-		void DecreaseWriteIndex(TSize step=1)
+		/**
+		 * Decreases the write index by the specified number of 
+		 * elements (default: step = 1).
+		 */
+		void DecreaseWriteIndex(TSize step = 1)
 		{
+			// XXX: might want to assert that step > 0
 			mWriteIndex -= step;
 			mWriteIndex =mWriteIndex%GetBufferSize();
 			if(mWriteIndex<0) mWriteIndex =GetBufferSize()+mWriteIndex ;
 			mLogicalSize-=step;
 			CLAM_ASSERT(mLogicalSize>=0,"Error:Read Index surpassed Write Index");
-		};
+		}
 
-		/** GET AND SETTERS
-		*/
+		/**
+		 * Returns a pointer (well, reference) to the element 
+		 * at the specified index. If the specified index is 
+		 * out of bounds it will 'wrap-around'.
+		 */
+		T& GetPtrToElement(int absPos)
+		{
+			int index = absPos; // XXX: unnecessary copy.
+			if(index >= GetBufferSize())
+				index -= GetBufferSize();
+			if(index < 0)
+				index += GetBufferSize();
+
+			return mBuffer[index];
+		}
+		
+		// Getters and setters: ---------------------------------------------------------
+
+		/**
+		 * Returns the current read size. The read size 
+		 * determines how many elements will read at once 
+		 * when doing 'chunk' reads.
+		 */
 		TSize GetReadSize() const
 		{
 			return mReadSize;
 		}
 
+		/**
+		 * Returns the current write size. The write size 
+		 * determines how many elements will be written at once 
+		 * when doing 'chunk' writes.
+		 */
 		TSize GetWriteSize() const
 		{
 			return mWriteSize;
 		}
 
+		/**
+		 * Sets the read size. This read size must be greater than or 
+		 * equal to 0 and less than or equal to the buffer size.
+		 */
 		void SetReadSize(TSize size)
 		{
 			CLAM_ASSERT(size>=0&&size<=GetBufferSize(),"AudioCircularBuffer:SetReadSize: ReadSize has to be larger than zero");
 			mReadSize = size;
-			
 		}
 
+		/**
+		 * Sets the write size. This write size must be greater than or 
+		 * equal to 0 and less than or equal to the buffer size.
+		 */
 		void SetWriteSize(TSize size)
 		{
 			CLAM_ASSERT(size>=0&&size<=GetBufferSize(),"AudioCircularBuffer:SetWriteSize: WriteSize has to be larger than zero");
 			mWriteSize = size;
-			
 		}
-
-		TSize GetBufferSize() const
-		{
-			return GetBufferSize;
-		}
-
-
-
 	};
+
+
+
 }; //end of namespace
 
 #endif //_CircularBuffer_

@@ -22,7 +22,8 @@
 #include "FLDisplayContainer.hxx"
 #include "GLPortNew.hxx"
 #include "ErrGUI.hxx"
-#include <math.h>
+#include <cmath>
+
 
 using namespace CLAMGUI;
 
@@ -52,7 +53,7 @@ void FLDisplayContainer::SliderCB(Fl_Slider* slider,Fl_Scrollbar* scrollbar)
 		f = 0.5+(f/slider->maximum())/2.;
 	else 
 		//f = 0.5/(1.+-f);
-		f = 0.5 * pow(10,f);
+		f = 0.5 * pow(double(10),f);
 
 	int r = static_cast<int>( f*max );
 	if (v+r > max) 

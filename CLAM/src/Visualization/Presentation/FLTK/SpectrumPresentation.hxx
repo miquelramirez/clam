@@ -24,7 +24,7 @@
 
 #include "ProcDataPresentation.hxx"
 #include "FLDisplayContainer.hxx"
-#include <FL/Fl_Double_Window.H>
+#include "PresentationWindow.hxx"
 #include "GLPortNew.hxx"
 #include "GLLinearSpRenderer.hxx"
 #include "GLState.hxx"
@@ -118,7 +118,7 @@ namespace CLAMGUI
 		GLPort*                           mPort;
 		GLLinearSpRenderer*               mRenderer;
 		FLDisplayContainer*               mDispContainer;
-		Fl_Double_Window*                 mWindow;
+		PresentationWindow*               mWindow;
 
 		Viewport                          mSpecPresMetrix;
 		bool                              mSpectralMetrixLocked;

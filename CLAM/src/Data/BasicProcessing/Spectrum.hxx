@@ -205,19 +205,19 @@ public:
 	/** Returns spectral magnitude in a given bin position.
 	 *	Inefficient Get, for efficiency work directly on the buffer 
 	 */
-	TData GetMag(TIndex pos);
+	TData GetMag(TIndex pos) const;
 	/** Returns spectral magnitude from a given frequency
 	 *	Inefficient Get, for efficiency work directly on the buffer 
 	 */
-	TData GetMag(TData freq);
+	TData GetMag(TData freq) const;
 	/** Returns spectral phase in a given bin position
 	 *	Inefficient Get, for efficiency work directly on the buffer 
 	 */
-	TData GetPhase(TIndex pos);
+	TData GetPhase(TIndex pos) const;
 	/** Returns spectral phase from a given frequency
 	 *	Inefficient Get, for efficiency work directly on the buffer 
 	 */
-	TData GetPhase(TData freq);
+	TData GetPhase(TData freq) const;
 	/** Sets spectral magnitude in a given bin position
 	 *	Inefficient Set, for efficiency work directly on the buffer 
 	 */
@@ -294,7 +294,7 @@ private:
 	void PRSetType(const SpecTypeFlags& tmpFlags,int size,int bpfsize);
 
 	/** Returns index from a given frequency */
-	TIndex IndexFromFreq(TData freq);
+	TIndex IndexFromFreq(TData freq) const;
 
 // Converting routines
 public:

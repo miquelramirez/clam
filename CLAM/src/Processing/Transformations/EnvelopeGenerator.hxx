@@ -80,6 +80,8 @@ public:
 		Configure(c);
 	}
 
+	const char * GetClassName() const { return "EnvelopeGenerator";}
+
 	InPortTmpl<Envelope> Input;
 
 	OutPortTmpl<Audio>   Output;

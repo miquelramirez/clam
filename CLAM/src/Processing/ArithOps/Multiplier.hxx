@@ -65,6 +65,8 @@ public:
 		Configure(c);
 	}
 
+	const char * GetClassName () const { return "Multiplier";}
+
 	/** This method allows to obtain the MultiplierConfig object of the class
 	 *  @return The configuration of the class
 	 */

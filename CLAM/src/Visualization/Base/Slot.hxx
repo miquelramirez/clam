@@ -1,32 +1,61 @@
+/*
+ * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
 #ifndef __SLOT__
 #define __SLOT__
+
+#include "Connection.hxx"
+#include <list>
 
 namespace CLAMGUI
 {
 
-class Signal;
-
-class Slot
-{
-	typedef unsigned tSlotId;
-public:
-	Slot();
-	Slot( tSlotId id, Signal* connectedSignal );
-	Slot& operator=( Slot& s );
-	Slot( Slot& s );
-
-	tSlotId GetID() const
+/**
+ * An Slot is something you may connect with a signal.
+ * @see Signal
+ */
+	class Slot
 	{
-		return mID;
-	}
+		typedef std::list<Connection>        tConnectionList;
+		typedef tConnectionList::iterator    tConnectionIterator;
+  
+	public:
+  
+		void Bind(const Connection& conn );
+  
+		void Unbind();
 
-	~Slot();
-
-private:
-	bool    mMustFreeSignal;
-	tSlotId mID;
-	Signal* mConnectedSignal;
-};
+		void Unbind( Connection::tConnectionId conn );
+  
+		unsigned  ActiveConnections() const
+		{
+			return mActiveConnections.size();
+		}
+  
+		~Slot();
+  
+	private:
+  
+		tConnectionList     mActiveConnections;
+	};
 
 }
 

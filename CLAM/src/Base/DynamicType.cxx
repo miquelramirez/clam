@@ -1,7 +1,4 @@
-/* DynamicType.cpp: implementation of the DynamicType class.
- *
- * written by Pau Arumí - May 2001
- *
+/*
  * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
@@ -35,6 +32,8 @@
 #	include "XMLStaticAdapter.hxx"
 #	include "XMLStorage.hxx"
 #endif//CLAM_USE_XML
+
+#include "ErrDynamicType.hxx"
 
 // IMPORTANT: this next flag will slow all the dynamic types mechanisms
 // So it can only be set (defined) when developing, testing or maintaining

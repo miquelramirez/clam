@@ -176,6 +176,8 @@ namespace CLAM
 
 		EnvelopeExtractor(const EnvExtractorConfig& c = EnvExtractorConfig());
 
+		const char * GetClassName() const {return "EnvelopeExtractor";}
+
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
 		void Attach(Audio& inp, Envelope& env);

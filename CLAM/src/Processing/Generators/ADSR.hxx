@@ -108,6 +108,8 @@ namespace CLAM
 
 		~ADSR(){}
 
+		const char * GetClassName() const {return "ADSR";}
+
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
 		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);

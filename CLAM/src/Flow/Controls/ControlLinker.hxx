@@ -46,15 +46,15 @@ class InControl;
  * acting as InPorts). And the same on the other direction: we use the
  * ControlLinkers to export a number of OutPorts (or CLs) to the outter world
  * of the group.
- * @see InPort @see OutPort
+ * \see InPort 
+ * \see OutPort
 
  * This class provides an interface to obtain all the "concrete" InPorts and
  * OutPort connected, along 
  * with functions for modifying the links between this ControlLinker and 
  * others. 
- * @see #GetOutControls(), @see #GetInControls()
- * @see #AddInLink(ControlLinker*, @see #AddOutLink(ControlLinker*),
- * @see #RemoveInLink(ControlLinker*), @see #RemoveInLink(ControlLinker*)
+ * \warning This class is just temptative. It is likely to be
+ *		soon depracated
  */
 class ControlLinker
 {
@@ -79,6 +79,8 @@ public:
 	 * should be an in control / Linker placed outside the group. If it acts as an
 	 * in control, the parameter represent in control / Linker placed inside
 	 * the group. </b>
+	 * \warning This method belongs to a temptative class. And it is likely to be
+	 *		soon depracated
 	 */
 	inline void AddInLink(ControlLinker* in);
 	/**
@@ -91,16 +93,22 @@ public:
 	 * should be an out control / Linker placed into the group. If it acts as an
 	 * in control, the parameter represent out control / Linker placed outside
 	 * the group. </b>
+	 * \warning This method belongs to a temptative class. And it is likely to be
+	 *		soon depracated
 	 */
 	inline void AddOutLink(ControlLinker* out);
 	/**
 	 * It cheks if the pointer passed is into the aggregate of input ControlLinkers
 	 * and in that case it is removed
+	 * \warning This method belongs to a temptative class. And it is likely to be
+	 *		soon depracated
 	 */
 	inline void RemoveInLink(ControlLinker* in);
 	/**
 	 * It cheks if the pointer passed is into the aggregate of output ControlLinkers
 	 * and in that case it is removed
+	 * \warning This method belongs to a temptative class. And it is likely to be
+	 *		soon depracated
 	 */
 	inline void RemoveOutLink(ControlLinker* out);
 	

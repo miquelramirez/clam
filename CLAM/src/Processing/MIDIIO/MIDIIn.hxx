@@ -159,6 +159,8 @@ public:
 	/** Destructor of the class*/
 	~MIDIIn() { if (mpDevice) mpDevice->Unregister(*this); }
 
+	const char * GetClassName() const {return "MIDIIn";}
+
 	/** Non supervised mode of Do function. Non implemented yet
 	 */
 	bool Do(void)

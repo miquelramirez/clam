@@ -171,8 +171,8 @@ namespace CLAM {
 		// fhc    stands for Higher cutoff frequency
 		// spb    stands for Slope for the pass band
 		// ssb    stands for Slope for the stop band
-		// fsr    stands for Sampling Rate Frequency (?) MRJ: Sampling Rate = Frecuencia de Muestro isn't it?
-		
+		// fsr    stands for Sampling Rate Frequency 
+
 		switch((int)Type)
 			{
 			case EFDFilterType::eLowPass:

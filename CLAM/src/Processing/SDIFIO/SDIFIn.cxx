@@ -127,8 +127,7 @@ bool SDIFIn::Do(void)
 	/* it is residual data ..*/
 	else if(tmpSDIFFrame.Type()=="1STF" && mConfig.GetEnableResidual())	// we use always the first 2 matrices
 	{
-		if(!(pMatrix->Type() == "ISTF"))	
-			throw Err("SDIFIn::Add ISTF Header in Matrix expected");	
+		CLAM_ASSERT(pMatrix->Type() == "ISTF","SDIFIn::Add ISTF Header in Matrix expected");
 		
 		// move pointer to next matrix in frame
 		frameIt++;
@@ -136,8 +135,7 @@ bool SDIFIn::Do(void)
 			dynamic_cast< SDIF::ConcreteMatrix<TFloat32>* >(*frameIt);
 		//pMatrix=pMatrix->mpNext;	
 		
-		if(!(pMatrix->Type() =="1STF"))	
-			throw Err("SDIFIn::Add 1STF Headerin Matrix expected");
+		CLAM_ASSERT(pMatrix->Type() =="1STF","SDIFIn::Add 1STF Headerin Matrix expected");
 		tmpFrame.GetResidualSpec().SetSize(pMatrix->Rows());
 		Array<Complex>& complexBuffer=tmpFrame.GetResidualSpec().GetComplexArray();
 		for (int r=0;r<pMatrix->Rows();r++)	//read in complex data

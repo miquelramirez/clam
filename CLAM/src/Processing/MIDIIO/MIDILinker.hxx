@@ -85,6 +85,7 @@ namespace CLAM
 		MIDILinker();
 		MIDILinker(const MIDILinkerConfig &cfg);
 		virtual ~MIDILinker();
+		const char * GetClassName() const {return "MIDILinker";}
 
 		virtual bool Do(void);
 		virtual const ProcessingConfig &GetConfig() const { return mConfig; }

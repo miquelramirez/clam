@@ -22,10 +22,9 @@
  *
  */
 
-//////////////////////////////////////////////////////////////////////
-
 #ifndef _DynamicType_
 #define _DynamicType_
+
 #ifdef CLAM_USE_XML
 	#include "XMLAdapter.hxx"
 	#include "XMLIterableAdapter.hxx"
@@ -36,7 +35,6 @@
 
 #include "Component.hxx"
 #include "DataTypes.hxx"
-#include "ErrDynamicType.hxx"
 
 #include <new>
 
@@ -96,7 +94,7 @@ public:
 	DynamicType(const DynamicType& prototype);
 	virtual ~DynamicType();
 	
-	virtual char* GetClassName() const =0;
+	virtual const char* GetClassName() const =0;
 protected:
 	/**
 	* The concrete dynamic type constructor calls DefaultInit(). This allows user to initialize

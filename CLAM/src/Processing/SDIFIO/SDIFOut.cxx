@@ -113,7 +113,7 @@ bool SDIFOut::Do(const Frame& frame)
 		//Next matrix
 
 
-		pMatrix=new SDIF::ConcreteMatrix<TFloat32>("ISTF",frame.GetResidualSpec().GetSize(),2);
+		pMatrix=new SDIF::ConcreteMatrix<TFloat32>("1STF",frame.GetResidualSpec().GetSize(),2);
 		
 		//We have to convert residual spectrum to complex
   		SpectrumConfig Scfg;

@@ -79,7 +79,7 @@ namespace CLAM {
 	{
 		mutable CleanTracksConfig mConfig;
 
-		virtual const char *GetClassName() {return "CleanTracks";} 
+		const char *GetClassName() const {return "CleanTracks";} 
 
 		/** Config change method
 		 * @throw

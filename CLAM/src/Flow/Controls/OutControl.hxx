@@ -39,19 +39,20 @@ public:
 	~OutControl();
 	/**
 	* Constructor of the OutControl.
-	* @param publish This flag (true by default) concerns the publication of the 
-	* control pointer at the base processing object.
-	* <b>Important:</b> notice that if the out control object is going to suffer a copy
+	* 
+	* \warning notice that if the out control object is going to suffer a copy
 	* (i.e.creating controls that will be copied inside an STL container)
 	* the original pointer published will be no longer meaningfull . For avoiding this
-	* case we recommend using the flag publish=true. And invoque the PublishInControl
+	* case we recommend using the flag publish=false. And invoque the PublishInControl
 	* method of the processing object, once the copy is made.
-	* @parent The processing object that owns the control object. The one where
+	* \param publish This flag (true by default) concerns the publication of the 
+	* control pointer at the base processing object.
+	* \param parent Optional. The processing object that owns the control object. The one where
 	* to publish the control if it is the case (publish flag set)
+	* \todo improve construction mechanism (params set)
 	*/
-
-	OutControl(std::string name, Processing* parent, const bool publish=true);
-
+	OutControl( std::string name, Processing* parent=0, const bool publish=true );
+	
 	
 //Methods
 public:
@@ -64,7 +65,7 @@ public:
 	 */
 	inline int SendControlAsBoolean( bool booleanValue )
 	{
-		return SendControl( booleanValue ? 1 : -1 );
+		return SendControl( booleanValue ? TControlData(1) : TControlData(-1) );
 	}
 
 //Redefined Methods
@@ -92,7 +93,7 @@ public:
 	inline OutControl       &operator[](int i)        { return *mArray[i]; }
 	inline const OutControl &operator[](int i) const  { return *mArray[i]; }
 
-	inline const int Size() {return mArray.Size();}
+	inline int Size() const {return mArray.Size();}
 };
 
 

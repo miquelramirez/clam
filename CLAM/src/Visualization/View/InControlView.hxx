@@ -100,7 +100,7 @@ namespace CLAMGUI
 		
 		void Configure( Aspect& cfg );
 		
-		virtual const char* GetClassName()
+		virtual const char* GetClassName() const
 			{
 				return "InControlView";
 			}

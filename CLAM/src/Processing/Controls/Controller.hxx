@@ -149,7 +149,7 @@ private:
 		return modifiedQs;
 	}
 
-	const char *GetClassName() {return "Controller";}
+	const char *GetClassName() const {return "Controller";}
 
 	Mutex mDataMutex;
 	Mutex mControllerDoMutex;

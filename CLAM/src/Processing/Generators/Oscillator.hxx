@@ -58,7 +58,7 @@ public:
 	~EOscillatorControls() 
 	{
 	};
-	
+
 	Component * Species() const 
 	{ 
 		return new EOscillatorControls;
@@ -152,6 +152,8 @@ public:
 
 	virtual ~Oscillator();
 
+	const char * GetClassName() const {return "Oscilator";}
+	
 	inline const ProcessingConfig &GetConfig() const { return mConfig;}
 	
 	bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);

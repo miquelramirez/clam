@@ -30,14 +30,14 @@ using namespace CLAM;
 
 	AudioFileIn::AudioFileIn() :
 		mpSoundFileIO(0),
-		Output("Output",this,1)
+		mOutput("Output",this,1)
 	{
 		Configure(AudioFileConfig());
 	};
 
 	AudioFileIn::AudioFileIn(const AudioFileConfig &c) :
 		mpSoundFileIO(0),
-		Output("Output",this,1)
+		mOutput("Output",this,1)
 	{ 
 		Configure(c);
 	};
@@ -89,7 +89,7 @@ using namespace CLAM;
 
 		mKeepFrameSizes = mConfig.GetKeepFrameSizes();
 		
-		Output.SetParams(mConfig.GetFrameSize());
+		mOutput.SetParams(mConfig.GetFrameSize());
 
 		return true;
 	}
@@ -105,11 +105,9 @@ using namespace CLAM;
 
 	bool AudioFileIn::Do(Audio& in)
 	{
+		if( !AbleToExecute() ) return true;
+		
 		short tmp[256];
-
-		if ( GetExecState() == Unconfigured ||
-			 GetExecState() == Ready )
-			throw(ErrProcessingObj("AudioFileIn: Do(): Not in execution mode",this));
 
 		CLAM_ASSERT(mpSoundFileIO->Header().mChannels==1,
 			"AudioFileIn: Do(): Not a mono file");
@@ -219,8 +217,8 @@ using namespace CLAM;
 
 	bool AudioFileIn::Do(void)
 	{
-		bool res = Do(Output.GetData());
-		Output.LeaveData();
+		bool res = Do(mOutput.GetData());
+		mOutput.LeaveData();
 		return res;
 	}
 
@@ -246,6 +244,15 @@ using namespace CLAM;
 			mStatus += "AudioFileIn: File does not have the requested number of channels";
 			return false;
 		}
+		try {	
+			mpSoundFileIO->SeekFrame(mConfig.GetStartFrame());
+//			printf("Seeking to %d\n",mConfig.GetStartFrame());
+		}
+		catch (ErrSoundFileIO err)
+		{
+			mStatus = "Error seeking frame\n";
+			return false;
+		}	
 		return true;
 	}
 

@@ -23,7 +23,7 @@
 #define __CLAMGL__
 
 #ifdef WIN32
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 #endif
 #include <GL/gl.h>

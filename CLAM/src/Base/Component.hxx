@@ -62,9 +62,8 @@ public:
 
 	/**
 	 * Return the class name
-	 * @todo This function must be defined as pure virtual when all the components will define it.
 	 */
-	virtual const char * GetClassName () {return 0;}
+	virtual const char * GetClassName() const =0;
 };
 
 }
