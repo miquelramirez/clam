@@ -57,6 +57,7 @@ namespace CLAM
 				SetCanGetData(true);
 			    }
 			    _renderer.Render();
+			    NetPlotController::Draw();
 			    return;
 			}
 
@@ -73,12 +74,14 @@ namespace CLAM
 			    ProcessPeakData();
                             _renderer.SetDataPtr(_magBuffer.GetPtr(), _freqBuffer.GetPtr(), _magBuffer.Size());
 			    _renderer.Render();
+			    NetPlotController::Draw();
 
 			    mMonitor->UnfreezeData();
 			}
 			else
 			{
 			    _renderer.Render();
+			    NetPlotController::Draw();
 			}
 		}
 

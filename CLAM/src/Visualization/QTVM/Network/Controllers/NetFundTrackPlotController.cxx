@@ -40,6 +40,7 @@ namespace CLAM
 		SetCanGetData(true);
 	    }
 	    _renderer.Render();
+	    NetPlotController::Draw();
 	}
 
 	void NetFundTrackPlotController::SetMonitor(MonitorType & monitor)

@@ -52,6 +52,7 @@ namespace CLAM
 			    SetCanGetData(true);
 			}
 			_renderer.Render();
+			NetPlotController::Draw();
 			return;
 		    }
 
@@ -68,12 +69,14 @@ namespace CLAM
 			AdaptSpectralData();
 			_renderer.SetDataPtr(_spec.GetMagBuffer().GetPtr(), _spec.GetMagBuffer().Size(), NormalMode);
 			_renderer.Render();
+			NetPlotController::Draw();
 
 			mMonitor->UnfreezeData();
 		    }
 		    else
 		    {
 			_renderer.Render();
+			NetPlotController::Draw();
 		    }
 		}
 

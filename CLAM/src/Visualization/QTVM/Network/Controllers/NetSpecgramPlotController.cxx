@@ -45,6 +45,7 @@ namespace CLAM
 		SetCanGetData(true);
 	    }
 	    _renderer.Render();
+	    NetPlotController::Draw();
 	}
 
 	void NetSpecgramPlotController::AddData(const Spectrum& spec)

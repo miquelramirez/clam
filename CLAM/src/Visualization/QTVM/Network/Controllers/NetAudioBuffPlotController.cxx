@@ -52,6 +52,7 @@ namespace CLAM
 		SetCanGetData(true);
 	    }
 	    _renderer.Render();
+	    NetPlotController::Draw();
 	}
 
 	void NetAudioBuffPlotController::AddData(const DataArray& data)
