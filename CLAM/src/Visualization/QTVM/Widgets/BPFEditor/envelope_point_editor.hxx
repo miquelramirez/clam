@@ -69,7 +69,11 @@ Q_OBJECT
 
 	void draw_envelope_pos(int p_x,QPainter &painter);
 //        Mutex_Lock * envelope_lock;
-
+        
+        /**Xamat: Factor to apply in display X time units, usually will be 
+	 * 1/Sampling Rate  */
+        float mTimeFactor; 
+  
 public:
 signals:
 
@@ -91,7 +95,7 @@ public:
 
 	~Envelope_Point_Editor();
 
-
+        void setTimeFactor(float timeFactor){mTimeFactor = timeFactor;}
 
 };
 
