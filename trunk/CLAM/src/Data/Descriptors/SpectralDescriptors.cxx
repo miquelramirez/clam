@@ -124,7 +124,7 @@ SpectralDescriptors::SpectralDescriptors(TData initVal):Descriptor(eNumAttr)
 	SetMagnitudeSkewness(initVal);
 	SetMagnitudeKurtosis(initVal);
 	SetFlatness(initVal);
-	SetHighFrequencyCoefficient(initVal);
+	SetHighFrequencyContent(initVal);
 	SetMaxMagFreq(initVal);
 	SetLowFreqEnergyRelation(initVal);
 	SetRolloff(initVal);
@@ -195,8 +195,8 @@ void SpectralDescriptors::ConcreteCompute()
  		SetMagnitudeKurtosis(mpStats->GetKurtosis());
 	if(HasFlatness())
 		SetFlatness(ComputeSpectralFlatness());
-	if(HasHighFrequencyCoefficient())
-		SetHighFrequencyCoefficient(ComputeHighFrequencyCoefficient());
+	if(HasHighFrequencyContent())
+		SetHighFrequencyContent(ComputeHighFrequencyContent());
 	if(HasMaxMagFreq())
 		SetMaxMagFreq(ComputeMaxMagFreq());
 	if(HasLowFreqEnergyRelation())
@@ -217,7 +217,7 @@ TData SpectralDescriptors::ComputeSpectralFlatness()
 
 /*this has been mostly copied and pasted from cuidado and should be checked and some of
 it promoted into basicOps*/
-TData SpectralDescriptors::ComputeHighFrequencyCoefficient()
+TData SpectralDescriptors::ComputeHighFrequencyContent()
 {
 	/*
 	TData temp = 0;
@@ -265,8 +265,10 @@ TData SpectralDescriptors::ComputeLowFreqEnergyRelation()
 	const DataArray data(const_cast<TData*>(magnitudeBuffer.GetPtr()), index);
 
 	Energy energyComputer;
+	TData totalEnergy = mpStats->GetEnergy();
+	if (totalEnergy < 10e-4) totalEnergy=10e-4;
 
-	TData result=(energyComputer(data)/mpStats->GetEnergy() );
+	TData result=(energyComputer(data)/totalEnergy );
 	return result;
 }
 
@@ -324,8 +326,8 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
 		tmpD.SetRolloff(a.GetRolloff()*mult);
 	if(a.HasSlope())
 		tmpD.SetSlope(a.GetSlope()*mult);
-	if(a.HasHighFrequencyCoefficient())
-		tmpD.SetHighFrequencyCoefficient(a.GetHighFrequencyCoefficient()*mult);
+	if(a.HasHighFrequencyContent())
+		tmpD.SetHighFrequencyContent(a.GetHighFrequencyContent()*mult);
 	if(a.HasBandDescriptors())
 		//todo!!! We are not multiplying because we would need the operator implemented in the array
 		tmpD.SetBandDescriptors(a.GetBandDescriptors());
@@ -443,11 +445,11 @@ SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescr
 		tmpD.UpdateData();
 		tmpD.SetSlope(a.GetSlope()*b.GetSlope());
 	}
-	if(a.HasHighFrequencyCoefficient() && b.HasHighFrequencyCoefficient() )
+	if(a.HasHighFrequencyContent() && b.HasHighFrequencyContent() )
 	{
-		tmpD.AddHighFrequencyCoefficient();
+		tmpD.AddHighFrequencyContent();
 		tmpD.UpdateData();
-		tmpD.SetHighFrequencyCoefficient(a.GetHighFrequencyCoefficient()*b.GetHighFrequencyCoefficient());
+		tmpD.SetHighFrequencyContent(a.GetHighFrequencyContent()*b.GetHighFrequencyContent());
 	}
 	if(a.HasBandDescriptors() && b.HasBandDescriptors() )
 	{
@@ -583,11 +585,11 @@ SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDesc
 		tmpD.UpdateData();
 		tmpD.SetSlope(a.GetSlope()+b.GetSlope());
 	}
-	if(a.HasHighFrequencyCoefficient() && b.HasHighFrequencyCoefficient() )
+	if(a.HasHighFrequencyContent() && b.HasHighFrequencyContent() )
 	{
-		tmpD.AddHighFrequencyCoefficient();
+		tmpD.AddHighFrequencyContent();
 		tmpD.UpdateData();
-		tmpD.SetHighFrequencyCoefficient(a.GetHighFrequencyCoefficient()+b.GetHighFrequencyCoefficient());
+		tmpD.SetHighFrequencyContent(a.GetHighFrequencyContent()+b.GetHighFrequencyContent());
 	}
 	if(a.HasBandDescriptors() && b.HasBandDescriptors() )
 	{
