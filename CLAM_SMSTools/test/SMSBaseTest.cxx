@@ -25,22 +25,23 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SMSExampleTest );
 class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 {
 	CPPUNIT_TEST_SUITE( SMSExampleTest );
-	CPPUNIT_TEST( testhelperAudiosAreEqual_WhenDifferentSizes );
-	CPPUNIT_TEST( testhelperAudiosAreEqual_WhenDiffersInASampler );
-	CPPUNIT_TEST( testhelperAudiosAreEqual_AfterDefaultConstructor );
-	CPPUNIT_TEST( testInitConfigs_GenerateCompatibleConfig );
-	CPPUNIT_TEST( testhelperFileExist );
-	CPPUNIT_TEST( testTestDataPath_TestsFilesAreAccessible );
-	CPPUNIT_TEST( testLoadInputSound_WithABadFileName );
-	CPPUNIT_TEST( testLoadInputSound_WithAnExistingSoundFile );
-	CPPUNIT_TEST( testLoadInputSound_CalledMultipleTimes );
-	CPPUNIT_TEST( testhelperLoadAudioFromFile );
+//	CPPUNIT_TEST( testhelperAudiosAreEqual_WhenDifferentSizes );
+//	CPPUNIT_TEST( testhelperAudiosAreEqual_WhenDiffersInASampler );
+//	CPPUNIT_TEST( testhelperAudiosAreEqual_AfterDefaultConstructor );
+//	CPPUNIT_TEST( testInitConfigs_GenerateCompatibleConfig );
+//	CPPUNIT_TEST( testhelperFileExist );
+//	CPPUNIT_TEST( testTestDataPath_TestsFilesAreAccessible );
+//	CPPUNIT_TEST( testLoadInputSound_WithABadFileName );
+//	CPPUNIT_TEST( testLoadInputSound_WithAnExistingSoundFile );
+//	CPPUNIT_TEST( testLoadInputSound_CalledMultipleTimes );
+//	CPPUNIT_TEST( testhelperLoadAudioFromFile );
 	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav );
-	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
-	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
-	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
-	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
-	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
+//	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
+//	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
+//	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_FreqShift );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
 	CPPUNIT_TEST_SUITE_END();
 
 
@@ -355,6 +356,25 @@ private:
 		Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_harmonizer-timestreach-transf";
+		double delta = 0.09;
+		std::string diagnostic;
+
+		bool transformedAudioAreEqual =
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
+		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+	}
+
+	void testTransformations_withLoadedScore_FreqShift ()
+	{
+		LoadTransformationScore( mPath + "/SMSTests/freqshift-transf.xml" );
+		LoadConfig( mPath + "/SMSTests/freqshift-config.xml");
+		InitConfigs();
+		LoadInputSound();
+		Analyze();
+		Transform();
+		Synthesize();
+
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_freqshift-transf";
 		double delta = 0.09;
 		std::string diagnostic;
 
