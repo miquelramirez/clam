@@ -13,10 +13,11 @@
 #include "NetPeaksPlot.hxx"
 #include "NetSpectrumPlot.hxx"
 #include "NetFundPlot.hxx"
-#include "AudioPlotProcessing.hxx"
-#include "PeaksPlotProcessing.hxx"
-#include "SpectrumPlotProcessing.hxx"
-#include "FundPlotProcessing.hxx"
+#include "NetAudioBuffPlot.hxx"
+#include "NetSpecgramPlot.hxx"
+#include "NetFundTrackPlot.hxx"
+#include "NetSinTracksPlot.hxx"
+
 #include "PortMonitor.hxx"
 
 
@@ -102,13 +103,22 @@ public:
 		connectWidgetsWithMappedControls(network,prototype);
 
 		connectWidgetsWithPorts<CLAM::VM::NetAudioPlot>
-			("OutPort__.*", "CLAM::VM::NetAudioPlot", "Audio Input");
+			("OutPort__.*", "CLAM::VM::NetAudioPlot");
 		connectWidgetsWithPorts<CLAM::VM::NetSpectrumPlot>
-			("OutPort__.*", "CLAM::VM::NetSpectrumPlot", "Spectrum Input");
+			("OutPort__.*", "CLAM::VM::NetSpectrumPlot");
 		connectWidgetsWithPorts<CLAM::VM::NetPeaksPlot>
-			("OutPort__.*", "CLAM::VM::NetPeaksPlot", "Peaks Input");
+			("OutPort__.*", "CLAM::VM::NetPeaksPlot");
 		connectWidgetsWithPorts<CLAM::VM::NetFundPlot>
-			("OutPort__.*", "CLAM::VM::NetFundPlot", "Fundamental Input");
+			("OutPort__.*", "CLAM::VM::NetFundPlot");
+		connectWidgetsWithPorts<CLAM::VM::NetAudioBuffPlot>
+	        	("OutPort__.*", "CLAM::VM::NetAudioBuffPlot");
+		connectWidgetsWithPorts<CLAM::VM::NetSpecgramPlot>
+	        	("OutPort__.*", "CLAM::VM::NetSpecgramPlot");
+		connectWidgetsWithPorts<CLAM::VM::NetFundTrackPlot>
+	        	("OutPort__.*", "CLAM::VM::NetFundTrackPlot");
+		// TODO: Still not ported
+//		connectWidgetsWithPorts<CLAM::VM::NetSinTracksPlot>
+//	        	("OutPort__.*", "CLAM::VM::NetSinTracksPlot");
 	}
 public slots:
 	void Start()
@@ -142,7 +152,7 @@ private:
 			QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
 			std::string controlName=GetNetworkNameFromWidgetName(aWidget->name() + 11);
 
-			std::cout << "Control: " << controlName << std::endl;
+			std::cout << "* Control: " << controlName << std::endl;
 
 			CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
 			QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
@@ -160,7 +170,7 @@ private:
 		{
 			QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
 			std::string controlName=GetNetworkNameFromWidgetName(aWidget->name() + 16);
-			std::cout << "100:1 Mapped Control: " << controlName << std::endl;
+			std::cout << "* Mapped Control (100:1): " << controlName << std::endl;
 
 			CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
 			QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
@@ -170,7 +180,7 @@ private:
 		}
 	}
 	template < typename PlotClass >
-	void connectWidgetsWithPorts(char* prefix, char* plotClassName, char* monitorControlName)
+	void connectWidgetsWithPorts(char* prefix, char* plotClassName)
 	{
 		CLAM::Network & network = _player.Network();
 		QWidget * prototype = _mainWidget;
@@ -179,7 +189,7 @@ private:
 		{
 			QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
 			std::string controlName=GetNetworkNameFromWidgetName(aWidget->name() + 9);
-			std::cout << plotClassName << ": " << controlName << std::endl;
+			std::cout << "* " << plotClassName << ": " << controlName << std::endl;
 
 			typedef typename PlotClass::MonitorType MonitorType;
 			MonitorType * portMonitor = new MonitorType;
