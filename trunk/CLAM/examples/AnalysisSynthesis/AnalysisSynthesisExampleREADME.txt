@@ -84,7 +84,7 @@ is necessary to use that window in the analysis of the residual component.
 <AnalysisHopSize>: hop size in number of samples. It is the same both for the sinusoidal
 and residual component. If -1, it is taken as half the residual window size (recommended)
 
-<AnalysisZeroPaddingFactor> Zero padding factor applied to both components. 0 means that zeros will be added
+<AnalysisZeroPaddingFactor> Zero padding factor applied to sinusoidal component. 0 means that zeros will be added
 to the input audio frame till it reaches the next power of two, 1 means that zeros will be added to
 the next power of two etc... 
 
@@ -120,9 +120,6 @@ for <AnalysisPeakDetectMagThreshold> (i.e. -120).
 <SynthesisWindowType>: type of window used for the residual analysis. Available: Same as in sinusoidal.
 
 <SynthesisHopSize>: synthesis hop size in number of samples. If -1 it is half the synthesis frame size (recommended)
-
-<SynthesisZeroPaddingFactor> zero padding factor for the ifft. Must be the same as the one used
-in the analysis.
 
 <SynthesisPhaseManagementType>: type of phase management to be applied to the sinusoidal synthesis.
 Available: Continuation, Align, Random. Recommended: Continuation.
@@ -173,13 +170,10 @@ bool MyTransformation::Do(const Audio& in, Audio& out)
 	return true;
 }
 
-2. Then go to the AnalysisSynthesisExampleGUI.cxx file and make the necessary include
-(in line 11).
-	ex. #include "MyTransformation.hxx"
-
-3. Finally, in the same file, go to line 477 and modify it to instantiate your particular
-transformation.
-	ex. MyTransformation myTrans;
+2. Then go to the mainAnaSynGUI.cxx and substitute all references to SMSFreqShift with references to MyTransformation.
+This will modify two lines so you end up having:
+	 #include "MyTransformation.hxx"
+	 MyTransformation myTrans;
 
 and that's all!
 
