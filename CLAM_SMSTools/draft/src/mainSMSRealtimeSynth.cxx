@@ -33,14 +33,6 @@ void CheckArgs( int argc, char* argv[] )
 	            exit ( -1 );
 	 }
 
-	if ( argc == 1 ) 
-	{
-	       		std::cerr << "No transformation score" << std::endl;
-				Usage( argv[0] );
-	            exit ( -1 );
-	 }
-
-
 	if ( argc > 4 ) 
 			{
 	            std::cerr << "Too many parameters" << std::endl;
