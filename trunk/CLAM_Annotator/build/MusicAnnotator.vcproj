@@ -1,0 +1,2296 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="MusicAnnotator"
+	SccProjectName="empty"
+	SccLocalPath=".">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\VC7ReleaseFiles/bin"
+			IntermediateDirectory=".\VC7ReleaseFiles/obj"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm1000 "
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="C:\MySandbox\Simac\upf\Mockups\MusicAnnotator\src;C:\MySandbox\Simac\upf\Mockups\common\src\plugins\widgets\QSignalsLogger;C:\MySandbox\Simac\upf\Mockups\MusicAnnotator\build\uic;c:\MySandbox\CLAM\externals\CbLib;c:\MySandbox\CLAM\..\id3lib\include;c:\MySandbox\CLAM\..\libmad\include;c:\MySandbox\CLAM\..\oggvorbis\include;c:\MySandbox\CLAM\..\pthreads\include;C:\Qt\3.2.2\include;c:\MySandbox\CLAM\..\qwt\include;c:\MySandbox\CLAM\..\libsndfile\include;..\src\SegmentationInformationWidget;..\..\common\src;..\..\common\src\ClipBoard;c:\MySandbox\CLAM\src\Base;c:\MySandbox\CLAM\src\Data\Base;c:\MySandbox\CLAM\src\Data\BasicProcessing;c:\MySandbox\CLAM\src\Data\Descriptors\Melody;c:\MySandbox\CLAM\src\Defines;c:\MySandbox\CLAM\src\Defines\Windows;c:\MySandbox\CLAM\src\Errors;c:\MySandbox\CLAM\src\Flow\Controls;c:\MySandbox\CLAM\src\Flow\Ports;c:\MySandbox\CLAM\src\Processing\AudioFileIO;c:\MySandbox\CLAM\src\Processing\AudioIO;c:\MySandbox\CLAM\src\Processing\Base;c:\MySandbox\CLAM\src\Standard;c:\MySandbox\CLAM\src\Storage\Base;c:\MySandbox\CLAM\src\Storage\XML;c:\MySandbox\CLAM\src\System\Threads;c:\MySandbox\CLAM\src\Tools\AudioFileIO;c:\MySandbox\CLAM\src\Tools\AudioIO;c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers;c:\MySandbox\CLAM\src\Visualization\QTVM\Players;c:\MySandbox\CLAM\src\Visualization\QTVM\Plots;c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers;c:\MySandbox\CLAM\src\Visualization\QTVM\Surfaces;c:\MySandbox\CLAM\src\Visualization\QTVM\SysPlot;c:\MySandbox\CLAM\src\Visualization\QTVM\Utils;c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Label;c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable;c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers;c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll;c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor;.\uic"
+				PreprocessorDefinitions="SIMAC_STATIC_BUILD; CLAM_FLOAT;HAS_FFTW=1;HAS_SFFTW=1;HAS_XERCES=1;HAS_FLTK=1;HAS_QT=1;HAS_SNDFILE=1;HAS_OGGVORBIS=1;HAS_LADSPA=0;HAS_PORTMIDI=1;HAS_ALSA=0;HAS_MAD=1;HAS_ID3=1;HAS_RTAUDIO=1;HAS_PTHREADS=1;HAS_DIRECTX=1;USE_FFTW=0;USE_SFFTW=0;USE_XERCES=0;USE_FLTK=0;USE_QT=1;USE_SNDFILE=1;USE_OGGVORBIS=1;USE_LADSPA=0;USE_PORTMIDI=0;USE_ALSA=0;USE_MAD=1;USE_ID3=1;USE_RTAUDIO=0;USE_PTHREADS=1;USE_DIRECTX=0;ID3LIB_LINKOPTION=1;QT_DLL;QT_THREAD_SUPPORT;VISUAL;HAVE_STANDARD_SSTREAM;HAVE_STANDARD_SSTREAM_STR;HAVE_STANDARD_UNICODE;HAVE_STANDARD_VECTOR_AT;WIN32;_CONSOLE;_MBCS"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				AssemblerListingLocation=".\VC7ReleaseFiles/obj/"
+				ObjectFile=".\VC7ReleaseFiles/obj/"
+				ProgramDataBaseFileName=".\VC7ReleaseFiles/obj/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"
+				ForcedIncludeFiles="preinclude.hxx"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="opengl32.lib glu32.lib id3lib_vc7.lib zlib_vc7.lib libmad.lib ogg_static.lib vorbis_static.lib vorbisenc_static.lib vorbisfile_static.lib pthreadVC.lib C:\Qt\3.2.2/lib/qt-mt322.lib C:\Qt\3.2.2/lib/qtmain.lib advapi32.lib comctl32.lib comdlg32.lib gdi32.lib kernel32.lib ole32.lib oleaut32.lib shell32.lib user32.lib uuid.lib winspool.lib wsock32.lib delayimp.lib imm32.lib winmm.lib qwt.lib libsndfile.lib"
+				OutputFile=".\VC7ReleaseFiles/bin/MusicAnnotator.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="c:\MySandbox\CLAM\..\id3lib\lib,c:\MySandbox\CLAM\..\libmad\lib,c:\MySandbox\CLAM\..\oggvorbis\lib,c:\MySandbox\CLAM\..\pthreads\lib,C:\Qt\3.2.2\lib,c:\MySandbox\CLAM\..\qwt\lib,c:\MySandbox\CLAM\..\libsndfile\lib"
+				IgnoreDefaultLibraryNames="MSVCRTD"
+				ProgramDatabaseFile=".\VC7ReleaseFiles/bin/MIDIOut.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\VC7DebugFiles/bin"
+			IntermediateDirectory=".\VC7DebugFiles/obj"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm1000 "
+				Optimization="0"
+				AdditionalIncludeDirectories="C:\MySandbox\Simac\upf\Mockups\common\src\plugins\widgets\QSignalsLogger;C:\MySandbox\Simac\upf\Mockups\MusicAnnotator\src;C:\MySandbox\Simac\upf\Mockups\MusicAnnotator\build\uic;c:\MySandbox\CLAM\externals\CbLib;c:\MySandbox\CLAM\..\id3lib\include;c:\MySandbox\CLAM\..\libmad\include;c:\MySandbox\CLAM\..\oggvorbis\include;c:\MySandbox\CLAM\..\pthreads\include;C:\Qt\3.2.2\include;c:\MySandbox\CLAM\..\qwt\include;c:\MySandbox\CLAM\..\libsndfile\include;..\src\SegmentationInformationWidget;..\..\common\src;..\..\common\src\ClipBoard;c:\MySandbox\CLAM\src\Base;c:\MySandbox\CLAM\src\Data\Base;c:\MySandbox\CLAM\src\Data\BasicProcessing;c:\MySandbox\CLAM\src\Data\Descriptors\Melody;c:\MySandbox\CLAM\src\Defines;c:\MySandbox\CLAM\src\Defines\Windows;c:\MySandbox\CLAM\src\Errors;c:\MySandbox\CLAM\src\Flow\Controls;c:\MySandbox\CLAM\src\Flow\Ports;c:\MySandbox\CLAM\src\Processing\AudioFileIO;c:\MySandbox\CLAM\src\Processing\AudioIO;c:\MySandbox\CLAM\src\Processing\Base;c:\MySandbox\CLAM\src\Standard;c:\MySandbox\CLAM\src\Storage\Base;c:\MySandbox\CLAM\src\Storage\XML;c:\MySandbox\CLAM\src\System\Threads;c:\MySandbox\CLAM\src\Tools\AudioFileIO;c:\MySandbox\CLAM\src\Tools\AudioIO;c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers;c:\MySandbox\CLAM\src\Visualization\QTVM\Players;c:\MySandbox\CLAM\src\Visualization\QTVM\Plots;c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers;c:\MySandbox\CLAM\src\Visualization\QTVM\Surfaces;c:\MySandbox\CLAM\src\Visualization\QTVM\SysPlot;c:\MySandbox\CLAM\src\Visualization\QTVM\Utils;c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Label;c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable;c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers;c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll;c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor;.\uic"
+				PreprocessorDefinitions="SIMAC_STATIC_BUILD; CLAM_FLOAT;HAS_FFTW=1;HAS_SFFTW=1;HAS_XERCES=1;HAS_FLTK=1;HAS_QT=1;HAS_SNDFILE=1;HAS_OGGVORBIS=1;HAS_LADSPA=0;HAS_PORTMIDI=1;HAS_ALSA=0;HAS_MAD=1;HAS_ID3=1;HAS_RTAUDIO=1;HAS_PTHREADS=1;HAS_DIRECTX=1;USE_FFTW=0;USE_SFFTW=0;USE_XERCES=0;USE_FLTK=0;USE_QT=1;USE_SNDFILE=1;USE_OGGVORBIS=1;USE_LADSPA=0;USE_PORTMIDI=0;USE_ALSA=0;USE_MAD=1;USE_ID3=1;USE_RTAUDIO=0;USE_PTHREADS=1;USE_DIRECTX=0;ID3LIB_LINKOPTION=1;QT_DLL;QT_THREAD_SUPPORT;VISUAL;HAVE_STANDARD_SSTREAM;HAVE_STANDARD_SSTREAM_STR;HAVE_STANDARD_UNICODE;HAVE_STANDARD_VECTOR_AT;WIN32;_CONSOLE;_MBCS"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				AssemblerListingLocation=".\VC7DebugFiles/obj/"
+				ObjectFile=".\VC7DebugFiles/obj/"
+				ProgramDataBaseFileName=".\VC7DebugFiles/obj/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"
+				ForcedIncludeFiles="preinclude.hxx"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="opengl32.lib glu32.lib id3libd_vc7.lib zlibD_vc7.lib libmadd.lib ogg_static_d.lib vorbis_static_d.lib vorbisenc_static_d.lib vorbisfile_static_d.lib pthreadVC.lib C:\Qt\3.2.2/lib/qt-mt322.lib C:\Qt\3.2.2/lib/qtmain.lib advapi32.lib comctl32.lib comdlg32.lib gdi32.lib kernel32.lib ole32.lib oleaut32.lib shell32.lib user32.lib uuid.lib winspool.lib wsock32.lib delayimp.lib imm32.lib winmm.lib qwt.lib libsndfiled.lib"
+				OutputFile=".\VC7DebugFiles/bin/MusicAnnotator.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="c:\MySandbox\CLAM\..\id3lib\lib,c:\MySandbox\CLAM\..\libmad\lib,c:\MySandbox\CLAM\..\oggvorbis\lib,c:\MySandbox\CLAM\..\pthreads\lib,C:\Qt\3.2.2\lib,c:\MySandbox\CLAM\..\qwt\lib,c:\MySandbox\CLAM\..\libsndfile\lib"
+				IgnoreDefaultLibraryNames="MSVCRT"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\VC7DebugFiles/bin/MIDIOut.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="3082"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="">
+			<File
+				RelativePath="..\src\About.cxx">
+			</File>
+			<File
+				RelativePath="..\src\AddSongsToProjectDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\src\AnalyzeWindow.cxx">
+			</File>
+			<File
+				RelativePath="..\src\Annotator.cxx">
+			</File>
+			<File
+				RelativePath="..\src\AnnotatorDataFacade.cxx">
+			</File>
+			<File
+				RelativePath="..\src\AnnotatorEnter.cxx">
+			</File>
+			<File
+				RelativePath="..\src\ConfigurationDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\src\main.cxx">
+			</File>
+			<File
+				RelativePath="..\src\NewProjectDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\src\NewProjectName.cxx">
+			</File>
+			<File
+				RelativePath="..\src\OpenProjectDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\src\RangeSelectionTableItem.cxx">
+			</File>
+			<File
+				RelativePath="..\src\SaveProjectAsDialog.cxx">
+			</File>
+			<File
+				RelativePath="..\src\SliderWithValue.cxx">
+			</File>
+			<Filter
+				Name="SegmentationInformationWidget Sources"
+				Filter="">
+				<File
+					RelativePath="..\src\SegmentationInformationWidget\SegmentationInformationWidget.cxx">
+				</File>
+			</Filter>
+			<Filter
+				Name="common Sources"
+				Filter="">
+				<File
+					RelativePath="..\..\common\src\ComboTableItem.cxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\DataFacade.cxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\ListViewItem.cxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\SegmentInformation.cxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\Song.cxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\Table.cxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\TableItem.cxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\TXTPathSongParser.cxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\TXTSongParser.cxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\TXTSongStructureParser.cxx">
+				</File>
+				<Filter
+					Name="plugins Sources"
+					Filter="">
+					<Filter
+						Name="widgets Sources"
+						Filter="">
+						<Filter
+							Name="QSignalsLogger Sources"
+							Filter="">
+							<File
+								RelativePath="..\..\common\src\plugins\widgets\QSignalsLogger\QSignalLogger.cxx">
+							</File>
+							<File
+								RelativePath="..\..\common\src\plugins\widgets\QSignalsLogger\QSignalsLogger.cxx">
+							</File>
+							<File
+								RelativePath="..\..\common\src\plugins\widgets\QSignalsLogger\QSignalsLoggerWidget.cxx">
+							</File>
+						</Filter>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="ClipBoard Sources"
+					Filter="">
+					<File
+						RelativePath="..\..\common\src\ClipBoard\ClipBoard.cxx">
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="AnnotatorBrowserGL Sources"
+				Filter="">
+				<File
+					RelativePath="..\src\AnnotatorBrowserGL\AnnotatorBrowserGL.cxx">
+				</File>
+			</Filter>
+			<Filter
+				Name="uic Sources"
+				Filter="">
+				<File
+					RelativePath="uic\qmake_image_collection.cxx">
+				</File>
+			</Filter>
+			<Filter
+				Name="c: Sources"
+				Filter="">
+				<Filter
+					Name="MySandbox Sources"
+					Filter="">
+					<Filter
+						Name="CLAM Sources"
+						Filter="">
+						<Filter
+							Name="Errors Sources"
+							Filter="">
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Errors\Err.cxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Errors\ErrDynamicType.cxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Errors\ErrOutOfMemory.cxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Errors\ErrProcessingObj.cxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Errors\ErrSystem.cxx">
+							</File>
+						</Filter>
+						<Filter
+							Name="Defines Sources"
+							Filter="">
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Defines\Assert.cxx">
+							</File>
+						</Filter>
+						<Filter
+							Name="Storage Sources"
+							Filter="">
+							<Filter
+								Name="XML Sources"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\BasicXMLable.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XMLAdapter.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XMLComponentAdapter.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XMLStorage.cxx">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Base Sources"
+							Filter="">
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Base\DynamicType.cxx">
+							</File>
+						</Filter>
+						<Filter
+							Name="Standard Sources"
+							Filter="">
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Standard\Array.cxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Standard\Enum.cxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Standard\Text.cxx">
+							</File>
+						</Filter>
+						<Filter
+							Name="Data Sources"
+							Filter="">
+							<Filter
+								Name="BasicProcessing Sources"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Data\BasicProcessing\Audio.cxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="Descriptors Sources"
+								Filter="">
+								<Filter
+									Name="Melody Sources"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Data\Descriptors\Melody\MediaTime.cxx">
+									</File>
+								</Filter>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Visualization Sources"
+							Filter="">
+							<Filter
+								Name="QTVM Sources"
+								Filter="">
+								<Filter
+									Name="Widgets Sources"
+									Filter="">
+									<Filter
+										Name="BPFEditor Sources"
+										Filter="">
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\envelope.cxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\envelope_point_editor.cxx">
+										</File>
+									</Filter>
+									<Filter
+										Name="Playable Sources"
+										Filter="">
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayableList.cxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayablePlot.cxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtAudioPlayer.cxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtPlayer.cxx">
+										</File>
+									</Filter>
+									<Filter
+										Name="Rulers Sources"
+										Filter="">
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers\XRuler.cxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers\YRuler.cxx">
+										</File>
+									</Filter>
+									<Filter
+										Name="Scroll Sources"
+										Filter="">
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\HScrollGroup.cxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\ScrollBar.cxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\VScrollGroup.cxx">
+										</File>
+									</Filter>
+									<Filter
+										Name="Label Sources"
+										Filter="">
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Label\SingleLabel.cxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Label\TimeSegmentLabelsGroup.cxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Label\VZLabel.cxx">
+										</File>
+									</Filter>
+								</Filter>
+								<Filter
+									Name="Utils Sources"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Utils\QtAppWrapper.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Utils\VMColor.cxx">
+									</File>
+								</Filter>
+								<Filter
+									Name="Plots Sources"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Plots\QtAudioPlot.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Plots\QtPlot.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Plots\QtPresentation.cxx">
+									</File>
+								</Filter>
+								<Filter
+									Name="SysPlot Sources"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\SysPlot\QtPlotter.cxx">
+									</File>
+								</Filter>
+								<Filter
+									Name="Controllers Sources"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\AudioPlotController.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\PlotController.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\SegmentationMarksPlotController.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\SelPosPlotController.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\SelTimeRegionPlotController.cxx">
+									</File>
+								</Filter>
+								<Filter
+									Name="Surfaces Sources"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Surfaces\DisplaySurface.cxx">
+									</File>
+								</Filter>
+								<Filter
+									Name="Renderers Sources"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers\DataRenderer.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers\Dial.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers\RegionMarker.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers\Renderer.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers\VLineArrayRenderer.cxx">
+									</File>
+								</Filter>
+								<Filter
+									Name="Players Sources"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Players\APlayer.cxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Players\Player.cxx">
+									</File>
+								</Filter>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Tools Sources"
+							Filter="">
+							<Filter
+								Name="AudioFileIO Sources"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioCodec.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioCodecs_Stream.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioFile.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioFileFormats.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioFileHeader.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioTextDescriptors.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\MpegAudioStream.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\MpegBitstream.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\MpegCodec.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\OggVorbisAudioStream.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\OggVorbisCodec.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\PCMAudioStream.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\PCMCodec.cxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="AudioIO Sources"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioIO\AudioDevice.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioIO\AudioDeviceList.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioIO\AudioManager.cxx">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Processing Sources"
+							Filter="">
+							<Filter
+								Name="AudioFileIO Sources No. 1"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReader.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReaderConfig.cxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="Base Sources No. 1"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\Processing.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\ProcessingComposite.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\PublishedInControls.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\PublishedInPorts.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\PublishedOutControls.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\PublishedOutPorts.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\TopLevelProcessing.cxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="AudioIO Sources No. 1"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\AudioIO\AudioIn.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\AudioIO\AudioOut.cxx">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Flow Sources"
+							Filter="">
+							<Filter
+								Name="Ports Sources"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\AudioInPort.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\AudioOutPort.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\InPort.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\OutPort.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\Region.cxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="Controls Sources"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Controls\InControl.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Controls\OutControl.cxx">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="System Sources"
+							Filter="">
+							<Filter
+								Name="Threads Sources"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\System\Threads\Condition.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\System\Threads\Mutex.cxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\System\Threads\Thread.cxx">
+								</File>
+							</Filter>
+						</Filter>
+					</Filter>
+				</Filter>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="">
+			<File
+				RelativePath="..\src\About.hxx">
+			</File>
+			<File
+				RelativePath="..\src\AddSongsToProjectDialog.hxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOCing ..\src\AddSongsToProjectDialog.hxx"
+						CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\AnalyzeWindow.hxx">
+			</File>
+			<File
+				RelativePath="..\src\Annotator.hxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOCing ..\src\Annotator.hxx"
+						CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\AnnotatorDataFacade.hxx">
+			</File>
+			<File
+				RelativePath="..\src\AnnotatorEnter.hxx">
+			</File>
+			<File
+				RelativePath="..\src\ConfigurationDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\src\NewProjectDialog.hxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOCing ..\src\NewProjectDialog.hxx"
+						CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\NewProjectName.hxx">
+			</File>
+			<File
+				RelativePath="..\src\OpenProjectDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\src\RangeSelectionTableItem.hxx">
+			</File>
+			<File
+				RelativePath="..\src\SaveProjectAsDialog.hxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOCing ..\src\SaveProjectAsDialog.hxx"
+						CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\SliderWithValue.hxx">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="MOCing ..\src\SliderWithValue.hxx"
+						CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<Filter
+				Name="C: Headers"
+				Filter="">
+				<Filter
+					Name="Qt Headers"
+					Filter="">
+					<Filter
+						Name="3.2.2 Headers"
+						Filter="">
+						<Filter
+							Name="include Headers"
+							Filter="">
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qaction.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qapplication.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qasciidict.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qbrush.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qcheckbox.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qcolor.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qcombobox.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qcstring.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qcursor.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qdatastream.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qdatetime.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qdesktopwidget.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qdict.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qdir.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qdragobject.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qevent.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qfile.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qfont.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qfontinfo.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qfontmetrics.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qframe.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qgarray.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qgdict.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qgl.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qglist.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qglobal.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qgroupbox.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qguardedptr.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qgvector.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qheader.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qiconset.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qiconview.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qimage.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qintdict.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qiodevice.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qlabel.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qlayout.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qlineedit.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qlistview.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qmap.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qmemarray.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qmessagebox.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qmime.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qnamespace.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qobject.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qobjectdefs.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qpaintdevice.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qpainter.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qpair.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qpalette.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qpen.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qpixmap.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qpoint.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qpointarray.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qpopupmenu.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qprogressbar.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qptrcollection.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qptrlist.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qptrvector.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qpushbutton.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qrangecontrol.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qrect.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qregion.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qscrollbar.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qscrollview.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qshared.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qsize.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qsizepolicy.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qslider.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qsplashscreen.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qsplitter.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qstring.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qstringlist.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qstrlist.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qstyle.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qtable.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qtabwidget.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qtextbrowser.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qtextstream.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qthread.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qtl.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qtoolbutton.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qtooltip.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qtranslator.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qvaluelist.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qwidget.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qwidgetplugin.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qwidgetstack.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qwindowdefs.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qwinexport.h">
+							</File>
+							<File
+								RelativePath="C:\Qt\3.2.2\include\qwmatrix.h">
+							</File>
+						</Filter>
+					</Filter>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="common Headers"
+				Filter="">
+				<File
+					RelativePath="..\..\common\src\ComboTableItem.hxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\DataFacade.hxx">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="MOCing ..\..\common\src\DataFacade.hxx"
+							CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+							Outputs=".\moc\$(InputName)_moc.cxx"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\common\src\Descriptors.hxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\ListViewItem.hxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\SegmentInformation.hxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\Song.hxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\StaticHeader.hxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\Table.hxx">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="MOCing ..\..\common\src\Table.hxx"
+							CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+							Outputs=".\moc\$(InputName)_moc.cxx"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\common\src\TableItem.hxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\TXTPathSongParser.hxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\TXTSongParser.hxx">
+				</File>
+				<File
+					RelativePath="..\..\common\src\TXTSongStructureParser.hxx">
+				</File>
+				<Filter
+					Name="plugins Headers"
+					Filter="">
+					<Filter
+						Name="widgets Headers"
+						Filter="">
+						<Filter
+							Name="QSignalsLogger Headers"
+							Filter="">
+							<File
+								RelativePath="..\..\common\src\plugins\widgets\QSignalsLogger\QSignalLogger.hxx">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCustomBuildTool"
+										Description="MOCing ..\..\common\src\plugins\widgets\QSignalsLogger\QSignalLogger.hxx"
+										CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+										Outputs=".\moc\$(InputName)_moc.cxx"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\common\src\plugins\widgets\QSignalsLogger\QSignalsLogger.hxx">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCustomBuildTool"
+										Description="MOCing ..\..\common\src\plugins\widgets\QSignalsLogger\QSignalsLogger.hxx"
+										CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+										Outputs=".\moc\$(InputName)_moc.cxx"/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\common\src\plugins\widgets\QSignalsLogger\QSignalsLoggerWidget.hxx">
+								<FileConfiguration
+									Name="Debug|Win32">
+									<Tool
+										Name="VCCustomBuildTool"
+										Description="MOCing ..\..\common\src\plugins\widgets\QSignalsLogger\QSignalsLoggerWidget.hxx"
+										CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+										Outputs=".\moc\$(InputName)_moc.cxx"/>
+								</FileConfiguration>
+							</File>
+						</Filter>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="ClipBoard Headers"
+					Filter="">
+					<File
+						RelativePath="..\..\common\src\ClipBoard\ClipBoard.hxx">
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="SegmentationInformationWidget Headers"
+				Filter="">
+				<File
+					RelativePath="..\src\SegmentationInformationWidget\SegmentationInformationWidget.hxx">
+				</File>
+			</Filter>
+			<Filter
+				Name="c: Headers"
+				Filter="">
+				<Filter
+					Name="MySandbox Headers"
+					Filter="">
+					<Filter
+						Name="CLAM Headers"
+						Filter="">
+						<Filter
+							Name="Errors Headers"
+							Filter="">
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Errors\Err.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Errors\ErrDynamicType.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Errors\ErrOutOfMemory.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Errors\ErrProcessingObj.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Errors\ErrSystem.hxx">
+							</File>
+						</Filter>
+						<Filter
+							Name="Defines Headers"
+							Filter="">
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Defines\Assert.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Defines\CLAM_Math.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Defines\CLAMGL.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Defines\DataTypes.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Defines\OSDefines.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Defines\StaticBool.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Defines\TypeInfo.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Defines\TypeInfoStd.hxx">
+							</File>
+							<Filter
+								Name="Windows Headers"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Defines\Windows\CLAM_windows.h">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Storage Headers"
+							Filter="">
+							<Filter
+								Name="Base Headers"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\Base\Storable.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\Base\Storage.hxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="XML Headers"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\BasicXMLable.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XercesDomDocumentHandler.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XercesDomReadingContext.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XercesDomWritingContext.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XMLable.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XMLAdapter.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XMLArrayAdapter.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XMLComponentAdapter.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XMLIterableAdapter.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XMLStorage.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Storage\XML\XmlStorageErr.hxx">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Base Headers No. 1"
+							Filter="">
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Base\Component.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Base\DynamicType.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Base\DynamicTypeMacros.hxx">
+							</File>
+						</Filter>
+						<Filter
+							Name="Standard Headers"
+							Filter="">
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Standard\Array.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Standard\Enum.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Standard\FastRounding.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Standard\Filename.hxx">
+							</File>
+							<File
+								RelativePath="c:\MySandbox\CLAM\src\Standard\Text.hxx">
+							</File>
+						</Filter>
+						<Filter
+							Name="Data Headers"
+							Filter="">
+							<Filter
+								Name="Base Headers No. 2"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Data\Base\ProcessingData.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Data\Base\ProcessingDataConfig.hxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="BasicProcessing Headers"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Data\BasicProcessing\Audio.hxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="Descriptors Headers"
+								Filter="">
+								<Filter
+									Name="Melody Headers"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Data\Descriptors\Melody\MediaTime.hxx">
+									</File>
+								</Filter>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Visualization Headers"
+							Filter="">
+							<Filter
+								Name="QTVM Headers"
+								Filter="">
+								<Filter
+									Name="Widgets Headers"
+									Filter="">
+									<Filter
+										Name="BPFEditor Headers"
+										Filter="">
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\envelope.hxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\envelope_point_editor.hxx">
+											<FileConfiguration
+												Name="Debug|Win32">
+												<Tool
+													Name="VCCustomBuildTool"
+													Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\envelope_point_editor.hxx"
+													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+													Outputs=".\moc\$(InputName)_moc.cxx"/>
+											</FileConfiguration>
+										</File>
+									</Filter>
+									<Filter
+										Name="Playable Headers"
+										Filter="">
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayableList.hxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayablePlot.hxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtAudioPlayer.hxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtPlayer.hxx">
+											<FileConfiguration
+												Name="Debug|Win32">
+												<Tool
+													Name="VCCustomBuildTool"
+													Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtPlayer.hxx"
+													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+													Outputs=".\moc\$(InputName)_moc.cxx"/>
+											</FileConfiguration>
+										</File>
+									</Filter>
+									<Filter
+										Name="Rulers Headers"
+										Filter="">
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers\XRuler.hxx">
+											<FileConfiguration
+												Name="Debug|Win32">
+												<Tool
+													Name="VCCustomBuildTool"
+													Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers\XRuler.hxx"
+													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+													Outputs=".\moc\$(InputName)_moc.cxx"/>
+											</FileConfiguration>
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers\YRuler.hxx">
+											<FileConfiguration
+												Name="Debug|Win32">
+												<Tool
+													Name="VCCustomBuildTool"
+													Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers\YRuler.hxx"
+													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+													Outputs=".\moc\$(InputName)_moc.cxx"/>
+											</FileConfiguration>
+										</File>
+									</Filter>
+									<Filter
+										Name="Scroll Headers"
+										Filter="">
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\HScrollGroup.hxx">
+											<FileConfiguration
+												Name="Debug|Win32">
+												<Tool
+													Name="VCCustomBuildTool"
+													Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\HScrollGroup.hxx"
+													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+													Outputs=".\moc\$(InputName)_moc.cxx"/>
+											</FileConfiguration>
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\ScrollBar.hxx">
+											<FileConfiguration
+												Name="Debug|Win32">
+												<Tool
+													Name="VCCustomBuildTool"
+													Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\ScrollBar.hxx"
+													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+													Outputs=".\moc\$(InputName)_moc.cxx"/>
+											</FileConfiguration>
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\VScrollGroup.hxx">
+											<FileConfiguration
+												Name="Debug|Win32">
+												<Tool
+													Name="VCCustomBuildTool"
+													Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\VScrollGroup.hxx"
+													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+													Outputs=".\moc\$(InputName)_moc.cxx"/>
+											</FileConfiguration>
+										</File>
+									</Filter>
+									<Filter
+										Name="Label Headers"
+										Filter="">
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Label\SingleLabel.hxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Label\TimeSegmentLabelsGroup.hxx">
+										</File>
+										<File
+											RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Widgets\Label\VZLabel.hxx">
+										</File>
+									</Filter>
+								</Filter>
+								<Filter
+									Name="Utils Headers"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Utils\IconData.hxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Utils\QtAppWrapper.hxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Utils\VMColor.hxx">
+									</File>
+								</Filter>
+								<Filter
+									Name="Plots Headers"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Plots\QtAudioPlot.hxx">
+										<FileConfiguration
+											Name="Debug|Win32">
+											<Tool
+												Name="VCCustomBuildTool"
+												Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Plots\QtAudioPlot.hxx"
+												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+												Outputs=".\moc\$(InputName)_moc.cxx"/>
+										</FileConfiguration>
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Plots\QtPlot.hxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Plots\QtPresentation.hxx">
+										<FileConfiguration
+											Name="Debug|Win32">
+											<Tool
+												Name="VCCustomBuildTool"
+												Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Plots\QtPresentation.hxx"
+												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+												Outputs=".\moc\$(InputName)_moc.cxx"/>
+										</FileConfiguration>
+									</File>
+								</Filter>
+								<Filter
+									Name="SysPlot Headers"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\SysPlot\QtPlotter.hxx">
+									</File>
+								</Filter>
+								<Filter
+									Name="Controllers Headers"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\AudioPlotController.hxx">
+										<FileConfiguration
+											Name="Debug|Win32">
+											<Tool
+												Name="VCCustomBuildTool"
+												Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\AudioPlotController.hxx"
+												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+												Outputs=".\moc\$(InputName)_moc.cxx"/>
+										</FileConfiguration>
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\PlotController.hxx">
+										<FileConfiguration
+											Name="Debug|Win32">
+											<Tool
+												Name="VCCustomBuildTool"
+												Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\PlotController.hxx"
+												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+												Outputs=".\moc\$(InputName)_moc.cxx"/>
+										</FileConfiguration>
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\SegmentationMarksPlotController.hxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\SelPosPlotController.hxx">
+										<FileConfiguration
+											Name="Debug|Win32">
+											<Tool
+												Name="VCCustomBuildTool"
+												Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\SelPosPlotController.hxx"
+												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+												Outputs=".\moc\$(InputName)_moc.cxx"/>
+										</FileConfiguration>
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\SelTimeRegionPlotController.hxx">
+										<FileConfiguration
+											Name="Debug|Win32">
+											<Tool
+												Name="VCCustomBuildTool"
+												Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Controllers\SelTimeRegionPlotController.hxx"
+												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+												Outputs=".\moc\$(InputName)_moc.cxx"/>
+										</FileConfiguration>
+									</File>
+								</Filter>
+								<Filter
+									Name="Surfaces Headers"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Surfaces\DisplaySurface.hxx">
+										<FileConfiguration
+											Name="Debug|Win32">
+											<Tool
+												Name="VCCustomBuildTool"
+												Description="MOCing c:\MySandbox\CLAM\src\Visualization\QTVM\Surfaces\DisplaySurface.hxx"
+												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+												Outputs=".\moc\$(InputName)_moc.cxx"/>
+										</FileConfiguration>
+									</File>
+								</Filter>
+								<Filter
+									Name="Renderers Headers"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers\DataRenderer.hxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers\Dial.hxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers\RegionMarker.hxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers\Renderer.hxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Renderers\VLineArrayRenderer.hxx">
+									</File>
+								</Filter>
+								<Filter
+									Name="Players Headers"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Players\APlayer.hxx">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\src\Visualization\QTVM\Players\Player.hxx">
+									</File>
+								</Filter>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="qwt Headers"
+							Filter="">
+							<Filter
+								Name="include Headers No. 1"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\..\qwt\include\qwt_array.h">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\..\qwt\include\qwt_dimap.h">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\..\qwt\include\qwt_global.h">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\..\qwt\include\qwt_math.h">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\..\qwt\include\qwt_scale.h">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\..\qwt\include\qwt_scldiv.h">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\..\qwt\include\qwt_scldraw.h">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="libsndfile Headers"
+							Filter="">
+							<Filter
+								Name="include Headers No. 2"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\..\libsndfile\include\sndfile.h">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Tools Headers"
+							Filter="">
+							<Filter
+								Name="AudioFileIO Headers"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioCodec.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioCodecs_Stream.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioFile.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioFileFormats.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioFileHeader.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\AudioTextDescriptors.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\MpegAudioStream.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\MpegBitstream.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\MpegCodec.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\OggVorbisAudioStream.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\OggVorbisCodec.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\PCMAudioStream.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioFileIO\PCMCodec.hxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="AudioIO Headers"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioIO\AudioDevice.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioIO\AudioDeviceList.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Tools\AudioIO\AudioManager.hxx">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Processing Headers"
+							Filter="">
+							<Filter
+								Name="Base Headers No. 3"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\Processing.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\ProcessingComposite.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\ProcessingConfig.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\PublishedInControls.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\PublishedInPorts.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\PublishedOutControls.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\PublishedOutPorts.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\Base\TopLevelProcessing.hxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="AudioFileIO Headers No. 1"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReader.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReaderConfig.hxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="AudioIO Headers No. 1"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\AudioIO\AudioIn.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\AudioIO\AudioIO.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Processing\AudioIO\AudioOut.hxx">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="Flow Headers"
+							Filter="">
+							<Filter
+								Name="Ports Headers"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\AudioInPort.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\AudioOutPort.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\InPort.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\InPortPublisher.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\OutPort.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\PhantomBuffer.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\ReadingRegion.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\Region.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\StreamImpl.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Ports\WritingRegion.hxx">
+								</File>
+							</Filter>
+							<Filter
+								Name="Controls Headers"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Controls\ControlLinker.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Controls\InControl.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\Flow\Controls\OutControl.hxx">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="pthreads Headers"
+							Filter="">
+							<Filter
+								Name="include Headers No. 3"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\..\pthreads\include\pthread.h">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="externals Headers"
+							Filter="">
+							<Filter
+								Name="CbLib Headers"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\CBL.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\CBLMacros.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\Functor0.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\Functor0R.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\Functor1.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\Functor1R.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\Functor2.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\Functor2R.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\Functor3.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\Functor3R.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\Functor4.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\Functor4R.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\externals\CbLib\FunctorBase.hxx">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="System Headers"
+							Filter="">
+							<Filter
+								Name="Threads Headers"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\System\Threads\Condition.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\System\Threads\Lock.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\System\Threads\Mutex.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\System\Threads\Thread.hxx">
+								</File>
+								<File
+									RelativePath="c:\MySandbox\CLAM\src\System\Threads\xtime.hxx">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="oggvorbis Headers"
+							Filter="">
+							<Filter
+								Name="include Headers No. 4"
+								Filter="">
+								<Filter
+									Name="vorbis Headers"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\..\oggvorbis\include\vorbis\codec.h">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\..\oggvorbis\include\vorbis\vorbisenc.h">
+									</File>
+									<File
+										RelativePath="c:\MySandbox\CLAM\..\oggvorbis\include\vorbis\vorbisfile.h">
+									</File>
+								</Filter>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="libmad Headers"
+							Filter="">
+							<Filter
+								Name="include Headers No. 5"
+								Filter="">
+								<File
+									RelativePath="c:\MySandbox\CLAM\..\libmad\include\mad.h">
+								</File>
+							</Filter>
+						</Filter>
+						<Filter
+							Name="id3lib Headers"
+							Filter="">
+							<Filter
+								Name="include Headers No. 6"
+								Filter="">
+								<Filter
+									Name="id3 Headers"
+									Filter="">
+									<File
+										RelativePath="c:\MySandbox\CLAM\..\id3lib\include\id3\tag.h">
+									</File>
+								</Filter>
+							</Filter>
+						</Filter>
+					</Filter>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="AnnotatorBrowserGL Headers"
+				Filter="">
+				<File
+					RelativePath="..\src\AnnotatorBrowserGL\AnnotatorBrowserGL.hxx">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="MOCing ..\src\AnnotatorBrowserGL\AnnotatorBrowserGL.hxx"
+							CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
+"
+							Outputs=".\moc\$(InputName)_moc.cxx"/>
+					</FileConfiguration>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Qt ui Files"
+			Filter="">
+			<File
+				RelativePath="..\src\AboutBase.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="UICing ..\src\AboutBase.ui"
+						CommandLine="$(QTDIR)\bin\uic.exe $(InputPath) -o .\uic\$(InputName).h
+$(QTDIR)\bin\uic.exe $(InputPath) -i $(InputName).h -o .\uic\$(InputName).cxx
+$(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\uic\$(InputName).h;.\uic\$(InputName).cxx;.\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\AnalyzeWindowBase.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="UICing ..\src\AnalyzeWindowBase.ui"
+						CommandLine="$(QTDIR)\bin\uic.exe $(InputPath) -o .\uic\$(InputName).h
+$(QTDIR)\bin\uic.exe $(InputPath) -i $(InputName).h -o .\uic\$(InputName).cxx
+$(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\uic\$(InputName).h;.\uic\$(InputName).cxx;.\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\AnnotatorBase.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="UICing ..\src\AnnotatorBase.ui"
+						CommandLine="$(QTDIR)\bin\uic.exe $(InputPath) -o .\uic\$(InputName).h
+$(QTDIR)\bin\uic.exe $(InputPath) -i $(InputName).h -o .\uic\$(InputName).cxx
+$(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\uic\$(InputName).h;.\uic\$(InputName).cxx;.\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\AnnotatorEnterBase.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="UICing ..\src\AnnotatorEnterBase.ui"
+						CommandLine="$(QTDIR)\bin\uic.exe $(InputPath) -o .\uic\$(InputName).h
+$(QTDIR)\bin\uic.exe $(InputPath) -i $(InputName).h -o .\uic\$(InputName).cxx
+$(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\uic\$(InputName).h;.\uic\$(InputName).cxx;.\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\ConfigurationDialogBase.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="UICing ..\src\ConfigurationDialogBase.ui"
+						CommandLine="$(QTDIR)\bin\uic.exe $(InputPath) -o .\uic\$(InputName).h
+$(QTDIR)\bin\uic.exe $(InputPath) -i $(InputName).h -o .\uic\$(InputName).cxx
+$(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\uic\$(InputName).h;.\uic\$(InputName).cxx;.\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\NewProjectDialogBase.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="UICing ..\src\NewProjectDialogBase.ui"
+						CommandLine="$(QTDIR)\bin\uic.exe $(InputPath) -o .\uic\$(InputName).h
+$(QTDIR)\bin\uic.exe $(InputPath) -i $(InputName).h -o .\uic\$(InputName).cxx
+$(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\uic\$(InputName).h;.\uic\$(InputName).cxx;.\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\NewProjectNameBase.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="UICing ..\src\NewProjectNameBase.ui"
+						CommandLine="$(QTDIR)\bin\uic.exe $(InputPath) -o .\uic\$(InputName).h
+$(QTDIR)\bin\uic.exe $(InputPath) -i $(InputName).h -o .\uic\$(InputName).cxx
+$(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\uic\$(InputName).h;.\uic\$(InputName).cxx;.\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\OpenProjectDialogBase.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="UICing ..\src\OpenProjectDialogBase.ui"
+						CommandLine="$(QTDIR)\bin\uic.exe $(InputPath) -o .\uic\$(InputName).h
+$(QTDIR)\bin\uic.exe $(InputPath) -i $(InputName).h -o .\uic\$(InputName).cxx
+$(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\uic\$(InputName).h;.\uic\$(InputName).cxx;.\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\src\SaveProjectAsDialogBase.ui">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="UICing ..\src\SaveProjectAsDialogBase.ui"
+						CommandLine="$(QTDIR)\bin\uic.exe $(InputPath) -o .\uic\$(InputName).h
+$(QTDIR)\bin\uic.exe $(InputPath) -i $(InputName).h -o .\uic\$(InputName).cxx
+$(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
+"
+						Outputs=".\uic\$(InputName).h;.\uic\$(InputName).cxx;.\moc\$(InputName)_moc.cxx"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="uic"
+			Filter="">
+			<File
+				RelativePath=".\uic\AboutBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\AboutBase.h">
+			</File>
+			<File
+				RelativePath=".\uic\AnalyzeWindowBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\AnalyzeWindowBase.h">
+			</File>
+			<File
+				RelativePath=".\uic\AnnotatorBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\AnnotatorBase.h">
+			</File>
+			<File
+				RelativePath=".\uic\AnnotatorEnterBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\AnnotatorEnterBase.h">
+			</File>
+			<File
+				RelativePath=".\uic\ConfigurationDialogBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\ConfigurationDialogBase.h">
+			</File>
+			<File
+				RelativePath=".\uic\NewProjectDialogBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\NewProjectDialogBase.h">
+			</File>
+			<File
+				RelativePath=".\uic\NewProjectNameBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\NewProjectNameBase.h">
+			</File>
+			<File
+				RelativePath=".\uic\OpenProjectDialogBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\OpenProjectDialogBase.h">
+			</File>
+			<File
+				RelativePath=".\uic\SaveProjectAsDialogBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\SaveProjectAsDialogBase.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="moc"
+			Filter="">
+			<File
+				RelativePath=".\moc\AboutBase_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\AddSongsToProjectDialog_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\AnalyzeWindowBase_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\Annotator_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\AnnotatorBase_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\AnnotatorBrowserGL_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\AnnotatorEnterBase_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\AudioPlotController_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\ConfigurationDialogBase_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\DataFacade_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\DisplaySurface_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\envelope_point_editor_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\HScrollGroup_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\NewProjectDialog_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\NewProjectDialogBase_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\NewProjectNameBase_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\OpenProjectDialogBase_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\PlotController_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\QSignalLogger_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\QSignalsLogger_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\QSignalsLoggerWidget_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\QtAudioPlot_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\QtPlayer_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\QtPresentation_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\SaveProjectAsDialog_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\SaveProjectAsDialogBase_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\ScrollBar_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\SelPosPlotController_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\SelTimeRegionPlotController_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\SliderWithValue_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\Table_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\VScrollGroup_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\XRuler_moc.cxx">
+			</File>
+			<File
+				RelativePath=".\moc\YRuler_moc.cxx">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

@@ -1,0 +1,162 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>NewProjectDialogBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>NewProjectDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>424</width>
+            <height>341</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Select files</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Please, select the files to add :</string>
+            </property>
+        </widget>
+        <widget class="QListView">
+            <column>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="clickable">
+                    <bool>false</bool>
+                </property>
+                <property name="resizable">
+                    <bool>false</bool>
+                </property>
+            </column>
+        <item>
+            <property name="text">
+                <string>my music</string>
+            </property>
+            <property name="pixmap">
+                <pixmap>stock_open.png</pixmap>
+            </property>
+            <item>
+                <property name="text">
+                    <string>songs 1970-2004</string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>stock_open.png</pixmap>
+                </property>
+                <item>
+                    <property name="text">
+                        <string>song 1</string>
+                    </property>
+                    <property name="pixmap">
+                        <pixmap></pixmap>
+                    </property>
+                </item>
+                <item>
+                    <property name="text">
+                        <string>song 2</string>
+                    </property>
+                    <property name="pixmap">
+                        <pixmap></pixmap>
+                    </property>
+                </item>
+            </item>
+        </item>
+            <property name="name">
+                <cstring>mFoldersView</cstring>
+            </property>
+            <property name="selectionMode">
+                <enum>Extended</enum>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>mRecursivelyCheckBox</cstring>
+            </property>
+            <property name="text">
+                <string>Select files into folders recursively</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mOkButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Ok</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+O</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mCancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>mOkButton</sender>
+        <signal>clicked()</signal>
+        <receiver>NewProjectDialogBase</receiver>
+        <slot>okClicked()</slot>
+    </connection>
+    <connection>
+        <sender>mCancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>NewProjectDialogBase</receiver>
+        <slot>close()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">NewProjectDialogBase.ui.h</include>
+</includes>
+<slots>
+    <slot>okClicked()</slot>
+</slots>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

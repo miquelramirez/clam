@@ -1,0 +1,46 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>AboutBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>AboutBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>278</width>
+            <height>241</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>About</string>
+    </property>
+    <property name="modal">
+        <bool>true</bool>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>pixmapLabel1</cstring>
+            </property>
+            <property name="pixmap">
+                <pixmap>simac.png</pixmap>
+            </property>
+            <property name="scaledContents">
+                <bool>true</bool>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<includes>
+    <include location="local" impldecl="in implementation">AboutBase.ui.h</include>
+</includes>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

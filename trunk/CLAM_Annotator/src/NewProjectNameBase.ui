@@ -1,0 +1,114 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>NewProjectNameBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>NewProjectNameBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>7</y>
+            <width>419</width>
+            <height>76</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>4</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>new project</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mEdit</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>LineEditPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="text">
+                <string>write the project name here</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mOkButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Ok</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+O</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mCancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>mCancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>NewProjectNameBase</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>mOkButton</sender>
+        <signal>clicked()</signal>
+        <receiver>NewProjectNameBase</receiver>
+        <slot>okClicked()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>okClicked()</slot>
+</slots>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
