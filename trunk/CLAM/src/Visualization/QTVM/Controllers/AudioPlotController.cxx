@@ -49,6 +49,7 @@ namespace CLAM
 			InitialRegionTime();
 			_duration = TData(GetnSamples())/_sampleRate;
 			_mustProcessData = true;
+			SetSelPos(TData(0.0));
 			emit requestRefresh();
 		}
 

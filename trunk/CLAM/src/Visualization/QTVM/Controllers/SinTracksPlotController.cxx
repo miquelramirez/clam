@@ -54,6 +54,7 @@ namespace CLAM
 			Colorize();
 			InitialRegionTime();
 			_mustProcessData = true;
+			SetSelPos(TData(0.0));
 			emit requestRefresh();
 		}
 
@@ -74,6 +75,7 @@ namespace CLAM
 			Colorize();
 			InitialRegionTime();
 			_mustProcessData = true;
+			SetSelPos(TData(0.0));
 			emit requestRefresh();
 		}
 

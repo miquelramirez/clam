@@ -47,6 +47,7 @@ namespace CLAM
 			SetvRange(TData(_maxFreq));
 			InitialRegionTime();
 			_mustProcessData = true;
+			SetSelPos(TData(0.0));
 			emit requestRefresh();
 		}
 
