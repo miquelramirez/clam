@@ -217,7 +217,7 @@ bool SMSAnalysis::ConfigureChildren()
 	mPO_FundDetect.Configure(mConfig.GetFundFreqDetect());
 	mPO_SinTracking.Configure(mConfig.GetSinTracking());
 	mPO_SynthSineSpectrum.Configure(mConfig.GetSynthSineSpectrum());
-
+	
 	return true;
 
 }
@@ -231,6 +231,24 @@ void SMSAnalysis::ConfigureData()
 	SpectrumConfig scfg;
 	scfg.SetSize(mConfig.GetResSpectralAnalysis().GetFFT().GetAudioSize()/2+1); // s.AudioFrameSize is the size of the generated frames
 	mSpec.Configure(scfg);
+	
+	/* Now we set prototype of SpectrumSubstracter: we want to substract two spectrums: 
+	the first on in MagPhase format, the second in Complex format and get the result back
+	in Mag Phase.*/
+
+ 	SpectrumConfig Scfg; 
+ 	SpecTypeFlags sflags;
+   	sflags.bComplex = 1;
+ 		sflags.bPolar = 0;
+ 		sflags.bMagPhase = 0;
+ 		sflags.bMagPhaseBPF = 0;
+ 	Scfg.SetType(sflags);
+ 	Scfg.SetSize(mSpec.GetSize());
+ 	Scfg.SetSpectralRange(22050);
+ 	Spectrum tmpSpecIn(Scfg);    
+
+	mPO_SpecSubstract.SetPrototypes(mSpec,tmpSpecIn,mSpec);
+
 	
 	// Fundamental
 	mFund.AddCandidatesFreq();
@@ -249,7 +267,7 @@ void SMSAnalysis::AttachChildren()
 	mPO_SpecSubstract.SetParent(this);
 }
 
-bool SMSAnalysis::Do(const Audio& in, /*testing!! const Audio& inRes,*/Spectrum& outGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec)
+bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec)
 {
 	//Analyzing sinusoidal component
 	mPO_SinSpectralAnalysis.Do(in,outGlobalSpec);
@@ -266,8 +284,6 @@ bool SMSAnalysis::Do(const Audio& in, /*testing!! const Audio& inRes,*/Spectrum&
 	mPO_ResSpectralAnalysis.Do(in/*Res*/,mSpec);
 
 	//Finally we substract mSpectrum-SinusoidalSpectrum
-	//SpectrumSubstract(mSpec,outSinSpec,outResSpec);
-
 	mPO_SpecSubstract.Do(mSpec,outSinSpec,outResSpec);
 
 	return true;
