@@ -62,7 +62,6 @@ namespace CLAM{
 
 	void Frame::SetMag(TData freq, TData newMag)
 	{
-		// BUG: NO EXISTE SPECTRUM::SETMAG(FLOAT,FLOAT)
 		GetSpectrum().SetMag(freq,newMag);
 	}
 	void Frame::SetMag(TIndex pos, TData newMag)
@@ -71,7 +70,6 @@ namespace CLAM{
 	}
 	void Frame::SetPhase(TData freq, TData newPhase)
 	{
-		// BUG: NO EXISTE SPECTRUM::SETPHASE(FLOAT,FLOAT)!!!!
 		GetSpectrum().SetPhase(freq,newPhase);
 	}
 	void Frame::SetPhase(TIndex pos, TData newPhase)

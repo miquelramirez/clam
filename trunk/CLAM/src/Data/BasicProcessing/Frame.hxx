@@ -43,10 +43,21 @@ namespace CLAM{
 //
 
 
-/** Clas to encapsulate a frame and all his related information
- Note: There are some Getters and Setters, but for efficiency you need to work directly on the dynamic attributes
-@see Spectrum, SpectralPeakArray, Fundamental, Audio
-*/
+/** Processing Data class to encapsulate a frame and all its related information. A Frame has an associated
+ *	time tag that points to the center of the audio chunk being used in the analysis and a duration.
+ *	It also holds audio data in 4 attributes: AudioFrame is the input audio used for analysis;
+ *	SynthAudioFrame is the synthesized audio after analysis and possible transformation; 
+ *	SinusoidalAudioFrame is the synthesized only sinusoidal component; ResidualAudioFrame is
+ *	the synthesized only resiual component.
+ *	A Frame also has three associated spectrums: Spectrum is the result of the STFT applied
+ *	to the input audio; SinusoidalSpec is the spectrum of the sinusoidal component; ResidualSpec
+ *	is the spectrum of the residual.
+ *	Finally, a frame has SpectralPeakArray that holds the output of the Spectral Peak Detection
+ *	algorithm and possibly a peak continuation.The Fundamental attribute holds the data of the
+ *	output of the Fundamental detection algorithm.
+ *	Note: There are some Getters and Setters, but for efficiency you need to work directly on the dynamic attributes
+ *	@see Spectrum, SpectralPeakArray, Fundamental, Audio
+ */
 class Frame : public ProcessingData
 {
 public:
