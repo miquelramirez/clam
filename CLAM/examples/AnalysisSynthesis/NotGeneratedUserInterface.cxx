@@ -5,6 +5,7 @@
 #include "FLTKConfigurator.hxx"
 #include "DebugSnapshots.hxx"
 #include "AudioSnapshot.hxx"
+#include "AudioBrowser.hxx"
 #include "CBL.hxx"
 
 using namespace CLAM;
@@ -63,7 +64,10 @@ void UserInterface::DetachDisplays()
 		Detach( mAudioOutputResidualDisplay );
 	if( mAudioOutputSinusoidalDisplay!=NULL )
 		Detach( mAudioOutputSinusoidalDisplay );
-
+	if( mInputSpectrum!=NULL )
+		Detach( mInputSpectrum );
+	if( mOutputSpectrum!=NULL )
+		Detach( mOutputSpectrum );
 }
 
 void UserInterface::LoadSound(void)
@@ -87,6 +91,9 @@ void UserInterface::LoadSound(void)
 			mAnalysisSynthesisExample->mHaveConfig=false;
 		}
 		mSmartTile->equalize();
+
+		mCounter->deactivate();
+		mCounter->value( 0 );
 
 		mSynthesize->deactivate();
 		mOutputSM->deactivate();
@@ -147,6 +154,17 @@ void UserInterface::Analyze(void)
 		mSynthesize->activate();
 		mMelodySM->activate();
 		mStoreAnalysisData->activate();
+
+		mCounter->activate();
+		mCounter->range( 0, mAnalysisSynthesisExample->mSegment.GetnFrames() );
+		mCounter->step( 1 );
+		mCounter->lstep( mAnalysisSynthesisExample->mSegment.GetnFrames()/10 );
+
+		mPaintSignal.Emit( true );
+		ChangeFrame();
+
+		mDisplayInSpec->activate();
+
 		if(mAnalysisSynthesisExample->mHaveTransformationScore)
 			mDoTransformation->activate();
 		Fl::redraw();
@@ -183,26 +201,29 @@ void UserInterface::DisplayInputSound(void)
 
 void UserInterface::DisplayInputSpectrum(void)
 {
-	Geometry g(0, 0, 860, 490);
-	ProcDataView<Spectrum> *view = new ProcDataView<Spectrum>;
-	ProcDataPresentation<Spectrum> *presentation = 
-		new ProcDataPresentation<Spectrum>(g,"Input Audio Spectrum");
+	if (mInputSpectrum == NULL)
+		mInputSpectrum = Attach( "Input Spectrum" , &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ (int) mCounter->value() ].GetSpectrum(), 0 );
+	else {
+		List<Frame>& localFrames = mAnalysisSynthesisExample->mSegment.GetFramesArray();
+		Frame& frame = localFrames[ mCounter->value() ];
+		Spectrum& spectrum = frame.GetSpectrum();
 
-	view->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[1].GetSpectrum() );
-	presentation->LinkWithView( view );
-
-//	Attach(presentation->GetWindow());
-
-	presentation->Show();
-	view->Refresh();
-
-	Fl::redraw();
+		mInputSpectrumView->BindTo( &spectrum );
+		mInputSpectrumView->Refresh();
+		mSmartTile->equalize();
+	}
 }
 
 void UserInterface::DisplayOutputSound(void)
 {
 	if (mAudioOutputDisplay==NULL)
 		mAudioOutputDisplay = Attach( "Audio Output" , &mAnalysisSynthesisExample->mAudioOut );
+}
+
+void UserInterface::DisplayOutputSpectrum(void)
+{
+	if (mOutputSpectrum == NULL)
+		mOutputSpectrum = Attach( "Output Spectrum" , &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ (int) mCounter->value() ].GetSpectrum(), 1 );
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
@@ -276,6 +297,11 @@ void UserInterface::_Detach(Fl_Window *w,UserInterface* ui)
 	ui->Detach(w);
 }
 
+void UserInterface::_DetachSpectrum(Fl_Window *w,UserInterface* ui)
+{
+	ui->DetachSpectrum(w);
+}
+
 void UserInterface::Detach(Fl_Window *w)
 {
 	Fl_Widget* w2 = w->parent();
@@ -301,29 +327,84 @@ void UserInterface::Detach(Fl_Window *w)
 	mSmartTile->equalize();
 }
 
-Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data)
+void UserInterface::DetachSpectrum(Fl_Window *w)
+{
+	Fl_Widget* w2 = w->parent();
+
+	mSmartTile->close( w2 );
+
+	PresentationWindow* p = dynamic_cast<PresentationWindow*>(w);
+
+	View* v = p->GetPresentation()->GetLinkedView();
+	
+	delete p->GetPresentation();
+	delete v;
+		
+	v = NULL;
+
+	if (w==mInputSpectrum) 
+		mInputSpectrum = NULL;
+	else if (w==mOutputSpectrum)
+		mOutputSpectrum = NULL;
+
+	mSmartTile->equalize();
+}
+
+Fl_Window* UserInterface::Attach(const char* title, CLAM::Audio* data )
 {
 	ProcDataView<Audio>* localView;
-	ProcDataPresentation<Audio>* localPresentation;
+	AudioBrowser* localPresentation;
 
 	localView = new ProcDataView<Audio>;
 	localView->BindTo( data );
 
 	Geometry g(0, 0, mSmartTile->w(), mSmartTile->h());
 
-	localPresentation = new ProcDataPresentation<Audio>(g, title);
+	localPresentation = new AudioBrowser(g, title);
 	localPresentation->LinkWithView( localView );
 
+	//Link Signals with Slots
+	mFrameSignal.Connect( *localPresentation->GetFrameSlot() );
+	mPaintSignal.Connect( *localPresentation->GetPaintSlot() );
+	localPresentation->GetSignal()->Connect( mSlot );
+
+ 	if (mAnalysisSynthesisExample->mHaveAnalysis)
+ 		localPresentation->setPainting( true );
+
 	mSmartTile->add_titled( localPresentation->GetWindow() );
-	
 	localPresentation->Show();
-
 	mSmartTile->equalize();
-
 	localPresentation->GetWindow()->callback((Fl_Callback*) _Detach,this);
-
 	localView->Refresh();
-	
+
+	return localPresentation->GetWindow();
+}
+
+Fl_Window* UserInterface::Attach(const char* title, CLAM::Spectrum* data, int type )
+{
+	Geometry g(0, 0, mSmartTile->w(), mSmartTile->h());
+
+	ProcDataView<Spectrum>* mSpectrumView;
+
+	mSpectrumView = new ProcDataView<Spectrum>;
+	if( type == 0 )
+		mInputSpectrumView = mSpectrumView;
+	else
+		mOutputSpectrumView = mSpectrumView;
+
+
+	ProcDataPresentation<Spectrum> *localPresentation = 
+		new ProcDataPresentation<Spectrum>(g, title);
+
+	mSpectrumView->BindTo( data );
+	localPresentation->LinkWithView( mSpectrumView );
+
+	mSmartTile->add_titled( localPresentation->GetWindow() );
+	localPresentation->Show();
+	mSmartTile->equalize();
+	localPresentation->GetWindow()->callback((Fl_Callback*) _DetachSpectrum,this);
+	mSpectrumView->Refresh();
+
 	return localPresentation->GetWindow();
 }
 
@@ -332,5 +413,65 @@ void UserInterface::Init()
 	mAudioInputDisplay=NULL; 
 	mAudioOutputDisplay=NULL; 
 	mAudioOutputResidualDisplay=NULL; 
-	mAudioOutputSinusoidalDisplay=NULL; 
+	mAudioOutputSinusoidalDisplay=NULL;
+	mInputSpectrum=NULL;
+	mInputSpectrumView=NULL;
+	mOutputSpectrum=NULL;
+	mOutputSpectrumView=NULL;
+}
+
+void UserInterface::ChangeFrame()
+{
+	DisplayInputSound();
+	DisplayInputSpectrum();
+
+	int nframe = (int) mCounter->value();
+
+	List<Frame>& localFrames = mAnalysisSynthesisExample->mSegment.GetFramesArray();
+	
+	TData nextcursorpos = localFrames[ nframe ].GetCenterTime();
+	
+	//Notify SigSlotted class to change
+	mFrameSignal.Emit( nextcursorpos );
+
+	//Change Spectrum Displayer
+	// InputSpectrum Displayer is yet cahnged
+		
+	if(mOutputSpectrumView != NULL)
+	{
+		mOutputSpectrumView->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+		mOutputSpectrumView->Refresh();
+		mSmartTile->equalize();
+	}
+
+	Fl::redraw();
+}
+
+void UserInterface::ChangeTimeTag( double tag )
+{
+	//Change mCounter
+	TTime time(tag);
+	TIndex nframe = mAnalysisSynthesisExample->mSegment.FindFrame( time );
+
+	mCounter->value( (int) nframe );
+
+	//Notify other GLPorts
+	TData nextcursorpos = mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetCenterTime();
+	mFrameSignal.Emit( nextcursorpos );
+
+	//Change Spectrum Displayer
+	if(mInputSpectrumView != NULL)
+	{
+		mInputSpectrumView->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+		mInputSpectrumView->Refresh();
+		mSmartTile->equalize();
+	}
+	if(mOutputSpectrumView != NULL)
+	{
+		mOutputSpectrumView->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[ nframe ].GetSpectrum() );
+		mOutputSpectrumView->Refresh();
+		mSmartTile->equalize();
+	}
+
+	Fl::redraw();
 }

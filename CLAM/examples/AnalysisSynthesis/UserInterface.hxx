@@ -9,19 +9,21 @@ class Fl_Smart_Tile;
 #include "ForwardDeclarations.hxx"
 #include "CLAMPresentations.hxx"
 #include "CLAMViews.hxx"
+#include "Signalv1.hxx"
+#include "Slotv1.hxx"
 #include <FL/Fl_Window.H>
-#include <FL/Fl_Box.H>
-#include <FL/Fl_Output.H>
 #include <FL/Fl_Menu_Bar.H>
+#include <FL/Fl_Counter.H>
+#include <FL/Fl_Group.H>
+#include <FL/Fl_Output.H>
+#include <FL/Fl_Box.H>
 
 class UserInterface {
 public:
   public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;
   UserInterface();
   Fl_Window *mWindow;
-  Fl_Box *mResizable;
 private:
-  Fl_Output *mConfigurationText;
   Fl_Menu_Bar *mMenuBar;
   static Fl_Menu_Item menu_mMenuBar[];
   inline void cb_Load_i(Fl_Menu_*, void*);
@@ -48,6 +50,13 @@ private:
   static Fl_Menu_Item *mStoreAnalysisData;
   inline void cb_mStoreAnalysisData_i(Fl_Menu_*, void*);
   static void cb_mStoreAnalysisData(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mMelodySM;
+  static Fl_Menu_Item *mMelodyAnalyze;
+  inline void cb_mMelodyAnalyze_i(Fl_Menu_*, void*);
+  static void cb_mMelodyAnalyze(Fl_Menu_*, void*);
+  static Fl_Menu_Item *mMelodyStore;
+  inline void cb_mMelodyStore_i(Fl_Menu_*, void*);
+  static void cb_mMelodyStore(Fl_Menu_*, void*);
   inline void cb_Load2_i(Fl_Menu_*, void*);
   static void cb_Load2(Fl_Menu_*, void*);
   static Fl_Menu_Item *mDoTransformation;
@@ -60,6 +69,8 @@ private:
   static Fl_Menu_Item *mVisualizeOutputs;
   inline void cb_Sound_i(Fl_Menu_*, void*);
   static void cb_Sound(Fl_Menu_*, void*);
+  inline void cb_Spectrum_i(Fl_Menu_*, void*);
+  static void cb_Spectrum(Fl_Menu_*, void*);
   inline void cb_Sinusoidal_i(Fl_Menu_*, void*);
   static void cb_Sinusoidal(Fl_Menu_*, void*);
   inline void cb_Residual_i(Fl_Menu_*, void*);
@@ -71,13 +82,6 @@ private:
   static void cb_Sinusoidal1(Fl_Menu_*, void*);
   inline void cb_Residual1_i(Fl_Menu_*, void*);
   static void cb_Residual1(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mMelodySM;
-  static Fl_Menu_Item *mMelodyAnalyze;
-  inline void cb_mMelodyAnalyze_i(Fl_Menu_*, void*);
-  static void cb_mMelodyAnalyze(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mMelodyStore;
-  inline void cb_mMelodyStore_i(Fl_Menu_*, void*);
-  static void cb_mMelodyStore(Fl_Menu_*, void*);
   static Fl_Menu_Item *mStoreOutputs;
   inline void cb_Sound2_i(Fl_Menu_*, void*);
   static void cb_Sound2(Fl_Menu_*, void*);
@@ -89,7 +93,11 @@ private:
   static void cb_Exit(Fl_Menu_*, void*);
   inline void cb_About_i(Fl_Menu_*, void*);
   static void cb_About(Fl_Menu_*, void*);
+  Fl_Counter *mCounter;
+  inline void cb_mCounter_i(Fl_Counter*, void*);
+  static void cb_mCounter(Fl_Counter*, void*);
   Fl_Smart_Tile *mSmartTile;
+  Fl_Output *mConfigurationText;
   void AboutWindow();
   Fl_Window *mWindow2;
   inline void cb_mWindow2_i(Fl_Window*, void*);
@@ -107,6 +115,7 @@ private:
   void StoreMelody(void);
   void StoreOutputSound(void);
   void DisplayOutputSound(void);
+  void DisplayOutputSpectrum(void);
   void StoreOutputSoundResidual(void);
   void DisplayOutputSoundResidual(void);
   void StoreOutputSoundSinusoidal(void);
@@ -115,20 +124,31 @@ private:
   void Transform(void);
   void Exit(void);
   Fl_Window* Attach( const char* title, CLAM::Audio* data );
+  Fl_Window* Attach( const char* title, CLAM::Spectrum* data, int type );
   static void _Detach(Fl_Window* buffer,UserInterface* ui);
+  static void _DetachSpectrum(Fl_Window* buffer,UserInterface* ui);
   void Detach(Fl_Window* buffer);
+  void DetachSpectrum(Fl_Window* buffer);
   void PlayInputSound();
   void PlayOutputSound();
   void PlaySinusoidal();
   void PlayResidual();
   void LoadSound();
   void Init();
+  void Update();
   void DetachDisplays();
+  void ChangeFrame();
+  void ChangeTimeTag(double tag);
   Fl_Window* mAudioInputDisplay;
   Fl_Window* mAudioOutputDisplay;
   Fl_Window* mAudioOutputResidualDisplay;
   Fl_Window* mAudioOutputSinusoidalDisplay;
-public:
-  void Update();
+  Fl_Window* mInputSpectrum;
+  Fl_Window* mOutputSpectrum;
+  ProcDataView<Spectrum>* mInputSpectrumView;
+  ProcDataView<Spectrum>* mOutputSpectrumView;
+  Signalv1<TData> mFrameSignal;
+  Signalv1<bool> mPaintSignal;
+  Slotv1<double> mSlot;
 };
 #endif

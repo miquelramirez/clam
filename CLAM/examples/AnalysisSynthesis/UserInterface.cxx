@@ -66,6 +66,20 @@ void UserInterface::cb_mStoreAnalysisData(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_mStoreAnalysisData_i(o,v);
 }
 
+inline void UserInterface::cb_mMelodyAnalyze_i(Fl_Menu_*, void*) {
+  AnalyzeMelody();
+}
+void UserInterface::cb_mMelodyAnalyze(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mMelodyAnalyze_i(o,v);
+}
+
+inline void UserInterface::cb_mMelodyStore_i(Fl_Menu_*, void*) {
+  StoreMelody();
+}
+void UserInterface::cb_mMelodyStore(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mMelodyStore_i(o,v);
+}
+
 inline void UserInterface::cb_Load2_i(Fl_Menu_*, void*) {
   LoadTransformation();
 }
@@ -92,6 +106,13 @@ inline void UserInterface::cb_Sound_i(Fl_Menu_*, void*) {
 }
 void UserInterface::cb_Sound(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_Sound_i(o,v);
+}
+
+inline void UserInterface::cb_Spectrum_i(Fl_Menu_*, void*) {
+  DisplayOutputSpectrum();
+}
+void UserInterface::cb_Spectrum(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_Spectrum_i(o,v);
 }
 
 inline void UserInterface::cb_Sinusoidal_i(Fl_Menu_*, void*) {
@@ -127,20 +148,6 @@ inline void UserInterface::cb_Residual1_i(Fl_Menu_*, void*) {
 }
 void UserInterface::cb_Residual1(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_Residual1_i(o,v);
-}
-
-inline void UserInterface::cb_mMelodyAnalyze_i(Fl_Menu_*, void*) {
-  AnalyzeMelody();
-}
-void UserInterface::cb_mMelodyAnalyze(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_mMelodyAnalyze_i(o,v);
-}
-
-inline void UserInterface::cb_mMelodyStore_i(Fl_Menu_*, void*) {
-  StoreMelody();
-}
-void UserInterface::cb_mMelodyStore(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_mMelodyStore_i(o,v);
 }
 
 inline void UserInterface::cb_Sound2_i(Fl_Menu_*, void*) {
@@ -186,7 +193,7 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Store Configuration...", 0,  (Fl_Callback*)UserInterface::cb_Store, 0, 0, 0, 0, 12, 0},
  {"Display", 0,  0, 0, 65, 0, 0, 12, 0},
  {"Sound", 0,  (Fl_Callback*)UserInterface::cb_mDisplayInSound, 0, 1, 0, 0, 12, 0},
- {"Spectrum", 0,  (Fl_Callback*)UserInterface::cb_mDisplayInSpec, 0, 17, 0, 0, 12, 0},
+ {"Spectrum", 0,  (Fl_Callback*)UserInterface::cb_mDisplayInSpec, 0, 1, 0, 0, 12, 0},
  {0},
  {"Play", 0,  (Fl_Callback*)UserInterface::cb_mPlayInputSound, 0, 1, 0, 0, 12, 0},
  {0},
@@ -194,6 +201,10 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Analyze", 0x40061,  (Fl_Callback*)UserInterface::cb_mAnalyze, 0, 1, 0, 0, 12, 0},
  {"Load...", 0,  (Fl_Callback*)UserInterface::cb_Load1, 0, 0, 0, 0, 12, 0},
  {"Store...", 0,  (Fl_Callback*)UserInterface::cb_mStoreAnalysisData, 0, 1, 0, 0, 12, 0},
+ {"Melody", 0,  0, 0, 65, 0, 0, 12, 0},
+ {"Analyze", 0,  (Fl_Callback*)UserInterface::cb_mMelodyAnalyze, 0, 0, 0, 0, 12, 0},
+ {"Store", 0,  (Fl_Callback*)UserInterface::cb_mMelodyStore, 0, 1, 0, 0, 12, 0},
+ {0},
  {0},
  {"Transformation", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Load...", 0,  (Fl_Callback*)UserInterface::cb_Load2, 0, 0, 0, 0, 12, 0},
@@ -205,6 +216,7 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Output", 0,  0, 0, 65, 0, 0, 12, 0},
  {"Display", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Sound", 0,  (Fl_Callback*)UserInterface::cb_Sound, 0, 0, 0, 0, 12, 0},
+ {"Spectrum", 0,  (Fl_Callback*)UserInterface::cb_Spectrum, 0, 16, 0, 0, 12, 0},
  {"Sinusoidal", 0,  (Fl_Callback*)UserInterface::cb_Sinusoidal, 0, 0, 0, 0, 12, 0},
  {"Residual", 0,  (Fl_Callback*)UserInterface::cb_Residual, 0, 0, 0, 0, 12, 0},
  {0},
@@ -212,10 +224,6 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Sound", 0,  (Fl_Callback*)UserInterface::cb_Sound1, 0, 0, 0, 0, 12, 0},
  {"Sinusoidal", 0,  (Fl_Callback*)UserInterface::cb_Sinusoidal1, 0, 0, 0, 0, 12, 0},
  {"Residual", 0,  (Fl_Callback*)UserInterface::cb_Residual1, 0, 0, 0, 0, 12, 0},
- {0},
- {"Melody", 0,  0, 0, 65, 0, 0, 12, 0},
- {"Analyze", 0,  (Fl_Callback*)UserInterface::cb_mMelodyAnalyze, 0, 0, 0, 0, 12, 0},
- {"Store", 0,  (Fl_Callback*)UserInterface::cb_mMelodyStore, 0, 1, 0, 0, 12, 0},
  {0},
  {"Store", 0,  0, 0, 64, 0, 0, 12, 0},
  {"Sound", 0,  (Fl_Callback*)UserInterface::cb_Sound2, 0, 0, 0, 0, 12, 0},
@@ -233,15 +241,22 @@ Fl_Menu_Item* UserInterface::mDisplayInSpec = UserInterface::menu_mMenuBar + 6;
 Fl_Menu_Item* UserInterface::mPlayInputSound = UserInterface::menu_mMenuBar + 8;
 Fl_Menu_Item* UserInterface::mAnalyze = UserInterface::menu_mMenuBar + 11;
 Fl_Menu_Item* UserInterface::mStoreAnalysisData = UserInterface::menu_mMenuBar + 13;
-Fl_Menu_Item* UserInterface::mDoTransformation = UserInterface::menu_mMenuBar + 17;
-Fl_Menu_Item* UserInterface::mSynthesize = UserInterface::menu_mMenuBar + 19;
-Fl_Menu_Item* UserInterface::mOutputSM = UserInterface::menu_mMenuBar + 22;
-Fl_Menu_Item* UserInterface::mVisualizeOutputs = UserInterface::menu_mMenuBar + 23;
-Fl_Menu_Item* UserInterface::mPlayOutputs = UserInterface::menu_mMenuBar + 28;
-Fl_Menu_Item* UserInterface::mMelodySM = UserInterface::menu_mMenuBar + 33;
-Fl_Menu_Item* UserInterface::mMelodyAnalyze = UserInterface::menu_mMenuBar + 34;
-Fl_Menu_Item* UserInterface::mMelodyStore = UserInterface::menu_mMenuBar + 35;
-Fl_Menu_Item* UserInterface::mStoreOutputs = UserInterface::menu_mMenuBar + 37;
+Fl_Menu_Item* UserInterface::mMelodySM = UserInterface::menu_mMenuBar + 14;
+Fl_Menu_Item* UserInterface::mMelodyAnalyze = UserInterface::menu_mMenuBar + 15;
+Fl_Menu_Item* UserInterface::mMelodyStore = UserInterface::menu_mMenuBar + 16;
+Fl_Menu_Item* UserInterface::mDoTransformation = UserInterface::menu_mMenuBar + 21;
+Fl_Menu_Item* UserInterface::mSynthesize = UserInterface::menu_mMenuBar + 23;
+Fl_Menu_Item* UserInterface::mOutputSM = UserInterface::menu_mMenuBar + 26;
+Fl_Menu_Item* UserInterface::mVisualizeOutputs = UserInterface::menu_mMenuBar + 27;
+Fl_Menu_Item* UserInterface::mPlayOutputs = UserInterface::menu_mMenuBar + 33;
+Fl_Menu_Item* UserInterface::mStoreOutputs = UserInterface::menu_mMenuBar + 38;
+
+inline void UserInterface::cb_mCounter_i(Fl_Counter*, void*) {
+  ChangeFrame();
+}
+void UserInterface::cb_mCounter(Fl_Counter* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_mCounter_i(o,v);
+}
 
 inline void UserInterface::cb_mWindow2_i(Fl_Window*, void*) {
   delete mWindow2;
@@ -848,26 +863,43 @@ static Fl_Pixmap pixmap_mtg(image_mtg);
 UserInterface::UserInterface() {
   Fl_Window* w;
   Init();
+  mSlot.Wrap( this, &UserInterface::ChangeTimeTag );
   { Fl_Window* o = mWindow = new Fl_Window(872, 548, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
     o->user_data((void*)(this));
-    { Fl_Box* o = mResizable = new Fl_Box(505, 50, 360, 490);
-      o->hide();
-      Fl_Group::current()->resizable(o);
-    }
-    { Fl_Output* o = mConfigurationText = new Fl_Output(105, 25, 400, 20, "Configuration File");
-      o->box(FL_THIN_DOWN_BOX);
-      o->labelsize(12);
-      o->textsize(12);
-      o->align(132);
-    }
     { Fl_Menu_Bar* o = mMenuBar = new Fl_Menu_Bar(0, 0, 872, 21);
       o->box(FL_THIN_UP_BOX);
       o->labelsize(13);
       o->textsize(12);
       o->menu(menu_mMenuBar);
     }
-    mSmartTile = new Fl_Smart_Tile(5, 50, 860, 490);
+    { Fl_Counter* o = mCounter = new Fl_Counter(330, 525, 190, 20, "Frame ");
+      o->box(FL_THIN_UP_BOX);
+      o->labelsize(12);
+      o->minimum(0);
+      o->maximum(0);
+      o->step(1);
+      o->callback((Fl_Callback*)cb_mCounter);
+      o->align(FL_ALIGN_LEFT);
+      o->deactivate();
+    }
+    { Fl_Group* o = new Fl_Group(5, 50, 860, 470);
+      mSmartTile = new Fl_Smart_Tile(5, 50, 860, 470);
+      o->end();
+      Fl_Group::current()->resizable(o);
+    }
+    { Fl_Group* o = new Fl_Group(0, 20, 872, 30);
+      { Fl_Output* o = mConfigurationText = new Fl_Output(105, 25, 400, 20, "Configuration File");
+        o->box(FL_THIN_DOWN_BOX);
+        o->labelsize(12);
+        o->textsize(12);
+        o->align(132);
+      }
+      { Fl_Box* o = new Fl_Box(505, 20, 367, 30);
+        Fl_Group::current()->resizable(o);
+      }
+      o->end();
+    }
     mWindow2=NULL;
     o->end();
   }
@@ -900,7 +932,7 @@ void UserInterface::AboutWindow() {
       pixmap_mtg.label(o);
     }
     mWindow2->show();
-    o->clear_border();
+    o->set_modal();
     o->end();
   }
 }
