@@ -26,7 +26,7 @@ namespace CLAM {
 	class AudioDescriptorsGen: public Processing {
 		AudioDescriptorsGenConfig mConfig;
 
-		const char *GetClassName() {return "AudioDescriptorsGen";}
+		const char *GetClassName() const {return "AudioDescriptorsGen";}
 
 		/** Config change method
 		 * @throw
