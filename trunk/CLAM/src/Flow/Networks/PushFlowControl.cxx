@@ -78,7 +78,7 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 {
 	
 	// for each out port of the processing already executed
-	PublishedOutPorts::Iterator itOutPort;
+	OutPortRegistry::Iterator itOutPort;
 	
 	for (itOutPort=producer->GetOutPorts().Begin(); 
 	     itOutPort!=producer->GetOutPorts().End(); 
