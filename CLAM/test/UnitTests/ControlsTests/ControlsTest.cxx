@@ -180,9 +180,6 @@ private:
 			std::string("in_3"), 
 			inControls[3].GetName() );
 	}
-	// void testInControlTmplArray_Constructor_ControlsGetPublished() //?
-
-
 
 	void testInControlTmplArray_ReceivesControl_HandlerReceivesControlAndId()
 	{
