@@ -1,0 +1,224 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0011 
+header_name {.hxx} 
+code_name {.cxx} 
+gridx 5 
+gridy 5 
+snap 3
+decl {\#include "Fl_Smart_Tile.H"} {} 
+
+decl {class Fl_Smart_Tile;} {public
+} 
+
+class UserInterface {open
+} {
+  decl {public: class AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
+  }
+  Function {UserInterface()} {open
+  } {
+    Fl_Window mWindow {
+      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
+      xywh {97 90 1058 690} type Double resizable visible
+    } {
+      Fl_Input mConfigurationText {
+        label {Configuration File}
+        private xywh {105 25 950 20} box THIN_DOWN_BOX labelsize 12 textsize 12
+      }
+      Fl_Menu_Bar mMenuBar {open selected
+        private xywh {0 0 1060 20} box THIN_UP_BOX labelsize 13 textsize 12
+      } {
+        submenu mSubMenu_1 {
+          label Application open
+          private xywh {0 0 100 20} labelsize 12
+        } {
+          menuitem mMenuItem_1_1 {
+            label {Load configuration file...}
+            callback {LoadConfiguration();}
+            private xywh {0 0 100 20} shortcut 0x4006c labelsize 12
+          }
+          menuitem mMenuItem_1_2 {
+            label Exit
+            callback {Exit();}
+            private xywh {5 5 100 20} shortcut 0x40071 labelsize 12
+          }
+        }
+        submenu mSubMenu_2 {
+          label Analysis open
+          private xywh {0 0 100 20} labelsize 12 deactivate
+        } {
+          menuitem mMenuItem_2 {
+            label Analyze
+            callback {Analyze();}
+            private xywh {15 15 100 20} shortcut 0x40061 labelsize 12
+          }
+          submenu mSubMenu_2_1 {
+            label {Input Sound} open
+            private xywh {15 15 100 20} labelsize 12
+          } {
+            menuitem mMenuItem_2_1 {
+              label Display
+              callback {DisplayInputSound();}
+              private xywh {15 15 100 20} labelsize 12
+            }
+          }
+        }
+        submenu mSubMenu_3 {
+          label {Analysis Data} open
+          private xywh {25 25 100 20} labelsize 12
+        } {
+          menuitem mMenuItem_3_1 {
+            label {Load...}
+            callback {LoadAnalysisData();}
+            private xywh {25 25 100 20} labelsize 12
+          }
+          menuitem mMenuItem_3_2 {
+            label {Store...}
+            callback {StoreAnalysisData();}
+            private xywh {25 25 100 20} labelsize 12 deactivate
+          }
+        }
+        submenu mSubMenu_4 {
+          label Synthesis open
+          private xywh {5 5 100 20} labelsize 12 deactivate
+        } {
+          menuitem mMenuItem_4 {
+            label Synthesize
+            callback {Synthesize();}
+            private xywh {5 5 100 20} shortcut 0x40073 labelsize 12
+          }
+          submenu mSubMenu_4_1 {
+            label {Output Sound} open
+            private xywh {5 5 100 20} labelsize 12
+          } {
+            menuitem mMenuItem_4_1 {
+              label Display
+              callback {DisplayOutputSound();}
+              private xywh {5 5 100 20} labelsize 12
+            }
+            menuitem mMenuItem_4_2 {
+              label {Store...}
+              callback {StoreOutputSound();}
+              private xywh {5 5 100 20} labelsize 12
+            }
+          }
+          submenu mSubMenu_4_2 {
+            label {Output Sound Sinusoidal} open
+            private xywh {25 25 100 20} labelsize 12
+          } {
+            menuitem mMenuItem_4_3 {
+              label Display
+              callback {DisplayOutputSoundSinusoidal();}
+              private xywh {25 25 100 20} labelsize 12
+            }
+            menuitem mMenuItem_4_4 {
+              label {Store...}
+              callback {StoreOutputSoundSinusoidal();}
+              private xywh {25 25 100 20} labelsize 12
+            }
+          }
+          submenu mSubMenu_4_3 {
+            label {Output Sound Residual} open
+            private xywh {30 30 100 20} labelsize 12
+          } {
+            menuitem mMenuItem_4_5 {
+              label Display
+              callback {DisplayOutputSoundResidual();}
+              private xywh {30 30 100 20} labelsize 12
+            }
+            menuitem mMenuItem_4_6 {
+              label {Store...}
+              callback {StoreOutputSoundResidual();}
+              private xywh {30 30 100 20} labelsize 12
+            }
+          }
+        }
+        submenu mSubMenu_5 {
+          label Transformation
+          private xywh {5 5 100 20} labelsize 12
+        } {
+          menuitem mMenuItem_5_1 {
+            label {Load...}
+            callback {LoadTransformation();}
+            private xywh {45 45 100 20} labelsize 12
+          }
+          menuitem mMenuItem_5_2 {
+            label Do
+            callback {Transform();}
+            private xywh {45 45 100 20} labelsize 12 deactivate
+          }
+        }
+        submenu mSubMenu_6 {
+          label Melody
+          private xywh {5 5 100 20} labelsize 12
+        } {
+          menuitem mMenuItem_6_1 {
+            label Analyze
+            callback {AnalyzeMelody();}
+            private xywh {55 55 100 20} labelsize 12 deactivate
+          }
+          menuitem mMenuItem_6_2 {
+            label {Store...}
+            callback {StoreMelody();}
+            private xywh {55 55 100 20} labelsize 12 deactivate
+          }
+        }
+        menuitem mMenuItem {
+          label About
+          callback {AboutWindow()}
+          private xywh {5 5 100 20} labelfont 13 labelsize 12
+        }
+      }
+      Fl_Box mSmartTile {
+        private xywh {0 50 1060 640} color 23
+        class Fl_Smart_Tile
+      }
+    }
+  }
+  Function {AboutWindow()} {private return_type void
+  } {
+    Fl_Window mWindow2 {
+      label {About this program...}
+      callback {delete mWindow2;} open
+      private xywh {428 401 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
+      code0 {mWindow2->show();} noborder visible
+    } {
+      Fl_Box {} {
+        label {SMS Analysis/Synthesis Application}
+        private xywh {85 15 265 20} labelfont 3 labelsize 12
+      }
+      Fl_Box {} {
+        label {by MTG - IUA - UPF (Barcelona, Spain)}
+        private xywh {85 40 265 20} labelfont 2 labelsize 12
+      }
+      Fl_Box {} {
+        label {logos/iua.xpm}
+        private xywh {360 15 50 60} labeltype image
+      }
+      Fl_Box {} {
+        label {please visit us at http://www.iua.upf.es/mtg for more info}
+        private xywh {90 65 260 20} labelfont 2 labelsize 11
+      }
+      Fl_Box {} {
+        label {logos/mtg.xpm}
+        private xywh {10 20 75 55} labeltype image
+      }
+    }
+  }
+  decl {void LoadConfiguration(void);} {}
+  decl {void DisplayInputSound(void);} {}
+  decl {void Analyze(void);} {}
+  decl {void LoadAnalysisData(void);} {}
+  decl {void StoreAnalysisData(void);} {}
+  decl {void Synthesize(void);} {}
+  decl {void AnalyzeMelody(void);} {}
+  decl {void StoreMelody(void);} {}
+  decl {void StoreOutputSound(void);} {}
+  decl {void DisplayOutputSound(void);} {}
+  decl {void StoreOutputSoundResidual(void);} {}
+  decl {void DisplayOutputSoundResidual(void);} {}
+  decl {void StoreOutputSoundSinusoidal(void);} {}
+  decl {void DisplayOutputSoundSinusoidal(void);} {}
+  decl {void LoadTransformation(void);} {}
+  decl {void Transform(void);} {}
+  decl {void Exit(void);} {}
+} 

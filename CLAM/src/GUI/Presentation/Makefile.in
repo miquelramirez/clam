@@ -1,0 +1,13 @@
+TOP=../../..
+
+MODULES = GUI_Presentation\
+	  GUI_AudioPresentation\
+	  GUI_FDFilterGenPresentation\
+	  GUI_OscillatorPresentation\
+	  GUI_SegmentPresentation\
+	  GUI_SegmentTFPresentation\
+	  GUI_SpectralDelayPresentation\
+	  GUI_SpectrumPresentation\
+	  GUI_AudioPlayerPresentation
+
+include $(TOP)/unix_tools/make.rules

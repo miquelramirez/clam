@@ -1,0 +1,9 @@
+TOP=../..
+
+MODULES = Spectrum\
+          Audio\
+          Envelope\
+          Fundamental\
+          SpectralPeakArray
+
+include $(TOP)/unix_tools/make.rules

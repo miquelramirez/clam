@@ -1,0 +1,10 @@
+<!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
+<SMSTransformationConfig>
+	<Name/>
+	<Type/>
+	<FAmount>200</FAmount>
+	<BPFAmount>
+		<Interpolation>Linear</Interpolation>
+		<Points>{0 0} {1 200}</Points>
+	</BPFAmount>
+</SMSTransformationConfig>

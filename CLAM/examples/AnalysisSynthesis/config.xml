@@ -1,0 +1,29 @@
+<SMSAnalysisSynthesisConfig>
+	<Name/>
+	<InputSoundFile>\infile.wav</InputSoundFile>
+	<OutputSoundFile>\1_out.wav</OutputSoundFile>
+	<OutputXMLFile>\analysis.xml</OutputXMLFile>
+	<InputXMLFile>\analysis.xml</InputXMLFile>
+	<SamplingRate>44100</SamplingRate>
+	<AnalysisWindowSize>1025</AnalysisWindowSize>
+	<AnalysisHopSize>-1</AnalysisHopSize>
+	<AnalysisWindowType>Hamming</AnalysisWindowType>
+	<ResAnalysisWindowSize>1025</ResAnalysisWindowSize>
+	<ResAnalysisHopSize>-1</ResAnalysisHopSize>
+	<ResAnalysisWindowType>BlackmanHarris92</ResAnalysisWindowType>
+	<AnalysisZeroPaddingFactor>0</AnalysisZeroPaddingFactor>
+	<AnalysisPeakDetectMagThreshold>-120</AnalysisPeakDetectMagThreshold>
+	<AnalysisMaxSines>50</AnalysisMaxSines>
+	<AnalysisSinTrackingFreqDeviation>20</AnalysisSinTrackingFreqDeviation>
+	<AnalysisReferenceFundFreq>1000</AnalysisReferenceFundFreq>
+	<AnalysisLowestFundFreq>40</AnalysisLowestFundFreq>
+	<AnalysisHighestFundFreq>6000</AnalysisHighestFundFreq>
+	<AnalysisMaxFundFreqError>10</AnalysisMaxFundFreqError>
+	<AnalysisMaxFundCandidates>50</AnalysisMaxFundCandidates>
+	<AnalysisHarmonic>0</AnalysisHarmonic>
+	<SynthesisFrameSize>256</SynthesisFrameSize>
+	<SynthesisWindowType>Triangular</SynthesisWindowType>
+	<SynthesisHopSize>-1</SynthesisHopSize>
+	<SynthesisZeroPaddingFactor>0</SynthesisZeroPaddingFactor>
+	<SynthesisPhaseManagementType>Continuation</SynthesisPhaseManagementType>
+</SMSAnalysisSynthesisConfig>

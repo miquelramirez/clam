@@ -1,0 +1,366 @@
++ El bucle principal de la aplicación ahora está en la propia aplicación :) SaltoApp::AudioMain
+
++ Cambio del modelo de ejecución. Ahora el flujo de SALTO se ha modelado como
+  máquina de estados. 
+
++ Eliminado un miembro irrelevante: AudioInBuffer
+
++ Eliminado un miembro irrelevante: mpSpectralBuffer
+
++ Cuenta de muestras sintetizadas trasladada a SaltoSynth::Do( Audio*& )
+
++ Estudiamos la viabilidad de tres Extract Class:
+  
+  SaltoSynth::AttackResidualSynthesis -> ResidualAttackSynthesis : Processing
+    + Despliegue:
+		Aparece en:
+			-> SaltoSynth::HandleSustain
+				-> SaltoSynth::DoStationarySynthesisProcess
+			-> SaltoSynth::HandleTransition
+			    -> SaltoSynth::DoStationarySynthesisProcess
+	+ Utiliza:
+		CSaltoSynthFrame ( parámetro de entrada )
+		CSaltoResidualSynthesis::DoAttackResidualSynthesis
+		Parameters::GetAttackTimbre
+		mAttackResVolume
+		mFrameCounterBase
+		mResFadeEnd
+		mResFadeStart
+
+	+ Discusión del Refactoring:
+		De momento podemos apreciar que código ha sido escrito intentando optimizar
+		sin embargo le falta algún comentario... Tal y como están ahora las cosas
+		es mejor dejar el método tal y como está ( añadiendo comentarios claro está ),
+		y realizando algunas optimizaciones simples.
+
+  SaltoSynth::SinusoidalSynthesis -> SinusoidalSynthesis : Processing
+	+ Despliegue:	
+		Aparece en
+			-> SaltoSynth::HandleSustain
+				 -> SaltoSynth::DoStationarySynthesisProcess	    
+			-> SaltoSynt::HandleTransition
+				 -> SaltoSynth::DoStationarySynthesisProcess
+			-> SaltoSynth::HandleRelease
+				 -> SaltoSynth::DoReleaseSynthesisProcess
+			
+				 
+	+ Utiliza:
+		CSaltoSynthFrame ( tipo del parámetro de entrada )
+		CSaltoSineSynthesis::DoSineSynthesis
+		Parameters::GetAttackTimbre
+		Parameters::GetBreathOnlySound
+		Parameters::SetBreathOnlySound
+
+	+ Discusión del Refactoring:
+		Este método consiste en un condicional de esta guisa
+
+			 if ( mpParams->GetBreathOnlySound() )
+			 {
+				if ( mpParams->GetAttackTimbre().GetLevel() > 0 )
+				{
+					mpParams->SetBreathOnlySound(false);
+					mpSineSynthPO->DoSineSynthesis(*pSynthFrame,mpParams->GetAttackTimbre().GetLevel()/127.0);	
+				}
+				else
+					mpSineSynthPO->DoSineSynthesis(*pSynthFrame,0.0);
+			 }	
+			 else
+			 {
+				if(mpParams->GetAttackTimbre().GetLevel() < 0) 
+				//at which level we go from note sound to breath-only sound
+				{
+					mpParams->SetBreathOnlySound(true);
+					mpSineSynthPO->DoSineSynthesis(*pSynthFrame,0.0);
+				}
+			else
+				mpSineSynthPO->DoSineSynthesis(*pSynthFrame,mpParams->GetAttackTimbre().GetLevel()/127.0);
+			 }		 
+
+		miremos su estructura
+
+			 if ( A  ) then
+				if ( B  ) then
+				   A:=false        A & B -> !A
+				   doX()
+				else
+				   doY()
+				endif	
+			 else			 
+			    if ( !B ) then
+				   A:=true
+				   doY()
+				else
+				   doX()
+				endif
+			 endif
+		
+		esto no tiene mucho sentido, vemos que la condición más importante es B que no A por lo que
+
+		if ( B ) then
+		   if ( A == true ) A:=!A
+		   doX()
+		else
+		   if ( A == false ) A:=!A
+		   doY()
+		endif
+
+		Vemos que una vez analizado el método, simplemente se trata de una decisión sobre la interpretación
+		de los parámetros, por lo que posiblemente resulte mucho más claro mover esta decisión a quien
+		sabe como llevarla a término: CSaltoSineSynthesis. Esto implica un cambio en la llamada: el nivel
+		del ataque debe resolverlo CSaltoSineSynthesis::DoSineSynthesis que también puede acceder a mpParams
+		( que es un singleton). Comprobemos que es factible esto mirando 
+			  a) quien llama a DoSineSynthesis
+				 el metodo SinusoidalSynthesis que a su vez es llamado desde
+					DoReleaseSynthesisProcess
+					DoStationarySynthesisProcess
+			  b) como es el código de DoSineSynthesis
+					no existen problemas evidentes
+
+		Realizamos el refactoring: 
+			  1) Reescribimos el código de SinusoidalSynthesis
+			  2) Cambiamos la definición y declaración de CSaltoSineSynthesis::DoSinesynthesis
+				 cambiando el parámetro gain por una variable local con el mismo nombre
+			  3) Movemos el código de SinusoidalSynthesis a DoSineSynthesis
+			  4) Sustituimos las llamadas a SinusoidalSynthesis por llamadas a DoSineSynthesis
+			  5) Eliminamos la declaración y definición de SinusoidalSynthesis
+			  6) Compilamos y ejecutamos
+
+
+  SaltoSynth::StationaryResidualSynthesis -> StationaryResidualSynthesis : Processing
+     + Despliegue:
+		Aparece en
+			-> SaltoSynth::HandleSustain
+				-> SaltoSynth::DoStationarySynthesisProcess
+
+			-> SaltoSynth::HandleTransition
+			    -> SaltoSynth::DoStationarySynthesisProcess
+  
+	 + Utiliza:
+			-> CSaltoDataManagment
+			-> CSaltoSynthFrame ( parámetro del método )
+			-> CSaltoResidualSynthesis::DoStatResidualSynthesis2
+			-> Frame
+			...
+
+	 + Discusión del Refactoring:
+	   
+	   De nuevo tenemos un condicional que decide los parámetros de control de un Processing Object. Cada
+	   vez estoy más convencido que vale la pena plantearse todos estos parámetros de control se modelen
+	   como controles, de manera que el sintetizador hace de "cerebro" adquiriendo información de su entorno
+	   ( mensajes MIDI, mensajes de la GUI ) y decidiendo que PO's se deben ejecutar, y en que orden ( cosa
+	   que ya hace de forma implícita), así como enviando los controles de salida que se consideren necesarios,
+	   calculándose los valores en un solo lugar... Sin embargo esto tiene una consecuencia interesante:
+	   si bien el PO "aplica" el control en su Do el valor del control puede ser tomado del "cerebro" tal como
+	   está ( as is basis ), o bien podemos programar el callback del control en el PO cliente de manera que
+	   este procesa el valor enviado por el "cerebro", para su posterior uso cuando se llame al Do. Pero no
+	   nos podemos olvidar de la eficiencia: ¿que es más óptimo, confiar en el mecanismo de controles o en la
+	   aproximación ortodoxa de pasar los valores por parámetro ?
+
+	   De todas maneras en este método vemos que existen algunas incongruencias:
+
+	   En este método vemos que  se decide:
+	     + La identidad del residuo estacionario, que se obtiene de la clase CSaltoDataManagment ( la BD ).
+		   En primer lugar vemos que solo se determina esta identidad en el caso que 
+					 mFrameCounterBase>=mStatResFadeInFrom
+		   
+		   en cualquier otro caso pStatResidual es una referencia nula. Pero lo gracioso es que la llamada 
+		   al método CSaltoResidualSynthesis::DoStatResidualSynthesis2 con pStatResidual == NULL no hace 
+		   NADA... por lo que la determinación del valor de level, de correctionFactor y la llamada deberían
+		   estar dentro del scope del if... Comprobaremos dentro de DoStatResidualSynthesis2 con un 
+		   CLAM_DEBUG_ASSERT que pStatResidual no es nulo: visto lo visto, está claro que es una precondición
+		   del método.
+
+		   Además el condicional que decide la dirección del bucle es extremadamente sospechoso:
+			  if ( A >= D )
+			  {
+				doZ();
+				if ( A < (B-100) & C )
+				{
+					doX();
+					A++;
+					if ( A >= ( B-100 ) )
+					   C=!C;
+				}
+				else if ( A <= (B-100) & !C )
+				{
+					doX();
+					A--;
+					if ( A <= 100 )
+					   C=!C;
+				}
+			  }
+			  doLevelCalc();
+			  doCorrectionFactorCalc();
+			  CallDoStatResidualSynthesis();	   		    
+
+			Analicemos las variables para ver si nuestras sospechas son ciertas:
+			-> A ( mFrameCounterStatRes ):
+				   Se inicializa a 100 en SaltoSynth::InitInterpolationSynthesis
+				   
+				   Sólo es modificada en SaltoSynth::StationaryResidualSynthesis
+
+			-> B ( mNumFramesStatRes ):
+				   Se inicializa en SaltoSynth::InitiInterpolationSynthesis, al numero
+				   de frames de residuo que tenemos en la BD.
+
+				   Se consulta en SaltoSynth::StationaryResidualSynthesis
+				   
+			-> C ( mStatResLoopDirectionFW ):
+				   Se inicializa a cierto en SaltoSynth::InitInterpolatingSynthesis
+
+				   Se consulta y modifica en SaltoSynth::StationaryResidualSynthesis
+
+				   Se vuelve a inicializar a cierto en SaltoSynth::EndTransitionSynthesis
+
+			-> D ( mStatResFadeInFrom ) :
+				   Se inicializa en SaltoSynth::InitInterpolatingSynthesis al valor de mResFadeStart
+				   
+				   Se consulta en SaltoSynth::StationaryResidualSynthesis
+
+				   Se vuelve a inicializar en SaltoSynth::TransitionSynthesis
+
+				   Vemos que el valor de mStatResFadeInFrom depende directamente de mResFadeStart, rastreemos
+				   esta variable:
+						
+						Se inicializa  en SaltoSynth::InitInterpolatingSynthesis a partir del valor que
+						hay en la BD
+						
+						Se Consulta en AttackResidual Synthesis
+
+						Se vuelve a inicializar en SaltoSynth::EndTransitionSynthesis a partir del valor
+						que hay en la BD
+			
+			Podemos deducir una serie de cosas:
+				
+				a) B y D son constantes a todos los efectos
+				a) A está confinada siempre al rango [100:B-100]
+
+			por lo que nuestras sospechas se confirman...
+
+			No haremos extract class a partir de este método, pero hemos detectado un barullo bastante
+			importante, que mejor será que arreglemos.
+			
+			1) Cambiamos primero el código de CSaltoResidualSynthesis::DoStatResidualSynthesis2 como
+			   hemos comentado más arriba
+			2) De rebote, observamos en en CSaltoResidualSynthesis::DoStatResidualSynthesis2 hay dos
+			   detalles que estaría bien arreglar ya que pasamos por aquí:
+						i) se evalua demasiadas veces una división por 22050 ( el rango espectral...)
+						   podemos fijarlo como static const y precalcular el recíproco
+						ii) leftBin y rightBin dependen de centerBin de la siguiente
+							manera de centerBin:
+								   centerBin = resonanceFreq*(specSize-1)*invSamplingRate;
+								   leftBin = centerBin - (0.9*centerBin)
+								   rightBin = centerBin -  (1.1*centerBin)
+							pero por alguna razón tenemos:
+								   leftBin = centerBin - (0.9*resonanceFreq*(specSize-1)*invSamplingRate);
+								   rightBin = centerBin - ( 1.1* resonanceFreq*(specSize-1)*invSamplingRate );
+							y en el resto del código no se utiliza centerBin para nada más... Cambiamos
+							este código por lo que debería ser. Diréis que hilo muy fino, pero esté método se
+							llama casi siempre y al hacer esto pasamos de hacer 3+4+4 (11) multiplicaciones
+							y 1+2+2 (5)  restas a hacer 3+1+1 (5) multiplicaciones y 1+1+1 (3) restas. Siempre 
+							en coma flotante además...
+			3) Ahora es seguro replantear el condicional de la siguiente manera:
+
+			   if ( A >= D )
+			   {
+					doZ();
+					doX();
+					
+					if (C)
+					{
+						A++;
+						if ( A>= B-100 )
+						   C=!C;
+					}
+					else
+					{
+						A--;
+						if ( A<= 100 )
+						   C=!C;
+					}
+					
+					doLevelCalc();
+					doCorrectionFactorCalc();
+					CallDoStatResidualSynthesis();	   		    
+			   }
+
+			   También podemos convertir algunas divisiones en multiplicaciones por recíprocos constantes
+			   y después está la cuestión del ipFactor, ya que si es mayor que 1 lo recortamos sobre el intervalo
+			   [ -inf, 1 ], nos podemos ahorrar una multiplicación ;)
+
+			   Como consecuencia de la transformación observamos que la condición if (A>=D) puede ser
+			   testeada antes de llamar a la función ( ya que el else es nulo ), por lo que hacemos
+			   SaltoSynth::DoStationarySynthesisProcess compruebe si debe o no llamar a este método
+
+			   Por último, compilamos y ejecutamos, y añadimos comentarios
+
+  + Extracción de la síntesis de la Transición entre dos notas
+
+	En principio, este es un claro candidato a Extract Class, e identificamos como partes de la síntesis tres
+	funciones de SaltoSynth: SaltoSynth::InitTransitionSynthesis, SaltoSynth::EndTransitionSynthesis y 
+	SaltoSynth::DoTransitionSynthesis, sin embargo tenemos que analizar el SaltoSynth::InitTransitionSynthesis
+	y el EndTransitionSynthesis, ya que aquí al menos, parece, que se están inicializando ( y restaurando algunos
+	valores ).
+
+	Vemos que las variables miembro de SaltoSynth están extremadamente cruzadas, por lo que de momento resulta
+	impracticable extraer la clase TransitionSynthesis de forma segura... sin embargo tenemos otros candidatos
+	para posible refactorización...
+
+  + DoStationarySynthesisProcess, DoReleaseSynthesisProcess
+
+	Estos dos métodos de SaltoSynth también son candidatos a convertirse en nuevos Processing... ya que arrastran
+	consigo un número considerable de miembros y de funcionalidad... examinemoslos:
+
+	 vemos que ambos métodos son prácticamente el mismo código:
+
+	 DoStationarySynthesisProcess                           DoReleaseSynthesisProcess
+	 if ( UseSines )                                           if ( UseSines )
+		doSineSynthesis();									      doSineSynthesis();
+	 if ( UseAttackResidual )            
+		doAttackResidual();
+	 if ( UseStationaryResidual )
+	    doStationaryResidual();
+
+		doSpectralSynthesis();									doSpectralSynthesis();
+
+	 vemos que estos dos métodos tienen como objetivo generar la parte sinusoidal
+	 y residual de la señal sintetizada para ser convertida al dominio temporal.
+	 Vemos que el control del flujo del procesado de la síntesis depende de los
+	 miembros UseSines, UseAttackResidual y UseStationaryResidual de Parameters. 
+	 ¿Qué opciones tenemos para modelar esto?
+		  a) un ProcessingComposite que contiene los Processing que se encargan
+		     de manejar la síntesis residual y sinusoidal y ofrece en su interfaz
+			 la posibilidad de cambiar la topología interna del Composite ( con
+			 métodos al estilo de Enable/DisableSinusoidalProcessing() etc. ),
+			 en que el Do tendria una estructura como la siguiente:
+
+				Do( CSaltoSynthFrame& synthesisFrame )
+				{
+						if ( enabledSinusoidal )
+						   doSineProcessing();
+						if ( enabledAttackResidual )
+						   doAttackReisdualProcessing();
+						if ( enabledStationaryResidual )
+						   doStationaryResidualProcessing();
+
+						doSpectralSynthesis( synthesisFrame );
+				}				
+
+			b) con un Processing Composite que recibe UseSines, UseAttackResidual y
+			   UseStatResidual como controles, y los Enable/Disable anteriores
+			   se convierten en callbacks de los controles, que determinan el
+			   valor de los flags que definen la topología interna del composite.
+
+		¿Qué escogemos? La segunda opción resulta muy interesante: ya que en cuanto
+		tengamos mejor definido el papel de Parameters resultará mucho más eficiente
+		( y elegante ) distribuir estas señales en forma de controles. Ejecutamos
+		la segunda opción, por lo tanto...
+
+		1) Creamos la clase SynthesisProcessing, y definimos la plantilla de clase
+		   básica para ProcessingComposite ( ConcreteConfigure, Do's, ConcreteStart,
+		   etc. )
+		2) Definimos un tipo enumerado para identificar los controles del Processing
+		3) Movemos a esta clase los métodos necesarios
+		4) Implementación del ConcreteConfigure
+		   + Vemos que CSaltoSineSynthesis no es un Processing y debería serlo...
+	  

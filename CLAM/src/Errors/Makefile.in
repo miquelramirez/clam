@@ -1,0 +1,5 @@
+TOP=../..
+
+MODULES = Error
+
+include $(TOP)/unix_tools/make.rules

@@ -1,0 +1,5 @@
+TOP = ../..
+
+SUBDIRS = XML
+
+include $(TOP)/unix_tools/make.rules

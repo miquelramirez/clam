@@ -1,0 +1,45 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0011 
+header_name {.hxx} 
+code_name {.cxx} 
+gridx 5 
+gridy 5 
+snap 3
+class Fl_WaitMessage {open
+} {
+  Function {Fl_WaitMessage()} {open
+  } {
+    Fl_Window mWindow {
+      label {Please wait...} open selected
+      xywh {579 656 341 100} box UP_BOX modal visible
+    } {
+      Fl_Slider mSlider {
+        xywh {5 55 330 30} type Horizontal box THIN_DOWN_BOX selection_color 60 minimum -1 slider_size 0.5
+      }
+      Fl_Box mLabel {
+        xywh {5 15 330 30} align 21
+      }
+    }
+    code {mValue = 0; mValueInc = 0.05;} {}
+    code {timeout();} {}
+  }
+  Function {~Fl_WaitMessage()} {open
+  } {
+    code {Fl::remove_timeout(s_timeout,this);
+delete mWindow;} {}
+  }
+  Function {s_timeout(void* ptr)} {open return_type {static void}
+  } {
+    code {((Fl_WaitMessage*)ptr)->timeout();} {}
+  }
+  Function {timeout(void)} {open return_type void
+  } {
+    code {Fl::add_timeout(0.03,s_timeout,this);
+mSlider->value(mValue);
+mValue += mValueInc;
+if (mValue<=-1.0) mValueInc = -mValueInc;
+if (mValue>=1.0) mValueInc = -mValueInc;} {}
+  }
+  decl {float mValue,mValueInc;} {public
+  }
+} 

@@ -1,0 +1,79 @@
+=================================================================
+CLAM Spectral Delay version 0.0.1 release notes 
+=================================================================
+
+Contents:
+
+	0 - Disclaimer
+	1 - What is Spectral Delay for?
+	2 - How to use it
+	3 - How to build it
+	4 - FAQ
+	5 - Licensing
+
+==============
+0 - Disclaimer
+==============
+
+First of all, I would like you to note that this Spectral Delay
+is completely unrelated with the Native Instruments notorious
+VST plug-in. Consider it an attempt at reverse-engineering :)
+
+Then also note the app current version number: it "works" in the
+sense that it loads and saves files, allows you to press and
+move around the knobs, and even does some "processing" on streaming
+audio. But unfortunately, there has been not time to make it sound
+well, or at least not to sound horrible.
+
+===============================
+1 - What is Spectral Delay for?
+===============================
+
+The "Spectral Delay" is just a bank of filters with delays attached
+that work on frequency domain. It acquires its input from the input
+file you select with the GUI, processes ( or messes ) it
+and then renders the output to your system sound device. It also
+saves the processed (or messed) audio to the output file you selected.
+
+=================
+2 - How to use it 
+=================
+
+I expect it to be quite intuitive, but as feedback is sent to 
+CLAM mailing list, this section will grow in size.
+
+===================
+3 - How to build it
+===================
+
+It's pretty easy, you just have to remind to setup your local "sandbox"
+as reported on the CLAM website, and once setup you just run the autoconf,
+the configure and then go back to the directory you found this README file
+and then:
+
+	make SpectralDelay_FLTK
+
+if you want a light-weight GUI
+or
+
+	make SpectralDelay_Qt
+
+if you want a light-weight GUI ( and a bit nicer ).
+
+Yes, there are two versions of the GUI, one developed with FLTK 
+( http://www.fltk.org ) and the other one with the famous Qt (http://www.trolltech.com)
+It's pretty the same thing but I find it too look nicer under X11 with
+FLTK than with Qt due to the horrible Windoze MDI emulation Qt does.
+
+=======
+4 - FAQ
+=======
+
+Not many questions yet... 
+
+=============
+5 - Licensing
+=============
+
+As the rest of CLAM, this is also GPL. You will find the license text all over
+the example sources.
