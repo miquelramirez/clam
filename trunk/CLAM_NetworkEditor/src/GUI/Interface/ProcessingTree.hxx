@@ -58,8 +58,8 @@ void CreateProcessing(QListViewItem *);
 	void PressProcessing(QListViewItem *);
 
 public: //signals
-	SigSlot::Signalv2 < const std::string &, CLAM::Processing * > AddNewProcessing;      
-	SigSlot::Slotv0 ProcessingCreated;
+	SigSlot::Signalv2 < const std::string &, CLAM::Processing * > SignalAddNewProcessing;      
+	SigSlot::Slotv0 SlotProcessingCreated;
 };
 
 } // namespace NetworkGUI

@@ -1,3 +1,5 @@
+#ifndef __DUMMYPRODUCTS__
+#define __DUMMYPRODUCTS__
 
 namespace CLAMTest
 {
@@ -54,3 +56,5 @@ namespace CLAMTest
 
 
 }
+
+#endif

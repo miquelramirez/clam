@@ -22,8 +22,9 @@
 #include "SpectralDescriptors.hxx"
 #include "Spectrum.hxx"
 #include "Array.hxx"
+#include <algorithm>
 
-using namespace CLAM;
+namespace CLAM{
 
 SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum):Descriptor(eNumAttr)
 {
@@ -31,7 +32,32 @@ SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum):Descriptor(eNumAtt
 	mpSpectrum=pSpectrum;
 }
 
-// Implementation
+SpectralDescriptors::SpectralDescriptors(TData initVal):Descriptor(eNumAttr)
+{
+	MandatoryInit();
+	AddAll();
+	UpdateData();
+	SetMean(initVal);
+	SetGeometricMean(initVal);
+	SetEnergy(initVal);
+	SetCentroid(initVal);
+	SetMoment2(initVal);
+	SetMoment3(initVal);	
+	SetMoment4(initVal);
+	SetMoment5(initVal);
+	SetMoment6(initVal);
+	SetKurtosis(initVal);
+	SetSkewness(initVal);
+	SetTilt(initVal);
+	SetFlatness(initVal);
+	SetHighFrequencyCoefficient(initVal);
+	SetMaxMagFreq(initVal);
+	SetLowFreqEnergyRelation(initVal);
+	SetRolloff(initVal);
+	SetIrregularity(initVal);
+	SetStrongPeak(initVal);
+	SetHFC(initVal);
+}
 
 void SpectralDescriptors::DefaultInit() {
 	mpSpectrum=0;
@@ -44,7 +70,7 @@ void SpectralDescriptors::CopyInit(const SpectralDescriptors & copied) {
 	mpStats=0;
 }
 
-inline const Spectrum* SpectralDescriptors::GetpSpectrum() const {
+const Spectrum* SpectralDescriptors::GetpSpectrum() const {
 	return mpSpectrum;
 }
 
@@ -232,3 +258,374 @@ TData SpectralDescriptors::ComputeRolloff()
 	 
 	return i;
 }
+
+
+
+SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult)
+{
+	SpectralDescriptors  tmpD(a);
+	if(a.HasMean())
+		tmpD.SetMean(a.GetMean()*mult);
+	if(a.HasGeometricMean())
+		tmpD.SetGeometricMean(a.GetGeometricMean()*mult);
+	if(a.HasEnergy())
+		tmpD.SetEnergy(a.GetEnergy()*mult);
+	if(a.HasCentroid())
+		tmpD.SetCentroid(a.GetCentroid()*mult);
+	if(a.HasMoment2())
+		tmpD.SetMoment2(a.GetMoment2()*mult);
+	if(a.HasMoment3())
+		tmpD.SetMoment3(a.GetMoment3()*mult);
+	if(a.HasMoment4())
+		tmpD.SetMoment4(a.GetMoment4()*mult);
+	if(a.HasMoment5())
+		tmpD.SetMoment5(a.GetMoment5()*mult);
+	if(a.HasMoment6())
+		tmpD.SetMoment6(a.GetMoment6()*mult);
+	if(a.HasIrregularity())
+			tmpD.SetIrregularity(a.GetIrregularity()*mult);
+	if(a.HasTilt())
+		tmpD.SetTilt(a.GetTilt()*mult);
+	if(a.HasFlatness())
+		tmpD.SetFlatness(a.GetFlatness()*mult);
+	if(a.HasKurtosis())
+		tmpD.SetKurtosis(a.GetKurtosis()*mult);
+	if(a.HasStrongPeak())
+		tmpD.SetStrongPeak(a.GetStrongPeak()*mult);
+	if(a.HasHFC())
+		tmpD.SetHFC(a.GetHFC()*mult);
+	if(a.HasMaxMagFreq())
+		tmpD.SetMaxMagFreq(a.GetMaxMagFreq()*mult);
+	if(a.HasLowFreqEnergyRelation())
+		tmpD.SetLowFreqEnergyRelation(a.GetLowFreqEnergyRelation()*mult);
+	if(a.HasSkewness())
+		tmpD.SetSkewness(a.GetSkewness()*mult);
+	if(a.HasRolloff())
+		tmpD.SetRolloff(a.GetRolloff()*mult);
+	if(a.HasHighFrequencyCoefficient())
+		tmpD.SetHighFrequencyCoefficient(a.GetHighFrequencyCoefficient()*mult);
+	if(a.HasBandDescriptors())
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetBandDescriptors(a.GetBandDescriptors());
+	if(a.HasMFCC())
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetMFCC(a.GetMFCC());
+	if(a.HasBandEnergy())
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetBandEnergy(a.GetBandEnergy());
+	return tmpD;
+}
+
+SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescriptors& b)
+{
+	SpectralDescriptors  tmpD;
+	if(a.HasMean() && b.HasMean() )
+	{
+		tmpD.AddMean();
+		tmpD.UpdateData();
+		tmpD.SetMean(a.GetMean()*b.GetMean());
+	}
+	if(a.HasGeometricMean() && b.HasGeometricMean() )
+	{
+		tmpD.AddGeometricMean();
+		tmpD.UpdateData();
+		tmpD.SetGeometricMean(a.GetGeometricMean()*b.GetGeometricMean());
+	}
+	if(a.HasEnergy() && b.HasEnergy() )
+	{
+		tmpD.AddEnergy();
+		tmpD.UpdateData();
+		tmpD.SetEnergy(a.GetEnergy()*b.GetEnergy());
+	}
+	if(a.HasCentroid() && b.HasCentroid() )
+	{
+		tmpD.AddCentroid();
+		tmpD.UpdateData();
+		tmpD.SetCentroid(a.GetCentroid()*b.GetCentroid());
+	}
+	if(a.HasMoment2() && b.HasMoment2() )
+	{
+		tmpD.AddMoment2();
+		tmpD.UpdateData();
+		tmpD.SetMoment2(a.GetMoment2()*b.GetMoment2());
+	}
+	if(a.HasMoment3() && b.HasMoment3() )
+	{
+		tmpD.AddMoment3();
+		tmpD.UpdateData();
+		tmpD.SetMoment3(a.GetMoment3()*b.GetMoment3());
+	}
+	if(a.HasMoment4() && b.HasMoment4() )
+	{
+		tmpD.AddMoment4();
+		tmpD.UpdateData();
+		tmpD.SetMoment4(a.GetMoment4()*b.HasMoment4());
+	}
+	if(a.HasMoment5() && b.HasMoment5())
+	{
+		tmpD.AddMoment5();
+		tmpD.UpdateData();
+		tmpD.SetMoment5(a.GetMoment5()*b.GetMoment5());
+	}
+	if(a.HasMoment6() && b.HasMoment6() )
+	{
+		tmpD.AddMoment6();
+		tmpD.UpdateData();
+		tmpD.SetMoment6(a.GetMoment6()*b.GetMoment6());
+	}
+	if(a.HasIrregularity() && b.HasIrregularity() )
+	{
+		tmpD.AddIrregularity();
+		tmpD.UpdateData();
+		tmpD.SetIrregularity(a.GetIrregularity()*b.GetIrregularity());
+	}
+	if(a.HasTilt() && b.HasTilt() )
+	{
+		tmpD.AddTilt();
+		tmpD.UpdateData();
+		tmpD.SetTilt(a.GetTilt()*b.GetTilt());
+	}
+	if(a.HasFlatness() && b.HasFlatness() )
+	{
+		tmpD.AddFlatness();
+		tmpD.UpdateData();
+		tmpD.SetFlatness(a.GetFlatness()*b.GetFlatness());
+	}
+	if(a.HasKurtosis() && b.HasKurtosis() )
+	{
+		tmpD.AddKurtosis();
+		tmpD.UpdateData();
+		tmpD.SetKurtosis(a.GetKurtosis()*b.GetKurtosis());
+	}
+	if(a.HasStrongPeak() && b.HasStrongPeak() )
+	{
+		tmpD.AddStrongPeak();
+		tmpD.UpdateData();
+		tmpD.SetStrongPeak(a.GetStrongPeak()*b.GetStrongPeak());
+	}
+	if(a.HasHFC() && b.HasHFC() )
+	{
+		tmpD.AddHFC();
+		tmpD.UpdateData();
+		tmpD.SetHFC(a.GetHFC()*b.GetHFC());
+	}
+	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
+	{
+		tmpD.AddMaxMagFreq();
+		tmpD.UpdateData();
+		tmpD.SetMaxMagFreq(a.GetMaxMagFreq()*b.GetMaxMagFreq());
+	}
+	if(a.HasLowFreqEnergyRelation() && b.HasLowFreqEnergyRelation() )
+	{
+		tmpD.AddLowFreqEnergyRelation();
+		tmpD.UpdateData();
+		tmpD.SetLowFreqEnergyRelation(a.GetLowFreqEnergyRelation()*b.GetLowFreqEnergyRelation());
+	}
+	if(a.HasSkewness() && b.HasSkewness() )
+	{
+		tmpD.AddSkewness();
+		tmpD.UpdateData();
+		tmpD.SetSkewness(a.GetSkewness()*b.GetSkewness());
+	}
+	if(a.HasRolloff() && b.HasRolloff() )
+	{
+		tmpD.AddRolloff();
+		tmpD.UpdateData();
+		tmpD.SetRolloff(a.GetRolloff()*b.GetRolloff());
+	}
+	if(a.HasHighFrequencyCoefficient() && b.HasHighFrequencyCoefficient() )
+	{
+		tmpD.AddHighFrequencyCoefficient();
+		tmpD.UpdateData();
+		tmpD.SetHighFrequencyCoefficient(a.GetHighFrequencyCoefficient()*b.GetHighFrequencyCoefficient());
+	}
+	if(a.HasBandDescriptors() && b.HasBandDescriptors() )
+	{
+		tmpD.AddBandDescriptors();
+		tmpD.UpdateData();
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetBandDescriptors(a.GetBandDescriptors() /** b.GetBandDescriptors()*/ );
+	}
+	if(a.HasMFCC() && b.HasMFCC() )
+	{
+		tmpD.AddMFCC();
+		tmpD.UpdateData();
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetMFCC(a.GetMFCC() /** b.GetMFCC() */);
+	}
+	if(a.HasBandEnergy() && b.HasBandEnergy() )
+	{
+		tmpD.AddBandEnergy();
+		tmpD.UpdateData();
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetBandEnergy(a.GetBandEnergy() /* * b.GetBandEnergy() */);
+	}
+		
+	return tmpD;
+}
+
+
+SpectralDescriptors operator / (const SpectralDescriptors& a,TData div) 
+{
+	return a*(1/div);
+}
+
+SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDescriptors& b)
+{
+	SpectralDescriptors  tmpD;
+	if(a.HasMean() && b.HasMean() )
+	{
+		tmpD.AddMean();
+		tmpD.UpdateData();
+		tmpD.SetMean(a.GetMean()+b.GetMean());
+	}
+	if(a.HasGeometricMean() && b.HasGeometricMean() )
+	{
+		tmpD.AddGeometricMean();
+		tmpD.UpdateData();
+		tmpD.SetGeometricMean(a.GetGeometricMean()+b.GetGeometricMean());
+	}
+	if(a.HasEnergy() && b.HasEnergy() )
+	{
+		tmpD.AddEnergy();
+		tmpD.UpdateData();
+		tmpD.SetEnergy(a.GetEnergy()+b.GetEnergy());
+	}
+	if(a.HasCentroid() && b.HasCentroid() )
+	{
+		tmpD.AddCentroid();
+		tmpD.UpdateData();
+		tmpD.SetCentroid(a.GetCentroid()+b.GetCentroid());
+	}
+	if(a.HasMoment2() && b.HasMoment2() )
+	{
+		tmpD.AddMoment2();
+		tmpD.UpdateData();
+		tmpD.SetMoment2(a.GetMoment2()+b.GetMoment2());
+	}
+	if(a.HasMoment3() && b.HasMoment3() )
+	{
+		tmpD.AddMoment3();
+		tmpD.UpdateData();
+		tmpD.SetMoment3(a.GetMoment3()+b.GetMoment3());
+	}
+	if(a.HasMoment4() && b.HasMoment4() )
+	{
+		tmpD.AddMoment4();
+		tmpD.UpdateData();
+		tmpD.SetMoment4(a.GetMoment4()+b.HasMoment4());
+	}
+	if(a.HasMoment5() && b.HasMoment5())
+	{
+		tmpD.AddMoment5();
+		tmpD.UpdateData();
+		tmpD.SetMoment5(a.GetMoment5()+b.GetMoment5());
+	}
+	if(a.HasMoment6() && b.HasMoment6() )
+	{
+		tmpD.AddMoment6();
+		tmpD.UpdateData();
+		tmpD.SetMoment6(a.GetMoment6()+b.GetMoment6());
+	}
+	if(a.HasIrregularity() && b.HasIrregularity() )
+	{
+		tmpD.AddIrregularity();
+		tmpD.UpdateData();
+		tmpD.SetIrregularity(a.GetIrregularity()+b.GetIrregularity());
+	}
+	if(a.HasTilt() && b.HasTilt() )
+	{
+		tmpD.AddTilt();
+		tmpD.UpdateData();
+		tmpD.SetTilt(a.GetTilt()+b.GetTilt());
+	}
+	if(a.HasFlatness() && b.HasFlatness() )
+	{
+		tmpD.AddFlatness();
+		tmpD.UpdateData();
+		tmpD.SetFlatness(a.GetFlatness()+b.GetFlatness());
+	}
+	if(a.HasKurtosis() && b.HasKurtosis() )
+	{
+		tmpD.AddKurtosis();
+		tmpD.UpdateData();
+		tmpD.SetKurtosis(a.GetKurtosis()+b.GetKurtosis());
+	}
+	if(a.HasStrongPeak() && b.HasStrongPeak() )
+	{
+		tmpD.AddStrongPeak();
+		tmpD.UpdateData();
+		tmpD.SetStrongPeak(a.GetStrongPeak()+b.GetStrongPeak());
+	}
+	if(a.HasHFC() && b.HasHFC() )
+	{
+		tmpD.AddHFC();
+		tmpD.UpdateData();
+		tmpD.SetHFC(a.GetHFC()+b.GetHFC());
+	}
+	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
+	{
+		tmpD.AddMaxMagFreq();
+		tmpD.UpdateData();
+		tmpD.SetMaxMagFreq(a.GetMaxMagFreq()+b.GetMaxMagFreq());
+	}
+	if(a.HasLowFreqEnergyRelation() && b.HasLowFreqEnergyRelation() )
+	{
+		tmpD.AddLowFreqEnergyRelation();
+		tmpD.UpdateData();
+		tmpD.SetLowFreqEnergyRelation(a.GetLowFreqEnergyRelation()+b.GetLowFreqEnergyRelation());
+	}
+	if(a.HasSkewness() && b.HasSkewness() )
+	{
+		tmpD.AddSkewness();
+		tmpD.UpdateData();
+		tmpD.SetSkewness(a.GetSkewness()+b.GetSkewness());
+	}
+	if(a.HasRolloff() && b.HasRolloff() )
+	{
+		tmpD.AddRolloff();
+		tmpD.UpdateData();
+		tmpD.SetRolloff(a.GetRolloff()+b.GetRolloff());
+	}
+	if(a.HasHighFrequencyCoefficient() && b.HasHighFrequencyCoefficient() )
+	{
+		tmpD.AddHighFrequencyCoefficient();
+		tmpD.UpdateData();
+		tmpD.SetHighFrequencyCoefficient(a.GetHighFrequencyCoefficient()+b.GetHighFrequencyCoefficient());
+	}
+	if(a.HasBandDescriptors() && b.HasBandDescriptors() )
+	{
+		tmpD.AddBandDescriptors();
+		tmpD.UpdateData();
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetBandDescriptors(a.GetBandDescriptors() /* + b.GetBandDescriptors()*/ );
+	}
+	if(a.HasMFCC() && b.HasMFCC() )
+	{
+		tmpD.AddMFCC();
+		tmpD.UpdateData();
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetMFCC(a.GetMFCC() /* + b.GetMFCC() */);
+	}
+	if(a.HasBandEnergy() && b.HasBandEnergy() )
+	{
+		tmpD.AddBandEnergy();
+		tmpD.UpdateData();
+		//todo!!! We are not multiplying because we would need the operator implemented in the array
+		tmpD.SetBandEnergy(a.GetBandEnergy() /* + b.GetBandEnergy() */);
+	}
+		
+	return tmpD;
+
+}
+
+
+SpectralDescriptors operator * (TData mult,const SpectralDescriptors& a)
+{
+	return a*mult;
+}
+
+
+};
+
+

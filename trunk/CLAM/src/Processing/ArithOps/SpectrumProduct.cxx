@@ -26,15 +26,6 @@
 
 namespace CLAM {
 
-	void SpecProductConfig::DefaultInit()
-	{
-		if (!HasName()) {
-			AddName();
-			UpdateData();
-		}
-	}
-
-
 	SpectrumProduct::SpectrumProduct()
 		: mSize(0),
 		  mProtoState(SOther),

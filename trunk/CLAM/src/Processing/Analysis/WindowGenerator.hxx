@@ -113,8 +113,6 @@ class ProcessingConfig;
 
 		bool MayDisableExecution() const {return true;}
 
-		void StoreOn(Storage &s) {};
-
 		void SetSize(TSize size) 
 		{
 			CLAM_DEBUG_ASSERT(size%2==1,"Window size must be odd");

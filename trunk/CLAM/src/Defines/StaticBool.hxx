@@ -23,11 +23,7 @@
 #define _STATIC_BOOL_HXX_
 template <bool b>
 	class StaticBool {
-//	public:
-//		static const bool value;
 };
-//template <> const bool StaticBool<true>::value=true;
-//template <> const bool StaticBool<false>::value=false;
 
 typedef StaticBool<true> StaticTrue;
 typedef StaticBool<false> StaticFalse;

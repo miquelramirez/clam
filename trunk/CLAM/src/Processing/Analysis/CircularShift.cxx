@@ -34,7 +34,6 @@ namespace CLAM {
 	void CircularShiftConfig::DefaultInit()
 	{
 		/* the dynamic type takes care if we add an existing attr .. */
-		AddName();
 		AddAmount();
 		/* All Attributes are added */
 		UpdateData();

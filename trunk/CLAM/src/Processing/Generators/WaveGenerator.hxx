@@ -58,14 +58,13 @@ namespace CLAM {
 	class WaveGeneratorConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (WaveGeneratorConfig, 7, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, EWaveType,   WaveType);
-		DYN_ATTRIBUTE (2, public, TData,       Frequency);
-		DYN_ATTRIBUTE (3, public, TData,       Amplitude);
-		DYN_ATTRIBUTE (4, public, TData,       Phase);
-		DYN_ATTRIBUTE (5, public, TData,       SampleRate);
-		DYN_ATTRIBUTE (6, public, int,         FrameSize);
+		DYNAMIC_TYPE_USING_INTERFACE (WaveGeneratorConfig, 6, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, EWaveType,   WaveType);
+		DYN_ATTRIBUTE (1, public, TData,       Frequency);
+		DYN_ATTRIBUTE (2, public, TData,       Amplitude);
+		DYN_ATTRIBUTE (3, public, TData,       Phase);
+		DYN_ATTRIBUTE (4, public, TData,       SampleRate);
+		DYN_ATTRIBUTE (5, public, int,         FrameSize);
 	protected:
 		void DefaultInit(void);
 	};
@@ -147,9 +146,6 @@ namespace CLAM {
 		 * arguments. This method implements the old conversor routines.
 		 */
 		bool Do(Audio& in);
-
-		/** @todo Not yet implemented. */
-		void StoreOn(Storage &s) {};
 
 	private:
 

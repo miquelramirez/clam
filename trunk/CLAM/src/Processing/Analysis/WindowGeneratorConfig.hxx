@@ -56,16 +56,14 @@ namespace CLAM {
 	class WindowGeneratorConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (WindowGeneratorConfig, 7,ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, EWindowType, Type);
-		DYN_ATTRIBUTE (2, public, TSize, Size);
-		DYN_ATTRIBUTE (3, public, TSize, MaxSize);
-		DYN_ATTRIBUTE (4, public, bool, UseTable);
-		DYN_ATTRIBUTE (5, public, EWindowNormalize, Normalize);
-		DYN_ATTRIBUTE (6, public, bool, Invert);
+		DYNAMIC_TYPE_USING_INTERFACE (WindowGeneratorConfig, 6,ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, EWindowType, Type);
+		DYN_ATTRIBUTE (1, public, TSize, Size);
+		DYN_ATTRIBUTE (2, public, TSize, MaxSize);
+		DYN_ATTRIBUTE (3, public, bool, UseTable);
+		DYN_ATTRIBUTE (4, public, EWindowNormalize, Normalize);
+		DYN_ATTRIBUTE (5, public, bool, Invert);
 	public:
-		~WindowGeneratorConfig(){};
 		void DefaultValues();
 	protected:
 		void DefaultInit();

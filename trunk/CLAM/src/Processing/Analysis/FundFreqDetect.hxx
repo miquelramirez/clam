@@ -71,8 +71,6 @@ namespace CLAM {
 
 		bool MayDisableExecution() const {return true;}
 
-		void StoreOn(Storage &s) {};
-
 	private:
 
 		double WeightCandidate(double freq, double maxMag,SpectralPeakArray&) const;

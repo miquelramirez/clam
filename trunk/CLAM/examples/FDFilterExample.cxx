@@ -51,7 +51,6 @@ int main( int argc, char** argv )
 		// We first delare the configuration class for the Processing
 		// of interest
 		CLAM::FDFilterGenConfig myFilterGeneratorConfig;
-		myFilterGeneratorConfig.SetName(std::string("exampleFilterGenerator"));
 
 		// Filter kind setup. There are three possible kinds: low pass ( eLowPass ),
 		// band pass ( eBandPass ) and high pass ( eHighPass ). This 'flag' defines

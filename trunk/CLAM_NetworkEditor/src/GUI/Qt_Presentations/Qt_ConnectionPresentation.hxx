@@ -40,10 +40,12 @@ public:
 	void Hide();
 protected:    
 	virtual void paintEvent( QPaintEvent * ) = 0;
-	void OnNewOutPos(int x, int y);
-	void OnNewInPos(int x, int y);
+	void SetOutPos(int x, int y);
+	void SetInPos(int x, int y);
 	void UpdatePosition();
-
+	void ResolveWireZone(int & position, int & extent,
+		const int origin, const int end,
+		const int wireThickness, const int torsionResistence);
 	void mousePressEvent( QMouseEvent *);
 	void mouseReleaseEvent( QMouseEvent *);
 	void keyPressEvent( QKeyEvent * );
@@ -53,8 +55,8 @@ protected:
 	QPointArray mPositions;
 
 public: //slots
-	SigSlot::Slotv2< int, int > SetOutPos;
-	SigSlot::Slotv2< int, int > SetInPos;
+	SigSlot::Slotv2< int, int > SlotSetOutPos;
+	SigSlot::Slotv2< int, int > SlotSetInPos;
 };
 
 } // namespace NetworkGUI

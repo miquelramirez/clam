@@ -19,15 +19,14 @@ using namespace CLAM;
 class OnsetDetectionConfig : public ProcessingConfig 
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (OnsetDetectionConfig, 8,ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, TSize, FrameSize);
-	DYN_ATTRIBUTE (2, public, TSize, nBands);
-	DYN_ATTRIBUTE (3, public, TSize, SmoothFiltSize);
-	DYN_ATTRIBUTE (4, public, TData, BandThreshold);
-	DYN_ATTRIBUTE (5, public, TSize, MinPeakDist);
-	DYN_ATTRIBUTE (6, public, TData, GlobalThreshold);
-	DYN_ATTRIBUTE (7, public, TSize, DifSize);
+	DYNAMIC_TYPE_USING_INTERFACE (OnsetDetectionConfig, 7,ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, TSize, FrameSize);
+	DYN_ATTRIBUTE (1, public, TSize, nBands);
+	DYN_ATTRIBUTE (2, public, TSize, SmoothFiltSize);
+	DYN_ATTRIBUTE (3, public, TData, BandThreshold);
+	DYN_ATTRIBUTE (4, public, TSize, MinPeakDist);
+	DYN_ATTRIBUTE (5, public, TData, GlobalThreshold);
+	DYN_ATTRIBUTE (6, public, TSize, DifSize);
 
 	void DefaultInit();
 };

@@ -180,7 +180,7 @@ namespace CLAMTest {
 			output.SetSize(1024);
 
 			for (ifft=iffts.begin(); ifft!=iffts.end(); ifft++) { // Implementation loop.
-				std::cout << "Running " << (*ifft)->GetName() << std::endl;
+				std::cout << "Running " << (*ifft)->GetClassName() << std::endl;
 
 				// Creation of list of prototypes. In a far future it
 				// should be possible to extract it from the processing
@@ -231,11 +231,8 @@ int main ()
 		IFFT_base *f1,*f2,*f3;
 
 		conf.SetAudioSize(1024);
-		conf.SetName("Default IFFT");
 		f1=new IFFT(conf);
-		conf.SetName("IFFT_rfftw");
 		f2=new IFFT_rfftw(conf);
-//		conf.SetName("IFFT_numrec");
 //		f3=new IFFT_numrec(conf);
 
 		objs.push_back(f1);

@@ -39,25 +39,23 @@ class SMSAnalysisConfig:public ProcessingConfig
 
 	friend class SMSAnalysis;
 
-	DYNAMIC_TYPE_USING_INTERFACE (SMSAnalysisConfig,9,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
+	DYNAMIC_TYPE_USING_INTERFACE (SMSAnalysisConfig,8,ProcessingConfig);
 /** Configuration for children Processing Objects*/
-	DYN_ATTRIBUTE(1,public,SpectralAnalysisConfig, SinSpectralAnalysis);
-	DYN_ATTRIBUTE(2,public,SpectralAnalysisConfig, ResSpectralAnalysis);
+	DYN_ATTRIBUTE(0,public,SpectralAnalysisConfig, SinSpectralAnalysis);
+	DYN_ATTRIBUTE(1,public,SpectralAnalysisConfig, ResSpectralAnalysis);
 
-	DYN_ATTRIBUTE(3,public,SpectralPeakDetectConfig, PeakDetect);
-	DYN_ATTRIBUTE(4,public,FundFreqDetectConfig, FundFreqDetect);
-	DYN_ATTRIBUTE(5,public,SinTrackingConfig, SinTracking);
+	DYN_ATTRIBUTE(2,public,SpectralPeakDetectConfig, PeakDetect);
+	DYN_ATTRIBUTE(3,public,FundFreqDetectConfig, FundFreqDetect);
+	DYN_ATTRIBUTE(4,public,SinTrackingConfig, SinTracking);
 /** Flags that are used in order to decide what debug display is shown*/
 	
-	DYN_ATTRIBUTE(6,protected,int, prSamplingRate);
-	DYN_ATTRIBUTE(7,protected,int, prFFTSize);
-	DYN_ATTRIBUTE(8,public, SynthSineSpectrumConfig,SynthSineSpectrum);
+	DYN_ATTRIBUTE(5,protected,int, prSamplingRate);
+	DYN_ATTRIBUTE(6,protected,int, prFFTSize);
+	DYN_ATTRIBUTE(7,public, SynthSineSpectrumConfig,SynthSineSpectrum);
 
 	
 //Config shortcuts
 public:
-	~SMSAnalysisConfig(){};
 /** Sinusoidal Analysis Window size in num. of samples */	
 	void SetSinWindowSize(TSize w);
 	TSize GetSinWindowSize() const;

@@ -25,7 +25,6 @@ void NetworkConfiguration::ConnectAndDo()
 
 SystemWithPorts::SystemWithPorts( std::string fileIn, std::string fileOut , int frameSize , int nFrames, bool hasAudioOut ) :
 	mAudioManager(44100, frameSize),
-	mControlSender(20,44100,0,frameSize),
 	mFileInName(fileIn),
 	mFileOutName(fileOut), 
 	mFrameSize(frameSize), 
@@ -61,7 +60,7 @@ void SystemWithPorts::RegisterProcessings()
 	mProcessings.push_back( &mMultiplier );
 	mProcessings.push_back( &mAudioOut);
 	mProcessings.push_back( &mMixer );
-//	mProcessings.push_back( &mControlSender );
+	mProcessings.push_back( &mControlSender );
 	
 }
 
@@ -69,7 +68,7 @@ void SystemWithPorts::ConfigureProcessings()
 {
 
 	// oscillators
-	CLAM::OscillatorConfig oscilCfg;
+	CLAM::SimpleOscillatorConfig oscilCfg;
 	oscilCfg.SetFrequency(440.0);
 	oscilCfg.SetAmplitude(0.5);
 
@@ -96,6 +95,12 @@ void SystemWithPorts::ConfigureProcessings()
 	mixerCfg.SetFrameSize(mFrameSize);
 
 	mMixer.Configure( mixerCfg );
+
+	CLAM::AutoPannerConfig pannerCfg;
+	pannerCfg.SetFrequency( 20.0 );
+	pannerCfg.SetFrameSize(mFrameSize);
+	pannerCfg.SetSamplingRate(44100);
+	mControlSender.Configure( pannerCfg );
 
 	if (mHasAudioOut)
 	{
@@ -126,7 +131,8 @@ void SystemWithPorts::StartProcessings()
 		mModulator.Start();
 		mMultiplier.Start();
 		mMixer.Start();
-
+		mControlSender.Start();
+		
 		if (mHasAudioOut)
 		{
 			mAudioOut.Start();
@@ -226,8 +232,8 @@ void SystemWithPorts::FileInFileOut::Stop()
 void SystemWithPorts::ModulatedFileInPlusFileIn::Connect()
 {
 	// linking ControlSender with AudioMixer volumes.
-	System().mControlSender.mLeft.AddLink(&(System().mMixer.GetInControls().Get("Input Gain_0")));
-	System().mControlSender.mRight.AddLink(&(System().mMixer.GetInControls().Get("Input Gain_1")));
+	System().mControlSender.GetOutControls().Get( "Left Control").AddLink(&(System().mMixer.GetInControls().Get("Input Gain_0")));
+	System().mControlSender.GetOutControls().Get( "Right Control").AddLink(&(System().mMixer.GetInControls().Get("Input Gain_1")));
 
 	System().mFileIn.GetOutPorts().Get( "Output" ).Attach( System().mFileInData );
 	System().mModulator.GetOutPorts().Get( "Audio Output" ).Attach( System().mModulatorData );

@@ -31,7 +31,7 @@
 #include <iostream>
 #include "Err.hxx"
 #include "AutoPanner.hxx"
-#include "Oscillator.hxx"
+#include "SimpleOscillator.hxx"
 #include "AudioManager.hxx"
 #include "AudioOut.hxx"
 #include "CircularStreamImpl.hxx"
@@ -60,7 +60,7 @@ int main( int argc, char** argv )
 		// processed by our new processing (see MyProcessingWithPortsAndControls.hxx/cxx for more details), and finally
 		// passed to the audio out. Our processing will have control signals from autopanner (that sends an LFO signal).
 
-		CLAM::Oscillator osc;
+		CLAM::SimpleOscillator osc;
 		CLAM::AutoPanner autoPanner;
 		CLAM::AudioOut audioOut;
 		CLAM::MyProcessingWithPortsAndControls myProc;

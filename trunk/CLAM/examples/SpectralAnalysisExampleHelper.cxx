@@ -13,7 +13,6 @@ namespace CLAMExamples
 
 	void SpectralAnalysisSettings::DefaultInit()
 	{
-		AddName();
 		AddAnalysisWindowWidth();
 		AddOverlapFactor();
 		AddWindowFunction();
@@ -189,10 +188,10 @@ namespace CLAMExamples
 		mAnalysisWindowSamples.SetSize( mSamplesToAcquire );
 		mAnalysisWindowSamples.SetSampleRate( sampleRate );
 
-		(*mWindowGen.FirstOutput())->Attach( mAnalysisWindowSamples );
+		(*mWindowGen.GetOutPorts().Begin())->Attach( mAnalysisWindowSamples );
 
 
-		InPortIterator i = mWindowApplier.FirstInput();
+		CLAM::PublishedInPorts::Iterator i = mWindowApplier.GetInPorts().Begin();
 		(*i)->Attach( mAcquiredSamples );
 		i++;
 		(*i)->Attach( mAnalysisWindowSamples );
@@ -200,18 +199,18 @@ namespace CLAMExamples
 		mWindowedAudioData.SetSize( mSamplesToAcquire );
 		mWindowedAudioData.SetSampleRate( sampleRate );
 
-		(*mWindowApplier.FirstOutput())->Attach( mWindowedAudioData );
+		(*mWindowApplier.GetOutPorts().Begin())->Attach( mWindowedAudioData );
 		
-		(*mCircularShift.FirstInput())->Attach( mWindowedAudioData );
+		(*mCircularShift.GetInPorts().Begin())->Attach( mWindowedAudioData );
 
 		mShiftedSamples.SetSize( mSamplesToAcquire );
 		mShiftedSamples.SetSampleRate( sampleRate );
 
-		(*mCircularShift.FirstOutput())->Attach( mShiftedSamples );
+		(*mCircularShift.GetOutPorts().Begin())->Attach( mShiftedSamples );
 
 		if ( mConfig.HasZeroPaddingFactor() )
 		{
-			(*mZeroPadder.FirstInput())->Attach( mShiftedSamples );
+			(*mZeroPadder.GetInPorts().Begin())->Attach( mShiftedSamples );
 
 			mEffectiveFFTInputSize = 
 				nextPowerOfTwo( CLAM::TSize(mSamplesToAcquire* pow(2, mConfig.GetZeroPaddingFactor() ) ));
@@ -219,20 +218,20 @@ namespace CLAMExamples
 			mFFTInput.SetSize( mEffectiveFFTInputSize );
 			mFFTInput.SetSampleRate( sampleRate );
 
-			(*mZeroPadder.FirstOutput())->Attach( mFFTInput );
+			(*mZeroPadder.GetOutPorts().Begin())->Attach( mFFTInput );
 			
-			(*mpFFTAlgorithm->FirstInput())->Attach( mFFTInput );
+			(*mpFFTAlgorithm->GetInPorts().Begin())->Attach( mFFTInput );
 		}
 		else
 		{
 			mEffectiveFFTInputSize = mSamplesToAcquire;
-			(*mpFFTAlgorithm->FirstInput())->Attach( mShiftedSamples );
+			(*mpFFTAlgorithm->GetInPorts().Begin())->Attach( mShiftedSamples );
 		}
 		
 		mResultingSpectrum.SetSize( mEffectiveFFTInputSize/2 + 1 );
 		mResultingSpectrum.SetType( mConfig.GetOutputSpectrumFormat() );
 
-		(*mpFFTAlgorithm->FirstOutput())->Attach( mResultingSpectrum );
+		(*mpFFTAlgorithm->GetOutPorts().Begin())->Attach( mResultingSpectrum );
 
 	}
 

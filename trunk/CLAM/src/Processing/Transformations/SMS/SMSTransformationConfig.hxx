@@ -35,16 +35,14 @@ namespace CLAM
 	class SMSTransformationConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SMSTransformationConfig, 4,ProcessingConfig);
-		/** Name of the SMSTransformation object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (SMSTransformationConfig, 3,ProcessingConfig);
 		/** Type of transformation, for the time being just a string, should become
 		* an enumeration of known transformation types??*/
-		DYN_ATTRIBUTE (1, public, std::string, Type);
+		DYN_ATTRIBUTE (0, public, std::string, Type);
 		/** Single Value Parameter */
-		DYN_ATTRIBUTE (2, public, TData, Amount);
+		DYN_ATTRIBUTE (1, public, TData, Amount);
 		/** BPF (envelope-like) Parameter */
-		DYN_ATTRIBUTE (3, public, BPF, BPFAmount);
+		DYN_ATTRIBUTE (2, public, BPF, BPFAmount);
 
 
 	protected:
@@ -55,8 +53,6 @@ namespace CLAM
 
 		/** By default, the amount is set to 0 and the On parameter to true.*/
 		void DefaultValues();
-	public:
-		virtual ~SMSTransformationConfig(){}
 	};
 
 

@@ -18,23 +18,20 @@ friend class SpectralSynthesis;
 
 public:
 	
-	DYNAMIC_TYPE_USING_INTERFACE(SpectralSynthesisConfig,8,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
+	DYNAMIC_TYPE_USING_INTERFACE(SpectralSynthesisConfig,7,ProcessingConfig);
 /** Configuration for children Processing Objects*/
-	DYN_ATTRIBUTE(1,public,WindowGeneratorConfig,AnalWindowGenerator);
-	DYN_ATTRIBUTE(2,public,WindowGeneratorConfig,SynthWindowGenerator);
-	DYN_ATTRIBUTE(3,public,CircularShiftConfig,CircularShift);
-	DYN_ATTRIBUTE(4,public,IFFTConfig,IFFT);
-	DYN_ATTRIBUTE(5,protected,int, prZeroPadding);
-	DYN_ATTRIBUTE(6,protected,int,prSamplingRate);
-	DYN_ATTRIBUTE(7,public,bool,Residual);
+	DYN_ATTRIBUTE(0,public,WindowGeneratorConfig,AnalWindowGenerator);
+	DYN_ATTRIBUTE(1,public,WindowGeneratorConfig,SynthWindowGenerator);
+	DYN_ATTRIBUTE(2,public,CircularShiftConfig,CircularShift);
+	DYN_ATTRIBUTE(3,public,IFFTConfig,IFFT);
+	DYN_ATTRIBUTE(4,protected,int, prZeroPadding);
+	DYN_ATTRIBUTE(5,protected,int,prSamplingRate);
+	DYN_ATTRIBUTE(6,public,bool,Residual);
 
 
 //Config shortcuts
 
 public:
-	~SpectralSynthesisConfig(){};
-
 /** Setter for Analysis Window size in number of samples. It should match the size used in the
  *	SpectralAnalysis Processing. An assertion fault is raised if size is not odd. This
  *	method changes size of AnalysisWindowGenerator, IFFT and CircularShift accordingly.

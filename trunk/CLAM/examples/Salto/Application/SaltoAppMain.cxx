@@ -61,20 +61,20 @@ public:
 		CSaltoDataManagment::InitSaltoDB( &Parameters::GetInstance() );
 
 		pMelody = new MelodyTranslator;
-		if( pMelody == NULL )
-			throw Err("OOM in MAIN cant construct melody");
+		CLAM_ASSERT( pMelody,
+			"OOM in MAIN cant construct melody");
 
 
 		DSPCfg.SetParams( Parameters::GetInstance() );
 		mMIDIHandler.SetParams( &Parameters::GetInstance() );
 		pDSP = new SaltoSynth(DSPCfg);
-		if(pDSP==NULL)
-			throw Err("OOM in MAIN cant construct CSaltoDSP");
+		CLAM_ASSERT(pDSP,
+			"OOM in MAIN cant construct CSaltoDSP");
 
 		// gui , user interface interacts also with parameter class
 		pGUI = new CSaltoEditor(&Parameters::GetInstance(), pDSP, pMelody, this);//,pMIDI);
-		if(pGUI==NULL)
-			throw Err("OOM in MAIN cant construct editor");
+		CLAM_ASSERT(pGUI,
+			"OOM in MAIN cant construct editor");
 
 		MIDIHandlerConfig MIDIHandlerCfg;
 		MIDIHandlerCfg.SetPitchModRange( DSPCfg.GetPitchModRange() );

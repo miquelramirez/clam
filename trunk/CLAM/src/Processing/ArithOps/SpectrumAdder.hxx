@@ -35,9 +35,8 @@ namespace CLAM {
 	class SpecAdderConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpecAdderConfig, 2,ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, int, NInputs);
+		DYNAMIC_TYPE_USING_INTERFACE (SpecAdderConfig, 1,ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, int, NInputs);
 	protected:
 		void DefaultInit();
 
@@ -159,8 +158,6 @@ namespace CLAM {
 		bool UnsetPrototypes();
 
 		bool MayDisableExecution() const {return true;}
-
-		void StoreOn(Storage &s) {};
 
 	private:
 

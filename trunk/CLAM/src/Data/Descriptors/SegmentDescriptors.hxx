@@ -39,16 +39,27 @@ namespace CLAM {
  */
 class SegmentDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SegmentDescriptors, 4, Descriptor);
-		/*All these attributes refer to mean values of spectrum descriptors across
+		DYNAMIC_TYPE_USING_INTERFACE (SegmentDescriptors, 7, Descriptor);
+		/** All these attributes refer to mean values of descriptors across
 		frames in the segment*/
 		DYN_ATTRIBUTE (0, public, FrameDescriptors, MeanD);
-	
+		/** All these attributes refer to maximum values of descriptors across
+		frames in the segment*/
+		DYN_ATTRIBUTE (1, public, FrameDescriptors, MaxD);
+		/** All these attributes refer to minimum values of descriptors across
+		frames in the segment*/
+		DYN_ATTRIBUTE (2, public, FrameDescriptors, MinD);
+		/** All these attributes refer to the variance of descriptors across
+		frames in the segment*/
+		DYN_ATTRIBUTE (3, public, FrameDescriptors, VarianceD);
+				
 		/** Mean value for fundamental across all frames */
-		DYN_ATTRIBUTE (1,public, TData, Fundamental);
+		DYN_ATTRIBUTE (4,public, TData, Fundamental);
 
-		DYN_ATTRIBUTE (2,public, AudioDescriptors, AudioD);
-		DYN_ATTRIBUTE (3,public, List<FrameDescriptors>, FramesD);
+		DYN_ATTRIBUTE (5,public, AudioDescriptors, AudioD);
+		
+		/** @todo: this should better be a List but by now Stats do not operate on lists*/
+		DYN_ATTRIBUTE (6,public, Array<FrameDescriptors>, FramesD);
 
 	public:
 
@@ -69,29 +80,14 @@ class SegmentDescriptors : public Descriptor {
 
 	private:
 		Segment* mpSegment;
+		StatsTmpl<false,FrameDescriptors,FrameDescriptors>* mSegmentStats;
 
 	};
 
 
 
-// Implementation
 
-inline void SegmentDescriptors::DefaultInit() {
-	mpSegment=0;
-	mpStats=0;
-	AddFramesD();
-	//AddAudioD();
-	UpdateData();
-}
 
-inline void SegmentDescriptors::CopyInit(const SegmentDescriptors & copied) {
-	mpSegment=copied.mpSegment;
-	mpStats=0;
-}
-
-inline const Segment* SegmentDescriptors::GetpSegment() const {
-	return mpSegment;
-}
 
 
 }

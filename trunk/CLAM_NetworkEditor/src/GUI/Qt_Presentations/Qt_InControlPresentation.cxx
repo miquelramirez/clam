@@ -55,7 +55,7 @@ Qt_InControlPresentation::~Qt_InControlPresentation()
 {
 }
 
-void Qt_InControlPresentation::OnNewName(const std::string& name)
+void Qt_InControlPresentation::SetName(const std::string& name)
 {
 	mName = name;
 	QToolTip::add( this, QString( mName.c_str() ));
@@ -85,7 +85,7 @@ void Qt_InControlPresentation::paintEvent( QPaintEvent * )
 
 void Qt_InControlPresentation::mousePressEvent( QMouseEvent *m)
 {
-	AcquireInControlClicked.Emit(this);
+	SignalAcquireInControlClicked.Emit(this);
 }
 
 QRegion Qt_InControlPresentation::GetRegion()

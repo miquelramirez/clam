@@ -102,7 +102,7 @@ public:
 
 	// The first one, the StoreOn will store the object into some sort
 	// of storage
-	virtual void StoreOn( CLAM::Storage& storer);
+	virtual void StoreOn( CLAM::Storage& storer) const;
 	// The second one, the LoadFrom, will load the object from some sort
 	// of storage
 	virtual void LoadFrom( CLAM::Storage& loader );
@@ -131,7 +131,7 @@ const char* BookStore::GetClassName() const
 	return "BookStore";
 }
 
-void BookStore::StoreOn( CLAM::Storage& storer )
+void BookStore::StoreOn( CLAM::Storage& storer ) const
 {
 	// To store correctly a 'BookStore' element we should first specify as attributes
 	// the XML namespace, XSI value and the XML Schema location
@@ -148,9 +148,9 @@ void BookStore::StoreOn( CLAM::Storage& storer )
 	CLAM::XMLAdapter< std::string > xsi_schemaLocationAttr( xsi_schemaLocationValue, "xsi:schemaLocation");
 
 	// And we pass to the storage object the adapter for these attributes
-	storer.Store( &xmlnsAttr );	
-	storer.Store( &xmlns_xsiAttr );
-	storer.Store( &xsi_schemaLocationAttr );
+	storer.Store( xmlnsAttr );
+	storer.Store( xmlns_xsiAttr );
+	storer.Store( xsi_schemaLocationAttr );
 
 	// And now we must store as plain content the sequence of books
 	// First we create the adapter for an 'iterable' container - such as the ones
@@ -158,7 +158,7 @@ void BookStore::StoreOn( CLAM::Storage& storer )
 	CLAM::XMLIterableAdapter< BookList > listAdapter( mBooksInStore, "Book" );
 
 	// We pass to the storage object the adapter for the object
-	storer.Store( &listAdapter );
+	storer.Store( listAdapter );
 }
 
 void BookStore::LoadFrom( CLAM::Storage& loader )
@@ -169,7 +169,7 @@ void BookStore::LoadFrom( CLAM::Storage& loader )
 
 	// and then we tell the storage object to load those sub-elements
 	// into the object adapted by listAdapter
-	loader.Load( &listAdapter );
+	loader.Load( listAdapter );
 }
 
 int main( int argc, char** argv )

@@ -69,115 +69,14 @@ namespace CLAM {
 		if (it == composite_end())
 			return; // Not found!
 		mObjects.remove(&obj);
-		mNames.Remove(obj.GetName());
-
 	}
 
 	void ProcessingComposite::Insert(Processing& obj) throw(ErrProcessingObj)
 	{
-		CLAM_BEGIN_CHECK
 		iterator it;
 		for (it=mObjects.begin(); it!=mObjects.end(); it++)
-			CLAM_ASSERT( ((*it) != &obj) , "ProcessingComposite::Insert():"
-			                              "Object already inserted\n");
-		CLAM_END_CHECK
-		try {
-			mNames.Add(obj.GetName());
-		}
-		catch (NameTable::DuplicatedName)
-		{
-			throw(ErrProcessingObj("ProcessingComposite::Insert():"
-								   " Duplicated Name",&obj));
-		}
+			if((*it)==&obj) return;				
 		mObjects.push_back(&obj);
 	}
-
-	std::string ProcessingComposite::InsertAndGiveName(Processing&obj)
-	{
-		iterator it;
-		for (it=mObjects.begin(); it!=mObjects.end(); it++)
-			CLAM_ASSERT( ((*it) != &obj) , "ProcessingComposite::InsertAndGiveName():"
-			                              "Object already inserted\n");
-		const char * className = obj.GetClassName();
-		std::string name = mNames.GenerateFromPrefix(className);
-		mObjects.push_back(&obj);
-		return name;
-	}
-
-	bool ProcessingComposite::NameChanged(Processing& obj, const std::string &old_name) 
-	{
-		CLAM_BEGIN_CHECK
-			iterator it;
-			for (it=composite_begin(); it!=composite_end(); it++)
-				if ( (*it) == &obj)
-					break;
-			CLAM_ASSERT(it != composite_end(),
-				"ProcessingComposite::NameChanged(): Object not in composite");
-		CLAM_END_CHECK
-
-		if (obj.GetName() == old_name)
-			return true;
-		
-		try 
-		{
-			mNames.Add(obj.GetName());
-		}
-		catch (NameTable::DuplicatedName)
-		{
-			return false;
-		}
-		mNames.Remove(old_name);
-		return true;
-	}
-
-	NameTable::NameTable()
-	{
-	}		
-
-	bool NameTable::Exists(const std::string &name)
-	{
-		return (PONameTable.count(name)!=0);
-	}
-
-	void NameTable::Add(const std::string &name) throw(DuplicatedName)
-	{
-		if (Exists(name))
-		{
-			DuplicatedName err(name);
-			throw(err);
-		}
-		PONameTable.insert(name);
-	}
-
-	void NameTable::Remove(const std::string &name)
-	{
-		PONameTable.erase(name);
-	}
-
-	std::string NameTable::GenerateFromPrefix(const std::string &prefix)
-	{
-		std::stringstream name;
-
-		int postfix;
-
-		PrefixMap::iterator it = POCountTable.find(prefix);
-		if ( it == POCountTable.end() )
-			postfix = 0;
-		else 
-			postfix = POCountTable[prefix];
-
-		do { // Someone might have manually used the generated name, so
-			// We check, and we increment the postfix until we find a free name.
-			name.str("");
-			name << prefix;
-			name << "_" << postfix;
-			postfix++;
-		} while ( PONameTable.count(name.str()) );
-
-		POCountTable[prefix] = postfix;
-		PONameTable.insert(name.str());
-
-		return name.str();
-	}
-		
 }
+

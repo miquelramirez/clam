@@ -20,7 +20,6 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
-		SetName("ProcessingChaineeConfig");
 		SetConcreteClassName("Unknown");
 		mpConcreteConfig=NULL;
 	}
@@ -33,7 +32,7 @@ namespace CLAM
 		SetConcreteConfig(*(originalConfig.mpConcreteConfig));
 	}
 
-	void ProcessingChaineeConfig::StoreOn(Storage & s)
+	void ProcessingChaineeConfig::StoreOn(Storage & s) const
 	{
 		ProcessingConfig::StoreOn(s);
 		mpConcreteConfig->StoreOn(s);
@@ -56,17 +55,19 @@ namespace CLAM
 		{
 			return new CLAM::SMSTransformationConfig();
 		}
-		else if (type=="SMSMorph") 
+		if (type=="SMSMorph") 
 			return new CLAM::SMSMorphConfig();
-		else if (type=="SMSTimeStretch")
+		if (type=="SMSTimeStretch")
 			return new CLAM::SMSTimeStretchConfig();
-		else
-		{
-			std::string error="ProcessingChaineeConfig::InstantiateConcreteConfig:Trying to instantiate a non-valid Configuration: ";
-			error+=type;
-			if(type=="Unknown") throw Err("Before instantiating a concrete configuration, you have to set its class name");
-			else throw Err(error.c_str());
-		}
+
+		// error let's investigate
+		CLAM_ASSERT(type!="Unknown",
+			"Before instantiating a concrete configuration, you have to set its class name");
+
+		std::string error="ProcessingChaineeConfig::InstantiateConcreteConfig: "
+			"Trying to instantiate a non-valid Configuration: ";
+		error+=type;
+		CLAM_ASSERT(false,error.c_str());
 	}
 	
 	// ProcessingChainConfig method definition

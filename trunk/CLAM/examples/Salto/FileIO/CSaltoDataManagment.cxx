@@ -20,28 +20,23 @@ CSaltoDataManagment* CSaltoDataManagment::pDB = NULL;
 
 CSaltoDataManagment* CSaltoDataManagment::GetSaltoDBHandle() 
 {
-	if ( pDB!=NULL )
-		return pDB;
-	else
-		throw SaltoDBErr( "SALTO Database has not been yet initialized" );
+	CLAM_ASSERT( pDB, "SALTO Database has not been yet initialized" );
+	return pDB;
 }
 
 bool CSaltoDataManagment::InitSaltoDB( Parameters* parm )
 {
-	if ( pDB )
-		throw SaltoDBErr("SALTO Database already init, release first" );
-	else
-		pDB = new CSaltoDataManagment( parm );
+	CLAM_ASSERT( !pDB, "SALTO Database already init, release first" );
+	pDB = new CSaltoDataManagment( parm );
+	CLAM_ASSERT( pDB, "SALTO Database could not be initialized" );
 	
 	return true;
 }
 
 bool CSaltoDataManagment::ReleaseSaltoDB()
 {
-	if (!pDB)
-		throw SaltoDBErr( "Cannot release the DB because it is not loaded yet" );
-	else
-		delete pDB;
+	CLAM_ASSERT(pDB, "Cannot release the DB because it is not loaded yet" );
+	delete pDB;
 
 	return true;
 }
@@ -98,8 +93,7 @@ CSaltoDataManagment::CSaltoDataManagment(Parameters* pParams)
 #endif	
 	// File-handling and Conversion
 	mpFileIO = new CSaltoFileIO();
-	if(mpFileIO==NULL)
-		throw Err("OOM in CSaltoDataManagment::CSaltoDataManagment");
+	CLAM_ASSERT (mpFileIO, "OOM in CSaltoDataManagment::CSaltoDataManagment");
 	
 	// here is all our Spectral data stored
 	for(i=0;i<MAX_SPECTRAL_SEGMENTS;i++)
@@ -110,8 +104,7 @@ CSaltoDataManagment::CSaltoDataManagment(Parameters* pParams)
 		mSpectralSeg[i] = new Segment(); //BUGSEGMENT!
 		(mSpectralSeg[i])->SetHoldsData(true);
 
-		if(mSpectralSeg[i]==NULL)
-			throw Err("OOM inCSaltoDataManagment::CSaltoDataManagment ->mSpectralSeg");
+		CLAM_ASSERT(mSpectralSeg[i], "OOM inCSaltoDataManagment::CSaltoDataManagment ->mSpectralSeg");
 	}
 	
 	// init counters
@@ -210,8 +203,7 @@ void CSaltoDataManagment::LoadSDIFToEditPosition(const char* pFileName)
 	mpSpectralSegEdit	= new Segment(); //BUGSEGMENT!
 	mpSpectralSegEdit->SetHoldsData(true);
 	
-	if(mpSpectralSegEdit ==NULL)
-			throw Err("OOM inCSaltoDataManagment::LoadSDIFToEditPosition");
+	CLAM_ASSERT(mpSpectralSegEdit, "OOM inCSaltoDataManagment::LoadSDIFToEditPosition");
 
 	bool readResidual = false;
 
@@ -233,8 +225,7 @@ void CSaltoDataManagment::LoadSDIFResiduals()
 	mpSpectralSegResidual	= new Segment(); //BUGSEGMENT!
 	mpSpectralSegResidual->SetHoldsData(true);
 	
-	if(mpSpectralSegResidual==NULL)
-			throw Err("OOM inCSaltoDataManagment::LoadSDIFResiduals");
+	CLAM_ASSERT(mpSpectralSegResidual, "OOM inCSaltoDataManagment::LoadSDIFResiduals");
 
   // !! we dont need the peaks here, add the funtionality to sdif read
 	bool readResidual = true;
@@ -400,7 +391,7 @@ void CSaltoDataManagment::SetFrameCounter(CSaltoTimbreVektor &timbreVek,TIndex f
    if (timbreIndex >= 0 && timbreIndex<SPECTRAL_SEGMENTS_IN_USE)
     mFrameCounter[timbreIndex] = frame;
    else
-    throw Err("CSaltoDataManagment::SetFrameCounter out of bounds");
+    CLAM_ASSERT(false,"CSaltoDataManagment::SetFrameCounter out of bounds");
 }	
 
 //----------------------------------------------------------------------------//
@@ -410,7 +401,7 @@ void CSaltoDataManagment::SetFrameCounter(TIndex segPosition,TIndex frame)
    if (segPosition >= 0 && segPosition<SPECTRAL_SEGMENTS_IN_USE)
     mFrameCounter[segPosition] = frame;
    else
-    throw Err("CSaltoDataManagment::SetFrameCounter out of bounds");
+    CLAM_ASSERT(false,"CSaltoDataManagment::SetFrameCounter out of bounds");
 }	
 
 //----------------------------------------------------------------------------//

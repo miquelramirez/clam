@@ -33,11 +33,11 @@ CSaltoSynthFrame::CSaltoSynthFrame( TSize nMaxPeaks,
 
 	SpectrumConfig cfg;
 	cfg.SetScale(EScale::eLinear);
-  SpecTypeFlags sflags;
-    sflags.bComplex = 1;
-		sflags.bPolar = 0;
-		sflags.bMagPhase = 0;
-		sflags.bMagPhaseBPF = 0;
+	SpecTypeFlags sflags;
+	sflags.bComplex = 1;
+	sflags.bPolar = 0;
+	sflags.bMagPhase = 0;
+	sflags.bMagPhaseBPF = 0;
 	cfg.SetType(sflags);
 	cfg.SetSize(spectralFrameSize);
 	cfg.SetSpectralRange(sampleRate/2);
@@ -50,8 +50,8 @@ CSaltoSynthFrame::CSaltoSynthFrame( TSize nMaxPeaks,
 	mpPreviousPhase	= new double[mMaxPeaks];
 	mpPreviousFreq	= new double[mMaxPeaks];
 	
-	if(mpPreviousPhase==NULL||mpPreviousFreq==NULL)
-		throw Err("OOM in CSaltoSynthFrame::CSaltoSynthFrame ");
+	CLAM_ASSERT(mpPreviousPhase && mpPreviousFreq,
+		"OOM in CSaltoSynthFrame::CSaltoSynthFrame ");
 	
 	// init index array and make it upToDate..
 	InitIndices();
@@ -100,7 +100,7 @@ void CSaltoSynthFrame::ClearSpectrum()
 	// the new faster way to clear the spectrum ( uses 90% less CPU power
 	// than the old way with get,set...)
 	// as soon as the Spectrum has a nice and fast "ClearSpectrum"-Method
-	// this unnice acces to the Buffer should be avoided.... 
+	// this unnice acces to the Buffer should be avoided....
 /*	memcpy( mSpectrum.GetRefToComplexBuffer().GetPtr(),
       	  mEmptySpectrum.GetRefToComplexBuffer().GetPtr(),
 	        mSpectrum.GetRefToComplexBuffer().SizeInBytes());

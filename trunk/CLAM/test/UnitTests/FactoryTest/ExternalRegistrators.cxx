@@ -1,11 +1,16 @@
 #include "Factory.hxx"
 #include "DummyProducts.hxx"
+#include "FactoryOnOtherTranslationUnits.hxx"
 
 namespace CLAMTest
 {
 
+
 typedef CLAM::Factory< A > FactoryOfAs;
 
-static FactoryOfAs::Registrator<B> DummyRegt("B");
+	FactoryOfAs* gAddressOfFactoryUsedByRegistrator;
+
+
+  static     FactoryOfAs::Registrator<B> DummyRegt( "B" );
 
 }

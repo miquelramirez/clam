@@ -64,20 +64,16 @@ int main( int argc, char** argv )
 		// In a lot of cases the default configurations are ok.
 
 		CLAM::OscillatorConfig osc1Cfg;
-		osc1Cfg.SetName("Generator");
 		osc1Cfg.SetFrequency(440.0);
 		osc1Cfg.SetSamplingRate( sampleRate );
 
 		CLAM::OscillatorConfig osc2Cfg;
-		osc2Cfg.SetName("Modulator");
 		osc2Cfg.SetFrequency(20.0);
 		osc1Cfg.SetSamplingRate( sampleRate );
 
 		CLAM::BinaryAudioOpConfig audioMultiplierCfg;
-		audioMultiplierCfg.SetName("Audio Multiplier");
 			
 		CLAM::AudioIOConfig audioOutCfg;
-		audioOutCfg.SetName("Audio Mono Out");
 		audioOutCfg.SetFrameSize( size );
 		audioOutCfg.SetSampleRate( sampleRate );
 		audioOutCfg.SetChannelID( 0 );

@@ -29,6 +29,11 @@
 class QGroupBox;
 class QLabel;
 
+namespace CLAM
+{
+	class ProcessingConfig;
+}
+
 namespace NetworkGUI
 {
 
@@ -38,24 +43,21 @@ class Qt_ProcessingConfigPresentation : public QDialog, public ProcessingConfigP
 {
 protected:
 	QGroupBox* mGroupBox;
-//	QPushButton* mOkButton;
-//	QPushButton* mCancelButton;
 	ActionButton * mOkButton;
 	ActionButton * mCancelButton;
 
-	virtual void Ok( bool );
-	virtual void Cancel( bool );
-	virtual void ApplyChangesToConfig() = 0;
-	virtual void OnNewConfig( CLAM::ProcessingConfig* ) = 0;
+	void Ok( bool );
+	void Cancel( bool );
+	virtual void ConfigureProcessing() = 0;
+	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
 public:
 	Qt_ProcessingConfigPresentation( QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_ProcessingConfigPresentation();
 	virtual void Show();
 	virtual void Hide();
 
 public: // slots
-	SigSlot::Slotv1< bool > mOkButtonIsPressed;
-	SigSlot::Slotv1< bool > mCancelButtonIsPressed;
+	SigSlot::Slotv1< bool > SlotOk;
+	SigSlot::Slotv1< bool > SlotCancel;
 };
 
 } // namespace NetworkGUI

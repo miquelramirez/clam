@@ -39,7 +39,7 @@ Qt_InPortPresentation::~Qt_InPortPresentation()
 {
 }
 
-void Qt_InPortPresentation::OnNewName(const std::string& name)
+void Qt_InPortPresentation::SetName(const std::string& name)
 {
 	mName = name;
 	QToolTip::add( this, QString( mName.c_str() ));
@@ -65,7 +65,7 @@ void Qt_InPortPresentation::paintEvent( QPaintEvent * )
 
 void Qt_InPortPresentation::mousePressEvent( QMouseEvent *m)
 {
-	AcquireInPortClicked.Emit(this);
+	SignalAcquireInPortClicked.Emit(this);
 }
 
 } // namespace NetworkGUI

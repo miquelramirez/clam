@@ -27,77 +27,128 @@
 #ifndef _XMLStorage_
 #define _XMLStorage_
 
-//#include <util/PlatformUtils.hpp>
 #include "Storage.hxx"
 #include <iosfwd>
 #include <string>
 
-namespace CLAM {
 
+namespace CLAM
+{
+
+class XMLable;
 class Component;
+class XercesDomDocumentHandler;
+class XercesDomWritingContext;
+class XercesDomReadingContext;
 
-class XMLStorageImplementation;
-
-
-class XMLStorage : public Storage {
-// Attributes
-private:
-	XMLStorageImplementation* mPM;
-// Construction/Destruction
+class XmlStorage : public Storage
+{
+	XercesDomDocumentHandler * _documentHandler;
+	XercesDomWritingContext * _writeContext;
+	XercesDomReadingContext * _readContext;
+	bool _lastWasContent;
 public:
-	XMLStorage();
-	virtual ~XMLStorage();
-// Redefined methods for Storable
-public:
-	/**
-	 * Add the object at the current storage tree point
-	 */
-	virtual void Store(Storable * object);
-	/**
-	 * Retrieves the object from the current storage tree point.
-	 */
-	virtual bool Load(Storable * object);
+	XmlStorage();
+	~XmlStorage();
 
-// Configuration
+// Final user interface (Atomic operations)
+public:
+	void Read(std::istream & is);
+	void Create(const std::string name);
+	void WriteSelection(std::ostream & os);
+	void WriteDocument(std::ostream & os);
+	void DumpObject(const Component & component);
+	void RestoreObject(Component & component);
+	/**
+	 * @todo Not implemented yet
+	 */
+	void Select(const std::string & path);
 	/**
 	 * Changes whether to output pretty formated XML or not.
 	 * By default, indentation and new lines are not inserted resulting
 	 * in compact XML but dificult for humans to read. Use this method,
 	 * to enable the indentation.
+	 * @todo Not implemented yet
 	 */
 	void UseIndentation(bool useIndentation);
-// Operators
+// Final User static interface (Summary operations)
 public:
-	/**
-	 * Dumps a Component as XML onto the recipient stream with name as the root element
-	 */
-	void Dump(Component & component, const std::string &name, std::ostream & recipient);
 
 	/**
 	 * Dumps a Component as XML onto the named file with name as the root element
 	 */
-	void Dump(Component & component,
-		const std::string& name,
-		const std::string& fileName);
+	static void Dump(const Component & obj, const std::string & rootName, std::ostream & os)
+	{
+		XmlStorage storage;
+		storage.Create(rootName);
+		storage.DumpObject(obj);
+		storage.WriteSelection(os);
+	}
+
 	/**
-	 * Restore a Component from the specified XML source stream
-	 * @todo (Unimplemented) Get the contents storage from a stream.
+	 * Restore a Component from the given istream
 	 */
-	void Restore(Component & component, std::istream & source);
+	static void Restore(Component & obj, std::istream & is)
+	{
+		XmlStorage storage;
+		storage.Read(is);
+		storage.RestoreObject(obj);
+	}
+
+	/**
+	 * Restore a Component from the xml fragment on the given xpath of the given document
+	 * @todo Not implemented
+	 */
+	static void RestorePartialDocument(Component & obj, const std::string & path, std::istream & is)
+	{
+		XmlStorage storage;
+		storage.Read(is);
+		storage.Select(path);
+		storage.RestoreObject(obj);
+	}
+
+	/**
+	 * Append the xml fragment corresponding to the given component
+	 * on the given xpath of an existing i/o stream
+	 * @todo Not implemented
+	 */
+	static void AppendToDocument(const Component & obj, const std::string & path, std::iostream & str);
+
+	/**
+	 * Dump a Component from the named XML file
+	 */
+	static void Dump(const Component & obj, const std::string & rootName, const std::string & filename);
+
 	/**
 	 * Restore a Component from the named XML file
 	 */
-	void Restore(Component & component, const std::string& fileName);
-private:
+	static void Restore(Component & obj, const std::string & filename);
+
+// Interface for Components to load/store their subitems
+public:
 	/**
-	 * Factory method that creates a XML Storage Implementation as
-	 * configured
-	 * @returns The new allocated XML implementation object
+	 * Components should use that function in their LoadFrom in order to store
+	 * their subitems wrapped with XML*Adapters.
 	 */
-	XMLStorageImplementation * NewXMLImplementation();
+	void Store(const Storable & storable);
+	/**
+	 * Components should use that function in their LoadFrom in order to load
+	 * their subitems wrapped with XML*Adapters.
+	 */
+	bool Load(Storable & storable);
+
+// Private helper functions
+private:
+	bool LoadContentAndChildren(XMLable* xmlable);
+	void StoreContentAndChildren(const XMLable * xmlable);
+	void StoreChildrenIfComponent(const XMLable * xmlable);
+	void AddContentToElement(const std::string & content);
 
 };
 
-}
+/** For maintaining compatibility with deprecated class name  */
+typedef XmlStorage XMLStorage;
+
+} // namespace CLAM
 
 #endif//_XMLStorage_

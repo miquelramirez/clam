@@ -28,19 +28,19 @@
 #include "AudioManager.hxx"
 #include "OSDefines.hxx"
 #include "InControl.hxx"
+#include "OutPortTmpl.hxx"
 
 namespace CLAM
 {
 	class ADSRConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ADSRConfig, 6, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, TData, AttackTime);
-		DYN_ATTRIBUTE (2, public, TData, DecayTime);
-		DYN_ATTRIBUTE (3, public, TData, SustainLevel);
-		DYN_ATTRIBUTE (4, public, TData , ReleaseTime);
-		DYN_ATTRIBUTE (5, public, TData , SamplingRate);
+		DYNAMIC_TYPE_USING_INTERFACE (ADSRConfig, 5, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, TData, AttackTime);
+		DYN_ATTRIBUTE (1, public, TData, DecayTime);
+		DYN_ATTRIBUTE (2, public, TData, SustainLevel);
+		DYN_ATTRIBUTE (3, public, TData , ReleaseTime);
+		DYN_ATTRIBUTE (4, public, TData , SamplingRate);
 	protected:
 		void DefaultInit(void);
 	};
@@ -69,7 +69,8 @@ namespace CLAM
 		} mStatus;
 
 	protected:
-		
+		OutPortTmpl<Audio> mOutput;
+
 		void HandleAttack(void);
 
 		void HandleDecay(void);
@@ -115,7 +116,7 @@ namespace CLAM
 		bool ConcreteConfigure( const ProcessingConfig& c );
 
 		// Unsupervised mode 
-		bool Do(void) { return true; }
+		bool Do(void); // { return true; }
 
 		bool Do( Audio& out);
 

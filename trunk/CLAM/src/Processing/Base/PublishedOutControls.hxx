@@ -7,23 +7,24 @@
 namespace CLAM
 {
 //foward declaration:
-class Processing;
 class OutControl;
 
 class PublishedOutControls
 {
+	std::vector<OutControl*> mOutControls;
 public:
 	typedef std::vector<OutControl*>::iterator Iterator;
-	PublishedOutControls(Processing* parent);
+	typedef std::vector<OutControl*>::const_iterator ConstIterator;
 
 	OutControl& GetByNumber(int index) const;
-	OutControl& Get(std::string name) const;
+	OutControl& Get(const std::string & name) const;
 	int Size() const;
+	void Publish( OutControl *);
+	void Clear(){ mOutControls.clear(); }
         Iterator Begin();
-	Iterator End();
-
-private:
-	Processing& mParent;
+	Iterator End();	
+	ConstIterator Begin() const;
+	ConstIterator End() const;
 };
 
 

@@ -256,7 +256,7 @@ bool SMSBase::LoadSound(const std::string& filename,Segment& segment)
 	// Initialization of the processing data objects :
 	TSize fileSize=myAudioFileIn.Size();
 
-	SetSamplingRate(myAudioFileIn.SampleRate());
+	SetSamplingRate(int(myAudioFileIn.SampleRate()));
 	
 	// Spectral Segment that will actually hold data
 	float duration=fileSize/mSamplingRate;
@@ -310,7 +310,7 @@ void SMSBase::AnalysisProcessing()
 void SMSBase::MorphAnalysisProcessing()
 {
 	CLAM_ACTIVATE_FAST_ROUNDING;
-	TSize size = mMorphSegment.GetAudio().GetSize();
+	/* NOT USED: TSize size = mMorphSegment.GetAudio().GetSize(); */
 	
 	Flush(mMorphSegment);
 	
@@ -318,7 +318,7 @@ void SMSBase::MorphAnalysisProcessing()
 	// The main analysis processing loop.
 	int k=0;
 	int step=mAnalConfig.GetHopSize();
-	int initialOffset=mAnalConfig.GetInitialOffset();	
+	/* NOT USED: int initialOffset=mAnalConfig.GetInitialOffset(); */
 
 	GetAnalysis().Start();
 
@@ -465,7 +465,6 @@ void SMSBase::StoreSound(const std::string& fileName,const Audio& audio)
 	AudioFileOut myAudioFileOut;
 	AudioFileConfig outfilecfg;
 	outfilecfg.SetChannels(1);
-	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	outfilecfg.SetSampleRate(mSamplingRate);	
 
@@ -826,7 +825,7 @@ void SMSBase::SetSMSMorphFileName()
 void SMSBase::TransformProcessing(void)
 {
 	CLAM_ACTIVATE_FAST_ROUNDING;
-	bool def=false;
+	/* UNUSED: bool def=false; */
 	SetSMSMorphFileName();
 	UpdateDataInTimeStretch();
 	mTransformation.Configure(mTransformationScore);
@@ -880,7 +879,7 @@ void SMSBase::ComputeLowLevelDescriptors()
 	mOriginalSegmentDescriptors.UpdateData();
 	
 	int i=0;
-	List<FrameDescriptors> &frameDesc=mOriginalSegmentDescriptors.GetFramesD();
+	Array<FrameDescriptors> &frameDesc=mOriginalSegmentDescriptors.GetFramesD();
 	List<Frame> &frames=mOriginalSegment.GetFramesArray();
 	int nFrames=mOriginalSegment.GetnFrames();
 	FrameDescriptors tmpFrameD;

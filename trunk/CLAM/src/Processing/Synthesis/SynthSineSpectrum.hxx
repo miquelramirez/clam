@@ -26,7 +26,9 @@ namespace CLAM{
  * array of spectral peaks.
  * It does this by convolving the spectral peaks with the 
  * significant part of the fourier transformed Blackman-Harris92 
- * window, it's main lobe.
+ * window, it's main lobe. WARNING: the do method changes the type of
+ * the output spectrum to complex regardless its original format. This
+ * behaviour may result in inconsistencies and should be taken into account.
  */
 class SynthSineSpectrum:public Processing
 {

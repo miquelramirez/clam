@@ -13,9 +13,6 @@
 #endif
 
 
-using namespace CLAM;
-
-
 namespace SDIF
 {
 
@@ -49,7 +46,7 @@ namespace SDIF
 		mFile = open(mpName,mode,0644);
 		if (mFile==-1)												// if open file error
 		{
-			throw ErrOpenFile(mpName); 			// throw filename
+			throw CLAM::ErrOpenFile(mpName); 			// throw filename
 		}
 		mSize = lseek(mFile,0,SEEK_END);
 		lseek(mFile,0,SEEK_SET);
@@ -132,11 +129,11 @@ namespace SDIF
 			Read(opening);
 		}
 
-		TInt32 p = Pos()+FrameHeader::SizeInFile();
+		CLAM::TInt32 p = Pos()+FrameHeader::SizeInFile();
 		
 		Read(frame.mHeader);
 
-		TInt32 readSize = frame.mHeader.mSize;
+		CLAM::TInt32 readSize = frame.mHeader.mSize;
 		frame.mHeader.mSize = DataFrameHeader::SizeInFile();
 		
 		int tmp = frame.mHeader.mnMatrices;
@@ -149,20 +146,20 @@ namespace SDIF
 			switch (header.mDataType)
 			{
 			case eFloat32:
-				pMatrix = new ConcreteMatrix<TFloat32>(header); break;
+				pMatrix = new ConcreteMatrix<CLAM::TFloat32>(header); break;
 			case eFloat64:
-				pMatrix = new ConcreteMatrix<TFloat64>(header); break;
+				pMatrix = new ConcreteMatrix<CLAM::TFloat64>(header); break;
 			case eInt32:
-				pMatrix = new ConcreteMatrix<TInt32>(header); break;
+				pMatrix = new ConcreteMatrix<CLAM::TInt32>(header); break;
 			case eInt64:
-				pMatrix = new ConcreteMatrix<TInt64>(header); break;
+				pMatrix = new ConcreteMatrix<CLAM::TInt64>(header); break;
 			case eUTF8byte:
 				pMatrix = new ConcreteMatrix<TUTF8byte>(header); break;
 			case eByte:
-				pMatrix = new ConcreteMatrix<TByte>(header); break;
+				pMatrix = new ConcreteMatrix<CLAM::TByte>(header); break;
 			default:
 			// +++ how do we handle unknown types ???
-				pMatrix = new ConcreteMatrix<TByte>(header); break; 
+				pMatrix = new ConcreteMatrix<CLAM::TByte>(header); break; 
 			};
 			File::ReadMatrixData(*pMatrix);
 			frame.Add(pMatrix);
@@ -211,8 +208,8 @@ namespace SDIF
 			Write(opening);
 		}
 
-		TInt32 writeSize = frame.mHeader.mSize;
-		TInt32 p = Pos()+FrameHeader::SizeInFile();
+		CLAM::TInt32 writeSize = frame.mHeader.mSize;
+		CLAM::TInt32 p = Pos()+FrameHeader::SizeInFile();
 
 		Write(frame.mHeader);
 		
@@ -249,7 +246,7 @@ namespace SDIF
 	void File::Read(MatrixHeader& header)
 	{
 		Read(header.mType);
-		TInt32 tmp;
+		CLAM::TInt32 tmp;
 		TRead(tmp);
 		header.mDataType = (DataType) tmp;
 		TRead(header.mnRows);
@@ -259,7 +256,7 @@ namespace SDIF
 	void File::Write(const MatrixHeader& header)
 	{ 
 		Write(header.mType);
-		TInt32 tmp = header.mDataType;
+		CLAM::TInt32 tmp = header.mDataType;
 		TWrite(tmp);
 		TWrite(header.mnRows);
 		TWrite(header.mnColumns);
@@ -284,9 +281,9 @@ namespace SDIF
 
 	void File::SkipMatrixData(const Matrix& matrix)
 	{
-		TUInt32 size = matrix.mHeader.mnColumns*matrix.mHeader.mnRows*
+		CLAM::TUInt32 size = matrix.mHeader.mnColumns*matrix.mHeader.mnRows*
 			((matrix.mHeader.mDataType)&0xFF);
-		TUInt32 padding = 8-size&7;
+		CLAM::TUInt32 padding = 8-size&7;
 		Pos(Pos()+size+padding);
 	}
 
@@ -298,12 +295,12 @@ namespace SDIF
 	#include <stdlib.h>
 	#endif
 
-	TUInt16 Swap(const TUInt16& val)
+	CLAM::TUInt16 Swap(const CLAM::TUInt16& val)
 	{
 	#if defined linux 
 		return bswap_16(val);
 	/*#elif defined WIN32
-		TUInt16 ret;
+		CLAM::TUInt16 ret;
 		_swab((char*)(&val),(char*)(&ret),16);
 		return ret;*/
 	#else
@@ -311,36 +308,36 @@ namespace SDIF
 	#endif
 	}
 
-	TUInt32 Swap(const TUInt32& val)
+	CLAM::TUInt32 Swap(const CLAM::TUInt32& val)
 	{
 	#if defined linux 
 		return bswap_32(val);
 	/*#elif defined WIN32
-		TUInt32 ret;
+		CLAM::TUInt32 ret;
 		_swab((char*)(&val),(char*)(&ret),32);
 		return ret;*/
 	#else
-  		TUInt32 cp = val;
-		TByte* ptr=(TByte*) &cp;
-		static TByte tmp;
+  		CLAM::TUInt32 cp = val;
+		CLAM::TByte* ptr=(CLAM::TByte*) &cp;
+		static CLAM::TByte tmp;
 		tmp=ptr[0]; ptr[0]=ptr[3]; ptr[3]=tmp;
 		tmp=ptr[1]; ptr[1]=ptr[2]; ptr[2]=tmp;
   	return cp;
 	#endif
 	}
 
-	TUInt64 Swap(const TUInt64& val)
+	CLAM::TUInt64 Swap(const CLAM::TUInt64& val)
 	{
 	#if defined linux 
 		return bswap_64(val);
 	/*#elif defined WIN32
-		TUInt64 ret;
+		CLAM::TUInt64 ret;
 		_swab((char*)(&val),(char*)(&ret),64);
 		return ret;*/
 	#else
-  		TUInt64 cp = val;
-		TByte* ptr=(TByte*) &cp;
-		static TByte tmp;
+  		CLAM::TUInt64 cp = val;
+		CLAM::TByte* ptr=(CLAM::TByte*) &cp;
+		static CLAM::TByte tmp;
 		tmp=ptr[0]; ptr[0]=ptr[7]; ptr[7]=tmp;
 		tmp=ptr[1]; ptr[1]=ptr[6]; ptr[6]=tmp;
 		tmp=ptr[2]; ptr[2]=ptr[5]; ptr[5]=tmp;
@@ -350,15 +347,15 @@ namespace SDIF
 	}
 
 	void File::_FixByteOrder(
-		TByte* ptr,TUInt32 nElems,TUInt32 elemSize)
+		CLAM::TByte* ptr,CLAM::TUInt32 nElems,CLAM::TUInt32 elemSize)
 	{
 		switch (elemSize)
 		{
 			case 1: return;
 			case 2:
 			{
-				TUInt16* fptr = (TUInt16*) ptr;
-				for (TUInt32 i=0;i<nElems;i++)
+				CLAM::TUInt16* fptr = (CLAM::TUInt16*) ptr;
+				for (CLAM::TUInt32 i=0;i<nElems;i++)
 				{
 					*fptr = Swap(*fptr);
 					fptr++;
@@ -367,8 +364,8 @@ namespace SDIF
 			}
 			case 4:
 			{
-				TUInt32* fptr = (TUInt32*) ptr;
-				for (TUInt32 i=0;i<nElems;i++)
+				CLAM::TUInt32* fptr = (CLAM::TUInt32*) ptr;
+				for (CLAM::TUInt32 i=0;i<nElems;i++)
 				{
 					*fptr = Swap(*fptr);
 					fptr++;
@@ -377,8 +374,8 @@ namespace SDIF
 			}
 			case 8:
 			{
-				TUInt64* fptr = (TUInt64*) ptr;
-				for (TUInt32 i=0;i<nElems;i++)
+				CLAM::TUInt64* fptr = (CLAM::TUInt64*) ptr;
+				for (CLAM::TUInt32 i=0;i<nElems;i++)
 				{
 					*fptr = Swap(*fptr);
 					fptr++;
@@ -391,33 +388,33 @@ namespace SDIF
 
 	void File::ReadMatrixData(Matrix& matrix)
 	{
-  		TByte dum[8];
-		TUInt32 nElems = matrix.mHeader.mnColumns*matrix.mHeader.mnRows;
-		TUInt32 elemSize = matrix.mHeader.mDataType&0xFF;
-		TUInt32 size = nElems*elemSize;
+  		CLAM::TByte dum[8];
+		CLAM::TUInt32 nElems = matrix.mHeader.mnColumns*matrix.mHeader.mnRows;
+		CLAM::TUInt32 elemSize = matrix.mHeader.mDataType&0xFF;
+		CLAM::TUInt32 size = nElems*elemSize;
 
-		TUInt32 padding = 8-size&7;
+		CLAM::TUInt32 padding = 8-size&7;
 
 		matrix.Resize(nElems);
 		matrix.SetSize(nElems);
 
-		Read((TByte*) matrix.GetPtr(),size);
-		FixByteOrder((TByte*) matrix.GetPtr(),nElems,elemSize);
+		Read((CLAM::TByte*) matrix.GetPtr(),size);
+		FixByteOrder((CLAM::TByte*) matrix.GetPtr(),nElems,elemSize);
 
 		Read(dum,padding);  
 	}
 
 	void File::WriteMatrixData(const Matrix& matrix)
 	{
-  	TByte dum[8];
-		TUInt32 nElems = matrix.mHeader.mnColumns*matrix.mHeader.mnRows;
-		TUInt32 elemSize = matrix.mHeader.mDataType&0xFF;
-		TUInt32 size = nElems*elemSize;
+  	CLAM::TByte dum[8];
+		CLAM::TUInt32 nElems = matrix.mHeader.mnColumns*matrix.mHeader.mnRows;
+		CLAM::TUInt32 elemSize = matrix.mHeader.mDataType&0xFF;
+		CLAM::TUInt32 size = nElems*elemSize;
 
-		TUInt32 padding = 8-size&7;
+		CLAM::TUInt32 padding = 8-size&7;
 
-		TByte tmp[1024];
-		const TByte *ptr = (const TByte*) const_cast<Matrix&>(matrix).GetPtr();
+		CLAM::TByte tmp[1024];
+		const CLAM::TByte *ptr = (const CLAM::TByte*) const_cast<Matrix&>(matrix).GetPtr();
 		while (size)
 		{
 			int blocksize = size;
@@ -425,7 +422,7 @@ namespace SDIF
 			memcpy(tmp,ptr,blocksize);
 
 			FixByteOrder(tmp,blocksize/elemSize,elemSize);
-			Write((TByte*) tmp,blocksize);
+			Write((CLAM::TByte*) tmp,blocksize);
 
 			ptr+=blocksize;
 			size-=blocksize;

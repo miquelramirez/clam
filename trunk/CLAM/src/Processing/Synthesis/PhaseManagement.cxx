@@ -15,7 +15,6 @@ Enum::tValue EPhaseGeneration::sDefault = EPhaseGeneration::eAlign;
 
 void PhaseManagementConfig::DefaultInit()
 {
-	AddName();
 	AddSamplingRate();
 	AddMaxSines();
 	AddType();

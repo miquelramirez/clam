@@ -1,46 +1,11 @@
-/*
- * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
- *
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- */
 
 #include "Oscillator.hxx"
-#include <iostream>
 
-using namespace CLAM;
-
-// Oscillator controls enumeration
-
-Enum::tEnumValue EOscillatorControls::sEnumValues[] =
-	{
-		{ EOscillatorControls::pitch, "pitch" },
-		{ EOscillatorControls::amplitude, "amplitude" },
-		{ EOscillatorControls::modidx, "modidx" },
-		{ EOscillatorControls::phase, "phase" },
-		{ 0, NULL }
-	};
-
-Enum::tValue EOscillatorControls::sDefault = EOscillatorControls::pitch;
-
-// OscillatorConfig method definition
+namespace CLAM
+{
+	
 void OscillatorConfig::DefaultInit(void)
 {
-	AddName();
 	AddFrequency();
 	AddAmplitude();
 	AddModIndex();
@@ -48,7 +13,7 @@ void OscillatorConfig::DefaultInit(void)
 	AddSamplingRate();
 	
 	UpdateData();
-	
+
 	SetFrequency(440.0);
 	SetAmplitude(1.0);
 	SetModIndex(1.0);
@@ -57,47 +22,37 @@ void OscillatorConfig::DefaultInit(void)
 }
 
 
-// Oscillator method definition
 Oscillator::Oscillator()
-	:mOutput("Audio Output",this,1)
-	,mFreqUpdated( false )
-	,mPhaseUpdated( false )
-	,mModIdxUpdated( false )
-	,mAmpUpdated( false )
-
+	:mInputPhaseMod("Input Phase Modulation", this, 1),
+	mInputFreqMod("Input Frequency Modulation", this, 1),
+	mModIdxUpdated( false ),
+	mModIdxCtl(0)
 {
-	mFreqCtl = new OscillatorCtrl( "Pitch", this, &Oscillator::UpdateFreq );
-	mAmpCtl = new OscillatorCtrl( "Amplitude", this, &Oscillator::UpdateAmp );
 	mModIdxCtl = new OscillatorCtrl( "ModIndex", this, &Oscillator::UpdateModIdx );
-	mPhaseCtl = new OscillatorCtrl( "Phase", this, &Oscillator::UpdatePhase );
-
+	
 	OscillatorConfig cfg;
-
 	Configure( cfg );
 }
 
-Oscillator::Oscillator( const OscillatorConfig& cfg )
-:mOutput("Audio Output",this,1)
-,mFreqUpdated( false )
-,mPhaseUpdated( false )
-,mModIdxUpdated( false )
-,mAmpUpdated( false )
-
-{
-	mFreqCtl = new OscillatorCtrl( "Pitch", this, &Oscillator::UpdateFreq );
-	mAmpCtl = new OscillatorCtrl( "Amplitude", this, &Oscillator::UpdateAmp );
+Oscillator::Oscillator(const OscillatorConfig& c )
+	: mInputPhaseMod("Input Phase Modulation", this, 1),
+	mInputFreqMod("Input Frequency Modulation", this, 1),
+	mModIdxUpdated( false ),
+	mModIdxCtl(0)
+{	
 	mModIdxCtl = new OscillatorCtrl( "ModIndex", this, &Oscillator::UpdateModIdx );
-	mPhaseCtl = new OscillatorCtrl( "Phase", this, &Oscillator::UpdatePhase );
 
-	Configure( cfg );
+	SimpleOscillatorConfig simpleCfg;
+	simpleCfg.SetFrequency( c.GetFrequency() );
+	simpleCfg.SetAmplitude( c.GetAmplitude() );
+	simpleCfg.SetSamplingRate( c.GetSamplingRate() );
+
+	Configure( c );
 }
 
 Oscillator::~Oscillator()
 {
-	delete mFreqCtl;
-	delete mAmpCtl;
 	delete mModIdxCtl;
-	delete mPhaseCtl;
 }
 
 bool Oscillator::ConcreteConfigure( const ProcessingConfig& c )
@@ -116,28 +71,11 @@ bool Oscillator::ConcreteConfigure( const ProcessingConfig& c )
 
 bool Oscillator::Do()
 {
-	bool res = Do(mOutput.GetData());
+	bool res =Do(mInputFreqMod.GetData(),mInputPhaseMod.GetData(),mOutput.GetData());			
+	mInputFreqMod.LeaveData();
+	mInputPhaseMod.LeaveData();
 	mOutput.LeaveData();
 	return res;
-}
-
-bool Oscillator::Do( Audio& out )
-{
-	if( !AbleToExecute() ) return true;
-	
-	ApplyControls();
-
-	TData* ptr = out.GetBuffer().GetPtr();
-	for (int i=0;i<out.GetSize();i++)
-	{
-		(*ptr++) = mAmp * TData(sin(mPhase + mModIndex));
-		mPhase += mDeltaPhase;
-		
-		if (mPhase>TData(2*PI)) 
-			mPhase-=TData(2*PI);
-	}
-
-	return true;
 }
 
 bool Oscillator::Do( const Audio& pitchModIn, const Audio& phaseModIn, Audio& out )
@@ -212,20 +150,6 @@ bool Oscillator::Do( const int& dum, const Audio& phaseModIn, Audio& out )
 	return true;
 }
 
-int Oscillator::UpdateFreq( TControlData value )
-{
-	mFreqUpdated = true;
-
-	return 0;
-}
-
-int Oscillator::UpdatePhase( TControlData value )
-{
-	mPhaseUpdated = true;
-
-	return 0;
-}
-
 int Oscillator::UpdateModIdx( TControlData value )
 {
 	mModIdxUpdated = true;
@@ -233,9 +157,6 @@ int Oscillator::UpdateModIdx( TControlData value )
 	return 0;
 }
 
-int Oscillator::UpdateAmp( TControlData value )
-{
-	mAmpUpdated = true;
 
-	return 0;
-}
+} // namespace CLAM
+

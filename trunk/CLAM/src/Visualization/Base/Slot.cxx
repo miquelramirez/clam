@@ -62,8 +62,8 @@ namespace SigSlot
 	void Slot::Unbind( Connection::tConnectionId conn )
 	{
 		tConnectionIterator i = std::find_if(	mActiveConnections.begin(), 
-											mActiveConnections.end(), 
-											ConnectionSearchPred( conn ) );
+							mActiveConnections.end(), 
+							ConnectionSearchPred( conn ) );
 
 		mActiveConnections.erase( i );
 	}

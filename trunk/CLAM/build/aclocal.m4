@@ -154,116 +154,74 @@ int main() {
 
 ])
 
+dnl Begin of FLTK checking procedure
 AC_DEFUN(CLAM_LIB_FLTK,
 [
-AC_MSG_CHECKING([for fltk headers; looking relative to CLAM])
-fltk_local=no
-if test -d ../../fltk/include/FL/; then
-	AC_MSG_RESULT(yes)
-	found_fltk=yes
-	pwd=`pwd`
-	FLTK_VERSION=`$pwd/../../fltk/bin/fltk-config --api-version`
-	if test $FLTK_VERSION = 1.1; then
-	    FLAG_FLTK_INCLUDES=`$pwd/../../fltk/bin/fltk-config --use-gl --use-images --cxxflags`
-	    FLAG_FLTK_LIBS=`$pwd/../../fltk/bin/fltk-config --use-gl --use-images --ldflags`
-	else
-	    FLTK_INCLUDES="../../fltk/include"
-	    FLTK_LIB_PATH="/usr/X11R6/lib ../../fltk/lib"
-	    FLAG_FLTK_INCLUDES="-I../../fltk/include"
-	    FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L../../fltk/lib"
-	fi
-	fltk_local=yes
-else
-	AC_MSG_RESULT(no)
-dnl	AC_MSG_CHECKING([for fltk headers; looking in standard locations...])
-	AC_MSG_CHECKING([for fltk-config...])
-	found_fltk=no
-	FLTK_VERSION=`fltk-config --api-version`
-    	if test $FLTK_VERSION = 1.1; then
+AC_MSG_CHECKING([fltk-config is known by the /usr/bin/which command...])
+
+if test -f `which fltk-config`
+	then
+		fltk_config_exec=`which fltk-config`	
 		AC_MSG_RESULT(yes)
-		found_fltk=yes
-		FLAG_FLTK_INCLUDES=`fltk-config --use-gl --use-images --cxxflags`
-		FLAG_FLTK_LIBS=`fltk-config --use-gl --use-images --ldflags`
-	fi
-dnl	for base in "/usr" \
-dnl	            "/usr/local" \
-dnl	            "/opt" 
-dnl	do
-dnl		if test -d $base/include/FL; then
-dnl			AC_MSG_RESULT(yes)
-dnl			found_fltk=yes
-dnl			FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L$base/lib"
-dnl			FLTK_LIB_PATH="/usr/X11R6/lib $base/lib"
-dnl			break;
-dnl		fi
-dnl	done
-fi
-if test $found_fltk = yes; then
-	AC_MSG_CHECKING([for fltk library (and other fltk required)...])
-	OLD_FLAGS=$CXXFLAGS
-
-	link_ok=no
-
-dnl	FLTK_LIBS="fltk GL fltk_gl X11 Xext fltk_forms fltk_images z png jpeg"
-dnl	for lib in $FLTK_LIBS
-dnl	do
-dnl		FLAG_FLTK_LIBS="$FLAG_FLTK_LIBS -l$lib"
-dnl	done
-	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIB_PATH $FLAG_FLTK_LIBS"
-	AC_TRY_LINK([
-		#include<FL/Fl_Window.H>
-		#include<FL/Fl.H>
-	],[
-		Fl_Window w(100,100);
-		Fl::run();
-	],[
-		link_ok=yes
-	],[])
-
-	if test $link_ok = no; then
-		AC_MSG_ERROR([
-The test program did not compile or link. Check your config.log for
-details.]
-		)
 	else
-		AC_MSG_RESULT(yes: [$FLTK_LIBS])
-	fi
-
-	AC_TRY_RUN([
-		#include<FL/Fl_Window.H>
-		#include<FL/Fl.H>
-		int main()
-		{
-			Fl_Window w(100,100);
-			Fl::run();
-			return 0;
-		}
-	],[
-		AC_MSG_RESULT(yes)
-		DEFINE_HAVE_FLTK=HAVE_FLTK
-		if test $fltk_local = yes; then
-			FLTK_INCLUDES="\$(CLAM_PATH)/../fltk/include"
-			FLTK_LIB_PATH="\$(CLAM_PATH)/../fltk/lib"
-		fi
-	],[
-		AC_MSG_ERROR([
-The test program did compile, but failed to link. This probably means that
-the run-time linker is not able to find libxercesc. You might want to set
-your LD_LIBRARY_PATH variable, or edit /etc/ld/ld.conf to point to the
-right location.]
-		)
-	],[
-		echo $ac_n "cross compiling; assumed OK... $ac_c"
-	])
-
-	CXXFLAGS=$OLD_FLAGS
-else
-	AC_MSG_ERROR([
-No fltk headers found!]
-	)
+		AC_MSG_RESULT(no)
+		AC_MSG_CHECKING([fltk-config is in the sandbox...])
+		PWD=`pwd`
+		if test -f "$PWD/../../fltk/bin/fltk-config"
+			then
+				fltk_config_exec="$PWD/../../fltk/bin/fltk-config"
+				AC_MSG_RESULT(yes)
+			else
+				AC_MSG_RESULT(no)
+				AC_MSG_ERROR([The autoconf script has been unable to locate fltk-config script. This means that you have neither installed a suitable FLTK package or it is not present in your CLAM sandbox])
+		fi;
 fi;
+
+fltk_config_exec="$fltk_config_exec --use-gl --use-images"
+
+AC_MSG_CHECKING([checking FLTK API version is 1.1 ...])
+
+FLTK_API_VERSION=`$fltk_config_exec --api-version`
+
+if [[ "1.1" == "$FLTK_API_VERSION" ]]
+	then
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR([Currently CLAM only supports FLTK API version 1.1])
+fi;	
+
+RAW_FLTK_CFLAGS=`$fltk_config_exec --cxxflags`
+RAW_FLTK_LDFLAGS=`$fltk_config_exec --ldflags`
+
+for incpath in $RAW_FLTK_CFLAGS
+	do
+		if [[ ${incpath:0:2} == "-I" ]]
+			then
+				FLTK_INCLUDES="$FLTK_INCLUDES ${incpath#-I*}"
+		fi
+	done
+
+for libpath in $RAW_FLTK_LDFLAGS
+	do
+		if [[ ${libpath:0:2} == "-L" ]]
+			then
+				FLTK_LIB_PATH="$FLTK_LIB_PATH ${libpath#-L*}"
+		fi
+	done
+
+for binname in $RAW_FLTK_LDFLAGS
+	do
+		if [[ ${binname:0:2} == "-l" ]]
+			then
+				FLTK_LIBS="$FLTK_LIBS ${binname#-l*}"
+		fi
+	done
+
 ]
 )
+dnl End of FLTK checking procedure
+
 
 AC_DEFUN(CLAM_LIB_XERCESC,
 [
@@ -336,14 +294,15 @@ configure with the --disable-xml option.]
 	if test $found_dom = yes; then
 		AC_MSG_CHECKING([for xercesc library...])
 		OLD_FLAGS=$CXXFLAGS
-		XERCESC_LIBS=xerces-c
-		FLAG_XERCESC_LIBS=-lxerces-c
+		XERCESC_LIBS="xerces-c pthread"
+		FLAG_XERCESC_LIBS="-lxerces-c -lpthread"
 		CXXFLAGS="$CXXFLAGS $FLAG_XERCESC_INCLUDES $FLAG_XERCESC_LIBS $FLAG_XERCESC_LIB_PATH"
 		AC_TRY_RUN([
-			#include<xercesc/dom/DOM_Document.hpp>
+			#include<xercesc/util/PlatformUtils.hpp>
 			int main()
 			{
-				DOM_Document::createDocument();
+				namespace xercesc=XERCES_CPP_NAMESPACE;
+				xercesc::XMLPlatformUtils::Initialize();
 				return 0;
 			}
 		],[
@@ -351,9 +310,10 @@ configure with the --disable-xml option.]
 			DEFINE_HAVE_XERCESC=HAVE_XERCESC
 		],[
 			AC_TRY_LINK([
-					#include<xercesc/dom/DOM_Document.hpp>
+					#include<xercesc/util/PlatformUtils.hpp>
 				],[
-					DOM_Document::createDocument();
+					namespace xercesc=XERCES_CPP_NAMESPACE;
+					xercesc::XMLPlatformUtils::Initialize();
 					return 0;
 				],[
 				AC_MSG_ERROR([

@@ -24,12 +24,12 @@ namespace SDIF
 	private:
 		std::list<Frame*> mFrameList;
 		TypeId mType;
-		TInt32 mStreamId;
+		CLAM::TInt32 mStreamId;
 	public:
 		/** Create a Stream
 		* @param streamId The StreamID for the frames in this stream
 		*/
-		Stream(TypeId typeId, TInt32 streamId);
+		Stream(TypeId typeId, CLAM::TInt32 streamId);
 		/** Add a Frame to the stream
 		* @param pFrame The Frame that this stream starts with.
 		*/
@@ -41,7 +41,7 @@ namespace SDIF
 		Frame* Front(void) const { return mFrameList.front(); }
 		Frame* Back(void) const { return mFrameList.back(); }
 
-		TInt32 StreamId(void) { return mStreamId; }		
+		CLAM::TInt32 StreamId(void) { return mStreamId; }		
 		TypeId StreamType(void) { return mType; }
 	};
 

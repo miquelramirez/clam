@@ -50,7 +50,8 @@ namespace CLAM
 		
  		void LinkStateOutWithInControl(Processing* inProc, unsigned inId)
 		{
-			LinkOutWithInControl( 0, inProc, inId );
+			GetOutControls().GetByNumber(0).AddLink(&inProc->GetInControls().GetByNumber(inId));
+//			LinkOutWithInControl( 0, inProc, inId );
 		}
 
 		int UpdateState( TControlData value )

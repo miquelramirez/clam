@@ -64,8 +64,6 @@ public:
 	
 	bool MayDisableExecution() const {return true;}
 	
-	void StoreOn(Storage &s) {};
-	
 	TData GetMFCC(int);
 
 	Array<TData>& GetMFCC();

@@ -43,6 +43,11 @@
 #include <map>
 
 #if defined(__LINUX_ALSA__)
+
+  /* alsa 0.9 backward compat for alsa 1.0 */
+  #define ALSA_PCM_OLD_HW_PARAMS_API
+  #define ALSA_PCM_OLD_SW_PARAMS_API
+
   #include <alsa/asoundlib.h>
   #include <pthread.h>
   #include <unistd.h>

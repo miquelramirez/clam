@@ -50,17 +50,15 @@ namespace CLAM {
 	class AudioIOConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (AudioIOConfig, 5, ProcessingConfig);
-		/** The name of the object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (AudioIOConfig, 4, ProcessingConfig);
 		/** The Device that will be used by this AudioIn or AudioOut instantiation, if it is not indicated, or its value is "default:default", system will choose the best device for this object*/
-		DYN_ATTRIBUTE (1, public, std::string, Device);
+		DYN_ATTRIBUTE (0, public, std::string, Device);
 		/** Channel attached to object; in case of stereo configuration 0 will be left channel and 1 right channel*/
-		DYN_ATTRIBUTE (2, public, int, ChannelID);
+		DYN_ATTRIBUTE (1, public, int, ChannelID);
 		/** FrameSize of the AudioIn or AudioOut audio port */
-		DYN_ATTRIBUTE (3, public, int, FrameSize);
+		DYN_ATTRIBUTE (2, public, int, FrameSize);
 		/** Sample Rate of the AudioIn or AudioOut class*/
-		DYN_ATTRIBUTE (4, public, int, SampleRate);
+		DYN_ATTRIBUTE (3, public, int, SampleRate);
 	protected:
 		void DefaultInit(void)
 		{

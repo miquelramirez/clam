@@ -34,19 +34,17 @@ namespace CLAM {
 	class SpectralPeakDetectConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDetectConfig, 4, ProcessingConfig);
-		/** Name of the SpectralPeakDetect object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDetectConfig, 3, ProcessingConfig);
 		/** Maximum namber of SpectralPeaks*/
-		DYN_ATTRIBUTE (1, public, TSize, MaxPeaks);
+		DYN_ATTRIBUTE (0, public, TSize, MaxPeaks);
 		/** Threshold of magnitude; SpectralPeaks will be located above this value*/
-		DYN_ATTRIBUTE (2, public, TData, MagThreshold);
+		DYN_ATTRIBUTE (1, public, TData, MagThreshold);
 		/** Maximum frequency, spectral peaks will only be detected under this threshold*/
-		DYN_ATTRIBUTE (3, public, TData, MaxFreq);
+		DYN_ATTRIBUTE (2, public, TData, MaxFreq);
 		/** Type of Magnitude interpolation between bins*/
-//		DYN_ATTRIBUTE (4, public, EInterpolation, InterpolMag);
+//		DYN_ATTRIBUTE (3, public, EInterpolation, InterpolMag);
 		/** Type of Phase interpolation between bins */
-//		DYN_ATTRIBUTE (5, public, EInterpolation, InterpolPhase);
+//		DYN_ATTRIBUTE (4, public, EInterpolation, InterpolPhase);
 
 //	protected:
 	private:

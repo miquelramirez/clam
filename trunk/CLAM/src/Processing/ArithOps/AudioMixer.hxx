@@ -15,10 +15,9 @@ namespace CLAM
 	class AudioMixerConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (AudioMixerConfig, 3, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, TData,       SampleRate);
-		DYN_ATTRIBUTE (2, public, int,         FrameSize);
+		DYNAMIC_TYPE_USING_INTERFACE (AudioMixerConfig, 2, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, TData,       SampleRate);
+		DYN_ATTRIBUTE (1, public, int,         FrameSize);
 
 	protected:
 		void DefaultInit(void)

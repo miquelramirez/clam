@@ -40,7 +40,7 @@ namespace SALTO
 		return mSegData[pos];
 	  else
 		return mSegData[0]; // return no error ! Check when this happens !!!!
-		//throw Err("CSaltoDataManagment::GetSegDataByPos out of Bounds ");
+		//CLAM_ASSERT(false,"CSaltoDataManagment::GetSegDataByPos out of Bounds ");
 	}
 
 

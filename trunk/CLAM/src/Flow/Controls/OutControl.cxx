@@ -27,14 +27,14 @@
 namespace CLAM {
 
 
-	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
-				  Processing* inProc, std::string inControl)
-	{
-		OutControl* out = &(outProc->GetOutControls().Get(outControl));
-		InControl* in = &(inProc->GetInControls().Get(inControl));
-		
-		out->AddLink(in);
-	}
+//	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
+//				  Processing* inProc, std::string inControl)
+//	{
+//		OutControl* out = &(outProc->GetOutControls().Get(outControl));
+//		InControl* in = &(inProc->GetInControls().Get(inControl));
+//		
+//		out->AddLink(in);
+//	}
 
 // Creation/Destruction
 

@@ -24,28 +24,27 @@
 
 #include <string>
 #include <qwidget.h>
-#include "InPortPresentation.hxx"
+#include "ConnectionPointPresentation.hxx"
 #include "Signalv2.hxx"
 #include "Signalv1.hxx"
 
 namespace NetworkGUI
 {
 
-class Qt_InPortPresentation : public QWidget, public InPortPresentation
+class Qt_InPortPresentation : public QWidget, public ConnectionPointPresentation
 {
 public:
 	Qt_InPortPresentation( int id, QWidget *parent = 0, const char *name = 0);
 	virtual ~Qt_InPortPresentation();
 	virtual void Show();
 	virtual void Hide();
+	virtual void SetName(const std::string& name);
 protected:
-	virtual void OnNewName(const std::string& name);
-
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent *);
 public: // signals
-	SigSlot::Signalv2< int , int >  AcquirePos;
-	SigSlot::Signalv1< Qt_InPortPresentation * > AcquireInPortClicked;
+	SigSlot::Signalv2< int , int >  SignalAcquirePos;
+	SigSlot::Signalv1< Qt_InPortPresentation * > SignalAcquireInPortClicked;
 
 // qt stuff
 	int   mId;

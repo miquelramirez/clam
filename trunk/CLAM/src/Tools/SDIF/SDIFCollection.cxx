@@ -58,7 +58,7 @@ namespace SDIF
 		}
 	}
 
-	Stream* Collection::FindStream(TInt32 streamId)
+	Stream* Collection::FindStream(CLAM::TInt32 streamId)
 	{
 		typedef std::list<Stream*>::iterator iterator;
 

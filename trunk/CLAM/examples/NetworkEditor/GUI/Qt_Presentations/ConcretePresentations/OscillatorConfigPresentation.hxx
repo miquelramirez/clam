@@ -23,13 +23,13 @@
 #define __OSCILLATORCONFIGPRESENTATION_HXX__
 
 #include "Qt_ProcessingConfigPresentation.hxx"
+#include "Oscillator.hxx"
 
 class QLabel;
 class QTextEdit;
 
 namespace CLAM
 {
-	class OscillatorConfig;
 	class ProcessingConfig;
 }
 
@@ -38,7 +38,7 @@ namespace NetworkGUI
 
 class OscillatorConfigPresentation : public Qt_ProcessingConfigPresentation
 {
-	CLAM::OscillatorConfig * mConfig;
+	CLAM::OscillatorConfig mConfig;
 	
 	QLabel * mFrequencyName;
 	QLabel * mAmplitudeName;
@@ -52,8 +52,8 @@ class OscillatorConfigPresentation : public Qt_ProcessingConfigPresentation
 	QTextEdit * mPhaseEdit;
 	QTextEdit * mSamplingRateEdit;
 protected:
-	virtual void OnNewConfig( CLAM::ProcessingConfig* );
-	virtual void ApplyChangesToConfig();
+	virtual void SetConfig( const CLAM::ProcessingConfig & );
+	virtual void ConfigureProcessing(); 
 public:
 	OscillatorConfigPresentation( QWidget * parent = 0 );
 	virtual ~OscillatorConfigPresentation();

@@ -82,10 +82,6 @@ namespace CLAM {
 
 		bool Do(const Audio& inL,const Audio& inR);
 
-		// COMPONENT Methods
-		/** @todo Not yet implemented. */
-		void StoreOn(Storage &s) {};
- 	
 	};
 };//namespace CLAM
 

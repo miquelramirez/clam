@@ -106,7 +106,6 @@ int main(int argc, char* argv[])
 		// We create the configuration object for the FFT_rfftw Processing. We just
 		// need to specify the size ( in samples of the input signal ).
 		CLAM::FFTConfig fconfig;
-		fconfig.SetName("local.My_beautiful_fft");
 		fconfig.SetAudioSize(samples);
 
 		// Processing object creation

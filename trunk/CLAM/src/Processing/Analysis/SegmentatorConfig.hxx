@@ -50,10 +50,9 @@ class SegmentatorConfig : public ProcessingConfig
 {
 friend class Segmentator;
 public:
-	DYNAMIC_TYPE_USING_INTERFACE(SegmentatorConfig,3,ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, int, MinSegmentLength);
-	DYN_ATTRIBUTE (2, public, Array<TDescriptorsParams>, DescriptorsParams);
+	DYNAMIC_TYPE_USING_INTERFACE(SegmentatorConfig,2,ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, int, MinSegmentLength);
+	DYN_ATTRIBUTE (1, public, Array<TDescriptorsParams>, DescriptorsParams);
 protected:
 	void DefaultInit();
 /*Public Interface*/

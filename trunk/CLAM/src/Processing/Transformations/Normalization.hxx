@@ -64,10 +64,9 @@ namespace CLAM
 	class NormalizationConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (NormalizationConfig, 3, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, int, Type);
-		DYN_ATTRIBUTE (2, public, TSize, FrameSize);
+		DYNAMIC_TYPE_USING_INTERFACE (NormalizationConfig, 2, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, int, Type);
+		DYN_ATTRIBUTE (1, public, TSize, FrameSize);
 
 		void DefaultInit(void);
 	};

@@ -53,7 +53,6 @@ int main()
 {
 
 try{
-	int i;
 	CLAM::List<int> testList;
 	int testElem;
 
@@ -64,7 +63,7 @@ try{
 		std::cout<<"List is not empty, Error!";
 
 	std::cout<<"Sequential Additions\n";
-	for(i=0;i<NITERATIONS;i++)
+	for(int i=0;i<NITERATIONS;i++)
 	{
 		testList.AddElem(i);
 		std::cout<<"Current Element is "<<testList.CurrentIndex()<<" has a value of "<<testList.Current()<<"\n";
@@ -76,7 +75,7 @@ try{
 	/*std::cout<<"Press enter when ready\n";
 	std::cin>>c;*/
 /*Sequential Extractions*/
-	for(i=0;i<NITERATIONS;i++)
+	for(int i=0;i<NITERATIONS;i++)
 	{
 		testList.Extract(testElem);
 		std::cout<<"Element in position "<<NITERATIONS-i-1<<" has a value of "<<testElem<<"\n";
@@ -110,7 +109,7 @@ try{
 	std::cin>>c;*/
 
 /*Additions*/
-	for(i=0;i<NITERATIONS;i++)
+	for(int i=0;i<NITERATIONS;i++)
 	{
 		testList.AddElem(i);
 		std::cout<<"Current Element is "<<testList.CurrentIndex()<<" has a value of "<<testList.Current()<<"\n";
@@ -122,7 +121,7 @@ try{
 
 /*Random Accesses*/
 	int current;
-	for(i=0;i<NITERATIONS;i++)
+	for(int i=0;i<NITERATIONS;i++)
 	{
 		current=int((double(rand())/RAND_MAX)*(2*NITERATIONS));
 		std::cout<<"Element at position "<<current<<" has a value of "<<testList[current]<<"\n";;
@@ -137,7 +136,7 @@ try{
 	CLAM_ASSERT(testList.FulfillsInvariant(), "List does not fullfil invariant");
 	std::cout<<"Random Accesses Finished Successfully, starting Random Extractions\n";
 /*Random Insertions*/
-	for(i=0;i<NITERATIONS;i++)
+	for(int i=0;i<NITERATIONS;i++)
 	{
 		current=int((double(rand())/RAND_MAX)*(NITERATIONS));
 		CLAM_ASSERT(testList.FulfillsInvariant(), "List does not fullfil invariant");
@@ -154,7 +153,7 @@ try{
 //	std::cin>>c;
 
 /*Random Accesses*/
-	for(i=0;i<NITERATIONS;i++)
+	for(int i=0;i<NITERATIONS;i++)
 	{
 		current=int((double(rand())/RAND_MAX)*(2*NITERATIONS));
 		std::cout<<"Element at position "<<current<<" has a value of "<<testList[current]<<"\n";;
@@ -178,15 +177,12 @@ try{
 	CLAM_ASSERT(copyList2->FulfillsInvariant(), "List does not fullfil invariant");
 	delete copyList2;
 
-
-#ifdef CLAM_USE_XML
 	// Storing result to XML document and check if loading matches
 	CLAM_ASSERT(CLAMTest::XMLInputOutputMatches(testList, "ListTest.xml"), 
 		"Original resulting list and XML reloaded one don't match");
-#endif//CLAM_USE_XML
 
 /*Random Extractions*/
-	for(i=0;i<2*NITERATIONS;i++)
+	for(int i=0;i<2*NITERATIONS;i++)
 	{
 		current=int((double(rand())/RAND_MAX)*(2*NITERATIONS-i-1));
 		testList.Extract(testElem,current);

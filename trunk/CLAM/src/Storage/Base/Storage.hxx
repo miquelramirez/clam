@@ -70,7 +70,7 @@ public:
 	 * @param A pointer to the Storage object. No references
 	 * will be keept on the storage.
 	 */
-	virtual void Store(Storable * object)=0;
+	virtual void Store(const Storable & object)=0;
 	/**
 	 * Loads an storable object from the storage.
 	 * <P>
@@ -86,7 +86,7 @@ public:
 	 * @returns false when the desired object is not present
 	 * in the storage.
 	 */
-	virtual bool Load (Storable * object)=0;
+	virtual bool Load (Storable & object)=0;
 };
 }
 

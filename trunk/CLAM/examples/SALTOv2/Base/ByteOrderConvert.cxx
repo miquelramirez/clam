@@ -90,7 +90,7 @@ void ByteOrderConvert::_FixByteOrder(
 			}
 			return;
 		}
-		default: throw;
+		default: CLAM_ASSERT(false,"Invalid element size");
 	}
 }
 

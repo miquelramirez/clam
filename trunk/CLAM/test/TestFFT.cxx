@@ -166,7 +166,7 @@ namespace CLAMTest {
 			Spectrum output(ssets);
 
 			for (f=ffts.begin(); f!=ffts.end(); f++) { // Implementation loop.
-				std::cout << "Running " << (*f)->GetName() << std::endl;
+				std::cout << "Running " << (*f)->GetClassName() << std::endl;
 
 				// Creation of list of prototypes. In a far future it
 				// should be possible to extract it from the processing
@@ -220,13 +220,9 @@ int main ()
 		FFT_base *f1,*f2,*f3, *f4;
 
 		conf.SetAudioSize(1024);
-		conf.SetName("Default FFT");
 		f1=new FFT(conf);
-		conf.SetName("FFT_rfftw");
 		f2=new FFT_rfftw(conf);
-		conf.SetName("FFT_numrec");
 		f3=new FFT_numrec(conf);
-		conf.SetName("FFT_ooura");
 		f4=new FFT_ooura(conf);
 
 		objs.push_back(f1);

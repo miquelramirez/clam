@@ -44,6 +44,7 @@ public:
 	
 	//methods relative to state of FlowControl & Network
 	virtual void ProcessingAddedToNetwork( Processing& added );
+	virtual void ProcessingRemovedFromNetwork( Processing& removed );
 
 	void ConfigureNode( NodeBase& toConfigure ) const;
 	

@@ -39,20 +39,9 @@ namespace CLAM
 	class FIRConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (FIRConfig, 2, ProcessingConfig);
-		/** The processing name */
-		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYNAMIC_TYPE_USING_INTERFACE (FIRConfig, 1, ProcessingConfig);
 		/** The convolution kernel for fixed coeficients processing */
-		DYN_ATTRIBUTE (1, public, ConvolutionKernel, ConvolutionKernel);
-	protected:
-		void DefaultInit()
-		{
-			// Instanciate all the attributes
-			AddName();
-			UpdateData();
-
-		}
-
+		DYN_ATTRIBUTE (0, public, ConvolutionKernel, ConvolutionKernel);
 	};
 
 	/**
@@ -231,17 +220,6 @@ namespace CLAM
 			Calculate(samplesIn, coefs, samplesOut, nMCoeficients, nToCompute);
 
 			return true;
-		}
-
-		/** Stores the processing running status */
-		virtual void StoreOn(Storage &s)
-		{
-			// This processing has no running status
-		}
-		/** Loads the processing running status */
-		virtual void LoadFrom(Storage &s)
-		{
-			// This processing has no running status
 		}
 
 	private:

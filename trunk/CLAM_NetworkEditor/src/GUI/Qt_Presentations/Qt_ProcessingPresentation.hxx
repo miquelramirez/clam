@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __QT_PROCESSINGPRESENTATION_HXX__
-#define __QT_PROCESSINGPRESENTATION_HXX__
+#ifndef __Qt_ProcessingPresentation_hxx__
+#define __Qt_ProcessingPresentation_hxx__
 
 #include <string>
 #include <qwidget.h>
@@ -31,14 +31,6 @@
 namespace CLAM
 {
 	class ProcessingConfig;
-}
-
-namespace CLAMVM
-{
-	class InPortAdapter;
-	class OutPortAdapter;
-	class InControlAdapter;
-	class OutControlAdapter;
 }
 
 namespace NetworkGUI
@@ -53,66 +45,63 @@ class Qt_ProcessingPresentation : public QWidget, public ProcessingPresentation
 {
 public:
 	Qt_ProcessingPresentation( std::string nameFromNetwork, QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_ProcessingPresentation();
-	virtual void Show();
-	virtual void Hide();
+	void Show();
+	void Hide();
 	void EmitPositionOfChildren();
 protected:
-	virtual void OnNewObservedClassName(const std::string& name);
+	virtual void SetObservedClassName(const std::string& name);
 
 	// port methods
-	virtual void OnNewInPort( CLAMVM::InPortAdapter* );
-	virtual void OnNewOutPort( CLAMVM::OutPortAdapter* );	
-	virtual void OnNewInPortClicked( Qt_InPortPresentation *);
-	virtual void OnNewOutPortClicked( Qt_OutPortPresentation *);
-	virtual void OnNewOutPortAfterClickInPort(const QPoint &);
-	virtual void OnNewInPortAfterClickOutPort(const QPoint &);
+	void SetInPort( const std::string & );
+	void SetOutPort( const std::string & );
+	void SetInPortClicked( Qt_InPortPresentation *);
+	void SetOutPortClicked( Qt_OutPortPresentation *);
+	void SetOutPortAfterClickInPort(const QPoint &);
+	void SetInPortAfterClickOutPort(const QPoint &);
 
 	// control methods
-	virtual void OnNewInControl( CLAMVM::InControlAdapter* );
-	virtual void OnNewOutControl( CLAMVM::OutControlAdapter* );	
-	virtual void OnNewInControlClicked( Qt_InControlPresentation *);
-	virtual void OnNewOutControlClicked( Qt_OutControlPresentation *);
-	virtual void OnNewOutControlAfterClickInControl(const QPoint &);
-	virtual void OnNewInControlAfterClickOutControl(const QPoint &);
-
+	void SetInControl( const std::string & );
+	void SetOutControl( const std::string & );
+	void SetInControlClicked( Qt_InControlPresentation *);
+	void SetOutControlClicked( Qt_OutControlPresentation *);
+	void SetOutControlAfterClickInControl(const QPoint &);
+	void SetInControlAfterClickOutControl(const QPoint &);
 
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent * );
 	void mouseReleaseEvent( QMouseEvent * );
 	void mouseMoveEvent( QMouseEvent * );
 	void keyPressEvent( QKeyEvent * );
-	void updateOutPortsPosition();
-	void updateOutControlsPosition();
+	void UpdateOutPortsPosition();
+	void UpdateOutControlsPosition();
 
 // qt stuff
 	bool        mDown;
 	QPoint     mClickPos;
-//	Qt_ProcessingConfigPresentation*  mpConfigPresentation;	
 
 public: // signals
-	SigSlot::Signalv1< Qt_InPortPresentation * > AcquireInPortClicked;
-	SigSlot::Signalv1< Qt_OutPortPresentation * > AcquireOutPortClicked;
-	SigSlot::Signalv1< Qt_InControlPresentation * > AcquireInControlClicked;
-	SigSlot::Signalv1< Qt_OutControlPresentation * > AcquireOutControlClicked;
-//	SigSlot::Signalv1< CLAM::ProcessingConfig * > EditConfiguration;
+	SigSlot::Signalv1< Qt_InPortPresentation * > SignalAcquireInPortClicked;
+	SigSlot::Signalv1< Qt_OutPortPresentation * > SignalAcquireOutPortClicked;
+	SigSlot::Signalv1< Qt_InControlPresentation * > SignalAcquireInControlClicked;
+	SigSlot::Signalv1< Qt_OutControlPresentation * > SignalAcquireOutControlClicked;
 
 public: // slots
 	// ports
-	SigSlot::Slotv1< Qt_InPortPresentation * > SetInPortClicked;
-	SigSlot::Slotv1< Qt_OutPortPresentation * > SetOutPortClicked;
-	SigSlot::Slotv1< const QPoint & > SetOutPortAfterClickInPort;
-	SigSlot::Slotv1< const QPoint & > SetInPortAfterClickOutPort;
+	SigSlot::Slotv1< Qt_InPortPresentation * > SlotSetInPortClicked;
+	SigSlot::Slotv1< Qt_OutPortPresentation * > SlotSetOutPortClicked;
+	SigSlot::Slotv1< const QPoint & > SlotSetOutPortAfterClickInPort;
+	SigSlot::Slotv1< const QPoint & > SlotSetInPortAfterClickOutPort;
 
 	//controls
-	SigSlot::Slotv1< Qt_InControlPresentation * > SetInControlClicked;
-	SigSlot::Slotv1< Qt_OutControlPresentation * > SetOutControlClicked;
-	SigSlot::Slotv1< const QPoint & > SetOutControlAfterClickInControl;
-	SigSlot::Slotv1< const QPoint & > SetInControlAfterClickOutControl;
+	SigSlot::Slotv1< Qt_InControlPresentation * > SlotSetInControlClicked;
+	SigSlot::Slotv1< Qt_OutControlPresentation * > SlotSetOutControlClicked;
+	SigSlot::Slotv1< const QPoint & > SlotSetOutControlAfterClickInControl;
+	SigSlot::Slotv1< const QPoint & > SlotSetInControlAfterClickOutControl;
 
 };
 
 
 } // namespace NetworkGUI
 
-#endif // __QT_PROCESSINGPRESENTATION_HXX__
+#endif // __Qt_ProcessingPresentation_hxx__
+

@@ -292,6 +292,7 @@ void SMSAnalysis::ConfigureData()
 	mSinReader=mStreamBuffer->NewReader(hopSize,sinWindowSize-1);
 	mResReader=mStreamBuffer->NewReader(hopSize,resWindowSize-1);
 	mStreamBuffer->Configure(sinWindowSize*2);
+	mStreamBuffer->SetSampleRate( mConfig.GetSamplingRate() );
 
 	//configure internal audio members used for convinience
 	mSinAudioFrame.SetSampleRate(mConfig.GetSamplingRate());

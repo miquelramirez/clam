@@ -37,7 +37,7 @@ Qt_OutPortPresentation::~Qt_OutPortPresentation()
 {
 }
 
-void Qt_OutPortPresentation::OnNewName(const std::string& name)
+void Qt_OutPortPresentation::SetName(const std::string& name)
 {
 	mName = name;
 	QToolTip::add( this, QString( mName.c_str() ));
@@ -63,7 +63,7 @@ void Qt_OutPortPresentation::paintEvent( QPaintEvent * )
 
 void Qt_OutPortPresentation::mousePressEvent( QMouseEvent *m)
 {
-	AcquireOutPortClicked.Emit(this);
+	SignalAcquireOutPortClicked.Emit(this);
 }
 
 void Qt_OutPortPresentation::updatePosition()

@@ -72,7 +72,7 @@ public:
 	void ConfigureAllNodes();
 	void Clear();
 	// serialization methods
-	virtual void StoreOn( Storage & storage);
+	virtual void StoreOn( Storage & storage) const;
 	virtual void LoadFrom( Storage & storage);
 	
 
@@ -85,13 +85,14 @@ public:
 	void DisconnectAllPorts();
 
 	// methods used to create processings and get them
-	Processing& GetProcessing( const std::string & name );
+	Processing& GetProcessing( const std::string & name ) const;
 	// add method using a pointer to a new processing
 	void AddProcessing( const std::string &, Processing* );
 	// add method using a key to get the new processing from factory
 	void AddProcessing( const std::string & name, const std::string & key );
 	void RemoveProcessing ( const std::string & );
-	bool HasProcessing( const std::string & name );
+	bool HasProcessing( const std::string & name ) const;
+	const std::string & GetNetworkId(const Processing * proc) const;
 
 	
 	
@@ -101,18 +102,17 @@ public:
 	ProcessingsMap::const_iterator BeginProcessings() const;
 	ProcessingsMap::const_iterator EndProcessings() const;
 
-	InPort & GetInPortByCompleteName( const std::string& );
-	OutPort & GetOutPortByCompleteName( const std::string& );
-	InControl & GetInControlByCompleteName( const std::string& );
-	OutControl & GetOutControlByCompleteName( const std::string& );
+	InPort & GetInPortByCompleteName( const std::string& ) const;
+	OutPort & GetOutPortByCompleteName( const std::string& ) const;
+	InControl & GetInControlByCompleteName( const std::string& ) const;
+	OutControl & GetOutControlByCompleteName( const std::string& ) const;
 
-	NamesList GetInPortsConnectedTo( const std::string & );
-	NamesList GetInControlsConnectedTo( const std::string & );
-	InPortsList GetInPortsConnectedTo( OutPort & );
+	NamesList GetInPortsConnectedTo( const std::string & ) const;
+	NamesList GetInControlsConnectedTo( const std::string & ) const;
+	InPortsList GetInPortsConnectedTo( OutPort & ) const;
 
 protected:
 	NodeBase & GetNodeAttachedTo(OutPort & );
-	const std::string & GetNetworkId(const Processing * proc);
 private:
 	
 	// fields
@@ -130,8 +130,8 @@ private:
 	void AssertFlowControlNotNull() const;
 	static std::size_t PositionOfLastIdentifier( const std::string& );
 	static std::size_t PositionOfProcessingIdentifier( const std::string& );
-	std::string GetLastIdentifier( const std::string& );
-	std::string GetProcessingIdentifier( const std::string& );
+	std::string GetLastIdentifier( const std::string& ) const;
+	std::string GetProcessingIdentifier( const std::string& ) const;
 	static char NamesIdentifiersSeparator();
 
 

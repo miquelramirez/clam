@@ -1,21 +1,15 @@
 #include "PublishedInPorts.hxx"
 #include "InPort.hxx"
-#include "Processing.hxx"
-#include <string>
 
 namespace CLAM
 {
 
-PublishedInPorts::PublishedInPorts(Processing* parent) :
-		mParent(*parent)
-{}
-
 InPort& PublishedInPorts::GetByNumber(int index) const
 {
 	CLAM_ASSERT(index>=0, "index for Port must be >=0");
-	Processing::InPortIterator it;
+	ConstIterator it;
 	int i;
-	for (it=mParent.FirstInput(), i=0; it!=mParent.LastInput(); it++, i++)
+	for (it=mInPorts.begin(), i=0; it!=mInPorts.end(); it++, i++)
 	{
 		if (i==index) return *(*it);
 	}
@@ -24,10 +18,10 @@ InPort& PublishedInPorts::GetByNumber(int index) const
 	return *(InPort*)NULL; // just to get rid of warnings
 }
 	
-InPort& PublishedInPorts::Get(std::string name) const
+InPort& PublishedInPorts::Get(const std::string & name) const
 {
-	Processing::InPortIterator it;
-	for (it=mParent.FirstInput(); it!=mParent.LastInput(); it++)
+	ConstIterator it;
+	for (it=mInPorts.begin(); it!=mInPorts.end(); it++)
 	{
 		std::string actualName( (*it)->GetName() );
 		if (name == (*it)->GetName()) return *(*it);
@@ -39,31 +33,43 @@ InPort& PublishedInPorts::Get(std::string name) const
 
 int PublishedInPorts::Size() const
 {
-	Processing::InPortIterator it;
-	int count=0;
-	for (it=mParent.FirstInput(); it!=mParent.LastInput(); it++)
-		++count;
-	return count;
+	return mInPorts.size();
 }
 
 PublishedInPorts::Iterator  PublishedInPorts::Begin()
 {
-	return mParent.FirstInput();
+	return mInPorts.begin();
 }
 
 PublishedInPorts::Iterator PublishedInPorts::End()
 {
-	return mParent.LastInput();
+	return mInPorts.end();
 }
+
+PublishedInPorts::ConstIterator  PublishedInPorts::Begin() const
+{
+	return mInPorts.begin();
+}
+
+PublishedInPorts::ConstIterator PublishedInPorts::End() const
+{
+	return mInPorts.end();
+}
+
 
 bool PublishedInPorts::AreReadyForReading()
 {
 	Iterator in;
-	for ( in=Begin(); in!=End(); in++)
+	for ( in=mInPorts.begin(); in!=mInPorts.end(); in++)
 		if (!(*in)->IsReadyForReading()) return false;
 
 	return true;
 }
 
+void PublishedInPorts::Publish( InPort * in )
+{
+	mInPorts.push_back( in );
+}
 	
 } // namespace CLAM
+

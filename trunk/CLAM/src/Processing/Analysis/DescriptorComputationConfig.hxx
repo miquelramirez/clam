@@ -29,12 +29,7 @@ namespace CLAM {
 	class DescriptorComputationConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (DescriptorComputationConfig, 1,ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		
-		~DescriptorComputationConfig();
-	protected:
-		void DefaultInit();
+		DYNAMIC_TYPE_USING_INTERFACE (DescriptorComputationConfig, 0,ProcessingConfig);
 	};
 
 }

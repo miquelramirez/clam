@@ -21,9 +21,41 @@
 
 #include "Assert.hxx"
 #include <iostream>
+#if defined(__linux__)
+#include <execinfo.h>
+#endif
 
 
 namespace CLAM {
+
+void DumpBacktrace(std::ostream & os)
+{
+#if defined(__linux__)
+
+	void *bt_array[100];	// 100 should be enough ?!?
+	char **bt_strings;
+	int num_entries;
+
+	if ((num_entries = backtrace(bt_array, 100)) < 0) {
+		os << " Unable to generate a backtrace" << std::endl;
+		return;
+	}
+
+	if ((bt_strings = backtrace_symbols(bt_array, num_entries)) == NULL) {
+		os << " Unable to adquire symbols names for the backtrace" << std::endl;
+		return;
+	}
+
+	os << "\n Backtrace:\n" << std::endl;
+	for (int i = 0; i < num_entries; i++) {
+		os << "[" << i << "] " <<  bt_strings[i] << std::endl;
+	}
+	free(bt_strings);
+#else
+	os << " Unable to adquire symbols names for the backtrace" << std::endl;
+#endif
+}
+
 
 // by default, CLAM asserts must breakpoint
 // we'll want to disable breakpoints for automatic assertion testing 
@@ -39,6 +71,7 @@ static void DefaultAssertHandler(const char* message, const char* filename, int 
 	std::cout << "##########################################################" << std::endl;
 	std::cout << "At file " << filename << " line " << lineNumber << std::endl;
 	std::cout << message << std::endl;
+	DumpBacktrace(std::cout);
 }
 
 static AssertFailedHandlerType CurrentAssertFailedHandler=DefaultAssertHandler;
@@ -90,6 +123,5 @@ void ExecuteWarningHandler(const char* message, const char* filename, int lineNu
 
 
 }
-
 
 

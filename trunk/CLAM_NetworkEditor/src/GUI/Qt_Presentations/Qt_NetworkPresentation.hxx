@@ -54,23 +54,21 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 {
 public:
 	Qt_NetworkPresentation( QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_NetworkPresentation();
 	virtual void Show();
 	virtual void Hide();
 protected:
 	void AttachConnectionToPortPresentations( Qt_PortConnectionPresentation * );
 	void AttachConnectionToControlPresentations( Qt_ControlConnectionPresentation * );
-	virtual void OnNewName(const std::string& name); 
-	virtual void OnNewProcessing(CLAMVM::ProcessingController*, const std::string & name );
-	virtual void OnNewPortConnection(CLAMVM::ConnectionAdapter* );
-	virtual void OnNewControlConnection(CLAMVM::ConnectionAdapter* );
+	virtual void SetName(const std::string& name); 
+	virtual void CreateProcessingPresentation( const std::string &, CLAMVM::ProcessingController * );
+	virtual void SetPortConnection(CLAMVM::ConnectionAdapter* );
+	virtual void SetControlConnection(CLAMVM::ConnectionAdapter* );
 
-	virtual void OnNewInPortClicked( Qt_InPortPresentation *);
-	virtual void OnNewOutPortClicked( Qt_OutPortPresentation *);
-	virtual void OnNewInControlClicked( Qt_InControlPresentation *);
-	virtual void OnNewOutControlClicked( Qt_OutControlPresentation *);
+	virtual void SetInPortClicked( Qt_InPortPresentation *);
+	virtual void SetOutPortClicked( Qt_OutPortPresentation *);
+	virtual void SetInControlClicked( Qt_InControlPresentation *);
+	virtual void SetOutControlClicked( Qt_OutControlPresentation *);
 
-//	virtual void OnNewConfiguration( CLAM::ProcessingConfig * );
 	void paintEvent( QPaintEvent * );
 	void mouseMoveEvent( QMouseEvent *);
 	void mouseReleaseEvent( QMouseEvent *m);
@@ -84,18 +82,17 @@ protected:
 	QPoint mMousePos;
 
 public: // slots
-	SigSlot::Slotv1< Qt_InPortPresentation * > SetInPortClicked;
-	SigSlot::Slotv1< Qt_OutPortPresentation * > SetOutPortClicked;
-	SigSlot::Slotv1< Qt_InControlPresentation * > SetInControlClicked;
-	SigSlot::Slotv1< Qt_OutControlPresentation * > SetOutControlClicked;
-//	SigSlot::Slotv1< CLAM::ProcessingConfig * > SetConfigurator;
+	SigSlot::Slotv1< Qt_InPortPresentation * > SlotSetInPortClicked;
+	SigSlot::Slotv1< Qt_OutPortPresentation * > SlotSetOutPortClicked;
+	SigSlot::Slotv1< Qt_InControlPresentation * > SlotSetInControlClicked;
+	SigSlot::Slotv1< Qt_OutControlPresentation * > SlotSetOutControlClicked;
 	// signals
-	SigSlot::Signalv1< const QPoint & > AcquireOutPortAfterClickInPort;
-	SigSlot::Signalv1< const QPoint & > AcquireInPortAfterClickOutPort;
-	SigSlot::Signalv1< const QPoint & > AcquireOutControlAfterClickInControl;
-	SigSlot::Signalv1< const QPoint & > AcquireInControlAfterClickOutControl;
-	SigSlot::Signalv1< const std::string& > SendNewMessageToStatus;
-	SigSlot::Signalv0 ProcessingCreated;
+	SigSlot::Signalv1< const QPoint & > SignalAcquireOutPortAfterClickInPort;
+	SigSlot::Signalv1< const QPoint & > SignalAcquireInPortAfterClickOutPort;
+	SigSlot::Signalv1< const QPoint & > SignalAcquireOutControlAfterClickInControl;
+	SigSlot::Signalv1< const QPoint & > SignalAcquireInControlAfterClickOutControl;
+	SigSlot::Signalv1< const std::string& > SignalSendNewMessageToStatus;
+	SigSlot::Signalv0 SignalProcessingCreated;
 
 
 private:

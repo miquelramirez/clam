@@ -14,12 +14,11 @@ namespace CLAM
 class AutoPannerConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (AutoPannerConfig, 5, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, TData, Frequency);
-	DYN_ATTRIBUTE (2, public, TData , SamplingRate);
-	DYN_ATTRIBUTE (3, public, TData , Phase);
-	DYN_ATTRIBUTE (4, public, int , FrameSize);
+	DYNAMIC_TYPE_USING_INTERFACE (AutoPannerConfig, 4, ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, TData, Frequency);
+	DYN_ATTRIBUTE (1, public, TData , SamplingRate);
+	DYN_ATTRIBUTE (2, public, TData , Phase);
+	DYN_ATTRIBUTE (3, public, int , FrameSize);
 protected:
 	void DefaultInit(void);
 };

@@ -1,7 +1,0 @@
-This example shows how to use MIDILinker class in order to add easily MIDI support to any application, so we can modify values of the Processing controls we specify.
-
-There are two different executables, 'make MIDILinker_example' builds an application where we have two oscillators. We can change the frequency of these by playing a MIDI keyboard (one changes with MIDI Note on, and the other with MIDI Note off).
-
-The other is the same example, but now we have a GUI where we can select the messages and values that change the processing controls selected.
-It can be compiled by typing 'make FLTK_GUI_MIDILinker_example'.
-

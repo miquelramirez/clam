@@ -44,9 +44,8 @@ class DynamicTypeAdvancedTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 
 public:
-	//by now we don't need setUp and tearDown.
-	//void setUp();
-	//void tearDown();
+	void setUp() {};
+	void tearDown() {};
 
 private:
 	void CheckCLAM_USE_XML();

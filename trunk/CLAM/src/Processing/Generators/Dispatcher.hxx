@@ -33,18 +33,15 @@ namespace CLAM
 	class DispatcherConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (DispatcherConfig, 3, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, Array< Instrument* >, Instruments);
-		DYN_ATTRIBUTE (2, public, int, NInValues);
+		DYNAMIC_TYPE_USING_INTERFACE (DispatcherConfig, 2, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, Array< Instrument* >, Instruments);
+		DYN_ATTRIBUTE (1, public, int, NInValues);
 
 	protected:
 		void DefaultInit(void)
 		{
-			AddName();
 			AddInstruments();
 			AddNInValues();
-		
 			UpdateData();
 		}
 	};

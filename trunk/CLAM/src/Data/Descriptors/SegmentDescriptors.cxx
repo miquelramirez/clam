@@ -36,6 +36,22 @@ SegmentDescriptors::SegmentDescriptors(Segment* pSegment): Descriptor(eNumAttr)
 	mpSegment=pSegment;
 }
 
+void SegmentDescriptors::DefaultInit() {
+	mpSegment=0;
+	mpStats=0;
+	AddFramesD();
+	UpdateData();
+}
+
+void SegmentDescriptors::CopyInit(const SegmentDescriptors & copied) {
+	mpSegment=copied.mpSegment;
+	mpStats=0;
+}
+
+const Segment* SegmentDescriptors::GetpSegment() const {
+	return mpSegment;
+}
+
 void SegmentDescriptors::SetpSegment(Segment* pSegment) {
 	mpSegment=pSegment;
 	if(mpSegment->HasAudio())
@@ -56,6 +72,15 @@ void SegmentDescriptors::SetFramePrototype(const FrameDescriptors& proto, int nF
 	for (i=0;i<nFrames;i++){
 		GetFramesD().AddElem(tmpFrD);
 		GetFramesD()[i].SetPrototype(proto);}
+	mSegmentStats= new StatsTmpl<false,FrameDescriptors,FrameDescriptors>(&GetFramesD());
+	if(HasMeanD())
+		GetMeanD().SetPrototype(proto);
+	if(HasMaxD())
+		GetMaxD().SetPrototype(proto);
+	if(HasMinD())
+		GetMinD().SetPrototype(proto);
+	if(HasVarianceD())
+		GetVarianceD().SetPrototype(proto);
 
 }
 
@@ -75,5 +100,13 @@ void SegmentDescriptors::ConcreteCompute()
 	int i;
 	for (i=0;i<nFrames;i++)
 		GetFramesD()[i].Compute();
+	if(HasMeanD())
+		SetMeanD(mSegmentStats->GetMean());
+	if(HasMaxD())
+		SetMaxD(mSegmentStats->GetMax());
+	if(HasMinD())
+		SetMinD(mSegmentStats->GetMin());
+	if(HasVarianceD())
+		SetVarianceD(mSegmentStats->GetVariance());
 }
 

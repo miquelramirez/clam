@@ -75,31 +75,23 @@ namespace CLAM {
 		return res;
 	}
 
-	bool EnvelopeModulator::Do(const Envelope& env, const Audio& inp, Audio& out) throw(ErrProcessingObj)
+	bool EnvelopeModulator::Do(const Envelope& env, const Audio& inp, Audio& out) 
 	{
-		Array<TData> &inpa     = inp.GetBuffer();
-		Array<TData> &outa     = out.GetBuffer();
-		BPFTmpl<TTime,TData> &envb = env.GetAmplitudeBPF();
+		Array<TData> &inputArray = inp.GetBuffer();
+		Array<TData> &outputArray = out.GetBuffer();
+		BPFTmpl<TTime,TData> &amplitudeBpf = env.GetAmplitudeBPF();
 		TTime pos = 0.0;
-		int i;
-		int size = out.GetSize();
-		if (inp.GetSize() < out.GetSize())
-			size = inp.GetSize();
-		try {
-			if (mCompress)
-				for (i=0;i<size;i++) {
-					outa[i]=inpa[i]*envb.GetValue(pos);
-					pos += mDeltaX;
-				}
-			else
-				for (i=0;i<size;i++) {
-					outa[i]=inpa[i]*Compress(envb.GetValue(pos));
-					pos += mDeltaX;
-				}
-		}
-		catch (Err) {
-			throw(ErrProcessingObj("EnvelopeModulator::Do(): BPF or Audio index out of bounds.",this));
-		}
+		const int size = MIN(inp.GetSize(), out.GetSize());
+		if (mCompress)
+			for (int i=0;i<size;i++) {
+				outputArray[i]=inputArray[i]*amplitudeBpf.GetValue(pos);
+				pos += mDeltaX;
+			}
+		else
+			for (int i=0;i<size;i++) {
+				outputArray[i]=inputArray[i]*Compress(amplitudeBpf.GetValue(pos));
+				pos += mDeltaX;
+			}
 		return true;
 	}
 

@@ -46,7 +46,6 @@ using namespace CLAM;
 	void WindowGeneratorConfig::DefaultInit()
 	{
 		/* All Attributes are added */
-		AddName();
 		AddType();
 		AddSize();
 		AddMaxSize();

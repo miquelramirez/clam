@@ -51,46 +51,41 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
 {
 	resize(800,600);
 	setPalette( QPalette( QColor( 250, 250, 200 )));
- 	SetInPortClicked.Wrap( this, &Qt_NetworkPresentation::OnNewInPortClicked);
- 	SetOutPortClicked.Wrap( this, &Qt_NetworkPresentation::OnNewOutPortClicked);
+ 	SlotSetInPortClicked.Wrap( this, &Qt_NetworkPresentation::SetInPortClicked);
+ 	SlotSetOutPortClicked.Wrap( this, &Qt_NetworkPresentation::SetOutPortClicked);
 
- 	SetInControlClicked.Wrap( this, &Qt_NetworkPresentation::OnNewInControlClicked);
- 	SetOutControlClicked.Wrap( this, &Qt_NetworkPresentation::OnNewOutControlClicked);
+ 	SlotSetInControlClicked.Wrap( this, &Qt_NetworkPresentation::SetInControlClicked);
+ 	SlotSetOutControlClicked.Wrap( this, &Qt_NetworkPresentation::SetOutControlClicked);
 
 	setAcceptDrops(TRUE);
 }
 
 
-Qt_NetworkPresentation::~Qt_NetworkPresentation()
-{
-}
-
-
-void Qt_NetworkPresentation::OnNewInPortClicked( Qt_InPortPresentation * inport)
+void Qt_NetworkPresentation::SetInPortClicked( Qt_InPortPresentation * inport)
 {
 	mInPortSelected = inport;	
 	grabMouse();
 }
 
-void Qt_NetworkPresentation::OnNewOutPortClicked( Qt_OutPortPresentation * outport)
+void Qt_NetworkPresentation::SetOutPortClicked( Qt_OutPortPresentation * outport)
 {
 	mOutPortSelected = outport;	
 	grabMouse();
 }
 
-void Qt_NetworkPresentation::OnNewInControlClicked( Qt_InControlPresentation * incontrol)
+void Qt_NetworkPresentation::SetInControlClicked( Qt_InControlPresentation * incontrol)
 {
 	mInControlSelected = incontrol;	
 	grabMouse();
 }
 
-void Qt_NetworkPresentation::OnNewOutControlClicked( Qt_OutControlPresentation * outcontrol)
+void Qt_NetworkPresentation::SetOutControlClicked( Qt_OutControlPresentation * outcontrol)
 {
 	mOutControlSelected = outcontrol;	
 	grabMouse();
 }
 
-void Qt_NetworkPresentation::OnNewName(const std::string& name)
+void Qt_NetworkPresentation::SetName(const std::string& name)
 {
 	mName = name;
 
@@ -103,34 +98,35 @@ void Qt_NetworkPresentation::OnNewName(const std::string& name)
 
 }
 
-void Qt_NetworkPresentation::OnNewProcessing( CLAMVM::ProcessingController* controller, const std::string & name)
+void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & name, CLAMVM::ProcessingController * controller )
 {
 	Qt_ProcessingPresentation* presentation = new Qt_ProcessingPresentation(name, this);
 	presentation->AttachTo(*controller);
 
-	presentation->AcquireInPortClicked.Connect( SetInPortClicked );
-	presentation->AcquireOutPortClicked.Connect( SetOutPortClicked );
-	presentation->AcquireInControlClicked.Connect( SetInControlClicked );
-	presentation->AcquireOutControlClicked.Connect( SetOutControlClicked );
-	presentation->RemoveProcessing.Connect( SetRemoveProcessing );
+	presentation->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
+	presentation->SignalAcquireOutPortClicked.Connect( SlotSetOutPortClicked );
+	presentation->SignalAcquireInControlClicked.Connect( SlotSetInControlClicked );
+	presentation->SignalAcquireOutControlClicked.Connect( SlotSetOutControlClicked );
+	presentation->SignalRemoveProcessing.Connect( SlotRemoveProcessing );
 
-	AcquireOutPortAfterClickInPort.Connect( presentation->SetOutPortAfterClickInPort );
-	AcquireInPortAfterClickOutPort.Connect( presentation->SetInPortAfterClickOutPort );
-	AcquireOutControlAfterClickInControl.Connect( presentation->SetOutControlAfterClickInControl );
-	AcquireInControlAfterClickOutControl.Connect( presentation->SetInControlAfterClickOutControl );
+	SignalAcquireOutPortAfterClickInPort.Connect( presentation->SlotSetOutPortAfterClickInPort );
+	SignalAcquireInPortAfterClickOutPort.Connect( presentation->SlotSetInPortAfterClickOutPort );
+	SignalAcquireOutControlAfterClickInControl.Connect( presentation->SlotSetOutControlAfterClickInControl );
+	SignalAcquireInControlAfterClickOutControl.Connect( presentation->SlotSetInControlAfterClickOutControl );
 
 	controller->Publish();
 	mProcessingPresentations.push_back(presentation);
+
 	presentation->Show();
 
-	SendNewMessageToStatus.Emit( "Created " + presentation->GetNameFromNetwork() );
+	SignalSendNewMessageToStatus.Emit( "Created " + presentation->GetNameFromNetwork() );
 }
 
-void Qt_NetworkPresentation::OnNewPortConnection( CLAMVM::ConnectionAdapter* adapter)
+void Qt_NetworkPresentation::SetPortConnection( CLAMVM::ConnectionAdapter* adapter)
 {
 	Qt_PortConnectionPresentation* presentation = new Qt_PortConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
-	presentation->RemoveConnection.Connect(SetRemovePortConnection);
+	presentation->SignalRemoveConnection.Connect( SlotSetRemovePortConnection);
 	adapter->Publish();
 	// connectar presentation a outport i inport signals
 
@@ -146,16 +142,16 @@ void Qt_NetworkPresentation::OnNewPortConnection( CLAMVM::ConnectionAdapter* ada
 	}	
 	presentation->Show();
 
-	SendNewMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
+	SignalSendNewMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
 				     " to " + presentation->GetInName() );
 }
 
 
-void Qt_NetworkPresentation::OnNewControlConnection( CLAMVM::ConnectionAdapter* adapter)
+void Qt_NetworkPresentation::SetControlConnection( CLAMVM::ConnectionAdapter* adapter)
 {
 	Qt_ControlConnectionPresentation* presentation = new Qt_ControlConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
-	presentation->RemoveConnection.Connect(SetRemoveControlConnection);
+	presentation->SignalRemoveConnection.Connect( SlotSetRemoveControlConnection);
 	adapter->Publish();
 	// connectar presentation a outport i inport signals
 
@@ -171,7 +167,7 @@ void Qt_NetworkPresentation::OnNewControlConnection( CLAMVM::ConnectionAdapter* 
 	}	
 	presentation->Show();
 
-	SendNewMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
+	SignalSendNewMessageToStatus.Emit( "Linked " + presentation->GetOutName() +
 				     " to " + presentation->GetInName() );
 }
 
@@ -182,8 +178,8 @@ void Qt_NetworkPresentation::AttachConnectionToPortPresentations( Qt_PortConnect
 	Qt_InPortPresentation & in = (Qt_InPortPresentation&)
 		GetInPortPresentationByCompleteName( con->GetInName() );
 
-	out.AcquirePos.Connect(con->SetOutPos);	
-	in.AcquirePos.Connect(con->SetInPos);	
+	out.SignalAcquirePos.Connect(con->SlotSetOutPos);	
+	in.SignalAcquirePos.Connect(con->SlotSetInPos);	
 }
 
 
@@ -194,8 +190,8 @@ void Qt_NetworkPresentation::AttachConnectionToControlPresentations( Qt_ControlC
 	Qt_InControlPresentation & in = (Qt_InControlPresentation&)
 		GetInControlPresentationByCompleteName( con->GetInName() );
 
-	out.AcquirePos.Connect(con->SetOutPos);	
-	in.AcquirePos.Connect(con->SetInPos);	
+	out.SignalAcquirePos.Connect(con->SlotSetOutPos);	
+	in.SignalAcquirePos.Connect(con->SlotSetInPos);	
 }
 
 void Qt_NetworkPresentation::Show()
@@ -221,17 +217,17 @@ void Qt_NetworkPresentation::mouseReleaseEvent( QMouseEvent *m)
 {
 	if( mInPortSelected ) //from inport to outport
 	{
-	        AcquireOutPortAfterClickInPort.Emit( m->pos() );
+	        SignalAcquireOutPortAfterClickInPort.Emit( m->pos() );
 	}
 	else if (mOutPortSelected)
 	{
-	        AcquireInPortAfterClickOutPort.Emit( m->pos() );
+	        SignalAcquireInPortAfterClickOutPort.Emit( m->pos() );
 	}
 	if (mInPortSelected && mOutPortSelected) //there is a new connection
 	{
 		const std::string inPort = GetCompleteNameFromInPortSelected();
 		const std::string outPort = GetCompleteNameFromOutPortSelected();
-		CreateNewPortConnectionFromGUI.Emit( outPort, inPort );
+		SignalCreateNewPortConnectionFromGUI.Emit( outPort, inPort );
 	}
 
 	mInPortSelected = 0;
@@ -240,17 +236,17 @@ void Qt_NetworkPresentation::mouseReleaseEvent( QMouseEvent *m)
 
 	if( mInControlSelected ) //from inport to outport
 	{
-	        AcquireOutControlAfterClickInControl.Emit( m->pos() );
+	        SignalAcquireOutControlAfterClickInControl.Emit( m->pos() );
 	}
 	else if (mOutControlSelected)
 	{
-	        AcquireInControlAfterClickOutControl.Emit( m->pos() );
+	        SignalAcquireInControlAfterClickOutControl.Emit( m->pos() );
 	}
 	if (mInControlSelected && mOutControlSelected) //there is a new connection
 	{
 		const std::string inControl = GetCompleteNameFromInControlSelected();
 		const std::string outControl = GetCompleteNameFromOutControlSelected();
-		CreateNewControlConnectionFromGUI.Emit( outControl, inControl );
+		SignalCreateNewControlConnectionFromGUI.Emit( outControl, inControl );
 	}
 
 	mInControlSelected = 0;
@@ -350,8 +346,8 @@ void Qt_NetworkPresentation::dropEvent(QDropEvent* event)
 		
 		std::string className(GetProcessingIdentifier(completeName));
 		std::string concreteName(GetLastIdentifier(completeName));
-		OnAddNewProcessing( concreteName, factory.Create(className) );
-		ProcessingCreated.Emit();
+		AddProcessing( concreteName, factory.Create(className) );
+		SignalProcessingCreated.Emit();
 
 		Qt_ProcessingPresentation & proc = (Qt_ProcessingPresentation&)GetProcessingPresentation(concreteName);
 		proc.move(event->pos());

@@ -1,14 +1,4 @@
 /*
-DON'T EDIT THIS FILE BY HAND, IT IS GENERATED 
-BY THE SCRIPT SndPcmGen.pl FROM
-alsa-lib/test/latency.c
-SndPcm.in.head.cxx
-SndPcm.in.tail.cxx
-SndPcm.in.head.hxx
-SndPcm.in.tail.hxx
-*/
-
-/*
  * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
@@ -28,6 +18,10 @@ SndPcm.in.tail.hxx
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+
+/* alsa 0.9 backwards compatibility for alsa 1.0 */
+#define ALSA_PCM_OLD_HW_PARAMS_API
+#define ALSA_PCM_OLD_SW_PARAMS_API
 
 #include <alsa/asoundlib.h>
 #include <Err.hxx>

@@ -19,6 +19,8 @@
  *
  */
 
+#define MDB_FLTK_OPENGL_WORKAROUND
+
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl.H>
@@ -187,9 +189,11 @@ int Fl_Smart_Tile::handle(int e)
 				{
 					movingnewsize_ = child(current_)->h()-Fl::event_y()+prevy;
 					movement_ = 1;
+#ifndef MDB_FLTK_OPENGL_WORKAROUND
 					for (int j=0;j<children();j++)
 						if (visible_[j] && child(j)->visible()) 
 							child(j)->hide();
+#endif
 					recalc();
 					prevy = Fl::event_y();
 				}

@@ -31,8 +31,6 @@
 #include <fstream>
 #include "XMLTestHelper.hxx"
 
-using CLAMTest::XMLInputOutputMatches;
-
 using namespace CLAM;
 
 #define NCHILDRENPERSEGMENT 30
@@ -67,7 +65,6 @@ try{
 	//The File I/O PO
 	AudioFileIn myAudioFileIn;
 	AudioFileConfig infilecfg;
-	infilecfg.SetName("FileIn");
 	infilecfg.SetFilename(fileName);
 	infilecfg.SetFiletype(EAudioFileType::eWave);
 	myAudioFileIn.Configure(infilecfg);
@@ -134,15 +131,11 @@ try{
 		}
 	}
 
-#ifdef CLAM_USE_XML
-		
 	std::cout << "Segmentation finished, starting XML dump \n";	
 
 	// Storing result to XML document and check if loading matches
-	CLAM_ASSERT(XMLInputOutputMatches(mySegment, "SegmentTest.xml"), 
+	CLAM_ASSERT(CLAMTest::XMLInputOutputMatches(mySegment, "SegmentTest.xml"), 
 		"Original resulting segment and XML reloaded one don't match");
-
-#endif//CLAM_USE_XML
 
 	//Detaching all children
 	std::cout << "Detaching all segments" << std::endl;

@@ -33,7 +33,7 @@ namespace SDIF
 
 		Matrix(
 				const TypeId& type = TypeId::sDefault,DataType dataType = eUnknown,
-				TInt32 nRows = 0, TInt32 nColumns = 0);
+				CLAM::TInt32 nRows = 0, CLAM::TInt32 nColumns = 0);
 		virtual char* GetPtr(void) = 0;
 		virtual void Resize(int nElems) = 0;
 		virtual void SetSize(int nElems) = 0;
@@ -42,20 +42,20 @@ namespace SDIF
 
 		TypeId Type(void) {return mHeader.mType;}
 		
-		TInt32 Rows(void) { return mHeader.mnRows; }
-		TInt32 Columns(void) { return mHeader.mnColumns; }
-		TInt32 SizeInFile(void)
+		CLAM::TInt32 Rows(void) { return mHeader.mnRows; }
+		CLAM::TInt32 Columns(void) { return mHeader.mnColumns; }
+		CLAM::TInt32 SizeInFile(void)
 		{
-			TUInt32 nElems = mHeader.mnColumns*mHeader.mnRows;
-			TUInt32 elemSize = mHeader.mDataType&0xFF;
-			TUInt32 size = nElems*elemSize;
-			TUInt32 padding = 8-size&7;
+			CLAM::TUInt32 nElems = mHeader.mnColumns*mHeader.mnRows;
+			CLAM::TUInt32 elemSize = mHeader.mDataType&0xFF;
+			CLAM::TUInt32 size = nElems*elemSize;
+			CLAM::TUInt32 padding = 8-size&7;
 			
 			return mHeader.SizeInFile()+size+padding;
 		}
 	};
 
-	template <class T=TFloat32> class ConcreteMatrix:public Matrix
+	template <class T=CLAM::TFloat32> class ConcreteMatrix:public Matrix
 	{
 	friend class File;
 	private:
@@ -69,10 +69,10 @@ namespace SDIF
 		*/
 		ConcreteMatrix(
 				const TypeId& type = TypeId::sDefault,
-				TInt32 nRows = 0, TInt32 nColumns = 0)
+				CLAM::TInt32 nRows = 0, CLAM::TInt32 nColumns = 0)
 			:Matrix(type,GetType<T>::Get(),nRows,nColumns)
 		{
-			TInt32 nElems = Rows()*Columns();
+			CLAM::TInt32 nElems = Rows()*Columns();
 			Resize(nElems);
 			SetSize(nElems);
 		}
@@ -80,7 +80,7 @@ namespace SDIF
 		ConcreteMatrix(const MatrixHeader& header)
 		:Matrix(header)
 		{
-			TInt32 nElems = Rows()*Columns();
+			CLAM::TInt32 nElems = Rows()*Columns();
 			Resize(nElems);
 			SetSize(nElems);
 		}
@@ -94,7 +94,7 @@ namespace SDIF
 		* @param row,col coordinates of the value
 		* @return The indicated value
 		*/
-		T GetValue(TInt32 row,TInt32 col)
+		T GetValue(CLAM::TInt32 row,CLAM::TInt32 col)
 		{
 			return mpData[row*mHeader.mnColumns + col];
 		}
@@ -103,7 +103,7 @@ namespace SDIF
 		* @param row,col coordinates of the value
 		* @param val The new value
 		*/
-		void SetValue(TInt32 row,TInt32 col,const T& val)
+		void SetValue(CLAM::TInt32 row,CLAM::TInt32 col,const T& val)
 		{
 			mpData[row*mHeader.mnColumns + col] = val;
 		}

@@ -47,7 +47,7 @@ namespace CLAM {
 					*/
 #ifdef DEBUGGING_MIDIIO
 					printf("adding %s:Value port\n",
-						MIDI::GetMessageInfo(status).name,
+						MIDI::GetMessageInfo(status).name);
 #endif
 					char tmp[256];
 					sprintf(tmp,"%s:Value",
@@ -113,18 +113,18 @@ namespace CLAM {
 					   out to values (LSB, MSB), we prefer 1 14bit value.
 						 see also the code in ConcreteConfigure
 					*/
-					SendControl(i,
+					GetOutControls().GetByNumber(i).SendControl(
 						msg[mOutControlInfos[i]->mField+1]+
 						(msg[mOutControlInfos[i]->mField+2]<<7)
 					);
 				}
 				else if (mOutControlInfos[i]->mMessage == MIDI::eSystem)
 				{
-					SendControl(i,1);
+					GetOutControls().GetByNumber(i).SendControl(1);
 				}
 				else
 				{
-					SendControl(i,msg[mOutControlInfos[i]->mField+1]);
+					GetOutControls().GetByNumber(i).SendControl(msg[mOutControlInfos[i]->mField+1]);
 				}
 			}
 		}

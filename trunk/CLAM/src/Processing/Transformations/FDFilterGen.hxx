@@ -106,15 +106,14 @@ public:
 class FDFilterGenConfig: public ProcessingConfig 
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (FDFilterGenConfig, 8, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, EFDFilterType, Type);
-	DYN_ATTRIBUTE (2, public, TData, SpectralRange);
-	DYN_ATTRIBUTE (3, public, TData, Gain);
-	DYN_ATTRIBUTE (4, public, TData, HighCutOff);
-	DYN_ATTRIBUTE (5, public, TData, LowCutOff);
-	DYN_ATTRIBUTE (6, public, TData, PassBandSlope);
-	DYN_ATTRIBUTE (7, public, TData, StopBandSlope);
+	DYNAMIC_TYPE_USING_INTERFACE (FDFilterGenConfig, 7, ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, EFDFilterType, Type);
+	DYN_ATTRIBUTE (1, public, TData, SpectralRange);
+	DYN_ATTRIBUTE (2, public, TData, Gain);
+	DYN_ATTRIBUTE (3, public, TData, HighCutOff);
+	DYN_ATTRIBUTE (4, public, TData, LowCutOff);
+	DYN_ATTRIBUTE (5, public, TData, PassBandSlope);
+	DYN_ATTRIBUTE (6, public, TData, StopBandSlope);
 protected:
 	void DefaultInit(void);
 };

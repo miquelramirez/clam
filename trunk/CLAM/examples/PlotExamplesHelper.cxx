@@ -142,7 +142,6 @@ void generateSignalSpectrum( CLAM::Spectrum& spectrum )
 	spectrum.SetSpectralRange( 22050 );
 
 	CLAM::FFTConfig fconfig;
-	fconfig.SetName("local.My_beautiful_fft");
 	fconfig.SetAudioSize(samples);
 
 	// Windowing and Fourier transform

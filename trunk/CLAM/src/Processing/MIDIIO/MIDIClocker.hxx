@@ -40,20 +40,15 @@ namespace CLAM
 class MIDIClockerConfig: public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (MIDIClockerConfig, 2, ProcessingConfig);
-
-	/** The name of the object*/
-	DYN_ATTRIBUTE (0, public, std::string, Name)
+	DYNAMIC_TYPE_USING_INTERFACE (MIDIClockerConfig, 1, ProcessingConfig);
 
 	/** The Device that will be used by this MIDIClocker or MIDIOut instantiation, if it is not indicated, or its value is "default:default", system will choose the best device for this object*/
-	DYN_ATTRIBUTE (1, public, std::string, Device);
+	DYN_ATTRIBUTE (0, public, std::string, Device);
 
 protected:
 	void DefaultInit(void)
 	{
-		AddName();
 		AddDevice();
-
 		UpdateData();
 
 		SetDevice("default:default");

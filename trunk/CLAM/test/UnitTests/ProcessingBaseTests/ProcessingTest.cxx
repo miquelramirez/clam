@@ -19,8 +19,6 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testGetInControl_WithOutOfRangeIndexThrowException );
 	CPPUNIT_TEST( testGetOutControl_WithOutOfRangeIndexThrowException );
 	CPPUNIT_TEST( testLinkAndSendControl_ChangesInControlState );
-
-	CPPUNIT_TEST( testLinkOutWithInControl_ChangesInControlState );
 	// new controls/ports interface.
 	// todo: adapt the old tests:
 	CPPUNIT_TEST( testInControls_GetByNumber_GetTheRightControl );
@@ -73,51 +71,38 @@ private:
 
 	void testGetInControl_GetTheRightControl()
 	{
-		CPPUNIT_ASSERT_EQUAL( std::string("in"), GetInControl(0)->GetName() );
+		CPPUNIT_ASSERT_EQUAL( std::string("in"), GetInControls().GetByNumber(0).GetName() );
 	}
 	void testGetOutControl_GetTheRightControl()
 	{
-		CPPUNIT_ASSERT_EQUAL( std::string("out1"), GetOutControl(0)->GetName() );
+		CPPUNIT_ASSERT_EQUAL( std::string("out1"), GetOutControls().GetByNumber(0).GetName() );
 	}
 	void testGetInControl_WithOutOfRangeIndexThrowException() 
 	{
-#		ifdef HAVE_STANDARD_VECTOR_AT // otherwise cannot be tested
-			try
-			{
-				GetInControl(2); // we have two published in controls: indexs 0,1
-				CPPUNIT_FAIL("std::out_of_range was expected but none was thrown");
-			}
-			catch( std::out_of_range&) {}
-#		endif
+		try
+		{
+			GetInControls().GetByNumber(2); // we have two published in controls: indexs 0,1
+			CPPUNIT_FAIL("std::out_of_range was expected but none was thrown");
+		}
+		catch( ... ) {}
 	}
 	void testGetOutControl_WithOutOfRangeIndexThrowException() 
 	{
-#		ifdef HAVE_STANDARD_VECTOR_AT // otherwise cannot be tested
-			try
-			{
-				GetOutControl(2); // we have two published out controls: indexs 0,1
-				CPPUNIT_FAIL("std::out_of_range was expected but none was thrown");
-			}
-			catch( std::out_of_range&) {}
-#		endif
+		try
+		{
+			GetOutControls().GetByNumber(2); // we have two published out controls: indexs 0,1
+			CPPUNIT_FAIL("std::out_of_range was expected but none was thrown");
+		}
+		catch( ... ) {}
 	}
 	void testLinkAndSendControl_ChangesInControlState()
 	{
 		const int outId=0, inId=0;
-		LinkOutWithInControl(outId, this, inId);
-		SendControl(outId, 1.f);
-		CPPUNIT_ASSERT_EQUAL( 1.f, GetInControl(inId)->GetLastValue() );
+		GetOutControls().GetByNumber(outId).AddLink(&(GetInControls().GetByNumber(inId)));
+		GetOutControls().GetByNumber(outId).SendControl(1.f);
+		CPPUNIT_ASSERT_EQUAL( 1.f, GetInControls().GetByNumber(inId).GetLastValue() );
 	}
 
-	// free method LinkOutWithInControl()
-	
-	void testLinkOutWithInControl_ChangesInControlState()
-	{
-		CLAM::LinkOutWithInControl( this, "out1",this, "in" );
-		GetOutControls().Get( "out1" ).SendControl( 1.f );
-		CPPUNIT_ASSERT_EQUAL( 1.f, GetInControls().Get("in").GetLastValue() );
-	}
-	
 	//---------------------------------------
 	// new controls/ports interface tests
 

@@ -3,11 +3,6 @@
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
- * This program is free s/*
- * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
- *
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -81,7 +76,6 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	MIDIManager manager;
 	// Control for handling MIDI notes		
 	MIDIInConfig inNoteCfg;	
-	inNoteCfg.SetName("in");	
 	inNoteCfg.SetDevice(midiDeviceStr);
 	inNoteCfg.SetChannelMask(CLAM::MIDI::ChannelMask(-1)); //all
 	inNoteCfg.SetMessageMask(CLAM::MIDI::MessageMask(CLAM::MIDI::eNoteOn)|CLAM::MIDI::MessageMask(CLAM::MIDI::eNoteOff));
@@ -90,7 +84,6 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
   
 	//control for stoping at eof 
 	MIDIInConfig inStopCfg;
-	inStopCfg.SetName("stop");	
 	inStopCfg.SetDevice(midiDeviceStr);
 	inStopCfg.SetChannelMask(CLAM::MIDI::SysMsgMask(CLAM::MIDI::eStop)); //it is a sys message that uses channel byte for actual data
 	inStopCfg.SetMessageMask(CLAM::MIDI::MessageMask(CLAM::MIDI::eSystem));
@@ -100,20 +93,23 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	//MIDI clocker to keep track of timing
 	MIDIClockerConfig clockerCfg;
 
-	clockerCfg.SetName("clocker");
 	clockerCfg.SetDevice(midiDeviceStr);
 		
 	MIDIClocker clocker(clockerCfg);
 
 	//We instantiate our MIDI2Melody converter and link MIDi controls to its input controls
 	MIDI2Melody converter;
- 
-	inNote.LinkOutWithInControl( 0, &converter, 2);   /** Key for Note Off */
-	inNote.LinkOutWithInControl( 1, &converter, 3);   /** Velocity for Note Off */
-	inNote.LinkOutWithInControl( 2, &converter, 4);   /** Key for Note On */
-	inNote.LinkOutWithInControl( 3, &converter, 5);   /** Velocity for Note On */
+
+	/** Key for Note Off */
+	inNote.GetOutControls().GetByNumber(0).AddLink(&converter.GetInControls().GetByNumber(2));
+	/** Velocity for Note Off */
+	inNote.GetOutControls().GetByNumber(1).AddLink(&converter.GetInControls().GetByNumber(3));
+	/** Key for Note On */
+	inNote.GetOutControls().GetByNumber(2).AddLink(&converter.GetInControls().GetByNumber(4));
+	 /** Velocity for Note On */
+	inNote.GetOutControls().GetByNumber(3).AddLink(&converter.GetInControls().GetByNumber(5));
   
-	inStop.LinkOutWithInControl(0, &converter,0);
+	inStop.GetOutControls().GetByNumber(0).AddLink(&converter.GetInControls().GetByNumber(0));
   
 	//We start the MIDI manager and initialize loop variables	
 	manager.Start();
@@ -127,7 +123,7 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	do{//Converter loop
 		
 			//we send a timing control to the MIDI clocker 
-			clocker.DoControl(0,curTime);
+			clocker.GetInControls().GetByNumber(0).DoControl(curTime);
 			//we increment the time counter
 			curTime += curTimeInc;
 			//we check for new events in the MIDI manager

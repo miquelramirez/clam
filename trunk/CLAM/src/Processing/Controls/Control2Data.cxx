@@ -25,7 +25,6 @@ namespace CLAM {
 
 void Control2DataConfig::DefaultInit(void)
 {
-	AddName();
 	AddNumControls();
 	UpdateData();
 	SetNumControls(0);

@@ -25,13 +25,45 @@
 #include "AudioDescriptors.hxx"
 #include "Audio.hxx"
 
-using namespace CLAM;
+namespace CLAM {
 
-AudioDescriptors::AudioDescriptors(Audio* pAudio): Descriptor(eNumAttr)
+AudioDescriptors::AudioDescriptors(Audio* pAudio): DescriptorAbs(eNumAttr)
 {
 	MandatoryInit();
 	mpAudio=pAudio;
 }
+
+AudioDescriptors::AudioDescriptors(TData initVal):DescriptorAbs(eNumAttr)
+{
+	MandatoryInit();
+	AddAll();
+	UpdateData();
+	SetMean(initVal);
+	SetTemporalCentroid(initVal);
+	SetEnergy(initVal);
+	SetVariance(initVal);
+	SetZeroCrossingRate(initVal);
+	SetRiseTime(initVal);
+	SetLogAttackTime(initVal);
+	SetAttack(initVal);
+	SetDecay(initVal);
+	SetSustain(initVal);
+	SetRelease(initVal);
+}
+
+void AudioDescriptors::DefaultInit() {
+	mpAudio=0;
+}
+
+
+void AudioDescriptors::CopyInit(const AudioDescriptors & copied) {
+	mpAudio=copied.mpAudio;
+}
+
+const Audio* AudioDescriptors::GetpAudio() const {
+	return mpAudio;
+}
+
 
 
 void AudioDescriptors::SetpAudio(Audio* pAudio) {
@@ -85,7 +117,7 @@ TData AudioDescriptors::ComputeAttackTime()
 	if(mComputedAttackTime) return mComputedAttackTime;
 
 	TData max = 0.;
-	TIndex maxindex,offset;
+	TIndex maxindex = -1,offset;
 
 	//this algorithm is not the first time I see it, should be generalized and optimized
 	int i;
@@ -112,4 +144,221 @@ TData AudioDescriptors::ComputeAttackTime()
 TData AudioDescriptors::ComputeLogAttackTime()
 {
 	return log(ComputeAttackTime());
+}
+
+
+AudioDescriptors operator * (const AudioDescriptors& a,TData mult)
+{
+	
+	AudioDescriptors tmpD(a);
+
+	if (a.HasMean())
+	{
+		tmpD.SetMean(a.GetMean()*mult);
+	}
+	if (a.HasTemporalCentroid())
+	{
+		tmpD.SetTemporalCentroid(a.GetTemporalCentroid()*mult);
+	}
+	if (a.HasEnergy())
+	{
+		tmpD.SetEnergy(a.GetEnergy()*mult);
+	}
+	if(a.HasVariance())
+	{
+		tmpD.SetVariance(a.GetVariance()*mult);
+	}
+	if(a.HasZeroCrossingRate())
+	{
+		tmpD.SetZeroCrossingRate(a.GetZeroCrossingRate()*mult);
+	}
+	if(a.HasRiseTime())
+	{
+		tmpD.SetRiseTime(a.GetRiseTime()*mult);
+	}
+	if(a.HasLogAttackTime())
+	{
+		tmpD.SetLogAttackTime(a.GetLogAttackTime()*mult);
+	}
+	if(a.HasAttack())
+	{
+		tmpD.SetAttack(a.GetAttack()*mult);
+	}
+	if(a.HasDecay())
+	{
+		tmpD.SetDecay(a.GetDecay()*mult);
+	}
+	if(a.HasSustain())
+	{
+		tmpD.SetSustain(a.GetSustain()*mult);
+	}
+	if(a.HasRelease())
+	{
+		tmpD.SetRelease(a.GetRelease()*mult);
+	}
+	return tmpD;
+}
+
+AudioDescriptors operator * (TData mult, const AudioDescriptors& a)
+{
+	return a*mult;
+}
+
+AudioDescriptors operator * (const AudioDescriptors& a,const AudioDescriptors& b)
+{
+	AudioDescriptors tmpD;
+
+	if (a.HasMean() && b.HasMean() )
+	{
+		tmpD.AddMean();
+		tmpD.UpdateData();
+		tmpD.SetMean(a.GetMean()*b.GetMean() );
+	}
+	if (a.HasTemporalCentroid() && b.HasTemporalCentroid() )
+	{
+		tmpD.AddTemporalCentroid();
+		tmpD.UpdateData();
+		tmpD.SetTemporalCentroid(a.GetTemporalCentroid()*b.GetTemporalCentroid() );
+	}
+	if (a.HasEnergy() && b.HasEnergy() )
+	{
+		tmpD.AddEnergy();
+		tmpD.UpdateData();
+		tmpD.SetEnergy(a.GetEnergy()*b.GetEnergy() );
+	}
+	if(a.HasVariance() && b.HasVariance() )
+	{
+		tmpD.AddVariance();
+		tmpD.UpdateData();
+		tmpD.SetVariance(a.GetVariance()*b.GetVariance() );
+	}
+	if(a.HasZeroCrossingRate() && b.HasZeroCrossingRate() )
+	{
+		tmpD.AddZeroCrossingRate();
+		tmpD.UpdateData();
+		tmpD.SetZeroCrossingRate(a.GetZeroCrossingRate()*b.GetZeroCrossingRate() );
+	}
+	if(a.HasRiseTime() && b.HasRiseTime() )
+	{
+		tmpD.AddRiseTime();
+		tmpD.UpdateData();
+		tmpD.SetRiseTime(a.GetRiseTime()*b.GetRiseTime() );
+	}
+	if(a.HasLogAttackTime() && b.HasLogAttackTime() )
+	{
+		tmpD.AddLogAttackTime();
+		tmpD.UpdateData();
+		tmpD.SetLogAttackTime(a.GetLogAttackTime()*b.GetLogAttackTime() );
+	}
+	if(a.HasAttack() && b.HasAttack() )
+	{
+		tmpD.AddAttack();
+		tmpD.UpdateData();
+		tmpD.SetAttack(a.GetAttack()*b.GetAttack() );
+	}
+	if(a.HasDecay() && b.HasDecay() )
+	{
+		tmpD.AddDecay();
+		tmpD.UpdateData();
+		tmpD.SetDecay(a.GetDecay()*b.GetDecay() );
+	}
+	if(a.HasSustain() && b.HasSustain() )
+	{
+		tmpD.AddSustain();
+		tmpD.UpdateData();
+		tmpD.SetSustain(a.GetSustain()*b.GetSustain() );
+	}
+	if(a.HasRelease() && b.HasRelease() )
+	{
+		tmpD.AddRelease();
+		tmpD.UpdateData();
+		tmpD.SetRelease(a.GetRelease()*b.GetRelease() );
+	}
+	return tmpD;
+}
+
+AudioDescriptors operator + (const AudioDescriptors& a,const AudioDescriptors& b)
+{
+	AudioDescriptors tmpD;
+
+	if (a.HasMean() && b.HasMean() )
+	{
+		tmpD.AddMean();
+		tmpD.UpdateData();
+		tmpD.SetMean(a.GetMean()+b.GetMean() );
+	}
+	if (a.HasTemporalCentroid() && b.HasTemporalCentroid() )
+	{
+		tmpD.AddTemporalCentroid();
+		tmpD.UpdateData();
+		tmpD.SetTemporalCentroid(a.GetTemporalCentroid()+b.GetTemporalCentroid() );
+	}
+	if (a.HasEnergy() && b.HasEnergy() )
+	{
+		tmpD.AddEnergy();
+		tmpD.UpdateData();
+		tmpD.SetEnergy(a.GetEnergy()+b.GetEnergy() );
+	}
+	if(a.HasVariance() && b.HasVariance() )
+	{
+		tmpD.AddVariance();
+		tmpD.UpdateData();
+		tmpD.SetVariance(a.GetVariance()+b.GetVariance() );
+	}
+	if(a.HasZeroCrossingRate() && b.HasZeroCrossingRate() )
+	{
+		tmpD.AddZeroCrossingRate();
+		tmpD.UpdateData();
+		tmpD.SetZeroCrossingRate(a.GetZeroCrossingRate()+b.GetZeroCrossingRate() );
+	}
+	if(a.HasRiseTime() && b.HasRiseTime() )
+	{
+		tmpD.AddRiseTime();
+		tmpD.UpdateData();
+		tmpD.SetRiseTime(a.GetRiseTime()+b.GetRiseTime() );
+	}
+	if(a.HasLogAttackTime() && b.HasLogAttackTime() )
+	{
+		tmpD.AddLogAttackTime();
+		tmpD.UpdateData();
+		tmpD.SetLogAttackTime(a.GetLogAttackTime()+b.GetLogAttackTime() );
+	}
+	if(a.HasAttack() && b.HasAttack() )
+	{
+		tmpD.AddAttack();
+		tmpD.UpdateData();
+		tmpD.SetAttack(a.GetAttack()+b.GetAttack() );
+	}
+	if(a.HasDecay() && b.HasDecay() )
+	{
+		tmpD.AddDecay();
+		tmpD.UpdateData();
+		tmpD.SetDecay(a.GetDecay()+b.GetDecay() );
+	}
+	if(a.HasSustain() && b.HasSustain() )
+	{
+		tmpD.AddSustain();
+		tmpD.UpdateData();
+		tmpD.SetSustain(a.GetSustain()+b.GetSustain() );
+	}
+	if(a.HasRelease() && b.HasRelease() )
+	{
+		tmpD.AddRelease();
+		tmpD.UpdateData();
+		tmpD.SetRelease(a.GetRelease()+b.GetRelease() );
+	}
+	return tmpD;
+
+}
+
+AudioDescriptors operator - (const AudioDescriptors& a,const AudioDescriptors& b)
+{
+	return a+((-1)*b);
+}
+
+AudioDescriptors operator / (const AudioDescriptors& a,TData div) 
+{
+	return a*(1/div);
+}
+
 }

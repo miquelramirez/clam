@@ -28,7 +28,6 @@ void NetworkConfiguration::ConnectAndDo()
 
 SystemWithNodes::SystemWithNodes( std::string fileIn, std::string fileOut , int frameSize , int nFrames, bool hasAudioOut ) :
 	mAudioManager(44100, frameSize),
-	mControlSender(20,44100,0,frameSize),
 	mFileInName(fileIn),
 	mFileOutName(fileOut), 
 	mFrameSize(frameSize), 
@@ -69,7 +68,7 @@ void SystemWithNodes::RegisterProcessings()
 	mProcessings.push_back( &mMultiplier );
 	mProcessings.push_back( &mAudioOut);
 	mProcessings.push_back( &mMixer );
-//	mProcessings.push_back( &mControlSender );
+	mProcessings.push_back( &mControlSender );
 	
 }
 
@@ -77,7 +76,7 @@ void SystemWithNodes::ConfigureProcessings()
 {
 
 	// oscillators
-	CLAM::OscillatorConfig oscilCfg;
+	CLAM::SimpleOscillatorConfig oscilCfg;
 	oscilCfg.SetFrequency(440.0);
 	oscilCfg.SetAmplitude(0.5);
 
@@ -105,6 +104,13 @@ void SystemWithNodes::ConfigureProcessings()
 
 	mMixer.Configure( mixerCfg );
 
+	CLAM::AutoPannerConfig pannerCfg;
+	pannerCfg.SetFrequency( 20.0 );
+	pannerCfg.SetFrameSize(mFrameSize);
+	pannerCfg.SetSamplingRate(44100);
+	mControlSender.Configure( pannerCfg );
+
+
 	if (mHasAudioOut)
 	{
 		CLAM::AudioIOConfig audioCfg;
@@ -123,6 +129,7 @@ void SystemWithNodes::StartProcessings()
 		mModulator.Start();
 		mMultiplier.Start();
 		mMixer.Start();
+		mControlSender.Start();
 
 		if (mHasAudioOut)
 		{
@@ -241,8 +248,8 @@ void SystemWithNodes::FileInFileOut::Stop()
 void SystemWithNodes::ModulatedFileInPlusFileIn::Connect()
 {
 	// linking ControlSender with AudioMixer volumes.
-	System().mControlSender.mLeft.AddLink(&(System().mMixer.GetInControls().Get("Input Gain_0")));
-	System().mControlSender.mRight.AddLink(&(System().mMixer.GetInControls().Get("Input Gain_1")));
+	System().mControlSender.GetOutControls().Get( "Left Control").AddLink(&(System().mMixer.GetInControls().Get("Input Gain_0")));
+	System().mControlSender.GetOutControls().Get( "Right Control").AddLink(&(System().mMixer.GetInControls().Get("Input Gain_1")));
 
 	// attach for each Port
 	System().mFileIn.GetOutPorts().Get( "Output" ).Attach( *System().mFileInData );
@@ -317,23 +324,40 @@ bool SystemWithNodes::ConditionalAudioOutAttach( AudioNode& a)
 	return false;
 }
 
+void SystemWithNodes::UnattachAllPorts()
+{	
+	mFileIn.GetOutPorts().Get( "Output" ).Unattach();
+	mModulator.GetOutPorts().Get( "Audio Output" ).Unattach();
+	mOscillator.GetOutPorts().Get( "Audio Output" ).Unattach();
+//	mMultiplier.GetInPorts().Get( "First Audio Input" ).Unattach();
+//	mMultiplier.GetInPorts().Get( "Second Audio Input" ).Unattach();
+	mMultiplier.GetOutPorts().Get( "Audio Output" ).Unattach();
+//	mMixer.GetInPorts().Get("Input Audio_0").Unattach();
+//	mMixer.GetInPorts().Get("Input Audio_1").Unattach();
+	mMixer.GetOutPorts().Get("Output Audio").Unattach();
+//	mFileOut.GetInPorts().Get( "Input" ).Unattach();
+//	mAudioOut.GetInPorts().Get( "Input" ).Unattach();
+
+}
+
 void SystemWithNodes::DeleteAllNodes()
 {
-	if ( mOscillatorData ) delete mOscillatorData;
-	if ( mFileInData ) delete mFileInData;
-	if ( mModulatorData ) delete mModulatorData;
-	if ( mMixerData ) delete mMixerData;
-	if ( mMultiplierData ) delete mMultiplierData;
+//	if ( mOscillatorData ) delete mOscillatorData;
+//	if ( mFileInData ) delete mFileInData;
+//	if ( mModulatorData ) delete mModulatorData;
+//	if ( mMixerData ) delete mMixerData;
+//	if ( mMultiplierData ) delete mMultiplierData;
 }
 void SystemWithNodes::ResetAllNodes()
 {
 	// this is a provisional way of reset nodes! 
 	// Nodes should have a Reset method
 	// todo: change this method when new Node interface is ready
-	DeleteAllNodes();
+	UnattachAllPorts();
+//	DeleteAllNodes();
 
 	mOscillatorData = new AudioNode();
-    mFileInData = new AudioNode();
+	mFileInData = new AudioNode();
 	mModulatorData = new AudioNode();
 	mMixerData = new AudioNode();
 	mMultiplierData = new AudioNode();

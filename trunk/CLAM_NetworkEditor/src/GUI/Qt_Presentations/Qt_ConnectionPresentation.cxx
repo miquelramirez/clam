@@ -39,8 +39,8 @@ Qt_ConnectionPresentation::Qt_ConnectionPresentation( QWidget *parent, const cha
 {
 	setPalette( QPalette( QColor( 250, 250, 200) ) );
 
-	SetOutPos.Wrap( this, &Qt_ConnectionPresentation::OnNewOutPos);
-	SetInPos.Wrap( this, &Qt_ConnectionPresentation::OnNewInPos);
+	SlotSetOutPos.Wrap( this, &Qt_ConnectionPresentation::SetOutPos);
+	SlotSetInPos.Wrap( this, &Qt_ConnectionPresentation::SetInPos);
 	setFixedSize(0,0);
 
 	mPositions[0] = QPoint(0,0);
@@ -54,14 +54,14 @@ Qt_ConnectionPresentation::~Qt_ConnectionPresentation()
 {
 }
 
-void Qt_ConnectionPresentation::OnNewOutPos(int x, int y)
+void Qt_ConnectionPresentation::SetOutPos(int x, int y)
 {
 	origin.setX(x);
 	origin.setY(y);
 	UpdatePosition();
 }
 
-void Qt_ConnectionPresentation::OnNewInPos(int x, int y)
+void Qt_ConnectionPresentation::SetInPos(int x, int y)
 {
 	end.setX(x);
 	end.setY(y);
@@ -80,33 +80,32 @@ void Qt_ConnectionPresentation::Hide()
 	hide();
 }
 
+void Qt_ConnectionPresentation::ResolveWireZone(int & position, int & extent,
+	const int origin, const int end,
+	const int wireThickness, const int torsionResistence)
+{
+	int upperLimit = end-torsionResistence;
+	if (upperLimit>origin-wireThickness)
+		upperLimit=origin-wireThickness;
+
+	int lowerLimit = origin+torsionResistence;
+	if (lowerLimit<end+wireThickness)
+		lowerLimit=end+wireThickness;
+
+	position=upperLimit;
+	extent=lowerLimit-upperLimit;
+}
+
+
 void Qt_ConnectionPresentation::UpdatePosition()
 {
 	int x, y, w, h;
-	if (origin.x() > end.x())
-	{
-		x = end.x();
-		w = origin.x() - end.x();
-	}
-	else
-	{
-		x = origin.x();
-		w = end.x() - origin.x();
-	}
 
-	if (origin.y() > end.y())
-	{
-		y = end.y();
-		h = origin.y() - end.y();
-	}
-	else
-	{
-		y = origin.y();
-		h = end.y() - origin.y();
-	}
+	ResolveWireZone(x,w,origin.x(),end.x(),5,60);
+	ResolveWireZone(y,h,origin.y(),end.y(),5,60);
 
 	move (x,y);
-	setFixedSize(w + 1,h +1);
+	setFixedSize(w,h);
 }
 
 
@@ -127,10 +126,10 @@ void Qt_ConnectionPresentation::mouseReleaseEvent( QMouseEvent *)
 
 void Qt_ConnectionPresentation::keyPressEvent( QKeyEvent *k )
 {
-	switch ( tolower(k->ascii()) ) 
+	switch ( tolower(k->ascii()) )
 	{
-        case 'x': 
-		RemoveConnection.Emit( this );
+        case 'x':
+		SignalRemoveConnection.Emit( this );
 		Hide();
 		mDown = false;
 		releaseKeyboard();

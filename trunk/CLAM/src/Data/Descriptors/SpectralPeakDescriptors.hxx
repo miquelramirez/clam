@@ -52,6 +52,7 @@ namespace CLAM {
 
 	public:
 		SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray);
+		SpectralPeakDescriptors(TData initVal);
 
 		const SpectralPeakArray* GetpSpectralPeakArray() const;
 		void SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray);
@@ -72,26 +73,132 @@ namespace CLAM {
 
 	private:
 		SpectralPeakArray* mpSpectralPeakArray;
-		CrossCenterOfGravity<1,TData> mCentroid;
+		CrossCenterOfGravity<1> mCentroid;
 
 	};
 
 
+SpectralPeakDescriptors operator / (const SpectralPeakDescriptors& a,TData div) ;
+SpectralPeakDescriptors operator * (const SpectralPeakDescriptors& a,TData mult) ;
+SpectralPeakDescriptors operator * (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b) ;
+SpectralPeakDescriptors operator + (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b) ;
 
-// Implementation
+template<>
+inline SpectralPeakDescriptors CLAM_max (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b)
+{
+	SpectralPeakDescriptors tmpD(a);
 
-inline void SpectralPeakDescriptors::DefaultInit() {
-	mpSpectralPeakArray=0;
-	mpStats=0;
+	if (a.HasMagnitudeMean() && b.HasMagnitudeMean())
+	{
+		if(b.GetMagnitudeMean()>a.GetMagnitudeMean())
+			tmpD.SetMagnitudeMean(b.GetMagnitudeMean());
+	}
+	if (a.HasHarmonicCentroid() && b.HasHarmonicCentroid())
+	{
+		if(b.GetHarmonicCentroid()>a.GetHarmonicCentroid())
+			tmpD.SetHarmonicCentroid(b.GetHarmonicCentroid());
+	}
+	if (a.HasSpectralTilt() && b.HasSpectralTilt())
+	{
+		if(b.GetSpectralTilt()>a.GetSpectralTilt())
+			tmpD.SetSpectralTilt(b.GetSpectralTilt());
+	}
+	if (a.HasFirstTristimulus() && b.HasFirstTristimulus())
+	{
+		if(b.GetFirstTristimulus()>a.GetFirstTristimulus())
+			tmpD.SetFirstTristimulus(b.GetFirstTristimulus());
+	}
+	if (a.HasSecondTristimulus() && b.HasSecondTristimulus())
+	{
+		if(b.GetSecondTristimulus()>a.GetSecondTristimulus())
+			tmpD.SetSecondTristimulus(b.GetSecondTristimulus());
+	}
+	if (a.HasThirdTristimulus() && b.HasThirdTristimulus())
+	{
+		if(b.GetThirdTristimulus()>a.GetThirdTristimulus())
+			tmpD.SetThirdTristimulus(b.GetThirdTristimulus());
+	}
+	if (a.HasHarmonicDeviation() && b.HasHarmonicDeviation())
+	{
+		if(b.GetHarmonicDeviation()>a.GetHarmonicDeviation())
+			tmpD.SetHarmonicDeviation(b.GetHarmonicDeviation());
+	}
+	if (a.HasOddHarmonics() && b.HasOddHarmonics())
+	{
+		if(b.GetOddHarmonics()>a.GetOddHarmonics())
+			tmpD.SetOddHarmonics(b.GetOddHarmonics());
+	}
+	if (a.HasEvenHarmonics() && b.HasEvenHarmonics())
+	{
+		if(b.GetEvenHarmonics()>a.GetEvenHarmonics())
+			tmpD.SetEvenHarmonics(b.GetEvenHarmonics());
+	}
+	if (a.HasOddToEvenRatio() && b.HasOddToEvenRatio())
+	{
+		if(b.GetOddToEvenRatio()>a.GetOddToEvenRatio())
+			tmpD.SetOddToEvenRatio(b.GetOddToEvenRatio());
+	}
+	
+	return tmpD;
 }
 
-inline void SpectralPeakDescriptors::CopyInit(const SpectralPeakDescriptors & copied) {
-	mpSpectralPeakArray=copied.mpSpectralPeakArray;
-	mpStats=0;
-}
+template<>
+inline SpectralPeakDescriptors CLAM_min (const SpectralPeakDescriptors& a,const SpectralPeakDescriptors& b)
+{
+	SpectralPeakDescriptors tmpD(a);
 
-inline const SpectralPeakArray* SpectralPeakDescriptors::GetpSpectralPeakArray() const {
-	return mpSpectralPeakArray;
+	if (a.HasMagnitudeMean() && b.HasMagnitudeMean())
+	{
+		if(b.GetMagnitudeMean()<a.GetMagnitudeMean())
+			tmpD.SetMagnitudeMean(b.GetMagnitudeMean());
+	}
+	if (a.HasHarmonicCentroid() && b.HasHarmonicCentroid())
+	{
+		if(b.GetHarmonicCentroid()<a.GetHarmonicCentroid())
+			tmpD.SetHarmonicCentroid(b.GetHarmonicCentroid());
+	}
+	if (a.HasSpectralTilt() && b.HasSpectralTilt())
+	{
+		if(b.GetSpectralTilt()<a.GetSpectralTilt())
+			tmpD.SetSpectralTilt(b.GetSpectralTilt());
+	}
+	if (a.HasFirstTristimulus() && b.HasFirstTristimulus())
+	{
+		if(b.GetFirstTristimulus()<a.GetFirstTristimulus())
+			tmpD.SetFirstTristimulus(b.GetFirstTristimulus());
+	}
+	if (a.HasSecondTristimulus() && b.HasSecondTristimulus())
+	{
+		if(b.GetSecondTristimulus()<a.GetSecondTristimulus())
+			tmpD.SetSecondTristimulus(b.GetSecondTristimulus());
+	}
+	if (a.HasThirdTristimulus() && b.HasThirdTristimulus())
+	{
+		if(b.GetThirdTristimulus()<a.GetThirdTristimulus())
+			tmpD.SetThirdTristimulus(b.GetThirdTristimulus());
+	}
+	if (a.HasHarmonicDeviation() && b.HasHarmonicDeviation())
+	{
+		if(b.GetHarmonicDeviation()<a.GetHarmonicDeviation())
+			tmpD.SetHarmonicDeviation(b.GetHarmonicDeviation());
+	}
+	if (a.HasOddHarmonics() && b.HasOddHarmonics())
+	{
+		if(b.GetOddHarmonics()<a.GetOddHarmonics())
+			tmpD.SetOddHarmonics(b.GetOddHarmonics());
+	}
+	if (a.HasEvenHarmonics() && b.HasEvenHarmonics())
+	{
+		if(b.GetEvenHarmonics()<a.GetEvenHarmonics())
+			tmpD.SetEvenHarmonics(b.GetEvenHarmonics());
+	}
+	if (a.HasOddToEvenRatio() && b.HasOddToEvenRatio())
+	{
+		if(b.GetOddToEvenRatio()<a.GetOddToEvenRatio())
+			tmpD.SetOddToEvenRatio(b.GetOddToEvenRatio());
+	}
+	
+	return tmpD;
 }
 
 

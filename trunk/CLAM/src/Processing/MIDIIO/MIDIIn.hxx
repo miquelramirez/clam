@@ -39,35 +39,31 @@ namespace CLAM{
 class MIDIInConfig: public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (MIDIInConfig, 5, ProcessingConfig);
-
-	/** The name of the object*/
-	DYN_ATTRIBUTE (0, public, std::string, Name)
+	DYNAMIC_TYPE_USING_INTERFACE (MIDIInConfig, 4, ProcessingConfig);
 
 	/** The Device that will be used by this MIDIIn or MIDIOut instantiation, if it is not indicated, or its value is "default:default", system will choose the best device for this object*/
-	DYN_ATTRIBUTE (1, public, std::string, Device);
+	DYN_ATTRIBUTE (0, public, std::string, Device);
 	/** The ChannelMask allows you to create a MIDIIn that receives midi
 	 *  messages on a certain channel or channels only. The way to calculate the
 	 *  ChannelMask is by adding the channel masks for the channels you want to filter
 	 *  with bitwise OR. You can use the function MIDI::ChannelMask(channel) to obtain the mask for a certain channel.*/
-	DYN_ATTRIBUTE (2, public, unsigned short, ChannelMask);
+	DYN_ATTRIBUTE (1, public, unsigned short, ChannelMask);
 
 	/** The MessageMask allows you to create a MIDIIn that receives midi
 	 *  messages of a certain type only. The way to calculate the MessageMask is by
 	 *  adding the message masks for the message types you want to filter with logical
 	 *  OR. You can use the function MIDI::MessageMask(channel) to obtain the
 	 *  mask for a certain channel.*/
-	DYN_ATTRIBUTE (3, public, unsigned short, MessageMask);
+	DYN_ATTRIBUTE (2, public, unsigned short, MessageMask);
 
 	/** The Filter allows you to create a MIDIIn that receives midi messages
 	 *  where the second byte (first data byte) has a certain value. This is
 	 *  particularly useful for control change messages, where the second byte
 	 *  specifies the type of control change.*/
-	DYN_ATTRIBUTE (4, public, unsigned char, Filter);
+	DYN_ATTRIBUTE (3, public, unsigned char, Filter);
 protected:
 	void DefaultInit(void)
 	{
-		AddName();
 		AddDevice();
 		AddChannelMask();
 		AddMessageMask();

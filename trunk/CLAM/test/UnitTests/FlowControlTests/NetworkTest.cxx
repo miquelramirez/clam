@@ -33,6 +33,7 @@
 
 #include "Oscillator.hxx"
 #include "AudioMultiplier.hxx"
+#include "AudioFileIn.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
 
@@ -95,6 +96,11 @@ class NetworkTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testRemoveControlsConnection_WhenControlsAreNotConnected );
 	CPPUNIT_TEST( testRemoveControlsConnection_WhenControlsAreConnected );
 
+	// network state tests
+	CPPUNIT_TEST( testStartNetworkStartsProcessings_WhenAreReady );
+	CPPUNIT_TEST( testStartNetworkDoesntStartProcessings_WhenAreNotReady );	
+	CPPUNIT_TEST( testStopNetworkStopsProcessings_WhenAreRunning );
+	CPPUNIT_TEST( testStopNetworkDoesntStopProcessings_WhenAreNotRunning );
 
 	CPPUNIT_TEST( testUseOfString_substr );
 	CPPUNIT_TEST_SUITE_END();
@@ -923,6 +929,74 @@ class NetworkTest : public CppUnit::TestFixture
 		net.ConnectControls("first.outControlOfFirstProc","second.inControlOfSecondProc");
 		CPPUNIT_ASSERT_EQUAL( true, net.DisconnectControls( "first.outControlOfFirstProc","second.inControlOfSecondProc" ));
 
+	}
+
+	void testStartNetworkStartsProcessings_WhenAreReady()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
+		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
+		CLAM::AudioMultiplier * multiplier = new CLAM::AudioMultiplier;
+		net.AddProcessing( "oscillator", oscillator) ;
+		net.AddProcessing( "multiplier", multiplier );
+		net.Start();
+
+		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Running, oscillator->GetExecState() );
+		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Running, multiplier->GetExecState() );
+		
+
+	}
+
+	void testStartNetworkDoesntStartProcessings_WhenAreNotReady()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
+		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
+		CLAM::AudioFileIn * filein = new CLAM::AudioFileIn;
+		net.AddProcessing( "oscillator", oscillator) ;
+		net.AddProcessing( "filein", filein );
+		net.Start();
+
+		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Running, oscillator->GetExecState() );
+		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Unconfigured, filein->GetExecState() );		
+	}
+
+	void testStopNetworkStopsProcessings_WhenAreRunning()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
+		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
+		CLAM::AudioMultiplier * multiplier = new CLAM::AudioMultiplier;
+		net.AddProcessing( "oscillator", oscillator) ;
+		net.AddProcessing( "multiplier", multiplier );
+		net.Start();
+		net.Stop();
+		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Ready, oscillator->GetExecState() );
+		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Ready, multiplier->GetExecState() );
+
+	}
+
+	void testStopNetworkDoesntStopProcessings_WhenAreNotRunning()
+	{	
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+
+		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
+		CLAM::AudioFileIn * filein = new CLAM::AudioFileIn;
+		net.AddProcessing( "oscillator", oscillator) ;
+		net.AddProcessing( "filein", filein );
+		net.Start();
+		net.Stop();
+
+		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Ready, oscillator->GetExecState() );
+		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Unconfigured, filein->GetExecState() );		
 	}
 };
    

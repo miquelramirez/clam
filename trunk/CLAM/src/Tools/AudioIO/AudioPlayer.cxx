@@ -62,9 +62,7 @@ void AudioPlayer::PlayingThreadSafe(  )
 	AudioOut mOutputL;
 	AudioOut mOutputR;
 
-	mOutCfgL.SetName( "left mOut" );
 	mOutCfgL.SetChannelID( 0 );
-	mOutCfgR.SetName( "right mOut" );
 	mOutCfgR.SetChannelID( 1 );
 		
 	mOutputL.Configure( mOutCfgL );

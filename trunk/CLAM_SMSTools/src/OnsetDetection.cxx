@@ -13,7 +13,6 @@ using namespace std;
 /* The Configuration object has at least to have a name */	
 void OnsetDetectionConfig::DefaultInit()
 {
-	AddName();
 	AddFrameSize();
 	AddnBands();
 	AddSmoothFiltSize();
@@ -80,7 +79,6 @@ bool OnsetDetection::ConfigureChildren()
 	// FFT
 	FFTConfig fcfg;
 	fcfg.SetAudioSize(mFFTSize);
-	fcfg.SetName("_FFT_");
 	mFFT.Configure(fcfg);
 	mFFT.SetPrototypes (mAudioFrameZeroed, mSpec);
 

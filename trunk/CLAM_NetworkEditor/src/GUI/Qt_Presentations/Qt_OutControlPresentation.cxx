@@ -54,7 +54,7 @@ Qt_OutControlPresentation::~Qt_OutControlPresentation()
 {
 }
 
-void Qt_OutControlPresentation::OnNewName(const std::string& name)
+void Qt_OutControlPresentation::SetName(const std::string& name)
 {
 	mName = name;
 	QToolTip::add( this, QString( mName.c_str() ));
@@ -83,7 +83,7 @@ void Qt_OutControlPresentation::paintEvent( QPaintEvent * )
 
 void Qt_OutControlPresentation::mousePressEvent( QMouseEvent *m)
 {
-	AcquireOutControlClicked.Emit(this);
+	SignalAcquireOutControlClicked.Emit(this);
 }
 
 

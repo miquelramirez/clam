@@ -29,58 +29,9 @@
 
 namespace CLAM {
 
-
-	/** This is an internal class which olds the processing object
-	 * name table. Its main pourpose is avoiding that two processing
-	 * objects share the same name. It can also be used to generate
-	 * default names given a name prefix.  */
-	class NameTable {
-	
-		typedef std::set<std::string> NameSet;
-		typedef std::map<std::string,int> PrefixMap;
-		NameSet PONameTable;
-		PrefixMap POCountTable;
-
-	public:
-		NameTable();
-		/** Error class */
-		class DuplicatedName { public: DuplicatedName(std::string){}};
-
-		/** Singleton accessor to the Processing Object name table instance */
-		static NameTable &GetNameTable();
-
-		/** This methods checks if a name has been previously used by a processing object.
-		 * @param the name of the processing object to check.
-		 * @return true if the name has been used, false if not.
-		 */
-		bool Exists(const std::string &name);
-
-		/** This method registers a name as being used by a processing object.
-		 * @param the name of the processing object.
-		 */
-		void Add(const std::string &name) throw(DuplicatedName);
-
-		/** This method registers as unused a name that was previously
-		 *  used by a processing object. 
-		 */
-		void Remove(const std::string &name);
-
-		/** This method creates a new unused name using the given prefix,
-		 * and registers it as being used by a processing object.
-		 * @param character string to be used as the starting characters
-		 * of the new name.
-		 * @return the new generated name.
-		 */
-		std::string GenerateFromPrefix(const std::string &prefix);
-	};
-
-
 /** Abstract class for processing object agregates. */
 	class ProcessingComposite : public Processing
 	{
-
-		NameTable mNames;
-
 		std::list<Processing*> mObjects;
 
 	protected:
@@ -116,19 +67,6 @@ namespace CLAM {
 		// Composite interface.
 
 		void Insert(Processing& o) throw(ErrProcessingObj);
-
-		std::string InsertAndGiveName(Processing&);
-
-		/**
-		 * Changes the name inside the composite for a child
-		 * @param child the child process you want to rename
-		 * @param old_name the old name you dislike
-		 * @pre child should belong to the composite.
-		 * @pre old_name is the previous name
-		 * @return false when the name change is not possible
-		 * because there is another processing with the same name.
-		 */
-		bool NameChanged(Processing&child,const std::string &old_name);
 
 		void Remove(Processing& o);
 

@@ -27,9 +27,8 @@
 #include <iomanip>
 #include "mtgsstream.h" // An alias for <sstream>
 #include "Component.hxx"
-#ifdef CLAM_USE_XML
-	#include "XMLStaticAdapter.hxx"
-#endif//CLAM_USE_XML
+#include "XMLAdapter.hxx"
+
 // TODO: This is provisional to share the IllegalValue exception
 #include "Enum.hxx"
 
@@ -68,17 +67,14 @@ unsigned int FlagsBase::GetFlagPosition(const std::string & whichOne) const thro
  * @see Storage
  * @todo TODO: This method can throw and IllegalValue exception
  */
-void FlagsBase::StoreOn (Storage & storage) {
-#		ifdef CLAM_USE_XML 
-		unsigned int N=GetNFlags();
-		for (unsigned int i=0; i<N; i++) {
-			if (!IsSetFlag(i)) continue;
-			std::string s = GetFlagString(i);
-			XMLStaticAdapter adapter(s);
-			storage.Store(&adapter);
-		}
-#		endif//CLAM_USE_XML 
-
+void FlagsBase::StoreOn (Storage & storage) const {
+	unsigned int N=GetNFlags();
+	for (unsigned int i=0; i<N; i++) {
+		if (!IsSetFlag(i)) continue;
+		std::string s = GetFlagString(i);
+		XMLAdapter<std::string> adapter(s);
+		storage.Store(adapter);
+	}
 }
 /* 
  * Loads component's subitems from the given Storage
@@ -87,28 +83,24 @@ void FlagsBase::StoreOn (Storage & storage) {
  * @todo TODO: This method can throw and IllegalValue exception
  */
 void FlagsBase::LoadFrom (Storage & storage) {
-#		ifdef CLAM_USE_XML
-		unsigned int N=GetNFlags();
-		for (unsigned int i=0; i<N; i++) {
-			SetFlag(i,false);
-		}
-		do {
-			std::string flagName;
-			XMLAdapter<std::string> adapter(flagName);
-			if (!storage.Load(&adapter)) break;
-			unsigned int i = GetFlagPosition(flagName);
-			SetFlag(i,true);
-		}
-		while (true);
-#		endif//CLAM_USE_XML 
-
+	unsigned int N=GetNFlags();
+	for (unsigned int i=0; i<N; i++) {
+		SetFlag(i,false);
+	}
+	do {
+		std::string flagName;
+		XMLAdapter<std::string> adapter(flagName);
+		if (!storage.Load(adapter)) break;
+		unsigned int i = GetFlagPosition(flagName);
+		SetFlag(i,true);
+	}
+	while (true);
 }
 
 std::istream & CLAM::operator >> (std::istream & is, FlagsBase & f) {
 	const unsigned int N = f.GetNFlags();
 	bool * bs = new bool[N];
-	unsigned int i;
-	for (i=N; i--; ) {
+	for (unsigned int i=N; i--; ) {
 		bs[i]=false;
 	}
 	if (is.flags() & std::ios::skipws) {
@@ -131,7 +123,7 @@ std::istream & CLAM::operator >> (std::istream & is, FlagsBase & f) {
 	std::string flagName;
 	while (ss>>flagName) {
 		try {
-			i = f.GetFlagPosition(flagName);
+			unsigned i = f.GetFlagPosition(flagName);
 			bs[i]=true;
 		}
 		catch (IllegalValue) {
@@ -139,7 +131,7 @@ std::istream & CLAM::operator >> (std::istream & is, FlagsBase & f) {
 				flagName+"'");
 		}
 	}
-	for (i=N; i--;) f.SetFlag(i, bs[i]);
+	for (unsigned i=N; i--;) f.SetFlag(i, bs[i]);
 	delete bs;
 	return is;
 }

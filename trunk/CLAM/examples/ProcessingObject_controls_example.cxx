@@ -40,10 +40,7 @@ using namespace CLAM;
 
 class MyProcConf : public ProcessingConfig {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (MyProcConf, 1,ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name);
-	
-	void DefaultInit() {}
+	DYNAMIC_TYPE_USING_INTERFACE (MyProcConf, 0,ProcessingConfig);
 };
 
 class MyProcObj : public Processing
@@ -77,24 +74,23 @@ public:
 
 	int DoInPitchControl(TControlData val) 
 	{ 
-		std::cout << GetName() << ": DoInPitchControl activated. Value="<< val << std::endl;  
+		std::cout << GetClassName() << ": DoInPitchControl activated. Value="<< val << std::endl;  
 		return 1; 
 	}
 	int DoInAmplitudeControl(TControlData val) 
 	{ 
-		std::cout << GetName() << ": DoInAmplitudeControl activated. Value="<< val << std::endl;  
+		std::cout << GetClassName() << ": DoInAmplitudeControl activated. Value="<< val << std::endl;  
 		return 2; 
 	}
 	
 	bool Do() 
 	{
-		std::cout << GetName() << ": doing my Do()... " << std::endl;
+		std::cout << GetClassName() << ": doing my Do()... " << std::endl;
 		return true;
 	}
 	const ProcessingConfig &GetConfig() const { return mConfig;};
 	virtual bool Start(void) {return true;};
 	virtual bool Stop(void) {return true;};
-	void StoreOn(Storage & store) {};
 };
 
 #endif // _MyProcObj_
@@ -104,27 +100,22 @@ int main(void)
 {
 	try {
 	MyProcConf conf1;
-	conf1.AddName();
 	conf1.UpdateData();
-	conf1.SetName("the first process");
 	MyProcObj proc1(conf1);
-	conf1.SetName("the second process");
 	MyProcObj proc2(conf1);
-	conf1.SetName("the third process");
 	MyProcObj proc3(conf1);
 
-	proc1.LinkOutWithInControl(0, &proc2, 0);
-	proc1.LinkOutWithInControl(1, &proc2, 1);
-	proc1.LinkOutWithInControl(0, &proc3, 0);
-	proc1.LinkOutWithInControl(0, &proc3, 1);
-
+	proc1.GetOutControls().GetByNumber(0).AddLink(&proc2.GetInControls().GetByNumber(0));
+	proc1.GetOutControls().GetByNumber(1).AddLink(&proc2.GetInControls().GetByNumber(1));
+	proc1.GetOutControls().GetByNumber(0).AddLink(&proc3.GetInControls().GetByNumber(0));
+	proc1.GetOutControls().GetByNumber(0).AddLink(&proc3.GetInControls().GetByNumber(1));
 
 	proc1.Do();
 	proc2.Do();
-	proc1.SendControl(0, 44);
-	proc1.SendControl(1, 555);
+	proc1.GetOutControls().GetByNumber(0).SendControl(44);
+	proc1.GetOutControls().GetByNumber(1).SendControl(555);
 
-	proc1.DoControl(0, 222.2f); 
+	proc1.GetInControls().GetByNumber(0).DoControl(222.2f); 
 
 
 	}catch(std::out_of_range e)

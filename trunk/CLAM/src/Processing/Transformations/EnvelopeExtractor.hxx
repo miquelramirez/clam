@@ -90,12 +90,11 @@ namespace CLAM
 	class EnvExtractorConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (EnvExtractorConfig, 10, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, TData, SampleRate);
+		DYNAMIC_TYPE_USING_INTERFACE (EnvExtractorConfig, 9, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, TData, SampleRate);
 
 		/** Number of samples in each audio input frame */
-		DYN_ATTRIBUTE (2, public, int, FrameSize);
+		DYN_ATTRIBUTE (1, public, int, FrameSize);
 
 		/** Time period between envelope interpolation points, in
 		 *  miliseconds. If you prefer to specify the exact amount of
@@ -109,7 +108,7 @@ namespace CLAM
 		 *  at the end of each audio frame, for eficiency
 		 *  reasons. This may change in future.
 		 */
-		DYN_ATTRIBUTE (3, public, ControlConfig, InterpolationPeriod);
+		DYN_ATTRIBUTE (2, public, ControlConfig, InterpolationPeriod);
 
 		/** 
 		 *  Number of mIlliseconds of audio to use for the "average"
@@ -123,14 +122,14 @@ namespace CLAM
 		 * value of 0.0. If both attributes are non-zero, this one
 		 * will be used.
 		 */
-		DYN_ATTRIBUTE (4, public, ControlConfig, IntegrationLength);
+		DYN_ATTRIBUTE (3, public, ControlConfig, IntegrationLength);
 
 		/** Number of envelope interpolation points to use for each
 		 *  audio frame. If you prefer to use time units, you can use
 		 *  the InterpolationPeriod attribute instead, (leaving this
 		 *  one to 0). If both are non-zero, this one will be used. 
 		 */
-		DYN_ATTRIBUTE (5, public, int, NInterpPointsPerFrame);
+		DYN_ATTRIBUTE (4, public, int, NInterpPointsPerFrame);
 
 		/** Number of interpolation segments (possibly from previous
 		 *  audio frames) to add up to the average used to calculate
@@ -145,13 +144,13 @@ namespace CLAM
 		 *  use the IntegrationLength attribute, leaving this one to zero.
 		 *  If both are non-zero, this one will be used.
 		 */
-		DYN_ATTRIBUTE (6, public, int, NMemoryPoints);
+		DYN_ATTRIBUTE (5, public, int, NMemoryPoints);
 		
-		DYN_ATTRIBUTE (7, public, ControlConfig, NormalLevel);
+		DYN_ATTRIBUTE (6, public, ControlConfig, NormalLevel);
 
-		DYN_ATTRIBUTE (8, public, ControlConfig, SilenceLevel);
+		DYN_ATTRIBUTE (7, public, ControlConfig, SilenceLevel);
 
-		DYN_ATTRIBUTE (9, public, EInterpolation, InterpolationType);
+		DYN_ATTRIBUTE (8, public, EInterpolation, InterpolationType);
 	protected:
 
 		void DefaultInit(void);
@@ -186,8 +185,6 @@ namespace CLAM
 		bool Do(void);
 
 		bool Do(const Audio& inp, Envelope& env);
-
-		void StoreOn(Storage &s) {};
 
 		// Debugging accessors
 

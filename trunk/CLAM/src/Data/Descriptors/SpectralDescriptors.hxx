@@ -68,14 +68,13 @@ namespace CLAM {
 
 	public:
 		SpectralDescriptors(Spectrum* pSpectrum);
+		SpectralDescriptors(TData initVal);
 
 		const Spectrum* GetpSpectrum() const;
 		void SetpSpectrum(Spectrum* pSpectrum);
 		void ConcreteCompute();
 
 		void SetPrototype(const SpectralDescriptors& p);
-
-		
 
 	private:
 		void DefaultInit();
@@ -93,13 +92,269 @@ namespace CLAM {
 		
 		/** Conversion from index to frequency, needed for many descriptors */
 		TData mDeltaFreq;
-	};
+};
 
+SpectralDescriptors operator * (const SpectralDescriptors& a,TData mult);
+SpectralDescriptors operator * (TData mult,const SpectralDescriptors& a);
+SpectralDescriptors operator / (const SpectralDescriptors& a,TData div);
+SpectralDescriptors operator * (const SpectralDescriptors& a,const SpectralDescriptors& b) ;
+SpectralDescriptors operator + (const SpectralDescriptors& a, const SpectralDescriptors& b);
 
-
-
+template<>
+inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const SpectralDescriptors& b)
+{
+	SpectralDescriptors  tmpD(a);
+	if(a.HasMean() && b.HasMean() )
+	{
+		if(b.GetMean()>a.GetMean())
+			tmpD.SetMean(b.GetMean());
+	}
+	if(a.HasGeometricMean() && b.HasGeometricMean() )
+	{
+		if(b.GetGeometricMean()>a.GetGeometricMean())
+			tmpD.SetGeometricMean(b.GetGeometricMean());
+	}
+	if(a.HasEnergy() && b.HasEnergy() )
+	{
+		if(b.GetEnergy()>a.GetEnergy())
+			tmpD.SetEnergy(b.GetEnergy());
+	}
+	if(a.HasCentroid() && b.HasCentroid() )
+	{
+		if(b.GetCentroid()>a.GetCentroid())
+			tmpD.SetCentroid(b.GetCentroid());
+	}
+	if(a.HasMoment2() && b.HasMoment2() )
+	{
+		if(b.GetMoment2()>a.GetMoment2())
+			tmpD.SetMoment2(b.GetMoment2());
+	}
+	if(a.HasMoment3() && b.HasMoment3() )
+	{
+		if(b.GetMoment3()>a.GetMoment3())
+			tmpD.SetMoment3(b.GetMoment3());
+	}
+	if(a.HasMoment4() && b.HasMoment4() )
+	{
+		if(b.GetMoment4()>a.GetMoment4())
+			tmpD.SetMoment4(b.GetMoment4());
+	}
+	if(a.HasMoment5() && b.HasMoment5())
+	{
+		if(b.GetMoment5()>a.GetMoment5())
+			tmpD.SetMoment5(b.GetMoment5());
+	}
+	if(a.HasMoment6() && b.HasMoment6() )
+	{
+		if(b.GetMoment6()>a.GetMoment6())
+			tmpD.SetMoment6(b.GetMoment6());
+	}
+	if(a.HasIrregularity() && b.HasIrregularity() )
+	{
+		if(b.GetIrregularity()>a.GetIrregularity())
+			tmpD.SetIrregularity(b.GetIrregularity());
+	}
+	if(a.HasTilt() && b.HasTilt() )
+	{
+		if(b.GetTilt()>a.GetTilt())
+			tmpD.SetTilt(b.GetTilt());
+	}
+	if(a.HasFlatness() && b.HasFlatness() )
+	{
+		if(b.GetFlatness()>a.GetFlatness())
+			tmpD.SetFlatness(b.GetFlatness());
+	}
+	if(a.HasKurtosis() && b.HasKurtosis() )
+	{
+		if(b.GetKurtosis()>a.GetKurtosis())
+			tmpD.SetKurtosis(b.GetKurtosis());
+	}
+	if(a.HasStrongPeak() && b.HasStrongPeak() )
+	{
+		if(b.GetStrongPeak()>a.GetStrongPeak())
+			tmpD.SetStrongPeak(b.GetStrongPeak());
+	}
+	if(a.HasHFC() && b.HasHFC() )
+	{
+		if(b.GetHFC()>a.GetHFC())
+			tmpD.SetHFC(b.GetHFC());
+	}
+	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
+	{
+		if(b.GetMaxMagFreq()>a.GetMaxMagFreq())
+			tmpD.SetMaxMagFreq(b.GetMaxMagFreq());
+	}
+	if(a.HasLowFreqEnergyRelation() && b.HasLowFreqEnergyRelation() )
+	{
+		if(b.GetLowFreqEnergyRelation()>a.GetLowFreqEnergyRelation())
+			tmpD.SetLowFreqEnergyRelation(b.GetLowFreqEnergyRelation());
+	}
+	if(a.HasSkewness() && b.HasSkewness() )
+	{
+		if(b.GetSkewness()>a.GetSkewness())
+			tmpD.SetSkewness(b.GetSkewness());
+	}
+	if(a.HasRolloff() && b.HasRolloff() )
+	{
+		if(b.GetRolloff()>a.GetRolloff())
+			tmpD.SetRolloff(b.GetRolloff());
+	}
+	if(a.HasHighFrequencyCoefficient() && b.HasHighFrequencyCoefficient() )
+	{
+		if(b.GetHighFrequencyCoefficient()>a.GetHighFrequencyCoefficient())
+			tmpD.SetHighFrequencyCoefficient(b.GetHighFrequencyCoefficient());
+	}
+	if(a.HasBandDescriptors() && b.HasBandDescriptors() )
+	{
+		/* Array does not have these operators
+		
+		  if(b.GetBandDescriptors()>a.GetBandDescriptors())
+			tmpD.SetBandDescriptors(b.GetBandDescriptors() );*/
+	}
+	if(a.HasMFCC() && b.HasMFCC() )
+	{
+		/* Array does not have these operators
+		if(b.GetMFCC()>a.GetMFCC())
+			tmpD.SetMFCC(b.GetMFCC());*/
+	}
+	if(a.HasBandEnergy() && b.HasBandEnergy() )
+	{
+		/* Array does not have these operators
+		if(b.GetBandEnergy()>a.GetBandEnergy())
+			tmpD.SetBandEnergy(b.GetBandEnergy());*/
+	}
+		
+	return tmpD;
 
 }
 
+template<>
+inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const SpectralDescriptors& b)
+{
+	SpectralDescriptors  tmpD(a);
+	if(a.HasMean() && b.HasMean() )
+	{
+		if(b.GetMean()<a.GetMean())
+			tmpD.SetMean(b.GetMean());
+	}
+	if(a.HasGeometricMean() && b.HasGeometricMean() )
+	{
+		if(b.GetGeometricMean()<a.GetGeometricMean())
+			tmpD.SetGeometricMean(b.GetGeometricMean());
+	}
+	if(a.HasEnergy() && b.HasEnergy() )
+	{
+		if(b.GetEnergy()<a.GetEnergy())
+			tmpD.SetEnergy(b.GetEnergy());
+	}
+	if(a.HasCentroid() && b.HasCentroid() )
+	{
+		if(b.GetCentroid()<a.GetCentroid())
+			tmpD.SetCentroid(b.GetCentroid());
+	}
+	if(a.HasMoment2() && b.HasMoment2() )
+	{
+		if(b.GetMoment2()<a.GetMoment2())
+			tmpD.SetMoment2(b.GetMoment2());
+	}
+	if(a.HasMoment3() && b.HasMoment3() )
+	{
+		if(b.GetMoment3()<a.GetMoment3())
+			tmpD.SetMoment3(b.GetMoment3());
+	}
+	if(a.HasMoment4() && b.HasMoment4() )
+	{
+		if(b.GetMoment4()<a.GetMoment4())
+			tmpD.SetMoment4(b.GetMoment4());
+	}
+	if(a.HasMoment5() && b.HasMoment5())
+	{
+		if(b.GetMoment5()<a.GetMoment5())
+			tmpD.SetMoment5(b.GetMoment5());
+	}
+	if(a.HasMoment6() && b.HasMoment6() )
+	{
+		if(b.GetMoment6()<a.GetMoment6())
+			tmpD.SetMoment6(b.GetMoment6());
+	}
+	if(a.HasIrregularity() && b.HasIrregularity() )
+	{
+		if(b.GetIrregularity()<a.GetIrregularity())
+			tmpD.SetIrregularity(b.GetIrregularity());
+	}
+	if(a.HasTilt() && b.HasTilt() )
+	{
+		if(b.GetTilt()<a.GetTilt())
+			tmpD.SetTilt(b.GetTilt());
+	}
+	if(a.HasFlatness() && b.HasFlatness() )
+	{
+		if(b.GetFlatness()<a.GetFlatness())
+			tmpD.SetFlatness(b.GetFlatness());
+	}
+	if(a.HasKurtosis() && b.HasKurtosis() )
+	{
+		if(b.GetKurtosis()<a.GetKurtosis())
+			tmpD.SetKurtosis(b.GetKurtosis());
+	}
+	if(a.HasStrongPeak() && b.HasStrongPeak() )
+	{
+		if(b.GetStrongPeak()<a.GetStrongPeak())
+			tmpD.SetStrongPeak(b.GetStrongPeak());
+	}
+	if(a.HasHFC() && b.HasHFC() )
+	{
+		if(b.GetHFC()<a.GetHFC())
+			tmpD.SetHFC(b.GetHFC());
+	}
+	if(a.HasMaxMagFreq() && b.HasMaxMagFreq() )
+	{
+		if(b.GetMaxMagFreq()<a.GetMaxMagFreq())
+			tmpD.SetMaxMagFreq(b.GetMaxMagFreq());
+	}
+	if(a.HasLowFreqEnergyRelation() && b.HasLowFreqEnergyRelation() )
+	{
+		if(b.GetLowFreqEnergyRelation()<a.GetLowFreqEnergyRelation())
+			tmpD.SetLowFreqEnergyRelation(b.GetLowFreqEnergyRelation());
+	}
+	if(a.HasSkewness() && b.HasSkewness() )
+	{
+		if(b.GetSkewness()<a.GetSkewness())
+			tmpD.SetSkewness(b.GetSkewness());
+	}
+	if(a.HasRolloff() && b.HasRolloff() )
+	{
+		if(b.GetRolloff()<a.GetRolloff())
+			tmpD.SetRolloff(b.GetRolloff());
+	}
+	if(a.HasHighFrequencyCoefficient() && b.HasHighFrequencyCoefficient() )
+	{
+		if(b.GetHighFrequencyCoefficient()<a.GetHighFrequencyCoefficient())
+			tmpD.SetHighFrequencyCoefficient(b.GetHighFrequencyCoefficient());
+	}
+	if(a.HasBandDescriptors() && b.HasBandDescriptors() )
+	{
+		/* Array does not have these operators
+		if(b.GetBandDescriptors()<a.GetBandDescriptors())
+			tmpD.SetBandDescriptors(b.GetBandDescriptors() );*/
+	}
+	if(a.HasMFCC() && b.HasMFCC() )
+	{
+		/* Array does not have these operators
+		if(b.GetMFCC()<a.GetMFCC())
+			tmpD.SetMFCC(b.GetMFCC());*/
+	}
+	if(a.HasBandEnergy() && b.HasBandEnergy() )
+	{
+		/* Array does not have these operators
+		if(b.GetBandEnergy()<a.GetBandEnergy())
+			tmpD.SetBandEnergy(b.GetBandEnergy());*/
+	}
+		
+	return tmpD;
+
+}
+
+}
 
 #endif /* __SpectralDescriptors_H__ */

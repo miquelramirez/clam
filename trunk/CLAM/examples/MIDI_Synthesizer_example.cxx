@@ -95,17 +95,17 @@ public:
 
 		void LinkControls(void)
 		{
-			mADSR.LinkOutWithInControl( 0, this, 0 );
+			mADSR.GetOutControls().GetByNumber(0).AddLink(&GetInControls().GetByNumber(0));
 
-			LinkOutWithInControl( 1, &mMapperNote, 0 );
-			LinkOutWithInControl( 2, &mMapperVel, 0 );
-			LinkOutWithInControl( 3, &mMapperPitchBend, 0 );	
+			GetOutControls().GetByNumber(1).AddLink(&mMapperNote.GetInControls().GetByNumber(0));
+			GetOutControls().GetByNumber(2).AddLink(&mMapperVel.GetInControls().GetByNumber(0));
+			GetOutControls().GetByNumber(3).AddLink(&mMapperPitchBend.GetInControls().GetByNumber(0));
 
-			mMapperNote.LinkOutWithInControl( 0, &mFreqMultiplier, 0 );
-			mMapperPitchBend.LinkOutWithInControl( 0, &mFreqMultiplier, 1 );
+			mMapperNote.GetOutControls().GetByNumber(0).AddLink(&mFreqMultiplier.GetInControls().GetByNumber(0));
+			mMapperPitchBend.GetOutControls().GetByNumber(0).AddLink(&mFreqMultiplier.GetInControls().GetByNumber(1));
 
-			mFreqMultiplier.LinkOutWithInControl( 0, &mOscillator, 0 );
-			mMapperVel.LinkOutWithInControl( 0, &mADSR, 0 );
+			mFreqMultiplier.GetOutControls().GetByNumber(0).AddLink(&mOscillator.GetInControls().GetByNumber(0));
+			mMapperVel.GetOutControls().GetByNumber(0).AddLink(&mADSR.GetInControls().GetByNumber(0));
 		}
 
 	public:
@@ -168,7 +168,6 @@ bool MyInstrument::ConcreteConfigure( const ProcessingConfig& c)
 	ADSRConfig ADSRCfg;
 	std::string tmp = mConfig.GetName() + ".ADSR";
 
-	ADSRCfg.SetName( tmp );
 	ADSRCfg.SetAttackTime( mConfig.GetAttackTime() );
 	ADSRCfg.SetDecayTime( mConfig.GetDecayTime() );
 	ADSRCfg.SetSustainLevel( mConfig.GetSustainLevel() );
@@ -243,11 +242,9 @@ void MyAudioApplication::AudioMain(void)
 		AudioIOConfig inCfgL;
 		AudioIOConfig inCfgR;
 
-		inCfgL.SetName("left in");
 		inCfgL.SetDevice(mAudioDeviceStr);
 		inCfgL.SetChannelID(0);
 
-		inCfgR.SetName("right in");
 		inCfgR.SetDevice(mAudioDeviceStr);
 		inCfgR.SetChannelID(1);
 
@@ -259,11 +256,9 @@ void MyAudioApplication::AudioMain(void)
 		AudioIOConfig outCfgL;
 		AudioIOConfig outCfgR;
 
-		outCfgL.SetName("left out");
 		outCfgL.SetDevice(mAudioDeviceStr);
 		outCfgL.SetChannelID(0);
 
-		outCfgR.SetName("right out");
 		outCfgR.SetDevice(mAudioDeviceStr);
 		outCfgR.SetChannelID(1);
 
@@ -280,7 +275,6 @@ void MyAudioApplication::AudioMain(void)
 		// MIDIInControls
 		MIDIInConfig inNoteCfg;
 		
-		inNoteCfg.SetName("in");
 		inNoteCfg.SetDevice(mMidiDeviceStr);
 		inNoteCfg.SetChannelMask(MIDI::ChannelMask(-1)); //all
 
@@ -293,7 +287,6 @@ void MyAudioApplication::AudioMain(void)
 
 		MIDIInConfig inCtrlCfg;
 		
-		inCtrlCfg.SetName("inctrl");
 		inCtrlCfg.SetDevice(mMidiDeviceStr);
 		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(-1)); // all
 		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
@@ -303,7 +296,6 @@ void MyAudioApplication::AudioMain(void)
 
 		MIDIInConfig inPitchBendCfg;
 		
-		inPitchBendCfg.SetName("inPitchBend");
 		inPitchBendCfg.SetDevice(mMidiDeviceStr);
 		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(-1)); //all
 		inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
@@ -312,7 +304,6 @@ void MyAudioApplication::AudioMain(void)
 
 		MIDIClockerConfig clockerCfg;
 
-		clockerCfg.SetName("clocker");
 		clockerCfg.SetDevice(mMidiDeviceStr);
 		
 		MIDIClocker clocker(clockerCfg);
@@ -324,7 +315,6 @@ void MyAudioApplication::AudioMain(void)
 		{
 			char tmp[10];
 			sprintf(tmp,"instrument%d",i);
-			instrumentCfg[i].SetName(tmp);
 			instrumentCfg[i].SetAttackTime( (TData) 0.05 );
 			instrumentCfg[i].SetDecayTime( (TData) 0.07 );
 			instrumentCfg[i].SetSustainLevel( (TData) 0.5 );
@@ -341,7 +331,6 @@ void MyAudioApplication::AudioMain(void)
 		// Dispatcher declaration
 		DispatcherConfig dispatcherCfg;
 		
-		dispatcherCfg.SetName( "Dispatcher" );
 		dispatcherCfg.SetInstruments( instruments );
 		dispatcherCfg.SetNInValues( 2 ) ;
 
@@ -380,15 +369,17 @@ void MyAudioApplication::AudioMain(void)
 		}
 		mixer.GetOutPorts().Get("Output Audio").Attach(out);
 
-		inNote.LinkOutWithInControl( 0, &dispatcher, 1 );   /** Key for Note Off */
-		inNote.LinkOutWithInControl( 1, &dispatcher, 2 );   /** Velocity for Note Off */
-		inNote.LinkOutWithInControl( 2, &dispatcher, 1 );   /** Key for Note On */
-		inNote.LinkOutWithInControl( 3, &dispatcher, 2 );   /** Velocity for Note On */
+		/** Key for Note Off */
+		inNote.GetOutControls().GetByNumber(0).AddLink(&dispatcher.GetInControls().GetByNumber(0));
+		/** Velocity for Note Off */
+		inNote.GetOutControls().GetByNumber(1).AddLink(&dispatcher.GetInControls().GetByNumber(1));
+		/** Key for Note On */
+		inNote.GetOutControls().GetByNumber(2).AddLink(&dispatcher.GetInControls().GetByNumber(2));
+		/** Velocity for Note On */
+		inNote.GetOutControls().GetByNumber(3).AddLink(&dispatcher.GetInControls().GetByNumber(3));
 		
 		for( i = 0; i < nVoices; i++ )
-		{
-			inPitchBend.LinkOutWithInControl( 0, instruments[ i ] , 3 );
-		}
+			inPitchBend.GetOutControls().GetByNumber(0).AddLink(&instruments[i]->GetInControls().GetByNumber(3));
 
 		midiManager.Start();
 
@@ -418,7 +409,7 @@ void MyAudioApplication::AudioMain(void)
 			inL.Do(bufL);
 			inR.Do(bufR);
 
-			clocker.DoControl(0,curTime);
+			clocker.GetInControls().GetByNumber(0).DoControl(curTime);
 			curTime += curTimeInc;
 
 			midiManager.Check();

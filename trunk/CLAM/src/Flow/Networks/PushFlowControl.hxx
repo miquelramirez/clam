@@ -38,6 +38,8 @@ public:
 	virtual ~PushFlowControl(){}
 
 	void ProcessingAddedToNetwork( Processing & added );
+	void ProcessingRemovedFromNetwork( Processing & removed );
+
 	void DoProcessings();
 
 private:

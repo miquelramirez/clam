@@ -34,11 +34,7 @@ namespace CLAM {
 	class SpecProductConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpecProductConfig, 1,ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-	protected:
-		void DefaultInit();
-
+		DYNAMIC_TYPE_USING_INTERFACE (SpecProductConfig, 0,ProcessingConfig);
 	};
 
 /** This class performs the product of two Spectrum processing data
@@ -159,8 +155,6 @@ namespace CLAM {
 		bool UnsetPrototypes();
 
 		bool MayDisableExecution() const {return true;}
-
-		void StoreOn(Storage &s) {};
 
 	private:
 

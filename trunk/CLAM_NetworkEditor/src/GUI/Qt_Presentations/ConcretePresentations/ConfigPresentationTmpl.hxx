@@ -32,6 +32,7 @@
 #include "Enum.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
+#include "Filename.hxx"
 
 #include <qdialog.h>
 #include <qvbox.h>
@@ -42,7 +43,7 @@
 #include <qvalidator.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
-
+#include <qfiledialog.h>
 
 
 namespace CLAM
@@ -69,9 +70,9 @@ protected:
 
 
 
-	ConcreteConfig * mConfig;
-	virtual void OnNewConfig( CLAM::ProcessingConfig* );
-	virtual void ApplyChangesToConfig();
+	ConcreteConfig mConfig;
+	virtual void SetConfig( const CLAM::ProcessingConfig & );
+	virtual void ConfigureProcessing();
 	void GetInfo();
 	void SetInfo();
 	QWidget * GetWidget(const char * name);
@@ -99,6 +100,11 @@ public:
 	void RetrieveValue(const char *name, CLAM::TData *foo, T& value);
 
 	template<typename T>
+	void AddWidget(const char *name, unsigned long *foo, T& value);
+	template<typename T>
+	void RetrieveValue(const char *name, unsigned long *foo, T& value);
+
+	template<typename T>
 	void AddWidget(const char *name, CLAM::TSize *foo, T& value);
 	template<typename T>
 	void RetrieveValue(const char *name, CLAM::TSize *foo, T& value);
@@ -112,13 +118,19 @@ public:
 	void AddWidget(const char *name, CLAM::Enum *foo, T& value);
 	template<typename T>
 	void RetrieveValue(const char *name, CLAM::Enum *foo, T& value);
+
+	
+	template<typename T>
+	void AddWidget(const char *name, CLAM::Filename *foo, T& value);
+	template<typename T>
+	void RetrieveValue(const char *name, CLAM::Filename *foo, T& value);
+
 };
 
 
 template<class ConcreteConfig>
 ConfigPresentationTmpl<ConcreteConfig>::ConfigPresentationTmpl( QWidget * parent )
-	: Qt_ProcessingConfigPresentation( parent ),
-	  mConfig(0)
+	: Qt_ProcessingConfigPresentation( parent )
 {
 	mSetter = 0;
 	mGetter = 0;
@@ -147,16 +159,17 @@ void ConfigPresentationTmpl<ConcreteConfig>::Hide()
 }
 
 template<class ConcreteConfig>
-void ConfigPresentationTmpl<ConcreteConfig>::OnNewConfig( CLAM::ProcessingConfig* cfg)
+void ConfigPresentationTmpl<ConcreteConfig>::SetConfig( const CLAM::ProcessingConfig & cfg)
 {
-	mConfig = (ConcreteConfig*)cfg;
+//	deep copy from abstract processing config to concrete
+	mConfig = static_cast<const ConcreteConfig &>(cfg);
 
 
 	CLAM_ASSERT(!mSetter, "Configurator: Configuration assigned twice");
 	CLAM_ASSERT(!mGetter, "Configurator: Configuration assigned twice");
 	typedef ConfigPresentationTmpl<ConcreteConfig> ConcreteConfigPresentation;
-	mSetter = new CLAM::ConfigurationSetter<ConcreteConfig,ConcreteConfigPresentation>(mConfig, this);
-	mGetter = new CLAM::ConfigurationGetter<ConcreteConfig,ConcreteConfigPresentation>(mConfig, this);
+	mSetter = new CLAM::ConfigurationSetter<ConcreteConfig,ConcreteConfigPresentation>(&mConfig, this);
+	mGetter = new CLAM::ConfigurationGetter<ConcreteConfig,ConcreteConfigPresentation>(&mConfig, this);
 	CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
 
 
@@ -176,10 +189,10 @@ void ConfigPresentationTmpl<ConcreteConfig>::OnNewConfig( CLAM::ProcessingConfig
 }
 
 template<class ConcreteConfig>
-void ConfigPresentationTmpl<ConcreteConfig>::ApplyChangesToConfig()
+void ConfigPresentationTmpl<ConcreteConfig>::ConfigureProcessing()
 {
 	SetInfo();
-	ApplyConfig.Emit(mConfig);
+	SignalConfigureProcessing.Emit(mConfig);
 }
 
 template<class ConcreteConfig>
@@ -253,6 +266,28 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLA
 	std::stringstream s(readValue);
 	s >> value;
 }
+template <class ConcreteConfig>
+template< typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, unsigned long *foo, T& value) {
+	QHBox * cell = new QHBox(mLayout);
+	new QLabel(QString(name), cell);
+	std::stringstream val;
+	val << value << std::ends;
+	QLineEdit * mInput = new QLineEdit(QString(val.str().c_str()), cell);
+	mInput->setValidator(new QDoubleValidator(mInput));
+	mWidgets.insert(tWidgets::value_type(name, mInput));
+}
+
+template <class ConcreteConfig>
+template< typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, unsigned long *foo, T& value) {
+	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+	const char * readValue=mInput->text().latin1();
+	std::stringstream s(readValue);
+	s >> value;
+}
+
 
 template <class ConcreteConfig>
 template< typename T>
@@ -320,6 +355,37 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLA
 	CLAM_END_CHECK
 		value=mapping[mInput->currentItem()].value;
 }
+
+
+template <class ConcreteConfig>
+template <typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::Filename *foo, T& value) 
+{	
+	QHBox * cell = new QHBox(mLayout);
+	new QLabel(QString(name), cell);
+	QLineEdit * mInput = new QLineEdit(QString(value.c_str()), cell);
+	mInput->resize( 80, 25 );
+	resize(245, 275);
+	mWidgets.insert(tWidgets::value_type(name, mInput));
+
+	QPushButton * fileBrowserLauncher = new QPushButton("...",cell);
+	QFileDialog * fd = new QFileDialog(0, "file dialog", FALSE );
+	fd->setMode( QFileDialog::ExistingFile );
+	
+	connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
+	connect( fd, SIGNAL(fileSelected( const QString & )), mInput, SLOT( setText( const QString & )));
+}
+
+template <class ConcreteConfig>
+template< typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLAM::Filename *foo, T& value) 
+{	
+	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+	value=mInput->text().latin1();
+}
+
+
 
 /*	
   template <class ConcreteConfig>

@@ -1,1 +1,1 @@
-<AnSpectralAnalysisSettigns><Name></Name><AnalysisWindowWidth>20</AnalysisWindowWidth><OverlapFactor>50</OverlapFactor><WindowFunction>BlackmanHarris92</WindowFunction><FFTAlgorithm>FFTW</FFTAlgorithm><OutputSpectrumFormat>MagPhase</OutputSpectrumFormat></AnSpectralAnalysisSettigns>
+<AnSpectralAnalysisSettigns><AnalysisWindowWidth>20</AnalysisWindowWidth><OverlapFactor>50</OverlapFactor><WindowFunction>BlackmanHarris92</WindowFunction><FFTAlgorithm>FFTW</FFTAlgorithm><OutputSpectrumFormat>MagPhase</OutputSpectrumFormat></AnSpectralAnalysisSettigns>

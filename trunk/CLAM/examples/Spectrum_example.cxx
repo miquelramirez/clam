@@ -26,64 +26,50 @@
 ////////////////////////////////////////////////////////////////////
 
 
-#define SIZE 100
-#define SPECTRALRANGE 22050
-
-
 #include "Spectrum.hxx"
-
-//! Aixo es per provar la sortida xml
-#include <fstream>
-//typedef std::basic_fstream<char> std::fstream;
-
-#ifdef CLAM_USE_XML
-#	include "XMLStorage.hxx"
-#	include "XMLStaticAdapter.hxx"
-#	include "XMLComponentAdapter.hxx"
-#	include "XMLable.hxx"
-#endif//CLAM_USE_XML
-
-using namespace CLAM;
-
-#include "Complex.hxx"
+#include "SpectrumConfig.hxx"
+#include "GlobalEnums.hxx"
+#include "XMLStorage.hxx"
+#include <iostream>
 
 
 
 
 int test1() {
-	int i;
+	const unsigned spectrumSize=100;
+	const unsigned spectralRange=22050;
 
 	try
-		{
-		fprintf(stdout, "Spectrum Test\n");
-		Array<Complex> *pData=new Array<Complex>(SIZE);
-		for (i=0; i<SIZE; i++)
-			pData->AddElem(Complex(2,5) );
+	{
+		std::cout << "Spectrum Test" << std::endl;
+		CLAM::Array<CLAM::Complex> *pData=new CLAM::Array<CLAM::Complex>(spectrumSize);
+		for (int i=0; i<spectrumSize; i++)
+			pData->AddElem(CLAM::Complex(2,5) );
 
 /*****Constructing diferent types of spectrums*****/
 
 //Default Spectrum (size=0,type=MagPhase,spectralrng=22050,scale=linear)
 
-		Spectrum defaultSpec;
+		CLAM::Spectrum defaultSpec;
 
 //Explicitly changing config
-		SpecTypeFlags specFlags;
+		CLAM::SpecTypeFlags specFlags;
 		specFlags.bComplex=1;
-		Spectrum complex;
+		CLAM::Spectrum complex;
 		complex.SetType(specFlags);
-		complex.SetSize(SIZE);
-		complex.SetSpectralRange(SPECTRALRANGE);
-		complex.SetScale(EScale::eLog);
+		complex.SetSize(spectrumSize);
+		complex.SetSpectralRange(spectralRange);
+		complex.SetScale(CLAM::EScale::eLog);
 
 //From already existing config
 
-		SpectrumConfig myLoadedConfig; //Supposed to be loaded from file
-		myLoadedConfig.SetSize(SIZE);
+		CLAM::SpectrumConfig myLoadedConfig; //Supposed to be loaded from file
+		myLoadedConfig.SetSize(spectrumSize);
 		myLoadedConfig.SetType(specFlags);
-		myLoadedConfig.SetSpectralRange(SPECTRALRANGE);
-		myLoadedConfig.SetScale(EScale::eLog);
+		myLoadedConfig.SetSpectralRange(spectralRange);
+		myLoadedConfig.SetScale(CLAM::EScale::eLog);
 
-		Spectrum loadedSpec(myLoadedConfig);
+		CLAM::Spectrum loadedSpec(myLoadedConfig);
 
 
 /*****Setting a buffer*****/
@@ -97,40 +83,44 @@ int test1() {
 
 /*****Using the spectrum (inefficiently)*****/
 
-		printf("Spectral Range: %f\n", complex.GetSpectralRange());
+		std::cout << "Spectral Range: " << complex.GetSpectralRange() << std::endl;
 
 		// Set values
-		for (i=0; i<SIZE; i++) {
+		for (int i=0; i<spectrumSize; i++) {
 			complex.SetMag(i,i);
 			complex.SetPhase(i,i+1);
 		}
 
 		// Get values
-		for (i=0; i<SIZE; i++) {
-			printf("Mag[%d] = %f, Phase[%d] = %f \n", i, complex.GetMag(i), i, complex.GetPhase(i) );
+		for (int i=0; i<spectrumSize; i++) {
+			std::cout 
+				<< "Mag[" << i << "] = " << complex.GetMag(i) << ", " 
+				<< "Phase[" << i << "] = " << complex.GetPhase(i) << std::endl;
 		}
 
 
 /*****Using the spectrum (efficiently)*****/
 		//Resizing spectrum
-		defaultSpec.SetSize(SIZE);
+		defaultSpec.SetSize(spectrumSize);
 
-		DataArray &mag=defaultSpec.GetMagBuffer();
-		DataArray &phase=defaultSpec.GetPhaseBuffer();
+		CLAM::DataArray &mag=defaultSpec.GetMagBuffer();
+		CLAM::DataArray &phase=defaultSpec.GetPhaseBuffer();
 		// Set values
-		for (i=0; i<SIZE; i++) {
+		for (int i=0; i<spectrumSize; i++) {
 			mag[i]=i;
 			phase[i]=i+1;
 		}
 		// Get values
 		mag=defaultSpec.GetMagBuffer();
 		phase=defaultSpec.GetPhaseBuffer();
-		for (i=0; i<SIZE; i++) {
-			printf("Mag[%d] = %f, Phase[%d] = %f \n", i, mag[i], i, phase[i] );
+		for (int i=0; i<spectrumSize; i++) {
+			std::cout 
+				<< "Mag[" << i << "] = " << mag[i] << ", " 
+				<< "Phase[" << i << "] = " << phase[i] << std::endl;
 		}
 
 /*****Using conversion routines*****/
-		SpecTypeFlags newType;
+		CLAM::SpecTypeFlags newType;
 
 		/*converting magphase to complex keeping original data*/
 		newType.bMagPhase=newType.bComplex=1;
@@ -142,12 +132,9 @@ int test1() {
 		complex.SetTypeSynchronize(newType);
 
 /*****Storing result to XML document*****/ 
-#ifdef CLAM_USE_XML
-		XMLStorage storage;
-		storage.Dump(complex, "ComplexSpectrum", "SpectrumExample.1.xml");
-		storage.Dump(defaultSpec, "DefaultSpectrum", "SpectrumExample.2.xml");
-		storage.Dump(loadedSpec, "LoadedSpectrum", "SpectrumExample.3.xml");
-#endif//CLAM_USE_XML
+		CLAM::XMLStorage::Dump(complex, "ComplexSpectrum", "SpectrumExample.1.xml");
+		CLAM::XMLStorage::Dump(defaultSpec, "DefaultSpectrum", "SpectrumExample.2.xml");
+		CLAM::XMLStorage::Dump(loadedSpec, "LoadedSpectrum", "SpectrumExample.3.xml");
 
 
 
@@ -155,7 +142,7 @@ int test1() {
 
 	}
  
-	catch(Err error)
+	catch(CLAM::Err error)
 	{
 		error.Print();
 	}

@@ -25,14 +25,14 @@
 #include <string>
 #include <qwidget.h>
 #include <qregion.h>
-#include "InControlPresentation.hxx"
+#include "ConnectionPointPresentation.hxx"
 #include "Signalv2.hxx"
 #include "Signalv1.hxx"
 
 namespace NetworkGUI
 {
 
-class Qt_InControlPresentation : public QWidget, public InControlPresentation
+class Qt_InControlPresentation : public QWidget, public ConnectionPointPresentation
 {
 public:
 	Qt_InControlPresentation( int id, QWidget *parent = 0, const char *name = 0);
@@ -40,15 +40,14 @@ public:
 	virtual void Show();
 	virtual void Hide();
 	QRegion GetRegion();
-
+	virtual void SetName(const std::string& name);
+	
 protected:
-	virtual void OnNewName(const std::string& name);
-
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent *);
 public: // signals
-	SigSlot::Signalv2< int , int >  AcquirePos;
-	SigSlot::Signalv1< Qt_InControlPresentation * > AcquireInControlClicked;
+	SigSlot::Signalv2< int , int >  SignalAcquirePos;
+	SigSlot::Signalv1< Qt_InControlPresentation * > SignalAcquireInControlClicked;
 
 protected:
 // qt stuff

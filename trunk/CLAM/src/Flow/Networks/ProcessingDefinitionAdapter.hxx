@@ -50,7 +50,7 @@ public:
 		return "ProcessingDefinitionAdapter";
 	}
 	
-	virtual void StoreOn (Storage & store);
+	virtual void StoreOn (Storage & store) const;
 
 	/**
 	 * Loads component's subitems from the given Storage

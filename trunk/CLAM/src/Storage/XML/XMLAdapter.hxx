@@ -100,6 +100,10 @@ public:
 		: BasicXMLable(name, isXMLElement), mAdaptee(anAdaptee)
 	{
 	}
+	XMLAdapter (const t_adaptee & anAdaptee, const char * name=NULL, bool isXMLElement=false)
+		: BasicXMLable(name, isXMLElement), mAdaptee(const_cast<T&>(anAdaptee))
+	{
+	}
 	virtual ~XMLAdapter() 
 	{
 	};
@@ -107,7 +111,7 @@ public:
 // Accessors
 public:
 	//* @return A string with the extracted XML content
-	std::string XMLContent() 
+	std::string XMLContent() const
 	{
 
 		std::stringstream str;

@@ -59,7 +59,7 @@ namespace CLAM {
 		bool ConcreteConfigure(const ProcessingConfig& c);
 		int DoMap(TControlData val)
 		{
-			SendControl(0,TControlData(mMappingPtr->Map(val)));
+			GetOutControls().GetByNumber(0).SendControl(TControlData(mMappingPtr->Map(val)));
 			return 1;
 		}
 		bool Do(void) { return true; }

@@ -90,8 +90,6 @@ int main(void)
 
 		BinaryControlOpConfig multiplyCfg ;
 
-		multiplyCfg.SetName("Multiply");
-
 		ControlMultiplier FreqMultiplier( multiplyCfg); 
 
 
@@ -100,7 +98,6 @@ int main(void)
 		MIDIInConfig inNoteCfg;
 
 		
-		inNoteCfg.SetName("in");
 		inNoteCfg.SetDevice("default:default");
 		inNoteCfg.SetChannelMask(
 			MIDI::ChannelMask(1)|
@@ -114,14 +111,8 @@ int main(void)
 		
 		MIDIInControl inNote(inNoteCfg);
 
-	/*	for (Processing::InControlIterator it = FreqMultiplier.FirstInControl(); it<FreqMultiplier.LastInControl(); it++)
-		{
-			cout << (*(it))->GetName() << endl;
-		}*/
-
 		MIDIInConfig inCtrlCfg;
 		
-		inCtrlCfg.SetName("inctrl");
 		inCtrlCfg.SetDevice("default:default");
 		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(1));
 		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
@@ -131,33 +122,30 @@ int main(void)
 
 		MIDIInConfig inPitchBendCfg;
 		
-		inPitchBendCfg.SetName("inPitchBend");
 		inPitchBendCfg.SetDevice("default:default");
 		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
 		inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
 		
 		MIDIInControl inPitchBend(inPitchBendCfg);
 
+		inNote.GetOutControls().GetByNumber(2).AddLink(&mapperNote.GetInControls().GetByNumber(0));
+		inNote.GetOutControls().GetByNumber(3).AddLink(&mapperVel.GetInControls().GetByNumber(0));
+		inNote.GetOutControls().GetByNumber(1).AddLink(&mapperVel.GetInControls().GetByNumber(0));
+		inCtrl.GetOutControls().GetByNumber(0).AddLink(&mapper.GetInControls().GetByNumber(0));
 
-		inNote.LinkOutWithInControl(2,&mapperNote,0);
-		inNote.LinkOutWithInControl(3, &mapperVel, 0);
-		inNote.LinkOutWithInControl(1, &mapperVel, 0);
+		inPitchBend.GetOutControls().GetByNumber(0).AddLink(&mapperPitchBend.GetInControls().GetByNumber(0));
 
-		inCtrl.LinkOutWithInControl(0, &mapper, 0);
 
-		inPitchBend.LinkOutWithInControl(0 , &mapperPitchBend, 0);
+		mapperNote.GetOutControls().GetByNumber(0).AddLink(&printKey.GetInControls().GetByNumber(0));
+		mapperNote.GetOutControls().GetByNumber(0).AddLink(&FreqMultiplier.GetInControls().GetByNumber(0));
 
-		mapperNote.LinkOutWithInControl(0,&printKey,0);
-		mapperNote.LinkOutWithInControl(0,&FreqMultiplier, 0);
-
-		mapperVel.LinkOutWithInControl(0,&printVel,0);
+		mapperVel.GetOutControls().GetByNumber(0).AddLink(&printVel.GetInControls().GetByNumber(0));
 		
-		mapper.LinkOutWithInControl(0, &printCtrl, 0);
+		mapper.GetOutControls().GetByNumber(0).AddLink(&printCtrl.GetInControls().GetByNumber(0));
 		
-		//mapperPitchBend.LinkOutWithInControl(0, &printPitchBend, 0);
-		mapperPitchBend.LinkOutWithInControl(0, &FreqMultiplier, 1 );
+		mapperPitchBend.GetOutControls().GetByNumber(0).AddLink(&FreqMultiplier.GetInControls().GetByNumber(1));
 		
-		FreqMultiplier.LinkOutWithInControl( 0 , &printPitchBend, 0 );
+		FreqMultiplier.GetOutControls().GetByNumber(0).AddLink(&printPitchBend.GetInControls().GetByNumber(0));
 
 		midiManager.Start();
 
