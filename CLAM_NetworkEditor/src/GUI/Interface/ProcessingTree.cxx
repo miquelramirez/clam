@@ -94,7 +94,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 #endif
 	new ProcessingItem( utils, "OutControlSender" );	
 	new ProcessingItem( utils, "Fundamental2Control" );	
-	new ProcessingItem( utils, "BPF2Control" );	
+	new ProcessingItem( utils, "MIDIcontrol" );	
 
 	QListViewItem* winplots = new QListViewItem(this,"Plots in new windows");
 	new ProcessingItem(winplots, "AudioPlotProcessing");
