@@ -47,6 +47,7 @@ namespace CLAM
 			SetvRange(TData(_maxFreq));
 			InitialRegionTime();
 			_mustProcessData = true;
+			emit requestRefresh();
 		}
 
 		void FundPlotController::SetDataColor(Color c)

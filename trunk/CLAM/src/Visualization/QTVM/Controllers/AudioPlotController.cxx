@@ -49,6 +49,7 @@ namespace CLAM
 			InitialRegionTime();
 			_duration = TData(GetnSamples())/_sampleRate;
 			_mustProcessData = true;
+			emit requestRefresh();
 		}
 
 		void AudioPlotController::SetDataColor(Color c)

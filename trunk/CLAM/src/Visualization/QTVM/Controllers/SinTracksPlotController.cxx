@@ -54,6 +54,7 @@ namespace CLAM
 			Colorize();
 			InitialRegionTime();
 			_mustProcessData = true;
+			emit requestRefresh();
 		}
 
 		void SinTracksPlotController::SetData(const Array< SpectralPeakArray >& peakMtx, 
@@ -73,6 +74,7 @@ namespace CLAM
 			Colorize();
 			InitialRegionTime();
 			_mustProcessData = true;
+			emit requestRefresh();
 		}
 
 		void SinTracksPlotController::SurfaceDimensions(int w,int h)
