@@ -227,8 +227,8 @@ namespace CLAMGUI
 
 		/////////////////////////////////////////////////////////////////////////////
 		// Initialization of the processing data objects :
-		CLAM::TSize samplesInFile=(selectedFile.GetHeader().GetLength()/1000.)*
-			selectedFile.GetHeader().GetSampleRate();
+		CLAM::TSize samplesInFile=int( (selectedFile.GetHeader().GetLength()/1000.)*
+			selectedFile.GetHeader().GetSampleRate() );
 
 		SetSamplingRate(int(selectedFile.GetHeader().GetSampleRate()));
 		
@@ -466,13 +466,9 @@ namespace CLAMGUI
 		CLAM::AudioFileHeader fileHeader;
 		fileHeader.SetValues( audio.GetSampleRate(), 1, desiredOutputFmt );
 
-		outputFile.SetHeader( fileHeader );
-
 		outputFile.CreateNew( fileName, fileHeader );
 
 		CLAM::MonoAudioFileWriterConfig cfgWriter;
-		cfgWriter.AddTargetFile();
-		cfgWriter.UpdateData();
 		cfgWriter.SetTargetFile(outputFile);
 
 		CLAM::MonoAudioFileWriter proc;
