@@ -24,6 +24,15 @@
 using CLAM::TData;
 using namespace CLAMGUI;
 
+GLWaveRenderer::GLWaveRenderer( unsigned char red, unsigned char green, unsigned char blu )
+		: GLArrayRenderer( red, green, blu ), mPixelColorSize(0), mPixelColor(0)
+{
+}
+
+GLWaveRenderer::~GLWaveRenderer()
+{
+}
+
 void GLWaveRenderer::InitArray( unsigned int n_elems )
 {
 	GLfloat color[3] = { 0.0f, 0.0f, 0.0f };
@@ -38,6 +47,18 @@ void GLWaveRenderer::InitArray( unsigned int n_elems )
 		mIntertwined[k].z = 0.0f;             // We make zero the z-values
 	}
 }
+
+void GLWaveRenderer::DrawVerticalLine(float x,float top,float bottom)
+{
+	top = max(mCullingData.bottomY,top);
+	bottom = max(mCullingData.bottomY,bottom);
+	top = min(mCullingData.topY,top);
+	bottom = min(mCullingData.topY,bottom);
+	int nPixels = (bottom - top) * Y2Pixel + 1;
+	glRasterPos2f(x,top);
+	glDrawPixels(1,nPixels,GL_GREEN,GL_FLOAT,mPixelColor);
+}
+
 
 void GLWaveRenderer::ArrangeXScale()
 {
@@ -74,4 +95,185 @@ void GLWaveRenderer::YaxisTransform( TData top, TData bottom, TData& transtop, T
 	transtop = top + 1.0f;
 	transbottom = bottom - 1.0f;
 	integer = false;
+}
+
+void GLWaveRenderer::CacheData( const DataArray& array )
+{
+	mDataArray = array;
+	int newSize = ((int)(( mDataArray.Size()/10)+1));
+	mDataArrayTop.Resize( newSize );
+	mDataArrayTop.SetSize(newSize);
+	mDataArrayBottom.Resize( newSize );
+	mDataArrayBottom.SetSize( newSize );
+	for(int i=0; i<mDataArrayTop.Size(); i++)
+	{
+		int begin = (i-0.5)*10;
+		int end = (i+0.5)*10;
+		begin = max(begin , 0);
+		begin = min(begin , mDataArray.Size()-2);
+		end = min(end , mDataArray.Size());
+		float top = mDataArray[begin];
+		float bottom = mDataArray[begin];
+		for(int k=begin+1; k<end; k++)
+		{
+			if (mDataArray[k] > top)
+				top = mDataArray[k];
+			if (mDataArray[k] < bottom)
+				bottom = mDataArray[k];
+		}
+		mDataArrayTop[i] = top;
+		mDataArrayBottom[i] = bottom;
+	}
+	newSize = ((int)(( mDataArrayTop.Size()/10)+1));
+	mDataArrayTop2.Resize( newSize );
+	mDataArrayTop2.SetSize(newSize);
+	mDataArrayBottom2.Resize( newSize );
+	mDataArrayBottom2.SetSize( newSize );
+	for(int i=0; i<mDataArrayTop2.Size(); i++)
+	{
+		int begin = (i-0.5)*10;
+		int end = (i+0.5)*10;
+		begin = max(begin , 0);
+		begin = min(begin , mDataArrayTop.Size()-2);
+		end = min(end , mDataArrayTop.Size());
+		float top = mDataArrayTop[begin];
+		float bottom = mDataArrayBottom[begin];
+		for(int k=begin+1; k<end; k++)
+		{
+			if (mDataArrayTop[k] > top)
+				top = mDataArrayTop[k];
+			if (mDataArrayBottom[k] < bottom)
+				bottom = mDataArrayBottom[k];
+		}
+		mDataArrayTop2[i] = top;
+		mDataArrayBottom2[i] = bottom;
+	}
+
+	/*unsigned int nbins = array.Size();
+
+	if ( nbins != mIntertwined.size() )
+		ResizeArray( nbins ); // Valarray resizing to accomodate the new CLAM Array
+
+	DataTransform( array );
+	mDataChanged = true;
+	if(nbins>mMinPointsToOptimize)
+		FindMaxMin();*/
+
+}
+
+void GLWaveRenderer::Draw()
+{
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity();
+
+	float leftX = mCullingData.leftX;
+	float rightX= mCullingData.rightX;
+	float topY = mCullingData.topY;
+	float bottomY= mCullingData.bottomY;
+	Index2Pixel = mCullingData.pixel_width / (float)(mCullingData.right-mCullingData.left);
+	X2Pixel = mCullingData.pixel_width / (float)(rightX-leftX);
+	Y2Pixel = mCullingData.pixel_height / (float)(topY-bottomY);
+
+	float indexes_per_pixel = (mCullingData.right - mCullingData.left) / mCullingData.pixel_width;
+
+	//mMustUpdateBounds
+	float lastTop,lastBottom;
+	for(int i=0; i<mCullingData.pixel_width; i++)
+	{
+		float topValue,bottomValue;
+		int nIndex = mCullingData.left + i / Index2Pixel;
+		int nNextIndex = mCullingData.left + (i+1) / Index2Pixel;
+		float x = leftX + i / X2Pixel * 1.0001;
+		if (indexes_per_pixel > 200)
+		{
+			nIndex /= 100;
+			nNextIndex /= 100;
+			nIndex =min(nIndex,mDataArrayTop2.Size()-1);
+			nNextIndex = min(nNextIndex,mDataArrayTop2.Size()-1);
+			topValue = mDataArrayTop2[nIndex];
+			bottomValue = mDataArrayBottom2[nIndex];
+			if (nNextIndex > nIndex)
+				for(int k=nIndex+1; k<nNextIndex; k++)
+				{
+					if (mDataArrayTop2[k] > topValue)
+						topValue = mDataArrayTop2[k];
+					if (mDataArrayBottom2[k] < bottomValue)
+						bottomValue = mDataArrayBottom2[k];
+				}
+		}
+		else
+		if (indexes_per_pixel > 20)
+		{
+			nIndex /= 10;
+			nNextIndex /= 10;
+			nIndex =min(nIndex,mDataArrayTop.Size()-1);
+			nNextIndex = min(nNextIndex,mDataArrayTop.Size()-1);
+			topValue = mDataArrayTop[nIndex];
+			bottomValue = mDataArrayBottom[nIndex];
+			if (nNextIndex > nIndex)
+				for(int k=nIndex+1; k<nNextIndex; k++)
+				{
+					if (mDataArrayTop[k] > topValue)
+						topValue = mDataArrayTop[k];
+					if (mDataArrayBottom[k] < bottomValue)
+						bottomValue = mDataArrayBottom[k];
+				}
+		}
+		else
+		{
+			nIndex =min(nIndex,mDataArray.Size()-1);
+			nNextIndex = min(nNextIndex,mDataArray.Size()-1);
+			topValue = mDataArray[nIndex];
+			bottomValue = mDataArray[nIndex];
+			if (nNextIndex > nIndex)
+				for(int k=nIndex+1; k<nNextIndex; k++)
+				{
+					if (mDataArray[k] > topValue)
+						topValue = mDataArray[k];
+					if (mDataArray[k] < bottomValue)
+						bottomValue = mDataArray[k];
+				}
+		}
+		if (i > 0)
+			if (bottomValue > lastTop)
+				DrawVerticalLine(x,lastTop,bottomValue);
+			else
+			if (topValue < lastBottom)
+				DrawVerticalLine(x,topValue,lastBottom);
+		if (bottomValue == topValue)
+		{
+			glRasterPos2f(x,topValue);
+			glDrawPixels(1,1,GL_GREEN,GL_FLOAT,mPixelColor);
+		}
+		else
+			DrawVerticalLine(x,bottomValue,topValue);
+		lastTop = topValue;
+		lastBottom = bottomValue;
+	}
+ 	glFlush();
+}
+
+void GLWaveRenderer::PerformCulling( float left, float right, unsigned pixel_width, unsigned extraparams )
+{
+		// MRJ: pixel_height es l'alçada del viewport en pixels
+	float *pextraparams = (float*)extraparams;
+	mCullingData.leftX = left;
+	mCullingData.rightX = right;
+	mCullingData.left = (unsigned)(left*GetXConversionFactor());
+	mCullingData.right = (unsigned)(right*GetXConversionFactor());
+	mCullingData.topY = pextraparams[0];
+	mCullingData.bottomY = pextraparams[1];
+	mCullingData.pixel_width = pixel_width;
+	mCullingData.pixel_height = (unsigned int)(pextraparams[2] + 0.5);
+	mCullingRequested = true;
+	mMustUpdateBounds= true;	
+	if (mCullingData.pixel_height > mPixelColorSize)
+	{
+		delete [] mPixelColor;
+		mPixelColorSize = ((int)(mCullingData.pixel_height / 100) + 1 )*100;
+		mPixelColor = new float[mPixelColorSize];
+		for(int m=0; m<mPixelColorSize; m++)
+			mPixelColor[m]=1.0;
+	}
 }

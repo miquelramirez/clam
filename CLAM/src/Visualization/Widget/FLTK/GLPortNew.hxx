@@ -64,7 +64,7 @@ class GLPort : public Fl_Gl_Window
 	class CullingCallbackAdapter
 	{
 		
-		CBL::Functor3<float, float, unsigned>    mCullingCb;
+		CBL::Functor4<float, float, unsigned,unsigned>    mCullingCb;
 		bool                                     mValid;
 		public:
 		CullingCallbackAdapter()
@@ -72,16 +72,16 @@ class GLPort : public Fl_Gl_Window
 		{
 		}
 
-		inline void SetCallback( const CBL::Functor3<float,float,unsigned>& cb )
+		inline void SetCallback( const CBL::Functor4<float,float,unsigned,unsigned>& cb )
 		{
 			mCullingCb = cb;
 			mValid = true;
 		}
 
-		inline void operator()( float left, float right, unsigned pixel_width)
+		inline void operator()( float left, float right, unsigned pixel_width,unsigned pixel_height)
 		{
 			if ( mValid )
-				mCullingCb( left, right, pixel_width );
+				mCullingCb( left, right, pixel_width, pixel_height );
 		}
 
 	};
@@ -134,7 +134,7 @@ public:
 		mDrawCb.SetCallback( cb );
 	}
 
-	inline void SetCullingCallback( const CBL::Functor3<float,float,unsigned>& cb )
+	inline void SetCullingCallback( const CBL::Functor4<float,float,unsigned,unsigned>& cb )
 	{
 		mCullCb.SetCallback( cb );
 	}

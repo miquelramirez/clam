@@ -66,8 +66,12 @@ void GLPort::ApplyProjection()
 	// Let's try with the rulers...
 	glOrtho( mHorRange.mPosition, mHorRange.mPosition + mHorRange.mSize, mVerRange.mPosition - mVerRange.mSize, mVerRange.mPosition, -1.0f, 1.0f );
 
-
-	mCullCb( mHorRange.mPosition, mHorRange.mPosition + mHorRange.mSize, w() );
+	//mCullCb( mHorRange.mPosition, mHorRange.mPosition + mHorRange.mSize, w(), h() );
+	float extraparams[3];
+	extraparams[0]=mVerRange.mPosition;
+	extraparams[1]=mVerRange.mPosition - mVerRange.mSize;
+	extraparams[2] = h();
+	mCullCb( mHorRange.mPosition, mHorRange.mPosition + mHorRange.mSize, w(), (unsigned int)&extraparams );
 }
 
 }
