@@ -89,7 +89,7 @@ namespace CLAM {
 
 	void ALSAMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
 	{
-		int err = snd_rawmidi_write(mHandleOut,msg,size);
+		snd_rawmidi_write(mHandleOut,msg,size);
 		snd_rawmidi_drain(mHandleOut);
 	}
 
