@@ -108,6 +108,9 @@ namespace CLAM
 		/** Analyze and extract melody. This feature only works on some sort of instruments
 		* for monophonic phrases */
 		void AnalyzeMelody(void);
+
+		void ComputeLowLevelDescriptors();
+
 		/** Stores previously analyzed melody into xml format */
 		void StoreMelody(void);
 

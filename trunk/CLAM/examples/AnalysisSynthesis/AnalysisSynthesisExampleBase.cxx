@@ -21,6 +21,8 @@
 
 
 #include "AnalysisSynthesisExampleBase.hxx"
+#include "SegmentDescriptors.hxx"
+#include "BasicStatistics.hxx"
 
 #include "AudioFileIn.hxx"
 #include "AudioFileOut.hxx"
@@ -441,6 +443,8 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 
 void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 {
+	ComputeLowLevelDescriptors();
+	
 	TData frequencies[85]={32.703, 34.648, 36.708, 38.891, 41.203, 43.654, 46.249, 48.999, 51.913, 55.000, 58.270, 61.735,
 												 65.406, 69.296, 73.416, 77.782, 82.407, 87.307, 92.499, 97.999, 103.83, 110.00, 116.00, 123.47,
 												 130.81, 138.59, 146.83, 155.56, 164.81, 174.61, 185.00, 196.00, 207.65, 220.00, 233.08, 246.94,
@@ -688,3 +692,31 @@ void AnalysisSynthesisExampleBase::SetTransformation(SMSTransformation* pTransfo
 	mpTransformation=pTransformation;
 }
 
+void AnalysisSynthesisExampleBase::ComputeLowLevelDescriptors()
+{
+	// Energy Computation, note that this should be done inside a PO, added here as example
+	mSegmentDescriptors.AddFramesD();
+	mSegmentDescriptors.UpdateData();
+	
+	int i=0;
+	List<FrameDescriptors> &frameDesc=mSegmentDescriptors.GetFramesD();
+	List<Frame> &frames=mSegment.GetFramesArray();
+	int nFrames=mSegment.GetnFrames();
+	FrameDescriptors tmpFrameD;
+	tmpFrameD.AddSpectrumD();
+	tmpFrameD.UpdateData();
+	SpectralDescriptors tmpSpecD;
+	tmpSpecD.AddEnergy();
+	tmpSpecD.UpdateData();
+	tmpFrameD.SetSpectrumD(tmpSpecD);
+
+	for(i=0;i<nFrames;i++)
+	{
+		Spectrum &tmpSpec=frames[i].GetSpectrum();
+		tmpFrameD.SetpFrame(&frames[i]);
+		tmpFrameD.GetSpectrumD().SetpSpectrum(&tmpSpec);
+		tmpFrameD.GetSpectrumD().SetEnergy(Energy(tmpSpec.GetMagBuffer().GetPtr(),tmpSpec.GetMagBuffer().Size()));
+		frameDesc.AddElem(tmpFrameD);
+	}
+
+}
