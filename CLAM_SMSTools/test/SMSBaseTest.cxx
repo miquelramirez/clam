@@ -42,6 +42,7 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testTransformations_withLoadedScore_sinusoidalGain );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_residualGain );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_FreqShift );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_PitchShift );
 //	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
 //	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
 	CPPUNIT_TEST_SUITE_END();
@@ -416,6 +417,25 @@ private:
 		Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_freqshift-transf";
+		double delta = 0.09;
+		std::string diagnostic;
+
+		bool transformedAudioAreEqual =
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
+		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+	}
+
+	void testTransformations_withLoadedScore_PitchShift ()
+	{
+		LoadTransformationScore( mPath + "/SMSTests/pitchshift-transf.xml" );
+		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		InitConfigs();
+		LoadInputSound();
+		Analyze();
+		Transform();
+		Synthesize();
+
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_pitchshift-transf";
 		double delta = 0.09;
 		std::string diagnostic;
 
