@@ -22,6 +22,9 @@
 #include "MultiChannelAudioFileWriterConfigPresentation.hxx"
 #include "ProcessingConfig.hxx"
 #include "AudioFileHeader.hxx"
+
+#include <limits>
+
 #include <qlabel.h>
 #include <qspinbox.h>
 #include <string>
