@@ -66,8 +66,12 @@ namespace CLAM
 
     bool PeaksPlotProcessing::ConcreteStop()
     {
-	if(mPlot) delete mPlot;
-	mPlot = NULL;
+	if(mPlot) 
+	{
+	    mPlot->StopRendering();
+	    delete mPlot;
+	    mPlot = NULL;
+	}
 	return true;
     }
 

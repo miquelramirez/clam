@@ -14,6 +14,7 @@ namespace CLAM
 		{
 			public:
 				GLThread(NetDisplaySurface* surf);
+		                virtual ~GLThread();
 	
 				void resizeViewport(int w, int h);
 				void Start();
@@ -23,9 +24,12 @@ namespace CLAM
 				void setView(double left, double right, double bottom, double top);
 				void setBackgColor(double r, double g, double b);
 
+		                void SetControllerToNULL();
+
 			private:
 				volatile bool _doRendering;
 				volatile bool _doResize;
+		                volatile bool _terminated;
 				int _w, _h;
 				double _left, _right, _bottom, _top;
 				double _r, _g, _b;
@@ -33,7 +37,7 @@ namespace CLAM
 				NetDisplaySurface* _surf;
 				NetPlotController* _controller;
 
-				Thread _thread;
+		                Thread _thread;
 
 				void thread_code();
 		};

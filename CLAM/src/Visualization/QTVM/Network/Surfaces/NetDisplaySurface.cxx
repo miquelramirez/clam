@@ -16,8 +16,10 @@ namespace CLAM
 
 		NetDisplaySurface::~NetDisplaySurface()
 		{
-		    stopRendering();
-			if(_controller) delete _controller;
+			if(_controller) 
+			{
+			    delete _controller;
+			}
 		}
 
 		void NetDisplaySurface::SetBackgroundColor(double r, double g, double b)

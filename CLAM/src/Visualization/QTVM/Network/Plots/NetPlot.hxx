@@ -24,6 +24,8 @@ namespace CLAM
 				void Show();
 				void Hide();
 
+		                void StopRendering();
+
 			protected:
 				NetPlotController* _controller;
 

@@ -60,7 +60,7 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 	regtSpectrumPlotProcessing( "SpectrumPlotProcessing" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtPeaksPlotProcessing( "PeaksPlotProcessing" );
-
-
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtFundPlotProcessing( "FundPlotProcessing" );
 
 

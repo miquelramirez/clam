@@ -12,8 +12,14 @@ namespace CLAM
 			_controller = NULL;
 			_doRendering = false;
 			_doResize = false;
+			_terminated = false;
 		  
 		       _thread.SetThreadCode(makeMemberFunctor0((*this), GLThread, thread_code));
+		}
+
+	        GLThread::~GLThread()
+		{
+		    if(_terminated) _thread.Stop();
 		}
 	    		
 		void GLThread::resizeViewport(int w, int h)
@@ -28,27 +34,26 @@ namespace CLAM
 		    _surf->makeCurrent();    
 		    while(_doRendering)
 		    {
-			        if(_doResize)
-			        {
-					glViewport(0, 0, _w, _h);
-					_doResize = false;
-				}
-				if(_controller)
-				{
-				        glMatrixMode(GL_PROJECTION);
-				        glLoadIdentity();
-				        glOrtho(_left, _right, _bottom, _top, -1.0, 1.0);
-				        glMatrixMode(GL_MODELVIEW);
-				        glShadeModel(GL_FLAT);
-					glClearColor(_r, _g, _b, 1.0);
-					glClear(GL_COLOR_BUFFER_BIT);
+			if(_controller)
+			{
+			    if(_doResize)
+			    {
+				glViewport(0, 0, _w, _h);
+				_doResize = false;
+			    }
+			    glMatrixMode(GL_PROJECTION);
+			    glLoadIdentity();
+			    glOrtho(_left, _right, _bottom, _top, -1.0, 1.0);
+			    glMatrixMode(GL_MODELVIEW);
+			    glShadeModel(GL_FLAT);
+			    glClearColor(_r, _g, _b, 1.0);
+			    glClear(GL_COLOR_BUFFER_BIT);
 
-					_controller->Draw();
-					_surf->swapBuffers();
-				}
-				_thread.Sleep(40);
-
+			    _controller->Draw();
+			    _surf->swapBuffers();
+			    _thread.Sleep(66);
 			}
+		    }
 		}
 
 		void GLThread::Start()
@@ -64,8 +69,8 @@ namespace CLAM
 		{
 		    if(_doRendering)
 		    {
-				_doRendering = false;
-				_thread.Stop();
+			_doRendering = false;
+			_terminated = true;
 		    }
 		}
 
