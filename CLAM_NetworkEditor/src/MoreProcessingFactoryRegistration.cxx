@@ -3,7 +3,10 @@
 #include "Processing.hxx"
 #include "MultiChannelAudioFileReader.hxx"
 #include "MultiChannelAudioFileWriter.hxx"
+
+#ifndef WIN32
 #include "LadspaLoader.hxx"
+#endif
 
 // processings in local directory
 #include "Random.hxx"
@@ -23,7 +26,10 @@ static ProcessingFactory::Registrator<CLAM::Random> regtRandom( "Random" );
 static ProcessingFactory::Registrator<CLAM::OneOverF> regtOneOverF( "OneOverF" );
 static ProcessingFactory::Registrator<CLAM::SquareWave> regtSquareWave( "SquareWave" );
 
+#ifndef WIN32
 static ProcessingFactory::Registrator<CLAM::LadspaLoader> regtLadspaLoader( "LadspaLoader" );
+#endif
+
 static ProcessingFactory::Registrator<CLAM::MonoAudioFileReader> regtMonoAudioFileReader( "MonoAudioFileReader" );
 static ProcessingFactory::Registrator<CLAM::MonoAudioFileWriter> regtMonoAudioFileWriter( "MonoAudioFileWriter" );
 static ProcessingFactory::Registrator<CLAM::MultiChannelAudioFileReader> regtMultiChannelAudioFileReader( "MultiChannelAudioFileReader" );
