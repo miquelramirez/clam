@@ -15,6 +15,8 @@ namespace CLAMVM
 {
 	class InPortAdapter;
 	class OutPortAdapter;
+	class InControlAdapter;
+	class OutControlAdapter;
 
 	class ProcessingModel
 	{
@@ -28,6 +30,8 @@ namespace CLAMVM
 		SigSlot::Signalv1< const std::string &>          AcquireClassName;
 		SigSlot::Signalv1< CLAMVM::InPortAdapter* >   AcquireInPort;
 		SigSlot::Signalv1< CLAMVM::OutPortAdapter* > AcquireOutPort;
+		SigSlot::Signalv1< CLAMVM::InControlAdapter* >   AcquireInControl;
+		SigSlot::Signalv1< CLAMVM::OutControlAdapter* > AcquireOutControl;
 		SigSlot::Slotv1< CLAM::ProcessingConfig * > SetNewConfig;
 	};
 }

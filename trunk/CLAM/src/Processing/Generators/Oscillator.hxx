@@ -156,7 +156,7 @@ public:
 
 	virtual ~Oscillator();
 
-	const char * GetClassName() const {return "Oscilator";}
+	const char * GetClassName() const {return "Oscillator";}
 	
 	inline const ProcessingConfig &GetConfig() const { return mConfig;}
 	

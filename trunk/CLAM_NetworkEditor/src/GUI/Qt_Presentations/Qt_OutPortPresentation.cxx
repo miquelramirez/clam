@@ -9,7 +9,7 @@ namespace NetworkGUI
 Qt_OutPortPresentation::Qt_OutPortPresentation( int id,  QWidget *parent, const char *name)
 	: QWidget( parent, name ), mDown(false), mId(id)
 {
-	move(parentWidget()->width()-10,mId*7+3);
+	updatePosition();
 	setFixedSize(10,5);
 }
 
@@ -44,6 +44,11 @@ void Qt_OutPortPresentation::paintEvent( QPaintEvent * )
 void Qt_OutPortPresentation::mousePressEvent( QMouseEvent *m)
 {
 	AcquireOutPortClicked.Emit(this);
+}
+
+void Qt_OutPortPresentation::updatePosition()
+{
+	move(parentWidget()->width()-10,mId*7+7);
 }
 
 } // namespace NetworkGUI

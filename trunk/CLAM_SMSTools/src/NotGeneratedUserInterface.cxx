@@ -29,6 +29,7 @@
 #include "AudioPlayer.hxx"
 #include <FL/fl_message.H>
 #include <FL/fl_ask.H>
+#include <FL/Fl_Help_Dialog.H>
 
 using namespace CLAM;
 using namespace CLAMGUI;
@@ -139,7 +140,7 @@ void UserInterface::SaveTransformScore()
 void UserInterface::LoadAnalysisData(void)
 {
 
-	if ( !mSMS->LoadAnalysis(  ) )
+	if ( !mSMS->DoLoadAnalysis(  ) )
 		return;
 	mSMS->mHaveAnalysis = true;
 	// @todo: Check this is true...
@@ -197,7 +198,7 @@ void UserInterface::Exit(void)
 
 void UserInterface::StoreAnalysisData(void)
 {
-	mSMS->StoreAnalysis();
+	mSMS->DoStoreAnalysis();
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -217,7 +218,7 @@ void UserInterface::StoreOutputSoundSinusoidal(void)
 
 void UserInterface::AnalyzeMelody(void)
 {
-	mSMS->AnalyzeMelody();
+	mSMS->ExecuteMelodyAnalysis();
 	ApplyMelodyAvailableState();
 }
 
@@ -466,4 +467,26 @@ void UserInterface::ApplyTransformationPerformedState()
 {
 	mUndoTransMenuItem->activate();
 	mWindow->redraw();
+}
+
+/*This will evolve towards something more sophisticated*/
+void composeFilename( const std::string& key, std::string& filename )
+{
+	if ( key=="Application_License" )
+		filename="doc/en/license.html";
+	else
+		filename="";
+}
+
+void UserInterface::DisplayLicense()
+{
+	std::string urlToLoad;
+	std::string key = "Application_License";
+
+	composeFilename( key, urlToLoad );
+
+	Fl_Help_Dialog* helpViewer = new Fl_Help_Dialog(  );
+	helpViewer->load( urlToLoad.c_str() );
+	helpViewer->show();
+	
 }

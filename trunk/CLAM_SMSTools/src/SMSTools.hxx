@@ -9,7 +9,8 @@
 #include "SMS_DataExplorer.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
-using namespace CLAM;
+#include <string>
+
 
 class UserInterface;
 
@@ -37,14 +38,14 @@ public:
 
 	SigSlot::Slotv1<double>        TimeSelected;
 	/** Slot for setting the current score*/
-	SigSlot::Slotv1< const SMSTransformationChainConfig& > SetScore;
-	SigSlot::Signalv1< const SMSTransformationChainConfig& > ScoreChanged;
+	SigSlot::Slotv1< const CLAM::SMSTransformationChainConfig& > SetScore;
+	SigSlot::Signalv1< const CLAM::SMSTransformationChainConfig& > ScoreChanged;
 
 protected: // methods
 
 		
 	/** callback for the SetScore slot */
-	virtual void OnNewScore( const SMSTransformationChainConfig& cfg );
+	virtual void OnNewScore( const CLAM::SMSTransformationChainConfig& cfg );
 
 	/** Load transformation score */
 	virtual void LoadTransformationScore(const std::string& inputFileName);
@@ -56,9 +57,9 @@ protected: // methods
 
 	void DoTracksCleanup();
 
-	void DoLoadAnalysis();
+	bool DoLoadAnalysis();
 
-	void DoStoreAnalysis();
+	bool DoStoreAnalysis();
 	
 	void DoTransformation();
 
@@ -69,21 +70,26 @@ protected: // methods
 
 	bool LoadAnalysis();
 	void StoreAnalysis();
+	void ExecuteMelodyAnalysis();
+	void AnalyzeMelody();
 
-	void StoreSound(const Audio& audio);
+	void StoreSound(const CLAM::Audio& audio);
 	void StoreOutputSound();
 	void StoreOutputSoundResidual();
 	void StoreOutputSoundSinusoidal();
-
+	void StoreMelody();
 
 private:
 
 	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0 method );
 
+
 protected:
 	int                       mThreadState;
 	std::string               mFilename;
-	Thread                    mThread;
+	std::string               mAnalysisInputFile;
+	std::string               mAnalysisOutputFile;
+	CLAM::Thread              mThread;
 	CLAMVM::SMS_DataExplorer  mExplorer;
 	UserInterface*            mUI;
 };

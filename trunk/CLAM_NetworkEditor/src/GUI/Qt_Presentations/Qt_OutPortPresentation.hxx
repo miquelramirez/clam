@@ -18,6 +18,7 @@ public:
 	virtual ~Qt_OutPortPresentation();
 	virtual void Show();
 	virtual void Hide();
+	void updatePosition();
 protected:
 	virtual void OnNewName(const std::string& name);
 

@@ -147,7 +147,7 @@ namespace CLAM
 
 		/** Analyze and extract melody. This feature only works on some sort of instruments
 		* for monophonic phrases */
-		void AnalyzeMelody(void);
+		virtual void AnalyzeMelody(void);
 
 		void ComputeLowLevelDescriptors();
 
@@ -156,8 +156,6 @@ namespace CLAM
 
 		SerializationController mSerialization;
 
-		/** Input audio */
-//		Audio mAudioIn;
 		/** Output audio */
 		Audio mAudioOut;
 		/** Output audio, only sinusoidal component */
@@ -165,11 +163,12 @@ namespace CLAM
 		/** Output audio, only residual component */
 		Audio mAudioOutRes;
 		
-		/** Internal structure used for analysis and synthesis, contains all.
+		/** Internal structure used for storing the result of the analysis, contains all data.
 		* @see Segment.hxx */
 		Segment mOriginalSegment;
+		/** Segment that will be used for the synthesis */
 		Segment mTransformedSegment;
-
+		/** Optional segment that contains the result of the analysis of the sound to morph */
 		Segment mMorphSegment;
 
 		SegmentDescriptors mOriginalSegmentDescriptors;

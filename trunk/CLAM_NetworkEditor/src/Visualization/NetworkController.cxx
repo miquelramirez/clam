@@ -90,11 +90,13 @@ void NetworkController::ConnectPorts( const std::string & out , const std::strin
 	std::cout << "add connection" << std::endl;
 	if(mObserved->ConnectPorts(out, in))
 	{
-		ConnectionAdapter* conAdapter = new ConnectionAdapter;
+		ConnectionAdapterTmpl< CLAM::OutPort, CLAM::InPort> * 
+			conAdapter = new ConnectionAdapterTmpl< CLAM::OutPort, CLAM::InPort >;
+		
 		conAdapter->BindTo( mObserved->GetOutPortByCompleteName(out), 
 				    mObserved->GetInPortByCompleteName(in), (const CLAM::Network&)*mObserved );
-		mConnectionAdapters.push_back( conAdapter );
-		AcquireConnection.Emit( conAdapter );
+		mConnectionAdapters.push_back( (ConnectionAdapter*)conAdapter );
+		AcquireConnection.Emit( (ConnectionAdapter*)conAdapter );
 	}
 }
 
@@ -136,7 +138,7 @@ void NetworkController::DisconnectPorts( const std::string & out , const std::st
 		ConnectionAdapterIterator itc;
 		for ( itc=mConnectionAdapters.begin(); itc!=mConnectionAdapters.end(); itc++)
 		{
-			ConnectionAdapter * con = (*itc);
+			ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort> * con = (ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>*)(*itc);
 			if (con->ConnectsInPort(inPort))
 			{
 				mConnectionAdapters.remove(con);
@@ -202,11 +204,11 @@ bool NetworkController::Publish()
 		std::list<CLAM::InPort*>::iterator itInPort;
 		for (itInPort=inPortList.begin(); itInPort!=inPortList.end(); itInPort++)
 		{
-			ConnectionAdapter* conAdapter = new ConnectionAdapter;
+			ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>* conAdapter = new ConnectionAdapterTmpl<CLAM::OutPort, CLAM::InPort>;
 			const CLAM::InPort* in = *itInPort;
 			conAdapter->BindTo( *out, *in, (const CLAM::Network&)*mObserved);
-			mConnectionAdapters.push_back( conAdapter );
-			AcquireConnection.Emit( conAdapter );
+			mConnectionAdapters.push_back( (ConnectionAdapter*)conAdapter );
+			AcquireConnection.Emit( (ConnectionAdapter*)conAdapter );
 		}
 
 

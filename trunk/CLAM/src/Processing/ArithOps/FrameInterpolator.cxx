@@ -32,6 +32,17 @@ namespace CLAM {
 	{
 		AddAll();
 		UpdateData();
+		DefaultValues();
+	}
+
+	void FrameInterpConfig::DefaultValues()
+	{
+		SetMagInterpolationFactor( 0.0 );
+		SetFreqInterpolationFactor( 0.0 );
+		SetPitchInterpolationFactor( 0.0 );
+		SetResidualInterpolationFactor( 0.0 );
+		SetHarmonic( false );
+		SetUseSpectralShape(false);
 	}
 
 
@@ -39,6 +50,7 @@ namespace CLAM {
 		: mIn1("Input 1",this,1),
 		  mIn2("Input 2",this,1),
 		  mOut("Output",this,1),
+		  mSpectralShape("SpectralShape",this,1),
 		  mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl),
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
@@ -55,6 +67,7 @@ namespace CLAM {
 		: mIn1("Input 1",this,1),
 		  mIn2("Input 2",this,1),
 		  mOut("Output",this,1),
+		  mSpectralShape("SpectralShape",this,1),
 		  mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl),
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
@@ -78,8 +91,14 @@ namespace CLAM {
 		pkInterpConfig.SetFreqInterpolationFactor(mConfig.GetFreqInterpolationFactor());
 		pkInterpConfig.SetPitchInterpolationFactor(mConfig.GetPitchInterpolationFactor());
 		pkInterpConfig.SetHarmonic(mConfig.GetHarmonic());
-
+		pkInterpConfig.SetUseSpectralShape(mConfig.GetUseSpectralShape());
 		mPO_PeaksInterpolator.Configure(pkInterpConfig);
+
+		//todo: using interpolator with ports is still not available!!
+		if(mConfig.GetUseSpectralShape())
+		{
+			mPO_PeaksInterpolator.mSpectralShape.Attach(mSpectralShape);
+		}
 
 		SpecInterpConfig spInterpConfig;
 		spInterpConfig.SetInterpolationFactor(mConfig.GetResidualInterpolationFactor());
@@ -130,7 +149,10 @@ namespace CLAM {
 			out.GetFundamental().SetFreq(0,newPitch);
 		out.GetFundamental().SetnCandidates(1);
 
-		mPO_PeaksInterpolator.Do(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),out.GetSpectralPeakArray());
+		if(mConfig.GetUseSpectralShape())
+			mPO_PeaksInterpolator.Do(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),mSpectralShape.GetData(),out.GetSpectralPeakArray());
+		else
+			mPO_PeaksInterpolator.Do(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),out.GetSpectralPeakArray());
 		mPO_SpectrumInterpolator.Do(in1.GetResidualSpec(),in2.GetResidualSpec(),out.GetResidualSpec());
 
 		return true;
@@ -138,7 +160,7 @@ namespace CLAM {
 
 	bool FrameInterpolator::Do(void)
 	{
-		throw(ErrProcessingObj("FrameInterpolator::Do(): Not implemented"),this);
+		CLAM_ASSERT(false,"FrameInterpolator::Do(): Not implemented");
 	}
 
 	

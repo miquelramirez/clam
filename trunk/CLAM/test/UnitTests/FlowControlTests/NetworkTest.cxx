@@ -317,7 +317,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "Malformed port name. It should be ProcessingName.[Port/Control]Name" ), 
+				std::string( "Malformed port/control name. It should be ProcessingName.[Port/Control]Name" ), 
 				std::string( expected.what() ) );
 
 		}
@@ -427,7 +427,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "Malformed port name. It should be ProcessingName.[Port/Control]Name" ), 
+				std::string( "Malformed port/control name. It should be ProcessingName.[Port/Control]Name" ), 
 				std::string( expected.what() ) );
 
 		}
@@ -535,7 +535,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "Malformed port name. It should be ProcessingName.[Port/Control]Name" ), 
+				std::string( "Malformed port/control name. It should be ProcessingName.[Port/Control]Name" ), 
 				std::string( expected.what() ) );
 
 		}
@@ -643,7 +643,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "Malformed port name. It should be ProcessingName.[Port/Control]Name" ), 
+				std::string( "Malformed port/control name. It should be ProcessingName.[Port/Control]Name" ), 
 				std::string( expected.what() ) );
 
 		}
@@ -819,7 +819,7 @@ class NetworkTest : public CppUnit::TestFixture
 
 	void testConnectControls_WhenConnectionIsValid()
 	{
-/*
+
 		CLAM::Network net;
 		const int nodeSize=1;
 		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
@@ -837,22 +837,77 @@ class NetworkTest : public CppUnit::TestFixture
 		CLAM::InControl* inControlOfSecondProc = 
 			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
 		
-		net.ConnectControls("first.outPortOfFirstProc","second.inPortOfSecondProc");
+		net.ConnectControls("first.outControlOfFirstProc","second.inControlOfSecondProc");
 		CPPUNIT_ASSERT_EQUAL( true, outControlOfFirstProc->IsConnectedTo(*inControlOfSecondProc) );
-*/
-	
 	}
 
 	void testConnectControls_WhenConnectionIsNotValid()
 	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
+		DummyProcessing* firstProc = new DummyProcessing;
+		DummyProcessing* secondProc = new DummyProcessing;
+
+		net.AddProcessing( "first", firstProc );
+		net.AddProcessing( "second", secondProc );
+
+		const int dummyLength = 1;
+		CLAM::OutControl* outControlOfFirstProc =  
+			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
+
+		CLAM::InControl* inControlOfSecondProc = 
+			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
+		
+		CPPUNIT_ASSERT_EQUAL( false, outControlOfFirstProc->IsConnectedTo(*inControlOfSecondProc) );
 	}
 
 	void testRemoveControlsConnection_WhenControlsAreNotConnected()
 	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
+		DummyProcessing* firstProc = new DummyProcessing;
+		DummyProcessing* secondProc = new DummyProcessing;
+
+		net.AddProcessing( "first", firstProc );
+		net.AddProcessing( "second", secondProc );
+
+		const int dummyLength = 1;
+		CLAM::OutControl* outControlOfFirstProc =  
+			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
+
+		CLAM::InControl* inControlOfSecondProc = 
+			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
+		
+		CPPUNIT_ASSERT_EQUAL( false, net.DisconnectControls( "first.outControlOfFirstProc","second.inControlOfSecondProc"  ));
+
 	}
 
 	void testRemoveControlsConnection_WhenControlsAreConnected()
-	{
+	{		
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+	
+		DummyProcessing* firstProc = new DummyProcessing;
+		DummyProcessing* secondProc = new DummyProcessing;
+
+		net.AddProcessing( "first", firstProc );
+		net.AddProcessing( "second", secondProc );
+
+		const int dummyLength = 1;
+		CLAM::OutControl* outControlOfFirstProc =  
+			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
+
+		CLAM::InControl* inControlOfSecondProc = 
+			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
+		
+		net.ConnectControls("first.outControlOfFirstProc","second.inControlOfSecondProc");
+		CPPUNIT_ASSERT_EQUAL( true, net.DisconnectControls( "first.outControlOfFirstProc","second.inControlOfSecondProc" ));
+
 	}
 };
    

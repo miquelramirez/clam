@@ -26,8 +26,6 @@
 #include "DataTypes.hxx"
 #include "TypeInfo.hxx"
 #include "ComplexTmplDec.hxx"
-#include "DataTypes.hxx"
-
 
 namespace CLAM
 {

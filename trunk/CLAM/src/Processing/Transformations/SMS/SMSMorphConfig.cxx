@@ -22,30 +22,31 @@ namespace CLAM
 		tmpBPF.SetXValue(1,1);
 		SetHybBPF(tmpBPF);
 
-		AddInterpolateFrame();
-		UpdateData();
 		SetInterpolateFrame(true);
-		AddHybSinFreq();
-		UpdateData();
 		SetHybSinFreq(GetHybBPF());
-		AddHybSinAmp();
-		UpdateData();
 		SetHybSinAmp(GetHybBPF());
-		AddHybPitch();
-		UpdateData();
 		SetHybPitch(GetHybSinFreq());
 
-		AddHybResAmp();
-		UpdateData();
 		SetHybResAmp(GetHybBPF());
-		AddSynchronizeTime();
-		UpdateData();
-		BPF tmpBPF2(2);
-		tmpBPF2.SetXValue(0,0);
-		tmpBPF2.SetValue(0,0);
-		tmpBPF2.SetXValue(1,1);
-		tmpBPF2.SetValue(1,1);
-		SetSynchronizeTime(tmpBPF2);
 
+		SetSynchronizeTime(tmpBPF);
+
+		BPF defaultWeights;
+		defaultWeights.Insert( 0.0, 0.5 );
+		defaultWeights.Insert( 1.0, 0.5 );
+
+		SetHybSinShapeW1( defaultWeights );
+		SetHybSinShapeW2( defaultWeights );
+		
+		SetHybResShapeW1( defaultWeights );
+		SetHybResShapeW2( defaultWeights );
+
+		BPF defaultShapeWeights;
+		defaultShapeWeights.Insert( 0.0, 1.0 );
+		defaultShapeWeights.Insert( 1.0, 1.0 );
+
+
+		SetHybSinSpectralShape( defaultShapeWeights );
+		SetHybResSpectralShape( defaultShapeWeights );
 	}
 }

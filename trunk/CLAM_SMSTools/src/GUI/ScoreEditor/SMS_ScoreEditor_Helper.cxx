@@ -14,5 +14,11 @@ namespace CLAMVM
 		}
 
 	}
+
+	void clearBPF( CLAM::BPF& bpf )
+	{
+		while( bpf.Size() )
+			bpf.DeleteIndex(0);				
+	}
 	
 }

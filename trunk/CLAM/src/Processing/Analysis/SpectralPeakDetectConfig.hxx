@@ -40,9 +40,9 @@ namespace CLAM {
 		/** Maximum namber of SpectralPeaks*/
 		DYN_ATTRIBUTE (1, public, TSize, MaxPeaks);
 		/** Threshold of magnitude; SpectralPeaks will be located above this value*/
-		DYN_ATTRIBUTE (2, public, TSize, MagThreshold);
+		DYN_ATTRIBUTE (2, public, TData, MagThreshold);
 		/** Maximum frequency, spectral peaks will only be detected under this threshold*/
-		DYN_ATTRIBUTE (3, public, TSize, MaxFreq);
+		DYN_ATTRIBUTE (3, public, TData, MaxFreq);
 		/** Type of Magnitude interpolation between bins*/
 		DYN_ATTRIBUTE (4, public, EInterpolation, InterpolMag);
 		/** Type of Phase interpolation between bins */

@@ -1,0 +1,11 @@
+SMS Tools 2 - version 0.1.1
+
+The SMS Tools 2 binary distribution package contains:
+
+SMSTools2.exe        -     SMS Tools executable file
+wav_22050            -     Sample WAVE files sampled at 22.05 kHz
+wav_44100            -     Sample WAVE files sampled at 44.1  kHz
+configs              -     Some example SMS Tools config files
+transformationScores -     Some example SMS transformation scores
+
+as well as several .dll's needed by SMS Tools.

@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0103 
+version 1.0104 
 header_name {.hxx} 
 code_name {.cxx}
 decl {\#include <FL/Fl_Tile.H>} {public
@@ -24,14 +24,14 @@ class UserInterface {open
   } {
     Fl_Window mWindow {
       label {SMS Tools 2 | MTG-UPF (Barcelona)} open
-      xywh {153 51 870 550} type Double hide resizable
-      code0 {mWindow2=NULL;}
+      xywh {153 51 870 550} type Double resizable
+      code0 {mWindow2=NULL;} visible
     } {
-      Fl_Menu_Bar mMenuBar {
+      Fl_Menu_Bar mMenuBar {open
         private xywh {0 0 872 25} labelsize 13 textsize 12
       } {
         submenu mFileMenuItem {
-          label File open
+          label File
           private xywh {5 5 100 20} labelsize 12
         } {
           submenu mConfigurationOpsMenuItem {
@@ -167,7 +167,7 @@ Exit();}
           }
         }
         submenu mViewMenuItem {
-          label View
+          label View open
           private xywh {0 0 100 20} labelsize 12
         } {
           menuitem mShowOriginalAudioMenuItem {
@@ -232,11 +232,16 @@ Exit();}
           }
         }
         submenu mHelpMenuItem {
-          label Help
+          label Help open
           xywh {0 0 100 20} labelsize 12
         } {
+          menuitem mHelpLauchLicense {
+            label {License...}
+            callback {DisplayLicense();} selected
+            private xywh {0 0 100 20} labelsize 12
+          }
           menuitem {} {
-            label About
+            label {About SMSTools 2...}
             callback {AboutWindow()}
             private xywh {15 15 100 20} labelsize 12
           }
@@ -265,18 +270,18 @@ Exit();}
       }
     }
   }
-  Function {AboutWindow()} {open return_type void
+  Function {AboutWindow()} {return_type void
   } {
     Fl_Window mWindow2 {
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;} open
-      private xywh {347 416 450 180} type Double labelsize 10 hide
+      private xywh {535 287 450 180} type Double labelsize 10
       code0 {mWindow2->position(mWindow->x()+(mWindow->w()-mWindow2->w())/2,mWindow->y()+(mWindow->h()-mWindow2->h())/2);}
-      code1 {mWindow2->show();} modal
+      code1 {mWindow2->show();} modal visible
     } {
       Fl_Box {} {
-        label {SMS Tools 2}
+        label {SMS Tools 2 v.0.1.2}
         private xywh {5 5 440 30} box FLAT_BOX labelfont 1 labelsize 16 labelcolor 0
       }
       Fl_Box {} {
@@ -300,10 +305,6 @@ mWindow2=NULL;} open
       Fl_Box {} {
         label {for more information}
         private xywh {110 115 230 20}
-      }
-      Fl_Box {} {
-        label {CLAM Release 0.5 beta 3} selected
-        private xywh {5 145 440 30} box FLAT_BOX labelfont 3 labelcolor 0
       }
     }
   }
@@ -353,4 +354,5 @@ mWindow2=NULL;} open
   decl {void EditTransformScore();} {}
   decl {void SaveTransformScore();} {}
   decl {SMSScoreEditor* mScoreEditor;} {}
+  decl {void DisplayLicense();} {}
 } 

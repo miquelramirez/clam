@@ -41,9 +41,9 @@ namespace CLAM {
 	
 	void SpectralPeakDetectConfig::DefaultValues()
 	{
-		SetMagThreshold(-80);
+		SetMagThreshold(-80.f);
 		SetMaxPeaks(1000);
-		SetMaxFreq(10000);
+		SetMaxFreq(10000.f);
 	}
 
 
@@ -138,8 +138,7 @@ namespace CLAM {
 		
 
 		// detection loop 
-		i=0;
-		while (i<nBins-2 && nSpectralPeaks<=maxPeaks) 
+		for (int i = 0; (i < nBins-2) && (nSpectralPeaks < maxPeaks); ++i)
 		{
 			leftMag 	= inMagBuffer[i];
 			middleMag	= inMagBuffer[i+1];
@@ -213,16 +212,23 @@ namespace CLAM {
 						leftPhase = inPhaseBuffer[i];
 						rightPhase = inPhaseBuffer[i+1];
 					}
+
 					if (fabs(rightPhase-leftPhase)>PI)
+					{
 						if (rightPhase>0)
 							leftPhase+=TData(TWO_PI);
 						else
 							rightPhase+=TData(TWO_PI);
+					}
+
 					if (diffFromMax >= 0)
 						spectralPeakPhase = leftPhase + diffFromMax*(rightPhase-leftPhase);
 					else
 						spectralPeakPhase = leftPhase + (1+diffFromMax)*(rightPhase-leftPhase);	
-					if(spectralPeakFreq>maxFreq) break;
+
+					if (spectralPeakFreq>maxFreq)
+						break;
+
 					outFreqBuffer.AddElem(spectralPeakFreq);
 					outMagBuffer.AddElem(spectralPeakMag); 
 					outPhaseBuffer.AddElem(spectralPeakPhase);
@@ -234,7 +240,6 @@ namespace CLAM {
 				}
 			}
 			binWidth++;
-			i++;
 		}
 		
 		// update the very last binwidth value if it's not set yet 
@@ -245,14 +250,18 @@ namespace CLAM {
 			outBinWidthBuffer[nSpectralPeaks-1]=TData(tempVal);
 			binWidth = (TSize) ((i-lastSpectralPeakBin)/2.0);
 		}
+
+
 		//TODO: I don't know if we could also change nMaxPeaks if we have found less
 		//but then we would be resizing array in every call to the Do and that is not
 		//very nice either.
 		
 		//All this is not necessary, it is not doing anything
-		//if(nSpectralPeaks>maxPeaks)
-		//	out.SetnMaxPeaks(nSpectralPeaks);
-		//out.SetnPeaks(nSpectralPeaks);
+/*
+		if(nSpectralPeaks>maxPeaks)
+			out.SetnMaxPeaks(nSpectralPeaks);
+		out.SetnPeaks(nSpectralPeaks);
+*/
 		return true;
 	}
 

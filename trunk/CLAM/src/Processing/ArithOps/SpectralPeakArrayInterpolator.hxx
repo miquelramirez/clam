@@ -34,14 +34,16 @@ namespace CLAM {
 	class PeaksInterpConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (PeaksInterpConfig, 5,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (PeaksInterpConfig, 6,ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Name);
 		DYN_ATTRIBUTE(1, public, TData, MagInterpolationFactor);
 		DYN_ATTRIBUTE(2, public, TData, FreqInterpolationFactor);
 		DYN_ATTRIBUTE(3, public, TData, PitchInterpolationFactor);
 		DYN_ATTRIBUTE(4, public, bool, Harmonic);
+		DYN_ATTRIBUTE(5,public, bool, UseSpectralShape);
 	protected:
 		void DefaultInit();
+		void DefaultValues();
 
 	};
 
@@ -54,14 +56,6 @@ namespace CLAM {
 		
 		PeaksInterpConfig mConfig;
 
-		/** Size of the input/output vectors */
-		int mSize;
-
-		InPortTmpl<SpectralPeakArray> mIn1;
-		InPortTmpl<SpectralPeakArray> mIn2;
-		OutPortTmpl<SpectralPeakArray> mOut;
-
-		
 		const char *GetClassName() const {return "SpectralPeakArrayInterpolator";}
 
 
@@ -84,7 +78,7 @@ namespace CLAM {
 		bool Do(void);
 
 		bool Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2, SpectralPeakArray& out);
-
+		bool Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2,const Spectrum& spectralShape, SpectralPeakArray& out);
 	
 		/** Input control for interpolation factor */
 		SpectralPeakArrayInterpolatorCtl  mMagInterpolationFactorCtl;
@@ -98,6 +92,13 @@ namespace CLAM {
 
 		/** Input control for whether harmonic interpolation has to be performed*/
 		SpectralPeakArrayInterpolatorCtl mIsHarmonicCtl;
+
+		/** Ports */
+		InPortTmpl<SpectralPeakArray> mIn1;
+		InPortTmpl<SpectralPeakArray> mIn2;
+		OutPortTmpl<SpectralPeakArray> mOut;
+
+		InPortTmpl<Spectrum> mSpectralShape;
 	private:
 		bool FindHarmonic(const IndexArray& indexArray,int index,int& lastPosition);
 

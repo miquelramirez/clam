@@ -62,7 +62,7 @@ public:
 	static void e_cb(Fl_Envelope* ev,Fl_EnvelopeControl* ec);
 };
 
-class Fl_Envelope_Scroll:public Fl_Group
+class Fl_Envelope_Scroll : public Fl_Group
 {
 public:
 	Fl_Scrollbar* hscroll;
@@ -71,11 +71,14 @@ public:
 	Fl_Slider*    vslider;
 private:
 	Fl_Double_Window* window;
+	bool          mIsActive;
 public:
 	Fl_Envelope*  envelope;	
 	Fl_EnvelopeControl* control;
 
 	Fl_Envelope_Scroll(int x,int y,int w,int h);
+
+	int handle( int event );
 
 	void margin_adjust(void);
 };

@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\xercesc\include"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" RFFTW2st.lib FFTW2st.lib xerces-c_1.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\cppunit\lib" RFFTW2st.lib FFTW2st.lib xerces-c_1.lib cppunit_vc6.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "SpectrumTest - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\xercesc\include"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" FFTW2std.lib RFFTW2std.lib xerces-c_1d.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\cppunit\lib" FFTW2std.lib RFFTW2std.lib xerces-c_1d.lib cppunitd_vc6.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -200,6 +200,64 @@ SOURCE=..\..\..\src\Data\BasicProcessing\Spectrum.cxx
 # End Group
 # Begin Group "Header Files"
 
+# Begin Group "Errors Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Errors\Err.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Errors\ErrOutOfMemory.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Errors\ErrDynamicType.hxx
+# End Source File
+# End Group
+# Begin Group "Defines Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\Assert.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\CLAM_Math.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\DataTypes.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\ByteOrder.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\EDataFormat.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\StaticBool.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\TypeInfo.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\mtgsstream.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\TypeInfoStd.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Defines\OSDefines.hxx
+# End Source File
+# End Group
 # Begin Group "Storage Headers"
 
 # Begin Group "Base Headers"
@@ -252,64 +310,6 @@ SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.hxx
 SOURCE=..\..\..\src\Storage\XML\XercesDomPrinter.hxx
 # End Source File
 # End Group
-# End Group
-# Begin Group "Errors Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Errors\Err.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Errors\ErrOutOfMemory.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Errors\ErrDynamicType.hxx
-# End Source File
-# End Group
-# Begin Group "Defines Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\Assert.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\mtgsstream.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\StaticBool.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\TypeInfo.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\TypeInfoStd.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\CLAM_Math.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\DataTypes.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\ByteOrder.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\EDataFormat.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Defines\OSDefines.hxx
-# End Source File
 # End Group
 # Begin Group "Base Headers No. 1"
 
@@ -386,14 +386,6 @@ SOURCE=..\..\..\src\Standard\BPF.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\ArrayToBPFCnv.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Standard\ComplexToPolarCnv.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Standard\Flags.hxx
 # End Source File
 # Begin Source File
@@ -420,6 +412,14 @@ SOURCE=..\..\..\src\Standard\BPFTmplDef.hxx
 
 SOURCE=..\..\..\src\Standard\BPFTmpl.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\ArrayToBPFCnv.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\ComplexToPolarCnv.hxx
+# End Source File
 # End Group
 # Begin Group "Data Headers"
 
@@ -440,6 +440,14 @@ SOURCE=..\..\..\src\Data\Base\ProcessingData.hxx
 
 SOURCE=..\..\..\src\Data\BasicProcessing\Spectrum.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpecTypeFlags.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpectrumConfig.hxx
+# End Source File
 # End Group
 # End Group
 # Begin Group "test Headers"
@@ -448,14 +456,96 @@ SOURCE=..\..\..\src\Data\BasicProcessing\Spectrum.hxx
 
 SOURCE=..\..\..\test\SpectrumComp.hxx
 # End Source File
+# Begin Group "UnitTests Headers"
+
+# Begin Group "CommonHelpers Headers"
+
 # Begin Source File
 
-SOURCE=..\..\..\test\XMLTestHelper.hxx
+SOURCE=..\..\..\test\UnitTests\CommonHelpers\XMLTestHelper.hxx
 # End Source File
+# End Group
+# End Group
+# End Group
+# Begin Group "cppunit Headers"
+
+# Begin Group "include Headers"
+
+# Begin Group "cppunit Headers No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\Portability.h
+# End Source File
+# Begin Group "extensions Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestFactory.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestSuiteFactory.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestFactoryRegistry.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\AutoRegisterSuite.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestSuiteBuilder.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\HelperMacros.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\Test.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\TestSuite.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\SourceLine.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\Exception.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\Asserter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\TestAssert.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\TestFixture.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\TestCase.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\TestCaller.h
+# End Source File
+# End Group
+# End Group
 # End Group
 # Begin Group "xercesc Headers"
 
-# Begin Group "include Headers"
+# Begin Group "include Headers No. 1"
 
 # Begin Group "xercesc Headers No. 1"
 

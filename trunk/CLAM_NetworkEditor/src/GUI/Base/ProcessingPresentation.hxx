@@ -20,6 +20,8 @@ namespace CLAMVM
 	class ProcessingModel;
 	class InPortAdapter;
 	class OutPortAdapter;
+	class InControlAdapter;
+	class OutControlAdapter;
 }
 
 namespace NetworkGUI
@@ -27,6 +29,8 @@ namespace NetworkGUI
 
 	class InPortPresentation;
 	class OutPortPresentation;
+	class InControlPresentation;
+	class OutControlPresentation;
 
 class ProcessingPresentation : public CLAMVM::Presentation
 {
@@ -35,8 +39,12 @@ protected:
 
 	std::list<InPortPresentation*> mInPortPresentations;
 	std::list<OutPortPresentation*> mOutPortPresentations;
+	std::list<InControlPresentation*> mInControlPresentations;
+	std::list<OutControlPresentation*> mOutControlPresentations;
 	typedef std::list<InPortPresentation*>::iterator InPortPresentationIterator;
 	typedef std::list<OutPortPresentation*>::iterator OutPortPresentationIterator;
+	typedef std::list<InControlPresentation*>::iterator InControlPresentationIterator;
+	typedef std::list<OutControlPresentation*>::iterator OutControlPresentationIterator;
 	std::string mNameFromNetwork;
 	std::string mObservedClassName;
 public:
@@ -48,12 +56,16 @@ public:
 	virtual const std::string & GetNameFromNetwork(){return mNameFromNetwork;}
 	OutPortPresentation & GetOutPortPresentation( const std::string& );
 	InPortPresentation & GetInPortPresentation( const std::string& );
+	OutControlPresentation & GetOutControlPresentation( const std::string& );
+	InControlPresentation & GetInControlPresentation( const std::string& );
 
 protected:
 	virtual void OnNewConfig( CLAM::ProcessingConfig * );
 	virtual void OnNewObservedClassName( const std::string& ) = 0;
 	virtual void OnNewInPort( CLAMVM::InPortAdapter* ) = 0;
 	virtual void OnNewOutPort( CLAMVM::OutPortAdapter* ) = 0;
+	virtual void OnNewInControl( CLAMVM::InControlAdapter* ) = 0;
+	virtual void OnNewOutControl( CLAMVM::OutControlAdapter* ) = 0;
 
 public:	//slots
 	SigSlot::Signalv1< ProcessingPresentation* > RemoveProcessing;
@@ -61,6 +73,8 @@ public:	//slots
 	SigSlot::Slotv1<const std::string &> SetObservedClassName;
 	SigSlot::Slotv1< CLAMVM::InPortAdapter* > SetInPort;
 	SigSlot::Slotv1< CLAMVM::OutPortAdapter* > SetOutPort;	
+	SigSlot::Slotv1< CLAMVM::InControlAdapter* > SetInControl;
+	SigSlot::Slotv1< CLAMVM::OutControlAdapter* > SetOutControl;	
 };
 
 } //namespace NetworkGUI

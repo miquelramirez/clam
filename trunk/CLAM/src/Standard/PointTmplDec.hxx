@@ -82,16 +82,14 @@ namespace CLAM
 		}
 
 	/*non-member operators*/
-		friend PointTmpl<TX,TY> operator-(const PointTmpl<TX,TY>& firstPoint,
-			const PointTmpl<TX,TY>& secondPoint)
+		PointTmpl<TX,TY> operator-(const PointTmpl<TX,TY>& otherPoint)
 		{
-			PointTmpl<TX,TY> result(firstPoint.mX-secondPoint.mX,firstPoint.mY-secondPoint.mY);
+			PointTmpl<TX,TY> result(mX-otherPoint.mX,mY-otherPoint.mY);
 			return result;
 		}
-		friend const PointTmpl<TX,TY> operator+(const PointTmpl<TX,TY>& firstPoint,
-			const PointTmpl<TX,TY>& secondPoint)
+		PointTmpl<TX,TY> operator+(const PointTmpl<TX,TY>& otherPoint)
 		{
-			PointTmpl<TX,TY> result(firstPoint.mX+secondPoint.mX,firstPoint.mY+secondPoint.mY);
+			PointTmpl<TX,TY> result(mX+otherPoint.mX,mY+otherPoint.mY);
 			return result;
 		}
 

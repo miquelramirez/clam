@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\..\fftw\include" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\..\xercesc\include" /I "..\..\..\externals\numrec"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\fftw\include" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\externals\numrec" /I "..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\..\fftw\include" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\..\xercesc\include" /I "..\..\..\externals\numrec"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\fftw\include" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\externals\numrec" /I "..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" FFTW2std.lib RFFTW2std.lib xerces-c_1d.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\xercesc\lib" FFTW2std.lib RFFTW2std.lib xerces-c_1d.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -179,6 +179,14 @@ SOURCE=..\..\..\src\Flow\Controls\OutControl.cxx
 
 SOURCE=..\..\..\src\Flow\Ports\Port.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\InPort.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\OutPort.cxx
+# End Source File
 # End Group
 # Begin Group "Nodes Sources"
 
@@ -197,6 +205,10 @@ SOURCE=..\..\..\src\Flow\Nodes\SourceStreamRegion.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Flow\Nodes\WriteStreamRegion.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Nodes\Node.cxx
 # End Source File
 # Begin Source File
 
@@ -255,6 +267,24 @@ SOURCE=..\..\..\src\Processing\Analysis\FFT_rfftw.cxx
 
 SOURCE=..\..\..\src\Processing\Analysis\FFT_numrec.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\Analysis\FFT_ooura.cxx
+# End Source File
+# End Group
+# End Group
+# Begin Group "Data Sources"
+
+# Begin Group "BasicProcessing Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Audio.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Spectrum.cxx
+# End Source File
 # End Group
 # End Group
 # Begin Group "Standard Sources"
@@ -287,20 +317,6 @@ SOURCE=..\..\..\src\Standard\Point.cxx
 
 SOURCE=..\..\..\src\Standard\BPF.cxx
 # End Source File
-# End Group
-# Begin Group "Data Sources"
-
-# Begin Group "BasicProcessing Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Data\BasicProcessing\Audio.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Data\BasicProcessing\Spectrum.cxx
-# End Source File
-# End Group
 # End Group
 # Begin Group "externals Sources"
 
@@ -589,14 +605,6 @@ SOURCE=..\..\..\src\Standard\BPF.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\ArrayToBPFCnv.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Standard\ComplexToPolarCnv.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Standard\ComplexTmplDef.hxx
 # End Source File
 # Begin Source File
@@ -618,6 +626,14 @@ SOURCE=..\..\..\src\Standard\BPFTmplDef.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Standard\BPFTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\ArrayToBPFCnv.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\ComplexToPolarCnv.hxx
 # End Source File
 # End Group
 # Begin Group "Processing Headers"
@@ -642,6 +658,10 @@ SOURCE=..\..\..\src\Processing\Base\PublishedOutPorts.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Processing\Base\ProcessingConfig.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Processing\Base\Processing.hxx
 # End Source File
 # Begin Source File
@@ -657,6 +677,10 @@ SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 
 # Begin Source File
 
+SOURCE=..\..\..\src\Processing\Analysis\FFTConfig.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Processing\Analysis\FFT.hxx
 # End Source File
 # Begin Source File
@@ -666,6 +690,10 @@ SOURCE=..\..\..\src\Processing\Analysis\FFT_rfftw.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Processing\Analysis\FFT_numrec.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\Analysis\FFT_ooura.hxx
 # End Source File
 # End Group
 # End Group
@@ -690,7 +718,15 @@ SOURCE=..\..\..\src\Data\BasicProcessing\Audio.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Data\BasicProcessing\SpecTypeFlags.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Data\BasicProcessing\Spectrum.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpectrumConfig.hxx
 # End Source File
 # End Group
 # End Group

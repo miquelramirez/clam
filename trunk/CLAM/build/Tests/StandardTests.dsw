@@ -39,19 +39,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "DelayPoolTest"=".\DelayPool\DelayPoolTest.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "FlagsTest"=".\Flags\FlagsTest.dsp" - Package Owner=<4>
+Project: "DelayPoolTest"="..\Examples\SpectralDelay\DelayPoolTest\DelayPoolTest.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -64,30 +52,6 @@ Package=<4>
 ###############################################################################
 
 Project: "ListTest"=".\List\ListTest.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "PointTest"=".\Point\PointTest.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "PolarTest"=".\Polar\PolarTest.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

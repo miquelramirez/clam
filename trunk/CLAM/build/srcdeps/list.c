@@ -23,10 +23,36 @@ list* list_new(void)
 {
 	list* ret = (list*) malloc(sizeof(list));
 	ret->first = ret->last = 0;
+	ret->lock = 0;
 	return ret;
 }
 
+void list_lock(list* l)
+{
+	l->lock++;
+}
+
+void list_unlock(list* l)
+{
+	l->lock--;
+}
+
 void list_free(list* l)
+{
+	if (l->lock)
+	{
+		fprintf(stderr,"Error: list lock %d != 0 when trying to free list\n",
+			l->lock);
+		fprintf(stderr,"  This suggests that the list is being multi-refered to\n");
+		fprintf(stderr,"  Refusing to free list, clearing it only\n");
+		list_clear(l);
+	}else{
+		list_clear(l);
+		free(l);
+	}
+}
+
+void list_clear(list* l)
 {
 	item *i = l->first;
 	while (i)
@@ -35,7 +61,7 @@ void list_free(list* l)
 		item_free(i);
 		i = n;
 	}
-	free(l);
+	l->first = l->last = 0;
 }
 
 void list_add(list* l,item* i)

@@ -4,6 +4,7 @@
 
 #include "ModelAdapter.hxx"
 #include "ConnectionModel.hxx"
+#include "Network.hxx"
 
 #include <list>
 
@@ -18,9 +19,9 @@ namespace CLAMVM
 {
 	class ConnectionAdapter : public ModelAdapter, public ConnectionModel
 	{
-	private:		
-		const CLAM::OutPort* mOutObserved;
-		const CLAM::InPort* mInObserved;
+	protected:		
+//		const CLAM::OutPort* mOutObserved;
+//		const CLAM::InPort* mInObserved;
 		const CLAM::Network*  mNetworkObserved;
 		
 	public:
@@ -31,11 +32,101 @@ namespace CLAMVM
 			return "ConnectionAdapter";
 		}
 
-		virtual bool ConnectsInPort( CLAM::InPort &);
-		virtual bool Publish();
-		virtual bool BindTo( const CLAM::OutPort&, const CLAM::InPort&, const CLAM::Network &);
+//		virtual bool ConnectsInPort( CLAM::InPort &);
+		virtual bool Publish()=0;
+//		virtual bool BindTo( const CLAM::OutPort&, const CLAM::InPort&, const CLAM::Network &);
 		
 	};
+
+
+	template<class OUT, class IN>
+	class ConnectionAdapterTmpl : public ConnectionAdapter
+	{
+	private:		
+		const OUT* mOutObserved;
+		const IN* mInObserved;
+	public:
+		ConnectionAdapterTmpl();
+		virtual ~ConnectionAdapterTmpl();
+
+		virtual const char* GetClassName() const
+		{
+			return "ConnectionAdapterTmpl";
+		}
+
+		virtual bool ConnectsInPort( IN &);
+		virtual bool Publish();
+		virtual bool BindTo( const OUT &, const IN &, const CLAM::Network &);
+	};
+
+
+
+
+
+	template<class OUT, class IN>
+	ConnectionAdapterTmpl<OUT,IN>::ConnectionAdapterTmpl()
+		: mOutObserved(0), mInObserved(0)
+	{
+	}
+
+	template<class OUT, class IN>
+	ConnectionAdapterTmpl<OUT,IN>::~ConnectionAdapterTmpl()
+	{
+	}
+	
+	template<class OUT, class IN>
+	bool ConnectionAdapterTmpl<OUT,IN>::Publish()
+	{
+		if ((!mOutObserved)  || (!mInObserved) || (!mNetworkObserved))
+			return false;
+		
+		std::string outName("");
+		std::string inName("");
+		
+		CLAM::Network::ProcessingsMap::const_iterator it;
+		for(it=mNetworkObserved->BeginProcessings(); it!=mNetworkObserved->EndProcessings(); it++)
+		{
+			if( (it->second) == (mOutObserved->GetProcessing()) )
+			{
+				outName += it->first;
+			}
+			
+			else if( (it->second) == (mInObserved->GetProcessing()) )
+			{
+				inName += it->first;
+			}
+		}
+		
+		outName += ".";
+		outName += mOutObserved->GetName();
+		
+		
+		inName += ".";
+		inName += mInObserved->GetName();
+		
+		AcquireNames.Emit( outName, inName );
+	}
+
+
+	template<class OUT, class IN>
+	bool ConnectionAdapterTmpl<OUT,IN>::BindTo( const OUT & out, 
+						    const IN & in, 
+						    const CLAM::Network & net )
+	{
+		mOutObserved = dynamic_cast< const OUT * > (&out);
+		mInObserved = dynamic_cast< const IN * > (&in);
+		mNetworkObserved = dynamic_cast< const CLAM::Network *> (&net);
+		
+		if ((!mOutObserved)  || (!mInObserved) || (!mNetworkObserved))
+			return false;
+		return true;
+	}
+
+	template<class OUT, class IN>
+	bool ConnectionAdapterTmpl<OUT,IN>::ConnectsInPort( IN & in)
+	{
+		return (&in == mInObserved);
+	}
 } // namespace CLAMVM
 
 #endif //_CONNECTIONADAPTER_HXX_

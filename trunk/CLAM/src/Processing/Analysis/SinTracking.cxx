@@ -155,7 +155,7 @@ using namespace CLAM;
 		SpectralPeak candidatePeak;
 		candidatePeak=iPeakArray.GetSpectralPeak(candidatePos);
 		//I added &&(candidatePeak.GetIndex()==-1) because it matched already matched peak
-		if((IsBestCandidate(candidatePeak,processedPeakPos))&&(oPeakArray.GetIndex(candidatePos)==-1))
+		if(candidatePos<oPeakArray.GetnPeaks()&&(IsBestCandidate(candidatePeak,processedPeakPos))&&(oPeakArray.GetIndex(candidatePos)==-1))
 		{
 		  //Match
 		  Match(mPreviousPeakArray.GetIndex(processedPeakPos),candidatePos,candidatePeak,oPeakArray);

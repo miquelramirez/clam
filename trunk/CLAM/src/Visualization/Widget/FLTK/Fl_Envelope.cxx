@@ -17,6 +17,7 @@ either version 2 of the License, or (at your option) any later version.
 #include <stdlib.h>
 #include <math.h>
 #include "Fl_Envelope.H"
+#include <iostream>
 
 void Fl_PointMover::bound(int id) 
 {
@@ -121,11 +122,13 @@ void Fl_PointMover::add_point(float px,float py,void* puser_data)
 	p.y=py;
 	p.user_data=puser_data;
 	points_.AddElem( p );
+	redraw();
 }
 
 void Fl_PointMover::remove_point(int id)
 {
 	points_.DeleteElem( id );
+	redraw();
 }
 
 void Fl_PointMover::remove_points(int id,int n)
@@ -138,6 +141,7 @@ void Fl_PointMover::remove_points(int id,int n)
 	int oldSize = points_.Size();
 	points_.Resize( oldSize - n );
 	points_.SetSize( oldSize - n );
+	redraw();
 
 }
 
@@ -145,6 +149,7 @@ void Fl_PointMover::clear()
 {
 	points_.Resize(0);
 	points_.SetSize(0);
+	redraw();
 }
 
 
