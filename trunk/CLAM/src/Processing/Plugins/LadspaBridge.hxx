@@ -31,10 +31,6 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 
-namespace CLAM
-{
-	class PublishedOutPorts;
-}
 
 class LadspaBridge
 {
