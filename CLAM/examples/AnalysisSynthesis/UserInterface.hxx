@@ -60,17 +60,15 @@ private:
   Fl_Input *mConfigurationText;
   Fl_Menu_Bar *mMenuBar;
   static Fl_Menu_Item menu_mMenuBar[];
-  inline void cb_Load_i(Fl_Menu_*, void*);
-  static void cb_Load(Fl_Menu_*, void*);
   inline void cb_Configure_i(Fl_Menu_*, void*);
   static void cb_Configure(Fl_Menu_*, void*);
-  inline void cb_Load1_i(Fl_Menu_*, void*);
-  static void cb_Load1(Fl_Menu_*, void*);
+  inline void cb_Load_i(Fl_Menu_*, void*);
+  static void cb_Load(Fl_Menu_*, void*);
   static Fl_Menu_Item *mStoreAnalysisData;
   inline void cb_mStoreAnalysisData_i(Fl_Menu_*, void*);
   static void cb_mStoreAnalysisData(Fl_Menu_*, void*);
-  inline void cb_Load2_i(Fl_Menu_*, void*);
-  static void cb_Load2(Fl_Menu_*, void*);
+  inline void cb_Load1_i(Fl_Menu_*, void*);
+  static void cb_Load1(Fl_Menu_*, void*);
   static Fl_Menu_Item *mDoTransformation;
   inline void cb_mDoTransformation_i(Fl_Menu_*, void*);
   static void cb_mDoTransformation(Fl_Menu_*, void*);
@@ -137,6 +135,6 @@ private:
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
-  void Attach(Fl_Group* canvas);
+  void Attach(Fl_Window* canvas);
 };
 #endif

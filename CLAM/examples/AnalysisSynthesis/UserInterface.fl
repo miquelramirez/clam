@@ -396,31 +396,28 @@ class UserInterface {open
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
-  Function {UserInterface()} {} {
+  Function {UserInterface()} {open
+  } {
     Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)}
-      xywh {127 69 800 715} type Double color 23 hide resizable
+      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
+      xywh {2 24 1108 779} type Double color 23 hide resizable
       code0 {mWindow2=NULL;}
     } {
       Fl_Input mConfigurationText {
         label {Configuration File}
-        private xywh {105 25 690 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
+        private xywh {105 25 985 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
       }
       Fl_Menu_Bar mMenuBar {
-        private xywh {0 0 800 20} box THIN_UP_BOX labelsize 13 textsize 12
+        private xywh {0 0 1110 20} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
           label Input
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
-            label {Load configuration file...}
-            callback {LoadConfiguration();}
-            private xywh {5 5 100 20} shortcut 0x4006c labelsize 12
-          }
-          menuitem {} {
             label {Configure...}
-            callback {EditConfiguration();}
+            callback {LoadConfiguration();
+//EditConfiguration();}
             private xywh {5 5 100 20} labelsize 12
           }
           submenu {} {
@@ -552,19 +549,19 @@ Exit();}
         }
       }
       Fl_Box mSmartTile {
-        private xywh {0 50 800 665} color 23 resizable
+        private xywh {165 100 800 665} color 23 resizable
         class Fl_Smart_Tile
       }
     }
   }
-  Function {AboutWindow()} {open private return_type void
+  Function {AboutWindow()} {private return_type void
   } {
     Fl_Window mWindow2 {
       label {About this program...}
       callback {delete mWindow2;
-mWindow2=NULL;} selected
-      private xywh {408 300 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
-      code0 {mWindow2->show();} noborder visible
+mWindow2=NULL;}
+      private xywh {408 300 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10 hide
+      code0 {mWindow2->show();} noborder
     } {
       Fl_Box {} {
         label {SMS Analysis/Synthesis Application}
@@ -607,5 +604,6 @@ mWindow2=NULL;} selected
   decl {void LoadTransformation(void);} {}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
-  decl {void Attach(Fl_Group* canvas);} {}
+  decl {void Attach(Fl_Window* canvas);} {selected
+  }
 } 
