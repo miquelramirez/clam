@@ -55,6 +55,7 @@ namespace CLAMTest {
 	Enum::tValue MyEnum::sDefault = MyEnum::dos;
 
 	void MyEnum::TestClass () {
+		bool the_test_is_passed = true;
 		std::cout << "-- Testing Enum" << std::endl;
 		{
 			std::cout << "+ Default constructor" << std::endl;
@@ -88,6 +89,7 @@ namespace CLAMTest {
 			MyEnum e;
 			try {
 				e.SetValueSafely("dros");
+				the_test_is_passed &= false;
 				std::cout << e.GetString() << std::endl;
 			} 
 			catch (IllegalValue e) {
@@ -99,12 +101,17 @@ namespace CLAMTest {
 			MyEnum e;
 			try {
 				e.SetValueSafely(4);
+				the_test_is_passed &= false;
 				std::cout << e.GetString() << std::endl;
 			} 
 			catch (IllegalValue e) {
 				std::cerr << "Exception thrown: " << e.msg << std::endl;
 			}
 		}
+		if ( the_test_is_passed )
+			std::cout << "Test Passed." << std::endl;
+		else
+			std::cout << "Test Failed." << std::endl;
 	}
 }
 
