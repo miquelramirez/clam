@@ -3,6 +3,7 @@
 
 #include <pthread.h>
 #include "Lock.hxx"
+#include <errno.h>
 
 namespace CLAM
 {
