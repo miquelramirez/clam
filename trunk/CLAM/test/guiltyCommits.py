@@ -64,7 +64,7 @@ def queryLogs(module) :
 		cmd = "cvs rlog -N -r%s -r%s %s" % (fst, sec, file)
 		print "issuing:",cmd
 		log = getoutput(cmd)
-		logs.append( "\n%s\n"%file + cleanLogOutput(log) )
+		logs.append( "\n\n%s\n"%file + cleanLogOutput(log) )
 		fileauthors = Set(getAuthors(log))
 		print fileauthors
 		authors = authors.union( fileauthors )
