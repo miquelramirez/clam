@@ -144,7 +144,7 @@ public:
 	*/
 	bool UpdateData();
 	
-	
+private:
 	// Types of the constructors and destructors that all registerd type must have.
 	// A pointer to these functions is stored into the typeDescTable. (an array of TAttr) 
 	// The definition of TAttr is following:
@@ -152,14 +152,10 @@ public:
 	typedef void* (*t_new_copy)(void* pos,void* orig);
 	typedef void (*t_destructor)(void* pos);
 
-	/**
-	*
-	*
-	*
-	*/
 	virtual void InformAttr_ (unsigned id, const char* name, unsigned size, const char* type, const bool isPtr,
 	                       const t_new, const t_new_copy, const t_destructor);
 
+protected:
 	inline void InformTypedAttr_(unsigned id, const char* name, unsigned size, const char *type, const bool isPtr,
 	                          const t_new, const t_new_copy, const t_destructor, const Component* ptr);
 
@@ -172,7 +168,7 @@ public:
 	void AddAttr_ (const unsigned i, const unsigned size);
 	void RemoveAttr_ (const unsigned id);
 
-
+public:
 	void FullfilsInvariant() const;
 
 	virtual Component* DeepCopy() const;
@@ -226,15 +222,12 @@ protected:
 	inline bool        OwnsItsMemory() const { return bOwnsItsMemory; }
 	inline void        SetOwnsItsMemory(const bool owns) { bOwnsItsMemory = owns; }
 	inline bool        ExistAttr(unsigned id) const;
-	/**
-	 * 
-	 */
 	inline void        SetPreAllocateAllAttributes() { bPreAllocateAllAttributes=true; }
 
 
 public:
 	// Developing tools:
-	void Debug();
+	void Debug() const;
 
 protected:
 	
