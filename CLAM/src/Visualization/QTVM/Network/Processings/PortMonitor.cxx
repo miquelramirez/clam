@@ -10,7 +10,7 @@ namespace CLAM
 		UpdateData();
 	}
 
-	template <>
+    template <>
 	bool PortMonitor<Audio,AudioInPort>::Do()
 	{
 		if(!AbleToExecute()) return true;
@@ -27,21 +27,17 @@ namespace CLAM
 
 	template <>
 	PortMonitor<Audio,AudioInPort>::PortMonitor()
-		: mInput("Input", this)
+	    : mInput("Input", this),mWhichDataToRead(0)
 	{
 		PortMonitorConfig cfg;
 		Configure(cfg);
-		mData[0].SetSize(256);
-		mData[1].SetSize(256);
 	}
 
 	template <>
 	PortMonitor<Audio,AudioInPort>::PortMonitor(const PortMonitorConfig& cfg)
-		: mInput("Input", this)
+	    : mInput("Input", this),mWhichDataToRead(0)
 	{
 		Configure(cfg);
-		mData[0].SetSize(256);
-		mData[1].SetSize(256);
 	}
 #ifndef QT_PLUGIN
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::PeaksPortMonitor> regtPeaksPortMonitor("PeaksPortMonitor");
