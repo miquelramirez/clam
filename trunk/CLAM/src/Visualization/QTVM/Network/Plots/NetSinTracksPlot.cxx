@@ -19,6 +19,11 @@ namespace CLAM
 	{
 	    ((NetSinTracksPlotController*)_controller)->SetData(peaks);
 	}
+	
+	void NetSinTracksPlot::SetMonitor(MonitorType & monitor)
+	{
+	    ((NetSinTracksPlotController*)_controller)->SetMonitor(monitor);
+	}
 
 	void NetSinTracksPlot::SetPlotController()
 	{
