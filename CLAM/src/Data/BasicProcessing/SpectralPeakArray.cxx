@@ -60,6 +60,7 @@ void SpectralPeakArray::DefaultInit()
 	SetScale(EScale(EScale::eLinear));
 	SetnPeaks(0);
 	SetMinimizeResizes(1);
+	mIsIndexUpToDate=false;
 }
  
 
