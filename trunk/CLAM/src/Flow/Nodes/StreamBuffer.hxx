@@ -307,7 +307,7 @@ namespace CLAM {
 	{
 		CLAM_ASSERT(mRegions.FulfilsInvariant(),
 		            "StreamBuffer::Configure(): "
-		            "Inconsisntent regions before configuration")
+		            "Inconsisntent regions before configuration");
 
 		mBuffer.Configure(max_window_size);
 

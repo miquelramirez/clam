@@ -331,7 +331,7 @@ namespace CLAMGUI
 	bool SMSTools::DoLoadAnalysis()
 	{
 
-		char* fileName = fl_file_chooser("Choose file to load...", "*.{xml|sdif}", "");
+		char* fileName = fl_file_chooser("Choose file to load...", "*.{xml,sdif}", "");
 
 		if ( !fileName )
 			return false;
@@ -378,9 +378,7 @@ namespace CLAMGUI
 
 		melodyFilename = filename;
 
-		CLAM::XMLStorage x;
-		x.UseIndentation(true);
-		x.Dump( GetMelody(), "Analyzed_Melody", melodyFilename );
+		CLAM::XMLStorage::Dump( GetMelody(), "Analyzed_Melody", melodyFilename );
 	}
 
 	bool SMSTools::DoStoreAnalysis()
@@ -390,7 +388,7 @@ namespace CLAMGUI
 		
 		do
 		{
-			fileName = fl_file_chooser("Choose file to store in...", "*.{xml|sdif}", "");
+			fileName = fl_file_chooser("Choose file to store in...", "*.{xml,sdif}", "");
 
 			if ( !fileName )
 				return false;
@@ -451,7 +449,7 @@ namespace CLAMGUI
 
 	void SMSTools::StoreOutputSound()
 	{
-		StoreSound( GetSynthesizedSinusoidal() );
+		StoreSound( GetSynthesizedSound() );
 	}
 
 	void SMSTools::StoreOutputSoundResidual()

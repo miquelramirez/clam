@@ -51,10 +51,6 @@ Qt_InControlPresentation::Qt_InControlPresentation( int id,  QWidget *parent, co
 	mReg += reg;
 }
 
-Qt_InControlPresentation::~Qt_InControlPresentation()
-{
-}
-
 void Qt_InControlPresentation::SetName(const std::string& name)
 {
 	mName = name;

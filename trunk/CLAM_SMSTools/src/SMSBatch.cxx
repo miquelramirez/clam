@@ -60,14 +60,10 @@ void SMSBatch::Run(void)
 		std::cout << "3. Only Synthesize" << "\n";
 		std::cout << "0. Finish" << "\n" << "\n";
 
-		int option;
+		int option=0;
 		std::cin>>option;
 
-		if(option==0)
-		{
-			finish=true;
-			break;
-		}
+		if (!option) return;
 		
 		std::string folderName;
 		std::cout<<"\n"<<"\n"<<"Enter folder name where xml configuration files are located: \n";
@@ -77,52 +73,49 @@ void SMSBatch::Run(void)
 
 		std::string inputConfigFileName;
 
-		for (dir_it it(folderName); it != dir_it(); ++it){
-			if (!get<is_hidden>(it))
+		for (dir_it it(folderName); it != dir_it(); ++it)
+		{
+			if (get<is_hidden>(it)) continue;
+			if (get<is_directory>(it)) continue;
+			inputConfigFileName=*it;
+			std::string ext=inputConfigFileName.substr(inputConfigFileName.length()-4,inputConfigFileName.length());
+			if (ext!=".xml") break;
+			
+			std::string fullPathConfigName=folderName+'/'+inputConfigFileName;
+			std::cout <<"Processing configuration file: "<<fullPathConfigName<<"\n";
+			LoadConfig(fullPathConfigName);
+			switch(option)
 			{
-				if(!get<is_directory>(it))
+				case 1://Analyze, synthesize and store output sound + sinusoidal componet + residual component
 				{
-					inputConfigFileName=*it;
-					std::string ext=inputConfigFileName.substr(inputConfigFileName.length()-4,inputConfigFileName.length());
-					if(ext!=".xml") break;
-					
-					std::string fullPathConfigName=folderName+'/'+inputConfigFileName;
-					std::cout <<"Processing configuration file: "<<fullPathConfigName<<"\n";
-					LoadConfig(fullPathConfigName);
-					switch(option)
-					{
-						case 1://Analyze, synthesize and store output sound + sinusoidal componet + residual component
-						{
-							LoadInputSound();
-							Analyze();
-							Synthesize();
-							StoreOutputSound();
-							StoreOutputSoundSinusoidal();
-							StoreOutputSoundResidual();
-							break;
-						}
-						case 2://Analyze content of a given folder and store output .sdif or .xml files
-						{
-							LoadInputSound();
-							Analyze();
-							StoreAnalysis( mGlobalConfig.GetOutputAnalysisFile() );			
-							break;
-						}
-						case 3://Synthesize previously analyzed .sdif or .xml files
-						{
-							LoadAnalysis(mGlobalConfig.GetInputAnalysisFile());
-							Synthesize();
-							StoreOutputSound();
-							StoreOutputSoundSinusoidal();
-							StoreOutputSoundResidual();
-							break;
-						}
-						default:
-						{
-							std::cout<<"\n"<<"\n"<<"Error, not a valid option"<<"\n"<<"\n"<<"\n";
-							break;
-						}
-					}
+					LoadInputSound();
+					Analyze();
+					Synthesize();
+					StoreOutputSound();
+					StoreOutputSoundSinusoidal();
+					StoreOutputSoundResidual();
+					break;
+				}
+				case 2://Analyze content of a given folder and store output .sdif or .xml files
+				{
+					LoadInputSound();
+					Analyze();
+					StoreAnalysis( mGlobalConfig.GetOutputAnalysisFile() );			
+					break;
+				}
+				case 3://Synthesize previously analyzed .sdif or .xml files
+				{
+					LoadAnalysis(mGlobalConfig.GetInputAnalysisFile());
+					Synthesize();
+					StoreOutputSound();
+					StoreOutputSoundSinusoidal();
+					StoreOutputSoundResidual();
+					break;
+				}
+				default:
+				{
+					std::cout<<"\n"<<"\n"<<"Error, not a valid option"<<"\n"<<"\n"<<"\n";
+					break;
 				}
 			}
 		}
@@ -153,8 +146,7 @@ int main(int argc,char** argv)
 void GenerateXML()
 {
 	SMSAnalysisSynthesisConfig c;
-	XMLStorage x;
-	x.Dump(c,"SMSAnalysisSynthesisConfig","c:\\config.xml");
+	XMLStorage::Dump(c,"SMSAnalysisSynthesisConfig","c:\\config.xml");
 }
 
 TData Error(Audio& original, Audio& synthesized,Audio& error)

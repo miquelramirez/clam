@@ -176,16 +176,12 @@ int main( int argc, char** argv )
 {
 	try
 	{
-		// We instantiate a XMLStorage object, which will become our
-		// interlocutor witch CLAM XML store/load facilities
-		CLAM::XMLStorage storageInterface;
-		
 		// We create an instance of BookStore so it becomes the persistent object
 		// encoded in XML document
 		BookStore store;
 
 		// We retrieve the BookStore object encoded in the XML document
-		storageInterface.Restore( store, "BookStore.xml" );
+		CLAM::XMLStorage::Restore( store, "BookStore.xml" );
 		
 		// Now we will create a new entry in the BookStore object
 		Book aNewBook;
@@ -205,7 +201,7 @@ int main( int argc, char** argv )
 		outputFile << "<?xml version=\"1.0\" ?>" << std::endl;
 
 		// We dump the object onto the newly created document
-		storageInterface.Dump( store, "BookStore",  outputFile );
+		CLAM::XMLStorage::Dump( store, "BookStore",  outputFile );
 		
 		outputFile.close();
 	}

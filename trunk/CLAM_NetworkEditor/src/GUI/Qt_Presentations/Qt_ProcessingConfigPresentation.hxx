@@ -23,6 +23,7 @@
 #define __QT_PROCESSINGCONFIGPRESENTATION_HXX__
 
 #include <qdialog.h>
+#include <qvbox.h>
 #include "Slotv1.hxx"
 #include "ProcessingConfigPresentation.hxx"
 
@@ -42,7 +43,7 @@ class ActionButton;
 class Qt_ProcessingConfigPresentation : public QDialog, public ProcessingConfigPresentation
 {
 protected:
-	QGroupBox* mGroupBox;
+	QVBox * mAttributeContainer;
 	ActionButton * mOkButton;
 	ActionButton * mCancelButton;
 

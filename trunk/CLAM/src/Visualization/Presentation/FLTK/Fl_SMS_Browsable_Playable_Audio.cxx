@@ -150,7 +150,11 @@ int Fl_SMS_Browsable_Playable_Audio::handle( int event )
 	}
 	else if ( event == FL_SHOW )
 	{
-		CLAM_ASSERT( mDisplay == NULL, "Precondition violation" );
+#ifdef __APPLE__
+		if ( mDisplay == NULL )
+		{
+#endif
+
 		mImposterBox->hide();
 		begin();
 		mDisplay = new Fl_SMS_Gl_Single_Browsable_Display( x(), y(), w()-50, h()-50 );
@@ -176,15 +180,26 @@ int Fl_SMS_Browsable_Playable_Audio::handle( int event )
 		mYSlider->resize( x()+w()-20, y(), 20, h() -50 );
 		mPlayButton->resize( x()+w()-40, y()+h()-20,20,20 );
 		mStopButton->resize( x()+w()-20, y()+h()-20,20,20 );
+#ifdef __APPLE__
+		}
+		else
+		{
+			mDisplay->resize( x(), y(), w()-50, h()-50 );
+			mDisplay->redraw();
+		}
+
+#endif 
 	}
 	else if ( event == FL_HIDE )
 	{
+#ifndef __APPLE__
 		if ( mDisplay )
 		{
 			remove( mDisplay );
 			delete mDisplay;
 			mDisplay = NULL;
 		}
+#endif
 	}
 	
 

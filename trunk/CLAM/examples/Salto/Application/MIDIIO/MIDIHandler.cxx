@@ -92,7 +92,6 @@ namespace CLAM
 	{
 		ControllerConfig cfg;
 
-		cfg.SetName("MIDIController");
 		cfg.SetNumControls(eNUMControls);
 
 		if(!mControl.Configure(cfg))

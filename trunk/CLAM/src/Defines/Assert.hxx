@@ -73,19 +73,19 @@ namespace CLAM
 /// Macro used when an assert fails
 #if defined(CLAM_USE_RELEASE_ASSERTS)
 #define CLAM_ABORT(message) \
-	{ \
+	do { \
 		throw CLAM::ErrAssertionFailed( message, __FILE__, __LINE__); \
-	}
+	} while(0)
 #else
 #define CLAM_ABORT(message) \
-	{ \
+	do { \
 		if ( !CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled ) { \
 			throw CLAM::ErrAssertionFailed( message, __FILE__, __LINE__); \
 		} else { \
 			CLAM::ExecuteAssertFailedHandler ( message, __FILE__, __LINE__); \
 			CLAM_BREAKPOINT; \
 		} \
-	}
+	} while(0)
 #endif
 
 /// @name Assertions and checks
@@ -97,20 +97,20 @@ namespace CLAM
 * Notice that this is NOT a regular (documented) check
 * that will throw a (documented) error condition (Err).
 * Asserts on debug mode (when the DEBUG macro is defined)
-* will set a break point while in release mode (DEBUG is 
+* will set a break point while in release mode (DEBUG is
 * not defined) you may get an unexpected exception that
 * can be catched by the application on the top level and
-* do some backups actions. 
+* do some backups actions.
 * Any way, a descriptive message is displayed.
 *
 * Sometimes the check is not only an expression but a
-* complete set of statements. In these cases, you can use 
+* complete set of statements. In these cases, you can use
 * CLAM_BEGIN_CHECK and CLAM_END_CHECK macros to enclose
-* the whole check code and use CLAM_ASSERT for concrete 
+* the whole check code and use CLAM_ASSERT for concrete
 * expressions to check.
 *
-* You can change the default release mode assertion 
-* failed callback by using the SetAssertFailedHandler 
+* You can change the default release mode assertion
+* failed callback by using the SetAssertFailedHandler
 * function.
 *
 * You can get a lightweight assertion using (with care)
@@ -121,15 +121,15 @@ namespace CLAM
 * Is worth to keep most of the asserts as CLAM_ASSERT.
 *
 * Anyway, for very performance depending applications
-* you may use the CLAM_DISABLE_CHECKS to remove ALL the 
-* CLAM_ASSERT and CLAM_DEBUG_ASSERT and its related checks 
+* you may use the CLAM_DISABLE_CHECKS to remove ALL the
+* CLAM_ASSERT and CLAM_DEBUG_ASSERT and its related checks
 * in whatever mode you use them.
-* 
+*
 * @param expression The expression that must be true.
-* @param message A message that describes the unexpected 
+* @param message A message that describes the unexpected
 * runtime error to the programmer.
 */
-/** 
+/**
 * @def CLAM_BEGIN_CHECK
 * Marks the start of check code block that is tied to a CLAM_ASSERT
 * and can be removed without affecting any functionality.
@@ -137,7 +137,7 @@ namespace CLAM
 * @see CLAM_ASSERT
 * @see CLAM_END_CHECK
 */
-/** 
+/**
 * @def CLAM_END_CHECK
 * Ends a block of code started by CLAM_BEGIN_CHECK
 * @see CLAM_BEGIN_CHECK
@@ -145,19 +145,21 @@ namespace CLAM
 #if defined(CLAM_DISABLE_CHECKS)
 #define CLAM_BEGIN_CHECK if (0) {
 #define CLAM_END_CHECK }
-#define CLAM_ASSERT( expression, message ) 
+#define CLAM_ASSERT( expression, message )
 #define CLAM_WARNING( expression, message )
 #else
 #define CLAM_BEGIN_CHECK {
 #define CLAM_END_CHECK }
 #define CLAM_ASSERT( expression, message ) \
+	do { \
 	if (!(expression)) { \
 		CLAM_ABORT(message); \
-	}
+	} } while (0)
 #define CLAM_WARNING( expression, message ) \
+	do { \
 	if (!(expression)) { \
 		CLAM::ExecuteWarningHandler ( message, __FILE__, __LINE__); \
-	}
+	} } while (0)
 #endif
 
 
@@ -169,7 +171,7 @@ namespace CLAM
 * @see CLAM_BEGIN_CHECK
 * @see CLAM_END_DEBUG_CHECK
 */
-/** 
+/**
 * @def CLAM_END_DEBUG_CHECK
 * Ends a block of code started by CLAM_BEGIN_DEBUG_CHECK
 * @see CLAM_BEGIN_DEBUG_CHECK
@@ -178,28 +180,30 @@ namespace CLAM
 #if defined(CLAM_DISABLE_CHECKS) || defined(CLAM_USE_RELEASE_ASSERTS)
 #define CLAM_BEGIN_DEBUG_CHECK if (0) {
 #define CLAM_END_DEBUG_CHECK }
-#define CLAM_DEBUG_ASSERT( expression, message ) 
+#define CLAM_DEBUG_ASSERT( expression, message )
 #define CLAM_DEBUG_WARNING( expression, message )
 #else
 #define CLAM_BEGIN_DEBUG_CHECK {
 #define CLAM_END_DEBUG_CHECK }
 #define CLAM_DEBUG_ASSERT( expression, message ) \
+	do { \
 	if (!(expression)) { \
 		CLAM_ABORT(message); \
-	}
+	} } while (0)
 #define CLAM_DEBUG_WARNING( expression, message ) \
+	do { \
 	if (!(expression)) { \
 		CLAM::ExecuteWarningHandler ( message, __FILE__, __LINE__); \
-	}
+	} } while (0)
 #endif
 /// @}
-	
+
 /**
 * The exception thrown when an assertion fails.
 * Don't throw it directly, use the assertion macro Assert instead
 * because the Assert macro is sensible to the compilation conditions.
 * Neither do any explicit declaration that this exception can
-* be thrown from a function as you would have to do with any other 
+* be thrown from a function as you would have to do with any other
 * exception.
 * See the Error Notification Mechanisms documentation.
 * @todo Subclass ErrAssertionFailed from Err.

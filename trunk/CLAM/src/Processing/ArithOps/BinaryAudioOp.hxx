@@ -58,7 +58,7 @@ namespace CLAM
 			}
 			catch (std::bad_cast)
 			{
-				CLAM_ASSERT(false,"Config should be a BynariaAudioOpConfig")
+				CLAM_ASSERT(false,"Config should be a BynariaAudioOpConfig");
 			}
 			return true;
 			

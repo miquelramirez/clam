@@ -92,6 +92,7 @@ public:
 
 	XercesDomWritingContext * release()
 	{
+		return 0;
 	}
 	
 	void addAttribute(const char * name, const char * value)

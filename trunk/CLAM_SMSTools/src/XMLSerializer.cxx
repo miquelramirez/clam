@@ -33,7 +33,7 @@ XMLSerializer::~XMLSerializer(  ) {  }
 
 bool XMLSerializer::DoLoad( const char* fileName, Segment& segment )
 {
-	mXMLStorage.Restore( segment, fileName );
+	XMLStorage::Restore( segment, fileName );
 
 	return true;
 }
@@ -60,7 +60,7 @@ bool XMLSerializer::DoStore( const char* fileName, Segment& segment )
 		tmpFrame.GetResidualSpec(  ).SetType( tmpFl );
 	}
 
-	mXMLStorage.Dump( tmpSegment, "Segment", fileName );
+	XMLStorage::Dump( tmpSegment, "Segment", fileName );
 
 	//Now we add Spectrum back, it is needed for Melody analysis
 /*	for( i = 0; i < nFrames; i++ )

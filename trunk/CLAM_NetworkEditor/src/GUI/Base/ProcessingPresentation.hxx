@@ -59,7 +59,7 @@ protected:
 	std::string mNameFromNetwork;
 	std::string mObservedClassName;
 
-	ProcessingConfigPresentation* mConfig;
+	ProcessingConfigPresentation * mConfig;
 public:
 	ProcessingPresentation(const std::string& nameFromNetwork = "unnamed");
 	virtual ~ProcessingPresentation();

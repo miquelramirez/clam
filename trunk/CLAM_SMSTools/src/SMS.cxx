@@ -235,9 +235,7 @@ int main(int argc,char** argv)
 void GenerateXML()
 {
 	SMSBaseAnalysisSynthesisConfig c;
-	XMLStorage x;
-	x.UseIndentation(true);
-	x.Dump(c,"SMSBaseAnalysisSynthesisConfig","c:\\config.xml");
+	XMLStorage::Dump(c,"SMSBaseAnalysisSynthesisConfig","c:\\config.xml");
 }
 
 TData Error(Audio& original, Audio& synthesized,Audio& error)

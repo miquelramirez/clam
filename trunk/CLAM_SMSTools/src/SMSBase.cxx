@@ -41,9 +41,6 @@
 
 #include <fstream>
 #include "XMLStorage.hxx"
-#include "XMLStaticAdapter.hxx"
-#include "XMLComponentAdapter.hxx"
-#include "XMLable.hxx"
 
 #include "AudioIO.hxx"
 #include "AudioOut.hxx"
@@ -162,8 +159,7 @@ void SMSBase::LoadConfig(const std::string& inputFileName)
 
 	mCurrentWaitMessage = CreateWaitMessage( "Loading XML configuration file, please wait." );
 	//Loading configuration
-	XMLStorage x;
-	x.Restore(mGlobalConfig,inputFileName);
+	XMLStorage::Restore(mGlobalConfig,inputFileName);
 	mHaveConfig = false;
 	if(HaveCompatibleConfig())
 	{	
@@ -199,9 +195,7 @@ void SMSBase::StoreConfig(const std::string& inputFileName)
 	CLAMGUI::WaitMessage *wm;
 	wm = CreateWaitMessage("Storing configuration xml file, please wait.");
 	//Loading configuration
-	XMLStorage x;
-	x.UseIndentation(true);
-	x.Dump(mGlobalConfig,"SMSAnalysisSynthesisConfig",inputFileName);
+	XMLStorage::Dump(mGlobalConfig,"SMSAnalysisSynthesisConfig",inputFileName);
 
 	delete wm;
 }
@@ -286,7 +280,7 @@ void SMSBase::Flush(Segment& seg)
 void SMSBase::AnalysisProcessing()
 {
 	CLAM_ACTIVATE_FAST_ROUNDING;
-	CLAM_DEBUG_ASSERT( 0 != mCurrentProgressIndicator, "SMSBase::AnalysisProcessing needs a ProgressIndicator")
+	CLAM_DEBUG_ASSERT( 0 != mCurrentProgressIndicator, "SMSBase::AnalysisProcessing needs a ProgressIndicator");
 		
 	Flush(mOriginalSegment);
 	
@@ -764,25 +758,21 @@ void SMSBase::StoreMelody(void)
 			substr(0,mGlobalConfig.GetOutputAnalysisFile().length()-4));
 	melodyFilename += "_melody.xml";
 
-	XMLStorage x;
-	x.UseIndentation(true);
-	x.Dump(mMelody,"Analyzed_Melody",melodyFilename);
+	XMLStorage::Dump(mMelody,"Analyzed_Melody",melodyFilename);
 }
 
 void SMSBase::LoadTransformationScore(const std::string& inputFileName)
 {
 	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
 	//Loading configuration
-	XMLStorage x;
-	x.Restore(mTransformationScore,inputFileName);
+	XMLStorage::Restore(mTransformationScore,inputFileName);
 	delete wm;
 }
 
 void SMSBase::StoreTransformationScore( const std::string& outputFilename )
 {
 	CLAMGUI::WaitMessage* wm = CreateWaitMessage( "Storing transformation score" );
-	XMLStorage x;
-	x.Dump( mTransformationScore, "SMS_Transformation_Score", outputFilename );
+	XMLStorage::Dump( mTransformationScore, "SMS_Transformation_Score", outputFilename );
 	delete wm;
 }
 

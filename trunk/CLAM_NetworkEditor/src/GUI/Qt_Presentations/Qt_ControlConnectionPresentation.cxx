@@ -49,7 +49,6 @@ void Qt_ControlConnectionPresentation::paintEvent( QPaintEvent * e)
 
 	UpdateBezierLine();
 	paint.drawCubicBezier(mPositions);
-//	paint.drawPolyline(mPositions);
 	paint.end();
 
 
@@ -60,13 +59,11 @@ void Qt_ControlConnectionPresentation::paintEvent( QPaintEvent * e)
 
 	p.setPen( QPen ( QColor( 0, 0, 0 ), 3));
 	p.drawCubicBezier(mPositions);
-//	p.drawPolyline(mPositions);
 	if (mDown)
 		p.setPen( QPen ( QColor( 200, 50, 50), 1 ) );
 	else
 		p.setPen( QPen ( QColor( 80, 80, 200), 1 ) );
 	p.drawCubicBezier(mPositions);
-//	p.drawPolyline(mPositions);
 	p.flush();
 	p.end();
 	setMask( bm );

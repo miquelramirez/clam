@@ -51,7 +51,6 @@ namespace CLAM {
  * 
  * @see XMLable
  * @see XMLAdapter
- * @see XMLStaticAdapter
  * @see XMLComponentAdapter
  */
 template <class T> class XMLArrayAdapter : public BasicXMLable {

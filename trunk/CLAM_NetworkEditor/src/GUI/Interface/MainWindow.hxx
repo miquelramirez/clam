@@ -44,7 +44,6 @@ public:
 
 private:
 	void OnNewMessageToStatus( const std::string & );
-//	void OnNewChangeOnNetworkState( bool );
 	void Start();
 	void Stop();
 

@@ -48,28 +48,8 @@ namespace CLAM {
  * order to follow the reference.
  *
  * <P><B>Pay attention to the management of the name memory</B>
- * (@see BasicXMLable).
- * 
- * <P>Consider using an XMLStaticAdapter instead this class when: 
- * <UL>
- * <LI>The adaptee is going to vary and you want to store the state 
- * at a concrete moment.
- * <LI>The adaptee will be not available at storage time.
- * <LI>The same adaptee is stored a lot of times and you want to
- * reuse the same extraction all the time.
- * <LI>You hate use templated types.
- * </UL>
- * 
- * <P>A normal XMLAdapter is more useful than an XMLStaticAdapter
- * specially when:
- * <UL>
- * <LI>You want to follow the changes on the adaptee.
- * <LI>The Adapter is going to be permanently in memory and you don't
- * want to expend extra memory for the content container.
- * </UL>
- * 
+ * @see BasicXMLable
  * @see XMLable
- * @see XMLStaticAdapter
  */
 template <class T> class XMLAdapter : public BasicXMLable {
 // Internal Types

@@ -20,6 +20,8 @@
 */
 
 #if defined _MSC_VER && _MSC_VER < 1310 // MSVC++ 6
+#undef min
+#undef max
 	namespace std
 	{	
 		template < typename T >

@@ -122,11 +122,11 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 	SignalSendNewMessageToStatus.Emit( "Created " + presentation->GetNameFromNetwork() );
 }
 
-void Qt_NetworkPresentation::SetPortConnection( CLAMVM::ConnectionAdapter* adapter)
+void Qt_NetworkPresentation::CreatePortConnectionPresentation( CLAMVM::ConnectionAdapter* adapter)
 {
 	Qt_PortConnectionPresentation* presentation = new Qt_PortConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
-	presentation->SignalRemoveConnection.Connect( SlotSetRemovePortConnection);
+	presentation->SignalRemoveConnection.Connect( SlotRemovePortConnection);
 	adapter->Publish();
 	// connectar presentation a outport i inport signals
 
@@ -147,11 +147,11 @@ void Qt_NetworkPresentation::SetPortConnection( CLAMVM::ConnectionAdapter* adapt
 }
 
 
-void Qt_NetworkPresentation::SetControlConnection( CLAMVM::ConnectionAdapter* adapter)
+void Qt_NetworkPresentation::CreateControlConnectionPresentation( CLAMVM::ConnectionAdapter* adapter)
 {
 	Qt_ControlConnectionPresentation* presentation = new Qt_ControlConnectionPresentation(this);
 	presentation->AttachTo(*adapter);
-	presentation->SignalRemoveConnection.Connect( SlotSetRemoveControlConnection);
+	presentation->SignalRemoveConnection.Connect( SlotRemoveControlConnection);
 	adapter->Publish();
 	// connectar presentation a outport i inport signals
 
@@ -227,7 +227,7 @@ void Qt_NetworkPresentation::mouseReleaseEvent( QMouseEvent *m)
 	{
 		const std::string inPort = GetCompleteNameFromInPortSelected();
 		const std::string outPort = GetCompleteNameFromOutPortSelected();
-		SignalCreateNewPortConnectionFromGUI.Emit( outPort, inPort );
+		SignalCreatePortConnection.Emit( outPort, inPort );
 	}
 
 	mInPortSelected = 0;
@@ -246,7 +246,7 @@ void Qt_NetworkPresentation::mouseReleaseEvent( QMouseEvent *m)
 	{
 		const std::string inControl = GetCompleteNameFromInControlSelected();
 		const std::string outControl = GetCompleteNameFromOutControlSelected();
-		SignalCreateNewControlConnectionFromGUI.Emit( outControl, inControl );
+		SignalCreateControlConnection.Emit( outControl, inControl );
 	}
 
 	mInControlSelected = 0;
@@ -296,6 +296,8 @@ void Qt_NetworkPresentation::Hide()
 
 void Qt_NetworkPresentation::paintEvent( QPaintEvent * e)
 {
+	UpdatePresentations();
+	
 	if (mInPortSelected)
 	{
 		QPainter p(this);

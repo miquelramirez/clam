@@ -35,7 +35,6 @@ class Qt_InPortPresentation : public QWidget, public ConnectionPointPresentation
 {
 public:
 	Qt_InPortPresentation( int id, QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_InPortPresentation();
 	virtual void Show();
 	virtual void Hide();
 	virtual void SetName(const std::string& name);

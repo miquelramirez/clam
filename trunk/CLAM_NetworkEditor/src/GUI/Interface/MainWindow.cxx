@@ -32,6 +32,8 @@
 #include <qapplication.h>
 #include <string>
 
+#include <iostream> // TODO: remove
+
 namespace NetworkGUI
 {
 
@@ -117,7 +119,6 @@ void MainWindow::Stop()
 
 void MainWindow::NewNetwork()
 {
-	std::cout << "new network" << std::endl;
 	SignalNewNetworkSignal.Emit();
 }
 
@@ -151,7 +152,6 @@ void MainWindow::SaveNetwork()
 
 void MainWindow::SaveAsNetwork()
 {
-	std::cout << "saving network as" << std::endl;
 	SaveNetwork();
 }
 

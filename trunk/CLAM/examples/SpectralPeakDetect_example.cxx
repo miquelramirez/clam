@@ -45,9 +45,7 @@ int main ( int argc, char** argv )
 			exit( 0 );
 		}
 		
-		CLAM::XMLStorage storageIFace;
-
-		storageIFace.Restore( restoredAnalysis, analysisName );
+		CLAM::XMLStorage::Restore( restoredAnalysis, analysisName );
 
 		CLAM::SpectralPeakDetectConfig processingConfig;
 		
@@ -85,7 +83,7 @@ int main ( int argc, char** argv )
 
 		peakDetector.Stop();
 
-		storageIFace.Dump( detectedPeaksSet, "DetectedPeaks_0001", "DetectedPeaks_0001.xml" );
+		CLAM::XMLStorage::Dump( detectedPeaksSet, "DetectedPeaks_0001", "DetectedPeaks_0001.xml" );
 	}
 	catch( CLAM::Err& error )
 	{

@@ -45,6 +45,7 @@ class Qt_ProcessingPresentation : public QWidget, public ProcessingPresentation
 {
 public:
 	Qt_ProcessingPresentation( std::string nameFromNetwork, QWidget *parent = 0, const char *name = 0);
+	virtual ~Qt_ProcessingPresentation(){}
 	void Show();
 	void Hide();
 	void EmitPositionOfChildren();

@@ -130,7 +130,7 @@ class XmlWriteContext
 
 		void CloseEmptyElement()
 		{
-			CLAM_ASSERT(mTagOpened,"No open tag to close")
+			CLAM_ASSERT(mTagOpened,"No open tag to close");
 			// TODO: Change the temporary to normal insertion with the upgrade to 0.5.2
 			mTarget << std::string(" />");
 			mTagOpened = false;
@@ -138,7 +138,7 @@ class XmlWriteContext
 
 		void EndOpenTag()
 		{
-			CLAM_ASSERT(mTagOpened,"No open tag to close")
+			CLAM_ASSERT(mTagOpened,"No open tag to close");
 			// TODO: Change the temporary to normal insertion with the upgrade to 0.5.2
 			mTarget << std::string(">");
 			mTagOpened = false;

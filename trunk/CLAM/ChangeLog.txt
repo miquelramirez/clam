@@ -1,5 +1,32 @@
-2004-01-12 CLAM_0_5_6
+2004-01-15 CLAM_0_5_7 'Tomorrow MacOsX patch'
+  * SMSTools:
+     ** Fix: Closing window crashed on MacOsX.
+     ** Fix: Storing output global sound stored sinusoidal in previous release 
+  * Base:
+     ** [Experimental] Support for Polymorphic attributes in DT
+  * XML:
+     ** Abstract types thru Polymorphic attributes
+     ** XMLStaticAdapter is deprecated
+  * Network Editor:
+     ** Better layout on processing configuration dialogs
+     ** Fix: integer fiels on processing configuration dialogs were
+        limited to 99. Now it uses std::numeric_limits
+     ** Fix: Network serialization loading was broken
+     ** Some processings still in draft moved to example files
+  * Simple Examples:
+     ** FlowControlExamples tree has been moved to draft since simpler and more
+        concrete examples now exists: examples/NetworkUsage_example and
+        examples/PortsAndControlsUsageExample/
+     ** Examples have been ported to use the XML static XMLStorage methods
+     ** Some broken examples have been fixed, including
+     compiling_against_clam and SpectralDelay.
+  * Windows Build System:
+     ** Updated .dsp Visual 6 projects that were outdated in previous release
+     ** Fixed some minor problems in some settings.cfg files
+  * Salto:
+     ** Fix: Did not compile in previous release. Example in general is still outdated though.
 
+2004-01-12 CLAM_0_5_6 'XML and Ladspa rewrite'
   * XML:
      ** Both, basic XMLStorage usage interface and customization interface have changed.
         Check 'Migration Guidelines' on the documentation and update your code.

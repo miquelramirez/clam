@@ -37,6 +37,7 @@
 #include "Filename.hxx"
 #include "Enum.hxx"
 #include "Processing.hxx"
+#include "XMLStorage.hxx"
 
 using namespace CLAM;
 
@@ -164,21 +165,18 @@ int TryFLTKConfigurator(DummyConfig & config)
 
 void TryDisplayXML(DummyConfig & config) 
 {
-	XMLStorage storage;
-	storage.Dump(config,"DummyConfig", std::cout);
+	XMLStorage::Dump(config,"DummyConfig", std::cout);
 }
 
 void TryStoreXML(DummyConfig & config, char * xmlfilename) 
 {
-	XMLStorage storage;
-	storage.Dump(config,"DummyConfig", xmlfilename);
+	XMLStorage::Dump(config,"DummyConfig", xmlfilename);
 }
 
 void TryLoadXML(DummyConfig & config, char * xmlfilename) 
 {
 	try {
-		XMLStorage storage;
-		storage.Restore(config, xmlfilename);
+		XMLStorage::Restore(config, xmlfilename);
 	} catch (...) {
 		std::cout 
 			<< "Could not read the file '" << xmlfilename <<  "'. " 

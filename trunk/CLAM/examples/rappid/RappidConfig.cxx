@@ -81,7 +81,6 @@ void RappidConfig::parse_command_line(int argc, char *argv[])
 	std::string store_file;
 	TData fval;
 	bool store = false;
-	XMLStorage x;
 
 	static struct option long_options[] = {
 		{"test-sleep",           1, 0,  500}, //General
@@ -162,7 +161,7 @@ void RappidConfig::parse_command_line(int argc, char *argv[])
 			SetDoControlTest(true);
 			break;
 		case 504:
-			x.Restore(*this,optarg);
+			CLAM::XMLStorage::Restore(*this,optarg);
 			break;
 		case 505:
 			store=true;
@@ -375,7 +374,7 @@ void RappidConfig::parse_command_line(int argc, char *argv[])
 		Dump();
 	}
 	if (store)
-		x.Dump(*this,"Rappid_configuration",store_file);
+		CLAM::XMLStorage::Dump(*this,"Rappid_configuration",store_file);
 }
 
 void RappidConfig::print_command_line_help()

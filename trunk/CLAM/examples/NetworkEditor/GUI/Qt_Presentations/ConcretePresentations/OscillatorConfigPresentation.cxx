@@ -49,8 +49,6 @@ OscillatorConfigPresentation::OscillatorConfigPresentation( QWidget * parent )
 	mSamplingRateName = new QLabel( "Sampling Rate", this );
 	mSamplingRateName->setGeometry( QRect (  10, 140, 120, 25 ) );
 
-	mGroupBox->setGeometry( QRect( 10, 170, 190, 40 ) );
-
 	mFrequencyEdit = new QTextEdit(this);
 	mFrequencyEdit->setGeometry( 120, 20 , 60, 20);
 	mAmplitudeEdit = new QTextEdit(this);

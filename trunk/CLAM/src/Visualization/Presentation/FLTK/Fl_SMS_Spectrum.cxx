@@ -110,7 +110,11 @@ namespace CLAMVM
 		}
 		else if ( evtCode == FL_SHOW )
 		{
-			CLAM_ASSERT( mDisplay == NULL, "Precondition violation" );
+#ifdef __APPLE__
+		if ( mDisplay == NULL)
+		{
+#endif
+
 			mImposterBox->hide();
 			
 			mDisplay = new Fl_Gl_Single_Display( x(), y(), w()-50, h()-50 );
@@ -131,17 +135,27 @@ namespace CLAMVM
 			mYAxis->resize( x()+w()-50, y(), 30, h() - 50);
 			mXSlider->resize( x(), y() +h() -20, w() -50, 20);
 			mYSlider->resize( x()+w()-20, y(), 20, h() -50 );
+#ifdef __APPLE__
+		}
+		else
+		{
+			mDisplay->resize( x(), y(), w()-50, h()-50 );
+			mDisplay->redraw();
+		}
+
+#endif 
 	
 		}
 		else if ( evtCode == FL_HIDE )
 		{
+#ifndef __APPLE__
 			if ( mDisplay )
 			{
 				remove( mDisplay );
 				delete mDisplay;
 				mDisplay = NULL;
 			}
-
+#endif
 		}
 			
 		return Fl_Group::handle( evtCode );		

@@ -82,9 +82,8 @@ public:
 		mMIDIHandler.SetParams(&Parameters::GetInstance());
 		mMIDIHandler.LinkOutControl(0, pDSP, 0);
 
-		pMelody->LinkOutWithInControl( 0, &mMIDIHandler, 0);
-		pMelody->LinkOutWithInControl( 1, &mMIDIHandler, 1);
-
+		pMelody->GetOutControls().GetByNumber(0).AddLink( &(mMIDIHandler.GetInControls().GetByNumber(0)) );
+		pMelody->GetOutControls().GetByNumber(1).AddLink( &(mMIDIHandler.GetInControls().GetByNumber(1)) );		
 		pGUI->mpEditorWindow->set_non_modal();
 		pGUI->mpEditorWindow->show(argc,argv);
 
@@ -125,7 +124,6 @@ protected:
 
 			MIDIInConfig inNoteCfg;
 
-			inNoteCfg.SetName("in");
 			inNoteCfg.SetDevice("default:default");
 			inNoteCfg.SetChannelMask(MIDI::ChannelMask(1));
 			inNoteCfg.SetMessageMask(
@@ -136,7 +134,6 @@ protected:
 
 			MIDIInConfig inPitchBendCfg;
 			
-			inPitchBendCfg.SetName("inPitchBend");
 			inPitchBendCfg.SetDevice("default:default");
 			inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
 			inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
@@ -145,7 +142,6 @@ protected:
 
 			MIDIInConfig inBreathNoteCfg;
 
-			inBreathNoteCfg.SetName("in2");
 			inBreathNoteCfg.SetDevice("default:default");
 			inBreathNoteCfg.SetChannelMask( 				
 				MIDI::ChannelMask(3) |
@@ -159,7 +155,6 @@ protected:
 
 			MIDIInConfig inCtrlCfg;
 			
-			inCtrlCfg.SetName("inctrl");
 			inCtrlCfg.SetDevice("default:default");
 			inCtrlCfg.SetChannelMask(MIDI::ChannelMask(1));
 			inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
@@ -167,19 +162,20 @@ protected:
 
 			SALTO::BreathController breathController( inBreathNoteCfg, inCtrlCfg );
 
-			pitchBend.LinkOutWithInControl( 0, &mMIDIHandler, 2);
+			pitchBend.GetOutControls().GetByNumber(0).AddLink( &(mMIDIHandler.GetInControls().GetByNumber(2)));
 
-			keyboardNote.LinkOutWithInControl( 0, &mMIDIHandler, 1);
-			keyboardNote.LinkOutWithInControl( 1, &mMIDIHandler, 0);
-			keyboardNote.LinkOutWithInControl( 2, &mMIDIHandler, 1);
-			keyboardNote.LinkOutWithInControl( 3, &mMIDIHandler, 0);
+			keyboardNote.GetOutControls().GetByNumber(0).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(1)));
+			keyboardNote.GetOutControls().GetByNumber(1).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(0)));
+			keyboardNote.GetOutControls().GetByNumber(2).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(1)));
+			keyboardNote.GetOutControls().GetByNumber(3).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(0)));		
 
-			breathController.mInNote.LinkOutWithInControl( 0, &mMIDIHandler, 1 );
-			breathController.mInNote.LinkOutWithInControl( 1, &mMIDIHandler, 0);
-			breathController.mInNote.LinkOutWithInControl( 2, &mMIDIHandler, 1);
-			breathController.mInNote.LinkOutWithInControl( 3, &mMIDIHandler, 0);
+			breathController.mInNote.GetOutControls().GetByNumber(0).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(1)));
+			breathController.mInNote.GetOutControls().GetByNumber(1).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(0)));
+			breathController.mInNote.GetOutControls().GetByNumber(2).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(1)));
+			breathController.mInNote.GetOutControls().GetByNumber(3).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(0)));
 
-			breathController.mAirSpeed.LinkOutWithInControl( 0, &mMIDIHandler, 3 );
+
+			breathController.mAirSpeed.GetOutControls().GetByNumber(0).AddLink(&(mMIDIHandler.GetInControls().GetByNumber(3)));
 
 			mFileAudioOut.Start();
 			mMIDIManager.Start();
@@ -233,13 +229,9 @@ protected:
 
 		mAudioManager = new AudioManager( DSPCfg.GetSampleRate(), DSPCfg.GetHopSize());	
 
-		mAudioManager->SetInternalBuffersNumber(12);
-
 		AudioIOConfig iocfgL;
-		iocfgL.SetName("left out");
 		iocfgL.SetChannelID(0);
 		AudioIOConfig iocfgR;
-		iocfgR.SetName("right out");
 		iocfgR.SetChannelID(1);
 		mAudioOutL = new AudioOut(iocfgL);
 	}

@@ -49,6 +49,9 @@
 #include <FL/Fl_Menu_Item.H>
 #include <FL/fl_file_chooser.H>
 
+
+#undef GetClassName
+
 #include "CBL.hxx"
 
 #define HorPos fl_width(name)

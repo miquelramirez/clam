@@ -36,7 +36,6 @@ class Qt_OutControlPresentation : public QWidget, public ConnectionPointPresenta
 {
 public:
 	Qt_OutControlPresentation( int id, QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_OutControlPresentation();
 	virtual void Show();
 	virtual void Hide();
 	void updatePosition();

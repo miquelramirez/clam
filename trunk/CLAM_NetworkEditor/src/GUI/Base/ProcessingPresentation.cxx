@@ -67,6 +67,11 @@ ProcessingPresentation::~ProcessingPresentation()
 	for ( it=mOutControlPresentations.begin(); it!=mOutControlPresentations.end(); it++)
 		delete *it;
 
+	mInPortPresentations.clear();
+	mOutPortPresentations.clear();
+	mInControlPresentations.clear();
+	mOutControlPresentations.clear();
+
 	if (mConfig)
 	{
 		mConfig->Hide();

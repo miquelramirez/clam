@@ -23,7 +23,7 @@ CFG=AudioApplicationExample - Win32 Debug
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName "CLAM_Skeleton_project"
+# PROP Scc_ProjName "empty"
 # PROP Scc_LocalPath "."
 CPP=cl.exe
 RSC=rc.exe
@@ -37,19 +37,19 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "..\ReleaseFiles\bin"
-# PROP Intermediate_Dir "..\ReleaseFiles\obj"
+# PROP Output_Dir "../ReleaseFiles/bin"
+# PROP Intermediate_Dir "../ReleaseFiles/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\System\Application" /I "..\..\..\..\src\Tools\AudioIO"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "__WINDOWS_DS__" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\System\Application" /I "..\..\..\..\src\Tools\AudioIO"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
+# ADD BASE LINK32
 # ADD LINK32 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\dxsdk\lib" fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
@@ -62,19 +62,19 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\DebugFiles\bin"
-# PROP Intermediate_Dir "..\DebugFiles\obj"
+# PROP Output_Dir "../DebugFiles/bin"
+# PROP Intermediate_Dir "../DebugFiles/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\System\Application" /I "..\..\..\..\src\Tools\AudioIO"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "__WINDOWS_DS__" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Generators" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\System\Application" /I "..\..\..\..\src\Tools\AudioIO"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
-# ADD RSC /l 0xc0a /d "_DEBUG"
+# ADD RSC /l 0xc0a
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD BASE LINK32
 # ADD LINK32 /libpath:"..\..\..\..\..\fltk\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\dxsdk\lib" fltk_1_1d.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
@@ -94,7 +94,7 @@ LINK32=link.exe
 
 # Begin Source File
 
-SOURCE=..\..\..\..\examples\GUIAudioApplicationExample.cxx
+SOURCE=..\..\..\..\examples\AudioApplicationExample.cxx
 # End Source File
 # End Group
 # Begin Group "Tools Sources"
@@ -109,19 +109,18 @@ SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\DirectXAudioDevice.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\RtAAudioDevice.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.cxx
 # End Source File
+# End Group
+# Begin Group "RtAudio Sources"
+
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\RtAudio.cpp
+SOURCE=..\..\..\..\src\Tools\AudioIO\RtAudio\RtAAudioDevice.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\RtAudioUtils.cxx
+SOURCE=..\..\..\..\src\Tools\AudioIO\RtAudio\RtAudio.cxx
 # End Source File
 # End Group
 # Begin Source File
@@ -163,6 +162,28 @@ SOURCE=..\..\..\..\src\Errors\ErrDynamicType.cxx
 
 SOURCE=..\..\..\..\src\Defines\Assert.cxx
 # End Source File
+# End Group
+# Begin Group "Storage Sources"
+
+# Begin Group "XML Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\BasicXMLable.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLComponentAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLStorage.cxx
+# End Source File
+# End Group
 # End Group
 # Begin Group "Base Sources"
 
@@ -289,6 +310,10 @@ SOURCE=..\..\..\..\src\Processing\AudioIO\AudioOut.cxx
 
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Processing\Generators\SimpleOscillator.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Processing\Generators\Oscillator.cxx
 # End Source File
 # End Group
@@ -297,6 +322,10 @@ SOURCE=..\..\..\..\src\Processing\Generators\Oscillator.cxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\AudioAdder.cxx
 # End Source File
 # End Group
 # End Group
@@ -324,6 +353,63 @@ SOURCE=..\..\..\..\src\System\Application\GUIAudioApplication.cxx
 # End Group
 # Begin Group "Header Files"
 
+# Begin Group "Storage Headers"
+
+# Begin Group "Base Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
+# End Source File
+# End Group
+# Begin Group "XML Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\BasicXMLable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLComponentAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLIterableAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLArrayAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLStorage.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomDocumentHandler.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomWritingContext.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomReadingContext.hxx
+# End Source File
+# End Group
+# End Group
 # Begin Group "Errors Headers"
 
 # Begin Source File
@@ -351,6 +437,10 @@ SOURCE=..\..\..\..\src\Defines\Assert.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Defines\mtgsstream.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Defines\StaticBool.hxx
 # End Source File
 # Begin Source File
@@ -360,10 +450,6 @@ SOURCE=..\..\..\..\src\Defines\TypeInfo.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Defines\TypeInfoStd.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\CLAM_Math.hxx
 # End Source File
 # Begin Source File
 
@@ -379,7 +465,7 @@ SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Defines\mtgsstream.h
+SOURCE=..\..\..\..\src\Defines\CLAM_Math.hxx
 # End Source File
 # Begin Source File
 
@@ -393,40 +479,30 @@ SOURCE=..\..\..\..\src\Defines\Windows\CLAM_windows.h
 # End Source File
 # End Group
 # End Group
-# Begin Group "Base Headers"
+# Begin Group "Base Headers No. 1"
 
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Base\Component.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Base\DynamicType.hxx
 # End Source File
-# End Group
-# Begin Group "Storage Headers"
-
-# Begin Group "Base Headers No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
-# End Source File
-# End Group
 # End Group
 # Begin Group "Standard Headers"
 
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\Array.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\FastRounding.hxx
 # End Source File
 # Begin Source File
 
@@ -560,6 +636,10 @@ SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Processing\Base\ProcessingConfig.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Processing\Base\Processing.hxx
 # End Source File
 # Begin Source File
@@ -590,6 +670,10 @@ SOURCE=..\..\..\..\src\Processing\AudioIO\AudioOut.hxx
 
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Processing\Generators\SimpleOscillator.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Processing\Generators\Oscillator.hxx
 # End Source File
 # End Group
@@ -602,6 +686,10 @@ SOURCE=..\..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\ArithOps\AudioMultiplier.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\ArithOps\AudioAdder.hxx
 # End Source File
 # End Group
 # End Group
@@ -623,19 +711,18 @@ SOURCE=..\..\..\..\src\Tools\AudioIO\AudioDevice.hxx
 
 SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\DXFullDuplex.hxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\RtAudio.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Tools\AudioIO\Windows\RtAudioUtils.hxx
-# End Source File
 # End Group
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Tools\AudioIO\AudioDeviceList.hxx
 # End Source File
+# Begin Group "RtAudio Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Tools\AudioIO\RtAudio\RtAudio.hxx
+# End Source File
+# End Group
 # End Group
 # End Group
 # Begin Group "System Headers"
@@ -653,6 +740,10 @@ SOURCE=..\..\..\..\src\System\Application\BaseAudioApplication.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\System\Application\GUIAudioApplication.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\System\Application\AudioApplication.hxx
 # End Source File
 # End Group
 # End Group

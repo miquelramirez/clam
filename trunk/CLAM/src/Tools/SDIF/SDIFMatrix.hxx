@@ -1,5 +1,5 @@
-#ifndef __Matrix__
-#define __Matrix__
+#ifndef _SdifMatrix_hxx_
+#define _SdifMatrix_hxx_
 
 #include "SDIFHeader.hxx"
 
@@ -11,7 +11,7 @@
 namespace SDIF
 {
 	/** The data in a Frames are stored in 2D matrices.
-	* Each column corresponds to a parameter like frequency or amplitude and 
+	* Each column corresponds to a parameter like frequency or amplitude and
 	* each row represents an object like a filter, sinusoid, or noise band.
 	* Each Matrix starts with a MatrixHeader, that contains a
 	*       type id, and the dimensions of the matrix.
@@ -41,7 +41,7 @@ namespace SDIF
 		virtual ~Matrix() { }
 
 		TypeId Type(void) {return mHeader.mType;}
-		
+
 		CLAM::TInt32 Rows(void) { return mHeader.mnRows; }
 		CLAM::TInt32 Columns(void) { return mHeader.mnColumns; }
 		CLAM::TInt32 SizeInFile(void)
@@ -50,7 +50,7 @@ namespace SDIF
 			CLAM::TUInt32 elemSize = mHeader.mDataType&0xFF;
 			CLAM::TUInt32 size = nElems*elemSize;
 			CLAM::TUInt32 padding = 8-size&7;
-			
+
 			return mHeader.SizeInFile()+size+padding;
 		}
 	};
@@ -70,7 +70,7 @@ namespace SDIF
 		ConcreteMatrix(
 				const TypeId& type = TypeId::sDefault,
 				CLAM::TInt32 nRows = 0, CLAM::TInt32 nColumns = 0)
-			:Matrix(type,GetType<T>::Get(),nRows,nColumns)
+			: Matrix(type,GetType<T>::Get(),nRows,nColumns)
 		{
 			CLAM::TInt32 nElems = Rows()*Columns();
 			Resize(nElems);
@@ -110,4 +110,4 @@ namespace SDIF
 	};
 }
 
-#endif
+#endif//_SdifMatrix_hxx_

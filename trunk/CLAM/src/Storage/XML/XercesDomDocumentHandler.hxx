@@ -94,9 +94,10 @@ public:
 		setDocument(domDoc);
 		_parser = reader.adoptParser();
 	}
-	void writeDocument(std::ostream & os)
+	void writeDocument(std::ostream & os, bool useIndentation=false)
 	{
 		XercesDomWriter writer;
+		writer.DoIndentedFormat(useIndentation);
 		writer.write(os,_document);
 
 	}
