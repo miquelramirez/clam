@@ -1,6 +1,7 @@
 
 # Top points to the root directory of your project
 TOP = ../
+include clam-location.cfg
 
 include $(CLAM_PATH)/build/Makefile.rules
 
