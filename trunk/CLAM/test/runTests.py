@@ -8,11 +8,11 @@ enableSendMail = True
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
 updateLevelForCLAM = 1
-updateLevelForExamples = 0
-updateLevelForTestData = 0
+updateLevelForExamples = 1
+updateLevelForTestData = 1
 
 # When false keeps already compiled objects
-doCleanMake = False
+doCleanMake = True
 # When false does not run autoconf and configure unless a new checkout
 doAutoconf = False
 configureOptions = '--without-portmidi  --without-portaudio'
@@ -228,7 +228,7 @@ def checkPaths() :
 	
 
 def parseCompilationWarnings(compilationOut) :
-	nwarnings = compilationOut.count('warning')
+	nwarnings = compilationOut.count('warning') + compilationOut.count('avís')
 	warnings = ''
 	if nwarnings > 0 :
 		warnings = ' - found %d warnings !'% (nwarnings)
