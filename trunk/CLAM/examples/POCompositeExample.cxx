@@ -70,7 +70,7 @@ class BigProcessing : public ProcessingComposite {
 
 	// Processing Object compliance methods.
 
-	const char *GetClassName() {return "BigProcessing";}
+	const char *GetClassName() const {return "BigProcessing";}
 
 	/** Configuration method */
 	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);

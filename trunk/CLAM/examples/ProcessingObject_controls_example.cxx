@@ -69,6 +69,7 @@ public:
 		Configure(c);
 	}
 	virtual ~MyProcObj(){}
+	const char * GetClassName() const {return "CLAMTest_MyProcObj";}
 	
 	TControlData mState;
 public:
