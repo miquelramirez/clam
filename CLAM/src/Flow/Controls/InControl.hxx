@@ -194,7 +194,7 @@ InControlArray::~InControlArray()
 template <class Processing>
 class InControlTmplArray
 {
-	typedef typename InControlTmpl<Processing> TInControl;
+	typedef InControlTmpl<Processing> TInControl;
 	typedef typename TInControl::TPtrMemberFuncId TPtrMemberFuncId;
 
 	Array<TInControl*> mArray;
