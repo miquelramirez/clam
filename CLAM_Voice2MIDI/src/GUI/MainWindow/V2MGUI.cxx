@@ -127,6 +127,7 @@ void V2MGUI::save_audio()
 			}
 			else
 			{
+				fclose(fp);
 				int err = v2mFacade->SaveAudio((fn));
 				if(err)
 					Message(QMessageBox::Warning,"file error","Unable to write the file.");
@@ -148,6 +149,7 @@ void V2MGUI::save_melody()
 			}
 			else
 			{
+				fclose(fp);
 				if(segmentationEditor->IsModified()) segmentationEditor->SaveMelody();
 				v2mFacade->StoreMelody(fn.ascii());
 				UpdateEnabled(eSaveMelody);
@@ -167,6 +169,7 @@ void V2MGUI::save_midi_melody()
 			}
 			else
 			{
+				fclose(fp);
 				if(pianoRoll->IsModified()) segmentationEditor->SaveMelody();
 				v2mFacade->StoreMIDIMelody(fn.ascii());
 				UpdateEnabled(eSaveMIDIMelody);
