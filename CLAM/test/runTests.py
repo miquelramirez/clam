@@ -24,7 +24,7 @@ configureOptions = '--without-portmidi  --without-portaudio'
 # Non-test are runned those seconds and then killed
 executionTime = 15 
 
-configurations = ['release'] #['debug', 'release'] 
+configurations = ['debug', 'release'] 
 
 # Mail report settings
 publicAddress = 'clam-devel@iua.upf.es' # To use only when fails
@@ -319,7 +319,8 @@ def compileAndRun(name, path) :
 		# compilation phase
 		if doCleanMake :
 			getStatusOutput('make clean')
-		makecmd = 'make depend && make CONFIG=%s' % (configuration)
+		getStatusOutput( 'make depend' )
+		makecmd = 'make CONFIG=%s' % (configuration)
 		ok, output = getStatusOutput( makecmd )
 		foundCompilationErrors = foundCompilationErrors or not ok
 		if not ok :
