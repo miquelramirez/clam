@@ -6,7 +6,9 @@ namespace CLAM
     namespace VM
     {
 	NetSpecgramPlotController::NetSpecgramPlotController()
-	    : mMonitor(0),_index(0),_specSize(0),_palette(0.0f)
+	    : mMonitor(0),_index(0),_specSize(0),_palette(0.0f),
+	      _leftIndex1(0), _rightIndex1(0), _leftIndex2(0), _rightIndex2(0),
+	      _bottomBound(0), _topBound(0)
 	{
 	    SetnSamples(100);
 	    mSlotNewData.Wrap(this,&NetSpecgramPlotController::OnNewData);
@@ -41,7 +43,9 @@ namespace CLAM
 	    if(CanSendData())
 	    {
 		SetCanGetData(false);
-		_renderer.SetData(_cachedData,_index);
+		ComputeIndexes();
+		_renderer.SetIndexes(_leftIndex1, _rightIndex1, _leftIndex2, _rightIndex2, TIndex(_view.left));
+		_renderer.SetData(_cachedData,_bottomBound, _topBound);
 		SetCanGetData(true);
 	    }
 	    _renderer.Render();
@@ -143,6 +147,46 @@ namespace CLAM
 		}
 		SetCanSendData(true);
 	    }
+	}
+
+	void NetSpecgramPlotController::ComputeIndexes()
+	{
+	   _bottomBound=TIndex(_view.bottom);
+	    _topBound=TIndex(_view.top);
+	    if(_topBound < (TIndex)_specSize) _topBound+=1;
+	    
+	    unsigned width=unsigned(_view.right-_view.left);
+	    if(width < 4) width=4;
+	    if(width==unsigned(GetnSamples()))
+	    {
+		_leftIndex1=TIndex(_index);
+		_rightIndex1=TIndex(_cachedData.size());
+		_leftIndex2=0;
+		_rightIndex2=TIndex(_index);
+		return;
+	    }
+
+	    unsigned left1=unsigned(_index)+unsigned(_view.left);
+	    unsigned left2=0;
+	    if(left1 > (unsigned)_cachedData.size())
+	    {
+		left2=left1-unsigned(_cachedData.size());
+		left1=unsigned(_cachedData.size());
+	    }
+	    unsigned rest=0;
+	    unsigned right1=left1+width+4;
+	    if(right1 > (unsigned)_cachedData.size())
+	    {
+		rest=right1-unsigned(_cachedData.size());
+		right1=unsigned(_cachedData.size());
+	    }
+	   
+	    _leftIndex1=TIndex(left1);
+	    _rightIndex1=TIndex(right1);
+	    _leftIndex2=TIndex(left2);
+	    _rightIndex2=_leftIndex2+TIndex(rest);
+	    if(_rightIndex2 > _leftIndex1) _rightIndex2=_leftIndex1;
+	    
 	}
     }
 }

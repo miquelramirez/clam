@@ -31,13 +31,14 @@ namespace CLAM
 	    BuffDataRenderer _renderer;
 	    int _index;
 	    TSize _frameSize;
+	    TIndex _leftIndex1,_rightIndex1,_leftIndex2,_rightIndex2;
 	    SigSlot::Slotv0 mSlotNewData;
 
 	    void AddData(const DataArray& data);
 	  
 	    void Init(const TSize& frameSize);
 	    void OnNewData();
-	    
+	    void ComputeIndexes();
 	};
     }
 }

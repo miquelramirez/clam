@@ -13,12 +13,16 @@ namespace CLAM
 	    BuffDataRenderer();
 	    virtual ~BuffDataRenderer();
 
-	    void SetDataPtr(const TData* data, unsigned nElems, unsigned index);
+	    void SetDataPtr(const TData* data);
+	    void SetIndexes(const TIndex& left1, const TIndex& right1, 
+			    const TIndex& left2, const TIndex& right2, 
+			    const TIndex& begin);
 	    void Render();
 
 	private:
 	    const TData* _data;
-	    unsigned _nElems, _index;
+	    TIndex _leftIndex1, _rightIndex1, _leftIndex2, _rightIndex2;
+	    TIndex _begin;
 	};
     }
 }
