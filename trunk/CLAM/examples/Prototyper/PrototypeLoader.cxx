@@ -10,6 +10,7 @@
 #include "AudioManager.hxx"
 #include "QtSlot2Control.hxx"
 #include "NetPeaksPlot.hxx"
+#include "PeaksPlotProcessing.hxx"
 
 
 class NetworkPlayer
@@ -28,7 +29,6 @@ public:
 		_network.AddFlowControl( new CLAM::PushFlowControl( /*frameSize*/ 512 ));
 		CLAM::XmlStorage::Restore(_network,networkFile);
 		_thread.SetThreadCode( makeMemberFunctor0( *this, NetworkPlayer, Do ) );
-		Start();
 	}
 	void Start()
 	{
@@ -118,12 +118,22 @@ void connectWidgetsWithMappedControls(CLAM::Network & network, QWidget * prototy
 }
 void connectWidgetsWithPeaksPorts(CLAM::Network & network, QWidget * prototype)
 {
-	QObjectList * widgets = prototype->queryList("CLAM::VM::NetPeaksPlot",0);
+	QObjectList * widgets = prototype->queryList("CLAM::VM::NetPeaksPlot","OutPort::.*");
 	for (QObjectListIt it(*widgets); it.current(); ++it)
 	{
 		QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
-		std::string controlName(aWidget->name());
+		std::string controlName(aWidget->name() + 9);
+		for (std::string::size_type colonPosition = controlName.find("::", 0);
+			colonPosition!=std::string::npos;
+			colonPosition = controlName.find("::", colonPosition))
+		{
+			controlName.replace(colonPosition, 2, ".");
+		}
+		controlName = "SMSPitchShift_11.Out SpectralPeaks";
 		std::cout << "Peak Port Monitor: " << controlName << std::endl;
+		CLAM::Processing * monitor = new CLAM::PeaksPlotProcessing;
+		network.AddProcessing("PrototyperMonitor",monitor);
+		network.ConnectPorts(controlName,"PrototyperMonitor.Peaks Input");
 	}
 
 }
@@ -134,6 +144,7 @@ QWidget * loadPrototype(CLAM::Network & network, char* uiFile)
 
 	connectWidgetsWithControls(network,prototype);
 	connectWidgetsWithMappedControls(network,prototype);
+	connectWidgetsWithPeaksPorts(network,prototype);
 
 	return prototype;
 
@@ -155,18 +166,22 @@ int main( int argc, char *argv[] )
 
 	
 
+	QApplication app( argc, argv );
+
 	NetworkPlayer player(networkFile);
 
-	QApplication app( argc, argv );
 
 	QWidget * prototype = loadPrototype(player.Network(), uiFile);
 
 	if (!prototype) return -1;
 
+
 	// Set up the dynamic dialog here
 	app.setMainWidget( prototype );
 
 	prototype->show();
+
+	player.Start();
 	int result = app.exec();
 
 	return result;
