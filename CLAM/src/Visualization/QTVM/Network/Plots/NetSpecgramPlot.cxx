@@ -20,6 +20,11 @@ namespace CLAM
 	    ((NetSpecgramPlotController*)_controller)->SetData(spec);
 	}
 
+	void NetSpecgramPlot::SetMonitor(MonitorType & monitor)
+	{
+	    ((NetSpecgramPlotController*)_controller)->SetMonitor(monitor);
+	}
+
 	void NetSpecgramPlot::SetPlotController()
 	{
 	    SetController(new NetSpecgramPlotController());
