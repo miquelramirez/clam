@@ -39,11 +39,11 @@ namespace CLAM
 {
 
 Thread::Thread(bool realtime):
+	mRealtime(realtime),
 	mHasCode( false ), 
-  mHasCleanup( false ),
+	mHasCleanup( false ),
 	mIsCancelled(false),
-	mRunning(false),
-	mRealtime(realtime)
+	mRunning(false)
 {
 }
 
