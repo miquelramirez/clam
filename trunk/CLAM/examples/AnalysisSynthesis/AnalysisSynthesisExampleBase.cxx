@@ -334,6 +334,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSound(void)
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	outfilecfg.SetFilename(mGlobalConfig.GetOutputSoundFile());
+	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
 
 	myAudioFileOut.Configure(outfilecfg);
 
@@ -350,13 +351,12 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundSinusoidal(void)
 	outfilecfg.SetChannels(1);
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
-	outfilecfg.SetFilename(mGlobalConfig.GetOutputSoundFile());
 	std::string filename(
 		mGlobalConfig.GetOutputSoundFile().
 			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
 	filename += "_sin.wav";
-
 	outfilecfg.SetFilename(filename);
+	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
 	
 	myAudioFileOut.Configure(outfilecfg);
 
@@ -372,8 +372,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundResidual(void)
 	outfilecfg.SetChannels(1);
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
-	myAudioFileOut.Configure(outfilecfg);
-	
+	outfilecfg.SetSampleRate(mGlobalConfig.GetSamplingRate());
 	std::string filename(
 		mGlobalConfig.GetOutputSoundFile().
 			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
