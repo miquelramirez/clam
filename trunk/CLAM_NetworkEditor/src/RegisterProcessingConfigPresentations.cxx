@@ -78,6 +78,8 @@
 // Controls
 #include "Fundamental2Control.hxx"
 #include "ControlPrinter.hxx"
+#include "ControlScaler.hxx"
+#include "ControlMapper.hxx"
 
 //MIDI
 #include "MIDIKeyboard.hxx"
@@ -218,6 +220,8 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
        regtFundamental2ControlConfig("Fundamental2ControlConfig");
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ControlPrinterConfig> >
        regtControlPrinterConfig("ControlPrinterConfig");
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ControlScalerConfig> >
+       regtControlScalerConfig("ControlScalerConfig");
 
 // MIDI
 

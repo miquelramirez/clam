@@ -100,6 +100,8 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem( utils, "OutControlSender" );	
 	new ProcessingItem( utils, "Fundamental2Control" );	
 	new ProcessingItem( utils, "ControlPrinter" );	
+	new ProcessingItem( utils, "ControlScaler" );	
+	new ProcessingItem( utils, "ControlMapper" );	
 
 	QListViewItem* winplots = new QListViewItem(this,"Plots in new windows");
 	new ProcessingItem(winplots, "AudioPlotProcessing");

@@ -122,6 +122,11 @@ void NetworkController::ProcessingLoop()
 		ExecuteEvents();
 		mObserved->DoProcessings();
 	}
+
+	CLAM::MIDIManager::Current().Stop();	// this is a provisional hack
+	printf( "Stopping MIDIManager... (provisional hack) \n");
+
+
 }
 
 void NetworkController::ProcessingNameChanged( const std::string & newName, ProcessingController * controller )
@@ -182,10 +187,6 @@ void NetworkController::ChangeState( bool state)
 		if(!mThread.IsRunning())
 			return;
 		
-
-//		CLAM::MIDIManager::Current().Stop();	// this is a provisional hack
-		printf( "Stopping MIDIManager... (provisional hack) \n");
-
 		mLoopCondition = false;
 		mThread.Stop();
 		mObserved->Stop();

@@ -80,10 +80,14 @@ void Qt_OutControlSenderPresentation::ConfigurationUpdated( bool ok )
 void Qt_OutControlSenderPresentation::AdjustControlRepresentationValues()
 {
 	QRangeControl * controlRepresentation = dynamic_cast<QRangeControl*>( mControlRepresentation );
+
 	controlRepresentation->setRange( (int)(round(mMin/mStep)),
-			   (int)(round(mMax/mStep)) );
-	
-	controlRepresentation->setValue( (int)(mDefault/mStep) );
+		(int)(round(mMax/mStep)) );
+
+	if ( mInvertDirection ) 
+		controlRepresentation->setValue( (int)(round(mMin/mStep)) + (int)(round((mMax-mDefault)/mStep)) );
+	else
+		controlRepresentation->setValue( (int)(mDefault/mStep) );
 }
 
 void Qt_OutControlSenderPresentation::CreateControlRepresentationWidget( 
@@ -135,9 +139,9 @@ void Qt_OutControlSenderPresentation::CreateControlRepresentationWidget(
 void Qt_OutControlSenderPresentation::SlotValueChanged( int value )
 {
 	if ( mInvertDirection ) 
-		SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( mMax - value*mStep ) );
-	
-	else SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( value*mStep ) );
+		SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( mMin + mMax - value*mStep ) );
+	else	
+	SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( value*mStep ) );
 }
 
 void Qt_OutControlSenderPresentation::ExecuteResize( const QPoint & difference )
@@ -165,6 +169,8 @@ void Qt_OutControlSenderPresentation::ExecuteResize( const QPoint & difference )
 		case DownRight:
 			newGeometry.setWidth( difference.x() + width() );
 			newGeometry.setHeight( difference.y() + height() );
+			break;
+		default: 
 			break;
 	}
 	setGeometry( newGeometry );
