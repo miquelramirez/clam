@@ -7,6 +7,9 @@
 #include <qmessagebox.h>
 #include <algorithm>
 #include <qpopupmenu.h>
+#include <qprogressdialog.h>
+#include <qapplication.h>
+#include <qeventloop.h>
 
 #include "AnalyzeWindow.hxx"
 #include "OpenProjectDialog.hxx"
@@ -141,9 +144,9 @@ void Annotator::initAudioWidget()
 
 void Annotator::initLLDescriptorsWidgets()
 {
-  //TODO: The user should select this schema
-  CLAM::XMLStorage s;
-  s.Restore(mLLDSchema,"LLDSchema.xml");
+  
+
+  LoadDescriptorPool();
 
   int nTabs = mLLDSchema.GetLLDNames().size();
         
@@ -213,7 +216,7 @@ void Annotator::analyze()
 
 void Annotator::doAnalysis()
 {
-  std::cout<<"doing analysis"<<std::endl;
+  //std::cout<<"doing analysis"<<std::endl;
   drawLLDescriptors(mCurrentIndex);
   drawAudio(NULL);
   fillGlobalDescriptors(mCurrentIndex);
@@ -545,12 +548,23 @@ void Annotator::songsClicked( QListViewItem * item)
 {
          if (item != 0)
 	{
-		mCurrentIndex = mSongDescriptorsIndex[std::string(item->text(0).ascii()) ];
+	        CLAM::AudioFile file;
+	      	file.OpenExisting(item->text(0).ascii());
+	        mpProgressDialog = new QProgressDialog ("Loading Audio", 
+							"Cancel",file.GetHeader().GetLength(),
+							this);
+		std::cout<<file.GetHeader().GetLength()<<std::endl;
+                mpProgressDialog->setProgress(0);
+		//mpProgressDialog->show();
+                mCurrentIndex = mSongDescriptorsIndex[std::string(item->text(0).ascii()) ];
 		fillGlobalDescriptors( mCurrentIndex );
 		drawAudio(item);
 		drawLLDescriptors(mCurrentIndex);
 		songAnalyzeAction->setEnabled( TRUE );
 		songAnalyzeAllAction->setEnabled (TRUE );
+		
+		delete mpProgressDialog;
+		mpProgressDialog = NULL;
 
 	}
 }
@@ -579,7 +593,7 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 
 void Annotator::drawLLDescriptors(int index)
 {
-  std::cout<<"drawing lldescriptors"<<std::endl;
+  //std::cout<<"drawing lldescriptors"<<std::endl;
   std::vector<CLAM::Envelope_Point_Editor*>::iterator it;
   std::vector<CLAM::Envelope*>::iterator it2;
  
@@ -589,10 +603,10 @@ void Annotator::drawLLDescriptors(int index)
 
   for(it=mFunctionEditors.begin(),it2=mEnvelopes.begin();it!=mFunctionEditors.end();it++,it2++)
     {
-      std::cout<<"in the drawing loop"<<std::endl;
+      //std::cout<<"in the drawing loop"<<std::endl;
       if(mHaveLLDescriptors[index])
 	{
-	  std::cout<<"Have it";
+	  //std::cout<<"Have it";
 	  (*it)->set_envelope(*it2);
 	  (*it)->show();
 	}
@@ -605,9 +619,9 @@ void Annotator::loadAudioFile(const char* filename)
 {
 	const CLAM::TSize readSize = 1024;
 	CLAM::AudioFile file;
-	std::cout<<filename<<"\n";
+//	std::cout<<filename<<"\n";
 	file.OpenExisting(filename);
-//	std::cout<<audio.GetSize()<<"\n";
+	std::cout<<file.GetHeader().GetLength()<<"\n";
 	int nChannels = file.GetHeader().GetChannels();
 	std::vector<CLAM::Audio> audioFrameVector(nChannels);
 	int i;
@@ -619,12 +633,20 @@ void Annotator::loadAudioFile(const char* filename)
 	reader.Start();
 	int beginSample=0;
 	mCurrentAudio.SetSize(0);
+	//	mpProgressDialog = new QProgressDialog("Loading Audio File", 
+	//					      "Cancel",file.GetHeader().GetSamples());
+//mpProgressDialog->setProgress( 0 );
+	float samplingRate = mCurrentAudio.GetSampleRate();
 	while(reader.Do(audioFrameVector))
 	{
 		mCurrentAudio.SetSize(mCurrentAudio.GetSize()+audioFrameVector[0].GetSize());
 		mCurrentAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
 		beginSample+=readSize;
+		qApp->eventLoop()->processEvents( QEventLoop::AllEvents );
+		mpProgressDialog->setProgress( beginSample/samplingRate*1000.0 );
+		if (mpProgressDialog->wasCanceled()) break;
 	}
+	std::cout<<beginSample/samplingRate*1000.0<<std::endl;
 	reader.Stop();
  
 }
@@ -695,16 +717,47 @@ void Annotator::languageChange()
       tabWidget2->changeTab( (*it), tr((*it2).c_str() ) );
       
     }
-    /*
-    tabWidget2->changeTab( mTabPages[0], tr( "Pitch" ) );
-    tabWidget2->changeTab( mTabPages[1], tr( "Energy" ) );
-    tabWidget2->changeTab( mTabPages[2], tr( "Centroid" ) );
-    tabWidget2->changeTab( mTabPages[3], tr( "SpecSpread" ) );
-    tabWidget2->changeTab( mTabPages[4], tr( "SpecDev" ) );
-    tabWidget2->changeTab( mTabPages[5], tr( "SpecVar" ) );
-    tabWidget2->changeTab( mTabPages[6], tr( "SpecFlatness" ) );
-    tabWidget2->changeTab( mTabPages[7], tr( "SpecKurtosis" ) );
-    tabWidget2->changeTab( mTabPages[8], tr( "SpecSkewness" ) );
-    tabWidget2->changeTab( mTabPages[9], tr( "SpecRolloff" ) );
-    */
 }
+
+void Annotator::LoadDescriptorPool()
+{
+  //TODO: The user should select this schema
+  CLAM::XMLStorage::Restore(mLLDSchema,"LLDSchema.xml");
+  //Create Descriptors Pool Scheme and add attributes following loaded LLD schema
+  
+  std::list<std::string>::iterator it;
+  std::list<std::string>& descriptorsNames = mLLDSchema.GetLLDNames();
+  for(it = descriptorsNames.begin(); it != descriptorsNames.end(); it++)
+  {
+    mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
+  }
+ 
+  //Create Descriptors Pool
+  mpDescriptorPool = new CLAM::DescriptionDataPool(mDescriptionScheme);
+
+  //Load Descriptors Pool
+  CLAM::XMLStorage::Restore((*mpDescriptorPool),"DescriptorsPool.xml");
+  
+/*  
+  //Define Number of frames
+  int nFrames = 25;
+  mpDescriptorPool->SetNumberOfContexts("Frame",nFrames);
+  /*BTW, What happens if the Number of Contexts is modified after values have
+    been written? Is it a destructive process?*/
+
+/*  int nDescriptors = descriptorsNames.size();
+  int i,n;
+  
+  /*Instantiate values and set them to zero (scope definition does not call
+  constructors?)*/
+/*  for (i = 0,it = descriptorsNames.begin(); i < nDescriptors; i++,it++)
+  {
+    CLAM::TData* values = mpDescriptorPool->GetWritePool<CLAM::TData>("Frame",(*it));
+    for (n = 0; n<nFrames; n++)
+    {
+      values[n]=0;
+    }
+  }
+*/
+}
+

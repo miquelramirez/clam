@@ -12,7 +12,8 @@
 #include "envelope.hxx"
 
 #include "LLDSchema.hxx"
-
+#include "DescriptionScheme.hxx"
+#include "Pool.hxx"
 
 namespace CLAM {
 		namespace VM 
@@ -20,6 +21,8 @@ namespace CLAM {
 				class QtAudioPlot;
 		};
 };
+
+class QProgressDialog;
 
 class Annotator : public AnnotatorBase
 {
@@ -85,6 +88,8 @@ class Annotator : public AnnotatorBase
                 void initEnvelopes();
                 void generateRandomEnvelopes();
 		CLAM::Envelope* generateRandomEnvelope();
+
+                void LoadDescriptorPool();
 	private:
 		bool mChanges;
 		AnnotatorDataFacade & mData;
@@ -108,6 +113,10 @@ class Annotator : public AnnotatorBase
                 std::vector<QWidget*> mTabPages;
                
                 CLAM::LLDSchema mLLDSchema;
+                CLAM::DescriptionScheme mDescriptionScheme;
+                CLAM::DescriptionDataPool* mpDescriptorPool;
+
+                QProgressDialog* mpProgressDialog;
 };
 
 #endif

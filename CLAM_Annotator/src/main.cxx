@@ -6,7 +6,7 @@
 
 int main( int argc, char ** argv )
 {
-    QApplication a( argc, argv );
+    QApplication app( argc, argv );
     QSplashScreen splash( QPixmap::fromMimeSource("simac.png") );
     splash.setCursor( QCursor(Qt::WaitCursor) );
     splash.show();
@@ -14,6 +14,6 @@ int main( int argc, char ** argv )
     AnnotatorEnter w;
     w.show();
     splash.finish(&w);
-    a.connect( &a, SIGNAL( lastWindowClosed() ), &a, SLOT( quit() ) );
-    return a.exec();
+    QObject::connect( qApp, SIGNAL( lastWindowClosed() ), qApp, SLOT( quit() ) );
+    return app.exec();
 }
