@@ -66,7 +66,6 @@ int main( int argc, char **argv )
 	NetworkGUI::MainWindow mw;
 	
 	mw.GetNetworkPresentation().AttachToNetworkController(controller);
-	controller.Publish();
 	app.setMainWidget(&mw);
 	mw.show();
 	app.connect( &app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()) );

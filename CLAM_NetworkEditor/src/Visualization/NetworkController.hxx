@@ -47,7 +47,10 @@ namespace CLAM
 	class Network;
 	class Processing;
 }
-
+namespace NetworkGUI
+{
+	class NetworkPresentation;
+}
 namespace CLAMVM
 {
 	class NetworkController : public ModelController
@@ -103,6 +106,8 @@ namespace CLAMVM
 		
 		void LoadNetworkFrom( const std::string & );
 		void SaveNetworkTo( const std::string & );
+
+		
 	private:		
 		CLAM::Thread mThread;
 		/** Main loop of the application, where DoProcessings method from network
@@ -217,9 +222,11 @@ namespace CLAMVM
 			return mProcessingControllers.end();
 		}
 
-		virtual bool Publish();
 		virtual bool Update();
 		virtual bool BindTo( CLAM::Network&  );
+		void AttachToNetworkPresentation( NetworkGUI::NetworkPresentation * netpresentation);
+
+		bool Publish() { return false; }
 
 	public:
 		SigSlot::Slotv1< bool > SlotChangeState;

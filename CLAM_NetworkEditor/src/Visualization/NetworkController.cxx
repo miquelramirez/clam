@@ -32,6 +32,11 @@
 namespace CLAMVM
 {
 	
+void NetworkController::AttachToNetworkPresentation( NetworkGUI::NetworkPresentation * netpresentation)
+{
+}
+
+
 NetworkController::NetworkController()
 {
 	mObserved=0;
@@ -437,13 +442,6 @@ std::string NetworkController::GetName()
 		return "network controller unbinded";
 	return mObserved->GetName();
 }
-
-bool NetworkController::Publish()
-{
-	CLAM_ASSERT(mObserved, "Trying to publish an unbinded network controller" );
-	return true;
-}
-
 bool NetworkController::BindTo( CLAM::Network& obj )
 {
 	mObserved = &obj;

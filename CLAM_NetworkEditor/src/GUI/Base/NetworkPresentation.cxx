@@ -163,6 +163,7 @@ NetworkPresentation::~NetworkPresentation()
 void NetworkPresentation::AttachToNetworkController(CLAMVM::NetworkController & controller)
 {
 	mNetworkController = & controller;
+	controller.AttachToNetworkPresentation(this);
 
 	SetName( controller.GetName() );
 	controller.SignalCreateProcessingPresentation.Connect( SlotCreateProcessingPresentation );
