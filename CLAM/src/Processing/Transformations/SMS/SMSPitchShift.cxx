@@ -25,12 +25,30 @@
 using namespace CLAM;
 
 
-bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, SpectralPeakArray& outPeaks,Spectrum& outRes)
+bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
+		const Fundamental& inFund, 
+		const Spectrum& inRes, 
+		SpectralPeakArray& outPeaks,
+		Fundamental& outFund,
+		Spectrum& outRes)
 {
 	outPeaks = inPeaks; //TODO big cludge for streaming
+	outFund = inFund;
 	outRes = inRes;
 
-	mSpectralEnvelope.SetSpectralRange(mSpectralRange);
+	TSize spectralRange = 22050; // default for SampleRate = 44100;
+
+	TData amount=mShiftAmount.GetLastValue();
+	if(amount==1)//no pitch shift
+		return true;
+	
+	spectralRange = inRes.GetSpectralRange();
+	mIsHarmonic.DoControl( inFund.GetFreq(0) );
+
+	for (int i=0;i<inFund.GetnCandidates();i++)
+		outFund.SetFreq(i,inFund.GetFreq(i)*amount);
+
+	mSpectralEnvelope.SetSpectralRange(spectralRange);
  	
 	bool haveEnvelope=false;
 
@@ -46,12 +64,12 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 	DataArray& oBinPosArray=outPeaks.GetBinPosBuffer();
 	TSize nPeaks=inPeaks.GetnPeaks();
 	TData newFreq;
-	TData amount=mShiftAmount.GetLastValue();
+	
 	//Shift all peaks
 	for(int i=0;i<nPeaks;i++)
 	{
 		newFreq=iFreqArray[i]*amount;
-		if(newFreq<mSpectralRange)
+		if(newFreq<spectralRange)
 		{
 			oFreqArray[i]=newFreq;
 			oBinPosArray[i]=iBinPosArray[i]*amount;
@@ -74,20 +92,15 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 
 bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
-	out=in;
-	TData amount=mShiftAmount.GetLastValue();
-	if(amount==1)//no pitch shift
-		return true;
-	mSpectralRange=in.GetResidualSpec().GetSpectralRange();
-	mIsHarmonic.DoControl(in.GetFundamental().GetFreq(0));
-	Fundamental tmpFund=in.GetFundamental();
+	out=in;	// TODO most likely this copy is not necessary
 
-	for (int i=0;i<in.GetFundamental().GetnCandidates();i++)
-	{
-		tmpFund.SetFreq(i,in.GetFundamental().GetFreq(i)*amount);
-	}
-	out.SetFundamental(tmpFund);
-	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),out.GetSpectralPeakArray(),out.GetResidualSpec());
+	return Do( in.GetSpectralPeakArray(),
+				in.GetFundamental(), 
+				in.GetResidualSpec(), 
+				out.GetSpectralPeakArray(),
+				out.GetFundamental(), 
+				out.GetResidualSpec() 
+				);
 
 }
 
