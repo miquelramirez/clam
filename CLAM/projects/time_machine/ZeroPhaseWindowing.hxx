@@ -43,7 +43,7 @@ namespace MTG {
 
 
   private:
-		const char *GetClassName() {return "ZeroPhaseWindowing";}
+		const char *GetClassName() const {return "ZeroPhaseWindowing";}
 
 		/** Configuration change method
 		 * @throw

@@ -41,7 +41,7 @@ namespace MTG {
 		bool Do(TData *pinputBuffer, TInt32 inSize, TData *poutputBuffer, TInt32 outSize);
 
   private:
-		const char *GetClassName() {return "ZeroPadding";}
+		const char *GetClassName() const {return "ZeroPadding";}
 
 		/** Configuration change method
 		 * @throw

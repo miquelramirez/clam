@@ -75,7 +75,7 @@ public:
 	{
 	}
 
-	virtual const char* GetClassName()
+	const char* GetClassName() const
 	{
 		return "TokenDelayView";
 	}
