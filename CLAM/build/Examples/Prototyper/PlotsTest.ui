@@ -21,12 +21,12 @@
         </property>
         <widget class="CLAM::VM::NetPeaksPlot">
             <property name="name">
-                <cstring>MySillyName</cstring>
+                <cstring>InPort::SMSAnalysisCore_2::</cstring>
             </property>
         </widget>
         <widget class="QSlider">
             <property name="name">
-                <cstring>InControl::SMSAnalysis::SpectralPeaks</cstring>
+                <cstring>InControl::SimpleOscillator_1::Pitch</cstring>
             </property>
             <property name="orientation">
                 <enum>Horizontal</enum>
@@ -35,4 +35,7 @@
     </vbox>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>NetPeaksPlot.hxx</includehint>
+</includehints>
 </UI>

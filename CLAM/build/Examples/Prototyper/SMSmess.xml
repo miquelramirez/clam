@@ -174,7 +174,7 @@
   </port_connection>
   <port_connection>
     <out>SMSAnalysisCore_2.Sinusoidal Peaks</out>
-    <in>SMSSinusoidalGain_1.In SpectralPeakArray</in>
+    <in>SMSSinusoidalGain_1.In SpectralPeaks</in>
   </port_connection>
   <port_connection>
     <out>SMSAnalysisCore_2.Residual Spectrum</out>
@@ -193,7 +193,7 @@
     <in>SMSPitchShift_11.In Spectrum</in>
   </port_connection>
   <port_connection>
-    <out>SMSSinusoidalGain_1.Out SpectralPeakArray</out>
+    <out>SMSSinusoidalGain_1.Out SpectralPeaks</out>
     <in>SMSPitchShift_11.In SpectralPeaks</in>
   </port_connection>
   <port_connection>
