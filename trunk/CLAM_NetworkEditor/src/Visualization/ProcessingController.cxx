@@ -122,6 +122,11 @@ bool ProcessingController::BindTo( CLAM::Processing& obj )
 	return true;
 }
 
+CLAM::Processing & ProcessingController::GetObserved()
+{
+	return *mObserved;
+}
+
 const CLAM::ProcessingConfig & ProcessingController::GetObservedConfig()
 {
 	return mObserved->GetConfig();

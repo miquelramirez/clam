@@ -7,6 +7,9 @@
 #include "OutControlSender.hxx"
 
 class QWidget;
+namespace CLAMVM {
+	class ProcessingController;
+}
 
 
 namespace NetworkGUI
@@ -18,6 +21,9 @@ class Qt_PortMonitorPresentation : public Qt_ProcessingPresentation
 	QWidget * mControlRepresentation;
 public:
 	Qt_PortMonitorPresentation();
+	void UpdateMonitor();
+	SigSlot::Slotv1<CLAMVM::ProcessingController&> SlotBindMonitor;
+	void BindMonitor(CLAMVM::ProcessingController & controller);
 /*
 	void UpdateSize( bool hasToResize = true );
 protected:

@@ -93,6 +93,7 @@ public:
 	 * We create a list if ports and controls for each processing
 	 */
 	bool BindTo( CLAM::Processing& obj );
+	CLAM::Processing & GetObserved();
 
 	NamesList::iterator BeginInPortNames();
 	NamesList::iterator EndInPortNames();

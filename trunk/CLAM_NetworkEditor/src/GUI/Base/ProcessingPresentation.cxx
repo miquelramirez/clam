@@ -116,6 +116,7 @@ void ProcessingPresentation::AttachTo(CLAMVM::ProcessingController & controller)
 	controller.SignalChangeState.Connect( SlotChangeState );
 
 	ChangeState( controller.GetProcessingExecState(), controller.GetProcessingStatus() );
+	SignalControllerAttached.Emit(controller);
 }
 
 ConnectionPointPresentation & ProcessingPresentation::GetOutPortPresentation( const std::string& name)
