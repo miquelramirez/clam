@@ -896,7 +896,8 @@ void SMSBase::ComputeLowLevelDescriptors()
 		Spectrum &tmpSpec=frames[i].GetSpectrum();
 		tmpFrameD.SetpFrame(&frames[i]);
 		tmpFrameD.GetSpectrumD().SetpSpectrum(&tmpSpec);
-		tmpFrameD.GetSpectrumD().SetEnergy(Energy()(tmpSpec.GetMagBuffer()));
+		Energy energyComputer;
+		tmpFrameD.GetSpectrumD().SetEnergy(energyComputer(tmpSpec.GetMagBuffer()));
 		frameDesc.AddElem(tmpFrameD);
 	}
 

@@ -205,7 +205,9 @@ TData SpectralDescriptors::ComputeLowFreqEnergyRelation()
 	
 	data.SetSize(index);
 
-	TData result=(Energy()(data)/mpStats->GetEnergy() );
+	Energy energyComputer;
+
+	TData result=(energyComputer(data)/mpStats->GetEnergy() );
 	data.SetSize(size);
 	return result;
 }
