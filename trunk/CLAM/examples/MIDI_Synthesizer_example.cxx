@@ -210,10 +210,10 @@ void MyAudioApplication::AudioMain(void)
 	try
 	{
 
-		unsigned int buffersize = 256;
+		unsigned int buffersize = 512;
 
 		// Audio and MIDI managers
-		AudioManager audioManager(48000,256*2);
+		AudioManager audioManager(48000,512);
 		MIDIManager midiManager;
 
 		// AudioIn

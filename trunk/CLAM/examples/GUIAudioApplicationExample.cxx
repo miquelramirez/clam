@@ -46,12 +46,9 @@ void MyAudioApplication::AudioMain(void)
 {
 	try
 	{
-		unsigned int buffersize = 256;
-#ifndef WIN32
-		AudioManager audioManager(48000,4096);
-#else
-		AudioManager audioManager(44100, 256*2 );
-#endif
+		unsigned int buffersize = 512;
+
+		AudioManager audioManager(44100, 512 );
 
 		AudioIOConfig inCfgL;
 		AudioIOConfig inCfgR;
