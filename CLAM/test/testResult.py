@@ -23,6 +23,7 @@ class TestResult :
 			self.debug.compilationOk = ok
 		else :
 			self.release.compilationOk = ok
+
 	def unitTestsFailures(self, config, nfailures):
 		self.__checkConfig(config)
 		if config == "debug" :

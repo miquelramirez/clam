@@ -7,8 +7,12 @@
 #----------------------------------------------------------------------
 # begin configuration
 
+
+	
 enableSendMail = True
 enablePlaceCvsTags = True
+
+quickTestForScriptDebuging = False  # important: to be enabled for debuging puroposes only
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
@@ -60,6 +64,18 @@ spvTestsPath = BUILDPATH + 'Tests/SupervisedTests/'
 nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
 simpleExamplesPath = BUILDPATH + 'Examples/Simple/'
 
+# update level: 0-Keep, 1-Update, 2-CleanCheckout
+# when the sandbox is not present always clean checkout
+
+if quickTestForScriptDebuging : 
+	enableSendMail = False
+	enablePlaceCvsTags = False
+	updateLevelForCLAM = 1 
+	updateLevelForExamples = 0
+	updateLevelForTestData = 0 
+	doCleanMake = False
+	doAutoconf = False
+	
 sandboxes = [ # Module, Sandbox name, Tag, Update level
 	( 'CLAM', SANDBOX_NAME, MODULE_TAG, updateLevelForCLAM),
 	( 'CLAM_DescriptorsGUI', 'clean-CLAM_DescriptorsGUI', '', updateLevelForExamples ),
@@ -72,9 +88,6 @@ sandboxes = [ # Module, Sandbox name, Tag, Update level
 	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', '', updateLevelForExamples ),
 	( 'CLAM-TestData', 'CLAM-TestData', '', updateLevelForTestData )
 ]
-# update level: 0-Keep, 1-Update, 2-CleanCheckout
-# when the sandbox is not present always clean checkout
-
 def baseDirOf(keyname) :
 	for modulename, sandboxname, _, _  in sandboxes :
 		if modulename.find(keyname) >= 0 : 
@@ -187,9 +200,9 @@ testsToRun[-1:-1] = simpleExamples
 testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
 
-# uncomment only for testing purposes: 
-#testsToRun = [( 'UnitTests', unitTestsPath ),( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/') ]
-
+if quickTestForScriptDebuging :
+	testsToRun = [( 'UnitTests', unitTestsPath ),( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/') ]
+	
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
 # end configuration
@@ -334,7 +347,7 @@ def formatSummary(name, configuration, result) :
 def compileAndRun(name, path) :
 	global foundCompilationErrors, foundExecutionErrors, foundTestsFailures, configurations
 	if name == '' :
-		return 'found invalid test (see message above)', '', TestResulut()
+		return 'found invalid test (see message above)', '', TestResult()
 	
 	os.chdir(path)
 	# compilation phase
@@ -376,7 +389,9 @@ def compileAndRun(name, path) :
 			foundTestsFailues = foundTestsFailures or not ok
 			runMessages, d = parseTestsFailures( output )
 			if isUnitTest(path) :
-				testResult.unitTestsFailures(configuration, ok)
+				failures = 0 
+				if not ok : failures = 1 #TODO parse output to obtain failures
+				testResult.unitTestsFailures(configuration, failures)
 			
 		else :
 			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
@@ -535,11 +550,12 @@ def runTests() :
 		resultSet.add( aTestResult )
 		print "test name: %s \t compiles: %i " % (aTestResult.name, aTestResult.compiles() )
 		print aSummary     # for console monitoring purposes
-	print "\nGlobal test result (stability level) %i ( %i tests) " % (resultSet.stabilityLevel(), resultSet.nTests() )
-
+	
+	requiredStabilityLevel = PassUnitTests # Compiles 
+	print "\nGlobal test results with %i tests. Stability level: %i Required: %i " % ( resultSet.nTests(), resultSet.stabilityLevel(), requiredStabilityLevel )
 	guiltyReport = "Chasing-guilty-commits is DISABLED"
 	if enablePlaceCvsTags :
-		if resultSet.stabilityLevel() >= Compiles :
+		if resultSet.stabilityLevel() >= requiredStabilityLevel :
 			placeTestsOkTags("CLAM")
 			placeTestsOkTags("CLAM_NetworkEditor")
 			placeTestsOkTags("CLAM_SMSTools")
