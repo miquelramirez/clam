@@ -39,7 +39,7 @@ namespace CLAMVM
 		
 		Fl_Help_View*                 mHelpWidget;
 		Fl_SMS_Gender_Selector*       mpGenderSelector;
-		CLAM::SMSTransformationConfig mConfig;
+		CLAM::SegmentTransformationConfig mConfig;
 		static const char*            mHelpText;
 		
 		

@@ -31,7 +31,7 @@ namespace CLAMVM
 	protected:
 		Fl_Help_View*          mHelpWidget;
 		Fl_SMS_BPF_Editor*     mEditorWidget;
-		CLAM::SMSTransformationConfig mConfig;
+		CLAM::SegmentTransformationConfig mConfig;
 		static const char*            mHelpText;
 	};
 

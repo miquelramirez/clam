@@ -52,7 +52,7 @@ namespace CLAMVM
 
 	void SMSResidualGainConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
 	{
-		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
+		CLAM::SegmentTransformationConfig& conCfg = static_cast< CLAM::SegmentTransformationConfig& >( cfg );
 
 		conCfg.RemoveAmount();
 		conCfg.RemoveBPFAmount();
@@ -67,7 +67,7 @@ namespace CLAMVM
 
 	void SMSResidualGainConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
-		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
+		mConfig = static_cast<const CLAM::SegmentTransformationConfig& >(cfg);
 
 		if ( !mConfig.HasBPFAmount() )
 		{
