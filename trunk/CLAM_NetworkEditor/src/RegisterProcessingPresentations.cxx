@@ -86,7 +86,7 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtSMSSinusoidalGain( "SMSSinusoidalGain" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
-        regtSMSSineFilter( "SMSSineFilter" );
+//        regtSMSSineFilter( "SMSSineFilter" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtSMSOddEvenHarmonicRatio( "SMSOddEvenHarmonicRatio" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
