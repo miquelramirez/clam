@@ -351,7 +351,7 @@ namespace CLAM {
     for (i=0;i<size;i++)
       geomean *= mag[i];
 
-    geomean = pow(geomean,1/(TData)size);
+    geomean = pow((double)geomean,1.0/(TData)size);
   
     return 10*log(geomean/mean);
   }
@@ -363,7 +363,7 @@ namespace CLAM {
 	  int i;
 	  TData temp = 0;
 	  for (i=1;i<size;i++)
-		  temp += pow(mag[i],2)*i; 
+		  temp += pow(mag[i],2.0)*i; 
 	  return temp;
   }
   

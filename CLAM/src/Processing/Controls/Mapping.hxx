@@ -103,7 +103,7 @@ namespace CLAM {
 
 		TData Map( const TData inNote )
 		{
-			return ( TData( pow( 2 , ( inNote - mNoteRef ) / 12 ) ) ) * mFrequencyRef ;
+			return ( TData( pow( 2 , ( inNote - mNoteRef ) / 12.0 ) ) ) * mFrequencyRef ;
 		}
 
 		void Set(DataArray& arguments)
