@@ -81,7 +81,9 @@ public:
 	void AddProcessing( const std::string &, Processing* );
 	//! add method using a key to get the new processing from factory
 	void AddProcessing( const std::string & name, const std::string & key );
-	void RemoveProcessing ( const std::string & );
+	std::string AddProcessing( const std::string& key );
+	std::string GetUnusedName( const std::string& prefix );
+	void RemoveProcessing ( const std::string& name );
 	bool HasProcessing( const std::string & name ) const;
 	/** It configures the processing with the given processing id and config object and
 	 *  notifies this to the network. So use this method instead of getting the processing

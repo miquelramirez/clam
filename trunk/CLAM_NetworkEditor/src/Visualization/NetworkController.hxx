@@ -74,7 +74,8 @@ namespace CLAMVM
 		/** This method is called when a processing has been created from gui. 
 		 * In this case, the processing is added to the network, 
 		 * its controller created and a signal emitted to create the proper presentation. */
-		void AddProcessing( const std::string & , CLAM::Processing * );
+		void AddProcessing2Remove( const std::string& , CLAM::Processing * );
+		std::string AddProcessing( const std::string& key );
 		
 		/** When a connection is created from GUI, this method is called. 
 		 * It leaves the event in a list to execute if the audio thread is running, 
@@ -239,7 +240,7 @@ namespace CLAMVM
 		
 		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreateControlConnection;
 
-		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddProcessing;
+//		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddProcessing;
 		SigSlot::Slotv2< CLAM::Processing *, const CLAM::ProcessingConfig &  > SlotConfigureProcessing;
 		SigSlot::Slotv1< const std::string & > SlotRemoveProcessing;
 		SigSlot::Slotv2< const std::string &, ProcessingController * > SlotProcessingNameChanged;
