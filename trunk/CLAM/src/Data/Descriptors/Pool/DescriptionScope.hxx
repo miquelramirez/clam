@@ -71,7 +71,7 @@ namespace CLAM
 		{
 			NamesMap::const_iterator it = _nameMap.find(name);
 			CLAM_ASSERT(it!=_nameMap.end(),
-				"Accessing an unexisting attribute inside a scope");
+				(std::string()+"Accessing an unexisting attribute '"+_scopeName+"':'"+name+"'").c_str());
 			return it->second;
 		}
 

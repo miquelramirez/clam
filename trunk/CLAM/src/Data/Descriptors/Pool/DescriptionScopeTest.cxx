@@ -44,7 +44,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			std::string expected = "Accessing an unexisting attribute inside a scope";
+			std::string expected = "Accessing an unexisting attribute 'TestScope':'MyAttribute'";
 			CPPUNIT_ASSERT_EQUAL(
 				expected,
 				std::string(err.what()));
@@ -71,7 +71,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			std::string expected = "Accessing an unexisting attribute inside a scope";
+			std::string expected = "Accessing an unexisting attribute 'TestScope':'Foo'";
 			CPPUNIT_ASSERT_EQUAL(
 				expected,
 				std::string(err.what()));

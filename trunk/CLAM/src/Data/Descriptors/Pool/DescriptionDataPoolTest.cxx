@@ -105,7 +105,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Accessing an unexisting attribute inside a scope";
+			const std::string expected = "Accessing an unexisting attribute 'Frame':'UnexistingAttribute'";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
@@ -120,7 +120,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Accessing an unexisting attribute inside a scope";
+			const std::string expected = "Accessing an unexisting attribute 'Frame':'UnexistingAttribute'";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
@@ -194,7 +194,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Getting data from a non instanciated attribute";
+			const std::string expected = "Getting data from a non instanciated attribute 'Frame':'Center'";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
