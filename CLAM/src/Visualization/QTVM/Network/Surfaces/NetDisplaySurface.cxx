@@ -24,7 +24,7 @@ namespace CLAM
 		{
 			if(_controller) 
 			{
-			    delete _controller;
+				delete _controller;
 			}
 		}
 
