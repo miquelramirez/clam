@@ -16,7 +16,7 @@ AudioFileIO::~AudioFileIO(){}
 int AudioFileIO::Load(const char* fileName,Audio& out)
 {
 	AudioFile file;
-	file.SetLocation(fileName);
+	file.OpenExisting(fileName);
 
 	if((!file.IsReadable()) | (file.GetHeader().GetChannels() > 1))
 		return -1; // no es legible o no es mono
@@ -39,12 +39,11 @@ int AudioFileIO::Load(const char* fileName,Audio& out)
 int AudioFileIO::Save(const char* fileName,Audio& in)
 {
 	AudioFile file;
-	file.SetLocation(fileName);
-
 	AudioFileHeader header;
 	header.SetValues(in.GetSampleRate(),1,EAudioFileFormat::eWAV);
 	
-	file.SetHeader(header);
+	file.CreateNew(fileName, header);
+
 	if(!file.IsWritable()) return -1;
 
 	MonoAudioFileWriterConfig cfg;
