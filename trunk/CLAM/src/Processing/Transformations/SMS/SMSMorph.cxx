@@ -89,7 +89,7 @@ SMSMorph::SMSMorph(const SMSMorphConfig &c):
 
 bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 {
-	mConfig=dynamic_cast<const SMSMorphConfig&>(c);
+	CopyAsConcreteConfig(mConfig,c);
 	mHaveInternalSegment=false;
 	mUseTemporalBPF = true;
 
