@@ -68,9 +68,9 @@ class PrototypeLoader
 public:
 
 };
-void connectWidgetsWithControls(CLAM::Network & network, QWidget * qtPrototype)
+void connectWidgetsWithControls(CLAM::Network & network, QWidget * prototype)
 {
-	QObjectList * widgets = qtPrototype->queryList(0,"InControl::.*");
+	QObjectList * widgets = prototype->queryList(0,"InControl::.*");
 	for (QObjectListIt it(*widgets); it.current(); ++it)
 	{
 		QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
@@ -93,9 +93,9 @@ void connectWidgetsWithControls(CLAM::Network & network, QWidget * qtPrototype)
 
 }
 
-void connectWidgetsWithMappedControls(CLAM::Network & network, QWidget * qtPrototype)
+void connectWidgetsWithMappedControls(CLAM::Network & network, QWidget * prototype)
 {
-	QObjectList * widgets = qtPrototype->queryList(0,"InControlFloat::.*");
+	QObjectList * widgets = prototype->queryList(0,"InControlFloat::.*");
 	for (QObjectListIt it(*widgets); it.current(); ++it)
 	{
 		QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
@@ -116,9 +116,9 @@ void connectWidgetsWithMappedControls(CLAM::Network & network, QWidget * qtProto
 	}
 
 }
-void connectWidgetsWithPeaksPorts(CLAM::Network & network, QWidget * qtPrototype)
+void connectWidgetsWithPeaksPorts(CLAM::Network & network, QWidget * prototype)
 {
-	QObjectList * widgets = qtPrototype->queryList("CLAM::VM::NetPeaksPlot",0);
+	QObjectList * widgets = prototype->queryList("CLAM::VM::NetPeaksPlot",0);
 	for (QObjectListIt it(*widgets); it.current(); ++it)
 	{
 		QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
@@ -129,13 +129,13 @@ void connectWidgetsWithPeaksPorts(CLAM::Network & network, QWidget * qtPrototype
 }
 QWidget * loadPrototype(CLAM::Network & network, char* uiFile)
 {
-	QWidget * qtPrototype = (QWidget *) QWidgetFactory::create( uiFile );
-	if (!qtPrototype) return 0;
+	QWidget * prototype = (QWidget *) QWidgetFactory::create( uiFile );
+	if (!prototype) return 0;
 
-	connectWidgetsWithControls(network,qtPrototype);
-	connectWidgetsWithMappedControls(network,qtPrototype);
+	connectWidgetsWithControls(network,prototype);
+	connectWidgetsWithMappedControls(network,prototype);
 
-	return qtPrototype;
+	return prototype;
 
 }
 
@@ -153,18 +153,20 @@ int main( int argc, char *argv[] )
 	char * networkFile = argv[1]; // "SpectralDelay.clam"
 	char * uiFile = argv[2]; // "SpectralDelay.ui" 
 
+	
+
 	NetworkPlayer player(networkFile);
 
 	QApplication app( argc, argv );
 
-	QWidget * qtPrototype = loadPrototype(player.Network(), uiFile);
+	QWidget * prototype = loadPrototype(player.Network(), uiFile);
 
-	if (!qtPrototype) return -1;
+	if (!prototype) return -1;
 
 	// Set up the dynamic dialog here
-	app.setMainWidget( qtPrototype );
+	app.setMainWidget( prototype );
 
-	qtPrototype->show();
+	prototype->show();
 	int result = app.exec();
 
 	return result;
