@@ -26,7 +26,7 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 {
 	CPPUNIT_TEST_SUITE( SMSExampleTest );
 	CPPUNIT_TEST( testhelperAudiosAreEqual_WhenDifferentSizes );
-/*	CPPUNIT_TEST( testhelperAudiosAreEqual_WhenDiffersInASampler );
+	CPPUNIT_TEST( testhelperAudiosAreEqual_WhenDiffersInASampler );
 	CPPUNIT_TEST( testhelperAudiosAreEqual_AfterDefaultConstructor );
 	CPPUNIT_TEST( testInitConfigs_GenerateCompatibleConfig );
 	CPPUNIT_TEST( testhelperFileExist );
@@ -40,7 +40,7 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
 	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
-*/	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
 	CPPUNIT_TEST_SUITE_END();
 
 
@@ -56,7 +56,7 @@ public:
 	//! Common initialization, executed before each test method
 	void setUp() 
 	{ 
-		mPath = "../../../../../CLAM-TestData/";
+		mPath = "../../../CLAM-TestData/";
 	}
 
 	//! Common clean up, executed after each test method
