@@ -58,7 +58,7 @@ NetworkController::NetworkController()
 
 	SlotRebuildProcessingPresentationAttachedTo.Wrap( this, &NetworkController::RebuildProcessingPresentationAttachedTo );
 	SlotRemoveAllConnections.Wrap( this, &NetworkController::RemoveAllConnections );
-	SlotAddProcessing.Wrap( this, &NetworkController::AddProcessing );
+//	SlotAddProcessing.Wrap( this, &NetworkController::AddProcessing2Remove );
 	SlotProcessingNameChanged.Wrap( this, &NetworkController::ProcessingNameChanged );
 	
 	SlotChangeState.Wrap( this, &NetworkController::ChangeState );
@@ -435,11 +435,26 @@ NetworkController::~NetworkController()
 	Clear();
 }
 
-void NetworkController::AddProcessing( const std::string & name, 
-					      CLAM::Processing * proc )
+void NetworkController::AddProcessing2Remove( const std::string & name, CLAM::Processing * proc )
 {
-	mObserved->AddProcessing(name, proc);
-	mPresentation->CreateProcessingPresentation( name, CreateProcessingController(name, proc));
+	std::string id = name;
+
+	if ( mObserved->HasProcessing( id ) )
+			{
+			std::cerr << "Processing Already exists!" << std::endl;
+			std::string prefix = proc->GetClassName();
+			id = mObserved->GetUnusedName( prefix );
+			}
+	mObserved->AddProcessing(id, proc);
+	mPresentation->CreateProcessingPresentation( id, CreateProcessingController(id, proc));
+}
+
+std::string NetworkController::AddProcessing( const std::string &key )
+{
+	std::string name = mObserved->AddProcessing( key );
+	CLAM::Processing& proc = mObserved->GetProcessing( name );
+	mPresentation->CreateProcessingPresentation( name, CreateProcessingController(name, &proc));
+	return name;
 }
 
 ProcessingController* NetworkController::CreateProcessingController( const std::string & name, CLAM::Processing * proc )

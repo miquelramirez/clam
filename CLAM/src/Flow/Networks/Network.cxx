@@ -185,6 +185,7 @@ namespace CLAM
 	{
 		AssertFlowControlNotNull();
 
+		std::cerr << "Adding processing (string, *proc): " << name << std::endl;
 		// returns false if the key was repeated.
 		if (!mProcessings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
@@ -194,6 +195,7 @@ namespace CLAM
 
 	void Network::AddProcessing( const std::string & name, const std::string & key)
 	{
+		std::cout << "void Network::AddProcessing( const std::string & name, const std::string & key)" << std::endl;
 		AssertFlowControlNotNull();
 
 		Processing * proc = ProcessingFactory::GetInstance().Create( key );
@@ -203,6 +205,39 @@ namespace CLAM
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
 
 		mFlowControl->ProcessingAddedToNetwork(*proc);
+	}
+
+	std::string Network::AddProcessing( const std::string & key) // returns the name that was used so the same one can be used when calling CreateProcessingController (hack)
+	{
+		AssertFlowControlNotNull();
+
+		std::string name = GetUnusedName( key ); // this won't be needed in the future
+		
+		Processing * proc = ProcessingFactory::GetInstance().Create( key );
+		std::cerr << "Adding processing (key): " << name << std::endl;
+
+		// returns false if the key was repeated.
+		if (!mProcessings.insert( ProcessingsMap::value_type( name , proc ) ).second )
+			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
+
+		mFlowControl->ProcessingAddedToNetwork(*proc);
+
+		return name;
+	}
+
+	std::string Network::GetUnusedName( const std::string& prefix )
+	{
+		std::string name;
+
+        for ( int i = 0; i<9999999; i++ ) // 9999999 is just an arbitrary large value
+        {
+				std::stringstream<char>	tmp; 
+				tmp << i;
+                name = prefix + "_" + tmp.str(); // pseudo code ofcourse
+                if (!this->HasProcessing( name ) ) return name;
+        }
+        CLAM_ASSERT(false, "All valid id's for given prefix are exhausted");
+		return "";
 	}
 
 
@@ -239,7 +274,7 @@ namespace CLAM
 		delete proc;		
 	}
 
-	bool Network::HasProcessing( const std::string & name ) const
+	bool Network::HasProcessing( const std::string& name ) const
 	{
 		ProcessingsMap::const_iterator i = mProcessings.find( name );
 		return i!=mProcessings.end();
