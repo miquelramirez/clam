@@ -6,7 +6,7 @@
 
 namespace CLAM
 {
-        class AudioBuffPortMonitor;
+	class AudioBuffPortMonitor;
 
 	namespace VM
 	{
@@ -20,7 +20,7 @@ namespace CLAM
 
 			void SetData(const Audio& audio);
 			void SetDataColor(Color c);
-		        void SetMonitor(MonitorType & monitor);
+			void SetMonitor(MonitorType & monitor);
 
 		protected:
 			virtual void SetPlotController();
