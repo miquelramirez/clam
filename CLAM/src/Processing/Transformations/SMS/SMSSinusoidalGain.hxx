@@ -38,10 +38,6 @@ namespace CLAM{
 
 	class SMSSinusoidalGain : public FrameTransformation
 	{
-		
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
 		const char *GetClassName() const {return "SMSSinusoidalGain";}
 
 		InPort<SpectralPeakArray> mIn;
@@ -50,7 +46,7 @@ namespace CLAM{
 		InControl mGainAmount;
 
 	public:
-		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
+
 		SMSSinusoidalGain() 
 			: 
 			mIn("In SpectralPeaks", this), 
@@ -60,20 +56,12 @@ namespace CLAM{
 		{
 			Configure( SegmentTransformationConfig() );
 		}
-		/** Constructor with an object of SegmentTransformationConfig class by parameter
-		 *  @param c SegmentTransformationConfig object created by the user
-		*/
-//		SMSSinusoidalGain(const SegmentTransformationConfig &c):SegmentTransformation(c)
-//		{
-//		}
 
 		const ProcessingConfig& GetConfig() const { throw 0; }
 
 		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
-		/** Destructor of the class*/
- 		~SMSSinusoidalGain()
-		{}
+ 		~SMSSinusoidalGain() {}
 
 		bool Do(const Frame& in, Frame& out)
 		{
@@ -82,7 +70,6 @@ namespace CLAM{
 
 		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
 
-				// Note that overriding this method breaks the processing chain functionality. 
 		bool Do()
 		{
 			bool result = Do(mIn.GetData(), mOut.GetData());
@@ -91,7 +78,7 @@ namespace CLAM{
 			return result;
 		}
 	};		
-};//namespace CLAM
+}	//namespace CLAM
 
 #endif // _SMSSinusoidalGain_
 
