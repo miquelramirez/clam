@@ -29,43 +29,40 @@
 #include "InControl.hxx"
 
 namespace CLAM{
-/*
-	//TODO cludge for network editor
-	class SMSFreqShiftConfig : public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE( SMSFreqShiftConfig, 0, ProcessingConfig);
-			
-	};
-*/
+
 	class SMSFreqShift: public SMSTransformation
 	{
 		
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
 		 */
-		const char *GetClassName() const {return "SMSFreqShift";}
-
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
 		InControl mShiftAmount;
 
 	public:
-		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSFreqShift() : mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this), mShiftAmount("Shift Amount", this)
+		const char* GetClassName() const
 		{
-			ConnectControls( *this, "Out Control", *this, "In Control" );
+			return "SMSFreqShift";
+		}
+		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
+		SMSFreqShift() : 
+			mIn("In SpectralPeaks", this), 
+			mOut("Out SpectralPeaks", this), 
+			mShiftAmount("Shift Amount", this)
+		{
 			Configure( SMSTransformationConfig() );
 		}
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
 		SMSFreqShift(const SMSTransformationConfig &c):
-			SMSTransformation(c), mIn("In SpectralPeaks", this), 
-			mOut("Out SpectralPeaks", this), mShiftAmount("Shift Amount", this)
+			SMSTransformation(c), 
+			mIn("In SpectralPeaks", this), 
+			mOut("Out SpectralPeaks", this), 
+			mShiftAmount("Shift Amount", this)
 		{
-			ConnectControls( *this, "Out Control", *this, "In Control" );
 		}
 
 		/** Destructor of the class*/
@@ -92,4 +89,3 @@ namespace CLAM{
 };//namespace CLAM
 
 #endif // _SMSFreqShift_
-

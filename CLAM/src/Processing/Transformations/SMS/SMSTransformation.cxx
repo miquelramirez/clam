@@ -78,9 +78,15 @@ namespace CLAM
 			Frame & outframe = out.GetFrame(mCurrentInputFrame);
 
 			if (mTransformation)
+			{
 				mTransformation->Do(inframe, outframe);
+			}
 			else //TODO remove when refactoring is done 
+			{
 				Do( inframe, outframe );
+			}
+			
+
 			
 			if(&in!=&out)
 				out.mCurrentFrameIndex++;
@@ -117,8 +123,11 @@ namespace CLAM
 	{
 		if(mConfig.HasBPFAmount())
 		{
-			mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(pos));
-			mSendAmount.SendControl(mConfig.GetBPFAmount().GetValue(pos));			//<<<<<<
+			TControlData amount = mConfig.GetBPFAmount().GetValue(pos);
+			printf("sending %f ", amount);
+			mAmountCtrl.DoControl(amount);
+			CLAM_ASSERT(mSendAmount.IsConnected(), "cannot send to not connected port");
+			mSendAmount.SendControl(amount);			//<<<<<<
 			return true;
 		}
 		else return false;

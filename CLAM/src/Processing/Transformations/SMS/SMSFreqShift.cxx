@@ -34,12 +34,8 @@ bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	DataArray& ofreqArray=out.GetFreqBuffer();
 	TSize nPeaks=in.GetnPeaks();
 	TData amount=mShiftAmount.GetLastValue();
-	// TODO add new Control
+	printf("%f ", amount);
 	
-	printf("in npeaks: %d, out npeaks: %d \n"
-	       "in freqbuff size: %d, out freqbuff size: %d \n", nPeaks, out.GetnPeaks(), 
-	       ifreqArray.Size(), ofreqArray.Size() );
-
 	for(int i=0;i<nPeaks;i++)
 	{
 		ofreqArray[i]=ifreqArray[i]+amount;
