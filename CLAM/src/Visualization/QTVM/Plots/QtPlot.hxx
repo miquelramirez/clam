@@ -46,10 +46,6 @@ namespace CLAM
 		                virtual std::vector<unsigned>& GetMarks()=0; 
 				virtual void SetMarksColor(Color c)=0;
 
-                        public slots:
-			        void KeyPressed(QKeyEvent*);
-		                void KeyReleased(QKeyEvent*);
-
 			protected:
 				virtual void closeEvent(QCloseEvent *);
 		};
