@@ -37,7 +37,7 @@
 #include "Filename.hxx"
 #include "AudioFile.hxx"
 #include "BPF.hxx"
-#include "envelope_point_editor.hxx"
+#include "QtEnvelopeEditor.hxx"
 
 #include <limits>
 #include <qdialog.h>
@@ -331,39 +331,25 @@ void ConfigPresentationTmpl<ConcreteConfig>::AddWidget( const char* name, CLAM::
 	QHBox* cell = new QHBox( mLayout);
 	new QLabel( QString(name), cell);
 
-	CLAM::Envelope_Point_Editor* mInput = new CLAM::Envelope_Point_Editor( cell);
+	CLAM::QtEnvelopeEditor * mInput = new CLAM::QtEnvelopeEditor ( cell);
 	mInput->setMinimumSize( QSize( 400, 400) );
-	CLAM::Envelope* env = new CLAM::Envelope;
 
-	env->set_minX_value( 0 );
-	env->set_maxX_value( CLAM::AudioManager::Current().SampleRate() / 2 );	// nyquist/2
-	std::cerr << "maxX = " << CLAM::AudioManager::Current().SampleRate() / 2 << std::endl;
-	env->set_minY_value( -12 ); // used in SMSSineFilter (interpreted as dB's )
-	env->set_maxY_value( 12 );
+	// TODO: Those should be BPF properties
+	mInput->BoundMinX( 0 );
+	mInput->BoundMaxX( CLAM::AudioManager::Current().SampleRate() / 2 );	// nyquist/2
+	mInput->BoundMinY( -12 ); // used in SMSSineFilter (interpreted as dB's )
+	mInput->BoundMaxY( 12 );
 
-	for ( int i=0; i<value.Size(); i++ )
-	{
-		printf( "added node %d to Widget\n", i );
-		env->add_node_at_offset( value.GetXValue(i), value.GetValueFromIndex(i) ); // TODO change this to floats for CLAM
-	}
-
-	mInput->set_envelope( env );
+	mInput->SetValue(value);
 	mWidgets.insert(tWidgets::value_type(name, mInput));
 }
 
 template <class ConcreteConfig>
 template <typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLAM::BPF *foo, T& value) {
-	CLAM::Envelope_Point_Editor* mInput = dynamic_cast<CLAM::Envelope_Point_Editor*>(GetWidget(name));
+	CLAM::QtEnvelopeEditor * mInput = dynamic_cast<CLAM::QtEnvelopeEditor *>(GetWidget(name));
 	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-
-	CLAM::Envelope* env = mInput->get_envelope();
-	value.SetSize(0);
-	for ( int i=0; i< env->get_node_count(); i++ )
-	{
-		printf( "added node %d to BPF\n", i );
-		value.Insert( env->get_node_offset(i), env->get_node_height(i) ); // TODO change this to floats for CLAM
-	}
+	value = mInput->GetValue();
 }
 
 
