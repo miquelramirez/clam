@@ -73,7 +73,8 @@ fi
 if test x$found_in_sandbox_$$package_esc = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_$$package_esc"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
