@@ -1,5 +1,0 @@
-TOP=../..
-
-MODULES = GlobalEnums
-
-include $(TOP)/unix_tools/make.rules

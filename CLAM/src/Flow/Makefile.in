@@ -1,5 +1,0 @@
-TOP=../..
-
-MODULES = Controls Prototypes Ports
-
-include $(TOP)/unix_tools/make.rules
