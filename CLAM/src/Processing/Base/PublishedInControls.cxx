@@ -40,11 +40,30 @@ InControl& PublishedInControls::Get(const std::string & name) const
 			return **it;
 
 	std::string error( "name not found in InControls collection: " );
-	error += name;
+	error += "'" +  name + "'" + ". In ports availables: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
 	return *(InControl*)NULL; // just to get rid of warnings
 }
+std::string PublishedInControls::AvailableNames() const
+{
+	std::string result;
+	ConstIterator it;
+	bool first=true;
+	for (it=mInControls.begin(); it!=mInControls.end(); it++)
+	{
+		if (!first) 
+			result += ", ";
+		else 
+			first = false;
+		InControl & control = *(*it);
+		result += "'";
+		result += control.GetName();
+		result += "'";
+	}
+	return result;
+}
+
 int PublishedInControls::Size() const
 {
 	return mInControls.size();

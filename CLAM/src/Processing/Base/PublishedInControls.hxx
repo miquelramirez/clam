@@ -45,6 +45,9 @@ public:
 	Iterator End();
 	ConstIterator Begin() const;
 	ConstIterator End() const;
+private:
+	std::string AvailableNames() const;
+
 };
 
 
