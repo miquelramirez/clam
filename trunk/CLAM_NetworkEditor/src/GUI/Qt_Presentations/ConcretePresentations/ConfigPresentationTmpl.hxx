@@ -25,6 +25,8 @@
 #include "Qt_ProcessingConfigPresentation.hxx"
 #include <qwidget.h>
 
+#include "AudioManager.hxx"
+
 #include <map>
 #include <string>
 #include "ConfigurationVisitor.hxx"
@@ -329,37 +331,39 @@ void ConfigPresentationTmpl<ConcreteConfig>::AddWidget( const char* name, CLAM::
 	QHBox* cell = new QHBox( mLayout);
 	new QLabel( QString(name), cell);
 
-	Envelope_Point_Editor* mInput = new Envelope_Point_Editor( cell);
-	mInput->setMinimumSize( QSize( 500, 500) );
-	Envelope* env = new Envelope;
+	CLAM::Envelope_Point_Editor* mInput = new CLAM::Envelope_Point_Editor( cell);
+	mInput->setMinimumSize( QSize( 400, 400) );
+	CLAM::Envelope* env = new CLAM::Envelope;
 
-	env->set_max_value( 500 );
-	env->set_min_value( 0 );
+	env->set_minX_value( 0 );
+	env->set_maxX_value( CLAM::AudioManager::Current().SampleRate() / 2 );	// nyquist/2
+	std::cerr << "maxX = " << CLAM::AudioManager::Current().SampleRate() / 2 << std::endl;
+	env->set_minY_value( -12 ); // used in SMSSineFilter (interpreted as dB's )
+	env->set_maxY_value( 12 );
 
 	for ( int i=0; i<value.Size(); i++ )
 	{
-		env->add_node_at_offset( value.GetValueFromIndex(i), value.GetXValue(i) ); // TODO change this to floats for CLAM
+		printf( "added node %d to Widget\n", i );
+		env->add_node_at_offset( value.GetXValue(i), value.GetValueFromIndex(i) ); // TODO change this to floats for CLAM
 	}
 
 	mInput->set_envelope( env );
 	mWidgets.insert(tWidgets::value_type(name, mInput));
 }
 
-
 template <class ConcreteConfig>
 template <typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLAM::BPF *foo, T& value) {
-	Envelope_Point_Editor* mInput = dynamic_cast<Envelope_Point_Editor*>(GetWidget(name));
+	CLAM::Envelope_Point_Editor* mInput = dynamic_cast<CLAM::Envelope_Point_Editor*>(GetWidget(name));
 	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
 
-	Envelope* env = mInput->get_envelope();
+	CLAM::Envelope* env = mInput->get_envelope();
 	value.SetSize(0);
 	for ( int i=0; i< env->get_node_count(); i++ )
 	{
+		printf( "added node %d to BPF\n", i );
 		value.Insert( env->get_node_offset(i), env->get_node_height(i) ); // TODO change this to floats for CLAM
 	}
-//	const char * readValue=mInput->text().latin1();
-//	std::stringstream s(readValue);
 }
 
 
