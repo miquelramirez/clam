@@ -51,7 +51,6 @@ namespace CLAM {
   }
 
   void FFT_ooura::ReleaseMemory() {
-		  //if (fftbuffer) { delete[] fftbuffer; fftbuffer = 0; }
 	if (ip) { delete[] ip; ip = 0; }
 	if (w) { delete[] w; w = 0; }
   }
@@ -64,8 +63,6 @@ namespace CLAM {
 	int wSize = (int)(mSize*5/8-1);
 	w = new TData[wSize];
 	for (int i=0; i<wSize; i++) w[i] = 0;
-
-	//fftbuffer = new TData[mSize];
   }
 
   FFT_ooura::FFT_ooura()

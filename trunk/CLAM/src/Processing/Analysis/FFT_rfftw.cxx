@@ -59,7 +59,6 @@ namespace CLAM {
 	{
 		if ( mpPlan )
 			rfftw_destroy_plan(mpPlan);
-		delete [] fftbuffer;
 	}
 
 	bool FFT_rfftw::Do()

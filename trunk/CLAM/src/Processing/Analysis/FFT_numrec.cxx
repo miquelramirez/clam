@@ -61,8 +61,6 @@ namespace CLAM {
 
 	FFT_numrec::~FFT_numrec()
 	{
-	  if (fftbuffer)
-		delete[] fftbuffer;
 	}
 
 	bool FFT_numrec::Do()
