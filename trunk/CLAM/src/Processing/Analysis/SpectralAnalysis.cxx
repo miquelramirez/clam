@@ -21,6 +21,8 @@
 
 #include "SpectralAnalysis.hxx"
 
+
+
 using namespace CLAM;
 
 /////////////////////////////////////////////////////////////////////
@@ -56,7 +58,7 @@ void SpectralAnalysisConfig::DefaultValues()
 	/** WindowSize/2*/
 	SetHopSize((GetWindowSize()-1)/2);
 
-	GetCircularShift().SetAmount(256);//because zero padding is zero!!
+	GetCircularShift().SetAmount(-256);
 	
 }
 
@@ -66,7 +68,7 @@ void SpectralAnalysisConfig::SetWindowSize(TSize w)
 	CLAM_ASSERT(w%2==1,"Window size must be odd");
 	GetWindowGenerator().SetSize(w);
 	SetprFFTSize(int(PowerOfTwo((w-1)*pow(TData(2),TData(GetZeroPadding())))));
-	GetCircularShift().SetAmount(-(GetprFFTSize()/TData(2))); 
+	GetCircularShift().SetAmount(-((w-1)/TData(2))); 
 	GetFFT().SetAudioSize(GetprFFTSize());
 	if(w<2*GetHopSize()+1)
 		SetHopSize((w-1)/2);
@@ -94,7 +96,6 @@ void SpectralAnalysisConfig::SetZeroPadding(int z)
 	SetprZeroPadding(z);
 	SetprFFTSize(int(PowerOfTwo((GetWindowSize()-1)*pow(TData(2),TData(GetZeroPadding())))));
 	GetFFT().SetAudioSize(GetprFFTSize());
-	GetCircularShift().SetAmount(-(GetprFFTSize()/2)); 
 }
 
 int SpectralAnalysisConfig::GetZeroPadding() const
@@ -247,8 +248,7 @@ bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 	
 	/* Finally, we do the circular shift */
 	mPO_CShift.Do(mAudioFrame,mAudioFrame);
-
-	
+		
 	/* and now the FFT can be performed */
 	mPO_FFT.Do(mAudioFrame, outSp);
 
