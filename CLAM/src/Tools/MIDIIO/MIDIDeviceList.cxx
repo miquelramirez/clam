@@ -24,9 +24,6 @@
 
 namespace CLAM
 {
-	MIDIDeviceList *sAlsaMIDIDeviceList = 0;
-	MIDIDeviceList *sPortMidiMIDIDeviceList = 0;
-	
 	MIDIDeviceList::MIDIDeviceList(const std::string& arch)
 		:mArch(arch)
 	{
