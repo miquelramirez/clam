@@ -40,8 +40,11 @@ namespace CLAM
 
 		void NetPlot::show()
 		{
+		    if(!_closed)
+		    {
 			QWidget::show();
 			_surf->startRendering();
+		    }
 		}
 
 		void NetPlot::hide()
@@ -72,7 +75,6 @@ namespace CLAM
 		void NetPlot::closeEvent(QCloseEvent* ce)
 		{
 		    _closed = true;
-		    hide();
 		    QWidget::closeEvent(ce);
 		}
 
