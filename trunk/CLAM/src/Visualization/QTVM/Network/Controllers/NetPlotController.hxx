@@ -50,6 +50,11 @@ namespace CLAM
 
 		                 void SetFirst(bool first);
 		                 bool First();
+
+		                 void SetCanGetData(bool canget);
+		                 void SetCanSendData(bool cansend);
+		                 bool CanGetData();
+		                 bool CanSendData();
 				
 			private:
 				TSize _nSamples;
@@ -57,6 +62,8 @@ namespace CLAM
                  		TData _vmax;
 		                bool _first;
 		                bool _monitorIsRunning;
+		                bool _canSendData;
+		                bool _canGetData;
 		                
 				void InitView();
 				

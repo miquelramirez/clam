@@ -7,11 +7,12 @@ namespace CLAM
 	{
 		NetPeaksPlotController::NetPeaksPlotController()
 		{
-			SetvRange(TData(-150.0),TData(0.0));
-			_renderer.SetVBounds(TData(0.0),TData(-150.0));
-			SetnSamples(22050);
-			_linear = false;
-			mMonitor = 0;
+		    SetPeaksColor(VMColor::Cyan(),VMColor::Red());
+		    SetvRange(TData(-150.0),TData(0.0));
+		    _renderer.SetVBounds(TData(0.0),TData(-150.0));
+		    SetnSamples(22050);
+		    _linear = false;
+		    mMonitor = 0;
 		}
 
 		NetPeaksPlotController::~NetPeaksPlotController()
@@ -20,16 +21,24 @@ namespace CLAM
 
 		void NetPeaksPlotController::SetData(const SpectralPeakArray& peaks)
 		{
+		    if(!peaks.GetMagBuffer().Size()) return;
+		    if(CanGetData())
+		    {
+			SetCanSendData(false);
 			_magBuffer = peaks.GetMagBuffer();
 			_freqBuffer = peaks.GetFreqBuffer();
 			_linear = (peaks.GetScale() == EScale::eLinear);
+			if(First()) Init();
 			ProcessPeakData();
-			FullView();
+			SetCanSendData(true);
+		    }
 		}
 
 		void NetPeaksPlotController::SetMonitor(MonitorType & monitor)
 		{
 			mMonitor = & monitor;
+			mMonitor->AttachStartSlot(mStartSlot);
+			mMonitor->AttachStopSlot(mStopSlot);
 		}
 
 		void NetPeaksPlotController::SetPeaksColor(Color cline, Color cpoint)
@@ -41,22 +50,36 @@ namespace CLAM
 		{
 			if (!mMonitor)
 			{
-				_renderer.Render();
-				return;
+			    if(CanSendData())
+			    {
+				SetCanGetData(false);
+				_renderer.SetDataPtr(_magBuffer.GetPtr(), _freqBuffer.GetPtr(), _magBuffer.Size());
+				SetCanGetData(true);
+			    }
+			    _renderer.Render();
+			    return;
 			}
-			const CLAM::SpectralPeakArray & peaks = mMonitor->FreezeAndGetData();
 
-			// TODO: Because we have exclusive right for
-			// to the data we could remove some of this copies
-			_magBuffer = peaks.GetMagBuffer();
-			_freqBuffer = peaks.GetFreqBuffer();
-			_linear = (peaks.GetScale() == EScale::eLinear);
-			ProcessPeakData();
-			FullView();
+			if(MonitorIsRunning())
+			{
+			    const CLAM::SpectralPeakArray & peaks = mMonitor->FreezeAndGetData();
 
-			_renderer.Render();
+			    // TODO: Because we have exclusive right for
+			    // to the data we could remove some of this copies
+			    _magBuffer = peaks.GetMagBuffer();
+			    _freqBuffer = peaks.GetFreqBuffer();
+			    _linear = (peaks.GetScale() == EScale::eLinear);
+			    if(First() && _magBuffer.Size()) Init();
+			    ProcessPeakData();
+                            _renderer.SetDataPtr(_magBuffer.GetPtr(), _freqBuffer.GetPtr(), _magBuffer.Size());
+			    _renderer.Render();
 
-			mMonitor->UnfreezeData();
+			    mMonitor->UnfreezeData();
+			}
+			else
+			{
+			    _renderer.Render();
+			}
 		}
 
 		void NetPeaksPlotController::FullView()
@@ -75,7 +98,12 @@ namespace CLAM
 			{
 				if(_linear) _magBuffer[i] = 20.0*log10(_magBuffer[i]);
 			}
-			_renderer.SetDataPtr(_magBuffer.GetPtr(), _freqBuffer.GetPtr(), _magBuffer.Size());
+		}
+
+	        void NetPeaksPlotController::Init()
+		{
+		    SetFirst(false);
+		    FullView();
 		}
 	}
 }

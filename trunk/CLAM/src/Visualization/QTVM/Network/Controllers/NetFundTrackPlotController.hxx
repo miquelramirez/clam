@@ -2,8 +2,9 @@
 #define __NETFUNDTRACKPLOTCONTROLLER__
 
 #include "Fundamental.hxx"
-#include "DataRenderer.hxx"
+#include "BuffDataRenderer.hxx"
 #include "NetPlotController.hxx"
+#include "PortMonitor.hxx"
 
 namespace CLAM
 {
@@ -12,24 +13,28 @@ namespace CLAM
 	class NetFundTrackPlotController : public NetPlotController 
 	{
 	public:
+	    typedef FundTrackPortMonitor MonitorType;
 	    NetFundTrackPlotController();
 	    virtual ~NetFundTrackPlotController();
 
 	    void SetData(const Fundamental& fund);
 	    void SetDataColor(Color c);
 	    void Draw();
+	    void SetMonitor(MonitorType & monitor);
 
 	private:
 	    DataArray _cachedData;
-	    DataArray _processedData;
-	    DataRenderer _renderer;
+	    BuffDataRenderer _renderer;
 	    int _index;
+	    SigSlot::Slotv0 mSlotNewData;
+
+	    MonitorType* mMonitor;
 	    
 	    void AddData(const TData& data);
-	    void ProcessData();
 	  
-	    void InitDataArrays();
-	    void InitView();
+	    void Init();
+	    void FullView();
+	    void OnNewData();
 
 	};
     }

@@ -6,8 +6,9 @@ namespace CLAM
 	{
 		NetAudioPlotController::NetAudioPlotController() 
 		{
-			SetvRange(TData(-1.0),TData(1.0));
-			mMonitor = 0;
+		    SetDataColor(VMColor::Green());
+		    SetvRange(TData(-1.0),TData(1.0));
+		    mMonitor = 0;
 		}
 
 		NetAudioPlotController::~NetAudioPlotController()
@@ -16,43 +17,61 @@ namespace CLAM
 
 		void NetAudioPlotController::SetData(const Audio& audio)
 		{
-			TSize audioSize = audio.GetBuffer().Size();
-			SetnSamples(audioSize);
-			_dRenderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize,NormalMode);
-			FullView();
+		    if(!audio.GetBuffer().Size()) return;
+		    if(CanGetData())
+		    {
+			SetCanSendData(false);
+			_cacheData=audio;
+			if(First()) Init(_cacheData.GetBuffer().Size());
+			SetCanSendData(true);
+		    }
 		}
 
 		void NetAudioPlotController::SetMonitor(MonitorType & monitor)
 		{
 			mMonitor = & monitor;
+			mMonitor->AttachStartSlot(mStartSlot);
+			mMonitor->AttachStopSlot(mStopSlot);
 		}
 
 		void NetAudioPlotController::SetDataColor(Color c)
 		{
-			_dRenderer.SetColor(c);
+			_renderer.SetColor(c);
 		}
 
 		void NetAudioPlotController::Draw()
 		{
 			if (!mMonitor)
 			{
-				_dRenderer.Render();
-				return;
+			    if(CanSendData())
+			    {
+				SetCanGetData(false);
+				_renderer.SetDataPtr(_cacheData.GetBuffer().GetPtr(),_cacheData.GetBuffer().Size(),NormalMode);
+				SetCanGetData(true);
+			    }
+			    _renderer.Render();
+			    return;
 			}
 		      
-			const Audio& audio = mMonitor->FreezeAndGetData();
+			if(MonitorIsRunning())
+			{
+			    const Audio& audio = mMonitor->FreezeAndGetData();
+			    
+			    // TODO: Because we have exclusive right for
+			    // to the data we could remove some of this copies
 
-			// TODO: Because we have exclusive right for
-			// to the data we could remove some of this copies
+			    TSize audioSize = audio.GetBuffer().Size();
+			    if(First() && audioSize) Init(audioSize);
+			    _renderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize,NormalMode);
 
-			TSize audioSize = audio.GetBuffer().Size();
-			SetnSamples(audioSize);
-			_dRenderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize,NormalMode);
-			FullView();
+			    _renderer.Render();
 
-			_dRenderer.Render();
-
-			mMonitor->UnfreezeData();
+			    mMonitor->UnfreezeData();
+			}
+			else
+			{
+			    _renderer.Render();
+			}
 		}
 
 		void NetAudioPlotController::FullView()
@@ -63,6 +82,14 @@ namespace CLAM
 			_view.bottom = GetvMin();
 			emit sendView(_view);
 		}
+
+	        void NetAudioPlotController::Init(const TSize& frameSize)
+		{
+		    SetnSamples(frameSize);
+		    SetFirst(false);
+		    FullView();
+		}
+
 	}
 }
 

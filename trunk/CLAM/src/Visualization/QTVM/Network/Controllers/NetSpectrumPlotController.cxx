@@ -7,8 +7,9 @@ namespace CLAM
 	{
 		NetSpectrumPlotController::NetSpectrumPlotController()
 		{
-			SetvRange(TData(-150.0),TData(0.0));
-			mMonitor = 0;
+		    SetDataColor(VMColor::Green());
+		    SetvRange(TData(-150.0),TData(0.0));
+		    mMonitor = 0;
 		}
 
 		NetSpectrumPlotController::~NetSpectrumPlotController()
@@ -17,14 +18,22 @@ namespace CLAM
 
 		void NetSpectrumPlotController::SetData(const Spectrum& spec)
 		{
+		    if(!spec.GetMagBuffer().Size()) return;
+		    if(CanGetData())
+		    {
+			SetCanSendData(false);
 			_spec = spec;
-			CacheData();
-			FullView();
+			if(First()) Init(_spec.GetMagBuffer().Size());
+			AdaptSpectralData();
+			SetCanSendData(true);
+		    }
 		}
 
 		void NetSpectrumPlotController::SetMonitor(MonitorType & monitor)
 		{
 			mMonitor = & monitor;
+			mMonitor->AttachStartSlot(mStartSlot);
+			mMonitor->AttachStopSlot(mStopSlot);
 		}
 
 		void NetSpectrumPlotController::SetDataColor(Color c)
@@ -34,23 +43,38 @@ namespace CLAM
 
 		void NetSpectrumPlotController::Draw()
 		{
-			if (!mMonitor)
+		    if (!mMonitor)
+		    {
+			if(CanSendData())
 			{
-				_renderer.Render();
-				return;
+			    SetCanGetData(false);
+			    _renderer.SetDataPtr(_spec.GetMagBuffer().GetPtr(), _spec.GetMagBuffer().Size(), NormalMode);
+			    SetCanGetData(true);
 			}
+			_renderer.Render();
+			return;
+		    }
+
+		    if(MonitorIsRunning())
+		    {
 			const Spectrum & spectrum = mMonitor->FreezeAndGetData();
 
 			// TODO: Because we have exclusive right for
 			// to the data we could remove some of this copies
 
 			_spec = spectrum;
-			CacheData();
-			FullView();
-
+			TSize specSize = _spec.GetMagBuffer().Size();
+			if(First() && specSize) Init(specSize);
+			AdaptSpectralData();
+			_renderer.SetDataPtr(_spec.GetMagBuffer().GetPtr(), _spec.GetMagBuffer().Size(), NormalMode);
 			_renderer.Render();
 
 			mMonitor->UnfreezeData();
+		    }
+		    else
+		    {
+			_renderer.Render();
+		    }
 		}
 
 		void NetSpectrumPlotController::FullView()	
@@ -87,12 +111,11 @@ namespace CLAM
 			_spec.ToDB();
 		}
 
-		void NetSpectrumPlotController::CacheData()
+	        void NetSpectrumPlotController::Init(const TSize& size)
 		{
-			AdaptSpectralData();
-			TSize specSize = _spec.GetMagBuffer().Size();
-			_renderer.SetDataPtr(_spec.GetMagBuffer().GetPtr(), specSize, NormalMode);
-			SetnSamples(specSize);
+		    SetnSamples(size);
+		    SetFirst(false);
+		    FullView();
 		}
 	}
 }

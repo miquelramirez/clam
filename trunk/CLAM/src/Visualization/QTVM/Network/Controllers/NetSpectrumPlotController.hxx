@@ -22,9 +22,6 @@ namespace CLAM
 			virtual void Draw();
 			void SetMonitor(MonitorType & monitor);
 
-		protected:
-			void FullView();
-
 		private:
 			Spectrum  _spec;
 
@@ -33,7 +30,8 @@ namespace CLAM
 			MonitorType * mMonitor;
 
 			void AdaptSpectralData();
-			void CacheData();
+		        void Init(const TSize& size);
+		        void FullView();
 		};
 	}
 }
