@@ -29,6 +29,7 @@
 #endif//CLAM_USE_XML
 #include "Array.hxx"
 #include <list>
+#include "XMLTestHelper.hxx"
 
 #include <iostream>
 #include <fstream>
@@ -37,225 +38,364 @@
 using namespace CLAM;
 
 namespace CLAMTest {
+
+/**
+ * This a component which simulates containing some XML adapters TestCases.
+ * It check the effectiveness of the Store/Load pair for the XML adapter.
+ * It will store default constructed TestCases, and then will load
+ * over a non-default constructed TestCases that can be compared
+ * to the default one.
+ */
+template <class TestCase>
+class GenericAdaptersTester : public Component {
+	std::string mId;
+public:
+	GenericAdaptersTester() {
+		mId=TestCase::kind();
+	}
+	void StoreOn(Storage & storer) {
+		TestCase a, b, c;
+		a.AdaptToStore(storer,true,false); // Content
+		b.AdaptToStore(storer,false,false); // Attribute
+		c.AdaptToStore(storer,false,true); // Element
+	}
+	void LoadFrom(Storage & storer) 
+	{
+		// For each insertion mode (attribute-element-content)
+		{
+			TestCase a(false), b;
+			a.AdaptToLoad(storer,true,false); // Content
+			std::string context("Loading Content "+mId);
+			bool failed = a.DiferenceCause(b,context);
+			CLAM_ASSERT(!failed, context.c_str());
+		}
+		{
+			TestCase a(false), b;
+			a.AdaptToLoad(storer,false,false); // Attribute
+			std::string context("Loading Attribute "+mId);
+			bool failed = a.DiferenceCause(b,context);
+			CLAM_ASSERT(!failed, context.c_str());
+		}
+		{
+			TestCase a(false), b;
+			a.AdaptToLoad(storer,false,true); // Element
+			std::string context("Loading Element "+mId);
+			bool failed = a.DiferenceCause(b,context);
+			CLAM_ASSERT(!failed, context.c_str());
+		}
+	}
+};
+
+class SimpleAdapterTestCase {
+public:
+	int i;
+	double d;
+	char c;
+	std::string s;
+	static char * kind() {return "Simple Adapter";}
+	SimpleAdapterTestCase() {
+		i = 3;
+		d = 3.5;
+		c = 'a';
+		s = "Hola";
+	}
+	SimpleAdapterTestCase(bool b) {
+		i = 6;
+		d = 6.5;
+		c = 'b';
+		s = "Adios";
+	}
+	bool DiferenceCause(const SimpleAdapterTestCase & other, std::string &context) const {
+		if (i!=other.i) {
+			context+=": Int value mismatch";
+			return true;
+		}
+		if (d!=other.d) {
+			context+=": Double value mismatch";
+			return true;
+		}
+		if (c!=other.c) {
+			context+=": Char value mismatch";
+			return true;
+		}
+		if (std::string(s)!=std::string(other.s)) {
+			context+=": String value mismatch";
+			return true;
+		}
+		return false;
+	}
+	void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
+		CLAM_ASSERT(!(asContent && asElement),
+			"Testing logic calling in AdaptToStore");
+		XMLAdapter<int> intAdapter(i, asContent?0:"myInt", asElement);
+		storer.Store(&intAdapter);
+		XMLAdapter<double> doubleAdapter(d, asContent?0:"myDouble", asElement);
+		storer.Store(&doubleAdapter);
+		XMLAdapter<char> charAdapter(c, asContent?0:"myChar", asElement);
+		storer.Store(&charAdapter);
+		XMLAdapter<std::string> strAdapter(s, asContent?0:"myString", asElement);
+		storer.Store(&strAdapter);
+	}
+	void AdaptToLoad(Storage & storer, bool asContent, bool asElement) {
+		CLAM_ASSERT(!(asContent && asElement),
+			"Testing logic calling in AdaptToStore");
+		XMLAdapter<int> intAdapter(i, asContent?0:"myInt", asElement);
+		storer.Load(&intAdapter);
+		XMLAdapter<double> doubleAdapter(d, asContent?0:"myDouble", asElement);
+		storer.Load(&doubleAdapter);
+		XMLAdapter<char> charAdapter(c, asContent?0:"myChar", asElement);
+		storer.Load(&charAdapter);
+		XMLAdapter<std::string> strAdapter(s, asContent?0:"myString", asElement);
+		storer.Load(&strAdapter);
+	}
+};
 	
+class ArrayAdapterTestCase {
+protected:
+	int *iarray;
+	double *darray;
+	char *carray;
+	std::string *sarray;
+	unsigned isize, dsize, csize, ssize;
+public:
+	static char * kind() {return "Array of Simple type Adapter";}
+	template <class T> 
+	void Fill(T*& target, unsigned & targetsize, T* source, unsigned size) {
+		target=new T[size];
+		targetsize = size;
+		for (unsigned j = 0; j<size; j++) {
+			target[j]=source[j];
+		}
+	}
+
+	ArrayAdapterTestCase() 
+	{
+		int iArray[] = {2,359,4,5,32,432};
+		double dArray[] = {2.67,359.67,46574.56,565,32.5,432};
+		char cArray[] = {'e','#','<','>','"','b','c','&'};
+		std::string sArray[] = {"Hi,you", "HowAreYou?", "VeryWell,thanks,&you?"};
+		Fill(iarray,isize,iArray,sizeof(iArray)/sizeof(int));
+		Fill(darray,dsize,dArray,sizeof(dArray)/sizeof(double));
+		Fill(carray,csize,cArray,sizeof(cArray)/sizeof(char));
+		Fill(sarray,ssize,sArray,sizeof(sArray)/sizeof(std::string));
+	}
+	ArrayAdapterTestCase(bool b) {
+		int iArray[] = {0,0,0,0,0,0};
+		double dArray[] = {6.66,6.66,6.66,6.66,6.66,6.66};
+		char cArray[] = {'=','=','=','=','=','=','=','='};
+		std::string sArray[] = {"Empty1", "Empty2", "Empty3"};
+		Fill(iarray,isize,iArray,sizeof(iArray)/sizeof(int));
+		Fill(darray,dsize,dArray,sizeof(dArray)/sizeof(double));
+		Fill(carray,csize,cArray,sizeof(cArray)/sizeof(char));
+		Fill(sarray,ssize,sArray,sizeof(sArray)/sizeof(std::string));
+	}
+	~ArrayAdapterTestCase() {
+		delete[] iarray;
+		delete[] darray;
+		delete[] carray;
+		delete[] sarray;
+	}
+	bool DiferenceCause(const ArrayAdapterTestCase & other, std::string &context) const {
+		for (unsigned j=0; j<isize; j++) {
+			if (iarray[j]!=other.iarray[j]) {
+				std::cout << "Found " << iarray[j] << " expected " << other.iarray[j] << " pos: " << j << std::endl;
+				context+=": Int value mismatch";
+				return true;
+			}
+		}
+		for (unsigned j=0; j<dsize; j++) {
+			// TODO: To do this check better
+			double difference=darray[j]-other.darray[j];
+			difference*=difference;
+			if (difference>0.1) {
+				std::cout << "Found " << darray[j] << " expected " << other.darray[j] << " pos: " << j << std::endl;
+				context+=": Double value mismatch";
+				return true;
+			}
+		}
+		for (unsigned j=0; j<csize; j++)
+			if (carray[j]!=other.carray[j]) {
+				std::cout << "Found " << carray[j] << " expected " << other.carray[j] << " pos: " << j << std::endl;
+				context+=": Char value mismatch";
+				return true;
+			}
+		for (unsigned j=0; j<ssize; j++) {
+			if (sarray[j]!=other.sarray[j]) {
+				std::cout << "Found " << sarray[j] << " expected " << other.sarray[j] << " pos: " << j << std::endl;
+				context+=": String value mismatch";
+				return true;
+			}
+		}
+		return false;
+	}
+	void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
+		CLAM_ASSERT(!(asContent && asElement),
+			"Testing logic calling in AdaptToStore");
+		XMLArrayAdapter<int> intAdapter(iarray, isize, asContent?0:"myInt", asElement);
+		storer.Store(&intAdapter);
+		XMLArrayAdapter<double> doubleAdapter(darray, dsize, asContent?0:"myDouble", asElement);
+		storer.Store(&doubleAdapter);
+		XMLArrayAdapter<char> charAdapter(carray, csize, asContent?0:"myChar", asElement);
+		storer.Store(&charAdapter);
+		XMLArrayAdapter<std::string> strAdapter(sarray, ssize, asContent?0:"myString", asElement);
+		storer.Store(&strAdapter);
+	}
+	void AdaptToLoad(Storage & storer, bool asContent, bool asElement) {
+		CLAM_ASSERT(!(asContent && asElement),
+			"Testing logic calling in AdaptToStore");
+		XMLArrayAdapter<int> intAdapter(iarray, isize, asContent?0:"myInt", asElement);
+		storer.Load(&intAdapter);
+		XMLArrayAdapter<double> doubleAdapter(darray, dsize, asContent?0:"myDouble", asElement);
+		storer.Load(&doubleAdapter);
+		XMLArrayAdapter<char> charAdapter(carray, csize, asContent?0:"myChar", asElement);
+		storer.Load(&charAdapter);
+		XMLArrayAdapter<std::string> strAdapter(sarray, ssize, asContent?0:"myString", asElement);
+		storer.Load(&strAdapter);
+	}
+};
+
+/**
+ * A Component that is a test case for testing XMLStaticAdapters of
+ * some bassic types.
+ * This one is much like the SimpleAdapterTestCase but the
+ * Store procedure use static adapters.
+ * @attention Static adapters cannot be uses for loading so we use 
+ * the non static adapters for this purpose.
+ */
+class StaticAdapterTestCase : public SimpleAdapterTestCase {
+public:
+	StaticAdapterTestCase() : SimpleAdapterTestCase() {}
+	StaticAdapterTestCase(bool b) : SimpleAdapterTestCase(b) {}
+	static char * kind() {return "Simple type Static Adapter";}
+	void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
+		CLAM_ASSERT(!(asContent && asElement),
+			"Testing logic calling in AdaptToStore");
+		XMLStaticAdapter intAdapter(i, asContent?0:"myInt", asElement);
+		storer.Store(&intAdapter);
+		XMLStaticAdapter doubleAdapter(d, asContent?0:"myDouble", asElement);
+		storer.Store(&doubleAdapter);
+		XMLStaticAdapter charAdapter(c, asContent?0:"myChar", asElement);
+		storer.Store(&charAdapter);
+		XMLStaticAdapter strAdapter(s, asContent?0:"myString", asElement);
+		storer.Store(&strAdapter);
+	}
+};
+
+/**
+ * A Component that is a test case for testing IterableAdapters of
+ * some bassic types.
+ * This one is much like the SimpleAdapterTestCase but the
+ * Store procedure use static adapters.
+ */
+class IterableAdapterTestCase : public ArrayAdapterTestCase {
+	std::vector<int> iv;
+	std::vector<double> dv;
+	std::vector<char> cv;
+	std::vector<std::string> sv;
+public:
+	IterableAdapterTestCase() : ArrayAdapterTestCase() {
+		CopyCArrays();
+	}
+	IterableAdapterTestCase(bool b) : ArrayAdapterTestCase(b) {
+		CopyCArrays();
+	}
+	void CopyCArrays() {
+		iv.assign(iarray, iarray+isize);
+		dv.assign(darray, darray+dsize);
+		cv.assign(carray, carray+csize);
+		sv.assign(sarray, sarray+ssize);
+	}
+	static char * kind() {return "XMLIterableAdapter";}
+	void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
+		CLAM_ASSERT(!(asContent && asElement),
+			"Testing logic calling in AdaptToStore");
+		XMLStaticAdapter separator("", "Separator", true);
+		XMLIterableAdapter<std::vector<int> > intAdapter(iv, "elemi", asContent?0:"myInt", asElement);
+		storer.Store(&intAdapter);
+		if (asContent) storer.Store(&separator);
+		XMLIterableAdapter<std::vector<double> > doubleAdapter(dv, "elemd", asContent?0:"myDouble", asElement);
+		storer.Store(&doubleAdapter);
+		if (asContent) storer.Store(&separator);
+		XMLIterableAdapter<std::vector<char> > charAdapter(cv, "elemc", asContent?0:"myChar", asElement);
+		storer.Store(&charAdapter);
+		if (asContent) storer.Store(&separator);
+		XMLIterableAdapter<std::vector<std::string> > strAdapter(sv, "elems",  asContent?0:"myString", asElement);
+		storer.Store(&strAdapter);
+	}
+	void AdaptToLoad(Storage & storer, bool asContent, bool asElement) {
+		CLAM_ASSERT(!(asContent && asElement),
+			"Testing logic calling in AdaptToLoad");
+		std::string dummy;
+		XMLAdapter<std::string> separator(dummy, "Separator", true);
+		XMLIterableAdapter<std::vector<int> > intAdapter(iv, "elemi", asContent?0:"myInt", asElement);
+		storer.Load(&intAdapter);
+		if (asContent) storer.Load(&separator);
+		XMLIterableAdapter<std::vector<double> > doubleAdapter(dv, "elemd", asContent?0:"myDouble", asElement);
+		storer.Load(&doubleAdapter);
+		if (asContent) storer.Load(&separator);
+		XMLIterableAdapter<std::vector<char> > charAdapter(cv, "elemc", asContent?0:"myChar", asElement);
+		storer.Load(&charAdapter);
+		if (asContent) storer.Load(&separator);
+		XMLIterableAdapter<std::vector<std::string> > strAdapter(sv, "elems",  asContent?0:"myString", asElement);
+		storer.Load(&strAdapter);
+	}
+	bool DiferenceCause(const IterableAdapterTestCase & other, std::string &context) const {
+		for (unsigned j=0; j<isize; j++) {
+			if (iv[j]!=other.iv[j]) {
+				std::cout << "Found " << iv[j] << " expected " << other.iv[j] << std::endl;
+				context+=": Int value mismatch";
+				return true;
+			}
+		}
+		for (unsigned j=0; j<dsize; j++) {
+			// TODO: To do this check better
+			double difference=dv[j]-other.dv[j];
+			difference*=difference;
+			if (difference>0.1) {
+				std::cout << "Found " << dv[j] << " expected " << other.dv[j] << " dif " << difference << std::endl;
+				context+=": Double value mismatch";
+				return true;
+			}
+		}
+		for (unsigned j=0; j<csize; j++)
+			if (cv[j]!=other.cv[j]) {
+				std::cout << "Found " << cv[j] << " expected " << other.cv[j] << " pos: " << j << std::endl;
+				context+=": Char value mismatch";
+				return true;
+			}
+		for (unsigned j=0; j<ssize; j++) {
+			if (sv[j]!=other.sv[j]) {
+				std::cout << "Found " << sv[j] << " expected " << other.sv[j] << " pos: " << j << std::endl;
+				context+=": String value mismatch";
+				return true;
+			}
+		}
+		return false;
+	}
+};
+
+
 /**
  * Tests the XMLAdapter class
  */
 void XMLAdapterClassTest() {
 	std::cout << "-- Testing XMLAdapter" << std::endl;
 	{
-		int i = 3;
-		double d = 3.5;
-		char c = 'a';
-		char * s = "Hola";
-		XMLStorage storer("MyPrueba");
-		{ 
-			XMLAdapter<int> intAdapter(i);
-			storer.Store(&intAdapter);
-			XMLAdapter<double> doubleAdapter(d);
-			storer.Store(&doubleAdapter);
-			XMLAdapter<char> charAdapter(c);
-			storer.Store(&charAdapter);
-			XMLAdapter<char*> strAdapter(s);
-			storer.Store(&strAdapter);
-		}
-		{
-			XMLAdapter<int> intAdapter(i, "myInt");
-			storer.Store(&intAdapter);
-			XMLAdapter<double> doubleAdapter(d, "myDouble");
-			storer.Store(&doubleAdapter);
-			XMLAdapter<char> charAdapter(c, "myChar");
-			storer.Store(&charAdapter);
-			XMLAdapter<char*> strAdapter(s, "myString");
-			storer.Store(&strAdapter);
-		}
-		{ 
-			XMLAdapter<int> intAdapter(i, "myInt", true);
-			storer.Store(&intAdapter);
-			XMLAdapter<double> doubleAdapter(d, "myDouble", true);
-			storer.Store(&doubleAdapter);
-			XMLAdapter<char> charAdapter(c, "myChar", true);
-			storer.Store(&charAdapter);
-			XMLAdapter<char*> strAdapter(s, "myString", true);
-			storer.Store(&strAdapter);
-		}
-		storer.dumpOn(std::cout);
-		std::ofstream f("testxml.xml");
-		storer.dumpOn(f);
-	}
-	{
-		XMLStorage storer("MyPrueba");
-		storer._restoreFrom("testxml.xml");
-		{
-			int i = 6;
-			double d = 6.214;
-			char c = 'b';
-			char buffer[512] = "Adios";
-			char *s = buffer;
-			std::cout << "Reading content" << std::endl;
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-			{
-				XMLAdapter<int> intAdapter(i);
-				storer.Load(&intAdapter);
-				XMLAdapter<double> doubleAdapter(d);
-				storer.Load(&doubleAdapter);
-				XMLAdapter<char> charAdapter(c);
-				storer.Load(&charAdapter);
-				XMLAdapter<char*> strAdapter(s);
-				storer.Load(&strAdapter);
-			}
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-		}
-		{
-			int i = 6;
-			double d = 6.214;
-			char c = 'b';
-			char buffer[512] = "Adios";
-			char *s = buffer;
-			std::cout << "Reading attributes" << std::endl;
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-			{
-				XMLAdapter<int> intAdapter(i, "myInt");
-				storer.Load(&intAdapter);
-				XMLAdapter<double> doubleAdapter(d, "myDouble");
-				storer.Load(&doubleAdapter);
-				XMLAdapter<char> charAdapter(c, "myChar");
-				storer.Load(&charAdapter);
-				XMLAdapter<char*> strAdapter(s, "myString");
-				storer.Load(&strAdapter);
-			}
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-		}
-		{
-			int i = 6;
-			double d = 6.214;
-			char c = 'b';
-			char buffer[512] = "Adios";
-			char *s = buffer;
-			std::cout << "Reading elements" << std::endl;
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-			{ 
-				XMLAdapter<int> intAdapter(i, "myInt", true);
-				storer.Load(&intAdapter);
-				XMLAdapter<double> doubleAdapter(d, "myDouble", true);
-				storer.Load(&doubleAdapter);
-				XMLAdapter<char> charAdapter(c, "myChar", true);
-				storer.Load(&charAdapter);
-				XMLAdapter<char*> strAdapter(s, "myString", true);
-				storer.Load(&strAdapter);
-			}
-			std::cout << "i:" << i << " d:" << d << " c:'" << c << "' s:\"" << s << "\"" << std::endl;
-		}
+		GenericAdaptersTester<SimpleAdapterTestCase> tester;
+		bool match = XMLInputOutputMatches(tester,__FILE__"Simple.xml");
+		CLAM_ASSERT(match, "Store/Load mismatch using basic types adapters");
 	}
 }
 
 /**
- * Test the XMLArrayAdapter class
+ * Tests the XMLArrayAdapter class
  */
 void XMLArrayAdapterClassTest() {
 	std::cout << "-- Testing XMLArrayAdapter" << std::endl;
-	int intArray[] = {2,359,4,5,32,432};
-	double doubleArray[] = {2.67,359.67,46574.56,565,32.5,432};
-	char charArray[] = {'e','#','<','>','"','b','c','&'};
-	char *stringArray[] = {"Hi,you", "HowAreYou?", "VeryWell,thanks,&you?"};
-	XMLStorage storer("MyPrueba");
 	{
-		XMLArrayAdapter<int> intAdapter(intArray, sizeof(intArray)/sizeof(int));
-		storer.Store(&intAdapter);
-		XMLArrayAdapter<double> doubleAdapter(doubleArray, sizeof(doubleArray)/sizeof(double));
-		storer.Store(&doubleAdapter);
-		XMLArrayAdapter<char> charAdapter(charArray, sizeof(charArray)/sizeof(char));
-		storer.Store(&charAdapter);
-		XMLArrayAdapter<char*> strAdapter(stringArray, sizeof(stringArray)/sizeof(char*));
-		storer.Store(&strAdapter);
-	}
-	{ 
-		XMLArrayAdapter<int> intAdapter(intArray, sizeof(intArray)/sizeof(int), "myInt");
-		storer.Store(&intAdapter);
-		XMLArrayAdapter<double> doubleAdapter(doubleArray, sizeof(doubleArray)/sizeof(double), "myDouble");
-		storer.Store(&doubleAdapter);
-		XMLArrayAdapter<char> charAdapter(charArray, sizeof(charArray)/sizeof(char), "myChar");
-		storer.Store(&charAdapter);
-		XMLArrayAdapter<char*> strAdapter(stringArray, sizeof(stringArray)/sizeof(char*), "myString");
-		storer.Store(&strAdapter);
-	}
-	{ 
-		XMLArrayAdapter<int> intAdapter(intArray, sizeof(intArray)/sizeof(int), "myInt", true);
-		storer.Store(&intAdapter);
-		XMLArrayAdapter<double> doubleAdapter(doubleArray, sizeof(doubleArray)/sizeof(double), "myDouble", true);
-		storer.Store(&doubleAdapter);
-		XMLArrayAdapter<char> charAdapter(charArray, sizeof(charArray)/sizeof(char), "myChar", true);
-		storer.Store(&charAdapter);
-		XMLArrayAdapter<char*> strAdapter(stringArray, sizeof(stringArray)/sizeof(char*), "myString", true);
-		storer.Store(&strAdapter);
-	}
-	storer.dumpOn(std::cout);
-	std::ofstream f("testxml.xml");
-	storer.dumpOn(f);
-	{
-		XMLStorage storer("MyPrueba");
-		storer._restoreFrom("testxml.xml");
-		{
-			int intArray[] = {0,0,0,0,0,0};
-			double doubleArray[] = {6.66,6.66,6.66,6.66,6.66,6.66};
-			char charArray[] = {'=','=','=','=','=','=','=','='};
-			std::string stringArray[] = {"Empty1", "Empty2", "Empty3"};
-			std::cout << "Reading content" << std::endl;
-			XMLArrayAdapter<int> intAdapter(intArray, sizeof(intArray)/sizeof(int));
-			storer.Load(&intAdapter);
-			XMLArrayAdapter<double> doubleAdapter(doubleArray, sizeof(doubleArray)/sizeof(double));
-			storer.Load(&doubleAdapter);
-			XMLArrayAdapter<char> charAdapter(charArray, sizeof(charArray)/sizeof(char));
-			storer.Load(&charAdapter);
-			XMLArrayAdapter<std::string> strAdapter(stringArray, sizeof(stringArray)/sizeof(std::string));
-			storer.Load(&strAdapter);
-
-			unsigned int i;
-			for ( i=0; i<sizeof(intArray)/sizeof(int); i++) std::cout << intArray[i] << " "; std::cout << std::endl;
-			for ( i=0; i<sizeof(doubleArray)/sizeof(double); i++) std::cout << doubleArray[i] << " "; std::cout << std::endl;
-			for ( i=0; i<sizeof(charArray)/sizeof(char); i++) std::cout << charArray[i] << " "; std::cout << std::endl;
-			for ( i=0; i<sizeof(stringArray)/sizeof(std::string); i++) std::cout << stringArray[i] << " "; std::cout << std::endl;
-		}
-		{ 
-			int intArray[] = {0,0,0,0,0,0};
-			double doubleArray[] = {6.66,6.66,6.66,6.66,6.66,6.66};
-			char charArray[] = {'=','=','=','=','=','=','=','='};
-			std::string stringArray[] = {"Empty1", "Empty2", "Empty3"};
-			std::cout << "Reading attributes" << std::endl;
-			XMLArrayAdapter<int> intAdapter(intArray, sizeof(intArray)/sizeof(int), "myInt");
-			storer.Load(&intAdapter);
-			XMLArrayAdapter<double> doubleAdapter(doubleArray, sizeof(doubleArray)/sizeof(double), "myDouble");
-			storer.Load(&doubleAdapter);
-			XMLArrayAdapter<char> charAdapter(charArray, sizeof(charArray)/sizeof(char), "myChar");
-			storer.Load(&charAdapter);
-			XMLArrayAdapter<std::string> strAdapter(stringArray, sizeof(stringArray)/sizeof(std::string), "myString");
-			storer.Load(&strAdapter);
-			unsigned int i;
-			for ( i=0; i<sizeof(intArray)/sizeof(int); i++) std::cout << intArray[i] << " "; std::cout << std::endl;
-			for ( i=0; i<sizeof(doubleArray)/sizeof(double); i++) std::cout << doubleArray[i] << " "; std::cout << std::endl;
-			for ( i=0; i<sizeof(charArray)/sizeof(char); i++) std::cout << charArray[i] << " "; std::cout << std::endl;
-			for ( i=0; i<sizeof(stringArray)/sizeof(std::string); i++) std::cout << stringArray[i] << " "; std::cout << std::endl;
-		}
-		{ 
-			int intArray[] = {0,0,0,0,0,0};
-			double doubleArray[] = {6.66,6.66,6.66,6.66,6.66,6.66};
-			char charArray[] = {'=','=','=','=','=','=','=','='};
-			std::string stringArray[] = {"Empty1", "Empty2", "Empty3"};
-			std::cout << "Reading elements" << std::endl;
-			XMLArrayAdapter<int> intAdapter(intArray, sizeof(intArray)/sizeof(int), "myInt", true);
-			storer.Load(&intAdapter);
-			XMLArrayAdapter<double> doubleAdapter(doubleArray, sizeof(doubleArray)/sizeof(double), "myDouble", true);
-			storer.Load(&doubleAdapter);
-			XMLArrayAdapter<char> charAdapter(charArray, sizeof(charArray)/sizeof(char), "myChar", true);
-			storer.Load(&charAdapter);
-			XMLArrayAdapter<std::string> strAdapter(stringArray, sizeof(stringArray)/sizeof(std::string), "myString", true);
-			storer.Load(&strAdapter);
-			unsigned int i;
-			for ( i=0; i<sizeof(intArray)/sizeof(int); i++) std::cout << intArray[i] << " "; std::cout << std::endl;
-			for ( i=0; i<sizeof(doubleArray)/sizeof(double); i++) std::cout << doubleArray[i] << " "; std::cout << std::endl;
-			for ( i=0; i<sizeof(charArray)/sizeof(char); i++) std::cout << charArray[i] << " "; std::cout << std::endl;
-			for ( i=0; i<sizeof(stringArray)/sizeof(std::string); i++) std::cout << stringArray[i] << " "; std::cout << std::endl;
-		}
+		GenericAdaptersTester<ArrayAdapterTestCase> tester;
+		bool match = XMLInputOutputMatches(tester,__FILE__"Array.xml");
+		CLAM_ASSERT(match, "Store/Load mismatch using basic type arrays adapters");
 	}
 }
 
@@ -264,42 +404,11 @@ void XMLArrayAdapterClassTest() {
  */
 void XMLStaticAdapterClassTest() {
 	std::cout << "-- Testing XMLStaticAdapter" << std::endl;
-	int i = 3;
-	double d = 3.5;
-	char c = 'a';
-	char * s = "Hola";
-	XMLStorage storer("MyPrueba");
-	{ 
-		XMLStaticAdapter intAdapter(i);
-		storer.Store(&intAdapter);
-		XMLStaticAdapter doubleAdapter(d);
-		storer.Store(&doubleAdapter);
-		XMLStaticAdapter charAdapter(c);
-		storer.Store(&charAdapter);
-		XMLStaticAdapter strAdapter(s);
-		storer.Store(&strAdapter);
+	{
+		GenericAdaptersTester<StaticAdapterTestCase> tester;
+		bool match = XMLInputOutputMatches(tester,__FILE__"Array.xml");
+		CLAM_ASSERT(match, "Store/Load mismatch using basic type static adapters");
 	}
-	{ 
-		XMLStaticAdapter intAdapter(i, "myInt");
-		storer.Store(&intAdapter);
-		XMLStaticAdapter doubleAdapter(d, "myDouble");
-		storer.Store(&doubleAdapter);
-		XMLStaticAdapter charAdapter(c, "myChar");
-		storer.Store(&charAdapter);
-		XMLStaticAdapter strAdapter(s, "myString");
-		storer.Store(&strAdapter);
-	}
-	{ 
-		XMLStaticAdapter intAdapter(i, "myInt", true);
-		storer.Store(&intAdapter);
-		XMLStaticAdapter doubleAdapter(d, "myDouble", true);
-		storer.Store(&doubleAdapter);
-		XMLStaticAdapter charAdapter(c, "myChar", true);
-		storer.Store(&charAdapter);
-		XMLStaticAdapter strAdapter(s, "myString", true);
-		storer.Store(&strAdapter);
-	}
-	storer.dumpOn(std::cout);
 }
 
 /**
@@ -307,116 +416,11 @@ void XMLStaticAdapterClassTest() {
  */
 void XMLIterableAdapterClassTest() {
 	std::cout << "-- Testing XMLIterableAdapter" << std::endl;
-	int intArray[] = {2,359,4,5,32,432};
-	double doubleArray[] = {2.67,359.67,46574.56,565,32.5,432};
-	char charArray[] = {'e','#','<','>','"','b','c','&'};
-	char *stringArray[] = {"Hi,you", "HowAreYou?", "VeryWell,thanks,&you?"};
-	const unsigned intArraySize = sizeof(intArray)/sizeof(int);
-	const unsigned doubleArraySize = sizeof(doubleArray)/sizeof(double);
-	const unsigned charArraySize = sizeof(charArray)/sizeof(char);
-	const unsigned stringArraySize = sizeof(stringArray)/sizeof(char*);
-	std::vector<int> intVector(intArray, intArray+intArraySize);
-	std::vector<double> doubleVector(doubleArray, doubleArray+doubleArraySize);
-	std::vector<char> charVector(charArray, charArray+charArraySize);
-	std::vector<char*> stringVector(stringArray, stringArray+stringArraySize);
-	XMLStorage storer("MyPrueba");
-
 	{
-		XMLIterableAdapter<std::vector<int> > intAdapter(intVector, "elemi");
-		storer.Store(&intAdapter);
-		XMLIterableAdapter<std::vector<double> > doubleAdapter(doubleVector, "elemd");
-		storer.Store(&doubleAdapter);
-		XMLIterableAdapter<std::vector<char> > charAdapter(charVector, "elemc");
-		storer.Store(&charAdapter);
-		XMLIterableAdapter<std::vector<char*> > strAdapter(stringVector, "elems");
-		storer.Store(&strAdapter);
+		GenericAdaptersTester<IterableAdapterTestCase> tester;
+		bool match = XMLInputOutputMatches(tester,__FILE__"Array.xml");
+		CLAM_ASSERT(match, "Store/Load mismatch using basic type iterable adapters");
 	}
-	{ 
-		XMLIterableAdapter<std::vector<int> > intAdapter(intVector, "elemi", "myInt");
-		storer.Store(&intAdapter);
-		XMLIterableAdapter<std::vector<double> > doubleAdapter(doubleVector, "elemd", "myDouble");
-		storer.Store(&doubleAdapter);
-		XMLIterableAdapter<std::vector<char> > charAdapter(charVector, "elemc", "myChar");
-		storer.Store(&charAdapter);
-		XMLIterableAdapter<std::vector<char*> > strAdapter(stringVector, "elems", "myString");
-		storer.Store(&strAdapter);
-	}
-	{ 
-		XMLIterableAdapter<std::vector<int> > intAdapter(intVector, "elemi", "myInt", true);
-		storer.Store(&intAdapter);
-		XMLIterableAdapter<std::vector<double> > doubleAdapter(doubleVector, "elemd", "myDouble", true);
-		storer.Store(&doubleAdapter);
-		XMLIterableAdapter<std::vector<char> > charAdapter(charVector, "elemc", "myChar", true);
-		storer.Store(&charAdapter);
-		XMLIterableAdapter<std::vector<char*> > strAdapter(stringVector, "elems", "myString", true);
-		storer.Store(&strAdapter);
-	}
-	storer.dumpOn(std::cout);
-	std::ofstream f("testxml.xml");
-	storer.dumpOn(f);
-/*
-	{
-		XMLStorage storer("MyPrueba");
-		storer._restoreFrom("testxml.xml");
-		{
-			int intArray[] = {0,0,0,0,0,0};
-			double doubleArray[] = {6.66,6.66,6.66,6.66,6.66,6.66};
-			char charArray[] = {'=','=','=','=','=','=','=','='};
-			std::string stringArray[] = {"Empty1", "Empty2", "Empty3"};
-			std::cout << "Reading content" << std::endl;
-			XMLIterableAdapter<std::vector<int> > intAdapter(intArray, "elemi");
-			storer.Load(&intAdapter);
-			XMLIterableAdapter<std::vector<double> > doubleAdapter(doubleArray, "elemd");
-			storer.Load(&doubleAdapter);
-			XMLIterableAdapter<std::vector<char> > charAdapter(charArray, "elemc");
-			storer.Load(&charAdapter);
-			XMLIterableAdapter<std::vector<std::string> > strAdapter(stringArray, "elems");
-			storer.Load(&strAdapter);
-			for (unsigned int i=0; i<sizeof(intArray)/sizeof(int); i++) std::cout << intArray[i] << " "; std::cout << std::endl;
-			for (unsigned int i=0; i<sizeof(doubleArray)/sizeof(double); i++) std::cout << doubleArray[i] << " "; std::cout << std::endl;
-			for (unsigned int i=0; i<sizeof(charArray)/sizeof(char); i++) std::cout << charArray[i] << " "; std::cout << std::endl;
-			for (unsigned int i=0; i<sizeof(stringArray)/sizeof(std::string); i++) std::cout << stringArray[i] << " "; std::cout << std::endl;
-		}
-		{ 
-			int intArray[] = {0,0,0,0,0,0};
-			double doubleArray[] = {6.66,6.66,6.66,6.66,6.66,6.66};
-			char charArray[] = {'=','=','=','=','=','=','=','='};
-			std::string stringArray[] = {"Empty1", "Empty2", "Empty3"};
-			std::cout << "Reading attributes" << std::endl;
-			XMLIterableAdapter<std::vector<int> > intAdapter(intArray, "elemi", "myInt");
-			storer.Load(&intAdapter);
-			XMLIterableAdapter<std::vector<double> > doubleAdapter(doubleArray, "elemd", "myDouble");
-			storer.Load(&doubleAdapter);
-			XMLIterableAdapter<std::vector<char> > charAdapter(charArray, "elemc", "myChar");
-			storer.Load(&charAdapter);
-			XMLIterableAdapter<std::vector<std::string> > strAdapter(stringArray, "elems", "myString");
-			storer.Load(&strAdapter);
-			for (unsigned int i=0; i<sizeof(intArray)/sizeof(int); i++) std::cout << intArray[i] << " "; std::cout << std::endl;
-			for (unsigned int i=0; i<sizeof(doubleArray)/sizeof(double); i++) std::cout << doubleArray[i] << " "; std::cout << std::endl;
-			for (unsigned int i=0; i<sizeof(charArray)/sizeof(char); i++) std::cout << charArray[i] << " "; std::cout << std::endl;
-			for (unsigned int i=0; i<sizeof(stringArray)/sizeof(std::string); i++) std::cout << stringArray[i] << " "; std::cout << std::endl;
-		}
-		{ 
-			int intArray[] = {0,0,0,0,0,0};
-			double doubleArray[] = {6.66,6.66,6.66,6.66,6.66,6.66};
-			char charArray[] = {'=','=','=','=','=','=','=','='};
-			std::string stringArray[] = {"Empty1", "Empty2", "Empty3"};
-			std::cout << "Reading elements" << std::endl;
-			XMLIterableAdapter<std::vector<int> > intAdapter(intArray, "elemi", "myInt", true);
-			storer.Load(&intAdapter);
-			XMLIterableAdapter<std::vector<double> > doubleAdapter(doubleArray, "elemd", "myDouble", true);
-			storer.Load(&doubleAdapter);
-			XMLIterableAdapter<std::vector<char> > charAdapter(charArray, "elemc", "myChar", true);
-			storer.Load(&charAdapter);
-			XMLIterableAdapter<std::vector<std::string> > strAdapter(stringArray, "elems", "myString", true);
-			storer.Load(&strAdapter);
-			for (unsigned int i=0; i<sizeof(intArray)/sizeof(int); i++) std::cout << intArray[i] << " "; std::cout << std::endl;
-			for (unsigned int i=0; i<sizeof(doubleArray)/sizeof(double); i++) std::cout << doubleArray[i] << " "; std::cout << std::endl;
-			for (unsigned int i=0; i<sizeof(charArray)/sizeof(char); i++) std::cout << charArray[i] << " "; std::cout << std::endl;
-			for (unsigned int i=0; i<sizeof(stringArray)/sizeof(std::string); i++) std::cout << stringArray[i] << " "; std::cout << std::endl;
-		}
-	}
-	*/
 }
 
 /** 
@@ -534,6 +538,9 @@ void XMLComponentAdapterClassTest() {
  */
 class MyComponent : public CLAM::Component {
 	public:
+		virtual const char * GetClassName() {
+			return "MyComponent";
+		}
 		virtual ~MyComponent() {};
 		void StoreOn(CLAM::Storage & s) {
 			std::string text("Content");

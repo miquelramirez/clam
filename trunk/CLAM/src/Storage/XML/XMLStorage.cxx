@@ -167,7 +167,19 @@ namespace CLAM
 
 	class XercesXMLStorageImplementation : public XMLStorageImplementation
 	{
+		protected:
+		std::list<std::string> mCurrentPath;
 		public:
+		std::string CurrentPath() {
+			std::string result("");
+			std::list<std::string>::iterator it =mCurrentPath.begin();
+			std::list<std::string>::iterator end =mCurrentPath.end();
+			for (;it!=end; it++) {
+				result+="/";
+				result+=*it;
+			}
+			return result;
+		}
 		XercesXMLStorageImplementation() {
 			if (!sPlatformUtilsInitialized) {
 				try
@@ -223,6 +235,7 @@ namespace CLAM
 					);
 				mWrittingNode = DOMDoc.getDocumentElement();
 				lastWasContent=false;
+				mCurrentPath.push_back(rootName);
 			}
 			virtual void WriteDOM(std::ostream & os) {
 				PrintDoc(os,DOMDoc);
@@ -244,6 +257,8 @@ namespace CLAM
 			bool StartReadElement(XMLLoadFrame & frame, const char *name) {
 				frame.oldNode = mReadingNode;
 				if (!ChangeReadingNode(name)) return false;
+				mCurrentPath.push_back(name);
+				TRACELOAD << "Path:" << CurrentPath() << std::endl;
 				// Change the current attributes
 				frame.oldAttributes = PushReadAttributes();
 				// Change the current Plain text stream
@@ -349,8 +364,17 @@ namespace CLAM
 			virtual void ReleaseReadAtRoot() {
 				// Check there is no content left
 				// TODO: Convert this to a trappable error/exception
-				if (FetchContent()) 
-					std::cerr << "Parsing error: There is plain content left in the node!" << std::endl;
+				if (FetchContent()) {
+					std::cerr 
+						<< "Parsing error: There is plain content left in the node '" << CurrentPath() << "'" << std::endl
+						<< "BEGIN OFENDING INPUT" << std::endl;
+					while (mTextNodesContent->good() && !mTextNodesContent->eof()) 
+						std::cerr << char(mTextNodesContent->get());
+					std::cerr
+						<< std::endl
+
+						<< "END OFENDING INPUT" << std::endl;
+				}
 				else {
 					DOM_NodeList subNodes=mReadingNode.getChildNodes();
 					if (mReadPosition<subNodes.getLength()) {
@@ -392,6 +416,7 @@ namespace CLAM
 				mReadPositionsStack.pop_back();
 				mAttributes = frame.oldAttributes;
 				mReadingNode = frame.oldNode;
+				mCurrentPath.pop_back();
 			}
 			/**
 			* Dumps the plain content available on the current reading position
@@ -578,7 +603,7 @@ bool XMLStorage::Load (Storable * object) {
 		return xmlObject->XMLContent(stream);
 	}
 	else if (xmlObject->IsXMLElement()) {
-		TRACELOAD << "Element --" << std::endl;
+		TRACELOAD << "Element --" << xmlObject->XMLName() << std::endl;
 		// Init a new frame on the element if it exists
 		XMLLoadFrame frame;
 		if (!mPM->StartReadElement(frame,xmlObject->XMLName())) return false;
