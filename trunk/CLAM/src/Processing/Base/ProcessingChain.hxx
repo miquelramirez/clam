@@ -349,10 +349,7 @@ protected:
 		{
 			typedef CLAM::Factory<Processing> ProcessingFactory;
 
-			// Factory::CreateSafe throws an ErrFactory exception if the key is not
-			// valid
-			//InsertAndGiveName( *( ProcessingFactory::GetInstance().CreateSafe( type ) ) );
-			Insert( *( ProcessingFactory::GetInstance().CreateSafe( type ) ) );
+			Insert( *( ProcessingFactory::GetInstance().Create( type ) ) );
 						
 			return true;
 			
