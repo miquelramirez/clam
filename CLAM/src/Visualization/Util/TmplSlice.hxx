@@ -25,10 +25,11 @@
 #include <cstring>
 #include "sizetdef.h"
 
+namespace CLAMGUI{
+
 /** 
  *  Curiosly parametrized version of Stroustrup's slice 
  */
-
 template < unsigned Size, unsigned Stride >
 class TmplSlice
 {
@@ -67,5 +68,6 @@ class TmplSlice
 
 };
 
+};
 
 #endif // TmplSlice.hxx
