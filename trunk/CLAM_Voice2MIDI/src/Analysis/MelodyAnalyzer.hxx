@@ -1,6 +1,6 @@
 /*
  * MelodyAnalyzer.hxx
- * Interface for MelodyAnalyzer class. 
+ * Interface for MelodyAnalyzer class.
  * Used to extract the melody based on the characteristics obtained
  * during the analysis. MIDI melody is obtained from the extracted
  * melody.
@@ -29,34 +29,34 @@ using CLAM::MediaTime;
 class MelodyAnalyzer
 {
 public:
-	MelodyAnalyzer();
-	~MelodyAnalyzer();
+    MelodyAnalyzer();
+    ~MelodyAnalyzer();
 
-	void AnalyzeMelody(const Segment& segment,
-		               const SegmentDescriptors& descriptors);
+    void AnalyzeMelody(const Segment& segment, const SegmentDescriptors& descriptors);
 
-	Melody GetMelody();
-	void SetMelody(const Melody& m);
-	MIDIMelody GetMIDIMelody();
+    Melody GetMelody();
+    void SetMelody(const Melody& m);
+    MIDIMelody GetMIDIMelody();
 
-	void StoreMelody(const std::string& filename);
-	void StoreMIDIMelody(const std::string& filename);
-    
+    void StoreMelody(const std::string& filename);
+    void StoreMIDIMelody(const std::string& filename);
+
 private:
-	Melody melody;
-	MIDIMelody midiMelody;
-	TData frequencies[85];
-	Array<PitchNote> pitch; 
+    Melody melody;
+    MIDIMelody midiMelody;
+    TData frequencies[85];
+    Array<PitchNote> pitch;
 
-	void Init();
-	int GetPitchIndex(TData ff);
-	void UpdateMidi();
-	int GetVelocity(int v);
+    void Init();
+    int GetPitchIndex(TData ff);
+    void UpdateMidi();
+    int GetVelocity(int v);
+    
+    DataArray GetEnergy(const Segment& segment, const SegmentDescriptors& descriptors);
 
-	DataArray GetEnergy(const Segment& segment,
-						const SegmentDescriptors& descriptors);
-
-	bool IsValid(const DataArray& energy,const MediaTime& time,TData sr);
+    bool IsValid(const DataArray& energy,const MediaTime& time,TData sr);
 };
 
 #endif
+
+
