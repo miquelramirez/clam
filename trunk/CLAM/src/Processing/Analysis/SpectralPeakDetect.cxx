@@ -137,7 +137,7 @@ namespace CLAM {
 		out.SetnMaxPeaks(maxPeaks);
 
 		// detection loop 
-		for (i=1;i<NumBands-2;i++) {
+		for (i=0;i<NumBands-2;i++) {
 			
 			if (out.GetnPeaks()>maxPeaks) break;
 
@@ -205,13 +205,13 @@ namespace CLAM {
 					TData leftPhase,rightPhase;
 					if (diffFromMax>=0)
 					{
-						leftPhase = inPhaseBuffer[i];
-						rightPhase = inPhaseBuffer[i+1];
+						leftPhase = inPhaseBuffer[i+1];
+						rightPhase = inPhaseBuffer[i+2];
 					}
 					else
 					{
-						leftPhase = inPhaseBuffer[i-1];
-						rightPhase = inPhaseBuffer[i];
+						leftPhase = inPhaseBuffer[i];
+						rightPhase = inPhaseBuffer[i+1];
 					}
 					if (fabs(rightPhase-leftPhase)>PI)
 						if (rightPhase>0)
