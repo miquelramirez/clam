@@ -169,8 +169,7 @@ private:
 		AudioMultiplier            mPO_AudioProduct;
 		CircularShift			mPO_CircularShift;
 		OverlapAdd				mPO_OverlapAdd;
-		
-
+	
 		// And the interfaces with the outside world.
 
 		
