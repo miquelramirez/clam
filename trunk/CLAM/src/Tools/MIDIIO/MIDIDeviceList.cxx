@@ -22,34 +22,39 @@
 #include "MIDIDeviceList.hxx"
 #include "MIDIManager.hxx"
 
-using namespace CLAM;
-
-MIDIDeviceList::MIDIDeviceList(const std::string& arch)
-	:mArch(arch)
+namespace CLAM
 {
-}
-
-MIDIDeviceList::~MIDIDeviceList()
-{
-}
-
-MIDIDeviceList* MIDIManager::FindList(const std::string& arch)
-{
-	unsigned int i;
-	std::string tmp = arch;
-
-	if (tmp == "default")
-		tmp = DEFAULT_MIDI_ARCH; 
-
-	/** Finding available devices for architecture arch
-	*/
-	for (i=0;i<Singleton().mDeviceLists.size();i++)
+	MIDIDeviceList *sAlsaMIDIDeviceList = 0;
+	MIDIDeviceList *sPortMidiMIDIDeviceList = 0;
+	
+	MIDIDeviceList::MIDIDeviceList(const std::string& arch)
+		:mArch(arch)
 	{
-		if (Singleton().mDeviceLists[i]->ArchName() == tmp)
-		{
-			return Singleton().mDeviceLists[i];
-		}
 	}
-
-	return 0;
+	
+	MIDIDeviceList::~MIDIDeviceList()
+	{
+	}
+	
+	MIDIDeviceList* MIDIManager::FindList(const std::string& arch)
+	{
+		unsigned int i;
+		std::string tmp = arch;
+		
+		if (tmp == "default")
+			tmp = DEFAULT_MIDI_ARCH; 
+		
+		/** Finding available devices for architecture arch
+		 */
+		for (i=0;i<Singleton().mDeviceLists.size();i++)
+		{
+			if (Singleton().mDeviceLists[i]->ArchName() == tmp)
+			{
+				return Singleton().mDeviceLists[i];
+			}
+		}
+		
+		return 0;
+	}
+	
 }
