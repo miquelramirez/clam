@@ -60,7 +60,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	new ProcessingItem( inputoutput, "AudioOut" );
-	new ProcessingItem( inputoutput, "AudioIn" );
+//	new ProcessingItem( inputoutput, "AudioIn" );
 	
 	QListViewItem * files = new QListViewItem( this,"Audio File I/O" );
 	new ProcessingItem( files, "MonoAudioFileReader" );
@@ -94,6 +94,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 #endif
 	new ProcessingItem( utils, "OutControlSender" );	
 	new ProcessingItem( utils, "Fundamental2Control" );	
+	new ProcessingItem( utils, "BPF2Control" );	
 
 	QListViewItem* winplots = new QListViewItem(this,"Plots in new windows");
 	new ProcessingItem(winplots, "AudioPlotProcessing");
