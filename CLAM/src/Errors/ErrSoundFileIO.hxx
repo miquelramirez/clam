@@ -1,10 +1,10 @@
 #ifndef __SoundFileIOError__
 #define __SoundFileIOError__
 
-class SoundFileIOError
+class ErrSoundFileIO
 {
 public:
-	SoundFileIOError(char* str):mStr(str) {}
+	ErrSoundFileIO(char* str):mStr(str) {}
 	char* mStr;
 };
 
