@@ -23,13 +23,19 @@
 #ifndef _SMSResidualGain_
 #define _SMSResidualGain_
 
-#include "SMSTransformation.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "Frame.hxx"
+#include "Spectrum.hxx"
+#include "SMSTransformationConfig.hxx"
+#include "FrameTransformation.hxx"
 
 
 namespace CLAM{
 
 
-	class SMSResidualGain: public SMSTransformation
+	class SMSResidualGain: public FrameTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -40,23 +46,33 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
+		InControl mGainAmount;
+
 	public:
-		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSResidualGain() : mIn("In Spectrum", this), mOut("Out Spectrum", this)
+		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
+		SMSResidualGain() 
+			: 
+			mIn("In Spectrum", this), 
+			mOut("Out Spectrum", this),
+			mGainAmount( "Gain Amount", this)
 		{
-			Configure( SMSTransformationConfig() );
+			Configure( SegmentTransformationConfig() );
 		}
-		/** Constructor with an object of SMSTransformationConfig class by parameter
-		 *  @param c SMSTransformationConfig object created by the user
+		/** Constructor with an object of SegmentTransformationConfig class by parameter
+		 *  @param c SegmentTransformationConfig object created by the user
 		*/
-		SMSResidualGain(const SMSTransformationConfig &c):SMSTransformation(c)
-		{
-		}
+//		SMSResidualGain(const SegmentTransformationConfig &c) : SegmentTransformation(c)
+//		{
+//		}
 
 
 		/** Destructor of the class*/
  		~SMSResidualGain()
 		{}
+
+		const ProcessingConfig& GetConfig() const { throw 0; }
+
+		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
 		bool Do(const Frame& in, Frame& out)
 		{

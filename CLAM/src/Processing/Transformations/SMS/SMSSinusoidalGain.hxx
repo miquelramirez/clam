@@ -23,13 +23,20 @@
 #ifndef _SMSSinusoidalGain_
 #define _SMSSinusoidalGain_
 
-#include "SMSTransformation.hxx"
+#include "Frame.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "FrameTransformation.hxx"
+#include "SpectralPeakArray.hxx"
+
+#include "SMSTransformationConfig.hxx"
 
 
 namespace CLAM{
 
 
-	class SMSSinusoidalGain: public SMSTransformation
+	class SMSSinusoidalGain : public FrameTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -40,20 +47,29 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
+		InControl mGainAmount;
 
 	public:
-		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSSinusoidalGain() : mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this)
-		{
-			Configure( SMSTransformationConfig() );
-		}
-		/** Constructor with an object of SMSTransformationConfig class by parameter
-		 *  @param c SMSTransformationConfig object created by the user
-		*/
-		SMSSinusoidalGain(const SMSTransformationConfig &c):SMSTransformation(c)
-		{
-		}
+		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
+		SMSSinusoidalGain() 
+			: 
+			mIn("In SpectralPeaks", this), 
+			mOut("Out SpectralPeaks", this),
+			mGainAmount("Gain Amount", this)
 
+		{
+			Configure( SegmentTransformationConfig() );
+		}
+		/** Constructor with an object of SegmentTransformationConfig class by parameter
+		 *  @param c SegmentTransformationConfig object created by the user
+		*/
+//		SMSSinusoidalGain(const SegmentTransformationConfig &c):SegmentTransformation(c)
+//		{
+//		}
+
+		const ProcessingConfig& GetConfig() const { throw 0; }
+
+		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
 		/** Destructor of the class*/
  		~SMSSinusoidalGain()

@@ -31,7 +31,7 @@
 namespace CLAM{
 
 
-	class SMSPitchDiscretization: public SMSTransformation
+	class SMSPitchDiscretization: public SegmentTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -41,22 +41,22 @@ namespace CLAM{
 
 
 	public:
-		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
+		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSPitchDiscretization()
 		{
 		}
-		/** Constructor with an object of SMSTransformationConfig class by parameter
-		 *  @param c SMSTransformationConfig object created by the user
+		/** Constructor with an object of SegmentTransformationConfig class by parameter
+		 *  @param c SegmentTransformationConfig object created by the user
 		*/
-		SMSPitchDiscretization(const SMSTransformationConfig &c):SMSTransformation(c)
+		SMSPitchDiscretization(const SegmentTransformationConfig &c):SegmentTransformation(c)
 		{
 		}
 
 		virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			SMSTransformation::ConcreteConfigure(c);
+			SegmentTransformation::ConcreteConfigure(c);
 			//configure member PitchShift by default
-			mPO_PitchShift.Configure(SMSTransformationConfig());
+			mPO_PitchShift.Configure(SegmentTransformationConfig());
 			return true;
 		}
 

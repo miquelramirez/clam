@@ -210,7 +210,7 @@ bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
 bool SMSMorph::Do(const Segment& in1, Segment& out)
 {
 	if(!mHaveInternalSegment) return false;
-	return SMSTransformation::Do(in1,out);
+	return SegmentTransformation::Do(in1,out);
 }
 
 bool SMSMorph::Do(const Segment& in1,Segment& in2, Segment& out)

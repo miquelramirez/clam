@@ -46,7 +46,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 	DataArray& oBinPosArray=outPeaks.GetBinPosBuffer();
 	TSize nPeaks=inPeaks.GetnPeaks();
 	TData newFreq;
-	TData amount=mAmountCtrl.GetLastValue();
+	TData amount=mShiftAmount.GetLastValue();
 	//Shift all peaks
 	for(int i=0;i<nPeaks;i++)
 	{
@@ -75,7 +75,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
 	out=in;
-	TData amount=mAmountCtrl.GetLastValue();
+	TData amount=mShiftAmount.GetLastValue();
 	if(amount==1)//no pitch shift
 		return true;
 	mSpectralRange=in.GetResidualSpec().GetSpectralRange();

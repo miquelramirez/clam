@@ -28,7 +28,6 @@ using namespace CLAM;
 
 bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 {
-	int i;
 	BPF voices=mConfig.GetBPFAmount();
 	TSize nVoices=voices.Size();
 	Frame tmpInFrame(in),tmpOutFrame(in);
@@ -36,7 +35,7 @@ bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 	tmpOutFrame.AddSpectralPeakArray();
 	tmpOutFrame.UpdateData();
 	
-	for(i=0;i<nVoices;i++)
+	for(int i=0;i<nVoices;i++)
 	{
 		TData amount=voices.GetValueFromIndex(i);
 		TData gain=voices.GetXValue(i);
@@ -67,17 +66,16 @@ void SMSHarmonizer::Gain(Frame& inputFrame, TData gain)
 	SpectralPeakArray& peaks=inputFrame.GetSpectralPeakArray();
 	Spectrum& residual=inputFrame.GetResidualSpec();
 	DataArray& peakMag=peaks.GetMagBuffer();
-	int i;
 	int nPeaks=peaks.GetnPeaks();
 	int specSize=residual.GetSize();
 //TODO check whether spectrum is in dB or not
 	TData linGain=Lin(gain);
 
-	for(i=0;i<nPeaks;i++)
+	for(int i=0;i<nPeaks;i++)
 	{
 		peakMag[i]=std::min(peakMag[i]+gain,TData(0));
 	}
-	for(i=0;i<specSize;i++)
+	for(int i=0;i<specSize;i++)
 	{
 		residual.SetMag(i,residual.GetMag(i)*linGain);
 	}

@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _SMSTransformation_
-#define _SMSTransformation_
+#ifndef _SegmentTransformation_
+#define _SegmentTransformation_
 
 
 #include "Processing.hxx"
@@ -38,13 +38,7 @@
 
 namespace CLAM {
 
-	/** Abstract base class for all SMS Transformations. It implements all basic behaviour for
-	 *	SMS Transformations such as Configuration and Control handling but defers the selection
-	 *	of a particular Do overload to its template subclass SMSTransformation. 
-	 *	@see SMSTransformation
-	 */
-
-	class SMSTransformation : public Processing
+	class SegmentTransformation: public Processing
 	{
 		
 		FrameTransformation* mFrameTransformation;
@@ -53,7 +47,7 @@ namespace CLAM {
 		OutControl mSendAmount; //TODO privatize
 
 		/** Internally stored configuration */
-		SMSTransformationConfig mConfig;
+		SegmentTransformationConfig mConfig;
 		/** Boolean member that indicates whether BPF or single value is to be used. This is not
 		 *	a control because it is not supposed to change un run-time. It is rather a configuration
 		 *	parameter that can be automatically extracted from mConfig but it is placed here to make
@@ -92,15 +86,15 @@ namespace CLAM {
 			return mConfig;
 		}
 
-		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSTransformation();
+		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
+		SegmentTransformation();
 
-		/** Constructor with an object of SMSTransformationConfig class by parameter
-		 *  @param c SMSTransformationConfig object created by the user
+		/** Constructor with an object of SegmentTransformationConfig class by parameter
+		 *  @param c SegmentTransformationConfig object created by the user
 		*/
-		SMSTransformation(const SMSTransformationConfig& c);
+		SegmentTransformation(const SegmentTransformationConfig& c);
 		
- 		virtual ~SMSTransformation();
+ 		virtual ~SegmentTransformation();
 
 		/** Supervised Do() function. It calls the non-supervised Do that receives Segment as
 		 *	input and output.
@@ -126,7 +120,7 @@ namespace CLAM {
 
 		virtual bool Do(const Frame& in,Frame& out) { return true; } 
 		bool Do() { return true; } 
-		const char* GetClassName() const { return "SMSTransformation"; } 
+		const char* GetClassName() const { return "SegmentTransformation"; } 
 
 
 		void AddFramesToOutputIfInputIsLonger(int frameindex, const Segment& in, Segment& out)
@@ -166,4 +160,4 @@ namespace CLAM {
 	
 };//namespace CLAM
 
-#endif // _SMSTransformation_
+#endif // _SegmentTransformation_

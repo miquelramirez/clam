@@ -34,16 +34,16 @@ namespace CLAM{
 	
 	/** @todo: introduce interpolation of spectral shapes, before that, interpolations may be
 	 *	extracted to external Processing's*/
-	class SMSMorph: public SMSTransformation
+	class SMSMorph: public SegmentTransformation
 	{
 		
 		typedef InControlTmpl<SMSMorph> SMSMorphCtrl;	
 	
 	public:
-		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
+		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSMorph();
-		/** Constructor with an object of SMSTransformationConfig class by parameter
-		 *  @param c SMSTransformationConfig object created by the user
+		/** Constructor with an object of SegmentTransformationConfig class by parameter
+		 *  @param c SegmentTransformationConfig object created by the user
 		*/
 		SMSMorph(const SMSMorphConfig &c);
 		
@@ -119,7 +119,7 @@ namespace CLAM{
 		SMSMorphConfig mConfig;
 		
 
-		/** Input Port. Note that all SMSTransformations will have segment as input and output, 
+		/** Input Port. Note that all SegmentTransformations will have segment as input and output, 
 		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
 		 *	transformation. Here we add a second segment for the sound to morph.*/
 		Segment* mpInput2;

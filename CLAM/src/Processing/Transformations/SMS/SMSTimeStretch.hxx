@@ -33,16 +33,16 @@ namespace CLAM{
 	
 	/** @todo: introduce interpolation of spectral shapes, before that, interpolations may be
 	 *	extracted to external Processing's*/
-	class SMSTimeStretch: public SMSTransformation
+	class SMSTimeStretch: public SegmentTransformation
 	{
 					
 	public:
-		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
+		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSTimeStretch();
-		/** Constructor with an object of SMSTransformationConfig class by parameter
-		 *  @param c SMSTransformationConfig object created by the user
+		/** Constructor with an object of SegmentTransformationConfig class by parameter
+		 *  @param c SegmentTransformationConfig object created by the user
 		*/
-		SMSTimeStretch(const SMSTransformationConfig &c);
+		SMSTimeStretch(const SegmentTransformationConfig &c);
 		
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
