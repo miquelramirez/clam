@@ -138,7 +138,7 @@ void MyInstrumentConfig::DefaultInit(void)
 
 	try
 	{
-		SetSamplingRate( AudioManager::Singleton().SampleRate() );
+		SetSamplingRate( AudioManager::Current().SampleRate() );
 	}
 	catch(Err)
 	{
