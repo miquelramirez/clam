@@ -62,6 +62,7 @@ private:
 		try {
 			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
+			document=0; // Use the un used var to stop warnings.
 		}
 		catch (XmlStorageErr & e)
 		{
@@ -79,6 +80,7 @@ private:
 		try {
 			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
+			document=0; // Use the un used var to stop warnings.
 		}
 		catch (XmlStorageErr & e)
 		{
@@ -141,6 +143,7 @@ private:
 		try {
 			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
+			document=0; // Use the un used var to stop warnings.
 		}
 		catch (XmlStorageErr & e)
 		{
@@ -169,6 +172,7 @@ private:
 		try {
 			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
+			document=0; // Use the un used var to stop warnings.
 		}
 		catch (XmlStorageErr & e)
 		{
@@ -197,6 +201,7 @@ private:
 		try {
 			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
+			document=0; // Use the un used var to stop warnings.
 		}
 		catch (XmlStorageErr & e)
 		{
