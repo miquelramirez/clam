@@ -60,9 +60,9 @@ namespace CLAM{
 
  		~SMSFreqShift() {}	
 		
-		const ProcessingConfig& GetConfig() const { throw 0; }
+		const ProcessingConfig& GetConfig() const { return mConfig; }
 
-		bool ConcreteConfigure(const ProcessingConfig& c) { return mConfig; }
+		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
 		bool Do(const Frame& in, Frame& out)
 		{

@@ -23,7 +23,6 @@
 #ifndef _SMSSpectralShapeShift_
 #define _SMSSpectralShapeShift_
 
-#include "FrameTransformation.hxx"
 #include "SpectralEnvelopeExtract.hxx"
 #include "SpectralEnvelopeApply.hxx"
 #include "Frame.hxx"
@@ -32,6 +31,8 @@
 #include "OutPort.hxx"
 #include "SMSTransformationConfig.hxx"
 #include "InControl.hxx"
+#include "FrameTransformation.hxx"
+#include "FrameTransformationConfig.hxx"
 
 namespace CLAM{
 
@@ -50,6 +51,8 @@ namespace CLAM{
 
 		InControl mShiftAmount;
 
+		FrameTransformationConfig mConfig;
+
 	public:
 
 		SMSSpectralShapeShift() 
@@ -64,7 +67,7 @@ namespace CLAM{
 
  		~SMSSpectralShapeShift() {}
 
-		const ProcessingConfig& GetConfig() const { throw 0; }
+		const ProcessingConfig& GetConfig() const { return mConfig; }
 
 		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
