@@ -99,14 +99,14 @@ public:
 		connectWidgetsWithControls(network,prototype);
 		connectWidgetsWithMappedControls(network,prototype);
 
-	//	connectWidgetsWithPorts<CLAM::VM::NetAudioPlot, CLAM::AudioPlotProcessing>
-	//		("OutPort__.*", "CLAM::VM::NetAudioPlot", "Audio Input");
+		connectWidgetsWithPorts<CLAM::VM::NetAudioPlot, CLAM::AudioPlotProcessing>
+			("OutPort__.*", "CLAM::VM::NetAudioPlot", "Audio Input");
 		connectWidgetsWithPorts<CLAM::VM::NetSpectrumPlot, CLAM::SpectrumPlotProcessing>
 			("OutPort__.*", "CLAM::VM::NetSpectrumPlot", "Spectrum Input");
 		connectWidgetsWithPorts<CLAM::VM::NetPeaksPlot, CLAM::PeaksPlotProcessing>
 			("OutPort__.*", "CLAM::VM::NetPeaksPlot", "Peaks Input");
-	//	connectWidgetsWithPorts<CLAM::VM::NetFundPlot, CLAM::FundPlotProcessing>
-	//		("OutPort__.*", "CLAM::VM::NetFundPlot", "Fundamental Input");
+		connectWidgetsWithPorts<CLAM::VM::NetFundPlot, CLAM::FundPlotProcessing>
+			("OutPort__.*", "CLAM::VM::NetFundPlot", "Fundamental Input");
 	}
 	void Start()
 	{
