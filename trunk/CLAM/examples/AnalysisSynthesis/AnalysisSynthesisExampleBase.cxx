@@ -40,6 +40,7 @@
 #include "HeapDbg.hxx"
 
 //Transformation class
+#include "SMSPitchShift.hxx"
 #include "SMSFreqShift.hxx"
 
 #include <fstream>
@@ -103,7 +104,7 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	
 	int synthFrameSize;
 	if(mGlobalConfig.GetSynthesisFrameSize()<0)
-		synthFrameSize=(resAnalWindowSize-1)/2;
+		synthFrameSize=analHopSize;
 	else
 		synthFrameSize=mGlobalConfig.GetSynthesisFrameSize();
 
@@ -121,6 +122,7 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mAnalConfig.GetPeakDetect().SetMagThreshold(mGlobalConfig.GetAnalysisPeakDetectMagThreshold());
 	
 	mAnalConfig.GetSinTracking().SetnMaxSines(mGlobalConfig.GetAnalysisMaxSines());
+	mAnalConfig.GetSinTracking().SetIsHarmonic(mGlobalConfig.GetAnalysisHarmonic());
 	mAnalConfig.GetPeakDetect().SetMaxPeaks(mGlobalConfig.GetAnalysisMaxSines());
 
 
@@ -567,6 +569,7 @@ void AnalysisSynthesisExampleBase::SynthesisProcessing()
 	
 	mSegment.mCurrentFrameIndex=0;
 	for(i=0;i<nSynthFrames;i++){
+		
 		if(mySynthesis.Do(mSegment))
 		{
 			mAudioOutSin.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
@@ -831,7 +834,7 @@ void AnalysisSynthesisExampleBase::Transform(void)
 	bool def=false;
 	if(!mpTransformation)
 	{
-		SetTransformation(new SMSFreqShift);
+		SetTransformation(new SMSPitchShift());
 		def=true;
 	}
 	mpTransformation->Configure(mTransformationScore);
