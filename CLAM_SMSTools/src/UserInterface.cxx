@@ -823,7 +823,7 @@ void UserInterface::AboutWindow() {
     w = o;
     o->labelsize(10);
     o->callback((Fl_Callback*)cb_mWindow2, (void*)(this));
-    { Fl_Box* o = new Fl_Box(5, 5, 440, 30, "SMS Tools 2 v.0.1.2");
+    { Fl_Box* o = new Fl_Box(5, 5, 440, 30, "SMS Tools 2 v.0.2");
       o->box(FL_FLAT_BOX);
       o->labelfont(1);
       o->labelsize(16);
