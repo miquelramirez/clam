@@ -49,6 +49,9 @@ namespace CLAM {
 
 	};
 
+	/** This Processing class takes an input audio buffer and shifts it to get zero-phase
+	 *	conditions in the STFT 
+	 */
 	class CircularShift: public Processing {
 		CircularShiftConfig mConfig;
 
@@ -78,18 +81,13 @@ namespace CLAM {
 
 		// Port interfaces.
 
-		/** Change the internal type state.
-		 * Apart from prototype configuration, the Size, Scale and
-		 * SpectralRange attributes of each Spectrum are also
-		 * checked.
-		 */
-
+		/** Not implemented yet */
 		bool SetPrototypes(Spectrum& inputs,const Spectrum& out);
-
+		/** Not implemented yet */
 		bool SetPrototypes();
-
+		/** Not implemented yet */
 		bool UnsetPrototypes();
-
+		/** Not implemented yet */
 		bool MayDisableExecution() const {return true;}
 
 		void StoreOn(Storage &s) {};
