@@ -42,8 +42,10 @@ namespace CLAM{
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSOddEvenHarmonicRatio()
+		SMSOddEvenHarmonicRatio() : mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this)
 		{
+			Configure( SMSTransformationConfig() );
+
 		}
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
