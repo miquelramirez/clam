@@ -29,7 +29,7 @@
 namespace CLAM{
 
 
-	class SMSSineFilter: public SMSTransformation
+	class SMSSineFilter: public SegmentTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -42,24 +42,24 @@ namespace CLAM{
 
 
 	public:
-		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
+		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSSineFilter()
 		{
 		}
-		/** Constructor with an object of SMSTransformationConfig class by parameter
-		 *  @param c SMSTransformationConfig object created by the user
+		/** Constructor with an object of SegmentTransformationConfig class by parameter
+		 *  @param c SegmentTransformationConfig object created by the user
 		*/
-		SMSSineFilter(const SMSTransformationConfig &c)
-			: SMSTransformation(c)
+		SMSSineFilter(const SegmentTransformationConfig &c)
+			: SegmentTransformation(c)
 			, mIn("In SpectralPeaks", this)
 			, mOut("Out SpectralPeaks", this)
 		{
-			Configure( SMSTransformationConfig() );
+			Configure( SegmentTransformationConfig() );
 		}
 
 		virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			SMSTransformation::ConcreteConfigure(c);
+			SegmentTransformation::ConcreteConfigure(c);
 			//BPF will be used in a non temporal sense
 			mUseTemporalBPF=false;
 			return true;

@@ -23,14 +23,14 @@
 
 namespace CLAM
 {
-	void SMSTransformationConfig::DefaultInit()
+	void SegmentTransformationConfig::DefaultInit()
 	{
 		AddAmount();
 		UpdateData();
 		DefaultValues();
 	}
 
-	void SMSTransformationConfig::DefaultValues()
+	void SegmentTransformationConfig::DefaultValues()
 	{
 		SetAmount(0);
 	}

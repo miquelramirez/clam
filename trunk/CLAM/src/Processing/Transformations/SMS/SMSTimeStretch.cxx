@@ -32,7 +32,7 @@ SMSTimeStretch::SMSTimeStretch()
 	Configure(SMSTimeStretchConfig());
 }
 
-SMSTimeStretch::SMSTimeStretch(const SMSTransformationConfig &c):SMSTransformation(c)
+SMSTimeStretch::SMSTimeStretch(const SegmentTransformationConfig &c):SegmentTransformation(c)
 {
 	mSynthesisTime=0;
 	mAnalysisTime=0;

@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef __SMSTRANSFORMATIONCONFIG__
-#define __SMSTRANSFORMATIONCONFIG__
+#ifndef _SegmentTransformetionConfig_
+#define _SegmentTransformetionConfig_
 
 #include "BPF.hxx"
 #include "Processing.hxx"
@@ -28,14 +28,14 @@
 namespace CLAM
 {
 	
-	/** Configuration class for all SMSTransformations. It includes a float-like single value 
+	/** Configuration class for all SegmentTransformations. It includes a float-like single value 
 	 *	parameter and a BPF envelope-like parameter. Either one of these may be used to initialize 
-	 *	and update the value control in an SMSTransformation.
+	 *	and update the value control in an SegmentTransformation.
 	 */
-	class SMSTransformationConfig: public ProcessingConfig
+	class SegmentTransformationConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SMSTransformationConfig, 3,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (SegmentTransformationConfig, 3,ProcessingConfig);
 		/** Type of transformation, for the time being just a string, should become
 		* an enumeration of known transformation types??*/
 		DYN_ATTRIBUTE (0, public, std::string, Type);
@@ -59,4 +59,4 @@ namespace CLAM
 }
 
 
-#endif // SMSTransformationConfig.hxx
+#endif // _SegmentTransformetionConfig_

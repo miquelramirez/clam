@@ -74,7 +74,7 @@ namespace CLAM
 		   type=="SMSSpectralShapeShift"||type=="SMSGenderChange"||
 		   type=="SMSTransformationChainIO")
 		{
-			return new CLAM::SMSTransformationConfig();
+			return new CLAM::SegmentTransformationConfig();
 		}
 		if (type=="SMSMorph") 
 			return new CLAM::SMSMorphConfig();

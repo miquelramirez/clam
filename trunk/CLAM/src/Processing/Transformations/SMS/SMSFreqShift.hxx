@@ -23,14 +23,12 @@
 #ifndef _SMSFreqShift_
 #define _SMSFreqShift_
 
-//#include "Processing.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
 #include "SMSTransformationConfig.hxx"
-
 #include "FrameTransformation.hxx"
 
 namespace CLAM{
@@ -51,19 +49,19 @@ namespace CLAM{
 		{
 			return "SMSFreqShift";
 		}
-		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
+		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSFreqShift() 
 			: 
 			mIn("In SpectralPeaks", this), 
 			mOut("Out SpectralPeaks", this), 
 			mShiftAmount("Shift Amount", this)
 		{
-			Configure( SMSTransformationConfig() );
+			Configure( SegmentTransformationConfig() );
 		}
-		/** Constructor with an object of SMSTransformationConfig class by parameter
-		 *  @param c SMSTransformationConfig object created by the user
+		/** Constructor with an object of SegmentTransformationConfig class by parameter
+		 *  @param c SegmentTransformationConfig object created by the user
 		*/
-/*		SMSFreqShift(const SMSTransformationConfig &c):
+/*		SMSFreqShift(const SegmentTransformationConfig &c):
 			mIn("In SpectralPeaks", this), 
 			mOut("Out SpectralPeaks", this), 
 			mShiftAmount("Shift Amount", this)

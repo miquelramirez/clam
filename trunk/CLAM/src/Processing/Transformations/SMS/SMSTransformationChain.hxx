@@ -95,7 +95,7 @@ namespace CLAM {
 			for (iterator obj=composite_begin(); obj!=composite_end(); obj++,i++)
 			{
 				Processing & proc = *(*obj);
-				SMSTransformation & trans = dynamic_cast<SMSTransformation&>(proc);
+				SegmentTransformation& trans = dynamic_cast<SegmentTransformation&>(proc);
 				//TODO have a list instead of being a composite
 				
 				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==int(composite_size())-1)
@@ -135,7 +135,7 @@ namespace CLAM {
 			{
 				//connecting ports for non-supervised mode
 				Processing & processing = *(*(obj));
-				SMSTransformation &concreteObj = dynamic_cast<SMSTransformation&>(processing);
+				SegmentTransformation&concreteObj = dynamic_cast<SegmentTransformation&>(processing);
 				
 				concreteObj.AttachIn(*pCurrentData);
 				if(!(*obj)->CanProcessInplace())
@@ -148,12 +148,12 @@ namespace CLAM {
 			}
 			// now we have to restore the inSegment of the first child
 			obj=composite_begin();
-			SMSTransformation& concreteObj = dynamic_cast<SMSTransformation&>( *(*(obj)) );
+			SegmentTransformation& concreteObj = dynamic_cast<SegmentTransformation&>( *(*(obj)) );
 			concreteObj.AttachIn(*mpChainInput);
 			
 			obj=composite_end();
 			obj--;
-			SMSTransformation& concreteObj2 = dynamic_cast<SMSTransformation&>( *(*(obj)) );
+			SegmentTransformation& concreteObj2 = dynamic_cast<SegmentTransformation&>( *(*(obj)) );
 
 			concreteObj2.AttachOut( *mpChainOutput);
 
@@ -240,7 +240,7 @@ namespace CLAM {
 			
 			if ( classname=="SMSFreqShift") 
 			{
-				SMSTransformation* wrapper = new SMSTransformation;	
+				SegmentTransformation* wrapper = new SegmentTransformation;	
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* freqshift = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(freqshift);
@@ -249,6 +249,39 @@ namespace CLAM {
 				return;
 			}
 			
+			if ( classname=="SMSSinusoidalGain") 
+			{
+				SegmentTransformation* wrapper = new SegmentTransformation;	
+				Processing * proc = theFactory.Create(classname);
+				FrameTransformation* singain = dynamic_cast<FrameTransformation*>(proc); 
+				wrapper->WrapFrameTransformation(singain);
+				ConnectControls(*wrapper,"Out Control", *singain, "Gain Amount");
+				Insert( *wrapper );
+				return;
+			}
+
+			if ( classname=="SMSResidualGain") 
+			{
+				SegmentTransformation* wrapper = new SegmentTransformation;	
+				Processing * proc = theFactory.Create(classname);
+				FrameTransformation* resgain = dynamic_cast<FrameTransformation*>(proc); 
+				wrapper->WrapFrameTransformation(resgain);
+				ConnectControls(*wrapper,"Out Control", *resgain, "Gain Amount");
+				Insert( *wrapper );
+				return;
+			}
+
+			if ( classname=="SMSPitchShift") 
+			{
+				SegmentTransformation* wrapper = new SegmentTransformation;	
+				Processing * proc = theFactory.Create(classname);
+				FrameTransformation* pitchshift = dynamic_cast<FrameTransformation*>(proc); 
+				wrapper->WrapFrameTransformation(pitchshift);
+				ConnectControls(*wrapper,"Out Control", *pitchshift, "Shift Amount");
+				Insert( *wrapper );
+				return;
+			}
+
 			Insert( *( theFactory.Create( classname ) ) );
 		}
 		/** Helper method for updating frame counters both in ports and in internal data*/
@@ -264,7 +297,7 @@ namespace CLAM {
 		{
 			for(iterator obj=composite_begin(); obj!=composite_end(); obj++)
 			{
-				SMSTransformation* transf =dynamic_cast<SMSTransformation*>((*obj));
+				SegmentTransformation* transf =dynamic_cast<SegmentTransformation*>((*obj));
 				if(!transf->IsLastFrame()) return false;
 			}
 			return true;

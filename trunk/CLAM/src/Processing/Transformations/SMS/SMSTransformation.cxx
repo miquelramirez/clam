@@ -26,13 +26,13 @@
 
 namespace CLAM
 {
-	void SMSTransformation:: WrapFrameTransformation( FrameTransformation* trans)
+	void SegmentTransformation::WrapFrameTransformation( FrameTransformation* trans)
 	{
-		CLAM_ASSERT( !mFrameTransformation, "SMSTransformation::Wrapp object shoudn't have wrapped transformation");
+		CLAM_ASSERT( !mFrameTransformation, "SegmentTransformation::Wrapp object shoudn't have wrapped transformation");
 		mFrameTransformation = trans;
 	}
 	
-	SMSTransformation::SMSTransformation()
+	SegmentTransformation::SegmentTransformation()
 		: mSendAmount("Out Control", this)
 		, mAmountCtrl("Amount",this)
 		, mOnCtrl("On",this)
@@ -44,7 +44,7 @@ namespace CLAM
 		mFrameTransformation = 0;
 	}
 
-	SMSTransformation::SMSTransformation(const SMSTransformationConfig& c) 
+	SegmentTransformation::SegmentTransformation(const SegmentTransformationConfig& c) 
 		: mSendAmount("Out Control", this)
 		, mAmountCtrl("Amount",this)
 		, mOnCtrl("On",this)
@@ -57,13 +57,13 @@ namespace CLAM
 		mFrameTransformation = 0;
 	}
 
-	SMSTransformation::~SMSTransformation()
+	SegmentTransformation::~SegmentTransformation()
 	{
 		if (mFrameTransformation)
 			delete mFrameTransformation;
 	};
 	
-	bool SMSTransformation::Do(const Segment& in, Segment& out)
+	bool SegmentTransformation::Do(const Segment& in, Segment& out)
 	{
 		CLAM_ASSERT(mInput==&in, "sms transformation chain needs input segment");
 		//TODO find out why this finalization condition (and not just using size)
@@ -96,7 +96,7 @@ namespace CLAM
 		return true;
 	}
 
-	bool SMSTransformation::ConcreteConfigure(const ProcessingConfig& c)
+	bool SegmentTransformation::ConcreteConfigure(const ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig(mConfig, c);
 		mUseTemporalBPF=false;
@@ -119,7 +119,7 @@ namespace CLAM
 		return true;
 	}	
 
-	bool SMSTransformation::UpdateControlValueFromBPF(TData pos)
+	bool SegmentTransformation::UpdateControlValueFromBPF(TData pos)
 	{
 		if(mConfig.HasBPFAmount())
 		{
@@ -132,7 +132,7 @@ namespace CLAM
 		else return false;
 	}
 
-	bool SMSTransformation::IsLastFrame()
+	bool SegmentTransformation::IsLastFrame()
 	{
 		bool isLast=mInput->mCurrentFrameIndex >= mInput->GetnFrames();
 		
@@ -146,7 +146,7 @@ namespace CLAM
 		return isLast;
 	}
 
-	bool SMSTransformation::ConcreteStart()
+	bool SegmentTransformation::ConcreteStart()
 	{
 		return true;
 	}

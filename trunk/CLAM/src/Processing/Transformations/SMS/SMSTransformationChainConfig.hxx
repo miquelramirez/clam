@@ -141,7 +141,7 @@ namespace CLAM{
 		/** Returns a configuration iterator at the end of the list*/
 		const_iterator ConfigList_end_const() const {return GetConfigurations().end();}
 
-		bool AddSMSConfiguration(const SMSTransformationConfig& cfg,std::string type)
+		bool AddSMSConfiguration(const SegmentTransformationConfig& cfg,std::string type)
 		{
 			AddConfiguration(cfg,type);
 			return true;

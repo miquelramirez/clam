@@ -36,7 +36,7 @@ namespace CLAM{
 	 *	Pitch shift with timbre preservation using the SMS model. In order to preserve timbre, 
 	 *	the original spectral shape is extracted and then applied back.
 	 */
-	class SMSSpectralShapeShift: public SMSTransformation
+	class SMSSpectralShapeShift: public SegmentTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -49,16 +49,16 @@ namespace CLAM{
 
 
 	public:
-		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
+		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSSpectralShapeShift() : mIn( "In SpectralPeaks", this), mOut( "Out SpectralPeaks", this) 
 		{
-			Configure( SMSTransformationConfig() );
+			Configure( SegmentTransformationConfig() );
 			mSpectralRange=22050;//default
 		}
-		/** Constructor with an object of SMSTransformationConfig class by parameter
-		 *  @param c SMSTransformationConfig object created by the user
+		/** Constructor with an object of SegmentTransformationConfig class by parameter
+		 *  @param c SegmentTransformationConfig object created by the user
 		*/
-		SMSSpectralShapeShift(const SMSTransformationConfig &c):SMSTransformation(c)
+		SMSSpectralShapeShift(const SegmentTransformationConfig &c):SegmentTransformation(c)
 		{
 		}
 
