@@ -820,7 +820,7 @@ void DynamicType::FullfilsInvariant() const
 }
 
 
-void DynamicType::Debug()
+void DynamicType::Debug() const
 {
 	TAttr * attr = 0;
 	std::cout <<std::endl<<"Class Name: "<< GetClassName() << " at: " << this <<std::endl << "[#attr.], dyn_offs,statc_offs,name,type,{comp,dynType,ptr,strble},exist,size,Ptr"\
