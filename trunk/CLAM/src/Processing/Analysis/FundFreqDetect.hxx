@@ -35,6 +35,7 @@ namespace CLAM {
 	class ProcessingConfig;
 	class Fundamental;
 	class SpectralPeakArray;
+	class IndexArray;
 
 	/**    This class estimates a fundamental frequency value
 	*     in the spectral domain for one single spectral Frame.
@@ -81,7 +82,7 @@ namespace CLAM {
 	private:
 
 		double WeightCandidate(double freq, double maxMag,SpectralPeakArray&) const;
-		int GetClosestPeak(double freq, int peak,SpectralPeakArray& peaks) const;
+		int GetClosestPeak(double freq, int firstPeak, const IndexArray & peakIndexes, const DataArray & peakFrequencies) const;
 		double GetClosestHarmonic(double peak, double fundfreq) const;
 		bool IsGoodCandidate(double freq) const;
 
