@@ -72,7 +72,7 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_SpectrumPor
 
 #include "Qt_FundPortMonitorPresentation.hxx"
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_FundPortMonitorPresentation>
-        regtFundPortMonitor( "FundPortMonitor" );
+        regtFundPortMonitor( "FundamentalPortMonitor" );
 	
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
 	regtAudioPlotProcessing( "AudioPlotProcessing" );
