@@ -15,27 +15,22 @@ namespace CLAM
 	    Color color;
 
 	    SinTrackNode()
-		{
-		    freq=TData(0.0);
-		    timeIndex=0;
-		}
+		: freq(TData(0.0)),
+		  timeIndex(0)
+		{}
+
 	    SinTrackNode(const TData& f, const TIndex& ti, const Color& c)
-		{
-		    freq=f;
-		    timeIndex=ti;
-		    color.r=c.r;
-		    color.g=c.g;
-		    color.b=c.b;
-		}
+		: freq(f),
+		  timeIndex(ti),
+		  color(c)
+		{}
+
 	    SinTrackNode(const SinTrackNode& node)
-		{
-		    freq=node.freq;
-		    timeIndex=node.timeIndex;
-		    color.r=node.color.r;
-		    color.g=node.color.g;
-		    color.b=node.color.b;
-		}
-    
+		: freq(node.freq),
+		  timeIndex(node.timeIndex),
+		  color(node.color)
+		{}
+
 	    SinTrackNode& operator=(const SinTrackNode& node)
 		{
 		    freq=node.freq;
