@@ -34,9 +34,10 @@ FLMultiDisplay::FLMultiDisplay(int x,int y,int w,int h)
 
 void FLMultiDisplay::draw(void)
 {
-	fl_push_clip( x(), y(), w(), h());
-	fl_color(color());
-	fl_rectf(x(),y(),w(),h());
+
+	//fl_flush_clip( x(), y(), w(), h());
+	//fl_color(color());
+	//fl_rectf(x(),y(),w(),h());
 	for (int i=0;i<mChildren.children();i++)
 	{
 		FLDisplay* d = dynamic_cast< FLDisplay* > ( mChildren.child(i) );

@@ -24,7 +24,6 @@
 #include <FL/Fl_Widget.H>
 #include <algorithm>
 
-
 namespace CLAMGUI
 {
 
@@ -139,10 +138,13 @@ void FLTKWrapper::sRefreshingCallback( void* data )
 		{
 
 			std::list<Refreshee>::iterator i = pFl->mWidgetsToBeRefreshed.begin();
+			Fl_Widget* childWidget = NULL;
 
 			while ( i != pFl->mWidgetsToBeRefreshed.end() )
 				{
-					(*i).mpWidget->redraw();
+					childWidget = (*i).mpWidget;
+					childWidget->damage();
+					childWidget->redraw();
 					i++;
 				}
 		}
