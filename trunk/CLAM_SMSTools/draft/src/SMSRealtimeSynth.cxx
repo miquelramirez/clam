@@ -83,15 +83,18 @@ void SMSRealtimeSynth::Stream()
 
 	for( int i=0; i<nSynthFrames; i++ )
 	{
+		printf("synthesis. i==%d\n", i);
 		if( !GetSynthesis().Do(mTransformedSegment) )
+		{
+			printf("analysis frame with negative center\n");
 			continue; // it is an analysis frame with negative center time and thus should not be used
+		}
 
-		Audio& output = mTransformedSegment.GetFramesArray()[i].GetSynthAudioFrame();
+		Frame& currentFrame = mTransformedSegment.GetFramesArray()[i];
+		printf("synthesizing frame #%d at %x\n",i, &currentFrame);
+		Audio& output = currentFrame.GetSynthAudioFrame();
 		outL.Do( output );
 		outR.Do( output );
-		//mAudioOutSin.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
-		//mAudioOutRes.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetResidualAudioFrame());
-		//mAudioOut.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSynthAudioFrame());
 		beginIndex+=synthFrameSize;
 	}
 	
