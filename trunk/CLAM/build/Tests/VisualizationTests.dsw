@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "AudioPresentationTest"=".\AudioPresentation\AudioPresentationTest.dsp" - Package Owner=<4>
+Project: "AudioPresentationTest"=".\SupervisedTests\AudioPresentation\AudioPresentationTest.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "ControlAdapterTest"=".\ControlAdapter\ControlAdapterTest.dsp" - Package Owner=<4>
+Project: "ControlAdapterTest"="..\..\..\CLAM-devel-Easter-release\build\Tests\ControlAdapter\ControlAdapterTest.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -28,6 +28,18 @@ Package=<4>
 ###############################################################################
 
 Project: "FDFilterControllerTest"=".\TestFDFilterController\FDFilterControllerTest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "FundFreqPresentationTest"=".\SupervisedTests\FundFreqPresentation\FundFreqPresentation.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -63,7 +75,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "SpectralPeaksPresentationTest"=".\SpectralPeaksPresentation\SpectralPeaksPresentationTest.dsp" - Package Owner=<4>
+Project: "SpectralPeaksPresentationTest"=".\SupervisedTests\SpectralPeaksPresentation\SpectralPeaksPresentationTest.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -75,7 +87,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "SpectrumPresentationTest"=".\SpectrumPresentation\SpectrumPresentationTest.dsp" - Package Owner=<4>
+Project: "SpectrumPresentationTest"=".\SupervisedTests\SpectrumPresentation\SpectrumPresentationTest.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Visualization\Base"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\..\..\src\Defines" /I "..\..\..\externals\CbLib" /I "..\..\..\src\Errors" /I "..\..\..\src\Visualization\Base" /FI"preinclude.hxx" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /FD /c
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /nologo /subsystem:console /machine:I386
+# ADD LINK32 /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "Signalv1Test - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Visualization\Base"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\..\..\src\Defines" /I "..\..\..\externals\CbLib" /I "..\..\..\src\Errors" /I "..\..\..\src\Visualization\Base" /FI"preinclude.hxx" /D "_DEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /FD /GZ /Zm1000 /c
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /subsystem:console /machine:I386
+# ADD LINK32 /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -90,8 +90,10 @@ LINK32=link.exe
 # End Group
 # Begin Group "Source Files"
 
+# PROP Default_Filter ""
 # Begin Group "test Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\test\TestSignalv1.cxx
@@ -103,24 +105,27 @@ SOURCE=..\..\..\test\TestSignalv1Classes.cxx
 # End Group
 # Begin Group "Visualization Sources"
 
+# PROP Default_Filter ""
 # Begin Group "Base Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\src\Visualization\Base\Connection.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Visualization\Base\Slot.cxx
+SOURCE=..\..\..\src\Visualization\Base\Signal.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Visualization\Base\Signal.cxx
+SOURCE=..\..\..\src\Visualization\Base\Slot.cxx
 # End Source File
 # End Group
 # End Group
 # Begin Group "Errors Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\src\Errors\Err.cxx
@@ -128,6 +133,7 @@ SOURCE=..\..\..\src\Errors\Err.cxx
 # End Group
 # Begin Group "Defines Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\src\Defines\Assert.cxx
@@ -136,13 +142,32 @@ SOURCE=..\..\..\src\Defines\Assert.cxx
 # End Group
 # Begin Group "Header Files"
 
+# PROP Default_Filter ""
 # Begin Group "Visualization Headers"
 
+# PROP Default_Filter ""
 # Begin Group "Base Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\src\Visualization\Base\Connection.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\ConnectionHandler.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signal.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signalv1.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Visualization\Base\Signalv1ImplSerious.hxx
 # End Source File
 # Begin Source File
 
@@ -152,40 +177,27 @@ SOURCE=..\..\..\src\Visualization\Base\Slot.hxx
 
 SOURCE=..\..\..\src\Visualization\Base\Slotv1.hxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Signal.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\ConnectionHandler.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Signalv1ImplSerious.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Visualization\Base\Signalv1.hxx
-# End Source File
 # End Group
 # End Group
 # Begin Group "externals Headers"
 
+# PROP Default_Filter ""
 # Begin Group "CbLib Headers"
 
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\FunctorBase.hxx
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\externals\CbLib\Functor1.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\FunctorBase.hxx
 # End Source File
 # End Group
 # End Group
 # Begin Group "Errors Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\src\Errors\Err.hxx
@@ -193,6 +205,7 @@ SOURCE=..\..\..\src\Errors\Err.hxx
 # End Group
 # Begin Group "Defines Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\src\Defines\Assert.hxx
@@ -200,6 +213,7 @@ SOURCE=..\..\..\src\Defines\Assert.hxx
 # End Group
 # Begin Group "test Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\test\TestSignalv1Classes.hxx
@@ -215,7 +229,7 @@ SOURCE=settings.cfg
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "Signalv1Test.dsp"
+"buildstamp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	srcdeps.exe settings.cfg Signalv1Test.dsp
 
 # End Custom Build
@@ -225,7 +239,7 @@ InputPath=settings.cfg
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "Signalv1Test.dsp"
+"buildstamp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	srcdeps.exe settings.cfg Signalv1Test.dsp
 
 # End Custom Build

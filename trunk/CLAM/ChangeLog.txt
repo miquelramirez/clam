@@ -1,3 +1,34 @@
+2003-07-03 CLAM_0_5_1
+'SMSTools update and Mac compilation issues'
+  * Examples - SMS:
+      ** Improved stability and performance.
+      ** Fixed a few bugs in how some configurations were handled
+      ** Removed some useless fields from configuration (i.e. PhaseManagementType) and
+         changed AnalysisMaxSines for AnalysisPeakDetectMaxFrequency.
+      ** Transformations Configurators: graphical widget for editing configurations
+      ** New view added (fundamental)
+      ** SMSMorph transformation is now usable.
+      ** SMSTime stretch is also usable
+      ** SMSEdu (from amora's career final project project) available as 'draft'
+  * Examples - Misc:
+      ** NetworkEditor (from xrubio's career final project) available on 'examples'
+  * Processing - All:
+      ** Configs has been separated from their processings in a separate
+         header to lower memory usage during SMSTools compilation in Mac.
+  * Processing - Analysis:
+      ** Spectral peak detect does not have MaxPeaks as a configuration parameter. Instead,
+         you may indicate the maximum peak frequency you want to detect with MaxFreq.
+  * Processing - Transformation -SMS:
+      ** SMSTransformation chain is now able to acknowledge SMSTransformations that do
+         not process inplace and have different processing rate.
+  * Testing:
+      ** Some more test has been moved to cppunit framework
+  * Doxygen:
+      ** Few doxygen inline documentation fixes
+  * BuildSystem
+      ** Library generation under Linux available (not a CLAM lib still but
+         generating user libraries)
+
 2003-06-11 CLAM_0_5_0
 'flashing new build system and SMSTools'
   * Build system:

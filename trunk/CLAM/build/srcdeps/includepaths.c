@@ -5,7 +5,7 @@
 #include "includepaths.h"
 #include <string.h>
 
-extern list* includepaths; /* definition in main */
+extern list* includepaths; /* definition in parser.c */
 
 /* add a path to the include paths */
 /* Don't add /CVS paths! */

@@ -790,15 +790,15 @@ SOURCE=..\..\..\..\src\Standard\BPFTmpl.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Standard\IndexArray.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Standard\List.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\Search.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\IndexArray.hxx
 # End Source File
 # End Group
 # Begin Group "Data Headers"
@@ -823,6 +823,14 @@ SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpecTypeFlags.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectrumConfig.hxx
 # End Source File
 # Begin Source File
 
@@ -952,6 +960,10 @@ SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Processing\Base\ProcessingConfig.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Processing\Base\Processing.hxx
 # End Source File
 # Begin Source File
@@ -965,6 +977,10 @@ SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 # End Group
 # Begin Group "Analysis Headers"
 
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\FFTConfig.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Analysis\FFT_rfftw.hxx

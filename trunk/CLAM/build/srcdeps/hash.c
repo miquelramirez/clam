@@ -74,7 +74,7 @@ void hash_set(hash* h,const char* key,const char* val)
 			stradd(val);
 			strend();
 			free(i->str);
-			i->str = strdup(tmp);
+			i->str = mystrdup(tmp);
 			return;			
 		}
 		i = i->next;

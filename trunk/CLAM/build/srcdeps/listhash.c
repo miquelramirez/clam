@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "listhash.h"
-#include "strdup.h"
+#include "mystrdup.h"
 
 listkey* listkey_new(const char* str)
 {
 	listkey* ret = (listkey*) malloc(sizeof(listkey));
-	ret->str = strdup(str);
+	ret->str = mystrdup(str);
 	ret->next = 0;
 	ret->l = 0;
 	ret->owns_list = 1;
