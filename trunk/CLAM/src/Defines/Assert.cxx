@@ -122,7 +122,7 @@ void ExecuteWarningHandler(const char* message, const char* filename, int lineNu
 	CurrentWarningHandler(message,filename,lineNumber);
 }
 
-#if defined(__linux__)
+#if 0 //  defined(__linux__)
 class SystemSignalTrapper
 {
 	int _signal;
