@@ -126,6 +126,8 @@ int main(void)
 		cout << "catched a nice '...'" << endl;
 		return 1;
 	}
+	std::cout << "Test Passed!" << std::endl;
+
 	return 0;
 }  // main
 }; // end namespace CLAMTest

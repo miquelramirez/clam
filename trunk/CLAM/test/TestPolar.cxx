@@ -34,7 +34,9 @@ int main () {
 	ss << p1;
 	ss >> p2;
 	std::cout << p1 << " " << p2 << std::endl;
-	CLAM_ASSERT(p1==p2, "Extraction operator over a complex had no efect");
+	CLAM_ASSERT(p1==p2, "Test Failed. Extraction operator over a complex had no efect");
+	if ( p1==p2 )
+		std::cout << "Test Passed" << std::endl;
 	return 0;
 }
 

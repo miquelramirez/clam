@@ -92,6 +92,10 @@ public:
 		std::cout << "Destroying A...... at : "<< this << std::endl;
 	}
 
+	void LoadFrom (CLAM::Storage & store)
+	{
+	}
+
 	void StoreOn(CLAM::Storage & storage)
 	{
 #ifdef CLAM_USE_XML
@@ -133,6 +137,10 @@ public:
 	B() : a(9), b(9), c(9)
 	{
 		std::cout << "Constructiong B at : " << this << std::endl;
+	}
+
+	void LoadFrom (CLAM::Storage & store)
+	{
 	}
 
 	void StoreOn(CLAM::Storage & storage)
@@ -350,8 +358,8 @@ int main()
 			// Array construction
 			std::cout << "Testing construction" << std::endl;
 			Array<int> intarray;
-			Array<double> doublearray;
-			Array<ComplexTmpl<double> > complexarray;
+			Array<TData> doublearray;
+			Array<ComplexTmpl<TData> > complexarray;
 			Array<SelfRefering > selfarray;
 	
 			// Element addition:
@@ -359,8 +367,8 @@ int main()
 			std::cout << "Testing element adition";
 			for (i=25; i<50; i++) {
 				intarray.AddElem(i);
-				doublearray.AddElem(double(i));
-				complexarray.AddElem(ComplexTmpl<double>(i,i));
+				doublearray.AddElem(TData(i));
+				complexarray.AddElem(ComplexTmpl<TData>(i,i));
 				selfarray.AddElem(SelfRefering(i));
 				std::cout << '.' << std::flush;
 			}
@@ -369,8 +377,8 @@ int main()
 			std::cout << std::endl << "Testing element insertion";
 			for (i=0; i<40; i++) {
 				intarray.InsertElem(i,i);
-				doublearray.InsertElem(i,double(i));
-				complexarray.InsertElem(i,ComplexTmpl<double>(i,i));
+				doublearray.InsertElem(i,TData(i));
+				complexarray.InsertElem(i,ComplexTmpl<TData>(i,i));
 				selfarray.InsertElem(i,SelfRefering(i));
 				std::cout << '.' << std::flush;
 			}
@@ -417,8 +425,8 @@ int main()
 			std::cout << std::endl << "Testing element access";
 			for (i=0; i<50; i++) {
 				if ( intarray[i] != i ||
-					 doublearray[i] != double(i) ||
-					 complexarray[i] != ComplexTmpl<double>(i,i) ) {
+					 doublearray[i] != TData(i) ||
+					 complexarray[i] != ComplexTmpl<TData>(i,i) ) {
 					std::cout << intarray[i] << 'X';
 					result = 1;
 				}
@@ -441,7 +449,7 @@ int main()
 			}
 			else
 				std::cout << ".";
-			Array<double> newdouble(doublearray);
+			Array<TData> newdouble(doublearray);
 			if (! (newdouble == doublearray) ) {
 				std::cout << "X";
 				result = 1;
@@ -455,7 +463,7 @@ int main()
 			}
 			else
 				std::cout << ".";
-			Array<ComplexTmpl<double> > newcomplex(complexarray);
+			Array<ComplexTmpl<TData> > newcomplex(complexarray);
 			if (! (newcomplex == complexarray) ) {
 				std::cout << "X";
 				result = 1;
