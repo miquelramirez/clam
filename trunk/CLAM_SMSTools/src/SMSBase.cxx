@@ -49,8 +49,8 @@
 #include "SMSMorph.hxx"
 #include "SMSTimeStretchConfig.hxx"
 
-using namespace CLAMGUI;
-using namespace CLAM;
+namespace CLAM
+{
 
 SMSBase::SMSBase()
 	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
@@ -918,3 +918,5 @@ void SMSBase::SetSamplingRate(TSize samplingRate)
 	mAudioOutSin.SetSampleRate(samplingRate);
 
 }
+
+} //namespace CLAM
