@@ -248,22 +248,34 @@ void NetworkController::RemoveControlConnection( const std::string & outControl,
 		ExecuteRemoveControlConnection(outControl, inControl);
 }
 
-void NetworkController::LoadNetworkFrom( const std::string & file)
+std::string BaseName(const std::string& xmlfile)
+{
+	int dotPos = xmlfile.find_last_of('.');
+	if (dotPos == 0) return xmlfile;
+	std::string result= xmlfile.substr(0, dotPos);
+	return result;
+}
+void NetworkController::LoadNetworkFrom( const std::string & xmlfile)
 {
 	Clear();
 //	SignalClearPresentation.Emit(); 
 	mPresentation->Clear();
 	CLAM::XMLStorage storage;
-	storage.Restore( *mObserved, file );
+	storage.Restore( *mObserved, xmlfile );
 
 	BindTo( *mObserved );
+
+	std::string positionsFile = BaseName(xmlfile)+".pos";
+	mPresentation->SetUpWidgetsPositions(positionsFile);
 
 	Publish();
 }
 
-void NetworkController::SaveNetworkTo( const std::string & file)
+void NetworkController::SaveNetworkTo( const std::string & xmlfile)
 {
-	CLAM::XMLStorage::Dump( *mObserved, "network", file );
+	CLAM::XMLStorage::Dump( *mObserved, "network", xmlfile );
+	
+	mPresentation->SaveWidgetsPositions( BaseName(xmlfile)+".pos" );
 }
 
 void NetworkController::RemoveProcessing(const std::string & name )

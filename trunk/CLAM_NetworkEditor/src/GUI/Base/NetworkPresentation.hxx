@@ -61,6 +61,7 @@ protected:
 	std::list<ProcessingPresentation*> mProcessingPresentations;
 	std::list<ProcessingPresentation*> mProcessingPresentationsToRemove;
 	typedef std::list<ProcessingPresentation*>::iterator ProcessingPresentationIterator;
+	typedef std::list<ProcessingPresentation*>::reverse_iterator ProcessingPresentationReverseIterator;
 	std::list<ConnectionPresentation*> mConnectionPresentations;
 	std::list<ConnectionPresentation*> mConnectionPresentationsToRemove;
 	typedef std::list<ConnectionPresentation*>::iterator ConnectionPresentationIterator;
@@ -73,6 +74,8 @@ public:
 	virtual void Hide() = 0;
 	void UpdatePresentations();
 	void Clear( );
+	virtual void SetUpWidgetsPositions(const std::string& positionsFilename ) = 0;
+	virtual void SaveWidgetsPositions(const std::string& positionsFilename ) = 0;
 
 	CLAMVM::NetworkController & GetNetworkController();
 

@@ -37,6 +37,7 @@
 #include <qdragobject.h> 
 
 #include <iostream> // TODO: remove
+#include <fstream>
 
 namespace NetworkGUI
 {
@@ -109,6 +110,66 @@ void Qt_NetworkPresentation::SetName(const std::string& name)
 	int pixelsWide = fm.width( QString(mName.c_str()));
 	int pixelsHigh = fm.height();
 */
+}
+
+Qt_ProcessingPresentation* Qt_NetworkPresentation::FindProcessingPresentation(const std::string& name)
+{
+ 	ProcessingPresentationIterator it;
+	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
+	{
+		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
+		if (name==proc->GetName())
+			return proc;
+	}
+	return 0;
+}
+
+void Qt_NetworkPresentation::SaveWidgetsPositions(const std::string& positionsFilename)
+{
+	std::cout << "saving positions in file: "<<positionsFilename << std::endl; //TODO remove
+	
+	std::ofstream os(positionsFilename.c_str());
+	CLAM_ASSERT(os.is_open(), "error opening positions file for writting");
+	
+	const std::string tab = "\t";
+	const std::string sep = " ";
+	ProcessingPresentationIterator it;
+	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
+	{
+		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
+		int x = proc->pos().x();
+		int y = proc->pos().y();
+		os << proc->GetName() << tab << x << sep << y << std::endl;
+	}
+
+		
+}
+void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& positionsFilename)
+{
+	printf("opening file %s\n", positionsFilename.c_str());
+	std::ifstream is(positionsFilename.c_str());
+	if (!is.is_open())
+	{
+		std::cerr << "Warning: widget-positions file '" 
+			<< positionsFilename << "' not found\n";
+		return;
+	}
+	std::string procname;
+	int x,y;
+	while (is >> procname)
+	{
+		is >> x;
+		is >> y;
+		std::cout << procname << " "<< x <<" "<<y<<"\n";
+		Qt_ProcessingPresentation * proc=FindProcessingPresentation( procname );
+		if (!proc)
+		{
+			std::cerr<<"Warning: found bad name in network-positions file: '"
+				<< procname <<"'\n";
+			continue;
+		}
+		proc->MoveAbsolute( QPoint(x,y) );
+	}
 }
 
 void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & name, CLAMVM::ProcessingController * controller )
