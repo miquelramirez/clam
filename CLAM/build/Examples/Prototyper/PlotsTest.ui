@@ -19,16 +19,14 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QWidget">
+        <widget class="CLAM::VM::NetPeaksPlot">
             <property name="name">
-                <cstring>OutPort::</cstring>
+                <cstring>MySillyName</cstring>
             </property>
-            <hbox>
-            </hbox>
         </widget>
         <widget class="QSlider">
             <property name="name">
-                <cstring>slider1</cstring>
+                <cstring>InControl::SMSAnalysis::SpectralPeaks</cstring>
             </property>
             <property name="orientation">
                 <enum>Horizontal</enum>
