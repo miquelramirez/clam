@@ -29,7 +29,7 @@ namespace CLAM
 		DataRenderer::DataRenderer()
 		{
 			SetStep(TData(1.0));
-			SetColor(VMColor::Blue());
+			SetColor(VMColor::Green());
 		}
 	
 		DataRenderer::~DataRenderer()
