@@ -126,15 +126,19 @@ namespace CLAM {
 		DataArray& inMagBuffer=input.GetMagBuffer();
 		DataArray& inPhaseBuffer=input.GetPhaseBuffer();
 
+		TSize maxPeaks=mConfig.GetMaxPeaks();
+		out.SetnMaxPeaks(maxPeaks);
+		out.SetnPeaks(0);
+		
 		DataArray& outMagBuffer=out.GetMagBuffer();
 		DataArray& outFreqBuffer=out.GetFreqBuffer();
 		DataArray& outPhaseBuffer=out.GetPhaseBuffer();
 		DataArray& outBinPosBuffer=out.GetBinPosBuffer();
 		DataArray& outBinWidthBuffer=out.GetBinWidthBuffer();
 
-		TSize maxPeaks=mConfig.GetMaxPeaks();
+		
 
-		out.SetnMaxPeaks(maxPeaks);
+		
 
 		// detection loop 
 		for (i=0;i<NumBands-2;i++) {
