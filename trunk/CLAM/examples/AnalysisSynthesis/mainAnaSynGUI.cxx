@@ -16,12 +16,6 @@ int main(void)
 	try
 		{
 			AnalysisSynthesisExampleGUI example;
-			/******* TRANSFORMATION *******/
-			SMSFreqShift myTrans;
-			
-			example.SetTransformation(&myTrans);
-			/******* TRANSFORMATION *******/
-			
 			example.Run();
 		}
 	catch(Err& error)
