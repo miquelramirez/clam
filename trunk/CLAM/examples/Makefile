@@ -13,7 +13,6 @@ PROGRAMS=\
 	FundamentalDetect\
 	XMLViewExample\
 	SIViewExample\
-	QtSIViewExample\
 	SnapshotExample\
 	StreamBufferExample\
 	NodeExample
