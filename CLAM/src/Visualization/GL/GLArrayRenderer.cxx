@@ -36,7 +36,7 @@ GLArrayRenderer::GLArrayRenderer( unsigned char red, unsigned char gree, unsigne
 	ResizeArray( 1024 );
 	/*This limit has been experimentally found to be correct but it depends on the
 	  system and the amount of simultaneous views.*/
-	mMinPointsToOptimize=50000;
+	mMinPointsToOptimize=500000;
 }
 
 
