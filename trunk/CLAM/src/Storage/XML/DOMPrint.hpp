@@ -1,17 +1,32 @@
 #ifndef _DomPrint
 #define _DomPrint
 
+
+// MRJ: The Xercesc-1.7.0 internal headers have hardwired the 
+// path <xerces/whatever/etc> so since I don't feel like 
+// hacking the official xerces headers I think more reasonable
+// our files that attack directly the xerces headers
+#ifndef WIN32
 #include <util/PlatformUtils.hpp>
 #include <util/XMLString.hpp>
 #include <util/XMLUniDefs.hpp>
 #include <framework/XMLFormatter.hpp>
 #include <util/TranscodingException.hpp>
-
-
 #include <dom/DOM_DOMException.hpp>
-
 #include <dom/DOM.hpp>
 #include <parsers/DOMParser.hpp>
+#else
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
+#include <xercesc/framework/XMLFormatter.hpp>
+#include <xercesc/util/TranscodingException.hpp>
+#include <xercesc/dom/DOM_DOMException.hpp>
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/parsers/DOMParser.hpp>
+
+#endif
+
 #include <iostream>
 #include <cstring>
 #include <cstdlib>

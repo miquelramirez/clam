@@ -30,8 +30,16 @@
 #include "DOMPrint.hpp"
 #include "XMLable.hxx"
 #include "Component.hxx"
+
+// MRJ: See the comments in DOMPrint.hpp
+#ifndef WIN32
 #include <util/PlatformUtils.hpp>
 #include <dom/DOM.hpp>
+#else
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/dom/DOM.hpp>
+#endif
+
 #include <list>
 #include <deque>
 #include "Assert.hxx"
