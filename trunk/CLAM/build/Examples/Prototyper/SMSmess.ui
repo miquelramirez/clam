@@ -90,7 +90,7 @@
                         </widget>
                     </grid>
                 </widget>
-                <widget class="CLAM::VM::NetFundPlot">
+                <widget class="CLAM::VM::NetFundTrackPlot">
                     <property name="name">
                         <cstring>OutPort__SMSAnalysisCore__Fundamental</cstring>
                     </property>
@@ -170,10 +170,10 @@
                         <cstring>InControl__SMSFreqShift__Shift___Amount</cstring>
                     </property>
                     <property name="minValue">
-                        <number>-200</number>
+                        <number>-400</number>
                     </property>
                     <property name="maxValue">
-                        <number>200</number>
+                        <number>400</number>
                     </property>
                     <property name="value">
                         <number>0</number>
@@ -385,8 +385,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>InControlFloat__SMSSinusoidalGain__Gain___Amount</sender>
