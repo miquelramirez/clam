@@ -35,20 +35,30 @@ namespace CLAM
 namespace NetworkGUI
 {
 
-class MultiChannelAudioFileWriterConfigPresentation : public MonoAudioFileWriterConfigPresentation
+class MultiChannelAudioFileWriterConfigPresentation 
+	: public Qt_ProcessingConfigPresentation
 {
 	CLAM::MultiChannelAudioFileWriterConfig mMultiConfig;
+	QVBox * mLayout;
+	QLineEdit * mLocation;
+	QLineEdit * mSampleRate;
+	QComboBox * mFormat;
+
 	QSpinBox * mChannels;
 protected:
+	void SetConfig( const CLAM::ProcessingConfig & cfg);
 	void ConfigureProcessing();
 	void CreateGUI();
+	void CreateSampleRate();
+	void CreateFormat();
 	void CreateChannels();
+	void CreateLocation();
 public:
 	MultiChannelAudioFileWriterConfigPresentation( QWidget * parent = 0 );
 	virtual ~MultiChannelAudioFileWriterConfigPresentation();	
 	CLAM::ProcessingConfig * GetConfig()
 	{
-		return &mConfig;
+		return &mMultiConfig;
 	}
 };
 
