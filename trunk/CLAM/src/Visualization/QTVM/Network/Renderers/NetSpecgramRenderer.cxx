@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include "Assert.hxx"
 #include "CLAMGL.hxx"
@@ -8,41 +9,54 @@ namespace CLAM
     namespace VM
     {
 	NetSpecgramRenderer::NetSpecgramRenderer()
-	    : _palette(0.0f)
-	{
+	    : _palette(0.0f)	{
 	}
 
 	NetSpecgramRenderer::~NetSpecgramRenderer()
 	{
 	}
 
-	void NetSpecgramRenderer::SetData( std::vector<Spectrum>& data )
+	void NetSpecgramRenderer::SetData( Array<DataArray>& data )
 	{
-	    _data = data;
+	    if(!data.Size()) return;
+	    TSize specSize = data[0].Size();
+	    TSize size = data.Size();
+	    _data.Resize(size);
+	    _data.SetSize(size);
+	    for(int i = 0; i < size; i++)
+	    {
+		_data[i].Resize(specSize);
+		_data[i].SetSize(specSize);
+		std::copy(data[i].GetPtr(),data[i].GetPtr()+specSize,_data[i].GetPtr());
+	    }
 	}
 
 	void NetSpecgramRenderer::Render()
 	{
-	    glBegin(GL_POINTS);
-	    for(int i = 0; (unsigned)i < _data.size(); i++)
+	    TSize dataSize = TSize(_data.Size());
+	    TSize specLen = _data[0].Size();
+	    for(int i = 0; i < specLen; i++)
 	    {
-		if(!_data[i].HasMagBuffer()) continue;
-		for(int j = 0;j < _data[i].GetMagBuffer().Size(); j++)
+		glBegin(GL_LINE_STRIP);
+		for(int j = 0;j < dataSize; j++)
 		{
-		    TIndex colorIndex = _palette.Get( ClampToRange( _data[i].GetMagBuffer()[j]) );
+		    if(i > _data[j].Size()-1) // ensure correct size
+		    {
+			break;
+		    }
+		    TIndex colorIndex = _palette.Get( ClampToRange( _data[j][i]) );
 		    if( colorIndex < 64 || colorIndex >= 128  )
 		    {
-			std::cerr << _data[i].GetMagBuffer()[j] << std::endl;
-			std::cerr << i << std::endl;
+			std::cerr << _data[j][i] << std::endl;
 			std::cerr << colorIndex << std::endl;
 			CLAM_ASSERT( false, "NetSpecgramRenderer: color index out of range" );
-		    }
+			}
 		    _palette.GetRGBFromIndex( colorIndex, _color.r, _color.g, _color.b);
 		    glColor3ub(GLubyte(_color.r),GLubyte(_color.g),GLubyte(_color.b));
-		    glVertex2f(GLfloat(i),GLfloat(j));
+		    glVertex2f(GLfloat(j),GLfloat(i));
 		}
+		glEnd();
 	    }
-	    glEnd();
 	}
 
 	float NetSpecgramRenderer::ClampToRange(TData value) const
@@ -57,6 +71,7 @@ namespace CLAM
 	   
 	    return value;
 	}
+
     }
 }
 
