@@ -47,8 +47,20 @@ namespace CLAM
 
 	class ADSR: public Processing
 	{
+	public:
+		AudioOutPort mOutput;
+		enum Status {
+		Attack = 0,
+		Decay = 1,
+		Sustain = 2,
+		Release = 3,
+		Done = 4,
+		};
+
 	private:
+		InControlTmpl< ADSR >  mAmplitude;
 		ADSRConfig             mConfig;
+		TControlData           mAmpValue;
 		TData                  mAttackTime;
 		TData                  mDecayTime;
 		TData                  mSustainLevel;
@@ -56,21 +68,10 @@ namespace CLAM
 		TData                  mSamplingRate;
 		TData                  mLevel;
 		TData                  mDLevel;
-		TControlData           mAmpValue;
-		InControlTmpl< ADSR >  mAmplitude;
+		Status                 mStatus;
 		OutControl             mState;
 
-		enum Status {
-		Attack = 0,
-		Decay = 1,
-		Sustain = 2,
-		Release = 3,
-		Done = 4,
-		} mStatus;
-
 	protected:
-		AudioOutPort mOutput;
-
 		void HandleAttack(void);
 
 		void HandleDecay(void);
