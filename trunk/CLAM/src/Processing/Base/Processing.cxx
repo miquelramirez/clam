@@ -160,7 +160,8 @@ namespace CLAM {
 
 		try {
 			if(ConcreteStop())
-				mExecState = Ready;
+			//	mExecState = Ready; //TODO simplify number of states
+				mExecState = Unconfigured;
 		}
 		catch (ErrProcessingObj &e) {
 			mConfigErrorMessage += "Stop(): Object failed to stop properly.\n";
