@@ -28,13 +28,12 @@ public:
 	CPPUNIT_TEST_SUITE( SMSSynthesisTest );
 	
 	CPPUNIT_TEST( testAnalysisSynthesis );
-//	CPPUNIT_TEST( testAnalysisSynthesisInaNetwork );
+	CPPUNIT_TEST( testAnalysisSynthesisInaNetwork );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void setUp()
 	{
-		// instantiate processings: TODO
 		ConfigureAnalysisSynthesis();
 	}
 
