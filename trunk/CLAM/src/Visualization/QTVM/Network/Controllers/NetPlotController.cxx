@@ -6,7 +6,7 @@ namespace CLAM
 	{
 		NetPlotController::NetPlotController()
 		{
-		    _nSamples = 1; 
+		        _nSamples = 0;
 			_vmin = TData(0.0);
 			_vmax = TData(1.0);
 			
@@ -16,16 +16,16 @@ namespace CLAM
 		NetPlotController::~NetPlotController()
 		{
 		}
+	        
+	    void NetPlotController::SetnSamples(const TSize& nSamples)
+	    {
+			_nSamples = nSamples;
+	    }
 
-		void NetPlotController::SetnSamples(const TSize& n)
-		{
-			_nSamples = n;
-		}
-
-		TSize NetPlotController::GetnSamples() const
-		{
+	    TSize NetPlotController::GetnSamples() const
+	    {
 			return _nSamples;
-		}
+	    }
 
 		void NetPlotController::SetvRange(const TData& vmin, const TData& vmax)
 		{

@@ -7,21 +7,18 @@ namespace CLAM
 	{
 		NetSpectrumPlotController::NetSpectrumPlotController()
 		{
-			_mustProcessData = false;
 			SetvRange(TData(-150.0),TData(0.0));
 		}
 
 		NetSpectrumPlotController::~NetSpectrumPlotController()
-		{
+		{	
 		}
+
 		void NetSpectrumPlotController::SetData(const Spectrum& spec)
 		{
 			_spec = spec;
 			CacheData();
 			FullView();
-			_mustProcessData = true;
-
-			emit requestRefresh();
 		}
 
 		void NetSpectrumPlotController::SetDataColor(Color c)
@@ -31,19 +28,18 @@ namespace CLAM
 
 		void NetSpectrumPlotController::Draw()
 		{
-			if(_mustProcessData) ProcessData();
 			_renderer.Render();
 		}
 
-		void NetSpectrumPlotController::FullView()
+		void NetSpectrumPlotController::FullView()	
 		{
-			_view.left = TData(0.0);
-			_view.right = TData(_magBuffer.Size());
-			_view.top = GetvMax();
-			_view.bottom = GetvMin();
-
-			emit sendView(_view);
+		    _view.left = TData(0.0);
+		    _view.right = TData(GetnSamples());
+		    _view.top = GetvMax();
+		    _view.bottom = GetvMin();
+		    emit sendView(_view);
 		}
+
 		void NetSpectrumPlotController::AdaptSpectralData()
 		{
 			SpecTypeFlags spFlags;
@@ -72,14 +68,11 @@ namespace CLAM
 		void NetSpectrumPlotController::CacheData()
 		{
 			AdaptSpectralData();
-			_magBuffer=_spec.GetMagBuffer();
+			TSize specSize = _spec.GetMagBuffer().Size();
+			_renderer.SetDataPtr(_spec.GetMagBuffer().GetPtr(), specSize, NormalMode);
+			SetnSamples(specSize);
 		}
 
-		void NetSpectrumPlotController::ProcessData()
-		{
-			_renderer.SetDataPtr(_magBuffer.GetPtr(),_magBuffer.Size(),NormalMode);	
-			_mustProcessData = false;
-		}
 	}
 }
 

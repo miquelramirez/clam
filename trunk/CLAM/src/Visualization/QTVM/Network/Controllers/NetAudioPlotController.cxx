@@ -1,4 +1,3 @@
-#include "CLAMGL.hxx"
 #include "NetAudioPlotController.hxx"
 
 namespace CLAM
@@ -7,7 +6,6 @@ namespace CLAM
 	{
 		NetAudioPlotController::NetAudioPlotController() 
 		{
-			_mustProcessData = false;
 			SetvRange(TData(-1.0),TData(1.0));
 		}
 
@@ -21,8 +19,6 @@ namespace CLAM
 			SetnSamples(audioSize);
 			_dRenderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize,NormalMode);
 			FullView();
-			_mustProcessData = true;
-			emit requestRefresh();
 		}
 
 		void NetAudioPlotController::SetDataColor(Color c)
@@ -32,7 +28,6 @@ namespace CLAM
 
 		void NetAudioPlotController::Draw()
 		{
-			if(_mustProcessData) ProcessData();
 			_dRenderer.Render();
 		}
 
@@ -42,13 +37,7 @@ namespace CLAM
 			_view.right = TData(GetnSamples());
 			_view.top = GetvMax();
 			_view.bottom = GetvMin();
-	
 			emit sendView(_view);
-		}
-
-		void NetAudioPlotController::ProcessData()
-		{
-			_mustProcessData = false;
 		}
 	}
 }

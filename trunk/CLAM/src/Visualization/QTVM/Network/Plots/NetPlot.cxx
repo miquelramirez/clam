@@ -1,4 +1,5 @@
 #include <qlayout.h>
+#include "GLContext.hxx"
 #include "NetPlotController.hxx"
 #include "NetDisplaySurface.hxx"
 #include "NetPlot.hxx"
@@ -38,11 +39,13 @@ namespace CLAM
 		void NetPlot::Show()
 		{
 			show();
+			_surf->startRendering();
 		}
 
 		void NetPlot::Hide()
 		{
 			hide();
+			_surf->stopRendering();
 		}
 
 		void NetPlot::SetController(NetPlotController* controller)
@@ -58,8 +61,16 @@ namespace CLAM
 			layout->setSpacing(0);
 
 			_surf = new NetDisplaySurface(this);
+			GLContext* glc = new GLContext(_surf->format(), _surf);
+			_surf->setContext(glc);
 			_surf->setMinimumSize(100,20);
 			layout->addWidget(_surf);
+		}
+
+		void NetPlot::closeEvent(QCloseEvent* ce)
+		{
+		    _surf->stopRendering();
+			QWidget::closeEvent(ce);
 		}
 	}
 }
