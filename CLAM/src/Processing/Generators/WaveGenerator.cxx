@@ -47,7 +47,7 @@ namespace CLAM {
 
 
 	template<> 
-	TData WaveFunctor<EWaveType::eSine>::operator()(TTime x,TData amplitude)
+		TData WaveFunctor<WaveGenerator::EWaveType_eSine>::operator()(TTime x,TData amplitude)
 	{
 		return amplitude * sin(x);
 	}
@@ -78,7 +78,7 @@ namespace CLAM {
 
 		mXDelta =  2.0 * M_PI / samples_per_period;
 
-		mXPos = fmod( mConfig.GetPhase(), (2 * M_PI) );
+		mXPos = fmod( TData(mConfig.GetPhase()), TData(2 * M_PI) );
 
 		mType = mConfig.GetWaveType();
 		
@@ -96,7 +96,8 @@ namespace CLAM {
 		switch(mType)
 		{
 		case EWaveType::eSine:
-			FillBuffer<EWaveType::eSine>(out.GetBuffer());
+
+			FillBuffer< EWaveType_eSine > ( out.GetBuffer(), *this );
 			break;
 		default:
 			return false;
