@@ -33,6 +33,8 @@
 #define DEFAULT_MIDI_ARCH "alsa"
 #endif
 
+
+
 namespace CLAM{
 
 /** This class takes care of all the creation of the registration of 
@@ -116,8 +118,6 @@ protected:
 	*/
 //		bool Register(MIDIOut& out);
 };
-
-
 
 
 };//CLAM

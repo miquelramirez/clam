@@ -28,6 +28,8 @@
 
 namespace CLAM {
 
+	extern MIDIDeviceList* sPortMidiMIDIDeviceList;
+
 	std::ostream& operator<<( std::ostream& out_str, const PmDeviceInfo* dev_info )
 	{
 	
