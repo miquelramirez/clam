@@ -46,6 +46,11 @@ public:
 		PublishCallbacks();
 	}
 
+	View* GetLinkedView(void)
+	{
+		return mLinkedView;
+	}
+
 	virtual void PublishCallbacks()
 	{
 		CLAM_ASSERT( false, " Base presentation class PublishCallbacks() invoked. It is mandatory to overwrite this method" );
