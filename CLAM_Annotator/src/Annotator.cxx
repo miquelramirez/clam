@@ -17,7 +17,6 @@
 #include "AddSongsToProjectDialog.hxx"
 #include "SaveProjectAsDialog.hxx"
 
-//#include "SegmentationInformationWidget.hxx"
 
 #include <algorithm>
 
@@ -553,7 +552,7 @@ void Annotator::songsClicked( QListViewItem * item)
 	        mpProgressDialog = new QProgressDialog ("Loading Audio", 
 							"Cancel",file.GetHeader().GetLength(),
 							this);
-		std::cout<<file.GetHeader().GetLength()<<std::endl;
+		//std::cout<<file.GetHeader().GetLength()<<std::endl;
                 mpProgressDialog->setProgress(0);
 		//mpProgressDialog->show();
                 mCurrentIndex = mSongDescriptorsIndex[std::string(item->text(0).ascii()) ];
@@ -599,7 +598,8 @@ void Annotator::drawLLDescriptors(int index)
  
   int i;
 
-  generateRandomEnvelopes();
+  //generateRandomEnvelopes();
+  generateEnvelopesFromDescriptors();
 
   for(it=mFunctionEditors.begin(),it2=mEnvelopes.begin();it!=mFunctionEditors.end();it++,it2++)
     {
@@ -621,7 +621,7 @@ void Annotator::loadAudioFile(const char* filename)
 	CLAM::AudioFile file;
 //	std::cout<<filename<<"\n";
 	file.OpenExisting(filename);
-	std::cout<<file.GetHeader().GetLength()<<"\n";
+	//std::cout<<file.GetHeader().GetLength()<<"\n";
 	int nChannels = file.GetHeader().GetChannels();
 	std::vector<CLAM::Audio> audioFrameVector(nChannels);
 	int i;
@@ -646,7 +646,7 @@ void Annotator::loadAudioFile(const char* filename)
 		mpProgressDialog->setProgress( beginSample/samplingRate*1000.0 );
 		if (mpProgressDialog->wasCanceled()) break;
 	}
-	std::cout<<beginSample/samplingRate*1000.0<<std::endl;
+	//std::cout<<beginSample/samplingRate*1000.0<<std::endl;
 	reader.Stop();
  
 }
@@ -659,8 +659,24 @@ void Annotator::initEnvelopes()
     (*it)=NULL;
   }
 }
-  
 
+void Annotator::generateEnvelopesFromDescriptors()
+{
+  std::vector<CLAM::Envelope*>::iterator it;
+  std::list<std::string>::iterator it2;
+  std::list<std::string>& descriptorsNames = mLLDSchema.GetLLDNames();
+
+  for(it=mEnvelopes.begin(), it2 = descriptorsNames.begin();it!=mEnvelopes.end();it++, it2++)
+  {
+      if(*it)
+      {
+	delete (*it);
+	(*it)=NULL;
+      }
+      (*it)=generateEnvelopeFromDescriptor((*it2));
+  }
+}
+  
 void Annotator::generateRandomEnvelopes()
 {
   std::vector<CLAM::Envelope*>::iterator it;
@@ -704,6 +720,42 @@ CLAM::Envelope* Annotator::generateRandomEnvelope()
   return tmpEnvelope;
 }
 
+
+CLAM::Envelope* Annotator::generateEnvelopeFromDescriptor(const std::string& name)
+{
+  const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",name);
+  std::cout<<name<<std::endl;
+  CLAM::Envelope* tmpEnvelope = new CLAM::Envelope();
+
+  int audioSize=mCurrentAudio.GetSize();
+  int i,x;
+  
+  int nFrames = mpDescriptorPool->GetNumberOfContexts("Frame");
+  int frameSize = audioSize/nFrames;
+
+  tmpEnvelope->set_maxY_value(100);
+  tmpEnvelope->set_minY_value(0);
+  tmpEnvelope->set_maxX_value(audioSize);
+  tmpEnvelope->set_minX_value(0);
+  tmpEnvelope->set_max_nodes(-1);
+   
+  for(i=0, x=0; i<nFrames ; x+=frameSize, i++)
+  {
+    int value;
+    //we must make sure that the limits of the envelope are not surpassed
+    //TODO: we should have dynamic limits!
+    if(values[i]>100) value = 100;
+    else if(values[i]<0) value = 0;
+    else value = values[i];
+
+    tmpEnvelope->add_node_at_offset(x,value);
+
+    std::cout<<"("<<x<<","<<value<<")";
+  }
+  std::cout<<std::endl;
+  return tmpEnvelope;
+}
+
 void Annotator::languageChange()
 {
     AnnotatorBase::languageChange();
@@ -738,26 +790,4 @@ void Annotator::LoadDescriptorPool()
   //Load Descriptors Pool
   CLAM::XMLStorage::Restore((*mpDescriptorPool),"DescriptorsPool.xml");
   
-/*  
-  //Define Number of frames
-  int nFrames = 25;
-  mpDescriptorPool->SetNumberOfContexts("Frame",nFrames);
-  /*BTW, What happens if the Number of Contexts is modified after values have
-    been written? Is it a destructive process?*/
-
-/*  int nDescriptors = descriptorsNames.size();
-  int i,n;
-  
-  /*Instantiate values and set them to zero (scope definition does not call
-  constructors?)*/
-/*  for (i = 0,it = descriptorsNames.begin(); i < nDescriptors; i++,it++)
-  {
-    CLAM::TData* values = mpDescriptorPool->GetWritePool<CLAM::TData>("Frame",(*it));
-    for (n = 0; n<nFrames; n++)
-    {
-      values[n]=0;
-    }
-  }
-*/
 }
-
