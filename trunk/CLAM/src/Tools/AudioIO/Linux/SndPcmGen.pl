@@ -104,7 +104,7 @@ while (<LAT>)
 		s/.*\*max.*//;
 		s/exit\(.*\)/return -1;/;
 		s/printf/cat_error/;
-		s/err != rate/abs(err-rate) < 3/;
+		s/err != rate/abs(err-rate) > 2/;
 		
 		print CXX $_;
 	}
