@@ -125,6 +125,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem(canvasplots,"AudioBuffPortMonitor");
 	new ProcessingItem(canvasplots,"SpecgramPortMonitor");
 	new ProcessingItem(canvasplots,"FundTrackPortMonitor");
+	new ProcessingItem(canvasplots,"SinTracksPortMonitor");
 	
 	show();
 	header()->hide();
