@@ -24,8 +24,8 @@ namespace CLAM
 				void setBackgColor(double r, double g, double b);
 
 			private:
-				bool _doRendering;
-				bool _doResize;
+				volatile bool _doRendering;
+				volatile bool _doResize;
 				int _w, _h;
 				double _left, _right, _bottom, _top;
 				double _r, _g, _b;
