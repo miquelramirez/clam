@@ -3,6 +3,7 @@
 
 #include "OutControl.hxx"
 #include "OutControlPublisher.hxx"
+#include "InControl.hxx"
 #include "MIDIInControl.hxx"
 #include "MIDIClocker.hxx"
 #include "Processing.hxx"
@@ -29,6 +30,11 @@ class MIDIKeyboard : public Processing
 
 		MIDIIOConfig mNoteInConfig;
 		MIDIInControl mNoteIn;
+
+		InControl mNoteInControl;
+		InControl mVelocityInControl;
+		InControl mPitchBendInControl;
+		InControl mModulationInControl;
 
 		MIDIIOConfig mPitchBendInConfig;
 		MIDIInControl mPitchBendIn;
@@ -66,5 +72,6 @@ class MIDIKeyboard : public Processing
 };
 
 } // namespace CLAM 
+
 
 #endif

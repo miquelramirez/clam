@@ -18,7 +18,11 @@ void MIDIKeyboardConfig::DefaultInit(void)
 MIDIKeyboard::MIDIKeyboard()
 	:
 	mCurrentTime( 0.0 ),
-	mCurrentTimeIncrement( 0.0 ),
+	mCurrentTimeIncrement( 0 ),	
+	mNoteInControl( "NoteIn", this, false ),
+	mVelocityInControl( "VelocityIn", this, false ),
+	mPitchBendInControl( "PitchBendIn", this, false ),
+	mModulationInControl( "ModulationIn", this, false ),
 	mNoteOut( "NoteOut", this ),
 	mVelocityOut( "VelocityOut", this ),
 	mPitchBendOut( "PitchBendOut", this ),
@@ -30,9 +34,14 @@ MIDIKeyboard::MIDIKeyboard()
 MIDIKeyboard::MIDIKeyboard( ProcessingConfig& cfg )
 	:
 	mCurrentTime( 0.0 ),
-	mCurrentTimeIncrement( 0.0 ),
+	mCurrentTimeIncrement( 0 ),	
+	mNoteInControl( "NoteIn", this),
+	mVelocityInControl( "VelocityIn", this, false ),
+	mPitchBendInControl( "PitchBendIn", this, false ),
+	mModulationInControl( "ModulationIn", this, false ),
 	mNoteOut( "NoteOut", this ),
 	mVelocityOut( "VelocityOut", this ),
+	mPitchBendOut( "PitchBendOut", this ),
 	mModulationOut( "ModulationOut", this )
 {
 	Configure( cfg );	
@@ -40,8 +49,10 @@ MIDIKeyboard::MIDIKeyboard( ProcessingConfig& cfg )
 
 bool MIDIKeyboard::ConcreteConfigure( const ProcessingConfig& cfg )
 {
+	CopyAsConcreteConfig( mConfig, cfg );
 
 	mConfig.SetMidiDevice( "alsa:hw:1,0" );
+
 //	mConfig.SetMidiDevice( "file:test.mid" );
 
 	mNoteInConfig.SetDevice( mConfig.GetMidiDevice() );
@@ -67,7 +78,10 @@ bool MIDIKeyboard::ConcreteConfigure( const ProcessingConfig& cfg )
 	mPitchBendOut.PublishOutControl( outPitchBend );
 	mModulationOut.PublishOutControl( outModulation );	
 
-
+	mNoteOut.AddLink( &mNoteInControl );
+	mVelocityOut.AddLink( &mVelocityInControl );
+	mPitchBendOut.AddLink( &mPitchBendInControl );
+	mModulationOut.AddLink( &mModulationInControl );
 
 	mClockerConfig.SetDevice( mConfig.GetMidiDevice() );
 	mClocker.Configure( mClockerConfig );
@@ -77,11 +91,16 @@ bool MIDIKeyboard::ConcreteConfigure( const ProcessingConfig& cfg )
 
 bool MIDIKeyboard::Do()
 {
-	int buffersize = 512;	
+	TData buffersize = 512.0;	
 
-	mCurrentTimeIncrement = TData( buffersize ) * 1000.0 / CLAM::AudioManager::Current().SampleRate();
+	mCurrentTimeIncrement = buffersize * 1000.0 / CLAM::AudioManager::Current().SampleRate();
 
 	mClocker.GetInControls().GetByNumber(0).DoControl( mCurrentTime );
+
+	mNoteOut.SendControl( mNoteInControl.GetLastValue() );
+	mVelocityOut.SendControl( mVelocityInControl.GetLastValue() );
+	mPitchBendOut.SendControl( mPitchBendInControl.GetLastValue() );
+	mModulationOut.SendControl( mModulationInControl.GetLastValue() );
 
 	mCurrentTime += mCurrentTimeIncrement;
 
