@@ -29,6 +29,7 @@ namespace CLAM
 
 			private slots:
 				void receivedView(SView);
+				void refresh();
 
 			protected:
 				virtual void initializeGL(); 

@@ -17,7 +17,9 @@ namespace CLAM
 
 		void NetAudioPlotController::SetData(const Audio& audio)
 		{
-			_audio = audio;
+			TSize audioSize = audio.GetBuffer().Size();
+			SetnSamples(audioSize);
+			_dRenderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize,NormalMode);
 			FullView();
 			_mustProcessData = true;
 			emit requestRefresh();
@@ -37,7 +39,7 @@ namespace CLAM
 		void NetAudioPlotController::FullView()
 		{
 			_view.left = TData(0.0);
-			_view.right = TData(_audio.GetBuffer().Size());
+			_view.right = TData(GetnSamples());
 			_view.top = GetvMax();
 			_view.bottom = GetvMin();
 	
@@ -46,7 +48,6 @@ namespace CLAM
 
 		void NetAudioPlotController::ProcessData()
 		{
-			_dRenderer.SetDataPtr(_audio.GetBuffer().GetPtr(),_audio.GetBuffer().Size(),NormalMode);	
 			_mustProcessData = false;
 		}
 	}

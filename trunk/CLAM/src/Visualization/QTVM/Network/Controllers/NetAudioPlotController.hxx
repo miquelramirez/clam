@@ -24,7 +24,6 @@ namespace CLAM
 				
 			private:
 				DataRenderer _dRenderer;
-				Audio _audio;
 				bool _mustProcessData;
 				
 				void ProcessData();
