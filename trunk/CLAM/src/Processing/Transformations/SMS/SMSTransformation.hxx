@@ -45,7 +45,7 @@ namespace CLAM {
 	class SMSTransformation:public Processing
 	{
 		
-		typedef InControlTmpl<SMSTransformation> SMSTransformationCtrl;
+		typedef InControl SMSTransformationCtrl;
 	
 	public:
 		void AttachIn( Segment& data ){ mInput = &data; }
