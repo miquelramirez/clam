@@ -22,6 +22,7 @@
 #include "FundPlotProcessing.hxx"
 #include "SinTracksPlotProcessing.hxx"
 #include "FundTrackPlotProcessing.hxx"
+#include "SpecgramPlotProcessing.hxx"
 
 
 typedef CLAM::ProcessingFactory ProcessingFactory;
@@ -48,6 +49,8 @@ static ProcessingFactory::Registrator<CLAM::PeaksPlotProcessing> regtPeaksPlotPr
 static ProcessingFactory::Registrator<CLAM::FundPlotProcessing> regtFundPlotProcessing("FundPlotProcessing");
 static ProcessingFactory::Registrator<CLAM::SinTracksPlotProcessing> regtSinTracksPlotProcessing("SinTracksPlotProcessing");
 static ProcessingFactory::Registrator<CLAM::FundTrackPlotProcessing> regtFundTrackPlotProcessing("FundTrackPlotProcessing");
+static ProcessingFactory::Registrator<CLAM::SpecgramPlotProcessing> regtSpecgramPlotProcessing("SpecgramPlotProcessing");
+
 
 
 
