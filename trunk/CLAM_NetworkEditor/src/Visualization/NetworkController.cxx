@@ -33,10 +33,11 @@ namespace CLAMVM
 {
 	
 NetworkController::NetworkController()
-	: mObserved(0),
-	  mLoopCondition(false),
-	  mThread( true ) // realtime
 {
+	mObserved=0;
+	mLoopCondition=false;
+	mThread=true; // realtime
+		
 	SlotCreatePortConnection.Wrap( this, &NetworkController::CreatePortConnection );
 	SlotRemovePortConnection.Wrap( this, &NetworkController::RemovePortConnection );
 	
