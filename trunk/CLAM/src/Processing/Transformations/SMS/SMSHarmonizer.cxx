@@ -39,8 +39,8 @@ bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 	{
 		TData amount=voices.GetValueFromIndex(i);
 		TData gain=voices.GetXValue(i);
-		mPO_PitchShift.GetInControl("Amount").DoControl(amount);
-		mPO_PitchShift.Do(in,tmpInFrame);
+		mPitchShift.GetInControl("Amount").DoControl(amount);
+		mPitchShift.Do(in,tmpInFrame);
 		Gain(tmpInFrame,gain);
 		AddFrame(tmpInFrame,tmpOutFrame,tmpOutFrame);
 	}
@@ -55,9 +55,9 @@ bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 
 void SMSHarmonizer::AddFrame(const Frame& in1, const Frame& in2, Frame& out)
 {
-	mPO_SpectrumAdder.Start();
-	mPO_SpectrumAdder.Do(in1.GetResidualSpec(),in2.GetResidualSpec(),out.GetResidualSpec());
-	mPO_SpectrumAdder.Stop();
+	mSpectrumAdder.Start();
+	mSpectrumAdder.Do(in1.GetResidualSpec(),in2.GetResidualSpec(),out.GetResidualSpec());
+	mSpectrumAdder.Stop();
 	out.SetSpectralPeakArray(in1.GetSpectralPeakArray()+in2.GetSpectralPeakArray());
 }
 	

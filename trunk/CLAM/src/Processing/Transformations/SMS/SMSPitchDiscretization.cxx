@@ -62,12 +62,13 @@ bool SMSPitchDiscretization::Do( 	const SpectralPeakArray& inPeaks,
 
 		mPitchShift.GetInControl("Shift Amount").DoControl(amount);
 		mPitchShift.Do( inPeaks, 
-						inFund, 
-						inSpectrum, 
-						outPeaks, 
-						outFund, 
-						outSpectrum 
-					);
+		                inFund, 
+		                inSpectrum, 
+		                outPeaks, 
+		                outFund, 
+		                outSpectrum,
+				true /*preserve outs*/
+				);
 		
 		Fundamental tmpFund;
 		tmpFund.AddElem(discPitch);

@@ -72,7 +72,9 @@ bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks,
 		SpectralPeakArray tmpSpectralPeaks;
 		mSpectralShapeShift.Do(inPeaks,tmpSpectralPeaks);
 
-		mPitchShift.Do( tmpSpectralPeaks, inFund, inSpectrum, outPeaks, outFund, outSpectrum );
+		mPitchShift.Do( tmpSpectralPeaks, inFund, inSpectrum, 
+				outPeaks, outFund, outSpectrum,
+				true /*preserve outs*/);
 	}
 }
 
