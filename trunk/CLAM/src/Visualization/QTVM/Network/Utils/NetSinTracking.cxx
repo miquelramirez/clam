@@ -6,7 +6,12 @@ namespace CLAM
     {
 	NetSinTracking::NetSinTracking()
 	    : _palette(0.0f), 
-	      _time(0)
+	      _time(0),
+	      _leftIndex1(0),
+	      _rightIndex1(0),
+	      _leftIndex2(0),
+	      _rightIndex2(0),
+	      _begin(0)
 	{
 	}
 	
@@ -14,16 +19,16 @@ namespace CLAM
 	{
 	}
 
-	std::vector< std::vector<SinTrackNode> >& NetSinTracking::GetTracks(const Array<SpectralPeakArray>& peakMtx, int index)
+	std::vector< std::vector<SinTrackNode> >& NetSinTracking::GetTracks(const Array<SpectralPeakArray>& peakMtx )
 	{
 	    _table.clear();
 	    _tracks.clear();
-	    _time=0;
-	    for(int i=index; i < peakMtx.Size();i++)
+	    _time=_begin;
+	    for(int i=_leftIndex1; i < _rightIndex1;i++)
 	    {
 		AddNodes(peakMtx[i]);
 	    }
-	    for(int i=0; i < index;i++)
+	    for(int i=_leftIndex2; i < _rightIndex2;i++)
 	    {
 		AddNodes(peakMtx[i]);
 	    }
@@ -82,6 +87,17 @@ namespace CLAM
 		}
 	    }
 	    _time++;
+	}
+	
+	void NetSinTracking::SetIndexes(const TIndex& left1, const TIndex& right1, 
+					const TIndex& left2, const TIndex& right2, 
+					const TIndex& begin)
+	{
+	    _leftIndex1=left1;
+	    _rightIndex1=right1;
+	    _leftIndex2=left2;
+	    _rightIndex2=right2;
+	    _begin=begin;
 	}
 
     }
