@@ -22,6 +22,7 @@ void UserInterface::EditConfiguration(void)
 
 void UserInterface::Update()
 {
+	mAnalysisSynthesisExample->SetHaveConfig(true);
 	mAnalysisSynthesisExample->InitConfigs();
 	LoadSound();
 }

@@ -58,6 +58,7 @@ namespace CLAM
 		void Run(void);
 		/** Using this method a user-defined transformation can be set*/
 		void SetTransformation(SMSTransformation* pTransformation);
+		void SetHaveConfig(bool hasConfig){mHaveConfig=hasConfig;}
 	protected:
 		/** Initialize analysis and synthesis configuration from loaded
 		* global configuration */
