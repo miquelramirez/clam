@@ -11,7 +11,7 @@
 	<AnalysisWindowType>Hamming</AnalysisWindowType>
 	<ResAnalysisWindowSize>513</ResAnalysisWindowSize>
 	<ResAnalysisWindowType>BlackmanHarris92</ResAnalysisWindowType>
-	<AnalysisZeroPaddingFactor>0</AnalysisZeroPaddingFactor>
+	<AnalysisZeroPaddingFactor>1</AnalysisZeroPaddingFactor>
 	<AnalysisPeakDetectMagThreshold>-120</AnalysisPeakDetectMagThreshold>
 	<AnalysisMaxSines>50</AnalysisMaxSines>
 	<AnalysisSinTrackingFreqDeviation>20</AnalysisSinTrackingFreqDeviation>
@@ -25,6 +25,5 @@
 	<SynthesisFrameSize>256</SynthesisFrameSize>
 	<SynthesisWindowType>Triangular</SynthesisWindowType>
 	<SynthesisHopSize>-1</SynthesisHopSize>
-	<SynthesisZeroPaddingFactor>0</SynthesisZeroPaddingFactor>
 	<SynthesisPhaseManagementType>Continuation</SynthesisPhaseManagementType>
 </SMSAnalysisSynthesisConfig>

@@ -21,6 +21,8 @@
 
 #include "SMSSynthesis.hxx"
 
+
+
 using namespace CLAM;
 
 
@@ -103,20 +105,6 @@ TSize SMSSynthesisConfig::GetSynthWindowSize() const
 {
 	return GetSpectralSynth().GetSynthWindowSize();
 }
-
-/** Zero padding factor*/
-void SMSSynthesisConfig::SetZeroPadding(int z)
-{
-	GetSpectralSynth().SetZeroPadding(z);
-	GetSynthSineSpectrum().SetSpectrumSize(GetSpectralSynth().GetIFFT().GetAudioSize()/2+1);
-}
-
-int SMSSynthesisConfig::GetZeroPadding() const
-{
-	return int(GetSynthSineSpectrum().GetZeroPadding());
-}
-
-
 
 /** Synthesis Hop size in miliseconds. Must be < (WindowSize-(1/SR))/2*/	
 void SMSSynthesisConfig::SetHopSize(TSize h)
@@ -272,7 +260,6 @@ bool SMSSynthesis::Do(SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio)
 	
 	mPO_SynthSineSpectrum.Do(in,outSpec);
 	return mPO_SinSpectralSynthesis.Do(outSpec,outAudio);
-
 }
 
 bool SMSSynthesis::Do(Frame& in)
