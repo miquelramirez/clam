@@ -125,6 +125,8 @@ namespace CLAM
 	bool MonoAudioFileWriter::ConcreteStop()
 	{
 		mOutStream->Dispose();
+		delete mOutStream;
+		mOutStream = NULL;
 
 		return true;
 	}
