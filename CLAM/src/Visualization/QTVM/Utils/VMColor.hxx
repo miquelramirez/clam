@@ -28,11 +28,19 @@ namespace CLAM
 {
 	namespace VM
 	{
-		typedef struct{
-			TUInt16 r;
-			TUInt16 g;
-			TUInt16 b;
-		} Color;
+		struct Color
+		{
+		    TUInt16 r;
+		    TUInt16 g;
+		    TUInt16 b;
+
+		    Color();
+		    Color(TUInt16 red, TUInt16 green, TUInt16 blue);
+		    Color(const Color& c);
+		    ~Color();
+
+		    void operator=(Color c);
+		};
 		
 		class VMColor
 		{
