@@ -10,24 +10,19 @@ namespace NetworkGUI
 {
 
 Qt_PortMonitorPresentation::Qt_PortMonitorPresentation()
-	: mControlRepresentation(0)
+{
+}
+
+void Qt_PortMonitorPresentation::ProcessingControllerAttached()
 {
 	QBoxLayout * layout = new QHBoxLayout(this);
-	layout->setMargin(16); // Let the resize handles be visible
-	mControlRepresentation = new CLAM::VM::NetPeaksPlot(this);
-	mControlRepresentation->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-	layout->addWidget(mControlRepresentation);
-	SlotBindMonitor.Wrap( this, &Qt_PortMonitorPresentation::BindMonitor );
-	SignalControllerAttached.Connect(SlotBindMonitor);
-
+	layout->setMargin(12); // Let the resize handles be visible
+	QWidget * innerPlot = SetInnerPlot();
+	innerPlot->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+	layout->addWidget(innerPlot);
+	innerPlot->show();
 }
 
-void Qt_PortMonitorPresentation::BindMonitor(CLAMVM::ProcessingController & controller)
-{
-	CLAM::PeaksPortMonitor & monitor = 
-		dynamic_cast<CLAM::PeaksPortMonitor &>(controller.GetObserved());
-	((CLAM::VM::NetPeaksPlot *)mControlRepresentation)->SetMonitor(monitor);
-}
 
 } // namespace NetworkGUI
 
