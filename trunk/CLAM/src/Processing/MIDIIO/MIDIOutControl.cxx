@@ -132,7 +132,7 @@ int MIDIOutControl::DoControl(int id,TControlData val)
 		{
 			/* for the first byte, we need to keep the status, and
 			 * modify the channel */
-			mMessage[i] = mStatusByte | ((unsigned char)(val)-1);
+		    mStatusByte = (mStatusByte&0xF0) | ((unsigned char)(val)-1);
 		}else{
 			mMessage[i] = (unsigned char) val;
 		}
@@ -145,6 +145,7 @@ int MIDIOutControl::DoControl(int id,TControlData val)
 			 * call Handle to send the message to the device */
 			mUniqId++;
 			mControlsReceived = 0;
+                        mMessage[0]=mStatusByte;
 			Handle(mMessage,mMessageSize);
 		}
 	}else{
