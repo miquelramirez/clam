@@ -121,7 +121,7 @@ namespace CLAM {
 			Substract(in1,in2,out);
 			break;
 		default:
-			throw(ErrProcessingObj("Do(...) : internal inconsistency (invalid mProtoState)",this));
+			CLAM_ASSERT(false,"Do(...) : internal inconsistency (invalid mProtoState)");
 		}
 
 		return true;
@@ -129,7 +129,9 @@ namespace CLAM {
 
 	bool SpectrumSubstracter2::Do(void)
 	{
-		throw(ErrProcessingObj("SpectrumSubstracter2::Do(): Not implemented"),this);
+		CLAM_ASSERT(false,"SpectrumSubstracter2::Do(): Not implemented");
+
+		return true;
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 
@@ -145,57 +147,43 @@ namespace CLAM {
 		out.GetType(to);
 
 		// Sanity check:
-		if (!(t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF) ||
-			!(t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF) ||
-			!(to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF) )
-			throw(ErrProcessingObj("SpectrumSubstracter2s:"
-								   " Spectrum object with no attributes"));
+		CLAM_ASSERT(t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF,
+			"SpectrumSubstracter2: First input Spectrum without content");
+		CLAM_ASSERT(t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF,
+			"SpectrumSubstracter2: Second input Spectrum without content");
+		CLAM_ASSERT(to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF,
+			"SpectrumSubstracter2: Output Spectrum object without content");
 
-		// Substracter size. "pure" BPFs are not considered here.
+		// Product size. "pure" BPFs are not considered here.
 		mSize = 0;
 		if (t1.bMagPhase || t1.bComplex || t1.bPolar) {
 			mSize = in1.GetSize();
-			if (!mSize) 
-				throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-									   " Zero size spectrum",this));
+			CLAM_ASSERT(mSize,"SpectrumSubstracter2::SetPrototypes: Zero size spectrum");
 		}
-		if (t2.bMagPhase || t2.bComplex || t2.bPolar)
-			if (mSize) {
-				if (mSize != in2.GetSize())
-					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-										   "Size mismatch in spectrum sum"
-										   ,this));
-			}
-			else {
-				mSize = in2.GetSize();
-				if (!mSize) 
-					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-										   " Zero size spectrum",this));
-			}
+		if (t2.bMagPhase || t2.bComplex || t2.bPolar) 
+		{
+			CLAM_ASSERT(in2.GetSize(),"SpectrumSubstracter2::SetPrototypes: Zero size spectrum");
+			if (!mSize) mSize = in2.GetSize();
+			else CLAM_ASSERT(mSize == in2.GetSize(),
+				"SpectrumSubstracter2::SetPrototypes: Sizes Mismatch");
+		}
 		if (to.bMagPhase || to.bComplex || to.bPolar)
-			if (mSize) {
-				if (mSize != out.GetSize())
-					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-										   "Size mismatch in spectrum sum"
-										   ,this));
-			}
-			else {
-				mSize = out.GetSize();
-				if (!mSize)
-					throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-										   " Zero size spectrum",this));
-			}
+		{
+			CLAM_ASSERT(out.GetSize(),"SpectrumSubstracter2::SetPrototypes: Zero size spectrum");
+			if (!mSize) mSize = out.GetSize();
+			else CLAM_ASSERT(mSize == out.GetSize(),
+				"SpectrumSubstracter2::SetPrototypes: Output size Mismatch");
+		}
 
 		// Spectral Range.  
 		// We could also ignore BPF-only objects here, but in
 		// practice, if a BPF is designed for a certain spectral
 		// range, error will probably be too big out of the range, out
 		// we always force range matching
-		if (in1.GetSpectralRange() != in2.GetSpectralRange() ||
-			in1.GetSpectralRange() != out.GetSpectralRange() )
-			throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-								   "Spectral range mismatch in spectrum sum"
-								   ,this));
+		CLAM_ASSERT(in1.GetSpectralRange() == in2.GetSpectralRange(),
+			"SpectrumSubstracter2::SetPrototypes: Spectral range mismatch on inputs");
+		CLAM_ASSERT(in1.GetSpectralRange() == out.GetSpectralRange(),
+			"SpectrumSubstracter2::SetPrototypes: Spectral range mismatch on output");
 
 		// Scale.
 		if (in1.GetScale() == EScale::eLinear)
@@ -210,9 +198,8 @@ namespace CLAM {
 				mScaleState=Sloglog;
 		// Log scale output might be useful, for example when working
 		// with BPF objects at the three ports. But right for now...
-		if (out.GetScale() == EScale::eLog)
-			throw(ErrProcessingObj("SpectrumSubstracter2:"
-								   " Log Scale Output not implemented",this));
+		CLAM_ASSERT (out.GetScale() != EScale::eLog,
+			"SpectrumSubstracter2: Log Scale Output not implemented");
 
 		// Prototypes.
 
@@ -258,8 +245,8 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-								   " Data flags internal inconsistency",this));
+			CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes:"
+				" Data flags internal inconsistency");
 		}
 		if (i2BPF) {
 			// States with direct BPF implementation.
@@ -289,8 +276,8 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes:"
-								   " invalid data flags",this));
+			CLAM_ASSERT(false, "SpectrumSubstracter2::SetPrototypes:"
+				" invalid data flags");
 		}
 		// Direct non-BPF states.
 		if (t1.bMagPhase && t2.bMagPhase &&	to.bMagPhase) {
@@ -332,7 +319,9 @@ namespace CLAM {
 
 	bool SpectrumSubstracter2::SetPrototypes()
 	{
-		throw(ErrProcessingObj("SpectrumSubstracter2::SetPrototypes(): Not implemented"),this);
+		CLAM_ASSERT(false,"SpectrumSubstracter2::SetPrototypes(): Not implemented");
+
+		return true;
 	}
 
 	bool SpectrumSubstracter2::UnsetPrototypes()
@@ -590,7 +579,7 @@ namespace CLAM {
 			SubstractBPFMagPhaseLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("SubstractBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SubstractBPFMagPhaseLinLog: Not implemented");
 			break;
 		case Sloglin:
 			SubstractBPFMagPhaseLogLin(in1,in2,out);
@@ -611,7 +600,7 @@ namespace CLAM {
 			SubstractBPFMagPhaseLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("SubstractBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SubstractBPFMagPhaseLinLog: Not implemented");
 			break;
 		}
 	}
@@ -740,7 +729,7 @@ namespace CLAM {
 			SubstractBPFComplexLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("SubstractBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SubstractBPFMagPhaseLinLog: Not implemented");
 			break;
 		case Sloglin:
 			SubstractBPFComplexLogLin(in1,in2,out);
@@ -761,7 +750,7 @@ namespace CLAM {
 			SubstractBPFComplexLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("SubstractBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SubstractBPFMagPhaseLinLog: Not implemented");
 			break;
 		}
 	}
@@ -885,7 +874,7 @@ namespace CLAM {
 			SubstractBPFPolarLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("SubstractBPFPolarLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SubstractBPFPolarLinLog: Not implemented");
 			break;
 		case Sloglin:
 			SubstractBPFPolarLogLin(in1,in2,out);
@@ -906,7 +895,7 @@ namespace CLAM {
 			SubstractBPFPolarLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("SubstractBPFPolarLinLog: Not implemented"));
+			CLAM_ASSERT(false,"SubstractBPFPolarLinLog: Not implemented");
 			break;
 		}
 	}
@@ -1024,10 +1013,12 @@ namespace CLAM {
 			Point &pf1=in1.GetPhaseBPF().GetPointArray()[i];
 			Point &pf2=in2.GetPhaseBPF().GetPointArray()[i];
 			Point &pfo=out.GetPhaseBPF().GetPointArray()[i];
-			if (pm1.GetX() != pm2.GetX() ||
-				pm1.GetX() != pmo.GetX() )
-				throw(ErrProcessingObj("SubstractBPF: BPF abcisas do not match "
-								 "(and BPF merging not yet iplemented)",this));
+			CLAM_ASSERT(pm1.GetX() == pm2.GetX(),
+				"SubstractBPF: BPF abcisas do not match "
+					 "(and BPF merging not yet iplemented)");
+			CLAM_ASSERT(pm1.GetX() == pmo.GetX(),
+				"SubstractBPF: BPF abcisas do not match "
+					 "(and BPF merging not yet iplemented)");
 			pmo.SetY(pm1.GetY()/pm2.GetY());
 			pfo.SetY(pf1.GetY()-pf2.GetY());
 		}
@@ -1037,50 +1028,50 @@ namespace CLAM {
 	// UNINMPLEMENTED METHODS. outme day...
 	void SpectrumSubstracter2::SubstractMagPhaseLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractMagPhaseLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractMagPhaseLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractMagPhaseLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractMagPhaseLinLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractMagPhaseLinLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractComplexLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractComplexLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractComplexLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractComplexLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractComplexLinLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractComplexLinLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractPolarLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractPolarLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractPolarLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractPolarLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractPolarLinLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractPolarLinLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractBPFComplexLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractBPFComplexLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractBPFComplexLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractBPFComplexLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractBPFComplexLinLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractBPFComplexLinLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractBPFPolarLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractBPFPolarLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractBPFPolarLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractBPFPolarLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractBPFPolarLinLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractBPFPolarLinLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractBPFMagPhaseLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractBPFMagPhaseLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractBPFMagPhaseLog: Not implemented");
 	}
 	void SpectrumSubstracter2::SubstractBPFMagPhaseLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("SubstractBPFMagPhaseLinLog: Not implemented"));
+		CLAM_ASSERT(false,"SubstractBPFMagPhaseLinLog: Not implemented");
 	}
 }

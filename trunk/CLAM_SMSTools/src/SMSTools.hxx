@@ -1,10 +1,10 @@
 #ifndef __SMSTools__
 #define __SMSTools__
 
+#include "SMSBase.hxx"
 #include "NotGeneratedUserInterface.hxx"
 #include "WaitMessageGUI.hxx"
 #include "ProgressGUI.hxx"
-#include "SMSBase.hxx"
 #include "Thread.hxx"
 #include "SMS_DataExplorer.hxx"
 #include "Signalv1.hxx"
@@ -69,6 +69,10 @@ protected: // methods
 	void DoMorphTracksCleanup();
 
 	bool LoadAnalysis();
+	virtual bool LoadSound(const std::string& filename,CLAM::Segment& segment);
+
+	virtual bool LoadInputSound();
+
 	void StoreAnalysis();
 	void ExecuteMelodyAnalysis();
 	void AnalyzeMelody();
@@ -83,6 +87,9 @@ private:
 
 	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0 method );
 
+protected: // methods
+	
+	CLAMVM::SMS_DataExplorer& SegmentExplorer();
 
 protected:
 	int                       mThreadState;
@@ -90,10 +97,12 @@ protected:
 	std::string               mAnalysisInputFile;
 	std::string               mAnalysisOutputFile;
 	CLAM::Thread              mThread;
-	CLAMVM::SMS_DataExplorer  mExplorer;
+	CLAMVM::SMS_DataExplorer  mSegmentExplorer;
 	UserInterface*            mUI;
 };
 
 }
+
+#include "SMSTools_inlines.hxx"
 
 #endif // SMSTools.hxx

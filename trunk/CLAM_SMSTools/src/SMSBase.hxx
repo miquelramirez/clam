@@ -59,8 +59,95 @@ namespace CLAM
 		SMSBase(void);	
 		virtual ~SMSBase(void);
 		void Run(void);
-		void SetHaveConfig(bool hasConfig){mHaveConfig=hasConfig;}
+		void SetHaveConfig(bool hasConfig){
+			mHaveConfig=hasConfig;
+		}
+
+		SMSTransformationChainConfig& GetCurrentTransformationScore() {
+			return mTransformationScore;
+		}
 		
+		Segment& GetOriginalSegment()
+		{
+			return mOriginalSegment;
+		}
+
+		Segment& GetTransformedSegment()
+		{
+			return mTransformedSegment;
+		}
+		
+		bool  HasAnalysis()
+		{
+			return mHaveAnalysis;
+		}
+
+		bool  HasTransformation()
+		{
+			return mHaveTransformation;
+		}
+
+		void  SetHasTransformation( bool value )
+		{
+			mHaveTransformation = value;
+		}
+
+		bool  HasTransformationScore( )
+		{
+			return mHaveTransformationScore;
+		}
+
+		void  SetCurrentTransformationScore( const SMSTransformationChainConfig& cfg )
+		{
+			mTransformationScore = cfg;
+			mHaveTransformationScore = true;
+		}
+
+		void  SetAnalysisInputFile( const char* filename )
+		{
+			mGlobalConfig.SetInputAnalysisFile( filename );
+		}
+
+		const std::string& GetAnalysisInputFile() const
+		{
+			return mGlobalConfig.GetInputAnalysisFile();
+		}
+
+		void  SetAnalysisOutputFile( const char* filename )
+		{
+			mGlobalConfig.SetOutputAnalysisFile( filename );
+		}
+
+		const std::string& GetAnalysisOutputFile() const
+		{
+			return mGlobalConfig.GetOutputAnalysisFile();
+		}
+
+		SerializationController& GetSerializer()
+		{
+			return mSerialization;
+		}
+
+		Audio& GetSynthesizedSound()
+		{
+			return mAudioOut;
+		}
+
+		Audio& GetSynthesizedSinusoidal()
+		{
+			return mAudioOutSin;
+		}
+
+		Audio& GetSynthesizedResidual()
+		{
+			return mAudioOutRes;
+		}
+
+		Melody& GetMelody()
+		{
+			return mMelody;
+		}
+
 	protected:
 	
 		/** Cleans up segment from pre-existing data*/ 
@@ -101,12 +188,12 @@ namespace CLAM
 		void StoreSound(const std::string& filename,const Audio& audio);
 		
 		/** Load input sound */
-		bool LoadInputSound(void);
+		virtual bool LoadInputSound(void);
 		/** Load sound to morph*/
 		bool LoadMorphSound(void);
 
 		/** General method for loading a sound */
-		bool LoadSound(const std::string& filename,Segment& segment);
+		virtual bool LoadSound(const std::string& filename,Segment& segment);
 
 		/** This method should be overridden on subclasses to provide
 		further control on how the concrete process is performed */
@@ -187,6 +274,7 @@ namespace CLAM
 		SMSAnalysisSynthesisConfig mGlobalConfig;
 		/** Transformation score loaded from an xml file */
 		SMSTransformationChainConfig mTransformationScore;
+
 
 		/** Actual transformation to be used*/
 		SMSTransformationChain mTransformation;

@@ -40,10 +40,8 @@ namespace CLAM {
 
 		const char *GetClassName() const {return "SinTracking";} 
 
-		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdderConfig
-		 * object.
+		/** 
+		 * Config change method
 		 */
 		virtual bool ConcreteConfigure(const ProcessingConfig&);
 

@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob0 /I "..\..\..\..\src\Defines" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\examples\SMS\GUI" /I "..\..\..\..\examples\SMS\GUI\ScoreEditor" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Data\Descriptors" /I "..\..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\SDIFIO" /I "..\..\..\..\src\Processing\Synthesis" /I "..\..\..\..\src\Processing\Transformations" /I "..\..\..\..\src\Processing\Transformations\SMS" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\src\Tools\SDIF" /I "..\..\..\..\src\Visualization\Base" /I "..\..\..\..\src\Visualization\GL" /I "..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\src\Visualization\Util" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\..\..\xercesc\include" /FI"preinclude.hxx" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /Zm1000 /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob0 /I "..\..\..\..\src\Defines" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\examples\SMS\GUI" /I "..\..\..\..\examples\SMS\GUI\ScoreEditor" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Data\Descriptors" /I "..\..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\SDIFIO" /I "..\..\..\..\src\Processing\Synthesis" /I "..\..\..\..\src\Processing\Transformations" /I "..\..\..\..\src\Processing\Transformations\SMS" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\src\Tools\SDIF" /I "..\..\..\..\src\Visualization\Base" /I "..\..\..\..\src\Visualization\GL" /I "..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\src\Visualization\Util" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\..\..\xercesc\include" /FI"preinclude.hxx" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /Zm1000 /c
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\..\..\..\src\Defines" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\examples\SMS\GUI" /I "..\..\..\..\examples\SMS\GUI\ScoreEditor" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Data\Descriptors" /I "..\..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\SDIFIO" /I "..\..\..\..\src\Processing\Synthesis" /I "..\..\..\..\src\Processing\Transformations" /I "..\..\..\..\src\Processing\Transformations\SMS" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\src\Tools\SDIF" /I "..\..\..\..\src\Visualization\Base" /I "..\..\..\..\src\Visualization\GL" /I "..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\src\Visualization\Util" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\..\..\xercesc\include" /FI"preinclude.hxx" /D "_DEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /GZ /Zm1000 /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\..\..\..\src\Defines" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\dxsdk\include" /I "..\..\..\..\examples\SMS\GUI" /I "..\..\..\..\examples\SMS\GUI\ScoreEditor" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Data\Descriptors" /I "..\..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\SDIFIO" /I "..\..\..\..\src\Processing\Synthesis" /I "..\..\..\..\src\Processing\Transformations" /I "..\..\..\..\src\Processing\Transformations\SMS" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\src\Tools\SDIF" /I "..\..\..\..\src\Visualization\Base" /I "..\..\..\..\src\Visualization\GL" /I "..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\src\Visualization\Util" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\..\..\xercesc\include" /FI"preinclude.hxx" /D "_DEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /FD /GZ /Zm1000 /c
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -180,30 +180,6 @@ SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\SMSTimeStretchConfigurator.cxx
 SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\SMSTransformPanel.cxx
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_Browsable_Playable_Audio.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_FundFreq_Browser.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_Gl_Single_Browsable_Display.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_SinTracks_Browser.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_Spectrum.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_SpectrumAndPeaks.cxx
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\SMS\GUI\SMS_DataExplorer.cxx
@@ -694,6 +670,10 @@ SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Smart_Tile.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_SMS_Gl_Single_Browsable_Display.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_X_Axis.cxx
 # End Source File
 # Begin Source File
@@ -887,6 +867,30 @@ SOURCE=..\..\..\..\src\Visualization\Presentation\Base\SpectralPeaksPresentation
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Presentation\Base\SpectrumPresentation.cxx
+# End Source File
+# End Group
+# Begin Group "FLTK Sources No. 1"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SMS_Browsable_Playable_Audio.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SMS_FundFreq_Browser.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SMS_SinTracks_Browser.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SMS_Spectrum.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SMS_SpectrumAndPeaks.cxx
 # End Source File
 # End Group
 # End Group
@@ -1290,6 +1294,10 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Group.H
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Help_Dialog.H
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Help_View.H
 # End Source File
 # Begin Source File
@@ -1451,6 +1459,10 @@ SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Palette.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_Smart_Tile.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Widget\FLTK\Fl_SMS_Gl_Single_Browsable_Display.hxx
 # End Source File
 # Begin Source File
 
@@ -1729,6 +1741,30 @@ SOURCE=..\..\..\..\src\Visualization\Presentation\Base\SpectralPeaksPresentation
 SOURCE=..\..\..\..\src\Visualization\Presentation\Base\SpectrumPresentation.hxx
 # End Source File
 # End Group
+# Begin Group "FLTK Headers No. 2"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SMS_Browsable_Playable_Audio.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SMS_FundFreq_Browser.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SMS_SinTracks_Browser.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SMS_Spectrum.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Visualization\Presentation\FLTK\Fl_SMS_SpectrumAndPeaks.hxx
+# End Source File
+# End Group
 # End Group
 # End Group
 # Begin Group "externals Headers"
@@ -1986,30 +2022,6 @@ SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\SMSTransformPanel.hxx
 # End Group
 # Begin Source File
 
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_Browsable_Playable_Audio.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_FundFreq_Browser.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_Gl_Single_Browsable_Display.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_SinTracks_Browser.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_Spectrum.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\examples\SMS\GUI\Fl_SMS_SpectrumAndPeaks.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\examples\SMS\GUI\SMS_DataExplorer.hxx
 # End Source File
 # End Group
@@ -2060,6 +2072,10 @@ SOURCE=..\..\..\..\examples\SMS\SMSBase.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\SMS\SMSTools.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\SMS\SMSTools_inlines.hxx
 # End Source File
 # Begin Source File
 

@@ -124,9 +124,7 @@ namespace CLAM {
 
 
 		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdder2Config
-		 * object.
+		 * @pre argument should be an SpecAdder2Config
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 

@@ -74,9 +74,7 @@ namespace CLAM {
 	inline void OtherToRIFFTW(Spectrum &in) const;
 
 	/** Configuration change method
-	 * @throw
-	 * bad_cast exception when the argument is not an IFFTConfig
-	 * object.  
+	 * @pre argument should be a IFFTConfig
 	 */
 	bool ConcreteConfigure(const ProcessingConfig&);
 

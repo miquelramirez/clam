@@ -336,6 +336,9 @@ void SMSBase::TracksCleanupProcessing()
 	CleanTracksConfig clcfg;
 	clcfg.SetSamplingRate(mSamplingRate);
 	clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
+	clcfg.SetFreqDev( mGlobalConfig.GetAnalysisSinTrackingFreqDeviation() );
+	clcfg.SetMaxDropOut( mGlobalConfig.GetCleanTracksMaxDropOut( ) );
+	clcfg.SetMinLength( mGlobalConfig.GetCleanTracksMinLength() );
 	CleanTracks myCleanTracks;
 	myCleanTracks.Configure(clcfg);
 	myCleanTracks.Start();

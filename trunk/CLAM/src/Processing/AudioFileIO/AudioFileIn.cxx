@@ -107,7 +107,7 @@ using namespace CLAM;
 	{
 		if( !AbleToExecute() ) return true;
 		
-		short tmp[256];
+		float tmp[256];
 
 		CLAM_ASSERT(mpSoundFileIO->Header().mChannels==1,
 			"AudioFileIn: Do(): Not a mono file");
@@ -120,21 +120,26 @@ using namespace CLAM;
 		else
 			m=n;
 
+		int j = n;
+		if (j>256) j=256;
+
 		TData* ptr = in.GetBuffer().GetPtr();
-		while (n)
+		while (n > 0)
 		{			
-			int j = n;
-			if (j>256) j=256;
+			
+			// MRJ: Smart compiler will emit a CMOV or SLE
+			j = ( n<256 ) ? n : 256;
+			
 			try {
 				mpSoundFileIO->Read(tmp,j);
 			}
 			catch (ErrSoundFileIO e) {
 				throw ErrProcessingObj(e.mStr,this);
 			}
-			short* sptr = tmp;
+			float* sptr = tmp;
 			n -= j;
 			while (j--) {
-				*ptr++ = (*sptr++)/TData(32768.);
+				*ptr++ = (*sptr++);
 			}
 		}
 		
@@ -162,7 +167,7 @@ using namespace CLAM;
 
 	bool AudioFileIn::Do(Audio& inL,Audio& inR)
 	{
-		short tmp[256];
+		float tmp[256];
 
 		if ( GetExecState() == Unconfigured ||
 			 GetExecState() == Ready )
@@ -190,12 +195,12 @@ using namespace CLAM;
 			int j = n*2; /* n in number of frames, j in number of samples */
 			if (j>256) j=256;
 			mpSoundFileIO->Read(tmp,j);
-			short* sptr = tmp;
+			float* sptr = tmp;
 			j /= 2; /* j now also in number of frames */
 			n -= j;
 			while (j--) {
-				*ptrL++ = (*sptr++)/TData(32768.);
-				*ptrR++ = (*sptr++)/TData(32768.);
+				*ptrL++ = (*sptr++);
+				*ptrR++ = (*sptr++);
 			}
 		}
 

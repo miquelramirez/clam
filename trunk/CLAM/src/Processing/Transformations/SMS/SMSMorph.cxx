@@ -89,10 +89,9 @@ SMSMorph::SMSMorph(const SMSMorphConfig &c):
 
 bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 {
-	CopyAsConcreteConfig(mConfig,c);
+	mConfig=dynamic_cast<const SMSMorphConfig&>(c);
 	mHaveInternalSegment=false;
-	mUseTemporalBPF = true;
-
+	
 	if(mConfig.HasFileName())
 	{
 		if(LoadSDIF(mConfig.GetFileName(),mSegment))
@@ -327,7 +326,7 @@ void SMSMorph::UpdateSpectralShape(const BPF& weightBPF1, const BPF& weightBPF2,
 		{
 			xValue=weightBPF1.GetXValue(i);
 			yValue=weightBPF1.GetValueFromIndex(i)*interpFactor+weightBPF2.GetValue(xValue)*(1-interpFactor);
-			xValue=pow(10,xValue)/10*spectralRange;
+			xValue*=spectralRange;
 			spectralShapeBPF.Insert(xValue,yValue);
 		}
 	}
@@ -337,7 +336,7 @@ void SMSMorph::UpdateSpectralShape(const BPF& weightBPF1, const BPF& weightBPF2,
 		{
 			xValue=weightBPF2.GetXValue(i);
 			yValue=weightBPF2.GetValueFromIndex(i)*interpFactor+weightBPF1.GetValue(xValue)*(1-interpFactor);
-			xValue=pow(10,xValue)/10*spectralRange;
+			xValue*=spectralRange;
 			spectralShapeBPF.Insert(xValue,yValue);
 		}
 	}

@@ -2,10 +2,10 @@
 #define __PLOTSINTRACKS__
 
 // forward declaration
+#include "SpectralPeakArray.hxx"
 namespace CLAM
 {
 	template < typename T > class Array;
-	class SpectralPeakArray;
 	class Segment;
 }
 

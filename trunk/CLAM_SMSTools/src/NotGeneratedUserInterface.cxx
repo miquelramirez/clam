@@ -51,8 +51,8 @@ void UserInterface::Update()
 		return;
 	ApplyInitialState();
 	ApplyReadyToAnalyzeState();
-	mSMS->mExplorer.CloseAll();
-	mSMS->mExplorer.SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
+	mSMS->SegmentExplorer().CloseAll();
+	mSMS->SegmentExplorer().SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
 					      mSMS->mGlobalConfig.GetAnalysisHighestFundFreq());
 	mWindow->redraw();
 }
@@ -73,8 +73,8 @@ void UserInterface::LoadConfiguration(void)
 		if (mSMS->mHaveAnalysis &&	mSMS->mHaveConfig)
 			ApplyAnalysisAvailableState();
 
-		mSMS->mExplorer.CloseAll();
-		mSMS->mExplorer.SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
+		mSMS->SegmentExplorer().CloseAll();
+		mSMS->SegmentExplorer().SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
 						      mSMS->mGlobalConfig.GetAnalysisHighestFundFreq());
 
 		mWindow->redraw();
@@ -86,12 +86,11 @@ bool UserInterface::LoadSound(void)
 	mSMS->LoadInputSound();
 	if ( !mSMS->mHaveAudioIn )
 	{
-		fl_alert( "Unable to open the Input sound file!");
 		ApplyInitialState();
 		return false;
 	}
 
-	mSMS->mExplorer.NewInputAudio( mSMS->mOriginalSegment.GetAudio());
+	mSMS->SegmentExplorer().NewInputAudio( mSMS->mOriginalSegment.GetAudio());
 	
 	return true;
 }
@@ -147,10 +146,10 @@ void UserInterface::LoadAnalysisData(void)
 	mSMS->mHaveConfig = true;
 	ApplyAnalysisAvailableState();
 	DeactivateFrameDataMenuItems();
-	mSMS->mExplorer.NewSegment( mSMS->mOriginalSegment );
+	mSMS->SegmentExplorer().NewSegment( mSMS->mOriginalSegment );
 	// @todo: determine what has to do the UserInterface for obtaining frame data when it is being loaded
 	// so that one cannot rely on the fact that it is available in the segment object
-	// mSMS->mExplorer.NewFrame( mSMS->mSegment.GetFramesArray()[0]);
+	// mSMS->SegmentExplorer().NewFrame( mSMS->mSegment.GetFramesArray()[0]);
 	mFrameDataAvailable = false;
 	mWindow->redraw();
 }
@@ -169,8 +168,8 @@ void UserInterface::Analyze(void)
 		ApplyReadyToAnalyzeState();
 		ApplyAnalysisAvailableState();
 		mFrameDataAvailable = true;
-		mSMS->mExplorer.NewSegment( mSMS->mOriginalSegment );
-		mSMS->mExplorer.NewFrame( mSMS->mOriginalSegment.GetFramesArray()[0],
+		mSMS->SegmentExplorer().NewSegment( mSMS->mOriginalSegment );
+		mSMS->SegmentExplorer().NewFrame( mSMS->mOriginalSegment.GetFramesArray()[0],
 					  FrameDataAvailable());
 		mWindow->redraw();
 	}
@@ -183,9 +182,9 @@ void UserInterface::Synthesize(void)
 	{
 		ApplySynthesisAvailableState();
 	}
-	mSMS->mExplorer.NewSynthesizedAudio(mSMS->mAudioOut);
-	mSMS->mExplorer.NewSynthesizedSinusoidal(mSMS->mAudioOutSin);
-	mSMS->mExplorer.NewSynthesizedResidual( mSMS->mAudioOutRes );
+	mSMS->SegmentExplorer().NewSynthesizedAudio(mSMS->mAudioOut);
+	mSMS->SegmentExplorer().NewSynthesizedSinusoidal(mSMS->mAudioOutSin);
+	mSMS->SegmentExplorer().NewSynthesizedResidual( mSMS->mAudioOutRes );
 	mWindow->redraw();
 }
 
@@ -232,9 +231,9 @@ void UserInterface::Transform(void)
 
 	mSMS->Transform();
 	ApplyTransformationPerformedState();
-	mSMS->mExplorer.CloseAll();
-	mSMS->mExplorer.NewSegment( mSMS->mTransformedSegment );
-	mSMS->mExplorer.NewFrame( mSMS->mTransformedSegment.GetFramesArray()[0],
+	mSMS->SegmentExplorer().CloseAll();
+	mSMS->SegmentExplorer().NewSegment( mSMS->mTransformedSegment );
+	mSMS->SegmentExplorer().NewFrame( mSMS->mTransformedSegment.GetFramesArray()[0],
 												   FrameDataAvailable() );
 	mWindow->redraw();
 
@@ -248,8 +247,8 @@ void UserInterface::UndoTransform()
 	ApplyAnalysisAvailableState();
 	mFrameDataAvailable = true;
 	
-	mSMS->mExplorer.NewSegment( mSMS->mOriginalSegment );
-	mSMS->mExplorer.NewFrame( mSMS->mOriginalSegment.GetFramesArray()[0],
+	mSMS->SegmentExplorer().NewSegment( mSMS->mOriginalSegment );
+	mSMS->SegmentExplorer().NewFrame( mSMS->mOriginalSegment.GetFramesArray()[0],
 													   FrameDataAvailable());
 
 	mWindow->redraw();
@@ -262,10 +261,10 @@ void UserInterface::ChangeFrame()
 	if ( mFrameDataAvailable )
 	{
 		if(mSMS->mHaveTransformation)
-			mSMS->mExplorer.NewFrame( mSMS->mTransformedSegment.GetFramesArray()[nframe],
+			mSMS->SegmentExplorer().NewFrame( mSMS->mTransformedSegment.GetFramesArray()[nframe],
 													   FrameDataAvailable() );
 		else
-			mSMS->mExplorer.NewFrame( mSMS->mOriginalSegment.GetFramesArray()[nframe],
+			mSMS->SegmentExplorer().NewFrame( mSMS->mOriginalSegment.GetFramesArray()[nframe],
 													   FrameDataAvailable() );
 	}
 }
@@ -286,67 +285,67 @@ void UserInterface::Init(  )
 
 void UserInterface::DisplayInputSound()
 {
-	mSMS->mExplorer.ShowInputAudio();
+	mSMS->SegmentExplorer().ShowInputAudio();
 	mWindow->redraw();
 }
 
 void UserInterface::DisplaySpectrumAndPeaks()
 {
-	mSMS->mExplorer.ShowSpectrumAndPeaks();
+	mSMS->SegmentExplorer().ShowSpectrumAndPeaks();
 	mWindow->redraw();
 
 }
 
 void UserInterface::DisplaySinusoidalSpectrum()
 {
-	mSMS->mExplorer.ShowSinusoidalSpectrum();
+	mSMS->SegmentExplorer().ShowSinusoidalSpectrum();
 	mWindow->redraw();
 }
 
 void UserInterface::DisplayResidualSpectrum()
 {
-	mSMS->mExplorer.ShowResidualSpectrum();
+	mSMS->SegmentExplorer().ShowResidualSpectrum();
 	mWindow->redraw();
 
 }
 
 void UserInterface::DisplaySynthesizedAudio()
 {
-	mSMS->mExplorer.ShowSynthesizedAudio();
+	mSMS->SegmentExplorer().ShowSynthesizedAudio();
 	mWindow->redraw();
 
 }
 
 void UserInterface::DisplaySynthesizedSinusoidal()
 {
-	mSMS->mExplorer.ShowSynthesizedSinusoidal();
+	mSMS->SegmentExplorer().ShowSynthesizedSinusoidal();
 	mWindow->redraw();
 
 }
 
 void UserInterface::DisplaySynthesizedResidual()
 {
-	mSMS->mExplorer.ShowSynthesizedResidual();
+	mSMS->SegmentExplorer().ShowSynthesizedResidual();
 	mWindow->redraw();
 
 }
 
 void UserInterface::DisplaySinusoidalTracks()
 {
-	mSMS->mExplorer.ShowSinTracks();
+	mSMS->SegmentExplorer().ShowSinTracks();
 	mWindow->redraw();
 
 }
 
 void UserInterface::DisplayFundFreqTrajectory()
 {
-	mSMS->mExplorer.ShowFundFreq();
+	mSMS->SegmentExplorer().ShowFundFreq();
 	mWindow->redraw();
 }
 
 void UserInterface::ApplyInitialState()
 {
-	mSMS->mExplorer.CloseAll();
+	mSMS->SegmentExplorer().CloseAll();
 	
 
 	mFileMenuItem->activate();

@@ -184,7 +184,7 @@ private:
 
 	
 	/** Configuration method */
-	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 	/** Internal convenience method used for initializing frames */
 	void InitFrame(Frame& in);

@@ -19,7 +19,7 @@ namespace CLAM {
 		/** The minimum lenght a track should have to be keeped */
 		DYN_ATTRIBUTE (2,public,TSize,MinLength);
 		/** Maximum frequency distance between two tracks to be considered one
-		as continuation of the other */
+		as continuation of the other, expressed as a percentage between 0 and 100 */
 		DYN_ATTRIBUTE (3,public,TData,FreqDev);
 		/** This attribute is necessary so that BinPosition can be recomputed*/
 		DYN_ATTRIBUTE (4, public, TData, SamplingRate);

@@ -91,41 +91,45 @@ namespace CLAM {
 
 	/* The supervised Do() function */
 
-	bool  SpectralPeakDetect::Do(void) 
+	bool  SpectralPeakDetect::Do(void)
 	{
-		throw(ErrProcessingObj(CLASS"::Do(): Supervised mode not implemented"),this);
+		CLAM_ASSERT(false,CLASS"::Do(): Supervised mode not implemented");
 		return false;
 	}
 
 	/* The  unsupervised Do() function */
 
-	bool  SpectralPeakDetect::Do(Spectrum& input, SpectralPeakArray& out)
+	bool  SpectralPeakDetect::Do(const Spectrum& input, SpectralPeakArray& out)
 	{
 
 		int i;
-		TSize nSpectralPeaks = 0;	
+		TSize nSpectralPeaks = 0;
 		TSize binWidth = 0;	 // BinWidth is in NumBins
 
-		TData  middleMag;
-		TData  leftMag;
-		TData  rightMag;
-		TData  interpolatedBin;
-		TData  spectralPeakFreq=0;
-		TData  spectralPeakPhase;
-		TData  spectralPeakMag;
-		TData  diffFromMax;
- 		TData  samplingRate = input.GetSpectralRange() * TData(2.0);
-		TSize  magThreshold = mConfig.GetMagThreshold();
-		TSize  nBins = input.GetSize();
-		TData maxFreq= mConfig.GetMaxFreq();
+		TData middleMag;
+		TData leftMag;
+		TData rightMag;
+		TData interpolatedBin;
+		TData spectralPeakFreq=0;
+		TData spectralPeakPhase;
+		TData spectralPeakMag;
+		TData diffFromMax;
+		const TData samplingRate = input.GetSpectralRange() * TData(2.0);
+		const TSize magThreshold = mConfig.GetMagThreshold();
+		const TSize nBins = input.GetSize();
+		const TData maxFreq= mConfig.GetMaxFreq();
 
-		CLAM_ASSERT(CheckOutputType(out),"SpectralPeakDetect::Do - Type of output data doesn't match "); 
+		CLAM_ASSERT(CheckOutputType(out),"SpectralPeakDetect::Do - Type of output data doesn't match ");
 		
 		DataArray& inMagBuffer=input.GetMagBuffer();
 		DataArray& inPhaseBuffer=input.GetPhaseBuffer();
 
 		TSize maxPeaks=mConfig.GetMaxPeaks();
-		out.SetnMaxPeaks(maxPeaks);
+		if (out.GetnMaxPeaks() != maxPeaks)
+		{
+			out.SetnMaxPeaks(maxPeaks);
+		}
+
 		out.SetnPeaks(0);
 		
 		DataArray& outMagBuffer=out.GetMagBuffer();
@@ -138,7 +142,7 @@ namespace CLAM {
 		
 
 		// detection loop 
-		for (int i = 0; (i < nBins-2) && (nSpectralPeaks < maxPeaks); ++i)
+		for (i = 0; (i < nBins-2) && (nSpectralPeaks < maxPeaks); ++i)
 		{
 			leftMag 	= inMagBuffer[i];
 			middleMag	= inMagBuffer[i+1];
@@ -177,7 +181,7 @@ namespace CLAM {
 					binWidth = (TSize) ((SpectralPeakPosition-lastSpectralPeakBin)/2.0);
 				}	
 
-				// if we get to the end of a constant area then ... 
+				// if we get to the end of a constant area then ...
 				if ((middleMag == leftMag) && (middleMag > rightMag) && (nSpectralPeaks > 0)){
 			
 					// update last SpectralPeak BinPosition, it will be located in the middle of the constant area 
@@ -224,17 +228,17 @@ namespace CLAM {
 					if (diffFromMax >= 0)
 						spectralPeakPhase = leftPhase + diffFromMax*(rightPhase-leftPhase);
 					else
-						spectralPeakPhase = leftPhase + (1+diffFromMax)*(rightPhase-leftPhase);	
+						spectralPeakPhase = leftPhase + (1+diffFromMax)*(rightPhase-leftPhase);
 
 					if (spectralPeakFreq>maxFreq)
 						break;
 
 					outFreqBuffer.AddElem(spectralPeakFreq);
-					outMagBuffer.AddElem(spectralPeakMag); 
+					outMagBuffer.AddElem(spectralPeakMag);
 					outPhaseBuffer.AddElem(spectralPeakPhase);
 					outBinPosBuffer.AddElem(interpolatedBin);
 					outBinWidthBuffer.AddElem(0); // BinWidth will be set later
-					
+
 					nSpectralPeaks++;
 				
 				}
@@ -269,18 +273,34 @@ namespace CLAM {
 
 	bool SpectralPeakDetect::CheckOutputType(SpectralPeakArray& out) 
 	{
-		out.SetScale(EScale::eLog);
+		if (!out.HasScale())
+			return false;
+
+		if (out.GetScale() != EScale::eLog)
+			return false;
+
+		if (!out.HasBinWidthBuffer())
+			return false;
+
+		if (!out.HasFreqBuffer())
+			return false;
+
+		if (!out.HasBinPosBuffer())
+			return false;
+
+		if (!out.HasMagBuffer())
+			return false;
+
+		if (!out.HasPhaseBuffer())
+			return false;
+
+/*		out.SetScale(EScale::eLog);
 		out.AddBinWidthBuffer();
 		out.AddFreqBuffer();
 		out.AddBinPosBuffer();
 		out.AddMagBuffer();
 		out.AddPhaseBuffer();
-
-		out.UpdateData();
-
-		/* Clear the  output Array */
-
-		out.SetnPeaks(0); // set the number of SpectralPeaks to 0
+		out.UpdateData();*/
 
 		return true;
 	}

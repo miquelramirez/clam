@@ -28,6 +28,7 @@ namespace CLAMVM
 		if ( !valid() )
 			ResizeGL();
 
+		glClear( GL_COLOR_BUFFER_BIT );
 		DrawContents();
 		redraw_overlay();
 		

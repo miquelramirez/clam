@@ -35,7 +35,7 @@ namespace CLAM {
 		//Default values
 		SetMaxDropOut(3);
 		SetMinLength(3);
-		SetFreqDev(200);
+		SetFreqDev(20);
 		SetSamplingRate(44100);
 		SetSpecSize(22050);
 	}
@@ -65,7 +65,7 @@ namespace CLAM {
 
 		mMaxDropOut = mConfig.GetMaxDropOut();
 		mMinLength= mConfig.GetMinLength();
-		mFreqDev= mConfig.GetFreqDev();
+		mFreqDev= 1.0/mConfig.GetFreqDev();
 		mSamplingRate= mConfig.GetSamplingRate();
 		mSpecSize= mConfig.GetSpecSize();
 		return true;
@@ -141,7 +141,10 @@ namespace CLAM {
 				firstCandidatable++;
 */
 			bool thereIsCandidate=false;
-			TData bestFreqDif=mFreqDev;
+			// MRJ: Transition of Frequency deviation from absolute hertz to
+			// a %. We multiply this factor by the currently considered trajectory
+			// final frequency
+			TData bestFreqDif=mFreqDev * mTrajectoryArray[i].finalFreq ;
 			int bestCandidate;
 
 			// Get the best 'candidate' to be followed by the track 'toBeAppended'
