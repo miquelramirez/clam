@@ -18,15 +18,19 @@ def placeTestsOkTags(module) :
 	ok, out = getstatusoutput(cmd)
 #	assert ok==0, "command: "+cmd+" returned false\n\n"+out
 
-def queryDiffsFrom(fromTag, module) :
-	cmd = "cvs rdiff -r%s -r%s  %s" % (fromTag, candidateTag, module)
+def queryDiffsFromDate(date, module) :
+	cmd = "cvs rdiff -D%s -r%s  %s" % (date, candidateTag, module)
 	filename = "cvsdiff-%s" % module
 	print "issuing: ",cmd
 	out = getoutput(cmd)
 	open(filename, "w").write( out )
 
 def queryDiffs(module) :
-	queryDiffsFrom( okTag, module )
+	cmd = "cvs rdiff -r%s -r%s  %s" % (okTag, candidateTag, module)
+	filename = "cvsdiff-%s" % module
+	print "issuing: ",cmd
+	out = getoutput(cmd)
+	open(filename, "w").write( out )
 
 
 NewFile = -1
@@ -86,7 +90,6 @@ def queryLogs(module) :
 		log = getoutput(cmd)
 		logs.append( "\n\n%s\n"%file + cleanLogOutput(log) )
 		fileauthors = Set(getAuthors(log))
-		print fileauthors
 		authors = authors.union( fileauthors )
 	return ",".join( authors ), "".join(logs)
 		
@@ -100,16 +103,30 @@ def chaseTheGuiltyCommits(module):
 	
 
 
-def printGuiltyCommitsFrom( fromTag ) :
-	diffs = queryDiffsFrom( fromTag, "CLAM")
-	authors, logs = queryLogs("CLAM")
+def printGuiltyCommitsFromDate( date, module ) :
+	diffs = queryDiffsFromDate( date, module)
+	authors, logs = queryLogs(module)
 	print "authors: %s\n logs:\n%s" % (authors, logs)
 	
-def printGuiltyCommits() :
-	printGuiltyCommitsFrom(okTag)
+def printGuiltyCommits(  ) :
+	diffs = queryDiffs( "CLAM")
+	authors, logs = queryLogs("CLAM")
+	print "authors: %s\n logs:\n%s" % (authors, logs)
+
 
 
 
 if __name__ == '__main__':
-	pass
-#	testcvs()
+	from sys import argv
+	usage = """
+Usage example: ./guiltyCommits 2005-03-31
+CLAM is default module, or use:
+./guiltyCommits 2005-03-31 CLAM_NetworkEditor"""
+	assert len(argv)==2 or len(argv)==3, usage
+	date = argv[1]
+	if len(argv)==3 : 
+		module = argv[2]
+	else :
+		module = "CLAM"
+	print "querying commits from date %s on module %s " % (date, module)
+	printGuiltyCommitsFromDate( date, module )
