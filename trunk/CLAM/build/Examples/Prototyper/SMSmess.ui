@@ -58,7 +58,7 @@
                         </property>
                         <widget class="CLAM::VM::NetAudioPlot" row="1" column="1">
                             <property name="name">
-                                <cstring>OutPort__SMSSynthesis_3__OutputAudio</cstring>
+                                <cstring>OuPort__SMSSynthesis__OutputAudio</cstring>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Synthetized Audio</string>
@@ -66,7 +66,7 @@
                         </widget>
                         <widget class="CLAM::VM::NetPeaksPlot" row="1" column="0">
                             <property name="name">
-                                <cstring>OutPort__SMSPitchShift_11__Out___SpectralPeaks</cstring>
+                                <cstring>OutPort__SMSPitchShift__Out___SpectralPeaks</cstring>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Transformed Peaks</string>
@@ -74,7 +74,7 @@
                         </widget>
                         <widget class="CLAM::VM::NetSpectrumPlot" row="0" column="1">
                             <property name="name">
-                                <cstring>OutPort__SMSSynthesis_3__OutputSpectrum</cstring>
+                                <cstring>OutPort__SMSSynthesis__OutputSpectrum</cstring>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Synthetized Spectrum</string>
@@ -82,7 +82,7 @@
                         </widget>
                         <widget class="CLAM::VM::NetPeaksPlot" row="0" column="0">
                             <property name="name">
-                                <cstring>OutPort__SMSAnalysisCore_2__Sinusoidal___Peaks</cstring>
+                                <cstring>OutPort__SMSAnalysisCore__Sinusoidal___Peaks</cstring>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Detected Peaks</string>
@@ -92,7 +92,7 @@
                 </widget>
                 <widget class="CLAM::VM::NetFundPlot">
                     <property name="name">
-                        <cstring>OutPort__SMSAnalysisCore_2__Fundamental</cstring>
+                        <cstring>OutPort__SMSAnalysisCore__Fundamental</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -162,12 +162,12 @@
                         <string>SMS Pitch Shift</string>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>InControl__SMSPitchShift_11__Amount</cstring>
+                        <cstring>InControl__SMSPitchShift__Amount</cstring>
                     </property>
                 </widget>
                 <widget class="QSlider" row="0" column="1">
                     <property name="name">
-                        <cstring>InControlFloat__SMSPitchShift_11__Amount</cstring>
+                        <cstring>InControlFloat__SMSPitchShift__Shift___Amount</cstring>
                     </property>
                     <property name="maxValue">
                         <number>199</number>
@@ -181,7 +181,7 @@
                 </widget>
                 <widget class="QSlider" row="2" column="1">
                     <property name="name">
-                        <cstring>InControlFloat__SMSSinusoidalGain_1__Amount</cstring>
+                        <cstring>InControlFloat__SMSSinusoidalGain__Gain___Amount</cstring>
                     </property>
                     <property name="maxValue">
                         <number>199</number>
@@ -220,7 +220,7 @@
                 </widget>
                 <widget class="QSlider" row="1" column="1">
                     <property name="name">
-                        <cstring>InControlFloat__SMSResidualGain_5__Amount</cstring>
+                        <cstring>InControlFloat__SMSResidualGain__Gain___Amount</cstring>
                     </property>
                     <property name="maxValue">
                         <number>199</number>
@@ -256,7 +256,7 @@
                         <string>SMS Residual Gain</string>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>InControlFloat__SMSResidualGain_5__Amount</cstring>
+                        <cstring>InControlFloat__SMSResidualGain__Gain___Amount</cstring>
                     </property>
                 </widget>
                 <widget class="QLCDNumber" row="0" column="2">
@@ -292,7 +292,7 @@
                         <string>SMS Sinusoidal Gain</string>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>InControlFloat__SMSSinusoidalGain_1__Amount</cstring>
+                        <cstring>InControlFloat__SMSSinusoidalGain__Gain___Amount</cstring>
                     </property>
                 </widget>
                 <widget class="QLCDNumber" row="2" column="2">
@@ -386,19 +386,19 @@
 </customwidgets>
 <connections>
     <connection>
-        <sender>InControlFloat__SMSSinusoidalGain_1__Amount</sender>
+        <sender>InControlFloat__SMSSinusoidalGain__Gain___Amount</sender>
         <signal>valueChanged(int)</signal>
         <receiver>lCDNumber1_2</receiver>
         <slot>display(int)</slot>
     </connection>
     <connection>
-        <sender>InControlFloat__SMSResidualGain_5__Amount</sender>
+        <sender>InControlFloat__SMSResidualGain__Gain___Amount</sender>
         <signal>valueChanged(int)</signal>
         <receiver>lCDNumber1</receiver>
         <slot>display(int)</slot>
     </connection>
     <connection>
-        <sender>InControlFloat__SMSPitchShift_11__Amount</sender>
+        <sender>InControlFloat__SMSPitchShift__Shift___Amount</sender>
         <signal>valueChanged(int)</signal>
         <receiver>lCDNumber1_2_2</receiver>
         <slot>display(int)</slot>
@@ -423,13 +423,12 @@
     </connection>
 </connections>
 <tabstops>
-    <tabstop>InControlFloat__SMSPitchShift_11__Amount</tabstop>
-    <tabstop>InControlFloat__SMSResidualGain_5__Amount</tabstop>
-    <tabstop>InControlFloat__SMSSinusoidalGain_1__Amount</tabstop>
+    <tabstop>InControlFloat__SMSPitchShift__Shift___Amount</tabstop>
+    <tabstop>InControlFloat__SMSResidualGain__Gain___Amount</tabstop>
+    <tabstop>InControlFloat__SMSSinusoidalGain__Gain___Amount</tabstop>
     <tabstop>PlayButton</tabstop>
     <tabstop>StopButton</tabstop>
     <tabstop>CloseButton</tabstop>
-    <tabstop>OutPort__SMSPitchShift_11__Out___SpectralPeaks</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
