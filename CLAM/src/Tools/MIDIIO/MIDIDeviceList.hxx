@@ -93,9 +93,6 @@ public:
 //		static list_iterator lists_end()   {return sDeviceLists.end();}
 };
 
-
-
-
 };//CLAM
 
 #endif
