@@ -22,6 +22,8 @@ namespace CLAM
 			void Draw();
 			void SetMonitor(MonitorType & monitor);
 
+		        void UpdatePoint(const TData& x, const TData& y);
+
 		protected:
 		        void FullView();
 
@@ -30,6 +32,10 @@ namespace CLAM
 			Dial _renderer;
 
 			MonitorType * mMonitor;
+		        
+		        bool _hasData;
+		        QString _tooltip;
+		        bool _renderingIsDone;
 
 		        void Init();
 		};

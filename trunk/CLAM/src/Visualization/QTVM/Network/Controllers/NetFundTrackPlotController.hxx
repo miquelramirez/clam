@@ -22,6 +22,8 @@ namespace CLAM
 	    void Draw();
 	    void SetMonitor(MonitorType & monitor);
 
+	    void UpdatePoint(const TData& x, const TData& y);
+
 	protected:
 	    void FullView();
 
@@ -32,6 +34,10 @@ namespace CLAM
 	    SigSlot::Slotv0 mSlotNewData;
 
 	    MonitorType* mMonitor;
+	    
+	    bool _hasData;
+	    QString _tooltip;
+	    bool _renderingIsDone;
 	    
 	    void AddData(const TData& data);
 	  

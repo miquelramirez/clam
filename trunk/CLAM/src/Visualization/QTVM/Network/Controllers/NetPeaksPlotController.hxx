@@ -22,17 +22,23 @@ namespace CLAM
 			virtual void Draw();
 			void SetMonitor(MonitorType & monitor);
 
+		        void UpdatePoint(const TData& x, const TData& y);
+
 	        protected:
 		        void FullView();
 
 		private:
 			DataArray _magBuffer;
 			DataArray _freqBuffer;
-			bool _linear;
-
+			
 			NetPeaksRenderer _renderer;
 
 			MonitorType * mMonitor;
+
+		        bool _linear;
+		        bool _hasData;
+		        QString _tooltip;
+		        bool _renderingIsDone;
 
 			void ProcessPeakData();
 		        void Init();

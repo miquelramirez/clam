@@ -8,7 +8,11 @@ namespace CLAM
 	NetSpecgramPlotController::NetSpecgramPlotController()
 	    : mMonitor(0),_index(0),_specSize(0),_palette(0.0f),
 	      _leftIndex1(0), _rightIndex1(0), _leftIndex2(0), _rightIndex2(0),
-	      _bottomBound(0), _topBound(0)
+	      _bottomBound(0), _topBound(0),
+	      _spectralRange(TData(0.0)),
+	      _hasData(false),
+	      _tooltip(""),
+	      _renderingIsDone(false)
 	{
 	    SetnSamples(100);
 	    mSlotNewData.Wrap(this,&NetSpecgramPlotController::OnNewData);
@@ -24,7 +28,7 @@ namespace CLAM
 	    if(CanGetData())
 	    {
 		SetCanSendData(false);
-		if(First()) Init(spec.GetMagBuffer().Size());
+		if(First()) Init(spec.GetMagBuffer().Size(),spec.GetSpectralRange());
 		AddData(spec);
 		SetCanSendData(true);
 	    }
@@ -50,6 +54,8 @@ namespace CLAM
 	    }
 	    _renderer.Render();
 	    NetPlotController::Draw();
+
+	    _renderingIsDone=true;
 	}
 
 	void NetSpecgramPlotController::AddData(const Spectrum& spec)
@@ -109,10 +115,12 @@ namespace CLAM
 	    _spec.ToDB();
 	}
 
-	void NetSpecgramPlotController::Init(const TSize& specSize)
+	void NetSpecgramPlotController::Init(const TSize& specSize, const TData& spectralRange)
 	{
 	    _index=0;
+	    _hasData=true;
 	    _cachedData.clear();
+	    _spectralRange=spectralRange;
 	    _specSize = specSize;
 	    SetvRange(TData(0.0),TData(_specSize));
 	    SetFirst(false);
@@ -141,7 +149,7 @@ namespace CLAM
 		{
 		    const Spectrum & spec = mMonitor->FreezeAndGetData();
 		    TSize bufferSize = spec.GetMagBuffer().Size();
-		    if(First() && bufferSize) Init(bufferSize);
+		    if(First() && bufferSize) Init(bufferSize,spec.GetSpectralRange());
 		    if(bufferSize) AddData(spec);
 		    mMonitor->UnfreezeData();
 		}
@@ -187,6 +195,24 @@ namespace CLAM
 	    _rightIndex2=_leftIndex2+TIndex(rest);
 	    if(_rightIndex2 > _leftIndex1) _rightIndex2=_leftIndex1;
 	    
+	}
+
+	void NetSpecgramPlotController::UpdatePoint(const TData& x, const TData& y)
+	{
+	     TData yvalue=y;
+	     NetPlotController::UpdatePoint(x,y);
+	     _tooltip="";
+	     if(_hasData)
+	     {
+		 yvalue*=_spectralRange;
+		 yvalue/=GetvMax();
+		 _tooltip = "frequency="+(_tooltip.setNum(yvalue,'f',0))+"Hz";  
+	     }
+	     if(_renderingIsDone)
+	     {
+		 _renderingIsDone=false;
+		 emit toolTip(_tooltip);
+	     }
 	}
     }
 }

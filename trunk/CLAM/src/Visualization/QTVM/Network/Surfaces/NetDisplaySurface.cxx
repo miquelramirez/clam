@@ -1,6 +1,7 @@
 #include "NetDisplaySurface.hxx"
 #include <qwidget.h>
 #include <iostream>
+#include <qtooltip.h>
 
 namespace CLAM
 {
@@ -40,6 +41,8 @@ namespace CLAM
 		{
 			_controller = controller;
 			connect(_controller,SIGNAL(sendView(SView)),this,SLOT(receivedView(SView)));
+			connect(_controller,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
+			setMouseTracking(true);
 		}
 
 		void NetDisplaySurface::startRendering()
@@ -178,6 +181,15 @@ namespace CLAM
 		    if(_controller)
 		    {
 			_controller->EnterEvent();
+		    }
+		}
+
+	        void NetDisplaySurface::updateToolTip(QString s)
+		{
+		    if(!s.isEmpty())
+		    {
+			QToolTip::remove(this);
+			QToolTip::add(this,s);
 		    }
 		}
 

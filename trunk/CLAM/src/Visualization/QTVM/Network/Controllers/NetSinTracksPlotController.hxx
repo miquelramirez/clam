@@ -22,6 +22,8 @@ namespace CLAM
 	    void Draw();
 	    void SetMonitor(MonitorType & monitor);
 
+	    void UpdatePoint(const TData& x, const TData& y);
+
 	protected:
 	    void FullView();
 
@@ -32,11 +34,16 @@ namespace CLAM
 	    SigSlot::Slotv0 mSlotNewData;
 	    int _index;
 	    SinTracking mSinTracking;
+	    TIndex _leftIndex1,_rightIndex1,_leftIndex2,_rightIndex2;
+	    bool _hasData;
+	    QString _tooltip;
+	    bool _renderingIsDone;
 
 	    void AddData(const SpectralPeakArray& data);
 	  
 	    void Init();
 	    void OnNewData();
+	    void ComputeIndexes();
 
 	};
     }

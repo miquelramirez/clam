@@ -12,7 +12,10 @@ namespace CLAM
 	      _leftIndex1(0),
 	      _rightIndex1(0),
 	      _leftIndex2(0),
-	      _rightIndex2(0)
+	      _rightIndex2(0),
+	      _hasData(false),
+	      _tooltip(""),
+	      _renderingIsDone(false)
 	{
 	    SetDataColor(VMColor::Green());
 	    SetvRange(TData(-1.0),TData(1.0));
@@ -60,6 +63,8 @@ namespace CLAM
 	    }
 	    _renderer.Render();
 	    NetPlotController::Draw();
+
+	    _renderingIsDone=true;
 	}
 
 	void NetAudioBuffPlotController::AddData(const DataArray& data)
@@ -83,6 +88,7 @@ namespace CLAM
 
 	void NetAudioBuffPlotController::Init(const TSize& frameSize)
 	{
+	    _hasData=true;
 	    _index=0;
 	    _frameSize = frameSize;
 	    SetnSamples(_frameSize*100);
@@ -151,6 +157,21 @@ namespace CLAM
 	    _rightIndex2=_leftIndex2+TIndex(rest);
 	    if(_rightIndex2 > _leftIndex1) _rightIndex2=_leftIndex1;
 	}
+
+	 void NetAudioBuffPlotController::UpdatePoint(const TData& x, const TData& y)
+	 {
+	     NetPlotController::UpdatePoint(x,y);
+	     _tooltip="";
+	     if(_hasData)
+	     {
+		 _tooltip = "amplitude="+(_tooltip.setNum(y,'f',3));  
+	     }
+	     if(_renderingIsDone)
+	     {
+		 _renderingIsDone=false;
+		 emit toolTip(_tooltip);
+	     }
+	 }
     }
 }
 

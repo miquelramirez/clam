@@ -5,13 +5,16 @@ namespace CLAM
 	namespace VM
 	{
 		NetFundPlotController::NetFundPlotController() 
+		    : mMonitor(0),
+		      _hasData(false),
+		      _tooltip(""),
+		      _renderingIsDone(false)
 		{
 		    SetDataColor(VMColor::Green());
 		    SetvRange(TData(0.0),TData(1.0));
 		    SetnSamples(22050);
 		    _renderer.SetVBounds(TData(0.7),TData(0.0));
 		    _renderer.SetHBounds(TData(0.0),TData(GetnSamples()));
-		    mMonitor = 0;
 		}
 
 		NetFundPlotController::~NetFundPlotController()
@@ -53,6 +56,9 @@ namespace CLAM
 			}
 			_renderer.Render();
 			NetPlotController::Draw();
+
+			_renderingIsDone=true;
+
 			return;
 		    }
 		    
@@ -74,6 +80,8 @@ namespace CLAM
 			_renderer.Render();
 			NetPlotController::Draw();
 		    }
+
+		    _renderingIsDone=true;
 		}
 
 		void NetFundPlotController::FullView()
@@ -87,8 +95,24 @@ namespace CLAM
 
 	        void NetFundPlotController::Init()
 		{
+		    _hasData=true;
 		    SetFirst(false);
 		    FullView();
+		}
+
+	        void NetFundPlotController::UpdatePoint(const TData& x, const TData& y)
+		{
+		    NetPlotController::UpdatePoint(x,y);
+		    _tooltip="";
+		    if(_hasData)
+		    {
+			_tooltip = "frequency="+(_tooltip.setNum(x,'f',0))+"Hz";  
+		    }
+		    if(_renderingIsDone)
+		    {
+			_renderingIsDone=false;
+			emit toolTip(_tooltip);
+		    }
 		}
 	}
 }

@@ -22,6 +22,8 @@ namespace CLAM
 			virtual void Draw();
 			void SetMonitor(MonitorType & monitor);
 
+		        void UpdatePoint(const TData& x, const TData& y);
+
 		protected:
 		        void FullView();
 
@@ -31,6 +33,12 @@ namespace CLAM
 			DataRenderer _renderer;
 
 			MonitorType * mMonitor;
+		       
+		        TData _spectralRange;
+		        bool _hasData;
+		        QString _tooltip;
+		        bool _renderingIsDone;
+		    
 
 			void AdaptSpectralData();
 		        void Init(const TSize& size);
