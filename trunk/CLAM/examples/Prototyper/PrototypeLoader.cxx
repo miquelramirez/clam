@@ -9,7 +9,7 @@
 #include "XMLStorage.hxx"
 #include "Thread.hxx"
 #include "AudioManager.hxx"
-#include "ControlSender.hxx"
+#include "QtSlot2Control.hxx"
 
 class NetworkPlayer
 {

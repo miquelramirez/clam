@@ -1,5 +1,5 @@
-#ifndef _ControlSender_hxx_
-#define _ControlSender_hxx_
+#ifndef _QtSlot2Control_hxx_
+#define _QtSlot2Control_hxx_
 #include <qobject.h>
 #include <iostream>
 #include "OutControl.hxx"
@@ -38,6 +38,6 @@ private:
 
 
 
-#endif//_ControlSender_hxx_
+#endif//_QtSlot2Control_hxx_
 
 
