@@ -19,6 +19,8 @@
  *
  */
 
+#include "MIDIManager.hxx"
+
 #include "NetworkController.hxx"
 #include "Network.hxx"
 #include "InPort.hxx"
@@ -112,6 +114,9 @@ void NetworkController::ExecuteEvents()
 
 void NetworkController::ProcessingLoop()
 {
+	CLAM::MIDIManager::Current().Start();	// this is a provisional hack
+	printf( "Starting MIDIManager... (provisional hack) \n");
+
 	while(mLoopCondition)
 	{
 		ExecuteEvents();
@@ -483,7 +488,7 @@ bool NetworkController::BindTo( CLAM::Network& obj )
 	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
 	{
 		CLAM::Processing * producer = it->second;
-		CLAM::PublishedOutPorts::Iterator itOutPort;
+		CLAM::OutPortRegistry::Iterator itOutPort;
 		for (itOutPort=producer->GetOutPorts().Begin(); itOutPort!=producer->GetOutPorts().End(); itOutPort++)
 		{	
 			if ((*itOutPort)->HasConnections())
@@ -497,7 +502,7 @@ bool NetworkController::BindTo( CLAM::Network& obj )
 			}
 		}
 
-		CLAM::PublishedOutControls::Iterator itOutControl;
+		CLAM::OutControlRegistry::Iterator itOutControl;
 		for (itOutControl=producer->GetOutControls().Begin(); itOutControl!=producer->GetOutControls().End(); itOutControl++)
 		{	
 			if((*itOutControl)->IsConnected())

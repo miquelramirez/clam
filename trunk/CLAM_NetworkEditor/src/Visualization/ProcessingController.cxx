@@ -95,19 +95,19 @@ void ProcessingController::UpdateListOfPortsAndControls()
 	mInControlNames.clear();
 	mOutControlNames.clear();
 
-	CLAM::PublishedInPorts::ConstIterator itPortIn;
+	CLAM::InPortRegistry::ConstIterator itPortIn;
 	for (itPortIn = mObserved->GetInPorts().Begin(); itPortIn != mObserved->GetInPorts().End(); itPortIn++)
 		mInPortNames.push_back((*itPortIn)->GetName());
 		
-	CLAM::PublishedOutPorts::ConstIterator itPortOut;
+	CLAM::OutPortRegistry::ConstIterator itPortOut;
 	for (itPortOut = mObserved->GetOutPorts().Begin(); itPortOut != mObserved->GetOutPorts().End(); itPortOut++)
 		mOutPortNames.push_back((*itPortOut)->GetName());
 
-	CLAM::PublishedInControls::ConstIterator itCtrlIn;
+	CLAM::InControlRegistry::ConstIterator itCtrlIn;
 	for (itCtrlIn = mObserved->GetInControls().Begin(); itCtrlIn != mObserved->GetInControls().End(); itCtrlIn++)
 		mInControlNames.push_back((*itCtrlIn)->GetName());
 
-	CLAM::PublishedOutControls::ConstIterator itCtrlOut;
+	CLAM::OutControlRegistry::ConstIterator itCtrlOut;
 	for (itCtrlOut = mObserved->GetOutControls().Begin(); itCtrlOut != mObserved->GetOutControls().End(); itCtrlOut++)
 		mOutControlNames.push_back((*itCtrlOut)->GetName());
 }
