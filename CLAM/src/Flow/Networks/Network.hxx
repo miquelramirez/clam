@@ -87,6 +87,8 @@ public:
 	 *  notifies this to the network. So use this method instead of getting the processing
 	 *  with GetProcessing and calling Configure on it. **/
 	void ConfigureProcessing( const std::string &, const ProcessingConfig & );
+	/** Calls Configure() for each processing with its current configuration  */
+	void ReconfigureAllProcessings();
 	void ChangeKeyMap( const std::string & oldName, const std::string & newName );	
 	
 	const std::string & GetNetworkId(const Processing * proc) const;
