@@ -69,8 +69,8 @@
                 <cstring>aboutTextBox</cstring>
             </property>
             <property name="text">
-                <string>&lt;p align="center"&gt;&lt;b&gt;NetworkEditor version 0.1&lt;/b&gt;&lt;/p&gt;
-&lt;p align="center"&gt;October 2004&lt;/p&gt;
+                <string>&lt;p align="center"&gt;&lt;b&gt;NetworkEditor version 0.2&lt;/b&gt;&lt;/p&gt;
+&lt;p align="center"&gt;January 2005&lt;/p&gt;
 &lt;p align="center"&gt;A  Graphic Environment for Editing CLAM Networks&lt;/p&gt;</string>
             </property>
         </widget>
