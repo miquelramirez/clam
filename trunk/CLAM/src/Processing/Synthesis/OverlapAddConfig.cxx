@@ -38,8 +38,8 @@ void OverlapAddConfig::DefaultInit()
 void OverlapAddConfig::DefaultValues()
 {
 	/* set default values */
-	SetHopSize(256);
-	SetFrameSize(256);
+	SetHopSize(512); // was 256
+	SetFrameSize(1024); // was 256
 }
 
 } // namespace CLAM

@@ -34,8 +34,8 @@ void SinTrackingConfig::DefaultInit()
 
 void SinTrackingConfig::DefaultValues()
 {
-	SetThreshold(20);//in percents
-	SetnMaxSines(250);
+	SetThreshold(40);//in percents // was 20
+	SetnMaxSines(200); // was 250
 	SetIsHarmonic(0);
 }
 

@@ -38,7 +38,7 @@ namespace CLAM
 	{		
 		SetReferenceFundFreq(1000);
 		SetLowestFundFreq(35);
-		SetHighestFundFreq(2000);
+		SetHighestFundFreq(1500); // was 2000
 		SetMaxCandMagDiff(30);
 		SetMaxFundFreqError(10); 
 		SetNInt(5);
@@ -52,7 +52,7 @@ namespace CLAM
 		SetMPnPeaks(10);
 		SetPMCont(1.0);
 		SetMPCont(1.0);
-		SetNMaxCandidates(60);
+		SetNMaxCandidates(40); // was 60
 	}
 
 
