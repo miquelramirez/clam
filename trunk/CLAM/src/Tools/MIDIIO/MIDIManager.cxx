@@ -26,7 +26,8 @@
 #include <algorithm>
 using std::find ;
 
-using namespace CLAM;
+namespace CLAM
+{
 
 MIDIManager* MIDIManager::pSingleton = 0;
 
@@ -213,3 +214,4 @@ bool MIDIManager::Register(MIDIOut& out)
 }
 */
 
+}

@@ -22,6 +22,8 @@
 #include "MIDIDevice.hxx"
 #include "MIDIIn.hxx"
 #include "MIDIEnums.hxx"
+#include <algorithm>
+using std::find;
 
 using namespace CLAM;
 

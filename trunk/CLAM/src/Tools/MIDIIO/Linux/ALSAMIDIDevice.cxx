@@ -19,8 +19,10 @@
  *
  */
 
-#include "MIDIIO.hxx"
+#include "MIDIIn.hxx"
 #include <alsa/asoundlib.h>
+#include "MIDIDeviceList.hxx"
+#include "MIDIDevice.hxx"
 
 namespace CLAM {
 
