@@ -42,9 +42,6 @@
 #include "PhaseManagement.hxx"
 #include "SpectralSynthesis.hxx"
 #include "SpectrumAdder2.hxx"
-
-#include "SnapshotGenerator.hxx"
-
 #include "SMSAnalysis.hxx"
 
 #include <stdlib.h>
