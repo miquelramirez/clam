@@ -539,33 +539,33 @@ private:
 		CLAM::TData tolerance = 0.008;  // Due to numerical inaccuracies
 
 		std::map<std::string, CLAM::TData> data;
-		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0;
-		data["Silence-Spectrum.xml"] = 0.0; // Avoid NaN
-		data["Constant-Spectrum.xml"]= 131328.0;
-		data["ConstantDouble-Spectrum.xml"]= 21012447232.0;
-		data["ConstantHalfSize-Spectrum.xml"]= 526336.0;
-		data["DeltasAtExtremeBins-Spectrum.xml"]= 512.0;
-		data["DeltaAtCenterBin-Spectrum.xml"]= 3.0;
+		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0; // Magnitude * 0
+		data["Silence-Spectrum.xml"] = 0.0; // Silence
+		data["Constant-Spectrum.xml"]= 131328.0; // 1^2 * sum(1 to 512)
+		data["ConstantDouble-Spectrum.xml"]= 21012480000.0; // 400^2 * sum(1 to 512)
+		data["ConstantHalfSize-Spectrum.xml"]= 526336.0; 
+		data["DeltasAtExtremeBins-Spectrum.xml"]= 512.0; // 1.0^2 * 512
+		data["DeltaAtCenterBin-Spectrum.xml"]= 3.0; // 1.0^2 * 3 (the 4th bin)
 		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 1470.23278808594;
-		data["Balance000.600.wav"] = 35030.96875;
+		data["Balance000.600.wav"] = 35030.921875;
 		data["Balance000.992.wav"] = 35163.140625;
 		data["Balance001.988.wav"] = 112741.8203125;
-		data["Balance010.910.wav"] = 67255.7109375;
-		data["Cello_A2.wav"] = 442392.75;
-		data["Cello_C2.wav"] = 0.0; // Avoid NaN!!
-		data["Disco_Rojo001.008.wav"] = 932897.8125;
-		data["Disco_Rojo002.327.wav"] = 237543;
-		data["Geiger_Counter005.020.wav"] = 47262.75390625;
-		data["SaxBritHorns12.wav"] = 510717.0625;
-		data["Time002.624.wav"] = 660662.1875;
-		data["bell_A3.wav"] = 557885;
+		data["Balance010.910.wav"] = 67255.7421875;
+		data["Cello_A2.wav"] = 442392.4375;
+		data["Cello_C2.wav"] = 0.0; // Silence
+		data["Disco_Rojo001.008.wav"] = 932898.0625;
+		data["Disco_Rojo002.327.wav"] = 237543.015625;
+		data["Geiger_Counter005.020.wav"] = 47262.77734375;
+		data["SaxBritHorns12.wav"] = 510716.90625;
+		data["Time002.624.wav"] = 660661.875;
+		data["bell_A3.wav"] = 557884.6875;
 		data["gamelan-gong.wav"] = 722027.0625;
 		data["gt_E4.wav"] = 5.25229263305664;
-		data["pno_Eb1.wav"] = 0.000000;  // Avoid NaN!!
-		data["silence.wav"] = 0.000000; // Avoid NaN!!
-		data["vln_A3.wav"] = 0.000000; // Avoid NaN!!
-		data["vln_D5.wav"] = 0.000000; // Avoid NaN!!
-		data["whitenoise.wav"] = 44574528;
+		data["pno_Eb1.wav"] = 0.000000;  // Silence
+		data["silence.wav"] = 0.000000; // Silence
+		data["vln_A3.wav"] = 0.000000; // Silence
+		data["vln_D5.wav"] = 0.000000; // Silence
+		data["whitenoise.wav"] = 44574532.0;
 
 		mDescriptors->AddHighFrequencyContent();
 
