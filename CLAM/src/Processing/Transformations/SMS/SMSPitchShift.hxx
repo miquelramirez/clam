@@ -32,6 +32,8 @@
 #include "FDCombFilter.hxx"
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
+
+#include "FrameTransformationConfig.hxx"
 #include "SMSTransformationConfig.hxx"
 
 
@@ -48,41 +50,59 @@ namespace CLAM{
 
 		InPort<SpectralPeakArray> mInPeaks;
 		OutPort<SpectralPeakArray> mOutPeaks;
+		InPort<Fundamental> mInFundamental;
+		OutPort<Fundamental> mOutFundamental;
 		InPort<Spectrum> mInSpectrum;
 		OutPort<Spectrum> mOutSpectrum;
 
 		InControl mIsHarmonic;
 		InControl mShiftAmount;
 
+		FrameTransformationConfig mConfig;
+
 	public:
 		SMSPitchShift()
 			: 
 			mInPeaks("In SpectralPeaks", this), 
 			mOutPeaks("Out SpectralPeaks", this), 
+			mInFundamental("In Fundamental", this),
+			mOutFundamental("Out Fundamental", this),
 			mInSpectrum("In Spectrum", this), 
 			mOutSpectrum("Out Spectrum", this), 
 			mIsHarmonic("Harmonic",this),
 			mShiftAmount("Shift Amount", this)
 		{
 			Configure( SegmentTransformationConfig() );
-			mSpectralRange=22050; //default
 		}
 
  		~SMSPitchShift() {}
 
-		const ProcessingConfig& GetConfig() const { throw 0; }
+		const ProcessingConfig& GetConfig() const { return mConfig; }
 
 	    bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
-		
-		bool Do(const SpectralPeakArray& inpeaks,const Spectrum& inRes, SpectralPeakArray& out,Spectrum& outRes);
+		bool Do(const SpectralPeakArray& inPeaks,
+		        const Fundamental& inFund,
+				const Spectrum& inRes,
+				SpectralPeakArray& outPeaks,
+				Fundamental& outFund,
+				Spectrum& outRes);
+
 		bool Do(const Frame& in, Frame& out);
 
 		bool Do()
 		{
-			bool result = Do(mInPeaks.GetData(), mInSpectrum.GetData(), mOutPeaks.GetData(), mOutSpectrum.GetData());
+			bool result = Do(mInPeaks.GetData(), 
+							mInFundamental.GetData(), 
+							mInSpectrum.GetData(), 
+							mOutPeaks.GetData(), 
+							mOutFundamental.GetData(), 
+							mOutSpectrum.GetData());
+
 			mInPeaks.Consume();
 			mOutPeaks.Produce();
+			mInFundamental.Consume();
+			mOutFundamental.Produce();
 			mInSpectrum.Consume();
 			mOutSpectrum.Produce();
 			return result;
@@ -93,10 +113,8 @@ namespace CLAM{
 		SpectralEnvelopeApply mSpectralEnvelopeApply;
 		FDCombFilter mFDCombFilter;
 		Spectrum mSpectralEnvelope;
-		TSize mSpectralRange;
-	
 	};		
-};//namespace CLAM
+}	//namespace CLAM
 
 #endif // _SMSPitchShift_
 
