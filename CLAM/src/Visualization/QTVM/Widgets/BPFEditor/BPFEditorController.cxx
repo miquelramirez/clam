@@ -332,9 +332,8 @@ namespace CLAM
 	    return p;
 	}
 
-	bool BPFEditorController::Match(const Pixel& p, const Pixel& q, bool only_x_coord)
+	bool BPFEditorController::Match(const Pixel& p, const Pixel& q)
 	{
-	    if(only_x_coord) return (abs(int(p.x-q.x))<=1);
 	    return ((abs(int(p.x-q.x))<=1)&&(abs(int(p.y-q.y))<=1));
 	}
 
@@ -380,10 +379,8 @@ namespace CLAM
 
 	    if(mCurrentIndex == 0)
 	    {
-		Pixel p = GetPixel(x,y);
-		Pixel q = GetPixel(mData.GetXValue(mCurrentIndex+1), mData.GetValueFromIndex(mCurrentIndex+1));
-	      
-		if(!Match(p,q,true))
+		TData next_x = mData.GetXValue(mCurrentIndex+1);
+		if(IsValid(x,next_x))
 		{
 		    mData.SetValue(mCurrentIndex,y);
 		    mData.SetXValue(mCurrentIndex,x);
@@ -402,10 +399,8 @@ namespace CLAM
 
 	    if(mCurrentIndex==mData.Size()-1)
 	    {
-		Pixel p = GetPixel(x,y);
-		Pixel q = GetPixel(mData.GetXValue(mCurrentIndex-1), mData.GetValueFromIndex(mCurrentIndex-1));
-	      
-		if(!Match(p,q,true))
+		TData prior_x = mData.GetXValue(mCurrentIndex-1);
+		if(IsValid(prior_x,x))
 		{
 		    mData.SetValue(mCurrentIndex,y);
 		    mData.SetXValue(mCurrentIndex,x);
@@ -422,11 +417,9 @@ namespace CLAM
 		return;
 	    }
 	    
-	    Pixel prior = GetPixel(mData.GetXValue(mCurrentIndex-1), mData.GetValueFromIndex(mCurrentIndex-1));
-	    Pixel current = GetPixel(x,y);
-	    Pixel next = GetPixel(mData.GetXValue(mCurrentIndex+1), mData.GetValueFromIndex(mCurrentIndex+1));
-	   
-	    if(!Match(current,prior,true) && !Match(current,next,true))
+	    TData prior_x = mData.GetXValue(mCurrentIndex-1);
+	    TData next_x = mData.GetXValue(mCurrentIndex+1);
+	    if(IsValid(prior_x,x) && IsValid(x,next_x))
 	    {
 		mData.SetValue(mCurrentIndex,y);
 		mData.SetXValue(mCurrentIndex,x);
@@ -439,6 +432,11 @@ namespace CLAM
 	    }
 
 	    emit requestRefresh();
+	}
+
+	bool BPFEditorController::IsValid(const TData& x0, const TData& x1)
+	{
+	    return (x0 < x1);
 	}
     }
 }
