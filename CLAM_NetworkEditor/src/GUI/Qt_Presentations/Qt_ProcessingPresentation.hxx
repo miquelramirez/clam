@@ -72,6 +72,7 @@ public:
 	void Move( const QPoint & );
 	void MoveAbsolute( const QPoint & );
 	void Initialize( const std::string & nameFromNetwork, QWidget * parent );
+	virtual void ConfigurationUpdated( bool );
 protected:
 	void SetObservedClassName(const std::string& name);
 	
@@ -99,7 +100,6 @@ protected:
 	void mouseMoveEvent( QMouseEvent * );
 	void mouseDoubleClickEvent ( QMouseEvent * );
 
-	virtual void ConfigurationUpdated( bool );
 	void UpdateOutPortsPosition();
 	void UpdateOutControlsPosition();
 

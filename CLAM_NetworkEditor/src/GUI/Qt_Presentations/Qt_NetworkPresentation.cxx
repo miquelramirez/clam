@@ -38,6 +38,7 @@
 
 #include <iostream> // TODO: remove
 #include <fstream>
+#include "MainWindow.hxx"
 
 namespace NetworkGUI
 {
@@ -45,13 +46,14 @@ namespace NetworkGUI
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
 
-Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *name)
+Qt_NetworkPresentation::Qt_NetworkPresentation( MainWindow *parent, const char *name)
 	: QWidget( parent, name ),	  
 	  mInPortSelected(0),
 	  mOutPortSelected(0),
 	  mInControlSelected(0),
 	  mOutControlSelected(0)
 {
+	mMainWindow = parent;
 	resize(800,600);
 	setPalette( QPalette( QColor( 250, 250, 200 )));
  	SlotSetInPortClicked.Wrap( this, &Qt_NetworkPresentation::SetInPortClicked);
@@ -124,28 +126,37 @@ Qt_ProcessingPresentation* Qt_NetworkPresentation::FindProcessingPresentation(co
 	return 0;
 }
 
-void Qt_NetworkPresentation::SaveWidgetsPositions(const std::string& positionsFilename)
+void Qt_NetworkPresentation::SaveWidgetsPositions(const std::string& baseFilename)
 {
-	std::cout << "saving positions in file: "<<positionsFilename << std::endl; //TODO remove
+	std::string positionsFilename = baseFilename + ".pos";
 	
 	std::ofstream os(positionsFilename.c_str());
 	CLAM_ASSERT(os.is_open(), "error opening positions file for writting");
 	
 	const std::string tab = "\t";
 	const std::string sep = " ";
+
+	int width = mMainWindow->size().width();
+	int height = mMainWindow->size().height();
+
+	os << width << sep << height << std::endl; // main window size
 	ProcessingPresentationIterator it;
 	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
 	{
 		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
 		int x = proc->pos().x();
 		int y = proc->pos().y();
-		os << proc->GetName() << tab << x << sep << y << std::endl;
+		width = proc->size().width();
+		height = proc->size().height();
+		os << proc->GetName() << tab << x << sep << y << tab;
+		os << width << sep << height << std::endl;
 	}
 
 		
 }
-void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& positionsFilename)
+void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& baseFilename)
 {
+	std::string positionsFilename = baseFilename+".pos";
 	printf("opening file %s\n", positionsFilename.c_str());
 	std::ifstream is(positionsFilename.c_str());
 	if (!is.is_open())
@@ -155,12 +166,21 @@ void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& positionsF
 		return;
 	}
 	std::string procname;
-	int x,y;
+	int x,y, width, height;
+	is >> x;
+	is >> y;
+	resize(x,y);
+	mMainWindow->resize(x,y);
+	std::string caption("CLAM Network Editor -- ");
+	caption += baseFilename;
+	mMainWindow->setCaption( caption.c_str() );
+
 	while (is >> procname)
 	{
 		is >> x;
 		is >> y;
-		std::cout << procname << " "<< x <<" "<<y<<"\n";
+		is >> width;
+		is >> height;
 		Qt_ProcessingPresentation * proc=FindProcessingPresentation( procname );
 		if (!proc)
 		{
@@ -169,6 +189,8 @@ void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& positionsF
 			continue;
 		}
 		proc->MoveAbsolute( QPoint(x,y) );
+		proc->resize(width, height);
+		proc->ConfigurationUpdated(true);
 	}
 }
 

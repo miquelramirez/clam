@@ -51,9 +51,12 @@ class Qt_OutPortPresentation;
 class Qt_InControlPresentation;
 class Qt_OutControlPresentation;
 class Qt_ProcessingPresentation;
+class MainWindow;
 
 class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 {
+	MainWindow * mMainWindow;
+	
 	typedef std::list<Qt_ProcessingPresentation * > QtProcessingList;
 	typedef std::list<Qt_ConnectionPresentation * > QtConnectionList;
 	
@@ -102,7 +105,7 @@ class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 	QtProcessingList mSelectedProcessingPresentations;
 	QtConnectionList mSelectedConnectionPresentations;
 public:
-	Qt_NetworkPresentation( QWidget *parent = 0, const char *name = 0);
+	Qt_NetworkPresentation( MainWindow *parent = 0, const char *name = 0);
 	void Show();
 	void Hide();
 

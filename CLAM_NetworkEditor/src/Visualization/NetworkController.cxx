@@ -265,8 +265,7 @@ void NetworkController::LoadNetworkFrom( const std::string & xmlfile)
 
 	BindTo( *mObserved );
 
-	std::string positionsFile = BaseName(xmlfile)+".pos";
-	mPresentation->SetUpWidgetsPositions(positionsFile);
+	mPresentation->SetUpWidgetsPositions( BaseName(xmlfile) );
 
 	Publish();
 }
@@ -275,7 +274,7 @@ void NetworkController::SaveNetworkTo( const std::string & xmlfile)
 {
 	CLAM::XMLStorage::Dump( *mObserved, "network", xmlfile );
 	
-	mPresentation->SaveWidgetsPositions( BaseName(xmlfile)+".pos" );
+	mPresentation->SaveWidgetsPositions( BaseName(xmlfile) );
 }
 
 void NetworkController::RemoveProcessing(const std::string & name )

@@ -48,7 +48,7 @@ namespace NetworkGUI
 	{
 		setCentralWidget( &mNetworkPresentation );
 		setCaption( "CLAM Network Editor" );
-		resize( 800, 600 );
+		resize(800,600 );
 	
 		SlotSendMessageToStatus.Wrap( this, &MainWindow::SendMessageToStatus );
 		mNetworkPresentation.SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
