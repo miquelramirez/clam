@@ -149,17 +149,20 @@ void MyOutAudioApplication::AudioMain(void)
 {
 	try
 	{
-		unsigned int buffersize = 4096;
-
-		AudioManager audioManager(48000,4096);
+		unsigned int buffersize = 1024;
+		int samplerate = 44100;
+		
+		AudioManager audioManager(samplerate,2048);
 
 		AudioIOConfig outLCfg;
 		outLCfg.SetName("left out");
 		outLCfg.SetChannelID(0);
+		outLCfg.SetSampleRate(samplerate);
 
 		AudioIOConfig outRCfg;
 		outRCfg.SetName("right out");
 		outRCfg.SetChannelID(1);
+		outRCfg.SetSampleRate(samplerate);
 
 		Audio bufOsc;
 		bufOsc.SetSize(buffersize);
