@@ -37,7 +37,8 @@ class GLArrayRenderer
 {
 	struct tCullingData
 	{
-		unsigned left, right, pixel_width;
+		unsigned left, right, pixel_width, pixel_height;
+		float leftX, rightX, topY, bottomY;
 	};
 public:
 
