@@ -91,16 +91,26 @@ namespace CLAM
 	template <typename PortDataType, typename PortType>
 	PortMonitor<PortDataType,PortType>::PortMonitor() 
 		: mInput("Input", this)
+		, mWhichDataToRead(0)
 	{
 		PortMonitorConfig cfg;
 		Configure(cfg);
+		mData[0].AddAll();
+		mData[0].UpdateData();
+		mData[1].AddAll();
+		mData[1].UpdateData();
 	}
 
 	template <typename PortDataType, typename PortType>
 	PortMonitor<PortDataType,PortType>::PortMonitor(const PortMonitorConfig& cfg)
 		: mInput("Input", this)
+		, mWhichDataToRead(0)
 	{
 		Configure(cfg);
+		mData[0].AddAll();
+		mData[0].UpdateData();
+		mData[1].AddAll();
+		mData[1].UpdateData();
 	}
 
 	template <typename PortDataType, typename PortType>
