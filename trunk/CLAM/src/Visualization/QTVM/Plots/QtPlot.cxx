@@ -39,6 +39,16 @@ namespace CLAM
 			QtPlotter::Remove(this);
 			e->accept();
 		}
+
+	        void QtPlot::KeyPressed(QKeyEvent* e)
+		{
+		    keyPressEvent(e);
+		}
+
+	        void QtPlot::KeyReleased(QKeyEvent* e)
+		{
+		    keyReleaseEvent(e);
+		}
 	}
 }
 
