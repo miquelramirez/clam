@@ -466,7 +466,7 @@ namespace CLAM {
 		 * @return Name of the processing object, after appending to it
 		 *	the full path of the compound objects containing this one.
 		 */
-		std::string GetFullName() const;
+		virtual std::string GetFullName() const;
 
 		// Input Output related methods.
 		// They are not mandatory; a default implementation is given.

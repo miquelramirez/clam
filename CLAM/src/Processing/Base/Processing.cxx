@@ -19,6 +19,7 @@
  *
  */
 
+
 #include "Processing.hxx"
 #include "ProcessingComposite.hxx"
 #include "TopLevelProcessing.hxx"
@@ -59,8 +60,10 @@ namespace CLAM {
 		if (name_change_requested)
 			mName = config_name;
 
+
 		if (!mpParent) {
-			mpParent = TopLevelProcessing::GetInstance();
+			mpParent =  &(TopLevelProcessing::GetInstance());
+
 			if (mName == "")
 				mName = mpParent->InsertAndGiveName(*this);
 			else
@@ -139,8 +142,9 @@ namespace CLAM {
 
 	Processing::~Processing()
 	{
-		if (mpParent)
+		if ( mpParent )
 			mpParent->Remove(*this);
+		
 	}
 
 	void Processing::Start(void) throw(ErrProcessingObj)
@@ -244,7 +248,7 @@ namespace CLAM {
 		ProcessingComposite *p;
 
 		if (o==0)
-			p = TopLevelProcessing::GetInstance();
+			p = &(TopLevelProcessing::GetInstance());
 		else
 			p = dynamic_cast<ProcessingComposite*>(o);
 

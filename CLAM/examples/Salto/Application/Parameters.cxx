@@ -73,6 +73,9 @@ void Parameters::DefaultInit()
   SetUseRandomLoop(false);
   SetBreathOnlySound(false);
   SetTransitionInterval(0);
+  SetPlayNote(false);
+  SetPlayNoteOn(false);
+  SetPlayNoteOff(false);
 
  
 // Attacks
@@ -93,7 +96,6 @@ void Parameters::DefaultInit()
 //----------------------------------------------------------------------------//
 
 }
-
 
 void Parameters::SetupSaxoDB()
 {

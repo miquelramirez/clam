@@ -174,6 +174,7 @@ void MyOutAudioApplication::AudioMain(void)
 		Oscillator testtone(testtoneCfg);
 
 		audioManager.Start();
+
 		TopLevelProcessing::GetInstance()->Start();
 
 		do

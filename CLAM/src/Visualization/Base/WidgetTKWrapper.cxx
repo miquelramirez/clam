@@ -33,26 +33,13 @@ Enum::tEnumValue EWidgetTK::sEnumValues[] =
 
 Enum::tValue EWidgetTK::sDefault = EWidgetTK::FLTK;
 
-WidgetTKWrapper* WidgetTKWrapper::mpWrapper = NULL;
-
-
-WidgetTKWrapper* WidgetTKWrapper::GetWrapperFor( std::string toolkit )
+WidgetTKWrapper& WidgetTKWrapper::GetWrapperFor( std::string toolkit )
 {
 	EWidgetTK requestedTK( toolkit );
 
 	if ( requestedTK.GetValue() == EWidgetTK::FLTK )
 	{
-		if ( mpWrapper )
-			return mpWrapper;
-		else
 			return FLTKWrapper::GetInstance();
-	}
-	else if( requestedTK.GetValue() == EWidgetTK::Qt )
-	{
-		if ( mpWrapper )
-			return mpWrapper;
-		//		else
-		//	return QtWrapper::GetInstance();
 	}
 	else
 	{
@@ -60,5 +47,4 @@ WidgetTKWrapper* WidgetTKWrapper::GetWrapperFor( std::string toolkit )
 		      "about CLAM supported toolkits\n" ) );
 	}
 
-	return NULL;
 }

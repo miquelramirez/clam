@@ -849,7 +849,6 @@ UserInterface::UserInterface() {
   Fl_Window* w;
   { Fl_Window* o = mWindow = new Fl_Window(872, 548, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
-    o->color(50);
     o->user_data((void*)(this));
     { Fl_Output* o = mConfigurationText = new Fl_Output(105, 25, 400, 20, "Configuration File");
       o->box(FL_THIN_DOWN_BOX);

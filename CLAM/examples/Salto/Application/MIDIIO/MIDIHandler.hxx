@@ -63,6 +63,23 @@ namespace CLAM
 		Controller	mControl;
 	public:
 		bool Do(void){ return mControl.Do(); }
+
+		bool DoNote(void)
+		{ 
+			if( Params().GetPlayNoteOn() ) // NoteOn
+			{
+				mControl.EnqueueControl( eStateControl ,(TControlData( eAttack )));
+				Params().SetPlayNoteOn( false );
+			}
+			else if( Params().GetPlayNoteOff() ) // NoteOff
+			{
+				Params().SetPlayNote( false );
+				Params().SetPlayNoteOff( false );
+				mControl.EnqueueControl( eStateControl ,(TControlData( eRelease )));
+			}
+			return mControl.Do();
+		}
+
 	protected:
 		void AdoptChildren();
 		bool ConfigureChildren();

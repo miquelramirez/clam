@@ -47,7 +47,7 @@ protected: // methods
 
 private:
 
-	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0& method );
+	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0 method );
 
 protected:
 	int mThreadState;

@@ -17,7 +17,7 @@ namespace CLAM
 
   class Parameters: public ProcessingData
   {
-    DYNAMIC_TYPE_USING_INTERFACE  (Parameters, 31, ProcessingData);
+     DYNAMIC_TYPE_USING_INTERFACE  (Parameters, 34, ProcessingData);
 
   public:
     DYN_ATTRIBUTE (0, public,bool,Play);
@@ -55,6 +55,9 @@ namespace CLAM
 // Salto SDIF Control Data Methods
     DYN_ATTRIBUTE (29,public, bool,UseMelody);
 	DYN_ATTRIBUTE (30,public, bool,WriteToFile);
+	DYN_ATTRIBUTE (31,public, bool,PlayNote);
+	DYN_ATTRIBUTE (32,public, bool,PlayNoteOn);
+	DYN_ATTRIBUTE (33,public, bool,PlayNoteOff);
 
 
 /////////////////////////// THESE CAN BE DINAMIC BUT CHECK FIRST ////////////////////////

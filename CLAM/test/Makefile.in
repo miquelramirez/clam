@@ -5,7 +5,6 @@ PROGRAMS = \
            TestPoint \
            TestPolar \
            BPFTest \
-           QtSIViewExample\
            ListTest \
            TestAudioFileIO \
            TestXMLAdapters \
@@ -16,9 +15,6 @@ PROGRAMS = \
            AudioPlayer \
            TestPOComposite \
            SegmentTest \
-           TestMMAudioPresentation \
-           TestMIDILinker \
-           TestFLTK_GUI_MIDILinker \
 
 TESTS = \
         TestConfig \

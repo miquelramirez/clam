@@ -216,8 +216,8 @@ private:
 	double mEventSample;
 
 	/* runtime */
-	Frame*	           mpCurrSpectralFrameBase;
-	Frame*	           mpCurrSpectralFrameResidual;	// for TESTING
+	Frame*             mpCurrSpectralFrameBase;
+	Frame*             mpCurrSpectralFrameResidual;	// for TESTING
 	SpectralPeakArray* mpCurrPeakArrayTarget;
 	Frame*             mpTransitionFrameBase;
 	Frame*             mpTransitionFrameTarget;
@@ -270,7 +270,7 @@ private:
 	SALTO::AttackResidualSynthesis		mAttackResSynth;
 	SALTO::StationaryResidualSynthesis  mStatResSyhthesis;
 	InterpolatingSynthesis				mInterpol;
-		
+
 	/* pointer to other classes*/
 	Parameters	        *mpParams;
 

@@ -50,12 +50,16 @@ namespace SALTO
 
  void CSaltoEditor::sPlay(Fl_Button* pButton, CSaltoEditor* pThis)
 {
-	if(!pThis->mpParams->GetPlay()) // init once on play
+	if(!pThis->mpParams->GetPlayNote()) // init once on play
 	{
 		pThis->mpParams->SetAttackTimbreLevel(105);
 		pThis->mpParams->SetPitchModFactor(1.0);
+		pThis->mpParams->SetPlayNoteOn(true);
 	}
-	pThis->mpParams->SetPlay(bool(pButton->value()));
+	else
+		pThis->mpParams->SetPlayNoteOff( !bool(pButton->value()));
+
+	pThis->mpParams->SetPlayNote(true);
 }
 	
  void CSaltoEditor::sExit(Fl_Button* pButton, CSaltoEditor* pThis)

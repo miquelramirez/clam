@@ -5,6 +5,7 @@
 #include "FLTKConfigurator.hxx"
 #include "DebugSnapshots.hxx"
 #include "AudioSnapshot.hxx"
+#include "CBL.hxx"
 
 using namespace CLAM;
 using namespace CLAMGUI;
@@ -13,9 +14,18 @@ void UserInterface::EditConfiguration(void)
 {
 	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
 	configurator->SetConfig(mAnalysisSynthesisExample->mGlobalConfig);
+	configurator->SetApplyCallback(makeMemberFunctor0((*this), UserInterface, Update ));
 	configurator->show();
-	Fl::run();
 }
+
+
+
+void UserInterface::Update()
+{
+	mAnalysisSynthesisExample->InitConfigs();
+	LoadSound();
+}
+
 
 void UserInterface::LoadConfiguration(void)
 {
@@ -25,35 +35,50 @@ void UserInterface::LoadConfiguration(void)
 	if ( str )
 	{
 		mConfigurationText->value(str);
-		
 		std::string inputXMLFileName(str);
-		
+
 		mAnalysisSynthesisExample->LoadConfig(inputXMLFileName);
-		
-		if (mAnalysisSynthesisExample->mHaveConfig)
-		{	
-			mAnalysisSynthesisExample->LoadInputSound();
-			if (mAnalysisSynthesisExample->mHaveAudioIn)
-			{
-				mAnalyze->activate();
-				mDisplayInSM->activate();
-				mDisplayInSound->activate();
-				mPlayInputSound->activate();
-			}
-			else 
-				mAnalysisSynthesisExample->mHaveConfig=false;
-			for(int i=0;i<4;i++){
-				if(mAttachedPresentations[i]!=NULL){
-					if( mAttachedPresentations[i]->GetWindow()->shown() ) 
-						mAttachedPresentations[i]->GetWindow()->hide();
-				}
-			}
-		}
-		
+		LoadSound();	
+	
 		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
 			mSynthesize->activate();
 		Fl::redraw();
 	}		
+}
+
+void UserInterface::LoadSound(void)
+{
+	if (mAnalysisSynthesisExample->mHaveConfig)
+	{	
+		mAnalysisSynthesisExample->LoadInputSound();
+		if (mAnalysisSynthesisExample->mHaveAudioIn)
+		{
+			mAnalyze->activate();
+			mDisplayInSM->activate();
+			mDisplayInSound->activate();
+			mPlayInputSound->activate();
+		}
+		else
+		{
+			mAnalyze->deactivate();
+			mDisplayInSM->deactivate();
+			mDisplayInSound->deactivate();
+			mPlayInputSound->deactivate();
+			mAnalysisSynthesisExample->mHaveConfig=false;
+		}
+		for(int i=0;i<4;i++){
+			if(mAttachedPresentations[i]!=NULL){
+				if( mAttachedPresentations[i]->GetWindow()->shown() ) 
+					mSmartTile->close(mAttachedPresentations[i]->GetWindow());
+					mAttachedPresentations[i]->GetWindow()->hide();
+			}
+		}
+		mSmartTile->equalize();
+
+		mSynthesize->deactivate();
+		mOutputSM->deactivate();
+	}
+	Fl::redraw();
 }
 
 void UserInterface::StoreConfiguration(void)
@@ -146,10 +171,14 @@ void UserInterface::DisplayInputSound(void)
 		//MRJ: Don't forget to always refresh associated views!
 		mAttachedViews[0]->Refresh();
 		if( mAttachedPresentations[0]->GetWindow()->shown() ) {
+			mSmartTile->close(mAttachedPresentations[0]->GetWindow());
 			mAttachedPresentations[0]->GetWindow()->hide();
+			mSmartTile->equalize();
 		}
 		else {
+			mSmartTile->add(mAttachedPresentations[0]->GetWindow());
 			mAttachedPresentations[0]->GetWindow()->show();
+			mSmartTile->equalize();
 		}
  	}
 	Fl::redraw();
@@ -181,10 +210,14 @@ void UserInterface::DisplayOutputSound(void)
 	else{
 		mAttachedViews[1]->Refresh();
 		if( mAttachedPresentations[1]->GetWindow()->shown() ) {
+			mSmartTile->close(mAttachedPresentations[1]->GetWindow());
 			mAttachedPresentations[1]->GetWindow()->hide();
+			mSmartTile->equalize();
 		}
 		else {
+			mSmartTile->add(mAttachedPresentations[1]->GetWindow());
 			mAttachedPresentations[1]->GetWindow()->show();
+			mSmartTile->equalize();
 		}
 	}
 	Fl::redraw();
@@ -198,10 +231,14 @@ void UserInterface::DisplayOutputSoundResidual(void)
 	else{
 		mAttachedViews[2]->Refresh();
 		if( mAttachedPresentations[2]->GetWindow()->shown() ) {
+			mSmartTile->close(mAttachedPresentations[2]->GetWindow());
 			mAttachedPresentations[2]->GetWindow()->hide();
+			mSmartTile->equalize();
 		}
 		else {
+			mSmartTile->add(mAttachedPresentations[2]->GetWindow());
 			mAttachedPresentations[2]->GetWindow()->show();
+			mSmartTile->equalize();
 		}
 	}
 	Fl::redraw();
@@ -215,10 +252,14 @@ void UserInterface::DisplayOutputSoundSinusoidal(void)
 	else{
 		mAttachedViews[3]->Refresh();
 		if( mAttachedPresentations[3]->GetWindow()->shown() ) {
+			mSmartTile->close(mAttachedPresentations[3]->GetWindow());
 			mAttachedPresentations[3]->GetWindow()->hide();
+			mSmartTile->equalize();
 		}
 		else {
+			mSmartTile->add(mAttachedPresentations[3]->GetWindow());
 			mAttachedPresentations[3]->GetWindow()->show();
+			mSmartTile->equalize();
 		}
 	}
 	Fl::redraw();
@@ -292,11 +333,10 @@ void UserInterface::Attach(int i, Audio* obj)
 	mAttachedPresentations[i]->GetWindow()->resizable();
 	
 	mSmartTile->add(mAttachedPresentations[i]->GetWindow());
-	mSmartTile->equalize();
 	mAttachedPresentations[i]->GetWindow()->show();
 	
 	mAttachedPresentations[i]->Show();
 	mAttachedViews[i]->Refresh();
+	mSmartTile->equalize();
+	Fl::redraw();
 }
-
-

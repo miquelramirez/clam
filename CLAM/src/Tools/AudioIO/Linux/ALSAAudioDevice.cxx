@@ -163,7 +163,6 @@ namespace CLAM {
 
 	void ALSAAudioDevice::Stop(void) throw(Err)
 	{
-
 		//printf("ALSAAudioDevice::Stop\n");
 		if (sndpcm) {
 			sndpcm->Stop();

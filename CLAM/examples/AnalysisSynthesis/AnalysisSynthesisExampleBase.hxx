@@ -211,7 +211,6 @@ namespace CLAM
 		/** Indicates whether there is a valid spectrum, needed for melody anlysis */
 		bool mHaveSpectrum;
 
-
 		CLAMGUI::Progress* mCurrentProgressIndicator;
 		CLAMGUI::WaitMessage* mCurrentWaitMessage;
 

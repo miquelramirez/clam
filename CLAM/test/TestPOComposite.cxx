@@ -281,19 +281,19 @@ namespace CLAMTest {
 
 	int POCompositeTest::TestTopLevel()
 	{
-		TopLevelProcessing *top = TopLevelProcessing::GetInstance();
+		TopLevelProcessing &top = TopLevelProcessing::GetInstance();
 		{
 			Leaf1 leaf1,leaf2,leaf3;
 			Leaf2 leaf4,leaf5,leaf6;
-			PrintPOComposite(*top);
+			PrintPOComposite(top);
 		}
-		PrintPOComposite(*top);
+		PrintPOComposite(top);
 		{
 			Leaf1 leaf1,leaf2,leaf3;
 			Leaf2 leaf4,leaf5,leaf6;
-			PrintPOComposite(*top);
+			PrintPOComposite(top);
 		}
-		PrintPOComposite(*top);
+		PrintPOComposite(top);
 
 		return 0;
 	}

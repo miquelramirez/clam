@@ -1314,7 +1314,6 @@ CSaltoEditor::StoreLoopValues(TIndex pos)
 void CSaltoEditor::LoadSDIFToEdit()
 {
   char *p;
-  int i=0;
   p = fl_file_chooser("Pick a SDIF file",0,0);  // open file chooser
   
 //  mpSaltoApp->SetSDIFToEdit(p);           // load SDIF for editing stat tmpl 
