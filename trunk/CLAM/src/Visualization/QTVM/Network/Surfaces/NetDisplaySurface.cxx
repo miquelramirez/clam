@@ -76,7 +76,7 @@ namespace CLAM
 
 		void NetDisplaySurface::refresh()
 		{
-			update();
+			updateGL();
 		}
 	}
 }

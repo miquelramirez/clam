@@ -23,6 +23,8 @@ namespace CLAM
 		: mInput("Audio Input", this)
 	{
 		Configure(cfg);
+
+		InitAudioPlot();
 	}
 
 	AudioPlotProcessing::~AudioPlotProcessing()
