@@ -45,7 +45,7 @@ namespace CLAM {
 		DYN_ATTRIBUTE (1, public, TSize, MaxPeaks);
 		/** Threshold of magnitude; SpectralPeaks will be located above this value*/
 		DYN_ATTRIBUTE (2, public, TSize, MagThreshold);
-		/** Number of bands*/
+		/** Number of bands (Spectrum size) */
 		DYN_ATTRIBUTE (3, public, TSize, NumBands);
 		/** Type of Magnitude interpolation between bins*/
 		DYN_ATTRIBUTE (4, public, EInterpolation, InterpolMag);
