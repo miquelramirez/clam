@@ -4,6 +4,22 @@
 #include <cmath>
 
 
+//optimized integer rounding routine for Windows
+inline int Round(float a) {
+#ifdef WIN32
+            int i;
+            __asm {
+                        fld   a
+                        fistp i
+            }
+            return i;
+#else
+            return rint(a); // just hope it's an intrinsic.
+#endif
+}
+
+
+
 #ifndef linux
 
 #ifndef MIN
