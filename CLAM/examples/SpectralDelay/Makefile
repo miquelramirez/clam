@@ -1,5 +1,4 @@
 PROGRAMS=\
-	SpectralDelay_Qt\
 	SpectralDelay_FLTK\
 	SpectralDelay_Console\
 
