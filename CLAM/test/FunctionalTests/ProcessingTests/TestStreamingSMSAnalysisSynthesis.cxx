@@ -207,7 +207,7 @@ private:
 
 		CLAM::MonoAudioFileReaderConfig audioInCfg;
 		CLAM::AudioFile file;
-		file.OpenExisting(GetTestDataDirectory("sine.wav"));
+		file.OpenExisting(GetTestDataDirectory("Elvis.wav"));
 		audioInCfg.SetSourceFile(file);
 
 		net.ConfigureProcessing("AudioIn", audioInCfg);
