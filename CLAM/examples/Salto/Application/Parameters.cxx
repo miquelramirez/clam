@@ -524,6 +524,11 @@ const char* Parameters::GetFilePathOfSegmentPos(TIndex pos)
 }
 
 
+
+
+
+} // end of namespace CLAM
+
 void InstrumentValues::Instantiate(int instr,char* dataFolder)
 {
 	_GetInstance(instr,dataFolder);
@@ -615,6 +620,3 @@ InstrumentValues& InstrumentValues::_GetInstance(int instr,char* dataFolder)
 	}
 	return instance;
 }
-
-
-} // end of namespace CLAM
