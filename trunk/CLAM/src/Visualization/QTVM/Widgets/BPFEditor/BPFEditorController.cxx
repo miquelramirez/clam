@@ -122,10 +122,10 @@ namespace CLAM
 			{
 			    if(mProcessingSelection)
 			    {
+				mProcessingSelection=false;
 				mCorners[1].SetX(x);
 				mCorners[1].SetY(y);
 				PushSettings();
-				mProcessingSelection=false;
 			    }
 			}
 			break;
