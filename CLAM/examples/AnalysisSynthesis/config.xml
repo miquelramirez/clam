@@ -1,16 +1,16 @@
+<!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
 <SMSAnalysisSynthesisConfig>
 	<Name/>
-	<InputSoundFile>c:\vln_gclra_mf_1_12.wav</InputSoundFile>
+	<InputSoundFile>1.wav</InputSoundFile>
 	<OutputSoundFile>/1_out.wav</OutputSoundFile>
-	<OutputAnalysisFile>c:/analysis.sdif</OutputAnalysisFile>
-	<InputAnalysisFile>c:/analysis.sdif</InputAnalysisFile>
-	<SamplingRate>44100</SamplingRate>
+	<OutputAnalysisFile>analysis.sdif</OutputAnalysisFile>
+	<InputAnalysisFile>analysis.sdif</InputAnalysisFile>
+	<SamplingRate>22050</SamplingRate>
 	<AnalysisWindowSize>513</AnalysisWindowSize>
 	<AnalysisHopSize>256</AnalysisHopSize>
 	<AnalysisWindowType>Hamming</AnalysisWindowType>
 	<ResAnalysisWindowSize>513</ResAnalysisWindowSize>
 	<ResAnalysisWindowType>BlackmanHarris92</ResAnalysisWindowType>
-	<!--ResAnalysisHopSize>-1</ResAnalysisHopSize-->
 	<AnalysisZeroPaddingFactor>0</AnalysisZeroPaddingFactor>
 	<AnalysisPeakDetectMagThreshold>-120</AnalysisPeakDetectMagThreshold>
 	<AnalysisMaxSines>50</AnalysisMaxSines>
