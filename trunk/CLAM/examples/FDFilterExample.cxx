@@ -49,7 +49,7 @@ int main()
 	myFilterGeneratorConfig.SetType(EFDFilterType(EFDFilterType::eLowPass));
 	myFilterGeneratorConfig.SetSpectralRange(22050);
 	myFilterGeneratorConfig.SetGain(1);
-	myFilterGeneratorConfig.SetLowCutoff(1000);
+	myFilterGeneratorConfig.SetLowCutOff(1000);
 	myFilterGeneratorConfig.SetStopBandSlope(3);
 
 	FDFilterGen myFilterGenerator(myFilterGeneratorConfig);
@@ -58,7 +58,7 @@ int main()
 
 	myFilterGenerator.Do(mySpec);
 
-	BPF_ &bpf = mySpec.GetMagBPF();
+	BPF &bpf = mySpec.GetMagBPF();
 	std::cout << bpf.Size() << " points BPF:" << std::endl;
 	for (int i=0; i<bpf.Size(); i++)
 		std::cout << "  " << bpf.GetXValue(i) << ", " << bpf.GetValueFromIndex(i) << std::endl;
