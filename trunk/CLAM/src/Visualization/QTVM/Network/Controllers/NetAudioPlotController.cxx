@@ -45,10 +45,9 @@ namespace CLAM
 			// TODO: Because we have exclusive right for
 			// to the data we could remove some of this copies
 
-			_cachedData = audio;
-			TSize audioSize = _cachedData.GetBuffer().Size();
+			TSize audioSize = audio.GetBuffer().Size();
 			SetnSamples(audioSize);
-			_dRenderer.SetDataPtr(_cachedData.GetBuffer().GetPtr(),audioSize,NormalMode);
+			_dRenderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize,NormalMode);
 			FullView();
 
 			_dRenderer.Render();
