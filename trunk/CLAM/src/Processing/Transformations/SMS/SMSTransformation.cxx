@@ -24,7 +24,7 @@
 namespace CLAM
 {
 	SMSTransformation::SMSTransformation()
-		: mAmountCtrl("Amount",this), mOnCtrl("On",this), 
+		: mAmountCtrl("Amount",this), mOnCtrl("On",this), mOutControl("Out Control", this),
 		mInput(0), mOutput(0), mUseTemporalBPF( false )
 	{
 		mCurrentInputFrame = 0;
@@ -32,7 +32,7 @@ namespace CLAM
 
 	SMSTransformation::SMSTransformation(const SMSTransformationConfig& c)
 		:mAmountCtrl("Amount",this),mOnCtrl("On",this),
-		mInput(0),mOutput(0), mUseTemporalBPF( false )
+		mInput(0),mOutput(0), mUseTemporalBPF( false ), mOutControl("Out Control", this)
 	{
 		mCurrentInputFrame = 0;
 		Configure(c);
@@ -43,12 +43,21 @@ namespace CLAM
 		CopyAsConcreteConfig(mConfig, c);
 		mUseTemporalBPF=false;
 		if(mConfig.HasAmount())
-			mAmountCtrl.DoControl(mConfig.GetAmount());
+		{
+			mAmountCtrl.DoControl(mConfig.GetAmount());								//<<<<<<
+			mOutControl.SendControl(mConfig.GetAmount());							//<<<<<<
+		}
 		else if(mConfig.HasBPFAmount()){
-			mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0));
-			mUseTemporalBPF=true;}
+			mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0)); 				//<<<<<<
+			mOutControl.SendControl(mConfig.GetBPFAmount().GetValue(0)); 			//<<<<<<
+			mUseTemporalBPF=true;
+		}
 		else
-			mAmountCtrl.DoControl(0);
+		{
+			mAmountCtrl.DoControl(0);												//<<<<<<
+			mOutControl.SendControl(0);												//<<<<<<
+		}
+
 		return true;
 	}	
 
@@ -57,6 +66,7 @@ namespace CLAM
 		if(mConfig.HasBPFAmount())
 		{
 			mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(pos));
+			mOutControl.SendControl(mConfig.GetBPFAmount().GetValue(pos));			//<<<<<<
 			return true;
 		}
 		else return false;

@@ -26,6 +26,7 @@
 #include "SMSTransformation.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
+#include "InControl.hxx"
 
 namespace CLAM{
 /*
@@ -48,20 +49,23 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
+		InControl mInControl;
+
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSFreqShift() : mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this)
+		SMSFreqShift() : mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this), mInControl("In Control", this)
 		{
+			ConnectControls( *this, "Out Control", *this, "In Control" );
 			Configure( SMSTransformationConfig() );
 		}
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
 		SMSFreqShift(const SMSTransformationConfig &c):
-			SMSTransformation(c),
-			mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this)
-
+			SMSTransformation(c), mIn("In SpectralPeaks", this), 
+			mOut("Out SpectralPeaks", this), mInControl("In Control", this)
 		{
+			ConnectControls( *this, "Out Control", *this, "In Control" );
 		}
 
 		/** Destructor of the class*/

@@ -51,7 +51,7 @@ namespace CLAM{
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSPitchShift():mIsHarmonic("Harmonic",this), mInPeaks("In SpectralPeaks", this), mOutPeaks("Out SpectralPeaks", this), mInSpectrum("In Spectrum", this), mOutSpectrum("Out Spectrum", this)
+		SMSPitchShift(): mInPeaks("In SpectralPeaks", this), mOutPeaks("Out SpectralPeaks", this), mInSpectrum("In Spectrum", this), mOutSpectrum("Out Spectrum", this), mIsHarmonic("Harmonic",this)
 		{
 			Configure( SMSTransformationConfig() );
 			mSpectralRange=22050;//default
@@ -83,12 +83,12 @@ namespace CLAM{
 		}
 
 	private:
+		InControl mIsHarmonic;
 		SpectralEnvelopeExtract mPO_SpectralEnvelopeExtract;
 		SpectralEnvelopeApply mPO_SpectralEnvelopeApply;
 		FDCombFilter mPO_FDCombFilter;
 		Spectrum mSpectralEnvelope;
 		TSize mSpectralRange;
-		InControlTmpl<SMSPitchShift> mIsHarmonic;
 	
 	};		
 };//namespace CLAM

@@ -66,8 +66,11 @@ bool SMSGenderChange::Do(const Frame& in, Frame& out)
 
 		
 		
-		mPO_SpectralShapeShift.mAmountCtrl.DoControl(sss);
-		mPO_PitchShift.mAmountCtrl.DoControl(pitchTransposition);
+		//mPO_SpectralShapeShift.mAmountCtrl.DoControl(sss);
+		mPO_SpectralShapeShift.GetInControl("Amount").DoControl(sss);
+
+		//mPO_PitchShift.mAmountCtrl.DoControl(pitchTransposition);
+		mPO_PitchShift.GetInControl("Amount").DoControl(pitchTransposition);
 
 		mPO_SpectralShapeShift.Do(in.GetSpectralPeakArray(),tmpFrame.GetSpectralPeakArray());
 		mPO_PitchShift.Do(tmpFrame,out);
