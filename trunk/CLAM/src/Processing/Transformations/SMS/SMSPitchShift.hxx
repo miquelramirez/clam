@@ -105,6 +105,7 @@ namespace CLAM{
 			mOutFundamental.Produce();
 			mInSpectrum.Consume();
 			mOutSpectrum.Produce();
+
 			return result;
 		}
 
