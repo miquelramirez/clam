@@ -11,14 +11,12 @@
 #ifdef WIN32
 #include <portmidi.h>
 #endif
-
 using namespace CLAM;
 
 V2MFacade::V2MFacade(Slotv0& slot0,Slotv1<int>& slot1,Slotv1<DataArray>& slot2) 
                      : mStopSlot(slot0),mDynamicReceptor(slot2)
 {
 	mRequestUpdateProgressBar.Connect(slot1);
-	
 	mFrame.AddAudioFrame();
 	mFrame.UpdateData();
 
@@ -30,9 +28,7 @@ V2MFacade::V2MFacade(Slotv0& slot0,Slotv1<int>& slot1,Slotv1<DataArray>& slot2)
 	fundSegPlayer = NULL;
 	recorder = NULL;
 	midiPlayer = NULL;
-
 	_needUpdatedMelody = false;
-
 	InitMIDI();
 	_midi_device = "default";
 	_midi_program = 0;
@@ -68,8 +64,8 @@ void V2MFacade::Play(pMode mode)
 								                              mSegment.GetAudio().GetSampleRate(),
 															  mSegment.GetAudio().GetSize(),
 															  mStopSlot,mDynamicReceptor); 
-
 						break;
+
 		case pmMIDI:
 						if(!NeedUpdatedMelody())
 							midiPlayer = new MIDIMelodyPlayer(GetMIDIMelody(),
@@ -97,21 +93,18 @@ void V2MFacade::Stop()
 		delete audioPlayer;
 		audioPlayer = NULL;
 	}
-
 	if(fundPlayer)
 	{
 		fundPlayer->Stop();
 		delete fundPlayer;
 		fundPlayer = NULL;
 	}
-
 	if(fundSegPlayer)
 	{
 		fundSegPlayer->Stop();
 		delete fundSegPlayer;
 		fundSegPlayer = NULL;
 	}
-
 	if(midiPlayer)
 	{
 		midiPlayer->Stop();
@@ -205,7 +198,6 @@ void V2MFacade::StoreMelody(const std::string& filename)
 {
 	melodyAnalyzer.StoreMelody(filename);
 }
-
 void V2MFacade::StoreMIDIMelody(const std::string& filename)
 {
 	melodyAnalyzer.StoreMIDIMelody(filename);
@@ -248,6 +240,8 @@ const std::list<DisplayData> V2MFacade::GetDisplayData(bool audio)
 		SegmentDescriptors descriptors = analyzer.GetDescriptors();
 		TData energy;
 		DataArray values;
+		values.Resize(nSamples);  
+		values.SetSize(nSamples);  
 		TData max = 0.0;
 		displayData.top = 0.0;
 		for(i=0;i < mSegment.GetnFrames();i++)
@@ -255,33 +249,28 @@ const std::list<DisplayData> V2MFacade::GetDisplayData(bool audio)
 			energy = descriptors.GetFrameD(i).GetSpectrumD().GetEnergy();
 			for(j = 0; j < step;j++)
 			{
-				values.AddElem(energy);
+				values[j]=energy;
 			} 
 			max = (max < energy) ? energy : max;
 		}
 		displayData.data = values;
-		displayData.data.Resize(nSamples);  // same size
-		displayData.data.SetSize(nSamples);
 		displayData.right = nSamples;
 		displayData.bottom = 0.0;
 		displayData.top = max*1.5;
 		data.push_back(displayData);
 		// fundamental
 		TData freq = 0.0;
-		values.SetSize(0);
 		max = 0.0;
 		for(i=0;i < nFrames;i++)
 		{
 			freq = mSegment.GetFrame(i).GetFundamental().GetFreq(0);
 			for(j = 0; j < step;j++)
 			{
-				values.AddElem(freq);
+				values[j]=freq;
 			}
 			max = (max < freq) ? freq : max;
 		}
 		displayData.data = values;
-		displayData.data.Resize(nSamples); // same size
-		displayData.data.SetSize(nSamples);
 		displayData.top = max*1.2;
 		data.push_back(displayData);	
 	}
@@ -293,45 +282,37 @@ Melody V2MFacade::GetMelody()
 {
 	return melodyAnalyzer.GetMelody();
 }
-
 void V2MFacade::SetMelody(const Melody& melody)
 {
 	melodyAnalyzer.SetMelody(melody);
 	_needUpdatedMelody = false;
 }
-
 MIDIMelody V2MFacade::GetMIDIMelody()
 {
 	return melodyAnalyzer.GetMIDIMelody();
 }
-
 TSize V2MFacade::GetAnalysisSteps()
 {
 	return mSegment.GetAudio().GetSize();
 }
-
 bool V2MFacade::NeedUpdatedMelody()
 {
 	return _needUpdatedMelody;
 }
-
 void V2MFacade::NeedUpdatedMelody(bool up)
 {
 	_needUpdatedMelody = up;
 }
-
 void V2MFacade::SetMelodyTmp(const Melody& melodyTmp)
 {
 	_melodyTmp = melodyTmp;
 	_needUpdatedMelody = true;
 }
-
 void V2MFacade::SetMIDIMelodyTmp(const MIDIMelody& midiMelodyTmp)
 {
 	_midiMelodyTmp = midiMelodyTmp;
 	_needUpdatedMelody = true;
 }
-
 void V2MFacade::GetMIDIDevices()
 {
 	MIDIManager manager;	
@@ -355,22 +336,18 @@ void V2MFacade::GetMIDIDevices()
 #endif
 	}
 }
-
 const std::list<std::string> V2MFacade::GetMIDIDeviceNames()
 {
 	return _midi_device_list;	
 }
-
 void V2MFacade::SetMIDIDevice(int index)
 {
 	_midi_device = midi_dev[index];
 }
-
 void V2MFacade::SetMIDIProgram(int index)
 {
 	_midi_program = available_midi_programs[index];
 }
-
 void V2MFacade::GetMIDIPrograms()
 {
 	available_midi_programs[0] =  0; // Piano
@@ -381,13 +358,11 @@ void V2MFacade::GetMIDIPrograms()
 	available_midi_programs[5] = 68; // Oboe
 	available_midi_programs[6] = 75; // Flute
 }
-
 void V2MFacade::InitMIDI()
 {
 	GetMIDIDevices();
 	GetMIDIPrograms();
 }
-
 const std::list<std::string> V2MFacade::GetAvailableMIDIPrograms()
 {
 	std::list<std::string> progList;

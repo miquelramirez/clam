@@ -9,21 +9,19 @@
 #include "SegmentatorConfig.hxx"
 #include "XMLStorage.hxx"
 
-using namespace CLAM;
+using namespace CLAM; 
 
 MelodyAnalyzer::MelodyAnalyzer()
 {
 	Init();
 }    
 
-MelodyAnalyzer::~MelodyAnalyzer(){}
+MelodyAnalyzer::~MelodyAnalyzer(){} 
 
 void MelodyAnalyzer::Init()
 {
 	// init table of frequencies
-	for(int i=0;i < 85;i++) frequencies[i]=TData(32.703*pow(2.0,double(i/12.0)));
-
-	// init pairs (pitch,octave)
+	for(int i=0;i < 85;i++) frequencies[i]=TData(32.703*pow(2.0,double(i/12.0))); 	// init pairs (pitch,octave)
 	pitch.Resize(85);
 	pitch.SetSize(85);
 	int k,l;
@@ -49,16 +47,12 @@ void MelodyAnalyzer::AnalyzeMelody(const Segment& segment,
 	SegmentDescriptors mSegmentDescriptors(descriptors);
 	DataArray eData = GetEnergy(segment,descriptors);
 
-	CLAM_ACTIVATE_FAST_ROUNDING;
-
-	TData ePercentil, eThr, fPercentil, fThr, minLength;
-
+	CLAM_ACTIVATE_FAST_ROUNDING; 	TData ePercentil, eThr, fPercentil, fThr, minLength;
 	ePercentil = 50;
 	eThr = TData(0.0032);
 	fPercentil = 3;
 	fThr = 0;
 	minLength = 2;
-
 	int i;
 
 	//Configuring Segmentator to work only with fundamental and energy
@@ -74,11 +68,9 @@ void MelodyAnalyzer::AnalyzeMelody(const Segment& segment,
 	sgConfig.AddDescParams(tmpParams);
 	sgConfig.SetMinSegmentLength(int(minLength));
 	Segmentator segmentator(sgConfig);
-	segmentator.Start();
-
-	//Segmentate
+	segmentator.Start(); 	//Segmentate
 	segmentator.Do(mSegment,mSegmentDescriptors);
-		
+
 	List<Note> array;
 	List<MIDINote> midiNotes;
 	Array<TData> fund;
@@ -104,23 +96,17 @@ void MelodyAnalyzer::AnalyzeMelody(const Segment& segment,
 		mSegment.GetChildren()[i].SetHoldsData(false);
 		MediaTime time;
 		time.SetBegin(mSegment.GetChildren()[i].GetBeginTime());
-		time.SetEnd(mSegment.GetChildren()[i].GetEndTime());
-		
-		Note myNote;
+		time.SetEnd(mSegment.GetChildren()[i].GetEndTime()); 		Note myNote;
 		MIDINote midiNote;
 		myNote.AddPitchNote();
 		myNote.UpdateData();
-		int veloc = 0;
-
-		// Compute Fundamental frequency mean
+		int veloc = 0; 		// Compute Fundamental frequency mean
 		TIndex b=Round(2*mSegment.GetChildren()[i].GetBeginTime()*mSegment.GetSamplingRate()/wSize);
 		TIndex e;
 		if(mSegment.GetChildren()[i].GetEndTime() < mSegment.GetEndTime())
 			e=Round(2*mSegment.GetChildren()[i].GetEndTime()*mSegment.GetSamplingRate()/wSize);	
 		else
-			e=Round(2*mSegment.GetEndTime()*mSegment.GetSamplingRate()/wSize);	
-
-		int j;
+			e=Round(2*mSegment.GetEndTime()*mSegment.GetSamplingRate()/wSize);	 		int j;
 		// Compute mean
 		int count=0;
 		TData offsetTh=10;
@@ -180,7 +166,7 @@ void MelodyAnalyzer::AnalyzeMelody(const Segment& segment,
 			ff/=number;
 		else ff=0;
 		noteEnergy/=(e-b);
-		
+
 		if(ff < 60) continue;
 		if(ff > 1000) continue;
 		if(noteEnergy==0) noteEnergy=lastEnergy;
@@ -192,21 +178,20 @@ void MelodyAnalyzer::AnalyzeMelody(const Segment& segment,
 			myNote.SetEnergy(noteEnergy);
 			myNote.SetTime(time);
 			myNote.SetPitchNote(pitch[GetPitchIndex(ff)]);
-		
 			midiNote.SetKey(myNote.GetNoteNumber());
 			veloc = GetVelocity(myNote.GetVelocity());
 			midiNote.SetVelocity(veloc);
 			midiNote.SetTime(myNote.GetTime());
 
 			array.AddElem(myNote);
-			midiNotes.AddElem(midiNote);	
+			midiNotes.AddElem(midiNote);
 		}
 	}
-	
+
 	melody.SetNoteArray(array);
 	melody.SetNumberOfNotes(array.Size());
 	midiMelody.SetNoteArray(midiNotes);
-	midiMelody.SetNumberOfNotes(midiNotes.Size());
+	midiMelody.SetNumberOfNotes(midiNotes.Size()); 	
 
 	CLAM_DEACTIVATE_FAST_ROUNDING;
 }
@@ -224,12 +209,12 @@ int MelodyAnalyzer::GetPitchIndex(TData ff)
 		}
 	}
 	return n;
-}
+} 
 
 Melody MelodyAnalyzer::GetMelody()
 {
 	return melody;
-}
+} 
 
 void MelodyAnalyzer::SetMelody(const Melody& m)
 {
@@ -246,30 +231,26 @@ void MelodyAnalyzer::UpdateMidi()
 {
 	List<MIDINote> midiList;
 	MIDINote midi_note;
-	int veloc = 0;
-	for(int i = 0;i < melody.GetNoteArray().Size();i++)
+	int veloc = 0; 	for(int i = 0;i < melody.GetNoteArray().Size();i++)
 	{
 		midi_note.SetKey(melody.GetNoteArray()[i].GetNoteNumber());
 		veloc = GetVelocity(melody.GetNoteArray()[i].GetVelocity());
 		midi_note.SetVelocity(veloc);
 		midi_note.SetTime(melody.GetNoteArray()[i].GetTime());
 		midiList.AddElem(midi_note);
-	}
-	midiMelody.SetNoteArray(midiList);
+	} 	midiMelody.SetNoteArray(midiList);
 	midiMelody.SetNumberOfNotes(midiList.Size());
 }
 
 void MelodyAnalyzer::StoreMelody(const std::string& filename)
 {
-	XMLStorage x;
-	x.UseIndentation(true);
+	XMLStorage x; 	x.UseIndentation(true);
 	x.Dump(melody,"Analyzed_Melody",filename);
 }
 
 void MelodyAnalyzer::StoreMIDIMelody(const std::string& filename)
 {
-	XMLStorage x;
-	x.UseIndentation(true);
+	XMLStorage x; 	x.UseIndentation(true);
 	x.Dump(midiMelody,"Analyzed_MIDIMelody",filename);
 }
 
@@ -283,20 +264,26 @@ DataArray MelodyAnalyzer::GetEnergy(const Segment& segment,
 {
 	Segment seg(segment);
 	SegmentDescriptors desc(descriptors);
+
 	int nFrames = seg.GetnFrames();
 	TSize nSamples = seg.GetAudio().GetSize();
 	TSize step = nSamples/nFrames;
+	
 	// energy
 	TData energy;
 	DataArray values;
+	values.Resize(nSamples);
+	values.SetSize(nSamples);
+	int k=0;
 	for(int i=0;i < nFrames;i++)
 	{
 		energy = desc.GetFrameD(i).GetSpectrumD().GetEnergy();
 		for(int j = 0; j < step;j++)
 		{
-			values.AddElem(energy);
-		} 
+			values[k++]=energy;
+		}
 	}
+
 	return values;
 }
 
@@ -310,6 +297,7 @@ bool MelodyAnalyzer::IsValid(const DataArray& energy,
 	bool ok = (t.GetBegin() > 0.07 && t.GetEnd() <= dur);
 	if(!ok) return false;
 	int bucket = int((t.GetBegin()+((t.GetEnd()-t.GetBegin())/2.0))*sr);
+
 	return (data[bucket] > 0.007);
 }
 

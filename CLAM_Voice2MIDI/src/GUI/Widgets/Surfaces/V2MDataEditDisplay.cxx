@@ -18,12 +18,12 @@ V2MDataEditDisplay::~V2MDataEditDisplay(){}
 
 void V2MDataEditDisplay::SetPoints(const Array<Point>& points)
 {
-	_points.SetSize(0);
-	availablePoint.SetSize(0);
-	for(int i = 0;i < points.Size();i++)
+	_points = points;
+	availablePoint.Resize(_points.Size());
+	availablePoint.SetSize(_points.Size());
+	for(int i = 0;i < _points.Size();i++)
 	{
-		_points.AddElem(points[i]);   // add point
-		availablePoint.AddElem(true); // the point is available
+		availablePoint[i]=true; // the point is available
 	}
 }
 

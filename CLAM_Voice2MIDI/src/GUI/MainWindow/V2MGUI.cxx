@@ -227,10 +227,11 @@ void V2MGUI::analyze_melody()
 {
     v2mFacade->AnalyzeMelody();
 	if(v2mFacade->GetMelody().GetNumberOfNotes() > 0)
-	{
+	{	
 		segmentationEditor->SetData(v2mFacade->GetMelody(),
 			                        analysisDisplay->GetAnalysisData(),
 									true);
+
 		pianoRoll->SetData(v2mFacade->GetMelody(),
 			               v2mFacade->GetMIDIMelody(),
 						   analysisDisplay->GetAnalysisData(),
