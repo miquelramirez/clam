@@ -408,7 +408,7 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLA
 {	
 	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
 	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-	value.SetLocation( mInput->text().latin1());
+	value.OpenExisting( mInput->text().latin1());
 }
 
 } // namespace NetworkGUI
