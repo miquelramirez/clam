@@ -234,6 +234,12 @@ namespace CLAM {
 		 */
 		bool AddChainee(const std::string& type)
 		{
+			if (es smsshift)
+				SMSTransformation * wrapper = new ...;
+				smsshift = GetInstance ..
+				wrapper.wrapp(smsshift)
+				Insert(wrapper)
+			
 			Insert( *( ProcessingFactory::GetInstance().Create( type ) ) );
 						
 			return true;
