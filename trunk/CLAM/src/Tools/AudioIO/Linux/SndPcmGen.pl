@@ -104,9 +104,17 @@ while (<LAT>)
 		s/.*\*max.*//;
 		s/exit\(.*\)/return -1;/;
 		s/printf/cat_error/;
-		s/err != rate/abs(err-rate) > 2/;
-		
+		if (m/snd_pcm_hw_params_set_rate_near/)
+		{
+			print CXX "setrate:\n";
+		}
 		print CXX $_;
+		if (m/err != rate/)
+		{
+			print CXX<<EOF;
+		if (abs(err-rate)<3) { rate = err; goto setrate; }
+EOF
+		}
 	}
 	if (m/^{/ && $inproto)
 	{
