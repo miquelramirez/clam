@@ -139,7 +139,7 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mSynthConfig.SetZeroPadding(synthZeroPaddingFactor);
 }
 
-void AnalysisSynthesisExampleBase::LoadConfig(const string& inputFileName)
+void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 {
 	WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
 	//Loading configuration
@@ -178,7 +178,7 @@ void AnalysisSynthesisExampleBase::LoadConfig(const string& inputFileName)
 	delete wm;
 }
 
-void AnalysisSynthesisExampleBase::LoadAnalysis(const string& inputFileName)
+void AnalysisSynthesisExampleBase::LoadAnalysis(const std::string& inputFileName)
 {
 	WaitMessage *wm = CreateWaitMessage("Loading analysis data xml file, please wait");
 	//Loading analysis
@@ -349,7 +349,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundSinusoidal(void)
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	outfilecfg.SetFilename(mGlobalConfig.GetOutputSoundFile());
-	string filename(
+	std::string filename(
 		mGlobalConfig.GetOutputSoundFile().
 			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
 	filename += "_sin.wav";
@@ -372,7 +372,7 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundResidual(void)
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	myAudioFileOut.Configure(outfilecfg);
 	
-	string filename(
+	std::string filename(
 		mGlobalConfig.GetOutputSoundFile().
 			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
 	filename += "_res.wav";

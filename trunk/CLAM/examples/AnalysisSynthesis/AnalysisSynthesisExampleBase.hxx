@@ -78,11 +78,11 @@ namespace CLAM
 		* global configuration */
 		void InitConfigs(void);
 		/** Load global configuration */
-		void LoadConfig(const string& inputFileName);
+		void LoadConfig(const std::string& inputFileName);
 		/** Load transformation score */
-		void LoadTransformationScore(const string& inputFileName);
+		void LoadTransformationScore(const std::string& inputFileName);
 		/** Load previously stored analysis xml data */
-		void LoadAnalysis(const string& inputFileName);
+		void LoadAnalysis(const std::string& inputFileName);
 		/** Store data resulting from analysis. Some unnecessary data
 		* is removed from memory */
 		void StoreAnalysis(void);
