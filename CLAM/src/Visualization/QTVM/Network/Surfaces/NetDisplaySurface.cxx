@@ -37,11 +37,18 @@ namespace CLAM
 		void NetDisplaySurface::startRendering()
 		{
 			_thread.Start();
+			_timer.start(40);
 		}
 
 		void NetDisplaySurface::stopRendering()
 		{
 			_thread.Stop();
+			_timer.stop();
+		}
+		void NetDisplaySurface::refresh()
+		{
+			updateGL();
+			_timer.start(40);
 		}
 
 		void NetDisplaySurface::resizeEvent(QResizeEvent* re)
