@@ -66,6 +66,9 @@
 #include "PeaksPlotProcessing.hxx"
 #include "FundPlotProcessing.hxx"
 
+//SMSTransformations
+#include "SMSFreqShift.hxx"
+
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SimpleOscillatorConfig> > 
@@ -173,6 +176,12 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FundPlotProcessingConfig> >
        regtFundPlotProcessingCfg("FundPlotProcessingConfig");
 
+/*
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSFreqShiftConfig> >
+       regtSMSFreqShiftCfg("SMSFreqShiftConfig");
+*/
 
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSTransformationConfig> >
+       regtSMSTransformationConfig("SMSTransformationConfig");
 
 
