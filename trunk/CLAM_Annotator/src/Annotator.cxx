@@ -38,6 +38,7 @@ using CLAM::VM::QtAudioPlot;
 
 Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f), mData( data ),mEnvelopes(0),mFunctionEditors(0),mCurrentIndex(0),mpTabLayout(0)
 {
+        mpAudioPlot=NULL;
 	setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
 	mProjectOverview->setSorting(-1);
 	initView();
@@ -51,7 +52,6 @@ Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade
 	initEnvelopes();
 	languageChange();
 	mChanges = false;
-	
 }
 
 bool Annotator::somethingIsSelected() const
@@ -135,10 +135,11 @@ void Annotator::initAudioWidget()
 	mpAudioPlot->Label("Audio");
 	mCurrentAudio.SetSize(20000);
 	mpAudioPlot->SetData(mCurrentAudio);
-	mpAudioPlot->SetForegroundColor(CLAM::VM::VMColor::Green());
-	mpAudioPlot->SetBackgroundColor(CLAM::VM::VMColor::Black());
+	mpAudioPlot->SwitchDisplayColors(true);
+	mpAudioPlot->SetToggleColorOn(true);
+	mpAudioPlot->switchColors();
+	mpAudioPlot->setFocus();
 	mpAudioPlot->Show();
-
 }
 
 void Annotator::initLLDescriptorsWidgets()
@@ -791,3 +792,29 @@ void Annotator::LoadDescriptorPool()
   CLAM::XMLStorage::Restore((*mpDescriptorPool),"DescriptorsPool.xml");
   
 }
+
+bool Annotator::event(QEvent* e)
+{
+    if(mpAudioPlot)
+    {
+	QKeyEvent* keyEvent=dynamic_cast<QKeyEvent*>(e);
+	if(keyEvent)
+	{
+	    if(!mpAudioPlot->hasFocus())
+	    {
+		switch(keyEvent->key())
+		{
+		    case Qt::Key_Shift:
+		    case Qt::Key_Insert:
+		    case Qt::Key_Delete:
+			mpAudioPlot->setFocus();
+			break;
+		    default:
+			break;
+		}
+	    }
+	}
+    }
+    return QWidget::event(e);
+}
+

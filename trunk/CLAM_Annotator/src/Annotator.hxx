@@ -52,6 +52,8 @@ class Annotator : public AnnotatorBase
                 void analyzeAll();
 	protected:
 		void closeEvent( QCloseEvent * e);
+                bool event(QEvent* e);
+
 	private:
 		void value( const std::string & descriptor, std::string & descriptorValue ) const;
 		void createListOfGenres( QStringList &, const QString & ) const;
