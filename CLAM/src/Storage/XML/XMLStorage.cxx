@@ -123,13 +123,20 @@ namespace CLAM
 		Dump(obj,rootName,os);
 	}
 
-	void XmlStorage::AppendToDocument(const Component & obj, const std::string & path, std::iostream & str)
+	void XmlStorage::AppendToDocument(const Component & obj, const std::string & path, const std::string & filename)
 	{
 		XmlStorage storage;
-		storage.Read(str);
+		{
+			std::ifstream is (filename.c_str());
+			storage.Read(is);
+		}
 		storage.Select(path);
 		storage.DumpObject(obj);
-		storage.WriteDocument(str);
+		storage.Select("/");
+		{
+			std::ofstream os(filename.c_str());
+			storage.WriteSelection(os);
+		}
 	}
 
 

@@ -3,6 +3,7 @@
 
 #include "XMLStorage.hxx"
 #include "XmlMockUpObjects.hxx"
+#include <fstream>
 /*
 TOTEST:
 - Return values on error conditions
@@ -38,8 +39,10 @@ class XercesDomToClamObjectsTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testForErrors_UnexpectedContentOnInner);
 	CPPUNIT_TEST(testForErrors_withXmlParseErrors);
 	CPPUNIT_TEST(testLoading_OnAInnerSelection);
-	CPPUNIT_TEST(testInsertObjectsIntoExistingXml);
-	CPPUNIT_TEST(testRestoreObjectsFromPartOfXml);
+	CPPUNIT_TEST(testAppendToDocumentUsingPrimitives);
+	CPPUNIT_TEST(testAppendToDocument);
+	CPPUNIT_TEST(testRestoreFromFragmentUsingPrimitives);
+	CPPUNIT_TEST(testRestoreFromFragment);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -408,7 +411,7 @@ private:
 		CPPUNIT_ASSERT_EQUAL(expected, toLoad.childStructureTrace(0));
 	}
 	// TODO; On this suite?
-	void testInsertObjectsIntoExistingXml()
+	void testAppendToDocumentUsingPrimitives()
 	{
 		std::istringstream xml(
 			"<Doc>"
@@ -450,8 +453,53 @@ private:
 			"</Doc>";
 		CPPUNIT_ASSERT_EQUAL(expected,os.str());
 	}
+	void testAppendToDocument()
+	{
+		{
+			std::ofstream os("deleteme.xml");
+			os <<
+				"<Doc>"
+				"<Recipient>"
+				"<OldElement/>"
+				"OldElementContent"
+				"</Recipient>"
+				"</Doc>"
+			;
+		}
 
-	void testRestoreObjectsFromPartOfXml()
+		CompositeOfXmlables toAppend;
+		XmlMockUpComponent component("Element",true);
+		XmlMockUpBasic basic("SubElement",true);
+		basic.setContent("SubElementContent");
+		component.add(basic);
+		XmlMockUpComponent component2("Element2",true);
+		toAppend.add(component);
+		toAppend.add(component2);
+
+		XmlStorage::AppendToDocument(toAppend, "/Doc/Recipient", "deleteme.xml");
+
+		std::string expected =
+			"<Doc>"
+			"<Recipient>"
+				"<OldElement/>"
+				"OldElementContent"
+				"<Element>"
+				"<SubElement>"
+				"SubElementContent"
+				"</SubElement>"
+				"</Element>"
+				"<Element2/>"
+			"</Recipient>"
+			"</Doc>";
+
+		std::string result;
+		std::ifstream is("deleteme.xml");
+		for (char buffer[255]; is.get(buffer,255,'\0');)
+			result += buffer;
+		CPPUNIT_ASSERT_EQUAL(expected,result);
+	}
+
+	void testRestoreFromFragmentUsingPrimitives()
 	{
 		std::istringstream xml(
 			"<Doc>"
@@ -484,6 +532,46 @@ private:
 		storage.Read(xml);
 		storage.Select("Recipient");
 		storage.RestoreObject(toExtract);
+		std::string expected = 
+			"C''\n"
+			"{\n"
+			".B'SubElementContent'\n"
+			"}\n"
+			"C'Element2Content'\n"
+			"{\n"
+			"}\n";
+		CPPUNIT_ASSERT_EQUAL(expected, toExtract.childStructureTrace(0));
+	}
+	void testRestoreFromFragment()
+	{
+		std::istringstream xml(
+			"<Doc>"
+			"<Recipient>"
+				"<Element>"
+				"<SubElement>"
+				"SubElementContent"
+				"</SubElement>"
+				"</Element>"
+				"<Element2>"
+				"Element2Content"
+				"</Element2>"
+			"</Recipient>"
+			"<OtherElement/>"
+			"</Doc>"
+			);
+
+		CompositeOfXmlables toExtract;
+		XmlMockUpComponent component("Element",true);
+		component.setContent("PreviousElementContent");
+		XmlMockUpBasic basic("SubElement",true);
+		basic.setContent("PreviousSubElementContent");
+		XmlMockUpComponent component2("Element2",true);
+		component.setContent("PreviousElement2Content");
+		component.add(basic);
+		toExtract.add(component);
+		toExtract.add(component2);
+
+		XmlStorage::RestoreFromFragment(toExtract,"Recipient",xml);
 		std::string expected = 
 			"C''\n"
 			"{\n"
