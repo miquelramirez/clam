@@ -69,15 +69,47 @@ namespace NetworkGUI
 		setCentralWidget(&mNetworkPresentation);
  
 
-		file->insertItem("New", this, SLOT(NewNetwork()));
-		file->insertItem("Load", this, SLOT(LoadNetwork()));
-		file->insertItem("Save", this, SLOT(SaveNetwork()));
-		file->insertItem("Save As", this, SLOT(SaveAsNetwork()));
+///////// FILE MENU /////////////////////////////////////////////
+		QAction* newNetwork = new QAction( this, "NewNetwork" );
+		newNetwork->addTo( file );
+	    newNetwork->setMenuText( tr( "&New" ) );
+		newNetwork->setAccel( tr( "CTRL+N" ) );
+		connect( newNetwork, SIGNAL( activated() ), this, SLOT( NewNetwork() ) );
+
+		QAction* loadNetwork = new QAction( this, "LoadNetwork" );
+		loadNetwork->addTo( file );
+	    loadNetwork->setMenuText( tr( "&Load" ) );
+		loadNetwork->setAccel( tr( "CTRL+O" ) );
+		connect( loadNetwork, SIGNAL( activated() ), this, SLOT( LoadNetwork() ) );
+		
+		QAction* saveNetwork = new QAction( this, "SaveNetwork" );
+		saveNetwork->addTo( file );
+	    saveNetwork->setMenuText( tr( "&Save" ) );
+		saveNetwork->setAccel( tr( "CTRL+S" ) );
+		connect( saveNetwork, SIGNAL( activated() ), this, SLOT( SaveNetwork() ) );
+
+		QAction* saveAsNetwork = new QAction( this, "SaveAsNetwork" );
+		saveAsNetwork->addTo( file );
+	    saveAsNetwork->setMenuText( tr( "&Save As" ) );
+		saveAsNetwork->setAccel( tr( "CTRL+SHIFT+S" ) );
+		connect( saveAsNetwork, SIGNAL( activated() ), this, SLOT( SaveAsNetwork() ) );
+
 		file->insertSeparator();
-		file->insertItem("Exit", qApp, SLOT(quit()));
 
-		view->insertItem("Processing Menu", this, SLOT(ShowProcMenu()));
+		QAction* quitProgram = new QAction( this, "Quit" );
+		quitProgram->addTo( file );
+	    quitProgram->setMenuText( tr( "&Quit" ) );
+		quitProgram->setAccel( tr( "CTRL+Q" ) );
+		connect( quitProgram, SIGNAL( activated() ), qApp, SLOT( quit() ) );
 
+///////// VIEW MENU /////////////////////////////////////////////
+		QAction* viewProcessingMenu = new QAction( this, "ShowProcMenu" );
+		viewProcessingMenu->addTo( view );
+	    viewProcessingMenu->setMenuText( tr( "&Processing Menu" ) );
+		viewProcessingMenu->setAccel( tr( "CTRL+M" ) );
+		connect( viewProcessingMenu, SIGNAL( activated() ), this, SLOT( ShowProcMenu() ) );
+		
+///////// NETWORK ACTIONS MENU /////////////////////////////////////////////
 		QAction* startNetwork = new QAction( this, "StartNetwork" );
 		startNetwork->addTo( networkActions );
 	    startNetwork->setMenuText( tr( "&Start Network" ) );
@@ -90,8 +122,7 @@ namespace NetworkGUI
 		stopNetwork->setAccel( tr( "Esc" ) );
 		connect( stopNetwork, SIGNAL( activated() ), this, SLOT( StopNetwork() ) );
 
-		networkActions->insertItem("Start", this, SLOT(StartNetwork()));
-		networkActions->insertItem("Stop", this, SLOT(StopNetwork()));	
+/////////////////////////////////////////////////////////////////////////////
 
 		mDockProcMenu = new QDockWindow( QDockWindow::InDock, this );
 		mDockProcMenu->setResizeEnabled( true );
