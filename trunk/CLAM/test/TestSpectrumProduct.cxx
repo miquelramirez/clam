@@ -26,7 +26,7 @@
 #include "SpectrumProduct.hxx"
 #include "TestUtils.hxx"
 #include "OctaveVector.hxx"
-
+#include <limits>
 
 namespace CLAMTest {
 	static const unsigned int ArraySize=40;
@@ -160,7 +160,8 @@ namespace CLAMTest {
 		SpectrumConfig cfg;
 		int proto1,proto2,proto3;
 		static int count=0;
-		TData max_err = 0.00005;
+		//TData max_err = 0.00005;
+		TData max_err = std::numeric_limits<TData>::epsilon()*TData(1e3);
 		product.Start();
 
 		cfg.AddBPFSize();
@@ -189,7 +190,8 @@ namespace CLAMTest {
 					product.SetPrototypes(in1,in2,out);
 					product.Do(in1,in2,out);
 					TData diff = CLAMTest::TestUtils::MaxDiff(out,out_good);
-					std::cerr << diff << std::endl;;
+					std::cerr << "Tolerance: " << max_err << std::endl;
+					std::cerr << "Difference: " << diff << std::endl;;
 					if (diff > max_err)
 						return false;
 					std::cerr.flush();
