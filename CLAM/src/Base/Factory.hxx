@@ -216,7 +216,6 @@ public: // Inner classes. Public for better testing
 		}
 
 		Registrator( RegistryKey key ) {
-			std::cout << "reg key="<<key<<" at fact "<<&(TheFactoryType::GetInstance())<< std::endl;
 			TheFactoryType::GetInstance().AddCreator( key, Create );
 		}
 
