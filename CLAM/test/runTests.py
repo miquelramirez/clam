@@ -273,6 +273,7 @@ def parseTestsFailures( testsOut ) :
 				# print 'found OK'
 				details = ''
 				summary += line
+				state = 'OK'
 		elif state == 'FAILURES' :
 			details +=  line + '\n'
 		else :
