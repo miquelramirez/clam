@@ -32,9 +32,9 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 		Fundamental& outFund,
 		Spectrum& outRes)
 {
-//	outPeaks = inPeaks; //TODO big cludge for streaming
-//	outFund = inFund;
-//	outRes = inRes;
+	outPeaks = inPeaks; //TODO big cludge for streaming
+	outFund = inFund;
+	outRes = inRes;
 
 	TSize spectralRange = 22050; // default for SampleRate = 44100;
 

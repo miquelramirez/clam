@@ -67,13 +67,22 @@ namespace CLAM{
  		~SMSPitchDiscretization() {}
 
 		bool Do()
-		{	return Do(mInPeaks.GetData(), 
-					  mInFund.GetData(), 
-					  mInSpectrum.GetData(), 
-					  mOutPeaks.GetData(), 
-					  mOutFund.GetData(),
-				      mOutSpectrum.GetData() 
-					 );
+		{	bool result = Do(mInPeaks.GetData(), 
+					  		mInFund.GetData(), 
+						 	mInSpectrum.GetData(), 
+							mOutPeaks.GetData(), 
+							mOutFund.GetData(),
+							mOutSpectrum.GetData() 
+						 );
+
+			mInPeaks.Consume();
+			mOutPeaks.Produce();
+			mInFund.Consume();
+			mOutFund.Produce();
+			mInSpectrum.Consume();
+			mOutSpectrum.Produce();
+
+			return result;
 		}
 
 		bool Do(const Frame& in, Frame& out);
