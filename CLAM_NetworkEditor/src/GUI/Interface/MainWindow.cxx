@@ -30,143 +30,150 @@
 #include <qfiledialog.h>
 #include <qapplication.h>
 #include <string>
+#include "aboutdialog.h"
 
 #include <iostream> // TODO: remove
 
 namespace NetworkGUI
 {
 
-MainWindow::MainWindow()
-	: mNetwork(this),
-	  mDockProcMenu(0),
-	  QMainWindow( 0, "", WGroupLeader )
-{
-	setCentralWidget( &mNetwork );
-	setCaption( "CLAM Network Editor" );
-	resize( 800, 600 );
+	MainWindow::MainWindow()
+		: mNetwork(this),
+		  mDockProcMenu(0),
+		  QMainWindow( 0, "", WGroupLeader )
+	{
+		setCentralWidget( &mNetwork );
+		setCaption( "CLAM Network Editor" );
+		resize( 800, 600 );
 	
-	SlotSendMessageToStatus.Wrap( this, &MainWindow::SendMessageToStatus );
-	mNetwork.SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
-	SignalNewNetworkSignal.Connect( mNetwork.SlotClear );
-	statusBar()->message( "Ready to edit" );
+		SlotSendMessageToStatus.Wrap( this, &MainWindow::SendMessageToStatus );
+		mNetwork.SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
+		SignalNewNetworkSignal.Connect( mNetwork.SlotClear );
+		statusBar()->message( "Ready to edit" );
 
-	SignalChangeNetworkState.Connect( mNetwork.SlotChangeState );
+		SignalChangeNetworkState.Connect( mNetwork.SlotChangeState );
 
 
-	QPopupMenu * file = new QPopupMenu( this );
-	QPopupMenu * view = new QPopupMenu( this );
-	QPopupMenu * networkActions = new QPopupMenu( this );
-	QPopupMenu * outControlActions = new QPopupMenu( this );
-        menuBar()->insertItem( "File", file );
-        menuBar()->insertItem( "View", view );
-	menuBar()->insertItem( "Network Actions", networkActions );
-        menuBar()->insertItem( "About", this, SLOT(About()));
-	setCentralWidget(&mNetwork);
+		QPopupMenu * file = new QPopupMenu( this );
+		QPopupMenu * view = new QPopupMenu( this );
+		QPopupMenu * networkActions = new QPopupMenu( this );
+		QPopupMenu * outControlActions = new QPopupMenu( this );
+		menuBar()->insertItem( "File", file );
+		menuBar()->insertItem( "View", view );
+		menuBar()->insertItem( "Network Actions", networkActions );
+		menuBar()->insertItem( "About", this, SLOT(ShowAboutDlg()));
+		setCentralWidget(&mNetwork);
  
-	file->insertItem("New", this, SLOT(NewNetwork()));
-	file->insertItem("Load", this, SLOT(LoadNetwork()));
-	file->insertItem("Save", this, SLOT(SaveNetwork()));
-	file->insertItem("Save As", this, SLOT(SaveAsNetwork()));
-	file->insertSeparator();
-	file->insertItem("Exit", qApp, SLOT(quit()));
+		file->insertItem("New", this, SLOT(NewNetwork()));
+		file->insertItem("Load", this, SLOT(LoadNetwork()));
+		file->insertItem("Save", this, SLOT(SaveNetwork()));
+		file->insertItem("Save As", this, SLOT(SaveAsNetwork()));
+		file->insertSeparator();
+		file->insertItem("Exit", qApp, SLOT(quit()));
 
-	view->insertItem("Processing Menu", this, SLOT(ShowProcMenu()));
+		view->insertItem("Processing Menu", this, SLOT(ShowProcMenu()));
 
-	networkActions->insertItem("Start", this, SLOT(StartNetwork()));
-	networkActions->insertItem("Stop", this, SLOT(StopNetwork()));	
+		networkActions->insertItem("Start", this, SLOT(StartNetwork()));
+		networkActions->insertItem("Stop", this, SLOT(StopNetwork()));	
 
-	mDockProcMenu = new QDockWindow( QDockWindow::InDock, this );
-	mDockProcMenu->setResizeEnabled( true );
-	mDockProcMenu->setCloseMode( QDockWindow::Always );
+		mDockProcMenu = new QDockWindow( QDockWindow::InDock, this );
+		mDockProcMenu->setResizeEnabled( true );
+		mDockProcMenu->setCloseMode( QDockWindow::Always );
 	
-	addToolBar( mDockProcMenu, Qt::DockLeft );
+		addToolBar( mDockProcMenu, Qt::DockLeft );
 
-	mDockProcMenu->setFixedExtentWidth( 160 );
-	mDockProcMenu->setCaption( tr( "Processing menu" ) );
-	mDockProcMenu->show();
-	setDockEnabled( mDockProcMenu, Qt::DockTop, false );
-	setDockEnabled( mDockProcMenu, Qt::DockBottom, false );
+		mDockProcMenu->setFixedExtentWidth( 160 );
+		mDockProcMenu->setCaption( tr( "Processing menu" ) );
+		mDockProcMenu->show();
+		setDockEnabled( mDockProcMenu, Qt::DockTop, false );
+		setDockEnabled( mDockProcMenu, Qt::DockBottom, false );
 
 
-	ProcessingTree * procTree = new ProcessingTree( mNetwork, mDockProcMenu );
-	mDockProcMenu->setWidget( procTree );
-	setActiveWindow();
-	mNetwork.Show();
-}
+		ProcessingTree * procTree = new ProcessingTree( mNetwork, mDockProcMenu );
+		mDockProcMenu->setWidget( procTree );
+		setActiveWindow();
+		mNetwork.Show();
+	}
 
-MainWindow::~MainWindow()
-{
-}
+	void MainWindow::ShowAboutDlg()
+	{
+		AboutDialog* aboutDlg = new AboutDialog( this, "NetworkEditor_AboutDialog", true );
+		aboutDlg->show();
+	}
 
-void MainWindow::SendMessageToStatus( const std::string & message)
-{
-	statusBar()->message( QString( message.c_str() ), 2000);
-}
+	MainWindow::~MainWindow()
+	{
+	}
 
-Qt_NetworkPresentation & MainWindow::GetNetworkPresentation()
-{
-	return mNetwork;
-}
+	void MainWindow::SendMessageToStatus( const std::string & message)
+	{
+		statusBar()->message( QString( message.c_str() ), 2000);
+	}
 
-void MainWindow::NewNetwork()
-{
-	SignalNewNetworkSignal.Emit();
-}
+	Qt_NetworkPresentation & MainWindow::GetNetworkPresentation()
+	{
+		return mNetwork;
+	}
 
-void MainWindow::LoadNetwork()
-{
-	QString s = QFileDialog::getOpenFileName(
-		"",
-		"XML Files (*.xml)",
-		this,
-		"open file dialog"
-		"Choose a file to load network" );
+	void MainWindow::NewNetwork()
+	{
+		SignalNewNetworkSignal.Emit();
+	}
+
+	void MainWindow::LoadNetwork()
+	{
+		QString s = QFileDialog::getOpenFileName(
+			"",
+			"XML Files (*.xml)",
+			this,
+			"open file dialog"
+			"Choose a file to load network" );
 
 //	SignalNewNetworkSignal.Emit();
-	if (s!=QString::null)
-		mNetwork.SignalLoadNetworkFrom.Emit(std::string(s.ascii()));
-}
-
-
-void MainWindow::SaveNetwork()
-{
-	QString s = QFileDialog::getSaveFileName(
-		"",
-		"XML Files (*.xml)",
-		this,
-		"save file dialog"
-		"Choose a file to save network" );
-
-	if (s!=QString::null)
-	{
-		//TODO code for saving positions
-		//  call method to mNetwork : SaveNetwork passing filename
-		//  QtNetworkPresentation::SaveNetwork (slot) :
-		//     execute Signal SaveNetworkTo passing ref to stream
-		//     add elem with positions: (name, xpos, ypos) tuples
-		//     save doc
-		mNetwork.SignalSaveNetworkTo.Emit(std::string(s.ascii()));
+		if (s!=QString::null)
+			mNetwork.SignalLoadNetworkFrom.Emit(std::string(s.ascii()));
 	}
-}
 
-void MainWindow::SaveAsNetwork()
-{
-	SaveNetwork();
-}
 
-void MainWindow::StartNetwork()
-{
-	SignalChangeNetworkState.Emit(true);
-}
+	void MainWindow::SaveNetwork()
+	{
+		QString s = QFileDialog::getSaveFileName(
+			"",
+			"XML Files (*.xml)",
+			this,
+			"save file dialog"
+			"Choose a file to save network" );
 
-void MainWindow::StopNetwork()
-{
-	SignalChangeNetworkState.Emit(false);
-}
+		if (s!=QString::null)
+		{
+			//TODO code for saving positions
+			//  call method to mNetwork : SaveNetwork passing filename
+			//  QtNetworkPresentation::SaveNetwork (slot) :
+			//     execute Signal SaveNetworkTo passing ref to stream
+			//     add elem with positions: (name, xpos, ypos) tuples
+			//     save doc
+			mNetwork.SignalSaveNetworkTo.Emit(std::string(s.ascii()));
+		}
+	}
 
-void MainWindow::ShowProcMenu()
-{
-	mDockProcMenu->show();
-}
+	void MainWindow::SaveAsNetwork()
+	{
+		SaveNetwork();
+	}
+
+	void MainWindow::StartNetwork()
+	{
+		SignalChangeNetworkState.Emit(true);
+	}
+
+	void MainWindow::StopNetwork()
+	{
+		SignalChangeNetworkState.Emit(false);
+	}
+
+	void MainWindow::ShowProcMenu()
+	{
+		mDockProcMenu->show();
+	}
 
 } // namespace NetworkGUI

@@ -1,0 +1,94 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>AboutDialog</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>AboutDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>88</x>
+            <y>10</y>
+            <width>294</width>
+            <height>120</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>4</hsizetype>
+            <vsizetype>4</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>About the NetworkEditor...</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <property name="modal">
+        <bool>true</bool>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>MTG_Logo</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="font">
+                <font>
+                    <family>OpenSymbol</family>
+                    <pointsize>14</pointsize>
+                </font>
+            </property>
+            <property name="frameShape">
+                <enum>NoFrame</enum>
+            </property>
+            <property name="pixmap">
+                <pixmap>image1</pixmap>
+            </property>
+            <property name="scaledContents">
+                <bool>false</bool>
+            </property>
+            <property name="alignment">
+                <set>AlignJustify|AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>aboutTextBox</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;p align="center"&gt;&lt;b&gt;NetworkEditor version 0.1&lt;/b&gt;&lt;/p&gt;
+&lt;p align="center"&gt;October 2004&lt;/p&gt;
+&lt;p align="center"&gt;A  Graphic Environment for Editing CLAM Networks&lt;/p&gt;</string>
+            </property>
+        </widget>
+    </hbox>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="2477">789c9d955b4f1b571446dff91516e70d553bbe7b46551f0093c4dc492021a9fa309e8bc1601b9b3b55ff7bf7b78631466a55a9b3049e35df9ec3b99a0f1bb5f3e383dac687b5dbbbe4ee32ada517c9a2b691dd4f26cfbffff1db9f6beb8da8d66cd6e25eadb9fecbdafac95d2dad1dcea6b9c4824ba873c9438637059ee21d81e77822783fc10b41fe2c6fb40439f58db6209fe21d417e8ba782bc8f6795db10cf054eff1a85c0e95fb325f017bc2df036de13f8773c12f83e1e0bfc044f04fd99c8db7541be8b4702dfc363413df3d9ce04790bcf05fe0d2f047e2c677acbf967bc1d2e7c0bef765a1dc61776f05e95db261e0bf27b7c28f06d3cad72ebe2b9c00b793712d4b31edd4290f3f77a7541fe8037043e93477581d39f2816bc7f852702bfc65341bd366388138193b3bdcaf9fe897704ce7ad05c39ff75f9b02e70da63f8657d0fe7a2fd0bbc1038e34f5b82fa1f381d24a7ff692cc83b7826f0115e08ead97f595d90b37e594390dfe04d414e7fb28ec0393f592ca8e77c6589201fe343812f703a44fd13ce853fe2b9a07e8017829cf7f3bac0e738070ee7efe54dc1fb11de12e497381b1c673ed85ee5fe35bc2b789ff39df704ce7ecd238137f058e0319e08bc890f05ce78f354e0e73803c6cf702efc142f047e24e7ebab5cafaf385f30f817bc2970c65bb4047e8873a0f103bc2370beef384ee5f8393f454fe09c9f221238f35fc40267fd8a44e09f713630fe096703e21f711618e7fc33dc72fcecbf82abfc67f08685f754cfff4f1d496243277532ffccabdab7bad7160a1bd9855d3a63bfbbaa5aadeaf06b9b7836b599dd3873bf5bf89389dd5a78577767f7f6404dc5a33dd9b3bd5475f46bd3b65e5b2ad98647ebdb8e95f3aab65efcbdf94afed1f9e47cf6ca81edaed48dbd6e7b992a9f7bfb33efc9c0f69675fbee555ae553e7c00eedc88e977527cbf4e1353d6476bed8d77775fba455ae54f9919dda99f36d59f79df4dc7ed84fab5bc3efcefce7c9693aad655ddb9f9e5ac7ba7e9f59cf224f63af6fd8bdc7e16dbc21b1461886d41f66210f85cf79dffa1e8d7c55f656e72f98b5aa7d122ec2285c864b8bc2d85bd85d5d8f7015aec3c46ba661166e3c9f8785cfdd22dc96ebb1b2becfe12edc87079ff3810dc26378f2bb95f57ddb2fa1f054f9c21987ab72bf84e77fdc7fa3f0a2dffeb9495fd3b0f52ffbb982fd1cb6ffeb7c847ed8093becfbbf7e5dfb1bc6823fde</data>
+    </image>
+    <image name="image1">
+        <data format="XPM.GZ" length="10541">789ced96cd8ed33010c7ef7d8a687d5b216fdbdded06211e01892312e2e0af6cec24dec42c0784787766c6499a425bdad22d87b5a3b4f93bf6fc66ecb1e39bebecd3c70fd9f5cdecebb378b62a53a508d9b5fed634df3f7f79ff6376b598cfb3b779b69c678bab37b3aba74c656cb5bc37b941f9883237b910240b94f2562ea44019481abc509628f55ce58ade7624b55eea254a87d2acb4d20aa526291662417d5594cbd53247d992d4b7c51d7925489afbdbfb3b944d94abc58a2c339285588907941265313777861afb5e0a435ed52497ab7c25519a281ff403b95145998b9cde5a9262089093347891bc40499cc4499cc4499cc4499cc4499cc4499cd7cb61425e80c394d697e018fd9a386ccd291eb7979273cb2c347055ddd495a37ed6348db16b3b9635c0615826b59ed5d08c7970c28c9cc7a7eda5e0bcd5ca93c3586acf6d1b1fdbd1a6d2631123a6ea6b15fa501d306e60d688d150cbc647d5ede1ac7b403187cc4f74bf61cc0c1e1ac66a7c6e07d72bb46a2a28acafaab15d656d35b43b8ca3ecdac9b8201d1a1847eef73cb0d8c74ddbfd3d0fdab54189dd7d1f040dfb0e0e86d38786e3dc1c9607e300e14c0c33e0302b7671a08f9af4690f1cb7ffc9f1fb386ad227324fe6f09338fbf3e0688e58e78bdf18b7e3f3602f67928cec88757a3447aa61cdd1fa712fc5a18074ddef2110ce4b7122a8df7b393f671eb84df7ac1a365e3ee1fc631e54d3cd2ed628ad446dd8b0a79f67dcfaa45a9766d87a87721e0e6eb0312037e8d679672b031f617b3e0e6dd0ba6d848a4dfdf42b07c873e501f7edf0918dbad9002979a63c00503d9aa452b59808a65f41f519cfd7120e4676cbe1cad3467a81733c26bddfc6e97cefe1daa7926f7dde5d2681d5138e2be182a494f0c4c15089c68a00461ddc9d0fa58737740347d29373318dcbd2bb4e7aeaef7857629d55f5406274dc1af2cd173ef0c04bf8879fe03124b016a07be13d54f417b42c7901bff0a69388c2d6d0a9e0812ce07f3cbc08982f4b472e585a3d2732f0ee08469e00a728830b345601ed835de0a09201030fd8ca2100fbca40763ac9d9465ae3a7e8370e04d2b9311e09dea1a77ee0d0dd7b0d231b90e382830a8aa3c05f8ac74ecea374401ee6877738baa1c399c129a1c90e122686e3e4c4f71d8c3e0c2bb493d00e3c739417c1c16e0901c29c811fa1df7aaa069750db1ff84fceeb5062fc944261ba6ac2f6e6a7af1fffc7c3167506ce712571122771122771122771122771122771126727e7e7bbd92fe7c29457</data>
+    </image>
+</images>
+<includes>
+    <include location="local" impldecl="in implementation">aboutdialog.ui.h</include>
+</includes>
+<functions>
+    <function access="protected">mouseReleaseEvent( QMouseEvent * e )</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
