@@ -157,7 +157,6 @@ int main(int argc,char** argv)
 	listhash_add_item_str(config,"OS_MACOSX","0");
 #	endif
 #endif
-	platform = windows_platform;
 
 	config_parse( settings.settingsfile );
 
