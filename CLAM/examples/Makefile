@@ -1,5 +1,6 @@
 SUBDIRS=Salto SpectralDelay 
 PROGRAMS=\
+	RepresenterExample\
 	Spectrum_example\
 	FFT_example\
 	FDFilterExample\
@@ -16,7 +17,8 @@ PROGRAMS=\
 	QtSIViewExample\
 	SnapshotExample\
 	StreamBufferExample\
-	NodeExample
+	NodeExample\
+	NodeExample2
 
 
 TOP=..
