@@ -221,7 +221,7 @@ bool OutPort<Token>::TryDisconnectFromPublisher( InPortBase & in )
 template<class Token>
 void OutPort<Token>::DisconnectFromConcreteIn(InPort<Token>& in)
 {
-	CLAM_DEBUG_ASSERT( IsDirectlyConnectedTo(in) || IsPhysicallyConnectedToIn(in), 
+	CLAM_ASSERT( IsDirectlyConnectedTo(in) || IsPhysicallyConnectedToIn(in), 
 			"OutPort::DisconnectFromConcreteIn() in port is not directly neither physically connected" );
 	if (IsDirectlyConnectedTo(in) )
 	{
