@@ -58,6 +58,8 @@ inline float  tanh(float _X)
 
 #endif
 
+#ifndef linux
+
 #ifndef MIN
 #define MIN(a,b) ((a<=b)?(a):(b))
 #endif
@@ -65,5 +67,7 @@ inline float  tanh(float _X)
 #ifndef MAX
 #define MAX(a,b) ((a>=b)?(a):(b))
 #endif
+
+#endif //linux
 
 #endif // CLAM_Math.hxx
