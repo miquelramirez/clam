@@ -44,6 +44,7 @@ namespace CLAM{
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
 		SMSResidualGain() : mIn("In Spectrum", this), mOut("Out Spectrum", this)
 		{
+			Configure( SMSTransformationConfig() );
 		}
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user

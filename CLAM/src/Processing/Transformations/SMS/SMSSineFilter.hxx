@@ -49,8 +49,9 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSSineFilter(const SMSTransformationConfig &c):SMSTransformation(c)
+		SMSSineFilter(const SMSTransformationConfig &c):SMSTransformation(c) : mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this)
 		{
+			Configure( SMSTransformationConfig() );
 		}
 
 		virtual bool ConcreteConfigure(const ProcessingConfig& c)

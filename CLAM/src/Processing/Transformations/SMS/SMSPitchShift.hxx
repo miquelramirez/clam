@@ -53,6 +53,7 @@ namespace CLAM{
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
 		SMSPitchShift():mIsHarmonic("Harmonic",this), mInPeaks("In SpectralPeaks", this), mOutPeaks("Out SpectralPeaks", this), mInSpectrum("In Spectrum", this), mOutSpectrum("Out Spectrum", this)
 		{
+			Configure( SMSTransformationConfig() );
 			mSpectralRange=22050;//default
 		}
 		/** Constructor with an object of SMSTransformationConfig class by parameter
