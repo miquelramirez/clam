@@ -54,8 +54,8 @@ void GLWaveRenderer::DrawVerticalLine(float x,float top,float bottom)
 		return;
 	if (top > mCullingData.topY)
 		return;
-	top = max(mCullingData.bottomY + 0.1/Y2Pixel,top);
-	bottom = max(mCullingData.bottomY + 0.1/Y2Pixel,bottom);
+	top = max(mCullingData.bottomY + 0.1f/Y2Pixel,top);
+	bottom = max(mCullingData.bottomY + 0.1f/Y2Pixel,bottom);
 	int nPixels = (bottom - top) * Y2Pixel + 1;
 	glRasterPos2f(x,top);
 	glDrawPixels(1,nPixels,GL_GREEN,GL_FLOAT,mPixelColor);
