@@ -1,5 +1,0 @@
-TOP=../..
-
-MODULES = GUI
-
-include $(TOP)/unix_tools/make.rules

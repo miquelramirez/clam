@@ -1,9 +1,0 @@
-SUBDIRS = Base Data Errors Processing Standard FlowControl GUI Storage
-TOP=..
-CLEANFILES=libmtg.a
-
-include $(TOP)/unix_tools/make.rules
-
-
-
-

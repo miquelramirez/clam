@@ -1,6 +1,0 @@
-TOP=../..
-
-SOURCES = $(shell ls *.cxx)
-MODULES = $(SOURCES:%.cxx=%)
-
-include $(TOP)/unix_tools/make.rules
