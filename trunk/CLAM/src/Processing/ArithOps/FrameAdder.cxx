@@ -21,13 +21,13 @@
 
 #include "Complex.hxx"
 #include "SpecTypeFlags.hxx"
-#include "FrameInterpolator.hxx"
+#include "FrameAdder.hxx"
 #include "BPF.hxx"
 #include "Point.hxx"
 
 namespace CLAM {
 
-	FrameInterpolator::FrameInterpolator()
+	FrameAdder::FrameAdder()
 		: mIn1("Input 1",this),
 		  mIn2("Input 2",this),
 		  mOut("Output",this)
@@ -36,7 +36,7 @@ namespace CLAM {
 		Configure(FrameInterpConfig());
 	}
 
-	FrameInterpolator::FrameInterpolator(const FrameInterpConfig &c)
+	FrameAdder::FrameAdder(const FrameInterpConfig &c)
 		: mIn1("Input 1",this),
 		  mIn2("Input 2",this),
 		  mOut("Output",this)
@@ -46,14 +46,14 @@ namespace CLAM {
 	}
 
 
-	bool FrameInterpolator::ConcreteConfigure(const ProcessingConfig&c)
+	bool FrameAdder::ConcreteConfigure(const ProcessingConfig&c)
 	{
 		CopyAsConcreteConfig(mConfig, c);
 
 		return true;
 	}
 
-	void FrameInterpolator::AttachChildren()
+	void FrameAdder::AttachChildren()
 	{
 		mPO_SpectrumAdder.SetParent(this);
 		mPO_PeaksAdder.SetParent(this);
