@@ -51,17 +51,17 @@ bool OutControlSender::ConcreteConfigure(const ProcessingConfig& c)
 	CopyAsConcreteConfig(mConfig, c);
 	if(mConfig.GetMin() > mConfig.GetMax() )
 	{
-		mStatus += " min value greater than max";
+		AddConfigErrorMessage( " min value greater than max" );
 		return false;
 	}
 	if((mConfig.GetDefault() > mConfig.GetMax()) || (mConfig.GetDefault() < mConfig.GetMin()))
 	{
-		mStatus += " default value out of range";
+		AddConfigErrorMessage( " default value out of range" );
 		return false;
 	}
 	if(mConfig.GetStep() == 0 )
 	{
-		mStatus += " step value equal to 0";
+		AddConfigErrorMessage( " step value equal to 0" );
 		return false;
 	}
 
