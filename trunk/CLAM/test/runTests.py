@@ -3,7 +3,6 @@
 
 #TODO: 
 # - filter out ling srcdeps output in compilation errors
-# - fix number of tests faild in summary
 # - tests able to be marked as not-mandatory, so if failed just gives warning
 #----------------------------------------------------------------------
 # begin configuration
@@ -276,8 +275,10 @@ def parseTestsFailures( testsOut ) :
 				state = 'OK'
 		elif state == 'FAILURES' :
 			details +=  line + '\n'
+		elif state == 'OK':
+			pass
 		else :
-			assert false, 'error parsing tests failures'
+			assert False, 'error parsing tests failures'
 	if state == 'TESTS_INFO' :
 		summary += 'could not terminate!'
 	return summary, details
