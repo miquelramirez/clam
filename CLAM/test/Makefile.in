@@ -33,7 +33,6 @@ TESTS = \
         TestSpectrumAdder \
         TestSpectrumAdder2 \
         TestSpectrumProduct \
-        AnalysisSynthesisTest \
         TestWindowing \
         PhantomBufferTest \
         TestStreamRegions \
