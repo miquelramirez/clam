@@ -178,13 +178,11 @@ void TryLoadXML(DummyConfig & config, char * xmlfilename)
 int main(int argc, char** argv)
 {
 	int ret=0;
-	try{
+	try {
 		DummyConfig config;
 		TryLoadXML(config,"configout.xml");
 		TryQTConfigurator(config,argc,argv);
 		TryFLTKConfigurator(config);
-//		TryQTConfigurator(config,argc,argv);
-//		TryFLTKConfigurator(config);
 		TryStoreXML(config,"configout.xml");
 	} catch (CLAM::Err e)
 	{
@@ -201,6 +199,3 @@ int main(int argc, char** argv)
 
 	return ret;	
 } 
-
-
-
