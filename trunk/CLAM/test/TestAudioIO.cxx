@@ -20,6 +20,9 @@
  */
 
 #include "AudioIO.hxx"
+#include "AudioManager.hxx"
+#include "AudioIn.hxx"
+#include "AudioOut.hxx"
 
 #ifndef WIN32
 #include <sched.h>
@@ -54,7 +57,7 @@ void setscheduler(void)
 
 void test_stereo_io(void)
 {
-	AudioManager audioManager;
+	AudioManager audioManager(44100, 512);
 	
 	AudioIOConfig inCfgL;
 	AudioIOConfig inCfgR;
@@ -85,6 +88,10 @@ void test_stereo_io(void)
 	AudioOut outR(outCfgR);
 
 	audioManager.Start();
+	inL.Start();
+	inR.Start();
+	outL.Start();
+	outR.Start();
 
 	do
 	{
@@ -98,7 +105,7 @@ void test_stereo_io(void)
 
 void test_mono_io(void)
 {
-	AudioManager audioManager;
+	AudioManager audioManager(44100, 512);
 
 	AudioIOConfig inCfg;
 	AudioIOConfig outCfg;
@@ -114,6 +121,8 @@ void test_mono_io(void)
 	AudioOut out(outCfg);
 
 	audioManager.Start();
+	in.Start();
+	out.Start();
 
 	do
 	{
