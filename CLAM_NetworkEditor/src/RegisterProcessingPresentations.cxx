@@ -3,6 +3,7 @@
 #include "Factory.hxx"
 #include "Qt_ProcessingPresentation.hxx"
 #include "Qt_OutControlSenderPresentation.hxx"
+#include "Qt_PortMonitorPresentation.hxx"
 
 typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
 
@@ -55,7 +56,10 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation> 
 	regtSMSSynthesis( "SMSSynthesis" );
 
+
 // Plot Processings
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_PortMonitorPresentation>
+        regtPeakPortMonitor( "PeaksPortMonitor" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
 	regtAudioPlotProcessing( "AudioPlotProcessing" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
@@ -82,3 +86,4 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
         regtSMSOddEvenHarmonicRatio( "SMSOddEvenHarmonicRatio" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtSMSSpectralShapeShift( "SMSSpectralShapeShift" );
+		
