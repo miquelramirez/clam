@@ -71,7 +71,7 @@ public:
 	static void thunk( const FunctorBase& ftor, Parm1Type param1, Parm2Type param2, Parm3Type param3 )
 	{
 		Callee* callee = (Callee*) ftor.callee;
-#ifdef __MSVC__
+#ifdef _MSC_VER
 
 		// Microsoft Parser is shit, just because it didn't like MemFunc &memFunc( *(MemFunc*)(void*)(ftor.memFunc) );
 		// I HAD to make this horrible kludge :_(
