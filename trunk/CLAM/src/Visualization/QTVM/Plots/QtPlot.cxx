@@ -40,15 +40,6 @@ namespace CLAM
 			e->accept();
 		}
 
-	        void QtPlot::KeyPressed(QKeyEvent* e)
-		{
-		    keyPressEvent(e);
-		}
-
-	        void QtPlot::KeyReleased(QKeyEvent* e)
-		{
-		    keyReleaseEvent(e);
-		}
 	}
 }
 
