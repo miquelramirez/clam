@@ -59,6 +59,7 @@ namespace CLAM{
 		bool Do()
 		{
 			CLAM_ASSERT(false, "Do with ports not implemented");
+			return false;
 		}
 
 		bool Do(const Frame& in, Frame& out);
