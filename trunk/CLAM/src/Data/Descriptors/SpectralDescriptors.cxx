@@ -261,15 +261,12 @@ TData SpectralDescriptors::ComputeLowFreqEnergyRelation()
 	// Energy(0-100 Hz) / Total Energy
 	int size=mpSpectrum->GetSize();
 	TIndex index = Round(100.0/mDeltaFreq);
-	
-	DataArray data=mpSpectrum->GetMagBuffer();
-	
-	data.SetSize(index);
+	const DataArray & magnitudeBuffer = mpSpectrum->GetMagBuffer();
+	const DataArray data(const_cast<TData*>(magnitudeBuffer.GetPtr()), index);
 
 	Energy energyComputer;
 
 	TData result=(energyComputer(data)/mpStats->GetEnergy() );
-	data.SetSize(size);
 	return result;
 }
 
