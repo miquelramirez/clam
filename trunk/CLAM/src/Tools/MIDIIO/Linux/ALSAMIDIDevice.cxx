@@ -19,7 +19,10 @@
  *
  */
 
-#include "MIDIIO.hxx"
+#include "MIDIDeviceList.hxx"
+#include "MIDIDevice.hxx"
+
+
 #include <alsa/asoundlib.h>
 
 namespace CLAM {
@@ -46,19 +49,19 @@ namespace CLAM {
 	{
 		mDevice = device;
 	}
-
+	
 	void ALSAMIDIDevice::ConcreteStart(void) throw(Err)
 	{
-			int err = snd_rawmidi_open(&mHandleIn,NULL,mDevice.c_str(),
-									   SND_RAWMIDI_NONBLOCK);
-			if (err)
-			{
-					std::string str("Could not open ALSAMIDIDevice ");
-					str += mDevice;
-					throw Err(str.c_str());
-			}
+		int err = snd_rawmidi_open(&mHandleIn,NULL,mDevice.c_str(),
+					   SND_RAWMIDI_NONBLOCK);
+		if (err)
+		{
+			std::string str("Could not open ALSAMIDIDevice ");
+			str += mDevice;
+			throw Err(str.c_str());
+		}
 	}
-
+	
 	void ALSAMIDIDevice::ConcreteStop(void) throw(Err)
 	{
 		if (mHandleIn) {
