@@ -24,7 +24,7 @@ namespace CLAM
 	void NetSpecgramRenderer::Render()
 	{
 	    TSize dataSize = TSize(_data.size());
-	    TSize specLen = _data[0].size();
+	    TSize specLen = (dataSize) ? _data[0].size() : 0;
 	    for(int i = 0; i < specLen; i++)
 	    {
 		glBegin(GL_LINE_STRIP);
