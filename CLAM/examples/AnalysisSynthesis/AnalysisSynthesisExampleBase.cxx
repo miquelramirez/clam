@@ -118,7 +118,6 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 		
 	int samplingRate=int(mGlobalConfig.GetSamplingRate());
 	int analZeroPaddingFactor=mGlobalConfig.GetAnalysisZeroPaddingFactor();
-	int synthZeroPaddingFactor=mGlobalConfig.GetSynthesisZeroPaddingFactor();
 	// SMS Analysis configuration
 	mAnalConfig.SetSinWindowSize(analWindowSize);
 	mAnalConfig.SetSamplingRate(TData(samplingRate));
@@ -128,12 +127,13 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mAnalConfig.SetResWindowSize(resAnalWindowSize);
 	mAnalConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
 
+	mAnalConfig.GetPeakDetect().SetMagThreshold(mGlobalConfig.GetAnalysisPeakDetectMagThreshold());
+
 	//SMS Synthesis configuration
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
 	mSynthConfig.SetFrameSize(synthFrameSize);
 	mSynthConfig.SetHopSize(synthHopSize);
 	mSynthConfig.SetSamplingRate(TData(samplingRate));
-	mSynthConfig.SetZeroPadding(synthZeroPaddingFactor);
 }
 
 void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
@@ -176,7 +176,6 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 	mGlobalConfig.HasSynthesisFrameSize() &&
 	mGlobalConfig.HasSynthesisWindowType() &&
 	mGlobalConfig.HasSynthesisHopSize() &&
-	mGlobalConfig.HasSynthesisZeroPaddingFactor() &&
 	mGlobalConfig.HasSynthesisPhaseManagementType())
 	{	
 		mHaveConfig = true;
