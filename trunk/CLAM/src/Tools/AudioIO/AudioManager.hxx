@@ -22,6 +22,7 @@
 #define __AudioManager___
 
 #include <vector>
+#include <string>
 #include "Err.hxx"
 
 
