@@ -29,7 +29,7 @@
 
 namespace CLAM {
 
-	class FFTConfig;
+	struct FFTConfig;
 	class Spectrum;
 	class Audio;
 	class ProcessingConfig;

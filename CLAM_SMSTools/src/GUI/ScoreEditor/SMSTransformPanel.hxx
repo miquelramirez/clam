@@ -49,6 +49,7 @@ protected:
 	void ShowFactoryProductsOnBrowser();
 
 	void InsertNewConfiguratorInScoreBox( const char* transName );
+	void RemoveAllConfiguratorsFromScoreBox();
 	void RemoveConfiguratorFromScoreBox( int index );
 	void SwapConfigurators( int source, int destination );
 	void ApplyChangesIntoChain();

@@ -25,8 +25,6 @@
 #include "DynamicType.hxx"
 #include "Array.hxx"
 #include "BPF.hxx"
-#include "ArrayToBPFCnv.hxx"
-#include "ComplexToPolarCnv.hxx"
 #include "DataTypes.hxx"
 #include "OSDefines.hxx"
 #include "Err.hxx"

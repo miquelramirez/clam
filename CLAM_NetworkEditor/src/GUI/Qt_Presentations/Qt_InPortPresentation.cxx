@@ -11,7 +11,7 @@ Qt_InPortPresentation::Qt_InPortPresentation( int id,  QWidget *parent, const ch
 	: QWidget( parent, name ),  mId(id)
 
 {	
-	move(0,mId*7+3);
+	move(0,mId*7+7);
 	setFixedSize(10,5);
 }
 

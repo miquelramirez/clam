@@ -258,7 +258,7 @@ void config_parse_line(char* ptr,const char* filename,int line)
 
 	if (tmp[0]) {
 		/* we now have a token list */
-		int k = 0;
+		int k = 0; /* k = token count, including operators */
 		char* ptr = tmp;
 		char* key = ptr;
 		listkey* i = 0;
@@ -294,11 +294,13 @@ void config_parse_line(char* ptr,const char* filename,int line)
 			}
 			else if (is_include)
 			{
+				/* First token was 'include' */
 				if (k>0)
 				{
 					int err;
 					char filename2[2048];
 					{
+					  /* get the filenames we are including */
 						const char* a = filename;
 						char* b = filename2;
 						if (*ptr=='/' || 
@@ -340,16 +342,21 @@ void config_parse_line(char* ptr,const char* filename,int line)
 					if (!strcmp(ptr,"="))
 					{
 						had_assign = 1;
+						/* get the listkey of the token in the config hash, so
+						** we can assign the values later on in the loop */
 						i = listhash_add_key_once(config,key);
+						/* when reassigning value(s) to a var in the config hash
+						** we clear the old value(s)
+						*/
 						if (i->l)
 						{
-							list_free(i->l);
-							i->l = list_new();
+							list_clear(i->l);
 						}
 					}
 				}
 				if (k>1)
 				{
+					/* assign values to the config listhash for listkey i */
 					if (i) listkey_add_item_str(i,ptr);
 				}
 			}
@@ -391,7 +398,11 @@ int config_parse(const char* filename)
 		
 	FILE* f = fopen(filename,"r");
 	
-	if (f==0) return -1;
+	if (f==0) 
+	{
+		fprintf(stderr, "Could not open config file: %s for reading\n", filename);
+		return -1;
+	}
 	
 	n = 0;
 
@@ -435,33 +446,45 @@ void config_init(void)
 
 	used_vars = list_new();
 
+	/* locking lists to make sure we don't delete the list while it is
+	** still being refered to with another name */
+
 	ignore_unused =
 		listhash_add_key_once(config,"IGNORE_UNUSED")->l = list_new();
-
+	list_lock(ignore_unused);
+	
 	libraries_debug = 
 		listhash_add_key_once(config,"LIBRARIES_DEBUG")->l = list_new();
-
+	list_lock(libraries_debug );
+	
 	libraries_release = 
 		listhash_add_key_once(config,"LIBRARIES_RELEASE")->l = list_new();
-
+	list_lock(libraries_release );
+	
 	library_paths = 
 		listhash_add_key_once(config,"LIBRARY_PATHS")->l = list_new();
-
+	list_lock(library_paths );
+	
 	link_flags_debug = 
 		listhash_add_key_once(config,"LINK_FLAGS_DEBUG")->l = list_new();
-
+	list_lock(link_flags_debug );
+	
 	link_flags_release = 
 		listhash_add_key_once(config,"LINK_FLAGS_RELEASE")->l = list_new();
-
+	list_lock(link_flags_release );
+	
 	cxxflags_debug = 
 		listhash_add_key_once(config,"CXXFLAGS_DEBUG")->l = list_new();
-
+	list_lock(cxxflags_debug );
+	
 	cxxflags_release = 
 		listhash_add_key_once(config,"CXXFLAGS_RELEASE")->l = list_new();
-
+	list_lock(cxxflags_release );
+	
 	program = 
 		listhash_add_key_once(config,"PROGRAM")->l = list_new();
-
+	list_lock(program );
+	
 	listhash_add_key_once(config,"SOURCES")->l = list_new();
 	listhash_add_key_once(config,"PRE_INCLUDES")->l = list_new();
 	listhash_add_key_once(config,"DEFINES")->l = list_new();
@@ -481,7 +504,6 @@ void config_init(void)
 	list_add_str_once(used_vars,"DEFINES");
 	list_add_str_once(used_vars,"SEARCH_INCLUDES");
 	list_add_str_once(used_vars,"SEARCH_RECURSE_INCLUDES");
-
 }
 
 void config_check(void)
@@ -505,6 +527,16 @@ void config_check(void)
 
 void config_exit(void)
 {
+	list_unlock(ignore_unused);
+	list_unlock(libraries_debug );
+	list_unlock(libraries_release );
+	list_unlock(library_paths );
+	list_unlock(link_flags_debug );
+	list_unlock(link_flags_release );
+	list_unlock(cxxflags_debug );
+	list_unlock(cxxflags_release );
+	list_unlock(program );
+	
 	listhash_free(config);
 	list_free(used_vars);
 }

@@ -1,33 +1,70 @@
+2003-07-25 CLAM_0_5_2
+'Processing bug-fixing, SMSTools update'
+  * Processing - Transformation - SMS:
+      ** SMSMorph was not working by a side-effect of the introduction
+         of the SMS Time Stretch.
+      ** SMSMorph: All controls except Residual Spectral Shape are fully
+         functional.
+  * Processing - Analysis:
+      ** SpectralPeakDetect infinite loop bug fixed.
+      ** Added New Ooura FFT algorithm.
+  * Standard:
+      ** Stack, Queue and String removed. Use the STL ones instead.
+      ** Obsoleted DescStats removed.
+  * BuildSystem:
+      ** Library generation for both Linux and Windows. (Still not
+         CLAM binaries but user libraries)
+  * Examples - Miscellaneous:
+      ** AudioFileIO example, explaining how to load and save a sound file is 
+         available
+  * SMSTools - v.0.1.1
+      ** GUI - Score Editor:
+	  *** UI screen texts tweaked so they result more informative
+	  *** Added new and improved SMS Morph transformation control widget, 
+	      allowing user a finer grain level of control on that SMS transformation. Also SMS Morph
+	      transformation description has been completely rewritten.
+	  *** Bug fixed: under some circumstances configuration widgets might be 
+              unadvertendly duplicated, leading to invalid transformation scores
+	  *** Editor widget layout tweaked a bit to make bigger the screen area devoted
+	      to transformation parameters edition
+
+
 2003-07-03 CLAM_0_5_1
 'SMSTools update and Mac compilation issues'
   * Examples - SMS:
       ** Improved stability and performance.
       ** Fixed a few bugs in how some configurations were handled
-      ** Removed some useless fields from configuration (i.e. PhaseManagementType) and
-         changed AnalysisMaxSines for AnalysisPeakDetectMaxFrequency.
-      ** Transformations Configurators: graphical widget for editing configurations
+      ** Removed some useless fields from configuration
+         i.e. PhaseManagementType and changed AnalysisMaxSines for
+         AnalysisPeakDetectMaxFrequency.
+      ** Transformations Configurators: graphical widget for editing
+         configurations.
       ** New view added (fundamental)
       ** SMSMorph transformation is now usable.
-      ** SMSTime stretch is also usable
-      ** SMSEdu (from amora's career final project project) available as 'draft'
+      ** SMSTime stretch is also usable.
+      ** SMSEdu (from amora's career final project project) available
+         as 'draft'.
   * Examples - Misc:
-      ** NetworkEditor (from xrubio's career final project) available on 'examples'
+      ** NetworkEditor (from xrubio's career final project) available
+         on 'examples'
   * Processing - All:
       ** Configs has been separated from their processings in a separate
          header to lower memory usage during SMSTools compilation in Mac.
   * Processing - Analysis:
-      ** Spectral peak detect does not have MaxPeaks as a configuration parameter. Instead,
-         you may indicate the maximum peak frequency you want to detect with MaxFreq.
+      ** Spectral peak detect does not have MaxPeaks as a configurations
+         parameter. Instead, you may indicate the maximum peak frequency
+         you want to detect with MaxFreq.
   * Processing - Transformation -SMS:
-      ** SMSTransformation chain is now able to acknowledge SMSTransformations that do
-         not process inplace and have different processing rate.
+      ** SMSTransformation chain is now able to acknowledge
+         SMSTransformations that do not process inplace and have
+         different processing rate.
   * Testing:
       ** Some more test has been moved to cppunit framework
   * Doxygen:
       ** Few doxygen inline documentation fixes
-  * BuildSystem
-      ** Library generation under Linux available (not a CLAM lib still but
-         generating user libraries)
+  * BuildSystem:
+      ** Library generation under Linux available (still not for a CLAM
+         lib but for generating user libraries)
 
 2003-06-11 CLAM_0_5_0
 'flashing new build system and SMSTools'

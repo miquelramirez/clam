@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\src\Data\Descriptors" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\xercesc\include" /I "..\..\..\src\Tools\AudioFileIO"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Data\Descriptors" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\xercesc\lib" xerces-c_1.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\cppunit\lib" xerces-c_1.lib cppunit_vc6.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "SegmentTest - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\src\Data\Descriptors" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\xercesc\include" /I "..\..\..\src\Tools\AudioFileIO"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Data\Descriptors" /I "..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\xercesc\lib" xerces-c_1d.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\cppunit\lib" xerces-c_1d.lib cppunitd_vc6.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -179,6 +179,14 @@ SOURCE=..\..\..\src\Flow\Controls\OutControl.cxx
 
 SOURCE=..\..\..\src\Flow\Ports\Port.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\OutPort.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\InPort.cxx
+# End Source File
 # End Group
 # Begin Group "Nodes Sources"
 
@@ -197,6 +205,10 @@ SOURCE=..\..\..\src\Flow\Nodes\SourceStreamRegion.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Flow\Nodes\WriteStreamRegion.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Nodes\Node.cxx
 # End Source File
 # Begin Source File
 
@@ -264,15 +276,19 @@ SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileIn.cxx
 
 # Begin Source File
 
+SOURCE=..\..\..\src\Standard\Matrix.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\Enum.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Standard\Complex.cxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Standard\Polar.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Standard\Enum.cxx
 # End Source File
 # Begin Source File
 
@@ -290,15 +306,15 @@ SOURCE=..\..\..\src\Standard\BPF.cxx
 
 SOURCE=..\..\..\src\Standard\Flags.cxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Standard\Matrix.cxx
-# End Source File
 # End Group
 # Begin Group "Data Sources"
 
 # Begin Group "BasicProcessing Sources"
 
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\Audio.cxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Data\BasicProcessing\Spectrum.cxx
@@ -314,10 +330,6 @@ SOURCE=..\..\..\src\Data\BasicProcessing\SpectralPeak.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Data\BasicProcessing\SpectralPeakArray.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Data\BasicProcessing\Audio.cxx
 # End Source File
 # Begin Source File
 
@@ -563,15 +575,23 @@ SOURCE=..\..\..\src\Flow\Ports\OutPort.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Flow\Ports\InPort.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\InPortTmpl.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Flow\Ports\OutPortTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Flow\Ports\InPort.hxx
 # End Source File
 # End Group
 # Begin Group "Nodes Headers"
@@ -614,19 +634,19 @@ SOURCE=..\..\..\src\Standard\Array.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\List.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Standard\Search.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Standard\SearchArray.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\IndexArray.hxx
+SOURCE=..\..\..\src\Standard\MatrixTmplDec.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\Matrix.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\Enum.hxx
 # End Source File
 # Begin Source File
 
@@ -658,10 +678,6 @@ SOURCE=..\..\..\src\Standard\PointTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\Enum.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Standard\GlobalEnums.hxx
 # End Source File
 # Begin Source File
@@ -678,23 +694,27 @@ SOURCE=..\..\..\src\Standard\BPF.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\ArrayToBPFCnv.hxx
+SOURCE=..\..\..\src\Standard\IndexArray.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\ComplexToPolarCnv.hxx
+SOURCE=..\..\..\src\Standard\List.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\Search.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\MatrixTmplDef.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\MatrixTmpl.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Standard\Flags.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Standard\MatrixTmplDec.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Standard\Matrix.hxx
 # End Source File
 # Begin Source File
 
@@ -722,11 +742,11 @@ SOURCE=..\..\..\src\Standard\BPFTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\MatrixTmplDef.hxx
+SOURCE=..\..\..\src\Standard\ArrayToBPFCnv.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\MatrixTmpl.hxx
+SOURCE=..\..\..\src\Standard\ComplexToPolarCnv.hxx
 # End Source File
 # End Group
 # Begin Group "Processing Headers"
@@ -751,6 +771,10 @@ SOURCE=..\..\..\src\Processing\Base\PublishedOutPorts.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Processing\Base\ProcessingConfig.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Processing\Base\Processing.hxx
 # End Source File
 # Begin Source File
@@ -764,6 +788,10 @@ SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 # End Group
 # Begin Group "Analysis Headers"
 
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\Analysis\SegmentatorConfig.hxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Processing\Analysis\Segmentator.hxx
@@ -798,6 +826,10 @@ SOURCE=..\..\..\src\Data\Base\ProcessingData.hxx
 
 # Begin Source File
 
+SOURCE=..\..\..\src\Data\BasicProcessing\Audio.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Data\BasicProcessing\Spectrum.hxx
 # End Source File
 # Begin Source File
@@ -814,15 +846,19 @@ SOURCE=..\..\..\src\Data\BasicProcessing\SpectralPeakArray.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Data\BasicProcessing\Audio.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Data\BasicProcessing\Frame.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Data\BasicProcessing\Segment.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpecTypeFlags.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Data\BasicProcessing\SpectrumConfig.hxx
 # End Source File
 # End Group
 # Begin Group "Descriptors Headers"
@@ -868,16 +904,98 @@ SOURCE=..\..\..\src\Data\Descriptors\SegmentDescriptors.hxx
 # End Source File
 # End Group
 # End Group
-# Begin Group "test Headers"
+# Begin Group "cppunit Headers"
+
+# Begin Group "include Headers"
+
+# Begin Group "cppunit Headers No. 1"
 
 # Begin Source File
 
-SOURCE=..\..\..\test\XMLTestHelper.hxx
+SOURCE=..\..\..\..\cppunit\include\cppunit\Portability.h
 # End Source File
+# Begin Group "extensions Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestFactory.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestSuiteFactory.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestFactoryRegistry.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\AutoRegisterSuite.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\TestSuiteBuilder.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\extensions\HelperMacros.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\Test.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\TestSuite.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\SourceLine.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\Exception.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\Asserter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\TestAssert.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\TestFixture.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\TestCase.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\cppunit\include\cppunit\TestCaller.h
+# End Source File
+# End Group
+# End Group
+# End Group
+# Begin Group "test Headers"
+
+# Begin Group "UnitTests Headers"
+
+# Begin Group "CommonHelpers Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\test\UnitTests\CommonHelpers\XMLTestHelper.hxx
+# End Source File
+# End Group
+# End Group
 # End Group
 # Begin Group "xercesc Headers"
 
-# Begin Group "include Headers"
+# Begin Group "include Headers No. 1"
 
 # Begin Group "xercesc Headers No. 1"
 

@@ -65,7 +65,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\..\cppunit\include" /I ".\\" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\..\cppunit\include" /I ".\\" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /FD /GZ /c
 # SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
@@ -108,6 +108,10 @@ SOURCE=.\dsp_parser.c
 # Begin Source File
 
 SOURCE=.\dsp_parser.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\emptydsp.c
 # End Source File
 # Begin Source File
 
@@ -246,25 +250,31 @@ SOURCE=.\winmain.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\unittests\ConfigParserTest.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\unittests\ConsoleRunner.cxx
+# End Source File
+# Begin Source File
 
-!IF  "$(CFG)" == "unittests - Win32 Release"
+SOURCE=.\unittests\DspParserTest.cxx
+# End Source File
+# Begin Source File
 
-!ELSEIF  "$(CFG)" == "unittests - Win32 Debug"
+SOURCE=.\unittests\FileHelper.cxx
+# End Source File
+# Begin Source File
 
-!ENDIF 
+SOURCE=.\unittests\FileHelper.hxx
+# End Source File
+# Begin Source File
 
+SOURCE=.\unittests\FunctionalTestWithCLAM.cxx
 # End Source File
 # Begin Source File
 
 SOURCE=.\unittests\SourceCodeParserTest.cxx
-
-!IF  "$(CFG)" == "unittests - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "unittests - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # End Group
 # End Target

@@ -285,9 +285,13 @@ int main(int argc,char** argv)
 
 	if (gendepend==1)
 	{
+		/* important to the this before parser_init ! */
 		listkey* k = listhash_find(config,"SOURCES");
-		list* sources = k->l;
-		list_add_str(sources,srcfile);
+		/* clear the list, we only want to process the 1 source file 
+		** given on the command line
+		*/
+		list_clear(k->l);
+		list_add_str(k->l,srcfile);
 		recursesrcs = 0;
 	}else{
 		recursesrcs = 1;

@@ -12,6 +12,11 @@
 
 stack* groupstack = 0;
 
+FILE* infile = 0;
+FILE* outfile = 0;
+
+extern char* empty_dsp_lines[];
+
 static int skip = 0;
 static char* endgroup = "# End Group";
 static char* begingroup = "# Begin Group \"";
@@ -59,9 +64,6 @@ int strcmp_eol(const char* a,const char* b)
 	
 	return strcmp(a,b);
 }
-
-FILE* infile = 0;
-FILE* outfile = 0;
 
 void dsp_parse_add_needed_includepaths(void)
 {
@@ -155,7 +157,7 @@ void dsp_parse_add_cxxflags(void)
 		:
 		cxxflags_release->first 
 	;
-	while (i)
+	while (i) 
 	{
 		if (i->str && i->str[0]!=0)
 		{
@@ -534,6 +536,8 @@ void dsp_parse_line_chkcfg(const char* buf,int line)
 			}
 			b++;
 		}
+		if (!*b) 
+			currentConfigIsDebug = 0;
 
 /*		fprintf(stderr,"%d CURRENTCONFIG=%s %d\n",line,currentConfig,currentConfigIsDebug);
 */
@@ -638,7 +642,7 @@ void dsp_parse_line(const char* buf,int line)
 		}
 		else
 		if (
-			!strcmp_begin(buf,"# ADD LINK32 ")
+			!strcmp_begin(buf,"# ADD LINK32")
 		) {
 			/*
 			char tmp2[4096];
@@ -694,45 +698,77 @@ void dsp_parse_line(const char* buf,int line)
 	}
 }
 
-void dsp_parse(const char* filename)
+/* helper function. Maybe should be in some other place? (PA) */
+void assert_file_open(FILE* fd, const char* filename, const char* additional)
+{
+	if (!fd)
+	{
+		fprintf(stderr, "Could not open %s %s\n", filename, additional);
+		exit(-1);
+	}
+}
+
+void dsp_parse_from_empty(const char* outFilename)
 {
 	char buf[4096];
 	int line = 0;
 
 	groupstack = stack_new();
 
-	infile = fopen(filename,"r");
-	if (!infile) {
-		fprintf(stderr,"Could not open %s for reading\n",filename);
-		exit(-1);
-	}
-	outfile = fopen("PARSETMP.dsp","w");
-	if (!outfile)
+	outfile = fopen(outFilename,"w");
+	assert_file_open(outfile, outFilename, "for writing");
+	
+	while (empty_dsp_lines[line])
 	{
-		fprintf(stderr,"Could not open PARSETMP.dsp for writing\n");
-		exit(-1);
+		strncpy(buf, empty_dsp_lines[line], 4096);
+		line++;
+		dsp_parse_line(buf,line);
 	}
+	fclose(outfile);
+}
+ 
+void dsp_parse_from_file(const char* inFilename,const char* outFilename)
+/* expects two different files */
+{
+
+	char buf[4096];
+	int line = 0;
+
+	groupstack = stack_new();
+
+	infile = fopen(inFilename,"r");
+	assert_file_open(infile, inFilename, "for reading");
+
+	// TODO assert files are not equals (?)
+	outfile = fopen(outFilename,"w");
+	assert_file_open(outfile, outFilename, "for writing");
+	
 	while (fgets(buf,4096,infile))
 	{
 		line++;
 		dsp_parse_line(buf,line);
 	}
-	
 	fclose(infile);
 	fclose(outfile);
 
-	infile = fopen("PARSETMP.dsp","r");
-	if (!infile) {
-		fprintf(stderr,"Could not open PARSETMP.dsp for reading\n");
-		exit(-1);
-	}
-	outfile = fopen(filename,"w");
-	if (!outfile)
-	{
-		fprintf(stderr,"Could not open %s for writing\n",filename);
-		exit(-1);
-	}
+}
 
+
+void dsp_parse_inplace(const char* filename)
+/* modifies the passed file */
+{
+	char buf[4096];
+	const char* tempFile = "PARSETMP.dsp";
+
+	dsp_parse_from_file(filename, tempFile);
+
+	// copy the temp file back to filename
+	infile = fopen(tempFile,"r");
+	assert_file_open(infile, tempFile, "for reading");
+	
+	outfile = fopen(filename,"w");
+	assert_file_open(outfile, tempFile, "for writing");
+	
 	while (fgets(buf,4096,infile))
 	{
 		fputs(buf,outfile);
@@ -742,4 +778,9 @@ void dsp_parse(const char* filename)
 	fclose(outfile);
 	
 	remove("PARSETMP.dsp");
+}
+
+void dsp_parse(const char* filename)
+{
+	dsp_parse_inplace( filename );
 }

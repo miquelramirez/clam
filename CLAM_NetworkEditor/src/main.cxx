@@ -17,6 +17,8 @@
 #include "AudioIO.hxx"
 #include "AudioManager.hxx"
 
+#include "Controller.hxx"
+
 #include "Qt_NetworkPresentation.hxx"
 #include <qapplication.h>
 
@@ -63,6 +65,10 @@ void ConfigureNetwork(CLAM::Network & net)
 
 	CLAM::AudioOutWrapperConfiguration outCfg;
 	outCfg.SetName("audio out");
+
+	CLAM::ControllerConfig controllerCfg;
+	controllerCfg.SetName(" 10 controller ");
+	controllerCfg.SetNumControls(10);
 /*	CLAM::AudioIOConfig outCfgL;
 	CLAM::AudioIOConfig outCfgR;
 
@@ -82,8 +88,9 @@ void ConfigureNetwork(CLAM::Network & net)
 	net.AddProcessing( "oscillator-modulator", new CLAM::Oscillator( modulatorCfg) );
 	net.AddProcessing( "multiplier", new CLAM::AudioMultiplier );
 	net.AddProcessing( "oscillator-generator", new CLAM::Oscillator(generatorCfg) );
-	net.AddProcessing( "mixer", new CLAM::AudioMixer<3>(mixerCfg) );
+	net.AddProcessing( "mixer", new CLAM::AudioMixer<8>(mixerCfg) );
 	net.AddProcessing( "file-out", new CLAM::AudioFileOut(fileOutCfg));
+	net.AddProcessing("controller", new CLAM::Controller(controllerCfg));
 	
 //	net.ConnectPorts( "file-in.Output", "file-out.Input" );
 

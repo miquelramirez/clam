@@ -32,6 +32,7 @@
 #include "FFT.hxx"
 #include "FFT_rfftw.hxx"
 #include "FFT_numrec.hxx"
+#include "FFT_ooura.hxx"
 #include "OctaveVector.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
@@ -44,6 +45,7 @@ using CLAM::FFT_base;
 using CLAM::FFTConfig;
 using CLAM::FFT_rfftw;
 using CLAM::FFT_numrec;
+using CLAM::FFT_ooura;
 using CLAM::Err;
 
 namespace CLAMTest {
@@ -215,7 +217,7 @@ int main ()
 	try {
 		CLAMTest::FFT::FFTList objs;
 		FFTConfig conf;
-		FFT_base *f1,*f2,*f3;
+		FFT_base *f1,*f2,*f3, *f4;
 
 		conf.SetAudioSize(1024);
 		conf.SetName("Default FFT");
@@ -224,10 +226,13 @@ int main ()
 		f2=new FFT_rfftw(conf);
 		conf.SetName("FFT_numrec");
 		f3=new FFT_numrec(conf);
+		conf.SetName("FFT_ooura");
+		f4=new FFT_ooura(conf);
 
 		objs.push_back(f1);
 		objs.push_back(f2);
 		objs.push_back(f3);
+		objs.push_back(f4);
 		int res =  CLAMTest::FFT::TestFFTs(objs);
 		if (res)
 			std::cout << std::endl << "Failed!" << std::endl;

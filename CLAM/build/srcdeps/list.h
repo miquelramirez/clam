@@ -11,6 +11,7 @@ typedef struct list
 {
 	item* first;
 	item* last;
+	int lock;
 } list;
 
 item* item_new(const char* str);
@@ -18,6 +19,11 @@ void  item_free(item* i);
 
 list* list_new(void);
 void  list_free(list* l);
+void  list_clear(list* l);
+
+void  list_lock(list* l);
+void  list_unlock(list* l);
+
 
 int   list_size(list* l);
 

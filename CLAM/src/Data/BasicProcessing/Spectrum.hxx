@@ -22,24 +22,14 @@
 #ifndef _Spectrum_
 #define _Spectrum_
 
-#include "DynamicType.hxx"
 #include "Array.hxx"
 #include "Complex.hxx"
 #include "Polar.hxx"
 #include "BPF.hxx"
-#include "ArrayToBPFCnv.hxx"
-#include "ComplexToPolarCnv.hxx"
-#include "DataTypes.hxx"
-#include "Flags.hxx"
-#include "OSDefines.hxx"
-#include "Err.hxx"
-#include "Enum.hxx"
-#include "ProcessingDataConfig.hxx"
 #include "ProcessingData.hxx"
 
 namespace CLAM {
 
-class Spectrum;
 class SpectrumConfig;
 
 struct SpecTypeFlags;

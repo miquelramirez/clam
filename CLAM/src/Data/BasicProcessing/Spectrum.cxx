@@ -22,6 +22,8 @@
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
 #include "SpecTypeFlags.hxx"
+#include "ArrayToBPFCnv.hxx"
+#include "ComplexToPolarCnv.hxx"
 
 using namespace CLAM;
 

@@ -5,9 +5,11 @@
 #include "BPF.hxx"
 #include "Signalv0.hxx"
 #include "Slotv2.hxx"
+#include <string>
 
 class Fl_Envelope_Scroll;
 class Fl_Check_Button;
+class Fl_Box;
 
 namespace CLAMVM
 {
@@ -25,10 +27,25 @@ namespace CLAMVM
 		void SetGridWidth( double xwidth, double ywidth );
 		void SetHorizontalRange( double xmin, double xmax );
 		void SetVerticalRange( double ymin, double ymax );
+		void SetXAxisLabel( const char* label );
+		void SetYAxisLabel( const char* label );
 
-		SigSlot::Signalv0   PointsChanged;		
+		virtual void resize( int X, int Y, int W, int H );
+		
+		SigSlot::Signalv0   PointsChanged;	
 
 	protected:
+
+		Fl_Envelope_Scroll&   FunctionEditor() { 
+			return *mpFunctionEditor;
+		}
+
+		Fl_Check_Button& SnapToGridButton() {
+			return *mpSnapToGridBtn;
+		}
+
+		virtual void CreateContents();
+		virtual void ApplyLayoutOnContents( int X, int Y, int W, int H);
 
 		SigSlot::Slotv2<double,double>  NewPoint;
 		SigSlot::Slotv0                 PointRemoved;
@@ -43,6 +60,10 @@ namespace CLAMVM
 	protected:
 		Fl_Envelope_Scroll* mpFunctionEditor;
 		Fl_Check_Button*    mpSnapToGridBtn;
+		Fl_Box*             mpXAxisLabelBox;
+		Fl_Box*             mpYAxisLabelBox;
+		std::string         mXAxisLabel;
+		std::string         mYAxisLabel;
 	};
 
 }

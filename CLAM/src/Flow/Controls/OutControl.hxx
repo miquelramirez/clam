@@ -117,8 +117,8 @@ void OutControlArray::Configure(int size,
 	mArray.Resize(size);
 	mArray.SetSize(size);
 	for (int i=0; i<size; i++) {
-		std::stringstream str(name);
-		str << "_" << i;
+		std::stringstream str("");
+		str << name << "_" << i;
 		mArray[i] = new OutControl(str.str(),wtp);
 	}
 }

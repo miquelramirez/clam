@@ -63,10 +63,8 @@ namespace CLAM
 		/** BPF (envelope-like) Parameter. Hybridize Residual Spectral Shape */
 		DYN_ATTRIBUTE (12, public, BPF, HybResSpectralShape);
 		/** BPF (envelope-like) Parameter. Weight for Residual Spectral Shape */
-		DYN_ATTRIBUTE (13, public, BPF, HybResShapeW1);
-		/** BPF (envelope-like) Parameter. What residual phase to take, input sound or sound to hybridize */
-		DYN_ATTRIBUTE (14, public, BPF, HybResPhase);
-
+		DYN_ATTRIBUTE (13, public, BPF, HybResShapeW1 );
+		DYN_ATTRIBUTE (14, public, BPF, HybResShapeW2 );
 	protected:
 		void DefaultInit();
 

@@ -6,6 +6,7 @@
 namespace CLAMVM
 {
 	void clampBPFValues( CLAM::BPF& bpf, double min, double max );
+	void clearBPF( CLAM::BPF& bpf );
 }
 
 

@@ -116,6 +116,20 @@ namespace CLAM
 		return true;
 	}
 
+	bool Network::ConnectControls( const std::string & producer, const std::string & consumer )
+	{
+		OutControl & outcontrol = GetOutControlByCompleteName(producer);
+		InControl & incontrol = GetInControlByCompleteName(consumer);
+
+		if ( outcontrol.IsConnectedTo(incontrol) ) 
+			return false;
+			
+
+		outcontrol.AddLink( &incontrol );
+		return true;
+	}
+
+
 	bool Network::DisconnectPorts( const std::string & producer, const std::string & consumer)
 	{
 		AssertFlowControlNotNull();
@@ -130,6 +144,21 @@ namespace CLAM
 		inport.Unattach();
 		
 
+		return true;
+	}
+
+
+
+	bool Network::DisconnectControls( const std::string & producer, const std::string & consumer)
+	{
+
+		OutControl & outcontrol = GetOutControlByCompleteName(producer);
+		InControl & incontrol = GetInControlByCompleteName(consumer);
+
+		if ( !outcontrol.IsConnectedTo( incontrol )) 
+			return false;
+
+		outcontrol.RemoveLink( &incontrol );
 		return true;
 	}
 
@@ -162,7 +191,7 @@ namespace CLAM
 	std::size_t Network::PositionOfLastIdentifier( const std::string & str ) 
 	{
 		std::size_t result = str.find_last_of( NamesIdentifiersSeparator() );
-		CLAM_ASSERT( result!=std::string::npos, "Malformed port name. It should be ProcessingName.[Port/Control]Name");
+		CLAM_ASSERT( result!=std::string::npos, "Malformed port/control name. It should be ProcessingName.[Port/Control]Name");
 		return result;
 	}
 	std::size_t Network::PositionOfProcessingIdentifier( const std::string& str )

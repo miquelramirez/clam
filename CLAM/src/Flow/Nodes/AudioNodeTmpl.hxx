@@ -253,7 +253,7 @@ namespace CLAM {
 		mStream.SetPrototype(a);
 	}
 
-	void NodeTmpl::SetSampleRate(TData sr)
+	void AudioNodeTmpl::SetSampleRate(TData sr)
 	{
 		mStream.SetSampleRate(sr);
 	}

@@ -2,20 +2,21 @@
 #include "ConnectionAdapter.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
-#include "Network.hxx"
+
 
 namespace CLAMVM
 {
 
 ConnectionAdapter::ConnectionAdapter()
-	: mOutObserved(0), mInObserved(0)
+//	: mOutObserved(0), mInObserved(0)
+	: mNetworkObserved(0)
 {
 }
 
 ConnectionAdapter::~ConnectionAdapter()
 {
 }
-
+/*
 bool ConnectionAdapter::Publish()
 {
 	if ((!mOutObserved)  || (!mInObserved) || (!mNetworkObserved))
@@ -47,7 +48,8 @@ bool ConnectionAdapter::Publish()
 	
 	AcquireNames.Emit( outName, inName );
 }
-
+*/
+/*
 bool ConnectionAdapter::BindTo( const CLAM::OutPort& out, 
 				const CLAM::InPort& in, 
 				const CLAM::Network & net )
@@ -60,11 +62,14 @@ bool ConnectionAdapter::BindTo( const CLAM::OutPort& out,
 		return false;
 	return true;
 }
-
+*/
+/*
 bool ConnectionAdapter::ConnectsInPort( CLAM::InPort & in)
 {
 	return (&in == mInObserved);
 }
+*/
+
 
 
 } // namespace CLAMVM

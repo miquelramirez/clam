@@ -91,6 +91,7 @@ inline void SMSScoreEditor::cb_mScoreBrowser_i(Fl_Select_Browser* b, void*)
 		return;
 	
 	mHighlightedConfig = b->value();
+	
 	b->select( mHighlightedConfig );
 	
 	ClearTransformationWidgets();
@@ -116,7 +117,7 @@ SMSScoreEditor::SMSScoreEditor()
 	Fl_Window* w;
 
 	{
-		Fl_Window* o = mMainWindow = new Fl_Window(890, 475, "SMS - Transformation Score Edition");
+		Fl_Window* o = mMainWindow = new Fl_Window(890, 475, "SMS Tools 2 - SMS Transformation Score Editor");
 		w = o;
 		o->box(FL_FLAT_BOX);
 		o->user_data((void*)(this));
@@ -217,14 +218,14 @@ SMSScoreEditor::SMSScoreEditor()
 		{
 			Fl_Group* o =
 				mTransParmDock =
-				new Fl_Group(465, 20, 420, 420, "Transformation");
+				new Fl_Group(465, 20, 420, 450, "Transformation");
 			o->labelfont(FL_HELVETICA);
 			o->labelsize(14);
 			o->align(FL_ALIGN_TOP);
 			o->box(FL_ENGRAVED_BOX);
 
 			{
-				Fl_Tabs* o = mTransTabs = new Fl_Tabs(470, 25, 410, 410);
+				Fl_Tabs* o = mTransTabs = new Fl_Tabs(470, 25, 410, 440);
 				o->box(FL_DEFINED_UP_BOX);
 				o->labelsize(12);
 
@@ -263,6 +264,7 @@ SMSScoreEditor::SMSScoreEditor()
 			o->callback( (Fl_Callback*) cb_mApplyChangesToCurrentCfg, this );
 			o->deactivate();
 			o->labelsize(12);
+			o->hide();
 		}
 		{
 			Fl_Button* o =
@@ -272,6 +274,7 @@ SMSScoreEditor::SMSScoreEditor()
 			o->down_box(FL_DEFINED_DOWN_BOX);
 			o->deactivate();
 			o->labelsize(12);
+			o->hide();
 		}
 		{
 			mNoConfigWidgetAvailable = new Fl_Box( 0, 0, 100, 100 );
@@ -290,6 +293,14 @@ SMSScoreEditor::SMSScoreEditor()
 	ScoreWasChanged.Wrap( this, &SMSScoreEditor::OnScoreChanged );
 	ShowFactoryProductsOnBrowser();
 	ResetChangedStatus();
+}
+
+void SMSScoreEditor::RemoveAllConfiguratorsFromScoreBox()
+{
+	while( mScoreContentsBox->size() )
+	{
+		RemoveConfiguratorFromScoreBox( 1 );
+	}
 }
 
 void SMSScoreEditor::OnScoreChanged( )
@@ -347,7 +358,7 @@ void SMSScoreEditor::ShowFactoryProductsOnBrowser()
 
 void SMSScoreEditor::ShowScoreOnBrowser(  const CLAM::SMSTransformationChainConfig& cfg )
 {
-	mScoreContentsBox->clear();
+	RemoveAllConfiguratorsFromScoreBox();
 	CLAM::SMSTransformationChainConfig::const_iterator i = cfg.ConfigList_begin_const();
 
 	i++;
@@ -576,11 +587,16 @@ void SMSScoreEditor::RemoveConfiguratorFromScoreBox( int index )
 		if ( cfg->GetParametersWidget() == mConfigWidgetContainer->child(0) )
 			ClearTransformationEditWidget();
 	
-	currentParent =cfg->GetParametersWidget()->parent();
+	Fl_Widget* currentWidget = cfg->GetParametersWidget();
+
+	if ( currentWidget == NULL ) // No parameters widget
+		currentWidget = mNoConfigWidgetAvailable;
+
+	currentParent =currentWidget->parent();
 	if ( currentParent)
 	{
-		cfg->GetParametersWidget()->hide();
-		currentParent->remove( cfg->GetParametersWidget() );
+		currentWidget->hide();
+		currentParent->remove( currentWidget );
 		currentParent->end();
 	}
 

@@ -27,6 +27,8 @@ namespace NetworkGUI
 class Qt_ConnectionPresentation;
 class Qt_InPortPresentation;
 class Qt_OutPortPresentation;
+class Qt_InControlPresentation;
+class Qt_OutControlPresentation;
 
 class Qt_NetworkPresentation :  public QWidget, public NetworkPresentation
 {
@@ -40,8 +42,12 @@ protected:
 	virtual void OnNewName(const std::string& name); 
 	virtual void OnNewProcessing(CLAMVM::ProcessingController*, const std::string & name );
 	virtual void OnNewConnection(CLAMVM::ConnectionAdapter* );
+
 	virtual void OnNewInPortClicked( Qt_InPortPresentation *);
 	virtual void OnNewOutPortClicked( Qt_OutPortPresentation *);
+	virtual void OnNewInControlClicked( Qt_InControlPresentation *);
+	virtual void OnNewOutControlClicked( Qt_OutControlPresentation *);
+
 	virtual void OnNewConfiguration( CLAM::ProcessingConfig * );
 	void paintEvent( QPaintEvent * );
 	void mouseMoveEvent( QMouseEvent *);
@@ -50,22 +56,31 @@ protected:
 
 	Qt_InPortPresentation* mInPortSelected;
 	Qt_OutPortPresentation* mOutPortSelected;
+	Qt_InControlPresentation* mInControlSelected;
+	Qt_OutControlPresentation* mOutControlSelected;
 	QPoint mMousePos;
 	CLAM::QTConfigurator mConfigurator;
 
 public: // slots
 	SigSlot::Slotv1< Qt_InPortPresentation * > SetInPortClicked;
 	SigSlot::Slotv1< Qt_OutPortPresentation * > SetOutPortClicked;
+	SigSlot::Slotv1< Qt_InControlPresentation * > SetInControlClicked;
+	SigSlot::Slotv1< Qt_OutControlPresentation * > SetOutControlClicked;
 	SigSlot::Slotv1< CLAM::ProcessingConfig * > SetConfigurator;
 	// signals
 	SigSlot::Signalv1< const QPoint & > AcquireOutPortAfterClickInPort;
 	SigSlot::Signalv1< const QPoint & > AcquireInPortAfterClickOutPort;
+	SigSlot::Signalv1< const QPoint & > AcquireOutControlAfterClickInControl;
+	SigSlot::Signalv1< const QPoint & > AcquireInControlAfterClickOutControl;
 	SigSlot::Signalv1< const std::string& > SendNewMessageToStatus;
 
 
 private:
 	const std::string GetCompleteNameFromInPortSelected();
 	const std::string GetCompleteNameFromOutPortSelected();
+	const std::string GetCompleteNameFromInControlSelected();
+	const std::string GetCompleteNameFromOutControlSelected();
+
 };
 
 } // namespace NetworkGUI

@@ -5,6 +5,8 @@
 #include "Node.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 #include "OutPortTmpl.hxx"
 #include "CircularStreamImpl.hxx"
 #include "NodeTmpl.hxx"
@@ -36,7 +38,9 @@ public:
 	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name );
 	bool ConnectPorts( const std::string &, const std::string & );
+	bool ConnectControls( const std::string &, const std::string & );
 	bool DisconnectPorts( const std::string &, const std::string & );
+	bool DisconnectControls( const std::string &, const std::string & );
 	void DisconnectAllPorts();
 	
 	void Start();
@@ -58,11 +62,10 @@ public:
 	Nodes::const_iterator EndNodes() const;
 	InPort & GetInPortByCompleteName( const std::string& );
 	OutPort & GetOutPortByCompleteName( const std::string& );
-
-
-protected:
 	InControl & GetInControlByCompleteName( const std::string& );
 	OutControl & GetOutControlByCompleteName( const std::string& );
+
+protected:
 	NodeBase & GetNodeAttachedTo(OutPort & );
 private:
 	

@@ -673,7 +673,7 @@ void Array<T>::Init()
 template<class T>
 Array<T>::Array(T* ptr,int size) 
 {
-	throw(Err("Array::Array(T*): Not implemented"));
+	CLAM_ASSERT(false,"Array::Array(T*): Not implemented");
 }
 
 template<class T>
@@ -749,19 +749,19 @@ T* Array<T>::GetPtr(void)
 template<class T>
 void Array<T>::SetPtr(T* ptr) 
 {
-	throw(Err("Array::SetPtr(T*): Not implemented"));
+	CLAM_ASSERT(false,"Array::SetPtr(T*): Not implemented");
 }
 
 template<class T>
 TSize Array<T>::GetStep() 
 {
-	throw(Err("Array::GetStep(): Not implemented"));
+	CLAM_ASSERT(false,"Array::GetStep(): Not implemented");
 }
 
 template<class T>
 void Array<T>::SetStep(TSize step) 
 {
-	throw(Err("Array::SetStep(int): Not implemented"));
+	CLAM_ASSERT(false,"Array::SetStep(int): Not implemented");
 }
 
 template<class T>

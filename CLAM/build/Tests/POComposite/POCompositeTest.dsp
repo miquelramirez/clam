@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Flow\Ports"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Base" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\xercesc\lib" xerces-c_1.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "POCompositeTest - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Errors" /I "..\..\..\src\Defines" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Flow\Ports"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\src\Base" /I "..\..\..\src\Defines" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\..\xercesc\include"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\xercesc\lib" xerces-c_1d.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -123,6 +123,36 @@ SOURCE=..\..\..\src\Errors\ErrDynamicType.cxx
 SOURCE=..\..\..\src\Defines\Assert.cxx
 # End Source File
 # End Group
+# Begin Group "Storage Sources"
+
+# Begin Group "XML Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\BasicXMLable.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLComponentAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLStorage.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XercesDomPrinter.cxx
+# End Source File
+# End Group
+# End Group
 # Begin Group "Base Sources"
 
 # Begin Source File
@@ -148,6 +178,14 @@ SOURCE=..\..\..\src\Flow\Controls\OutControl.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Flow\Ports\Port.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\InPort.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\OutPort.cxx
 # End Source File
 # End Group
 # End Group
@@ -188,6 +226,59 @@ SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.cxx
 # End Group
 # Begin Group "Header Files"
 
+# Begin Group "Storage Headers"
+
+# Begin Group "Base Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\Base\Storable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\Base\Storage.hxx
+# End Source File
+# End Group
+# Begin Group "XML Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\BasicXMLable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLComponentAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLIterableAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLStorage.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLArrayAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Storage\XML\XercesDomPrinter.hxx
+# End Source File
+# End Group
+# End Group
 # Begin Group "Errors Headers"
 
 # Begin Source File
@@ -215,6 +306,10 @@ SOURCE=..\..\..\src\Defines\Assert.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Defines\mtgsstream.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Defines\StaticBool.hxx
 # End Source File
 # Begin Source File
@@ -235,10 +330,6 @@ SOURCE=..\..\..\src\Defines\DataTypes.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Defines\mtgsstream.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Defines\ByteOrder.hxx
 # End Source File
 # Begin Source File
@@ -250,34 +341,20 @@ SOURCE=..\..\..\src\Defines\EDataFormat.hxx
 SOURCE=..\..\..\src\Defines\OSDefines.hxx
 # End Source File
 # End Group
-# Begin Group "Base Headers"
+# Begin Group "Base Headers No. 1"
 
-# Begin Source File
-
-SOURCE=..\..\..\src\Base\DynamicTypeMacros.hxx
-# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Base\Component.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Base\DynamicTypeMacros.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Base\DynamicType.hxx
 # End Source File
-# End Group
-# Begin Group "Storage Headers"
-
-# Begin Group "Base Headers No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\Base\Storable.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Storage\Base\Storage.hxx
-# End Source File
-# End Group
 # End Group
 # Begin Group "Flow Headers"
 
@@ -341,6 +418,10 @@ SOURCE=..\..\..\src\Processing\Base\PublishedOutPorts.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Processing\Base\ProcessingConfig.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Processing\Base\Processing.hxx
 # End Source File
 # Begin Source File
@@ -351,6 +432,155 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.hxx
 
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 # End Source File
+# End Group
+# End Group
+# Begin Group "xercesc Headers"
+
+# Begin Group "include Headers"
+
+# Begin Group "xercesc Headers No. 1"
+
+# Begin Group "util Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\util\XercesDefs.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\util\PlatformUtils.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\util\XMLString.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\util\XMLUniDefs.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\util\TranscodingException.hpp
+# End Source File
+# End Group
+# Begin Group "parsers Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\parsers\DOMParser.hpp
+# End Source File
+# End Group
+# Begin Group "dom Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOMString.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Node.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Element.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Attr.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_CharacterData.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Text.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_CDATASection.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Comment.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_DocumentType.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_DOMImplementation.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_DocumentFragment.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_ProcessingInstruction.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Entity.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_EntityReference.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_NodeList.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Notation.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_NodeFilter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_NodeIterator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_TreeWalker.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_XMLDecl.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Range.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_Document.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_DOMException.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM_NamedNodeMap.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\dom\DOM.hpp
+# End Source File
+# End Group
+# Begin Group "framework Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\xercesc\include\xercesc\framework\XMLFormatter.hpp
+# End Source File
+# End Group
+# End Group
 # End Group
 # End Group
 # End Group

@@ -112,6 +112,10 @@ SOURCE=.\dsp_parser.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\emptydsp.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\hash.c
 # End Source File
 # Begin Source File

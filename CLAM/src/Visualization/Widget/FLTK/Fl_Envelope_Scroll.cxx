@@ -144,7 +144,7 @@ void Fl_EnvelopeControl::e_cb(Fl_Envelope* ev,Fl_EnvelopeControl* ec)
 // class Fl_Envelope_Scroll
 
 Fl_Envelope_Scroll::Fl_Envelope_Scroll(int x,int y,int w,int h)
-	: Fl_Group(x,y,w,h)
+	: Fl_Group(x,y,w,h), mIsActive( true )
 {
 	hscroll = new Fl_Scrollbar( x, y+h-36, w-36, 18);
 	vscroll = new Fl_Scrollbar( x+w-36, y, 18, h-36);
@@ -157,8 +157,16 @@ Fl_Envelope_Scroll::Fl_Envelope_Scroll(int x,int y,int w,int h)
 	hscroll->type(FL_HOR_SLIDER);
 	hslider->type(FL_HOR_SLIDER);
 	end();
+	//resizable( envelope );
 	resizable( window );
 	window->resizable(envelope);
+}
+
+int Fl_Envelope_Scroll::handle( int event )
+{
+	int retValue = Fl_Group::handle( event );
+
+	return retValue;
 }
 
 void Fl_Envelope_Scroll::margin_adjust(void)

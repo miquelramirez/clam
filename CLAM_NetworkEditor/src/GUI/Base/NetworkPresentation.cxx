@@ -7,6 +7,8 @@
 #include "ConnectionPresentation.hxx"
 #include "OutPortPresentation.hxx"
 #include "InPortPresentation.hxx"
+#include "OutControlPresentation.hxx"
+#include "InControlPresentation.hxx"
 #include "Processing.hxx"
 
 namespace NetworkGUI
@@ -104,6 +106,18 @@ InPortPresentation & NetworkPresentation::GetInPortPresentationByCompleteName(co
 {	
 	ProcessingPresentation& proc = GetProcessingPresentation( GetProcessingIdentifier(name) );
 	return proc.GetInPortPresentation( GetLastIdentifier(name) );
+}
+
+OutControlPresentation & NetworkPresentation::GetOutControlPresentationByCompleteName(const std::string & name)
+{
+	ProcessingPresentation& proc = GetProcessingPresentation( GetProcessingIdentifier(name) );
+	return proc.GetOutControlPresentation( GetLastIdentifier(name) );
+}
+
+InControlPresentation & NetworkPresentation::GetInControlPresentationByCompleteName(const std::string &name)
+{	
+	ProcessingPresentation& proc = GetProcessingPresentation( GetProcessingIdentifier(name) );
+	return proc.GetInControlPresentation( GetLastIdentifier(name) );
 }
 
 ProcessingPresentation& NetworkPresentation::GetProcessingPresentation( const std::string & name )

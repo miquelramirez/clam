@@ -15,6 +15,8 @@ namespace CLAMVM
 
 class InPortAdapter;
 class OutPortAdapter;
+class InControlAdapter;
+class OutControlAdapter;
 
 class ProcessingController : public ModelController, public ProcessingModel
 {
@@ -23,8 +25,12 @@ private:
 	CLAM::ProcessingConfig* mConfig;
 	std::list<InPortAdapter*> mInPortAdapters;
 	std::list<OutPortAdapter*> mOutPortAdapters;
+	std::list<InControlAdapter*> mInControlAdapters;
+	std::list<OutControlAdapter*> mOutControlAdapters;
 	typedef std::list<OutPortAdapter*>::iterator OutPortAdapterIterator;
 	typedef std::list<InPortAdapter*>::iterator InPortAdapterIterator;
+	typedef std::list<OutControlAdapter*>::iterator OutControlAdapterIterator;
+	typedef std::list<InControlAdapter*>::iterator InControlAdapterIterator;
 public:
 	ProcessingController();
 	virtual ~ProcessingController();

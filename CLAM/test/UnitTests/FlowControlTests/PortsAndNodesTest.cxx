@@ -62,8 +62,6 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithAudioPorts_WhenPortsAreNotConnectedWithNode );
 	CPPUNIT_TEST( testOutPort_IsConnectedTo_WithGeneralTemplatePorts_WhenPortsAreNotConnectedWithNode );
 
-	CPPUNIT_TEST( testPortSetParams_WhenIsAlreadyAttached_AssertsWithRightMessage );
-
 	// tests related to IsReadyForReading / IsReadyForWriting methods of Inport/OutPort classes
 	/*
 	CPPUNIT_TEST( testInPort_IsReadyForReading_WithGeneralTemplatePorts_WhenThereIsDataReady );
@@ -309,25 +307,7 @@ class PortsAndNodesTest : public CppUnit::TestFixture, public CLAM::Processing
 		CLAM::InPortTmpl<DummyProcessingData> concreteIn("out", this, length);
 		CPPUNIT_ASSERT_EQUAL( false, concreteOut.IsConnectedTo(concreteIn) );
 	}
-
 	
-	void testPortSetParams_WhenIsAlreadyAttached_AssertsWithRightMessage()
-	{
-		const int length=1; 
-		CLAM::OutPortTmpl<DummyProcessingData> out("out", this, length);
-		// for this tests any kind of node and port suits us
-		CLAM::NodeTmpl<DummyProcessingData, CLAM::CircularStreamImpl<DummyProcessingData> > node;
-		out.Attach(node);
-		try {
-			out.SetParams(length);
-			CPPUNIT_FAIL("an assert was supposed to happen. But nothing happened.");
-		} catch ( CLAM::ErrAssertionFailed& expected) {
-			CPPUNIT_ASSERT_EQUAL( 
-				std::string("Port::SetParams(int), SetParams must be called before Attach port"), 
-				std::string( expected.what() ) );
-		}
-	}
-
 	void testInPort_IsReadyForReading_WithAudioPorts_WhenIsNotAttachedToNode()
 	{
 		const int length=1;

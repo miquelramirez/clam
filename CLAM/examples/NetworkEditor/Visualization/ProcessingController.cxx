@@ -2,6 +2,8 @@
 #include "ProcessingController.hxx"
 #include "InPortAdapter.hxx"
 #include "OutPortAdapter.hxx"
+#include "InControlAdapter.hxx"
+#include "OutControlAdapter.hxx"
 #include "Processing.hxx"
 
 #include <vector>
@@ -20,12 +22,19 @@ ProcessingController::~ProcessingController()
 	if (mConfig)
 		delete mConfig;
 
-	InPortAdapterIterator itin;
-	for ( itin=mInPortAdapters.begin(); itin!=mInPortAdapters.end(); itin++)
-		delete *itin;
-	OutPortAdapterIterator itout;
-	for ( itout=mOutPortAdapters.begin(); itout!=mOutPortAdapters.end(); itout++)
-		delete *itout;
+	InPortAdapterIterator itPortIn;
+	for ( itPortIn=mInPortAdapters.begin(); itPortIn!=mInPortAdapters.end(); itPortIn++)
+		delete *itPortIn;
+	OutPortAdapterIterator itPortOut;
+	for ( itPortOut=mOutPortAdapters.begin(); itPortOut!=mOutPortAdapters.end(); itPortOut++)
+		delete *itPortOut;
+	InControlAdapterIterator itCtrlIn;
+	for ( itCtrlIn=mInControlAdapters.begin(); itCtrlIn!=mInControlAdapters.end(); itCtrlIn++)
+		delete *itCtrlIn;
+	OutControlAdapterIterator itCtrlOut;
+	for ( itCtrlOut=mOutControlAdapters.begin(); itCtrlOut!=mOutControlAdapters.end(); itCtrlOut++)
+		delete *itCtrlOut;
+
 }
 	
 
@@ -43,29 +52,55 @@ bool ProcessingController::Publish()
 
 	AcquireConfig.Emit( mConfig );
 	CLAM::Processing* proc = (CLAM::Processing*) mObserved;	
-	CLAM::Processing::ConstInPortIterator itin;
-	for (itin = proc->GetInPorts().Begin(); 
-	     itin != proc->GetInPorts().End(); 
-	     itin++)
+	CLAM::Processing::ConstInPortIterator itPortIn;
+	for (itPortIn = proc->GetInPorts().Begin(); 
+	     itPortIn != proc->GetInPorts().End(); 
+	     itPortIn++)
 	{
 		InPortAdapter* adapter = new InPortAdapter;
-		CLAM::InPort* inport = *itin;
+		CLAM::InPort* inport = *itPortIn;
 		adapter->BindTo(*inport);
 		mInPortAdapters.push_back(adapter);
 		AcquireInPort.Emit(adapter);
 	}
 	
-	CLAM::Processing::ConstOutPortIterator itout;
-	for (itout = proc->GetOutPorts().Begin(); 
-		     itout != proc->GetOutPorts().End(); 
-	     itout++)
+	CLAM::Processing::ConstOutPortIterator itPortOut;
+	for (itPortOut = proc->GetOutPorts().Begin(); 
+	     itPortOut != proc->GetOutPorts().End(); 
+	     itPortOut++)
 	{	
 		OutPortAdapter* adapter = new OutPortAdapter;
-		CLAM::OutPort* outport = *itout;
+		CLAM::OutPort* outport = *itPortOut;
 		adapter->BindTo(*outport);
 		mOutPortAdapters.push_back(adapter);
 		AcquireOutPort.Emit(adapter);
 	}
+
+
+	CLAM::Processing::ConstInControlIterator itCtrlIn;
+	for (itCtrlIn = proc->GetInControls().Begin(); 
+	     itCtrlIn != proc->GetInControls().End(); 
+	     itCtrlIn++)
+	{
+		InControlAdapter* adapter = new InControlAdapter;
+		CLAM::InControl* incontrol = *itCtrlIn;
+		adapter->BindTo(*incontrol);
+		mInControlAdapters.push_back(adapter);
+		AcquireInControl.Emit(adapter);
+	}
+	
+	CLAM::Processing::ConstOutControlIterator itCtrlOut;
+	for (itCtrlOut = proc->GetOutControls().Begin(); 
+	     itCtrlOut != proc->GetOutControls().End(); 
+	     itCtrlOut++)
+	{	
+		OutControlAdapter* adapter = new OutControlAdapter;
+		CLAM::OutControl* outcontrol = *itCtrlOut;
+		adapter->BindTo(*outcontrol);
+		mOutControlAdapters.push_back(adapter);
+		AcquireOutControl.Emit(adapter);
+	}
+
 	return true;
 }
 

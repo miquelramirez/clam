@@ -1,0 +1,50 @@
+This is the CHANGELOG file for SMS Tools 2, a CLAM application. For a CHANGELOG of SMS Tools before version 0.1, please
+refer to CLAM own CHANGELOG.
+
+TODOs:
+     ** Main application GUI:
+	*** Bug fixing: last data display window closed is not being completely 
+	    erased from main UI ( X-Windows only )
+
+	
+	
+2003-08-01
+'Bug fixing and SMS Morph editor improvements'
+  * SMS Tools 2 - v.0.1.2
+      ** General issues:
+	  *** Bug fixed: DOS console should not appear  ( Windows only )
+	  *** Bug fixed: when storing/loading SMS analysis results into XML
+	      the "wait" message that appears on screen was not being updated
+	  *** New feature: now SMSTools 2 license can be read from within the application ( menu Help->License... )
+	  *** New feature: almost always SMSTools 2 crashes a log file ( SMSTools2_errors.log ) is created with
+	      information about the causes of the application crash
+	  
+      ** Processing - SMS Transformations:
+	  *** Bug fixed: sometimes transformations were not being applied properly ( or at all )
+
+      ** GUI - Main Window:
+   	 *** Bug fixed: pressing 'SMS Analysis->Store Melody' button crashed application
+	 *** New feature: message box added telling the user that the melody extraction was successfully performed
+
+	
+      ** GUI - Score Editor:
+	  *** Added several more parameters to the SMS Morph transformation widget
+	  *** Bug fixed: pressing 'Apply configuration' button while being visible the Pitch Discretization control
+	      widget caused SMSTools 2 to crash
+	
+2003-07-25
+'Bug fixing and SMS Morph editor improvements'
+  * SMS Tools 2 - v.0.1.1
+      ** GUI - Score Editor:
+	  *** UI screen texts tweaked so they result more informative
+	  *** Added new and improved SMS Morph transformation control widget, 
+	      allowing user a finer grain level of control on that SMS transformation. Also SMS Morph
+	      transformation description has been completely rewritten.
+	  *** Bug fixed: under some circumstances configuration widgets might be 
+              unadvertendly duplicated, leading to invalid transformation scores
+	  *** Editor widget layout tweaked a bit to make bigger the screen area devoted
+	      to transformation parameters edition
+
+	
+2003-07-23 SMS Tools 2, version 0.1
+'First SMS Tools 2 public release'
