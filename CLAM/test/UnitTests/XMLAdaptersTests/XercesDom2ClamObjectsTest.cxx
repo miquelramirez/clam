@@ -40,6 +40,11 @@ class XercesDomToClamObjectsTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testLoadingContentAfterElement);
 	CPPUNIT_TEST(testLoadingSubobjects);
 	CPPUNIT_TEST(testLoadingSubobjects_whenComponentIsContent);
+	CPPUNIT_TEST(testForErrors_UnexpectedElementOnRoot);
+	CPPUNIT_TEST(testForErrors_UnexpectedContentOnRoot);
+	CPPUNIT_TEST(testForErrors_UnexpectedElementOnInner);
+	CPPUNIT_TEST(testForErrors_UnexpectedContentOnInner);
+	CPPUNIT_TEST(testForErrors_withXmlParseErrors);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -61,8 +66,25 @@ private:
 		XMLStorage loader;
 		loader.Read(xml);
 		loader.RestoreObject(toLoad);
+		loader.ThrowErrors();
 
 		CPPUNIT_ASSERT_EQUAL(expected, toLoad.childStructureTrace(0));
+	}
+	void assertErrorGiven(const std::string & expected, CompositeOfXmlables & toLoad, std::istream & xml, const std::string & parsed="")
+	{
+		XMLStorage loader;
+		try
+		{
+			loader.Read(xml);
+			loader.RestoreObject(toLoad);
+			loader.ThrowErrors();
+			CPPUNIT_FAIL("Should have thrown an exception");
+		}
+		catch (CLAM::XmlStorageErr & err)
+		{
+			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
+		}
+		CPPUNIT_ASSERT_EQUAL(parsed, toLoad.childStructureTrace(0));
 	}
 	
 	
@@ -157,9 +179,14 @@ private:
 		CompositeOfXmlables toLoad;
 		XmlMockUpBasic basic("Element",true);
 		basic.setContent("PreviousValue");
+		XmlMockUpBasic basic2("Other",true);
+		basic2.setContent("PreviousOtherValue");
 		toLoad.add(basic);
+		toLoad.add(basic2);
 
-		std::string expected= "B'PreviousValue'[unloaded]\n";
+		std::string expected=
+			"B'PreviousValue'[unloaded]\n"
+			"B''\n";
 
 		assertComponentsLoaded(expected, toLoad, xml);
 	}
@@ -263,6 +290,102 @@ private:
 			"}\n";
 
 		assertComponentsLoaded(expected, toLoad, xml);
+	}
+	void testForErrors_UnexpectedElementOnRoot()
+	{
+		std::istringstream xml(
+			"<Doc>"
+			"<Element>"
+			"</Element>"
+			"</Doc>"
+			);
+		CompositeOfXmlables toLoad;
+
+		std::string expected= 
+			"Unexpected Element: 'Element' at position /Doc\n";
+		std::string parsed="";
+
+		assertErrorGiven(expected, toLoad, xml, parsed);
+	}
+
+	void testForErrors_UnexpectedContentOnRoot()
+	{
+		std::istringstream xml(
+			"<Doc>"
+			"Unexpected content"
+			"</Doc>"
+			);
+		CompositeOfXmlables toLoad;
+
+		std::string expected= 
+			"Unexpected content: 'Unexpected content' at position /Doc\n";
+		std::string parsed= "";
+
+		assertErrorGiven(expected, toLoad, xml, parsed);
+	}
+	void testForErrors_UnexpectedElementOnInner()
+	{
+		std::istringstream xml(
+			"<Doc>"
+			"<Element>"
+			"<UnExpectedSubElement/>"
+			"</Element>"
+			"</Doc>"
+			);
+		CompositeOfXmlables toLoad;
+		XmlMockUpComponent component("Element",true);
+		component.setContent("PreviousElementContent");
+		toLoad.add(component);
+
+		std::string expected= 
+			"Unexpected Element: 'UnExpectedSubElement' at position /Doc/Element\n";
+		std::string parsed= 
+			"C''\n"
+			"{\n"
+			"}\n";
+
+		assertErrorGiven(expected, toLoad, xml, parsed);
+	}
+
+	void testForErrors_UnexpectedContentOnInner()
+	{
+		std::istringstream xml(
+			"<Doc>"
+			"<Element>"
+			"ParsedWord Unexpected Content"
+			"</Element>"
+			"</Doc>"
+			);
+		CompositeOfXmlables toLoad;
+		XmlMockUpComponent component("Element",true);
+		component.setContent("PreviousElementContent");
+		toLoad.add(component);
+
+		std::string expected= 
+			"Unexpected content: 'Unexpected Content' at position /Doc/Element\n";
+		std::string parsed= 
+			"C'ParsedWord'\n"
+			"{\n"
+			"}\n";
+
+		assertErrorGiven(expected, toLoad, xml, parsed);
+	}
+	void testForErrors_withXmlParseErrors()
+	{
+		std::istringstream xml(
+			"<Doc>"
+			"</Element>"
+			"</Doc>"
+			);
+		CompositeOfXmlables toLoad;
+
+		std::string expected= 
+			"\nXML Parser Errors:\n"
+			"Fatal Error at file CLAMParser, line 1, col 8:\n"
+			"Expected end of tag 'Doc'\n";
+		std::string parsed= "";
+
+		assertErrorGiven(expected, toLoad, xml, parsed);
 	}
 
 };

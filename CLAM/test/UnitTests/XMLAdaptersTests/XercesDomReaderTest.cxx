@@ -6,6 +6,7 @@
 #include "XercesInitializer.hxx"
 #include "XercesEncodings.hxx"
 #include <sstream>
+#include <fstream>
 
 namespace CLAM
 {
@@ -24,6 +25,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( XercesDomReaderTest );
 class XercesDomReaderTest : public CppUnit::TestCase
 {
 	CPPUNIT_TEST_SUITE( XercesDomReaderTest );
+	CPPUNIT_TEST(testBadSource_throwsException);
+	CPPUNIT_TEST(testNonXml_throwsException);
 	CPPUNIT_TEST(testEmptyDocument);
 	CPPUNIT_TEST(testFullDocument);
 	CPPUNIT_TEST(testFullDocument_whenDuplicatedAttribute);
@@ -49,9 +52,46 @@ private:
 	std::stringstream mTargetStream;
 	std::string xmlHeader() 
 	{
-	return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>";
+		return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>";
 	}
 
+	void testBadSource_throwsException()
+	{
+		std::ifstream toRead("NonExistingFile.xml");
+		XercesDomReader reader;
+		try {
+			xercesc::DOMNode * document = reader.read(toRead);
+			CPPUNIT_FAIL("Read should have thrown an exception");
+		}
+		catch (XmlStorageErr & e)
+		{
+			CPPUNIT_ASSERT_EQUAL(
+				std::string("Unable to open the document source"),
+			std::string(e.what()));
+		}
+	}
+
+	void testNonXml_throwsException()
+	{
+		std::istringstream toRead("ument />");
+		XercesDomReader reader;
+
+		try {
+			xercesc::DOMNode * document = reader.read(toRead);
+			CPPUNIT_FAIL("Read should have thrown an exception");
+		}
+		catch (XmlStorageErr & e)
+		{
+			CPPUNIT_ASSERT_EQUAL(
+				std::string(
+					"\n"
+					"XML Parser Errors:\n"
+					"Fatal Error at file CLAMParser, line 1, col 1:\n"
+					"Invalid document structure\n"
+					),
+			std::string(e.what()));
+		}
+	}
 	void testEmptyDocument()
 	{
 		std::istringstream toRead("<EmptyDocument />");
@@ -102,7 +142,7 @@ private:
 			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
 		}
-		catch (Err & e)
+		catch (XmlStorageErr & e)
 		{
 			CPPUNIT_ASSERT_EQUAL(std::string(
 			"\n"
@@ -130,12 +170,12 @@ private:
 			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
 		}
-		catch (Err & e)
+		catch (XmlStorageErr & e)
 		{
 			CPPUNIT_ASSERT_EQUAL(std::string(
 			"\n"
 			"XML Parser Errors:\n"
-			"Fatal Error at file CLAMParser, line 1, col 88:\n"
+			"Fatal Error at file CLAMParser, line 1, col 81:\n"
 			"Expected end of tag 'Unclosed'\n"
 			), std::string(e.what()));
 		}
@@ -158,12 +198,12 @@ private:
 			xercesc::DOMNode * document = reader.read(toRead);
 			CPPUNIT_FAIL("Read should have thrown an exception");
 		}
-		catch (Err & e)
+		catch (XmlStorageErr & e)
 		{
 			CPPUNIT_ASSERT_EQUAL(std::string(
 			"\n"
 			"XML Parser Errors:\n"
-			"Fatal Error at file CLAMParser, line 1, col 79:\n"
+			"Fatal Error at file CLAMParser, line 1, col 71:\n"
 			"Expected end of tag 'Element'\n"
 			), std::string(e.what()));
 		}
