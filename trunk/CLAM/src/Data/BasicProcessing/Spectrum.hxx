@@ -37,7 +37,6 @@
 #include "ProcessingDataConfig.hxx"
 #include "ProcessingData.hxx"
 #include "GlobalEnums.hxx"
-#include "SpectralDescriptors.hxx"
 
 namespace CLAM{
 
@@ -163,7 +162,7 @@ protected:
 class Spectrum : public ProcessingData
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (Spectrum, 11, ProcessingData);
+	DYNAMIC_TYPE_USING_INTERFACE (Spectrum, 10, ProcessingData);
 	/**
 	* The kind of scale
 	*/
@@ -180,10 +179,6 @@ public:
 	DYN_ATTRIBUTE (7, public, Array<Polar>, PolarArray);
 	DYN_ATTRIBUTE (8, public, BPF, MagBPF);
 	DYN_ATTRIBUTE (9, public, BPF, PhaseBPF);
-	/**
-	* Optional Attribute for holding descriptors data, must be manually added
-	*/
-	DYN_ATTRIBUTE (10, public, SpectralDescriptors, Descriptors);
 
 public:
 	Spectrum(const SpectrumConfig &newConfig) : ProcessingData(eNumAttr)

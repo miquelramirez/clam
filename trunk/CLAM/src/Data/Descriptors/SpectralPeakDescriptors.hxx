@@ -22,8 +22,6 @@
 #ifndef __SpectralPeakDescriptors_H__
 #define __SpectralPeakDescriptors_H__
 
-
-#include "Flags.hxx"
 #include "DynamicType.hxx"
 #include "ProcessingData.hxx"
 #include "DataTypes.hxx"
@@ -38,136 +36,7 @@
 namespace CLAM {
 
 	
-
-
-	/**
-	* Flags for descriptors derived from the SpectralPeak array
-	*/
-	class SpectralPeakDescriptorsFlags : public CLAM::Flags<11> {
-
-	// Construction/Destruction
-	public:
-		static tFlagValue sFlagValues[];
-		virtual CLAM::Component * Species() const {
-			return new SpectralPeakDescriptorsFlags();
-		}
-		typedef enum {
-			eMagnitudeMean=0,
-			eHarmonicCentroid=1,
-			eSpectralTilt=2,
-			eHarmonicDeviation=3,
-			eFirstTristimulus=4,
-			eSecondTristimulus=5,
-			eThirdTristimulus=6,
-			eBrightness=7,
-			eOddHarmonics=8,
-			eEvenHarmonics=9,
-			eOddToEvenRatio=10
-		} tFlag;
-
-		SpectralPeakDescriptorsFlags () :
-			CLAM::Flags<11>(sFlagValues),
-			magnitudeMean(operator[](eMagnitudeMean)),
-			harmonicCentroid(operator[](eHarmonicCentroid)),
-			spectralTilt(operator[](eSpectralTilt)),
-			harmonicDeviation(operator[](eHarmonicDeviation)),
-			firstTristimulus(operator[](eFirstTristimulus)),
-			secondTristimulus(operator[](eSecondTristimulus)),
-			thirdTristimulus(operator[](eThirdTristimulus)),
-			brightness(operator[](eBrightness)),
-			oddHarmonics(operator[](eOddHarmonics)),
-			evenHarmonics(operator[](eEvenHarmonics)),
-			oddToEvenRatio(operator[](eOddToEvenRatio))
-		{
-		};
-
-		template <class T> SpectralPeakDescriptorsFlags(const T &t) : 
-			CLAM::Flags<11>(sFlagValues,t),
-			magnitudeMean(operator[](eMagnitudeMean)),
-			harmonicCentroid(operator[](eHarmonicCentroid)),
-			spectralTilt(operator[](eSpectralTilt)),
-			harmonicDeviation(operator[](eHarmonicDeviation)),
-			firstTristimulus(operator[](eFirstTristimulus)),
-			secondTristimulus(operator[](eSecondTristimulus)),
-			thirdTristimulus(operator[](eThirdTristimulus)),
-			brightness(operator[](eBrightness)),
-			oddHarmonics(operator[](eOddHarmonics)),
-			evenHarmonics(operator[](eEvenHarmonics)),
-			oddToEvenRatio(operator[](eOddToEvenRatio))
-		{};
-
-		template <class T1, class T2> SpectralPeakDescriptorsFlags(const T1 &t1, const T2 &t2) : 
-			CLAM::Flags<11>(sFlagValues,t1,t2),
-			magnitudeMean(operator[](eMagnitudeMean)),
-			harmonicCentroid(operator[](eHarmonicCentroid)),
-			spectralTilt(operator[](eSpectralTilt)),
-			harmonicDeviation(operator[](eHarmonicDeviation)),
-			firstTristimulus(operator[](eFirstTristimulus)),
-			secondTristimulus(operator[](eSecondTristimulus)),
-			thirdTristimulus(operator[](eThirdTristimulus)),
-			brightness(operator[](eBrightness)),
-			oddHarmonics(operator[](eOddHarmonics)),
-			evenHarmonics(operator[](eEvenHarmonics)),
-			oddToEvenRatio(operator[](eOddToEvenRatio))
-		{};
-
-		/**
-		* Mean of the magnitude of detected SpectralPeaks
-		*/
-		reference magnitudeMean;
-
-		/**
-		* 1st order moment of harmonics
-		*/
-		reference harmonicCentroid;
-
-		/**
-		* Spectral Tilt of the sinusoidal component: linear regression of the (fi,ai) data points
-		*/
-		reference spectralTilt;
-
-		/**
-		* Spectral Deviation taking into account only harmonic content
-		*/
-		reference harmonicDeviation;
-
-		/**
-		* Energy of the 1st harmonic
-		*/
-		reference firstTristimulus;
-
-		/**
-		* 2nd modified Tristimulus parameter
-		*/
-		reference secondTristimulus;
-
-		/**
-		* 3rd modified Tristimulus parameter
-		*/
-		reference thirdTristimulus;
-
-		/**
-		* 1st order moment using number of harmonic instead of frequency
-		*/
-		reference brightness;
-
-		/**
-		* Content in odd harmonics excluding the 1st one
-		*/
-		reference oddHarmonics;
-
-		/**
-		* Content in even harmonics
-		*/
-		reference evenHarmonics;
-
-		/**
-		* Ratio of Odd harmonics content divided by Even harmonics content
-		*/
-		reference oddToEvenRatio;
-
-
-	};
+	class SpectralPeakArray;
 
 
 	class SpectralPeakDescriptors : public ProcessingData {
@@ -187,11 +56,15 @@ namespace CLAM {
 		
 	public:
 
-		SpectralPeakDescriptors(SpectralPeakDescriptorsFlags& flags);
-		void SetFlags(const SpectralPeakDescriptorsFlags& flags);
-		void GetFlags(SpectralPeakDescriptorsFlags& flags) const;
+		SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray);
+		
+		const SpectralPeakArray* GetpSpectralPeakArray() const{return mpSpectralPeakArray;}
+		void SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray) {mpSpectralPeakArray=pSpectralPeakArray;}
 
 		friend class SpectralPeakDescriptorsGen;
+
+	private:
+		SpectralPeakArray* mpSpectralPeakArray;
 
 	};
 	

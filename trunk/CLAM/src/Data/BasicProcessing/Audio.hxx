@@ -37,7 +37,6 @@
 #include "ProcessingData.hxx"
 #include "ProcessingDataConfig.hxx"
 #include "DataTypes.hxx"
-#include "AudioDescriptors.hxx"
 
 namespace CLAM {
 
@@ -47,7 +46,7 @@ namespace CLAM {
 	 */
 	class Audio: public ProcessingData {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (Audio, 4, ProcessingData);
+		DYNAMIC_TYPE_USING_INTERFACE (Audio, 3, ProcessingData);
 
 		/** Sample rate in Hz */
 		DYN_ATTRIBUTE (0, public, TData, SampleRate);
@@ -55,8 +54,6 @@ namespace CLAM {
 		DYN_ATTRIBUTE (1, public, TTime, BeginTime);
 		/** The Audio buffer */
 		DYN_ATTRIBUTE (2, public, DataArray, Buffer);
-		/** Optional attribute to hold data for audio related descriptors */
-		DYN_ATTRIBUTE (3, public, AudioDescriptors, Descriptors);
 
 	protected:
 

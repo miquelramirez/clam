@@ -28,7 +28,7 @@
 #include "DataTypes.hxx"
 
 #include "AudioDescriptors.hxx"
-#include "SpectrumDescriptors.hxx"
+#include "SpectralDescriptors.hxx"
 #include "SpectralPeakDescriptors.hxx"
 
 namespace CLAM{
@@ -39,38 +39,38 @@ class Frame;
 /*
  * This class holds Descriptors computed from Frame data. Right now no specific
  * descriptors are computed for frame (only for spectrums, audios... that are held
- * inside the frame. TODO: add specific descriptors an create corresponding flags.
+ * inside the frame. TODO: add specific descriptors.
  *
  */
 class FrameDescriptors : public ProcessingData
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 11, ProcessingData);
+	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 8, ProcessingData);
 	/** Spectrum analyzed from the Audio input  */
-	DYN_ATTRIBUTE (2, public, SpectrumDescriptors, SpectrumD);
+	DYN_ATTRIBUTE (0, public, SpectralDescriptors, SpectrumD);
 	/** Vector of peaks in spectral analysis  */
-	DYN_ATTRIBUTE (3, public, SpectralPeakArrayDescriptors, SpectralPeakArrayD);
+	DYN_ATTRIBUTE (1, public, SpectralPeakDescriptors, SpectralPeakD);
 	/** Residual spectrum of the Audio  */
-	DYN_ATTRIBUTE (5, public, SpectrumDescriptors, ResidualSpecD);
+	DYN_ATTRIBUTE (2, public, SpectralDescriptors, ResidualSpecD);
 	/** Sinusoidal spectrum of the Audio  */
-	DYN_ATTRIBUTE (6, public, SpectrumDescriptors, SinusoidalSpecD);
+	DYN_ATTRIBUTE (3, public, SpectralDescriptors, SinusoidalSpecD);
 	/*Audio chunk that has been used for generating spectral data, will usually be
 	a previously windowed audio chunk*/
 	/** Audio chunk we want to analyze */
-	DYN_ATTRIBUTE (7, public, AudioDescriptors, AudioFrameD);
+	DYN_ATTRIBUTE (4, public, AudioDescriptors, AudioFrameD);
 	/** Sinusoidal synthesized Audio */
-	DYN_ATTRIBUTE (8, public, AudioDescriptors, SinusoidalAudioFrameD);
+	DYN_ATTRIBUTE (5, public, AudioDescriptors, SinusoidalAudioFrameD);
 	/** Residual synthesized Audio */
-	DYN_ATTRIBUTE (9, public, AudioDescriptors, ResidualAudioFrameD);
+	DYN_ATTRIBUTE (6, public, AudioDescriptors, ResidualAudioFrameD);
 	/** Global synthesized Audio */
-	DYN_ATTRIBUTE (10, public, AudioDescriptors, SynthAudioFrameD);
+	DYN_ATTRIBUTE (7, public, AudioDescriptors, SynthAudioFrameD);
 
 public:
 
-	FrameDescriptors(const Frame* pFrame);
+	FrameDescriptors(Frame* pFrame);
 		
-	const Frame* GetpFrame() const{return pFrame;}
-	void SetpFrame(const Frame* pFrame) {mpFrame=pFrame;}
+	const Frame* GetpFrame() const{return mpFrame;}
+	void SetpFrame(Frame* pFrame) {mpFrame=pFrame;}
 
 	
 private:

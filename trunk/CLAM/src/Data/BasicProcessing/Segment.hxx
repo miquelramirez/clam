@@ -36,8 +36,6 @@
 #include "ProcessingData.hxx"
 #include "Frame.hxx"
 #include "Audio.hxx"
-#include "SegmentDescriptors.hxx"
-
 
 namespace CLAM{
 
@@ -52,7 +50,7 @@ typedef Search < List < Frame >, Frame> FrameSearch;
 class Segment : public ProcessingData
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (Segment, 8, ProcessingData);
+	DYNAMIC_TYPE_USING_INTERFACE (Segment, 7, ProcessingData);
 	DYN_ATTRIBUTE (0, public, TTime, BeginTime);
 	DYN_ATTRIBUTE (1, public, TTime, EndTime);
 	DYN_ATTRIBUTE (2, private, bool, prHoldsData);
@@ -60,9 +58,8 @@ public:
 	DYN_ATTRIBUTE (3, public, List<Frame>, FramesArray);
 	DYN_ATTRIBUTE (4, public, Audio, Audio);
 	DYN_ATTRIBUTE (5, public, List<Segment>, Children);
-	DYN_ATTRIBUTE (6, public, SegmentDescriptors, Descriptors);
-	DYN_ATTRIBUTE (7, public, TData, SamplingRate);
-
+	DYN_ATTRIBUTE (6, public, TData, SamplingRate);
+	
 private:
 	FrameSearch mFramesSearch;
 	Segment* pParent;

@@ -19,3 +19,12 @@
  *
  */
 
+#include "SpectralDescriptors.hxx"
+
+using namespace CLAM;
+
+SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum=NULL):ProcessingData(eNumAttr)
+{
+	MandatoryInit();
+	mpSpectrum=pSpectrum;
+}

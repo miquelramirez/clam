@@ -38,6 +38,8 @@
 
 namespace CLAM {
 
+	class Spectrum;
+
 	class SpectralDescriptors : public ProcessingData {
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 17, ProcessingData);
@@ -62,27 +64,13 @@ namespace CLAM {
 
 	public:
 
-		friend class SpectralDescriptorsGen;
-		void SetAll() {
-			AddMean();
-			AddGeometricMean();
-			AddEnergy();
-			AddCentroid();
-			AddMoment2();
-			AddMoment3();
-			AddMoment4();
-			AddMoment5();
-			AddMoment6();
-			AddIrregularity();
-			AddTilt();
-			AddFlatness();
-			AddKurtosis();
-			AddStrongPeak();
-			AddHFC();
-			AddMFCC();
-			AddBandEnergy();
-			UpdateData();
-		}
+		SpectralDescriptors(Spectrum* pSpectrum);
+
+		const Spectrum* GetpSpectrum() const{return mpSpectrum;}
+		void SetpSpectrum(Spectrum* pSpectrum) {mpSpectrum=pSpectrum;}
+
+	private:
+		Spectrum* mpSpectrum;
 
 	};
 

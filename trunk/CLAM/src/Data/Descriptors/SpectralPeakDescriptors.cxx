@@ -29,60 +29,10 @@
 using namespace CLAM;
 
 
-Flags<11>::tFlagValue SpectralPeakDescriptorsFlags::sFlagValues[] = {
-	{SpectralPeakDescriptorsFlags::eMagnitudeMean, "magnitudeMean"},
-	{SpectralPeakDescriptorsFlags::eHarmonicCentroid, "harmonicCentroid"},
-	{SpectralPeakDescriptorsFlags::eSpectralTilt, "spectralTilt"},
-	{SpectralPeakDescriptorsFlags::eHarmonicDeviation, "harmonicDeviation"},
-	{SpectralPeakDescriptorsFlags::eFirstTristimulus, "firstTristimulus"},
-	{SpectralPeakDescriptorsFlags::eSecondTristimulus, "secondTristimulus"},
-	{SpectralPeakDescriptorsFlags::eThirdTristimulus, "thirdTristimulus"},
-	{SpectralPeakDescriptorsFlags::eBrightness, "brightness"},
-	{SpectralPeakDescriptorsFlags::eOddHarmonics, "oddHarmonics"},
-	{SpectralPeakDescriptorsFlags::eEvenHarmonics, "evenHarmonics"},
-	{SpectralPeakDescriptorsFlags::eOddToEvenRatio, "oddToEvenRatio"},
-	{0,NULL}
-};
-
-
-SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakDescriptorsFlags& flags): ProcessingData(eNumAttr)
+SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray): ProcessingData(eNumAttr)
 {
 	MandatoryInit();
-	SetFlags(flags);
+	mpSpectralPeakArray=pSpectralPeakArray;
 }
 		
-
-void SpectralPeakDescriptors::SetFlags(const SpectralPeakDescriptorsFlags& flags)
-{
-
-	flags.magnitudeMean?AddMagnitudeMean():RemoveMagnitudeMean();
- 	flags.harmonicCentroid?AddHarmonicCentroid():RemoveHarmonicCentroid();
-	flags.spectralTilt?AddSpectralTilt():RemoveSpectralTilt();
-	flags.harmonicDeviation?AddHarmonicDeviation():RemoveHarmonicDeviation();
-	flags.firstTristimulus?AddFirstTristimulus():RemoveFirstTristimulus();
-	flags.secondTristimulus?AddSecondTristimulus():RemoveSecondTristimulus();
-	flags.thirdTristimulus?AddThirdTristimulus():RemoveThirdTristimulus();
-	flags.brightness?AddBrightness():RemoveBrightness();
-	flags.oddHarmonics?AddOddHarmonics():RemoveOddHarmonics();
-	flags.evenHarmonics?AddEvenHarmonics():RemoveEvenHarmonics();
-	flags.oddToEvenRatio?AddOddToEvenRatio():RemoveOddToEvenRatio();
-	
-	UpdateData();
-}
-
-void SpectralPeakDescriptors::GetFlags(SpectralPeakDescriptorsFlags& flags) const
-{
-	flags.magnitudeMean=HasMagnitudeMean()?true:false;
-	flags.harmonicCentroid=HasHarmonicCentroid()?true:false;
-	flags.spectralTilt=HasSpectralTilt()?true:false;
-	flags.harmonicDeviation=HasHarmonicDeviation()?true:false;
-	flags.firstTristimulus=HasFirstTristimulus()?true:false;
-	flags.secondTristimulus=HasSecondTristimulus()?true:false;
-	flags.thirdTristimulus=HasThirdTristimulus()?true:false;
-	flags.brightness=HasBrightness()?true:false;
-	flags.oddHarmonics=HasOddHarmonics()?true:false;
-	flags.evenHarmonics=HasEvenHarmonics()?true:false;
-	flags.oddToEvenRatio=HasOddToEvenRatio()?true:false;
-}
-
 

@@ -29,75 +29,14 @@
 using namespace CLAM;
 
 
-CLAM::Flags<16>::tFlagValue SegmentDescriptorsFlags::sFlagValues[] = {
-	{SegmentDescriptorsFlags::eSpectralMean, "spectralmean"},
-	{SegmentDescriptorsFlags::eSpectralGeometricMean, "spectralgeometricMean"},
-	{SegmentDescriptorsFlags::eSpectralEnergy, "spectralenergy"},
-	{SegmentDescriptorsFlags::eSpectralCentroid, "spectralcentroid"},
-	{SegmentDescriptorsFlags::eSpectralMoment2, "spectralmoment2"},
-	{SegmentDescriptorsFlags::eSpectralMoment3, "spectralmoment3"},
-	{SegmentDescriptorsFlags::eSpectralMoment4, "spectralmoment4"},
-	{SegmentDescriptorsFlags::eSpectralMoment5, "spectralmoment5"},
-	{SegmentDescriptorsFlags::eSpectralMoment6, "spectralmoment6"},
-	{SegmentDescriptorsFlags::eSpectralIrregularity, "spectralirregularity"},
-	{SegmentDescriptorsFlags::eSpectralTilt, "spectraltilt"},
-	{SegmentDescriptorsFlags::eSpectralFlatness, "spectralflatness"},
-	{SegmentDescriptorsFlags::eSpectralKurtosis, "spectralkurtosis"},
-	{SegmentDescriptorsFlags::eSpectralStrongPeak, "spectralstrongPeak"},
-	{SegmentDescriptorsFlags::eFundamental, "fundamental"},
-	{SegmentDescriptorsFlags::eMelody, "melody"},
-	{0,NULL}
-};
 
 	
-SegmentDescriptors::SegmentDescriptors(SegmentDescriptorsFlags& flags): ProcessingData(eNumAttr)
+SegmentDescriptors::SegmentDescriptors(Segment* pSegment=NULL): ProcessingData(eNumAttr)
 {
 	MandatoryInit();
-	SetFlags(flags);
+	mpSegment=pSegment;
 }
 
-
-void SegmentDescriptors::SetFlags(const SegmentDescriptorsFlags& flags)
-{
-	flags.spectralMean?AddSpectralMean():RemoveSpectralMean();
-	flags.spectralGeometricMean?AddSpectralGeometricMean():RemoveSpectralGeometricMean();
-	flags.spectralEnergy?AddSpectralEnergy():RemoveSpectralEnergy();
-	flags.spectralCentroid?AddSpectralCentroid():RemoveSpectralCentroid();
-	flags.spectralMoment2?AddSpectralMoment2():RemoveSpectralMoment2();
-	flags.spectralMoment3?AddSpectralMoment3():RemoveSpectralMoment3();
-	flags.spectralMoment4?AddSpectralMoment4():RemoveSpectralMoment4();
-	flags.spectralMoment5?AddSpectralMoment5():RemoveSpectralMoment5();
-	flags.spectralMoment6?AddSpectralMoment6():RemoveSpectralMoment6();
-	flags.spectralIrregularity?AddSpectralIrregularity():RemoveSpectralIrregularity();
-	flags.spectralTilt?AddSpectralTilt():RemoveSpectralTilt();
-	flags.spectralFlatness?AddSpectralFlatness():RemoveSpectralFlatness();
-	flags.spectralKurtosis?AddSpectralKurtosis():RemoveSpectralKurtosis();
-	flags.spectralStrongPeak?AddSpectralStrongPeak():RemoveSpectralStrongPeak();
-	flags.fundamental?AddFundamental():RemoveFundamental();
-	flags.melody?AddMelody():RemoveMelody();
-	UpdateData();
-}
-
-
-void SegmentDescriptors::GetFlags(SegmentDescriptorsFlags& flags) const
-{
-	flags.spectralMean=HasSpectralMean()?true:false;
-	flags.spectralGeometricMean=HasSpectralGeometricMean()?true:false;
-	flags.spectralEnergy=HasSpectralEnergy()?true:false;
-	flags.spectralCentroid=HasSpectralCentroid()?true:false;
-	flags.spectralMoment2=HasSpectralMoment2()?true:false;
-	flags.spectralMoment3=HasSpectralMoment3()?true:false;
-	flags.spectralMoment4=HasSpectralMoment4()?true:false;
-	flags.spectralMoment5=HasSpectralMoment5()?true:false;
-	flags.spectralMoment6=HasSpectralMoment6()?true:false;
-	flags.spectralIrregularity=HasSpectralIrregularity()?true:false;
-	flags.spectralTilt=HasSpectralTilt()?true:false;
-	flags.spectralFlatness=HasSpectralFlatness()?true:false;
-	flags.spectralKurtosis=HasSpectralKurtosis()?true:false;
-	flags.spectralStrongPeak=HasSpectralStrongPeak()?true:false;
-	flags.fundamental=HasFundamental()?true:false;
-	flags.melody=HasMelody()?true:false;
-}
 
 
 
