@@ -1,11 +1,11 @@
-<network id="CLAM" >
-  <processing type="AudioOut" id="AudioOut_1" >
+<network id="CLAM Network" >
+  <processing type="AudioOut" id="AudioOut" >
     <Device>default:default</Device>
     <ChannelID>0</ChannelID>
     <FrameSize>512</FrameSize>
-    <SampleRate>44100</SampleRate>
+    <SampleRate>0</SampleRate>
   </processing>
-  <processing type="MonoAudioFileReader" id="MonoAudioFileReader_0" >
+  <processing type="MonoAudioFileReader" id="MonoAudioFileReader" >
     <SourceFile>
       <URI>../../../../CLAM-TestData/longSounds/daft_mono.wav</URI>
       <Header>
@@ -21,7 +21,7 @@
     </SourceFile>
     <SelectedChannel>0</SelectedChannel>
   </processing>
-  <processing type="SMSAnalysisCore" id="SMSAnalysisCore_2" >
+  <processing type="SMSAnalysisCore" id="SMSAnalysisCore" >
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -35,12 +35,12 @@
         <Amount>-1024</Amount>
       </CircularShift>
       <FFT>
-        <AudioSize>8192</AudioSize>
+        <AudioSize>2048</AudioSize>
       </FFT>
-      <prHopSize>256</prHopSize>
-      <prZeroPadding>2</prZeroPadding>
+      <prHopSize>512</prHopSize>
+      <prZeroPadding>0</prZeroPadding>
       <prSamplingRate>44100</prSamplingRate>
-      <prFFTSize>8192</prFFTSize>
+      <prFFTSize>2048</prFFTSize>
     </SinSpectralAnalysis>
     <ResSpectralAnalysis>
       <WindowGenerator>
@@ -57,20 +57,20 @@
       <FFT>
         <AudioSize>1024</AudioSize>
       </FFT>
-      <prHopSize>256</prHopSize>
+      <prHopSize>512</prHopSize>
       <prZeroPadding>0</prZeroPadding>
       <prSamplingRate>44100</prSamplingRate>
       <prFFTSize>1024</prFFTSize>
     </ResSpectralAnalysis>
     <PeakDetect>
-      <MaxPeaks>1000</MaxPeaks>
+      <MaxPeaks>500</MaxPeaks>
       <MagThreshold>-60</MagThreshold>
-      <MaxFreq>10000</MaxFreq>
+      <MaxFreq>8000</MaxFreq>
     </PeakDetect>
     <FundFreqDetect>
       <ReferenceFundFreq>1000</ReferenceFundFreq>
       <LowestFundFreq>35</LowestFundFreq>
-      <HighestFundFreq>2000</HighestFundFreq>
+      <HighestFundFreq>1500</HighestFundFreq>
       <MaxCandMagDiff>30</MaxCandMagDiff>
       <MaxFundFreqError>10</MaxFundFreqError>
       <PMp>0.5</PMp>
@@ -84,11 +84,11 @@
       <PMCont>1</PMCont>
       <MPCont>1</MPCont>
       <NInt>5</NInt>
-      <NMaxCandidates>60</NMaxCandidates>
+      <NMaxCandidates>40</NMaxCandidates>
     </FundFreqDetect>
     <SinTracking>
-      <Threshold>20</Threshold>
-      <nMaxSines>250</nMaxSines>
+      <Threshold>40</Threshold>
+      <nMaxSines>200</nMaxSines>
       <IsHarmonic>0</IsHarmonic>
     </SinTracking>
     <prSamplingRate>44100</prSamplingRate>
@@ -99,16 +99,10 @@
       <ZeroPadding>0</ZeroPadding>
     </SynthSineSpectrum>
   </processing>
-  <processing type="SMSPitchShift" id="SMSPitchShift_11" >
-    <Amount>0</Amount>
-  </processing>
-  <processing type="SMSResidualGain" id="SMSResidualGain_5" >
-    <Amount>0</Amount>
-  </processing>
-  <processing type="SMSSinusoidalGain" id="SMSSinusoidalGain_1" >
-    <Amount>0</Amount>
-  </processing>
-  <processing type="SMSSynthesis" id="SMSSynthesis_3" >
+  <processing type="SMSPitchShift" id="SMSPitchShift" />
+  <processing type="SMSResidualGain" id="SMSResidualGain" />
+  <processing type="SMSSinusoidalGain" id="SMSSinusoidalGain" />
+  <processing type="SMSSynthesis" id="SMSSynthesis" >
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -130,7 +124,7 @@
       </AnalWindowGenerator>
       <SynthWindowGenerator>
         <Type>Triangular</Type>
-        <Size>513</Size>
+        <Size>1025</Size>
         <MaxSize>0</MaxSize>
         <UseTable>1</UseTable>
         <Normalize>NoNormalization</Normalize>
@@ -147,49 +141,53 @@
       <Residual>0</Residual>
     </SpectralSynth>
     <OverlapAddSin>
-      <HopSize>256</HopSize>
-      <FrameSize>256</FrameSize>
+      <HopSize>512</HopSize>
+      <FrameSize>512</FrameSize>
     </OverlapAddSin>
     <OverlapAddRes>
-      <HopSize>256</HopSize>
-      <FrameSize>256</FrameSize>
+      <HopSize>512</HopSize>
+      <FrameSize>512</FrameSize>
     </OverlapAddRes>
     <OverlapAddGlobal>
-      <HopSize>256</HopSize>
-      <FrameSize>256</FrameSize>
+      <HopSize>512</HopSize>
+      <FrameSize>512</FrameSize>
     </OverlapAddGlobal>
     <prSamplingRate>0</prSamplingRate>
   </processing>
   <port_connection>
-    <out>MonoAudioFileReader_0.Samples Read</out>
-    <in>SMSAnalysisCore_2.Input Audio</in>
+    <out>MonoAudioFileReader.Samples Read</out>
+    <in>SMSAnalysisCore.Input Audio</in>
   </port_connection>
   <port_connection>
-    <out>SMSAnalysisCore_2.Sinusoidal Peaks</out>
-    <in>SMSSinusoidalGain_1.In SpectralPeaks</in>
+    <out>SMSAnalysisCore.Sinusoidal Peaks</out>
+    <in>SMSSinusoidalGain.In SpectralPeaks</in>
   </port_connection>
   <port_connection>
-    <out>SMSAnalysisCore_2.Residual Spectrum</out>
-    <in>SMSResidualGain_5.In Spectrum</in>
+    <out>SMSAnalysisCore.Fundamental</out>
+    <in>SMSPitchShift.In Fundamental</in>
   </port_connection>
   <port_connection>
-    <out>SMSPitchShift_11.Out SpectralPeaks</out>
-    <in>SMSSynthesis_3.InputSinPeaks</in>
+    <out>SMSAnalysisCore.Residual Spectrum</out>
+    <in>SMSResidualGain.In Spectrum</in>
   </port_connection>
   <port_connection>
-    <out>SMSPitchShift_11.Out Spectrum</out>
-    <in>SMSSynthesis_3.InputResSpectrum</in>
+    <out>SMSPitchShift.Out SpectralPeaks</out>
+    <in>SMSSynthesis.InputSinPeaks</in>
   </port_connection>
   <port_connection>
-    <out>SMSResidualGain_5.Out Spectrum</out>
-    <in>SMSPitchShift_11.In Spectrum</in>
+    <out>SMSPitchShift.Out Spectrum</out>
+    <in>SMSSynthesis.InputResSpectrum</in>
   </port_connection>
   <port_connection>
-    <out>SMSSinusoidalGain_1.Out SpectralPeaks</out>
-    <in>SMSPitchShift_11.In SpectralPeaks</in>
+    <out>SMSResidualGain.Out Spectrum</out>
+    <in>SMSPitchShift.In Spectrum</in>
   </port_connection>
   <port_connection>
-    <out>SMSSynthesis_3.OutputAudio</out>
-    <in>AudioOut_1.Audio Input</in>
+    <out>SMSSinusoidalGain.Out SpectralPeaks</out>
+    <in>SMSPitchShift.In SpectralPeaks</in>
+  </port_connection>
+  <port_connection>
+    <out>SMSSynthesis.OutputAudio</out>
+    <in>AudioOut.Audio Input</in>
   </port_connection>
 </network>
