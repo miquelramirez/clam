@@ -10,6 +10,7 @@ namespace CLAM
 	{
 		NetPlot::NetPlot(QWidget* parent) : QWidget(parent)
 		{
+		        _closed = false;
 			InitNetPlot();
 		}
 		
@@ -38,8 +39,11 @@ namespace CLAM
 
 		void NetPlot::Show()
 		{
+		    if(!_closed)
+		    {
 			show();
 			_surf->startRendering();
+		    }
 		}
 
 		void NetPlot::Hide()
@@ -68,8 +72,9 @@ namespace CLAM
 
 		void NetPlot::closeEvent(QCloseEvent* ce)
 		{
-		    _surf->stopRendering();
-			QWidget::closeEvent(ce);
+		    _closed = true;
+		    Hide();
+		    QWidget::closeEvent(ce);
 		}
 	}
 }
