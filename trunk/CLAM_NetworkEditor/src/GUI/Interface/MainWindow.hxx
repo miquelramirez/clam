@@ -30,6 +30,7 @@
 #include "Qt_NetworkPresentation.hxx"
 
 class QDockWindow;
+class AboutDialog;
 
 namespace NetworkGUI
 {
@@ -46,6 +47,7 @@ private:
 	void SendMessageToStatus( const std::string & );
 	Qt_NetworkPresentation mNetwork;
 	QDockWindow * mDockProcMenu;
+	AboutDialog* mpAboutDlg;
 public: //slots
 	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
 
