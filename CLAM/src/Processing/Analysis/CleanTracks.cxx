@@ -40,12 +40,12 @@ namespace CLAM {
 		SetSpecSize(22050);
 	}
 	
-	CleanTracks::CleanTracks():mSearchTrajectories(mTrajectoryArray)
+	CleanTracks::CleanTracks():mTrajectoryArray(100,100),mSearchTrajectories(mTrajectoryArray)
 	{
 		Configure(CleanTracksConfig());
 	}
 
-	CleanTracks::CleanTracks(const CleanTracksConfig &c ):mSearchTrajectories(mTrajectoryArray)
+	CleanTracks::CleanTracks(const CleanTracksConfig &c ):mTrajectoryArray(100,100),mSearchTrajectories(mTrajectoryArray)
 	{
 		Configure(c);
 	}
@@ -100,6 +100,7 @@ namespace CLAM {
 		int i;
 		int nFrames=segment.GetnFrames();
 		Array<SpectralPeakArray*> spectralPeakArrayArray;
+		spectralPeakArrayArray.Resize(nFrames);
 		for(i=0;i<nFrames;i++)
 		{
 			spectralPeakArrayArray.AddElem(&segment.GetFrame(i).GetSpectralPeakArray());

@@ -134,6 +134,8 @@ namespace CLAM {
 
 		TSize maxPeaks=mConfig.GetMaxPeaks();
 
+		out.SetnMaxPeaks(maxPeaks);
+
 		// detection loop 
 		for (i=1;i<NumBands-2;i++) {
 			
