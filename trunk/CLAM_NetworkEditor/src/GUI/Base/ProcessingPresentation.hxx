@@ -31,6 +31,8 @@
 #include "ProcessingController.hxx"
 #include "Slotv1.hxx"
 #include "Signalv1.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 
 namespace CLAM
 {
