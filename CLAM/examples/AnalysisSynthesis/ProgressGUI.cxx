@@ -6,7 +6,7 @@
 #define Sleep(var) usleep(var*1000)
 #endif
 #ifdef WIN32
-#include <windows.h>
+#include "CLAM_windows.h"
 #endif
 
 

@@ -242,8 +242,8 @@ namespace CLAM
 				// set only transition specific parameters
 				// we dont need a new attack
 				Params().SetAttackTimbrePitch(pitch);
-				double ipFactor = velocity/60.0;
 				/*
+				double ipFactor = velocity/60.0;
 				if (ipFactor<0.1) 
 				  ipFactor=0.1;
 				Params().SetInterPolFactor(ipFactor); 

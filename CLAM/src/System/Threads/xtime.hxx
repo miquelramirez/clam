@@ -2,7 +2,7 @@
 #define __XTIME__
 
 #ifdef WIN32
-#include <windows.h> // for FTIME
+#include "CLAM_windows.h" // for FTIME
 #undef GetClassName
 #else
 #include <sys/time.h> // for GetTimeOfDay

@@ -2,7 +2,7 @@
 #define __DOUBLEBUFFER__
 
 #include "ErrOutOfMemory.hxx"
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 
 namespace CLAM

@@ -1,6 +1,6 @@
 #include "PACLAMCallbacks.hxx"
 #include "DoubleBuffer.hxx"
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 #include <iostream>
 

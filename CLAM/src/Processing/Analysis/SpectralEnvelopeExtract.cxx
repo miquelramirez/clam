@@ -101,9 +101,13 @@ namespace CLAM {
 	{
 		output.SetScale(input.GetScale());
 		
-		CheckOutputType(output);
 		int i;
 		TSize nPeaks=input.GetnPeaks();
+				
+		if (nPeaks<4) return false; //cannot extract an envelope out of only 3 peaks!
+
+		CheckOutputType(output);
+
 		DataArray& magBuffer=input.GetMagBuffer();
 		DataArray& phaseBuffer=input.GetPhaseBuffer();
 		DataArray& freqBuffer=input.GetFreqBuffer();

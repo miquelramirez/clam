@@ -58,7 +58,7 @@ void ProcDataPresentation<Spectrum>::UpdateMagData( const DataArray& array )
 			mRenderer->DefineViewport( array, mSpecPresMetrix );
 			
 			mDispContainer->SetHorRange( mSpecPresMetrix.left, mSpecPresMetrix.right );
-			mDispContainer->SetVerRange( mSpecPresMetrix.top , -( mSpecPresMetrix.top - mSpecPresMetrix.bottom ) );
+			mDispContainer->SetVerRange( 20 , -120 );
 			mDispContainer->mpHorRuler->mInteger = mSpecPresMetrix.isIntX;
 			mDispContainer->mpVerRuler->mInteger = mSpecPresMetrix.isIntY;
 			mSpectralMetrixLocked = true;
@@ -104,8 +104,8 @@ void ProcDataPresentation<Spectrum>::UpdateScale( unsigned int nbins, EScale sca
 	else if ( scale.GetValue() == EScale::eLog )
 		{
 			//	mSpecPresMetrix.SetTopEstimation( DB( TData(nbins), CLAM_DB_SCALING ) );
-			mSpecPresMetrix.SetTopEstimation( 150 );
-			mSpecPresMetrix.SetBottomEstimation( TData(DB( TData(0), CLAM_DB_SCALING ) ) );
+			mSpecPresMetrix.SetTopEstimation( 0 );
+			mSpecPresMetrix.SetBottomEstimation( -100 );
 		}
 	else
 		CLAM_ASSERT( false, "Spectrum was crippled somehow since it hasn't provided a valid scale" );

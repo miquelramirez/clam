@@ -1,5 +1,5 @@
 #include "PACLAMCallbacks.hxx"
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 #include <iostream>
 using std::cout;

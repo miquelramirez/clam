@@ -20,7 +20,7 @@
  */
 
 #define STRICT
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 #include <basetsd.h>
 #include <mmsystem.h>
