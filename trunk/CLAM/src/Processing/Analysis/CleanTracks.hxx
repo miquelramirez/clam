@@ -113,7 +113,9 @@ namespace CLAM {
 		void Update(Array<SpectralPeakArray*>& peakArrayArray);
 		void ContinuedAt(void);
 		void InterpolatePeaks(TTrajectory& trajectory, Array<SpectralPeakArray*>& peakArrayArray);
+
 		TIndex FindTrajectoryPosition(TIndex id);
+
 		TData mSamplingRate;
 		TData mSpecSize;
 		TSize mMaxDropOut;
