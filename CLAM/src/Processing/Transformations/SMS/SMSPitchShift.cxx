@@ -36,7 +36,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 
 	//First extract spectral envelope
 	if(mIsHarmonic.GetLastValue()>0)
-		haveEnvelope = mPO_SpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope);
+		haveEnvelope = mSpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope);
 
 	if(&outPeaks!=&inPeaks)//TODO: this is already solved inPeaks new DT
 		outPeaks=inPeaks;
@@ -65,9 +65,9 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 	//Apply original spectral shape and comb filter the residual
 	if(mIsHarmonic.GetLastValue()>0)
 	{
-		if(haveEnvelope) mPO_SpectralEnvelopeApply.Do(outPeaks,mSpectralEnvelope,outPeaks);
-		mPO_FDCombFilter.mFreq.DoControl(mIsHarmonic.GetLastValue()*amount);
-		mPO_FDCombFilter.Do(inRes,outRes);
+		if(haveEnvelope) mSpectralEnvelopeApply.Do(outPeaks,mSpectralEnvelope,outPeaks);
+		mFDCombFilter.mFreq.DoControl(mIsHarmonic.GetLastValue()*amount);
+		mFDCombFilter.Do(inRes,outRes);
 	}
 	return true;
 }

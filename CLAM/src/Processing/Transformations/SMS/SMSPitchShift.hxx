@@ -103,9 +103,9 @@ namespace CLAM{
 		}
 
 	private:
-		SpectralEnvelopeExtract mPO_SpectralEnvelopeExtract;
-		SpectralEnvelopeApply mPO_SpectralEnvelopeApply;
-		FDCombFilter mPO_FDCombFilter;
+		SpectralEnvelopeExtract mSpectralEnvelopeExtract;
+		SpectralEnvelopeApply mSpectralEnvelopeApply;
+		FDCombFilter mFDCombFilter;
 		Spectrum mSpectralEnvelope;
 		TSize mSpectralRange;
 	
