@@ -67,6 +67,7 @@
 #include "PeaksPlotProcessing.hxx"
 #include "FundPlotProcessing.hxx"
 #include "SinTracksPlotProcessing.hxx"
+#include "FundTrackPlotProcessing.hxx"
 
 //SMSTransformations
 #include "SMSFreqShift.hxx"
@@ -183,6 +184,9 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SinTracksPlotProcessingConfig> >
        regtSinTracksPlotProcessingCfg("SinTracksPlotProcessingConfig");
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FundTrackPlotProcessingConfig> >
+       regtFundTrackPlotProcessingCfg("FundTrackPlotProcessingConfig");
  
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSTransformationConfig> >
        regtSMSTransformationConfig("SMSTransformationConfig");
