@@ -16,8 +16,7 @@ PROGRAMS=\
 	QtSIViewExample\
 	SnapshotExample\
 	StreamBufferExample\
-	NodeExample\
-	NodeExample2
+	NodeExample
 
 
 TOP=..
