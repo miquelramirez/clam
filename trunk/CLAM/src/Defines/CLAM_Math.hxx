@@ -4,6 +4,52 @@
 #include <cmath>
 
 
+
+
+
+
+#ifdef WIN32
+#ifdef _DEBUG
+#include <cfloat>
+#endif
+#endif
+#include "Assert.hxx"
+
+
+//optimized positive integer chopping routine for Windows, is equivalent to int(a) but much more efficient
+inline int Chop(float a) {
+#if defined (_MSC_VER)
+            int i;
+#ifdef _DEBUG
+/**IMPORTANT: if in release mode, you are responsible for changing controlfp.
+	You must do so outside the loop that actually calls the loop */
+			CLAM_ASSERT(a>=0,"Chop function only for positive numbers");
+			unsigned int saved;
+			saved = _controlfp(_RC_CHOP,_MCW_RC);
+#endif //_DEBUG
+            __asm {
+                        fld   a
+						//fadd  half
+                        fistp i
+            }
+#ifdef _DEBUG
+			_controlfp(saved, _MCW_RC);
+#endif //_DEBUG
+            return i;
+#else //not WIN32
+            return int(a); // just hope it's an intrinsic.
+#endif //WIN32
+}
+
+
+
+
+
+
+
+
+
+
 //optimized integer rounding routine for Windows
 inline int Round(float a) {
 #if defined (_MSC_VER)
