@@ -65,7 +65,7 @@ namespace CLAMGUI
 	ProcDataPresentation( const char* label = 0)
 		: Presentation(), mSpectralMetrixLocked( false )
 	{
-		Geometry geo ( 100, 100, 800, 600 );
+		Geometry geo ( 100, 100, 400, 300 );
 		Init( geo, label );
 	}
 	

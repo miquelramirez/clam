@@ -69,7 +69,7 @@ namespace CLAMGUI
 		ProcDataPresentation( const char* l = 0)
 			: Presentation()
 		{
-			Geometry g( 100, 100, 800, 600 );
+			Geometry g( 100, 100, 400, 300 );
 
 			Init( g, l );
 		}
