@@ -82,6 +82,8 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	QListViewItem* plots = new QListViewItem(this,"Plots");
 	ProcessingItem* audioplotprocessing = new ProcessingItem(plots,"AudioPlotProcessing");
 	ProcessingItem* spectrumplotprocessing = new ProcessingItem(plots,"SpectrumPlotProcessing");
+	ProcessingItem* peaksplotprocessing = new ProcessingItem(plots, "PeaksPlotProcessing");
+	ProcessingItem* fundplotprocessing = new ProcessingItem(plots, "FundPlotProcessing");
 	show();
 	header()->hide();
 

@@ -76,6 +76,11 @@ namespace CLAM
 		    Hide();
 		    QWidget::closeEvent(ce);
 		}
+
+	        void NetPlot::StopRendering()
+		{
+		    _surf->stopRendering();
+		}
 	}
 }
 

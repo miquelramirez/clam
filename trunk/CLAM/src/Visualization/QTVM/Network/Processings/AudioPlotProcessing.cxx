@@ -76,9 +76,13 @@ namespace CLAM
 
 	bool AudioPlotProcessing::ConcreteStop()
 	{
-		if(mPlot) delete mPlot;
+	    if(mPlot) 
+	    {
+		mPlot->StopRendering();
+		delete mPlot;
 		mPlot = NULL;
-		return true;
+	    }
+	    return true;
 	}
 }
 

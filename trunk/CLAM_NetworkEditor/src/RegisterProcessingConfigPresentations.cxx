@@ -64,6 +64,7 @@
 #include "AudioPlotProcessing.hxx"
 #include "SpectrumPlotProcessing.hxx"
 #include "PeaksPlotProcessing.hxx"
+#include "FundPlotProcessing.hxx"
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
@@ -169,6 +170,8 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::PeaksPlotProcessingConfig> >
        regtPeaksPlotProcessingCfg("PeaksPlotProcessingConfig");
 
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FundPlotProcessingConfig> >
+       regtFundPlotProcessingCfg("FundPlotProcessingConfig");
 
 
 
