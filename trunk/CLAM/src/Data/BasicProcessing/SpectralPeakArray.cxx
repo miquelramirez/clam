@@ -300,11 +300,14 @@ TIndex SpectralPeakArray::GetMaxMagIndex() const// returns position of mag maxim
 
 void SpectralPeakArray::ResetIndices() // reset all indices 
 {
+	static int nTimes=0;
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::ResetIndices: Index array is not instantiated");
 	IndexArray& indexArray=GetIndexArray();
 	TSize nPeaks=GetnPeaks();
+	//Resize will only be done once
+	if(indexArray.Size()!=GetnMaxPeaks())
+		indexArray.Resize(GetnMaxPeaks());
 	// set size to the number of Peaks
-	indexArray.Resize(nPeaks);
 	indexArray.SetSize(nPeaks);
 
 	indexArray.Reset();
@@ -499,7 +502,7 @@ void SpectralPeakArray::ToLinear()
 		for (i=0; i<nPeaks; i++)
 		{
 			if(mag[i]==0.0001) mag[i]=0;
-			mag[i]= pow(10,mag[i]/20); 
+			mag[i]= pow(TData(10),TData(mag[i]/20)); 
 		}
 		SetScale(EScale::eLinear);
 	}

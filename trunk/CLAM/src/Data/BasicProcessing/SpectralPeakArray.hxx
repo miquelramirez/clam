@@ -328,22 +328,22 @@ public:
 	{
 		if (npeaks>GetnMaxPeaks()) SetnMaxPeaks(npeaks);
 		if(HasMagBuffer()) {
-			GetMagBuffer().Resize(npeaks);
+		//	GetMagBuffer().Resize(npeaks);
 			GetMagBuffer().SetSize(npeaks);}
 		if(HasFreqBuffer()) {
-			GetFreqBuffer().Resize(npeaks);
+		//	GetFreqBuffer().Resize(npeaks);
 			GetFreqBuffer().SetSize(npeaks);}
 		if(HasPhaseBuffer()){
-			GetPhaseBuffer().Resize(npeaks);
+		//	GetPhaseBuffer().Resize(npeaks);
 			GetPhaseBuffer().SetSize(npeaks);}
 		if(HasBinPosBuffer()) {	
-			GetBinPosBuffer().Resize(npeaks);
+		//	GetBinPosBuffer().Resize(npeaks);
 			GetBinPosBuffer().SetSize(npeaks);}
 		if(HasBinWidthBuffer()) {
-			GetBinWidthBuffer().Resize(npeaks);
+		//	GetBinWidthBuffer().Resize(npeaks);
 			GetBinWidthBuffer().SetSize(npeaks);}
 		if(HasIndexArray()) {
-			GetIndexArray().Resize(npeaks);
+		//	GetIndexArray().Resize(npeaks);
 			GetIndexArray().SetSize(npeaks);}
 
 
