@@ -56,7 +56,7 @@ namespace CLAM
 		Normalization(NormalizationConfig& c);
 		~Normalization();
 
-	
+		const char * GetClassName() const {return "Normalization";}
 
 		bool Do(void);
 
