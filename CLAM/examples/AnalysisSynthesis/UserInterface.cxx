@@ -285,25 +285,19 @@ Configuration::Configuration(CLAM::SMSAnalysisSynthesisConfig* config) {
   }
 }
 
-inline void UserInterface::cb_Load_i(Fl_Menu_*, void*) {
-  LoadConfiguration();
-}
-void UserInterface::cb_Load(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_Load_i(o,v);
-}
-
 inline void UserInterface::cb_Configure_i(Fl_Menu_*, void*) {
-  EditConfiguration();
+  LoadConfiguration();
+//EditConfiguration();
 }
 void UserInterface::cb_Configure(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_Configure_i(o,v);
 }
 
-inline void UserInterface::cb_Load1_i(Fl_Menu_*, void*) {
+inline void UserInterface::cb_Load_i(Fl_Menu_*, void*) {
   LoadAnalysisData();
 }
-void UserInterface::cb_Load1(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_Load1_i(o,v);
+void UserInterface::cb_Load(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_Load_i(o,v);
 }
 
 inline void UserInterface::cb_mStoreAnalysisData_i(Fl_Menu_*, void*) {
@@ -313,11 +307,11 @@ void UserInterface::cb_mStoreAnalysisData(Fl_Menu_* o, void* v) {
   ((UserInterface*)(o->parent()->user_data()))->cb_mStoreAnalysisData_i(o,v);
 }
 
-inline void UserInterface::cb_Load2_i(Fl_Menu_*, void*) {
+inline void UserInterface::cb_Load1_i(Fl_Menu_*, void*) {
   LoadTransformation();
 }
-void UserInterface::cb_Load2(Fl_Menu_* o, void* v) {
-  ((UserInterface*)(o->parent()->user_data()))->cb_Load2_i(o,v);
+void UserInterface::cb_Load1(Fl_Menu_* o, void* v) {
+  ((UserInterface*)(o->parent()->user_data()))->cb_Load1_i(o,v);
 }
 
 inline void UserInterface::cb_mDoTransformation_i(Fl_Menu_*, void*) {
@@ -428,14 +422,13 @@ void UserInterface::cb_About(Fl_Menu_* o, void* v) {
 
 Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"Input", 0,  0, 0, 64, 0, 0, 12, 0},
- {"Load configuration file...", 0x4006c,  (Fl_Callback*)UserInterface::cb_Load, 0, 0, 0, 0, 12, 0},
  {"Configure...", 0,  (Fl_Callback*)UserInterface::cb_Configure, 0, 0, 0, 0, 12, 0},
  {"Analysis Data", 0,  0, 0, 64, 0, 0, 12, 0},
- {"Load...", 0,  (Fl_Callback*)UserInterface::cb_Load1, 0, 0, 0, 0, 12, 0},
+ {"Load...", 0,  (Fl_Callback*)UserInterface::cb_Load, 0, 0, 0, 0, 12, 0},
  {"Store...", 0,  (Fl_Callback*)UserInterface::cb_mStoreAnalysisData, 0, 1, 0, 0, 12, 0},
  {0},
  {"Transformation", 0,  0, 0, 64, 0, 0, 12, 0},
- {"Load...", 0,  (Fl_Callback*)UserInterface::cb_Load2, 0, 0, 0, 0, 12, 0},
+ {"Load...", 0,  (Fl_Callback*)UserInterface::cb_Load1, 0, 0, 0, 0, 12, 0},
  {"Do", 0,  (Fl_Callback*)UserInterface::cb_mDoTransformation, 0, 1, 0, 0, 12, 0},
  {0},
  {"Melody", 0,  0, 0, 65, 0, 0, 12, 0},
@@ -465,19 +458,19 @@ Fl_Menu_Item UserInterface::menu_mMenuBar[] = {
  {"About", 0,  (Fl_Callback*)UserInterface::cb_About, 0, 0, 0, 13, 12, 0},
  {0}
 };
-Fl_Menu_Item* UserInterface::mStoreAnalysisData = UserInterface::menu_mMenuBar + 5;
-Fl_Menu_Item* UserInterface::mDoTransformation = UserInterface::menu_mMenuBar + 9;
-Fl_Menu_Item* UserInterface::mMelodySM = UserInterface::menu_mMenuBar + 11;
-Fl_Menu_Item* UserInterface::mMelodyAnalyze = UserInterface::menu_mMenuBar + 12;
-Fl_Menu_Item* UserInterface::mMelodyStore = UserInterface::menu_mMenuBar + 13;
-Fl_Menu_Item* UserInterface::mDisplayInSM = UserInterface::menu_mMenuBar + 15;
-Fl_Menu_Item* UserInterface::mDisplayInSound = UserInterface::menu_mMenuBar + 16;
-Fl_Menu_Item* UserInterface::mDisplayInSpec = UserInterface::menu_mMenuBar + 17;
-Fl_Menu_Item* UserInterface::mAnalyze = UserInterface::menu_mMenuBar + 20;
-Fl_Menu_Item* UserInterface::mSynthesize = UserInterface::menu_mMenuBar + 21;
-Fl_Menu_Item* UserInterface::mOutputSM = UserInterface::menu_mMenuBar + 22;
-Fl_Menu_Item* UserInterface::mStoreOutputs = UserInterface::menu_mMenuBar + 23;
-Fl_Menu_Item* UserInterface::mVisualizeOutputs = UserInterface::menu_mMenuBar + 28;
+Fl_Menu_Item* UserInterface::mStoreAnalysisData = UserInterface::menu_mMenuBar + 4;
+Fl_Menu_Item* UserInterface::mDoTransformation = UserInterface::menu_mMenuBar + 8;
+Fl_Menu_Item* UserInterface::mMelodySM = UserInterface::menu_mMenuBar + 10;
+Fl_Menu_Item* UserInterface::mMelodyAnalyze = UserInterface::menu_mMenuBar + 11;
+Fl_Menu_Item* UserInterface::mMelodyStore = UserInterface::menu_mMenuBar + 12;
+Fl_Menu_Item* UserInterface::mDisplayInSM = UserInterface::menu_mMenuBar + 14;
+Fl_Menu_Item* UserInterface::mDisplayInSound = UserInterface::menu_mMenuBar + 15;
+Fl_Menu_Item* UserInterface::mDisplayInSpec = UserInterface::menu_mMenuBar + 16;
+Fl_Menu_Item* UserInterface::mAnalyze = UserInterface::menu_mMenuBar + 19;
+Fl_Menu_Item* UserInterface::mSynthesize = UserInterface::menu_mMenuBar + 20;
+Fl_Menu_Item* UserInterface::mOutputSM = UserInterface::menu_mMenuBar + 21;
+Fl_Menu_Item* UserInterface::mStoreOutputs = UserInterface::menu_mMenuBar + 22;
+Fl_Menu_Item* UserInterface::mVisualizeOutputs = UserInterface::menu_mMenuBar + 27;
 
 inline void UserInterface::cb_mWindow2_i(Fl_Window*, void*) {
   delete mWindow2;
@@ -1083,23 +1076,23 @@ static Fl_Pixmap pixmap_mtg(image_mtg);
 
 UserInterface::UserInterface() {
   Fl_Double_Window* w;
-  { Fl_Double_Window* o = mWindow = new Fl_Double_Window(800, 715, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
+  { Fl_Double_Window* o = mWindow = new Fl_Double_Window(1108, 779, "SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)");
     w = o;
     o->color(23);
     o->user_data((void*)(this));
-    { Fl_Input* o = mConfigurationText = new Fl_Input(105, 25, 690, 20, "Configuration File");
+    { Fl_Input* o = mConfigurationText = new Fl_Input(105, 25, 985, 20, "Configuration File");
       o->box(FL_THIN_DOWN_BOX);
       o->labelsize(12);
       o->textsize(12);
       o->align(132);
     }
-    { Fl_Menu_Bar* o = mMenuBar = new Fl_Menu_Bar(0, 0, 800, 20);
+    { Fl_Menu_Bar* o = mMenuBar = new Fl_Menu_Bar(0, 0, 1110, 20);
       o->box(FL_THIN_UP_BOX);
       o->labelsize(13);
       o->textsize(12);
       o->menu(menu_mMenuBar);
     }
-    { Fl_Smart_Tile* o = mSmartTile = new Fl_Smart_Tile(0, 50, 800, 665);
+    { Fl_Smart_Tile* o = mSmartTile = new Fl_Smart_Tile(165, 100, 800, 665);
       o->color(23);
       Fl_Group::current()->resizable(o);
     }
