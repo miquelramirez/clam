@@ -517,6 +517,7 @@ void SMSBase::StoreOutputSoundResidual(void)
 
 	myAudioFileOut.Start();
 	myAudioFileOut.Do(mAudioOutRes);
+	myAudioFileOut.Stop( );
 }
 
 void SMSBase::DoSynthesis()
