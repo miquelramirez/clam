@@ -1,10 +1,25 @@
 #! /usr/bin/python
+# -*- coding: iso-8859-15 -*-
 
-from commands import getoutput
+from commands import getoutput, getstatusoutput
+
+okTag = "tests-passed-on-linux-rel"
+candidateTag = "tests-passed-on-linux-candidate-rel"
+
+def placeTestsOkCandidateTags(module) :
+	cmd = "cvs rtag -Fa %s %s" % (candidateTag, module)
+	print cmd
+	ok, out = getstatusoutput(cmd)
+#	assert ok==0, "command: "+cmd+" returned false\n\n"+out
+
+def placeTestsOkTags(module) :
+	cmd = "cvs rtag -Fa -r%s %s %s" % (candidateTag, okTag, module)
+	print cmd
+	ok, out = getstatusoutput(cmd)
+#	assert ok==0, "command: "+cmd+" returned false\n\n"+out
+
 def queryDiffs(module) :
-	fstTag = "tests-passed-on-linux-rel"
-	secTag = "tests-passed-on-linux-candidate-rel"
-	cmd = "cvs rdiff -r%s -r%s  %s" % (fstTag, secTag, module)
+	cmd = "cvs rdiff -r%s -r%s  %s" % (okTag, candidateTag, module)
 	filename = "cvsdiff-%s" % module
 	print "issuing: ",cmd
 	out = getoutput(cmd)
@@ -61,6 +76,8 @@ def queryLogs(module) :
 	logs = []
 	for diff in diffs :
 		type, file, fst, sec =  getFilenameAndTags(diff)
+		if type != ChangedFile:  #TODO have into account new/removed cases
+			continue
 		cmd = "cvs rlog -N -r%s -r%s %s" % (fst, sec, file)
 		print "issuing:",cmd
 		log = getoutput(cmd)
@@ -70,9 +87,19 @@ def queryLogs(module) :
 		authors = authors.union( fileauthors )
 	return ",".join( authors ), "".join(logs)
 		
+def chaseTheGuiltyCommits(module):
+	diffs = queryDiffs(module)
+	authors, commitlogs = queryLogs(module)
+	if authors == "" :
+		return ""
+	pattern = "\nAuthors of guilty commits (module %s):\n%s\nGuilty commits:\n%s\n"
+	return pattern % (module, authors, commitlogs)
+	
+
 def testcvs() :
 	diffs = queryDiffs("CLAM")
 	authors, logs = queryLogs("CLAM")
 	print "authors: %s\n logs:\n%s" % (authors, logs)
 
-testcvs()
+if __name__ == '__main__':
+	testcvs()
