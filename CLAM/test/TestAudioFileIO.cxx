@@ -59,6 +59,47 @@ void TestIO(void)
 	} while (!infile.Done());
 }
 
+void TestSeek(void)
+{
+	printf("TestAudioFileIO: TestSeek: Reading file tmp.wav, writing tmp2.wav\n");
+	AudioFileConfig infilecfg;
+	AudioFileConfig outfilecfg;
+
+	infilecfg.SetName("filein");
+	infilecfg.SetFilename("tmp.wav");
+	infilecfg.SetFiletype(EAudioFileType::eWave);
+	infilecfg.SetChannels(2);
+
+	outfilecfg.SetName("fileout");
+	outfilecfg.SetFilename("tmp2.wav");
+	outfilecfg.SetFiletype(EAudioFileType::eWave);
+	outfilecfg.SetChannels(2);
+
+	AudioFileIn infile(infilecfg);
+	AudioFileOut outfile(outfilecfg);
+
+	printf("Setting startframe %d/%d/2 = %d",
+		infile.Size(),infile.Channels(),infile.Size()/infile.Channels());
+
+	infilecfg.SetStartFrame(infile.Size()/infile.Channels()/2);
+	infile.Configure(infilecfg);
+
+	Audio bufL;
+	Audio bufR;
+	bufL.SetSize(512);
+	bufR.SetSize(512);
+
+	/** @todo how are we going to pass samplerate and channels? */
+	infile.Start();
+	outfile.Start();
+	do
+	{
+		infile.Do(bufL,bufR);
+		outfile.Do(bufL,bufR);
+	} while (!infile.Done());
+}
+
+
 void TestSplit(void)
 {
 	printf("TestAudioFileIO: TestSplit: Reading file tmp.wav, writing tmpL.wav,tmpR.wav\n");
@@ -190,6 +231,11 @@ void TestOSC(void)
 	OscillatorConfig ampmodcfg;
 	Multiplier mul;
 
+	bufA.SetSize(256);
+	bufB.SetSize(256);
+	bufC.SetSize(256);
+	bufD.SetSize(256);
+
 	carcfg.SetFrequency(440.);
 	
 	modcfg.SetFrequency(0.5);
@@ -276,6 +322,11 @@ void TestEnv(void)
 
 	AudioFileOut outfile(outfilecfg);
 
+	bufenv.SetSize(256);
+	bufenv2.SetSize(256);
+	buf.SetSize(256);
+	bufout.SetSize(256);
+
 	envgen.Start();
 	envgen2.Start();
 	osc.Start();
@@ -287,7 +338,7 @@ void TestEnv(void)
 		envgen2.Do(env2,bufenv2);
 		osc.Do(bufenv2,0,buf);
 		mul.Do(buf,bufenv,bufout);
-		outfile.Do(buf); //out);
+		outfile.Do(bufout);
 	};
 
 	envgen.Stop();
@@ -306,6 +357,7 @@ int main(int argc,char** argv)
 		TestEnv();
 		TestJoin();
 		TestSplit();
+		TestSeek();
 	}	
 	catch (std::exception &e)
 	{

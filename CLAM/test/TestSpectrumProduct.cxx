@@ -163,7 +163,11 @@ namespace CLAMTest {
 		SpectrumConfig cfg;
 		int proto1,proto2,proto3;
 		static int count=0;
+#ifdef CLAM_DOUBLE
 		TData max_err = 0.00005;
+#else
+		TData max_err = 0.00039f;
+#endif
 		//TODO: To be unquoted when we use gcc 3.0
 		//TData max_err = std::numeric_limits<TData>::epsilon()*TData(1e3);
 		product.Start();

@@ -44,6 +44,7 @@ public:
 		PassBandSlope("Pass Band Slope",this),
 		StopBandSlope("Stop Band Slope",this)
 		{}
+	const char * GetClassName() const {return "FDControlsGenerator";}
 
 	bool Do(void)
 		{

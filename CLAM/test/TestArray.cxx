@@ -91,6 +91,7 @@ public:
 	{
 		std::cout << "Destroying A...... at : "<< this << std::endl;
 	}
+	const char * GetClassName() const {return "A";}
 
 	void LoadFrom (CLAM::Storage & store)
 	{
@@ -138,6 +139,8 @@ public:
 	{
 		std::cout << "Constructiong B at : " << this << std::endl;
 	}
+
+	const char * GetClassName() const {return "A";}
 
 	void LoadFrom (CLAM::Storage & store)
 	{

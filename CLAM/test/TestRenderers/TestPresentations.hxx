@@ -29,7 +29,7 @@
 #include "GeometryKit.hxx"
 
 #ifdef WIN32
-#include <windows.h>
+#include "CLAM_windows.h"
 #endif
 #include <GL/gl.h>
 

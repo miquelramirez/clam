@@ -19,6 +19,16 @@
  *
  */
 
+/**
+ * @file
+ * This file contains tests that checks that the XMLAdapters do their work,
+ * that is to adapt objects to something a XMLStorage can manage for Loading
+ * and Storing.
+ * @todo Refactor code duplication
+ * @todo Array of basic objects XML test
+ * @todo List of basic objects XML test
+ */
+
 #ifdef CLAM_USE_XML
 #include "XMLAdapter.hxx"
 #include "XMLStaticAdapter.hxx"
@@ -28,6 +38,7 @@
 #include "XMLStorage.hxx"
 #endif//CLAM_USE_XML
 #include "Array.hxx"
+#include "List.hxx"
 #include <list>
 #include "XMLTestHelper.hxx"
 
@@ -54,35 +65,38 @@ public:
 		mId=TestCase::kind();
 	}
 	void StoreOn(Storage & storer) {
-		TestCase a, b, c;
+		TestCase a(true), b(true), c(true);
 		a.AdaptToStore(storer,true,false); // Content
 		b.AdaptToStore(storer,false,false); // Attribute
 		c.AdaptToStore(storer,false,true); // Element
 	}
-	void LoadFrom(Storage & storer) 
+	void LoadFrom(Storage & storer)
 	{
 		// For each insertion mode (attribute-element-content)
 		{
-			TestCase a(false), b;
+			TestCase a, b(true);
 			a.AdaptToLoad(storer,true,false); // Content
 			std::string context("Loading Content "+mId);
 			bool failed = a.DiferenceCause(b,context);
 			CLAM_ASSERT(!failed, context.c_str());
 		}
 		{
-			TestCase a(false), b;
+			TestCase a, b(true);
 			a.AdaptToLoad(storer,false,false); // Attribute
 			std::string context("Loading Attribute "+mId);
 			bool failed = a.DiferenceCause(b,context);
 			CLAM_ASSERT(!failed, context.c_str());
 		}
 		{
-			TestCase a(false), b;
+			TestCase a, b(true);
 			a.AdaptToLoad(storer,false,true); // Element
 			std::string context("Loading Element "+mId);
 			bool failed = a.DiferenceCause(b,context);
 			CLAM_ASSERT(!failed, context.c_str());
 		}
+	}
+	const char * GetClassName() const {
+		return "GenericAdaptersTester";
 	}
 };
 
@@ -93,13 +107,13 @@ public:
 	char c;
 	std::string s;
 	static char * kind() {return "Simple Adapter";}
-	SimpleAdapterTestCase() {
+	SimpleAdapterTestCase(bool b) {
 		i = 3;
 		d = 3.5;
 		c = 'a';
 		s = "Hola";
 	}
-	SimpleAdapterTestCase(bool b) {
+	SimpleAdapterTestCase() {
 		i = 6;
 		d = 6.5;
 		c = 'b';
@@ -149,7 +163,7 @@ public:
 		storer.Load(&strAdapter);
 	}
 };
-	
+
 class ArrayAdapterTestCase {
 protected:
 	int *iarray;
@@ -159,7 +173,7 @@ protected:
 	unsigned isize, dsize, csize, ssize;
 public:
 	static char * kind() {return "Array of Simple type Adapter";}
-	template <class T> 
+	template <class T>
 	void Fill(T*& target, unsigned & targetsize, T* source, unsigned size) {
 		target=new T[size];
 		targetsize = size;
@@ -168,7 +182,7 @@ public:
 		}
 	}
 
-	ArrayAdapterTestCase() 
+	ArrayAdapterTestCase(bool b)
 	{
 		int iArray[] = {2,359,4,5,32,432};
 		double dArray[] = {2.67,359.67,46574.56,565,32.5,432};
@@ -179,7 +193,7 @@ public:
 		Fill(carray,csize,cArray,sizeof(cArray)/sizeof(char));
 		Fill(sarray,ssize,sArray,sizeof(sArray)/sizeof(std::string));
 	}
-	ArrayAdapterTestCase(bool b) {
+	ArrayAdapterTestCase() {
 		int iArray[] = {0,0,0,0,0,0};
 		double dArray[] = {6.66,6.66,6.66,6.66,6.66,6.66};
 		char cArray[] = {'=','=','=','=','=','=','=','='};
@@ -259,7 +273,7 @@ public:
  * some bassic types.
  * This one is much like the SimpleAdapterTestCase but the
  * Store procedure use static adapters.
- * @attention Static adapters cannot be uses for loading so we use 
+ * @attention Static adapters cannot be uses for loading so we use
  * the non static adapters for this purpose.
  */
 class StaticAdapterTestCase : public SimpleAdapterTestCase {
@@ -293,10 +307,10 @@ class IterableAdapterTestCase : public ArrayAdapterTestCase {
 	std::vector<char> cv;
 	std::vector<std::string> sv;
 public:
-	IterableAdapterTestCase() : ArrayAdapterTestCase() {
+	IterableAdapterTestCase(bool b) : ArrayAdapterTestCase(b) {
 		CopyCArrays();
 	}
-	IterableAdapterTestCase(bool b) : ArrayAdapterTestCase(b) {
+	IterableAdapterTestCase() : ArrayAdapterTestCase() {
 		CopyCArrays();
 	}
 	void CopyCArrays() {
@@ -423,35 +437,35 @@ void XMLIterableAdapterClassTest() {
 	}
 }
 
-/** 
+/**
  * A Component class having three basic attributes
  * that are stored each as element, attribute and plain.
  */
-class XMLComponentAdapterTester : public Component {
+class ComponentAdapterTestHelper : public Component {
 // Construction/Destruction
 public:
-	XMLComponentAdapterTester(std::string c) {
-		plain="simpleContent-"+c;
-		attribute="attributeContent-"+c;
-		element="elementContent-"+c;
+	ComponentAdapterTestHelper(char c) {
+		plain=std::string("simpleContent-")+c;
+		attribute=std::string("attributeContent-")+c;
+		element=std::string("elementContent-")+c;
 	}
-	virtual ~XMLComponentAdapterTester() {
-		
+	virtual ~ComponentAdapterTestHelper() {
+
 	};
+	const char * GetClassName() const {
+		return "ComponentAdapterTestHelper";
+	}
 // Operations
 public:
 	void modify () {
-		plain+="Modified";
-		attribute+="Modified";
-		element+="Modified";
+		plain+="-Modified";
+		attribute+="-Modified";
+		element+="-Modified";
 	}
-	bool operator== (XMLComponentAdapterTester&c) {
+	bool operator== (const ComponentAdapterTestHelper&c) const {
 		return c.plain==plain && c.attribute==attribute && c.element==element;
 	}
-	bool operator!= (XMLComponentAdapterTester&c) {
-		return c.plain!=plain || c.attribute!=attribute || c.element!=element;
-	}
-	void print() {
+	void print() const {
 		std::cout << plain << '\n' << attribute << '\n' << element << std::endl;
 	}
 // Operations (Component interface)
@@ -465,7 +479,6 @@ public:
 		store.Store(&myAdapter3);
 	}
 	virtual void LoadFrom (Storage & store) {
-		std::cout << "Loading Component tester"<<std::endl;
 		XMLAdapter<std::string> myAdapter1(plain);
 		store.Load(&myAdapter1);
 		XMLAdapter<std::string> myAdapter2(attribute, "mySubItem");
@@ -481,52 +494,89 @@ private:
 };
 
 
+class ComponentAdapterTestCase {
+public:
+	ComponentAdapterTestCase(char c) : _component(c) {
+	}
+	ComponentAdapterTestCase(char c, bool b) : _component(c) {
+		_component.modify();
+	}
+	static char * kind() {return "XMLComponentAdapter";}
+	void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
+		CLAM_ASSERT(!(asContent && asElement),
+			"Testing logic calling in AdaptToStore");
+
+		CLAM_ASSERT(asContent || asElement,
+			"Attributes not aplicable for XMLComponentAdapters");
+
+		XMLComponentAdapter adapter(_component, asContent?0:"AsElement", asElement);
+		storer.Store(&adapter);
+	}
+	void AdaptToLoad(Storage & storer, bool asContent, bool asElement) {
+		CLAM_ASSERT(!(asContent && asElement),
+			"Testing logic calling in AdaptToLoad");
+		CLAM_ASSERT(asContent || asElement,
+			"Attributes not aplicable for XMLComponentAdapters");
+
+		XMLComponentAdapter adapter(_component, asContent?0:"AsElement", asElement);
+		storer.Load(&adapter);
+	}
+	bool DiferenceCause(const ComponentAdapterTestCase & other, std::string &context) const {
+		if (_component==other._component) return false;
+		std::cout << "Found: " << std::endl;
+		_component.print();
+		std::cout << "Expected: " << std::endl;
+		other._component.print();
+		return true;
+	}
+// Attributes
+private:
+	ComponentAdapterTestHelper _component;
+};
+
+
+class ComponentAdaptersTester : public Component {
+public:
+	ComponentAdaptersTester() {
+		mId="ComponentAdapter";
+	}
+	const char * GetClassName() const {
+		return "ComponentAdaptersTester";
+	}
+	void StoreOn(Storage & storer) {
+		ComponentAdapterTestCase a('C'), b('E');
+		a.AdaptToStore(storer,true,false); // Content
+		b.AdaptToStore(storer,false,true); // Element
+	}
+	void LoadFrom(Storage & storer) {
+		{
+			ComponentAdapterTestCase a('C',false), b('C');
+			a.AdaptToLoad(storer,true,false); // Content
+			std::string context("Loading Content "+mId);
+			bool failed = a.DiferenceCause(b,context);
+			CLAM_ASSERT(!failed, context.c_str());
+		}
+		{
+			ComponentAdapterTestCase a('E',false), b('E');
+			a.AdaptToLoad(storer,false,true); // Element
+			std::string context("Loading Element "+mId);
+			bool failed = a.DiferenceCause(b,context);
+			CLAM_ASSERT(!failed, context.c_str());
+		}
+	}
+private:
+	std::string mId;
+};
+
 /**
  * Tests the XMLComponentAdapter class
  */
 void XMLComponentAdapterClassTest() {
 	std::cout << "-- Testing XMLComponentAdapter" << std::endl;
-	CLAMTest::XMLComponentAdapterTester myAdapteeC("C");
-	CLAMTest::XMLComponentAdapterTester myAdapteeA("A");
-	CLAMTest::XMLComponentAdapterTester myAdapteeE("E");
-	XMLStorage storer("MyPrueba");
 	{
-		// Testing as a simple content
-		XMLComponentAdapter componentAdapter(myAdapteeC);
-		storer.Store(&componentAdapter);
-	}
-	{
-		// Testing as an element content
-		XMLComponentAdapter componentAdapter(myAdapteeE, "myComponentAsElem", true);
-		storer.Store(&componentAdapter);
-	}
-	storer.dumpOn(std::cout);
-	std::ofstream f("testxml.xml");
-	storer.dumpOn(f);
-	{
-		XMLStorage storer("MyPrueba");
-		storer._restoreFrom("testxml.xml");
-		CLAMTest::XMLComponentAdapterTester myLoadedAdaptee("T");
-		{
-			// Testing as a simple content
-			XMLComponentAdapter componentAdapter(myLoadedAdaptee);
-			storer.Load(&componentAdapter);
-			if (myLoadedAdaptee!=myAdapteeC) {
-				std::cerr << "Difference" << std::endl;
-				myLoadedAdaptee.print();
-				myAdapteeC.print();
-			}
-		}
-		{
-			// Testing as an element content
-			XMLComponentAdapter componentAdapter(myLoadedAdaptee, "myComponentAsElem", true);
-			storer.Load(&componentAdapter);
-			if (myLoadedAdaptee!=myAdapteeE) {
-				std::cerr << "Difference" << std::endl;
-				myLoadedAdaptee.print();
-				myAdapteeE.print();
-			}
-		}
+		ComponentAdaptersTester tester;
+		bool match = XMLInputOutputMatches(tester,__FILE__"Component.xml");
+		CLAM_ASSERT(match, "Store/Load mismatch using component adapters");
 	}
 };
 
@@ -537,28 +587,51 @@ void XMLComponentAdapterClassTest() {
  * A Component having only one parameter
  */
 class MyComponent : public CLAM::Component {
+		std::string _tag;
 	public:
-		virtual const char * GetClassName() {
+		MyComponent() {_tag="DefaultContent";};
+		MyComponent(const MyComponent &c) {_tag=c._tag;};
+		MyComponent(std::string tag) {_tag=tag;};
+		const char * GetClassName() const {
 			return "MyComponent";
 		}
 		virtual ~MyComponent() {};
 		void StoreOn(CLAM::Storage & s) {
-			std::string text("Content");
 			#ifdef CLAM_USE_XML
-			CLAM::XMLAdapter<std::string> adapt(text);
+			CLAM::XMLAdapter<std::string> adapt(_tag);
 			s.Store(&adapt);
 			#endif//CLAM_USE_XML
 		}
 		void LoadFrom(CLAM::Storage & s) {
 			#ifdef CLAM_USE_XML
 			std::string text;
-			CLAM::XMLAdapter<std::string> adapt(text);
+			CLAM::XMLAdapter<std::string> adapt(_tag);
 			s.Load(&adapt);
-			CLAM_ASSERT(text=="Content","Loading do not match");
 			#endif//CLAM_USE_XML
 		}
 };
+ 
+void XMLComponentArrayTest() {
+	std::cout << "-- Testing CLAM::Array<Component>" << std::endl;
+	CLAM::Array<MyComponent> a;
+	a.AddElem(MyComponent("One"));
+	a.AddElem(MyComponent("Two"));
+	a.AddElem(MyComponent("Three"));
+	a.AddElem(MyComponent("Four"));
+	bool match = XMLInputOutputMatches(a,__FILE__"ComponentArray.xml");
+	CLAM_ASSERT(match, "Store/Load mismatch using array of components");
+}
 
+void XMLComponentListTest() {
+	std::cout << "-- Testing CLAM::List<Component>" << std::endl;
+	CLAM::List<MyComponent> a;
+	a.AddElem(MyComponent("One"));
+	a.AddElem(MyComponent("Two"));
+	a.AddElem(MyComponent("Three"));
+	a.AddElem(MyComponent("Four"));
+	bool match = XMLInputOutputMatches(a,__FILE__"ComponentListy.xml");
+	CLAM_ASSERT(match, "Store/Load mismatch using list of components");
+}
 
 
 }
@@ -570,18 +643,10 @@ int main (void) {
 	CLAMTest::XMLArrayAdapterClassTest();
 	CLAMTest::XMLComponentAdapterClassTest();
 	CLAMTest::XMLIterableAdapterClassTest();
+	CLAMTest::XMLComponentArrayTest();
+	CLAMTest::XMLComponentListTest();
+//	CLAMTest::XMLBasicArrayTest();
 	#endif//CLAM_USE_XML
-	CLAMTest::MyComponent c;
-	CLAM::Array<CLAMTest::MyComponent> a;
-	a.AddElem(c);
-	a.AddElem(c);
-	a.AddElem(c);
-	a.AddElem(c);
-	#ifdef CLAM_USE_XML
-	CLAM::XMLStorage storage("Prueba");
-	storage.Dump(a,"UnArray",std::cout);
-	#endif//CLAM_USE_XML
-	// TODO: Test Array loading
 
 	return 0;
 

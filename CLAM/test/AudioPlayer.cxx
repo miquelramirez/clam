@@ -87,6 +87,9 @@ void AudioFilePlayerApplication::AudioMain(void)
 	tb.Start();
 */
 	audioManager.Start();
+	outL.Start();
+	outR.Start();
+	osc.Start();
 
 	int k = 0;
 	
