@@ -26,6 +26,7 @@ namespace CLAM
 	    glBegin(GL_POINTS);
 	    for(int i = 0; (unsigned)i < _data.size(); i++)
 	    {
+		if(!_data[i].HasMagBuffer()) continue;
 		for(int j = 0;j < _data[i].GetMagBuffer().Size(); j++)
 		{
 		    TIndex colorIndex = _palette.Get( ClampToRange( _data[i].GetMagBuffer()[j]) );
