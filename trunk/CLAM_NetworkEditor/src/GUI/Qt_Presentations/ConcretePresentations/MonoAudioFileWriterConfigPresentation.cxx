@@ -35,7 +35,7 @@ namespace NetworkGUI
 
 MonoAudioFileWriterConfigPresentation::MonoAudioFileWriterConfigPresentation( QWidget * parent )
 	: Qt_ProcessingConfigPresentation( parent , "config"  ),
-	mLocation(0),
+	mLocation(),
 	mLayout(0),
 	mSampleRate(0),
 	mFormat(0)
@@ -71,18 +71,22 @@ void MonoAudioFileWriterConfigPresentation::ConfigureProcessing()
 
 void MonoAudioFileWriterConfigPresentation::SetConfig( const CLAM::ProcessingConfig & cfg )
 {
+
 	mConfig = static_cast<const CLAM::MonoAudioFileWriterConfig &>(cfg);
 	CLAM::AudioFileHeader header;
 	header.AddAll();
 	header.UpdateData();
-	mConfig.GetTargetFile().CreateNew( mLocation->text().latin1(), header);
+	
+	if (!mLocation )
+		mConfig.GetTargetFile().CreateNew( "", header);
+	else
+		mConfig.GetTargetFile().CreateNew( mLocation->text().latin1(), header);
 	CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
 
 	mLayout = mAttributeContainer;
 	mLayout->setSpacing(5);
 	mLayout->setMargin(5);
 	mLayout->setMinimumWidth(120);
-
 	CreateGUI();
 	adjustSize();
 }
@@ -103,6 +107,7 @@ void MonoAudioFileWriterConfigPresentation::CreateLocation()
 	
 	mLocation = new QLineEdit(QString(mConfig.GetTargetFile().GetLocation().c_str()), cell); 
 	mLocation->setMinimumWidth(300);
+	mLocation->setText( "" );
 
 	QPushButton * fileBrowserLauncher = new QPushButton("...",cell);
 	fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
