@@ -17,8 +17,12 @@ typedef void (*pthread_clean_pfunc) (void *);
 namespace CLAM
 {
 
-Thread::Thread()
-	: mHasCode( false ), mHasCleanup( false ), mIsCancelled(false), mRunning(false)
+Thread::Thread(bool realtime):
+	mHasCode( false ), 
+  mHasCleanup( false ),
+	mIsCancelled(false),
+	mRunning(false),
+	mRealtime(realtime)
 {
 }
 
@@ -38,6 +42,8 @@ void Thread::SetupPriorityPolicy()
 		res = SetThreadPriority( GetCurrentThread(), THREAD_PRIORITY_NORMAL );
 		err = GetLastError();
 	#else
+	if (mRealtime)
+	{
 		struct sched_param sched_param;
 		int policy;
 
@@ -48,6 +54,16 @@ void Thread::SetupPriorityPolicy()
 		if (!pthread_setschedparam(pthread_self(), SCHED_RR, &sched_param)) {
 			printf("Scheduler set to Round Robin with priority %i...\n", sched_param.sched_priority);
 		}
+	}else{
+		struct sched_param sched_param;
+		int policy;
+
+		if (pthread_getschedparam(pthread_self(), &policy, &sched_param) < 0) {
+			printf("Scheduler getparam failed...\n");
+		}
+		sched_param.sched_priority = sched_get_priority_max(policy)/2;
+		pthread_setschedparam(pthread_self(), policy, &sched_param);
+	}
 	#endif  
 }
 

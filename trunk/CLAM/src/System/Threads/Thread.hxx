@@ -14,7 +14,7 @@ class Thread
 {
 public:
 
-	Thread();
+	Thread(bool realtime = false);
 
 	virtual ~Thread();
 
@@ -47,6 +47,7 @@ public:
 	}
 
 private:
+	bool               mRealtime;
 	bool               mHasCode;
 	bool               mHasCleanup;
 	pthread_t          mThreadID;
