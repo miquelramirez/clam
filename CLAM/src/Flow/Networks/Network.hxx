@@ -81,9 +81,7 @@ public:
 	void AddProcessing( const std::string &, Processing* );
 	//! add method using a key to get the new processing from factory
 	void AddProcessing( const std::string & name, const std::string & key );
-	std::string AddProcessing( const std::string& key );
-	std::string GetUnusedName( const std::string& prefix );
-	void RemoveProcessing ( const std::string& name );
+	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name ) const;
 	/** It configures the processing with the given processing id and config object and
 	 *  notifies this to the network. So use this method instead of getting the processing
@@ -110,6 +108,11 @@ public:
 	NamesList GetInControlsConnectedTo( const std::string & ) const;
 	InPortsList GetInPortsConnectedTo( OutPortBase & ) const;
 
+protected:
+  std::string GetLastIdentifier( const std::string& ) const;
+  std::string GetProcessingIdentifier( const std::string& ) const;
+	
+
 private:
 	
 	// fields
@@ -119,8 +122,6 @@ private:
 	void AssertFlowControlNotNull() const;
 	static std::size_t PositionOfLastIdentifier( const std::string& );
 	static std::size_t PositionOfProcessingIdentifier( const std::string& );
-	std::string GetLastIdentifier( const std::string& ) const;
-	std::string GetProcessingIdentifier( const std::string& ) const;
 	static char NamesIdentifiersSeparator();
 	FlowControl* mFlowControl;
 };
