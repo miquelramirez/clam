@@ -46,14 +46,14 @@ void FlowControl::ConfigurePorts(Processing& toConfigure) const
 	/*
 	 *
 	 * TODO: rethink the way ports size must be decided
-	PublishedInPorts::Iterator itin; // todo : should be a typdef of PublishedInPorts
+	InPortsRegistry::Iterator itin; // todo : should be a typdef of InPortsRegistry
 	for (itin = toConfigure.GetInPorts().Begin(); itin != toConfigure.GetInPorts().End(); itin++)
 	{
 		(*itin)->SetSize(mFrameSize);
 		(*itin)->SetHop(mFrameSize);
 	}
 		
-	PublishedOutPorts::Iterator itout; // todo: idem
+	OutPortsRegistry::Iterator itout; // todo: idem
 	for (itout = toConfigure.GetOutPorts().Begin(); itout != toConfigure.GetOutPorts().End(); itout++)
 	{
 		(*itout)->SetSize(mFrameSize);
