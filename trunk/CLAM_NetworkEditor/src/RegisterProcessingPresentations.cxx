@@ -58,22 +58,7 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 
 
 // Plot Processings
-#include "Qt_PortMonitorPresentation.hxx"
-static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_PortMonitorPresentation>
-        regtPeakPortMonitor( "PeaksPortMonitor" );
 
-#include "Qt_AudioPortMonitorPresentation.hxx"
-static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_AudioPortMonitorPresentation>
-        regtAudioPortMonitor( "AudioPortMonitor" );
-
-#include "Qt_SpectrumPortMonitorPresentation.hxx"
-static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_SpectrumPortMonitorPresentation>
-        regtSpectrumPortMonitor( "SpectrumPortMonitor" );
-
-#include "Qt_FundPortMonitorPresentation.hxx"
-static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_FundPortMonitorPresentation>
-        regtFundPortMonitor( "FundamentalPortMonitor" );
-	
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
 	regtAudioPlotProcessing( "AudioPlotProcessing" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
