@@ -48,6 +48,8 @@ private:
 	Qt_NetworkPresentation mNetworkPresentation;
 	QDockWindow * mDockProcMenu;
 	AboutDialog* mpAboutDlg;
+	QString mCurrentNetwork;
+
 public: //slots
 	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
 
