@@ -290,32 +290,6 @@ bool SMSAnalysis::Do(const Audio& in, /*testing!! const Audio& inRes,*/Spectrum&
 	//Finally we substract mSpectrum-SinusoidalSpectrum
 	SpectrumSubstract(mSpec,outSinSpec,outResSpec);
 
-	//XA: Testing, computing energy also for residual
-	// DESCRIPTOR COMPUTATION 
-	// Energy Computation, note that this should be done inside a PO, added here as example
-	TData aux1 = 0,aux2 = 0;
-	//residual
-	outResSpec.AddDescriptors();
-	outResSpec.UpdateData();
-	//global
-	outGlobalSpec.AddDescriptors();
-	outGlobalSpec.UpdateData();
-	
-	SpectralDescriptors tmpDesc;
-	tmpDesc.AddEnergy();
-	tmpDesc.UpdateData();
-
-	outResSpec.SetDescriptors(tmpDesc);
-	outGlobalSpec.SetDescriptors(tmpDesc);
-
-	DataArray& resMagBuffer=outResSpec.GetMagBuffer();
-	DataArray& globMagBuffer=outGlobalSpec.GetMagBuffer();
-	for(int j=0; j<outResSpec.GetSize(); j++){
-		aux1 += globMagBuffer[j]*globMagBuffer[j];
-		aux2 += resMagBuffer[j]*resMagBuffer[j];}
-	outGlobalSpec.GetDescriptors().SetEnergy(aux1);
-	outResSpec.GetDescriptors().SetEnergy(aux2);
-
 	return true;
 
 }

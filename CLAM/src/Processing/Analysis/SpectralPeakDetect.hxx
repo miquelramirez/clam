@@ -42,7 +42,7 @@ namespace CLAM {
 		/** Name of the SpectralPeakDetect object*/
 		DYN_ATTRIBUTE (0, public, std::string, Name);
 		/** Maximum namber of SpectralPeaks*/
-		DYN_ATTRIBUTE (1, public, TSize, MaxSpectralPeaks);
+		DYN_ATTRIBUTE (1, public, TSize, MaxPeaks);
 		/** Threshold of magnitude; SpectralPeaks will be located above this value*/
 		DYN_ATTRIBUTE (2, public, TSize, MagThreshold);
 		/** Number of bands*/

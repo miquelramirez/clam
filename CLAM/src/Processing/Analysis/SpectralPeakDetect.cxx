@@ -43,7 +43,7 @@ namespace CLAM {
 		
 		SetNumBands(513);
 		SetMagThreshold(-80);
-		SetMaxSpectralPeaks(100);
+		SetMaxPeaks(100);
 	}
 
 
@@ -224,7 +224,7 @@ namespace CLAM {
 					outBinWidthBuffer.AddElem(0); // BinWidth will be set later
 					
 					nSpectralPeaks++;
-					out.SetnSpectralPeaks(nSpectralPeaks);
+					out.SetnPeaks(nSpectralPeaks);
 
 
 				}
@@ -259,7 +259,7 @@ namespace CLAM {
 
 		/* Clear the  output Array */
 
-		out.SetnSpectralPeaks(0); // set the number of SpectralPeaks to 0
+		out.SetnPeaks(0); // set the number of SpectralPeaks to 0
 
 		return true;
 	}

@@ -39,7 +39,7 @@
 #include "ProcessingDataConfig.hxx"
 #include "Processing.hxx"
 #include "SynthSineSpectrum.hxx"
-#include "SynPhaseManagement.hxx"
+#include "PhaseManagement.hxx"
 #include "SpectralSynthesis.hxx"
 #include "SpectrumAdder2.hxx"
 
@@ -63,7 +63,7 @@ public:
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 /** Configuration for children Processing Objects*/
 	DYN_ATTRIBUTE(1,public, SynthSineSpectrumConfig,SynthSineSpectrum);
-	DYN_ATTRIBUTE(2,public, SynPhaseManagementConfig,PhaseMan);
+	DYN_ATTRIBUTE(2,public, PhaseManagementConfig,PhaseMan);
 	DYN_ATTRIBUTE(3,public, SpectralSynthesisConfig,SpectralSynth);
 
 	DYN_ATTRIBUTE(4,protected,int,prSamplingRate);
@@ -127,7 +127,7 @@ private:
 		SpectralSynthesis		mPO_ResSpectralSynthesis;
 		SpectralSynthesis		mPO_SpectralSynthesis;
 		SynthSineSpectrum		mPO_SynthSineSpectrum;
-		SynPhaseManagement		mPO_PhaseMan;
+		PhaseManagement			mPO_PhaseMan;
 		SpectrumAdder2			mPO_SpectrumAdder;
 
 
