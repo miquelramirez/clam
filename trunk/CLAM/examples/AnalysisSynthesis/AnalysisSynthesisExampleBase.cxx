@@ -313,6 +313,8 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 		WaitMessage *wm = CreateWaitMessage("Cleaning tracks, please wait");
 	
 		CleanTracksConfig clcfg;
+		clcfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
+		clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
 		CleanTracks myCleanTracks;
 		myCleanTracks.Configure(clcfg);
 		myCleanTracks.Start();
