@@ -189,8 +189,8 @@ void Spectrum::ToDB()
 			specSize=TData(GetSize());
 			for (i=0; i<specSize; i++)
 			{
-				if(mag[i]==0) mag[i]=TData(0.0001);
-				mag[i]= 20*log10(mag[i]); 
+				if(mag[i]==0) mag[i]=-200;
+				else mag[i]= 20*log10(mag[i]); 
 			}
 			SynchronizeTo(flags);
 		}
@@ -201,8 +201,9 @@ void Spectrum::ToDB()
 			for (i=0; i<specSize; i++)
 			{
 				TData magLin = polar[i].Mag();
-				if(magLin==0) magLin=TData(0.0001);
-				TData magLog = 20*log10(magLin);
+				TData magLog;
+				if(magLin==0) magLog=-200;
+				else magLog = 20*log10(magLin);
 				polar[i].SetMag(magLog);
 			}
 			flags.bPolar = true;
@@ -217,9 +218,10 @@ void Spectrum::ToDB()
 			{
 				TData re = complex[i].Real();
 				TData im = complex[i].Imag();
-				TData magLin = sqrt(pow(re,2) + pow(im,2));
-				if(magLin==0) magLin=TData(0.0001);
-				TData magLog = 20*log10(magLin);
+				TData magLin = sqrt(re*re + im*im);
+				TData magLog;
+				if(magLin==0) magLog=-200;
+				else magLog = 20*log10(magLin);
 				complex[i].SetReal(magLog * re / magLin);
 				complex[i].SetImag(magLog * im / magLin);
 			}
@@ -234,8 +236,9 @@ void Spectrum::ToDB()
 			for (i=0; i<bpfSize; i++)
 			{
 				TData magLin=magBPF.GetValueFromIndex(i);
-				if(magLin==0) magLin=TData(0.0001);
-				TData magLog = 20*log10(magLin);
+				TData magLog;
+				if(magLin==0) magLog=-200;
+				else magLog = 20*log10(magLin);
 				magBPF.SetValue(i,magLog);
 			}
 			flags.bMagPhaseBPF = true;
@@ -261,8 +264,8 @@ void Spectrum::ToLinear()
 			DataArray &mag = GetMagBuffer();
 			for (i=0; i<specSize; i++)
 			{
-				if(mag[i]==0.0001) mag[i]=0;
-				mag[i]= pow(TData(10),TData(mag[i]/20)); 
+				if(mag[i]<=-200) mag[i]=0;
+				else mag[i]= pow(TData(10),TData(mag[i]/20)); 
 			}
 			SynchronizeTo(flags);
 		}
@@ -271,10 +274,11 @@ void Spectrum::ToLinear()
 			Array<Polar> &polar = GetPolarArray();
 			for (i=0; i<specSize; i++)
 			{
-				TData magLin = polar[i].Mag();
-				if(magLin==0.0001) magLin=0;
-				TData magLog = pow(TData(10),TData(magLin/20));
-				polar[i].SetMag(magLog);
+				TData magLog = polar[i].Mag();
+				TData magLin;
+				if(magLog<=-200) magLin=0;
+				else magLin = pow(TData(10),TData(magLog/20));
+				polar[i].SetMag(magLin);
 			}
 			flags.bPolar = true;
 			flags.bMagPhase = false;
@@ -287,11 +291,12 @@ void Spectrum::ToLinear()
 			{
 				TData re = complex[i].Real();
 				TData im = complex[i].Imag();
-				TData magLin = sqrt(pow(re,2) + pow(im,2));
-				if(magLin==0.0001) magLin=0;
-				TData magLog = pow(TData(10),TData(magLin/20));
-				complex[i].SetReal(magLog * re / magLin);
-				complex[i].SetImag(magLog * im / magLin);
+				TData magLog = sqrt(re*re + im*im);
+				TData magLin;
+				if(magLog<=-200) magLin=0;
+				else magLin = pow(TData(10),TData(magLog/20));
+				complex[i].SetReal(magLin * re / magLin);
+				complex[i].SetImag(magLin * im / magLin);
 			}
 			flags.bComplex = true;
 			flags.bMagPhase = false;
@@ -303,10 +308,11 @@ void Spectrum::ToLinear()
 			int bpfSize=GetBPFSize();
 			for (i=0; i<bpfSize; i++)
 			{
-				TData magLin = magBPF.GetValueFromIndex(i);
-				if(magLin==0.0001) magLin=0;
-				TData magLog = pow(TData(10),TData(magLin/20));
-				magBPF.SetValue(i,magLog);
+				TData magLog = magBPF.GetValueFromIndex(i);
+				TData magLin;
+				if(magLog<=-200) magLin=0;
+				else magLin = pow(TData(10),TData(magLog/20));
+				magBPF.SetValue(i,magLin);
 			}
 			flags.bMagPhaseBPF = true;
 			flags.bMagPhase = false;

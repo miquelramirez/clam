@@ -68,7 +68,7 @@ namespace CLAM{
 class SpectralPeakArray : public ProcessingData
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakArray, 8, ProcessingData);
+	DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakArray, 9, ProcessingData);
 	DYN_ATTRIBUTE (0, public, EScale, Scale);
 	DYN_ATTRIBUTE (1, public, DataArray, MagBuffer);
 	DYN_ATTRIBUTE (2, public, DataArray, FreqBuffer);
@@ -77,6 +77,7 @@ public:
 	DYN_ATTRIBUTE (5, public, DataArray, BinWidthBuffer);
 	DYN_ATTRIBUTE (6, public, IndexArray, IndexArray);
 	DYN_ATTRIBUTE (7, public, bool, IsIndexUpToDate);
+	DYN_ATTRIBUTE (8, public, bool, MinimizeResizes);
 	
 protected:
 	void DefaultInit();
@@ -355,18 +356,30 @@ public:
 */	
 	void SetnMaxPeaks(TSize npeaks)
 	{
-		if(HasMagBuffer()) 
+		if(HasMagBuffer()){
 			GetMagBuffer().Resize(npeaks);
-		if(HasFreqBuffer())
+			if(GetMinimizeResizes())
+				GetMagBuffer().SetStep(npeaks);}
+		if(HasFreqBuffer()){
 			GetFreqBuffer().Resize(npeaks);
-		if(HasPhaseBuffer())
+			if(GetMinimizeResizes())
+				GetFreqBuffer().SetStep(npeaks);}
+		if(HasPhaseBuffer()){
 			GetPhaseBuffer().Resize(npeaks);
-		if(HasBinPosBuffer())	
+			if(GetMinimizeResizes())
+				GetPhaseBuffer().SetStep(npeaks);}
+		if(HasBinPosBuffer()){	
 			GetBinPosBuffer().Resize(npeaks);
-		if(HasBinWidthBuffer())
+			if(GetMinimizeResizes())
+				GetBinPosBuffer().SetStep(npeaks);}
+		if(HasBinWidthBuffer()){
 			GetBinWidthBuffer().Resize(npeaks);
-		if(HasIndexArray())
+			if(GetMinimizeResizes())
+				GetBinWidthBuffer().SetStep(npeaks);}
+		if(HasIndexArray()){
 			GetIndexArray().Resize(npeaks);
+			if(GetMinimizeResizes())
+				GetIndexArray().SetStep(npeaks);}
 	}
 
 /** Returns the actual allocated size of the different instantiated buffers

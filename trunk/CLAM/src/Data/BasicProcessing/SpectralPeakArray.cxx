@@ -45,9 +45,11 @@ void SpectralPeakArray::DefaultInit()
 	AddFreqBuffer();
 	AddMagBuffer();
 	AddScale();
+	AddMinimizeResizes();
 	UpdateData();
 	SetScale(EScale(EScale::eLinear));
 	SetnPeaks(0);
+	SetMinimizeResizes(1);
 }
  
 
@@ -305,7 +307,7 @@ void SpectralPeakArray::ResetIndices() // reset all indices
 	IndexArray& indexArray=GetIndexArray();
 	TSize nPeaks=GetnPeaks();
 	//Resize will only be done once
-	if(indexArray.Size()!=GetnMaxPeaks())
+	if(indexArray.AllocatedSize()!=GetnMaxPeaks())
 		indexArray.Resize(GetnMaxPeaks());
 	// set size to the number of Peaks
 	indexArray.SetSize(nPeaks);
