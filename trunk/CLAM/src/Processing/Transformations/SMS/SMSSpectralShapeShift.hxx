@@ -43,9 +43,6 @@ namespace CLAM{
 	class SMSSpectralShapeShift: public FrameTransformation
 	{
 		
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
 		const char *GetClassName() const {return "SMSSpectralShapeShift";}
 
 		InPort<SpectralPeakArray> mIn;
@@ -53,9 +50,8 @@ namespace CLAM{
 
 		InControl mShiftAmount;
 
-
 	public:
-		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
+
 		SMSSpectralShapeShift() 
 			: 
 			mIn( "In SpectralPeaks", this), 
@@ -63,12 +59,10 @@ namespace CLAM{
 			mShiftAmount( "Shift Amount", this )
 		{
 			Configure( SegmentTransformationConfig() );
-			mSpectralRange=22050;//default
+			mSpectralRange=22050;	//default
 		}
 
-		/** Destructor of the class*/
- 		~SMSSpectralShapeShift()
-		{}
+ 		~SMSSpectralShapeShift() {}
 
 		const ProcessingConfig& GetConfig() const { throw 0; }
 
@@ -81,7 +75,6 @@ namespace CLAM{
 	
 		bool Do(const SpectralPeakArray& inpeaks,SpectralPeakArray& out);
 
-		// Note that overriding this method breaks the processing chain functionality. 
 		bool Do()
 		{
 			bool result = Do(mIn.GetData(), mOut.GetData());
@@ -96,7 +89,7 @@ namespace CLAM{
 		Spectrum mSpectralEnvelope;
 		TSize mSpectralRange;
 	};		
-};//namespace CLAM
+}	//namespace CLAM
 
 #endif // _SMSSpectralShapeShift_
 
