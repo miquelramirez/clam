@@ -7,8 +7,6 @@
 #include "ProcessingPresentation.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
-#include "QTConfigurator.hxx"
-
 
 namespace CLAM
 {
@@ -70,13 +68,14 @@ protected:
 // qt stuff
 	bool        mDown;
 	QPoint     mClickPos;
+//	Qt_ProcessingConfigPresentation*  mpConfigPresentation;	
 
 public: // signals
 	SigSlot::Signalv1< Qt_InPortPresentation * > AcquireInPortClicked;
 	SigSlot::Signalv1< Qt_OutPortPresentation * > AcquireOutPortClicked;
 	SigSlot::Signalv1< Qt_InControlPresentation * > AcquireInControlClicked;
 	SigSlot::Signalv1< Qt_OutControlPresentation * > AcquireOutControlClicked;
-	SigSlot::Signalv1< CLAM::ProcessingConfig * > EditConfiguration;
+//	SigSlot::Signalv1< CLAM::ProcessingConfig * > EditConfiguration;
 
 public: // slots
 	// ports

@@ -14,10 +14,10 @@ class Processing;
 
 class FlowControl
 {
-	bool _networkChanged;
+	bool mNetworkChanged;
 
 public:
-	FlowControl( int frameSize = 0 );
+	FlowControl( int frameSize = 512 );
 	virtual ~FlowControl(){}
 	virtual void AttachToNetwork( Network* );
 	
@@ -29,14 +29,14 @@ public:
 	// to implement in each type of flowcontrol
 	virtual void DoProcessings() = 0;
 
-	void NetworkTopologyChanged() { _networkChanged=true;}
+	void NetworkTopologyChanged() { mNetworkChanged=true;}
 
 protected:
-	bool HasNetworkTopologyChanged() const { return _networkChanged; }
+	bool HasNetworkTopologyChanged() const { return mNetworkChanged; }
 	void ConfigurePorts(Processing &toConfigure) const;
 	
-	int _frameSize;
-	Network * _network;
+	int mFrameSize;
+	Network * mNetwork;
 
 };
 

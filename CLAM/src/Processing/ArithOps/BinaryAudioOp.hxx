@@ -65,13 +65,17 @@ namespace CLAM
 		const char *GetClassName() const {return "BinaryAudioOperation";}
 
 		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecAdderConfig
-		 * object.
+		 * @pre argument should be an SpecAdderConfig object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+		bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			mConfig = dynamic_cast<const BinaryAudioOpConfig&>(c);	    
+			try {
+				mConfig = dynamic_cast<const BinaryAudioOpConfig&>(c);	    
+			}
+			catch (std::bad_cast)
+			{
+				CLAM_ASSERT(false,"Config should be a BynariaAudioOpConfig")
+			}
 			return true;
 			
 		}

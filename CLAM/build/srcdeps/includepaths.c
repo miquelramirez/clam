@@ -3,6 +3,7 @@
 #include "strfuncs.h"
 #include "strptr.h"
 #include "includepaths.h"
+#include <stdlib.h>
 #include <string.h>
 
 extern list* includepaths; /* definition in parser.c */
@@ -14,7 +15,12 @@ void includepaths_add(const char* str)
 	const char* ptr = str;
 	ptr = strptr_skip_end(ptr);
 	while (ptr!=str && *ptr!='/' && *ptr!='\\') ptr--;
-	if ((*ptr=='/' || *ptr!='\\') && (!strcmp(ptr,"/CVS") || !strcmp(ptr,"\\CVS"))) return;
+	if (*ptr=='\\') 
+	{
+		fprintf(stderr, "Error in includepaths.c: '\\' encountered in a include path\n");
+		exit(-1);
+	}
+	if ((*ptr=='/') && !strcmp(ptr,"/CVS") ) return;
 
 	list_add_str_once(includepaths,str);
 }

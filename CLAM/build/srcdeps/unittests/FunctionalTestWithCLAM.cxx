@@ -27,6 +27,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FunctionalTestWithCLAM );
  *
  * WARNING: they maight take some time to run. So it is likely you'd want to take it
  * out of the srcdeps test suite while developing it.
+ * And of course this test suite doesn't have sense if srcdeps is used independently
+ * of CLAM.
  *
  */
 class FunctionalTestWithCLAM : public CppUnit::TestFixture, public FileHelper
@@ -40,7 +42,7 @@ class FunctionalTestWithCLAM : public CppUnit::TestFixture, public FileHelper
 
 
 public:
-	FunctionalTestWithCLAM() : FileHelper("../../Examples/FlowControlExamples/NonSupervisedSystemExamples/")
+	FunctionalTestWithCLAM() : FileHelper("../Examples/FlowControlExamples/NonSupervisedSystemExample/")
 	{
 	}
 	/// Common initialization, executed before each test method
@@ -64,7 +66,7 @@ private:
 		listhash_add_item_str(config,"OS_WINDOWS","1");
 		listhash_add_item_str(config,"OS_LINUX","0");
 		listhash_add_item_str(config,"OS_MACOSX","0");
-		config_parse( helper_filename("testsettings.cfg") );
+		config_parse( helper_filename("settings.cfg") );
 	
 		parser_init();
 			
@@ -94,7 +96,7 @@ private:
 		listhash_add_item_str(config,"OS_WINDOWS","1");
 		listhash_add_item_str(config,"OS_LINUX","0");
 		listhash_add_item_str(config,"OS_MACOSX","0");
-		config_parse( helper_filename("testsettings.cfg") );
+		config_parse( helper_filename("settings.cfg") );
 	
 		parser_init();
 			

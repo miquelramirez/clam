@@ -3,18 +3,6 @@
 
 #include "Point.hxx"
 
-// Kludge!!!!
-// DGG: I don't understand why cppunit headers look for this std
-// function in CLAM namespace
-#if defined __GNUC__ && __GNUC__ < 3
-namespace CLAM
-{
-	std::string operator + (const char * a, const std::string & b)
-	{
-		return std::operator+(a,b);
-	}
-}
-#endif
 namespace CLAMTest
 {
 

@@ -30,6 +30,7 @@
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAM {
 
@@ -46,14 +47,12 @@ namespace CLAM {
 	  mSize = mConfig.GetAudioSize();
 	}
 
-	CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
+	if ( !isPowerOfTwo( mSize ) )
+	{
+		mStatus = "Configure failed: FFT Ooura algorithm only works for input buffers";
+		mStatus += "that are a power of two!";
 
-	// assert that mSize is a power of two as well, we don't
-	// want to get in any unwanted and unexpected trouble...
-	if (mSize > 0) { // mSize can be 0 in the case of an uninitialized creation
-	  int n = 1;
-	  while (n < mSize) n <<= 1;
-	  CLAM_ASSERT(n==mSize, "Size in FFT configuration must be a power of two");
+		return false;
 	}
 
 	mState=sOther;

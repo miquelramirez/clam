@@ -24,7 +24,7 @@
 #include "InControlArray.hxx"
 #include "InControlTmplArray.hxx"
 #include "BaseLoggable.hxx"
-
+#include "Processing.hxx"
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace CLAMTest {
@@ -35,7 +35,7 @@ class ControlsTest;
 CPPUNIT_TEST_SUITE_REGISTRATION( ControlsTest );
 
 
-class ControlsTest : public CppUnit::TestFixture, public BaseLoggable
+class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CLAM::Processing
 {
 	CPPUNIT_TEST_SUITE( ControlsTest );
 	// testing InControl and OutControl :
@@ -63,7 +63,12 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable
 
 	CPPUNIT_TEST_SUITE_END();
 	
-	
+	// Testing pattern: Self Shunt
+	// Processing interface:
+	const char* GetClassName() const { return "for testing"; }
+	bool Do() { return false; }
+	const CLAM::ProcessingConfig& GetConfig() const { throw 0; }
+	bool ConcreteConfigure( const CLAM::ProcessingConfig& ) { return false; }
 
 public:
 	void tearDown() {
@@ -136,7 +141,7 @@ private:
 		in.DoControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 
 			GetLog(), 
-			std::string("InControl published\nControlHandler called with id : 2 and value : 1") );
+			std::string("ControlHandler called with id : 2 and value : 1") );
 		    // note that controlId == 2
 	}
 
@@ -183,10 +188,7 @@ private:
 				
 		ins[1].DoControl( -1.0 );
 		CPPUNIT_ASSERT_EQUAL( 
-			std::string(
-				"InControl published\n"
-				"InControl published\n"
-				"ControlHandler called with id : 1 and value : -1" ),
+			std::string( "ControlHandler called with id : 1 and value : -1" ),
 			GetLog() );
 	}
 

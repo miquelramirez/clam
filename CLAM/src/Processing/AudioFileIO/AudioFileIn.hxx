@@ -23,6 +23,7 @@
 #define _AudioFileIn_
 
 #include "Audio.hxx"
+#include "ErrSoundFileIO.hxx"
 #include "AudioFile.hxx"
 #include "Processing.hxx"
 #include "OutPortTmpl.hxx"
@@ -46,9 +47,10 @@ class SoundFileIO;
 		SoundFileIO* mpSoundFileIO;
 		bool mKeepFrameSizes;
 
+		bool CheckSoundFile() throw( ErrSoundFileIO );
 		bool ConcreteStart();
-
 		bool ConcreteStop();
+
 
 	private:
 		OutPortTmpl<Audio> mOutput;
@@ -57,10 +59,6 @@ class SoundFileIO;
 
 		void AddSilence(Audio&, int length);
 
-		/** Configuration change method
-		 * @pre argument should be a AudioFileInConfig
-		 */
-		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 
@@ -69,6 +67,13 @@ class SoundFileIO;
 		AudioFileIn(const AudioFileConfig &c);
 
 		virtual ~AudioFileIn();
+
+		/** Configuration change method
+		 * @pre argument should be a AudioFileInConfig
+		 * NOTE: the fact that AudioFileIn::ConcreteConfigure is
+		 * a public method is just a temporary measure
+		 */
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		/** Configuration access:
 		 */

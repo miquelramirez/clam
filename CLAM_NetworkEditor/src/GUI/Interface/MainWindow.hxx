@@ -5,15 +5,18 @@
 #include <qmainwindow.h> 
 #include <string>
 #include "Slotv1.hxx"
+#include "Signalv1.hxx"
+#include "Signalv0.hxx"
 #include "Qt_NetworkPresentation.hxx"
-#include "FactoryToolBox.hxx"
-#include "NetworkActions.hxx"
+
+class QDockWindow;
 
 namespace NetworkGUI
 {
 
 class MainWindow : public QMainWindow
 {
+	Q_OBJECT
 public:
 	MainWindow();
 	virtual ~MainWindow();
@@ -21,16 +24,28 @@ public:
 
 private:
 	void OnNewMessageToStatus( const std::string & );
-	void OnNewChangeOnNetworkState( bool );
+//	void OnNewChangeOnNetworkState( bool );
 	void Start();
 	void Stop();
 
 	Qt_NetworkPresentation mNetwork;
-	FactoryToolBox mFactory;
-	NetworkActions mNetworkActions;
+	QDockWindow * mDockProcMenu;
 
 public: //slots
 	SigSlot::Slotv1< const std::string & > NewMessageToStatus;
+
+ public slots:
+ void LoadNetwork();
+	void SaveNetwork();
+	void NewNetwork(); 
+	void SaveAsNetwork();
+	void StartNetwork();
+	void StopNetwork();
+	void ShowProcMenu();
+
+public: // CLAM signals
+	SigSlot::Signalv1 < bool > ChangeNetworkState;
+	SigSlot::Signalv0 NewNetworkSignal;
 
 };
 

@@ -33,8 +33,11 @@ namespace CLAMVM
 		CLAM::Thread mThread;
 		void ProcessingLoop();
 		bool mLoopCondition;
-		ConnectionsMap mToConnect;
-		ConnectionsMap mToDisconnect;
+		ConnectionsMap mPortsToConnect;
+		ConnectionsMap mPortsToDisconnect;
+		ConnectionsMap mControlsToConnect;
+		ConnectionsMap mControlsToDisconnect;
+
 		ProcessingsList mProcessingsToRemove;
 
 		CLAM::Network* mObserved;
@@ -43,14 +46,21 @@ namespace CLAMVM
 		std::list<ConnectionAdapter*> mConnectionAdapters;
 		typedef std::list<ConnectionAdapter*>::iterator ConnectionAdapterIterator;
 
-		void OnNewConnectionFromGUI( const std::string &, const std::string & );
+		void OnNewPortConnectionFromGUI( const std::string &, const std::string & );
+		void OnNewControlConnectionFromGUI( const std::string &, const std::string & );
 		void OnNewChangeState( bool);
-		void OnRemoveConnectionFromGUI( const std::string &, const std::string & );
+		void OnRemovePortConnectionFromGUI( const std::string &, const std::string & );
+		void OnRemoveControlConnectionFromGUI( const std::string &, const std::string & );
 		void OnRemoveProcessingFromGUI( const std::string & );
+		void OnLoadNetwork( const std::string & );
+		void OnSaveNetwork( const std::string & );
+		void OnClear();
 
 		// helper methods
 		void ConnectPorts( const std::string & , const std::string & );
+		void ConnectControls( const std::string & , const std::string & );
 		void DisconnectPorts( const std::string & , const std::string & );
+		void DisconnectControls( const std::string & , const std::string & );
 		void RemoveProcessingFromNetwork( const std::string & );
 		void ExecuteEvents();
 	public:

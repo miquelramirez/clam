@@ -105,22 +105,41 @@ namespace CLAM
 
 		void  SetAnalysisInputFile( const char* filename )
 		{
+			if ( !mGlobalConfig.HasInputAnalysisFile() )
+			{
+				mGlobalConfig.AddInputAnalysisFile();
+				mGlobalConfig.UpdateData();
+			}
+
 			mGlobalConfig.SetInputAnalysisFile( filename );
 		}
 
 		const std::string& GetAnalysisInputFile() const
 		{
-			return mGlobalConfig.GetInputAnalysisFile();
+			if ( !mGlobalConfig.HasInputAnalysisFile() )
+			{
+				return std::string( "" );
+			}
+			else				
+				return mGlobalConfig.GetInputAnalysisFile();
 		}
 
 		void  SetAnalysisOutputFile( const char* filename )
 		{
+			if ( !mGlobalConfig.HasOutputAnalysisFile() )
+			{
+				mGlobalConfig.AddOutputAnalysisFile();
+				mGlobalConfig.UpdateData();
+			}
 			mGlobalConfig.SetOutputAnalysisFile( filename );
 		}
 
 		const std::string& GetAnalysisOutputFile() const
 		{
-			return mGlobalConfig.GetOutputAnalysisFile();
+			if ( !mGlobalConfig.HasOutputAnalysisFile() )
+				return std::string( "" );
+			else
+				return mGlobalConfig.GetOutputAnalysisFile();
 		}
 
 		SerializationController& GetSerializer()

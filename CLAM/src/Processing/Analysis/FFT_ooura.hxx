@@ -44,7 +44,7 @@ namespace CLAM {
 		/** Internal output buffer */
 		TData* fftbuffer;
 	  /** Internal bit reversal, cos & sin tables */
-	  TData *w;
+		TData *w;
 		int *ip;
 	  /** Auxiliary flags structure, used to add the complex attribute. */
 		static SpecTypeFlags mComplexflags;

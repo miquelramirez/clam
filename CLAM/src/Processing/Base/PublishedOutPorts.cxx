@@ -19,6 +19,8 @@ OutPort& PublishedOutPorts::GetByNumber(int index) const
 		if (i==index) return *(*it);
 	}
 	CLAM_ASSERT(false, "PublishedOutPorts::GetByNumber() index out of range");
+	
+	return *(OutPort*)NULL; // just to get rid of warnings
 }
 	
 OutPort& PublishedOutPorts::Get(std::string name) const
@@ -30,6 +32,8 @@ OutPort& PublishedOutPorts::Get(std::string name) const
 		if (name == (*it)->GetName()) return *(*it);
 	}
 	CLAM_ASSERT(false, "name not found in OutPorts collection");
+	
+	return *(OutPort*)NULL; // just to get rid of warnings
 }
 int PublishedOutPorts::Size() const
 {

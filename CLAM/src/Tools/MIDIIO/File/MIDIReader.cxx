@@ -11,6 +11,26 @@ namespace MIDI
 		static int nbytesPerChnMsg[7] =
 		{ 3,3,3,3,2,3,3 };
 
+		{
+			/* do some overly paranoid safety check, to see if endianity
+			** got determined correctly. this should really not be necesary,
+			** we should have some standard tests for that, but hey! it won't
+			** hurt
+			*/
+			unsigned int tmpi = 0x4D546864;
+			#ifdef MIDI_FILE_NEEDS_SWAP
+			char tmps[4] = {0x64,0x68,0x54,0x4D};
+			#else
+			char tmps[4] = {0x4D,0x54,0x68,0x64};
+			#endif
+						
+			if (*((int*)tmps)!=tmpi)
+			{
+				printf("Determined endianity seems wrong\n");
+				throw Error("Determined endianity seems wrong");
+			}
+		}
+
 		unsigned int chnkType = GetInt();
 		unsigned int length;
 		unsigned short format,ntrcks;
@@ -72,11 +92,24 @@ namespace MIDI
 								}
 							}
 						}
+						else if (b == 0xF0 || b==0xF7)
+						{
+							/* TODO: For now, we'll just skip SysEx events */
+							int length = GetVarLength();
+							while (--length)
+							{
+								GetByte();
+							}
+							if (GetByte()!=0xF7)
+							{
+								throw Error("SysEx message did not terminate with 0xF7");
+							}
+						}
 						else
 						{
-							throw Error("Currently only supporting MIDI and META events\n");
+							throw Error("Encountered a message that I don't know how to handle");
 						}
-						runningStatus = 0;					
+						runningStatus = 0;
 					}else{
 						if (nbytesPerChnMsg[type]==2)
 						{

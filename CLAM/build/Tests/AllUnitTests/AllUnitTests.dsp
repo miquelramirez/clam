@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob0 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\..\xercesc\include"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob0 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\..\xercesc\include"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /D "CLAM_USE_XML" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\cppunit\include" /I "..\..\..\test\UnitTests" /I "..\..\..\test\UnitTests\CommonHelpers" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Controls" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a /d "_DEBUG"
 BSC32=bscmake.exe
@@ -123,6 +123,10 @@ SOURCE=..\..\..\test\UnitTests\NonComponentData\EnumTest.cxx
 # Begin Source File
 
 SOURCE=..\..\..\test\UnitTests\NonComponentData\FlagsTest.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\test\UnitTests\NonComponentData\TextTest.cxx
 # End Source File
 # End Group
 # Begin Group "DynamicTypeTests Sources"
@@ -367,13 +371,6 @@ SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
 # End Group
 # Begin Group "Processing Sources"
 
-# Begin Group "Controls Sources No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\Controls\AutoPanner.cxx
-# End Source File
-# End Group
 # Begin Group "Base Sources No. 1"
 
 # Begin Source File
@@ -403,6 +400,13 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.cxx
+# End Source File
+# End Group
+# Begin Group "Controls Sources No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\Controls\AutoPanner.cxx
 # End Source File
 # End Group
 # End Group
@@ -738,6 +742,10 @@ SOURCE=..\..\..\src\Standard\Flags.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Standard\Text.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Standard\Array.hxx
 # End Source File
 # Begin Source File
@@ -846,11 +854,11 @@ SOURCE=..\..\..\src\Storage\XML\XMLComponentAdapter.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.hxx
+SOURCE=..\..\..\src\Storage\XML\XMLIterableAdapter.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Storage\XML\XMLIterableAdapter.hxx
+SOURCE=..\..\..\src\Storage\XML\XMLStaticAdapter.hxx
 # End Source File
 # Begin Source File
 
@@ -975,13 +983,6 @@ SOURCE=..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
 # End Group
 # Begin Group "Processing Headers"
 
-# Begin Group "Controls Headers No. 1"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\Controls\AutoPanner.hxx
-# End Source File
-# End Group
 # Begin Group "Base Headers No. 2"
 
 # Begin Source File
@@ -1015,6 +1016,13 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.hxx
+# End Source File
+# End Group
+# Begin Group "Controls Headers No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\Controls\AutoPanner.hxx
 # End Source File
 # End Group
 # Begin Group "ArithOps Headers"

@@ -26,6 +26,8 @@
 #include <algorithm>
 using std::find;
 
+//#define DEBUGGING_MIDIIO
+
 using namespace CLAM;
 
 MIDIManager& MIDIDevice::_MIDIManager(void)
@@ -63,6 +65,7 @@ bool MIDIDevice::Register(MIDIManager* mm,MIDIClocker& in)
 }
 
 /*
+
 bool MIDIDevice::Register(MIDIOut& out)
 {
 	unsigned int i;

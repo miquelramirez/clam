@@ -120,7 +120,7 @@ namespace CLAM {
 			Multiply(in1,in2,out);
 			break;
 		default:
-			throw(ErrProcessingObj("Do(...) : internal inconsistency (invalid mProtoState)",this));
+			CLAM_ASSERT(false,"Do(...) : internal inconsistency (invalid mProtoState)");
 		}
 
 		return true;
@@ -154,57 +154,43 @@ namespace CLAM {
 		out.GetType(to);
 
 		// Sanity check:
-		if (!(t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF) ||
-			!(t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF) ||
-			!(to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF) )
-			throw(ErrProcessingObj("SpectrumProducts:"
-								   " Spectrum object with no attributes"));
+		CLAM_ASSERT(t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF,
+			"SpectrumProducts: First input Spectrum without content");
+		CLAM_ASSERT(t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF,
+			"SpectrumProducts: Second input Spectrum without content");
+		CLAM_ASSERT(to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF,
+			"SpectrumProducts: Output Spectrum object without content");
 
 		// Product size. "pure" BPFs are not considered here.
 		mSize = 0;
 		if (t1.bMagPhase || t1.bComplex || t1.bPolar) {
 			mSize = in1.GetSize();
-			if (!mSize) 
-				throw(ErrProcessingObj("SpectrumProduct::SetPrototypes:"
-									   " Zero size spectrum",this));
+			CLAM_ASSERT(mSize,"SpectrumProduct::SetPrototypes: Zero size spectrum");
 		}
-		if (t2.bMagPhase || t2.bComplex || t2.bPolar)
-			if (mSize) {
-				if (mSize != in2.GetSize())
-					throw(ErrProcessingObj("SpectrumProduct::SetPrototypes:"
-										   "Size mismatch in spectrum product"
-										   ,this));
-			}
-			else {
-				mSize = in2.GetSize();
-				if (!mSize) 
-					throw(ErrProcessingObj("SpectrumProduct::SetPrototypes:"
-										   " Zero size spectrum",this));
-			}
+		if (t2.bMagPhase || t2.bComplex || t2.bPolar) 
+		{
+			CLAM_ASSERT(in2.GetSize(),"SpectrumProduct::SetPrototypes: Zero size spectrum");
+			if (!mSize) mSize = in2.GetSize();
+			else CLAM_ASSERT(mSize == in2.GetSize(),
+				"SpectrumProduct::SetPrototypes: Sizes Mismatch");
+		}
 		if (to.bMagPhase || to.bComplex || to.bPolar)
-			if (mSize) {
-				if (mSize != out.GetSize())
-					throw(ErrProcessingObj("SpectrumProduct::SetPrototypes:"
-										   "Size mismatch in spectrum product"
-										   ,this));
-			}
-			else {
-				mSize = out.GetSize();
-				if (!mSize)
-					throw(ErrProcessingObj("SpectrumProduct::SetPrototypes:"
-										   " Zero size spectrum",this));
-			}
+		{
+			CLAM_ASSERT(out.GetSize(),"SpectrumProduct::SetPrototypes: Zero size spectrum");
+			if (!mSize) mSize = out.GetSize();
+			else CLAM_ASSERT(mSize == out.GetSize(),
+				"SpectrumProduct::SetPrototypes: Output size Mismatch");
+		}
 
 		// Spectral Range.  
 		// We could also ignore BPF-only objects here, but in
 		// practice, if a BPF is designed for a certain spectral
 		// range, error will probably be too big out of the range, so
 		// we always force range matching
-		if (in1.GetSpectralRange() != in2.GetSpectralRange() ||
-			in1.GetSpectralRange() != out.GetSpectralRange() )
-			throw(ErrProcessingObj("SpectrumProduct::SetPrototypes:"
-								   "Spectral range mismatch in spectrum product"
-								   ,this));
+		CLAM_ASSERT(in1.GetSpectralRange() == in2.GetSpectralRange(),
+			"SpectrumProduct::SetPrototypes: Spectral range mismatch on inputs");
+		CLAM_ASSERT(in1.GetSpectralRange() == out.GetSpectralRange(),
+			"SpectrumProduct::SetPrototypes: Spectral range mismatch on output");
 
 		// Scale.
 		if (in1.GetScale() == EScale::eLinear)
@@ -219,9 +205,8 @@ namespace CLAM {
 				mScaleState=Sloglog;
 		// Log scale output might be useful, for example when working
 		// with BPF objects at the three ports. But right for now...
-		if (out.GetScale() == EScale::eLog)
-			throw(ErrProcessingObj("SpectrumProduct:"
-								   " Log Scale Output not implemented",this));
+		CLAM_ASSERT(out.GetScale() != EScale::eLog,
+			"SpectrumProduct: Log Scale Output not implemented");
 
 		// Prototypes.
 
@@ -267,8 +252,8 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			throw(ErrProcessingObj("SpectrumProduct::SetPrototypes:"
-								   " Data flags internal inconsistency",this));
+			CLAM_ASSERT(false,
+				"SpectrumProduct::SetPrototypes: Data flags internal inconsistency");
 		}
 		if (i2BPF) {
 			// States with direct BPF implementation.
@@ -297,8 +282,8 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			throw(ErrProcessingObj("SpectrumProduct::SetPrototypes:"
-								   " invalid data flags",this));
+			CLAM_ASSERT(false, "SpectrumProduct::SetPrototypes:"
+								   " invalid data flags");
 		}
 		// Direct non-BPF states.
 		if (t1.bMagPhase && t2.bMagPhase &&	to.bMagPhase) {
@@ -340,7 +325,7 @@ namespace CLAM {
 
 	bool SpectrumProduct::SetPrototypes()
 	{
-		throw(ErrProcessingObj("SpectrumProduct::SetPrototypes(): Not implemented"),this);
+		CLAM_ASSERT(false,"SpectrumProduct::SetPrototypes(): Not implemented");
 	}
 
 	bool SpectrumProduct::UnsetPrototypes()
@@ -597,7 +582,7 @@ namespace CLAM {
 			MultiplyBPFMagPhaseLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("MultiplyBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"MultiplyBPFMagPhaseLinLog: Not implemented");
 			break;
 		case Sloglin:
 			MultiplyBPFMagPhaseLogLin(in1,in2,out);
@@ -618,7 +603,7 @@ namespace CLAM {
 			MultiplyBPFMagPhaseLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("MultiplyBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"MultiplyBPFMagPhaseLinLog: Not implemented");
 			break;
 		}
 	}
@@ -743,7 +728,7 @@ namespace CLAM {
 			MultiplyBPFComplexLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("MultiplyBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"MultiplyBPFMagPhaseLinLog: Not implemented");
 			break;
 		case Sloglin:
 			MultiplyBPFComplexLogLin(in1,in2,out);
@@ -763,7 +748,7 @@ namespace CLAM {
 			MultiplyBPFComplexLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("MultiplyBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"MultiplyBPFMagPhaseLinLog: Not implemented");
 			break;
 		}
 	}
@@ -886,7 +871,7 @@ namespace CLAM {
 			MultiplyBPFPolarLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("MultiplyBPFPolarLinLog: Not implemented"));
+			CLAM_ASSERT(false,"MultiplyBPFPolarLinLog: Not implemented");
 			break;
 		case Sloglin:
 			MultiplyBPFPolarLogLin(in1,in2,out);
@@ -906,7 +891,7 @@ namespace CLAM {
 			MultiplyBPFPolarLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("MultiplyBPFPolarLinLog: Not implemented"));
+			CLAM_ASSERT(false,"MultiplyBPFPolarLinLog: Not implemented");
 			break;
 		}
 	}
@@ -1016,7 +1001,7 @@ namespace CLAM {
 	void SpectrumProduct::MultiplyBPF(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
 		// First we check if the abcisas agree
-		throw(Err("MultiplyBPF: method not implemented"));
+		CLAM_ASSERT(false,"MultiplyBPF: method not implemented");
 		for (int i=0;i<mSize;i++) {
 			PointTmpl<TData,TData> &pm1=in1.GetMagBPF().GetPointArray()[i];
 			PointTmpl<TData,TData> &pm2=in2.GetMagBPF().GetPointArray()[i];
@@ -1024,10 +1009,12 @@ namespace CLAM {
 			PointTmpl<TData,TData> &pf1=in1.GetPhaseBPF().GetPointArray()[i];
 			PointTmpl<TData,TData> &pf2=in2.GetPhaseBPF().GetPointArray()[i];
 			PointTmpl<TData,TData> &pfo=out.GetPhaseBPF().GetPointArray()[i];
-			if (pm1.GetX() != pm2.GetX() ||
-				pm1.GetX() != pmo.GetX() )
-				throw(ErrProcessingObj("MultiplyBPF: BPF abcisas do not match "
-								 "(and BPF merging not yet iplemented)",this));
+			CLAM_ASSERT(pm1.GetX() == pm2.GetX(),
+				"MultiplyBPF: input BPF abcisas do not match "
+				 "(and BPF merging not yet iplemented)");
+			CLAM_ASSERT(pm1.GetX() == pmo.GetX(),
+				"MultiplyBPF: output BPF abcisas do not match "
+				 "(and BPF merging not yet iplemented)");
 			pmo.SetY(pm1.GetY()*pm2.GetY());
 			pfo.SetY(pf1.GetY()+pf2.GetY());
 		}
@@ -1036,50 +1023,50 @@ namespace CLAM {
 
 	void SpectrumProduct::MultiplyMagPhaseLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyMagPhaseLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyMagPhaseLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyMagPhaseLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyMagPhaseLinLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyMagPhaseLinLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyComplexLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyComplexLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyComplexLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyComplexLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyComplexLinLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyComplexLinLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyPolarLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyPolarLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyPolarLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyPolarLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyPolarLinLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyPolarLinLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyBPFComplexLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyBPFComplexLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyBPFComplexLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyBPFComplexLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyBPFComplexLinLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyBPFComplexLinLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyBPFPolarLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyBPFPolarLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyBPFPolarLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyBPFPolarLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyBPFPolarLinLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyBPFPolarLinLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyBPFMagPhaseLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyBPFMagPhaseLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyBPFMagPhaseLog: Not implemented");
 	}
 	void SpectrumProduct::MultiplyBPFMagPhaseLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("MultiplyBPFMagPhaseLinLog: Not implemented"));
+		CLAM_ASSERT(false,"MultiplyBPFMagPhaseLinLog: Not implemented");
 	}
 }

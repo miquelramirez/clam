@@ -122,9 +122,7 @@ namespace CLAM {
 
 
 		/** Configuration change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpectrumProductConfig
-		 * object.
+		 * @pre argument should be an SpectrumProductConfig
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 

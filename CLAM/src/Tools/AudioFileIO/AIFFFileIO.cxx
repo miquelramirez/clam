@@ -56,11 +56,17 @@ void AIFFFileIO::ReadHeader(void)
 	ChunkHeader form;
 	ReadChunkHeader(form);
 	if (!CheckID(form.id,"FORM"))
-		throw ErrSoundFileIO("Not an AIFF file");
+	{
+		UnsupportedSoundFileFormat error( "Given file had not a valid AIFF header ");
+		throw error;
+	}
 	i = 0;
 	i += ReadID(AIFFID);
 	if (!CheckID(AIFFID,"AIFF"))
-		throw ErrSoundFileIO("Not an AIFF file");
+	{
+		UnsupportedSoundFileFormat error( "Given file had not a valid AIFF header " );
+		throw error;
+	}
 
 	while (i<form.len) {
 		ChunkHeader h;
@@ -70,7 +76,11 @@ void AIFFFileIO::ReadHeader(void)
 			i += int( fread(&fmt,1,sizeof(fmt),mFile) );
 
 			if (sizeof(fmt)!=2+4+2+10) 
-				throw ErrSoundFileIO("Incorrect size of AIFFCommChunk: check alignment");
+			{
+				UnsupportedSoundFileFormat error( "Incorrect size of AIFFCommChunk: check alignment" );
+				
+				throw error;
+			}
 
 			SWAP(fmt.channels);
 			SWAP(fmt.numSampleFrames);
@@ -98,9 +108,15 @@ void AIFFFileIO::ReadHeader(void)
 		}
 	}
 	if (!fmtFound)
-		throw ErrSoundFileIO("No format chunk found");
+	{
+		UnsupportedSoundFileFormat error( "Given file had not a valid header!" );
+		throw error;
+	}
 	if (mOffset == 0) 
-		throw ErrSoundFileIO("No data block found");
+	{
+		UnsupportedSoundFileFormat error( "Given file contained no audio data");
+		throw error;
+	}
 }
 
 void AIFFFileIO::WriteHeader(void)

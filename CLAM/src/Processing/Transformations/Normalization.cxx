@@ -67,8 +67,8 @@ bool Normalization::Do(void)
 	return false;
 }
 	
-bool Normalization::Do(Audio &in) throw(ErrProcessingObj){
-
+bool Normalization::Do(Audio &in) 
+{
 	Audio chunk;
 	TData max=0;
 	TIndex p=0, m=0;

@@ -43,7 +43,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <string>
-#include "XMLTestHelper.hxx"
 
 //#include <iostream>
 //#include <fstream>

@@ -49,7 +49,8 @@ namespace CLAM {
 
 	Err::~Err() throw()
 	{
-		delete [] mMsg;
+		if ( mMsg )
+			delete [] mMsg;
 	};
 
 /* specifying the header's member function */
@@ -65,15 +66,23 @@ namespace CLAM {
 
 	void Err::Embed(const std::exception &e) throw()
 	{
+		Embed(e.what());
+	}
+
+	void Err::Embed(const char* str) throw()
+	{
 		static const char* separation = "\n Nested error: ";
+		size_t msgLen = strlen(mMsg);
+		size_t sepLen = strlen(separation); 
+		size_t strLen = strlen(str);
 		size_t len;
 		char* msg;
-		len = strlen(mMsg) + strlen(e.what()) + strlen(separation) + 1;
+		len = msgLen + sepLen + strLen + 1;
 		msg = new(std::nothrow) char[len];
 		if (!msg) return;
-		strncpy(msg,mMsg,len);
-		strncat(msg,separation,len);
-		strncat(msg,e.what(),len);
+		strcpy(msg,mMsg);
+		strcpy(msg+msgLen,separation);
+		strcpy(msg+msgLen+sepLen,str);
 		delete [] mMsg;
 		mMsg = msg;
 	}

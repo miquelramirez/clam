@@ -10,15 +10,15 @@ namespace CLAM
 {
 
 FlowControl::FlowControl(  int frameSize )
-	:_frameSize(frameSize),
-	 _network(0),
-	 _networkChanged(false)
+	:mFrameSize(frameSize),
+	 mNetwork(0),
+	 mNetworkChanged(false)
 {
 }      
 
 void FlowControl::AttachToNetwork( Network* network)
 {
-	_network = network;
+	mNetwork = network;
 }
 
 void FlowControl::ConfigurePorts(Processing& toConfigure) const
@@ -27,13 +27,13 @@ void FlowControl::ConfigurePorts(Processing& toConfigure) const
 		for (itin = toConfigure.GetInPorts().Begin(); 
 		     itin != toConfigure.GetInPorts().End(); 
 		     itin++)
-			(*itin)->SetParams(_frameSize);
+			(*itin)->SetParams(mFrameSize);
 		
 		Processing::OutPortIterator itout; // todo: idem
 		for (itout = toConfigure.GetOutPorts().Begin(); 
 		     itout != toConfigure.GetOutPorts().End(); 
 		     itout++)
-			(*itout)->SetParams(_frameSize);		
+			(*itout)->SetParams(mFrameSize);		
 }
 
 void FlowControl::ProcessingAddedToNetwork( Processing& added )
@@ -44,14 +44,14 @@ void FlowControl::ProcessingAddedToNetwork( Processing& added )
 
 void FlowControl::ConfigureNode( NodeBase& toConfigure ) const
 {
-	toConfigure.Configure( _frameSize );
+	toConfigure.Configure( mFrameSize );
 }
 
 
 void FlowControl::DoProcessings()
 {
 	Network::ProcessingsMap::iterator it;
-	for ( it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++ )
+	for ( it=mNetwork->BeginProcessings(); it!=mNetwork->EndProcessings(); it++ )
 	{
 		if (it->second->CanDoUsingPorts())
 			it->second->Do();

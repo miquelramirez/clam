@@ -30,6 +30,7 @@
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
+#include "CLAM_Math.hxx"
 
 extern "C" {
 #include "numrecipes_fft.h"
@@ -49,6 +50,14 @@ namespace CLAM {
 			CLAM_ASSERT(mConfig.GetAudioSize()>=0, 
 				"Wrong (negative) Size in FFT Configuration.");
 			mSize = mConfig.GetAudioSize();
+		}
+
+		if ( !isPowerOfTwo( mSize ) )
+		{
+			mStatus = "Configure failed: Numerical Recipes FFT algorithm does not\n";
+			mStatus += "accept non power of two buffers";
+
+			return false;
 		}
 
 		mState=sOther;

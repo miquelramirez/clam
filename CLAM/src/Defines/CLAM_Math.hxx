@@ -9,7 +9,7 @@
 #endif
 #endif
 #include "Assert.hxx"
-
+#include "DataTypes.hxx"
 
 //optimized positive integer chopping routine for Windows, is equivalent to int(a) but much more efficient
 inline int Chop(float a) {
@@ -19,8 +19,8 @@ inline int Chop(float a) {
 /**IMPORTANT: if in release mode, you are responsible for changing controlfp.
 	You must do so outside the loop that actually calls the loop */
 			CLAM_ASSERT(a>=0,"Chop function only for positive numbers");
-			unsigned int saved;
-			saved = _controlfp(_RC_CHOP,_MCW_RC);
+			unsigned int saved = _controlfp(0, 0);
+			_controlfp(_RC_CHOP, _MCW_RC);
 #endif //_DEBUG
             __asm {
                         fld   a
@@ -46,8 +46,8 @@ inline int Round(float a)
 /**IMPORTANT: if in release mode, you are responsible for changing controlfp.
 	You must do so outside the loop that actually calls the loop */
 	CLAM_ASSERT(a>=0,"Round function only for positive numbers");
-	unsigned int saved;
-	saved = _controlfp(_RC_CHOP,_MCW_RC);
+	unsigned int saved = _controlfp(0, 0);
+	_controlfp(_RC_CHOP, _MCW_RC);
 #endif //_DEBUG
     __asm {
 			fld   a
@@ -96,10 +96,12 @@ inline int Round(float a)
 #endif // MSVC++ 6
 
 #ifndef __USE_ISOC99
+#ifndef __APPLE__
 inline double  round(double _X)
         {return (floor(_X+0.5)); }
 inline float  round(float _X)
         {return (floorf(_X+0.5f)); }
+#endif
 #endif
 
 
@@ -111,6 +113,62 @@ inline float log2lin( float x )
 //	static double magic = 1.0 / (20.0 * log10(exp(1.0)))=0.1151292546497;
 
 	return exp( x * 0.1151292546497f );
+
+}
+
+/**
+ * Returns true if the given (unsigned) integer n is
+ * a power-of-two.
+ * Will return true for n = 0 and n = 1.
+ **/
+inline bool isPowerOfTwo( CLAM::TUInt32 n)
+{
+	return (((n - 1) & n) == 0);
+}
+
+/**
+ * Returns the closest power-of-two number greater or equal
+ * to n for the given (unsigned) integer n.
+ * Will return 0 when n = 0 and 1 when n = 1.
+ **/
+inline CLAM::TUInt32 nextPowerOfTwo( CLAM::TUInt32 n)
+{
+	--n;
+
+	n |= n >> 16;
+	n |= n >> 8;
+	n |= n >> 4;
+	n |= n >> 2;
+	n |= n >> 1;
+	++n;
+
+	return n;
+}
+
+namespace CLAM
+{
+
+/*Non member function, returns absolute value of class T*/
+template <class T> inline T Abs(T value)
+{
+	if(value<0) return -value;
+	else return value;
+}
+
+/* DB */
+
+// Default scaling
+#define CLAM_DB_SCALING  20  
+
+inline double DB(double linData, int scaling=20) 
+{ 
+	return (scaling*log10(linData)); 
+}
+
+inline double Lin(double logData, int scaling=20 ) 
+{ 
+	return (pow(double(10),(logData/scaling)) ); 
+}
 
 }
 

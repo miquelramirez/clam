@@ -64,8 +64,8 @@ namespace CLAM {
 
 		void Set(DataArray& arguments)
 		{
-			if ( arguments.Size() != 1 )
-				throw Err( "Not enough arguments for ValueToRatioMapping" ) ;
+			CLAM_ASSERT( arguments.Size() == 1,
+				"Not enough arguments for ValueToRatioMapping" );
 			Set( arguments[0] ) ;
 		}
 	};
@@ -115,8 +115,8 @@ namespace CLAM {
 				Set(69,440);
 			}else
 			{
-				if ( arguments.Size() != 2 )
-					throw Err( "Not enough arguments for NoteToFreqMapping" ) ;
+				CLAM_ASSERT(arguments.Size() == 2,
+					"Not enough arguments for NoteToFreqMapping" );
 				Set( arguments[0], arguments[1] ) ;
 			}
 		}
@@ -160,8 +160,8 @@ namespace CLAM {
 
 		void Set(DataArray& arguments)
 		{
-			if (arguments.Size()!=4)
-				throw Err("Not enough arguments for LinearMapping");
+			CLAM_ASSERT(arguments.Size()==4,
+				"Not enough arguments for LinearMapping");
 			Set(arguments[0],arguments[1],arguments[2],arguments[3]);
 		}
 

@@ -45,7 +45,7 @@ namespace CLAM
 	 */
 	template <class T> class CircularBuffer
 	{
-	public: // XXX: no encapsulation! danger danger!
+	protected: 
 		Array<T> mBuffer;
 		TSize mLogicalSize;
 		TSize mReadSize;
@@ -149,13 +149,33 @@ namespace CLAM
 		 */
 		void SetInitialReadOffset(TSize size)
 		{
-			CLAM_ASSERT((mInitialReadOffset >= 0)&&(mInitialReadOffset < GetBufferSize()-1),
+			CLAM_ASSERT((size >= 0)&&(size < GetBufferSize()-1),
 				"CircularBuffer:SetInitialReadOffset: InitialReadOffset has to be larger than zero");
-			mInitialReadOffsetSize = size;
+			mInitialReadOffset = size;
 		}
 
+		/**
+		 * Returns the initial write offset. That is, the 
+		 * index at which the buffer starts writeing after it 
+		 * has been initialized.
+		 */
+		TSize GetInitialWriteOffset() const
+		{
+			return mInitialWriteOffset;
+		}
 
-		// XXX: no get/set initial write offset?
+		/**
+		 * Sets the initial write offset. That is, the
+		 * index at which the buffer starts writeing after it 
+		 * has been initialized. Init() or InitPointers() should be 
+		 * called after this method.
+		 */
+		void SetInitialWriteOffset(TSize size)
+		{
+			CLAM_ASSERT((size >= 0)&&(size < GetBufferSize()-1),
+				"CircularBuffer:SetInitialWriteOffset: InitialWriteOffset has to be larger than zero");
+			mInitialWriteOffset = size;
+		}
 
 		// Methods for data acces: ------------------------------------------------------
 	

@@ -47,7 +47,7 @@ namespace CLAM {
 
 
 	template<> 
-		TData WaveFunctor<WaveGenerator::EWaveType_eSine>::operator()(TTime x,TData amplitude)
+	inline TData WaveFunctor<WaveGenerator::EWaveType_eSine>::operator()(TTime x,TData amplitude)
 	{
 		return amplitude * sin(x);
 	}

@@ -25,6 +25,8 @@ OutControl& PublishedOutControls::Get(std::string name) const
 		if (name == (*it)->GetName()) return *(*it);
 	}
 	CLAM_ASSERT(false, "name not found in OutControls collection");
+	
+	return *(OutControl*)NULL; // Just to get rid of warnings
 }
 
 int PublishedOutControls::Size() const

@@ -12,7 +12,7 @@ class Processing;
 class BasicFlowControl : public FlowControl
 {
 public:
-	BasicFlowControl( int frameSize = 0 );
+	BasicFlowControl( int frameSize = 512 );
 	virtual ~BasicFlowControl(){}
 
 	void DoProcessings();

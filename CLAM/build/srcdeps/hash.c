@@ -1,5 +1,6 @@
 #include "hash.h"
 #include "strfuncs.h"
+#include "mystrdup.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -75,7 +76,7 @@ void hash_set(hash* h,const char* key,const char* val)
 			strend();
 			free(i->str);
 			i->str = mystrdup(tmp);
-			return;			
+			return;
 		}
 		i = i->next;
 	}

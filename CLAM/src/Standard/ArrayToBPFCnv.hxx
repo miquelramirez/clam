@@ -40,12 +40,10 @@ public:
 	//Convert values array (supposed to be equidistant) to BPF
 	void ConvertToBPF(BPFTmpl<TX,TY>& newBPF,const Array<TY>& originalArray) const
 	{
-		int i;
-		if((originalArray.Size()<1) || (originalArray.Size()!=newBPF.Size()))
-		{
-			throw Err("Inconsistent size in original array dimensions. By ArrayToBPFCnv");
-		}
-		for(i=0;i<originalArray.Size();i++)
+		CLAM_ASSERT(originalArray.Size()>=1, "Zero lenght array.");
+		CLAM_ASSERT(originalArray.Size()==newBPF.Size(), "Different array dimensions");
+
+		for(int i=0;i<originalArray.Size();i++)
 		{
 			newBPF.SetValue((TX)i,originalArray[i]);
 		}
@@ -55,24 +53,23 @@ public:
 	void ConvertToBPF(BPFTmpl<TX,TY>& newBPF,const Array<TX>& originalXArray,
 		const Array<TY>& originalYArray) const
 	{
-		int i;
-		if((originalXArray.Size()<1)||(originalYArray.Size()<1)||(originalXArray.Size() != originalYArray.Size()) || (newBPF.Size() != originalXArray.Size()) )
-		{
-			throw Err("Inconsistent size in original array dimensions. By ArrayToBPFCnv");
-		}
-		for(i=0;i<originalXArray.Size();i++)
+		CLAM_ASSERT(originalXArray.Size()>=1, "Zero lenght X array.");
+		CLAM_ASSERT(originalYArray.Size()>=1, "Zero lenght Y array.");
+		CLAM_ASSERT(originalXArray.Size()==originalYArray.Size(), "Different array dimensions for X and Y");
+		CLAM_ASSERT(originalXArray.Size()==newBPF.Size(), "Different array dimensions on write");
+
+		for(int i=0;i<originalXArray.Size();i++)
 		{	
 			newBPF.SetValue(i,originalYArray[i]);
 			newBPF.SetXValue(i,originalXArray[i]);
-		 }
+		}
 	}
 	
 	//Convert BPF to X and Y values arrays
 	void ConvertToArray(const BPFTmpl<TX,TY>& originalBPF,Array<TX>& 
 		newXArray,Array<TY>& newYArray) const
 	{
-		int i;
-		for(i=0;i<originalBPF.Size();i++)
+		for(int i=0;i<originalBPF.Size();i++)
 		{
 			newXArray.AddElem(originalBPF.GetXValue(i));
 			newYArray.AddElem(originalBPF.GetValueFromIndex(i));
@@ -84,8 +81,7 @@ public:
 	void ConvertToArray(const BPFTmpl<TX,TY>& originalBPF,
 		Array<TY>& newArray)
 	{
-		int i;
-		for(i=0;i<originalBPF.Size();i++)
+		for(int i=0;i<originalBPF.Size();i++)
 		{
 			 newYArray.AddElem(originalBPF.GetValueFromIndex(i));
 		}

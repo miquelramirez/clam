@@ -20,7 +20,6 @@ bool OutControlAdapter::Publish()
 		return false;
 
 	AcquireName.Emit(mObserved->GetName());
-//	AcquireDataType.Emit(
 }
 
 bool OutControlAdapter::BindTo( const CLAM::OutControl& obj)

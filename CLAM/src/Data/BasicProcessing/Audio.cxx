@@ -131,6 +131,8 @@ void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool c
 	{
 		TIndex size=endIndex-beginIndex;
 		chunk.SetSize(size);
+		chunk.SetSampleRate( GetSampleRate() );
+		chunk.SetBeginTime( GetTimeFromIndex(beginIndex) );
 	}
 	
 		

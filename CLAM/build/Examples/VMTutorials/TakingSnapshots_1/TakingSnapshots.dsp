@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Visualization\Base" /I "..\..\..\..\src\Visualization\GL" /I "..\..\..\..\src\Visualization\Plot" /I "..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\src\Visualization\Util" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\src\Visualization\Widget\FLTK"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\externals\CbLib" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\..\fltk\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Visualization\Base" /I "..\..\..\..\src\Visualization\GL" /I "..\..\..\..\src\Visualization\Plot" /I "..\..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\..\src\Visualization\Presentation\FLTK" /I "..\..\..\..\src\Visualization\Util" /I "..\..\..\..\src\Visualization\View" /I "..\..\..\..\src\Visualization\Widget" /I "..\..\..\..\src\Visualization\Widget\FLTK"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -754,14 +754,6 @@ SOURCE=..\..\..\..\src\Standard\BPF.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\ArrayToBPFCnv.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\ComplexToPolarCnv.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Standard\Flags.hxx
 # End Source File
 # Begin Source File
@@ -787,6 +779,14 @@ SOURCE=..\..\..\..\src\Standard\BPFTmplDef.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\BPFTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\ArrayToBPFCnv.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\ComplexToPolarCnv.hxx
 # End Source File
 # Begin Source File
 
@@ -1433,13 +1433,6 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Tooltip.H
 # Begin Source File
 
 SOURCE=..\..\..\..\..\fltk\include\FL\gl.h
-# End Source File
-# End Group
-# Begin Group "Fl Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\Fl\Fl_Group.H
 # End Source File
 # End Group
 # End Group

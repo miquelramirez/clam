@@ -182,15 +182,30 @@ namespace CLAMGUI
 
 		infilecfg.SetFilename(filename);
 		infilecfg.SetFiletype(CLAM::EAudioFileType::eWave);
-		if(!myAudioFileIn.Configure(infilecfg))
+		
+		myAudioFileIn.PreConcreteConfigure( infilecfg );
+
+		try
 		{
-			fl_message(
-				"The file you specified in the configuration does not exists\n"
-				"or it is encoded in an unsupported format."
-				);
+			myAudioFileIn.ConcreteConfigure( infilecfg );
+		} 
+		catch( CLAM::ErrSoundFileIO& error )
+		{
+			std::string messageShown;
+			messageShown = "Sorry, but the file ";
+			messageShown += filename;
+			messageShown += " cannot be used because: \n";
+			messageShown += error.what();
+
+			fl_message( messageShown.c_str() );
+
 			return false;
 		}
-		
+
+		myAudioFileIn.PostConcreteConfigure();
+
+		myAudioFileIn.Start();
+
 		if ( myAudioFileIn.Channels() > 1 )
 		{
 			fl_message( 
@@ -201,6 +216,7 @@ namespace CLAMGUI
 
 			return false;
 		}
+
 		/////////////////////////////////////////////////////////////////////////////
 		// Initialization of the processing data objects :
 		CLAM::TSize fileSize=myAudioFileIn.Size();
@@ -217,7 +233,6 @@ namespace CLAMGUI
 		
 
 		//Read Audio File
-		myAudioFileIn.Start();
 		myAudioFileIn.Do(segment.GetAudio());
 		myAudioFileIn.Stop();
 		return true;

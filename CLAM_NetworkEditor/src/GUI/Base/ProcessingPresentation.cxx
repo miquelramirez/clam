@@ -10,14 +10,21 @@
 #include "OutControlAdapter.hxx"
 #include "ProcessingModel.hxx"
 #include "ProcessingConfig.hxx"
+#include "Factory.hxx"
+
+#include <iostream>
 
 namespace NetworkGUI
 {
 
+typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
+
 ProcessingPresentation::ProcessingPresentation(const std::string& nameFromNetwork)
-	: mNameFromNetwork(nameFromNetwork)
+	: mNameFromNetwork(nameFromNetwork),
+	  mConfig(0)
 {
 	SetConfig.Wrap( this, &ProcessingPresentation::OnNewConfig );
+	SetConfigFromGUI.Wrap( this, &ProcessingPresentation::OnNewUpdateConfig );
 	SetInPort.Wrap( this, &ProcessingPresentation::OnNewInPort );
 	SetOutPort.Wrap( this, &ProcessingPresentation::OnNewOutPort );
 	SetInControl.Wrap( this, &ProcessingPresentation::OnNewInControl );
@@ -28,7 +35,22 @@ ProcessingPresentation::ProcessingPresentation(const std::string& nameFromNetwor
 
 void ProcessingPresentation::OnNewConfig( CLAM::ProcessingConfig * cfg)
 {
-	mConfig = cfg;
+	if (!mConfig)
+	{
+		ProcessingConfigPresentationFactory & factory =  ProcessingConfigPresentationFactory::GetInstance();
+		mConfig = factory.Create(cfg->GetClassName());
+		NewConfig.Connect( mConfig->SetConfig );
+		mConfig->ApplyConfig.Connect( SetConfigFromGUI );
+
+	}
+
+	NewConfig.Emit( cfg );
+
+}
+
+void ProcessingPresentation::OnNewUpdateConfig( CLAM::ProcessingConfig * cfg)
+{
+	UpdateConfig.Emit( cfg );
 }
 
 ProcessingPresentation::~ProcessingPresentation()
@@ -46,6 +68,11 @@ ProcessingPresentation::~ProcessingPresentation()
 	for ( itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end(); itOutControl++)
 		delete *itOutControl;
 
+	if (mConfig)
+	{
+		mConfig->Hide();
+		delete mConfig;
+	}
 }
 
 void ProcessingPresentation::AttachTo(CLAMVM::ProcessingModel & m)
@@ -56,6 +83,7 @@ void ProcessingPresentation::AttachTo(CLAMVM::ProcessingModel & m)
 	m.AcquireInControl.Connect(SetInControl);
 	m.AcquireOutControl.Connect(SetOutControl);
 	m.AcquireConfig.Connect(SetConfig);
+	UpdateConfig.Connect( m.SetNewConfig );
 }
 
 OutPortPresentation & ProcessingPresentation::GetOutPortPresentation( const std::string& name)
@@ -71,7 +99,7 @@ InPortPresentation & ProcessingPresentation::GetInPortPresentation( const std::s
 	InPortPresentationIterator itin;
 	for ( itin=mInPortPresentations.begin(); itin!=mInPortPresentations.end(); itin++)
 		if((*itin)->GetName() == name)
-			return **itin;
+			return **itin;	
 }
 
 OutControlPresentation & ProcessingPresentation::GetOutControlPresentation( const std::string& name)
@@ -88,6 +116,24 @@ InControlPresentation & ProcessingPresentation::GetInControlPresentation( const 
 	for ( itin=mInControlPresentations.begin(); itin!=mInControlPresentations.end(); itin++)
 		if((*itin)->GetName() == name)
 			return **itin;
+}
+
+bool ProcessingPresentation::HasInPort( const std::string& name)
+{
+	InPortPresentationIterator itin;
+	for ( itin=mInPortPresentations.begin(); itin!=mInPortPresentations.end(); itin++)
+		if((*itin)->GetName() == name)
+			return true;
+	return false;
+}
+
+bool ProcessingPresentation::HasOutPort( const std::string& name)
+{
+	OutPortPresentationIterator itout;
+	for ( itout=mOutPortPresentations.begin(); itout!=mOutPortPresentations.end(); itout++)
+		if((*itout)->GetName() == name)
+			return true;
+	return false;	
 }
 
 } //namespace NetworkGUI

@@ -131,7 +131,7 @@ bool OverlapAdd::UnsetPrototypes(){
 
 bool OverlapAdd::Do(void)
 {
-	throw(ErrProcessingObj("OverlapAdd::Do(): Supervised mode not implemented"),this);
+	CLAM_ASSERT(false,"OverlapAdd::Do(): Supervised mode not implemented");
 	return false;
 }
 

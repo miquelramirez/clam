@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /I "..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\build\srcdeps\unittests\source_files_for_testing\subdir"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_DOUBLE" /I "..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\build\srcdeps\unittests\source_files_for_testing\subdir"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a
 BSC32=bscmake.exe
@@ -90,21 +90,71 @@ LINK32=link.exe
 # End Group
 # Begin Group "Source Files"
 
+# Begin Group "build Sources"
+
+# Begin Group "srcdeps Sources"
+
+# Begin Group "unittests Sources"
+
+# Begin Group "source_files_for_testing Sources"
+
 # Begin Source File
 
-SOURCE=a.cxx
+SOURCE=..\..\build\srcdeps\unittests\source_files_for_testing\a.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=b.cxx
+SOURCE=..\..\build\srcdeps\unittests\source_files_for_testing\b.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=d.cxx
+SOURCE=..\..\build\srcdeps\unittests\source_files_for_testing\d.cxx
 # End Source File
+# Begin Group "subdir Sources"
+
+# Begin Source File
+
+SOURCE=..\..\build\srcdeps\unittests\source_files_for_testing\subdir\c.cxx
+# End Source File
+# End Group
+# End Group
+# End Group
+# End Group
+# End Group
 # End Group
 # Begin Group "Header Files"
 
+# Begin Group "build Headers"
+
+# Begin Group "srcdeps Headers"
+
+# Begin Group "unittests Headers"
+
+# Begin Group "source_files_for_testing Headers"
+
+# Begin Source File
+
+SOURCE=..\..\build\srcdeps\unittests\source_files_for_testing\a.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\build\srcdeps\unittests\source_files_for_testing\b.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\build\srcdeps\unittests\source_files_for_testing\with_no_impl.hxx
+# End Source File
+# Begin Group "subdir Headers"
+
+# Begin Source File
+
+SOURCE=..\..\build\srcdeps\unittests\source_files_for_testing\subdir\c.hxx
+# End Source File
+# End Group
+# End Group
+# End Group
+# End Group
+# End Group
 # End Group
 # Begin Source File
 

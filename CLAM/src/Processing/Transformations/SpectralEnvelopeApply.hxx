@@ -67,7 +67,7 @@ namespace CLAM {
 
 		/** Config change method
 		 *  @param The ProcessingConfig object
-		 *  @throw bad_cast exception when the argument is not an SpectralEnvelopeApplyConfig object.
+		 *  @pre argument should be a SpectralEnvelopeApplyConfig
 		 *  @return True if the cast has been commited correctly		 
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);

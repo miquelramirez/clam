@@ -120,7 +120,7 @@ namespace CLAM {
 	};
 
 	template < typename BinOp >
-	const char *BinaryControlOp<BinOp>::GetClassName() const { return "BinaryControlOperation"; }
+	inline const char *BinaryControlOp<BinOp>::GetClassName() const { return "BinaryControlOperation"; }
 
 }
 

@@ -8,6 +8,7 @@
 namespace CLAM
 {
 	class Processing;
+	class ProcessingConfig;
 }
 
 namespace CLAMVM
@@ -31,6 +32,9 @@ private:
 	typedef std::list<InPortAdapter*>::iterator InPortAdapterIterator;
 	typedef std::list<OutControlAdapter*>::iterator OutControlAdapterIterator;
 	typedef std::list<InControlAdapter*>::iterator InControlAdapterIterator;
+
+protected:
+	void OnUpdateConfigFromGUI( CLAM::ProcessingConfig* );
 public:
 	ProcessingController();
 	virtual ~ProcessingController();

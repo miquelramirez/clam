@@ -99,7 +99,7 @@ public:
 
 	bool Do(void)
 	{
-		throw(ErrProcessingObj("ThreadedBufferIn: Do(): Supervised mode not implemented",this));
+		CLAM_ASSERT(false,"ThreadedBufferIn: Do(): Supervised mode not implemented");
 		return true;		
 	}
 

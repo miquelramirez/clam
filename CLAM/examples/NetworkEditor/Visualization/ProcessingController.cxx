@@ -5,9 +5,11 @@
 #include "InControlAdapter.hxx"
 #include "OutControlAdapter.hxx"
 #include "Processing.hxx"
+#include "ProcessingConfig.hxx"
 
 #include <vector>
 
+#include <iostream>
 namespace CLAMVM
 {
 
@@ -15,6 +17,7 @@ ProcessingController::ProcessingController()
 	: mObserved(0),
 	  mConfig(0)
 {
+	SetNewConfig.Wrap( this, &ProcessingController::OnUpdateConfigFromGUI );
 }
 
 ProcessingController::~ProcessingController()
@@ -36,6 +39,15 @@ ProcessingController::~ProcessingController()
 		delete *itCtrlOut;
 
 }
+
+void ProcessingController::OnUpdateConfigFromGUI( CLAM::ProcessingConfig * cfg) 
+{
+	mConfig = (CLAM::ProcessingConfig*)cfg->DeepCopy();
+//	if (mConfig)
+//		delete mConfig;
+//	mConfig = new CLAM::ProcessingConfig(*cfg);
+	Update();
+}
 	
 
 bool ProcessingController::Publish()
@@ -49,7 +61,7 @@ bool ProcessingController::Publish()
 
 	const CLAM::ProcessingConfig & conf( mObserved->GetConfig() );
 	mConfig = (CLAM::ProcessingConfig*)conf.DeepCopy();
-
+	std::cout << mConfig->GetClassName() << std::endl;
 	AcquireConfig.Emit( mConfig );
 	CLAM::Processing* proc = (CLAM::Processing*) mObserved;	
 	CLAM::Processing::ConstInPortIterator itPortIn;
@@ -117,6 +129,8 @@ bool ProcessingController::BindTo( CLAM::Processing& obj )
 
 bool ProcessingController::Update()
 {
+	mObserved->Configure( *mConfig );
+	std::cout << "configuration updated" << std::endl;
 	return true;
 }
 

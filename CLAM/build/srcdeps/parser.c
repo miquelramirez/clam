@@ -82,7 +82,7 @@ int recursesrcs = 0;
 ** dependencies
 ** 0 = don't generate depend (for visual dsp's)
 ** 1 = generate single file dependency
-** 2 = generate full dependencies (including seperate .d files) (option -f)
+** 2 = generate full dependencies (including seperate .d files) (option -d)
 */
 int gendepend = 0;
 
@@ -108,13 +108,14 @@ void extmap_init(void)
 	hash_add(extmap,".hh",".cc");
 	hash_add(extmap,".hxx",".cxx");
 	hash_add(extmap,".hpp",".cpp");
-	hash_add(extmap,".H",".C");
 	
 	/* these are weird, but also occur */
 	hash_add(extmap,".h",".cc");
 	hash_add(extmap,".h",".cxx");
 	hash_add(extmap,".h",".cpp");
+#ifdef linux
 	hash_add(extmap,".h",".C");
+#endif
 
 	hash_add(extmap,".H",".cc");
 	hash_add(extmap,".H",".cxx");

@@ -11,10 +11,16 @@ const OutPort* NodeBase::GetWriter() const
 	return mpDriver;
 }
 
-const std::list<InPort*> NodeBase::GetReaders() const
+NodeBase::ReaderIterator NodeBase::BeginReaders()
 {
-	return mInputs;
+	return mInputs.begin();
 }
+
+NodeBase::ReaderIterator NodeBase::EndReaders()
+{
+	return mInputs.end();
+}
+
 
 void  NodeBase::UnattachAll()
 {

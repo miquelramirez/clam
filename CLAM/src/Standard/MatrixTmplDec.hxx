@@ -77,21 +77,19 @@ namespace CLAM
 	 // Determinant
 		float GetDet() const
 		{
-			if(mNumRows != mNumColumns)
-				throw Err("Determinant only valid for square matrices");
+			CLAM_ASSERT(mNumRows == mNumColumns,
+				"Determinant only valid for square matrices");
 			float sum = 0;
 
 			if (mNumColumns == 1)
 				return (*this)(0,0);
 
-			else {
-				for (unsigned int i=0; i< mNumColumns;i++) // For the first row
-					{
-						sum += MatrixBuffer()[i] * pow((TData)-1,(TData)i) * (GetSubmatrix(0,i).GetDet());
-					}
-				// i+1 : the matrix index are from [0..N-1] 
-				return sum;
+			for (unsigned int i=0; i< mNumColumns;i++) // For the first row
+			{
+				sum += MatrixBuffer()[i] * pow((TData)-1,(TData)i) * (GetSubmatrix(0,i).GetDet());
 			}
+			// i+1 : the matrix index are from [0..N-1] 
+			return sum;
 		}	
 
 		// Get Transposed Matrix
@@ -119,7 +117,7 @@ namespace CLAM
 			MatrixTmpl<T> ret(mNumRows, mNumColumns);
 			for (unsigned int i=0; i<mNumRows; i++)
 				for(unsigned int j=0; j<mNumColumns; j++)
-		ret(i,j) = 0;
+			ret(i,j) = 0;
 			(*this) = ret;
 		}
 
@@ -127,53 +125,46 @@ namespace CLAM
 		// Invert the matrix
 		void Invert()
 		{
-			if (mNumRows != mNumColumns)
-				throw Err("Inverse can only be calculated for square matrix");
-			else
-			{
-				MatrixTmpl<T> ret(mNumRows, mNumColumns);
-				MatrixTmpl<T> aux(mNumRows-1, mNumColumns-1);
-				for (unsigned int i=0; i<mNumRows; i++)
-					for (unsigned int j=0; j<mNumRows; j++)
-						{
-							aux = GetSubmatrix(i,j);
-							ret(i,j) = pow((TData)-1,(TData)i+j) * aux.GetDet();
-						}
-				ret = (1 / GetDet()) * (ret.GetTrans());
-				(*this) = ret;
-			} 
+			CLAM_ASSERT(mNumRows == mNumColumns,
+				"Inverse can only be calculated for square matrix");
+			MatrixTmpl<T> ret(mNumRows, mNumColumns);
+			MatrixTmpl<T> aux(mNumRows-1, mNumColumns-1);
+			for (unsigned int i=0; i<mNumRows; i++)
+				for (unsigned int j=0; j<mNumRows; j++)
+				{
+					aux = GetSubmatrix(i,j);
+					ret(i,j) = pow((TData)-1,(TData)i+j) * aux.GetDet();
+				}
+			ret = (1 / GetDet()) * (ret.GetTrans());
+			(*this) = ret;
 		}
 
 		// Get the inverse of a matrix
 		MatrixTmpl<T> GetInverse() const
 		{
-			if (mNumRows != mNumColumns)
-				throw Err("Inverse can only be calculated for square matrix");
-			else
-			{
-				MatrixTmpl<T> ret(mNumRows, mNumColumns);
-				for (unsigned int i=0; i<mNumRows; i++)
-					for (unsigned int j=0; j<mNumColumns; j++)
-						ret(i,j) = pow((TData)-1,(TData)i+j) * ( GetSubmatrix(i,j).GetDet() );
-				ret = (1/GetDet()) * (ret.GetTrans());
-				return ret; 
-			}
+			CLAM_ASSERT(mNumRows == mNumColumns,
+				"Inverse can only be calculated for square matrix");
+			MatrixTmpl<T> ret(mNumRows, mNumColumns);
+			for (unsigned i=0; i<mNumRows; i++)
+				for (unsigned j=0; j<mNumColumns; j++)
+					ret(i,j) = pow((TData)-1,(TData)i+j) * ( GetSubmatrix(i,j).GetDet() );
+			ret = (1/GetDet()) * (ret.GetTrans());
+			return ret; 
 		}
 
 		// Delete a Row and return a new Matrix Oject with reduced dims
 		MatrixTmpl<T> GetDelRow(unsigned int row) const
 		{
-			unsigned int i,j;
 			MatrixTmpl<T> ret (mNumRows-1,mNumColumns);
 
-			for (i=0;i<row;i++) // copy unshifted part
+			for (unsigned i=0;i<row;i++) // copy unshifted part
 			{
-				for(j=0;j<mNumColumns;j++)
+				for(unsigned j=0;j<mNumColumns;j++)
 					ret(i,j) = MatrixBuffer()[i*mNumColumns+j];
 			}
-			for (i=row;i<mNumRows-1;i++) // shift rest one row up
+			for (unsigned i=row;i<mNumRows-1;i++) // shift rest one row up
 			{
-				for(j=0;j<mNumColumns;j++)
+				for(unsigned j=0;j<mNumColumns;j++)
 					ret(i,j) = MatrixBuffer()[(i+1)*mNumColumns+j];
 			}
 			return ret; 
@@ -185,15 +176,15 @@ namespace CLAM
 			unsigned int i,j;
 			MatrixTmpl<T> ret (mNumRows,mNumColumns-1);
 
-			for (i=0;i<mNumRows;i++) // shift matrix one column left
+			for (unsigned i=0;i<mNumRows;i++) // shift matrix one column left
 			{
-				for(j=0;j<column;j++) 
+				for(unsigned j=0;j<column;j++) 
 					ret(i,j) = MatrixBuffer()[i*mNumColumns+j];
 			}
 
-			for (i=0;i<mNumRows;i++) // shift matrix one column left
+			for (unsigned i=0;i<mNumRows;i++) // shift matrix one column left
 			{
-				for(j=column;j<mNumColumns-1;j++)
+				for(unsigned j=column;j<mNumColumns-1;j++)
 					ret(i,j) = MatrixBuffer()[i*mNumColumns+j+1];
 			}
 			return ret;
@@ -233,44 +224,58 @@ namespace CLAM
 		/**** Get/Set an element *****/
 		void SetAt (unsigned int iPosition, unsigned int jPosition, T element)
 		{
-			if( (iPosition >= mNumRows) | (iPosition < 0) | (jPosition >= mNumColumns) | (jPosition < 0))
-				throw Err("Index exceed matrix dimension");
-			else
-				MatrixBuffer()[mNumColumns*iPosition+jPosition] = element;
+			CLAM_ASSERT(iPosition < mNumRows,
+				"Index beyond matrix dimension");
+			CLAM_ASSERT(iPosition >= 0,
+				"Index beyond matrix dimension");
+			CLAM_ASSERT(jPosition < mNumColumns,
+				"Index beyond matrix dimension");
+			CLAM_ASSERT(jPosition >= 0,
+				"Index beyond matrix dimension");
+
+			MatrixBuffer()[mNumColumns*iPosition+jPosition] = element;
 		}
 
 		T GetAt (unsigned int iPosition, unsigned int jPosition) const
 		{
-			if( (iPosition >= mNumRows) | (iPosition < 0) | (jPosition >= mNumColumns) | (jPosition < 0))
-				throw Err("Index exceed matrix dimension");
-			else
-				return MatrixBuffer()[mNumColumns*iPosition+jPosition];
+			CLAM_ASSERT(iPosition < mNumRows,
+				"Index beyond matrix dimension");
+			CLAM_ASSERT(iPosition >= 0,
+				"Index beyond matrix dimension");
+			CLAM_ASSERT(jPosition < mNumColumns,
+				"Index beyond matrix dimension");
+			CLAM_ASSERT(jPosition >= 0,
+				"Index beyond matrix dimension");
+
+			return MatrixBuffer()[mNumColumns*iPosition+jPosition];
 		}
 
 		// Get one column
 		friend MatrixTmpl<T> GetColumn(unsigned int column, MatrixTmpl<T>& m )
 		{
-			if ( (column >= m.mNumColumns) | (column < 0))
-							throw Err("Index exceed matrix dimension");
-			else {
-				MatrixTmpl<T> ret(m.mNumRows, 1); // Column vector
-				for (unsigned int i=0; i<m.mNumRows; i++)
-					ret(i,0) = m(i,column);
-				return ret;
-			}
+			CLAM_ASSERT(column<m.mNumColumns,
+				"Column beyond matrix dimensions");
+			CLAM_ASSERT(column >= 0,
+				"Column beyond matrix dimensions");
+
+			MatrixTmpl<T> ret(m.mNumRows, 1); // Column vector
+			for (unsigned int i=0; i<m.mNumRows; i++)
+				ret(i,0) = m(i,column);
+			return ret;
 		}
 
 		// Get one row
 		friend MatrixTmpl<T> GetRow(unsigned int row, MatrixTmpl<T>& m)
 		{
-			if ( (row >= m.mNumRows) | (row < 0))
-							throw Err("Index exceed matrix dimension");
-			else {
-				MatrixTmpl<T> ret(1, m.mNumColumns); // Row vector
-				for (unsigned int i=0; i<m.mNumColumns; i++)
-					ret(0,i) = m(row,i);
-				return ret;
-			}
+			CLAM_ASSERT(row < m.mNumRows,
+				"Row beyond matrix dimensions");
+			CLAM_ASSERT(row >= 0,
+				"Row beyond matrix dimensions");
+	
+			MatrixTmpl<T> ret(1, m.mNumColumns); // Row vector
+			for (unsigned int i=0; i<m.mNumColumns; i++)
+				ret(0,i) = m(row,i);
+			return ret;
 		}
 
 		/* Apply an unary function to all the elements of the matrix */
@@ -309,8 +314,15 @@ namespace CLAM
 
 		/**** Operators ****/
 		T& operator () (unsigned int iPosition,unsigned	int jPosition) const {
-			if( (iPosition >= mNumRows) | (iPosition < 0) | (jPosition >= mNumColumns) | (jPosition < 0))
-				throw Err("Index exceed matrix dimension");
+			CLAM_ASSERT(iPosition < mNumRows,
+				"Index beyond matrix dimension");
+			CLAM_ASSERT(iPosition >= 0,
+				"Index beyond matrix dimension");
+			CLAM_ASSERT(jPosition < mNumColumns,
+				"Index beyond matrix dimension");
+			CLAM_ASSERT(jPosition >= 0,
+				"Index beyond matrix dimension");
+
 			return ( MatrixBuffer()[mNumColumns*iPosition+jPosition] ); 
 		}
 
@@ -335,61 +347,53 @@ namespace CLAM
 		const MatrixTmpl<T>& operator += (const MatrixTmpl<T>& newMatrix)
 		{
 			// Adding element by element
-			if ( (mNumRows != newMatrix.mNumRows) | (mNumColumns != newMatrix.mNumColumns))
-				throw Err("Addition of matrix of different dimensions not permitted"); 
-			else {
-				for (unsigned int i=0; i< (mNumRows*mNumColumns) ; i++)
-					MatrixBuffer()[i] += newMatrix.MatrixBuffer()[i];
-				return *this;
-			}
+			CLAM_ASSERT(mNumRows == newMatrix.mNumRows,"Adding matrix with different dimensions");
+			CLAM_ASSERT(mNumColumns == newMatrix.mNumColumns,"Adding matrix with different dimensions");
+			for (unsigned int i=0; i< (mNumRows*mNumColumns) ; i++)
+				MatrixBuffer()[i] += newMatrix.MatrixBuffer()[i];
+			return *this;
 		}
 
 		const MatrixTmpl<T>& operator -= (const MatrixTmpl<T>& newMatrix)
 		{
-			// Adding element by element
-			if ( (mNumRows != newMatrix.mNumRows) | (mNumColumns != newMatrix.mNumColumns) )
-				throw Err("Substraction of matrix of different dimensions not permitted");	
-			else {
-				for (unsigned int i=0; i< (mNumRows*mNumColumns) ; i++)
-					MatrixBuffer()[i] -= newMatrix.MatrixBuffer()[i];
-				return *this;
-			} 
+			// Substract element by element
+			CLAM_ASSERT(mNumRows == newMatrix.mNumRows,"Substracting matrix with different dimensions");
+			CLAM_ASSERT(mNumColumns == newMatrix.mNumColumns,"Substracting matrix with different dimensions");
+			for (unsigned int i=0; i< (mNumRows*mNumColumns) ; i++)
+				MatrixBuffer()[i] -= newMatrix.MatrixBuffer()[i];
+			return *this;
 		}
 
 		friend MatrixTmpl<T> operator + (MatrixTmpl<T>& m1, MatrixTmpl<T>& m2)
 		{
-			if ( (m1.mNumRows != m2.mNumRows) | (m1.mNumColumns != m2.mNumColumns) ) 
-				throw Err("Addition of matrix of different dimension not permitted");
-			else {
-				MatrixTmpl<T> ret(m1.mNumRows, m1.mNumColumns);	// Construction of an Vector object
-				for (unsigned int i=0; i<ret.mNumRows; i++)
-					for (unsigned int j=0; j<ret.mNumColumns; j++)
-						ret(i,j) = m1(i,j) + m2(i,j);
-				return ret;
-			}
+			CLAM_ASSERT(m1.mNumRows == m2.mNumRows,"Adding matrix with different dimensions");
+			CLAM_ASSERT(m1.mNumColumns == m2.mNumColumns,"Adding matrix with different dimensions");
+			MatrixTmpl<T> ret(m1.mNumRows, m1.mNumColumns);	// Construction of an Vector object
+			for (unsigned int i=0; i<ret.mNumRows; i++)
+				for (unsigned int j=0; j<ret.mNumColumns; j++)
+					ret(i,j) = m1(i,j) + m2(i,j);
+			return ret;
 		}
 
 		// add an element to all the matrix elements
 		friend MatrixTmpl<T> operator + (MatrixTmpl<T>& m1, const T element)
 		{
-				MatrixTmpl<T> ret(m1.mNumRows, m1.mNumColumns); 
-				for (unsigned int i=0; i<ret.mNumRows; i++)
-					for (unsigned int j=0; j<ret.mNumColumns; j++)
-						ret(i,j) = m1(i,j) + element;
-				return ret;
+			MatrixTmpl<T> ret(m1.mNumRows, m1.mNumColumns); 
+			for (unsigned int i=0; i<ret.mNumRows; i++)
+				for (unsigned int j=0; j<ret.mNumColumns; j++)
+					ret(i,j) = m1(i,j) + element;
+			return ret;
 		}
 
 		friend MatrixTmpl<T> operator - (MatrixTmpl<T>& m1, MatrixTmpl<T>& m2)
 		{
-			if ( (m1.mNumRows != m2.mNumRows) | (m1.mNumColumns != m2.mNumColumns) ) 
-				throw Err("Substraction of matrix of different dimension not permitted"); 
-			else {
-				MatrixTmpl<T> ret(m1.mNumRows, m1.mNumColumns);	// Construction of an Vector object
-				for (unsigned int i=0; i<ret.mNumRows; i++)
-					for (unsigned int j=0; j<ret.mNumColumns; j++)
-						ret(i,j) = m1(i,j) - m2(i,j);
-				return ret;
-			}
+			CLAM_ASSERT(m1.mNumRows == m2.mNumRows,"Substracting matrix with different dimensions");
+			CLAM_ASSERT(m1.mNumColumns == m2.mNumColumns,"Substracting matrix with different dimensions");
+			MatrixTmpl<T> ret(m1.mNumRows, m1.mNumColumns);	// Construction of an Vector object
+			for (unsigned int i=0; i<ret.mNumRows; i++)
+				for (unsigned int j=0; j<ret.mNumColumns; j++)
+					ret(i,j) = m1(i,j) - m2(i,j);
+			return ret;
 		}
 
 		// substract an element to all the matrix elements
@@ -412,19 +416,15 @@ namespace CLAM
 
 		friend MatrixTmpl<T> operator * (const MatrixTmpl<T>& m1, const MatrixTmpl<T>& m2)
 		{
-			if( m1.mNumColumns != m2.mNumRows)
-				throw Err("Multiplication not permitted"); 
-			else
-			{
-				MatrixTmpl<T> ret(m1.mNumRows, m2.mNumColumns);
-				for (unsigned int i=0; i<ret.mNumRows; i++)
-					for (unsigned int j=0; j<ret.mNumColumns; j++) {
-						ret(i,j) = 0;
-						for( unsigned int k=0; k<m1.mNumColumns; k++)
-							ret(i,j) += m1(i,k)*m2(k,j);
-					}
-				return ret;
-			}
+			CLAM_ASSERT( m1.mNumColumns == m2.mNumRows,"Multiplications with incompatible arrays");
+			MatrixTmpl<T> ret(m1.mNumRows, m2.mNumColumns);
+			for (unsigned int i=0; i<ret.mNumRows; i++)
+				for (unsigned int j=0; j<ret.mNumColumns; j++) {
+					ret(i,j) = 0;
+					for( unsigned int k=0; k<m1.mNumColumns; k++)
+						ret(i,j) += m1(i,k)*m2(k,j);
+				}
+			return ret;
 		}
 
 		friend MatrixTmpl<T> operator / (const MatrixTmpl<T>& m, T scalar)

@@ -64,6 +64,7 @@ namespace CLAM {
 		}
 
 		void Embed(const std::exception &) throw();
+		void Embed(const char* str) throw();
 
 	};
 

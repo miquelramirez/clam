@@ -92,7 +92,7 @@ namespace CLAM
 
 		bool Do(void);
 
-		bool Do(Audio &in) throw(ErrProcessingObj);
+		bool Do(Audio &in);
 		void sort(DataArray& list, int size);
 		void swap(TData& a, TData& b);
 		

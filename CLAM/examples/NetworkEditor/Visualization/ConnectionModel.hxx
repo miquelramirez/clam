@@ -5,11 +5,6 @@
 #include "Signalv2.hxx"
 #include <string>
 
-namespace CLAM
-{
-	class Processing;
-}
-
 namespace CLAMVM
 {
 	class ConnectionModel
@@ -23,4 +18,4 @@ namespace CLAMVM
 	};
 } // namespace CLAMVM
 
-#endif // __INCONNECTIONMODEL_HXX__
+#endif // __CONNECTIONMODEL_HXX__

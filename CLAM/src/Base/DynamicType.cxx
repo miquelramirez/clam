@@ -157,15 +157,9 @@ void DynamicType::RemoveAllMem()
 void DynamicType::InformAttr_(unsigned val, const char* name, unsigned size, const char* type, const bool isPtr,
                             const t_new fnew, const t_new_copy fcopy, const t_destructor fdestr)
 {
-CLAM_BEGIN_CHECK
-	if (val >= numAttr)
-	{
-		throw ErrDynamicType("There are more registered Attributes than the "
-		                     "number defined in DYN_CLASS_TABLE macro. In class:",
-		                     GetClassName());
-	}
-CLAM_END_CHECK
-
+	CLAM_ASSERT(val<numAttr, 
+		"There are more registered Attributes than the "
+		"number defined in DYN_CLASS_TABLE macro.");
 	CLAM_ASSERT(fnew, "in DT: a dynamic attribute don't have default-constructor !");
 	CLAM_ASSERT(fcopy, "in DT: a dynamic attribute don't have copy constructor !");
 

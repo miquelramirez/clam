@@ -1,4 +1,5 @@
 #include "SDIFOut.hxx"
+#include "ErrOpenFile.hxx"
 #include "SpectrumConfig.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
@@ -68,8 +69,19 @@ bool SDIFOut::ConcreteConfigure(const ProcessingConfig& c)
 	CopyAsConcreteConfig(mConfig, c);
 	if(mpFile) delete mpFile;
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eOutput);
-	mpFile->Open();
-	return true;
+
+	try
+	{
+		mpFile->Open();
+		return true;
+	}
+	catch ( ErrOpenFile& e )
+	{
+		mStatus = "Inner exception thrown: File could not be opened\n";
+		mStatus += e.what();
+
+		return false;
+	}
 }
 
 

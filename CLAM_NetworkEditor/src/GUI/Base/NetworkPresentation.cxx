@@ -19,11 +19,14 @@ NetworkPresentation::NetworkPresentation()
 {
 	SetName.Wrap( this, &NetworkPresentation::OnNewName );
 	SetProcessing.Wrap( this, &NetworkPresentation::OnNewProcessing );
-	SetConnection.Wrap( this, &NetworkPresentation::OnNewConnection );
-	SetRemoveConnection.Wrap( this, &NetworkPresentation::OnRemoveConnection );
+	SetPortConnection.Wrap( this, &NetworkPresentation::OnNewPortConnection );
+	SetControlConnection.Wrap( this, &NetworkPresentation::OnNewControlConnection );
+	SetRemovePortConnection.Wrap( this, &NetworkPresentation::OnRemovePortConnection );
+	SetRemoveControlConnection.Wrap( this, &NetworkPresentation::OnRemoveControlConnection );
 	SetRemoveProcessing.Wrap( this, &NetworkPresentation::OnRemoveProcessing );
 	AddNewProcessing.Wrap( this, &NetworkPresentation::OnAddNewProcessing );
 	ChangeState.Wrap( this, &NetworkPresentation::OnNewChangeState );
+	Clear.Wrap(this, &NetworkPresentation::OnClear );
 }
 
 void NetworkPresentation::OnNewChangeState( bool newState )
@@ -35,12 +38,20 @@ void NetworkPresentation::OnNewChangeState( bool newState )
 	}
 }
 
-void NetworkPresentation::OnRemoveConnection(  ConnectionPresentation * con)
+void NetworkPresentation::OnRemovePortConnection(  ConnectionPresentation * con)
 {
 	mConnectionPresentations.remove(con);
 	con->Hide();
 
-	RemoveConnectionFromGUI.Emit( con->GetOutName(), con->GetInName() );
+	RemovePortConnectionFromGUI.Emit( con->GetOutName(), con->GetInName() );
+}
+
+void NetworkPresentation::OnRemoveControlConnection(  ConnectionPresentation * con)
+{
+	mConnectionPresentations.remove(con);
+	con->Hide();
+
+	RemoveControlConnectionFromGUI.Emit( con->GetOutName(), con->GetInName() );
 }
 
 void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
@@ -66,7 +77,11 @@ void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
 	}
 	for(it=toRemove.begin(); it!=toRemove.end(); it++)
 	{
-		OnRemoveConnection( *it );
+		if (proc->HasInPort(GetLastIdentifier((*it)->GetInName())) || proc->HasOutPort(GetLastIdentifier((*it)->GetOutName())))
+			OnRemovePortConnection( *it );
+		else
+			OnRemoveControlConnection(*it);
+		    
 	}
 	mProcessingPresentations.remove( proc );
 	RemoveProcessingFromGUI.Emit( proc->GetNameFromNetwork() );
@@ -86,13 +101,19 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkModel & model)
 {
 	model.AcquireName.Connect( SetName );
 	model.AcquireProcessing.Connect( SetProcessing );
-	model.AcquireConnection.Connect( SetConnection );
+	model.AcquirePortConnection.Connect( SetPortConnection );
+	model.AcquireControlConnection.Connect( SetControlConnection );
 	SChangeState.Connect( model.ChangeState );
 	AddProcessing.Connect( model.AddNewProcessing );
 	
-	CreateNewConnectionFromGUI.Connect( model.CreateNewConnection );
-	RemoveConnectionFromGUI.Connect( model.RemoveConnection );
+	CreateNewPortConnectionFromGUI.Connect( model.CreateNewPortConnection );
+	CreateNewControlConnectionFromGUI.Connect( model.CreateNewControlConnection );
+	RemovePortConnectionFromGUI.Connect( model.RemovePortConnection );
+	RemoveControlConnectionFromGUI.Connect( model.RemoveControlConnection );
 	RemoveProcessingFromGUI.Connect( model.RemoveProcessing );
+	ClearSignal.Connect( model.Clear );
+	SaveNetworkTo.Connect( model.SaveNetwork );
+	LoadNetworkFrom.Connect( model.LoadNetwork );
 }
 
 
@@ -157,10 +178,24 @@ std::string NetworkPresentation::GetLastIdentifier( const std::string& str )
 	return str.substr( PositionOfLastIdentifier(str)+1 );
 }
 
-void NetworkPresentation::OnAddNewProcessing( const std::string & name, 
-						 CLAM::Processing * proc)
+void NetworkPresentation::OnAddNewProcessing( const std::string & name, CLAM::Processing * proc)
 {
 	AddProcessing.Emit(name,proc);
+}
+
+void NetworkPresentation::OnClear()
+{
+	ProcessingPresentationIterator it;
+	for(it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
+		delete *it;
+	mProcessingPresentations.clear();
+
+	ConnectionPresentationIterator itc;
+	for(itc=mConnectionPresentations.begin(); itc!=mConnectionPresentations.end(); itc++)
+		delete *itc;
+	mConnectionPresentations.clear();
+
+	ClearSignal.Emit();
 }
 
 

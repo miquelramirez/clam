@@ -6,7 +6,7 @@ namespace NetworkGUI
 {
 
 OutPortPresentation::OutPortPresentation()
-	: mName( "unnamed inport" )
+	: mName( "unnamed out port" )
 {
 	SetName.Wrap( this, &OutPortPresentation::OnNewName );
 }

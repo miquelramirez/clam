@@ -23,21 +23,18 @@
 #include "AutoPanner.hxx"
 #include "InControl.hxx"
 #include "OSDefines.hxx" // some  tests use M_PI
+#include "Processing.hxx"
 
 namespace CLAMTest {
 
 class AutoPannerTest;
 CPPUNIT_TEST_SUITE_REGISTRATION( AutoPannerTest );
 
-class AutoPannerTest : public CppUnit::TestFixture
+class AutoPannerTest : public CppUnit::TestFixture, public CLAM::Processing
 {
 public:
 
-	void setUp()
-	{
-		mControlSender.mLeft.AddLink(&mReceiverLeft);
-		mControlSender.mRight.AddLink(&mReceiverRight);		
-	}
+	void setUp(){}
 	void tearDown(){}
 
 private:
@@ -52,23 +49,26 @@ private:
 
 
 	CPPUNIT_TEST_SUITE_END();
+
+	// Testing pattern: Self Shunt
+	// Processing interface:
+	const char* GetClassName() const { return "for testing"; }
+	bool Do() { return false; }
+	const CLAM::ProcessingConfig& GetConfig() const { throw 0; }
+	bool ConcreteConfigure( const CLAM::ProcessingConfig& ) { return false; }
+
 public:
 	AutoPannerTest()
-		: mReceiverLeft("Receiver Left"),
-		  mReceiverRight("Receiver Right"),
-		  mControlSender(44100, 44100, 0),
-		  mDelta(0.00001)
-		// AutoPanner needs a constructor but we won't use
-		// this configuration
-	{
-	}
+		: mReceiverLeft("Receiver Left",this),
+		  mReceiverRight("Receiver Right",this),
+		  mDelta(0.00001f)
+	{}
 
 private:
 	//fixture attributes
 	CLAM::InControl mReceiverLeft;
 	CLAM::InControl mReceiverRight;
-	CLAM::AutoPanner mControlSender;
-	const double mDelta;
+	double mDelta;
 
 	void testDo_WhenFreqEqualSamplingRateAndNoPhase()
 	{
@@ -77,17 +77,29 @@ private:
 		CLAM::TData phase = 0.0;
 		int frameSize = 1;
 
-		mControlSender.Configure( freq , samplingRate, phase, frameSize );
+		CLAM::AutoPanner controlSender;
+		controlSender.GetOutControls().Get("Left Control").AddLink(&mReceiverLeft);
+		controlSender.GetOutControls().Get("Right Control").AddLink(&mReceiverRight);		
 
-		mControlSender.Do();
+		CLAM::AutoPannerConfig cfg;
+		cfg.SetName("autopanner config");
+		cfg.SetFrequency( freq );
+		cfg.SetSamplingRate( samplingRate );
+		cfg.SetPhase( phase );
+		cfg.SetFrameSize( frameSize );
+
+		controlSender.Configure(cfg);
+		controlSender.Start();
+		controlSender.Do();
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta);
 
-		mControlSender.Do();
+		controlSender.Do();
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta);
+		controlSender.Stop();
 	}
 
 	void testDo_WhenFreqEqualSamplingRateWithPhase()
@@ -97,18 +109,31 @@ private:
 		CLAM::TData phase = CLAM::TData(M_PI/2);
 		int frameSize = 1;
 
-		mControlSender.Configure( freq , samplingRate, phase, frameSize );
+		CLAM::AutoPanner controlSender;
+		controlSender.GetOutControls().Get("Left Control").AddLink(&mReceiverLeft);
+		controlSender.GetOutControls().Get("Right Control").AddLink(&mReceiverRight);		
 
-		mControlSender.Do();
+		CLAM::AutoPannerConfig cfg;
+		cfg.SetName("autopanner config");
+		cfg.SetFrequency( freq );
+		cfg.SetSamplingRate( samplingRate );
+		cfg.SetPhase( phase );
+		cfg.SetFrameSize( frameSize );
+
+		controlSender.Configure(cfg);
+		controlSender.Start();
+		controlSender.Do();
 
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverLeft.GetLastValue(),mDelta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverRight.GetLastValue(),mDelta);
 
-		mControlSender.Do();
+		controlSender.Do();
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverLeft.GetLastValue(),mDelta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverRight.GetLastValue(),mDelta);
+
+		controlSender.Stop();
 	}
 
 	void testDo_WhenFreqIsQuarterOfSamplingRate()
@@ -118,14 +143,27 @@ private:
 		CLAM::TData phase = 0;
 		int frameSize = 1;
 
-		mControlSender.Configure( freq , samplingRate, phase, frameSize );
+		CLAM::AutoPanner controlSender;
+		controlSender.GetOutControls().Get("Left Control").AddLink(&mReceiverLeft);
+		controlSender.GetOutControls().Get("Right Control").AddLink(&mReceiverRight);		
 
-		mControlSender.Do();
+		CLAM::AutoPannerConfig cfg;
+		cfg.SetName("autopanner config");
+		cfg.SetFrequency( freq );
+		cfg.SetSamplingRate( samplingRate );
+		cfg.SetPhase( phase );
+		cfg.SetFrameSize( frameSize );
+
+		controlSender.Configure(cfg);
+		controlSender.Start();
+		controlSender.Do();
 		//first Do gives the initial state, already tested
-		mControlSender.Do();
+		controlSender.Do();
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverLeft.GetLastValue(),mDelta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverRight.GetLastValue(),mDelta); 
+
+		controlSender.Stop();
 	}
 
 	void testDo_WhenFreqEqualSamplingRateAndFrameSizeIs10()
@@ -135,17 +173,30 @@ private:
 		CLAM::TData phase = 0.0;
 		int frameSize = 10;
 
-		mControlSender.Configure( freq , samplingRate, phase, frameSize );
+		CLAM::AutoPanner controlSender;
+		controlSender.GetOutControls().Get("Left Control").AddLink(&mReceiverLeft);
+		controlSender.GetOutControls().Get("Right Control").AddLink(&mReceiverRight);		
 
-		mControlSender.Do();
+		CLAM::AutoPannerConfig cfg;
+		cfg.SetName("autopanner config");
+		cfg.SetFrequency( freq );
+		cfg.SetSamplingRate( samplingRate );
+		cfg.SetPhase( phase );
+		cfg.SetFrameSize( frameSize );
+
+		controlSender.Configure(cfg);
+		controlSender.Start();
+		controlSender.Do();
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta);
 
-		mControlSender.Do();
+		controlSender.Do();
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta);
+
+		controlSender.Stop();
 	}
 
 	void testDo_WhenFreqIsQuarterOfSamplingRateAndPhaseAndFrameSizeIs7()
@@ -155,26 +206,34 @@ private:
 		CLAM::TData phase = CLAM::TData(M_PI);
 		int frameSize = 7;
 
-		mControlSender.Configure( freq , samplingRate, phase, frameSize );
+		CLAM::AutoPanner controlSender;
+		controlSender.GetOutControls().Get("Left Control").AddLink(&mReceiverLeft);
+		controlSender.GetOutControls().Get("Right Control").AddLink(&mReceiverRight);		
 
-		mControlSender.Do();
+		CLAM::AutoPannerConfig cfg;
+		cfg.SetName("autopanner config");
+		cfg.SetFrequency( freq );
+		cfg.SetSamplingRate( samplingRate );
+		cfg.SetPhase( phase );
+		cfg.SetFrameSize( frameSize );
+
+		controlSender.Configure(cfg);
+		controlSender.Start();
+		controlSender.Do();
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta); 
-		mControlSender.Do();
+		controlSender.Do();
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverLeft.GetLastValue(),mDelta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverRight.GetLastValue(),mDelta); 
-		mControlSender.Do();
+		controlSender.Do();
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(0.0) , mReceiverLeft.GetLastValue(),mDelta);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TControlData(1.0) , mReceiverRight.GetLastValue(),mDelta); 
+
+		controlSender.Stop();
 	}
-
-
-
-
-
 };
 
 } //namespace CLAMTest
