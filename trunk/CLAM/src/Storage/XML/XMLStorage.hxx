@@ -69,7 +69,18 @@ public:
 	void DumpObject(const Component & component); ///< Holds the component DOM to the selected node
 	void RestoreObject(Component & component); ///< Restores the component from the selected node
 	/**
-	 * @todo Not implemented yet
+	 * Moves the node selection to the specified path.
+	 * @throws XmlStorageErr whenever a step is not found
+	 * The path is a subset of XPath.
+	 * Absolute and relative paths can be used but node
+	 * names are the only step specifier to be used.
+	 *
+	 * @code
+	 * /Root/Element/SubElement
+	 * Element/SubElement     // Relative being in /Root, the default)
+	 * /                      // Equivalent to /Root but useful when 
+	 *                        // you don't know the root node name.
+	 * @endcode
 	 */
 	void Select(const std::string & path); ///< Sets the selection at the specified path (the default selection is the root node)
 	/**
@@ -207,7 +218,15 @@ typedef XmlStorage XMLStorage;
  @code
  // An unmodified default constructed object!!!
  MyComponent comp;
- CLAM::XmlStorage::Restore(comp, "mycomponent.xml");
+ try
+ {
+	CLAM::XmlStorage::Restore(comp, "mycomponent.xml");
+ }
+ catch (CLAM::XmlStorageErr & err)
+ {
+ 	// Handle the error here
+ 	std::cerr << err.what() << std::endl;
+ }
  @endcode
 
  Dump and Restore are overloaded to accept any C++ stream instead of a filename.
@@ -222,6 +241,13 @@ typedef XmlStorage XMLStorage;
  or using RestorePartialDocument to restore the object taking an XML fragment.
  Vote for them in the CLAM stories if you are interested in such functionality
  to be prioritized.
+
+ Catchable exceptions (CLAM::XmlStorageErr) are thrown on the following conditions:
+ - The source/target stream could not be open
+ - The read source contained illegal XML
+ - The XML is valid but it failed to be mapped to the CLAM objects.
+ - A step on the path to change the selection couldn't be followed
+ - A loaded CLAM object failed its own activation constraints.
 
  @author David Garcia.
  */

@@ -72,7 +72,15 @@ public:
 		_document = document;
 		_selection = _document->getDocumentElement();
 	}
-	void selectPath(const char * path){}
+	void selectPath(const char * path)
+	{
+		if (path[0]!='/') 
+			_selection = recursiveSelection(_selection, path, 0);
+		else
+			_selection = absoluteSelection(path);
+		return;
+	}
+	
 	xercesc::DOMElement * getSelection()
 	{
 		return _selection;
@@ -99,15 +107,50 @@ public:
 		XercesDomWriter writer;
 		writer.DoIndentedFormat(useIndentation);
 		writer.write(os,_document);
-
 	}
 	void writeSelection(std::ostream & os, bool useIndentation=false)
 	{
 		XercesDomWriter writer;
 		writer.DoIndentedFormat(useIndentation);
 		writer.write(os,_selection);
-
 	}
+private:
+	xercesc::DOMElement * absoluteSelection(const std::string & path)
+	{
+		xercesc::DOMElement * root = (xercesc::DOMElement*) _document->getDocumentElement();
+		unsigned int nextSlash = std::string(path).find('/',1);
+		std::string rootStep = std::string(path).substr(1,nextSlash-1);
+		std::string rootName = L(root->getNodeName());
+		if (rootStep=="") return root;
+
+		if (rootName== rootStep)
+			return recursiveSelection(root, path, nextSlash+1);
+
+		throw XmlStorageErr("Wrong root name, expected '"+rootStep+"' but found '"+rootName+"'");
+	}
+	xercesc::DOMElement * recursiveSelection(xercesc::DOMElement * current, const std::string & path, unsigned int pos)
+	{
+		if (pos >= path.length()) return current;
+		unsigned int slashPosition = path.find('/', pos);
+		unsigned int stepSize = 
+			slashPosition == std::string::npos ? 
+				std::string::npos : slashPosition-pos;
+		std::string step = path.substr(pos, stepSize);
+		for (
+			xercesc::DOMNode * child = current->getFirstChild();
+			child;
+			child = child->getNextSibling())
+		{
+			if (child->getNodeType() != xercesc::DOMNode::ELEMENT_NODE) continue;
+			std::string nodeName(L(child->getNodeName()));
+			if (nodeName != step) continue;
+			if (slashPosition==std::string::npos) return (xercesc::DOMElement *) child;
+			return recursiveSelection((xercesc::DOMElement *) child, path, slashPosition+1);
+		}
+		std::string msg = "Wrong path step '" + step + "'";
+		throw XmlStorageErr(msg);
+	}
+
 };
 
 

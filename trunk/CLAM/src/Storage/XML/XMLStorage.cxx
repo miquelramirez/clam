@@ -88,7 +88,7 @@ namespace CLAM
 
 	void XmlStorage::Select(const std::string & path)
 	{
-		CLAM_ASSERT(false,"XmlStorage::Select not implemented yet");
+		_documentHandler->selectPath(path.c_str());
 	}
 
 	void XmlStorage::UseIndentation(bool useIndentation) {
