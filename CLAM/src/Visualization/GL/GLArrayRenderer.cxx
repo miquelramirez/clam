@@ -334,7 +334,7 @@ void GLArrayRenderer::FindMaxMin()
 
 	//We always add an end point at zero
 	mElemIdxBuffer.AddElem(nElems-1);
-	mIntertwined[mnMaxMin].y=0;
+	mIntertwined[nElems-1].y=0;
 	mnMaxMin++;
 	
 }

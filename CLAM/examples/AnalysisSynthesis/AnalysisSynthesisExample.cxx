@@ -36,11 +36,11 @@ class AnalysisSynthesisExampleStdio:public AnalysisSynthesisExampleBase
 public:
 	CLAMGUI::Progress* CreateProgress(const char* title,float from,float to)
 	{
-		return new StdOutProgress(title,from,to);
+		return new CLAMGUI::StdOutProgress(title,from,to);
 	}
 	CLAMGUI::WaitMessage* CreateWaitMessage(const char* title)
 	{
-		return new StdOutWaitMessage(title);
+		return new CLAMGUI::StdOutWaitMessage(title);
 	}
 
 	void Run(void);
@@ -88,11 +88,11 @@ void AnalysisSynthesisExampleStdio::Run(void)
 			}
 			case 3://Analyze
 			{
-				if(!mHaveConfig||!mHaveAudioIn)
+				if(!mHaveConfig)
 				{
 					std::cout<<"\n"<<"\n"<<"Error, there is no available analysis/synthesis configuration"<<"\n";
 					std::cout<<"\n"<<"Please select option 1 of the menu first"<<"\n";
-					break;
+				       	break;
 				}
 				LoadInputSound();
 				showSnapshotAudio(mAudioIn,"Input Audio");

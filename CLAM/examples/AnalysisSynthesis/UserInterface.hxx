@@ -6,11 +6,11 @@
 #include "FL/Fl_Tile.H"
 #include "Fl_Smart_Tile.H"
 class Fl_Smart_Tile;
+#include "ForwardDeclarations.hxx"
 #include "CLAMPresentations.hxx"
 #include "CLAMViews.hxx"
-#include "ForwardDeclarations.hxx"
 #include <FL/Fl_Window.H>
-#include <FL/Fl_Input.H>
+#include <FL/Fl_Output.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Box.H>
 
@@ -20,7 +20,7 @@ public:
   UserInterface();
   Fl_Window *mWindow;
 private:
-  Fl_Input *mConfigurationText;
+  Fl_Output *mConfigurationText;
   Fl_Menu_Bar *mMenuBar;
   static Fl_Menu_Item menu_mMenuBar[];
   inline void cb_Load_i(Fl_Menu_*, void*);
@@ -52,9 +52,7 @@ private:
   static Fl_Menu_Item *mDoTransformation;
   inline void cb_mDoTransformation_i(Fl_Menu_*, void*);
   static void cb_mDoTransformation(Fl_Menu_*, void*);
-public:
   static Fl_Menu_Item *mSynthesize;
-private:
   inline void cb_Synthesize_i(Fl_Menu_*, void*);
   static void cb_Synthesize(Fl_Menu_*, void*);
   static Fl_Menu_Item *mOutputSM;
@@ -120,7 +118,10 @@ private:
   void PlayOutputSound();
   void PlaySinusoidal();
   void PlayResidual();
+  void LoadSound();
   CLAMGUI::ProcDataPresentation<CLAM::Audio>* mAttachedPresentations[4];
   CLAMGUI::ProcDataView<CLAM::Audio>* mAttachedViews[4];
+public:
+  void Update();
 };
 #endif

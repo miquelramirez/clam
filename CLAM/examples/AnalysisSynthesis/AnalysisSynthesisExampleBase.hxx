@@ -211,12 +211,14 @@ namespace CLAM
 		/** Indicates whether there is a valid spectrum, needed for melody anlysis */
 		bool mHaveSpectrum;
 
+
 		CLAMGUI::Progress* mCurrentProgressIndicator;
 		CLAMGUI::WaitMessage* mCurrentWaitMessage;
 
 		std::string mXMLInputFile;
 
 		SDIFIn  mSDIFReader;
+
 
 		/** Creates progress bar. Implemented both in GUI and stdio versions */
 		virtual CLAMGUI::Progress* CreateProgress(const char* title,float from,float to) = 0;
@@ -231,7 +233,8 @@ namespace CLAM
 		{
 			return mGlobalConfig.GetDoCleanTracks();
 		}
-		
+
+
 	};
 
 };

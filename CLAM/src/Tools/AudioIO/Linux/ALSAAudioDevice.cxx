@@ -62,7 +62,7 @@ namespace CLAM {
 	ALSAAudioDevice::ALSAAudioDevice(const std::string& name,const std::string& device): 
 		AudioDevice(name)
 	{
-		printf("ALSAAudioDevice::ALSAAudioDevice\n");
+		//printf("ALSAAudioDevice::ALSAAudioDevice\n");
 
 		int i;
 		
@@ -163,14 +163,15 @@ namespace CLAM {
 
 	void ALSAAudioDevice::Stop(void) throw(Err)
 	{
-		printf("ALSAAudioDevice::Stop\n");
+
+		//printf("ALSAAudioDevice::Stop\n");
 		if (sndpcm) {
 			sndpcm->Stop();
 		}
 	}
 	ALSAAudioDevice::~ALSAAudioDevice()
 	{
-		printf("ALSAAudioDevice::~ALSAAudioDevice\n");
+		//printf("ALSAAudioDevice::~ALSAAudioDevice\n");
 		Stop();
 		if (sndpcm) {
 			delete sndpcm;

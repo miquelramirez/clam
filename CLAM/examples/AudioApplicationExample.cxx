@@ -29,6 +29,8 @@
 #include "AudioAdder.hxx"
 #include "AudioApplication.hxx"
 
+#include "TopLevelProcessing.hxx"
+
 using namespace CLAM;
 
 class MyIOAudioApplication:public AudioApplication
@@ -101,6 +103,8 @@ void MyIOAudioApplication::AudioMain(void)
 
 		audioManager.Start();
 
+		TopLevelProcessing::GetInstance()->Start();
+
 		do
 		{
 			inL.Do(bufL);
@@ -170,6 +174,7 @@ void MyOutAudioApplication::AudioMain(void)
 		Oscillator testtone(testtoneCfg);
 
 		audioManager.Start();
+		TopLevelProcessing::GetInstance()->Start();
 
 		do
 		{

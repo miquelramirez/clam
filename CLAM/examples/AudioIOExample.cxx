@@ -195,7 +195,7 @@ bool AudioIOExample::ConcreteStart() throw(ErrProcessingObj)
 		(*obj)->Start();
 
 	try {
-		AudioManager::Singleton().Start();
+		AudioManager::Current().Start();
 	}
 	catch (Err) {
 		throw(ErrProcessingObj("Could not start AudioManager",this));
@@ -247,7 +247,7 @@ bool AudioIOExample::ConfigureChildren(const AudioIOExampleConfig & c)
 	tcfg.SetFrequency(mConfig.GetFirstTremoloFreq());
 	tcfg.SetStartPhase( mConfig.GetFirstTremoloStartingPhase());
 	tcfg.SetMaxAtenuation(mConfig.GetFirstTremoloMaxAtenuation());
-	tcfg.SetSamplingRate(AudioManager::Singleton().SampleRate());
+	tcfg.SetSamplingRate(AudioManager::Current().SampleRate());
 	tcfg.SetName("First_Tremolo");
 
 	mTremoloApplier.Configure(tcfg);
@@ -265,7 +265,7 @@ bool AudioIOExample::ConfigureChildren(const AudioIOExampleConfig & c)
 void AudioIOExample::ConfigureAudio(Audio& a)
 {
 	a.SetSize(mSize);
-	a.SetSampleRate(AudioManager::Singleton().SampleRate());
+	a.SetSampleRate(AudioManager::Current().SampleRate());
 }
 
 

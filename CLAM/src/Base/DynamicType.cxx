@@ -208,7 +208,7 @@ void DynamicType::AddAttr_ (const unsigned val, const unsigned size)
 
 		// check if we can unset the global some-removed flag.
 		dynamicTable[numAttr].hasBeenRemoved = false;
-		for (int j=0; j<numAttr; j++) {
+		for (unsigned int j=0; j<numAttr; j++) {
 			if (dynamicTable[j].hasBeenRemoved) {
 				dynamicTable[numAttr].hasBeenRemoved = true;
 				break;
@@ -262,7 +262,7 @@ void DynamicType::RemoveAttr_(const unsigned i)
 		
 		// check if we can unset the global some-added flag.
 		dynamicTable[numAttr].hasBeenAdded = false;
-		for (int j=0; j<numAttr; j++) {
+		for (unsigned int j=0; j<numAttr; j++) {
 			if (dynamicTable[j].hasBeenAdded) {
 				dynamicTable[numAttr].hasBeenAdded = true;
 				break;

@@ -28,6 +28,8 @@ namespace CLAMGUI
 
 void AnalysisSynthesisExampleGUI::Run(void)
 {
+	Fl::get_system_colors();
+
 	UserInterface userinterface;
 	userinterface.mAnalysisSynthesisExample = this;
 	Fl::get_system_colors();
@@ -40,15 +42,18 @@ void AnalysisSynthesisExampleGUI::Run(void)
 	
 Progress* AnalysisSynthesisExampleGUI::CreateProgress(const char* title,float from,float to) 
 {
-	return new ProgressGUI(title,from,to);
+	ProgressGUI* tmp = new ProgressGUI(title,from,to);
+	return tmp;
 }
 
 WaitMessage* AnalysisSynthesisExampleGUI::CreateWaitMessage(const char* title) 
 {
-	return new WaitMessageGUI(title);
+	WaitMessageGUI* tmp = new WaitMessageGUI(title);
+	return tmp;
 }
 
-void AnalysisSynthesisExampleGUI::ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0& method )
+void AnalysisSynthesisExampleGUI::ExecuteMethodOnThreadKeepingScreenUpToDate( 
+	CBL::Functor0 method )
 {
 	mThread.SetThreadCode( method );
 

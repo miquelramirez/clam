@@ -29,21 +29,22 @@ class UserInterface {open
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
-  Function {UserInterface()} {} {
+  Function {UserInterface()} {open
+  } {
     Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)}
-      xywh {89 185 872 548} color 50 hide resizable
-      code0 {mWindow2=NULL;}
+      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
+      xywh {325 514 872 548} resizable
+      code0 {mWindow2=NULL;} visible
     } {
-      Fl_Input mConfigurationText {
+      Fl_Output mConfigurationText {
         label {Configuration File}
         private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
       }
-      Fl_Menu_Bar mMenuBar {
-        private xywh {0 0 872 21} box THIN_UP_BOX color 50 labelsize 13 textsize 12
+      Fl_Menu_Bar mMenuBar {open
+        private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
-          label Input
+          label Input open
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
@@ -57,9 +58,9 @@ class UserInterface {open
             private xywh {15 15 100 20} labelsize 12
           }
           menuitem {} {
-            label {Store Configure...}
+            label {Store Configuration...}
             callback {StoreConfiguration();}
-            private xywh {15 15 100 20} labelsize 12 hide
+            private xywh {15 15 100 20} labelsize 12
           }
           submenu mDisplayInSM {
             label Display
@@ -119,7 +120,7 @@ class UserInterface {open
         }
         submenu mSynthesize {
           label Synthesis
-          xywh {0 0 100 20} labelsize 12 deactivate
+          private xywh {0 0 100 20} labelsize 12 deactivate
         } {
           menuitem {} {
             label Synthesize
@@ -219,8 +220,8 @@ Exit();}
           private xywh {10 10 100 20} labelsize 12
         }
       }
-      Fl_Box mSmartTile {
-        private xywh {5 50 860 490} color 23 resizable
+      Fl_Box mSmartTile {selected
+        private xywh {5 50 860 490} resizable
         class Fl_Smart_Tile
       }
     }
@@ -235,7 +236,7 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;}
-      private xywh {444 336 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10
+      private xywh {447 339 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
       code0 {mWindow2->show();} noborder visible
     } {
       Fl_Box {} {
@@ -248,7 +249,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/iua.xpm}
-        private xywh {360 15 50 60}
+        private xywh {360 15 50 60} labeltype image
       }
       Fl_Box {} {
         label {please visit us at http://www.iua.upf.es/mtg for more info}
@@ -256,7 +257,7 @@ mWindow2=NULL;}
       }
       Fl_Box {} {
         label {logos/mtg.xpm}
-        private xywh {10 20 75 55}
+        private xywh {10 20 75 55} labeltype image
       }
     }
   }
@@ -285,6 +286,9 @@ mWindow2=NULL;}
   decl {void PlayOutputSound();} {}
   decl {void PlaySinusoidal();} {}
   decl {void PlayResidual();} {}
+  decl {void LoadSound();} {}
   decl {CLAMGUI::ProcDataPresentation<CLAM::Audio>* mAttachedPresentations[4];} {}
   decl {CLAMGUI::ProcDataView<CLAM::Audio>* mAttachedViews[4];} {}
+  decl {void Update();} {public
+  }
 } 

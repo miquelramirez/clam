@@ -37,6 +37,7 @@
 #include "Segmentator.hxx"
 #include "OnsetDetection.hxx"
 #include "Normalization.hxx"
+#include "HeapDbg.hxx"
 
 
 //Transformation class
@@ -138,7 +139,17 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 
 void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 {
-	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
+	if(mHaveConfig)//This means we had a previous configuration
+	{
+		mHaveAnalysis = false;
+		mHaveAudioIn = false;
+		mHaveAudioOut = false;
+		mHaveTransformationScore = false;
+		mHaveMelody = false;
+		mHaveSpectrum = false;
+	}
+	
+	mCurrentWaitMessage = CreateWaitMessage( "Loading configuration xml file, please wait." );
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mGlobalConfig,inputFileName);
@@ -172,7 +183,8 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 		mHaveConfig = true;
 		InitConfigs();
 	}
-	delete wm;
+	DestroyWaitMessage();
+
 }
 
 void AnalysisSynthesisExampleBase::StoreConfig(const std::string& inputFileName)
@@ -181,7 +193,9 @@ void AnalysisSynthesisExampleBase::StoreConfig(const std::string& inputFileName)
 	wm = CreateWaitMessage("Storing configuration xml file, please wait.");
 	//Loading configuration
 	XMLStorage x;
-	x.Restore(mGlobalConfig,inputFileName);
+	x.Dump(mGlobalConfig,"SMSAnalysisSynthesisConfig",inputFileName);
+
+	delete wm;
 }
 
 void AnalysisSynthesisExampleBase::DoLoadSDIFAnalysis()
@@ -346,7 +360,10 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	infilecfg.SetFilename(mGlobalConfig.GetInputSoundFile());
 	infilecfg.SetFiletype(EAudioFileType::eWave);
 	if(!myAudioFileIn.Configure(infilecfg))
-		return false;
+	{
+		mHaveAudioIn = false;
+		return mHaveAudioIn;
+	}
 			
 	/////////////////////////////////////////////////////////////////////////////
 	// Initialization of the processing data objects :
@@ -899,7 +916,7 @@ void AnalysisSynthesisExampleBase::PlayResidual()
 void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 {
 	
-	TSize outBufferSize=256;
+	TSize outBufferSize=512;
 	AudioManager audioManager(mGlobalConfig.GetSamplingRate(),outBufferSize*2);
 	AudioIOConfig outCfgL;
 	AudioIOConfig outCfgR;
@@ -926,4 +943,3 @@ void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 		outputL.Do(tmpAudioBuffer);
 	}
 }
-
