@@ -92,20 +92,21 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 #endif
 	new ProcessingItem( utils, "OutControlSender" );	
 
-	QListViewItem* plots = new QListViewItem(this,"Plots");
-	new ProcessingItem(plots,"AudioPortMonitor");
-	new ProcessingItem(plots,"SpectrumPortMonitor");
-	new ProcessingItem(plots,"PeaksPortMonitor");
-	new ProcessingItem(plots,"FundamentalPortMonitor");
-	
-	new ProcessingItem(plots, "AudioPlotProcessing");
-	new ProcessingItem(plots, "SpectrumPlotProcessing");
-	new ProcessingItem(plots, "PeaksPlotProcessing");
-	new ProcessingItem(plots, "FundPlotProcessing");
-	new ProcessingItem(plots, "SinTracksPlotProcessing");
-	new ProcessingItem(plots, "FundTrackPlotProcessing");
-	new ProcessingItem(plots, "SpecgramPlotProcessing");
+	QListViewItem* winplots = new QListViewItem(this,"Plots in new windows");
+	new ProcessingItem(winplots, "AudioPlotProcessing");
+	new ProcessingItem(winplots, "SpectrumPlotProcessing");
+	new ProcessingItem(winplots, "PeaksPlotProcessing");
+	new ProcessingItem(winplots, "FundPlotProcessing");
+	new ProcessingItem(winplots, "SinTracksPlotProcessing");
+	new ProcessingItem(winplots, "FundTrackPlotProcessing");
+	new ProcessingItem(winplots, "SpecgramPlotProcessing");
 
+	QListViewItem* canvasplots = new QListViewItem(this,"Plots in canvas");
+	new ProcessingItem(canvasplots,"AudioPortMonitor");
+	new ProcessingItem(canvasplots,"SpectrumPortMonitor");
+	new ProcessingItem(canvasplots,"PeaksPortMonitor");
+	new ProcessingItem(canvasplots,"FundamentalPortMonitor");
+	
 	show();
 	header()->hide();
 
