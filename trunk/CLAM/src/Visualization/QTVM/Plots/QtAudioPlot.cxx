@@ -259,15 +259,6 @@ namespace CLAM
 			((AudioPlotController*)_controller)->SetMarksColor(c);
 		}
 
-	        void QtAudioPlot::KeyPressEvent(QKeyEvent* e)
-		{
-		    keyPressEvent(e);
-		}
-	    
-		void QtAudioPlot::KeyReleaseEvent(QKeyEvent* e)
-		{
-		    keyReleaseEvent(e);
-		}
 	}	
 }
 
