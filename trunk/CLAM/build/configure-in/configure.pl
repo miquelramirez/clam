@@ -318,6 +318,8 @@ if ($ARGV[0] eq '')
 open OUTFILE,">$ARGV[0]" or die "Failed to open $ARGV[0] for writing\n";
 
 &ac('INIT','test','0.1','clam@iua.upf.es');
+&ac('PREREQ','2.50');
+
 
 &parse_acv_file("acv/portable_setenv.acv");
 
