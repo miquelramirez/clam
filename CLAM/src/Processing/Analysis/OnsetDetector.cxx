@@ -129,7 +129,7 @@ namespace CLAM
 
 		//Onset detection	
 		Algorithm( originalSegment, out );
-	
+
 		return true;
 
 	}
@@ -163,8 +163,7 @@ namespace CLAM
 ////////SEGMENTATION ALGORITHM//////////
 ////////////////////////////////////////
 	void OnsetDetector::Algorithm( Segment& s , Array<TimeIndex>& finalOnsets )
-	{	
-	
+	{
 		Array< Array<float> > smoothedInput(mnBands);	//Smoothed Band Energy Array
 		smoothedInput.SetSize(mnBands);
 
