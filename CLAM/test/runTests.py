@@ -26,7 +26,6 @@ publicAddress = 'clam-devel@iua.upf.es' # To use only when fails
 privateAddress = 'parumi@iua.upf.es' # To know the test has been runned
 subject = 'nightly tests report'
 
-MODULE_TAG = 'development-branch'
 
 #this will be used only when it's not set in the environment
 CVSROOT = ':ext:parumi@iua-share.upf.es:/mnt/cvsroot'
@@ -43,8 +42,11 @@ doAutoconf = doAutoconf or updateLevelForCLAM == 2
 CLAM_SANDBOXES = os.path.abspath( os.path.dirname(sys.argv[0])+'/../..' ) + '/'
 print 'CLAM_SANDBOXES=',CLAM_SANDBOXES
 
-MODULE_TAG = 'development-branch'
-SANDBOX_NAME = 'clean-'+MODULE_TAG
+MODULE_TAG = '' #'development-branch'
+if MODULE_TAG :
+	SANDBOX_NAME = 'clean-'+MODULE_TAG
+else :
+	SANDBOX_NAME = 'clean-CLAM'
 
 BUILDPATH = CLAM_SANDBOXES + '%s/build/' % (SANDBOX_NAME)
 SALTO_DATA_FOLDER = CLAM_SANDBOXES + 'SaltoDataFolder/'
