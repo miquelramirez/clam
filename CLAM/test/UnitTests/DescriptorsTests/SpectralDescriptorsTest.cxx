@@ -56,6 +56,7 @@ class SpectralDescriptorsTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testMaxMagFreq );
 	CPPUNIT_TEST( testMagnitudeSkewness );
 	CPPUNIT_TEST( testMagnitudeKurtosis );
+	CPPUNIT_TEST( testHighFrequencyContent );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -531,6 +532,44 @@ private:
 		mDescriptors->AddMagnitudeKurtosis();
 
 		assertDescriptorExtractionInsideTolerance(data,tolerance, &CLAM::SpectralDescriptors::GetMagnitudeKurtosis);
+
+	}
+	void testHighFrequencyContent()
+	{
+		CLAM::TData tolerance = 0.008;  // Due to numerical inaccuracies
+
+		std::map<std::string, CLAM::TData> data;
+		data["DeltaAtZeroBin-Spectrum.xml"] = 0.0;
+		data["Silence-Spectrum.xml"] = 0.0; // Avoid NaN
+		data["Constant-Spectrum.xml"]= 131328.0;
+		data["ConstantDouble-Spectrum.xml"]= 21012447232.0;
+		data["ConstantHalfSize-Spectrum.xml"]= 526336.0;
+		data["DeltasAtExtremeBins-Spectrum.xml"]= 512.0;
+		data["DeltaAtCenterBin-Spectrum.xml"]= 3.0;
+		data["AltoSax-Iowa-ff-Db3B3-Region 012.wav"] = 1470.23278808594;
+		data["Balance000.600.wav"] = 35030.96875;
+		data["Balance000.992.wav"] = 35163.140625;
+		data["Balance001.988.wav"] = 112741.8203125;
+		data["Balance010.910.wav"] = 67255.7109375;
+		data["Cello_A2.wav"] = 442392.75;
+		data["Cello_C2.wav"] = 0.0; // Avoid NaN!!
+		data["Disco_Rojo001.008.wav"] = 932897.8125;
+		data["Disco_Rojo002.327.wav"] = 237543;
+		data["Geiger_Counter005.020.wav"] = 47262.75390625;
+		data["SaxBritHorns12.wav"] = 510717.0625;
+		data["Time002.624.wav"] = 660662.1875;
+		data["bell_A3.wav"] = 557885;
+		data["gamelan-gong.wav"] = 722027.0625;
+		data["gt_E4.wav"] = 5.25229263305664;
+		data["pno_Eb1.wav"] = 0.000000;  // Avoid NaN!!
+		data["silence.wav"] = 0.000000; // Avoid NaN!!
+		data["vln_A3.wav"] = 0.000000; // Avoid NaN!!
+		data["vln_D5.wav"] = 0.000000; // Avoid NaN!!
+		data["whitenoise.wav"] = 44574528;
+
+		mDescriptors->AddHighFrequencyContent();
+
+		assertDescriptorExtractionInsideTolerance(data,tolerance, &CLAM::SpectralDescriptors::GetHighFrequencyContent);
 
 	}
 
