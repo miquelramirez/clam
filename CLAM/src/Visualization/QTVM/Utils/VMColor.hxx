@@ -39,7 +39,7 @@ namespace CLAM
 		    Color(const Color& c);
 		    ~Color();
 
-		    void operator=(Color c);
+		    Color& operator=(Color c);
 		};
 		
 		class VMColor
