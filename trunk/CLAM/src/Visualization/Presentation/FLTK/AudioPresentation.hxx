@@ -95,8 +95,6 @@ namespace CLAMGUI
 			mPort->redraw();
 		}
 
-		Fl_Window* GetWindow() { return mWindow; }
-
 	protected:
 
 		void Init(const Geometry& g, const char* label );

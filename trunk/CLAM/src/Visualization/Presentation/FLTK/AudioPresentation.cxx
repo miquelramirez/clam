@@ -84,7 +84,7 @@ void ProcDataPresentation<Audio>::Init( const Geometry& g, const char* l )
 	mPort = new GLPort( Rect<int>( 0, 0, g.GetW(), g.GetH() ) );
 	mRenderer = new GLWaveRenderer( 0, 200, 0 );
 
-	mDispContainer->Add( *mPort );
+	mDispContainer->Add( mPort );
 
 	mWindow->resizable( mDispContainer );
 
