@@ -82,6 +82,8 @@ namespace CLAM
 		component.LoadFrom(*this);
 		_readContext->release();
 		_errors += concat(_readContext->errors());
+		if (_errors!="")
+			throw XmlStorageErr(_errors);
 	}
 
 	void XmlStorage::Select(const std::string & path)
@@ -221,11 +223,6 @@ namespace CLAM
 			_writeContext->addContent(" ");
 		_writeContext->addContent(content.c_str());
 		_lastWasContent = true;
-	}
-	void XmlStorage::ThrowErrors()
-	{
-		if (_errors=="") return;
-		throw XmlStorageErr(_errors);
 	}
 
 

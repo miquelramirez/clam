@@ -80,7 +80,6 @@ public:
 	 * @todo Not implemented yet
 	 */
 	void UseIndentation(bool useIndentation);
-	void ThrowErrors();
 // @}
 
 /**
