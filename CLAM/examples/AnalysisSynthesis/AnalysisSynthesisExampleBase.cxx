@@ -123,11 +123,19 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mAnalConfig.GetSinTracking().SetnMaxSines(mGlobalConfig.GetAnalysisMaxSines());
 	mAnalConfig.GetPeakDetect().SetMaxPeaks(mGlobalConfig.GetAnalysisMaxSines());
 
+
+	mAnalConfig.GetFundFreqDetect().SetReferenceFundFreq(mGlobalConfig.GetAnalysisReferenceFundFreq());
+	mAnalConfig.GetFundFreqDetect().SetLowestFundFreq(mGlobalConfig.GetAnalysisLowestFundFreq());
+	mAnalConfig.GetFundFreqDetect().SetHighestFundFreq(mGlobalConfig.GetAnalysisHighestFundFreq());
+	mAnalConfig.GetFundFreqDetect().SetMaxFundFreqError(mGlobalConfig.GetAnalysisMaxFundFreqError());
+	mAnalConfig.GetFundFreqDetect().SetNMaxCandidates(mGlobalConfig.GetAnalysisMaxFundCandidates());
+	
 	//SMS Synthesis configuration
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
 	mSynthConfig.SetFrameSize(synthFrameSize);
 	mSynthConfig.SetHopSize(synthFrameSize);
 	mSynthConfig.SetSamplingRate(TData(samplingRate));
+	mSynthConfig.GetPhaseMan().SetType(mGlobalConfig.GetSynthesisPhaseManagementType());
 }
 
 void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
