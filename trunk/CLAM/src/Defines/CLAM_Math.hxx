@@ -6,17 +6,28 @@
 
 //optimized integer rounding routine for Windows
 inline int Round(float a) {
-#ifdef WIN32
-            int i;
-            __asm {
-                        fld   a
-                        fistp i
-            }
-            return i;
+#if defined (_MSC_VER)
+	int i;
+	__asm {
+		fld   a
+		fistp i
+	}
+	return i;
 #else
-            return rint(a); // just hope it's an intrinsic.
+	#ifdef __USE_ISOC99
+		return lrint(a);
+	#else
+		return int(rint(a));
+	#endif
 #endif
 }
+
+#ifndef __USE_ISOC99
+inline double  round(double _X)
+        {return (floor(_X+0.5)); }
+inline float  round(float _X)
+        {return (floorf(_X+0.5f)); }
+#endif
 
 
 
@@ -45,13 +56,6 @@ inline int Round(float a) {
 		}
 	} // namespace std
 #endif // MSVC++ 6
-
-#ifndef __USE_ISOC99
-inline double  round(double _X)
-        {return (floor(_X+0.5)); }
-inline float  round(float _X)
-        {return (floorf(_X+0.5f)); }
-#endif
 
 
 #endif // CLAM_Math.hxx
