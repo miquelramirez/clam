@@ -240,10 +240,11 @@ namespace CLAMGUI
 		segment.GetAudio().SetSize(samplesInFile);
 		segment.GetAudio().SetSampleRate(selectedFile.GetHeader().GetSampleRate());
 		
-		fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
+		// @TODO: Broken because Ports!
+		//fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
 
 		//Read Audio File
-		fileReader.Do();
+		fileReader.Do(segment.GetAudio());
 
 		fileReader.Stop();
 
@@ -479,9 +480,10 @@ namespace CLAMGUI
 
 		proc.Start();
 
-		proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
+		// @TODO: Broken because of Ports
+		//proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
 
-		proc.Do();
+		proc.Do(audio);
 
 		proc.Stop();
 		
