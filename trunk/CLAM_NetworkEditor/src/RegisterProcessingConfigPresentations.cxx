@@ -61,6 +61,7 @@
 #include "SquareWave.hxx"
 
 // plots
+#include "PortMonitor.hxx"
 #include "AudioPlotProcessing.hxx"
 #include "SpectrumPlotProcessing.hxx"
 #include "PeaksPlotProcessing.hxx"
@@ -164,6 +165,9 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::OutControlSenderConfig> > 
 	regtOutControlSenderCfg( "OutControlSenderConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::PortMonitorConfig> >
+       regtPortMonitorCfg("PortMonitorConfig");
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioPlotProcessingConfig> >
 	regtAudioPlotProcessingCfg("AudioPlotProcessingConfig");
