@@ -1,0 +1,9 @@
+800 600
+MonoAudioFileReader_0	9 54	132 52
+AudioOut_1	521 40	81 52
+SpecgramPortMonitor_6	455 272	177 102
+SpecgramPortMonitor_7	455 364	177 90
+AudioPortMonitor_8	329 80	113 52
+FundTrackPortMonitor_9	455 453	179 74
+SMSAnalysisCore_10	53 233	118 52
+PeaksPortMonitor_11	61 440	378 84
