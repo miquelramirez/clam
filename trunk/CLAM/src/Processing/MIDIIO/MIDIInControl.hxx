@@ -1,6 +1,6 @@
 #include "MIDIEnums.hxx"
-#include "MIDIIO.hxx"
 #include "Array.hxx"
+#include "MIDIIn.hxx"
 
 namespace CLAM {
 

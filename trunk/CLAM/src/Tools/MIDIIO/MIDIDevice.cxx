@@ -20,6 +20,8 @@
  */
 
 #include "MIDIDevice.hxx"
+#include "MIDIIn.hxx"
+#include "MIDIEnums.hxx"
 
 using namespace CLAM;
 

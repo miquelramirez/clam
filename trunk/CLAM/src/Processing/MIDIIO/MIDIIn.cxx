@@ -20,13 +20,9 @@
  */
 
 
-#ifdef WIN32
-#define DEFAULT_MIDI_ARCH "portmidi"
-#else
-#define DEFAULT_MIDI_ARCH "alsa"
-#endif
 
 #include "MIDIIn.hxx"
+#include "MIDIManager.hxx"
 
 using namespace CLAM;
 

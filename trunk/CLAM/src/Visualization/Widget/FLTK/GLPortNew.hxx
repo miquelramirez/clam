@@ -45,7 +45,7 @@ public:
 	GLPort( const Rect<int>& geometry, const char* label = 0 ) :
 		Fl_Gl_Window( geometry.GetX(), geometry.GetY(), geometry.GetW(), geometry.GetH(), label ),
 		mInMultiDisplay(0),
-		mIsConf( false )
+		mIsConf( false ), mTimerLaunched( false )
 	{
 
 	}
@@ -88,6 +88,7 @@ protected:
 private:
 	CBL::Functor0         mDrawCb;
 	bool                  mIsConf;
+	bool                  mTimerLaunched;
 	GLState*         mRenderingState;
 };
 

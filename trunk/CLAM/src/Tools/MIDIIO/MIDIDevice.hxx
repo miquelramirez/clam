@@ -23,6 +23,11 @@
 #define __MIDIDevice__
 
 
+#include <string>
+#include <vector>
+#include "Err.hxx"
+
+
 namespace CLAM{
 
 

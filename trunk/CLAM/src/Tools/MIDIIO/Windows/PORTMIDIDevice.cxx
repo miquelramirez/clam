@@ -21,14 +21,14 @@
 #ifndef __PORTMIDIDevice__
 #define __PORTMIDIDevice__
 
-#include "MIDIIO.hxx"
+#include "MIDIManager.hxx"
 #include "portmidi.h"
 #include "porttime.h"
 #include <iostream>
 
 namespace CLAM {
 
-	extern MIDIDeviceList *sPortMidiMIDIDeviceList;
+	MIDIDeviceList *sPortMidiMIDIDeviceList;
 
 	std::ostream& operator<<( std::ostream& out_str, const PmDeviceInfo* dev_info )
 	{

@@ -24,7 +24,7 @@
 
 #include "AudioFileIn.hxx"
 #include "FFT_rfftw.hxx"
-#include "PeakDetect.hxx"
+#include "SpectralPeakDetect.hxx"
 #include "FundFreqDetect.hxx"
 #include "ProcessingComposite.hxx"
 #include "Frame.hxx"
@@ -106,7 +106,7 @@ private:
 
 	// The internal Processing Objects
 	FFT_rfftw			mFFT;
-	PeakDetect			mPeakDetect;
+ 	SpectralPeakDetect			mPeakDetect;
 	FundFreqDetect		mFundDetect;
 	
 

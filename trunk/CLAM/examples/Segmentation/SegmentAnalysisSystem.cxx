@@ -81,7 +81,7 @@ bool SegmentAnalysisSystem::ConfigureChildren()
 
 	////////////////////////////////////////////////////////////////
 	// PeakDetect
-	PeakDetectConfig peakCfg;
+	SpectralPeakDetectConfig peakCfg;
 	peakCfg.SetName("Peak");
 	peakCfg.SetNumBands(mConfig.GetAudioFrameSize()/2+1);
 	peakCfg.SetMaxPeaks(100);
@@ -114,13 +114,13 @@ void SegmentAnalysisSystem::ConfigureData()
 	SpectrumConfig scfg;
 	scfg.SetSize(mConfig.GetAudioFrameSize()/2+1); // s.AudioFrameSize is the size of the generated frames
 	mSpec.Configure(scfg);
-	mSpec.AddDescriptors();
+//	mSpec.AddDescriptors();
 	mSpec.UpdateData();
-	SpectralDescriptors spdesc;
-	spdesc.AddAll();
-	spdesc.UpdateData();
+//	SpectralDescriptors spdesc;
+//	spdesc.AddAll();
+//	spdesc.UpdateData();
 	
-	mSpec.SetDescriptors(spdesc);
+//	mSpec.SetDescriptors(spdesc);
 	  
 	// Fundamental
 
@@ -175,7 +175,7 @@ bool SegmentAnalysisSystem::Do(Segment& in,int frameIndex)
 	TData aux = 0;
 	for(int j=0; j<in.GetFrame(frameIndex).GetSpectrum().GetSize(); j++)
 		aux += (in.GetFrame(frameIndex).GetSpectrum().GetMag(j))*(in.GetFrame(frameIndex).GetSpectrum().GetMag(j));
-	in.GetFrame(frameIndex).GetSpectrum().GetDescriptors().SetEnergy(aux);
+	//in.GetFrame(frameIndex).GetSpectrum().GetDescriptors().SetEnergy(aux);
 
 	// Convert Spectrum to dB
 	Lin2dB(in.GetFrame(frameIndex).GetSpectrum());
