@@ -1,7 +1,7 @@
 #ifndef __NETSPECGRAMPLOTCONTROLLER__
 #define __NETSPECGRAMPLOTCONTROLLER__
 
-#include <vector>
+#include "Array.hxx"
 #include "Spectrum.hxx"
 #include "NetSpecgramRenderer.hxx"
 #include "NetPlotController.hxx"
@@ -21,17 +21,19 @@ namespace CLAM
 
 	private:
 	    Spectrum _spec;
-	    std::vector<Spectrum> _cachedData;
-	    std::vector<Spectrum> _processedData;
+	    Array<DataArray> _cachedData;
+	    Array<DataArray> _processedData;
 	    NetSpecgramRenderer _renderer;
 	    int _index;
+	    int _specSize;
+	    bool _first;
 	    
 	    void AddData(const Spectrum& spec);
 	    void AdaptSpectralData();
 	    void ProcessData();
 	  
-	    void InitDataArrays();
 	    void FullView();
+	    void Init(const TSize& specSize);
 
 	};
     }
