@@ -232,15 +232,21 @@ void SMSBase::StoreAnalysis(const char* fileName)
 
 bool SMSBase::LoadInputSound(void)
 {
-	//The File In PO
+	mHaveAudioIn = LoadSound(mGlobalConfig.GetInputSoundFile(),mOriginalSegment);
+	mHaveAudioMorph = LoadSound(mGlobalConfig.GetMorphSoundFile(),mMorphSegment);
+	return mHaveAudioIn;
+}
+
+
+bool SMSBase::LoadSound(const std::string& filename,Segment& segment)
+{
 	AudioFileIn myAudioFileIn;
 	AudioFileConfig infilecfg;
-	infilecfg.SetFilename(mGlobalConfig.GetInputSoundFile());
+	infilecfg.SetFilename(filename);
 	infilecfg.SetFiletype(EAudioFileType::eWave);
 	if(!myAudioFileIn.Configure(infilecfg))
 	{
-		mHaveAudioIn = false;
-		return mHaveAudioIn;
+		return false;
 	}
 			
 	/////////////////////////////////////////////////////////////////////////////
@@ -251,60 +257,18 @@ bool SMSBase::LoadInputSound(void)
 	
 	// Spectral Segment that will actually hold data
 	float duration=fileSize/mSamplingRate;
-	mOriginalSegment.SetEndTime(duration);
-	mOriginalSegment.SetSamplingRate(mSamplingRate);
-	mOriginalSegment.mCurrentFrameIndex=0;
-	mOriginalSegment.GetAudio().SetSize(fileSize);
-	mOriginalSegment.GetAudio().SetSampleRate(mSamplingRate);
+	segment.SetEndTime(duration);
+	segment.SetSamplingRate(mSamplingRate);
+	segment.mCurrentFrameIndex=0;
+	segment.GetAudio().SetSize(fileSize);
+	segment.GetAudio().SetSampleRate(mSamplingRate);
 	
 
 	//Read Audio File
 	myAudioFileIn.Start();
-	myAudioFileIn.Do(mOriginalSegment.GetAudio());
+	myAudioFileIn.Do(segment.GetAudio());
 	myAudioFileIn.Stop();
-
-	mHaveAudioIn = true;
-
-	//TODO: this should be called from elsewhere and both methods should be refactored to reduce duplication
-	LoadMorphSound();
-
-	return mHaveAudioIn;
-}
-
-bool SMSBase::LoadMorphSound(void)
-{
-	//The File In PO
-	AudioFileIn myAudioFileIn;
-	AudioFileConfig infilecfg;
-	infilecfg.SetFilename(mGlobalConfig.GetMorphSoundFile());
-	infilecfg.SetFiletype(EAudioFileType::eWave);
-	if(!myAudioFileIn.Configure(infilecfg))
-	{
-		mHaveAudioMorph = false;
-		return mHaveAudioMorph;
-	}
-			
-	/////////////////////////////////////////////////////////////////////////////
-	// Initialization of the processing data objects :
-	TSize fileSize=myAudioFileIn.Size();
-
-	// Spectral Segment that will hold data to morph
-	float duration=fileSize/mSamplingRate;
-	mMorphSegment.SetEndTime(duration);
-	mMorphSegment.SetSamplingRate(myAudioFileIn.SampleRate());
-	mMorphSegment.mCurrentFrameIndex=0;
-	mMorphSegment.GetAudio().SetSize(fileSize);
-	mMorphSegment.GetAudio().SetSampleRate(mSamplingRate);
-	
-
-	//Read Audio File
-	myAudioFileIn.Start();
-	myAudioFileIn.Do(mMorphSegment.GetAudio());
-	myAudioFileIn.Stop();
-
-	mHaveAudioMorph = true;
-
-	return mHaveAudioMorph;
+	return true;
 }
 
 
@@ -462,63 +426,46 @@ void SMSBase::Analyze(void)
 
 void SMSBase::StoreOutputSound(void)
 {
-	AudioFileOut myAudioFileOut;
-	AudioFileConfig outfilecfg;
-	outfilecfg.SetChannels(1);
-	outfilecfg.SetName("FileOut");
-	outfilecfg.SetFiletype(EAudioFileType::eWave);
-	outfilecfg.SetFilename(mGlobalConfig.GetOutputSoundFile());
-	outfilecfg.SetSampleRate(mSamplingRate);
-
-	myAudioFileOut.Configure(outfilecfg);
-
-	myAudioFileOut.Start();
-	myAudioFileOut.Do(mAudioOut);
-	myAudioFileOut.Stop();
+	StoreSound(mGlobalConfig.GetOutputSoundFile(),mAudioOut);
 }
 
 
 void SMSBase::StoreOutputSoundSinusoidal(void)
 {
-	AudioFileOut myAudioFileOut;
-	AudioFileConfig outfilecfg;
-	outfilecfg.SetChannels(1);
-	outfilecfg.SetName("FileOut");
-	outfilecfg.SetFiletype(EAudioFileType::eWave);
 	std::string filename(
 		mGlobalConfig.GetOutputSoundFile().
 			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
 	filename += "_sin.wav";
-	outfilecfg.SetFilename(filename);
-	outfilecfg.SetSampleRate(mSamplingRate);
-	
-	myAudioFileOut.Configure(outfilecfg);
-
-	myAudioFileOut.Start();
-	myAudioFileOut.Do(mAudioOutSin);
-	myAudioFileOut.Stop();
+	StoreSound(filename,mAudioOutSin);
 }
 
 void SMSBase::StoreOutputSoundResidual(void)
+{
+	
+	std::string filename(
+		mGlobalConfig.GetOutputSoundFile().
+			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
+	filename += "_res.wav";
+	StoreSound(filename,mAudioOutRes);
+}
+
+void SMSBase::StoreSound(const std::string& fileName,const Audio& audio)
 {
 	AudioFileOut myAudioFileOut;
 	AudioFileConfig outfilecfg;
 	outfilecfg.SetChannels(1);
 	outfilecfg.SetName("FileOut");
 	outfilecfg.SetFiletype(EAudioFileType::eWave);
-	outfilecfg.SetSampleRate(mSamplingRate);
-	std::string filename(
-		mGlobalConfig.GetOutputSoundFile().
-			substr(0,mGlobalConfig.GetOutputSoundFile().length()-4));
-	filename += "_res.wav";
-	
-	outfilecfg.SetFilename(filename);
+	outfilecfg.SetSampleRate(mSamplingRate);	
+
+	outfilecfg.SetFilename(fileName);
 	
 	myAudioFileOut.Configure(outfilecfg);
 
 	myAudioFileOut.Start();
-	myAudioFileOut.Do(mAudioOutRes);
+	myAudioFileOut.Do(audio);
 	myAudioFileOut.Stop( );
+
 }
 
 void SMSBase::DoSynthesis()

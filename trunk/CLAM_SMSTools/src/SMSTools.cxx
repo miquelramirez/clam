@@ -216,4 +216,29 @@ namespace CLAMGUI
 
 	}
 
+	void SMSTools::StoreSound(const Audio& audio)
+	{
+		char* fileName = fl_file_chooser("Choose file to store on...", "*.wav", "");
+
+		if ( !fileName )
+			return;
+		
+		SMSBase::StoreSound(fileName,audio);
+	}
+
+	void SMSTools::StoreOutputSound()
+	{
+		StoreSound(mAudioOut);
+	}
+
+	void SMSTools::StoreOutputSoundResidual()
+	{
+		StoreSound(mAudioOutRes);
+	}
+
+	void SMSTools::StoreOutputSoundSinusoidal()
+	{
+		StoreSound(mAudioOutSin);
+	}
+
 }
