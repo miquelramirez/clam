@@ -1,35 +1,20 @@
-
 #include "Qt_SpectrumPortMonitorPresentation.hxx"
-
-#include <qlayout.h>
-
-#include "NetSpectrumPlot.hxx"
 #include "PortMonitor.hxx"
+#include "NetSpectrumPlot.hxx"
+#include "Factory.hxx"
 
 namespace NetworkGUI
 {
 
-Qt_SpectrumPortMonitorPresentation::Qt_SpectrumPortMonitorPresentation()
-	: mControlRepresentation(0)
-{
-	QBoxLayout * layout = new QHBoxLayout(this);
-	layout->setMargin(16); // Let the resize handles be visible
-	mControlRepresentation = new CLAM::VM::NetSpectrumPlot(this);
-	mControlRepresentation->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-	layout->addWidget(mControlRepresentation);
-	SlotBindMonitor.Wrap( this, &Qt_SpectrumPortMonitorPresentation::BindMonitor );
-	SignalControllerAttached.Connect(SlotBindMonitor);
-
+	QWidget * Qt_SpectrumPortMonitorPresentation::SetInnerPlot()
+	{
+		return SetConcreteInnerPlot<CLAM::VM::NetSpectrumPlot>();
+	}
 }
 
-void Qt_SpectrumPortMonitorPresentation::BindMonitor(CLAMVM::ProcessingController & controller)
-{
-	typedef CLAM::SpectrumPortMonitor PortMonitor;
-	typedef CLAM::VM::NetSpectrumPlot NetPlot;
-	PortMonitor & monitor = dynamic_cast<PortMonitor &>( controller.GetObserved());
-	NetPlot * plot = (NetPlot*)mControlRepresentation;
-	plot->SetMonitor(monitor);
-}
+typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
 
-} // namespace NetworkGUI
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_SpectrumPortMonitorPresentation>
+	regtSpectrumPortMonitor( "SpectrumPortMonitor" );
+
 
