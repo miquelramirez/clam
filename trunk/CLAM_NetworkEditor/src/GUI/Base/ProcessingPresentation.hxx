@@ -60,7 +60,7 @@ protected:
 public:
 	ProcessingPresentation(const std::string& name= "unnamed");
 	virtual ~ProcessingPresentation();
-	void AttachTo(CLAMVM::ProcessingController & );
+	void AttachToProcessingController(CLAMVM::ProcessingController & );
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 	const std::string & GetName(){return mName;}

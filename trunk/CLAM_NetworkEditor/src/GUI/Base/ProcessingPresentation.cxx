@@ -91,7 +91,8 @@ ProcessingPresentation::~ProcessingPresentation()
 	}
 }
 
-void ProcessingPresentation::AttachTo(CLAMVM::ProcessingController & controller)
+void ProcessingPresentation::AttachToProcessingController(
+		CLAMVM::ProcessingController & controller)
 {
 	CLAMVM::ProcessingController::NamesList::iterator it;
 	for( it=controller.BeginInPortNames();it!=controller.EndInPortNames();it++)
