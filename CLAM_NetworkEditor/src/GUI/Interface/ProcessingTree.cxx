@@ -76,7 +76,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem( synthesis, "IFFT_rfftw" );	
 	new ProcessingItem( synthesis, "SMSSynthesis" );	
 
-	new QListViewItem(this, "SMS Transformations");
+	QListViewItem * smstrans = new QListViewItem(this, "SMS Transformations");
 	new ProcessingItem( smstrans, "SMSFreqShift" );
 	new ProcessingItem( smstrans, "SMSPitchShift" );
 	new ProcessingItem( smstrans, "SMSResidualGain" );
