@@ -127,6 +127,11 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem(canvasplots,"FundTrackPortMonitor");
 	new ProcessingItem(canvasplots,"SinTracksPortMonitor");
 	
+	QListViewItem* icaRelated = new QListViewItem(this,"ICA");
+	new ProcessingItem(icaRelated,"ICA");
+	new ProcessingItem(icaRelated,"CrossMixer");
+	new ProcessingItem(icaRelated,"AmariError");
+	
 	show();
 	header()->hide();
 
