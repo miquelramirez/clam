@@ -44,10 +44,6 @@ namespace CLAM{
 	 */
 	class SMSPitchShift: public FrameTransformation
 	{
-		
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
 		const char *GetClassName() const {return "SMSPitchShift";}
 
 		InPort<SpectralPeakArray> mInPeaks;
@@ -59,7 +55,6 @@ namespace CLAM{
 		InControl mShiftAmount;
 
 	public:
-		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSPitchShift()
 			: 
 			mInPeaks("In SpectralPeaks", this), 
@@ -70,18 +65,10 @@ namespace CLAM{
 			mShiftAmount("Shift Amount", this)
 		{
 			Configure( SegmentTransformationConfig() );
-			mSpectralRange=22050;//default
+			mSpectralRange=22050; //default
 		}
-		/** Constructor with an object of SegmentTransformationConfig class by parameter
-		 *  @param c SegmentTransformationConfig object created by the user
-		*/
-//		SMSPitchShift(const SegmentTransformationConfig &c) : SegmentTransformation(c), mIsHarmonic("Harmonic",this)
-//		{
-//		}
-//
-		/** Destructor of the class*/
- 		~SMSPitchShift()
-		{}
+
+ 		~SMSPitchShift() {}
 
 		const ProcessingConfig& GetConfig() const { throw 0; }
 
@@ -91,7 +78,6 @@ namespace CLAM{
 		bool Do(const SpectralPeakArray& inpeaks,const Spectrum& inRes, SpectralPeakArray& out,Spectrum& outRes);
 		bool Do(const Frame& in, Frame& out);
 
-		// Note that overriding this method breaks the processing chain functionality. 
 		bool Do()
 		{
 			bool result = Do(mInPeaks.GetData(), mInSpectrum.GetData(), mOutPeaks.GetData(), mOutSpectrum.GetData());
