@@ -62,7 +62,6 @@ void PhaseManagement::Init()
 	mLastPeakArray.AddBinWidthBuffer();
 	mLastPeakArray.AddBinPosBuffer();
 	mLastPeakArray.AddIndexArray();
-	mLastPeakArray.AddIsIndexUpToDate();
 
 	mLastPeakArray.UpdateData();
 	mLastPeakArray.SetScale(EScale::eLog);

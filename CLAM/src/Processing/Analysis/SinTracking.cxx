@@ -105,7 +105,6 @@ bool SinTracking::Do(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPea
 	oPeakArray.AddPhaseBuffer();
 	oPeakArray.AddBinWidthBuffer();
 	oPeakArray.AddBinPosBuffer();
-	oPeakArray.AddIsIndexUpToDate();
 	oPeakArray.UpdateData();
 
 	TData fn = mFundFreqValue.GetLastValue();
