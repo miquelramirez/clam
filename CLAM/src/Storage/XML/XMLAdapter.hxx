@@ -119,7 +119,7 @@ public:
 	bool XMLContent(std::istream & str) 
 	{
 		str >> mAdaptee;
-		return !(!str);
+		return str!=NULL;
 	}
 // Testing
 public:

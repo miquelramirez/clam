@@ -75,6 +75,9 @@
 //  Includes
 // ---------------------------------------------------------------------------
 #include "DOMPrint.hpp"
+#include <string>
+
+#define TRACEDUMP if (1); else std::cout
 
 // ---------------------------------------------------------------------------
 //  Local data
@@ -178,6 +181,9 @@ static const XMLCh  gNotation[] =
 //  a document node and it will do the whole thing.
 // ---------------------------------------------------------------------------
 
+unsigned tabPosition = 0;
+
+
 std::ostream& PrintDoc(std::ostream& target, DOM_Node& toWrite)
 {
   
@@ -260,6 +266,7 @@ std::ostream& operator<<(std::ostream& target, DOM_Node& toWrite)
 
         case DOM_Node::ELEMENT_NODE :
         {
+		TRACEDUMP << std::string(tabPosition++,'\t') << "Element: " << nodeName << std::endl;
             // The name has to be representable without any escapes
             *gFormatter  << XMLFormatter::NoEscapes
                          << chOpenAngle << nodeName;
@@ -318,6 +325,7 @@ std::ostream& operator<<(std::ostream& target, DOM_Node& toWrite)
                 //
                 *gFormatter << XMLFormatter::NoEscapes << chForwardSlash << chCloseAngle;
             }
+		TRACEDUMP << std::string(--tabPosition,'\t') << "tnemelE: " << nodeName << std::endl;
             break;
         }
         
@@ -363,6 +371,7 @@ std::ostream& operator<<(std::ostream& target, DOM_Node& toWrite)
 	
         case DOM_Node::DOCUMENT_TYPE_NODE:
         {
+		TRACEDUMP << "Document: " << nodeName << std::endl;
             DOM_DocumentType doctype = (DOM_DocumentType &)toWrite;;
 
             *gFormatter << XMLFormatter::NoEscapes  << gStartDoctype
@@ -396,6 +405,7 @@ std::ostream& operator<<(std::ostream& target, DOM_Node& toWrite)
                             << id << chCloseSquare;
 
             *gFormatter << XMLFormatter::NoEscapes << chCloseAngle;
+		TRACEDUMP << "tnemucoD: " << nodeName << std::endl;
             break;
         }
         

@@ -130,15 +130,15 @@ public:
 	 * @see Storage
 	 */
 	virtual void LoadFrom (Storage & store) {
+		mAdaptee.clear();
 		while (true) {
 			t_adapteeValues elem;
 			if (!LoadLeaveOrComponent(store, elem, mElementsName,
 						(TypeInfo<t_adapteeValues>::StorableAsLeaf *)NULL)
 					)
-				return;
+				break;
 			mAdaptee.push_back(elem);
 		}
-		
 	};
 // Implementation:
 private:
@@ -163,7 +163,7 @@ private:
 	{
 		return "";
 	}
-	//* @return A string with the extracted XML content
+	/// @return A string with the extracted XML content
 	std::string ContentLeaveOrComponent(StaticTrue* isLeave) 
 	{
 		if (!IsXMLAttribute()) return "";
@@ -190,17 +190,18 @@ private:
 	 */
 	bool ContentLeaveOrComponent(StaticTrue* isLeave, std::istream &str) 
 	{
-		while (true) {
+		if (!IsXMLAttribute()) return true;
+		mAdaptee.clear();
+		while (str) {
 			t_adapteeValues contained;
 			str >> contained;
-			if (!str) return true;
-			mAdaptee.push_back(contained);
+			if (str) mAdaptee.push_back(contained);
 		}
-		return false;
+		return true;
 	}
 // Testing
 public:
-	//* Check the internal status for a class instance is valid
+	/// Check the internal status for a class instance is valid
 	bool FulfilsInvariant();
 };
 
