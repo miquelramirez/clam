@@ -11,6 +11,7 @@ namespace CLAM
 		NetPlot::NetPlot(QWidget* parent, const char * name)
 			: QWidget(parent,name)
 		{
+		        _controller=NULL;
 		        _closed = false;
 			InitNetPlot();
 		}
@@ -82,6 +83,7 @@ namespace CLAM
 		{
 		    _surf->stopRendering();
 		}
+	     
 	}
 }
 
