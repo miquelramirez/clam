@@ -217,7 +217,6 @@ namespace CLAM {
 					else
 						SpectralPeakPhase = leftPhase + (1+diffFromMax)*(rightPhase-leftPhase);	
 					outFreqBuffer.AddElem(SpectralPeakFreq);
-					// out.GetMagBuffer().AddElem(log(SpectralPeakMag)*20); Don't change the scale here!!!!
 					outMagBuffer.AddElem(SpectralPeakMag); 
 					outPhaseBuffer.AddElem(SpectralPeakPhase);
 					outBinPosBuffer.AddElem(interpolatedBin);
