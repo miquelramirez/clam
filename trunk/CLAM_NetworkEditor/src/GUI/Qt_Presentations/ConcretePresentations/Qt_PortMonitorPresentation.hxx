@@ -35,15 +35,6 @@ public:
 	}
 };
 
-class Qt_PeaksPortMonitorPresentation : public Qt_PortMonitorPresentation
-{
-public:
-	virtual QWidget * SetInnerPlot()
-	{
-		return SetConcreteInnerPlot<CLAM::VM::NetPeaksPlot>();
-	}
-};
-	
 } // namespace NetworkGUI
 
 #endif //__Qt_PortMonitorPresentation_hxx__  
