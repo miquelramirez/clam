@@ -75,11 +75,13 @@ namespace CLAM
 	void BPFEditorController::SetKeyInsertPressed(bool pressed)
 	{
 	    mKeyInsertPressed = pressed;
+	    mProcessingSelection = false;
 	}
 
 	void BPFEditorController::SetKeyDeletePressed(bool pressed)
 	{
 	    mKeyDeletePressed = pressed;
+	    mProcessingSelection = false;
 	}
 	    
 	void BPFEditorController::SetLeftButtonPressed(bool pressed)
@@ -368,10 +370,11 @@ namespace CLAM
 
 	void BPFEditorController::UpdateBPF(const TData& x, const TData& y)
 	{
-	    if(!mData.Size() == 1) 
+	    if(mData.Size() == 1) 
 	    {
-		mData.SetValue(mCurrentIndex,y);
-		mData.SetXValue(mCurrentIndex,x);
+		printf("where is the problem?");
+		mData.SetValue(0,y);
+		mData.SetXValue(0,x);
 
 		emit requestRefresh();
 
