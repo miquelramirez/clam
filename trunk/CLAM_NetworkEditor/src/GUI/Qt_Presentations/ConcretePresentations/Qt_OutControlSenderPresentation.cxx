@@ -12,7 +12,7 @@ namespace NetworkGUI
 {
 
 Qt_OutControlSenderPresentation::Qt_OutControlSenderPresentation()
-	: mControlRepresentation(0)
+	: mControlRepresentation(0), mInvertDirection(false)
 {
 }
 
@@ -89,6 +89,7 @@ void Qt_OutControlSenderPresentation::AdjustControlRepresentationValues()
 void Qt_OutControlSenderPresentation::CreateControlRepresentationWidget( 
 		const CLAM::OutControlSenderConfig::EControlRepresentation & representation )
 {
+	mInvertDirection = false;
 	switch( representation )
 	{
 		case CLAM::OutControlSenderConfig::EControlRepresentation::eVerticalSlider:
@@ -96,6 +97,7 @@ void Qt_OutControlSenderPresentation::CreateControlRepresentationWidget(
 			mControlRepresentation->setMinimumSize( 20, 50 );
 			setMinimumSize( 56, 76 );
 			resize( 56, 76 );
+			mInvertDirection = true;
 			break;
 		case CLAM::OutControlSenderConfig::EControlRepresentation::eHorizontalSlider:
 			mControlRepresentation = new QSlider( Horizontal, this );
@@ -132,7 +134,10 @@ void Qt_OutControlSenderPresentation::CreateControlRepresentationWidget(
 
 void Qt_OutControlSenderPresentation::SlotValueChanged( int value )
 {
-	SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( value*mStep ) );
+	if ( mInvertDirection ) 
+		SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( mMax - value*mStep ) );
+	
+	else SignalSendOutControlValue.Emit( "out", (CLAM::TControlData)( value*mStep ) );
 }
 
 void Qt_OutControlSenderPresentation::ExecuteResize( const QPoint & difference )
