@@ -32,8 +32,9 @@
         improve compilation speed
      ** Working towards supporting MacOSX/PPC (including byte order issues)
      ** Added a FileMIDIDevice
-     ** SoundFileIO improvements (data types, better errors)
-     ** Declare template specializations in header inline
+     ** SoundFileIO improvements ( support for more sample formats added, better errors)
+     ** Declare template specializations in header inline ( gcc 3.x compatibility
+        issue )
   * ProcessingData:
      ** SpectralPeakArray ProcessingData; when adding an IndexArray to an 
         already existing SpectralPeakArray and calling InitIndices(), the 
@@ -85,9 +86,8 @@
      ** New transformations
   * New examples:
      ** FilePlayback
-     ** Fl_Playable_Audio
      ** ProcessingLifeCycle
-     ** ThreadedProcessing
+     ** Persistence_Throught_DTs
      ** StereoToMonoFile
   * Examples - NetworkEditor
      ** Improved GUI
