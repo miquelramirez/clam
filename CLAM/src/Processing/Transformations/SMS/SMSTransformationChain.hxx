@@ -309,6 +309,7 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* spectralShapeShift = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(spectralShapeShift);
+				ConnectControls(*wrapper,"Out Control", *spectralShapeShift, "Shift Amount");
 				Insert( *wrapper );
 				return;
 			}
