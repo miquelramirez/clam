@@ -1,5 +1,10 @@
 #! /usr/bin/python
 
+#TODO: 
+# - filter out ling srcdeps output in compilation errors
+# - fix number of tests faild in summary
+# - return true if all tests passed
+# - tests able to be marked as not-mandatory, so if failed just gives warning
 #----------------------------------------------------------------------
 # begin configuration
 
