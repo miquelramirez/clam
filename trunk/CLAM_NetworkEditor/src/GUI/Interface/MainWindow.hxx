@@ -57,6 +57,7 @@ public: //slots
 	void StartNetwork();
 	void StopNetwork();
 	void ShowProcMenu();
+	void ShowAboutDlg();
 
 public: // CLAM signals
 	SigSlot::Signalv1 < bool > SignalChangeNetworkState;
