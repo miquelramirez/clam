@@ -46,6 +46,7 @@ namespace CLAM
 					_controller->Draw();
 					_surf->swapBuffers();
 				}
+				_thread.Sleep(40);
 
 			}
 		}
