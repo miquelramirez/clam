@@ -21,9 +21,6 @@
 
 #include "SMSTransformation.hxx"
 
-//TODO !!!!! remove
-#include "SMSFreqShift.hxx"
-
 namespace CLAM
 {
 	void SegmentTransformation::WrapFrameTransformation( FrameTransformation* trans)
@@ -102,18 +99,18 @@ namespace CLAM
 		mUseTemporalBPF=false;
 		if(mConfig.HasAmount())
 		{
-			mAmountCtrl.DoControl(mConfig.GetAmount());								//<<<<<<
-			mSendAmount.SendControl(mConfig.GetAmount());							//<<<<<<
+			mAmountCtrl.DoControl(mConfig.GetAmount());								
+			mSendAmount.SendControl(mConfig.GetAmount());						
 		}
 		else if(mConfig.HasBPFAmount()){
-			mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0)); 				//<<<<<<
-			mSendAmount.SendControl(mConfig.GetBPFAmount().GetValue(0)); 			//<<<<<<
+			mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0)); 		
+			mSendAmount.SendControl(mConfig.GetBPFAmount().GetValue(0)); 
 			mUseTemporalBPF=true;
 		}
 		else
 		{
-			mAmountCtrl.DoControl(0);												//<<<<<<
-			mSendAmount.SendControl(0);												//<<<<<<
+			mAmountCtrl.DoControl(0);										
+			mSendAmount.SendControl(0);									
 		}
 
 		return true;
@@ -124,9 +121,8 @@ namespace CLAM
 		if(mConfig.HasBPFAmount())
 		{
 			TControlData amount = mConfig.GetBPFAmount().GetValue(pos);
-			printf("sending %f ", amount);
 			mAmountCtrl.DoControl(amount);
-			mSendAmount.SendControl(amount);			//<<<<<<
+			mSendAmount.SendControl(amount);		
 			return true;
 		}
 		else return false;
