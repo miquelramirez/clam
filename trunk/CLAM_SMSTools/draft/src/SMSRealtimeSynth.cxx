@@ -79,7 +79,8 @@ void SMSRealtimeSynth::Stream()
 	GetSynthesis().Configure( mSynthConfig );
 	GetSynthesis().Start();
 
-	while(mTransformation.Do());
+	while(mTransformation.Do()); //this leaves mCurrentFrameIndex to the last
+	mTransformedSegment.mCurrentFrameIndex=0;
 
 	for( int i=0; i<nSynthFrames; i++ )
 	{
@@ -91,7 +92,7 @@ void SMSRealtimeSynth::Stream()
 		}
 
 		Frame& currentFrame = mTransformedSegment.GetFramesArray()[i];
-		printf("synthesizing frame #%d at %x\n",i, &currentFrame);
+		printf("synthesizing frame at %x\n", &currentFrame);
 		Audio& output = currentFrame.GetSynthAudioFrame();
 		outL.Do( output );
 		outR.Do( output );
