@@ -37,12 +37,22 @@
 
 namespace CLAM
 {
+	static std::string concat(const std::list<std::string> & strings)
+	{
+		std::string result;
+		std::list<std::string>::const_iterator it;
+		for (it=strings.begin(); it!=strings.end(); it++)
+		{
+			result += *it + "\n";
+		}
+		return result;
+	}
 	void XmlStorage::Read(std::istream & is)
 	{
 		_documentHandler->read(is);
 	}
 
-	void XmlStorage::Create(const std::string name)
+	void XmlStorage::Create(const std::string & name)
 	{
 		_documentHandler->create(name.c_str());
 		_lastWasContent=false;
@@ -70,6 +80,8 @@ namespace CLAM
 		XercesDomReadingContext rootContext(*_documentHandler);
 		_readContext = & rootContext;
 		component.LoadFrom(*this);
+		_readContext->release();
+		_errors += concat(_readContext->errors());
 	}
 
 	void XmlStorage::Select(const std::string & path)
@@ -163,7 +175,7 @@ namespace CLAM
 			_readContext = &innerContext;
 			LoadContentAndChildren(xmlable);
 			_readContext = innerContext.release();
-		//	addErrors(innerContext.errors());
+			_errors += concat(innerContext.errors());
 			return true;
 		}
 
@@ -209,6 +221,22 @@ namespace CLAM
 			_writeContext->addContent(" ");
 		_writeContext->addContent(content.c_str());
 		_lastWasContent = true;
+	}
+	void XmlStorage::ThrowErrors()
+	{
+		if (_errors=="") return;
+		throw XmlStorageErr(_errors);
+	}
+
+
+
+	XmlStorageErr::XmlStorageErr(const std::string & errors)
+	{
+		_errors = errors;
+	}
+	const char * XmlStorageErr::what() const throw()
+	{
+		return _errors.c_str();
 	}
 
 }

@@ -28,6 +28,7 @@
 #define _XMLStorage_
 
 #include "Storage.hxx"
+#include "XmlStorageErr.hxx"
 #include <iosfwd>
 #include <string>
 
@@ -41,6 +42,7 @@ class XercesDomDocumentHandler;
 class XercesDomWritingContext;
 class XercesDomReadingContext;
 
+
 class XmlStorage : public Storage
 {
 	XercesDomDocumentHandler * _documentHandler;
@@ -48,6 +50,7 @@ class XmlStorage : public Storage
 	XercesDomReadingContext * _readContext;
 	bool _lastWasContent;
 	bool _useIndentation;
+	std::string _errors;
 /**
  * @name Atomic primitives to Dump and Restore
  * To be used only when you need to twickle the default behavior for summary operations
@@ -60,7 +63,7 @@ public:
 
 public:
 	void Read(std::istream & is); ///< Loads the DOM from the stream and selects the root node
-	void Create(const std::string name); ///< Creates a root node and selects it
+	void Create(const std::string & name); ///< Creates a root node and selects it
 	void WriteSelection(std::ostream & os); ///< Dumps the selected node on the stream
 	void WriteDocument(std::ostream & os); ///< Dumps the full document on the stream
 	void DumpObject(const Component & component); ///< Holds the component DOM to the selected node
@@ -77,6 +80,7 @@ public:
 	 * @todo Not implemented yet
 	 */
 	void UseIndentation(bool useIndentation);
+	void ThrowErrors();
 // @}
 
 /**
