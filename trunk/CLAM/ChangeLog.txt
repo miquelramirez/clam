@@ -1,3 +1,5 @@
+  * Memory leak review:
+     ** FFT internal buffer was not freed on destruction
   * XML Storage Error Handling:
      ** Catchable CLAM::XmlStorageErr excepetions are thrown whenever:
         *** I/O error happens
