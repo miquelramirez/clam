@@ -91,15 +91,22 @@ namespace CLAM
 		void StoreAnalysis(const std::string& filename) {StoreAnalysis(filename.c_str());}
 
 		/** Store synthesized sound */
-		void StoreOutputSound(void);
+		virtual void StoreOutputSound(void);
 		/** Store synthesized sound, only residual component */
-		void StoreOutputSoundResidual(void);
+		virtual void StoreOutputSoundResidual(void);
 		/** Store synthesized sound, only sinusoidal component */
-		void StoreOutputSoundSinusoidal(void);
+		virtual void StoreOutputSoundSinusoidal(void);
+		
+		/** General method for storing a sound*/
+		void StoreSound(const std::string& filename,const Audio& audio);
+		
 		/** Load input sound */
 		bool LoadInputSound(void);
 		/** Load sound to morph*/
 		bool LoadMorphSound(void);
+
+		/** General method for loading a sound */
+		bool LoadSound(const std::string& filename,Segment& segment);
 
 		/** This method should be overridden on subclasses to provide
 		further control on how the concrete process is performed */

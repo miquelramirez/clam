@@ -70,6 +70,11 @@ protected: // methods
 	bool LoadAnalysis();
 	void StoreAnalysis();
 
+	void StoreSound(const Audio& audio);
+	void StoreOutputSound();
+	void StoreOutputSoundResidual();
+	void StoreOutputSoundSinusoidal();
+
 
 private:
 
