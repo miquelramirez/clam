@@ -200,7 +200,15 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 	Qt_ProcessingPresentation* procPresent = 0;
 
 	Qt_ProcessingPresentationFactory & factory =  Qt_ProcessingPresentationFactory::GetInstance();
-	procPresent = factory.Create(controller->GetObservedClassName());
+	try
+	{
+		procPresent = factory.CreateSafe(controller->GetObservedClassName());
+	}
+	catch (CLAM::ErrFactory & err)
+	{
+		// No special presentation, just the standar one
+		procPresent = new Qt_ProcessingPresentation;
+	}
 	procPresent->Initialize( name, this );
 			
 	procPresent->AttachToProcessingController(*controller);
