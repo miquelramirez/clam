@@ -28,12 +28,6 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <errno.h>
-#include <sys/time.h>
-
-
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #define TB_DEBUG0
 #define TB_DEBUG1
@@ -113,8 +107,8 @@ public:
 	{
 		int i,j;
 		int nInputs = inArray.Size();
-		TData* ptr[nInputs];
-		TData* srcPtr[nInputs];
+		TData** ptr=new TData*[nInputs];
+		TData** srcPtr=new TData*[nInputs];
 
 		int n = inArray[0]->GetSize();
 				
@@ -152,6 +146,9 @@ public:
 			pthread_mutex_unlock(&fastmutex);
 		}
 
+		delete[] ptr;
+		delete[] srcPtr;
+
 		return true;
 	}
 
@@ -178,7 +175,7 @@ public:
 		int nInputs = mBuffers.Size();
 		int i;
 
-		Audio tmp[nInputs];
+		Audio* tmp=new Audio[nInputs];
 
 		for (i=0;i<nInputs;i++)
 		{
@@ -197,6 +194,7 @@ public:
 		}
 
 		mWriteIndex=(mWriteIndex+tmp[0].GetSize())&mBufferMask;
+		delete[] tmp;
 	}
 	
 	void Background(void)
