@@ -176,11 +176,6 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FundPlotProcessingConfig> >
        regtFundPlotProcessingCfg("FundPlotProcessingConfig");
 
-/*
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSFreqShiftConfig> >
-       regtSMSFreqShiftCfg("SMSFreqShiftConfig");
-*/
-
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSTransformationConfig> >
        regtSMSTransformationConfig("SMSTransformationConfig");
 
