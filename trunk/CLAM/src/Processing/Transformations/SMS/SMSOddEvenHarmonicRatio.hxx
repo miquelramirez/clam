@@ -23,13 +23,19 @@
 #ifndef _SMSOddEvenHarmonicRatio_
 #define _SMSOddEvenHarmonicRatio_
 
-#include "SMSTransformation.hxx"
+#include "FrameTransformation.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "SpectralPeakArray.hxx"
+#include "Frame.hxx"
+#include "SMSTransformationConfig.hxx"
 
 
 namespace CLAM{
 
 
-	class SMSOddEvenHarmonicRatio: public SegmentTransformation
+	class SMSOddEvenHarmonicRatio: public FrameTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -40,24 +46,29 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
+		InControl mOddFactor;
+
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
-		SMSOddEvenHarmonicRatio() : mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this)
+		SMSOddEvenHarmonicRatio() 
+			: 
+			mIn("In SpectralPeaks", this), 
+			mOut("Out SpectralPeaks", this),
+			mOddFactor("Odd Harmonics Factor", this)
 		{
 			Configure( SegmentTransformationConfig() );
 
-		}
-		/** Constructor with an object of SegmentTransformationConfig class by parameter
-		 *  @param c SegmentTransformationConfig object created by the user
-		*/
-		SMSOddEvenHarmonicRatio(const SegmentTransformationConfig &c):SegmentTransformation(c)
-		{
 		}
 
 		/** Destructor of the class*/
  		~SMSOddEvenHarmonicRatio()
 		{}
 	
+
+		const ProcessingConfig& GetConfig() const { throw 0; }
+
+		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
+
 		bool Do(const Frame& in, Frame& out)
 		{
 			return Do(in.GetSpectralPeakArray(), out.GetSpectralPeakArray());
@@ -65,10 +76,8 @@ namespace CLAM{
 
 		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
 
-		// Note that overriding this method breaks the processing chain functionality. 
 		bool Do()
 		{
-			printf("!!! only for streaming !!!\n");
 			bool result = Do(mIn.GetData(), mOut.GetData());
 			mIn.Consume();
 			mOut.Produce();
