@@ -29,6 +29,8 @@
 #include "MultiChannelAudioFileReaderConfig.hxx"
 #include "MultiChannelAudioFileReader.hxx"
 #include "envelope_point_editor.hxx"
+#include "DataFacade.hxx"
+#include "TXTSongParser.hxx"
 
 
 #include "LLDSchema.hxx"
@@ -36,22 +38,45 @@
 
 using CLAM::VM::QtAudioPlot;
 
-Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f), mData( data ),mEnvelopes(0),mFunctionEditors(0),mCurrentIndex(0),mpTabLayout(0)
+Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f),mEnvelopes(0),mFunctionEditors(0),mCurrentIndex(0),mpTabLayout(0)
 {
-        mpAudioPlot=NULL;
-	setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
-	mProjectOverview->setSorting(-1);
-	initView();
-	initFileMenu();
-	initEditMenu();
-	makeDescriptorTable();
-	makeConnections();
-	initSongs(nameProject, files, data);
-	initLLDescriptorsWidgets();
-	initAudioWidget();
-	initEnvelopes();
-	languageChange();
-	mChanges = false;
+  //I should try to get rid of this constructor and pass things to the new one(see below)	
+  setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
+  initProject();
+	
+}
+
+Annotator::Annotator():AnnotatorBase( 0, "annotator", WDestructiveClose),mEnvelopes(0),mFunctionEditors(0),mCurrentIndex(0),mpTabLayout(0)
+{
+  initDataFacade();
+}
+
+void Annotator::initProject()
+{
+  mpAudioPlot = NULL;
+  mProjectOverview->setSorting(-1);
+  initView();
+  initFileMenu();
+  initEditMenu();
+  makeDescriptorTable();
+  makeConnections();
+  initDataFacade();
+  initSongs(name(), mSongFiles.GetFileNames());
+  initLLDescriptorsWidgets();
+  initAudioWidget();
+  initEnvelopes();
+  languageChange();
+  mChanges = false;
+}
+
+void Annotator::initDataFacade()
+{
+  DataFacade data;
+  TXTSongParser songParser( "DataTest/", data );
+  mpData = new AnnotatorDataFacade( data );
+
+  //this should go elsewhere
+  CLAM::XMLStorage::Restore(mSongFiles,"Songs.xml");
 }
 
 bool Annotator::somethingIsSelected() const
@@ -88,7 +113,7 @@ void Annotator::fileMenuAboutToShow()
 void Annotator::createListOfGenres( QStringList & list, const QString & value) const
 {
 	AnnotatorDataFacade::StringList genres;
-	mData.getGenres( genres );
+	mpData->getGenres( genres );
 	AnnotatorDataFacade::StringList::iterator itValue = std::find( genres.begin(), genres.end(), value);
 	AnnotatorDataFacade::StringList::iterator itEnd = genres.end();
 	AnnotatorDataFacade::StringList::iterator itBegin = genres.begin();
@@ -216,7 +241,6 @@ void Annotator::analyze()
 
 void Annotator::doAnalysis()
 {
-  //std::cout<<"doing analysis"<<std::endl;
   drawLLDescriptors(mCurrentIndex);
   drawAudio(NULL);
   fillGlobalDescriptors(mCurrentIndex);
@@ -296,13 +320,13 @@ void Annotator::value( const std::string & descriptor, std::string & descriptorV
 	if ( descriptor == "Danceability" )
 	{
 		int previousDescValue = QString( descriptorValue.c_str() ).toInt();
-		double descValue = mData.scaleDanceability( previousDescValue );
+		double descValue = mpData->scaleDanceability( previousDescValue );
 		descriptorValue = std::string( QString().setNum( descValue ).ascii() );
 	}
 	else if ( descriptor == "Dynamic Complexity" )
 	{	
 		int previousDescValue = QString( descriptorValue.c_str() ).toInt();
-		double descValue = mData.scaleDynamicComplexity( previousDescValue );
+		double descValue = mpData->scaleDynamicComplexity( previousDescValue );
 		descriptorValue = std::string( QString().setNum( descValue ).ascii() );
 	}
 }
@@ -318,7 +342,7 @@ void Annotator::descriptorsTableChanged(int row, int column)
 	std::string valueOfDescriptor;
 	valueOfDescriptor = std::string( mDescriptorsTable->text(row, column).ascii() );
 	value( nameOfDescriptor, valueOfDescriptor);
-	mData.setDescriptor( nameOfTheFile, nameOfDescriptor, valueOfDescriptor );
+	mpData->setDescriptor( nameOfTheFile, nameOfDescriptor, valueOfDescriptor );
 	int index = mSongDescriptorsIndex[ nameOfTheFile ];
 	mSongDescriptors[ index ][ nameOfDescriptor ] = valueOfDescriptor;
 }
@@ -342,10 +366,10 @@ void Annotator::addSongs( const AnnotatorDataFacade::StringList & list)
 			ListViewItem * item = new ListViewItem( mProjectOverview->childCount(), mProjectOverview, QString( it->c_str() ), tr("Yes"), tr("No") );
 			songs.push_back(*it);
 			tmp.clear();
-			mData.getDescriptorsFromFile(*it, tmp);
+			mpData->getDescriptorsFromFile(*it, tmp);
 			mSongDescriptorsIndex[*it]= mSongDescriptors.size();
 			Song::Segments segments;
-			mData.getSegmentInformationFromFile( segments, *it );
+			mpData->getSegmentInformationFromFile( segments, *it );
 			mSongSegments.push_back( segments );
 			mSongDescriptors.push_back(tmp);
 			//by default songs have HL descriptors but not LL
@@ -403,23 +427,23 @@ void Annotator::deleteSongsFromProject()
 
 void Annotator::addSongsToProject()
 {
-	AddSongsToProjectDialog * dialog = new AddSongsToProjectDialog( mData, this, "add songs to project", WDestructiveClose);
+	AddSongsToProjectDialog * dialog = new AddSongsToProjectDialog( *mpData, this, "add songs to project", WDestructiveClose);
 	dialog->show();
 }
 
 void Annotator::fileOpen()
 {
-	OpenProjectDialog * dialog = new OpenProjectDialog( mData, 0, "open project dialog", WDestructiveClose );
+	OpenProjectDialog * dialog = new OpenProjectDialog(this, *mpData, 0, "open project dialog", WDestructiveClose );
 	dialog->show();
 }
 
 void Annotator::fileNew()
 {
-	NewProjectDialog * dialog = new NewProjectDialog( mData, 0, "new dialog", WDestructiveClose );
+	NewProjectDialog * dialog = new NewProjectDialog( *mpData, 0, "new dialog", WDestructiveClose );
 	dialog->show();
 }
 
-void Annotator::initSongs( const std::string & nameProject, const AnnotatorDataFacade::StringList & files, AnnotatorDataFacade & data  )
+void Annotator::initSongs( const std::string & nameProject, const std::vector<std::string> & files)
 {
 	mLogicGroup->hide();
 	addSongs( files );	
@@ -455,7 +479,7 @@ void Annotator::drawTitle( int index, bool computed = true )
 
 void Annotator::drawGenre( int index, bool computed = true )
 {
-	QString value = mData.genreWithoutSinonims( mSongDescriptors[index]["genre"] );
+	QString value = mpData->genreWithoutSinonims( mSongDescriptors[index]["genre"] );
 	if(!computed) value = "?";
 	QStringList listOfGenres;
 	createListOfGenres( listOfGenres, value);
@@ -470,7 +494,7 @@ void Annotator::drawDynamicComplexity( int index, bool computed = true )
 	QString value = mSongDescriptors[index]["Dynamic Complexity"];
 	if(!computed) value = "?";
 	double valueInDouble = value.toDouble();
-	valueInDouble = mData.normalizeDynamicComplexity( valueInDouble ) *10.0;
+	valueInDouble = mpData->normalizeDynamicComplexity( valueInDouble ) *10.0;
 	int valueInInt = int(valueInDouble);
 	value.setNum( valueInInt );
 	mDescriptorsTable->setItem(6,1,new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent, value ) );
@@ -482,7 +506,7 @@ void Annotator::drawDanceability( int index, bool computed = true )
 	QString value = mSongDescriptors[index]["Danceability"];
 	if(!computed) value = "?";
 	double valueInDouble = value.toDouble() ;
-	valueInDouble = mData.normalizeDanceability( valueInDouble )*10.0;
+	valueInDouble = mpData->normalizeDanceability( valueInDouble )*10.0;
 	int valueInInt = int(valueInDouble);
 	value.setNum( valueInInt );
 	mDescriptorsTable->setItem(3,1,new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent, value ) );
@@ -553,10 +577,8 @@ void Annotator::songsClicked( QListViewItem * item)
 	        mpProgressDialog = new QProgressDialog ("Loading Audio", 
 							"Cancel",file.GetHeader().GetLength(),
 							this);
-		//std::cout<<file.GetHeader().GetLength()<<std::endl;
-                mpProgressDialog->setProgress(0);
-		//mpProgressDialog->show();
-                mCurrentIndex = mSongDescriptorsIndex[std::string(item->text(0).ascii()) ];
+		mpProgressDialog->setProgress(0);
+		mCurrentIndex = mSongDescriptorsIndex[std::string(item->text(0).ascii()) ];
 		fillGlobalDescriptors( mCurrentIndex );
 		drawAudio(item);
 		drawLLDescriptors(mCurrentIndex);
@@ -593,7 +615,6 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 
 void Annotator::drawLLDescriptors(int index)
 {
-  //std::cout<<"drawing lldescriptors"<<std::endl;
   std::vector<CLAM::Envelope_Point_Editor*>::iterator it;
   std::vector<CLAM::Envelope*>::iterator it2;
  
@@ -604,10 +625,8 @@ void Annotator::drawLLDescriptors(int index)
 
   for(it=mFunctionEditors.begin(),it2=mEnvelopes.begin();it!=mFunctionEditors.end();it++,it2++)
     {
-      //std::cout<<"in the drawing loop"<<std::endl;
-      if(mHaveLLDescriptors[index])
+     if(mHaveLLDescriptors[index])
 	{
-	  //std::cout<<"Have it";
 	  (*it)->set_envelope(*it2);
 	  (*it)->show();
 	}
@@ -620,9 +639,7 @@ void Annotator::loadAudioFile(const char* filename)
 {
 	const CLAM::TSize readSize = 1024;
 	CLAM::AudioFile file;
-//	std::cout<<filename<<"\n";
 	file.OpenExisting(filename);
-	//std::cout<<file.GetHeader().GetLength()<<"\n";
 	int nChannels = file.GetHeader().GetChannels();
 	std::vector<CLAM::Audio> audioFrameVector(nChannels);
 	int i;
@@ -647,7 +664,6 @@ void Annotator::loadAudioFile(const char* filename)
 		mpProgressDialog->setProgress( beginSample/samplingRate*1000.0 );
 		if (mpProgressDialog->wasCanceled()) break;
 	}
-	//std::cout<<beginSample/samplingRate*1000.0<<std::endl;
 	reader.Stop();
  
 }
@@ -700,7 +716,6 @@ CLAM::Envelope* Annotator::generateRandomEnvelope()
   CLAM::Envelope* tmpEnvelope = new CLAM::Envelope();
   int audioSize=mCurrentAudio.GetSize();
   int i;
-  //std::cout<<"In generateRandomEnvelope. Audio Size= "<<audioSize<<"\n";
   tmpEnvelope->set_maxY_value(100);
   tmpEnvelope->set_minY_value(0);
   tmpEnvelope->set_maxX_value(audioSize);
@@ -725,7 +740,6 @@ CLAM::Envelope* Annotator::generateRandomEnvelope()
 CLAM::Envelope* Annotator::generateEnvelopeFromDescriptor(const std::string& name)
 {
   const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",name);
-  std::cout<<name<<std::endl;
   CLAM::Envelope* tmpEnvelope = new CLAM::Envelope();
 
   int audioSize=mCurrentAudio.GetSize();
@@ -751,9 +765,7 @@ CLAM::Envelope* Annotator::generateEnvelopeFromDescriptor(const std::string& nam
 
     tmpEnvelope->add_node_at_offset(x,value);
 
-    std::cout<<"("<<x<<","<<value<<")";
   }
-  std::cout<<std::endl;
   return tmpEnvelope;
 }
 

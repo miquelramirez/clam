@@ -35,10 +35,11 @@ void OpenProjectDialog::removeCurrentListViewItems()
 	}
 }
 
-OpenProjectDialog::OpenProjectDialog(AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f ) : OpenProjectDialogBase (parent, name, f), mData(data)
+OpenProjectDialog::OpenProjectDialog(Annotator* pAnnotator,AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f ) : OpenProjectDialogBase (parent, name, f), mData(data)
 {
 	removeCurrentListViewItems();
 	insertItemsFromAnnotatorDataFacadeIntoListView();
+	mpAnnotator = pAnnotator;
 }
 
 void OpenProjectDialog::itemClicked( QListViewItem * item )
@@ -47,7 +48,7 @@ void OpenProjectDialog::itemClicked( QListViewItem * item )
 		return;
 	AnnotatorDataFacade::StringList listOfFiles;
 	mData.getFilesInProject( std::string(item->text(0).ascii() ) , listOfFiles );
-	Annotator * annotator = new Annotator(std::string(item->text(0).ascii()), listOfFiles, mData, 0, "Annotator", WDestructiveClose );
-	annotator->showMaximized();
+	//mpAnnotator = new Annotator(std::string(item->text(0).ascii()), listOfFiles, mData, 0, "Annotator", WDestructiveClose );
+	mpAnnotator->initProject();
 	close();
 }

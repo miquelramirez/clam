@@ -2,7 +2,7 @@
 #include <qcursor.h>
 #include <qsplashscreen.h>
 
-#include "AnnotatorEnter.hxx"
+#include "Annotator.hxx"
 
 int main( int argc, char ** argv )
 {
@@ -11,7 +11,7 @@ int main( int argc, char ** argv )
     splash.setCursor( QCursor(Qt::WaitCursor) );
     splash.show();
     splash.message("Loading data ... ");
-    AnnotatorEnter w;
+    Annotator w;
     w.show();
     splash.finish(&w);
     QObject::connect( qApp, SIGNAL( lastWindowClosed() ), qApp, SLOT( quit() ) );
