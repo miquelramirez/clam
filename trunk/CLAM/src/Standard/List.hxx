@@ -237,16 +237,17 @@ public:
 		#ifdef CLAM_USE_XML	 
 		// This condition is not needed because storing an XML adapter
 		// onto a non XML storage has no effect but it enhances performance.
-		if (dynamic_cast < XMLStorage* > (&storage))
+		if (! dynamic_cast < XMLStorage* > (&storage)) return;
+		if(mSize<=0) return;
+		// TODO: think if it's the best way to check if there is data.
+		typedef typename TypeInfo<T>::StorableAsLeaf IsStorableAsLeaf;
+		for (int i=0; i<mSize; i++) 
 		{
-			if(mSize>0)
-			{
-				// TODO: think if it's the best way to check if there is data.
-				for (int i=0; i<mSize; i++) 
-				{
-					StoreMemberOn((TypeInfo<T>::StorableAsLeaf*)NULL, &(*this)[i], storage);
-				}
-			}
+			StoreMemberOn(
+				(IsStorableAsLeaf*)NULL, 
+				&(*this)[i], 
+				storage
+			);
 		}
 		#endif//CLAM_USE_XML
 	}
@@ -256,13 +257,18 @@ public:
 		#ifdef CLAM_USE_XML 
 		// This condition is not needed because storing an XML adapter
 		// onto a non XML storage has no effect but it enhances performance.
-		if (dynamic_cast < XMLStorage* > (&storage))
+		if (!dynamic_cast < XMLStorage* > (&storage)) return;
+		typedef typename TypeInfo<T>::StorableAsLeaf IsStorableAsLeaf;
+		while (true) 
 		{
-			while (true) {
-				T elem;
-				if (!LoadMemberFrom((TypeInfo<T>::StorableAsLeaf *)NULL, &(elem), storage)) return;
-				AddElem(elem);
-			}
+			T elem;
+			if (!LoadMemberFrom(
+				(IsStorableAsLeaf *)NULL, 
+				&(elem), 
+				storage
+			))
+				return;
+			AddElem(elem);
 		}
 		#endif//CLAM_USE_XML
 	}

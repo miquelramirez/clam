@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef LINUX
+#ifdef linux
 #include <byteswap.h>
 #endif
 
@@ -68,7 +68,7 @@ protected:
 
 	void Swap(unsigned short& val)
 	{
-	#ifdef LINUX
+	#ifdef linux
 		val = bswap_16(val);
 	#else
 		unsigned char* ptr=(unsigned char*) &val;
@@ -84,7 +84,7 @@ protected:
 
 	void Swap(unsigned int& val)
 	{
-	#ifdef LINUX
+	#ifdef linux
 		val = bswap_32(val);
 	#else
 		unsigned char* ptr=(unsigned char*) &val;

@@ -19,46 +19,18 @@
  *
  */
 
-#ifndef _SpectralPeak_DETECT_
-#define _SpectralPeak_DETECT_
+#ifndef _SpectralPeakDetect_
+#define _SpectralPeakDetect_
 
 #include "Processing.hxx"
-#include "DynamicType.hxx"
-#include "Spectrum.hxx"
-#include "SpectralPeak.hxx"
-#include "SpectralPeakArray.hxx"
+#include "SpectralPeakDetectConfig.hxx"
 
 namespace CLAM {
 
-
-	/** Configuration class for SpectralPeakDetect objects
-	 *  @see ProcessingConfig, SpectralPeakDetect
-	 */
-	class SpectralPeakDetectConfig: public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDetectConfig, 6,ProcessingConfig);
-		/** Name of the SpectralPeakDetect object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		/** Maximum namber of SpectralPeaks*/
-		DYN_ATTRIBUTE (1, public, TSize, MaxPeaks);
-		/** Threshold of magnitude; SpectralPeaks will be located above this value*/
-		DYN_ATTRIBUTE (2, public, TSize, MagThreshold);
-		/** Number of bands (Spectrum size) */
-		DYN_ATTRIBUTE (3, public, TSize, NumBands);
-		/** Type of Magnitude interpolation between bins*/
-		DYN_ATTRIBUTE (4, public, EInterpolation, InterpolMag);
-		/** Type of Phase interpolation between bins */
-		DYN_ATTRIBUTE (5, public, EInterpolation, InterpolPhase);
-	protected:
-		void DefaultInit();
-	public:
-	  /** Initialize configuration object with default values (name 'SpectralPeakDetect', 513 bands, Magnitude treshold set to -80 and MaxSpectralPeaks setted to 100
-	   */
-		void DefaultValues();
-		~SpectralPeakDetectConfig(){};
-		
- 	}; 
+	class SpectralPeakArray;
+	class Storage;
+	class Spectrum;
+	class ProcessingConfig;
 
 	/**
 	 * This class is dedicated to find magnitude SpectralPeaks in a given spectral frame.
@@ -93,7 +65,7 @@ namespace CLAM {
 		SpectralPeakDetect();
 		/** Constructor with an object of SpectralPeakDetectConfig class by parameter
 		 *  @param c SpectralPeakDetectConfig object created by the user
-*/
+		*/
 		SpectralPeakDetect(const SpectralPeakDetectConfig &c);
 
 		/** Destructor of the class*/

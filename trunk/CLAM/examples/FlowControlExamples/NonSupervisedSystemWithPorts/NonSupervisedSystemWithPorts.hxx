@@ -23,8 +23,8 @@ class NetworkConfiguration
 {
 public: 
 	NetworkConfiguration( SystemWithPorts* sys, std::string name) : 
-	  _system(sys),
-	  _name(name)
+	  mSystem(sys),
+	  mName(name)
 	{}
 
 	// returns true if has finished the processing (i.e. end-of-file)
@@ -32,19 +32,19 @@ public:
 	virtual void Connect()  =0;
 	virtual void Start() {};
 	virtual void Stop() {};
-	const std::string& GetName() const { return _name; }
+	const std::string& GetName() const { return mName; }
 	
 	void ConnectAndDo();
 	virtual ~NetworkConfiguration() {};
 
 protected:
 	/// to be used in template methods definitions Do() and Connect()
-	SystemWithPorts& System() { return *_system; }
+	SystemWithPorts& System() { return *mSystem; }
 
 private:
-	SystemWithPorts* _system;
+	SystemWithPorts* mSystem;
 protected:
-	const std::string _name;
+	const std::string mName;
 	static bool trace;
 };
 
@@ -65,7 +65,7 @@ public:
 	void RegisterProcessings();
 
 	int GetMaxFramesToProcess() const {
-		return _maxFramesToProcess;
+		return mMaxFramesToProcess;
 	}
 	// NetworkConfiguration classes:
 	
@@ -117,16 +117,16 @@ public:
 	
 	ProcessingIterator FirstProcessing()
 	{
-		return _processings.begin();
+		return mProcessings.begin();
 	}
 
 	ProcessingIterator LastProcessing()
 	{
-		return _processings.end();
+		return mProcessings.end();
 	}
 
 
-private:
+public: // just for convenience
 	void StartProcessings();
 	void ConfigureProcessings();
 	void ConfigureData();
@@ -136,36 +136,36 @@ private:
 	bool AudioOutAttach(CLAM::Audio& a);
 
 	// audio manager
-	CLAM::AudioManager _audioManager;
+	CLAM::AudioManager mAudioManager;
 
 	// processings
-	CLAM::Oscillator _oscillator;
-	CLAM::Oscillator _modulator;
-	CLAM::AudioFileIn _fileIn;
-	CLAM::AudioFileOut _fileOut;
-	CLAM::AudioMultiplier _multiplier;
-	CLAM::AudioOut _audioOut;
-	CLAM::AudioMixer<2> _mixer;
-	CLAM::AutoPanner _controlSender;	
+	CLAM::Oscillator mOscillator;
+	CLAM::Oscillator mModulator;
+	CLAM::AudioFileIn mFileIn;
+	CLAM::AudioFileOut mFileOut;
+	CLAM::AudioMultiplier mMultiplier;
+	CLAM::AudioOut mAudioOut;
+	CLAM::AudioMixer<2> mMixer;
+	CLAM::AutoPanner mControlSender;	
 
 	// processing data
-	CLAM::Audio _oscillatorData;
-	CLAM::Audio _fileInData;
-	CLAM::Audio _modulatorData;
-	CLAM::Audio _mixerData;
-	CLAM::Audio _multiplierData;
+	CLAM::Audio mOscillatorData;
+	CLAM::Audio mFileInData;
+	CLAM::Audio mModulatorData;
+	CLAM::Audio mMixerData;
+	CLAM::Audio mMultiplierData;
 
 	//other system parameters
-	std::string _fileInName;
-	std::string _fileOutName;
-	int _frameSize;
-	int _maxFramesToProcess;
-	bool _hasAudioOut;
+	std::string mFileInName;
+	std::string mFileOutName;
+	int mFrameSize;
+	int mMaxFramesToProcess;
+	bool mHasAudioOut;
 
 
 	//system infrastructure
-	NetworkConfigurations _networks;
-	std::vector<CLAM::Processing*> _processings;
+	NetworkConfigurations mNetworks;
+	std::vector<CLAM::Processing*> mProcessings;
 
 };
 

@@ -20,6 +20,7 @@
  */
 
 #include "SMSGenderChange.hxx"
+#include "Factory.hxx"
 
 using namespace CLAM;
 
@@ -73,4 +74,5 @@ bool SMSGenderChange::Do(const Frame& in, Frame& out)
 	return true;
 }
 
-
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<CLAM::SMSGenderChange> regtSMSGenderChange( "SMSGenderChange" );

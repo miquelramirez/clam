@@ -3,7 +3,6 @@
 #include <qpainter.h>
 
 #include <qtooltip.h>
-#include <iostream>
 
 namespace NetworkGUI
 {
@@ -25,13 +24,6 @@ void Qt_InPortPresentation::OnNewName(const std::string& name)
 	mName = name;
 	QToolTip::add( this, QString( mName.c_str() ));
 }
-
-/*
-void Qt_InPortPresentation::OnNewDataType(const std::string& name)
-{
-	mDataType = name;
-}
-*/
 
 void Qt_InPortPresentation::Show()
 {

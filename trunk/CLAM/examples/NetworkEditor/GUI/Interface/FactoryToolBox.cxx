@@ -18,10 +18,8 @@ FactoryToolBox::FactoryToolBox(  QWidget * parent , const char * name )
 	setLineWidth( 1 );
 	setPalette( QPalette( QColor( 100, 100, 100 )));
 	AddProcessingLabel( "Oscillator" );
-//	AddProcessingLabel( "Mixer 2" );
+	AddProcessingLabel( "Mixer 2" );
 	AddProcessingLabel( "Multiplier" );
-	AddProcessingLabel( "Audio File In" );
-	AddProcessingLabel( "Audio File Out" );
 }
 
 FactoryToolBox::~FactoryToolBox()

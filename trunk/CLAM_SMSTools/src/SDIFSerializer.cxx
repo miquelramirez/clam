@@ -68,6 +68,9 @@ bool SDIFSerializer::DoStore( const char* fileName, Segment& segment )
 	
 	SDIFOutConfig cfg;
 	cfg.SetSamplingRate( segment.GetSamplingRate() );
+	cfg.SetFrameSize((segment.GetFrame(0).GetResidualSpec().GetSize()-1)*2+1);
+	cfg.SetSpectrumSize(segment.GetFrame(0).GetResidualSpec().GetSize());
+		
 	cfg.SetFileName( fileName );
 	cfg.SetEnableResidual( true );
 	mSDIFWriter.Configure( cfg );

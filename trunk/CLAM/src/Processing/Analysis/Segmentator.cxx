@@ -20,7 +20,24 @@
  */
 
 #include "Segmentator.hxx"
+#include "Point.hxx"
+#include "Segment.hxx"
 #include <iostream>
+#include "SegmentDescriptors.hxx"
+
+
+namespace CLAM
+{
+	class SegmentBoundaries
+	{
+	public:
+		Array < Array < PointTmpl < int , TData > > > mArray;
+
+		SegmentBoundaries(int size):mArray(size)
+		{
+		}
+	};
+}
 
 using namespace CLAM;
 
@@ -123,7 +140,7 @@ std::ostream& operator << (std::ostream& myStream, const TDescriptorsParams& a)
 
 std::istream& operator >> (std::istream& myStream, const TDescriptorsParams& a)
 {
-	throw Err("Extractor not implemented");
+	CLAM_ASSERT(false, "TDescriptorParams extractor operator is not implemented");
 	return myStream;
 }
 
@@ -209,14 +226,14 @@ bool Segmentator::Do()
 		if (GetExecState() == Disabled)
 			return true;
 
-	throw(ErrProcessingObj("Segmentator: Do(): Supervised mode not implemented",this));
+	CLAM_ASSERT(false, "Segmentator: Do(): Supervised mode not implemented");
 }
 
 
 bool Segmentator::Do(Segment& originalSegment,SegmentDescriptors& descriptors)
 {
 	int nFrames=originalSegment.GetnFrames();
-	Matrix  descriptorsValues(mConfig.GetDescriptorsParams().Size(),nFrames);
+	Matrix descriptorsValues(mConfig.GetDescriptorsParams().Size(),nFrames);
 	UnwrapDescriptors(originalSegment, descriptors,descriptorsValues);
 	Algorithm(originalSegment,descriptorsValues);
 	return true;
@@ -398,8 +415,9 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 	// segment boundaries for each parameter
 	int nFrames=s.GetnFrames();
 	int nDescriptors=mConfig.GetDescriptorsParams().Size();
-	Array<Array<PointTmpl<int,TData> > >  segmentBoundaries(nDescriptors);// segment boundaries for each parameter
-	segmentBoundaries.SetSize(nDescriptors);
+	SegmentBoundaries segmentBoundaries(nDescriptors);
+	// segment boundaries for each parameter
+	segmentBoundaries.mArray.SetSize(nDescriptors);
 	int i=0;
 	do
 	{
@@ -407,7 +425,7 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 		for (z=0;z<nDescriptors;z++)
 		{
 			if(i==0)
-				segmentBoundaries[z].AddElem(PointTmpl<int,TData>(0,100));//very high value
+				segmentBoundaries.mArray[z].AddElem(PointTmpl<int,TData>(0,100));//very high value
 
 			else if (i<4){}
 			else
@@ -425,15 +443,15 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 						if((values.GetAt(z,i)/values.GetAt(z,i-2))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)||
 						(values.GetAt(z,i)/values.GetAt(z,i-2))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
 						{*/
-						//if((i-segmentBoundaries[z][segmentBoundaries[z].Size()-1])>=mConfig.GetMinSegmentLength())
+						//if((i-segmentBoundaries.mArray[z][segmentBoundaries.mArray[z].Size()-1])>=mConfig.GetMinSegmentLength())
 						if (((currentValue>previousValue)&&(previousValue>values.GetAt(z,i-2))&&(values.GetAt(z,i-2)>values.GetAt(z,i-3)))||
 						   ((currentValue<previousValue)&&(previousValue<values.GetAt(z,i-2))&&(values.GetAt(z,i-2)<values.GetAt(z,i-3)))){
 						tmpValue.SetY(tmpValue.GetY()/(mConfig.GetDescriptorsParams()[z].percentil/100));
-						segmentBoundaries[z].AddElem(tmpValue);}
+						segmentBoundaries.mArray[z].AddElem(tmpValue);}
 						else if((currentValue/previousValue)>(1+2*mConfig.GetDescriptorsParams()[z].percentil/100)||
 						       (currentValue/previousValue)<(1-2*mConfig.GetDescriptorsParams()[z].percentil/100)){
 							tmpValue.SetY(tmpValue.GetY()/(mConfig.GetDescriptorsParams()[z].percentil/100));
-							segmentBoundaries[z].AddElem(tmpValue);}
+							segmentBoundaries.mArray[z].AddElem(tmpValue);}
 
 						//}}
 					}/*
@@ -441,21 +459,21 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 					if((values.GetAt(z,i)/values.GetAt(z,i-2))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)||
 						(values.GetAt(z,i)/values.GetAt(z,i-2))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
 					{
-						//if((i-segmentBoundaries[z][segmentBoundaries[z].Size()-1])>=mConfig.GetMinSegmentLength())
-						segmentBoundaries[z].AddElem(i);
+						//if((i-segmentBoundaries.mArray[z][segmentBoundaries.mArray[z].Size()-1])>=mConfig.GetMinSegmentLength())
+						segmentBoundaries.mArray[z].AddElem(i);
 					}}
 					else if(i>3){
 					if((values.GetAt(z,i)/values.GetAt(z,i-3))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)||
 						(values.GetAt(z,i)/values.GetAt(z,i-3))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
 					{
-						//if((i-segmentBoundaries[z][segmentBoundaries[z].Size()-1])>=mConfig.GetMinSegmentLength())
-						segmentBoundaries[z].AddElem(i);
+						//if((i-segmentBoundaries.mArray[z][segmentBoundaries.mArray[z].Size()-1])>=mConfig.GetMinSegmentLength())
+						segmentBoundaries.mArray[z].AddElem(i);
 					}}*/
 				}
 				/*else if (values.GetAt(z,i)==0&&values.GetAt(z,i-1)!=0)
 				{
 					Point<int,TData>  tmpValue(i,100);
-					segmentBoundaries[z].AddElem(tmpValue);
+					segmentBoundaries.mArray[z].AddElem(tmpValue);
 				}*/
 
 			}
@@ -465,7 +483,7 @@ void Segmentator::Algorithm(Segment& s,const Matrix& values)
 	DataFusion(s,segmentBoundaries);
 }
 
-void Segmentator::DataFusion(Segment& s,const Array<Array<PointTmpl<int,TData> > > & segmentBoundaries)
+void Segmentator::DataFusion(Segment& s,const SegmentBoundaries& segmentBoundaries)
 {
 
 	unsigned int n,m,z;
@@ -483,8 +501,8 @@ void Segmentator::DataFusion(Segment& s,const Array<Array<PointTmpl<int,TData> >
 	/*Setting probability to one wherever a segment boundary was found*/
 	for(z=0;z<nDescriptors;z++)
 	{
-		for(n=0;n<segmentBoundaries[z].Size();n++)
-			probabilityMatrix.SetAt(segmentBoundaries[z][n].GetX(),z,segmentBoundaries[z][n].GetY());
+		for(n=0;n<segmentBoundaries.mArray[z].Size();n++)
+			probabilityMatrix.SetAt(segmentBoundaries.mArray[z][n].GetX(),z,segmentBoundaries.mArray[z][n].GetY());
 	}
 
 	// Adding probability values of different descriptors

@@ -23,16 +23,20 @@
 #define _Segmentator_
 
 #include "Processing.hxx"
-#include "Segment.hxx"
-#include "DataTypes.hxx"
-#include "Array.hxx"
-#include "SearchArray.hxx"
+#include "SegmentatorConfig.hxx"
+
 #include "Matrix.hxx"
-#include "SegmentDescriptors.hxx"
-#include "Point.hxx"
-#include <iosfwd>
+/* TODO: this should be moved to the .cxx but a simple forward declaration
+	 won't work, so the method Algorithm should be implemented in a different
+	 way. since this will break the interface with possible subclasses, we 
+	 leave it for later. MDB
+*/
 
 namespace CLAM{
+
+class Segment;
+class SegmentDescriptors;
+class SegmentBoundaries;
 
 enum {
 	SpectralDescBase=150, //for example
@@ -66,72 +70,8 @@ enum {
 };
 
 
-typedef struct //may need further additions
-{
-	TIndex id;
-	TData threshold;
-	TData percentil;
-	TData nPreviousFrames;
-}TDescriptorsParams;
+	/* SegmentatorConfig moved to SegmentatorConfig.hxx */
 
-inline bool operator<(const TDescriptorsParams& param1,const TDescriptorsParams& param2)
-{
-	if (param1.id<param2.id) return true;
-	else return false;
-}
-
-inline bool operator>=(const TDescriptorsParams& param1,const TDescriptorsParams& param2)
-{
-	if (param1.id>=param2.id) return true;
-	else return false;
-}
-
-inline bool operator==(const TDescriptorsParams& param1,const TDescriptorsParams& param2)
-{
-	if (param1.id==param2.id) return true;
-	else return false;
-}
-
-inline bool operator==(const TDescriptorsParams& param1,TIndex id)
-{
-	if (param1.id==id) return true;
-	else return false;
-}
-
-std::ostream& operator << (std::ostream& myStream, const TDescriptorsParams& a);
-
-std::istream& operator >> (std::istream& myStream, const TDescriptorsParams& a);
-
-
-class SegmentatorConfig : public ProcessingConfig
-{
-friend class Segmentator;
-public:
-	DYNAMIC_TYPE_USING_INTERFACE(SegmentatorConfig,3,ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, int, MinSegmentLength);
-	DYN_ATTRIBUTE (2, public, Array<TDescriptorsParams>, DescriptorsParams);
-protected:
-	void DefaultInit();
-/*Public Interface*/
-public:
-	void AddDescParams(const TDescriptorsParams& descParams);
-	bool FindDescParams(TDescriptorsParams& descParams);
-	void ClearDescParams();
-
-	void SetDescriptorsSearch (const SearchArray<TDescriptorsParams> & frame) {
-		mDescriptorsSearch=frame;
-	}
-	const SearchArray<TDescriptorsParams> & GetDescriptorsSearch () const {
-		return mDescriptorsSearch;
-	}
-	SearchArray<TDescriptorsParams> & GetDescriptorsSearch () {
-		return mDescriptorsSearch;
-	}
-	~SegmentatorConfig(){};
-private:
-	SearchArray<TDescriptorsParams> mDescriptorsSearch;
-};
 	
 class Segmentator:public Processing
 {
@@ -149,9 +89,8 @@ public:
 		
 protected:
 	SegmentatorConfig  mConfig;
-
 private:
-	void DataFusion(Segment& s,const Array<Array<PointTmpl<int,TData> > >& segmentBoundaries);
+	void DataFusion(Segment& s,const SegmentBoundaries& segmentBoundaries);
 	bool ConcreteConfigure(const ProcessingConfig& c);
 	/* All Algorithms should follow this prototype, taking as an input a segment and
 	// a Matrix where the descriptors values are stored

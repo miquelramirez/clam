@@ -1,26 +1,13 @@
+#ifndef _ProcessingChain_
+#define _ProcessingChain_
+
 #include "ProcessingComposite.hxx"
 #include "ProcessingData.hxx"
 #include "InPortTmpl.hxx"
 #include "OutPortTmpl.hxx"
 #include "InControlTmplArray.hxx"
+#include "Factory.hxx"
 
-//We should avoid having to include all SMS Transformations here: factory needed
-#include "SMSTransformation.hxx"
-#include "SMSFreqShift.hxx"
-#include "SMSPitchShift.hxx"
-#include "SMSOddEvenHarmonicRatio.hxx"
-#include "SMSSineFilter.hxx"
-#include "SMSResidualGain.hxx"
-#include "SMSTransformationChainIO.hxx"
-#include "SMSHarmonizer.hxx"
-#include "SMSSinusoidalGain.hxx"
-#include "SMSPitchDiscretization.hxx"
-#include "SMSSpectralShapeShift.hxx"
-#include "SMSGenderChange.hxx"
-#include "SMSMorph.hxx"
-
-#ifndef _ProcessingChain_
-#define _ProcessingChain_
 
 namespace CLAM{
 
@@ -41,41 +28,19 @@ namespace CLAM{
 		/** Initialization for default constructor. All attributes are added, ConcreteClassName is
 		 *	set to "Unknown" and pointer to concrete configuration is set to null. 
 		 */
-		void DefaultInit()
-		{
-			AddAll();
-			UpdateData();
-			SetName("ProcessingChaineeConfig");
-			SetConcreteClassName("Unknown");
-			mpConcreteConfig=NULL;
-		}
+		void DefaultInit();
 		/** Initialization for copy constructor. All dynamic attributes are added and copied from
 		 *	original configuration. Concrete Configuration is set 'by hand'.
 		 */
-		void CopyInit(const ProcessingChaineeConfig& originalConfig)
-		{
-			AddAll();
-			UpdateData();
-			mpConcreteConfig=NULL;
-			SetConcreteConfig(*(originalConfig.mpConcreteConfig));
-		}
+		void CopyInit(const ProcessingChaineeConfig& originalConfig);
 		/** Overriding virtual method in base class to store concrete configuration by hand as it
 		 *	is not a dynamic attribute.
 		 */
-		void StoreOn(Storage & s) 
-		{
-			ProcessingConfig::StoreOn(s);
-			mpConcreteConfig->StoreOn(s);
-		}
+		void StoreOn(Storage & s); 
 		/** Overriding virtual method in base class to load concrete configuration by hand as it
 		 *	is not a dynamic attribute.
 		 */
-		void LoadFrom(Storage& s)
-		{
-			ProcessingConfig::LoadFrom(s);
-			mpConcreteConfig=InstantiateConcreteConfig();
-			const_cast<ProcessingConfig*>(mpConcreteConfig)->LoadFrom(s);
-		}
+		void LoadFrom(Storage& s);
 		/** Returns the concrete configuration as a reference to the base class.*/
 		ProcessingConfig& GetConcreteConfig() const {return *mpConcreteConfig;}
 		/** Sets the concrete configuration, passing a reference to the base class. Note
@@ -89,10 +54,7 @@ namespace CLAM{
 		}
 
 		/** Virtual destructor. Deletes pointer to concrete configuration */
-		virtual ~ProcessingChaineeConfig()
-		{
-			if(mpConcreteConfig) delete mpConcreteConfig;
-		}
+		virtual ~ProcessingChaineeConfig();
 
 		/** Adds a new instantiated concrete configuration using the Concrete Class name as a
 		 *	type selector (ConcreteClassName must be set in advanced) deleting any previously
@@ -100,31 +62,16 @@ namespace CLAM{
 		 */
 		void AddConcreteConfig()
 		{
-			if(mpConcreteConfig) delete mpConcreteConfig;
+			if(mpConcreteConfig) 
+				delete mpConcreteConfig;
 			mpConcreteConfig=InstantiateConcreteConfig();
 		}
 
 		
 	protected:
 		/** Instantiates a concrete configuration using input string as a type selector. */
-		ProcessingConfig* InstantiateConcreteConfig(const std::string& type)
-		{
-			if(type=="SMSDummyTransformation"||type=="SMSFreqShift"||type=="SMSPitchShift"||
-				type=="SMSOddEvenHarmonicRatio"||type=="SMSSineFilter"||type=="SMSResidualGain"||
-				type=="SMSHarmonizer"||type=="SMSSinusoidalGain"||type=="SMSPitchDiscretization"||
-				type=="SMSSpectralShapeShift"||type=="SMSGenderChange"||type=="SMSTransformationChainIO")
-			{
-				return new CLAM::SMSTransformationConfig();
-			}
-			else if (type=="SMSMorph") return new CLAM::SMSMorphConfig();
-			else
-			{
-				std::string error="ProcessingChaineeConfig::InstantiateConcreteConfig:Trying to instantiate a non-valid Configuration: ";
-				error+=type;
-				if(type=="Unknown") throw Err("Before instantiating a concrete configuration, you have to set its class name");
-				else throw Err(error.c_str());
-			}
-		}
+		ProcessingConfig* InstantiateConcreteConfig(const std::string& type);
+
 		/** Instantiates a concrete configuration using the ConcreteClassName attribute as a
 		 *	type selector (ConcreteClassName must be set in advanced)
 		 */
@@ -162,12 +109,7 @@ namespace CLAM{
 
 		
 		/** By default all attributes are added. */
-		void DefaultInit()
-		{
-			AddAll();
-			UpdateData();
-		}
-
+		void DefaultInit();
 		/** Returns a configuration iterator at the beginning of the list*/
 		iterator ConfigList_begin() {return GetConfigurations().begin();}
 		/** Returns a configuration iterator at the end of the list*/
@@ -193,25 +135,10 @@ namespace CLAM{
 		TSize GetnConfigurations(){return ConfigList_size();}
 
 		/** Virtual destructor. */
-		virtual ~ProcessingChainConfig()
-		{
-		}
+		virtual ~ProcessingChainConfig();
 	protected:
 		/** Adds a configuration at the end of the list. */
-		virtual void AddConfiguration(const ProcessingConfig& newConcreteConfig,const std::string& className)
-		{
-			ProcessingChaineeConfig newChaineeConfig;
-			newChaineeConfig.SetConcreteClassName(className);
-			newChaineeConfig.SetConcreteConfig(newConcreteConfig);
-			
-			//We first resize and set to false by default, on array
-			GetOnArray().Resize(GetnConfigurations()+1);
-			GetOnArray().SetSize(GetnConfigurations()+1);
-			GetOnArray()[GetnConfigurations()]=false;
-			
-			GetConfigurations().push_back(newChaineeConfig);
-			
-		}
+		virtual void AddConfiguration(const ProcessingConfig& newConcreteConfig,const std::string& className);
 
 	};
 	
@@ -228,7 +155,6 @@ namespace CLAM{
 		/** Default Constructor */
 		ProcessingChain():mChainInput("Input",this,1),mChainOutput("Output",this,1)
 		{
-			mpTmpData=NULL;
 			mpConfig=NULL;
 			mpOnCtrlArray=NULL;
 		}
@@ -238,7 +164,9 @@ namespace CLAM{
 		 */
 		virtual ~ProcessingChain()
 		{
-			if (mpTmpData) delete mpTmpData;
+			int i;
+			for(i=0;i<mpTmpDataArray.Size();i++)
+				if(mpTmpDataArray[i]) delete mpTmpDataArray[i];
 			if (mpConfig) delete mpConfig;
 			iterator obj;
 			for(obj=composite_begin();obj!=composite_end();obj++)
@@ -268,17 +196,25 @@ namespace CLAM{
 		{
 			iterator obj;
 			
-			if(mpTmpData)
-			{
-				delete mpTmpData;
-			}
-			mpTmpData=new U(mChainInput.GetData());
-						
+			int i;
+			for(i=0;i<mpTmpDataArray.Size();i++)
+				if(mpTmpDataArray[i]){
+					delete mpTmpDataArray[i];
+					mpTmpDataArray[i]=NULL;}
+			mpTmpDataArray.SetSize(0);
+			U* pCurrentData;
+			pCurrentData=new U(mChainInput.GetData());
+			mpTmpDataArray.AddElem(pCurrentData);
 			for(obj=composite_begin();obj!=composite_end();obj++)
 			{
 				//connecting ports for non-supervised mode
-				(*obj)->GetInPorts().GetByNumber(0).Attach(*mpTmpData);
-				(*obj)->GetOutPorts().GetByNumber(0).Attach(*mpTmpData);
+				(*obj)->GetInPorts().GetByNumber(0).Attach(*pCurrentData);
+				if(!(*obj)->CanProcessInplace())
+				{
+					pCurrentData=new U(mChainInput.GetData());
+					mpTmpDataArray.AddElem(pCurrentData);
+				}
+				(*obj)->GetOutPorts().GetByNumber(0).Attach(*pCurrentData);
 			}
 			obj=composite_begin();
 			(*obj)->GetInPorts().GetByNumber(0).Attach(mChainInput.GetData());
@@ -323,14 +259,7 @@ namespace CLAM{
 					}
 					
 				}
-			/*	else
-				{
-					iterator last=obj;
-					last++;
-					if (obj==composite_begin()||last==composite_end())
-						throw(ErrProcessingObj("ProcessingChain::Do(): first and last processing in the chain must be active",this));
-				}*/
-				
+					
 			}
 			return result;
 		}
@@ -393,71 +322,21 @@ protected:
 		 */
 		bool AddChainee(const std::string& type)
 		{
-			
-			/** Note: this ugly 'if' will be replaced by a Factory Method*/
-			if(type=="SMSFreqShift")
-			{
-				InsertAndGiveName(*(new SMSFreqShift()));
-			}
-			else if(type=="SMSPitchShift")
-			{
-				InsertAndGiveName(*(new SMSPitchShift()));
-			}
-			else if(type=="SMSOddEvenHarmonicRatio")
-			{
-				InsertAndGiveName(*(new SMSOddEvenHarmonicRatio()));
-			}
-			else if(type=="SMSSineFilter")
-			{
-				InsertAndGiveName(*(new SMSSineFilter()));
-			}
-			else if(type=="SMSResidualGain")
-			{
-				InsertAndGiveName(*(new SMSResidualGain()));
-			}
-			else if(type=="SMSSinusoidalGain")
-			{
-				InsertAndGiveName(*(new SMSSinusoidalGain()));
-			}
-			else if(type=="SMSTransformationChainIO")
-			{
-				InsertAndGiveName(*(new SMSTransformationChainIO()));
-			}
-			else if(type=="SMSHarmonizer")
-			{
-				InsertAndGiveName(*(new SMSHarmonizer()));
-			}
-			else if(type=="SMSPitchDiscretization")
-			{
-				InsertAndGiveName(*(new SMSPitchDiscretization()));
-			}
-			else if(type=="SMSSpectralShapeShift")
-			{
-				InsertAndGiveName(*(new SMSSpectralShapeShift()));
-			}
-			else if(type=="SMSGenderChange")
-			{
-				InsertAndGiveName(*(new SMSGenderChange()));
-			}
-			else if(type=="SMSMorph")
-			{
-				InsertAndGiveName(*(new SMSMorph()));
-			}
-			else
-			{
-				throw Err("ProcessingChain::AddChainee:Not a valid Chainee");
-			}
+			typedef CLAM::Factory<Processing> ProcessingFactory;
+
+			// Factory::CreateSafe throws an ErrFactory exception if the key is not
+			// valid
+			InsertAndGiveName( *( ProcessingFactory::GetInstance().CreateSafe( type ) ) );
+						
 			return true;
 			
 		}
 		/** Temporal ProcessingData used as an internal node for intermediate Processing */
-		U* mpTmpData;
+		Array<U*> mpTmpDataArray;
 		/** Internal configuration. A pointer is used because polymorphism may be used on it */
 		ProcessingChainConfig* mpConfig;
 
-		//InControlArray a;
 		InControlTmplArray<ThisProc> *mpOnCtrlArray;
-
 		
 };
 

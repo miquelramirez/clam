@@ -62,9 +62,9 @@ namespace SigSlot
 			 *
 			 *  Removes the given connections, so the Signal does not
 			 *  notify anymore the Slot behind that Connection.
-			 *  \param The connection to be freed
+			 *  \param conn The connection to be freed
 			 */
-			virtual void FreeConnection( Connection* ) = 0;
+			virtual void FreeConnection( Connection* conn ) = 0;
   
 	protected:
 		void FreeConnectionId( tConnectionId );

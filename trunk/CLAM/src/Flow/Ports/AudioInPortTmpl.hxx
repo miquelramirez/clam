@@ -18,6 +18,7 @@ class InPortTmpl<Audio> : public InPort
 	Audio mWrapper;
 public:
 	inline InPortTmpl(std::string n, Processing *o, int length, int hop = 0, bool inplace=false);
+	inline ~InPortTmpl();
 	inline Audio &GetData();
 	inline void LeaveData();
 	void Attach(ProcessingData& data);
@@ -37,10 +38,10 @@ public:
 // Template method implementations
 
 InPortTmpl<Audio>::InPortTmpl(std::string n,
-							  Processing *o,
-							  int length,
-							  int hop,
-							  bool inplace)
+			      Processing *o,
+			      int length,
+			      int hop,
+			      bool inplace)
 	: InPort(n,o,length,hop,inplace),
 	  mpRegion(0),
 	  mpNode(0),
@@ -48,6 +49,13 @@ InPortTmpl<Audio>::InPortTmpl(std::string n,
 {
 	o->PublishInPort(this);
 }
+
+InPortTmpl<Audio>::~InPortTmpl()
+{
+	if (mpRegion)
+		delete mpRegion;
+}
+
 
 Audio &InPortTmpl<Audio>::GetData()	
 { 
@@ -126,7 +134,6 @@ inline bool InPortTmpl<Audio>::IsReadyForReading()
 	
 	return mpNode->CanActivateRegion( *mpRegion );
 }
-
 
 inline void InPortTmpl<Audio>::Unattach()
 {

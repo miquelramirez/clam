@@ -673,32 +673,5 @@ void XMLStorage::Store(Storable * object) {
 
 bool XercesXMLStorageImplementation::sPlatformUtilsInitialized = false;
 
-//////////////////////////////////////////////////////////////////////
-// Deprecated functions
-//////////////////////////////////////////////////////////////////////
-
-
-//* @deprecated use default constructor
-XMLStorage::XMLStorage(const char * rootElementName) {
-	CLAM_WARNING(true, "Using XMLStorage deprecated constructor");
-	mPM=NewXMLImplementation();
-	mPM->NewDocument(rootElementName);
-}
-
-//* @deprecated: use Dump
-void XMLStorage::dumpOn(std::ostream & aStream) {
-	CLAM_WARNING(true, "Using deprecated method XMLStorage::dumpOn");
-	mPM->WriteDOM(aStream);
-//	Inspect(aStream,mPM->DOMDoc);
-//	aStream << mPM->DOMDoc << endl;
-}
-
-//* @deprecated: use Restore
-void XMLStorage::_restoreFrom(char * xmlFile) {
-	CLAM_WARNING(true, "Using deprecated method XMLStorage::_restoreFrom");
-	mPM->Parse(xmlFile);
-	mPM->PrepareReadAtRoot();
-	mPM->ReleaseReadAtRoot();
-}
 
 

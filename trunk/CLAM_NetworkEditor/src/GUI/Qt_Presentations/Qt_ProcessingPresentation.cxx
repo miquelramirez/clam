@@ -5,10 +5,11 @@
 #include "Qt_InPortPresentation.hxx"
 #include "Qt_OutPortPresentation.hxx"
 
+
 #include <qtooltip.h> 
 #include <qpainter.h>
 #include <cmath>
-#include <iostream>
+
 
 namespace NetworkGUI
 {
@@ -18,10 +19,8 @@ Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwor
 	  ProcessingPresentation(nameFromNetwork),
 	  mDown(false)
 {
-//	setPalette( QPalette( QColor( 250, 250, 200 )));
 	QWidget * top = topLevelWidget();
 	QString s(mNameFromNetwork.c_str());
-//	setMask(QRegion(11,0,width()-11, height()));
 
 	//we calculate width of name
 	QFont font( "Helvetica" ,8 );
@@ -58,9 +57,7 @@ void Qt_ProcessingPresentation::OnNewInPortAfterClickOutPort( const QPoint & p)
 	{
 		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*itin);
 		if (in->geometry().contains(real))
-		{
 			in->AcquireInPortClicked.Emit(in);
-		}
 	}
 }
 
@@ -77,9 +74,7 @@ void Qt_ProcessingPresentation::OnNewOutPortAfterClickInPort( const QPoint & p)
 	{
 		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*itout);
 		if (out->geometry().contains(real))
-		{
 			out->AcquireOutPortClicked.Emit(out);
-		}
 	}
 }	
 
@@ -93,11 +88,6 @@ void Qt_ProcessingPresentation::OnNewOutPortClicked( Qt_OutPortPresentation * ou
 	AcquireOutPortClicked.Emit( outport );
 }
 
-void Qt_ProcessingPresentation::OnNewName(const std::string& name)
-{
-	mName = name;
-}
-
 void Qt_ProcessingPresentation::OnNewObservedClassName(const std::string& name)
 {
 	mObservedClassName = name;
@@ -106,31 +96,30 @@ void Qt_ProcessingPresentation::OnNewObservedClassName(const std::string& name)
 
 void Qt_ProcessingPresentation::OnNewInPort( CLAMVM::InPortAdapter* adapter )
 {
-	Qt_InPortPresentation* presentation = new Qt_InPortPresentation( mInPortPresentations.size(),this );
+	Qt_InPortPresentation* presentation = 
+		new Qt_InPortPresentation( mInPortPresentations.size(),this );
+
 	presentation->AttachTo(*adapter);
 	presentation->AcquireInPortClicked.Connect( SetInPortClicked );
 	adapter->Publish();
 	mInPortPresentations.push_back(presentation);
 	int heightPorts = mInPortPresentations.size()*7+3;
 	if (height() < heightPorts)
-	{
 		setFixedSize(width(),heightPorts);
-	}
-       
 }
 
 void Qt_ProcessingPresentation::OnNewOutPort( CLAMVM::OutPortAdapter* adapter )
 {
-	Qt_OutPortPresentation* presentation = new Qt_OutPortPresentation( mOutPortPresentations.size(), this );
+	Qt_OutPortPresentation* presentation = 
+		new Qt_OutPortPresentation( mOutPortPresentations.size(), this );
+
 	presentation->AttachTo(*adapter);
 	presentation->AcquireOutPortClicked.Connect( SetOutPortClicked );
 	adapter->Publish();
 	mOutPortPresentations.push_back(presentation);
 	int heightPorts = mOutPortPresentations.size()*7+3;
 	if (height() < heightPorts)
-	{
 		setFixedSize(width(),heightPorts);
-	}
 }
 
 void Qt_ProcessingPresentation::Show()
@@ -138,16 +127,12 @@ void Qt_ProcessingPresentation::Show()
 
 	InPortPresentationIterator itin;
 	for ( itin=mInPortPresentations.begin(); itin!=mInPortPresentations.end(); itin++)
-	{
-		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*itin);
-		in->Show();
-	}
+		(*itin)->Show();
+
 	OutPortPresentationIterator itout;
 	for ( itout=mOutPortPresentations.begin(); itout!=mOutPortPresentations.end(); itout++)
-	{
-		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*itout);
-		out->Show();
-	}
+		(*itout)->Show();
+
 	show();
 }
 
@@ -155,14 +140,12 @@ void Qt_ProcessingPresentation::Hide()
 {
 	InPortPresentationIterator itin;
 	for ( itin=mInPortPresentations.begin(); itin!=mInPortPresentations.end(); itin++)
-	{
 		(*itin)->Hide();
-	}
+
 	OutPortPresentationIterator itout;
 	for ( itout=mOutPortPresentations.begin(); itout!=mOutPortPresentations.end(); itout++)
-	{
 		(*itout)->Hide();
-	}	
+
 	hide();
 }
 
@@ -204,43 +187,52 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 
 void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 {
-	mDown = true;
-	mClickPos = m->pos();
+	if(m->button() == LeftButton )
+	{
+		mDown = true;
+		mClickPos = m->pos();
+	}
+	else
+	{
+		EditConfiguration.Emit( mConfig );
+	}
+	grabKeyboard();
 }
 
 void Qt_ProcessingPresentation::mouseReleaseEvent( QMouseEvent *m)
 {
 	mDown = false;
+	releaseKeyboard();
 }
 
 void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 {
-	if(mDown)
-	{
-		QPoint difference(mapFromGlobal(m->globalPos()));
-		difference = mapToParent(difference) - mClickPos;
-		move(difference);
+	if(!mDown)
+		return;
 
-		// emit movement to update connections
-		InPortPresentationIterator itin;
-		for (itin=mInPortPresentations.begin(); itin!=mInPortPresentations.end();itin++)
-		{
-			Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*itin);
-			int posX = in->pos().x();
-			int posY = in->pos().y() + in->height()/2;
-			in->AcquirePos.Emit( difference.x()+ posX, difference.y()+posY);
-		}
-		OutPortPresentationIterator itout;
-		for (itout=mOutPortPresentations.begin(); itout!=mOutPortPresentations.end();itout++)
-		{	
-			Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*itout);
-			int posX = out->pos().x() + 10;
-			int posY = out->pos().y() + out->height()/2;
-			out->AcquirePos.Emit( difference.x() + posX , difference.y()+ posY );
-		}
-		QWidget * parent = parentWidget();
-		parent->repaint();
+	QPoint difference(mapFromGlobal(m->globalPos()));
+	difference = mapToParent(difference) - mClickPos;
+	move(difference);
+	
+	// emit movement to update connections
+	InPortPresentationIterator itin;
+	for (itin=mInPortPresentations.begin(); itin!=mInPortPresentations.end();itin++)
+	{
+		Qt_InPortPresentation * in = (Qt_InPortPresentation*)(*itin);
+		int posX = in->pos().x();
+		int posY = in->pos().y() + in->height()/2;
+		in->AcquirePos.Emit( difference.x()+ posX, difference.y()+posY);
 	}
+	OutPortPresentationIterator itout;
+	for (itout=mOutPortPresentations.begin(); itout!=mOutPortPresentations.end();itout++)
+	{	
+		Qt_OutPortPresentation * out = (Qt_OutPortPresentation*)(*itout);
+		int posX = out->pos().x() + 10;
+		int posY = out->pos().y() + out->height()/2;
+		out->AcquirePos.Emit( difference.x() + posX , difference.y()+ posY );
+	}
+	QWidget * parent = parentWidget();
+	parent->repaint();
 }
 
 void Qt_ProcessingPresentation::EmitPositionOfPorts()
@@ -260,6 +252,20 @@ void Qt_ProcessingPresentation::EmitPositionOfPorts()
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
 		out->AcquirePos.Emit( pos().x() + posX , pos().y() + posY );
+	}
+}
+
+void Qt_ProcessingPresentation::keyPressEvent( QKeyEvent *k )
+{
+	switch ( tolower(k->ascii()) ) 
+	{
+        case 'x': 
+
+		RemoveProcessing.Emit( this );
+		Hide();
+		mDown = false;
+		releaseKeyboard();
+		break;
 	}
 }
 

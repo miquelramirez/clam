@@ -19,6 +19,8 @@
  *
  */
 
+#include "Audio.hxx"
+#include "Spectrum.hxx"
 #include "Complex.hxx"
 #include "CircularShift.hxx"
 #include "ErrProcessingObj.hxx"

@@ -428,8 +428,8 @@ void CSaltoDataManagment::GetNextSynthFrame(CSaltoSynthFrame *pSynthFrame,TIndex
 	
 	pCurrSpecFrame = &mSpectralSeg[currSegment]->GetFrame(mFrameCounter[currSegment]);
 	
-//	pSynthFrame->SetPeakArray(*(pCurrSpecFrame->GetSpectralPeakArray()));			  // This has to be optimized _memory is allocated //
-	pSynthFrame->SetPeakArray(pCurrSpecFrame->GetSpectralPeakArray());			  // This has to be optimized _memory is allocated //	
+//	pSynthFrame->SetPeakArray(*(pCurrSpecFrame->GetSpectralPeakArray()));			  // This has to be optimized mMemory is allocated //
+	pSynthFrame->SetPeakArray(pCurrSpecFrame->GetSpectralPeakArray());			  // This has to be optimized mMemory is allocated //	
 	pSynthFrame->SetFundFreq( (pCurrSpecFrame->GetFundamental()).GetFreq() ); // ..is double
 	pSynthFrame->SetResidualPtr(&(pCurrSpecFrame->GetResidualSpec()));								// ..is pointer ! //BUGFRAME!
 	

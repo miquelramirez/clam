@@ -19,6 +19,7 @@
  *
  */
 
+#include "SpectrumConfig.hxx"
 #include "SMSSynthesis.hxx"
 
 using namespace CLAM;

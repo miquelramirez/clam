@@ -1,6 +1,7 @@
 #include "GLPointsArrays.hxx"
 #include "Assert.hxx"
 #include "CLAMGL.hxx"
+#include <cstdlib>
 
 namespace CLAMVM
 {

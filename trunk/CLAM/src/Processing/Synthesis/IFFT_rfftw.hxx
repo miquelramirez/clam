@@ -25,6 +25,7 @@
 
 #include "IFFT.hxx"
 #include "ErrDynamicType.hxx"
+#include "SpectrumConfig.hxx"
 
 extern "C" {
 #include FFTW_HEADER
@@ -32,80 +33,82 @@ extern "C" {
 
 namespace CLAM {
 
+    
 
-	/** Implementation of the IFFT using the Fastest Fourier in the West 
-	 * @see <a HREF="http://www.fftw.org/"> FFTW Home Page</a>
+    /** Implementation of the IFFT using the Fastest Fourier in the West 
+     * @see <a HREF="http://www.fftw.org/"> FFTW Home Page</a>
+     */
+    class IFFT_rfftw: public IFFT_base
+    {
+	rfftw_plan	mpPlan;
+	/** Internal output buffer */
+	TData* ifftbuffer;
+	/** Auxiliary flags structure, used to add the complex attribute. */
+	SpecTypeFlags mComplexflags;
+
+	/* IFFT possible execution states.
 	 */
-	class IFFT_rfftw: public IFFT_base
-	{
-		rfftw_plan	mpPlan;
-		/** Internal output buffer */
-		TData* ifftbuffer;
-		/** Auxiliary flags structure, used to add the complex attribute. */
-		static SpecTypeFlags mComplexflags;
+	typedef enum {
+	    sComplex, // We just need to read the complex array.
+	    sOther // The complex array is not present.
+	} IFFTState;
 
-		/* IFFT possible execution states.
-		 */
-		typedef enum {
-			sComplex, // We just need to read the complex array.
-			sOther // The complex array is not present.
-		} IFFTState;
+	/** Execution state of the IFFT object. It includes I/O
+	    prototypes state */
+	IFFTState mState;
 
-		/** Execution state of the IFFT object. It includes I/O
-		prototypes state */
-		IFFTState mState;
+	void DefaultInit();
 
-		void DefaultInit();
+	inline void CheckTypes(const Spectrum& in, const Audio &out) const;
 
-		inline void CheckTypes(const Spectrum& in, const Audio &out) const;
+	// Output conversions
 
-		// Output conversions
+	/** Converts a complex array to the RIFFTW input format.
+	 * @param The spectrum object from which the complex array is taken. It 
+	 *  must have its ComplexArray attribute instantiated.
+	 * @see the <a HREF="http://www.fftw.org/doc/fftw_2.html#SEC5"> RFFTW docs </a>
+	 * for a description of this format.
+	 */
+	inline void ComplexToRIFFTW(Spectrum &in) const;
 
-		/** Converts a complex array to the RIFFTW input format.
-		 * @param The spectrum object from which the complex array is taken. It 
-		 *  must have its ComplexArray attribute instantiated.
-		 * @see the <a HREF="http://www.fftw.org/doc/fftw_2.html#SEC5"> RFFTW docs </a>
-		 * for a description of this format.
-		 */
-		inline void ComplexToRIFFTW(Spectrum &in) const;
+	inline void OtherToRIFFTW(Spectrum &in) const;
 
-		inline void OtherToRIFFTW(Spectrum &in) const;
+	/** Configuration change method
+	 * @throw
+	 * bad_cast exception when the argument is not an IFFTConfig
+	 * object.  
+	 */
+	bool ConcreteConfigure(const ProcessingConfig&);
 
-		/** Configuration change method
-		 * @throw
-		 * bad_cast exception when the argument is not an IFFTConfig
-		 * object.  
-		 */
-		bool ConcreteConfigure(const ProcessingConfig&);
+    public:
 
-	public:
+	IFFT_rfftw();
 
-		IFFT_rfftw();
+	IFFT_rfftw(const IFFTConfig &c) throw(ErrDynamicType);
 
-		IFFT_rfftw(const IFFTConfig &c) throw(ErrDynamicType);
+	~IFFT_rfftw();
 
-		~IFFT_rfftw();
+	const char * GetClassName() const {return "IFFT_rfftw";}
 
-		const char * GetClassName() const {return "IFFT_rfftw";}
+	bool Do();
 
-		bool Do();
+	void Attach(Spectrum& in, Audio &out);
 
-		void Attach(Spectrum& in, Audio &out);
+	bool Do(Spectrum& in, Audio &out) const;
 
-		bool Do(Spectrum& in, Audio &out) const;
+	// Port interfaces.
 
-		// Port interfaces.
+	bool SetPrototypes(const Spectrum& in,const Audio &out);
 
-		bool SetPrototypes(const Spectrum& in,const Audio &out);
+	bool SetPrototypes();
 
-		bool SetPrototypes();
+	bool UnsetPrototypes();
 
-		bool UnsetPrototypes();
+	bool MayDisableExecution() const {return true;}
 
-		bool MayDisableExecution() const {return true;}
-
-	};
+    };
 
 }
 
 #endif // _IFFT_rfftw_
+

@@ -8,10 +8,16 @@
 #include "NetworkPresentation.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
+#include "QTConfigurator.hxx"
+
+namespace CLAM
+{
+	class ProcessingConfig;
+}
 
 namespace CLAMVM
 {
-	class ProcessingAdapter;
+	class ProcessingController;
 	class ConnectionAdapter;
 }
 
@@ -32,10 +38,11 @@ public:
 protected:
 	void AttachConnectionToPortPresentations( Qt_ConnectionPresentation * );
 	virtual void OnNewName(const std::string& name); 
-	virtual void OnNewProcessing(CLAMVM::ProcessingAdapter*, const std::string & name );
+	virtual void OnNewProcessing(CLAMVM::ProcessingController*, const std::string & name );
 	virtual void OnNewConnection(CLAMVM::ConnectionAdapter* );
 	virtual void OnNewInPortClicked( Qt_InPortPresentation *);
 	virtual void OnNewOutPortClicked( Qt_OutPortPresentation *);
+	virtual void OnNewConfiguration( CLAM::ProcessingConfig * );
 	void paintEvent( QPaintEvent * );
 	void mouseMoveEvent( QMouseEvent *);
 	void mouseReleaseEvent( QMouseEvent *m);
@@ -44,10 +51,12 @@ protected:
 	Qt_InPortPresentation* mInPortSelected;
 	Qt_OutPortPresentation* mOutPortSelected;
 	QPoint mMousePos;
+	CLAM::QTConfigurator mConfigurator;
 
 public: // slots
 	SigSlot::Slotv1< Qt_InPortPresentation * > SetInPortClicked;
 	SigSlot::Slotv1< Qt_OutPortPresentation * > SetOutPortClicked;
+	SigSlot::Slotv1< CLAM::ProcessingConfig * > SetConfigurator;
 	// signals
 	SigSlot::Signalv1< const QPoint & > AcquireOutPortAfterClickInPort;
 	SigSlot::Signalv1< const QPoint & > AcquireInPortAfterClickOutPort;

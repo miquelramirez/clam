@@ -5,7 +5,7 @@
 #include "Lock.hxx"
 #include <errno.h>
 
-//! http://www.boost.org/libs/thread/doc/mutex_concept.html
+// http://www.boost.org/libs/thread/doc/mutex_concept.html
 
 namespace CLAM
 {

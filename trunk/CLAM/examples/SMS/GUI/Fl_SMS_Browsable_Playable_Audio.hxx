@@ -45,6 +45,14 @@ namespace CLAMVM
 	using SigSlot::Slotv1;
 	using SigSlot::Slotv0;
 
+	/** MRJ: This class needs heavy refactoring: 
+	*   + First, the AudioPlayer should be a ProcessingComposite with an InControl
+	*     PlaybackStartTime ( for adjusting the initial time )
+	*   + Second, the presentation should keep internally an Audio object for keeping
+	*     track of what the Audio player must play instead of messing around with pointers
+	*   + Third, use the Thread class for a cleaner solution for MT
+	*/
+
 	class Fl_SMS_Browsable_Playable_Audio 
 		: public Fl_Group, public AudioPresentation
 	{
@@ -58,6 +66,8 @@ namespace CLAMVM
 		bool                              mCancel;
 		bool                              mIsThisPlaying;
 		CLAM::AudioPlayer*                mAudioPlayer;
+		CLAM::TTime                       mSelectedSampleTime;
+		tAudioTimeInfo                    mAudioProperties;
 		// for transforming the sample index into sample time
 
 		void Play(  );
@@ -73,8 +83,6 @@ namespace CLAMVM
 	protected:
 		void OnNewAudio( const DataArray&, TTime, TTime, TData );
 		Fl_SMS_Gl_Single_Browsable_Display*   mDisplay;
-		CLAM::TData                       mAudioOffset;
-		CLAM::TData                       mSampleRate;
 		TooltipTracker2D                  mTooltipTracker;
 		DataBoundBox                      mWorldSpaceCoords;
 		Fl_Box*                           mImposterBox;

@@ -107,7 +107,16 @@ namespace CLAM {
 
 		std::string InsertAndGiveName(Processing&);
 
-		void NameChanged(Processing&,const std::string &old_name) throw(ErrProcessingObj);
+		/**
+		 * Changes the name inside the composite for a child
+		 * @param child the child process you want to rename
+		 * @param old_name the old name you dislike
+		 * @pre child should belong to the composite.
+		 * @pre old_name is the previous name
+		 * @return false when the name change is not possible
+		 * because there is another processing with the same name.
+		 */
+		bool NameChanged(Processing&child,const std::string &old_name);
 
 		void Remove(Processing& o);
 

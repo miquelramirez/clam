@@ -20,6 +20,7 @@
  */
 
 #include "SMSSineFilter.hxx"
+#include "Factory.hxx"
 
 using namespace CLAM;
 
@@ -38,3 +39,5 @@ bool SMSSineFilter::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	return true;
 }
 
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<CLAM::SMSSineFilter> regtSMSSineFilter( "SMSSineFilter" );

@@ -129,57 +129,130 @@ Available: Continuation, Align, Random. Recommended: Continuation.
 /*************************************************************************************/
 /*************************************************************************************/
 
-(2) The transformation score is, for the time being, a very simple one.
+<!-- The following is a transformation score for the SMS Analysis Synthesis Application. 
+You may find an explanation of the AnalysisSynthesis scheme and most of these transformations 
+in chapter 10 of Udo Zoelzer's (ed.) DAFX. Digital Audio Effects (Wiley 2002). Of course you 
+can also access the source code of the example and the comments therein.
 
-It has two possible fields FAmount and BPFAmount.
+This configuration file is basically a composition of concrete configurations that affect 
+specific transformations. You may change the order, activate/deactivate or configure any 
+of them. The way the configuration affects a concrete transformation may vary, you should
+read the comments before each transformation for learning the particularities of every transformation.
 
-FAmount: is a floating point value that is given as initial value and will remain 
-constant if no BPFAmount is given.
+All transformations share some common fields. First they need to define the kind of concrete 
+transformation in the ConcreteClassName attribute. Then you need to specify the values for the 
+transformation. This can usually be done in two different ways: using a single-value Amount 
+attribute or a breakpoint function BPFAmount attribute in which you declare a function as a 
+set of points and an interpolation type (note: this function may represent a time envelope or 
+a spectral envelope depending on the transformation).
 
-BPFAmount: is a break point function value. The way this envelope is applied to a
-particular transformation will depend on the type of transformation and the way it
-is supposed to react. In the SMSFreqShift.cxx for example, you will see that the
-envelope is used as a temporal envelope for the amount of frequency shift to be applied
-and the breakpoint function's x axis must be defined between 0 and 1.
+In any transformation chain there need to be two special transformations called SMSTransformationChainIO 
+as first and last transformation to the chain. These transformations act as input and output, 
+are mandatory but do not affect the result.
 
-/*************************************************************************************/
-/*************************************************************************************/
-/********************** WRITING YOUR OWN TRANSFORMATION ******************************/
-/*************************************************************************************/
-/*************************************************************************************/
-If you want to write your own transformation, follow the following steps:
+After the particular transformations there is an 'OnArray' where you have the same number 
+of 1's or 0's as transformations in the Chain. 1 means active and 0 means bypassed 
+(SMSTransformationChainIO's are not affected by this).-->
 
-1. Look at the SMSFreqShift.hxx and .cxx files. It is a sample transformation that is
-used as default. Write your own MyTransformation.hxx and MyTransformation.cxx files
-following the same structure. Note that you only have to add code to any of the possible
-overloads of the Do(in, out) method. Accepted overloads are for (audio,audio), 
-(spectrum,spectrum) (spectralpeakarray,spectralpeakarray), (frame,frame) and (segment,segment).
+Example with commented elements:
 
-So, if MyTransformation only gets every audioSample and divides it by two, I should
-only have to write the following overload:
+<SMSTransformationChainConfig>
+	<Configurations>
+		<!-- Input to the transformation chain. Must always be present. -->
+		<Config>
+			<ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
+		</Config>
+		<!-- Pitch shift with timbre preservation. You can define a single-value amount or a 
+		time envelope. 1 means no change and 0.5 means multiplying current pitch by 0.5-->
+		<Config>
+			<ConcreteClassName>SMSPitchShift</ConcreteClassName>
+			<BPFAmount>
+				<Interpolation>Linear</Interpolation>
+				<Points>{0 1.5} {1 1.5}</Points>
+			</BPFAmount>
+		</Config>
+		<!-- Gender change. If amount is 0 it means from male to female. If it is 1 it means 
+		from female to male. -->
+		<Config>
+			<ConcreteClassName>SMSGenderChange</ConcreteClassName>
+			<Amount>0</Amount>
+		</Config>
+		<!-- Pitch discretization to temparate scale. If active it rounds the pitch to nearest 
+		note according to temperate musical scale.-->
+		<Config>
+			<ConcreteClassName>SMSPitchDiscretization</ConcreteClassName>
+		</Config>
+		<!-- Gain applied to odd harmonics in relation to even harmonic. E.g. A value of 6 means 
+		that a 6dB difference will be introduced, thus, odd harmonics will be 3dB higher and even 
+		harmonic 3dB lower.-->
+		<Config>
+			<ConcreteClassName>SMSOddEvenHarmonicRatio</ConcreteClassName>
+			<Amount>12</Amount>
+		</Config>
+		<!-- Frequency shift applied to all partials expressed in Hz-->
+		<Config>
+			<ConcreteClassName>SMSFreqShift</ConcreteClassName>
+			<Amount>100</Amount>
+		</Config>
+		<!-- Filter expressed in bpf format applied to only the sinusoidal components-->
+		<Config>
+			<ConcreteClassName>SMSSineFilter</ConcreteClassName>
+			<BPFAmount>
+				<Interpolation>Step</Interpolation>
+				<Points>{0 6} {1 0} {2 0} {100 0} </Points>
+			</BPFAmount>
+		</Config>
+		<!-- Gain in dB's applied to the residual component-->
+		<Config>
+			<ConcreteClassName>SMSResidualGain</ConcreteClassName>
+			<Amount>6</Amount>
+		</Config>
+		<!-- Gain in dB's applied to the sinusoidal component-->
+		<Config>
+			<ConcreteClassName>SMSSinusoidalGain</ConcreteClassName>
+			<Amount>3</Amount>
+		</Config>
+		<!-- Harmonizer. Each point defines a new voice added to the harmonization. The X value is the 
+		gain in relation to the original one and the Y value the pitch transposition factor. -->
+		<Config>
+			<ConcreteClassName>SMSHarmonizer</ConcreteClassName>
+			<BPFAmount>
+				<Interpolation>Step</Interpolation>
+				<Points>{-3 1.3} {-3 1.5} {-3 1.7}</Points>
+			</BPFAmount>
+		</Config>
+		<!-- Frequency shift applied to the sinusoidal spectral shape expressed in Hz.-->
+		<Config>
+			<ConcreteClassName>SMSSpectralShapeShift</ConcreteClassName>
+			<Amount>50</Amount>
+		</Config>
+		<!-- Morphing between two different sounds. SMSMorph has many different parameters to configure 
+		some of which are not even implemented. But the basic ones (and already tested) are:
+		- <HypBPB>: BPF (envelope-like) Parameter. Defines how much of each sound is being used from 0 to 1 
+		- <SynchronizeTime>: BPF (envelope-like) Parameter. Defines temporal relation between input sound and sound
+			to hybridize 
+		- <HybPitch: BPF (envelope-like) Parameter. Pitch to use: 0 input, 1 sound to hybridize-->
+		<Config>
+			<ConcreteClassName>SMSMorph</ConcreteClassName>
+			<HybBPF>
+				<Interpolation>Linear</Interpolation>
+				<Points>{0 0} {1 1}</Points>
+			</HybBPF>
+		</Config>
+		<!-- Output to the transformation chain. Must always be present. -->
+		<Config>
+			<ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
+		</Config>
+	</Configurations>
+	<!-- Array defining what transformations are active(1) or bypassed(0). WARNING: This array always has to 
+	be the same size as the number of previous transformations available.-->
+	<OnArray>1 0 0 0 0 0 0 0 0 0 0 1 1</OnArray>
+</SMSTransformationChainConfig>
 
-bool MyTransformation::Do(const Audio& in, Audio& out)
-{
-	TSize size=in.GetSize()
-	DataArray& inBuffer=in.GetBuffer();
-	DataArray& outBuffer=out.GetBuffer();
-	for(int i=0;i<size;i++)
-		outBuffer[i]=inBuffer[i]/2;
-	return true;
-}
 
-2. Then go to the SMSBase.cxx file and make the necessary include
+/*************************** Writing your own transformation ************************************/
 
-	ex. #include "MyTransformation.hxx"
-
-3. Finally, in the same file, find the Transform() method and make a new of your particular
-transformation.
-	ex. SetTransformation(new MyTransformation ());
-
-and that's all!
-
-Note: this feature is not implemented in the command line version at this writting but
-will soon be.
+MISSING, COMING SOON.
 
 
 /*************************************************************************************/

@@ -29,7 +29,7 @@
 	#include "XMLAdapter.hxx"
 	#include "XMLIterableAdapter.hxx"
 	#include "XMLComponentAdapter.hxx"
-#endif//CLAM_USE_XML
+#endif //CLAM_USE_XML
 
 #include "DynamicTypeMacros.hxx"  //this file is not included anywhere but here.
 
@@ -38,8 +38,8 @@
 
 #include <new>
 
-
 namespace CLAM {
+
 /////////////////////////////////////////////////////////////////////////////
 // Class DynamicType declaration :
 //
@@ -425,7 +425,7 @@ inline void DynamicType::InformTypedAttr_(unsigned val, const char*name, unsigne
 }
 
 
-}; //namespace CLAM
+} //namespace CLAM
 
 #endif // !defined _DynamicType_
 

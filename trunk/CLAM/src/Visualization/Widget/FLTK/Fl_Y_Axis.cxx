@@ -1,5 +1,5 @@
 #include "Fl_Y_Axis.hxx"
-#include <Fl/Fl_Group.H>
+#include <FL/Fl_Group.H>
 #include <cmath>
 #include <cstdio>
 

@@ -40,12 +40,13 @@ namespace CLAM
 		pthread_t mThread;
 		bool mCancel;
 		static AudioPlayer* sCurrentPlayer;
+		TTime  mT0;
 
 		void PlayingThreadSafe(  );
 		static void* sPlayingThreadSafe( void* thisobject );
 		
 	public:
-		AudioPlayer( Audio* audio, SigSlot::Slotv0& slot );
+		AudioPlayer( Audio* audio, SigSlot::Slotv0& slot, TTime t0 );
 		virtual ~AudioPlayer();
 
 		static void StopFromGUIThread(  );

@@ -1,5 +1,6 @@
 #include "GLStraightLineArray.hxx"
 #include "CLAMGL.hxx"
+#include <cstdlib>
 
 namespace CLAMVM
 {

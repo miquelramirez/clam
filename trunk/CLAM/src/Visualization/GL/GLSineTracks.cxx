@@ -6,60 +6,60 @@
 
 namespace CLAMVM
 {
-		GLSineTracks::GLSineTracks()
-			: mHeads(NULL), mTails(NULL), mPalette( NULL )
-		{
-		}
+	GLSineTracks::GLSineTracks()
+		: mHeads(NULL), mTails(NULL), mPalette( NULL )
+	{
+	}
 
-		GLSineTracks::~GLSineTracks()
-		{
+	GLSineTracks::~GLSineTracks()
+	{
 				
-		}
+	}
 
-		void GLSineTracks::ExecuteGLCommands()
-		{
-				CLAM_ASSERT( mPalette!=NULL, "No palette was given!" );
-				unsigned char colors[3];
+	void GLSineTracks::ExecuteGLCommands()
+	{
+		CLAM_ASSERT( mPalette!=NULL, "No palette was given!" );
+		unsigned char colors[3];
 
-				glClear( GL_COLOR_BUFFER_BIT );
-				glMatrixMode( GL_MODELVIEW );
-				glShadeModel( GL_SMOOTH );
-				glLoadIdentity();
+		glClear( GL_COLOR_BUFFER_BIT );
+		glMatrixMode( GL_MODELVIEW );
+		glShadeModel( GL_SMOOTH );
+		glLoadIdentity();
 
-				SineTrackSpanEnds::iterator currStart, currEnd;
+		SineTrackSpanEnds::iterator currStart, currEnd;
 				
-				currStart = mHeads->begin();
-				currEnd = mTails->begin();
+		currStart = mHeads->begin();
+		currEnd = mTails->begin();
 
-				while ( currStart != mHeads->end() && currEnd !=mTails->end() )
+		while ( currStart != mHeads->end() && currEnd !=mTails->end() )
+		{
+			SinusoidalTrack::iterator trackBegin, trackEnd;
+			trackBegin = *currStart;
+			trackEnd = *currEnd;
+
+			glBegin( GL_LINE_STRIP );
+			while ( trackBegin != trackEnd )
+			{
+				if ( ((*trackBegin).mColorIndex < 64) || ((*trackBegin).mColorIndex >= 128 ) )
 				{
-						SinusoidalTrack::iterator trackBegin, trackEnd;
-						trackBegin = *currStart;
-						trackEnd = *currEnd;
+					std::cerr << (*trackBegin).mMag << std::endl;
+					std::cerr << (*trackBegin).mFreq << std::endl;
+					std::cerr << (*trackBegin).mTimeIndex << std::endl;
+					std::cerr << (*trackBegin).mColorIndex << std::endl;
 
-						glBegin( GL_LINE_STRIP );
-						while ( trackBegin != trackEnd )
-						{
-							if ( ((*trackBegin).mColorIndex < 64) || ((*trackBegin).mColorIndex >= 128 ) )
-							{
-								std::cerr << (*trackBegin).mMag << std::endl;
-								std::cerr << (*trackBegin).mFreq << std::endl;
-								std::cerr << (*trackBegin).mTimeIndex << std::endl;
-								std::cerr << (*trackBegin).mColorIndex << std::endl;
-
-								CLAM_ASSERT( false, "Out of range" );
-							}
-
-
-							mPalette->GetRGBFromIndex( (*trackBegin).mColorIndex, colors[0], colors[1], colors[2]);
-							glColor3ubv( colors );
-							glVertex2f( (*trackBegin).mTimeIndex, (*trackBegin).mFreq );
-							trackBegin++;
-						}
-						glEnd();
-						currStart++;
-						currEnd++;
+					CLAM_ASSERT( false, "Out of range" );
 				}
-				glShadeModel( GL_FLAT );
+
+
+				mPalette->GetRGBFromIndex( (*trackBegin).mColorIndex, colors[0], colors[1], colors[2]);
+				glColor3ubv( colors );
+				glVertex2f( (*trackBegin).mTimeIndex, (*trackBegin).mFreq );
+				trackBegin++;
+			}
+			glEnd();
+			currStart++;
+			currEnd++;
 		}
+		glShadeModel( GL_FLAT );
+	}
 }

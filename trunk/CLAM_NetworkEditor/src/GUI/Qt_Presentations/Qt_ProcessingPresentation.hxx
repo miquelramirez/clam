@@ -7,6 +7,13 @@
 #include "ProcessingPresentation.hxx"
 #include "Signalv1.hxx"
 #include "Slotv1.hxx"
+#include "QTConfigurator.hxx"
+
+
+namespace CLAM
+{
+	class ProcessingConfig;
+}
 
 namespace CLAMVM
 {
@@ -29,7 +36,6 @@ public:
 	virtual void Hide();
 	void EmitPositionOfPorts();
 protected:
-	virtual void OnNewName(const std::string& name);
 	virtual void OnNewObservedClassName(const std::string& name);
 	virtual void OnNewInPort( CLAMVM::InPortAdapter* );
 	virtual void OnNewOutPort( CLAMVM::OutPortAdapter* );	
@@ -39,9 +45,10 @@ protected:
 	virtual void OnNewInPortAfterClickOutPort(const QPoint &);
 
 	void paintEvent( QPaintEvent * );
-	void        mousePressEvent( QMouseEvent *);
-	void        mouseReleaseEvent( QMouseEvent *);
-	void        mouseMoveEvent( QMouseEvent *);
+	void mousePressEvent( QMouseEvent * );
+	void mouseReleaseEvent( QMouseEvent * );
+	void mouseMoveEvent( QMouseEvent * );
+	void keyPressEvent( QKeyEvent * );
 
 // qt stuff
 	bool        mDown;
@@ -50,6 +57,7 @@ protected:
 public: // signals
 	SigSlot::Signalv1< Qt_InPortPresentation * > AcquireInPortClicked;
 	SigSlot::Signalv1< Qt_OutPortPresentation * > AcquireOutPortClicked;
+	SigSlot::Signalv1< CLAM::ProcessingConfig * > EditConfiguration;
 public: // slots
 	SigSlot::Slotv1< Qt_InPortPresentation * > SetInPortClicked;
 	SigSlot::Slotv1< Qt_OutPortPresentation * > SetOutPortClicked;

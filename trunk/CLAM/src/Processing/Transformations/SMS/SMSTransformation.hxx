@@ -28,53 +28,14 @@
 #include "InPortTmpl.hxx"
 #include "OutPortTmpl.hxx"
 
-#include "BPF.hxx"
-
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
+#include "SMSTransformationConfig.hxx"
 
 namespace CLAM {
 
 
-	/** Configuration class for all SMSTransformations. It includes a float-like single value 
-	 *	parameter and a BPF envelope-like parameter. Either one of these may be used to initialize 
-	 *	and update the value control in an SMSTransformation.
-	 */
-	class SMSTransformationConfig: public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SMSTransformationConfig, 4,ProcessingConfig);
-		/** Name of the SMSTransformation object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		/** Type of transformation, for the time being just a string, should become
-		* an enumeration of known transformation types??*/
-		DYN_ATTRIBUTE (1, public, std::string, Type);
-		/** Single Value Parameter */
-		DYN_ATTRIBUTE (2, public, TData, Amount);
-		/** BPF (envelope-like) Parameter */
-		DYN_ATTRIBUTE (3, public, BPF, BPFAmount);
-
-
-	protected:
-		/** The single-value Amount and the On configuration are added by default. 
-		 *	Should you need the BPF, it must be added explicitly
-		 */
-		void DefaultInit()
-		{
-			AddAmount();
-			UpdateData();
-			DefaultValues();
-		}
-
-		/** By default, the amount is set to 0 and the On parameter to true.*/
-		void DefaultValues()
-		{
-			SetAmount(0);
-		}
-	public:
-		virtual ~SMSTransformationConfig(){}
-	};
 
 	/** Abstract base class for all SMS Transformations. It implements all basic behaviour for
 	 *	SMS Transformations such as Configuration and Control handling but defers the selection
@@ -93,37 +54,20 @@ namespace CLAM {
 		 *  @param The ProcessingConfig object
 		 *  @return True if the cast has been commited correctly		 
 		 */
-		virtual bool ConcreteConfigure(const ProcessingConfig& c)
-		{
-			CopyAsConcreteConfig(mConfig, c);
-			mUseTemporalBPF=false;
-			if(mConfig.HasAmount())
-				mAmountCtrl.DoControl(mConfig.GetAmount());
-			else if(mConfig.HasBPFAmount()){
-				mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0));
-				mUseTemporalBPF=true;}
-			else
-				mAmountCtrl.DoControl(0);
-			return true;
-		}
-		
+		virtual bool ConcreteConfigure(const ProcessingConfig& c);
+
 		const ProcessingConfig& GetConfig() const
 		{
 			return mConfig;
 		}
 
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSTransformation():mAmountCtrl("Amount",this),mOnCtrl("On",this),mInput("Input",this,1),mOutput("Output",this,1)
-		{
-		}
+		SMSTransformation();
 
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSTransformation(const SMSTransformationConfig& c):mAmountCtrl("Amount",this),mOnCtrl("On",this),mInput("Input",this,1),mOutput("Output",this,1)
-		{
-			Configure(c);
-		}
+		SMSTransformation(const SMSTransformationConfig& c);
 		
 		/** Destructor of the class*/
  		virtual ~SMSTransformation(){};
@@ -131,7 +75,7 @@ namespace CLAM {
 		/** Supervised Do() function. It calls the non-supervised Do that receives Segment as
 		 *	input and output.
 		 */
-		bool Do(void)
+		virtual bool Do(void)
 		{
 			return Do(mInput.GetData(),mOutput.GetData());
 		}
@@ -143,17 +87,18 @@ namespace CLAM {
 		/** Method to update the Amount control from an existing BPF configured in the
 		 *	configuration phase.
 		 */
-		bool UpdateControlValueFromBPF(TData pos)
-		{
-			if(mConfig.HasBPFAmount())
-			{
-				mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(pos));
-				return true;
-			}
-			else return false;
-		}
-	
+		virtual bool UpdateControlValueFromBPF(TData pos);
+
+		/** Returns true if there are no more frames to read from input */
+		virtual bool IsLastFrame();
+		
+		/** Overriding default method to initialize input frame counter */
+		bool ConcreteStart();
+
 	protected:
+		
+		/** Input frame counter */
+		int mCurrentInputFrame;
 
 /**@TODO: The UnwrapProcessingData methods could possibly be moved to a more
  *	generic place, like the Segment class (becoming a friend operation?). */
@@ -164,9 +109,9 @@ namespace CLAM {
 		 *	@param Frame*: just used as the selector that indicates that this
 		 *	overload is to be used
 		 */
-		const Frame& UnwrapProcessingData(const Segment& in,Frame*)
+		virtual const Frame& UnwrapProcessingData(const Segment& in,Frame*)
 		{
-			return in.GetFrame(in.mCurrentFrameIndex);
+			return in.GetFrame(mCurrentInputFrame);
 		}
 		/** Particular method for unwrapping a Frame from a given Segment
 		 *	@return: current Frame in the Segment returned as a non-constant reference.
@@ -174,9 +119,12 @@ namespace CLAM {
 		 *	@param Frame*: just used as the selector that indicates that this
 		 *	overload is to be used
 		 */
-		Frame& UnwrapProcessingData(Segment& out,Frame*)
+		virtual Frame& UnwrapProcessingData(Segment& out,Frame*)
 		{
-			return out.GetFrame(out.mCurrentFrameIndex);
+			if(mCurrentInputFrame==out.GetnFrames()&&mInput.GetData().GetnFrames()>out.GetnFrames())
+				out.AddFrame(out.GetFrame(out.GetnFrames()-1));
+			return out.GetFrame(mCurrentInputFrame);
+
 		}
 
 		/** Particular method for unwrapping an Audio from a given Segment
@@ -187,7 +135,8 @@ namespace CLAM {
 		 */
 		const Audio& UnwrapProcessingData(const Segment& in,Audio*)
 		{
-			return in.GetFrame(in.mCurrentFrameIndex).GetAudioFrame();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(in,pFrame).GetAudioFrame();
 		}
 		/** Particular method for unwrapping an Audio from a given Segment
 		 *	@return: AudioFrame in current Frame in the Segment returned as a non-constant reference.
@@ -197,7 +146,8 @@ namespace CLAM {
 		 */
 		Audio& UnwrapProcessingData(Segment& out,Audio*)
 		{
-			return out.GetFrame(out.mCurrentFrameIndex).GetAudioFrame();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(out,pFrame).GetAudioFrame();
 		}
 		/** Particular method for unwrapping a Spectrum from a given Segment
 		 *	@return: Residual Spectrum in current Frame in the Segment returned as a constant reference.
@@ -207,7 +157,8 @@ namespace CLAM {
 		 */
 		const Spectrum& UnwrapProcessingData(const Segment& in,Spectrum*)
 		{
-			return in.GetFrame(in.mCurrentFrameIndex).GetResidualSpec();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(in,pFrame).GetResidualSpec();
 		}
 		/** Particular method for unwrapping a Spectrum from a given Segment
 		 *	@return: Residual Spectrum in current Frame in the Segment returned as a non-constant reference.
@@ -217,7 +168,8 @@ namespace CLAM {
 		 */
 		Spectrum& UnwrapProcessingData(Segment& out,Spectrum*)
 		{
-			return out.GetFrame(out.mCurrentFrameIndex).GetResidualSpec();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(out,pFrame).GetResidualSpec();
 		}
 		/** Particular method for unwrapping a SpectralPeakArray from a given Segment
 		 *	@return: SpectralPeakArray in current Frame in the Segment returned as a constant reference.
@@ -227,7 +179,8 @@ namespace CLAM {
 		 */
 		const SpectralPeakArray& UnwrapProcessingData(const Segment& in,SpectralPeakArray*)
 		{
-			return in.GetFrame(in.mCurrentFrameIndex).GetSpectralPeakArray();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(in,pFrame).GetSpectralPeakArray();
 		}
 		/** Particular method for unwrapping a SpectralPeakArray from a given Segment
 		 *	@return: SpectralPeakArray in current Frame in the Segment returned as a non-constant reference.
@@ -237,7 +190,8 @@ namespace CLAM {
 		 */
 		SpectralPeakArray& UnwrapProcessingData(Segment& out,SpectralPeakArray*)
 		{
-			return out.GetFrame(out.mCurrentFrameIndex).GetSpectralPeakArray();
+			Frame* pFrame = NULL;
+			return UnwrapProcessingData(out,pFrame).GetSpectralPeakArray();
 		}
 
 		/** Internally stored configuration */
@@ -293,14 +247,20 @@ namespace CLAM {
 		 *  @param out the Segment that is output from the transformation.
 		 *  @return Boolean value, whether the process has finished successfully or not.
 		 */
-		bool Do(const Segment& in, Segment& out)
+		virtual bool Do(const Segment& in, Segment& out)
 		{
-			
-			if(mUseTemporalBPF)
-				UpdateControlValueFromBPF(((TData)in.mCurrentFrameIndex)/in.GetnFrames());
-			return Do(UnwrapSegment(in),UnwrapSegment(out));
-			
+			while(mCurrentInputFrame<in.mCurrentFrameIndex)
+			{
+				if(mUseTemporalBPF)
+					UpdateControlValueFromBPF(((TData)in.mCurrentFrameIndex)/in.GetnFrames());
+				Do(UnwrapSegment(in),UnwrapSegment(out));
+				if(&in!=&out)
+					out.mCurrentFrameIndex++;
+				mCurrentInputFrame++;
+			}
+			return true;
 		}
+		
 
 	
 	protected:
@@ -326,7 +286,7 @@ namespace CLAM {
 			return UnwrapProcessingData(in,(UnwrappedProcessingData*)(0));
 		}
 
-		
+				
 	};
 
 

@@ -29,7 +29,7 @@ public:
 	// to implement in each type of flowcontrol
 	virtual void DoProcessings() = 0;
 
-	void NetworkTopologyChanged() { _networkChanged=true; }
+	void NetworkTopologyChanged() { _networkChanged=true;}
 
 protected:
 	bool HasNetworkTopologyChanged() const { return _networkChanged; }

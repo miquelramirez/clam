@@ -49,7 +49,7 @@ namespace CLAM
 
 /**
 * Constructor from a given interpolation type. 
-* @argument Interpolation Type: EInterpolation (linear, polynomical, spline...)
+* @param Interpolation Type: EInterpolation (linear, polynomical, spline...)
 */
 		BPFTmpl(const EInterpolation& eInterpolation);
 
@@ -57,8 +57,8 @@ namespace CLAM
 * Constructor from a given interpolation type and an initial size. The initial size is used
 * to allocate the member mArray. Is the one to use for efficiency whenever a maximum size of
 * the BPF is known beforehand.
-* @argument size: Allocation size for the member array of points.
-* @argument Interpolation Type: EInterpolation (linear, polynomical, spline...)
+* @param size: Allocation size for the member array of points.
+* @param Interpolation Type: EInterpolation (linear, polynomical, spline...)
 */
 		BPFTmpl(TSize size);
 
@@ -67,7 +67,7 @@ namespace CLAM
 
 /**
 * Copy Constructor.
-* @argument originalBPF
+* @param originalBPF
 */
 		BPFTmpl(const BPFTmpl<TX,TY>& orig);
 

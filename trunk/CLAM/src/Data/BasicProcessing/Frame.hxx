@@ -23,19 +23,18 @@
 #define _Frame_
 
 #include "DynamicType.hxx"
+#include "Spectrum.hxx"
 #include "Array.hxx"
 #include "IndexArray.hxx"
 #include "DataTypes.hxx"
 #include "OSDefines.hxx"
 #include "Err.hxx"
 #include "ProcessingData.hxx"
-#include "Spectrum.hxx"
 #include "Fundamental.hxx"
 #include "SpectralPeakArray.hxx"
 #include "Audio.hxx"
 
-
-namespace CLAM{
+namespace CLAM {
 
 
 /** Processing Data class to encapsulate a frame and all its related information. A Frame has an associated

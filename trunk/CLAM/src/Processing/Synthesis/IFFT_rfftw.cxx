@@ -20,16 +20,16 @@
  */
 
 #include "IFFT_rfftw.hxx"
+#include "SpecTypeFlags.hxx"
 
 #include <string>
 #include "mtgsstream.h" // An alias for <sstream>
 
 #include "ErrProcessingObj.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
 
 namespace CLAM {
-
-	SpecTypeFlags IFFT_rfftw::mComplexflags;
-
 
 	bool IFFT_rfftw::ConcreteConfigure(const ProcessingConfig& c)
 	{

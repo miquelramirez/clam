@@ -1,6 +1,7 @@
 
 #include "ConnectionPresentation.hxx"
 #include "ConnectionModel.hxx"
+#include "Processing.hxx"
 
 namespace NetworkGUI
 {
@@ -8,6 +9,8 @@ namespace NetworkGUI
 ConnectionPresentation::ConnectionPresentation()
 	: mInName( "unnamed inport" ),
 	  mOutName( "unnamed outport" )
+//	  mOutProc(0),
+//	  mInProc(0)
 {
 	SetNames.Wrap( this, &ConnectionPresentation::OnNewNames );
 }
@@ -21,10 +24,12 @@ void ConnectionPresentation::AttachTo( CLAMVM::ConnectionModel & m )
 	m.AcquireNames.Connect(SetNames);
 }
 
-void ConnectionPresentation::OnNewNames(const std::string & out, const std::string & in)
+void ConnectionPresentation::OnNewNames( const std::string & portOut, const std::string & portIn )
 {
-	mInName = in;
-	mOutName = out;
+//	mInProc = in;
+//	mOutProc = out;
+	mInName = portIn;
+	mOutName = portOut;
 }
 
 } // namespace NetworkGUI

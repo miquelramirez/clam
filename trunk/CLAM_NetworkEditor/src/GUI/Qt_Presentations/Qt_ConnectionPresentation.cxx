@@ -109,7 +109,7 @@ void Qt_ConnectionPresentation::paintEvent( QPaintEvent * e)
 
 	QPainter paint;
 	paint.begin( &bm, this );
-	paint.setPen( QPen(color1, 3));
+	paint.setPen( QPen(color1, 5));
 
 	UpdateBezierLine();
 	paint.drawCubicBezier(mPositions);
@@ -122,7 +122,7 @@ void Qt_ConnectionPresentation::paintEvent( QPaintEvent * e)
 
 	QPainter p( &offscreen );
 
-	p.setPen( QPen ( QColor( 240, 200, 200 ), 3));
+	p.setPen( QPen ( QColor( 240, 200, 200 ), 5));
 	p.drawCubicBezier(mPositions);
 	if (mDown)
 		p.setPen( QPen ( QColor( 200, 50, 50), 1 ) );
@@ -193,7 +193,7 @@ void Qt_ConnectionPresentation::keyPressEvent( QKeyEvent *k )
 	switch ( tolower(k->ascii()) ) 
 	{
         case 'x': 
-		RemoveConnection.Emit( mOutName, mInName, this );
+		RemoveConnection.Emit( this );
 		Hide();
 		mDown = false;
 		releaseKeyboard();

@@ -20,6 +20,7 @@
  */
 
 #include "Complex.hxx"
+#include "SpecTypeFlags.hxx"
 #include "SpectrumAdder2.hxx"
 #include "ErrProcessingObj.hxx"
 #include "BPF.hxx"

@@ -96,7 +96,7 @@ namespace CLAM {
 			mHop = hop?hop:length;
 		}
 		const std::string& GetName() const { return mName; }
-		const Processing * GetProcessing() const { return mObject;}
+		Processing * GetProcessing() const { return mObject;}
 	};
 
 }

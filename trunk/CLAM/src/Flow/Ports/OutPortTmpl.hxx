@@ -22,6 +22,7 @@ class OutPortTmpl : public OutPort
 public:
 	
 	inline OutPortTmpl(const std::string &n, Processing *o, int length, int hop = 0);
+	inline ~OutPortTmpl();
 	inline T &GetData();
 	inline void LeaveData();
 	void Attach(ProcessingData& data);
@@ -53,6 +54,13 @@ inline OutPortTmpl<T>::OutPortTmpl(const std::string &n,
 	  mpNode(0)
 {
 	o->PublishOutPort(this);
+}
+
+template<class T>
+inline OutPortTmpl<T>::~OutPortTmpl()
+{
+	if (mpRegion)
+		delete mpRegion;
 }
 
 template<class T>
@@ -158,7 +166,17 @@ inline bool OutPortTmpl<T>::IsReadyForWriting()
 template<class T>
 inline void OutPortTmpl<T>::Unattach()
 {
-	mpNode = 0;
+	if( !IsAttached() )
+		return;
+
+	if(mpNode)
+	{
+		mpNode->UnattachAll();
+		delete mpRegion;
+		delete mpNode;
+		mpRegion = 0;
+		mpNode = 0;
+	}	
 	mData.SetPtr(NULL);
 }
 

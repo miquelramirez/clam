@@ -26,6 +26,7 @@
 #include "WaveFileIO.hxx"
 #include "ErrSoundFileIO.hxx"
 
+
 using namespace CLAM;
 
 	AudioFileIn::AudioFileIn() :
@@ -221,14 +222,15 @@ using namespace CLAM;
 		return res;
 	}
 
-	bool AudioFileIn::ConcreteStart()
+        bool AudioFileIn::ConcreteStart()
 	{
+	
 		if (!mpSoundFileIO)
 			return false;
 		try {	
-			mpSoundFileIO->Open(mConfig.GetFilename().c_str(),WaveFileIO::eRead);
+			mpSoundFileIO->Open(mConfig.GetFilename().c_str(),WaveFileIO::eRead);	
 		}
-		catch (ErrSoundFileIO err)
+		catch (ErrSoundFileIO& err)
 		{
 			mStatus += "Error opening file: ";
 			mStatus += err.mStr;
@@ -247,7 +249,7 @@ using namespace CLAM;
 			mpSoundFileIO->SeekFrame(mConfig.GetStartFrame());
 //			printf("Seeking to %d\n",mConfig.GetStartFrame());
 		}
-		catch (ErrSoundFileIO&)
+		catch (ErrSoundFileIO& e)
 		{
 			mStatus = "Error seeking frame\n";
 			return false;

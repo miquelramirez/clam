@@ -4,8 +4,8 @@
 
 #include "Signalv1.hxx"
 #include "Signalv2.hxx"
-#include "Slotv2.hxx"
 #include "Slotv1.hxx"
+#include "Slotv2.hxx"
 #include <string>
 
 namespace CLAM
@@ -15,7 +15,7 @@ namespace CLAM
 
 namespace CLAMVM
 {
-	class ProcessingAdapter;
+	class ProcessingController;
 	class ConnectionAdapter;
 
 	class NetworkModel
@@ -26,15 +26,15 @@ namespace CLAMVM
 
 		//signals
 		SigSlot::Signalv1< const std::string& >  AcquireName;
-		SigSlot::Signalv2< CLAMVM::ProcessingAdapter* , const std::string& > AcquireProcessing;
+		SigSlot::Signalv2< CLAMVM::ProcessingController* , const std::string& > AcquireProcessing;
 		SigSlot::Signalv1< CLAMVM::ConnectionAdapter* > AcquireConnection;
 
 		//slots
-		SigSlot::Slotv2< const std::string &, const std::string& > CreateNewConnection;
-
 		SigSlot::Slotv1< bool > ChangeState;
-		SigSlot::Slotv2< const std::string &, const std::string& > RemoveConnection;
+		SigSlot::Slotv1< const std::string & > RemoveProcessing;
+		SigSlot::Slotv2< const std::string &, const std::string & > RemoveConnection;
 		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > AddNewProcessing;
+		SigSlot::Slotv2< const std::string &, const std::string& > CreateNewConnection;
 		
 	};	
 }

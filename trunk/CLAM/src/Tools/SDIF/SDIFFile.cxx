@@ -290,7 +290,7 @@ namespace SDIF
 		Pos(Pos()+size+padding);
 	}
 
-	#ifdef LINUX
+	#ifdef linux
 	#include <byteswap.h>
 	#endif
 	
@@ -300,7 +300,7 @@ namespace SDIF
 
 	TUInt16 Swap(const TUInt16& val)
 	{
-	#if defined LINUX 
+	#if defined linux 
 		return bswap_16(val);
 	/*#elif defined WIN32
 		TUInt16 ret;
@@ -313,7 +313,7 @@ namespace SDIF
 
 	TUInt32 Swap(const TUInt32& val)
 	{
-	#if defined LINUX 
+	#if defined linux 
 		return bswap_32(val);
 	/*#elif defined WIN32
 		TUInt32 ret;
@@ -331,7 +331,7 @@ namespace SDIF
 
 	TUInt64 Swap(const TUInt64& val)
 	{
-	#if defined LINUX 
+	#if defined linux 
 		return bswap_64(val);
 	/*#elif defined WIN32
 		TUInt64 ret;

@@ -20,6 +20,7 @@
  */
 
 #include "SMSOddEvenHarmonicRatio.hxx"
+#include "Factory.hxx"
 
 using namespace CLAM;
 
@@ -30,13 +31,15 @@ bool SMSOddEvenHarmonicRatio::Do(const SpectralPeakArray& in, SpectralPeakArray&
 	DataArray& iMagArray=in.GetMagBuffer();
 	DataArray& oMagArray=out.GetMagBuffer();
 	TSize nPeaks=in.GetnPeaks();
-	TData oddFactor=mAmountCtrl.GetLastValue();
+	TData oddFactor=mAmountCtrl.GetLastValue()*0.5;
 	TData evenFactor=-oddFactor;
 	for(i=0;i<nPeaks-1;i+=2)
 	{
-		//oMagArray[i]=MIN(iMagArray[i]+oddFactor,0);
+		oMagArray[i]=MIN(iMagArray[i]+oddFactor,0);
 		oMagArray[i+1]=MIN(iMagArray[i+1]+evenFactor,0);
 	}
 	return true;
 }
 
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<CLAM::SMSOddEvenHarmonicRatio> regtSMSOddEvenHarmonicRatio( "SMSOddEvenHarmonicRatio" );

@@ -32,8 +32,6 @@ namespace CLAMVM
 
 using CLAM::Mutex;
 
-class Aspect;
-
 /** \class ModelAdapter
  *  \brief Base class for Model Object Adapters
  *

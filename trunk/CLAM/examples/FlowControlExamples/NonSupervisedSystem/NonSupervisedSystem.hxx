@@ -43,28 +43,28 @@ private:
 	void ConfigureData();
 
 	// processings
-	CLAM::Oscillator _oscillator;
-	CLAM::Oscillator _modulator;
-	CLAM::AudioFileIn _fileIn;
-	CLAM::AudioFileOut _fileOut;
-	CLAM::AudioAdder _adder;
-	CLAM::AudioMultiplier _multiplier;
+	CLAM::Oscillator mOscillator;
+	CLAM::Oscillator mModulator;
+	CLAM::AudioFileIn mFileIn;
+	CLAM::AudioFileOut mFileOut;
+	CLAM::AudioAdder mAdder;
+	CLAM::AudioMultiplier mMultiplier;
 
-	CLAM::AudioOut _audioOut;
+	CLAM::AudioOut mAudioOut;
 
 	// processing data
-	CLAM::Audio _oscillatorData;
-	CLAM::Audio _fileInData;
-	CLAM::Audio _modulatorData;
-	CLAM::Audio _adderData;
-	CLAM::Audio _multiplierData;
+	CLAM::Audio mOscillatorData;
+	CLAM::Audio mFileInData;
+	CLAM::Audio mModulatorData;
+	CLAM::Audio mAdderData;
+	CLAM::Audio mMultiplierData;
 
 	//other system parameters
-	std::string _fileInName;
-	std::string _fileOutName;
-	int _frameSize;
-	int _maxFramesToProcess;
-	bool _hasAudioOut;
+	std::string mFileInName;
+	std::string mFileOutName;
+	int mFrameSize;
+	int mMaxFramesToProcess;
+	bool mHasAudioOut;
 
 };
 

@@ -19,4 +19,6 @@ namespace CLAMGUI
 	class SMSTools;
 }
 
+class SMSScoreEditor;
+
 //using namespace CLAMGUI;

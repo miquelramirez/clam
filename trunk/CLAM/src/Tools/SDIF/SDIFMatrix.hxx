@@ -8,17 +8,17 @@
 
 #include "SDIFType.hxx"
 
-/** The data in a Frames are stored in 2D matrices.
-* Each column corresponds to a parameter like frequency or amplitude and 
-* each row represents an object like a filter, sinusoid, or noise band.
-* Each Matrix starts with a MatrixHeader, that contains a
-*       type id, and the dimensions of the matrix.
-*
-*       As Matrixes are stored in a linked list in the Frames,> *       each Matrix has a pointer to the next matrix inside the
-*       frame.
-*/
 namespace SDIF
 {
+	/** The data in a Frames are stored in 2D matrices.
+	* Each column corresponds to a parameter like frequency or amplitude and 
+	* each row represents an object like a filter, sinusoid, or noise band.
+	* Each Matrix starts with a MatrixHeader, that contains a
+	*       type id, and the dimensions of the matrix.
+	*
+	*       As Matrixes are stored in a linked list in the Frames,> *       each Matrix has a pointer to the next matrix inside the
+	*       frame.
+	*/
 
 	class Matrix
 	{

@@ -22,32 +22,17 @@
 #ifndef _CIRCULAR_SHIFT_H_
 #define _CIRCULAR_SHIFT_H_
 
+#include "DataTypes.hxx"
 #include "Processing.hxx"
-#include "DynamicType.hxx"
-#include "Spectrum.hxx"
-#include "Audio.hxx"
-
-
-
+#include "CircularShiftConfig.hxx"
+#include "InControl.hxx"
 
 namespace CLAM {
 
-	
-	class CircularShiftConfig: public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (CircularShiftConfig, 2,ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		/* Right now you can change the amount any time but it will only be taken into
-		account if Type is set to eCustom */
-		DYN_ATTRIBUTE (1, public, TData, Amount);
-
-		~CircularShiftConfig(){};
-	protected:
-		void DefaultInit();
-
-
-	};
+	class Spectrum;
+	class Audio;
+	class Storage;
+	class ProcessingConfig;
 
 	/** This Processing class takes an input audio buffer and shifts it to get zero-phase
 	 *	conditions in the STFT 

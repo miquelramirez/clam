@@ -25,111 +25,96 @@
 
 #include <typeinfo> // for bad_cast definition
 #include "Processing.hxx"
-#include "ProcessingData.hxx"
 #include "InPortTmpl.hxx"
 #include "OutPortTmpl.hxx"
-#include "DataTypes.hxx"
-#include "Audio.hxx"
-#include "Spectrum.hxx"
 #include <string>
+#include "FFTConfig.hxx"
 
 namespace CLAM {
 
-	class FFT_rfftw;
+    class FFT_rfftw;
+    class Storage;
+    class ProcessingConfig;
+    class Audio;
+    class Spectrum;
+	
+    /** Default FFT implemntation. 
+     * In order to use it, only the FFT.hxx file needs to be included;
+     * it will include any other necesary header.
+     */
+    typedef FFT_rfftw FFT;
 
-	/** Default FFT implemntation. 
-	 * In order to use it, only the FFT.hxx file needs to be included;
-	 * it will include any other necesary header.
+    /** Abstract base class for FFT classes */
+    class FFT_base: public Processing
+    {
+    protected:
+	/** FFT Configuration */
+	FFTConfig mConfig;
+	/** FFT size */
+	int mSize;
+
+	InPortTmpl<Audio>     mInput;
+	OutPortTmpl<Spectrum> mOutput;
+
+	const char *GetClassName() const {return "FFT";}
+
+	// Control change callback function
+	void ChangeSize(int n);
+	int GetSize() {return mSize;}
+
+	virtual bool ConcreteConfigure(const ProcessingConfig&) = 0;
+
+    public:
+
+	FFT_base();
+	virtual ~FFT_base();
+
+	/** Configuration access:
 	 */
-	typedef FFT_rfftw FFT;
+	const ProcessingConfig &GetConfig() const { return mConfig;}
 
+	virtual void Attach(Audio& in, Spectrum &out) = 0;
 
-	/** Configuration class for FFT classes
+	/** Supervised-mode Do function.
 	 */
-	struct FFTConfig: public ProcessingConfig {
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (FFTConfig, 2, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, int, AudioSize);
-	protected:
-		/** Dynamic type initialization: All attributes are
-		 *   instantiated.
-		 */
-		void DefaultInit(void);
-	};
+	virtual bool Do(void) = 0;
 
+	/** Standard FFT Do function, with storage class references as
+	 * arguments. This method implements the old conversor routines.
+	 * The resulting spectrum will be of input audio size / 2 + 1. 
+	 * Input audio must be a power-of-two.
+	 */
+	virtual bool Do(const Audio& in, Spectrum &out) const = 0;
 
-	/** Abstract base class for FFT classes */
-	class FFT_base: public Processing
-	{
-	protected:
-		/** FFT Configuration */
-		FFTConfig mConfig;
-		/** FFT size */
-		int mSize;
+	// Input/Output configuration methods
 
-		InPortTmpl<Audio>     mInput;
-		OutPortTmpl<Spectrum> mOutput;
+	/** FFT non-supervised mode SetPrototypes function */
+	virtual bool SetPrototypes(const Audio& in,const Spectrum &out) = 0;
 
-		const char *GetClassName() const {return "FFT";}
+	/** Standard supervised-mode SetPrototypes function. */
+	virtual bool SetPrototypes() {return false;}
 
-		// Control change callback function
-		void ChangeSize(int n);
-		int GetSize() {return mSize;}
+	/** Standard UnsetPrototypes function. */
+	virtual bool UnsetPrototypes() {return false;}
 
-		virtual bool ConcreteConfigure(const ProcessingConfig&) = 0;
+	// Enable/Disable methods. Maybe we should not be deriving
+	// these ones in FFT subclasses. (FFT implementations will
+	// probably be always memoryless.
 
-	public:
+	virtual bool MayDisableExecution() const {return false;}
 
-		FFT_base();
-		virtual ~FFT_base();
+	virtual bool DisableExecution() {return false;}
 
-		/** Configuration access:
-		 */
-		const ProcessingConfig &GetConfig() const { return mConfig;}
+	virtual bool EnableExecution() {return false;}
 
-		virtual void Attach(Audio& in, Spectrum &out) = 0;
+	// COMPONENT Methods
 
-		/** Supervised-mode Do function.
-		 */
-		virtual bool Do(void) = 0;
+	/** @todo Not yet implemented. */
+	virtual void StoreOn(Storage &s) {};
+	/** @todo Not yet implemented. */
+	virtual void LoadFrom(Storage &s) {};
 
-		/** Standard FFT Do function, with storage class references as
-		 * arguments. This method implements the old conversor routines.
-		 * The resulting spectrum will be of input audio size / 2 + 1. 
-		 * Input audio must be a power-of-two.
-		 */
-		virtual bool Do(const Audio& in, Spectrum &out) const = 0;
-
-		// Input/Output configuration methods
-
-		/** FFT non-supervised mode SetPrototypes function */
-		virtual bool SetPrototypes(const Audio& in,const Spectrum &out) = 0;
-
-		/** Standard supervised-mode SetPrototypes function. */
-		virtual bool SetPrototypes() {return false;}
-
-		/** Standard UnsetPrototypes function. */
-		virtual bool UnsetPrototypes() {return false;}
-
-		// Enable/Disable methods. Maybe we should not be deriving
-		// these ones in FFT subclasses. (FFT implementations will
-		// probably be always memoryless.
-
-		virtual bool MayDisableExecution() const {return false;}
-
-		virtual bool DisableExecution() {return false;}
-
-		virtual bool EnableExecution() {return false;}
-
-		// COMPONENT Methods
-
-		/** @todo Not yet implemented. */
-		virtual void StoreOn(Storage &s) {};
-		/** @todo Not yet implemented. */
-		virtual void LoadFrom(Storage &s) {};
-
-	};
+    };
 };//namespace CLAM
 
 // We include the default implementation here.

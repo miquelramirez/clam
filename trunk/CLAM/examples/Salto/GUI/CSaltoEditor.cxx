@@ -132,9 +132,9 @@ CSaltoEditor::CSaltoEditor(Parameters *pParams,SaltoSynth *pSaltoApp, MelodyTran
     mpAudioStartButton->when(FL_WHEN_CHANGED);
     mpAudioStartButton->callback((Fl_Callback*) sStart,this);
  // 	mpAudioStartButton->value(mpParams->GetAudioStart());
-#if defined LINUX || defined WIN32
+#if defined linux || defined WIN32
     mpAudioStartButton->hide();
-#endif //LINUX
+#endif //linux
 
     mpStoreButton = new Fl_Button(TP_FUNCTIONS_X+105,TP_FUNCTIONS_Y+5,100,20,"SAVE");
   	mpStoreButton->callback((Fl_Callback*) sStoreAll,this);

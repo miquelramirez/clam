@@ -20,6 +20,7 @@
  */
 
 #include "InControl.hxx"
+#include "OutControl.hxx"
 #include "Processing.hxx"
 
 namespace CLAM {
@@ -35,6 +36,12 @@ InControl::InControl(const std::string &name, Processing* parent, const bool pub
 InControl::~InControl() 
 {
 }
+
+bool InControl::IsConnectedTo( OutControl & out)
+{
+	return out.IsConnectedTo( *this );
+}
+
 
 //  InControl::OutControlIterator InControl::GetOutControls() const
 //  {

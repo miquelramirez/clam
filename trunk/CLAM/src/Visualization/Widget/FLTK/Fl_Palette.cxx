@@ -12,45 +12,46 @@
 
 #include "Fl_Palette.hxx"
 #include "CLAM_Math.hxx"
+#include <cstdlib>
 
 namespace CLAMVM
 {
 
-const int Fl_Palette::NCOLORMAPPING = 8192;
-const int Fl_Palette::FIRST_INDEX = 64;
-const int Fl_Palette::NCOLORS = 64;
+	const int Fl_Palette::NCOLORMAPPING = 8192;
+	const int Fl_Palette::FIRST_INDEX = 64;
+	const int Fl_Palette::NCOLORS = 64;
 
-int Fl_Palette::inited_=0;
+	int Fl_Palette::inited_=0;
 
-Fl_Palette::Fl_Palette(float v)
-	: colormapping( NULL )
-{
+	Fl_Palette::Fl_Palette(float v)
+		: colormapping( NULL )
+	{
 		colormapping = new int[NCOLORMAPPING];
 
 		InitColors();
 		value_=v;
 		CalcColorMap();
-}
+	}
 
-Fl_Palette::~Fl_Palette()
-{
+	Fl_Palette::~Fl_Palette()
+	{
 		if ( colormapping != NULL )
 			delete [] colormapping;
-}
+	}
 
-void Fl_Palette::CalcColorMap(void)
-{
+	void Fl_Palette::CalcColorMap(void)
+	{
 		//D/ Calculate the conversion color map, depending and the scaling value.
 		int i;
 		float v = 0.34-value_/3.;
 		for (i=0;i<NCOLORMAPPING;i++) 
 		{
-				colormapping[i]=int(pow(float(i)/float(NCOLORMAPPING),v)*float(NCOLORS));
+			colormapping[i]=int(pow(float(i)/float(NCOLORMAPPING),v)*float(NCOLORS));
 		}
-}
+	}
 
-void Fl_Palette::InitColors(void)
-{
+	void Fl_Palette::InitColors(void)
+	{
 		//D/ Create the colors in the FLTK colormap
 		if (inited_) return;
 
@@ -76,24 +77,24 @@ void Fl_Palette::InitColors(void)
 		int nDif = 0;
 		for(int k=0; k<NCOLORS; k+=nDif,n++)
 		{
-				nDif = ColorsIndex[n+1] - ColorsIndex[n];
-				for(int i=1; i<nDif; i++)
-				{
-						uchar R,G,B;
-						uchar R1,G1,B1;
-						uchar R2,G2,B2;
-						Fl::get_color((Fl_Color) (FIRST_INDEX + k), R1, G1, B1);
-						Fl::get_color((Fl_Color) (FIRST_INDEX + k+nDif), R2, G2, B2);
+			nDif = ColorsIndex[n+1] - ColorsIndex[n];
+			for(int i=1; i<nDif; i++)
+			{
+				uchar R,G,B;
+				uchar R1,G1,B1;
+				uchar R2,G2,B2;
+				Fl::get_color((Fl_Color) (FIRST_INDEX + k), R1, G1, B1);
+				Fl::get_color((Fl_Color) (FIRST_INDEX + k+nDif), R2, G2, B2);
 						
-						float factor = (float)i / nDif;
-						R = R1 + uchar((R2 - R1)*factor);
-						G = G1 + uchar((G2 - G1)*factor);
-						B = B1 + uchar((B2 - B1)*factor);
+				float factor = (float)i / nDif;
+				R = R1 + uchar((R2 - R1)*factor);
+				G = G1 + uchar((G2 - G1)*factor);
+				B = B1 + uchar((B2 - B1)*factor);
 						
-						Fl::set_color((Fl_Color)(FIRST_INDEX+k+i),R,G,B);
-				}
+				Fl::set_color((Fl_Color)(FIRST_INDEX+k+i),R,G,B);
+			}
 		}
-}
+	}
 
 
 }

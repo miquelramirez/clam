@@ -1,7 +1,7 @@
 
 #include "NetworkPresentation.hxx"
 #include "NetworkModel.hxx"
-#include "ProcessingAdapter.hxx"
+#include "ProcessingController.hxx"
 #include "ConnectionAdapter.hxx"
 #include "ProcessingPresentation.hxx"
 #include "ConnectionPresentation.hxx"
@@ -19,6 +19,7 @@ NetworkPresentation::NetworkPresentation()
 	SetProcessing.Wrap( this, &NetworkPresentation::OnNewProcessing );
 	SetConnection.Wrap( this, &NetworkPresentation::OnNewConnection );
 	SetRemoveConnection.Wrap( this, &NetworkPresentation::OnRemoveConnection );
+	SetRemoveProcessing.Wrap( this, &NetworkPresentation::OnRemoveProcessing );
 	AddNewProcessing.Wrap( this, &NetworkPresentation::OnAddNewProcessing );
 	ChangeState.Wrap( this, &NetworkPresentation::OnNewChangeState );
 }
@@ -32,13 +33,41 @@ void NetworkPresentation::OnNewChangeState( bool newState )
 	}
 }
 
-void NetworkPresentation::OnRemoveConnection( const std::string & out, const std::string & in, ConnectionPresentation * con)
+void NetworkPresentation::OnRemoveConnection(  ConnectionPresentation * con)
 {
 	mConnectionPresentations.remove(con);
-	ProcessingPresentation & procOut = GetProcessingPresentation( GetProcessingIdentifier( out ));
-	ProcessingPresentation & procIn = GetProcessingPresentation( GetProcessingIdentifier( in ));
-	RemoveConnectionFromGUI.Emit(procOut.GetNameFromNetwork()+"."+GetLastIdentifier(out), 
-				     procIn.GetNameFromNetwork()+"."+GetLastIdentifier(in));
+	con->Hide();
+
+	RemoveConnectionFromGUI.Emit( con->GetOutName(), con->GetInName() );
+}
+
+void NetworkPresentation::OnRemoveProcessing( ProcessingPresentation * proc)
+{
+	std::list<ConnectionPresentation*> toRemove;
+	
+	ConnectionPresentationIterator it;
+	for(it=mConnectionPresentations.begin(); it!=mConnectionPresentations.end(); it++)
+	{
+		const std::string & connection = (*it)->GetInName();
+		if( GetProcessingIdentifier(connection) == proc->GetNameFromNetwork() )
+		{
+ 			toRemove.push_back(*it);
+		}
+		else
+		{
+			const std::string & connection2 = (*it)->GetOutName();
+			if( GetProcessingIdentifier(connection2) == proc->GetNameFromNetwork() )
+			{
+				toRemove.push_back(*it);
+			}
+		}
+	}
+	for(it=toRemove.begin(); it!=toRemove.end(); it++)
+	{
+		OnRemoveConnection( *it );
+	}
+	mProcessingPresentations.remove( proc );
+	RemoveProcessingFromGUI.Emit( proc->GetNameFromNetwork() );
 }
 
 NetworkPresentation::~NetworkPresentation()
@@ -53,14 +82,15 @@ NetworkPresentation::~NetworkPresentation()
 
 void NetworkPresentation::AttachTo(CLAMVM::NetworkModel & model)
 {
-	model.AcquireName.Connect(SetName);
-	model.AcquireProcessing.Connect(SetProcessing);
-	model.AcquireConnection.Connect(SetConnection);
-	SChangeState.Connect(model.ChangeState);
-	AddProcessing.Connect(model.AddNewProcessing);
+	model.AcquireName.Connect( SetName );
+	model.AcquireProcessing.Connect( SetProcessing );
+	model.AcquireConnection.Connect( SetConnection );
+	SChangeState.Connect( model.ChangeState );
+	AddProcessing.Connect( model.AddNewProcessing );
 	
-	CreateNewConnectionFromGUI.Connect(model.CreateNewConnection);
-	RemoveConnectionFromGUI.Connect(model.RemoveConnection);
+	CreateNewConnectionFromGUI.Connect( model.CreateNewConnection );
+	RemoveConnectionFromGUI.Connect( model.RemoveConnection );
+	RemoveProcessingFromGUI.Connect( model.RemoveProcessing );
 }
 
 
@@ -80,12 +110,9 @@ ProcessingPresentation& NetworkPresentation::GetProcessingPresentation( const st
 {
 	ProcessingPresentationIterator it;
 	for(it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
-	{
-		if ((*it)->GetName() ==  name)
-		{
-			return **it;
-		}
-	}
+       		if ((*it)->GetNameFromNetwork() ==  name)
+				return **it;
+	CLAM_ASSERT( false, "NetworkPresentation::GetProcessingPresentation. Object not found." );
 }
 
 std::string NetworkPresentation::GetProcessingIdentifier( const std::string& str )

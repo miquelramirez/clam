@@ -1,3 +1,5 @@
+#include "SpectrumConfig.hxx"
+#include "SpecTypeFlags.hxx"
 #include "SynthSineSpectrum.hxx"
 
 using namespace CLAM;

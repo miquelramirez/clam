@@ -62,7 +62,9 @@ void SoundFileIO::Open(const char* filename,EMode mode)
 		}
 	
 		mFile = fopen(filename,cmode);
-		if (mFile==0) throw ErrSoundFileIO("File not found");
+
+		if (mFile==0) 
+		  throw ErrSoundFileIO("File not found");
 	}
 
 	ReadHeader();

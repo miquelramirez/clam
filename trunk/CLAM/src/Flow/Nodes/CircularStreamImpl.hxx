@@ -230,14 +230,16 @@ namespace CLAM {
 	template<class T>
 	void CircularStreamImpl<T>::Configure(unsigned int max_buffer_length)
 	{
-		if (max_buffer_length)
-			mLogicalSize = max_buffer_length;
-		CLAM_ASSERT(mLogicalSize != 0,
+		CLAM_ASSERT(max_buffer_length != 0,
 		            "CircularStreamImpl.Configure(): "
 		            "Zero buffer size not allowed." );
+
 		CLAM_ASSERT(mRegions.Writer() != 0,
 		            "CircularStreamImpl.Configure(): "
 		            "No writer region registered yet.");
+
+		if (max_buffer_length <=  mLogicalSize) return;
+		mLogicalSize = max_buffer_length;
 		mBuffer.Resize(ComputeLogicalLength(),
 		               ComputePhantomLength(),
 		               0);

@@ -15,7 +15,7 @@ void NetworkConfiguration::ConnectAndDo()
 	Start();
 	Connect(); 
 	if (trace) std::cout << "  Connected.  ";
-	for (int i=0; i<_system->GetMaxFramesToProcess(); i++) {
+	for (int i=0; i<mSystem->GetMaxFramesToProcess(); i++) {
 		if ( Do() ) break;
 	}
 	if (trace) std::cout <<"Done.\n";
@@ -24,13 +24,13 @@ void NetworkConfiguration::ConnectAndDo()
 
 
 SystemWithPorts::SystemWithPorts( std::string fileIn, std::string fileOut , int frameSize , int nFrames, bool hasAudioOut ) :
-	_audioManager(44100, frameSize),
-	_controlSender(20,44100,0,frameSize),
-	_fileInName(fileIn),
-	_fileOutName(fileOut), 
-	_frameSize(frameSize), 
-	_maxFramesToProcess(nFrames),
-	_hasAudioOut(hasAudioOut)
+	mAudioManager(44100, frameSize),
+	mControlSender(20,44100,0,frameSize),
+	mFileInName(fileIn),
+	mFileOutName(fileOut), 
+	mFrameSize(frameSize), 
+	mMaxFramesToProcess(nFrames),
+	mHasAudioOut(hasAudioOut)
 
 {
 	AddNetworkConfiguration( new OscillatorToFileOut( this ) );
@@ -54,14 +54,14 @@ SystemWithPorts::~SystemWithPorts()
 
 void SystemWithPorts::RegisterProcessings()
 {
-	_processings.push_back( &_oscillator );
-	_processings.push_back( &_modulator );
-	_processings.push_back( &_fileIn );
-	_processings.push_back( &_fileOut );
-	_processings.push_back( &_multiplier );
-	_processings.push_back( &_audioOut);
-	_processings.push_back( &_mixer );
-//	_processings.push_back( &_controlSender );
+	mProcessings.push_back( &mOscillator );
+	mProcessings.push_back( &mModulator );
+	mProcessings.push_back( &mFileIn );
+	mProcessings.push_back( &mFileOut );
+	mProcessings.push_back( &mMultiplier );
+	mProcessings.push_back( &mAudioOut);
+	mProcessings.push_back( &mMixer );
+//	mProcessings.push_back( &mControlSender );
 	
 }
 
@@ -73,36 +73,36 @@ void SystemWithPorts::ConfigureProcessings()
 	oscilCfg.SetFrequency(440.0);
 	oscilCfg.SetAmplitude(0.5);
 
-	_oscillator.Configure(oscilCfg);
+	mOscillator.Configure(oscilCfg);
 
 	oscilCfg.SetFrequency(220.0);
-	_modulator.Configure(oscilCfg);
+	mModulator.Configure(oscilCfg);
 
 	// Audio File In & Out
 	CLAM::AudioFileConfig fileCfg;
-	fileCfg.SetFilename( _fileOutName );
+	fileCfg.SetFilename( mFileOutName );
 	fileCfg.SetChannels(1);
 	fileCfg.SetFiletype( CLAM::EAudioFileType::eWave );
-	fileCfg.SetFrameSize( _frameSize );
+	fileCfg.SetFrameSize( mFrameSize );
 	fileCfg.SetKeepFrameSizes(true);
 
-	_fileOut.Configure( fileCfg );
+	mFileOut.Configure( fileCfg );
 
-	fileCfg.SetFilename(_fileInName);
+	fileCfg.SetFilename(mFileInName);
 
-	_fileIn.Configure (fileCfg);
+	mFileIn.Configure (fileCfg);
 
 	CLAM::AudioMixerConfig mixerCfg;
-	mixerCfg.SetFrameSize(_frameSize);
+	mixerCfg.SetFrameSize(mFrameSize);
 
-	_mixer.Configure( mixerCfg );
+	mMixer.Configure( mixerCfg );
 
-	if (_hasAudioOut)
+	if (mHasAudioOut)
 	{
 		CLAM::AudioIOConfig audioCfg;
-		audioCfg.SetFrameSize(_frameSize);
+		audioCfg.SetFrameSize(mFrameSize);
 
-		_audioOut.Configure(audioCfg);
+		mAudioOut.Configure(audioCfg);
 	}
 
 
@@ -110,26 +110,26 @@ void SystemWithPorts::ConfigureProcessings()
 
 void SystemWithPorts::ConfigureData()
 {
-	_oscillatorData.SetSize(_frameSize);
-	_fileInData.SetSize(_frameSize);
-	_modulatorData.SetSize(_frameSize);
-	_multiplierData.SetSize(_frameSize);
-	_mixerData.SetSize(_frameSize);
+	mOscillatorData.SetSize(mFrameSize);
+	mFileInData.SetSize(mFrameSize);
+	mModulatorData.SetSize(mFrameSize);
+	mMultiplierData.SetSize(mFrameSize);
+	mMixerData.SetSize(mFrameSize);
 }
 
 void SystemWithPorts::StartProcessings()
 {
 	try{
-		_oscillator.Start();
-		_fileOut.Start();
-		_fileIn.Start();
-		_modulator.Start();
-		_multiplier.Start();
-		_mixer.Start();
+		mOscillator.Start();
+		mFileOut.Start();
+		mFileIn.Start();
+		mModulator.Start();
+		mMultiplier.Start();
+		mMixer.Start();
 
-		if (_hasAudioOut)
+		if (mHasAudioOut)
 		{
-			_audioOut.Start();
+			mAudioOut.Start();
 		}
 
 	}
@@ -141,61 +141,61 @@ void SystemWithPorts::StartProcessings()
 
 void SystemWithPorts::OscillatorToFileOut::Connect()
 {
-	System()._oscillator.GetOutPorts().Get( "Audio Output" ).Attach( System()._oscillatorData );
-	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._oscillatorData );
-	System().AudioOutAttach(System()._oscillatorData);
+	System().mOscillator.GetOutPorts().Get( "Audio Output" ).Attach( System().mOscillatorData );
+	System().mFileOut.GetInPorts().Get( "Input" ).Attach( System().mOscillatorData );
+	System().AudioOutAttach(System().mOscillatorData);
 
 }
 bool SystemWithPorts::OscillatorToFileOut::Do() 
 {
-	System()._oscillator.Do();
-	System()._fileOut.Do();
+	System().mOscillator.Do();
+	System().mFileOut.Do();
 	System().AudioOutDo();
 	return false;
 }
 
 void SystemWithPorts::ModulatedFileIn::Connect()
 {
-	System()._fileIn.GetOutPorts().Get( "Output" ).Attach( System()._fileInData );
-	System()._modulator.GetOutPorts().Get( "Audio Output" ).Attach( System()._modulatorData );
-	System()._multiplier.GetInPorts().Get( "First Audio Input" ).Attach( System()._fileInData );
-	System()._multiplier.GetInPorts().Get( "Second Audio Input" ).Attach( System()._modulatorData );
-	System()._multiplier.GetOutPorts().Get( "Audio Output" ).Attach( System()._multiplierData );
-	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._multiplierData );
-	System().AudioOutAttach(System()._multiplierData);
+	System().mFileIn.GetOutPorts().Get( "Output" ).Attach( System().mFileInData );
+	System().mModulator.GetOutPorts().Get( "Audio Output" ).Attach( System().mModulatorData );
+	System().mMultiplier.GetInPorts().Get( "First Audio Input" ).Attach( System().mFileInData );
+	System().mMultiplier.GetInPorts().Get( "Second Audio Input" ).Attach( System().mModulatorData );
+	System().mMultiplier.GetOutPorts().Get( "Audio Output" ).Attach( System().mMultiplierData );
+	System().mFileOut.GetInPorts().Get( "Input" ).Attach( System().mMultiplierData );
+	System().AudioOutAttach(System().mMultiplierData);
 }
 bool SystemWithPorts::ModulatedFileIn::Do()
 {
-	System()._fileIn.Do();
-	System()._modulator.Do();
-	System()._multiplier.Do();
-	System()._fileOut.Do();
+	System().mFileIn.Do();
+	System().mModulator.Do();
+	System().mMultiplier.Do();
+	System().mFileOut.Do();
 	System().AudioOutDo();	
 
 	return false;
 }
 void SystemWithPorts::ModulatedFileIn::Stop()
 {
-	System()._fileIn.Stop();
-	System()._fileIn.Start();
+	System().mFileIn.Stop();
+	System().mFileIn.Start();
 }
 
 void SystemWithPorts::ModulatedOscillator::Connect()
 {
-	System()._oscillator.GetOutPorts().Get( "Audio Output" ).Attach( System()._oscillatorData );
-	System()._modulator.GetOutPorts().Get( "Audio Output" ).Attach( System()._modulatorData );
-	System()._multiplier.GetInPorts().Get( "First Audio Input" ).Attach( System()._oscillatorData );
-	System()._multiplier.GetInPorts().Get( "Second Audio Input" ).Attach( System()._modulatorData );
-	System()._multiplier.GetOutPorts().Get( "Audio Output" ).Attach( System()._multiplierData );
-	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._multiplierData );
-	System().AudioOutAttach(System()._multiplierData);
+	System().mOscillator.GetOutPorts().Get( "Audio Output" ).Attach( System().mOscillatorData );
+	System().mModulator.GetOutPorts().Get( "Audio Output" ).Attach( System().mModulatorData );
+	System().mMultiplier.GetInPorts().Get( "First Audio Input" ).Attach( System().mOscillatorData );
+	System().mMultiplier.GetInPorts().Get( "Second Audio Input" ).Attach( System().mModulatorData );
+	System().mMultiplier.GetOutPorts().Get( "Audio Output" ).Attach( System().mMultiplierData );
+	System().mFileOut.GetInPorts().Get( "Input" ).Attach( System().mMultiplierData );
+	System().AudioOutAttach(System().mMultiplierData);
 }
 bool SystemWithPorts::ModulatedOscillator::Do()
 {
-	System()._oscillator.Do();
-	System()._modulator.Do();
-	System()._multiplier.Do();
-	System()._fileOut.Do();
+	System().mOscillator.Do();
+	System().mModulator.Do();
+	System().mMultiplier.Do();
+	System().mFileOut.Do();
 	System().AudioOutDo();
 	System().AudioOutDo();
 
@@ -205,72 +205,72 @@ bool SystemWithPorts::ModulatedOscillator::Do()
 void SystemWithPorts::FileInFileOut::Connect()
 {
 
-	System()._fileIn.GetOutPorts().Get( "Output" ).Attach( System()._fileInData );
-	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._fileInData );
-	System().AudioOutAttach(System()._fileInData);
+	System().mFileIn.GetOutPorts().Get( "Output" ).Attach( System().mFileInData );
+	System().mFileOut.GetInPorts().Get( "Input" ).Attach( System().mFileInData );
+	System().AudioOutAttach(System().mFileInData);
 }
 bool SystemWithPorts::FileInFileOut::Do()
 {
-	System()._fileIn.Do();
-	System()._fileOut.Do();
+	System().mFileIn.Do();
+	System().mFileOut.Do();
 	System().AudioOutDo();
 
 	return false;
 }
 void SystemWithPorts::FileInFileOut::Stop()
 {
-	System()._fileIn.Stop();
-	System()._fileIn.Start();
+	System().mFileIn.Stop();
+	System().mFileIn.Start();
 }
 
 void SystemWithPorts::ModulatedFileInPlusFileIn::Connect()
 {
 	// linking ControlSender with AudioMixer volumes.
-	System()._controlSender.mLeft.AddLink(&(System()._mixer.GetInControls().Get("Input Gain_0")));
-	System()._controlSender.mRight.AddLink(&(System()._mixer.GetInControls().Get("Input Gain_1")));
+	System().mControlSender.mLeft.AddLink(&(System().mMixer.GetInControls().Get("Input Gain_0")));
+	System().mControlSender.mRight.AddLink(&(System().mMixer.GetInControls().Get("Input Gain_1")));
 
-	System()._fileIn.GetOutPorts().Get( "Output" ).Attach( System()._fileInData );
-	System()._modulator.GetOutPorts().Get( "Audio Output" ).Attach( System()._modulatorData );
-	System()._multiplier.GetInPorts().Get( "First Audio Input" ).Attach( System()._fileInData );
-	System()._multiplier.GetInPorts().Get( "Second Audio Input" ).Attach( System()._modulatorData );
-	System()._multiplier.GetOutPorts().Get( "Audio Output" ).Attach( System()._multiplierData );
-	System()._mixer.GetInPorts().Get("Input Audio_0").Attach( System()._multiplierData );
-	System()._mixer.GetInPorts().Get("Input Audio_1").Attach( System()._fileInData );
-	System()._mixer.GetOutPorts().Get("Output Audio").Attach( System()._mixerData );
-	System()._fileOut.GetInPorts().Get( "Input" ).Attach( System()._mixerData );
-	System().AudioOutAttach(System()._mixerData);
+	System().mFileIn.GetOutPorts().Get( "Output" ).Attach( System().mFileInData );
+	System().mModulator.GetOutPorts().Get( "Audio Output" ).Attach( System().mModulatorData );
+	System().mMultiplier.GetInPorts().Get( "First Audio Input" ).Attach( System().mFileInData );
+	System().mMultiplier.GetInPorts().Get( "Second Audio Input" ).Attach( System().mModulatorData );
+	System().mMultiplier.GetOutPorts().Get( "Audio Output" ).Attach( System().mMultiplierData );
+	System().mMixer.GetInPorts().Get("Input Audio_0").Attach( System().mMultiplierData );
+	System().mMixer.GetInPorts().Get("Input Audio_1").Attach( System().mFileInData );
+	System().mMixer.GetOutPorts().Get("Output Audio").Attach( System().mMixerData );
+	System().mFileOut.GetInPorts().Get( "Input" ).Attach( System().mMixerData );
+	System().AudioOutAttach(System().mMixerData);
 }
 bool SystemWithPorts::ModulatedFileInPlusFileIn::Do()
 {
-	System()._fileIn.Do();
-	System()._modulator.Do();
-	System()._multiplier.Do();
-	System()._controlSender.Do();
-	System()._mixer.Do();
-	System()._fileOut.Do();
+	System().mFileIn.Do();
+	System().mModulator.Do();
+	System().mMultiplier.Do();
+	System().mControlSender.Do();
+	System().mMixer.Do();
+	System().mFileOut.Do();
 	System().AudioOutDo();
 	return false;
 }
 void SystemWithPorts::ModulatedFileInPlusFileIn::Stop() {
-	System()._fileIn.Stop();
-	System()._fileIn.Start();
+	System().mFileIn.Stop();
+	System().mFileIn.Start();
 }
 
 
 void SystemWithPorts::AddNetworkConfiguration( NetworkConfiguration* item)
 {
-	_networks.push_back( item );
+	mNetworks.push_back( item );
 }
 void SystemWithPorts::RemoveAllNetworkConfigurations()
 {
 	NetworkConfigurations::iterator it;
-	for (it=_networks.begin(); it!=_networks.end(); it++)
+	for (it=mNetworks.begin(); it!=mNetworks.end(); it++)
 		delete (*it);
 }
 void SystemWithPorts::ProcessAllNetworkConfigurations()
 {
 	NetworkConfigurations::iterator it;
-	for (it=_networks.begin(); it!=_networks.end(); it++) {
+	for (it=mNetworks.begin(); it!=mNetworks.end(); it++) {
 		(*it)->ConnectAndDo();
 	}
 }
@@ -278,9 +278,9 @@ void SystemWithPorts::ProcessAllNetworkConfigurations()
 
 bool SystemWithPorts::AudioOutDo()
 {
-	if (_hasAudioOut)
+	if (mHasAudioOut)
 	{
-		_audioOut.Do();
+		mAudioOut.Do();
 		return true;
 	}
 	return false;
@@ -288,9 +288,9 @@ bool SystemWithPorts::AudioOutDo()
 
 bool SystemWithPorts::AudioOutAttach(CLAM::Audio& a)
 {
-	if (_hasAudioOut)
+	if (mHasAudioOut)
 	{
-		_audioOut.GetInPorts().Get( "Input" ).Attach( a );
+		mAudioOut.GetInPorts().Get( "Input" ).Attach( a );
 		return true;
 	}
 	return false;

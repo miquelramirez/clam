@@ -21,6 +21,7 @@
 
 #include <FL/Fl.H>
 #include "NotGeneratedUserInterface.hxx"
+#include "SMSTransformPanel.hxx"
 #include "SMSTools.hxx"
 #include <FL/fl_file_chooser.H>
 #include <FL/Fl.H>
@@ -50,6 +51,8 @@ void UserInterface::Update()
 	ApplyInitialState();
 	ApplyReadyToAnalyzeState();
 	mSMS->mExplorer.CloseAll();
+	mSMS->mExplorer.SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
+					      mSMS->mGlobalConfig.GetAnalysisHighestFundFreq());
 	mWindow->redraw();
 }
 
@@ -70,6 +73,8 @@ void UserInterface::LoadConfiguration(void)
 			ApplyAnalysisAvailableState();
 
 		mSMS->mExplorer.CloseAll();
+		mSMS->mExplorer.SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
+						      mSMS->mGlobalConfig.GetAnalysisHighestFundFreq());
 
 		mWindow->redraw();
 	}		
@@ -102,7 +107,7 @@ void UserInterface::StoreConfiguration(void)
 
 void UserInterface::LoadTransformation(void)
 {
-	char* str = fl_file_chooser("Select configuration file","*.xml","");
+	char* str = fl_file_chooser("Please, select a transformation score","*.xml","");
 	if ( str )
 	{
 		//mTransformationFileText->value(str);
@@ -113,6 +118,23 @@ void UserInterface::LoadTransformation(void)
 		mWindow->redraw();
 	}
 }
+
+void UserInterface::EditTransformScore( )
+{
+	mScoreEditor->Show();
+}
+
+void UserInterface::SaveTransformScore()
+{
+	char* str = fl_file_chooser( "Please, select where to save the transformation score", "*.xml", "" );
+
+	if ( str )
+	{
+		std::string outputXMLFilename( str );
+		mSMS->StoreTransformationScore( outputXMLFilename );
+	}
+}
+
 
 void UserInterface::LoadAnalysisData(void)
 {
@@ -148,7 +170,7 @@ void UserInterface::Analyze(void)
 		mFrameDataAvailable = true;
 		mSMS->mExplorer.NewSegment( mSMS->mOriginalSegment );
 		mSMS->mExplorer.NewFrame( mSMS->mOriginalSegment.GetFramesArray()[0],
-													   FrameDataAvailable());
+					  FrameDataAvailable());
 		mWindow->redraw();
 	}
 }
@@ -165,6 +187,7 @@ void UserInterface::Synthesize(void)
 	mSMS->mExplorer.NewSynthesizedResidual( mSMS->mAudioOutRes );
 	mWindow->redraw();
 }
+
 
 void UserInterface::Exit(void)
 {
@@ -253,6 +276,9 @@ void UserInterface::ChangeTimeTag( TTime tag )
 void UserInterface::Init(  )
 {
 	mSMS->SetCanvas( mSmartTile );
+	mScoreEditor = new SMSScoreEditor;
+	mSMS->ScoreChanged.Connect( mScoreEditor->SetTransformationScore );
+	mScoreEditor->TransformationChainChanged.Connect( mSMS->SetScore );
 	ApplyInitialState();
 	mFrameDataAvailable = false;
 }
@@ -311,6 +337,12 @@ void UserInterface::DisplaySinusoidalTracks()
 
 }
 
+void UserInterface::DisplayFundFreqTrajectory()
+{
+	mSMS->mExplorer.ShowFundFreq();
+	mWindow->redraw();
+}
+
 void UserInterface::ApplyInitialState()
 {
 	mSMS->mExplorer.CloseAll();
@@ -344,6 +376,7 @@ void UserInterface::ApplyInitialState()
 	mShowOriginalAudioMenuItem->deactivate();
 	mShowAnalysisResultsMenuItem->deactivate();
 	mShowSinTracksMenuItem->deactivate();
+	mShowFundFreqMenuItem->deactivate();
 	mViewFrameDataMenuItem->deactivate();
 	mShowSinusoidalSpectrumMenuItem->deactivate();
 	mShowSpectrumAndPeaksMenuItem->deactivate();
@@ -383,6 +416,7 @@ void UserInterface::ApplyAnalysisAvailableState()
 	
 	mShowAnalysisResultsMenuItem->activate();
 	mShowSinTracksMenuItem->activate();
+	mShowFundFreqMenuItem->activate();
 	mViewFrameDataMenuItem->activate();
 	mShowSpectrumAndPeaksMenuItem->activate();
 	mShowResidualSpectrumMenuItem->activate();

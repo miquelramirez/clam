@@ -32,9 +32,9 @@ namespace CLAMVM
  *  model objects, to the user. This "information presentation" is accomplished,
  *  typically, through some sort of graphical metaphor.
  */
-class Presentation
-{
-public:
+	class Presentation
+	{
+	public:
 		
 		/** \brief Destructor
 		 *
@@ -56,7 +56,7 @@ public:
 		 */
 		virtual void Hide() = 0;
 
-};
+	};
 
 }
 

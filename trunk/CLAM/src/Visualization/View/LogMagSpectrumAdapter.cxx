@@ -2,6 +2,7 @@
 #include "SpectrumConversions.hxx"
 #include "GlobalEnums.hxx"
 #include "Spectrum.hxx"
+#include "SpecTypeFlags.hxx"
 #include <algorithm>
 
 namespace CLAMVM

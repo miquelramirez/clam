@@ -48,7 +48,7 @@ namespace SigSlot
 				 *  This method keeps the Slot bound to a given Signal ( identified by a
 				 *  Connection ).
 				 *
-				 *  \param The connection to establish
+				 *  \param conn The connection to establish
 				 */
 				void Bind(const Connection& conn );
 				
@@ -63,7 +63,7 @@ namespace SigSlot
 				 *
 				 *  Calling this method severs the connection between the Slot and the
 				 *  Signal identified by the connection Id number.
-				 *  \param The connection to be severed.
+				 *  \param conn The connection to be severed.
 				 */
 				void Unbind( Connection::tConnectionId conn );
 				

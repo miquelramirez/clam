@@ -20,19 +20,19 @@ void main()
 
 	MyProcessingWithControlArray withControlArray;
 
-	withControlArray._in.DoControl( TControlData(3) );
+	withControlArray.mIn.DoControl( TControlData(3) );
 	std::cout << " expected: id 12, val 3\n";
 
-	withControlArray._in2.DoControl( TControlData(3) );
+	withControlArray.mIn2.DoControl( TControlData(3) );
 	std::cout << " expected: val 3\n";
 
 	for (int i=0; i<10; i++)
-		withControlArray._inArray[i].DoControl( TControlData(3.14) );
+		withControlArray.mInArray[i].DoControl( TControlData(3.14) );
 	std::cout << " expected: from id 0 to 9, val 3.14\n";
 	
 	int NVoices = MyProcessingWithControlArray::NVoices;
     for (int i=0; i<NVoices; i++)
-		withControlArray._voiceControl[i].DoControl( TControlData(2) );
+		withControlArray.mVoiceControl[i].DoControl( TControlData(2) );
 	std::cout << " expected: from id 0 to " << NVoices << " val 2\n";
 
 

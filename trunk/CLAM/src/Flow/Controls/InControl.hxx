@@ -31,6 +31,7 @@ namespace CLAM {
 
 // Forward Declaration:
 class Processing;
+class OutControl;
 
 typedef float TControlData;
 
@@ -54,6 +55,7 @@ public:
 	virtual int DoControl(TControlData val) { mLastValue = val; return 0;};
 	TControlData GetLastValue() const { return mLastValue; };
 	const std::string& GetName() const { return mName; }
+	bool IsConnectedTo( OutControl & );
 
 //Constructor/Destructor
 	/**
