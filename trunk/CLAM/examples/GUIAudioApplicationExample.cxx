@@ -46,7 +46,6 @@ void MyAudioApplication::AudioMain(void)
 {
 	try
 	{
-
 		unsigned int buffersize = 512;
 		AudioManager audioManager(44100, 512 );
 
