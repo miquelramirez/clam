@@ -10,6 +10,7 @@ namespace CLAM
 			: QGLWidget(parent)
 			, _timer( * new QTimer(this) )
 		{
+		        setMouseTracking(true);
 			setAutoBufferSwap(false);
 			SetBackgroundColor(0.0,0.0,0.0);
 			InitView();
@@ -97,6 +98,89 @@ namespace CLAM
 			_bottom = -1.0;
 			_top = 1.0;
 		}
+	    
+	        void NetDisplaySurface::mousePressEvent(QMouseEvent* e)
+		{
+		    if(_controller)
+		    {
+			if(e->button() == LeftButton)
+			{
+			    _controller->SetLeftButtonPressed(true);
+			    double xcoord = double(e->x());
+			    xcoord *= (_right-_left);
+			    xcoord /= double(width());
+			    xcoord += _left;
+			    double ycoord = double(-e->y())+double(height());
+			    ycoord *= (_top-_bottom);
+			    ycoord /= double(height());
+			    ycoord += _bottom;
+			    _controller->SetPoint(TData(xcoord),TData(ycoord));
+			    
+			}
+			if(e->button() == RightButton)
+			{
+			    _controller->SetRightButtonPressed(true);
+			}
+		    }
+		}
+
+	        void NetDisplaySurface::mouseReleaseEvent(QMouseEvent* e)
+		{
+		    if(_controller)
+		    {
+			if(e->button() == LeftButton)
+			{
+			    _controller->SetLeftButtonPressed(false);
+			    double xcoord = double(e->x());
+			    xcoord *= (_right-_left);
+			    xcoord /= double(width());
+			    xcoord += _left;
+			    double ycoord = double(-e->y())+double(height());
+			    ycoord *= (_top-_bottom);
+			    ycoord /= double(height());
+			    ycoord += _bottom;
+			    _controller->SetPoint(TData(xcoord),TData(ycoord));	    
+			}
+			if(e->button() == RightButton)
+			{
+			    _controller->SetRightButtonPressed(false);
+			}
+		    }  
+		}
+
+		void NetDisplaySurface::mouseMoveEvent(QMouseEvent* e)
+		{
+		    if(_controller)
+		    {
+			double xcoord = double(e->x());
+			xcoord *= (_right-_left);
+			xcoord /= double(width());
+			xcoord += _left;
+			double ycoord = double(-e->y())+double(height());
+			ycoord *= (_top-_bottom);
+			ycoord /= double(height());
+			ycoord += _bottom;
+			_controller->UpdatePoint(TData(xcoord),TData(ycoord));
+		    }
+		}  
+	
+
+	        void NetDisplaySurface::leaveEvent(QEvent* e)
+		{
+		    if(_controller)
+		    {
+			_controller->LeaveEvent();
+		    }
+		}
+
+		void NetDisplaySurface::enterEvent(QEvent* e)
+		{
+		    if(_controller)
+		    {
+			_controller->EnterEvent();
+		    }
+		}
+
 	}
 }
 
