@@ -14,6 +14,7 @@ namespace CLAM
 
 		class NetPlot : public QWidget
 		{	
+			Q_OBJECT
 			public:
 				NetPlot(QWidget* parent = 0);
 				virtual ~NetPlot();

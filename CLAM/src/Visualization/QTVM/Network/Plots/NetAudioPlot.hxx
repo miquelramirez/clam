@@ -10,6 +10,7 @@ namespace CLAM
 	{
 		class NetAudioPlot : public NetPlot
 		{
+			Q_OBJECT
 			public:
 				NetAudioPlot(QWidget* parent=0);
 				virtual ~NetAudioPlot();

@@ -10,6 +10,7 @@ namespace CLAM
 	{
 		class NetSpectrumPlot : public NetPlot
 		{
+			Q_OBJECT
 			public:
 				NetSpectrumPlot(QWidget* parent=0);
 				virtual ~NetSpectrumPlot();
