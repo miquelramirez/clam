@@ -21,32 +21,15 @@
 
 #include "GLPortNew.hxx"
 #include "CLAMGL.hxx"
-#include <iostream>
-#include <FL/Fl.H>
-
-using std::cerr;
-using std::endl;
 
 namespace CLAMGUI
 {
-
-void refreshingCallback( void* ptr_to_port )
-{
-	GLPort* goodPtr = ( GLPort* ) ptr_to_port;
-	goodPtr->redraw();
-	Fl::repeat_timeout(0.083,refreshingCallback, ptr_to_port);
-}
 
 void GLPort::DrawSelf()
 {
 	static bool first_time_called = false;
 
-//		make_current();
-//		if ( !valid() )
-	//	{
 	ApplyProjection(); // Window has been resized or something so projection must change
-	//	}
-		
 	glPushAttrib( GL_ALL_ATTRIB_BITS );
 		
 	mRenderingState->Apply(); // We apply our selected rendering environment onto the OpenGL stack
@@ -57,21 +40,15 @@ void GLPort::DrawSelf()
 	
 	if ( !mTimerLaunched )
 	{
-
-		Fl::add_timeout(0.166,refreshingCallback,this);
+		FLTKWrapper* tk = dynamic_cast<FLTKWrapper*>(WidgetTKWrapper::GetWrapperFor("FLTK" ));
+		mRefreshSlot = tk->RequestAsynchronousRefresh( this );
+	
 		mTimerLaunched = true;
 	}
-
-
-		//	swap_buffers();
-		
-
 }
 
 void GLPort::draw()
 {
-
-
 	if ( mInMultiDisplay )
 	{
 		mInMultiDisplay->draw();

@@ -23,6 +23,10 @@
 #define __FLTKWRAPPER__
 
 #include "WidgetTKWrapper.hxx"
+#include <list>
+#include <stack>
+
+class Fl_Widget;
 
 namespace CLAMGUI
 {
@@ -33,10 +37,17 @@ class FLTKWrapper
 
 	friend class WidgetTKWrapper;
 
+	struct Refreshee
+	{
+		Fl_Widget*   mpWidget;
+		unsigned     mSlotAssigned;
+	};
+
 public:
 
 	virtual ~FLTKWrapper()
 	{
+		CancelAllAsynchronousRefresh();
 	}
 
 	bool IsClosing() const;
@@ -45,12 +56,32 @@ public:
 
 	void Run() const;
 
+	void SetFPS( unsigned desired_fps );
+	
+	void ActivateAsynchronousRefresh();
+	
+	unsigned RequestAsynchronousRefresh( Fl_Widget* pWidget );
+
+	void CancelAsynchronousRefresh( unsigned freed_slot );
+
 private:
 
 	static FLTKWrapper* GetInstance();
+	static void  sRefreshingCallback( void* );
+
+	void CancelAllAsynchronousRefresh();
+
+	unsigned mNextSlot;
+	float    mTimeoutInterval;
+
+	std::stack<unsigned>   mFreedSlots;
+	std::list< Refreshee > mWidgetsToBeRefreshed;
 
 	FLTKWrapper()
+		: mNextSlot( 0 )
 	{
+		SetFPS( 30 );
+		ActivateAsynchronousRefresh();
 	}
 
 };
