@@ -29,7 +29,7 @@
 namespace CLAM{
 
 
-	class SMSOddEvenHarmonicRatio: public SMSTransformationTmpl<SpectralPeakArray>
+	class SMSOddEvenHarmonicRatio: public SMSTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -46,13 +46,18 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSOddEvenHarmonicRatio(const SMSTransformationConfig &c):SMSTransformationTmpl<SpectralPeakArray>(c)
+		SMSOddEvenHarmonicRatio(const SMSTransformationConfig &c):SMSTransformation(c)
 		{
 		}
 
 		/** Destructor of the class*/
  		~SMSOddEvenHarmonicRatio()
 		{}
+	
+		bool Do(const Frame& in, Frame& out)
+		{
+			return Do(in.GetSpectralPeakArray(), out.GetSpectralPeakArray());
+		}
 
 		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
 

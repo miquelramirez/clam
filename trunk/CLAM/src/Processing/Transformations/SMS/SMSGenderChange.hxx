@@ -31,7 +31,7 @@
 namespace CLAM{
 
 
-	class SMSGenderChange: public SMSTransformationTmpl<Frame>
+	class SMSGenderChange: public SMSTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -48,13 +48,13 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSGenderChange(const SMSTransformationConfig &c):SMSTransformationTmpl<Frame>(c)
+		SMSGenderChange(const SMSTransformationConfig &c):SMSTransformation(c)
 		{
 		}
 
 		virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			SMSTransformationTmpl<Frame>::ConcreteConfigure(c);
+			SMSTransformation::ConcreteConfigure(c);
 			//configure children by default
 			mPO_PitchShift.Configure(SMSTransformationConfig());
 			mPO_SpectralShapeShift.Configure(SMSTransformationConfig());

@@ -197,8 +197,8 @@ bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
 	//Initializes interpolated frame 
 	interpolatedFrame=mpInput2->GetFrame(mpInput2->mCurrentFrameIndex);
 	//Interpolation data
-	int frameNo1=floor(synchroTimeFactor);
-	int frameNo2=ceil(synchroTimeFactor);
+	int frameNo1=int(floor(synchroTimeFactor));
+	int frameNo2=int(ceil(synchroTimeFactor));
 	
 	//Interpolating
 	TData frameFactor=synchroTimeFactor-frameNo1;
@@ -210,7 +210,7 @@ bool SMSMorph::FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame)
 bool SMSMorph::Do(const Segment& in1, Segment& out)
 {
 	if(!mHaveInternalSegment) return false;
-	return SMSTransformationTmpl<Frame>::Do(in1,out);
+	return SMSTransformation::Do(in1,out);
 }
 
 bool SMSMorph::Do(const Segment& in1,Segment& in2, Segment& out)

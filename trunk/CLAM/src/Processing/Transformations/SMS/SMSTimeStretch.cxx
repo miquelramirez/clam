@@ -32,7 +32,7 @@ SMSTimeStretch::SMSTimeStretch()
 	Configure(SMSTimeStretchConfig());
 }
 
-SMSTimeStretch::SMSTimeStretch(const SMSTransformationConfig &c):SMSTransformationTmpl<Frame>(c)
+SMSTimeStretch::SMSTimeStretch(const SMSTransformationConfig &c):SMSTransformation(c)
 {
 	mSynthesisTime=0;
 	mAnalysisTime=0;
@@ -128,7 +128,7 @@ bool SMSTimeStretch::Do(const Segment& in, Segment& out)
 				mAnalysisTime=previousAnalysisTime;
 				return true;
 			}
-			Do(UnwrapSegment(in),UnwrapSegment(out));
+			Do(GetCurrentFrame(in),GetCurrentFrame(out));
 			ret=true;//we are actually getting some output!
 			CLAM_DEBUG_ASSERT(mCurrentInputFrame<in.mCurrentFrameIndex,"Error");
 			out.mCurrentFrameIndex++;

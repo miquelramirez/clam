@@ -34,7 +34,7 @@ namespace CLAM{
 	
 	/** @todo: introduce interpolation of spectral shapes, before that, interpolations may be
 	 *	extracted to external Processing's*/
-	class SMSMorph: public SMSTransformationTmpl<Frame>
+	class SMSMorph: public SMSTransformation
 	{
 		
 		typedef InControlTmpl<SMSMorph> SMSMorphCtrl;	

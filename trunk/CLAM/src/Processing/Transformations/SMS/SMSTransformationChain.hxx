@@ -68,6 +68,7 @@ namespace CLAM {
 		{
 			if(IsLastFrame())
 			{
+				printf("TransCHain::Do() is last frame\n");
 				return false;
 			}
 			NextFrame();
@@ -75,11 +76,9 @@ namespace CLAM {
 		}
 		bool Previously_ProcessingChainConcreteStart()
 		{
-			iterator obj;
 			
-			int i;
-			// init temp data
-			for(i=0;i<mpTmpDataArray.Size();i++)
+			// init temp segments array
+			for(int i=0;i<mpTmpDataArray.Size();i++)
 				if(mpTmpDataArray[i])
 				{
 					delete mpTmpDataArray[i];
@@ -90,6 +89,10 @@ namespace CLAM {
 			Segment* pCurrentData;
 			pCurrentData=new Segment(*mpChainInput);
 			mpTmpDataArray.AddElem(pCurrentData);
+			iterator obj;
+			
+			// set up connections:     inSegment<--trans-->outSegment
+			
 			for(obj=composite_begin();obj!=composite_end();obj++)
 			{
 				//connecting ports for non-supervised mode
@@ -99,14 +102,17 @@ namespace CLAM {
 				concreteObj.AttachIn(*pCurrentData);
 				if(!(*obj)->CanProcessInplace())
 				{
+					printf("Can't process inplace: setting a temporal segment\n");
 					pCurrentData=new Segment(*mpChainInput);
 					mpTmpDataArray.AddElem(pCurrentData);
 				}
 				concreteObj.AttachOut(*pCurrentData);
 			}
+			// now we have to restore the inSegment of the first child
 			obj=composite_begin();
 			SMSTransformation& concreteObj = dynamic_cast<SMSTransformation&>( *(*(obj)) );
 			concreteObj.AttachIn(*mpChainInput);
+			
 			obj=composite_end();
 			obj--;
 			SMSTransformation& concreteObj2 = dynamic_cast<SMSTransformation&>( *(*(obj)) );
@@ -133,6 +139,8 @@ namespace CLAM {
 		void NextFrame()
 		{
 			mpChainInput->mCurrentFrameIndex++;
+			int i = mpChainInput->mCurrentFrameIndex++;
+			printf("TransChain::NextFrame input frame index=%d at=%x\t", i, int(&(mpChainInput->GetFramesArray()[i]) ));
 		}
 		/** Returns true if current frame pointer at input port is pointing past the last
 		 *	frame in the segment
