@@ -5,7 +5,6 @@
  *	Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include "MyAnalyzer.hxx"
-
 //////////////////// MyAnalizerConfig ////////////////////
 
 /* default init of MyAnalyzerConfig */
@@ -44,7 +43,6 @@ TSize MyAnalyzerConfig::GetWindowSize() const
 {
 	return GetWindowGenerator().GetSize();
 }
-
 /* set the window type */
 void MyAnalyzerConfig::SetWindowType(const EWindowType& t)
 {
@@ -69,12 +67,10 @@ int MyAnalyzerConfig::GetZeroPadding() const
 {
 	return GetprZeroPadding();
 }
-
 void MyAnalyzerConfig::SetSamplingRate(TData sr)
 {
 	SetprSamplingRate(sr);
 }
-
 TData MyAnalyzerConfig::GetSamplingRate() const
 {
 	return GetprSamplingRate();
@@ -183,3 +179,4 @@ void MyAnalyzer::ConfigureFrame(Frame& in)
 }
 
 // END
+
