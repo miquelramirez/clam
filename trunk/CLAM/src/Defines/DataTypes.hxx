@@ -73,11 +73,11 @@ template <class T> inline T Abs(T value)
 // Default scaling
 #define CLAM_DB_SCALING  20  
 
-inline double DB(double linData, int scaling) 
+inline double DB(double linData, int scaling=20) 
 { 
-	return (scaling*log10(TData(1.0) + linData)); 
+	return (scaling*log10(linData)); 
 }
-inline double Lin(double logData, int scaling) { return (pow(10,(logData/scaling)) - TData(1.0) ); }
+inline double Lin(double logData, int scaling=20) { return (pow(double(10),(logData/scaling)) ); }
 
 };
 

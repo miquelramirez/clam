@@ -32,8 +32,8 @@ void GLPort::DrawSelf()
 
 void GLPort::draw()
 {
-	if (!valid())
-		ApplyProjection(); // Window has been resized or something so projection must change
+//	if (!valid())
+	ApplyProjection(); // Window has been resized or something so projection must change
 	glPushAttrib( GL_ALL_ATTRIB_BITS );
 	
 	mRenderingState->Apply(); // We apply our selected rendering environment onto the OpenGL stack

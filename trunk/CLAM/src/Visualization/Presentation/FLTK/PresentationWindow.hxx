@@ -6,8 +6,10 @@
 namespace CLAM
 {
 	class Audio;
+	class Spectrum;
 }
 using CLAM::Audio;
+using CLAM::Spectrum;
 
 namespace CLAMGUI
 {
@@ -16,11 +18,13 @@ namespace CLAMGUI
 	//  FLTK Presentations, that has a PresentationWindow as member
 	// See also: AudioPresentation.hxx: GetWindow()
 	class ProcDataPresentation<Audio>;
+	class ProcDataPresentation<Spectrum>;
 	
 	class PresentationWindow:public Fl_Double_Window
 	{
 	protected:
-		friend ProcDataPresentation<Audio>; 
+		friend class ProcDataPresentation<Audio>; 
+		friend class ProcDataPresentation<Spectrum>; 
 	
 		Presentation* mPresentation;
 

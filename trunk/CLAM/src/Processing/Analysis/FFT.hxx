@@ -70,7 +70,7 @@ namespace CLAM {
 		InPortTmpl<Audio>     mInput;
 		OutPortTmpl<Spectrum> mOutput;
 
-		const char *GetClassName() {return "FFT";}
+		const char *GetClassName() const {return "FFT";}
 
 		// Control change callback function
 		void ChangeSize(int n);
@@ -95,6 +95,8 @@ namespace CLAM {
 
 		/** Standard FFT Do function, with storage class references as
 		 * arguments. This method implements the old conversor routines.
+		 * The resulting spectrum will be of input audio size / 2 + 1. 
+		 * Input audio must be a power-of-two.
 		 */
 		virtual bool Do(const Audio& in, Spectrum &out) const = 0;
 

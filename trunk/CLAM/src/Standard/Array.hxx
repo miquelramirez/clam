@@ -97,6 +97,8 @@ public:
 		mAllocSize=mSize=mStep=0;
 	}
 	
+	const char * GetClassName() const {return NULL;}
+
 	bool OwnsMemory() const {return mStep>=0; }
 
 	TSize Size(void) const { return mSize; }
@@ -299,12 +301,10 @@ private:
 
 #ifdef CLAM_USE_XML
 	void StoreBufferOn(StaticFalse* asLeave, Component * polymorphicSelector, Storage & storage) {
-		char * label = NULL;
+		if (mSize<=0) return;
+		const char* className = mpData[1].GetClassName();
+		const char* label = className? className : "Element";
 		for (int i=0; i<mSize; i++) {
-			if (!label) {
-				label = const_cast<char*>(mpData[i].GetClassName());
-				if (!label) label = "Element";
-			}
 			XMLComponentAdapter adapter(mpData[i], label, true);
 			storage.Store(&adapter);
 		}
@@ -323,8 +323,8 @@ private:
 		storage.Store(&adapter);
 	}
 	void StoreMemberOn(StaticFalse* asLeave, Component * item, Storage & storage) {
-		char* label = const_cast<char*>(item->GetClassName());
-		if (!label) label = "Element";
+		const char* className = item->GetClassName();
+		const char* label = className? className : "Element";
 		XMLComponentAdapter adapter(*item, label, true);
 		storage.Store(&adapter);
 	}
@@ -335,15 +335,6 @@ private:
 */
 	bool LoadMemberFrom(StaticTrue* asLeave, void * item, Storage & storage) {
 		XMLAdapter<T> adapter(*(T*)item);
-		return storage.Load(&adapter);
-	}
-	/**
-	 * @todo This method is a temporal kludge to solve the problem reported in bug #111
-	 */
-	bool LoadMemberFrom(StaticFalse* asLeave, DynamicType * item, Storage & storage) {
-		char* className = (item->GetClassName());
-		const char* label = className? className : "Element";
-		XMLComponentAdapter adapter(*item, label, true);
 		return storage.Load(&adapter);
 	}
 	bool LoadMemberFrom(StaticFalse* asLeave, Component * item, Storage & storage) {
@@ -837,8 +828,8 @@ void Array<T>::StoreMemberOn(void * item, Storage & storage)
 template<class T>
 void Array<T>::StoreMemberOn(Component * item, Storage & storage) 
 {
-	char* label = const_cast<char*>(item->GetClassName());
-	if (!label) label = "Element";
+	const char* className = item->GetClassName();
+	const char* label = className? className : "Element";
 	XMLComponentAdapter adapter(*item, label, true);
 	storage.Store(&adapter);
 }
@@ -853,8 +844,8 @@ bool Array<T>::LoadMemberFrom(void * item, Storage & storage)
 template<class T>
 bool Array<T>::LoadMemberFrom(Component * item, Storage & storage) 
 {
-	char* label = const_cast<char*>(item->GetClassName());
-	if (!label) label = "Element";
+	const char* className = item->GetClassName();
+	const char* label = className? className : "Element";
 	XMLComponentAdapter adapter(*item, label, true);
 	return storage.Load(&adapter);
 }

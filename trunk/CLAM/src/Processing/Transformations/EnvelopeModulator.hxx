@@ -63,6 +63,8 @@ namespace CLAM
 	public:
 		EnvelopeModulator(const EnvModulatorConfig& c = EnvModulatorConfig());
 
+		const char * GetClassName() const {return "EnvelopeModulator";}
+
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
 		void Attach(Envelope& env, Audio& inp, Audio& out);

@@ -82,6 +82,8 @@ namespace CLAM {
 
 		~FFT_numrec();
 
+		const char * GetClassName() const {return "FFT_numrec";}
+
 		// Execution methods
 
 		bool Do();

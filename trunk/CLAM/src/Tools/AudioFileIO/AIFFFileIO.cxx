@@ -1,11 +1,9 @@
 #include "AIFFFileIO.hxx"
 #include "ErrSoundFileIO.hxx"
 
-extern "C"
-{
-	int tenbytefloat2int (unsigned char *bytes);
-	void uint2tenbytefloat (unsigned int num, unsigned char *bytes);
-}
+
+extern	int tenbytefloat2int (unsigned char *bytes);
+extern 	void uint2tenbytefloat (unsigned int num, unsigned char *bytes);
 
 using namespace CLAM;
 

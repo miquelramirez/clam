@@ -119,7 +119,7 @@ namespace CLAM {
 		/** OBSOLETE */
 		std::string NewUniqueName();
 
-		const char *GetClassName() {return "SpectrumAdder";}
+		const char *GetClassName() const {return "SpectrumAdder";}
 
 		/** Config change method
 		 * @throw

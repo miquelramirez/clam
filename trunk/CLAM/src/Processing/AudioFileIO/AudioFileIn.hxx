@@ -31,7 +31,13 @@ namespace CLAM {
 
 class SoundFileIO;
 
-	/** Class for audiofile Input */
+	/**
+	 * Processing for audio file input. It can be configured 
+	 * using an AudioFileConfig Config class. Only file name 
+	 * and optionally file type must be configured, other 
+	 * fields will be set by the Processing itself once 
+	 * Start() has been called.
+	 */
 	class AudioFileIn: public Processing
 	{
 	protected:
@@ -46,7 +52,7 @@ class SoundFileIO;
 
 	private:
 
-		const char *GetClassName() {return "AudioFileIn";}
+		const char *GetClassName() const {return "AudioFileIn";}
 
 		void AddSilence(Audio&, int length);
 
@@ -63,7 +69,7 @@ class SoundFileIO;
 
 		AudioFileIn(const AudioFileConfig &c);
 
-		OutPortTmpl<Audio> Output;
+		OutPortTmpl<Audio> mOutput;
 
 		virtual ~AudioFileIn();
 
@@ -71,7 +77,7 @@ class SoundFileIO;
 		 */
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
-		void Attach(Audio& out) {Output.Attach(out);}
+		void Attach(Audio& out) {mOutput.Attach(out);}
 
 		/** Supervised-mode Do function.
 		 */

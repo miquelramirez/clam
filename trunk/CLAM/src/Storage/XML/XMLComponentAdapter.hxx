@@ -110,6 +110,9 @@ public:
 		return true;
 	}
 
+	//* Returns the class name
+	const char * GetClassName() const {return "XMLComponentAdapter";}
+
 // Operators (for Component interface)
 public:
 	/** 

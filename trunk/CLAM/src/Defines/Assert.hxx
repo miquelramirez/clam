@@ -40,7 +40,7 @@ namespace CLAM
 
 // Microsoft VisualC++ and ancestror MSC
 #ifdef _MSC_VER
-#define CLAM_BREAKPOINT {_asm {int 3}}
+#define CLAM_BREAKPOINT {__asm {int 3}}
 	
 // MetroWorks Code Warrior
 #elif defined (__MWERKS__)

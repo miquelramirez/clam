@@ -23,6 +23,7 @@
 #include "Processing.hxx"
 #include "ProcessingComposite.hxx"
 #include "TopLevelProcessing.hxx"
+#include "ErrDynamicType.hxx"
 
 #include "mtgsstream.h" // An alias for <sstream>
 #include <cstring>
@@ -225,7 +226,6 @@ namespace CLAM {
 #endif
 	}
 
-//Private function:
 	InControl* Processing::GetInControl(unsigned inId) const
 	{//.at(unsigned) can throw an "out_of_range" exception.
 #ifdef HAVE_STANDARD_VECTOR_AT
@@ -234,6 +234,16 @@ namespace CLAM {
 		return mPublishedInControls[inId];
 #endif
 	}
+
+	OutControl* Processing::GetOutControl(unsigned inId) const
+	{//.at(unsigned) can throw an "out_of_range" exception.
+#ifdef HAVE_STANDARD_VECTOR_AT
+		return mPublishedOutControls.at(inId);
+#else
+		return mPublishedOutControls[inId];
+#endif
+	}
+
 
 	std::string Processing::GetFullName() const 
 	{

@@ -38,6 +38,7 @@ namespace CLAM {
 		inline InPortTmpl(std::string n, Processing *o, int length, int hop = 0, bool inplace=false);
 		inline Audio &GetData();
 		inline void LeaveData();
+		void Attach(ProcessingData& data);
 		inline void Attach(Audio& data);
 		inline void Attach(Node<Audio> &n);
 		inline void Attach(InPortTmpl<Audio> &n);
@@ -56,6 +57,7 @@ namespace CLAM {
 		inline OutPortTmpl(std::string n, Processing *o, int length, int hop = 0);
 		inline Audio &GetData();
 		inline void LeaveData();
+		void Attach(ProcessingData& data);
 		inline void Attach(Audio& data);
 		inline void Attach(OutPortTmpl<Audio> &n);
 		inline void Attach(Node<Audio> &n);
@@ -95,6 +97,16 @@ namespace CLAM {
 			mpNode->LeaveAndAdvance(mpRegion);
 	}
 
+	inline void InPortTmpl<Audio>::Attach(ProcessingData& data)
+	{
+		try{
+			Attach(dynamic_cast<Audio&> (data));
+		}
+		catch (std::bad_cast){
+			CLAM_ASSERT(false,"You are trying to attach a processing data that is not an Audio to an Audio port");
+		}
+	}
+	
 	void InPortTmpl<Audio>::Attach(Audio& data)
 	{
 		mpNode = 0;
@@ -130,6 +142,17 @@ namespace CLAM {
 		  mpNode(0)
 	{
 		o->PublishOutPort(this);
+	}
+
+	
+	inline void OutPortTmpl<Audio>::Attach(ProcessingData& data)
+	{
+		try{
+			Attach(dynamic_cast<Audio&> (data));
+		}
+		catch (std::bad_cast){
+			CLAM_ASSERT(false,"You are trying to attach a processing data that is not an Audio to an Audio port");
+		}
 	}
 
 	void OutPortTmpl<Audio>::Attach(Audio& data)

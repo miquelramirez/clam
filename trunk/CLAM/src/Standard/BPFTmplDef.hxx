@@ -327,7 +327,7 @@ namespace CLAM
 			case(EInterpolation::ePolynomialn):/*nth order polynomial interpolation where n is number
 				of points in the BPF-1. Must be less than 10*/
 			{
-				if(Size()>10) throw Err("BPF::SetIntpType:Cannot ser more than 10th order interpolation");
+				CLAM_ASSERT(Size()<11,"BPF::SetIntpType:Cannot ser more than 10th order interpolation");
 				mOrder=Size()-1;
 				mc.Resize(mOrder+1);
 				mc.SetSize(mOrder+1);
@@ -412,8 +412,7 @@ namespace CLAM
 				}
 				case(EInterpolation::eSpline)://3rd order spline interpolation
 				{
-					 if(!mIsSplineUpdated) 
-						throw Err("BPF::Spline table not updated");
+					CLAM_ASSERT(mIsSplineUpdated,"BPF::Spline table not updated");
 					result=BPFSplineInt(x);//get actual value
 					break;
 				}

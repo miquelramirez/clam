@@ -137,6 +137,7 @@ public:
 	/** The required virtual destructor */
 	virtual ~Enum ()  {
 	};
+	const char * GetClassName() const {return NULL;}
 //@}
 
 // Operations

@@ -20,6 +20,7 @@
  */
 
 #include "SpectrumPresentation.hxx"
+#include "GLLogSpRenderer.hxx"
 using CLAM::DB;
 using namespace CLAMGUI;
 
@@ -103,7 +104,7 @@ void ProcDataPresentation<Spectrum>::UpdateScale( unsigned int nbins, EScale sca
 	else if ( scale.GetValue() == EScale::eLog )
 		{
 			//	mSpecPresMetrix.SetTopEstimation( DB( TData(nbins), CLAM_DB_SCALING ) );
-			mSpecPresMetrix.SetTopEstimation( 70 );
+			mSpecPresMetrix.SetTopEstimation( 150 );
 			mSpecPresMetrix.SetBottomEstimation( TData(DB( TData(0), CLAM_DB_SCALING ) ) );
 		}
 	else
@@ -115,11 +116,11 @@ void ProcDataPresentation<Spectrum>::Init( const Geometry& g, const char* label)
 	
 	// FLTK thingies initialization
 	
-	mWindow = new Fl_Double_Window( g.GetX(), g.GetY(), g.GetW(), g.GetH(), label );
+	mWindow = new PresentationWindow( this, g.GetX(), g.GetY(), g.GetW(), g.GetH(), label );
 	mDispContainer = new FLDisplayContainer( 0, 0, g.GetW(), g.GetH() );
 	
 	mPort = new GLPort( Rect<int>( 0, 0, g.GetW(), g.GetH() ) );
-	mRenderer = new GLLinearSpRenderer( 0, 200, 0 );
+	mRenderer = new GLLogSpRenderer( 0, 200, 0 );
 	
 	mDispContainer->Add( mPort );
 	

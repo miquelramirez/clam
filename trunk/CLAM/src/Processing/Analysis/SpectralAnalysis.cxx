@@ -21,8 +21,6 @@
 
 #include "SpectralAnalysis.hxx"
 
-
-
 using namespace CLAM;
 
 /////////////////////////////////////////////////////////////////////
@@ -254,7 +252,8 @@ bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 	
 	/* Finally, we do the circular shift */
 	mPO_CShift.Do(mAudioFrame,mAudioFrame);
-		
+
+	
 	/* and now the FFT can be performed */
 	mPO_FFT.Do(mAudioFrame, outSp);
 

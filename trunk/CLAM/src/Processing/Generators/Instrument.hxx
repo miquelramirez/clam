@@ -82,6 +82,7 @@ namespace CLAM
 
 	public:
 		virtual bool Do(Audio& audio) = 0;
+		const char * GetClassName() const {return "Instrument";}
 	};
 }
 

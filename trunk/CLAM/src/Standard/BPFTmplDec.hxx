@@ -78,6 +78,11 @@ namespace CLAM
 		void Init();
 
 /**
+* Returns the class name. This implementation returns a NULL pointer
+*/
+		const char * GetClassName() const {return "BPF";}
+
+/**
 * Allocated Size of the member array of points
 * @return : allocated size of the array
 * @see Size

@@ -117,7 +117,7 @@ namespace CLAM {
 		/** OBSOLETE */
 		std::string NewUniqueName();
 
-		const char *GetClassName() {return "SpectrumProduct";}
+		const char *GetClassName() const {return "SpectrumProduct";}
 
 
 		/** Configuration change method

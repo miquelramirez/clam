@@ -30,122 +30,124 @@
 
 namespace CLAM 
 {
-		
-		class BinaryAudioOpConfig: public ProcessingConfig
+	
+	class BinaryAudioOpConfig: public ProcessingConfig
+	{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (BinaryAudioOpConfig, 1, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, std::string, Name);
+	protected:
+		void DefaultInit()
 		{
-		public:
-				DYNAMIC_TYPE_USING_INTERFACE (BinaryAudioOpConfig, 1, ProcessingConfig);
-				DYN_ATTRIBUTE (0, public, std::string, Name);
-		protected:
-				void DefaultInit()
-				{
-						/* the dynamic type takes care if we add an existing attr .. */
-						
-						AddName();
-						
-						
-						/* All Attributes are added */
-						UpdateData();
-						
-				}
-				
-		};
+			/* the dynamic type takes care if we add an existing attr .. */
+			
+			AddName();
+			
+			
+			/* All Attributes are added */
+			UpdateData();
+			
+		}
 		
-		template < typename BinOp >
-		class BinaryAudioOp
-				: public Processing 
+	};
+	
+	template < typename BinOp >
+	class BinaryAudioOp
+		: public Processing 
+	{
+		BinaryAudioOpConfig mConfig;
+		BinOp	     mOperation;
+		
+		const char *GetClassName() const {return "BinaryAudioOperation";}
+
+		/** Config change method
+		 * @throw
+		 * bad_cast exception when the argument is not an SpecAdderConfig
+		 * object.
+		 */
+		bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 		{
-				BinaryAudioOpConfig mConfig;
-				BinOp		     mOperation;
-				
-				const char *GetClassName() {return "BinaryAudioOperation";}
-				
-				/** Config change method
-				 * @throw
-				 * bad_cast exception when the argument is not an SpecAdderConfig
-				 * object.
-				 */
-				bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
-				{
-						mConfig = dynamic_cast<const BinaryAudioOpConfig&>(c);	    
-						return true;
-						
-				}
-				
-		public:
-				BinaryAudioOp()
-				{
-						Configure( BinaryAudioOpConfig() );
-				}
-				
-				BinaryAudioOp(const BinaryAudioOpConfig &c)
-				{
-								Configure( c );
-				}
-				
-				~BinaryAudioOp()
-				{
-				}
-				
-				const ProcessingConfig &GetConfig() const { return mConfig;}
-				
-				void Check(Audio& in1,Audio& in2, Audio& out)
-				{
-						
-						if (in1.GetSize() != in2.GetSize() || in1.GetSize() != out.GetSize())
-								throw(ErrProcessingObj("BinaryAudioOperation::Do(): invalid Audio Data Size"),this);
-						
-				}
-				
-				bool Do(void)
-				{
-						throw ( ErrProcessingObj( "BinaryAudioOperation::Do() : Supervised mode not implemented" ), this );
-						return false;
-				}
-				
-				bool Do(Audio& in1, Audio& in2, Audio& out)
-				{
-						int size = in1.GetSize();
-						int i;
-						
-						Check(in1,in2,out);
-										
-						TData* inb1 = in1.GetBuffer().GetPtr();
-						TData* inb2 = in2.GetBuffer().GetPtr();
-						TData* outb = out.GetBuffer().GetPtr();
-						
-						for (i=0;i<size;i++) 
-						{
-								*outb++ = mOperation( *inb1++ , *inb2++ );
-						}
-						
-										return true;
-				}
-				
-				// Port interfaces.
-				
-				bool SetPrototypes(Audio& in1,Audio& in2, const Audio& out)
-				{
-						return false;
-				}
-				
-				bool SetPrototypes()
-				{
-						return false;
-				}
-				
-				bool UnsetPrototypes()
-				{
-						return true;
-				}
-				
-				bool MayDisableExecution() const {return true;}
-				
-				void StoreOn(Storage &s) {};
-				
-		private:
-		};
+			mConfig = dynamic_cast<const BinaryAudioOpConfig&>(c);	    
+			return true;
+			
+		}
 		
+	public:
+		BinaryAudioOp()
+		{
+			Configure( BinaryAudioOpConfig() );
+		}
+		
+		BinaryAudioOp(const BinaryAudioOpConfig &c)
+		{
+				Configure( c );
+		}
+
+		~BinaryAudioOp()
+		{
+		}
+
+		const ProcessingConfig &GetConfig() const { return mConfig;}
+
+		void Check(Audio& in1,Audio& in2, Audio& out)
+		{
+			CLAM_ASSERT(in1.GetSize() == in2.GetSize(),
+				"BinaryAudioOperation::Do(): Incompatible Input Audio Data Sizes");
+			CLAM_ASSERT(in1.GetSize() == out.GetSize(),
+				"BinaryAudioOperation::Do(): Incompatible Output Audio Data Size");
+			
+		}
+
+		bool Do(void)
+		{
+			CLAM_ASSERT ( false,  "BinaryAudioOperation::Do() : Supervised mode not implemented" );
+			return false;
+		}
+
+		bool Do(Audio& in1, Audio& in2, Audio& out)
+		{
+
+			int size = in1.GetSize();
+			int i;
+			
+			Check(in1,in2,out);
+
+			TData* inb1 = in1.GetBuffer().GetPtr();
+			TData* inb2 = in2.GetBuffer().GetPtr();
+			TData* outb = out.GetBuffer().GetPtr();
+
+			for (i=0;i<size;i++) 
+			{
+				*outb++ = mOperation( *inb1++ , *inb2++ );
+			}
+
+			return true;
+		}
+
+		// Port interfaces.
+
+		bool SetPrototypes(Audio& in1,Audio& in2, const Audio& out)
+		{
+			return false;
+		}
+
+		bool SetPrototypes()
+		{
+			return false;
+		}
+
+		bool UnsetPrototypes()
+		{
+			return true;
+		}
+
+		bool MayDisableExecution() const {return true;}
+
+		void StoreOn(Storage &s) {};
+
+	private:
+	};
+	
 }
 
 #endif //	_BINARY_AUDIO_OP_H_

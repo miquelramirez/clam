@@ -41,6 +41,7 @@ namespace CLAM
 
 		~Mixer(){}
 
+		const char * GetClassName() const {return "Mixer";}
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
 		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast)

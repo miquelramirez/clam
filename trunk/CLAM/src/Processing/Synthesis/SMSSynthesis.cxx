@@ -21,8 +21,6 @@
 
 #include "SMSSynthesis.hxx"
 
-
-
 using namespace CLAM;
 
 
@@ -260,6 +258,7 @@ bool SMSSynthesis::Do(SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio)
 	
 	mPO_SynthSineSpectrum.Do(in,outSpec);
 	return mPO_SinSpectralSynthesis.Do(outSpec,outAudio);
+
 }
 
 bool SMSSynthesis::Do(Frame& in)
@@ -282,8 +281,11 @@ bool SMSSynthesis::Do(Frame& in)
 	Spectrum tmpSpec(tmpcfg),tmpSpec2(tmpcfg);
 	tmpSpec.SetSize(mConfig.GetSpectrumSize());
 	tmpSpec2.SetSize(mConfig.GetSpectrumSize());
-
+	
+	tmpSpec.SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
+	tmpSpec2.SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
 	Do(in.GetSpectralPeakArray(),tmpSpec,in.GetSinusoidalAudioFrame());
+	
 	mPO_SpectrumAdder.Do(tmpSpec,in.GetResidualSpec(),tmpSpec2);
 	mPO_SpectralSynthesis.Do(tmpSpec2,in.GetSynthAudioFrame());
 

@@ -73,6 +73,8 @@ namespace CLAM {
 
 		virtual ~ProcessingConfig(){};
 
+		virtual const char * GetClassName() const {return "Processing";}
+
 
 		/** This method forces the derived class to implement a Name dynamic attribute.
 		 * @param n Name of the new processing object
@@ -335,11 +337,9 @@ namespace CLAM {
 			 */
 			CLAM_BEGIN_DEBUG_CHECK
 				if (GetExecState() == Unconfigured ||
-			      GetExecState() == Ready)
+				    GetExecState() == Ready)
 				{
-					// this const_cast is Ugly, but i do not have time to make
-					// all GetClassName's const
-					std::string err(const_cast<Processing*>(this)->GetClassName());
+					std::string err(GetClassName());
 					err += ": Do(): Not in execution mode - did you call Start on this "
 							"object, the composite it is in, or the ToplevelProcessing singleton?";
 
@@ -355,14 +355,6 @@ namespace CLAM {
 		Processing();
 
 		virtual ~Processing();
-
-		/**
-		 * Class name getter method. This will be used to generate
-		 * default object names from a prefix. A default value is provided.
-		 * Processing classes which want a different default
-		 * prefix will have to override this method.
-		 */
-		virtual const char *GetClassName() {return "Processing";}
 
 		/** Method to turn the object into running state.
 		 * This method must be called before any call to Do() methods.
@@ -426,6 +418,7 @@ namespace CLAM {
 		int DoControl(unsigned id, TControlData val) const; // throw out_of_range;
 		int SendControl(unsigned id, TControlData val) const; // throw out_of_range;
 		InControl* GetInControl(unsigned inId) const;
+		OutControl* GetOutControl(unsigned inId) const;
 
 		/** Processing object composite iterator */
 		typedef std::list<Processing*>::iterator iterator;

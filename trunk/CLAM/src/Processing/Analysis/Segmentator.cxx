@@ -172,6 +172,9 @@ bool SegmentatorConfig::FindDescParams(TDescriptorsParams& descParams)
 	else return false;
 }
 
+void SegmentatorConfig::ClearDescParams() {
+	GetDescriptorsParams().Init();
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////			Segmentator			///////////////
@@ -215,7 +218,7 @@ bool Segmentator::Do(Segment& originalSegment,SegmentDescriptors& descriptors)
 	int nFrames=originalSegment.GetnFrames();
 	Matrix  descriptorsValues(mConfig.GetDescriptorsParams().Size(),nFrames);
 	UnwrapDescriptors(originalSegment, descriptors,descriptorsValues);
-	MyAlgorithm1(originalSegment,descriptorsValues);
+	Algorithm(originalSegment,descriptorsValues);
 	return true;
 }
 
@@ -350,21 +353,53 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment, SegmentDescr
 			else descriptorsValues.SetAt(z,i,0);
 			z++;
 		}
+		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==AudioEnergyId)
+		{
+			value=descriptors.GetFrameD(i).GetAudioFrameD().GetEnergy();
+			if(value>mConfig.GetDescriptorsParams()[z].threshold)
+				descriptorsValues.SetAt(z,i,value);
+			else descriptorsValues.SetAt(z,i,0);
+			z++;
+		}
+		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==AudioVarianceId)
+		{
+			value=descriptors.GetFrameD(i).GetAudioFrameD().GetVariance();
+			if(value>mConfig.GetDescriptorsParams()[z].threshold)
+				descriptorsValues.SetAt(z,i,value);
+			else descriptorsValues.SetAt(z,i,0);
+			z++;
+		}
+		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==AudioCentroidId)
+		{
+			value=descriptors.GetFrameD(i).GetAudioFrameD().GetTemporalCentroid();
+			if(value>mConfig.GetDescriptorsParams()[z].threshold)
+				descriptorsValues.SetAt(z,i,value);
+			else descriptorsValues.SetAt(z,i,0);
+			z++;
+		}
+		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==AudioZeroCrossingRateId)
+		{
+			value=descriptors.GetFrameD(i).GetAudioFrameD().GetZeroCrossingRate();
+			if(value>mConfig.GetDescriptorsParams()[z].threshold)
+				descriptorsValues.SetAt(z,i,value);
+			else descriptorsValues.SetAt(z,i,0);
+			z++;
+		}
 	}
 
 
 }
 
 
-void Segmentator::MyAlgorithm1(Segment& s,const Matrix& values)
+void Segmentator::Algorithm(Segment& s,const Matrix& values)
 {
 
 	// Segmentation objects
 	// segment boundaries for each parameter
 	int nFrames=s.GetnFrames();
 	int nDescriptors=mConfig.GetDescriptorsParams().Size();
-	Array<DataArray>  segmentBoundaries(nDescriptors);// segment boundaries for each parameter
-	segmentBoundaries.SetSize( nDescriptors );
+	Array<Array<PointTmpl<int,TData> > >  segmentBoundaries(nDescriptors);// segment boundaries for each parameter
+	segmentBoundaries.SetSize(nDescriptors);
 	int i=0;
 	do
 	{
@@ -372,25 +407,65 @@ void Segmentator::MyAlgorithm1(Segment& s,const Matrix& values)
 		for (z=0;z<nDescriptors;z++)
 		{
 			if(i==0)
-				segmentBoundaries[z].AddElem(0);
-			
+				segmentBoundaries[z].AddElem(PointTmpl<int,TData>(0,100));//very high value
+
+			else if (i<4){}
 			else
-			{ 
-				if((values.GetAt(z,i)/values.GetAt(z,i-1))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)||
-					(values.GetAt(z,i)/values.GetAt(z,i-1))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
+			{
+				TData currentValue=values.GetAt(z,i);
+				TData previousValue=values.GetAt(z,i-1);
+				if((previousValue!=0))
 				{
-					if((i-segmentBoundaries[z][segmentBoundaries[z].Size()-1])>=mConfig.GetMinSegmentLength())
-						segmentBoundaries[z].AddElem(TData(i));
+					PointTmpl<int,TData>  tmpValue(i,(currentValue-previousValue)/previousValue);
+					if (tmpValue.GetY()<0) tmpValue.SetY(tmpValue.GetY()*-1);
+					if((values.GetAt(z,i)/values.GetAt(z,i-1))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)
+					||(values.GetAt(z,i)/values.GetAt(z,i-1))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
+					{
+						/*if(i>2){
+						if((values.GetAt(z,i)/values.GetAt(z,i-2))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)||
+						(values.GetAt(z,i)/values.GetAt(z,i-2))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
+						{*/
+						//if((i-segmentBoundaries[z][segmentBoundaries[z].Size()-1])>=mConfig.GetMinSegmentLength())
+						if (((currentValue>previousValue)&&(previousValue>values.GetAt(z,i-2))&&(values.GetAt(z,i-2)>values.GetAt(z,i-3)))||
+						   ((currentValue<previousValue)&&(previousValue<values.GetAt(z,i-2))&&(values.GetAt(z,i-2)<values.GetAt(z,i-3)))){
+						tmpValue.SetY(tmpValue.GetY()/(mConfig.GetDescriptorsParams()[z].percentil/100));
+						segmentBoundaries[z].AddElem(tmpValue);}
+						else if((currentValue/previousValue)>(1+2*mConfig.GetDescriptorsParams()[z].percentil/100)||
+						       (currentValue/previousValue)<(1-2*mConfig.GetDescriptorsParams()[z].percentil/100)){
+							tmpValue.SetY(tmpValue.GetY()/(mConfig.GetDescriptorsParams()[z].percentil/100));
+							segmentBoundaries[z].AddElem(tmpValue);}
+
+						//}}
+					}/*
+					else if(i>2){
+					if((values.GetAt(z,i)/values.GetAt(z,i-2))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)||
+						(values.GetAt(z,i)/values.GetAt(z,i-2))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
+					{
+						//if((i-segmentBoundaries[z][segmentBoundaries[z].Size()-1])>=mConfig.GetMinSegmentLength())
+						segmentBoundaries[z].AddElem(i);
+					}}
+					else if(i>3){
+					if((values.GetAt(z,i)/values.GetAt(z,i-3))>(1+mConfig.GetDescriptorsParams()[z].percentil/100)||
+						(values.GetAt(z,i)/values.GetAt(z,i-3))<(1-mConfig.GetDescriptorsParams()[z].percentil/100))
+					{
+						//if((i-segmentBoundaries[z][segmentBoundaries[z].Size()-1])>=mConfig.GetMinSegmentLength())
+						segmentBoundaries[z].AddElem(i);
+					}}*/
 				}
+				/*else if (values.GetAt(z,i)==0&&values.GetAt(z,i-1)!=0)
+				{
+					Point<int,TData>  tmpValue(i,100);
+					segmentBoundaries[z].AddElem(tmpValue);
+				}*/
+
 			}
 		}
-	
 		i++;
 	} while(i<nFrames);
 	DataFusion(s,segmentBoundaries);
 }
 
-void Segmentator::DataFusion(Segment& s,const Array<DataArray>& segmentBoundaries)
+void Segmentator::DataFusion(Segment& s,const Array<Array<PointTmpl<int,TData> > > & segmentBoundaries)
 {
 
 	unsigned int n,m,z;
@@ -400,33 +475,37 @@ void Segmentator::DataFusion(Segment& s,const Array<DataArray>& segmentBoundarie
 	unsigned int nDescriptors=mConfig.GetDescriptorsParams().Size();
 	TData duration=s.GetFrame(0).GetDuration();/*BEWARE!Assuming equal lengthed frames*/
 	TData sampleRate=s.GetSamplingRate();
-	
+
 	/*Initializing Probability Matrix*/
 	Matrix probabilityMatrix(nFrames,nDescriptors);
 	memset(probabilityMatrix.GetBuffer().GetPtr(),0,nFrames*nDescriptors*sizeof(TData));
-		
+
 	/*Setting probability to one wherever a segment boundary was found*/
 	for(z=0;z<nDescriptors;z++)
 	{
 		for(n=0;n<segmentBoundaries[z].Size();n++)
-			probabilityMatrix.SetAt(segmentBoundaries[z][n],z,1);
+			probabilityMatrix.SetAt(segmentBoundaries[z][n].GetX(),z,segmentBoundaries[z][n].GetY());
 	}
-	
+
 	// Adding probability values of different descriptors
 	Array<TData> globalProb;
 	TData tmpProb=0;
-	for(n=0; n<nFrames; n++) 
+	for(n=0; n<nFrames; n++)
 	{
+		tmpProb=0;
 		for(z=0;z<nDescriptors;z++)
 		{
-			tmpProb=+probabilityMatrix.GetAt(n,z);
+			tmpProb+=probabilityMatrix.GetAt(n,z);
 		}
 		globalProb.AddElem(tmpProb);
 	}
-	
+
+	// MERGE: Two comments, choose one
 	// 3) Fusion of too near marks (separated 1 or 2 frames)
+	// 3) Fusion of too near marks (separated less than the minSegmentLength)
 	// Also compute maximun (to re-use the loop)
 	Array<TData> prob_fusion(globalProb);
+
 	n=m=0;
 	TData max=0;
 
@@ -465,27 +544,33 @@ void Segmentator::DataFusion(Segment& s,const Array<DataArray>& segmentBoundarie
 		if(prob_fusion[n]>max)
 			max=prob_fusion[n];
 	for(n=0; n<prob_fusion.Size(); n++)
-		if(prob_fusion[n]<=(max/7))
-		prob_fusion[n]=0;
+		// MERGE: cuidado max/100 vs. CLAM04 max/7
+		if(prob_fusion[n]<=(max/100))
+			prob_fusion[n]=0;
 
 	Array<TData> finalSegments; // final segment boundaries in samples
-	for(n=0; n< prob_fusion.Size(); n++){
+	for(n=0; n<prob_fusion.Size(); n++){
 		if(prob_fusion[n]>0)
 			finalSegments.AddElem(n*duration*sampleRate);}
-				
-	 
+
 	// Store segment boundaries information
 
 	if(finalSegments.Size()>0){
-	for(n=0; n<(finalSegments.Size()-1); n++) {
-		Segment tmpSegment;
-		tmpSegment.SetBeginTime(finalSegments[n]  /sampleRate);
-		tmpSegment.SetEndTime  (finalSegments[n+1]/sampleRate);
-		tmpSegment.SetpParent(&s);
-		tmpSegment.SetHoldsData( false );
-		s.GetChildren().AddElem(tmpSegment);
-	}}
+		for(n=0; n<(finalSegments.Size()-1); n++) {
+			Segment tmpSegment;
+			tmpSegment.SetBeginTime(finalSegments[n]  /sampleRate);
+			tmpSegment.SetEndTime  (finalSegments[n+1]/sampleRate);
+			tmpSegment.SetpParent(&s);
+			tmpSegment.SetHoldsData( false );
+			s.GetChildren().AddElem(tmpSegment);
+		}
 
+		Segment tmpSegment;
+		tmpSegment.SetBeginTime(finalSegments[finalSegments.Size()-1] /sampleRate);
+		tmpSegment.SetEndTime(s.GetAudio().GetEndTime());
+		tmpSegment.SetpParent(&s);
+		s.GetChildren().AddElem(tmpSegment);
+	}
 
 }
 

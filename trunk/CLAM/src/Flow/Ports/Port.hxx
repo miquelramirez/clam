@@ -25,7 +25,6 @@
 #include <string>
 #include "mtgsstream.h"
 #include "Processing.hxx"
-#include "ProcessingData.hxx"
 #include "Assert.hxx"
 #include "ReadStreamRegion.hxx"
 #include "WriteStreamRegion.hxx"
@@ -95,6 +94,8 @@ namespace CLAM {
 		InPort(const std::string &n, Processing *o, int length, int hop = 0, bool inplace=false);
 		virtual ~InPort() {}
 
+		virtual void Attach(ProcessingData& data)=0;
+		
 		bool CanDoInplace(void)  {return mCanDoInplace;}
 
 	};
@@ -102,6 +103,9 @@ namespace CLAM {
 	class OutPort: public Port {
 	public:
 		OutPort(const std::string &n, Processing *o, int length, int hop = 0);
+		
+		virtual void Attach(ProcessingData& data)=0;
+
 		virtual ~OutPort() {}
 	};
 
@@ -117,6 +121,7 @@ namespace CLAM {
 		inline InPortTmpl(const std::string &n, Processing *o, int length, int hop = 0, bool inplace=false);
 		inline T &GetData();
 		inline void LeaveData();
+		void Attach(ProcessingData& data);
 		inline void Attach(T& data);
 		inline void Attach(Node<T> &n);
 		inline void Attach(InPortTmpl<T> &p); // For composites
@@ -134,6 +139,7 @@ namespace CLAM {
 		inline OutPortTmpl(const std::string &n, Processing *o, int length, int hop = 0);
 		inline T &GetData();
 		inline void LeaveData();
+		void Attach(ProcessingData& data);
 		inline void Attach(T& data);
 		inline void Attach(Node<T> &n);
 		inline void Attach(OutPortTmpl<T> &p); // For composites
@@ -224,6 +230,17 @@ namespace CLAM {
 	}
 
 	template<class T>
+	void InPortTmpl<T>::Attach(ProcessingData& data)
+	{
+		try{ 
+			Attach(dynamic_cast<T&>(data));
+		}
+		catch (std::bad_cast){
+			CLAM_ASSERT(false,"You are trying to attach a processing data that is not suitable for this port");
+		}
+	}	
+
+	template<class T>
 	void InPortTmpl<T>::Attach(T& data)
 	{
 		mData.SetPtr(&data,1);
@@ -266,6 +283,17 @@ namespace CLAM {
 		o->PublishOutPort(this);
 	}
 
+	template<class T>
+	void OutPortTmpl<T>::Attach(ProcessingData& data)
+	{
+		try{ 
+			Attach(dynamic_cast<T&>(data));
+		}
+		catch (std::bad_cast){
+			CLAM_ASSERT(false,"You are trying to attach a processing data that is not suitable for this port");
+		}
+	}	
+	
 	template<class T>
 	void OutPortTmpl<T>::Attach(T& data)
 	{

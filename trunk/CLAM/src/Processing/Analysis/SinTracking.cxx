@@ -239,7 +239,7 @@ using namespace CLAM;
 	  for (i=0;i<nPeaks;i++)
 	  {
 		tmpDistance=Abs(peakFreqBuffer[i]-currentFreq)*factor;
-		if((distance==-1)&&(tmpDistance<mThreshold) || 
+		if((distance==-1)/*test: XA &&(tmpDistance<mThreshold)*/ || 
 		  (tmpDistance < distance))
 		{
 		  distance=tmpDistance;
@@ -428,7 +428,7 @@ already been assigned)*/
 				if(i==0 || iMagBuffer[pos]!=oMagBuffer[i-1])
 				{
 					oMagBuffer[i]=iMagBuffer[pos];
-					oFreqBuffer[i]=iFreqBuffer[pos];
+					//XA: oFreqBuffer[i]=iFreqBuffer[pos];
 					oPhaseBuffer[i]=iPhaseBuffer[pos];
 					i++;
 				}
@@ -454,10 +454,13 @@ already been assigned)*/
 		DataArray& magBuffer=peaks.GetMagBuffer();
 		
 		int i;
+		
+		TData currentFreq=funFreq;
 
 		for(i=0;i<mnMaxSines;i++)
 		{
-			freqBuffer[i]=funFreq*i;
+			freqBuffer[i]=currentFreq;
 			magBuffer[i]=-99;
+			currentFreq+=funFreq;
 		}
 	}

@@ -69,6 +69,8 @@ template <class T> class List:public Component
 
 
 public:
+	const char * GetClassName() const {return NULL;}
+
 	List()
 	{
 		mpFirst = mpLast = mpCurrent = NULL;
@@ -271,12 +273,8 @@ private:
 		storage.Store(&adapter);
 	}
 	void StoreMemberOn(StaticFalse* asLeave, Component * item, Storage & storage) {
-		DynamicType* dt;
-		char* label;
-		if(dt=dynamic_cast<DynamicType*> (item))
-			label = dt->GetClassName();
-		else
-			label = "Element";
+		const char* className = item->GetClassName();
+		const char* label = className? className : "Element";
 		XMLComponentAdapter adapter(*item, label, true);
 		storage.Store(&adapter);
 	}
@@ -289,12 +287,8 @@ private:
 		return storage.Load(&adapter);
 	}
 	bool LoadMemberFrom(StaticFalse* asLeave, Component * item, Storage & storage) {
-		DynamicType* dt;
-		char* label; 
-		if(dt=dynamic_cast<DynamicType*> (item))
-			label = dt->GetClassName();
-		else
-			label = "Element";
+		const char* className = item->GetClassName();
+		const char* label = className? className : "Element";
 		XMLComponentAdapter adapter(*item, label, true);
 		return storage.Load(&adapter);
 	}
@@ -584,7 +578,7 @@ template <class T> inline T& List<T>::operator [] (TIndex i) {
 	return ((Node*)mpCurrent)->mValue;
 }
 
-template <class T> inline List<T>::Node* List<T>::GetNodeAt(TIndex i){
+template <class T> inline typename List<T>::Node* List<T>::GetNodeAt(TIndex i){
 	/* this function is optimized, by starting searching from the current 
 	index, or from the beginning or the end, when that's closer.
 	*/

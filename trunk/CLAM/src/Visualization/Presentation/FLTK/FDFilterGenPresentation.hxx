@@ -42,7 +42,7 @@ using CLAM::EFDFilterType;
 namespace CLAMGUI
 {
 
-
+template < >
 class ProcObjPresentation< FDFilterGen >
 	: public Presentation
 {

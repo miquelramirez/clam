@@ -142,7 +142,7 @@ public:
 	void FulfillsInvariant() const;
 
 
-	const char *GetClassName() {return "TokenDelay";}
+	const char *GetClassName() const {return "TokenDelay";}
 
 	/**
 	 * Informative value about the current delay applied (different from the requested)

@@ -211,6 +211,9 @@ public:
 	/** The required virtual destructor */
 	virtual ~Flags ()  {};
 
+	/** @todo GetClassName for Flags */
+	const char * GetClassName() const {return NULL;}
+
 // Operators
 public:
 	virtual unsigned int GetNFlags () {

@@ -58,7 +58,8 @@ void ProcDataPresentation<Audio>::UpdateBufferData( const DataArray& array )
 	mRenderer->DefineViewport( array, view_specs );
 
 	mDispContainer->SetHorRange( view_specs.left, view_specs.right );
-	mDispContainer->SetVerRange( view_specs.top, -( view_specs.top - view_specs.bottom ) );
+	mDispContainer->SetVerRange( view_specs.top, -fabs(view_specs.top-view_specs.bottom));//-( view_specs.top - view_specs.bottom ) );
+//	mDispContainer->SetVerRange( view_specs.top, view_specs.bottom );
 	mDispContainer->mpHorRuler->mInteger = view_specs.isIntX;
 	mDispContainer->mpVerRuler->mInteger = view_specs.isIntY;
 

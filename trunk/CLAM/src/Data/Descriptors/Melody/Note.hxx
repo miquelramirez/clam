@@ -49,7 +49,7 @@ namespace CLAM {
 		//this mapping is experimental and should be revisited
 			TData velocity=65*log10(GetEnergy())+65;
 			if(velocity<25) velocity=25;
-			return velocity;//65;
+			return (int)velocity;//65;
 		}
 	private:
 		void DefaultInit();	

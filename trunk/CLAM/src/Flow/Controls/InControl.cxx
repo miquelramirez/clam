@@ -24,14 +24,13 @@
 
 namespace CLAM {
 
-InControl::InControl(const std::string &name, Processing* whereToPublish) :
+InControl::InControl(const std::string &name, Processing* parent, const bool publish) :
 	mLastValue(0),
 	mName(name)
 {
-	whereToPublish->PublishInControl(this);
+	if (parent && publish) parent->PublishInControl(this);
 }
 
-InControl::InControl(const std::string &name) : mLastValue(0), mName(name) {}
 
 InControl::~InControl() 
 {

@@ -58,6 +58,7 @@ namespace CLAM {
 		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
 
 	public:
+		const char * GetClassName() const {return "TopLevelProcessing";}
 
 		/** Singleton accessor */
 		static TopLevelProcessing& GetInstance();

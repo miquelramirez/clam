@@ -35,13 +35,18 @@ namespace CLAM {
 
 	class OverlapAdd;
 
-	/** Configuration class for Overlapp Add Processing
+/*	  Was:
+	  For good results FrameSize should be the same as HopSize; and BufferSize should
+	  be at least FrameSize+HopSize
+*/
+
+	/** Configuration class for Overlapp Add Processing.
 	 *  HopSize configures the write size of the circular buffer (note that the write size is
-	 *	here understood as the portion of the frame that is overwritten, not added)
-	 *  FrameSize configures the read size of the circular buffer
-	 *  BufferSize configures the overall physical size of the circular buffer 
-	 *  For good results FrameSize should be the same as HopSize; and BufferSize should
-	 *  be at least FrameSize+HopSize
+	 *	here understood as the portion of the frame that is overwritten, not added).
+	 *  FrameSize configures the read size of the circular buffer.
+	 *  BufferSize configures the overall physical size of the circular buffer.
+	 *  Currently, HopSize must be hop size, FrameSize must be hop size and 
+	 *  BufferSize must be twice hop size (as it will do 50% overlap).
 	 */
 	class OverlapAddConfig: public CLAM::ProcessingConfig
 	{
@@ -56,19 +61,17 @@ namespace CLAM {
 	protected:
 		void DefaultInit();
 		void DefaultValues();
-		
-
 	};
 
 	/** OverlapAdd Processing class.
-	 *  First half of the input buffer or audio is added to existing data in the
-	 *  circular buffer, second half overwrites existing data. When reading, only
-	 *  already overlapped regions should be given as output.
+	 *  First half of the input buffer or audio (which is of buffer size) is added to 
+	 *  existing data in the circular buffer (ie. 'mixed in'), second half overwrites 
+	 *  existing data. When reading, only already overlapped regions should be given as 
+	 *  output (this overlapped region and thus the output will be of frame size).
 	 *  @see OverlapAddConfig 
 	 */
 	class OverlapAdd: public Processing 
 	{
-	
 	public:
 
 		/* configuration methods */
@@ -87,13 +90,13 @@ namespace CLAM {
 		bool Do(void);
 
 		/** Do method 
-		 *  @param in: input Data Array 
-		 *  @param out: output Data Array 
+		 *  @param in: input Data Array (size must be buffer size).
+		 *  @param out: output Data Array (size must be frame size).
 		 */
 		bool Do(DataArray &in, DataArray &out);
 		/** Do method 
-		 *  @param in: input Audio 
-		 *  @param out: output Audio 
+		 *  @param in: input Audio (size must be buffer size).
+		 *  @param out: output Audio (size must be frame size).
 		 */
 		bool Do(Audio &in, Audio &out);
 
@@ -110,7 +113,7 @@ namespace CLAM {
 				
 	private:
 
-		const char *GetClassName() {return "OverlapAdd";}
+		const char *GetClassName() const {return "OverlapAdd";}
 
 		/** Configuration change method
 		 * @throw

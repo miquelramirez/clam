@@ -24,6 +24,7 @@
 #define _FFT_rfftw_
 
 #include "FFT.hxx"
+#include "ErrDynamicType.hxx"
 
 extern "C" {
 #include FFTW_HEADER
@@ -99,7 +100,7 @@ namespace CLAM {
 
 		bool MayDisableExecution() const {return true;}
 
-		const char* GetClassName() 
+		const char* GetClassName() const
 		{ 
 			return "FFT_rfftw"; 
 		}

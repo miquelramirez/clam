@@ -74,7 +74,7 @@ private:
 		{
 			return x*((1.0f-h)/Th);
 		}
-		else if ( x >= Th )
+		else //if ( x >= Th )
 		{
 //			std::cout << "G: " << (1.0f-h)+(x-Th)/r << std::endl;
 			return (1.0f-h)+(x-Th)/r;
@@ -95,7 +95,7 @@ private:
 	GLuint                    mDLid;
 	bool                      mDLready;
 	TData                     mSpectralRange;
-	//	CLAM::TabFunct<Log10_20>  mLogFunc;
+
 	float                     mOctaveStride;
 	const float               mF0;
 	const float               mFf;

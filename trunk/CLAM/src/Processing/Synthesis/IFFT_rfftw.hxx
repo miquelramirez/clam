@@ -24,6 +24,7 @@
 #define _IFFT_rfftw_
 
 #include "IFFT.hxx"
+#include "ErrDynamicType.hxx"
 
 extern "C" {
 #include FFTW_HEADER
@@ -84,6 +85,8 @@ namespace CLAM {
 		IFFT_rfftw(const IFFTConfig &c) throw(ErrDynamicType);
 
 		~IFFT_rfftw();
+
+		const char * GetClassName() const {return "IFFT_rfftw";}
 
 		bool Do();
 

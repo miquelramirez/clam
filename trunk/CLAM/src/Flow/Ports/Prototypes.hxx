@@ -23,8 +23,10 @@
 #ifndef _PROTOTYPES_
 #define _PROTOTYPES_
 
-#include "ProcessingData.hxx"
 #include<list>
+
+//forward declaration
+class ProcessingData;
 
 namespace CLAM {
 

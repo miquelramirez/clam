@@ -72,12 +72,20 @@ public:
 
 	/** Destructor method of the class*/
 	~AudioOut() { if (mpDevice) mpDevice->Unregister(*this); }
+
+	const char * GetClassName() const {return "AudioOut";}
 	
 	/** Supervised mode of Do method. Calls the non-supervised method with the Audio data chunk attached before as the parameter where data will be written
 	 */
 	bool Do(void);
 
-	/** Non supervised mode of Do function. The object writes in the device attached for the appropiate channel. Values selected to write are provided for the data chunk passed by parameter
+	/**
+	 * Non supervised mode of Do function. The object writes in the device attached for the appropiate channel. 
+	 * Values selected to write are provided for the data chunk passed by parameter. On current implementations 
+	 * Do() will return immediately when not all output channels of the device has been 'filled' yet. If this is 
+	 * last channel to be 'filled', Do() will block, until the device is ready to receive more data. The size of 
+	 * the data chunk passed has restrictions which are dependent on the implementation. Most will require the 
+	 * size to be a power-of-two somewhere in the region of 32 samples to 8192 samples.
 	 * @param data The Audio chunk that we want to pass to the selected Device
 	 * @return true if the method has been executed correctly
 	 */

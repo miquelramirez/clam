@@ -137,11 +137,10 @@ namespace CLAM {
 
 	bool AudioFileOut::Do(const Audio& in)
 	{
+		if( !AbleToExecute() ) return true;
+
 		short tmp[256];
 
-		if ( GetExecState() == Unconfigured ||
-			 GetExecState() == Ready )
-			throw(ErrProcessingObj("AudioFileOut: Do(): Not in execution mode",this));
 		CLAM_ASSERT(mpSoundFileIO->Header().mChannels==1,
 			"AudioFileOut: Do(): Not a mono file");
 		int n = in.GetBuffer().Size();

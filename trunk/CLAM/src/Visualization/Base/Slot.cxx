@@ -1,41 +1,74 @@
+/*
+ * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
 #include "Slot.hxx"
-#include "Signal.hxx"
+#include <algorithm>
 
 namespace CLAMGUI
 {
-
-	Slot::Slot()
-		: mMustFreeSignal(false), mConnectedSignal( NULL )
-	{		
-	}
-
-	Slot::~Slot()
+	
+	class ConnectionSearchPred
 	{
-		if ( mMustFreeSignal )
-			mConnectedSignal->FreeSlot( this );
-	}
+	public:
+		
+		ConnectionSearchPred( Connection::tConnectionId id )
+		: mSoughtID( id )
+		{
+		}
 
-	Slot::Slot( tSlotId id, Signal* connSig )
-		: mMustFreeSignal( true ), mID( id ), mConnectedSignal( connSig )
-	{
-	}
-
-	Slot::Slot( Slot& s )
-	{
-		mMustFreeSignal = s.mMustFreeSignal;
-		mID = s.mID;
-		mConnectedSignal = s.mConnectedSignal;
-		s.mMustFreeSignal = false;
-	}
-
-	Slot& Slot::operator=( Slot& s )
-	{
-		mMustFreeSignal = s.mMustFreeSignal;
-		mID = s.mID;
-		mConnectedSignal = s.mConnectedSignal;
-		s.mMustFreeSignal = false;
-
-		return *this;
-	}
-
+		bool operator()( const Connection& conn )
+		{
+			return ( conn.GetID() == mSoughtID );
+		}
+		
+	private:
+		
+		Connection::tConnectionId mSoughtID;
+	};
 }
+
+using namespace CLAMGUI;
+	
+Slot::~Slot()
+{
+	Unbind();
+}
+
+void Slot::Unbind()
+{
+	mActiveConnections.clear();
+}
+
+void Slot::Bind( const Connection& conn )
+{
+	mActiveConnections.push_back( conn );
+}
+
+void Slot::Unbind( Connection::tConnectionId conn )
+{
+	tConnectionIterator i = std::find_if(	mActiveConnections.begin(), 
+						mActiveConnections.end(), 
+						ConnectionSearchPred( conn ) );
+  
+	mActiveConnections.erase( i );
+}
+
+
