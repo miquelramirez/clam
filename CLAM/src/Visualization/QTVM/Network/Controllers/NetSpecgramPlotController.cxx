@@ -18,6 +18,7 @@ namespace CLAM
 
 	void NetSpecgramPlotController::SetData(const Spectrum& spec)
 	{
+	    if(!spec.GetMagBuffer().Size()) return;
 	    if(_first) Init(spec.GetMagBuffer().Size());
 	    AddData(spec);
 	    ProcessData();
