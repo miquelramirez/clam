@@ -42,7 +42,7 @@ $(PROGRAM): $(OBJECTS)
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
-	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
 else
 ifeq ($(CONFIG),release)
@@ -57,7 +57,7 @@ $(PROGRAM): $(OBJECTS)
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
-	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
+	$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
 else
 

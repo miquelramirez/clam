@@ -161,27 +161,40 @@ fltk_local=no
 if test -d ../../fltk/include/FL/; then
 	AC_MSG_RESULT(yes)
 	found_fltk=yes
-	FLTK_INCLUDES="../../fltk/include"
-	FLTK_LIB_PATH="/usr/X11R6/lib ../../fltk/lib"
-	FLAG_FLTK_INCLUDES="-I../../fltk/include"
-	FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L../../fltk/lib"
+	FLTK_VERSION=`../../fltk/fltk-config --api-version`
+	if test $FLTK_VERSION = 1.1; then
+	    FLAG_FLTK_INCLUDES=`../../fltk/fltk-config --use-gl --use-images --cxxflags`
+	    FLAG_FLTK_LIBS=`../../fltk/fltk-config --use-gl --use-images --ldflags`
+	else
+	    FLTK_INCLUDES="../../fltk/include"
+	    FLTK_LIB_PATH="/usr/X11R6/lib ../../fltk/lib"
+	    FLAG_FLTK_INCLUDES="-I../../fltk/include"
+	    FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L../../fltk/lib"
+	fi
 	fltk_local=yes
 else
 	AC_MSG_RESULT(no)
-	AC_MSG_CHECKING([for fltk headers; looking in standard locations...])
+dnl	AC_MSG_CHECKING([for fltk headers; looking in standard locations...])
+	AC_MSG_CHECKING([for fltk-config...])
 	found_fltk=no
-	for base in "/usr" \
-	            "/usr/local" \
-	            "/opt" 
-	do
-		if test -d $base/include/FL; then
-			AC_MSG_RESULT(yes)
-			found_fltk=yes
-			FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L$base/lib"
-			FLTK_LIB_PATH="/usr/X11R6/lib $base/lib"
-			break;
-		fi
-	done
+	FLTK_VERSION=`fltk-config --api-version`
+    	if test $FLTK_VERSION = 1.1; then
+		AC_MSG_RESULT(yes)
+		found_fltk=yes
+		FLAG_FLTK_INCLUDES=`fltk-config --use-gl --use-images --cxxflags`
+	fi
+dnl	for base in "/usr" \
+dnl	            "/usr/local" \
+dnl	            "/opt" 
+dnl	do
+dnl		if test -d $base/include/FL; then
+dnl			AC_MSG_RESULT(yes)
+dnl			found_fltk=yes
+dnl			FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L$base/lib"
+dnl			FLTK_LIB_PATH="/usr/X11R6/lib $base/lib"
+dnl			break;
+dnl		fi
+dnl	done
 fi
 if test $found_fltk = yes; then
 	AC_MSG_CHECKING([for fltk library (and other fltk required)...])
@@ -189,12 +202,12 @@ if test $found_fltk = yes; then
 
 	link_ok=no
 
-	FLTK_LIBS="fltk GL fltk_gl X11 Xext"
-	for lib in $FLTK_LIBS
-	do
-		FLAG_FLTK_LIBS="$FLAG_FLTK_LIBS -l$lib"
-	done
-
+dnl	FLTK_LIBS="fltk GL fltk_gl X11 Xext fltk_forms fltk_images z png jpeg"
+dnl	for lib in $FLTK_LIBS
+dnl	do
+dnl		FLAG_FLTK_LIBS="$FLAG_FLTK_LIBS -l$lib"
+dnl	done
+	FLAG_FLTK_LIBS=`fltk-config --use-gl --use-images --ldflags`
 	CXXFLAGS="$CXXFLAGS $FLAG_FLTK_INCLUDES $FLAG_FLTK_LIB_PATH $FLAG_FLTK_LIBS"
 	AC_TRY_LINK([
 		#include<FL/Fl_Window.H>
@@ -403,7 +416,7 @@ if test $found_fftw = yes; then
 
 	FFTW_LIBS="fftw"
 	FLAG_FFTW_LIBS="$FLAG_FFTW_LIBS -lfftw"
-	CFLAGS="$CFLAGS $FLAG_FFTW_INCLUDES $FLAG_FFTW_LIBS $FLAG_FFTW_LIB_PATH"
+	CFLAGS="$CFLAGS $FLAG_FFTW_INCLUDES $FLAG_FFTW_LIB_PATH $FLAG_FFTW_LIBS"
 	AC_TRY_LINK([
 		#include<fftw.h>
 	],[
@@ -576,7 +589,7 @@ if test $found_qt = yes; then
 	for lib in qt-mt qt; do
 		QT_LIBS="$lib"
 		FLAG_QT_LIBS="-l$lib"
-		CXXFLAGS="$CXXFLAGS $FLAG_QT_INCLUDES $FLAG_QT_LIBS $FLAG_QT_LIB_PATH"
+		CXXFLAGS="$CXXFLAGS $FLAG_QT_INCLUDES $FLAG_QT_LIB_PATH $FLAG_QT_LIBS"
 		AC_TRY_LINK([
 				#include<qapplication.h>
 			],[

@@ -88,9 +88,13 @@ void WaveFileIO::ReadHeader(void)
 
 			mHeader.mSampleWidth = fmt.sampleWidth;
 			mHeader.mBytesPerSample = (mHeader.mSampleWidth+7)>>3;
+			mHeader.mFormatTag = fmt.formatTag;
 
-			if (fmt.formatTag!=0x0001)
-				throw ErrSoundFileIO("Not a WAVE PCM file");
+			// MRJ: We acknowledge here WAVE IEEE Float sample format
+			if ( fmt.formatTag == 0x0003 )
+				throw ErrSoundFileIO( "IEEE 32-bit WAV encoding not supported" );
+			if (fmt.formatTag!=0x0001 )
+				throw ErrSoundFileIO("Not a WAVE PCM nor IEEE Float file!");
 			mHeader.mChannels = fmt.channels;
 			mHeader.mSamplerate = fmt.samplerate;
 			fmtFound = true;
@@ -106,7 +110,7 @@ void WaveFileIO::ReadHeader(void)
 		else
 		{
 		  if (CheckID(h.id,"data")) {
-			  mSize = h.len/2;
+			  mSize += h.len/mHeader.mBytesPerSample;
 			  mOffset = sizeof(riff)+i;
 		  }
 		  if (CheckID(h.id,"cue "))

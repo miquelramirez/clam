@@ -58,9 +58,7 @@ class SoundFileIO;
 		void AddSilence(Audio&, int length);
 
 		/** Configuration change method
-		 * @throw
-		 * bad_cast exception when the argument is not an FFTConfig
-		 * object.
+		 * @pre argument should be a AudioFileInConfig
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 

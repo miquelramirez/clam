@@ -44,6 +44,16 @@ void SpectralPeakArray::DefaultInit()
 	//Initializing minimum set of attributes (mag, freq and scale)
 	AddFreqBuffer();
 	AddMagBuffer();
+	// MRJ: More forgotten donuts here. What am I missing here? 
+	// SpectralPeakDetect::CheckOutputType demands all SpectralPeakArrays to comply
+	// with the following dyn attribs
+	AddBinWidthBuffer();
+	AddFreqBuffer();
+	AddBinPosBuffer();
+	AddPhaseBuffer();
+	// MRJ: End of SpectralPeakDetect::CheckOutputType attributes requirements. It
+	// seems that someone did an optimization that consisted in not adding these
+	// in SpectralPeakDetect::CheckOutputType... Merlijn?
 	AddScale();
 	AddMinimizeResizes();
 	UpdateData();

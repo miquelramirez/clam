@@ -219,9 +219,9 @@ SMSAnalysis::~SMSAnalysis()
 {
 }
 
-bool SMSAnalysis::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool SMSAnalysis::ConcreteConfigure(const ProcessingConfig& cfg)
 {
-	mConfig=dynamic_cast<const SMSAnalysisConfig&> (cfg);
+	CopyAsConcreteConfig(mConfig,cfg);
 	ConfigureChildren();
 	ConfigureData();
 	return true;
@@ -480,6 +480,10 @@ bool SMSAnalysis::SinusoidalAnalysis(Spectrum& outSp, SpectralPeakArray& pkArray
 	
 	// Peak Detection
 	SpectralPeakArray tmpPk;
+	
+	// MRJ: Seems somebody forgot about the donuts here...
+	tmpPk.SetScale( EScale::eLog );
+
 	mPO_PeakDetect.Do(outSp,tmpPk);
 
 	// If not possible to detect anything with this peak information, FundDetect will return a false

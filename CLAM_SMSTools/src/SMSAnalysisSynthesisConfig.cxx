@@ -38,6 +38,8 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 	SetAnalysisHighestFundFreq(6000); 
 	SetAnalysisHarmonic(true);
 	SetDoCleanTracks(false);
+	SetCleanTracksMaxDropOut( 8 );
+	SetCleanTracksMinLength( 4 );
 /** Synthesis **/
 	SetSynthesisFrameSize(256);
 	SetSynthesisWindowType(EWindowType::eTriangular);

@@ -161,6 +161,8 @@ namespace CLAM {
 	bool FrameInterpolator::Do(void)
 	{
 		CLAM_ASSERT(false,"FrameInterpolator::Do(): Not implemented");
+
+		return true;
 	}
 
 	

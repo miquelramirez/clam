@@ -113,7 +113,7 @@ namespace CLAM {
 			Interpolate(in1,in2,out);
 			break;
 		default:
-			throw(ErrProcessingObj("Do(...) : internal inconsistency (invalid mProtoState)",this));
+			CLAM_ASSERT(false,"Do(...) : internal inconsistency (invalid mProtoState)");
 		}
 
 		return true;
@@ -121,7 +121,9 @@ namespace CLAM {
 
 	bool SpectrumInterpolator::Do(void)
 	{
-		throw(ErrProcessingObj("SpectrumInterpolator::Do(): Not implemented"),this);
+		CLAM_ASSERT(false, "SpectrumInterpolator::Do(): Not implemented");
+
+		return true;
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 
@@ -137,11 +139,12 @@ namespace CLAM {
 		out.GetType(to);
 
 		// Sanity check:
-		if (!(t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF) ||
-			!(t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF) ||
-			!(to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF) )
-			throw(ErrProcessingObj("SpectrumInterpolators:"
-								   " Spectrum object with no attributes"));
+		CLAM_ASSERT((t1.bMagPhase || t1.bComplex || t1.bPolar || t1.bMagPhaseBPF),
+				"SpectrumInterpolator: First spectrum has no content");
+		CLAM_ASSERT((t2.bMagPhase || t2.bComplex || t2.bPolar || t2.bMagPhaseBPF),
+				"SpectrumInterpolator: Second spectrum has no content");
+		CLAM_ASSERT((to.bMagPhase || to.bComplex || to.bPolar || to.bMagPhaseBPF),
+				"SpectrumInterpolator: Output spectrum has no content");
 
 		// Interpolateer size. "pure" BPFs are not considered here.
 		mSize = 0;
@@ -233,8 +236,8 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			throw(ErrProcessingObj("SpectrumInterpolator::SetPrototypes:"
-								   " Data flags internal inconsistency",this));
+			CLAM_ASSERT(false, 
+				"SpectrumInterpolator::SetPrototypes: Data flags internal inconsistency");
 		}
 		if (i2BPF) {
 			// States with direct BPF implementation.
@@ -264,8 +267,9 @@ namespace CLAM {
 				return true;
 			}
 			// Should never get here:
-			throw(ErrProcessingObj("SpectrumInterpolator::SetPrototypes:"
-								   " invalid data flags",this));
+			CLAM_ASSERT(false, 
+				"SpectrumInterpolator::SetPrototypes:"
+				" invalid data flags");
 		}
 		// Direct non-BPF states.
 		if (t1.bMagPhase && t2.bMagPhase &&	to.bMagPhase) {
@@ -307,7 +311,9 @@ namespace CLAM {
 
 	bool SpectrumInterpolator::SetPrototypes()
 	{
-		throw(ErrProcessingObj("SpectrumInterpolator::SetPrototypes(): Not implemented"),this);
+		CLAM_ASSERT(false, "SpectrumInterpolator::SetPrototypes(): Not implemented");
+
+		return true;
 	}
 
 	bool SpectrumInterpolator::UnsetPrototypes()
@@ -593,7 +599,7 @@ namespace CLAM {
 			InterpolateBPFMagPhaseLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("InterpolateBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"InterpolateBPFMagPhaseLinLog: Not implemented");
 			break;
 		case Sloglin:
 			InterpolateBPFMagPhaseLogLin(in1,in2,out);
@@ -614,7 +620,7 @@ namespace CLAM {
 			InterpolateBPFMagPhaseLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("InterpolateBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"InterpolateBPFMagPhaseLinLog: Not implemented");
 			break;
 		}
 	}
@@ -762,7 +768,7 @@ namespace CLAM {
 			InterpolateBPFComplexLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("InterpolateBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"InterpolateBPFMagPhaseLinLog: Not implemented");
 			break;
 		case Sloglin:
 			InterpolateBPFComplexLogLin(in1,in2,out);
@@ -783,7 +789,7 @@ namespace CLAM {
 			InterpolateBPFComplexLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("InterpolateBPFMagPhaseLinLog: Not implemented"));
+			CLAM_ASSERT(false,"InterpolateBPFMagPhaseLinLog: Not implemented");
 			break;
 		}
 	}
@@ -921,7 +927,7 @@ namespace CLAM {
 			InterpolateBPFPolarLog(in1,in2,out);
 			break;
 		case Slinlog:
-			throw(ErrProcessingObj("InterpolateBPFPolarLinLog: Not implemented"));
+			CLAM_ASSERT(false,"InterpolateBPFPolarLinLog: Not implemented");
 			break;
 		case Sloglin:
 			InterpolateBPFPolarLogLin(in1,in2,out);
@@ -942,7 +948,7 @@ namespace CLAM {
 			InterpolateBPFPolarLogLin(in2,in1,out);
 			break;
 		case Sloglin:
-			throw(ErrProcessingObj("InterpolateBPFPolarLinLog: Not implemented"));
+			CLAM_ASSERT(false,"InterpolateBPFPolarLinLog: Not implemented");
 			break;
 		}
 	}
@@ -1084,10 +1090,10 @@ namespace CLAM {
 			Point &pf1=in1.GetPhaseBPF().GetPointArray()[i];
 			Point &pf2=in2.GetPhaseBPF().GetPointArray()[i];
 			Point &pfo=out.GetPhaseBPF().GetPointArray()[i];
-			if (pm1.GetX() != pm2.GetX() ||
-				pm1.GetX() != pmo.GetX() )
-				throw(ErrProcessingObj("InterpolateBPF: BPF abcisas do not match "
-								 "(and BPF merging not yet iplemented)",this));
+			CLAM_ASSERT(pm1.GetX() == pm2.GetX(), "InterpolateBPF: input BPF abcisas do not match "
+				"(and BPF merging not yet iplemented)");
+			CLAM_ASSERT(pm1.GetX() == pmo.GetX(), "InterpolateBPF: ouput BPF abcisas do not match with imput "
+				"(and BPF merging not yet iplemented)");
 /*****************************/
 //OPERATION: BPF AND BPF
 			pmo.SetY(invIntFactor*pm1.GetY()+intFactor*pm2.GetY());
@@ -1099,50 +1105,50 @@ namespace CLAM {
 	// UNINMPLEMENTED METHODS. some day...
 	void SpectrumInterpolator::InterpolateMagPhaseLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolateMagPhaseLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolateMagPhaseLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolateMagPhaseLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolateMagPhaseLinLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolateMagPhaseLinLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolateComplexLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolateComplexLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolateComplexLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolateComplexLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolateComplexLinLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolateComplexLinLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolatePolarLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolatePolarLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolatePolarLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolatePolarLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolatePolarLinLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolatePolarLinLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolateBPFComplexLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolateBPFComplexLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolateBPFComplexLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolateBPFComplexLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolateBPFComplexLinLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolateBPFComplexLinLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolateBPFPolarLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolateBPFPolarLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolateBPFPolarLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolateBPFPolarLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolateBPFPolarLinLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolateBPFPolarLinLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolateBPFMagPhaseLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolateBPFMagPhaseLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolateBPFMagPhaseLog: Not implemented");
 	}
 	void SpectrumInterpolator::InterpolateBPFMagPhaseLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("InterpolateBPFMagPhaseLinLog: Not implemented"));
+		CLAM_ASSERT(false,"InterpolateBPFMagPhaseLinLog: Not implemented");
 	}
 }

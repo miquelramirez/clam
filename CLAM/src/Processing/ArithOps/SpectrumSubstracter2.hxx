@@ -111,9 +111,7 @@ namespace CLAM {
 
 
 		/** Config change method
-		 * @throw
-		 * bad_cast exception when the argument is not an SpecSubstracter2Config
-		 * object.
+		 * @pre argument should be an SpecSubstracter2Config
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
 

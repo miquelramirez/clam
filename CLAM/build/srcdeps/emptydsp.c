@@ -99,6 +99,7 @@ char *empty_dsp_lines[] =
 "# PROP Default_Filter \"ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe\"\n",
 "# End Group\n",
 "# End Target\n",
-"# End Project\n"
+"# End Project\n",
+0 /* null pointer marking end of array */
 };
 

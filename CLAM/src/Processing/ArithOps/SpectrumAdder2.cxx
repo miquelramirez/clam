@@ -122,7 +122,7 @@ namespace CLAM {
 			Add(in1,in2,out);
 			break;
 		default:
-			throw(ErrProcessingObj("Do(...) : internal inconsistency (invalid mProtoState)",this));
+			CLAM_ASSERT(false,"Do(...) : internal inconsistency (invalid mProtoState)");
 		}
 
 		return true;
@@ -130,7 +130,9 @@ namespace CLAM {
 
 	bool SpectrumAdder2::Do(void)
 	{
-		throw(ErrProcessingObj("SpectrumAdder2::Do(): Not implemented"),this);
+		CLAM_ASSERT(false,"SpectrumAdder2::Do(): Not implemented");
+		
+		return true;
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 
@@ -1008,63 +1010,64 @@ namespace CLAM {
 			Point &pf1=in1.GetPhaseBPF().GetPointArray()[i];
 			Point &pf2=in2.GetPhaseBPF().GetPointArray()[i];
 			Point &pfo=out.GetPhaseBPF().GetPointArray()[i];
-			if (pm1.GetX() != pm2.GetX() ||
-				pm1.GetX() != pmo.GetX() )
-				throw(ErrProcessingObj("AddBPF: BPF abcisas do not match "
-								 "(and BPF merging not yet iplemented)",this));
+			CLAM_ASSERT(pm1.GetX() == pm2.GetX(), "InterpolateBPF: input BPF abcisas do not match "
+				"(and BPF merging not yet iplemented)");
+			CLAM_ASSERT(pm1.GetX() == pmo.GetX(), "InterpolateBPF: ouput BPF abcisas do not match with imput "
+				"(and BPF merging not yet iplemented)");
 			pmo.SetY(pm1.GetY()*pm2.GetY());
 			pfo.SetY(pf1.GetY()+pf2.GetY());
 		}
 
 	}
 
-	// UNINMPLEMENTED METHODS. outme day...
+	// UNINMPLEMENTED METHODS. some day...
 	void SpectrumAdder2::AddMagPhaseLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddMagPhaseLog: Not implemented"));
+		CLAM_ASSERT(false,"AddMagPhaseLog: Not implemented");
 	}
 	void SpectrumAdder2::AddMagPhaseLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddMagPhaseLinLog: Not implemented"));
+		CLAM_ASSERT(false,"AddMagPhaseLinLog: Not implemented");
 	}
 	void SpectrumAdder2::AddComplexLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddComplexLog: Not implemented"));
+		CLAM_ASSERT(false,"AddComplexLog: Not implemented");
 	}
 	void SpectrumAdder2::AddComplexLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddComplexLinLog: Not implemented"));
+		CLAM_ASSERT(false,"AddComplexLinLog: Not implemented");
 	}
 	void SpectrumAdder2::AddPolarLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddPolarLog: Not implemented"));
+		CLAM_ASSERT(false,"AddPolarLog: Not implemented");
 	}
 	void SpectrumAdder2::AddPolarLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddPolarLinLog: Not implemented"));
+		CLAM_ASSERT(false,"AddPolarLinLog: Not implemented");
 	}
 	void SpectrumAdder2::AddBPFComplexLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddBPFComplexLog: Not implemented"));
+		CLAM_ASSERT(false,"AddBPFComplexLog: Not implemented");
 	}
 	void SpectrumAdder2::AddBPFComplexLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddBPFComplexLinLog: Not implemented"));
+		CLAM_ASSERT(false,"AddBPFComplexLinLog: Not implemented");
 	}
 	void SpectrumAdder2::AddBPFPolarLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddBPFPolarLog: Not implemented"));
+		CLAM_ASSERT(false,"AddBPFPolarLog: Not implemented");
 	}
 	void SpectrumAdder2::AddBPFPolarLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddBPFPolarLinLog: Not implemented"));
+		CLAM_ASSERT(false,"AddBPFPolarLinLog: Not implemented");
 	}
 	void SpectrumAdder2::AddBPFMagPhaseLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddBPFMagPhaseLog: Not implemented"));
+		CLAM_ASSERT(false,"AddBPFMagPhaseLog: Not implemented");
 	}
 	void SpectrumAdder2::AddBPFMagPhaseLinLog(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		throw(ErrProcessingObj("AddBPFMagPhaseLinLog: Not implemented"));
+		CLAM_ASSERT(false,"AddBPFMagPhaseLinLog: Not implemented");
 	}
+
 }

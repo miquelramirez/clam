@@ -1,3 +1,51 @@
+
+
+2003-10-4? CLAM_0_5_3
+''
+
+  * Build system:
+      ** Bug fix in srcdeps: uninitialized var in emptydsp.c
+      ** Fix: 'configure' test for local sandbox fftw in linux, used wrong parameters order
+      ** Added support to fltk-config in order to get fltk paths and flags
+      ** Changed "release" flag compilation in gcc from -O6 to -O3
+  * Visualization Module:
+      ** Next generation VM Plots available. Check the examples for indications on how to
+         use them.
+      ** SMS Tools widgets for Spectrum, Audio, etc. promoted to VM standard presentations.
+  * Processing - General:
+      ** Many ugly warnings removed
+      ** CleanTracksConfig FreqDev parameter semantics changed to match the meaning of
+         SinTrackingConfig FreqDev.
+  * Processing - Analysis:
+      ** New LPC_AutoCorrelation Processing object added to spectral analysis Processings
+         set
+      ** The SpectralPeakDetect Processing class now no longer alters it's given ProcessingData 
+         if it's different than expected, but instead checks it using an assert. Also, a bug was 
+         fixed which tried to use an uninitialized index variable when setting the values for the 
+         last spectral peak.
+      ** The FFT_rfftw and FFT_ooura Processings were missing a return on SetPrototypes() which 
+         only generated a compiler error when CLAM_ASSERT was disabled.
+  * Processing - Synthesis:
+      ** The IFFT_rfftw Processing was missing a return on SetPrototypes() which only generated 
+         a compiler error when CLAM_ASSERT was disabled.
+  * Processing - AudioFileIO:
+      ** AudioFileIn should now be capable of loading PCM encoded files with sample formats
+         of 8, 16, 24 or 32 bits/sample
+  * ProcessingData - BasicProcessing:
+      ** New LPModel (Linear Predicitve Model) ProcessingData object added to basic 
+         Processing data objects. Allows conversions to CLAM::Spectrum.
+  * Standard:
+      ** Bug fixed in BPF that caused applications to crash when trying to use the Spline
+         value interpolation method
+  * Examples - Miscellaneous:
+      ** Usage example of FDFilterGen (Frequency Domain Filter Generator ) Processing 
+         object added to examples/ folder
+      ** Usage example of FFT_rfftw Processing object updated
+      ** Usage example of LPC_AutoCorrelation Processing object added to examples/
+      ** Example explaining how to play a given .wav file added to examples/
+      ** Example about Segment and SDIF I/O added to examples/
+      ** Examples explaining how to use new VM Plots added to examples/
+
 2003-07-25 CLAM_0_5_2
 'Processing bug-fixing, SMSTools update'
   * Processing - Transformation - SMS:
@@ -361,15 +409,15 @@
       ** Automatic Generic Snapshot Generation first attempt. It works
          for sure for Spectrum's, Audio's and Segment's.
       ** New GUI folder organisation: now it contains several subfolders
-	         + src/GUI/Core - Visualization Module Core Classes
-	         + src/GUI/GL   - OpenGL renderers
-	         + src/GUI/View - Set of actually implemented System Views
+        *** src/GUI/Core - Visualization Module Core Classes
+        *** src/GUI/GL  - OpenGL renderers
+        *** src/GUI/View - Set of actually implemented System Views
               ( Views Processings and PDs offered by CLAM )
-		 + src/GUI/Presentation - Set of presentations for
+        *** src/GUI/Presentation - Set of presentations for
            representing standard CLAM concepts ( Processing's and PDs )
-		 + src/GUI/Widget - Some custom widgets, as well as wrappers
+        *** src/GUI/Widget - Some custom widgets, as well as wrappers
            for different Toolkits
-		 + src/GUI/Util - Miscellaneous stuff
+        *** src/GUI/Util - Miscellaneous stuff
       ** Some old snapshots have been eliminated and is a TODO to port
          them to the new interface
   * Unix build system

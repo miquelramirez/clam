@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Transformations" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Transformations" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -306,18 +306,6 @@ SOURCE=..\..\..\..\src\Defines\Assert.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Defines\StaticBool.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\TypeInfo.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\TypeInfoStd.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Defines\CLAM_Math.hxx
 # End Source File
 # Begin Source File
@@ -334,6 +322,18 @@ SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Defines\StaticBool.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\TypeInfo.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\TypeInfoStd.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Defines\mtgsstream.h
 # End Source File
 # Begin Source File
@@ -341,24 +341,9 @@ SOURCE=..\..\..\..\src\Defines\mtgsstream.h
 SOURCE=..\..\..\..\src\Defines\OSDefines.hxx
 # End Source File
 # End Group
-# Begin Group "Base Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Base\Component.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Base\DynamicType.hxx
-# End Source File
-# End Group
 # Begin Group "Storage Headers"
 
-# Begin Group "Base Headers No. 1"
+# Begin Group "Base Headers"
 
 # Begin Source File
 
@@ -369,6 +354,21 @@ SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
 SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
 # End Source File
 # End Group
+# End Group
+# Begin Group "Base Headers No. 1"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Base\Component.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Base\DynamicType.hxx
+# End Source File
 # End Group
 # Begin Group "Standard Headers"
 
@@ -430,18 +430,6 @@ SOURCE=..\..\..\..\src\Standard\BPF.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\ArrayToBPFCnv.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\ComplexToPolarCnv.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Flags.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Standard\ComplexTmplDef.hxx
 # End Source File
 # Begin Source File
@@ -463,6 +451,18 @@ SOURCE=..\..\..\..\src\Standard\BPFTmplDef.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\BPFTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Flags.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\ArrayToBPFCnv.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\ComplexToPolarCnv.hxx
 # End Source File
 # End Group
 # Begin Group "Data Headers"
@@ -487,6 +487,14 @@ SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpecTypeFlags.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectrumConfig.hxx
 # End Source File
 # End Group
 # End Group
@@ -589,6 +597,10 @@ SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\ProcessingConfig.hxx
 # End Source File
 # Begin Source File
 

@@ -28,12 +28,12 @@ namespace CLAMVM
 		bool IsDoubleBufferingEnabled() const;
 
 		virtual void RedrawOverlay();
+		virtual void resize( int X, int Y, int W, int H );
 
 	protected:
 		virtual void WCSProject();
 		virtual void WindowProject();
 		virtual void Refresh();
-		virtual void resize( int X, int Y, int W, int H );
 
 
 	private:

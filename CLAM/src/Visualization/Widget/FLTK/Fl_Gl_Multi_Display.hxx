@@ -6,23 +6,24 @@
 
 namespace CLAMVM
 {
-		class GLRenderingManager;
+	class GLRenderingManager;
 
-		class Fl_Gl_Multi_Display : public Fl_Gl_2DSurface
-		{
-		public:
-				Fl_Gl_Multi_Display( int X, int Y, int W, int H, const char* label = 0 );
+	class Fl_Gl_Multi_Display : public Fl_Gl_2DSurface
+	{
+	public:
+		Fl_Gl_Multi_Display( int X, int Y, int W, int H, const char* label = 0 );
 
-				~Fl_Gl_Multi_Display();
+		~Fl_Gl_Multi_Display();
 
-				void AddRenderer( GLRenderingManager& mgr );
-		protected:
-				void DrawContents();
-		private:
-				typedef std::vector< GLRenderingManager* > tContainer;
+		void AddRenderer( GLRenderingManager& mgr );
+		void ClearRenderers();
+	protected:
+		void DrawContents();
+	private:
+		typedef std::vector< GLRenderingManager* > tContainer;
 
-				tContainer    mRenderers;
-		};
+		tContainer    mRenderers;
+	};
 
 }
 

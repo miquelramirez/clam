@@ -78,7 +78,7 @@ using namespace CLAM;
 	//Supervised mode
 	bool  SinTracking::Do(void) 
 	{
-		throw(ErrProcessingObj("SinTracking::Do(): Supervised mode not implemented"),this);
+		CLAM_ASSERT(false, "SinTracking::Do(): Supervised mode not implemented");
 		return false;
 	}
   
@@ -155,7 +155,9 @@ using namespace CLAM;
 		SpectralPeak candidatePeak;
 		candidatePeak=iPeakArray.GetSpectralPeak(candidatePos);
 		//I added &&(candidatePeak.GetIndex()==-1) because it matched already matched peak
-		if(candidatePos<oPeakArray.GetnPeaks()&&(IsBestCandidate(candidatePeak,processedPeakPos))&&(oPeakArray.GetIndex(candidatePos)==-1))
+		if( candidatePos<oPeakArray.GetnPeaks()
+		    && (IsBestCandidate(candidatePeak,processedPeakPos))
+		    && (oPeakArray.GetIndex(candidatePos)==-1) )
 		{
 		  //Match
 		  Match(mPreviousPeakArray.GetIndex(processedPeakPos),candidatePos,candidatePeak,oPeakArray);
@@ -192,8 +194,9 @@ using namespace CLAM;
 
 
 //true as soon as the distance between currentPeak and a Peak in iPeakArray is <mThreshold
-	bool SinTracking::ThereIsCandidate(const SpectralPeak& currentPeak,
-										const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray) const
+	bool SinTracking::ThereIsCandidate(const SpectralPeak& currentPeak, 
+					   const SpectralPeakArray& iPeakArray,
+					   SpectralPeakArray& oPeakArray) const
 	{
 	  int i;
 	  int dist;

@@ -26,6 +26,8 @@ list *library_paths = 0;
 
 list *program = 0;
 
+static int equalsigncount = 0;
+
 int config_parse(const char* filename);
 
 int var_true(char* subst,const char* filename,int line)
@@ -222,11 +224,12 @@ void config_parse_line_sub(config_data* d,int insidecond,int cond)
 					/* '=' is a special case: it is not necesarily seperated with spaces,
 					** so we insert token seperations just in case
 					*/
-					if (*d->in == '=')
+					if (*d->in == '=' && equalsigncount==0)
 					{
 						if (d->out!=d->out_start && *(d->out-1)) CHAROUT(d,0);
 						COPYINOUT(d);
 						CHAROUT(d,0);
+						equalsigncount++;
 					}else{
 						COPYINOUT(d);
 					}
@@ -251,6 +254,8 @@ void config_parse_line(char* ptr,const char* filename,int line)
 	d.in = ptr;
 	d.out = d.out_start = tmp;
 	d.n = 4096;
+
+	equalsigncount = 0;
 
 	/* parse the line and start the tokens, \0 seperated in \0\0 terminated
 	** in tmp */	

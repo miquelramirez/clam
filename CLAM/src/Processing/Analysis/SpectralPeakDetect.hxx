@@ -55,7 +55,7 @@ namespace CLAM {
 
 		/** Config change method
 		 *  @param The ProcessingConfig object
-		 *  @throw bad_cast exception when the argument is not an SpectralPeakDetectConfig object.
+		 *  @pre the argument should be an SpectralPeakDetectConfig object.
 		 *  @return True if the cast has been commited correctly		 
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
@@ -84,7 +84,7 @@ namespace CLAM {
 		 *  @param out An SpectralPeakArray object where will be setted the SpectralPeaks of Spectrum in.
 		 *  @return Boolean value, true if all has been executed correctly.
 		 */
-		bool Do(Spectrum& input, SpectralPeakArray& out);
+		bool Do(const Spectrum& input, SpectralPeakArray& out);
 
 		/** Change the internal type state.  
 		 * Apart from prototype configuration, the Size, Scale and
