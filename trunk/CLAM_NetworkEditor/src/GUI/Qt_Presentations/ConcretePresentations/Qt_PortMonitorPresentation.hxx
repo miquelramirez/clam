@@ -18,29 +18,30 @@ namespace NetworkGUI
 class Qt_PortMonitorPresentation : public Qt_ProcessingPresentation
 {
 	Q_OBJECT
-	QWidget * mControlRepresentation;
 public:
 	Qt_PortMonitorPresentation();
-	void UpdateMonitor();
-	SigSlot::Slotv1<CLAMVM::ProcessingController&> SlotBindMonitor;
-	void BindMonitor(CLAMVM::ProcessingController & controller);
-/*
-	void UpdateSize( bool hasToResize = true );
-protected:
-	void ConfigurationUpdated( bool ok );
-	void CreateControlRepresentationWidget( const CLAM::OutControlSenderConfig::EControlRepresentation & );
-	void AdjustControlRepresentationValues();
-	void ExecuteResize( const QPoint & difference );
-	void paintEvent( QPaintEvent * );
-	void mouseDoubleClickEvent ( QMouseEvent * ){} // to avoid editing name		
+	void ProcessingControllerAttached();
+	virtual QWidget * SetInnerPlot() = 0;
+	template <typename ConcretePlot>
+	QWidget * SetConcreteInnerPlot()
+	{
+		typedef typename ConcretePlot::MonitorType ConcreteMonitor;
+		ConcretePlot * innerPlot = new ConcretePlot(this);
+		CLAM_ASSERT(mController,"No Controller attached");
+		ConcreteMonitor & monitor = 
+			dynamic_cast<ConcreteMonitor &>(mController->GetObserved());
+		innerPlot->SetMonitor(monitor);
+		return innerPlot;
+	}
+};
 
-	CLAM::TControlData mMin;
-	CLAM::TControlData mMax;
-	CLAM::TControlData mStep;
-	CLAM::TControlData mDefault;
-public slots:
-	void SlotValueChanged( int );
-*/
+class Qt_PeaksPortMonitorPresentation : public Qt_PortMonitorPresentation
+{
+public:
+	virtual QWidget * SetInnerPlot()
+	{
+		return SetConcreteInnerPlot<CLAM::VM::NetPeaksPlot>();
+	}
 };
 	
 } // namespace NetworkGUI
