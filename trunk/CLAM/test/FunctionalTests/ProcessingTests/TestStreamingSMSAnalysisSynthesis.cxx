@@ -27,9 +27,8 @@ public:
 	
 	CPPUNIT_TEST_SUITE( SMSSynthesisTest );
 	
-//	CPPUNIT_TEST( testAnalysisSynthesis );
-//	CPPUNIT_TEST( foo );
-	CPPUNIT_TEST( testAnalysisSynthesisInaNetwork );
+	CPPUNIT_TEST( testAnalysisSynthesis );
+//	CPPUNIT_TEST( testAnalysisSynthesisInaNetwork );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,6 +42,9 @@ private:
 
 	CLAM::SMSAnalysisCore mAnalysis;
 	CLAM::SMSSynthesis mSynthesis;
+
+	const int helperResAnalWindowSize() { return 1025; }
+	const int helperAnalWindowSize() { return 2049; }
 
 	void ConfigureAnalysisSynthesis()
 	{
@@ -107,18 +109,20 @@ private:
 		writercfg.SetTargetFile(file);
 		audioWriter.Configure( writercfg );
 		
-//TODO new (alternative) interface:
-//		CLAM::ConnectPorts(audioProvider, "Samples Read", mAnalysis, "Input Audio");
-
-		audioProvider.GetOutPort("Samples Read").ConnectToIn( mAnalysis.GetInPort("Input Audio"));
-		mAnalysis.GetOutPort("Sinusoidal Peaks").ConnectToIn( mSynthesis.GetInPort("InputSinPeaks"));
-		mAnalysis.GetOutPort("Residual Spectrum").ConnectToIn( mSynthesis.GetInPort("InputResSpectrum"));
-		mSynthesis.GetOutPort("OutputAudio").ConnectToIn( audioWriter.GetInPort("Samples Write") );
+		CLAM::SMSAnalysisCore analysis;
+		CLAM::SMSSynthesis synthesis;
+		analysis.Configure( helperAnalysisConfigInstance() );
+		synthesis.Configure( helperSynthesisConfigInstance() );
+		
+		CLAM::ConnectPorts(audioProvider, "Samples Read", mAnalysis, "Input Audio");
+		CLAM::ConnectPorts(mAnalysis, "Sinusoidal Peaks", synthesis, "InputSinPeaks");
+		CLAM::ConnectPorts(mAnalysis, "Residual Spectrum", synthesis, "InputResSpectrum");
+		CLAM::ConnectPorts(synthesis, "OutputAudio", audioWriter, "Samples Write" );
 
 		audioProvider.Start();
 		audioWriter.Start();
 		mAnalysis.Start();
-		mSynthesis.Start();
+		synthesis.Start();
 	
 		// Processings firings
 		CLAM_ASSERT(audioProvider.GetOutPort("Samples Read").CanProduce(), "mono audio file reader should have provided audio");
@@ -126,9 +130,9 @@ private:
 		while (audioProvider.Do())
 		{
 			mAnalysis.Do();
-			if (mSynthesis.CanConsumeAndProduce())
+			if (synthesis.CanConsumeAndProduce())
 			{
-				mSynthesis.Do();
+				synthesis.Do();
 				audioWriter.Do();
 			}
 		}
@@ -143,27 +147,45 @@ private:
 					      
 	}
 	
-	void foo()
+	// helper methods for the network tests
+	const CLAM::SMSAnalysisConfig& helperAnalysisConfigInstance()
 	{
-		CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
-		CLAM::MonoAudioFileWriter proc;
-		CLAM::MonoAudioFileWriterConfig conf;
-		CLAM::AudioFileHeader header;
-		header.SetValues(44100, 1, "WAV");
-		CLAM::AudioFile file;
-		file.CreateNew("foo.wav", header);
-		CPPUNIT_ASSERT_MESSAGE("header has channels", header.HasChannels() );	
-		CPPUNIT_ASSERT_MESSAGE("file have channels", file.GetHeader().HasChannels() );	
-		
-		
-		conf.SetTargetFile( file );
-		CPPUNIT_ASSERT_MESSAGE("config have channels", conf.GetTargetFile().GetHeader().HasChannels() );	
 
-		CLAM::MonoAudioFileWriterConfig configcopy;
-		configcopy = conf;
-		CPPUNIT_ASSERT_MESSAGE("config copy have channels", configcopy.GetTargetFile().GetHeader().HasChannels() );	
-		proc.Configure(conf);
+		int analHopSize = 256;
+//		analHopSize= (resAnalWindowSize-1)/2 ;
+
+//		int synthFrameSize = analHopSize;
+		int analZeroPaddingFactor= 2;
+		
+		// SMS Analysis configuration 
+		static CLAM::SMSAnalysisConfig analConfig;
+		
+		analConfig.SetSinWindowSize(helperAnalWindowSize() );
+		analConfig.SetHopSize(analHopSize);
+//		analConfig.SetSinWindowType(mGlobalConfig.GetAnalysisWindowType());
+		analConfig.SetSinZeroPadding(analZeroPaddingFactor);
+		analConfig.SetResWindowSize( helperResAnalWindowSize() );
+//		analConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
+
+//		analConfig.GetPeakDetect().SetMagThreshold(mGlobalConfig.GetAnalysisPeakDetectMagThreshold());
+//		analConfig.GetPeakDetect().SetMaxFreq(mGlobalConfig.GetAnalysisPeakDetectMaxFreq());
+//		analConfig.GetSinTracking().SetIsHarmonic(mGlobalConfig.GetAnalysisHarmonic());
+//		analConfig.GetFundFreqDetect().SetReferenceFundFreq(mGlobalConfig.GetAnalysisReferenceFundFreq());
+//		analConfig.GetFundFreqDetect().SetLowestFundFreq(mGlobalConfig.GetAnalysisLowestFundFreq());
+//		analConfig.GetFundFreqDetect().SetHighestFundFreq(mGlobalConfig.GetAnalysisHighestFundFreq());
+
+		return analConfig;
 	}
+	const CLAM::SMSSynthesisConfig & helperSynthesisConfigInstance()
+	{
+		static CLAM::SMSSynthesisConfig synthConfig;
+		int synthFrameSize = helperAnalWindowSize();
+		synthConfig.SetAnalWindowSize( helperResAnalWindowSize() );
+		synthConfig.SetFrameSize(synthFrameSize);
+		synthConfig.SetHopSize(synthFrameSize);
+		return synthConfig;
+	}
+
 	
 	void testAnalysisSynthesisInaNetwork()
 	{
@@ -176,40 +198,43 @@ private:
 		net.AddProcessing( "AudioOut",new CLAM::MonoAudioFileWriter );
 		net.AddProcessing( "Analysis", new CLAM::SMSAnalysisCore );
 		net.AddProcessing( "Synthesis", new CLAM::SMSSynthesis );
+
 		net.ConnectPorts("AudioIn.Samples Read", "Analysis.Input Audio");
-		net.ConnectPorts("Analysis.Sinusoidal Peaks", "Synthesis.InputResSpectrum");
+		net.ConnectPorts("Analysis.Sinusoidal Peaks", "Synthesis.InputSinPeaks");
+		net.ConnectPorts("Analysis.Residual Spectrum", "Synthesis.InputResSpectrum");
 		net.ConnectPorts("Synthesis.OutputAudio", "AudioOut.Samples Write");
 		
-//TODO refactor filenames		
 
 		CLAM::MonoAudioFileReaderConfig audioInCfg;
 		CLAM::AudioFile file;
 		file.OpenExisting(GetTestDataDirectory("sine.wav"));
 		audioInCfg.SetSourceFile(file);
+
 		net.ConfigureProcessing("AudioIn", audioInCfg);
 		
 		CLAM::MonoAudioFileWriterConfig writercfg;		
 		CLAM::AudioFileHeader header;
-		header.AddChannels();
-		header.UpdateData();
 		header.SetValues(44100, 1, "WAV");
-		file.CreateNew(GetTestDataDirectory("out_sms_net_stream_result.wav"), header);
+		std::string storedResult=GetTestDataDirectory("SMSTests/out_sms_net_stream");
+		file.CreateNew( storedResult+"_result.wav", header);
 		writercfg.SetTargetFile(file);
-		CLAM::MonoAudioFileWriter foo;
-		foo.Configure(writercfg);
-//		net.GetProcessing("AudioOut").Configure(writercfg);
-//		net.ConfigureProcessing("AudioOut", writercfg );
+		
+		net.ConfigureProcessing("AudioOut", writercfg );
+		net.ConfigureProcessing("Analysis", helperAnalysisConfigInstance() );
+		net.ConfigureProcessing("Synthesis", helperSynthesisConfigInstance() );
+
 		
 		net.Start();
-//		for(int i=0; i<100; i++) net.DoProcessings();
+		//TODO network should control the overall execution
+		for(int i=0; i<100; i++) net.DoProcessings();
 		net.Stop();
-/*
+
 		std::string whyDifferents;
 		bool equals=helperCompareTwoAudioFiles(
 				storedResult+".wav", storedResult+"_result.wav", 
 				whyDifferents);
 		CPPUNIT_ASSERT_MESSAGE(whyDifferents, equals);
-*/
+
 		std::cout << "end of the test \n";
 	}
 };
