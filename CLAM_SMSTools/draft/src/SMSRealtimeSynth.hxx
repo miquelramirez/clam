@@ -38,6 +38,7 @@ class SMSRealtimeSynth : public SMSBase
 			void LoadAnalysisFile( char* analysisFile )
 			{
 				LoadAnalysis( analysisFile );
+				std::cout << "mOriginalSegment.HasBeginTime()" << mOriginalSegment.HasBeginTime() << std::endl;
 			}
 
 			void LoadConfigurationFile( char* configFile )
@@ -61,7 +62,7 @@ class SMSRealtimeSynth : public SMSBase
 				}
 
 				TransformProcessing();
-				//Synthesize();
+				Synthesize();
 			}
 
 			void QueryState()
@@ -73,7 +74,6 @@ class SMSRealtimeSynth : public SMSBase
 
 	private:
 			int mSampleRate;
-			int mBufferSize;
 			CLAM::AudioIOConfig outLCfg;
 		  	CLAM::AudioIOConfig outRCfg;
 			CLAM::AudioOut outL;
@@ -99,21 +99,23 @@ void SMSRealtimeSynth::Play()
 
 void SMSRealtimeSynth::PlayAudio( const CLAM::Audio& audio ) 
 {
-        try {
+				int bufferSize = 256;
 
 //				outLCfg.SetDevice("alsa:default");
-//                outLCfg.SetChannelID(0);
+                outLCfg.SetChannelID(0);
 //                outLCfg.SetSampleRate(mSampleRate);
-//                outL.Configure(outLCfg);
-//
-//                std::cout << "SampleRate for playback is: " << mSampleRate << std::endl;
-//                
+                outLCfg.SetSampleRate(44100);
+                outL.Configure(outLCfg);
+
+                std::cout << "SampleRate for playback is: " << mSampleRate << std::endl;
+                
 //				outRCfg.SetDevice("alsa:default");
-//                outRCfg.SetChannelID(1);
+                outRCfg.SetChannelID(1);
 //                outRCfg.SetSampleRate(mSampleRate);
-//                outR.Configure(outRCfg);
-//                
-//
+                outLCfg.SetSampleRate(44100);
+                outR.Configure(outRCfg);
+                
+
 
                 CLAM::AudioManager::Current().Start();
 
@@ -122,28 +124,20 @@ void SMSRealtimeSynth::PlayAudio( const CLAM::Audio& audio )
 
                 CLAM::Audio chunk;
 
+				std::cout << "mAudioOut.size(): " << mAudioOut.GetSize() << std::endl;
+				std::cout << "bufferSize: " << bufferSize << std::endl;
+
         int offset = 0;
 
-        while ( offset  < audio.GetSize() ) {
-                audio.GetAudioChunk( offset, offset+mBufferSize, chunk ) ;
+        while ( offset + bufferSize  < audio.GetSize() ) {
+                audio.GetAudioChunk( offset, offset+bufferSize, chunk ) ;
                 outL.Do(chunk);
                 outR.Do(chunk);
-                offset += mBufferSize;
+                offset += bufferSize;
         }
 
-                outL.Stop();
-                outR.Stop();
-                
-
-        } catch(CLAM::Err error) {
-                error.Print();
-                std::cerr << "Abnormal Program Termination" << std::endl;
-                exit(-1);
-         }
-         catch (std::exception e) {
-                std::cout << e.what() << std::endl;
-                exit(-1);
-        }
+        outL.Stop();
+        outR.Stop();
 }
 
 void SMSRealtimeSynth::TransformProcessing() 
