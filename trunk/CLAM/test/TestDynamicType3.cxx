@@ -126,7 +126,6 @@ void testBasic()
 		throw CLAM::Err("Test failed: Non updated AddX and RemoveX");
 	d.FullfilsInvariant();
 
-	CLAM_BREAKPOINT
 	Testing("Adding All attributes");
 	d.AddAll();
 	d.UpdateData();
