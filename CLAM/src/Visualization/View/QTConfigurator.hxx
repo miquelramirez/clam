@@ -28,6 +28,7 @@
 
 #include "Assert.hxx"
 #include "Enum.hxx"
+#include "BPF.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 
@@ -40,6 +41,8 @@
 #include <qspinbox.h>
 #include <qvalidator.h>
 #include <qcombobox.h>
+
+#include "envelope_point_editor.hxx"
 
 namespace CLAM{
 	/**
@@ -240,6 +243,42 @@ namespace CLAM{
 		template <typename T>
 		void RetrieveValue(const char *name, DynamicType *foo, T&value) {
 		}
+
+///////////////////////////////////////////////////////////////////////////////
+		template <typename T>
+		void AddWidget(const char *name, BPF *foo, T& value) {
+			QHBox * cell = new QHBox(mLayout);
+			new QLabel(QString(name), cell);
+			Envelope_Point_Editor* mInput = new Envelope_Point_Editor( cell);
+			mInput->setMinimumSize( QSize( 500, 500) );
+			Envelope* env = new Envelope;
+
+			env->set_max_value( 500 );
+			env->set_min_value( 0 );
+
+			for ( int i=0; i<value.Size(); i++ )
+			{
+				env->add_node_at_offset( value.GetValueFromIndex(i), value.GetXValue(i) ); // TODO change this to floats for CLAM
+			}
+
+			mInput->set_envelope( env );
+			mWidgets.insert(tWidgets::value_type(name, mInput));
+		}
+		template <typename T>
+		void RetrieveValue(const char *name, BPF *foo, T& value) {
+			Envelope_Point_Editor* mInput = dynamic_cast<Envelope_Point_Editor*>(GetWidget(name));
+			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+
+			Envelope* env = mInput->get_envelope();
+			value.SetSize(0);
+			for ( int i=0; i< env->get_node_count(); i++ )
+			{
+				value.Insert( env->get_node_offset(i), env->get_node_height(i) ); // TODO change this to floats for CLAM
+			}
+//			const char * readValue=mInput->text().latin1();
+//			std::stringstream s(readValue);
+		}
+//////////////////////////////////////////////////////////////////////////////
 
 	public slots:
 
