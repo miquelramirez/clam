@@ -113,7 +113,7 @@ inline SpectralPeak Lin(SpectralPeak &inPeak,int scalingFactor=20)
 {
 	if (inPeak.GetScale()!=EScale::eLinear){
 		TData currMag = inPeak.GetMag();
-		inPeak.SetMag(pow(10,(currMag/scalingFactor)));
+		inPeak.SetMag(pow(TData(10),TData(currMag/scalingFactor)));
 		inPeak.SetScale(EScale::eLinear);
 	}
 	return inPeak;
