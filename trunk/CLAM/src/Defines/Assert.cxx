@@ -21,6 +21,7 @@
 
 #include "Assert.hxx"
 #include <iostream>
+#include <csignal>
 #if defined(__linux__)
 #include <execinfo.h>
 #endif
@@ -66,12 +67,12 @@ bool disabledCLAMAssertBreakpoint = false;
 
 static void DefaultAssertHandler(const char* message, const char* filename, int lineNumber )
 {
-	std::cout << "##########################################################" << std::endl;
-	std::cout << "################### ASSERTION FAILED #####################" << std::endl;
-	std::cout << "##########################################################" << std::endl;
-	std::cout << "At file " << filename << " line " << lineNumber << std::endl;
-	std::cout << message << std::endl;
-	DumpBacktrace(std::cout);
+	std::cerr << "##########################################################" << std::endl;
+	std::cerr << "################### ASSERTION FAILED #####################" << std::endl;
+	std::cerr << "##########################################################" << std::endl;
+	std::cerr << "At file " << filename << " line " << lineNumber << std::endl;
+	std::cerr << message << std::endl;
+	DumpBacktrace(std::cerr);
 }
 
 static AssertFailedHandlerType CurrentAssertFailedHandler=DefaultAssertHandler;
@@ -101,11 +102,11 @@ ErrAssertionFailed::ErrAssertionFailed(const char* message, const char* filename
 
 static void DefaultWarningHandler(const char* message, const char* filename, int lineNumber )
 {
-	std::cout << "##########################################################" << std::endl;
-	std::cout << "######################## WARNING #########################" << std::endl;
-	std::cout << "##########################################################" << std::endl;
-	std::cout << "At file " << filename << " line " << lineNumber << std::endl;
-	std::cout << message << std::endl;
+	std::cerr << "##########################################################" << std::endl;
+	std::cerr << "######################## WARNING #########################" << std::endl;
+	std::cerr << "##########################################################" << std::endl;
+	std::cerr << "At file " << filename << " line " << lineNumber << std::endl;
+	std::cerr << message << std::endl;
 }
 
 static WarningHandlerType CurrentWarningHandler=DefaultWarningHandler;
@@ -120,6 +121,35 @@ void ExecuteWarningHandler(const char* message, const char* filename, int lineNu
 {
 	CurrentWarningHandler(message,filename,lineNumber);
 }
+
+// #if defined(__linux__)
+class SystemSignalTrapper
+{
+	int _signal;
+	sighandler_t _oldHandler;
+public:
+	SystemSignalTrapper(int signal, sighandler_t handler) :
+		_signal(signal)
+	{
+		_oldHandler = std::signal(signal, handler);
+	}
+	~SystemSignalTrapper()
+	{
+		std::signal(_signal, _oldHandler);
+	}
+};
+void segvSignalHandler(int myInt)
+{
+	std::cerr << std::endl;
+	std::cerr << "##########################################################" << std::endl;
+	std::cerr << "#################### BAD MEMORY ACCES ####################" << std::endl;
+	std::cerr << "##########################################################" << std::endl;
+	DumpBacktrace(std::cerr);
+	std::abort();
+}
+
+static SystemSignalTrapper segvSignalTrapper(SIGSEGV,segvSignalHandler);
+//#endif //defined linux
 
 
 }
