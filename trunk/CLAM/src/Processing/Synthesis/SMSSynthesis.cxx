@@ -46,9 +46,10 @@ mOutputSpectrum("OutputSpectrum",this),
 mOutputAudio("OutputAudio",this),
 mOutputResAudio("OutputResAudio",this),
 mOutputSinAudio("OutputSinAudio",this),
-mCurrentTime("CurrentTime",this),
+mCurrentTimeControl("CurrentTime",this),
 mCurrentPitch("CurrentPitch",this)
 {
+	mCurrentFrame = 0;
 	Configure(SMSSynthesisConfig());
 	AttachChildren();
 }
@@ -61,9 +62,10 @@ mOutputSpectrum("OutputSpectrum",this),
 mOutputAudio("OutputAudio",this),
 mOutputResAudio("OutputResAudio",this),
 mOutputSinAudio("OutputSinAudio",this),
-mCurrentTime("CurrentTime",this),
+mCurrentTimeControl("CurrentTime",this),
 mCurrentPitch("CurrentPitch",this)
 {
+	mCurrentFrame = 0;
 	Configure(cfg);
 	AttachChildren();
 }
@@ -219,7 +221,14 @@ bool SMSSynthesis::Do(
 	//First we do the phase managing. Note that if the Do(frame) overload is not used,
 	//the time and pitch controls in this processing should be set by hand before this
 	//method is used
-	mPhaseMan.mCurrentTime.DoControl(mCurrentTime.GetLastValue());
+
+
+//	mPhaseMan.mCurrentTime.DoControl(mCurrentTimeControl.GetLastValue()); //TODO used in SMSBase (Synth from segment)
+	mCurrentFrame ++;
+	int framesize = outputAudio.GetSize();
+	TData samplerate = outputAudio.GetSampleRate();
+	mPhaseMan.mCurrentTime.DoControl( TData( mCurrentFrame*framesize ) / samplerate  );
+	
 	mPhaseMan.mCurrentPitch.DoControl(mCurrentPitch.GetLastValue());
 	mPhaseMan.Do(inputSinusoidalPeaks);
 
@@ -259,7 +268,7 @@ bool SMSSynthesis::Do(Frame& in)
 //We initialize input frame, adding necessary attributes
 	InitFrame(in);
 //First we set the controls 
-	mCurrentTime.DoControl(in.GetCenterTime());
+	mCurrentTimeControl.DoControl(in.GetCenterTime());
 	mCurrentPitch.DoControl(in.GetFundamental().GetFreq(0));
 	
 
