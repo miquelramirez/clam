@@ -37,6 +37,8 @@ namespace CLAM{
 		 */
 		const char *GetClassName() const {return "SMSOddEvenHarmonicRatio";}
 
+		InPort<SpectralPeakArray> mIn;
+		OutPort<SpectralPeakArray> mOut;
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
@@ -60,6 +62,15 @@ namespace CLAM{
 		}
 
 		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
+
+		// Note that overriding this method breaks the processing chain functionality. 
+		bool Do()
+		{
+			bool result = Do(mIn.GetData(), mOut.GetData());
+			mIn.Consume();
+			mOut.Produce();
+			return result;
+		}
 
 	};		
 };//namespace CLAM
