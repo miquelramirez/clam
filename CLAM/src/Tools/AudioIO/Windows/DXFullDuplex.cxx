@@ -74,7 +74,7 @@ DXFullDuplex::~DXFullDuplex()
 HRESULT DXFullDuplex::InitDSoundDevices( void )
 {
 	HRESULT hr;
-	DSCAPS  dsound_caps;
+
 
 	// Obtaining the DirectSound interface
 	hr = DirectSoundCreate( mGUID, &mDS, NULL );
@@ -327,7 +327,6 @@ HRESULT DXFullDuplex::Poll( void )
 HRESULT DXFullDuplex::Start( void )
 {
 	HRESULT hr;
-	DWORD current_pos ;
 	
 	mNextCaptureOffset = 0;
 	mNextOutputOffset = mLatency*3; 

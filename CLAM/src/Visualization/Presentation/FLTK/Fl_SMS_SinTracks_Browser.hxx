@@ -36,6 +36,8 @@ namespace CLAMVM
 		Fl_Box*                             mImposterBox;
 		DataBoundBox                        mWorldSpaceCoords;
 		std::string                         mTooltipFmtStr;
+		double                              mMaxFreq;
+		double                              mMinFreq;
 
 	protected:
 
@@ -68,6 +70,7 @@ namespace CLAMVM
 		SigSlot::Signalv1<double>      SelectedXValue;
 
 		void SetTooltipFormat( const char* fmtStr );
+		void SetYRange( double ymin, double ymax );
 		
 	};
 

@@ -61,7 +61,9 @@ namespace CLAMVM
 		CLAM::TTime                         mBeginTime;
 		CLAM::TTime                         mEndTime;
 		std::string                         mTooltipFmtStr;
-		
+		double                              mMinFreq;
+		double                              mMaxFreq;
+
 	protected:
 
 		virtual void OnNewTrajectory( const CLAM::Array< TimeFreqMagPoint >& trajectory, CLAM::TData sRate );
@@ -74,7 +76,7 @@ namespace CLAMVM
 		virtual void OnSetSelectedXValue( double value );
 
 		SigSlot::Signalv1< double > ChangeSelectedXValue;
-		SigSlot::Slotv1< double >   HandleDisplaySelection;
+		SigSlot::Slotv1< double >   HandleDisplaySelection;		
 
 	public:
 		Fl_SMS_FundFreq_Browser( int X, int Y, int W, int H, const char* label = 0 );
@@ -93,6 +95,7 @@ namespace CLAMVM
 		SigSlot::Signalv1<double>      SelectedXValue;
 		
 		void SetTooltipFormat( const char* fmtStr );
+		void SetYRange( double ymin, double ymax );
 
 	};
 
@@ -100,6 +103,12 @@ namespace CLAMVM
 	inline void Fl_SMS_FundFreq_Browser::SetTooltipFormat( const char* fmtStr )
 	{
 		mTooltipFmtStr = fmtStr;
+	}
+
+	inline void Fl_SMS_FundFreq_Browser::SetYRange( double ymin, double ymax )
+	{
+		mMinFreq = ymin;
+		mMaxFreq = ymax;
 	}
 	
 }

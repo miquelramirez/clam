@@ -26,6 +26,8 @@
 #include "Processing.hxx"
 #include "CircularShiftConfig.hxx"
 #include "InControl.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 
 namespace CLAM {
 
@@ -37,8 +39,16 @@ namespace CLAM {
 	/** This Processing class takes an input audio buffer and shifts it to get zero-phase
 	 *	conditions in the STFT 
 	 */
-	class CircularShift: public Processing {
+	class CircularShift
+		: public Processing {
+	protected:
 		CircularShiftConfig mConfig;
+
+		InPortTmpl< Audio > mInput;
+		OutPortTmpl< Audio > mOutput;
+
+	protected:
+
 
 		const char *GetClassName() const {return "CircularShift";}
 

@@ -114,7 +114,7 @@ namespace CLAM
 			}
 			else
 			{
-				destMag[i] = 10.f*log10f(magSquared); // = 20*log10(sqrt(re^2 + im^2))
+				destMag[i] = 10.f*log10(magSquared); // = 20*log10(sqrt(re^2 + im^2))
 			}
 
 			destPhase[i] = src[i].Ang(); // = atan2(im. re)

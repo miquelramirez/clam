@@ -111,6 +111,8 @@ namespace CLAM {
 
 	bool  SpectralPeakDetect::Do(const Spectrum& input, SpectralPeakArray& out)
 	{
+		CLAM_ASSERT(CheckInputType(input), "SpectralPeakDetect::Do() - Type of input data doesn't match expected type.");
+		CLAM_ASSERT(CheckOutputType(out), "SpectralPeakDetect::Do() - Type of output data doesn't match expected type.");
 
 		int i;
 		TSize nSpectralPeaks = 0;
@@ -125,14 +127,12 @@ namespace CLAM {
 		TData spectralPeakMag;
 		TData diffFromMax;
 		const TData samplingRate = input.GetSpectralRange() * TData(2.0);
-		const TSize magThreshold = mConfig.GetMagThreshold();
+		const TData magThreshold = mConfig.GetMagThreshold();
 		const TSize nBins = input.GetSize();
 		const TData maxFreq= mConfig.GetMaxFreq();
 
-		CLAM_ASSERT(CheckOutputType(out),"SpectralPeakDetect::Do - Type of output data doesn't match ");
-		
-		DataArray& inMagBuffer=input.GetMagBuffer();
-		DataArray& inPhaseBuffer=input.GetPhaseBuffer();
+		const DataArray& inMagBuffer=input.GetMagBuffer();
+		const DataArray& inPhaseBuffer=input.GetPhaseBuffer();
 
 		TSize maxPeaks=mConfig.GetMaxPeaks();
 		if (out.GetnMaxPeaks() != maxPeaks)
@@ -207,7 +207,28 @@ namespace CLAM {
 
 				else { //  add SpectralPeak... BinWidth will be updated in the next turn
 			
-					// quadratic SpectralPeak interpolation ( taken from old SMS) 
+					// Estimating the ``true'' maximum peak (frequency and magnitude) of the detected local maximum 
+					// using a parabolic cure-fitting. The idea is that the main-lobe of spectrum of most analysis 
+					// windows on a dB scale looks like a parabola and therefore the maximum of a parabola fitted 
+					// through a local maxima bin and it's two neighboring bins will give a good approximation 
+					// of the actual frequency and magnitude of a sinusoid in the input signal.
+					//
+					// The parabola f(x) = a(x-n)^2 + b(x-n) + c can be completely described using 3 points; 
+					// f(n-1) = A1, f(n) = A2 and f(n+1) = A3, where 
+					// A1 = 20log10(|X(n-1)|), A2 = 20log10(|X(n)|), A3 = 20log10(|X(n+1)|).
+					//
+					// Solving these equation yields: a = 1/2*A1 - A2 + 1/2*A3, b = 1/2*A3 - 1/2*A1 and 
+					// c = A2.
+					//
+					// As the 3 bins are known to be a maxima, solving d/dx f(x) = 0, yields (fractional) bin 
+					// position x of the estimated peak. Substituting delta_x for (x-n) in this equation yields 
+					// the fractional offset in bins from n where the peak's maximum is.
+					//
+					// Solving this equation yields: delta_x = 1/2 * (A1 - A3)/(A1 - 2*A2 + A3).
+					// 
+					// Computing f(n+delta_x) will estimate the peak's magnitude (in dB's):
+					// f(n+delta_x) = A2 - 1/4*(A1-A3)*delta_x.
+
 					diffFromMax =  TData(0.5) * ((leftMag-rightMag) / (leftMag- 2*middleMag + rightMag));
 					interpolatedBin = SpectralPeakPosition+diffFromMax;
 			
@@ -280,8 +301,27 @@ namespace CLAM {
 	}
 
 
+	bool SpectralPeakDetect::CheckInputType(const Spectrum &in)
+	{
+		if (!in.HasScale())
+			return false;
 
-	bool SpectralPeakDetect::CheckOutputType(SpectralPeakArray& out) 
+		if (in.GetScale() != EScale::eLog)
+			return false;
+
+		if (!in.HasSpectralRange())
+			return false;
+
+		if (!in.HasMagBuffer())
+			return false;
+
+		if (!in.HasPhaseBuffer())
+			return false;
+
+		return true;
+	}
+
+	bool SpectralPeakDetect::CheckOutputType(const SpectralPeakArray &out) 
 	{
 		if (!out.HasScale())
 			return false;
@@ -304,14 +344,7 @@ namespace CLAM {
 		if (!out.HasPhaseBuffer())
 			return false;
 
-/*		out.SetScale(EScale::eLog);
-		out.AddBinWidthBuffer();
-		out.AddFreqBuffer();
-		out.AddBinPosBuffer();
-		out.AddMagBuffer();
-		out.AddPhaseBuffer();
-		out.UpdateData();*/
-
 		return true;
 	}
-};//namespace CLAM
+
+}

@@ -5,6 +5,20 @@
 
 namespace CLAMTest
 {
+	DataSizeMismatch::DataSizeMismatch() throw()
+		: Err( )
+	{
+	}
+
+	DataSizeMismatch::DataSizeMismatch( const char* msg ) throw()
+		: Err( msg )
+	{
+	}
+
+	DataSizeMismatch::~DataSizeMismatch() throw()
+	{
+	}
+	
 	static double evaluateAverage( CLAM::DataArray& left )
 	{
 		double avg = 0.0;
@@ -24,8 +38,8 @@ namespace CLAMTest
 					  CLAM::DataArray& right,
 					  double rightAverage )
 	{
-		CLAM_ASSERT( left.Size() == right.Size(),
-			     "Arrays cannot be compared: sizes differ!");
+		if ( left.Size() != right.Size() )
+			throw DataSizeMismatch( "Arrays cannot be compared: sizes differ!" );
 
 		double cov = 0.0;
 
@@ -42,7 +56,9 @@ namespace CLAMTest
 	static double evaluateVariance( CLAM::DataArray& vector,
 					double average )
 	{
-		CLAM_ASSERT( vector.Size() > 0, "Void vector: variance cannot be evaluated" );
+		if ( vector.Size() <= 0 )
+			throw DataSizeMismatch( "Void vector: variance cannot be evaluated" );
+
 		double var = 0.0;
 
 		for ( int i = 0; i < vector.Size(); i++ )
@@ -58,7 +74,7 @@ namespace CLAMTest
 	}
 
 	double evaluateSimilarity( CLAM::DataArray& left,
-				   CLAM::DataArray& right )
+				   CLAM::DataArray& right ) throw( DataSizeMismatch )
 	{
 	
 		double leftAverage = evaluateAverage( left );

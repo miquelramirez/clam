@@ -30,7 +30,8 @@
 #include "AudioFileOut.hxx"      // the same for the CLAM::AudioFileOut Processing class
 #include "Audio.hxx"             // imports the CLAM::Audio ProcessingData class interface
 #include "Assert.hxx"            // imports CLAM defensive programming utils
-#include <FL/fl_file_chooser.H>  // imports FLTK functions for file choosing dialogs
+#include "FileChooser.hxx"       // imports CLAMVM generic file chooser dialog
+#include "MessageBox.hxx"        // generic message box
 
 int main( int argc, char** argv )
 {
@@ -42,23 +43,27 @@ int main( int argc, char** argv )
 	// it. This configuration involves both specifying the name of the .wav file we want to open, and
 	// telling the sound file format expected ( such as WAVE RIFF ).
 
-	// First, we obtain the filename from the user through a FLTK file chooser dialog. The function
-	// will return either the filename selected by the user, or a NULL pointer, if the user 'cancels' the
-	// dialog
+	// First, we obtain the filename from the user through a CLAMVM::FileChooserDialog, a generic file chooser
+	// widget dialog
 
-
-	const char* filename = fl_file_chooser( "Please, select a .wav file", "*.wav", NULL );
+	CLAMVM::FileChooserDialog fileDlg;
 	
+	// We set the dialog title
+	fileDlg.SetTitle( "Please, select a .wav file" );
+	// We add a file type to be filtered in by the dialog
+	fileDlg.AddFileType( "*.wav" );
+	fileDlg.AddFileType( "*.aiff" );
+
 	// the user might cancel the dialog, so we can default the filename variable value to some pre-established
 	// value, or just abort program execution
-	if ( filename == NULL )
+	if ( !fileDlg.Show() )
 	{
 		std::cout << "User cancelled" << std::endl;
 		exit(0);
 	}
 
 	// Once we have acquired the filename we set the appropiate values for the AudioFileInConfig object
-	fileLoaderConfig.SetFilename( filename );
+	fileLoaderConfig.SetFilename( fileDlg.GetSelectedFilename() );
 
 	// CLAM::EAudioFileType is an enum type that specifies CLAM Audio file I/O file formats supported
 	fileLoaderConfig.SetFiletype( CLAM::EAudioFileType::eWave ); 
@@ -101,25 +106,21 @@ int main( int argc, char** argv )
 			messageShown += "due to the following problem: \n";
 			messageShown +=error.what();
 			
-			// We obtain a const char* from the string object
-			fl_message( messageShown.c_str() );
-			
+			CLAMVM::MessageBox msgBox;
+
+			msgBox.SetText( messageShown );
+			msgBox.Show();
+
 			// And now we tell the user to provide a new filename, just
 			// as we did before						
-			const char* filename = fl_file_chooser( "Please, select a .wav file", "*.wav", NULL );
 			
-			// the user might cancel the dialog, so we can default the filename variable value to some pre-established
-			// value, or just abort program execution
-			if ( filename == NULL )
+			if ( !fileDlg.Show() )
 			{
 				std::cout << "User cancelled" << std::endl;
 				exit(0);
 			}
-
-			fileLoaderConfig.SetFilename( filename );
-
-			CLAM_ASSERT( fileLoader.Configure( fileLoaderConfig ),
-				     "Unable to configure fileLoader!" );
+				
+			fileLoaderConfig.SetFilename( fileDlg.GetSelectedFilename() );
 		}
 	}
 	
@@ -157,16 +158,19 @@ int main( int argc, char** argv )
 
 	// Ask the user about the filename 
 
-	const char* outputFilename = fl_file_chooser(  "Please, specify file to dump Audio object", "*.wav", NULL );
-	
+	fileDlg.SetTitle("Please, specify file to dump Audio object" );
+	std::string outputFilename;
+
 	// now, if the user cancels, it makes sense to specify a default filename
 
-	if ( !outputFilename )
+	if ( !fileDlg.Show() )
 	{
 		outputFilename = "output.wav";
 		std::cout << "Audio samples will be stored on " << outputFilename << std::endl;
 	}
 	
+	outputFilename = fileDlg.GetSelectedFilename();
+
 	// now we set the values for the fileStorer object configuration
 
 	fileStorerConfig.SetFilename( outputFilename );

@@ -2,73 +2,10 @@
 #define __CLAM_MATH__
 
 #include <cmath>
-//XA
-#ifdef WIN32
-#ifdef _DEBUG
-#include <float.h>
-#endif
-#endif
-#include "Assert.hxx"
 #include "DataTypes.hxx"
+#include "FastRounding.hxx"
 
-//optimized positive integer chopping routine for Windows, is equivalent to int(a) but much more efficient
-inline int Chop(float a) {
-#if defined (_MSC_VER)
-            int i;
-#ifdef _DEBUG
-/**IMPORTANT: if in release mode, you are responsible for changing controlfp.
-	You must do so outside the loop that actually calls the loop */
-			CLAM_ASSERT(a>=0,"Chop function only for positive numbers");
-			unsigned int saved = _controlfp(0, 0);
-			_controlfp(_RC_CHOP, _MCW_RC);
-#endif //_DEBUG
-            __asm {
-                        fld   a
-						//fadd  half
-                        fistp i
-            }
-#ifdef _DEBUG
-			_controlfp(saved, _MCW_RC);
-#endif //_DEBUG
-            return i;
-#else //not WIN32
-            return int(a); // just hope it's an intrinsic.
-#endif //WIN32
-}
-
-/* optimized roundInt implementation valid only for positive integers*/
-inline int Round(float a)
-{
-#if defined (_MSC_VER)
-	int i;
-	static const float half = 0.5f;
-#ifdef _DEBUG
-/**IMPORTANT: if in release mode, you are responsible for changing controlfp.
-	You must do so outside the loop that actually calls the loop */
-	CLAM_ASSERT(a>=0,"Round function only for positive numbers");
-	unsigned int saved = _controlfp(0, 0);
-	_controlfp(_RC_CHOP, _MCW_RC);
-#endif //_DEBUG
-    __asm {
-			fld   a
-			fadd  half
-            fistp i
-           }
-#ifdef _DEBUG
-			_controlfp(saved, _MCW_RC);
-#endif //_DEBUG
-            return i;
-#else
-	#ifdef __USE_ISOC99
-		return lrint(a);
-	#else
-		return int(rint(a));
-	#endif
-#endif
-}
-
-
-
+/*
 #ifndef linux
 
 #ifndef MIN
@@ -80,6 +17,7 @@ inline int Round(float a)
 #endif
 
 #endif //linux
+*/
 
 #if defined _MSC_VER && _MSC_VER < 1310 // MSVC++ 6
 	namespace std
@@ -151,8 +89,8 @@ namespace CLAM
 /*Non member function, returns absolute value of class T*/
 template <class T> inline T Abs(T value)
 {
-	if(value<0) return -value;
-	else return value;
+
+	return ( value < 0 ) ? -value : value;
 }
 
 /* DB */

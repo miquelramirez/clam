@@ -106,15 +106,19 @@ void config_parse_line_sub(config_data* d,int insidecond,int cond)
 		if (*d->in=='$')
 		{
 			/* encountering a variable, starting with $( */
-			var = d->out;
 			d->in++;
-			if (*d->in!='(')
+			if (*d->in!='$')
 			{
-				fprintf(stderr,
-				"Expected '(' after '$' in line %s:%d\n",d->filename,d->line);
-				exit(-1);
+				var = d->out;
+				if (*d->in!='(')
+				{
+					fprintf(stderr,
+					"Expected '(' after '$' in line %s:%d\n",d->filename,d->line);
+					exit(-1);
+				}
+				d->in++;
 			}
-			d->in++;
+			/* else, $$ means output a single $ */
 		}
 
 		if (var)
@@ -519,6 +523,20 @@ void config_check(void)
 	list_add_str_once(ignore_unused,"EXTRA_MAKEFILE_VARS");
 	list_add_str_once(ignore_unused,"OS_LINUX");
 	list_add_str_once(ignore_unused,"OS_WINDOWS");
+
+	{
+		listkey* k = listhash_find(config,"EXTRA_MAKEFILE_VARS");
+		item* i = (k && k->l) ? k->l->first : 0;
+		while (i)
+		{	
+			if (i->str && i->str[0]!=0)
+			{
+				list_add_str_once(ignore_unused,i->str);
+			}
+			i = i->next;
+		}
+	}
+
 
 	while (n)
 	{

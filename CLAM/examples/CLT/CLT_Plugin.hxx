@@ -1,7 +1,7 @@
 #ifndef CLT_PLUGIN
 #define CLT_PLUGIN
 
-#include "ladspa_types.h"
+//#include <ladspa_types.h>
 #include "ProcessingComposite.hxx"
 #include "InPortTmpl.hxx"
 #include "OutPortTmpl.hxx"

@@ -34,9 +34,9 @@
 /* Module Initialisation:
    ---------------------- */
 void initialise_CLT_amplifier();
-void initialise_CLT_LP_filter();
-void initialise_CLT_HP_filter();
-void initialise_CLT_FD_filter();
+//void initialise_CLT_LP_filter();
+//void initialise_CLT_HP_filter();
+//void initialise_CLT_FD_filter();
 /** This function should initialise all modules in the library. This
     will lead to all plugin descriptors being registered. If you write
     a new plugin you should initialise it here. If the module has
@@ -45,9 +45,9 @@ void initialise_CLT_FD_filter();
 void initialise_modules() 
 {
 		initialise_CLT_amplifier();
-		initialise_CLT_LP_filter();
-		initialise_CLT_HP_filter();
-		initialise_CLT_FD_filter();
+//		initialise_CLT_LP_filter();
+//		initialise_CLT_HP_filter();
+//		initialise_CLT_FD_filter();
 }
 
 /*****************************************************************************/
@@ -55,17 +55,17 @@ void initialise_modules()
 /* Module Finalisation:
    -------------------- */
 
-void finalise_CLT_LP_filter();
-void finalise_CLT_HP_filter();
-void finalise_CLT_FD_filter();
+//void finalise_CLT_LP_filter();
+//void finalise_CLT_HP_filter();
+//void finalise_CLT_FD_filter();
 
 /** Finalise any structures allocated by the modules. This does not
     include descriptors passed to registerNewPluginDescriptor(). */
 void finalise_modules() 
 {
-		finalise_CLT_LP_filter();
-		finalise_CLT_HP_filter();
-		finalise_CLT_FD_filter();
+//		finalise_CLT_LP_filter();
+//		finalise_CLT_HP_filter();
+//		finalise_CLT_FD_filter();
 }
 
 /*****************************************************************************/

@@ -341,12 +341,12 @@ namespace CLAM {
 				tmpFreq2.AddElem(tmpFreq.GetFreq(i),tmpFreq.GetErr(i));
 	  
 		// 5.- SEARCH AROUND FOR A RELATIVE MINIMUM
-		TData nMinimum = MIN(3,tmpFreq2.GetnCandidates());
+		TData nMinimum = std::min(3,tmpFreq2.GetnCandidates());
 		for(i=0; i<nMinimum; i++)
 			{
         TData Low  = tmpFreq2.GetFreq(i)*TData(.9);
         TData High = tmpFreq2.GetFreq(i)*TData(1.1);
-        TData Incr = MAX(1.0,tmpFreq2.GetFreq(i)*TData(.008)); 
+        TData Incr = std::max(TData(1.0),tmpFreq2.GetFreq(i)*TData(.008)); 
         TData FinalPitch = tmpFreq2.GetFreq(i);
         TData FinalError = tmpFreq2.GetErr(i);
         TData lPitch,lErr;
@@ -371,7 +371,7 @@ namespace CLAM {
 	      if (tmpFreq2.GetErr(i) > tmpFreq2.GetErr(j))
 					tmpFreq2.Exchange(i,j);
 
-		TIndex nCandidates = MIN(outFreq.GetnMaxCandidates(),tmpFreq2.GetnCandidates());
+		  TIndex nCandidates = std::min(outFreq.GetnMaxCandidates(),tmpFreq2.GetnCandidates());
 		for(i=0; i<nCandidates; i++)
 			if(tmpFreq2.GetErr(i) <= mMaxFundFreqError)
 				outFreq.AddElem(tmpFreq2.GetFreq(i), tmpFreq2.GetErr(i));
@@ -396,7 +396,7 @@ namespace CLAM {
 		TData ErrorPM = 0;
 		int MaxNPM = 10;
 		if (nPeaks  > 4)
-			MaxNPM = MIN(mPMnPeaks,nPeaks);
+			MaxNPM = std::min(mPMnPeaks,nPeaks);
 		
 		TData Harmonic = TData(freq);
 		TSize nPM = MaxNPM;
@@ -414,7 +414,7 @@ namespace CLAM {
 					Mag  = TData(peaks.GetThruIndexMag(Peak));
 					FreqDistance = fabs(Freq - Harmonic);
 					Tmp = FreqDistance *	pow(Harmonic, -mPMp);
-					TData MagFactor = TData(MAX(0,MaxMag - Mag + 20));
+					TData MagFactor = TData(std::max(0.0,MaxMag - Mag + 20.0));
 					MagFactor = TData(1.0) - MagFactor/TData(75.0);
 					if (MagFactor < 0)
 						MagFactor = 0;
@@ -424,7 +424,7 @@ namespace CLAM {
  
 		// measured to predicted mismatch error 
 		TData ErrorMP = 0;
-		int MaxNMP = MIN(mMPnPeaks,nPeaks);
+		int MaxNMP = std::min(mMPnPeaks,nPeaks);
 		Harmonic = TData(freq);
 		TSize nMP = nPeaks;
 		for (Peak=0; Peak<nPeaks; Peak++)
@@ -438,7 +438,7 @@ namespace CLAM {
 				Harmonic = TData(GetClosestHarmonic(Freq,freq));
 				FreqDistance = fabs(Freq - Harmonic);
 				Tmp = FreqDistance * pow(Freq, -mMPp);
-				TData MagFactor = TData(MAX(0,MaxMag - Mag + 20));
+				TData MagFactor = TData(std::max(0.0,MaxMag - Mag + 20.0));
 				MagFactor = TData(1.0) - MagFactor/TData(75.0);
 				if (MagFactor < 0)
 					MagFactor = 0;

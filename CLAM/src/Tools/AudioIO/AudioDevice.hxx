@@ -132,7 +132,7 @@ protected:
 	
 	int SampleRate(void);
 	int Latency(void);
-	unsigned NumberOfInternalBuffers();
+	void SetLatency(int latency);
 
 private:
 	AudioManager* mAudioManager;

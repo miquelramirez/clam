@@ -268,16 +268,17 @@ void Fl_Axis::rescale(int when, double  x){
 };
 
 Fl_Axis::Fl_Axis(int x, int y, int w, int h, const char * label)
-	:Fl_Box(x,y,w,h,label),
-	scale_(FL_AXIS_LIN), valid_(0), label_format_(0),
-	minor_grid_color_(FL_BLACK), major_grid_color_(FL_BLACK), label_grid_color_(FL_BLACK),
-	minor_grid_style_(FL_SOLID), major_grid_style_(FL_SOLID), label_grid_style_(FL_SOLID),
-	minor_grid_width_(0), major_grid_width_(0), label_grid_width_(0), 
-	minor_grid_dashes_(0), major_grid_dashes_(0),label_grid_dashes_(0),
-	grid_visible_(0), tick_interval_(MINOR_INTERVAL), tick_separation_(MINOR_SEPARATION),
-	tick_length_(0), tick_width_(0), major_step_(MAJOR_STEP),label_step_(LABEL_STEP),
-	axis_align_(FL_AXIS_BOTTOM),label_font_face_(FL_HELVETICA), label_font_size_(LABEL_SIZE),
-	min_(0),max_(0),min_pos_(0),max_pos_(0),border_(AXIS_BORDER),axis_color_(FL_BLACK)
+	: Fl_Box(x,y,w,h,label),
+	  scale_(FL_AXIS_LIN), valid_(0), label_format_(0),
+	  minor_grid_style_(FL_SOLID), major_grid_style_(FL_SOLID), label_grid_style_(FL_SOLID),
+	  minor_grid_width_(0), major_grid_width_(0), label_grid_width_(0), 
+	  minor_grid_dashes_(0), major_grid_dashes_(0),label_grid_dashes_(0),
+	  grid_visible_(0), tick_interval_(MINOR_INTERVAL), tick_separation_(MINOR_SEPARATION),
+	  tick_length_(0), tick_width_(0), major_step_(MAJOR_STEP),label_step_(LABEL_STEP),
+	  axis_align_(FL_AXIS_BOTTOM),label_font_size_(LABEL_SIZE),
+	  min_(0),max_(0),min_pos_(0),max_pos_(0),border_(AXIS_BORDER),axis_color_(FL_BLACK),
+	  minor_grid_color_(FL_BLACK), major_grid_color_(FL_BLACK), label_grid_color_(FL_BLACK), 
+	  label_font_face_(FL_HELVETICA)
 	
 {
 	box(FL_NO_BOX);

@@ -58,6 +58,7 @@ namespace CLAMVM
 
 	void SinTracksPlot::SetYRange( double ymin, double ymax )
 	{
+		mpWidget->SetSpectralRange( fabs( ymax-ymin ) );
 	}
 
 	void SinTracksPlot::SetTooltipFormat( const char* fmtStr )

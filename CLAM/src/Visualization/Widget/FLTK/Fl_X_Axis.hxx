@@ -16,9 +16,9 @@ protected:
     void draw_grid();
 public:
 
-    Fl_X_Axis(int x, int y, int w, int h, const char * label=0);
+	Fl_X_Axis(int x, int y, int w, int h, const char * label=0);
 	~Fl_X_Axis();
-
+	
 };
 
 }

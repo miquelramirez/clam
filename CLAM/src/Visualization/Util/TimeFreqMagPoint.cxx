@@ -4,7 +4,7 @@ namespace CLAMVM
 {
 
 	TimeFreqMagPoint::TimeFreqMagPoint()
-		: mTimeIndex( -1 ), mAttribute( 0 )
+		: mAttribute( 0 ), mTimeIndex( -1 )
 	{
 	}
 		

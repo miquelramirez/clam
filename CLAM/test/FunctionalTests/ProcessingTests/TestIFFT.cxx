@@ -109,8 +109,9 @@ namespace CLAMTest
 
 			processing.Configure( processingConfig );
 
-			processing.Attach( smReferenceP2Spectrum, actualOutput );
-
+			(*processing.FirstInput())->Attach( smReferenceP2Spectrum );
+			(*processing.FirstOutput())->Attach( actualOutput );
+			
 			processing.Start();
 
 			processing.Do( );
@@ -142,7 +143,8 @@ namespace CLAMTest
 
 			processing.Configure( processingConfig );
 
-			processing.Attach( smReferenceNP2Spectrum, actualOutput );
+			(*processing.FirstInput())->Attach( smReferenceNP2Spectrum );
+			(*processing.FirstOutput())->Attach( actualOutput );
 
 			processing.Start();
 

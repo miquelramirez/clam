@@ -24,12 +24,83 @@
 
 #include "ProcessingData.hxx"
 #include "FrameDescriptors.hxx"
+#include "Frame.hxx"
 
 
 using namespace CLAM;
 
-FrameDescriptors::FrameDescriptors(Frame* pFrame): ProcessingData(eNumAttr)
+FrameDescriptors::FrameDescriptors(Frame* pFrame): Descriptor(eNumAttr)
 {
 	MandatoryInit();
 	mpFrame=pFrame;
+}
+
+
+void FrameDescriptors::SetpFrame(Frame* pFrame) {
+	mpFrame=pFrame;
+	//first we add dynamic attributes doing a single UpdateData
+	if(mpFrame->HasSpectrum())
+		AddSpectrumD();
+	if(mpFrame->HasSpectralPeakArray())
+		AddSpectralPeakD();
+	if(mpFrame->HasResidualSpec())
+		AddResidualSpecD();
+	if(mpFrame->HasSinusoidalSpec())
+		AddSinusoidalSpecD();
+	if(mpFrame->HasAudioFrame())
+		AddAudioFrameD();
+	if(mpFrame->HasSinusoidalAudioFrame())
+		AddSinusoidalAudioFrameD();
+	if(mpFrame->HasResidualAudioFrame())
+		AddResidualAudioFrameD();
+	if(mpFrame->HasSynthAudioFrame())
+		AddSynthAudioFrameD();
+	UpdateData();
+	//now we set the data of each descriptor
+	if(mpFrame->HasSpectrum())
+		GetSpectrumD().SetpSpectrum(&mpFrame->GetSpectrum());
+	if(mpFrame->HasSpectralPeakArray())
+		GetSpectralPeakD().SetpSpectralPeakArray(&mpFrame->GetSpectralPeakArray());
+	if(mpFrame->HasResidualSpec())
+		GetResidualSpecD().SetpSpectrum(&mpFrame->GetResidualSpec());
+	if(mpFrame->HasSinusoidalSpec())
+		GetSinusoidalSpecD().SetpSpectrum(&mpFrame->GetSinusoidalSpec());
+	if(mpFrame->HasAudioFrame())
+		GetAudioFrameD().SetpAudio(&mpFrame->GetAudioFrame());
+	if(mpFrame->HasSinusoidalAudioFrame())
+		GetSinusoidalAudioFrameD().SetpAudio(&mpFrame->GetSinusoidalAudioFrame());
+	if(mpFrame->HasResidualAudioFrame())
+		GetResidualAudioFrameD().SetpAudio(&mpFrame->GetResidualAudioFrame());
+	if(mpFrame->HasSynthAudioFrame())
+		GetSynthAudioFrameD().SetpAudio(&mpFrame->GetSynthAudioFrame());
+
+}
+
+void FrameDescriptors::Compute()
+{
+	/*Overriding compute method in base class because right now I don't know
+	what to do with member statistics.*/
+	ConcreteCompute();
+}
+
+
+void FrameDescriptors::ConcreteCompute()
+{
+	if(mpFrame->HasSpectrum())
+		GetSpectrumD().Compute();
+	if(mpFrame->HasSpectralPeakArray())
+		GetSpectralPeakD().Compute();
+	if(mpFrame->HasResidualSpec())
+		GetResidualSpecD().Compute();
+	if(mpFrame->HasSinusoidalSpec())
+		GetSinusoidalSpecD().Compute();
+	if(mpFrame->HasAudioFrame())
+		GetAudioFrameD().Compute();
+	if(mpFrame->HasSinusoidalAudioFrame())
+		GetSinusoidalAudioFrameD().Compute();
+	if(mpFrame->HasResidualAudioFrame())
+		GetResidualAudioFrameD().Compute();
+	if(mpFrame->HasSynthAudioFrame())
+		GetSynthAudioFrameD().Compute();
+
 }

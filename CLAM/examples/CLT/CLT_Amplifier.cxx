@@ -1,7 +1,7 @@
 #include "CLT_Amplifier.hxx"
 #include <stdlib.h>
 #include "ErrProcessingObj.hxx"
-#include "iostream"
+#include <iostream>
 
 void CLT_Amplifier::ConnectPort(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data * DataLocation)
 {
@@ -34,7 +34,7 @@ void CLT_Amplifier::Run(LADSPA_Handle Instance, unsigned long SampleCount)
 	amp = (CLT_Amplifier*) Instance;
 	sIBuffer.GetBuffer().SetSize(SampleCount);
 	sOBuffer.GetBuffer().SetSize(SampleCount);
-	cout << SampleCount << endl;
+	std::cout << SampleCount << std::endl;
 	amp->Do(sIBuffer, sOBuffer);
 }
 

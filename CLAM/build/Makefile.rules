@@ -38,6 +38,7 @@ CXXFLAGS = $(CXXFLAGS_DEBUG)
 $(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
 	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
+	@$(MACOSX_POSTLINK)
 
 %.o:
 	@mkdir -p obj
@@ -59,6 +60,7 @@ CXXFLAGS = $(CXXFLAGS_RELEASE)
 $(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
 	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
+	@$(MACOSX_POSTLINK)
 
 %.o:
 	@mkdir -p obj

@@ -192,7 +192,7 @@ namespace CLAM {
 					out.SetnPeaks(i-1);
 					break;
 				}
-				outMag[i]=0.0000000001;
+				outMag[i]=TData(0.0000000001);
 				outFreq[i]=lastFreq+=100;
 			}
 			i++;
@@ -306,7 +306,7 @@ namespace CLAM {
 					out.SetnPeaks(i-1);
 					break;
 				}
-				outMag[i]=0.0000000001;
+				outMag[i]=TData(0.0000000001);
 				outFreq[i]=lastFreq+=100;
 			}
 			i++;

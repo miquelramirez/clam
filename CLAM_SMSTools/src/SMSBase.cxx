@@ -23,7 +23,7 @@
 
 #include "SMSBase.hxx"
 #include "SegmentDescriptors.hxx"
-#include "BasicStatistics.hxx"
+#include "BasicOps.hxx"
 
 
 #include "AudioFileIn.hxx"
@@ -285,6 +285,7 @@ void SMSBase::Flush(Segment& seg)
 
 void SMSBase::AnalysisProcessing()
 {
+	CLAM_ACTIVATE_FAST_ROUNDING;
 	CLAM_DEBUG_ASSERT( 0 != mCurrentProgressIndicator, "SMSBase::AnalysisProcessing needs a ProgressIndicator")
 		
 	Flush(mOriginalSegment);
@@ -303,11 +304,12 @@ void SMSBase::AnalysisProcessing()
 	}
 
  	GetAnalysis().Stop();
+	CLAM_DEACTIVATE_FAST_ROUNDING;
 }
 
 void SMSBase::MorphAnalysisProcessing()
 {
-
+	CLAM_ACTIVATE_FAST_ROUNDING;
 	TSize size = mMorphSegment.GetAudio().GetSize();
 	
 	Flush(mMorphSegment);
@@ -327,12 +329,13 @@ void SMSBase::MorphAnalysisProcessing()
 	}
 
  	GetAnalysis().Stop();
-
+	CLAM_DEACTIVATE_FAST_ROUNDING;
 
 }
 
 void SMSBase::TracksCleanupProcessing()
 {
+	CLAM_ACTIVATE_FAST_ROUNDING;
 	CleanTracksConfig clcfg;
 	clcfg.SetSamplingRate(mSamplingRate);
 	clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
@@ -344,11 +347,12 @@ void SMSBase::TracksCleanupProcessing()
 	myCleanTracks.Start();
 	myCleanTracks.Do(mOriginalSegment);
 	myCleanTracks.Stop();	
-
+	CLAM_DEACTIVATE_FAST_ROUNDING;
 }
 
 void SMSBase::MorphTracksCleanupProcessing()
 {
+	CLAM_ACTIVATE_FAST_ROUNDING;
 	CleanTracksConfig clcfg;
 	clcfg.SetSamplingRate(mSamplingRate);
 	clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
@@ -357,6 +361,7 @@ void SMSBase::MorphTracksCleanupProcessing()
 	myCleanTracks.Start();
 	myCleanTracks.Do(mMorphSegment);
 	myCleanTracks.Stop();	
+	CLAM_DEACTIVATE_FAST_ROUNDING;
 
 }
 
@@ -387,6 +392,7 @@ void SMSBase::DoMorphTracksCleanup()
 
 void SMSBase::Analyze(void)
 {
+	CLAM_ACTIVATE_FAST_ROUNDING;
 	TSize size = mOriginalSegment.GetAudio().GetSize();
 	mCurrentProgressIndicator = CreateProgress("Analysis Processing",0,float(size));
 	DoAnalysis();
@@ -426,6 +432,7 @@ void SMSBase::Analyze(void)
 		tempSdifFilename += "_tmp.sdif";
 		mSerialization.DoSerialization( mSerialization.Store, mMorphSegment, tempSdifFilename.c_str() );
 	}
+	CLAM_DEACTIVATE_FAST_ROUNDING;
 }
 
 void SMSBase::StoreOutputSound(void)
@@ -479,6 +486,7 @@ void SMSBase::DoSynthesis()
 
 void SMSBase::SynthesisProcessing()
 {
+	CLAM_ACTIVATE_FAST_ROUNDING;
 	GetSynthesis().Start();
 	/////////////////////////////////////////////////////////////////////////////
 	// The main synthesis processing loop.
@@ -518,7 +526,7 @@ void SMSBase::SynthesisProcessing()
 	mHaveAudioOut = true;
 
 	GetSynthesis().Stop();
-
+	CLAM_DEACTIVATE_FAST_ROUNDING;
 }
 void SMSBase::CopySegmentExceptAudio(const Segment& src, Segment& dest)
 {
@@ -555,7 +563,7 @@ void SMSBase::AnalyzeMelody(void)
 /* This function is just an example of the kind of things you are able to do departing from this
 Analysis Synthesis applcation. The algorithm and the result are by no mean supposed to be state-of-the-art
 in metadata extraction from an input sound.*/	
-	
+	CLAM_ACTIVATE_FAST_ROUNDING;
 	
 	ComputeLowLevelDescriptors();
 	
@@ -710,7 +718,7 @@ in metadata extraction from an input sound.*/
 			noteEnergy+=energy[j];
 			if(energy[j]>maxEnergy) maxEnergy=energy[j];
 			testEnergy.AddElem(energy[j]);
-			if((fund[j] < (aux+100))&&(fund[j] > (MAX(0,(aux-100))))&&fund[j]>100&&fund[j]<1000) { 
+			if((fund[j] < (aux+100))&&(fund[j] > (std::max(TData(0.0),(aux-TData(100)))))&&fund[j]>TData(100)&&fund[j]<TData(1000)) { 
 				ff+=fund[j];
 				number++;
 			}
@@ -747,6 +755,7 @@ in metadata extraction from an input sound.*/
 	
 	mMelody.SetNoteArray(array);
 
+	CLAM_DEACTIVATE_FAST_ROUNDING;
 }
 
 void SMSBase::StoreMelody(void)
@@ -816,6 +825,7 @@ void SMSBase::SetSMSMorphFileName()
 
 void SMSBase::TransformProcessing(void)
 {
+	CLAM_ACTIVATE_FAST_ROUNDING;
 	bool def=false;
 	SetSMSMorphFileName();
 	UpdateDataInTimeStretch();
@@ -831,7 +841,7 @@ void SMSBase::TransformProcessing(void)
 	}
 	mTransformation.Stop();
 	mHaveTransformation=true;
-
+	CLAM_DEACTIVATE_FAST_ROUNDING;
 
 }
 
@@ -886,7 +896,7 @@ void SMSBase::ComputeLowLevelDescriptors()
 		Spectrum &tmpSpec=frames[i].GetSpectrum();
 		tmpFrameD.SetpFrame(&frames[i]);
 		tmpFrameD.GetSpectrumD().SetpSpectrum(&tmpSpec);
-		tmpFrameD.GetSpectrumD().SetEnergy(Energy(tmpSpec.GetMagBuffer().GetPtr(),tmpSpec.GetMagBuffer().Size()));
+		tmpFrameD.GetSpectrumD().SetEnergy(Energy()(tmpSpec.GetMagBuffer()));
 		frameDesc.AddElem(tmpFrameD);
 	}
 

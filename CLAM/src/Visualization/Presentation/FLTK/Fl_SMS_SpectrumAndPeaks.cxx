@@ -28,8 +28,8 @@ namespace CLAMVM
 		mYAxis = new Fl_Y_Axis( X+W-50,Y,30,H-50 );
 		mYAxis->align( FL_ALIGN_LEFT );
 		mYAxis->scale( FL_AXIS_LIN );
-		mYAxis->minimum( -1.0 );
-		mYAxis->maximum( 1.0 );
+		mYAxis->minimum( -150.0 );
+		mYAxis->maximum( 0.0 );
 		mYAxis->label_format( "%g" );
 		mYAxis->label_step( 10 );
 		mYAxis->label_size( 9 );
@@ -61,8 +61,17 @@ namespace CLAMVM
 		mSpectrumDrawMgr.SetDetailThreshold( 500 );				
 		mWorldSpaceCoords.mLeft = -1.0;
 		mWorldSpaceCoords.mRight = 1.0;
-		mWorldSpaceCoords.mTop = 1.0;
-		mWorldSpaceCoords.mBottom = -1.0;
+		mWorldSpaceCoords.mTop = 0.0;
+		mWorldSpaceCoords.mBottom = -150.0;
+
+	}
+
+	void Fl_SMS_SpectrumAndPeaks::SetYRange( double minMag, double maxMag )
+	{
+		mYAxis->minimum( minMag );
+		mYAxis->maximum( maxMag );
+		mWorldSpaceCoords.mTop = maxMag;
+		mWorldSpaceCoords.mBottom = minMag;
 
 	}
 
@@ -154,15 +163,8 @@ namespace CLAMVM
 		mSpectrumDrawMgr.CacheData( array );
 		mWorldSpaceCoords.mRight = array.Size() - 2;
 		mWorldSpaceCoords.mLeft = 0;
-		mWorldSpaceCoords.mTop = 0;
-		mWorldSpaceCoords.mBottom = -150;
 		mXAxis->minimum( 0 );
 		mXAxis->maximum( spectralRange );
-
-		// We check here for -1.0INFs, clamping the magnitude to -200 dB
-		mYAxis->minimum( -150 );
-				
-		mYAxis->maximum( 0 );
 		mPeaksDrawMgr.SetBinNumber( array.Size() );
 		mPeaksDrawMgr.SetSpectralRange ( spectralRange );
 		if ( mDisplay )
@@ -177,12 +179,8 @@ namespace CLAMVM
 		mXAxis->minimum( 0 );
 		mXAxis->maximum( spectralRange );
 		// We check here for -1.0INFs, clamping the magnitude to -200 dB
-		mYAxis->minimum( -150 );
-		mYAxis->maximum( 0 );
 		mWorldSpaceCoords.mRight = 510;
 		mWorldSpaceCoords.mLeft = 0;
-		mWorldSpaceCoords.mTop = 0;
-		mWorldSpaceCoords.mBottom = -150;
 
 		mPeaksDrawMgr.SetSpectralRange( spectralRange );
 	}

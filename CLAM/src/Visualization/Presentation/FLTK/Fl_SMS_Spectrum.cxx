@@ -31,7 +31,8 @@ namespace CLAMVM
 {
 	Fl_SMS_Spectrum::Fl_SMS_Spectrum( int X, int Y, int W, int H, const char* label )
 		: Fl_Group( X, Y, W, H, label ), mDisplay( NULL ), 
-		  mTooltipFmtStr( "f=%6.f Hz, amp(f)=%4.2f dB" )
+		  mTooltipFmtStr( "f=%6.f Hz, amp(f)=%4.2f dB" ),
+		  mMinMag( -150 ), mMaxMag( 0 )
 	{
 		mXAxis = new Fl_X_Axis( X, Y + H-50, W-50, 30 );
 		mXAxis->align( FL_ALIGN_BOTTOM );
@@ -47,8 +48,8 @@ namespace CLAMVM
 		mYAxis = new Fl_Y_Axis( X+W-50, Y, 30, H-50 );
 		mYAxis->align( FL_ALIGN_LEFT );
 		mYAxis->scale( FL_AXIS_LIN );
-		mYAxis->minimum( -1.0 );
-		mYAxis->maximum( 1.0 );
+		mYAxis->minimum( mMinMag );
+		mYAxis->maximum( mMaxMag );
 		mYAxis->label_format( "%g" );
 		mYAxis->label_step( 10 );
 		mYAxis->label_size( 9 );
@@ -71,8 +72,8 @@ namespace CLAMVM
 		mDrawMgr.SetDetailThreshold( 500 );
 		mWorldSpaceCoords.mLeft = -1.0;
 		mWorldSpaceCoords.mRight = 1.0;
-		mWorldSpaceCoords.mTop = 1.0;
-		mWorldSpaceCoords.mBottom = -1.0;
+		mWorldSpaceCoords.mTop = mMaxMag;
+		mWorldSpaceCoords.mBottom = mMinMag;
 	
 	}
 
@@ -149,15 +150,14 @@ namespace CLAMVM
 	void Fl_SMS_Spectrum::OnNewSpectrum( const DataArray& array, TData spectralRange )
 	{
 		mDrawMgr.CacheData( array );
-		const TData offsetPercentil = 0.2f; // 20%
 		mWorldSpaceCoords.mRight = array.Size() - 2;
 		mWorldSpaceCoords.mLeft = 0;
-		mWorldSpaceCoords.mTop = 0;
-		mWorldSpaceCoords.mBottom = -150;
+		mWorldSpaceCoords.mTop = mMaxMag;
+		mWorldSpaceCoords.mBottom = mMinMag;
 		mXAxis->minimum( 0 );
 		mXAxis->maximum( spectralRange );
-		mYAxis->minimum( -150 );
-		mYAxis->maximum( 0 );
+		mYAxis->minimum( mMinMag );
+		mYAxis->maximum( mMaxMag );
 		if ( mDisplay )
 			mDisplay->redraw();
 		redraw();

@@ -7,7 +7,8 @@
 namespace CLAMVM
 {
 	Fl_SMS_FundFreq_Browser::Fl_SMS_FundFreq_Browser( int X, int Y, int W, int H, const char* label )
-		: Fl_Group( X, Y, W, H ), mDisplay( NULL ), mTooltipFmtStr( "time %.3f secs freq. %.2f Hz" )
+		: Fl_Group( X, Y, W, H ), mDisplay( NULL ), mTooltipFmtStr( "time %.3f secs freq. %.2f Hz" ),
+		  mMinFreq( 0.0 ), mMaxFreq( 11025. )
 	{
 		mXAxis = new Fl_X_Axis( X,Y+H-50,W-50, 30 );
 		mXAxis->align( FL_ALIGN_BOTTOM );
@@ -23,8 +24,8 @@ namespace CLAMVM
 		mYAxis = new Fl_Y_Axis( X+ W-50,Y,30,H-50 );
 		mYAxis->align( FL_ALIGN_LEFT );
 		mYAxis->scale( FL_AXIS_LIN );
-		mYAxis->minimum( -1.0 );
-		mYAxis->maximum( 1.0 );
+		mYAxis->minimum( mMinFreq );
+		mYAxis->maximum( mMaxFreq );
 		mYAxis->label_format( "%g" );
 		mYAxis->label_step( 10 );
 		mYAxis->label_size( 9 );
@@ -54,13 +55,9 @@ namespace CLAMVM
 		NewTimeSpan.Wrap( this, &Fl_SMS_FundFreq_Browser::OnNewTimeSpan );
 		NewFreqRangeHint.Wrap( this, &Fl_SMS_FundFreq_Browser::OnNewFreqRangeHint );
 
-		mWorldSpaceCoords.mTop = 1;
-		mWorldSpaceCoords.mBottom = 0;
+		mWorldSpaceCoords.mTop = mMaxFreq;
+		mWorldSpaceCoords.mBottom = mMinFreq;
 		
-		mYAxis->maximum( 1 );
-		mYAxis->minimum( 0 );
-
-
 	}
 
 	Fl_SMS_FundFreq_Browser::~Fl_SMS_FundFreq_Browser()
@@ -175,7 +172,7 @@ namespace CLAMVM
 		mDrawMgr.CacheData( trajectory );
 
 		mWorldSpaceCoords.mRight = trajectory.Size();
-		mWorldSpaceCoords.mLeft = 0;
+		mWorldSpaceCoords.mLeft = 0;		
 
 		mFrames = trajectory.Size();
 
@@ -191,6 +188,8 @@ namespace CLAMVM
 		mYAxis->maximum( higher );
 		mWorldSpaceCoords.mTop = higher;
 		mWorldSpaceCoords.mBottom = lower;
+		mMaxFreq = higher;
+		mMinFreq = lower;
 
 		if ( mDisplay )
 		{

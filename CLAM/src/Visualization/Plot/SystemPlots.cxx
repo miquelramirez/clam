@@ -80,7 +80,8 @@ namespace CLAMVM
 		SetFLTKLookAndFeel();
 
 		Fl::run();
-
+		Fl::flush();
+		
 		widget->position( sOldWidgetPositions[key].x, sOldWidgetPositions[key].y );
 
 		CleanupActiveWindows();
@@ -159,6 +160,7 @@ namespace CLAMVM
 		SetFLTKLookAndFeel();
 
 		Fl::run();
+		Fl::flush();
 
 		CleanupActiveWindows();
 		sCurrentDisplayList.clear();

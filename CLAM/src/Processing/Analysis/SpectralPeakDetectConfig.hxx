@@ -34,7 +34,7 @@ namespace CLAM {
 	class SpectralPeakDetectConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDetectConfig, 6,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakDetectConfig, 4, ProcessingConfig);
 		/** Name of the SpectralPeakDetect object*/
 		DYN_ATTRIBUTE (0, public, std::string, Name);
 		/** Maximum namber of SpectralPeaks*/
@@ -44,16 +44,19 @@ namespace CLAM {
 		/** Maximum frequency, spectral peaks will only be detected under this threshold*/
 		DYN_ATTRIBUTE (3, public, TData, MaxFreq);
 		/** Type of Magnitude interpolation between bins*/
-		DYN_ATTRIBUTE (4, public, EInterpolation, InterpolMag);
+//		DYN_ATTRIBUTE (4, public, EInterpolation, InterpolMag);
 		/** Type of Phase interpolation between bins */
-		DYN_ATTRIBUTE (5, public, EInterpolation, InterpolPhase);
-	protected:
+//		DYN_ATTRIBUTE (5, public, EInterpolation, InterpolPhase);
+
+//	protected:
+	private:
 		void DefaultInit();
+
 	public:
 	  /** Initialize configuration object with default values (name 'SpectralPeakDetect', 513 bands, Magnitude treshold set to -80 and MaxSpectralPeaks setted to 100
 	   */
 		void DefaultValues();
-		~SpectralPeakDetectConfig(){};
+//		~SpectralPeakDetectConfig(){};
 		
  	}; 
 

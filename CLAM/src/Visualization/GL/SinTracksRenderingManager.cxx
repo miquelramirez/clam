@@ -49,8 +49,9 @@ namespace CLAMVM
 
 	void SinTracksRM::DetermineVisibleSamples()
 	{
-		mHorClipper.Cull( mDataBBox.mLeft, mDataBBox.mRight , mStarts, mEnds );
-		mVerClipper.Cull( mDataBBox.mBottom, mDataBBox.mTop, mStarts, mEnds );
+		mVerClipper.Cull( (int)mDataBBox.mBottom, (int)mDataBBox.mTop, mStarts, mEnds );
+		mHorClipper.Cull( (int)mDataBBox.mLeft, (int)mDataBBox.mRight , mStarts, mEnds );
+
 	}
 
 	void SinTracksRM::RenderData()

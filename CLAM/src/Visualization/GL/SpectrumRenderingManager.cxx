@@ -86,8 +86,8 @@ namespace CLAMVM
 	void SpectrumRenderingManager::DetermineVisibleSamples()
 	{
 
-		mOffset = mDataBBox.mLeft;
-		mLen = (mDataBBox.mRight - mDataBBox.mLeft)+1;
+		mOffset = (TSize)mDataBBox.mLeft;
+		mLen = (TSize)(mDataBBox.mRight - mDataBBox.mLeft)+1;
 
 		if ( mProcessedData.Size() <= mLen )
 			mProcessedData.Resize( mLen+1 );

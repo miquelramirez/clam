@@ -200,7 +200,7 @@ bool SDIFIn::LoadSDIFDataIntoSegment( CLAM::Segment& segment )
 				pkPhaseBuffer[r]=pMatrix->GetValue(r,3);
 				pkBinPosBuffer[r]=-1;
 				pkBinWidthBuffer[r]=-1;
-				pkIndexArray[r]=pMatrix->GetValue(r,0) - 1;	// -1 because SDIF doesnt allow Track 0
+				pkIndexArray[r]=(int)pMatrix->GetValue(r,0) - 1;	// -1 because SDIF doesnt allow Track 0
 			}
 		}
 		else
@@ -219,7 +219,7 @@ bool SDIFIn::LoadSDIFDataIntoSegment( CLAM::Segment& segment )
 				{
 					pkIndexArray[r]=-1;			
 					// track index and buffer it
-					int	tempIndex = pMatrix->GetValue(r,0) - 1;	// -1 because SDIF doesnt allow Track 0
+					int	tempIndex = (int)pMatrix->GetValue(r,0) - 1;	// -1 because SDIF doesnt allow Track 0
 					tmpIndexArray.AddElem(tempIndex);
 				}
 			}

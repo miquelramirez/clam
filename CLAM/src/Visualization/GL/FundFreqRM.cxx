@@ -5,7 +5,7 @@
 namespace CLAMVM
 {
 	FundFreqRM::FundFreqRM()
-		: mMustProcessData( false ), mMustColorize( false ), mPalette( 0.0f )
+		: mPalette( 0.0f ), mMustProcessData( false ),  mMustColorize( false )
 	{
 	}
 

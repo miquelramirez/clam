@@ -58,6 +58,7 @@ namespace CLAMVM
 
 		void SetTooltipFormat( const char* fmtStr );
 		void SetSpectralRange( double spectralRange );
+		void SetYRange( double minMag, double maxMag );
 	};
 
 	// inlines 

@@ -49,6 +49,7 @@ class NetworkTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetProcessing_WhenNoProcessings );
 	CPPUNIT_TEST( testGetProcessing_WhenProcessingAdded );
 	CPPUNIT_TEST( testGetProcessing_WithTwoProcessings );
+	CPPUNIT_TEST(  testAddProcessing_UsingFactory );
 	CPPUNIT_TEST( testHasProcessing_WhenHasIt );
 	CPPUNIT_TEST( testHasProcessing_WhenHasntIt );
 	CPPUNIT_TEST( testDestructor_DeletesChildrenProcessings );
@@ -144,6 +145,20 @@ class NetworkTest : public CppUnit::TestFixture
 
 		CPPUNIT_ASSERT_EQUAL ( proc, &net.GetProcessing( name ) );
 	}
+
+	void testAddProcessing_UsingFactory()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+			
+		std::string name( "oscillator" );
+		std::string key( "Oscillator" );
+		net.AddProcessing( name, key );
+
+		CPPUNIT_ASSERT_EQUAL ( true , net.HasProcessing( name ) );
+	}
+
 
 	void testGetProcessing_WithTwoProcessings()
 	{

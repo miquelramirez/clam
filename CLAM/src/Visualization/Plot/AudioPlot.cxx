@@ -52,6 +52,7 @@ namespace CLAMVM
 
 	void AudioPlot::SetYRange( double ymin, double ymax )
 	{
+		mpWidget->SetYRange( ymin, ymax );
 	}
 
 	void AudioPlot::SetTooltipFormat( const char* tooltipFmt )

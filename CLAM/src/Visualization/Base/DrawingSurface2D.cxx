@@ -26,9 +26,10 @@
 namespace CLAMVM
 {
 	DrawingSurface2D::DrawingSurface2D()
-		: mxmax( 1.0f ), mxmin( -1.0f ), mymax( 1.0f ), mymin( -1.0f ),
-		  mcxmax( 1.0f ), mcxmin( -1.0f ), mcymax( 1.0f ), mcymin( -1.0f ),
-		  mxdist( 0 ), mydist(0), mTooltipText( NULL )
+		: mxdist( 0 ), mydist(0), mTooltipText( NULL ), 
+		  mxmax( 1.0f ), mxmin( -1.0f ), mymax( 1.0f ), mymin( -1.0f ),
+		  mcxmax( 1.0f ), mcxmin( -1.0f ), mcymax( 1.0f ), mcymin( -1.0f )
+		  
 	{
 		mxdist = fabs( mxmax - mxmin );
 		mydist = fabs( mymax - mymin );

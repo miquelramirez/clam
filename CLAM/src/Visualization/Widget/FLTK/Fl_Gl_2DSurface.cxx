@@ -130,7 +130,7 @@ namespace CLAMVM
 		
 	bool Fl_Gl_2DSurface::IsDoubleBufferingEnabled() const
 	{
-		return bool(mode()&FL_DOUBLE);
+		return mode()&FL_DOUBLE!=0;
 	}
 
 	void Fl_Gl_2DSurface::WCSProject()

@@ -50,6 +50,8 @@ namespace CLAMVM
 		Fl_Box*                     mImposterBox;
 		DataBoundBox                mWorldSpaceCoords;
 		std::string                 mTooltipFmtStr;
+		double                      mMinMag;
+		double                      mMaxMag;
 
 	protected:
 		
@@ -67,6 +69,7 @@ namespace CLAMVM
 		void Hide();
 
 		void SetTooltipFormat( const char* fmtStr );
+		void SetYRange( double minMag, double maxMag );
 	};
 
 	// inlines
@@ -74,6 +77,12 @@ namespace CLAMVM
 	inline void Fl_SMS_Spectrum::SetTooltipFormat( const char* fmtStr )
 	{
 		mTooltipFmtStr = fmtStr;
+	}
+
+	inline void Fl_SMS_Spectrum::SetYRange( double minMag, double maxMag )
+	{
+		mMinMag = minMag;
+		mMaxMag = maxMag;
 	}
 }
 
