@@ -45,6 +45,7 @@ namespace CLAM
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::AudioPortMonitor> regtAudioPortMonitor("AudioPortMonitor");
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::FundamentalPortMonitor> regtFundamentalPortMonitor("FundamentalPortMonitor");
         static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::AudioBuffPortMonitor> regtAudioBuffPortMonitor("AudioBuffPortMonitor");
+        static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SpecgramPortMonitor> regtSpecgramPortMonitor("SpecgramPortMonitor");
 #endif
 	
 }
