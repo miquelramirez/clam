@@ -1,3 +1,69 @@
+2003-02-28  CLAM_0_4_2
+'Cuidado merge update'
+  * General
+      ** Most classes ported to the GetClassName contsness
+  * Processing - Base:
+      ** TopLevelProcessing::GetInstance() returns a pointer instead a reference
+  * Processings - Spectral:
+      ** Added Gaussian window to WindowGenerator
+      ** Removed Synth window to WindowGenerator (not used)
+      ** Added Maximizer Normalization to WindowGenerator
+  * Processing - Transformation:
+      ** Normalization moved from examples to src/Processing/Transformations
+      ** Added SpectralEnvelopeApply, FDCombFilter, LPC, Levinstong_Durbin and
+         AutocorrelationEvaluator
+      ** SMS transformations added and refactored: SMSPitchShift, SMSFreqShift, 
+         and SMSOddEvenHarmonicRatio.
+  * Processing - Analysis:    
+      ** SpectralEnvelopeExtract deprecates ExpectralEnvelopeExtractor
+  * Processing - ArithOps:
+      ** Fix: BinOps threw 'this' (the processing) on error instead exceptions
+      ** Some concrete BinOps have Personalized names for the class
+      ** Some concrete BinOps have Concrete Configuration alias (You can use
+         AudioAdderConfig instead BinaryAudioOp < Add<TData> > )
+  * Processing Data:
+      ** Added Correlation
+  * Standard:
+      ** TemplateCircularBuffer obsoleted by CircularBuffer
+  * Signal-Slot Mechanims:
+      ** CallbackHandler is obsolete
+  * Examples
+      ** ControlArrayExample added
+      ** FlowControlExamples added
+      ** LPC_Example added
+      ** AutocorrelationExample added
+  * AnalysisSynthesis example:
+      ** Batch processing on Windows
+      ** Removed patented icon formats (aka Gif)
+      ** Added Spectrum View
+      ** Added Signal/Slot facilities to coordinate Spectrum and Frame marker
+      ** Added Transformations
+      ** Lot of fixes
+  * Visualization:
+      ** Removed: FLDisplay, FLMultiDisplay, FLDisplayArray and CUIDADO_Snapshots
+      ** Added new custom FLTK widgets: Fl_ZoomSlider and Fl_Range
+      ** libsigslot added
+  * FLTKConfigurator:
+      ** Uses FL_Pack  & FL_Scroll for managing the widgets position
+  * AudioBrowser:
+      ** New class added, derived from AudioPresentation, that includes a 
+         GLPortSigSlot and capabilities to get its Signals and its Slots.
+  * GLPortSigSlot:
+      ** New class added, derived from GLPort, that includes Signals and Slots, 
+         and the methods to work with them, as well as an overlay that draws 
+         the Frame marker.
+  * MSVisualC++ build system
+      ** Changed extended.c to extended.cxx. Used by Tools/AudioFileIO/AIFFFileIO
+      ** CLAM_Windows.hxx used instead windows.h to work arraund some nasty defines
+  * SpectralDelay
+      ** QT dependencies removed from the .dsp. That includes build configurations and .cxx files.
+  * Tests:
+      ** New cppunit based infraestructured enabled and some tests ported
+      ** Better DynamicType tests
+      ** Better (non-cppunit) XMLAdapters tests
+  * Misc:
+      ** Modified boost::dir_it added as external included library (Only works 
+         for Windows... by now)
 
 2003-01-23 CLAM_0_4_1
 'Analysis Synthesis debuggin'
@@ -20,11 +86,10 @@
 
 2002-12-10
 'Zero padding move'
-  *Analysis Synthesis example:
+  * Analysis Synthesis example:
      ** Removed useless synthesis zero padding factor
      ** Fixed some other bugs related to zero padding
      ** Did a little modification in the GUI so Audio displays are closed when editing configuration
-
 
 2002-11-26  CLAM_0_4_0-rel
 'Fly examples, fly to seattle' release
@@ -234,7 +299,7 @@
   * AudioIO classes
       ** Some more error condition checks.
       ** Added underrun/overrun recovery mechanism.
-  * List class 
+  * List class
       ** It is now tested and working.
   * Changes in the Documentation:
       ** Updated doxygen generation configuration.
@@ -242,7 +307,7 @@
   * Other:
       ** Fixed minor compilation problems in several source files.
       ** Fixed some missing binary dependencies in the UNIX build system.
-  
+
 2001-02-07  development-root cuidado-root salto-root time_machine-root
 
   * Branches created.
