@@ -60,6 +60,8 @@ private:
 		// Configuration data
 		SMSSynthesisConfig mConfig;
 
+		int mCurrentFrame;
+
 		//internal Processing Objects
 		/** We use a SpectralSynthesis for Sinusoidal and another one
 		 * for residual synthesis. In principle we could use the same one
@@ -147,7 +149,7 @@ private:
 
 	public:
 		//Controls
-		InControlTmpl<SMSSynthesis> mCurrentTime;
+		InControlTmpl<SMSSynthesis> mCurrentTimeControl;
 		InControlTmpl<SMSSynthesis> mCurrentPitch;
 
 
