@@ -254,6 +254,15 @@ namespace CLAM
 		mFlowControl->ProcessingConfigured(*proc);
 	}
 
+	void Network::ReconfigureAllProcessings()
+	{
+		ProcessingsMap::iterator it;
+		for( it=mProcessings.begin(); it!=mProcessings.end(); it++)
+		{
+			Processing* proc = it->second;
+			proc->Configure( proc->GetConfig() );
+		}
+	}
 
 	bool Network::ConnectPorts( const std::string & producer, const std::string & consumer )
 	{
