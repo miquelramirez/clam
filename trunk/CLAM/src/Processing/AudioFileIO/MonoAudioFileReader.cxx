@@ -122,16 +122,21 @@ namespace CLAM
 		Audio& outputSamples = mOutput.GetData();
 
 		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(),
-						      outputSamples.GetBuffer().GetPtr(),
-						      outputSamples.GetSize() );
-
-		outputSamples.SetBeginTime( mCurrentBeginTime );
-		mDeltaTime = outputSamples.GetSize() / mConfig.GetSourceFile().GetHeader().GetSampleRate();
-		mCurrentBeginTime += mDeltaTime;
-		outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+						       outputSamples.GetBuffer().GetPtr(),
+						       outputSamples.GetSize() );
+		
+		if ( mNativeStream->WasSomethingRead() )
+		{
+			outputSamples.SetBeginTime( mCurrentBeginTime );
+			mDeltaTime = outputSamples.GetSize() / mConfig.GetSourceFile().GetHeader().GetSampleRate();
+			mCurrentBeginTime += mDeltaTime;
+			outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+		}
 
 		mOutput.LeaveData();
-		return true;
+		
+		return mNativeStream->WasSomethingRead();
+		
 	}
 	
 }

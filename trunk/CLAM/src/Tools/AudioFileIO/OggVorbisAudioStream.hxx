@@ -4,7 +4,7 @@
 #include <string>
 #include <vorbis/vorbisfile.h>
 #include <vorbis/vorbisenc.h>
-#include <deque>
+#include "CLAM_deque.hxx"
 #include <vector>
 #include "AudioCodecs_Stream.hxx"
 #include "DataTypes.hxx"

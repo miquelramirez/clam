@@ -157,7 +157,7 @@ namespace CLAMGUI
 		SetCurrentTransformationScore( cfg );
 		ScoreChanged.Emit( mTransformationScore );
 
-		mUI->ApplyTransformationReadyState();
+		mUI->UpdateState();
 	}
 
 	void SMSTools::LoadTransformationScore( const std::string& inputFilename )
@@ -168,15 +168,15 @@ namespace CLAMGUI
 
 	bool SMSTools::LoadInputSound(void)
 	{
-		mHaveAudioIn = LoadSound(mGlobalConfig.GetInputSoundFile(),GetOriginalSegment());
+		GetState().SetHasAudioIn(LoadSound(mGlobalConfig.GetInputSoundFile(),GetOriginalSegment()));
 
-		if ( !mHaveAudioIn )
+		if ( !GetState().GetHasAudioIn())
 		{
 			fl_message( "Input sound unavailable. No analysis can be performed" );
 		}
 
-		mHaveAudioMorph = LoadSound(mGlobalConfig.GetMorphSoundFile(),mMorphSegment);
-		return mHaveAudioIn;
+		GetState().SetHasAudioMorph (LoadSound(mGlobalConfig.GetMorphSoundFile(),mMorphSegment));
+		return GetState().GetHasAudioIn();
 	}
 
 	bool SMSTools::LoadSound(const std::string& filename, CLAM::Segment& segment)
@@ -253,18 +253,23 @@ namespace CLAMGUI
 	
 	void SMSTools::OnNewTime( double value )
 	{
-		if ( !HasAnalysis() )
+		if ( !GetState().GetHasAnalysis() )
 			return;
 		//Change mCounter
 		CLAM::TTime time( value  );
 		CLAM::TIndex nframe;
-		if( HasTransformation() )
+		if( GetState().GetHasTransformation() )
+		{
+			GetTransformedSegment().SetHoldsData(true);
 			nframe = GetTransformedSegment().FindFrame( time );
+		}
 		else
+		{
+			GetOriginalSegment().SetHoldsData(true);
 			nframe = GetOriginalSegment().FindFrame( time );
-		
+		}
 		mUI->mCounter->value( (int) nframe );
-		if( HasTransformation() )
+		if( GetState().GetHasTransformation() )
 			SegmentExplorer().NewFrame( GetTransformedSegment().GetFramesArray()[nframe],mUI->FrameDataAvailable() );
 		else
 			SegmentExplorer().NewFrame( GetOriginalSegment().GetFramesArray()[nframe],mUI->FrameDataAvailable() );
@@ -434,7 +439,7 @@ namespace CLAMGUI
 						 GetOriginalSegment(), 
 						 GetAnalysisInputFile().c_str() );
 
-		SetHasTransformation( false );
+		GetState().SetHasTransformation( false );
 
 		return true;
 	}

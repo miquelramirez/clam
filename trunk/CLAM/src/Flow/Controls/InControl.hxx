@@ -23,7 +23,7 @@
 #define _InControl_
 
 #include "ControlLinker.hxx"
-#include "mtgsstream.h"
+#include <sstream>
 #include <string>
 
 namespace CLAM {

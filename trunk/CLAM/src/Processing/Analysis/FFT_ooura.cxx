@@ -21,9 +21,6 @@
 
 
 #include "FFT_ooura.hxx"
-#include <string>
-
-#include "mtgsstream.h" // An alias for <sstream>
 
 #include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
@@ -63,7 +60,7 @@ namespace CLAM {
   }
 
   void FFT_ooura::SetupMemory() {
-	int ipSize = (int)(2+(1<<(int)(log(mSize/2+0.5)/log(2))/2));
+	int ipSize = (int)(2+(1<<(int)(log(mSize/2+0.5)/log(2.0))/2));
 	ip = new int[ipSize];
 	for (int i=0; i<ipSize; i++) ip[i] = 0;
 

@@ -64,7 +64,6 @@ void Dispatcher::Dispatch(void)
 			{
 				InstrStatus status = (*it);
 				(*it).mVelocity = 0;
-//				printf("SENDING NOTE OFF TO %d\n",(*it).mId);
 				mValuesOut[ (*it).mId * mNInValues + 1]->SendControl( mVelocity );
 				return;
 			}
@@ -77,8 +76,6 @@ void Dispatcher::Dispatch(void)
 		status.mNote = int(mNote);
 		status.mVelocity = int(mVelocity);
 		mInstrStatusList.push_back(status);
-
-//		printf("SENDING NOTE ON TO %d\n",status.mId);
 
 		mValuesOut[ status.mId * mNInValues + 1 ]->SendControl( mVelocity );
 		mValuesOut[ status.mId * mNInValues ]->SendControl( mNote );

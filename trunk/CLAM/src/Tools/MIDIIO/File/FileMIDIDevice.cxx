@@ -53,6 +53,7 @@ namespace CLAM {
 		void ConcreteStop(void) throw(Err);
 
 		void Read(void) throw(Err);
+		void Write(unsigned char* msg,int size) throw(Err);
 		void SetClock(TControlData val);
 	};
 
@@ -99,6 +100,11 @@ namespace CLAM {
 	void FileMIDIDevice::SetClock(TControlData val)
 	{
 		mCurTime = (::MIDI::Milliseconds) val;
+	}
+
+	void FileMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
+	{
+		throw Err("FileMIDIDevice::Write not implemented yet");
 	}
 
 	void FileMIDIDevice::Read(void) throw(Err)

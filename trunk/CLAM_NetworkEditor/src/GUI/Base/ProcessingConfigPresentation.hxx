@@ -34,7 +34,7 @@ class ProcessingConfigPresentation : public CLAMVM::Presentation
 
 public:
 	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
-
+	virtual CLAM::ProcessingConfig * GetConfig() = 0;
 public: // signals
 	SigSlot::Signalv1< const CLAM::ProcessingConfig & > SignalConfigureProcessing;
 	virtual void Show() = 0;

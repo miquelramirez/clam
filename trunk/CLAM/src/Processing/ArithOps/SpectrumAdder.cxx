@@ -24,7 +24,7 @@
 #include "SpectrumConfig.hxx"
 #include "ErrProcessingObj.hxx"
 
-#include "mtgsstream.h" // An alias for <sstream>
+#include <sstream>
 
 namespace CLAM {
 

@@ -38,6 +38,8 @@
 #include "SDIFIn.hxx"
 #include "SDIFOut.hxx"
 
+#include "SMSAppState.hxx"
+
 namespace CLAM
 {
 	
@@ -58,11 +60,8 @@ namespace CLAM
 	public:
 		SMSBase(void);	
 		virtual ~SMSBase(void);
-		void Run(void);
-		void SetHaveConfig(bool hasConfig){
-			mHaveConfig=hasConfig;
-		}
-
+		virtual void Run()=0;
+		
 		SMSTransformationChainConfig& GetCurrentTransformationScore() {
 			return mTransformationScore;
 		}
@@ -77,31 +76,14 @@ namespace CLAM
 			return mTransformedSegment;
 		}
 		
-		bool  HasAnalysis()
-		{
-			return mHaveAnalysis;
-		}
-
-		bool  HasTransformation()
-		{
-			return mHaveTransformation;
-		}
-
-		void  SetHasTransformation( bool value )
-		{
-			mHaveTransformation = value;
-		}
-
-		bool  HasTransformationScore( )
-		{
-			return mHaveTransformationScore;
-		}
 
 		void  SetCurrentTransformationScore( const SMSTransformationChainConfig& cfg )
 		{
 			mTransformationScore = cfg;
-			mHaveTransformationScore = true;
+			GetState().SetHasTransformationScore(true);
 		}
+
+//File setter/getters
 
 		void  SetAnalysisInputFile( const char* filename )
 		{
@@ -260,6 +242,13 @@ namespace CLAM
 		/** Stores previously analyzed melody into xml format */
 		void StoreMelody(void);
 
+
+		SMSAppState& GetState() {return mState;}
+
+
+	protected:
+
+		SMSAppState mState;
 		SerializationController mSerialization;
 
 		/** Output audio */
@@ -303,24 +292,8 @@ namespace CLAM
 		SMSAnalysis* mpAnalysis;
 		SMSSynthesis* mpSynthesis;
 
-		/** Indicates whether there is a valid analysis-synthesis configuration */
-		bool mHaveConfig;
-		/** Indicates whether an analysis has been performed */
-		bool mHaveAnalysis;
-		/** Indicates whether there is a valid input audio */
-		bool mHaveAudioIn;
-		/** Indicates whether there is a valid audio to morph*/
-		bool mHaveAudioMorph;
-		/** Indicates whether there is a valid output audio */
-		bool mHaveAudioOut;
-		/** Indicates whether there is a valid analyzed melody */
-		bool mHaveMelody;
-		/** Indicates whether there is a valid transformation score */
-		bool mHaveTransformationScore;
-		/** Indicates whether there is a valid spectrum, needed for melody anlysis */
-		bool mHaveSpectrum;
-		/** Indicates whether there a transformation has been performed */
-		bool mHaveTransformation;
+
+protected:
 
 		CLAMGUI::Progress* mCurrentProgressIndicator;
 		CLAMGUI::WaitMessage* mCurrentWaitMessage;

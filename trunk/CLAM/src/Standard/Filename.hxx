@@ -23,10 +23,11 @@
 #define _FILENAME_H_
 #include <exception>
 #include <iosfwd>
-#include <string>
+#include "Text.hxx"
 #include "Assert.hxx"
 #include "Component.hxx"
 #include "TypeInfo.hxx"
+#include <string>
 
 namespace CLAM {
 
@@ -37,15 +38,14 @@ namespace CLAM {
  * by type discriminators.
  * @todo Build a filename specific interface
  */
-class Filename : public std::string 
+class Filename : public Text
 {
-	typedef std::string std_string;	
 public:
 		Filename() {}
 
-		Filename(const std_string &s) : std_string(s) {} 
+		Filename(const std::string & s) : Text(s) {} 
 
-		Filename(const char * s) : std_string(s) {}
+		Filename(const char * s) : Text(s) {}
 };
 
 CLAM_TYPEINFOGROUP(BasicCTypeInfo, Filename);

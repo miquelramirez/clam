@@ -42,7 +42,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <string>
 
-//#include <iostream>
+#include <sstream>
 //#include <fstream>
 #include <vector>
 
@@ -126,23 +126,38 @@ public:
 		s = "Adios";
 	}
 	bool DiferenceCause(const SimpleAdapterTestCase & other, std::string &context) const {
+		bool areDifferent = false;
+		std::stringstream out;
 		if (i!=other.i) {
-			context+=": Int value mismatch";
-			return true;
+			out 
+				<< "Int value mismatch:" 
+				<< " Found " << i
+				<< " Expected " << other.i << std::endl;
+			areDifferent = true;
 		}
 		if (d!=other.d) {
-			context+=": Double value mismatch";
-			return true;
+			out 
+				<< "Double value mismatch:" 
+				<< " Found " << d
+				<< " Expected " << other.d << std::endl;
+			areDifferent = true;
 		}
 		if (c!=other.c) {
-			context+=": Char value mismatch";
-			return true;
+			out 
+				<< "Char value mismatch:" 
+				<< " Found " << c
+				<< " Expected " << other.c << std::endl;
+			areDifferent = true;
 		}
 		if (std::string(s)!=std::string(other.s)) {
-			context+=": String value mismatch";
-			return true;
+			out 
+				<< "String value mismatch:" 
+				<< " Found " << s
+				<< " Expected " << other.s << std::endl;
+			areDifferent = true;
 		}
-		return false;
+		context += out.str();
+		return areDifferent;
 	}
 	void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
 		CLAM_ASSERT(!(asContent && asElement),
@@ -216,37 +231,49 @@ public:
 		delete[] sarray;
 	}
 	bool DiferenceCause(const ArrayAdapterTestCase & other, std::string &context) const {
-		for (unsigned j=0; j<isize; j++) {
-			if (iarray[j]!=other.iarray[j]) {
-				std::cout << "Found " << iarray[j] << " expected " << other.iarray[j] << " pos: " << j << std::endl;
-				context+=": Int value mismatch";
-				return true;
-			}
+		bool areDifferent = false;
+		std::stringstream out;
+		for (unsigned j=0; j<isize; j++) 
+		{
+			if (iarray[j]==other.iarray[j]) continue;
+			out 
+				<< "Int value mismatch: pos: " << j 
+				<< " Found " << iarray[j] 
+				<< " expected " << other.iarray[j] << std::endl;
+			areDifferent = true;
 		}
-		for (unsigned j=0; j<dsize; j++) {
+		for (unsigned j=0; j<dsize; j++) 
+		{
 			// TODO: To do this check better
 			double difference=darray[j]-other.darray[j];
 			difference*=difference;
-			if (difference>0.1) {
-				std::cout << "Found " << darray[j] << " expected " << other.darray[j] << " pos: " << j << std::endl;
-				context+=": Double value mismatch";
-				return true;
-			}
+			if (difference<0.1) continue;
+			out 
+				<< "Double value mismatch: pos: " << j 
+				<< " Found " << darray[j] 
+				<< " expected " << other.darray[j] << std::endl;
+			areDifferent = true;
 		}
 		for (unsigned j=0; j<csize; j++)
-			if (carray[j]!=other.carray[j]) {
-				std::cout << "Found " << carray[j] << " expected " << other.carray[j] << " pos: " << j << std::endl;
-				context+=": Char value mismatch";
-				return true;
-			}
-		for (unsigned j=0; j<ssize; j++) {
-			if (sarray[j]!=other.sarray[j]) {
-				std::cout << "Found " << sarray[j] << " expected " << other.sarray[j] << " pos: " << j << std::endl;
-				context+=": String value mismatch";
-				return true;
-			}
+		{
+			if (carray[j]==other.carray[j]) continue;
+			out 
+				<< "Char value mismatch: pos: " << j 
+				<< " Found " << carray[j] 
+				<< " expected " << other.carray[j] << std::endl;
+			areDifferent = true;
 		}
-		return false;
+		for (unsigned j=0; j<ssize; j++)
+		{
+			if (sarray[j]==other.sarray[j])continue;
+			out 
+				<< "String value mismatch: pos: " << j 
+				<< " Found " << sarray[j] 
+				<< " expected " << other.sarray[j] << std::endl;
+			areDifferent = true;
+		}
+		context+=out.str();
+		return areDifferent;
 	}
 	void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
 		CLAM_ASSERT(!(asContent && asElement),
@@ -360,37 +387,49 @@ public:
 		storer.Load(strAdapter);
 	}
 	bool DiferenceCause(const IterableAdapterTestCase & other, std::string &context) const {
-		for (unsigned j=0; j<isize; j++) {
-			if (iv[j]!=other.iv[j]) {
-				std::cout << "Found " << iv[j] << " expected " << other.iv[j] << std::endl;
-				context+=": Int value mismatch";
-				return true;
-			}
+		bool areDifferent = false;
+		std::stringstream out;
+		for (unsigned j=0; j<isize; j++) 
+		{
+			if (iv[j]==other.iv[j]) continue;
+			out 
+				<< "Int value mismatch: pos: " << j 
+				<< " Found " << iv[j] 
+				<< " expected " << other.iv[j] << std::endl;
+			areDifferent = true;
 		}
-		for (unsigned j=0; j<dsize; j++) {
+		for (unsigned j=0; j<dsize; j++) 
+		{
 			// TODO: To do this check better
 			double difference=dv[j]-other.dv[j];
 			difference*=difference;
-			if (difference>0.1) {
-				std::cout << "Found " << dv[j] << " expected " << other.dv[j] << " dif " << difference << std::endl;
-				context+=": Double value mismatch";
-				return true;
-			}
+			if (difference<0.1) continue;
+			out 
+				<< "Double value mismatch: pos: " << j 
+				<< " Found " << dv[j] 
+				<< " expected " << other.dv[j] << std::endl;
+			areDifferent = true;
 		}
 		for (unsigned j=0; j<csize; j++)
-			if (cv[j]!=other.cv[j]) {
-				std::cout << "Found " << cv[j] << " expected " << other.cv[j] << " pos: " << j << std::endl;
-				context+=": Char value mismatch";
-				return true;
-			}
-		for (unsigned j=0; j<ssize; j++) {
-			if (sv[j]!=other.sv[j]) {
-				std::cout << "Found " << sv[j] << " expected " << other.sv[j] << " pos: " << j << std::endl;
-				context+=": String value mismatch";
-				return true;
-			}
+		{
+			if (cv[j]==other.cv[j]) continue;
+			out 
+				<< "Char value mismatch: pos: " << j 
+				<< " Found " << cv[j] 
+				<< " expected " << other.cv[j] << std::endl;
+			areDifferent = true;
 		}
-		return false;
+		for (unsigned j=0; j<ssize; j++)
+		{
+			if (sv[j]==other.sv[j])continue;
+			out 
+				<< "String value mismatch: pos: " << j 
+				<< " Found " << sv[j] 
+				<< " expected " << other.sv[j] << std::endl;
+			areDifferent = true;
+		}
+		context+=out.str();
+		return areDifferent;
 	}
 };
 
@@ -423,8 +462,8 @@ public:
 	bool operator== (const ComponentAdapterTestHelper&c) const {
 		return c.plain==plain && c.attribute==attribute && c.element==element;
 	}
-	void print() const {
-		std::cout << plain << '\n' << attribute << '\n' << element << std::endl;
+	void print(std::ostream & out) const {
+		out << plain << '\n' << attribute << '\n' << element << std::endl;
 	}
 // Operations (Component interface)
 public:
@@ -481,10 +520,12 @@ public:
 	}
 	bool DiferenceCause(const ComponentAdapterTestCase & other, std::string &context) const {
 		if (mComponent==other.mComponent) return false;
-		std::cout << "Found: " << std::endl;
-		mComponent.print();
-		std::cout << "Expected: " << std::endl;
-		other.mComponent.print();
+		std::ostringstream out;
+		out << "Found: " << std::endl;
+		mComponent.print(out);
+		out << "Expected: " << std::endl;
+		other.mComponent.print(out);
+		context = out.str();
 		return true;
 	}
 // Attributes

@@ -39,10 +39,16 @@ namespace AudioCodecs
 		bool   SynthesizeCurrent();
 		struct mad_frame& CurrentFrame();
 		struct mad_synth&  CurrentSynthesis();
-
+		struct mad_stream& StreamState();
 	};
+
+	inline struct mad_stream& MpegBitstream::StreamState()
+	{
+		return mBitstream;
+	}
 }
-	
+		
+
 }
 
 

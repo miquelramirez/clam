@@ -27,6 +27,7 @@
 #include "AudioDescriptors.hxx"
 #include "SpectralDescriptors.hxx"
 #include "SpectralPeakDescriptors.hxx"
+#include "MorphologicalFrameDescriptors.hxx"
 
 namespace CLAM{
 
@@ -42,7 +43,7 @@ class Frame;
 class FrameDescriptors : public Descriptor
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 8, Descriptor);
+	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 9, Descriptor);
 	/** Spectrum analyzed from the Audio input  */
 	DYN_ATTRIBUTE (0, public, SpectralDescriptors, SpectrumD);
 	/** Vector of peaks in spectral analysis  */
@@ -61,22 +62,29 @@ public:
 	DYN_ATTRIBUTE (6, public, AudioDescriptors, ResidualAudioFrameD);
 	/** Global synthesized Audio */
 	DYN_ATTRIBUTE (7, public, AudioDescriptors, SynthAudioFrameD);
+	
+
+	/** Morphological descriptors */
+	DYN_ATTRIBUTE (8, public, MorphologicalFrameDescriptors, MorphologicalFrameD);
+
 	//Note: some specific frame descriptors should be added
 public:
 	FrameDescriptors(Frame* pFrame);
 	FrameDescriptors(TData initVal);
 
 	const Frame* GetpFrame() const;
-	void SetpFrame(Frame* pFrame);
+	void SetpFrame(const Frame* pFrame);
 	void Compute();
 	void ConcreteCompute();
 	
+	TData GetFundamental() {return mpFrame->GetFundamental().GetFreq(0);}
+
 private:
 	void DefaultInit();
 	void CopyInit(const FrameDescriptors & copied);
 
 private:
-	Frame* mpFrame;
+	const Frame* mpFrame;
 
 };
 

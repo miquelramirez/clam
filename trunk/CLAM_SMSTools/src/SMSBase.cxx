@@ -54,16 +54,6 @@ using namespace CLAM;
 SMSBase::SMSBase()
 	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
 {
-	mHaveConfig = false;
-	mHaveAnalysis = false;
-	mHaveAudioIn = false;
-	mHaveAudioOut = false;
-	mHaveTransformationScore = false;
-	mHaveMelody = false;
-	mHaveSpectrum = false;
-	mHaveTransformation = false;
-	mHaveAudioMorph = false;
-
 	mTransformation.mChainInput.Attach(mOriginalSegment);
 	mTransformation.mChainOutput.Attach(mTransformedSegment);
 
@@ -93,7 +83,7 @@ SMSBase::~SMSBase(void)
 }
 void SMSBase::InitConfigs(void)
 {
-	if (!mHaveConfig) return;
+	if (!GetState().GetHasConfig()) return;
 
 	/*global parameters*/
 	int analWindowSize=mGlobalConfig.GetAnalysisWindowSize();
@@ -146,24 +136,18 @@ void SMSBase::InitConfigs(void)
 
 void SMSBase::LoadConfig(const std::string& inputFileName)
 {
-	if(mHaveConfig)//This means we had a previous configuration
+	if(GetState().GetHasConfig())//This means we had a previous configuration
 	{
-		mHaveAnalysis = false;
-		mHaveAudioIn = false;
-		mHaveAudioOut = false;
-		mHaveTransformationScore = false;
-		mHaveMelody = false;
-		mHaveSpectrum = false;
-		mHaveAudioMorph = false;
+		GetState().DefaultInit();
 	}
 
 	mCurrentWaitMessage = CreateWaitMessage( "Loading XML configuration file, please wait." );
 	//Loading configuration
 	XMLStorage::Restore(mGlobalConfig,inputFileName);
-	mHaveConfig = false;
+	GetState().SetHasConfig (false);
 	if(HaveCompatibleConfig())
 	{	
-		mHaveConfig = true;
+		GetState().SetHasConfig (true);
 		InitConfigs();
 	}
 	DestroyWaitMessage();
@@ -208,7 +192,7 @@ bool SMSBase::LoadAnalysis(const char* fileName)
 
 	mSerialization.DoSerialization( mSerialization.Load, mOriginalSegment, fileName );
 
-	mHaveTransformation=false;
+	GetState().SetHasTransformation(false);
 
 	DestroyWaitMessage();
 
@@ -229,9 +213,9 @@ void SMSBase::StoreAnalysis(const char* fileName)
 
 bool SMSBase::LoadInputSound(void)
 {
-	mHaveAudioIn = LoadSound(mGlobalConfig.GetInputSoundFile(),mOriginalSegment);
-	mHaveAudioMorph = LoadSound(mGlobalConfig.GetMorphSoundFile(),mMorphSegment);
-	return mHaveAudioIn;
+	GetState().SetHasAudioIn (LoadSound(mGlobalConfig.GetInputSoundFile(),mOriginalSegment));
+	GetState().SetHasAudioMorph (LoadSound(mGlobalConfig.GetMorphSoundFile(),mMorphSegment));
+	return GetState().GetHasAudioIn();
 }
 
 
@@ -402,10 +386,10 @@ void SMSBase::Analyze(void)
 			DestroyWaitMessage();
 
 		}
-	mHaveAnalysis = true;
-	mHaveSpectrum = true;
-	mHaveTransformation = false;
-	if(mHaveAudioMorph)
+	GetState().SetHasAnalysis(true);
+	GetState().SetHasSpectrum(true);
+	GetState().SetHasTransformation (false);
+	if(GetState().GetHasAudioMorph())
 	{
 		TSize size = mMorphSegment.GetAudio().GetSize();
 		mCurrentProgressIndicator = CreateProgress("Morph Analysis Processing",0,float(size));
@@ -516,7 +500,7 @@ void SMSBase::SynthesisProcessing()
 	}
 
 
-	mHaveAudioOut = true;
+	GetState().SetHasAudioOut (true);
 
 	GetSynthesis().Stop();
 	CLAM_DEACTIVATE_FAST_ROUNDING;
@@ -532,10 +516,10 @@ void SMSBase::CopySegmentExceptAudio(const Segment& src, Segment& dest)
 
 void SMSBase::Synthesize(void)
 {
-	if(!mHaveTransformation)
+	if(!GetState().GetHasTransformation())
 	{
 		CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);
-		mHaveTransformation=true;
+//		GetState().SetHasTransformation(true);
 	}
 
 	TSize size=TSize((mTransformedSegment.GetEndTime()-
@@ -745,7 +729,7 @@ in metadata extraction from an input sound.*/
 			array.AddElem(myNote);
 		}
 	}
-	
+	GetState().SetHasMelody(true);
 	mMelody.SetNoteArray(array);
 
 	CLAM_DEACTIVATE_FAST_ROUNDING;
@@ -829,7 +813,7 @@ void SMSBase::TransformProcessing(void)
 		mCurrentProgressIndicator->Update(float(i++));
 	}
 	mTransformation.Stop();
-	mHaveTransformation=true;
+	GetState().SetHasTransformation(true);
 	CLAM_DEACTIVATE_FAST_ROUNDING;
 
 }

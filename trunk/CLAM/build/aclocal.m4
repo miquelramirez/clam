@@ -430,7 +430,7 @@ else
 fi
 if test $found_fftw = yes; then
 	AC_MSG_CHECKING([for fftw library...])
-	OLD_FLAGS=$CXXFLAGS
+	OLD_FLAGS=$CFLAGS
 
 	link_ok=no
 
@@ -480,10 +480,105 @@ your LD_LIBRARY_PATH (DYLD_LIBRARY_PATH on Mac OS X) variable, or edit
 		echo $ac_n "cross compiling; assumed OK... $ac_c"
 	])
 
-	CXXFLAGS=$OLD_FLAGS
+	CFLAGS=$OLD_FLAGS
 else
 	AC_MSG_ERROR([
 No fftw headers found!]
+	)
+fi;
+]
+)
+
+AC_DEFUN(CLAM_LIB_PORTMIDI,
+[
+AC_MSG_CHECKING([for portmidi headers; looking relative to CLAM])
+portmidi_local=no
+if test -d ../../portmidi/include; then
+	AC_MSG_RESULT(yes)
+	found_portmidi=yes
+	PORTMIDI_INCLUDES="../../portmidi/include"
+	PORTMIDI_LIB_PATH="../../portmidi/lib"
+	FLAG_PORTMIDI_INCLUDES="-I../../portmidi/include"
+	FLAG_PORTMIDI_LIB_PATH="-L../../portmidi/lib"
+	portmidi_local=yes
+else
+	AC_MSG_RESULT(no)
+	AC_MSG_CHECKING([for portmidi headers; looking in standard locations...])
+	found_portmidi=no
+	for base in "/usr/include" \
+	            "/usr/local/include" \
+	            "/opt/include"
+	do
+		if test -r "$base/portmidi.h"; then
+			AC_MSG_RESULT(yes)
+			found_portmidi=yes
+			break;
+		fi
+	done
+	PORTMIDI_LIB_PATH=
+fi
+if test $found_portmidi = yes; then
+	AC_MSG_CHECKING([for portmidi library...])
+	OLD_FLAGS=$CFLAGS
+
+	link_ok=no
+
+	PORTMIDI_LIBS="portmidi porttime"
+	FLAG_PORTMIDI_LIBS="$FLAG_PORTMIDI_LIBS -lportmidi -lporttime"
+	
+	if test -r "/usr/include/alsa/asoundlib.h"; then
+		FLAG_PORTMIDI_LIBS="$FLAG_PORTMIDI_LIBS -lasound"
+	fi
+	
+	CFLAGS="$CFLAGS $FLAG_PORTMIDI_INCLUDES $FLAG_PORTMIDI_LIB_PATH $FLAG_PORTMIDI_LIBS"
+	AC_TRY_LINK([
+		#include <portmidi.h>
+	],[
+		Pm_CountDevices();
+		return 0;
+	],[
+		link_ok=yes
+	],[])
+
+	if test $link_ok = no; then
+		AC_MSG_ERROR([
+The test program did not compile or link. Check your config.log for
+details.]
+		)
+	else
+		AC_MSG_RESULT(yes: [$PORTMIDI_LIBS])
+	fi
+	 
+	AC_TRY_RUN([
+		#include<portmidi.h>
+		int main()
+		{
+			Pm_CountDevices();
+			return 0;
+		}
+	],[
+		AC_MSG_RESULT(yes)
+		DEFINE_HAVE_PORTMIDI=HAVE_PORTMIDI
+		HAVE_PORTMIDI=1
+		if test $portmidi_local = yes; then
+			PORTMIDI_INCLUDES="\$(CLAM_PATH)/../portmidi/include"
+			PORTMIDI_LIB_PATH="\$(CLAM_PATH)/../portmidi/lib"
+		fi
+	],[
+				AC_MSG_ERROR([
+The test program did compile, but failed to link. This probably means that
+the run-time linker is not able to find libportmidi. You might want to set
+your LD_LIBRARY_PATH (DYLD_LIBRARY_PATH on Mac OS X) variable, or edit 
+/etc/ld/ld.conf to point to the right location.]
+					)
+	],[
+		echo $ac_n "cross compiling; assumed OK... $ac_c"
+	])
+
+	CFLAGS=$OLD_FLAGS
+else
+	AC_MSG_WARN([
+No portmidi headers found. Continuing anyway, as it is not required.]
 	)
 fi;
 ]

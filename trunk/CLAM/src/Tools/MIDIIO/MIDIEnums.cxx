@@ -23,29 +23,29 @@
 
 namespace CLAM {
 
-	const MIDI::MessageInfo MIDI::sMessageInfo[8] =
+	const MIDI::MessageInfo MIDI::sMessageInfo[9] =
 	{
-		// mask    nBytes name              field[0]   field[1]   
-		{  0x0001, 3, "NoteOff",        {"Key",    "Vel"}   }, // eNoteOff
-		{  0x0002, 3, "NoteOn",         {"Key",    "Vel"}   }, // eNoteOn
-		{  0x0004, 3, "PolyAftertouch", {"Key",    "Value"} }, // ePolyAftertouch
-		{  0x0008, 3, "ControlChange",  {"CtrlNr", "Value"} }, // eControlChange
-		{  0x0010, 2, "ModeChange",     {0,0}               }, // eModeChange
-		{  0x0020, 3, "Aftertouch",     {"Channel","Value"} }, // eAftertouch
-		{  0x0040, 3, "Pitchbend",      {"LSB",    "MSB"}   }, // ePitchbend
-		{  0x0080, 0, "System",         {0,        0}       }  // eSystem
+//  nBytes  name        field[0]  field[1]  field[2]   Enum
+		{ 
+		3, "NoteOff",        {"Chn", "Key",    "Vel"  } // eNoteOff
+		},{
+		3, "NoteOn",         {"Chn", "Key",    "Vel"  } // eNoteOn
+		},{
+		3, "PolyAftertouch", {"Chn", "Key",    "Value"} // ePolyAftertouch
+		},{
+		3, "ControlChange",  {"Chn", "Ctrl",   "Value"} // eControlChange
+		},{
+		2, "ProgramChange",  {"Chn", "Value",  0      } // eProgramChange
+		},{
+		3, "Aftertouch",     {"Chn", "Value",  0      } // eAftertouch
+		},{
+		3, "Pitchbend",      {"Chn", "LSB",    "MSB"  } // ePitchbend
+		},{
+		1, "System",         {"Msg", 0,				0     } // eSystem
+		},{
+		3, "NoteOnOff",      {"Chn", "Key",    "Vel"  } // eSystem
+		}	
 	};
-
-	const unsigned short MIDI::sChannelMask[16] = 
-	{
-		0x0001,0x0002,0x0004,0x0008,
-		0x0010,0x0020,0x0040,0x0080,
-		0x0100,0x0200,0x0400,0x0800,
-		0x1000,0x2000,0x4000,0x8000
-	};
-
-	const unsigned short MIDI::sAllChannelMask = 0xFFFF;
-	const unsigned short MIDI::sAllMessageMask = 0x00FF;
 
 	const int MIDI::sNBytesPerSysMsg[16] =
 	{

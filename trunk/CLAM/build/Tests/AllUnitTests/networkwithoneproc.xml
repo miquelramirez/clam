@@ -1,9 +1,0 @@
-<network id="FooNetwork" >
-       <processing id="oscillator" type="Oscillator" >
-		<Frequency>440</Frequency>
-		<Amplitude>1</Amplitude>
-		<ModIndex>1</ModIndex>
-		<Phase>0</Phase>
-		<SamplingRate>44100</SamplingRate>
-	</processing>
-</network>

@@ -30,7 +30,7 @@
 #include <xercesc/dom/DOMWriter.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 #include <string>
-
+#include <sstream>
 
 namespace xercesc = XERCES_CPP_NAMESPACE;
 

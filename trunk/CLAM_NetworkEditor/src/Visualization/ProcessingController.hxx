@@ -24,6 +24,7 @@
 
 #include "ModelController.hxx"
 #include "Slotv1.hxx"
+#include "Slotv2.hxx"
 #include "Signalv3.hxx"
 #include "Signalv2.hxx"
 #include "Signalv1.hxx"
@@ -31,25 +32,13 @@
 
 #include <string>
 #include <list>
-/*
-namespace CLAM
-{
-	class ProcessingConfig;
-}
-*/
+
 namespace CLAMVM
 {
 
 class ProcessingController : public ModelController 
 {
 public:	
-/*	typedef enum {
-		Unconfigured=0,
-		Disabled,
-		Ready,
-		Running
-	} ProcessingExecState;
-*/
 	typedef CLAM::Processing::ExecState ProcessingExecState;
 	typedef std::list<std::string> NamesList;
 		
@@ -69,8 +58,11 @@ protected:
 	void ConfigureProcessing( const CLAM::ProcessingConfig & );
 	
 	void ProcessingNameChanged( const std::string & );
+	void SendOutControlValue( const std::string &, CLAM::TControlData );
+
 public:
 	ProcessingController();
+	virtual ~ProcessingController(){}
 	std::string GetObservedClassName();
 	const CLAM::ProcessingConfig & GetObservedConfig();
 	const char* GetClassName() const
@@ -116,7 +108,9 @@ public:
 	NamesList::iterator EndOutControlNames();
 	
 	SigSlot::Slotv1< const CLAM::ProcessingConfig & > SlotConfigureProcessing;
+	SigSlot::Signalv2< CLAM::Processing * , const CLAM::ProcessingConfig & > SignalConfigureProcessing;
 	SigSlot::Slotv1< const std::string & > SlotProcessingNameChanged;
+	SigSlot::Slotv2< const std::string &, CLAM::TControlData > SlotSendOutControlValue;
 	SigSlot::Signalv2< const std::string &, ProcessingController * > SignalProcessingNameChanged;
 	SigSlot::Signalv1< const std::string & > SignalChangeProcessingPresentationName;
 	SigSlot::Signalv2< ProcessingExecState, const std::string & > SignalChangeState;

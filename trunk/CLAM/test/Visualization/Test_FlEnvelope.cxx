@@ -9,22 +9,21 @@
 
 void dragcb(Fl_Envelope_Scroll* e,Fl_Output* o)
 {
-	FLPOINT* p=e->envelope.point(e->envelope.dragging());
-	if (p) {
-		char tmp[256];
-		sprintf(tmp,"%2.2f,%2.2f",p->x,p->y);
-		o->value(tmp);
-	}
+	unsigned dragged = e->envelope->dragging();
+	if (dragged > e->envelope->points()) return;
+	FLPOINT& p=e->envelope->point(dragged);
+	char tmp[256];
+	sprintf(tmp,"%2.2f,%2.2f",p.x,p.y);
+	o->value(tmp);
 }
 
 void writecb(Fl_Button* b,Fl_Envelope* e)
 {
 	int i=0;
-	FLPOINT* p;
 	FILE* f=fopen("output.txt","w");
-	while ((p=e->point(i++))!=0) {
-		fprintf(f,"%2.2f %2.2f\n",p->x,p->y);
-	}
+	const unsigned N = e->points();
+	for (int i=0; i<N; i++)
+		FLPOINT & p = e->point(i);
 	fclose(f);
 }
 
@@ -49,14 +48,14 @@ int main( int argc, char** argv )
 	//s.control.hvalue(0,1,-1,2);
 	
 	//s.control.hvalue( 0, 1, -1, 2 );
-	s.control.hvalue( 0, 22050, 0, 22050 );
+	s.control->hvalue( 0, 22050, 0, 22050 );
 	//s.control.vvalue( 0, 1, -1, 2 );
-	s.control.vvalue( 0, 150, -150, 150 );
+	s.control->vvalue( 0, 150, -150, 150 );
 	//s.envelope.grid(.1f,.1f);
-	s.envelope.grid( 100, 5 );
-	s.envelope.snap(0);
+	s.envelope->grid( 100, 5 );
+	s.envelope->snap(0);
 
-	s.envelope.margin(30,20,0,0);
+	s.envelope->margin(30,20,0,0);
 
 	s.margin_adjust();
 
@@ -72,11 +71,11 @@ int main( int argc, char** argv )
 	}
 	*/
 	
-	s.envelope.add_point( 0, -30 );
-	s.envelope.add_point( 6000, -30 );
-	s.envelope.add_point( 6500, -60 );
-	s.envelope.add_point( 8500, -120 );
-	s.envelope.add_point( 22050, -150 );
+	s.envelope->add_point( 0, -30 );
+	s.envelope->add_point( 6000, -30 );
+	s.envelope->add_point( 6500, -60 );
+	s.envelope->add_point( 8500, -120 );
+	s.envelope->add_point( 22050, -150 );
 	
 
 	w.show();

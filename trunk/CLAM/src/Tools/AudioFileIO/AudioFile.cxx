@@ -38,6 +38,7 @@ namespace CLAM
 		mActiveCodec = obj.mActiveCodec;
 		mKind = obj.mKind;
 		mHeaderData = obj.mHeaderData;
+		mTextDescriptors = obj.mTextDescriptors;
 	}
 
 	const AudioFile& AudioFile::operator=( const AudioFile& obj )
@@ -46,6 +47,7 @@ namespace CLAM
 		mActiveCodec = obj.mActiveCodec;
 		mKind = obj.mKind;
 		mHeaderData = obj.mHeaderData;
+		mTextDescriptors = obj.mTextDescriptors;
 
 		return *this;
 	}
@@ -85,6 +87,11 @@ namespace CLAM
 	void AudioFile::SetLocation( std::string uri )
 	{
 		mLocation = uri;
+		VerifyLocation();
+	}
+
+	void AudioFile::VerifyLocation()
+	{
 		ResolveCodec();			
 		
 		if ( mActiveCodec != NULL )
@@ -112,7 +119,7 @@ namespace CLAM
 		return mHeaderData;
 	}
 
-	const std::string& AudioFile::GetLocation() const
+	const std::string & AudioFile::GetLocation() const
 	{
 		return mLocation;
 	}
@@ -221,22 +228,20 @@ namespace CLAM
 	void AudioFile::LoadFrom( Storage& storage )
 	{
 
-		CLAM::XMLAdapter< std::string > xmlLocation( mLocation, "URI", true );
+		CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
 		storage.Load( xmlLocation );
-
+		VerifyLocation();
+		
 		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
 		storage.Load( xmlHeader );
 
-
 		CLAM::XMLComponentAdapter xmlTxtDescriptors( mTextDescriptors, "TextualDescriptors", true );
 		storage.Load( xmlTxtDescriptors );
-
-		
 	}
 
 	void AudioFile::StoreOn( Storage& storage ) const
 	{
-		CLAM::XMLAdapter< std::string > xmlLocation( mLocation, "URI", true );
+		CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
 		storage.Store( xmlLocation );
 
 		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
@@ -245,8 +250,6 @@ namespace CLAM
 
 		CLAM::XMLComponentAdapter xmlTxtDescriptors( mTextDescriptors, "TextualDescriptors", true );
 		storage.Store( xmlTxtDescriptors );
-
-
 	}
 
 }

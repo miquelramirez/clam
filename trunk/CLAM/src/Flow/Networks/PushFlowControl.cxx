@@ -25,7 +25,6 @@
 #include "OutPort.hxx"
 #include "InPort.hxx"
 #include "Network.hxx"
-#include <iostream>
 
 namespace CLAM
 {
@@ -67,7 +66,6 @@ void PushFlowControl::DoProcessings()
 			next->Do();
 			done.push_back(next);
 		}
-
 		AddNewPossibleProcessingsToDo(next, toDo, done);
 	}
 }

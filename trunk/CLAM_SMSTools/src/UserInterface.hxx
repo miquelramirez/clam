@@ -166,14 +166,6 @@ private:
   void DisplaySynthesizedSinusoidal();
   void DisplaySynthesizedResidual();
   void ApplyInitialState();
-  void ApplyReadyToAnalyzeState();
-  void ApplyAnalysisAvailableState();
-  void ApplyMelodyAvailableState();
-public:
-  void ApplyTransformationReadyState();
-private:
-  void ApplySynthesisAvailableState();
-  void ApplyTransformationPerformedState();
   void DeactivateFrameDataMenuItems();
   bool mFrameDataAvailable;
 public:
@@ -185,5 +177,8 @@ private:
   void SaveTransformScore();
   SMSScoreEditor* mScoreEditor;
   void DisplayLicense();
+public:
+  void InitCounter();
+  void UpdateState();
 };
 #endif

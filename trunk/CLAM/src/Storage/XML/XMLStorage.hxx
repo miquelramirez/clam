@@ -83,7 +83,7 @@ public:
 		XmlStorage storage;
 		storage.Create(rootName);
 		storage.DumpObject(obj);
-		storage.UseIndentation(true);
+//		storage.UseIndentation(true);
 		storage.WriteSelection(os);
 	}
 

@@ -29,6 +29,16 @@ SMSTimeStretch::SMSTimeStretch()
 	mSynthesisTime=0;
 	mAnalysisTime=0;
 	mCurrentInputFrame=-1;
+	Configure(SMSTimeStretchConfig());
+}
+
+SMSTimeStretch::SMSTimeStretch(const SMSTransformationConfig &c):SMSTransformationTmpl<Frame>(c)
+{
+	mSynthesisTime=0;
+	mAnalysisTime=0;
+	mCurrentInputFrame=-1;
+	Configure(c);
+
 }
 
 bool SMSTimeStretch::ConcreteConfigure(const ProcessingConfig& cfg)
@@ -42,7 +52,19 @@ bool SMSTimeStretch::ConcreteConfigure(const ProcessingConfig& cfg)
 		mUseTemporalBPF=true;}
 	else
 		mAmountCtrl.DoControl(0);
+	
+	FrameInterpConfig tmpCfg;
+	tmpCfg.SetHarmonic(mConcreteConfig.GetHarmonic());
+	mPO_FrameInterpolator.Configure(tmpCfg);
+
 	mPO_FrameInterpolator.Configure(FrameInterpConfig());
+
+	return true;
+}
+
+bool SMSTimeStretch::ConcreteStop()
+{
+	mPO_FrameInterpolator.Stop();
 	return true;
 }
 
@@ -53,9 +75,11 @@ bool SMSTimeStretch::ConcreteStart()
 	mCurrentInputFrame=-1;
 	mnSynthesisFrames=0;
 	mPO_FrameInterpolator.Start();
-	return SMSTransformationTmpl<Frame>::ConcreteStart();
+	mLeftFrame.SetCenterTime(-1);
+	return true;
 }
 
+/**TODO: This method does not work if called directly! it must be called from the Segment overload*/
 bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 {
 	TData interpFactor= (mAnalysisTime-mLeftFrame.GetCenterTime())/(mConcreteConfig.GetHopSize()/mConcreteConfig.GetSamplingRate());
@@ -78,6 +102,7 @@ bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 	}
 
 	mPO_FrameInterpolator.mFrameInterpolationFactorCtl.DoControl(interpFactor);
+	mLeftFrame.GetSpectralPeakArray().SetIsIndexUpToDate(true);
 	mPO_FrameInterpolator.Do(in,mLeftFrame,out);
 	
 	return true;
@@ -86,21 +111,25 @@ bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 
 bool SMSTimeStretch::Do(const Segment& in, Segment& out)
 {
+	bool ret =false;
 	if(mCurrentInputFrame>-1)
 	{
 		while(mCurrentInputFrame<in.mCurrentFrameIndex&&!HaveFinished())
 		{
-			UpdateControlValueFromBPF(((TData)mCurrentInputFrame)/in.GetnFrames());
+			if(mConcreteConfig.GetUseBPF())
+				UpdateControlValueFromBPF(((TData)mCurrentInputFrame)/in.GetnFrames());
 			TData previousAnalysisTime=mAnalysisTime;
 			UpdateTimeAndIndex(in);
 			if(mCurrentInputFrame>=in.mCurrentFrameIndex)
 			{
 				mCurrentInputFrame=in.mCurrentFrameIndex-2;
+				if(mCurrentInputFrame<0) mCurrentInputFrame=0;//I don't know why but this happens sometimes
 				mLeftFrame=in.GetFrame(mCurrentInputFrame);
 				mAnalysisTime=previousAnalysisTime;
 				return true;
 			}
 			Do(UnwrapSegment(in),UnwrapSegment(out));
+			ret=true;//we are actually getting some output!
 			CLAM_DEBUG_ASSERT(mCurrentInputFrame<in.mCurrentFrameIndex,"Error");
 			out.mCurrentFrameIndex++;
 		}

@@ -25,7 +25,6 @@
 #include <qtoolbar.h>
 #include <qbutton.h>
 #include <qlayout.h> 
-#include <iostream>
 #include <qpopupmenu.h>
 #include <qmenubar.h>
 #include <qfiledialog.h>
@@ -42,8 +41,6 @@ MainWindow::MainWindow()
 	  mDockProcMenu(0),
 	  QMainWindow( 0, "", WGroupLeader )
 {
-	mNetwork.setFocus();
-
 	setCentralWidget( &mNetwork );
 	setCaption( "CLAM Network Editor" );
 	resize( 800, 600 );
@@ -59,11 +56,11 @@ MainWindow::MainWindow()
 	QPopupMenu * file = new QPopupMenu( this );
 	QPopupMenu * view = new QPopupMenu( this );
 	QPopupMenu * networkActions = new QPopupMenu( this );
+	QPopupMenu * outControlActions = new QPopupMenu( this );
         menuBar()->insertItem( "File", file );
         menuBar()->insertItem( "View", view );
 	menuBar()->insertItem( "Network Actions", networkActions );
         menuBar()->insertItem( "About", this, SLOT(About()));
-
 	setCentralWidget(&mNetwork);
  
 	file->insertItem("New", this, SLOT(NewNetwork()));
@@ -81,6 +78,7 @@ MainWindow::MainWindow()
 	mDockProcMenu = new QDockWindow( QDockWindow::InDock, this );
 	mDockProcMenu->setResizeEnabled( true );
 	mDockProcMenu->setCloseMode( QDockWindow::Always );
+	
 	addToolBar( mDockProcMenu, Qt::DockLeft );
 
 	mDockProcMenu->setFixedExtentWidth( 160 );
@@ -89,8 +87,11 @@ MainWindow::MainWindow()
 	setDockEnabled( mDockProcMenu, Qt::DockTop, false );
 	setDockEnabled( mDockProcMenu, Qt::DockBottom, false );
 
+
 	ProcessingTree * procTree = new ProcessingTree( mNetwork, mDockProcMenu );
 	mDockProcMenu->setWidget( procTree );
+	setActiveWindow();
+	mNetwork.Show();
 }
 
 MainWindow::~MainWindow()
@@ -107,16 +108,6 @@ Qt_NetworkPresentation & MainWindow::GetNetworkPresentation()
 	return mNetwork;
 }
 
-void MainWindow::Start()
-{
-	std::cout << "starting network" << std::endl;
-}
-
-void MainWindow::Stop()
-{
-	std::cout << "stopping network" << std::endl;
-}
-
 void MainWindow::NewNetwork()
 {
 	SignalNewNetworkSignal.Emit();
@@ -131,7 +122,7 @@ void MainWindow::LoadNetwork()
 		"open file dialog"
 		"Choose a file to load network" );
 
-	SignalNewNetworkSignal.Emit();
+//	SignalNewNetworkSignal.Emit();
 	if (s!=QString::null)
 		mNetwork.SignalLoadNetworkFrom.Emit(std::string(s.ascii()));
 }
@@ -158,8 +149,6 @@ void MainWindow::SaveAsNetwork()
 void MainWindow::StartNetwork()
 {
 	SignalChangeNetworkState.Emit(true);
-	
-		
 }
 
 void MainWindow::StopNetwork()

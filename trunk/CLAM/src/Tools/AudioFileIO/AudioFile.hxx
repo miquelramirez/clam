@@ -28,7 +28,7 @@
 #include "AudioFileFormats.hxx"
 #include "AudioFileHeader.hxx"
 #include "AudioTextDescriptors.hxx"
-
+#include "Filename.hxx"
 #include <string>
 
 namespace CLAM
@@ -58,7 +58,7 @@ namespace CLAM
 		AudioTextDescriptors&         GetTextDescriptors();
 		const AudioTextDescriptors&   GetTextDescriptors() const;
 
-		const std::string&            GetLocation() const;
+		const std::string &              GetLocation() const;
 		EAudioFileKind                GetKind() const;
 
 		bool                          IsValid() const;
@@ -73,10 +73,11 @@ namespace CLAM
 
 	protected:
 		void                   ResolveCodec();
+		void		       VerifyLocation();
 		void                   SetKind( EAudioFileKind newKind );
 
 	protected:
-		std::string           mLocation;
+		Filename	      mLocation;
 		EAudioFileKind        mKind;
 		AudioCodecs::Codec*   mActiveCodec;
 		AudioFileHeader       mHeaderData;

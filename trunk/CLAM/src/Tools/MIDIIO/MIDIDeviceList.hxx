@@ -39,6 +39,7 @@ namespace CLAM{
  */
 class MIDIDeviceList
 {
+friend class MIDIManager;
 private:
 	std::string mArch;
 protected:
@@ -47,7 +48,7 @@ protected:
 	void AddMe(void);
 public:
 	typedef std::vector<MIDIDeviceList*>::const_iterator list_iterator;
-
+protected:
 	/** Constructor of the MIDIDeviceList class, with a string as parameter that contains the name of the concrete architecture by this list.
 	 *  @param arch The name of architecture (i.e. ALSA)
 	 */
@@ -60,19 +61,6 @@ public:
 	 */
 	const std::string& ArchName() {return mArch;}
 		
-	/** This method is useful to obtain a complete list of the devices available. This list is created with information of operating system, sound architecture, etc.
-	 *  @return A list of strings containing the names of the Devices
-	 */
-	const std::vector<std::string>& AvailableDevices(void)
-	{
-		return mAvailableDevices;
-	}
-
-	/** Pure virtual function that the concrete MIDIDeviceList class implements to get the name of the default device
-	 *  @return A string with the name of default device  
-	 */
-	virtual std::string DefaultDevice(void) = 0;
-
 	/** Pure virtual function that the concrete MIDIDeviceList class implements to create a concrete MIDIDevice
 	 *  @param name A string with the name of new device
 	 *  @param device A string with the type of device
@@ -92,6 +80,19 @@ public:
 	 *  @return The ending list iterator
 	 */
 //		static list_iterator lists_end()   {return sDeviceLists.end();}
+public:
+	/** This method is useful to obtain a complete list of the devices available. This list is created with information of operating system, sound architecture, etc.
+	 *  @return A list of strings containing the names of the Devices
+	 */
+	const std::vector<std::string>& AvailableDevices(void)
+	{
+		return mAvailableDevices;
+	}
+
+	/** Pure virtual function that the concrete MIDIDeviceList class implements to get the name of the default device
+	 *  @return A string with the name of default device  
+	 */
+	virtual std::string DefaultDevice(void) = 0;
 };
 
 };//CLAM

@@ -44,10 +44,12 @@ public:
 
 			// Expected Mel filter bank output values setup
 			
-			CLAM::TData fullRangeValues[] = { 8402.759, 5593.134, 1945.569, 1437.992, 1166.799, 
-							  1021.579, 852.393, 811.837, 718.220, 636.031, 704.546, 
-							  918.747, 965.266, 942.982, 1237.408, 1801.851, 1749.460, 
-							  2328.939, 2832.841, 2376.607 };
+			CLAM::TData fullRangeValues[] = {
+				8402.759, 5593.134, 1945.569, 1437.992, 1166.799, 
+				1021.579, 852.393, 811.837, 718.220, 636.031, 704.546, 
+				918.747, 965.266, 942.982, 1237.408, 1801.851, 1749.460, 
+				2328.939, 2832.841, 2376.607
+			};
 
 			mFullRangeExpectedMelValues.Resize( 20 );
 			mFullRangeExpectedMelValues.SetSize( 20 );
@@ -55,10 +57,12 @@ public:
 			std::copy( fullRangeValues, fullRangeValues + 20, 
 				   mFullRangeExpectedMelValues.GetPtr() );
 			
-			CLAM::TData speechRangeValues[] = { 0.000, 80.481, 1297.095, 82.991, 902.328, 275.889, 
-						      531.991, 510.485, 338.979, 373.507, 445.152, 342.516, 
-						      290.438, 320.306, 374.704, 286.708, 317.216, 216.559, 
-						      298.209, 277.066 };
+			CLAM::TData speechRangeValues[] = { 
+				0.000, 80.481, 1297.095, 82.991, 902.328, 275.889, 
+				531.991, 510.485, 338.979, 373.507, 445.152, 342.516, 
+				290.438, 320.306, 374.704, 286.708, 317.216, 216.559, 
+				298.209, 277.066 
+			};
 
 			mSpeechRangeExpectedMelValues.Resize( 20 );
 			mSpeechRangeExpectedMelValues.SetSize( 20 );

@@ -53,6 +53,7 @@ namespace CLAM {
 		bool Do(void);
 
 		bool Do(Descriptor& input);
+		bool Do(DescriptorAbs& input);
 	protected:
 		DescriptorComputationConfig mConfig;
 	

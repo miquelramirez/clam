@@ -23,7 +23,7 @@ CFG=AllApplicationTests - Win32 Debug
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName "CLAM_Skeleton_project"
+# PROP Scc_ProjName "empty"
 # PROP Scc_LocalPath "."
 CPP=cl.exe
 RSC=rc.exe
@@ -37,8 +37,8 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "..\ReleaseFiles\bin"
-# PROP Intermediate_Dir "..\ReleaseFiles\obj"
+# PROP Output_Dir "../ReleaseFiles/bin"
+# PROP Intermediate_Dir "../ReleaseFiles/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
@@ -49,7 +49,7 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
+# ADD BASE LINK32
 # ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" /libpath:"..\..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\dxsdk\lib" /libpath:"..\..\..\..\..\cppunit\lib" /libpath:"..\..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\..\libmad\lib" /libpath:"..\..\..\..\..\id3lib\lib" RFFTW2st.lib FFTW2st.lib xerces-c_2.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib cppunit_vc6.lib libsndfile.lib ogg_static.lib vorbis_static.lib vorbisenc_static.lib vorbisfile_static.lib id3lib.lib libmad.lib /nologo /subsystem:console /NODEFAULTLIB:MSVCRTD /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
@@ -62,19 +62,19 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\DebugFiles\bin"
-# PROP Intermediate_Dir "..\DebugFiles\obj"
+# PROP Output_Dir "../DebugFiles/bin"
+# PROP Intermediate_Dir "../DebugFiles/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "HAVE_STANDARD_UNICODE" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\test\UnitTests" /I "..\..\..\..\examples" /I "..\..\..\..\..\xercesc\include" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\..\pthreads\include" /I "..\..\..\..\..\cppunit\include" /I "..\..\..\..\..\libsndfile\include" /I "..\..\..\..\..\oggvorbis\include" /I "..\..\..\..\..\libmad\include" /I "..\..\..\..\..\id3lib\include" /I "..\..\..\..\examples\SMS" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Data\Descriptors" /I "..\..\..\..\src\Data\Descriptors\Melody" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Defines\Windows" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\AudioIO" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\SDIFIO" /I "..\..\..\..\src\Processing\Synthesis" /I "..\..\..\..\src\Processing\Transformations" /I "..\..\..\..\src\Processing\Transformations\SMS" /I "..\..\..\..\src\Processing\AudioFileIO" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /I "..\..\..\..\src\System" /I "..\..\..\..\src\System\Threads" /I "..\..\..\..\src\Tools\AudioFileIO" /I "..\..\..\..\src\Tools\AudioIO" /I "..\..\..\..\src\Tools\SDIF" /I "..\..\..\..\externals" /I "..\..\..\..\externals\numrec"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
-# ADD RSC /l 0xc0a /d "_DEBUG"
+# ADD RSC /l 0xc0a
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD BASE LINK32
 # ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" /libpath:"..\..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\..\dxsdk\lib" /libpath:"..\..\..\..\..\cppunit\lib" /libpath:"..\..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\..\libmad\lib" /libpath:"..\..\..\..\..\id3lib\lib" FFTW2std.lib RFFTW2std.lib xerces-c_2d.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib cppunitd_vc6.lib libsndfiled.lib ogg_static_d.lib vorbis_static_d.lib vorbisenc_static_d.lib vorbisfile_static_d.lib id3libd.lib libmadd.lib /nologo /subsystem:console /NODEFAULTLIB:MSVCRT /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
@@ -226,15 +226,15 @@ SOURCE=..\..\..\..\src\Standard\BPF.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Standard\Text.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Standard\Order.cxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\Flags.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Text.cxx
 # End Source File
 # Begin Source File
 
@@ -400,7 +400,23 @@ SOURCE=..\..\..\..\src\Data\Descriptors\SpectralPeakDescriptors.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Data\Descriptors\PeriodogramPeak.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\MorphologicalFrameDescriptors.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Data\Descriptors\FrameDescriptors.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\EnvelopeDescriptors.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\MorphologicalSegmentDescriptors.cxx
 # End Source File
 # Begin Source File
 
@@ -1018,10 +1034,6 @@ SOURCE=..\..\..\..\src\Defines\Assert.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Defines\mtgsstream.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\..\src\Defines\StaticBool.hxx
 # End Source File
 # Begin Source File
@@ -1232,6 +1244,10 @@ SOURCE=..\..\..\..\src\Standard\Search.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Standard\Text.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Standard\Filename.hxx
 # End Source File
 # Begin Source File
@@ -1257,10 +1273,6 @@ SOURCE=..\..\..\..\src\Standard\CommonOps.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\PhantomBuffer.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Text.hxx
 # End Source File
 # Begin Source File
 
@@ -1346,6 +1358,10 @@ SOURCE=..\..\..\..\examples\SMS\Progress.hxx
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\SMS\WaitMessage.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\examples\SMS\SMSAppState.hxx
 # End Source File
 # Begin Source File
 
@@ -1472,7 +1488,23 @@ SOURCE=..\..\..\..\src\Data\Descriptors\SpectralPeakDescriptors.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Data\Descriptors\PeriodogramPeak.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\MorphologicalFrameDescriptors.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Data\Descriptors\FrameDescriptors.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\EnvelopeDescriptors.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Descriptors\MorphologicalSegmentDescriptors.hxx
 # End Source File
 # Begin Source File
 
@@ -2058,20 +2090,6 @@ SOURCE=..\..\..\..\..\libsndfile\include\sndfile.h
 # End Source File
 # End Group
 # End Group
-# Begin Group "externals Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\externals\deque
-# End Source File
-# Begin Group "numrec Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\..\externals\numrec\numrecipes_fft.h
-# End Source File
-# End Group
-# End Group
 # Begin Group "xercesc Headers"
 
 # Begin Group "include Headers No. 3"
@@ -2232,6 +2250,20 @@ SOURCE=..\..\..\..\..\xercesc\include\xercesc\dom\DOMNodeList.hpp
 # End Group
 # End Group
 # End Group
+# Begin Group "externals Headers"
+
+# Begin Group "numrec Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\..\externals\numrec\numrecipes_fft.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\..\..\externals\CLAM_deque.hxx
+# End Source File
+# End Group
 # Begin Group "pthreads Headers"
 
 # Begin Group "include Headers No. 4"
@@ -2348,31 +2380,34 @@ SOURCE=..\..\..\..\..\id3lib\include\id3\tag.h
 # End Group
 # End Group
 # End Group
+# Begin Group "Qt .ui Files"
+
+# End Group
 # Begin Source File
 
 SOURCE=settings.cfg
 
 !IF  "$(CFG)" == "AllApplicationTests - Win32 Release"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "AllApplicationTests.dsp"
-	srcdeps.exe settings.cfg AllApplicationTests.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)"
+	srcdeps.exe settings.cfg
 
 # End Custom Build
-# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "AllApplicationTests - Win32 Debug"
 
+# PROP Ignore_Default_Tool 1
 # Begin Custom Build
 InputPath=settings.cfg
 
-"buildstamp" : $(SOURCE) "$(INTDIR)" "AllApplicationTests.dsp"
-	srcdeps.exe settings.cfg AllApplicationTests.dsp
+"buildstamp" : $(SOURCE) "$(INTDIR)"
+	srcdeps.exe settings.cfg
 
 # End Custom Build
-# PROP Exclude_From_Build 1
 
 !ENDIF 
 

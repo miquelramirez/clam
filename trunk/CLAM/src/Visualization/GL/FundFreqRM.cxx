@@ -69,7 +69,7 @@ namespace CLAMVM
 
 	void FundFreqRM::Colorize( )
 	{
-		float maxError = 0.0f;
+		/*float maxError = 0.0f;
 
 		for ( int i = 0; i < mErrorBuffer.Size(); i++ )
 		{
@@ -79,13 +79,13 @@ namespace CLAMVM
 				maxError = absError;
 		}
 		
-		float invMaxError = 1.0/maxError;
+		float invMaxError = 1.0/maxError;*/
 		float t = 0.0f;
 
 		for ( int i = 0; i < mErrorBuffer.Size(); i++ )
 		{
-			t = 1.0f - (mErrorBuffer[i]*invMaxError);
-			mColorBuffer[i] = mPalette.Get( t );
+		//	t = 1.0f - (mErrorBuffer[i]*invMaxError);
+			mColorBuffer[i] = mPalette.Get( 1.0 );
 		}
 
 	}

@@ -12,6 +12,7 @@ namespace CLAM
 	void SMSTimeStretchConfig::DefaultValues()
 	{
 		SetSamplingRate(44100);
-		SetHopSize(512);
+		SetHopSize(256);
+		SetUseBPF(true);
 	}
 }

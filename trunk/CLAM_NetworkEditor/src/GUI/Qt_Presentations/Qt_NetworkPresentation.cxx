@@ -21,7 +21,7 @@
 
 #include "Qt_NetworkPresentation.hxx"
 #include "ProcessingController.hxx"
-#include "ConnectionAdapter.hxx"
+//#include "ConnectionAdapter.hxx"
 #include "Factory.hxx"
 #include "Qt_ProcessingPresentation.hxx"
 #include "Qt_PortConnectionPresentation.hxx"
@@ -30,17 +30,21 @@
 #include "Qt_OutPortPresentation.hxx"
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
+#include "ProcessingConfig.hxx"
+
+#include "CLAM_Math.hxx"
 
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qdragobject.h> 
 
-#include "ProcessingConfig.hxx"
+#include <iostream> // TODO: remove
 
 namespace NetworkGUI
 {
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
 
 Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *name)
 	: QWidget( parent, name ),	  
@@ -65,8 +69,7 @@ Qt_NetworkPresentation::Qt_NetworkPresentation( QWidget *parent, const char *nam
 	SlotSendMessageToStatus.Wrap( this, &Qt_NetworkPresentation::SendMessageToStatus );
 	SlotMovingMouseWithButtonPressed.Wrap( this, &Qt_NetworkPresentation::MovingMouseWithButtonPressed );
 	setAcceptDrops(TRUE);
-	setFocus();
-	grabKeyboard();
+	setFocusPolicy(QWidget::ClickFocus);
 }
 
 void Qt_NetworkPresentation::SendMessageToStatus( const std::string & message )
@@ -114,8 +117,11 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 {
 	
 	Qt_ProcessingPresentation* presentation = 0;
-	
-	presentation = new Qt_ProcessingPresentation(name, this);
+
+	Qt_ProcessingPresentationFactory & factory =  Qt_ProcessingPresentationFactory::GetInstance();
+	presentation = factory.Create(controller->GetObservedClassName());
+	presentation->Initialize( name, this );
+			
 	presentation->AttachTo(*controller);
 
 	presentation->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
@@ -141,10 +147,10 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 	SignalSendMessageToStatus.Emit( "Created " + presentation->GetName() );
 }
 
-void Qt_NetworkPresentation::CreatePortConnectionPresentation( CLAMVM::ConnectionAdapter* adapter)
+void Qt_NetworkPresentation::CreatePortConnectionPresentation( const std::string & out, const std::string & in )
 {
 	Qt_PortConnectionPresentation* presentation = new Qt_PortConnectionPresentation(this);
-	presentation->AttachTo(*adapter);
+	presentation->AttachTo( out, in );
 	presentation->SignalRemoveConnection.Connect( SlotRemovePortConnection);
 	presentation->SignalConnectionPresentationSelected.Connect( SlotConnectionPresentationSelected );
 	presentation->SignalConnectionPresentationAddedToSelection.Connect( SlotConnectionPresentationAddedToSelection );
@@ -166,10 +172,10 @@ void Qt_NetworkPresentation::CreatePortConnectionPresentation( CLAMVM::Connectio
 }
 
 
-void Qt_NetworkPresentation::CreateControlConnectionPresentation( CLAMVM::ConnectionAdapter* adapter)
+void Qt_NetworkPresentation::CreateControlConnectionPresentation( const std::string & out, const std::string & in ) 
 {
 	Qt_ControlConnectionPresentation* presentation = new Qt_ControlConnectionPresentation(this);
-	presentation->AttachTo(*adapter);
+	presentation->AttachTo(out, in);
 	presentation->SignalRemoveConnection.Connect( SlotRemoveControlConnection);
 	presentation->SignalConnectionPresentationSelected.Connect( SlotConnectionPresentationSelected );
 	presentation->SignalConnectionPresentationAddedToSelection.Connect( SlotConnectionPresentationAddedToSelection );
@@ -225,21 +231,23 @@ void Qt_NetworkPresentation::Show()
 
 	show();
 }
+
 void Qt_NetworkPresentation::keyPressEvent( QKeyEvent * k)
 {
 	switch ( k->key() ) 
 	{
 
 	case Key_Delete:
+		QtConnectionList::iterator itc;
+		for( itc=mSelectedConnectionPresentations.begin(); itc!=mSelectedConnectionPresentations.end(); itc++ )
+			(*itc)->SignalRemoveConnection.Emit( *itc );
+		mSelectedConnectionPresentations.clear();
+
 		QtProcessingList::iterator it;
 		for( it=mSelectedProcessingPresentations.begin(); it!=mSelectedProcessingPresentations.end(); it++ )
 			(*it)->SignalRemoveProcessing.Emit( *it );
 		mSelectedProcessingPresentations.clear();
 		
-		QtConnectionList::iterator itc;
-		for( itc=mSelectedConnectionPresentations.begin(); itc!=mSelectedConnectionPresentations.end(); itc++ )
-			(*itc)->SignalRemoveConnection.Emit( *itc );
-		mSelectedConnectionPresentations.clear();
 		
 		repaint();
 		break;
@@ -250,7 +258,7 @@ void Qt_NetworkPresentation::keyPressEvent( QKeyEvent * k)
 
 void Qt_NetworkPresentation::mouseMoveEvent( QMouseEvent *m)
 {
-	mMousePos = m->pos();
+	mMousePos = m->globalPos();
 	repaint();
 }
 void Qt_NetworkPresentation::mousePressEvent ( QMouseEvent * e )
@@ -265,48 +273,71 @@ void Qt_NetworkPresentation::mousePressEvent ( QMouseEvent * e )
 		(*itc)->UnSelectConnectionPresentation();
 	mSelectedConnectionPresentations.clear();
 
+	mSelectionPos = e->globalPos();
+	mMousePos = e->globalPos();
+
 }
 
-void Qt_NetworkPresentation::mouseReleaseEvent( QMouseEvent *m)
+bool Qt_NetworkPresentation::CheckPortsSelection( QMouseEvent *m )
 {
+	bool selected = false;
 	if( mInPortSelected ) //from inport to outport
 	{
 	        SignalAcquireOutPortAfterClickInPort.Emit( m->pos() );
+		selected = true;
 	}
 	else if (mOutPortSelected)
 	{
 	        SignalAcquireInPortAfterClickOutPort.Emit( m->pos() );
+		selected = true;
 	}
 	if (mInPortSelected && mOutPortSelected) //there is a new connection
 	{
 		const std::string inPort = GetCompleteNameFromInPortSelected();
 		const std::string outPort = GetCompleteNameFromOutPortSelected();
 		SignalCreatePortConnection.Emit( outPort, inPort );
+		selected = true;
 	}
 
 	mInPortSelected = 0;
 	mOutPortSelected = 0;
+	return selected;
+}
 
-
+bool Qt_NetworkPresentation::CheckControlsSelection( QMouseEvent *m )
+{
+	bool selected = false;
 	if( mInControlSelected ) //from inport to outport
 	{
 	        SignalAcquireOutControlAfterClickInControl.Emit( m->pos() );
+		selected = true;
 	}
 	else if (mOutControlSelected)
 	{
 	        SignalAcquireInControlAfterClickOutControl.Emit( m->pos() );
+		selected = true;
 	}
 	if (mInControlSelected && mOutControlSelected) //there is a new connection
 	{
 		const std::string inControl = GetCompleteNameFromInControlSelected();
 		const std::string outControl = GetCompleteNameFromOutControlSelected();
 		SignalCreateControlConnection.Emit( outControl, inControl );
+		selected = true;		
 	}
 
 	mInControlSelected = 0;
 	mOutControlSelected = 0;
+	return selected;
+}
 
-
+void Qt_NetworkPresentation::mouseReleaseEvent( QMouseEvent *m )
+{
+	if( !CheckPortsSelection(m) && !CheckControlsSelection(m) )
+	{
+		CheckSelectionRectangle();
+		mSelectionPos = QPoint(0,0);
+		mMousePos = QPoint(0,0);
+	}
 	releaseMouse();
 	repaint();
 }
@@ -352,39 +383,104 @@ void Qt_NetworkPresentation::paintEvent( QPaintEvent * e)
 {
 	UpdatePresentations();
 	
+	if(mMousePos==QPoint(0,0))
+		return;
+	
+	QPainter p(this);
+	p.setBrush(QColor(255, 255, 255) );
+	
 	if (mInPortSelected)
 	{
-		QPainter p(this);
-		p.setBrush(QColor(255, 255, 255) );
-		p.drawLine(mInPortSelected->pos() + mInPortSelected->parentWidget()->pos(),
-			   mMousePos);
+		p.drawLine(mInPortSelected->pos() + mInPortSelected->parentWidget()->pos(), mapFromGlobal(mMousePos));
+		return;
 	}
 
 	if (mOutPortSelected)
 	{
-		QPainter p(this);
-		p.setBrush(QColor(255, 255, 255) );
-		p.drawLine(mOutPortSelected->pos() + mOutPortSelected->parentWidget()->pos(),
-			   mMousePos);
+		p.drawLine(mOutPortSelected->pos() + mOutPortSelected->parentWidget()->pos(), mapFromGlobal(mMousePos));
+		return;
 	}
 
 	if (mInControlSelected)
 	{
-		QPainter p(this);
-		p.setBrush(QColor(255, 255, 255) );
-		p.drawLine(mInControlSelected->pos() + mInControlSelected->parentWidget()->pos(),
-			   mMousePos);
+		p.drawLine(mInControlSelected->pos() + mInControlSelected->parentWidget()->pos(), mapFromGlobal(mMousePos));
+		return;
 	}
 
 	if (mOutControlSelected)
 	{
-		QPainter p(this);
-		p.setBrush(QColor(255, 255, 255) );
-		p.drawLine(mOutControlSelected->pos() + mOutControlSelected->parentWidget()->pos(),
-			   mMousePos);
+		p.drawLine(mOutControlSelected->pos() + mOutControlSelected->parentWidget()->pos(), mapFromGlobal(mMousePos));
+		return;
 	}
 
+	if(mSelectionPos!=QPoint(0,0))
+		DrawSelectionRectangle();
+
 }
+
+void Qt_NetworkPresentation::DrawSelectionRectangle()
+{
+	QPoint origin( std::min(mMousePos.x(), mSelectionPos.x()), std::min(mMousePos.y(), mSelectionPos.y()) );
+	QPoint end( std::max(mMousePos.x(), mSelectionPos.x()), std::max(mMousePos.y(), mSelectionPos.y()) );
+
+	QPainter p( this );
+	p.drawRect( QRect( mapFromGlobal(origin), mapFromGlobal(end)) );
+	
+}
+
+void Qt_NetworkPresentation::CheckSelectionRectangle()
+{
+	QPoint origin( std::min(mMousePos.x(), mSelectionPos.x()), std::min(mMousePos.y(), mSelectionPos.y()) );
+	QPoint end( std::max(mMousePos.x(), mSelectionPos.x()), std::max(mMousePos.y(), mSelectionPos.y()) );
+	QRect selection( mapFromGlobal(origin), mapFromGlobal(end) );
+
+	// if shift
+	//
+	// else
+	// 
+	// remove selected presentations
+	QtConnectionList::iterator itOld;
+	for( itOld=mSelectedConnectionPresentations.begin(); itOld!=mSelectedConnectionPresentations.end(); itOld++ )
+		(*itOld)->UnSelectConnectionPresentation();
+	mSelectedConnectionPresentations.clear();
+
+	// remove selected processsings
+	QtProcessingList::iterator itcOld;
+	for( itcOld=mSelectedProcessingPresentations.begin(); itcOld!=mSelectedProcessingPresentations.end(); itcOld++ )
+		(*itcOld)->UnSelectProcessingPresentation();
+	mSelectedProcessingPresentations.clear();
+
+	ProcessingPresentationIterator it;
+	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
+	{
+		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
+		
+		QRect processingR( proc->rect() );
+		processingR.moveTopLeft( QPoint( proc->x(), proc->y()) );
+
+		if(selection.contains( processingR ))
+		{
+			proc->SelectProcessingPresentation();
+			ProcessingPresentationAddedToSelection( proc );
+		}
+	}
+	ConnectionPresentationIterator itc;
+	for ( itc=mConnectionPresentations.begin(); itc!=mConnectionPresentations.end(); itc++)
+	{
+		Qt_ConnectionPresentation * con = (Qt_ConnectionPresentation*)(*itc);
+		
+		QRect connectionR( con->rect() );
+		connectionR.moveTopLeft( QPoint( con->x(), con->y()) );
+
+		if(selection.contains( connectionR ))
+		{
+			con->SelectConnectionPresentation();
+			ConnectionPresentationAddedToSelection( con );
+		}
+	}
+	
+}
+
 
 void Qt_NetworkPresentation::dragEnterEvent(QDragEnterEvent* event)
 {
@@ -424,14 +520,14 @@ void Qt_NetworkPresentation::ProcessingPresentationSelected( Qt_ProcessingPresen
 	for( itc=mSelectedProcessingPresentations.begin(); itc!=mSelectedProcessingPresentations.end(); itc++ )
 		(*itc)->UnSelectProcessingPresentation();
 	mSelectedProcessingPresentations.clear();
-
+	
 	mSelectedProcessingPresentations.push_back( proc );
+
 }
 
 void Qt_NetworkPresentation::ProcessingPresentationAddedToSelection( Qt_ProcessingPresentation * proc)
 {
 	mSelectedProcessingPresentations.push_back( proc );
-
 }
 
 void Qt_NetworkPresentation::ConnectionPresentationSelected( Qt_ConnectionPresentation * con )

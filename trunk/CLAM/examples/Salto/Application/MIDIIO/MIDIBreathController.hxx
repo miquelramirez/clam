@@ -6,17 +6,13 @@
 namespace SALTO
 {
 
-using CLAM::MIDIInControl;
-using CLAM::MIDIInConfig;
-
 struct BreathController
 {
 
-	MIDIInControl	mInNote;
-	MIDIInControl	mAirSpeed;
+	CLAM::MIDIInControl	mInNote;
+	CLAM::MIDIInControl	mAirSpeed;
 	
-	BreathController( const MIDIInConfig &note,
-					  const MIDIInConfig &airspeed )
+	BreathController( const CLAM::MIDIIOConfig &note, const CLAM::MIDIIOConfig &airspeed )
 		: mInNote( note ), mAirSpeed( airspeed ) 
 	{
 	}

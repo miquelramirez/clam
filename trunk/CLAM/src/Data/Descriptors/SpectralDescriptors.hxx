@@ -39,7 +39,7 @@ namespace CLAM {
 
 	class SpectralDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 25, Descriptor);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 27, Descriptor);
 		
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		DYN_ATTRIBUTE (1, public, TData, GeometricMean);
@@ -79,9 +79,12 @@ namespace CLAM {
 		 * The spectral slope represents the amount of decreasing of
 		 * the spectral magnitude. Measured in ??.
 		 */
-	        DYN_ATTRIBUTE (22,public, TData, Slope); 
+	    DYN_ATTRIBUTE (22,public, TData, Slope); 
 		DYN_ATTRIBUTE (23,public, TData, HighFrequencyCoefficient);
 		DYN_ATTRIBUTE (24,public, Array<SpectralDescriptors>, BandDescriptors);
+
+		DYN_ATTRIBUTE (25,public, Array<TData>,PCP);
+		DYN_ATTRIBUTE (26, public, Array<TData>,MFCCDerivative);
 
 	public:
 		SpectralDescriptors(Spectrum* pSpectrum);
@@ -91,9 +94,7 @@ namespace CLAM {
 		void SetpSpectrum(Spectrum* pSpectrum);
 		void ConcreteCompute();
 
-		void SetPrototype(const SpectralDescriptors& p);
-
-	private:
+//XA_C2S	private:
 		void DefaultInit();
 		void CopyInit(const SpectralDescriptors & copied);
 		

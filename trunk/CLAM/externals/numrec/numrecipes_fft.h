@@ -11,7 +11,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif*/
+#endif
 
 void realft(CLAM::TData data[], unsigned long n, int isign);
 

@@ -60,6 +60,8 @@ public:
 		mGlobalConfig.SetInputSoundFile("");
 	}
 
+	void Run(){}
+
 private:
 
 	

@@ -27,7 +27,7 @@
 #define _XMLAdapter_
 
 #include "BasicXMLable.hxx"
-#include "mtgsstream.h" // An alias for <sstream>
+#include <sstream>
 #include <string>
 
 namespace CLAM {

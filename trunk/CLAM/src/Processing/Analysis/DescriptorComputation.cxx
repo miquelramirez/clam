@@ -40,4 +40,11 @@ namespace CLAM
 		return true;
 	}
 
+	bool DescriptorComputation::Do( DescriptorAbs& input )
+	{
+		input.Compute();
+		return true;
+	}
+
+
 }

@@ -3,7 +3,7 @@
 
 #include "InPortTmpl.hxx"
 
-#include "mtgsstream.h"
+#include <sstream>
 #include "Array.hxx" // todo: ->std::vector
 
 namespace CLAM

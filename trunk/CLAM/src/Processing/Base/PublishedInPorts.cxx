@@ -24,10 +24,8 @@ InPort& PublishedInPorts::Get(const std::string & name) const
 {
 	ConstIterator it;
 	for (it=mInPorts.begin(); it!=mInPorts.end(); it++)
-	{
-		std::string actualName( (*it)->GetName() );
-		if (name == (*it)->GetName()) return *(*it);
-	}
+		if(name == (*it)->GetName()) 
+			return **it;
 
 	std::string error( "name not found in InPorts collection: " );
 	error += name;

@@ -5,7 +5,7 @@ SRCDEPS=$(CLAM_PATH)/build/srcdeps/srcdeps
 all: program
 
 clean:
-	rm -rf obj/ dep/ Makefile.vars $(PROGRAM)
+	rm -rf obj/ dep/ moc/ uic/ Makefile.vars $(PROGRAM)
 
 distclean: clean
 	rm -rf dep/
@@ -27,28 +27,66 @@ Makefile.vars: Makefile $(SRCDEPS) settings.cfg
 	@echo Generating SOURCES, OBJECTS, DEPENDS and INCLUDES definitions
 	$(SRCDEPS) settings.cfg > Makefile.vars
 
+ifeq ($(ISDARWIN),1)
+PROGRAMPATH = $(PROGRAM).app/Contents/MacOS/
+PROGRAMEXTRAS = $(PROGRAM).app $(PROGRAM).app/Contents $(PROGRAM).app/Contents/MacOS $(PROGRAM).app/Contents/Resources $(PROGRAM).app/Contents/Resources/CLAM.icns $(PROGRAM).app/Contents/Info.plist  
 
-program: $(PROGRAM)
+$(PROGRAM).app:
+	mkdir $(PROGRAM).app
+
+$(PROGRAM).app/Contents:
+	mkdir $(PROGRAM).app/Contents
+
+$(PROGRAM).app/Contents/MacOS:
+	mkdir $(PROGRAM).app/Contents/MacOS
+
+$(PROGRAM).app/Contents/Resources:
+	mkdir $(PROGRAM).app/Contents/Resources
+
+$(PROGRAM).app/Contents/Resources/CLAM.icns: $(CLAM_PATH)/build/macosx-utils/CLAM.icns
+	cp $(CLAM_PATH)/build/macosx-utils/CLAM.icns $(PROGRAM).app/Contents/Resources
+
+$(PROGRAM).app/Contents/Info.plist:
+	$(CLAM_PATH)/build/macosx-utils/create_Info_plist.sh $(PROGRAM).app/Contents/Info.plist $(PROGRAM)
+
+endif
+
+program: $(PROGRAMPATH)$(PROGRAM)
+
+tags:
+	ctags-exuberant --excmd=number $(SOURCES) src/*.h
 
 ifeq ($(CONFIG),debug)
 LIBRARIES = $(LIBRARIES_DEBUG)
 LINK_FLAGS = $(LINK_FLAGS_DEBUG)
 CXXFLAGS = $(CXXFLAGS_DEBUG)
 
-$(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
+$(PROGRAMPATH)$(PROGRAM): $(PROGRAMEXTRAS) $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
 	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
-	@$(MACOSX_POSTLINK)
+ifeq ($(ISDARWIN),1)
+	@$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
+endif
 
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
 	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
+uic/%.h:
+	@mkdir -p uic
+	@echo === Generating $@ from $<
+	@uic $< -o $@
+
+uic/%.cxx:
+	@mkdir -p uic
+	@echo === Generating $@ from $<
+	@uic -i $(@:uic/%.cxx=%.h) $< -o $@
+
 moc/%_moc.cxx:
 	@mkdir -p moc
 	@echo == Generating moc file for $@
-	moc $< -o $@
+	@moc $< -o $@
 
 else
 
@@ -57,20 +95,32 @@ LIBRARIES = $(LIBRARIES_RELEASE)
 LINK_FLAGS = $(LINK_FLAGS_RELEASE)
 CXXFLAGS = $(CXXFLAGS_RELEASE)
 
-$(PROGRAM): $(MOC_OBJECTS) $(OBJECTS)
+$(PROGRAMPATH)$(PROGRAM): $(PROGRAMEXTRAS) $(MOC_OBJECTS) $(OBJECTS)
 	@echo == linking $@
 	@$(CXX) $(OBJECTS) $(MOC_OBJECTS) $(LIBRARY_PATHS) $(LIBRARIES) $(LINK_FLAGS) -o $@
-	@$(MACOSX_POSTLINK)
+ifeq ($(ISDARWIN),1)
+	@$(CLAM_PATH)/build/macosx-utils/correct_dylibs_from_paths.sh $(PROGRAMPATH)$(PROGRAM) $(LIBRARY_PATHS) 
+endif
 
 %.o:
 	@mkdir -p obj
 	@echo == compiling $<
 	@$(CXX) $(CXXFLAGS) -c $(PREINCL) -ftemplate-depth-99 $(DEFINES) $(PRE_INCLUDES) $(INCLUDES) $< -o $@
 
+uic/%.h:
+	@mkdir -p uic
+	@echo === Generating $@ from $<
+	@uic $< -o $@
+
+uic/%.cxx:
+	@mkdir -p uic
+	@echo === Generating $@ from $<
+	@uic -i $(@:uic/%.cxx=%.h) $< -o $@
+
 moc/%_moc.cxx:
 	@mkdir -p moc
 	@echo == Generating moc file for $@
-	moc $< -o $@
+	@moc $< -o $@
 
 else
 
@@ -89,7 +139,7 @@ else
 	@echo "         setenv CONFIG release"
 	@echo "===================================================================="
 
-$(PROGRAM): .FORCE
+$(PROGRAMPATH)$(PROGRAM): .FORCE
 	@echo "===================================================================="
 	@echo "Error: specify configuration, either by"
 	@echo "- specifying CONFIG=[debug|release] when running make"
@@ -108,7 +158,7 @@ endif
 %.d:
 	@mkdir -p dep
 	@echo Generating dependency information for $<
-	@$(SRCDEPS) -d settings.cfg $< > $@
+	@$(SRCDEPS) -d $< settings.cfg > $@
 
 $(SRCDEPS):
 	@echo ===============================================================

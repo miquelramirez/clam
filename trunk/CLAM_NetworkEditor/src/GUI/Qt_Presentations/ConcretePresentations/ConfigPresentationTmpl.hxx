@@ -76,6 +76,10 @@ protected:
 public:
 	ConfigPresentationTmpl( QWidget * parent = 0 );
 	virtual ~ConfigPresentationTmpl();
+	CLAM::ProcessingConfig * GetConfig()
+	{
+		return &mConfig;
+	}
 
 	template<typename T>
 	void AddWidget(const char *name, void *foo, T& value);

@@ -109,7 +109,7 @@ class NotSupportedType : public Component {
 class DummyConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,10,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,30,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 	DYN_ATTRIBUTE(1,public,std::string,ThisisAString);
 	DYN_ATTRIBUTE(2,public,TData,ThisIsATData);
@@ -120,6 +120,26 @@ public:
 	DYN_ATTRIBUTE(7,public,bool, ThisIsABool);
 	DYN_ATTRIBUTE(8,public,DummySubConfig, ThisIsDifferentSubConfig);
 	DYN_ATTRIBUTE(9,public,Filename, ThisIsAFilename);
+	DYN_ATTRIBUTE(10,public,std::string,BName);
+	DYN_ATTRIBUTE(11,public,std::string,BThisisAString);
+	DYN_ATTRIBUTE(12,public,TData,BThisIsATData);
+	DYN_ATTRIBUTE(13,public,TSize,BThisIsATSize);
+	DYN_ATTRIBUTE(14,public,EDummy, BThisIsAEDummy);
+	DYN_ATTRIBUTE(15,public,NotSupportedType, BThisIsNotSupportedType);
+	DYN_ATTRIBUTE(16,public,DummySubConfig, BThisIsASubConfig);
+	DYN_ATTRIBUTE(17,public,bool, BThisIsABool);
+	DYN_ATTRIBUTE(18,public,DummySubConfig, BThisIsDifferentSubConfig);
+	DYN_ATTRIBUTE(19,public,Filename, BThisIsAFilename);
+	DYN_ATTRIBUTE(20,public,std::string,CName);
+	DYN_ATTRIBUTE(21,public,std::string,CThisisAString);
+	DYN_ATTRIBUTE(22,public,TData,CThisIsATData);
+	DYN_ATTRIBUTE(23,public,TSize,CThisIsATSize);
+	DYN_ATTRIBUTE(24,public,EDummy,CThisIsAEDummy);
+	DYN_ATTRIBUTE(25,public,NotSupportedType,CThisIsNotSupportedType);
+	DYN_ATTRIBUTE(26,public,DummySubConfig,CThisIsASubConfig);
+	DYN_ATTRIBUTE(27,public,bool,CThisIsABool);
+	DYN_ATTRIBUTE(28,public,DummySubConfig,CThisIsDifferentSubConfig);
+	DYN_ATTRIBUTE(29,public,Filename,CThisIsAFilename);
 
 private:
 

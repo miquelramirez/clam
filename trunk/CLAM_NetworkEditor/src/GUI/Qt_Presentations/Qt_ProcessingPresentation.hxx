@@ -29,6 +29,8 @@
 #include "Signalv0.hxx"
 #include "Slotv1.hxx"
 
+class QColor;
+
 namespace CLAM
 {
 	class ProcessingConfig;
@@ -45,18 +47,33 @@ class Qt_OutControlPresentation;
 class Qt_ProcessingPresentation : public QWidget, public ProcessingPresentation
 {
 	Q_OBJECT
+protected:
+	enum ResizePosition
+	{
+		NoResize,
+		UpLeft,
+		Up,
+		UpRight,
+//		MedLeft,
+//		MedRight,
+		DownLeft,
+		Down,
+		DownRight
+	};
 public:
-	Qt_ProcessingPresentation( std::string nameFromNetwork, QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_ProcessingPresentation(){}
+	Qt_ProcessingPresentation();
+	virtual ~Qt_ProcessingPresentation(){SlotConfigurationUpdated.Unbind();}
 	void Show();
 	void Hide();
 	void EmitPositionOfChildren();
 
+	void SelectProcessingPresentation();
 	void UnSelectProcessingPresentation();
 	void Move( const QPoint & );
+	void Initialize( const std::string & nameFromNetwork, QWidget * parent );
 protected:
-	virtual void SetObservedClassName(const std::string& name);
-
+	void SetObservedClassName(const std::string& name);
+	
 	// port methods
 	void SetInPort( const std::string & );
 	void SetOutPort( const std::string & );
@@ -67,7 +84,7 @@ protected:
 
 	// control methods
 	void SetInControl( const std::string & );
-	virtual void SetOutControl( const std::string & ); // reimplemented in Qt_OutControlSender widget
+	void SetOutControl( const std::string & ); // reimplemented in Qt_OutControlSender widget
 	void SetInControlClicked( Qt_InControlPresentation *);
 	void SetOutControlClicked( Qt_OutControlPresentation *);
 	void SetOutControlAfterClickInControl(const QPoint &);
@@ -75,19 +92,24 @@ protected:
 	
 
 	virtual void paintEvent( QPaintEvent * );
+	QColor GetColorOfState();
 	void mousePressEvent( QMouseEvent * );
+	void mouseReleaseEvent( QMouseEvent * );
 	void mouseMoveEvent( QMouseEvent * );
 	void mouseDoubleClickEvent ( QMouseEvent * );
 
-	void ConfigurationUpdated( bool );
+	virtual void ConfigurationUpdated( bool );
 	void UpdateOutPortsPosition();
 	void UpdateOutControlsPosition();
 
-	virtual void UpdateSize();
+	virtual void UpdateSize( bool hasToResize = true );
 	void ChangeProcessingPresentationName( const std::string & name ); // redefinition to let update the presentation
 	void DrawSelectedRepresentation();
-	void  UpdatePresentation();
+	void UpdatePresentation();
+	void EvaluateIfClickingToResize( const QPoint & pos );
+	virtual void ExecuteResize( const QPoint & difference );
 	bool	    mSelected;
+	ResizePosition mResizePosition;
 	QPoint     mPrevPos;
 
 public: // signals
@@ -122,6 +144,7 @@ public slots: // qt slots
 	void SlotExecuteChangeName();
 signals:
 	void SignalEmitGeometryChange( const QRect & );
+	void SignalFinishTextEditing();
 };
 
 

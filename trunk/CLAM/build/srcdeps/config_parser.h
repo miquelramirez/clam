@@ -12,7 +12,11 @@ extern list* link_flags_debug;
 extern list* link_flags_release;
 extern list* libraries_debug;
 extern list* libraries_release;
+extern list* vc7_libraries_debug;
+extern list* vc7_libraries_release;
+
 extern list* library_paths;
+extern list* ui_files;
 
 extern list* program;
 

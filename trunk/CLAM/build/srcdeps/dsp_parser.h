@@ -2,14 +2,10 @@
 #define __dsp_parser__
 
 
-void dsp_parse_inplace(const char* filename);
-
-//! the same as dsp_parse_inplace. @deprecated.
-void dsp_parse(const char* filename);
-void dsp_parse_from_empty(const char* outFilename);
-void dsp_parse_from_file(const char* inFilename, const char* outFilename);
-
-void dsp_parse_from_empty(const char* outFilename);
-void dsp_parse_from_file(const char* inFilename, const char* outFilename);
+/* Entry point for generating a .dsp file from
+ * the information extracted by srcdeps' parser
+ * from the config file and the associated sources.
+ */
+extern void dsp_parse(const char* filename);
 
 #endif

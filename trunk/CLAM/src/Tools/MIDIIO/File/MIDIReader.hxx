@@ -1,8 +1,32 @@
+/*
+ * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
+ * UNIVERSITAT POMPEU FABRA
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ * MIDIFileReader C++ classes
+ * This code is part of the CLAM library, but also usable stand-alone.
+ * Maarten de Boer <mdeboer@iua.upf.es>
+ *
+ */
 #ifndef __MIDIReader__
 #define __MIDIReader__
 
 #include <stdio.h>
 #include "MIDIDataTypes.hxx"
+#include "MIDIChunkType.hxx"
 
 namespace MIDI
 {
@@ -32,26 +56,35 @@ namespace MIDI
 		unsigned int GetInt(void)
 		{
 			unsigned int val;
-			fread(&val,4,1,mFile);
-	    	unsigned char* ptr=(unsigned char*) &val;
-	    	unsigned char tmp;
-			#ifdef MIDI_FILE_NEEDS_SWAP
-   	 	tmp=ptr[0]; ptr[0]=ptr[3]; ptr[3]=tmp;
-   	 	tmp=ptr[1]; ptr[1]=ptr[2]; ptr[2]=tmp;
-			#endif
+
+			val = GetByte();
+			val <<=8;
+			val |= GetByte();
+			val <<=8;
+			val |= GetByte();
+			val <<=8;
+			val |= GetByte();
+			
 			return val;
 		}
 		unsigned short GetShort(void)
 		{
 			unsigned short val;
-			fread(&val,2,1,mFile);
-   	 	unsigned char* ptr=(unsigned char*) &val;
-   	 	unsigned char tmp;
-			#ifdef MIDI_FILE_NEEDS_SWAP
-   	 	tmp=ptr[0]; ptr[0]=ptr[1]; ptr[1]=tmp;
-			#endif
+
+			val = GetByte();
+			val <<= 8;
+			val |= GetByte();
+
 			return val;
 		}
+
+		ChunkType GetChunkType(void)
+		{
+			Byte bytes[4];
+			for (int i=0;i<4;i++) bytes[i] = GetByte();
+			return ChunkType(bytes);
+		}
+
 		unsigned int GetVarLength(void)
 		{
 			/* read a variable lenght value. see midi file spec */
@@ -68,6 +101,7 @@ namespace MIDI
 			}
 			return ret;
 		}
+
 		class Error
 		{
 		public:

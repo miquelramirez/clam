@@ -30,7 +30,9 @@
 #include "XMLAdapter.hxx"
 #include "XMLComponentAdapter.hxx"
 #include "TypeInfo.hxx"
-#include "mtgsstream.h" // An alias for <sstream>
+#include <sstream>
+#include <iostream>
+
 
 namespace CLAM {
 
@@ -126,13 +128,7 @@ public:
 	 */
 	virtual void StoreOn (Storage & store) const
 	{
-		t_adapteeIterator it=mAdaptee.begin();
-		t_adapteeIterator end=mAdaptee.end();
-		for (; it!=end; it++) {
-			StoreLeaveOrComponent (store, *it, mElementsName,
-			                       (BasicIsStorableAsLeaf*)NULL
-			                       );
-		}
+		StoreLeaveOrComponent (store, (BasicIsStorableAsLeaf*)NULL);
 	};
 	/**
 	 * Loads component's subitems from the given Storage
@@ -144,7 +140,7 @@ public:
 		mAdaptee.clear();
 		while (true) {
 			t_adapteeValues elem;
-			if (!LoadLeaveOrComponent(store, elem, mElementsName,
+			if (!LoadLeaveOrComponent(store, elem,
 						(BasicIsStorableAsLeaf *)NULL)
 					)
 				break;
@@ -153,32 +149,45 @@ public:
 	};
 // Implementation:
 private:
-	void StoreLeaveOrComponent (Storage& store, t_adapteeValues & value, const char * mElemName, StaticTrue* isLeave) const 
+	void StoreLeaveOrComponent (Storage& store, StaticTrue* isLeave) const 
 	{
-		XMLAdapter<t_adapteeValues> adapter(value);
+		t_adapteeIterator it=mAdaptee.begin();
+		t_adapteeIterator end=mAdaptee.end();
+		char * separator = "";
+		std::stringstream stream;
+		for (; it!=end; it++) {
+			stream << separator << *it;
+			separator = " ";
+		}
+		std::string content=stream.str();
+		XMLAdapter<std::string> adapter(content);
 		store.Store(adapter);
 	}
-	void StoreLeaveOrComponent (Storage& store, t_adapteeValues & value, const char * mElemName, StaticFalse* isLeave) const
+	void StoreLeaveOrComponent (Storage& store, StaticFalse* isLeave) const
 	{
-		XMLComponentAdapter adapter(value,mElemName,true);
-		store.Store(adapter);
+		t_adapteeIterator it=mAdaptee.begin();
+		t_adapteeIterator end=mAdaptee.end();
+		for (; it!=end; it++) {
+			XMLComponentAdapter adapter(*it,mElementsName,true);
+			store.Store(adapter);
+		}
 	}
-	bool LoadLeaveOrComponent (Storage& store, t_adapteeValues & value, const char * mElemName, StaticTrue* isLeave) 
+	bool LoadLeaveOrComponent (Storage& store, t_adapteeValues & value, StaticTrue* isLeave) 
 	{
 		XMLAdapter<t_adapteeValues> adapter(value);
 		return store.Load(adapter);
 	}
-	bool LoadLeaveOrComponent (Storage& store, t_adapteeValues & value, const char * mElemName, StaticFalse* isLeave)
+	bool LoadLeaveOrComponent (Storage& store, t_adapteeValues & value, StaticFalse* isLeave)
 	{
-		XMLComponentAdapter adapter(value,mElemName,true);
+		XMLComponentAdapter adapter(value,mElementsName,true);
 		return store.Load(adapter);
 	}
-	//* @return A string with the extracted XML content
+	//* @return A string with the extracted XML content */
 	std::string ContentLeaveOrComponent(StaticFalse* /*isLeave*/) const
 	{
 		return "";
 	}
-	/// @return A string with the extracted XML content
+	/** @return A string with the extracted XML content */
 	std::string ContentLeaveOrComponent(StaticTrue* /*isLeave*/) const
 	{
 		if (!IsXMLAttribute()) return "";

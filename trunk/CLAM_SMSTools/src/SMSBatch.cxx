@@ -23,16 +23,16 @@
 #include <iostream>
 #include "StdOutProgress.hxx"
 #include "StdOutWaitMessage.hxx"
+#include "TraverseDirectory.hxx"
 
-
-#include "directory.h"
 #include <iostream>
 #include <algorithm>
 
-using namespace CLAM;
-using namespace std;
 
-class SMSBatch:public SMSBase
+namespace CLAM{
+
+/** Declaration of the concrete Traverse directory class to apply to all files*/
+class SMSBatch:public TraverseDirectory,public SMSBase
 {
 public:
 	CLAMGUI::Progress* CreateProgress(const char* title,float from,float to)
@@ -43,9 +43,70 @@ public:
 	{
 		return new CLAMGUI::StdOutWaitMessage(title);
 	}
-
+	void OnFile(const std::string& filename);
 	void Run(void);
+
+private:
+	std::string ChangeExtension(const std::string& filename,const std::string& newExtension);
+	int mOption;
 };
+
+
+//Auxiliary function to change the .mid extension to .xml in a given filename
+std::string SMSBatch::ChangeExtension(const std::string& filename,const std::string& newExtension)
+{
+	std::string result=filename.substr(0,filename.rfind('.')+1);
+	result.append(newExtension);
+	return result;
+}
+
+
+//Function where the process related to every file is actually implemented
+void SMSBatch::OnFile(const std::string& filename)
+{      
+	std::string xml("xml");
+	
+	//First we ensure that it is an XML file looking at the extension
+	if(GetExtension(filename)!=xml) 
+		return;
+	std::cout<<"\n"<<"Processing file: "<<filename<<"\n";
+	LoadConfig(filename);
+	switch(mOption)
+	{
+		case 1://Analyze, synthesize and store output sound + sinusoidal componet + residual component
+		{
+			LoadInputSound();
+			Analyze();
+			Synthesize();
+			StoreOutputSound();
+			StoreOutputSoundSinusoidal();
+			StoreOutputSoundResidual();
+			break;
+		}
+		case 2://Analyze content of a given folder and store output .sdif or .xml files
+		{
+			LoadInputSound();
+			Analyze();
+			StoreAnalysis( mGlobalConfig.GetOutputAnalysisFile() );			
+			break;
+		}
+		case 3://Synthesize previously analyzed .sdif or .xml files
+		{
+			LoadAnalysis(mGlobalConfig.GetInputAnalysisFile());
+			Synthesize();
+			StoreOutputSound();
+			StoreOutputSoundSinusoidal();
+			StoreOutputSoundResidual();
+			break;
+		}
+		default:
+		{
+			std::cout<<"\n"<<"\n"<<"Error, not a valid option"<<"\n"<<"\n"<<"\n";
+			break;
+		}
+	}
+}
+
 
 void SMSBatch::Run(void)
 {
@@ -60,75 +121,29 @@ void SMSBatch::Run(void)
 		std::cout << "3. Only Synthesize" << "\n";
 		std::cout << "0. Finish" << "\n" << "\n";
 
-		int option=0;
-		std::cin>>option;
+		mOption=0;
+		std::cin>>mOption;
 
-		if (!option) return;
+		if (!mOption) return;
 		
 		std::string folderName;
-		std::cout<<"\n"<<"\n"<<"Enter folder name where xml configuration files are located: \n";
+		std::cout<<"\n"<<"\n"<<"Enter folder name where xml configuration files are located (note that all subdirectories will be scanned recursively): \n";
 		std::cin>>folderName;
 		
-		using namespace boost::filesystem;
+		Traverse(folderName);
 
-		std::string inputConfigFileName;
-
-		for (dir_it it(folderName); it != dir_it(); ++it)
-		{
-			if (get<is_hidden>(it)) continue;
-			if (get<is_directory>(it)) continue;
-			inputConfigFileName=*it;
-			std::string ext=inputConfigFileName.substr(inputConfigFileName.length()-4,inputConfigFileName.length());
-			if (ext!=".xml") break;
-			
-			std::string fullPathConfigName=folderName+'/'+inputConfigFileName;
-			std::cout <<"Processing configuration file: "<<fullPathConfigName<<"\n";
-			LoadConfig(fullPathConfigName);
-			switch(option)
-			{
-				case 1://Analyze, synthesize and store output sound + sinusoidal componet + residual component
-				{
-					LoadInputSound();
-					Analyze();
-					Synthesize();
-					StoreOutputSound();
-					StoreOutputSoundSinusoidal();
-					StoreOutputSoundResidual();
-					break;
-				}
-				case 2://Analyze content of a given folder and store output .sdif or .xml files
-				{
-					LoadInputSound();
-					Analyze();
-					StoreAnalysis( mGlobalConfig.GetOutputAnalysisFile() );			
-					break;
-				}
-				case 3://Synthesize previously analyzed .sdif or .xml files
-				{
-					LoadAnalysis(mGlobalConfig.GetInputAnalysisFile());
-					Synthesize();
-					StoreOutputSound();
-					StoreOutputSoundSinusoidal();
-					StoreOutputSoundResidual();
-					break;
-				}
-				default:
-				{
-					std::cout<<"\n"<<"\n"<<"Error, not a valid option"<<"\n"<<"\n"<<"\n";
-					break;
-				}
-			}
-		}
 	}
 }
+
+};//namespace CLAM
 
 int main(int argc,char** argv)
 {
 	try{
-		SMSBatch example;
+		CLAM::SMSBatch example;
 		example.Run();
 	}
-	catch(Err error)
+	catch(CLAM::Err error)
 	{
 		error.Print();
 		std::cerr << "Abnormal Program Termination" << std::endl;
@@ -142,22 +157,3 @@ int main(int argc,char** argv)
 	return 0;
 }
 
-/*
-void GenerateXML()
-{
-	SMSAnalysisSynthesisConfig c;
-	XMLStorage::Dump(c,"SMSAnalysisSynthesisConfig","c:\\config.xml");
-}
-
-TData Error(Audio& original, Audio& synthesized,Audio& error)
-{
-	CLAM_ASSERT(original.GetSize()==synthesized.GetSize(),"Original and synthesized audio do not have the same size");
-	TData err=0;
-	int size=original.GetSize();
-	for(int i=0;i<size;i++)
-	{
-		err+=error.GetBuffer()[i]=(original.GetBuffer()[i]-synthesized.GetBuffer()[i]);
-	}
-	return err;
-}
-*/

@@ -114,18 +114,9 @@ namespace CLAM {
 		CLAM_ASSERT(CheckInputType(input), "SpectralPeakDetect::Do() - Type of input data doesn't match expected type.");
 		CLAM_ASSERT(CheckOutputType(out), "SpectralPeakDetect::Do() - Type of output data doesn't match expected type.");
 
-		int i;
-		TSize nSpectralPeaks = 0;
-		TSize binWidth = 0;	 // BinWidth is in NumBins
-
 		TData middleMag;
 		TData leftMag;
 		TData rightMag;
-		TData interpolatedBin;
-		TData spectralPeakFreq=0;
-		TData spectralPeakPhase;
-		TData spectralPeakMag;
-		TData diffFromMax;
 		const TData samplingRate = input.GetSpectralRange() * TData(2.0);
 		const TData magThreshold = mConfig.GetMagThreshold();
 		const TSize nBins = input.GetSize();
@@ -148,10 +139,10 @@ namespace CLAM {
 		DataArray& outBinPosBuffer=out.GetBinPosBuffer();
 		DataArray& outBinWidthBuffer=out.GetBinWidthBuffer();
 		
-
-		
-
 		// detection loop 
+		TSize nSpectralPeaks = 0;
+		TSize binWidth = 0;	 // BinWidth is in NumBins
+		int i;
 		for (i = 0; (i < nBins-2) && (nSpectralPeaks < maxPeaks); ++i)
 		{
 			leftMag 	= inMagBuffer[i];
@@ -177,6 +168,10 @@ namespace CLAM {
 				binWidth = 0; // Reset Binwidth
 			}
 			
+			TData interpolatedBin;
+			TData spectralPeakFreq=0;
+			TData spectralPeakPhase;
+			TData spectralPeakMag;
 			// local maximum Detected ! 
 			if ((middleMag >= leftMag) && (middleMag >= rightMag) && (middleMag > magThreshold)) {	
 
@@ -229,7 +224,7 @@ namespace CLAM {
 					// Computing f(n+delta_x) will estimate the peak's magnitude (in dB's):
 					// f(n+delta_x) = A2 - 1/4*(A1-A3)*delta_x.
 
-					diffFromMax =  TData(0.5) * ((leftMag-rightMag) / (leftMag- 2*middleMag + rightMag));
+					const TData diffFromMax = TData(0.5) * ((leftMag-rightMag) / (leftMag- 2*middleMag + rightMag));
 					interpolatedBin = SpectralPeakPosition+diffFromMax;
 			
 					// store SpectralPeak data 

@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "parser.h"
 #include "config_parser.h"
 #include "list.h"
+#include "listhash.h"
 #include "hash.h"
 #include "stack.h"
 #include "strfuncs.h"
@@ -64,6 +66,12 @@ list *guessed_headers = 0;
 */
 list *needed_includepaths = 0;
 
+list* ui_headers = NULL;
+listhash* ui_outputs = NULL;
+
+
+list* mocable_headers = NULL;
+
 /* list of all includes checked when building the
 ** needed_includepaths, for efficiency.
 */
@@ -93,6 +101,8 @@ int gendepend = 0;
 ** headers if recursesrc is set
 */
 hash* extmap = 0;
+
+static void generate_outputs_for_ui_files();
 
 void extmap_exit(void)
 {
@@ -149,11 +159,12 @@ int parser_recurse(const char* filename);
 **   trying different extensions occurding to extmap, and add that
 **   source to the sources list
 */
-int parser_include(const char* filename)
+int parser_include(const char* filename,int shouldrecurse)
 {
 	const char* path;
 	char tmp[2048];
 	char tmp2[2048];
+	char currentPath[2048];
 	char* pathend = 0;
 	int inlocalpath = 0;
 
@@ -173,40 +184,31 @@ int parser_include(const char* filename)
 
 	if (verbose)
 		fprintf(stderr,"Including %s from %s\n",filename,curFilename);
+
+	if ( list_find( ui_headers, filename ) ) /* An .ui generated header. Ignore completely.*/
+		return 1;
 		
 	{
 		/* first, check local path */
-		const char* a = curFilename;
-		char* b = tmp;
-		char* c = tmp2;
-		char* qb = 0;
-		char* qc = 0;
-		int n = 2032; /* leave room for possible extension change */
-		while (*a && n)
-		{
-			if (*a=='/' || *a=='\\')
-			{
-				qb = b;
-				qc = c;
-			}
-			*b++ = *a;
-			*c++ = *a;
-			a++;
-			n--;
-		}
-		*b = 0;
-		*c = 0;
-		if (qb)
-		{
-			pathend = qc;
-			qb++;
-			qc++;
-			*qc++ = ':';
-			*qc++ = '/';
-			strncpy(qb,filename,n);
-			strncpy(qc,filename,n-2);
-		}
+	
+		/* We extract the path from the name of the file we are currently parsing*/
+		/* NOTE: the extract path puts at currentPath the full path e.g. for /home/momonga/foo.txt
+		 * currentPath would be '/home/momonga/'
+		 */
+		extract_path( currentPath, 2048, curFilename );
 		
+		/*And we build the tmp and tmp2 stuff as explained above*/
+		strstart( tmp, 2048 );
+		stradd( currentPath );
+		stradd( filename );
+		strend();
+
+		strstart( tmp2, 2048 );
+		pathend = stradd( currentPath );
+		stradd( ":/" );
+		stradd( filename );
+		strend();
+
 		f = fopen(tmp, openmode);
 	}
 
@@ -255,7 +257,10 @@ int parser_include(const char* filename)
 	** - pathend point to the end of the path in tmp2
 	*/
 
-	parser_recurse(tmp);
+	if (shouldrecurse)
+	{
+		parser_recurse(tmp);
+	}
 
 	list_add_str_once(includes,tmp);
 
@@ -387,7 +392,8 @@ parse_include_filename:
 				ptr = strptr_copy_until(ptr,term,tmp,2048);
 			}
 
-			if (parser_include(tmp)==0)
+			/* don't recurse <system> includes, only recurse "filename" includes  */
+			if ( !parser_include(tmp,term=='"'/*should recurse*/) )
 			{
 				if (term=='>') {
 					/* a system include was not found, but that's okay, because
@@ -516,22 +522,48 @@ const char* parser_comment(const char* ptr)
 	return 0;
 }
 
+static void parser_mark_as_mocable( )
+{
+	const char* currentFilename = stack_top( filenamestack);
+	
+	if ( !strstr( currentFilename, "/include" ) )	/*Ignoring external library headers*/	
+	{
+		list_add_str_once( mocable_headers, currentFilename );		
+	}
+}
+
 /* parse a line. return 1 if after parsing the line we are still inside 
 ** a c-style comment */
 int parser_line(const char* ptr)
 {
-restart:
-	ptr = strptr_skip_spaces(ptr);
-	if (*ptr=='/' && *(ptr+1)=='/') return 0;
-	if (*ptr=='/' && *(ptr+1)=='*') 
+	do
 	{
-		ptr = parser_comment(ptr+2);
-		if (ptr==0) {
-			return 1;
+		/* Eat leading tabs and spaces */
+		ptr = strptr_skip_spaces(ptr);
+		
+		/* C++ single line comment */
+		if ( ptr[0] == '/' && ptr[1] == '/' )
+			return 0;
+
+		/* Beginning of C-style block comment */
+		if ( ptr[0] == '/' && ptr[1] == '*' )
+		{
+			ptr = parser_comment( ptr + 2 );
+
+			/*End of line reached inside parser_comment*/
+			if ( ptr == 0 )
+				return 1;
 		}
-		goto restart;
-	}
-	if (*ptr=='#')
+		else
+			break;
+	
+	} while( 1 );
+	
+	/* Blank line :S*/
+	if ( *ptr=='\n' )
+		return 0;	
+	/* Preprocessor directive */
+	else if (*ptr=='#')
 	{
 		ptr++;
 		ptr = strptr_skip_spaces(ptr);
@@ -539,7 +571,19 @@ restart:
 		{
 			ptr = parser_directive(ptr);
 		}
+		return 0;
 	}
+	/* TODO: Possible Q object - this might be optimized by controlling if we are
+	 * inside or outside a class scope
+	 */
+	else if ( strstr( ptr, "Q_OBJECT") )
+	{
+		parser_mark_as_mocable();
+		return 0;
+	}
+	else
+		return 0;
+
 	return 0;
 }
 
@@ -601,11 +645,69 @@ int parser_recurse(const char* filename)
 	return 1;
 }
 
+void generate_outputs_for_ui_files()
+{
+	listkey* k = listhash_find( config, "USE_QT" );
+	
+	if ( !k ) return;
+	
+	if ( strcmp( k->l->first->str, "1" ) ) return;
+
+	k = listhash_find( config, "UI_FILES" );
+
+	if ( !k ) return;
+	
+	/* No .ui files were specified */
+	if ( k->l->first == NULL ) return;
+
+	{
+		item* current_ui_file = k->l->first;
+
+		char ui_output_header[2048];
+		char ui_output_source[2048];
+		char ui_header_name[2048];
+		char ui_out_moc[2048];
+		
+		while( current_ui_file != NULL )
+		{
+			listkey* key = listhash_find( ui_outputs, current_ui_file->str );
+
+			if ( key )
+			{
+				fprintf( stderr, "Error: %s file was specified twice in UI_FILES \n", current_ui_file->str );
+				exit( 1 );
+			}
+
+			key = listhash_add_key_once( ui_outputs, current_ui_file->str );
+
+			convert_to_uicname( ui_output_header, 2048, current_ui_file->str, ".h" );
+			convert_to_uicname( ui_output_source, 2048, current_ui_file->str, ".cxx" );
+			convert_to_mocname( ui_out_moc, 2048, ui_output_header );
+			discard_path( ui_header_name, 2048, ui_output_header );
+
+			listkey_add_item_str_once( key, ui_output_header );
+			listkey_add_item_str_once( key, ui_output_source );
+			listkey_add_item_str_once( key, ui_out_moc );
+
+			list_add_str_once( ui_headers, ui_header_name );
+
+			current_ui_file = current_ui_file->next;
+		}
+	}
+}
+
 void parser_init(void)
 {
 	guessed_sources = list_new();
 
 	guessed_headers = list_new();
+
+	ui_headers = list_new();
+	ui_outputs = listhash_new();
+
+	mocable_headers = list_new();
+
+	generate_outputs_for_ui_files();
 
 	includepaths = list_new();
 
@@ -664,11 +766,17 @@ void parser_exit(void)
 
 	list_free(guessed_headers);
 
+	list_free(ui_headers);
+
+	list_free( mocable_headers );
+
 	list_free(includepaths);
 
 	list_free(includes_checked);
 
 	list_free(needed_includepaths);
+
+	listhash_free( ui_outputs );
 	
 	extmap_exit();
 }
@@ -716,6 +824,7 @@ void parser_run(const char* filename)
 
 		if (gendepend==1)
 		{
+			/* when this is executed, the stdout is supposed to be redirected to .d file */
 			item* i;
 			char objname[2048];
 			char depname[2048];
@@ -749,6 +858,8 @@ void parser_run(const char* filename)
 		else
 		if (gendepend==2)
 		{
+			/* when this is executed, the stdout is supposed to be redirected to the Makefile.vars file */
+			/* adding .d dependency to Makefile.vars and ... */
 			char depname[2048];
 			FILE* df;
 			convert_to_depname(depname,2048,filename);
@@ -769,6 +880,7 @@ void parser_run(const char* filename)
 			}
 			else
 			{
+			/* ... creating .d depency file */
 				item* i;
 				char objname[2048];
 				char depname[2048];
@@ -805,6 +917,7 @@ void parser_run(const char* filename)
 		}
 	}else{
 		fprintf(stderr,"Could not open %s\n",filename);
+		exit(-1);
 	}
 	if (verbose) fprintf(stderr,"free defines hash\n");
 	hash_free(cur_defines);
@@ -815,4 +928,57 @@ void parser_run(const char* filename)
 	conditions_end();
 }
 
+
+// used in dsp_parser and vcproj_parser
+void generate_files_tree(list* filelist, tree* t)
+{
+	item* i = filelist->first;
+
+
+	while (i)
+	{
+		char tmp[1024];
+		char* ptr;
+		char* start = 0;
+
+		tree* c = t;
+
+		strncpy(tmp,i->str,1024);
+		
+		ptr = tmp;
+
+		// traverse path name, creating nodes for each name in path
+		while (*ptr)
+		{
+			if (start==0) start = ptr;
+			if (*ptr=='/' || *ptr=='\\')
+			{
+				*ptr = 0;
+				if (strcmp(start,"..") && strcmp(start,"src"))
+				{
+					node* n = tree_add_str_once(c,start);
+					if (!n->sub) n->sub = tree_new();
+					c = n->sub;
+				}
+				start = 0;
+			}
+			ptr++;
+		}
+
+		tree_add_str_once(c,i->str);
+		i = i->next;
+	}
+}
+const char* filetype_str(FileType type)
+{
+	if ( type == header ) 
+		return "Headers";
+
+	if ( type == source ) 
+		return "Sources";
+	if ( type == qt ) 
+		return "Qt Files";
+	
+    return "Unknown files :o";
+}
 

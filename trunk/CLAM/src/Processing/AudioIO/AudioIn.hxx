@@ -51,10 +51,8 @@ public:
 	 *  Note that the user can not call this method directly. He will use Configure instead. The argument is expected to be an object of the necesary concrete configuration class.
 	 *  @return true if the object has been configured correctly; true otherwise
 	 *  @param The related ProcessingConfig object
-	 *  @throws ErrProcessingObj when a device adquisition fails
 	 */
-	bool ConcreteConfigure(const ProcessingConfig& c)
-		throw(ErrProcessingObj);
+	bool ConcreteConfigure(const ProcessingConfig& c);
 
 	/** Getter for the configuration of the class
 	 *  @return The ProcessingConfig object attached to this Processing object
@@ -69,7 +67,7 @@ public:
 	 *  @param c The concrete AudioIOConfig that will be used for this construction
 	 */
 	AudioIn(const AudioIOConfig &c) : Output("Output",this,1)  { mpDevice = 0; Configure(c); }
-
+	
 	/** Destructor method of the class*/
 	~AudioIn() { if (mpDevice) mpDevice->Unregister(*this); }
 

@@ -57,7 +57,8 @@ void SMSSynthesisConfig::DefaultValues()
 	/* Default frame size is 256*/
 	SetFrameSize(GetHopSize());
 
-
+	/** Setting synth sine generator size to default 257 **/
+	GetSynthSineSpectrum().SetSpectrumSize(257);
 }
 
 void SMSSynthesisConfig::SetSpectrumSize(TSize specSize)

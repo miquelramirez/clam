@@ -42,7 +42,7 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSTimeStretch(const SMSTransformationConfig &c):SMSTransformationTmpl<Frame>(c){}
+		SMSTimeStretch(const SMSTransformationConfig &c);
 		
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
@@ -51,6 +51,7 @@ namespace CLAM{
 
 		bool ConcreteConfigure(const ProcessingConfig& c);
 		bool ConcreteStart();
+		bool ConcreteStop();
 		
 		/** Destructor of the class*/
  		~SMSTimeStretch(){};
@@ -78,6 +79,7 @@ namespace CLAM{
 
 		/** Child processings **/
 		FrameInterpolator mPO_FrameInterpolator;
+	
 	};		
 };//namespace CLAM
 

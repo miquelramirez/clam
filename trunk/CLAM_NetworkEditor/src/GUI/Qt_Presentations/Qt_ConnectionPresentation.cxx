@@ -105,6 +105,7 @@ void Qt_ConnectionPresentation::UpdatePosition()
 
 	move (x,y);
 	setFixedSize(w,h);
+	repaint();
 }
 
 void Qt_ConnectionPresentation::mouseMoveEvent( QMouseEvent *m)
@@ -132,6 +133,12 @@ void Qt_ConnectionPresentation::mousePressEvent( QMouseEvent *m)
 void Qt_ConnectionPresentation::UnSelectConnectionPresentation()
 {
 	mSelected = false;
+	repaint();
+}
+
+void Qt_ConnectionPresentation::SelectConnectionPresentation()
+{
+	mSelected = true;
 	repaint();
 }
 

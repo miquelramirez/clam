@@ -69,7 +69,12 @@ class XercesDomReader : private xercesc::HandlerBase
 
 			std::ostringstream stream;
 			char c;
-			while (target.get(c)) stream.put(c);
+			while (true)
+			{
+				target.get(c);
+				if(!target.good()) break;
+				stream.put(c);
+			}
 			std::string temp = stream.str();
 			unsigned length = temp.length();
 			const char * documentText = temp.c_str();

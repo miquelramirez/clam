@@ -24,20 +24,13 @@
 
 #include "Frame.hxx"
 #include "DataTypes.hxx"
-#include "DynamicType.hxx"
-#include "Array.hxx"
 #include "List.hxx"
 #include "Search.hxx"
-#include "SearchArray.hxx"
-#include "IndexArray.hxx"
-#include "DataTypes.hxx"
-#include "OSDefines.hxx"
-#include "Err.hxx"
-#include "ProcessingDataConfig.hxx"
 #include "ProcessingData.hxx"
 #include "Audio.hxx"
 
-namespace CLAM {
+namespace CLAM 
+{
 
 typedef Search < List < Frame >, Frame> FrameSearch;
 
@@ -52,6 +45,7 @@ typedef Search < List < Frame >, Frame> FrameSearch;
  *	(i.e. is the parent) or not. Finally the child segments also have a pointer to their
  *	parent to be able to access the data.
  *	@see Audio, Frame, ProcessingData, List*/
+
 class Segment : public ProcessingData
 {
 public:
@@ -153,22 +147,29 @@ public:
 private:
 	
 	/** Internal convenience method */
-	void SetFramesSearch (const FrameSearch & frame) {
+	void SetFramesSearch (const FrameSearch & frame) 
+	{
 		mFramesSearch=frame;
 	}
+	
 	/** Internal convenience method */
-	const FrameSearch & GetFramesSearch () const {
+	const FrameSearch & GetFramesSearch () const 
+	{
 		return mFramesSearch;
 	}
+	
 	/** Internal convenience method */
-	FrameSearch & GetFramesSearch () {
+	FrameSearch & GetFramesSearch () 
+	{
 		return mFramesSearch;
 	}
+	
 	/** Internal convenience method */
 	void CopyDataFromParent();
 	void DefaultValues();
 };
 
-};//namespace
+} //namespace CLAM
 
 #endif
+

@@ -173,13 +173,16 @@ public:
 	void RemoveAttr_ (const unsigned id);
 
 
+	void FullfilsInvariant() const;
 
+	virtual Component* DeepCopy() const;
 public:
+	enum {idLength = 120, typeLength = 120}; //TODO: rise exception if the type is too long
+
+protected:
 	enum {shrinkThreshold = 80}; // Bytes.  That constant means that when updating data, if the
 	                             // used data disminish an amount superior that this threshold,
 	                             // data will be reallocated (shrunk)
-	enum {idLength = 120, typeLength = 120}; //TODO: rise exception if the type is too long
-
 	// item of the typeDescTable, that is static created only once in the concrete class constructor
 	struct TAttr
 	{
@@ -208,7 +211,6 @@ public:
 	};
 	virtual DynamicType& GetDynamicTypeCopy(const bool shareData = false, const bool deep = false) const =0;
 	virtual Component* ShallowCopy() const;
-	virtual Component* DeepCopy() const;
 	DynamicType& operator= (const DynamicType& source);
 
 
@@ -233,7 +235,6 @@ public:
 
 	// Developing tools:
 	void Debug();
-	void FullfilsInvariant() const;
 
 protected:
 	

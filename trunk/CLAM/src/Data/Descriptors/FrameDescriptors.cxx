@@ -62,7 +62,7 @@ const Frame* FrameDescriptors::GetpFrame() const {
 	return mpFrame;
 }
 
-void FrameDescriptors::SetpFrame(Frame* pFrame) {
+void FrameDescriptors::SetpFrame(const Frame* pFrame){
 	mpFrame=pFrame;
 	//first we add dynamic attributes doing a single UpdateData
 	if(mpFrame->HasSpectrum())

@@ -57,6 +57,13 @@ void FlowControl::ConfigurePorts(Processing& toConfigure) const
 		(*itout)->SetParams(mFrameSize);		
 }
 
+void FlowControl::ProcessingConfigured( Processing & configured )
+{
+	if(!configured.ModifiesPortsAndControlsAtConfiguration())
+		return;
+	ConfigurePorts( configured );
+}
+
 void FlowControl::ProcessingAddedToNetwork( Processing& added )
 {
 	ConfigurePorts( added );

@@ -46,6 +46,7 @@ protected:
 
 	virtual void ConfigureProcessing() = 0;
 	virtual void SetConfig( const CLAM::ProcessingConfig & ) = 0;
+	virtual CLAM::ProcessingConfig * GetConfig() = 0;
 public:
 	Qt_ProcessingConfigPresentation( QWidget *parent = 0, const char *name = 0);
 	void Show();

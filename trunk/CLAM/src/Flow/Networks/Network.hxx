@@ -92,6 +92,7 @@ public:
 	void AddProcessing( const std::string & name, const std::string & key );
 	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name ) const;
+	void ConfigureProcessing( const std::string &, const ProcessingConfig & );
 	void ChangeKeyMap( const std::string & oldName, const std::string & newName );	
 	
 	const std::string & GetNetworkId(const Processing * proc) const;

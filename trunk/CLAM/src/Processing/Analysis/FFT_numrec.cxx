@@ -21,9 +21,6 @@
 
 
 #include "FFT_numrec.hxx"
-#include <string>
-
-#include "mtgsstream.h" // An alias for <sstream>
 
 #include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
@@ -120,7 +117,7 @@ namespace CLAM {
 			ToOther(out);
 			break;
 		default:
-			throw(ErrProcessingObj("FFT_numrec: Do(): Inconsistent state",this));
+			CLAM_ASSERT(false, "FFT_numrec: Do(): Inconsistent state");
 		}
 		out.SetSpectralRange(in.GetSampleRate()/2);
 		return true;

@@ -23,9 +23,8 @@
 #ifndef _PolarTmplDef_
 #define _PolarTmplDef_
 
-#include <string>
 #include <iostream>
-#include "mtgsstream.h" // An alias for <sstream>
+#include <sstream>
 
 namespace CLAM
 {

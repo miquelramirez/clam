@@ -35,6 +35,7 @@ ProcessingController::ProcessingController()
 {
 	SlotConfigureProcessing.Wrap( this, &ProcessingController::ConfigureProcessing );
 	SlotProcessingNameChanged.Wrap( this, &ProcessingController::ProcessingNameChanged );
+	SlotSendOutControlValue.Wrap( this, &ProcessingController::SendOutControlValue );
 }
 
 void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & cfg) 
@@ -50,8 +51,7 @@ void ProcessingController::ConfigureProcessing( const CLAM::ProcessingConfig & c
 		mObserved->Stop();
 	}
 
-
-	mObserved->Configure(cfg);
+	SignalConfigureProcessing.Emit( mObserved, cfg );
 	SignalChangeState.Emit( mObserved->GetExecState(), mObserved->GetStatus() );
 
 	if(mObserved->ModifiesPortsAndControlsAtConfiguration())
@@ -112,24 +112,7 @@ bool ProcessingController::BindTo( CLAM::Processing& obj )
 	
 	if ( !mObserved )
 		return false;
-
-	CLAM::PublishedInPorts::ConstIterator itPortIn;
-	for (itPortIn = mObserved->GetInPorts().Begin(); itPortIn != mObserved->GetInPorts().End(); itPortIn++)
-		mInPortNames.push_back((*itPortIn)->GetName());
-		
-	CLAM::PublishedOutPorts::ConstIterator itPortOut;
-	for (itPortOut = mObserved->GetOutPorts().Begin(); itPortOut != mObserved->GetOutPorts().End(); itPortOut++)
-		mOutPortNames.push_back((*itPortOut)->GetName());
-
-
-	CLAM::PublishedInControls::ConstIterator itCtrlIn;
-	for (itCtrlIn = mObserved->GetInControls().Begin(); itCtrlIn != mObserved->GetInControls().End(); itCtrlIn++)
-		mInControlNames.push_back((*itCtrlIn)->GetName());
-	
-	CLAM::PublishedOutControls::ConstIterator itCtrlOut;
-	for (itCtrlOut = mObserved->GetOutControls().Begin(); itCtrlOut != mObserved->GetOutControls().End(); itCtrlOut++)
-		mOutControlNames.push_back((*itCtrlOut)->GetName());
-
+	UpdateListOfPortsAndControls();
 	return true;
 }
 
@@ -181,6 +164,11 @@ ProcessingController::NamesList::iterator ProcessingController::EndOutControlNam
 void ProcessingController::SetName( const std::string & name )
 {
 	SignalChangeProcessingPresentationName.Emit( name );
+}
+
+void ProcessingController::SendOutControlValue( const std::string & name, CLAM::TControlData value )
+{
+	mObserved->GetOutControls().Get( name ).SendControl( value );
 }
 
 } //namespace CLAMVM

@@ -50,12 +50,12 @@ namespace CLAM
 
 	void XmlStorage::WriteSelection(std::ostream & os)
 	{
-		_documentHandler->writeSelection(os);
+		_documentHandler->writeSelection(os,_useIndentation);
 	}
 
 	void XmlStorage::WriteDocument(std::ostream & os)
 	{
-		_documentHandler->writeDocument(os);
+		_documentHandler->writeDocument(os,_useIndentation);
 	}
 
 	void XmlStorage::DumpObject(const Component & component)

@@ -37,6 +37,9 @@ namespace AudioCodecs
 		void WriteData( int* channels, int nchannels,
 				TData** const samples, TSize howmany );
 
+		bool WasSomethingRead() const;
+		
+
 
 	protected:
 		virtual void DiskToMemoryTransfer() = 0;
@@ -62,6 +65,7 @@ namespace AudioCodecs
 		bool                mEOFReached;
 		TSize               mFramesToRead;
 		TSize               mFramesToWrite;
+		TSize               mFramesLastRead;
 
 	private:
 		void CheckForFileReading( TSize samplesToRead );
@@ -70,6 +74,12 @@ namespace AudioCodecs
 		static bool  HandleReAllocation( DataArray& buffer, TSize newSize );
 
 	};
+
+
+	inline bool Stream::WasSomethingRead() const
+	{
+		return mFramesLastRead != 0;
+	}
 
 	// inline methods
 	inline void Stream::ActivateStrictStreaming()

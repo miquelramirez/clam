@@ -464,8 +464,6 @@ bool SMSAnalysis::Do(Segment& in)
 //first we compute necessary sizes, indices and parameters
 	int frameIndex=in.mCurrentFrameIndex;
 	int step=mConfig.GetHopSize();
-	int sinFrameSize=mConfig.GetSinSpectralAnalysis().GetWindowSize()-1;
-	int resFrameSize=mConfig.GetResSpectralAnalysis().GetWindowSize()-1;
 	TData samplingRate=mConfig.GetSamplingRate();
 	TTime frameCenterTime=frameIndex*step/samplingRate;
 	//Audio center time is different from frame center time. This index corresponds to
@@ -485,7 +483,7 @@ bool SMSAnalysis::Do(Segment& in)
 	tmpFrame.SetCenterTime(TData(frameCenterTime));
 	tmpFrame.AddAudioFrame();
 	tmpFrame.UpdateData();
-	tmpFrame.GetAudioFrame().SetBeginTime(frameIndex*step);
+	tmpFrame.GetAudioFrame().SetBeginTime(((float)frameIndex - 0.5f)*step/samplingRate);
 	tmpFrame.GetAudioFrame().SetSampleRate(in.GetAudio().GetSampleRate());
 	
 	/*	Note: Here we are just taking the "new" audio belonging to each frame. That is, the

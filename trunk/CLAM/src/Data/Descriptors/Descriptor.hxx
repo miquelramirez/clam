@@ -63,7 +63,7 @@ public:
 	void SetPrototype(const DescriptorTmpl<abs>& proto)
 	{
 		*this=proto;
-		if(mpStats)
+ 		if(mpStats)
 		{
 			delete mpStats;
 			mpStats=0;

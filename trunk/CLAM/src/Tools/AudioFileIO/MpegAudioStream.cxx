@@ -1,3 +1,4 @@
+
 #include "MpegAudioStream.hxx"
 #include "AudioFile.hxx"
 #include "Assert.hxx"
@@ -104,23 +105,26 @@ namespace AudioCodecs
 							 channelData + samplesDecodedThisTime );
 			}
 			
-			
 			mSamplesDecoded += mBitstream.CurrentSynthesis().pcm.length;
 
 		}
+		
+		mFramesLastRead = mDecodeBuffer[0].size();
 
+		if ( !mDecodeBuffer[0].empty() )
+		{
 
-
-		for ( int i = 0; i < mEncodedChannels; i++ )
-			if ( mDecodeBuffer[i].size() < samplesToRead )
-			{
-				mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
-							 samplesToRead - mDecodeBuffer[i].size(),
-							 mad_fixed_t(0) );
-
-			}
-
-		ConsumeDecodedSamples();
+			for ( int i = 0; i < mEncodedChannels; i++ )
+				if ( mDecodeBuffer[i].size() < samplesToRead )
+				{
+					mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
+								 samplesToRead - mDecodeBuffer[i].size(),
+								 mad_fixed_t(0) );
+					
+				}
+			
+			ConsumeDecodedSamples();
+		}
 
 		mEOFReached = mBitstream.EOS() && mDecodeBuffer[0].empty();
 	}
@@ -167,3 +171,4 @@ namespace AudioCodecs
 }
 	
 }
+

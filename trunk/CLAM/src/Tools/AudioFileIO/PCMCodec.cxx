@@ -83,6 +83,7 @@ namespace AudioCodecs
 		if ( fileHandle != NULL )
 		{
 			hdr.AddSampleRate();
+			hdr.AddSamples();
 			hdr.AddChannels();
 			hdr.AddFormat();
 			hdr.AddEncoding();
@@ -91,12 +92,14 @@ namespace AudioCodecs
 			hdr.UpdateData();
 						
 			hdr.SetSampleRate( (TData)fileHeaderInfo.samplerate );
+			hdr.SetSamples( (TSize)fileHeaderInfo.frames / fileHeaderInfo.channels );
 			hdr.SetChannels( (TSize)fileHeaderInfo.channels );
 			hdr.SetFormat( fileHeaderInfo.format & SF_FORMAT_TYPEMASK );
 			hdr.SetEncoding( fileHeaderInfo.format & SF_FORMAT_SUBMASK );
 			hdr.SetEndianess( fileHeaderInfo.format & SF_FORMAT_ENDMASK );
 			hdr.SetLength( TTime(fileHeaderInfo.frames/fileHeaderInfo.channels) / hdr.GetSampleRate() );
 			hdr.SetLength( hdr.GetLength() * 1000. );
+			sf_close(fileHandle);
 		}
 
 	}

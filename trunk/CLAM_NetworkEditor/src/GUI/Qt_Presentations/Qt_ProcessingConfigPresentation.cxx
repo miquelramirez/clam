@@ -78,7 +78,6 @@ void Qt_ProcessingConfigPresentation::SlotCancel()
 
 void Qt_ProcessingConfigPresentation::Show()
 {
-	setFocus();
 	show();
 }
 

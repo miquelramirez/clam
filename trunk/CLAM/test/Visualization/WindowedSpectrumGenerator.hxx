@@ -66,7 +66,7 @@ namespace CLAMTest
 
 	protected:
 
-		virtual bool ConcreteConfigure( const ProcessingConfig& cfg ) 
+		virtual bool ConcreteConfigure( const ProcessingConfig& cfg ); 
 
 		virtual bool ConcreteStart();
 
