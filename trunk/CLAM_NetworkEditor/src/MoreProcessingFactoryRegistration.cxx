@@ -23,7 +23,7 @@
 #include "SinTracksPlotProcessing.hxx"
 #include "FundTrackPlotProcessing.hxx"
 #include "SpecgramPlotProcessing.hxx"
-#include "AudioBuffPlotProcessing.hxx"
+//#include "AudioBuffPlotProcessing.hxx"
 
 
 typedef CLAM::ProcessingFactory ProcessingFactory;
@@ -51,7 +51,7 @@ static ProcessingFactory::Registrator<CLAM::FundPlotProcessing> regtFundPlotProc
 static ProcessingFactory::Registrator<CLAM::SinTracksPlotProcessing> regtSinTracksPlotProcessing("SinTracksPlotProcessing");
 static ProcessingFactory::Registrator<CLAM::FundTrackPlotProcessing> regtFundTrackPlotProcessing("FundTrackPlotProcessing");
 static ProcessingFactory::Registrator<CLAM::SpecgramPlotProcessing> regtSpecgramPlotProcessing("SpecgramPlotProcessing");
-static ProcessingFactory::Registrator<CLAM::AudioBuffPlotProcessing> regtAudioBuffPlotProcessing("AudioBuffPlotProcessing");
+//static ProcessingFactory::Registrator<CLAM::AudioBuffPlotProcessing> regtAudioBuffPlotProcessing("AudioBuffPlotProcessing");
 
 
 
