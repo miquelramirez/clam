@@ -1,5 +1,7 @@
 AC_INIT([test],[0.1],[clam@iua.upf.es])
 
+AC_PREREQ([2.50])
+
 AC_MSG_CHECKING([setenv])
 which_setenv=`which setenv`
 if test x$which_setenv = x
@@ -2020,6 +2022,8 @@ int main()
 	fi
 fi
 fi
+# source add_qt_include_path
+
 if test x$found_qt = xyes
 then
 	before_adding_qt_include_path_CXXFLAGS=$CXXFLAGS
@@ -2400,6 +2404,7 @@ int main()
 fi
 
 fi
+# source add_qt_include_path_done
 CXXFLAGS=$before_adding_qt_include_path_CXXFLAGS
 CPPFLAGS=$before_adding_qt_include_path_CPPFLAGS
 #####################################################################
@@ -5685,6 +5690,8 @@ fi
 #####################################################################
 
 fi
+# source add_qt_include_path
+
 if test x$found_qt = xyes
 then
 	before_adding_qt_include_path_CXXFLAGS=$CXXFLAGS
@@ -5769,6 +5776,7 @@ fi
 #####################################################################
 
 fi
+# source add_qt_include_path_done
 CXXFLAGS=$before_adding_qt_include_path_CXXFLAGS
 CPPFLAGS=$before_adding_qt_include_path_CPPFLAGS
 #####################################################################
