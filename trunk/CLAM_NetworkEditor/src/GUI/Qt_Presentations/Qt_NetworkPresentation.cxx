@@ -114,35 +114,35 @@ void Qt_NetworkPresentation::SetName(const std::string& name)
 void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & name, CLAMVM::ProcessingController * controller )
 {
 	
-	Qt_ProcessingPresentation* presentation = 0;
+	Qt_ProcessingPresentation* procPresent = 0;
 
 	Qt_ProcessingPresentationFactory & factory =  Qt_ProcessingPresentationFactory::GetInstance();
-	presentation = factory.Create(controller->GetObservedClassName());
-	presentation->Initialize( name, this );
+	procPresent = factory.Create(controller->GetObservedClassName());
+	procPresent->Initialize( name, this );
 			
-	presentation->AttachToProcessingController(*controller);
+	procPresent->AttachToProcessingController(*controller);
 
-	presentation->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
-	presentation->SignalAcquireOutPortClicked.Connect( SlotSetOutPortClicked );
-	presentation->SignalAcquireInControlClicked.Connect( SlotSetInControlClicked );
-	presentation->SignalAcquireOutControlClicked.Connect( SlotSetOutControlClicked );
-	presentation->SignalRemoveProcessing.Connect( SlotRemoveProcessing );
-	presentation->SignalProcessingPresentationSelected.Connect( SlotProcessingPresentationSelected );
-	presentation->SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
-	presentation->SignalMovingMouseWithButtonPressed.Connect( SlotMovingMouseWithButtonPressed );
-	presentation->SignalProcessingPresentationAddedToSelection.Connect( SlotProcessingPresentationAddedToSelection );
+	procPresent->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
+	procPresent->SignalAcquireOutPortClicked.Connect( SlotSetOutPortClicked );
+	procPresent->SignalAcquireInControlClicked.Connect( SlotSetInControlClicked );
+	procPresent->SignalAcquireOutControlClicked.Connect( SlotSetOutControlClicked );
+	procPresent->SignalRemoveProcessing.Connect( SlotRemoveProcessing );
+	procPresent->SignalProcessingPresentationSelected.Connect( SlotProcessingPresentationSelected );
+	procPresent->SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
+	procPresent->SignalMovingMouseWithButtonPressed.Connect( SlotMovingMouseWithButtonPressed );
+	procPresent->SignalProcessingPresentationAddedToSelection.Connect( SlotProcessingPresentationAddedToSelection );
 		
-	SignalAcquireOutPortAfterClickInPort.Connect( presentation->SlotSetOutPortAfterClickInPort );
-	SignalAcquireInPortAfterClickOutPort.Connect( presentation->SlotSetInPortAfterClickOutPort );
-	SignalAcquireOutControlAfterClickInControl.Connect( presentation->SlotSetOutControlAfterClickInControl );
-	SignalAcquireInControlAfterClickOutControl.Connect( presentation->SlotSetInControlAfterClickOutControl );
+	SignalAcquireOutPortAfterClickInPort.Connect( procPresent->SlotSetOutPortAfterClickInPort );
+	SignalAcquireInPortAfterClickOutPort.Connect( procPresent->SlotSetInPortAfterClickOutPort );
+	SignalAcquireOutControlAfterClickInControl.Connect( procPresent->SlotSetOutControlAfterClickInControl );
+	SignalAcquireInControlAfterClickOutControl.Connect( procPresent->SlotSetInControlAfterClickOutControl );
 
 	controller->Publish();
-	mProcessingPresentations.push_back(presentation);
+	mProcessingPresentations.push_back(procPresent);
 
-	presentation->Show();
+	procPresent->Show();
 
-	SignalSendMessageToStatus.Emit( "Created " + presentation->GetName() );
+	SignalSendMessageToStatus.Emit( "Created " + procPresent->GetName() );
 }
 
 void Qt_NetworkPresentation::CreatePortConnectionPresentation( const std::string & out, const std::string & in )

@@ -28,12 +28,14 @@
 #include "Processing.hxx"
 #include "OutControl.hxx"
 #include "XMLStorage.hxx"
+#include "NetworkPresentation.hxx"
 
 namespace CLAMVM
 {
 	
 void NetworkController::AttachToNetworkPresentation( NetworkGUI::NetworkPresentation * netpresentation)
 {
+	mPresentation = netpresentation;
 }
 
 
@@ -42,12 +44,13 @@ NetworkController::NetworkController()
 	mObserved=0;
 	mLoopCondition=false;
 	mThread=true; // realtime
+	mPresentation=0;
 		
 	SlotCreatePortConnection.Wrap( this, &NetworkController::CreatePortConnection );
 	SlotRemovePortConnection.Wrap( this, &NetworkController::RemovePortConnection );
 	
 	SlotCreateControlConnection.Wrap( this, &NetworkController::CreateControlConnection );
-	SlotRemoveControlConnection.Wrap( this, &NetworkController::RemoveControlConnection );
+//	SlotRemoveControlConnection.Wrap( this, &NetworkController::RemoveControlConnection );
 	
 	SlotRemoveProcessing.Wrap( this, &NetworkController::RemoveProcessing );
 	SlotConfigureProcessing.Wrap( this, &NetworkController::ConfigureProcessing );
@@ -58,8 +61,8 @@ NetworkController::NetworkController()
 	SlotProcessingNameChanged.Wrap( this, &NetworkController::ProcessingNameChanged );
 	
 	SlotChangeState.Wrap( this, &NetworkController::ChangeState );
-	SlotSaveNetwork.Wrap( this, &NetworkController::SaveNetworkTo );
-	SlotLoadNetwork.Wrap( this, &NetworkController::LoadNetworkFrom );
+//	SlotSaveNetwork.Wrap( this, &NetworkController::SaveNetworkTo );
+//	SlotLoadNetwork.Wrap( this, &NetworkController::LoadNetworkFrom );
 	SlotClear.Wrap( this, &NetworkController::Clear );
 
 
@@ -137,7 +140,8 @@ void NetworkController::ProcessingNameChanged( const std::string & newName, Proc
 
 	// change key map in network
 	mObserved->ChangeKeyMap( oldName, newName );
-	SignalChangeConnectionPresentationNames.Emit( oldName, newName );
+//	SignalChangeConnectionPresentationNames.Emit( oldName, newName );
+	mPresentation->ChangeConnectionPresentationNames( oldName, newName );
 }
 
 bool NetworkController::ChangeKeyMap( const std::string & oldName, const std::string & newName )
@@ -210,7 +214,8 @@ void NetworkController::ExecuteCreatePortConnection( const std::string & out , c
 void NetworkController::RegisterPortConnection( const std::string & out, const std::string & in )
 {
 	mPortConnections.push_back( Connection( out, in ));
-	SignalCreatePortConnectionPresentation.Emit( out, in );
+//	SignalCreatePortConnectionPresentation.Emit( out, in );
+	mPresentation->CreatePortConnectionPresentation(out, in);	
 }
 
 void NetworkController::ExecuteCreateControlConnection( const std::string & out , const std::string & in )
@@ -222,7 +227,8 @@ void NetworkController::ExecuteCreateControlConnection( const std::string & out 
 void NetworkController::RegisterControlConnection( const std::string & out , const std::string & in )
 {	
 	mControlConnections.push_back( Connection( out, in ));
-	SignalCreateControlConnectionPresentation.Emit( out, in );
+//	SignalCreateControlConnectionPresentation.Emit( out, in );
+	mPresentation->CreateControlConnectionPresentation( out, in );
 }
 
 void NetworkController::RemovePortConnection( const std::string & outPort, const std::string & inPort )
@@ -245,7 +251,8 @@ void NetworkController::RemoveControlConnection( const std::string & outControl,
 void NetworkController::LoadNetworkFrom( const std::string & file)
 {
 	Clear();
-	SignalClearPresentation.Emit();
+//	SignalClearPresentation.Emit(); 
+	mPresentation->Clear();
 	CLAM::XMLStorage storage;
 	storage.Restore( *mObserved, file );
 
@@ -281,7 +288,8 @@ void NetworkController::RemoveAllPortConnections( const std::string & name )
 		for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
 		{
 			RemovePortConnection( completeOutName, *namesIn );
-			SignalRemoveConnectionPresentation.Emit( completeOutName, *namesIn );	
+//			SignalRemoveConnectionPresentation.Emit( completeOutName, *namesIn );	
+			mPresentation->RemoveConnectionPresentation( completeOutName, *namesIn );	
 		}
 	}
 	for(namesIt=proc->BeginInPortNames(); namesIt!=proc->EndInPortNames(); namesIt++)
@@ -296,7 +304,8 @@ void NetworkController::RemoveAllPortConnections( const std::string & name )
 			outName += inPort.GetAttachedOutPort()->GetName();
 			
 			RemovePortConnection( outName, completeInName );
-			SignalRemoveConnectionPresentation.Emit( outName, completeInName );	
+//			SignalRemoveConnectionPresentation.Emit( outName, completeInName );	
+			mPresentation->RemoveConnectionPresentation( outName, completeInName );
 		}
 	}	
 }
@@ -316,7 +325,8 @@ void NetworkController::RemoveAllControlConnections( const std::string & name )
 		for(namesIn=connected.begin(); namesIn!=connected.end(); namesIn++)
 		{
 			RemoveControlConnection( completeOutName, *namesIn );
-			SignalRemoveConnectionPresentation.Emit( completeOutName, *namesIn );	
+//			SignalRemoveConnectionPresentation.Emit( completeOutName, *namesIn );	
+			mPresentation->RemoveConnectionPresentation( completeOutName, *namesIn );	
 		}
 	}
 
@@ -333,7 +343,8 @@ void NetworkController::RemoveAllControlConnections( const std::string & name )
 		for( connectionIt=connectionsToRemove.begin(); connectionIt!=connectionsToRemove.end(); connectionIt++)
 		{
 			RemoveControlConnection( (*connectionIt).GetOut(), (*connectionIt).GetIn() );
-			SignalRemoveConnectionPresentation.Emit( (*connectionIt).GetOut(), (*connectionIt).GetIn() ); 
+//			SignalRemoveConnectionPresentation.Emit( (*connectionIt).GetOut(), (*connectionIt).GetIn() ); 
+			mPresentation->RemoveConnectionPresentation( (*connectionIt).GetOut(), (*connectionIt).GetIn() ); 
 		}
 	}
 }
@@ -365,7 +376,9 @@ void NetworkController::RemoveAllConnections(  CLAM::Processing * proc )
 
 void NetworkController::RebuildProcessingPresentationAttachedTo( ProcessingController * controller, CLAM::Processing * proc )
 {
-	SignalRebuildProcessingPresentationAttachedTo.Emit(  mObserved->GetNetworkId( proc ), controller );
+//	SignalRebuildProcessingPresentationAttachedTo.Emit(  mObserved->GetNetworkId( proc ), controller );
+	mPresentation->RebuildProcessingPresentationAttachedTo( 
+			mObserved->GetNetworkId( proc ), controller );
 }
 
 void NetworkController::ConfigureProcessing( CLAM::Processing * proc, const CLAM::ProcessingConfig & cfg )
@@ -416,7 +429,8 @@ void NetworkController::AddProcessing( const std::string & name,
 					      CLAM::Processing * proc )
 {
 	mObserved->AddProcessing(name, proc);
-	SignalCreateProcessingPresentation.Emit( name, CreateProcessingController(name, proc));
+//	SignalCreateProcessingPresentation.Emit( name, CreateProcessingController(name, proc));
+	mPresentation->CreateProcessingPresentation( name, CreateProcessingController(name, proc));
 }
 
 ProcessingController* NetworkController::CreateProcessingController( const std::string & name, CLAM::Processing * proc )
@@ -425,15 +439,15 @@ ProcessingController* NetworkController::CreateProcessingController( const std::
 	if(i!=mProcessingControllers.end())
 		CLAM_ASSERT(false, "NetworkController::CreateProcessingController() Trying to add a processing controller with a repeated name (key)" );
 
-	ProcessingController* controller = new ProcessingController;
-	controller->SignalProcessingNameChanged.Connect( SlotProcessingNameChanged );
-	controller->SignalRemoveAllConnections.Connect( SlotRemoveAllConnections );
-	controller->SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
-	controller->SignalConfigureProcessing.Connect( SlotConfigureProcessing );
+	ProcessingController* procContr = new ProcessingController;
+	procContr->SignalProcessingNameChanged.Connect( SlotProcessingNameChanged );
+	procContr->SignalRemoveAllConnections.Connect( SlotRemoveAllConnections );
+	procContr->SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
+	procContr->SignalConfigureProcessing.Connect( SlotConfigureProcessing );
 
-	controller->BindTo(*proc);
-	mProcessingControllers.insert( ProcessingControllersMap::value_type( name, controller));
-	return controller;
+	procContr->BindTo(*proc);
+	mProcessingControllers.insert( ProcessingControllersMap::value_type( name, procContr));
+	return procContr;
 }
 
 std::string NetworkController::GetName()
@@ -452,7 +466,8 @@ bool NetworkController::BindTo( CLAM::Network& obj )
 
 	ProcessingControllersMap::iterator itp;
 	for (itp=BeginProcessingControllers(); itp!=EndProcessingControllers(); itp++)
-		SignalCreateProcessingPresentation.Emit( itp->first, itp->second);
+//		SignalCreateProcessingPresentation.Emit( itp->first, itp->second);
+		mPresentation->CreateProcessingPresentation( itp->first, itp->second);
 
 	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
 	{
