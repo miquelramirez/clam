@@ -99,6 +99,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem(plots, "PeaksPlotProcessing");
 	new ProcessingItem(plots, "FundPlotProcessing");
 	new ProcessingItem(plots,"SinTracksPlotProcessing");
+	new ProcessingItem(plots,"FundTrackPlotProcessing");
 
 	show();
 	header()->hide();
