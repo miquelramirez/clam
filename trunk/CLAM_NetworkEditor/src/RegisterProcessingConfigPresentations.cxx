@@ -25,7 +25,9 @@
 // concrete configs
 #include "MonoAudioFileWriterConfigPresentation.hxx"
 #include "MultiChannelAudioFileWriterConfigPresentation.hxx"
+#ifndef WIN32
 #include "LadspaLoaderConfigPresentation.hxx"
+#endif
 #include "ConfigPresentationTmpl.hxx"
 #include "AudioFileConfig.hxx"
 #include "AutoPanner.hxx"
@@ -93,8 +95,10 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::IFFTConfig> > 
 	regtIFFTCfg( "IFFTConfig" );
 
+#ifndef WIN32
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::LadspaLoaderConfigPresentation >
 	regtLadspaLoaderCfg( "LadspaLoaderConfig" );
+#endif
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MonoAudioFileReaderConfig> > 
 	regtMonoAudioFileReaderCfg( "MonoAudioFileReaderConfig" );
