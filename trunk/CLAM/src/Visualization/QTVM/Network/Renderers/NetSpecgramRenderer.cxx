@@ -6,6 +6,7 @@ namespace CLAM
     namespace VM
     {
 	NetSpecgramRenderer::NetSpecgramRenderer()
+	    : _index(0)
 	{
 	}
 
@@ -13,10 +14,11 @@ namespace CLAM
 	{
 	}
 
-	void NetSpecgramRenderer::SetData( std::vector< std::vector<Color> >& data )
+	void NetSpecgramRenderer::SetData( std::vector< std::vector<Color> >& data, int index )
 	{
 	    if(!data.size()) return;
 	    _data = data;
+	    _index=index;
 	}
 
 	void NetSpecgramRenderer::Render()
@@ -26,14 +28,24 @@ namespace CLAM
 	    for(int i = 0; i < specLen; i++)
 	    {
 		glBegin(GL_LINE_STRIP);
-		for(int j = 0;j < dataSize; j++)
+		int j,k=0;
+		for(j = _index; j < dataSize; j++)
 		{
 		    if(i > (int)_data[j].size()-1) // ensure correct size
 		    {
 			break;
 		    }
 		    glColor3ub(GLubyte(_data[j][i].r),GLubyte(_data[j][i].g),GLubyte(_data[j][i].b));
-		    glVertex2f(GLfloat(j),GLfloat(i));
+		    glVertex2f(GLfloat(k++),GLfloat(i));
+		}
+		for(j = 0; j < _index; j++)
+		{
+		    if(i > (int)_data[j].size()-1) // ensure correct size
+		    {
+			break;
+		    }
+		    glColor3ub(GLubyte(_data[j][i].r),GLubyte(_data[j][i].g),GLubyte(_data[j][i].b));
+		    glVertex2f(GLfloat(k++),GLfloat(i));
 		}
 		glEnd();
 	    }

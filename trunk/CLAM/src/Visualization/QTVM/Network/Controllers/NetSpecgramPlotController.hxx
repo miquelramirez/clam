@@ -23,7 +23,6 @@ namespace CLAM
 	private:
 	    Spectrum _spec;
 	    std::vector< std::vector<Color> > _cachedData;
-	    std::vector< std::vector<Color> > _processedData;
 	    NetSpecgramRenderer _renderer;
 	    int _index;
 	    int _specSize;
@@ -32,7 +31,6 @@ namespace CLAM
 	    
 	    void AddData(const Spectrum& spec);
 	    void AdaptSpectralData();
-	    void ProcessData();
 	  
 	    void FullView();
 	    void Init(const TSize& specSize);
