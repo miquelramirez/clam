@@ -22,6 +22,7 @@
 /** WARNING WARNING WARNING
  * Don't take this file as a good example of processing object test yet.
  * It will be re-made using a better design when XML load is available.
+ * This test now only works on linux using octave as an external utility.
  */
 
 #include<list>
