@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <iostream>
 #include "Assert.hxx"
 #include "CLAMGL.hxx"
@@ -19,16 +18,7 @@ namespace CLAM
 	void NetSpecgramRenderer::SetData( Array<DataArray>& data )
 	{
 	    if(!data.Size()) return;
-	    TSize specSize = data[0].Size();
-	    TSize size = data.Size();
-	    _data.Resize(size);
-	    _data.SetSize(size);
-	    for(int i = 0; i < size; i++)
-	    {
-		_data[i].Resize(specSize);
-		_data[i].SetSize(specSize);
-		std::copy(data[i].GetPtr(),data[i].GetPtr()+specSize,_data[i].GetPtr());
-	    }
+	    _data = data;
 	}
 
 	void NetSpecgramRenderer::Render()
