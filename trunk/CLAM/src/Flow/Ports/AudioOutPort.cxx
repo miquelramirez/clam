@@ -30,6 +30,7 @@ AudioOutPort::AudioOutPort( const std::string & name, Processing * proc )
 	const int size = 256; // arbitrary default value. It makes more sense that size==1 like generic ports.
 	SetSize(size); 
 	SetHop(size);
+	SetSampleRate(44100);
 }
 
 AudioOutPort::~AudioOutPort()
