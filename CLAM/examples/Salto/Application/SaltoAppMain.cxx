@@ -189,6 +189,7 @@ protected:
 			mMIDIManager.Start();
 			mAudioManager->Start();
 			mMIDIHandler.Start();
+			mAudioOutL->Start(); 
 
 			while ( !Canceled() )
 			{
