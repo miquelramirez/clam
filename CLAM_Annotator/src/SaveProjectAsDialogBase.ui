@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>267</width>
-            <height>87</height>
+            <height>90</height>
         </rect>
     </property>
     <property name="caption">
@@ -87,6 +87,9 @@
         <slot>okClicked()</slot>
     </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">SaveProjectAsDialogBase.ui.h</include>
+</includes>
 <slots>
     <slot>okClicked()</slot>
 </slots>

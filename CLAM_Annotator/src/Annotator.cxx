@@ -28,9 +28,13 @@
 #include "MultiChannelAudioFileReader.hxx"
 #include "envelope_point_editor.hxx"
 
+
+#include "LLDSchema.hxx"
+#include "XMLStorage.hxx"
+
 using CLAM::VM::QtAudioPlot;
 
-Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f), mData( data ),mEnvelopes(10),mFunctionEditors(10),mCurrentIndex(0),mpTabLayout(0)
+Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f), mData( data ),mEnvelopes(0),mFunctionEditors(0),mCurrentIndex(0),mpTabLayout(0)
 {
 	setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
 	mProjectOverview->setSorting(-1);
@@ -137,10 +141,13 @@ void Annotator::initAudioWidget()
 
 void Annotator::initLLDescriptorsWidgets()
 {
-  //tab = new QWidget( tabWidget2, "tab" );
-  //tabWidget2->insertTab( tab, QString("") );
+  //TODO: The user should select this schema
+  CLAM::XMLStorage s;
+  s.Restore(mLLDSchema,"LLDSchema.xml");
 
-	mTabPages.resize(10);
+  int nTabs = mLLDSchema.GetLLDNames().size();
+        
+        mTabPages.resize(nTabs);
 	std::vector<QWidget*>::iterator it0;
 	std::string baseTabString("TabPage");
 	std::ostringstream tabString;
@@ -158,15 +165,15 @@ void Annotator::initLLDescriptorsWidgets()
 	  else (*it0)=tabWidget2->page(0);
 	}
 
-	//AnnotatorBaseLayout->addWidget( (QWidget*)tabWidget2 );
-
 	std::vector<CLAM::Envelope_Point_Editor*>::iterator it;
 	std::vector<CLAM::Envelope*>::iterator it2;
 	i=0;
+	mFunctionEditors.resize(nTabs);
+	mEnvelopes.resize(nTabs);
 	for(it=mFunctionEditors.begin();it!=mFunctionEditors.end();it++,i++)
 	{
 	  *it = new CLAM::Envelope_Point_Editor(tabWidget2->page(i));
-	  (*it)->setTimeFactor((float)1.0/44100.0);//should be sampling rate
+	  (*it)->setTimeFactor((float)1.0/44100.0);//TODO: should be sampling rate
 	  QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
 	  tabLayout->addWidget(*it);
 	}
@@ -201,11 +208,12 @@ void Annotator::analyze()
   mHaveHLDescriptors[mCurrentIndex]=false;
   
   doAnalysis();
-  //std::cout<<"analyze"<<std::endl;
+ 
 }
 
 void Annotator::doAnalysis()
 {
+  std::cout<<"doing analysis"<<std::endl;
   drawLLDescriptors(mCurrentIndex);
   drawAudio(NULL);
   fillGlobalDescriptors(mCurrentIndex);
@@ -571,7 +579,7 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 
 void Annotator::drawLLDescriptors(int index)
 {
-  //if(!mHaveLLDescriptors[index]) return;
+  std::cout<<"drawing lldescriptors"<<std::endl;
   std::vector<CLAM::Envelope_Point_Editor*>::iterator it;
   std::vector<CLAM::Envelope*>::iterator it2;
  
@@ -581,9 +589,10 @@ void Annotator::drawLLDescriptors(int index)
 
   for(it=mFunctionEditors.begin(),it2=mEnvelopes.begin();it!=mFunctionEditors.end();it++,it2++)
     {
-      //      std::cout<<mHaveLLDescriptors[index]<<"\n";
+      std::cout<<"in the drawing loop"<<std::endl;
       if(mHaveLLDescriptors[index])
 	{
+	  std::cout<<"Have it";
 	  (*it)->set_envelope(*it2);
 	  (*it)->show();
 	}
@@ -676,6 +685,17 @@ CLAM::Envelope* Annotator::generateRandomEnvelope()
 void Annotator::languageChange()
 {
     AnnotatorBase::languageChange();
+    std::vector<QWidget*>::iterator it;
+    std::list<std::string>::iterator it2;
+    
+    std::list<std::string>& names = mLLDSchema.GetLLDNames();
+    for(it2 = names.begin() ,it = mTabPages.begin(); 
+	it2 != names.end(); it++,it2++)
+    {
+      tabWidget2->changeTab( (*it), tr((*it2).c_str() ) );
+      
+    }
+    /*
     tabWidget2->changeTab( mTabPages[0], tr( "Pitch" ) );
     tabWidget2->changeTab( mTabPages[1], tr( "Energy" ) );
     tabWidget2->changeTab( mTabPages[2], tr( "Centroid" ) );
@@ -686,4 +706,5 @@ void Annotator::languageChange()
     tabWidget2->changeTab( mTabPages[7], tr( "SpecKurtosis" ) );
     tabWidget2->changeTab( mTabPages[8], tr( "SpecSkewness" ) );
     tabWidget2->changeTab( mTabPages[9], tr( "SpecRolloff" ) );
+    */
 }

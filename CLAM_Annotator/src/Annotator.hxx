@@ -11,6 +11,9 @@
 #include "envelope_point_editor.hxx"
 #include "envelope.hxx"
 
+#include "LLDSchema.hxx"
+
+
 namespace CLAM {
 		namespace VM 
 		{
@@ -91,16 +94,20 @@ class Annotator : public AnnotatorBase
 		SongSegments mSongSegments;
 //xamat
 		CLAM::VM::QtAudioPlot* mpAudioPlot;
-                std::vector<CLAM::Envelope_Point_Editor*> mFunctionEditors;
                 CLAM::Audio mCurrentAudio;
+
+                std::vector<CLAM::Envelope_Point_Editor*> mFunctionEditors;
                 std::vector<CLAM::Envelope*> mEnvelopes;
+                
                 int mCurrentIndex;
+                
                 std::vector<bool> mHaveLLDescriptors;
                 std::vector<bool> mHaveHLDescriptors;
+                
                 QVBoxLayout* mpTabLayout;
-
                 std::vector<QWidget*> mTabPages;
                
+                CLAM::LLDSchema mLLDSchema;
 };
 
 #endif
