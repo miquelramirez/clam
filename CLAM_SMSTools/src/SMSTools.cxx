@@ -185,7 +185,7 @@ namespace CLAMGUI
 			return false;
 		
 		CLAM::AudioFile selectedFile;
-		selectedFile.SetLocation( filename );
+		selectedFile.OpenExisting( filename );
 
 		if ( !selectedFile.IsReadable() )
 		{
@@ -463,12 +463,12 @@ namespace CLAMGUI
 			CLAM::EAudioFileFormat::FormatFromFilename( fileName );
 
 		CLAM::AudioFile outputFile;
-		outputFile.SetLocation( fileName );
-
 		CLAM::AudioFileHeader fileHeader;
 		fileHeader.SetValues( audio.GetSampleRate(), 1, desiredOutputFmt );
 
 		outputFile.SetHeader( fileHeader );
+
+		outputFile.CreateNew( fileName, fileHeader );
 
 		CLAM::MonoAudioFileWriterConfig cfgWriter;
 		cfgWriter.AddTargetFile();
