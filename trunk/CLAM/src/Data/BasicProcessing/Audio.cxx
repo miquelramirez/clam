@@ -44,10 +44,8 @@ void Audio::SetEndTime(TTime time)
 
 void Audio::SetSize(int s)
 {
-	int oldSize;
-	oldSize=GetSize();
-	if (s==oldSize)
-		return;
+	int oldSize=GetSize();
+	if (s==oldSize) return;
 
 	CLAM_ASSERT(s>=0,"Audio::SetSize(): Negative size specified");
 	if (HasBuffer()) {
@@ -113,7 +111,6 @@ void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool c
 	
 	/*Note that begin index is allowed to be less than zero and the end index to be beyond the end*/
 	CLAM_ASSERT(endIndex>beginIndex,
-
 	           "Audio::GetAudioChunk: Incorrect index boundaries for audio chunk");
 	TSize nBytesToCopy,offset=0;
 	
