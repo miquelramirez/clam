@@ -29,11 +29,6 @@
 using namespace CLAM;
 
 
-void SpectralPeakDescriptors::DefaultInit()
-{
-	mpSpectralPeakArray=NULL;
-}
-
 SpectralPeakDescriptors::SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray): ProcessingData(eNumAttr)
 {
 	MandatoryInit();

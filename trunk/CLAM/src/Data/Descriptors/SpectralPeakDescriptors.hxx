@@ -53,24 +53,46 @@ namespace CLAM {
 		DYN_ATTRIBUTE (8, public, TData, OddHarmonics);
 		DYN_ATTRIBUTE (9, public, TData, EvenHarmonics);
 		DYN_ATTRIBUTE (10,public, TData, OddToEvenRatio);
-		
-	public:
 
+	public:
 		SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray);
-		void DefaultInit();
-		
-		const SpectralPeakArray* GetpSpectralPeakArray() const{return mpSpectralPeakArray;}
-		void SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray) {mpSpectralPeakArray=pSpectralPeakArray;}
+
+		const SpectralPeakArray* GetpSpectralPeakArray() const;
+		void SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray);
 
 		friend class SpectralPeakDescriptorsGen;
+
+	private:
+		void DefaultInit();
+		void CopyInit(const SpectralPeakDescriptors & copied);
 
 	private:
 		SpectralPeakArray* mpSpectralPeakArray;
 
 	};
-	
 
-};
+
+
+// Implementation
+
+inline void SpectralPeakDescriptors::DefaultInit() {
+	mpSpectralPeakArray=0;
+}
+
+inline void SpectralPeakDescriptors::CopyInit(const SpectralPeakDescriptors & copied) {
+	mpSpectralPeakArray=copied.mpSpectralPeakArray;
+}
+
+inline const SpectralPeakArray* SpectralPeakDescriptors::GetpSpectralPeakArray() const {
+	return mpSpectralPeakArray;
+}
+
+inline void SpectralPeakDescriptors::SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray) {
+	mpSpectralPeakArray=pSpectralPeakArray;
+}
+
+
+}
 
 
 #endif /* __SpectralPeakDescriptors_H__ */
