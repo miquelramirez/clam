@@ -365,7 +365,7 @@ private:
 	
 	void testTransformations_withLoadedScore_TimestreachMorph()
 	{
-		CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
+//		CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
 			
 		LoadTransformationScore( mPath + "/SMSTests/timestreach_morph-transf.xml" );
 		LoadConfig( mPath + "/SMSTests/elvisMorphConfig.xml");
