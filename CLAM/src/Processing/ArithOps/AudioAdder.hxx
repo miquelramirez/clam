@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __BINARYAUDIOSUM__
-#define __BINARYAUDIOSUM__
+#ifndef __BINARYAUDIOAdd__
+#define __BINARYAUDIOAdd__
 
 #include "BinaryAudioOp.hxx"
 #include "CommonOps.hxx"
@@ -30,12 +30,12 @@ namespace CLAM
 
 
 	template<>
-	const char* BinaryAudioOp< Sum<TData> >::GetClassName()
+	const char* BinaryAudioOp< Add<TData> >::GetClassName()
 	{
-		return "BinaryAudioOperation_Sum";
+		return "BinaryAudioOperation_Add";
 	}
 
-	typedef BinaryAudioOp< Sum<TData> > AudioAdder;
+	typedef BinaryAudioOp< Add<TData> > AudioAdder;
 
 }
 

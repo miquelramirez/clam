@@ -41,7 +41,7 @@ namespace CLAM {
 
 	};
 
-/** This calss performs the sum of N Spectrum processing data
+/** This class performs the sum of N Spectrum processing data
  * objects.
  * <p>
  * It Allows any possible attribute configuration in its inputs and in
