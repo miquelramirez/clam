@@ -4,7 +4,6 @@
 #include <qgl.h>
 #include <qtimer.h>
 #include "NetPlotController.hxx"
-#include "GLThread.hxx"
 
 namespace CLAM
 {
@@ -28,13 +27,15 @@ namespace CLAM
 				void receivedView(SView);
 				void refresh();
 
+			protected slots:
+				void paintGL();
+
 			protected:
 				void resizeEvent(QResizeEvent* re);
 
 			private:
 				NetPlotController* _controller;
 
-				GLThread _thread;
 				QTimer _timer;
 				int _w, _h;
 				double _left, _right, _bottom, _top;
