@@ -123,6 +123,7 @@ private:
   void PlayResidual();
   void LoadSound();
   void Init();
+  void DetachDisplays();
   Fl_Window* mAudioInputDisplay;
   Fl_Window* mAudioOutputDisplay;
   Fl_Window* mAudioOutputResidualDisplay;
