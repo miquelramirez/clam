@@ -31,20 +31,14 @@ bool SMSPitchDiscretization::Do(const Frame& in, Frame& out)
 	if (pitch>0)
 	{
 		TData log2=0.69314718f;
-		TData test=12*log(pitch/55)/log2;
-		TData test1=pitch/55;
-		TData test2=log(test1);
-		TData test3=test2*12;
-		TData test4=test3/log2;
 
-
-		int nst=Round(12*log(pitch/55)/log2);
+		int nst = Round(12*log(pitch/55)/log2);
 		TData pow2_1_12=1.0594630f;
 		TData discPitch=55*(pow(pow2_1_12,nst));
 		
 		TData amount=discPitch/pitch;
 
-		mPO_PitchShift.mAmountCtrl.DoControl(amount);
+		mPO_PitchShift.GetInControl("Amount").DoControl(amount);
 		mPO_PitchShift.Do(in,out);
 		
 		Fundamental tmpFund;

@@ -27,6 +27,7 @@
 #include "ProcessingData.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
+#include "OutControl.hxx"
 #include "InControl.hxx"
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
@@ -34,8 +35,6 @@
 #include "SMSTransformationConfig.hxx"
 
 namespace CLAM {
-
-
 
 	/** Abstract base class for all SMS Transformations. It implements all basic behaviour for
 	 *	SMS Transformations such as Configuration and Control handling but defers the selection
@@ -45,8 +44,12 @@ namespace CLAM {
 	class SMSTransformation:public Processing
 	{
 		
-		typedef InControl SMSTransformationCtrl;
-	
+		OutControl mOutControl;
+
+	protected:
+		Segment* mInput;
+		Segment* mOutput;
+
 	public:
 		void AttachIn( Segment& data ){ mInput = &data; }
 		void AttachOut( Segment& data ){ mOutput = &data; }
@@ -104,24 +107,15 @@ namespace CLAM {
 		 *	it more explicit.
 		 */
 		bool mUseTemporalBPF;
-	public:
 		/** Control for the amount of the concrete transformation that will be applied. This control
 		 *	value can be manually updated or automatically from the values in the BPF envelope-like
 		 *	configuration parameter.
 		 */
-		SMSTransformationCtrl mAmountCtrl;
+		InControl mAmountCtrl;
 		/** Control to state whether a particular transformation is on or off. This control may be
 		 *	used as a bypass when the transformation is connected in a Chain.
 		 */
-		SMSTransformationCtrl mOnCtrl;
-		/** Input Port. Note that all SMSTransformations will have segment as input and output, 
-		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
-		 *	transformation*/
-		Segment* mInput;
-		/** Output Port. Note that all SMSTransformations will have segment as input and output, 
-		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
-		 *	transformation*/
-		Segment* mOutput;
+		InControl mOnCtrl;
 
 		virtual bool Do(const Frame& in,Frame& out)=0;
 

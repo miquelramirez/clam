@@ -40,7 +40,7 @@ bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 	{
 		TData amount=voices.GetValueFromIndex(i);
 		TData gain=voices.GetXValue(i);
-		mPO_PitchShift.mAmountCtrl.DoControl(amount);
+		mPO_PitchShift.GetInControl("Amount").DoControl(amount);
 		mPO_PitchShift.Do(in,tmpInFrame);
 		Gain(tmpInFrame,gain);
 		AddFrame(tmpInFrame,tmpOutFrame,tmpOutFrame);
