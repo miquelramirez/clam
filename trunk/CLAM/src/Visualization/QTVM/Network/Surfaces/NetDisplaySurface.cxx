@@ -29,7 +29,7 @@ namespace CLAM
 		{
 			_controller = controller;
 			connect(_controller,SIGNAL(sendView(SView)),this,SLOT(receivedView(SView)));
-			connect(_controller,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
+			connect(_controller,SIGNAL(requestRefresh()),this,SLOT(update()));
 		}
 
 		void NetDisplaySurface::initializeGL()

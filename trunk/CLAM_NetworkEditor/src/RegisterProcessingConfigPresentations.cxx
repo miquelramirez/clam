@@ -60,6 +60,10 @@
 #include "OutControlSender.hxx"
 #include "SquareWave.hxx"
 
+// plots
+#include "AudioPlotProcessing.hxx"
+#include "SpectrumPlotProcessing.hxx"
+
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SimpleOscillatorConfig> > 
@@ -154,4 +158,12 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::OutControlSenderConfig> > 
 	regtOutControlSenderCfg( "OutControlSenderConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioPlotProcessingConfig> >
+	regtAudioPlotProcessingCfg("AudioPlotProcessingConfig");
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SpectrumPlotProcessingConfig> >
+	regtSpectrumPlotProcessingCfg("SpectrumPlotProcessingConfig");
+
+
 

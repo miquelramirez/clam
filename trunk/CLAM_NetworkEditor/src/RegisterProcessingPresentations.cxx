@@ -54,4 +54,8 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 	regtSMSAnalysisCore( "SMSAnalysisCore" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation> 
 	regtSMSSynthesis( "SMSSynthesis" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+	regtAudioPlotProcessing( "AudioPlotProcessing" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+	regtSpectrumPlotProcessing( "SpectrumPlotProcessing" );
 

@@ -21,16 +21,12 @@ namespace CLAM
 
 			protected:
 				void FullView();
-				bool MustProcessData() const;
 				
 			private:
 				DataRenderer _dRenderer;
 				Audio _audio;
-				DataArray _processedData;
 				bool _mustProcessData;
 				
-				void DrawAxis();
-
 				void ProcessData();
 
 		};

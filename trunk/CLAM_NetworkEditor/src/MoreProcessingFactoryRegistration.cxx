@@ -1,4 +1,3 @@
-
 #include "Factory.hxx"
 #include "Processing.hxx"
 #include "MultiChannelAudioFileReader.hxx"
@@ -18,7 +17,7 @@
 #include "MonoAudioFileWriter.hxx"
 
 #include "AudioPlotProcessing.hxx"
-
+#include "SpectrumPlotProcessing.hxx"
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
@@ -40,4 +39,5 @@ static ProcessingFactory::Registrator<CLAM::MultiChannelAudioFileWriter> regtMul
 static ProcessingFactory::Registrator<CLAM::OutControlSender> regtOutControlSender( "OutControlSender" );
 
 static ProcessingFactory::Registrator<CLAM::AudioPlotProcessing> regtAudioPlotProcessing("AudioPlotProcessing");
+static ProcessingFactory::Registrator<CLAM::SpectrumPlotProcessing> regtSpectrumPlotProcessing("SpectrumPlotProcessing");
 
