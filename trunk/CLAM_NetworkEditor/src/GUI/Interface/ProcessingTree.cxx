@@ -118,6 +118,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem(canvasplots,"SpectrumPortMonitor");
 	new ProcessingItem(canvasplots,"PeaksPortMonitor");
 	new ProcessingItem(canvasplots,"FundamentalPortMonitor");
+	new ProcessingItem(canvasplots,"AudioBuffPortMonitor");
 	
 	show();
 	header()->hide();
