@@ -150,7 +150,6 @@ public:
 	 */
 	list_iterator lists_end() const {return DeviceLists().end();}
 
-
 	/** Iterator interface for used audio devices. It will iterate through the list of devices which have been registered.
 	 *  @return The beginning list iterator
 	 */

@@ -33,11 +33,11 @@ void PORepository::AcquireSystem()
 {
 	// ptlpo = pointer to top level processing object
 
-	CLAM::TopLevelProcessing* ptlpo = CLAM::TopLevelProcessing::GetInstance();
+	CLAM::TopLevelProcessing& ptlpo = CLAM::TopLevelProcessing::GetInstance();
 
 	Add_and_Recurse worker( *this );
 
-	std::for_each( ptlpo->composite_begin(), ptlpo->composite_end(), worker ); // Soooooooo nice :)
+	std::for_each( ptlpo.composite_begin(), ptlpo.composite_end(), worker ); // Soooooooo nice :)
 
 }
 

@@ -43,6 +43,7 @@
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Menu_Item.H>
+#include "CBL.hxx"
 
 #define HorPos fl_width(name)+5+(mWidgetNum/20)*340
 #define VerPos 5+25*(mWidgetNum%20)
@@ -65,6 +66,10 @@ namespace CLAM{
 		virtual ~FLTKConfigurator() {
 			if (mSetter) delete mSetter;
 			if (mGetter) delete mGetter;
+		}
+
+		void SetApplyCallback(CBL::Functor0 functor) {
+			mApplyCallback=functor;
 		}
 
 		template <class Config>
@@ -274,6 +279,7 @@ namespace CLAM{
 			FLTKConfigurator * owner = dynamic_cast<FLTKConfigurator*>(o->window());
 			CLAM_ASSERT(owner,"The given widget is not a FLTKConfigurator");
 			owner->SetInfo();
+			owner->mApplyCallback();
 		}
 		static void Discard(Fl_Widget* o, void* v) {
 			o->window()->hide();
@@ -287,7 +293,7 @@ namespace CLAM{
 			sub->show();
 		}
 
-		void FLTKConfigurator::show() {
+		void /*FLTKConfigurator::*/show() {
 			set_modal();
 			super::show();
 		}
@@ -297,6 +303,7 @@ namespace CLAM{
 		ConfigurationVisitor * mGetter;
 		ConfigurationVisitor * mSetter;
 		tWidgets mWidgets;
+		CBL::Functor0 mApplyCallback;
 
 	};
 }

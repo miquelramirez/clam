@@ -46,7 +46,7 @@ void AudioFilePlayerApplication::AudioMain(void)
 {
 	printf("AUDIO THREAD: %d\n",getpid());
 
-	AudioManager audioManager;
+	AudioManager audioManager(44100, 512);
 	
 	AudioIOConfig outCfgL;
 	AudioIOConfig outCfgR;

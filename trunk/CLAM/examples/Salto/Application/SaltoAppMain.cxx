@@ -104,11 +104,11 @@ protected:
 
 	void UserMain(void)
 	{
-		WidgetTKWrapper* tk = WidgetTKWrapper::GetWrapperFor("FLTK");
+		WidgetTKWrapper& tk = WidgetTKWrapper::GetWrapperFor("FLTK");
 
 		Start();
 
-		tk->Run();
+		tk.Run();
 
 		Stop();
 	}
@@ -271,6 +271,10 @@ protected:
 
 	void ProcessMIDIMessages(void)
 	{
+		if ( mParams.GetPlayNote() )
+		{
+			mMIDIHandler.DoNote();
+		}
 		if (mParams.GetUseMelody())
 		{
 			TTime currentTime = pDSP->GetEventSample()/DSPCfg.GetSampleRate();

@@ -28,6 +28,11 @@
 #include "Multiplier.hxx"
 #include "GUIAudioApplication.hxx"
 
+#include <iostream>
+using std::cout;
+using std::endl;
+using std::cerr;
+
 using namespace CLAM;
 
 class MyAudioApplication:public GUIAudioApplication
@@ -42,8 +47,11 @@ void MyAudioApplication::AudioMain(void)
 	try
 	{
 		unsigned int buffersize = 256;
-
+#ifndef WIN32
 		AudioManager audioManager(48000,4096);
+#else
+		AudioManager audioManager(44100, 256*2 );
+#endif
 
 		AudioIOConfig inCfgL;
 		AudioIOConfig inCfgR;

@@ -68,7 +68,7 @@ public:
 
 private:
 
-	static FLTKWrapper* GetInstance();
+	static FLTKWrapper& GetInstance();
 	static void  sRefreshingCallback( void* );
 
 	void CancelAllAsynchronousRefresh();

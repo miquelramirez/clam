@@ -103,9 +103,9 @@ public:
 
 	~GLPort()
 	{
-		FLTKWrapper* tk = dynamic_cast<FLTKWrapper*>(WidgetTKWrapper::GetWrapperFor("FLTK" ));
+		FLTKWrapper& tk = dynamic_cast<FLTKWrapper&>(WidgetTKWrapper::GetWrapperFor("FLTK" ));
 		
-		tk->CancelAsynchronousRefresh( mRefreshSlot );
+		tk.CancelAsynchronousRefresh( mRefreshSlot );
 		
 		delete mRenderingState;
 

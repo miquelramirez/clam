@@ -29,8 +29,13 @@ int main(void)
 		error.Print();
 		std::cerr << "Abnormal Program Termination" << std::endl;
 	}
+	catch (std::bad_cast& e)
+	{
+		std::cout << e.what() << std::endl; 
+	}
 	catch (std::exception& e)
 	{
+		std::cout<<typeid(e).name();
 		std::cout << e.what() << std::endl; 
 	}
 	catch ( ... )

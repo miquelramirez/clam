@@ -27,11 +27,11 @@
 namespace CLAMGUI
 {
 
-FLTKWrapper* FLTKWrapper::GetInstance()
+FLTKWrapper& FLTKWrapper::GetInstance()
 {
 	static FLTKWrapper wrapper;
 
-	return &wrapper;
+	return wrapper;
 }
 
 bool FLTKWrapper::IsClosing() const

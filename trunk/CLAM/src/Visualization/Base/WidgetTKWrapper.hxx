@@ -81,12 +81,10 @@ class WidgetTKWrapper
 
 public:
 
-	static WidgetTKWrapper* GetWrapperFor( std::string toolkit );
+	static WidgetTKWrapper& GetWrapperFor( std::string toolkit );
 
 	virtual ~WidgetTKWrapper()
 	{
-		if ( mpWrapper )
-			delete mpWrapper;
 	}
 
 	virtual void DisableAsynchronousRefresh() = 0;
@@ -104,7 +102,6 @@ protected:
 	}
 
 protected:
-	static WidgetTKWrapper* mpWrapper;
 
 
 };

@@ -27,10 +27,16 @@ namespace CLAM {
 	void TopLevelProcessingConfig::DefaultInit(void)
 	{ 
 		AddName(); 
-		UpdateData(); 
+		UpdateData();
+		SetName("TopLevel");
 	}
 
-	TopLevelProcessing *TopLevelProcessing::mpInstance=0;
+	TopLevelProcessing::TopLevelProcessing()
+	{
+		SetOrphan();
+		ConfigureOrphan( TopLevelProcessingConfig() );
+	}
+
 
 	TopLevelProcessing::
 	TopLevelProcessing(const TopLevelProcessingConfig &c)
@@ -49,14 +55,11 @@ namespace CLAM {
 		return true;
 	}
 
-	TopLevelProcessing* TopLevelProcessing::GetInstance()
+	TopLevelProcessing& TopLevelProcessing::GetInstance()
 	{
-		if (!mpInstance) {
-			TopLevelProcessingConfig cfg;
-			cfg.SetName("TopLevel");
-			mpInstance = new TopLevelProcessing(cfg);
-		}
-		return mpInstance;
+		static TopLevelProcessing theInstance;
+
+		return theInstance;
 	}
 
 	bool TopLevelProcessing::Do()

@@ -19,159 +19,90 @@
  *
  */
 
-
-#include "Segmentator.hxx"
-
-#include "AudioFileIn.hxx"
 #include <iostream>
-#include <math.h>
+#include <cstdlib>
+#include <exception>
+using std::cout;
+using std::endl;
+using std::cerr;
+#include <string>
+#include "FFT_rfftw.hxx"
+#include "DataTypes.hxx"
+#include "ErrProcessingObj.hxx"
 
-#include "Segment.hxx"
-#include "Segmentation/SegmentAnalysisSystem.hxx"
- 
-#include "Vector.hxx"
-
-
-#include "SnapshotGenerator.hxx"
-
-#include "DebugSnapshots.hxx"
-#include "SpectrumSnapshot.hxx"
 #include "AudioSnapshot.hxx"
-#include "SegmentSnapshot.hxx"
+#include "SpectrumSnapshot.hxx"
 
 using namespace CLAM;
 
-
-void Compute();
-
-int main()
+int main(int argc, char* argv[])
 {
-
-	try{
-		Compute();
-	}
-	catch(Err error)
-	{
-		error.Print();
-		std::cerr << "Abnormal Program Termination" << std::endl;
-	}
-	catch (std::exception e)
-	{
-		std::cout << e.what() << std::endl;
-	}
-	
-	std::clog << "Finished successfully!";
-	return 0;
-}
-
-
-void Compute()
-{
+	try {
 		
-	std::string fileName;
-	std::cout<<"Enter File Name: \n";
-	std::cin>>fileName;
-	// Display flags
-	TData analysisFrameSize=1024;		
-	 
-	//The File I/O PO
-	AudioFileIn myAudioFileIn;
-	AudioFileConfig infilecfg;
-	infilecfg.SetName("FileIn");
-	infilecfg.SetFilename(fileName);
-	infilecfg.SetFiletype(EAudioFileType::eWave);
-	myAudioFileIn.Configure(infilecfg);
+		int i,Size=1024;
+		float SampleRate=8000.0;
+		
+
+		// Audio creation
+		CLAM::Audio myaudio;
+		myaudio.SetSize( Size );
+		for (i=0;i<Size;i++)
+			myaudio.GetBuffer()[i]=0.5*sin(2.0*PI*400.0*(((float)i)/SampleRate));
+
+		// Spectrum attribute selection and config
+		CLAM::SpecTypeFlags sflags;
+		sflags.bMagPhase=true;
+		sflags.bComplex=true;
+		
+		CLAM::SpectrumConfig sconfig;
+		sconfig.SetType(sflags);
+		sconfig.SetSize(Size/2+1);
+		
+		// Spectrum creation
+		CLAM::Spectrum myspectrum(sconfig);
+		std::cout << myspectrum.GetComplexArray()[0] << std::endl;
+		
+		// Processing object configuration
+		CLAM::FFTConfig fconfig;
+		fconfig.SetName(std::string("local.My_beautiful_fft"));
+		fconfig.SetAudioSize(Size);
+		
+		// Processing object creation
+		CLAM::FFT_rfftw myfft(fconfig);
+		
+		// Processing object execution
+		std::cout << "Running object " << std::endl;
+		myfft.Start();
+		myfft.Do(myaudio,myspectrum);
+		
+		std::cout << "Opening Audio snapshot" << std::endl;
+		showSnapshotAudio( myaudio );
+		std::cout << "Closing Audio snapshot" << std::endl;
+		
+		std::cout << "Opening spectrum snapshot" << std::endl;
+		showSnapshotSpectrum( myspectrum );
+		std::cout << "Closing Spectrum Snapshot" << std::endl;
+		
+	}
+	catch(Err& err) 
+		{
+			err.Print();
+			abort();
+		}
+	catch ( std::exception& e )
+		{
+			std::cerr << "Standard library exception caught dump follows:" << std::endl;
+			std::cerr << e.what() << std::endl;
+			abort();
+		}
+	catch (...)
+		{
+			std::cerr << "Unknown exception caught. If you are using Windows and your" << std::endl;
+			std::cerr << "binary is in debug mode probably there is some memory corruption somewhere"<< std::endl;
+
+			abort();
+		}
 	
-
-	/////////////////////////////////////////////////////////////////////////////
-	// Initialization of the processing data objects :
-	TSize fileSize=myAudioFileIn.Size();
-	Audio readAudio; // read Audio object 
-	readAudio.SetSize( fileSize );
-	TData samplingRate=readAudio.GetSampleRate();
+	return 0;
 	
-	
-	//Read Audio File
-	myAudioFileIn.Start();
-	myAudioFileIn.Do(readAudio);
-
-
-	CLAMGUI::showPDSnapshot( &readAudio, "Input Signal" );
-
-
-	// The system that contains all the analysis processing objects:
-	SegmentAnalysisSystemConfig globalConfig;
-	globalConfig.Init();
-	globalConfig.SetAudioFrameSize(analysisFrameSize);
-	globalConfig.SetSamplingRate(samplingRate);
-	SegmentAnalysisSnapshotsFlags tmpFlags;
-	//intra frame display-flags !!!!!
-	tmpFlags.bShowAudioFrame=0;
-	tmpFlags.bShowFrameSpectrum=0;
-	globalConfig.SetDisplayFlags(tmpFlags);
-	SegmentAnalysisSystem s(globalConfig);
-	
-	// Spectral Segment that will actually hold data
-	float duration=fileSize/samplingRate;
-	std::cout << "The audio file has a total of" << duration << std::endl;
-	Segment mySegment;
-
-	mySegment.SetHoldsData( true );
-	mySegment.SetEndTime( duration );
-	mySegment.SetBeginTime( 0.0f );
-	mySegment.SetAudio(readAudio);
-	 
-	
-
-	/////////////////////////////////////////////////////////////////////////////
-	// The main processing loop.
-	int k=0,i=0;
-	int step=int(analysisFrameSize);
-
-	
-	std::cout << "Analysis Processing loop began, 0%% done \n";
-	s.Start();
-	int percentilCounter=0,lastPercentilCounter=0;
-	do
-	{
-		s.Do(mySegment,i);
-		i++;
-		k+=step;
-		percentilCounter=(int)((float)k/fileSize*100);
-		if(percentilCounter>lastPercentilCounter){
-		std::cout << percentilCounter;
-		std::cout << "% done \n";
-		lastPercentilCounter=percentilCounter;}
-	}  while(k<=fileSize-step);
-
-	std::cout << "Processing loop finished, starting Segmentation \n";
-	
-	//Configuring Segmentator to work only with fundamental and energy
-	SegmentatorConfig sgConfig;
-	TDescriptorsParams tmpParams;
-	tmpParams.id=SpectralEnergyId;
-	tmpParams.percentil=40;
-	tmpParams.threshold=0.0016;
-	sgConfig.AddDescParams(tmpParams);
-	tmpParams.id=FundamentalId;
-	tmpParams.percentil=4;
-	tmpParams.threshold=0;
-	sgConfig.AddDescParams(tmpParams);
-	sgConfig.SetMinSegmentLength(1);
-	Segmentator mySegmentator(sgConfig);
-	mySegmentator.Start();
-
-	//Segmentate
-	mySegmentator.Do(mySegment);
-
-	CLAMGUI::showPDSnapshot( &mySegment, "Time Frequency plot of top level Segment" );
-
-
 }
-
-
-
-
-
-
-

@@ -200,12 +200,11 @@ MIDIInConfig MIDILinker::GetMIDI(string midiName)
 
 Processing* MIDILinker::GetProcessingObject(const char* procName)
 {
-	TopLevelProcessing *top = NULL;
-	top = TopLevelProcessing::GetInstance();
+	TopLevelProcessing& top = TopLevelProcessing::GetInstance();
 	iterator begin, end;
 	Processing* proc = NULL;
-	begin = top->composite_begin();
-	end = top->composite_end();
+	begin = top.composite_begin();
+	end = top.composite_end();
 
 	while (begin != end)
 	{

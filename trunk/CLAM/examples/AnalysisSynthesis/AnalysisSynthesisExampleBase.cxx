@@ -39,7 +39,6 @@
 #include "Normalization.hxx"
 #include "HeapDbg.hxx"
 
-
 //Transformation class
 #include "SMSFreqShift.hxx"
 
