@@ -1,9 +1,27 @@
-#include <math.h>
-#include <iostream.h>
-#include <Processing.hxx>
+/*
+ * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
+#include "DataTypes.hxx" 
 #include "Normalization.hxx"
 #include "BasicStatistics.hxx"
-
 
 
 using namespace CLAM;
@@ -67,38 +85,37 @@ bool Normalization::Do(Audio &in) throw(ErrProcessingObj){
 		moments = new TData[4];
 		Moment(data,size,moments);
 
-		TData temp;
-		temp = Energy(moments,size);
-		
+		TData temp = Energy(moments,size);
+
 		//remove silence
 		if ( temp>0.3*mFrameSize/4410 ) //seems to be just above the noise due to 8 bits quantization
 		{
 			energy.AddElem(temp);
 			totEnergy += temp;
 
-			if(max<temp) max=temp;		}
+			if(max<temp) max=temp;
+		}
 
-		
 		p += mFrameSize;
 		m++;
-		}	while (p<=in.GetSize()-mFrameSize);
+	} while (p<=in.GetSize()-mFrameSize);
 
 	//normalizes according to the max energy 
 	if (mType==1) scalFactor=sqrt(max/mFrameSize);
 
-	//normalizes according to to the average energy
+	//normalizes according to the average energy
 	if (mType==2)
 	{
 		scalFactor=sqrt(totEnergy/in.GetSize());		
 	}
 
-	//normalizes according to to the threshold under which lies percent% of
+	//normalizes according to the threshold under which lies percent% of
 	//the energy values that are not silence
 	if (mType==3)
 	{
 		//find the threshold under which lies percent% of the energy values
 		//that are not silence
-				
+
 		int percent=90, i;
 
 		sort(energy, energy.Size());
@@ -108,8 +125,6 @@ bool Normalization::Do(Audio &in) throw(ErrProcessingObj){
 		scalFactor=sqrt(energy[i-1]/mFrameSize);
 
 	}
-
-		
 		
 	DataArray tempBuffer(in.GetSize());
 	tempBuffer.SetSize(in.GetSize());
@@ -118,9 +133,6 @@ bool Normalization::Do(Audio &in) throw(ErrProcessingObj){
 		tempBuffer[n] = in.GetBuffer()[n]/scalFactor;
 
 	in.SetBuffer(tempBuffer);
-	
-
-
 	
 	return true;
 }
@@ -143,7 +155,7 @@ void Normalization::sort(DataArray& list, int size)
 
 void Normalization::swap(TData& a, TData& b)
 {
-   float temp;
+   TData temp;
 
    temp = a;
    a = b;

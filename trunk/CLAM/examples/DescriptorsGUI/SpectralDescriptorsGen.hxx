@@ -26,7 +26,7 @@ namespace CLAM {
 	class SpectralDescriptorsGen: public Processing {
 		SpectralDescriptorsGenConfig mConfig;
 
-		const char *GetClassName() {return "SpectralDescriptorsGen";}
+		const char *GetClassName() const {return "SpectralDescriptorsGen";}
 
 		/** Config change method
 		 * @throw
