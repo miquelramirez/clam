@@ -28,58 +28,13 @@
 
 using namespace CLAM;
 
-CLAM::Flags<11>::tFlagValue AudioDescriptorsFlags::sFlagValues[] = {
-	{AudioDescriptorsFlags::eMean, "mean"},
-	{AudioDescriptorsFlags::eVariance, "variance"},
-	{AudioDescriptorsFlags::eTemporalCentroid, "temporalCentroid"},
-	{AudioDescriptorsFlags::eAttack, "attack"},
-	{AudioDescriptorsFlags::eDecay, "decay"},
-	{AudioDescriptorsFlags::eSustain, "sustain"},
-	{AudioDescriptorsFlags::eRelease, "release"},
-	{AudioDescriptorsFlags::eLogAttackTime, "logAttackTime"},
-	{AudioDescriptorsFlags::eEnergy, "energy"},
-	{AudioDescriptorsFlags::eZeroCrossingRate, "zeroCrossingRate"},
-	{AudioDescriptorsFlags::eRiseTime, "riseTime"},
-	{0,NULL}
-};
 
-	
-
-AudioDescriptors::AudioDescriptors(const AudioDescriptorsFlags& flags): ProcessingData(eNumAttr)
+AudioDescriptors::AudioDescriptors(Audio* pAudio=NULL): ProcessingData(eNumAttr)
 {
 	MandatoryInit();
-	SetFlags(flags);
+	mpAudio=pAudio;
 }
 
-void AudioDescriptors::SetFlags(const AudioDescriptorsFlags& flags)
-{
-	flags.mean?AddMean():RemoveMean();
-	flags.variance?AddVariance():RemoveVariance();
-	flags.temporalCentroid?AddTemporalCentroid():RemoveTemporalCentroid();
-	flags.attack?AddAttack():RemoveAttack();
-	flags.decay?AddDecay():RemoveDecay();
-	flags.sustain?AddSustain():RemoveSustain();
-	flags.release?AddRelease():RemoveRelease();
-	flags.logAttackTime?AddLogAttackTime():RemoveLogAttackTime();
-	flags.energy?AddEnergy():RemoveEnergy();
-	flags.zeroCrossingRate?AddZeroCrossingRate():RemoveZeroCrossingRate();
-	flags.riseTime?AddRiseTime():RemoveRiseTime();
-	UpdateData();
-}
 
-void AudioDescriptors::GetFlags(AudioDescriptorsFlags& flags) const
-{
-	flags.mean=HasMean()?true:false;
-	flags.variance=HasVariance()?true:false;
-	flags.temporalCentroid=HasTemporalCentroid()?true:false;
-	flags.attack=HasAttack()?true:false;
-	flags.decay=HasDecay()?true:false;
-	flags.sustain=HasSustain()?true:false;
-	flags.release=HasRelease()?true:false;
-	flags.logAttackTime=HasLogAttackTime()?true:false;
-	flags.energy=HasEnergy()?true:false;
-	flags.zeroCrossingRate=HasZeroCrossingRate()?true:false;
-	flags.riseTime=HasRiseTime()?true:false;
-}
 
 
