@@ -3,8 +3,6 @@
 
 #include "XMLStorage.hxx"
 #include "XmlMockUpObjects.hxx"
-#include "Component.hxx"
-#include <list>
 
 namespace CLAM
 {
