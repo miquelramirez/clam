@@ -150,12 +150,14 @@ namespace CLAM
 	    double Min(double a, double b);
 
 	    Pixel GetPixel(const TData& x, const TData& y);
-	    bool Match(const Pixel& p, const Pixel& q, bool only_x_coord=false);
+	    bool Match(const Pixel& p, const Pixel& q);
 	    int Hit(const TData& x, const TData& y);
 
 	    int GetMode();
 	    
 	    void UpdateBPF(const TData& x, const TData& y);
+
+	    bool IsValid(const TData& x0, const TData& x1);
 	};
     }
 }
