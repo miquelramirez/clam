@@ -23,14 +23,17 @@
 #ifndef _SMSFreqShift_
 #define _SMSFreqShift_
 
-#include "SMSTransformation.hxx"
+#include "Processing.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControl.hxx"
+#include "SpectralPeakArray.hxx"
+#include "Frame.hxx"
+#include "SMSTransformationConfig.hxx"
 
 namespace CLAM{
 
-	class SMSFreqShift: public SMSTransformation
+	class SMSFreqShift: public Processing
 	{
 		
 		/** This method returns the name of the object
@@ -57,17 +60,20 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSFreqShift(const SMSTransformationConfig &c):
-			SMSTransformation(c), 
+/*		SMSFreqShift(const SMSTransformationConfig &c):
 			mIn("In SpectralPeaks", this), 
 			mOut("Out SpectralPeaks", this), 
 			mShiftAmount("Shift Amount", this)
 		{
 		}
-
+*/
 		/** Destructor of the class*/
  		~SMSFreqShift()
-		{}
+		{}	
+		
+		const ProcessingConfig& GetConfig() const { throw 0; }
+
+		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
 		bool Do(const Frame& in, Frame& out)
 		{

@@ -46,7 +46,7 @@ namespace CLAM {
 	class SMSTransformation:public Processing
 	{
 		
-		SMSFreqShift * mTransformation;
+		SMSFreqShift * mFrameTransformation;
 
 	protected:
 		OutControl mSendAmount; //TODO privatize
@@ -76,7 +76,7 @@ namespace CLAM {
 		void AttachIn( Segment& data ){ mInput = &data; }
 		void AttachOut( Segment& data ){ mOutput = &data; }
 
-		void Wrap( SMSFreqShift*);
+		void WrapFrameTransformation( SMSFreqShift*);
 		
 		/** Configuration change method. Note that the Amount Control is initialized from the
 		 *	the values in the configuration. Appart from that the member boolean variable that

@@ -244,7 +244,7 @@ namespace CLAM {
 				SMSTransformation* wrapper = new SMSTransformation;	
 				Processing * proc = theFactory.Create(classname);
 				SMSFreqShift* freqshift = dynamic_cast<SMSFreqShift*>(proc); 
-				wrapper->Wrap(freqshift);
+				wrapper->WrapFrameTransformation(freqshift);
 				ConnectControls(*wrapper,"Out Control", *freqshift, "Shift Amount");
 				Insert( *wrapper );
 				return;
