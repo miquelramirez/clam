@@ -19,7 +19,7 @@ int AudioFileIO::Load(const char* fileName,Audio& out)
 	file.OpenExisting(fileName);
 
 	if((!file.IsReadable()) | (file.GetHeader().GetChannels() > 1))
-		return -1; // no es legible o no es mono
+		return -1; 
 
 	out.SetSize(file.GetHeader().GetSamples());
 
