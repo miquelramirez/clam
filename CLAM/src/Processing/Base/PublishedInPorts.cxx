@@ -49,7 +49,7 @@ InPortBase& PublishedInPorts::Get(const std::string & name) const
 			return **it;
 
 	std::string error( "name not found in InPorts collection: " );
-	error += "'" +  name + "'" + std::string(". In ports availables: ") + AvailableNames();
+	error += "'" +  name + "'" + ". In ports availables: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
 	return *(InPortBase*)NULL; // just to get rid of warnings
