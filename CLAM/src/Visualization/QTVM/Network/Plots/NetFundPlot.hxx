@@ -11,18 +11,18 @@ namespace CLAM
 		class NetFundPlot : public NetPlot
 		{
 			Q_OBJECT
-			public:
-				NetFundPlot(QWidget* parent=0);
-				virtual ~NetFundPlot();
+		public:
+			NetFundPlot(QWidget* parent = 0, const char * name = 0);
+			virtual ~NetFundPlot();
 
-				void SetData(const Fundamental& spec);
-				void SetDataColor(Color c);
+			void SetData(const Fundamental& spec);
+			void SetDataColor(Color c);
 
-			protected:
-				virtual void SetPlotController();
+		protected:
+			virtual void SetPlotController();
 
-			private:
-				void InitNetFundPlot();
+		private:
+			void InitNetFundPlot();
 		};
 	}
 }

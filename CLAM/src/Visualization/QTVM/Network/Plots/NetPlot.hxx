@@ -15,34 +15,35 @@ namespace CLAM
 		class NetPlot : public QWidget
 		{	
 			Q_OBJECT
-			public:
-				NetPlot(QWidget* parent = 0);
-				virtual ~NetPlot();
-			
-				void SetBackgroundColor(Color c);
-				void Label(const std::string& label);
-				void Geometry(int x,int y,int w,int h);
-				void Show();
-				void Hide();
+		public:
+			NetPlot(QWidget* parent = 0, const char * name = 0);
+			virtual ~NetPlot();
+		
+			void SetBackgroundColor(Color c);
+			void Label(const std::string& label);
+			void Geometry(int x,int y,int w,int h);
+			void Show();
+			void Hide();
 
-		                void StopRendering();
+			void StopRendering();
 
-			protected:
-				NetPlotController* _controller;
+		protected:
+			NetPlotController* _controller;
 
-				void closeEvent(QCloseEvent* ce);
+			void closeEvent(QCloseEvent* ce);
 
-				void SetController(NetPlotController* controller);
+			void SetController(NetPlotController* controller);
 
-				virtual void SetPlotController()=0;
+			virtual void SetPlotController()=0;
 
-			private:
-				NetDisplaySurface* _surf;
-		                bool _closed;
+		private:
+			NetDisplaySurface* _surf;
+			bool _closed;
 
-				void InitNetPlot();
+			void InitNetPlot();
 		};
 	}
 }
 
 #endif
+

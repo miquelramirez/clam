@@ -5,8 +5,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		NetPeaksPlot::NetPeaksPlot(QWidget* parent)
-		    : NetPlot(parent)
+		NetPeaksPlot::NetPeaksPlot(QWidget* parent, const char * name)
+			: NetPlot(parent,name)
 		{
 			InitNetPeaksPlot();
 		}

@@ -8,7 +8,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		NetPlot::NetPlot(QWidget* parent) : QWidget(parent)
+		NetPlot::NetPlot(QWidget* parent, const char * name)
+			: QWidget(parent,name)
 		{
 		        _closed = false;
 			InitNetPlot();

@@ -5,8 +5,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		NetSpectrumPlot::NetSpectrumPlot(QWidget* parent)
-		    : NetPlot(parent)
+		NetSpectrumPlot::NetSpectrumPlot(QWidget* parent, const char * name)
+			: NetPlot(parent,name)
 		{
 			InitNetSpectrumPlot();
 		}
