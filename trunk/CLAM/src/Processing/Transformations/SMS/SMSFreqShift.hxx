@@ -28,8 +28,15 @@
 #include "OutPort.hxx"
 
 namespace CLAM{
-
-
+/*
+	//TODO cludge for network editor
+	class SMSFreqShiftConfig : public ProcessingConfig
+	{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE( SMSFreqShiftConfig, 0, ProcessingConfig);
+			
+	};
+*/
 	class SMSFreqShift: public SMSTransformation
 	{
 		
@@ -69,9 +76,10 @@ namespace CLAM{
 		// Note that overriding this method breaks the processing chain functionality. 
 		bool Do()
 		{
-			return Do(mIn.GetData(), mOut.GetData());
+			bool result = Do(mIn.GetData(), mOut.GetData());
 			mIn.Consume();
 			mOut.Produce();
+			return result;
 		}
 	
 	};		
