@@ -22,89 +22,29 @@
 #ifndef _SMSAnalysis_
 #define _SMSAnalysis_
 
-
+#include "DataTypes.hxx"
 #include "SpectralPeakDetect.hxx"
 #include "FundFreqDetect.hxx"
-#include "Frame.hxx"
-#include "Segment.hxx"
 #include "SinTracking.hxx"
-#include "SMSSynthesis.hxx"//For Sinusoidal Synthesis
 #include "SpectrumSubstracter2.hxx"
 #include "SpectralAnalysis.hxx"
-#include "StreamBuffer.hxx"
+#include "SMSAnalysisConfig.hxx"
+#include "Audio.hxx"
+#include "ProcessingComposite.hxx"
+#include "Spectrum.hxx"
+#include "SynthSineSpectrum.hxx"
 #include "CircularStreamImpl.hxx"
-
-#include "Flags.hxx"
+#include "StreamBuffer.hxx"
 
 namespace CLAM {
 
-
-
-class SMSAnalysisConfig:public ProcessingConfig
-{
-
-	friend class SMSAnalysis;
-
-	DYNAMIC_TYPE_USING_INTERFACE (SMSAnalysisConfig,9,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string,Name);
-/** Configuration for children Processing Objects*/
-	DYN_ATTRIBUTE(1,public,SpectralAnalysisConfig, SinSpectralAnalysis);
-	DYN_ATTRIBUTE(2,public,SpectralAnalysisConfig, ResSpectralAnalysis);
-
-	DYN_ATTRIBUTE(3,public,SpectralPeakDetectConfig, PeakDetect);
-	DYN_ATTRIBUTE(4,public,FundFreqDetectConfig, FundFreqDetect);
-	DYN_ATTRIBUTE(5,public,SinTrackingConfig, SinTracking);
-/** Flags that are used in order to decide what debug display is shown*/
-	
-	DYN_ATTRIBUTE(6,protected,int, prSamplingRate);
-	DYN_ATTRIBUTE(7,protected,int, prFFTSize);
-	DYN_ATTRIBUTE(8,public, SynthSineSpectrumConfig,SynthSineSpectrum);
-
-	
-//Config shortcuts
-public:
-	~SMSAnalysisConfig(){};
-/** Sinusoidal Analysis Window size in num. of samples */	
-	void SetSinWindowSize(TSize w);
-	TSize GetSinWindowSize() const;
-/** Sinusoidal Analysis Window type*/
-	void SetSinWindowType(const EWindowType& t);
-	const EWindowType& GetSinWindowType() const;
-/** Sinusoidal Zero padding factor*/
-	void SetSinZeroPadding(int z);
-	int GetSinZeroPadding() const;
-/** Residual Analysis Window size in num. of samples */	
-	void SetResWindowSize(TSize w);
-	TSize GetResWindowSize() const;
-/** Residual Analysis Window type*/
-	void SetResWindowType(const EWindowType& t);
-	const EWindowType& GetResWindowType() const;
-/** Residual Zero padding factor*/
-	void SetResZeroPadding(int z);
-	int GetResZeroPadding() const;
-/** Global hop size used both for sinusoidal and residual components */
-	void SetHopSize(TSize h);
-	TSize GetHopSize() const;
-
-/** Sampling rate of the input audio*/
-	void SetSamplingRate(TData sr);
-	TData GetSamplingRate() const;
-
-/** Initial offset that is applied to analysis frame computed from windowSize and hopSize*/
-	TSize GetInitialOffset() const;
-
-	TSize GetHopsInBiggerWindow() const;
-
-private:
-
-	
-	void DefaultInit();
-	void DefaultValues();
-
-	/** Ad-hoc routine for finding FFT Size*/
-	TInt32 PowerOfTwo(TInt32 size);
-};
-
+class Frame;
+class Segment;
+class Fundamental;
+class ProcessingConfig;
+class WriteStreamRegion;
+class ReadStreamRegion;
+class SpectralPeakArray;
 
 /** Class that encapsulates all the building blocks of the SegmentAnalysis example */
 class SMSAnalysis:public ProcessingComposite
@@ -213,7 +153,7 @@ private:
 
 
 /** member stream buffer*/
-	AudioStreamBuffer<CircularStreamImpl<TData> > mStreamBuffer;
+	AudioStreamBuffer<CircularStreamImpl<TData> > *mStreamBuffer;
 /** member writer into stream buffer */
 	WriteStreamRegion* mWriter;
 /** member sinusoidal reader from stream buffer */

@@ -1,16 +1,17 @@
 #ifndef _SDIFIn_
 #define _SDIFIn_
 
+#include "Segment.hxx"
 #include "IndexArray.hxx"
 #include "Processing.hxx"
 #include "Err.hxx"
 #include "OutPortTmpl.hxx"
-#include "Segment.hxx"
 #include <string.h>
 
-namespace SDIF{class File;};//forward declaration
+namespace SDIF { class File; } //forward declaration
 
-namespace CLAM{
+namespace CLAM
+{
 
 
 class SDIFInConfig:public ProcessingConfig

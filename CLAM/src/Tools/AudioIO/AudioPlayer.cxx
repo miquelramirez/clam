@@ -34,7 +34,8 @@ using namespace CLAM;
 
 AudioPlayer* AudioPlayer::sCurrentPlayer = NULL;
 
-AudioPlayer::AudioPlayer( Audio* audio, SigSlot::Slotv0& slot ) : mAudioReference( audio )
+AudioPlayer::AudioPlayer( Audio* audio, SigSlot::Slotv0& slot, TTime t0 ) 
+	: mAudioReference( audio ), mT0( t0 )
 {
 	mCancel = false;
 	sCurrentPlayer = this;
@@ -73,10 +74,17 @@ void AudioPlayer::PlayingThreadSafe(  )
 	tmpAudioBuffer.SetSize(bufferSize);
 	TSize dataSize = mAudioReference->GetSize();
 	AudioManager::Current().Start();
-		
+	
+	// first sample calculation
+	TIndex firstSample = 
+		((mT0*1000 - mAudioReference->GetBeginTime())/(mAudioReference->GetEndTime()-mAudioReference->GetBeginTime()))*((TTime)mAudioReference->GetSize()-1);
+
+	CLAM_ASSERT( firstSample >= 0, "Bad sample index!" );
+	CLAM_ASSERT( firstSample < mAudioReference->GetSize(), "Bad sample index!" );
+
 	mOutputL.Start();
 	mOutputR.Start();
-	for( int i=0; i<dataSize && !mCancel; i+=bufferSize )
+	for( TIndex i=firstSample; i<dataSize && !mCancel; i+=bufferSize )
 	{
 		mAudioReference->GetAudioChunk( i, i + tmpAudioBuffer.GetSize(), tmpAudioBuffer, false );
 		mOutputR.Do( tmpAudioBuffer );

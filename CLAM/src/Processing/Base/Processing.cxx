@@ -76,73 +76,43 @@ namespace CLAM {
 				mpParent->Insert(*this);
 		}
 		else if (name_change_requested)
-			try {
-				mpParent->NameChanged(*this,old_name);
-			}
-			catch(ErrProcessingObj& e) {
-				// Invalid name.
-				mName = old_name;
-				mStatus ="Configuration failed: \n";
-				mStatus+=e.what();
-				throw(e);
-			}
+			if (!mpParent->NameChanged(*this,old_name))
+				throw ErrProcessingObj("Duplicated Processing Name Requested",this);
 
-
-		try {
-			if (ConcreteConfigure(c)) {
-				mState=Ready;
-				mStatus="";
-				return true;
-			}
+		if (!ConcreteConfigure(c)) {
 			mState=Unconfigured;
 			mStatus+=" Configuration failed.";
 			return false;
 		}
-		catch(std::bad_cast) {
-			mState = Unconfigured;
-			mName = old_name;
-			mStatus="Configuration failed: wrong argument type.";
-			throw(ErrProcessingObj("ProcesingObject::Configure(): wrong argument type.",this));
-		}
+		mState=Ready;
+		mStatus="";
+		return true;
 	}
 
-	bool Processing::ConfigureOrphan(const ProcessingConfig &c) throw(ErrProcessingObj)
+	void Processing::ConfigureOrphan(const ProcessingConfig &c)
 	{
 		std::string config_name;
 		std::string old_name = mName;
 
-		if (mState == Running ||
-			mState == Disabled)
-			throw(ErrProcessingObj("Processing::Configure(): Object is running.",this));
+		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
 
 		// As we have no acces to the actual dynamic configuration object
 		// but via its abstract interface, we have no way to do apriori an
 		// ExistAttr check, so we have to catch the possible exceptions.
-		try {
-			config_name = c.GetName();
-		}
-		catch (ErrDynamicType)
-		{
-			throw(ErrProcessingObj("Processing::Configure(): No name in config object.",this));
-		}
+		CLAM_ASSERT(c.HasName(), "There is no name in a Processing Configuration");
+
+		config_name = c.GetName();
 
 		bool name_change_requested = config_name != ""     && 
 		                             config_name != mName;
 		if (name_change_requested)
 			mName = config_name;
 
-		try {
-			if (ConcreteConfigure(c))
-				mState=Ready;
-			else
-				mState=Unconfigured;
-			
-			return true;
-		}
-		catch(std::bad_cast) {
-			mName = old_name;
-			throw(ErrProcessingObj("ProcesingObject::Configure(): wrong argument type.",this));
-		}
+		if (ConcreteConfigure(c))
+			mState=Ready;
+		else
+			mState=Unconfigured;
 	}
 
 
@@ -256,9 +226,7 @@ namespace CLAM {
 		else
 			p = dynamic_cast<ProcessingComposite*>(o);
 
-		if (!p)
-			throw(ErrProcessingObj("Processing::SetParent():"
-			                       "Inconsistent non-composite parent.",this));
+		CLAM_ASSERT(p, "Setting a non ProcessingComposite as Parent");
 
 		if (mpParent==p)
 			return;

@@ -1,23 +1,25 @@
 
-#include "ProcessingAdapter.hxx"
-#include "Processing.hxx"
+#include "ProcessingController.hxx"
 #include "InPortAdapter.hxx"
 #include "OutPortAdapter.hxx"
+#include "Processing.hxx"
 
 #include <vector>
-#include <iostream>
-
 
 namespace CLAMVM
 {
 
-ProcessingAdapter::ProcessingAdapter()
-	: mObserved (0)
+ProcessingController::ProcessingController()
+	: mObserved(0),
+	  mConfig(0)
 {
 }
 
-ProcessingAdapter::~ProcessingAdapter()
+ProcessingController::~ProcessingController()
 {
+	if (mConfig)
+		delete mConfig;
+
 	InPortAdapterIterator itin;
 	for ( itin=mInPortAdapters.begin(); itin!=mInPortAdapters.end(); itin++)
 		delete *itin;
@@ -27,15 +29,20 @@ ProcessingAdapter::~ProcessingAdapter()
 }
 	
 
-bool ProcessingAdapter::Publish()
+bool ProcessingController::Publish()
 {
 	if ( !mObserved )  // there is no object being observed
 		return false;
 	
-	AcquireName.Emit(mObserved->GetName());
-	AcquireClassName.Emit(mObserved->GetClassName());
-	CLAM::Processing* proc = (CLAM::Processing*) mObserved;
-	
+	AcquireClassName.Emit( mObserved->GetClassName() );
+	if (mConfig)
+		delete mConfig;
+
+	const CLAM::ProcessingConfig & conf( mObserved->GetConfig() );
+	mConfig = (CLAM::ProcessingConfig*)conf.DeepCopy();
+
+	AcquireConfig.Emit( mConfig );
+	CLAM::Processing* proc = (CLAM::Processing*) mObserved;	
 	CLAM::Processing::ConstInPortIterator itin;
 	for (itin = proc->GetInPorts().Begin(); 
 	     itin != proc->GetInPorts().End(); 
@@ -62,14 +69,19 @@ bool ProcessingAdapter::Publish()
 	return true;
 }
 
-bool ProcessingAdapter::BindTo( const CLAM::Processing& obj )
+bool ProcessingController::BindTo( CLAM::Processing& obj )
 {
-	mObserved = dynamic_cast< const CLAM::Processing* > (&obj);
+	mObserved = dynamic_cast< CLAM::Processing* > (&obj);
 	
 	if ( !mObserved )
 	{ 
 		return false;
 	}
+	return true;
+}
+
+bool ProcessingController::Update()
+{
 	return true;
 }
 

@@ -67,17 +67,17 @@ namespace CLAM
 
 /// Macro used when an assert fails
 #if defined(CLAM_USE_RELEASE_ASSERTS)
-#define CLAM_ABORT(description) \
+#define CLAM_ABORT(message) \
 	{ \
-		throw CLAM::ErrAssertionFailed( description, __FILE__, __LINE__); \
+		throw CLAM::ErrAssertionFailed( message, __FILE__, __LINE__); \
 	}
 #else
-#define CLAM_ABORT(description) \
+#define CLAM_ABORT(message) \
 	{ \
 		if ( !CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled ) { \
-			throw CLAM::ErrAssertionFailed( description, __FILE__, __LINE__); \
+			throw CLAM::ErrAssertionFailed( message, __FILE__, __LINE__); \
 		} else { \
-			CLAM::ExecuteAssertFailedHandler ( description, __FILE__, __LINE__); \
+			CLAM::ExecuteAssertFailedHandler ( message, __FILE__, __LINE__); \
 			CLAM_BREAKPOINT; \
 		} \
 	}
@@ -140,18 +140,18 @@ namespace CLAM
 #if defined(CLAM_DISABLE_CHECKS)
 #define CLAM_BEGIN_CHECK if (0) {
 #define CLAM_END_CHECK }
-#define CLAM_ASSERT( expression, description ) 
-#define CLAM_WARNING( expression, description )
+#define CLAM_ASSERT( expression, message ) 
+#define CLAM_WARNING( expression, message )
 #else
 #define CLAM_BEGIN_CHECK {
 #define CLAM_END_CHECK }
-#define CLAM_ASSERT( expression, description ) \
+#define CLAM_ASSERT( expression, message ) \
 	if (!(expression)) { \
-		CLAM_ABORT(description); \
+		CLAM_ABORT(message); \
 	}
-#define CLAM_WARNING( expression, description ) \
+#define CLAM_WARNING( expression, message ) \
 	if (!(expression)) { \
-		CLAM::ExecuteWarningHandler ( description, __FILE__, __LINE__); \
+		CLAM::ExecuteWarningHandler ( message, __FILE__, __LINE__); \
 	}
 #endif
 
@@ -173,18 +173,18 @@ namespace CLAM
 #if defined(CLAM_DISABLE_CHECKS) || defined(CLAM_USE_RELEASE_ASSERTS)
 #define CLAM_BEGIN_DEBUG_CHECK if (0) {
 #define CLAM_END_DEBUG_CHECK }
-#define CLAM_DEBUG_ASSERT( expression, description ) 
-#define CLAM_DEBUG_WARNING( expression, description )
+#define CLAM_DEBUG_ASSERT( expression, message ) 
+#define CLAM_DEBUG_WARNING( expression, message )
 #else
 #define CLAM_BEGIN_DEBUG_CHECK {
 #define CLAM_END_DEBUG_CHECK }
-#define CLAM_DEBUG_ASSERT( expression, description ) \
+#define CLAM_DEBUG_ASSERT( expression, message ) \
 	if (!(expression)) { \
-		CLAM_ABORT(description); \
+		CLAM_ABORT(message); \
 	}
-#define CLAM_DEBUG_WARNING( expression, description ) \
+#define CLAM_DEBUG_WARNING( expression, message ) \
 	if (!(expression)) { \
-		CLAM::ExecuteWarningHandler ( description, __FILE__, __LINE__); \
+		CLAM::ExecuteWarningHandler ( message, __FILE__, __LINE__); \
 	}
 #endif
 /// @}

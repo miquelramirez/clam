@@ -71,26 +71,26 @@ void Fl_Smart_Tile::shade(Fl_Widget* c)
 	int nshaded = 0;
 
 	if (c) {
-		if (c->h()==_shadedsize) {
+		if (c->h()==mShadedsize) {
 			c->size(c->w(),0);
 			c=0;
 		}
 		else
-			c->size(c->w(),_shadedsize);	
+			c->size(c->w(),mShadedsize);	
 	}
 		
 	for (i=0;i<children();i++)
 	{
-		if (child(i)->h()==_shadedsize)
+		if (child(i)->h()==mShadedsize)
 		{
 			nshaded++;
 		}
 	}
 
 	float newsize;
-	if (nshaded==children()) newsize=_shadedsize;
+	if (nshaded==children()) newsize=mShadedsize;
 	else
-	newsize = float(h()-(nshaded*_shadedsize))/float(children()-nshaded);
+	newsize = float(h()-(nshaded*mShadedsize))/float(children()-nshaded);
 
 	float newsizetotal = 0;
 	int inewsizetotal = 0;
@@ -102,7 +102,7 @@ void Fl_Smart_Tile::shade(Fl_Widget* c)
 	{
 
 		if (child(i)!=c) {
-			if (child(i)->h()!=_shadedsize)
+			if (child(i)->h()!=mShadedsize)
 			{
 				newsizetotal+=newsize;
 				int inewsize = int(newsizetotal)-inewsizetotal;
@@ -150,8 +150,8 @@ int Fl_Smart_Tile::handle(int e)
 	if (e==FL_DRAG && moving!=-1) {
 		int move = Fl::event_y()-prevy;
 		prevy = Fl::event_y();
-		if (child(moving)->h()-move<_minsize) return 1;
-		if (child(moving-1)->h()+move<_minsize) return 1;
+		if (child(moving)->h()-move<mMinsize) return 1;
+		if (child(moving-1)->h()+move<mMinsize) return 1;
 		child(moving)->resize(child(moving)->x(),child(moving)->y()+move,
 			child(moving)->w(),child(moving)->h()-move);
 		child(moving-1)->resize(child(moving-1)->x(),child(moving-1)->y(),

@@ -26,8 +26,8 @@
 
 #include "SerializationController.hxx"
 
-#include "SMSSynthesis.hxx"
-#include "SMSAnalysis.hxx"
+#include "SMSSynthesisConfig.hxx"
+#include "SMSAnalysisConfig.hxx"
 #include "SMSAnalysisSynthesisConfig.hxx"
 #include "Melody.hxx"
 #include "SMSTransformationChain.hxx"
@@ -40,6 +40,10 @@
 
 namespace CLAM
 {
+	
+	class SMSAnalysis;
+	class SMSSynthesis;
+
 	/** This is the base class for the Analysis Synthesis example. It implements
 	* all the necessary processing but it cannot be instantiated. To instantiate
 	* a particular analysis synthesis application you need to work directly with 
@@ -58,7 +62,6 @@ namespace CLAM
 		void SetHaveConfig(bool hasConfig){mHaveConfig=hasConfig;}
 		
 	protected:
-		
 	
 		/** Cleans up segment from pre-existing data*/ 
 		void Flush(Segment& seg);
@@ -67,12 +70,17 @@ namespace CLAM
 		/** Initialize analysis and synthesis configuration from loaded
 		* global configuration */
 		void InitConfigs(void);
+		/** Returns true if mGlobalConfig has the required elements.*/
+		bool HaveCompatibleConfig();
 		/** Load global configuration */
 		void LoadConfig(const std::string& inputFileName);
 		/** Store global configuration */
 		void StoreConfig(const std::string& inputFileName);
 		/** Load transformation score */
-		void LoadTransformationScore(const std::string& inputFileName);
+		virtual void LoadTransformationScore(const std::string& inputFileName);
+
+		/** Store transformation score */
+		void StoreTransformationScore( const std::string& outputFileName );
 
 		bool LoadAnalysis(const char* filename);
 		bool LoadAnalysis(const std::string& filename){return LoadAnalysis(filename.c_str());}
@@ -177,6 +185,11 @@ namespace CLAM
 		/** Actual transformation to be used*/
 		SMSTransformationChain mTransformation;
 
+
+		/** Internal Processings used for analysis and synthesis */
+		SMSAnalysis* mpAnalysis;
+		SMSSynthesis* mpSynthesis;
+
 		/** Indicates whether there is a valid analysis-synthesis configuration */
 		bool mHaveConfig;
 		/** Indicates whether an analysis has been performed */
@@ -224,7 +237,10 @@ namespace CLAM
 		/** sampling rate for the whole application */
 		TSize mSamplingRate;
 
+		SMSAnalysis& GetAnalysis(){return *mpAnalysis;}
+		SMSSynthesis& GetSynthesis(){return *mpSynthesis;}
 
+		void UpdateDataInTimeStretch();
 	};
 
 };

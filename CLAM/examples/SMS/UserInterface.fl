@@ -1,5 +1,5 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0104 
+version 1.0103 
 header_name {.hxx} 
 code_name {.cxx}
 decl {\#include <FL/Fl_Tile.H>} {public
@@ -23,22 +23,19 @@ class UserInterface {open
   Function {UserInterface()} {open
   } {
     Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {276 191 872 548} resizable
-      code0 {mWindow2=NULL;} visible
+      label {SMS Tools 2 | MTG-UPF (Barcelona)} open
+      xywh {153 51 870 550} type Double hide resizable
+      code0 {mWindow2=NULL;}
     } {
-      Fl_Group {} {open
-        xywh {0 0 872 21}
-      } {}
-      Fl_Menu_Bar mMenuBar {open
-        private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
+      Fl_Menu_Bar mMenuBar {
+        private xywh {0 0 872 25} labelsize 13 textsize 12
       } {
         submenu mFileMenuItem {
-          label File
+          label File open
           private xywh {5 5 100 20} labelsize 12
         } {
           submenu mConfigurationOpsMenuItem {
-            label Configuration open
+            label Configuration
             private xywh {0 0 100 20} labelsize 12
           } {
             menuitem mLoadCfgMenuItem {
@@ -83,13 +80,23 @@ class UserInterface {open
             }
           }
           submenu mSMSTransFileOpsMenuItem {
-            label {SMS Transformation}
+            label {SMS Transformation} open
             private xywh {0 0 100 20} labelsize 12
           } {
             menuitem mLoadSMSTransScoreMenuItem {
               label {Load Score...}
               callback {LoadTransformation();}
               private xywh {65 65 100 20} labelsize 12
+            }
+            menuitem mEditSMSTransScoreMenuItem {
+              label {Edit Score...}
+              callback {EditTransformScore();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            menuitem mSaveSMSTransScoreMenuItem {
+              label {Save Score...}
+              callback {SaveTransformScore();}
+              private xywh {0 0 100 20} labelsize 12
             }
           }
           submenu mSMSSynthesisFileOpsMenuItem {
@@ -135,7 +142,7 @@ Exit();}
           }
         }
         submenu mSMSTransformationMenuItem {
-          label {SMS Transformation} open
+          label {SMS Transformation}
           private xywh {20 20 100 20} labelsize 12
         } {
           menuitem mDoSMSTransMenuItem {
@@ -145,7 +152,7 @@ Exit();}
           }
           menuitem mUndoTransMenuItem {
             label {Undo Transformation}
-            callback {UndoTransform();} selected
+            callback {UndoTransform();}
             private xywh {0 0 100 20} labelsize 12
           }
         }
@@ -169,12 +176,17 @@ Exit();}
             private xywh {0 0 100 20} labelsize 12
           }
           submenu mShowAnalysisResultsMenuItem {
-            label {Analysis Results} open
+            label {Analysis Results}
             private xywh {0 0 100 20} labelsize 12
           } {
             menuitem mShowSinTracksMenuItem {
-              label SinusoidalTracks
+              label {Sinusoidal Tracks}
               callback {DisplaySinusoidalTracks();}
+              private xywh {0 0 100 20} labelsize 12
+            }
+            menuitem mShowFundFreqMenuItem {
+              label {Fundamental Frequency}
+              callback {DisplayFundFreqTrajectory();}
               private xywh {0 0 100 20} labelsize 12
             }
             submenu mViewFrameDataMenuItem {
@@ -230,48 +242,68 @@ Exit();}
           }
         }
       }
-      Fl_Counter mCounter {
-        label {Frame }
-        callback {ChangeFrame();}
-        xywh {330 525 190 20} box THIN_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
+      Fl_Group {} {open
+        xywh {0 520 870 30}
+      } {
+        Fl_Counter mCounter {
+          label {Frame }
+          callback {ChangeFrame();}
+          xywh {340 525 190 20} labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
+        }
+        Fl_Box {} {
+          xywh {0 520 340 30} resizable
+        }
       }
       Fl_Group {} {open
         xywh {0 25 870 495} resizable
       } {
         Fl_Box mSmartTile {
-          private xywh {0 25 870 495}
+          private xywh {0 30 870 490} resizable
           code0 {o->minsize(80);}
           class Fl_Smart_Tile
         }
       }
     }
   }
-  Function {AboutWindow()} {private return_type void
+  Function {AboutWindow()} {open return_type void
   } {
     Fl_Window mWindow2 {
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;} open
-      private xywh {837 547 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10 hide
-      code0 {mWindow2->show();} modal
+      private xywh {347 416 450 180} type Double labelsize 10 hide
+      code0 {mWindow2->position(mWindow->x()+(mWindow->w()-mWindow2->w())/2,mWindow->y()+(mWindow->h()-mWindow2->h())/2);}
+      code1 {mWindow2->show();} modal
     } {
       Fl_Box {} {
-        label {SMS Analysis/Synthesis Application}
-        private xywh {85 15 265 20} labelfont 3 labelsize 12
+        label {SMS Tools 2}
+        private xywh {5 5 440 30} box FLAT_BOX labelfont 1 labelsize 16 labelcolor 0
       }
       Fl_Box {} {
-        label {by MTG - IUA - UPF (Barcelona, Spain)}
-        private xywh {85 40 265 20} labelfont 2 labelsize 12
+        label {MTG - IUA - UPF}
+        private xywh {110 45 230 25}
       }
       Fl_Box {} {
-        private image {logos/iua.xpm} xywh {360 15 50 60}
+        private image {logos/iua2.xpm} xywh {345 40 100 100}
       }
       Fl_Box {} {
-        label {please visit us at http://www.iua.upf.es/mtg for more info}
-        private xywh {90 65 260 20} labelfont 2 labelsize 11
+        label {Please visit us at}
+        private xywh {110 75 230 20}
       }
       Fl_Box {} {
-        private image {logos/mtg.xpm} xywh {10 20 75 55}
+        private image {logos/mtg3.xpm} xywh {5 40 100 100}
+      }
+      Fl_Box {} {
+        label {http://www.iua.upf.es/mtg/}
+        private xywh {110 95 230 20} labelfont 4 labelcolor 4
+      }
+      Fl_Box {} {
+        label {for more information}
+        private xywh {110 115 230 20}
+      }
+      Fl_Box {} {
+        label {CLAM Release 0.5 beta 3} selected
+        private xywh {5 145 440 30} box FLAT_BOX labelfont 3 labelcolor 0
       }
     }
   }
@@ -308,7 +340,8 @@ mWindow2=NULL;} open
   decl {void ApplyReadyToAnalyzeState();} {}
   decl {void ApplyAnalysisAvailableState();} {}
   decl {void ApplyMelodyAvailableState();} {}
-  decl {void ApplyTransformationReadyState();} {}
+  decl {void ApplyTransformationReadyState();} {public
+  }
   decl {void ApplySynthesisAvailableState();} {}
   decl {void ApplyTransformationPerformedState();} {}
   decl {void DeactivateFrameDataMenuItems();} {}
@@ -316,4 +349,8 @@ mWindow2=NULL;} open
   decl {bool FrameDataAvailable();} {public
   }
   decl {void UndoTransform();} {}
+  decl {void DisplayFundFreqTrajectory();} {}
+  decl {void EditTransformScore();} {}
+  decl {void SaveTransformScore();} {}
+  decl {SMSScoreEditor* mScoreEditor;} {}
 } 

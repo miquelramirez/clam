@@ -37,7 +37,7 @@ using CLAM::Audio;
 
 
 Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label )
-	: Fl_Group( X, Y, W, H, label ), mCancel( false ), mIsThisPlaying( false ), mDisplay( NULL )
+	: Fl_Group( X, Y, W, H, label ), mCancel( false ), mIsThisPlaying( false ), mDisplay( NULL ), mSelectedSampleTime( 0 )
 {
 	mImposterBox = new Fl_Box( X, Y, W-50, H-50 );
 
@@ -88,8 +88,6 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 
 	mStopSlot.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::Stop );
 	mTooltipTracker.RenderTooltipText.Wrap( this, &Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip );
-	
-
 				
 	end();
 	mDrawMgr.SetDetailThreshold( 500 );
@@ -118,14 +116,14 @@ void Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip( int x, int y, char* text
 void Fl_SMS_Browsable_Playable_Audio::OnDisplaySelectedXValue( double value )
 {
 	// towards the outer world
-	double sampleTime = (value / mSampleRate ) + mAudioOffset;
-	SelectedXValue.Emit( sampleTime );
+	mSelectedSampleTime = (value / mAudioProperties.sampleRate ) + mAudioProperties.startTime;
+	SelectedXValue.Emit( mSelectedSampleTime );
 }
 
 void Fl_SMS_Browsable_Playable_Audio::OnSetSelectedXValue( double value )
 {
 	// towards the display
-	double sampleIndex = ( value * mSampleRate );
+	double sampleIndex = ( value * mAudioProperties.sampleRate );
 	ChangeSelectedXValue.Emit( sampleIndex );
 }
 
@@ -219,12 +217,12 @@ void Fl_SMS_Browsable_Playable_Audio::Play(  )
 { 
 	AudioPlayer::StopFromGUIThread(  );
 	Audio* tempAudio = new Audio;
-	tempAudio->SetSampleRate( mDrawMgr.GetTimeInfo(  ).sampleRate );
-	tempAudio->SetBeginTime( 0 );
+	tempAudio->SetSampleRate( mAudioProperties.sampleRate );
+	tempAudio->SetBeginTime( mAudioProperties.startTime );
 	tempAudio->SetBuffer( mDrawMgr.GetDataCached(  ) );
 
 	mIsThisPlaying = true;
-	mAudioPlayer = new AudioPlayer( tempAudio, mStopSlot );
+	mAudioPlayer = new AudioPlayer( tempAudio, mStopSlot, mSelectedSampleTime );
 }
 
 void Fl_SMS_Browsable_Playable_Audio::Stop(  )
@@ -238,19 +236,21 @@ void Fl_SMS_Browsable_Playable_Audio::Stop(  )
 
 void Fl_SMS_Browsable_Playable_Audio::OnNewAudio( const DataArray& array, TTime begin, TTime end, TData srate )
 {
-	tAudioTimeInfo timeNfo = { begin, begin+end, srate };
-	mDrawMgr.CacheData( array, timeNfo );
+	
+	mAudioProperties.startTime = begin;
+	mAudioProperties.endTime = end;
+	mAudioProperties.sampleRate = srate;
+	mSelectedSampleTime = begin;
+	mDrawMgr.CacheData( array, mAudioProperties );
 	mWorldSpaceCoords.mRight = array.Size() - 2;
 	mWorldSpaceCoords.mLeft = 0;
 	mWorldSpaceCoords.mTop = 1.0;
 	mWorldSpaceCoords.mBottom = -1.0;
 	mXAxis->minimum( begin );
-	mXAxis->maximum( begin+end );
+	mXAxis->maximum( end );
 	if ( mDisplay )
 		mDisplay->invalidate();
 	redraw();
-	mAudioOffset = begin;
-	mSampleRate = srate;
 }
 	
 void Fl_SMS_Browsable_Playable_Audio::Show()

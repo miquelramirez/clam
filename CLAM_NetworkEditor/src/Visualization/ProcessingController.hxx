@@ -1,8 +1,8 @@
 
-#ifndef _PROCESSINGADAPTER_
-#define _PROCESSINGADAPTER_
+#ifndef _PROCESSINGCONTROLLER_
+#define _PROCESSINGCONTROLLER_
 
-#include "ModelAdapter.hxx"
+#include "ModelController.hxx"
 #include "ProcessingModel.hxx"
 
 namespace CLAM
@@ -16,25 +16,27 @@ namespace CLAMVM
 class InPortAdapter;
 class OutPortAdapter;
 
-class ProcessingAdapter : public ModelAdapter, public ProcessingModel
+class ProcessingController : public ModelController, public ProcessingModel
 {
 private:
-	const CLAM::Processing* mObserved;
+	CLAM::Processing* mObserved;
+	CLAM::ProcessingConfig* mConfig;
 	std::list<InPortAdapter*> mInPortAdapters;
 	std::list<OutPortAdapter*> mOutPortAdapters;
 	typedef std::list<OutPortAdapter*>::iterator OutPortAdapterIterator;
 	typedef std::list<InPortAdapter*>::iterator InPortAdapterIterator;
 public:
-	ProcessingAdapter();
-	virtual ~ProcessingAdapter();
+	ProcessingController();
+	virtual ~ProcessingController();
 	virtual const char* GetClassName() const
 	{
-		return "ProcessingAdapter";
+		return "ProcessingController";
 	}
 	virtual bool Publish();
-	virtual bool BindTo( const CLAM::Processing& obj );
+	virtual bool BindTo( CLAM::Processing& obj );
+	virtual bool Update();
 };
 
 } // namespace CLAMVM
 
-#endif // __PROCESSINGADAPTER__
+#endif // __PROCESSINGCONTROLLER__

@@ -5,7 +5,7 @@
 #include "DataTypes.hxx"
 #include "ByteOrder.hxx"
 
-#ifdef LINUX
+#ifdef linux
   #include <byteswap.h>
 #endif
 

@@ -132,8 +132,9 @@ inline SpectralPeak Lin(SpectralPeak &inPeak)
 
 
 /** Function for changing the scale of a peak to log, conserving data consistency
-* @param inPeak: incoming peak
-* @param factor to apply in the logarithmic conversion (default 20)
+* @param inPeak incoming peak
+* @param scalingFactor factor to apply in the logarithmic 
+* conversion (default 20)
 */
 inline SpectralPeak DB(SpectralPeak& inPeak,int scalingFactor=20)
 {

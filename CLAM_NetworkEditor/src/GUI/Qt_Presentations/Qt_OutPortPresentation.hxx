@@ -20,11 +20,9 @@ public:
 	virtual void Hide();
 protected:
 	virtual void OnNewName(const std::string& name);
-//	virtual void OnNewDataType(const std::string& name);
 
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent *);
-	void mouseReleaseEvent( QMouseEvent *m);
 
 public: // signals
 	SigSlot::Signalv2< int , int >  AcquirePos;

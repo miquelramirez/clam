@@ -4,9 +4,13 @@
 
 #include "Presentation.hxx"
 #include "Slotv2.hxx"
-#include "Signalv3.hxx"
+#include "Signalv1.hxx"
 #include <string>
 
+namespace CLAM
+{
+	class Processing;
+}
 
 namespace CLAMVM
 {
@@ -34,14 +38,27 @@ public:
 		return mOutName;
 	}
 
+/*	CLAM::Processing * GetInProcessing()
+	{
+		return mInProc;
+	}
+	CLAM::Processing * GetOutProcessing()
+	{
+		return mInProc;
+	}
+*/
+
 protected:
-	virtual void OnNewNames(const std::string &, const std::string &);
-	std::string mInName;
+	virtual void OnNewNames( const std::string &, const std::string &);
+
+//	CLAM::Processing * mOutProc;
+//	CLAM::Processing * mInProc;
 	std::string mOutName;
+	std::string mInName;
 	
 public: //slots
-	SigSlot::Slotv2< const std::string &, const std::string & > SetNames;
-	SigSlot::Signalv3< const std::string &, const std::string &, ConnectionPresentation* > RemoveConnection;
+	SigSlot::Slotv2< const std::string &, const std::string &> SetNames;
+	SigSlot::Signalv1< ConnectionPresentation* > RemoveConnection;
 
 };
 

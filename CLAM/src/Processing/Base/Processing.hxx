@@ -33,6 +33,7 @@
 #include "PublishedOutControls.hxx"
 #include "PublishedInPorts.hxx"
 #include "PublishedOutPorts.hxx"
+#include "ProcessingConfig.hxx"
 
 
 #include <vector>
@@ -47,57 +48,6 @@ namespace CLAM {
 	class InPort;
 	class OutPort;
 	class ProcessingComposite;
-
-	/**
-	 * This is an abstract class which serves as interface for
-	 * configuration classes used as processing object construction
-	 * arguments, which must derive from it.
-	 * <p>
-	 * Note that the required virtual methods may be provided including
-	 * a "Name" dynamic attribute in the derived dynamic classes.
-	 * <p>
-	 * Note that processing objects constructors will take configuration
-	 * objects by value; further changes in a configuration object
-	 * will have no effect on the processing object constructed with it.
-	 */
-	class ProcessingConfig : public DynamicType {
-	public:
-		/**
-		 * Constructor. Must be called from the initialization list
-		 * of the derived classes.
-		 * @param n Number of dynamic attributes
-		 */
-		ProcessingConfig(const int n) : DynamicType(n) {};
-
-		/** Copy constructor.
-		 * @param prototype copy source.
-		 * @param shareData true if the new object is to share its data with the source */
-		ProcessingConfig(const ProcessingConfig& prototype, bool shareData=false, bool deep=true)
-			: DynamicType(prototype, shareData, deep)
-			{};
-
-
-		virtual ~ProcessingConfig(){};
-
-		virtual const char * GetClassName() const {return "Processing";}
-
-
-		/** This method forces the derived class to implement a Name dynamic attribute.
-		 * @param n Name of the new processing object
-		 */
-		virtual void SetName(const std::string&) = 0;
-
-		/** This method forces the derived class to implement a Name dynamic attribute.
-		 * @return Name of the new processing object
-		 */
-		virtual std::string& GetName(void) const = 0;
-
-		/** This method forces the derived class to implement a Name dynamic attribute.
-		 * @return Name of the new processing object
-		 */
-		virtual bool HasName(void) const = 0;
-
-	};
 
 	/**
 	 * This is the base of all the CLAM processing object classes.
@@ -347,7 +297,11 @@ namespace CLAM {
 
 		void SetOrphan();
 
-		bool ConfigureOrphan(const ProcessingConfig &c) throw(ErrProcessingObj);
+		/**
+		 * An special Configure case for TopLevelProcessing.
+		 * @todo review its utility and refactor code duplication
+		 */
+		void ConfigureOrphan(const ProcessingConfig &c);
 
 		bool AbleToExecute(void) const
 		{
@@ -397,6 +351,9 @@ namespace CLAM {
 		{	
 			return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
 		}
+
+		//XA: test
+		virtual bool CanProcessInplace() {return true;}
 		
 
 		/**

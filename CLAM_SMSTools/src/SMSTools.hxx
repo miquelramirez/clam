@@ -7,6 +7,7 @@
 #include "SMSBase.hxx"
 #include "Thread.hxx"
 #include "SMS_DataExplorer.hxx"
+#include "Signalv1.hxx"
 #include "Slotv1.hxx"
 using namespace CLAM;
 
@@ -35,8 +36,19 @@ public:
 	void SetCanvas( Fl_Smart_Tile* canvas );
 
 	SigSlot::Slotv1<double>        TimeSelected;
+	/** Slot for setting the current score*/
+	SigSlot::Slotv1< const SMSTransformationChainConfig& > SetScore;
+	SigSlot::Signalv1< const SMSTransformationChainConfig& > ScoreChanged;
 
 protected: // methods
+
+		
+	/** callback for the SetScore slot */
+	virtual void OnNewScore( const SMSTransformationChainConfig& cfg );
+
+	/** Load transformation score */
+	virtual void LoadTransformationScore(const std::string& inputFileName);
+
 
 	void DoAnalysis();
 

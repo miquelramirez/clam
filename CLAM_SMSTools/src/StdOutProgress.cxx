@@ -18,9 +18,9 @@ namespace CLAMGUI
 	void StdOutProgress::Update(float val)
 	{
 		int ival = int(100.*(val-mFrom)/(mTo-mFrom));
-		if (ival==mLastVal) return;
+		if (ival<mLastVal+10) return;
 		mLastVal = ival;
-		std::cout << mLastVal << "% \n";
+		std::cout << mLastVal << "% ";
 	}
 
 }

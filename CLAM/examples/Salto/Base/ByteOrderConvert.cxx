@@ -14,7 +14,7 @@ ByteOrderConvert::~ByteOrderConvert()
 TUInt16
 ByteOrderConvert::Swap(const TUInt16& val)
 {
-#if defined LINUX 
+#if defined linux 
 	return bswap_16(val);
 #else
 	return (val>>8)|(val<<8);
@@ -24,7 +24,7 @@ ByteOrderConvert::Swap(const TUInt16& val)
 TUInt32
 ByteOrderConvert::Swap(const TUInt32& val)
 {
-#if defined LINUX 
+#if defined linux 
 	return bswap_32(val);
 #else
   TUInt32 cp = val;
@@ -39,7 +39,7 @@ ByteOrderConvert::Swap(const TUInt32& val)
 TUInt64 
 ByteOrderConvert::Swap(const TUInt64& val)
 {
-#if defined LINUX 
+#if defined linux 
 	return bswap_64(val);
 #else
   TUInt64 cp = val;

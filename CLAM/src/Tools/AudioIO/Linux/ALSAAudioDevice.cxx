@@ -299,6 +299,8 @@ namespace CLAM {
 						break;
 					snprintf(name, 63,"hw:%d,%d", card,dev);
 					mAvailableDevices.push_back(name);
+					snprintf(name, 63,"plughw:%d,%d", card,dev);
+					mAvailableDevices.push_back(name);
 				}
 				snd_ctl_close(handle);
 				if (snd_card_next(&card) < 0)
@@ -311,7 +313,7 @@ namespace CLAM {
 
 		std::string DefaultDevice(void)
 		{
-			return "hw:0,0";
+			return "plughw:0,0";
 		}
 
 		AudioDevice* Create(

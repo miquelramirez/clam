@@ -21,29 +21,26 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 	SetInputAnalysisFile("");
 	SetOutputAnalysisFile("");
 /** Analysis **/
-	SetAnalysisWindowSize(513);
+	SetAnalysisWindowSize(2049);
 	/* by default (if -1) will take (WindowSize-1)/2*/
-	SetAnalysisHopSize(-1);
-	SetAnalysisWindowType(EWindowType::eHamming);
+	SetAnalysisHopSize(256);
+	SetAnalysisWindowType(EWindowType::eBlackmanHarris92);
 	
-	SetResAnalysisWindowSize(513);
+	SetResAnalysisWindowSize(1025);
 	SetResAnalysisWindowType(EWindowType::eBlackmanHarris92);
 	
-	SetAnalysisZeroPaddingFactor(0);
-	SetAnalysisPeakDetectMagThreshold(-60);//in dB
-	SetAnalysisMaxSines(50);
+	SetAnalysisZeroPaddingFactor(2);
+	SetAnalysisPeakDetectMagThreshold(-150);//in dB
+	SetAnalysisPeakDetectMaxFreq(10000);
 	SetAnalysisSinTrackingFreqDeviation(20);//in percetage
 	SetAnalysisReferenceFundFreq(1000); 
 	SetAnalysisLowestFundFreq(40); 
 	SetAnalysisHighestFundFreq(6000); 
-	SetAnalysisMaxFundFreqError(10); 				 
-	SetAnalysisMaxFundCandidates(50);
-	SetAnalysisHarmonic(false);
+	SetAnalysisHarmonic(true);
 	SetDoCleanTracks(false);
 /** Synthesis **/
 	SetSynthesisFrameSize(256);
 	SetSynthesisWindowType(EWindowType::eTriangular);
-	SetSynthesisPhaseManagementType(EPhaseGeneration::eContinuation);
 /** Morph **/
 	SetMorphSoundFile("");
 

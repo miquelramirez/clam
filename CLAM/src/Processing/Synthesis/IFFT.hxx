@@ -29,104 +29,99 @@
 #include "InPortTmpl.hxx"
 #include "OutPortTmpl.hxx"
 #include "DataTypes.hxx"
-#include "Audio.hxx"
-#include "Spectrum.hxx"
 
+
+#include "IFFTConfig.hxx"
 
 namespace CLAM {
 
-	class IFFT_rfftw;
+    class IFFT_rfftw;
+    class Audio;
+    class Spectrum;
 
-	/** Default IFFT implemntation. 
-	 * In order to use it, only the IFFT.hxx file needs to be included;
-	 * it will include any other necesary header.
+    /** Default IFFT implemntation. 
+     * In order to use it, only the IFFT.hxx file needs to be included;
+     * it will include any other necesary header.
+     */
+    typedef IFFT_rfftw IFFT;
+
+
+    /** Configuration class for IFFT classes
+     */
+    /* IFFTConfig moved to IFFTConfig.hxx */
+
+
+    /** Abstract base class for IFFT classes */
+    class IFFT_base: public Processing
+    {
+    protected:
+	enum {CLAM_DEFAULT_IFFT_SIZE=1024};
+		
+	/** IFFT Configuration */
+	IFFTConfig mConfig;
+	/** IFFT size */
+	int mSize;
+
+	InPortTmpl<Spectrum> mInput;
+	OutPortTmpl<Audio>   mOutput;
+
+	// Control change callback function
+	void ChangeSize(int n);
+	int GetSize() {return mSize;}
+
+	std::string NewUniqueName();
+
+		
+	virtual bool ConcreteConfigure(const ProcessingConfig&) = 0;
+
+    public:
+
+	IFFT_base();
+
+	virtual ~IFFT_base();
+
+	const char *GetClassName() const {return "IFFT";}
+		
+	/** Config access:
 	 */
-	typedef IFFT_rfftw IFFT;
+	virtual const ProcessingConfig &GetConfig() const { return mConfig;}
 
-
-	/** Configuration class for IFFT classes
+	/** Supervised-mode Do function.
 	 */
-	class IFFTConfig: public ProcessingConfig {
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE  (IFFTConfig, 2, ProcessingConfig);
-		DYN_ATTRIBUTE(0,public,  std::string,Name);
-		DYN_ATTRIBUTE (1,public,int, AudioSize);
-	protected:
-		/** Dynamic type initialization. */
-		void DefaultInit(void);
-	};
+	virtual bool Do(void) = 0;
 
-	/** Abstract base class for IFFT classes */
-	class IFFT_base: public Processing
-	{
-	protected:
-		enum {CLAM_DEFAULT_IFFT_SIZE=1024};
-		
-		/** IFFT Configuration */
-		IFFTConfig mConfig;
-		/** IFFT size */
-		int mSize;
+	virtual void Attach(Spectrum& in, Audio &out) = 0;
 
-		InPortTmpl<Spectrum> mInput;
-		OutPortTmpl<Audio>   mOutput;
+	/** Standard IFFT Do function, with storage class references as
+	 * arguments. This method implements the old conversor routines.
+	 */
+	virtual bool Do(Spectrum& in, Audio &out) const = 0;
 
-		// Control change callback function
-		void ChangeSize(int n);
-		int GetSize() {return mSize;}
+	// Input/Output configuration methods
 
-		std::string NewUniqueName();
+	/** IFFT non-supervised mode SetPrototypes function */
+	virtual bool SetPrototypes(const Spectrum& in,const Audio &out) = 0;
 
-		
-		virtual bool ConcreteConfigure(const ProcessingConfig&) = 0;
+	/** Standard supervised-mode SetPrototypes function. */
+	virtual bool SetPrototypes() {return false;}
 
-	public:
+	/** Standard UnsetPrototypes function. */
+	virtual bool UnsetPrototypes() {return false;}
 
-		IFFT_base();
+	// Enable/Disable methods. Maybe we should not be deriving
+	// these ones in IFFT subclasses. (IFFT implementations will
+	// probably be always memoryless.
 
-		virtual ~IFFT_base();
+	virtual bool MayDisableExecution() const {return false;}
 
-		const char *GetClassName() const {return "IFFT";}
-		
-		/** Config access:
-		 */
-		virtual const ProcessingConfig &GetConfig() const { return mConfig;}
+	// COMPONENT Methods
 
-		/** Supervised-mode Do function.
-		 */
-		virtual bool Do(void) = 0;
+	/** @todo Not yet implemented. */
+	virtual void StoreOn(Storage &s) {};
+	/** @todo Not yet implemented. */
+	virtual void LoadFrom(Storage &s) {};
 
-		virtual void Attach(Spectrum& in, Audio &out) = 0;
-
-		/** Standard IFFT Do function, with storage class references as
-		 * arguments. This method implements the old conversor routines.
-		 */
-		virtual bool Do(Spectrum& in, Audio &out) const = 0;
-
-		// Input/Output configuration methods
-
-		/** IFFT non-supervised mode SetPrototypes function */
-		virtual bool SetPrototypes(const Spectrum& in,const Audio &out) = 0;
-
-		/** Standard supervised-mode SetPrototypes function. */
-		virtual bool SetPrototypes() {return false;}
-
-		/** Standard UnsetPrototypes function. */
-		virtual bool UnsetPrototypes() {return false;}
-
-		// Enable/Disable methods. Maybe we should not be deriving
-		// these ones in IFFT subclasses. (IFFT implementations will
-		// probably be always memoryless.
-
-		virtual bool MayDisableExecution() const {return false;}
-
-		// COMPONENT Methods
-
-		/** @todo Not yet implemented. */
-		virtual void StoreOn(Storage &s) {};
-		/** @todo Not yet implemented. */
-		virtual void LoadFrom(Storage &s) {};
-
-	};
+    };
 }
 
 // We include the default implementation here.

@@ -19,6 +19,7 @@ class OutPortTmpl<Audio> : public OutPort
 public:
 
 	inline OutPortTmpl(std::string n, Processing *o, int length, int hop = 0);
+	inline ~OutPortTmpl();
 	inline Audio &GetData();
 	inline void LeaveData();
 	void Attach(ProcessingData& data);
@@ -50,6 +51,12 @@ OutPortTmpl<Audio>::OutPortTmpl(std::string n,
 	  mpData(0)
 {
 	o->PublishOutPort(this);
+}
+
+inline OutPortTmpl<Audio>::~OutPortTmpl()
+{
+	if (mpRegion)
+		delete mpRegion;
 }
 
 
@@ -150,7 +157,17 @@ inline bool OutPortTmpl<Audio>::IsReadyForWriting()
 
 inline void OutPortTmpl<Audio>::Unattach()
 {
-	mpNode = 0;
+	if( !IsAttached() )
+		return;
+
+	if(mpNode)
+	{
+		mpNode->UnattachAll();
+		delete mpRegion;
+		delete mpNode;
+		mpRegion = 0;
+		mpNode = 0;
+	}	
 	mpData = 0;
 }
 

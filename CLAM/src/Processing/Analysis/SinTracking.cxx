@@ -16,7 +16,7 @@ using namespace CLAM;
 	void SinTrackingConfig::DefaultValues()
 	{
 		SetThreshold(20);//in percents
-		SetnMaxSines(50);
+		SetnMaxSines(250);
 		SetIsHarmonic(0);
 	}
 	
@@ -155,7 +155,7 @@ using namespace CLAM;
 		SpectralPeak candidatePeak;
 		candidatePeak=iPeakArray.GetSpectralPeak(candidatePos);
 		//I added &&(candidatePeak.GetIndex()==-1) because it matched already matched peak
-		if(candidatePos<mnMaxSines&&(IsBestCandidate(candidatePeak,processedPeakPos))&&(oPeakArray.GetIndex(candidatePos)==-1))
+		if((IsBestCandidate(candidatePeak,processedPeakPos))&&(oPeakArray.GetIndex(candidatePos)==-1))
 		{
 		  //Match
 		  Match(mPreviousPeakArray.GetIndex(processedPeakPos),candidatePos,candidatePeak,oPeakArray);

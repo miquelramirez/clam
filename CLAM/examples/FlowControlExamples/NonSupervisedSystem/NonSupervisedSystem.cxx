@@ -8,11 +8,11 @@ namespace FlowControlExample
 {
 
 System::System( std::string fileIn, std::string fileOut , int frameSize , int nFrames, bool hasAudioOut) : 
-	_fileInName(fileIn),
-	_fileOutName(fileOut), 
-	_frameSize(frameSize), 
-	_maxFramesToProcess(nFrames),
-	_hasAudioOut(hasAudioOut)
+	mFileInName(fileIn),
+	mFileOutName(fileOut), 
+	mFrameSize(frameSize), 
+	mMaxFramesToProcess(nFrames),
+	mHasAudioOut(hasAudioOut)
 {
 	ConfigureProcessings();
 	ConfigureData();
@@ -28,55 +28,55 @@ void System::ConfigureProcessings()
 	oscilCfg.SetFrequency(440.0);
 	oscilCfg.SetAmplitude(0.5);
 
-	_oscillator.Configure(oscilCfg);
+	mOscillator.Configure(oscilCfg);
 
 	oscilCfg.SetFrequency(220.0);
-	_modulator.Configure(oscilCfg);
+	mModulator.Configure(oscilCfg);
 
 	// Audio File In & Out
 	CLAM::AudioFileConfig fileCfg;
-	fileCfg.SetFilename( _fileOutName );
+	fileCfg.SetFilename( mFileOutName );
 	fileCfg.SetChannels(1);
 	fileCfg.SetFiletype( CLAM::EAudioFileType::eWave );
-	fileCfg.SetFrameSize( _frameSize );
+	fileCfg.SetFrameSize( mFrameSize );
 	fileCfg.SetKeepFrameSizes(true);
 
-	_fileOut.Configure( fileCfg );
+	mFileOut.Configure( fileCfg );
 
-	fileCfg.SetFilename(_fileInName);
+	fileCfg.SetFilename(mFileInName);
 
-	_fileIn.Configure (fileCfg);
+	mFileIn.Configure (fileCfg);
 
-	if (_hasAudioOut)
+	if (mHasAudioOut)
 	{
 		CLAM::AudioIOConfig audioCfg;
-		audioCfg.SetFrameSize(_frameSize);
+		audioCfg.SetFrameSize(mFrameSize);
 
-		_audioOut.Configure(audioCfg);
+		mAudioOut.Configure(audioCfg);
 	}
 }
 
 void System::ConfigureData()
 {
-	_oscillatorData.SetSize(_frameSize);
-	_fileInData.SetSize(_frameSize);
-	_modulatorData.SetSize(_frameSize);
-	_multiplierData.SetSize(_frameSize);
-	_adderData.SetSize(_frameSize);
+	mOscillatorData.SetSize(mFrameSize);
+	mFileInData.SetSize(mFrameSize);
+	mModulatorData.SetSize(mFrameSize);
+	mMultiplierData.SetSize(mFrameSize);
+	mAdderData.SetSize(mFrameSize);
 }
 
 void System::StartProcessings()
 {
 	try{
-		_oscillator.Start();
-		_fileOut.Start();
-		_fileIn.Start();
-		_modulator.Start();
-		_multiplier.Start();
-		_adder.Start();
-		if (_hasAudioOut)
+		mOscillator.Start();
+		mFileOut.Start();
+		mFileIn.Start();
+		mModulator.Start();
+		mMultiplier.Start();
+		mAdder.Start();
+		if (mHasAudioOut)
 		{
-			_audioOut.Start();
+			mAudioOut.Start();
 		}
 	}
 	catch (CLAM::ErrProcessingObj& e)
@@ -87,11 +87,11 @@ void System::StartProcessings()
 
 bool System::OscillatorToFileOut() 
 {
-	_oscillator.Do(_oscillatorData);
-	_fileOut.Do(_oscillatorData);
-	if (_hasAudioOut)
+	mOscillator.Do(mOscillatorData);
+	mFileOut.Do(mOscillatorData);
+	if (mHasAudioOut)
 	{
-		_audioOut.Do(_oscillatorData);
+		mAudioOut.Do(mOscillatorData);
 	}
 
 	return false;
@@ -99,13 +99,13 @@ bool System::OscillatorToFileOut()
 
 bool System::ModulatedFileIn()
 {
-	_fileIn.Do(_fileInData);
-	_modulator.Do(_modulatorData);
-	_multiplier.Do(_fileInData, _modulatorData, _multiplierData);
-	_fileOut.Do(_multiplierData);
-	if (_hasAudioOut)
+	mFileIn.Do(mFileInData);
+	mModulator.Do(mModulatorData);
+	mMultiplier.Do(mFileInData, mModulatorData, mMultiplierData);
+	mFileOut.Do(mMultiplierData);
+	if (mHasAudioOut)
 	{
-		_audioOut.Do(_multiplierData);
+		mAudioOut.Do(mMultiplierData);
 	}
 
 	return false;
@@ -113,13 +113,13 @@ bool System::ModulatedFileIn()
 
 bool System::ModulatedOscillator()
 {
-	_oscillator.Do(_oscillatorData);
-	_modulator.Do(_modulatorData);
-	_multiplier.Do(_oscillatorData, _modulatorData, _multiplierData);
-	_fileOut.Do(_multiplierData);
-	if (_hasAudioOut)
+	mOscillator.Do(mOscillatorData);
+	mModulator.Do(mModulatorData);
+	mMultiplier.Do(mOscillatorData, mModulatorData, mMultiplierData);
+	mFileOut.Do(mMultiplierData);
+	if (mHasAudioOut)
 	{
-		_audioOut.Do(_multiplierData);
+		mAudioOut.Do(mMultiplierData);
 	}
 
 	return false;
@@ -127,14 +127,14 @@ bool System::ModulatedOscillator()
 
 bool System::ModulatedFileInPlusFileIn()
 {
-	_fileIn.Do(_fileInData);
-	_modulator.Do(_modulatorData);
-	_multiplier.Do(_fileInData, _modulatorData, _multiplierData);
-	_adder.Do(_multiplierData, _fileInData, _adderData);
-	_fileOut.Do(_adderData);
-	if (_hasAudioOut)
+	mFileIn.Do(mFileInData);
+	mModulator.Do(mModulatorData);
+	mMultiplier.Do(mFileInData, mModulatorData, mMultiplierData);
+	mAdder.Do(mMultiplierData, mFileInData, mAdderData);
+	mFileOut.Do(mAdderData);
+	if (mHasAudioOut)
 	{
-		_audioOut.Do(_adderData);
+		mAudioOut.Do(mAdderData);
 	}
 
 	return false;
@@ -142,18 +142,18 @@ bool System::ModulatedFileInPlusFileIn()
 
 bool System::FileInFileOut()
 {
-	_fileIn.Do(_fileInData);
-	_fileOut.Do(_fileInData);
-	if (_hasAudioOut)
+	mFileIn.Do(mFileInData);
+	mFileOut.Do(mFileInData);
+	if (mHasAudioOut)
 	{
-		_audioOut.Do(_fileInData);
+		mAudioOut.Do(mFileInData);
 	}
 	return false;
 }
 
 void System::DoProcessings( IterationMethod iterationDo )
 {
-	for (int i=0; i<_maxFramesToProcess; i++)
+	for (int i=0; i<mMaxFramesToProcess; i++)
 	{
 		if ( (this->*iterationDo)() ) 
 		{
@@ -173,13 +173,13 @@ void System::ProcessAllIterations()
 	std::cout << "fileinfileout" << std::endl;
 	DoProcessings( &System::FileInFileOut );
 
-	_fileIn.Stop();
-	_fileIn.Start();
+	mFileIn.Stop();
+	mFileIn.Start();
 	std::cout << "modulatedfilein" << std::endl;
 	DoProcessings( &System::ModulatedFileIn );
 
-	_fileIn.Stop();
-	_fileIn.Start();
+	mFileIn.Stop();
+	mFileIn.Start();
 	std::cout << "modulatedfileinplusfilein" << std::endl;
 	DoProcessings( &System::ModulatedFileInPlusFileIn);
 

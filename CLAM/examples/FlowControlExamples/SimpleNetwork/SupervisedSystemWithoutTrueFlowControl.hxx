@@ -20,19 +20,19 @@ class SupervisedSystemWithoutTrueFlowControl
 
 	class NetworkConfigurationMethodWrapper
 	{
-		SupervisedSystemWithoutTrueFlowControl* _parent;
-		NetworkConfigurationMethod _configurationMethod;
+		SupervisedSystemWithoutTrueFlowControl* mParent;
+		NetworkConfigurationMethod mConfigurationMethod;
 	public:
 		NetworkConfigurationMethodWrapper(
 			SupervisedSystemWithoutTrueFlowControl* parent,
 			NetworkConfigurationMethod confMethod ) :
-			_parent(parent),
-			_configurationMethod(confMethod)
+			mParent(parent),
+			mConfigurationMethod(confMethod)
 		{}
 		
 		void Configure()
 		{ 
-			(_parent->*_configurationMethod)();
+			(mParent->*mConfigurationMethod)();
 		}
 	};
 
@@ -75,25 +75,25 @@ private:
 	void ConfigureModulatedFileInPlusFileIn();
 
 	//other system parameters
-	std::string _fileInName;
-	std::string _fileOutName;
-	int _frameSize;
-	int _maxFramesToProcess;
-	bool _hasAudioOut;
+	std::string mFileInName;
+	std::string mFileOutName;
+	int mFrameSize;
+	int mMaxFramesToProcess;
+	bool mHasAudioOut;
 
-	CLAM::Network _network;
+	CLAM::Network mNetwork;
 
-	NetworkConfigurationMethods _configurations;
+	NetworkConfigurationMethods mConfigurations;
 
-	CLAM::AudioManager _audioManager;
+	CLAM::AudioManager mAudioManager;
 
 	//configurations
-	CLAM::OscillatorConfig _generatorCfg;
-	CLAM::OscillatorConfig _modulatorCfg;
-	CLAM::AudioFileConfig _fileInCfg;
-	CLAM::AudioFileConfig _fileOutCfg;
-	CLAM::AudioIOConfig _audioOutCfg;
-	CLAM::AudioMixerConfig _mixerCfg;
+	CLAM::OscillatorConfig mGeneratorCfg;
+	CLAM::OscillatorConfig mModulatorCfg;
+	CLAM::AudioFileConfig mFileInCfg;
+	CLAM::AudioFileConfig mFileOutCfg;
+	CLAM::AudioIOConfig mAudioOutCfg;
+	CLAM::AudioMixerConfig mMixerCfg;
 };
 
 } //namespace

@@ -28,6 +28,8 @@
 
 namespace CLAM {
 
+class InPort;
+
 //free method to link two Processing
 	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
 				  Processing* inProc, std::string inControl);
@@ -73,6 +75,8 @@ public:
 	}
 
 	const std::string& GetName(void) const { return mName; }
+	bool IsConnected();
+	bool IsConnectedTo( InControl & );
 };
 
 

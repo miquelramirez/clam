@@ -18,13 +18,13 @@ private:
 
 public:
 	enum {NVoices = 4};
-	Transformations _subPOsTransformation;
-	InControlTmpl<ThisProc> _in;
-	InControlTmpl<ThisProc> _in2;
+	Transformations mSubPOsTransformation;
+	InControlTmpl<ThisProc> mIn;
+	InControlTmpl<ThisProc> mIn2;
 
-	InControlTmplArray<ThisProc> _inArray;
+	InControlTmplArray<ThisProc> mInArray;
 
-	InControlTmplArray<ThisProc> _voiceControl;
+	InControlTmplArray<ThisProc> mVoiceControl;
 
 	
 	MyProcessingWithControlArray();

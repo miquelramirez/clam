@@ -1,5 +1,6 @@
 #include "CSaltoSynthFrame.hxx"
 #include "Err.hxx"
+#include "SpectrumConfig.hxx"
 
 namespace CLAM
 {

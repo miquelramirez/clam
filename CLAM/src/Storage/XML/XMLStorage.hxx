@@ -57,6 +57,7 @@ public:
 	 * Retrieves the object from the current storage tree point.
 	 */
 	virtual bool Load(Storable * object);
+
 // Configuration
 	/**
 	 * Changes whether to output pretty formated XML or not.
@@ -95,22 +96,6 @@ private:
 	 */
 	XMLStorageImplementation * NewXMLImplementation();
 
-// Deprecated
-private:
-	/**
-	 * @deprecated Use the default constructor
-	 */
-	XMLStorage(const char * rootElementName);
-	/**
-	 * (Expected to be changed) Dump the storage contents to a stream.
-	 * @deprecated by Dump
-	 */
-	void dumpOn(std::ostream & aStream);
-	/**
-	 * (Expected to be changed) Get the storage contents from a stream.
-	 * @deprecated by Restore
-	 */
-	void _restoreFrom(char * fileName);
 };
 
 }

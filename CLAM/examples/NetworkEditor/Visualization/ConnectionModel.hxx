@@ -5,6 +5,11 @@
 #include "Signalv2.hxx"
 #include <string>
 
+namespace CLAM
+{
+	class Processing;
+}
+
 namespace CLAMVM
 {
 	class ConnectionModel

@@ -23,35 +23,20 @@
 #define _SpectralEnvelope_Extract_
 
 #include "Processing.hxx"
-#include "DynamicType.hxx"
-#include "Spectrum.hxx"
-#include "SpectralPeak.hxx"
-#include "SpectralPeakArray.hxx"
+#include "SpectralEnvelopeExtractConfig.hxx"
 
 namespace CLAM {
 
+	class Spectrum;
+	class SpectralPeakArray;
+	class Storage;
+	class ProcessingConfig;
 
 	/** Configuration class for SpectralEnvelopeExtract objects
 	 *  @see ProcessingConfig, SpectralEnvelopeExtract
 	 */
-	class SpectralEnvelopeExtractConfig: public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralEnvelopeExtractConfig, 2,ProcessingConfig);
-		/** Name of the SpectralEnvelopeExtract object*/
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		/** Type of interpolation for resultant Spectrum BPF*/
-		DYN_ATTRIBUTE (1, public, EInterpolation, InterpolationType);
-		
-	protected:
-		void DefaultInit();
-	public:
-	  /** Initialize configuration object with default values (name 'SpectralEnvelopeExtract', 513 bands, Magnitude treshold set to -80 and MaxSpectralPeaks setted to 100
-	   */
-		void DefaultValues();
-		~SpectralEnvelopeExtractConfig(){};
-		
- 	}; 
+	/* SpectralEnvelopeExtractConfig moved to SpectralEnvelopeExtractConfig.hxx */
+
 
 	/**
 	 *	Processing to extract spectral envelope from an array of spectral peaks.

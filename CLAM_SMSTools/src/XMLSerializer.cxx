@@ -23,6 +23,7 @@
 #include "XMLSerializer.hxx"
 
 #include "Segment.hxx"
+#include "SpecTypeFlags.hxx"
 
 using namespace CLAM;
 
@@ -39,14 +40,15 @@ bool XMLSerializer::DoLoad( const char* fileName, Segment& segment )
 
 bool XMLSerializer::DoStore( const char* fileName, Segment& segment )
 {
-	segment.RemoveAudio();
-	segment.UpdateData();
+	Segment tmpSegment=segment;
+	tmpSegment.RemoveAudio();
+	tmpSegment.UpdateData();
 	int i=0;
-	int nFrames=segment.GetnFrames();
+	int nFrames=tmpSegment.GetnFrames();
 
 	for( i = 0; i < nFrames; i++ )
 	{
-		Frame& tmpFrame = segment.GetFrame( i );
+		Frame& tmpFrame = tmpSegment.GetFrame( i );
 		tmpFrame.RemoveAudioFrame(  ); //windowed audio frame
 		tmpFrame.RemoveSinusoidalAudioFrame(  );
 		tmpFrame.RemoveResidualAudioFrame(  );
@@ -58,16 +60,18 @@ bool XMLSerializer::DoStore( const char* fileName, Segment& segment )
 		tmpFrame.GetResidualSpec(  ).SetType( tmpFl );
 	}
 
-	mXMLStorage.Dump( segment, "Segment", fileName );
+	mXMLStorage.Dump( tmpSegment, "Segment", fileName );
 
 	//Now we add Spectrum back, it is needed for Melody analysis
-	for( i = 0; i < nFrames; i++ )
+/*	for( i = 0; i < nFrames; i++ )
 	{
 		Frame& tmpFrame = segment.GetFrame( i );
 		tmpFrame.AddSpectrum(  );//this could be kept for direct IFFT
 		tmpFrame.UpdateData(  );
 
 	}
+*/
+
 
 	return true;
 }

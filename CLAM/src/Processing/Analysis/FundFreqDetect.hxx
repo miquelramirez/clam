@@ -19,65 +19,19 @@
  *
  */
 
-#ifndef _FUNDFREQ_DETECT__
-#define _FUNDFREQ_DETECT__
+#ifndef _FundFreqDetect__
+#define _FundFreqDetect__
 
+#include "DataTypes.hxx"
 #include "Processing.hxx"
-#include "DynamicType.hxx"
-#include "Spectrum.hxx"
-#include "SpectralPeak.hxx"
-#include "SpectralPeakArray.hxx"
-#include "Fundamental.hxx"
+#include "FundFreqDetectConfig.hxx"
 
 namespace CLAM {
 
-	/**
-	 * Config class for FundFreqDetect Processing.
-	 */
-	class FundFreqDetectConfig: public ProcessingConfig
-	{
-	public:
-	  DYNAMIC_TYPE_USING_INTERFACE (FundFreqDetectConfig, 18,ProcessingConfig);
-	  /** Name. */
-	  DYN_ATTRIBUTE (0, public, std::string, Name);
-	  /** */
-	  DYN_ATTRIBUTE (1,public,TData, ReferenceFundFreq);
-	  /** Lowest frequency allowed for the fundamental. */
-	  DYN_ATTRIBUTE (2,public,TData, LowestFundFreq); 
-	  /** Highest frequency allowed for the fundamental. */
-	  DYN_ATTRIBUTE (3,public,TData, HighestFundFreq); 
-	  /** Maximum magnitude difference allowed between candidates (default: 30dB). */
-	  DYN_ATTRIBUTE (4,public,TData, MaxCandMagDiff); 
-	  /** Maximun allowed Two-Way Mismatch (TWM) error (default: 10). */
-	  DYN_ATTRIBUTE (5,public,TData, MaxFundFreqError);
-	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 0.5. */
-	  DYN_ATTRIBUTE (6,public,TData, PMp); 
-	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 1.4. */
-	  DYN_ATTRIBUTE (7,public,TData, PMq );
-	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 0.5. */
-	  DYN_ATTRIBUTE (8,public,TData, PMr );
-	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 0.5. */
-	  DYN_ATTRIBUTE (9,public,TData, MPp );
-	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 1.4. */
-	  DYN_ATTRIBUTE (10,public,TData, MPq );
-	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 0.5. */
-	  DYN_ATTRIBUTE (11,public,TData, MPr);
-	  /** Harmonic peaks to weight error (default: 10). */
-	  DYN_ATTRIBUTE (12,public,TSize, PMnPeaks); 
-	  /** Harmonic peaks to weight error (default: 10). */
-	  DYN_ATTRIBUTE (13,public,TSize, MPnPeaks);
-	  /** Harmonic error contributions (default: 1). */
-	  DYN_ATTRIBUTE (14,public,TData, PMCont );
-	  /** Harmonic error contributions (default: 1). */
-	  DYN_ATTRIBUTE (15,public,TData, MPCont );
-	  /** Number of integer frequency ratios considered as candidates (default: 5). */
-	  DYN_ATTRIBUTE (16,public,TSize, NInt);
-	  /** Maximum number of candidates. */
-	  DYN_ATTRIBUTE (17,public,TSize, NMaxCandidates); 
-	  void DefaultInit();
-	  void DefaultValues();
-	  ~FundFreqDetectConfig(){};
-	};
+	class Storage;
+	class ProcessingConfig;
+	class Fundamental;
+	class SpectralPeakArray;
 
 	/**    This class estimates a fundamental frequency value
 	*     in the spectral domain for one single spectral Frame.
@@ -89,65 +43,65 @@ namespace CLAM {
 	*     @author emilia.gomez@iua.upf.es
 	*     @see Fundamental SpectralPeakArray
 	*/
-class FundFreqDetect: public Processing {
-	mutable FundFreqDetectConfig mConfig;
+	class FundFreqDetect: public Processing {
+		mutable FundFreqDetectConfig mConfig;
 
-	const char *GetClassName() const {return "FundFreqDetect";}
+		const char *GetClassName() const {return "FundFreqDetect";}
 
-	bool ConcreteConfigure(const ProcessingConfig&);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
-public:
-	FundFreqDetect();
+	public:
+		FundFreqDetect();
 
-	FundFreqDetect(const FundFreqDetectConfig &c);
+		FundFreqDetect(const FundFreqDetectConfig &c);
 
-	~FundFreqDetect();
+		~FundFreqDetect();
 
-	const ProcessingConfig &GetConfig() const;
+		const ProcessingConfig &GetConfig() const;
 
-	bool Do(void);
+		bool Do(void);
 
-	/** Do function */
-	bool Do(SpectralPeakArray& input,Fundamental& fund);
+		/** Do function */
+		bool Do(SpectralPeakArray& input,Fundamental& fund);
 
-	bool SetPrototypes(const SpectralPeakArray& inputs);
-	bool SetPrototypes();
+		bool SetPrototypes(const SpectralPeakArray& inputs);
+		bool SetPrototypes();
 
-	bool UnsetPrototypes();
+		bool UnsetPrototypes();
 
-	bool MayDisableExecution() const {return true;}
+		bool MayDisableExecution() const {return true;}
 
-	void StoreOn(Storage &s) {};
+		void StoreOn(Storage &s) {};
 
-private:
+	private:
 
-	double WeightCandidate(double freq, double maxMag,SpectralPeakArray&) const;
-	int GetClosestPeak(double freq, int peak,SpectralPeakArray& peaks) const;
-	double GetClosestHarmonic(double peak, double fundfreq) const;
-	bool IsGoodCandidate(double freq) const;
+		double WeightCandidate(double freq, double maxMag,SpectralPeakArray&) const;
+		int GetClosestPeak(double freq, int peak,SpectralPeakArray& peaks) const;
+		double GetClosestHarmonic(double peak, double fundfreq) const;
+		bool IsGoodCandidate(double freq) const;
 
-	/** Maximum number of candidates*/
-	TData mnMaxCandidates;
-	/** Reference Fundamental Frequency */
-	TData mReferenceFundFreq;
-	TData mLowestFundFreq;
-	TData mHighestFundFreq;
-  
-	/** Max magnitude offset allowed between candidates (30 dB default) */
-	TData mMaxCandMagDiff; 
+		/** Maximum number of candidates*/
+		TData mnMaxCandidates;
+		/** Reference Fundamental Frequency */
+		TData mReferenceFundFreq;
+		TData mLowestFundFreq;
+		TData mHighestFundFreq;
 
-	/** Maximun TWM error accepted (10 default) */
-	TData mMaxFundFreqError; 
-	/** Number of integer frequency ratios considered (5 by default) as candidates */
-	TSize mnInt; 
+		/** Max magnitude offset allowed between candidates (30 dB default) */
+		TData mMaxCandMagDiff; 
 
-	/** Parameters to weight candidates */
-	/** Harmonic Error Constants */
-	TData mPMp, mPMq, mPMr, mMPp, mMPq, mMPr; // default values :0.5, 1.4, 0.5, 0.5, 1.4, 0.5
-	TSize mPMnPeaks, mMPnPeaks;   // Harmonic peaks to weight error, 10 by default
-	TData mPMCont, mMPCont; // Harmonic error contributions. Default: 1, 1
-};
+		/** Maximun TWM error accepted (10 default) */
+		TData mMaxFundFreqError; 
+		/** Number of integer frequency ratios considered (5 by default) as candidates */
+		TSize mnInt; 
 
-};// namespace CLAM
+		/** Parameters to weight candidates */
+		/** Harmonic Error Constants */
+		TData mPMp, mPMq, mPMr, mMPp, mMPq, mMPr; // default values :0.5, 1.4, 0.5, 0.5, 1.4, 0.5
+		TSize mPMnPeaks, mMPnPeaks;   // Harmonic peaks to weight error, 10 by default
+		TData mPMCont, mMPCont; // Harmonic error contributions. Default: 1, 1
+	};
+
+} // namespace CLAM
 
 #endif // _FUNFREQ_DETECT_

@@ -10,6 +10,7 @@
 #include "AudioAdapter.hxx"
 #include "SinTracksAdapter.hxx"
 #include "SpectralPeakArrayAdapter.hxx"
+#include "FundamentalAdapter.hxx"
 
 #include <FL/Fl_Widget.H>
 
@@ -28,6 +29,7 @@ namespace CLAMVM
 	class Fl_SMS_Spectrum;
 	class Fl_SMS_SinTracks_Browser;
 	class Fl_SMS_SpectrumAndPeaks;
+	class Fl_SMS_FundFreq_Browser;
 
 	class SMS_DataExplorer
 	{
@@ -43,15 +45,18 @@ namespace CLAMVM
 		SigSlot::Slotv1< const CLAM::Audio& >     NewSynthesizedSinusoidal;
 		SigSlot::Slotv1< const CLAM::Audio& >     NewSynthesizedResidual;
 		SigSlot::Signalv1< double >               SelectedTime;
+		SigSlot::Slotv2< CLAM::TData, CLAM::TData> SetFundFreqRangeHint;
 
 		SigSlot::Slotv0                           ShowInputAudio;
 		SigSlot::Slotv0                           ShowSinTracks;
+		SigSlot::Slotv0                           ShowFundFreq;
 		SigSlot::Slotv0                           ShowSpectrumAndPeaks;
 		SigSlot::Slotv0                           ShowSinusoidalSpectrum;
 		SigSlot::Slotv0                           ShowResidualSpectrum;
 		SigSlot::Slotv0                           ShowSynthesizedAudio;
 		SigSlot::Slotv0                           ShowSynthesizedSinusoidal;
 		SigSlot::Slotv0                           ShowSynthesizedResidual;
+		
 
 		void SetCanvas( Fl_Smart_Tile* pCanvas );
 		void CloseAll();
@@ -68,9 +73,11 @@ namespace CLAMVM
 		void OnNewSynthesizedSinusoidal( const CLAM::Audio& );
 		void OnNewSynthesizedResidual( const CLAM::Audio& );
 		void OnSelectedTimeChanged( double time  );
+		void OnNewFundFreqRangeHint( CLAM::TData lower, CLAM::TData higher );
 
 		void OnShowInputAudio();
 		void OnShowSinTracks();
+		void OnShowFundFreq();
 		void OnShowSpectrumAndPeaks();
 		void OnShowSinusoidalSpectrum();
 		void OnShowResidualSpectrum();
@@ -91,6 +98,8 @@ namespace CLAMVM
 
 		SinTracksAdapter             mSinusoidalTracksAdapter;
 		
+		FundamentalAdapter           mFundFreqAdapter;
+
 		SpectralPeakArrayAdapter     mPeakArrayAdapter;
 
 		AudioAdapter                 mOriginalAudioAdapter;
@@ -107,9 +116,12 @@ namespace CLAMVM
 		Fl_SMS_Spectrum*                 mpSinusoidalSpectrum;
 		Fl_SMS_Spectrum*                 mpResidualSpectrum;
 		Fl_SMS_SinTracks_Browser*        mpSegmentSinTracks;
+		Fl_SMS_FundFreq_Browser*         mpFundFreqBrowser;
 		Fl_Smart_Tile*                   mpCanvas;
 
 		double                           mCurrentFrameCenterTime;
+		CLAM::TData                      mHigherF0Hint;
+		CLAM::TData                      mLowerF0Hint;
 	};
 
 }

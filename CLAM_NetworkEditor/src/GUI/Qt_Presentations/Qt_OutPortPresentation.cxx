@@ -1,7 +1,6 @@
 
 #include "Qt_OutPortPresentation.hxx"
 #include <qpainter.h>
-#include <iostream>
 
 #include <qtooltip.h>
 namespace NetworkGUI
@@ -24,13 +23,6 @@ void Qt_OutPortPresentation::OnNewName(const std::string& name)
 	QToolTip::add( this, QString( mName.c_str() ));
 }
 
-/*
-void Qt_OutPortPresentation::OnNewDataType(const std::string& name)
-{
-	mDataType = name;
-}
-*/
-
 void Qt_OutPortPresentation::Show()
 {
 	show();
@@ -52,12 +44,6 @@ void Qt_OutPortPresentation::paintEvent( QPaintEvent * )
 void Qt_OutPortPresentation::mousePressEvent( QMouseEvent *m)
 {
 	AcquireOutPortClicked.Emit(this);
-}
-
-void Qt_OutPortPresentation::mouseReleaseEvent( QMouseEvent *m)
-{
-//	AcquireOutPortClicked.Emit(this);
-	std::cout << "mouse release" << std::endl;
 }
 
 } // namespace NetworkGUI

@@ -26,6 +26,9 @@
 #include "mtgsstream.h" // An alias for <sstream>
 
 #include "ErrProcessingObj.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
 
 namespace CLAM {
 
@@ -38,25 +41,28 @@ namespace CLAM {
 		
 		CopyAsConcreteConfig(mConfig, c);
 		if (mConfig.HasAudioSize()) {
-			if (mConfig.GetAudioSize()<0)
-				throw(ErrProcessingObj("Wrong (negative) Size in FFT Configuration.",this));
+			CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
 			mSize = mConfig.GetAudioSize();
 		}
+
+		CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
 
 		mState=sOther;
 		mComplexflags.bComplex=1;
 		mComplexflags.bMagPhase=0;
-		if (mSize > 0) {
-			if (mSize != oldSize) {
-				delete [] fftbuffer;
-				fftbuffer = new TData[mSize];
-				mpPlan = rfftw_create_plan (mSize , FFTW_REAL_TO_COMPLEX, FFTW_ESTIMATE);
-			}
-			return true;
+		if (mSize == 0) 
+		{
+			fftbuffer = 0;
+			mpPlan=0;
+			return false;
 		}
-		fftbuffer = 0;
-		mpPlan=0;
-		return false;
+		if (mSize == oldSize)
+			return true;
+
+		delete [] fftbuffer;
+		fftbuffer = new TData[mSize];
+		mpPlan = rfftw_create_plan (mSize , FFTW_REAL_TO_COMPLEX, FFTW_ESTIMATE);
+		return true;
 	}
 
 	FFT_rfftw::FFT_rfftw()
@@ -119,7 +125,7 @@ namespace CLAM {
 			if (flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF)
 				mState=sOther;
 			else
-				throw(ErrProcessingObj("FFT_rfftw: SetPrototypes(...): No Spectrum Attributes!",this));
+				CLAM_ASSERT(false, "FFT_rfftw: SetPrototypes(...): No Spectrum Attributes!");
 
 		return true;
 	}
@@ -167,7 +173,7 @@ namespace CLAM {
 			RFFTWToOther(out);
 			break;
 		default:
-			throw(ErrProcessingObj("FFT_rfftw: Do(): Inconsistent state",this));
+			CLAM_ASSERT(false, "FFT_rfftw: Do(): Inconsistent state");
 		}
 		out.SetSpectralRange(in.GetSampleRate()/2);
 		return true;
@@ -177,7 +183,7 @@ namespace CLAM {
 	{
 		// @todo Check port prototypes, and set the state (or de
 		// backup state if disabled) acordingly.
-		throw(ErrProcessingObj("FFT_rfftw::SetPrototypes: Not implemented.",this));
+		CLAM_ASSERT(false,"FFT_rfftw::SetPrototypes: Not implemented.");
 	}
 
 

@@ -30,40 +30,40 @@
 namespace CLAMVM
 {
 
-		class Fl_X_Axis;
-		class Fl_Y_Axis;
-		class Fl_ZoomSlider;
-		class Fl_GridLayout;
-		class Fl_Gl_Single_Display;
+	class Fl_X_Axis;
+	class Fl_Y_Axis;
+	class Fl_ZoomSlider;
+	class Fl_GridLayout;
+	class Fl_Gl_Single_Display;
 
-		class Fl_SinTracks : public SinTracksPresentation, public Fl_Window
-		{
-		private:
-				Fl_GridLayout*            mLayout;
-				Fl_X_Axis*                mXAxis;
-				Fl_Y_Axis*                mYAxis;
-				Fl_ZoomSlider*            mXSlider;
-				Fl_ZoomSlider*            mYSlider;
-				Fl_Gl_Single_Display*     mDisplay;
-				SinTracksRM               mDrawMgr;
+	class Fl_SinTracks : public SinTracksPresentation, public Fl_Window
+	{
+	private:
+		Fl_GridLayout*            mLayout;
+		Fl_X_Axis*                mXAxis;
+		Fl_Y_Axis*                mYAxis;
+		Fl_ZoomSlider*            mXSlider;
+		Fl_ZoomSlider*            mYSlider;
+		Fl_Gl_Single_Display*     mDisplay;
+		SinTracksRM               mDrawMgr;
 
-		protected:
-				virtual void OnNewTrackList( SineTrackList& list, TSize framelen ); 
+	protected:
+		virtual void OnNewTrackList( SineTrackList& list, TSize framelen ); 
 				
-				virtual void OnNewRange( TData );
+		virtual void OnNewRange( TData );
 
-				virtual void OnNewDuration( TTime begin, TTime end );
+		virtual void OnNewDuration( TTime begin, TTime end );
 
-		public:
+	public:
 
-				Fl_SinTracks( int X, int Y, int W, int H, const char* label = 0 );
-				~Fl_SinTracks();
+		Fl_SinTracks( int X, int Y, int W, int H, const char* label = 0 );
+		~Fl_SinTracks();
 
-				virtual void resize( int X, int Y, int W, int H );
-				virtual void Show();
-				virtual void Hide();
+		virtual void resize( int X, int Y, int W, int H );
+		virtual void Show();
+		virtual void Hide();
 
-		};
+	};
 
 }
 

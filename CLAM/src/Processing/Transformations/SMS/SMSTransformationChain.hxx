@@ -55,7 +55,7 @@ namespace CLAM {
 	class SMSTransformationChain:public ProcessingChain<Segment>
 	{
 	public:
-		
+				
 		/** Default constructor. */
 		SMSTransformationChain(){}
 		/** Virtual Destructor. */
@@ -66,16 +66,20 @@ namespace CLAM {
 		*/
 		bool Do()
 		{
-			if(IsLastFrame()) return false;
-			bool result=ProcessingChain<Segment>::Do();
+			if(IsLastFrame())
+			{
+				return false;
+			}
 			NextFrame();
-			return result;
+			return ProcessingChain<Segment>::Do();
 		}
 
 		bool ConcreteStart()
 		{
 			bool ret= ProcessingChain<Segment>::ConcreteStart();
-			mpTmpData->mCurrentFrameIndex=0;
+			int i;
+			for(i=0;i<mpTmpDataArray.Size();i++)
+				mpTmpDataArray[i]->mCurrentFrameIndex=0;
 			mChainInput.GetData().mCurrentFrameIndex=0;
 			return ret;
 		}
@@ -84,17 +88,21 @@ namespace CLAM {
 		/** Helper method for updating frame counters both in ports and in internal data*/
 		void NextFrame()
 		{
-			mpTmpData->mCurrentFrameIndex++;
 			mChainInput.GetData().mCurrentFrameIndex++;
-			if(!mChainInput.IsConnectedTo(mChainOutput))
-				mChainOutput.GetData().mCurrentFrameIndex++;
 		}
 		/** Returns true if current frame pointer at input port is pointing past the last
 		 *	frame in the segment
 		 */
 		bool IsLastFrame()
 		{
-			return mChainInput.GetData().mCurrentFrameIndex>=mChainInput.GetData().GetnFrames();
+			iterator obj;
+			for(obj=composite_begin();obj!=composite_end();obj++)
+			{
+				SMSTransformation* transf=static_cast<SMSTransformation*>((*obj));
+				if(!transf->IsLastFrame()) return false;
+			}
+			return true;
+
 		}
 
 

@@ -33,6 +33,8 @@
 #include "Storage.hxx"
 
 
+#include "OverlapAddConfig.hxx"
+
 namespace CLAM {
 
 	class OverlapAdd;
@@ -50,20 +52,8 @@ namespace CLAM {
 	 *  Currently, HopSize must be hop size, FrameSize must be hop size and 
 	 *  BufferSize must be twice hop size (as it will do 50% overlap).
 	 */
-	class OverlapAddConfig: public CLAM::ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (OverlapAddConfig, 4, CLAM::ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, TSize, HopSize);
-		DYN_ATTRIBUTE (2, public, TSize, FrameSize);
-		DYN_ATTRIBUTE (3, public, TSize, BufferSize);
+	/* OverlapAddConfig moved to OverlapAddConfig.hxx */
 
-		~OverlapAddConfig(){};
-	protected:
-		void DefaultInit();
-		void DefaultValues();
-	};
 
 	/** OverlapAdd Processing class.
 	 *  First half of the input buffer or audio (which is of buffer size) is added to 

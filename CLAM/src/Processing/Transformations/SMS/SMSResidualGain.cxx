@@ -20,6 +20,7 @@
  */
 
 #include "SMSResidualGain.hxx"
+#include "Factory.hxx"
 
 using namespace CLAM;
 
@@ -47,3 +48,5 @@ bool SMSResidualGain::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<CLAM::SMSResidualGain> regtSMSResidualGain( "SMSResidualGain" );

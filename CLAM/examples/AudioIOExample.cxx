@@ -21,7 +21,6 @@
 
 #include "AudioIO.hxx"
 #include "AudioIn.hxx"
-#include "AudioFileIn.hxx"
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
 
@@ -124,17 +123,15 @@ bool Tremolo::Do(const Audio &in_audio, Audio &out_audio)
 class AudioIOExampleConfig : public ProcessingConfig {
 public:
 
-		DYNAMIC_TYPE_USING_INTERFACE (AudioIOExampleConfig, 9, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (AudioIOExampleConfig, 7, ProcessingConfig);
 
 		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, std::string, Filename);
-		DYN_ATTRIBUTE (2, public, bool, UseAudioIn);
-		DYN_ATTRIBUTE (3, public, TData, FirstTremoloFreq );
-		DYN_ATTRIBUTE (4, public, TData, FirstTremoloStartingPhase );
-		DYN_ATTRIBUTE (5, public, TData, FirstTremoloMaxAtenuation );
-		DYN_ATTRIBUTE (6, public, TData, SecondTremoloFreq );
-		DYN_ATTRIBUTE (7, public, TData, SecondTremoloStartingPhase );
-		DYN_ATTRIBUTE (8, public, TData, SecondTremoloMaxAtenuation );
+		DYN_ATTRIBUTE (1, public, TData, FirstTremoloFreq );
+		DYN_ATTRIBUTE (2, public, TData, FirstTremoloStartingPhase );
+		DYN_ATTRIBUTE (3, public, TData, FirstTremoloMaxAtenuation );
+		DYN_ATTRIBUTE (4, public, TData, SecondTremoloFreq );
+		DYN_ATTRIBUTE (5, public, TData, SecondTremoloStartingPhase );
+		DYN_ATTRIBUTE (6, public, TData, SecondTremoloMaxAtenuation );
 
 private:
 	void DefaultInit();
@@ -145,8 +142,6 @@ void AudioIOExampleConfig::DefaultInit()
 {
 	AddAll();
 	UpdateData();
-	SetFilename("foo.wav");
-	SetUseAudioIn(false);
 
 	SetFirstTremoloFreq( 50.0 );
 	SetFirstTremoloStartingPhase( 0 );
@@ -162,7 +157,6 @@ class AudioIOExample : public ProcessingComposite {
 
 	AudioIn     mInput;
 	AudioIn     mInput2;
-	AudioFileIn mFileIn;
 	AudioOut    mOutput;
 	AudioOut    mOutput2;
 	Tremolo     mTremoloApplier;
@@ -211,11 +205,6 @@ void AudioIOExample::AttachChildren()
 {
 	mInput.SetParent(this);
 	mInput2.SetParent(this);
-	CLAM_DEBUG_ASSERT(mConfig.HasUseAudioIn(), "UseAudioIn flag is not added in the mConfig");
-	if (!mConfig.GetUseAudioIn()) {
-		// if flag UseAudioIn is not set, we don't attach mFileIn, so not to make further Start/Stops
-		mFileIn.SetParent(this);
-	}
 	mTremoloApplier.SetParent(this);
 	mTremoloApplier2.SetParent(this);
 	mOutput.SetParent(this);
@@ -242,17 +231,6 @@ bool AudioIOExample::ConfigureChildren()
  	cfg.SetName("output2");
  	cfg.SetChannelID(1);
  	mOutput2.Configure(cfg);
-
-	if (!mConfig.GetUseAudioIn()) {
-		AudioFileConfig fcfg;
-		fcfg.SetName("audio_file_in");
-		fcfg.SetFilename(mConfig.GetFilename());
-		fcfg.SetFiletype(EAudioFileType::eWave);
-		CLAM_DEBUG_ASSERT(mSize>0, "no positive frame size");
-		fcfg.SetFrameSize(mSize);
-		fcfg.SetChannels(1);
-		mFileIn.Configure(fcfg);
-	}
 
 	TremoloConfig tcfg;
 	tcfg.SetFrequency(mConfig.GetFirstTremoloFreq());
@@ -312,25 +290,16 @@ AudioIOExample::AudioIOExample(const AudioIOExampleConfig &cfg)
 
 bool AudioIOExample::Do()
 {
-	bool useAudioIn = mConfig.GetUseAudioIn();
-	if (useAudioIn) {
-		while (1) {
-			mInput.Do(mInputData);
-			mInput2.Do(mInputData2);
-			mTremoloApplier.Do(mInputData,mOutputData);
-			mTremoloApplier2.Do(mInputData2,mOutputData2);
-			mOutput.Do(mOutputData);
-			mOutput2.Do(mOutputData2);
-		}
-	} else { //use AudioFileIn
-		while (!mFileIn.Done()) {
-			mFileIn.Do(mInputData);
-			mTremoloApplier.Do(mInputData,mOutputData);
-			mTremoloApplier2.Do(mInputData2,mOutputData2);
-			mOutput.Do(mOutputData);
-			mOutput2.Do(mOutputData);
-		}
+	while (1) 
+	{
+		mInput.Do(mInputData);
+		mInput2.Do(mInputData2);
+		mTremoloApplier.Do(mInputData,mOutputData);
+		mTremoloApplier2.Do(mInputData2,mOutputData2);
+		mOutput.Do(mOutputData);
+		mOutput2.Do(mOutputData2);
 	}
+
 	return true;
 }
 

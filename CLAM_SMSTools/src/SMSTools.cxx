@@ -37,6 +37,7 @@ namespace CLAMGUI
 	{
 		TimeSelected.Wrap( this, &SMSTools::OnNewTime );
 		mExplorer.SelectedTime.Connect( TimeSelected );
+		SetScore.Wrap( this, &SMSTools::OnNewScore );
 	}
 
 	SMSTools::~SMSTools()
@@ -46,26 +47,53 @@ namespace CLAMGUI
 
 	void SMSTools::Run(void)
 	{
-		Fl::get_system_colors();
+		// FLTK look and feel  settings
 
+		Fl::get_system_colors();
+		
+		Fl::set_boxtype(FL_UP_BOX,FL_THIN_UP_BOX);
+		Fl::set_boxtype(FL_DOWN_BOX,FL_THIN_DOWN_BOX);
+		Fl::set_boxtype(FL_UP_FRAME,FL_THIN_UP_FRAME);
+		Fl::set_boxtype(FL_DOWN_FRAME,FL_THIN_DOWN_FRAME);
+		
 		mUI = new UserInterface;
 		mUI->mSMS = this;
 		mUI->Init(  );
-
-		// FLTK look and feel ( and tooltip ) settings
-
-		Fl::get_system_colors();
-		Fl::set_boxtype(FL_UP_BOX,FL_THIN_UP_BOX);
-		Fl::set_boxtype(FL_DOWN_BOX,FL_THIN_DOWN_BOX);
+		
+		// FLTK Tooltip settings
 
 		Fl_Tooltip::delay( 0.01 );
 		Fl_Tooltip::size( 10 );
 		Fl_Tooltip::enable();
 
 		mUI->mWindow->show();
-	
+		/* MDB: TODO we would rather have the window manager position
+		** the mWindow, but we want to center the AboutWindow on top
+		** of it, and at this point window manager has not placed the
+		** window yet, so the centering will fail. The real solution
+		** would be do wait until the mWindow has been mapped.. How do
+		** we do that? */
+		mUI->mWindow->position(20,40);
+		mUI->AboutWindow();
+
 		Fl::run();
 	}
+
+	void SMSTools::OnNewScore( const SMSTransformationChainConfig& cfg )
+	{
+		mTransformationScore = cfg;
+		mHaveTransformationScore = true;
+		ScoreChanged.Emit( mTransformationScore );
+
+		mUI->ApplyTransformationReadyState();
+	}
+
+	void SMSTools::LoadTransformationScore( const std::string& inputFilename )
+	{
+		SMSBase::LoadTransformationScore( inputFilename );
+		ScoreChanged.Emit( mTransformationScore );
+	}
+
 	
 	void SMSTools::OnNewTime( double value )
 	{
@@ -169,7 +197,7 @@ namespace CLAMGUI
 
 	bool SMSTools::LoadAnalysis()
 	{
-		char* fileName = fl_file_chooser("Choose file to load...", "{*.xml|*.sdif}", "");
+		char* fileName = fl_file_chooser("Choose file to load...", "*.xml|*.sdif", "");
 
 		if ( !fileName )
 			return false;
@@ -179,7 +207,7 @@ namespace CLAMGUI
 
 	void SMSTools::StoreAnalysis()
 	{
-		char* fileName = fl_file_chooser("Choose file to store on...", "{*.xml|*.sdif}", "");
+		char* fileName = fl_file_chooser("Choose file to store on...", "*.xml|*.sdif", "");
 
 		if ( !fileName )
 			return;

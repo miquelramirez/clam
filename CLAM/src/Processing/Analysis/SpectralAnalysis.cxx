@@ -19,6 +19,9 @@
  *
  */
 
+#include "Segment.hxx"
+#include "Frame.hxx"
+#include "SpectrumConfig.hxx"
 #include "SpectralAnalysis.hxx"
 
 using namespace CLAM;

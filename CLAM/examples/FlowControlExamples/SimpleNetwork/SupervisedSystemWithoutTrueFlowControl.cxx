@@ -17,14 +17,14 @@ SupervisedSystemWithoutTrueFlowControl::SupervisedSystemWithoutTrueFlowControl (
 	int maxFramesToProcess, 
 	bool hasAudioOut )	:
 
-	_audioManager(44100, frameSize),
-	_frameSize(frameSize), 
-	_maxFramesToProcess(maxFramesToProcess),
-	_hasAudioOut(hasAudioOut),
-	_fileInName(fileIn),
-	_fileOutName(fileOut)
+	mAudioManager(44100, frameSize),
+	mFrameSize(frameSize), 
+	mMaxFramesToProcess(maxFramesToProcess),
+	mHasAudioOut(hasAudioOut),
+	mFileInName(fileIn),
+	mFileOutName(fileOut)
 {
-	_network.AddFlowControl( new CLAM::PushFlowControl( _frameSize ));
+	mNetwork.AddFlowControl( new CLAM::PushFlowControl( mFrameSize ));
 	ConfigureAndAddProcessingsToNetwork();
 	RegisterAllNetworkConfigurationMethods();
 }
@@ -32,13 +32,13 @@ SupervisedSystemWithoutTrueFlowControl::SupervisedSystemWithoutTrueFlowControl (
 
 void SupervisedSystemWithoutTrueFlowControl::ConfigureAndAddProcessingsToNetwork()
 {
-	_network.AddProcessing("file-in", new CLAM::AudioFileIn( CreateFileInCfg() ));
-	_network.AddProcessing("oscillator-generator", new CLAM::Oscillator( CreateGeneratorCfg() ) );
-	_network.AddProcessing("oscillator-modulator", new CLAM::Oscillator( CreateModulatorCfg() ) );
-	_network.AddProcessing("multiplier", new CLAM::AudioMultiplier );
-	_network.AddProcessing( "mixer", new CLAM::AudioMixer<2>( CreateMixerCfg() ) );
-	_network.AddProcessing("file-out", new CLAM::AudioFileOut( CreateFileOutCfg() ) );
-	//_network.AddProcessing("audio-out", new CLAM::AudioOut( CreateAudioOutCfg() ) );
+	mNetwork.AddProcessing("file-in", new CLAM::AudioFileIn( CreateFileInCfg() ));
+	mNetwork.AddProcessing("oscillator-generator", new CLAM::Oscillator( CreateGeneratorCfg() ) );
+	mNetwork.AddProcessing("oscillator-modulator", new CLAM::Oscillator( CreateModulatorCfg() ) );
+	mNetwork.AddProcessing("multiplier", new CLAM::AudioMultiplier );
+	mNetwork.AddProcessing( "mixer", new CLAM::AudioMixer<2>( CreateMixerCfg() ) );
+	mNetwork.AddProcessing("file-out", new CLAM::AudioFileOut( CreateFileOutCfg() ) );
+	//mNetwork.AddProcessing("audio-out", new CLAM::AudioOut( CreateAudioOutCfg() ) );
 }
 
 CLAM::AudioFileConfig SupervisedSystemWithoutTrueFlowControl::CreateFileInCfg()
@@ -46,8 +46,8 @@ CLAM::AudioFileConfig SupervisedSystemWithoutTrueFlowControl::CreateFileInCfg()
 	CLAM::AudioFileConfig cfg;
 	cfg.SetChannels(1);
 	cfg.SetFiletype( CLAM::EAudioFileType::eWave );
-	cfg.SetFrameSize( _frameSize );
-	cfg.SetFilename( _fileInName );
+	cfg.SetFrameSize( mFrameSize );
+	cfg.SetFilename( mFileInName );
 	cfg.SetKeepFrameSizes(true);
 	return cfg;
 }
@@ -68,7 +68,7 @@ CLAM::OscillatorConfig SupervisedSystemWithoutTrueFlowControl::CreateModulatorCf
 CLAM::AudioMixerConfig SupervisedSystemWithoutTrueFlowControl::CreateMixerCfg()
 {	
 	CLAM::AudioMixerConfig cfg;
-	cfg.SetFrameSize(_frameSize);
+	cfg.SetFrameSize(mFrameSize);
 	return cfg;
 }
 CLAM::AudioFileConfig SupervisedSystemWithoutTrueFlowControl::CreateFileOutCfg()
@@ -76,15 +76,15 @@ CLAM::AudioFileConfig SupervisedSystemWithoutTrueFlowControl::CreateFileOutCfg()
 	CLAM::AudioFileConfig cfg;
 	cfg.SetChannels(1);
 	cfg.SetFiletype( CLAM::EAudioFileType::eWave );
-	cfg.SetFrameSize( _frameSize );
-	cfg.SetFilename( _fileOutName );
+	cfg.SetFrameSize( mFrameSize );
+	cfg.SetFilename( mFileOutName );
 	cfg.SetKeepFrameSizes(true);
 	return cfg;
 }
 CLAM::AudioIOConfig SupervisedSystemWithoutTrueFlowControl::CreateAudioOutCfg()
 {
 	CLAM::AudioIOConfig cfg;
-	cfg.SetFrameSize(_frameSize);
+	cfg.SetFrameSize(mFrameSize);
 	return cfg;
 }
 //---------------------------------------------------------------------------------
@@ -93,85 +93,85 @@ CLAM::AudioIOConfig SupervisedSystemWithoutTrueFlowControl::CreateAudioOutCfg()
 void SupervisedSystemWithoutTrueFlowControl::RegisterAllNetworkConfigurationMethods()
 {
 
-	_configurations.push_back( NetworkConfigurationMethodWrapper(
+	mConfigurations.push_back( NetworkConfigurationMethodWrapper(
 		this, &SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut ) );
-	_configurations.push_back( NetworkConfigurationMethodWrapper(
+	mConfigurations.push_back( NetworkConfigurationMethodWrapper(
 		this,&SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedOscillator ) );
-	_configurations.push_back( 	NetworkConfigurationMethodWrapper(
+	mConfigurations.push_back( 	NetworkConfigurationMethodWrapper(
 		this, &SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut ) );
-	_configurations.push_back( NetworkConfigurationMethodWrapper(
+	mConfigurations.push_back( NetworkConfigurationMethodWrapper(
 		this,&SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileIn ) );
-	_configurations.push_back( NetworkConfigurationMethodWrapper(
+	mConfigurations.push_back( NetworkConfigurationMethodWrapper(
 		this,&SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileInPlusFileIn ) );
 
 }
 
 void SupervisedSystemWithoutTrueFlowControl::ConfigureOscillatorToFileOut()
 {
-	_network.SetName("Oscillator to FileOut");
-	_network.ConnectPorts( "oscillator-generator.Audio Output", "file-out.Input" );
+	mNetwork.SetName("Oscillator to FileOut");
+	mNetwork.ConnectPorts( "oscillator-generator.Audio Output", "file-out.Input" );
 
-	if (_hasAudioOut)
-		_network.ConnectPorts( "oscillator-generator.Audio Output", "audio-out.Input" );
+	if (mHasAudioOut)
+		mNetwork.ConnectPorts( "oscillator-generator.Audio Output", "audio-out.Input" );
 	
 }
 void SupervisedSystemWithoutTrueFlowControl::ConfigureFileInFileOut()
 {
-	_network.SetName("FileIn to FileOut");
-	_network.ConnectPorts( "file-in.Output", "file-out.Input" );
+	mNetwork.SetName("FileIn to FileOut");
+	mNetwork.ConnectPorts( "file-in.Output", "file-out.Input" );
 	
-	if (_hasAudioOut)
-		_network.ConnectPorts( "file-in.Output", "audio-out.Input" );
+	if (mHasAudioOut)
+		mNetwork.ConnectPorts( "file-in.Output", "audio-out.Input" );
 }
 void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileIn()
 {
-	_network.SetName("Modulated FileIn");
-	_network.ConnectPorts( "file-in.Output", "multiplier.First Audio Input" );
-	_network.ConnectPorts( "oscillator-modulator.Audio Output", "multiplier.Second Audio Input" );
-	_network.ConnectPorts( "multiplier.Audio Output", "file-out.Input" );	
+	mNetwork.SetName("Modulated FileIn");
+	mNetwork.ConnectPorts( "file-in.Output", "multiplier.First Audio Input" );
+	mNetwork.ConnectPorts( "oscillator-modulator.Audio Output", "multiplier.Second Audio Input" );
+	mNetwork.ConnectPorts( "multiplier.Audio Output", "file-out.Input" );	
 
-	if (_hasAudioOut)
-		_network.ConnectPorts( "multiplier.Audio Output", "audio-out.Input" );
+	if (mHasAudioOut)
+		mNetwork.ConnectPorts( "multiplier.Audio Output", "audio-out.Input" );
 }
 void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedOscillator()
 {
-	_network.SetName("Modulated Oscillator");
-	_network.ConnectPorts( "oscillator-generator.Audio Output", "multiplier.First Audio Input" );
-	_network.ConnectPorts( "oscillator-modulator.Audio Output", "multiplier.Second Audio Input" );
-	_network.ConnectPorts( "multiplier.Audio Output", "file-out.Input" );	
+	mNetwork.SetName("Modulated Oscillator");
+	mNetwork.ConnectPorts( "oscillator-generator.Audio Output", "multiplier.First Audio Input" );
+	mNetwork.ConnectPorts( "oscillator-modulator.Audio Output", "multiplier.Second Audio Input" );
+	mNetwork.ConnectPorts( "multiplier.Audio Output", "file-out.Input" );	
 
-	if (_hasAudioOut)
-		_network.ConnectPorts( "multiplier.Audio Output", "audio-out.Input" );
+	if (mHasAudioOut)
+		mNetwork.ConnectPorts( "multiplier.Audio Output", "audio-out.Input" );
 }
 void SupervisedSystemWithoutTrueFlowControl::ConfigureModulatedFileInPlusFileIn()
 {
-	_network.SetName("Modulated FileIn plus FileIn");
-	_network.ConnectPorts( "file-in.Output", "multiplier.First Audio Input" );
-	_network.ConnectPorts( "oscillator-modulator.Audio Output", "multiplier.Second Audio Input" );
-	_network.ConnectPorts( "file-in.Output", "mixer.Input Audio_1" );
-	_network.ConnectPorts( "multiplier.Audio Output" , "mixer.Input Audio_0" );
-	_network.ConnectPorts( "mixer.Output Audio", "file-out.Input" );
+	mNetwork.SetName("Modulated FileIn plus FileIn");
+	mNetwork.ConnectPorts( "file-in.Output", "multiplier.First Audio Input" );
+	mNetwork.ConnectPorts( "oscillator-modulator.Audio Output", "multiplier.Second Audio Input" );
+	mNetwork.ConnectPorts( "file-in.Output", "mixer.Input Audio_1" );
+	mNetwork.ConnectPorts( "multiplier.Audio Output" , "mixer.Input Audio_0" );
+	mNetwork.ConnectPorts( "mixer.Output Audio", "file-out.Input" );
 
-	if (_hasAudioOut)
-		_network.ConnectPorts( "mixer.Output Audio", "audio-out.Input" );
+	if (mHasAudioOut)
+		mNetwork.ConnectPorts( "mixer.Output Audio", "audio-out.Input" );
 }
 
 void SupervisedSystemWithoutTrueFlowControl::ProcessAllNetworkTopologies()
 {
 	NetworkConfigurationMethods::iterator currentConfigMethod;
-	for ( currentConfigMethod=_configurations.begin(); 
-		  currentConfigMethod != _configurations.end(); 
+	for ( currentConfigMethod=mConfigurations.begin(); 
+		  currentConfigMethod != mConfigurations.end(); 
 		  currentConfigMethod++ )
 	{
-		_network.DisconnectAllPorts();
+		mNetwork.DisconnectAllPorts();
 		currentConfigMethod->Configure();
-		_network.Start();
+		mNetwork.Start();
 
-		for (int i=0; i<_maxFramesToProcess; i++)
-			_network.DoProcessings();
+		for (int i=0; i<mMaxFramesToProcess; i++)
+			mNetwork.DoProcessings();
 
-		std::cout << _network.GetName() << " network processed.\n";
-		_network.Stop();
+		std::cout << mNetwork.GetName() << " network processed.\n";
+		mNetwork.Stop();
 	}
 	
 }

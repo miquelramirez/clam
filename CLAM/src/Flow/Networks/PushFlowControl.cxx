@@ -35,7 +35,6 @@ void PushFlowControl::DoProcessings()
 		Processing * next = *(toDo.begin()); // the first
 		toDo.pop_front();
 
-
 		if(next->CanDoUsingPorts())
 		{
 			next->Do();
@@ -43,7 +42,6 @@ void PushFlowControl::DoProcessings()
 		}
 
 		AddNewPossibleProcessingsToDo(next, toDo, done);
-
 	}
 }
 

@@ -6,12 +6,12 @@
 
 namespace CLAMVM
 {
-		using CLAM::TData;
+	using CLAM::TData;
 
-class GLStraightLineArray
+	class GLStraightLineArray
 		: public GLRenderer
-{
-public:
+	{
+	public:
 
 		GLStraightLineArray();
 
@@ -19,33 +19,33 @@ public:
 
 		void SetLineColor( unsigned char r, unsigned char g, unsigned char b )
 		{
-				mLineColor[0] = r; 
-				mLineColor[1] = g; 
-				mLineColor[2] = b;
+			mLineColor[0] = r; 
+			mLineColor[1] = g; 
+			mLineColor[2] = b;
 		}
 
 		void SetStartAndHopSize( TData xstart, TData xhop )
 		{
-				mXStart = xstart;
-				mXHopSize = xhop;
+			mXStart = xstart;
+			mXHopSize = xhop;
 		}
 
 		void SetDataPtr( const TData* pValues, unsigned nelems )
 		{
-				mValues = pValues;
-				mElemsToDraw = nelems;
+			mValues = pValues;
+			mElemsToDraw = nelems;
 		}
 
 		virtual void ExecuteGLCommands();
 
-protected:
+	protected:
 
 		unsigned mElemsToDraw;
 		const TData* mValues;
 		TData mXStart;
 		TData mXHopSize;
 		unsigned char mLineColor[3];
-};
+	};
 
 }
 

@@ -9,6 +9,7 @@
 #include "Fl_SMS_Spectrum.hxx"
 #include "Fl_SMS_SinTracks_Browser.hxx"
 #include "Fl_SMS_SpectrumAndPeaks.hxx"
+#include "Fl_SMS_FundFreq_Browser.hxx"
 #include "Fl_Smart_Tile.hxx"
 
 #include <iostream>
@@ -19,7 +20,8 @@ namespace CLAMVM
 	SMS_DataExplorer::SMS_DataExplorer()
 		: mpOriginalAudioWidget( NULL ), mpSynthesizedAudioWidget( NULL ), mpSynthesizedResidualWidget( NULL ),
 		  mpSynthesizedSinusoidalWidget( NULL ), mpSpectrumAndPeaksWidget( NULL ), mpSinusoidalSpectrum( NULL ),
-		  mpResidualSpectrum( NULL ), mpSegmentSinTracks( NULL ), mpCanvas( NULL ), mCurrentFrameCenterTime( 0 )
+		  mpResidualSpectrum( NULL ), mpSegmentSinTracks( NULL ), mpFundFreqBrowser( NULL ),
+		  mpCanvas( NULL ), mCurrentFrameCenterTime( 0 ), mHigherF0Hint( 0 ), mLowerF0Hint( 0 )
 	{
 		// Slot wrapping
 		NewSegment.Wrap( this, &SMS_DataExplorer::OnNewSegment );
@@ -31,17 +33,28 @@ namespace CLAMVM
 		NewSynthesizedResidual.Wrap( this, &SMS_DataExplorer::OnNewSynthesizedResidual );
 		ShowInputAudio.Wrap( this, &SMS_DataExplorer::OnShowInputAudio );
 		ShowSinTracks.Wrap( this, &SMS_DataExplorer::OnShowSinTracks );
+		ShowFundFreq.Wrap( this, &SMS_DataExplorer::OnShowFundFreq );
 		ShowSpectrumAndPeaks.Wrap( this, &SMS_DataExplorer::OnShowSpectrumAndPeaks );
 		ShowSinusoidalSpectrum.Wrap( this, &SMS_DataExplorer::OnShowSinusoidalSpectrum );
 		ShowResidualSpectrum.Wrap( this, &SMS_DataExplorer::OnShowResidualSpectrum );
 		ShowSynthesizedAudio.Wrap( this, &SMS_DataExplorer::OnShowSynthesizedAudio );
 		ShowSynthesizedSinusoidal.Wrap( this, &SMS_DataExplorer::OnShowSynthesizedSinusoidal );
 		ShowSynthesizedResidual.Wrap( this, &SMS_DataExplorer::OnShowSynthesizedResidual );
-		
+		SetFundFreqRangeHint.Wrap( this, &SMS_DataExplorer::OnNewFundFreqRangeHint );
 	}
 	
 	SMS_DataExplorer::~SMS_DataExplorer()
 	{
+	}
+
+	void SMS_DataExplorer::OnNewFundFreqRangeHint( CLAM::TData lower, CLAM::TData higher )
+	{
+		mHigherF0Hint = higher;
+		mLowerF0Hint = lower;
+
+		if ( mpFundFreqBrowser )
+			mpFundFreqBrowser->NewFreqRangeHint( lower, higher );
+
 	}
 
 	void SMS_DataExplorer::SetCanvas( Fl_Smart_Tile* pCanvas )
@@ -53,6 +66,7 @@ namespace CLAMVM
 	void SMS_DataExplorer::OnNewSegment( const CLAM::Segment& segment )
 	{
 		mSinusoidalTracksAdapter.BindTo( segment );
+		mFundFreqAdapter.BindTo( segment );
 
 		// first we create the necessary widgets 
 		if ( !mpSegmentSinTracks )
@@ -64,8 +78,19 @@ namespace CLAMVM
 			mpSegmentSinTracks->SelectedXValue.Connect( SelectedTimeChanged );
 
 		}
+		if ( !mpFundFreqBrowser )
+		{
+			mpFundFreqBrowser = new Fl_SMS_FundFreq_Browser( 0,0,100,100, "Fundamental Frequency");
+			CLAM_ASSERT( mpFundFreqBrowser != NULL, "Unable to create widget");
+			mFundFreqAdapter.TrajectoryExtracted.Connect( mpFundFreqBrowser->NewTrajectory );
+			mFundFreqAdapter.TimeSpanChanged.Connect( mpFundFreqBrowser->NewTimeSpan );
+			mpFundFreqBrowser->SetSelectedXValue( mCurrentFrameCenterTime );
+			mpFundFreqBrowser->SelectedXValue.Connect( SelectedTimeChanged );
+			
+		}
 
 		mSinusoidalTracksAdapter.Publish();
+		mFundFreqAdapter.Publish();
 	}
 	
 	void SMS_DataExplorer::OnNewFrame( const CLAM::Frame& frame, bool fullAnalysisData )
@@ -119,6 +144,10 @@ namespace CLAMVM
 		if ( mpSegmentSinTracks )
 		{
 			mpSegmentSinTracks->SetSelectedXValue( frame.GetCenterTime() );
+		}
+		if ( mpFundFreqBrowser )
+		{
+			mpFundFreqBrowser->SetSelectedXValue( frame.GetCenterTime() );
 		}
 		if ( mpSynthesizedAudioWidget )
 		{
@@ -249,6 +278,31 @@ namespace CLAMVM
 		mpCanvas->redraw();
 
 	}
+
+	void SMS_DataExplorer::OnShowFundFreq( )
+	{
+		CLAM_ASSERT( mpCanvas!=NULL, "No canvas attached to Explorer");
+
+		if ( mpCanvas->contains( mpFundFreqBrowser ) ) // already in the canvas
+			return;
+		     
+		mpFundFreqBrowser->callback( (Fl_Callback*)sDetachCb, this );
+
+		mpCanvas->add_adjust ( mpFundFreqBrowser );
+		//TODO: this is a HACK!
+		mpFundFreqBrowser->hide();
+		Fl::flush();
+		mpFundFreqBrowser->show();
+		Fl::flush();
+
+		if ( mHigherF0Hint != mLowerF0Hint )
+			mpFundFreqBrowser->NewFreqRangeHint( mLowerF0Hint, mHigherF0Hint );
+
+		mpFundFreqBrowser->Show();
+		mpCanvas->redraw();
+
+	}
+
 
 	void SMS_DataExplorer::OnShowSpectrumAndPeaks()
 	{
@@ -455,7 +509,22 @@ namespace CLAMVM
 				mpCanvas->remove( mpSegmentSinTracks );
 			}
 		}
-		mpCanvas->redraw();
+		if ( mpFundFreqBrowser )
+		{
+			if ( mpCanvas->contains(mpFundFreqBrowser) )
+			{
+				mpFundFreqBrowser->Hide();
+				mpCanvas->remove( mpFundFreqBrowser );
+			}
+		}
+
+		if ( mpCanvas->children() > 0 )
+		  mpCanvas->redraw();
+		else
+		  {
+		    mpCanvas->hide();
+		    mpCanvas->show();
+		  }
 
 	}
 	

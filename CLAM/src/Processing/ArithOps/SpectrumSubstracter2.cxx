@@ -24,6 +24,7 @@
 #include "ErrProcessingObj.hxx"
 #include "BPF.hxx"
 #include "Point.hxx"
+#include "SpecTypeFlags.hxx"
 
 namespace CLAM {
 

@@ -11,6 +11,7 @@ namespace CLAM
 {
 	class OutPort;
 	class InPort;
+	class Network;
 }
 
 namespace CLAMVM
@@ -20,6 +21,7 @@ namespace CLAMVM
 	private:		
 		const CLAM::OutPort* mOutObserved;
 		const CLAM::InPort* mInObserved;
+		const CLAM::Network*  mNetworkObserved;
 		
 	public:
 		ConnectionAdapter();
@@ -31,7 +33,7 @@ namespace CLAMVM
 
 		virtual bool ConnectsInPort( CLAM::InPort &);
 		virtual bool Publish();
-		virtual bool BindTo( const CLAM::OutPort&, const CLAM::InPort& );
+		virtual bool BindTo( const CLAM::OutPort&, const CLAM::InPort&, const CLAM::Network &);
 		
 	};
 } // namespace CLAMVM

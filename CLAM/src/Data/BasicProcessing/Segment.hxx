@@ -22,6 +22,7 @@
 #ifndef _Segment_
 #define _Segment_
 
+#include "Frame.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Array.hxx"
@@ -34,12 +35,9 @@
 #include "Err.hxx"
 #include "ProcessingDataConfig.hxx"
 #include "ProcessingData.hxx"
-#include "Frame.hxx"
 #include "Audio.hxx"
 
-namespace CLAM{
-
-
+namespace CLAM {
 
 typedef Search < List < Frame >, Frame> FrameSearch;
 

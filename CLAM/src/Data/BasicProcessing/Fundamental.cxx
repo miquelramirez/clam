@@ -70,6 +70,7 @@ void Fundamental::SetFreq(TIndex pos,TData freq)//inefficient Set, for efficienc
 {
 	
 	CLAM_DEBUG_ASSERT(HasCandidatesFreq(),"Fundamental::SetFreq::Fundamental not initialized");
+	CLAM_DEBUG_ASSERT(pos<GetnCandidates(),"Fundamental::SetFreq::You are trying to set a candidate that does not exist");
 	GetCandidatesFreq()[pos]=freq;
 }
 
@@ -77,6 +78,7 @@ void Fundamental::SetErr(TIndex pos,TData err)//inefficient Set, for efficiency 
 {
 	
 	CLAM_DEBUG_ASSERT(HasCandidatesFreq(),"Fundamental::SetErr::Fundamental not initialized");
+	CLAM_DEBUG_ASSERT(pos<GetnCandidates(),"Fundamental::SetFreq::You are trying to set a candidate that does not exist");
 	GetCandidatesErr()[pos]=err;
 }
 

@@ -3,26 +3,26 @@
 namespace CLAMVM
 {
 
-		TimeFreqMagPoint::TimeFreqMagPoint()
-				: mTimeIndex( -1 )
-		{
-		}
+	TimeFreqMagPoint::TimeFreqMagPoint()
+		: mTimeIndex( -1 ), mAttribute( 0 )
+	{
+	}
 		
-		TimeFreqMagPoint::TimeFreqMagPoint( const TimeFreqMagPoint& p )
-		{
-				mMag = p.mMag;
-				mFreq = p.mFreq;
-				mTimeIndex = p.mTimeIndex;
-		}
+	TimeFreqMagPoint::TimeFreqMagPoint( const TimeFreqMagPoint& p )
+	{
+		mMag = p.mMag;
+		mFreq = p.mFreq;
+		mTimeIndex = p.mTimeIndex;
+	}
 		
-		const TimeFreqMagPoint& TimeFreqMagPoint::operator=( const TimeFreqMagPoint& p )
-		{
+	const TimeFreqMagPoint& TimeFreqMagPoint::operator=( const TimeFreqMagPoint& p )
+	{
 				
-				return *this;
-		}
+		return *this;
+	}
 
-		TimeFreqMagPoint::~TimeFreqMagPoint()
-		{
-		}
+	TimeFreqMagPoint::~TimeFreqMagPoint()
+	{
+	}
 
 }

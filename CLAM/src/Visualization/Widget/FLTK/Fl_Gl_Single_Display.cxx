@@ -1,5 +1,6 @@
 #include "Fl_Gl_Single_Display.hxx"
 #include "Assert.hxx"
+#include "CLAMGL.hxx"
 
 namespace CLAMVM
 {
@@ -21,11 +22,13 @@ namespace CLAMVM
 			WCSProject();
 			DataBoundBox dataBBox;
 			QueryDataBoundBox( dataBBox );
-			ScreenBoundBox scrBBox = { 0, 0, w(), h() };
+			ScreenBoundBox scrBBox = { x(), y(), w(), h() };
 						
 			mRenderer->SetWorldBounds( dataBBox );
 			mRenderer->SetPixelBounds( scrBBox );
 		}
+
+		glClear( GL_COLOR_BUFFER_BIT );
 
 		mRenderer->RenderData();
 

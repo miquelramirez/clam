@@ -22,6 +22,7 @@
 #include "Complex.hxx"
 #include "SpectrumProduct.hxx"
 #include "ErrProcessingObj.hxx"
+#include "SpectrumConfig.hxx"
 
 namespace CLAM {
 

@@ -6,20 +6,20 @@ namespace CLAM
 		//InControlTmplArray(int size, const std::string &name, Processing* parent=0,
 		//TPtrMemberFuncId f, const bool publish);
 MyProcessingWithControlArray::MyProcessingWithControlArray() :
-	_in(12, "my_name", this, CallbackId),
-	_in2("my_name", this, Callback),
-	_inArray(10, "array_control_name", this, CallbackId),
-	_voiceControl(NVoices, "VoiceControl", this, VoiceControlCallbackId),
-	_subPOsTransformation( NVoices )
+	mIn(12, "my_name", this, CallbackId),
+	mIn2("my_name", this, Callback),
+	mInArray(10, "array_control_name", this, CallbackId),
+	mVoiceControl(NVoices, "VoiceControl", this, VoiceControlCallbackId),
+	mSubPOsTransformation( NVoices )
 {
 	for(int i=0; i<NVoices; i++)
-		_subPOsTransformation.at(i) = new TransformationDummy;
+		mSubPOsTransformation.at(i) = new TransformationDummy;
 }
 
 MyProcessingWithControlArray::~MyProcessingWithControlArray()
 {
 	for(int i=0; i<NVoices; i++)
-		delete _subPOsTransformation.at(i);
+		delete mSubPOsTransformation.at(i);
 }
 
 
@@ -32,9 +32,9 @@ int MyProcessingWithControlArray::CallbackId(int id, TControlData val) {
 
 int MyProcessingWithControlArray::VoiceControlCallbackId(int id, TControlData val)
 {
-	CLAM_DEBUG_ASSERT(id < _subPOsTransformation.size(), "id is larger than array size");
+	CLAM_DEBUG_ASSERT(id < mSubPOsTransformation.size(), "id is larger than array size");
 	std::cout << "VoiceControlCallbackId with Id: " << id << std::endl;
-	_subPOsTransformation.at(id)->voiceInControl.DoControl(val);
+	mSubPOsTransformation.at(id)->voiceInControl.DoControl(val);
 	return 0;
 }
 

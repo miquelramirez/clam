@@ -23,6 +23,8 @@
 #include "FFT.hxx"
 #include <string>
 #include "ErrProcessingObj.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
 
 namespace CLAM {
 
@@ -52,7 +54,7 @@ namespace CLAM {
 	{
 		CLAM_ASSERT(n>=0,"Wrong (negative) Size in control input.");
 
-		throw(ErrProcessingObj("Controls not yet implemented.",this));
+		CLAM_ASSERT(false, "Controls not yet implemented.");
 
 	}
 

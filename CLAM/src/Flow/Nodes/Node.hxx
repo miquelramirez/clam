@@ -53,6 +53,7 @@ namespace CLAM {
 						      unsigned int length) = 0;
 		virtual void RemoveInPortConnection( InPort * port, 
 						     ReadStreamRegion * reader) = 0;
+		virtual void UnattachAll();
 	
 		virtual ReadStreamRegion  *NewReader (InPort *port,
 						      unsigned int hop,

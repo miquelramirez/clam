@@ -18,7 +18,6 @@ class InPortPresentation : public CLAMVM::Presentation
 {
 protected:
 	std::string mName;
-//	std::string mDataType;
 public:
 	InPortPresentation();
 	virtual ~InPortPresentation();
@@ -29,12 +28,9 @@ public:
 
 protected:
 	virtual void OnNewName(const std::string& name) = 0;
-//	virtual void OnNewDataType(const std::string& name) = 0;
 
 public: //slots
 	SigSlot::Slotv1<const std::string &> SetName;
-//	SigSlot::Slotv1<const std::string &> SetDataType;
-
 };
 
 } // namespace NetworkGUI

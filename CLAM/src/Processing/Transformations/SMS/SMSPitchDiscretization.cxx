@@ -20,6 +20,7 @@
  */
 
 #include "SMSPitchDiscretization.hxx"
+#include "Factory.hxx"
 
 using namespace CLAM;
 
@@ -29,7 +30,7 @@ bool SMSPitchDiscretization::Do(const Frame& in, Frame& out)
 	TData pitch=in.GetFundamentalFreq();
 	if (pitch>0)
 	{
-		TData log2=0.69314718;
+		TData log2=0.69314718f;
 		TData test=12*log(pitch/55)/log2;
 		TData test1=pitch/55;
 		TData test2=log(test1);
@@ -38,7 +39,7 @@ bool SMSPitchDiscretization::Do(const Frame& in, Frame& out)
 
 
 		int nst=Round(12*log(pitch/55)/log2);
-		TData pow2_1_12=1.0594630;
+		TData pow2_1_12=1.0594630f;
 		TData discPitch=55*(pow(pow2_1_12,nst));
 		
 		TData amount=discPitch/pitch;
@@ -53,4 +54,5 @@ bool SMSPitchDiscretization::Do(const Frame& in, Frame& out)
 	return true;
 }
 
-
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<CLAM::SMSPitchDiscretization> regtSMSPitchDiscretization( "SMSPitchDiscretization" );

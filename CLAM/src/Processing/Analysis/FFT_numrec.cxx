@@ -27,6 +27,9 @@
 
 #include "ErrProcessingObj.hxx"
 #include "Assert.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
 
 extern "C" {
 #include "numrecipes_fft.h"
@@ -43,8 +46,8 @@ namespace CLAM {
 		CopyAsConcreteConfig(mConfig, c);
 
 		if (mConfig.HasAudioSize()) {
-			if (mConfig.GetAudioSize()<0)
-				throw(ErrProcessingObj("Wrong (negative) Size in FFT Configuration.",this));
+			CLAM_ASSERT(mConfig.GetAudioSize()>=0, 
+				"Wrong (negative) Size in FFT Configuration.");
 			mSize = mConfig.GetAudioSize();
 		}
 

@@ -1,5 +1,5 @@
 #include "SDIFIn.hxx"
-#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
 #include "SpectralPeakArray.hxx"
@@ -19,13 +19,13 @@ void SDIFInConfig::DefaultInit()
 /*	This may have to change to false but right now, Salto is the most important app that
 	uses it and needs it set to true.*/
 	SetRelativePeakIndices(true);
-
+	SetFileName( "nofile" );
 	SetEnableResidual(true);
 	SetEnablePeakArray(true);
 	SetEnableFundFreq(true);
 	SetSpectralRange(22050);
 	SetMaxNumPeaks(100);
-	SetFileName("nofile");
+
 }
 
 SDIFIn::SDIFIn():
@@ -55,15 +55,31 @@ SDIFIn::~SDIFIn()
 bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
+	
+	if ( mConfig.GetFileName() == "nofile") // MRJ: default configuration provided, we just left the object "Unconfigured"
+	  return false;
+
 	if(mpFile) delete mpFile;
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eInput);
+
+	try
+	  {
+	    mpFile->Open();
+	  }
+	catch( Err& e )
+	{
+	  e.Print();
+	  return false;
+	}
+
+	mpFile->Close();//must leave closed file ready to start()
+
 	return true;
 }
 
 bool SDIFIn::ConcreteStart()
 {
 	mpFile->Open();
-
 	return true;
 }
 
@@ -128,6 +144,8 @@ bool SDIFIn::Do(void)
 	else if(tmpSDIFFrame.Type()=="1STF" && mConfig.GetEnableResidual())	// we use always the first 2 matrices
 	{
 		CLAM_ASSERT(pMatrix->Type() == "ISTF","SDIFIn::Add ISTF Header in Matrix expected");
+		
+		tmpFrame.GetResidualSpec().SetSpectralRange(pMatrix->GetValue(0,0)*0.5);
 		
 		// move pointer to next matrix in frame
 		frameIt++;

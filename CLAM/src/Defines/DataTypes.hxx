@@ -79,7 +79,7 @@ inline double DB(double linData, int scaling=20)
 }
 inline double Lin(double logData, int scaling=20) { return (pow(double(10),(logData/scaling)) ); }
 
-};
+}
 
 #endif
 
