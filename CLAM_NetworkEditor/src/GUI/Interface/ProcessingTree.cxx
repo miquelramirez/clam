@@ -74,11 +74,14 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * smssynthesis = new ProcessingItem( synthesis, "SMSSynthesis" );	
 	
 	QListViewItem * utils = new QListViewItem( this, "Utils" );
+#ifndef WIN32
 	ProcessingItem * ladspaloader = new ProcessingItem( utils, "LadspaLoader" );
+#endif
 	ProcessingItem * outcontrolsender = new ProcessingItem( utils, "OutControlSender" );	
 
 	QListViewItem* plots = new QListViewItem(this,"Plots");
 	ProcessingItem* audioplotprocessing = new ProcessingItem(plots,"AudioPlotProcessing");
+	ProcessingItem* spectrumplotprocessing = new ProcessingItem(plots,"SpectrumPlotProcessing");
 	show();
 	header()->hide();
 

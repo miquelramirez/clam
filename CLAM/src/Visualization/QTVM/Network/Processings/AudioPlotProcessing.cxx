@@ -10,14 +10,17 @@ namespace CLAM
 		SetName("AudioPlotProcessing");
 	}
 
-	AudioPlotProcessing::AudioPlotProcessing() : mPlot(0)
+	AudioPlotProcessing::AudioPlotProcessing() 
+		: mInput("Audio Input", this)
 	{
 		AudioPlotProcessingConfig cfg;
 		Configure(cfg);
+
+		InitAudioPlot();
 	}
 
 	AudioPlotProcessing::AudioPlotProcessing(const AudioPlotProcessingConfig& cfg)
-		: mPlot(0)
+		: mInput("Audio Input", this)
 	{
 		Configure(cfg);
 	}
@@ -38,7 +41,6 @@ namespace CLAM
 	bool AudioPlotProcessing::Do(const Audio& audio)
 	{
 		if(!AbleToExecute()) return true;
-		if(!mPlot) InitAudioPlot();
 		mPlot->SetData(audio);
 		if(!mPlot->isVisible()) mPlot->Show();
 		return true;
