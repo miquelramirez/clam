@@ -27,7 +27,7 @@
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControlTmplArray.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 #include "Array.hxx"
 
 #include "Frame.hxx" //TODO provisional
@@ -337,8 +337,6 @@ protected:
 		 */
 		bool AddChainee(const std::string& type)
 		{
-			typedef CLAM::Factory<Processing> ProcessingFactory;
-
 			Insert( *( ProcessingFactory::GetInstance().Create( type ) ) );
 						
 			return true;

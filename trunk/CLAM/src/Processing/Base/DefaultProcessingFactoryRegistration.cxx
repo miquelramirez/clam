@@ -19,7 +19,7 @@
  *
  */
 
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 #include "Oscillator.hxx"
 #include "SimpleOscillator.hxx"
 #include "AudioMultiplier.hxx"
@@ -45,7 +45,7 @@
  * The way processings are registered in factory could be changed in a future.
  * Warning: This file has a lot of dependencies.
  */
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+typedef CLAM::ProcessingFactory ProcessingFactory;
 
 static ProcessingFactory::Registrator<CLAM::SimpleOscillator> regtSimpleOscillator( "SimpleOscillator" );
 static ProcessingFactory::Registrator<CLAM::Oscillator> regtOscillator( "Oscillator" );
