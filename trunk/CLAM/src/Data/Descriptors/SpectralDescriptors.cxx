@@ -23,7 +23,14 @@
 
 using namespace CLAM;
 
-SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum=NULL):ProcessingData(eNumAttr)
+void SpectralDescriptors::DefaultInit()
+{
+	mpSpectrum=NULL;
+}
+	
+
+
+SpectralDescriptors::SpectralDescriptors(Spectrum* pSpectrum):ProcessingData(eNumAttr)
 {
 	MandatoryInit();
 	mpSpectrum=pSpectrum;

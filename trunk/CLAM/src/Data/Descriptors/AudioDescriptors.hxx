@@ -56,6 +56,8 @@ namespace CLAM {
 	public:
 
 		AudioDescriptors(Audio* pAudio);
+
+		void DefaultInit();
 		
 		const Audio* GetpAudio() const{return mpAudio;}
 		void SetpAudio(Audio* pAudio) {mpAudio=pAudio;}
