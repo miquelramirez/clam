@@ -1,0 +1,5 @@
+LIBRARIES=Rappid
+PROGRAMS=CMLRappid TestSoftSwitch TestAudioMixer TestAudioCompressor TestDynamicMixer TestRappidIO
+TOP=../..
+
+include $(TOP)/unix_tools/make.rules

@@ -1,0 +1,5 @@
+TOP=../../..
+
+MODULES = GUI_Core GUI_GView GUI_WidgetTKWrapper
+
+include $(TOP)/unix_tools/make.rules

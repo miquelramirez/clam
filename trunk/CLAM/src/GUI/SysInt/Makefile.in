@@ -1,0 +1,8 @@
+TOP=../../..
+
+MODULES = GUI_SysInt\
+	  GUI_Breakpoint\
+	  GUI_Debugger\
+	  GUI_PORepository
+
+include $(TOP)/unix_tools/make.rules

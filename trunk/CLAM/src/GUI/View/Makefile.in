@@ -1,0 +1,13 @@
+TOP=../../..
+
+MODULES = GUI_View\
+	  GUI_AudioGView\
+	  GUI_FDFilterGenView\
+	  GUI_InControlView\
+	  GUI_OscillatorGView\
+	  GUI_SegmentTFView\
+	  GUI_SegmentView\
+	  GUI_SpectralDelayView\
+	  GUI_SpectrumGView  
+
+include $(TOP)/unix_tools/make.rules

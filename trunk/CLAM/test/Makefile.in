@@ -1,0 +1,48 @@
+PROGRAMS = \
+           TestMoc \
+           TestEnum \
+           TestComplex \
+           TestPoint \
+           TestPolar \
+           BPFTest \
+           QtSIViewExample\
+           ListTest \
+           TestAudioFileIO \
+           TestXMLAdapters \
+           TestMIDIIO \
+           TestAudioIO \
+           TestControlMapper \
+           TestControls \
+           AudioPlayer \
+           TestPOComposite \
+           SegmentTest \
+           TestMMAudioPresentation \
+           TestMIDILinker \
+           TestFLTK_GUI_MIDILinker \
+
+TESTS = \
+        TestFlags \
+        TestArray \
+        TestArray2 \
+        TestDynamicType3 \
+        TestError \
+        TestFDFilterGen \
+        TestFFT \
+        TestIFFT \
+        TestSpectrum \
+        TestSpectrumAdder \
+        TestSpectrumAdder2 \
+        TestSpectrumProduct \
+        AnalysisSynthesisTest \
+        TestWindowing \
+        PhantomBufferTest \
+        TestStreamRegions \
+        TestStreamBuffer \
+        TestEnvelopeExtractor \
+        TestWaveGenerator \
+
+TOP=..
+
+CLEANFILES=*.data
+
+include $(TOP)/unix_tools/make.rules

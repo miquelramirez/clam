@@ -1,0 +1,169 @@
+2002-04-26  CLAM_0_3_0-rel
+
+  * General:
+      ** CLAM code is now released under GPL license.
+      ** MTG namespace becomes CLAM namespace
+      ** All library macros have 'CLAM_' as prefix
+      ** PARANOID support has been dropped.
+      ** New error handling macros.
+      ** More tests and examples
+  * Dynamic Types:
+      ** New DT macros
+      ** AddAll, RemoveAll
+      ** User init-methods: DefaultInit, CopyInit. Macro-expanded-init:
+         MandatoryInit
+      ** InformAll, all dyn attributes are informed at construction time.
+      ** SetPreallocateAllAttributes, to enhance time performance vs space
+         performance.
+  * Basic Types:
+      ** TypeInfo, a template class to get static information from a type.
+      ** Complex, Polar and Point templates, have default template parameters.
+      ** Point works with only one template parameter or two.
+      ** Complex<>, Polar<> and Point<> have TypeInfo for TData instance
+      ** BPF now allows setting the lateral derivatives.
+      ** Array initializes numeric data to zero again.
+  * Processing Data classes
+      ** Most ProcessingDataConfig classes have been removed, and
+         their attirbutes are now in the processing data classes.
+  * Processing classes
+      ** Completed "EnvelopeExtractor", which calculates audio envelopes.
+      ** Completed "EnvelopeModulator" class, which applies envelopes to audio.
+      ** New MIDI input class.
+  * XML:
+      ** Dump and Restore deprecates dumpOn and restoreFrom
+      ** Dump and Restore requires using the default XMLStorage constructor
+      ** XML Load for any DynamicType using the new macros
+      ** XML Load for Arrays, BPFs...
+      ** Some XML Store formats changed to allow Loading: Array, BPF,
+  * Documentation
+      ** The documentation has been updated with all the changes in
+         the library.
+  * Visualization Module( GUI )
+      ** Major reworking of most of GUI classes
+      ** Model-View-Presentation Architecture introduced
+      ** Automatic Generic Snapshot Generation first attempt. It works
+         for sure for Spectrum's, Audio's and Segment's.
+      ** New GUI folder organisation: now it contains several subfolders
+	         + src/GUI/Core - Visualization Module Core Classes 
+	         + src/GUI/GL   - OpenGL renderers
+	         + src/GUI/View - Set of actually implemented System Views
+              ( Views Processings and PDs offered by CLAM )
+		 + src/GUI/Presentation - Set of presentations for
+           representing standard CLAM concepts ( Processing's and PDs )
+		 + src/GUI/Widget - Some custom widgets, as well as wrappers
+           for different Toolkits
+		 + src/GUI/Util - Miscellaneous stuff
+      ** Some old snapshots have been eliminated and is a TODO to port
+         them to the new interface
+  * Unix build system
+      ** New configure arguments to set some compilation flags.
+      ** External library dependencies can be tuned with autoconf.
+  * Windows Build system:
+      ** More reliable projects have been provided
+      ** Tests projects now share .obj files between them, thus making
+         faster the build process
+	
+2002-04-19  CLAM_0_2_2-rel
+
+  * DynamicType class:
+      ** Dynamic type accessor checks are now only done in debug mode.
+  * Spectrum class:
+      ** Removed again the old kludge for BPF self-references,
+         and a related memory leak.
+      ** Updated obsolete assertion condition macros.
+      ** Fixed bug in SetType/Configure logic.
+  * Audio class:
+      ** Added silence initializations.
+      ** Added optimisation flag to chunk getters.
+      ** Added chunk setters.
+  * AudioFile classes
+      ** New configuration fields: SampleRate and Channels.
+      ** Both mono and stereo Do() methods are now available.
+      ** Improved error handling.
+  * Array class:
+      ** GetPtr has now a pure-const and a non-const versions.
+      ** Fixed the STL implementation so that it compiles again.
+      ** Implementing stream operators for your objects is no more needed
+         if you don't want to use XML.
+  * BPF class:
+      ** Fixed a couple of initialization bugs.
+  * Updated the documentation index with a new reference.
+  * Time machine project:
+      ** Added spectral analysis and synthesis related classes.
+  * Build system:
+      ** Added some VisualStudio projects for new tests.
+      ** _DEBUG flag is now set by default in unix.
+  * Documentation:
+      ** Added Flow Control and Nodes design documents.
+      ** Added doc about binary libraries in CVS.
+      ** Updated versions of the Documentation index, the
+         ErrorHandling document and the User tutorial.
+
+
+2002-02-27  CLAM_0_2_1-rel
+
+  * Array class:
+      ** Changed the Resize/SetSize semantics, fixing some remaining
+         bugs. This has important consequences:
+         *** Order is now important! Do Resize() first, then SetSize().
+         *** You need to do SetSize() with a proper value before trying 
+             to access an element in the array.
+      ** Added a STL based implementation (_MTG_USE_STL_ARRAY flag)
+      ** Empty arrays do not dump an "Empty" string when Storing.
+      ** Improved the tests.
+  * FFT_rfftw/IFFT_rfftw classes:
+      ** Fixed memory leak in destructors.
+  * Audio, Spectrum, WindowGenerator, BPF, TestSpectrum, Envelope,
+    EnvelopeExtractor, TestSpectrum 
+      ** Fixed Array SetSize/Resize calls order.
+  * Assertion and Error classes and functions, in files
+    Assert.hxx, Assert.cxx, Err.hxx, Err.cxx:
+      ** C string arguments are now const, fixing compilation errors.
+  * DynamicType:
+      ** Fixed memory leak in destructor.
+  * XMLArrayAdapter and XMLAdapter classes:
+      ** Removed the extraction operator. This temporarily fixes some
+         compilation errors.
+  * Unix build system:
+      ** Added automatic make tests target.
+
+2002-02-20
+
+  * Array class:
+      ** Fixed bug which caused data corruption when two consecutive
+         Resizes with the same argument where called.
+      ** Fixed wrong InsertElement initialization when mInitElems flags
+         is false
+  * SpectralPeak class:
+      ** Fixed wrong REGISTER_NUM_ATTRIBUTES which caused dynamic type
+         inconsistencies.
+  * Updated the GUI Snapshot code.
+
+2002-02-19  CLAM_0_2_0-rel
+
+  * Array class:
+      ** Fixed bug in memory reallocation and movement.
+      ** Added speciiallization macro for fast implementation.
+      ** TestArray is now an autotest.
+  * Audio class:
+      ** Fixed size modification bug (Thx, Gunter!).
+  * Segment class:
+      ** Fixed lost references bug (replacing Array with List)
+  * Spectrum class:
+      ** Removed a performance bottleneck in the data synchronization
+         routines.
+  * AudioIO classes
+      ** Some more error condition checks.
+      ** Added underrun/overrun recovery mechanism.
+  * List class 
+      ** It is now tested and working.
+  * Changes in the Documentation:
+      ** Updated doxygen generation configuration.
+      ** Updated coding recomendations.
+  * Other:
+      ** Fixed minor compilation problems in several source files.
+      ** Fixed some missing binary dependencies in the UNIX build system.
+  
+2001-02-07  development-root cuidado-root salto-root time_machine-root
+
+  * Branches created.

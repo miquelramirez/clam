@@ -1,0 +1,22 @@
+SUBDIRS=DescriptorsGUI Salto SpectralDelay PFC_SpectralDelay
+PROGRAMS=\
+	Spectrum_example\
+	FFT_example\
+	FDFilterExample\
+	ProcessingObject_controls_example\
+	POCompositeExample\
+	AudioIOExample\
+	MIDI_Synthesizer_example\
+	AudioApplicationExample\
+	FundamentalDetect\
+	XMLViewExample\
+	SIViewExample\
+	QtSIViewExample\
+	SnapshotExample\
+	StreamBufferExample\
+	NodeExample
+
+
+TOP=..
+
+include $(TOP)/unix_tools/make.rules
