@@ -38,10 +38,14 @@ namespace CLAM
 			QtFundFreqPlot plot;
 			plot.Label(label);
 			plot.Geometry(x,y,w,h);
-			plot.SetData(segment);
+			plot.SetBackgroundColor(VMColor::White());
+			plot.SetForegroundColor(VMColor::Blue());
+			plot.SetDialColor(VMColor::Black());
+			plot.SetRegionColor(VMColor::LightGray());
 			plot.SetMarks(marks);
 			plot.SetMarksColor(VMColor::Red());
 			plot.SwitchDisplayColors(true);
+			plot.SetData(segment);
 			plot.Show();
 			
 			QtAppWrapper::Run();
