@@ -43,6 +43,7 @@ namespace CLAM
 			plot.SetVLineColor(VMColor::Black());
 			plot.SetPeaksColor(VMColor::Cyan(),VMColor::Red());
 			plot.SwitchDisplayColors(true);
+			plot.SetData(spec,peaks);
 			plot.Show();
 
 			QtAppWrapper::Run();

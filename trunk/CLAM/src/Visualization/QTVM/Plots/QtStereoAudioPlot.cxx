@@ -189,6 +189,16 @@ namespace CLAM
 			// sel pos sync
 			connect(_leftChannel,SIGNAL(selPos(TData)),_rightChannel,SLOT(setSelPos(TData)));
 			connect(_rightChannel,SIGNAL(selPos(TData)),_leftChannel,SLOT(setSelPos(TData)));
+
+			// segmentation marks sync
+			connect(_leftChannel,SIGNAL(insertedMark(unsigned)),_rightChannel,SLOT(insertMark(unsigned)));
+			connect(_rightChannel,SIGNAL(insertedMark(unsigned)),_leftChannel,SLOT(insertMark(unsigned)));
+
+			connect(_leftChannel,SIGNAL(removedMark(int,unsigned)),_rightChannel,SLOT(removeMark(int,unsigned)));
+			connect(_rightChannel,SIGNAL(removedMark(int,unsigned)),_leftChannel,SLOT(removeMark(int,unsigned)));
+
+			connect(_leftChannel,SIGNAL(updatedMark(int,unsigned)),_rightChannel,SLOT(updateMark(int,unsigned)));
+			connect(_rightChannel,SIGNAL(updatedMark(int,unsigned)),_leftChannel,SLOT(updateMark(int,unsigned)));
 		}
 
 		void QtStereoAudioPlot::SetData(std::vector<Audio> data)
@@ -366,16 +376,21 @@ namespace CLAM
 			_rightChannel->switchColors();
 		}
 
-		void QtStereoAudioPlot::SetMarks(std::list<unsigned>& marks)
+		void QtStereoAudioPlot::SetMarks(std::vector<unsigned>& marks)
 		{
 			_leftChannel->SetMarks(marks);
 			_rightChannel->SetMarks(marks);
 		}
 
+	        std::vector<unsigned>& QtStereoAudioPlot::GetMarks()
+		{
+		    return _leftChannel->GetMarks();
+		}
+
 		void QtStereoAudioPlot::SetMarksColor(Color c)
 		{
 			_leftChannel->SetMarksColor(c);
-			_leftChannel->SetMarksColor(c);
+			_rightChannel->SetMarksColor(c);
 		}
 	}	
 }

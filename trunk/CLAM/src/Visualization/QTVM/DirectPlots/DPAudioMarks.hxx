@@ -22,7 +22,7 @@
 #ifndef __DPAUDIOMARKS__
 #define __DPAUDIOMARKS__
 
-#include <list>
+#include <vector>
 #include <string>
 #include "Audio.hxx"
 
@@ -31,7 +31,7 @@ namespace CLAM
 	namespace VM
 	{
 		void PlotAudioMarks(	const Audio& audio,
-								std::list<unsigned>& marks,
+								std::vector<unsigned>& marks,
 								const std::string& label="",
 								int x=100, 
 								int y=100, 

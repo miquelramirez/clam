@@ -221,7 +221,7 @@ namespace CLAM
 			ycoord *= tbound;
 			ycoord /= TData(_viewport.h);
 			ycoord += bBound;
-			PlotController::SetMousePos(x,ycoord);
+			SegmentationMarksPlotController::SetMousePos(x,ycoord);
 			TData t=GetMouseXPos()/_sampleRate;
 			TData freq=GetMouseYPos();
 			QString s;

@@ -42,6 +42,9 @@ namespace CLAM
 
 			_hzRatio = 1;
 			_vzRatio = 1;
+
+			_isLeftButtonPressed=false;
+			_isAbleToEdit=false;
 			
 			InitView();
 		}
@@ -192,7 +195,7 @@ namespace CLAM
 				emit vScrollValue(GetVScrollValue());
 				emit requestRefresh();
 			}
-		}
+		void EnterMouse();}
 
 		void PlotController::SetHMin(const TData& min)
 		{
@@ -315,7 +318,7 @@ namespace CLAM
 		}
 
 		void PlotController::InitHRatio()
-		{
+		{void EnterMouse();
 			int n = int(GetHMin());
 			int r = 1;
 			while(n < GetnSamples())
@@ -350,7 +353,7 @@ namespace CLAM
 			int vsv = GetVScrollValue();
 			emit vScrollMaxValue(GetnyPixels());
 			emit vScrollValue(vsv);
-		}
+		}void EnterMouse();
 
 		void PlotController::UpdateHViewport(int value)
 		{
@@ -430,6 +433,32 @@ namespace CLAM
 		{
 			return _mouseYPos;
 		}
+
+	        void PlotController::SetLeftButtonPressed(bool pressed)
+		{
+		    _isLeftButtonPressed=pressed;
+		}
+
+	        bool PlotController::IsLeftButtonPressed()
+		{
+		    return _isLeftButtonPressed;
+		}
+
+	        void PlotController::LeaveMouse()
+		{
+		    _isAbleToEdit=false;
+		}
+
+	        void PlotController::EnterMouse()
+		{
+		    _isAbleToEdit=true;
+		}
+
+                bool PlotController::IsAbleToEdit()
+		{
+		    return _isAbleToEdit;
+		}
+
 	}
 }
 

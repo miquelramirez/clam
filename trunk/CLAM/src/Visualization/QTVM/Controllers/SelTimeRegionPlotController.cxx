@@ -39,6 +39,8 @@ namespace CLAM
 
 		void SelTimeRegionPlotController::SetSelPos(const TData& value)
 		{
+		    if(CanDrawSelectedPos())
+		    {
 			if(_keyShiftPressed)
 			{
 				if(value > GetBeginRegion() && value < GetEndRegion())
@@ -74,6 +76,7 @@ namespace CLAM
 				SetEndRegion(GetSelPos());
 			}
 			emit selectedRegion(GetRegionTime());
+		    }
 		}
 		
 		void SelTimeRegionPlotController::Draw()

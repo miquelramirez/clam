@@ -29,7 +29,7 @@ namespace CLAM
 	{
 
 		void PlotFundamentalMarks(	const Segment& segment,
-									std::list<unsigned>& marks,
+									std::vector<unsigned>& marks,
 									const std::string& label,
 									int x, int y, int w, int h )
 		{
@@ -42,10 +42,10 @@ namespace CLAM
 			plot.SetForegroundColor(VMColor::Blue());
 			plot.SetDialColor(VMColor::Black());
 			plot.SetRegionColor(VMColor::LightGray());
+			plot.SetData(segment);
 			plot.SetMarks(marks);
 			plot.SetMarksColor(VMColor::Red());
 			plot.SwitchDisplayColors(true);
-			plot.SetData(segment);
 			plot.Show();
 			
 			QtAppWrapper::Run();

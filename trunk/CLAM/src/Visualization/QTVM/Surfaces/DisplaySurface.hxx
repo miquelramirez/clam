@@ -56,6 +56,8 @@ namespace CLAM
 			private slots:
 				void receivedView(View);
 				void updateToolTip(QString);
+		    
+		                void changeCursor(QCursor);
 
 			protected:
 				virtual void initializeGL(); 
@@ -63,11 +65,13 @@ namespace CLAM
 				virtual void paintGL(); 
 
 				virtual void mousePressEvent(QMouseEvent* e);
+		                virtual void mouseReleaseEvent(QMouseEvent* e);
 				virtual void mouseMoveEvent(QMouseEvent* e);
 
 				virtual void resizeEvent(QResizeEvent *e);
 
 				virtual void leaveEvent(QEvent* e);
+		                virtual void enterEvent(QEvent* e);
 
 			private:
 				View _view;

@@ -29,7 +29,7 @@ namespace CLAM
 	{
 
 		void PlotSinTracksMarks(	const Segment& segment,
-									std::list<unsigned>& marks,
+									std::vector<unsigned>& marks,
 									const std::string& label,
 									int x, int y, int w, int h	 )
 		{
@@ -40,7 +40,7 @@ namespace CLAM
 			plot.Geometry(x,y,w,h);
 			plot.SetData(segment);
 			plot.SetMarks(marks);
-			plot.SetMarksColor(marks);
+			plot.SetMarksColor(VMColor::Red());
 			plot.SwitchDisplayColors(true);
 			plot.Show();
 			
@@ -50,7 +50,7 @@ namespace CLAM
 		void PlotSinTracksMarks(	const Array< SpectralPeakArray >& peakMtx, 
 									const TData& sr, 
 									const TData& dur,
-									std::list<unsigned>& marks,
+									std::vector<unsigned>& marks,
 									const std::string& label,
 									int x, int y, int w, int h )
 		{

@@ -52,8 +52,9 @@ int main()
 	aPlot.Label("Audio");
 	aPlot.Geometry(100,100,500,225);
 	aPlot.SetData(audio);
+	aPlot.SetForegroundColor(CLAM::VM::VMColor::Blue());
 	aPlot.Show();
-
+       
 	return CLAM::VM::QtAppWrapper::Run();
 	
 }

@@ -24,6 +24,7 @@
 
 #include <qobject.h>
 #include <qstring.h>
+#include <qcursor.h>
 #include "DataTypes.hxx"
 
 namespace CLAM
@@ -72,13 +73,22 @@ namespace CLAM
 				TData GetBottomBound() const;
 				TData GetTopBound() const;
 
+		                virtual void SetLeftButtonPressed(bool pressed);
+		                virtual void LeaveMouse();
+		                virtual void EnterMouse();
+
+		                virtual void InsertMark(unsigned elem)=0;
+		                virtual void RemoveMark(int index, unsigned elem)=0;
+		                virtual void UpdateMark(int index, unsigned elem)=0;
+		    
+
 			signals:
 				void requestRefresh();
 				void sendView(View);
 
 				void hZoomRatio(int);
 				void hScrollValue(int);
-                void hScrollMaxValue(int);
+		    void hScrollMaxValue(int);
 
 				void vZoomRatio(int);
 				void vScrollValue(int);
@@ -88,6 +98,12 @@ namespace CLAM
 				void toolTip(QString);
 
 				void leavingMouse();
+		    
+		                void changeCursor(QCursor);
+
+		                void insertedMark(unsigned);
+		                void removedMark(int, unsigned);
+		                void updatedMark(int, unsigned);
 
 			protected:
 				View _view;
@@ -116,6 +132,9 @@ namespace CLAM
 				TData GetMouseXPos() const;
 				TData GetMouseYPos() const;
 
+		                bool IsLeftButtonPressed();
+		                bool IsAbleToEdit();
+
 			private:
 				TData _lBound;
 				TData _rBound;
@@ -137,6 +156,9 @@ namespace CLAM
 
 				TData _mouseXPos;
 				TData _mouseYPos;
+
+		                bool _isLeftButtonPressed;
+		                bool _isAbleToEdit;
 
 				void InitView();
 				

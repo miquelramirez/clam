@@ -22,7 +22,7 @@
 #ifndef __DPSINTRACKSMARKS__
 #define __DPSINTRACKSMARKS__
 
-#include <list>
+#include <vector>
 #include <string>
 #include "Segment.hxx"
 
@@ -32,7 +32,7 @@ namespace CLAM
 	{
 
 		void PlotSinTracksMarks(	const Segment& segment,
-									std::list<unsigned>& marks,
+									std::vector<unsigned>& marks,
 									const std::string& label="",
 									int x=100,
 									int y=100,
@@ -42,7 +42,7 @@ namespace CLAM
 		void PlotSinTracksMarks(	const Array< SpectralPeakArray >& peakMtx, 
 									const TData& sr, 
 									const TData& dur,
-									std::list<unsigned>& marks,
+									std::vector<unsigned>& marks,
 									const std::string& label="",
 									int x=100,
 									int y=100,

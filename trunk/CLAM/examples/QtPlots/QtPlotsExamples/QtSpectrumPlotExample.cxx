@@ -50,11 +50,12 @@ int main()
 	}
 	Spectrum spec;
 	XMLStorage::Restore(spec,"../../data/spectrum_data.xml");
-
+	
 	QtSpectrumPlot specPlot;
 	specPlot.Label("Spectrum");
 	specPlot.Geometry(100,100,500,225);
 	specPlot.SetData(spec);
+	specPlot.SetForegroundColor(CLAM::VM::VMColor::Blue());
 	specPlot.Show();
 	return CLAM::VM::QtAppWrapper::Run();
 }

@@ -73,6 +73,15 @@ namespace CLAM
 				case Qt::Key_Shift:
 						((SinTracksPlotController*)_controller)->SetKeyShiftPressed(true);
 						break;
+
+			        case Qt::Key_Insert:
+				                ((SinTracksPlotController*)_controller)->SetKeyInsertPressed(true); 
+						break;
+						
+			        case Qt::Key_Delete:
+				                ((SinTracksPlotController*)_controller)->SetKeyDeletePressed(true); 
+						break;
+
 				default:
 						break;
 			}
@@ -85,6 +94,15 @@ namespace CLAM
 				case Qt::Key_Shift:
 						((SinTracksPlotController*)_controller)->SetKeyShiftPressed(false);			
 						break;
+
+			        case Qt::Key_Insert:
+				                ((SinTracksPlotController*)_controller)->SetKeyInsertPressed(false); 
+						break;
+						
+			        case Qt::Key_Delete:
+				                ((SinTracksPlotController*)_controller)->SetKeyDeletePressed(false); 
+						break;
+
 				default:
 						break;
 			}
@@ -142,9 +160,14 @@ namespace CLAM
 			SetMarksColor(VMColor::Red());
 		}
 
-		void QtSinTracksPlot::SetMarks(std::list<unsigned>& marks)
+		void QtSinTracksPlot::SetMarks(std::vector<unsigned>& marks)
 		{
 			((SinTracksPlotController*)_controller)->SetMarks(marks);
+		}
+
+	        std::vector<unsigned>& QtSinTracksPlot::GetMarks()
+		{
+		    return ((SinTracksPlotController*)_controller)->GetMarks();
 		}
 
 		void QtSinTracksPlot::SetMarksColor(Color c)

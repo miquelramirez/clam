@@ -35,7 +35,7 @@ namespace CLAM
 		}
 
 		void SpectrumAndPeaksPlotController::SetData(const Spectrum& spec,
-													 const SpectralPeakArray& peaks)
+							     const SpectralPeakArray& peaks)
 		{
 			SpectrumPlotController::SetData(spec);
 			_peaks = peaks;
@@ -52,9 +52,9 @@ namespace CLAM
 
 		void SpectrumAndPeaksPlotController::Draw()
 		{
-			if(MustProcessData()) ProcessPeaksData();
-			_peaksRenderer.Render();
-			SpectrumPlotController::Draw();
+		    if(MustProcessData()) ProcessPeaksData();
+		    _peaksRenderer.Render();
+		    SpectrumPlotController::Draw();
 		}
 
 		void SpectrumAndPeaksPlotController::CachePeaksData()

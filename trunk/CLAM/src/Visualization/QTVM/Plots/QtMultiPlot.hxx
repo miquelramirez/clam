@@ -53,7 +53,8 @@ namespace CLAM
 				void SetXRange(const TData& xmin, const TData& xmax);
 				void SetYRange(const TData& ymin, const TData& ymax);
 
-				void SetMarks(std::list<unsigned>& marks);
+				void SetMarks(std::vector<unsigned>& marks);
+		                std::vector<unsigned>& GetMarks();
 				void SetMarksColor(Color c);
 
 			private slots:
@@ -63,10 +64,13 @@ namespace CLAM
 				void clearLabels();
 
 			protected:
-				virtual void SetPlotController();
-				virtual void Connect();
+		                virtual void keyPressEvent(QKeyEvent* e);
+				virtual void keyReleaseEvent( QKeyEvent* e);
 
-				virtual void DisplayBackgroundBlack();
+		                virtual void SetPlotController();				
+		                virtual void Connect();
+
+		                virtual void DisplayBackgroundBlack();
 				virtual void DisplayBackgroundWhite();
 
 			private:

@@ -50,7 +50,7 @@ int main()
 	// get plots from the factory
 	QtAudioPlot* aPlot = PlotFactory::GetAudioPlot(audio,"Audio",50,50);
 	QtFundFreqPlot* fPlot = PlotFactory::GetFundFreqPlot(seg,"Fundamental",50,300); 
-	
+
 	// add plots to plotter
 	QtPlotter::Add(aPlot);
 	QtPlotter::Add(fPlot);

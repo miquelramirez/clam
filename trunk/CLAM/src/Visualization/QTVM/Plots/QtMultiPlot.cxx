@@ -95,19 +95,19 @@ namespace CLAM
 
 		void QtMultiPlot::SetPlotController()
 		{
-			SetController(new MultiPlotController());
+		    SetController(new MultiPlotController());
 		}
 
-		void QtMultiPlot::Connect()
+	        void QtMultiPlot::Connect()
 		{
-			connect(((MultiPlotController*)_controller),SIGNAL(xRulerScaleDiv(QwtScaleDiv)),this,SLOT(setXRulerScaleDiv(QwtScaleDiv)));
-			connect(((MultiPlotController*)_controller),SIGNAL(yRulerScaleDiv(QwtScaleDiv)),this,SLOT(setYRulerScaleDiv(QwtScaleDiv)));
-			connect(((MultiPlotController*)_controller),SIGNAL(xvalue(TData)),this,SLOT(updateXLabel(TData)));
-			connect(((MultiPlotController*)_controller),SIGNAL(yvalue(TData)),this,SLOT(updateYLabel(TData)));
-			connect(((MultiPlotController*)_controller),SIGNAL(leavingMouse()),this,SLOT(clearLabels()));
+		    connect(((MultiPlotController*)_controller),SIGNAL(xRulerScaleDiv(QwtScaleDiv)),this,SLOT(setXRulerScaleDiv(QwtScaleDiv)));
+		    connect(((MultiPlotController*)_controller),SIGNAL(yRulerScaleDiv(QwtScaleDiv)),this,SLOT(setYRulerScaleDiv(QwtScaleDiv)));
+		    connect(((MultiPlotController*)_controller),SIGNAL(xvalue(TData)),this,SLOT(updateXLabel(TData)));
+		    connect(((MultiPlotController*)_controller),SIGNAL(yvalue(TData)),this,SLOT(updateYLabel(TData)));
+		    connect(((MultiPlotController*)_controller),SIGNAL(leavingMouse()),this,SLOT(clearLabels()));
 		}
 
-		void QtMultiPlot::DisplayBackgroundBlack()
+	        void QtMultiPlot::DisplayBackgroundBlack()
 		{
 			SetBackgroundColor(VMColor::Black());
 			SetMarksColor(VMColor::Orange());
@@ -147,14 +147,55 @@ namespace CLAM
 			_yLabel->setText("");
 		}
 
-		void QtMultiPlot::SetMarks(std::list<unsigned>& marks)
+		void QtMultiPlot::SetMarks(std::vector<unsigned>& marks)
 		{
 			((MultiPlotController*)_controller)->SetMarks(marks);
+		}
+	    
+	        std::vector<unsigned>& QtMultiPlot::GetMarks()
+		{
+		    return ((MultiPlotController*)_controller)->GetMarks();
 		}
 
 		void QtMultiPlot::SetMarksColor(Color c)
 		{
 			((MultiPlotController*)_controller)->SetMarksColor(c);
+		}
+
+	        void QtMultiPlot::keyPressEvent(QKeyEvent* e)
+		{
+		    switch(e->key())
+		    {
+			case Qt::Key_Insert:
+			    ((MultiPlotController*)_controller)->SetKeyInsertPressed(true); 
+			    break;
+						
+			case Qt::Key_Delete:
+			    ((MultiPlotController*)_controller)->SetKeyDeletePressed(true); 
+			    break;
+				    
+			default:
+			    break;
+
+		    }
+		}
+
+	        void QtMultiPlot::keyReleaseEvent(QKeyEvent* e)
+		{
+		    switch(e->key())
+		    {
+			case Qt::Key_Insert:
+			    ((MultiPlotController*)_controller)->SetKeyInsertPressed(false); 
+			    break;
+						
+			case Qt::Key_Delete:
+			    ((MultiPlotController*)_controller)->SetKeyDeletePressed(false); 
+			    break;
+				    
+			default:
+			    break;
+
+		    }
 		}
 	}
 }

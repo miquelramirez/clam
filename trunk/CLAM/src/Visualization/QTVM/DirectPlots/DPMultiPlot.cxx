@@ -101,7 +101,7 @@ namespace CLAM
 			QtAppWrapper::Run();
 		}
 
-		void DPMultiPlot::SetMarks(std::list<unsigned>& marks)
+		void DPMultiPlot::SetMarks(std::vector<unsigned>& marks)
 		{
 			_plot->SetMarks(marks);
 			_plot->SetMarksColor(VMColor::Red());

@@ -105,6 +105,15 @@ namespace CLAM
 				case Qt::Key_Shift:
 						((FundPlotController*)_controller)->SetKeyShiftPressed(true);
 						break;
+
+			        case Qt::Key_Insert:
+				                ((FundPlotController*)_controller)->SetKeyInsertPressed(true); 
+						break;
+						
+			        case Qt::Key_Delete:
+				                ((FundPlotController*)_controller)->SetKeyDeletePressed(true); 
+						break;
+
 				default:
 						break;
 			}
@@ -117,6 +126,15 @@ namespace CLAM
 				case Qt::Key_Shift:
 						((FundPlotController*)_controller)->SetKeyShiftPressed(false);			
 						break;
+
+			        case Qt::Key_Insert:
+				                ((FundPlotController*)_controller)->SetKeyInsertPressed(false); 
+						break;
+						
+			        case Qt::Key_Delete:
+				                ((FundPlotController*)_controller)->SetKeyDeletePressed(false); 
+						break;
+
 				default:
 						break;
 			}
@@ -191,10 +209,16 @@ namespace CLAM
 			QtPlot::closeEvent(e);
 		}
 
-		void QtFundFreqPlot::SetMarks(std::list<unsigned>& marks)
+		void QtFundFreqPlot::SetMarks(std::vector<unsigned>& marks)
 		{
 			((FundPlotController*)_controller)->SetMarks(marks);
 		}
+
+  	        std::vector<unsigned>& QtFundFreqPlot::GetMarks()
+		{
+		    return ((FundPlotController*)_controller)->GetMarks();
+		}
+
 
 		void QtFundFreqPlot::SetMarksColor(Color c)
 		{
