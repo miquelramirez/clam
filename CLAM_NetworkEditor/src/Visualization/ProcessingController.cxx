@@ -114,10 +114,7 @@ void ProcessingController::UpdateListOfPortsAndControls()
 
 bool ProcessingController::BindTo( CLAM::Processing& obj )
 {
-	mObserved = dynamic_cast< CLAM::Processing* > (&obj);
-	
-	if ( !mObserved )
-		return false;
+	mObserved = &obj;
 	UpdateListOfPortsAndControls();
 	return true;
 }
