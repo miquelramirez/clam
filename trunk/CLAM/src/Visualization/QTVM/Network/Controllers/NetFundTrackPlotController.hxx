@@ -23,6 +23,7 @@ namespace CLAM
 	    DataArray _cachedData;
 	    DataArray _processedData;
 	    DataRenderer _renderer;
+	    int _index;
 	    
 	    void AddData(const TData& data);
 	    void ProcessData();
