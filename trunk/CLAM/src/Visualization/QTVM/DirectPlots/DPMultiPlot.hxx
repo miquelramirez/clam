@@ -45,8 +45,6 @@ namespace CLAM
 
 				void AddData(const std::string& key, const DataArray& array);
 				void AddData(std::string key, const BPF& data, int samples = 100);
-				void RemoveData(std::string key );
-				void RemoveAllData();
 
 				void SetColor(std::string key, Color c);
 

@@ -32,6 +32,7 @@ namespace CLAM
 			QtAppWrapper::Init();
 			_plot = new QtMultiPlot();
 			_plot->Geometry(100,100,500,225);
+			_plot->SetDialColor(VMColor::Black());
 			_plot->SwitchDisplayColors(true);
 			_plot->Show();
 		}
@@ -59,16 +60,6 @@ namespace CLAM
 		void DPMultiPlot::AddData(std::string key, const BPF& data, int samples)
 		{
 			_plot->AddData(key,data,samples);
-		}
-
-		void DPMultiPlot::RemoveData(std::string key)
-		{
-			_plot->RemoveData(key);
-		}
-
-		void DPMultiPlot::RemoveAllData()
-		{
-			_plot->RemoveAllData();
 		}
 
 		void DPMultiPlot::SetColor(std::string key, Color c)

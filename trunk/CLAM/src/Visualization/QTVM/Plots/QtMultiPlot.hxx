@@ -57,6 +57,8 @@ namespace CLAM
 		                std::vector<unsigned>& GetMarks();
 				void SetMarksColor(Color c);
 
+		             	void SetDialColor(Color c);
+
 			private slots:
 				void updateXLabel(TData);
 				void updateYLabel(TData);

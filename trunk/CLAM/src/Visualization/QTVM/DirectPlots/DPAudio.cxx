@@ -25,28 +25,51 @@
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	void PlotAudio( const Audio& audio,
+			const std::string& label,
+			int x, int y, int w, int h )
 	{
-		void PlotAudio(	const Audio& audio,
-				const std::string& label,
-				int x, int y, int w, int h )
-		{
-			QtAppWrapper::Init();
+	    QtAppWrapper::Init();
 
-			QtAudioPlot plot;
-			plot.Label(label);
-			plot.Geometry(x,y,w,h);
-			plot.SetBackgroundColor(VMColor::White());
-			plot.SetForegroundColor(VMColor::Blue());
-			plot.SetDialColor(VMColor::Black());
-			plot.SetRegionColor(VMColor::LightGray());
-			plot.SwitchDisplayColors(true);
-			plot.SetData(audio);
-			plot.Show();
+	    QtAudioPlot plot;
+	    plot.Label(label);
+	    plot.Geometry(x,y,w,h);
+	    plot.SetBackgroundColor(VMColor::White());
+	    plot.SetForegroundColor(VMColor::Blue());
+	    plot.SetDialColor(VMColor::Black());
+	    plot.SetRegionColor(VMColor::LightGray());
+	    plot.SwitchDisplayColors(true);
+	    plot.SetData(audio);
+	    plot.Show();
 
-			QtAppWrapper::Run();
-		}
+	    QtAppWrapper::Run();
 	}
+
+	void PlotAudio( const Audio& audio,
+			std::vector<unsigned>& marks,
+			const std::string& label,
+			int x, int y, int w, int h )
+	{
+	    QtAppWrapper::Init();
+
+	    QtAudioPlot plot;
+	    plot.Label(label);
+	    plot.Geometry(x,y,w,h);
+	    plot.SetBackgroundColor(VMColor::White());
+	    plot.SetForegroundColor(VMColor::Blue());
+	    plot.SetDialColor(VMColor::Black());
+	    plot.SetRegionColor(VMColor::LightGray());
+	    plot.SetData(audio);
+	    plot.SetMarks(marks);
+	    plot.SetMarksColor(VMColor::Red());
+	    plot.SwitchDisplayColors(true);
+	    plot.Show();
+
+	    QtAppWrapper::Run();
+	}
+    }
 }
 
 // END
