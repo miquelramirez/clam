@@ -28,17 +28,18 @@
 #include "pthread.h"
 #include "CLAMViews.hxx"
 #include "CLAMPresentations.hxx"
-#include "DebugSnapshots.hxx"
-#include "AudioSnapshot.hxx"
 
 /******* TRANSFORMATION *******/
 #include "SMSFreqShift.hxx"
+
 
 #include <iostream>
 
 using namespace CLAM;
 using namespace CLAMGUI;
 using namespace std;
+
+
 
 #ifndef WIN32
 #include <unistd.h>
@@ -326,43 +327,63 @@ public:
 
 void UserInterface::LoadConfiguration(void)
 {
-	
+
 	char* str = fl_file_chooser("Select configuration file","*.xml","");
 	
 	if ( str )
-	{
-		mConfigurationText->value(str);
+		{
 		
-		std::string inputXMLFileName(str);
+			mConfigurationText->value(str);
 		
-		mAnalysisSynthesisExample->LoadConfig(inputXMLFileName);
+			std::string inputXMLFileName(str);
 		
-		if (mAnalysisSynthesisExample->mHaveConfig)
-		{	
-			mAnalysisSynthesisExample->LoadInputSound();
-			if (mAnalysisSynthesisExample->mHaveAudioIn)
-				mSubMenu_2->activate();
+			mAnalysisSynthesisExample->LoadConfig(inputXMLFileName);
+		
+			if (mAnalysisSynthesisExample->mHaveConfig)
+		   	{	
+					mAnalysisSynthesisExample->LoadInputSound();
+					if (mAnalysisSynthesisExample->mHaveAudioIn)
+		   			{
+							mDisplayInputSoundButton->activate();
+							mAnalyzeButton->activate();
+		   			}
+					else 
+					{
+						mAnalysisSynthesisExample->mHaveConfig=false;
+						mDisplayInputSoundButton->deactivate();
+						mAnalyzeButton->deactivate();
+					}
+		   	}
 			else 
-				mAnalysisSynthesisExample->mHaveConfig=false;
-		}
+			{
+				mDisplayInputSoundButton->deactivate();
+				mAnalyzeButton->deactivate();
+			}
 		
-		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
-			mSubMenu_4->activate();
-	}		
+
+		if (
+			mAnalysisSynthesisExample->mHaveAnalysis &&
+			mAnalysisSynthesisExample->mHaveConfig)
+			{
+				mSynthesizeButton->activate();
+			}
+		}		
 }
 
 void UserInterface::LoadTransformation(void)
 {
 	char* str = fl_file_chooser("Select configuration file","*.xml","");
 	if ( str )
-	{
-		//mTransformationFileText->value(str);
-		std::string inputXMLFileName(str);
-		mAnalysisSynthesisExample->LoadTransformationScore(inputXMLFileName);
-		mAnalysisSynthesisExample->mHaveTransformationScore=true;
-		if (mAnalysisSynthesisExample->mHaveAnalysis)
-			mMenuItem_5_2->activate();
-	}
+		{
+			mTransformationFileText->value(str);
+			std::string inputXMLFileName(str);
+			mAnalysisSynthesisExample->LoadTransformationScore(inputXMLFileName);
+			mAnalysisSynthesisExample->mHaveTransformationScore=true;
+			if (mAnalysisSynthesisExample->mHaveAnalysis)
+				{
+					mTransformButton->activate();
+				}
+		}
 }
 
 void UserInterface::LoadAnalysisData(void)
@@ -370,15 +391,15 @@ void UserInterface::LoadAnalysisData(void)
 	char* str = fl_file_chooser("Select analysis data file","*.xml","");
 	if (str)
 	{
-		//mAnalysisDataText->value(str);
+		mAnalysisDataText->value(str);
 		std::string inputXMLFileName(str);
 		mAnalysisSynthesisExample->LoadAnalysisThread(inputXMLFileName);
-		mMenuItem_6_1->deactivate();
+		mAnalyzeMelodyButton->deactivate();
 		if (
 			mAnalysisSynthesisExample->mHaveAnalysis &&
 			mAnalysisSynthesisExample->mHaveConfig)
 		{
-			mSubMenu_4->activate();
+			mSynthesizeButton->activate();
 		}
 	}
 }
@@ -388,11 +409,11 @@ void UserInterface::Analyze(void)
 	mAnalysisSynthesisExample->AnalyzeThread();
 	if (mAnalysisSynthesisExample->mHaveAnalysis)
 	{
-		mMenuItem_6_1->activate();
-		mSubMenu_4->activate();
-		mMenuItem_3_2->activate();
+		mAnalyzeMelodyButton->activate();
+		mSynthesizeButton->activate();
+		mStoreAnalysisDataButton->activate();
 		if(mAnalysisSynthesisExample->mHaveTransformationScore)
-			mMenuItem_5_2->activate();
+			mTransformButton->activate();
 	}
 }
 
@@ -400,7 +421,14 @@ void UserInterface::Synthesize(void)
 {
 	mAnalysisSynthesisExample->SynthesizeThread();
 	if (mAnalysisSynthesisExample->mHaveAudioOut)
-		mSubMenu_4->activate();
+	{
+		mStoreOutputSoundButton->activate();
+		mDisplayOutputSoundButton->activate();
+		mStoreOutputSoundSinusoidalButton->activate();
+		mDisplayOutputSoundSinusoidalButton->activate();
+		mStoreOutputSoundResidualButton->activate();
+		mDisplayOutputSoundResidualButton->activate();
+	}
 }
 
 void UserInterface::Exit(void)
@@ -430,17 +458,17 @@ void UserInterface::DisplayInputSound(void)
 
 void UserInterface::DisplayOutputSound(void)
 {
-	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOut, "Output Audio");
+	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioOut,"Output Audio");
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
 {
-	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutRes,"Output Audio Residual");
+	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioOutRes,"Output Audio Residual");
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
-	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutSin,"Output Audio Sinusoidal");
+	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioOutSin,"Output Audio Sinusoidal");
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -461,7 +489,7 @@ void UserInterface::StoreOutputSoundSinusoidal(void)
 void UserInterface::AnalyzeMelody(void)
 {
 	mAnalysisSynthesisExample->AnalyzeMelody();
-	mMenuItem_6_2->activate();
+	mStoreMelodyButton->activate();
 }
 
 void UserInterface::StoreMelody(void)
@@ -474,7 +502,7 @@ void UserInterface::Transform(void)
 	mAnalysisSynthesisExample->Transform();
 }
 
-int main(void)
+main(void)
 {
 	try{
 		AnalysisSynthesisExampleGUI example;
@@ -494,6 +522,6 @@ int main(void)
 		std::cout << e.what() << std::endl;
 	}
 	
-	std::clog << "Finished successfully!"<<std::endl;
+	std::clog << "Finished successfully!";
 	return 0;
 }
