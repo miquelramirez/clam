@@ -22,8 +22,8 @@ namespace CLAM
 			void SetBackgroundColor(Color c);
 			void Label(const std::string& label);
 			void Geometry(int x,int y,int w,int h);
-			void Show();
-			void Hide();
+			void show();
+			void hide();
 
 			void StopRendering();
 
@@ -38,6 +38,7 @@ namespace CLAM
 
 		private:
 			NetDisplaySurface* _surf;
+			bool _active;
 			bool _closed;
 
 			void InitNetPlot();

@@ -6,17 +6,21 @@
 
 namespace CLAM
 {
+	class PeaksPortMonitor;
+
 	namespace VM
 	{
 		class NetPeaksPlot : public NetPlot
 		{
 			Q_OBJECT
 		public:
+			typedef PeaksPortMonitor MonitorType;
 			NetPeaksPlot(QWidget* parent=0, const char * name=0);
 			virtual ~NetPeaksPlot();
 
 			void SetData(const SpectralPeakArray& peaks);
 			void SetPeaksColor(Color cline, Color cpoint);
+			void SetMonitor(MonitorType & monitor);
 
 		protected:
 			virtual void SetPlotController();

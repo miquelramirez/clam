@@ -20,6 +20,11 @@ namespace CLAM
 			((NetSpectrumPlotController*)_controller)->SetData(spec);
 		}
 
+		void NetSpectrumPlot::SetMonitor(MonitorType & monitor)
+		{
+			((NetSpectrumPlotController*)_controller)->SetMonitor(monitor);
+		}
+
 		void NetSpectrumPlot::SetDataColor(Color c)
 		{
 			((NetSpectrumPlotController*)_controller)->SetDataColor(c);
