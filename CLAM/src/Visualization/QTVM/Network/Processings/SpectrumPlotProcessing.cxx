@@ -16,7 +16,7 @@ namespace CLAM
 		SpectrumPlotProcessingConfig cfg;
 		Configure(cfg);
 
-		InitSpectrumPlot();
+		mPlot = NULL;
 	}
 
 	SpectrumPlotProcessing::SpectrumPlotProcessing(const SpectrumPlotProcessingConfig& cfg)
@@ -24,7 +24,7 @@ namespace CLAM
 	{
 		Configure(cfg);
 
-		InitSpectrumPlot();
+		mPlot = NULL;
 	}
 
 	SpectrumPlotProcessing::~SpectrumPlotProcessing()
@@ -61,6 +61,19 @@ namespace CLAM
 		mPlot->SetBackgroundColor(VM::VMColor::Black());
 		mPlot->SetDataColor(VM::VMColor::Green());
 		mPlot->Geometry(100,100,300,150);
+	}
+
+	bool SpectrumPlotProcessing::ConcreteStart()
+	{
+		if(!mPlot) InitSpectrumPlot();
+		return true;
+	}
+
+	bool SpectrumPlotProcessing::ConcreteStop()
+	{
+		if(mPlot) delete mPlot;
+		mPlot = NULL;
+		return true;
 	}
 }
 
