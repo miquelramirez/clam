@@ -503,7 +503,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in InControls collection: NonExistingControl" ), 
+				std::string( "name not found in InControls collection: 'NonExistingControl'. In ports availables: " ), 
 				std::string( expected.what() ) );
 
 		}
