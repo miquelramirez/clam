@@ -125,9 +125,8 @@ public:
 
 	/**
 	 * Restore a Component from the xml fragment on the given xpath of the given document.
-	 * @todo Not implemented
 	 */
-	static void RestorePartialDocument(Component & obj, const std::string & path, std::istream & is)
+	static void RestoreFromFragment(Component & obj, const std::string & path, std::istream & is)
 	{
 		XmlStorage storage;
 		storage.Read(is);
@@ -137,10 +136,9 @@ public:
 
 	/**
 	 * Append the xml fragment corresponding to the given component
-	 * on the given xpath of an existing i/o stream.
-	 * @todo Not implemented
+	 * on the given xpath of an existing file.
 	 */
-	static void AppendToDocument(const Component & obj, const std::string & path, std::iostream & str);
+	static void AppendToDocument(const Component & obj, const std::string & xpath, const std::string & filename);
 
 	/**
 	 * Dump a Component from the named XML file.
@@ -224,8 +222,9 @@ typedef XmlStorage XMLStorage;
  }
  catch (CLAM::XmlStorageErr & err)
  {
- 	// Handle the error here
+ 	// Handle the error, a dirty way could be:
  	std::cerr << err.what() << std::endl;
+ 	exit(-1);
  }
  @endcode
 
@@ -236,11 +235,9 @@ typedef XmlStorage XMLStorage;
  CLAM::XmlStorage::Dump(myComponent, "Document", std::cout)
  @endcode
 
- Although is not implemented yet, you could use the AppendToDocument
- static function to add an object in a given path of an existing XML file,
- or using RestorePartialDocument to restore the object taking an XML fragment.
- Vote for them in the CLAM stories if you are interested in such functionality
- to be prioritized.
+ You can the AppendToDocument static function to add an object in a given
+ path of an existing XML file,
+ or using RestoreFromFragment to restore the object taking an XML fragment.
 
  Catchable exceptions (CLAM::XmlStorageErr) are thrown on the following conditions:
  - The source/target stream could not be open
@@ -283,16 +280,23 @@ typedef XmlStorage XMLStorage;
  * @code
  * // An unmodified default constructed object!!!
  * MyComponent comp;
- * CLAM::XmlStorage::Restore(comp, "mycomponent.xml");
+ * try
+ * {
+ * 	CLAM::XmlStorage::Restore(comp, "mycomponent.xml");
+ * }
+ * catch (CLAM::XmlStorageErr & err)
+ * {
+ * 	// Handle the error, a dirty way could be:
+ * 	std::cerr << err.what() << std::endl;
+ * 	exit(-1);
+ * }
  * @endcode
  *
  * Dump and Restore are overloaded to accept any C++ stream instead of a filename.
  *
- * Although is not implemented yet, you could use the AppendToDocument
- * static function to add an object in a given path of an existing XML file,
- * or using RestorePartialDocument to restore the object taking an XML fragment.
- * Vote for them in the CLAM stories if you are interested in such functionality
- * to be prioritized.
+ * You can the AppendToDocument static function to add an object in a given
+ * path of an existing XML file,
+ * or using RestoreFromFragment to restore the object taking an XML fragment.
  *
  * 
  * @section XmlStepByStepInterface Step-By-Step Interface
