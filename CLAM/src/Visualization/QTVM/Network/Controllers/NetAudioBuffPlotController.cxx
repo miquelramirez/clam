@@ -6,7 +6,13 @@ namespace CLAM
     namespace VM
     {
 	NetAudioBuffPlotController::NetAudioBuffPlotController()
-	    : mMonitor(0),_index(0),_frameSize(0)
+	    : mMonitor(0),
+	      _index(0),
+	      _frameSize(0),
+	      _leftIndex1(0),
+	      _rightIndex1(0),
+	      _leftIndex2(0),
+	      _rightIndex2(0)
 	{
 	    SetDataColor(VMColor::Green());
 	    SetvRange(TData(-1.0),TData(1.0));
@@ -39,7 +45,6 @@ namespace CLAM
 
 	void NetAudioBuffPlotController::SetDataColor(Color c)
 	{
-
 	    _renderer.SetColor(c);
 	}
 
@@ -48,7 +53,9 @@ namespace CLAM
 	    if(CanSendData())
 	    {
 		SetCanGetData(false);
-		_renderer.SetDataPtr(_cachedData.GetPtr(),_cachedData.Size(), (unsigned)_index);
+		ComputeIndexes();
+		_renderer.SetIndexes(_leftIndex1,_rightIndex1,_leftIndex2,_rightIndex2,TIndex(_view.left));
+		_renderer.SetDataPtr(_cachedData.GetPtr());
 		SetCanGetData(true);
 	    }
 	    _renderer.Render();
@@ -108,6 +115,41 @@ namespace CLAM
 		}
 		SetCanSendData(true);
 	    }  
+	}
+
+	void NetAudioBuffPlotController::ComputeIndexes()
+	{
+	    unsigned width=unsigned(_view.right-_view.left);
+	    if(width < 512) width=512;
+	    if(width==unsigned(GetnSamples()))
+	    {
+		_leftIndex1=TIndex(_index);
+		_rightIndex1=TIndex(_cachedData.Size());
+		_leftIndex2=0;
+		_rightIndex2=TIndex(_index);
+		return;
+	    }
+
+	    unsigned left1=unsigned(_index)+unsigned(_view.left);
+	    unsigned left2=0;
+	    if(left1 > (unsigned)_cachedData.Size())
+	    {
+		left2=left1-unsigned(_cachedData.Size());
+		left1=unsigned(_cachedData.Size());
+	    }
+	    unsigned rest=0;
+	    unsigned right1=left1+width+4;
+	    if(right1 > (unsigned)_cachedData.Size())
+	    {
+		rest=right1-unsigned(_cachedData.Size());
+		right1=unsigned(_cachedData.Size());
+	    }
+	   
+	    _leftIndex1=TIndex(left1);
+	    _rightIndex1=TIndex(right1);
+	    _leftIndex2=TIndex(left2);
+	    _rightIndex2=_leftIndex2+TIndex(rest);
+	    if(_rightIndex2 > _leftIndex1) _rightIndex2=_leftIndex1;
 	}
     }
 }
