@@ -76,6 +76,9 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	QListViewItem * utils = new QListViewItem( this, "Utils" );
 	ProcessingItem * ladspaloader = new ProcessingItem( utils, "LadspaLoader" );
 	ProcessingItem * outcontrolsender = new ProcessingItem( utils, "OutControlSender" );	
+
+	QListViewItem* plots = new QListViewItem(this,"Plots");
+	ProcessingItem* audioplotprocessing = new ProcessingItem(plots,"AudioPlotProcessing");
 	show();
 	header()->hide();
 
