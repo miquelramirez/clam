@@ -1,5 +1,0 @@
-PROGRAMS=analizer TestMaskingPeakDetect TestSpectralEnvelopeGenerator\
-	     TestSpectralEnvelopeExtractor TestEnvelopeModulation
-TOP=../../..
-
-include $(TOP)/unix_tools/make.rules
