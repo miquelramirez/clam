@@ -98,7 +98,16 @@ void MyAudioApplication::AudioMain(void)
 		Oscillator oscR(oscLcfg);
 		Oscillator testtone(testtoneCfg);
 
+		//Starting all processings
 		audioManager.Start();
+		inL.Start();
+		inR.Start();
+		oscL.Start();
+		oscR.Start();
+		mul.Start();
+		testtone.Start();
+		outL.Start();
+		outR.Start();
 
 		do
 		{
