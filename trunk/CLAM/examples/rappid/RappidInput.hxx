@@ -40,7 +40,7 @@ class RappidInput: public ProcessingComposite, public RappidIO<RappidInput>
 	AudioFileIn   *pInputFile;
 	WaveGenerator *pWaveformIn;
 
-	const char *GetClassName() {return "RappidInput";}
+	const char *GetClassName() const {return "RappidInput";}
 
 	bool ConfigureRealTime();
 

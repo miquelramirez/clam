@@ -41,7 +41,7 @@ namespace MTG {
 
 
   private:
-		const char *GetClassName() {return "TDWindowing";}
+		const char *GetClassName() const {return "TDWindowing";}
 
 		/** Configuration change method
 		 * @throw

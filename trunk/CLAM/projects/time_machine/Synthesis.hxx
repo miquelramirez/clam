@@ -100,7 +100,7 @@ namespace MTG {
 
 		// Processing Object compliance methods.
 
-		const char *GetClassName() {return "AnlysisComposite";}
+		const char *GetClassName() const {return "AnlysisComposite";}
 
 		/** Configuration method */
 		bool ConcreteConfigure(const ProcessingObjectConfig&) throw(std::bad_cast);

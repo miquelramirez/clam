@@ -69,7 +69,7 @@ namespace MTG {
 		void Constant(TSize size,TData *pWindow);
 
   private:
-		const char *GetClassName() {return "WindowGen";}
+		const char *GetClassName() const {return "WindowGen";}
 
     bool ConcreteConfigure(const ProcessingObjectConfig&) throw(std::bad_cast);
 
