@@ -23,61 +23,79 @@
 #ifndef _SMSGenderChange_
 #define _SMSGenderChange_
 
-#include "SMSTransformation.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "FrameTransformation.hxx"
 #include "SMSPitchShift.hxx"
 #include "SMSSpectralShapeShift.hxx"
+#include "SpectralPeakArray.hxx"
 
 
 namespace CLAM{
 
 
-	class SMSGenderChange: public SegmentTransformation
+	class SMSGenderChange: public FrameTransformation
 	{
 		
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
 		const char *GetClassName() const {return "SMSGenderChange";}
 
+		InPort<SpectralPeakArray> mInPeaks;
+		OutPort<SpectralPeakArray> mOutPeaks;
+		InPort<Fundamental> mInFund;
+		OutPort<Fundamental> mOutFund;
+		InPort<Spectrum> mInSpectrum;
+		OutPort<Spectrum> mOutSpectrum;
+
+		InControl mGenderFactor;
 
 	public:
-		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
+
 		SMSGenderChange()
-		{
-		}
-		/** Constructor with an object of SegmentTransformationConfig class by parameter
-		 *  @param c SegmentTransformationConfig object created by the user
-		*/
-		SMSGenderChange(const SegmentTransformationConfig &c):SegmentTransformation(c)
-		{
-		}
-
-		virtual bool ConcreteConfigure(const ProcessingConfig& c)
-		{
-			SegmentTransformation::ConcreteConfigure(c);
-			//configure children by default
-			mPO_PitchShift.Configure(SegmentTransformationConfig());
-			mPO_SpectralShapeShift.Configure(SegmentTransformationConfig());
-			return true;
-		}
-
-		/** Destructor of the class*/
- 		~SMSGenderChange()
+		:
+		mInPeaks("In SpectralPeaks", this),	
+		mOutPeaks("Out SpectralPeaks", this),
+		mInFund("In Fundamental", this),
+		mOutFund("Out Fundamental", this),
+		mInSpectrum("In Spectrum", this),
+		mOutSpectrum("Out Spectrum", this),
+		mGenderFactor("Gender Factor", this)
 		{}
 
-		
+		const ProcessingConfig& GetConfig() const { throw 0; }
+
+		virtual bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
+
+ 		~SMSGenderChange() {}
+
 		bool Do() 
 		{
-			CLAM_ASSERT(false, "Do with ports not implemented");
-			return false;
+			bool result = Do(mInPeaks.GetData(), 
+						 mInFund.GetData(), 
+						 mInSpectrum.GetData(), 
+						 mOutPeaks.GetData(), 
+						 mOutFund.GetData(),
+						 mOutSpectrum.GetData() 
+						 );
+
+			return result;
 		}
 		
 		bool Do(const Frame& in, Frame& out);
+
+		bool Do(const SpectralPeakArray& inPeaks, 
+				const Fundamental& inFund,
+				const Spectrum& inSpectrum, 
+				SpectralPeakArray& outPeaks,
+				Fundamental& outFund,
+				Spectrum& outSpectrum);
+
 	private:
-		SMSPitchShift mPO_PitchShift;
-		SMSSpectralShapeShift mPO_SpectralShapeShift;
+
+		SMSPitchShift mPitchShift;
+		SMSSpectralShapeShift mSpectralShapeShift;
 	};		
-};//namespace CLAM
+}	//namespace CLAM
 
 #endif // _SMSGenderChange_
 

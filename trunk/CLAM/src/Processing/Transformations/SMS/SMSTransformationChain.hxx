@@ -293,6 +293,17 @@ namespace CLAM {
 				return;
 			}
 
+			if ( classname=="SMSSpectralShapeShift") 
+			{
+				SegmentTransformation* wrapper = new SegmentTransformation;	
+				Processing * proc = theFactory.Create(classname);
+				FrameTransformation* spectralShapeShift = dynamic_cast<FrameTransformation*>(proc); 
+				wrapper->WrapFrameTransformation(spectralShapeShift);
+				ConnectControls(*wrapper,"Out Control", *spectralShapeShift, "Shift Amount");
+				Insert( *wrapper );
+				return;
+			}
+
 			if ( classname=="SMSPitchDiscretization") 
 			{
 				SegmentTransformation* wrapper = new SegmentTransformation;	
@@ -303,13 +314,13 @@ namespace CLAM {
 				return;
 			}
 
-			if ( classname=="SMSSpectralShapeShift") 
+			if ( classname=="SMSGenderChange") 
 			{
 				SegmentTransformation* wrapper = new SegmentTransformation;	
 				Processing * proc = theFactory.Create(classname);
-				FrameTransformation* spectralShapeShift = dynamic_cast<FrameTransformation*>(proc); 
-				wrapper->WrapFrameTransformation(spectralShapeShift);
-				ConnectControls(*wrapper,"Out Control", *spectralShapeShift, "Shift Amount");
+				FrameTransformation* genderChange = dynamic_cast<FrameTransformation*>(proc); 
+				wrapper->WrapFrameTransformation(genderChange);
+				ConnectControls(*wrapper,"Out Control", *genderChange, "Gender Factor");
 				Insert( *wrapper );
 				return;
 			}
