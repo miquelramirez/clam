@@ -56,10 +56,10 @@ void SMSRealtimeSynth::Stream()
 	CLAM::ConnectPorts( GetSynthesis(), "OutputAudio", outL, "Audio Input" );
 	CLAM::ConnectPorts( GetSynthesis(), "OutputAudio", outR, "Audio Input" );
 
-	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 
 	CLAM_ACTIVATE_FAST_ROUNDING;
 	
+	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 	int nSynthFrames=mTransformedSegment.GetnFrames();
 
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
@@ -79,20 +79,22 @@ void SMSRealtimeSynth::Stream()
 	GetSynthesis().Configure( mSynthConfig );
 	GetSynthesis().Start();
 
-	while(mTransformation.Do()); //this leaves mCurrentFrameIndex to the last
 	mTransformedSegment.mCurrentFrameIndex=0;
+
 
 	for( int i=0; i<nSynthFrames; i++ )
 	{
-		printf("synthesis. i==%d\n", i);
-		if( !GetSynthesis().Do(mTransformedSegment) )
+		const Frame& inFrame = mOriginalSegment.GetFramesArray()[i];
+		mTransformation.Do( inFrame, mTransformedSegment.GetFramesArray()[i] );
+//		printf("synthesis. i==%d\n", i);
+		if( !GetSynthesis().Do( mTransformedSegment.GetFramesArray()[i] ) )
 		{
 			printf("analysis frame with negative center\n");
 			continue; // it is an analysis frame with negative center time and thus should not be used
 		}
 
 		Frame& currentFrame = mTransformedSegment.GetFramesArray()[i];
-		printf("synthesizing frame at %x\n", &currentFrame);
+//		printf("synthesizing frame at %x\n", &currentFrame);
 		Audio& output = currentFrame.GetSynthAudioFrame();
 		outL.Do( output );
 		outR.Do( output );
@@ -110,7 +112,7 @@ void SMSRealtimeSynth::Stream()
 
 void SMSRealtimeSynth::PlayAudio( const CLAM::Audio& audio ) 
 {
-				int bufferSize = 512;
+				int bufferSize = 1024;
                 outL.Start();
                 outR.Start();
 

@@ -30,7 +30,7 @@
 #include "SMSAnalysisConfig.hxx"
 #include "SMSAnalysisSynthesisConfig.hxx"
 #include "Melody.hxx"
-//#include "SMSTransformationChain.hxx"
+#include "SMSTransformationChainConfig.hxx"
 #include "SMSTransformationChain.hxx"
 #include "SegmentDescriptors.hxx"
 #include "AudioOut.hxx"
