@@ -89,4 +89,8 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
         regtSMSOddEvenHarmonicRatio( "SMSOddEvenHarmonicRatio" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtSMSSpectralShapeShift( "SMSSpectralShapeShift" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtSMSPitchDiscretization( "SMSPitchDiscretization" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtSMSGenderChange( "SMSGenderChange" );
 		

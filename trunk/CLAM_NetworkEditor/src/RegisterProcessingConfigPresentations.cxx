@@ -71,7 +71,7 @@
 #include "SpecgramPlotProcessing.hxx"
 
 //SMSTransformations
-#include "SMSFreqShift.hxx"
+#include "FrameTransformationConfig.hxx"
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
@@ -192,7 +192,7 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SpecgramPlotProcessingConfig> >
        regtSpecgramPlotProcessingCfg("SpecgramPlotProcessingConfig");
  
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SegmentTransformationConfig> >
-       regtSMSTransformationConfig("SegmentTransformationConfig");
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FrameTransformationConfig> >
+       regtSMSTransformationConfig("FrameTransformationConfig");
 
 
