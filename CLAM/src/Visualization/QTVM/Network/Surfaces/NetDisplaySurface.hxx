@@ -25,6 +25,7 @@ namespace CLAM
 
 			private slots:
 				void receivedView(SView);
+		                void updateToolTip(QString);
 
 			protected slots:
 				void paintGL();

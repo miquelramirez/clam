@@ -5,7 +5,9 @@ namespace CLAM
     namespace VM
     {
 	NetFundTrackPlotController::NetFundTrackPlotController()
-	    : _index(0),mMonitor(0)
+	    : _index(0),mMonitor(0),
+	      _hasData(false),_tooltip(""),
+	      _renderingIsDone(false)
 	{
 	    SetDataColor(VMColor::Green());
 	    mSlotNewData.Wrap(this,&NetFundTrackPlotController::OnNewData);
@@ -42,6 +44,8 @@ namespace CLAM
 	    }
 	    _renderer.Render();
 	    NetPlotController::Draw();
+
+	    _renderingIsDone=true;
 	}
 
 	void NetFundTrackPlotController::SetMonitor(MonitorType & monitor)
@@ -67,6 +71,7 @@ namespace CLAM
 
 	void NetFundTrackPlotController::Init()
 	{
+	    _hasData=true;
 	    _index=0;
 	    _cachedData.Init();
 	    SetvRange(TData(0.0),TData(2050.0));
@@ -101,6 +106,21 @@ namespace CLAM
 		}
 		SetCanSendData(true);
 	    }
+	}
+
+	void NetFundTrackPlotController::UpdatePoint(const TData& x, const TData& y)
+	{
+	     NetPlotController::UpdatePoint(x,y);
+	     _tooltip="";
+	     if(_hasData)
+	     {
+		 _tooltip = "frequency="+(_tooltip.setNum(y,'f',0))+"Hz";  
+	     }
+	     if(_renderingIsDone)
+	     {
+		 _renderingIsDone=false;
+		 emit toolTip(_tooltip);
+	     }
 	}
 
     }

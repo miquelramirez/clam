@@ -6,10 +6,14 @@ namespace CLAM
 	namespace VM
 	{
 		NetSpectrumPlotController::NetSpectrumPlotController()
+		    : mMonitor(0),
+		      _spectralRange(TData(0.0)),
+		      _hasData(false),
+		      _tooltip(""),
+		      _renderingIsDone(false)
 		{
 		    SetDataColor(VMColor::Green());
 		    SetvRange(TData(-150.0),TData(0.0));
-		    mMonitor = 0;
 		}
 
 		NetSpectrumPlotController::~NetSpectrumPlotController()
@@ -53,6 +57,9 @@ namespace CLAM
 			}
 			_renderer.Render();
 			NetPlotController::Draw();
+
+			_renderingIsDone=true;
+
 			return;
 		    }
 
@@ -78,6 +85,8 @@ namespace CLAM
 			_renderer.Render();
 			NetPlotController::Draw();
 		    }
+
+		    _renderingIsDone=true;
 		}
 
 		void NetSpectrumPlotController::FullView()	
@@ -116,9 +125,29 @@ namespace CLAM
 
 	        void NetSpectrumPlotController::Init(const TSize& size)
 		{
+		    _hasData=true;
+		    _spectralRange=_spec.GetSpectralRange();
 		    SetnSamples(size);
 		    SetFirst(false);
 		    FullView();
+		}
+
+	        void NetSpectrumPlotController::UpdatePoint(const TData& x, const TData& y)
+		{
+		    TData xvalue=x;
+		    NetPlotController::UpdatePoint(x,y);
+		    _tooltip="";
+		    if(_hasData)
+		    {
+			xvalue*=_spectralRange;
+			xvalue/=TData(GetnSamples());
+			_tooltip = "frequency="+(_tooltip.setNum(xvalue,'f',0))+"Hz "+"magnitude="+(_tooltip.setNum(y,'f',0))+"dB";  
+		    }
+		    if(_renderingIsDone)
+		    {
+			_renderingIsDone=false;
+			emit toolTip(_tooltip);
+		    }
 		}
 	}
 }

@@ -5,10 +5,13 @@ namespace CLAM
 	namespace VM
 	{
 		NetAudioPlotController::NetAudioPlotController() 
+		    : mMonitor(0),
+		      _hasData(false),
+		      _tooltip(""),
+		      _renderingIsDone(false)
 		{
 		    SetDataColor(VMColor::Green());
 		    SetvRange(TData(-1.0),TData(1.0));
-		    mMonitor = 0;
 		}
 
 		NetAudioPlotController::~NetAudioPlotController()
@@ -51,6 +54,9 @@ namespace CLAM
 			    }
 			    _renderer.Render();
 			    NetPlotController::Draw();
+			    
+			    _renderingIsDone=true;
+			    
 			    return;
 			}
 		      
@@ -75,6 +81,8 @@ namespace CLAM
 			    _renderer.Render();
 			    NetPlotController::Draw();
 			}
+			
+			_renderingIsDone=true;
 		}
 
 		void NetAudioPlotController::FullView()
@@ -88,9 +96,25 @@ namespace CLAM
 
 	        void NetAudioPlotController::Init(const TSize& frameSize)
 		{
+		    _hasData=true;
 		    SetnSamples(frameSize);
 		    SetFirst(false);
 		    FullView();
+		}
+
+	        void NetAudioPlotController::UpdatePoint(const TData& x, const TData& y)
+		{
+		    NetPlotController::UpdatePoint(x,y);
+		    _tooltip="";
+		    if(_hasData)
+		    {
+			_tooltip = "amplitude="+(_tooltip.setNum(y,'f',3));  
+		    }
+		    if(_renderingIsDone)
+		    {
+			_renderingIsDone=false;
+			emit toolTip(_tooltip);
+		    }
 		}
 
 	}

@@ -39,7 +39,7 @@ namespace CLAM
 	    virtual void Draw();
 
 	    void SetPoint(const TData& x, const TData& y);
-	    void UpdatePoint(const TData& x, const TData& y);
+	    virtual void UpdatePoint(const TData& x, const TData& y);
 
 	    void SetLeftButtonPressed(bool pressed);
 	    void SetRightButtonPressed(bool pressed);
@@ -49,6 +49,7 @@ namespace CLAM
 
 	signals:
 	    void sendView(SView);
+	    void toolTip(QString);
 
 	protected:
 	    SView _view;

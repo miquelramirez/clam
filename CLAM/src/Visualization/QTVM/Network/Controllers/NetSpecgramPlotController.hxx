@@ -23,6 +23,8 @@ namespace CLAM
 	    void Draw();
 	    void SetMonitor(MonitorType & monitor);
 
+	    void UpdatePoint(const TData& x, const TData& y);
+
 	protected:
 	    void FullView();
 
@@ -37,11 +39,15 @@ namespace CLAM
 	    SigSlot::Slotv0 mSlotNewData;
 	    TIndex _leftIndex1, _rightIndex1, _leftIndex2, _rightIndex2;
 	    TIndex _bottomBound, _topBound;
+	    TData _spectralRange;
+	    bool _hasData;
+	    QString _tooltip;
+	    bool _renderingIsDone;
 	    
 	    void AddData(const Spectrum& spec);
 	    void AdaptSpectralData();
 	  
-	    void Init(const TSize& specSize);
+	    void Init(const TSize& specSize, const TData& spectralRange);
 
 	    float ClampToRange(TData value) const;
 

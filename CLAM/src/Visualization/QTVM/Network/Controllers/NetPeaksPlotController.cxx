@@ -6,13 +6,16 @@ namespace CLAM
 	namespace VM
 	{
 		NetPeaksPlotController::NetPeaksPlotController()
+		    : mMonitor(0),
+		      _linear(false),
+		      _hasData(false),
+		      _tooltip(""),
+		      _renderingIsDone(false)
 		{
 		    SetPeaksColor(VMColor::Cyan(),VMColor::Red());
 		    SetvRange(TData(-150.0),TData(0.0));
 		    _renderer.SetVBounds(TData(0.0),TData(-150.0));
 		    SetnSamples(22050);
-		    _linear = false;
-		    mMonitor = 0;
 		}
 
 		NetPeaksPlotController::~NetPeaksPlotController()
@@ -58,6 +61,9 @@ namespace CLAM
 			    }
 			    _renderer.Render();
 			    NetPlotController::Draw();
+
+			    _renderingIsDone=true;
+
 			    return;
 			}
 
@@ -83,6 +89,8 @@ namespace CLAM
 			    _renderer.Render();
 			    NetPlotController::Draw();
 			}
+
+			_renderingIsDone=true;
 		}
 
 		void NetPeaksPlotController::FullView()
@@ -96,17 +104,36 @@ namespace CLAM
 
 		void NetPeaksPlotController::ProcessPeakData()
 		{
+		    if(_linear)
+		    {
 			TSize nPeaks = _magBuffer.Size();
 			for(int i = 0; i < nPeaks; i++)
 			{
-				if(_linear) _magBuffer[i] = 20.0*log10(_magBuffer[i]);
+			    _magBuffer[i] = 20.0*log10(_magBuffer[i]);
 			}
+		    }
 		}
 
 	        void NetPeaksPlotController::Init()
 		{
+		    _hasData=true;
 		    SetFirst(false);
 		    FullView();
+		}
+
+	        void NetPeaksPlotController::UpdatePoint(const TData& x, const TData& y)
+		{
+		    NetPlotController::UpdatePoint(x,y);
+		    _tooltip="";
+		    if(_hasData)
+		    {
+			_tooltip = "frequency="+(_tooltip.setNum(x,'f',0))+"Hz "+"magnitude="+(_tooltip.setNum(y,'f',0))+"dB";  
+		    }
+		    if(_renderingIsDone)
+		    {
+			_renderingIsDone=false;
+			emit toolTip(_tooltip);
+		    }
 		}
 	}
 }

@@ -21,6 +21,8 @@ namespace CLAM
 	    void SetDataColor(Color c);
 	    void Draw();
 	    void SetMonitor(MonitorType & monitor);
+
+	    void UpdatePoint(const TData& x, const TData& y);
 	
 	protected:
 	    void FullView();
@@ -33,6 +35,9 @@ namespace CLAM
 	    TSize _frameSize;
 	    TIndex _leftIndex1,_rightIndex1,_leftIndex2,_rightIndex2;
 	    SigSlot::Slotv0 mSlotNewData;
+	    bool _hasData;
+	    QString _tooltip;
+	    bool _renderingIsDone;
 
 	    void AddData(const DataArray& data);
 	  
