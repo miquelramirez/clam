@@ -19,6 +19,9 @@
  *
  */
 
+#include <algorithm>
+using std::find ;
+
 #include "MIDIDevice.hxx"
 #include "MIDIIn.hxx"
 #include "MIDIEnums.hxx"
