@@ -55,8 +55,8 @@ namespace CLAM
 SMSBase::SMSBase()
 	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
 {
-	mTransformation.mpChainInput = &mOriginalSegment;
-	mTransformation.mpChainOutput = &mTransformedSegment;
+	mTransformation.AttachIn( mOriginalSegment );
+	mTransformation.AttachOut( mTransformedSegment );
 
 	mpAnalysis=new SMSAnalysis;
 	mpSynthesis=new SMSSynthesis;
