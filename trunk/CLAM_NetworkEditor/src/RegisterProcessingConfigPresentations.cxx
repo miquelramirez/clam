@@ -43,6 +43,13 @@
 #include "MultiChannelAudioFileReaderConfig.hxx"
 #include "SMSAnalysisConfig.hxx"
 #include "SMSSynthesisConfig.hxx"
+#include "SpectralPeakDetectConfig.hxx"
+#include "FundFreqDetectConfig.hxx"
+#include "SinTrackingConfig.hxx"
+#include "SynthSineSpectrumConfig.hxx"
+#include "PhaseManagementConfig.hxx"
+#include "WindowGeneratorConfig.hxx"
+#include "CircularShiftConfig.hxx"
 
 // local processings
 #include "FlagControl.hxx"
@@ -106,6 +113,27 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSSynthesisConfig> > 
 	regtSMSSynthesisCfg( "SMSSynthesisConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::SpectralPeakDetectConfig> > 
+	regtSpectralPeakDetectCfg( "SpectralPeakDetectConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::FundFreqDetectConfig> > 
+	regtFundFreqDetectCfg( "FundFreqDetectConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::SinTrackingConfig> > 
+	regtSinTrackingCfg( "SinTrackingConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::SynthSineSpectrumConfig> > 
+	regtSynthSineSpectrumCfg( "SynthSineSpectrumConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::PhaseManagementConfig> > 
+	regtPhaseManagementCfg( "PhaseManagementConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::WindowGeneratorConfig> > 
+	regtWindowGeneratorCfg( "WindowGeneratorConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::CircularShiftConfig> > 
+	regtCircularShiftCfg( "CircularShiftConfig" );
 
 // in draft
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FlagControlConfig> > 
