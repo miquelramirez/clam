@@ -1,3 +1,23 @@
+/*
+ * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 #ifndef _CLEANTRACKS__
 #define _CLEANTRACKS__
 
@@ -19,14 +39,18 @@ namespace CLAM {
 	class CleanTracksConfig: public ProcessingConfig
 	{
 	public:
-	  DYNAMIC_TYPE_USING_INTERFACE(CleanTracksConfig, 4,ProcessingConfig);
-	  DYN_ATTRIBUTE (0, public, std::string, Name);
-	  DYN_ATTRIBUTE (1,public,TSize,MaxDropOut);
-	  DYN_ATTRIBUTE (2,public,TSize,MinLength);
-	  DYN_ATTRIBUTE (3,public,TData,FreqDev);
+		DYNAMIC_TYPE_USING_INTERFACE(CleanTracksConfig, 6,ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYN_ATTRIBUTE (1,public,TSize,MaxDropOut);
+		DYN_ATTRIBUTE (2,public,TSize,MinLength);
+		DYN_ATTRIBUTE (3,public,TData,FreqDev);
+		/** This attribute is necessary so that BinPosition can be recomputed*/
+		DYN_ATTRIBUTE (4, public, TData, SamplingRate);
+		/** This attribute is necessary so that BinPosition can be recomputed*/
+		DYN_ATTRIBUTE (5, public, int, SpecSize);
 
-	  void DefaultInit();
-	  ~CleanTracksConfig(){};
+		void DefaultInit();
+		~CleanTracksConfig(){};
 	};
 
 	typedef struct STrajectory
@@ -83,10 +107,6 @@ namespace CLAM {
 		int GetnCleanedTracks() const {return mTrajectoryArray.Size();};
 		
 	private:
-
-	
-
-
 		void Clean (Array<SpectralPeakArray*>& peakArrayArray);
 		void Continue(Array<SpectralPeakArray*>& peakArrayArray);
 		void AddTrajectory(TTrajectory& trajectory);
@@ -94,8 +114,10 @@ namespace CLAM {
 		void UpdateTrackIds(Array<SpectralPeakArray*>& peakArrayArray);
 		void Update(Array<SpectralPeakArray*>& peakArrayArray);
 		void ContinuedAt(void);
-		void interpolatePeaks(TTrajectory& trajectory, Array<SpectralPeakArray*>& peakArrayArray);
+		void InterpolatePeaks(TTrajectory& trajectory, Array<SpectralPeakArray*>& peakArrayArray);
 
+		TData mSamplingRate;
+		TData mSpecSize;
 		TSize mMaxDropOut;
 		TSize mMinLength;
 		TData mFreqDev;
