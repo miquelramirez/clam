@@ -54,6 +54,8 @@ class ConnectionPointPresentation;
 
 class NetworkPresentation: public CLAMVM::Presentation
 {
+	CLAMVM::NetworkController * mNetworkController;
+
 protected:
 	std::string mName;
 	std::list<ProcessingPresentation*> mProcessingPresentations;
@@ -66,11 +68,13 @@ protected:
 public:
 	NetworkPresentation();
         virtual ~NetworkPresentation();
-	virtual void AttachTo(CLAMVM::NetworkController &);
+	virtual void AttachToNetworkController(CLAMVM::NetworkController &);
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
 	void UpdatePresentations();
 	void Clear( );
+
+	CLAMVM::NetworkController & GetNetworkController();
 
 protected:
 	virtual void SetName(const std::string& name) = 0; 
@@ -106,32 +110,32 @@ protected:
 
 public: 
 	SigSlot::Slotv1< bool > SlotChangeState;
-	SigSlot::Signalv1< bool > SignalChangeState;
+//	SigSlot::Signalv1< bool > SignalChangeState;
 	
-	SigSlot::Signalv1< const std::string & > SignalLoadNetworkFrom;
-	SigSlot::Signalv1< const std::string & > SignalSaveNetworkTo;
+//	SigSlot::Signalv1< const std::string & > SignalLoadNetworkFrom;
+//	SigSlot::Signalv1< const std::string & > SignalSaveNetworkTo;
 
-	SigSlot::Signalv0 SignalClear;
+//	SigSlot::Signalv0 SignalClear;
 	SigSlot::Slotv0 SlotClear;
 
 	SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddProcessing;
-	SigSlot::Signalv2 < const std::string &, CLAM::Processing * > SignalAddProcessing;
+//	SigSlot::Signalv2 < const std::string &, CLAM::Processing * > SignalAddProcessing;
 	SigSlot::Slotv2< const std::string & , CLAMVM::ProcessingController * > SlotCreateProcessingPresentation;
 	SigSlot::Slotv1< ProcessingPresentation* > SlotRemoveProcessing;
-	SigSlot::Signalv1< const std::string & > SignalRemoveProcessing;
+//	SigSlot::Signalv1< const std::string & > SignalRemoveProcessing;
 	SigSlot::Slotv2< const std::string &, CLAMVM::ProcessingController * > SlotRebuildProcessingPresentationAttachedTo;
 
-	SigSlot::Signalv2< const std::string &, const std::string & > SignalCreatePortConnection;
+//	SigSlot::Signalv2< const std::string &, const std::string & > SignalCreatePortConnection;
 	SigSlot::Slotv2< const std::string &, const std::string & > SlotCreatePortConnection;
-	SigSlot::Signalv2< const std::string &, const std::string &  > SignalRemovePortConnection;
+//	SigSlot::Signalv2< const std::string &, const std::string &  > SignalRemovePortConnection;
 	SigSlot::Slotv1< ConnectionPresentation * > SlotRemovePortConnection;
 	SigSlot::Slotv2< const std::string &, const std::string & > SlotCreatePortConnectionPresentation;	
 	
 	SigSlot::Slotv2< const std::string &, const std::string &> SlotRemoveConnectionPresentation;
 
-	SigSlot::Signalv2< const std::string &, const std::string & > SignalCreateControlConnection;
+//	SigSlot::Signalv2< const std::string &, const std::string & > SignalCreateControlConnection;
 	SigSlot::Slotv2< const std::string &, const std::string & > SlotCreateControlConnection;
-	SigSlot::Signalv2< const std::string &, const std::string & > SignalRemoveControlConnection;
+//	SigSlot::Signalv2< const std::string &, const std::string & > SignalRemoveControlConnection;
 	SigSlot::Slotv1< ConnectionPresentation *> SlotRemoveControlConnection;
 	SigSlot::Slotv2< const std::string &, const std::string & > SlotCreateControlConnectionPresentation;
 
