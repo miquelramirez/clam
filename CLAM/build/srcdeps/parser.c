@@ -300,7 +300,12 @@ int parser_include(const char* filename,int shouldrecurse)
 		}
 		list_add_str_once(guessed_headers,tmp);
 
-		if (recursesrcs && !library_mode )
+		/* if (recursesrcs && !library_mode ) */
+		/* The functionality intended by the library_mode flag is better
+		 * to be removed from srcdeps. It is better not to hack these
+		 * kind of semantics...
+		 */
+		if (recursesrcs)
 		{
 			char* ext = extension(tmp);
 			char  headerext[16];
