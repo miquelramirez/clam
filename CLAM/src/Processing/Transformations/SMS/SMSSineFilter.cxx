@@ -27,12 +27,13 @@ using namespace CLAM;
 
 bool SMSSineFilter::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 {
-	int i;
+	out = in; // TODO big cludge for streaming refactoring
+
 	DataArray& iMagArray=in.GetMagBuffer();
 	DataArray& oMagArray=out.GetMagBuffer();
 	TSize nPeaks=in.GetnPeaks();
 	BPF filter=mConfig.GetBPFAmount();
-	for(i=0;i<nPeaks;i++)
+	for(int i=0;i<nPeaks;i++)
 	{
 		oMagArray[i]=iMagArray[i]+filter.GetValue(i);
 	}

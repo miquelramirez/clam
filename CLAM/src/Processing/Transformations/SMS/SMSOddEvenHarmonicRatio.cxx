@@ -27,13 +27,13 @@ using namespace CLAM;
 
 bool SMSOddEvenHarmonicRatio::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 {
-	int i;
+	out = in; // TODO big cludge for streaming refactoring
 	DataArray& iMagArray=in.GetMagBuffer();
 	DataArray& oMagArray=out.GetMagBuffer();
 	TSize nPeaks=in.GetnPeaks();
 	TData oddFactor=mAmountCtrl.GetLastValue()*0.5;
 	TData evenFactor=-oddFactor;
-	for(i=0;i<nPeaks-1;i+=2)
+	for(int i=0;i<nPeaks-1;i+=2)
 	{
 		oMagArray[i]=std::min(iMagArray[i]+oddFactor,TData(0));
 		oMagArray[i+1]=std::min(iMagArray[i+1]+evenFactor,TData(0));
