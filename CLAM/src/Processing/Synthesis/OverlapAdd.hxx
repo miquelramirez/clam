@@ -36,10 +36,11 @@ namespace CLAM {
 	class OverlapAdd;
 
 	/** Configuration class for Overlapp Add Processing
-	 *  HopSize configures the write size of the circular buffer
+	 *  HopSize configures the write size of the circular buffer (note that the write size is
+	 *	here understood as the portion of the frame that is overwritten, not added)
 	 *  FrameSize configures the read size of the circular buffer
 	 *  BufferSize configures the overall physical size of the circular buffer 
-	 *  For good results FrameSize should be twice HopSize and BufferSize should
+	 *  For good results FrameSize should be the same as HopSize; and BufferSize should
 	 *  be at least FrameSize+HopSize
 	 */
 	class OverlapAddConfig: public CLAM::ProcessingConfig
