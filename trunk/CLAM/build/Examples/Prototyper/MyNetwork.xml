@@ -1,0 +1,18 @@
+<network id="CLAM" >
+  <processing type="AudioOut" id="AudioOut_1" >
+    <Device>default:default</Device>
+    <ChannelID>0</ChannelID>
+    <FrameSize>512</FrameSize>
+    <SampleRate>44100</SampleRate>
+  </processing>
+  <processing type="SimpleOscillator" id="SimpleOscillator_0" >
+    <Frequency>440</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+  <port_connection>
+    <out>SimpleOscillator_0.Audio Output</out>
+    <in>AudioOut_1.Audio Input</in>
+  </port_connection>
+</network>

@@ -1,0 +1,4 @@
+TOP=../../..
+
+include ../../Makefile.rules
+
