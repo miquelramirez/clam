@@ -25,6 +25,7 @@
 #include "Processing.hxx"
 #include "MIDIInControl.hxx"
 #include "ControlMapper.hxx"
+#include "MIDIManager.hxx"
 
 using std::for_each;
 using std::string;
