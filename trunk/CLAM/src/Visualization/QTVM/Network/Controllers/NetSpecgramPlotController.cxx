@@ -1,4 +1,3 @@
-#include <algorithm>
 #include "SpecTypeFlags.hxx"
 #include "NetSpecgramPlotController.hxx"
 
@@ -7,9 +6,9 @@ namespace CLAM
     namespace VM
     {
 	NetSpecgramPlotController::NetSpecgramPlotController()
-	    : _index(0),_specSize(0),_first(true)
+	    : _index(0),_specSize(0),_first(true),_palette(0.0f)
 	{
-	    SetnSamples(200);
+	    SetnSamples(100);
 	}
 
 	NetSpecgramPlotController::~NetSpecgramPlotController()
@@ -34,38 +33,41 @@ namespace CLAM
 	{
 	    _spec = spec;
 	    AdaptSpectralData();
-	    if(_cachedData.Size() < GetnSamples())
+	    std::vector<Color> v;
+	    for(int i = 0; i < _specSize; i++)
 	    {
-		TSize currentSize = _cachedData.Size();
-		_cachedData.Resize(currentSize+1);
-		_cachedData.SetSize(currentSize+1);
-		_cachedData[currentSize].Resize(_specSize);
-		_cachedData[currentSize].SetSize(_specSize);
-		std::copy(_spec.GetMagBuffer().GetPtr(),_spec.GetMagBuffer().GetPtr()+_specSize,_cachedData[currentSize].GetPtr());
+		Color c;
+		TIndex colorIndex = _palette.Get( ClampToRange( _spec.GetMagBuffer()[i]) );
+		_palette.GetRGBFromIndex( colorIndex, c.r, c.g, c.b);
+		v.push_back(c);
+	    }
+	    if((int)_cachedData.size() < GetnSamples())
+	    {
+		_cachedData.push_back(v);
 	    }
 	    else
 	    {
-		std::copy(_spec.GetMagBuffer().GetPtr(),_spec.GetMagBuffer().GetPtr()+_specSize,_cachedData[_index++].GetPtr());
-		if(_index == _cachedData.Size()) _index = 0;
+		_cachedData[_index++]=v;
+		if(_index == (int)_cachedData.size()) _index = 0;
 	    }
 	}
 
 	void NetSpecgramPlotController::ProcessData()
 	{
-	    if(_cachedData.Size() < GetnSamples())
+	    if((int)_cachedData.size() < GetnSamples())
 	    {
 		_renderer.SetData(_cachedData);
 	    }
 	    else
 	    {
 		int i,j=0;
-		for(i = _index; i < _cachedData.Size(); i++)
+		for(i = _index; i < (int)_cachedData.size(); i++)
 		{
-		    std::copy(_cachedData[i].GetPtr(),_cachedData[i].GetPtr()+_specSize,_processedData[j++].GetPtr());
+		    _processedData[j++]=_cachedData[i];
 		}
 		for(i = 0; i < _index; i++)
 		{
-		    std::copy(_cachedData[i].GetPtr(),_cachedData[i].GetPtr()+_specSize,_processedData[j++].GetPtr());
+		    _processedData[j++]=_cachedData[i];
 		}
 		 _renderer.SetData(_processedData);
 	    }
@@ -109,18 +111,22 @@ namespace CLAM
 	{
 	    _specSize = specSize;
 	    SetvRange(TData(0.0),TData(_specSize));
-	    _cachedData.Init();
-	    _processedData.Resize(GetnSamples());
-	    _processedData.SetSize(GetnSamples());
-	    for(int i = 0; i < _processedData.Size(); i++)
-	    {
-		_processedData[i].Resize(_specSize);
-		_processedData[i].SetSize(_specSize);
-	    }
+	    _processedData.resize(GetnSamples());
 	    _first = false;
 	}
 
-		
+	float NetSpecgramPlotController::ClampToRange(TData value) const
+	{
+	    if ( value > 0.0 ) // 0 dB is the maximum
+		return 1.0f;
+	    if ( value < -100.0 ) // -100 dB is the minimum
+		return 0.0f;
+
+	    value += 100.0f;
+	    value*= 0.01f;
+	   
+	    return value;
+	}	
     }
 }
 
