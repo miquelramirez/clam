@@ -36,12 +36,6 @@ class SMSRealtimeSynth : public SMSBase
 
 			void LoadScoreFile( const std::string& scoreFile );
 
-			void DoTheTransform();
-
-			void DoSynthesis();
-
-			void SynthesisProcessing();
-
 			void Play();
 
 			void Stream();
@@ -54,8 +48,6 @@ class SMSRealtimeSynth : public SMSBase
 		  	CLAM::AudioIOConfig outRCfg;
 			CLAM::AudioOut outL;
 			CLAM::AudioOut outR;
-
-			CLAM::SMSSynthesis mSynthesis;
 
 			void ConfigureAudio();
 			void PlayAudio( const CLAM::Audio& audio );

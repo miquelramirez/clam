@@ -70,8 +70,7 @@ int main( int argc, char* argv[] )
 	
 	synth.QueryState();
 
-	std::cout << "And now the transfom:\n";  	
-	synth.DoTheTransform();
+//	std::cout << "And now the transfom:\n";  	
 
 //	synth.Play();
 	synth.Stream();
