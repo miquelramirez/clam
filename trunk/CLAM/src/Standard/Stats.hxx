@@ -210,7 +210,13 @@ public:
 	 * 		{\sum i \cdot x_i }
 	 * 		{\sum x_i}
 	 * \f]
-	 * */
+	 *
+	 * whenever the Mean(X) is less than 1e-7, then it will return the mid position
+	 * \f[
+	 * 	\frac{Size(X)-1}{2}
+	 * \f]
+	 *
+	 */
 	U GetCentroid()
 	{
 //		return GetCenterOfGravity(FirstOrder);
