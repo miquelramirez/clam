@@ -166,6 +166,11 @@ namespace CLAM
 	public:
 		const char * GetClassName() const {return "PeaksPortMonitor";}
 	};
+        class SinTracksPortMonitor : public PortMonitor<SpectralPeakArray>
+	{
+	public:
+	        const char * GetClassName() const {return "SinTracksPortMonitor";}
+	};
 	class SpectrumPortMonitor : public PortMonitor <Spectrum>
 	{
 	public:
