@@ -80,6 +80,9 @@ namespace CLAM
 				QPushButton* _btoggle_color;
 				TimeSegmentLabelsGroup *_labelsGroup;
 
+				int _maxHZRatio;
+				int _currentHZRatio;
+
 				void InitStereoAudioPlot();
 				void DirtyTrick();
 		};
