@@ -30,11 +30,15 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 		const Spectrum& inRes, 
 		SpectralPeakArray& outPeaks,
 		Fundamental& outFund,
-		Spectrum& outRes)
+		Spectrum& outRes,
+		bool preserveOuts)
 {
-	outPeaks = inPeaks; //TODO big cludge for streaming
-	outFund = inFund;
-	outRes = inRes;
+	if (!preserveOuts) //TODO big cludge for streaming
+	{
+		outPeaks = inPeaks; 
+		outFund = inFund;
+		outRes = inRes;
+	}
 
 	TSize spectralRange = 22050; // default for SampleRate = 44100;
 
@@ -92,15 +96,16 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 
 bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
-	out=in;	// TODO most likely this copy is not necessary
+//	out=in;	// TODO most likely this copy is not necessary
 
 	return Do( in.GetSpectralPeakArray(),
-				in.GetFundamental(), 
-				in.GetResidualSpec(), 
-				out.GetSpectralPeakArray(),
-				out.GetFundamental(), 
-				out.GetResidualSpec() 
-				);
+			in.GetFundamental(), 
+			in.GetResidualSpec(), 
+			out.GetSpectralPeakArray(),
+			out.GetFundamental(), 
+			out.GetResidualSpec(),
+			true /*preserve outs*/
+			);
 
 }
 

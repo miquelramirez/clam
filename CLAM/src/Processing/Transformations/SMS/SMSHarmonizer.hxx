@@ -60,7 +60,7 @@ namespace CLAM{
 			//BPF will be used in a non temporal sense
 			mUseTemporalBPF=false;
 			//configure member PitchShift by default
-			mPO_PitchShift.Configure(SegmentTransformationConfig());
+			mPitchShift.Configure(SegmentTransformationConfig());
 			return true;
 		}
 
@@ -76,8 +76,8 @@ namespace CLAM{
 		
 		bool Do(const Frame& in, Frame& out);
 	private:
-		SMSPitchShift mPO_PitchShift;
-		SpectrumAdder2 mPO_SpectrumAdder;
+		SMSPitchShift mPitchShift;
+		SpectrumAdder2 mSpectrumAdder;
 		void AddFrame(const Frame& in1, const Frame& in2, Frame& out);
 		void Gain(Frame& inputFrame, TData gain);
 	

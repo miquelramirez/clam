@@ -83,21 +83,24 @@ namespace CLAM{
 
 		bool Do(const SpectralPeakArray& inPeaks,
 		        const Fundamental& inFund,
-				const Spectrum& inRes,
-				SpectralPeakArray& outPeaks,
-				Fundamental& outFund,
-				Spectrum& outRes);
+			const Spectrum& inRes,
+			SpectralPeakArray& outPeaks,
+			Fundamental& outFund,
+			Spectrum& outRes,
+			bool preserveOuts);
 
 		bool Do(const Frame& in, Frame& out);
 
 		bool Do()
 		{
 			bool result = Do(mInPeaks.GetData(), 
-							mInFundamental.GetData(), 
-							mInSpectrum.GetData(), 
-							mOutPeaks.GetData(), 
-							mOutFundamental.GetData(), 
-							mOutSpectrum.GetData());
+					mInFundamental.GetData(), 
+					mInSpectrum.GetData(), 
+					mOutPeaks.GetData(), 
+					mOutFundamental.GetData(), 
+					mOutSpectrum.GetData(),
+					false /*initialize outs*/
+					);
 
 			mInPeaks.Consume();
 			mOutPeaks.Produce();

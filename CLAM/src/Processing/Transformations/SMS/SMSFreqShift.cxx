@@ -25,9 +25,13 @@
 using namespace CLAM;
 
 
-bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
+bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out, bool preserveOuts)
 {
-	out = in; //TODO big cludge for streaming
+
+	if ( !preserveOuts )
+	{
+		out = in; //TODO big cludge for streaming
+	}
 
 	
 	DataArray& ifreqArray=in.GetFreqBuffer();
