@@ -27,10 +27,18 @@ using namespace CLAM;
 
 bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 {
+	out = in; //TODO big cludge for streaming
+
+	
 	DataArray& ifreqArray=in.GetFreqBuffer();
 	DataArray& ofreqArray=out.GetFreqBuffer();
 	TSize nPeaks=in.GetnPeaks();
 	TData amount=mAmountCtrl.GetLastValue();
+	
+	printf("in npeaks: %d, out npeaks: %d \n"
+	       "in freqbuff size: %d, out freqbuff size: %d \n", nPeaks, out.GetnPeaks(), 
+	       ifreqArray.Size(), ofreqArray.Size() );
+
 	for(int i=0;i<nPeaks;i++)
 	{
 		ofreqArray[i]=ifreqArray[i]+amount;
