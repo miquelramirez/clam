@@ -711,7 +711,7 @@ namespace CLAM {
 		TData *mo = out.GetMagBuffer().GetPtr();
 		TData *fo = out.GetPhaseBuffer().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			mo[i]=TData(pow(10,m1.GetValue(pos)/10.0))*m2[i];
+			mo[i]=TData(pow(10.0,m1.GetValue(pos)/10.0))*m2[i];
 			fo[i]=f1.GetValue(pos)+f2[i];
 			pos+=delta;
 		}
@@ -854,8 +854,8 @@ namespace CLAM {
 		Complex *c2 = in2.GetComplexArray().GetPtr();
 		Complex *co = out.GetComplexArray().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			TData BRe = TData(pow(10,fabs(m1.GetValue(pos))/10.0) * cos(f1.GetValue(pos)));
-			TData BIm = TData(pow(10,fabs(m1.GetValue(pos))/10.0) * sin(f1.GetValue(pos)));
+			TData BRe = TData(pow(10.0,fabs(m1.GetValue(pos))/10.0) * cos(f1.GetValue(pos)));
+			TData BIm = TData(pow(10.0,fabs(m1.GetValue(pos))/10.0) * sin(f1.GetValue(pos)));
 			co[i]= Complex(BRe,BIm) * c2[i];
 			pos+=delta;
 		}
@@ -992,7 +992,7 @@ namespace CLAM {
 		Polar *p2 = in2.GetPolarArray().GetPtr();
 		Polar *po = out.GetPolarArray().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			TData BMag = TData(pow(10,m1.GetValue(pos)/10.0));
+			TData BMag = TData(pow(10.0,m1.GetValue(pos)/10.0));
 			TData BPha = f1.GetValue(pos);
 			po[i]=Polar(BMag,BPha)*p2[i];
 			pos+=delta;
