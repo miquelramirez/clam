@@ -20,6 +20,7 @@
 #include "SpectrumPlotProcessing.hxx"
 #include "PeaksPlotProcessing.hxx"
 #include "FundPlotProcessing.hxx"
+#include "SinTracksPlotProcessing.hxx"
 
 
 typedef CLAM::ProcessingFactory ProcessingFactory;
@@ -44,5 +45,6 @@ static ProcessingFactory::Registrator<CLAM::AudioPlotProcessing> regtAudioPlotPr
 static ProcessingFactory::Registrator<CLAM::SpectrumPlotProcessing> regtSpectrumPlotProcessing("SpectrumPlotProcessing");
 static ProcessingFactory::Registrator<CLAM::PeaksPlotProcessing> regtPeaksPlotProcessing("PeaksPlotProcessing");
 static ProcessingFactory::Registrator<CLAM::FundPlotProcessing> regtFundPlotProcessing("FundPlotProcessing");
+static ProcessingFactory::Registrator<CLAM::SinTracksPlotProcessing> regtSinTracksPlotProcessing("SinTracksPlotProcessing");
 
 
