@@ -6,6 +6,8 @@
 #include "DataTypes.hxx"
 //#include "OutControlSender.hxx"
 
+#include "NetPeaksPlot.hxx"
+
 class QWidget;
 namespace CLAMVM {
 	class ProcessingController;
