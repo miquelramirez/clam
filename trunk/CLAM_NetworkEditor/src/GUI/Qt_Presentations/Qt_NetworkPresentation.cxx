@@ -376,7 +376,6 @@ bool Qt_NetworkPresentation::CheckPortsSelection( QMouseEvent *m )
 	{
 		const std::string inPort = GetCompleteNameFromInPortSelected();
 		const std::string outPort = GetCompleteNameFromOutPortSelected();
-//		SignalCreatePortConnection.Emit( outPort, inPort );
 		GetNetworkController().CreatePortConnection( outPort, inPort );
 		selected = true;
 	}
@@ -403,7 +402,6 @@ bool Qt_NetworkPresentation::CheckControlsSelection( QMouseEvent *m )
 	{
 		const std::string inControl = GetCompleteNameFromInControlSelected();
 		const std::string outControl = GetCompleteNameFromOutControlSelected();
-//		SignalCreateControlConnection.Emit( outControl, inControl );
 		GetNetworkController().CreateControlConnection( outControl, inControl );
 		selected = true;		
 	}
@@ -576,12 +574,6 @@ void Qt_NetworkPresentation::dropEvent(QDropEvent* event)
 	
 	if ( QTextDrag::decode(event, text) ) 
 	{
-//		ProcessingFactory& factory = ProcessingFactory::GetInstance();
-//		std::string completeName(text.ascii());
-		
-//		std::string className(GetProcessingIdentifier(completeName));
-//		std::string concreteName(GetLastIdentifier(completeName));
-//		AddProcessing( concreteName, factory.Create(className) );
 		std::string key = text.ascii();
 		std::string name = AddProcessing( key );	
 		SignalProcessingCreated.Emit(); 		// TODO: Get rid of this signal
@@ -647,8 +639,6 @@ void Qt_NetworkPresentation::MovingMouseWithButtonPressed( const QPoint & p)
 			(*it)->Move(p);
 	}
 }
-
-
 
 
 } // namespace NetworkGUI
