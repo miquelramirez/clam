@@ -73,14 +73,18 @@ namespace CLAM{
 
 		bool Do(const Frame& in, Frame& out)
 		{
-			return Do(in.GetSpectralPeakArray(), out.GetSpectralPeakArray());
+			return Do(in.GetSpectralPeakArray(), 
+				out.GetSpectralPeakArray(),
+				true /* preserve output */);
 		}
 	
-		bool Do(const SpectralPeakArray& inpeaks,SpectralPeakArray& out);
+		bool Do(const SpectralPeakArray& inpeaks,SpectralPeakArray& out, 
+				bool preserveOutput);
 
 		bool Do()
 		{
-			bool result = Do(mIn.GetData(), mOut.GetData());
+			bool result = Do(mIn.GetData(), mOut.GetData(), 
+					false /* don't preserve output*/ );
 			mIn.Consume();
 			mOut.Produce();
 			return result;	
