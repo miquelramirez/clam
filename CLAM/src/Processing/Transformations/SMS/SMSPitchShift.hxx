@@ -44,6 +44,10 @@ namespace CLAM{
 		 */
 		const char *GetClassName() const {return "SMSPitchShift";}
 
+		InPort<SpectralPeakArray> mInPeaks;
+		OutPort<SpectralPeakArray> mOutPeaks;
+		InPort<Spectrum> mInSpectrum;
+		OutPort<Spectrum> mOutSpectrum;
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
@@ -65,6 +69,16 @@ namespace CLAM{
 		
 		bool Do(const SpectralPeakArray& inpeaks,const Spectrum& inRes, SpectralPeakArray& out,Spectrum& outRes);
 		bool Do(const Frame& in, Frame& out);
+
+		// Note that overriding this method breaks the processing chain functionality. 
+		bool Do()
+		{
+			bool result = Do(mInPeaks.GetData(), mInSpectrum.GetData(), mOutPeaks.GetData(), mOutSpectrum.GetData());
+			mIn.Consume();
+			mOut.Produce();
+			return result;
+		}
+
 	private:
 		SpectralEnvelopeExtract mPO_SpectralEnvelopeExtract;
 		SpectralEnvelopeApply mPO_SpectralEnvelopeApply;

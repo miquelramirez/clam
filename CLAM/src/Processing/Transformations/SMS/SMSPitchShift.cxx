@@ -27,7 +27,6 @@ using namespace CLAM;
 
 bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, SpectralPeakArray& outPeaks,Spectrum& outRes)
 {
-	int i;
 	mSpectralEnvelope.SetSpectralRange(mSpectralRange);
  	
 	bool haveEnvelope=false;
@@ -46,7 +45,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 	TData newFreq;
 	TData amount=mAmountCtrl.GetLastValue();
 	//Shift all peaks
-	for(i=0;i<nPeaks;i++)
+	for(int i=0;i<nPeaks;i++)
 	{
 		newFreq=iFreqArray[i]*amount;
 		if(newFreq<mSpectralRange)
@@ -79,8 +78,8 @@ bool SMSPitchShift::Do(const Frame& in, Frame& out)
 	mSpectralRange=in.GetResidualSpec().GetSpectralRange();
 	mIsHarmonic.DoControl(in.GetFundamental().GetFreq(0));
 	Fundamental tmpFund=in.GetFundamental();
-	int i;
-	for (i=0;i<in.GetFundamental().GetnCandidates();i++)
+
+	for (int i=0;i<in.GetFundamental().GetnCandidates();i++)
 	{
 		tmpFund.SetFreq(i,in.GetFundamental().GetFreq(i)*amount);
 	}
