@@ -36,8 +36,8 @@ namespace CLAM
 	void SpectralPeakDetectConfig::DefaultValues()
 	{
 		SetMagThreshold(-80.f);
-		SetMaxPeaks(1000);
-		SetMaxFreq(10000.f);
+		SetMaxPeaks(500);	// was 1000
+		SetMaxFreq(8000.f);	// was 10000
 	}
 
 }

@@ -49,8 +49,8 @@ void SMSSynthesisConfig::DefaultValues()
 //	SetHopSize((GetAnalWindowSize()i-1)/2);
 //	TODO PA remove hack...
 	SetAnalWindowSize(1025);	
-	SetHopSize(256);
-	SetFrameSize(256);
+	SetHopSize(512);	// was 256
+	SetFrameSize(512);	// was 256
 
 	/* Default frame size is 256*/
 //	SetFrameSize(GetHopSize());

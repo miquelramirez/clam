@@ -43,8 +43,8 @@ void SMSAnalysisConfig::DefaultValues()
 
 	//TODO PA  remove these values (aiming to analy-synt streaming) ?
 	SetSinWindowSize(2049);
-	SetHopSize(256);
-	SetSinZeroPadding(2);
+	SetHopSize(512);
+	SetSinZeroPadding(0);
 	SetResWindowSize(1025);
 	
 }
