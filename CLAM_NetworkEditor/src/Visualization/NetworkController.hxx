@@ -111,6 +111,7 @@ namespace CLAMVM
 	private:		
 		NetworkGUI::NetworkPresentation * mPresentation;
 		CLAM::Thread mThread;
+
 		/** Main loop of the application, where DoProcessings method from network
 		 * is executed and all the events are checked calling ExecuteEvents.
 		 * @see ExecuteEvents */
