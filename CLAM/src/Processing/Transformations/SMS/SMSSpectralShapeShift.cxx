@@ -30,19 +30,20 @@ bool SMSSpectralShapeShift::Do(const SpectralPeakArray& inPeaks,SpectralPeakArra
 
 	mSpectralEnvelope.SetSpectralRange(mSpectralRange);
  	
-	mPO_SpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope);
+	mSpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope);
 
-	TData amount=mAmountCtrl.GetLastValue();
+	TData amount=mShiftAmount.GetLastValue();
+
 	//Shift spectral shape
 	BPF& magBPF=mSpectralEnvelope.GetMagBPF();
 	int nPoints=magBPF.Size();
 	for(int i=0;i<nPoints;i++)
 	{
-		magBPF.SetXValue(i,magBPF.GetXValue(i)+amount);
+		magBPF.SetXValue(i, magBPF.GetXValue(i)+amount);
 	}
 	magBPF.UpdateSplineTable();
 	//Apply new spectral shape 
-	mPO_SpectralEnvelopeApply.Do(inPeaks,mSpectralEnvelope,outPeaks);
+	mSpectralEnvelopeApply.Do(inPeaks,mSpectralEnvelope,outPeaks);
 	return true;
 }
 

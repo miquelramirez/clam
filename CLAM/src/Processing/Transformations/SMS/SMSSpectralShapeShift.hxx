@@ -23,11 +23,15 @@
 #ifndef _SMSSpectralShapeShift_
 #define _SMSSpectralShapeShift_
 
-#include "SMSTransformation.hxx"
+#include "FrameTransformation.hxx"
 #include "SpectralEnvelopeExtract.hxx"
 #include "SpectralEnvelopeApply.hxx"
+#include "Frame.hxx"
 #include "FDCombFilter.hxx"
-
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "SMSTransformationConfig.hxx"
+#include "InControl.hxx"
 
 namespace CLAM{
 
@@ -36,7 +40,7 @@ namespace CLAM{
 	 *	Pitch shift with timbre preservation using the SMS model. In order to preserve timbre, 
 	 *	the original spectral shape is extracted and then applied back.
 	 */
-	class SMSSpectralShapeShift: public SegmentTransformation
+	class SMSSpectralShapeShift: public FrameTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -47,24 +51,28 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
+		InControl mShiftAmount;
+
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
-		SMSSpectralShapeShift() : mIn( "In SpectralPeaks", this), mOut( "Out SpectralPeaks", this) 
+		SMSSpectralShapeShift() 
+			: 
+			mIn( "In SpectralPeaks", this), 
+			mOut( "Out SpectralPeaks", this),
+			mShiftAmount( "Shift Amount", this )
 		{
 			Configure( SegmentTransformationConfig() );
 			mSpectralRange=22050;//default
-		}
-		/** Constructor with an object of SegmentTransformationConfig class by parameter
-		 *  @param c SegmentTransformationConfig object created by the user
-		*/
-		SMSSpectralShapeShift(const SegmentTransformationConfig &c):SegmentTransformation(c)
-		{
 		}
 
 		/** Destructor of the class*/
  		~SMSSpectralShapeShift()
 		{}
+
+		const ProcessingConfig& GetConfig() const { throw 0; }
+
+		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
 		bool Do(const Frame& in, Frame& out)
 		{
@@ -83,8 +91,8 @@ namespace CLAM{
 		}
 
 	private:
-		SpectralEnvelopeExtract mPO_SpectralEnvelopeExtract;
-		SpectralEnvelopeApply mPO_SpectralEnvelopeApply;
+		SpectralEnvelopeExtract mSpectralEnvelopeExtract;
+		SpectralEnvelopeApply mSpectralEnvelopeApply;
 		Spectrum mSpectralEnvelope;
 		TSize mSpectralRange;
 	};		
