@@ -20,6 +20,11 @@ namespace CLAM
 			((NetAudioBuffPlotController*)_controller)->SetData(audio);
 		}
 
+	        void NetAudioBuffPlot::SetMonitor(MonitorType & monitor)
+		{
+			((NetAudioBuffPlotController*)_controller)->SetMonitor(monitor);
+		}
+
 		void NetAudioBuffPlot::SetDataColor(Color c)
 		{
 			((NetAudioBuffPlotController*)_controller)->SetDataColor(c);
