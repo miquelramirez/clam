@@ -23,21 +23,48 @@
 #ifndef _SMSSineFilter_
 #define _SMSSineFilter_
 
-#include "InControl.hxx"
-#include "OutControl.hxx"
+#include "BPF.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
+#include "Frame.hxx"
+#include "SpectralPeakArray.hxx"
 #include "FrameTransformation.hxx"
 #include "FrameTransformationConfig.hxx"
-#include "SpectralPeakArray.hxx"
-#include "SegmentTransformation.hxx"
+#include "Processing.hxx"
 #include "SegmentTransformationConfig.hxx"
 
 
-namespace CLAM{
+namespace CLAM
+{
+
+	class SMSSineFilterConfig : public ProcessingConfig
+	{
+
+	   public:
+			DYNAMIC_TYPE_USING_INTERFACE (SMSSineFilterConfig, 2,ProcessingConfig);
+			/** Single Value Parameter */
+			DYN_ATTRIBUTE (0, public, TData, Amount);
+			/** BPF (envelope-like) Parameter */
+			DYN_ATTRIBUTE (1, public, BPF, BPFAmount);
 
 
-	class SMSSineFilter: public SegmentTransformation
+		private:
+
+			void SMSSineFilterConfig::DefaultInit()
+			{
+				AddAll();
+				UpdateData();
+				DefaultValues();
+			}
+
+			void DefaultValues()
+			{
+				SetAmount(0);
+			}
+
+	};
+
+	class SMSSineFilter: public FrameTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -48,32 +75,31 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mInPeaks;
 		OutPort<SpectralPeakArray> mOutPeaks;
 
-		SegmentTransformationConfig mConfig;
+		SMSSineFilterConfig mConfig;
 
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSSineFilter()
+			:
+			mInPeaks("In SpectralPeaks", this),
+			mOutPeaks("Out SpectralPeaks", this)
 		{
 		}
 		/** Constructor with an object of SegmentTransformationConfig class by parameter
 		 *  @param c SegmentTransformationConfig object created by the user
 		*/
-		SMSSineFilter(const SegmentTransformationConfig &c)
-			: SegmentTransformation(c)
-			, mInPeaks("In SpectralPeaks", this)
-			, mOutPeaks("Out SpectralPeaks", this)
+		SMSSineFilter(const SMSSineFilterConfig &c)
+			:
+			mInPeaks("In SpectralPeaks", this),
+			mOutPeaks("Out SpectralPeaks", this)
 		{
 			Configure( SegmentTransformationConfig() );
 		}
 
-		virtual bool ConcreteConfigure(const ProcessingConfig& c)
-		{
-			SegmentTransformation::ConcreteConfigure(c);
-			//BPF will be used in a non temporal sense
-			mUseTemporalBPF=false;
-			return true;
-		}
+		virtual bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
+
+		const ProcessingConfig& GetConfig() const { return mConfig; }
 
 		/** Destructor of the class*/
  		~SMSSineFilter()
@@ -81,7 +107,7 @@ namespace CLAM{
 
 		bool Do(const Frame& in, Frame& out)
 		{
-			return Do(in.GetSpectralPeakArray(), out.GetSpectralPeakArray());
+			return Do( in.GetSpectralPeakArray(), out.GetSpectralPeakArray() );
 		}
 
 		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
