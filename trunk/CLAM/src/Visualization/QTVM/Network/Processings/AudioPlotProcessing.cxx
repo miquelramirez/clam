@@ -40,17 +40,17 @@ namespace CLAM
 
 	bool AudioPlotProcessing::Do()
 	{
-		bool res = Do(mInput.GetAudio()); 
-		mInput.Consume();
-		return res;
+	    bool res = Do(mInput.GetAudio()); 
+	    mInput.Consume();
+	    return res;;
 	}
 
 	bool AudioPlotProcessing::Do(const Audio& audio)
 	{
-		if(!AbleToExecute()) return true;
-		mPlot->SetData(audio);
-		if(!mPlot->isVisible()) mPlot->Show();
-		return true;
+	    if(!AbleToExecute()) return true;
+	    mPlot->SetData(audio);
+	    if(!mPlot->isVisible()) mPlot->Show();
+	    return true;
 	}
 
 	bool AudioPlotProcessing::ConcreteConfigure(const ProcessingConfig& c)

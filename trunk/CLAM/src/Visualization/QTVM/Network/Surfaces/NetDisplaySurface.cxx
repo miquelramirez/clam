@@ -16,7 +16,7 @@ namespace CLAM
 
 		NetDisplaySurface::~NetDisplaySurface()
 		{
-			stopRendering();
+		    stopRendering();
 			if(_controller) delete _controller;
 		}
 

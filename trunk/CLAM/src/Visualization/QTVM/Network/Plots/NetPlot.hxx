@@ -35,6 +35,7 @@ namespace CLAM
 
 			private:
 				NetDisplaySurface* _surf;
+		                bool _closed;
 
 				void InitNetPlot();
 		};
