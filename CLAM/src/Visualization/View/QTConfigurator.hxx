@@ -33,7 +33,8 @@
 #include "DynamicType.hxx"
 
 #include <qdialog.h>
-#include <qvbox.h>
+#include <qhbox.h>
+#include <qlayout.h>
 #include <qgrid.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
@@ -43,6 +44,7 @@
 #include <qcombobox.h>
 
 #include "envelope_point_editor.hxx"
+#include "QtEnvelopeEditor.hxx"
 
 namespace CLAM{
 	/**
@@ -77,18 +79,20 @@ namespace CLAM{
 			mGetter = new ConfigurationGetter<Config,QTConfigurator>(&config, this);
 
 			CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
-			mLayout = new QVBox(this);
+			mLayout = new QVBoxLayout(this);
 			mLayout->setSpacing(3);
 			mLayout->setMargin(5);
-//			mLayout->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding));
-			mLayout->setMinimumWidth(400);
-//			mLayout->setPaletteBackgroundColor(QColor(0xFF,0x00,0x00));
+			//mLayout->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding));
+			setMinimumWidth(400);
+			setPaletteBackgroundColor(QColor(0xFF,0x00,0x00));
 			GetInfo();
 
-			QFrame * frame = new QFrame(mLayout);
+			QFrame * frame = new QFrame(this);
+			mLayout->addWidget(frame);
 			frame->setMinimumHeight(10);
 
-			QHBox * buttons = new QHBox(mLayout );
+			QHBox * buttons = new QHBox(this );
+			mLayout->addWidget(buttons);
 			buttons->setMargin(5);
 			buttons->setSpacing(3);
 			
@@ -107,7 +111,7 @@ namespace CLAM{
 			buttons->setStretchFactor(discardButton,2);
 			buttons->setStretchFactor(okButton,2);
 
-			mLayout->adjustSize();
+			adjustSize();
 		}
 	private:
 
@@ -125,12 +129,21 @@ namespace CLAM{
 			if (found==mWidgets.end()) return NULL;
 			return found->second;
 		}
+		void PushWidget(const char * name, QWidget * widget)
+		{
+			mWidgets.insert(tWidgets::value_type(name, widget));
+		}
 
 	public:
 
 		/** Default implementation, do nothing */
 		template <typename T>
 		void AddWidget(const char *name, void *foo, T& value) {
+			QHBox * cell = new QHBox(this);
+			mLayout->addWidget(cell);
+			new QLabel(QString(name), cell);
+			QLabel * mInput = new QLabel("Non editable attribute", cell);
+			PushWidget(name,mInput);
 		}
 		/** Default implementation, do nothing */
 		template <typename T>
@@ -139,10 +152,11 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, std::string *foo, T& value) {
-			QHBox * cell = new QHBox(mLayout);
+			QHBox * cell = new QHBox(this);
+			mLayout->addWidget(cell);
 			new QLabel(QString(name), cell);
 			QLineEdit * mInput = new QLineEdit(QString(value.c_str()), cell);
-			mWidgets.insert(tWidgets::value_type(name, mInput));
+			PushWidget(name, mInput);
 		}
 		template <typename T>
 		void RetrieveValue(const char *name, std::string *foo, T& value) {
@@ -153,13 +167,14 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, TData *foo, T& value) {
-			QHBox * cell = new QHBox(mLayout);
+			QHBox * cell = new QHBox(this);
+			mLayout->addWidget(cell);
 			new QLabel(QString(name), cell);
 			std::stringstream val;
 			val << value << std::ends;
 			QLineEdit * mInput = new QLineEdit(QString(val.str().c_str()), cell);
 			mInput->setValidator(new QDoubleValidator(mInput));
-			mWidgets.insert(tWidgets::value_type(name, mInput));
+			PushWidget(name, mInput);
 		}
 		template <typename T>
 		void RetrieveValue(const char *name, TData *foo, T& value) {
@@ -172,14 +187,15 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, TSize *foo, T& value) {
-			QHBox * cell = new QHBox(mLayout);
+			QHBox * cell = new QHBox(this);
+			mLayout->addWidget(cell);
 			new QLabel(QString(name), cell);
 			QSpinBox * mInput = new QSpinBox(cell);
 			QIntValidator * validator = new QIntValidator(mInput);
 			validator->setBottom(0);
 			mInput->setValidator(validator);
 			mInput->setValue(value);
-			mWidgets.insert(tWidgets::value_type(name, mInput));
+			PushWidget(name, mInput);
 		}
 		template <typename T>
 		void RetrieveValue(const char *name, TSize *foo, T& value) {
@@ -190,11 +206,12 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, bool *foo, T& value) {
-			QPushButton * mInput = new QPushButton(name, mLayout);
+			QPushButton * mInput = new QPushButton(name, this);
+			mLayout->addWidget(mInput);
 			mInput->setToggleButton(true);
 			mInput->setOn(value);
 			mInput->setAutoDefault(false);
-			mWidgets.insert(tWidgets::value_type(name, mInput));
+			PushWidget(name, mInput);
 		}
 		template <typename T>
 		void RetrieveValue(const char *name, bool *foo, T& value) {
@@ -205,7 +222,8 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, Enum *foo, T& value) {
-			QHBox * cell = new QHBox(mLayout);
+			QHBox * cell = new QHBox(this);
+			mLayout->addWidget(cell);
 			new QLabel(QString(name), cell);
 			QComboBox * mChoice = new QComboBox(/*editable*/false, cell);
 
@@ -214,7 +232,7 @@ namespace CLAM{
 				mChoice->insertItem( mapping[i].name );
 				if (mapping[i].value==value.GetValue()) mChoice->setCurrentItem(i);
 			}
-			mWidgets.insert(tWidgets::value_type(name, mChoice));
+			PushWidget(name, mChoice);
 		}
 		template <typename T>
 		void RetrieveValue(const char *name, Enum *foo, T& value) {
@@ -231,55 +249,43 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, DynamicType *foo, T&value) {
-			QHBox * cell = new QHBox(mLayout);
+			QHBox * cell = new QHBox(this);
+			mLayout->addWidget(cell);
 			new QLabel(QString(name), cell);
 			QPushButton * mInput = new QPushButton("Details...", cell);
 			mInput->setAutoDefault(false);
 			QTConfigurator * subConfigurator = new QTConfigurator(this);
 			subConfigurator->SetConfig(value);
 			connect( mInput, SIGNAL(clicked()), subConfigurator, SLOT(show()) );
-			mWidgets.insert(tWidgets::value_type(name, mInput));
+			PushWidget(name, mInput);
 		}
 		template <typename T>
 		void RetrieveValue(const char *name, DynamicType *foo, T&value) {
 		}
 
-///////////////////////////////////////////////////////////////////////////////
 		template <typename T>
 		void AddWidget(const char *name, BPF *foo, T& value) {
-			QHBox * cell = new QHBox(mLayout);
+			QHBox * cell = new QHBox(this);
+			mLayout->addWidget(cell);
 			new QLabel(QString(name), cell);
-			Envelope_Point_Editor* mInput = new Envelope_Point_Editor( cell );
+			QtEnvelopeEditor* mInput = new QtEnvelopeEditor( cell );
+			// Those ones should be BPF properties
+			mInput->BoundMinX( 0 );
+			mInput->BoundMaxX( 22050 );
+			mInput->BoundMinY( 0 );
+			mInput->BoundMaxY( 1000 );
+
+			mInput->SetValue(value);
 			mInput->setMinimumSize( QSize( 350, 350) );
-			Envelope* env = new Envelope;
-
-			env->set_maxX_value( 22050 );
-			env->set_minX_value( 0 );
-			env->set_minY_value( 0 );
-			env->set_maxY_value( 1000 );
-
-			for ( int i=0; i<value.Size(); i++ )
-			{
-				env->add_node_at_offset( value.GetXValue( i ), value.GetValueFromIndex( i ) ); // TODO change this to floats for CLAM
-			}
-
-			mInput->set_envelope( env );
-			mWidgets.insert(tWidgets::value_type(name, mInput));
+			PushWidget(name, mInput);
 		}
 
 		template <typename T>
 		void RetrieveValue(const char *name, BPF *foo, T& value) {
-			Envelope_Point_Editor* mInput = dynamic_cast<Envelope_Point_Editor*>(GetWidget(name));
+			QtEnvelopeEditor * mInput = dynamic_cast<QtEnvelopeEditor*>(GetWidget(name));
 			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-
-			Envelope* env = mInput->get_envelope();
-			value.SetSize(0);
-			for ( int i=0; i< env->get_node_count(); i++ )
-			{
-				value.Insert( env->get_node_offset( i ), env->get_node_height( i ) ); // TODO change this to floats for CLAM
-			}
+			value = mInput->GetValue();
 		}
-//////////////////////////////////////////////////////////////////////////////
 
 	public slots:
 
@@ -300,7 +306,7 @@ namespace CLAM{
 		}
 
 	private:
-		QVBox * mLayout;
+		QVBoxLayout * mLayout;
 		ConfigurationVisitor * mGetter;
 		ConfigurationVisitor * mSetter;
 		tWidgets mWidgets;
