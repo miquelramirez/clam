@@ -53,20 +53,20 @@ namespace CLAM {
 
 	class EWindowNormalize : public Enum {
 	public:
-		
+
 		static tEnumValue sEnumValues[];
 		static tValue sDefault;
 		EWindowNormalize() : Enum(sEnumValues, sDefault) {}
 		EWindowNormalize(tValue v) : Enum(sEnumValues, v) {};
 		EWindowNormalize(std::string s) : Enum(sEnumValues, s) {};
-		
+
 		typedef enum {
 			eNone,
 			eAnalysis,
 			eEnergy,
-			eSynthesis
+			eMax
 		};
-		
+
 		virtual Component* Species() const
 		{
 			return (Component*) new EWindowNormalize(eAnalysis);
@@ -93,17 +93,17 @@ namespace CLAM {
 	};
 
 
-        /**
-	 * This class can be used for generating Windows and for zeropadding the 
-	 * windowed data. The Do functions accept different types of data,  which 
+	/**
+	 * This class can be used for generating Windows and for zeropadding the
+	 * windowed data. The Do functions accept different types of data,  which
 	 * are simple Arrays, Audio and Spectrum.
 	 * <p>
-	 * If the window is smaller as the Data Array then the rest of the Array 
+	 * If the window is smaller as the Data Array then the rest of the Array
 	 * is filled with Zeroes.
 	 * <p>
-	 * The Size of the window can be changed via a control, the Type 
+	 * The Size of the window can be changed via a control, the Type
 	 * (Hamming,Kaiser, etc) is fixed.
-	 * A configuration option is to generate the window everytime  the  
+	 * A configuration option is to generate the window everytime  the
 	 * Do() function is called. This is settable via the UseTable element
 	 * of the configuration.
 	 *
@@ -115,7 +115,7 @@ namespace CLAM {
 	class WindowGenerator: public Processing {
 		WindowGeneratorConfig mConfig;
 
-		const char *GetClassName() {return "WindowGenerator";}
+		const char *GetClassName() const {return "WindowGenerator";}
 
 		/** Config change method
 		 * @throw
@@ -153,7 +153,7 @@ namespace CLAM {
 		void StoreOn(Storage &s) {};
 
 		void SetSize(TSize size) 
-		{ 
+		{
 			CLAM_DEBUG_ASSERT(size%2==1,"Window size must be odd");
 			mSize.DoControl((TControlData)size); 
 		}
@@ -173,9 +173,11 @@ namespace CLAM {
 		void BlackmanHarris70(long size,DataArray& window) const;
 		void BlackmanHarris74(long size,DataArray& window) const;
 		void BlackmanHarris92(long size,DataArray& window) const;
+		void BlackmanHarrisLike(long size,DataArray& window) const;
 		void Hamming(long size,DataArray& window) const;
 		void Triangular(long size,DataArray& window) const;
 		void BlackmanHarris92TransMainLobe(long size,DataArray& window) const;
+		void Gaussian(long size,DataArray& window) const;
 		void InvertWindow(const DataArray& originalWindow,
 		                  DataArray& invertedWindow) const;
 		void InvertWindow(DataArray& window) const;
@@ -186,4 +188,4 @@ namespace CLAM {
 
 };//namespace CLAM
 
-#endif // _SPECTRUM_ADDER_
+#endif //_WINDOW_GENERATOR_

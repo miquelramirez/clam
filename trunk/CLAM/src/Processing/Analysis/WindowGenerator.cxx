@@ -38,6 +38,7 @@ using namespace CLAM;
 		{EWindowNormalize::eNone,"NoNormalization"},
 		{EWindowNormalize::eAnalysis,"NormalizationForAnalysis"},
 		{EWindowNormalize::eEnergy,"NormalizationForConstantEnergy"},
+		{EWindowNormalize::eMax,"NormalizationForMaximizingMagnitude"},
 		{0,NULL}
 	};
 
@@ -53,11 +54,11 @@ using namespace CLAM;
 		AddUseTable();
 		AddNormalize();
 		AddInvert();
-		
+
 		UpdateData();
 		DefaultValues();
 	}
-	
+
 	void WindowGeneratorConfig::DefaultValues()
 	{
 		SetUseTable(true);
@@ -68,7 +69,7 @@ using namespace CLAM;
 	}
 
 	/* Processing  object Method  implementations */
-	
+
 	WindowGenerator::WindowGenerator():
 		mSize("Size",this)
 	{
@@ -86,35 +87,35 @@ using namespace CLAM;
 
 
 	/* Configure the Processing Object according to the Config object */
-	
+
 	bool WindowGenerator::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 	{
 		mConfig = dynamic_cast<const WindowGeneratorConfig&>(c);
 		mSize.DoControl(TControlData(mConfig.GetSize()));
-		
+
 		if (mConfig.HasUseTable())
 			if (!mConfig.GetUseTable()) return true;
-		
-		
+
+
 		/* Fill the table */
-		
+
 		mTable.Resize(mConfig.GetSize());
 		mTable.SetSize(mConfig.GetSize());
 		mSize.DoControl(TControlData(mConfig.GetSize()));
-		
+
 		EWindowType type;
 		if (mConfig.HasType())
 			type = mConfig.GetType();
 		else type = EWindowType::eHamming;
-		
+
 		CreateTable(mTable,type,mConfig.GetSize());
 
 		return true;
-		
+
 	}
-	
+
 	/* Setting Prototypes for faster processing */
-		
+
 	bool WindowGenerator::SetPrototypes(const DataArray& out)
 	{
 		return false;
@@ -124,27 +125,27 @@ using namespace CLAM;
 	{
 		return false;
 	}
-	
+
 	bool WindowGenerator::UnsetPrototypes()
 	{
 		return false;
 	}
-	
+
 	/* The supervised Do() function */
-	
-	bool  WindowGenerator::Do(void) 
+
+	bool  WindowGenerator::Do(void)
 	{
 		throw(ErrProcessingObj(CLASS"::Do(): Supervised mode not implemented"),this);
 		return false;
 	}
-	
+
 	/* The  unsupervised Do() function */
-	
+
 	bool  WindowGenerator::Do(DataArray& out)
-	{		
+	{
 		bool useTable;
-		int winsize = (int) mSize.GetLastValue();
-		int audiosize = out.Size();
+		const int winsize = (int) mSize.GetLastValue();
+		const int audiosize = out.Size();
 
 		if (mConfig.HasUseTable())
 			useTable = mConfig.GetUseTable();
@@ -160,26 +161,26 @@ using namespace CLAM;
 		else {
 			CreateWindowFromTable(out);
 		}
-		
+
 		//zero padding is applied if audiosize is greater than window size
 		if (winsize < audiosize) {
 			TData* audio = out.GetPtr();
 			memset(audio+winsize,0,(audiosize-winsize)*sizeof(TData));
 		}
-		
+
 		NormalizeWindow(out);
 		if (mConfig.GetInvert())
 			InvertWindow(out);
 
 		return true;
 	}
-	
+
 	bool  WindowGenerator::Do(Audio& out)
 	{
 		Do(out.GetBuffer());
-		
+
 		return true;
-	} 
+	}
 
 
 	bool  WindowGenerator::Do(Spectrum& out)
@@ -191,14 +192,14 @@ using namespace CLAM;
 			throw(ErrProcessingObj(CLASS"::Do(): Spectral Window exists only for type MagPhase"),this);
 
 		return true;
-	} 
+	}
 
 
-	 
+
 	/*Create Table or window 'on the fly'*/
 	void WindowGenerator::CreateTable(DataArray& table,EWindowType windowType,
-	 																	long windowsize) const
-	{ 
+	                                  long windowsize) const
+	{
 		switch(windowType)//use mathematical function according to type
 			{
 			case EWindowType::eKaiserBessel17:
@@ -271,7 +272,17 @@ using namespace CLAM;
 					BlackmanHarris92TransMainLobe(windowsize,table);
 					break;
 				}
-				
+			case EWindowType::eGaussian:
+				{
+					Gaussian(windowsize,table);
+					break;
+				}
+			case EWindowType::eBlackmanHarrisLike:
+				{
+					BlackmanHarrisLike(windowsize,table);
+					break;
+				}
+
 			}
 	}
 	
@@ -296,7 +307,7 @@ void WindowGenerator::CreateWindowFromTable(DataArray &array) const
 }
 
 
-/* function that returns the zero-order modified Bessel function of the first 
+/* function that returns the zero-order modified Bessel function of the first
 kind of X*/
 
 double WindowGenerator::BesselFunction(double x) const
@@ -316,7 +327,7 @@ double WindowGenerator::BesselFunction(double x) const
 }
 
 /* function to create a Kaiser-Bessel window; window size (must be odd)*/
- 
+
 void WindowGenerator::KaiserBessel(long size,DataArray& window,
                               double alpha) const
 {
@@ -331,10 +342,10 @@ void WindowGenerator::KaiserBessel(long size,DataArray& window,
 	// compute window
 	if (windowsize % 2 != 0)
 		window[iHalfsize]= TData(BesselFunction(PiAlpha) / BesselFunction(PiAlpha));
-	for(i=0; i<iHalfsize; i++) 
+	for(i=0; i<iHalfsize; i++)
 	{
 		window[i] = window[windowsize-i-1] =TData(
-		   BesselFunction(PiAlpha * sqrt(1.0 - pow((double)(i-iHalfsize) / 
+		   BesselFunction(PiAlpha * sqrt(1.0 - pow((double)(i-iHalfsize) /
 		   dHalfsize, 2))) / BesselFunction(PiAlpha) );
 	}
 
@@ -350,10 +361,10 @@ void WindowGenerator::BlackmanHarrisX(long size,DataArray& window,
 
 	if(size%2 !=0)
 	{
-		window[(int)(size/2)] = a0 - a1 * cos(fConst * ((int)(size/2))) + a2 * 
+		window[(int)(size/2)] = a0 - a1 * cos(fConst * ((int)(size/2))) + a2 *
 			cos(fConst * 2 * ((int)(size/2))) - a3 * cos(fConst * 3 * ((int)(size/2)));
 	}
-	for(i = 0; i < (int)(size/2); i++) 
+	for(i = 0; i < (int)(size/2); i++)
 	{
 		window[i] = window[size-i-1] = a0 - a1 * cos(fConst * i) +
 			a2 * cos(fConst * 2 * i) - a3 * cos(fConst * 3 * i);
@@ -368,14 +379,14 @@ void WindowGenerator::BlackmanHarrisX(long size,DataArray& window,
 void WindowGenerator::BlackmanHarris62(long size,DataArray& window) const
 {
 	/* for 3 term -62.05 */
-	double a0 = .44959, a1 = .49364, a2 = .05677; 
+	double a0 = .44959, a1 = .49364, a2 = .05677;
 	BlackmanHarrisX(size,window,a0,a1,a2);
-	
+
 }
 
 
 /* function to create a backmanHarris window*/
- 
+
 void WindowGenerator::BlackmanHarris70(long size,DataArray& window) const
 {
 	/* for 3 term -70.83 */
@@ -399,10 +410,23 @@ void WindowGenerator::BlackmanHarris92(long size,DataArray& window) const
 
 	/* for -92dB */
 	double a0 = .35875, a1 = .48829, a2 = .14128, a3 = .01168;
-	
+
 	BlackmanHarrisX(size,window,a0,a1,a2,a3);
 }
 
+void WindowGenerator::BlackmanHarrisLike(long size, DataArray& window) const
+{
+	int i;
+	TData fSum=0;
+	float a0 = .51, a1 = .42, a2 = -0.04, a3 = .03, a4=0.03, a5=0.05;
+	for(i=0; i<size; i++)
+		fSum += window[i] = 
+			0.47 - 0.45*cos(TData(TWO_PI/(size-1.0)*i)) - 0.01*cos(TData(TWO_PI/(size-1.0)*i*2.0)) - 0.01*cos(TData(TWO_PI/(size-1.0)*i*3.0));
+	fSum = fSum/2;
+	for (i = 0; i < size; i++)
+		window[i] = window[i] / fSum;
+	return;
+}
 
 
 /* function to design a Hamming window*/
@@ -435,38 +459,49 @@ void WindowGenerator::BlackmanHarris92TransMainLobe(long size,DataArray& window)
 	short N = 512, i, m;
 	TData fA[4] = {TData(.35875), TData(.48829), TData(.14128), TData(.01168)},
 		fMax = 0;
-	TData fTheta = -TData(4.0) * TData(TWO_PI) / N, 
+	TData fTheta = -TData(4.0) * TData(TWO_PI) / N,
 	       fThetaIncr = (TData(8.0) * TData(TWO_PI) / N) / (size);
 
 
-	for(i = 0; i < size; i++) 
+	for(i = 0; i < size; i++)
 	{
 		window[i] = 0;  // init value
 		for (m = 0; m < 4; m++)
-			window[i] +=  -1 * (fA[m]/2) * 
-				(Sinc (fTheta - m * TData(TWO_PI)/N, N) + 
+			window[i] +=  -1 * (fA[m]/2) *
+				(Sinc (fTheta - m * TData(TWO_PI)/N, N) +
 				   Sinc (fTheta + m * TData(TWO_PI)/N, N));
 		fTheta += fThetaIncr;
 	}
-	
+
 	/* normalize window */
 	fMax = window[(int) size / 2];
-	for (i = 0; i < size; i++) 
+	for (i = 0; i < size; i++)
 		window[i] = window[i] / fMax;
 
 }
 
+void WindowGenerator::Gaussian(long size,DataArray& window) const
+{
+	double  s = 0.15;
+	if(size%2 !=0)
+		window[size/2] = 1;
+	for(int i = 0; i < size/2; i++)
+	{
+		TData x = (TData)(i-(TData)size/2.)/(TData)(size-1);
+		window[i] = window[size-i-1]= exp(-(x*x)/(2*s*s));
+	}
+}
 
 void WindowGenerator::InvertWindow(const DataArray& originalWindow,
 		DataArray& invertedWindow) const
 {
 	int i;
-	
+
 	if(invertedWindow.AllocatedSize()!=originalWindow.AllocatedSize())
 		invertedWindow.Resize(originalWindow.AllocatedSize());
 	if(invertedWindow.Size()!=originalWindow.Size())
 		invertedWindow.SetSize(originalWindow.Size());
-	
+
 	if (originalWindow.Size()%2!=0)
 		if(originalWindow[(int)(originalWindow.Size()/2)]!=0)
 			invertedWindow[(int)(originalWindow.Size()/2)]=
@@ -486,31 +521,43 @@ void WindowGenerator::InvertWindow(DataArray& window) const
 
 void WindowGenerator::NormalizeWindow(DataArray& window) const
 {
-	int i;
-	double sum=0.0,invSum;
-
 	if (mConfig.GetNormalize() == EWindowNormalize::eNone) return;
-	else {
-		int size = window.Size();
-		for(i=0;i<(int)size;i++)
-		{
-			sum+=window[i];
-		}
-		//Note: We multiply by two because we add the energy of the negative spectrum
+	double normalizationFactor=1.0;
 
-		if (mConfig.GetNormalize() == EWindowNormalize::eAnalysis) 
-			invSum=1/sum*2;
-		
-		else if (mConfig.GetNormalize() == EWindowNormalize::eEnergy) 
-			invSum=size/sum*2;
-		else
-			invSum=1/sum;
-		for(i=0;i<(int)size;i++)
+	const int size = window.Size();
+	//Note: We multiply by two because we add the energy of the negative spectrum
+	switch (mConfig.GetNormalize()) {
+		case EWindowNormalize::eAnalysis:
 		{
-			window[i]*=invSum;
+			double sum=0.0;
+			for(int i=0;i<size;i++) sum+=window[i];
+			normalizationFactor=1/(sum/2);
+			break;
 		}
-	} 
-} 
+		case EWindowNormalize::eEnergy:
+		{
+			double sum=0.0;
+			for(int i=0;i<size;i++) sum+=window[i];
+			normalizationFactor=size/(sum/2);
+			break;
+		}
+		case EWindowNormalize::eMax:
+		{
+			double max=0.0;
+			for(int i=0;i<size;i++)
+				if (max<window[i]) max=window[i];
+			normalizationFactor = 1.0/max; // be careful with even windows!!
+			break;
+		}
+		default:
+			CLAM_ASSERT(false, "Unexpected normalization type");
+	}
+
+	for(int i=0;i<size;i++)
+	{
+		window[i]*=normalizationFactor;
+	}
+}
 
 /* internal math functions */
  double WindowGenerator::Sinc(double x, short N) const

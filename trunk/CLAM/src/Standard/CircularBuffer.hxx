@@ -166,13 +166,37 @@ namespace CLAM {
 			
 		};
 
+		
+		void Read(T* buffer)
+		{
+			TSize limit;
+			if((limit=mReadIndex+mReadSize)>GetBufferSize())
+			{
+				TSize secondHalf=limit%GetBufferSize();
+				TSize firstHalf=mReadSize-secondHalf;
+				memcpy(buffer,mBuffer.GetPtr()+mReadIndex,firstHalf*sizeof(T));
+				memcpy(buffer+firstHalf,mBuffer.GetPtr(),secondHalf*sizeof(T));
+			}
+			else
+			{
+				memcpy(buffer,mBuffer.GetPtr()+mReadIndex,mReadSize*sizeof(T));
+			}
+			
+			IncreaseReadIndex(mReadSize);
+		}
 
 		void Read(Array<T>& in,TSize offset=0) //const
 		{
 			CLAM_ASSERT(GetReadSize()<=in.Size()+offset,"Error, input buffer is not large enough");
+
+#ifdef CLAM_HIGH_OPTIMIZATIONS
+			
+			Read(in.GetPtr()+offset);
+		
+#else
 			for(int i=0;i<mReadSize;i++)
 				Read(in[i+offset]);
-			
+#endif		
 		};
 
 		void Write(const T& element)
@@ -182,11 +206,37 @@ namespace CLAM {
 			
 		};
 
+		
+		
+		void Write (const T* buffer)
+		{
+			TSize limit;
+			if((limit=mWriteIndex+mWriteSize)>GetBufferSize())
+			{
+				TSize secondHalf=limit%GetBufferSize();
+				TSize firstHalf=mWriteSize-secondHalf;
+				memcpy(mBuffer.GetPtr()+mWriteIndex,buffer,firstHalf*sizeof(T));
+				memcpy(mBuffer.GetPtr(),buffer+firstHalf,secondHalf*sizeof(T));
+			}
+			else
+			{
+				memcpy(mBuffer.GetPtr()+mWriteIndex,buffer,mWriteSize*sizeof(T));
+			}
+			
+			IncreaseWriteIndex(mWriteSize);
+		}
+		
 		void Write(const Array<T>& in,TSize offset=0) 
 		{
 			CLAM_ASSERT(GetWriteSize()<=in.Size()+offset,"Error, input buffer is not large enough");
+#ifdef CLAM_HIGH_OPTIMIZATIONS
+			
+			Write(in.GetPtr()+offset);
+		
+#else
 			for(int i=0;i<mWriteSize;i++)
 				Write(in[i+offset]);
+#endif
 		};
 		
 		void Add(const T& elem)

@@ -587,13 +587,10 @@ void Spectrum::MagPhase2Complex()
 	Array<Complex > &complexArray=GetComplexArray();
 	complexArray.Resize(size);
 	complexArray.SetSize(size);
-	Polar aux;
 	for (int i=0; i<size; i++) 
 	{
-		aux.SetMag(magBuffer[i]);
-		aux.SetAng(phaseBuffer[i]);
-		complexArray[i].SetReal(aux.Real());
-		complexArray[i].SetImag(aux.Imag());
+		complexArray[i].SetReal(magBuffer[i]*cos(phaseBuffer[i]));
+		complexArray[i].SetImag(magBuffer[i]*sin(phaseBuffer[i]));
 	}
 }
 
@@ -632,7 +629,7 @@ void Spectrum::BPF2MagPhase()
 
 int Spectrum::GetSize() const
 {
-	int size= GetprSize();
+	const int size= GetprSize();
 
 	CLAM_BEGIN_CHECK
 	if(HasMagBuffer() && GetMagBuffer().Size())
@@ -689,7 +686,7 @@ void Spectrum::SetSize(int newSize)
 
 int Spectrum::GetBPFSize() const
 {
-	int bpfsize= HasprBPFSize() ? GetprBPFSize() : GetSize();
+	const int bpfsize= HasprBPFSize() ? GetprBPFSize() : GetSize();
 
 	CLAM_BEGIN_CHECK
 	CLAM_ASSERT(! (HasMagBPF() && GetMagBPF().Size() && GetMagBPF().Size() != bpfsize) ,

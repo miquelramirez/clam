@@ -109,7 +109,9 @@ public:
 		eBlackmanHarris92,
 		eHamming,
 		eTriangular,
-		eBlackmanHarris92TransMainLobe
+		eBlackmanHarris92TransMainLobe,
+		eGaussian,
+		eBlackmanHarrisLike
 	};
 
 	virtual Component* Species() const

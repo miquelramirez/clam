@@ -39,6 +39,7 @@ static int roundInt(double in)
 }
 #endif
 
+# define M_1_2PI         0.15915494309189533577  /* 1/(2pi) */
 
 #if defined _MSC_VER
 

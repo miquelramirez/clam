@@ -162,7 +162,7 @@ namespace CLAM {
 		
 			// local Minimum detected 
 			if ((middleMag <= leftMag) && (middleMag<= rightMag)) {
-				if ((nSpectralPeaks > 0) && (out.GetBinWidth(nSpectralPeaks-1) == 0)) {
+				if ((nSpectralPeaks > 0) && (outBinWidthBuffer[nSpectralPeaks-1] == 0)) {
 					outBinWidthBuffer[nSpectralPeaks-1]=TData(binWidth); // store last SpectralPeakBinWidth
 				}
 				binWidth = 0; // Reset Binwidth
@@ -174,7 +174,7 @@ namespace CLAM {
 				TSize SpectralPeakPosition = i+1; 	// middleMag has index i+1
 
 				// update last BinWidth 
-				if ((nSpectralPeaks > 0) && (out.GetBinWidth(nSpectralPeaks-1) == 0)) { 			
+				if ((nSpectralPeaks > 0) && (outBinWidthBuffer[nSpectralPeaks-1] == 0)) { 			
 			
 					TSize lastSpectralPeakBin = (TSize) (outFreqBuffer[nSpectralPeaks-1]*2* NumBands/SamplingRate);
 					TSize tempVal = binWidth - (TSize)((SpectralPeakPosition-lastSpectralPeakBin)/2.0);
@@ -233,21 +233,22 @@ namespace CLAM {
 					outBinWidthBuffer.AddElem(0); // BinWidth will be set later
 					
 					nSpectralPeaks++;
-					out.SetnPeaks(nSpectralPeaks);
-
-
+				
 				}
 			}
 			binWidth++;
 		}
 		// update the very last binwidth value if it's not set yet 
-		if ((nSpectralPeaks > 0) && (out.GetBinWidth(nSpectralPeaks-1) == 0)){ 			
+		if ((nSpectralPeaks > 0) && (outBinWidthBuffer[nSpectralPeaks-1] == 0)){ 			
 		
 			TSize lastSpectralPeakBin = (TSize) (outFreqBuffer[nSpectralPeaks-1] * 2 * NumBands / SamplingRate);
 			TSize tempVal = binWidth - (TSize)((i-lastSpectralPeakBin)/2.0);
 			outBinWidthBuffer[nSpectralPeaks-1]=TData(tempVal);
 			binWidth = (TSize) ((i-lastSpectralPeakBin)/2.0);
 		}
+		if(nSpectralPeaks>maxPeaks)
+			out.SetnMaxPeaks(nSpectralPeaks);
+		out.SetnPeaks(nSpectralPeaks);
 		return true;
 	}
 
