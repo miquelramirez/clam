@@ -6,10 +6,12 @@ namespace CLAM
 	{
 		NetFundPlotController::NetFundPlotController() 
 		{
-			SetvRange(TData(0.0),TData(1.0));
-			_renderer.SetVBounds(TData(0.7),TData(0.0));
-			SetnSamples(22050);
-			mMonitor = 0;
+		    SetDataColor(VMColor::Green());
+		    SetvRange(TData(0.0),TData(1.0));
+		    SetnSamples(22050);
+		    _renderer.SetVBounds(TData(0.7),TData(0.0));
+		    _renderer.SetHBounds(TData(0.0),TData(GetnSamples()));
+		    mMonitor = 0;
 		}
 
 		NetFundPlotController::~NetFundPlotController()
@@ -18,14 +20,20 @@ namespace CLAM
 
 		void NetFundPlotController::SetData(const Fundamental& data)
 		{
-			_renderer.SetHBounds(TData(0.0),TData(GetnSamples()));
-			_renderer.Update(data.GetFreq(0));
-			FullView();
+		    if(CanGetData())
+		    {
+			SetCanSendData(false);
+			_fund=data;
+			if(First()) Init();
+			SetCanSendData(true);
+		    }
 		}
 
 		void NetFundPlotController::SetMonitor(MonitorType & monitor)
 		{
 			mMonitor = & monitor;
+			mMonitor->AttachStartSlot(mStartSlot);
+			mMonitor->AttachStopSlot(mStopSlot);
 		}
 
 		void NetFundPlotController::SetDataColor(Color c)
@@ -35,22 +43,34 @@ namespace CLAM
 
 		void NetFundPlotController::Draw()
 		{
-			if (!mMonitor)
+		    if (!mMonitor)
+		    {
+			if(CanSendData())
 			{
-				_renderer.Render();
-				return;
+			   SetCanGetData(false);
+			   _renderer.Update(_fund.GetFreq(0));
+			   SetCanGetData(true);
 			}
-			const CLAM::Fundamental & fund = mMonitor->FreezeAndGetData();
+			_renderer.Render();
+			return;
+		    }
+		    
+		    if(MonitorIsRunning())
+		    {
+			const Fundamental & fund = mMonitor->FreezeAndGetData();
 
 			// TODO: Because we have exclusive right for
 			// to the data we could remove some of this copies
-			_renderer.SetHBounds(TData(0.0),TData(GetnSamples()));
+			if(First()) Init();
 			_renderer.Update(fund.GetFreq(0));
-			FullView();
-
 			_renderer.Render();
 
 			mMonitor->UnfreezeData();
+		    }
+		    else
+		    {
+			_renderer.Render();
+		    }
 		}
 
 		void NetFundPlotController::FullView()
@@ -60,6 +80,12 @@ namespace CLAM
 			_view.top = GetvMax();
 			_view.bottom = GetvMin();
 			emit sendView(_view);
+		}
+
+	        void NetFundPlotController::Init()
+		{
+		    SetFirst(false);
+		    FullView();
 		}
 	}
 }

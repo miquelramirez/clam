@@ -22,13 +22,14 @@ namespace CLAM
 			void Draw();
 			void SetMonitor(MonitorType & monitor);
 
-		protected:
-			void FullView();
-
 		private:
+		        Fundamental _fund;
 			Dial _renderer;
 
 			MonitorType * mMonitor;
+
+		        void Init();
+		        void FullView();
 		};
 	}
 }

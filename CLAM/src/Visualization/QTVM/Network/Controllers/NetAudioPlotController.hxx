@@ -22,13 +22,14 @@ namespace CLAM
 			virtual void Draw();
 			void SetMonitor(MonitorType & monitor);
 
-		protected:
-			void FullView();
-
 		private:
-			DataRenderer _dRenderer;
+		        Audio _cacheData;
+			DataRenderer _renderer;
 
 			MonitorType * mMonitor;
+
+		        void Init(const TSize& frameSize);
+		        void FullView();
 		};
 	}
 }

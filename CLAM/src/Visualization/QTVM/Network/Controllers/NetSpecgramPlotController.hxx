@@ -31,6 +31,7 @@ namespace CLAM
 	    int _index;
 	    int _specSize;
 	    QtPalette _palette;
+	    SigSlot::Slotv0 mSlotNewData;
 	    
 	    void AddData(const Spectrum& spec);
 	    void AdaptSpectralData();
@@ -39,6 +40,8 @@ namespace CLAM
 	    void Init(const TSize& specSize);
 
 	    float ClampToRange(TData value) const;
+
+	    void OnNewData();
 
 	};
     }

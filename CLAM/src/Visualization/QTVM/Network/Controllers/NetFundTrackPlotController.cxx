@@ -5,12 +5,10 @@ namespace CLAM
     namespace VM
     {
 	NetFundTrackPlotController::NetFundTrackPlotController()
-	    : _index(0)
+	    : _index(0),mMonitor(0)
 	{
-	    InitDataArrays();
-	    SetvRange(TData(0.0),TData(2050.0));
-	    SetnSamples(200);
-	    InitView();
+	    SetDataColor(VMColor::Green());
+	    mSlotNewData.Wrap(this,&NetFundTrackPlotController::OnNewData);
 	}
 
 	NetFundTrackPlotController::~NetFundTrackPlotController()
@@ -19,9 +17,13 @@ namespace CLAM
 
 	void NetFundTrackPlotController::SetData(const Fundamental& fund)
 	{
-	    AddData(fund.GetFreq(0));
-	    ProcessData();
-	    emit sendView(_view);
+	    if(CanGetData())
+	    {
+		SetCanSendData(false);
+		if(First()) Init();
+		AddData(fund.GetFreq(0));
+		SetCanSendData(true);
+	    }
 	}
 
 	void NetFundTrackPlotController::SetDataColor(Color c)
@@ -31,7 +33,21 @@ namespace CLAM
 
 	void NetFundTrackPlotController::Draw()
 	{
+	    if(CanSendData())
+	    {
+		SetCanGetData(false);
+		_renderer.SetDataPtr(_cachedData.GetPtr(),_cachedData.Size(), (unsigned)_index);
+		SetCanGetData(true);
+	    }
 	    _renderer.Render();
+	}
+
+	void NetFundTrackPlotController::SetMonitor(MonitorType & monitor)
+	{
+	    mMonitor = & monitor;
+	    mMonitor->AttachStartSlot(mStartSlot);
+	    mMonitor->AttachStopSlot(mStopSlot);
+	    mMonitor->AttachSlotNewData(mSlotNewData);
 	}
 
 	void NetFundTrackPlotController::AddData(const TData& data)
@@ -47,36 +63,42 @@ namespace CLAM
 	    }
 	}
 
-	void NetFundTrackPlotController::ProcessData()
+	void NetFundTrackPlotController::Init()
 	{
-	    if(_cachedData.Size() < GetnSamples())
-	    {
-		_renderer.SetDataPtr(_cachedData.GetPtr(),_cachedData.Size(),NormalMode);
-	    }
-	    else
-	    {
-		int i,j = 0;
-		for(i = _index; i < _cachedData.Size(); i++)
-		    _processedData[j++]=_cachedData[i];
-		for(i = 0; i < _index; i++)
-		    _processedData[j++] = _cachedData[i];
-		 _renderer.SetDataPtr(_processedData.GetPtr(),_processedData.Size(),NormalMode);
-	    }
-	}
-
-	void NetFundTrackPlotController::InitDataArrays()
-	{
+	    _index=0;
 	    _cachedData.Init();
-	    _processedData.Resize(200);
-	    _processedData.SetSize(200);
+	    SetvRange(TData(0.0),TData(2050.0));
+	    SetnSamples(100); 
+	    SetFirst(false);
+	    FullView();
 	}
 
-	void NetFundTrackPlotController::InitView()
+	void NetFundTrackPlotController::FullView()
 	{
-	    _view.left=TData(0.0);
+	     _view.left=TData(0.0);
 	    _view.right=TData(GetnSamples());
 	    _view.bottom=GetvMin();
 	    _view.top=GetvMax();
+
+	    emit sendView(_view);
+	}
+
+	void NetFundTrackPlotController::OnNewData()
+	{
+	    if(CanGetData())
+	    {
+		SetCanSendData(false);
+		if(MonitorIsRunning())
+		{
+		    const Fundamental & fund = mMonitor->FreezeAndGetData();
+
+		    if(First()) Init();
+		    AddData(fund.GetFreq(0));	
+
+		    mMonitor->UnfreezeData();
+		}
+		SetCanSendData(true);
+	    }
 	}
 
     }

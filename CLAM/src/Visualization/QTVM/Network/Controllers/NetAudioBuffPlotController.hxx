@@ -28,11 +28,13 @@ namespace CLAM
 	    BuffDataRenderer _renderer;
 	    int _index;
 	    TSize _frameSize;
-	    
+	    SigSlot::Slotv0 mSlotNewData;
+
 	    void AddData(const DataArray& data);
 	  
 	    void Init(const TSize& frameSize);
 	    void FullView();
+	    void OnNewData();
 	    
 	};
     }

@@ -9,6 +9,7 @@ namespace CLAM
 	    : mMonitor(0),_index(0),_specSize(0),_palette(0.0f)
 	{
 	    SetnSamples(100);
+	    mSlotNewData.Wrap(this,&NetSpecgramPlotController::OnNewData);
 	}
 
 	NetSpecgramPlotController::~NetSpecgramPlotController()
@@ -18,8 +19,13 @@ namespace CLAM
 	void NetSpecgramPlotController::SetData(const Spectrum& spec)
 	{
 	    if(!spec.GetMagBuffer().Size()) return;
-	    if(First()) Init(spec.GetMagBuffer().Size());
-	    AddData(spec);
+	    if(CanGetData())
+	    {
+		SetCanSendData(false);
+		if(First()) Init(spec.GetMagBuffer().Size());
+		AddData(spec);
+		SetCanSendData(true);
+	    }
 	}
 
 	void NetSpecgramPlotController::SetMonitor(MonitorType & monitor)
@@ -27,42 +33,18 @@ namespace CLAM
 	    mMonitor = & monitor;
 	    mMonitor->AttachStartSlot(mStartSlot);
 	    mMonitor->AttachStopSlot(mStopSlot);
+	    mMonitor->AttachSlotNewData(mSlotNewData);
 	}
 
 	void NetSpecgramPlotController::Draw()
 	{
-	    if(!mMonitor)
+	    if(CanSendData())
 	    {
-		_renderer.Render();
-		return;
+		SetCanGetData(false);
+		_renderer.SetData(_cachedData,_index);
+		SetCanGetData(true);
 	    }
-
-	    if(MonitorIsRunning())
-	    {
-		const Spectrum & spec = mMonitor->FreezeAndGetData();
-
-		// TODO: Because we have exclusive right for
-		// to the data we could remove some of this copies
-
-	    
-		if(First() && spec.GetMagBuffer().Size()) 
-		{
-		    Init(spec.GetMagBuffer().Size());
-		}
-
-		if(spec.GetMagBuffer().Size())
-		{
-		    AddData(spec);
-		
-		    _renderer.Render();
-		}
-
-		mMonitor->UnfreezeData();
-	    }
-	    else
-	    {
-		_renderer.Render();
-	    }
+	    _renderer.Render();
 	}
 
 	void NetSpecgramPlotController::AddData(const Spectrum& spec)
@@ -86,7 +68,6 @@ namespace CLAM
 		_cachedData[_index++]=v;
 		if(_index == (int)_cachedData.size()) _index = 0;
 	    }
-	    _renderer.SetData(_cachedData,_index);
 	}
 
 	void NetSpecgramPlotController::FullView()
@@ -145,6 +126,23 @@ namespace CLAM
 	   
 	    return value;
 	}	
+
+	void NetSpecgramPlotController::OnNewData()
+	{
+	    if(CanGetData())
+	    {
+		SetCanSendData(false);
+		if(MonitorIsRunning())
+		{
+		    const Spectrum & spec = mMonitor->FreezeAndGetData();
+		    TSize bufferSize = spec.GetMagBuffer().Size();
+		    if(First() && bufferSize) Init(bufferSize);
+		    if(bufferSize) AddData(spec);
+		    mMonitor->UnfreezeData();
+		}
+		SetCanSendData(true);
+	    }
+	}
     }
 }
 

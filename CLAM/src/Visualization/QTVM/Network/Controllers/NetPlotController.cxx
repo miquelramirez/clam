@@ -9,9 +9,12 @@ namespace CLAM
 		        _nSamples = 0;
 			_vmin = TData(0.0);
 			_vmax = TData(1.0);
+			_monitorIsRunning=false;
 			
 			InitView();
 			SetFirst(true);
+			SetCanGetData(true);
+			SetCanSendData(false);
 
 			mStartSlot.Wrap(this,&NetPlotController::ConcreteStartMonitor);
 			mStopSlot.Wrap(this,&NetPlotController::ConcreteStopMonitor);
@@ -79,6 +82,26 @@ namespace CLAM
 	        bool NetPlotController::First()
 		{
 		    return _first;
+		}
+
+	        void NetPlotController::SetCanGetData(bool canget)
+		{
+		    _canGetData=canget;
+		}
+
+	        void NetPlotController::SetCanSendData(bool cansend)
+		{
+		    _canSendData=cansend;
+		}
+
+		bool NetPlotController::CanGetData()
+		{
+		    return _canGetData;
+		}
+
+		bool NetPlotController::CanSendData()
+		{
+		    return _canSendData;
 		}
 	    
 	}
