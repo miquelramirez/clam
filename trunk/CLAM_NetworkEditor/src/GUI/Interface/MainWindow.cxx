@@ -131,38 +131,36 @@ namespace NetworkGUI
 			"open file dialog"
 			"Choose a file to load network" );
 
-		if (s!=QString::null)
-		{
-			mNetworkPresentation.GetNetworkController().LoadNetworkFrom(std::string(s.ascii()) );
-		}
+		if (s==QString::null)
+			return;
+		
+		mNetworkPresentation.GetNetworkController().LoadNetworkFrom(std::string(s.ascii()) );
+		mCurrentNetwork = s;
 	}
 
 
-	void MainWindow::SaveNetwork()
+	void MainWindow::SaveAsNetwork()
 	{
 		QString s = QFileDialog::getSaveFileName(
-			"",
+			mCurrentNetwork,
 			"XML Files (*.xml)",
 			this,
 			"save file dialog"
 			"Choose a file to save network" );
 
-		if (s!=QString::null)
-		{
-			//TODO code for saving positions
-			//  call method to mNetworkPresentation : SaveNetwork passing filename
-			//  QtNetworkPresentation::SaveNetwork (slot) :
-			//     execute Signal SaveNetworkTo passing ref to stream
-			//     add elem with positions: (name, xpos, ypos) tuples
-			//     save doc
-			mNetworkPresentation.GetNetworkController().SaveNetworkTo(std::string(s.ascii()));
-			printf("network saved\n");
-		}
+		if (s==QString::null) 
+			return;
+
+		mCurrentNetwork = s;
+		SaveNetwork();	
 	}
 
-	void MainWindow::SaveAsNetwork()
+	void MainWindow::SaveNetwork()
 	{
-		SaveNetwork();
+		if (mCurrentNetwork==QString::null)
+			return;
+		std::string xmlfile = mCurrentNetwork.ascii();
+		mNetworkPresentation.GetNetworkController().SaveNetworkTo(xmlfile);
 	}
 
 	void MainWindow::StartNetwork()
