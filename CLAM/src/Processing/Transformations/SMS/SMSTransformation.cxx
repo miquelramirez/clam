@@ -26,7 +26,7 @@
 
 namespace CLAM
 {
-	void SMSTransformation:: WrapFrameTransformation( SMSFreqShift* trans)
+	void SMSTransformation:: WrapFrameTransformation( FrameTransformation* trans)
 	{
 		CLAM_ASSERT( !mFrameTransformation, "SMSTransformation::Wrapp object shoudn't have wrapped transformation");
 		mFrameTransformation = trans;

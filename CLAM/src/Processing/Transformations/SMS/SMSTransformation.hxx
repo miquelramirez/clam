@@ -34,19 +34,20 @@
 #include "Segment.hxx"
 #include "SMSTransformationConfig.hxx"
 
+#include "FrameTransformation.hxx"
+
 namespace CLAM {
 
-	class SMSFreqShift; //TODO remove
-	
 	/** Abstract base class for all SMS Transformations. It implements all basic behaviour for
 	 *	SMS Transformations such as Configuration and Control handling but defers the selection
 	 *	of a particular Do overload to its template subclass SMSTransformation. 
 	 *	@see SMSTransformation
 	 */
-	class SMSTransformation:public Processing
+
+	class SMSTransformation : public Processing
 	{
 		
-		SMSFreqShift * mFrameTransformation;
+		FrameTransformation* mFrameTransformation;
 
 	protected:
 		OutControl mSendAmount; //TODO privatize
@@ -76,7 +77,7 @@ namespace CLAM {
 		void AttachIn( Segment& data ){ mInput = &data; }
 		void AttachOut( Segment& data ){ mOutput = &data; }
 
-		void WrapFrameTransformation( SMSFreqShift*);
+		void WrapFrameTransformation( FrameTransformation*);
 		
 		/** Configuration change method. Note that the Amount Control is initialized from the
 		 *	the values in the configuration. Appart from that the member boolean variable that
