@@ -246,7 +246,7 @@ namespace CLAM
 			ycoord *= tbound;
 			ycoord /= TData(_viewport.h);
 			ycoord += bBound;
-			PlotController::SetMousePos(x,ycoord);
+			SegmentationMarksPlotController::SetMousePos(x,ycoord);
 			TData t=GetMouseXPos()/_sampleRate;
 			TData amp=GetMouseYPos();
 			QString s;
@@ -256,12 +256,15 @@ namespace CLAM
 
 		void AudioPlotController::SetSelPos(const TData& value)
 		{
+		    if(CanDrawSelectedPos())
+		    {
 			if(GetDialPos() != value)
 			{
 				SelTimeRegionPlotController::SetSelPos(value);
 				emit requestRefresh();
 				emit selPos(value);
 			}
+		    }
 		}
 	}
 }

@@ -191,6 +191,7 @@ namespace CLAM
 			{
 				(it->second)->Render();
 			}
+			SelPosPlotController::Draw();
 		}
 
 		void MultiPlotController::SetMousePos(TData x,TData y)
@@ -201,7 +202,7 @@ namespace CLAM
 			ycoord *= tbound;
 			ycoord /= TData(_viewport.h);
 			ycoord += bBound;
-			PlotController::SetMousePos(x,ycoord);
+			SegmentationMarksPlotController::SetMousePos(x,ycoord);
 			TData global_max=TData(GetnSamples());
 			TData local_max=_xmax+_xmin;
 			TData xval=(GetMouseXPos()*local_max/global_max)-_xmin;
@@ -213,7 +214,7 @@ namespace CLAM
 
 		void MultiPlotController::SetHBounds(const TData& left,const TData& right)
 		{
-			PlotController::SetHBounds(left,right);
+			SelPosPlotController::SetHBounds(left,right);
 			_mustProcessData=true;
 		
 			TData global_max=TData(GetnSamples());
@@ -229,7 +230,7 @@ namespace CLAM
 
 		void MultiPlotController::SetVBounds(const TData& bottom,const TData& top)
 		{
-			PlotController::SetVBounds(bottom,top);
+			SelPosPlotController::SetVBounds(bottom,top);
 			_mustProcessData=true;
 
 			TData global_max=GetvRange();

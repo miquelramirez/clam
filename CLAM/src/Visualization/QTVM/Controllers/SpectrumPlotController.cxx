@@ -204,6 +204,7 @@ namespace CLAM
         
 		void SpectrumPlotController::SetMousePos(TData x,TData y)
 		{
+		        SegmentationMarksPlotController::SetMousePos(x,y);
 			TData xcoord=x;
 			xcoord *= _spectralRange;
 			xcoord /= TData(GetnSamples());

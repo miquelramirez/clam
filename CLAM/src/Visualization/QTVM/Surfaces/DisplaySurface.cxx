@@ -57,6 +57,7 @@ namespace CLAM
 			connect(_controller,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
 			connect(_controller,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
 			connect(this,SIGNAL(leavingMouse()),_controller,SIGNAL(leavingMouse()));
+			connect(_controller,SIGNAL(changeCursor(QCursor)),this,SLOT(changeCursor(QCursor)));
 		}
 
 		void DisplaySurface::initializeGL()
@@ -90,6 +91,7 @@ namespace CLAM
 			{
 				if(e->button() == LeftButton)
 				{
+				        _controller->SetLeftButtonPressed(true);
 					float left = float(_controller->GetLeftBound());
 					float right = float(_controller->GetRightBound());
 					float xcoord = e->x();
@@ -103,6 +105,17 @@ namespace CLAM
 					}
 				}
 			}
+		}
+
+	        void DisplaySurface::mouseReleaseEvent(QMouseEvent* e)
+		{
+		    if(_controller)
+		    {
+			if(e->button() == LeftButton)
+			{
+			    _controller->SetLeftButtonPressed(false);
+			}
+		    }
 		}
 
 		void DisplaySurface::mouseMoveEvent(QMouseEvent* e)
@@ -154,8 +167,25 @@ namespace CLAM
 
 		void DisplaySurface::leaveEvent(QEvent* e)
 		{
-			QWidget::leaveEvent(e);
-			emit leavingMouse();
+		    if(_controller)
+		    {
+			_controller->LeaveMouse();
+		    }
+		    QWidget::leaveEvent(e);
+		    emit leavingMouse();
+		}
+
+	        void DisplaySurface::enterEvent(QEvent* e)
+		{
+		    if(_controller)
+		    {
+			_controller->EnterMouse();
+		    }
+		}
+
+	        void DisplaySurface::changeCursor(QCursor cursor)
+		{
+		    setCursor(cursor);
 		}
 	}
 }

@@ -29,7 +29,7 @@ namespace CLAM
 	{
 
 	    void PlotSpectrumMarks(const Spectrum& spec,
-				   std::list<unsigned>& marks,
+				   std::vector<unsigned>& marks,
 				   const std::string& label,
 				   int x, int y, int w, int h)
 		{

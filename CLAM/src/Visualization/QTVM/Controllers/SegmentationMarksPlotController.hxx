@@ -22,41 +22,72 @@
 #ifndef __SEGMENTATIONMARKSPLOTCONTROLLER__
 #define __SEGMENTATIONMARKSPLOTCONTROLLER__
 
-#include <list>
+#include <vector>
 #include "VLineArrayRenderer.hxx"
 #include "PlotController.hxx"
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	class SegmentationMarksPlotController : public PlotController
 	{
-		class SegmentationMarksPlotController : public PlotController
-		{
-			typedef std::list<unsigned> Marks;
+ 
+	public:
+	    SegmentationMarksPlotController();
+	    virtual ~SegmentationMarksPlotController();
 
-			public:
-				SegmentationMarksPlotController();
-				virtual ~SegmentationMarksPlotController();
-			
-				void SetMarks(std::list<unsigned>& marks);
-				void SetMarksColor(Color c);
+	    void SetMarks(std::vector<unsigned>& marks);
+	    std::vector<unsigned>& GetMarks();
 
-				virtual void Draw();
-				virtual void SurfaceDimensions(int w,int h);
+	    void SetMarksColor(Color c);
 
-			protected:
-				virtual void SetHBounds(const TData& left, const TData& right);
-				virtual void SetVBounds(const TData& bottom, const TData& top);
+	    virtual void Draw();
+	    virtual void SurfaceDimensions(int w,int h);
 
-			private:
-				Marks _marks;
-				VLineArrayRenderer _marksRenderer;
-				bool _mustProcessMarks;
+	    virtual void SetMousePos(TData x, TData y);
+	    virtual void LeaveMouse();
 
-				void ProcessMarksData();
-		};
-	}
+	    virtual void SetLeftButtonPressed(bool pressed);
+
+	    void SetKeyInsertPressed(bool pressed);
+	    void SetKeyDeletePressed(bool pressed);
+
+	    void InsertMark(unsigned elem);
+	    void RemoveMark(int index, unsigned elem);
+	    void UpdateMark(int index, unsigned elem);
+
+	protected:
+	    virtual void SetHBounds(const TData& left, const TData& right);
+	    virtual void SetVBounds(const TData& bottom, const TData& top);
+
+	    bool CanDrawSelectedPos();
+
+	private:
+	    std::vector<unsigned> _marks;
+	    VLineArrayRenderer _marksRenderer;
+	    bool _mustProcessMarks;
+	    bool _hit;
+	    unsigned _currentElem;
+	    int _currentIndex;
+	    bool _keyInsertPressed;
+	    bool _keyDeletePressed;
+
+	    void ProcessMarksData();
+
+	    bool HaveElem(unsigned elem);
+	    void InsertElem(unsigned elem);
+	    void RemoveElem(int index);
+	    void Update(int index, unsigned elem);
+
+	    unsigned GetPixel(const TData& x) const;
+	    int Hit(const TData& x);
+	};
+    }
 }
 
 #endif
+
+
+
 

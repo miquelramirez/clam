@@ -51,7 +51,8 @@ namespace CLAM
 
 				void SetData(std::vector<Audio> data);
 
-				void SetMarks(std::list<unsigned>& marks);
+				void SetMarks(std::vector<unsigned>& marks);
+		                std::vector<unsigned>& GetMarks();
 				void SetMarksColor(Color c);
 
 				void SetBackgroundColor(Color c);

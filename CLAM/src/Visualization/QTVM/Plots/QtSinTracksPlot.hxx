@@ -45,7 +45,8 @@ namespace CLAM
 				void SetData(	const Array< SpectralPeakArray >& peakMtx, 
 								const TData& sr, const TData& dur	);
 
-				void SetMarks(std::list<unsigned>& marks);
+				void SetMarks(std::vector<unsigned>& marks);
+		                std::vector<unsigned>& GetMarks();
 				void SetMarksColor(Color c);
 
 				void SetDialColor(Color c);

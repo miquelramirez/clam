@@ -22,7 +22,7 @@
 #ifndef __DPSPECTRUMMARKS__
 #define __DPSPECTRUMMARKS__
 
-#include <list>
+#include <vector>
 #include <string>
 #include "Spectrum.hxx"
 
@@ -32,7 +32,7 @@ namespace CLAM
 	{
 
 		void PlotSpectrumMarks(	const Spectrum& spec,
-								std::list<unsigned>& marks,
+								std::vector<unsigned>& marks,
 								const std::string& label="",
 								int x=100,
 								int y=100,

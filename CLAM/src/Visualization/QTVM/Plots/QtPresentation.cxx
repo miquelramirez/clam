@@ -72,6 +72,11 @@ namespace CLAM
 
 			// connections to emit sel pos
 			connect(_controller,SIGNAL(selPos(TData)),this,SIGNAL(selPos(TData)));
+
+			// connections to emit signals for segmentation marks management
+			connect(_controller,SIGNAL(insertedMark(unsigned)),this,SIGNAL(insertedMark(unsigned)));
+			connect(_controller,SIGNAL(removedMark(int,unsigned)),this,SIGNAL(removedMark(int,unsigned)));
+			connect(_controller,SIGNAL(updatedMark(int,unsigned)),this,SIGNAL(updatedMark(int,unsigned)));
 		}
 
 		void QtPresentation::Init()
@@ -375,6 +380,21 @@ namespace CLAM
 		void QtPresentation::SetFlag(bool f)
 		{
 			flag=f;
+		}
+
+	        void QtPresentation::insertMark(unsigned elem)
+		{
+		    _controller->InsertMark(elem);
+		}
+	    
+	        void QtPresentation::removeMark(int index, unsigned elem)
+		{
+		    _controller->RemoveMark(index,elem);
+		}
+
+		void QtPresentation::updateMark(int index, unsigned elem)
+		{
+		    _controller->UpdateMark(index,elem);
 		}
 	}
 }

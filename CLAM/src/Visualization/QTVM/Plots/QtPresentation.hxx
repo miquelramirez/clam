@@ -57,7 +57,8 @@ namespace CLAM
 				QtPresentation(QWidget* parent = 0);
 				virtual ~QtPresentation();
 			
-				virtual void SetMarks(std::list<unsigned>& marks)=0;
+				virtual void SetMarks(std::vector<unsigned>& marks)=0;
+		                virtual std::vector<unsigned>& GetMarks()=0;
 				virtual void SetMarksColor(Color c)=0;
 
 				void SetBackgroundColor(Color c);
@@ -102,6 +103,10 @@ namespace CLAM
 
 				void selPos(TData);
 
+		                void insertedMark(unsigned);
+		                void removedMark(int, unsigned);
+		                void updatedMark(int, unsigned);
+
 			public slots:
 				void hZoomIn();
 				void hZoomOut();
@@ -123,6 +128,10 @@ namespace CLAM
 				void switchColors();
 
 				void setSelPos(TData);
+
+		                void insertMark(unsigned);
+		                void removeMark(int, unsigned);
+		                void updateMark(int, unsigned);
 
 			protected:
 				PlotController* _controller;

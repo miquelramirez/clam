@@ -189,14 +189,15 @@ namespace CLAM
 		//////////////////////////////////////////////////////////////////////
 
 		QtPlot* PlotFactory::create(const Audio& audio,
-									const std::string& label,
-									int x, int y, int w, int h,
-									bool sc, QWidget* parent)
+					    const std::string& label,
+					    int x, int y, int w, int h,
+					    bool sc, QWidget* parent)
 		{
 			QtAudioPlot* plot = new QtAudioPlot(parent);
 			plot->SetData(audio);
 			plot->Label(label);
 			plot->Geometry(x,y,w,h);
+			plot->SetForegroundColor(VMColor::Blue());
 			plot->SwitchDisplayColors(sc);
 			return plot;
 		}
@@ -210,6 +211,7 @@ namespace CLAM
 			plot->SetData(data);
 			plot->Label(label);
 			plot->Geometry(x,y,w,h);
+			plot->SetForegroundColor(VMColor::Blue());
 			plot->SwitchDisplayColors(sc);
 			return plot;
 		}
@@ -226,6 +228,7 @@ namespace CLAM
 				plot->SetData(segment);
 				plot->Label(label);
 				plot->Geometry(x,y,w,h);
+				plot->SetForegroundColor(VMColor::Blue());
 				plot->SwitchDisplayColors(sc);
 				return plot;
 			}
@@ -249,6 +252,7 @@ namespace CLAM
 			plot->SetData(spec);
 			plot->Label(label);
 			plot->Geometry(x,y,w,h);
+			plot->SetForegroundColor(VMColor::Blue());
 			plot->SwitchDisplayColors(sc);
 			return plot;
 		}
@@ -263,6 +267,7 @@ namespace CLAM
 			plot->SetData(spec,peaks);
 			plot->Label(label);
 			plot->Geometry(x,y,w,h);
+			plot->SetForegroundColor(VMColor::Blue());
 			plot->SwitchDisplayColors(sc);
 			return plot;
 		}

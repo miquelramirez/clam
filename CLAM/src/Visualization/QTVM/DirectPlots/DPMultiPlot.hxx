@@ -22,7 +22,7 @@
 #ifndef __DPMULTIPLOT__
 #define __DPMULTIPLOT__
 
-#include <list>
+#include <vector>
 #include <string>
 #include "Array.hxx"
 #include "BPF.hxx"
@@ -50,7 +50,7 @@ namespace CLAM
 
 				void SetColor(std::string key, Color c);
 
-				void SetMarks(std::list<unsigned>& marks);
+				void SetMarks(std::vector<unsigned>& marks);
 				
 				void SetXRange(const TData& xmin, const TData& xmax);
 				void SetYRange(const TData& ymin, const TData& ymax);

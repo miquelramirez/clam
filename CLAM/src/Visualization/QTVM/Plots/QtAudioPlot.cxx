@@ -107,6 +107,15 @@ namespace CLAM
 				case Qt::Key_Shift:
 						((AudioPlotController*)_controller)->SetKeyShiftPressed(true);
 						break;
+
+			        case Qt::Key_Insert:
+				                ((AudioPlotController*)_controller)->SetKeyInsertPressed(true); 
+						break;
+						
+			        case Qt::Key_Delete:
+				                ((AudioPlotController*)_controller)->SetKeyDeletePressed(true); 
+						break;
+				    
 				default:
 						break;
 			}
@@ -117,8 +126,17 @@ namespace CLAM
 			switch(e->key())
 			{
 				case Qt::Key_Shift:
-						((AudioPlotController*)_controller)->SetKeyShiftPressed(false);			
+						((AudioPlotController*)_controller)->SetKeyShiftPressed(false);
 						break;
+
+			        case Qt::Key_Insert:
+				                ((AudioPlotController*)_controller)->SetKeyInsertPressed(false); 
+						break;
+						
+			        case Qt::Key_Delete:
+				                ((AudioPlotController*)_controller)->SetKeyDeletePressed(false); 
+						break;
+
 				default:
 						break;
 			}
@@ -225,10 +243,16 @@ namespace CLAM
 			keyReleaseEvent(e);
 		}
 
-		void QtAudioPlot::SetMarks(std::list<unsigned>& marks)
+		void QtAudioPlot::SetMarks(std::vector<unsigned>& marks)
 		{
 			((AudioPlotController*)_controller)->SetMarks(marks);
 		}
+	    
+                std::vector<unsigned>& QtAudioPlot::GetMarks()
+		{
+		    return ((AudioPlotController*)_controller)->GetMarks();
+		}
+
 
 		void QtAudioPlot::SetMarksColor(Color c)
 		{

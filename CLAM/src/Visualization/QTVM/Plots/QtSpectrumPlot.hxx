@@ -23,41 +23,53 @@
 #define __QTSPECTRUMPLOT__
 #include "Spectrum.hxx"
 #include "QtPresentation.hxx"
+
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {		
+	class SingleLabel;
+
+	class QtSpectrumPlot : public QtPresentation
 	{
-		class SingleLabel;		
-		class QtSpectrumPlot : public QtPresentation
-		{
-			Q_OBJECT
-			public:
-				QtSpectrumPlot(QWidget* parent=0);
-				virtual ~QtSpectrumPlot();
 
-				virtual void SetData(const Spectrum& spec);
+	    Q_OBJECT
+	public:
+	    QtSpectrumPlot(QWidget* parent=0);
+	    virtual ~QtSpectrumPlot();
 
-				void SetMarks(std::list<unsigned>& marks);
-				void SetMarksColor(Color c);
-				void SetForegroundColor(Color c);
-				void SetVLineColor(Color c);
-			protected slots:
-				void updateMagLabel(TData);
-				void updateFreqLabel(TData);
+	    virtual void SetData(const Spectrum& spec);
 
-			protected:
-				virtual void SetPlotController();
-				virtual void Connect();
+	    void SetMarks(std::vector<unsigned>& marks);
+	    std::vector<unsigned>& GetMarks();
+	    void SetMarksColor(Color c);
 
-				virtual void DisplayBackgroundBlack();
-				virtual void DisplayBackgroundWhite();
-			private:
-				SingleLabel *_magLabel,*_freqLabel;
+	    void SetForegroundColor(Color c);
+	    void SetVLineColor(Color c);
 
-				void InitSpectrumPlot();
-		};
-	}
+        protected slots:
+            void updateMagLabel(TData);
+	    void updateFreqLabel(TData);
+
+	protected:				
+	    virtual void keyPressEvent(QKeyEvent* e);
+	    virtual void keyReleaseEvent( QKeyEvent* e);
+
+	    virtual void SetPlotController();
+	    virtual void Connect();
+
+	    virtual void DisplayBackgroundBlack();
+	    virtual void DisplayBackgroundWhite();
+
+	private:
+	    SingleLabel *_magLabel,*_freqLabel;
+	    
+	    void InitSpectrumPlot();
+	};
+    }
 }
 
 #endif
+
+
 

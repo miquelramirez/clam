@@ -22,7 +22,7 @@
 #ifndef __DPFUNDAMENTALMARKS__
 #define __DPFUNDAMENTALMARKS__
 
-#include <list>
+#include <vector>
 #include <string>
 #include "Segment.hxx"
 
@@ -32,7 +32,7 @@ namespace CLAM
 	{
 
 		void PlotFundamentalMarks(	const Segment& segment,
-									std::list<unsigned>& marks,
+									std::vector<unsigned>& marks,
 									const std::string& label="",
 									int x=100,
 									int y=100,
