@@ -485,7 +485,6 @@ void Array<T>::ResizeDataBuffer(int new_size)
 {
 	if (new_size == mAllocSize)
 		return;
-	int i;
 	T* old_data = mpData;
 	mpData = (T*) malloc(new_size*sizeof(T));
 	if (!old_data) return;
@@ -493,7 +492,7 @@ void Array<T>::ResizeDataBuffer(int new_size)
 	if (mSize < elems)
 		elems = mSize;
 	InitializeCopyDataBlock(0,elems,old_data);
-	for (i=0; i<mSize; i++)
+	for (int i=0; i<mSize; i++)
 		(&old_data[i])->~T();
 	free(old_data);
 }
