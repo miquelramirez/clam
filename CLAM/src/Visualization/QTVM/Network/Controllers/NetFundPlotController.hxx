@@ -4,6 +4,7 @@
 #include "Fundamental.hxx"
 #include "Dial.hxx"
 #include "NetPlotController.hxx"
+#include "PortMonitor.hxx"
 
 namespace CLAM
 {
@@ -11,20 +12,23 @@ namespace CLAM
 	{
 		class NetFundPlotController : public NetPlotController
 		{
-			public:
-				NetFundPlotController();
-				virtual ~NetFundPlotController();
+		public:
+			typedef FundamentalPortMonitor MonitorType;
+			NetFundPlotController();
+			virtual ~NetFundPlotController();
 
-				void SetData(const Fundamental& data);
-				void SetDataColor(Color c);
-				void Draw();
+			void SetData(const Fundamental& data);
+			void SetDataColor(Color c);
+			void Draw();
+			void SetMonitor(MonitorType & monitor);
 
-			protected:
-				void FullView();
-				
-			private:
-				Dial _renderer;
+		protected:
+			void FullView();
 
+		private:
+			Dial _renderer;
+
+			MonitorType * mMonitor;
 		};
 	}
 }
