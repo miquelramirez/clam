@@ -26,6 +26,9 @@
 
 #include "AudioIO.hxx"
 #include "Processing.hxx"
+#include "Audio.hxx"
+#include "Port.hxx"
+#include "AudioDevice.hxx"
 
 
 namespace CLAM{

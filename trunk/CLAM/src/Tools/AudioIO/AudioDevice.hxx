@@ -134,3 +134,5 @@ protected:
 };
 
 };//CLAM
+
+#endif

@@ -19,7 +19,11 @@
  *
  */
 
+#include "AudioManager.hxx"
 #include "AudioDevice.hxx"
+#include "AudioIn.hxx"
+#include "AudioOut.hxx"
+
 #include <algorithm>
 using std::find;
 

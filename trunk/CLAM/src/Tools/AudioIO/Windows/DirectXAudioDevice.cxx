@@ -29,6 +29,7 @@
 #include <dinput.h>
 
 #include "DXFullDuplex.hxx"
+#include "AudioDeviceList.hxx"
 
 namespace CLAM {
 

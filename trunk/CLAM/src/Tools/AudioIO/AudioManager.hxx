@@ -22,9 +22,13 @@
 #define __AudioManager___
 
 #include <vector>
+#include "Err.hxx"
 
 
 namespace CLAM{
+
+class AudioDevice;
+class AudioDeviceList;
 
 /** This class takes care of all the creation of the registration of 
  * AudioIn and AudioOut objects, and the creation of AudioDevice objects required. 

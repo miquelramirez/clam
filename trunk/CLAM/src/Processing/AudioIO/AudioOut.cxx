@@ -20,6 +20,7 @@
  */
 
 #include "AudioOut.hxx"
+#include "AudioManager.hxx"
 
 using namespace CLAM;
 

@@ -20,10 +20,20 @@
  */
 
 #include "AudioManager.hxx"
+#include "AudioDeviceList.hxx"
+#include "AudioIn.hxx"
+#include "AudioOut.hxx"
+#include <algorithm>
+using std::find;
 
-using namespace CLAM;
+namespace CLAM{
 
 AudioManager* AudioManager::pSingleton = 0;
+AudioDeviceList *sAlsaAudioDeviceList = 0;
+AudioDeviceList *sDirectXAudioDeviceList = 0;
+AudioDeviceList *sPAAudioDeviceList = 0;
+AudioDeviceList *sRtAAudioDeviceList = 0;
+
 
 AudioManager::AudioManager(int sampleRate,int latency) throw(Err)
 	: mInternalBuffersNumber( 8 )
@@ -173,3 +183,24 @@ bool AudioManager::Register(AudioOut& out)
 	AudioDevice* device = FindOrCreateDevice(out.mConfig.GetDevice());
 	return device->Register(out);
 }
+
+AudioDeviceList* AudioManager::FindList(const std::string& arch)
+{
+	unsigned int i;
+	std::string tmp = arch;
+
+	if (tmp == "default")
+		tmp = DEFAULT_AUDIO_ARCH;
+
+	for (i=0;i<Singleton().mDeviceLists.size();i++)
+	{
+		if (Singleton().mDeviceLists[i]->ArchName() == tmp)
+		{
+			return Singleton().mDeviceLists[i];
+		}
+	}
+
+	return 0;
+}
+
+};//CLAM
