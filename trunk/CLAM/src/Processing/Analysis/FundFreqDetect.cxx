@@ -433,7 +433,7 @@ namespace CLAM
 				TData Freq = TData(peakFrequencies[peakIndexes[Peak]]);
 				TData Mag  = TData(peakMagnitudes[peakIndexes[Peak]]);
 				TData FreqDistance = fabs(Freq - Harmonic);
-				Tmp = FreqDistance *	pow(Harmonic, -mPMp);
+				Tmp = FreqDistance * pow(Harmonic, -mPMp);
 				TData MagFactor = TData(std::max(0.0,MaxMag - Mag + 20.0));
 				MagFactor = TData(1.0) - MagFactor/TData(75.0);
 				if (MagFactor < 0)
@@ -455,7 +455,7 @@ namespace CLAM
 			if ( (freq > 500) && (Freq < 100))
 				continue;
 
-			TData Mag = TData(peakFrequencies[peakIndexes[Peak]]);
+			TData Mag = TData(peakMagnitudes[peakIndexes[Peak]]);
 			Harmonic = TData(GetClosestHarmonic(Freq,freq));
 			TData FreqDistance = fabs(Freq - Harmonic);
 			Tmp = FreqDistance * pow(Freq, -mMPp);
