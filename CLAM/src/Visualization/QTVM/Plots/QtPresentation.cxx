@@ -83,6 +83,9 @@ namespace CLAM
 		{
 			_controller = NULL;
 
+			QFont f("Sans",8);
+			f.setBold(true);
+
 			_mainLayout = new QVBoxLayout(this);
 			_mainLayout->setMargin(2);
 			_mainLayout->setSpacing(0);
@@ -92,6 +95,7 @@ namespace CLAM
 			topLeftHole = new QFrame(this);
 			topLeftHole->setFixedSize(50,40);
 			_btoggle_color = new QPushButton(topLeftHole);
+			_btoggle_color->setFont(f);
 			_btoggle_color->setFixedSize(25,25);
 			_btoggle_color->setGeometry(12,8,25,25);
 			_btoggle_color->setToggleButton(true);
