@@ -446,11 +446,8 @@ bool NetworkController::Publish()
 
 bool NetworkController::BindTo( CLAM::Network& obj )
 {
-	mObserved = dynamic_cast< CLAM::Network* > (&obj);
+	mObserved = &obj;
 	
-	if( !mObserved )
-		return false;
-
 	CLAM::Network::ProcessingsMap::const_iterator it;
 	for (it=mObserved->BeginProcessings(); it!=mObserved->EndProcessings(); it++)
 		CreateProcessingController( it->first,  it->second );
