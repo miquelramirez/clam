@@ -30,7 +30,7 @@ uic :
 	mkdir uic
 
 uic/qmake_image_collection.cxx:$(IMAGES)
-	$(UIC)  -embed MusicAnnotator $(IMAGES) -o uic/qmake_image_collection.cxx
+	$(UIC)  -embed Annotator $(IMAGES) -o uic/qmake_image_collection.cxx
 
 
 clean_images: 
