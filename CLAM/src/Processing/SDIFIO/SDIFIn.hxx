@@ -50,6 +50,8 @@ public:
 	
 	bool Do(void);
 
+	bool Do( CLAM::Segment& segment );
+
 	const ProcessingConfig &GetConfig() const;
 
 	SDIF::File* mpFile;
@@ -59,6 +61,8 @@ protected:
 	bool ConcreteStart();
 
 	bool ConcreteStop();
+
+	bool LoadSDIFDataIntoSegment( CLAM::Segment& s );
 
 private:
 	

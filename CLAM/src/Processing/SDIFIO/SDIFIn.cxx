@@ -95,7 +95,7 @@ const ProcessingConfig& SDIFIn::GetConfig() const
 	return mConfig;
 }
 
-bool SDIFIn::Do(void)
+bool SDIFIn::LoadSDIFDataIntoSegment( CLAM::Segment& segment )
 {
 	if(!mpFile) return false;
 	if(mpFile->Done()) return false;
@@ -122,10 +122,10 @@ bool SDIFIn::Do(void)
 				
 		mLastCenterTime=frameTimeTag;
 		initFrame.SetCenterTime(frameTimeTag);
-		Output.GetData().AddFrame(initFrame);
+		segment.AddFrame(initFrame);
 	}
 
-	Frame& tmpFrame=Output.GetData().GetFrame(Output.GetData().GetnFrames()-1);
+	Frame& tmpFrame=segment.GetFrame(segment.GetnFrames()-1);
 	
 	SDIF::Frame::MatrixIterator frameIt = tmpSDIFFrame.Begin();
 
@@ -133,7 +133,7 @@ bool SDIFIn::Do(void)
 	
 	SDIF::ConcreteMatrix<TFloat32>* pMatrix=
 		dynamic_cast< SDIF::ConcreteMatrix<TFloat32>* >(*frameIt);
-	
+
 	/* its a fundamental frequency ..*/
 	if (tmpSDIFFrame.Type()=="1FQ0" && mConfig.GetEnableFundFreq())
 	{
@@ -144,6 +144,9 @@ bool SDIFIn::Do(void)
 	else if(tmpSDIFFrame.Type()=="1STF" && mConfig.GetEnableResidual())	// we use always the first 2 matrices
 	{
 		CLAM_ASSERT(pMatrix->Type() == "ISTF","SDIFIn::Add ISTF Header in Matrix expected");
+
+		// MRJ: We set the sampling rate for the segment
+		segment.SetSamplingRate( pMatrix->GetValue( 0, 0 ) );
 		
 		tmpFrame.GetResidualSpec().SetSpectralRange(pMatrix->GetValue(0,0)*0.5);
 		
@@ -254,6 +257,22 @@ bool SDIFIn::Do(void)
 	}
 
 	return true;	
+	
+}
+
+bool SDIFIn::Do( CLAM::Segment& segment )
+{
+	bool thereIsMoreData = false;
+	
+	while( ( thereIsMoreData = LoadSDIFDataIntoSegment( segment ) ) );
+
+	return true;
+}
+
+bool SDIFIn::Do(void)
+{
+	return LoadSDIFDataIntoSegment( Output.GetData() );
+
 
 }
 

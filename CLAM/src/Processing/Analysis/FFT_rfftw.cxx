@@ -184,6 +184,7 @@ namespace CLAM {
 		// @todo Check port prototypes, and set the state (or de
 		// backup state if disabled) acordingly.
 		CLAM_ASSERT(false,"FFT_rfftw::SetPrototypes: Not implemented.");
+		return false;
 	}
 
 

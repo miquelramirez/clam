@@ -108,7 +108,7 @@ public:
 
 	void SetSize(TSize size)
 	{
-		CLAM_ASSERT(size <= mAllocSize,msgSetSizeOutOfRange);
+		CLAM_ASSERT(size <= mAllocSize || !OwnsMemory(), msgSetSizeOutOfRange);
 		if (OwnsMemory())
 		{
 			if (size > mSize)
