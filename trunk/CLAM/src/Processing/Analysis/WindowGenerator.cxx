@@ -35,9 +35,9 @@
 using namespace CLAM;
 
 	Enum::tEnumValue EWindowNormalize::sEnumValues[] = {
-		{EWindowNormalize::eNone,"No Normalization"},
-		{EWindowNormalize::eAnalysis,"Normalization for Analysis"},
-		{EWindowNormalize::eEnergy,"Normalization for constant Energy"},
+		{EWindowNormalize::eNone,"NoNormalization"},
+		{EWindowNormalize::eAnalysis,"NormalizationForAnalysis"},
+		{EWindowNormalize::eEnergy,"NormalizationForConstantEnergy"},
 		{0,NULL}
 	};
 
