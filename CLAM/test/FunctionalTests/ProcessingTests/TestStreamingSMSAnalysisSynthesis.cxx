@@ -17,15 +17,15 @@
 namespace CLAMTest
 {
 
-class SMSSynthesisTest;
+class TestStreamingSMSAnalysisSynthesis;
 
-CPPUNIT_TEST_SUITE_REGISTRATION( SMSSynthesisTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( TestStreamingSMSAnalysisSynthesis );
 
-class SMSSynthesisTest : public CppUnit::TestFixture
+class TestStreamingSMSAnalysisSynthesis : public CppUnit::TestFixture
 {
 public:
 	
-	CPPUNIT_TEST_SUITE( SMSSynthesisTest );
+	CPPUNIT_TEST_SUITE( TestStreamingSMSAnalysisSynthesis );
 	
 	CPPUNIT_TEST( testAnalysisSynthesis );
 	CPPUNIT_TEST( testAnalysisSynthesisInaNetwork );
@@ -87,9 +87,9 @@ private:
 	//TODO: fix. it runs but produces a broken sinusoidal
 	void testAnalysisSynthesis() //no segment, no frame just streaming inner data
 	{
-		CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
+//		CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
 
-		int frameSize = 256;
+		int frameSize = 512;
 		CLAM::MonoAudioFileReader audioProvider;
 		CLAM::MonoAudioFileReaderConfig readercfg;
 		CLAM::MonoAudioFileWriter audioWriter;
