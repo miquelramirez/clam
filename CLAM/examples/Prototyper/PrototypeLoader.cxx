@@ -71,18 +71,13 @@ public:
 	}
 
 };
-
-
-QWidget * loadPrototype(CLAM::Network & network, char* uiFile)
+void connectWidgetsWithControls(CLAM::Network & network, QWidget * qtPrototype)
 {
-	QWidget * qtPrototype = (QWidget *) QWidgetFactory::create( uiFile );
-	if (!qtPrototype) return 0;
-
-	QObjectList * widgets = qtPrototype->queryList(0,"CLAM_IC::.*");
+	QObjectList * widgets = qtPrototype->queryList(0,"InControl::.*");
 	for (QObjectListIt it(*widgets); it.current(); ++it)
 	{
 		QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
-		std::string controlName(aWidget->name() + 9);
+		std::string controlName(aWidget->name() + 11);
 		for (std::string::size_type colonPosition = controlName.find("::", 0);
 			colonPosition!=std::string::npos;
 			colonPosition = controlName.find("::", colonPosition))
@@ -92,12 +87,43 @@ QWidget * loadPrototype(CLAM::Network & network, char* uiFile)
 		std::cout << controlName << std::endl;
 
 		CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
-		ControlSender * notifier = new ControlSender(controlName.c_str());
+		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
 		                  SLOT(sendControl(int)));
-
 	}
+
+}
+void connectWidgetsWithMappedControls(CLAM::Network & network, QWidget * qtPrototype)
+{
+	QObjectList * widgets = qtPrototype->queryList(0,"InControlFloat::.*");
+	for (QObjectListIt it(*widgets); it.current(); ++it)
+	{
+		QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
+		std::string controlName(aWidget->name() + 16);
+		for (std::string::size_type colonPosition = controlName.find("::", 0);
+			colonPosition!=std::string::npos;
+			colonPosition = controlName.find("::", colonPosition))
+		{
+			controlName.replace(colonPosition, 2, ".");
+		}
+		std::cout << controlName << std::endl;
+
+		CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
+		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
+		notifier->linkControl(receiver);
+		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
+		                  SLOT(sendMappedControl(int)));
+	}
+
+}
+QWidget * loadPrototype(CLAM::Network & network, char* uiFile)
+{
+	QWidget * qtPrototype = (QWidget *) QWidgetFactory::create( uiFile );
+	if (!qtPrototype) return 0;
+
+	connectWidgetsWithControls(network,qtPrototype);
+	connectWidgetsWithMappedControls(network,qtPrototype);
 
 	// This control list should be extracted from the network
 	char * controls[] =

@@ -6,24 +6,28 @@
 #include "InControl.hxx"
 
 
-class ControlSender : public QObject
+class QtSlot2Control : public QObject
 {
 	Q_OBJECT
 public:
-	ControlSender(const char * name)
+	QtSlot2Control(const char * name)
 		: _sender(name)
 		, _name(name)
 	{
 	}
-	virtual ~ControlSender(){}
+	virtual ~QtSlot2Control(){}
 	void linkControl(CLAM::InControl & receiver)
 	{
 		_sender.AddLink(& receiver);
 	}
 public slots:
+	void sendMappedControl(int value)
+	{
+		CLAM::TControlData mappedValue = CLAM::TControlData(value)/99.0;
+		_sender.SendControl(mappedValue);
+	}
 	void sendControl(int value)
 	{
-		std::cout << _name << ": Sending " << value << std::endl;
 		_sender.SendControl(value);
 	}
 private:
@@ -31,6 +35,7 @@ private:
 	const char * _name;
 	
 };
+
 
 
 #endif//_ControlSender_hxx_
