@@ -25,6 +25,12 @@
 
 #include "verbose.h" 
 
+#ifdef WIN32
+  char* openmode = "rb";
+#else
+  char* openmode = "r";
+#endif
+
 /* hash with all cur_defines during a parser_run */
 hash *cur_defines = 0;
 
@@ -124,7 +130,7 @@ void extmap_init(void)
 /* Check is a file exists */
 int file_exists(const char* filename)
 {
-	FILE* f = fopen(filename,"r");
+	FILE* f = fopen(filename,openmode);
 	if (f) {
 		fclose(f);
 		return 1;
@@ -200,7 +206,7 @@ int parser_include(const char* filename)
 			strncpy(qc,filename,n-2);
 		}
 		
-		f = fopen(tmp,"r");
+		f = fopen(tmp, openmode);
 	}
 
 	if (f==0)
@@ -539,7 +545,7 @@ restart:
 int parser_recurse(const char* filename)
 {
 	static FILE* f = 0;
-	FILE* g = fopen(filename,"r");
+	FILE* g = fopen(filename, openmode);
 	int in_comment = 0;
 	static char buf[2048];
 	int filepos = -1;
@@ -584,7 +590,7 @@ int parser_recurse(const char* filename)
 	if (filepos != -1)
 	{
 //		fprintf(stderr,"restore filepos %s %d\n",stack_top(filenamestack),filepos);
-		f = fopen(stack_top(filenamestack),"r");
+		f = fopen(stack_top(filenamestack), openmode);
 		fseek(f,filepos,SEEK_SET);
 	}else
 	{
