@@ -3,12 +3,13 @@
 #----------------------------------------------------------------------
 # begin configuration
 
+enableSendMail = False
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
 updateLevelForCLAM = 1
-updateLevelForExamples = 1
-updateLevelForTestData = 1
+updateLevelForExamples = 0
+updateLevelForTestData = 0
 
 # When false keeps already compiled objects
 doCleanMake = False
@@ -21,7 +22,6 @@ executionTime = 15
 configurations = ['release'] #['debug', 'release'] 
 
 # Mail report settings
-enableSendMail = True
 publicAddress = 'clam-devel@iua.upf.es' # To use only when fails
 privateAddress = 'parumi@iua.upf.es' # To know the test has been runned
 subject = 'nightly tests report'
