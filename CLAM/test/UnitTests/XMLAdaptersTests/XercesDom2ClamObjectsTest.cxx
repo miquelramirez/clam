@@ -66,7 +66,6 @@ private:
 		XMLStorage loader;
 		loader.Read(xml);
 		loader.RestoreObject(toLoad);
-		loader.ThrowErrors();
 
 		CPPUNIT_ASSERT_EQUAL(expected, toLoad.childStructureTrace(0));
 	}
@@ -77,7 +76,6 @@ private:
 		{
 			loader.Read(xml);
 			loader.RestoreObject(toLoad);
-			loader.ThrowErrors();
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::XmlStorageErr & err)
