@@ -13,8 +13,7 @@ namespace CLAMVM
 		mpFunctionEditor->envelope->grid( 0.1f, 0.1f );
 		mpFunctionEditor->control->hvalue( 0.0, 1.0, 0.0, 1.0 );
 		mpFunctionEditor->control->vvalue( 0.0, 1.0, 0.0, 1.0 );
-		mpFunctionEditor->envelope->margin( 20, 10, 0, 0 );
-		//mpFunctionEditor->margin_adjust();
+		mpFunctionEditor->envelope->margin( 20, 10, 5, 5 );
 		mpFunctionEditor->end();
 
 		mpSnapToGridBtn = new Fl_Check_Button( X+10, H-15, W-40, 15 );
