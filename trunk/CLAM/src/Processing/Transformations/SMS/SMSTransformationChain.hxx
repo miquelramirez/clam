@@ -33,8 +33,7 @@
 #include "ProcessingFactory.hxx"
 #include "Array.hxx"
 
-//TODO !!!! remove
-#include "SMSFreqShift.hxx"
+#include "FrameTransformation.hxx"
 
 namespace CLAM {
 
@@ -243,7 +242,7 @@ namespace CLAM {
 			{
 				SMSTransformation* wrapper = new SMSTransformation;	
 				Processing * proc = theFactory.Create(classname);
-				SMSFreqShift* freqshift = dynamic_cast<SMSFreqShift*>(proc); 
+				FrameTransformation* freqshift = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(freqshift);
 				ConnectControls(*wrapper,"Out Control", *freqshift, "Shift Amount");
 				Insert( *wrapper );
@@ -265,7 +264,7 @@ namespace CLAM {
 		{
 			for(iterator obj=composite_begin(); obj!=composite_end(); obj++)
 			{
-				SMSTransformation* transf=static_cast<SMSTransformation*>((*obj));
+				SMSTransformation* transf =dynamic_cast<SMSTransformation*>((*obj));
 				if(!transf->IsLastFrame()) return false;
 			}
 			return true;
