@@ -33,8 +33,6 @@
 
 namespace CLAM {
 
-	extern AudioDeviceList *sDirectXAudioDeviceList;
-
 	class ErrDirectX:public Err
 	{
 		public:
@@ -238,8 +236,8 @@ namespace CLAM {
 
 	class DirectXAudioDeviceList: public AudioDeviceList
 	{
-			static DirectXAudioDeviceList mDevices;
-
+			static DirectXAudioDeviceList sDevices;
+		private:
 			DirectXAudioDeviceList()
 				:AudioDeviceList(std::string("directx"))
 			{
@@ -247,7 +245,8 @@ namespace CLAM {
 
 				if( FAILED( hr = DirectSoundEnumerate(DSEnumCallback,this ) ) )
 					throw(ErrDirectX( TEXT("DirectSoundEnumerate"), hr ));
-				sDirectXAudioDeviceList = this;
+
+				AddMe();
 			}
 		public:
 			std::vector<LPGUID> mGuids;
@@ -283,6 +282,6 @@ namespace CLAM {
 			}
 	};
 
-	DirectXAudioDeviceList DirectXAudioDeviceList::mDevices;
+	DirectXAudioDeviceList DirectXAudioDeviceList::sDevices;
 
 }

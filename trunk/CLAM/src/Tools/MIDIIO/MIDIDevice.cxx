@@ -27,11 +27,29 @@ using std::find;
 
 using namespace CLAM;
 
-bool MIDIDevice::Register(MIDIIn& in)
+MIDIManager& MIDIDevice::_MIDIManager(void)
+{
+	if (mMIDIManager==0) 
+		throw Err("This MIDIDevice is not associated with any MIDIManager");
+
+	return *mMIDIManager; 
+}
+
+void MIDIDevice::_SetMIDIManager(MIDIManager* am)
+{
+	if (mMIDIManager==0) mMIDIManager = am;
+	else if (mMIDIManager!=am)
+	{
+		throw Err("An MIDIDevice can only be associated with one MIDIManager");
+	}
+}
+
+bool MIDIDevice::Register(MIDIManager* mm,MIDIIn& in)
 {
 	/** Register a MIDIIn object as a new input of the device
 	*/
 	mInputs.push_back(&in);
+	_SetMIDIManager(mm);
 	in.mpDevice = this;
 	return true;
 }

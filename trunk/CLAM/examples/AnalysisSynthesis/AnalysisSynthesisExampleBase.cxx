@@ -451,7 +451,6 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 			mCurrentWaitMessage = CreateWaitMessage("Cleaning tracks, please wait");
 			DoTracksCleanup();
 			DestroyWaitMessage();
-
 		}
 	mHaveAnalysis = true;
 	mHaveSpectrum = true;
@@ -920,7 +919,7 @@ void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 	Audio  tmpAudioBuffer;
 	tmpAudioBuffer.SetSize(outBufferSize);
 	TSize size=audio.GetSize();
-	AudioManager::Singleton().Start();
+	AudioManager::Current().Start();
 	outputL.Start();
 	outputR.Start();
 	int i;

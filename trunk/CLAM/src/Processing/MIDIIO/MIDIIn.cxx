@@ -46,7 +46,7 @@ bool MIDIIn::ConcreteConfigure(const ProcessingConfig& cfg)
 	/** Getting the MIDIManager object
 	*/
 	try {
-		m = &MIDIManager::Singleton();
+		m = &MIDIManager::Current();
 	}
 	catch (Err &e) {
 		ErrProcessingObj ne("MIDIIn::ConcreteConfigure(): No MIDIManager found.",this);

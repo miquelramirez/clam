@@ -40,7 +40,7 @@ bool AudioIn::ConcreteConfigure(const ProcessingConfig& cfg)
 	AudioManager *m;
 
 	try {
-		m = &AudioManager::Singleton();
+		m = &(AudioManager::Current());
 	}
 	catch (Err &e) {
 		ErrProcessingObj ne("AudioIn::ConcreteConfigure(): No AudioManager found.",this);

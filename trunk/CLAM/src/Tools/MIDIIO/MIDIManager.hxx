@@ -33,8 +33,6 @@
 #define DEFAULT_MIDI_ARCH "alsa"
 #endif
 
-
-
 namespace CLAM{
 
 /** This class takes care of all the creation of the registration of 
@@ -48,19 +46,48 @@ class MIDIManager
 {
 	friend class MIDIIn;
 //		friend class MIDIOut;
+	friend class MIDIDeviceList;
 private:
 	std::vector<MIDIDevice*> mDevices;
-	std::vector<MIDIDeviceList*> mDeviceLists;
+
+	/** A Meyers-Singleton-style list of all DeviceList */
+	static std::vector<MIDIDeviceList*>& DeviceLists(void)
+	{ 
+		static std::vector<MIDIDeviceList*> sDeviceLists;
+		return sDeviceLists;
+	}
+	
+	static MIDIManager* _Current(bool set = 0,MIDIManager* m = 0)
+	{
+		static MIDIManager* sCurrent = 0;
+		if (set)
+		{
+			if (m)
+			{
+				if (sCurrent) throw Err("Can only have one MIDIManager at a time");
+			}
+			sCurrent = m;
+		}
+		return sCurrent;
+	}
 public:
 	typedef std::vector<MIDIDevice*>::const_iterator device_iterator;
+	typedef std::vector<MIDIDeviceList*>::const_iterator list_iterator;
 
-	static MIDIManager* pSingleton;
-
-	/** Constructor of the class. */
+	/** Constructor of the class*/
 	MIDIManager() throw(Err);
 
 	/** Destructor of the class*/
 	~MIDIManager();
+
+	static MIDIManager& Current()
+	{
+		MIDIManager* p = _Current();
+		
+		if (p==0) throw Err("No MIDIManager current");
+		
+		return *p;
+	}
 
 	/** Find a created MIDIDevice, or NULL when not found
 	 *  @param name The name of the MIDIDevice we want to get
@@ -69,35 +96,39 @@ public:
 	MIDIDevice* FindDevice(const std::string& name);
 
 	/** Find a created MIDIDevice, or create it when not found
-	 *  @param name The name of the AudioDevice we want to get
-	 *  @return the AudioDevice if it exists; otherwise method will create and return a new MIDIDevice
+	 *  @param name The name of the MIDIDevice we want to get
+	 *  @return the MIDIDevice if it exists; otherwise method will create and return a new MIDIDevice
 	 */
 	MIDIDevice* FindOrCreateDevice(const std::string& name);
 
-	/** This method starts the AudioManager object*/
+	/** This method starts the MIDIManager object*/
 	void Start(void) throw(Err);
 
-	/** This method stops the AudioManager object*/
-	void MIDIManager::Stop(void) throw(Err);
+	/** This method stops the MIDIManager object*/
+	void Stop(void) throw(Err);
 
 	/** Checks all devices searching data to read*/
 	void Check(void);
 
-	/** Method to control that only exists one MIDIManager instantiation
-	 *  @return the pointer to the MIDIManager object
-	 *  @throw Error if is not an MIDIManager initialized yet
-	 */		
-	static MIDIManager& Singleton(void) throw(Err)
-	{ 
-		if (pSingleton) return *pSingleton;
-		else throw Err("No MIDIManager initialized");
-	}
-
- 	/** Retrieve the list of devices available for a given architecture. You can then use the AvailableDevices() method to retrieve a list of the available devices for each AudioDeviceList.
+ 	/** Retrieve the list of devices available for a given architecture. You can
+	 * then use the AvailableDevices() method to retrieve a list of the
+	 * available devices for each MIDIDeviceList.
 	 *  @param arch The name of architecture wich will be returned the devices. By default is set to "default"
-	 *  @return The list of AudioDevices
+	 *  @return The list of MIDIDevices
 	 */
 	MIDIDeviceList* FindList(const std::string& arch = "default");
+
+	/** Global iterator interface for device lists. It can be used
+	 *	to obtain the device list for each existent architecture.
+	 *  @return The beginning list iterator
+	 */
+	list_iterator lists_begin() const {return DeviceLists().begin();}
+
+	/** Global iterator interface for device lists. It can be used
+	 *	to obtain the device list for each existent architecture.
+	 *  @return The ending list iterator
+	 */
+	list_iterator lists_end() const {return DeviceLists().end();}
 
 	/** Iterator interface for used midi devices. It will iterate
 	 *  through the list of devices which have been registered.

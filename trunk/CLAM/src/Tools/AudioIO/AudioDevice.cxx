@@ -29,7 +29,24 @@ using std::find;
 
 using namespace CLAM;
 
-bool AudioDevice::Register(AudioIn& in)
+AudioManager& AudioDevice::_AudioManager(void)
+{
+	if (mAudioManager==0) 
+		throw Err("This AudioDevice is not associated with any AudioManager");
+
+	return *mAudioManager; 
+}
+
+void AudioDevice::_SetAudioManager(AudioManager* am)
+{
+	if (mAudioManager==0) mAudioManager = am;
+	else if (mAudioManager!=am)
+	{
+		throw Err("An AudioDevice can only be associated with one AudioManager");
+	}
+}
+
+bool AudioDevice::Register(AudioManager* am,AudioIn& in)
 {
 	unsigned int i;
 	for (i=0; i<mInputs.size(); i++)
@@ -40,11 +57,12 @@ bool AudioDevice::Register(AudioIn& in)
 			return false;
 		}
 	mInputs.push_back(&in);
+	_SetAudioManager(am);
 	in.mpDevice = this;
 	return true;
 }
 
-bool AudioDevice::Register(AudioOut& out)
+bool AudioDevice::Register(AudioManager* am,AudioOut& out)
 {
 	unsigned int i;
 	for (i=0; i<mOutputs.size(); i++)
@@ -55,6 +73,7 @@ bool AudioDevice::Register(AudioOut& out)
 			return false;
 		}
 	mOutputs.push_back(&out);
+	_SetAudioManager(am);
 	out.mpDevice = this;
 	return true;
 }
@@ -125,7 +144,7 @@ int AudioDevice::SampleRate(void)
 	}
 	
 	if (sr == 0)
-		sr = AudioManager::Singleton().SampleRate();
+		sr = _AudioManager().SampleRate();
 	
 	for (i=0;i<mInputs.size();i++)
 	{
@@ -141,12 +160,12 @@ int AudioDevice::SampleRate(void)
 
 int AudioDevice::Latency(void)
 {
-	return AudioManager::Singleton().Latency();
+	return _AudioManager().Latency();
 }
 
 unsigned AudioDevice::NumberOfInternalBuffers()
 {
-	return AudioManager::Singleton().GetInternalBuffersNumber();
+	return _AudioManager().GetInternalBuffersNumber();
 }
 
 void AudioDevice::SetNChannels(int channels)

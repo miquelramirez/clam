@@ -58,7 +58,7 @@ void OscillatorConfig::DefaultInit(void)
 	SetPhase(0.0);
 	try
 	{
-		SetSamplingRate( TData(AudioManager::Singleton().SampleRate()) );
+		SetSamplingRate( TData(AudioManager::Current().SampleRate()) );
 	}
 	catch (Err)
 	{

@@ -29,8 +29,6 @@
 
 namespace CLAM {
 
-	extern AudioDeviceList *sAlsaAudioDeviceList;
-
 	class ALSAAudioDevice: public AudioDevice
 	{
 	private:
@@ -307,7 +305,7 @@ namespace CLAM {
 					break;
 			}
 			
-			sAlsaAudioDeviceList = this;
+			AddMe();
 		}
 	public:
 
