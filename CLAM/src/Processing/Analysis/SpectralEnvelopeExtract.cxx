@@ -175,7 +175,7 @@ namespace CLAM {
 			TData currentMag=magBuffer[nPeaks-2];
 			while(currentFreq<spectralRange)
 			{
-				currentMag*=pow(0.06,(currentFreq/lastFreq-1));
+				currentMag*=pow(0.06,(double)(currentFreq/lastFreq-1.0));
 				magPointArray.AddElem(Point(currentFreq,currentMag));
 				phasePointArray.AddElem(Point(currentFreq,0));//check phase!!! this is not correct although may not be necessary
 				currentFreq+=freqGap;
