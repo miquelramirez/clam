@@ -100,6 +100,9 @@ namespace CLAMVM
 		 * It leaves the event in a list to execute if the audio thread is running, 
 		 * or executes the creation, calling ExecuteRemoveProcessing */	
 		void RemoveProcessing( const std::string & );
+		
+		void LoadNetworkFrom( const std::string & );
+		void SaveNetworkTo( const std::string & );
 	private:		
 		CLAM::Thread mThread;
 		/** Main loop of the application, where DoProcessings method from network
@@ -157,8 +160,6 @@ namespace CLAMVM
 		 * remove the proper control connection presentation. */
 		void ExecuteRemoveControlConnection( const std::string & , const std::string & );
 	
-		void LoadNetwork( const std::string & );
-		void SaveNetwork( const std::string & );
 		
 			
 

@@ -65,7 +65,7 @@ int main( int argc, char **argv )
 	app.setFont(QFont("Verdana", 9));
 	NetworkGUI::MainWindow mw;
 	
-	mw.GetNetworkPresentation().AttachTo(controller);
+	mw.GetNetworkPresentation().AttachToNetworkController(controller);
 	controller.Publish();
 	app.setMainWidget(&mw);
 	mw.show();

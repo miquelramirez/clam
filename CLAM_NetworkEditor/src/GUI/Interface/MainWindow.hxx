@@ -45,7 +45,7 @@ public:
 
 private:
 	void SendMessageToStatus( const std::string & );
-	Qt_NetworkPresentation mNetwork;
+	Qt_NetworkPresentation mNetworkPresentation;
 	QDockWindow * mDockProcMenu;
 	AboutDialog* mpAboutDlg;
 public: //slots

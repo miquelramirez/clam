@@ -53,8 +53,8 @@ NetworkController::NetworkController()
 	SlotProcessingNameChanged.Wrap( this, &NetworkController::ProcessingNameChanged );
 	
 	SlotChangeState.Wrap( this, &NetworkController::ChangeState );
-	SlotSaveNetwork.Wrap( this, &NetworkController::SaveNetwork );
-	SlotLoadNetwork.Wrap( this, &NetworkController::LoadNetwork );
+	SlotSaveNetwork.Wrap( this, &NetworkController::SaveNetworkTo );
+	SlotLoadNetwork.Wrap( this, &NetworkController::LoadNetworkFrom );
 	SlotClear.Wrap( this, &NetworkController::Clear );
 
 
@@ -237,7 +237,7 @@ void NetworkController::RemoveControlConnection( const std::string & outControl,
 		ExecuteRemoveControlConnection(outControl, inControl);
 }
 
-void NetworkController::LoadNetwork( const std::string & file)
+void NetworkController::LoadNetworkFrom( const std::string & file)
 {
 	Clear();
 	SignalClearPresentation.Emit();
@@ -249,7 +249,7 @@ void NetworkController::LoadNetwork( const std::string & file)
 	Publish();
 }
 
-void NetworkController::SaveNetwork( const std::string & file)
+void NetworkController::SaveNetworkTo( const std::string & file)
 {
 	CLAM::XMLStorage::Dump( *mObserved, "network", file );
 }

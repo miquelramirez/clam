@@ -32,26 +32,28 @@
 #include <string>
 #include "aboutdialog.h"
 
+#include "NetworkController.hxx"
+
 #include <iostream> // TODO: remove
 
 namespace NetworkGUI
 {
 
-	MainWindow::MainWindow()
-		: mNetwork(this),
-		  mDockProcMenu(0),
-		  QMainWindow( 0, "", WGroupLeader )
+	MainWindow::MainWindow() :
+		  QMainWindow( 0, "", WGroupLeader ),
+		  mNetworkPresentation(this),
+		  mDockProcMenu(0)
 	{
-		setCentralWidget( &mNetwork );
+		setCentralWidget( &mNetworkPresentation );
 		setCaption( "CLAM Network Editor" );
 		resize( 800, 600 );
 	
 		SlotSendMessageToStatus.Wrap( this, &MainWindow::SendMessageToStatus );
-		mNetwork.SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
-		SignalNewNetworkSignal.Connect( mNetwork.SlotClear );
+		mNetworkPresentation.SignalSendMessageToStatus.Connect( SlotSendMessageToStatus );
+		SignalNewNetworkSignal.Connect( mNetworkPresentation.SlotClear );
 		statusBar()->message( "Ready to edit" );
 
-		SignalChangeNetworkState.Connect( mNetwork.SlotChangeState );
+		SignalChangeNetworkState.Connect( mNetworkPresentation.SlotChangeState );
 
 
 		QPopupMenu * file = new QPopupMenu( this );
@@ -62,7 +64,7 @@ namespace NetworkGUI
 		menuBar()->insertItem( "View", view );
 		menuBar()->insertItem( "Network Actions", networkActions );
 		menuBar()->insertItem( "About", this, SLOT(ShowAboutDlg()));
-		setCentralWidget(&mNetwork);
+		setCentralWidget(&mNetworkPresentation);
  
 		file->insertItem("New", this, SLOT(NewNetwork()));
 		file->insertItem("Load", this, SLOT(LoadNetwork()));
@@ -90,10 +92,10 @@ namespace NetworkGUI
 
 		mpAboutDlg = new AboutDialog( this, "NetworkEditor_AboutDialog", true );
 
-		ProcessingTree * procTree = new ProcessingTree( mNetwork, mDockProcMenu );
+		ProcessingTree * procTree = new ProcessingTree( mNetworkPresentation, mDockProcMenu );
 		mDockProcMenu->setWidget( procTree );
 		setActiveWindow();
-		mNetwork.Show();
+		mNetworkPresentation.Show();
 	}
 
 	void MainWindow::ShowAboutDlg()
@@ -112,7 +114,7 @@ namespace NetworkGUI
 
 	Qt_NetworkPresentation & MainWindow::GetNetworkPresentation()
 	{
-		return mNetwork;
+		return mNetworkPresentation;
 	}
 
 	void MainWindow::NewNetwork()
@@ -129,9 +131,10 @@ namespace NetworkGUI
 			"open file dialog"
 			"Choose a file to load network" );
 
-//	SignalNewNetworkSignal.Emit();
 		if (s!=QString::null)
-			mNetwork.SignalLoadNetworkFrom.Emit(std::string(s.ascii()));
+		{
+			mNetworkPresentation.GetNetworkController().LoadNetworkFrom(std::string(s.ascii()) );
+		}
 	}
 
 
@@ -147,12 +150,13 @@ namespace NetworkGUI
 		if (s!=QString::null)
 		{
 			//TODO code for saving positions
-			//  call method to mNetwork : SaveNetwork passing filename
+			//  call method to mNetworkPresentation : SaveNetwork passing filename
 			//  QtNetworkPresentation::SaveNetwork (slot) :
 			//     execute Signal SaveNetworkTo passing ref to stream
 			//     add elem with positions: (name, xpos, ypos) tuples
 			//     save doc
-			mNetwork.SignalSaveNetworkTo.Emit(std::string(s.ascii()));
+			mNetworkPresentation.GetNetworkController().SaveNetworkTo(std::string(s.ascii()));
+			printf("network saved\n");
 		}
 	}
 

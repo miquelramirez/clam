@@ -21,7 +21,6 @@
 
 #include "Qt_NetworkPresentation.hxx"
 #include "ProcessingController.hxx"
-//#include "ConnectionAdapter.hxx"
 #include "Factory.hxx"
 #include "Qt_ProcessingPresentation.hxx"
 #include "Qt_PortConnectionPresentation.hxx"
@@ -30,9 +29,8 @@
 #include "Qt_OutPortPresentation.hxx"
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
-#include "ProcessingConfig.hxx"
 
-#include "CLAM_Math.hxx"
+#include "NetworkController.hxx"
 
 #include <qpainter.h>
 #include <qpixmap.h>
@@ -105,12 +103,12 @@ void Qt_NetworkPresentation::SetOutControlClicked( Qt_OutControlPresentation * o
 void Qt_NetworkPresentation::SetName(const std::string& name)
 {
 	mName = name;
-
+/* 
 	QFont font( "Verdana" ,10 );
 	QFontMetrics fm( font );
 	int pixelsWide = fm.width( QString(mName.c_str()));
 	int pixelsHigh = fm.height();
-
+*/
 }
 
 void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & name, CLAMVM::ProcessingController * controller )
@@ -122,7 +120,7 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 	presentation = factory.Create(controller->GetObservedClassName());
 	presentation->Initialize( name, this );
 			
-	presentation->AttachTo(*controller);
+	presentation->AttachToProcessingController(*controller);
 
 	presentation->SignalAcquireInPortClicked.Connect( SlotSetInPortClicked );
 	presentation->SignalAcquireOutPortClicked.Connect( SlotSetOutPortClicked );
@@ -295,7 +293,8 @@ bool Qt_NetworkPresentation::CheckPortsSelection( QMouseEvent *m )
 	{
 		const std::string inPort = GetCompleteNameFromInPortSelected();
 		const std::string outPort = GetCompleteNameFromOutPortSelected();
-		SignalCreatePortConnection.Emit( outPort, inPort );
+//		SignalCreatePortConnection.Emit( outPort, inPort );
+		GetNetworkController().CreatePortConnection( outPort, inPort );
 		selected = true;
 	}
 
@@ -321,7 +320,8 @@ bool Qt_NetworkPresentation::CheckControlsSelection( QMouseEvent *m )
 	{
 		const std::string inControl = GetCompleteNameFromInControlSelected();
 		const std::string outControl = GetCompleteNameFromOutControlSelected();
-		SignalCreateControlConnection.Emit( outControl, inControl );
+//		SignalCreateControlConnection.Emit( outControl, inControl );
+		GetNetworkController().CreateControlConnection( outControl, inControl );
 		selected = true;		
 	}
 

@@ -31,7 +31,7 @@
 namespace NetworkGUI
 {
 
-NetworkPresentation::NetworkPresentation()
+NetworkPresentation::NetworkPresentation() : mNetworkController(0)
 {
 	SlotRemovePortConnection.Wrap( this, &NetworkPresentation::RemovePortConnection);
 	SlotCreatePortConnectionPresentation.Wrap( this, &NetworkPresentation::CreatePortConnectionPresentation);
@@ -55,9 +55,17 @@ NetworkPresentation::NetworkPresentation()
 	SlotChangeConnectionPresentationNames.Wrap( this, &NetworkPresentation::ChangeConnectionPresentationNames );
 }
 
+CLAMVM::NetworkController & NetworkPresentation::GetNetworkController()
+{
+	CLAM_DEBUG_ASSERT( mNetworkController, "NetworkPresentation should have attached NetworkController");
+	return *mNetworkController;
+}
+
 void NetworkPresentation::ChangeState( bool newState )
 {
-	SignalChangeState.Emit ( newState );
+//	SignalChangeState.Emit ( newState );
+	GetNetworkController().ChangeState( newState );
+	
 }
 
 void NetworkPresentation::RemoveConnectionPresentation( const std::string & out, const std::string & in)
@@ -83,7 +91,8 @@ void NetworkPresentation::RemovePortConnection(  ConnectionPresentation * con)
 	mConnectionPresentationsToRemove.push_back(con);
 	con->Hide();
 
-	SignalRemovePortConnection.Emit( con->GetOutName(), con->GetInName() );
+//	SignalRemovePortConnection.Emit( con->GetOutName(), con->GetInName() );
+	GetNetworkController().RemovePortConnection( con->GetOutName(), con->GetInName() );
 }
 
 void NetworkPresentation::RemoveControlConnection(  ConnectionPresentation * con)
@@ -91,7 +100,8 @@ void NetworkPresentation::RemoveControlConnection(  ConnectionPresentation * con
 	mConnectionPresentationsToRemove.push_back(con);
 	con->Hide();
 
-	SignalRemoveControlConnection.Emit( con->GetOutName(), con->GetInName() );
+//	SignalRemoveControlConnection.Emit( con->GetOutName(), con->GetInName() );
+	GetNetworkController().RemoveControlConnection( con->GetOutName(), con->GetInName() );
 }
 
 void NetworkPresentation::UpdatePresentations()
@@ -118,7 +128,8 @@ void NetworkPresentation::UpdatePresentations()
 void NetworkPresentation::RemoveProcessing( ProcessingPresentation * proc)
 {
 	mProcessingPresentationsToRemove.push_back(proc);
-	SignalRemoveProcessing.Emit( proc->GetName() ); 
+//	SignalRemoveProcessing.Emit( proc->GetName() ); 
+	GetNetworkController().RemoveProcessing( proc->GetName() ); 
 }
 
 void NetworkPresentation::RebuildProcessingPresentationAttachedTo( const std::string & name, CLAMVM::ProcessingController * controller )
@@ -149,33 +160,35 @@ NetworkPresentation::~NetworkPresentation()
 		delete *it;
 }
 
-void NetworkPresentation::AttachTo(CLAMVM::NetworkController & controller)
+void NetworkPresentation::AttachToNetworkController(CLAMVM::NetworkController & controller)
 {
+	mNetworkController = & controller;
+
 	SetName( controller.GetName() );
 	controller.SignalCreateProcessingPresentation.Connect( SlotCreateProcessingPresentation );
+
 	CLAMVM::NetworkController::ProcessingControllersMap::iterator it;	
 	for(it=controller.BeginProcessingControllers(); it!=controller.EndProcessingControllers(); it++ )
 		CreateProcessingPresentation( it->first, it->second );
 		
-	SignalChangeState.Connect( controller.SlotChangeState );
-	
-	SignalAddProcessing.Connect( controller.SlotAddProcessing );
-	SignalRemoveProcessing.Connect( controller.SlotRemoveProcessing );
+//	SignalChangeState.Connect( controller.SlotChangeState );
+//	SignalAddProcessing.Connect( controller.SlotAddProcessing );
+//	SignalRemoveProcessing.Connect( controller.SlotRemoveProcessing );
 	controller.SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
 	controller.SignalClearPresentation.Connect( SlotClear );
 	
-	SignalCreatePortConnection.Connect( controller.SlotCreatePortConnection );
-	SignalRemovePortConnection.Connect( controller.SlotRemovePortConnection );
-	SignalCreateControlConnection.Connect( controller.SlotCreateControlConnection );
-	SignalRemoveControlConnection.Connect( controller.SlotRemoveControlConnection );
+//	SignalCreatePortConnection.Connect( controller.SlotCreatePortConnection );
+//	SignalRemovePortConnection.Connect( controller.SlotRemovePortConnection );
+//	SignalCreateControlConnection.Connect( controller.SlotCreateControlConnection );
+//	SignalRemoveControlConnection.Connect( controller.SlotRemoveControlConnection );
 	controller.SignalCreateControlConnectionPresentation.Connect( SlotCreateControlConnectionPresentation );
 	controller.SignalCreatePortConnectionPresentation.Connect( SlotCreatePortConnectionPresentation );
 	controller.SignalRemoveConnectionPresentation.Connect( SlotRemoveConnectionPresentation );
 	controller.SignalChangeConnectionPresentationNames.Connect( SlotChangeConnectionPresentationNames );
 
-	SignalClear.Connect( controller.SlotClear );
-	SignalSaveNetworkTo.Connect( controller.SlotSaveNetwork );
-	SignalLoadNetworkFrom.Connect( controller.SlotLoadNetwork );
+//	SignalClear.Connect( controller.SlotClear );
+//	SignalSaveNetworkTo.Connect( controller.SlotSaveNetwork );
+//	SignalLoadNetworkFrom.Connect( controller.SlotLoadNetwork );
 }
 
 void NetworkPresentation::ChangeConnectionPresentationNames( const std::string & oldName, const std::string & newName )
@@ -221,6 +234,7 @@ ProcessingPresentation& NetworkPresentation::GetProcessingPresentation( const st
        		if ((*it)->GetName() ==  name)
 				return **it;
 	CLAM_ASSERT( false, "NetworkPresentation::GetProcessingPresentation. Object not found." );
+	throw 0; //avoid warning
 }
 
 std::string NetworkPresentation::GetProcessingIdentifier( const std::string& str )
@@ -254,17 +268,20 @@ std::string NetworkPresentation::GetLastIdentifier( const std::string& str )
 
 void NetworkPresentation::CreateControlConnection( const std::string & out, const std::string & in )
 {
-	SignalCreateControlConnection.Emit( out, in ) ;
+//	SignalCreateControlConnection.Emit( out, in ) ;
+	GetNetworkController().CreateControlConnection( out, in ) ;
 }
 
 void NetworkPresentation::CreatePortConnection( const std::string & out, const std::string & in )
 {
-	SignalCreatePortConnection.Emit( out, in ) ;
+//	SignalCreatePortConnection.Emit( out, in ) ;
+	GetNetworkController().CreatePortConnection(out, in);
 }
 
 void NetworkPresentation::AddProcessing( const std::string & name, CLAM::Processing * proc)
 {
-	SignalAddProcessing.Emit(name,proc);
+	//SignalAddProcessing.Emit(name,proc);
+	GetNetworkController().AddProcessing(name, proc);
 }
 
 void NetworkPresentation::Clear()
@@ -282,7 +299,8 @@ void NetworkPresentation::Clear()
 	mProcessingPresentations.clear();
 	mProcessingPresentationsToRemove.clear();
 	
-	SignalClear.Emit();
+//	SignalClear.Emit();
+	GetNetworkController().Clear();
 }
 
 
