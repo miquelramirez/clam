@@ -636,6 +636,8 @@ bool SynthSineSpectrum::ConcreteConfigure(const ProcessingConfig& cfg) throw(std
 	wcfg.SetSize(MAINLOBE_TABLE_SIZE);
 	wcfg.SetType(EWindowType::eBlackmanHarris92);
 	mWndGen.Configure(wcfg);
+	//@TODO: there is some kind of bug in the window generator: when generating the 
+	//BlackmannHarris transform it does not yield the same results as the above table!
 	//mBlackHarris92TransMainLobe.SetSize(MAINLOBE_TABLE_SIZE);
 	//mWndGen.Do(mBlackHarris92TransMainLobe);
 	return true;
@@ -673,11 +675,6 @@ bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residual
 	return true;
 }
 
-//-------------------------------------------------------------------//
-//-------------------------------------------------------------------//
-//-------------------------------------------------------------------//
-
-/* private member functions */
 void SynthSineSpectrum::FillSynthSineSpectrum	(	const SpectralPeakArray& peakArray, double gain)
 {
 	TSize 		mainLobeBins = TData(8)*pow(2,mConfig.GetZeroPadding()) ; // Number of bins in the mainlope of a transformed BHarris92 window 
