@@ -28,18 +28,17 @@
 #include "pthread.h"
 #include "CLAMViews.hxx"
 #include "CLAMPresentations.hxx"
+#include "DebugSnapshots.hxx"
+#include "AudioSnapshot.hxx"
 
 /******* TRANSFORMATION *******/
 #include "SMSFreqShift.hxx"
-
 
 #include <iostream>
 
 using namespace CLAM;
 using namespace CLAMGUI;
 using namespace std;
-
-
 
 #ifndef WIN32
 #include <unistd.h>
@@ -325,65 +324,54 @@ public:
 
 };
 
+void UserInterface::EditConfiguration(void)
+{
+	new Configuration(&mAnalysisSynthesisExample->mGlobalConfig);
+}
+
 void UserInterface::LoadConfiguration(void)
 {
-
+	
 	char* str = fl_file_chooser("Select configuration file","*.xml","");
 	
 	if ( str )
-		{
+	{
+		mConfigurationText->value(str);
 		
-			mConfigurationText->value(str);
+		std::string inputXMLFileName(str);
 		
-			std::string inputXMLFileName(str);
+		mAnalysisSynthesisExample->LoadConfig(inputXMLFileName);
 		
-			mAnalysisSynthesisExample->LoadConfig(inputXMLFileName);
-		
-			if (mAnalysisSynthesisExample->mHaveConfig)
-		   	{	
-					mAnalysisSynthesisExample->LoadInputSound();
-					if (mAnalysisSynthesisExample->mHaveAudioIn)
-		   			{
-							mDisplayInputSoundButton->activate();
-							mAnalyzeButton->activate();
-		   			}
-					else 
-					{
-						mAnalysisSynthesisExample->mHaveConfig=false;
-						mDisplayInputSoundButton->deactivate();
-						mAnalyzeButton->deactivate();
-					}
-		   	}
+		if (mAnalysisSynthesisExample->mHaveConfig)
+		{	
+			mAnalysisSynthesisExample->LoadInputSound();
+			if (mAnalysisSynthesisExample->mHaveAudioIn)
+			{
+				mAnalyze->activate();
+				mDisplayInSM->activate();
+				mDisplayInSound->activate();
+			}
 			else 
-			{
-				mDisplayInputSoundButton->deactivate();
-				mAnalyzeButton->deactivate();
-			}
+				mAnalysisSynthesisExample->mHaveConfig=false;
+		}
 		
-
-		if (
-			mAnalysisSynthesisExample->mHaveAnalysis &&
-			mAnalysisSynthesisExample->mHaveConfig)
-			{
-				mSynthesizeButton->activate();
-			}
-		}		
+		if (mAnalysisSynthesisExample->mHaveAnalysis &&	mAnalysisSynthesisExample->mHaveConfig)
+			mSynthesize->activate();
+	}		
 }
 
 void UserInterface::LoadTransformation(void)
 {
 	char* str = fl_file_chooser("Select configuration file","*.xml","");
 	if ( str )
-		{
-			mTransformationFileText->value(str);
-			std::string inputXMLFileName(str);
-			mAnalysisSynthesisExample->LoadTransformationScore(inputXMLFileName);
-			mAnalysisSynthesisExample->mHaveTransformationScore=true;
-			if (mAnalysisSynthesisExample->mHaveAnalysis)
-				{
-					mTransformButton->activate();
-				}
-		}
+	{
+		//mTransformationFileText->value(str);
+		std::string inputXMLFileName(str);
+		mAnalysisSynthesisExample->LoadTransformationScore(inputXMLFileName);
+		mAnalysisSynthesisExample->mHaveTransformationScore=true;
+		if (mAnalysisSynthesisExample->mHaveAnalysis)
+			mDoTransformation->activate();
+	}
 }
 
 void UserInterface::LoadAnalysisData(void)
@@ -391,15 +379,15 @@ void UserInterface::LoadAnalysisData(void)
 	char* str = fl_file_chooser("Select analysis data file","*.xml","");
 	if (str)
 	{
-		mAnalysisDataText->value(str);
+		//mAnalysisDataText->value(str);
 		std::string inputXMLFileName(str);
 		mAnalysisSynthesisExample->LoadAnalysisThread(inputXMLFileName);
-		mAnalyzeMelodyButton->deactivate();
+		mStoreAnalysisData->deactivate();
 		if (
 			mAnalysisSynthesisExample->mHaveAnalysis &&
 			mAnalysisSynthesisExample->mHaveConfig)
 		{
-			mSynthesizeButton->activate();
+			mSynthesize->activate();
 		}
 	}
 }
@@ -409,11 +397,13 @@ void UserInterface::Analyze(void)
 	mAnalysisSynthesisExample->AnalyzeThread();
 	if (mAnalysisSynthesisExample->mHaveAnalysis)
 	{
-		mAnalyzeMelodyButton->activate();
-		mSynthesizeButton->activate();
-		mStoreAnalysisDataButton->activate();
+		mDisplayInSpec->activate();
+		mSynthesize->activate();
+		mMelodySM->activate();
+		mStoreAnalysisData->activate();
 		if(mAnalysisSynthesisExample->mHaveTransformationScore)
-			mTransformButton->activate();
+			mDoTransformation->activate();
+		Fl::redraw();
 	}
 }
 
@@ -422,12 +412,9 @@ void UserInterface::Synthesize(void)
 	mAnalysisSynthesisExample->SynthesizeThread();
 	if (mAnalysisSynthesisExample->mHaveAudioOut)
 	{
-		mStoreOutputSoundButton->activate();
-		mDisplayOutputSoundButton->activate();
-		mStoreOutputSoundSinusoidalButton->activate();
-		mDisplayOutputSoundSinusoidalButton->activate();
-		mStoreOutputSoundResidualButton->activate();
-		mDisplayOutputSoundResidualButton->activate();
+		mSynthesize->activate();
+		mOutputSM->activate();
+		Fl::redraw();
 	}
 }
 
@@ -450,25 +437,80 @@ void UserInterface::DisplayInputSound(void)
 	view->BindTo( &mAnalysisSynthesisExample->mAudioIn );
 	presentation->LinkWithView( view );
 
+	Attach(presentation->GetWindow());
+
 	presentation->Show();
 	view->Refresh();
 
-//	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioIn,"Input Audio");
+//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioIn, "Input Audio");
+}
+
+void UserInterface::DisplayInputSpectrum(void)
+{
+	ProcDataView<Spectrum> *view = new ProcDataView<Spectrum>;
+	ProcDataPresentation<Spectrum> *presentation = 
+		new ProcDataPresentation<Spectrum>("Input Audio Spectrum");
+
+	view->BindTo( &mAnalysisSynthesisExample->mSegment.GetFramesArray()[1].GetSpectrum() );
+	presentation->LinkWithView( view );
+
+	Attach(presentation->GetWindow());
+
+	presentation->Show();
+	view->Refresh();
+
+//	showSnapshotSpectrum(mAnalysisSynthesisExample->);//, "Input Audio Spectrum");
 }
 
 void UserInterface::DisplayOutputSound(void)
 {
-	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioOut,"Output Audio");
+	ProcDataView<Audio> *view = new ProcDataView<Audio>;
+	ProcDataPresentation<Audio> *presentation = 
+		new ProcDataPresentation<Audio>("Output Audio");
+
+	view->BindTo( &mAnalysisSynthesisExample->mAudioOut );
+	presentation->LinkWithView( view );
+
+	Attach(presentation->GetWindow());
+
+	presentation->Show();
+	view->Refresh();
+
+//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOut, "Output Audio");
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
 {
-	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioOutRes,"Output Audio Residual");
+	ProcDataView<Audio> *view = new ProcDataView<Audio>;
+	ProcDataPresentation<Audio> *presentation = 
+		new ProcDataPresentation<Audio>("Output Audio Residual");
+
+	view->BindTo( &mAnalysisSynthesisExample->mAudioOutRes );
+	presentation->LinkWithView( view );
+
+	Attach(presentation->GetWindow());
+
+	presentation->Show();
+	view->Refresh();
+
+//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutRes,"Output Audio Residual");
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
-	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioOutSin,"Output Audio Sinusoidal");
+	ProcDataView<Audio> *view = new ProcDataView<Audio>;
+	ProcDataPresentation<Audio> *presentation = 
+		new ProcDataPresentation<Audio>("Output Audio Sinusoidal");
+
+	view->BindTo( &mAnalysisSynthesisExample->mAudioOutSin );
+	presentation->LinkWithView( view );
+
+	Attach(presentation->GetWindow());
+
+	presentation->Show();
+	view->Refresh();
+
+//	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutSin,"Output Audio Sinusoidal");
 }
 
 void UserInterface::StoreOutputSound(void)
@@ -489,7 +531,7 @@ void UserInterface::StoreOutputSoundSinusoidal(void)
 void UserInterface::AnalyzeMelody(void)
 {
 	mAnalysisSynthesisExample->AnalyzeMelody();
-	mStoreMelodyButton->activate();
+	mMelodyStore->activate();
 }
 
 void UserInterface::StoreMelody(void)
@@ -502,7 +544,36 @@ void UserInterface::Transform(void)
 	mAnalysisSynthesisExample->Transform();
 }
 
-main(void)
+void UserInterface::Attach(Fl_Group* canvas)
+{
+/*
+	MyGroup** aux = (MyGroup**) mT->array();
+	int n = mT->children();
+	int i;
+	for(i=0; i<n; i++)
+		if ((unsigned int)(aux[i]->mId) == mMenu->value()) 
+			return; // added
+*/
+/*
+	MyGroup* g = new MyGroup(0,0,mT->w(),mT->h(),strdup(mSettings->mName[mMenu->value()]),mMenu->value());    
+	g->SetData(mAudioSegment);
+	g->showPeaks = mPeaksButton->value();
+	
+	if (mMenu->value() == DISP_AUDIO)
+		g->showOnsets = mAudioSegment.HasChildren();
+*/
+	canvas->resizable();
+	mSmartTile->add(canvas);
+	mSmartTile->equalize();
+	canvas->show();
+
+/*
+	g->shade_button->callback((Fl_Callback *)shade_cb,mT);
+	g->close_button->callback((Fl_Callback *)close_cb,mT); 
+*/
+}
+
+int main(void)
 {
 	try{
 		AnalysisSynthesisExampleGUI example;
@@ -522,6 +593,6 @@ main(void)
 		std::cout << e.what() << std::endl;
 	}
 	
-	std::clog << "Finished successfully!";
+	std::clog << "Finished successfully!"<<std::endl;
 	return 0;
 }

@@ -29,7 +29,6 @@
 #include "SMSAnalysisSynthesisConfig.hxx"
 #include "Melody.hxx"
 #include "SMSTransformation.hxx"
-#include "SegmentDescriptors.hxx"
 
 namespace CLAM
 {
@@ -123,8 +122,6 @@ namespace CLAM
 		/** Internal structure used for analysis and synthesis, contains all.
 		* @see Segment.hxx */
 		Segment mSegment;
-		SegmentDescriptors mSegmentDescriptors;
-		
 		/** Analyzed melody */
 		Melody mMelody;
 

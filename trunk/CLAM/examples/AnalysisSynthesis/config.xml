@@ -1,18 +1,18 @@
-<!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
 <SMSAnalysisSynthesisConfig>
 	<Name/>
-	<InputSoundFile>c:\1.wav</InputSoundFile>
-	<OutputSoundFile>c:\1_out.wav</OutputSoundFile>
-	<OutputXMLFile>c:\1_out.xml</OutputXMLFile>
-	<InputXMLFile>c:\1.xml</InputXMLFile>
+	<InputSoundFile>infile.wav</InputSoundFile>
+	<OutputSoundFile>1_out.wav</OutputSoundFile>
+	<OutputXMLFile>analysis.xml</OutputXMLFile>
+	<InputXMLFile>analysis.xml</InputXMLFile>
 	<SamplingRate>44100</SamplingRate>
-	<AnalysisWindowSize>513</AnalysisWindowSize>
+	<AnalysisWindowSize>1025</AnalysisWindowSize>
 	<AnalysisHopSize>-1</AnalysisHopSize>
 	<AnalysisWindowType>Hamming</AnalysisWindowType>
-	<ResAnalysisWindowSize>513</ResAnalysisWindowSize>
+	<ResAnalysisWindowSize>1025</ResAnalysisWindowSize>
 	<ResAnalysisWindowType>BlackmanHarris92</ResAnalysisWindowType>
+	<!--ResAnalysisHopSize>-1</ResAnalysisHopSize-->
 	<AnalysisZeroPaddingFactor>0</AnalysisZeroPaddingFactor>
-	<AnalysisPeakDetectMagThreshold>-60</AnalysisPeakDetectMagThreshold>
+	<AnalysisPeakDetectMagThreshold>-120</AnalysisPeakDetectMagThreshold>
 	<AnalysisMaxSines>50</AnalysisMaxSines>
 	<AnalysisSinTrackingFreqDeviation>20</AnalysisSinTrackingFreqDeviation>
 	<AnalysisReferenceFundFreq>1000</AnalysisReferenceFundFreq>
@@ -21,6 +21,7 @@
 	<AnalysisMaxFundFreqError>10</AnalysisMaxFundFreqError>
 	<AnalysisMaxFundCandidates>50</AnalysisMaxFundCandidates>
 	<AnalysisHarmonic>0</AnalysisHarmonic>
+	<DoCleanTracks>0</DoCleanTracks>
 	<SynthesisFrameSize>256</SynthesisFrameSize>
 	<SynthesisWindowType>Triangular</SynthesisWindowType>
 	<SynthesisHopSize>-1</SynthesisHopSize>
