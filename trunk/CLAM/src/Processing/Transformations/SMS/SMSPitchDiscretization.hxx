@@ -23,7 +23,7 @@
 #ifndef _SMSPitchDiscretization_
 #define _SMSPitchDiscretization_
 
-#include "SMSTransformation.hxx"
+#include "FrameTransformation.hxx"
 #include "SMSPitchShift.hxx"
 #include "SpectrumAdder2.hxx"
 
@@ -31,7 +31,7 @@
 namespace CLAM{
 
 
-	class SMSPitchDiscretization: public SegmentTransformation
+	class SMSPitchDiscretization: public FrameTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -42,23 +42,11 @@ namespace CLAM{
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
-		SMSPitchDiscretization()
-		{
-		}
-		/** Constructor with an object of SegmentTransformationConfig class by parameter
-		 *  @param c SegmentTransformationConfig object created by the user
-		*/
-		SMSPitchDiscretization(const SegmentTransformationConfig &c):SegmentTransformation(c)
-		{
-		}
+		SMSPitchDiscretization() {}
 
-		virtual bool ConcreteConfigure(const ProcessingConfig& c)
-		{
-			SegmentTransformation::ConcreteConfigure(c);
-			//configure member PitchShift by default
-			mPO_PitchShift.Configure(SegmentTransformationConfig());
-			return true;
-		}
+		const ProcessingConfig& GetConfig() const { throw 0; }
+
+		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
 		/** Destructor of the class*/
  		~SMSPitchDiscretization()
@@ -71,7 +59,7 @@ namespace CLAM{
 		}
 		bool Do(const Frame& in, Frame& out);
 	private:
-		SMSPitchShift mPO_PitchShift;
+		SMSPitchShift mPitchShift;
 		
 	};		
 };//namespace CLAM

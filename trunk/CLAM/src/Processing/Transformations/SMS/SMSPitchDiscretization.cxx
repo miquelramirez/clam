@@ -38,8 +38,8 @@ bool SMSPitchDiscretization::Do(const Frame& in, Frame& out)
 		
 		TData amount=discPitch/pitch;
 
-		mPO_PitchShift.GetInControl("Amount").DoControl(amount);
-		mPO_PitchShift.Do(in,out);
+		mPitchShift.GetInControl("Shift Amount").DoControl(amount);
+		mPitchShift.Do(in,out);
 		
 		Fundamental tmpFund;
 		tmpFund.AddElem(discPitch);
