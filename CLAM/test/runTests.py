@@ -26,7 +26,7 @@ configureOptions = '--without-portmidi  --without-portaudio'
 executionTime = 15
 
 configurations = ['debug', 'release'] 
-#configurations = ['debug'] 
+configurations = ['release'] 
 
 # Mail report settings
 publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
@@ -86,7 +86,7 @@ def baseDirOf(keyname) :
 automaticTests = [
 	( 'UnitTests', unitTestsPath ),
 	( 'FunctionalTests', functionalTestsPath ),
-	( 'SMSToolsTests', CLAM_SANDBOXES+'CLAM_SMSTools/build/FunctionalTests/' )
+	( 'SMSToolsTests', baseDirOf('SMSTools')+'/build/FunctionalTests/' )
 ]
 
 externalApplications = [
@@ -99,8 +99,8 @@ externalApplications = [
 	( 'SMSTools', baseDirOf('SMSTools')+'/build/Tools/' ),
 	( 'SMSBatch', baseDirOf('SMSTools')+'/build/Batch/' ),
 	( 'SMSConsole', baseDirOf('SMSTools')+'/build/Console/' ),
-#	( 'Rappid', baseDirOf('Rappid')+'/build/' ),
 	( 'SDIFDisplay', baseDirOf('SDIFDisplay')+'/build/' )
+#	( 'Rappid', baseDirOf('Rappid')+'/build/' ),
 #	( 'DescriptorsGUI', baseDirOf('DescriptorsGUI')+'/build/' ),
 #	( 'Salto', baseDirOf('Salto')+'/build/' ),
 ]
@@ -327,7 +327,8 @@ def formatSummary(name, configuration, result) :
 
 def compileAndRun(name, path) :
 	global foundCompilationErrors, foundExecutionErrors, foundTestsFailures, configurations
-	assert not name == '', 'found removed test (invalid dir or settings file)'
+	if name == '' :
+		return 'found invalid test (see message above)', '', TestResulut()
 	
 	os.chdir(path)
 	# compilation phase
