@@ -26,10 +26,10 @@
 
 namespace CLAM
 {
-	void SMSTransformation:: Wrap( SMSFreqShift* trans)
+	void SMSTransformation:: WrapFrameTransformation( SMSFreqShift* trans)
 	{
-		CLAM_ASSERT( !mTransformation, "SMSTransformation::Wrapp object shoudn't have wrapped transformation");
-		mTransformation = trans;
+		CLAM_ASSERT( !mFrameTransformation, "SMSTransformation::Wrapp object shoudn't have wrapped transformation");
+		mFrameTransformation = trans;
 	}
 	
 	SMSTransformation::SMSTransformation()
@@ -41,7 +41,7 @@ namespace CLAM
 		mOutput = 0;
 		mUseTemporalBPF = 0;
 		mCurrentInputFrame = 0;
-		mTransformation = 0;
+		mFrameTransformation = 0;
 	}
 
 	SMSTransformation::SMSTransformation(const SMSTransformationConfig& c) 
@@ -54,13 +54,13 @@ namespace CLAM
 		mUseTemporalBPF = 0;
 		mCurrentInputFrame = 0;
 		Configure(c);
-		mTransformation = 0;
+		mFrameTransformation = 0;
 	}
 
 	SMSTransformation::~SMSTransformation()
 	{
-		if (mTransformation)
-			delete mTransformation;
+		if (mFrameTransformation)
+			delete mFrameTransformation;
 	};
 	
 	bool SMSTransformation::Do(const Segment& in, Segment& out)
@@ -77,9 +77,9 @@ namespace CLAM
 			const Frame & inframe = in.GetFrame(mCurrentInputFrame);
 			Frame & outframe = out.GetFrame(mCurrentInputFrame);
 
-			if (mTransformation)
+			if (mFrameTransformation)
 			{
-				mTransformation->Do(inframe, outframe);
+				mFrameTransformation->Do(inframe, outframe);
 			}
 			else //TODO remove when refactoring is done 
 			{
@@ -126,7 +126,6 @@ namespace CLAM
 			TControlData amount = mConfig.GetBPFAmount().GetValue(pos);
 			printf("sending %f ", amount);
 			mAmountCtrl.DoControl(amount);
-			CLAM_ASSERT(mSendAmount.IsConnected(), "cannot send to not connected port");
 			mSendAmount.SendControl(amount);			//<<<<<<
 			return true;
 		}
