@@ -69,6 +69,7 @@
 #include "SinTracksPlotProcessing.hxx"
 #include "FundTrackPlotProcessing.hxx"
 #include "SpecgramPlotProcessing.hxx"
+#include "AudioBuffPlotProcessing.hxx"
 
 //SMSTransformations
 #include "FrameTransformationConfig.hxx"
@@ -191,6 +192,9 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SpecgramPlotProcessingConfig> >
        regtSpecgramPlotProcessingCfg("SpecgramPlotProcessingConfig");
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioBuffPlotProcessingConfig> >
+       regtAudioBuffPlotProcessingCfg("AudioBuffPlotProcessingConfig");
  
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FrameTransformationConfig> >
        regtSMSTransformationConfig("FrameTransformationConfig");
