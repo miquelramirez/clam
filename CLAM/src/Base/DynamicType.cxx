@@ -671,12 +671,12 @@ void DynamicType::SelfSharedCopy(const DynamicType &prototype)
 
 void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 {
-	// that counter is in the table, so it is shared by prototype and this
-	// this check is not really necessary, but it can be usefull to catch bugs of the user of this class
-	if (prototype.dynamicTable[prototype.numAttr].hasBeenAdded || 
-		prototype.dynamicTable[prototype.numAttr].hasBeenRemoved)
-		throw ErrDynamicType("in SelfShallowCopy(). A copy is not allowed when the origin"
-							 "object is not updated. call Update() before making the copy.");
+	CLAM_ASSERT( 
+		!prototype.dynamicTable[prototype.numAttr].hasBeenAdded &&	
+		!prototype.dynamicTable[prototype.numAttr].hasBeenRemoved,
+		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
+	);
+	if (this==&prototype) return;
 
 	SelfCopyPrototype(prototype);
 
@@ -694,13 +694,13 @@ void DynamicType::SelfShallowCopy(const DynamicType &prototype)
 
 void DynamicType::SelfDeepCopy(const DynamicType &prototype)
 {
-	// that counter is in the table, so it is shared by prototype and this
-	// this check is not really necessary, but it can be usefull to catch bugs of the user of this class
-	if (prototype.dynamicTable[prototype.numAttr].hasBeenAdded || 
-		prototype.dynamicTable[prototype.numAttr].hasBeenRemoved)
-		throw ErrDynamicType("in SelfDeepCopy(). A copy is not allowed when the origin object is not updated.\
-		call Update() before making the copy.");
-
+	CLAM_ASSERT( 
+		!prototype.dynamicTable[prototype.numAttr].hasBeenAdded &&	
+		!prototype.dynamicTable[prototype.numAttr].hasBeenRemoved,
+		"making a copy of a non-updated DT is not allowed since the copy share the same dynamic-info"
+	);
+	if (this==&prototype) return;
+		
 	SelfCopyPrototype(prototype);
 
 	data = new char[allocatedDataSize];
@@ -953,7 +953,7 @@ void DynamicType::Debug()
 	std::cout<<std::endl;
 
 #	ifdef CLAM_USE_XML
-		XMLStorage storage ("XML-Class_Debug");
+		XMLStorage storage;
 		std::fstream fileout("Debug.xml", std::ios::out);
 		storage.Dump(*this, GetClassName(), fileout);
 #	endif//CLAM_USE_XML

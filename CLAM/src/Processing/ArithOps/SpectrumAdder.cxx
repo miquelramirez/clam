@@ -74,7 +74,7 @@ namespace CLAM {
 		return name.str();
 	}
 
-	bool SpectrumAdder::ConcreteConfigure(const ProcessingConfig&c) throw(std::bad_cast)
+	bool SpectrumAdder::ConcreteConfigure(const ProcessingConfig&c)
 	{
 		int oldNInputs;
 
@@ -84,7 +84,7 @@ namespace CLAM {
 		else
 			oldNInputs = 0;
 
-		mConfig = dynamic_cast<const SpecAdderConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		if ( !mConfig.HasNInputs() ||
 			 mConfig.GetNInputs() <= 0 ) {
 			mNInputs = 0;

@@ -135,7 +135,7 @@ namespace CLAM {
 
 		std::string DefaultDevice(void)
 		{
-			return "hw:1,0";
+			return "hw:0,0";
 		}
 
 		MIDIDevice* Create(

@@ -84,7 +84,7 @@ namespace CLAM
 		void AdoptChildren();
 		bool ConfigureChildren();
 		void InitializeControlValues();
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);
+		bool ConcreteConfigure( const ProcessingConfig& c );
 		bool ConcreteStart();
 		bool ConcreteStop();
 

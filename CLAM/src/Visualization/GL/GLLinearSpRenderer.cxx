@@ -46,8 +46,12 @@ void GLLinearSpRenderer::ArrangeXScale()
 {
 // We update here the x-coordinate 
 	float invNFs = GLfloat(  ( 1.0f / (GLfloat) mIntertwined.size() )  * mSampRate );
+	float freq = 0;
 	for ( unsigned int k = 0; k < mIntertwined.size(); k++ )
-		mIntertwined[k].x = GLfloat( k * invNFs ); 
+	{
+		mIntertwined[k].x = freq;
+		freq += invNFs;
+	}
 
 	mXConversionFactor = mIntertwined.size() /  mSampRate;
 }

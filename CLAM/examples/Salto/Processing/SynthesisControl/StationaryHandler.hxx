@@ -90,7 +90,7 @@ namespace SALTO
 
 		bool ConcretStop();
 
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw ( std::bad_cast );
+		bool ConcreteConfigure( const ProcessingConfig& c );
 
 		void DoInterpolatingSynthesis( CSaltoSynthFrame  &pSynthFrame,
 									   Frame			 *pCurrSpectralFrameBase,										

@@ -30,29 +30,13 @@ bool SMSOddEvenHarmonicRatio::Do(const SpectralPeakArray& in, SpectralPeakArray&
 	DataArray& iMagArray=in.GetMagBuffer();
 	DataArray& oMagArray=out.GetMagBuffer();
 	TSize nPeaks=in.GetnPeaks();
-	TData oddFactor=MIN(1,mAmountCtrl.GetLastValue());
-	TData evenFactor=1-oddFactor;
+	TData oddFactor=mAmountCtrl.GetLastValue();
+	TData evenFactor=-oddFactor;
 	for(i=0;i<nPeaks-1;i+=2)
 	{
-		oMagArray[i]=iMagArray[i]*oddFactor;
-		oMagArray[i+1]=iMagArray[i+1]*evenFactor;
+		//oMagArray[i]=MIN(iMagArray[i]+oddFactor,0);
+		oMagArray[i+1]=MIN(iMagArray[i+1]+evenFactor,0);
 	}
 	return true;
 }
 
-bool SMSOddEvenHarmonicRatio::Do(const Frame& in, Frame& out)
-{
-	return Do(in.GetSpectralPeakArray(),out.GetSpectralPeakArray());
-}
-
-bool SMSOddEvenHarmonicRatio::Do(const Segment& in, Segment& out)
-{
-	int i;
-	TSize nFrames=in.GetnFrames();
-	for(i=0;i<nFrames;i++)
-	{
-		UpdateControlValueFromBPF((TData)i/nFrames);
-		Do(in.GetFrame(i),out.GetFrame(i));
-	}
-	return true;
-}

@@ -1,0 +1,74 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0011 
+header_name {.hxx} 
+code_name {.cxx} 
+gridx 5 
+gridy 5 
+snap 3
+decl {\#include <FL/fl_file_chooser.H>} {public
+} 
+
+class SaltoConfig {open
+} {
+  decl {int mInstrument;} {public
+  }
+  decl {char mDataFolder[1024];} {public
+  }
+  Function {SaltoConfig(int argc,char** argv)} {open
+  } {
+    Fl_Window mWindow {open
+      xywh {988 507 336 170} align 0 visible
+    } {
+      Fl_Group {} {open
+        xywh {0 10 340 45}
+      } {
+        Fl_Button mTrumpet {
+          label Trumpet
+          xywh {5 35 15 15} type Radio box THIN_DOWN_BOX down_box THIN_DOWN_BOX color 7 selection_color 0 align 8
+        }
+        Fl_Button mAltoSax {
+          label {Alto Saxophone}
+          xywh {5 15 15 15} type Radio box THIN_DOWN_BOX down_box THIN_DOWN_BOX value 1 color 7 selection_color 2 align 8
+        }
+      }
+      Fl_Output mDataFolderOutput {
+        xywh {5 100 325 25} box THIN_DOWN_BOX align 0 textfont 4 textsize 12
+      }
+      Fl_Button {} {
+        label Choose
+        callback {SetDataFolder(fl_file_chooser("","",""));}
+        xywh {250 70 80 25} box THIN_UP_BOX
+      }
+      Fl_Box {} {
+        label {Data folder}
+        xywh {5 70 240 25} align 20
+      }
+      Fl_Button {} {
+        label Ok
+        callback {mInstrument = mTrumpet->value();
+mWindow->hide();}
+        xywh {275 140 55 25} box THIN_UP_BOX
+      }
+    }
+    code {SetDataFolder("");} {}
+    code {{
+	int i;
+	for (i=1;i<argc;i++)
+	{
+		if (argv[i][0]=='-' && argv[i][1]=='t')
+			mTrumpet->value(1);
+		else
+			SetDataFolder(argv[i]);
+	}
+}
+mWindow->show();
+Fl::run();} {selected
+    }
+  }
+  Function {SetDataFolder(char* choice)} {open
+  } {
+    code {if (choice==0) choice="";
+strcpy(mDataFolder,choice);
+mDataFolderOutput->value(mDataFolder);} {}
+  }
+} 

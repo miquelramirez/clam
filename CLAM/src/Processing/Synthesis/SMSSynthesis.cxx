@@ -49,8 +49,13 @@ void SMSSynthesisConfig::DefaultValues()
 	GetSpectralSynth().SetAnalWindowType(EWindowType::eBlackmanHarris92);
 	GetSpectralSynth().GetAnalWindowGenerator().SetInvert(true);
 
+	
 	/** WindowSize/2*/
 	SetHopSize((GetAnalWindowSize()-1)/2);
+
+	/* Default frame size is 256*/
+	SetFrameSize(GetHopSize());
+
 
 }
 
@@ -110,16 +115,28 @@ void SMSSynthesisConfig::SetHopSize(TSize h)
 
 	//CLAM_ASSERT(GetSynthWindowSize()>=2*h, "SMSSynthesisConfig::SetHopSize: Hop Size is too large compared to window size");
 	GetSpectralSynth().SetHopSize(h);
+	GetOverlapAddSin().SetHopSize(h);
+	GetOverlapAddSin().SetBufferSize(GetFrameSize()+h);
+	GetOverlapAddRes().SetHopSize(h);
+	GetOverlapAddRes().SetBufferSize(GetFrameSize()+h);
+	GetOverlapAddGlobal().SetHopSize(h);
+	GetOverlapAddGlobal().SetBufferSize(GetFrameSize()+h);
 }
 
 void SMSSynthesisConfig::SetFrameSize(TSize f)
 {
-	GetSpectralSynth().SetFrameSize(f);
+//	GetSpectralSynth().SetFrameSize(f);
+	GetOverlapAddSin().SetFrameSize(f);
+	GetOverlapAddSin().SetBufferSize(f+GetHopSize());
+	GetOverlapAddRes().SetFrameSize(f);
+	GetOverlapAddRes().SetBufferSize(f+GetHopSize());
+	GetOverlapAddGlobal().SetFrameSize(f);
+	GetOverlapAddGlobal().SetBufferSize(f+GetHopSize());
 }
 
 TSize SMSSynthesisConfig::GetFrameSize()
 {
-	return GetSpectralSynth().GetFrameSize();
+	return GetOverlapAddSin().GetFrameSize();
 }
 
 
@@ -169,15 +186,36 @@ void SMSSynthesis::AttachChildren()
 	mPO_SynthSineSpectrum.SetParent(this);
 	mPO_PhaseMan.SetParent(this);
 	mPO_SpectrumAdder.SetParent(this);
+	mPO_OverlapAddSin.SetParent(this);
+	mPO_OverlapAddRes.SetParent(this);
+	mPO_OverlapAddGlobal.SetParent(this);
 }
 
-SMSSynthesis::SMSSynthesis() 
+SMSSynthesis::SMSSynthesis():
+mInputSinSpectralPeaks("InputSinPeaks",this,1),
+mInputResSpectrum("InputResSpectrum",this,1),
+mOutputSinSpectrum("OutputSinSpectrum",this,1),
+mOutputSpectrum("OutputSpectrum",this,1),
+mOutputAudio("OutputAudio",this,1),
+mOutputResAudio("OutputResAudio",this,1),
+mOutputSinAudio("OutputSinAudio",this,1),
+mCurrentTime("CurrentTime",this),
+mCurrentPitch("CurrentPitch",this)
 {
 	Configure(SMSSynthesisConfig());
 	AttachChildren();
 }
 
-SMSSynthesis::SMSSynthesis(const SMSSynthesisConfig& cfg)
+SMSSynthesis::SMSSynthesis(const SMSSynthesisConfig& cfg):
+mInputSinSpectralPeaks("InputSinPeaks",this,1),
+mInputResSpectrum("InputResSpectrum",this,1),
+mOutputSinSpectrum("OutputSinSpectrum",this,1),
+mOutputSpectrum("OutputSpectrum",this,1),
+mOutputAudio("OutputAudio",this,1),
+mOutputResAudio("OutputResAudio",this,1),
+mOutputSinAudio("OutputSinAudio",this,1),
+mCurrentTime("CurrentTime",this),
+mCurrentPitch("CurrentPitch",this)
 {
 	Configure(cfg);
 	AttachChildren();
@@ -195,10 +233,12 @@ bool SMSSynthesis::ConfigureChildren()
 		return false;
 
 	//configure residual spectral synthesis
+	mConfig.GetSpectralSynth().SetResidual(true);
 	if(!mPO_ResSpectralSynthesis.Configure(mConfig.GetSpectralSynth()))
 		return false;
 
 	//configure sinusoidal spectral synthesis
+	mConfig.GetSpectralSynth().SetResidual(false);
 	if(!mPO_SinSpectralSynthesis.Configure(mConfig.GetSpectralSynth()))
 		return false;
 
@@ -216,18 +256,26 @@ bool SMSSynthesis::ConfigureChildren()
 	if(!mPO_SpectrumAdder.Configure(SpecAdder2Config()))
 		return false;
 
+	//Overlap and add PO
+	if(!mPO_OverlapAddSin.Configure(mConfig.GetOverlapAddSin()))
+		return false;
+	if(!mPO_OverlapAddRes.Configure(mConfig.GetOverlapAddRes()))
+		return false;
+	if(!mPO_OverlapAddGlobal.Configure(mConfig.GetOverlapAddGlobal()))
+		return false;
+
 	return true;
 }
 
 void SMSSynthesis::ConfigureData()
 {
-
+		mAudioFrame.SetSize(mConfig.GetHopSize()*2);//audio used as input of the overlap and add
 }
 
 
-bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const SMSSynthesisConfig&>(c);
+	CopyAsConcreteConfig(mConfig, c);
 
 	//CONFIGURE CHILDREN AND DATA
 	ConfigureChildren();
@@ -236,33 +284,131 @@ bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_c
 	return true;
 }
 
-bool SMSSynthesis::Do(void)
+void SMSSynthesis::Attach(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum,
+			Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
+			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio)
 {
-	return false;
+	mInputSinSpectralPeaks.Attach(inputSinusoidalPeaks);
+	mInputResSpectrum.Attach(inputResidualSpectrum);
+	mOutputSinSpectrum.Attach(outputSinusoidalSpectrum);
+	mOutputSpectrum.Attach(outputSpectrum);
+	mOutputAudio.Attach(outputAudio);
+	mOutputResAudio.Attach(outputSinusoidalAudio);
+	mOutputSinAudio.Attach(outputResidualAudio);
 }
 
 
-bool SMSSynthesis::Do(SpectralPeakArray& in,Audio& out)
+bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Audio& out)
 {
 	SpectrumConfig tmpcfg;
 	tmpcfg.SetScale(EScale::eLinear);
 	Spectrum tmpSpec(tmpcfg);
-	return Do(in,tmpSpec,out);
+	return SinusoidalSynthesis(in,tmpSpec,out);
 	
 }
 
 /** Sinusoidal synthesis, gives also the output spectrum */
-bool SMSSynthesis::Do(SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio)
+bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Spectrum& outSpec,Audio& outAudio)
 {
 	outSpec.SetSize(mConfig.GetSpectrumSize());
 	
 	mPO_SynthSineSpectrum.Do(in,outSpec);
-	return mPO_SinSpectralSynthesis.Do(outSpec,outAudio);
+	mPO_SinSpectralSynthesis.Do(outSpec,mAudioFrame);
+	//Finally the overlap and add is accomplished
+	return mPO_OverlapAddSin.Do(mAudioFrame, outAudio);
+
+}
+
+
+bool SMSSynthesis::Do(void)
+{
+	return Do(mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
+		mOutputSinSpectrum.GetData(),mOutputSpectrum.GetData(),
+		mOutputAudio.GetData(),mOutputSinAudio.GetData(),mOutputResAudio.GetData());
+}
+
+
+bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks, Spectrum& inputResidualSpectrum, 
+			Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio)
+{
+	//This may need to be initialized?
+	Spectrum tmpOutputSinSpec;
+	Spectrum tmpOutputSpec;
+	
+	return Do(inputSinusoidalPeaks,inputResidualSpectrum,tmpOutputSinSpec,tmpOutputSpec,
+		outputAudio,outputSinusoidalAudio,outputResidualAudio);
+
+}
+
+bool SMSSynthesis::Do(SpectralPeakArray& inputSinusoidalPeaks,Spectrum& inputResidualSpectrum,
+		Spectrum& outputSinusoidalSpectrum,	Spectrum& outputSpectrum,
+		Audio& outputAudio, Audio& outputSinusoidalAudio, Audio& outputResidualAudio)
+{
+	
+	//First we do the phase managing. Note that if the Do(frame) overload is not used,
+	//the time and pitch controls in this processing should be set by hand before this
+	//method is used
+	mPO_PhaseMan.mCurrentTime.DoControl(mCurrentTime.GetLastValue());
+	mPO_PhaseMan.mCurrentPitch.DoControl(mCurrentPitch.GetLastValue());
+	mPO_PhaseMan.Do(inputSinusoidalPeaks);
+	
+	//We synthesize the sinusoidal component 	
+	SinusoidalSynthesis(inputSinusoidalPeaks,outputSinusoidalSpectrum,outputSinusoidalAudio);
+	
+	//We add Residual spectrum in the input frame plus the synthesized sinusoidal spectrum
+	mPO_SpectrumAdder.Do(outputSinusoidalSpectrum,inputResidualSpectrum,outputSpectrum);
+	
+	//We synthesize to audio the resulting summed spectrum
+	mPO_SpectralSynthesis.Do(outputSpectrum,mAudioFrame);
+	//We do the overlap and add
+	mPO_OverlapAddGlobal.Do(mAudioFrame, outputAudio);
+
+
+	//Now we synthesize only the residual spectrum
+	mPO_ResSpectralSynthesis.Do(inputResidualSpectrum,mAudioFrame);
+	//And we do the overlap and add process for the residual
+	return mPO_OverlapAddRes.Do(mAudioFrame, outputResidualAudio);
+
+	/* Note: although sinusoidal spectrum is already available from the analysis phase, we 
+	need to store it again in the frame because the original peak array may have been
+	transformed
+	*/
 
 }
 
 bool SMSSynthesis::Do(Frame& in)
 {
+	if(in.GetCenterTime()<0) return false;//such frames should not be synthesized	
+	
+//We initialize input frame, adding necessary attributes
+	InitFrame(in);
+//First we set the controls 
+	mCurrentTime.DoControl(in.GetCenterTime());
+	mCurrentPitch.DoControl(in.GetFundamental().GetFreq(0));
+	
+
+//We make sure that spectrums in input frame has the appropiate size and spectral range.
+//Note that the only spectrum we can be sure has the correct spectral range is the residual 
+//because it its the only one that has been stored in the analysis process.
+	in.GetOutSpec().SetSize(mConfig.GetSpectrumSize());
+	in.GetOutSpec().SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
+	in.GetSinusoidalSpec().SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
+
+	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),in.GetSinusoidalSpec(),in.GetOutSpec(),
+		in.GetSynthAudioFrame(),in.GetSinusoidalAudioFrame(),in.GetResidualAudioFrame());
+
+}
+
+bool SMSSynthesis::Do(Segment& in)
+{
+	return Do(in.GetFrame(in.mCurrentFrameIndex++));
+}
+
+
+void SMSSynthesis::InitFrame(Frame& in)
+{
+	in.AddOutSpec();
+	in.AddSinusoidalSpec();
 	in.AddSinusoidalAudioFrame();
 	in.AddResidualAudioFrame();
 	in.AddSynthAudioFrame();
@@ -271,30 +417,5 @@ bool SMSSynthesis::Do(Frame& in)
 	in.GetSinusoidalAudioFrame().SetSize(mConfig.GetFrameSize());
 	in.GetResidualAudioFrame().SetSize(mConfig.GetFrameSize());
 	in.GetSynthAudioFrame().SetSize(mConfig.GetFrameSize());
-		
-	if(in.GetCenterTime()<0) return false;//such frames should not be synthesized
-
-	mPO_PhaseMan.Do(in);
-
-	SpectrumConfig tmpcfg;
-	tmpcfg.SetScale(EScale::eLinear);
-	Spectrum tmpSpec(tmpcfg),tmpSpec2(tmpcfg);
-	tmpSpec.SetSize(mConfig.GetSpectrumSize());
-	tmpSpec2.SetSize(mConfig.GetSpectrumSize());
 	
-	tmpSpec.SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
-	tmpSpec2.SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
-	Do(in.GetSpectralPeakArray(),tmpSpec,in.GetSinusoidalAudioFrame());
-	
-	mPO_SpectrumAdder.Do(tmpSpec,in.GetResidualSpec(),tmpSpec2);
-	mPO_SpectralSynthesis.Do(tmpSpec2,in.GetSynthAudioFrame());
-
-	//Synthesizing residual only component
-	return mPO_ResSpectralSynthesis.Do(in.GetResidualSpec(),in.GetResidualAudioFrame());
 }
-
-bool SMSSynthesis::Do(Segment& in)
-{
-	return Do(in.GetFrame(in.mCurrentFrameIndex++));
-}
-

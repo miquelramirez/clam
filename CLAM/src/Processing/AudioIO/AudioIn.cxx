@@ -24,15 +24,10 @@
 
 using namespace CLAM;
 
-bool AudioIn::ConcreteConfigure(const ProcessingConfig& cfg)
+bool AudioIn::ConcreteConfigure(const ProcessingConfig& c)
 	throw(ErrProcessingObj)
 {
-	try {
-		mConfig = dynamic_cast<const AudioIOConfig&>(cfg);
-	}
-	catch (std::bad_cast) {
-		throw(ErrProcessingObj("AudioIn::ConcreteConfigure(): Wrong argument type.",this));
-	}
+	CopyAsConcreteConfig(mConfig, c);
 
 	if (mpDevice)
 		mpDevice->Unregister(*this);

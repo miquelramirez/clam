@@ -55,7 +55,7 @@ namespace CLAM {
 
 	protected:
 
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 		const char * GetClassName() const {return "TopLevelProcessing";}

@@ -71,9 +71,9 @@ mAmplitude( "Amplitude", this, &ADSR::UpdateAmp )
 	Configure( cfg );
 }
 
-bool ADSR::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast )
+bool ADSR::ConcreteConfigure( const ProcessingConfig& c )
 {
-	mConfig = dynamic_cast< const ADSRConfig& >(cfg);
+	CopyAsConcreteConfig(mConfig, c);
 
 	mAttackTime = mConfig.GetAttackTime();
 	mDecayTime = mConfig.GetDecayTime();

@@ -51,9 +51,9 @@ namespace SALTO
 	InterpolatingSynthesis::~InterpolatingSynthesis()
 	{}
 
-	bool InterpolatingSynthesis::ConcreteConfigure( const ProcessingConfig& cfg ) throw( std::bad_cast )
+	bool InterpolatingSynthesis::ConcreteConfigure( const ProcessingConfig& c )
 	{
-		mConfig = dynamic_cast< const InterpolatingSynthesisConfig& >( cfg );
+		CopyAsConcreteConfig(mConfig, c);
 
 		mSpectralRange = mConfig.GetSpectralRange();
 

@@ -108,13 +108,12 @@ SaltoSynth::SaltoSynth( const SaltoSynthConfig& cfg )
 		ControlSetup();
 }
 
-bool SaltoSynth::ConcreteConfigure( const ProcessingConfig& cfg)throw( std::bad_cast )
+bool SaltoSynth::ConcreteConfigure( const ProcessingConfig& c)
 {
 	bool res = true;
 	
+	CopyAsConcreteConfig(mConfig, c);
 	try{
-		mConfig = dynamic_cast< const SaltoSynthConfig& >( cfg );
-
 		mpParams = mConfig.GetParams();
 
 		mpSynthFrame= new CSaltoSynthFrame(	MAX_SINES, 
@@ -202,6 +201,12 @@ bool SaltoSynth::ConfigureChildren(void)
 		return false;
 	}
 
+	OverlapAddConfig olaCfg;
+	
+	olaCfg.SetHopSize(mConfig.GetHopSize());
+	olaCfg.SetFrameSize(mConfig.GetHopSize()*3);
+	olaCfg.SetBufferSize(mConfig.GetHopSize()*3);
+
 	InterpolatingSynthesisConfig interpCfg;
 	interpCfg.SetSpectralRange( mConfig.GetSpectralRange() );
 
@@ -219,6 +224,7 @@ bool SaltoSynth::ConfigureData(void)
 {
 	TSize internalBufferSize = mConfig.GetHopSize();
 
+	mOLABuffer.SetSize(internalBufferSize*2);
 	AudioOutBuffer.SetSize(internalBufferSize);
 	EmptyAudioBuffer.SetSize(internalBufferSize);
 
@@ -528,7 +534,9 @@ void SaltoSynth::DoReleaseSynthesisProcess( CSaltoSynthFrame *pSynthFrame )
 	}
 
 	// -- Spectral Synthesis
-	mSpectralSynthesis.Do(*(pSynthFrame->GetSpectrumPtr()),AudioOutBuffer);
+	mSpectralSynthesis.Do(*(pSynthFrame->GetSpectrumPtr()),mOLABuffer);
+
+	mOverlapAdd.Do(mOLABuffer,AudioOutBuffer);
 	
 }
 
@@ -676,7 +684,10 @@ void SaltoSynth::DoStationarySynthesisProcess( CSaltoSynthFrame* pSynthFrame )
 				StationaryResidualSynthesis( pSynthFrame );
 		}
 	// -- Spectral Synthesis
-	mSpectralSynthesis.Do(*(pSynthFrame->GetSpectrumPtr()),AudioOutBuffer);
+		
+	mSpectralSynthesis.Do(*(pSynthFrame->GetSpectrumPtr()),mOLABuffer);
+
+	mOverlapAdd.Do(mOLABuffer,AudioOutBuffer);
 	
 }
 

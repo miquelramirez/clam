@@ -23,14 +23,13 @@
 #ifndef _SpectralFilterGen_
 #define _SpectralFilterGen_
 
-#include"Processing.hxx"
-#include"ProcessingData.hxx"
-#include"Port.hxx"
-#include"DataTypes.hxx"
-#include"Audio.hxx"
-#include"Spectrum.hxx"
+#include "Processing.hxx"
+#include "ProcessingData.hxx"
+#include "OutPortTmpl.hxx"
+#include "DataTypes.hxx"
+#include "Audio.hxx"
+#include "Spectrum.hxx"
 #include "Enum.hxx"
-// #include"Defines.hxx"
 
 namespace CLAM {
 
@@ -187,7 +186,7 @@ private:
 	const char *GetClassName() const {return "FDFilterGen";}
 	
 	/** Private method called by the public Configure(cfg) method on the base class*/
-	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig& c);
 
 	/** Auxiliary Function:*/
 	void SetFilterPoint(

@@ -23,7 +23,8 @@
 #define _AUDIO_MIXER_HXX
 
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 #include "Audio.hxx"
 
 namespace CLAM
@@ -56,7 +57,7 @@ namespace CLAM
 
 		unsigned int mFrameSize;
 
-		inline bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+		inline bool ConcreteConfigure(const ProcessingConfig& c);
 
 		inline void Do(Array<TData>* inp[N], Array<TData>& out);
 
@@ -65,6 +66,8 @@ namespace CLAM
 		inline AudioMixer(const AudioMixerConfig& c = AudioMixerConfig());
 
 		inline const ProcessingConfig &GetConfig() const { return mConfig;}
+
+		const char * GetClassName() const {return "AudioMixer";}
 
 		inline bool Do(void);
 

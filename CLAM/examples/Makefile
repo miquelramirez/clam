@@ -1,5 +1,6 @@
-SUBDIRS=Salto SpectralDelay 
+SUBDIRS=Salto SpectralDelay
 PROGRAMS=\
+	SnapshotExample\
 	Spectrum_example\
 	FFT_example\
 	FDFilterExample\
@@ -11,8 +12,6 @@ PROGRAMS=\
 	AudioApplicationExample\
 	GUIAudioApplicationExample\
 	FundamentalDetect\
-	XMLViewExample\
-	SIViewExample
 
 
 TOP=..

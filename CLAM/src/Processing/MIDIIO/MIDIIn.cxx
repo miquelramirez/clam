@@ -26,15 +26,10 @@
 
 using namespace CLAM;
 
-bool MIDIIn::ConcreteConfigure(const ProcessingConfig& cfg)
+bool MIDIIn::ConcreteConfigure(const ProcessingConfig& c)
 	throw(ErrProcessingObj)
 {
-	try {
-		mConfig = dynamic_cast<const MIDIInConfig&>(cfg);
-	}
-	catch (std::bad_cast) {
-		throw(ErrProcessingObj("MIDIIn::ConcreteConfigure(): Wrong argument type.",this));
-	}
+	CopyAsConcreteConfig(mConfig, c);
 
 	/** Unregistering a possible device already assigned to the MIDIIn object
 	*/

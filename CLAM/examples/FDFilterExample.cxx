@@ -27,6 +27,7 @@
 
 #include "Spectrum.hxx"
 #include "FDFilterGen.hxx"
+#include <iostream>
 
 using namespace CLAM;
 

@@ -71,9 +71,9 @@ namespace CLAM {
 		Configure(c);
 	}
 
-	bool AudioCompressor::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+	bool AudioCompressor::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const AudioCompressorConfig&>(cfg);
+		CopyAsConcreteConfig(mConfig, c);
 
 		mFrameSize = mConfig.GetFrameSize();
 

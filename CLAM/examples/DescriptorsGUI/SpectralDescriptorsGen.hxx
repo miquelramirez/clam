@@ -33,14 +33,14 @@ namespace CLAM {
 		 * bad_cast exception when the argument is not an SpecAdderConfig
 		 * object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 		SpectralDescriptorsGen();
 
 		SpectralDescriptorsGen(const SpectralDescriptorsGenConfig &c);
 
-	        ~SpectralDescriptorsGen();
+		~SpectralDescriptorsGen();
 
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 

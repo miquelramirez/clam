@@ -23,8 +23,9 @@
 
 namespace CLAM {
 
-	// Data visitor
 
+	// Data visitor
+	//\todo change exceptions for asserts
 	void DataVisitor::ErrMsg(std::string &msg,const std::string &data_class)
 	{
 		msg=  "No Visit method implemented in visitor ";
@@ -62,26 +63,5 @@ namespace CLAM {
 	}
 
 
-	// InPortTmpls
 
-	InPort::InPort(const std::string &n,
-				   Processing *o,
-				   int length,
-				   int hop,
-				   bool inplace) 
-		: Port(n,o,length,hop),
-		  mCanDoInplace(inplace)
-
-	{}
-
-	// OutPortTmpls
-
-	OutPort::OutPort(const std::string &n,
-					 Processing *o,
-					 int length,
-					 int hop )
-		: Port(n,o,length,hop)
-	{}
-
-
-}
+} // namespace

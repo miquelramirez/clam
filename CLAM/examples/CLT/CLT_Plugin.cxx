@@ -35,9 +35,9 @@ CLT_Plugin::~CLT_Plugin()
 {
 }
 
-bool CLT_Plugin::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool CLT_Plugin::ConcreteConfigure(const ProcessingConfig& c)
 {
-		mConfig = dynamic_cast<const CLT_PluginConfig&>(cfg);
+		CopyAsConcreteConfig(mConfig, c);
 		//configurar els fills
 		return true;
 }

@@ -9,11 +9,10 @@ namespace CLAM
 {
 //template <class T> void InitArrayElement(T& t)
 
-Parameters Parameters::mInstance;
-
 Parameters& Parameters::GetInstance()
 {
-	return mInstance;
+	static Parameters instance;
+	return instance;
 }
 
 //////////////////////////////////////////
@@ -22,6 +21,11 @@ Parameters& Parameters::GetInstance()
 void Parameters::DefaultInit()
 {
 //	Configure(ParametersConfig());
+
+  mpFileName = new char*[MAX_SPECTRAL_SEGMENTS];
+  mpPitchAttribute = new char*[MAX_PITCH_VALUE];
+  mpAttackAttribute = new char*[MAX_ATTACKS_VALUE];
+  mpStatTemplAttribute = new char*[MAX_STAT_TEMPLATES];
 
   AddAll();
   UpdateData();
@@ -85,14 +89,10 @@ void Parameters::DefaultInit()
 	  mpFileName[i]=NULL;
 
 //----------------------------------------------------------------------------//
-#ifdef ALTOSAX
-	SetupSaxoDB();
-#endif //ALTOSAX
-//----------------------------------------------------------------------------//
-#ifdef TRUMPET
-	SetupTrumpetDB();
-#endif //TRUMPET
-
+	if (ALTOSAX)
+		SetupSaxoDB();
+	if (TRUMPET)
+		SetupTrumpetDB();
 //----------------------------------------------------------------------------//
 
 }
@@ -522,5 +522,99 @@ const char* Parameters::GetFilePathOfSegmentPos(TIndex pos)
 
   return mpPathName;
 }
+
+
+void InstrumentValues::Instantiate(int instr,char* dataFolder)
+{
+	_GetInstance(instr,dataFolder);
+}
+
+InstrumentValues& InstrumentValues::GetInstance(void)
+{
+	return _GetInstance(-1,0);
+}
+
+InstrumentValues& InstrumentValues::_GetInstance(int instr,char* dataFolder)
+{
+	static InstrumentValues instance;
+	if (instance.mInstrument==-1)
+	{
+		instance.mInstrument = instr;
+		if (instr==-1)
+			throw CLAM::Err("InstrumentValues has not been instantiated yet\n");
+		else if (instr==0)
+		{
+    	strcpy(instance.mSALTO_DATA_FILE_NAME,dataFolder);
+			strcat(instance.mSALTO_DATA_FILE_NAME,"/AltoSax/SALTO_DATA_FILE");
+    	strcpy(instance.mSALTO_DATA_TXT_FNAME,dataFolder);
+			strcat(instance.mSALTO_DATA_TXT_FNAME,"/AltoSax/SALTO_DATA_FILE.txt");
+    	strcpy(instance.mSALTO_STAT_TMPL_FILE_NAME,dataFolder);
+			strcat(instance.mSALTO_STAT_TMPL_FILE_NAME,"/AltoSax/SALTO_STAT_TMPL_FILE");
+    	strcpy(instance.mSALTO_STAT_TMPL_TXT_FNAME,dataFolder);
+			strcat(instance.mSALTO_STAT_TMPL_TXT_FNAME,"/AltoSax/SALTO_STAT_TMPL_FILE.txt");
+    	strcpy(instance.mSALTO_TEST_RESIDUAL_NAME,dataFolder);
+			strcat(instance.mSALTO_TEST_RESIDUAL_NAME,"/AltoSax/statresidual.sms.sdif"); //"RT_a1_mf_2.sms.sdif"
+    	strcpy(instance.mSDIF_ATTACKS_FOLDER,dataFolder);
+			strcat(instance.mSDIF_ATTACKS_FOLDER,"/AltoSax/SDIFAttacks/");
+    	instance.mVERYSOFT_ATTACKS =
+				"slow(sl)/";
+    	instance.mSOFT_ATTACKS =
+				"mediumshort(ms)/";
+    	instance.mHARD_ATTACKS =
+				"short(s)/";
+    	instance.mVERYHARD_ATTACKS =
+				"short(s)/"; // doesnt exist
+
+			instance.mMAX_SPECTRAL_SEGMENTS			= 100;	// spec Segments read from SDIF
+			instance.mSPECTRAL_SEGMENTS_IN_USE  = 75;   // current number of SpecSegs in memory
+			instance.mMAX_PITCH_VALUE						= 25;
+			instance.mMAX_ATTACKS_VALUE         = 3;		//4 for breath-only
+			instance.mVSOFT                     = 0;    // define depends on MAX_ATTACKS_VALUE
+			instance.mSOFT                      = 1;    // define depends on MAX_ATTACKS_VALUE
+			instance.mHARD                      = 1;    // define depends on MAX_ATTACKS_VALUE
+			instance.mVHARD				              = 2;    // define depends on MAX_ATTACKS_VALUE
+			instance.mBREATHONLY                = 3;
+			instance.mMAX_SMOOTHNESS_VALUE			= 1;  
+			instance.mLOWEST_PITCH              = 174.61; // F2 
+		}else if (instr==1)
+		{
+    	strcpy(instance.mSALTO_DATA_FILE_NAME      ,dataFolder);
+			strcat(instance.mSALTO_DATA_FILE_NAME      ,"/Trumpet/SALTO_DATA_FILE");
+    	strcpy(instance.mSALTO_DATA_TXT_FNAME      ,dataFolder);
+			strcat(instance.mSALTO_DATA_TXT_FNAME      ,"/Trumpet/SALTO_DATA_FILE.txt");
+    	strcpy(instance.mSALTO_STAT_TMPL_FILE_NAME,dataFolder);
+			strcat(instance.mSALTO_STAT_TMPL_FILE_NAME,"/Trumpet/SALTO_STAT_TMPL_FILE");
+    	strcpy(instance.mSALTO_STAT_TMPL_TXT_FNAME,dataFolder);
+			strcat(instance.mSALTO_STAT_TMPL_TXT_FNAME,"/Trumpet/SALTO_STAT_TMPL_FILE.txt");
+    	strcpy(instance.mSALTO_TEST_RESIDUAL_NAME ,dataFolder);
+			strcat(instance.mSALTO_TEST_RESIDUAL_NAME ,"/Trumpet/statresidual.sms.sdif"); //"RT_a1_mf_2.sms.sdif"
+    	strcpy(instance.mSDIF_ATTACKS_FOLDER      ,dataFolder);
+			strcat(instance.mSDIF_ATTACKS_FOLDER      ,"/Trumpet/SDIFAttacks/");
+    	instance.mVERYSOFT_ATTACKS          =
+				"vs/";
+    	instance.mSOFT_ATTACKS              =
+				"s/";
+    	instance.mHARD_ATTACKS              =
+				"h/";
+    	instance.mVERYHARD_ATTACKS          =
+				"vh/";
+  		instance.mMAX_SPECTRAL_SEGMENTS			= 100;		// spec Segments read from SDIF;
+  		instance.mSPECTRAL_SEGMENTS_IN_USE  = 100;    // current number of SpecSegs in memory;
+  		instance.mMAX_PITCH_VALUE						= 25;
+  		instance.mMAX_ATTACKS_VALUE         = 4; 			//5 for breath-only;
+  		instance.mVSOFT                     = 0;      // define depends on MAX_ATTACKS_VALUE;
+  		instance.mSOFT                      = 1;      // define depends on MAX_ATTACKS_VALUE;
+  		instance.mHARD                      = 2;      // define depends on MAX_ATTACKS_VALUE ;
+  		instance.mVHARD				              = 3;      // define depends on MAX_ATTACKS_VALUE;
+  		instance.mBREATHONLY                = 4;
+  		instance.mMAX_SMOOTHNESS_VALUE			= 1;
+  		instance.mLOWEST_PITCH              = 233.08;  // A#2;
+		}else{
+			throw CLAM::Err("Invalid instrument while instatiating InstrumentValues\n");
+		}
+	}
+	return instance;
+}
+
 
 } // end of namespace CLAM

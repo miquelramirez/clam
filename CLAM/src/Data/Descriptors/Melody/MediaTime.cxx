@@ -9,4 +9,4 @@ namespace CLAM {
 		UpdateData();
 	}
 
-}; // namespace MTG
+}; // namespace CLAM

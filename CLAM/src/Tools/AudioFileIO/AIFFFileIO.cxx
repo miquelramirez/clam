@@ -1,9 +1,7 @@
+#include "extended.hxx"
 #include "AIFFFileIO.hxx"
 #include "ErrSoundFileIO.hxx"
 
-
-extern	int tenbytefloat2int (unsigned char *bytes);
-extern 	void uint2tenbytefloat (unsigned int num, unsigned char *bytes);
 
 using namespace CLAM;
 
@@ -22,7 +20,7 @@ void AIFFFileIO::InitSelf(void)
 
 int AIFFFileIO::ReadChunkHeader(ChunkHeader& h)
 {
-	int ret = fread(&h,1,sizeof(h),mFile);
+	int ret = int( fread(&h,1,sizeof(h),mFile) );
 	SWAP(h.len);
 	return ret;
 }
@@ -31,17 +29,17 @@ int AIFFFileIO::WriteChunkHeader(const ChunkHeader& h)
 {
 	ChunkHeader cp = h;
 	SWAP(cp.len);
-	return fwrite(&cp,1,sizeof(cp),mFile);
+	return int(fwrite(&cp,1,sizeof(cp),mFile) );
 }
 
 int AIFFFileIO::ReadID(ID& id)
 {
-	return fread(&id,1,sizeof(id),mFile);
+	return int( fread(&id,1,sizeof(id),mFile) );
 }
 
 int AIFFFileIO::WriteID(ID& id)
 {
-	return fwrite(&id,1,sizeof(id),mFile);
+	return int( fwrite(&id,1,sizeof(id),mFile) );
 }
 
 bool AIFFFileIO::CheckID(const ID& id,const ID& cmp)
@@ -69,7 +67,7 @@ void AIFFFileIO::ReadHeader(void)
 		i += ReadChunkHeader(h);
 		if (CheckID(h.id,"COMM")) {
 			AIFFCommChunk fmt;
-			i += fread(&fmt,1,sizeof(fmt),mFile);
+			i += int( fread(&fmt,1,sizeof(fmt),mFile) );
 
 			if (sizeof(fmt)!=2+4+2+10) 
 				throw ErrSoundFileIO("Incorrect size of AIFFCommChunk: check alignment");
@@ -139,7 +137,7 @@ void AIFFFileIO::WriteHeader(void)
 	SWAP(fmtChunk.numSampleFrames);
 	SWAP(fmtChunk.sampleWidth);
 	
-	mOffset += fwrite(&fmtChunk,1,sizeof(fmtChunk),mFile);
+	mOffset += int( fwrite(&fmtChunk,1,sizeof(fmtChunk),mFile) );
 	mOffset += WriteChunkHeader(dataHeader);
 
 	unsigned int offset = 0;
@@ -148,8 +146,8 @@ void AIFFFileIO::WriteHeader(void)
 	SWAP(offset);
 	SWAP(blockSize);
 
-	mOffset += fwrite(&offset,1,sizeof(offset),mFile);
-	mOffset += fwrite(&blockSize,1,sizeof(blockSize),mFile);
+	mOffset += int( fwrite(&offset,1,sizeof(offset),mFile) );
+	mOffset += int( fwrite(&blockSize,1,sizeof(blockSize),mFile) );
 }
 
 

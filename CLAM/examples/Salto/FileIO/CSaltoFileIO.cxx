@@ -138,6 +138,9 @@ void CSaltoFileIO::ReadStatTmplDataFileFromText(const char* fileName,Array<CSalt
 {
   int i,j,nPeaks,nTempl;
   double dVal;
+	
+	printf("GODVER %s\n\n",fileName);
+	
   mFout.open(fileName,std::ios::in);  
   if (!mFout.is_open())
       throw Err("CSaltoFileIO::ReadStatTmplDataFileFromText File could not be opened");

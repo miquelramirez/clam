@@ -2,6 +2,7 @@
 #include "Parameters.hxx"
 #include "SaltoSynth.hxx"
 #include "CSaltoEditor.hxx"
+#include "SaltoConfig.hxx"
 //#include "CSaltoMIDIInOut.hxx"
 #include "Err.hxx"
 #include "GUIAudioApplication.hxx"
@@ -22,7 +23,7 @@
 #undef CreateWindow
 #endif
 using SALTO::CSaltoEditor;
-using CLAMGUI::WidgetTKWrapper;
+using CLAMVM::WidgetTKWrapper;
 using namespace CLAM;
 
 class SaltoApp:public GUIAudioApplication
@@ -30,7 +31,6 @@ class SaltoApp:public GUIAudioApplication
 public:
 	SaltoApp()
 	{
-		//mParams=NULL;
 		pDSP = NULL;
 		pMelody = NULL;
 		pGUI=NULL;
@@ -58,30 +58,28 @@ public:
 
 	Fl_Window* CreateWindow(int argc,char** argv)
 	{
-		mParams = Parameters::GetInstance();
-
-		CSaltoDataManagment::InitSaltoDB( &mParams );
+		CSaltoDataManagment::InitSaltoDB( &Parameters::GetInstance() );
 
 		pMelody = new MelodyTranslator;
 		if( pMelody == NULL )
 			throw Err("OOM in MAIN cant construct melody");
 
 
-		DSPCfg.SetParams( mParams );
-		mMIDIHandler.SetParams( &mParams );
+		DSPCfg.SetParams( Parameters::GetInstance() );
+		mMIDIHandler.SetParams( &Parameters::GetInstance() );
 		pDSP = new SaltoSynth(DSPCfg);
 		if(pDSP==NULL)
 			throw Err("OOM in MAIN cant construct CSaltoDSP");
 
 		// gui , user interface interacts also with parameter class
-		pGUI = new CSaltoEditor(&mParams, pDSP, pMelody, this);//,pMIDI);
+		pGUI = new CSaltoEditor(&Parameters::GetInstance(), pDSP, pMelody, this);//,pMIDI);
 		if(pGUI==NULL)
 			throw Err("OOM in MAIN cant construct editor");
 
 		MIDIHandlerConfig MIDIHandlerCfg;
 		MIDIHandlerCfg.SetPitchModRange( DSPCfg.GetPitchModRange() );
 		mMIDIHandler.Configure( MIDIHandlerCfg );
-		mMIDIHandler.SetParams(&mParams);
+		mMIDIHandler.SetParams(&Parameters::GetInstance());
 		mMIDIHandler.LinkOutControl(0, pDSP, 0);
 
 		pMelody->LinkOutWithInControl( 0, &mMIDIHandler, 0);
@@ -95,8 +93,6 @@ public:
 	}
 
 protected:
-
-	Parameters       mParams;
 	SaltoSynth*       pDSP;
 	MelodyTranslator* pMelody;
 	CSaltoEditor*     pGUI;
@@ -207,10 +203,10 @@ protected:
 			mMIDIHandler.Stop();
 			pDSP->Stop();
 
-			if ( mParams.GetWriteToFile())
+			if ( Parameters::GetInstance().GetWriteToFile())
 				{
 					std::cout << "Closing audio File ..... " << std::endl;
-					mParams.SetExit(true); // MRJ: Ya lo es no?
+					Parameters::GetInstance().SetExit(true); // MRJ: Ya lo es no?
 					mFileAudioOut.Stop();
 				}
 
@@ -250,7 +246,7 @@ protected:
 
 	void RenderSynthesis(Audio& synthbuffer)
 	{
-		if( mParams.GetWriteToFile())
+		if( Parameters::GetInstance().GetWriteToFile())
 			mFileAudioOut.Do( synthbuffer );
 		else
 		{
@@ -262,21 +258,21 @@ protected:
 
 	void ProcessMIDIMessages(void)
 	{
-		if ( mParams.GetPlayNote() )
+		if ( Parameters::GetInstance().GetPlayNote() )
 		{
 			mMIDIHandler.DoNote();
 		}
-		if (mParams.GetUseMelody())
+		if (Parameters::GetInstance().GetUseMelody())
 		{
 			TTime currentTime = pDSP->GetEventSample()/DSPCfg.GetSampleRate();
-			if (!pMelody->Do( mParams.GetPlay(), currentTime ))
+			if (!pMelody->Do( Parameters::GetInstance().GetPlay(), currentTime ))
 			{
-				mParams.SetUseMelody( false );
+				Parameters::GetInstance().SetUseMelody( false );
 				pDSP->ResetEventSample();
 			}
 			mMIDIHandler.Do();
 		}
-		if ( mParams.GetUseMidiKeyboard() || mParams.GetUseBreathController() )
+		if ( Parameters::GetInstance().GetUseMidiKeyboard() || Parameters::GetInstance().GetUseBreathController() )
 		{
 			mMIDIManager.Check();
 			mMIDIHandler.Do();
@@ -301,11 +297,19 @@ private:
 
 int main (int argc,char** argv)
 {
+	//WHY DOES THIS NOT WORK? IT SEEMS TO CAUSE SOME DATA CORRUPTION,
+	//OR MORE LIKELY, CAUSE SOME DATA CORRUPTION TO BECOME EVIDENT...
+	//OR MAYBE... IT'S TRYING TO RUN Fl::run TWICE IS CAUSING PROBLEMS?
+	
+	//SaltoConfig config(argc,argv);
+	//InstrumentValues::Instantiate(config.mInstrument,config.mDataFolder);
+
+	InstrumentValues::Instantiate(0,"SaltoDataFolder");
+
 	SaltoApp mySalto;
 
 	try
 	{
-
 		mySalto.Run(argc,argv);
 	}
 	catch ( Err& e )

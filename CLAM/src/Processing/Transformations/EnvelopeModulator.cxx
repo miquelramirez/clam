@@ -42,9 +42,9 @@ namespace CLAM {
 		Configure(c);
 	}
 
-	bool EnvelopeModulator::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+	bool EnvelopeModulator::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const EnvModulatorConfig&>(cfg);
+		CopyAsConcreteConfig(mConfig, c);
 
 		mDeltaX = 1000.0/((TTime)mConfig.GetSampleRate());
 

@@ -71,7 +71,7 @@ public:
 
 	bool ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const ThreadedBufferInConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		return true;
 	}
 

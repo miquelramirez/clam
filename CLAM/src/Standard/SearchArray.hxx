@@ -42,6 +42,11 @@ public:
 	{
 		Set(array);
 	}
+
+	~SearchArray()
+	{
+
+	}
 	void Set(const Array<T>& array)
 	{
 		mpArray = &array;

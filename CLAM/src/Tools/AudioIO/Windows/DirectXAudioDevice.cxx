@@ -19,7 +19,7 @@
  *
  */
 
-#include "AudioIO.hxx"
+#include "AudioManager.hxx"
 
 #define STRICT
 #include "CLAM_windows.h"

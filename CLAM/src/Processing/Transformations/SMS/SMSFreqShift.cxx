@@ -30,26 +30,10 @@ bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	DataArray& ifreqArray=in.GetFreqBuffer();
 	DataArray& ofreqArray=out.GetFreqBuffer();
 	TSize nPeaks=in.GetnPeaks();
+	TData amount=mAmountCtrl.GetLastValue();
 	for(i=0;i<nPeaks;i++)
 	{
-		ofreqArray[i]=ifreqArray[i]+mAmountCtrl.GetLastValue();
-	}
-	return true;
-}
-
-bool SMSFreqShift::Do(const Frame& in, Frame& out)
-{
-	return Do(in.GetSpectralPeakArray(),out.GetSpectralPeakArray());
-}
-
-bool SMSFreqShift::Do(const Segment& in, Segment& out)
-{
-	int i;
-	TSize nFrames=in.GetnFrames();
-	for(i=0;i<nFrames;i++)
-	{
-		UpdateControlValueFromBPF((TData)i/nFrames);
-		Do(in.GetFrame(i),out.GetFrame(i));
+		ofreqArray[i]=ifreqArray[i]+amount;
 	}
 	return true;
 }

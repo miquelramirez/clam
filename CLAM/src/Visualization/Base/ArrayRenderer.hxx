@@ -19,6 +19,9 @@
  *
  */
 
+/** \file ArrayRenderer.hxx
+ */
+
 #ifndef __ARRAYRENDERER__
 #define __ARRAYRENDERER__
 
@@ -28,9 +31,22 @@
 using CLAM::TData;
 using CLAM::DataArray;
 
+/** \namespace CLAMGUI
+ *  \brief     The old Visualization Module namespace.
+ *
+ *  This namespace is deprecated so its usage is STRONGLY discouraged. The official
+ *  namespace now is CLAMVM 
+ *  @see CLAMVM
+ */
 namespace CLAMGUI
 {
 
+/** \class ArrayRenderer
+ *  \brief Deprecated Interface.
+ *
+ *  This interface is <em>deprecated</em>, so its usage is strongly discouraged. Since
+ *  it will be removed soon.
+ */
 class ArrayRenderer
 {
 public:

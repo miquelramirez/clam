@@ -36,8 +36,7 @@ namespace CLAM {
 	protected:
 
 		SourceStreamRegion(unsigned int hop,
-		                   unsigned int length,
-		                   unsigned int offset = 0);
+		                   unsigned int length);
 	public:
 
 		typedef std::list<ReadStreamRegion*>::iterator reader_iterator;
@@ -49,11 +48,32 @@ namespace CLAM {
 		reader_const_iterator readers_end()   const;
 
 		void AddReader(ReadStreamRegion*);
+		void RemoveReader(ReadStreamRegion*);
 		bool IsSourceOf(const ReadStreamRegion*) const;
 
 		virtual bool FulfilsInvariant() const;
+		bool CanActivate() const;
 		virtual bool Accept(RegionVisitor& v) const { return v.Visit(*this); }
-		virtual ~SourceStreamRegion() {};
+
+		/** This method initializes the source region and all its associated
+		 *	readers. All readers are centered around 0 (or offset passed as a
+		 *	parameter if you need a different value). The source region is advanced
+		 *	so half of the biggest window size is written with zeros. */
+		void Init(unsigned int offset=0);
+		
+		const ReadStreamRegion& GetLastReading() const;
+		bool HasReaders() const { return !mReaders.empty(); }
+
+	protected:
+		/** Initializes associated reading regions*/
+		void InitReaders(unsigned int offset);
+		/** Helper function to compute the length of the largest reading region. */
+		unsigned int FindLargestReadRegionLength();
+
+		virtual ~SourceStreamRegion() {}
+	private:
+		bool AllReadersPreceedsThisWithNoOverlap() const;
+
 	};
 
 }

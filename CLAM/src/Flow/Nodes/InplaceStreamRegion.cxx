@@ -29,8 +29,13 @@ namespace CLAM {
 	                                         SourceStreamRegion *src,
 	                                         unsigned int write_delay) 
 		: ReadStreamRegion(hop,read_length,src),
-		  WriteStreamRegion(hop,write_length,read_length-(write_length+write_delay))
-	{}
+		  //WriteStreamRegion(hop,write_length,read_length-(write_length+write_delay))
+		  WriteStreamRegion(hop,write_length)
+	{
+		//XA: this may not work because regions are centered in the configure method
+		WriteStreamRegion::mPos=read_length-(write_length+write_delay);
+	
+	}
 	
 
 	void InplaceStreamRegion::Activate()

@@ -30,9 +30,9 @@ namespace CLAMGUI
 						CalculateDrawingConstants();
 				}
 
-				virtual void SetRangeNotifier( Signalv2<float,float>& sig );
+				virtual void SetRangeNotifier( SigSlot::Signalv2<float,float>& sig );
 
-				virtual void SetSpanNotifier( Signalv2<float,float>& sig );
+				virtual void SetSpanNotifier( SigSlot::Signalv2<float,float>& sig );
 
 				virtual void SetRange( float lowerBound, float upperBound );
 
@@ -65,8 +65,8 @@ namespace CLAMGUI
 				float mUpperBound;
 				float mDistance;  // separation between the lower bound and the upper bound
 				float mPixelLen;
-				Slot  mRangeSlot;
-				Slot  mSpanSlot;
+				SigSlot::Slot  mRangeSlot;
+				SigSlot::Slot  mSpanSlot;
 				int   mFontType;
 				float valuePerPixel; // position increment per pixel
 				float pixelsPerValue; // pixels "occupied" by each value

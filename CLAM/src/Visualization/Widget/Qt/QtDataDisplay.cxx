@@ -5,9 +5,9 @@
 #include <qslider.h>
 #include <qscrollbar.h>
 #include <qlayout.h>
-#include "qwt_scale.h"
-#include "qwt_scldraw.h"
-#include "qwt_scldiv.h"
+#include <qwt_scale.h>
+#include <qwt_scldraw.h>
+#include <qwt_scldiv.h>
 #include "Viewport.hxx"
 
 #include <cmath>

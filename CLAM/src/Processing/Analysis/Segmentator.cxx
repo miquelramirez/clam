@@ -109,7 +109,7 @@ std::ostream& operator << (std::ostream& myStream, const TDescriptorsParams& a)
 		}
 		default:
 		{
-			myStream << "Unknown descriptor";
+			myStream << "UnknownDescriptor";
 			break;
 		}
 	}
@@ -194,9 +194,9 @@ Segmentator::~Segmentator()
 {
 }
 
-bool Segmentator::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool Segmentator::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig=dynamic_cast<const SegmentatorConfig&> (c);
+	CopyAsConcreteConfig(mConfig, c);
 	return true;
 }
 

@@ -22,7 +22,7 @@
 #include "ErrGUI.hxx"
 #include <iostream>
 
-namespace CLAMGUI {
+namespace CLAMVM {
 
 	ErrGUI::ErrGUI( char* mMainMsg, char* filename, int line) : 
 		Err( "GUI Error:" ), 

@@ -152,7 +152,7 @@ protected:
 
 private:
 	void DataFusion(Segment& s,const Array<Array<PointTmpl<int,TData> > >& segmentBoundaries);
-	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig& c);
 	/* All Algorithms should follow this prototype, taking as an input a segment and
 	// a Matrix where the descriptors values are stored
 	*/

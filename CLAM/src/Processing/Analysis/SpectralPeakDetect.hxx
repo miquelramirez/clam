@@ -24,7 +24,6 @@
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
-#include "Port.hxx"
 #include "Spectrum.hxx"
 #include "SpectralPeak.hxx"
 #include "SpectralPeakArray.hxx"
@@ -87,7 +86,7 @@ namespace CLAM {
 		 *  @throw bad_cast exception when the argument is not an SpectralPeakDetectConfig object.
 		 *  @return True if the cast has been commited correctly		 
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SpectralPeakDetectConfig initialised by default*/
@@ -114,8 +113,6 @@ namespace CLAM {
 		 *  @return Boolean value, true if all has been executed correctly.
 		 */
 		bool Do(Spectrum& input, SpectralPeakArray& out);
-
-		// Port interfaces.
 
 		/** Change the internal type state.  
 		 * Apart from prototype configuration, the Size, Scale and

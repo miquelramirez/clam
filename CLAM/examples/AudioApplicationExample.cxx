@@ -25,7 +25,7 @@
 #include "AudioManager.hxx"
 
 #include "Oscillator.hxx"
-#include "Multiplier.hxx"
+#include "AudioMultiplier.hxx"
 #include "AudioAdder.hxx"
 #include "AudioApplication.hxx"
 
@@ -89,7 +89,7 @@ void MyIOAudioApplication::AudioMain(void)
 		oscLcfg.SetFrequency(0.2);
 		oscLcfg.SetPhase(PI/2.);
 
-		Multiplier mul;
+		AudioMultiplier mul;
 		AudioAdder add;
 
 		Oscillator oscL(oscRcfg);

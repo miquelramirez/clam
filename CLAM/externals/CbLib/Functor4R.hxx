@@ -86,7 +86,7 @@ class MemberTranslator4R : public Functor4R< TypeOfReturn, Parm1Type, Parm2Type,
 {
 public:
 
-	MemberTranslator4R( Callee& c, const MemFunc& mf )
+	MemberTranslator4R( Callee& c, MemFunc mf )
 		: Functor4R< TypeOfReturn, Parm1Type, Parm2Type, Parm3Type, Parm4Type > ( thunk, &c, &mf, sizeof( MemFunc ) )
 	{
 	}

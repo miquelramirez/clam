@@ -3,9 +3,12 @@
 
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Valuator.H>
+#include "Signalv2.hxx"
+#include <cmath>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
+		using SigSlot::Signalv2;
 
 		class Fl_ZoomSlider : public Fl_Widget
 		{
@@ -30,13 +33,13 @@ namespace CLAMGUI
 				inline void SetScale( float value )
 				{
 						scale_ = value;
-						update2();
+						UpdateThumbParts();
 				}
 
 				inline void SetOffset( float value )
 				{
 						offset_ = value;
-						update2();
+						UpdateThumbParts();
 				}
 
 				Fl_ZoomSlider( int X, int Y, int W, int H, int orientation );
@@ -47,6 +50,12 @@ namespace CLAMGUI
 
 				int handle( int evt );
 
+				Signalv2<double, double> SpanChanged;
+				/**
+				   Resize the slider, and update the thumb positions
+				 */
+				void resize( int X, int Y, int W, int H );
+
 		protected:
 				/**
 				   Calculate scale and offset from the physical positions of the thumb-parts
@@ -55,13 +64,13 @@ namespace CLAMGUI
 				{
 					if (type()==FL_HORIZONTAL) 
 					{
-							scale_=float(v2-v1+1)/float(w()-2);
-							offset_=float(v1-1)/float(w()-2);
+							scale_=float(mLastPixel-mFirstPixel+1)/float(w()-2);
+							offset_=float(mFirstPixel-1)/float(w()-2);
 					}
 					else
 					{
-							scale_=float(v2-v1+1)/float(h()-2);
-							offset_=float(h()-2-v2)/float(h()-2);		
+							scale_=float(mLastPixel-mFirstPixel+1)/float(h()-2);
+							offset_=float(h()-2-mLastPixel)/float(h()-2);		
 					}
 					
 				}
@@ -72,33 +81,39 @@ namespace CLAMGUI
 				{
 						if (type()==FL_HORIZONTAL) 
 						{
-								v1=int(offset_*float(w()-2))+1;
-								v2=int((scale_)*float(w()-2))+v1-1;
+								mFirstPixel=int(offset_*float(w()-2))+1;
+								mLastPixel=int((scale_)*float(w()-2))+mFirstPixel-1;
+								mPixelLen = mLastPixel - mFirstPixel;
 						}
 						else
 						{
-								v2=h()-2-int(offset_*float(h()-2));		
-								v1=v2+1-int((scale_)*float(h()-2));
+								mLastPixel=h()-2-int(offset_*float(h()-2));		
+								mFirstPixel=mLastPixel+1-int((scale_)*float(h()-2));
+								mPixelLen = mLastPixel - mFirstPixel;
+
 						}
 
 				}
 
-				/**
-				   Resize the slider, and update the thumb positions
-				 */
-				void resize( int X, int Y, int W, int H )
-				{
-						Fl_Widget::resize(X,Y,W,H);
-						UpdateThumbParts();
+				void UpdatePixelLen()
+				{			
+
+					if ( mOrientation == FL_HORIZONTAL )
+							mPixelLen = fabs( double(h() - y()) ) -offset_*2;
+					else if ( mOrientation == FL_VERTICAL )
+							mPixelLen = fabs( double(w() - x()) ) - offset_ * 2;
+						
 				}
+
 
 		private:
 				float scale_;
 				float offset_;
-				int v1,v2;
-
+				int mFirstPixel, mLastPixel;
 				int mOrientation; // either FL_HORIZONTAL or FL_VERTICAL
-				
+				int prev;
+				int dragging;
+				float mPixelLen;
 		};
 		
 }

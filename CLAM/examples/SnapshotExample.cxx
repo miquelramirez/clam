@@ -30,9 +30,9 @@ using std::cerr;
 #include "DataTypes.hxx"
 #include "ErrProcessingObj.hxx"
 
-#include "AudioSnapshot.hxx"
-#include "SpectrumSnapshot.hxx"
+#include "Plot.hxx"
 
+using CLAMVM::plot;
 using namespace CLAM;
 
 int main(int argc, char* argv[])
@@ -76,11 +76,11 @@ int main(int argc, char* argv[])
 		myfft.Do(myaudio,myspectrum);
 		
 		std::cout << "Opening Audio snapshot" << std::endl;
-		showSnapshotAudio( myaudio );
+		plot( myaudio, "FFT Input audio" );
 		std::cout << "Closing Audio snapshot" << std::endl;
 		
 		std::cout << "Opening spectrum snapshot" << std::endl;
-		showSnapshotSpectrum( myspectrum );
+		plot( myspectrum, "FFT Output spectrum" );
 		std::cout << "Closing Spectrum Snapshot" << std::endl;
 		
 	}

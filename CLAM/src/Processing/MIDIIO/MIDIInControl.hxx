@@ -30,7 +30,7 @@ namespace CLAM {
 		MIDIInControl(const MIDIInConfig &c);
 		const char * GetClassName() const {return "MIDIInControl";}
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg)
+		bool ConcreteConfigure(const ProcessingConfig& c)
 			throw(ErrProcessingObj);
 
 		void Handle(unsigned char* msg,int size);

@@ -56,7 +56,7 @@ private:
 	
 	OutControl mOutNoteOn;
 	OutControl mOutNoteOff;
-	bool ConcreteConfigure(const ProcessingConfig &cfg) {return true;}
+	bool ConcreteConfigure(const ProcessingConfig &c) {return true;}
 // Constructor/Destructor
 public:
 	MyProcObj(const MyProcConf &c) :

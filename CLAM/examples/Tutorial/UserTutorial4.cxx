@@ -45,7 +45,7 @@ int main()
 	// Instead of creating and initialize our own array, like in
 	// example 3, we get a reference to the uninitialized complex
 	// array (which already has the right size)
-	Array<Complex<TData> > &cplx = spec.GetComplexArray();
+	Array<Complex > &cplx = spec.GetComplexArray();
 
 	// ... and we initialize it directly. 
 	for (int i=0; i<513; i++)

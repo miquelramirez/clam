@@ -32,11 +32,11 @@ namespace CLAM {
 	SpecTypeFlags FFT_rfftw::mComplexflags;
 
 
-	bool FFT_rfftw::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool FFT_rfftw::ConcreteConfigure(const ProcessingConfig& c)
 	{
 		int oldSize = mSize;
 		
-		mConfig = dynamic_cast<const FFTConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		if (mConfig.HasAudioSize()) {
 			if (mConfig.GetAudioSize()<0)
 				throw(ErrProcessingObj("Wrong (negative) Size in FFT Configuration.",this));

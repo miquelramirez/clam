@@ -25,7 +25,7 @@
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
 #include "Audio.hxx"
-#include "AudioIO.hxx"
+#include "AudioManager.hxx"
 #include "OSDefines.hxx"
 #include "InControl.hxx"
 
@@ -112,7 +112,7 @@ namespace CLAM
 
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) throw(std::bad_cast);
+		bool ConcreteConfigure( const ProcessingConfig& c );
 
 		// Unsupervised mode 
 		bool Do(void) { return true; }

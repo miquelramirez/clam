@@ -72,7 +72,7 @@ public:
 	bool Do(void){ return false;}
 
 	/** Configuration method */
-	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 	const ProcessingConfig &GetConfig() const {return mConfig;}
 

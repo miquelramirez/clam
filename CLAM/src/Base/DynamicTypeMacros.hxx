@@ -94,7 +94,7 @@ protected: \
 	} \
 private: \
 	template <unsigned int NAttrib> \
-	class AttributePosition : public DynamicType::AttributePositionBase<NAttrib> { \
+	class AttributePosition : public CLAM::DynamicType::AttributePositionBase<NAttrib> { \
 		public: \
 			typedef StaticBool<!(NAttrib>=N)> InboundsCheck; \
 	}; \
@@ -124,31 +124,36 @@ private: \
 	/** Undefined link for the Remove method chain (Remove) */ \
 	template <unsigned int NAttrib> \
 	void RemoveChainedAttr (AttributePosition<NAttrib>*a) { \
-		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
+		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
+		CheckAttribute ((InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 	/** Undefined link for the Add method chain (Add) */ \
 	template <unsigned int NAttrib> \
 	void AddChainedAttr (AttributePosition<NAttrib>*a) { \
-		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
+		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
+		CheckAttribute ((InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 	/** Undefined link for the Inform method chain (Inform) */ \
 	template <unsigned int NAttrib> \
 	void InformChainedAttr (AttributePosition<NAttrib>*a) { \
-		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
+		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
+		CheckAttribute ((InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 	/** Undefined link on the method chain (Store) */ \
 	template <unsigned int NAttrib> \
 	void StoreChainedAttr (AttributePosition<NAttrib>*a,CLAM::Storage & s) { \
-		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
+		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
+		CheckAttribute ((InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 	/** Undefined link on the method chain (Load) */ \
 	template <unsigned int NAttrib> \
 	void LoadChainedAttr (AttributePosition<NAttrib>*a,CLAM::Storage & s) { \
-		CheckAttribute ((AttributePosition<NAttrib>::InboundsCheck*)NULL, \
+		typedef typename AttributePosition<NAttrib>::InboundsCheck InboundsCheck; \
+		CheckAttribute ((InboundsCheck*)NULL, \
 		                (AttributePosition<NAttrib>*)NULL); \
 	}\
 private: \

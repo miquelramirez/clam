@@ -363,7 +363,7 @@ namespace CLAM {
 	  int i;
 	  TData temp = 0;
 	  for (i=1;i<size;i++)
-		  temp += pow((double)mag[i],20.0)*i; 
+		  temp += pow(mag[i],(TData)2)*i;
 	  return temp;
   }
   

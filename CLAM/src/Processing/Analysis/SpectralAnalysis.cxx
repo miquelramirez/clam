@@ -58,9 +58,6 @@ void SpectralAnalysisConfig::DefaultValues()
 
 	GetCircularShift().SetAmount(-256);
 
-	/** Buffer size for circular buffer **/
-	SetBufferSize(-1); //by default, it will be taken as windowSize-1+hopsize
-	
 }
 
 
@@ -151,13 +148,15 @@ TInt32 SpectralAnalysisConfig::PowerOfTwo(TInt32 size)
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 
-SpectralAnalysis::SpectralAnalysis()
+SpectralAnalysis::SpectralAnalysis():mInput("Input",this,1),
+		mOutput("Output",this,1)
 {
 	AttachChildren();
 	Configure(SpectralAnalysisConfig());
 }
 
-SpectralAnalysis::SpectralAnalysis(SpectralAnalysisConfig& cfg)
+SpectralAnalysis::SpectralAnalysis(SpectralAnalysisConfig& cfg):mInput("Input",this,1),
+		mOutput("Output",this,1)
 {
 	AttachChildren();
 	Configure(cfg);
@@ -165,6 +164,12 @@ SpectralAnalysis::SpectralAnalysis(SpectralAnalysisConfig& cfg)
 
 SpectralAnalysis::~SpectralAnalysis()
 {
+}
+
+void SpectralAnalysis::Attach(Audio& in, Spectrum &out)
+{
+	mInput.Attach(in);
+	mOutput.Attach(out);
 }
 
 bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
@@ -211,15 +216,6 @@ void SpectralAnalysis::ConfigureData()
 	
 	/*Setting prototypes in the FFT*/
 	mPO_FFT.SetPrototypes (mWindow, mSpec);
-		  
-	/*Initializing and configuring member circular buffer*/
-	if(mConfig.GetBufferSize()==-1) mConfig.SetBufferSize(mConfig.GetWindowSize()-1+mConfig.GetHopSize());
-	mCircularBuffer.SetBufferSize(mConfig.GetBufferSize());
-	mCircularBuffer.SetReadSize(mConfig.GetWindowSize()-1);
-	mCircularBuffer.SetWriteSize(mConfig.GetHopSize());
-	mCircularBuffer.Init();
-	mCircularBuffer.IncreaseWriteIndex(mConfig.GetBufferSize()-2*mConfig.GetHopSize());
-	mCircularBuffer.IncreaseReadIndex(((mConfig.GetBufferSize()-mConfig.GetHopSize()+1)-(mConfig.GetWindowSize()))/2);
 }
 
 void SpectralAnalysis::AttachChildren()
@@ -230,19 +226,15 @@ void SpectralAnalysis::AttachChildren()
 	mPO_FFT.SetParent(this);
 }
 
+bool SpectralAnalysis::Do(void){return Do(mInput.GetData(),mOutput.GetData());}
 
 bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 {
 	/* mAudioFrame is used as a helper audio copy where all windowing is done */
+	
+	in.GetAudioChunk(0,in.GetSize()-1 ,mAudioFrame,true );
+
 	mAudioFrame.SetSize(mConfig.GetWindowSize()-1);
-
-	/* Input audio frame is writen onto circular buffer */
-	mCircularBuffer.WriteAudio(in);
-	/* WindowSize-1 samples are read and put into helper mAudioFrame data */
-	mCircularBuffer.ReadAudio(mAudioFrame);
-
-	/* Read index is then decreased according to hop size */
-	mCircularBuffer.DecreaseReadIndex(mConfig.GetWindowSize()-mConfig.GetHopSize()-1);
 
 	/* Zero padding is added to audioframe */
 	mAudioFrame.SetSize(mConfig.GetprFFTSize());

@@ -27,6 +27,10 @@
 #include "Audio.hxx"
 #include <typeinfo> // std::bad_cast
 #include "ErrProcessingObj.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+
+#include <iostream>
 
 namespace CLAM 
 {
@@ -72,13 +76,26 @@ namespace CLAM
 			
 		}
 		
+		InPortTmpl<Audio> mFirstInput;
+		InPortTmpl<Audio> mSecondInput;
+		OutPortTmpl<Audio> mOutput;
+		
+
 	public:
+
 		BinaryAudioOp()
+			:mFirstInput("First Audio Input",this,1)
+			 ,mSecondInput("Second Audio Input",this,1)
+			 ,mOutput("Audio Output",this,1)
 		{
 			Configure( BinaryAudioOpConfig() );
 		}
 		
 		BinaryAudioOp(const BinaryAudioOpConfig &c)
+			:mFirstInput("First Audio Input",this,1)
+			 ,mSecondInput("Second Audio Input",this,1)
+			 ,mOutput("Audio Output",this,1)
+									                 
 		{
 				Configure( c );
 		}
@@ -89,27 +106,33 @@ namespace CLAM
 
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
-		void Check(Audio& in1,Audio& in2, Audio& out)
+		void Check(const Audio& in1, const Audio& in2, const Audio& out)
 		{
-			CLAM_ASSERT(in1.GetSize() == in2.GetSize(),
+			CLAM_ASSERT(in1.GetSize() <= in2.GetSize(),
 				"BinaryAudioOperation::Do(): Incompatible Input Audio Data Sizes");
-			CLAM_ASSERT(in1.GetSize() == out.GetSize(),
+			CLAM_ASSERT(in1.GetSize() <= out.GetSize(),
 				"BinaryAudioOperation::Do(): Incompatible Output Audio Data Size");
 			
 		}
 
 		bool Do(void)
 		{
-			CLAM_ASSERT ( false,  "BinaryAudioOperation::Do() : Supervised mode not implemented" );
-			return false;
+			bool res = Do(mFirstInput.GetData(),
+				      mSecondInput.GetData(),
+				      mOutput.GetData());
+			mFirstInput.LeaveData();
+			mSecondInput.LeaveData();
+			mOutput.LeaveData();
+			return res;
 		}
 
-		bool Do(Audio& in1, Audio& in2, Audio& out)
+		bool Do(const Audio& in1, const Audio& in2, Audio& out)
 		{
+
 
 			int size = in1.GetSize();
 			int i;
-			
+
 			Check(in1,in2,out);
 
 			TData* inb1 = in1.GetBuffer().GetPtr();
@@ -126,7 +149,7 @@ namespace CLAM
 
 		// Port interfaces.
 
-		bool SetPrototypes(Audio& in1,Audio& in2, const Audio& out)
+		bool SetPrototypes(const Audio& in1, const Audio& in2, const Audio& out)
 		{
 			return false;
 		}

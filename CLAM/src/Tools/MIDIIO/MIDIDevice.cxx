@@ -21,6 +21,7 @@
 
 #include "MIDIDevice.hxx"
 #include "MIDIIn.hxx"
+#include "MIDIClocker.hxx"
 #include "MIDIEnums.hxx"
 #include <algorithm>
 using std::find;
@@ -49,6 +50,13 @@ bool MIDIDevice::Register(MIDIManager* mm,MIDIIn& in)
 	/** Register a MIDIIn object as a new input of the device
 	*/
 	mInputs.push_back(&in);
+	_SetMIDIManager(mm);
+	in.mpDevice = this;
+	return true;
+}
+
+bool MIDIDevice::Register(MIDIManager* mm,MIDIClocker& in)
+{
 	_SetMIDIManager(mm);
 	in.mpDevice = this;
 	return true;
@@ -99,6 +107,12 @@ void MIDIDevice::Unregister(MIDIIn& in)
 	mInputs.erase(it);
 	in.mpDevice = 0;
 }
+
+void MIDIDevice::Unregister(MIDIClocker& in)
+{
+	in.mpDevice = 0;
+}
+
 
 /*	
 void MIDIDevice::Unregister(MIDIOut& out)

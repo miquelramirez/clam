@@ -28,61 +28,62 @@
 
 #include "ConnectionHandler.hxx"
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
-	template < typename ParmType1, typename ParmType2 >
+template < typename ParmType1, typename ParmType2 >
 	class Signalv2 : public Signal
+{
+public:
+	typedef typename CBL::Functor2<ParmType1,ParmType2>              tCallbackType;
+
+public:
+	
+	virtual ~Signalv2()
 	{
-	public:
-		typedef typename CBL::Functor2<ParmType1,ParmType2>              tCallbackType;
-  
-	public:
-  
-		virtual ~Signalv2()
-		{
-			mSuper.DestroyConnections();
-		}
-  
-  
-		void Connect( Slotv2<ParmType1,ParmType2>& slot )
-		{
-			Connection c( AssignConnection(), this );
-    
-			mSuper.AddCallback( c.GetID(), &slot, slot.GetMethod() );
-    
-			slot.Bind(c);
-		}
-  
-		void Emit( ParmType1 parm1, ParmType2 parm2 )
-		{
-			if ( mSuper.HasNoCallbacks() )
-				return;
-    
-			typename tSuperType::tCallList calls = mSuper.GetCalls();
-			typename tSuperType::tCallIterator i = calls.begin();
-			typename tSuperType::tCallIterator end = calls.end();
-    
-			while ( i != end )
+		mSuper.DestroyConnections();
+	}
+
+
+	void Connect( Slotv2<ParmType1,ParmType2>& slot )
+	{
+		Connection c( AssignConnection(), this );
+
+		mSuper.AddCallback( c.GetID(), &slot, slot.GetMethod() );
+
+		slot.Bind(c);
+	}
+	
+	void Emit( ParmType1 parm1, ParmType2 parm2 )
+	{
+		if ( mSuper.HasNoCallbacks() )
+			return;
+		
+		typename tSuperType::tCallList calls = mSuper.GetCalls();
+		typename tSuperType::tCallIterator i = calls.begin();
+		typename tSuperType::tCallIterator end = calls.end();
+
+		while ( i != end )
 			{
 				(*(*i))( parm1, parm2 );
 				i++;
 			}
-    
-		}
-  
-		void FreeConnection( Connection* pConnection )
-		{
-			mSuper.RemoveCall( pConnection->GetID() );
-			FreeConnectionId( pConnection->GetID() );
-		}
-	private:
-		typedef Signalv2<ParmType1,ParmType2>                tSignalType;
-		typedef ConnectionHandler<tSignalType >     tSuperType;
-  
-		tSuperType  mSuper;
-	};
+		
+	}
+
+	void FreeConnection( Connection* pConnection )
+	{
+		mSuper.RemoveCall( pConnection->GetID() );
+		FreeConnectionId( pConnection->GetID() );
+	}
+private:
+	typedef Signalv2<ParmType1,ParmType2>                tSignalType;
+	typedef ConnectionHandler<tSignalType >     tSuperType;
+
+	tSuperType  mSuper;
+};
 
 }
+
 
 #endif // Signalv2ImplSerious.hxx

@@ -66,10 +66,9 @@ namespace CLAM {
 		return name.str();
 	}
 
-	bool SpectrumSubstracter2::ConcreteConfigure(const ProcessingConfig&c) throw(std::bad_cast)
+	bool SpectrumSubstracter2::ConcreteConfigure(const ProcessingConfig&c)
 	{
-		// Nothing specific to configure here...
-		mConfig = dynamic_cast<const SpecSubstracter2Config&>(c);
+		CopyAsConcreteConfig(mConfig, c);
 		
 		return true;
 	}
@@ -707,7 +706,7 @@ namespace CLAM {
 		TData *mo = out.GetMagBuffer().GetPtr();
 		TData *fo = out.GetPhaseBuffer().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			Polar po = Polar(pow(TData(10),m1.GetValue(pos)/TData(10.0)),f1.GetValue(pos)) - 
+			Polar po = Polar(log2lin(m1.GetValue(pos)),f1.GetValue(pos)) - 
 			            Polar(m2[i],f2[i]);
 			mo[i]=po.Mag();
 			fo[i]=po.Ang();
@@ -853,8 +852,8 @@ namespace CLAM {
 		Complex *c2 = in2.GetComplexArray().GetPtr();
 		Complex *co = out.GetComplexArray().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			TData BRe = pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * cos(f1.GetValue(pos));
-			TData BIm = pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * sin(f1.GetValue(pos));
+			TData BRe = log2lin(fabs(m1.GetValue(pos)) * cos(f1.GetValue(pos)));
+			TData BIm = log2lin(fabs(m1.GetValue(pos)) * sin(f1.GetValue(pos)));
 			co[i]= Complex(BRe,BIm) - c2[i];
 			pos+=delta;
 		}
@@ -993,7 +992,7 @@ namespace CLAM {
 		Polar *p2 = in2.GetPolarArray().GetPtr();
 		Polar *po = out.GetPolarArray().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			TData BMag = pow(TData(10),m1.GetValue(pos)/TData(10.0));
+			TData BMag = log2lin(m1.GetValue(pos));
 			TData BPha = f1.GetValue(pos);
 			po[i]=Polar(BMag,BPha)-p2[i];
 			pos+=delta;

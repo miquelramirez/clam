@@ -64,12 +64,6 @@ namespace CLAM
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-private:
-	  
-	  // Singleton interface
-
-	  static Parameters mInstance;
-
 public:
 	  
 	  static Parameters& GetInstance();
@@ -191,10 +185,11 @@ double          GetStatFundFreq7()                           	{return mCurrentSt
     Array<CSaltoSegData> mSegData;
 
     // SegData Handling
-    char* mpFileName[MAX_SPECTRAL_SEGMENTS];
-    char* mpPitchAttribute[MAX_PITCH_VALUE];
-    char* mpAttackAttribute[MAX_ATTACKS_VALUE];
-    char* mpStatTemplAttribute[MAX_STAT_TEMPLATES];
+    char** mpFileName;
+    char** mpPitchAttribute;
+    char** mpAttackAttribute;
+    char** mpStatTemplAttribute;
+
     char  mpPathName[255];
 
     TIndex mCurrSDIFPosition, mSelectedPitch, mSelectedAttack;

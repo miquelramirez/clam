@@ -23,7 +23,9 @@
 #define _DYNAMIC_MIXER_HXX
 
 #include "ProcessingComposite.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
+
 #include "Audio.hxx"
 #include "SoftSwitch.hxx"
 #include "AudioMixer.hxx"
@@ -85,13 +87,15 @@ namespace CLAM
 
 		void ConfigureData();
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig& c);
 
 		bool ConcreteStart();
 
 	public:
 
 		DynamicMixer(const DynamicMixerConfig& c = DynamicMixerConfig());
+
+		const char * GetClassName() const {return "DynamicMixer";}
 
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 

@@ -1,14 +1,4 @@
 /*
-DON'T EDIT THIS FILE BY HAND, IT IS GENERATED 
-BY THE SCRIPT SndPcmGen.pl FROM
-alsa-lib/test/latency.c
-SndPcm.cxx.in.head
-SndPcm.cxx.in.tail
-SndPcm.hxx.in.head
-SndPcm.hxx.in.tail
-*/
-
-/*
  * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
@@ -151,7 +141,6 @@ void SndPcm::Start(void)
 
 void SndPcm::Stop(void)
 {
-	printf("Stop\n");
 	if (chandle)
 		snd_pcm_drop(chandle);
 	if (phandle)

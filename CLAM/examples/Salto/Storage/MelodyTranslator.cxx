@@ -30,9 +30,9 @@ namespace CLAM
 	{
 	}
 
-	bool MelodyTranslator::ConcreteConfigure( const ProcessingConfig& cfg )throw( std::bad_cast )
+	bool MelodyTranslator::ConcreteConfigure( const ProcessingConfig& c )
 	{
-		mConfig = dynamic_cast< const MelodyTranslatorConfig& >( cfg );
+		CopyAsConcreteConfig(mConfig, c);
 
 		mFileName = mConfig.GetFileName();
 

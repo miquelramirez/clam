@@ -35,10 +35,22 @@ namespace CBL
 
 class FunctorBase
 {
-	
+	class A
+	{
+	};
+
+	class B
+	{
+	};
+
+	class AB : public A, public B
+	{
+	};
+
+
 public:
 	
-	typedef void (FunctorBase::*_MemFunc)();
+	typedef void (AB::*_MemFunc)();
 	
 	FunctorBase()
 		: callee( 0 ), func( 0 )

@@ -25,6 +25,11 @@
 
 namespace CLAM {
 
+// by default, CLAM asserts must breakpoint
+// we'll want to disable breakpoints for automatic assertion testing 
+// purposes
+bool disabledCLAMAssertBreakpoint = false;
+
 // Assert related
 
 static void DefaultAssertHandler(const char* message, const char* filename, int lineNumber )
@@ -49,9 +54,13 @@ void ExecuteAssertFailedHandler(const char* message, const char* filename, int l
 	CurrentAssertFailedHandler(message,filename,lineNumber);
 }
 
+bool ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
+
 ErrAssertionFailed::ErrAssertionFailed(const char* message, const char* filename, int lineNumber)
 	: Err(message)
 {
+	if (!breakpointInCLAMAssertEnabled) return; 
+
 	std::cout << "##########################################################" << std::endl;
 	std::cout << "################### ASSERTION FAILED #####################" << std::endl;
 	std::cout << "##########################################################" << std::endl;

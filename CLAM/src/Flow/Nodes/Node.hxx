@@ -25,18 +25,52 @@
 #include "ReadStreamRegion.hxx"
 #include "WriteStreamRegion.hxx"
 #include "Audio.hxx"
+#include <list>
+
 
 namespace CLAM {
 
+	// forward declarations
 	class Port;
+	class OutPort;
+	class InPort;
 
-	template<class T>
-	class Node {
+	//-------------------------------------------
+	class NodeBase {
 	protected:
 		OutPort *mpDriver;
-		Array<InPort*> mInputs;
+		std::list<InPort*> mInputs;
 	public:
-		Node() : mpDriver(0) {}
+		const OutPort * GetWriter() const;
+		const std::list<InPort*> GetReaders() const;
+
+		NodeBase() : mpDriver(0){}
+		virtual ~NodeBase() {}		
+		virtual void Configure(int max_window_size=0) = 0;
+
+		virtual WriteStreamRegion *NewWriter (OutPort *port, 
+						      unsigned int hop, 
+						      unsigned int length) = 0;
+		virtual void RemoveInPortConnection( InPort * port, 
+						     ReadStreamRegion * reader) = 0;
+	
+		virtual ReadStreamRegion  *NewReader (InPort *port,
+						      unsigned int hop,
+						      unsigned int length,
+						      SourceStreamRegion* source = 0) = 0;
+
+		virtual bool CanActivateRegion(SourceStreamRegion &toActivate)=0;
+		virtual bool CanActivateRegion(ReadStreamRegion &toActivate)=0;
+	};
+
+	//-------------------------------------------
+	
+
+	template<class T>
+	class Node : public NodeBase
+	{
+
+	public:
 		virtual ~Node() {}
 
 		virtual void Configure(int max_window_size=0) = 0;
@@ -44,14 +78,14 @@ namespace CLAM {
 		virtual void SetPrototype(const T &proto) = 0;
 
 		virtual WriteStreamRegion *NewWriter (OutPort *port,
-											  unsigned int hop,
-											  unsigned int length) = 0;
-	
+						      unsigned int hop,
+						      unsigned int length) = 0;
+		
 		virtual ReadStreamRegion  *NewReader (InPort *port,
-											  unsigned int hop,
-											  unsigned int length,
-											  SourceStreamRegion* source = 0) = 0;
-
+						      unsigned int hop,
+						      unsigned int length,
+						      SourceStreamRegion* source = 0) = 0;
+		
 		virtual void GetAndActivate(WriteStreamRegion* r, Array<T> &a) = 0;
 		virtual void GetAndActivate(ReadStreamRegion* r, Array<T> &a) = 0;
 		virtual void GetAndActivate(DelayStreamRegion* r, Array<T> &a) = 0;
@@ -65,23 +99,10 @@ namespace CLAM {
 
 
 	template<>
-	class Node<Audio>
+	class Node<Audio> : public NodeBase
 	{
-	protected:
-		OutPort *mpDriver;
-		Array<InPort*> mInputs;
 	public:
-		Node() : mpDriver(0) {}
 		virtual ~Node() {}
-
-		virtual WriteStreamRegion *NewWriter (OutPort *port,
-											  unsigned int hop,
-											  unsigned int length) = 0;
-	
-		virtual ReadStreamRegion  *NewReader (InPort *port,
-											  unsigned int hop,
-											  unsigned int length,
-											  SourceStreamRegion* source = 0) = 0;
 
 		virtual void SetPrototype(const Audio &proto) = 0;
 

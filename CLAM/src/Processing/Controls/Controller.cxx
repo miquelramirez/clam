@@ -31,7 +31,7 @@ Controller::Controller()
 
 bool Controller::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const ControllerConfig&>(c);
+	CopyAsConcreteConfig(mConfig, c);
 	int n = mConfig.GetNumControls();
 
 	CLAM_ASSERT( !OutControls.Size() ||

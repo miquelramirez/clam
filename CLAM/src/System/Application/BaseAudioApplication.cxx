@@ -20,7 +20,7 @@
  */
 
 #include "BaseAudioApplication.hxx"
-#include "AudioIO.hxx"
+#include "AudioManager.hxx"
 #include <pthread.h>
 #include <cstdio>
 #include <iostream>

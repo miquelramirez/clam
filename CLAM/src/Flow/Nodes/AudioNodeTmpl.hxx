@@ -28,6 +28,8 @@
 
 #include "Audio.hxx"
 
+
+#if !defined _MSC_VER || _MSC_VER >= 1310 // MSVC++ 6 this class does not compile under Visual 6!
 namespace CLAM {
 
 	template<class BUFFER>
@@ -41,14 +43,16 @@ namespace CLAM {
 
 		void Configure(int max_window_size=0) { mStream.Configure(max_window_size); }
 
-		WriteStreamRegion *NewWriter (OutPort *port,
-									  unsigned int hop,
-									  unsigned int length);
+		WriteStreamRegion *NewWriter (
+			OutPort *port, 
+			unsigned int hop,
+			unsigned int length
+		);
 	
-		ReadStreamRegion  *NewReader (InPort *port,
-									  unsigned int hop,
-									  unsigned int length,
-									  SourceStreamRegion* source = 0);
+		ReadStreamRegion  *NewReader (InPort *port, unsigned int hop,
+					      unsigned int length, SourceStreamRegion* source = 0);
+		
+		void RemoveInPortConnection( InPort * port , ReadStreamRegion *  reader);
 
 		void GetAndActivate(WriteStreamRegion* r, Audio &a);
 		void GetAndActivate(ReadStreamRegion* r, Audio &a);
@@ -59,26 +63,47 @@ namespace CLAM {
 		void LeaveAndAdvance(ReadStreamRegion *r);
 		void LeaveAndAdvance(DelayStreamRegion *r);
 		void LeaveAndAdvance(InplaceStreamRegion *r);
+
+		bool CanActivateRegion(SourceStreamRegion &toActivate) {
+			return mStream.CanActivateRegion( toActivate );
+		}
+		bool CanActivateRegion(ReadStreamRegion &toActivate) {
+			return mStream.CanActivateRegion( toActivate );
+		}
 	};
 
 	template<class BUFFER>
-	WriteStreamRegion *NodeTmpl<Audio,BUFFER>::NewWriter (OutPort *port,
-														 unsigned int hop,
-														 unsigned int length)
+	WriteStreamRegion *NodeTmpl<Audio,BUFFER>::NewWriter (
+		OutPort *port,
+		unsigned int hop,
+		unsigned int length
+	)
 	{
-		mpDriver = port;
+		Node<Audio>::mpDriver = port;
 		return mStream.NewWriter(hop,length);
 	}
 	
 	
 	template<class BUFFER>
-	ReadStreamRegion *NodeTmpl<Audio,BUFFER>::NewReader (InPort *port,
-														unsigned int hop,
-														unsigned int length,
-														SourceStreamRegion* source = 0)
+	ReadStreamRegion *NodeTmpl<Audio,BUFFER>::NewReader (
+		InPort *port, 
+		unsigned int hop,
+		unsigned int length,
+		SourceStreamRegion* source 
+	)
 	{
-		mInputs.AddElem(port);
+		Node<Audio>::mInputs.push_back(port);
 		return mStream.NewReader(hop,length,source);
+	}
+
+	template<class BUFFER>
+	void NodeTmpl<Audio,BUFFER>::RemoveInPortConnection(
+		InPort * port , ReadStreamRegion *  reader)
+	{
+		CLAM_ASSERT( port->GetNode() == this, "NodeTmpl::RemoveInPort() "
+			     "InPort to remove connection is not attached to the node" );
+		Node<Audio>::mInputs.remove(port);
+		mStream.RemoveReader( reader );
 	}
 
 
@@ -142,6 +167,121 @@ namespace CLAM {
 		mStream.LeaveAndAdvance(r);
 	}
 
-}
+} // end of namespace CLAM
+#else // MSVC 6.0 Hack
+
+	#include "CircularStreamImpl.hxx"
+
+namespace CLAM {
+
+	class AudioNodeTmpl : public NodeTmpl< Audio, CircularStreamImpl<TData> >
+	{
+		StreamBuffer<Audio,CircularStreamImpl<TData> > mStream;
+	public:
+
+		void SetPrototype(const Audio &proto);
+
+		void SetSampleRate(TData sample_rate);
+
+		void Configure(int max_window_size=0) { mStream.Configure(max_window_size); }
+
+		WriteStreamRegion *NewWriter (
+			OutPort *port, 
+			unsigned int hop,
+			unsigned int length
+		);
+	
+		ReadStreamRegion  *NewReader (InPort *port, unsigned int hop,
+					      unsigned int length, SourceStreamRegion* source = 0);
+
+		void GetAndActivate(WriteStreamRegion* r, Audio &a);
+		void GetAndActivate(ReadStreamRegion* r, Audio &a);
+		void GetAndActivate(DelayStreamRegion* r, Audio &a);
+		void GetAndActivate(InplaceStreamRegion* r, Audio &a);
+
+		void LeaveAndAdvance(WriteStreamRegion *r);
+		void LeaveAndAdvance(ReadStreamRegion *r);
+		void LeaveAndAdvance(DelayStreamRegion *r);
+		void LeaveAndAdvance(InplaceStreamRegion *r);
+	};
+
+	WriteStreamRegion *AudioNodeTmpl::NewWriter (
+		OutPort *port,
+		unsigned int hop,
+		unsigned int length
+	)
+	{
+		Node<Audio>::mpDriver = port;
+		return mStream.NewWriter(hop,length);
+	}
+	
+	
+	ReadStreamRegion *AudioNodeTmpl::NewReader (
+		InPort *port, 
+		unsigned int hop,
+		unsigned int length,
+		SourceStreamRegion* source 
+	)
+	{
+		Node<Audio>::mInputs.push_back(port);
+		return mStream.NewReader(hop,length,source);
+	}
+
+
+	void AudioNodeTmpl::GetAndActivate(WriteStreamRegion* r, Audio &a)
+	{
+		mStream.GetAndActivate(r,a);
+	}
+
+	void AudioNodeTmpl::GetAndActivate(ReadStreamRegion* r, Audio &a)
+	{
+		mStream.GetAndActivate(r,a);
+	}
+
+	void AudioNodeTmpl::GetAndActivate(DelayStreamRegion* r, Audio &a)
+	{
+		mStream.GetAndActivate(r,a);
+	}
+
+	void AudioNodeTmpl::GetAndActivate(InplaceStreamRegion* r, Audio &a)
+	{
+		mStream.GetAndActivate(r,a);
+	}
+
+	void AudioNodeTmpl::SetPrototype(const Audio &a)
+	{
+		mStream.SetPrototype(a);
+	}
+
+	void NodeTmpl::SetSampleRate(TData sr)
+	{
+		mStream.SetSampleRate(sr);
+	}
+
+	void AudioNodeTmpl::LeaveAndAdvance(WriteStreamRegion *r)
+	{
+		mStream.LeaveAndAdvance(r);
+	}
+
+	void AudioNodeTmpl::LeaveAndAdvance(ReadStreamRegion *r)
+	{
+		mStream.LeaveAndAdvance(r);
+	}
+
+	void AudioNodeTmpl::LeaveAndAdvance(DelayStreamRegion *r)
+	{
+		mStream.LeaveAndAdvance(r);
+	}
+
+	void AudioNodeTmpl::LeaveAndAdvance(InplaceStreamRegion *r)
+	{
+		mStream.LeaveAndAdvance(r);
+	}
+
+
+} // end of namespace CLAM
+
+#endif // end of MSVC 6.0 check
+
 
 #endif

@@ -19,8 +19,6 @@
  *
  */
 
-
-
 /* Define whether you have an std version that is not full compliant
  * to the standard (such as the one included in Visual C++)
  */
@@ -65,8 +63,11 @@
 // turn off warning about the "C++ Exception Specification ignored"
 #       pragma warning (disable : 4290 )
 
+#ifdef __cplusplus
 #	include <cstdio>
-
+#else
+#include <stdio.h>
+#endif
 #	define snprintf _snprintf
 
 // Hint taken from http://www.boost.org/more/microsoft_vcpp.html
@@ -77,10 +78,16 @@
 #		define for if (0) {} else for
 #	endif
 
+#ifdef __cplusplus
+#if defined _MSC_VER && _MSC_VER < 1310 // MSVC++ 6
+	namespace std
+	{	
+		typedef ::size_t size_t;
+	} // namespace
+#endif // MSVC++ 6
+#endif //__cplusplus
 
 // Needed for getting RtAudio to compile right for Windoze
 #define __WINDOWS_DS__
 
-#endif
-
-
+#endif //_MSC_VER

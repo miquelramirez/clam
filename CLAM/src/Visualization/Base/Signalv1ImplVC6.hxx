@@ -29,139 +29,140 @@
 #include <list>
 #include <utility>
 
-namespace CLAMGUI
+namespace SigSlot
 {
 
-	template < typename ParmType1 >
+template < typename ParmType1 >
 	class Signalv1 : public Signal
-	{
-	public:
+{
+public:
 		typedef typename CBL::Functor1<ParmType1>                  tCallbackType;
-		// Begin of ConnectionHandler
+// Begin of ConnectionHandler
 		struct tCallback
 		{
 			tConnectionId  mConnection;
 			Slot*          mSlot;
 			tCallbackType  mCallback;
-    
+
 			tCallback( tConnectionId id, Slot* slot, tCallbackType cb )
 				: mConnection( id ), mSlot( slot ), mCallback( cb )
 			{
 			}
 		};
-  
+
 		typedef tCallbackType*                                     tCallbackPtr;
 		typedef std::list<tCallbackPtr>                            tCallList;
 		typedef typename std::list<tCallbackPtr >::iterator        tCallIterator;
 		typedef std::list<tCallback>                               tCallbackList;
 		typedef typename std::list<tCallback>::iterator            tCbListIterator;
 		typedef typename std::list<tCallback>::const_iterator      const_tCbListIterator;
-  
-  
-	protected:		
-  
+
+
+protected:		
+
 		void AddCallback( tConnectionId pConnection, Slot* slot, tCallbackType cb )
 		{
-			mCallbacks.push_back( tCallback( pConnection, slot, cb ) );
+				mCallbacks.push_back( tCallback( pConnection, slot, cb ) );
 		}
-  
+		
 		bool HasNoCallbacks( ) const
 		{
-			return mCallbacks.empty();
+				return mCallbacks.empty();
 		}
-  
+		
 		tCallList& GetCalls( )
 		{
-			mCalls.clear();
-    
-			tCbListIterator i   = mCallbacks.begin();
-			tCbListIterator end = mCallbacks.end();
-    
-			while ( i!=end)
-			{
-				mCalls.push_back( &(i->mCallback) );
-				i++;
-			}
-    
-			return mCalls;
+				mCalls.clear();
+				
+				tCbListIterator i   = mCallbacks.begin();
+				tCbListIterator end = mCallbacks.end();
+				
+				while ( i!=end)
+				{
+						mCalls.push_back( &(i->mCallback) );
+						i++;
+				}
+				
+				return mCalls;
 		}
-  
+		
 		void RemoveCall(  tConnectionId id )
 		{
-			tCbListIterator i = mCallbacks.begin();
-			tCbListIterator end = mCallbacks.end();
-    
-			while ( i!=end )
-			{
-				if ( i->mConnection == id )
+				tCbListIterator i = mCallbacks.begin();
+				tCbListIterator end = mCallbacks.end();
+
+				while ( i!=end )
 				{
-					mCallbacks.erase( i );
-					break;
+						if ( i->mConnection == id )
+						{
+								mCallbacks.erase( i );
+								break;
+						}
+						i++;
 				}
-				i++;
-			}
 		}
-  
+
 		void DestroyConnections()
 		{
 			tCbListIterator elem;
-    
+
 			while ( !mCallbacks.empty() )
 			{
 				elem = mCallbacks.begin();
-	
+
 				elem->mSlot->Unbind( elem->mConnection );
 			}
 		}
-		// End of "ConnectionHandler"
-  
-	public:
-  
-		virtual ~Signalv1()
-		{
-			DestroyConnections();
-		}
-  
-		void Connect( Slotv1<ParmType1>& slot )
-		{
-			Connection c( AssignConnection(), this );
-    
-			AddCallback( c.GetID(), &slot, slot.GetMethod() );
-    
-			slot.Bind(c);
-		}
-  
-		void Emit( ParmType1 parm )
-		{
-			if ( HasNoCallbacks() )
-				return;
-    
-			tCallList calls = GetCalls();
-			tCallIterator i = calls.begin();
-			tCallIterator end = calls.end();
-    
-			while ( i != end )
+// End of "ConnectionHandler"
+		
+public:
+	
+	virtual ~Signalv1()
+	{
+		DestroyConnections();
+	}
+
+	void Connect( Slotv1<ParmType1>& slot )
+	{
+		Connection c( AssignConnection(), this );
+
+		AddCallback( c.GetID(), &slot, slot.GetMethod() );
+
+		slot.Bind(c);
+	}
+	
+	void Emit( ParmType1 parm )
+	{
+		if ( HasNoCallbacks() )
+			return;
+		
+		tCallList calls = GetCalls();
+		tCallIterator i = calls.begin();
+		tCallIterator end = calls.end();
+
+		while ( i != end )
 			{
 				(*(*i))( parm );
 				i++;
 			}
-    
-		}
+		
+	}
 
-		void FreeConnection( Connection* pConnection )
-		{
-			RemoveCall( pConnection->GetID() );
-			FreeConnectionId( pConnection->GetID() );
-		}
-  
-	private:
-  
+	void FreeConnection( Connection* pConnection )
+	{
+		RemoveCall( pConnection->GetID() );
+		FreeConnectionId( pConnection->GetID() );
+	}
+
+private:
+
 		tCallList       mCalls;
 		tCallbackList   mCallbacks;
-  
-  
-	};
+
+
+};
 
 }
+
 
 #endif // Signalv1ImplVC6.hxx

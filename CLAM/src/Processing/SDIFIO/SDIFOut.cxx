@@ -65,7 +65,7 @@ bool SDIFOut::ConcreteStop()
 
 bool SDIFOut::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast< const SDIFOutConfig& > ( c );
+	CopyAsConcreteConfig(mConfig, c);
 	if(mpFile) delete mpFile;
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eOutput);
 	mpFile->Open();

@@ -24,7 +24,7 @@
 
 #include "RappidIO.hxx"
 #include "ProcessingComposite.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
 
 namespace CLAM {
 	class AudioFileOut;
@@ -38,15 +38,13 @@ class RappidOutput: public ProcessingComposite, public RappidIO<RappidOutput>
 	AudioOut      *pRTOutput;
 	AudioFileOut  *pOutputFile;
 
-	const char *GetClassName() const {return "RappidOutput";}
-
 	bool ConfigureRealTime(bool exclusive=true);
 
 	bool ConfigureFile(bool exclusive=true);
 
 	bool ConfigureChildren();
 
-	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 	bool ConcreteStart();
 
@@ -61,6 +59,8 @@ public:
 	RappidOutput();
 
 	RappidOutput(const RappidIOConfig &c);
+
+	const char * GetClassName() const {return "RappidOutput";}
 
 	~RappidOutput();
 

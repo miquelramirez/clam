@@ -24,7 +24,7 @@
 
 #include "Array.hxx"
 #include "Spectrum.hxx"
-#include "PeakArray.hxx"
+#include "SpectralPeakArray.hxx"
 
 namespace CLAM {
 
@@ -91,15 +91,15 @@ public:
 	}
 
 	/* Scale convert for a Peak Array */
-	void Convert(PeakArray &inputPeakArray, 
-				 PeakArray &outputPeakArray, EScaleType oScaleType=eUnknown)
+	void Convert(SpectralPeakArray &inputPeakArray, 
+				 SpectralPeakArray &outputPeakArray, EScaleType oScaleType=eUnknown)
 	{
 		if(oScaleType==0) oScaleType=outputPeakArray.GetScale();	 
 		Convert(inputPeakArray.GetRefToPeakArray(), outputPeakArray.GetRefToPeakArray(), oScaleType);
 		outputPeakArray.SetScale(oScaleType);
 	}
 	
-	void Convert(PeakArray &spectrum, EScaleType oScaleType)
+	void Convert(SpectralPeakArray &spectrum, EScaleType oScaleType)
 	{
 		Convert(spectrum,spectrum,oScaleType);
 	}

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "TransformationDummy.hxx"
-#include "InControl.hxx"
+#include "InControlTmplArray.hxx"
 
 namespace CLAM
 {

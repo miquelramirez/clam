@@ -8,48 +8,83 @@
 
 // file
 
-#define ALTOSAX
-//#define TRUMPET
-
-#ifdef WIN32
-	#define SALTO_DATA_DIR "c:"
-#else
-	#define SALTO_DATA_DIR "../../.."
-#endif
-
-  #ifdef ALTOSAX
+class InstrumentValues
+{
+public:
+	char mSALTO_DATA_FILE_NAME[1024];
+	char mSALTO_DATA_TXT_FNAME[1024];
+	char mSALTO_STAT_TMPL_FILE_NAME[1024];
+	char mSALTO_STAT_TMPL_TXT_FNAME[1024];
+	char mSALTO_TEST_RESIDUAL_NAME[1024];
+	char mSDIF_ATTACKS_FOLDER[1024];
+	char* mVERYSOFT_ATTACKS;
+	char* mSOFT_ATTACKS;
+	char* mHARD_ATTACKS;
+	char* mVERYHARD_ATTACKS;
+	int   mMAX_SPECTRAL_SEGMENTS;
+	int   mSPECTRAL_SEGMENTS_IN_USE;
+	int   mMAX_PITCH_VALUE;
+	int   mMAX_ATTACKS_VALUE;
+	int   mVSOFT;
+	int   mSOFT;
+	int   mHARD;
+	int   mVHARD;
+	int   mBREATHONLY;
+	int   mMAX_SMOOTHNESS_VALUE;
+	float mLOWEST_PITCH;
 	
-    #define SALTO_DATA_FILE_NAME      SALTO_DATA_DIR"/SaltoDataFolder/AltoSax/SALTO_DATA_FILE"
-    #define SALTO_DATA_TXT_FNAME      SALTO_DATA_DIR"/SaltoDataFolder/AltoSax/SALTO_DATA_FILE.txt"
-    #define SALTO_STAT_TMPL_FILE_NAME SALTO_DATA_DIR"/SaltoDataFolder/AltoSax/SALTO_STAT_TMPL_FILE"
-    #define SALTO_STAT_TMPL_TXT_FNAME SALTO_DATA_DIR"/SaltoDataFolder/AltoSax/SALTO_STAT_TMPL_FILE.txt"
-    #define SALTO_TEST_RESIDUAL_NAME  SALTO_DATA_DIR"/SaltoDataFolder/AltoSax/statresidual.sms.sdif" //"RT_a1_mf_2.sms.sdif"
-    #define SDIF_ATTACKS_FOLDER       SALTO_DATA_DIR"/SaltoDataFolder/AltoSax/SDIFAttacks/"
-    #define VERYSOFT_ATTACKS          "slow(sl)/"
-    #define SOFT_ATTACKS              "mediumshort(ms)/"
-    #define HARD_ATTACKS              "short(s)/"
-    #define VERYHARD_ATTACKS          "short(s)/" // doesnt exist
-//    #define SHORT_ATTACKS             SALTO_DATA_DIR"/temp/salto/SALTOApplication/SaltoDataFolder/short(s)/"
-//    #define MEDIUM_SHORT_ATTACKS      SALTO_DATA_DIR"/temp/salto/SALTOApplication/SaltoDataFolder/mediumshort(ms)/"
-//    #define SLOW_ATTACKS              SALTO_DATA_DIR"/temp/salto/SALTOApplication/SaltoDataFolder/slow(sl)/"
-  #endif //ALTOSAX
-  
-  #ifdef TRUMPET
-    #define SALTO_DATA_FILE_NAME      SALTO_DATA_DIR"/SaltoDataFolder/Trumpet/SALTO_DATA_FILE"
-    #define SALTO_DATA_TXT_FNAME      SALTO_DATA_DIR"/SaltoDataFolder/Trumpet/SALTO_DATA_FILE.txt"
-    #define SALTO_STAT_TMPL_FILE_NAME SALTO_DATA_DIR"/SaltoDataFolder/Trumpet/SALTO_STAT_TMPL_FILE"
-    #define SALTO_STAT_TMPL_TXT_FNAME SALTO_DATA_DIR"/SaltoDataFolder/Trumpet/SALTO_STAT_TMPL_FILE.txt"
-    #define SALTO_TEST_RESIDUAL_NAME  SALTO_DATA_DIR"/SaltoDataFolder/Trumpet/statresidual.sms.sdif" //"RT_a1_mf_2.sms.sdif"
-    #define SDIF_ATTACKS_FOLDER       SALTO_DATA_DIR"/SaltoDataFolder/Trumpet/SDIFAttacks/"
-    #define VERYSOFT_ATTACKS          "vs/"
-    #define SOFT_ATTACKS              "s/"
-    #define HARD_ATTACKS              "h/"
-    #define VERYHARD_ATTACKS          "vh/"
-  #endif //TRUMPET
+	static InstrumentValues& GetInstance(void);
+	static void Instantiate(int instr,char* dataFolder);
 
-//#endif //LINUX
+	InstrumentValues()
+	{
+		mInstrument = -1;
+	}
 
-                                   
+	bool IsALTOSAX(void) { return mInstrument == 0; }
+	bool IsTRUMPET(void) { return mInstrument == 1; }
+
+	int   mInstrument;
+private:
+	static InstrumentValues& _GetInstance(int instr,char* dataFolder);
+};
+
+#define SALTO_DATA_FILE_NAME InstrumentValues::GetInstance().mSALTO_DATA_FILE_NAME
+#define SALTO_DATA_TXT_FNAME InstrumentValues::GetInstance().mSALTO_DATA_TXT_FNAME
+#define SALTO_STAT_TMPL_FILE_NAME InstrumentValues::GetInstance().mSALTO_STAT_TMPL_FILE_NAME
+#define SALTO_STAT_TMPL_TXT_FNAME InstrumentValues::GetInstance().mSALTO_STAT_TMPL_TXT_FNAME
+#define SALTO_TEST_RESIDUAL_NAME InstrumentValues::GetInstance().mSALTO_TEST_RESIDUAL_NAME
+#define SDIF_ATTACKS_FOLDER InstrumentValues::GetInstance().mSDIF_ATTACKS_FOLDER
+#define VERYSOFT_ATTACKS InstrumentValues::GetInstance().mVERYSOFT_ATTACKS
+#define SOFT_ATTACKS InstrumentValues::GetInstance().mSOFT_ATTACKS
+#define HARD_ATTACKS InstrumentValues::GetInstance().mHARD_ATTACKS
+#define VERYHARD_ATTACKS InstrumentValues::GetInstance().mVERYHARD_ATTACKS
+
+#define MAX_SPECTRAL_SEGMENTS (InstrumentValues::GetInstance().mMAX_SPECTRAL_SEGMENTS)
+#define SPECTRAL_SEGMENTS_IN_USE (InstrumentValues::GetInstance().mSPECTRAL_SEGMENTS_IN_USE)
+#define MAX_PITCH_VALUE (InstrumentValues::GetInstance().mMAX_PITCH_VALUE)
+#define MAX_ATTACKS_VALUE (InstrumentValues::GetInstance().mMAX_ATTACKS_VALUE)
+#define VSOFT (InstrumentValues::GetInstance().mVSOFT)
+#define SOFT (InstrumentValues::GetInstance().mSOFT)
+#define HARD (InstrumentValues::GetInstance().mHARD)
+#define VHARD (InstrumentValues::GetInstance().mVHARD)
+#define BREATHONLY (InstrumentValues::GetInstance().mBREATHONLY)
+#define MAX_SMOOTHNESS_VALUE (InstrumentValues::GetInstance().mMAX_SMOOTHNESS_VALUE)
+#define LOWEST_PITCH (InstrumentValues::GetInstance().mLOWEST_PITCH)
+
+#define ALTOSAX (InstrumentValues::GetInstance().IsALTOSAX())
+#define TRUMPET (InstrumentValues::GetInstance().IsTRUMPET())
+
+// math constants
+#define HALFPI    (PI/2)
+
+// global macros
+#undef MIN
+#undef MAX
+#define MIN(a,b)      ((a <= b) ? (a) : (b))
+#define MAX(a,b)      ((a >= b) ? (a) : (b))
+#define CLIP(a,b,c)   ((a<=b)?(b):(a>=c)?(c):(a))
+
 //  GENERAL DEFINES
 #define MIDI_DEVICE_NR            0       	// 0 is first input port in OMS
 #define MIDI_EXT_CTRL_RANGE       127     	// resolution of external controller
@@ -61,44 +96,6 @@
 //#define OSCILLOSCOPE_REFRESH_TIME 0.05    	// in secs = 20 frames/sec
 //#define OSCILLOSCOPE_REFRESH_TIME 0.1    	// in secs = 10 frames/sec
 
-#ifdef ALTOSAX  
-  #define MAX_SPECTRAL_SEGMENTS			100			// spec Segments read from SDIF
-  #define SPECTRAL_SEGMENTS_IN_USE  75      // current number of SpecSegs in memory
-  #define MAX_PITCH_VALUE						25
-  #define MAX_ATTACKS_VALUE         3 			//4 for breath-only
-  #define VSOFT                     0       // define depends on MAX_ATTACKS_VALUE
-  #define SOFT                      1       // define depends on MAX_ATTACKS_VALUE
-  #define HARD                      1       // define depends on MAX_ATTACKS_VALUE
-  #define VHARD				              2       // define depends on MAX_ATTACKS_VALUE
-  #define BREATHONLY                3
-  #define MAX_SMOOTHNESS_VALUE			1
-  #define LOWEST_PITCH              174.61  // F2 
-#endif
-
-#ifdef TRUMPET 
-  #define	MAX_SPECTRAL_SEGMENTS			100			// spec Segments read from SDIF
-  #define SPECTRAL_SEGMENTS_IN_USE  100     // current number of SpecSegs in memory
-  #define MAX_PITCH_VALUE						25
-  #define MAX_ATTACKS_VALUE         4 			//5 for breath-only
-  #define VSOFT                     0       // define depends on MAX_ATTACKS_VALUE
-  #define SOFT                      1       // define depends on MAX_ATTACKS_VALUE
-  #define HARD                      2       // define depends on MAX_ATTACKS_VALUE 
-  #define VHARD				              3       // define depends on MAX_ATTACKS_VALUE
-//  #define BREATHONLY                4
-  #define MAX_LOUDNESS_VALUE				1
-  #define MAX_SMOOTHNESS_VALUE			1
-  #define LOWEST_PITCH              233.08  // A#2
-#endif
-
-// math constants
-#define HALFPI    (PI/2)
-
-// global macros
-#undef MIN
-#undef MAX
-#define MIN(a,b)      ((a <= b) ? (a) : (b))
-#define MAX(a,b)      ((a >= b) ? (a) : (b))
-#define CLIP(a,b,c)   ((a<=b)?(b):(a>=c)?(c):(a))
 
 // FlowControl Enums
 enum

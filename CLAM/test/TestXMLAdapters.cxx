@@ -270,7 +270,7 @@ public:
 
 /**
  * A Component that is a test case for testing XMLStaticAdapters of
- * some bassic types.
+ * some basic types.
  * This one is much like the SimpleAdapterTestCase but the
  * Store procedure use static adapters.
  * @attention Static adapters cannot be uses for loading so we use
@@ -610,7 +610,7 @@ class MyComponent : public CLAM::Component {
 			#endif//CLAM_USE_XML
 		}
 };
- 
+
 void XMLComponentArrayTest() {
 	std::cout << "-- Testing CLAM::Array<Component>" << std::endl;
 	CLAM::Array<MyComponent> a;

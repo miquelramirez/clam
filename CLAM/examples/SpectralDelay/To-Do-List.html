@@ -1,0 +1,111 @@
+<html>
+
+<head>
+	<title>SpectralDelay Recovery TODO list</title>
+	<link rel="StyleSheet" href="to-do_list.css" type="text/css" media="screen" />
+</head>
+
+<body>
+
+<h1>TODO list for recovering SpectralDelay</h1>
+
+<li class='to-do'>Fix broken sources
+	<ul>
+		<li class='done'>Remove any trace of Qt ( for now ) from the .dsp file</li>
+		<li class='current'>Fix 'examples/GUI/View/TokenDelayView.hxx'
+			<ul>
+			<li class='done'>Change the name of UpdatingModelAdapter class for ModelController</li>
+			<li class='done'>Define precisely the interface and roles of a ConcreteModelController
+				<ul>
+					<li class='done'>Write a Test for a ConcreteModelController
+						<ul>
+							<li class='done'>Write/Test ControlAdapter 
+								<ul>
+									<li class='done'>Unitary/Functional test: InControl - ControlAdapter Binding</li>
+								</ul>
+							</li>
+							<li class='done'>Propose a CompositeAspect class</li>
+							<li class='done'>Write a mockup Processing with input controls</li>
+							<li class='done'>Write a mockup Presentation that is the controlling interface</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li class='done'>ConcreteModelController - generic behaviour extraction
+				<ul>
+					<li class='done'>Extract an abstract ProcessingController class from ConcreteModelController</li>
+				</ul>
+			</li>
+			<li class='done'>Aspect refactoring
+				<ul>
+					<li class='done'>Refactor Audio visualization support
+						<ul>
+							<li class='done'>Refactor AudioAdapter</li>
+							<li class='done'>Convert AudioAspect into AudioModel</li>
+							<li class='done'>Refactor AudioPresentation</li>
+							<li class='done'>Check that AnalysisSynthesis is still working</li>
+						</ul>
+					</li>
+					<li class='done'>Refactor Spectrum visualization support
+						<ul>
+							<li class='done'>Refactor SpectrumAdapter</li>
+							<li class='done'>Convert SpectrumAspect into SpectrumModel</li>
+							<li class='done'>Refactor SpectrumPresentation</li>
+							<li class='done'>Check that AnalysisSynthesis is still working</li>
+						</ul>
+					</li>
+					<li class='done'>Refactor SpectralPeakArray visualization support
+						<ul>
+							<li class='done'>Refactor SpectralPeakArrayAdapter</li>
+							<li class='done'>Convert SpectralPeakArrayAspect into PeakArrayModel</li>
+							<li class='done'>Refactor SpectralPeakArrayPresentation</li>
+						</ul>
+					</li>
+					<li class='done'>Refactor SinTracks visualization support
+						<ul>
+							<li class='done'>Refactor SinTracksAdapter</li>
+							<li class='done'>Convert SinTracksAspect into SinTracksModel</li>
+							<li class='done'>Refactor SinTracksPresentation</li>
+						</ul>
+					</li>
+					<li class='done'>Refactor Control visualization support
+						<ul>
+							<li class='done'>Refactor ControlAdapter</li>
+							<li class='done'>Convert ControlAdapterAspect into InputControlModel</li>
+							<li class='done'>Refactor the tests at draft</li>
+						</ul>
+					</li>
+					<li class='done'>Refactor Processing visualization support
+						<ul>
+							<li class='done'>Refactor ProcessingController</li>
+							<li class='done'>Convert ProcessingControllerAspect into ProcessingModel</li>
+							<li class='done'>Refactor the tests at draft</li>
+							<li class='done'>One last refactoring: Remove duplication of bound controls</li>
+							<li class='done'>Make really really generic the input control binding</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li class='done'>Transplant the things in src/Visualization</li>
+			</ul>
+		</li>
+		<li class='current'>Fix TokenDelayPresentation 
+			<li class='current'>Write TokenDelayController</li>
+			<li class='current'>Fix FLDelayPres</li>
+		</li>
+		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseFilterPres.hxx'</li>
+		<li class='to-do'>Fix 'examples/GUI/Presentation/BaseFilterBankPres.hxx' ( not very sure about what to do with this thing )</li>
+		<li class='to-do'>Fix 'examples/GUI/View/AudioFileView.hxx'
+			<ul>
+				<li class='to-do'>In this case, we are just accessing a ProcessingConfig ( AudioFileConfig ) so this should be handled by the Configurators thing. However, this may imply major hacking of that nifty generative programming example. In a nutshell, we must decide between doing the 'right' thing or hacking a ModelController that is bound to a Processing
+				</li>
+			</ul>
+		</li>
+		<li class='to-do'>Remove 'examples/GUI/Presentation/BaseSpecPres.hxx' since the needs it covers are already covered by the SpectrumPresentation class at 'src/Visualization/Presentation/Base'</li>
+
+	</ul>
+</li>
+
+</body>
+
+</html>

@@ -1,6 +1,8 @@
-SUBDIRS= SimpleProcessingSystem
-PROGRAMS=\
-	FlowControlExample
+PROGRAMS = NonSupervisedSystemExample \
+	NonSupervisedSystemWithPortsExample
+
+SUBDIRS= NonSupervisedSystem \
+	NonSupervisedSystemWithPorts
 
 TOP=../..
 

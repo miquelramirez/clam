@@ -88,28 +88,17 @@ public:
 		bPolar(operator[](ePolar)),
 		bMagPhase(operator[](eMagPhase)),
 		bMagPhaseBPF(operator[](eMagPhaseBPF))
-
 	{};
 
 /*
-	template <typename T> SpecTypeFlags (const T &t) : 
-		Flags<4>(sFlagValues,t),
-		bComplex(operator[](eComplex)),
-		bPolar(operator[](ePolar)),
-		bMagPhase(operator[](eMagPhase)),
-		bMagPhaseBPF(operator[](eMagPhaseBPF))
-
-	{};
-*/
-
-	template <typename T1, typename T2> SpecTypeFlags (const T1 &t1,const T2 &t2) : 
+	template <typename T1, typename T2> SpecTypeFlags (const T1 &t1,const T2 &t2) :
 		Flags<4>(sFlagValues,t1,t2),
 		bComplex(operator[](eComplex)),
 		bPolar(operator[](ePolar)),
 		bMagPhase(operator[](eMagPhase)),
 		bMagPhaseBPF(operator[](eMagPhaseBPF))
 	{};
-
+*/
 
 	reference bComplex;
 	reference bPolar; 

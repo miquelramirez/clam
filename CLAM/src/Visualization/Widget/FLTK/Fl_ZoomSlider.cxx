@@ -1,30 +1,41 @@
 #include "Fl_ZoomSlider.hxx"
 #include <FL/fl_draw.H>
 #include <FL/Fl.H>
+#include <iostream>
 
-namespace CLAMGUI
+namespace CLAMVM
 {
 
 		Fl_ZoomSlider::Fl_ZoomSlider( int X, int Y, int W, int H, int orientation )
-				: Fl_Widget( X, Y, W, H ), mOrientation(orientation)
+				: Fl_Widget( X, Y, W, H ), mOrientation(orientation), prev(0), dragging(0), mFirstPixel(0),
+					mLastPixel(0)
 		{
 				box(FL_THIN_DOWN_FRAME);
 				SetScale(1);
 				SetOffset(0);
 				type(orientation);
-
 		}
 
 		Fl_ZoomSlider::~Fl_ZoomSlider()
 		{
 		}
 
+		void Fl_ZoomSlider::resize( int X, int Y, int W, int H )
+		{
+				Fl_Widget::resize(X,Y,W,H);
+
+				UpdateThumbParts();
+				UpdateScaleAndOffset();
+
+		}
+
+
 		void Fl_ZoomSlider::draw(void)
 		{
 				draw_box();
 				
-				int w1 = v1;	
-				int w2 = v2;
+				int w1 = mFirstPixel;	
+				int w2 = mLastPixel;
 				
 				if (type()==FL_HORIZONTAL) 
 				{
@@ -69,11 +80,8 @@ namespace CLAMGUI
 		
 		int Fl_ZoomSlider::handle(int evt)
 		{
-				static int prev=0;
-				static int dragging=0;	
-				
-				int w1=v1;
-				int w2=v2;
+				int w1=mFirstPixel;
+				int w2=mLastPixel;
 				
 				if (type()==FL_HORIZONTAL) 
 				{
@@ -125,18 +133,19 @@ namespace CLAMGUI
 				}
 				case FL_DRAG:
 				{
+	
 						int cur,o,r;
 						if (type()==FL_HORIZONTAL) 
 						{
-								cur=Fl::event_x();
-								o=x();
-								r=w();
+							cur=Fl::event_x();
+							o=x();
+							r=w();
 						}
 						else
 						{
-								cur=Fl::event_y();
-								o=y();
-								r=h();
+							cur=Fl::event_y();
+							o=y();
+							r=h();
 						}
 						int d = cur-prev;
 						if (dragging&1) 
@@ -157,15 +166,19 @@ namespace CLAMGUI
 						}
 						
 						if (dragging&1)
-								v1+=d;
+						{
+								mFirstPixel+=d;
+						}
 						if (dragging&2)
-								v2+=d;
+						{
+								mLastPixel+=d;
+						}
 						
 						if (dragging && d) 
 						{
-								UpdateScaleAndOffset();
-								do_callback();
-								redraw();
+							UpdateScaleAndOffset();
+							SpanChanged.Emit( GetOffset(), GetScale() );
+							redraw();
 						}
 						
 						prev=cur;

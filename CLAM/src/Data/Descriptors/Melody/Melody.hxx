@@ -18,19 +18,20 @@ namespace CLAM{
 /**class Melody, used to store the melodic description of an AudioSegment
 @@see SegmentDescriptors
 **/
+
  class Melody: public ProcessingData
  {
  public:
-	 DYNAMIC_TYPE_USING_INTERFACE (Melody, 4, ProcessingData);
-	 /** Array of notes belonging to the melody **/
-	 DYN_ATTRIBUTE (0, public, List<Note>, NoteArray); 
-	 /** Higher-level descriptors computed from the noteArray information */
-	 DYN_ATTRIBUTE (1, public, TSize, NumberOfNotes); 
-	 /** Tessitura in Hz: difference between the minimum and maximum pitch **/
-	 DYN_ATTRIBUTE (2, public, TData, Tessitura); 
-	 /* MelodicContour: Parsons Code or different interval quantization */
-	 DYN_ATTRIBUTE (3, public, List<TData>, Contour); 
-	 
+	DYNAMIC_TYPE_USING_INTERFACE (Melody, 4, ProcessingData);
+	/** Array of notes belonging to the melody **/
+	DYN_ATTRIBUTE (0, public, List<Note>, NoteArray); 
+	/** Higher-level descriptors computed from the noteArray information */
+	DYN_ATTRIBUTE (1, public, TSize, NumberOfNotes); 
+	/** Tessitura in Hz: difference between the minimum and maximum pitch **/
+	DYN_ATTRIBUTE (2, public, TData, Tessitura); 
+	/* MelodicContour: Parsons Code or different interval quantization */
+	DYN_ATTRIBUTE (3, public, List<TData>, Contour); 
+
  protected:
 	 void DefaultInit();	
  };

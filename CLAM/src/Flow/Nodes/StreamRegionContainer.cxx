@@ -35,10 +35,18 @@ namespace CLAM {
 
 	void StreamRegionContainer::SetWriter(WriteStreamRegion *writer)
 	{
-		CLAM_ASSERT(mSources.size() == 0,
+		CLAM_ASSERT(!Writer(),
 		            "StreamRegionContainer::SetWriter():"
 		            " Writer already set.");
 		mSources.push_back(writer);
+	}
+
+	void StreamRegionContainer::SetAdder(AddStreamRegion *adder)
+	{
+		CLAM_ASSERT(!Adder(),
+		            "StreamRegionContainer::SetAdder():"
+		            " Adder already set.");
+		mSources.push_back(adder);
 	}
 
 	void StreamRegionContainer::AddDelay(DelayStreamRegion *new_delay,
@@ -98,19 +106,70 @@ namespace CLAM {
 			source=mSources.front();
 		source->AddReader(new_reader);
 	}
+	void StreamRegionContainer::RemoveReader(ReadStreamRegion * reader)
+	{
+ 		CLAM_ASSERT(Contains(reader), "StreamRegionContainer::RemoveReader(): "
+			    " Reader to remove is not present in container" );
+		
+		// we remove the reader from writer region
+		// todo: remove reader from all the sources
+		mSources.front()->RemoveReader(reader); 
+	}
 
 	WriteStreamRegion *StreamRegionContainer::Writer()
 	{
 		if (mSources.size() == 0)
 			return 0;
-		return static_cast<WriteStreamRegion*>(mSources.front());
+		WriteStreamRegion* writer;
+		source_const_iterator sit;
+		for (sit=sources_begin();sit!=sources_end();sit++)
+		{
+			if(writer=dynamic_cast<WriteStreamRegion*>(*sit))
+				return writer;
+		}
+		return 0;
 	}
 
 	const WriteStreamRegion *StreamRegionContainer::Writer() const
 	{
 		if (mSources.size() == 0)
 			return 0;
-		return static_cast<WriteStreamRegion*>(mSources.front());
+		const WriteStreamRegion* writer;
+		source_const_iterator sit;
+		for (sit=sources_begin();sit!=sources_end();sit++)
+		{
+			if(writer=dynamic_cast<WriteStreamRegion*>(*sit))
+				return writer;
+		}
+		return 0;
+	}
+
+	AddStreamRegion *StreamRegionContainer::Adder()
+	{
+		if (mSources.size() == 0)
+			return 0;
+		AddStreamRegion* adder;
+		source_const_iterator sit;
+		for (sit=sources_begin();sit!=sources_end();sit++)
+		{
+			if(adder=dynamic_cast<AddStreamRegion*>(*sit))
+				return adder;
+		}
+		return 0;
+	}
+
+	const AddStreamRegion *StreamRegionContainer::Adder() const
+	{
+		if (mSources.size() == 0)
+			return 0;
+		const AddStreamRegion* adder;
+		source_const_iterator sit;
+		for (sit=sources_begin();sit!=sources_end();sit++)
+		{
+			if(adder=dynamic_cast<AddStreamRegion*>(*sit))
+				return adder;
+		}
+		return 0;
 	}
 
 	const SourceStreamRegion *StreamRegionContainer::LastSource() const
@@ -179,6 +238,31 @@ namespace CLAM {
 	}
 
 
+	//XA
+	void StreamRegionContainer::Init()
+	{
+		source_iterator sit;
+		for (sit=sources_begin(); sit!=sources_end(); sit++)
+			(*sit)->Init();
+	}
+
+	unsigned int StreamRegionContainer::FindLargestReadRegionLength() const
+	{
+		if (mSources.size() == 0)
+			return 0;
+
+		unsigned int len=0;
+
+		source_const_iterator sit;
+		SourceStreamRegion::reader_const_iterator rit;
+
+		for (sit=sources_begin(); sit!=sources_end();  sit++)
+			for (rit=(*sit)->readers_begin();  rit != (*sit)->readers_end();  rit++)
+				if ((*rit)->Len() >len) len=(*rit)->Len();
+		
+		return len;
+	}
+
 	bool RegionFinder::Visit(const WriteStreamRegion& src)
 	{
 		if (&src == static_cast<const WriteStreamRegion*>(mContainer.Writer()))
@@ -222,6 +306,8 @@ namespace CLAM {
 		return Visit(static_cast<const SourceStreamRegion&>(inplace));
 	}
 
+
+	
 
 
 }

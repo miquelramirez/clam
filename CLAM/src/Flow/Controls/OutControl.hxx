@@ -28,7 +28,11 @@
 
 namespace CLAM {
 
-class OutControl : public ControlLinker
+//free method to link two Processing
+	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
+				  Processing* inProc, std::string inControl);
+
+class OutControl
 {
 //Attributes
 private:
@@ -67,10 +71,6 @@ public:
 	{
 		return SendControl( booleanValue ? TControlData(1) : TControlData(-1) );
 	}
-
-//Redefined Methods
-	OutControlIterator GetOutControls() const;
-	InControlIterator GetInControls() const;
 
 	const std::string& GetName(void) const { return mName; }
 };

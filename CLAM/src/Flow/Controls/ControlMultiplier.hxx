@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#ifndef __ControlMultiplier_hxx__
+#define __ControlMultiplier_hxx__
 
 #include "BinaryControlOp.hxx"
 #include "CommonOps.hxx"
@@ -27,7 +29,7 @@ namespace CLAM
 
 	
 	template <>
-		const char* BinaryControlOp< Multiply<TControlData> >::GetClassName() const
+	const char* BinaryControlOp< Multiply<TControlData> >::GetClassName() const
 	{
 		return "BinaryControlOperation_Multiply";
 	}
@@ -36,4 +38,5 @@ namespace CLAM
 
 }
 
+#endif//__ControlMultiplier_hxx__
 

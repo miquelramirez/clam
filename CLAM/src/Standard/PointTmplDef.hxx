@@ -24,6 +24,7 @@
 #define _PointTmplDef_
 
 #include <string>
+#include <iostream>
 #include "mtgsstream.h" // An alias for <sstream>
 
 namespace CLAM
@@ -34,7 +35,8 @@ namespace CLAM
 	* @todo Error conditions management
 	*/
 	template <class TX,class TY>
-	std::istream& operator >> (std::istream& is, PointTmpl<TX,TY> & a)
+	inline std::istream& operator >> (std::istream & is,
+			PointTmpl<TX,TY> & a)
 	{
 		if (is.flags() & std::ios::skipws) {
 			char c = '\0';
@@ -50,27 +52,33 @@ namespace CLAM
 //			std::cerr << "A point starting with '" << c << "'" << std::endl;
 			return is;
 		}
-		std::string content;
-		std::getline(is,content,'}');
-		std::stringstream ss(content);
 		TX x; 
 		TY y;
-		if ((ss >> x) && (ss >> y)) {
-				a.SetX(x);
-				a.SetY(y);
+		if (!(is >> x)) return is;
+		if (!(is >> y)) return is;
+		if (is.flags() & std::ios::skipws) {
+			char c = '\0';
+			do
+				is.get(c);
+			while (is && isspace(c));
+			if (is) is.putback(c);
 		}
+		if (!is.get(c) || c!='}') return is;
+
+		a.SetX(x);
+		a.SetY(y);
 		return is;
 	}
 
 	template <class TX,class TY>
 	std::ostream& operator << (std::ostream& myStream, const PointTmpl<TX,TY>& a)
 	{
-		myStream << "{";
-		myStream << a.GetX();
-		myStream << " ";
-		myStream << a.GetY();
-		myStream << "}";
-		return myStream;
+		return myStream 
+			<< "{"
+			<< a.GetX()
+			<< " "
+			<< a.GetY()
+			<< "}";
 	}
 
 } // namespace CLAM

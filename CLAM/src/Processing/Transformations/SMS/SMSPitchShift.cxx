@@ -71,23 +71,14 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 
 bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
-	mSpectralRange=in.GetSinusoidalSpec().GetSpectralRange();
+	mSpectralRange=in.GetResidualSpec().GetSpectralRange();
 	mIsHarmonic.DoControl(in.GetFundamental().GetFreq(0));
-//	CLAM_ASSERT(mSpectralRange<20000,"Error");//test
-	//test
-	TData time=in.GetCenterTime();
+	Fundamental tmpFund=in.GetFundamental();
+	int i;
+	for (i=0;i<in.GetFundamental().GetnCandidates();i++)
+	{
+		tmpFund.SetFreq(i,in.GetFundamental().GetFreq(i)*mAmountCtrl.GetLastValue());
+	}
+	out.SetFundamental(tmpFund);
 	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),out.GetSpectralPeakArray(),out.GetResidualSpec());
 }
-
-bool SMSPitchShift::Do(const Segment& in, Segment& out)
-{
-	int i;
-	TSize nFrames=in.GetnFrames();
-	for(i=0;i<nFrames;i++)
-	{
-		UpdateControlValueFromBPF((TData)i/nFrames);
-		Do(in.GetFrame(i),out.GetFrame(i));
-	}
-	return true;
-}
-

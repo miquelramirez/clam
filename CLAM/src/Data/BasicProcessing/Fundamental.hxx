@@ -47,7 +47,7 @@ class Fundamental: public ProcessingData
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (Fundamental, 4, ProcessingData);
 	/** Maximum number of candidates wanted */
-	DYN_ATTRIBUTE (0, public, int, nMaxCandidates);
+	DYN_ATTRIBUTE (0, private, int, prnMaxCandidates);
 	/** Current(initial) number of candidates */
 	DYN_ATTRIBUTE (1, public, int, nCandidates);
 	/** Array with the candidate frequencies*/
@@ -61,7 +61,16 @@ public:
 
 
   //Accessory getters and setters, for efficiency work directly on the buffer
+	
 
+	void SetnMaxCandidates(TSize nMaxCandidates)
+	{
+		GetCandidatesFreq().Resize(nMaxCandidates);
+		GetCandidatesErr().Resize(nMaxCandidates);
+		SetprnMaxCandidates(nMaxCandidates);
+	}
+
+	TSize GetnMaxCandidates() {return GetprnMaxCandidates();}
 	
 	/** Returns the Frequency of a given position in the candidate array
 	 *  @param pos Position we want to get frequency, 0 by default

@@ -106,9 +106,9 @@ namespace CLAM {
 	}
 
 	template<unsigned int N>
-	bool DynamicMixer<N>::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+	bool DynamicMixer<N>::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const DynamicMixerConfig&>(cfg);
+		CopyAsConcreteConfig(mConfig, c);
 
 		ConfigureData();
 

@@ -30,9 +30,9 @@ using namespace CLAM;
 class FDControlsGenerator : public Processing {
 
 	/** Private method called by the public Configure(cfg) method */
-	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			mConfig = dynamic_cast<const FDFilterGenConfig&>(c);
+			CopyAsConcreteConfig(mConfig, c);
 			return true;
 		}
 

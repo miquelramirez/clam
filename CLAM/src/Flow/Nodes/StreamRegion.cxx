@@ -29,41 +29,43 @@
 namespace CLAM {
 
 	StreamRegion::StreamRegion(unsigned int hop,
-	                           unsigned int length,
-	                           unsigned int offset)
+	                           unsigned int length)
 		: mHop(hop),
-		  mPos(offset),
+		  mPos(0),
 		  mLen(length),
-		  mEnd(offset)
-	{}
+		  mEnd(0)
+	{
+		CLAM_ASSERT( length>0, "StreamRegion() ctr.: bad length size value");
+		CLAM_ASSERT( hop>0, "StreamRegion() ctr.: bad hopsize value");
+	}
+
+
 
 	void StreamRegion::Activate()
 	{
 		mEnd = mPos+mLen;
 	}
 
+	void StreamRegion::Leave()
+	{
+		mEnd=mPos;
+	}
+
+
 	void StreamRegion::LeaveAndAdvance()
 	{
 		mPos += mHop;
 	}
 
-	bool StreamRegion::Preceeds(const StreamRegion *r) const
+	bool StreamRegion::PreceedsWithNoOverlap(const StreamRegion *forwardRegion) const
 	{
-		if ( r->End() > Pos())
-			return false;
-		return true;
+		return End() <= forwardRegion->Pos();
 	}
-
-	bool StreamRegion::Follows(const StreamRegion *r) const
-	{
-		if (End() > r->Pos())
-			return false;
-		return true;
-	}
-
 
 	bool StreamRegion::FulfilsInvariant() const
 	{
+		CLAM_ASSERT( false, "you just discovered that this method is used ;-). Please contatct pau or xavi rubio ");
+
 		if (mPos > mEnd)
 			return false;
 		if (mEnd != mPos + mLen &&

@@ -24,7 +24,7 @@
 #include <new>
 #include "ErrOpenFile.hxx"
 #include "OSDefines.hxx"
-#include "errno.h"
+#include <errno.h>
 
 namespace CLAM {
 

@@ -38,6 +38,11 @@ class InControl;
 
 
 /**
+ * This class is not used by now. 25 March 2003. As a result of a refactoring
+ * Is expected that will realive (or some similar class) when we have to deal 
+ * with networks that exports controls and ports.
+ *
+ *
  * This class is a base class of InPort and OutPort and also 
  * can be instantiated. Instances of ControlLinker are used as
  * control input/output of the groups of processing objects: it holds

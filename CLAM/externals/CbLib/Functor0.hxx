@@ -84,7 +84,7 @@ class MemberTranslator0 : public Functor0
 {
 public:
 	
-	MemberTranslator0( Callee& c, const MemFunc& m )
+	MemberTranslator0( Callee& c, MemFunc m )
 		: Functor0 ( thunk, &c, &m, sizeof( MemFunc ) )
 	{
 	}

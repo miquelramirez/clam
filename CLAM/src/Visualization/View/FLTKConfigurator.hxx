@@ -24,10 +24,12 @@
 
 #include "ConfigurationVisitor.hxx"
 #include <map>
+#include <list>
 #include <string>
 
 #include "Assert.hxx"
 #include "Enum.hxx"
+#include "Filename.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 
@@ -45,18 +47,49 @@
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Menu_Item.H>
+#include <FL/fl_file_chooser.H>
+
 #include "CBL.hxx"
 
 #define HorPos fl_width(name)
 #define VerPos 0
 
 namespace CLAM{
+	class FLTKConfigurator;
+
+	class ConfigurationHolderBase
+	{
+	protected:
+		ConfigurationHolderBase(DynamicType & holded)
+			: mConfiguration(holded)
+		{}
+		DynamicType & mConfiguration;
+	public:
+		virtual void ApplyDataTo(FLTKConfigurator & configurator)=0;
+		virtual ~ConfigurationHolderBase() {}
+	};
+
+	template <class HoldedType>
+	class ConfigurationHolder : public ConfigurationHolderBase
+	{
+	public:
+		ConfigurationHolder(HoldedType & configuration)
+			: ConfigurationHolderBase(configuration)
+		{}
+		void ApplyDataTo(FLTKConfigurator & configurator)
+		{
+			configurator.SetConfig(static_cast<HoldedType&>(mConfiguration));
+		}
+	};
+
+
 	class FLTKConfigurator : public Fl_Window {
 
 		typedef Fl_Window super;
 		typedef std::map<std::string, Fl_Widget*> tWidgets;
+		typedef std::list<ConfigurationHolderBase *> tConfigHolders;
 	public:
-		FLTKConfigurator() 
+		FLTKConfigurator()
 			: super(360, 540, "Edit the configuration")
 		{
 			mSetter = NULL;
@@ -73,6 +106,11 @@ namespace CLAM{
 			if (mGetter) delete mGetter;
 			if (mWidgetPack) delete mWidgetPack;
 			if (mScrollGroup) delete mScrollGroup;
+
+			tConfigHolders::iterator it =
+				mSubConfigurationHolders.begin();
+			for (;it!=mSubConfigurationHolders.end(); it++)
+				delete *it;
 		}
 
 		void SetApplyCallback(CBL::Functor0 functor) {
@@ -86,9 +124,9 @@ namespace CLAM{
 			CLAM_ASSERT(!mGetter, "Configurator: Configuration assigned twice");
 			mSetter = new ConfigurationSetter<Config,FLTKConfigurator>(&config, this);
 			mGetter = new ConfigurationGetter<Config,FLTKConfigurator>(&config, this);
-			
+
 			mScrollGroup = new Fl_Scroll( 0, 0, w() , h()-25 );
-			
+
 			mWidgetPack = new Fl_Pack( 0 , 0, 0, 0 );
 			mWidgetPack->type(FL_VERTICAL);
 			mWidgetPack->align(FL_ALIGN_LEFT);
@@ -100,13 +138,13 @@ namespace CLAM{
  			mWidgetPack->end();
 
 			mScrollGroup->end();
-			
+
 			int widgetsOnColumn = mWidgetNum;
-			if ( mWidgetNum > 20 ) 
+			if ( mWidgetNum > 20 )
 				widgetsOnColumn = 20;
-				
+
 			Fl_Pack* buttons = new Fl_Pack( 20 , (widgetsOnColumn+1)*25, w(), 20 );
-			
+
 			buttons->type(FL_HORIZONTAL);
 			buttons->spacing(4);
 
@@ -154,6 +192,22 @@ namespace CLAM{
 		/** Default implementation, do nothing */
 		template <typename T>
 		void AddWidget(const char *name, void *foo, T& value) {
+			fl_font(FL_HELVETICA,12);
+
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+		        Fl_Box* b = new Fl_Box(0, 0, 155, 20, name);
+			Fl_Box* notEditable = new Fl_Box( 155, 0, 170, 20, "Not Editable");
+			o->end();
+
+			b->labelsize(12);
+			b->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			b->box(FL_FLAT_BOX);
+
+			notEditable->labelsize(12);
+			notEditable->align(FL_ALIGN_RIGHT | FL_ALIGN_INSIDE);
+			notEditable->box(FL_FLAT_BOX);
+
+			mWidgetNum++;
 		}
 		/** Default implementation, do nothing */
 		template <typename T>
@@ -182,6 +236,44 @@ namespace CLAM{
 		}
 		template <typename T>
 		void RetrieveValue(const char *name, std::string *foo, T& value) {
+			Fl_Input * mInput = dynamic_cast<Fl_Input*>(GetWidget(name));
+			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+			value=mInput->value();
+		}
+
+		template <typename T>
+		void AddWidget(const char *name, Filename *foo, T& value) {
+			fl_font(FL_HELVETICA,12);
+
+			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
+		        Fl_Box* b = new Fl_Box(0, 0, 155, 20, name);
+
+			Fl_Pack* fileWidget = new Fl_Pack( 155, 0, 170, 20);
+
+			fileWidget->type(FL_HORIZONTAL);
+			fileWidget->spacing(4);
+
+			Fl_Input * mInput = new Fl_Input( 0, 0, 150, 20);
+			Fl_Button * fileBrowserLauncher = new Fl_Button (0,0,20,20);
+			fileBrowserLauncher->label("...");
+			fileBrowserLauncher->callback(LaunchFileBrowser, mInput);
+
+			fileWidget->end();
+			o->end();
+
+			b->labelsize(12);
+			b->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			b->box(FL_FLAT_BOX);
+
+			mInput->value( value.c_str() );
+			mInput->textsize(12);
+			mInput->align(FL_ALIGN_LEFT);
+
+			mWidgetNum++;
+			mWidgets.insert(tWidgets::value_type(name, mInput));
+		}
+		template <typename T>
+		void RetrieveValue(const char *name, Filename *foo, T& value) {
 			Fl_Input * mInput = dynamic_cast<Fl_Input*>(GetWidget(name));
 			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
 			value=mInput->value();
@@ -313,20 +405,19 @@ namespace CLAM{
 
 			Fl_Group* o = new Fl_Group(0, 0, 330, 20);
 			Fl_Box * mBox = new Fl_Box(HorPos, VerPos, fl_width(name), 20);
-			Fl_Button * mInput = new Fl_Button( 320-fl_width( "Details..." ), VerPos, fl_width( "Details..." )+5, 20, "Details...");
+			Fl_Button * mInput = new Fl_Button( 330-55-fl_width( "Details..." ), VerPos, fl_width( "Details..." )+55, 20, "Details...");
 			o->end();
 
 			mInput->labelsize(12);
 
 			mBox->labelsize(12);
 			mBox->label(name);
-			mBox->align(FL_ALIGN_LEFT | FL_ALIGN_INSIDE);
+			mBox->align(FL_ALIGN_LEFT);
 
 			mInput->callback(ShowSubConfig);
-
-			FLTKConfigurator * subConfigurator = new FLTKConfigurator;
-			subConfigurator->SetConfig(value);
-			mInput->user_data(subConfigurator);
+			ConfigurationHolderBase * holder = new ConfigurationHolder<T>(value);
+			mInput->user_data(holder);
+			mSubConfigurationHolders.push_back(holder);
 
 			mWidgetNum++;
 			mWidgets.insert(tWidgets::value_type(name, mInput));
@@ -344,14 +435,24 @@ namespace CLAM{
 		}
 		static void Discard(Fl_Widget* o, void* v) {
 			o->window()->hide();
+			delete o->window();
 		}
 		static void Ok(Fl_Widget* o, void* v) {
 			Apply(o,v);
 			Discard(o,v);
 		}
 		static void ShowSubConfig(Fl_Widget* o, void* v) {
-			FLTKConfigurator * sub = (FLTKConfigurator*)(v);
-			sub->show();
+			FLTKConfigurator * subConfigurator = new FLTKConfigurator;
+
+			ConfigurationHolderBase * handler = (ConfigurationHolderBase*)(v);
+			handler->ApplyDataTo(*subConfigurator);
+			subConfigurator->show();
+		}
+
+		static void LaunchFileBrowser(Fl_Widget* o, void * data)
+		{
+			Fl_Input * fileInput = (Fl_Input*) data;
+			fileInput->value(fl_file_chooser("Select filename","*",fileInput->value(),1 ));
 		}
 
 		void show() {
@@ -372,6 +473,7 @@ namespace CLAM{
 		ConfigurationVisitor * mSetter;
 		tWidgets mWidgets;
 		CBL::Functor0 mApplyCallback;
+		tConfigHolders mSubConfigurationHolders;
 
 	};
 }

@@ -24,7 +24,9 @@
 
 #include "Array.hxx"
 #include "Audio.hxx"
-#include "AudioCircularBuffer.hxx"
+//#include "AudioCircularBuffer.hxx"
+#include "StreamBuffer.hxx"
+#include "CircularStreamImpl.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Processing.hxx"
@@ -120,12 +122,21 @@ namespace CLAM {
 		 * bad_cast exception when the argument is not an OverlapAddConfig
 		 * object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig&);
 
 		/* protected methods */
 	protected:
 		OverlapAddConfig   mConfig;
-		AudioCircularBuffer mCircBuffer;
+		/** member stream buffer. TODO: this stream buffer should probably be outside the
+		overlap add config and act like a port. As a matter of fact the whole OLA processing
+		could probably just become a node. */
+		StreamBuffer<TData, CircularStreamImpl<TData> > *mStreamBuffer;
+		ReadStreamRegion *mReader;
+		WriteStreamRegion *mWriter;
+		/** This add stream region should become an inplace region whenever inplace regions
+		 *	are completely implemented and tested */
+		AddStreamRegion *mAdder;
+		Array<TData> mBuffer;
 	
 	};
 } //end of namespace CLAM

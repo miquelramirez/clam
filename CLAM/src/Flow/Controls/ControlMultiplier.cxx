@@ -23,3 +23,4 @@
 using namespace CLAM;
 
 template BinaryControlOp< Multiply<TControlData> >;
+

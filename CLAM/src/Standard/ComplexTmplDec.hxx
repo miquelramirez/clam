@@ -34,7 +34,7 @@ namespace CLAM
 	private:
 		T mRe, mIm;
 	public:
-		ComplexTmpl(T re = 0.0,T im = 0.0) // constructor
+		ComplexTmpl(T re = 0.0,T im = 0.0) //< constructor
 		{
 			mRe = re;
 			mIm = im;
@@ -42,32 +42,33 @@ namespace CLAM
 
 		~ComplexTmpl(){}
 
-		const T Real(void) const {return mRe;}; // accessor returns the real part
-		const T Imag(void) const {return mIm;}; // accessor returns the imaginary part
+		const T Real(void) const {return mRe;}; //< accessor returns the real part
+		const T Imag(void) const {return mIm;}; //< accessor returns the imaginary part
 
-		void SetReal(const T& re) { mRe = re;}; // accesor sets the real part
-		void SetImag(const T& im) { mIm = im;}; // accesor sets the imaginary part
+		void SetReal(const T& re) { mRe = re;}; //< accesor sets the real part
+		void SetImag(const T& im) { mIm = im;}; //< accesor sets the imaginary part
 
-		// returns magnitude
+		/// returns magnitude
 		const T Mag(void) const
 		{
 			return sqrt (mRe*mRe + mIm*mIm);
 		}
 
-		// returns angle
+		/// returns angle
 		const T Ang(void) const
 		{
-			return atan2 (mIm,mRe); 
+			return atan2 (mIm,mRe);
 		}
 
-		// friend function to handle polar coordinates
+		/// friend function to handle polar coordinates
 		friend ComplexTmpl<T> ToPolar(const T& r, const T& theta)
 		{
 			return ComplexTmpl<T>(r * cos(theta), r * sin(theta));
 		};
 
 		// ------   member operators ... ------
-		//  complex '=' operator  (float)
+
+		///  complex '=' operator  (float)
 		const ComplexTmpl<T>& operator = (const float re)
 		{
 			mRe = re;
@@ -75,8 +76,8 @@ namespace CLAM
 			return *this;
 		}
 
-		// complex '=' operator
-		const ComplexTmpl<T>& operator = (const ComplexTmpl<T>& a) 
+		/// complex '=' operator
+		const ComplexTmpl<T>& operator = (const ComplexTmpl<T>& a)
 		{
 			mRe = a.mRe;
 			mIm = a.mIm;
@@ -84,7 +85,7 @@ namespace CLAM
 
 		}
 
-		// complex '+=' operator
+		/// complex '+=' operator
 		const ComplexTmpl<T>& operator += (const ComplexTmpl<T>& a)
 		{
 			mRe = mRe + a.mRe;
@@ -92,7 +93,7 @@ namespace CLAM
 			return *this;
 		}
 
-		//  complex '-=' operator 
+		///  complex '-=' operator
 		const ComplexTmpl<T>& operator -= (const ComplexTmpl<T>& a)
 		{
 			mRe = mRe - a.mRe;
@@ -100,64 +101,64 @@ namespace CLAM
 			return *this;
 		}
 
-		// complex '+' operator 
+		/// complex '+' operator
 		ComplexTmpl<T> operator + (const ComplexTmpl<T>& b) const
 		{
-			ComplexTmpl<T> ret(mRe + b.mRe , mIm + b.mIm); 
+			ComplexTmpl<T> ret(mRe + b.mRe , mIm + b.mIm);
 			return ret;
 		}
 
-		 //  complex '-' operator 
+		///  complex '-' operator
 		ComplexTmpl<T> operator - (const ComplexTmpl<T>& b) const
 		{
-			ComplexTmpl<T> ret(mRe - b.mRe , mIm - b.mIm); 
+			ComplexTmpl<T> ret(mRe - b.mRe , mIm - b.mIm);
 			return ret;
 		}
 
-		 // complex '*' operator
+		/// complex '*' operator
 		ComplexTmpl<T> operator * (const ComplexTmpl<T>& b) const
 		{
-			ComplexTmpl<T> ret((mRe * b.mRe) - (mIm * b.mIm),(mRe * b.mIm) + (b.mRe * mIm));
-			return ret;  
+			return ComplexTmpl<T> (
+				(mRe * b.mRe) - (mIm * b.mIm),
+				(mRe * b.mIm) + (b.mRe * mIm)
+			);
 		}
 
-		// MRJ: Argh!
+		/// Product by a scalar
 		ComplexTmpl<T> operator * (const T& scalar ) const
 		{
-			ComplexTmpl<T> ret(mRe*scalar,mIm*scalar);
-			return ret;
+			return ComplexTmpl<T>(mRe*scalar,mIm*scalar);
 		}
 
-		 // complex '/' operator 
+		/// complex '/' operator
 		ComplexTmpl<T> operator / (const ComplexTmpl<T>& b) const
 		{
-			ComplexTmpl<T>	ret( ((mRe * b.mRe) + (mIm * b.mIm)) /((b.mRe * b.mRe) + (b.mIm * b.mIm)),
-													((b.mRe * mIm) - (mRe * b.mIm)) / ((b.mRe * b.mRe) + (b.mIm * b.mIm)));
-			return ret;  
+			return ComplexTmpl<T> (
+				((mRe * b.mRe) + (mIm * b.mIm)) /((b.mRe * b.mRe) + (b.mIm * b.mIm)),
+				((b.mRe * mIm) - (mRe * b.mIm)) /((b.mRe * b.mRe) + (b.mIm * b.mIm))
+			);
 		}
 
-		 // complex '==' operator
+		/// complex '==' operator
 		bool operator == (const ComplexTmpl<T>& b) const
-		{	
-			if ((mRe == b.mRe)&&(mIm == b.mIm)) return true;
-			else return false;
+		{
+			return (mRe == b.mRe) && (mIm == b.mIm);
 		}
 
-		 // complex '!=' operator
+		/// complex '!=' operator
 		bool operator != (const ComplexTmpl<T>& b) const
-		{	
-			if ((mRe == b.mRe)&&(mIm == b.mIm)) return false;
-			else return true;
+		{
+			return (mRe != b.mRe) || (mIm != b.mIm);
 		}
-		
+
 	};
 
 	template <class T>
 	std::istream& operator >> (std::istream & stream, ComplexTmpl<T> & a);
-	
+
 	template <class T>
 	std::ostream& operator << (std::ostream & stream, const ComplexTmpl<T> & a);
-	
+
 } // namespace CLAM
 
 #endif // _ComplexTmplDec_

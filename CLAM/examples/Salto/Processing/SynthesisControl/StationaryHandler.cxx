@@ -104,9 +104,9 @@ namespace SALTO
 		return true;
 	}
 
-	bool StationaryHandler::ConcreteConfigure( const ProcessingConfig& cfg )throw ( std::bad_cast )
+	bool StationaryHandler::ConcreteConfigure( const ProcessingConfig& c )
 	{
-		mConfig = dynamic_cast< const StationaryHandlerConfig& >( cfg );
+		CopyAsConcreteConfig(mConfig, c);
 
 		return true;
 	}

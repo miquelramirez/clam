@@ -22,8 +22,8 @@
 #define __PORTMIDIDevice__
 
 #include "MIDIManager.hxx"
-#include "portmidi.h"
-#include "porttime.h"
+#include <portmidi.h>
+#include <porttime.h>
 #include <iostream>
 
 namespace CLAM {

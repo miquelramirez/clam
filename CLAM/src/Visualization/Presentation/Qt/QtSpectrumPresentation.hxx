@@ -75,7 +75,7 @@ protected:
 	CBL::Functor2< unsigned int, EScale >            mGetScale;
 
 	GLLinearSpRenderer*                              mRenderer;
-    QtDataDisplay*                                   display;
+	QtDataDisplay*                                   display;
 	QtGLPort*                                        mPort;
 
 	Viewport                                         mSpecPresMetrix;

@@ -9,9 +9,9 @@ void main()
 
 	MyProcessingWithSimpleControls model;
 	
-	model.aInControlArray.at( MyProcessingWithSimpleControls::eVoice0 )->DoControl (c1);
-	model.aInControlArray.at( MyProcessingWithSimpleControls::eVoice3 )->DoControl (c2);
-	model.aInControlArray.at( MyProcessingWithSimpleControls::eVoice4 )->DoControl (c3);
+	model.aInControlArray[ MyProcessingWithSimpleControls::eVoice0 ]->DoControl (c1);
+	model.aInControlArray[ MyProcessingWithSimpleControls::eVoice3 ]->DoControl (c2);
+	model.aInControlArray[ MyProcessingWithSimpleControls::eVoice4 ]->DoControl (c3);
 
 	model.cSingleControl.DoControl( c2 );
 	model.dSingleControl.DoControl( c3 );

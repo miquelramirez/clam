@@ -41,15 +41,13 @@ namespace CLAM
 	{ 
 	}
 
-	bool MIDIHandler::ConcreteConfigure( const ProcessingConfig& cfg)throw( std::bad_cast )
+	bool MIDIHandler::ConcreteConfigure( const ProcessingConfig& c)
 	{
 	
 		bool r = true;
 
+		CopyAsConcreteConfig(mConfig, c);
 		try {
-			
-			mConfig = dynamic_cast< const MIDIHandlerConfig& >( cfg );
-
 			if( !ConfigureChildren() )
 			{
 				std::string aux(mStatus);
@@ -139,12 +137,10 @@ namespace CLAM
 					Params().SetDisplayedValuesChanged(true); // display needs update 
 
 					TIndex val = 30-velocity;
-					#ifdef TRUMPET
-					val = CLIP(val,1,10);
-					#endif           
-					#ifdef ALTOSAX    
+					if (TRUMPET)
+						val = CLIP(val,1,10);
+					if (ALTOSAX)
 					val = CLIP(val,2,10);
-					#endif            
 					//Params().SetAttackTimbreTransFrames(val);    
 
 					if (pitch>=Params().GetAttackTimbre().GetPitch())   // check if transition up or down

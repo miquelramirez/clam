@@ -46,9 +46,9 @@ namespace CLAM {
 		Configure(cfg);
 	}
 
-	bool OverlapAndAdd::ConcreteConfigure(const ProcessingConfig& cfg)
+	bool OverlapAndAdd::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const OverlapAndAddConfig&>(cfg);
+		CopyAsConcreteConfig(mConfig, c);
 
 		mHop = mConfig.GetHopSize();
 		mLen = mConfig.GetLength();

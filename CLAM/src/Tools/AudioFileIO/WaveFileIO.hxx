@@ -11,6 +11,8 @@ public:
 	~WaveFileIO()
 	{
 		Close();
+		if (mCuePoints)
+			delete mCuePoints;
 	}
 private:
 	void InitSelf(void);
@@ -37,6 +39,15 @@ private:
 		int len;
 	};
 
+	struct CuePoint {
+	  int    identifier;
+	  int    position;
+	  ID      fccChunk;
+	  int    chunkStart;
+	  int    blockStart;
+	  int    offset;
+	};
+	
 #pragma pack (2)
 
 	struct WaveFmtChunk 
@@ -58,6 +69,10 @@ private:
 	int WriteID(ID& id);
 
 	bool CheckID(const ID& id,const ID& cmp);
+
+public:
+	CuePoint* mCuePoints; // read only for now
+	int mNCuePoints; 
 };
 
 };//CLAM

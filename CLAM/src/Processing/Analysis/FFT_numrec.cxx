@@ -36,11 +36,12 @@ namespace CLAM {
 
 	SpecTypeFlags FFT_numrec::mComplexflags;
 
-	bool FFT_numrec::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	bool FFT_numrec::ConcreteConfigure(const ProcessingConfig& c)
 	{
 		int oldSize = mSize;
 
-		mConfig = dynamic_cast<const FFTConfig&>(c);
+		CopyAsConcreteConfig(mConfig, c);
+
 		if (mConfig.HasAudioSize()) {
 			if (mConfig.GetAudioSize()<0)
 				throw(ErrProcessingObj("Wrong (negative) Size in FFT Configuration.",this));

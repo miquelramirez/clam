@@ -1,0 +1,37 @@
+body
+{
+	font-family:Sans-Serif;
+}
+h1
+{
+	color: #888888;
+}
+h2
+{
+	color: #555555;
+}
+
+.to-do 
+{
+	font-weight: normal;
+	color: Black;
+	text-decoration: none;
+	
+}
+.done 
+{
+	color: Olive;
+	text-decoration: line-through;
+	font-weight: normal;
+}
+.current 
+{
+	font-weight: bold;
+	color:Purple
+}
+.hidden 
+{
+	color: white;
+	visibility: hidden;
+	
+}

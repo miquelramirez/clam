@@ -2,15 +2,10 @@
 #define __CLAM_MATH__
 
 #include <cmath>
-
-
-
-
-
-
+//XA
 #ifdef WIN32
 #ifdef _DEBUG
-#include <cfloat>
+#include <float.h>
 #endif
 #endif
 #include "Assert.hxx"
@@ -41,24 +36,28 @@ inline int Chop(float a) {
 #endif //WIN32
 }
 
-
-
-
-
-
-
-
-
-
-//optimized integer rounding routine for Windows
-inline int Round(float a) {
+/* optimized roundInt implementation valid only for positive integers*/
+inline int Round(float a)
+{
 #if defined (_MSC_VER)
 	int i;
-	__asm {
-		fld   a
-		fistp i
-	}
-	return i;
+	static const float half = 0.5f;
+#ifdef _DEBUG
+/**IMPORTANT: if in release mode, you are responsible for changing controlfp.
+	You must do so outside the loop that actually calls the loop */
+	CLAM_ASSERT(a>=0,"Round function only for positive numbers");
+	unsigned int saved;
+	saved = _controlfp(_RC_CHOP,_MCW_RC);
+#endif //_DEBUG
+    __asm {
+			fld   a
+			fadd  half
+            fistp i
+           }
+#ifdef _DEBUG
+			_controlfp(saved, _MCW_RC);
+#endif //_DEBUG
+            return i;
 #else
 	#ifdef __USE_ISOC99
 		return lrint(a);
@@ -67,13 +66,6 @@ inline int Round(float a) {
 	#endif
 #endif
 }
-
-#ifndef __USE_ISOC99
-inline double  round(double _X)
-        {return (floor(_X+0.5)); }
-inline float  round(float _X)
-        {return (floorf(_X+0.5f)); }
-#endif
 
 
 
@@ -103,5 +95,23 @@ inline float  round(float _X)
 	} // namespace std
 #endif // MSVC++ 6
 
+#ifndef __USE_ISOC99
+inline double  round(double _X)
+        {return (floor(_X+0.5)); }
+inline float  round(float _X)
+        {return (floorf(_X+0.5f)); }
+#endif
+
+
+/** Fast "pow" for converting a logarithmic value into linear value ( assumes a log
+scale factor of 20 ). Warning, float should be TData but includes should then be changed**/
+inline float log2lin( float x )
+{
+
+//	static double magic = 1.0 / (20.0 * log10(exp(1.0)))=0.1151292546497;
+
+	return exp( x * 0.1151292546497f );
+
+}
 
 #endif // CLAM_Math.hxx

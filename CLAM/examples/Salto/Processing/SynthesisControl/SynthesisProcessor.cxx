@@ -67,9 +67,9 @@ namespace SALTO
 		return true;
 	}
 
-	bool SynthesisProcessor::ConcreteConfigure( const ProcessingConfig& cfg ) throw ( std::bad_cast )
+	bool SynthesisProcessor::ConcreteConfigure( const ProcessingConfig& c )
 	{
-		mConfig = dynamic_cast< const SynthesisProcessorConfig& > ( cfg );
+		CopyAsConcreteConfig(mConfig, c);
 
 		return true;
 	}

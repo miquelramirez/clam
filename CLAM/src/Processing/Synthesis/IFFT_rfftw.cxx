@@ -19,21 +19,21 @@
  *
  */
 
-#include"IFFT_rfftw.hxx"
+#include "IFFT_rfftw.hxx"
 
-#include<string>
+#include <string>
 #include "mtgsstream.h" // An alias for <sstream>
 
-#include"ErrProcessingObj.hxx"
+#include "ErrProcessingObj.hxx"
 
 namespace CLAM {
 
 	SpecTypeFlags IFFT_rfftw::mComplexflags;
 
 
-	bool IFFT_rfftw::ConcreteConfigure(const ProcessingConfig& b) throw(std::bad_cast)
+	bool IFFT_rfftw::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		mConfig = dynamic_cast<const IFFTConfig&>(b); // Configuration copy
+		CopyAsConcreteConfig(mConfig, c);
 		if (mConfig.HasAudioSize()) {
 			CLAM_ASSERT (mConfig.GetAudioSize()>=0,"Wrong (negative) Size in IFFT Configuration.");
 			mSize = mConfig.GetAudioSize();

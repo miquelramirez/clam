@@ -22,7 +22,9 @@
 #include "MIDILinker.hxx"
 #include <cstdlib>
 #include <iostream>
+#include <string>
 #include <algorithm>
+#include "XMLAdapter.hxx"
 #include "TopLevelProcessing.hxx"
 
 using namespace CLAM;
@@ -30,6 +32,7 @@ using namespace CLAM;
 using std::cout;
 using std::endl;
 using std::for_each;
+using std::find;
 
 void MIDIRelation::StoreOn(Storage & store)
 {
@@ -99,9 +102,9 @@ MIDILinker::MIDILinker(const MIDILinkerConfig& cfg)
 	Configure(cfg);
 }
 
-bool MIDILinker::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast)
+bool MIDILinker::ConcreteConfigure(const ProcessingConfig& c)
 {
-	mConfig = dynamic_cast<const MIDILinkerConfig&>(cfg);
+	CopyAsConcreteConfig(mConfig, c);
 	
 	std::vector<unsigned>::iterator beginBytes;
 	std::vector<MIDIRelation>::iterator beginRel, endRel;
@@ -134,7 +137,7 @@ bool MIDILinker::ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_c
 	return true;
 }
 
-MIDIInConfig MIDILinker::CreateMIDICfg(const unsigned short channel, const MIDI::Message message, const string  name,TData filter=-1)
+MIDIInConfig MIDILinker::CreateMIDICfg(const unsigned short channel, const MIDI::Message message, const string  name,TData filter)
 {
 	MIDIInConfig cfg;
 	
@@ -287,7 +290,7 @@ void MIDILinker::LinkMIDIWithControl(
 	const char*  procName, 
 	const unsigned CtrlId, 
 	const ControlMapperConfig& mapperCfg, 
-	const int numByte=0)
+	const int numByte)
 {
 	Processing* po = GetProcessingObject(procName);
 	

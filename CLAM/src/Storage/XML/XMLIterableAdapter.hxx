@@ -164,12 +164,12 @@ private:
 		return store.Load(&adapter);
 	}
 	//* @return A string with the extracted XML content
-	std::string ContentLeaveOrComponent(StaticFalse* isLeave) 
+	std::string ContentLeaveOrComponent(StaticFalse* /*isLeave*/) 
 	{
 		return "";
 	}
 	/// @return A string with the extracted XML content
-	std::string ContentLeaveOrComponent(StaticTrue* isLeave) 
+	std::string ContentLeaveOrComponent(StaticTrue* /*isLeave*/) 
 	{
 		if (!IsXMLAttribute()) return "";
 		std::stringstream stream;

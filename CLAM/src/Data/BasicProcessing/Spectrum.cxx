@@ -100,6 +100,7 @@ void Spectrum::GetConfig(SpectrumConfig& c) const
 }
 
 
+
 void Spectrum::DefaultInit()
 {
 	Configure(SpectrumConfig());
@@ -176,9 +177,7 @@ void Spectrum::SetType(const SpecTypeFlags& tmpFlags)
 set as constants elsewhere */
 void Spectrum::ToDB()
 {
-	SpectrumConfig c;
-	GetConfig(c);
-	if(c.GetScale()==EScale::eLinear)
+	if(GetScale()==EScale::eLinear)
 	{
 		int i;
 		SpecTypeFlags flags;
@@ -192,9 +191,8 @@ void Spectrum::ToDB()
 				if(mag[i]==0) mag[i]=-200;
 				else mag[i]= 20*log10(mag[i]); 
 			}
-			SynchronizeTo(flags);
 		}
-		else if (HasPolarArray()) // WARNING: computational expensive operation
+		if (HasPolarArray()) // WARNING: computational expensive operation
 		{
 			Array<Polar> &polar = GetPolarArray();
 			specSize=TData(GetSize());
@@ -208,9 +206,8 @@ void Spectrum::ToDB()
 			}
 			flags.bPolar = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
-		else if (HasComplexArray())  // WARNING: computational expensive operation
+		if (HasComplexArray())  // WARNING: computational expensive operation
 		{
 			Array<Complex> &complex = GetComplexArray();
 			specSize=TData(GetSize());
@@ -227,12 +224,11 @@ void Spectrum::ToDB()
 			}
 			flags.bComplex = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
-		else if (HasMagBPF())  // WARNING: computational expensive operation
+		if (HasMagBPF())  // WARNING: computational expensive operation
 		{
 			BPF &magBPF= GetMagBPF();
-			int bpfSize=TData(GetBPFSize());
+			const int bpfSize=GetBPFSize();
 			for (i=0; i<bpfSize; i++)
 			{
 				TData magLin=magBPF.GetValueFromIndex(i);
@@ -243,7 +239,6 @@ void Spectrum::ToDB()
 			}
 			flags.bMagPhaseBPF = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
 		SetScale(EScale(EScale::eLog));
 	}
@@ -252,9 +247,7 @@ void Spectrum::ToDB()
 
 void Spectrum::ToLinear()
 {
-	SpectrumConfig c;
-	GetConfig(c);
-	if(c.GetScale()==EScale::eLog)
+	if(GetScale()==EScale::eLog)
 	{
 		int i;
 		SpecTypeFlags flags;
@@ -265,11 +258,10 @@ void Spectrum::ToLinear()
 			for (i=0; i<specSize; i++)
 			{
 				if(mag[i]<=-200) mag[i]=0;
-				else mag[i]= pow(TData(10),TData(mag[i]/20)); 
+				else mag[i]= log2lin(mag[i]); 
 			}
-			SynchronizeTo(flags);
 		}
-		else if (HasPolarArray())  // WARNING: computational expensive operation
+		if (HasPolarArray())  // WARNING: computational expensive operation
 		{
 			Array<Polar> &polar = GetPolarArray();
 			for (i=0; i<specSize; i++)
@@ -277,14 +269,13 @@ void Spectrum::ToLinear()
 				TData magLog = polar[i].Mag();
 				TData magLin;
 				if(magLog<=-200) magLin=0;
-				else magLin = pow(TData(10),TData(magLog/20));
+				else magLin = log2lin(magLog);
 				polar[i].SetMag(magLin);
 			}
 			flags.bPolar = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
-		else if (HasComplexArray())  // WARNING: computational expensive operation
+		if (HasComplexArray())  // WARNING: computational expensive operation
 		{
 			Array<Complex> &complex = GetComplexArray();
 			for (i=0; i<specSize; i++)
@@ -294,15 +285,14 @@ void Spectrum::ToLinear()
 				TData magLog = sqrt(re*re + im*im);
 				TData magLin;
 				if(magLog<=-200) magLin=0;
-				else magLin = pow(TData(10),TData(magLog/20));
+				else magLin = log2lin(magLog);
 				complex[i].SetReal(magLin * re / magLin);
 				complex[i].SetImag(magLin * im / magLin);
 			}
 			flags.bComplex = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
-		else if (HasMagBPF())  // WARNING: computational expensive operation
+		if (HasMagBPF())  // WARNING: computational expensive operation
 		{
 			BPF &magBPF = GetMagBPF();
 			int bpfSize=GetBPFSize();
@@ -311,12 +301,11 @@ void Spectrum::ToLinear()
 				TData magLog = magBPF.GetValueFromIndex(i);
 				TData magLin;
 				if(magLog<=-200) magLin=0;
-				else magLin = pow(TData(10),TData(magLog/20));
+				else magLin = log2lin(magLog);
 				magBPF.SetValue(i,magLin);
 			}
 			flags.bMagPhaseBPF = true;
 			flags.bMagPhase = false;
-			SynchronizeTo(flags);
 		}
 		SetScale(EScale(EScale::eLinear));
 
@@ -746,5 +735,5 @@ void Spectrum::GetType(SpecTypeFlags& f) const
 
 TIndex Spectrum::IndexFromFreq(TData freq) const
 {
-	return roundInt(freq*((GetSize()-1)/GetSpectralRange()));
+	return Round(freq*((GetSize()-1)/GetSpectralRange()));
 }

@@ -24,10 +24,11 @@
 
 #include "Err.hxx"
 
-using CLAM::Err;
 
-namespace CLAMGUI
+namespace CLAMVM
 {
+
+using CLAM::Err;
 
 class ErrGUI : public Err
 {
@@ -49,7 +50,7 @@ public:
 	void Print(void);
 };
 
-#define GUIException( msg ) ErrGUI( msg, __FILE__, __LINE__ )
+#define GUIException( msg ) CLAMVM::ErrGUI( msg, __FILE__, __LINE__ )
 
 }
 

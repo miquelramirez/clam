@@ -38,14 +38,14 @@ namespace CLAM {
 	
 	/** Pitch note type definition = pitch + octave 
 	 **/
-		class PitchNote: public ProcessingData
+	class PitchNote: public ProcessingData
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (PitchNote, 2, ProcessingData);
 		DYN_ATTRIBUTE (0, public, EPitch, Pitch);   
 		DYN_ATTRIBUTE (1, public, int,    Octave);
 		
-		void DefaultInit();	
+		void DefaultInit();
 	};
 	
 }; // namespace CLAM

@@ -56,7 +56,7 @@ namespace CLAM {
 		{
 		}
 		const char * GetClassName() const {return "ControlMapper";}
-		bool ConcreteConfigure(const ProcessingConfig& cfg);
+		bool ConcreteConfigure(const ProcessingConfig& c);
 		int DoMap(TControlData val)
 		{
 			SendControl(0,TControlData(mMappingPtr->Map(val)));

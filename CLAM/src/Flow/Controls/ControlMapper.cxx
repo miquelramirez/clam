@@ -50,9 +50,9 @@ ControlMapper::ControlMapper(const ControlMapperConfig& cfg)
 	Configure(cfg);
 }
 
-bool ControlMapper::ConcreteConfigure( const ProcessingConfig& cfg )
+bool ControlMapper::ConcreteConfigure( const ProcessingConfig& c )
 {
-	mConfig = dynamic_cast<const ControlMapperConfig&>(cfg);
+	CopyAsConcreteConfig(mConfig, c);
 
 	if (mMappingPtr) delete mMappingPtr;
 	mMappingPtr = Mapping::Create(mConfig.GetMapping());

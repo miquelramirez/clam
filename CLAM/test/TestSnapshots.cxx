@@ -30,12 +30,11 @@ using std::cerr;
 #include "DataTypes.hxx"
 #include "ErrProcessingObj.hxx"
 
-#include "DebugSnapshots.hxx"
-#include "AudioSnapshot.hxx"
-#include "SpectrumSnapshot.hxx"
+//#include "DebugSnapshots.hxx"
+#include "Plot.hxx"
 
-using CLAMGUI::WidgetTKWrapper;
-using CLAMGUI::Geometry;
+//using CLAMVM::WidgetTKWrapper;
+//using CLAMVM::Geometry;
 
 using namespace CLAM;
 
@@ -87,7 +86,7 @@ int main(int argc, char* argv[])
 		for ( i = 0; i < 10; i++ )
 			{
 				std::cout << "Opening Audio snapshot" << std::endl;
-				showSnapshotAudio( myaudio );
+				CLAMVM::plot( myaudio );
 				std::cout << "Closing Audio snapshot" << std::endl;
 			} 
 		
@@ -98,7 +97,7 @@ int main(int argc, char* argv[])
 		for ( i = 0; i < 10; i++ )
 			{
 				std::cout << "Opening spectrum snapshot" << std::endl;
-				showSnapshotSpectrum( myspectrum );
+				CLAMVM::plot( myspectrum );
 				std::cout << "Closing Spectrum Snapshot" << std::endl;
 			}
 		

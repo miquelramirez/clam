@@ -23,7 +23,8 @@
 #define _EnvelopeModulator_
 
 #include "Processing.hxx"
-#include "Port.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 #include "Envelope.hxx"
 #include "Audio.hxx"
 
@@ -58,7 +59,7 @@ namespace CLAM
 
 		TData Compress(TData);
 
-		bool ConcreteConfigure(const ProcessingConfig& cfg) throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig& c);
 
 	public:
 		EnvelopeModulator(const EnvModulatorConfig& c = EnvModulatorConfig());

@@ -205,17 +205,17 @@ namespace CLAMTest {
 		bool res = true;
 		if (region == 0) // Writer
 		{
-			T* data;
-			data = mpObject2->GetAndActivate(mWriter);
-			FillData(data,mWriter->Pos(),mWriter->Len());
+			CLAM::Array<T> data;
+			mpObject2->GetAndActivate(mWriter,data);
+			FillData(data.GetPtr(),mWriter->Pos(),mWriter->Len());
 			mpObject2->LeaveAndAdvance(mWriter);
 			return true;
 		}
 		// Reader
-		const T* data;
+		CLAM::Array<T> data;
 		CLAM::ReadStreamRegion *reader = mReaders[region];
-		data = mpObject2->GetAndActivate(reader);
-		res = CheckData(data,reader->Pos(),reader->Len());
+		mpObject2->GetAndActivate(reader,data);
+		res = CheckData(data.GetPtr(),reader->Pos(),reader->Len());
 		mpObject2->LeaveAndAdvance(reader);
 		return res;
 	}
