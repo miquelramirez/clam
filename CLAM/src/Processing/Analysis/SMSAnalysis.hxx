@@ -22,11 +22,6 @@
 #ifndef _SMSAnalysis_
 #define _SMSAnalysis_
 
-//#define WITH_GUI
-
-#ifdef WITH_GUI
-
-#endif
 
 #include "SpectralPeakDetect.hxx"
 #include "FundFreqDetect.hxx"
@@ -36,7 +31,6 @@
 #include "SMSSynthesis.hxx"//For Sinusoidal Synthesis
 #include "SpectralAnalysis.hxx"
 
-#include "SnapshotGenerator.hxx"
 #include "Flags.hxx"
 
 namespace CLAM {
