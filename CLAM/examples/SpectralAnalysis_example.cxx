@@ -36,9 +36,7 @@ int main( int argc, char** argv )
 	try
 	{
 		CLAMExamples::SpectralAnalysisSettings settings;
-		CLAM::XMLStorage storageIface;
-		
-		storageIface.Dump( settings, "AnSpectralAnalysisSettigns", "example_Config.xml" );
+		CLAM::XMLStorage::Dump( settings, "AnSpectralAnalysisSettigns", "example_Config.xml" );
 
 		const char* filename = fl_file_chooser( "Please select the Spectral Analysis settings to be used",
 							"*.xml", NULL );
@@ -48,10 +46,9 @@ int main( int argc, char** argv )
 			std::cerr << "User cancelled" << std::endl;
 			exit(0);
 		}
-		
 
 
-		storageIface.Restore( settings, filename );
+		CLAM::XMLStorage::Restore( settings, filename );
 		
 		std::cout << "Specified config loaded" << std::endl;
 
@@ -143,11 +140,9 @@ int main( int argc, char** argv )
 		filename = fl_file_chooser( "Please enter the filename where the analysis is to be stored",
 					    "*.xml", NULL );
 		if (  filename )
-		{
-			storageIface.Dump( resultingAnalysis, "SpectralAnalysis", filename );
-		}
+			CLAM::XMLStorage::Dump( resultingAnalysis, "SpectralAnalysis", filename );
 		else
-			storageIface.Dump( resultingAnalysis, "SpectralAnalysis", "SpectralAnalysis_0001.xml");
+			CLAM::XMLStorage::Dump( resultingAnalysis, "SpectralAnalysis", "SpectralAnalysis_0001.xml");
 	}
 	catch( CLAM::Err& error )
 	{

@@ -132,8 +132,10 @@ namespace CLAM {
 		if (flags.bComplex)
 			mState=sComplex;
 		else
-			CLAM_ASSERT(flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF,"IFFT_rfftw: SetPrototypes(): No Spectrum Attributes!")
-				mState=sOther;
+		{
+			CLAM_ASSERT(flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF,"IFFT_rfftw: SetPrototypes(): No Spectrum Attributes!");
+			mState=sOther;
+		}
 		// TODO: Maybe should update the prototype in the port?
 
 		return true;
@@ -150,7 +152,7 @@ namespace CLAM {
 	{
 		if (GetExecState() == Disabled)
 			return true;
-		CLAM_ASSERT(GetExecState()!=Unconfigured&&GetExecState()!=Ready,"IFFT_rfftw: Do(): Not in execution mode")
+		CLAM_ASSERT(GetExecState()!=Unconfigured&&GetExecState()!=Ready,"IFFT_rfftw: Do(): Not in execution mode");
 		
 		CLAM_BEGIN_CHECK
 			if ( GetExecState() == Unconfigured ||

@@ -10,9 +10,8 @@ namespace CLAM
 	class MelodyTranslatorConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (MelodyTranslatorConfig, 2, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, std::string, FileName);
+		DYNAMIC_TYPE_USING_INTERFACE (MelodyTranslatorConfig, 1, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, std::string, FileName);
 	protected:
 		void DefaultInit(void);
 	};

@@ -23,7 +23,7 @@ CFG=POCompositeExample - Win32 Debug
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName "CLAM_Skeleton_project"
+# PROP Scc_ProjName "empty"
 # PROP Scc_LocalPath "."
 CPP=cl.exe
 RSC=rc.exe
@@ -37,20 +37,20 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "..\ReleaseFiles\bin"
-# PROP Intermediate_Dir "..\ReleaseFiles\obj"
+# PROP Output_Dir "../ReleaseFiles/bin"
+# PROP Intermediate_Dir "../ReleaseFiles/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Synthesis" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\..\..\..\src\Defines" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Synthesis" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /FI"preinclude.hxx" /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /FD /Zm1000 /c
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" RFFTW2st.lib FFTW2st.lib /nologo /subsystem:console /machine:I386
+# ADD BASE LINK32 /machine:IX86
+# ADD LINK32 RFFTW2st.lib FFTW2st.lib /subsystem:console /machine:I386 /libpath:"..\..\..\..\..\fftw\lib"
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "POCompositeExample - Win32 Debug"
@@ -62,20 +62,20 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\DebugFiles\bin"
-# PROP Intermediate_Dir "..\DebugFiles\obj"
+# PROP Output_Dir "../DebugFiles/bin"
+# PROP Intermediate_Dir "../DebugFiles/obj"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /I "..\..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Defines" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Synthesis" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\..\..\..\src\Defines" /I "..\..\..\..\..\fftw\include" /I "..\..\..\..\src\Base" /I "..\..\..\..\src\Data\Base" /I "..\..\..\..\src\Data\BasicProcessing" /I "..\..\..\..\src\Errors" /I "..\..\..\..\src\Flow\Controls" /I "..\..\..\..\src\Flow\Nodes" /I "..\..\..\..\src\Flow\Ports" /I "..\..\..\..\src\Processing\Analysis" /I "..\..\..\..\src\Processing\ArithOps" /I "..\..\..\..\src\Processing\Base" /I "..\..\..\..\src\Processing\Synthesis" /I "..\..\..\..\src\Standard" /I "..\..\..\..\src\Storage\Base" /I "..\..\..\..\src\Storage\XML" /FI"preinclude.hxx" /D "_DEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /FD /GZ /Zm1000 /c
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
-# ADD RSC /l 0xc0a /d "_DEBUG"
+# ADD RSC /l 0xc0a
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /libpath:"..\..\..\..\..\fftw\lib" FFTW2std.lib RFFTW2std.lib /nologo /subsystem:console /debug /machine:I386
+# ADD BASE LINK32 /machine:IX86
+# ADD LINK32 FFTW2std.lib RFFTW2std.lib /subsystem:console /debug /machine:I386 /libpath:"..\..\..\..\..\fftw\lib"
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -90,8 +90,10 @@ LINK32=link.exe
 # End Group
 # Begin Group "Source Files"
 
+# PROP Default_Filter ""
 # Begin Group "examples Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\examples\POCompositeExample.cxx
@@ -99,9 +101,14 @@ SOURCE=..\..\..\..\examples\POCompositeExample.cxx
 # End Group
 # Begin Group "Errors Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Errors\Err.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Errors\ErrDynamicType.cxx
 # End Source File
 # Begin Source File
 
@@ -111,20 +118,42 @@ SOURCE=..\..\..\..\src\Errors\ErrOutOfMemory.cxx
 
 SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.cxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Errors\ErrDynamicType.cxx
-# End Source File
 # End Group
 # Begin Group "Defines Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Defines\Assert.cxx
 # End Source File
 # End Group
+# Begin Group "Storage Sources"
+
+# PROP Default_Filter ""
+# Begin Group "XML Sources"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\BasicXMLable.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLComponentAdapter.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLStorage.cxx
+# End Source File
+# End Group
+# End Group
 # Begin Group "Base Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Base\DynamicType.cxx
@@ -132,8 +161,10 @@ SOURCE=..\..\..\..\src\Base\DynamicType.cxx
 # End Group
 # Begin Group "Flow Sources"
 
+# PROP Default_Filter ""
 # Begin Group "Controls Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Controls\InControl.cxx
@@ -145,10 +176,7 @@ SOURCE=..\..\..\..\src\Flow\Controls\OutControl.cxx
 # End Group
 # Begin Group "Ports Sources"
 
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\Port.cxx
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Ports\InPort.cxx
@@ -157,12 +185,25 @@ SOURCE=..\..\..\..\src\Flow\Ports\InPort.cxx
 
 SOURCE=..\..\..\..\src\Flow\Ports\OutPort.cxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\Port.cxx
+# End Source File
 # End Group
 # Begin Group "Nodes Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.cxx
+SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\Node.cxx
 # End Source File
 # Begin Source File
 
@@ -174,42 +215,20 @@ SOURCE=..\..\..\..\src\Flow\Nodes\SourceStreamRegion.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\Node.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.cxx
 # End Source File
 # End Group
 # End Group
 # Begin Group "Processing Sources"
 
+# PROP Default_Filter ""
 # Begin Group "Base Sources No. 1"
 
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.cxx
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Base\Processing.cxx
@@ -220,11 +239,28 @@ SOURCE=..\..\..\..\src\Processing\Base\ProcessingComposite.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.cxx
 # End Source File
 # End Group
 # Begin Group "Analysis Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Analysis\FFT.cxx
@@ -236,6 +272,7 @@ SOURCE=..\..\..\..\src\Processing\Analysis\FFT_rfftw.cxx
 # End Group
 # Begin Group "Synthesis Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Synthesis\IFFT.cxx
@@ -247,6 +284,7 @@ SOURCE=..\..\..\..\src\Processing\Synthesis\IFFT_rfftw.cxx
 # End Group
 # Begin Group "ArithOps Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumProduct.cxx
@@ -255,8 +293,10 @@ SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumProduct.cxx
 # End Group
 # Begin Group "Data Sources"
 
+# PROP Default_Filter ""
 # Begin Group "BasicProcessing Sources"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.cxx
@@ -269,17 +309,22 @@ SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.cxx
 # End Group
 # Begin Group "Standard Sources"
 
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\BPF.cxx
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\Complex.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\Polar.cxx
+SOURCE=..\..\..\..\src\Standard\Enum.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\Enum.cxx
+SOURCE=..\..\..\..\src\Standard\Flags.cxx
 # End Source File
 # Begin Source File
 
@@ -291,21 +336,83 @@ SOURCE=..\..\..\..\src\Standard\Point.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\BPF.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Flags.cxx
+SOURCE=..\..\..\..\src\Standard\Polar.cxx
 # End Source File
 # End Group
 # End Group
 # Begin Group "Header Files"
 
+# PROP Default_Filter ""
+# Begin Group "Storage Headers"
+
+# PROP Default_Filter ""
+# Begin Group "Base Headers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
+# End Source File
+# End Group
+# Begin Group "XML Headers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\BasicXMLable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomDocumentHandler.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomReadingContext.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XercesDomWritingContext.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLable.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLArrayAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLComponentAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLIterableAdapter.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Storage\XML\XMLStorage.hxx
+# End Source File
+# End Group
+# End Group
 # Begin Group "Errors Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Errors\Err.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
 # End Source File
 # Begin Source File
 
@@ -315,16 +422,37 @@ SOURCE=..\..\..\..\src\Errors\ErrOutOfMemory.hxx
 
 SOURCE=..\..\..\..\src\Errors\ErrProcessingObj.hxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Errors\ErrDynamicType.hxx
-# End Source File
 # End Group
 # Begin Group "Defines Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Defines\Assert.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\ByteOrder.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\CLAM_Math.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\DataTypes.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\mtgsstream.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Defines\OSDefines.hxx
 # End Source File
 # Begin Source File
 
@@ -338,37 +466,10 @@ SOURCE=..\..\..\..\src\Defines\TypeInfo.hxx
 
 SOURCE=..\..\..\..\src\Defines\TypeInfoStd.hxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\CLAM_Math.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\DataTypes.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\mtgsstream.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\ByteOrder.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\EDataFormat.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Defines\OSDefines.hxx
-# End Source File
 # End Group
-# Begin Group "Base Headers"
+# Begin Group "Base Headers No. 1"
 
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Base\Component.hxx
@@ -377,25 +478,17 @@ SOURCE=..\..\..\..\src\Base\Component.hxx
 
 SOURCE=..\..\..\..\src\Base\DynamicType.hxx
 # End Source File
-# End Group
-# Begin Group "Storage Headers"
-
-# Begin Group "Base Headers No. 1"
-
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Storage\Base\Storable.hxx
+SOURCE=..\..\..\..\src\Base\DynamicTypeMacros.hxx
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Storage\Base\Storage.hxx
-# End Source File
-# End Group
 # End Group
 # Begin Group "Flow Headers"
 
+# PROP Default_Filter ""
 # Begin Group "Controls Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Controls\ControlLinker.hxx
@@ -411,17 +504,18 @@ SOURCE=..\..\..\..\src\Flow\Controls\OutControl.hxx
 # End Group
 # Begin Group "Ports Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Ports\Port.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Flow\Ports\InPort.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
 # End Source File
 # Begin Source File
 
@@ -433,18 +527,27 @@ SOURCE=..\..\..\..\src\Flow\Ports\OutPort.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\OutPortTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Ports\OutPortTmpl.hxx
+SOURCE=..\..\..\..\src\Flow\Ports\Port.hxx
 # End Source File
 # End Group
 # Begin Group "Nodes Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.hxx
+SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Flow\Nodes\Node.hxx
 # End Source File
 # Begin Source File
 
@@ -456,31 +559,40 @@ SOURCE=..\..\..\..\src\Flow\Nodes\SourceStreamRegion.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Flow\Nodes\StreamRegion.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Flow\Nodes\WriteStreamRegion.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\Node.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\DelayStreamRegion.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Flow\Nodes\InplaceStreamRegion.hxx
 # End Source File
 # End Group
 # End Group
 # Begin Group "Standard Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Standard\Array.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\ComplexTmplDec.hxx
+SOURCE=..\..\..\..\src\Standard\ArrayToBPFCnv.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\BPF.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\BPFTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\BPFTmplDec.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\BPFTmplDef.hxx
 # End Source File
 # Begin Source File
 
@@ -488,11 +600,43 @@ SOURCE=..\..\..\..\src\Standard\Complex.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\PolarTmplDec.hxx
+SOURCE=..\..\..\..\src\Standard\ComplexTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\Polar.hxx
+SOURCE=..\..\..\..\src\Standard\ComplexTmplDec.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\ComplexTmplDef.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\ComplexToPolarCnv.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Enum.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\FastRounding.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Flags.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\GlobalEnums.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\Point.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\PointTmpl.hxx
 # End Source File
 # Begin Source File
 
@@ -504,55 +648,7 @@ SOURCE=..\..\..\..\src\Standard\PointTmplDef.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\PointTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\SearchArray.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Enum.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\GlobalEnums.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\BPFTmplDec.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Point.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\BPF.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\ArrayToBPFCnv.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\ComplexToPolarCnv.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\Flags.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\ComplexTmplDef.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\ComplexTmpl.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Standard\PolarTmplDef.hxx
+SOURCE=..\..\..\..\src\Standard\Polar.hxx
 # End Source File
 # Begin Source File
 
@@ -560,33 +656,23 @@ SOURCE=..\..\..\..\src\Standard\PolarTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\BPFTmplDef.hxx
+SOURCE=..\..\..\..\src\Standard\PolarTmplDec.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\src\Standard\BPFTmpl.hxx
+SOURCE=..\..\..\..\src\Standard\PolarTmplDef.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Standard\SearchArray.hxx
 # End Source File
 # End Group
 # Begin Group "Processing Headers"
 
+# PROP Default_Filter ""
 # Begin Group "Base Headers No. 2"
 
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Base\Processing.hxx
@@ -597,11 +683,32 @@ SOURCE=..\..\..\..\src\Processing\Base\ProcessingComposite.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\src\Processing\Base\ProcessingConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInControls.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedInPorts.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutControls.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Base\PublishedOutPorts.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 # End Source File
 # End Group
 # Begin Group "Analysis Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Analysis\FFT.hxx
@@ -610,9 +717,14 @@ SOURCE=..\..\..\..\src\Processing\Analysis\FFT.hxx
 
 SOURCE=..\..\..\..\src\Processing\Analysis\FFT_rfftw.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Analysis\FFTConfig.hxx
+# End Source File
 # End Group
 # Begin Group "Synthesis Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\Synthesis\IFFT.hxx
@@ -621,9 +733,14 @@ SOURCE=..\..\..\..\src\Processing\Synthesis\IFFT.hxx
 
 SOURCE=..\..\..\..\src\Processing\Synthesis\IFFT_rfftw.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Processing\Synthesis\IFFTConfig.hxx
+# End Source File
 # End Group
 # Begin Group "ArithOps Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumProduct.hxx
@@ -632,19 +749,22 @@ SOURCE=..\..\..\..\src\Processing\ArithOps\SpectrumProduct.hxx
 # End Group
 # Begin Group "Data Headers"
 
+# PROP Default_Filter ""
 # Begin Group "Base Headers No. 3"
 
-# Begin Source File
-
-SOURCE=..\..\..\..\src\Data\Base\ProcessingDataConfig.hxx
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Data\Base\ProcessingData.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\Base\ProcessingDataConfig.hxx
+# End Source File
 # End Group
 # Begin Group "BasicProcessing Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
@@ -653,12 +773,22 @@ SOURCE=..\..\..\..\src\Data\BasicProcessing\Audio.hxx
 
 SOURCE=..\..\..\..\src\Data\BasicProcessing\Spectrum.hxx
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpectrumConfig.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\src\Data\BasicProcessing\SpecTypeFlags.hxx
+# End Source File
 # End Group
 # End Group
 # Begin Group "fftw Headers"
 
+# PROP Default_Filter ""
 # Begin Group "include Headers"
 
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\..\fftw\include\fftw.h
@@ -676,23 +806,11 @@ SOURCE=settings.cfg
 
 !IF  "$(CFG)" == "POCompositeExample - Win32 Release"
 
-# Begin Custom Build
-InputPath=settings.cfg
-
-"buildstamp" : $(SOURCE) "$(INTDIR)" "POCompositeExample.dsp"
-	srcdeps.exe settings.cfg POCompositeExample.dsp
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "POCompositeExample - Win32 Debug"
 
-# Begin Custom Build
-InputPath=settings.cfg
-
-"buildstamp" : $(SOURCE) "$(INTDIR)" "POCompositeExample.dsp"
-	srcdeps.exe settings.cfg POCompositeExample.dsp
-
-# End Custom Build
+# PROP Exclude_From_Build 1
 
 !ENDIF 
 

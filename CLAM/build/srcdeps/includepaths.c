@@ -17,7 +17,7 @@ void includepaths_add(const char* str)
 	while (ptr!=str && *ptr!='/' && *ptr!='\\') ptr--;
 	if (*ptr=='\\') 
 	{
-		fprintf(stderr, "Error in includepaths.c: '\\' encountered in a include path\n");
+		fprintf(stderr, "Error in includepaths.c: '\\' encountered in a include path\n line:%s \n ",str);
 		exit(-1);
 	}
 	if ((*ptr=='/') && !strcmp(ptr,"/CVS") ) return;

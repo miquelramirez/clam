@@ -78,7 +78,7 @@ namespace CLAM
 	}
 
 	void XmlStorage::UseIndentation(bool useIndentation) {
-		// TODO: Not yet implemented
+		_useIndentation=useIndentation;
 	}
 
 // Static sumarized interface
@@ -88,6 +88,7 @@ namespace CLAM
 		_readContext = 0;
 		_writeContext = 0;
 		_lastWasContent = true;
+		_useIndentation = false;
 	}
 	XmlStorage::~XmlStorage()
 	{

@@ -23,6 +23,7 @@
 #include "Array.hxx"
 #include "Audio.hxx"
 #include "Assert.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAM
 {

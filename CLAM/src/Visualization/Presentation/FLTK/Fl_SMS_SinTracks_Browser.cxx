@@ -126,6 +126,10 @@ namespace CLAMVM
 		}
 		else if ( event == FL_SHOW )
 		{
+#ifdef __APPLE__
+		if ( mDisplay == NULL )
+		{
+#endif
 			mDisplay = new Fl_SMS_Gl_Single_Browsable_Display( x(),y(),w()-50,h()-50 );
 			mDisplay->SetRenderer( mDrawMgr );
 			mDisplay->EnableDoubleBuffering();
@@ -151,17 +155,27 @@ namespace CLAMVM
 			mYAxis->resize( x()+w()-50, y(), 30, h() - 50);
 			mXSlider->resize( x(), y() +h() -20, w() -50, 20);
 			mYSlider->resize( x()+w()-20, y(), 20, h() -50 );
+#ifdef __APPLE__
+		}
+		else
+		{
+			mDisplay->resize( x(), y(), w()-50, h()-50 );
+			mDisplay->redraw();
+		}
 
+#endif 
 
 		}
 		else if ( event == FL_HIDE )
 		{
+#ifndef __APPLE__
 			if ( mDisplay )
 			{
 				remove( mDisplay );
 				delete mDisplay;
 				mDisplay = NULL;
 			}
+#endif
 		}
 	
 		return Fl_Group::handle( event );

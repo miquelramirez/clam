@@ -511,8 +511,11 @@ namespace CLAM
 	Network::NamesList  Network::GetInPortsConnectedTo( const std::string & producer ) const
 	{		
 		OutPort & out = GetOutPortByCompleteName( producer );
-		CLAM_ASSERT( out.GetNode(), "Trying to access a node from an outport without connections");
+//		CLAM_ASSERT( out.GetNode(), "Trying to access a node from an outport without connections");
 		NamesList consumers;
+
+		if(!out.GetNode())
+			return consumers;
 
 		NodeBase::ReaderIterator it;
 		for(it=out.GetNode()->BeginReaders();

@@ -546,7 +546,9 @@ InstrumentValues& InstrumentValues::_GetInstance(int instr,char* dataFolder)
 	{
 		instance.mInstrument = instr;
 		if (instr==-1)
+		{
 			CLAM_ASSERT(false,"InstrumentValues has not been instantiated yet\n");
+		}
 		else if (instr==0)
 		{
     	strcpy(instance.mSALTO_DATA_FILE_NAME,dataFolder);

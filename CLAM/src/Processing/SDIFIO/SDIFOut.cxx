@@ -102,8 +102,8 @@ bool SDIFOut::Do(const Frame& frame)
 		SDIF::ConcreteMatrix<TFloat32>* pMatrix;
 				
 		//First matrix to add to frame
-		pMatrix=new SDIF::ConcreteMatrix<TFloat32>(SDIF::TypeId::sDefault,1,1);
-		
+		pMatrix=new SDIF::ConcreteMatrix<TFloat32>("1FQ0",1,1);
+
 		//We add fundamental frequency
 		pMatrix->SetValue(0,0,frame.GetFundamental().GetFreq());
 		tmpSDIFFrame.Add(pMatrix);
@@ -126,7 +126,7 @@ bool SDIFOut::Do(const Frame& frame)
 
 
 		pMatrix=new SDIF::ConcreteMatrix<TFloat32>("1STF",frame.GetResidualSpec().GetSize(),2);
-		
+
 		//We have to convert residual spectrum to complex
   		SpectrumConfig Scfg;
   		SpecTypeFlags sflags;
@@ -138,7 +138,7 @@ bool SDIFOut::Do(const Frame& frame)
 		}
 		//SDIF only accepts linear data
 		frame.GetResidualSpec().ToLinear();
-		
+
 		Array<Complex>& complexBuffer=frame.GetResidualSpec().GetComplexArray();
 		for (int r=0;r<pMatrix->Rows();r++)	//Write in complex data
 		{
@@ -154,24 +154,23 @@ bool SDIFOut::Do(const Frame& frame)
 		SpectralPeakArray& tmpPeakArray=frame.GetSpectralPeakArray();
 		//SDIF only accepts linear data
 		tmpPeakArray.ToLinear();
-		
+
 		SDIF::Frame tmpSDIFFrame("1TRC",frame.GetCenterTime(),2);
-		
+
 		int nElems=tmpPeakArray.GetnPeaks();
 
 		SDIF::ConcreteMatrix<TFloat32>* pMatrix;
-				
+
 		//First matrix to add to frame
-		pMatrix=new SDIF::ConcreteMatrix<TFloat32>(SDIF::TypeId::sDefault,nElems,4);
-	
+		pMatrix=new SDIF::ConcreteMatrix<TFloat32>("1TRC",nElems,4);
 		DataArray& pkfreqBuffer=tmpPeakArray.GetFreqBuffer();
 		DataArray& pkmagBuffer=tmpPeakArray.GetMagBuffer();
 		DataArray& pkPhaseBuffer=tmpPeakArray.GetPhaseBuffer();
 		DataArray& pkBinPosBuffer=tmpPeakArray.GetBinPosBuffer();
 		DataArray& pkBinWidthBuffer=tmpPeakArray.GetBinWidthBuffer();
 		IndexArray& pkIndexArray=tmpPeakArray.GetIndexArray();
-		
-		for (int r=0;r<nElems;r++)	
+
+		for (int r=0;r<nElems;r++)
 		{
 			//write track index
 			pMatrix->SetValue(r,0,pkIndexArray[r]+1);	// +1 because SDIF doesnt allow Track 0

@@ -34,14 +34,13 @@ namespace CLAM
 class CSaltoStatTmplData;
 
 class SaltoSynthConfig : public ProcessingConfig
-{
+{	
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (SaltoSynthConfig, 5, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, TSize, AnalysisFrameSize );
-	DYN_ATTRIBUTE (2, public, TData, SampleRate );
-	DYN_ATTRIBUTE (3, public, EWindowType, AnalysisWindowType );
-	DYN_ATTRIBUTE (4, public, TData, PitchModRange );
+	DYNAMIC_TYPE_USING_INTERFACE (SaltoSynthConfig, 4, ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, TSize, AnalysisFrameSize );
+	DYN_ATTRIBUTE (1, public, TData, SampleRate );
+	DYN_ATTRIBUTE (2, public, EWindowType, AnalysisWindowType );
+	DYN_ATTRIBUTE (3, public, TData, PitchModRange );
 private:
 	Parameters*			mpParams;
 protected:

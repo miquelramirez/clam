@@ -35,10 +35,6 @@ Qt_InPortPresentation::Qt_InPortPresentation( int id,  QWidget *parent, const ch
 	setFixedSize(10,5);
 }
 
-Qt_InPortPresentation::~Qt_InPortPresentation()
-{
-}
-
 void Qt_InPortPresentation::SetName(const std::string& name)
 {
 	mName = name;

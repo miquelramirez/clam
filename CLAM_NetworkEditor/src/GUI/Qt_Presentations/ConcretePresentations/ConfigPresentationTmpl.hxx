@@ -34,6 +34,7 @@
 #include "DynamicType.hxx"
 #include "Filename.hxx"
 
+#include <limits>
 #include <qdialog.h>
 #include <qvbox.h>
 #include <qgrid.h>
@@ -60,15 +61,10 @@ class ConfigPresentationTmpl : public Qt_ProcessingConfigPresentation
 	typedef std::map<std::string, QWidget*> tWidgets;
 protected:
 
-
-	
 	QVBox * mLayout;
 	CLAM::ConfigurationVisitor * mGetter;
 	CLAM::ConfigurationVisitor * mSetter;
 	tWidgets mWidgets;
-
-
-
 
 	ConcreteConfig mConfig;
 	virtual void SetConfig( const CLAM::ProcessingConfig & );
@@ -173,18 +169,13 @@ void ConfigPresentationTmpl<ConcreteConfig>::SetConfig( const CLAM::ProcessingCo
 	CLAM_ASSERT(!mLayout, "Configurator: Configuration assigned twice");
 
 
-	mLayout = new QVBox(this);
-	mLayout->setSpacing(3);
+	mLayout = mAttributeContainer;
+	mLayout->setSpacing(5);
 	mLayout->setMargin(5);
 	mLayout->setMinimumWidth(120);
 	GetInfo();
 
-	QFrame * frame = new QFrame(mLayout);
-	frame->setMinimumHeight(10);
-	mLayout->adjustSize();	
-
-
-	
+	adjustSize();
 
 }
 
@@ -231,6 +222,7 @@ template <class ConcreteConfig>
 template< typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, std::string *foo, T& value) {
 	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
 	new QLabel(QString(name), cell);
 	QLineEdit * mInput = new QLineEdit(QString(value.c_str()), cell);
 	mInput->resize( 120, 25 );
@@ -249,10 +241,12 @@ template <class ConcreteConfig>
 template< typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::TData *foo, T& value) {
 	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
 	new QLabel(QString(name), cell);
 	std::stringstream val;
 	val << value << std::ends;
 	QLineEdit * mInput = new QLineEdit(QString(val.str().c_str()), cell);
+	mInput->setAlignment(Qt::AlignRight);
 	mInput->setValidator(new QDoubleValidator(mInput));
 	mWidgets.insert(tWidgets::value_type(name, mInput));
 }
@@ -270,10 +264,12 @@ template <class ConcreteConfig>
 template< typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, unsigned long *foo, T& value) {
 	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
 	new QLabel(QString(name), cell);
 	std::stringstream val;
 	val << value << std::ends;
 	QLineEdit * mInput = new QLineEdit(QString(val.str().c_str()), cell);
+	mInput->setAlignment(Qt::AlignRight);
 	mInput->setValidator(new QDoubleValidator(mInput));
 	mWidgets.insert(tWidgets::value_type(name, mInput));
 }
@@ -293,11 +289,12 @@ template <class ConcreteConfig>
 template< typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::TSize *foo, T& value) {
 	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
 	new QLabel(QString(name), cell);
 	QSpinBox * mInput = new QSpinBox(cell);
-	QIntValidator * validator = new QIntValidator(mInput);
-	validator->setBottom(0);
-	mInput->setValidator(validator);
+	mInput->setMaxValue(std::numeric_limits<T>::max());
+	mInput->setMinValue(std::numeric_limits<T>::min());
+//	mInput->setAlignment(Qt::AlignRight);
 	mInput->setValue(value);
 	mWidgets.insert(tWidgets::value_type(name, mInput));
 }
@@ -332,6 +329,7 @@ template <class ConcreteConfig>
 template< typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::Enum *foo, T& value) {
 	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
 	new QLabel(QString(name), cell);
 	QComboBox * mChoice = new QComboBox(false, cell); // false editable
 	
@@ -362,16 +360,18 @@ template <typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::Filename *foo, T& value) 
 {	
 	QHBox * cell = new QHBox(mLayout);
-	new QLabel(QString(name), cell);
+	cell->setSpacing(5);
+	QLabel * label = new QLabel(QString(name), cell);
 	QLineEdit * mInput = new QLineEdit(QString(value.c_str()), cell);
-	mInput->resize( 80, 25 );
-	resize(245, 275);
-	mWidgets.insert(tWidgets::value_type(name, mInput));
+	mInput->setMinimumWidth(300);
 
 	QPushButton * fileBrowserLauncher = new QPushButton("...",cell);
-	QFileDialog * fd = new QFileDialog(0, "file dialog", FALSE );
+	fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+	QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
 	fd->setMode( QFileDialog::ExistingFile );
-	
+
+	mWidgets.insert(tWidgets::value_type(name, mInput));
+
 	connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
 	connect( fd, SIGNAL(fileSelected( const QString & )), mInput, SLOT( setText( const QString & )));
 }

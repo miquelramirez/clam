@@ -19,7 +19,9 @@
  *
  */
 
-#define MDB_FLTK_OPENGL_WORKAROUND
+#ifdef __APPLE__
+#define MDB_FLTK_MACOSX_OPENGL_WORKAROUND
+#endif
 
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Window.H>
@@ -102,6 +104,12 @@ void Fl_Smart_Tile::add_adjust(Fl_Widget* widget)
 		widget->resize( 0, 0, w(), max );
 	}
 	add(widget);
+#ifdef MDB_FLTK_MACOSX_OPENGL_WORKAROUND
+	widget->hide();
+	widget->show();
+	Fl::flush();
+	redraw();
+#endif
 }
 
 
@@ -189,11 +197,9 @@ int Fl_Smart_Tile::handle(int e)
 				{
 					movingnewsize_ = child(current_)->h()-Fl::event_y()+prevy;
 					movement_ = 1;
-#ifndef MDB_FLTK_OPENGL_WORKAROUND
 					for (int j=0;j<children();j++)
 						if (visible_[j] && child(j)->visible()) 
 							child(j)->hide();
-#endif
 					recalc();
 					prevy = Fl::event_y();
 				}
@@ -223,7 +229,23 @@ int Fl_Smart_Tile::handle(int e)
 						child(current_)->show();
 
 					recalc();
+#ifdef MDB_FLTK_MACOSX_OPENGL_WORKAROUND
+					for (int i = 0;i<children();i++)
+					{
+						Fl_Widget* widget = child(i);
+						if (widget->visible())
+						{
+						widget->hide();
+						widget->show();
+						}
+					}
+					Fl::flush();
+					redraw();
+#endif
 				}
+				
+				
+								
 				break;
 			}
 			case 'c': // closing
@@ -239,6 +261,19 @@ int Fl_Smart_Tile::handle(int e)
 					remove(w);
 					w->do_callback(); // SHOULD THIS CALL THE CALLBACK??
 					//delete w;	
+#ifdef MDB_FLTK_MACOSX_OPENGL_WORKAROUND
+					recalc();
+					for (int i = 0;i<children();i++)
+					{
+						Fl_Widget* widget = child(i);
+						if (widget->visible())
+						{
+						widget->hide();
+						widget->show();
+						}
+					}
+					Fl::flush();
+#endif
 					redraw();
 				}
 				break;

@@ -23,6 +23,9 @@
 #include "ActionButton.hxx"
 #include <qlabel.h>
 #include <qgroupbox.h>  
+#include <qlayout.h>
+#include <qhbox.h>
+#include <qsizepolicy.h>
 
 #include "ProcessingConfig.hxx"
 
@@ -34,23 +37,29 @@ Qt_ProcessingConfigPresentation::Qt_ProcessingConfigPresentation( QWidget *paren
 {
 	if ( !name )
 		setName( "ProcessingConfigDesigner" );
-	
-	mGroupBox = new QGroupBox( this, "mGroupBox" );
-	mGroupBox->setGeometry( QRect( 10, 230, 190, 40 ) );
-	
-	mOkButton = new ActionButton( mGroupBox, "mOkButton" );
-	mOkButton->setGeometry( QRect( 20, 10, 70, 20 ) );
-	
-	mCancelButton = new ActionButton( mGroupBox, "mCancelButton" );
-	mCancelButton->setGeometry( QRect( 100, 10, 70, 20 ) );
-	
+
 	setCaption( tr( "Processing Config" ) );
 
-	mGroupBox->setTitle( QString::null );
+	QVBoxLayout * top =new QVBoxLayout(this);
+
+	mAttributeContainer = new QVBox(this,"AttributeContainer");
+	top->addWidget(mAttributeContainer);
+
+	top->addStretch(10);
+	top->setSpacing(22);
+
+	QHBox * buttonBox = new QHBox(this,"buttonBox" );
+	top->addWidget(buttonBox);
+
+	buttonBox->setSpacing(20);
+	buttonBox->setMargin(10);
+	
+	mOkButton = new ActionButton( buttonBox, "mOkButton" );
+
+	mCancelButton = new ActionButton( buttonBox, "mCancelButton" );
+	
 	mOkButton->setText( tr( "Ok" ) );
 	mCancelButton->setText( tr( "Cancel" ) );
-
-	resize( QSize(400, 275).expandedTo(minimumSizeHint()) );
 
 	SlotOk.Wrap( this, &Qt_ProcessingConfigPresentation::Ok );
 	SlotCancel.Wrap( this, &Qt_ProcessingConfigPresentation::Cancel );

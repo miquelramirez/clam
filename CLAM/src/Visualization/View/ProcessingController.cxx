@@ -51,7 +51,7 @@ namespace CLAMVM
 	bool ProcessingController::BindTo( Processing& procObj )
 	{
 
-		CLAM::PusblishedInControls::Iterator i = procObj.GetInControls().Begin();
+		CLAM::PublishedInControls::Iterator i = procObj.GetInControls().Begin();
 
 		while ( i!=procObj.GetInControls().End() )
 		{

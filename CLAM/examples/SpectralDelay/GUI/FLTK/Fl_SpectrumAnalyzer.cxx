@@ -3,6 +3,7 @@
 #include "Fl_GridLayout.hxx"
 #include "Fl_Gl_Single_Display.hxx"
 #include <algorithm>
+#include "CLAM_Math.hxx"
 
 using namespace SpectralDelay;
 

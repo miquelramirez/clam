@@ -3,7 +3,7 @@
 
 const char* strptr_skip_end(const char* ptr)
 {
-	while (*ptr++);
+	while (*ptr) ptr++;
 	return ptr;
 }
 

@@ -33,10 +33,6 @@ Qt_OutPortPresentation::Qt_OutPortPresentation( int id,  QWidget *parent, const 
 	setFixedSize(10,5);
 }
 
-Qt_OutPortPresentation::~Qt_OutPortPresentation()
-{
-}
-
 void Qt_OutPortPresentation::SetName(const std::string& name)
 {
 	mName = name;

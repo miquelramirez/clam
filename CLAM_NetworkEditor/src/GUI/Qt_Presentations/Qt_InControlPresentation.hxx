@@ -36,7 +36,6 @@ class Qt_InControlPresentation : public QWidget, public ConnectionPointPresentat
 {
 public:
 	Qt_InControlPresentation( int id, QWidget *parent = 0, const char *name = 0);
-	virtual ~Qt_InControlPresentation();
 	virtual void Show();
 	virtual void Hide();
 	QRegion GetRegion();

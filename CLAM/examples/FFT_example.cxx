@@ -124,14 +124,9 @@ int main(int argc, char* argv[])
 
 		std::cout << "Storing spectrum"<< std::endl;
 		
-		// To obtain a persistent copy of the myspectrum object we first instantiate
-		// a CLAM::XMLStorage object - this copy will be encoded as a well-formed XML
-		// document
-		CLAM::XMLStorage storage;
-
-		// and then we tell it to dump the object, setting the 'root' element name of the
-		// resulting XML document to 'FFTResult' on the file 'FFT_example.xml'
-		storage.Dump(myspectrum, "FFTResult", "FFT_example.xml");
+		// Now we'll dump the object on an XML file having FFTResult as the root
+		// element on the FFT_example.xml local file.
+		CLAM::XMLStorage::Dump(myspectrum, "FFTResult", "FFT_example.xml");
 
 	}
 	catch(CLAM::Err& err) // first we check for CLAM internal exceptions

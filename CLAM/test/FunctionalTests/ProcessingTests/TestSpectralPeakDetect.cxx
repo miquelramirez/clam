@@ -7,7 +7,6 @@
 #include "SpectralPeakArray.hxx"
 #include "SpectralPeakDetect.hxx"
 #include "XMLStorage.hxx"
-#include "Plots.hxx"
 #include <fstream>
 
 namespace CLAMTest

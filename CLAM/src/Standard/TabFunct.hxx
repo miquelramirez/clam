@@ -47,7 +47,7 @@ private:
 public:
 	TData operator() (const TData arg) {
 
-		CLAM_DEBUG_ASSERT(arg>=mLowerBound && arg<=mUpperBound, "Tablulated functor argument out of bound")
+		CLAM_DEBUG_ASSERT(arg>=mLowerBound && arg<=mUpperBound, "Tablulated functor argument out of bound");
 		
 		int index = int((arg-mLowerBound) / mIncr);
 

@@ -30,7 +30,7 @@ ConnectionPresentation::ConnectionPresentation()
 	: mInName( "unnamed inport" ),
 	  mOutName( "unnamed outport" )
 {
-	SlotSetNames.Wrap( this, &ConnectionPresentation::SetNames );
+//	SlotSetNames.Wrap( this, &ConnectionPresentation::SetNames );
 }
 
 ConnectionPresentation::~ConnectionPresentation()
@@ -39,7 +39,7 @@ ConnectionPresentation::~ConnectionPresentation()
 
 void ConnectionPresentation::AttachTo( CLAMVM::ConnectionAdapter & adapter )
 {
-	adapter.SignalAcquireNames.Connect(SlotSetNames);
+	SetNames( adapter.GetOutName(), adapter.GetInName() );	
 }
 
 void ConnectionPresentation::SetNames( const std::string & portOut, const std::string & portIn )

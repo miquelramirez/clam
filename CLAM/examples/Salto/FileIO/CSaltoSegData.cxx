@@ -41,3 +41,4 @@ CSaltoSegData::operator=(const CSaltoSegData &source)
 }
 
 } // end of namespace CLAM
+

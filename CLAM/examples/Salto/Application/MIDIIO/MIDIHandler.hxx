@@ -32,7 +32,7 @@ namespace CLAM
 
 		void LinkOutControl( unsigned in, Processing* processing, unsigned out)
 		{
-			 mControl.OutControls[ out ].AddLink( processing->GetInControl( in ) );
+			 mControl.OutControls[ out ].AddLink( &(processing->GetInControls().GetByNumber( in )) );
 		}
 
 	private:

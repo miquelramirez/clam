@@ -25,6 +25,7 @@
 #include "Err.hxx"        // imports CLAM exception class declaration
 #include "Processing.hxx" // imports Processing abstract class declaration
 #include "Audio.hxx"      // imports the Audio class declaration
+#include "CLAM_Math.hxx"
 
 // Helper function used below
 static inline CLAM::TData sign( CLAM::TData value )

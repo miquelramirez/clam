@@ -1,5 +1,5 @@
 #include "ByteOrderConvert.hxx"
-
+#include "Assert.hxx"
 
 ByteOrderConvert::ByteOrderConvert()
 {

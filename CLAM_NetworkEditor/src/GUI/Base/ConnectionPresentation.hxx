@@ -23,7 +23,7 @@
 #define __CONNECTIONPRESENTATION_HXX__
 
 #include "Presentation.hxx"
-#include "Slotv2.hxx"
+//#include "Slotv2.hxx"
 #include "Signalv1.hxx"
 #include <string>
 
@@ -65,7 +65,7 @@ protected:
 	std::string mInName;
 	
 public: //slots
-	SigSlot::Slotv2< const std::string &, const std::string &> SlotSetNames;
+//	SigSlot::Slotv2< const std::string &, const std::string &> SlotSetNames;
 	SigSlot::Signalv1< ConnectionPresentation* > SignalRemoveConnection;
 
 };

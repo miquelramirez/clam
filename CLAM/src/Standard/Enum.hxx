@@ -233,7 +233,7 @@ public:
 			if (mValue==mEnumValues[i].value) 
 				return mEnumValues[i].name;
 		}
-		CLAM_ASSERT(false, "Illegal numeric value for an Enum")
+		CLAM_ASSERT(false, "Illegal numeric value for an Enum");
 		return "IllegalValue";
 	}
 

@@ -136,8 +136,7 @@ void CSaltoFileIO::ReadStatTmplDataFileFromText(const char* fileName,Array<CSalt
 	printf("GODVER %s\n\n",fileName);
 	
   mFout.open(fileName,std::ios::in);  
-  CLAM_ASSERT(mFout.is_open(), 
-      "CSaltoFileIO::ReadStatTmplDataFileFromText File could not be opened");
+  CLAM_ASSERT(mFout.is_open(), "CSaltoFileIO::ReadStatTmplDataFileFromText File could not be opened");
   
   SpectralPeak tempPeak;
   tempPeak.AddAll();
@@ -170,8 +169,7 @@ void CSaltoFileIO::WriteSaltoDataFileToText(const char* fileName,Array<CSaltoSeg
 {
   int i,nSegments;
   mFout.open(fileName,std::ios::out);  
-  CLAM_ASSERT(mFout.is_open())
-        "CSaltoFileIO::WriteSaltoDataFileToText could not be opened");
+  CLAM_ASSERT(mFout.is_open(), "CSaltoFileIO::WriteSaltoDataFileToText could not be opened");
 
   nSegments = saltoData.Size();
   mFout<<nSegments<<std::endl;  
@@ -199,8 +197,7 @@ void CSaltoFileIO::ReadSaltoDataFileFromText(const char* fileName,Array<CSaltoSe
   int i,iVal,nSegments;
   double dVal;
   mFout.open(fileName,std::ios::in);  
-  CLAM_ASSERT(mFout.is_open(),
-        "CSaltoFileIO::ReadStatTmplDataFileFromText File could not be opened");
+  CLAM_ASSERT(mFout.is_open(), "CSaltoFileIO::ReadStatTmplDataFileFromText File could not be opened");
 
   mFout>>nSegments;
 

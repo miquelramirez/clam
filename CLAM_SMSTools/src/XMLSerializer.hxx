@@ -32,8 +32,6 @@ namespace CLAM {
 
 	class XMLSerializer : public Serializer {
 
-		XMLStorage mXMLStorage;
-
 	public:
 		XMLSerializer(  );
 		virtual ~XMLSerializer(  );

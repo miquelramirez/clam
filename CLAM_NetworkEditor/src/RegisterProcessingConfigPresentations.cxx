@@ -39,7 +39,7 @@
 #include "FlagControl.hxx"
 #include "Random.hxx"
 #include "OneOverF.hxx"
-#include "LadspaLoader.hxx"
+//#include "LadspaLoader.hxx"
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
@@ -58,7 +58,7 @@ typedef NetworkGUI::ConfigPresentationTmpl<CLAM::AudioAdderConfig> AudioAdderCon
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::FlagControlConfig> FlagControlConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::RandomConfig> RandomConfigPresentation;
 typedef NetworkGUI::ConfigPresentationTmpl<CLAM::OneOverFConfig> OneOverFConfigPresentation;
-typedef NetworkGUI::ConfigPresentationTmpl<CLAM::LadspaLoaderConfig> LadspaLoaderConfigPresentation;
+//typedef NetworkGUI::ConfigPresentationTmpl<CLAM::LadspaLoaderConfig> LadspaLoaderConfigPresentation;
 
 static ProcessingConfigPresentationFactory::Registrator<SimpleOscillatorConfigPresentationTmpl> regtSimpleOscillatorCfg( "SimpleOscillatorConfig" );
 static ProcessingConfigPresentationFactory::Registrator<OscillatorConfigPresentationTmpl> regtOscillatorCfg( "OscillatorConfig" );
@@ -74,7 +74,7 @@ static ProcessingConfigPresentationFactory::Registrator<AudioMultiplierConfigPre
 static ProcessingConfigPresentationFactory::Registrator<FlagControlConfigPresentation> regtFlagControlCfg( "FlagControlConfig" );
 static ProcessingConfigPresentationFactory::Registrator<RandomConfigPresentation> regtRandomCfg( "RandomConfig" );
 static ProcessingConfigPresentationFactory::Registrator<OneOverFConfigPresentation> regtOneOverFCfg( "OneOverFConfig" );
-static ProcessingConfigPresentationFactory::Registrator<LadspaLoaderConfigPresentation> regtLadspaLoaderCfg( "LadspaLoaderConfig" );
+//static ProcessingConfigPresentationFactory::Registrator<LadspaLoaderConfigPresentation> regtLadspaLoaderCfg( "LadspaLoaderConfig" );
 
 
 // manual config presentation

@@ -239,30 +239,28 @@ bool SaltoSynth::ConfigureData(void)
 
 void SaltoSynth::ControlSetup(void)
 {
-	LinkOutWithInControl( 0, &mInterpol, 0 );
-	LinkOutWithInControl( 1, &mInterpol, 1 );
-	LinkOutWithInControl( 2, &mInterpol, 2 );
-	LinkOutWithInControl( 3, &mInterpol, 3 );
-	LinkOutWithInControl( 4, &mInterpol, 4 );
-	LinkOutWithInControl( 5, &mInterpol, 5 );
-	LinkOutWithInControl( 6, &mInterpol, 6 );
-	LinkOutWithInControl( 7, &mInterpol, 7 );
-	LinkOutWithInControl( 8, &mInterpol, 8 );
-	LinkOutWithInControl( 9, &mInterpol, 9 );
+	GetOutControls().GetByNumber(0).AddLink( &(mInterpol.GetInControls().GetByNumber(0)) );
+	GetOutControls().GetByNumber(1).AddLink( &(mInterpol.GetInControls().GetByNumber(1)) );
+	GetOutControls().GetByNumber(2).AddLink( &(mInterpol.GetInControls().GetByNumber(2)) );
+	GetOutControls().GetByNumber(3).AddLink( &(mInterpol.GetInControls().GetByNumber(3)) );
+	GetOutControls().GetByNumber(4).AddLink( &(mInterpol.GetInControls().GetByNumber(4)) );
+	GetOutControls().GetByNumber(5).AddLink( &(mInterpol.GetInControls().GetByNumber(5)) );
+	GetOutControls().GetByNumber(6).AddLink( &(mInterpol.GetInControls().GetByNumber(6)) );
+	GetOutControls().GetByNumber(7).AddLink( &(mInterpol.GetInControls().GetByNumber(7)) );
+	GetOutControls().GetByNumber(8).AddLink( &(mInterpol.GetInControls().GetByNumber(8)) );
+	GetOutControls().GetByNumber(9).AddLink( &(mInterpol.GetInControls().GetByNumber(9)) );
 
-	LinkOutWithInControl( 10, &mSineSynth, 0 );
-	LinkOutWithInControl( 11, &mSineSynth, 1 );
-	LinkOutWithInControl( 12, &mSineSynth, 2 );
-	LinkOutWithInControl( 13, &mSineSynth, 3 );
+	GetOutControls().GetByNumber(10).AddLink( &(mSineSynth.GetInControls().GetByNumber(0)) );
+	GetOutControls().GetByNumber(11).AddLink( &(mSineSynth.GetInControls().GetByNumber(1)) );
+	GetOutControls().GetByNumber(12).AddLink( &(mSineSynth.GetInControls().GetByNumber(2)) );
+	GetOutControls().GetByNumber(13).AddLink( &(mSineSynth.GetInControls().GetByNumber(3)) );
 
-	LinkOutWithInControl( 14, &mAttackResSynth,   0 );
-	LinkOutWithInControl( 14, &mStatResSyhthesis, 0 );
-	LinkOutWithInControl( 15, &mStatResSyhthesis, 1 );
+	GetOutControls().GetByNumber(14).AddLink( &(mAttackResSynth.GetInControls().GetByNumber(0)) );
+	GetOutControls().GetByNumber(14).AddLink( &(mStatResSyhthesis.GetInControls().GetByNumber(0)) );
+	GetOutControls().GetByNumber(15).AddLink( &(mStatResSyhthesis.GetInControls().GetByNumber(1)) );
 
-
-
-	mSineSynth.LinkOutWithInControl( 0, this, 1 );
-	mSineSynth.LinkOutWithInControl( 1, this, 2 );
+	mSineSynth.GetOutControls().GetByNumber(0).AddLink( &(this->GetInControls().GetByNumber(1)) );
+	mSineSynth.GetOutControls().GetByNumber(1).AddLink( &(this->GetInControls().GetByNumber(2)) );
 
 }
 

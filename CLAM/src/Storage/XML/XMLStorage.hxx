@@ -47,6 +47,7 @@ class XmlStorage : public Storage
 	XercesDomWritingContext * _writeContext;
 	XercesDomReadingContext * _readContext;
 	bool _lastWasContent;
+	bool _useIndentation;
 public:
 	XmlStorage();
 	~XmlStorage();
@@ -82,6 +83,7 @@ public:
 		XmlStorage storage;
 		storage.Create(rootName);
 		storage.DumpObject(obj);
+		storage.UseIndentation(true);
 		storage.WriteSelection(os);
 	}
 

@@ -18,3 +18,4 @@ CSaltoTimbreVektor::~CSaltoTimbreVektor()
 }
 
 } // end of namespace CLAM
+

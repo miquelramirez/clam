@@ -141,7 +141,7 @@ void Segment::AddFrame(Frame& newFrame)
 
 void Segment::DeleteFrame(TIndex pos)
 {
-	CLAM_ASSERT(pos<=GetnFrames(),"Segment::DeleteFrame: Index out of bounds")
+	CLAM_ASSERT(pos<=GetnFrames(),"Segment::DeleteFrame: Index out of bounds");
 	CLAM_ASSERT(GetHoldsData()||pParent,
 		"Segment::DeleteFrame: No available frame array attribute");
 

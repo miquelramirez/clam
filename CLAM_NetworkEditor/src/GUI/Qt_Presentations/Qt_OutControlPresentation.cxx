@@ -50,10 +50,6 @@ Qt_OutControlPresentation::Qt_OutControlPresentation( int id,  QWidget *parent, 
 	mReg += reg;
 }
 
-Qt_OutControlPresentation::~Qt_OutControlPresentation()
-{
-}
-
 void Qt_OutControlPresentation::SetName(const std::string& name)
 {
 	mName = name;

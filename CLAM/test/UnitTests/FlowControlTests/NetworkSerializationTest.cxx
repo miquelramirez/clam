@@ -55,10 +55,9 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	void TestLoadEmptyNetwork()
 	{
 		CLAM::Network foo;
-		CLAM::XMLStorage storage;
 		std::string name("FooNetwork");
 
-		storage.Restore(foo, "emptynetwork.xml");
+		CLAM::XMLStorage::Restore(foo, "emptynetwork.xml");
 
 		CPPUNIT_ASSERT_EQUAL( name , foo.GetName() );
 		
@@ -68,12 +67,11 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	{
 		CLAM::Network foo;
 		foo.SetName( "FooNetwork" );
-		CLAM::XMLStorage storage;		
 
 		std::stringstream output("");
 		std::string result( "<network id=\"FooNetwork\"/>" );
 
-		storage.Dump(foo, "network", output);
+		CLAM::XMLStorage::Dump(foo, "network", output);
 		std::string outputString(output.str());
 		CPPUNIT_ASSERT_EQUAL( result, outputString );
 		
@@ -83,11 +81,10 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	void TestLoadNetworkWithOneProcessing()
 	{	
 		CLAM::Network foo;
-		CLAM::XMLStorage storage;
 		std::string procName("oscillator");
 		foo.AddFlowControl( new CLAM::BasicFlowControl );
 
-		storage.Restore(foo, "networkwithoneproc.xml");
+		CLAM::XMLStorage::Restore(foo, "networkwithoneproc.xml");
 		
 		CPPUNIT_ASSERT_EQUAL( true, foo.HasProcessing( procName ) );
 
@@ -96,7 +93,6 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	void TestSaveNetworkWithOneProcessing()
 	{
 		CLAM::Network foo;
-		CLAM::XMLStorage storage;
 		std::string name("FooNetworkWithOneProcessing");
 		std::string procName("oscillator");
 		CLAM::Oscillator* osc = new CLAM::Oscillator;
@@ -106,7 +102,7 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		foo.AddProcessing("oscillator", osc);
 
 		std::stringstream output("");
-		storage.Dump(foo, "network",output);
+		CLAM::XMLStorage::Dump(foo, "network",output);
 		std::string result(
 			"<network id=\"FooNetworkWithOneProcessing\">"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
@@ -126,13 +122,12 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	void TestLoadNetworkWithMoreThanOneProcessing()
 	{
 		CLAM::Network foo;
-		CLAM::XMLStorage storage;
 		std::string procName("oscillator");
 		std::string procName2("fftw");
 		std::string procName3("multiplier");
 		foo.AddFlowControl( new CLAM::BasicFlowControl );
 
-		storage.Restore(foo, "networkwithmorethanoneproc.xml");
+		CLAM::XMLStorage::Restore(foo, "networkwithmorethanoneproc.xml");
 		
 		CPPUNIT_ASSERT_EQUAL( true, foo.HasProcessing( procName ) );
 		CPPUNIT_ASSERT_EQUAL( true, foo.HasProcessing( procName2 ) );
@@ -142,7 +137,6 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	void TestSaveNetworkWithMoreThanOneProcessing()
 	{		
 		CLAM::Network foo;
-		CLAM::XMLStorage storage;
 		std::string name("FooNetworkWithMoreThanOneProcessing");
 		std::stringstream output("");
 
@@ -168,7 +162,7 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
 		foo.AddProcessing("fftw", new CLAM::FFT_rfftw );
 
-		storage.Dump(foo, "network", output );
+		CLAM::XMLStorage::Dump(foo, "network", output );
 		std::string outputString(output.str());
 		
 		CPPUNIT_ASSERT_EQUAL( result, outputString );
@@ -190,7 +184,6 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	void TestSaveNetworkWithPortsConnection()
 	{
 		CLAM::Network foo;
-		CLAM::XMLStorage storage;
 		std::string name("FooNetworkWithPortsConnection");
 		std::stringstream output("");
 		
@@ -216,7 +209,7 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		foo.AddProcessing("oscillator", new CLAM::Oscillator );
 		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
 		foo.ConnectPorts("oscillator.Audio Output", "multiplier.First Audio Input");
-		storage.Dump(foo, "network", output );
+		CLAM::XMLStorage::Dump(foo, "network", output );
 		std::string outputString(output.str());
 		
 		CPPUNIT_ASSERT_EQUAL( result, outputString );
@@ -226,10 +219,9 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	void TestLoadNetworkWithControlsConnection()
 	{		
 		CLAM::Network foo;
-		CLAM::XMLStorage storage;
 		foo.AddFlowControl( new CLAM::BasicFlowControl );
 
-		storage.Restore(foo, "networkwithcontrolconnections.xml");
+		CLAM::XMLStorage::Restore(foo, "networkwithcontrolconnections.xml");
 		
 		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("panner").GetOutControls().Get("Left Control").IsConnectedTo( 
 					      foo.GetProcessing("oscillator").GetInControls().Get("ModIndex")));
@@ -242,7 +234,6 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	void TestSaveNetworkWithControlsConnection()
 	{		
 		CLAM::Network foo;
-		CLAM::XMLStorage storage;
 		std::string name("FooNetworkWithControlsConnection");
 		std::stringstream output("");
 		
@@ -273,7 +264,7 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		foo.AddProcessing("oscillator", new CLAM::Oscillator );
 		foo.AddProcessing("panner", new CLAM::AutoPanner );
 		foo.ConnectControls("panner.Left Control","oscillator.Amplitude");
-		storage.Dump(foo, "network", output );
+		CLAM::XMLStorage::Dump(foo, "network", output );
 		std::string outputString(output.str());
 		
 		CPPUNIT_ASSERT_EQUAL( result, outputString );
