@@ -492,7 +492,7 @@ def updateSandboxes() :
 def deployClamBuildSystem() :
 	# BuildSrcDeps
 	os.chdir(BUILDPATH+'srcdeps/')
-	executeMandatory('make')
+	executeMandatory('make clean && make')
 
 	# ConfigureClam
 	os.chdir(BUILDPATH)
