@@ -1,4 +1,4 @@
-#include "SineTracksAdapter.hxx"
+#include "NetSinTracking.hxx"
 #include "NetSinTracksPlotController.hxx"
 
 namespace CLAM
@@ -6,11 +6,12 @@ namespace CLAM
     namespace VM
     {
 	NetSinTracksPlotController::NetSinTracksPlotController()
+	    : mMonitor(0), 
+	      _index(0)
 	{
-	    InitPeakMatrix();
-	    SetnSamples(200);
+	    SetnSamples(100);
 	    SetvRange(TData(0.0),TData(11025.0));
-	    InitView();
+	    mSlotNewData.Wrap(this,&NetSinTracksPlotController::OnNewData);
 	}
 
 	NetSinTracksPlotController::~NetSinTracksPlotController()
@@ -19,61 +20,86 @@ namespace CLAM
 	
 	void NetSinTracksPlotController::SetData(const SpectralPeakArray& peaks)
 	{
-	    AddData(peaks);
-	    CheckView();
-	    SineTracksAdapter _adapter;
-	    _cachedTracks = _adapter.GetTrackList(_peakMtx);
-	    ProcessData();
-	    emit sendView(_view);
+	    if(!peaks.GetMagBuffer().Size()) return;
+	    if(CanGetData())
+	    {
+		SetCanSendData(false);
+		if(First()) Init();
+		AddData(peaks);
+		SetCanSendData(true);
+	    }
 	}
 
 	void NetSinTracksPlotController::Draw()
 	{
+	    if(CanSendData())
+	    {
+		SetCanGetData(false);
+		NetSinTracking tracksBuilder;
+		_renderer.SetData(tracksBuilder.GetTracks(_peakMtx,_index));
+		SetCanGetData(true);
+	    }
 	    _renderer.Render();
+	    NetPlotController::Draw();
 	}
 
 	void NetSinTracksPlotController::AddData(const SpectralPeakArray& data)
 	{
-	    _peakMtxOldSize=_peakMtx.Size();
 	    if(!data.GetMagBuffer().Size()) return;
-	    _peakMtx.AddElem(data);
-	}
-
-	void NetSinTracksPlotController::ProcessData()
-	{
-	    _renderer.SetHBounds(_view.left,_view.right);
-	    _renderer.SetData(_cachedTracks);
-	}
-
-	void NetSinTracksPlotController::CheckView()
-	{
-	    TSize newSize = _peakMtx.Size();
-	    if(_peakMtxOldSize == newSize) return;
-	    if(_peakMtx.Size() > GetnSamples())
+	    
+	    if(_peakMtx.Size() < GetnSamples())
 	    {
-		_view.left = _view.left+TData(1.0);
-		_view.right = _view.right+TData(1.0);
+		_peakMtx.AddElem(data);
+	    }
+	    else
+	    {
+		_peakMtx[_index++] = data;
+		if(_index == GetnSamples()) _index = 0;
 	    }
 	}
 
-	void NetSinTracksPlotController::InitPeakMatrix()
+	void NetSinTracksPlotController::Init()
 	{
+	    _index=0;
+	    SetFirst(false);
 	    _peakMtx.Init();
+	    FullView();
 	}
 
-	void NetSinTracksPlotController::InitView()
+	void NetSinTracksPlotController::FullView()
 	{
 	    _view.left=TData(0.0);
 	    _view.right=TData(GetnSamples());
 	    _view.top = GetvMax();
 	    _view.bottom = GetvMin();
+
+	    emit sendView(_view);
 	}
 
-	void NetSinTracksPlotController::FullView()
+	void NetSinTracksPlotController::SetMonitor(MonitorType & monitor)
 	{
-	    // TODO
+	    mMonitor = & monitor;
+	    mMonitor->AttachStartSlot(mStartSlot);
+	    mMonitor->AttachStopSlot(mStopSlot);
+	    mMonitor->AttachSlotNewData(mSlotNewData);
 	}
 
+	void NetSinTracksPlotController::OnNewData()
+	{
+	    if(CanGetData())
+	    {
+		SetCanSendData(false);
+		if(MonitorIsRunning())
+		{
+		    const SpectralPeakArray & peaks = mMonitor->FreezeAndGetData();
+		    TSize bufferSize = peaks.GetMagBuffer().Size();
+		    if(First() && bufferSize) Init();
+		    if(bufferSize) AddData(peaks);
+		    mMonitor->UnfreezeData();
+		}
+		SetCanSendData(true);
+	    }
+	}
     }
 }
 
