@@ -9,7 +9,7 @@
 
 namespace CLAMTest
 {
-DONTCOMPILE!!!
+DONTCOMPILE!!!!
 class ProcessingTest;
 CPPUNIT_TEST_SUITE_REGISTRATION( ProcessingTest );
 
