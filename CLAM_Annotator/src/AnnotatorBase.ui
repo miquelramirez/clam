@@ -1,0 +1,725 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>AnnotatorBase</class>
+<widget class="QMainWindow">
+    <property name="name">
+        <cstring>AnnotatorBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>1</y>
+            <width>836</width>
+            <height>592</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>7</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="maximumSize">
+        <size>
+            <width>32767</width>
+            <height>400</height>
+        </size>
+    </property>
+    <property name="caption">
+        <string>Music Annotator</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout6</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QListView">
+                    <column>
+                        <property name="text">
+                            <string>File</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>false</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Calculated</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Changed</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <property name="name">
+                        <cstring>mProjectOverview</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>225</height>
+                        </size>
+                    </property>
+                    <property name="selectionMode">
+                        <enum>Single</enum>
+                    </property>
+                    <property name="rootIsDecorated">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QFrame">
+                    <property name="name">
+                        <cstring>frame3</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>7</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>700</width>
+                            <height>225</height>
+                        </size>
+                    </property>
+                    <property name="frameShape">
+                        <enum>StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Raised</enum>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout5</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="Table">
+                    <property name="name">
+                        <cstring>mDescriptorsTable</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>7</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>0</width>
+                            <height>250</height>
+                        </size>
+                    </property>
+                </widget>
+                <widget class="QTabWidget">
+                    <property name="name">
+                        <cstring>tabWidget2</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>700</width>
+                            <height>250</height>
+                        </size>
+                    </property>
+                    <widget class="QWidget">
+                        <property name="name">
+                            <cstring>tab</cstring>
+                        </property>
+                        <attribute name="title">
+                            <string>Tab 1</string>
+                        </attribute>
+                    </widget>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>mLogicGroup</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>4</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>LogicGroup</string>
+            </property>
+            <spacer>
+                <property name="name">
+                    <cstring>spacer6</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>242</width>
+                        <height>20</height>
+                    </size>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>379</x>
+                        <y>28</y>
+                        <width>242</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </spacer>
+            <spacer>
+                <property name="name">
+                    <cstring>spacer5_3</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>242</width>
+                        <height>20</height>
+                    </size>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>11</x>
+                        <y>28</y>
+                        <width>242</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </spacer>
+        </widget>
+    </vbox>
+</widget>
+<menubar>
+    <property name="name">
+        <cstring>MenuBar</cstring>
+    </property>
+    <item text="&amp;File" name="mFileMenu">
+        <action name="fileNew_projectAction"/>
+        <action name="fileOpen_projectAction_2"/>
+        <action name="fileSave_projectAction"/>
+        <action name="fileSave_project_asAction"/>
+        <separator/>
+        <action name="filePublishAction"/>
+        <separator/>
+        <action name="fileAdd_to_projectAction"/>
+        <action name="fileExportAction"/>
+        <item text="E&amp;xport to" name="popupMenu_9" accel="">
+            <action name="fileExportto_MPEG7Action"/>
+        </item>
+        <separator/>
+        <action name="fileExitAction"/>
+    </item>
+    <item text="&amp;Edit" name="mEditMenu">
+        <action name="editDelete_from_projectAction"/>
+    </item>
+    <item text="Analyze" name="SongMenu">
+        <action name="songAnalyzeAction"/>
+        <action name="songAnalyzeAllAction"/>
+    </item>
+    <item text="&amp;Configuration" name="configuration">
+        <action name="configurationPreferencesAction"/>
+        <separator/>
+        <action name="configurationSave_configurationAction"/>
+    </item>
+    <item text="&amp;Help" name="help">
+        <action name="helpAboutAction"/>
+    </item>
+    <separator/>
+</menubar>
+<toolbars>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>Toolbar</cstring>
+        </property>
+        <property name="label">
+            <string>Toolbar</string>
+        </property>
+        <action name="songAnalyzeAction"/>
+    </toolbar>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>mIntraSongToolbar</cstring>
+        </property>
+        <property name="closeMode">
+            <number>0</number>
+        </property>
+        <property name="label">
+            <string>Intrasong toolbar</string>
+        </property>
+        <action name="fileNew_projectAction"/>
+        <action name="fileOpen_projectAction_2"/>
+        <action name="fileSave_projectAction"/>
+    </toolbar>
+</toolbars>
+<customwidgets>
+    <customwidget>
+        <class>Table</class>
+        <header location="local">Table.hxx</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+    </customwidget>
+</customwidgets>
+<actions>
+    <action>
+        <property name="name">
+            <cstring>fileExitAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset></iconset>
+        </property>
+        <property name="text">
+            <string>Exit</string>
+        </property>
+        <property name="menuText">
+            <string>E&amp;xit</string>
+        </property>
+        <property name="accel">
+            <string></string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>helpAboutAction</cstring>
+        </property>
+        <property name="text">
+            <string>&amp;About</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;About</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>configurationPreferencesAction</cstring>
+        </property>
+        <property name="text">
+            <string>&amp;Preferences</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Preferences</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>configurationSave_configurationAction</cstring>
+        </property>
+        <property name="text">
+            <string>&amp;Save configuration</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Save configuration</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>songAnalyzeAction</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>stock_autopilot.png</iconset>
+        </property>
+        <property name="text">
+            <string>&amp;AnalyzeLLDescriptors</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;AnalyzeLLDescriptors</string>
+        </property>
+        <property name="toolTip">
+            <string>Analyze</string>
+        </property>
+        <property name="accel">
+            <string>F9</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileExportAction</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>E&amp;xport to</string>
+        </property>
+        <property name="menuText">
+            <string>E&amp;xport to</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileExportto_MPEG7Action</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>&amp;MPEG7</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;MPEG7</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileNew_projectAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>stock_new-document-32.png</iconset>
+        </property>
+        <property name="text">
+            <string>&amp;New project</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;New project</string>
+        </property>
+        <property name="toolTip">
+            <string>New project</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileSave_projectAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>stock_save_as.png</iconset>
+        </property>
+        <property name="text">
+            <string>&amp;Save project</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Save project</string>
+        </property>
+        <property name="toolTip">
+            <string>Save project</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileSave_project_asAction</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset></iconset>
+        </property>
+        <property name="text">
+            <string>S&amp;ave project as</string>
+        </property>
+        <property name="menuText">
+            <string>S&amp;ave project as</string>
+        </property>
+        <property name="toolTip">
+            <string>Save project as</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileOpen_projectAction_2</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>stock_open.png</iconset>
+        </property>
+        <property name="text">
+            <string>&amp;Open project</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Open project</string>
+        </property>
+        <property name="toolTip">
+            <string>Open project</string>
+        </property>
+        <property name="statusTip">
+            <string>Open project</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileAdd_to_projectAction</cstring>
+        </property>
+        <property name="text">
+            <string>&amp;Add to project</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Add to project</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>filePublishAction</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="iconSet">
+            <iconset></iconset>
+        </property>
+        <property name="text">
+            <string>&amp;Publish</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Publish</string>
+        </property>
+        <property name="toolTip">
+            <string>Publish</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>songAnalyzeAllAction</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>&amp;AnalyzeAllDescriptors</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;AnalyzeAllDescriptors</string>
+        </property>
+        <property name="accel">
+            <string>F10</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>songPreviousAction</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>&amp;Previous</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Previous</string>
+        </property>
+        <property name="accel">
+            <string>-</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editDelete_from_projectAction</cstring>
+        </property>
+        <property name="enabled">
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset></iconset>
+        </property>
+        <property name="text">
+            <string>Delete (from project)</string>
+        </property>
+        <property name="menuText">
+            <string>Delete (from project)</string>
+        </property>
+    </action>
+</actions>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>fileExitAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>fileExit()</slot>
+    </connection>
+    <connection>
+        <sender>fileExitAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>fileNew_projectAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>fileNew()</slot>
+    </connection>
+    <connection>
+        <sender>fileOpen_projectAction_2</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>fileOpen()</slot>
+    </connection>
+    <connection>
+        <sender>fileAdd_to_projectAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>addSongsToProject()</slot>
+    </connection>
+    <connection>
+        <sender>editDelete_from_projectAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>deleteSongsFromProject()</slot>
+    </connection>
+    <connection>
+        <sender>fileSave_project_asAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>fileSaveAs()</slot>
+    </connection>
+    <connection>
+        <sender>fileSave_projectAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>fileSave()</slot>
+    </connection>
+    <connection>
+        <sender>mProjectOverview</sender>
+        <signal>clicked(QListViewItem*)</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>songsClicked(QListViewItem*)</slot>
+    </connection>
+    <connection>
+        <sender>songAnalyzeAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>analyze()</slot>
+    </connection>
+    <connection>
+        <sender>songAnalyzeAllAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>analyzeAll()</slot>
+    </connection>
+    <connection>
+        <sender>AnnotatorBase</sender>
+        <signal>usesTextLabelChanged(bool)</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>AnnotatorBase_usesTextLabelChanged(bool)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in declaration">ListViewItem.hxx</include>
+    <include location="local" impldecl="in declaration">qlistview.h</include>
+    <include location="local" impldecl="in declaration">TableItem.hxx</include>
+    <include location="local" impldecl="in declaration">Table.hxx</include>
+    <include location="local" impldecl="in declaration">qstringlist.h</include>
+    <include location="local" impldecl="in declaration">ComboTableItem.hxx</include>
+    <include location="local" impldecl="in declaration">qtimer.h</include>
+    <include location="local" impldecl="in declaration">vector</include>
+    <include location="local" impldecl="in declaration">qgroupbox.h</include>
+    <include location="local" impldecl="in declaration">qlayout.h</include>
+    <include location="local" impldecl="in declaration">qpoint.h</include>
+    <include location="local" impldecl="in declaration">qcolordialog.h</include>
+    <include location="local" impldecl="in declaration">iostream</include>
+    <include location="local" impldecl="in declaration">About.hxx</include>
+    <include location="local" impldecl="in declaration">ConfigurationDialog.hxx</include>
+    <include location="local" impldecl="in declaration">AnalyzeWindow.hxx</include>
+    <include location="local" impldecl="in declaration">Song.hxx</include>
+    <include location="local" impldecl="in implementation">AnnotatorBase.ui.h</include>
+</includes>
+<variables>
+    <variable>AnalyzeWindow mAnalyzeWindow;</variable>
+    <variable>About mAbout;</variable>
+    <variable>QPopupMenu * mIntraSongViewMenu;</variable>
+    <variable>bool play;</variable>
+    <variable>bool mSongDescriptorsViewed;</variable>
+    <variable>bool mIntraSongViewed;</variable>
+    <variable>bool artistViewed;</variable>
+    <variable>bool titleViewed;</variable>
+    <variable>bool genreViewed;</variable>
+    <variable>bool happyMusicViewed;</variable>
+    <variable>bool lyricsViewed;</variable>
+    <variable>bool itemViewed;</variable>
+    <variable>bool structureItemViewed;</variable>
+    <variable>bool mIntraSong2Viewed;</variable>
+    <variable>ConfigurationDialog mConfigurationDialog;</variable>
+    <variable>std::vector &lt; Descriptors &gt;  mSongDescriptors;</variable>
+</variables>
+<slots>
+    <slot>fileNew()</slot>
+    <slot>fileOpen()</slot>
+    <slot>fileSave()</slot>
+    <slot>fileSaveAs()</slot>
+    <slot>filePrint()</slot>
+    <slot>fileExit()</slot>
+    <slot>viewTitle()</slot>
+    <slot>viewArtist()</slot>
+    <slot>viewGenre()</slot>
+    <slot>viewLyrics()</slot>
+    <slot>viewItem()</slot>
+    <slot>viewStructureItem()</slot>
+    <slot>viewIntraSong()</slot>
+    <slot>viewSongDescriptors()</slot>
+    <slot>chooseColor()</slot>
+    <slot>changeViewMenu( QWidget * q )</slot>
+    <slot>viewIntraSongViewMenu()</slot>
+    <slot>AnnotatorBrowserGLgroup_toggled( bool a )</slot>
+    <slot>songsClicked( QListViewItem * item )</slot>
+    <slot>addSongsToProject()</slot>
+    <slot>deleteSongsFromProject()</slot>
+    <slot>songAnalyzeAction_activated()</slot>
+    <slot specifier="pure virtual">analyze()</slot>
+    <slot specifier="pure virtual">analyzeAll()</slot>
+    <slot>AnnotatorBase_usesTextLabelChanged( bool )</slot>
+</slots>
+<functions>
+    <function access="private">init()</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>table.h</includehint>
+</includehints>
+</UI>

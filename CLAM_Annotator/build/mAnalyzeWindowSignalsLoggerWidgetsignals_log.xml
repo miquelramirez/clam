@@ -1,0 +1,31 @@
+<log>
+<signal_connection>
+<sender name="pushButton2"></sender> 
+<signal name="clicked()"></signal>
+<receiver name="AnalyzeWindowBase"></receiver>
+<slot name="close()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="mAnalyzeButton"></sender> 
+<signal name="clicked()"></signal>
+<receiver name="AnalyzeWindowBase"></receiver>
+<slot name="emit_analyze()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="mAnalyzeAllButton"></sender> 
+<signal name="clicked()"></signal>
+<receiver name="AnalyzeWindowBase"></receiver>
+<slot name="emit_analyzeAll()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="mAnalyzeAllButton"></sender> 
+<signal name="clicked()"></signal>
+<receiver name="AnalyzeWindowBase"></receiver>
+<slot name="close()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="mAnalyzeButton"></sender> 
+<signal name="clicked()"></signal>
+<receiver name="AnalyzeWindowBase"></receiver>
+<slot name="close()"></slot>
+</signal_connection>

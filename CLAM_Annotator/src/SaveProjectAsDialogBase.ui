@@ -1,0 +1,95 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>SaveProjectAsDialogBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>SaveProjectAsDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>267</width>
+            <height>87</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Save project as</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLineEdit">
+            <property name="name">
+                <cstring>mNameToBeSaved</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>LineEditPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="text">
+                <string>write the name for the project here</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mOkButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Ok</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+O</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>mCancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>mOkButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SaveProjectAsDialogBase</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>mCancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SaveProjectAsDialogBase</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>mOkButton</sender>
+        <signal>clicked()</signal>
+        <receiver>SaveProjectAsDialogBase</receiver>
+        <slot>okClicked()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>okClicked()</slot>
+</slots>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

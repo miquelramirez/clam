@@ -1,0 +1,115 @@
+<log>
+<signal_connection>
+<sender name="fileExitAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="fileExit()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="fileExitAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="close()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="fileNew_projectAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="fileNew()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="fileOpen_projectAction_2"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="fileOpen()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="fileAdd_to_projectAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="addSongsToProject()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="editDelete_from_projectAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="deleteSongsFromProject()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="fileSave_project_asAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="fileSaveAs()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="fileSave_projectAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="fileSave()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="mProjectOverview"></sender> 
+<signal name="clicked(QListViewItem*)"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="songsClicked(QListViewItem*)"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="songAnalyzeAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="analyze()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="songAnalyzeAllAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="analyzeAll()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="Annotator"></sender> 
+<signal name="usesTextLabelChanged(bool)"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="AnnotatorBase_usesTextLabelChanged(bool)"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="unnamed"></sender> 
+<signal name="aboutToShow()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="fileMenuAboutToShow()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="unnamed"></sender> 
+<signal name="aboutToShow()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="editMenuAboutToShow()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="helpAboutAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="AboutBase"></receiver>
+<slot name="show()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="configurationPreferencesAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="ConfigurationDialogBase"></receiver>
+<slot name="show()"></slot>
+</signal_connection>
+<signal_connection>
+<sender name="mDescriptorsTable"></sender> 
+<signal name="valueChanged( int, int)"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="descriptorsTableChanged(int, int)"></slot>
+</signal_connection>
+<signal_emited at="19:40:24">
+<sender name="mProjectOverview"></sender> 
+<signal name="clicked(QListViewItem*)"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="songsClicked(QListViewItem*)"></slot>
+</signal_emited>
+<signal_emited at="19:40:29">
+<sender name="songAnalyzeAction"></sender> 
+<signal name="activated()"></signal>
+<receiver name="Annotator"></receiver>
+<slot name="analyze()"></slot>
+</signal_emited>
