@@ -1,3 +1,14 @@
+#if 1
+
+#include <stdio.h>
+
+int main(int argc,char** argv)
+{
+	printf("THIS EXAMPLE NEEDS FIXING\n");
+}
+
+#else
+
 /*
  * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
@@ -24,7 +35,7 @@
 #include<string>
 #include"FFT_rfftw.hxx"
 #include "AudioFileIn.hxx"
-#include"PeakDetect.hxx"
+#include "PeakDetect.hxx"
 
 #include"FundFreqDetect.hxx"
 #include"XMLStorage.hxx"
@@ -167,3 +178,5 @@ int main(int argc, char* argv[])
 	return 0;
 
 }
+
+#endif
