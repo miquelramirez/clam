@@ -26,35 +26,27 @@ namespace CLAM
     namespace VM
     {
 	Color::Color()
-	{
-	    r=0; 
-	    g=0; 
-	    b=0;
-	}
+	    : r(0),g(0),b(0)
+	{}
 
 	Color::Color(TUInt16 red, TUInt16 green, TUInt16 blue)
-	{
-	    r=red;
-	    g=green;
-	    b=blue;
-	}
+	    : r(red),g(green),b(blue)
+	{}
 
 	Color::Color(const Color& c)
-	{
-	    r=c.r;
-	    g=c.g;
-	    b=c.b;
-	}
+	    : r(c.r),g(c.g),b(c.b)
+	{}
 
 	Color::~Color()
 	{
 	}
 
-	void Color::operator=(Color c)
+	Color& Color::operator=(Color c)
 	{
 	    r=c.r;
 	    g=c.g;
 	    b=c.b;
+	    return *this;
 	}
 
 	Color VMColor::Red()
