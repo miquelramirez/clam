@@ -462,7 +462,7 @@ void UserInterface::UpdateState()
 		mShowSinTracksMenuItem->activate();
 		mShowFundFreqMenuItem->activate();
 		mViewFrameDataMenuItem->activate();
-		mShowSinusoidalSpectrumMenuItem->activate();
+		//mShowSinusoidalSpectrumMenuItem->activate();
 		mShowSpectrumAndPeaksMenuItem->activate();
 		mShowResidualSpectrumMenuItem->activate();
 		mMelodyExtractionMenuItem->activate();
