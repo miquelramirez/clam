@@ -16,15 +16,15 @@ namespace CLAM
 		AudioPlotProcessingConfig cfg;
 		Configure(cfg);
 
-		InitAudioPlot();
+		mPlot = NULL;
 	}
 
 	AudioPlotProcessing::AudioPlotProcessing(const AudioPlotProcessingConfig& cfg)
 		: mInput("Audio Input", this)
 	{
 		Configure(cfg);
-
-		InitAudioPlot();
+		
+		mPlot = NULL;
 	}
 
 	AudioPlotProcessing::~AudioPlotProcessing()
@@ -61,6 +61,19 @@ namespace CLAM
 		mPlot->SetBackgroundColor(VM::VMColor::Black());
 		mPlot->SetDataColor(VM::VMColor::Green());
 		mPlot->Geometry(100,100,300,150);
+	}
+
+	bool AudioPlotProcessing::ConcreteStart()
+	{
+		if(!mPlot) InitAudioPlot();
+		return true;
+	}
+
+	bool AudioPlotProcessing::ConcreteStop()
+	{
+		if(mPlot) delete mPlot;
+		mPlot = NULL;
+		return true;
 	}
 }
 

@@ -43,6 +43,10 @@ namespace CLAM
 			inline const ProcessingConfig &GetConfig() const { return mConfig;}
 			bool ConcreteConfigure(const ProcessingConfig& c);
 
+		protected:
+			bool ConcreteStart();
+			bool ConcreteStop();
+
 		private:
 			SpectrumPlotProcessingConfig mConfig;
 			VM::NetSpectrumPlot* mPlot;
