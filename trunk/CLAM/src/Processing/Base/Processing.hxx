@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2001-2005 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -47,46 +47,18 @@ namespace CLAM {
 
 	/**
 	 * Connects two ports of two processings selecting them by the port name.
-	 * Short hand for sender.GetOutPorts().Get(outPortName).ConnectToIn(receiver.GetOutPorts().Get(inPortName))
+	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
 	 */
 	void ConnectPorts(
 			Processing & sender, const std::string & outPortName, 
 			Processing & receiver, const std::string & inPortName );
 	/**
 	 * Connects two ports of two processings selecting them by the port number.
-	 * Short hand for sender.GetOutPorts().Get(outPortName).ConnectToIn(receiver.GetOutPorts().Get(inPortName))
+	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
 	 */
 	void ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
 			Processing & receiver, unsigned inPortNumber );
-	/**
-	 * Connects a free out port to an in port inside a processing selected by the port name.
-	 * Short hand for sender.ConnectToIn(receiver.GetOutPorts().Get(inPortName))
-	 */
-	void ConnectPorts(
-			OutPortBase & sender,
-			Processing & receiver, const std::string & inPortName );
-	/**
-	 * Connects a free in port to an out port inside a processing selected by the port name.
-	 * Short hand for sender.GetOutPorts().Get(outPortName).ConnectToIn(receiver)
-	 */
-	void ConnectPorts(
-			Processing & sender, const std::string & outPortName, 
-			InPortBase & receiver);
-	/**
-	 * Connects a free out port to an in port inside a processing selected by the port number.
-	 * Short hand for sender.ConnectToIn(receiver.GetOutPorts().GetByNumber(inPortNumber))
-	 */
-	void ConnectPorts(
-			OutPortBase & sender,
-			Processing & receiver, unsigned inPortNumber );
-	/**
-	 * Connects a free in port to an out port inside a processing selected by the port number.
-	 * Short hand for sender.GetOutPorts().GetByNumber(outPortNumber).ConnectToIn(receiver)
-	 */
-	void ConnectPorts(
-			Processing & sender, unsigned outPortNumber, 
-			InPortBase & receiver);
 	/**
 	 * Free function that connects two controls.
 	 * Short hand for sender.GetOutControls().GetByNumber(outControlNumber).AddLink(&receiver.GetOutControls().GetByNumber(inControlNumber))
@@ -299,6 +271,27 @@ namespace CLAM {
 		 */
 		virtual bool ModifiesPortsAndControlsAtConfiguration()	{ return false;	}
 	
+		bool HasInPort( const std::string & name )
+		{
+			return mInPortRegistry.Has(name);
+		}
+
+
+		bool HasOutPort( const std::string & name )
+		{
+			return mOutPortRegistry.Has(name);
+		}
+
+		bool HasInControl( const std::string & name )
+		{
+			return mInControlRegistry.Has(name);
+		}
+
+		bool HasOutControl( const std::string & name )
+		{
+			return mOutControlRegistry.Has(name);
+		}
+
 		InPortBase & GetInPort( const std::string & name )
 		{
 			return mInPortRegistry.Get(name);
