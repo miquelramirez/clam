@@ -25,8 +25,8 @@
 
 
 #include "ErrProcessingObj.hxx"
-#include "PublishedInControls.hxx"
-#include "PublishedOutControls.hxx"
+#include "InControlRegistry.hxx"
+#include "OutControlRegistry.hxx"
 #include "PublishedInPorts.hxx"
 #include "PublishedOutPorts.hxx"
 #include "ProcessingConfig.hxx"
