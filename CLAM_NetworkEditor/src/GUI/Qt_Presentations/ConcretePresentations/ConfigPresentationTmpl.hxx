@@ -34,6 +34,8 @@
 #include "DynamicType.hxx"
 #include "Filename.hxx"
 #include "AudioFile.hxx"
+#include "BPF.hxx"
+#include "envelope_point_editor.hxx"
 
 #include <limits>
 #include <qdialog.h>
@@ -128,6 +130,19 @@ public:
 	template<typename T>
 	void RetrieveValue(const char *name, CLAM::AudioFile *foo, T& value);
 
+	//////////////////////////////////////////////////////
+	
+	template<typename T>
+	void AddWidget(const char *name, unsigned short *foo, T& value);
+	template<typename T>
+	void RetrieveValue(const char *name, unsigned short *foo, T& value);
+
+
+	template<typename T>
+	void AddWidget(const char *name, CLAM::BPF *foo, T& value);
+	template<typename T>
+	void RetrieveValue(const char *name, CLAM::BPF *foo, T& value);
+	///////////////////////////////////////////////////////
 };
 
 
@@ -256,6 +271,7 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLA
 	std::stringstream s(readValue);
 	s >> value;
 }
+
 template <class ConcreteConfig>
 template< typename T>
 void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, unsigned long *foo, T& value) {
@@ -278,6 +294,72 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, uns
 	const char * readValue=mInput->text().latin1();
 	std::stringstream s(readValue);
 	s >> value;
+}
+
+template <class ConcreteConfig>
+template< typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, unsigned short *foo, T& value) {
+	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
+	new QLabel(QString(name), cell);
+	std::stringstream val;
+	val << value << std::ends;
+	QLineEdit * mInput = new QLineEdit(QString(val.str().c_str()), cell);
+	mInput->setAlignment(Qt::AlignRight);
+	mInput->setValidator(new QDoubleValidator(mInput));
+	mWidgets.insert(tWidgets::value_type(name, mInput));
+}
+
+template <class ConcreteConfig>
+template< typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, unsigned short *foo, T& value) {
+	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+	const char * readValue=mInput->text().latin1();
+	std::stringstream s(readValue);
+	s >> value;
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+
+
+template <class ConcreteConfig>
+template <typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::AddWidget( const char* name, CLAM::BPF *foo, T& value )
+{
+	QHBox* cell = new QHBox( mLayout);
+	new QLabel( QString(name), cell);
+
+	Envelope_Point_Editor* mInput = new Envelope_Point_Editor( cell);
+	mInput->setMinimumSize( QSize( 500, 500) );
+	Envelope* env = new Envelope;
+
+	env->set_max_value( 500 );
+	env->set_min_value( 0 );
+
+	for ( int i=0; i<value.Size(); i++ )
+	{
+		env->add_node_at_offset( value.GetValueFromIndex(i), value.GetXValue(i) ); // TODO change this to floats for CLAM
+	}
+
+	mInput->set_envelope( env );
+	mWidgets.insert(tWidgets::value_type(name, mInput));
+}
+
+
+template <class ConcreteConfig>
+template <typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLAM::BPF *foo, T& value) {
+	Envelope_Point_Editor* mInput = dynamic_cast<Envelope_Point_Editor*>(GetWidget(name));
+	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+
+	Envelope* env = mInput->get_envelope();
+	value.SetSize(0);
+	for ( int i=0; i< env->get_node_count(); i++ )
+	{
+		value.Insert( env->get_node_offset(i), env->get_node_height(i) ); // TODO change this to floats for CLAM
+	}
+//	const char * readValue=mInput->text().latin1();
+//	std::stringstream s(readValue);
 }
 
 
