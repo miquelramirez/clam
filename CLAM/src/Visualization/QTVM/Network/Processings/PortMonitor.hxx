@@ -179,6 +179,12 @@ namespace CLAM
 	public:
 		const char * GetClassName() const {return "AudioPortMonitor";}
 	};
+
+        class AudioBuffPortMonitor : public PortMonitor<Audio,AudioInPort>
+	{
+	public:
+	        const char * GetClassName() const {return  "AudioBuffPortMonitor";}
+	};
 }
 
 #endif
