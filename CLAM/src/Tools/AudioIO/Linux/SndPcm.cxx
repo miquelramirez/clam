@@ -222,7 +222,7 @@ int SndPcm::setparams_stream(snd_pcm_t *handle,
 		cat_error("Rate %iHz not available for %s: %s\n", rate, id, snd_strerror(err));
 		return err;
 	}
-	if (err != rate) {
+	if (abs(err-rate) < 3) {
 		cat_error("Rate doesn't match (requested %iHz, get %iHz)\n", rate, err);
 		return -EINVAL;
 	}
