@@ -2,7 +2,7 @@
 #define __NETAUDIOBUFFPLOTCONTROLLER__
 
 #include "Audio.hxx"
-#include "DataRenderer.hxx"
+#include "BuffDataRenderer.hxx"
 #include "NetPlotController.hxx"
 
 namespace CLAM
@@ -21,14 +21,12 @@ namespace CLAM
 
 	private:
 	    DataArray _cachedData;
-	    DataArray _processedData;
-	    DataRenderer _renderer;
+	    BuffDataRenderer _renderer;
 	    int _index;
 	    bool _first;
 	    TSize _frameSize;
 	    
 	    void AddData(const DataArray& data);
-	    void ProcessData();
 	  
 	    void Init(const TSize& frameSize);
 	    void FullView();
