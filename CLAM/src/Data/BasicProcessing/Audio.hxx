@@ -39,7 +39,9 @@
 namespace CLAM {
 
 
-	/** Audio class with the Data Buffer, information about it (SampleRate, BeginTime), and methods to insert and get Audio chunks
+	/** Audio class with the Data Buffer, information about it (SampleRate, BeginTime), and methods to insert and get Audio chunks.
+	 * You can also get 'slices' that's an audio that maps to 
+	 * some other audio's data.
 	 *  @see AudioDescriptors, Spectrum
 	 */
 	class Audio: public ProcessingData {
