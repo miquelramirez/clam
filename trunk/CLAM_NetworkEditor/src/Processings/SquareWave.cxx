@@ -56,10 +56,10 @@ void SquareWaveConfig::DefaultInit(void)
 // SquareWave method definition
 SquareWave::SquareWave()
 	:mOutput("Audio Output",this),
-	mFreqUpdated( false ),
-	mAmpUpdated( false ),
 	mFreqCtl(0),
-	mAmpCtl(0)
+	mAmpCtl(0),
+	mFreqUpdated( false ),
+	mAmpUpdated( false )
 
 {
 	mFreqCtl = new SquareWaveCtrl( "Pitch", this, &SquareWave::UpdateFreq );
@@ -72,10 +72,10 @@ SquareWave::SquareWave()
 
 SquareWave::SquareWave( const SquareWaveConfig& cfg )
 	:mOutput("Audio Output",this),
-	mFreqUpdated( false ),
-	mAmpUpdated( false ),
 	mFreqCtl(0),
-	mAmpCtl(0)
+	mAmpCtl(0),
+	mFreqUpdated( false ),
+	mAmpUpdated( false )
 
 {
 	mFreqCtl = new SquareWaveCtrl( "Pitch", this, &SquareWave::UpdateFreq );
