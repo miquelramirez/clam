@@ -188,7 +188,7 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FundTrackPlotProcessingConfig> >
        regtFundTrackPlotProcessingCfg("FundTrackPlotProcessingConfig");
  
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSTransformationConfig> >
-       regtSMSTransformationConfig("SMSTransformationConfig");
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SegmentTransformationConfig> >
+       regtSMSTransformationConfig("SegmentTransformationConfig");
 
 
