@@ -253,8 +253,10 @@ namespace CLAM{
 			mInput->setMinimumSize( QSize( 350, 350) );
 			Envelope* env = new Envelope;
 
-			env->set_max_value( 22050 );
-			env->set_min_value( 0 );
+			env->set_maxX_value( 22050 );
+			env->set_minX_value( 0 );
+			env->set_minY_value( 0 );
+			env->set_maxY_value( 1000 );
 
 			for ( int i=0; i<value.Size(); i++ )
 			{
