@@ -40,6 +40,23 @@
 
 #include "SMSAppState.hxx"
 
+namespace CLAMGUI
+{
+	class NullProgress : public Progress
+	{
+	public:
+		void Update(float ) {}
+		NullProgress() : Progress("",0.0,0.0) {}
+	};
+	
+	class NullWaitMessage : public WaitMessage
+	{
+	public:
+		NullWaitMessage() : WaitMessage("") {}
+			
+	};
+}
+
 namespace CLAM
 {
 	
@@ -154,7 +171,7 @@ namespace CLAM
 		/** Cleans up segment from pre-existing data*/ 
 		void Flush(Segment& seg);
 		/** Copies all content in src segment except Audio */
-		void CopySegmentExceptAudio(const Segment& src, Segment& dest);
+		void CopySegmentExceptAudio(Segment& src, Segment& dest);
 		/** Initialize analysis and synthesis configuration from loaded
 		* global configuration */
 		void InitConfigs(void);
@@ -232,6 +249,8 @@ namespace CLAM
 		virtual void DoTransformation();
 		void Transform(void);
 		void TransformProcessing();
+
+		void ConfigureSMSMorph();
 
 		/** Analyze and extract melody. This feature only works on some sort of instruments
 		* for monophonic phrases */
