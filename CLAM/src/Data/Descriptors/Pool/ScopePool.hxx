@@ -105,7 +105,8 @@ namespace CLAM
 			CLAM_ASSERT(_size,"Getting an attribute from a zero size pool");
 			unsigned attribPos = _spec.GetIndex(name);
 			_spec.CheckType(attribPos,(AttributeType*)0);
-			CLAM_ASSERT(_attributePools[attribPos].GetData(),"Getting data from a non instanciated attribute");
+			CLAM_ASSERT(_attributePools[attribPos].GetData(),
+				(std::string()+"Getting data from a non instanciated attribute '"+_spec.GetName()+"':'"+name+"'").c_str());
 			return (const AttributeType*) _attributePools[attribPos].GetData();
 		}
 
