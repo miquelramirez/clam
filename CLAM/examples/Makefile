@@ -13,9 +13,7 @@ PROGRAMS=\
 	FundamentalDetect\
 	XMLViewExample\
 	SIViewExample\
-	SnapshotExample\
-	StreamBufferExample\
-	NodeExample
+	SnapshotExample
 
 
 TOP=..
