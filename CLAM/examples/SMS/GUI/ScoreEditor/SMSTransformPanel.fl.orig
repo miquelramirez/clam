@@ -1,0 +1,88 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0104 
+header_name {.hxx} 
+code_name {.cxx}
+decl {\#include "SMSTranformationChain.hxx"} {} 
+
+decl {\#include "Signalv1.hxx"} {} 
+
+class SMS_ScoreEditor {open
+} {
+  Function {SMS_ScoreEditor()} {} {
+    Fl_Window mMainWindow {
+      label {SMS - Transformation Score Edition} open
+      private xywh {178 214 927 483}
+      class Fl_Window modal visible
+    } {
+      Fl_Group mChainTopologyDock {
+        label {Transformation Score} open
+        private xywh {5 15 495 425} box THIN_UP_FRAME labeltype EMBOSSED_LABEL
+        class Fl_Group
+      } {
+        Fl_Browser mRepositoryBox {
+          label {Available SMS Transformations}
+          private xywh {250 35 240 365} labelsize 12 align 1 textsize 10
+        }
+        Fl_Browser mScoreContentsBox {
+          label {Transformations in the Score}
+          private xywh {20 35 225 365} labelsize 12 align 1 textsize 10
+        }
+        Fl_Button mMoveTransUpInScoreButton {
+          label {Move &up}
+          callback {MoveHighlightedUp();}
+          private tooltip {Move selected transformations up in the score} xywh {20 405 70 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0x80075
+        }
+        Fl_Button mMoveTransDownInScoreButton {
+          label {Move &down}
+          callback {MoveHighlightedDown();}
+          private tooltip {Move selected transformations down in the score} xywh {95 405 80 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0x80064
+        }
+        Fl_Button mRemoveTransFromScoreButton {
+          label {&Remove}
+          callback {RemoveHighlightedFromScore();}
+          private tooltip {Remove Transformations from Score} xywh {180 405 65 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0x80072
+        }
+        Fl_Button mAddTransformToScoreButton {
+          label {Add &transformation to score}
+          callback {AddHighlightedToScore();}
+          private tooltip {Adds transformation to current score} xywh {250 405 240 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0x80074
+        }
+      }
+      Fl_Group mTransParmDock {
+        label {Transformation Parameters} open
+        private xywh {505 15 420 465} labeltype EMBOSSED_LABEL
+        class Fl_Group
+      } {
+        Fl_Button mApplyChangesToCurrentCfg {
+          label {Apply configuration}
+          private tooltip {Applies configuration to the selected transformation} xywh {620 445 150 30} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX deactivate
+        }
+        Fl_Button mDiscardConfigButton {
+          label {Discard configuration}
+          private xywh {775 445 145 30} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX deactivate
+        }
+        Fl_Tabs mTransTabs {open
+          private xywh {515 20 400 420} box PLASTIC_UP_BOX labelsize 12
+        } {}
+      }
+      Fl_Button mApplyChangesToScoreButton {
+        label {&Apply Changes to Score}
+        private xywh {5 450 230 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0x80061
+      }
+      Fl_Button mDiscardChangesButton {
+        label {&Discard Changes to Score}
+        callback {DiscardChangesAndClose();}
+        private xywh {250 450 250 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0x80064
+      }
+    }
+  }
+  decl {void DiscardChangesAndClose();} {}
+  decl {void ApplyChangesAndClose();} {}
+  decl {void AddHighlightedToScore();} {}
+  decl {void RemoveHighlightedFromScore();} {}
+  decl {void MoveHighlightedDown();} {}
+  decl {void MoveHighlightedUp();} {}
+  decl {SigSlot::Signalv1< const SMSTransformationChainConfig& > TransformationChainChanged;} {}
+  decl {SMSTranformationChainConfig mChainConfig;} {selected
+  }
+} 
