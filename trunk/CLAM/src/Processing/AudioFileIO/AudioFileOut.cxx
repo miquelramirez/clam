@@ -21,10 +21,10 @@
 
 #include "AudioFileOut.hxx"
 #include "ErrProcessingObj.hxx"
-#include "SoundFileIO/SoundFileIO.hxx"
-#include "SoundFileIO/AIFFFileIO.hxx"
-#include "SoundFileIO/WaveFileIO.hxx"
-#include "SoundFileIO/SoundFileIOError.hxx"
+#include "SoundFileIO.hxx"
+#include "AIFFFileIO.hxx"
+#include "WaveFileIO.hxx"
+#include "ErrSoundFileIO.hxx"
 
 namespace CLAM {
 
@@ -116,7 +116,7 @@ namespace CLAM {
 			mpSoundFileIO->Create(
 				mConfig.GetFilename().c_str(),SoundFileIO::eWrite,header);
 		}
-		catch (SoundFileIOError err)
+		catch (ErrSoundFileIO err)
 		{
 			mStatus += "Error opening file: ";
 			mStatus += err.mStr;
@@ -166,7 +166,7 @@ namespace CLAM {
 				n -= m;
 			}
 		}
-		catch (SoundFileIOError orig) {
+		catch (ErrSoundFileIO orig) {
 			throw ErrProcessingObj(orig.mStr,this);
 		}
 				
@@ -223,7 +223,7 @@ namespace CLAM {
 				n -= m/2;
 			}
 		}
-		catch (SoundFileIOError orig) {
+		catch (ErrSoundFileIO orig) {
 			throw ErrProcessingObj(orig.mStr,this);
 		}
 				

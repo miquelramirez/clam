@@ -1,5 +1,5 @@
 #include "WaveFileIO.hxx"
-#include "SoundFileIOError.hxx"
+#include "ErrSoundFileIO.hxx"
 
 #ifdef SOUNDFILEIO_BIG_ENDIAN
 #define SWAP(var) Swap(var)
@@ -52,12 +52,12 @@ void WaveFileIO::ReadHeader(void)
 	ChunkHeader riff;
 	ReadChunkHeader(riff);
 	if (!CheckID(riff.id,"RIFF"))
-		throw SoundFileIOError("Not a RIFF file");
+		throw ErrSoundFileIO("Not a RIFF file");
 	i = 0;
 	int r = ReadID(waveID);
 	i += r;
 	if (!CheckID(waveID,"WAVE"))
-		throw SoundFileIOError("Not a WAVE file");
+		throw ErrSoundFileIO("Not a WAVE file");
 	while (i<riff.len) {
 		ChunkHeader h;
 		i += ReadChunkHeader(h);
@@ -74,7 +74,7 @@ void WaveFileIO::ReadHeader(void)
 			mHeader.mBytesPerSample = (mHeader.mSampleWidth+7)>>3;
 
 			if (fmt.formatTag!=0x0001)
-				throw SoundFileIOError("Not a WAVE PCM file");
+				throw ErrSoundFileIO("Not a WAVE PCM file");
 			mHeader.mChannels = fmt.channels;
 			mHeader.mSamplerate = fmt.samplerate;
 			fmtFound = true;
@@ -90,9 +90,9 @@ void WaveFileIO::ReadHeader(void)
 		}
 	}
 	if (!fmtFound)
-		throw SoundFileIOError("No format chunk found");
+		throw ErrSoundFileIO("No format chunk found");
 	if (mOffset == 0) 
-		throw SoundFileIOError("No data block found");
+		throw ErrSoundFileIO("No data block found");
 }
 
 void WaveFileIO::WriteHeader(void)

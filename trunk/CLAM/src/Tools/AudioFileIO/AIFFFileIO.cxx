@@ -1,5 +1,5 @@
 #include "AIFFFileIO.hxx"
-#include "SoundFileIOError.hxx"
+#include "ErrSoundFileIO.hxx"
 
 
 #ifndef macintosh
@@ -63,11 +63,11 @@ void AIFFFileIO::ReadHeader(void)
 	ChunkHeader form;
 	ReadChunkHeader(form);
 	if (!CheckID(form.id,"FORM"))
-		throw SoundFileIOError("Not an AIFF file");
+		throw ErrSoundFileIO("Not an AIFF file");
 	i = 0;
 	i += ReadID(AIFFID);
 	if (!CheckID(AIFFID,"AIFF"))
-		throw SoundFileIOError("Not an AIFF file");
+		throw ErrSoundFileIO("Not an AIFF file");
 
 	while (i<form.len) {
 		ChunkHeader h;
@@ -77,7 +77,7 @@ void AIFFFileIO::ReadHeader(void)
 			i += fread(&fmt,1,sizeof(fmt),mFile);
 
 			if (sizeof(fmt)!=2+4+2+10) 
-				throw SoundFileIOError("Incorrect size of AIFFCommChunk: check alignment");
+				throw ErrSoundFileIO("Incorrect size of AIFFCommChunk: check alignment");
 
 			SWAP(fmt.channels);
 			SWAP(fmt.numSampleFrames);
@@ -105,9 +105,9 @@ void AIFFFileIO::ReadHeader(void)
 		}
 	}
 	if (!fmtFound)
-		throw SoundFileIOError("No format chunk found");
+		throw ErrSoundFileIO("No format chunk found");
 	if (mOffset == 0) 
-		throw SoundFileIOError("No data block found");
+		throw ErrSoundFileIO("No data block found");
 }
 
 void AIFFFileIO::WriteHeader(void)
