@@ -1,6 +1,5 @@
 #include "Fl_Smart_Tile.H"
 #include <FL/Fl_Window.H>
-#include <stdio.h>
 
 static char *image_shade[] = {
 "11 11 2 1",
