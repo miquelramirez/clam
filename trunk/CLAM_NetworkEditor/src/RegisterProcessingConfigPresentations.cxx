@@ -74,6 +74,8 @@
 //SMSTransformations
 #include "FrameTransformationConfig.hxx"
 
+#include "Fundamental2Control.hxx"
+
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SimpleOscillatorConfig> > 
@@ -199,4 +201,6 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FrameTransformationConfig> >
        regtSMSTransformationConfig("FrameTransformationConfig");
 
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::Fundamental2ControlConfig> >
+       regtFundamental2ControlConfig("Fundamental2ControlConfig");
 

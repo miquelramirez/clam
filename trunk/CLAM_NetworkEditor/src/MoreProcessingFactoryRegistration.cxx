@@ -25,7 +25,6 @@
 #include "SpecgramPlotProcessing.hxx"
 #include "AudioBuffPlotProcessing.hxx"
 
-
 typedef CLAM::ProcessingFactory ProcessingFactory;
 
 // processings in draft directory
@@ -52,8 +51,6 @@ static ProcessingFactory::Registrator<CLAM::SinTracksPlotProcessing> regtSinTrac
 static ProcessingFactory::Registrator<CLAM::FundTrackPlotProcessing> regtFundTrackPlotProcessing("FundTrackPlotProcessing");
 static ProcessingFactory::Registrator<CLAM::SpecgramPlotProcessing> regtSpecgramPlotProcessing("SpecgramPlotProcessing");
 static ProcessingFactory::Registrator<CLAM::AudioBuffPlotProcessing> regtAudioBuffPlotProcessing("AudioBuffPlotProcessing");
-
-
 
 
 
