@@ -10,6 +10,7 @@ namespace CLAM
 	{
 		class NetFundPlot : public NetPlot
 		{
+			Q_OBJECT
 			public:
 				NetFundPlot(QWidget* parent=0);
 				virtual ~NetFundPlot();

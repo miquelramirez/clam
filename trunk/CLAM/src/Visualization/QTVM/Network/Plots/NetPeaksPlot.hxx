@@ -10,6 +10,7 @@ namespace CLAM
     {
 	class NetPeaksPlot : public NetPlot
 	{
+	Q_OBJECT
 	public:
 	    NetPeaksPlot(QWidget* parent=0);
 	    virtual ~NetPeaksPlot();
