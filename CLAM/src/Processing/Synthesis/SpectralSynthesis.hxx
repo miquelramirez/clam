@@ -81,26 +81,56 @@ public:
 public:
 	~SpectralSynthesisConfig(){};
 
-/** Analysis Window size in miliseconds. In num. of samples WindowSize/SR is forced to be odd*/	
+/** Setter for Analysis Window size in number of samples. It should match the size used in the
+ *	SpectralAnalysis Processing. An assertion fault is raised if size is not odd. This
+ *	method changes size of AnalysisWindowGenerator, IFFT and CircularShift accordingly.
+ */	
 	void SetAnalWindowSize(TSize w);
+/** Getter for Analysis Window Size
+ *	@see SetAnalWindowSize
+ */
 	TSize GetAnalWindowSize() const;
-/** Analysis Window type*/
+
+/** Setter for Analysis Window type
+ *	@see EWindowType
+ */
 	void SetAnalWindowType(const EWindowType& t);
+/** Getter for Analysis Window type
+ *	@see SetAnalWindowType
+ */
 	const EWindowType& GetAnalWindowType() const;
-/** Analysis Zero padding factor*/
+
+/** Sets Zero padding factor.
+ *	A factor of zero means that no zero padding has been applied in the analysis.
+ *	@see SpectralAnalysis::SetZeroPadding
+ */
 	void SetZeroPadding(int z);
+/** Getter for Zero padding factor 
+ *	@see SetZeroPadding*/
 	int GetZeroPadding() const;
-/** Synthesis window size*/
+/** Setter for Synthesis window size in number of samples. Just affects the Synthesis
+ *	Window Generator Size
+ */
 	void SetSynthWindowSize(TSize w);
+/**	Getter for Synthesis Window Size
+ *	@see SetSynthWindowSize
+ */
 	TSize GetSynthWindowSize()const;
 
-/** Synthesis Hop size in miliseconds. Must be < (WindowSize-(1/SR))/2*/	
+/** Setter for Synthesis Hop size in number of samples.
+ *	Changes size of the Synthesis WindowGenerator, and the Hop Size and Buffer Size in the
+ *	OverlapAdd Processing
+ */	
 	void SetHopSize(TSize h);
+/** Getter for Synthesis Hop size
+ *	@see  SetHopSize
+ */
 	TSize GetHopSize() const;
-/** Sampling rate of the output audio*/
+/** Setter for global Sampling rate. It synchronizes all existing sizes. */
 	void SetSamplingRate(TData sr);
+/** Getter for global Sampling rate */
 	TData GetSamplingRate() const;
-/** Spectrum Size **/
+/** Setter for Spectrum Size **/
 	void SetSpectrumSize(TSize specSize);
 	TSize GetSpectrumSize() const;
 /** Frame Size **/

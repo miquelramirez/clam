@@ -58,13 +58,12 @@ void SpectralSynthesisConfig::DefaultValues()
 	GetSynthWindowGenerator().SetType(EWindowType::eTriangular);
 	GetSynthWindowGenerator().SetNormalize(EWindowNormalize::eNone);
 	GetSynthWindowGenerator().SetSize(GetHopSize()*2+1);
-	/**/
-
+	
+	/* Default frame size is 256*/
 	SetFrameSize(256);
 
 }
 
-/** Synthesis Window size in miliseconds. In num. of samples WindowSize/SR is forced to be odd*/	
 void SpectralSynthesisConfig::SetAnalWindowSize(TSize w)
 {
 	CLAM_ASSERT(w%2==1,"Window size must be odd");
@@ -72,10 +71,6 @@ void SpectralSynthesisConfig::SetAnalWindowSize(TSize w)
 	TData audioSize=TData(PowerOfTwo((w-1)*int(pow(TData(2.0),TData(GetZeroPadding())))));
 	GetIFFT().SetAudioSize(int(audioSize));
 	GetCircularShift().SetAmount(TData(w/2)); 
-
-/*	TODO:This condition should be checked!!
-	if(w<2*GetHopSize()+1)
-		SetHopSize((w-1)/2);*/
 }
 
 TSize SpectralSynthesisConfig::GetAnalWindowSize() const
@@ -83,7 +78,6 @@ TSize SpectralSynthesisConfig::GetAnalWindowSize() const
 	return GetAnalWindowGenerator().GetSize();
 }
 
-/** Analysis Window type*/
 void SpectralSynthesisConfig::SetAnalWindowType(const EWindowType& t)
 {
 	GetAnalWindowGenerator().SetType(t);
@@ -106,7 +100,6 @@ TSize SpectralSynthesisConfig::GetSynthWindowSize() const
 	return GetSynthWindowGenerator().GetSize();
 }
 
-/** Zero padding factor*/
 void SpectralSynthesisConfig::SetZeroPadding(int z)
 {
 	SetprZeroPadding(z);
@@ -119,11 +112,8 @@ int SpectralSynthesisConfig::GetZeroPadding() const
 	return GetprZeroPadding();
 }
 
-/** Synthesis Hop size in miliseconds. Must be < (WindowSize-(1/SR))/2*/	
 void SpectralSynthesisConfig::SetHopSize(TSize h)
 {
-
-	//CLAM_ASSERT(GetSynthWindowSize()>=2*h, "SpectralSynthesisConfig::SetHopSize: Hop Size is too large compared to window size");
 	GetSynthWindowGenerator().SetSize(2*h+1);
 	GetOverlapAdd().SetHopSize(h);
 	GetOverlapAdd().SetBufferSize(GetFrameSize()+h);
@@ -145,7 +135,6 @@ TSize SpectralSynthesisConfig::GetHopSize() const
 	return GetOverlapAdd().GetHopSize();
 }
 
-/** Sampling rate of the input audio*/
 void SpectralSynthesisConfig::SetSamplingRate(TData sr)
 {
 	SetprSamplingRate(int(sr));
@@ -206,11 +195,11 @@ SpectralSynthesis::~SpectralSynthesis()
 bool SpectralSynthesis::ConfigureChildren()
 {
 	
-	//instantiate analysis window gen
+	//instantiate analysis window generator
 	if(!mPO_AnalWindowGen.Configure(mConfig.GetAnalWindowGenerator()))
 		return false;
 
-	/*instantiate synthesis window generator*/
+	//instantiate synthesis window generator
 	if(!mPO_SynthWindowGen.Configure(mConfig.GetSynthWindowGenerator()))
 		return false;
 	
@@ -238,7 +227,7 @@ void SpectralSynthesis::ConfigureData()
 	//INSTANIATE PROCESSING DATA
 	///////////////////////////////////
 
-	//intantiate audio
+	//intantiate audio used as temporary data
 	mAudio0.SetSize(mConfig.GetIFFT().GetAudioSize());//audio used as output of the IFFT
 
 	mAudio1.SetSize(mConfig.GetAnalWindowSize());//audio without zeropadding
@@ -249,7 +238,7 @@ void SpectralSynthesis::ConfigureData()
 	
 	mSynthWindow.SetSize(mConfig.GetHopSize()*2+1);
 
-	//INITIALIZATION OF WINDOW
+	//initialize window
 	Audio tmpWindow,tmpWindow2;
 	
 	tmpWindow.SetSize(mConfig.GetAnalWindowSize());
@@ -265,7 +254,7 @@ void SpectralSynthesis::ConfigureData()
 
 
 
-	/*Now we generate triangular synthesis window*/
+	//Now we generate triangular synthesis window
 	tmpWindow.SetSize(mConfig.GetHopSize()*2+1);
 
 	mPO_SynthWindowGen.Start();
@@ -273,10 +262,10 @@ void SpectralSynthesis::ConfigureData()
 	mPO_SynthWindowGen.Stop();
 
 	
-	/*Now we multiply both windows*/
+	//Now we multiply both windows
 	mPO_AudioProduct.Do(tmpWindow,mSynthWindow,mSynthWindow);
 
-	/*now we set it to even size leaving last sample out*/
+	//now we set it to even size leaving last sample out
 	mSynthWindow.SetSize(mConfig.GetHopSize()*2);
 
 
@@ -310,36 +299,22 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 	{
 		tmpFlags.bComplex=1;
 	}
-	in.SetTypeSynchronize(tmpFlags); //convert MagPhase data to ComplexData
-
-	
+//convert MagPhase data to ComplexData
+	in.SetTypeSynchronize(tmpFlags); 
+//Now we do the inverse FFT
 	mPO_IFFT.Do(in, mAudio0);
-
-
-	
-	mPO_CircularShift.Do(mAudio0,mAudio0);//Undoing Synthesis circular shift
-
-
-
+//Undoing Synthesis circular shift
+	mPO_CircularShift.Do(mAudio0,mAudio0);
 //Undoing zero padding by hand seems a bit ugly but...
 	mAudio0.GetAudioChunk(0,mConfig.GetAnalWindowSize()*2,mAudio1,false);//XA_New
-
-
-	
-
-
-	//Now we take the central samples to multiply with the window
+//Now we take the central samples to multiply with the window
 	int centerSample=mAudio1.GetSize()/2;
 	mAudio1.GetAudioChunk(centerSample-mConfig.GetHopSize(),centerSample+mConfig.GetHopSize()-1,mAudio2,false);//XA_New
-
-	mPO_AudioProduct.Do(mAudio2, mSynthWindow,mAudio3);//Aplying inverse window
+//Aplying inverse window
+	mPO_AudioProduct.Do(mAudio2, mSynthWindow,mAudio3);
+//Finally the overlap and add is accomplished
+	mPO_OverlapAdd.Do(mAudio3, out);
 	
-
-
-	mPO_OverlapAdd.Do(mAudio3, out);//overlapp and add
-	
-
-
 	return true;
 }
 
