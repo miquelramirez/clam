@@ -78,6 +78,45 @@ public:
 		CLAM_DEBUG_ASSERT(FulfillsInvariant(),"List does not fulfill invariant");
 
 	}
+
+	List & operator = (const List& src)
+	{
+		int i;
+		if (mSize>0)
+		{
+			DoLast();
+			while(mpCurrent)
+			{
+				DeleteElem(mSize-1);
+			}
+
+		}
+		for(i=0;i<src.Size();i++)
+		{
+			AddElem(src[i]);
+		}
+		return *this;
+	}
+	
+	List(const List& src)
+	{
+		mpFirst = mpLast = mpCurrent = NULL;
+		mCurrentIndex = 0;
+		mSize = 0;
+		*this=src;
+	}
+	
+	~List()
+	{
+		mpCurrent = mpFirst;
+		while (mpCurrent)
+		{
+			Node* next = mpCurrent->mpNext;
+			delete mpCurrent;
+			mpCurrent = next;
+		}
+	}
+	
 	void AddElem(const T& value);
 	void InsertElem(const T& value,TIndex i);
 	void InsertElem(const T& value);
@@ -156,14 +195,17 @@ public:
 	
 	bool IsLast()
 	{
-		if (mCurrentIndex==mSize-1) return true;
-		else return false;
+		return (mpCurrent==mpLast);
+	}
+
+	bool Done(void)
+	{
+		return mCurrentIndex==mSize;
 	}
 
 	bool IsFirst()
 	{
-		if (mCurrentIndex==0) return true;
-		else return false;
+		return (mpCurrent==mpFirst);
 	}
 
 	int CurrentIndex() const{return mCurrentIndex;}

@@ -21,6 +21,7 @@ PROGRAMS = \
            TestFLTK_GUI_MIDILinker \
 
 TESTS = \
+        TestConfig \
         TestFlags \
         TestArray \
         TestArray2 \

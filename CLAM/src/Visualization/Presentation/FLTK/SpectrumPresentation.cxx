@@ -128,7 +128,13 @@ void ProcDataPresentation<Spectrum>::Init( const Geometry& g, const char* label)
 	mWindow->end();
 	
 	// Linking the port and the renderer...
-	
+
+	mPort->SetCullingCallback( makeMemberFunctor3( float, float, unsigned, 
+												   *mRenderer, GLLinearSpRenderer, PerformCulling ) );
+
+
+	mPort->SetDrawingCallback( makeMemberFunctor0( *mRenderer, GLLinearSpRenderer, Draw ) );
+
 	mPort->Configure( new SpecPresGLState , makeMemberFunctor0( *mRenderer, GLLinearSpRenderer, Draw ) );
 	
 	// Initializing the callback placeholders

@@ -47,12 +47,13 @@ void SndPcm::cat_error(const char* fmt,...)
 }
 
 	
-SndPcm::SndPcm(int irate,int ichannels,int ilatency,
+SndPcm::SndPcm(int irate,int ichannels_in,int ichannels_out,int ilatency,
 	const char* pdevice,const char* cdevice)
 {
-	format = SND_PCM_FORMAT_S16_LE;
+	format = SND_PCM_FORMAT_S16;
 	rate = irate;
-	channels = ichannels;
+	channels_in = ichannels_in;
+	channels_out = ichannels_out;
 	latency_min = ilatency;
 	latency_max = ilatency*2;
 	block = 0;
@@ -61,15 +62,25 @@ SndPcm::SndPcm(int irate,int ichannels,int ilatency,
 	error_str[0]=0;
 	int err;
 
-	if ((err = snd_pcm_open(&phandle, pdevice, SND_PCM_STREAM_PLAYBACK, block ? 0 : SND_PCM_NONBLOCK)) < 0) {
-		cat_error("SndPcm::SndPcm(...): Playback open error: %s\n", snd_strerror(err));
-		throw SndPcmError(error_str);
-	}
-	if ((err = snd_pcm_open(&chandle, cdevice, SND_PCM_STREAM_CAPTURE, block ? 0 : SND_PCM_NONBLOCK)) < 0) {
-		cat_error("SndPcm::SndPcm(...): Record open error: %s\n", snd_strerror(err));
-		throw SndPcmError(error_str);
-	}
+	phandle = 0;
+	chandle = 0;
 
+	if (channels_out)
+	{
+		if ((err = snd_pcm_open(&phandle, pdevice, SND_PCM_STREAM_PLAYBACK, block ? 0 : SND_PCM_NONBLOCK)) < 0) {
+			cat_error("SndPcm::SndPcm(...): Playback open error: %s\n", snd_strerror(err));
+			throw SndPcmError(error_str);
+		}
+	}
+	
+	if (channels_in)
+	{
+		if ((err = snd_pcm_open(&chandle, cdevice, SND_PCM_STREAM_CAPTURE, block ? 0 : SND_PCM_NONBLOCK)) < 0) {
+			cat_error("SndPcm::SndPcm(...): Record open error: %s\n", snd_strerror(err));
+			throw SndPcmError(error_str);
+		}
+	}
+	
 	latency = latency_min - 4;
 	if (setparams(phandle, chandle, &latency) < 0)
 		throw SndPcmError(error_str);
@@ -77,10 +88,17 @@ SndPcm::SndPcm(int irate,int ichannels,int ilatency,
 
 SndPcm::~SndPcm()
 {
-	snd_pcm_hw_free(phandle);
-	snd_pcm_hw_free(chandle);
-	snd_pcm_close(phandle);
-	snd_pcm_close(chandle);
+	if (phandle)
+		snd_pcm_hw_free(phandle);
+	
+	if (chandle)
+		snd_pcm_hw_free(chandle);
+	
+	if (phandle)
+		snd_pcm_close(phandle);
+	
+	if (chandle)
+		snd_pcm_close(chandle);
 }
 
 void SndPcm::Start(void)
@@ -88,18 +106,21 @@ void SndPcm::Start(void)
 	int err;
 	char buffer[1024];
 	
-	int nSilentBlockSamples = snd_pcm_bytes_to_samples(chandle,1024);
-	int nSilentBlockFrames = snd_pcm_bytes_to_frames(chandle,1024);
+	int nSilentBlockSamples = snd_pcm_bytes_to_samples(phandle,1024);
+	int nSilentBlockFrames = snd_pcm_bytes_to_frames(phandle,1024);
 	
-	if ((err = snd_pcm_link(chandle, phandle)) < 0) {
-		cat_error("Streams link error: %s\n", snd_strerror(err));
-		throw SndPcmError(error_str);
+	if (chandle && phandle)
+	{
+		if ((err = snd_pcm_link(chandle, phandle)) < 0) {
+			cat_error("Streams link error: %s\n", snd_strerror(err));
+			throw SndPcmError(error_str);
+		}
 	}
 	if (snd_pcm_format_set_silence(format, buffer, nSilentBlockSamples) < 0) {
 		cat_error("silence error\n");
 		throw SndPcmError(error_str);
 	}
-	int n = latency*2; /* write two silent buffers */
+	int n = latency*2; // write two silent buffers
 	while (n)
 	{
 		int m = n;
@@ -111,54 +132,89 @@ void SndPcm::Start(void)
 		n -= m;
 	}
 
-	if ((err = snd_pcm_start(chandle)) < 0) {
-		cat_error("Go error: %s\n", snd_strerror(err));
-		throw SndPcmError(error_str);
+	if (chandle)
+	{
+		if ((err = snd_pcm_start(chandle)) < 0) {
+			cat_error("Go error: %s\n", snd_strerror(err));
+			throw SndPcmError(error_str);
+		}
 	}
+	else
+	{
+		if ((err = snd_pcm_start(phandle)) < 0) {
+			cat_error("Go error: %s\n", snd_strerror(err));
+			throw SndPcmError(error_str);
+		}
+	}
+
 }
 
 void SndPcm::Stop(void)
 {
-	snd_pcm_drop(chandle);
-	snd_pcm_nonblock(phandle, 0);
-	snd_pcm_drain(phandle);
-	snd_pcm_nonblock(phandle, !block ? 1 : 0);
-	snd_pcm_unlink(chandle);
+	printf("Stop\n");
+	if (chandle)
+		snd_pcm_drop(chandle);
+	if (phandle)
+	{
+		snd_pcm_nonblock(phandle, 0);
+		snd_pcm_drain(phandle);
+		snd_pcm_nonblock(phandle, !block ? 1 : 0);
+	}
+	if (chandle)
+		snd_pcm_unlink(chandle);
 }
 
 void SndPcm::RecoverXRun(short* data)
 {
-	int err;
-	
-	snd_pcm_drop(chandle);
-	snd_pcm_drop(phandle);
+	if (chandle) snd_pcm_drop(chandle);
+	if (phandle) snd_pcm_drop(phandle);
 
 	putchar('.');
 
 	latency = latency_min - 4;
+	
 	if (setparams(phandle, chandle, &latency) < 0)
 		throw SndPcmError(error_str);
 
-	if (writebuf(phandle,(char*) data, latency) < 0) {
-		cat_error("write error\n");
-		throw SndPcmError(error_str);
+	if (phandle)
+	{
+		if (writebuf(phandle,(char*) data, latency) < 0) {
+			cat_error("write error\n");
+			throw SndPcmError(error_str);
+		}
+		if (writebuf(phandle,(char*) data, latency) < 0) {
+			cat_error("write error\n");
+			throw SndPcmError(error_str);
+		}
 	}
-	if (writebuf(phandle,(char*) data, latency) < 0) {
-		cat_error("write error\n");
-		throw SndPcmError(error_str);
-	}
+	
 
-	if ((err = snd_pcm_start(chandle)) < 0) {
-		cat_error("Go error: %s\n", snd_strerror(err));
-		throw SndPcmError(error_str);
-	}
+	if (chandle)
+	{
+		int err;
 
+		if ((err = snd_pcm_start(chandle)) < 0) {
+			cat_error("Go error: %s\n", snd_strerror(err));
+			throw SndPcmError(error_str);
+		}
+	}
+	else
+	{
+		int err;
+
+		if ((err = snd_pcm_start(phandle)) < 0) {
+			cat_error("Go error: %s\n", snd_strerror(err));
+			throw SndPcmError(error_str);
+		}
+	}
 }
-
 
 void SndPcm::Poll(void)
 {
-	snd_pcm_wait(chandle, 1000);
+	if (chandle)
+		snd_pcm_wait(chandle, 1000);
+	else
+		snd_pcm_wait(phandle, 1000);
 }
 /*
  * The functions which follow are taken from the latency test included
@@ -193,6 +249,7 @@ void SndPcm::Poll(void)
  */
 int SndPcm::setparams_stream(snd_pcm_t *handle,
 		     snd_pcm_hw_params_t *params,
+				 int channels,
 		     const char *id)
 {
 	int err;
@@ -217,12 +274,14 @@ int SndPcm::setparams_stream(snd_pcm_t *handle,
 		cat_error("Channels count (%i) not available for %s: %s\n", channels, id, snd_strerror(err));
 		return err;
 	}
+setrate:
 	err = snd_pcm_hw_params_set_rate_near(handle, params, rate, 0);
 	if (err < 0) {
 		cat_error("Rate %iHz not available for %s: %s\n", rate, id, snd_strerror(err));
 		return err;
 	}
 	if (err != rate) {
+		if (abs(err-rate)<3) { rate = err; goto setrate; }
 		cat_error("Rate doesn't match (requested %iHz, get %iHz)\n", rate, err);
 		return -EINVAL;
 	}
@@ -322,60 +381,78 @@ int SndPcm::setparams_set(snd_pcm_t *handle,
 int SndPcm::setparams(snd_pcm_t *phandle, snd_pcm_t *chandle, int *bufsize)
 {
 	int err, last_bufsize = *bufsize;
-	snd_pcm_hw_params_t *pt_params, *ct_params;	/* templates with rate, format and channels */
-	snd_pcm_hw_params_t *p_params, *c_params;
-	snd_pcm_sw_params_t *p_swparams, *c_swparams;
+	snd_pcm_hw_params_t *pt_params = 0, *ct_params = 0;	/* templates with rate, format and channels */
+	snd_pcm_hw_params_t *p_params = 0, *c_params = 0;
+	snd_pcm_sw_params_t *p_swparams = 0, *c_swparams = 0;
 	snd_pcm_sframes_t size;
 
-	snd_pcm_hw_params_alloca(&p_params);
-	snd_pcm_hw_params_alloca(&c_params);
-	snd_pcm_hw_params_alloca(&pt_params);
-	snd_pcm_hw_params_alloca(&ct_params);
-	snd_pcm_sw_params_alloca(&p_swparams);
-	snd_pcm_sw_params_alloca(&c_swparams);
-	if ((err = setparams_stream(phandle, pt_params, "playback")) < 0) {
+	if (phandle)
+	{
+		snd_pcm_hw_params_alloca(&p_params);
+		snd_pcm_hw_params_alloca(&pt_params);
+		snd_pcm_sw_params_alloca(&p_swparams);
+	}
+	
+	if (chandle)
+	{
+		snd_pcm_hw_params_alloca(&c_params);
+		snd_pcm_hw_params_alloca(&ct_params);
+		snd_pcm_sw_params_alloca(&c_swparams);
+	}
+	
+	if (phandle && (err = setparams_stream(phandle, pt_params, channels_out, "playback")) < 0) {
 		cat_error("Unable to set parameters for playback stream: %s\n", snd_strerror(err));
 		return -1;;
 	}
-	if ((err = setparams_stream(chandle, ct_params, "capture")) < 0) {
+	if (chandle && (err = setparams_stream(chandle, ct_params, channels_in, "capture")) < 0) {
 		cat_error("Unable to set parameters for playback stream: %s\n", snd_strerror(err));
 		return -1;;
 	}
-
       __again:
       	if (last_bufsize == *bufsize)
 		*bufsize += 4;
 	last_bufsize = *bufsize;
 	if (*bufsize > latency_max)
 		return -1;
-	if ((err = setparams_bufsize(phandle, p_params, pt_params, *bufsize, "playback")) < 0) {
-		cat_error("Unable to set sw parameters for playback stream: %s\n", snd_strerror(err));
-		return -1;;
-	}
-	if ((err = setparams_bufsize(chandle, c_params, ct_params, *bufsize, "capture")) < 0) {
+		
+	if (phandle && (err = setparams_bufsize(phandle, p_params, pt_params, *bufsize, "playback")) < 0) {
 		cat_error("Unable to set sw parameters for playback stream: %s\n", snd_strerror(err));
 		return -1;;
 	}
 
-	size = snd_pcm_hw_params_get_period_size(p_params, NULL);
-	if (size > *bufsize)
-		*bufsize = size;
-	size = snd_pcm_hw_params_get_period_size(c_params, NULL);
-	if (size > *bufsize)
-		*bufsize = size;
-	if (snd_pcm_hw_params_get_period_time(p_params, NULL) !=
-	    snd_pcm_hw_params_get_period_time(c_params, NULL))
-		goto __again;
-	if (snd_pcm_hw_params_get_period_size(p_params, NULL) * 2 < snd_pcm_hw_params_get_buffer_size(p_params))
-		goto __again;
-	if (snd_pcm_hw_params_get_period_size(c_params, NULL) * 2 < snd_pcm_hw_params_get_buffer_size(c_params))
-		goto __again;
-
-	if ((err = setparams_set(phandle, p_params, p_swparams, "playback")) < 0) {
+	if (chandle && (err = setparams_bufsize(chandle, c_params, ct_params, *bufsize, "capture")) < 0) {
 		cat_error("Unable to set sw parameters for playback stream: %s\n", snd_strerror(err));
 		return -1;;
 	}
-	if ((err = setparams_set(chandle, c_params, c_swparams, "capture")) < 0) {
+
+	if (p_params)
+	{
+		size = snd_pcm_hw_params_get_period_size(p_params, NULL);
+		if (size > *bufsize)
+			*bufsize = size;
+	}
+	
+	if (c_params)
+	{		
+		size = snd_pcm_hw_params_get_period_size(c_params, NULL);
+		if (size > *bufsize)
+			*bufsize = size;
+	}
+	
+	if (c_params && p_params)
+		if (snd_pcm_hw_params_get_period_time(p_params, NULL) !=
+		    snd_pcm_hw_params_get_period_time(c_params, NULL))
+			goto __again;
+	if (p_params && snd_pcm_hw_params_get_period_size(p_params, NULL) * 2 < snd_pcm_hw_params_get_buffer_size(p_params))
+			goto __again;
+	if (c_params && snd_pcm_hw_params_get_period_size(c_params, NULL) * 2 < snd_pcm_hw_params_get_buffer_size(c_params))
+			goto __again;
+
+	if (phandle && (err = setparams_set(phandle, p_params, p_swparams, "playback")) < 0) {
+		cat_error("Unable to set sw parameters for playback stream: %s\n", snd_strerror(err));
+		return -1;;
+	}
+	if (chandle && (err = setparams_set(chandle, c_params, c_swparams, "capture")) < 0) {
 		cat_error("Unable to set sw parameters for playback stream: %s\n", snd_strerror(err));
 		return -1;;
 	}
@@ -384,8 +461,6 @@ int SndPcm::setparams(snd_pcm_t *phandle, snd_pcm_t *chandle, int *bufsize)
 		cat_error("Prepare error: %s\n", snd_strerror(err));
 		return -1;;
 	}
-
-
 
 	fflush(stdout);
 	return 0;
@@ -406,7 +481,7 @@ long SndPcm::readbuf(snd_pcm_t *handle, char *buf, long len)
 		}
 		// cat_error("read = %li\n", r);
 	} else {
-		int frame_bytes = (snd_pcm_format_width(format) / 8) * channels;
+		int frame_bytes = (snd_pcm_format_width(format) / 8) * channels_in;
 		do {
 			r = snd_pcm_readi(handle, buf, len);
 			if (r > 0) {

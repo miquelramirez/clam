@@ -147,14 +147,14 @@ namespace CLAM {
     // Instantiate the BPF buffer of the spectrum if necessary.
 		out.AddMagBPF();
 		out.AddPhaseBPF();
-		if (out.UpdateData())
-			{
-				out.SetBPFSize(10);
-			}
-		else
-			if (out.GetBPFSize()<10) 
-				out.SetBPFSize(10);
+		if (out.UpdateData()) {
+			out.SetBPFSize(10);
+		}
+		else if (out.GetBPFSize()<10) 
+			out.SetBPFSize(10);
 		
+		
+		EScale originalScale = out.GetScale();
 		out.SetScale(EScale(EScale::eLog));
 		
 		TData g,flc,fhc,spb,ssb,fsr;
@@ -172,12 +172,6 @@ namespace CLAM {
 		// spb    stands for Slope for the pass band
 		// ssb    stands for Slope for the stop band
 		// fsr    stands for Sampling Rate Frequency (?) MRJ: Sampling Rate = Frecuencia de Muestro isn't it?
-		
-		// MRJ: Why this? if it was intended to not evaluate the indirections more than once it is quite unnecessary
-		// since below there is a switch each branch will ONLY be evaluated if the preceding case evaluates to true.
-		// In my opinion this only obscures the code for no reason ( and variable names are translated into symbols
-		// (i.e. indexes in the program symbol table) so there is NO overhead at runtime about being descriptive
-		// with variable names )
 		
 		switch((int)Type)
 			{
@@ -231,6 +225,21 @@ namespace CLAM {
 			}
 
 			}
+		if (originalScale==EScale::eLinear)
+		{	
+			int bpfSize=out.GetBPFSize();
+			BPF& bpf=out.GetMagBPF();
+		
+			for (int i=0; i<bpfSize; i++) {
+				
+				TData tmpValue = bpf.GetValueFromIndex(i);
+						
+				tmpValue = (tmpValue==0.0001) ? 0 : pow(10,tmpValue/20); 
+				bpf.SetValue(i, tmpValue);
+			}
+			out.SetScale(EScale(EScale::eLinear));
+		}
+
 		return true; 
 	}
 	

@@ -25,12 +25,12 @@
 using namespace CLAM;
 
 
-void POIcon::SetAvatar( Processing* p_pobj )
+void POIcon::SetAvatar( CLAM::Processing* p_pobj )
 {
 	mAvatar = p_pobj;
 }
 
-void POIcon::SetActionCallback( const CBL::Functor1< Processing* >& cb )
+void POIcon::SetActionCallback( const CBL::Functor1< CLAM::Processing* >& cb )
 {
 	mActionCb = cb;
 }

@@ -33,6 +33,7 @@ namespace CLAM {
 	private:
 		std::string mDevice;
 		snd_rawmidi_t *mHandleIn;
+		snd_rawmidi_status_t *mStatusIn;
 	public:
 		ALSAMIDIDevice(const std::string& name,const std::string& device);
 		~ALSAMIDIDevice();
@@ -59,6 +60,8 @@ namespace CLAM {
 					str += mDevice;
 					throw Err(str.c_str());
 			}
+			snd_rawmidi_status_malloc(&mStatusIn);
+
 	}
 
 	void ALSAMIDIDevice::ConcreteStop(void) throw(Err)
@@ -66,14 +69,24 @@ namespace CLAM {
 		if (mHandleIn) {
 			snd_rawmidi_drain(mHandleIn); 
 			snd_rawmidi_close(mHandleIn);
+			snd_rawmidi_status_free(mStatusIn);
 		}
 	}
 
 	void ALSAMIDIDevice::Read(void) throw(Err)
 	{
 		unsigned char ch;
-		if (snd_rawmidi_read(mHandleIn,&ch,1)!=-EAGAIN)
+		size_t n;
+		do
+		{
+			int err = snd_rawmidi_read(mHandleIn,&ch,1);
+			if (err!=-EAGAIN)
+			{
 				HandleRawByte(ch);
+			}
+			snd_rawmidi_status(mHandleIn,mStatusIn);
+                        n = snd_rawmidi_status_get_avail(mStatusIn);
+		} while (n);
 	}
 
 	ALSAMIDIDevice::~ALSAMIDIDevice()
@@ -124,7 +137,7 @@ namespace CLAM {
 
 		std::string DefaultDevice(void)
 		{
-			return "hw:0,0";
+			return "hw:1,0";
 		}
 
 		MIDIDevice* Create(

@@ -101,15 +101,20 @@ public:
 	}
 	~DynamicControls() {
 		// remove vectors:
+		// MRJ: Portability issue: there was being used std::vector<T>::at(size_t idx )
+		// and since gcc-2.95 libstdc++ does not support it, it is a bit difficult
+		// to hide this feature assymetry. Since in the loop condition we are testing
+		// the iterator against std::vector<T>::size() it is *safe* to use the 
+		// operator[].
 		int i;
 		for (i=0; i<inCtrlsTmpl.size(); i++) {
-			delete inCtrlsTmpl.at(i);
+			delete inCtrlsTmpl[i];
 		}
 		for (i=0; i<inCtrls.size(); i++) {
-			delete inCtrls.at(i);
+			delete inCtrls[i];
 		}
 		for (i=0; i<outCtrls.size(); i++) {
-			delete outCtrls.at(i);
+			delete outCtrls[i];
 		}
 		
 	}

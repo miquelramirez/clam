@@ -138,8 +138,6 @@ void GLTF2DRenderer::RenderFrame( const DataArray& array, bool isLin )
 
 void GLTF2DRenderer::BuildNewTex()
 {
-	// TODO: if wraparound happens we should write over the texture, instead of creating
-	// a new one. 
 
 	GLuint texId;
 

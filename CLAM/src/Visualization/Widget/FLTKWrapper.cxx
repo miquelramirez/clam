@@ -76,6 +76,11 @@ void FLTKWrapper::SetFPS( unsigned desired_fps )
 	mTimeoutInterval = 1.0 / float( desired_fps ); 
 }
 
+void FLTKWrapper::DisableAsynchronousRefresh()
+{
+	CancelAllAsynchronousRefresh();
+}
+
 unsigned FLTKWrapper::RequestAsynchronousRefresh( Fl_Widget* pWidget )
 {
 	unsigned assigned_slot;
@@ -133,6 +138,7 @@ void FLTKWrapper::CancelAllAsynchronousRefresh()
 
 void FLTKWrapper::sRefreshingCallback( void* data )
 {
+
 	FLTKWrapper* pFl = ( FLTKWrapper* ) data;
 
 	if ( !pFl->mWidgetsToBeRefreshed.empty() )

@@ -27,17 +27,16 @@ using namespace CLAMGUI;
 
 void FLDisplayContainer::redraw()
 {
-	
 	Fl_Group::redraw();
-
+	mpDisplay->damage();
+	mpDisplay->redraw();
 }
 
 void FLDisplayContainer::draw()
 {
 	mpDisplay->SetHorRange( mHorRange );
 	mpDisplay->SetVerRange( mVerRange );
-
-
+	
 	Fl_Group::draw();
 }
 
@@ -196,3 +195,4 @@ void FLDisplayContainer::Add( GLPort* port )
 	port->resize( x(), y(), w() - 70, h() - 60 );
 
 }
+

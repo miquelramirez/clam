@@ -60,7 +60,7 @@ namespace CLAM
 					mOutputStreamId= mDevice->openStream( mDevID,mNChannels, 0, 0, 
 										   RtAudio::RTAUDIO_SINT16, SampleRate()/mNChannels, &mFramesPerBuffer, NumberOfInternalBuffers() );
 					mInputStreamId= mDevice->openStream( 0, 0, mDevID, mNChannels, RtAudio::RTAUDIO_SINT16,
-											 SampleRate()/mNChannels, &mFramesPerBuffer, NumberOfInternalBuffers() );
+											 SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers() );
 
 					mOutputSamples = (short*) mDevice->getStreamBuffer( mOutputStreamId );
 					mDevice->startStream( mOutputStreamId );
@@ -77,7 +77,7 @@ namespace CLAM
 					mFramesPerBuffer = Latency()/mNChannels;
 					mDevice = new RtAudio();
 					mOutputStreamId= mDevice->openStream( mDevID,mNChannels, 0, 0, 
-										   RtAudio::RTAUDIO_SINT16, SampleRate()/mNChannels, &mFramesPerBuffer, NumberOfInternalBuffers() );
+										   RtAudio::RTAUDIO_SINT16, SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers() );
 					mOutputSamples = (short*) mDevice->getStreamBuffer( mOutputStreamId );
 					mDevice->startStream( mOutputStreamId );
 								
@@ -91,7 +91,7 @@ namespace CLAM
 					mFramesPerBuffer = Latency()/mNChannels;
 					mDevice = new RtAudio();
 					mInputStreamId= mDevice->openStream( 0, 0, mDevID, mNChannels, RtAudio::RTAUDIO_SINT16,
-											 SampleRate()/mNChannels, &mFramesPerBuffer, NumberOfInternalBuffers());
+											 SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers());
 					mInputSamples = (short*) mDevice->getStreamBuffer( mInputStreamId );
 					mDevice->startStream( mInputStreamId );
 				
@@ -122,6 +122,7 @@ namespace CLAM
 				mDevice->closeStream( mOutputStreamId );
 				mDevice->closeStream( mInputStreamId );
 				delete mDevice;
+				mDevice=NULL;
 				mInputSamples = NULL;
 				mOutputSamples = NULL;
 				mOutputStreamId = -1;
@@ -131,6 +132,7 @@ namespace CLAM
 				mDevice->stopStream( mInputStreamId );
 				mDevice->closeStream( mInputStreamId );
 				delete mDevice;
+				mDevice=NULL;
 				mInputSamples = NULL;
 				mInputStreamId = -1;
 				break;
@@ -138,6 +140,7 @@ namespace CLAM
 				mDevice->stopStream( mOutputStreamId );
 				mDevice->closeStream( mOutputStreamId );
 				delete mDevice;
+				mDevice=NULL;
 				mOutputSamples = NULL;
 				mOutputStreamId = -1;
 				break;

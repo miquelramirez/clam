@@ -62,8 +62,6 @@ namespace CLAM {
 		TData finalFreq;
 		TData initialMag;
 		TData finalMag;
-		//TData initialPhase;
-		//TData finalPhase;
 		int continuedAtId;
 		friend bool operator >=(const struct STrajectory& first,const struct STrajectory& second)
 		{
@@ -115,7 +113,7 @@ namespace CLAM {
 		void Update(Array<SpectralPeakArray*>& peakArrayArray);
 		void ContinuedAt(void);
 		void InterpolatePeaks(TTrajectory& trajectory, Array<SpectralPeakArray*>& peakArrayArray);
-
+		TIndex FindTrajectoryPosition(TIndex id);
 		TData mSamplingRate;
 		TData mSpecSize;
 		TSize mMaxDropOut;

@@ -46,6 +46,7 @@ DXFullDuplex::DXFullDuplex( TUInt32 irate, TByte ichannels, TSize latency, LPGUI
 	  mWritingToPrimary( false )
 {
 	HRESULT hr;
+
 	hr = InitDSoundDevices();
 	
 
@@ -79,7 +80,7 @@ HRESULT DXFullDuplex::InitDSoundDevices( void )
 	hr = DirectSoundCreate( mGUID, &mDS, NULL );
 	CheckResult( "Failed while obtaining a DirectSound interface", hr );
 
-	hr = mDS->SetCooperativeLevel( shMainWnd, DSSCL_WRITEPRIMARY );
+	hr = mDS->SetCooperativeLevel( 	GetForegroundWindow(), DSSCL_WRITEPRIMARY );
 
 	if ( hr == DS_OK)
 	{

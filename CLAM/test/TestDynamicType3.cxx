@@ -126,7 +126,7 @@ void testBasic()
 		throw CLAM::Err("Test failed: Non updated AddX and RemoveX");
 	d.FullfilsInvariant();
 
-
+	CLAM_BREAKPOINT
 	Testing("Adding All attributes");
 	d.AddAll();
 	d.UpdateData();
@@ -639,6 +639,68 @@ void testDataSharing()
 
 }
 
+class MyVisitorToInt {
+	public:
+	template <typename T>
+	void Accept(const char *name, T &value) {
+		Accept(name, value, value);
+	}
+	template <typename T>
+	void Accept(const char *name, int foo, T& value) {
+		std::cout << "ToInt Visiting '" << name << "' Type int Value: " << value << std::endl;
+	}
+	template <typename T>
+	void Accept(const char *name, Component &foo, T&value) {
+		std::cout << "ToInt Visiting '" << name << "' Component" << std::endl;
+	}
+	template <typename T>
+	void Accept(const char *name, DynamicType &foo, T&value) {
+		std::cout << "ToInt Visiting '" << name << "' Dynamic Type" << std::endl;
+		value.VisitAll(*this);
+	}
+};
+
+class MyVisitorToFloat {
+	public:
+	void Accept(const char *name, float value) {
+		std::cout << "ToFloat Visiting '" << name << "' Type float Value: " << value << std::endl;
+	}
+	void Accept(const char *name, Component &value) {
+		std::cout << "ToFloat Visiting '" << name << "' Component" << std::endl;
+	}
+};
+	
+void testVisitors() {
+	{
+		Dyn p;
+		p.Populate(); p.Modify(4);
+		MyVisitorToInt visitorToInt;
+		p.VisitAll(visitorToInt);	
+		MyVisitorToFloat visitorToFloat;
+		p.VisitAll(visitorToFloat);	
+	}
+	{
+		DynWithArrays o;
+		o.Populate();
+		o.Modify(4);
+		MyVisitorToInt visitorToInt;
+		o.VisitAll(visitorToInt);	
+		MyVisitorToFloat visitorToFloat;
+		o.VisitAll(visitorToFloat);	
+	}
+	{
+		SuperDynAlt o;
+		o.AddAll(); o.UpdateData();
+		Dyn & p = o.GetP();
+		p.AddAll(); p.UpdateData();
+
+		MyVisitorToInt visitorToInt;
+		o.VisitAll(visitorToInt);	
+		MyVisitorToFloat visitorToFloat;
+		o.VisitAll(visitorToFloat);	
+	}
+}
+
 int main(void)
 {
 	try{
@@ -689,6 +751,10 @@ int main(void)
 			testXML();
 
 			CLAM_CHECK_HEAP( " Corruption at testXML() " );
+
+			testVisitors();
+
+			CLAM_CHECK_HEAP( " Corruption at testVisitors() " );
 
 			std::cout << ".";
 			

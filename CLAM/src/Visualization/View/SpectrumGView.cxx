@@ -65,44 +65,44 @@ void ProcDataView<Spectrum>::Configure( Aspect& cfg )
 	cb_holder = cfg.GetRequest( Services("GetScale" ) );
 	someone |= Acknowledge( RenderScale, cb_holder );
 	if ( someone )
-		{
-			LockServices();
-		}
+	{
+		LockServices();
+	}
 }
 
 void ProcDataView<Spectrum>::Refresh()
 {
 	if ( HasServicesLocked() && HasModelLocked() )
+	{
+		SpectrumConfig myCfg;
+		
+		mObservedObj->GetConfig( myCfg );
+		
+		CLAM_BEGIN_CHECK
+		SpecTypeFlags flags = myCfg.GetType();
+		if ( !flags.bMagPhase ) // Something strange happens
 		{
-			SpectrumConfig myCfg;
-			
-			mObservedObj->GetConfig( myCfg );
-			
-			CLAM_BEGIN_CHECK
-			SpecTypeFlags flags = myCfg.GetType();
-			if ( !flags.bMagPhase ) // Something strange happens
-				{
-					CLAM_ASSERT( mObservedObj->HasMagBuffer(), "No Magnitude buffer Dynamic Attribute in the Spectrum to be rendered" );
-					CLAM_ASSERT( mObservedObj->HasPhaseBuffer(), "No Phase buffer Dynamic Attribute in the Spectrum to be rendered" );
-					mObservedObj->Debug();
-					CLAM_ASSERT( false, "Spectrum MisConfigured, Check the Debug Info ( Debug.xml ) ");
-				}
-			CLAM_END_CHECK
-
-
-			// Refreshing code
-			if ( RenderScale != NULL )
-				(*RenderScale) ( myCfg.GetSize(), myCfg.GetScale() );
-			if ( RenderSpectralRange != NULL )
-				(*RenderSpectralRange ) (myCfg.GetSpectralRange() );
-			if ( RenderSpectralResolution != NULL )
-				( *RenderSpectralResolution ) ( TData(  myCfg.GetSpectralRange() / myCfg.GetSize() ) );
-			if ( RenderMagnitude != NULL ) 
-				(*RenderMagnitude)( mObservedObj->GetMagBuffer() );
-			if ( RenderPhase != NULL )
-				(*RenderPhase) ( mObservedObj->GetPhaseBuffer() );
-			
+			CLAM_ASSERT( mObservedObj->HasMagBuffer(), "No Magnitude buffer Dynamic Attribute in the Spectrum to be rendered" );
+			CLAM_ASSERT( mObservedObj->HasPhaseBuffer(), "No Phase buffer Dynamic Attribute in the Spectrum to be rendered" );
+			mObservedObj->Debug();
+			CLAM_ASSERT( false, "Spectrum MisConfigured, Check the Debug Info ( Debug.xml ) ");
 		}
+		CLAM_END_CHECK
+
+
+		// Refreshing code
+		if ( RenderScale != NULL )
+			(*RenderScale) ( myCfg.GetSize(), myCfg.GetScale() );
+		if ( RenderSpectralRange != NULL )
+			(*RenderSpectralRange ) (myCfg.GetSpectralRange() );
+		if ( RenderSpectralResolution != NULL )
+			( *RenderSpectralResolution ) ( TData(  myCfg.GetSpectralRange() / myCfg.GetSize() ) );
+		if ( RenderMagnitude != NULL ) 
+			(*RenderMagnitude)( mObservedObj->GetMagBuffer() );
+		if ( RenderPhase != NULL )
+			(*RenderPhase) ( mObservedObj->GetPhaseBuffer() );
+		
+	}
 }
 
 void ProcDataView<Spectrum>::Release()

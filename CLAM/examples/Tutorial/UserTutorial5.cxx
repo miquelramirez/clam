@@ -19,7 +19,7 @@
  *
  */
 
-/** @file CLAM tutorial, example 5.
+/** @file UserTutorial5.cxx CLAM tutorial, example 5.
  *  Ilustrates how to use a simple processing object.
  */
 #include"FFT.hxx"

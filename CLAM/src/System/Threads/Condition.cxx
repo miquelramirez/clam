@@ -1,9 +1,9 @@
 #include "Condition.hxx"
-
 #include "Thread.hxx"
 #include "ErrSystem.hxx"
 #include "Assert.hxx"
 #include "xtime.hxx"
+#include <errno.h>
 
 namespace CLAM
 {

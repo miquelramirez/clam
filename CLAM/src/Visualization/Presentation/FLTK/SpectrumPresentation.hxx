@@ -62,68 +62,69 @@ namespace CLAMGUI
 	{
 	public:
 		
-	ProcDataPresentation( const char* label = 0)
-		: Presentation(), mSpectralMetrixLocked( false )
-	{
-		Geometry geo ( 100, 100, 400, 300 );
-		Init( geo, label );
-	}
+		ProcDataPresentation( const char* label = 0)
+			: Presentation(), mSpectralMetrixLocked( false )
+		{
+			Geometry geo ( 100, 100, 400, 300 );
+			Init( geo, label );
+		}
+		
+		
+		ProcDataPresentation( const Geometry& g, const char* label = 0)
+			: Presentation(), mSpectralMetrixLocked( false )
+		{
+			Init( g, label );
+		}
 	
+		virtual ~ProcDataPresentation()
+		{
+			delete mWindow;
+			delete mRenderer;
+		}	
+		
+		void PublishCallbacks();
+		
+		
+		void Show();
+		
+		
+		void Do()
+		{
+			mDispContainer->redraw();
+		}
+		
+		Fl_Window* GetWindow() { return mWindow; }
+		
+	protected:
+		
+		
+		virtual void Init( const Geometry& g, const char* label );
+		virtual void UpdateMagData( const DataArray& array );
+		virtual void UpdatePhaseData( const DataArray& array );
+		void UpdateScale( unsigned int nbins, EScale scale );
+		void UpdateSpectralRangeData( TData value );
+		
+		void UpdateSpectralResolutionData( TData value );
+	
+	protected:
+		
+		
+		CBL::Functor1< const DataArray& >               mDrawMagCb;
+		CBL::Functor1< const DataArray& >               mDrawPhaseCb;
+		CBL::Functor1< TData >                          mDrawRangeCb;
+		CBL::Functor1< TData >                          mDrawResolutionCb;
+		CBL::Functor2< unsigned int, EScale >           mDrawScaleCb;
+		
+		GLPort*                           mPort;
+		GLLinearSpRenderer*               mRenderer;
+		FLDisplayContainer*               mDispContainer;
+		Fl_Double_Window*                 mWindow;
 
-	ProcDataPresentation( const Geometry& g, const char* label = 0)
-		: Presentation(), mSpectralMetrixLocked( false )
-	{
-		Init( g, label );
-	}
+		Viewport                          mSpecPresMetrix;
+		bool                              mSpectralMetrixLocked;
+		
+	};
 	
-	virtual ~ProcDataPresentation()
-	{
-		delete mWindow;
-		delete mRenderer;
-	}	
-	
-	void PublishCallbacks();
-	
-	
-	void Show();
-	
-	
-	void Do()
-	{
-		mDispContainer->redraw();
-	}
-	
-
-protected:
-	
-	
-	virtual void Init( const Geometry& g, const char* label );
-	virtual void UpdateMagData( const DataArray& array );
-	virtual void UpdatePhaseData( const DataArray& array );
-	void UpdateScale( unsigned int nbins, EScale scale );
-	void UpdateSpectralRangeData( TData value );
-	
-	void UpdateSpectralResolutionData( TData value );
-	
-protected:
-	
-	
-	CBL::Functor1< const DataArray& >               mDrawMagCb;
-	CBL::Functor1< const DataArray& >               mDrawPhaseCb;
-	CBL::Functor1< TData >                          mDrawRangeCb;
-	CBL::Functor1< TData >                          mDrawResolutionCb;
-	CBL::Functor2< unsigned int, EScale >           mDrawScaleCb;
-	
-	GLPort*                           mPort;
-	GLLinearSpRenderer*               mRenderer;
-	FLDisplayContainer*               mDispContainer;
-	Fl_Double_Window*                 mWindow;
-
-	Viewport                          mSpecPresMetrix;
-	bool                              mSpectralMetrixLocked;
-	
-};
-
 }
 
 #endif // SpectrumPresentation.hxx

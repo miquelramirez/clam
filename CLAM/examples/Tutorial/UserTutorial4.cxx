@@ -19,7 +19,7 @@
  *
  */
 
-/** @file CLAM tutorial, example 4.
+/** @file UserTutorial4.cxx CLAM tutorial, example 4.
  * This example illustrates:
  *   * a more efficient way to change the value of a dynamic attribute
  *     such as an array of samples.

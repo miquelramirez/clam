@@ -87,7 +87,7 @@ public:
 	{	
 		IdxList::iterator ListIt;		
 
-		Mutex::ScopedLock lock( mDataMutex );
+		Mutex::ScopedLock lock( mControllerDoMutex );
 		
 		IdxList qs = getQueues();
 		
@@ -152,6 +152,7 @@ private:
 	const char *GetClassName() {return "Controller";}
 
 	Mutex mDataMutex;
+	Mutex mControllerDoMutex;
 };
 //////////////////////////////////////////////////////////////////////////////////////////
 }; // namespace CLAM

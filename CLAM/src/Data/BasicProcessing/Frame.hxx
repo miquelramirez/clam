@@ -38,11 +38,6 @@
 namespace CLAM{
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-// Class Frame :
-//
-
-
 /** Processing Data class to encapsulate a frame and all its related information. A Frame has an associated
  *	time tag that points to the center of the audio chunk being used in the analysis and a duration.
  *	It also holds audio data in 4 attributes: AudioFrame is the input audio used for analysis;

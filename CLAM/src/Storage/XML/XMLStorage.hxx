@@ -46,7 +46,6 @@ private:
 // Construction/Destruction
 public:
 	XMLStorage();
-	XMLStorage(const char * rootElementName);
 	virtual ~XMLStorage();
 // Redefined methods for Storable
 public:
@@ -80,6 +79,20 @@ public:
 	 * Restore a Component from the named XML file
 	 */
 	void Restore(Component & component, const std::string& fileName);
+private:
+	/**
+	 * Factory method that creates a XML Storage Implementation as
+	 * configured
+	 * @returns The new allocated XML implementation object
+	 */
+	XMLStorageImplementation * NewXMLImplementation();
+
+// Deprecated
+public:
+	/**
+	 * @deprecated Use the default constructor
+	 */
+	XMLStorage(const char * rootElementName);
 	/**
 	 * (Expected to be changed) Dump the storage contents to a stream.
 	 * @deprecated by Dump
@@ -90,13 +103,6 @@ public:
 	 * @deprecated by Restore
 	 */
 	void _restoreFrom(char * fileName);
-private:
-	/**
-	 * Factory method that creates a XML Storage Implementation as
-	 * configured
-	 * @returns The new allocated XML implementation object
-	 */
-	XMLStorageImplementation * NewXMLImplementation();
 };
 
 }

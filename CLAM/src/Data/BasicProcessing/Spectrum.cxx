@@ -185,12 +185,12 @@ void Spectrum::ToDB()
 		TData specSize;
 		if (HasMagBuffer())
 		{
-			DataArray &Mag = GetMagBuffer();
+			DataArray &mag = GetMagBuffer();
 			specSize=TData(GetSize());
 			for (i=0; i<specSize; i++)
 			{
-				if(Mag[i]==0) Mag[i]=TData(0.0001);
-				Mag[i]= 20*log10(Mag[i]); 
+				if(mag[i]==0) mag[i]=TData(0.0001);
+				mag[i]= 20*log10(mag[i]); 
 			}
 			SynchronizeTo(flags);
 		}
@@ -258,11 +258,11 @@ void Spectrum::ToLinear()
 		TData specSize=TData(GetSize());
 		if (HasMagBuffer())
 		{
-			DataArray &Mag = GetMagBuffer();
+			DataArray &mag = GetMagBuffer();
 			for (i=0; i<specSize; i++)
 			{
-				if(Mag[i]==0.0001) Mag[i]=0;
-				Mag[i]= pow(10,Mag[i]/20); 
+				if(mag[i]==0.0001) mag[i]=0;
+				mag[i]= pow(10,mag[i]/20); 
 			}
 			SynchronizeTo(flags);
 		}
@@ -282,16 +282,16 @@ void Spectrum::ToLinear()
 		}
 		else if (HasComplexArray())  // WARNING: computational expensive operation
 		{
-			Array<Complex> &Complex = GetComplexArray();
+			Array<Complex> &complex = GetComplexArray();
 			for (i=0; i<specSize; i++)
 			{
-				TData re = Complex[i].Real();
-				TData im = Complex[i].Imag();
+				TData re = complex[i].Real();
+				TData im = complex[i].Imag();
 				TData magLin = sqrt(pow(re,2) + pow(im,2));
 				if(magLin==0.0001) magLin=0;
 				TData magLog = pow(10,magLin/20);
-				Complex[i].SetReal(magLog * re / magLin);
-				Complex[i].SetImag(magLog * im / magLin);
+				complex[i].SetReal(magLog * re / magLin);
+				complex[i].SetImag(magLog * im / magLin);
 			}
 			flags.bComplex = true;
 			flags.bMagPhase = false;

@@ -179,7 +179,6 @@ std::ostream & operator << (std::ostream & os, FlagsBase & f);
 */
 template <unsigned int N> class Flags : public FlagsBase, public std::bitset<N>
 {
-
 // Construction/Destruction
 protected:
 	/** The default constructor */
@@ -249,6 +248,27 @@ public:
 
 };
 
+//MRJ: Why this? There exists a fairly well known issue about
+//VC6 support of template base classes, where polymorphism usual assumptions
+//don't hold. In this case we introduce two proxy methods that
+//just "inform" the compiler about what it has to do next... to promote
+//the references to the derived class object into references to the
+//base class. Sad but true. In discharge of MS guys this seems to be no
+//longer needed in VC++ 7.1. We could have implemented the body of the methods
+//inline on the header, but would have prevented us from using the compile-time
+//saving usage of the <iosfwd> header.
+
+#ifdef _MSC_VER
+template <unsigned int N>
+std::istream & operator >> (std::istream & is, Flags<N> & f) {
+	return (is >>  static_cast<FlagsBase&>(f) );
+}
+
+template <unsigned int N>
+std::ostream & operator << (std::ostream & os, Flags<N> & f){
+	return (os << static_cast<FlagsBase&>(f));
+}
+#endif //_MSC_VER
 
 }
 

@@ -18,8 +18,8 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 /** General	**/
 	SetInputSoundFile("");
 	SetOutputSoundFile("");
-	SetInputXMLFile("");
-	SetOutputXMLFile("");
+	SetInputAnalysisFile("");
+	SetOutputAnalysisFile("");
 	SetSamplingRate(44100);
 /** Analysis **/
 	SetAnalysisWindowSize(513);

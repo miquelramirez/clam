@@ -1,3 +1,6 @@
+#ifndef __MIDIINCONTROL__
+#define __MIDIINCONTROL__
+
 #include "MIDIEnums.hxx"
 #include "Array.hxx"
 #include "MIDIIn.hxx"
@@ -33,3 +36,5 @@ namespace CLAM {
 	};
 
 }
+
+#endif // MIDIInControl.hxx

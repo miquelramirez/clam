@@ -35,21 +35,21 @@ namespace CLAMGUI
 class GLArrayRenderer
 	: public ArrayRenderer
 {
-
+	struct tCullingData
+	{
+		unsigned left, right, pixel_width;
+	};
 public:
 
-	GLArrayRenderer( unsigned char red = 0, unsigned char gree = 255, unsigned char blu = 0 )
-	: mIntertwined( 1024 ), r( red ), g( gree ), b( blu )
-	{
-		InitArray( 1024 );
-	}
+	GLArrayRenderer( unsigned char red = 0, unsigned char gree = 255, unsigned char blu = 0 );
 
 	virtual ~GLArrayRenderer()
 	{
 	}
 
 	virtual void CacheData( const DataArray& array );
-	void Draw();
+	virtual void Draw();
+	virtual void PerformCulling( float left, float right, unsigned pixel_width );
 	virtual void DefineViewport( const DataArray& array, Viewport& view_specs );
 
 protected:
@@ -59,16 +59,46 @@ protected:
 	virtual void DataTransform( const DataArray& array);
 	virtual void XaxisTransform( TData left, TData right, TData& transleft, TData& transright, bool& integer );
 	virtual void YaxisTransform( TData top, TData bottom, TData& transtop, TData& transbottom, bool& integer );
+	virtual float GetXConversionFactor()
+	{
+		return 1;
+	}
+	/** If data reduction is used, everytime a zoom or change of view is done, we
+	 *	need to recompute the index boundaries 
+	 */
+	virtual void UpdateBounds();
+	/** Finds maximums and minimums in array, it is the core of the data reduction
+	 *	algorithm used when array size is more than @see mMinPointsToOptimize.
+	 */
+	virtual void FindMaxMin();
 
 protected:
 
 	std::valarray< c3f_v3f > mIntertwined;
+	CLAM::Array< GLuint >  mElemIdxBuffer;
+	unsigned       mLastIndex,mFirstIndex,mnMaxMin;
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;
+	bool          mDataChanged;
+	bool          mCullingRequested;
+	bool          mMustUpdateBounds;
+	tCullingData  mCullingData;
+	/** if array to visualize has more than mMinPointsToOptimize, a data reduction
+	 *	algorithm is used to visualize the array*/
+	unsigned mMinPointsToOptimize;
 };
 
 
 }
 
 #endif // GLArrayRenderer.hxx
+
+
+
+
+
+
+
+
+

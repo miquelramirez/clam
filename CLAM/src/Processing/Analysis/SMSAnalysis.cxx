@@ -34,17 +34,7 @@ using namespace CLAM;
 
 void SMSAnalysisConfig::DefaultInit()
 {
-	AddName();
-	AddprSamplingRate();
-	AddprFFTSize();
-	
-	AddSinSpectralAnalysis();
-	AddResSpectralAnalysis();
-	AddPeakDetect();
-	AddFundFreqDetect();
-	AddSinTracking();
-	AddSynthSineSpectrum();
-
+	AddAll();
 	UpdateData();
 	DefaultValues();	
 }
@@ -313,7 +303,7 @@ bool SMSAnalysis::Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& ou
 
 bool SMSAnalysis::Do(Frame& in)
 {
-	return Do(in.GetAudioFrame(),/*in.GetResidualAudioFrame(),*/in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
+	return Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec(),in.GetSinusoidalSpec());
 }
 
 bool SMSAnalysis::Do(Segment& in)

@@ -35,6 +35,58 @@ namespace CLAMGUI
 
 class GLPort : public Fl_Gl_Window
 {
+
+	class DrawCallbackAdapter
+	{
+		
+		CBL::Functor0    mDrawCb;
+		bool             mValid;
+		public:
+		DrawCallbackAdapter()
+			: mValid( false )
+		{
+		}
+
+		inline void SetCallback( const CBL::Functor0& cb )
+		{
+			mDrawCb = cb;
+			mValid = true;
+		}
+
+		inline void operator()()
+		{
+			if ( mValid )
+				mDrawCb();
+		}
+
+	};
+
+	class CullingCallbackAdapter
+	{
+		
+		CBL::Functor3<float, float, unsigned>    mCullingCb;
+		bool                                     mValid;
+		public:
+		CullingCallbackAdapter()
+			: mValid( false )
+		{
+		}
+
+		inline void SetCallback( const CBL::Functor3<float,float,unsigned>& cb )
+		{
+			mCullingCb = cb;
+			mValid = true;
+		}
+
+		inline void operator()( float left, float right, unsigned pixel_width)
+		{
+			if ( mValid )
+				mCullingCb( left, right, pixel_width );
+		}
+
+	};
+
+
 public:
 
 	Range mVerRange;
@@ -63,7 +115,6 @@ public:
 	{
 		mIsConf = false;
 		mRenderingState = state;
-		mDrawCb = draw_cb;
 		mIsConf = true;
 	 
 	}
@@ -78,25 +129,44 @@ public:
 		mVerRange = range;
 	}
 
+	inline void SetDrawingCallback( const CBL::Functor0& cb )
+	{
+		mDrawCb.SetCallback( cb );
+	}
+
+	inline void SetCullingCallback( const CBL::Functor3<float,float,unsigned>& cb )
+	{
+		mCullCb.SetCallback( cb );
+	}
+
 	void DrawSelf(); // Kludge
 
 	void draw(); // Fl_Gl_Window required interface
 
 	int handle( int ); // Fl_Gl_Window required interface
 
+	void damage()
+	{
+		invalidate();
+		Fl_Gl_Window::damage();
+	}
+
 protected:
 
 	void ApplyProjection();
 	
 private:
-	CBL::Functor0    mDrawCb;
-	bool             mIsConf;
-	bool             mTimerLaunched;
-	GLState*         mRenderingState;
-	unsigned         mRefreshSlot;
+
+	DrawCallbackAdapter     mDrawCb;
+	CullingCallbackAdapter  mCullCb;
+	bool                    mIsConf;
+	bool                    mTimerLaunched;
+	GLState*                mRenderingState;
+	unsigned                mRefreshSlot;
 };
 
 }
 
 #endif // GLPort_new.hxx
+
 

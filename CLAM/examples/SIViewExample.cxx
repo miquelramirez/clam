@@ -82,8 +82,8 @@ int main(int argc, char* argv[])
 		
 		SpectrumView specView;
 		SpectrumPresentation spectrum_pres(	Geometry( 562, 100, 512, 384 ),
-									"An Spectrum Processing Data Presentation" );
-		//SpectrumPresentation pres;
+											"An Spectrum Processing Data Presentation" );
+		SpectrumPresentation pres;
 
 		specView.BindTo( &myspectrum );
 		spectrum_pres.LinkWithView( &specView );
@@ -124,3 +124,4 @@ int main(int argc, char* argv[])
 	return 0;
 	
 }
+

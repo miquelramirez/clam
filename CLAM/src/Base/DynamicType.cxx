@@ -205,6 +205,19 @@ void DynamicType::AddAttr_ (const unsigned val, const unsigned size)
 		inf.hasBeenRemoved = false;
 		++numActiveAttr;
 		dataSize += size;
+
+		// check if we can unset the global some-removed flag.
+		dynamicTable[numAttr].hasBeenRemoved = false;
+		for (int j=0; j<numAttr; j++) {
+			if (dynamicTable[j].hasBeenRemoved) {
+				dynamicTable[numAttr].hasBeenRemoved = true;
+				break;
+			}
+		}
+#	ifdef CLAM_EXTRA_CHECKS_ON_DT
+		FullfilsInvariant();
+#	endif //CLAM_EXTRA_CHECKS_ON_DT
+
 		return;
 	}
 	if (AttrHasData(val)) return;
@@ -246,6 +259,19 @@ void DynamicType::RemoveAttr_(const unsigned i)
 		inf.hasBeenAdded=false;
 		--numActiveAttr;
 		dataSize -= typeDescTable[i].size;
+		
+		// check if we can unset the global some-added flag.
+		dynamicTable[numAttr].hasBeenAdded = false;
+		for (int j=0; j<numAttr; j++) {
+			if (dynamicTable[j].hasBeenAdded) {
+				dynamicTable[numAttr].hasBeenAdded = true;
+				break;
+			}
+		}
+#	ifdef CLAM_EXTRA_CHECKS_ON_DT
+		FullfilsInvariant();
+#	endif //CLAM_EXTRA_CHECKS_ON_DT
+
 		return;
 	}
 	if (!AttrHasData(i) || !data) return;

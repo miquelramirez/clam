@@ -301,14 +301,15 @@ public:
 	virtual void LoadFrom(CLAM::Storage & s) {
 		this->LoadDynAttributes(s);
 	}
-protected:
-	virtual void StoreDynAttributes(CLAM::Storage & s);
-	virtual void LoadDynAttributes(CLAM::Storage & s);
 	template <unsigned int NAttrib> 
 	class AttributePositionBase { 
 	public:
 		static const int value;
 	};
+	
+protected:
+	virtual void StoreDynAttributes(CLAM::Storage & s);
+	virtual void LoadDynAttributes(CLAM::Storage & s);
 	template <typename AttribType>
 	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
 #ifdef CLAM_USE_XML

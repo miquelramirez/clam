@@ -30,31 +30,16 @@
 #include "Melody.hxx"
 #include "SMSTransformation.hxx"
 #include "SegmentDescriptors.hxx"
+#include "AudioOut.hxx"
+#include "Progress.hxx"
+#include "WaitMessage.hxx"
+#include "SDIFIn.hxx"
+#include "SDIFOut.hxx"
+
+
 
 namespace CLAM
 {
-
-	class Progress
-	{
-	public:
-		char* mTitle;
-		float mFrom;
-		float mTo;
-
-		Progress(const char* title,float from,float to);
-		virtual ~Progress();
-		virtual void Update(float val) = 0;
-	};
-
-	class WaitMessage
-	{
-	public:
-		char* mTitle;
-
-		WaitMessage(const char* title);
-		virtual ~WaitMessage();
-	};
-
 
 	/** This is the base class for the Analysis Synthesis example. It implements
 	* all the necessary processing but it cannot be instantiated. To instantiate
@@ -69,7 +54,7 @@ namespace CLAM
 	{
 	public:
 		AnalysisSynthesisExampleBase(void);	
-		virtual ~AnalysisSynthesisExampleBase(void) { }
+		virtual ~AnalysisSynthesisExampleBase(void);
 		void Run(void);
 		/** Using this method a user-defined transformation can be set*/
 		void SetTransformation(SMSTransformation* pTransformation);
@@ -79,10 +64,41 @@ namespace CLAM
 		void InitConfigs(void);
 		/** Load global configuration */
 		void LoadConfig(const std::string& inputFileName);
+		/** Store global configuration */
+		void StoreConfig(const std::string& inputFileName);
 		/** Load transformation score */
 		void LoadTransformationScore(const std::string& inputFileName);
 		/** Load previously stored analysis xml data */
+
+		void LoadXMLAnalysis();
+
+		/** This method should be overridden on subclasses to provide
+			further control on how the concrete process is performed */
+		virtual void DoLoadXMLAnalysis();
+		
+		void LoadSDIFAnalysis();
+
+		/** This method should be overridden on subclasses to provide
+			further control on how the concrete process is performed */
+
+		virtual void DoLoadSDIFAnalysis();
+
 		void LoadAnalysis(const std::string& inputFileName);
+
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
+
+		virtual void DoStoreXMLAnalysis();
+
+		void StoreXMLAnalysis();
+
+		virtual void DoStoreSDIFAnalysis();
+
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
+
+		void StoreSDIFAnalysis();
+
 		/** Store data resulting from analysis. Some unnecessary data
 		* is removed from memory */
 		void StoreAnalysis(void);
@@ -96,14 +112,49 @@ namespace CLAM
 		/** Load input sound */
 		bool LoadInputSound(void);
 
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
+
+		virtual void DoAnalysis();
+
+		void AnalysisProcessing();
+
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
+
+		virtual void DoTracksCleanup();
+
+		void TracksCleanupProcessing();
+
 		/** Perform analysis. Requires a valid configuration file to be loaded */
 		void Analyze(void);
 		/** Perform synthesis. Requires a valid configuration file to be loaded 
 		* and the analysis to be performed. */
+		void SynthesisProcessing();
+
+		/** This method should be overridden on subclasses to provide
+		further control on how the concrete process is performed */
+
+		virtual void DoSynthesis();
+
 		void Synthesize(void);
 		/** Perform transformation according to previously set transformation 
 		* (PitchScale by default). Requires a valid transformation score to be loaded */
 		void Transform(void);
+
+
+		/** Play Input Sound */
+		void PlayInputSound();
+		/** Play Output Synthesized Sound */
+		void PlayOutputSound();
+		/** Play Ouput Synthesized Sinusoidal Component */
+		void PlaySinusoidal();
+		/** Play Output Synthesized Residual Component */
+		void PlayResidual();
+
+		/** Method used by any other method that needs to play an audio */
+		void Play(const Audio& audio);
+
 
 		/** Analyze and extract melody. This feature only works on some sort of instruments
 		* for monophonic phrases */
@@ -160,10 +211,27 @@ namespace CLAM
 		/** Indicates whether there is a valid spectrum, needed for melody anlysis */
 		bool mHaveSpectrum;
 
+		CLAMGUI::Progress* mCurrentProgressIndicator;
+		CLAMGUI::WaitMessage* mCurrentWaitMessage;
+
+		std::string mXMLInputFile;
+
+		SDIFIn  mSDIFReader;
+
 		/** Creates progress bar. Implemented both in GUI and stdio versions */
-		virtual CLAM::Progress* CreateProgress(const char* title,float from,float to) = 0;
+		virtual CLAMGUI::Progress* CreateProgress(const char* title,float from,float to) = 0;
 		/** Creates a wait message. Implemented both in GUI and stdio versions */
-		virtual CLAM::WaitMessage* CreateWaitMessage(const char* title) = 0;
+		virtual CLAMGUI::WaitMessage* CreateWaitMessage(const char* title) = 0;
+
+		void DestroyProgressIndicator();
+
+		void DestroyWaitMessage();
+
+		inline bool HasToDoTracksCleaning() const
+		{
+			return mGlobalConfig.GetDoCleanTracks();
+		}
+		
 	};
 
 };

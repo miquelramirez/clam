@@ -82,6 +82,11 @@ namespace CLAMGUI
 
 		}
 
+		void LoadFrom( CLAM::Storage& store )
+		{
+
+		}
+
 		/**
 		 *   This method triggers repository initialization to store
 		 *   the current composition of the system

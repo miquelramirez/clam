@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef __AudioManager__
+#ifndef __AudioManager___
 #define __AudioManager___
 
 #include <vector>
@@ -47,6 +47,7 @@ private:
 	std::vector<AudioDeviceList*> mDeviceLists;
 public:
 	typedef std::vector<AudioDevice*>::const_iterator device_iterator;
+	typedef std::vector<AudioDeviceList*>::const_iterator list_iterator;
 
 	static AudioManager* pSingleton;
 
@@ -127,13 +128,13 @@ public:
 	 *	to obtain the device list for each existent architecture.
 	 *  @return The beginning list iterator
 	 */
-//		list_iterator lists_begin() {return Singleton().mDeviceLists.begin();}
+	list_iterator lists_begin() const {return mDeviceLists.begin();}
 
 	/** Global iterator interface for device lists. It can be used
 	 *	to obtain the device list for each existent architecture.
 	 *  @return The ending list iterator
 	 */
-//		list_iterator lists_end()   {return Singleton().mDeviceLists.end();}
+	list_iterator lists_end() const {return mDeviceLists.end();}
 
 	/** Iterator interface for used audio devices. It will iterate through the list of devices which have been registered.
 	 *  @return The beginning list iterator

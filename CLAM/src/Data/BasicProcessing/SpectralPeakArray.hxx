@@ -70,7 +70,6 @@ class SpectralPeakArray : public ProcessingData
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (SpectralPeakArray, 8, ProcessingData);
 	DYN_ATTRIBUTE (0, public, EScale, Scale);
-//XA	DYN_ATTRIBUTE (1, public, int, nPeaks);
 	DYN_ATTRIBUTE (1, public, DataArray, MagBuffer);
 	DYN_ATTRIBUTE (2, public, DataArray, FreqBuffer);
 	DYN_ATTRIBUTE (3, public, DataArray, PhaseBuffer);
@@ -78,6 +77,7 @@ public:
 	DYN_ATTRIBUTE (5, public, DataArray, BinWidthBuffer);
 	DYN_ATTRIBUTE (6, public, IndexArray, IndexArray);
 	DYN_ATTRIBUTE (7, public, bool, IsIndexUpToDate);
+	
 protected:
 	void DefaultInit();
 public:  
@@ -397,6 +397,10 @@ public:
 	void   SetThruIndexBinWidth(TIndex pos,TSize binWidth);
 	void   SetThruIndexSpectralPeak(TIndex pos,SpectralPeak& peak);
 
+	/** Converts linear magnitude data to dB*/
+	void TodB();
+	/** Converts dB magnitude data to linear*/
+	void ToLinear();
 
 };
 

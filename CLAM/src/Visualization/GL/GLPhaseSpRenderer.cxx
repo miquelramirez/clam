@@ -48,6 +48,8 @@ void GLPhaseSpRenderer::ArrangeXScale()
 	float invNFs = GLfloat( ( 1.0f / (GLfloat) mIntertwined.size() ) * mSampRate );
 	for ( unsigned int k = 0; k < mIntertwined.size(); k++ )
 		mIntertwined[k].x = GLfloat( k * invNFs ); 
+	
+	mXConversionFactor = 1.0f/invNFs;
 }
 
 void GLPhaseSpRenderer::SetSamplingRate( TData rate )

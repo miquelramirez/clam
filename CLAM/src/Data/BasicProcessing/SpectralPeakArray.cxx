@@ -156,7 +156,7 @@ SpectralPeak SpectralPeakArray::GetSpectralPeak(TIndex pos) const
 }
 
 
-void SpectralPeakArray::SetSpectralPeak(int pos,const SpectralPeak& spectralPeak,TIndex index)
+void SpectralPeakArray::SetSpectralPeak(TIndex pos,const SpectralPeak& spectralPeak,TIndex index)
 {
 	CLAM_ASSERT(spectralPeak.GetScale()==GetScale(),"SpectralPeakArray::SetSpectralPeak:Incorrect scale in input SpectralPeak");
 	CLAM_ASSERT(pos<GetnPeaks(),"SpectralPeakArray::SetSpectralPeak:Out of bounds in peak array");
@@ -470,6 +470,41 @@ void SpectralPeakArray::SetThruIndexBinWidth(TIndex pos,TSize binWidth)
 	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::SetThruIndexBinWidth: IndexTable is not up to date");
 	CLAM_ASSERT(pos<GetIndexArray().Size()&&pos>=0,"SpectralPeakArray::SetThruIndexBinWidth: Out of bounds in Index Array");
 	SetBinWidth(GetIndexArray()[pos],binWidth);
+}
+
+void SpectralPeakArray::TodB()
+{
+	if(GetScale()==EScale::eLinear)//else we need to do nothing
+	{
+		DataArray &mag = GetMagBuffer();
+		int nPeaks=GetnPeaks();
+		int i;
+		for (i=0; i<nPeaks; i++)
+		{
+			if(mag[i]==0) mag[i]=TData(0.0001);
+			mag[i]= 20*log10(mag[i]); 
+		}
+		SetScale(EScale::eLog);
+	}
+
+}
+
+void SpectralPeakArray::ToLinear()
+{
+	if(GetScale()==EScale::eLog)//else we need to do nothing
+	{
+		DataArray &mag = GetMagBuffer();
+		int nPeaks=GetnPeaks();
+		int i;
+		for (i=0; i<nPeaks; i++)
+		{
+			if(mag[i]==0.0001) mag[i]=0;
+			mag[i]= pow(10,mag[i]/20); 
+		}
+		SetScale(EScale::eLinear);
+	}
+
+
 }
 
 

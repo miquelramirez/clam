@@ -22,10 +22,23 @@
 #include "GLArrayRenderer.hxx"
 #include "Viewport.hxx"
 #include <algorithm>
+#include "Assert.hxx"
 using std::max_element;
 using std::min_element;
 #include "CLAM_Math.hxx"
+#include <iostream>
 using namespace CLAMGUI;
+
+GLArrayRenderer::GLArrayRenderer( unsigned char red, unsigned char gree, unsigned char blu)
+	: mElemIdxBuffer(0,100), mLastIndex(0), mFirstIndex(0), r( red ), g( gree ), b( blu ), mDataChanged( false ), 
+	  mCullingRequested(false), mMustUpdateBounds( true )
+{
+	ResizeArray( 1024 );
+	/*This limit has been experimentally found to be correct but it depends on the
+	  system and the amount of simultaneous views.*/
+	mMinPointsToOptimize=50000;
+}
+
 
 void GLArrayRenderer::InitArray( unsigned int nelems )
 {
@@ -45,6 +58,9 @@ void GLArrayRenderer::ResizeArray( unsigned int new_size )
 {
 	mIntertwined.resize( new_size );
 	InitArray( new_size );
+	
+	mLastIndex = 0;
+	mFirstIndex = 0;
 }
 
 void GLArrayRenderer::CacheData( const DataArray& array )
@@ -56,6 +72,9 @@ void GLArrayRenderer::CacheData( const DataArray& array )
 		ResizeArray( nbins ); // Valarray resizing to accomodate the new CLAM Array
 
 	DataTransform( array );
+	mDataChanged = true;
+	if(nbins>mMinPointsToOptimize)
+		FindMaxMin();
 }
 
 void GLArrayRenderer::DataTransform( const DataArray& array )
@@ -72,8 +91,29 @@ void GLArrayRenderer::Draw()
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
-	glInterleavedArrays (GL_C3F_V3F, 0, &mIntertwined[0]);
-	glDrawArrays( GL_LINE_STRIP, 0, mIntertwined.size() );
+
+	if ( mDataChanged )
+	{
+		// caches the data on the video card ( if possible, otherwise it remains in 
+		// processor memory - bad luck boy)
+		glInterleavedArrays (GL_C3F_V3F, 0, &mIntertwined[0]);
+		mDataChanged = false;
+		
+	}
+	if(mCullingRequested && mCullingData.right-mCullingData.left>mMinPointsToOptimize)
+	{
+		if ( mMustUpdateBounds)
+		{
+			UpdateBounds();
+			mMustUpdateBounds= false;
+		}
+		
+		glDrawElements( GL_LINE_STRIP, (mLastIndex-mFirstIndex), GL_UNSIGNED_INT, mElemIdxBuffer.GetPtr()+mFirstIndex );
+	}
+	else
+	{
+		glDrawArrays( GL_LINE_STRIP, 0, mIntertwined.size() );
+	}
 	glFlush();
 }
 
@@ -106,9 +146,9 @@ void GLArrayRenderer::DefineViewport( const DataArray& array, Viewport& view_spe
 	// :KLUDGE: let's pad the top and bottom when they are equal
 	
 	if ( fabs( top - bottom ) < 0.01 )
-		{
-			top += TData(1.0);
-		}
+	{
+		top += TData(1.0);
+	}
 
 	TData left   = 0;
 	TData right  = (TData) array.Size();
@@ -130,3 +170,179 @@ void GLArrayRenderer::YaxisTransform( TData top, TData bottom, TData& transtop, 
 	transbottom = bottom;
 	integer = true;
 }
+
+void GLArrayRenderer::PerformCulling( float left, float right, unsigned pixel_width )
+{
+	mCullingData.left = (unsigned)(left*GetXConversionFactor());
+	mCullingData.right = (unsigned)(right*GetXConversionFactor());
+	mCullingData.pixel_width = pixel_width;
+	mCullingRequested = true;
+	mMustUpdateBounds= true;	
+
+}
+
+void GLArrayRenderer::UpdateBounds()
+{
+	GLuint start, end;
+	start = mCullingData.left;
+	end = mCullingData.right;
+	CLAM_ASSERT( start<end, "Start and End indexes cannot be equal!!!!" );
+
+	unsigned int k;
+	
+	bool found=false;
+
+	if(mCullingData.left>mElemIdxBuffer[mFirstIndex])
+	{
+		for(k=mFirstIndex;k<mnMaxMin;k++)
+		{
+			if(mElemIdxBuffer[k]>mCullingData.left)
+			{
+				mFirstIndex=k;
+				found=true;
+				break;
+			}
+		}
+		if(!found) mFirstIndex=mnMaxMin-1;
+	}
+	else if(mCullingData.left<mElemIdxBuffer[mFirstIndex])
+	{
+		for(k=mFirstIndex;k>0;k--)
+		{
+			if(mElemIdxBuffer[k]<mCullingData.left)
+			{
+				mFirstIndex=k+1;
+				found=true;
+				break;
+			}
+		}
+		if(!found) mFirstIndex=0;
+	}
+	
+	found=false;
+
+	if(mCullingData.right>mElemIdxBuffer[mLastIndex])
+	{
+		for(k=mLastIndex;k<mnMaxMin;k++)
+		{
+			if(mElemIdxBuffer[k]>mCullingData.right)
+			{
+				mLastIndex=k-1;
+				found=true;
+				break;
+			}
+		}
+		if(!found) mLastIndex=mnMaxMin-1;
+	}
+	else if(mCullingData.right<mElemIdxBuffer[mLastIndex])
+	{
+		for(k=mLastIndex;k>0;k--)
+		{
+			if(mElemIdxBuffer[k]<mCullingData.right)
+			{
+				mLastIndex=k;
+				found=true;
+				break;
+			}
+		}
+		if(!found) mLastIndex=0;
+	}
+
+}
+
+
+
+void GLArrayRenderer::FindMaxMin()
+{
+	//Minimum value that will be acknowledged as maximum or minimum
+	float minY=0.00001;
+	float threshold=0.0015;
+
+	unsigned int nElems=mIntertwined.size();
+	
+	float leftY,middleY,rightY;
+	// detection loop 
+	unsigned int i;
+	
+	//We always add a start point at zero
+	mElemIdxBuffer.AddElem(0);
+	mIntertwined[0].y=0;
+
+	mnMaxMin=1;
+	
+	i=1;
+	bool firstZero=true;
+	while (i<nElems-2) 
+	{
+		//constant area with low amplitude values (noise)
+		while(i<nElems-2&&mIntertwined[i].y<minY && mIntertwined[i].y > -minY)
+		{
+			if(firstZero)
+			{
+				mElemIdxBuffer.AddElem(i);
+				mnMaxMin++;
+				firstZero=false;
+				mIntertwined[i].y=0;
+			}				
+			i++;
+		}
+		if(!firstZero)
+		{
+			mElemIdxBuffer.AddElem(i-1);
+			mnMaxMin++;
+			mIntertwined[i-1].y=0;
+			firstZero=true;
+		}
+				
+		leftY 	= mIntertwined[i].y;
+		middleY	= mIntertwined[i+1].y;
+		rightY 	= mIntertwined[i+2].y;
+
+		
+		// local Minimum detected 
+		if ((leftY-middleY > threshold) && (rightY-middleY> threshold)) 
+		{
+			float interpolatedPosition;
+			
+			int pointPosition = i+1; 	// middleY has index i+1
+			// quadratic interpolation
+			float diffFromMin =  TData(0.5) * ((leftY-rightY) / (leftY- 2*middleY + rightY));
+			interpolatedPosition = pointPosition+diffFromMin;
+			mElemIdxBuffer.AddElem((unsigned)(interpolatedPosition));
+							
+			mnMaxMin++;
+		
+		}
+
+			
+		// local maximum Detected ! 
+		if ((middleY-leftY > threshold) && (middleY-rightY > threshold)) 
+		{	
+			//if(middleY < 2*minY) continue;
+			float diffFromMax;
+			float interpolatedPosition;
+			int pointPosition = i+1; 	// middleY has index i+1
+			// quadratic interpolation
+			diffFromMax =  TData(0.5) * ((leftY-rightY) / (leftY- 2*middleY + rightY));
+			interpolatedPosition = pointPosition+diffFromMax;
+			mElemIdxBuffer.AddElem((unsigned)(interpolatedPosition));
+							
+			mnMaxMin++;
+		}
+		i++;
+	}
+
+	//We always add an end point at zero
+	mElemIdxBuffer.AddElem(nElems-1);
+	mIntertwined[mnMaxMin].y=0;
+	mnMaxMin++;
+	
+}
+
+
+
+
+
+
+
+

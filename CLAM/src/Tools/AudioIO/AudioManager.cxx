@@ -68,7 +68,6 @@ AudioManager::~AudioManager()
 	unsigned int i;
 	for (i=0;i<mDevices.size(); i++)
 	{
-		mDevices[i]->Stop();
 		delete mDevices[i];
 	}
 	pSingleton = 0;

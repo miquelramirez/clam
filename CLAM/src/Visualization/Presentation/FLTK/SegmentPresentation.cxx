@@ -26,7 +26,6 @@ using namespace CLAMGUI;
 
 void ProcDataPresentation<Segment>::PublishCallbacks()
 {
-	//:TODO: To fully implement this
 	Aspect a;
 
 	HookCb hook = makeMemberFunctor1( View*, mTimeFreqPres, SegmentTFPresentation, LinkWithView );
@@ -38,17 +37,14 @@ void ProcDataPresentation<Segment>::PublishCallbacks()
 
 void ProcDataPresentation<Segment>::Show()
 {
-	// :TODO: To fully implement this
 	mTimeFreqPres.Show();
 }
 
 void ProcDataPresentation<Segment>::Do()
 {
-	// :TODO: To fully implement this
 	mTimeFreqPres.Do();
 }
 
 void ProcDataPresentation<Segment>::Init( const Geometry& g, const char* label )
 {
-	// :TODO: We will surely have to do something
 }

@@ -40,12 +40,12 @@ namespace CLAM {
 		SetSpecSize(22050);
 	}
 	
-	CleanTracks::CleanTracks()
+	CleanTracks::CleanTracks():mSearchTrajectories(mTrajectoryArray)
 	{
 		Configure(CleanTracksConfig());
 	}
 
-	CleanTracks::CleanTracks(const CleanTracksConfig &c )
+	CleanTracks::CleanTracks(const CleanTracksConfig &c ):mSearchTrajectories(mTrajectoryArray)
 	{
 		Configure(c);
 	}
@@ -158,22 +158,8 @@ namespace CLAM {
 			int nDeleted=0;
 			for(z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
 			{
-				TTrajectory tmpTrajectory;
-				tmpTrajectory.id=peakArrayArray[i]->GetIndex(z-nDeleted);
-				//int trajectoryPosition=mSearchTrajectories.Find(tmpTrajectory);
-				
-				int j;
-				int trajectoryPosition;
-				for(j=0; j<mTrajectoryArray.Size(); j++)
-				{
-					if(mTrajectoryArray[j].id==tmpTrajectory.id)
-					{
-						trajectoryPosition=j;
-						break;
-					}
-					else trajectoryPosition=-1;
-				}
-				///////////////////////////////////
+				int id=peakArrayArray[i]->GetIndex(z-nDeleted);
+				int trajectoryPosition=FindTrajectoryPosition(id);
 				if (trajectoryPosition!=-1)
 				{
 					if(mTrajectoryArray[trajectoryPosition].length<mMinLength)
@@ -181,10 +167,10 @@ namespace CLAM {
 						//modified
 						peakArrayArray[i]->DeleteSpectralPeak(z-nDeleted);
 						peakArrayArray[i]->SetIsIndexUpToDate(true);
-						peakArrayArray[i]->DeleteIndex(tmpTrajectory.id);
+						peakArrayArray[i]->DeleteIndex(id);
 						mTrajectoryArray[trajectoryPosition].length--;//update length
 						if(mTrajectoryArray[trajectoryPosition].length==0)
-							DeleteTrajectory(tmpTrajectory.id);
+							DeleteTrajectory(id);
 						nDeleted++;
 					}
 				}
@@ -204,20 +190,7 @@ namespace CLAM {
 			for(z=0;z<peakArrayArray[i]->GetnIndexedPeaks();z++)
 			{
 				currentTrackid=peakArrayArray[i]->GetIndex(z);
-				TTrajectory tmpTrajectory;
-				tmpTrajectory.id=currentTrackid;
-				//newTrackid=mSearchTrajectories.Find(tmpTrajectory);
-				int j;
-				for(j=0; j<mTrajectoryArray.Size(); j++)
-				{
-					if(mTrajectoryArray[j].id==tmpTrajectory.id)
-					{
-						newTrackid=j;
-						break;
-					}
-					else newTrackid=-1;
-				}
-
+				newTrackid=FindTrajectoryPosition(currentTrackid);
 				if(newTrackid!=currentTrackid)
 				{
 					peakArrayArray[i]->SetIndex(z,newTrackid);
@@ -237,27 +210,13 @@ namespace CLAM {
 		if(nTrajectories>0)
 		{
 			//would be faster using searcharray.find
-			//pos=mSearchTrajectories.Find(trajectory);
-			int i;
-			for(i=0; i<nTrajectories; i++)
-			{
-				if(mTrajectoryArray[i].id==trajectory.id)
-				{
-					pos=i;
-					break;
-				}
-				else pos=-1;
-			}
-			//if(trajectory.id!=mTrajectoryArray[pos].id)
-			//	pos=-1;
-						
+			pos=FindTrajectoryPosition(trajectory.id);
 		}
 		if(pos!=-1)//if found, length and last data are updated
 		{
 			mTrajectoryArray[pos].length++;
 			mTrajectoryArray[pos].finalFreq=trajectory.finalFreq;
 			mTrajectoryArray[pos].finalMag=trajectory.finalMag;
-			//mTrajectoryArray[pos].finalPhase=trajectory.finalPhase;
 		}
 		else  //trajectory added
 		{
@@ -268,20 +227,9 @@ namespace CLAM {
 
 	void CleanTracks::DeleteTrajectory(int id)
 	{
-		TTrajectory tmpTrajectory;
-		tmpTrajectory.id=id;
-		int i, pos;
-		TSize nTrajectories=mTrajectoryArray.Size();
-		for(i=0; i<nTrajectories; i++)
-			{
-				if(mTrajectoryArray[i].id==id)
-				{
-					pos=i;
-					break;
-				}
-				else pos=-1;
-			}
-
+		int pos;
+		
+		pos=FindTrajectoryPosition(id);
 		mTrajectoryArray.DeleteElem(pos);
 	}
 
@@ -333,22 +281,9 @@ namespace CLAM {
 
 	void  CleanTracks::InterpolatePeaks(TTrajectory& fromTrajectory, Array<SpectralPeakArray*>& peakArrayArray)
 	{
-		TTrajectory tmpTrajectory;
-		tmpTrajectory.id=fromTrajectory.continuedAtId;
-		//int newTrajPos=mSearchTrajectories.Find(tmpTrajectory);
-		int j, newTrajPos, z;
-		for(j=0; j<mTrajectoryArray.Size(); j++)
-		{
-			if(mTrajectoryArray[j].id==tmpTrajectory.id)
-			{
-				newTrajPos=j;
-				break;
-			}
-			//else newTrajPos=-1;
-		}
+		int newTrajPos=FindTrajectoryPosition(fromTrajectory.continuedAtId);
+		CLAM_ASSERT(newTrajPos>-1,"CleanTracks::InterpolatePeaks:Negative Index for track");
 		TTrajectory toTrajectory=mTrajectoryArray[newTrajPos];
-
-
 		int gap=toTrajectory.beginPos-(fromTrajectory.beginPos+fromTrajectory.length);
 		TData freqSlope=(toTrajectory.initialFreq-fromTrajectory.finalFreq)/(gap+1);
 		TData magSlope=(toTrajectory.initialMag-fromTrajectory.finalMag)/(gap+1);
@@ -357,6 +292,7 @@ namespace CLAM {
 		TData currentBinPos;
 		int currentBinWidth;
 		TData lastBinPos=0;
+		int z;
 		for(z=fromTrajectory.beginPos+fromTrajectory.length;z<toTrajectory.beginPos;z++)
 		{
 			currentFreq+=freqSlope;
@@ -390,5 +326,23 @@ namespace CLAM {
 	}
 
 	
+TIndex CleanTracks::FindTrajectoryPosition(TIndex id)
+{
+	TTrajectory tmpTrajectory;
+	int trajectoryPosition=-1;
+	tmpTrajectory.id=id;
+	//we have to check whether it is first or last track
+	if(tmpTrajectory.id==mTrajectoryArray[0].id) 
+		trajectoryPosition=0;
+	else if (tmpTrajectory.id==mTrajectoryArray[mTrajectoryArray.Size()-1].id) 
+		trajectoryPosition=mTrajectoryArray.Size()-1;
+	else
+	{
+		trajectoryPosition=mSearchTrajectories.Find(tmpTrajectory);
+		//note that Find returns the closest index and that does not guarantee that is the exact one
+		if(trajectoryPosition!=-1&&mTrajectoryArray[trajectoryPosition].id!=id) trajectoryPosition=-1;
+	}
+	return trajectoryPosition;
+}
 
 };//namespace

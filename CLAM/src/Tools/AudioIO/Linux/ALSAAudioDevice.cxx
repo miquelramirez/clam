@@ -64,6 +64,8 @@ namespace CLAM {
 	ALSAAudioDevice::ALSAAudioDevice(const std::string& name,const std::string& device): 
 		AudioDevice(name)
 	{
+		printf("ALSAAudioDevice::ALSAAudioDevice\n");
+
 		int i;
 		
 		mNChannelsWritten = 0;
@@ -131,7 +133,7 @@ namespace CLAM {
 		if (sndpcm==0)
 		{
 			try {
-				sndpcm = new ::SndPcm(SampleRate(),mNChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+				sndpcm = new ::SndPcm(SampleRate(),mNReadChannels,mNWriteChannels,Latency(),mDevice.c_str(),mDevice.c_str());
 			}
 			catch (SndPcmError &e) {
 				Err ne("ALSAAudioDevice::Start(): Failed to create PCM device.");
@@ -163,12 +165,14 @@ namespace CLAM {
 
 	void ALSAAudioDevice::Stop(void) throw(Err)
 	{
+		printf("ALSAAudioDevice::Stop\n");
 		if (sndpcm) {
 			sndpcm->Stop();
 		}
 	}
 	ALSAAudioDevice::~ALSAAudioDevice()
 	{
+		printf("ALSAAudioDevice::~ALSAAudioDevice\n");
 		Stop();
 		if (sndpcm) {
 			delete sndpcm;
@@ -218,16 +222,13 @@ namespace CLAM {
 			mNChannelsRead = 0;
 			for (int i=0;i<mNChannels;i++)
 				mChannelsRead[i] = false;
-
-			if (mNWriteChannels == 0)
-				sndpcm->WriteBuf(mWriteBuf.GetPtr());
 		}
 	}
 
 	void ALSAAudioDevice::Write(const Audio& audio,const int channelID)
 	{
 		CLAM_DEBUG_ASSERT(channelID < mNChannels,
-		                  "ALSAAudioDevice::Read(): Invalid Channel ID");
+		                  "ALSAAudioDevice::Write(): Invalid Channel ID");
 
 		TData* ptrA = audio.GetBuffer().GetPtr();
 		short* ptrB = mWriteBuf.GetPtr() + channelID;
@@ -259,15 +260,12 @@ namespace CLAM {
 
 		if (mNChannelsWritten==mNWriteChannels)
 		{
+			if (mNReadChannels==0) sndpcm->Poll();
 			sndpcm->WriteBuf(mWriteBuf.GetPtr(),mWriteBufSize);
 						
 			mNChannelsWritten = 0;
 			for (i=0;i<mNChannels;i++)
 				mChannelsWritten[i] = false;
-
-			if (mNReadChannels == 0)
-				sndpcm->ReadBuf(mReadBuf.GetPtr());
-				
 		}
 	}
 

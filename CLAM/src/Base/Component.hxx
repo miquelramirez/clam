@@ -44,16 +44,16 @@ public:
 public:
 	/** 
 	 * Stores component's subitems on the given Storage
-	 * @param store The given storage where the subitem will be stored
+	 * @param storage The given storage where the subitem will be stored
 	 * @see Storage
 	 */
-	virtual void StoreOn (Storage & store)=0;
+	virtual void StoreOn (Storage & storage)=0;
 	/**
 	 * Loads component's subitems from the given Storage
-	 * @param store The given storage where the subitem will be loaded from
+	 * @param storage The given storage where the subitem will be loaded from
 	 * @see Storage
 	 */
-	virtual void LoadFrom (Storage & store)=0;
+	virtual void LoadFrom (Storage & storage)=0;
 
 	// TODO: Documentation for copy functions
 	// TODO: Copy functions must be pure virtual

@@ -3,14 +3,33 @@
 using namespace CLAMGUI;
 
 GLSpectralBlock::GLSpectralBlock( int divs )
-	: mDivisions( divs ), mDLid( 0 ), mDLready(false)
+	: mDivisions( divs ), mDLid( 0 ), mDLready(false), mSpectralRange( 0 ),
+	  mF0( 20.0f ), mFf( 20000.0f ), mMustCalculateIndexes(false),
+	  Th(0.007f),A(0.45f), r(2), 
+	  mBands(100)
 {
+	// int N = log(fMax/fInit)/log(octavePart); //num of bands
+	mDivisions = int(log10f(mFf/mF0)/log10f(4.0/3.0));
 
-	mBlockHeights.Resize( divs );
-	mBlockHeights.SetSize( divs );
+	mBlockHeights.Resize( mBands );
+	mBlockHeights.SetSize( mBands );
+
+
+	
+	mOctaveStride = 4.0f/3.0f;
 }
 
-void GLSpectralBlock::CacheData( const DataArray& array )
+void GLSpectralBlock::CacheSampleRate( TData sampleRate )
+{
+	if ( mSpectralRange != sampleRate )
+	{	
+		mSpectralRange = sampleRate;
+		
+		mMustCalculateIndexes = true;
+	}
+}
+/*
+void oldCacheData( const DataArray& array )
 {
 	// We will hop on the array with a fixed delta that depends
 	// on the number of divisions (bands) to be measured
@@ -60,6 +79,81 @@ void GLSpectralBlock::CacheData( const DataArray& array )
 	}
 
 }
+*/
+
+void GLSpectralBlock::CalculateBandRanges( int arraySize )
+{
+	mRangesList.clear();
+
+	float invSampRate = 1.0f/float(mSpectralRange);
+	float convFactor = (arraySize-1)*invSampRate;
+
+	tIndexRange tmp = { 0, 0, 0 };
+
+	tmp.right = mF0 * convFactor;
+
+	for ( int k = 0; k < mBands; k++ )
+	{
+		float exponent= float((k+1)*mDivisions)/mBands;
+
+		tmp.left = tmp.right;
+		tmp.right = int(mF0*(powf(mOctaveStride, exponent))*convFactor);
+
+		tmp.size = tmp.right - tmp.left + 1;
+
+		CLAM_DEBUG_ASSERT( tmp.right < arraySize, "Out of bonds!!!!" );
+		mRangesList.push_back( tmp );
+
+	}
+}
+
+
+void GLSpectralBlock::GenerateBlockHeights( const DataArray& array)
+{
+	// first we generate the sums "tal cual"
+
+	tIndexList::iterator pItem = mRangesList.begin();
+	tIndexList::iterator pEnd = mRangesList.end();
+
+	CLAM_ASSERT( mBlockHeights.Size() == mRangesList.size(), "Check the nodes in the list boy!" );
+
+	float  accum=0;
+	const TData* dataPtr0, *dataPtr1;
+	float invsize;
+	int k = 0; // k is the block height index
+
+	while ( pItem!= pEnd )
+	{
+		
+		dataPtr0 = array.GetPtr()+pItem->left;
+		dataPtr1 = array.GetPtr()+pItem->left+pItem->size;
+		CLAM_DEBUG_ASSERT( dataPtr0!=dataPtr1, "Must not be equal_!!!" );
+		invsize = 1.0f/float(pItem->size);
+
+		while ( dataPtr0 != dataPtr1 )
+		{
+			accum+= *dataPtr0++;
+		}
+
+		mBlockHeights[k] = compress( accum*invsize );
+		
+		accum = 0;
+		k++;
+		pItem++;
+	}
+
+}
+
+void GLSpectralBlock::CacheData( const DataArray& array )
+{
+	if ( mMustCalculateIndexes )
+		{
+			CalculateBandRanges(array.Size());
+			mMustCalculateIndexes = false;
+		}
+
+	GenerateBlockHeights(array);
+}
 
 void GLSpectralBlock::DataTransform( const DataArray& array )
 {
@@ -71,7 +165,7 @@ void GLSpectralBlock::DefineViewport( const DataArray& array, Viewport& v )
 	v.bottom = 0;
 	v.top = 1;
 	v.left = 0;
-	v.right = TData(mDivisions);
+	v.right = TData(mBands);
 }
 
 void GLSpectralBlock::BuildDisplayList()
@@ -128,3 +222,10 @@ void GLSpectralBlock::Draw()
 		}
 	
 }
+
+
+
+
+
+
+

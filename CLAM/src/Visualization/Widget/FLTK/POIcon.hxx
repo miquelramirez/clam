@@ -23,27 +23,31 @@
 #define __POICON__
 
 #include "ObjectIcon.hxx"
+namespace CLAM {
+	class Processing;
+}
+
 
 namespace CLAMGUI
 {
 
-class Processing;
 
 class POIcon : public ObjectIcon
 {
 
 public:
+	virtual ~POIcon() {};
 
 	int handle( int event );
 
-	void SetAvatar( Processing* p_pobj);
+	void SetAvatar( CLAM::Processing* p_pobj);
 
-	void SetActionCallback( const CBL::Functor1< Processing* >& cb );
+	void SetActionCallback( const CBL::Functor1< CLAM::Processing* >& cb );
 
 private:
 
-	CBL::Functor1< Processing* >   mActionCb;
-	Processing*                    mAvatar;
+	CBL::Functor1< CLAM::Processing* >   mActionCb;
+	CLAM::Processing*                    mAvatar;
 
 };
 
