@@ -25,28 +25,50 @@
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+
+	void PlotSpectrum( const Spectrum& spec,
+			   const std::string& label,
+			   int x, int y, int w, int h)
 	{
+	    QtAppWrapper::Init();
 
-	    void PlotSpectrum(const Spectrum& spec,
-			      const std::string& label,
-			      int x, int y, int w, int h)
-		{
-			QtAppWrapper::Init();
+	    QtSpectrumPlot plot;
+	    plot.Label(label);
+	    plot.Geometry(x,y,w,h);
+	    plot.SetBackgroundColor(VMColor::White());
+	    plot.SetForegroundColor(VMColor::Blue());
+	    plot.SetVLineColor(VMColor::Black());
+	    plot.SwitchDisplayColors(true);
+	    plot.SetData(spec);
+	    plot.Show();
 
-			QtSpectrumPlot plot;
-			plot.Label(label);
-			plot.Geometry(x,y,w,h);
-			plot.SetBackgroundColor(VMColor::White());
-			plot.SetForegroundColor(VMColor::Blue());
-			plot.SetVLineColor(VMColor::Black());
-			plot.SwitchDisplayColors(true);
-			plot.SetData(spec);
-			plot.Show();
-
-			QtAppWrapper::Run();
-		}
+	    QtAppWrapper::Run();
 	}
+
+	void PlotSpectrum( const Spectrum& spec,
+			   std::vector<unsigned>& marks,
+			   const std::string& label,
+			   int x, int y, int w, int h)
+	{
+	    QtAppWrapper::Init();
+
+	    QtSpectrumPlot plot;
+	    plot.Label(label);
+	    plot.Geometry(x,y,w,h);
+	    plot.SetBackgroundColor(VMColor::White());
+	    plot.SetForegroundColor(VMColor::Blue());
+	    plot.SetVLineColor(VMColor::Black());
+	    plot.SetMarks(marks);
+	    plot.SetMarksColor(VMColor::Red());
+	    plot.SwitchDisplayColors(true);
+	    plot.SetData(spec);
+	    plot.Show();
+
+	    QtAppWrapper::Run();
+	}
+    }
 }
 
 // END

@@ -28,15 +28,23 @@
 
 namespace CLAM
 {
-	namespace VM
-	{
-		void PlotAudioStereo(	std::vector<Audio> data,
-								const std::string& label="",
-								int x=100, 
-								int y=100, 
-								int w=660, 
-								int h=250 );
-	}
+    namespace VM
+    {
+	void PlotAudioStereo( std::vector<Audio> data,
+			      const std::string& label="",
+			      int x=100, 
+			      int y=100, 
+			      int w=660, 
+			      int h=250 );
+
+	void PlotAudioStereo( std::vector<Audio> data,
+			      std::vector<unsigned>& marks,
+			      const std::string& label="",
+			      int x=100, 
+			      int y=100, 
+			      int w=660, 
+			      int h=250 );
+    }
 }
 
 #endif

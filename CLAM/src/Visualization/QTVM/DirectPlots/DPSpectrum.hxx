@@ -22,21 +22,30 @@
 #ifndef __DPSPECTRUM__
 #define __DPSPECTRUM__
 
+#include <vector>
 #include <string>
 #include "Spectrum.hxx"
 
 namespace CLAM
 {
-	namespace VM
-	{
+    namespace VM
+    {
 
-		void PlotSpectrum(	const Spectrum& spec,
-							const std::string& label="",
-							int x=100,
-							int y=100,
-							int w=500,
-							int h=225 );
-	}
+	void PlotSpectrum( const Spectrum& spec,
+			   const std::string& label="",
+			   int x=100,
+			   int y=100,
+			   int w=500,
+			   int h=225 );
+
+	void PlotSpectrum( const Spectrum& spec,
+			   std::vector<unsigned>& marks,
+			   const std::string& label="",
+			   int x=100,
+			   int y=100,
+			   int w=500,
+			   int h=225 );
+    }
 }
 
 #endif

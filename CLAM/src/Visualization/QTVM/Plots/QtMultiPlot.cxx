@@ -110,12 +110,14 @@ namespace CLAM
 	        void QtMultiPlot::DisplayBackgroundBlack()
 		{
 			SetBackgroundColor(VMColor::Black());
+			SetDialColor(VMColor::Red());
 			SetMarksColor(VMColor::Orange());
 		}
 
 		void QtMultiPlot::DisplayBackgroundWhite()
 		{
 			SetBackgroundColor(VMColor::White());
+			SetDialColor(VMColor::Black());
 			SetMarksColor(VMColor::Red());
 		}
 
@@ -196,6 +198,11 @@ namespace CLAM
 			    break;
 
 		    }
+		}
+
+	    	void QtMultiPlot::SetDialColor(Color c)
+		{
+		    ((MultiPlotController*)_controller)->SetDialColor(c);
 		}
 	}
 }
