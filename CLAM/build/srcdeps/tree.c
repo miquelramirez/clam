@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tree.h"
-#include "strdup.h"
+#include "mystrdup.h"
 
 node* node_new(const char* str)
 {
 	node* ret = (node*) malloc(sizeof(node));
-	ret->str = strdup(str);
+	ret->str = mystrdup(str);
 	ret->next = 0;
 	ret->sub = 0;
 	return ret;

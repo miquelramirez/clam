@@ -17,11 +17,17 @@ include $(DEPENDS)
 endif
 endif
 
-$(PROGRAM): $(OBJECTS)
-	gcc $(OBJECTS) -o $(PROGRAM)
+$(PROGRAM): $(OBJECTS) mystrdup.o
+	gcc $(OBJECTS) mystrdup.o  -o $(PROGRAM)
+
+mystrdup.o: mystrdup.c
+	gcc -c $(CFLAGS) $< -o $@
+
 
 %.o: %.c
 	gcc -c $(CFLAGS) $< -o $@
+
+
 
 %.d: %.c
 	gcc -M $< -o $@

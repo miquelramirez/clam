@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "list.h"
-#include "strdup.h"
+#include "mystrdup.h"
 
 item* item_new(const char* str)
 {
 	item* ret = (item*) malloc(sizeof(item));
-	ret->str = strdup(str);
+	ret->str = mystrdup(str);
 	ret->next = 0;
 	return ret;
 }

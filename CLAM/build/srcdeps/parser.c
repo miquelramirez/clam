@@ -679,7 +679,7 @@ void parser_run(const char* filename)
 	conditions_start();
 
 	{
-		item* i = defines->first;
+		item* i = defines? defines->first : 0;
 		while (i)
 		{
 			hash_set(cur_defines,i->str,"");
@@ -688,7 +688,7 @@ void parser_run(const char* filename)
 	}
 	
 	{
-		item* i = pre_includes->first;
+		item* i = pre_includes? pre_includes->first : 0;
 		while (i)
 		{
 			parser_recurse(i->str);
