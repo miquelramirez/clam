@@ -12,22 +12,22 @@ enableSendMail = True
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
-updateLevelForCLAM = 1
+updateLevelForCLAM = 1 
 updateLevelForExamples = 1
-updateLevelForTestData = 1
+updateLevelForTestData = 1 
 
 # When false keeps already compiled objects
-doCleanMake = True
+doCleanMake = False
 # When false does not run autoconf and configure unless a new checkout
 doAutoconf = False
 configureOptions = '--without-portmidi  --without-portaudio'
 # Non-test are runned those seconds and then killed
-executionTime = 15 
+executionTime = 15
 
-configurations = ['debug', 'release'] 
+configurations = ['debug']# ['debug', 'release'] 
 
 # Mail report settings
-publicAddress = 'clam-devel@iua.upf.es' # To use only when fails
+publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
 privateAddress = 'parumi@iua.upf.es' # To know the test has been runned
 subject = 'nightly tests report'
 
@@ -182,10 +182,16 @@ testsToRun[-1:-1] = simpleExamples
 testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
 
+#TODO remove:
+#testsToRun = [( 'UnitTests', unitTestsPath ),
+#	( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/') ]
+
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
 # end configuration
 #--------------------------------------------------------------------
+
+from testResult import TestResult
 
 # global vars. ugly, yes.
 foundCompilationErrors = False 
@@ -232,7 +238,7 @@ def checkPaths() :
 	return out
 	
 
-def parseCompilationWarnings(compilationOut) :
+def parseCompilationWarnings(compilationOut) : #TODO depracate
 	nwarnings = compilationOut.count('warning') + compilationOut.count('avís')
 	warnings = ''
 	if nwarnings > 0 :
@@ -240,16 +246,23 @@ def parseCompilationWarnings(compilationOut) :
 		# print warnings
 	return warnings
 
+def getNWarnings(compilationOut):
+	return compilationOut.count('warning') + compilationOut.count('avís')
+	
+
 def parseTestsFailures( testsOut ) :
 	state='TESTS_INFO'
 	summary = 'tests results: '
 	details = ''
 	for line in testsOut.split('\n') :
+		if line.find('Run:  ') == 0 :
+			summary += line
+		
 		if state == 'TESTS_INFO' :
 			if line.find('!!!FAILURES!!!') >=0 :
 				# print 'found !!!FAILURES!!!'
 				details = line + '\n'
-				summary +=  line
+				summary +=  'Failures! '
 				state = 'FAILURES'
 			if line.find('OK (') == 0 :
 				# print 'found OK'
@@ -258,8 +271,9 @@ def parseTestsFailures( testsOut ) :
 		elif state == 'FAILURES' :
 			details +=  line + '\n'
 		else :
-			assert(false)
-	# print 'in parseTestsFailures :', summary, ' details: ',details
+			assert false, 'error parsing tests failures'
+	if state == 'TESTS_INFO' :
+		summary += 'could not terminate!'
 	return summary, details
 
 def parseExecutionErrors( executionOut ) :
@@ -289,7 +303,7 @@ def getStatusOutput(cmd) :
 	return (stat == 0), output
 
 def executeMandatory(cmd) :
-	stat, output = getStatusOutput(cmd)
+	stat, output = getStatusOutput(cmd ) #+' 2>&1')
 	if not stat : 
 		sendError(output)
 		sys.exit(1)
@@ -297,7 +311,7 @@ def executeMandatory(cmd) :
 
 def formatSummary(name, configuration, result) :
 	nameConfig = '%s (%s) ' % (name, configuration)
-	secondRow = 50
+	secondRow = 35
 	npoints = 0
 	if len(nameConfig) < secondRow :
 		npoints += secondRow - len(nameConfig)
@@ -308,43 +322,48 @@ def formatSummary(name, configuration, result) :
 
 def compileAndRun(name, path) :
 	global foundCompilationErrors, foundExecutionErrors, foundTestsFailures, configurations
-	if name == '' :
-		# print 'found removed test (invalid dir or settings file)'
-		return '',''
+	assert not name == '', 'found removed test (invalid dir or settings file)'
+	
 	os.chdir(path)
 	# compilation phase
-	summary = ''
+	summaryText = ['']
+	testResult = TestResult()
+	testResult.name(name)
+	
 	details = ''
 	for configuration in configurations :
 		# compilation phase
-		if doCleanMake :
+		if doCleanMake or len(configurations)>1:
 			getStatusOutput('make clean')
-		getStatusOutput( 'make depend' )
-		makecmd = 'make CONFIG=%s' % (configuration)
+		makecmd = 'make depend && make CONFIG=%s' % (configuration)
 		ok, output = getStatusOutput( makecmd )
 		foundCompilationErrors = foundCompilationErrors or not ok
 		if not ok :
-			compilationSumary = 'COMPILATION ERRORS'
+			compilationSumary = 'COMPILATION ERRORS' #TODO depracate
 		else :
 			compilationSumary = 'compilation OK'
+		
+		testResult.compilationStatus(configuration, ok)
+		testResult.nWarnings(configuration, getNWarnings(output) )
+		
 		compilationSumary += parseCompilationWarnings( output )
-		summary += formatSummary(name, configuration, compilationSumary)
+		summaryText.append(formatSummary(name, configuration, compilationSumary) )
 		detailsFormat = '\n\n%s\n-----------------------------\n%s\n'
 		if not ok :
+			testResult.reportError(configuration, output)
 			details += detailsFormat % (name, output)
-		if not ok : 
-			continue
+			continue 
 			
 		# execution phase
 		execcmd = './'+name
-		if not os.access(execcmd, os.X_OK) :
-			print 'file should exist: ', execcmd
-			assert(False)
+		assert os.access(execcmd, os.X_OK), 'file should exist: ' + execcmd
+		
 		if isTest(path) :
 			# print 'isTest yes\nrunning tests'
 			ok, output = getStatusOutput( execcmd )
 			foundTestsFailues = foundTestsFailures or not ok
 			runMessages, d = parseTestsFailures( output )
+			testResult.nFailures(1)
 		else :
 			# print 'isTest no\nexecuting application for a while'
 			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
@@ -352,12 +371,12 @@ def compileAndRun(name, path) :
 			runMessages, d = parseExecutionErrors( output )
 			foundExecutionErrors =  foundExecutionErrors or not ok or runMessages.find('OK')==-1
 		
-		summary += formatSummary(name, configuration, runMessages)
+		summaryText.append( formatSummary(name, configuration, runMessages) )
 		if d != '' :
 			details += detailsFormat % (name, d)
-	os.chdir(CLAM_SANDBOXES)
 
-	return summary, details
+	os.chdir(CLAM_SANDBOXES)
+	return "".join(summaryText), details, testResult
 
 
 mailTemplate = '''
@@ -382,12 +401,6 @@ DETAILS (only if finds errors/failures)
 import time, string, signal
 def runInBackgroundForAWhile(path, command, sleeptime=10) :
 	os.chdir(path)
-	out, err = '/tmp/removeme.out', '/tmp/removeme.err'
-	#file(out, 'w')
-	#file(err, 'w')
-	fullcmd = '%s > %s 2> %s &' % (command, out, err)
-	# print fullcmd
-	# print 'result ',os.system( fullcmd )
 	time.sleep( sleeptime )
 	withoutSlash = command[command.find('/')+1 : ]
 
@@ -404,7 +417,6 @@ def runInBackgroundForAWhile(path, command, sleeptime=10) :
 		os.remove(err)
 	else :
 		result = "[No error messages received from '%s']"%command
-	os.chdir(CLAM_SANDBOXES)
 	return True, result #TODO status
 
 
@@ -473,8 +485,9 @@ def deployClamBuildSystem() :
 #  Aplication Logic
 #
 def runTests() :
-	totalSummary = ['']
-	totalDetails = ['']
+	totalSummary = [''] # TODO depracate
+	totalDetails = [''] # TODO depracate
+	totalResults = []
 	subj = [subject]
 	if 'CVSROOT' not in os.environ :
 		print 'warning: CVSROOT not found in environ'
@@ -498,10 +511,11 @@ def runTests() :
 	# compile and run/tests entries
 	for name, path in testsToRun :
 		print '\n\nname\t\t %s \npath \t\t%s \n' % (name, path)
-		summary, details  = compileAndRun(name, path)
-		totalSummary.append(summary)
-		totalDetails.append(details)
-		print "".join(totalSummary)
+		aSummary, aDetail, aTestResult  = compileAndRun(name, path)
+		totalSummary.append(aSummary)
+		totalDetails.append(aDetail)
+		totalResults.append(aTestResult)
+		print aSummary     # for console monitoring purposes
 
 	mailBody = mailTemplate  % ( MODULE_TAG, "".join(totalSummary), "".join(totalDetails) )
 	if foundCompilationErrors : 
