@@ -15,7 +15,6 @@ PROGRAMS = \
            AudioPlayer \
            TestPOComposite \
            SegmentTest \
-           TestSignalv1 \
 
 TESTS = \
         TestXMLAdapters \
@@ -29,6 +28,7 @@ TESTS = \
         TestFFT \
         TestIFFT \
         TestSpectrum \
+        TestSignalv1 \
         TestSpectrumAdder \
         TestSpectrumAdder2 \
         TestSpectrumProduct \
