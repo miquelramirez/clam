@@ -101,17 +101,6 @@ int SMSAnalysisConfig::GetSinZeroPadding() const
 	return GetSinSpectralAnalysis().GetZeroPadding();
 }
 
-/** Analysis Hop size in miliseconds. Must be < (WindowSize-(1/SR))/2*/	
-/*void SMSAnalysisConfig::SetSinHopSize(TSize h)
-{
-	GetSinSpectralAnalysis().SetHopSize(h);
-}
-
-TSize SMSAnalysisConfig::GetSinHopSize() const
-{
-	return GetSinSpectralAnalysis().GetHopSize();
-}*/
-
 void SMSAnalysisConfig::SetHopSize(TSize h)
 {
 	GetSinSpectralAnalysis().SetHopSize(h);
@@ -159,18 +148,6 @@ int SMSAnalysisConfig::GetResZeroPadding() const
 {
 	return GetResSpectralAnalysis().GetZeroPadding();
 }
-
-/** Analysis Hop size in miliseconds. Must be < (WindowSize-(1/SR))/2*/	
-/*void SMSAnalysisConfig::SetResHopSize(TSize h)
-{
-	GetResSpectralAnalysis().SetHopSize(h);
-}
-
-TSize SMSAnalysisConfig::GetResHopSize() const
-{
-	return GetResSpectralAnalysis().GetHopSize();
-}
-*/
 
 /** Sampling rate of the input audio*/
 void SMSAnalysisConfig::SetSamplingRate(TData sr)
@@ -269,6 +246,7 @@ void SMSAnalysis::AttachChildren()
 	mPO_PeakDetect.SetParent(this);
 	mPO_FundDetect.SetParent(this);
 	mPO_SinTracking.SetParent(this);
+	mPO_SpecSubstract.SetParent(this);
 }
 
 bool SMSAnalysis::Do(const Audio& in, /*testing!! const Audio& inRes,*/Spectrum& outGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec)
@@ -288,7 +266,9 @@ bool SMSAnalysis::Do(const Audio& in, /*testing!! const Audio& inRes,*/Spectrum&
 	mPO_ResSpectralAnalysis.Do(in/*Res*/,mSpec);
 
 	//Finally we substract mSpectrum-SinusoidalSpectrum
-	SpectrumSubstract(mSpec,outSinSpec,outResSpec);
+	//SpectrumSubstract(mSpec,outSinSpec,outResSpec);
+
+	mPO_SpecSubstract.Do(mSpec,outSinSpec,outResSpec);
 
 	return true;
 
@@ -333,7 +313,6 @@ bool SMSAnalysis::Do(Segment& in)
 	TTime centerTime=centerSample/samplingRate;
 	
 	//Adding a new frame to segment, this frame will have the audiochunk as audioframe
-	//Does this really have to be done here
 	Frame tmpFrame;
 	tmpFrame.SetDuration(step/samplingRate);	
 	tmpFrame.SetCenterTime(TData(centerTime));
@@ -362,59 +341,5 @@ bool SMSAnalysis::Do(Segment& in)
 	return Do(in.GetFrame(frameIndex));
 }
 
-/*This should probably be in another Processing class, but for the time being...*/
-void SMSAnalysis::SpectrumSubstract(Spectrum& in1,Spectrum& in2,Spectrum& out)
-{
-	//TODO: Here complex arrays should be instantiated and synchronized afterwards.
-	CLAM_ASSERT(in1.GetSize()==in2.GetSize()&&in2.GetSize()==out.GetSize(),"Spectrums must have the same size");
-
-	/** Setting up output spectrum */
-	SpecTypeFlags outFlags,origOutFlags;
-	out.GetType(outFlags);
-	origOutFlags=outFlags;
-	//We force outSpectrum to have complex
-	outFlags.bComplex=true;
-	out.SetType(outFlags);
-
-	/** Now we check and/or convert inputs */
-	SpecTypeFlags in1Flags,in2Flags,origIn1Flags,origIn2Flags;
-	in1.GetType(in1Flags);
-	origIn1Flags=in1Flags;
-	in2.GetType(in2Flags);
-	origIn2Flags=in2Flags;
-	if(!in1Flags.bComplex)
-	{//A conversion must be accomplished
-		in1Flags.bComplex=true;
-		in1.SetTypeSynchronize(in1Flags);
-	}
-	if(!in2Flags.bComplex)
-	{//A conversion must be accomplished
-		in2Flags.bComplex=true;
-		in2.SetTypeSynchronize(in2Flags);
-	}
-	
-	int size=in1.GetSize();
-	int i;
-	Array<Complex>& c1=in1.GetComplexArray();
-	Array<Complex>& c2=in2.GetComplexArray();
-	Array<Complex>& co=out.GetComplexArray();
-
-	for(i=0;i<size;i++)
-	{
-		co[i]=c1[i]-c2[i];
-	}
-
-	//Now we synchronize output spectrum
-	SpecTypeFlags compFlags;
-	compFlags.bComplex=true;
-	compFlags.bMagPhase=false;
-	out.SynchronizeTo(compFlags);
-
-	//Finally we live all spectrums in the format they were before
-	in1.SetType(origIn1Flags);
-	in2.SetType(origIn2Flags);
-	out.SetType(origOutFlags);
-
-}
 
 

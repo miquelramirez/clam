@@ -29,6 +29,7 @@
 #include "Segment.hxx"
 #include "SinTracking.hxx"
 #include "SMSSynthesis.hxx"//For Sinusoidal Synthesis
+#include "SpectrumSubstracter2.hxx"
 #include "SpectralAnalysis.hxx"
 
 #include "Flags.hxx"
@@ -82,20 +83,6 @@ public:
 	void SetHopSize(int h);
 	TSize GetHopSize() const;
 
-/** Sinusoidal Analysis Hop size in miliseconds. Must be < (WindowSize-(1/SR))/2
-* For the time being the same hop size must be used for residual and sinusoidal
-* analysis so this methods have been removed
-*/	
-//	void SetSinHopSize(TSize h);
-//	TSize GetSinHopSize() const;
-
-/** Residual Analysis Hop size in miliseconds. Must be < (WindowSize-(1/SR))/2
-* For the time being the same hop size must be used for residual and sinusoidal
-* analysis so this methods have been removed
-*/	
-//	void SetResHopSize(TSize h);
-//	TSize GetResHopSize() const;
-
 /** Sampling rate of the input audio*/
 	void SetSamplingRate(TData sr);
 	TData GetSamplingRate() const;
@@ -138,9 +125,6 @@ public:
 	bool Do(Spectrum& outSp, SpectralPeakArray& pkArray,Fundamental& outFn);
 	bool Do(const Audio& in/*,const Audio& resIn*/, Spectrum& outSp,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec,Spectrum& outSinSpec);
 
-	/** This should probably be in another Processing class, but for the time being...*/
-	void SpectrumSubstract(Spectrum& in1,Spectrum& in2,Spectrum& out);
-
 //private:
 
 	// Configuration data
@@ -155,6 +139,7 @@ public:
 	SinTracking		mPO_SinTracking;
 	/**For Sinusoidal Synthesis*/
 	SynthSineSpectrum		mPO_SynthSineSpectrum;
+	SpectrumSubstracter2		mPO_SpecSubstract;
 
 	//Internal DataObjects
 /** object only used for initializing frames */	
