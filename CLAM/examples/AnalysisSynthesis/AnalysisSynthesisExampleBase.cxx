@@ -449,8 +449,11 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	if ( HasToDoTracksCleaning() )
 		{	
 			mCurrentWaitMessage = CreateWaitMessage("Cleaning tracks, please wait");
+
 			DoTracksCleanup();
+
 			DestroyWaitMessage();
+
 		}
 	mHaveAnalysis = true;
 	mHaveSpectrum = true;
@@ -897,14 +900,7 @@ void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 {
 	
 	TSize outBufferSize=256;
-	
-#ifdef WIN32
-	//When using RT implementation in windows, twice the sampling rate must be passed
-	//if a stereo sound is to be reproduced
-	AudioManager audioManager(2*mGlobalConfig.GetSamplingRate(),outBufferSize*2);
-#else
 	AudioManager audioManager(mGlobalConfig.GetSamplingRate(),outBufferSize*2);
-#endif
 	AudioIOConfig outCfgL;
 	AudioIOConfig outCfgR;
 
@@ -930,3 +926,4 @@ void AnalysisSynthesisExampleBase::Play(const Audio& audio)
 		outputL.Do(tmpAudioBuffer);
 	}
 }
+

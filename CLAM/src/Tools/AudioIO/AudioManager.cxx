@@ -46,6 +46,12 @@ AudioManager::~AudioManager()
 	_Current(true,0);
 }
 
+std::vector<AudioDeviceList*>& AudioManager::DeviceLists(void)
+{ 
+	static std::vector<AudioDeviceList*> sDeviceLists;
+	return sDeviceLists;
+}
+
 AudioDevice* AudioManager::FindDevice(const std::string& name)
 {
 	unsigned int i;
