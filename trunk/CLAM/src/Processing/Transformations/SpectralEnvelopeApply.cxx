@@ -1,0 +1,153 @@
+/*
+ * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
+#include "Complex.hxx"
+#include "SpectralEnvelopeApply.hxx"
+#include "ErrProcessingObj.hxx"
+
+#define CLASS "SpectralEnvelopeApply"
+
+namespace CLAM {
+
+	/* The  Configuration object has at least to have a name */
+
+	void SpectralEnvelopeApplyConfig::DefaultInit()
+	{
+		AddAll();
+		UpdateData();
+		DefaultValues();
+	}
+
+	
+	void SpectralEnvelopeApplyConfig::DefaultValues()
+	{
+		SetName("SpectralEnvelopeApply");
+		
+	}
+
+
+	/* Processing  object Method  implementations */
+
+	SpectralEnvelopeApply::SpectralEnvelopeApply()
+	{
+		Configure(SpectralEnvelopeApplyConfig());
+	}
+
+	SpectralEnvelopeApply::SpectralEnvelopeApply(const SpectralEnvelopeApplyConfig &c = SpectralEnvelopeApplyConfig())
+	{
+		Configure(c);
+	}
+
+	SpectralEnvelopeApply::~SpectralEnvelopeApply()
+	{}
+
+
+	/* Configure the Processing Object according to the Config object */
+
+	bool SpectralEnvelopeApply::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+	{
+
+		mConfig = dynamic_cast<const SpectralEnvelopeApplyConfig&>(c);
+		return true;
+	}
+
+	/* Setting Prototypes for faster processing */
+
+	bool SpectralEnvelopeApply::SetPrototypes(const SpectralPeakArray& input,Spectrum& output)
+	{
+		return true;
+	}
+
+	bool SpectralEnvelopeApply::SetPrototypes()
+	{
+		return true;
+	}
+	
+	bool SpectralEnvelopeApply::UnsetPrototypes()
+	{
+		return true;
+	}
+
+	/* The supervised Do() function */
+
+	bool  SpectralEnvelopeApply::Do(void) 
+	{
+		throw(ErrProcessingObj(CLASS"::Do(): Supervised mode not implemented"),this);
+		return false;
+	}
+
+	/* The  unsupervised Do() function */
+	bool  SpectralEnvelopeApply::Do(const SpectralPeakArray& input, const Spectrum& spectralEnvelope, SpectralPeakArray& output)
+	{
+		output.SetScale(input.GetScale());
+		CLAM_ASSERT(input.GetScale()==spectralEnvelope.GetScale(),"You are trying to apply an envelope that has a different scale");
+				
+		TSize nPeaks=input.GetnPeaks();
+		DataArray& imagBuffer=input.GetMagBuffer();
+		DataArray& iphaseBuffer=input.GetPhaseBuffer();
+		DataArray& ifreqBuffer=input.GetFreqBuffer();
+
+		if(output.GetnMaxPeaks()!=input.GetnMaxPeaks())
+			output.SetnMaxPeaks(input.GetnMaxPeaks());
+		if(output.GetnPeaks()!=input.GetnPeaks())
+			output.SetnPeaks(input.GetnPeaks());
+		
+		DataArray& omagBuffer=output.GetMagBuffer();
+		DataArray& ophaseBuffer=output.GetPhaseBuffer();
+		DataArray& ofreqBuffer=output.GetFreqBuffer();
+
+		int i;
+
+		for(i=0;i<nPeaks;i++)
+		{
+			ophaseBuffer[i]=iphaseBuffer[i];
+			ofreqBuffer[i]=ifreqBuffer[i];
+			omagBuffer[i]=spectralEnvelope.GetMag((TData)ifreqBuffer[i]);
+			CLAM_ASSERT(omagBuffer[i]<0,"Error");
+
+		}
+		
+		return true;
+	}
+
+	/* The  unsupervised Do() function */
+	bool  SpectralEnvelopeApply::Do(const Spectrum& input, const Spectrum& spectralEnvelope, Spectrum& output)
+	{
+		output.SetScale(input.GetScale());
+		CLAM_ASSERT(input.GetScale()==spectralEnvelope.GetScale(),"You are trying to apply an envelope that has a different scale");
+		
+		output=input;
+		
+		int spectrumSize=input.GetSize();
+		
+		int i;
+		TData delta = input.GetSpectralRange()/(spectrumSize-1);
+		for(i=0;i<spectrumSize;i++)
+		{
+			output.SetMag(i,spectralEnvelope.GetMag((TData)i*delta));
+		}
+
+
+		return true;
+	}
+
+
+};//namespace CLAM
