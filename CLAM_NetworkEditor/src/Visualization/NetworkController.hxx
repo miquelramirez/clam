@@ -64,19 +64,47 @@ namespace CLAMVM
 			std::string mOut;
 		};
 	public:		
-		//typedef std::map< std::string , std::string  > ConnectionsList;
 		typedef std::list<Connection> ConnectionsList;
 		typedef std::map< std::string , ProcessingController*  > ProcessingControllersMap;
-		//typedef ProcessingControllersMap::iterator ProcessingControllersMapIterator;
 		typedef std::list< std::string > ProcessingsList;
-	protected:		
-	
+		
+		/** This method is called when a processing has been created from gui. 
+		 * In this case, the processing is added to the network, 
+		 * its controller created and a signal emitted to create the proper presentation. */
+		void AddProcessing( const std::string & , CLAM::Processing * );
+		
+		/** When a connection is created from GUI, this method is called. 
+		 * It leaves the event in a list to execute if the audio thread is running, 
+		 * or executes the creation, calling ExecuteCreatePortConnection. */
+		void CreatePortConnection( const std::string &, const std::string & );
+		
+		/** When a connection is created from GUI, this method is called. 
+		 * It leaves the event in a list to execute if the audio thread is running, 
+		 * or executes the creation, calling ExecuteCreateControlConnection. */
+		void CreateControlConnection( const std::string &, const std::string & );
+
+		void Clear();
+		void ChangeState( bool);
+		
+		/** When a connection is removed from GUI, this method is called. 
+		 * It leaves the event in a list to execute if the audio thread is running, 
+		 * or executes the creation, calling ExecuteRemovePortConnection. */
+		void RemovePortConnection( const std::string &, const std::string & );
+		
+		/** When a connection is removed from GUI, this method is called. 
+		 * It leaves the event in a list to execute if the audio thread is running, 
+		 * or executes the creation, calling ExecuteRemoveControlConnection. */
+		void RemoveControlConnection( const std::string &, const std::string & );
+		
+		/** When a processing is removed from GUI, this method is called. 
+		 * It leaves the event in a list to execute if the audio thread is running, 
+		 * or executes the creation, calling ExecuteRemoveProcessing */	
+		void RemoveProcessing( const std::string & );
+	private:		
 		CLAM::Thread mThread;
-		/** 
-		 * Main loop of the application, where DoProcessings method from network
+		/** Main loop of the application, where DoProcessings method from network
 		 * is executed and all the events are checked calling ExecuteEvents.
-		 * @see ExecuteEvents
-		 */
+		 * @see ExecuteEvents */
 		void ProcessingLoop();
 		
 		bool mLoopCondition;
@@ -94,129 +122,74 @@ namespace CLAMVM
 		CLAM::Network* mObserved;
 		ProcessingControllersMap mProcessingControllers;
 
-		/** 
-		 * This method creates a processing controller for a concrete Processing and returns it in order to
-		 * create a processing presentation attached to this instance of controller
-		 */
+		/** Creates a processing controller for a concrete Processing.	 */
 		ProcessingController* CreateProcessingController( const std::string & , CLAM::Processing *  );
 
-		/** 
-		 * This method creates a port connection adapter for a link between ports and returns it in order to
-		 * create a port connection presentation attached to this instance of adapter
-		 */
+		/** Creates a port connection adapter for a link between ports 
+		 * and adds it to mPortConnection.*/
 		void RegisterPortConnection( const std::string &, const std::string & );
-		/** 
-		 * This method creates a control connection adapter for a link between controls and returns it in order to
-		 * create a control connection presentation attached to this instance of adapter
-		 */
-		void RegisterControlConnection( const std::string &, const std::string & );
-		/** 
-		 * When a connection is created from GUI, this method is called. It leaves the event in a list to execute if the 
-		 * audio thread is running, or executes the creation, calling ExecuteCreatePortConnection.
-		 * @see ExecuteCreatePortConnection
-		 */
-		void CreatePortConnection( const std::string &, const std::string & );
-	
-		/** 
-		 * When a connection is removed from GUI, this method is called. It leaves the event in a list to execute if the 
-		 * audio thread is running, or executes the creation, calling ExecuteRemovePortConnection.
-		 * @see ExecuteRemovePortConnection
-		 */
-		void RemovePortConnection( const std::string &, const std::string & );
 
-		/** 
-		 * In this method the connection is created at network level, and if it's successful a signal is emitted to the GUI in order to
-		 * create a port connection presentation
-		 */
+		/** Creates a control connection adapter for a link between controls 
+		 * and adds it to mControlConnection */
+		void RegisterControlConnection( const std::string &, const std::string & );
+
+	
+
+		/** Creates the connection into the observed network, 
+		 * and if it's successful a signal is emitted to the GUI in order to
+		 * create a port connection presentation */
 		void ExecuteCreatePortConnection( const std::string & , const std::string & );
 		
-		/** 
-		 * In this method the connection is removed at network level, and if it's successful a signal is emitted to the GUI in order to
-		 * remove the proper port connection presentation.
-		 */
+		/** Removes the connection connection is removed at network level, 
+		 * and if it's successful a signal is emitted to the GUI in order to
+		 * remove the proper port connection presentation. */
 		void ExecuteRemovePortConnection( const std::string & , const std::string & );
 
-		
-		/** 
-		 * When a connection is created from GUI, this method is called. It leaves the event in a list to execute if the 
-		 * audio thread is running, or executes the creation, calling ExecuteCreateControlConnection.
-		 * @see ExecuteCreateControlConnection
-		 */
-		void CreateControlConnection( const std::string &, const std::string & );
 	
-		/** 
-		 * When a connection is removed from GUI, this method is called. It leaves the event in a list to execute if the 
-		 * audio thread is running, or executes the creation, calling ExecuteRemoveControlConnection.
-		 * @see ExecuteRemoveControlConnection
-		 */	
-		void RemoveControlConnection( const std::string &, const std::string & );
 
-		/** 
-		 * In this method the connection is created at network level, and if it's successful a signal is emitted to the GUI in order to
-		 * create a control connection presentation
-		 */
+		/** Creates a connection in the observed network level, 
+		 * and if it's successful a signal is emitted to the GUI in order to
+		 * create a control connection presentation */
 		void ExecuteCreateControlConnection( const std::string & , const std::string & );
 
-		/** 
-		 * In this method the connection is removed at network level, and if it's successful a signal is emitted to the GUI in order to
-		 * remove the proper control connection presentation.
-		 */
+		/** Removes the connection of the observed network, 
+		 * and if it's successful a signal is emitted to the GUI in order to
+		 * remove the proper control connection presentation. */
 		void ExecuteRemoveControlConnection( const std::string & , const std::string & );
 	
-		void ChangeState( bool);
 		void LoadNetwork( const std::string & );
 		void SaveNetwork( const std::string & );
 		
-		void Clear();
 			
-		/** 
-		 * When a processing is removed from GUI, this method is called. It leaves the event in a list to execute if the 
-		 * audio thread is running, or executes the creation, calling ExecuteRemoveProcessing
-		 * @see ExecuteRemoveProcessing
-		 */	
-		void RemoveProcessing( const std::string & );
 
-		/** 
-		 * In this method all the connections of a concrete processing are removed, and after this step has been done, the processing is removed
-		 * from network.
+		/** All the connections of a concrete processing are removed, 
+		 * and after this step has been done, the processing is removed from network.
 		 * @see RemoveAllPortConnections, @see RemoveAllControlConnections
 		 */
 		void ExecuteRemoveProcessing( const std::string & );
 
-		/** 
-		 * This method is called when a processing has been created from gui. In this case, the processing is added to the network, its
-		 * controller created and a signal emitted to create the proper presentation.
-		 */
-		void AddProcessing( const std::string & , CLAM::Processing * );
-		/** 
-		 * This method is called when a processing name is changed from gui. It executes the change inside NetworkController and
-		 * passes the change to Network
+	
+		/** This method is called when a processing name is changed from gui. 
+		 * It executes the change inside NetworkController and passes the change to Network
 		 * @see ChangeKeyMap
-		 * @see ChangeProcessingNameInsideConnections
-		 */
+		 * @see ChangeProcessingNameInsideConnections */
 		void ProcessingNameChanged( const std::string &, ProcessingController * );
 
-		/* 
-		 * Using this function from ProcessingNameChanged the name of the controller is changed in the ProcessingControllersMap.
-		 * It returns false if the name is duplicated, in order to not modify gui
-		 * @see ProcessingNameChanged
-		 */
+		/** Using this function from ProcessingNameChanged the name of the controller 
+		 * is changed in the ProcessingControllersMap. It returns false if the name is 
+		 * duplicated, in order to not modify gui. @see ProcessingNameChanged */
 		bool ChangeKeyMap( const std::string & oldName , const std::string & newName );
 		
-		/*
-		 * This method disconnects all the ports of a concrete processing, removing in the process all the presentation of its connections.
-		 */
+		/** This method disconnects all the ports of a concrete processing, 
+		 * removing in the process all the presentation of its connections. */
 		void RemoveAllPortConnections( const std::string &  );
 
-		/*
-		 * This method disconnects all the controls of a concrete processing, removing in the process all the presentation of its connections.
-		 */
+		/** This method disconnects all the controls of a concrete processing, 
+		 * removing in the process all the presentation of its connections. */
 		void RemoveAllControlConnections( const std::string & );
 
-		/*
-		 * This method, called from ProcessingLoop, executes all the events related to creation/destruction of processings/connections
-		 * in a thread-safe way.
-		 */		
+		/** This method, called from ProcessingLoop, executes all the events related 
+		 * to creation/destruction of processings/connections in a thread-safe way. */		
 		void ExecuteEvents();
 
 		void RemoveAllConnections( CLAM::Processing * );
