@@ -21,11 +21,6 @@ private:
 		Fl_Button* shade;
 		Fl_Button* close;
 
-		~TitledWidget()
-		{
-			delete sub;
-		}
-
 		TitledWidget(Fl_Widget* s):Fl_Group(s->x(),s->y(),s->w(),s->h())
 		{
 			sub = s;
