@@ -21,7 +21,13 @@
 
 #include "SMSTools.hxx"
 #include "AudioFileIn.hxx"
+#include "AudioFile.hxx"
+#include "MonoAudioFileReader.hxx"
+#include "MonoAudioFileWriter.hxx"
+#include "HeapDbg.hxx"
 #include <iostream>
+#include <string>
+#include <algorithm>
 #include <fstream>
 #include <FL/Fl.H>
 #include <FL/Fl_Tooltip.H>
@@ -175,69 +181,72 @@ namespace CLAMGUI
 
 	bool SMSTools::LoadSound(const std::string& filename, CLAM::Segment& segment)
 	{
-		CLAM::AudioFileIn myAudioFileIn;
-		CLAM::AudioFileConfig infilecfg;
-
-		if ( filename == "" ) // No file specified
-		{
+		if ( filename.length() <= 0 )
 			return false;
-		}
-
-		infilecfg.SetFilename(filename);
-		infilecfg.SetFiletype(CLAM::EAudioFileType::eWave);
 		
-		myAudioFileIn.PreConcreteConfigure( infilecfg );
+		CLAM::AudioFile selectedFile;
+		selectedFile.SetLocation( filename );
 
-		try
-		{
-			myAudioFileIn.ConcreteConfigure( infilecfg );
-		} 
-		catch( CLAM::ErrSoundFileIO& error )
+		if ( !selectedFile.IsReadable() )
 		{
 			std::string messageShown;
 			messageShown = "Sorry, but the file ";
 			messageShown += filename;
-			messageShown += " cannot be used because: \n";
-			messageShown += error.what();
+			messageShown += " \ncannot be used: \n";
+			messageShown += "Unable to open or unrecognized format";
 
 			fl_message( messageShown.c_str() );
 
 			return false;
 		}
 
-		myAudioFileIn.PostConcreteConfigure();
+		int selectedChannel = 0;
 
-		myAudioFileIn.Start();
-
-		if ( myAudioFileIn.Channels() > 1 )
+		if ( selectedFile.GetHeader().GetChannels() > 1 )
 		{
-			fl_message( 
-				"Sorry, but the input sound you specified in the configuration\n"
-				"is not a mono file. Currently, SMS Tools doesn't support non\n"
-				"mono files."
-				);
+			std::string messageShown;
+			messageShown = "The file ";
+			messageShown += filename;
+			messageShown += " \nhas several channels, but SMSTools only \n";
+			messageShown += "can process mono channel signals. By default\n";
+			messageShown += "the channel to be analyzed will be the first\n";
+			messageShown +="channel in the file.\n";
 
-			return false;
+			fl_message( messageShown.c_str() );
+			
 		}
+
+		CLAM::MonoAudioFileReaderConfig cfg;
+		cfg.SetSourceFile( selectedFile );
+		cfg.SetSelectedChannel( selectedChannel );
+
+		CLAM::MonoAudioFileReader fileReader;
+		fileReader.Configure( cfg );
+
+		fileReader.Start();
 
 		/////////////////////////////////////////////////////////////////////////////
 		// Initialization of the processing data objects :
-		CLAM::TSize fileSize=myAudioFileIn.Size();
+		CLAM::TSize samplesInFile=(selectedFile.GetHeader().GetLength()/1000.)*
+			selectedFile.GetHeader().GetSampleRate();
 
-		SetSamplingRate(int(myAudioFileIn.SampleRate()));
+		SetSamplingRate(int(selectedFile.GetHeader().GetSampleRate()));
 		
 		// Spectral Segment that will actually hold data
-		float duration=fileSize/mSamplingRate;
-		segment.SetEndTime(duration);
-		segment.SetSamplingRate(mSamplingRate);
+		float duration = samplesInFile/mSamplingRate;
+		segment.SetEndTime(selectedFile.GetHeader().GetLength());
+		segment.SetSamplingRate(selectedFile.GetHeader().GetSampleRate());
 		segment.mCurrentFrameIndex=0;
-		segment.GetAudio().SetSize(fileSize);
-		segment.GetAudio().SetSampleRate(mSamplingRate);
+		segment.GetAudio().SetSize(samplesInFile);
+		segment.GetAudio().SetSampleRate(selectedFile.GetHeader().GetSampleRate());
 		
+		fileReader.GetOutPorts().GetByNumber(0).Attach( segment.GetAudio() );
 
 		//Read Audio File
-		myAudioFileIn.Do(segment.GetAudio());
-		myAudioFileIn.Stop();
+		fileReader.Do();
+
+		fileReader.Stop();
+
 		return true;
 	}
 
@@ -439,12 +448,38 @@ namespace CLAMGUI
 
 	void SMSTools::StoreSound(const CLAM::Audio& audio)
 	{
-		char* fileName = fl_file_chooser("Choose file to store in...", "*.wav", "");
+		char* fileName = fl_file_chooser("Choose file to store in...", "{*.wav,*.ogg}", "");
 
 		if ( !fileName )
 			return;
+
+		CLAM::EAudioFileFormat desiredOutputFmt = 
+			CLAM::EAudioFileFormat::FormatFromFilename( fileName );
+
+		CLAM::AudioFile outputFile;
+		outputFile.SetLocation( fileName );
+
+		CLAM::AudioFileHeader fileHeader;
+		fileHeader.SetValues( audio.GetSampleRate(), 1, desiredOutputFmt );
+
+		outputFile.SetHeader( fileHeader );
+
+		CLAM::MonoAudioFileWriterConfig cfgWriter;
+		cfgWriter.AddTargetFile();
+		cfgWriter.UpdateData();
+		cfgWriter.SetTargetFile(outputFile);
+
+		CLAM::MonoAudioFileWriter proc;
+		proc.Configure( cfgWriter );
+
+		proc.Start();
+
+		proc.GetInPorts().GetByNumber(0).Attach( const_cast<CLAM::Audio& >(audio) );
+
+		proc.Do();
+
+		proc.Stop();
 		
-		SMSBase::StoreSound(fileName,audio);
 	}
 
 	void SMSTools::StoreOutputSound()

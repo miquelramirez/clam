@@ -36,18 +36,17 @@ namespace CLAMTest
 		
 		static void loadBack2BackDataset( const std::string& pathToTestData )
 		{
-			CLAM::XMLStorage   storageIface;
 
 			if ( !smBack2BackDataLoaded )
 			{
 				
-				storageIface.Restore( smReferenceSpectralPeakArray,
+				CLAM::XMLStorage::Restore( smReferenceSpectralPeakArray,
 						      pathToTestData + "OneSineSpectrum_RectWindow_P2_Peaks.xml" );
 
-				storageIface.Restore( smReferenceSpectrum,
+				CLAM::XMLStorage::Restore( smReferenceSpectrum,
 						      pathToTestData + "OneSineSpectrum_RectWindow_P2.xml" );
 
-				storageIface.Restore( smReferenceSpectralPeaksSet,
+				CLAM::XMLStorage::Restore( smReferenceSpectralPeaksSet,
 						      pathToTestData + "DetectedPeaks_0001.xml" );
 
 				smBack2BackDataLoaded = true;
@@ -58,7 +57,14 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			mPathToTestData = "../../../../../CLAM-TestData/spectralData/";
+			char* pathToTestData = getenv("CLAM_TEST_DATA");
+
+			if ( !pathToTestData )
+				mPathToTestData ="../../../../../CLAM-TestData/"; 
+			else
+				mPathToTestData = pathToTestData;
+
+			mPathToTestData +="spectralData/";
 			loadBack2BackDataset( mPathToTestData );
 		}
 
@@ -70,7 +76,6 @@ namespace CLAMTest
 
 		void test_ProofOfConcept()
 		{
-			CLAM::XMLStorage storageIface;
 
 			CLAM::SpectralPeakArray detectedPeaks;
 			detectedPeaks.SetScale( CLAM::EScale::eLog );
@@ -127,7 +132,7 @@ namespace CLAMTest
 
 				CLAMVM::SystemPlots::DisplayAll();
 				*/
-				storageIface.Dump( detectedPeaks,
+				CLAM::XMLStorage::Dump( detectedPeaks,
 						   "PeaksFailedToPassTest",
 						   "detectedPeaks_ProofOfConcept.xml" );
 			}
@@ -140,9 +145,9 @@ namespace CLAMTest
 			// process
 
 			CLAMExamples::SpectralAnalysis specAnalysis;
-			CLAM::XMLStorage storageIFace;
-			storageIFace.Restore( specAnalysis, 
-					      mPathToTestData+smReferenceSpectralPeaksSet.GetSpectralAnalysis() );
+			
+			CLAM::XMLStorage::Restore( specAnalysis, 
+						   mPathToTestData+smReferenceSpectralPeaksSet.GetSpectralAnalysis() );
 			
 			CLAM::SpectralPeakDetect peakDetector;
 			peakDetector.Configure( smReferenceSpectralPeaksSet.GetPeakDetectionSettings() );

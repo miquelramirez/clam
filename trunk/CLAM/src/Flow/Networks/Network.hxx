@@ -92,6 +92,8 @@ public:
 	void AddProcessing( const std::string & name, const std::string & key );
 	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name ) const;
+	void ChangeKeyMap( const std::string & oldName, const std::string & newName );	
+	
 	const std::string & GetNetworkId(const Processing * proc) const;
 
 	
@@ -133,9 +135,6 @@ private:
 	std::string GetLastIdentifier( const std::string& ) const;
 	std::string GetProcessingIdentifier( const std::string& ) const;
 	static char NamesIdentifiersSeparator();
-
-
-
 	FlowControl* mFlowControl;
 
 	/**this method is provisional, because Network may need non-audio nodes.

@@ -302,7 +302,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in InPorts collection" ), 
+				std::string( "name not found in InPorts collection: NonExistingPort" ), 
 				std::string( expected.what() ) );
 
 		}
@@ -412,7 +412,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in OutPorts collection" ), 
+				std::string( "name not found in OutPorts collection: NonExistingPort" ), 
 				std::string( expected.what() ) );
 
 		}
@@ -520,7 +520,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in InControls collection" ), 
+				std::string( "name not found in InControls collection: NonExistingControl" ), 
 				std::string( expected.what() ) );
 
 		}
@@ -628,7 +628,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in OutControls collection" ), 
+				std::string( "name not found in OutControls collection: NonExistingControl" ), 
 				std::string( expected.what() ) );
 
 		}

@@ -32,7 +32,7 @@
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "Err.hxx"
-#include "Oscillator.hxx"
+#include "SimpleOscillator.hxx"
 #include "AudioMultiplier.hxx"
 #include "AudioAdder.hxx"
 #include "AudioIO.hxx"
@@ -94,13 +94,13 @@ int main( int argc, char** argv )
 		network->AddFlowControl( new CLAM::PushFlowControl( size ));
 
 
-		CLAM::OscillatorConfig osc1Cfg;
+		CLAM::SimpleOscillatorConfig osc1Cfg;
 		osc1Cfg.SetFrequency(440.0);
 		osc1Cfg.SetSamplingRate( sampleRate );
 
-		CLAM::OscillatorConfig osc2Cfg;
+		CLAM::SimpleOscillatorConfig osc2Cfg;
 		osc2Cfg.SetFrequency(40.0);
-		osc1Cfg.SetSamplingRate( sampleRate );
+		osc2Cfg.SetSamplingRate( sampleRate );
 
 		CLAM::BinaryAudioOpConfig audioMultiplierCfg;
 
@@ -116,8 +116,8 @@ int main( int argc, char** argv )
 		// audio file while we hear it.
 
 		network->AddProcessing( "File In", new CLAM::AudioFileIn( audioFileInCfg ) );
-		network->AddProcessing( "Generator", new CLAM::Oscillator( osc1Cfg ) );
-		network->AddProcessing( "Modulator", new CLAM::Oscillator( osc2Cfg ) );
+		network->AddProcessing( "Generator", new CLAM::SimpleOscillator( osc1Cfg ) );
+		network->AddProcessing( "Modulator", new CLAM::SimpleOscillator( osc2Cfg ) );
 		network->AddProcessing( "Audio Multiplier", new CLAM::AudioMultiplier( audioMultiplierCfg ) );
 		network->AddProcessing( "Audio Adder", new CLAM::AudioAdder( audioAdderCfg ) );
 		network->AddProcessing( "Audio Mono Out", new CLAM::AudioOut( audioOutCfg ) );

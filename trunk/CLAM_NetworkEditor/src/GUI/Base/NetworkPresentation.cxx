@@ -28,8 +28,6 @@
 #include "ConnectionPointPresentation.hxx"
 #include "Processing.hxx"
 
-#include <iostream> // TODO: remove
-
 namespace NetworkGUI
 {
 
@@ -50,9 +48,12 @@ NetworkPresentation::NetworkPresentation()
 	SlotCreateProcessingPresentation.Wrap( this, &NetworkPresentation::CreateProcessingPresentation );
 	SlotAddProcessing.Wrap( this, &NetworkPresentation::AddProcessing );
 	SlotRemoveProcessing.Wrap( this, &NetworkPresentation::RemoveProcessing );
-
+	SlotRebuildProcessingPresentationAttachedTo.Wrap( this, &NetworkPresentation::RebuildProcessingPresentationAttachedTo );
+	
 	SlotChangeState.Wrap( this, &NetworkPresentation::ChangeState );
 	SlotClear.Wrap(this, &NetworkPresentation::Clear );
+
+	SlotChangeConnectionPresentationNames.Wrap( this, &NetworkPresentation::ChangeConnectionPresentationNames );
 }
 
 void NetworkPresentation::ChangeState( bool newState )
@@ -66,8 +67,6 @@ void NetworkPresentation::ChangeState( bool newState )
 
 void NetworkPresentation::RemoveConnectionPresentation( const std::string & out, const std::string & in)
 {
-	std::cout << "here we are" << std::endl;
-	std::cout << out << " " << in << std::endl;
 	ConnectionPresentationIterator it;
 	ConnectionPresentation * con = 0;
 	for( it=mConnectionPresentations.begin(); it!=mConnectionPresentations.end(); it++)
@@ -123,7 +122,24 @@ void NetworkPresentation::UpdatePresentations()
 void NetworkPresentation::RemoveProcessing( ProcessingPresentation * proc)
 {
 	mProcessingPresentationsToRemove.push_back(proc);
-	SignalRemoveProcessing.Emit( proc->GetNameFromNetwork() ); // TODO: change GetNameFromNetwork name method
+	SignalRemoveProcessing.Emit( proc->GetName() ); 
+}
+
+void NetworkPresentation::RebuildProcessingPresentationAttachedTo( const std::string & name, CLAMVM::ProcessingController * controller )
+{	
+
+	ProcessingPresentationIterator it;
+	for( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++ )
+	{
+		if((*it)->GetName()==name)
+		{
+			(*it)->UpdateListOfPortsAndControls( *controller );
+			(*it)->Show();
+			return;
+		}
+	}
+	CLAM_ASSERT( false, "NetworkPresentation::RebuildProcessingPresentationAttachedTo : name not found in processing presentations list" );
+
 }
 
 NetworkPresentation::~NetworkPresentation()
@@ -149,6 +165,7 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkController & controller)
 	
 	SignalAddProcessing.Connect( controller.SlotAddProcessing );
 	SignalRemoveProcessing.Connect( controller.SlotRemoveProcessing );
+	controller.SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
 	
 	SignalCreatePortConnection.Connect( controller.SlotCreatePortConnection );
 	SignalRemovePortConnection.Connect( controller.SlotRemovePortConnection );
@@ -157,12 +174,24 @@ void NetworkPresentation::AttachTo(CLAMVM::NetworkController & controller)
 	controller.SignalCreateControlConnectionPresentation.Connect( SlotCreateControlConnectionPresentation );
 	controller.SignalCreatePortConnectionPresentation.Connect( SlotCreatePortConnectionPresentation );
 	controller.SignalRemoveConnectionPresentation.Connect( SlotRemoveConnectionPresentation );
+	controller.SignalChangeConnectionPresentationNames.Connect( SlotChangeConnectionPresentationNames );
 
 	SignalClear.Connect( controller.SlotClear );
 	SignalSaveNetworkTo.Connect( controller.SlotSaveNetwork );
 	SignalLoadNetworkFrom.Connect( controller.SlotLoadNetwork );
 }
 
+void NetworkPresentation::ChangeConnectionPresentationNames( const std::string & oldName, const std::string & newName )
+{
+	ConnectionPresentationIterator it;
+	for(it=mConnectionPresentations.begin(); it!=mConnectionPresentations.end(); it++ )
+	{
+		if(GetProcessingIdentifier((*it)->GetInName()) == oldName )
+			(*it)->SetInName( newName + "." + GetLastIdentifier( (*it)->GetInName()) );
+		if(GetProcessingIdentifier((*it)->GetOutName()) == oldName )
+			(*it)->SetOutName( newName + "." + GetLastIdentifier( (*it)->GetOutName()) );
+	}
+}
 
 ConnectionPointPresentation & NetworkPresentation::GetOutPortPresentationByCompleteName(const std::string & name)
 {
@@ -192,7 +221,7 @@ ProcessingPresentation& NetworkPresentation::GetProcessingPresentation( const st
 {
 	ProcessingPresentationIterator it;
 	for(it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
-       		if ((*it)->GetNameFromNetwork() ==  name)
+       		if ((*it)->GetName() ==  name)
 				return **it;
 	CLAM_ASSERT( false, "NetworkPresentation::GetProcessingPresentation. Object not found." );
 }

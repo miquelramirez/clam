@@ -312,8 +312,17 @@ void config_parse_line(char* ptr,const char* filename,int line)
 					  /* get the filenames we are including */
 						const char* a = filename;
 						char* b = filename2;
-						if (*ptr=='/' || 
-							(isalpha(*ptr) && *(ptr+1)==':' && *(ptr+2)=='\\'))
+						if
+							(
+								*ptr=='/'
+								|| 
+								(
+									isalpha(*ptr) && *(ptr+1)==':' &&
+									(
+										*(ptr+2)=='\\' || *(ptr+2)=='/'
+									)
+								)
+							)
 						{
 							strcpy(filename2,ptr);
 						}else{

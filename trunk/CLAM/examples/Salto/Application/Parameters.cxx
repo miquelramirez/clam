@@ -575,7 +575,7 @@ InstrumentValues& InstrumentValues::_GetInstance(int instr,char* dataFolder)
 			instance.mMAX_SPECTRAL_SEGMENTS			= 100;	// spec Segments read from SDIF
 			instance.mSPECTRAL_SEGMENTS_IN_USE  = 75;   // current number of SpecSegs in memory
 			instance.mMAX_PITCH_VALUE						= 25;
-			instance.mMAX_ATTACKS_VALUE         = 3;		//4 for breath-only
+			instance.mMAX_ATTACKS_VALUE         = 5;		//4 for breath-only
 			instance.mVSOFT                     = 0;    // define depends on MAX_ATTACKS_VALUE
 			instance.mSOFT                      = 1;    // define depends on MAX_ATTACKS_VALUE
 			instance.mHARD                      = 1;    // define depends on MAX_ATTACKS_VALUE

@@ -460,9 +460,11 @@ namespace CLAM
 
 	void Network::Clear()
 	{
-		Nodes::iterator itNodes;
-		for(itNodes=BeginNodes();itNodes!=EndNodes();itNodes++)
-			delete *itNodes;
+		Stop();
+		// TODO: nodes destruction is really inestable at this moment, in supervised-mode-2004 it will be solved.
+//		Nodes::iterator itNodes;
+//		for(itNodes=BeginNodes();itNodes!=EndNodes();itNodes++)
+//			delete *itNodes;
 		mNodes.clear();
 		
 		std::for_each( 	mProcessings.begin(), mProcessings.end(), HelperFunctions::DeleteProcessing );
@@ -568,5 +570,17 @@ namespace CLAM
 				return it->first;
 
 		CLAM_ASSERT(false, "Trying to get a network id from a processing not present in it");
+	}
+
+	void Network::ChangeKeyMap( const std::string & oldName, const std::string & newName )
+	{
+		if( mProcessings.find( newName ) != mProcessings.end() ) // newName is being used
+		{
+			CLAM_ASSERT( false, "Network::ChangeKeyMap Trying to modify unexistent processing" );
+		}
+		ProcessingsMap::iterator it = mProcessings.find( oldName );
+		Processing * proc = it->second;
+		mProcessings.erase( it );
+		mProcessings.insert( ProcessingsMap::value_type( newName, proc ) );
 	}
 }

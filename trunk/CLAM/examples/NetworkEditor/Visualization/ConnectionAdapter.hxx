@@ -24,11 +24,8 @@
 
 #include "ModelAdapter.hxx"
 #include "Network.hxx"
-#include "Signalv2.hxx"
 #include <string>
 #include <list>
-
-#include <iostream> // TODO: remove
 
 namespace CLAM
 {
@@ -50,7 +47,6 @@ namespace CLAMVM
 		ConnectionAdapter() : mNetworkObserved(0)
 		{
 		}
-	
 		virtual const char* GetClassName() const
 		{
 			return "ConnectionAdapter";
@@ -60,7 +56,6 @@ namespace CLAMVM
 
 		virtual std::string GetInName() = 0;
 		virtual std::string GetOutName() = 0;
-
 	};
 
 
@@ -72,7 +67,6 @@ namespace CLAMVM
 		const IN* mInObserved;
 	public:
 		ConnectionAdapterTmpl();
-
 		const char* GetClassName() const
 		{
 			return "ConnectionAdapterTmpl";

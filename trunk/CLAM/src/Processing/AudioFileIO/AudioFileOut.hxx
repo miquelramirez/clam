@@ -23,7 +23,7 @@
 #define _AudioFileOut_
 
 #include "Audio.hxx"
-#include "AudioFile.hxx"
+#include "AudioFileConfig.hxx"
 #include "Processing.hxx"
 #include "InPortTmpl.hxx"
 

@@ -129,6 +129,7 @@ void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool c
 
 	if(configureChunk)
 	{
+		chunk.SetSampleRate( GetSampleRate() );
 		TIndex size=endIndex-beginIndex;
 		chunk.SetSize(size);
 		chunk.SetSampleRate( GetSampleRate() );

@@ -30,7 +30,6 @@
 
 namespace NetworkGUI
 {
-
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * parent, const char * name  )
@@ -55,14 +54,18 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * flagcontrol = new ProcessingItem( controls, "FlagControl" );	
 	ProcessingItem * random = new ProcessingItem( controls, "Random" );	
 	ProcessingItem * oneoverf = new ProcessingItem( controls, "OneOverF" );	
-	
+
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	ProcessingItem * audiofilein = new ProcessingItem( inputoutput, "AudioFileIn" );
 	ProcessingItem * audiofileout = new ProcessingItem( inputoutput, "AudioFileOut" );
 	ProcessingItem * audioout = new ProcessingItem( inputoutput, "AudioOut" );
-
-//	QListViewItem * externals = new QListViewItem( this, "Externals" );
-//	ProcessingItem * ladspaloader = new ProcessingItem( externals, "LadspaLoader" );
+	ProcessingItem * monoaudiofilereader = new ProcessingItem( inputoutput, "MonoAudioFileReader" );
+	ProcessingItem * monoaudiofilewriter = new ProcessingItem( inputoutput, "MonoAudioFileWriter" );
+	ProcessingItem * multichannelaudiofilereader = new ProcessingItem( inputoutput, "MultiChannelAudioFileReader" );
+	ProcessingItem * multichannelaudiofilewriter = new ProcessingItem( inputoutput, "MultiChannelAudioFileWriter" );
+	
+	QListViewItem * plugins = new QListViewItem( this, "Plugins" );
+	ProcessingItem * ladspaloader = new ProcessingItem( plugins, "LadspaLoader" );
 	show();
 	header()->hide();
 
@@ -75,6 +78,8 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 
 	SignalAddNewProcessing.Connect( network.SlotAddProcessing );	
 	network.SignalProcessingCreated.Connect( SlotProcessingCreated );
+
+	setFocusPolicy( NoFocus );
 }
 
 ProcessingTree::~ProcessingTree()

@@ -26,13 +26,14 @@
 #include <qwidget.h>
 
 #include <map>
-#include<string>
+#include <string>
 #include "ConfigurationVisitor.hxx"
 #include "Assert.hxx"
 #include "Enum.hxx"
 #include "DataTypes.hxx"
 #include "DynamicType.hxx"
 #include "Filename.hxx"
+#include "AudioFile.hxx"
 
 #include <limits>
 #include <qdialog.h>
@@ -45,7 +46,6 @@
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qfiledialog.h>
-
 
 namespace CLAM
 {
@@ -76,8 +76,6 @@ protected:
 public:
 	ConfigPresentationTmpl( QWidget * parent = 0 );
 	virtual ~ConfigPresentationTmpl();
-	virtual void Show();
-	virtual void Hide();	
 
 	template<typename T>
 	void AddWidget(const char *name, void *foo, T& value);
@@ -121,6 +119,11 @@ public:
 	template<typename T>
 	void RetrieveValue(const char *name, CLAM::Filename *foo, T& value);
 
+	template<typename T>
+	void AddWidget(const char *name, CLAM::AudioFile *foo, T& value);
+	template<typename T>
+	void RetrieveValue(const char *name, CLAM::AudioFile *foo, T& value);
+
 };
 
 
@@ -143,20 +146,9 @@ ConfigPresentationTmpl<ConcreteConfig>::~ConfigPresentationTmpl()
 }
 
 template<class ConcreteConfig>
-void ConfigPresentationTmpl<ConcreteConfig>::Show()
-{
-	show();
-}
-
-template<class ConcreteConfig>
-void ConfigPresentationTmpl<ConcreteConfig>::Hide()
-{
-	hide();
-}
-
-template<class ConcreteConfig>
 void ConfigPresentationTmpl<ConcreteConfig>::SetConfig( const CLAM::ProcessingConfig & cfg)
 {
+
 //	deep copy from abstract processing config to concrete
 	mConfig = static_cast<const ConcreteConfig &>(cfg);
 
@@ -385,30 +377,35 @@ void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLA
 	value=mInput->text().latin1();
 }
 
+template <class ConcreteConfig>
+template <typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::AudioFile *foo, T& value) 
+{	
+	QHBox * cell = new QHBox(mLayout);
+	cell->setSpacing(5);
+	QLabel * label = new QLabel(QString(name), cell);
+	QLineEdit * mInput = new QLineEdit(QString(value.GetLocation().c_str()), cell);
+	mInput->setMinimumWidth(300);
 
+	QPushButton * fileBrowserLauncher = new QPushButton("...",cell);
+	fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+	QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
+	fd->setMode( QFileDialog::AnyFile );
 
-/*	
-  template <class ConcreteConfig>
-	void AddWidget(const char *name, DynamicType *foo, T&value) {
-		QHBox * cell = new QHBox(mLayout);
-		new QLabel(QString(name), cell);
-		QPushButton * mInput = new QPushButton("Details...", cell);
-		mInput->setAutoDefault(false);
-		//QTConfigurator * subConfigurator = new QTConfigurator(this;)
-		ConfigPresentationTmpl * subConfigurator = new ConfigPresentationTmpl(this);
+	mWidgets.insert(tWidgets::value_type(name, mInput));
 
-		subConfigurator->SetConfig(value);
-		connect( mInput, SIGNAL(clicked()), subConfigurator, SLOT(show()) );
-		mWidgets.insert(tWidgets::value_type(name, mInput));
-	}
-*/
-/*
-	template <class ConcreteConfig>
-	void RetrieveValue(const char *name, DynamicType *foo, T&value) {
-	}	
-*/
+	connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
+	connect( fd, SIGNAL(fileSelected( const QString & )), mInput, SLOT( setText( const QString & )));
+}
 
-
+template <class ConcreteConfig>
+template< typename T>
+void ConfigPresentationTmpl<ConcreteConfig>::RetrieveValue(const char *name, CLAM::AudioFile *foo, T& value) 
+{	
+	QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+	CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+	value.SetLocation( mInput->text().latin1());
+}
 
 } // namespace NetworkGUI
 

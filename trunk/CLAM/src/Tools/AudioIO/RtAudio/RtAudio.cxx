@@ -41,8 +41,8 @@
 
 #include "RtAudio.hxx"
 #include <vector>
-#include <stdio.h>
-#include <iostream.h>
+#include <cstdio>
+#include <iostream>
 
 // Static variable definitions.
 const unsigned int RtAudio :: SAMPLE_RATES[] = {

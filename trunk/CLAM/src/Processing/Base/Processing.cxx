@@ -78,6 +78,7 @@ namespace CLAM {
 				mState=Unconfigured;
 				mPreconfigureExecuted = false;
 				mStatus+=" Configuration failed.";
+				mState = Unconfigured;
 				return false;
 			}
 		}
@@ -120,8 +121,8 @@ namespace CLAM {
 
 	void Processing::Start(void) 
 	{
-		
-		CLAM_ASSERT(mState==Ready,AddStatus("Start(): Object not ready"));
+		CLAM_ASSERT(mState==Ready,
+			    ComposeAssertMessage(AddStatus( "Start(): Object not ready" )).c_str() );
 		try {
 			if (ConcreteStart())
 				mState = Running;
@@ -238,6 +239,15 @@ namespace CLAM {
 			mpParent->Remove(*this);
 
 		mpParent=0;
+	}
+
+	std::string Processing::ComposeAssertMessage( std::string msg )
+	{
+		std::string assertMessage = GetClassName();
+		assertMessage += "::";
+		assertMessage += msg;
+
+		return assertMessage;
 	}
 
 	const char* Processing::AddStatus(const std::string& a)

@@ -44,7 +44,7 @@ typedef Search < List < Frame >, Frame> FrameSearch;
 /**	Processing Data class to encapsulate a CLAM segment. A Segment is basically an ordered
  *	list of Frames (@see Frame). It also has a BeginTime and EndTime time tags, an associated
  *	Audio (usually a large audio chunk from which smaller Audio Frames are obtained) and
- *	a global SamplingRate.
+ *	a global SamplingRate. Note: time unit is miliseconds.
  *	Appart from these internal Processing Data, a Segment also holds a list of child segments
  *	named Children. These are usually smaller segments that result from applying some sort of
  *	segmentation algorithm to the original Segment. These children do not hold data (namely
@@ -56,7 +56,9 @@ class Segment : public ProcessingData
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (Segment, 7, ProcessingData);
+	/** Begin time in miliseconds*/
 	DYN_ATTRIBUTE (0, public, TTime, BeginTime);
+	/** End time in miliseconds */
 	DYN_ATTRIBUTE (1, public, TTime, EndTime);
 	DYN_ATTRIBUTE (2, private, bool, prHoldsData);
 	DYN_ATTRIBUTE (3, private, List<Frame>, prFramesArray);
@@ -105,7 +107,7 @@ public:
 
 //Interface for accessing and modifying frames
 
-	/** Returns a reference to the frame found in a given position
+	/** Returns a reference to the frame found in a given position. Time in miliseconds
 	 *	@see const Frame& GetFrame(TIndex pos) const
 	 *	@see GetFrame(TTime time)
 	 */
@@ -116,20 +118,24 @@ public:
 	void AddFrame(Frame& newFrame); // XXX: should really be a const reference as the frame is copied
 	/** Deletes frame in a given position. */
 	void DeleteFrame(TIndex pos);
-	/** Finds frame with center time closest to the one given 
+
+	/** Finds frame with center time closest to the one given. Time in miliseconds 
 	 *	@return position of frame in segment 
 	 */
 	TIndex FindFrame(TTime time) const;
-	/** Returns a reference to the frame with center time closest to the one passed
+
+	/** Returns a reference to the frame with center time closest to the one passed. Time in miliseconds.
 	 *	@see const Frame& GetFrame(TTime time) const
 	 *	@see GetFrame(TIndex pos)
 	 */
 	Frame& GetFrame(TTime time);
-	/** Returns a reference to the frame with center time closest to the one passed
+
+	/** Returns a reference to the frame with center time closest to the one passed. Time in miliseconds.
 	 *	@see Frame& GetFrame(TTime time) 
 	 */
 	const Frame& GetFrame(TTime time) const;
-	/**	Deletes frame with center time closest to the one passed
+
+	/**	Deletes frame with center time closest to the one passed. Time in miliseconds
 	 *	@see DeletFrame(TIndex pos)
 	 */
 	void DeleteFrame(TTime time);

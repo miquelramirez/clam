@@ -1,0 +1,11 @@
+#Defines when making a release build
+defines_release = 
+
+#Defines when making a release build
+defines_debug = 
+
+libs_release = 
+libs_debug =
+libdirs =
+includedirs =
+lib_flags =

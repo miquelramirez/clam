@@ -23,7 +23,6 @@
 
 
 #include <qpixmap.h>
-#include <iostream>
 #include <qpainter.h>
 #include <qbitmap.h>
 
@@ -35,7 +34,7 @@ Qt_ConnectionPresentation::Qt_ConnectionPresentation( QWidget *parent, const cha
 	  origin(-1,-1),
 	  end(-1,-1),
 	  mPositions(4),
-	  mDown(false)
+	  mSelected(false)
 {
 	setPalette( QPalette( QColor( 250, 250, 200) ) );
 
@@ -108,34 +107,34 @@ void Qt_ConnectionPresentation::UpdatePosition()
 	setFixedSize(w,h);
 }
 
+void Qt_ConnectionPresentation::mouseMoveEvent( QMouseEvent *m)
+{
+	SignalMovingMouseWithButtonPressed.Emit( m->globalPos() - mPrevPos );
+	mPrevPos = m->globalPos();
+}
+
+
 
 void Qt_ConnectionPresentation::mousePressEvent( QMouseEvent *m)
 {
-	mDown = true;
-	grabKeyboard();
-	repaint();
-}
-
-void Qt_ConnectionPresentation::mouseReleaseEvent( QMouseEvent *)
-{
-	mDown = false;
-	releaseKeyboard();
-	repaint();
-}
-
-
-void Qt_ConnectionPresentation::keyPressEvent( QKeyEvent *k )
-{
-	switch ( tolower(k->ascii()) )
+	mPrevPos = m->globalPos();
+	if(!mSelected) // already selected
 	{
-        case 'x':
-		SignalRemoveConnection.Emit( this );
-		Hide();
-		mDown = false;
-		releaseKeyboard();
-		break;
+		mSelected = true;
+		if((m->button() & LeftButton) && (m->state() & ShiftButton))
+			SignalConnectionPresentationAddedToSelection.Emit( this );
+		else
+			SignalConnectionPresentationSelected.Emit( this );
+		repaint();
 	}
 }
+
+void Qt_ConnectionPresentation::UnSelectConnectionPresentation()
+{
+	mSelected = false;
+	repaint();
+}
+
 
 } // namespace NetworkGUI
 

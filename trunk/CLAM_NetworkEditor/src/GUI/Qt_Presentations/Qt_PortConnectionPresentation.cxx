@@ -41,6 +41,7 @@ Qt_PortConnectionPresentation::~Qt_PortConnectionPresentation()
 void Qt_PortConnectionPresentation::paintEvent( QPaintEvent * e)
 {
 
+	UpdateBezierLine();
 	QBitmap bm( size() );
 	bm.fill( color0 );			//transparent
 
@@ -48,7 +49,6 @@ void Qt_PortConnectionPresentation::paintEvent( QPaintEvent * e)
 	paint.begin( &bm, this );
 	paint.setPen( QPen(color1, 5));
 
-	UpdateBezierLine();
 	paint.drawCubicBezier(mPositions);
 	paint.end();
 
@@ -60,7 +60,7 @@ void Qt_PortConnectionPresentation::paintEvent( QPaintEvent * e)
 
 	p.setPen( QPen ( QColor( 0, 0, 50 ), 5));
 	p.drawCubicBezier(mPositions);
-	if (mDown)
+	if (mSelected)
 		p.setPen( QPen ( QColor( 200, 50, 50), 1 ) );
 	else
 		p.setPen( QPen ( QColor( 120, 120, 200), 1 ) );

@@ -62,16 +62,16 @@ public:
 
 	/** Default constructor for the class. Sets the configuration to the default values, calling the base constructor of the AudioIOConfig object
 	*/
-	AudioOut() : Input("Input",this,1) { mpDevice = 0; Configure(AudioIOConfig()); }
-
+	AudioOut();
 
 	/** Constructor of the class with an AudioIOConfig object constructed by the user as parameter.
 	 *  @param c The concrete AudioIOConfig that will be used for this construction
 	 */
-	AudioOut(const AudioIOConfig &c) : Input("Input",this,1) { mpDevice = 0; Configure(c); }
+	AudioOut( const AudioIOConfig& cfg );
 
 	/** Destructor method of the class*/
-	~AudioOut() { if (mpDevice) mpDevice->Unregister(*this); }
+	~AudioOut();
+	
 
 	const char * GetClassName() const {return "AudioOut";}
 	

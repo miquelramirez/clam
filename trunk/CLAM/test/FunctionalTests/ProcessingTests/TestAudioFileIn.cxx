@@ -33,7 +33,14 @@ namespace CLAMTest
 
 		void setUp( )
 		{
-			mPathToTestData = "../../../../../CLAM-TestData/SMSTests/";
+			char* pathToTestData = getenv("CLAM_TEST_DATA");
+
+			if ( !pathToTestData )
+				mPathToTestData = "../../../../../CLAM-TestData/";
+			else
+				mPathToTestData = pathToTestData;
+
+			mPathToTestData += "SMSTests/";
 		}
 
 		void tearDown( )

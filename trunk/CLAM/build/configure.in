@@ -34,15 +34,75 @@ AC_SUBST(DEFINE_HAVE_QT)
 AC_SUBST(DEFINE_HAVE_STANDARD_SSTREAM)
 AC_SUBST(DEFINE_HAVE_STANDARD_SSTREAM_STR)
 AC_SUBST(DEFINE_HAVE_STANDARD_VECTOR_AT)
+AC_SUBST(DEFINE_HAVE_STANDARD_UNICODE)
 AC_SUBST(DEFINE_HAVE_STRSTREAM_SSTREAM)
 AC_SUBST(DEFINE_CLAM_HAVE_PTHREADS)
 AC_SUBST(DEFINE_HAVE_XERCESC)
+
+# MRJ: Variables defined by autoconf for libsndfile
+AC_SUBST(SNDFILE_INCLUDES)
+AC_SUBST(SNDFILE_LIB_PATH)
+AC_SUBST(SNDFILE_LIBS)
+
+#MRJ: Variables defined by autoconf for libogg and libvorbis
+AC_SUBST(OGGVORBIS_INCLUDES)
+AC_SUBST(OGGVORBIS_LIB_PATH)
+AC_SUBST(OGGVORBIS_LIBS)
+
+#MRJ: Variables defined by autoconf for libmad
+AC_SUBST(LIBMAD_INCLUDES)
+AC_SUBST(LIBMAD_LIB_PATH)
+AC_SUBST(LIBMAD_LIBS)
+
+#MRJ: Variables defined by autoconf for id3lib
+AC_SUBST(ID3LIB_INCLUDES)
+AC_SUBST(ID3LIB_LIB_PATH)
+AC_SUBST(ID3LIB_LIBS)
+
+AC_SUBST(LADSPA_INCLUDES)
+
+IS_DARWIN="no"
+
+# Checks system Darwiness i.e. libraries should be
+# located at the local sandbox
+CLAM_CHECK_DARWINESS
+
+# Path to pkgconfig GNOME app
+PKGCONFIG=""
+# Easy testing of availability
+PKGCONFIG_AVAILABLE="no"
+
+# Checks wether pkgconfig is installed in the system,
+# and sets variable accordingly
+CLAM_CHECK_PKGCONFIG
 
 # Check external C libraries
 
 AC_PROG_CC
 
+# FFTW checking procedure
 CLAM_LIB_FFTW
+
+if test $IS_DARWIN = "no"
+then
+	if test $PKGCONFIG_AVAILABLE = "yes"
+	then
+		# libsndfile checking procedure	
+		CLAM_LIB_SNDFILE
+		# Underbit's MAD checking procedure
+		CLAM_LIB_MAD
+	else
+		CLAM_LIB_SNDFILE_NO_PKGCONFIG
+		CLAM_LIB_MAD_NO_PKGCONFIG
+	fi
+	# Vorbis I  SDK checking procedure
+	CLAM_LIB_OGGVORBIS
+	CLAM_LIB_LADSPA
+else
+	CLAM_LIB_OGGVORBIS_DARWIN
+	CLAM_LIB_SNDFILE_DARWIN
+	CLAM_LIB_MAD_DARWIN
+fi
 
 # Check external C++ libraries
 
@@ -50,8 +110,25 @@ AC_PROG_CXX
 AC_LANG_CPLUSPLUS
 
 CLAM_CHECK_CXX
-CLAM_LIB_FLTK
+
+UNICODE_SUPPORT_AVAILABLE="no"
+#Besides setting the macro HAVE_STANDARD_UNICODE,
+#also sets the variable UNICODE_SUPPORT_AVAILABLE for
+#convenience
+CLAM_CHECK_UNICODE_SUPPORT
+
+CLAM_CHECK_LIBCXX_FEATURES
+
 CLAM_LIB_QT
+
+CLAM_LIB_FLTK
+# id3lib checking procedure
+if test $IS_DARWIN = "no"
+then
+	CLAM_LIB_ID3LIB
+else
+	CLAM_LIB_ID3LIB_DARWIN
+fi
 
 AC_ARG_ENABLE(xml,[  --disable-xml           do check for XML support],
    [
@@ -69,8 +146,6 @@ AC_ARG_ENABLE(xml,[  --disable-xml           do check for XML support],
 		CLAM_LIB_XERCESC
    ]
 )
-
-CLAM_CHECK_LIBCXX_FEATURES
 
 
 # Should we check for this?

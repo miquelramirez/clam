@@ -37,18 +37,55 @@ namespace CLAM {
 
 	class AudioDescriptors : public DescriptorAbs {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 11, DescriptorAbs);
+		DYNAMIC_TYPE_USING_INTERFACE (AudioDescriptors, 12, DescriptorAbs);
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		DYN_ATTRIBUTE (1, public, TData, Variance);
+
+		/**
+		 * The temporal centroid is the time averaged over the
+		 * energy envelope. What is the effect of a silent signal?
+		 * Measured in ???.
+		 */
 		DYN_ATTRIBUTE (2, public, TData, TemporalCentroid);
 		DYN_ATTRIBUTE (3, public, TData, Attack);
 		DYN_ATTRIBUTE (4, public, TData, Decay);
 		DYN_ATTRIBUTE (5, public, TData, Sustain);
 		DYN_ATTRIBUTE (6, public, TData, Release);
+
+		/**
+		 * The log-attack time is the (base 10) logarithm of the
+		 * rise time. For a silent signal, log-attack time is
+		 * -5 (approx. silence). Measured in log10(seconds).
+		 */
 		DYN_ATTRIBUTE (7, public, TData, LogAttackTime);
+
+		/**
+		 * The total energy estimates the signal power at a given
+		 * time. Measured in energy.
+		 */
 		DYN_ATTRIBUTE (8, public, TData, Energy);
+
+		/**
+		 * The zero-crossing rate is a measure of the number of time
+		 * the signal value cross the zero axe, averaged over the
+		 * whole signal. Measured in crossings/second.
+		 */
 		DYN_ATTRIBUTE (9, public, TData, ZeroCrossingRate);
+
+		/**
+		 * The rise time is the time duration between the signal
+		 * reached 2% of it maximum value to the time it reaches 80%
+		 * of its maximum value. For a silent signal, rise time is
+		 * 0. Measured in seconds.
+		 */
 		DYN_ATTRIBUTE (10,public, TData, RiseTime);
+
+		/**
+		 * The temporal decrease is a measure of the amount of
+		 * decrease in the signal energy. Measured in dB per
+		 * seconds??
+		 */
+		DYN_ATTRIBUTE (11,public, TData, Decrease);
 
 	public:
 
@@ -66,14 +103,18 @@ namespace CLAM {
 		TData ComputeZeroCrossingRate();
 		TData ComputeAttackTime();
 		TData ComputeLogAttackTime();
+		TData ComputeDecrease();
 
 		
 	private:
 		Audio* mpAudio;
+		static const TData mEpsilon;
 		
+		bool mIsAttackTimeComputed;
 		TData mComputedAttackTime;
 	};
 
+	
 
 AudioDescriptors operator * (const AudioDescriptors& a,TData mult) ;
 AudioDescriptors operator * (TData mult, const AudioDescriptors& a) ;
@@ -142,6 +183,11 @@ inline AudioDescriptors CLAM_min (const AudioDescriptors & a,const AudioDescript
 		if(b.GetRelease()<a.GetRelease())
 			tmpD.SetRelease(b.GetRelease() );
 	}
+	if(a.HasDecrease() && b.HasDecrease() )
+	{
+		if(b.GetDecrease()<a.GetDecrease())
+			tmpD.SetDecrease(b.GetDecrease() );
+	}
 	return tmpD;
 
 
@@ -206,6 +252,11 @@ inline AudioDescriptors CLAM_max (const AudioDescriptors & a,const AudioDescript
 	{
 		if(b.GetRelease()>a.GetRelease())
 			tmpD.SetRelease(b.GetRelease() );
+	}
+	if(a.HasDecrease() && b.HasDecrease() )
+	{
+		if(b.GetDecrease()>a.GetDecrease())
+			tmpD.SetDecrease(b.GetDecrease() );
 	}
 	return tmpD;
 

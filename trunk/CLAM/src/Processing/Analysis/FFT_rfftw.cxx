@@ -32,49 +32,27 @@
 
 namespace CLAM {
 
-	SpecTypeFlags FFT_rfftw::mComplexflags;
-
 
 	bool FFT_rfftw::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		int oldSize = mSize;
-		
-		CopyAsConcreteConfig(mConfig, c);
-		if (mConfig.HasAudioSize()) {
-			CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
-			mSize = mConfig.GetAudioSize();
-		}
-
-		CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
-
-		mState=sOther;
-		mComplexflags.bComplex=1;
-		mComplexflags.bMagPhase=0;
-		if (mSize == 0) 
+		FFT_base::ConcreteConfigure(c);
+		if(mSize==0)
 		{
-			fftbuffer = 0;
-			mpPlan=0;
+			mpPlan=0;		
 			return false;
 		}
-		if (mSize == oldSize)
-			return true;
-
-		delete [] fftbuffer;
-		fftbuffer = new TData[mSize];
 		mpPlan = rfftw_create_plan (mSize , FFTW_REAL_TO_COMPLEX, FFTW_ESTIMATE);
 		return true;
 	}
 
 	FFT_rfftw::FFT_rfftw()
-		: mpPlan(0),
-		  fftbuffer(0)
+		: mpPlan(0)
 	{
 		Configure(FFTConfig());
 	}
 
-	FFT_rfftw::FFT_rfftw(const FFTConfig &c) throw(ErrDynamicType)
-		: mpPlan(0),
-		  fftbuffer(0)
+	FFT_rfftw::FFT_rfftw(const FFTConfig &c)
+		: mpPlan(0)
 	{ 
 		Configure(c);
 	};
@@ -86,69 +64,12 @@ namespace CLAM {
 		delete [] fftbuffer;
 	}
 
-	void FFT_rfftw::CheckTypes(const Audio& in, const Spectrum &out) const
-	{
-
-		CLAM_BEGIN_CHECK
-		// Input object checking
-		if (in.GetSize()!=mSize) { 
-			std::stringstream ss;
-			ss << "FFT_rfftw::Do: Wrong size in FFT Audio input\n"
-			   << "  Expected: " << mSize << ", used " << in.GetSize();
-			CLAM_ASSERT(0,ss.str().c_str());
-		}
-		if (!in.HasBuffer())
-			CLAM_ASSERT(0,"FFT Do: Float attribute required for Audio object.");
-		if (out.GetSize() < mSize/2+1 ) { // ALGORITHM DEPENDENT CHECKING
-			std::stringstream ss;
-			ss << "FFT_rfftw::Do: not enough memory in out Spectrum.\n"
-			   << "  Expected: " << mSize/2+1 << ", used " << out.GetSize();
-			CLAM_ASSERT(0,ss.str().c_str());
-		}
-
-		CLAM_END_CHECK
-	}
-
-	bool FFT_rfftw::SetPrototypes(const Audio& in,const Spectrum &out)
-	{
-		CheckTypes(in,out);
-
-		SpecTypeFlags flags;
-		out.GetType(flags);
-
-		if (flags.bComplex)
-			if (flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF)
-				mState=sComplexSync;
-			else
-				mState=sComplex;
-		else
-			if (flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF)
-				mState=sOther;
-			else
-				CLAM_ASSERT(false, "FFT_rfftw: SetPrototypes(...): No Spectrum Attributes!");
-
-		return true;
-	}
-
-	bool FFT_rfftw::UnsetPrototypes()
-	{
-		mState=sOther;
-		return true;
-	}
-
-	void FFT_rfftw::Attach(Audio& in, Spectrum &out)
-	{
-		mInput.Attach(in);
-		mOutput.Attach(out);
-	}
-
-
 	bool FFT_rfftw::Do()
 	{
 		return Do(mInput.GetData(),mOutput.GetData());
 	};
 
-	bool FFT_rfftw::Do(const Audio& in, Spectrum &out) const
+	bool FFT_rfftw::Do(const Audio& in, Spectrum &out)
 	{
 		TData *inbuffer;
 
@@ -158,19 +79,19 @@ namespace CLAM {
 		case sComplex:
 			inbuffer = in.GetBuffer().GetPtr();
 			rfftw_one(mpPlan, inbuffer, fftbuffer);
-			RFFTWToComplex(out);
+			ToComplex(out);
 			break;
 		case sComplexSync:
 			inbuffer = in.GetBuffer().GetPtr();
 			rfftw_one(mpPlan, inbuffer, fftbuffer);
-			RFFTWToComplex(out);
+			ToComplex(out);
 			out.SynchronizeTo(mComplexflags);
 			break;
 		case sOther:
 			CheckTypes(in,out);
 			inbuffer = in.GetBuffer().GetPtr();
 			rfftw_one(mpPlan, inbuffer, fftbuffer);
-			RFFTWToOther(out);
+			ToOther(out);
 			break;
 		default:
 			CLAM_ASSERT(false, "FFT_rfftw: Do(): Inconsistent state");
@@ -179,16 +100,7 @@ namespace CLAM {
 		return true;
 	}
 
-	bool FFT_rfftw::SetPrototypes()
-	{
-		// @todo Check port prototypes, and set the state (or de
-		// backup state if disabled) acordingly.
-		CLAM_ASSERT(false,"FFT_rfftw::SetPrototypes: Not implemented.");
-		return false;
-	}
-
-
-	inline void FFT_rfftw::RFFTWToComplex(Spectrum &out) const
+	inline void FFT_rfftw::ToComplex(Spectrum &out)
 	{
 		Array<Complex>& outbuffer = out.GetComplexArray();
 		int i;
@@ -208,26 +120,5 @@ namespace CLAM {
 		outbuffer.SetSize(mSize/2+1);
 	}
 
-
-	inline void FFT_rfftw::RFFTWToOther(Spectrum &out) const
-	{
-		bool hadcomplex=true;
-		SpecTypeFlags flags;
-
-		if (!out.HasComplexArray()) {
-			hadcomplex=false;
-			out.GetType(flags);
-			flags.bComplex=1;
-			out.SetType(flags);
-		}
-
-		RFFTWToComplex(out);
-		out.SynchronizeTo(mComplexflags);
-
-		// @todo Can we leave the complex attribute just there?
-		if (!hadcomplex) {
-			out.RemoveComplexArray();
-			out.UpdateData();
-		}
-	}
+	
 };//namespace CLAM

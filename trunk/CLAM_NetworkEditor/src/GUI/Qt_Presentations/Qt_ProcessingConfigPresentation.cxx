@@ -20,12 +20,12 @@
  */
 
 #include "Qt_ProcessingConfigPresentation.hxx"
-#include "ActionButton.hxx"
 #include <qlabel.h>
 #include <qgroupbox.h>  
 #include <qlayout.h>
 #include <qhbox.h>
 #include <qsizepolicy.h>
+#include <qpushbutton.h>
 
 #include "ProcessingConfig.hxx"
 
@@ -53,35 +53,32 @@ Qt_ProcessingConfigPresentation::Qt_ProcessingConfigPresentation( QWidget *paren
 
 	buttonBox->setSpacing(20);
 	buttonBox->setMargin(10);
+
+	QPushButton * ok = new QPushButton( "Ok", buttonBox );
+	connect( ok, SIGNAL( clicked() ),
+		 this, SLOT( SlotOk() ));
 	
-	mOkButton = new ActionButton( buttonBox, "mOkButton" );
-
-	mCancelButton = new ActionButton( buttonBox, "mCancelButton" );
-	
-	mOkButton->setText( tr( "Ok" ) );
-	mCancelButton->setText( tr( "Cancel" ) );
-
-	SlotOk.Wrap( this, &Qt_ProcessingConfigPresentation::Ok );
-	SlotCancel.Wrap( this, &Qt_ProcessingConfigPresentation::Cancel );
-
-	mOkButton->Pressed.Connect( SlotOk );
-	mCancelButton->Pressed.Connect( SlotCancel );
-
+	QPushButton * cancel = new QPushButton( "Cancel", buttonBox );
+	connect( cancel, SIGNAL( clicked() ),
+		 this, SLOT( SlotCancel() ));
 }
 	
-void Qt_ProcessingConfigPresentation::Ok( bool )
+void Qt_ProcessingConfigPresentation::SlotOk()
 {
 	ConfigureProcessing();
+	SignalConfigurationUpdated.Emit( true );
 	close();
 }
 
-void Qt_ProcessingConfigPresentation::Cancel( bool )
+void Qt_ProcessingConfigPresentation::SlotCancel()
 {
+	SignalConfigurationUpdated.Emit( false );
 	close();
 }
 
 void Qt_ProcessingConfigPresentation::Show()
 {
+	setFocus();
 	show();
 }
 

@@ -28,17 +28,13 @@
 
 #include "Presentation.hxx"
 #include "ProcessingConfigPresentation.hxx"
+#include "ProcessingController.hxx"
 #include "Slotv1.hxx"
 #include "Signalv1.hxx"
 
 namespace CLAM
 {
 	class ProcessingConfig;
-}
-
-namespace CLAMVM
-{
-	class ProcessingController;
 }
 
 namespace NetworkGUI
@@ -49,30 +45,33 @@ class ConnectionPointPresentation;
 class ProcessingPresentation : public CLAMVM::Presentation
 {
 protected:
-	
+	std::string mProcessingStatus;
+	CLAMVM::ProcessingController::ProcessingExecState mProcessingState;
 	typedef std::list< ConnectionPointPresentation * > ConnectionPointPresentationsList;
 
 	ConnectionPointPresentationsList mInPortPresentations;
 	ConnectionPointPresentationsList mOutPortPresentations;
 	ConnectionPointPresentationsList mInControlPresentations;
 	ConnectionPointPresentationsList mOutControlPresentations;
-	std::string mNameFromNetwork;
+	std::string mName;
 	std::string mObservedClassName;
 
 	ProcessingConfigPresentation * mConfig;
 public:
-	ProcessingPresentation(const std::string& nameFromNetwork = "unnamed");
+	ProcessingPresentation(const std::string& name= "unnamed");
 	virtual ~ProcessingPresentation();
 	void AttachTo(CLAMVM::ProcessingController & );
 	virtual void Show() = 0;
 	virtual void Hide() = 0;
-	const std::string & GetNameFromNetwork(){return mNameFromNetwork;}
+	const std::string & GetName(){return mName;}
 	ConnectionPointPresentation & GetOutPortPresentation( const std::string& );
 	ConnectionPointPresentation & GetInPortPresentation( const std::string& );
 	ConnectionPointPresentation & GetOutControlPresentation( const std::string& );
 	ConnectionPointPresentation & GetInControlPresentation( const std::string& );
 	bool HasInPort( const std::string& name);
 	bool HasOutPort( const std::string& name);
+	virtual void ChangeProcessingPresentationName( const std::string & name );
+	void UpdateListOfPortsAndControls( CLAMVM::ProcessingController & controller );
 
 protected:
 	void SetConfig( const CLAM::ProcessingConfig & );
@@ -82,11 +81,17 @@ protected:
 	virtual void SetOutPort( const std::string & ) = 0;
 	virtual void SetInControl( const std::string & ) = 0;
 	virtual void SetOutControl( const std::string & ) = 0;
+	void ChangeState( CLAMVM::ProcessingController::ProcessingExecState state, const std::string & status );
+	virtual void UpdatePresentation() = 0;
+	
 
 public:	//signals & slots
 	SigSlot::Signalv1< ProcessingPresentation* > SignalRemoveProcessing;
 	SigSlot::Signalv1< const CLAM::ProcessingConfig & > SignalConfigureProcessing;
+	SigSlot::Signalv1< const std::string & > SignalProcessingNameChanged;
 	SigSlot::Slotv1< const CLAM::ProcessingConfig &> SlotConfigureProcessing;
+	SigSlot::Slotv1< const std::string & > SlotChangeProcessingPresentationName;
+	SigSlot::Slotv2< CLAMVM::ProcessingController::ProcessingExecState, const std::string & > SlotChangeState; 
 };
 
 

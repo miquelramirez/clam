@@ -1,7 +1,65 @@
-2004-01-15 CLAM_0_5_7 'Tomorrow MacOsX patch'
+2004-02-18 CLAM_0_6_0
+'Audio file formats: Reloaded'
+
+  * Network Editor:
+     ** Added support for ladspa plugins inside the GUI
+     ** Support to change the name of processings
+     ** Support for new Audio File I/O processings
+     ** Now is possible to know the state of a given processing and the error
+        message (if it exists).
+  * Audio File I/O Support:
+     ** Four new processings available for reading/writing from audio files:
+        *** MonoAudioFileReader/Writer ( single channel reading and writing )
+		*** MultiChannelAudioFileReader/Writer ( multi channel reading and writing )
+     ** New AudioFile class. This class models the concept of 'audio file' which has
+        attached attributes as 'Location' ( the path to the file ), 'Header' ( the concrete
+		file header information such as length, samplerate, etc. ) and
+		'TextDescriptors' (text-based meta-data such as Artist, Title, Album, etc. )
+     ** New File formats supported:
+		*** Almost any PCM-based audio data storage scheme encoding/decoding is supported
+		    through libsndfile ( http://www.zip.com.au/~erikd/libsndfile )
+		*** Ogg/Vorbis encoding and decoding support
+		*** Mpeg Audio Layer 1/2/3 decoding support
+     ** New Feature: Partial retrieval of textual metadata embedded in files. For now
+		CLAM is just able to extract information such as Artist, Title, Album and Track number.
+		Support for a wider range of textual descriptors extraction will be available soon.
+		*** ID3 metadata frames retrieval from Mpeg bitstreams
+		*** Vorbis Comments retrieval from Vorbis bitstreams
+			MacOS X note: ID3 meta-data extraction only works for MacOS X 10.3 systems and above,
+			since Apple did not include Unicode ( wchar_t ) support in their libstdc++ binary
+			distribution.
+     ** Three new examples showing how to use the new Processing's and the AudioFile class:
+		*** examples/FileInfo_example.cxx
+		*** examples/AudioFileReading_example.cxx
+		*** examples/AudioFileWritiing_example.cxx
+		their build projects can be found on the build/Examples/Simple folder
+  * FFT refactored:
+	** Removed duplicated code and unused functionality and improved efficiency.
+  * Salto:
+	** Fix: several potentially dangerous out-of-bounce array accesses in fltk G.interface
+  * Processing Data:
+	** Documented (doxygen style) that the time unit is miliseconds in Audio, Frame and Segment
+  * Processings:
+	** AudioFileIn stamps the sample-rate to the written audio
+  * Descriptors:
+    ** AttackTime is based on the envelope
+    ** Fix: LogAttackTime recalculated the AttackTime always
+    ** New AudioDescriptors: Decrease
+    ** New SpectralDescriptors: Slope and Spread
+    ** Functional tests added
+    ** Fixes and precission enhancements
+  * Tests:
+	** All unit and functional tests have been merged in only two executables (settings.cfg),
+	   namely: AllUnitTests and AllFunctionalTests
+
+
+
+
+2004-01-15 CLAM_0_5_7
+'Tomorrow MacOsX patch'
   * SMSTools:
      ** Fix: Closing window crashed on MacOsX.
-     ** Fix: Storing output global sound stored sinusoidal in previous release 
+     ** Fix: Storing output global sound stored sinusoidal in previous release
   * Base:
      ** [Experimental] Support for Polymorphic attributes in DT
   * XML:
@@ -26,7 +84,8 @@
   * Salto:
      ** Fix: Did not compile in previous release. Example in general is still outdated though.
 
-2004-01-12 CLAM_0_5_6 'XML and Ladspa rewrite'
+2004-01-12 CLAM_0_5_6
+'XML and Ladspa rewrite'
   * XML:
      ** Both, basic XMLStorage usage interface and customization interface have changed.
         Check 'Migration Guidelines' on the documentation and update your code.
@@ -66,7 +125,6 @@
      ** New support for using LADSPA plugins as CLAM Processings.
   * Build system:
      ** Fix: some fltk-config nagging options removed on aclocal
-
 
 2003-11-26 CLAM_0_5_5
 
@@ -185,7 +243,8 @@
      ** Configuration of processings from interface.
      ** Serialization
 
-2003-10-4 CLAM_0_5_3 'Starting the new course'
+2003-10-4 CLAM_0_5_3 
+'Starting the new course'
 
   * Build system:
      ** Bug fix in srcdeps: uninitialized var in emptydsp.c
@@ -235,7 +294,9 @@
      ** Example about Segment and SDIF I/O added to examples/
      ** Examples explaining how to use new VM Plots added to examples/
 
-2003-07-25 CLAM_0_5_2 'Processing bug-fixing, SMSTools update'
+2003-07-25 CLAM_0_5_2 
+'Processing bug-fixing, SMSTools update'
+
   * Processing - Transformation - SMS:
      ** SMSMorph was not working by a side-effect of the introduction of the 
         SMS Time Stretch.
@@ -267,7 +328,9 @@
             devoted to transformation parameters edition
 
 
-2003-07-03 CLAM_0_5_1 'SMSTools update and Mac compilation issues'
+2003-07-03 CLAM_0_5_1 
+'SMSTools update and Mac compilation issues'
+
   * Examples - SMS:
      ** Improved stability and performance.
      ** Fixed a few bugs in how some configurations were handled
@@ -406,7 +469,8 @@
      ** Configurators: New type suported: 'Filename'
      ** 'Formal' documentation will be soon made publicly available
 
-2003-03-05 CLAM_0_4_2 'Cuidado merge update'
+2003-03-05 CLAM_0_4_2 
+'Cuidado merge update'
 
   * General
      ** Most classes ported to the GetClassName contsness
@@ -480,7 +544,8 @@
      ** Modified boost::dir_it added as external included library (Only works 
         for Windows... by now)
 
-2003-01-23 CLAM_0_4_1 'Analysis Synthesis debuggin'
+2003-01-23 CLAM_0_4_1 
+'Analysis Synthesis debuggin'
 
   * General:
      ** Fix: Component::GetClassName has changed the signature to const 
@@ -515,14 +580,18 @@
   * SMSAnalysis:
      ** Sample rate was not correctly initialized under some conditions
 
-2002-12-10 'Zero padding move'
+2002-12-10 
+'Zero padding move'
+
   * Analysis Synthesis example:
      ** Removed useless synthesis zero padding factor
      ** Fixed some other bugs related to zero padding
      ** Did a little modification in the GUI so Audio displays are closed 
         when editing configuration
 
-2002-11-26 CLAM_0_4_0-rel 'Fly examples, fly to seattle' release
+2002-11-26 CLAM_0_4_0-rel 
+'Fly examples, fly to seattle' release
+
   * General:
      ** Directory reorganization
      ** CLAM_WARNING macros with customizable behaviour

@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "__WINDOWS_DS__" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\fftw\include" /I "..\..\..\..\fltk\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\dxsdk\include" /I "..\..\..\examples\SpectralDelay\App" /I "..\..\..\examples\SpectralDelay\GUI" /I "..\..\..\examples\SpectralDelay\GUI\FLTK" /I "..\..\..\examples\SpectralDelay\GUI\Presentation" /I "..\..\..\examples\SpectralDelay\GUI\View" /I "..\..\..\examples\SpectralDelay\Processing" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Application" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\GL" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\src\Visualization\Widget\FLTK"
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /FD /c /Zm1000 /D "NDEBUG" /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "HAVE_STANDARD_UNICODE" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "__WINDOWS_DS__" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\fftw\include" /I "..\..\..\..\fltk\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\dxsdk\include" /I "..\..\..\examples\SpectralDelay\App" /I "..\..\..\examples\SpectralDelay\GUI" /I "..\..\..\examples\SpectralDelay\GUI\FLTK" /I "..\..\..\examples\SpectralDelay\GUI\Presentation" /I "..\..\..\examples\SpectralDelay\GUI\View" /I "..\..\..\examples\SpectralDelay\Processing" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Application" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\GL" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\externals"
 # ADD BASE RSC /l 0xc0a /d "NDEBUG"
 # ADD RSC /l 0xc0a /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\dxsdk\lib" RFFTW2st.lib FFTW2st.lib fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_2.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\dxsdk\lib" /libpath:"..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\libmad\lib" /libpath:"..\..\..\..\id3lib\lib" RFFTW2st.lib FFTW2st.lib fltk_1_1.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_2.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib libsndfile.lib ogg_static.lib vorbis_static.lib vorbisenc_static.lib vorbisfile_static.lib id3lib.lib libmad.lib /nologo /subsystem:console /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none /debug
 
 !ELSEIF  "$(CFG)" == "SpectralDelay - Win32 Debug"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "__WINDOWS_DS__" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\fftw\include" /I "..\..\..\..\fltk\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\dxsdk\include" /I "..\..\..\examples\SpectralDelay\App" /I "..\..\..\examples\SpectralDelay\GUI" /I "..\..\..\examples\SpectralDelay\GUI\FLTK" /I "..\..\..\examples\SpectralDelay\GUI\Presentation" /I "..\..\..\examples\SpectralDelay\GUI\View" /I "..\..\..\examples\SpectralDelay\Processing" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Application" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\GL" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\src\Visualization\Widget\FLTK"
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /D "_DEBUG" /FD /GZ /Zm1000 /c /D "HAVE_STANDARD_SSTREAM" /D "HAVE_STANDARD_SSTREAM_STR" /D "HAVE_STANDARD_VECTOR_AT" /D "HAVE_STANDARD_UNICODE" /D "WIN32" /D "_MBCS" /D "_CONSOLE" /D "CLAM_FLOAT" /D "CLAM_USE_XML" /D "__WINDOWS_DS__" /D "ID3LIB_LINKOPTION=1" /I "..\..\..\src\Defines" /FI"preinclude.hxx" /I "..\..\..\externals\CbLib" /I "..\..\..\..\xercesc\include" /I "..\..\..\..\fftw\include" /I "..\..\..\..\fltk\include" /I "..\..\..\..\pthreads\include" /I "..\..\..\..\dxsdk\include" /I "..\..\..\examples\SpectralDelay\App" /I "..\..\..\examples\SpectralDelay\GUI" /I "..\..\..\examples\SpectralDelay\GUI\FLTK" /I "..\..\..\examples\SpectralDelay\GUI\Presentation" /I "..\..\..\examples\SpectralDelay\GUI\View" /I "..\..\..\examples\SpectralDelay\Processing" /I "..\..\..\src\Base" /I "..\..\..\src\Data\Base" /I "..\..\..\src\Data\BasicProcessing" /I "..\..\..\src\Defines" /I "..\..\..\src\Defines\Windows" /I "..\..\..\src\Errors" /I "..\..\..\src\Flow\Controls" /I "..\..\..\src\Flow\Nodes" /I "..\..\..\src\Flow\Ports" /I "..\..\..\src\Processing\Analysis" /I "..\..\..\src\Processing\ArithOps" /I "..\..\..\src\Processing\AudioIO" /I "..\..\..\src\Processing\Base" /I "..\..\..\src\Processing\Synthesis" /I "..\..\..\src\Processing\Transformations" /I "..\..\..\src\Processing\AudioFileIO" /I "..\..\..\src\Standard" /I "..\..\..\src\Storage\Base" /I "..\..\..\src\Storage\XML" /I "..\..\..\src\System\Application" /I "..\..\..\src\System\Threads" /I "..\..\..\src\Tools\AudioFileIO" /I "..\..\..\src\Tools\AudioIO" /I "..\..\..\src\Visualization\Base" /I "..\..\..\src\Visualization\GL" /I "..\..\..\src\Visualization\Presentation\Base" /I "..\..\..\src\Visualization\Util" /I "..\..\..\src\Visualization\View" /I "..\..\..\src\Visualization\Widget" /I "..\..\..\src\Visualization\Widget\FLTK" /I "..\..\..\externals"
 # ADD BASE RSC /l 0xc0a /d "_DEBUG"
 # ADD RSC /l 0xc0a
 BSC32=bscmake.exe
@@ -75,7 +75,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32
-# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\dxsdk\lib" FFTW2std.lib RFFTW2std.lib fltk_1_1d.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_2d.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib /nologo /subsystem:console /debug /machine:I386
+# ADD LINK32 /libpath:"..\..\..\..\fftw\lib" /libpath:"..\..\..\..\fltk\lib" /libpath:"..\..\..\..\xercesc\lib" /libpath:"..\..\..\..\pthreads\lib" /libpath:"..\..\..\..\dxsdk\lib" /libpath:"..\..\..\..\libsndfile\lib" /libpath:"..\..\..\..\oggvorbis\lib" /libpath:"..\..\..\..\libmad\lib" /libpath:"..\..\..\..\id3lib\lib" FFTW2std.lib RFFTW2std.lib fltk_1_1d.lib fltkforms_1_1d.lib fltkgl_1_1d.lib fltkimages_1_1d.lib comctl32.lib kernel32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib wsock32.lib user32.lib gdi32.lib opengl32.lib glu32.lib xerces-c_2d.lib dsound.lib dxerr8.lib user32.lib gdi32.lib pthreadVC.lib libsndfile.lib ogg_static_d.lib vorbis_static_d.lib vorbisenc_static_d.lib vorbisfile_static_d.lib id3libd.lib libmadd.lib /nologo /subsystem:console /debug /machine:I386
 # SUBTRACT LINK32 /nologo /verbose /pdb:none
 
 !ENDIF 
@@ -496,7 +496,7 @@ SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.cxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFile.cxx
+SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileConfig.cxx
 # End Source File
 # Begin Source File
 
@@ -616,6 +616,10 @@ SOURCE=..\..\..\src\Standard\Point.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Standard\BPF.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\Text.cxx
 # End Source File
 # End Group
 # Begin Group "Visualization Sources"
@@ -1067,6 +1071,10 @@ SOURCE=..\..\..\src\Standard\CircularBuffer.hxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\Standard\Text.hxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\Standard\ComplexTmplDef.hxx
 # End Source File
 # Begin Source File
@@ -1196,19 +1204,19 @@ SOURCE=..\..\..\src\Flow\Ports\InPort.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Flow\Ports\InPortTmpl.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
+SOURCE=..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Flow\Ports\OutPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\AudioOutPortTmpl.hxx
 # End Source File
 # End Group
 # Begin Group "Nodes Headers"
@@ -1304,7 +1312,7 @@ SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 
 # Begin Source File
 
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFile.hxx
+SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileConfig.hxx
 # End Source File
 # Begin Source File
 
@@ -1497,6 +1505,68 @@ SOURCE=..\..\..\..\fftw\include\fftw.h
 # Begin Source File
 
 SOURCE=..\..\..\..\fftw\include\rfftw.h
+# End Source File
+# End Group
+# End Group
+# Begin Group "externals Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\externals\deque
+# End Source File
+# Begin Group "CbLib Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\FunctorBase.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor1.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor2.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor0.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor3.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor4.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor0R.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor1R.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor2R.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor3R.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\Functor4R.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\CBLMacros.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\externals\CbLib\CBL.hxx
 # End Source File
 # End Group
 # End Group
@@ -1808,64 +1878,6 @@ SOURCE=..\..\..\src\Visualization\Widget\FLTK\FLKnob.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Visualization\Widget\FLTKWrapper.hxx
-# End Source File
-# End Group
-# End Group
-# Begin Group "externals Headers"
-
-# Begin Group "CbLib Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\FunctorBase.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor1.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor2.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor0.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor3.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor4.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor0R.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor1R.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor2R.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor3R.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\Functor4R.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\CBLMacros.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\externals\CbLib\CBL.hxx
 # End Source File
 # End Group
 # End Group
@@ -2240,6 +2252,7 @@ InputPath=settings.cfg
 	srcdeps.exe settings.cfg SpectralDelay.dsp
 
 # End Custom Build
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "SpectralDelay - Win32 Debug"
 
@@ -2250,6 +2263,7 @@ InputPath=settings.cfg
 	srcdeps.exe settings.cfg SpectralDelay.dsp
 
 # End Custom Build
+# PROP Exclude_From_Build 1
 
 !ENDIF 
 

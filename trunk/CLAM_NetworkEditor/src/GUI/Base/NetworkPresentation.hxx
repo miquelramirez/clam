@@ -79,7 +79,9 @@ protected:
 	virtual void CreateProcessingPresentation( const std::string &, CLAMVM::ProcessingController * ) = 0;
 	void RemoveProcessing( ProcessingPresentation* );
 	void AddProcessing( const std::string & , CLAM::Processing * );
-
+	void RebuildProcessingPresentationAttachedTo( const std::string &, CLAMVM::ProcessingController * );
+	void ChangeConnectionPresentationNames( const std::string &, const std::string & );
+	
 	virtual void CreatePortConnectionPresentation( CLAMVM::ConnectionAdapter * ) = 0;
 	virtual void CreateControlConnectionPresentation( CLAMVM::ConnectionAdapter * ) = 0;
 	void RemovePortConnection( ConnectionPresentation * );
@@ -87,8 +89,8 @@ protected:
 	void CreatePortConnection( const std::string &, const std::string & );
 	void CreateControlConnection( const std::string &, const std::string & );
 
-	void RemoveConnectionPresentation( 	const std::string &, const std::string & );
-
+	void RemoveConnectionPresentation( const std::string &, const std::string & );
+	
 	virtual void Clear( );
 	
 	ConnectionPointPresentation & GetOutPortPresentationByCompleteName(const std::string &);
@@ -118,6 +120,7 @@ public:
 	SigSlot::Slotv2< const std::string & , CLAMVM::ProcessingController * > SlotCreateProcessingPresentation;
 	SigSlot::Slotv1< ProcessingPresentation* > SlotRemoveProcessing;
 	SigSlot::Signalv1< const std::string & > SignalRemoveProcessing;
+	SigSlot::Slotv2< const std::string &, CLAMVM::ProcessingController * > SlotRebuildProcessingPresentationAttachedTo;
 
 	SigSlot::Signalv2< const std::string &, const std::string & > SignalCreatePortConnection;
 	SigSlot::Slotv2< const std::string &, const std::string & > SlotCreatePortConnection;
@@ -132,6 +135,8 @@ public:
 	SigSlot::Signalv2< const std::string &, const std::string & > SignalRemoveControlConnection;
 	SigSlot::Slotv1< ConnectionPresentation *> SlotRemoveControlConnection;
 	SigSlot::Slotv1< CLAMVM::ConnectionAdapter * > SlotCreateControlConnectionPresentation;
+
+	SigSlot::Slotv2< const std::string &, const std::string & > SlotChangeConnectionPresentationNames;
 };
 
 } // namespace NetworkGUI

@@ -1,1 +1,11 @@
 WARNING: This example is experimental, we are working on it yet.
+
+Interface:
+
+* To select a processing/connection : click on it
+* Select more than one processing/connection : shift + click on each processing
+* Deselect processing/connection: click on another part of the GUI
+* Config a processing: right click on it.
+* Edit the name of a processing: double click on it. After editing the name, Enter to finish.
+
+

@@ -24,26 +24,37 @@
 
 #include "ModelController.hxx"
 #include "Slotv1.hxx"
+#include "Signalv3.hxx"
+#include "Signalv2.hxx"
+#include "Signalv1.hxx"
+#include "Processing.hxx"
 
 #include <string>
 #include <list>
-
+/*
 namespace CLAM
 {
-	class Processing;
 	class ProcessingConfig;
 }
-
+*/
 namespace CLAMVM
 {
 
 class ProcessingController : public ModelController 
 {
-public:
+public:	
+/*	typedef enum {
+		Unconfigured=0,
+		Disabled,
+		Ready,
+		Running
+	} ProcessingExecState;
+*/
+	typedef CLAM::Processing::ExecState ProcessingExecState;
 	typedef std::list<std::string> NamesList;
 		
 private:
-	CLAM::Processing* mObserved;
+	CLAM::Processing * mObserved;
 
 protected:
 	
@@ -51,8 +62,13 @@ protected:
 	NamesList mOutPortNames;
 	NamesList mInControlNames;
 	NamesList mOutControlNames;
-	
+
+	/** 
+	 * In this method new config from GUI is passed to Network; if its state is running the processing is stopped before
+	 */
 	void ConfigureProcessing( const CLAM::ProcessingConfig & );
+	
+	void ProcessingNameChanged( const std::string & );
 public:
 	ProcessingController();
 	std::string GetObservedClassName();
@@ -66,6 +82,25 @@ public:
 		return true;
 	}
 	bool Publish();
+
+	ProcessingExecState GetProcessingExecState()
+	{
+		return mObserved->GetExecState();
+	}
+
+	const std::string & GetProcessingStatus()
+	{
+		return mObserved->GetStatus();
+	}
+	
+
+	void SetName( const std::string & );
+
+	void UpdateListOfPortsAndControls();
+	
+	/** 
+	 * We create a list if ports and controls for each processing
+	 */
 	bool BindTo( CLAM::Processing& obj );
 
 	NamesList::iterator BeginInPortNames();
@@ -81,7 +116,12 @@ public:
 	NamesList::iterator EndOutControlNames();
 	
 	SigSlot::Slotv1< const CLAM::ProcessingConfig & > SlotConfigureProcessing;
-
+	SigSlot::Slotv1< const std::string & > SlotProcessingNameChanged;
+	SigSlot::Signalv2< const std::string &, ProcessingController * > SignalProcessingNameChanged;
+	SigSlot::Signalv1< const std::string & > SignalChangeProcessingPresentationName;
+	SigSlot::Signalv2< ProcessingExecState, const std::string & > SignalChangeState;
+	SigSlot::Signalv1< CLAM::Processing * > SignalRemoveAllConnections;
+	SigSlot::Signalv2< ProcessingController *, CLAM::Processing * > SignalRebuildProcessingPresentationAttachedTo;
 };
 
 } // namespace CLAMVM

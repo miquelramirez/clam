@@ -433,6 +433,11 @@ void Spectrum::SetPhase(TData freq, TData newPhase)
 
 void Spectrum::SynchronizeTo(const SpecTypeFlags& tmpFlags)
 {
+	SynchronizeTo(tmpFlags,(*this));
+}	
+
+void Spectrum::SynchronizeTo(const SpecTypeFlags& tmpFlags,const Spectrum& in)
+{
 	//if tmpFlags are set so different synchronizations are possible, the easiest one is chosen
 	
 	SpecTypeFlags currentFlags;
@@ -441,14 +446,14 @@ void Spectrum::SynchronizeTo(const SpecTypeFlags& tmpFlags)
 
 	if(tmpFlags.bMagPhase)
 	{
-		if(currentFlags.bPolar) MagPhase2Polar();
-		if(currentFlags.bComplex) MagPhase2Complex();
-		if(currentFlags.bMagPhaseBPF) MagPhase2BPF();
+		if(currentFlags.bPolar) MagPhase2Polar(in);
+		if(currentFlags.bComplex) MagPhase2Complex(in);
+		if(currentFlags.bMagPhaseBPF) MagPhase2BPF(in);
 	}
 	else if(tmpFlags.bComplex)
 	{
-		if(currentFlags.bPolar)  Complex2Polar();
-		if(currentFlags.bMagPhase) Complex2MagPhase();
+		if(currentFlags.bPolar)  Complex2Polar(in);
+		if(currentFlags.bMagPhase) Complex2MagPhase(in);
 		if(currentFlags.bMagPhaseBPF)
 		{
 			if(currentFlags.bMagPhase) MagPhase2BPF();
@@ -461,7 +466,7 @@ void Spectrum::SynchronizeTo(const SpecTypeFlags& tmpFlags)
 				GetPhaseBuffer().Resize(size);
 				GetMagBuffer().SetSize(size);
 				GetPhaseBuffer().SetSize(size);
-				Complex2MagPhase();
+				Complex2MagPhase(in);
 				MagPhase2BPF();
 		
 				RemoveMagBuffer();
@@ -472,8 +477,8 @@ void Spectrum::SynchronizeTo(const SpecTypeFlags& tmpFlags)
 	}
 	else if(tmpFlags.bPolar)
 	{
-		if(currentFlags.bComplex)  Polar2Complex();
-		if(currentFlags.bMagPhase) Polar2MagPhase();
+		if(currentFlags.bComplex)  Polar2Complex(in);
+		if(currentFlags.bMagPhase) Polar2MagPhase(in);
 		if(currentFlags.bMagPhaseBPF)
 		{
 			if(currentFlags.bMagPhase) MagPhase2BPF();
@@ -486,7 +491,7 @@ void Spectrum::SynchronizeTo(const SpecTypeFlags& tmpFlags)
 				GetPhaseBuffer().Resize(size);
 				GetMagBuffer().SetSize(size);
 				GetPhaseBuffer().SetSize(size);
-				Polar2MagPhase();
+				Polar2MagPhase(in);
 				MagPhase2BPF();
 
 				RemoveMagBuffer();
@@ -509,7 +514,7 @@ void Spectrum::SynchronizeTo(const SpecTypeFlags& tmpFlags)
 			GetMagBuffer().SetSize(size);
 			GetPhaseBuffer().SetSize(size);
 		}
-		BPF2MagPhase();
+		BPF2MagPhase(in);
 
 		if(currentFlags.bPolar) MagPhase2Polar();
 		if(currentFlags.bComplex) MagPhase2Complex();
@@ -521,16 +526,42 @@ void Spectrum::SynchronizeTo(const SpecTypeFlags& tmpFlags)
 		}
 	}
 
+
 }
 
 
+void Spectrum::SynchronizeTo(const Spectrum& in)
+{
+	//if tmpFlags are set so different synchronizations are possible, the easiest one is chosen
+
+	SpecTypeFlags tmpFlags;
+	in.GetType(tmpFlags);
+
+	SynchronizeTo(tmpFlags,in);
+	
+
+
+}
+
 ////////Converting routines////////////////
 
+
+void Spectrum::Complex2Polar(const Spectrum& in)
+{
+	ComplexToPolarCnv_ convert;
+	convert.ToPolar(in.GetComplexArray(), GetPolarArray());	
+}
 
 void Spectrum::Complex2Polar() 
 {
 	ComplexToPolarCnv_ convert;
 	convert.ToPolar(GetComplexArray(), GetPolarArray());
+}
+
+void Spectrum::Polar2Complex(const Spectrum& in) 
+{
+	ComplexToPolarCnv_ convert;
+	convert.ToComplex(in.GetPolarArray(),GetComplexArray());
 }
 
 void Spectrum::Polar2Complex() 
@@ -539,12 +570,9 @@ void Spectrum::Polar2Complex()
 	convert.ToComplex(GetPolarArray(),GetComplexArray());
 }
 
-void Spectrum::Polar2MagPhase() 
+void Spectrum::Polar2MagPhase(const Array<Polar>& polarArray,DataArray& magBuffer, DataArray& phaseBuffer)
 {
 	int size = GetSize();
-	DataArray &magBuffer=GetMagBuffer();
-	DataArray &phaseBuffer=GetPhaseBuffer();
-	Array<Polar> &polarArray=GetPolarArray();
 	for (int i=0; i<size; i++) 
 	{
 		magBuffer[i] = polarArray[i].Mag();
@@ -552,12 +580,19 @@ void Spectrum::Polar2MagPhase()
 	}
 }
 
-void Spectrum::Complex2MagPhase() 
+void Spectrum::Polar2MagPhase(const Spectrum& in) 
+{
+	Polar2MagPhase(in.GetPolarArray(),GetMagBuffer(),GetPhaseBuffer());
+}
+
+void Spectrum::Polar2MagPhase() 
+{
+	Polar2MagPhase(GetPolarArray(),GetMagBuffer(),GetPhaseBuffer());
+}
+
+void Spectrum::Complex2MagPhase(const Array<Complex>& complexArray, DataArray& magBuffer, DataArray& phaseBuffer)
 {
 	int size = GetSize();
-	DataArray &magBuffer=GetMagBuffer();
-	DataArray &phaseBuffer=GetPhaseBuffer();
-	Array<Complex > &complexArray=GetComplexArray();
 	for (int i=0; i<size; i++) 
 	{
 		magBuffer[i] = complexArray[i].Mag();
@@ -565,12 +600,19 @@ void Spectrum::Complex2MagPhase()
 	}
 }
 
-void Spectrum::MagPhase2Polar() 
+void Spectrum::Complex2MagPhase(const Spectrum& in) 
+{
+	Complex2MagPhase(in.GetComplexArray(),GetMagBuffer(),GetPhaseBuffer());
+}
+
+void Spectrum::Complex2MagPhase() 
+{
+	Complex2MagPhase(GetComplexArray(),GetMagBuffer(),GetPhaseBuffer());
+}
+
+void Spectrum::MagPhase2Polar(const DataArray& magBuffer,const DataArray& phaseBuffer,Array<Polar>& polarArray)
 {
 	int size = GetSize();
-	DataArray &magBuffer=GetMagBuffer();
-	DataArray &phaseBuffer=GetPhaseBuffer();
-	Array<Polar > &polarArray=GetPolarArray();
 	for (int i=0; i<size; i++)
 	{
 		polarArray[i].SetMag(magBuffer[i]);
@@ -578,14 +620,24 @@ void Spectrum::MagPhase2Polar()
 	}
 }
 
-void Spectrum::MagPhase2Complex() 
+void Spectrum::MagPhase2Polar(const Spectrum& in) 
+{
+	MagPhase2Polar(in.GetMagBuffer(),in.GetPhaseBuffer(),GetPolarArray());
+
+}
+
+void Spectrum::MagPhase2Polar() 
+{
+	MagPhase2Polar(GetMagBuffer(),GetPhaseBuffer(),GetPolarArray());
+
+}
+
+void Spectrum::MagPhase2Complex(const DataArray& magBuffer,const DataArray& phaseBuffer,Array<Complex>& complexArray) 
 {
 	int size = GetSize();
-	DataArray &magBuffer=GetMagBuffer();
-	DataArray &phaseBuffer=GetPhaseBuffer();
-	Array<Complex > &complexArray=GetComplexArray();
-	complexArray.Resize(size);
-	complexArray.SetSize(size);
+	/* Xamat: I think this is not necessary, check in tests
+	  complexArray.Resize(size);
+	  complexArray.SetSize(size);*/
 	for (int i=0; i<size; i++) 
 	{
 		complexArray[i].SetReal(magBuffer[i]*cos(phaseBuffer[i]));
@@ -593,7 +645,17 @@ void Spectrum::MagPhase2Complex()
 	}
 }
 
-void Spectrum::MagPhase2BPF() 
+void Spectrum::MagPhase2Complex(const Spectrum& in) 
+{
+	MagPhase2Complex(in.GetMagBuffer(),	in.GetPhaseBuffer(),GetComplexArray());
+}
+
+void Spectrum::MagPhase2Complex() 
+{
+	MagPhase2Complex(GetMagBuffer(), GetPhaseBuffer(),GetComplexArray());
+}
+
+void Spectrum::MagPhase2BPF(const DataArray& magBuffer, const DataArray& phaseBuffer, BPF& magBPF, BPF& phaseBPF) 
 {
 	int size = GetSize();
 	CLAM_ASSERT(size == GetBPFSize(),
@@ -605,23 +667,42 @@ void Spectrum::MagPhase2BPF()
 	for (i=0; i<size ;i++)
 		freqBuffer.AddElem(i*delta); // set frequency points
 	
-	convert.ConvertToBPF(GetMagBPF(), freqBuffer, GetMagBuffer());
-	convert.ConvertToBPF(GetPhaseBPF(), freqBuffer, GetPhaseBuffer());
+	convert.ConvertToBPF(magBPF, freqBuffer, magBuffer);
+	convert.ConvertToBPF(phaseBPF, freqBuffer, phaseBuffer);
 }
 
-void Spectrum::BPF2MagPhase()
+
+void Spectrum::MagPhase2BPF(const Spectrum& in) 
+{
+	MagPhase2BPF(in.GetMagBuffer(),in.GetPhaseBuffer(),GetMagBPF(),GetPhaseBPF());
+}
+
+void Spectrum::MagPhase2BPF() 
+{
+	MagPhase2BPF(GetMagBuffer(),GetPhaseBuffer(),GetMagBPF(),GetPhaseBPF());
+}
+
+void Spectrum::BPF2MagPhase( const BPF& magBPF, const BPF& phaseBPF, DataArray& magBuffer, DataArray& phaseBuffer)
 {
 	int i;
 	TData freq;
 	int size = GetSize();
-	DataArray &magBuffer=GetMagBuffer();
-	DataArray &phaseBuffer=GetPhaseBuffer();
 	TData delta = GetSpectralRange()/(size-1);
 	for(i=0; i<size; i++){
 		freq = i*delta;
-		magBuffer[i]  = GetMagBPF().GetValue(freq); // interpolation
-		phaseBuffer[i]= GetPhaseBPF().GetValue(freq);
+		magBuffer[i]  = magBPF.GetValue(freq); // interpolation
+		phaseBuffer[i]= phaseBPF.GetValue(freq);
 	}
+}
+
+void Spectrum::BPF2MagPhase(const Spectrum& in)
+{
+	BPF2MagPhase(in.GetMagBPF(),in.GetPhaseBPF(),GetMagBuffer(),GetPhaseBuffer());
+}
+
+void Spectrum::BPF2MagPhase()
+{
+	BPF2MagPhase(GetMagBPF(),GetPhaseBPF(),GetMagBuffer(),GetPhaseBuffer());	
 }
 
 

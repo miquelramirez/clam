@@ -45,27 +45,10 @@ namespace CLAM {
 	class FFT_rfftw: public FFT_base
 	{
 		rfftw_plan	mpPlan;
-		/** Internal output buffer */
-		TData* fftbuffer;
-		/** Auxiliary flags structure, used to add the complex attribute. */
-		static SpecTypeFlags mComplexflags;
-
-		/* FFT possible execution states.
-		 */
-		typedef enum {
-			sComplex, // We just need to write the complex array.
-			sComplexSync, // We write the complex array and synchronize.
-			sOther // The complex array is not present.
-		} FFTState;
-
-		/** I/O Prototype state of the FFT object. */
-		FFTState mState;
-
+	
 		/** Configuration change method
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
-
-		inline void CheckTypes(const Audio& in, const Spectrum &out) const;
 
 		// Output conversions
 
@@ -75,32 +58,20 @@ namespace CLAM {
 		 * @see the <a HREF="http://www.fftw.org/doc/fftw_2.html#SEC5"> RFFTW docs </a>
 		 * for a description of this format.
 		 */
-		inline void RFFTWToComplex(Spectrum &out) const;
-
-		inline void RFFTWToOther(Spectrum &out) const;
-
+		void ToComplex(Spectrum &out);
 	public:
 
 		FFT_rfftw();
 
-		FFT_rfftw(const FFTConfig &c)
-			throw(ErrDynamicType);
-
+		FFT_rfftw(const FFTConfig &c);
+		
 		~FFT_rfftw();
 
 		bool Do(void);
 
-		void Attach(Audio& in, Spectrum &out);
-
-		bool Do(const Audio& in, Spectrum &out) const;
+		bool Do(const Audio& in, Spectrum &out);
 
 		// Port interfaces.
-
-		bool SetPrototypes(const Audio& in,const Spectrum &out);
-
-		bool SetPrototypes();
-
-		bool UnsetPrototypes();
 
 		bool MayDisableExecution() const {return true;}
 

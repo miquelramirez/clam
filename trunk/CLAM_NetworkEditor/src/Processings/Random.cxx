@@ -5,6 +5,8 @@
 #include <time.h>
 #include <stdlib.h>
 
+#define DEFAULTDELAYFACTOR 10
+
 namespace CLAM
 {
 
@@ -13,7 +15,7 @@ void RandomConfig::DefaultInit(void)
 	AddAll();
 	UpdateData();
 	SetName("Random");
-	SetDelayFactor(10);
+	SetDelayFactor(DEFAULTDELAYFACTOR);
 	SetMinNote(36);
 	SetMaxNote(98);
 	srand( (unsigned)time( NULL ) );
@@ -23,7 +25,7 @@ Random::Random()
 	: mInput("In delay factor", this ),
 	  mOutput("Out frequency", this ),
 	  mMidiToFreq(),
-	  mCounter(0)
+	  mCounter(DEFAULTDELAYFACTOR)
 {
 	mInput.DoControl(10);
 	mMidiToFreq.Set(69.0,440.0);
@@ -35,7 +37,7 @@ Random::Random( const RandomConfig & cfg)
 	: mInput("In delay factor", this ),
 	  mOutput("Out frequency", this ),
 	  mMidiToFreq(),
-	  mCounter(0)
+	  mCounter(DEFAULTDELAYFACTOR)
 {
 	Configure(cfg);
 }
@@ -46,7 +48,6 @@ bool Random::Do()
 	if( !AbleToExecute() ) return true;
 
 //	static int Counter = (int)mInput.GetLastValue(); // Sends control from the first call
-	mCounter = mInput.GetLastValue();
 	mCounter++;
 	if (mCounter > (int)mInput.GetLastValue())
 	{
@@ -71,6 +72,7 @@ bool Random::ConcreteConfigure(const ProcessingConfig& c)
 }
 
 } // namespace CLAM
+
 
 
 

@@ -146,6 +146,8 @@ bool AudioFileIn::Do(Audio& in)
 			*ptr++ = (*sptr++);
 		}
 	}
+
+	in.SetSampleRate( mConfig.GetSampleRate() );
 		
 	if (!mKeepFrameSizes)
 	{
@@ -209,6 +211,9 @@ bool AudioFileIn::Do(Audio& inL,Audio& inR)
 			*ptrR++ = (*sptr++);
 		}
 	}
+
+	inL.SetSampleRate( mConfig.GetSampleRate() );
+	inR.SetSampleRate( mConfig.GetSampleRate() );
 
 	if (!mKeepFrameSizes)
 	{
