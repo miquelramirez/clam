@@ -293,6 +293,26 @@ namespace CLAM {
 				return;
 			}
 
+			if ( classname=="SMSPitchDiscretization") 
+			{
+				SegmentTransformation* wrapper = new SegmentTransformation;	
+				Processing * proc = theFactory.Create(classname);
+				FrameTransformation* pitchDiscretization = dynamic_cast<FrameTransformation*>(proc); 
+				wrapper->WrapFrameTransformation(pitchDiscretization);
+				Insert( *wrapper );
+				return;
+			}
+
+			if ( classname=="SMSSpectralShapeShift") 
+			{
+				SegmentTransformation* wrapper = new SegmentTransformation;	
+				Processing * proc = theFactory.Create(classname);
+				FrameTransformation* spectralShapeShift = dynamic_cast<FrameTransformation*>(proc); 
+				wrapper->WrapFrameTransformation(spectralShapeShift);
+				Insert( *wrapper );
+				return;
+			}
+
 			Insert( *( theFactory.Create( classname ) ) );
 		}
 		/** Helper method for updating frame counters both in ports and in internal data*/
