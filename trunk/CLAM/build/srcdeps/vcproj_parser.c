@@ -123,7 +123,7 @@ void vcproj_parse_add_library_paths(void)
 
 char* srcdeps_path()
 {
-	char* toppath = listhash_find(config, "TOP")->l->first->str;
+	char* toppath = listhash_find(config, "CLAM_PATH")->l->first->str;
 	static char srcdepspath[100];
 	sprintf(srcdepspath,"%s%s",toppath,"/build/srcdeps/srcdeps.exe");
 	winstyle(srcdepspath);
