@@ -75,13 +75,12 @@ namespace CLAM
 				_timer.start(_refreshInterval,true);
 		}
 
-		void NetDisplaySurface::resizeGL(int width, int height)
-		{ 
-			_w = width;
-			_h = height;
-			_doResize = true;
-			update();
-		}
+	        void NetDisplaySurface::resizeEvent(QResizeEvent* re)
+	        {
+		    _w = re->size().width();
+		    _h = re->size().height();
+		    _doResize = true;
+	        }
 
 		void NetDisplaySurface::receivedView(SView v)
 		{

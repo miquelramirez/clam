@@ -28,9 +28,9 @@ namespace CLAM
 
 			protected slots:
 				void paintGL();
-				void resizeGL(int width, int height);
 
 			protected:
+		                void resizeEvent(QResizeEvent* re);
 
 			private:
 				NetPlotController* _controller;
