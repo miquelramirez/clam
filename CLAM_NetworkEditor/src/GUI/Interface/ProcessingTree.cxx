@@ -98,12 +98,13 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem(plots,"PeaksPortMonitor");
 	new ProcessingItem(plots,"FundPortMonitor");
 	
-	new ProcessingItem(plots,"AudioPlotProcessing");
-	new ProcessingItem(plots,"SpectrumPlotProcessing");
+	new ProcessingItem(plots, "AudioPlotProcessing");
+	new ProcessingItem(plots, "SpectrumPlotProcessing");
 	new ProcessingItem(plots, "PeaksPlotProcessing");
 	new ProcessingItem(plots, "FundPlotProcessing");
-	new ProcessingItem(plots,"SinTracksPlotProcessing");
-	new ProcessingItem(plots,"FundTrackPlotProcessing");
+	new ProcessingItem(plots, "SinTracksPlotProcessing");
+	new ProcessingItem(plots, "FundTrackPlotProcessing");
+	new ProcessingItem(plots, "SpecgramPlotProcessing");
 
 	show();
 	header()->hide();
