@@ -3,13 +3,14 @@
 #include <qwidget.h>
 #include <qobjectlist.h>
 #include <iostream>
-#include "EventLogger.hxx"
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "XMLStorage.hxx"
 #include "Thread.hxx"
 #include "AudioManager.hxx"
 #include "QtSlot2Control.hxx"
+#include "NetPeaksPlot.hxx"
+
 
 class NetworkPlayer
 {
@@ -65,10 +66,6 @@ class PrototypeLoader
 	QWidget * _mainWidget;
 	NetworkPlayer _player;
 public:
-	QWidget * loadWidget(char * uiFile)
-	{
-		return _mainWidget = (QWidget *) QWidgetFactory::create( uiFile );
-	}
 
 };
 void connectWidgetsWithControls(CLAM::Network & network, QWidget * qtPrototype)
@@ -84,6 +81,7 @@ void connectWidgetsWithControls(CLAM::Network & network, QWidget * qtPrototype)
 		{
 			controlName.replace(colonPosition, 2, ".");
 		}
+		std::cout << "Control: " << controlName << std::endl;
 		std::cout << controlName << std::endl;
 
 		CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
@@ -94,6 +92,7 @@ void connectWidgetsWithControls(CLAM::Network & network, QWidget * qtPrototype)
 	}
 
 }
+
 void connectWidgetsWithMappedControls(CLAM::Network & network, QWidget * qtPrototype)
 {
 	QObjectList * widgets = qtPrototype->queryList(0,"InControlFloat::.*");
@@ -107,13 +106,24 @@ void connectWidgetsWithMappedControls(CLAM::Network & network, QWidget * qtProto
 		{
 			controlName.replace(colonPosition, 2, ".");
 		}
-		std::cout << controlName << std::endl;
+		std::cout << "0:1 Mapped Control: " << controlName << std::endl;
 
 		CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
 		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
 		                  SLOT(sendMappedControl(int)));
+	}
+
+}
+void connectWidgetsWithPeaksPorts(CLAM::Network & network, QWidget * qtPrototype)
+{
+	QObjectList * widgets = qtPrototype->queryList("CLAM::VM::NetPeaksPlot",0);
+	for (QObjectListIt it(*widgets); it.current(); ++it)
+	{
+		QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
+		std::string controlName(aWidget->name());
+		std::cout << "Peak Port Monitor: " << controlName << std::endl;
 	}
 
 }
@@ -125,32 +135,6 @@ QWidget * loadPrototype(CLAM::Network & network, char* uiFile)
 	connectWidgetsWithControls(network,qtPrototype);
 	connectWidgetsWithMappedControls(network,qtPrototype);
 
-	// This control list should be extracted from the network
-	char * controls[] =
-	{
-		"Unexisting Control",
-		"CLAM::HighPassDelay",
-		"CLAM::LowPassDelay",
-		"CLAM::BandPassDelay",
-		"CLAM::HighPassGain",
-		"CLAM::LowPassGain",
-		"CLAM::BandPassGain",
-		0
-	};
-
-
-	for (int i=0; controls[i]!=0; i++)
-	{
-		QWidget * controler = 
-			(QWidget *) qtPrototype->child( controls[i] );
-		if (!controler) continue;
-		std::cout << "Found " << controls[i] << std::endl;
-
-		// This object should be an interface to the CLAM control
-		EventLogger * notifier = new EventLogger(controls[i]);
-		notifier->connect(controler,SIGNAL(valueChanged(int)),
-		                  SLOT(printValue(int)));
-	}
 	return qtPrototype;
 
 }
