@@ -20,6 +20,8 @@ namespace CLAM
 				GLContext(const QGLFormat& fmt, QPaintDevice* dev);
 
 			protected:
+				//TODO PA: (refactoring) the platform specific should be hiden into 
+				//     the implementation, not affecting the class interface
 #if defined(Q_WS_WIN)
 				int choosePixelFormat(void* p, HDC hdc);
 #elif defined(Q_WS_X11)
