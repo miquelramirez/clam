@@ -1,9 +1,12 @@
 2003-02-28  CLAM_0_4_2
 'Cuidado merge update'
+
   * General
       ** Most classes ported to the GetClassName contsness
   * Processing - Base:
       ** TopLevelProcessing::GetInstance() returns a pointer instead a reference
+  * Processings - Generators:
+      ** Added AbleToExecute in Generator::Do
   * Processings - Spectral:
       ** Added Gaussian window to WindowGenerator
       ** Removed Synth window to WindowGenerator (not used)
