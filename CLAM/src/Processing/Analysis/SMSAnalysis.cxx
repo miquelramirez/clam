@@ -22,6 +22,7 @@
 #include "SMSAnalysis.hxx"
 
 
+
 using namespace CLAM;
 
 /////////////////////////////////////////////////////////////////////
@@ -261,12 +262,15 @@ bool SMSAnalysis::Do(const Audio& in, Spectrum& outGlobalSpec,SpectralPeakArray&
 {
 	//Analyzing sinusoidal component
 	mPO_SinSpectralAnalysis.Do(in,outGlobalSpec);
+
 	Do(outGlobalSpec,outPk,outFn);
 
 	
 	//Analyzing residual component
 	//First we synthesize Sinusoidal Spectrum
 	mPO_SynthSineSpectrum.Do(outPk,outSinSpec);
+
+
 	//Then we analyze the spectrum of the whole audio using residual config
 	    
 	outResSpec.SetSize(mSpec.GetSize());
