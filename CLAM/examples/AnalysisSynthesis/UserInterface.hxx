@@ -120,5 +120,7 @@ private:
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
+  void StoreOutputSound(void);
+  void DisplayOutputSound(void);
 };
 #endif
