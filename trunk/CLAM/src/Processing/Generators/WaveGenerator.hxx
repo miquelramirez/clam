@@ -48,7 +48,7 @@ namespace CLAM {
 	};
 
 
-	template<typename EWaveType::tValue V> 
+	template< typename WaveType > 
 	class WaveFunctor {
 	public:
 		TData operator()(TTime x,TData amplitude);
@@ -75,6 +75,11 @@ namespace CLAM {
 		WaveGeneratorConfig mConfig;
 	private:
 
+		// MRJ: Convenience type for template thingies to work
+		class EWaveType_eSine
+		{
+		};
+
 		TData mAmplitude;
 
 		TData mXPos;    // Radians
@@ -94,6 +99,32 @@ namespace CLAM {
 		inline TData Sine(TTime pos);
 
 	public:
+
+
+		inline TData GetXPos() const
+		{
+			return mXPos;
+		}
+
+		inline void SetXPos( TData new_value )
+		{
+			mXPos = new_value;
+		}
+
+		inline TData GetXDelta() const
+		{
+			return mXDelta;
+		}
+
+		inline void SetXDelta( TData new_value )
+		{
+			mXDelta = new_value;
+		}
+
+		inline TData GetAmplitude() const
+		{
+			return mAmplitude;
+		}
 
 		OutPortTmpl<Audio> Output;
 
@@ -123,21 +154,31 @@ namespace CLAM {
 
 	private:
 
-		template<typename EWaveType::tValue V> 
-		void FillBuffer(Array<TData> &buffer)
-		{
-			int i;
-			WaveFunctor<V> func;
-			int size = buffer.Size();
-			for (i=0; i<size; i++) {
-				buffer[i] = func(mXPos,mAmplitude);
-				mXPos += mXDelta;
-			}
-			if (mXPos > 2.0 * M_PI)
-				mXPos = fmod(mXPos,2.0 * M_PI);
-		}
  	
 	};
+
+	template < typename WaveType >
+	void FillBuffer(Array<TData> &buffer, WaveGenerator& generator, WaveType* dummy = 0 )
+	{
+		TData xvalue = generator.GetXPos(); 
+		TData xdelta = generator.GetXDelta();
+		TData amplitude = generator.GetAmplitude();
+
+
+		int i;
+		WaveFunctor<WaveType> func;
+		int size = buffer.Size();
+		for (i=0; i<size; i++) {
+			buffer[i] = func( xvalue, amplitude);
+			xvalue += xdelta;
+		}
+		if (xvalue > 2.0 * M_PI)
+			xvalue = fmod(xvalue, TData( 2.0 * M_PI ));
+
+		generator.SetXPos( xvalue );
+	}
+
+
 }//namespace CLAM
 
 #endif // _WaveGenerator_
