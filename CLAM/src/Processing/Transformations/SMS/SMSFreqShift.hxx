@@ -30,6 +30,7 @@
 #include "Frame.hxx"
 #include "SMSTransformationConfig.hxx"
 #include "FrameTransformation.hxx"
+#include "FrameTransformationConfig.hxx"
 
 namespace CLAM{
 
@@ -39,6 +40,8 @@ namespace CLAM{
 		OutPort<SpectralPeakArray> mOut;
 
 		InControl mShiftAmount;
+
+		FrameTransformationConfig mConfig;
 
 	public:
 		const char* GetClassName() const
@@ -59,7 +62,7 @@ namespace CLAM{
 		
 		const ProcessingConfig& GetConfig() const { throw 0; }
 
-		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
+		bool ConcreteConfigure(const ProcessingConfig& c) { return mConfig; }
 
 		bool Do(const Frame& in, Frame& out)
 		{
