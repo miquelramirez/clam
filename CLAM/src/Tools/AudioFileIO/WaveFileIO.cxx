@@ -65,7 +65,9 @@ void WaveFileIO::ReadHeader(void)
 		i += ReadChunkHeader(h);
 		if (CheckID(h.id,"fmt ")) {
 			WaveFmtChunk fmt;
-			i += fread(&fmt,1,sizeof(fmt),mFile);
+			int j = 0;
+			j = fread(&fmt,1,sizeof(fmt),mFile);
+			i += j;
 
 			SWAP(fmt.formatTag);
 			SWAP(fmt.channels);
@@ -80,6 +82,14 @@ void WaveFileIO::ReadHeader(void)
 			mHeader.mChannels = fmt.channels;
 			mHeader.mSamplerate = fmt.samplerate;
 			fmtFound = true;
+			
+			while (j<h.len)
+			{
+				char dum[256];
+				int n = (h.len-j);
+				if (n>256) n = 256;
+				j += fread(&dum,1,n,mFile);
+			}
 		}
 		else
 		{
