@@ -79,6 +79,8 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	ProcessingItem * smspitchshift = new ProcessingItem( smstrans, "SMSPitchShift" );
 	ProcessingItem * smsresidualgain = new ProcessingItem( smstrans, "SMSResidualGain" );
 	ProcessingItem * smssinusoidalgain = new ProcessingItem( smstrans, "SMSSinusoidalGain" );
+	ProcessingItem * smssinefilter = new ProcessingItem( smstrans, "SMSSineFilter" );
+	ProcessingItem * smsoddevenharmonicratio = new ProcessingItem( smstrans, "SMSOddEvenHarmonicRatio" );
 	ProcessingItem * smsspectralshapeshift = new ProcessingItem( smstrans, "SMSSpectralShapeShift" );
 
 		
