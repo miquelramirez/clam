@@ -468,6 +468,12 @@ void UserInterface::UpdateState()
 		mMelodyExtractionMenuItem->activate();
 		if(appState.GetHasTransformationScore())
 			mDoSMSTransMenuItem->activate();
+		if(mFrameDataAvailable)
+		{
+			mViewFrameDataMenuItem->activate();
+			mShowSpectrumAndPeaksMenuItem->activate();
+			mShowResidualSpectrumMenuItem->activate();
+		}
 	}
 	if(appState.GetHasMelody())
 		mStoreMelodyMenuItem->activate();
@@ -485,8 +491,7 @@ void UserInterface::UpdateState()
 	
 	if(appState.GetHasTransformation())
 		mUndoTransMenuItem->activate();
-	if(!mFrameDataAvailable)
-		DeactivateFrameDataMenuItems();
+	
 		
 	mWindow->redraw();
 }
