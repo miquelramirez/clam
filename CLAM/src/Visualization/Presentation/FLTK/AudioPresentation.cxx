@@ -80,7 +80,7 @@ void ProcDataPresentation<Audio>::Init( const Geometry& g, const char* l )
 	// FLTK thingies initialization
 
 	mWindow = new PresentationWindow( this , g.GetX(), g.GetY(), g.GetW(), g.GetH(), l );
-	mDispContainer = new FLDisplayContainer( g.GetX(), g.GetY(), g.GetW(), g.GetH() );
+	mDispContainer = new FLDisplayContainer( 0, 0, g.GetW(), g.GetH() );
 
 
 	mPort = new GLPort( Rect<int>( 0, 0, g.GetW(), g.GetH() ) );
