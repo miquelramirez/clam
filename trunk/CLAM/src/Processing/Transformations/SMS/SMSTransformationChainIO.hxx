@@ -23,7 +23,7 @@
 #ifndef _SMSTransformationChainIO_
 #define _SMSTransformationChainIO_
 
-#include "SMSTransformation.hxx"
+#include "SegmentTransformation.hxx"
 #include "SpectralEnvelopeExtract.hxx"
 #include "SpectralEnvelopeApply.hxx"
 #include "FDCombFilter.hxx"

@@ -23,7 +23,15 @@
 #ifndef _SMSSineFilter_
 #define _SMSSineFilter_
 
-#include "SMSTransformation.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "FrameTransformation.hxx"
+#include "FrameTransformationConfig.hxx"
+#include "SpectralPeakArray.hxx"
+#include "SegmentTransformation.hxx"
+#include "SegmentTransformationConfig.hxx"
 
 
 namespace CLAM{
@@ -37,8 +45,10 @@ namespace CLAM{
 		 */
 		const char *GetClassName() const {return "SMSSineFilter";}
 
-		InPort<SpectralPeakArray> mIn;
-		OutPort<SpectralPeakArray> mOut;
+		InPort<SpectralPeakArray> mInPeaks;
+		OutPort<SpectralPeakArray> mOutPeaks;
+
+		SegmentTransformationConfig mConfig;
 
 
 	public:
@@ -51,8 +61,8 @@ namespace CLAM{
 		*/
 		SMSSineFilter(const SegmentTransformationConfig &c)
 			: SegmentTransformation(c)
-			, mIn("In SpectralPeaks", this)
-			, mOut("Out SpectralPeaks", this)
+			, mInPeaks("In SpectralPeaks", this)
+			, mOutPeaks("Out SpectralPeaks", this)
 		{
 			Configure( SegmentTransformationConfig() );
 		}
@@ -79,14 +89,14 @@ namespace CLAM{
 				// Note that overriding this method breaks the processing chain functionality. 
 		bool Do()
 		{
-			bool result = Do(mIn.GetData(), mOut.GetData());
-			mIn.Consume();
-			mOut.Produce();
+			bool result = Do( mInPeaks.GetData(), mOutPeaks.GetData() );
+			mInPeaks.Consume();
+			mOutPeaks.Produce();
 			return result;
 		}
 	
 	};		
-};//namespace CLAM
+}	//namespace CLAM
 
 #endif // _SMSSineFilter_
 

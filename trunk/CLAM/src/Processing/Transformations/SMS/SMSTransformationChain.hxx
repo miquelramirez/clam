@@ -23,7 +23,7 @@
 #define _SMSTransformationChain_
 
 
-#include "SMSTransformation.hxx"
+#include "SegmentTransformation.hxx"
 #include "SMSTransformationChainConfig.hxx"
 #include "ProcessingComposite.hxx"
 #include "ProcessingData.hxx"

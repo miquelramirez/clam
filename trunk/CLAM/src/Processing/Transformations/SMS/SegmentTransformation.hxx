@@ -32,7 +32,7 @@
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
-#include "SMSTransformationConfig.hxx"
+#include "SegmentTransformationConfig.hxx"
 
 #include "FrameTransformation.hxx"
 

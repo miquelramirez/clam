@@ -29,7 +29,7 @@
 #include "FDCombFilter.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
-#include "SMSTransformationConfig.hxx"
+#include "SegmentTransformationConfig.hxx"
 #include "InControl.hxx"
 #include "FrameTransformation.hxx"
 #include "FrameTransformationConfig.hxx"

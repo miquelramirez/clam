@@ -25,7 +25,7 @@
 
 #include "SMSPitchShift.hxx"
 #include "SpectrumAdder2.hxx"
-#include "SMSTransformation.hxx"
+#include "SegmentTransformation.hxx"
 
 
 // TODO: this transformation needs to be ported to inherit from FrameTransformation instead of SegmentTransformation

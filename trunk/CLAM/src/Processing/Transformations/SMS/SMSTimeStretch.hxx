@@ -23,7 +23,7 @@
 #ifndef _SMSTimeStretch_
 #define _SMSTimeStretch_
 
-#include "SMSTransformation.hxx"
+#include "SegmentTransformation.hxx"
 #include "FrameInterpolator.hxx"
 #include "SMSTimeStretchConfig.hxx"
 

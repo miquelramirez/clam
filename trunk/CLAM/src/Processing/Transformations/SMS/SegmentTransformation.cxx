@@ -19,7 +19,7 @@
  *
  */
 
-#include "SMSTransformation.hxx"
+#include "SegmentTransformation.hxx"
 
 namespace CLAM
 {
