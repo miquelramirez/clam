@@ -50,7 +50,7 @@ namespace CLAM{
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSSpectralShapeShift() : mIn( "In SpectralPeakArray", this), mOut( "Out SpectralPeakArray", this) 
+		SMSSpectralShapeShift() : mIn( "In SpectralPeaks", this), mOut( "Out SpectralPeaks", this) 
 		{
 			Configure( SMSTransformationConfig() );
 			mSpectralRange=22050;//default
