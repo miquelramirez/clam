@@ -21,21 +21,73 @@
 
 #include "SMSTransformation.hxx"
 
+//TODO !!!!! remove
+#include "SMSFreqShift.hxx"
+
 namespace CLAM
 {
-	SMSTransformation::SMSTransformation()
-		: mAmountCtrl("Amount",this), mOnCtrl("On",this), mSendAmount("Out Control", this),
-		mInput(0), mOutput(0), mUseTemporalBPF( false )
+	void SMSTransformation:: Wrap( SMSFreqShift* trans)
 	{
+		CLAM_ASSERT( !mTransformation, "SMSTransformation::Wrapp object shoudn't have wrapped transformation");
+		mTransformation = trans;
+	}
+	
+	SMSTransformation::SMSTransformation()
+		: mSendAmount("Out Control", this)
+		, mAmountCtrl("Amount",this)
+		, mOnCtrl("On",this)
+	{
+		mInput = 0;
+		mOutput = 0;
+		mUseTemporalBPF = 0;
 		mCurrentInputFrame = 0;
+		mTransformation = 0;
 	}
 
-	SMSTransformation::SMSTransformation(const SMSTransformationConfig& c)
-		:mAmountCtrl("Amount",this),mOnCtrl("On",this),
-		mInput(0),mOutput(0), mUseTemporalBPF( false ), mSendAmount("Out Control", this)
+	SMSTransformation::SMSTransformation(const SMSTransformationConfig& c) 
+		: mSendAmount("Out Control", this)
+		, mAmountCtrl("Amount",this)
+		, mOnCtrl("On",this)
 	{
+		mInput = 0;
+		mOutput = 0;
+		mUseTemporalBPF = 0;
 		mCurrentInputFrame = 0;
 		Configure(c);
+		mTransformation = 0;
+	}
+
+	SMSTransformation::~SMSTransformation()
+	{
+		if (mTransformation)
+			delete mTransformation;
+	};
+	
+	bool SMSTransformation::Do(const Segment& in, Segment& out)
+	{
+		CLAM_ASSERT(mInput==&in, "sms transformation chain needs input segment");
+		//TODO find out why this finalization condition (and not just using size)
+		while( mCurrentInputFrame<in.mCurrentFrameIndex)
+		{
+			if(mUseTemporalBPF)
+				UpdateControlValueFromBPF(((TData)in.mCurrentFrameIndex)/in.GetnFrames());
+			
+			AddFramesToOutputIfInputIsLonger(mCurrentInputFrame, in, out);
+			
+			const Frame & inframe = in.GetFrame(mCurrentInputFrame);
+			Frame & outframe = out.GetFrame(mCurrentInputFrame);
+
+			if (mTransformation)
+				mTransformation->Do(inframe, outframe);
+			else //TODO remove when refactoring is done 
+				Do( inframe, outframe );
+			
+			if(&in!=&out)
+				out.mCurrentFrameIndex++;
+			
+			mCurrentInputFrame++;
+		}
+		return true;
 	}
 
 	bool SMSTransformation::ConcreteConfigure(const ProcessingConfig& c)

@@ -36,6 +36,8 @@
 
 namespace CLAM {
 
+	class SMSFreqShift; //TODO remove
+	
 	/** Abstract base class for all SMS Transformations. It implements all basic behaviour for
 	 *	SMS Transformations such as Configuration and Control handling but defers the selection
 	 *	of a particular Do overload to its template subclass SMSTransformation. 
@@ -45,6 +47,7 @@ namespace CLAM {
 	{
 		
 		OutControl mSendAmount;
+		SMSFreqShift * mTransformation;
 
 	protected:
 
@@ -72,6 +75,8 @@ namespace CLAM {
 	public:
 		void AttachIn( Segment& data ){ mInput = &data; }
 		void AttachOut( Segment& data ){ mOutput = &data; }
+
+		void Wrap( SMSFreqShift*);
 		
 		/** Configuration change method. Note that the Amount Control is initialized from the
 		 *	the values in the configuration. Appart from that the member boolean variable that
@@ -94,8 +99,7 @@ namespace CLAM {
 		*/
 		SMSTransformation(const SMSTransformationConfig& c);
 		
-		/** Destructor of the class*/
- 		virtual ~SMSTransformation(){};
+ 		virtual ~SMSTransformation();
 
 		/** Supervised Do() function. It calls the non-supervised Do that receives Segment as
 		 *	input and output.
@@ -137,28 +141,7 @@ namespace CLAM {
 		 *  @param out the Segment that is output from the transformation.
 		 *  @return Boolean value, whether the process has finished successfully or not.
 		 */
-		virtual bool Do(const Segment& in, Segment& out)
-		{
-			CLAM_ASSERT(mInput==&in, "sms transformation chain needs input segment");
-			//TODO find out why this finalization condition (and not just using size)
-			while( mCurrentInputFrame<in.mCurrentFrameIndex)
-			{
-				if(mUseTemporalBPF)
-					UpdateControlValueFromBPF(((TData)in.mCurrentFrameIndex)/in.GetnFrames());
-				
-				AddFramesToOutputIfInputIsLonger(mCurrentInputFrame, in, out);
-				
-				const Frame & inframe = in.GetFrame(mCurrentInputFrame);
-				Frame & outframe = out.GetFrame(mCurrentInputFrame);
-
-				Do( inframe, outframe );
-				if(&in!=&out)
-					out.mCurrentFrameIndex++;
-				
-				mCurrentInputFrame++;
-			}
-			return true;
-		}
+		virtual bool Do(const Segment& in, Segment& out);
 
 		//TODO remove. but now is used from Time-Stretch
 		//! formerly corresponded to UnwrappedProcessingData
