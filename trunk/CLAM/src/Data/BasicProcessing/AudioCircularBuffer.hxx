@@ -23,6 +23,7 @@
 #define _AudioCircularBuffer_
 
 #include "Array.hxx"
+#include "Audio.hxx"
 #include "DataTypes.hxx"
 #include "Err.hxx"
 #include "CircularBuffer.hxx"
