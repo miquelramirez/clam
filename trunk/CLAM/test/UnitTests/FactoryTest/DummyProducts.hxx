@@ -32,4 +32,25 @@ namespace CLAMTest
 		virtual const char * GetClassName() const {return "DummyProductBar";}
 	};
 
+  class A
+  {
+  public:
+    virtual void foo() = 0;
+    
+    virtual ~A()
+    {
+    }
+  };
+
+  class B : public A
+  {
+  public:
+    virtual void foo() {}
+    
+    virtual ~B()
+    {
+    }
+  };
+
+
 }

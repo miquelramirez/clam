@@ -108,7 +108,7 @@ protected:
 
 		mTheFactory->GetRegisteredNames( registeredNames );
 
-		CPPUNIT_ASSERT_EQUAL( (unsigned int )0, registeredNames.size() );
+		CPPUNIT_ASSERT_EQUAL( true, registeredNames.empty() );
 	}
 
 };

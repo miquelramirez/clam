@@ -33,9 +33,17 @@ namespace CLAM {
 #define MACOSX_WORKAROUND
 #endif
 
+#ifdef __MACOSX_CORE__
+/* a kludgy factor 2 (22050->44100) sample rate conversion
+** because macosx drivers do not handle 22050 */ 
+#define FACTOR2SRC_KLUDGE
+#endif
+
+//#define DEBUG_RDWR_POS
+
+
 	typedef signed short  MY_TYPE;
 	#define FORMAT RtAudio::RTAUDIO_SINT16
-	#define SCALE  32767.0
 
 	class RtAAudioDevice: public AudioDevice
 	{
@@ -97,6 +105,29 @@ namespace CLAM {
 
 			}
 
+#ifdef FACTOR2SRC_KLUDGE
+			void CopyToFactor2SRC(MY_TYPE* ptr,int frames)
+			{
+				int cnt = frames*mChannels;
+				int limit = mFrames*mChannels;
+				int i = mReadIndex*mChannels;
+
+#ifdef DEBUG_RDWR_POS				
+				printf("copyto: r=%d %d\n",mReadIndex,frames);
+#endif				
+				while (cnt--)
+				{
+					*ptr++ = (MY_TYPE)(mData[i]*32767.);
+					*ptr++ = (MY_TYPE)(mData[i]*32767.);
+					i++;
+					if (i==limit) i = 0;
+				}
+				mReadIndex += frames;
+				if (mReadIndex >= mFrames) mReadIndex -= mFrames;
+
+			}
+#endif
+
 			void CopyFrom(MY_TYPE* ptr,int frames)
 			{
 				int cnt = frames*mChannels;
@@ -114,6 +145,29 @@ namespace CLAM {
 				mWriteIndex += frames;
 				if (mWriteIndex >= mFrames) mWriteIndex -= mFrames;
 			}
+
+#ifdef FACTOR2SRC_KLUDGE
+			void CopyFromDoFactor2SRC(MY_TYPE* ptr,int frames)
+			{
+				int cnt = frames*mChannels;
+				int limit = mFrames*mChannels;
+				int i = mWriteIndex*mChannels;
+				
+#ifdef DEBUG_RDWR_POS				
+				printf("copyfrom: w=%d %d\n",mWriteIndex,frames);
+#endif				
+				while (cnt--)
+				{
+					TData t = TData(*ptr++);
+					t += TData(*ptr++);
+					t /= 65534.;
+					mData[i++] = t;
+					if (i==limit) i = 0;
+				}
+				mWriteIndex += frames;
+				if (mWriteIndex >= mFrames) mWriteIndex -= mFrames;
+			}
+#endif				
 
 			void ChannelCopyFrom(TData* ptr,int size,int chnId)
 			{
@@ -178,6 +232,9 @@ namespace CLAM {
 		bool mTickOnRead;
 		bool mTickOnWrite;
 		int mDevice;
+#ifdef FACTOR2SRC_KLUDGE
+		bool mDoFactor2SRC;
+#endif
 	public:
 		RtAAudioDevice(const std::string& name,int _device);
 		~RtAAudioDevice();
@@ -213,6 +270,30 @@ namespace CLAM {
 			}
 #endif
 
+#ifdef FACTOR2SRC_KLUDGE
+			mDoFactor2SRC = false;
+			if (fs == 22050)
+			{
+				mDoFactor2SRC = true;
+			}
+
+			if (mDoFactor2SRC)
+			{
+				/* multiply the rt audio buffer size by two,
+				** because while we will work on 22050 hz,
+				** rtaudio will work at 44100, so it's internal
+				** buffer will be double the size. when we access
+				** the rt audio buffer in CopyFromDoFactor2SRC
+				** and CopyToFactor2SRC, we indeed copy double 
+				** mRtAudioBufferSize.
+				** We multiply by two now, and device by two
+				** later on to go back to our buffer size
+				*/
+				mRtAudioBufferSize *= 2;
+				fs *= 2;
+			}
+#endif
+			
 #ifdef MACOSX_WORKAROUND
 			mInternalRtAudioBufferSize = mRtAudioBufferSize;
 			if (mInternalRtAudioBufferSize>2048)
@@ -221,26 +302,38 @@ namespace CLAM {
 			}
 #endif
 
-  			try {
-    			mRtAudio = new RtAudio(&mRtAudioStream, 
-						mDevice, mOutputs.size(),
-						mDevice, mInputs.size(), 
-						FORMAT, fs, 
+  		try {
+    		mRtAudio = new RtAudio(&mRtAudioStream, 
+					mDevice, mOutputs.size(),
+					mDevice, mInputs.size(), 
+					FORMAT, fs, 
 #ifdef MACOSX_WORKAROUND
-						&mInternalRtAudioBufferSize,
+					&mInternalRtAudioBufferSize,
 #else
-						&mRtAudioBufferSize, 
+					&mRtAudioBufferSize, 
 #endif
-					2);
-  			}
-  			catch (RtError &) {
-    			exit(EXIT_FAILURE);
-  			}
+				2);
+  		}
+  		catch (RtError &) {
+    		exit(EXIT_FAILURE);
+  		}
 
 #ifdef MACOSX_WORKAROUND
 			mRtAudioBufferSize = mInternalRtAudioBufferSize*((mRtAudioBufferSize+mInternalRtAudioBufferSize-1)/mInternalRtAudioBufferSize);
 #endif
 
+			
+#ifdef FACTOR2SRC_KLUDGE
+			if (mDoFactor2SRC)
+			{
+				/* see comment above */
+				mRtAudioBufferSize /= 2;
+#ifdef MACOSX_WORKAROUND
+				mInternalRtAudioBufferSize /= 2;
+#endif
+			}
+#endif
+					
 			/* update the latency value of the audiomanager */
 			SetLatency(mRtAudioBufferSize);
 
@@ -320,17 +413,41 @@ namespace CLAM {
 	{
 #ifdef MACOSX_WORKAROUND
 		int i = mRtAudioBufferSize/mInternalRtAudioBufferSize;
-		i = 2;
-		while (i--)
+		
+#ifdef FACTOR2SRC_KLUDGE
+		if (mDoFactor2SRC)
 		{
-			mWriteBuffer.CopyTo(mRtAudioBuffer,mInternalRtAudioBufferSize);
-			mRtAudio->tickStream(mRtAudioStream);
-			mReadBuffer.CopyFrom(mRtAudioBuffer,mInternalRtAudioBufferSize);
+			while (i--)
+			{
+				mWriteBuffer.CopyToFactor2SRC(mRtAudioBuffer,mInternalRtAudioBufferSize);
+				mRtAudio->tickStream(mRtAudioStream);
+				mReadBuffer.CopyFromDoFactor2SRC(mRtAudioBuffer,mInternalRtAudioBufferSize);
+			}
+		}else
+#endif
+		{
+			while (i--)
+			{
+				mWriteBuffer.CopyTo(mRtAudioBuffer,mInternalRtAudioBufferSize);
+				mRtAudio->tickStream(mRtAudioStream);
+				mReadBuffer.CopyFrom(mRtAudioBuffer,mInternalRtAudioBufferSize);
+			}
 		}
 #else
-		mWriteBuffer.CopyTo(mRtAudioBuffer,mRtAudioBufferSize);
-		mRtAudio->tickStream(mRtAudioStream);
-		mReadBuffer.CopyFrom(mRtAudioBuffer,mRtAudioBufferSize);
+#ifdef FACTOR2SRC_KLUDGE
+		if (mDoFactor2SRC)
+		{
+			mWriteBuffer.CopyToFactor2SRC(mRtAudioBuffer,mRtAudioBufferSize);
+			mRtAudio->tickStream(mRtAudioStream);
+			mReadBuffer.CopyFromDoFactor2SRC(mRtAudioBuffer,mRtAudioBufferSize);
+		}
+		else
+#endif
+		{
+			mWriteBuffer.CopyTo(mRtAudioBuffer,mRtAudioBufferSize);
+			mRtAudio->tickStream(mRtAudioStream);
+			mReadBuffer.CopyFrom(mRtAudioBuffer,mRtAudioBufferSize);
+		}
 #endif
 	}
 
