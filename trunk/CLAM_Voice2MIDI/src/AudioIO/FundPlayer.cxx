@@ -39,23 +39,23 @@ void* FundPlayer::sPlayFundThreadSafe(void* ptr)
 void FundPlayer::PlayFundThreadSafe()
 {
 	TSize nSamples = mSegment.GetAudio().GetSize(); // number of samples
-    TData sampleRate = mSegment.GetSamplingRate();  // sample rate
-    TSize frameSize = 2048;                         // frame size
-	
-    AudioManager manager((int)sampleRate,(int)frameSize);  
-    manager.Start();                             // init audio manager
+	TData sampleRate = mSegment.GetSamplingRate();  // sample rate
+	TSize frameSize = 2048;                         // frame size
 
-    AudioOut channel;   // audio channel out
-    
-    AudioIOConfig  audioOutCfg;     // to configure the channel
+	AudioManager manager((int)sampleRate,(int)frameSize);  
+	manager.Start();                             // init audio manager
 
-    audioOutCfg.SetChannelID(0);    // channel id 0 
-    channel.Configure(audioOutCfg); // configure channel
+	AudioOut channel;   // audio channel out
 
-    channel.Start();   // init channel
-    
+	AudioIOConfig  audioOutCfg;     // to configure the channel
+
+	audioOutCfg.SetChannelID(0);    // channel id 0 
+	channel.Configure(audioOutCfg); // configure channel
+
+	channel.Start();   // init channel
+
 	SimpleOscillatorConfig oscCfg;
-    oscCfg.SetSamplingRate(sampleRate);
+	oscCfg.SetSamplingRate(sampleRate);
 	oscCfg.SetAmplitude(TData(0.6));
 	SimpleOscillator osc(oscCfg);
 	
@@ -64,22 +64,21 @@ void FundPlayer::PlayFundThreadSafe()
 
 	Audio samples;
 	samples.SetSize(frameSize);
-    
+
 	int nFrames = mSegment.GetnFrames();
 
 	osc.Start();
-    active = true;
-    for(TIndex i= 0;i < nSamples;i += frameSize)
-    {
+	active = true;
+	for(TIndex i= 0;i < nSamples;i += frameSize)
+	{
 		if(!active) break;
 		freqControl.DoControl(mSegment.GetFrame(int(i*nFrames/nSamples)).GetFundamental().GetFreq(0));
 		osc.Do(samples);
-        channel.Do(samples);
+		channel.Do(samples);
 		mSendData.Emit(samples.GetBuffer());
-        
 	}
-    osc.Stop();
-    channel.Stop();  
+	osc.Stop();
+	channel.Stop();  
 	if(active)	mRequestStop.Emit();
 }
 
