@@ -27,7 +27,7 @@ namespace CLAM
 AudioInPort::AudioInPort( const std::string & name, Processing * proc )
 	: InPort<TData>(name,proc)
 {
-	const int size = 256; // arbitrary default value. It makes more sense that size==1 like generic ports.
+	const int size = 512; // arbitrary default value. It makes more sense that size==1 like generic ports.
 	SetSize(size); 
 	SetHop(size);
 }

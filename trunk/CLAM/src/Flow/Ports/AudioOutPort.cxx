@@ -27,7 +27,8 @@ namespace CLAM
 AudioOutPort::AudioOutPort( const std::string & name, Processing * proc )
 	: OutPort<TData>(name,proc)
 {
-	const int size = 256; // arbitrary default value. It makes more sense that size==1 like generic ports.
+	const int size = 512; // arbitrary default value. It makes more sense that size==1 like generic ports.
+	// now set the same as AudioOut default config
 	SetSize(size); 
 	SetHop(size);
 	SetSampleRate(44100);
