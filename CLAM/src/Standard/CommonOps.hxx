@@ -22,7 +22,7 @@ namespace CLAM
 		const DataType Multiply<DataType>::IdentityElement = 1;
 	
 	template< typename DataType >
-	class Sum
+	class Add
 	{
 	public:
 
@@ -36,7 +36,7 @@ namespace CLAM
 	};
 
 	template< typename DataType >
-		const DataType Sum<DataType>::IdentityElement = 0;
+		const DataType Add<DataType>::IdentityElement = 0;
 
 
 }
