@@ -112,29 +112,38 @@ namespace CLAM
 	//	SetnCandidates(GetnCandidates()-1);
 	}
 
-	void Fundamental::Exchange(TIndex pos1, TIndex pos2)
-	{
-		CLAM_DEBUG_ASSERT(HasCandidatesFreq(),"Fundamental::Exchange(): Fundamental not initialized");
-		CLAM_ASSERT(pos1<GetnCandidates()&&pos2<GetnCandidates()&&pos1>=0&&pos2>=0,
-				   "Fundamental::DeleteElem(): Wrong index, one of the elements does not exist");
-		TData tmpFreq=GetFreq(pos1);
-		TData tmpErr=GetErr(pos1);
-		SetFreq(pos1,GetFreq(pos2));
-		SetErr(pos1,GetErr(pos2));
-		SetFreq(pos2,tmpFreq);
-		SetErr(pos2,tmpErr);
-	}
-
 	void Fundamental::SortByFrequency()
 	{
-		CLAM_ASSERT(false, "Fundamental::SortByFrequency(): Not implemented.");
-		//TODO: needs enhancement in the QSort Class
+		// TODO: Is a bubble sort, not so eficient O(N^2)
+		// TODO: Enhancement 1: Do a Quick Sort
+		// TODO: Engancement 2: Sort an index array
+		DataArray & errors = GetCandidatesErr();
+		DataArray & freqs = GetCandidatesFreq();
+		const int nCandidates = GetnCandidates();
+		for (int i=0; i<nCandidates; i++) // Ordering
+		for (int j=i+1; j<nCandidates; j++)
+		{
+			if (freqs[i] <= freqs[j]) continue;
+			std::swap(errors[i],errors[j]);
+			std::swap(freqs[i],freqs[j]);
+		}
 	}
 
 	void Fundamental::SortByError()
 	{
-		CLAM_ASSERT(false, "Fundamental::SortByError(): Not implemented.");
-		//TODO: needs enhancement in the QSort Class
+		// TODO: Is a bubble sort, not so eficient O(N^2)
+		// TODO: Enhancement 1: Do a Quick Sort
+		// TODO: Engancement 2: Sort an index array
+		DataArray & errors = GetCandidatesErr();
+		DataArray & freqs = GetCandidatesFreq();
+		const int nCandidates = GetnCandidates();
+		for (int i=0; i<nCandidates; i++) // Ordering
+		for (int j=i+1; j<nCandidates; j++)
+		{
+			if (errors[i] <= errors[j]) continue;
+			std::swap(errors[i],errors[j]);
+			std::swap(freqs[i],freqs[j]);
+		}
 	}
 
 }
