@@ -77,7 +77,7 @@ private:
 
 	// Processing Object compliance methods.
 
-	const char *GetClassName() {return "OnsetDetection";}
+	const char *GetClassName() const {return "OnsetDetection";}
 
 	/** Configuration method */
 	bool ConcreteConfigure(const ProcessingConfig&) throw(std::bad_cast);
