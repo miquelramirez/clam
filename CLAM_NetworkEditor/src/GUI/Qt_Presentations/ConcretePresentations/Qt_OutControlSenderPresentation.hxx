@@ -32,6 +32,7 @@ protected:
 	CLAM::TControlData mMax;
 	CLAM::TControlData mStep;
 	CLAM::TControlData mDefault;
+	bool mInvertDirection;
 public slots:
 	void SlotValueChanged( int );
 };
