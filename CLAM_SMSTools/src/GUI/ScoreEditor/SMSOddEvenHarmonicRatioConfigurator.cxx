@@ -54,7 +54,7 @@ namespace CLAMVM
 	void SMSOddEvenHarmonicRatioConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
 	{
 		
-		CLAM::SMSTransformationConfig& conCfg = static_cast< CLAM::SMSTransformationConfig& >( cfg );
+		CLAM::SegmentTransformationConfig& conCfg = static_cast< CLAM::SegmentTransformationConfig& >( cfg );
 
 		conCfg.RemoveAmount();
 		conCfg.RemoveBPFAmount();
@@ -70,7 +70,7 @@ namespace CLAMVM
 
 	void SMSOddEvenHarmonicRatioConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
-		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
+		mConfig = static_cast<const CLAM::SegmentTransformationConfig& >(cfg);
 		mEditorWidget->Clear();
 		
 		if ( !mConfig.HasBPFAmount() )

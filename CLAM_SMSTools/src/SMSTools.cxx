@@ -233,7 +233,6 @@ namespace CLAMGUI
 		SetSamplingRate(int(selectedFile.GetHeader().GetSampleRate()));
 		
 		// Spectral Segment that will actually hold data
-		float duration = samplesInFile/mSamplingRate;
 		segment.SetEndTime(selectedFile.GetHeader().GetLength());
 		segment.SetSamplingRate(selectedFile.GetHeader().GetSampleRate());
 		segment.mCurrentFrameIndex=0;

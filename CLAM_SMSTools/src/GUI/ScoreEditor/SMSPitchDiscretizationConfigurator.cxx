@@ -41,7 +41,7 @@ namespace CLAMVM
 
 	void SMSPitchDiscretizationConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
-		mConfig = static_cast<const CLAM::SMSTransformationConfig& >(cfg);
+		mConfig = static_cast<const CLAM::SegmentTransformationConfig& >(cfg);
 	}
 
 	const CLAM::ProcessingConfig& SMSPitchDiscretizationConfigurator::GetConfig()

@@ -30,7 +30,7 @@ namespace CLAMVM
 	protected:
 		
 		Fl_Help_View*                 mHelpWidget;
-		CLAM::SMSTransformationConfig mConfig;
+		CLAM::SegmentTransformationConfig mConfig;
 		static const char*            mHelpText;
 		
 		
