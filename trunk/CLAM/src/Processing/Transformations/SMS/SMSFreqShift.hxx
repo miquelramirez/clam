@@ -58,17 +58,7 @@ namespace CLAM{
 		{
 			Configure( SegmentTransformationConfig() );
 		}
-		/** Constructor with an object of SegmentTransformationConfig class by parameter
-		 *  @param c SegmentTransformationConfig object created by the user
-		*/
-/*		SMSFreqShift(const SegmentTransformationConfig &c):
-			mIn("In SpectralPeaks", this), 
-			mOut("Out SpectralPeaks", this), 
-			mShiftAmount("Shift Amount", this)
-		{
-		}
-*/
-		/** Destructor of the class*/
+
  		~SMSFreqShift()
 		{}	
 		
