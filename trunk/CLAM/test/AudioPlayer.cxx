@@ -29,9 +29,7 @@
 #include "ThreadedBuffer.hxx"
 #include "AudioFileIn.hxx"
 
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <iostream>
 
 using namespace CLAM;
 
@@ -44,7 +42,6 @@ public:
 
 void AudioFilePlayerApplication::AudioMain(void)
 {
-	printf("AUDIO THREAD: %d\n",getpid());
 
 	AudioManager audioManager(44100, 512);
 	
@@ -66,14 +63,13 @@ void AudioFilePlayerApplication::AudioMain(void)
 	AudioOut outL(outCfgL);
 	AudioOut outR(outCfgR);
 
-/*
 	OscillatorConfig oscCfg;
 	Oscillator osc(oscCfg);
-*/
-	AudioFileConfig infilecfg;
+
+/*	AudioFileConfig infilecfg;
 
 	infilecfg.SetName("filein");
-	infilecfg.SetFilename("/mnt/hda8/foo.wav");
+	infilecfg.SetFilename("c:/temp/test.wav");
 	infilecfg.SetFiletype(EAudioFileType::eWave);
 	infilecfg.SetKeepFrameSizes(true);
 
@@ -89,7 +85,7 @@ void AudioFilePlayerApplication::AudioMain(void)
 	ThreadedBufferIn tb(&filein);
 
 	tb.Start();
-
+*/
 	audioManager.Start();
 
 	int k = 0;
@@ -97,8 +93,9 @@ void AudioFilePlayerApplication::AudioMain(void)
 	do
 	{
 		if (k++>5000) exit(-1);
-		tb.Do(bufL,bufR);
-//		osc.Do(buf);
+//		tb.Do(bufL,bufR);
+		osc.Do(bufL);
+		osc.Do(bufR);
 		outL.Do(bufL);
 		outR.Do(bufR);
 	} while (!Canceled());
@@ -107,9 +104,6 @@ void AudioFilePlayerApplication::AudioMain(void)
 #include <FL/Fl_Window.H>
 #include <FL/Fl.H>
 
-#ifndef WIN32
-//#include "clam_su_wrapper.h"
-#endif
 
 int main(int argc,char** argv)
 {
