@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-#if  !defined(CLAM_DOUBLE) && !defined(__GNUC__)
+#if  !defined(CLAM_DOUBLE) && !defined(__GNUC__) && (_MSC_VER<1310)
 
 inline long  abs(long _X)
         {return (labs(_X)); }
@@ -56,6 +56,14 @@ inline float  tan(float _X)
 inline float  tanh(float _X)
         {return (tanhf(_X)); }
 
+#endif
+
+#ifndef MIN
+#define MIN(a,b) ((a<=b)?(a):(b))
+#endif
+
+#ifndef MAX
+#define MAX(a,b) ((a>=b)?(a):(b))
 #endif
 
 #endif // CLAM_Math.hxx
