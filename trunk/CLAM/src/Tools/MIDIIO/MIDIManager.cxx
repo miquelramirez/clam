@@ -29,6 +29,10 @@ using std::find ;
 namespace CLAM
 {
 
+
+// these have to be all in the some .cxx file, because of
+// unpredictable linking order!!
+
 MIDIManager* MIDIManager::pSingleton = 0;
 
 MIDIDeviceList* sAlsaMIDIDeviceList = 0;
