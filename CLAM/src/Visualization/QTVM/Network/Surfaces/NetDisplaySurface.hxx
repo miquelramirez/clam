@@ -39,6 +39,7 @@ namespace CLAM
 				int _w, _h;
 				double _left, _right, _bottom, _top;
 				double _r, _g, _b;
+				volatile bool _doResize;
 				
 				void InitView();
 		};
