@@ -22,6 +22,19 @@
 #ifndef __SNAPSHOTGENERATOR__
 #define __SNAPSHOTGENERATOR__
 
+/*
+  Such strange #ifdef (the next two ones) are used to avoid the instantiation of the templates,
+  which is done by the gcc compiler in its 2.95 version, even if you don't use them.
+ */
+
+#ifdef __PROCDATAVIEW__
+#define EXPAND_TEMPLATE_DATA_SNAPSHOT
+#endif
+
+#ifdef __PROCOBJVIEW__
+#define EXPAND_TEMPLATE_PROCESSING_SNAPSHOT
+#endif
+
 #include "Array.hxx"
 #include "WidgetTKWrapper.hxx"
 #include <FL/Fl.H>
@@ -29,6 +42,7 @@
 namespace CLAMGUI
 {
 
+#ifdef EXPAND_TEMPLATE_PROCESSING_SNAPSHOT
 template < typename ProcObjType > 
 void showPOSnapshot( ProcObjType* obj, const char* label = 0 )
 {
@@ -49,7 +63,9 @@ void showPOSnapshot( ProcObjType* obj, const char* label = 0 )
 	} while ( ! toolkit->IsClosing() );
 
 }
+#endif
 
+#ifdef EXPAND_TEMPLATE_DATA_SNAPSHOT
 template < typename ProcDataType >
 void showPDSnapshot( ProcDataType* obj, const char* label = 0 )
 {
@@ -71,14 +87,10 @@ void showPDSnapshot( ProcDataType* obj, const char* label = 0 )
 	} while ( !toolkit->IsClosing() );
 	
 }
+#endif
 
 extern  void showSnapshotArray( const CLAM::DataArray& array );
-
 extern  void showSnapshotArray( CLAM::DataArray& array );
 
-
 }
-
-
-
 #endif // SnapshotGenerator.hxx
