@@ -30,7 +30,6 @@ namespace CLAM
 	    NetSpecgramRenderer _renderer;
 	    int _index;
 	    int _specSize;
-	    bool _first;
 	    QtPalette _palette;
 	    
 	    void AddData(const Spectrum& spec);

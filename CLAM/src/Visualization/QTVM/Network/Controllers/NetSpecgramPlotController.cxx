@@ -6,7 +6,7 @@ namespace CLAM
     namespace VM
     {
 	NetSpecgramPlotController::NetSpecgramPlotController()
-	    : mMonitor(0),_index(0),_specSize(0),_first(true),_palette(0.0f)
+	    : mMonitor(0),_index(0),_specSize(0),_palette(0.0f)
 	{
 	    SetnSamples(100);
 	}
@@ -18,14 +18,15 @@ namespace CLAM
 	void NetSpecgramPlotController::SetData(const Spectrum& spec)
 	{
 	    if(!spec.GetMagBuffer().Size()) return;
-	    if(_first) Init(spec.GetMagBuffer().Size());
+	    if(First()) Init(spec.GetMagBuffer().Size());
 	    AddData(spec);
-	    FullView();
 	}
 
 	void NetSpecgramPlotController::SetMonitor(MonitorType & monitor)
 	{
 	    mMonitor = & monitor;
+	    mMonitor->AttachStartSlot(mStartSlot);
+	    mMonitor->AttachStopSlot(mStopSlot);
 	}
 
 	void NetSpecgramPlotController::Draw()
@@ -36,25 +37,32 @@ namespace CLAM
 		return;
 	    }
 
-	    const Spectrum & spec = mMonitor->FreezeAndGetData();
+	    if(MonitorIsRunning())
+	    {
+		const Spectrum & spec = mMonitor->FreezeAndGetData();
 
-	    // TODO: Because we have exclusive right for
-	    // to the data we could remove some of this copies
+		// TODO: Because we have exclusive right for
+		// to the data we could remove some of this copies
 
 	    
-	    if(_first && spec.GetMagBuffer().Size()) 
-	    {
-		Init(spec.GetMagBuffer().Size());
-	    }
+		if(First() && spec.GetMagBuffer().Size()) 
+		{
+		    Init(spec.GetMagBuffer().Size());
+		}
 
-	    if(spec.GetMagBuffer().Size())
+		if(spec.GetMagBuffer().Size())
+		{
+		    AddData(spec);
+		
+		    _renderer.Render();
+		}
+
+		mMonitor->UnfreezeData();
+	    }
+	    else
 	    {
-		AddData(spec);
-		FullView();
 		_renderer.Render();
 	    }
-
-	    mMonitor->UnfreezeData();
 	}
 
 	void NetSpecgramPlotController::AddData(const Spectrum& spec)
@@ -117,9 +125,12 @@ namespace CLAM
 
 	void NetSpecgramPlotController::Init(const TSize& specSize)
 	{
+	    _index=0;
+	    _cachedData.clear();
 	    _specSize = specSize;
 	    SetvRange(TData(0.0),TData(_specSize));
-	    _first = false;
+	    SetFirst(false);
+	    FullView();
 	}
 
 	float NetSpecgramPlotController::ClampToRange(TData value) const

@@ -13,6 +13,10 @@
 #include "Audio.hxx"
 #include "AudioInPort.hxx"
 
+// sigslot
+#include "Signalv0.hxx"
+#include "Slotv0.hxx"
+
 namespace CLAM
 {
 
@@ -74,10 +78,13 @@ namespace CLAM
 		inline const DataType & FreezeAndGetData();
 		inline void UnfreezeData();
 
+	        void AttachStartSlot(SigSlot::Slotv0& slot) {mSigStart.Connect(slot);}
+	        void AttachStopSlot(SigSlot::Slotv0& slot) { mSigStop.Connect(slot);}
+
 	protected:
 		bool ConcreteConfigure(const ProcessingConfig& c) {return true;}
-		bool ConcreteStart() {return true;}
-		bool ConcreteStop() {return true;}
+		bool ConcreteStart() { mSigStart.Emit(); return true;}
+		bool ConcreteStop() { mSigStop.Emit(); return true;}
 
 
 	private:
@@ -86,6 +93,9 @@ namespace CLAM
 		DataType mData[2];
 		TryMutex mSwitchMutex;
 		unsigned mWhichDataToRead;
+
+	        SigSlot::Signalv0 mSigStart;
+	        SigSlot::Signalv0 mSigStop;
 	};
 
 	template <typename PortDataType, typename PortType>
