@@ -44,9 +44,28 @@ namespace CLAM {
 	class SMSTransformation:public Processing
 	{
 		
-		OutControl mOutControl;
+		OutControl mSendAmount;
 
 	protected:
+
+		/** Internally stored configuration */
+		SMSTransformationConfig mConfig;
+		/** Boolean member that indicates whether BPF or single value is to be used. This is not
+		 *	a control because it is not supposed to change un run-time. It is rather a configuration
+		 *	parameter that can be automatically extracted from mConfig but it is placed here to make
+		 *	it more explicit.
+		 */
+		bool mUseTemporalBPF;
+		/** Control for the amount of the concrete transformation that will be applied. This control
+		 *	value can be manually updated or automatically from the values in the BPF envelope-like
+		 *	configuration parameter.
+		 */
+		InControl mAmountCtrl;
+		/** Control to state whether a particular transformation is on or off. This control may be
+		 *	used as a bypass when the transformation is connected in a Chain.
+		 */
+		InControl mOnCtrl;
+		
 		Segment* mInput;
 		Segment* mOutput;
 
@@ -98,26 +117,11 @@ namespace CLAM {
 		bool ConcreteStart();
 
 	protected:
-		
-		/** Internally stored configuration */
-		SMSTransformationConfig mConfig;
-		/** Boolean member that indicates whether BPF or single value is to be used. This is not
-		 *	a control because it is not supposed to change un run-time. It is rather a configuration
-		 *	parameter that can be automatically extracted from mConfig but it is placed here to make
-		 *	it more explicit.
-		 */
-		bool mUseTemporalBPF;
-		/** Control for the amount of the concrete transformation that will be applied. This control
-		 *	value can be manually updated or automatically from the values in the BPF envelope-like
-		 *	configuration parameter.
-		 */
-		InControl mAmountCtrl;
-		/** Control to state whether a particular transformation is on or off. This control may be
-		 *	used as a bypass when the transformation is connected in a Chain.
-		 */
-		InControl mOnCtrl;
 
-		virtual bool Do(const Frame& in,Frame& out)=0;
+
+		virtual bool Do(const Frame& in,Frame& out) { return true; } 
+		bool Do() { return true; } 
+		const char* GetClassName() const { return "SMSTransformation"; } 
 
 
 		void AddFramesToOutputIfInputIsLonger(int frameindex, const Segment& in, Segment& out)
@@ -156,8 +160,7 @@ namespace CLAM {
 			return true;
 		}
 
-	protected:
-		//TODO remove. but now is used from TimeStreach
+		//TODO remove. but now is used from Time-Stretch
 		//! formerly corresponded to UnwrappedProcessingData
 		const Frame& GetCurrentFrame(const Segment& in)
 		{

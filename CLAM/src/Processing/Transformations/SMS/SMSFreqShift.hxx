@@ -49,11 +49,11 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-		InControl mInControl;
+		InControl mShiftAmount;
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSFreqShift() : mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this), mInControl("In Control", this)
+		SMSFreqShift() : mIn("In SpectralPeaks", this), mOut("Out SpectralPeaks", this), mShiftAmount("Shift Amount", this)
 		{
 			ConnectControls( *this, "Out Control", *this, "In Control" );
 			Configure( SMSTransformationConfig() );
@@ -63,7 +63,7 @@ namespace CLAM{
 		*/
 		SMSFreqShift(const SMSTransformationConfig &c):
 			SMSTransformation(c), mIn("In SpectralPeaks", this), 
-			mOut("Out SpectralPeaks", this), mInControl("In Control", this)
+			mOut("Out SpectralPeaks", this), mShiftAmount("Shift Amount", this)
 		{
 			ConnectControls( *this, "Out Control", *this, "In Control" );
 		}
