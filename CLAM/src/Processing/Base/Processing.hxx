@@ -27,8 +27,8 @@
 #include "ErrProcessingObj.hxx"
 #include "InControlRegistry.hxx"
 #include "OutControlRegistry.hxx"
-#include "PublishedInPorts.hxx"
-#include "PublishedOutPorts.hxx"
+#include "InPortRegistry.hxx"
+#include "OutPortRegistry.hxx"
 #include "ProcessingConfig.hxx"
 
 
@@ -273,32 +273,32 @@ namespace CLAM {
 	
 		InPortBase & GetInPort( const std::string & name )
 		{
-			return mPublishedInPorts.Get(name);
+			return mInPortRegistry.Get(name);
 		}
 		OutPortBase & GetOutPort( const std::string & name )
 		{
-			return mPublishedOutPorts.Get(name);
+			return mOutPortRegistry.Get(name);
 		}
 		InControl & GetInControl( const std::string & name )
 		{
-			return mPublishedInControls.Get(name);
+			return mInControlRegistry.Get(name);
 		}		
 		OutControl & GetOutControl( const std::string & name )
 		{
-			return mPublishedOutControls.Get(name);
+			return mOutControlRegistry.Get(name);
 		}
 
 		/** Accessor to published Controls manager */
-		PublishedInControls& GetInControls() { return mPublishedInControls; }
+		InControlRegistry& GetInControls() { return mInControlRegistry; }
 		
 		/** Accessor to published Controls manager */
-		PublishedOutControls& GetOutControls() { return mPublishedOutControls; }
+		OutControlRegistry& GetOutControls() { return mOutControlRegistry; }
 		
 		/** Accessor to published Ports manager */
-		PublishedInPorts& GetInPorts() { return mPublishedInPorts; }
+		InPortRegistry& GetInPorts() { return mInPortRegistry; }
 		
 		/** Accessor to published Portss manager */
-		PublishedOutPorts& GetOutPorts() { return mPublishedOutPorts; }
+		OutPortRegistry& GetOutPorts() { return mOutPortRegistry; }
 
 		/** Returns a string describing configuration errors if any */
 		const std::string& GetConfigErrorMessage() const { return mConfigErrorMessage; }
@@ -337,10 +337,10 @@ namespace CLAM {
 
 
 	private:
-		PublishedInControls mPublishedInControls;
-		PublishedOutControls mPublishedOutControls;
-		PublishedInPorts mPublishedInPorts;
-		PublishedOutPorts mPublishedOutPorts;
+		InControlRegistry mInControlRegistry;
+		OutControlRegistry mOutControlRegistry;
+		InPortRegistry mInPortRegistry;
+		OutPortRegistry mOutPortRegistry;
 		bool  mPreconfigureExecuted;
 	};
 
