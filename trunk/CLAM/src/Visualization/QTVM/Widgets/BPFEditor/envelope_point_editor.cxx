@@ -344,7 +344,6 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 		step++;
 
 	}
-
         for (float i=0.0f;i<(cur_width*mZoom);i+=increment) {
 
 		int real_screen_offset=int((float)i/mZoom);
@@ -354,8 +353,6 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 			painter.drawText(real_screen_offset-display_font_metrics.width(buf)/2,cur_height+display_font_metrics.height(),buf);
 	}
 
-
-
 	if (mGrab.moving_point) {
 
 		sprintf(buf,"mZoom %i%%, %i nodes. Moving node %i, pos: %i,%i",int(mZoom*100.0),envelope->get_node_count(),mGrab.node,envelope->get_node_offset(mGrab.node),envelope->get_node_height(mGrab.node));
@@ -363,7 +360,6 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 
 		sprintf(buf,"mZoom %i%%, %i nodes. ",int(mZoom*100.0),envelope->get_node_count());
 	}
-
 
 	painter.drawText(2,cur_height+3+display_font_metrics.height()*2,buf);
 
@@ -553,8 +549,7 @@ void Envelope_Point_Editor::update_position_list(const std::vector<int>& p_posit
 Envelope_Point_Editor::Envelope_Point_Editor(QWidget *p_parent) : QWidget(p_parent) {
 
   //xamat
-  //setBackgroundMode (NoBackground);
-  //setBackgroundColor(QColor(255,255,255));
+	setBackgroundMode (NoBackground);
 	
 	envelope=NULL;
 	mZoom=0.25f;
