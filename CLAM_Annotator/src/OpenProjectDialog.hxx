@@ -4,11 +4,12 @@
 #include "OpenProjectDialogBase.h"
 
 class AnnotatorDataFacade;
+class Annotator;
 
 class OpenProjectDialog : public OpenProjectDialogBase
 {
 	public:
-		OpenProjectDialog(AnnotatorDataFacade & , QWidget * parent = 0, const char * name = 0, WFlags f = 0);
+		OpenProjectDialog(Annotator* ,AnnotatorDataFacade & , QWidget * parent = 0, const char * name = 0, WFlags f = 0);
 	public slots:
 			
 		void itemClicked( QListViewItem * item);
@@ -16,6 +17,7 @@ class OpenProjectDialog : public OpenProjectDialogBase
 		void insertItemsFromAnnotatorDataFacadeIntoListView();
 		void removeCurrentListViewItems();
 		AnnotatorDataFacade & mData;
+                Annotator* mpAnnotator;
 };
 
 #endif

@@ -3,6 +3,11 @@
 #include <iostream>
 #include <algorithm>
 
+AnnotatorDataFacade::AnnotatorDataFacade( DataFacade & data ) : mDataFacade( data )
+{
+	initData();
+}
+
 std::string AnnotatorDataFacade::genreWithoutSinonims( const std::string & genreWithSinonims ) const
 {
 	DataFacade data;	
@@ -79,10 +84,7 @@ void AnnotatorDataFacade::addFileIntoFolder( const std::string & file, const std
 	
 }
 
-AnnotatorDataFacade::AnnotatorDataFacade( DataFacade & data ) : mDataFacade( data )
-{
-	initData();
-}
+
 
 void AnnotatorDataFacade::initFolders( DataFacade & data )
 {

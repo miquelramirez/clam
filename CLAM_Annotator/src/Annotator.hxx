@@ -15,6 +15,8 @@
 #include "DescriptionScheme.hxx"
 #include "Pool.hxx"
 
+#include "SongFiles.hxx"
+
 namespace CLAM {
 		namespace VM 
 		{
@@ -26,16 +28,21 @@ class QProgressDialog;
 
 class Annotator : public AnnotatorBase
 {
-	Q_OBJECT
-	public:
+  Q_OBJECT
+  
+
+   	public:
 		Annotator( const std::string &, const AnnotatorDataFacade::StringList &, AnnotatorDataFacade &, QWidget * parent = 0, const char * name = 0, WFlags f = 0);
-		void initSongs(const std::string &, const AnnotatorDataFacade::StringList &, AnnotatorDataFacade &);
+                Annotator();
+                void initSongs(const std::string &, const std::vector<std::string>&);
 		void fillGlobalDescriptors( int index);
 		void songsClicked( QListViewItem * item);
 		void playPause();
 		void chooseColor();
 		void initFileMenu();
 		void initEditMenu();
+
+                void initProject();
 	public slots:
 		void descriptorsTableChanged( int, int);
 		void fileNew();			
@@ -79,6 +86,7 @@ class Annotator : public AnnotatorBase
 		void drawBPM( int, bool );
 		void drawDynamicComplexity( int, bool );
 //xamat
+                void initDataFacade();
                 void languageChange();
                 void initAudioWidget();
                 void initLLDescriptorsWidgets();
@@ -97,8 +105,11 @@ class Annotator : public AnnotatorBase
                 void LoadDescriptorPool();
 	private:
 		bool mChanges;
-		AnnotatorDataFacade & mData;
-		typedef std::map< std::string, int > SongDescriptorsIndex;
+		AnnotatorDataFacade* mpData;
+		
+                SongFiles mSongFiles;
+
+                typedef std::map< std::string, int > SongDescriptorsIndex;
 		SongDescriptorsIndex mSongDescriptorsIndex;
 		typedef std::vector< Song::Segments > SongSegments;
 		SongSegments mSongSegments;

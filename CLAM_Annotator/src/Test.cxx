@@ -1,14 +1,22 @@
 #include "LLDSchema.hxx"
 #include "DescriptionScheme.hxx"
 #include "Pool.hxx"
-
+#include "SongFiles.hxx"
 
 #include "XMLStorage.hxx"
 
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
+void FillSongNames(SongFiles& songFiles);
 
 int main()
 {
+  //Create and store SongList
+  SongFiles songFiles;
+  FillSongNames(songFiles);
+
+  CLAM::XMLStorage::Dump(songFiles,"SongFiles","Songs.xml");
+  
+
   //Create and store custom LLDSchema (basically a list of strings)
   CLAM::LLDSchema testSchema;
   testSchema.GetLLDNames().push_back("Pitch");
@@ -79,4 +87,27 @@ void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
   }
 
 
+}
+
+void FillSongNames(SongFiles& songFiles)
+{
+  songFiles.GetFileNames().push_back("SongsTest/07276EC58D0000000000E8_02.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/07276EC58D0000000000E8_03.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/07276EC58D0000000000E8_04.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/07276EC58D0000000000E8_05.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/07276EC58D0000000000E8_06.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/07276EC58D0000000000E8_07.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/07FAB6C09A0000000000C7_01.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/07FAB6C09A0000000000C7_07.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/081290D29F00000000009A_03.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/081290D29F00000000009A_07.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/08785F4E190000000000A7_05.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/08785F4E190000000000A7_06.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/08B64B245C000000000072_01.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/08B64B245C000000000072_02.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/08B64B245C000000000072_03.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/08B64B245C000000000072_04.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/08B64B245C000000000072_05.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/08B64B245C000000000072_06.mp3");
+  songFiles.GetFileNames().push_back("SongsTest/08B64B245C000000000072_07.mp3");
 }
