@@ -5,8 +5,8 @@ namespace CLAM
 {
 	void FundPlotProcessingConfig::DefaultInit()
 	{
-		AddAll();       
-		UpdateData();	
+		AddAll();
+		UpdateData();
 		SetName("FundPlotProcessing");
 		SetCaption("Fundamental");
 		Setxpos(100);
@@ -16,31 +16,30 @@ namespace CLAM
 	}
 
 	FundPlotProcessing::FundPlotProcessing() 
-		: mInput("Fundamental Input", this)
+		: mPlot(0)
+		, mInput("Fundamental Input", this)
+		, mOwnedPlot(false)
 	{
 		FundPlotProcessingConfig cfg;
 		Configure(cfg);
-
-		mPlot = NULL;
 	}
 
 	FundPlotProcessing::FundPlotProcessing(const FundPlotProcessingConfig& cfg)
-		: mInput("Fundamental Input", this)
+		: mPlot(0)
+		, mInput("Fundamental Input", this)
+		, mOwnedPlot(false)
 	{
 		Configure(cfg);
-
-		mPlot = NULL;
 	}
 
 	FundPlotProcessing::~FundPlotProcessing()
 	{
-		if(mPlot) delete mPlot;
+		if(mOwnedPlot) delete mPlot;
 	}
-
 
 	bool FundPlotProcessing::Do()
 	{
-		bool res = Do(mInput.GetData()); 
+		bool res = Do(mInput.GetData());
 		mInput.Consume();
 		return res;
 	}
@@ -59,15 +58,6 @@ namespace CLAM
 		return true;
 	}
 
-	void FundPlotProcessing::InitFundPlot()
-	{
-		mPlot = new VM::NetFundPlot();
-		mPlot->Label(mConfig.GetCaption());
-		mPlot->SetBackgroundColor(VM::VMColor::Black());
-		mPlot->SetDataColor(VM::VMColor::Green());
-		mPlot->Geometry(mConfig.Getxpos(),mConfig.Getypos(),mConfig.Getwidth(),mConfig.Getheight());
-	}
-
 	bool FundPlotProcessing::ConcreteStart()
 	{
 		if(!mPlot) InitFundPlot();
@@ -78,12 +68,37 @@ namespace CLAM
 	{
 		if(mPlot) 
 		{
-		    mPlot->StopRendering();
-		    delete mPlot;
-		    mPlot = NULL;
+			mPlot->StopRendering();
+			if (mOwnedPlot)
+			{
+				delete mPlot;
+				mPlot = NULL;
+			}
 		}
 		return true;
 	}
+
+	void FundPlotProcessing::SetPlot(VM::NetFundPlot * plot)
+	{
+		if (mOwnedPlot) delete mPlot;
+		mOwnedPlot = false;
+		mPlot = plot;
+		mPlot->Label(mConfig.GetCaption());
+		mPlot->SetBackgroundColor(VM::VMColor::Black());
+		mPlot->SetDataColor(VM::VMColor::Green());
+	}
+
+	void FundPlotProcessing::InitFundPlot()
+	{
+		if (mOwnedPlot) delete mPlot;
+		mPlot = new VM::NetFundPlot();
+		mOwnedPlot = true;
+		mPlot->Label(mConfig.GetCaption());
+		mPlot->SetBackgroundColor(VM::VMColor::Black());
+		mPlot->SetDataColor(VM::VMColor::Green());
+		mPlot->Geometry(mConfig.Getxpos(),mConfig.Getypos(),mConfig.Getwidth(),mConfig.Getheight());
+	}
+
 }
 
 // END
