@@ -1,3 +1,23 @@
+/*
+ * Copyright (c) 2001-2002 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 #include "CleanTracks.hxx"
 #include "ErrProcessingObj.hxx"
 #include <iostream.h>
@@ -9,20 +29,15 @@ namespace CLAM {
 	void CleanTracksConfig::DefaultInit()
 	{
 		
-		AddName();
-		AddMaxDropOut();
-		AddMinLength();
-		AddFreqDev();
-
+		AddAll();
 		UpdateData();
 
 		//Default values
 		SetMaxDropOut(3);
 		SetMinLength(3);
 		SetFreqDev(200);
-
-
-
+		SetSamplingRate(44100);
+		SetSpecSize(22050);
 	}
 	
 	CleanTracks::CleanTracks()
@@ -49,13 +64,10 @@ namespace CLAM {
 		mConfig = dynamic_cast<const CleanTracksConfig&>(c);	    
 
 		mMaxDropOut = mConfig.GetMaxDropOut();
-
 		mMinLength= mConfig.GetMinLength();
-
 		mFreqDev= mConfig.GetFreqDev();
-
-		//initialize trajectories
-
+		mSamplingRate= mConfig.GetSamplingRate();
+		mSpecSize= mConfig.GetSpecSize();
 		return true;
 	}
 
@@ -130,7 +142,7 @@ namespace CLAM {
 				while(mTrajectoryArray[i].continuedAtId!=-1)
 				{
 					contAt=mTrajectoryArray[i].continuedAtId;
-					interpolatePeaks(mTrajectoryArray[i], peakArrayArray);
+					InterpolatePeaks(mTrajectoryArray[i], peakArrayArray);
 				}
 			}
 		}
@@ -319,7 +331,7 @@ namespace CLAM {
 		}
 	}
 
-	void  CleanTracks::interpolatePeaks(TTrajectory& fromTrajectory, Array<SpectralPeakArray*>& peakArrayArray)
+	void  CleanTracks::InterpolatePeaks(TTrajectory& fromTrajectory, Array<SpectralPeakArray*>& peakArrayArray)
 	{
 		TTrajectory tmpTrajectory;
 		tmpTrajectory.id=fromTrajectory.continuedAtId;
@@ -342,10 +354,16 @@ namespace CLAM {
 		TData magSlope=(toTrajectory.initialMag-fromTrajectory.finalMag)/(gap+1);
 		TData currentFreq=fromTrajectory.finalFreq;
 		TData currentMag=fromTrajectory.finalMag;
+		TData currentBinPos;
+		int currentBinWidth;
+		TData lastBinPos=0;
 		for(z=fromTrajectory.beginPos+fromTrajectory.length;z<toTrajectory.beginPos;z++)
 		{
 			currentFreq+=freqSlope;
 			currentMag+=magSlope;
+			currentBinPos=2*currentFreq*mSpecSize/mSamplingRate;
+			currentBinWidth=currentBinPos-lastBinPos;
+			lastBinPos=currentBinPos;
 			SpectralPeak tmpPeak;
 			tmpPeak.AddPhase();
 			tmpPeak.AddBinWidth();
@@ -354,6 +372,8 @@ namespace CLAM {
 			tmpPeak.SetFreq(currentFreq);
 			tmpPeak.SetMag(currentMag);
 			tmpPeak.SetScale(EScale(EScale::eLog));
+			tmpPeak.SetBinPos(currentBinPos);
+			tmpPeak.SetBinWidth(currentBinWidth);
 			peakArrayArray[z]->AddSpectralPeak(tmpPeak, true, fromTrajectory.id);
 			//Peaks should be sorted in the frames where added !!!!!
 		}
