@@ -101,14 +101,14 @@ public:
 		connectWidgetsWithControls(network,prototype);
 		connectWidgetsWithMappedControls(network,prototype);
 
-		connectWidgetsWithPorts<CLAM::VM::NetAudioPlot, CLAM::AudioPlotProcessing>
+		connectWidgetsWithPorts<CLAM::VM::NetAudioPlot>
 			("OutPort__.*", "CLAM::VM::NetAudioPlot", "Audio Input");
-		connectWidgetsWithPorts<CLAM::VM::NetSpectrumPlot, CLAM::SpectrumPlotProcessing>
+		connectWidgetsWithPorts<CLAM::VM::NetSpectrumPlot>
 			("OutPort__.*", "CLAM::VM::NetSpectrumPlot", "Spectrum Input");
-		connectWidgetsWithPorts<CLAM::VM::NetPeaksPlot, CLAM::PeaksPlotProcessing>
+		connectWidgetsWithPorts<CLAM::VM::NetPeaksPlot>
 			("OutPort__.*", "CLAM::VM::NetPeaksPlot", "Peaks Input");
-//		connectWidgetsWithPorts<CLAM::VM::NetFundPlot, CLAM::FundPlotProcessing>
-//			("OutPort__.*", "CLAM::VM::NetFundPlot", "Fundamental Input");
+		connectWidgetsWithPorts<CLAM::VM::NetFundPlot>
+			("OutPort__.*", "CLAM::VM::NetFundPlot", "Fundamental Input");
 	}
 public slots:
 	void Start()
@@ -169,7 +169,7 @@ private:
 					  SLOT(sendMappedControl(int)));
 		}
 	}
-	template < typename PlotClass, typename MonitorClass >
+	template < typename PlotClass >
 	void connectWidgetsWithPorts(char* prefix, char* plotClassName, char* monitorControlName)
 	{
 		CLAM::Network & network = _player.Network();
