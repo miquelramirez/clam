@@ -124,8 +124,7 @@ bool SinTracking::Do(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPea
 
 void SinTracking::AddNewTrack(int peakPosition, const SpectralPeak& currentPeak,SpectralPeakArray& oPeakArray) const
 {
-  int i;
-  for(i=0;i<mnMaxSines;i++)
+  for(int i=0;i<mnMaxSines;i++)
   {
 	if(mGuideArray[i].isDead==true)
 	{
@@ -146,77 +145,53 @@ void SinTracking::AddNewTrack(int peakPosition, const SpectralPeak& currentPeak,
 
 void SinTracking::Tracking(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray,TIndex processedPeakPos) const
 {
-  bool notFinished=true;
-  int candidatePos;
-  TData distance;
-  SpectralPeak currentPeak;		
-  currentPeak=mPreviousPeakArray.GetSpectralPeak(processedPeakPos);
-  if(!ThereIsCandidate(currentPeak,iPeakArray,oPeakArray))
-  {
-	//Kill Track
-	KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
-  }
-  else
-  {
-	candidatePos=GetCandidate(currentPeak,iPeakArray,distance);
-	if(candidatePos==-1) return;
-	SpectralPeak candidatePeak;
-	candidatePeak=iPeakArray.GetSpectralPeak(candidatePos);
-	//I added &&(candidatePeak.GetIndex()==-1) because it matched already matched peak
-	if( candidatePos<oPeakArray.GetnPeaks()
-	    && (IsBestCandidate(candidatePeak,processedPeakPos))
-	    && (oPeakArray.GetIndex(candidatePos)==-1) )
-	{
-	  //Match
-	  Match(mPreviousPeakArray.GetIndex(processedPeakPos),candidatePos,candidatePeak,oPeakArray);
-	}
-	else
-	{
-	//seems useless. To be checked....
-	/*candidatePos--;//Try with previous peak in array
-	  if(candidatePos==-1)&&(candidatePeak.GetIndex()==-1)
-	  {
-		KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
-	  }
-	  else
-	  {
-		candidatePeak=iPeakArray.GetSpectralPeak(candidatePos);
-		if(IsBestCandidate(candidatePeak,processedPeakPos))
-		{
-		 //Match
-		 Match(mPreviousPeakArray.GetIndex(processedPeakPos),
-		   candidatePos,candidatePeak,oPeakArray);
-		}
-		else
-		{
-		 //Kill Track
-		 KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
-		}
-	  }*/
-		KillTrack(mPreviousPeakArray.GetIndex(processedPeakPos));
-	}
-  }
+	const DataArray & previousFreqBuffer = mPreviousPeakArray.GetFreqBuffer();
+	const IndexArray & previousIndexBuffer = mPreviousPeakArray.GetIndexArray();
+	TData currentPeakFreq = previousFreqBuffer[processedPeakPos];
 
+	const DataArray& iFreqBuffer=iPeakArray.GetFreqBuffer();
+
+	if(!ThereIsCandidate(currentPeakFreq,iPeakArray,oPeakArray))
+	{
+		KillTrack(previousIndexBuffer[processedPeakPos]);
+		return;
+	}
+
+	TData distance;
+	int candidatePos=GetCandidate(currentPeakFreq,iPeakArray,distance);
+	if(candidatePos==-1) return;
+	TData candidatePeakFreq = iFreqBuffer[candidatePos];
+
+	if( candidatePos>=oPeakArray.GetnPeaks()
+	    || (!IsBestCandidate(candidatePeakFreq,currentPeakFreq))
+	    || (oPeakArray.GetIndex(candidatePos)!=-1) )
+	{
+		KillTrack(previousIndexBuffer[processedPeakPos]);
+		return;
+	}
+
+	// TODO: Optimize this by accessing directly to the buffers
+	// instead of calling Set/GetSpectralPeak
+	const SpectralPeak candidatePeak = iPeakArray.GetSpectralPeak(candidatePos);
+	TIndex trackId = previousIndexBuffer[processedPeakPos];
+	oPeakArray.SetSpectralPeak(candidatePos,candidatePeak,trackId);
 }
 
 
 
 //true as soon as the distance between currentPeak and a Peak in iPeakArray is <mThreshold
-bool SinTracking::ThereIsCandidate(const SpectralPeak& currentPeak, 
+bool SinTracking::ThereIsCandidate(TData currentPeakFreq, 
 				   const SpectralPeakArray& iPeakArray,
 				   SpectralPeakArray& oPeakArray) const
 {
-  int i;
-  int dist;
   TSize nInputPeaks=iPeakArray.GetnPeaks();
   if(nInputPeaks>mnMaxSines) nInputPeaks=mnMaxSines;
   DataArray& peakFreqBuffer=iPeakArray.GetFreqBuffer();	  
-  TData currentFreq=currentPeak.GetFreq();
-  TData factor=100/currentFreq;
+  TData factor=100/currentPeakFreq;
   IndexArray& outputIndexArray=oPeakArray.GetIndexArray();
-  for (i=0;i<nInputPeaks;i++)
+  for (int i=0;i<nInputPeaks;i++)
   {
-	dist=int(Abs(peakFreqBuffer[i]-currentFreq)*factor);
+	int dist=int(Abs(peakFreqBuffer[i]-currentPeakFreq)*factor);
 	if((dist< mThreshold)&&(outputIndexArray[i]==-1)) return true;
   }
   return false;
@@ -226,34 +201,30 @@ bool SinTracking::ThereIsCandidate(const SpectralPeak& currentPeak,
 //Sets mGuideArray.isDead to true and mnActiveGuides--
 void SinTracking::KillTrack(int trackId) const
 {
-  int i;
-  for(i=0;i<mnMaxSines;i++)
-  {
-	if(mGuideArray[i].trackId==trackId)
+	for(int i=0;i<mnMaxSines;i++)
 	{
-	  mGuideArray[i].isDead=true;
-	  mnActiveGuides--;
-	  break;
+		if(mGuideArray[i].trackId!=trackId) continue;
+		mGuideArray[i].isDead=true;
+		mnActiveGuides--;
+		return;
 	}
-  }
 }
 
 //Return the position of the peak in iPeakArray which is the closest to currentPeak
-TIndex SinTracking::GetCandidate(const SpectralPeak& currentPeak, 
+TIndex SinTracking::GetCandidate(TData currentPeakFreq, 
 									   const SpectralPeakArray& iPeakArray,
 									   TData& distance) const
 {
   //Can be optimized! XA
-  TIndex i,bestCandidate=-1;
+  TIndex bestCandidate=-1;
   TData tmpDistance;
   distance=-1;
   int nPeaks=iPeakArray.GetnPeaks();
   DataArray peakFreqBuffer=iPeakArray.GetFreqBuffer();
-  TData currentFreq=currentPeak.GetFreq();
-  TData factor=100/currentFreq;
-  for (i=0;i<nPeaks;i++)
+  TData factor=100/currentPeakFreq;
+  for (int i=0;i<nPeaks;i++)
   {
-	tmpDistance=Abs(peakFreqBuffer[i]-currentFreq)*factor;
+	tmpDistance=Abs(peakFreqBuffer[i]-currentPeakFreq)*factor;
 	if((distance==-1)/*test: XA &&(tmpDistance<mThreshold)*/ || 
 	  (tmpDistance < distance))
 	{
@@ -270,21 +241,17 @@ TIndex SinTracking::GetCandidate(const SpectralPeak& currentPeak,
 
 //true if there is no peak in previousPeakArray closer to candidate
 
-bool SinTracking::IsBestCandidate(const SpectralPeak& candidate, 
-								   int nMatchedPeaksInPreviousFrame) const
+bool SinTracking::IsBestCandidate(TData candidateFreq, TData currentFreq) const
 {
-  int i;
-  SpectralPeak tmpPeak;
-  tmpPeak=mPreviousPeakArray.GetSpectralPeak(nMatchedPeaksInPreviousFrame);
-  double nextDistance=(tmpPeak|candidate);
-  int nPeaks=mPreviousPeakArray.GetnPeaks();
-  DataArray& peakFreqBuffer=mPreviousPeakArray.GetFreqBuffer();
-  TData candidateFreq=candidate.GetFreq();
-  for(i=0;i<nPeaks;i++)
-  {
-	if(Abs(peakFreqBuffer[i]-candidateFreq)<nextDistance) return false;
-  }
-  return true;
+	double nextDistance=Abs(currentFreq-candidateFreq);
+
+	int nPeaks=mPreviousPeakArray.GetnPeaks();
+	DataArray& peakFreqBuffer=mPreviousPeakArray.GetFreqBuffer();
+	for(int i=0;i<nPeaks;i++)
+	{
+		if(Abs(peakFreqBuffer[i]-candidateFreq)<nextDistance) return false;
+	}
+	return true;
 
 }
 
@@ -308,7 +275,6 @@ frame. These are then assigned to newborn tracks.*/
 void SinTracking::CheckForNewBornTracks(const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray) const
 {
   TIndex nonAssignedPeakIndex=0;
-  SpectralPeak tmpPeak;
   bool notFinished=true;
   nonAssignedPeakIndex=GetFirstNonAssignedPeakPos(oPeakArray,nonAssignedPeakIndex);
   while(notFinished)
@@ -335,24 +301,25 @@ void SinTracking::CheckForNewBornTracks(const SpectralPeakArray& iPeakArray,Spec
 /*Returns index of first peak that has not been assigned to a track (-1 if all have
 already been assigned)*/
 //beginAt=0? why not starting from the previous new track index?
-TIndex SinTracking::GetFirstNonAssignedPeakPos(const SpectralPeakArray& oPeakArray,
-												  TIndex beginAt=0) const
+TIndex SinTracking::GetFirstNonAssignedPeakPos(const SpectralPeakArray& oPeakArray, TIndex beginAt=0) const
 {
-  int i;
-  TIndex assigned=1;
-  if(beginAt>=oPeakArray.GetnPeaks()||beginAt<0) return -1;
-  i=oPeakArray.GetFirstNonValidIndexPosition(beginAt);
-  if(i==(oPeakArray.GetnPeaks())) i=-1;//All peaks have been matched
-  return i;
+	const TIndex nPeaks = oPeakArray.GetnPeaks();
+	if (beginAt>=nPeaks) return -1;
+	if (beginAt<0) return -1;
+
+	int i=oPeakArray.GetFirstNonValidIndexPosition(beginAt);
+
+	if(i==nPeaks) return -1;//All peaks have been matched
+
+	return i;
 }
 
 
 //Initialization of the first output peak array: all peaks must be assigned a track
 void SinTracking::Initialization(const SpectralPeakArray& iPeakArray, SpectralPeakArray& oPeakArray)
 {
-	int i;
 	TSize nPeaks=oPeakArray.GetnPeaks();
-	for(i=0; i<nPeaks; i++)
+	for(int i=0; i<nPeaks; i++)
 	{
 		AddNewTrack(i, iPeakArray.GetSpectralPeak(i), oPeakArray);
 	}
@@ -361,8 +328,7 @@ void SinTracking::Initialization(const SpectralPeakArray& iPeakArray, SpectralPe
 
 void SinTracking::KillAll()
 {
-	int i;
-	for (i=0;i<mnMaxSines;i++)
+	for (int i=0;i<mnMaxSines;i++)
 	{
 		mGuideArray[i].isDead=true;
 	}
@@ -430,7 +396,7 @@ void SinTracking::HarmonicTracking(const SpectralPeakArray& in,SpectralPeakArray
 
 	/*for(i=0;i<mnMaxSines;i++)
 	{
-		pos=GetCandidate(out.GetSpectralPeak(i),in,d);
+		pos=GetCandidate(oFreqBuffer[i],in,d);
 		if(d<funFreq/2 && pos>-1)
 		{
 			oMagBuffer[i]=iMagBuffer[pos];
@@ -445,7 +411,7 @@ void SinTracking::HarmonicTracking(const SpectralPeakArray& in,SpectralPeakArray
 	i=0;
 	do
 	{
-		pos=GetCandidate(out.GetSpectralPeak(i),in,d);
+		pos=GetCandidate(oFreqBuffer[i],in,d);
 		if(d<funFreq/2 && pos>-1)
 		{
 			if(i==0 || iMagBuffer[pos]!=oMagBuffer[i-1])
