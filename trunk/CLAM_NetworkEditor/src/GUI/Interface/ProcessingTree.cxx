@@ -46,11 +46,15 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem( gen, "Oscillator");
 	new ProcessingItem( gen, "ADSR");
 	new ProcessingItem( gen, "SquareWave" );	
+	new ProcessingItem( gen, "WaveGenerator" );	
 
 	QListViewItem * aritops = new QListViewItem( this,"Arithmetic operations" );
 	new ProcessingItem( aritops, "AudioMultiplier" );
 	new ProcessingItem( aritops, "AudioAdder" );
 	new ProcessingItem( aritops, "AudioMixer" );
+	new ProcessingItem( aritops, "SpectralPeakArrayAdder" );
+	new ProcessingItem( aritops, "SpectrumAdder" );
+	new ProcessingItem( aritops, "SpectrumAdder2" );
 	
 	QListViewItem * controls = new QListViewItem( this, "Controls" );
 	new ProcessingItem( controls, "AutoPanner" );	
@@ -189,16 +193,15 @@ void ProcessingTree::startDrag()
 {
 	std::string className(mSelectedItem->text(0).ascii());
 
-	std::stringstream completeName;
-	completeName.str("");
+//	std::stringstream completeName;
+//	completeName.str("");
 
-	// in the format "classname.concretename", like "Oscillator.Oscillator_3"
+//  in the format "classname.concretename", like "Oscillator.Oscillator_3"
+//	completeName << className << ".";
 
-	completeName << className << ".";
+//	completeName << className << "_" << mNumProc;
 
-	completeName << className << "_" << mNumProc;
-
-	QDragObject *d = new QTextDrag( completeName.str().c_str(), this );
+	QDragObject *d = new QTextDrag( className.c_str(), this );
 	d->dragCopy();
 }
 

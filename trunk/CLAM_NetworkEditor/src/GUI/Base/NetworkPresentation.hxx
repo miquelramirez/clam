@@ -90,7 +90,8 @@ protected:
 	virtual void ChangeState( bool );
 
 	void RemoveProcessing( ProcessingPresentation* );
-	void AddProcessing( const std::string & , CLAM::Processing * );
+	void AddProcessing2Remove( const std::string & , CLAM::Processing * );
+	std::string AddProcessing( const std::string& key );
 	
 	void RemovePortConnection( ConnectionPresentation * );
 	void RemoveControlConnection( ConnectionPresentation * );
