@@ -24,6 +24,7 @@
 #include "GeometryKit.hxx"
 #include "Viewport.hxx"
 #include <algorithm>
+
 using std::max_element;
 using std::min_element;
 using namespace CLAMGUI;
@@ -78,8 +79,9 @@ void ProcDataPresentation<Audio>::Init( const Geometry& g, const char* l )
 {
 	// FLTK thingies initialization
 
-	mWindow = new Fl_Double_Window( g.GetX(), g.GetY(), g.GetW(), g.GetH(), l );
-	mDispContainer = new FLDisplayContainer( 0, 0, g.GetW(), g.GetH() );
+	mWindow = new PresentationWindow( this , g.GetX(), g.GetY(), g.GetW(), g.GetH(), l );
+	mDispContainer = new FLDisplayContainer( g.GetX(), g.GetY(), g.GetW(), g.GetH() );
+
 
 	mPort = new GLPort( Rect<int>( 0, 0, g.GetW(), g.GetH() ) );
 	mRenderer = new GLWaveRenderer( 0, 200, 0 );
