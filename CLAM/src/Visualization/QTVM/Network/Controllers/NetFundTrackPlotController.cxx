@@ -1,4 +1,3 @@
-#include <algorithm>
 #include "NetFundTrackPlotController.hxx"
 
 namespace CLAM
@@ -6,6 +5,7 @@ namespace CLAM
     namespace VM
     {
 	NetFundTrackPlotController::NetFundTrackPlotController()
+	    : _index(0)
 	{
 	    InitDataArrays();
 	    SetvRange(TData(0.0),TData(2050.0));
@@ -36,36 +36,39 @@ namespace CLAM
 
 	void NetFundTrackPlotController::AddData(const TData& data)
 	{
-	    _cachedData.AddElem(data);
+	    if(_cachedData.Size() < GetnSamples())
+	    {
+		_cachedData.AddElem(data);
+	    }
+	    else
+	    {
+		_cachedData[_index++] = data;
+		if(_index == GetnSamples()) _index = 0;
+	    }
 	}
 
 	void NetFundTrackPlotController::ProcessData()
 	{
-	    TSize offset, len;
-
-	    if(_cachedData.Size() <= GetnSamples())
+	    if(_cachedData.Size() < GetnSamples())
 	    {
-		offset = 0;
-		len = _cachedData.Size();
+		_renderer.SetDataPtr(_cachedData.GetPtr(),_cachedData.Size(),NormalMode);
 	    }
 	    else
 	    {
-		offset = _cachedData.Size()-GetnSamples();
-		len = _cachedData.Size()-offset;
+		int i,j = 0;
+		for(i = _index; i < _cachedData.Size(); i++)
+		    _processedData[j++]=_cachedData[i];
+		for(i = 0; i < _index; i++)
+		    _processedData[j++] = _cachedData[i];
+		 _renderer.SetDataPtr(_processedData.GetPtr(),_processedData.Size(),NormalMode);
 	    }
-
-	    if(_processedData.Size() < len)
-		_processedData.Resize(len);
-	    _processedData.SetSize(len);
-
-	    std::copy(_cachedData.GetPtr()+offset, _cachedData.GetPtr()+offset+len, _processedData.GetPtr());
-	    _renderer.SetDataPtr(_processedData.GetPtr(),_processedData.Size(),NormalMode);
 	}
 
 	void NetFundTrackPlotController::InitDataArrays()
 	{
 	    _cachedData.Init();
-	    _processedData.Init();
+	    _processedData.Resize(200);
+	    _processedData.SetSize(200);
 	}
 
 	void NetFundTrackPlotController::InitView()
