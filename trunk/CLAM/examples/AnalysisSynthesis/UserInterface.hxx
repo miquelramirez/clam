@@ -126,9 +126,7 @@ private:
   Fl_Window* Attach( const char* title, CLAM::Audio* data );
   Fl_Window* Attach( const char* title, CLAM::Spectrum* data, int type );
   static void _Detach(Fl_Window* buffer,UserInterface* ui);
-  static void _DetachSpectrum(Fl_Window* buffer,UserInterface* ui);
   void Detach(Fl_Window* buffer);
-  void DetachSpectrum(Fl_Window* buffer);
   void PlayInputSound();
   void PlayOutputSound();
   void PlaySinusoidal();

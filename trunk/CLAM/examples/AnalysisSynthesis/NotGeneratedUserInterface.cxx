@@ -297,15 +297,15 @@ void UserInterface::_Detach(Fl_Window *w,UserInterface* ui)
 	ui->Detach(w);
 }
 
-void UserInterface::_DetachSpectrum(Fl_Window *w,UserInterface* ui)
-{
-	ui->DetachSpectrum(w);
-}
-
 void UserInterface::Detach(Fl_Window *w)
 {
 	Fl_Widget* w2 = w->parent();
 
+
+	/* it should not be necesary to close w2 explicitely. instead, deleting
+	** w2 should already take care of that (through a callback). mdeboer
+	** should edit SmartTile to do so.
+	*/
 	mSmartTile->close( w2 );
 
 	PresentationWindow* p = dynamic_cast<PresentationWindow*>(w);
@@ -323,26 +323,7 @@ void UserInterface::Detach(Fl_Window *w)
 		mAudioOutputResidualDisplay = NULL;
 	else if (w==mAudioOutputSinusoidalDisplay)
 		mAudioOutputSinusoidalDisplay = NULL;
-
-	mSmartTile->equalize();
-}
-
-void UserInterface::DetachSpectrum(Fl_Window *w)
-{
-	Fl_Widget* w2 = w->parent();
-
-	mSmartTile->close( w2 );
-
-	PresentationWindow* p = dynamic_cast<PresentationWindow*>(w);
-
-	View* v = p->GetPresentation()->GetLinkedView();
-	
-	delete p->GetPresentation();
-	delete v;
-		
-	v = NULL;
-
-	if (w==mInputSpectrum) 
+ 	else if (w==mInputSpectrum) 
 		mInputSpectrum = NULL;
 	else if (w==mOutputSpectrum)
 		mOutputSpectrum = NULL;
@@ -402,7 +383,7 @@ Fl_Window* UserInterface::Attach(const char* title, CLAM::Spectrum* data, int ty
 	mSmartTile->add_titled( localPresentation->GetWindow() );
 	localPresentation->Show();
 	mSmartTile->equalize();
-	localPresentation->GetWindow()->callback((Fl_Callback*) _DetachSpectrum,this);
+	localPresentation->GetWindow()->callback((Fl_Callback*) _Detach,this);
 	mSpectrumView->Refresh();
 
 	return localPresentation->GetWindow();

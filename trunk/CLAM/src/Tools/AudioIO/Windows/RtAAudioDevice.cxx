@@ -3,7 +3,7 @@
 #include "RtAudio.h"
 #include "RtAudioUtils.hxx"
 
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 #include <iostream>
 

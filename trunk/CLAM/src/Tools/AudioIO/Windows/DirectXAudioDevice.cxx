@@ -22,7 +22,7 @@
 #include "AudioIO.hxx"
 
 #define STRICT
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 #include <dxerr8.h>
 #include <dsound.h>

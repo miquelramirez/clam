@@ -18,11 +18,13 @@
 
 #if defined _MSC_VER && _MSC_VER < 1310 // MSVC++ 6
 	namespace std
-	{
-		inline int max(int a, int b) { 
+	{	
+		template < typename T >
+		const T& max( const T& a, const T& b) { 
 			return (a>=b)? a : b;
 		}
-		inline int min(int a, int b) { 
+		template < typename T >
+		const T& min(const T& a, const T& b) { 
 			return (a<=b)? a : b;
 		}
 	} // namespace std

@@ -35,8 +35,7 @@ void GLLogSpRenderer::DataTransform( const DataArray& array )
 
 void GLLogSpRenderer::YaxisTransform( TData top, TData bottom, TData& transtop, TData& transbottom, bool& integer )
 {
-	transtop = DB( top, mDBScaling );
-	transtop = transtop + transtop * 0.1f;
+	transtop = 0;
 	transbottom = bottom;
-	integer = true;
+	integer = false;
 }

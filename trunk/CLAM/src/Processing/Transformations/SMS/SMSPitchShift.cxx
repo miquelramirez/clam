@@ -29,9 +29,11 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 	int i;
 	mSpectralEnvelope.SetSpectralRange(mSpectralRange);
  	
+	bool haveEnvelope=false;
+
 	//First extract spectral envelope
 	if(mIsHarmonic.GetLastValue()>0)
-		mPO_SpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope);
+		haveEnvelope = mPO_SpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope);
 
 	if(&outPeaks!=&inPeaks)//TODO: this is already solved inPeaks new DT
 		outPeaks=inPeaks;
@@ -60,7 +62,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,const Spectrum& inRes, S
 	//Apply original spectral shape and comb filter the residual
 	if(mIsHarmonic.GetLastValue()>0)
 	{
-		mPO_SpectralEnvelopeApply.Do(outPeaks,mSpectralEnvelope,outPeaks);
+		if(haveEnvelope) mPO_SpectralEnvelopeApply.Do(outPeaks,mSpectralEnvelope,outPeaks);
 		mPO_FDCombFilter.mFreq.DoControl(mIsHarmonic.GetLastValue()*amount);
 		mPO_FDCombFilter.Do(inRes,outRes);
 	}
@@ -71,7 +73,7 @@ bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
 	mSpectralRange=in.GetSinusoidalSpec().GetSpectralRange();
 	mIsHarmonic.DoControl(in.GetFundamental().GetFreq(0));
-	CLAM_ASSERT(mSpectralRange<20000,"Error");//test
+//	CLAM_ASSERT(mSpectralRange<20000,"Error");//test
 	//test
 	TData time=in.GetCenterTime();
 	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),out.GetSpectralPeakArray(),out.GetResidualSpec());

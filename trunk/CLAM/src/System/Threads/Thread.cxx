@@ -6,7 +6,7 @@
 #include <cstdio>
 #endif
 #ifdef WIN32
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 #endif
 

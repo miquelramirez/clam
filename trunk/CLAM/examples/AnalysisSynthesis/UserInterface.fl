@@ -31,7 +31,7 @@ decl {\#include "Signalv1.hxx"} {public
 decl {\#include "Slotv1.hxx"} {public
 } 
 
-class UserInterface {open
+class UserInterface {open selected
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
@@ -147,7 +147,7 @@ class UserInterface {open
           }
         }
         submenu mOutputSM {
-          label Output selected
+          label Output
           private xywh {10 10 100 20} labelsize 12 deactivate
         } {
           submenu mVisualizeOutputs {
@@ -309,9 +309,7 @@ mWindow2=NULL;}
   decl {Fl_Window* Attach( const char* title, CLAM::Audio* data );} {}
   decl {Fl_Window* Attach( const char* title, CLAM::Spectrum* data, int type );} {}
   decl {static void _Detach(Fl_Window* buffer,UserInterface* ui);} {}
-  decl {static void _DetachSpectrum(Fl_Window* buffer,UserInterface* ui);} {}
   decl {void Detach(Fl_Window* buffer);} {}
-  decl {void DetachSpectrum(Fl_Window* buffer);} {}
   decl {void PlayInputSound();} {}
   decl {void PlayOutputSound();} {}
   decl {void PlaySinusoidal();} {}

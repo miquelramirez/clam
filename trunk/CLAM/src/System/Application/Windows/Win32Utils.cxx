@@ -1,5 +1,5 @@
 #include "Win32Utils.hxx"
-#include <windows.h>
+#include "CLAM_windows.h"
 #undef GetClassName
 #undef CreateWindow
 #include "DXFullDuplex.hxx"
