@@ -6,7 +6,7 @@ namespace CLAM
     namespace VM
     {
 	NetAudioBuffPlotController::NetAudioBuffPlotController()
-	    : _index(0), _first(true), _frameSize(0)
+	    : mMonitor(0),_index(0), _first(true), _frameSize(0)
 	{
 	    SetvRange(TData(-1.0),TData(1.0));
 	}
@@ -22,6 +22,11 @@ namespace CLAM
 	    FullView();
 	}
 
+	void NetAudioBuffPlotController::SetMonitor(MonitorType & monitor)
+	{
+	    mMonitor = &monitor;
+	}
+
 	void NetAudioBuffPlotController::SetDataColor(Color c)
 	{
 	    _renderer.SetColor(c);
@@ -29,7 +34,28 @@ namespace CLAM
 
 	void NetAudioBuffPlotController::Draw()
 	{
+	    if(!mMonitor)
+	    {
+		_renderer.Render();
+		return;
+	    }
+
+	    const Audio& audio = mMonitor->FreezeAndGetData();
+
+	    // TODO: Because we have exclusive right for
+	    // to the data we could remove some of this copies
+
+	    if(_first && audio.GetBuffer().Size() > 0)
+	    {
+		Init(audio.GetBuffer().Size());
+	    }
+
+	    AddData(audio.GetBuffer());
+	    FullView();
+
 	    _renderer.Render();
+
+	    mMonitor->UnfreezeData();
 	}
 
 	void NetAudioBuffPlotController::AddData(const DataArray& data)
