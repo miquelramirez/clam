@@ -106,7 +106,7 @@ void Envelope::set_node_offset(int p_node,int p_x,int p_y) {
 		p_x=node[p_node+1].offset-1;
 	}
 
-	if (p_x>=9999) p_x=9999;
+	if (p_x>=9999999) p_x=9999999;
 
 	if (p_y>max_value) p_y=max_value;
 	if (p_y<min_value) p_y=min_value;

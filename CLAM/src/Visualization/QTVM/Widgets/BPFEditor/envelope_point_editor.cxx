@@ -32,8 +32,8 @@
 
 
 static const float MIN_ZOOM=0.2;
-static const float ZOOM_ADJUST_MARGIN_MIN=30.0; //percent of screen
-static const float ZOOM_ADJUST_MARGIN_MAX=5.0; //percent of screen
+static const float ZOOM_ADJUST_MARGIN_MIN=0; //percent of screen
+static const float ZOOM_ADJUST_MARGIN_MAX=0; //percent of screen
 
 bool Envelope_Point_Editor::adjust_zoom_to_window() {
 
@@ -297,7 +297,7 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
         	painter.drawLine((int)node_begin,0,(int)node_begin,cur_height);
         	painter.drawLine((int)node_end,0,(int)node_end,cur_height);
 	}
-
+	//xamat
 	painter.fillRect(0,cur_height,cur_width,real_height-cur_height,QColor(0,0,0));
 
 	painter.setPen(QColor(200,200,200));
@@ -548,7 +548,10 @@ void Envelope_Point_Editor::update_position_list(const std::vector<int>& p_posit
 
 Envelope_Point_Editor::Envelope_Point_Editor(QWidget *p_parent) : QWidget(p_parent) {
 
-	setBackgroundMode (NoBackground);
+  //xamat
+  //setBackgroundMode (NoBackground);
+  //setBackgroundColor(QColor(255,255,255));
+	
 	envelope=NULL;
 	mZoom=0.25f;
 
