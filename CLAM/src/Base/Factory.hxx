@@ -116,7 +116,8 @@ public: // Inner classes. Public for better testing
 			if (!res)
 			{
 				std::string errmsg("GetCreator invoked with a non existent key : ");
-				errmsg += creatorId;
+				errmsg += creatorId + "\nRegistered keys are:\n";
+				errmsg += GetRegisteredNames();
 				CLAM_ASSERT(res,errmsg.c_str());
 			}
 
@@ -166,6 +167,19 @@ public: // Inner classes. Public for better testing
 				namesList.push_back( i->first );
 			}
 		}
+		std::string GetRegisteredNames()
+		{
+			std::string result;
+			typedef std::list<RegistryKey> Names;
+			Names names;
+			GetRegisteredNames(names);
+			for(Names::iterator it=names.begin(); it!=names.end(); it++)
+			{
+				result += (*it)+"\t";
+			}
+			return result;
+			
+		}
 
 	private: // data
 		CreatorMap _creators;
@@ -202,6 +216,7 @@ public: // Inner classes. Public for better testing
 		}
 
 		Registrator( RegistryKey key ) {
+			std::cout << "reg key="<<key<<" at fact "<<&(TheFactoryType::GetInstance())<< std::endl;
 			TheFactoryType::GetInstance().AddCreator( key, Create );
 		}
 
