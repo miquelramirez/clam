@@ -19,7 +19,7 @@ class ConfigParserTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( ConfigParserTest );
 
-	CPPUNIT_TEST( test );
+	CPPUNIT_TEST( still_TODO_but_somehow_tested_in_DspParserTest );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -47,7 +47,7 @@ public:
 	}
 
 private:
-	void test()
+	void still_TODO_but_somehow_tested_in_DspParserTest()
 	{
 	/*	CPPUNIT_ASSERT_EQUAL( 
 			std::string("this should be a test about parsing settings.cfg file"), 
