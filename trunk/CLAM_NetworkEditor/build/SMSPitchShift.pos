@@ -1,0 +1,10 @@
+1076 776
+AudioOut_2	690 253	95 54
+Fundamental2Control_0	563 330	132 52
+MonoAudioFileReader_1	13 116	161 54
+OutControlSender_1	4 484	86 46
+PeaksPortMonitor_0	235 3	257 150
+PeaksPortMonitor_2	530 34	242 163
+SMSAnalysisCore_0	118 237	137 54
+SMSPitchShift_1	322 426	99 52
+SMSSynthesis_3	594 431	119 54
