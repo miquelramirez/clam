@@ -20,6 +20,11 @@ namespace CLAM
 			((NetFundPlotController*)_controller)->SetData(fund);
 		}
 
+		void NetFundPlot::SetMonitor(MonitorType & monitor)
+		{
+			((NetFundPlotController*)_controller)->SetMonitor(monitor);
+		}
+
 		void NetFundPlot::SetDataColor(Color c)
 		{
 			((NetFundPlotController*)_controller)->SetDataColor(c);

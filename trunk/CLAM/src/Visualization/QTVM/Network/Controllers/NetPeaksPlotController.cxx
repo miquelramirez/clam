@@ -7,10 +7,10 @@ namespace CLAM
 	{
 		NetPeaksPlotController::NetPeaksPlotController()
 		{
-			_linear = false;
 			SetvRange(TData(-150.0),TData(0.0));
-			SetnSamples(22050);
 			_renderer.SetVBounds(TData(0.0),TData(-150.0));
+			SetnSamples(22050);
+			_linear = false;
 			mMonitor = 0;
 		}
 
@@ -55,6 +55,7 @@ namespace CLAM
 			FullView();
 
 			_renderer.Render();
+
 			mMonitor->UnfreezeData();
 		}
 

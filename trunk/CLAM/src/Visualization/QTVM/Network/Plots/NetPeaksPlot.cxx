@@ -1,6 +1,5 @@
 #include "NetPeaksPlotController.hxx"
 #include "NetPeaksPlot.hxx"
-#include "PortMonitor.hxx"
 
 namespace CLAM
 {

@@ -8,6 +8,7 @@
 // Temporary until concrete classes will be separated
 #include "SpectralPeakArray.hxx"
 #include "Spectrum.hxx"
+#include "Fundamental.hxx"
 #include "InPort.hxx"
 #include "Audio.hxx"
 #include "AudioInPort.hxx"
@@ -146,6 +147,11 @@ namespace CLAM
 	{
 	public:
 		const char * GetClassName() const {return "SpectrumPortMonitor";}
+	};
+	class FundamentalPortMonitor : public PortMonitor <Fundamental>
+	{
+	public:
+		const char * GetClassName() const {return "FundamentalPortMonitor";}
 	};
 
 	template <>

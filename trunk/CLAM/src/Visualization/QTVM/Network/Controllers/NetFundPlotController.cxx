@@ -6,8 +6,10 @@ namespace CLAM
 	{
 		NetFundPlotController::NetFundPlotController() 
 		{
-		    SetvRange(TData(0.0),TData(1.0));
-		    _renderer.SetVBounds(TData(0.7),TData(0.0));
+			SetvRange(TData(0.0),TData(1.0));
+			_renderer.SetVBounds(TData(0.7),TData(0.0));
+			SetnSamples(22050);
+			mMonitor = 0;
 		}
 
 		NetFundPlotController::~NetFundPlotController()
@@ -16,10 +18,14 @@ namespace CLAM
 
 		void NetFundPlotController::SetData(const Fundamental& data)
 		{
-		    SetnSamples(22050);
-		    _renderer.SetHBounds(TData(0.0),TData(GetnSamples()));
-		    _renderer.Update(data.GetFreq(0));
-		    FullView();
+			_renderer.SetHBounds(TData(0.0),TData(GetnSamples()));
+			_renderer.Update(data.GetFreq(0));
+			FullView();
+		}
+
+		void NetFundPlotController::SetMonitor(MonitorType & monitor)
+		{
+			mMonitor = & monitor;
 		}
 
 		void NetFundPlotController::SetDataColor(Color c)
@@ -29,7 +35,22 @@ namespace CLAM
 
 		void NetFundPlotController::Draw()
 		{
+			if (!mMonitor)
+			{
+				_renderer.Render();
+				return;
+			}
+			const CLAM::Fundamental & fund = mMonitor->FreezeAndGetData();
+
+			// TODO: Because we have exclusive right for
+			// to the data we could remove some of this copies
+			_renderer.SetHBounds(TData(0.0),TData(GetnSamples()));
+			_renderer.Update(fund.GetFreq(0));
+			FullView();
+
 			_renderer.Render();
+
+			mMonitor->UnfreezeData();
 		}
 
 		void NetFundPlotController::FullView()
