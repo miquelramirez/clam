@@ -21,6 +21,7 @@
 
 #include "XercesEncodings.hxx"
 #include "XercesInitializer.hxx"
+#include "XmlStorageErr.hxx"
 
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
@@ -60,6 +61,7 @@ class XercesDomReader : private xercesc::HandlerBase
 		}
 		xercesc::DOMDocument * read(std::istream & target)
 		{
+			if (target.fail()) throw XmlStorageErr("Unable to open the document source");
 			parser->setErrorHandler(this);
 			parser->setValidationScheme(xercesc::XercesDOMParser::Val_Auto);
 			parser->setValidationSchemaFullChecking(true);
@@ -90,7 +92,7 @@ class XercesDomReader : private xercesc::HandlerBase
 			parser->parse(xercesInputSource);
 
 			if (parser->getErrorCount())
-				throw Err(
+				throw XmlStorageErr(
 					(std::string("\nXML Parser Errors:\n")+
 					 RecopilaErrors()).c_str());
 			xercesc::DOMDocument *doc = parser->getDocument();
