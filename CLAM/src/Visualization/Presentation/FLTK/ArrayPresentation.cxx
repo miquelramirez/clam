@@ -41,7 +41,7 @@ void ArrayPresentation::Init( const Geometry& g, const char* label )
 	mPort = new GLPort( Rect<int>( 0, 0, g.GetW(), g.GetH() ) );
 	mRenderer = new GLArrayRenderer( 0, 200, 0 );
 
-	mContainer->Add( *mPort );
+	mContainer->Add( mPort );
 	mMainWidget->resizable( mContainer );
 	mMainWidget->end();
 
