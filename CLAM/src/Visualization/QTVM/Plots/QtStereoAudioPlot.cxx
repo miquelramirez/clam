@@ -17,6 +17,7 @@ namespace CLAM
 	{
 		QtStereoAudioPlot::QtStereoAudioPlot(QWidget* parent) : QtPlot(parent)
 		{
+			_maxHZRatio=-1;
 			InitStereoAudioPlot();
 		}
 
@@ -224,14 +225,20 @@ namespace CLAM
 
 		void QtStereoAudioPlot::hZoomIn()
 		{
-			_leftChannel->hZoomIn();
-			DirtyTrick();
+			if(_currentHZRatio != 1)
+			{
+				_leftChannel->hZoomIn();
+				DirtyTrick();
+			}
 		}
 
 		void QtStereoAudioPlot::hZoomOut()
 		{
-			_leftChannel->hZoomOut();
-			DirtyTrick();
+			if(_currentHZRatio != _maxHZRatio)
+			{
+				_leftChannel->hZoomOut();
+				DirtyTrick();
+			}
 		}
 
 		void QtStereoAudioPlot::hScrollValue(int value)
@@ -258,8 +265,10 @@ namespace CLAM
 
 		void QtStereoAudioPlot::receivedHZoomRatio(int zr)
 		{
+			if(_maxHZRatio < zr) _maxHZRatio = zr;
 			// update horizontal zoom ratio indicator
 			_hs->updateZoomRatio(zr);
+			_currentHZRatio = zr;
 		}
 
 		void QtStereoAudioPlot::setXRulerScaleDiv(QwtScaleDiv div)
