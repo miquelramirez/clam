@@ -109,6 +109,7 @@ namespace CLAMVM
 
 		
 	private:		
+		NetworkGUI::NetworkPresentation * mPresentation;
 		CLAM::Thread mThread;
 		/** Main loop of the application, where DoProcessings method from network
 		 * is executed and all the events are checked calling ExecuteEvents.
@@ -231,31 +232,31 @@ namespace CLAMVM
 	public:
 		SigSlot::Slotv1< bool > SlotChangeState;
 		
-		SigSlot::Signalv2< const std::string &, const std::string & > SignalCreatePortConnectionPresentation;
+//		SigSlot::Signalv2< const std::string &, const std::string & > SignalCreatePortConnectionPresentation;
 		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemovePortConnection;
 		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreatePortConnection;
 		
-		SigSlot::Signalv2< const std::string &, const std::string & > SignalRemoveConnectionPresentation;
+//		SigSlot::Signalv2< const std::string &, const std::string & > SignalRemoveConnectionPresentation;
 		
-		SigSlot::Signalv2< const std::string &, const std::string & > SignalCreateControlConnectionPresentation;
-		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemoveControlConnection;
+//		SigSlot::Signalv2< const std::string &, const std::string & > SignalCreateControlConnectionPresentation;
+//		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemoveControlConnection;
 		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreateControlConnection;
 
 		SigSlot::Slotv2< const std::string &, CLAM::Processing *  > SlotAddProcessing;
 		SigSlot::Slotv2< CLAM::Processing *, const CLAM::ProcessingConfig &  > SlotConfigureProcessing;
 		SigSlot::Slotv1< const std::string & > SlotRemoveProcessing;
 		SigSlot::Slotv2< const std::string &, ProcessingController * > SlotProcessingNameChanged;
-		SigSlot::Signalv2< const std::string &, const std::string & > SignalChangeConnectionPresentationNames;
+//		SigSlot::Signalv2< const std::string &, const std::string & > SignalChangeConnectionPresentationNames;
 
-		SigSlot::Signalv2< const std::string &, CLAMVM::ProcessingController* > SignalCreateProcessingPresentation;
-		SigSlot::Signalv2< const std::string &, ProcessingController *> SignalRebuildProcessingPresentationAttachedTo;
+//		SigSlot::Signalv2< const std::string &, CLAMVM::ProcessingController* > SignalCreateProcessingPresentation;
+//		SigSlot::Signalv2< const std::string &, ProcessingController *> SignalRebuildProcessingPresentationAttachedTo;
 		SigSlot::Slotv1< CLAM::Processing * > SlotRemoveAllConnections;
 		SigSlot::Slotv2< ProcessingController *, CLAM::Processing * > SlotRebuildProcessingPresentationAttachedTo;
 
-		SigSlot::Slotv1< const std::string & > SlotLoadNetwork;
-		SigSlot::Slotv1< const std::string & > SlotSaveNetwork;
+//		SigSlot::Slotv1< const std::string & > SlotLoadNetwork;
+//		SigSlot::Slotv1< const std::string & > SlotSaveNetwork;
 		SigSlot::Slotv0 SlotClear;
-		SigSlot::Signalv0 SignalClearPresentation;
+//		SigSlot::Signalv0 SignalClearPresentation;
 		
 	};
 } // namespace CLAMVM

@@ -34,25 +34,19 @@ namespace NetworkGUI
 NetworkPresentation::NetworkPresentation() : mNetworkController(0)
 {
 	SlotRemovePortConnection.Wrap( this, &NetworkPresentation::RemovePortConnection);
-	SlotCreatePortConnectionPresentation.Wrap( this, &NetworkPresentation::CreatePortConnectionPresentation);
-	SlotCreatePortConnection.Wrap( this, &NetworkPresentation::CreatePortConnection);
-
-
-	SlotRemoveConnectionPresentation.Wrap( this, &NetworkPresentation::RemoveConnectionPresentation);
-	
+//	SlotCreatePortConnectionPresentation.Wrap( this, &NetworkPresentation::CreatePortConnectionPresentation);
+//	SlotCreatePortConnection.Wrap( this, &NetworkPresentation::CreatePortConnection);
+//	SlotRemoveConnectionPresentation.Wrap( this, &NetworkPresentation::RemoveConnectionPresentation);
 	SlotRemoveControlConnection.Wrap( this, &NetworkPresentation::RemoveControlConnection);
-	SlotCreateControlConnectionPresentation.Wrap( this, &NetworkPresentation::CreateControlConnectionPresentation);
-	SlotCreateControlConnection.Wrap( this, &NetworkPresentation::CreateControlConnection);
-
-	SlotCreateProcessingPresentation.Wrap( this, &NetworkPresentation::CreateProcessingPresentation );
+//	SlotCreateControlConnectionPresentation.Wrap( this, &NetworkPresentation::CreateControlConnectionPresentation);
+//	SlotCreateControlConnection.Wrap( this, &NetworkPresentation::CreateControlConnection);
+//	SlotCreateProcessingPresentation.Wrap( this, &NetworkPresentation::CreateProcessingPresentation );
 	SlotAddProcessing.Wrap( this, &NetworkPresentation::AddProcessing );
 	SlotRemoveProcessing.Wrap( this, &NetworkPresentation::RemoveProcessing );
-	SlotRebuildProcessingPresentationAttachedTo.Wrap( this, &NetworkPresentation::RebuildProcessingPresentationAttachedTo );
-	
+//	SlotRebuildProcessingPresentationAttachedTo.Wrap( this, &NetworkPresentation::RebuildProcessingPresentationAttachedTo );
 	SlotChangeState.Wrap( this, &NetworkPresentation::ChangeState );
 	SlotClear.Wrap(this, &NetworkPresentation::Clear );
-
-	SlotChangeConnectionPresentationNames.Wrap( this, &NetworkPresentation::ChangeConnectionPresentationNames );
+//	SlotChangeConnectionPresentationNames.Wrap( this, &NetworkPresentation::ChangeConnectionPresentationNames );
 }
 
 CLAMVM::NetworkController & NetworkPresentation::GetNetworkController()
@@ -166,7 +160,7 @@ void NetworkPresentation::AttachToNetworkController(CLAMVM::NetworkController & 
 	controller.AttachToNetworkPresentation(this);
 
 	SetName( controller.GetName() );
-	controller.SignalCreateProcessingPresentation.Connect( SlotCreateProcessingPresentation );
+//	controller.SignalCreateProcessingPresentation.Connect( SlotCreateProcessingPresentation );
 
 	CLAMVM::NetworkController::ProcessingControllersMap::iterator it;	
 	for(it=controller.BeginProcessingControllers(); it!=controller.EndProcessingControllers(); it++ )
@@ -175,17 +169,17 @@ void NetworkPresentation::AttachToNetworkController(CLAMVM::NetworkController & 
 //	SignalChangeState.Connect( controller.SlotChangeState );
 //	SignalAddProcessing.Connect( controller.SlotAddProcessing );
 //	SignalRemoveProcessing.Connect( controller.SlotRemoveProcessing );
-	controller.SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
-	controller.SignalClearPresentation.Connect( SlotClear );
+//	controller.SignalRebuildProcessingPresentationAttachedTo.Connect( SlotRebuildProcessingPresentationAttachedTo );
+//	controller.SignalClearPresentation.Connect( SlotClear );
 	
 //	SignalCreatePortConnection.Connect( controller.SlotCreatePortConnection );
 //	SignalRemovePortConnection.Connect( controller.SlotRemovePortConnection );
 //	SignalCreateControlConnection.Connect( controller.SlotCreateControlConnection );
 //	SignalRemoveControlConnection.Connect( controller.SlotRemoveControlConnection );
-	controller.SignalCreateControlConnectionPresentation.Connect( SlotCreateControlConnectionPresentation );
-	controller.SignalCreatePortConnectionPresentation.Connect( SlotCreatePortConnectionPresentation );
-	controller.SignalRemoveConnectionPresentation.Connect( SlotRemoveConnectionPresentation );
-	controller.SignalChangeConnectionPresentationNames.Connect( SlotChangeConnectionPresentationNames );
+//	controller.SignalCreateControlConnectionPresentation.Connect( SlotCreateControlConnectionPresentation );
+//	controller.SignalCreatePortConnectionPresentation.Connect( SlotCreatePortConnectionPresentation );
+//	controller.SignalRemoveConnectionPresentation.Connect( SlotRemoveConnectionPresentation );
+//	controller.SignalChangeConnectionPresentationNames.Connect( SlotChangeConnectionPresentationNames );
 
 //	SignalClear.Connect( controller.SlotClear );
 //	SignalSaveNetworkTo.Connect( controller.SlotSaveNetwork );

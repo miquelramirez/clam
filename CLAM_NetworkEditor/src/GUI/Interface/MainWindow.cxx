@@ -59,7 +59,7 @@ namespace NetworkGUI
 		QPopupMenu * file = new QPopupMenu( this );
 		QPopupMenu * view = new QPopupMenu( this );
 		QPopupMenu * networkActions = new QPopupMenu( this );
-		QPopupMenu * outControlActions = new QPopupMenu( this );
+//TODO		QPopupMenu * outControlActions = new QPopupMenu( this );
 		menuBar()->insertItem( "File", file );
 		menuBar()->insertItem( "View", view );
 		menuBar()->insertItem( "Network Actions", networkActions );
