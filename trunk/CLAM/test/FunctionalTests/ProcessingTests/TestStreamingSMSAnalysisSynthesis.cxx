@@ -44,6 +44,7 @@ private:
 
 	const int helperResAnalWindowSize() { return 1025; }
 	const int helperAnalWindowSize() { return 2049; }
+	const int helperAnalHopSize() {return 256;}
 
 	void ConfigureAnalysisSynthesis()
 	{
@@ -178,7 +179,7 @@ private:
 	const CLAM::SMSSynthesisConfig & helperSynthesisConfigInstance()
 	{
 		static CLAM::SMSSynthesisConfig synthConfig;
-		int synthFrameSize = helperAnalWindowSize();
+		int synthFrameSize = helperAnalHopSize();
 		synthConfig.SetAnalWindowSize( helperResAnalWindowSize() );
 		synthConfig.SetFrameSize(synthFrameSize);
 		synthConfig.SetHopSize(synthFrameSize);
@@ -191,7 +192,7 @@ private:
 		//CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
 		
 		CLAM::Network net;
-		const int audioFrameSize = 512; //!! test with different framesizes
+		const int audioFrameSize = 256; //!! test with different framesizes
 		net.AddFlowControl( new CLAM::BasicFlowControl( audioFrameSize ) );
 		net.AddProcessing( "AudioIn", new CLAM::MonoAudioFileReader );
 		net.AddProcessing( "AudioOut",new CLAM::MonoAudioFileWriter );
@@ -228,7 +229,7 @@ private:
 		for(int i=0; i<100; i++) net.DoProcessings();
 		net.Stop();
 
-		std::string whyDifferents;
+		std::string  whyDifferents;
 		bool equals=helperCompareTwoAudioFiles(
 				storedResult+".wav", storedResult+"_result.wav", 
 				whyDifferents);
