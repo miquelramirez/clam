@@ -26,6 +26,8 @@ namespace CLAM
 
 		~MelodyTranslator();
 
+		const char * GetClassName() const {return "MelodyTranslator";}
+
 		const ProcessingConfig &GetConfig() const { return mConfig; }
 
 		bool Do( const bool& play, TTime& currentTime );
