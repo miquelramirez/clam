@@ -45,6 +45,7 @@ namespace CLAM
 	
 	inline const ProcessingConfig &GetConfig() const { return mConfig;}
 	bool ConcreteConfigure(const ProcessingConfig& c);
+	void SetPlot(VM::NetPeaksPlot * plot);
 
     protected:
 	bool ConcreteStart();
@@ -54,7 +55,8 @@ namespace CLAM
 	PeaksPlotProcessingConfig mConfig;
 	VM::NetPeaksPlot* mPlot;
 	InPort<SpectralPeakArray> mInput;
-			
+	bool mOwnedPlot;
+
 	void InitPeaksPlot();
     };
 }

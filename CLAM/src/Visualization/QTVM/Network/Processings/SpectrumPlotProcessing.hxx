@@ -47,6 +47,7 @@ namespace CLAM
 	
 			inline const ProcessingConfig &GetConfig() const { return mConfig;}
 			bool ConcreteConfigure(const ProcessingConfig& c);
+			void SetPlot(VM::NetSpectrumPlot * plot);
 
 		protected:
 			bool ConcreteStart();
@@ -56,6 +57,7 @@ namespace CLAM
 			SpectrumPlotProcessingConfig mConfig;
 			VM::NetSpectrumPlot* mPlot;
 			InPort<Spectrum> mInput;
+			bool mOwnedPlot;
 			
 			void InitSpectrumPlot();
 	};
