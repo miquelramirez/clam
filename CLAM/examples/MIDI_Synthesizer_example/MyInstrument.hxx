@@ -1,6 +1,10 @@
 #ifndef _MyInstrument_hxx_
 #define _MyInstrument_hxx_
 
+#include "ProcessingConfig.hxx"
+#include "Instrument.hxx"
+#include "AudioManager.hxx"
+
 namespace CLAM
 {
 
