@@ -376,7 +376,7 @@ namespace CLAM
 		}
 
 		// add an element to all the matrix elements
-		friend MatrixTmpl<T> operator + (MatrixTmpl<T>& m1, const T element)
+		friend MatrixTmpl<T> operator + (const MatrixTmpl<T>& m1, const T & element)
 		{
 			MatrixTmpl<T> ret(m1.mNumRows, m1.mNumColumns); 
 			for (unsigned int i=0; i<ret.mNumRows; i++)
@@ -402,7 +402,7 @@ namespace CLAM
 			MatrixTmpl<T> ret(m1.mNumRows, m1.mNumColumns); 
 			for (unsigned int i=0; i<ret.mNumRows; i++)
 				for (unsigned int j=0; j<ret.mNumColumns; j++)
-		ret(i,j) = m1(i,j) - element;
+					ret(i,j) = m1(i,j) - element;
 			return ret;
 		}
 
