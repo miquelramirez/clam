@@ -20,9 +20,9 @@
  */
 
 #include "AnalysisSynthesisExampleBase.hxx"
-
-#include "SnapshotGenerator.hxx"
 #include "DebugSnapshots.hxx"
+#include "AudioSnapshot.hxx"
+#include "SpectrumSnapshot.hxx"
 #include <iostream>
 
 using namespace CLAM;
@@ -130,7 +130,7 @@ void AnalysisSynthesisExampleStdio::Run(void)
 					break;
 				}
 				LoadInputSound();
-				CLAMGUI::showPDSnapshot(&mAudioIn,"Input Audio");
+				showSnapshotAudio(mAudioIn,"Input Audio");
 				Analyze();
 				break;
 			}
@@ -232,9 +232,9 @@ void AnalysisSynthesisExampleStdio::Run(void)
 				}
 				Synthesize();
 				
-				CLAMGUI::showPDSnapshot(&mAudioOut,"Output Sound");
-				CLAMGUI::showPDSnapshot(&mAudioOutSin,"Sinusoidal Component");
-				CLAMGUI::showPDSnapshot(&mAudioOutRes,"Residual Component");
+				showSnapshotAudio(mAudioOut,"Output Sound");
+				showSnapshotAudio(mAudioOutSin,"Sinusoidal Component");
+				showSnapshotAudio(mAudioOutRes,"Residual Component");
 				break;
 			}
 			case 10://Exit
