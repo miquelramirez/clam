@@ -24,12 +24,13 @@
 
 #include <valarray>
 
+
+namespace CLAMGUI{
 /**
  *   Stroustrup's Slice iterator, with some minor tweaks for
  *   achieving the efficiency of traditional C hand-coded implementation
  *   of the concept
  */
-
 template < typename T, typename SliceType = std::slice >
 class Slice_iter
 {
@@ -113,6 +114,6 @@ bool operator<( const Slice_iter< T, SliceType >&p, const Slice_iter< T, SliceTy
 }
 
 
-
+};//CLAMGUI
 
 #endif // Slice_iter.hxx
