@@ -19,7 +19,6 @@ namespace CLAM
 	{
 	    if(_first) Init(audio.GetBuffer().Size());
 	    AddData(audio.GetBuffer());
-	    ProcessData();
 	    FullView();
 	}
 
@@ -50,21 +49,7 @@ namespace CLAM
 		_index += _frameSize;
 		if(_index == GetnSamples()) _index = 0;
 	    }
-	}
-
-	void NetAudioBuffPlotController::ProcessData()
-	{
-	    if(_cachedData.Size() < GetnSamples())
-	    {
-		_renderer.SetDataPtr(_cachedData.GetPtr(),_cachedData.Size(),NormalMode);
-	    }
-	    else
-	    {
-		TSize len = _cachedData.Size()-_index;
-		std::copy(_cachedData.GetPtr()+_index,_cachedData.GetPtr()+_cachedData.Size(),_processedData.GetPtr());
-		std::copy(_cachedData.GetPtr(),_cachedData.GetPtr()+_index,_processedData.GetPtr()+len);
-		_renderer.SetDataPtr(_processedData.GetPtr(),_processedData.Size(),NormalMode);
-	    }
+	    _renderer.SetDataPtr(_cachedData.GetPtr(),_cachedData.Size(), (unsigned)_index);
 	}
 
 	void NetAudioBuffPlotController::Init(const TSize& frameSize)
@@ -72,8 +57,6 @@ namespace CLAM
 	    _frameSize = frameSize;
 	    SetnSamples(_frameSize*100);
 	    _cachedData.Init();
-	    _processedData.Resize(GetnSamples());
-	    _processedData.SetSize(GetnSamples());
 	    _first = false;
 	}
 
