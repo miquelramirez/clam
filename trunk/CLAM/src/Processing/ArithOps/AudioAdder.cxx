@@ -21,4 +21,4 @@
 
 #include "AudioAdder.hxx"
 using namespace CLAM;
-template BinaryAudioOp< Sum<TData> >;
+template BinaryAudioOp< Add<TData> >;

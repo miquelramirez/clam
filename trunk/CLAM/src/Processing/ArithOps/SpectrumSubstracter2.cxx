@@ -133,7 +133,7 @@ namespace CLAM {
 	}
 
 	// This function analyses the inputs and decides which prototypes to use 
-	// For the sum computation. 
+	// For the substrac computation. 
 	bool SpectrumSubstracter2::SetPrototypes(const Spectrum& in1,const Spectrum& in2,const Spectrum& out)
 	{
 		// Check common attributes
