@@ -1,3 +1,5 @@
+// DEPRECATED: See NetDisplaySurface !!!
+#if 0
 #include "NetPlotController.hxx"
 #include "NetDisplaySurface.hxx"
 #include "GLThread.hxx"
@@ -99,4 +101,4 @@ namespace CLAM
 }
 
 // END
-
+#endif

@@ -1,3 +1,5 @@
+// DEPRECATED: See NetDisplaySurface !!!
+#if 0                                                         
 #ifndef __GLTHREAD__
 #define __GLTHREAD__
 
@@ -44,6 +46,7 @@ namespace CLAM
     }
 }
 
+#endif
 #endif
 
 
