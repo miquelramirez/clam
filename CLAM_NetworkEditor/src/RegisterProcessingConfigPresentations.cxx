@@ -73,8 +73,14 @@
 
 //SMSTransformations
 #include "FrameTransformationConfig.hxx"
+#include "SMSSineFilter.hxx"
 
 #include "Fundamental2Control.hxx"
+
+//MIDI
+#include "MIDIKeyboard.hxx"
+#include "MIDIIOConfig.hxx"
+//#include "MIDIDispatcher.hxx"
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 
@@ -198,9 +204,23 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::AudioBuffPlotProcessingConfig> >
        regtAudioBuffPlotProcessingCfg("AudioBuffPlotProcessingConfig");
  
+// SMS Transformations	   
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FrameTransformationConfig> >
        regtSMSTransformationConfig("FrameTransformationConfig");
 
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSSineFilterConfig> >
+       regtSMSSineFilterConfig("SMSSineFilterConfig");
+
+// Control	   
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::Fundamental2ControlConfig> >
        regtFundamental2ControlConfig("Fundamental2ControlConfig");
 
+// MIDI
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MIDIKeyboardConfig> >
+       regtMIDIKeyboardConfig("MIDIKeyboardConfig");
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MIDIIOConfig> >
+       regtMIDIIOConfig("MIDIIOConfig");
+//static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MIDIDispatcherConfig> >
+//       regtMIDIDispatcherConfig("MIDIDispatcherConfig");
