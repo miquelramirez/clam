@@ -59,7 +59,7 @@ void TremoloConfig::DefaultInit()
 	SetFrequency( TData(5.0) );
 	SetMaxAtenuation( TData(0.2) );
 	SetStartPhase( TData(0.0) );
-	SetSamplingRate(48000);
+	SetSamplingRate(44100);
 }
 
 class Tremolo: public Processing {
@@ -68,7 +68,7 @@ class Tremolo: public Processing {
 	TData mPhaseDelta;
 	TData mMidAmplitude;
 	TData mTremoloAmplitude;
-	const char* GetClassName() {return "Tremolo";}
+	const char* GetClassName() const {return "Tremolo";}
 	bool ConcreteStart();
 	bool ConcreteConfigure(const ProcessingConfig &cfg) throw(std::bad_cast);
 public:
@@ -116,7 +116,7 @@ bool Tremolo::Do(const Audio &in_audio, Audio &out_audio)
 	}
 
 	if ( mPhase > 2*PI )
-		mPhase -= 2*PI;
+		mPhase -= 2*TData(PI);
 
 	return true;
 }
@@ -146,7 +146,7 @@ void AudioIOExampleConfig::DefaultInit()
 	AddAll();
 	UpdateData();
 	SetFilename("foo.wav");
-	SetUseAudioIn(true);
+	SetUseAudioIn(false);
 
 	SetFirstTremoloFreq( 50.0 );
 	SetFirstTremoloStartingPhase( 0 );
@@ -174,11 +174,11 @@ class AudioIOExample : public ProcessingComposite {
 	Audio mOutputData2;
 
 	void AttachChildren();
-	bool ConfigureChildren(const AudioIOExampleConfig&);
+	bool ConfigureChildren();
 	bool ConfigureData();
 	void ConfigureAudio(Audio&);
 
-	const char* GetClassName() {return "AudioIOExample";}
+	const char* GetClassName() const {return "AudioIOExample";}
 
 	bool ConcreteStart() throw(ErrProcessingObj);
 	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
@@ -211,7 +211,11 @@ void AudioIOExample::AttachChildren()
 {
 	mInput.SetParent(this);
 	mInput2.SetParent(this);
-	mFileIn.SetParent(this);
+	CLAM_DEBUG_ASSERT(mConfig.HasUseAudioIn(), "UseAudioIn flag is not added in the mConfig");
+	if (!mConfig.GetUseAudioIn()) {
+		// if flag UseAudioIn is not set, we don't attach mFileIn, so not to make further Start/Stops
+		mFileIn.SetParent(this);
+	}
 	mTremoloApplier.SetParent(this);
 	mTremoloApplier2.SetParent(this);
 	mOutput.SetParent(this);
@@ -219,7 +223,7 @@ void AudioIOExample::AttachChildren()
 }
 
 
-bool AudioIOExample::ConfigureChildren(const AudioIOExampleConfig & c)
+bool AudioIOExample::ConfigureChildren()
 {
 	AudioIOConfig cfg;
 
@@ -239,9 +243,16 @@ bool AudioIOExample::ConfigureChildren(const AudioIOExampleConfig & c)
  	cfg.SetChannelID(1);
  	mOutput2.Configure(cfg);
 
-	AudioFileConfig fcfg;
-	fcfg.SetName("audio_file_in");
-	fcfg.SetFilename(c.GetFilename());
+	if (!mConfig.GetUseAudioIn()) {
+		AudioFileConfig fcfg;
+		fcfg.SetName("audio_file_in");
+		fcfg.SetFilename(mConfig.GetFilename());
+		fcfg.SetFiletype(EAudioFileType::eWave);
+		CLAM_DEBUG_ASSERT(mSize>0, "no positive frame size");
+		fcfg.SetFrameSize(mSize);
+		fcfg.SetChannels(1);
+		mFileIn.Configure(fcfg);
+	}
 
 	TremoloConfig tcfg;
 	tcfg.SetFrequency(mConfig.GetFirstTremoloFreq());
@@ -282,7 +293,7 @@ bool AudioIOExample::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad
 {
 	try {
 		mConfig = dynamic_cast<const AudioIOExampleConfig&>(c);
-		ConfigureChildren(mConfig);
+		ConfigureChildren();
 	}
 	catch (Err &e) {
 		mStatus+=e.what();
@@ -293,7 +304,7 @@ bool AudioIOExample::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad
 }
 
 AudioIOExample::AudioIOExample(const AudioIOExampleConfig &cfg)
-	: mSize(256)
+	: mSize(512)
 {
 	AttachChildren();
 	Configure(cfg);
@@ -301,13 +312,24 @@ AudioIOExample::AudioIOExample(const AudioIOExampleConfig &cfg)
 
 bool AudioIOExample::Do()
 {
-	while (1) {
-		mInput.Do(mInputData);
-		mInput2.Do(mInputData2);
-		mTremoloApplier.Do(mInputData,mOutputData);
-		mTremoloApplier2.Do(mInputData2,mOutputData2);
-		mOutput.Do(mOutputData);
-		mOutput2.Do(mOutputData2);
+	bool useAudioIn = mConfig.GetUseAudioIn();
+	if (useAudioIn) {
+		while (1) {
+			mInput.Do(mInputData);
+			mInput2.Do(mInputData2);
+			mTremoloApplier.Do(mInputData,mOutputData);
+			mTremoloApplier2.Do(mInputData2,mOutputData2);
+			mOutput.Do(mOutputData);
+			mOutput2.Do(mOutputData2);
+		}
+	} else { //use AudioFileIn
+		while (!mFileIn.Done()) {
+			mFileIn.Do(mInputData);
+			mTremoloApplier.Do(mInputData,mOutputData);
+			mTremoloApplier2.Do(mInputData2,mOutputData2);
+			mOutput.Do(mOutputData);
+			mOutput2.Do(mOutputData);
+		}
 	}
 	return true;
 }
