@@ -122,8 +122,8 @@ namespace CLAMVM
 	{
 		TSize offset, len;
 
-		offset = mDataBBox.mLeft;
-		len = (mDataBBox.mRight - mDataBBox.mLeft)+1;
+		offset = (TSize)mDataBBox.mLeft;
+		len = (TSize)(mDataBBox.mRight - mDataBBox.mLeft)+1;
 
 		mOffset = offset;
 

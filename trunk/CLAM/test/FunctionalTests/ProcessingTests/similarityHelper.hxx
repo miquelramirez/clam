@@ -1,6 +1,7 @@
 #ifndef __SIMILARITY_HELPER__
 #define __SIMILARITY_HELPER__
 
+#include "Err.hxx"
 #include "Array.hxx"
 
 namespace CLAM
@@ -10,6 +11,15 @@ namespace CLAM
 
 namespace CLAMTest
 {
+	class DataSizeMismatch
+		: public CLAM::Err
+	{
+	public:
+		DataSizeMismatch() throw();
+		DataSizeMismatch( const char* msg ) throw();
+		~DataSizeMismatch() throw();
+	};
+
 	/**
 	 *  Evaluates the Pearson R correlation value
 	 *  between input arrays. The formula for computing it is as follows:
@@ -17,7 +27,7 @@ namespace CLAMTest
 	 *  r(x,y) = Cov( x,y ) / stdDeviation(x)*stdDeviation(y);
 	 */
 	double evaluateSimilarity( CLAM::DataArray& left,
-				   CLAM::DataArray& right );
+				   CLAM::DataArray& right ) throw ( DataSizeMismatch );
 
 	/**
 	 *  Flattens the input spectral peak array into a floating-point values

@@ -326,6 +326,7 @@ namespace CLAM {
 	bool SpectrumProduct::SetPrototypes()
 	{
 		CLAM_ASSERT(false,"SpectrumProduct::SetPrototypes(): Not implemented");
+		return true;
 	}
 
 	bool SpectrumProduct::UnsetPrototypes()

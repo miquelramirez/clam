@@ -30,6 +30,7 @@
 #include "Processing.hxx"
 #include "WindowGeneratorConfig.hxx"
 #include "Array.hxx"
+#include "OutPortTmpl.hxx"
 
 namespace CLAM {
 
@@ -119,6 +120,9 @@ class ProcessingConfig;
 			CLAM_DEBUG_ASSERT(size%2==1,"Window size must be odd");
 			mSize.DoControl((TControlData)size); 
 		}
+
+	protected:
+		OutPortTmpl< Audio >  mOutput;
 
 	private:
 		InControl   mSize;

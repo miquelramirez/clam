@@ -1,4 +1,23 @@
-2003-11-?? CLAM_0_5_4
+2003-11-26 CLAM_0_5_5
+
+  * General:
+     ** Code cleanup
+  * Visualization Module:
+     ** Bug that provoked Sinusoidal tracks to pop has been fixed
+     ** Bug that prevented some code to compile fixed
+  * Examples/NetworkEditor:
+     ** Bug Fixing
+  * Processing/Analysis
+     ** DescriptorsComputer added: now there is the possibility of computing 
+        statistics for Spectrums, SpectralPeakArrays, Frames, etc
+  * MacOSX Support
+     ** build system changes
+     ** RtAudio for Audio I/O
+  * Audio I/O 
+     ** A generic RtAAudioDevice for all platforms (includes some platform 
+        specific workarounds)
+
+2003-11-06 CLAM_0_5_4
 
   * Build system:
      ** Added 'Compiling_against_CLAM_example' subdir to the build dir. It 
@@ -32,9 +51,10 @@
         improve compilation speed
      ** Working towards supporting MacOSX/PPC (including byte order issues)
      ** Added a FileMIDIDevice
-     ** SoundFileIO improvements ( support for more sample formats added, better errors)
-     ** Declare template specializations in header inline ( gcc 3.x compatibility
-        issue )
+     ** SoundFileIO improvements ( support for more sample formats added, 
+        better errors)
+     ** Declare template specializations in header inline ( gcc 3.x 
+        compatibility issue )
   * ProcessingData:
      ** SpectralPeakArray ProcessingData; when adding an IndexArray to an 
         already existing SpectralPeakArray and calling InitIndices(), the 
@@ -648,6 +668,3 @@
      ** Fixed minor compilation problems in several source files.
      ** Fixed some missing binary dependencies in the UNIX build system.
 
-2001-02-07 development-root cuidado-root salto-root time_machine-root
-
-  * Branches created.

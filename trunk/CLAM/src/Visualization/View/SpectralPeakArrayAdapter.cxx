@@ -64,10 +64,12 @@ namespace CLAMVM
 
 				const DataArray& phaseBuff = peakArray.GetPhaseBuffer();
 
-				if ( !peakArray.GetIndexArray().Size() )
-					return false;
+				bool thereAreIndexes = peakArray.HasIndexArray();
 
-				const Array<TIndex>& indexBuff = peakArray.GetIndexArray();
+				const Array<TIndex>* pIndexBuff = NULL;
+
+				if ( thereAreIndexes )
+					pIndexBuff = &peakArray.GetIndexArray();
 
 				mPartialBuffer.Resize( nPeaks );
 				mPartialBuffer.SetSize( nPeaks );
@@ -77,7 +79,7 @@ namespace CLAMVM
 						mPartialBuffer[i].mMag = magBuff[i];
 						mPartialBuffer[i].mFreq = freqBuff[i];
 						mPartialBuffer[i].mPhase = phaseBuff[i];
-						mPartialBuffer[i].mTrackId = indexBuff[i];
+						mPartialBuffer[i].mTrackId = (thereAreIndexes)? (*pIndexBuff)[i]:i;
 				}
 				
 				if ( peakArray.GetScale() == EScale::eLinear )

@@ -27,7 +27,8 @@
 #include "OutPortTmpl.hxx"
 #include "SpectralPeakDetectConfig.hxx"
 
-namespace CLAM {
+namespace CLAM
+{
 
 	class SpectralPeakArray;
 	class Storage;
@@ -36,16 +37,13 @@ namespace CLAM {
 
 	/**
 	 * This class is dedicated to find magnitude SpectralPeaks in a given spectral frame.
-	 * The spectral frame has to be in MagPhaseBPF format for the algorithm. All 
-	 * other formats will be converted and will therefore run slower.
+	 * The spectral frame has to be in phase/magnitudes (in dB's) format for the algorithm.
 	 * <p>
 	 * In order to get a better frequency solution, the precise SpectralPeakBinPosition 
-	 * is interpolated. The Magnitude at this interpolated BinPos is calculated 
-	 * by using the second order interpolation of the BPF type, phase is 
-	 * interpolated linearly.
+	 * is interpolated. The Magnitude at this interpolated BinPos is calculated a 3-point 
+	 * curve-fit, phase is interpolated linearly.
 	 * <p>
 	 * The type of the  output is  SpectralPeakArray
-	 *
 	 */
 	class SpectralPeakDetect: public Processing {
 
@@ -77,7 +75,7 @@ namespace CLAM {
 		SpectralPeakDetect(const SpectralPeakDetectConfig &c);
 
 		/** Destructor of the class*/
- 		~SpectralPeakDetect();
+ 		virtual ~SpectralPeakDetect();
 
 		virtual void Attach( Spectrum& in, SpectralPeakArray& out );
 
@@ -117,15 +115,10 @@ namespace CLAM {
 		/** Not implemented yet*/
 		inline void Detect(Spectrum& inputs, Spectrum& out);
 
-		/** Checks if the output type has the correct size and attributes .
-		 *  If not, resize Buffers and changes control flags to set correctly the object
-		 *  @param out SpectrumSpectralPeakArray object to be checked
-		 *  @return true if success
-		 */
-		bool CheckOutputType(SpectralPeakArray& out);
-		
+		bool CheckInputType(const Spectrum &in);
+		bool CheckOutputType(const SpectralPeakArray &out);
  	}; 
 
-};//namespace CLAM
+} //namespace CLAM
 
 #endif // _SpectralPeak_Detect_

@@ -25,10 +25,13 @@
 #include "InControl.hxx" // TControlData defined there.
 #include <list>
 #include <string>
+#include <Array.hxx>
+
 
 namespace CLAM {
 
 class InPort;
+class Processing;
 
 //free method to link two Processing
 	void LinkOutWithInControl(Processing* outProc, std::string outControl, 

@@ -37,8 +37,8 @@ using CLAM::Audio;
 
 
 Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, int W, int H, const char* label )
-	: Fl_Group( X, Y, W, H, label ), mCancel( false ), mIsThisPlaying( false ), mDisplay( NULL ), mSelectedSampleTime( 0 ),
-	  mTooltipFormat( "t=%.4f s, x(t)=%.2f" )
+	: Fl_Group( X, Y, W, H, label ), mDisplay( NULL ), mCancel( false ), mIsThisPlaying( false ), mSelectedSampleTime( 0 ),
+	  mTooltipFormat( "t=%.4f s, x(t)=%.2f" ), mMinAmp( -1.0 ), mMaxAmp( 1.0 )
 {
 	mImposterBox = new Fl_Box( X, Y, W-50, H-50 );
 
@@ -58,8 +58,8 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 	mYAxis = new Fl_Y_Axis( X+W-50, Y, 30, H-50 );
 	mYAxis->align( FL_ALIGN_LEFT );
 	mYAxis->scale( FL_AXIS_LIN );
-	mYAxis->minimum( -1.0 );
-	mYAxis->maximum( 1.0 );
+	mYAxis->minimum( mMinAmp );
+	mYAxis->maximum( mMaxAmp );
 	mYAxis->label_format( "%g" );
 	mYAxis->label_step( 10 );
 	mYAxis->label_size( 9 );
@@ -101,8 +101,8 @@ Fl_SMS_Browsable_Playable_Audio::Fl_SMS_Browsable_Playable_Audio( int X, int Y, 
 
 	mWorldSpaceCoords.mLeft = -1.0;
 	mWorldSpaceCoords.mRight = 1.0;
-	mWorldSpaceCoords.mTop = 1.0;
-	mWorldSpaceCoords.mBottom = -1.0;
+	mWorldSpaceCoords.mTop = mMaxAmp;
+	mWorldSpaceCoords.mBottom = mMinAmp;
 
 }
 
@@ -158,9 +158,9 @@ int Fl_SMS_Browsable_Playable_Audio::handle( int event )
 		mDisplay->EnableDoubleBuffering();
 		mDisplay->SetPainting();
 		mDisplay->SetWorldSpace( mWorldSpaceCoords.mRight,
-								mWorldSpaceCoords.mLeft,
-								mWorldSpaceCoords.mTop, 
-								mWorldSpaceCoords.mBottom );
+					 mWorldSpaceCoords.mLeft,
+					 mWorldSpaceCoords.mTop, 
+					 mWorldSpaceCoords.mBottom );
 		mDisplay->end();
 		end();//add( mDisplay );
 		resizable( mDisplay );
@@ -245,10 +245,12 @@ void Fl_SMS_Browsable_Playable_Audio::OnNewAudio( const DataArray& array, TTime 
 	mDrawMgr.CacheData( array, mAudioProperties );
 	mWorldSpaceCoords.mRight = array.Size() - 2;
 	mWorldSpaceCoords.mLeft = 0;
-	mWorldSpaceCoords.mTop = 1.0;
-	mWorldSpaceCoords.mBottom = -1.0;
+	mWorldSpaceCoords.mTop = mMaxAmp;
+	mWorldSpaceCoords.mBottom = mMinAmp;
 	mXAxis->minimum( begin );
 	mXAxis->maximum( end );
+	mYAxis->minimum( mMinAmp );
+	mYAxis->maximum( mMaxAmp );
 	if ( mDisplay )
 		mDisplay->invalidate();
 	mXSlider->Reset();

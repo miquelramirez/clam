@@ -25,7 +25,6 @@
 #include "ControlLinker.hxx"
 #include "mtgsstream.h"
 #include <string>
-#include "Array.hxx"
 
 namespace CLAM {
 
@@ -105,7 +104,7 @@ public:
 	* <b>Important:</b> notice that if the out control object is going to suffer a copy
 	* (i.e.creating controls that will be copied inside an STL container)
 	* the original pointer published will be no longer . For avoiding this
-	* case we recommend using the flag publish=true. And invoque the PublishInControl
+	* case we recommend using the flag publish=true. And invoke the PublishInControl
 	* method of the processing object, once the copy is made.
 	* @param f The member function that will act as a service funtion each time
 	* the DoControl method is invoqued.
@@ -155,6 +154,6 @@ int InControlTmpl<ProcObj>::DoControl(TControlData val)
 
 
 
-}; // namespace CLAM
+} // namespace CLAM
 
 #endif //_InControl_

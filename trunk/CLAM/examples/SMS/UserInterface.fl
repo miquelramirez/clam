@@ -237,7 +237,7 @@ Exit();}
         } {
           menuitem mHelpLauchLicense {
             label {License...}
-            callback {DisplayLicense();} selected
+            callback {DisplayLicense();}
             private xywh {0 0 100 20} labelsize 12
           }
           menuitem {} {
@@ -253,10 +253,10 @@ Exit();}
         Fl_Counter mCounter {
           label {Frame }
           callback {ChangeFrame();}
-          xywh {340 525 190 20} labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
+          xywh {60 525 190 20} labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
         }
-        Fl_Box {} {
-          xywh {0 520 340 30} resizable
+        Fl_Box {} {selected
+          xywh {253 520 616 30} resizable
         }
       }
       Fl_Group {} {open
@@ -276,9 +276,9 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;} open
-      private xywh {535 287 450 180} type Double labelsize 10
+      private xywh {535 287 450 180} type Double labelsize 10 hide
       code0 {mWindow2->position(mWindow->x()+(mWindow->w()-mWindow2->w())/2,mWindow->y()+(mWindow->h()-mWindow2->h())/2);}
-      code1 {mWindow2->show();} modal visible
+      code1 {mWindow2->show();} modal
     } {
       Fl_Box {} {
         label {SMS Tools 2 v.0.1.2}

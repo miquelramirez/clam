@@ -18,11 +18,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
 #include "DataTypes.hxx"
-#include "Normalization.hxx"
-#include "BasicStatistics.hxx"
 #include "CLAM_Math.hxx"
+#include "Normalization.hxx"
+#include "Stats.hxx"
+
+
 
 using namespace CLAM;
 
@@ -34,7 +35,7 @@ void NormalizationConfig::DefaultInit()
 	AddFrameSize();
 	UpdateData();
 	SetType(1);
-	SetFrameSize(2205);	//0.05s at 44.1k
+	SetFrameSize(2205);//0.05s at 44.1k
 
 }
 
@@ -54,7 +55,7 @@ Normalization::~Normalization() {}
 
 bool Normalization::ConcreteConfigure(const ProcessingConfig& c)
 {
-	CopyAsConcreteConfig(mConfig, c);
+	CopyAsConcreteConfig(mConfig,c);
 
 	mType=mConfig.GetType();
 	mFrameSize=mConfig.GetFrameSize();
@@ -67,8 +68,8 @@ bool Normalization::Do(void)
 	return false;
 }
 	
-bool Normalization::Do(Audio &in) 
-{
+bool Normalization::Do(Audio &in){
+
 	Audio chunk;
 	TData max=0;
 	TIndex p=0, m=0;
@@ -80,15 +81,15 @@ bool Normalization::Do(Audio &in)
 	{
 		in.GetAudioChunk(p, p+mFrameSize, chunk);
 		TSize size = chunk.GetSize();
-		TData* data = chunk.GetBuffer().GetPtr();
-		TData* moments = NULL;
-		moments = new TData[4];
-		Moment(data,size,moments);
+		DataArray moments(4);
+		moments.SetSize(4);
+		Stats myStats(&chunk.GetBuffer());
+		myStats.GetMoments(moments, FifthOrder);
 
-		TData temp = Energy(moments,size);
+		TData temp = myStats.GetEnergy();
 
 		//remove silence
-		if ( temp>0.01 ) //seems to work for most of the audiofiles with frame size=2205...
+		if ( temp>0.3*mFrameSize/4410 ) //seems to be just above noise due to 8 bits quantization
 		{
 			energy.AddElem(temp);
 			totEnergy += temp;

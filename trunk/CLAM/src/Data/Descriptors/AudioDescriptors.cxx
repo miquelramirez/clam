@@ -21,19 +21,95 @@
 
 
 
-
-#include "ProcessingData.hxx"
+#include <cmath>
 #include "AudioDescriptors.hxx"
-
+#include "Audio.hxx"
 
 using namespace CLAM;
 
-AudioDescriptors::AudioDescriptors(Audio* pAudio): ProcessingData(eNumAttr)
+AudioDescriptors::AudioDescriptors(Audio* pAudio): Descriptor(eNumAttr)
 {
 	MandatoryInit();
 	mpAudio=pAudio;
 }
 
 
+void AudioDescriptors::SetpAudio(Audio* pAudio) {
+	mpAudio=pAudio;
+    //TODO: it may give problems because pointer passed
+	InitStats(&mpAudio->GetBuffer());
+	mComputedAttackTime=0;	
+}
 
+void AudioDescriptors::ConcreteCompute()
+{
+	if (HasMean())
+		SetMean(mpStats->GetMean());
+	if (HasTemporalCentroid())
+		SetTemporalCentroid(mpStats->GetCentroid()*mpAudio->GetDuration()/mpAudio->GetSize());
+	if (HasEnergy())
+		SetEnergy(mpStats->GetEnergy());
+	if(HasVariance())
+		SetVariance(mpStats->GetVariance());
+	if(HasZeroCrossingRate())
+		SetZeroCrossingRate(ComputeZeroCrossingRate());
+	if(HasRiseTime())
+		SetRiseTime(ComputeAttackTime());
+	if(HasLogAttackTime())
+		SetLogAttackTime(ComputeLogAttackTime());
+/*
+		Not implemented yet;
 
+		DYN_ATTRIBUTE (3, public, TData, Attack);
+		DYN_ATTRIBUTE (4, public, TData, Decay);
+		DYN_ATTRIBUTE (5, public, TData, Sustain);
+		DYN_ATTRIBUTE (6, public, TData, Release);
+*/
+}
+
+TData AudioDescriptors::ComputeZeroCrossingRate()
+{
+	int sum = 0;
+	DataArray& data=mpAudio->GetBuffer();
+	int size=data.Size();
+	for (int i=1; i<size; i++) {
+	  if (((data[i] < 0.0) && (data[i-1] > 0.0)) ||
+		  ((data[i] > 0.0) && (data[i-1] < 0.0)))
+		sum++;
+	}
+	return ((TData)sum)/size;
+}
+
+TData AudioDescriptors::ComputeAttackTime()
+{
+	if(mComputedAttackTime) return mComputedAttackTime;
+
+	TData max = 0.;
+	TIndex maxindex,offset;
+
+	//this algorithm is not the first time I see it, should be generalized and optimized
+	int i;
+	int size=mpAudio->GetSize();
+	for (i=0;i<size;i++)
+	   if (data[i] > max) {
+		max = data[i];
+		maxindex = i;
+	}
+	i=0;
+	TData offsetMag=0.02*max;
+	while(true)
+	{
+		if(data[i]>offsetMag){ 
+			offset=i;
+			break;}
+		i++;
+	}
+
+	mComputedAttackTime=maxindex-offset;
+	return mComputedAttackTime;
+}
+
+TData AudioDescriptors::ComputeLogAttackTime()
+{
+	return log(ComputeAttackTime());
+}

@@ -100,7 +100,8 @@ AudioDevice* AudioManager::FindOrCreateDevice(const std::string& name)
 	{
 		std::string errstr;
 		errstr = "AudioManager::FindOrCreateDevice(): "
-			"Don't have a list of \""+arch+"\" devices";
+			"Don't have a list of \""+arch+"\" devices.\n"
+			" Maybe you are not specifying any library to play sound (alsa, rtaudio...)\n";
 		throw Err((char*) errstr.c_str());
 	}
 
@@ -108,7 +109,8 @@ AudioDevice* AudioManager::FindOrCreateDevice(const std::string& name)
 	{
 		std::string errstr;
 		errstr = "AudioManager::FindOrCreateDevice(): "
-			"Don't have any \""+arch+"\" devices available";
+			"Don't have any \""+arch+"\" devices available.\n"
+			" Maybe you are not specifying any library to play sound (alsa, rtaudio...)\n";
 		throw Err((char*) errstr.c_str());
 	}
 
@@ -124,7 +126,8 @@ AudioDevice* AudioManager::FindOrCreateDevice(const std::string& name)
 	{
 		std::string errstr;
 		errstr = "AudioManager::FindOrCreateDevice(): "
-			"No device \""+device+"\" available in architecture \""+arch+"\".\n";
+			"No device \""+device+"\" available in architecture \""+arch+"\".\n"
+			" Maybe you are not specifying any library to play sound (alsa, rtaudio...)\n";
 		throw Err((char*) errstr.c_str());
 	}
 

@@ -1,12 +1,36 @@
+/*
+ * Copyright (c) 2001-2003 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
 
 #include "Network.hxx"
 #include "FlowControl.hxx"
 #include <algorithm>
 #include "ProcessingDefinitionAdapter.hxx"
 #include "ConnectionDefinitionAdapter.hxx"
+#include "Factory.hxx"
 
 namespace CLAM
-{
+{	
+	typedef Factory<CLAM::Processing> ProcessingFactory;
+	
 	namespace HelperFunctions
 	{
 		void DeleteProcessing( Network::ProcessingsMap::value_type& mapElem ) {
@@ -115,7 +139,6 @@ namespace CLAM
 		XMLAdapter<std::string> strAdapter( mName, "id");
 		storage.Load(&strAdapter);
 
-		// how to iterate???
 		while(1)
 		{
 			ProcessingDefinitionAdapter procDefinitionAdapter;
@@ -124,7 +147,6 @@ namespace CLAM
 				break;
 			
 			AddProcessing(procDefinitionAdapter.GetName(), procDefinitionAdapter.GetProcessing()); 
-
 		}
 
 		// second iteration to load ports. 
@@ -184,6 +206,20 @@ namespace CLAM
 
 		mFlowControl->ProcessingAddedToNetwork(*proc);
 	}
+
+	void Network::AddProcessing( const std::string & name, const std::string & key)
+	{
+		AssertFlowControlNotNull();
+
+		Processing * proc = ProcessingFactory::GetInstance().Create( key );
+
+		// returns false if the key was repeated.
+		if (!mProcessings.insert( ProcessingsMap::value_type( name, proc ) ).second )
+			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
+
+		mFlowControl->ProcessingAddedToNetwork(*proc);
+	}
+
 
 	void Network::RemoveProcessing ( const std::string & name)
 	{
@@ -422,8 +458,6 @@ namespace CLAM
 
 	void Network::Clear()
 	{
-//		Stop();
-
 		Nodes::iterator itNodes;
 		for(itNodes=BeginNodes();itNodes!=EndNodes();itNodes++)
 			delete *itNodes;
@@ -507,6 +541,17 @@ namespace CLAM
 			completeName += (*it)->GetName();
 			consumers.push_back(completeName);
 		}
+		return consumers;
+	}
+
+	Network::InPortsList Network::GetInPortsConnectedTo( OutPort & producer )
+	{		
+		CLAM_ASSERT( producer.GetNode(), "Trying to access a node from an outport without connections");
+		InPortsList consumers;
+
+		NodeBase::ReaderIterator it;
+		for(it=producer.GetNode()->BeginReaders(); it!=producer.GetNode()->EndReaders(); it++)
+			consumers.push_back(*it);
 		return consumers;
 	}
 

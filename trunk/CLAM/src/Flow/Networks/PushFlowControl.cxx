@@ -1,10 +1,30 @@
+/*
+ * Copyright (c) 2001-2003 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 
 
 #include "PushFlowControl.hxx"
 #include "Processing.hxx"
 #include "OutPort.hxx"
 #include "InPort.hxx"
-#include "Node.hxx"
+#include "Network.hxx"
 #include <iostream>
 
 namespace CLAM
@@ -53,25 +73,25 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 {
 	
 	// for each out port of the processing already executed
-	Processing::OutPortIterator itOutPort;		
+	Processing::OutPortIterator itOutPort;
+	
 	for (itOutPort=producer->GetOutPorts().Begin(); 
 	     itOutPort!=producer->GetOutPorts().End(); 
 	     itOutPort++)
 	{
 		if (!(*itOutPort)->GetNode())
 			break;
+
+		Network::InPortsList consumers;
+		consumers = mNetwork->GetInPortsConnectedTo( **itOutPort );
 		
-		// for each processing connected as a consumer to the node
-//		std::list<InPort*> consumers = (*itOutPort)->GetNode()->GetReaders();
-		NodeBase::ReaderIterator consumers;
-//		std::list< InPort* >::iterator itInPort;
-		for (consumers=(*itOutPort)->GetNode()->BeginReaders(); 
-		     consumers!=(*itOutPort)->GetNode()->EndReaders(); 
-		     consumers++)
+		Network::InPortsList::iterator itInPort;
+
+		for (itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++)
 		{
-			Processing * consumer = (Processing*)(*consumers)->GetProcessing();
-			if (AreAllProducersExecuted( consumer, executed ))
-				toDo.push_back( consumer );
+			Processing * proc = (*itInPort)->GetProcessing();
+			if (AreAllProducersExecuted( proc, executed ))
+				toDo.push_back( proc );
 		}
 	}
 }

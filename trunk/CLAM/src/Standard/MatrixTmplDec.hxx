@@ -174,7 +174,6 @@ namespace CLAM
 		// Delete Column
 		MatrixTmpl<T> GetDelColumn(unsigned int column) const
 		{
-			unsigned int i,j;
 			MatrixTmpl<T> ret (mNumRows,mNumColumns-1);
 
 			for (unsigned i=0;i<mNumRows;i++) // shift matrix one column left

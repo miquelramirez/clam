@@ -22,10 +22,7 @@
 #ifndef __FrameDescriptors__
 #define __FrameDescriptors__
 
-#include "Flags.hxx"
-#include "DynamicType.hxx"
-#include "ProcessingData.hxx"
-#include "DataTypes.hxx"
+#include "Descriptor.hxx"
 
 #include "AudioDescriptors.hxx"
 #include "SpectralDescriptors.hxx"
@@ -42,10 +39,10 @@ class Frame;
  * inside the frame. TODO: add specific descriptors.
  *
  */
-class FrameDescriptors : public ProcessingData
+class FrameDescriptors : public Descriptor
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 8, ProcessingData);
+	DYNAMIC_TYPE_USING_INTERFACE (FrameDescriptors, 8, Descriptor);
 	/** Spectrum analyzed from the Audio input  */
 	DYN_ATTRIBUTE (0, public, SpectralDescriptors, SpectrumD);
 	/** Vector of peaks in spectral analysis  */
@@ -64,12 +61,14 @@ public:
 	DYN_ATTRIBUTE (6, public, AudioDescriptors, ResidualAudioFrameD);
 	/** Global synthesized Audio */
 	DYN_ATTRIBUTE (7, public, AudioDescriptors, SynthAudioFrameD);
-
+	//Note: some specific frame descriptors should be added
 public:
 	FrameDescriptors(Frame* pFrame);
 
 	const Frame* GetpFrame() const;
 	void SetpFrame(Frame* pFrame);
+	void Compute();
+	void ConcreteCompute();
 
 private:
 	void DefaultInit();
@@ -94,10 +93,6 @@ inline void FrameDescriptors::CopyInit(const FrameDescriptors & copied) {
 
 inline const Frame* FrameDescriptors::GetpFrame() const {
 	return mpFrame;
-}
-
-inline void FrameDescriptors::SetpFrame(Frame* pFrame) {
-	mpFrame=pFrame;
 }
 
 

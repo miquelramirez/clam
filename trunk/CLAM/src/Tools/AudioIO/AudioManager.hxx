@@ -113,25 +113,11 @@ public:
 	 */
 	int Latency(void) { return mLatency; }
 
-	/** Setter to set the number of internal buffers
-	 *  used internally by DirectX. By default it is 8
+	/** Setter to change the latency of the AudioManager
 	 */
+	void SetLatency(int latency) { mLatency = latency; }
 
-	void SetInternalBuffersNumber( unsigned numbuffs)
-	{
-		mInternalBuffersNumber = numbuffs;
-	}
 
-	/** Getter to set the number of internal buffers
-	 *  used internally by DirectX.
-	 *  @return the number of internal buffers 
-	 */
-
-	unsigned GetInternalBuffersNumber() const
-	{
-		return mInternalBuffersNumber;
-	}
-	
  	/** Retrieve the list of devices available for a given architecture. You can then use the AvailableDevices() method to retrieve a list of the available devices for each AudioDeviceList.
 	 *  @param arch The name of architecture wich will be returned the devices. By default is set to "default"
 	 *  @return The list of AudioDevices

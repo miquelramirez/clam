@@ -1,8 +1,8 @@
 #ifndef CLT_DESCRIPTOR
 #define CLT_DESCRIPTOR
 
-#include "ladspa_types.h"
-
+//#include <ladspa_types.h>
+#include <ladspa.h>
 
 class CLT_Descriptor;
 class CLT_Port;

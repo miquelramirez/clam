@@ -63,6 +63,7 @@ namespace CLAMVM
 
 	void SpectrumAndPeaksPlot::SetYRange( double ymin, double ymax )
 	{
+		mpWidget->SetYRange( ymin, ymax );
 	}
 
 	void SpectrumAndPeaksPlot::SetTooltipFormat( const char* fmtStr )

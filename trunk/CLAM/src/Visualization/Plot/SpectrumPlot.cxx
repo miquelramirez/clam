@@ -54,6 +54,7 @@ namespace CLAMVM
 
 	void SpectrumPlot::SetYRange( double ymin, double ymax )
 	{
+		mpWidget->SetYRange( ymin, ymax );
 	}
 
 	void SpectrumPlot::SetTooltipFormat( const char* tooltipFmt )

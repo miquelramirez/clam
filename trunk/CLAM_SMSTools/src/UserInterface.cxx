@@ -781,7 +781,7 @@ UserInterface::UserInterface() {
       o->menu(menu_mMenuBar);
     }
     { Fl_Group* o = new Fl_Group(0, 520, 870, 30);
-      { Fl_Counter* o = mCounter = new Fl_Counter(340, 525, 190, 20, "Frame ");
+      { Fl_Counter* o = mCounter = new Fl_Counter(60, 525, 190, 20, "Frame ");
         o->labelsize(12);
         o->minimum(0);
         o->maximum(0);
@@ -790,7 +790,7 @@ UserInterface::UserInterface() {
         o->align(FL_ALIGN_LEFT);
         o->deactivate();
       }
-      { Fl_Box* o = new Fl_Box(0, 520, 340, 30);
+      { Fl_Box* o = new Fl_Box(253, 520, 616, 30);
         Fl_Group::current()->resizable(o);
       }
       o->end();

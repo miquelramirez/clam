@@ -65,7 +65,7 @@ int _recursedir(
 			if (f)
 			{
 				char tmp2[2048];
-				strstart(tmp,2048);
+				strstart(tmp2,2048);
 				stradd(dir);
 				stradd("/");
 				stradd(fd.cFileName);

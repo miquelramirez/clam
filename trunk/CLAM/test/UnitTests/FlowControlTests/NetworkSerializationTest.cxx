@@ -30,9 +30,6 @@
 #include "Storage.hxx"
 #include "BasicFlowControl.hxx"
 
-
-#include <iostream>
-
 namespace CLAMTest {
 
 class NetworkSerializationTest;
@@ -53,11 +50,6 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( TestSaveNetworkWithPortsConnection );
 	CPPUNIT_TEST( TestSaveNetworkWithControlsConnection );
 	CPPUNIT_TEST( TestLoadNetworkWithControlsConnection );
-
-/*
-	CPPUNIT_TEST( TestLoadNetworkWithWrongXMLFile );
-
-*/
 	CPPUNIT_TEST_SUITE_END();
 
 	void TestLoadEmptyNetwork()
@@ -291,39 +283,12 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 		foo.AddProcessing("oscillator", new CLAM::Oscillator );
 		foo.AddProcessing("panner", new CLAM::AutoPanner );
 		foo.ConnectControls("panner.Left Control","oscillator.Amplitude");
-//		storage.UseIndentation(true);
 		storage.Dump(foo, "network", output );
 		std::string outputString(output.str());
 		
 		CPPUNIT_ASSERT_EQUAL( result, outputString );
 
 	}
-
-
-
-/*
-	void TestLoadNetworkWithWrongXMLFile()
-	{	
-		CLAM::Network foo;
-		CLAM::XMLStorage storage;
-		std::string procName("oscillator");
-		std::string procName2("fftw");
-		std::string procName3("multiplier");
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
-
-		storage.Restore(foo, "wrongxml.xml");
-		storage.Dump(foo, "network", "prova.xml");
-		
-	}
-*/
-
-/*
-	
-
-
-
-*/
-
 };
 
 } // namespace CLAMTest

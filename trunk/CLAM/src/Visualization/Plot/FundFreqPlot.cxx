@@ -63,6 +63,7 @@ namespace CLAMVM
 
 	void FundFreqPlot::SetYRange( double ymin, double ymax )
 	{
+		mpWidget->NewFreqRangeHint( ymin, ymax );
 	}
 
 	void FundFreqPlot::SetTooltipFormat( const char* fmtStr )

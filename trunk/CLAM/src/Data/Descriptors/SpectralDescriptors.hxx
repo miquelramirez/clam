@@ -23,11 +23,8 @@
 #define __SpectralDescriptors_H__
 
 
-#include "Flags.hxx"
-#include "DynamicType.hxx"
-#include "ProcessingData.hxx"
-#include "DataTypes.hxx"
 #include "Array.hxx"
+#include "Descriptor.hxx"
 
 
 /*
@@ -40,9 +37,9 @@ namespace CLAM {
 
 	class Spectrum;
 
-	class SpectralDescriptors : public ProcessingData {
+	class SpectralDescriptors : public Descriptor {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 22, ProcessingData);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 23, Descriptor);
 		
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		DYN_ATTRIBUTE (1, public, TData, GeometricMean);
@@ -66,44 +63,40 @@ namespace CLAM {
 		DYN_ATTRIBUTE (18,public, TData, LowFreqEnergyRelation); 
 		DYN_ATTRIBUTE (19,public, TData, Skewness); 
 		DYN_ATTRIBUTE (20,public, TData, Rolloff); 
-		DYN_ATTRIBUTE (21,public, Array<SpectralDescriptors>, BandDescriptors);
+		DYN_ATTRIBUTE (21,public, TData, HighFrequencyCoefficient);
+		DYN_ATTRIBUTE (22,public, Array<SpectralDescriptors>, BandDescriptors);
 
 	public:
-		// MERGE: Is this friendship necessary??
-//		friend class SpectralDescriptorsGen;
 		SpectralDescriptors(Spectrum* pSpectrum);
 
 		const Spectrum* GetpSpectrum() const;
 		void SetpSpectrum(Spectrum* pSpectrum);
+		void ConcreteCompute();
+
+		void SetPrototype(const SpectralDescriptors& p);
+
+		
 
 	private:
 		void DefaultInit();
 		void CopyInit(const SpectralDescriptors & copied);
+		
+		TData ComputeSpectralTilt();
+		TData ComputeSpectralFlatness();
+		TData ComputeHighFrequencyCoefficient();
+		TData ComputeMaxMagFreq();
+		TData ComputeLowFreqEnergyRelation();
+		TData ComputeRolloff();
 
 	private:
 		Spectrum* mpSpectrum;
-
+		
+		/** Conversion from index to frequency, needed for many descriptors */
+		TData mDeltaFreq;
 	};
 
 
 
-// Implementation
-
-inline void SpectralDescriptors::DefaultInit() {
-	mpSpectrum=0;
-}
-
-inline void SpectralDescriptors::CopyInit(const SpectralDescriptors & copied) {
-	mpSpectrum=copied.mpSpectrum;
-}
-
-inline const Spectrum* SpectralDescriptors::GetpSpectrum() const {
-	return mpSpectrum;
-}
-
-inline void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum) {
-	mpSpectrum=pSpectrum;
-}
 
 
 }

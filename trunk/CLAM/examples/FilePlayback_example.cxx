@@ -103,6 +103,8 @@ int main( int argc, char** argv )
 		// card at once. 
 		// In this example we will try 44.1 kHz playback sample rate, and we will estimate that 1024
 		// will be well enough for our purposes.
+		// The AudioManager class should be declared before AudioOut objects, because
+		// they need this manager to know how to play the sound (which sound device is available for them).
 
 		// NOTE about the frame size determination: The size of these 'frames' can be anything
 		// reasonable below the maximum buffer size we told the AudioManager
@@ -115,9 +117,6 @@ int main( int argc, char** argv )
 		const CLAM::TSize frameSize = 1024;
 
 		CLAM::AudioManager theAudioManager( playbackSampleRate, frameSize );
-
-		// and start it to tell the OS setup things for our application
-		theAudioManager.Start();
 
 		// Now we will create two AudioOut objects, one for each channel in our card. Note that even
 		// if the sound you are playing is mono, you must write something onto both channels.

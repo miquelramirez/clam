@@ -65,8 +65,6 @@
 #endif // MSVC++ 6
 #endif
 
-// Needed for getting RtAudio to compile right for Windoze
-#define __WINDOWS_DS__
 
 #endif
 

@@ -70,13 +70,15 @@ using namespace CLAM;
 	/* Processing  object Method  implementations */
 
 	WindowGenerator::WindowGenerator():
-		mSize("Size",this)
+		mSize("Size",this),
+		mOutput( "Generated window function samples", this, 1 )
 	{
 		Configure(WindowGeneratorConfig());
 	}
 
 	WindowGenerator::WindowGenerator(const WindowGeneratorConfig &c) :
-		mSize("Size",this)
+		mSize("Size",this),
+		mOutput( "Generated window function samples", this, 1 )
 	{
 		Configure(c);
 	}
@@ -134,8 +136,9 @@ using namespace CLAM;
 
 	bool  WindowGenerator::Do(void)
 	{
-		CLAM_ASSERT(false,CLASS"::Do(): Supervised mode not implemented");
-		return false;
+		CLAM_ASSERT( AbleToExecute(), "This processing is not ready to do anything" );
+		
+		return Do( mOutput.GetData() );
 	}
 
 	/* The  unsupervised Do() function */

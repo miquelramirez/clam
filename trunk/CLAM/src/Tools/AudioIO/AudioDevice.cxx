@@ -163,9 +163,9 @@ int AudioDevice::Latency(void)
 	return _AudioManager().Latency();
 }
 
-unsigned AudioDevice::NumberOfInternalBuffers()
+void AudioDevice::SetLatency(int latency)
 {
-	return _AudioManager().GetInternalBuffersNumber();
+	_AudioManager().SetLatency(latency);
 }
 
 void AudioDevice::SetNChannels(int channels)

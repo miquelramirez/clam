@@ -64,7 +64,7 @@ void Fl_EnvelopeControl::hvalue(float position, float size, float top, float tot
 //	printf("%f %f %f %f\n",position,size,top,total);
 	if (total<1000) {
 		hmul=1000.;
-		hdiv=0.001;
+		hdiv=0.001f;
 	}else{
 		hmul=1;
 		hdiv=1;
@@ -88,7 +88,7 @@ void Fl_EnvelopeControl::vvalue(float position, float size, float top, float tot
 {
 	if (total<1000) {
 		vmul=1000.;
-		vdiv=0.001;
+		vdiv=0.001f;
 	}else{
 		vmul=1;
 		vdiv=1;

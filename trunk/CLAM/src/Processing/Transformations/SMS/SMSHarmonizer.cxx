@@ -75,7 +75,7 @@ void SMSHarmonizer::Gain(Frame& inputFrame, TData gain)
 
 	for(i=0;i<nPeaks;i++)
 	{
-		peakMag[i]=MIN(peakMag[i]+gain,0);
+		peakMag[i]=std::min(peakMag[i]+gain,TData(0));
 	}
 	for(i=0;i<specSize;i++)
 	{

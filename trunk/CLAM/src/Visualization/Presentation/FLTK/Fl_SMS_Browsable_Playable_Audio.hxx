@@ -74,6 +74,7 @@ namespace CLAMVM
 		Signalv1<double>      SelectedXValue;
 
 		void SetTooltipFormat( const char* fmtStr );
+		void SetYRange( double ymin, double ymax );
 
 	protected:
 		virtual void OnDisplaySelectedXValue( double value );
@@ -111,12 +112,20 @@ namespace CLAMVM
 		tAudioTimeInfo                    mAudioProperties;
 		// for transforming the sample index into sample time	
 		std::string                       mTooltipFormat;
+		double                            mMinAmp;
+		double                            mMaxAmp;
 	};
 
 	// inlines 
 	inline void Fl_SMS_Browsable_Playable_Audio::SetTooltipFormat( const char* fmtStr )
 	{
 		mTooltipFormat = fmtStr;
+	}
+
+	inline void Fl_SMS_Browsable_Playable_Audio::SetYRange( double ymin, double ymax )
+	{
+		mMinAmp = ymin;
+		mMaxAmp = ymax;
 	}
 
 }

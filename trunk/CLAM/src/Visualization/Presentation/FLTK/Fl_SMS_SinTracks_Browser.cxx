@@ -30,7 +30,7 @@ namespace CLAMVM
 {
 	Fl_SMS_SinTracks_Browser::Fl_SMS_SinTracks_Browser( int X, int Y, int W, int H, const char* label )
 		: Fl_Group( X, Y, W, H, label ), mDisplay( NULL ), mImposterBox( NULL ),
-		mTooltipFmtStr( "time %.3f s, freq %.2f Hz " )
+		  mTooltipFmtStr( "time %.3f s, freq %.2f Hz " ), mMaxFreq( 22050. ), mMinFreq( 0.0 )
 	{
 		mXAxis = new Fl_X_Axis( X,Y+H-50,W-50, 30 );
 		mXAxis->align( FL_ALIGN_BOTTOM );
@@ -46,8 +46,8 @@ namespace CLAMVM
 		mYAxis = new Fl_Y_Axis( X+ W-50,Y,30,H-50 );
 		mYAxis->align( FL_ALIGN_LEFT );
 		mYAxis->scale( FL_AXIS_LIN );
-		mYAxis->minimum( -1.0 );
-		mYAxis->maximum( 1.0 );
+		mYAxis->minimum( mMinFreq );
+		mYAxis->maximum( mMaxFreq );
 		mYAxis->label_format( "%g" );
 		mYAxis->label_step( 10 );
 		mYAxis->label_size( 9 );
@@ -77,8 +77,8 @@ namespace CLAMVM
 
 		mWorldSpaceCoords.mLeft = -1.0;
 		mWorldSpaceCoords.mRight = 1.0;
-		mWorldSpaceCoords.mTop = 1.0;
-		mWorldSpaceCoords.mBottom = -1.0;
+		mWorldSpaceCoords.mTop = mMaxFreq;
+		mWorldSpaceCoords.mBottom = mMinFreq;
 
 
 	}
@@ -131,9 +131,9 @@ namespace CLAMVM
 			mDisplay->EnableDoubleBuffering();
 			mDisplay->SetPainting();
 			mDisplay->SetWorldSpace( mWorldSpaceCoords.mRight,
-								mWorldSpaceCoords.mLeft,
-								mWorldSpaceCoords.mTop, 
-								mWorldSpaceCoords.mBottom );
+						 mWorldSpaceCoords.mLeft,
+						 mWorldSpaceCoords.mTop, 
+						 mWorldSpaceCoords.mBottom );
 
 			mDisplay->end();
 			
@@ -172,6 +172,8 @@ namespace CLAMVM
 		mDrawMgr.CacheData( list );
 		mWorldSpaceCoords.mRight = framelen;
 		mWorldSpaceCoords.mLeft = 0;
+		mWorldSpaceCoords.mTop = mMaxFreq;
+		mWorldSpaceCoords.mBottom = mMinFreq;
 		mFrames = framelen;
 
 		if ( mDisplay )

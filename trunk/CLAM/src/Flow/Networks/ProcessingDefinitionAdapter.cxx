@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2001-2003 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
 
 #include "ProcessingDefinitionAdapter.hxx"
 #include "Assert.hxx"
@@ -22,9 +43,9 @@ namespace CLAM
 
 	void ProcessingDefinitionAdapter::StoreOn (Storage & store)	
 	{
-		XMLAdapter<std::string> nameAdapter( mName, "id");
-		std::string className(mAdaptee->GetClassName());
-		XMLAdapter<std::string> classNameAdapter( className, "type");
+		XMLAdapter<Text> nameAdapter( mName, "id");
+		Text className(mAdaptee->GetClassName());
+		XMLAdapter<Text> classNameAdapter( className, "type");
 		store.Store(&nameAdapter);
 		store.Store(&classNameAdapter);
 
@@ -34,10 +55,10 @@ namespace CLAM
 
 	void ProcessingDefinitionAdapter::LoadFrom (Storage & store) 
 	{	
-		XMLAdapter<std::string> nameAdapter( mName, "id");
+		XMLAdapter<Text> nameAdapter( mName, "id");
 		store.Load(&nameAdapter);
-		std::string className("");
-		XMLAdapter<std::string> classNameAdapter( className, "type");
+		Text className("");
+		XMLAdapter<Text> classNameAdapter( className, "type");
 		store.Load(&classNameAdapter);
 
 		mAdaptee = ProcessingFactory::GetInstance().Create(className);
