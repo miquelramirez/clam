@@ -21,6 +21,10 @@
 
 #include "SndPcm.hxx"
 #include "AudioIO.hxx"
+#include "AudioIn.hxx"
+#include "AudioOut.hxx"
+#include "AudioDeviceList.hxx"
+#include "AudioDevice.hxx"
 #include <cstdio>
 
 namespace CLAM {
