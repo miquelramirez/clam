@@ -43,12 +43,12 @@ namespace CLAM
 		mData[0].SetSize(256);
 		mData[1].SetSize(256);
 	}
-
-
+#ifndef QT_PLUGIN
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::PeaksPortMonitor> regtPeaksPortMonitor("PeaksPortMonitor");
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SpectrumPortMonitor> regtSpectrumPortMonitor("SpectrumPortMonitor");;
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::AudioPortMonitor> regtAudioPortMonitor("AudioPortMonitor");
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::FundamentalPortMonitor> regtFundamentalPortMonitor("FundamentalPortMonitor");
+#endif
 	
 }
 
