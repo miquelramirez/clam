@@ -20,9 +20,14 @@
  */
 
 #include "MIDILinker.hxx"
+#include "MIDIManager.hxx"
 #include "Oscillator.hxx"
 #include <iostream>
 #include "AudioIO.hxx"
+#include "AudioIn.hxx"
+#include "AudioOut.hxx"
+#include "AudioManager.hxx"
+
 
 using namespace CLAM;
 
