@@ -29,8 +29,9 @@ namespace CLAMGUI
 
 FLTKWrapper* FLTKWrapper::GetInstance()
 {
-	Fl::visual( FL_DOUBLE );
-	return new FLTKWrapper;
+	static FLTKWrapper wrapper;
+
+	return &wrapper;
 }
 
 bool FLTKWrapper::IsClosing() const
