@@ -40,6 +40,7 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 	SetAnalysisMaxFundFreqError(10); 				 
 	SetAnalysisMaxFundCandidates(50);
 	SetAnalysisHarmonic(false);
+	SetDoCleanTracks(false);
 /** Synthesis **/
 	SetSynthesisFrameSize(256);
 	SetSynthesisWindowType(EWindowType::eTriangular);
@@ -49,5 +50,3 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 	SetSynthesisPhaseManagementType(EPhaseGeneration::eContinuation);
 
 }
-
-

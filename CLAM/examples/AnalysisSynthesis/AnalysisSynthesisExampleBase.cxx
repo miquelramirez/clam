@@ -99,6 +99,14 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	/*global parameters*/
 	int analWindowSize=mGlobalConfig.GetAnalysisWindowSize();
 	int resAnalWindowSize=mGlobalConfig.GetResAnalysisWindowSize();
+	
+	/* Here we should check whether the values in 
+	the configuration is valid. TODO: add more checks. */
+	if(analWindowSize%2==0||resAnalWindowSize%2==0)//we don't allow even sizes
+	{ 
+		mHaveConfig=false;
+		return;
+	}
 
 	int analHopSize;
 	if(mGlobalConfig.GetAnalysisHopSize()<0)
@@ -129,7 +137,9 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mAnalConfig.SetSinZeroPadding(analZeroPaddingFactor);
 	mAnalConfig.SetResWindowSize(resAnalWindowSize);
 	mAnalConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
-	//	analConfig.SetDisplayFlags(mGlobalConfig.GetAnalysisSynthesisDisplayFlags());
+
+	mAnalConfig.GetPeakDetect().SetMagThreshold(mGlobalConfig.GetAnalysisPeakDetectMagThreshold());
+	mAnalConfig.GetSinTracking().SetIsHarmonic(mGlobalConfig.GetAnalysisHarmonic());
 
 	//SMS Synthesis configuration
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
@@ -146,31 +156,33 @@ void AnalysisSynthesisExampleBase::LoadConfig(const string& inputFileName)
 	XMLStorage x;
 	x.Restore(mGlobalConfig,inputFileName);
 	mHaveConfig = false;
-	if(	
-	mGlobalConfig.HasInputSoundFile() &&
-	mGlobalConfig.HasOutputSoundFile() &&
-	mGlobalConfig.HasOutputXMLFile() &&
-	mGlobalConfig.HasInputXMLFile() &&
-	mGlobalConfig.HasSamplingRate() &&
-	mGlobalConfig.HasAnalysisWindowSize() &&
-	mGlobalConfig.HasAnalysisHopSize() &&
-	mGlobalConfig.HasAnalysisWindowType() &&
-	mGlobalConfig.HasResAnalysisWindowSize() &&
-	mGlobalConfig.HasResAnalysisWindowType() &&
-	mGlobalConfig.HasAnalysisZeroPaddingFactor() &&
-	mGlobalConfig.HasAnalysisPeakDetectMagThreshold() &&
-	mGlobalConfig.HasAnalysisMaxSines() &&
-	mGlobalConfig.HasAnalysisSinTrackingFreqDeviation() &&
-	mGlobalConfig.HasAnalysisReferenceFundFreq() && 
-	mGlobalConfig.HasAnalysisLowestFundFreq() && 
-	mGlobalConfig.HasAnalysisHighestFundFreq() && 
-	mGlobalConfig.HasAnalysisMaxFundFreqError() && 				 
-	mGlobalConfig.HasAnalysisMaxFundCandidates() &&
-	mGlobalConfig.HasSynthesisFrameSize() &&
-	mGlobalConfig.HasSynthesisWindowType() &&
-	mGlobalConfig.HasSynthesisHopSize() &&
-	mGlobalConfig.HasSynthesisZeroPaddingFactor() &&
-	mGlobalConfig.HasSynthesisPhaseManagementType())
+	/* Here we are checking whether the structure of
+	the configuration is valid*/
+	if(	mGlobalConfig.HasInputSoundFile() &&
+		mGlobalConfig.HasOutputSoundFile() &&
+		mGlobalConfig.HasOutputXMLFile() &&
+		mGlobalConfig.HasInputXMLFile() &&
+		mGlobalConfig.HasSamplingRate() &&
+		mGlobalConfig.HasAnalysisWindowSize() &&
+		mGlobalConfig.HasAnalysisHopSize() &&
+		mGlobalConfig.HasAnalysisWindowType() &&
+		mGlobalConfig.HasResAnalysisWindowSize() &&
+		mGlobalConfig.HasResAnalysisWindowType() &&
+		mGlobalConfig.HasAnalysisZeroPaddingFactor() &&
+		mGlobalConfig.HasAnalysisPeakDetectMagThreshold() &&
+		mGlobalConfig.HasAnalysisMaxSines() &&
+		mGlobalConfig.HasAnalysisSinTrackingFreqDeviation() &&
+		mGlobalConfig.HasAnalysisReferenceFundFreq() && 
+		mGlobalConfig.HasAnalysisLowestFundFreq() && 
+		mGlobalConfig.HasAnalysisHighestFundFreq() && 
+		mGlobalConfig.HasAnalysisMaxFundFreqError() &&
+		mGlobalConfig.HasAnalysisMaxFundCandidates() &&
+		mGlobalConfig.HasDoCleanTracks() &&		
+		mGlobalConfig.HasSynthesisFrameSize() &&
+		mGlobalConfig.HasSynthesisWindowType() &&
+		mGlobalConfig.HasSynthesisHopSize() &&
+		mGlobalConfig.HasSynthesisZeroPaddingFactor() &&
+		mGlobalConfig.HasSynthesisPhaseManagementType() )
 	{	
 		mHaveConfig = true;
 		InitConfigs();
@@ -201,30 +213,25 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 
 	
 	for(i=0;i<mSegment.GetnFrames();i++)
-		{
-			
-			Frame& tmpFrame=mSegment.GetFrame(i);
-			tmpFrame.RemoveAudioFrame();//windowed audio frame
-			tmpFrame.RemoveSinusoidalAudioFrame();
-			tmpFrame.RemoveResidualAudioFrame();
-			tmpFrame.RemoveSinusoidalSpec();
-			tmpFrame.RemoveSpectrum();//this could be kept for direct IFFT
-			//Now we remove auxiliary data formats for residual spectrum
-			SpecTypeFlags tmpFl;
-			tmpFrame.GetResidualSpec().SetType(tmpFl);
-			
-		}
+	{
+		Frame& tmpFrame=mSegment.GetFrame(i);
+		tmpFrame.RemoveAudioFrame();//windowed audio frame
+		tmpFrame.RemoveSinusoidalAudioFrame();
+		tmpFrame.RemoveResidualAudioFrame();
+		tmpFrame.RemoveSinusoidalSpec();
+		tmpFrame.RemoveSpectrum();//this could be kept for direct IFFT
+		//Now we remove auxiliary data formats for residual spectrum
+		SpecTypeFlags tmpFl;
+		tmpFrame.GetResidualSpec().SetType(tmpFl);	
+	}
 
 	//Now we add Spectrum back, it is needed for Melody analysis
 	for(i=0;i<mSegment.GetnFrames();i++)
-		{
-			
-			Frame& tmpFrame=mSegment.GetFrame(i);
-			tmpFrame.AddSpectrum();//this could be kept for direct IFFT
-			tmpFrame.UpdateData();			
-		}
-	
-	
+	{
+		Frame& tmpFrame=mSegment.GetFrame(i);
+		tmpFrame.AddSpectrum();//this could be kept for direct IFFT
+		tmpFrame.UpdateData();			
+	}
 
 	XMLStorage x;
 	x.Dump(mSegment,"Analyzed_Segment",mGlobalConfig.GetOutputXMLFile());
@@ -233,8 +240,6 @@ void AnalysisSynthesisExampleBase::StoreAnalysis(void)
 
 bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 {
-	bool displayAudio=false; //true;
-
 	//The File In PO
 	AudioFileIn myAudioFileIn;
 	AudioFileConfig infilecfg;
@@ -307,17 +312,19 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	/*Now I will try to clean Tracks (TODO:This should be done on a frame by frame basis
 	and included in SMSAnalysis*/
 
-	WaitMessage *wm = CreateWaitMessage("Cleaning tracks, please wait");
-	
-	CleanTracksConfig clcfg;
-	CleanTracks myCleanTracks;
-	myCleanTracks.Configure(clcfg);
-	myCleanTracks.Start();
-	myCleanTracks.Do(mSegment);
-	myCleanTracks.Stop();
-
-	delete wm;
-
+	if(mGlobalConfig.GetDoCleanTracks())
+	{
+		WaitMessage *wm = CreateWaitMessage("Cleaning tracks, please wait");
+		
+		CleanTracksConfig clcfg;
+		CleanTracks myCleanTracks;
+		myCleanTracks.Configure(clcfg);
+		myCleanTracks.Start();
+		myCleanTracks.Do(mSegment);
+		myCleanTracks.Stop();
+		
+		delete wm;
+	}
 	mHaveAnalysis = true;
 	mHaveSpectrum = true;
 }
@@ -403,8 +410,7 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 		
 	//This does not necessarily have to be true, look at OverlapAddTest above!
 	int nSynthFrames=size/mSynthConfig.GetFrameSize();
-	int windowsInFrame=(mSynthConfig.GetFrameSize()+1)/mSynthConfig.GetHopSize();
-	int k=0,i;
+	int i;
 
 	Progress* pct = CreateProgress("Synthesis Processing",0,float(nSynthFrames));
 
@@ -434,6 +440,15 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 
 	mHaveAudioOut = true;
 
+	/*int outSize=mAudioOutSin.GetSize();
+	DataArray& outSin=mAudioOutSin.GetBuffer();
+	Audio testAudio;
+	testAudio.SetSize(1000);
+	DataArray& test=testAudio.GetBuffer();
+	for(i=74600;i<75600;i++)
+	{
+		test[i-74600]=outSin[i];
+	}*/
 	mySynthesis.Stop();
 }
 
@@ -500,7 +515,7 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 	mySegmentator.Start();
 
 	//Segmentate
-	mySegmentator.Do(mSegment,mSegmentDescriptors);
+	mySegmentator.Do(mSegment);
 
 
 		////////////////
@@ -521,7 +536,7 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 	onset.Start();
 	onset.Do(mSegment);
 */
-	List<Note> array;
+	Array<Note> array;
 	Array<TData> fund;
 	Array<TData> energy;
 
@@ -531,12 +546,11 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 	for(i=0; i<mSegment.GetnFrames(); i++)
 	{
 		fund.AddElem(mSegment.GetFrame(i).GetFundamental().GetFreq());
-		if(mSegmentDescriptors.GetFrameD(i).GetSpectrumD().GetEnergy()>eThr)
-			energy.AddElem(mSegmentDescriptors.GetFrameD(i).GetSpectrumD().GetEnergy());
+		if(mSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetEnergy()>eThr)
+			energy.AddElem(mSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetEnergy());
 		else
 			energy.AddElem(0);
 	}
-	int fr = 0;		
 	TData ff,aux,number =0,noteEnergy=0,lastFF=0,lastEnergy=0;
 	for(i=0;i<mSegment.GetChildren().Size();i++)
 	{

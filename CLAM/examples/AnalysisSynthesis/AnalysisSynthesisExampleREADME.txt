@@ -119,7 +119,7 @@ for <AnalysisPeakDetectMagThreshold> (i.e. -120).
 
 <SynthesisWindowType>: type of window used for the residual analysis. Available: Same as in sinusoidal.
 
-<SynthesisHopSize>: synthesis hop size in number of samples. If -1 it is equal the synthesis frame size (recommended)
+<SynthesisHopSize>: synthesis hop size in number of samples. If -1 it is half the synthesis frame size (recommended)
 
 <SynthesisZeroPaddingFactor> zero padding factor for the ifft. Must be the same as the one used
 in the analysis.
