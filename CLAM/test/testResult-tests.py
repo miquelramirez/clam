@@ -16,16 +16,24 @@ class TestTestResultSet (unittest.TestCase) :
 		self.set.add(t2)
 		self.assertEqual( 2, self.set.nTests() )
 		
-	def testPassed_default(self) :
-		self.assert_( self.set.passed() )
+	def testStabilityLevel_default(self) :
+		self.assert_( self.set.stabilityLevel() == DoesntCompile )
 		
 	def testPassed_withOneTestNotPassed(self) :
 		t = TestResult()
 		t.compilationOk( "debug", False )
-		self.assert_( not t.passed() )
+		assert( not t.compiles() )
 		self.set.add( t )
-		self.assert_ ( not self.set.passed() )
-		
+		assert ( not self.set.compiles() )
+
+	def testPassUnitTests_default(self):
+		assert( self.set.passUnitTests() )
+
+	def testPassUnitTests_withOneTestWithFailures(self) :
+		t = TestResult()
+		t.unitTestsFailures("debug", 1)
+		self.set.add( t )
+		assert (not self.set.passUnitTests() )
 	
 		
 class TestTestResult (unittest.TestCase) :
@@ -35,70 +43,29 @@ class TestTestResult (unittest.TestCase) :
 	def testConstructor(self):
 		self.assertEqual("unnamed test", self.test.name)
 
-	def testassed_default(self):
-		self.assert_( self.test.passed() )
+	def testCompiles_default(self):
+		self.assert_( self.test.compiles() )
 
-	def testPassed_whenDebugErrors(self): 
-		"""passed should return false when debug errors"""
+	def testCompiles_whenDebugErrors(self): 
+		"""compiles should return false when debug errors"""
 		self.test.compilationOk("debug", False)
-		self.assert_(not self.test.passed() )
+		self.assert_(not self.test.compiles() )
 	
-	def testPassed_whenReleaseErrors(self): 
-		"""passed should return false when release errors"""
+	def testCompiles_whenReleaseErrors(self): 
+		"""compiles should return false when release errors"""
 		self.test.compilationOk("release", False)
-		self.assert_(not self.test.passed() )
+		self.assert_(not self.test.compiles() )
 
-
-	def XtestPassed_whenNoErrorsSetAndIsAutoTest_Failures(self):
-		"if autotest and tests not passed, should return false"
-		self.test._isAutoTest = True
-		self.test.nFailures(1)
-		assert not self.test.passed()
-		self.assertEqual( 1, self.test.getNFailures() )
-	
-	def XtestPassed_whenNoErrorsSetAndIsAutoTest_Errors(self):
-		"if autotest and tests not passed, should return false"
-		self.test._isAutoTest = True
-		self.test.nErrors(1)
-		assert not self.test.passed()
-		self.assertEqual( 1, self.test.getNErrors() )
+	def testPassUnitTests_default(self):
+		self.assert_( self.test.passUnitTests() )
 		
-	def XtestPassed_whenNoErrorsSet_IsAutoTest_Passed(self):
-		"passed autotests should return true"
-		self.test._isAutoTest = True
-		assert self.test.passed()
-		
-	def XtestConfigurationStatus_whithInvalidConfiguration(self):
-		"passing configuration not debug or release should raise"
-		self.assertRaises( Exception, 
-			self.test.compilationStatus, 'debbug', True)
-		
-	def XtestConfigurationStatus_DebugOk(self):
-		self.test._debugCompilationOk = False
-		self.test.compilationStatus('debug', True)
-		assert self.test._debugCompilationOk
+	def testPassUnitTests_whenDebugFailures(self):
+		self.test.unitTestsFailures("debug", 1)
+		self.assert_( not self.test.passUnitTests() )
 
-	def XtestConfigurationStatus_ReleaseNotOk(self):
-		self.test._debugCompilationOk = True
-		self.test.compilationStatus('release', False)
-		assert not self.test._releaseCompilationOk
-		
-	def XtestNWarnings_Debug(self):
-		self.test.nWarnings('debug', 2)
-		assert 2 == self.test._debugNWarnings
-	
-	def XtestNWarnings_Release(self):
-		self.test.nWarnings('release', 1)
-		assert 1 == self.test._releaseNWarnings
-	
-	def XtestReportedError(self):
-		self.test.reportError('debug', 'un error')
-		assert 'un error' == self.test._reportedError
-
-	def XtestName(self):
-		self.test.name('a test')
-		assert 'a test' == self.test._testname
-
+	def testPassUnitTests_whenReleaseFailures(self):
+		self.test.unitTestsFailures("release", 1)
+		self.assert_( not self.test.passUnitTests() )
 
 if __name__ == "__main__":
 	unittest.main()
