@@ -72,9 +72,11 @@ public:
 template<class ProcObj>
 class InControlTmpl : public InControl
 {
-private:
+public:
 	typedef int (ProcObj::*TPtrMemberFunc)(TControlData);
 	typedef int (ProcObj::*TPtrMemberFuncId)(int,TControlData);
+
+private:
 	TPtrMemberFunc   mFunc;
 	TPtrMemberFuncId mFuncId;
 	ProcObj* mProcObj;
@@ -115,7 +117,7 @@ public:
 			if (publish) mProcObj->PublishInControl(this);
 		};
 
-	InControlTmpl(int mId,const std::string &name, ProcObj* parent, TPtrMemberFuncId f,const bool publish=true )	:
+	InControlTmpl(int id,const std::string &name, ProcObj* parent, TPtrMemberFuncId f,const bool publish=true )	:
 		InControl(name),
 		mFunc(0),
 		mFuncId(f),
@@ -186,6 +188,54 @@ InControlArray::~InControlArray()
 	for (int i=0; i<size; i++)
 		delete mArray[i];
 }
+
+//////////////////////////////////////////////////
+// 
+template <class Processing>
+class InControlTmplArray
+{
+	typedef typename InControlTmpl<Processing> TInControl;
+	typedef typename TInControl::TPtrMemberFuncId TPtrMemberFuncId;
+
+	Array<TInControl*> mArray;
+
+public:
+	InControlTmplArray(int size, const std::string &name, Processing* parent,
+		TPtrMemberFuncId f, const bool publish=true);
+	~InControlTmplArray();
+
+	inline TInControl& operator[](int i) { return *mArray[i]; }
+	inline const TInControl& operator[](int i) const { return *mArray[i]; }
+
+};
+/////////////////////////////////////////////
+// Implementation
+template <class Processing>
+InControlTmplArray<Processing>::InControlTmplArray(int size, 
+								   const std::string &name,
+								   Processing *parent, 
+								   TPtrMemberFuncId f,
+								   const bool publish)
+{
+	mArray.Resize(size);
+	mArray.SetSize(size);
+	for (int i=0; i<size; i++) {
+		std::stringstream str;
+		str << name << "_" << i;
+		CLAM_ASSERT(parent, "ArrayControls not being published. TODO: check ctr parameters");
+		mArray[i] = new TInControl(i, str.str(), parent, f, publish);
+		
+	}
+}
+template <class Processing>
+InControlTmplArray<Processing>::~InControlTmplArray()
+{
+	int size = mArray.Size();
+	for (int i=0; i<size; i++)
+		delete mArray[i];
+}
+
+
 
 }; // namespace CLAM
 

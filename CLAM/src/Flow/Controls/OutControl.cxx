@@ -61,7 +61,7 @@ int OutControl::SendControl(TControlData val)
 	{
 		ret = (*it)->DoControl(val);
 	}
-	// TODO: decide if returning just the last result is ok
+	// TODO: depracate controls with return value.
 	return ret;
 }
 
