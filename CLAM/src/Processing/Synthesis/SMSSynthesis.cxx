@@ -228,8 +228,6 @@ bool SMSSynthesis::Do(
 	
 	outputSpectrum.SetSize( inputResidualSpectrum.GetSize() );
 
-	std::cout << "SMSSynthesis::Do(...) spectrum sizes\nsin : " << outputSinusoidalSpectrum.GetSize()
-		<< "\nres : " << inputResidualSpectrum.GetSize() << "\nout: " << outputSpectrum.GetSize() << std::endl;
 
 	//We add Residual spectrum in the input frame plus the synthesized sinusoidal spectrum
 	mSpectrumAdder.Do(outputSinusoidalSpectrum, inputResidualSpectrum, outputSpectrum);
