@@ -19,45 +19,46 @@ namespace CLAM
 
 	class AudioPlotProcessingConfig : public ProcessingConfig
 	{
-		public:
-			DYNAMIC_TYPE_USING_INTERFACE (AudioPlotProcessingConfig, 6, ProcessingConfig);
-			DYN_ATTRIBUTE (0, public, std::string, Name);
-	                DYN_ATTRIBUTE (1, public, std::string, Caption);
-	                DYN_ATTRIBUTE (2, public, int, xpos);
-                        DYN_ATTRIBUTE (3, public, int, ypos);
-                        DYN_ATTRIBUTE (4, public, int, width);
-                        DYN_ATTRIBUTE (5, public, int, height);
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (AudioPlotProcessingConfig, 6, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYN_ATTRIBUTE (1, public, std::string, Caption);
+		DYN_ATTRIBUTE (2, public, int, xpos);
+		DYN_ATTRIBUTE (3, public, int, ypos);
+		DYN_ATTRIBUTE (4, public, int, width);
+		DYN_ATTRIBUTE (5, public, int, height);
 
-		protected:
-			void DefaultInit();
+	protected:
+		void DefaultInit();
 	};
-
 
 	class AudioPlotProcessing : public Processing
 	{
-		public:
-			AudioPlotProcessing();
-			AudioPlotProcessing(const AudioPlotProcessingConfig& cfg);
-			virtual ~AudioPlotProcessing();
+	public:
+		AudioPlotProcessing();
+		AudioPlotProcessing(const AudioPlotProcessingConfig& cfg);
+		virtual ~AudioPlotProcessing();
 
-			bool Do();
-			bool Do(const Audio& audio);
+		bool Do();
+		bool Do(const Audio& audio);
 
-			const char * GetClassName() const {return "AudioPlotProcessing";}
-	
-			inline const ProcessingConfig &GetConfig() const { return mConfig;}
-			bool ConcreteConfigure(const ProcessingConfig& c);
+		const char * GetClassName() const {return "AudioPlotProcessing";}
 
-		protected:
-			bool ConcreteStart();
-			bool ConcreteStop();
+		inline const ProcessingConfig &GetConfig() const { return mConfig;}
+		bool ConcreteConfigure(const ProcessingConfig& c);
+		void SetPlot(VM::NetAudioPlot * plot);
 
-		private:
-			AudioPlotProcessingConfig mConfig;
-			VM::NetAudioPlot* mPlot;
-			AudioInPort mInput;
-			
-			void InitAudioPlot();
+	protected:
+		bool ConcreteStart();
+		bool ConcreteStop();
+
+	private:
+		AudioPlotProcessingConfig mConfig;
+		VM::NetAudioPlot* mPlot;
+		AudioInPort mInput;
+		bool mOwnedPlot;
+
+		void InitAudioPlot();
 	};
 }
 

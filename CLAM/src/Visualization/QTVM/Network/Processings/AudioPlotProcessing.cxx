@@ -5,8 +5,8 @@ namespace CLAM
 {
 	void AudioPlotProcessingConfig::DefaultInit()
 	{
-		AddAll();       
-		UpdateData();	
+		AddAll();
+		UpdateData();
 		SetName("AudioPlotProcessing");
 		SetCaption("Audio");
 		Setxpos(100);
@@ -16,56 +16,46 @@ namespace CLAM
 	}
 
 	AudioPlotProcessing::AudioPlotProcessing() 
-		: mInput("Audio Input", this)
+		: mPlot(0)
+		, mInput("Audio Input", this)
+		, mOwnedPlot(false)
 	{
 		AudioPlotProcessingConfig cfg;
 		Configure(cfg);
-
-		mPlot = NULL;
 	}
 
 	AudioPlotProcessing::AudioPlotProcessing(const AudioPlotProcessingConfig& cfg)
-		: mInput("Audio Input", this)
+		: mPlot(0)
+		, mInput("Audio Input", this)
+		, mOwnedPlot(false)
 	{
 		Configure(cfg);
-		
-		mPlot = NULL;
 	}
 
 	AudioPlotProcessing::~AudioPlotProcessing()
 	{
-		if(mPlot) delete mPlot;
+		if(mOwnedPlot) delete mPlot;
 	}
-
 
 	bool AudioPlotProcessing::Do()
 	{
-	    bool res = Do(mInput.GetAudio()); 
-	    mInput.Consume();
-	    return res;;
+		bool res = Do(mInput.GetAudio()); 
+		mInput.Consume();
+		return res;
 	}
 
 	bool AudioPlotProcessing::Do(const Audio& audio)
 	{
-	    if(!AbleToExecute()) return true;
-	    mPlot->SetData(audio);
-	    if(!mPlot->isVisible()) mPlot->Show();
-	    return true;
+		if(!AbleToExecute()) return true;
+		mPlot->SetData(audio);
+		if(!mPlot->isVisible()) mPlot->Show();
+		return true;
 	}
 
 	bool AudioPlotProcessing::ConcreteConfigure(const ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig(mConfig, c);
 		return true;
-	}
-
-	void AudioPlotProcessing::InitAudioPlot()
-	{
-		mPlot = new VM::NetAudioPlot();
-		mPlot->Label(mConfig.GetCaption().c_str());
-		mPlot->SetBackgroundColor(VM::VMColor::Black());
-		mPlot->SetDataColor(VM::VMColor::Green());
-		mPlot->Geometry(mConfig.Getxpos(),mConfig.Getypos(),mConfig.Getwidth(),mConfig.Getheight());
 	}
 
 	bool AudioPlotProcessing::ConcreteStart()
@@ -76,14 +66,39 @@ namespace CLAM
 
 	bool AudioPlotProcessing::ConcreteStop()
 	{
-	    if(mPlot) 
-	    {
-		mPlot->StopRendering();
-		delete mPlot;
-		mPlot = NULL;
-	    }
-	    return true;
+		if(mPlot) 
+		{
+			mPlot->StopRendering();
+			if (mOwnedPlot)
+			{
+				delete mPlot;
+				mPlot = NULL;
+			}
+		}
+		return true;
 	}
+
+	void AudioPlotProcessing::SetPlot(VM::NetAudioPlot * plot)
+	{
+		if (mOwnedPlot) delete mPlot;
+		mOwnedPlot = false;
+		mPlot = plot;
+		mPlot->Label(mConfig.GetCaption());
+		mPlot->SetBackgroundColor(VM::VMColor::Black());
+		mPlot->SetDataColor(VM::VMColor::Green());
+	}
+
+	void AudioPlotProcessing::InitAudioPlot()
+	{
+		if (mOwnedPlot) delete mPlot;
+		mPlot = new VM::NetAudioPlot();
+		mOwnedPlot = true;
+		mPlot->Label(mConfig.GetCaption());
+		mPlot->SetBackgroundColor(VM::VMColor::Black());
+		mPlot->SetDataColor(VM::VMColor::Green());
+		mPlot->Geometry(mConfig.Getxpos(),mConfig.Getypos(),mConfig.Getwidth(),mConfig.Getheight());
+	}
+
 }
 
 // END

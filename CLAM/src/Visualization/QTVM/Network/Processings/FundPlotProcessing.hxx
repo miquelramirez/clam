@@ -19,45 +19,46 @@ namespace CLAM
 
 	class FundPlotProcessingConfig : public ProcessingConfig
 	{
-		public:
-			DYNAMIC_TYPE_USING_INTERFACE (FundPlotProcessingConfig, 6, ProcessingConfig);
-			DYN_ATTRIBUTE (0, public, std::string, Name);
-	                DYN_ATTRIBUTE (1, public, std::string, Caption);
-	                DYN_ATTRIBUTE (2, public, int, xpos);
-                        DYN_ATTRIBUTE (3, public, int, ypos);
-                        DYN_ATTRIBUTE (4, public, int, width);
-                        DYN_ATTRIBUTE (5, public, int, height);
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (FundPlotProcessingConfig, 6, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, std::string, Name);
+		DYN_ATTRIBUTE (1, public, std::string, Caption);
+		DYN_ATTRIBUTE (2, public, int, xpos);
+		DYN_ATTRIBUTE (3, public, int, ypos);
+		DYN_ATTRIBUTE (4, public, int, width);
+		DYN_ATTRIBUTE (5, public, int, height);
 
-		protected:
-			void DefaultInit();
+	protected:
+		void DefaultInit();
 	};
-
 
 	class FundPlotProcessing : public Processing
 	{
-		public:
-			FundPlotProcessing();
-			FundPlotProcessing(const FundPlotProcessingConfig& cfg);
-			virtual ~FundPlotProcessing();
+	public:
+		FundPlotProcessing();
+		FundPlotProcessing(const FundPlotProcessingConfig& cfg);
+		virtual ~FundPlotProcessing();
 
-			bool Do();
-			bool Do(const Fundamental& fund);
+		bool Do();
+		bool Do(const Fundamental& fund);
 
-			const char * GetClassName() const {return "FundPlotProcessing";}
-	
-			inline const ProcessingConfig &GetConfig() const { return mConfig;}
-			bool ConcreteConfigure(const ProcessingConfig& c);
+		const char * GetClassName() const {return "FundPlotProcessing";}
 
-		protected:
-			bool ConcreteStart();
-			bool ConcreteStop();
+		inline const ProcessingConfig &GetConfig() const { return mConfig;}
+		bool ConcreteConfigure(const ProcessingConfig& c);
+		void SetPlot(VM::NetFundPlot * plot);
 
-		private:
-			FundPlotProcessingConfig mConfig;
-			VM::NetFundPlot* mPlot;
-			InPort<Fundamental> mInput;
-			
-			void InitFundPlot();
+	protected:
+		bool ConcreteStart();
+		bool ConcreteStop();
+
+	private:
+		FundPlotProcessingConfig mConfig;
+		VM::NetFundPlot* mPlot;
+		InPort<Fundamental> mInput;
+		bool mOwnedPlot;
+
+		void InitFundPlot();
 	};
 }
 
