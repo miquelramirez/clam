@@ -27,11 +27,10 @@
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControl.hxx"
-#include "FrameTransformation.hxx"
 #include "SpectralPeakArray.hxx"
-
 #include "SMSTransformationConfig.hxx"
-
+#include "FrameTransformation.hxx"
+#include "FrameTransformationConfig.hxx"
 
 namespace CLAM{
 
@@ -45,6 +44,8 @@ namespace CLAM{
 
 		InControl mGainAmount;
 
+		FrameTransformationConfig mConfig;
+
 	public:
 
 		SMSSinusoidalGain() 
@@ -57,7 +58,7 @@ namespace CLAM{
 			Configure( SegmentTransformationConfig() );
 		}
 
-		const ProcessingConfig& GetConfig() const { throw 0; }
+		const ProcessingConfig& GetConfig() const { return mConfig; }
 
 		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 

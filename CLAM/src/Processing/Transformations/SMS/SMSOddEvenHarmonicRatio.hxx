@@ -23,13 +23,14 @@
 #ifndef _SMSOddEvenHarmonicRatio_
 #define _SMSOddEvenHarmonicRatio_
 
-#include "FrameTransformation.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
 #include "SMSTransformationConfig.hxx"
+#include "FrameTransformation.hxx"
+#include "FrameTransformationConfig.hxx"
 
 
 namespace CLAM{
@@ -43,6 +44,8 @@ namespace CLAM{
 		OutPort<SpectralPeakArray> mOut;
 
 		InControl mOddFactor;
+
+		FrameTransformationConfig mConfig;
 
 	public:
 
@@ -58,7 +61,7 @@ namespace CLAM{
 
  		~SMSOddEvenHarmonicRatio() {}
 	
-		const ProcessingConfig& GetConfig() const { throw 0; }
+		const ProcessingConfig& GetConfig() const { return mConfig; }
 
 		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 

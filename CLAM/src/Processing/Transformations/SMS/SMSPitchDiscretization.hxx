@@ -23,9 +23,10 @@
 #ifndef _SMSPitchDiscretization_
 #define _SMSPitchDiscretization_
 
-#include "FrameTransformation.hxx"
 #include "SMSPitchShift.hxx"
 #include "SpectrumAdder2.hxx"
+#include "FrameTransformation.hxx"
+#include "FrameTransformationConfig.hxx"
 
 
 namespace CLAM{
@@ -35,12 +36,13 @@ namespace CLAM{
 	{
 
 		SMSPitchShift mPitchShift;
+		FrameTransformationConfig mConfig;
 
 	public:
 
 		SMSPitchDiscretization() {}
 
-		const ProcessingConfig& GetConfig() const { throw 0; }
+		const ProcessingConfig& GetConfig() const { return mConfig; }
 
 		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 

@@ -30,7 +30,7 @@
 #include "Spectrum.hxx"
 #include "SMSTransformationConfig.hxx"
 #include "FrameTransformation.hxx"
-
+#include "FrameTransformationConfig.hxx"
 
 namespace CLAM{
 
@@ -45,6 +45,8 @@ namespace CLAM{
 
 		InControl mGainAmount;
 
+		FrameTransformationConfig mConfig;
+
 	public:
 
 		SMSResidualGain() 
@@ -58,7 +60,7 @@ namespace CLAM{
 
  		~SMSResidualGain() {}
 
-		const ProcessingConfig& GetConfig() const { throw 0; }
+		const ProcessingConfig& GetConfig() const { return mConfig; }
 
 		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
