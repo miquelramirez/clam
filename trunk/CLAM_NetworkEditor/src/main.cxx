@@ -27,6 +27,8 @@
 
 #include "AudioManager.hxx"
 
+#include "MIDIManager.hxx"
+
 #include <qapplication.h>
 
 #include <cmath>
@@ -39,7 +41,7 @@
 
 void ConfigureNetwork(CLAM::Network & net)
 {	
-	int frameSize = 512;
+	int frameSize = 1024; // was 512
 	net.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
 
 }
@@ -50,7 +52,9 @@ int main( int argc, char **argv )
 	XInitThreads();
 #endif
 
-	CLAM::AudioManager audioManager( 44100, 512 );
+	CLAM::AudioManager audioManager( 44100, 1024 ); //was 44100, 512
+
+	CLAM::MIDIManager midiManager;
 
 	srand(time(NULL)); // gui stuff
 

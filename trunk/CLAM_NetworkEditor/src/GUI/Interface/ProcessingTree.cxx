@@ -62,6 +62,11 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem( inputoutput, "AudioOut" );
 //	new ProcessingItem( inputoutput, "AudioIn" );
 	
+	QListViewItem * midi = new QListViewItem( this,"MIDI" );
+	new ProcessingItem( midi, "MIDIKeyboard" );
+	new ProcessingItem( midi, "MIDIInControl" );
+//	new ProcessingItem( midi, "MIDIDispatcher" );
+
 	QListViewItem * files = new QListViewItem( this,"Audio File I/O" );
 	new ProcessingItem( files, "MonoAudioFileReader" );
 	new ProcessingItem( files, "MonoAudioFileWriter" );
@@ -81,7 +86,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem( smstrans, "SMSPitchShift" );
 	new ProcessingItem( smstrans, "SMSResidualGain" );
 	new ProcessingItem( smstrans, "SMSSinusoidalGain" );
-//	new ProcessingItem( smstrans, "SMSSineFilter" );
+	new ProcessingItem( smstrans, "SMSSineFilter" );
 	new ProcessingItem( smstrans, "SMSOddEvenHarmonicRatio" );
 	new ProcessingItem( smstrans, "SMSSpectralShapeShift" );
 	new ProcessingItem( smstrans, "SMSPitchDiscretization" );
@@ -94,7 +99,6 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 #endif
 	new ProcessingItem( utils, "OutControlSender" );	
 	new ProcessingItem( utils, "Fundamental2Control" );	
-	new ProcessingItem( utils, "MIDIcontrol" );	
 
 	QListViewItem* winplots = new QListViewItem(this,"Plots in new windows");
 	new ProcessingItem(winplots, "AudioPlotProcessing");

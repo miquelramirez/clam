@@ -53,7 +53,3 @@ static ProcessingFactory::Registrator<CLAM::SpecgramPlotProcessing> regtSpecgram
 static ProcessingFactory::Registrator<CLAM::AudioBuffPlotProcessing> regtAudioBuffPlotProcessing("AudioBuffPlotProcessing");
 
 
-
-
-
-
