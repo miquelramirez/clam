@@ -9,8 +9,8 @@
         *** CLAM objects detect some semantic constraints.
   * XPath (like) navegation:
      ** The implementation of XmlStorage::Select allows using:
-        *** XmlStorage::AppendToDocument(object,path,iostream)
-        *** XmlStorage::RestorePartialDocument(object, path, istream)
+        *** XmlStorage::AppendToDocument(object, path, filename)
+        *** XmlStorage::RestoreFromFragment(object, path, istream)
         *** Using atomic primitives for doing some similar hacks like writing
             fragments of the XML for an object to disk.
 
