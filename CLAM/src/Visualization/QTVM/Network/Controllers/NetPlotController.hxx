@@ -1,74 +1,110 @@
 #ifndef __NETPLOTCONTROLLER__
 #define __NETPLOTCONTROLLER__
 
+#include <list>
 #include <qobject.h>
 #include "DataTypes.hxx"
 #include "Slotv0.hxx"
+#include "Point.hxx"
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	struct SView
 	{
-		typedef struct
-		{
-			float left;
-			float right;
-			float bottom;
-			float top;
-		} SView;
+	    float left;
+	    float right;
+	    float bottom;
+	    float top;
 
-		class NetPlotController : public QObject
-		{
-			Q_OBJECT
+	    SView();
+	    SView(float, float, float, float);
+	    SView(const SView& v);
+	    ~SView();
+	    
+	    void operator=(SView v);
+	};
 
-			public:
-				NetPlotController();
-				virtual ~NetPlotController();
+	class NetPlotController : public QObject
+	{
+	    typedef std::list<SView> ViewStack;
 
-				virtual void Draw() = 0;
+	    Q_OBJECT
+	    
+	public:
+	    NetPlotController();
+	    virtual ~NetPlotController();
 
-			signals:
-				void sendView(SView);
+	    virtual void Draw();
 
-			protected:
-				SView _view;
+	    void SetPoint(const TData& x, const TData& y);
+	    void UpdatePoint(const TData& x, const TData& y);
 
-                                SigSlot::Slotv0 mStartSlot;
-	                        SigSlot::Slotv0 mStopSlot;
+	    void SetLeftButtonPressed(bool pressed);
+	    void SetRightButtonPressed(bool pressed);
 
-				void SetnSamples(const TSize& nSamples);
-				TSize GetnSamples() const;
+	    void EnterEvent();
+	    void LeaveEvent();
 
-				void SetvRange(const TData& vmin, const TData& vmax);
-				TData GetvMin() const;
-				TData GetvMax() const;
+	signals:
+	    void sendView(SView);
 
-		                 void ConcreteStartMonitor();
-	                         void ConcreteStopMonitor();
+	protected:
+	    SView _view;
 
-		                 bool MonitorIsRunning();
+	    SigSlot::Slotv0 mStartSlot;
+	    SigSlot::Slotv0 mStopSlot;
 
-		                 void SetFirst(bool first);
-		                 bool First();
+	    virtual void FullView() = 0;
 
-		                 void SetCanGetData(bool canget);
-		                 void SetCanSendData(bool cansend);
-		                 bool CanGetData();
-		                 bool CanSendData();
+	    void SetnSamples(const TSize& nSamples);
+	    TSize GetnSamples() const;
+
+	    void SetvRange(const TData& vmin, const TData& vmax);
+	    TData GetvMin() const;
+	    TData GetvMax() const;
+
+	    void ConcreteStartMonitor();
+	    void ConcreteStopMonitor();
+
+	    bool MonitorIsRunning();
+
+	    void SetFirst(bool first);
+	    bool First();
+
+	    void SetCanGetData(bool canget);
+	    void SetCanSendData(bool cansend);
+	    bool CanGetData();
+	    bool CanSendData();
 				
-			private:
-				TSize _nSamples;
-				TData _vmin;
-                 		TData _vmax;
-		                bool _first;
-		                bool _monitorIsRunning;
-		                bool _canSendData;
-		                bool _canGetData;
-		                
-				void InitView();
+	private:
+	    TSize _nSamples;
+	    TData _vmin;
+            TData _vmax;
+	    bool _first;
+	    bool _monitorIsRunning;
+	    bool _canSendData;
+	    bool _canGetData;
+	    bool _leftButtonPressed;
+	    bool _rightButtonPressed;
+	    bool _mouseOverDisplay;
+	    Point _corners[2];
+	    ViewStack _viewStack;
+	                
+	    void PushView();
+	    void PopView();
+
+	    float XMax();
+	    float XMin();
+	    float YMax();
+	    float YMin();
+
+	    float Max(float a, float b);
+	    float Min(float a, float b);
 				
-		};
-	}
+	};
+    }
 }
 
 #endif
