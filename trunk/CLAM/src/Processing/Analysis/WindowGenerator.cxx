@@ -31,15 +31,15 @@ namespace CLAM
 	/* Processing  object Method  implementations */
 
 	WindowGenerator::WindowGenerator():
-		mSize("Size",this),
-		mOutput( "Generated window function samples", this )
+		mOutput( "Generated window function samples", this ),
+		mSize("Size",this)
 	{
 		Configure(WindowGeneratorConfig());
 	}
 
 	WindowGenerator::WindowGenerator(const WindowGeneratorConfig &c) :
-		mSize("Size",this),
-		mOutput( "Generated window function samples", this )
+		mOutput( "Generated window function samples", this ),
+		mSize("Size",this)
 	{
 		Configure(c);
 	}
@@ -258,21 +258,20 @@ namespace CLAM
 	/*Create window from table*/
 void WindowGenerator::CreateWindowFromTable(DataArray &array) const
 {
-	int i;
 	unsigned int index = 0x00000000; 
 	unsigned int increment = (unsigned int)((double) (0x00010000) * mConfig.GetSize()/
-																					(mSize.GetLastValue()));
+		(mSize.GetLastValue()));
 
 	//fix point increment [ 16bit | 16bit ] --> 1 = [ 0x0001 | 0x0000 ]
 
 	int size = int(mSize.GetLastValue());
 	CLAM_ASSERT(size<=array.Size(),"WindowGenerator::CreateWindowFromTable:output array does not have a valid size");
-	for (i=0;i<size;i++)
-		{
-			TData val = mTable[index>>16];
-			array[i] = val;
-			index += increment;
-		}
+	for (int i=0;i<size;i++)
+	{
+		TData val = mTable[index>>16];
+		array[i] = val;
+		index += increment;
+	}
 }
 
 
@@ -281,13 +280,12 @@ kind of X*/
 
 double WindowGenerator::BesselFunction(double x) const
 {
-	int i;
 	double Sum = 0;
 	double Factorial = 1.0;
 	double HalfX = x/2.0;
 	Sum += 1.0;
 	Sum += HalfX * HalfX;
-	for(i=2; i<50; i++)
+	for(int i=2; i<50; i++)
 	{
 		Factorial *= i;
 		Sum += pow( pow(HalfX, (double)i) / Factorial, 2.0);
@@ -300,8 +298,6 @@ double WindowGenerator::BesselFunction(double x) const
 void WindowGenerator::KaiserBessel(long size,DataArray& window,
                               double alpha) const
 {
-	int     i;
-
 	TData PiAlpha = TData(PI) * TData(alpha);
 	long windowsize = size;
 
@@ -311,7 +307,7 @@ void WindowGenerator::KaiserBessel(long size,DataArray& window,
 	// compute window
 	if (windowsize % 2 != 0)
 		window[iHalfsize]= TData(BesselFunction(PiAlpha) / BesselFunction(PiAlpha));
-	for(i=0; i<iHalfsize; i++)
+	for(int i=0; i<iHalfsize; i++)
 	{
 		window[i] = window[windowsize-i-1] =TData(
 		   BesselFunction(PiAlpha * sqrt(1.0 - pow((double)(i-iHalfsize) /
@@ -324,7 +320,6 @@ void WindowGenerator::KaiserBessel(long size,DataArray& window,
 void WindowGenerator::BlackmanHarrisX(long size,DataArray& window,
                                  double a0,double a1,double a2,double a3) const
 {
-	int i;
 	double fConst = TWO_PI / (size-1);
 	/* compute window */
 
@@ -333,7 +328,7 @@ void WindowGenerator::BlackmanHarrisX(long size,DataArray& window,
 		window[(int)(size/2)] = a0 - a1 * cos(fConst * ((int)(size/2))) + a2 *
 			cos(fConst * 2 * ((int)(size/2))) - a3 * cos(fConst * 3 * ((int)(size/2)));
 	}
-	for(i = 0; i < (int)(size/2); i++)
+	for(int i = 0; i < (int)(size/2); i++)
 	{
 		window[i] = window[size-i-1] = a0 - a1 * cos(fConst * i) +
 			a2 * cos(fConst * 2 * i) - a3 * cos(fConst * 3 * i);
@@ -385,14 +380,16 @@ void WindowGenerator::BlackmanHarris92(long size,DataArray& window) const
 
 void WindowGenerator::BlackmanHarrisLike(long size, DataArray& window) const
 {
-	int i;
 	TData fSum=0;
-	float a0 = .51f, a1 = .42f, a2 = -0.04f, a3 = .03f, a4=0.03f, a5=0.05f;
-	for(i=0; i<size; i++)
+//	float a0 = .51f, a1 = .42f, a2 = -0.04f, a3 = .03f, a4=0.03f, a5=0.05f;
+	for(int i=0; i<size; i++)
 		fSum += window[i] = 
-			0.47 - 0.45*cos(TData(TWO_PI/(size-1.0)*i)) - 0.01*cos(TData(TWO_PI/(size-1.0)*i*2.0)) - 0.01*cos(TData(TWO_PI/(size-1.0)*i*3.0));
+			+ 0.47
+			- 0.45 * cos(TData(TWO_PI/(size-1.0)*i)) 
+			- 0.01 * cos(TData(TWO_PI/(size-1.0)*i*2.0)) 
+			- 0.01 * cos(TData(TWO_PI/(size-1.0)*i*3.0));
 	fSum = fSum/2;
-	for (i = 0; i < size; i++)
+	for (int i = 0; i < size; i++)
 		window[i] = window[i] / fSum;
 	return;
 }
@@ -401,22 +398,22 @@ void WindowGenerator::BlackmanHarrisLike(long size, DataArray& window) const
 /* function to design a Hamming window*/
 void WindowGenerator::Hamming(long size,DataArray& window) const
 {
-	int     i;
-	
 	if(size%2 !=0)
-		window[(int)(size/2)]= TData(0.54) - TData(0.46)*cos(TData(2.0)*TData(PI)*((int)(size/2))/(size-1));
-	for(i = 0; i < (int)(size/2); i++) 
-		window[i] = window[size-i-1] = TData(0.54) - TData(0.46)*cos(TData(2.0)*TData(PI)*i/(size-1));
+		window[(int)(size/2)]= 
+			+ TData(0.54)
+			- TData(0.46)*cos(TData(2.0)*TData(PI)*((int)(size/2))/(size-1));
+	for(int i = 0; i < (int)(size/2); i++) 
+		window[i] = window[size-i-1] = 
+			+ TData(0.54)
+			- TData(0.46) * cos(TData(2.0)*TData(PI)*i/(size-1));
 }
 
 /* function to design a Triangular window*/
 void WindowGenerator::Triangular(long size,DataArray& window) const
 {
-	int     i;
-	
 	if(size%2 !=0)
 		window[(int)(size/2)] = (TData)2*((int)(size/2))/(size-1);
-	for(i = 0; i < (int)(size/2); i++)
+	for(int i = 0; i < (int)(size/2); i++)
 	{
 		window[i] = window[size-i-1]= (TData)2*i/(size-1);
 	}
@@ -425,17 +422,17 @@ void WindowGenerator::Triangular(long size,DataArray& window) const
 /* function to create the (fft-)transformed Mainlobe of a BlackmanHarris 92 dB window*/
 void WindowGenerator::BlackmanHarris92TransMainLobe(long size,DataArray& window) const
 {
-	short N = 512, i, m;
+	const short N = 512;
 	TData fA[4] = {TData(.35875), TData(.48829), TData(.14128), TData(.01168)},
 		fMax = 0;
 	TData fTheta = -TData(4.0) * TData(TWO_PI) / N,
 	       fThetaIncr = (TData(8.0) * TData(TWO_PI) / N) / (size);
 
 
-	for(i = 0; i < size; i++)
+	for(int i = 0; i < size; i++)
 	{
 		window[i] = 0;  // init value
-		for (m = 0; m < 4; m++)
+		for (int m = 0; m < 4; m++)
 			window[i] +=  -1 * (fA[m]/2) *
 				(Sinc (fTheta - m * TData(TWO_PI)/N, N) +
 				   Sinc (fTheta + m * TData(TWO_PI)/N, N));
@@ -444,7 +441,7 @@ void WindowGenerator::BlackmanHarris92TransMainLobe(long size,DataArray& window)
 
 	/* normalize window */
 	fMax = window[(int) size / 2];
-	for (i = 0; i < size; i++)
+	for (int i = 0; i < size; i++)
 		window[i] = window[i] / fMax;
 
 }
@@ -466,8 +463,6 @@ void WindowGenerator::Gaussian(long size,DataArray& window) const
 /* function to design a Sine window*/
 void WindowGenerator::Sine(long size,DataArray& window) const
 {
-	int     i;
-	
 	double tmp1 = PI/(2.0*float(size));
 	double tmp2 = 0.5*(2.0*float(size));
 
@@ -480,8 +475,6 @@ void WindowGenerator::Sine(long size,DataArray& window) const
 void WindowGenerator::InvertWindow(const DataArray& originalWindow,
 		DataArray& invertedWindow) const
 {
-	int i;
-
 	if(invertedWindow.AllocatedSize()!=originalWindow.AllocatedSize())
 		invertedWindow.Resize(originalWindow.AllocatedSize());
 	if(invertedWindow.Size()!=originalWindow.Size())
@@ -491,7 +484,7 @@ void WindowGenerator::InvertWindow(const DataArray& originalWindow,
 		if(originalWindow[(int)(originalWindow.Size()/2)]!=0)
 			invertedWindow[(int)(originalWindow.Size()/2)]=
 				1/originalWindow[(int)(originalWindow.Size()/2)];
-	for(i=0;i<(int)(originalWindow.Size()/2);i++)
+	for(int i=0;i<(int)(originalWindow.Size()/2);i++)
 	{
 		if(originalWindow[i]!=0)
 			invertedWindow[i]=invertedWindow[originalWindow.Size()-1-i]=1.0/originalWindow[i];
