@@ -3,131 +3,116 @@
 #ifndef UserInterface_hxx
 #define UserInterface_hxx
 #include <FL/Fl.H>
-#include "Fl_Smart_Tile.H"
-class Fl_Smart_Tile;
-#include "SMSAnalysisSynthesisConfigForwardDeclaration.hxx"
-class AnalysisSynthesisExampleGUI;
-#include <FL/Fl_Window.H>
-#include <FL/Fl_Box.H>
-#include <FL/Fl_Input.H>
-#include <FL/Fl_Value_Input.H>
-#include <FL/Fl_Choice.H>
-#include <FL/Fl_Value_Slider.H>
-#include <FL/Fl_Light_Button.H>
-#include <FL/Fl_Button.H>
-
-class Configuration {
-public:
-  public: CLAM::SMSAnalysisSynthesisConfig* mConfig;
-  Configuration(CLAM::SMSAnalysisSynthesisConfig* config);
-private:
-  Fl_Window *mWindow;
-  inline void cb_mWindow_i(Fl_Window*, void*);
-  static void cb_mWindow(Fl_Window*, void*);
-  Fl_Input *mFileInName;
-  Fl_Input *mFileOutName;
-  Fl_Input *mXMLInName;
-  Fl_Input *mXMLOutName;
-  inline void cb_Hop_i(Fl_Value_Input*, void*);
-  static void cb_Hop(Fl_Value_Input*, void*);
-  inline void cb_Analysis_i(Fl_Choice*, void*);
-  static void cb_Analysis(Fl_Choice*, void*);
-  static Fl_Menu_Item menu_Analysis[];
-  static Fl_Menu_Item menu_Analysis1[];
-  inline void cb_Residual_i(Fl_Choice*, void*);
-  static void cb_Residual(Fl_Choice*, void*);
-  static Fl_Menu_Item menu_Residual[];
-  static Fl_Menu_Item menu_Residual1[];
-  inline void cb_Window_i(Fl_Choice*, void*);
-  static void cb_Window(Fl_Choice*, void*);
-  static Fl_Menu_Item menu_Window[];
-  static Fl_Menu_Item menu_Window1[];
-  inline void cb_Hop1_i(Fl_Value_Input*, void*);
-  static void cb_Hop1(Fl_Value_Input*, void*);
-  inline void cb_Zero_i(Fl_Value_Input*, void*);
-  static void cb_Zero(Fl_Value_Input*, void*);
-  static Fl_Menu_Item menu_Phase[];
-};
 #include <FL/Fl_Double_Window.H>
-#include <FL/Fl_Menu_Bar.H>
+#include <FL/Fl_Box.H>
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Input.H>
 
 class UserInterface {
 public:
-  public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;
+  public: class AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;
   UserInterface();
   Fl_Double_Window *mWindow;
+  Fl_Button *mLoadConfigurationButton;
 private:
+  inline void cb_mLoadConfigurationButton_i(Fl_Button*, void*);
+  static void cb_mLoadConfigurationButton(Fl_Button*, void*);
+public:
   Fl_Input *mConfigurationText;
-  Fl_Menu_Bar *mMenuBar;
-  static Fl_Menu_Item menu_mMenuBar[];
-  inline void cb_Configure_i(Fl_Menu_*, void*);
-  static void cb_Configure(Fl_Menu_*, void*);
-  inline void cb_Load_i(Fl_Menu_*, void*);
-  static void cb_Load(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mStoreAnalysisData;
-  inline void cb_mStoreAnalysisData_i(Fl_Menu_*, void*);
-  static void cb_mStoreAnalysisData(Fl_Menu_*, void*);
-  inline void cb_Load1_i(Fl_Menu_*, void*);
-  static void cb_Load1(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mDoTransformation;
-  inline void cb_mDoTransformation_i(Fl_Menu_*, void*);
-  static void cb_mDoTransformation(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mMelodySM;
-  static Fl_Menu_Item *mMelodyAnalyze;
-  inline void cb_mMelodyAnalyze_i(Fl_Menu_*, void*);
-  static void cb_mMelodyAnalyze(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mMelodyStore;
-  inline void cb_mMelodyStore_i(Fl_Menu_*, void*);
-  static void cb_mMelodyStore(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mDisplayInSM;
-  static Fl_Menu_Item *mDisplayInSound;
-  inline void cb_mDisplayInSound_i(Fl_Menu_*, void*);
-  static void cb_mDisplayInSound(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mDisplayInSpec;
-  inline void cb_mDisplayInSpec_i(Fl_Menu_*, void*);
-  static void cb_mDisplayInSpec(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mAnalyze;
-  inline void cb_mAnalyze_i(Fl_Menu_*, void*);
-  static void cb_mAnalyze(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mSynthesize;
-  inline void cb_mSynthesize_i(Fl_Menu_*, void*);
-  static void cb_mSynthesize(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mOutputSM;
-  static Fl_Menu_Item *mStoreOutputs;
-  inline void cb_Sound_i(Fl_Menu_*, void*);
-  static void cb_Sound(Fl_Menu_*, void*);
-  inline void cb_Sinusoidal_i(Fl_Menu_*, void*);
-  static void cb_Sinusoidal(Fl_Menu_*, void*);
-  inline void cb_Residual1_i(Fl_Menu_*, void*);
-  static void cb_Residual1(Fl_Menu_*, void*);
-  static Fl_Menu_Item *mVisualizeOutputs;
-  inline void cb_Sound1_i(Fl_Menu_*, void*);
-  static void cb_Sound1(Fl_Menu_*, void*);
-  inline void cb_Sinusoidal1_i(Fl_Menu_*, void*);
-  static void cb_Sinusoidal1(Fl_Menu_*, void*);
-  inline void cb_Residual2_i(Fl_Menu_*, void*);
-  static void cb_Residual2(Fl_Menu_*, void*);
-  inline void cb_Exit_i(Fl_Menu_*, void*);
-  static void cb_Exit(Fl_Menu_*, void*);
-  inline void cb_About_i(Fl_Menu_*, void*);
-  static void cb_About(Fl_Menu_*, void*);
-  Fl_Smart_Tile *mSmartTile;
-  void AboutWindow();
-  Fl_Window *mWindow2;
-  inline void cb_mWindow2_i(Fl_Window*, void*);
-  static void cb_mWindow2(Fl_Window*, void*);
+  Fl_Button *mDisplayInputSoundButton;
+private:
+  inline void cb_mDisplayInputSoundButton_i(Fl_Button*, void*);
+  static void cb_mDisplayInputSoundButton(Fl_Button*, void*);
+public:
+  Fl_Input *mInputSoundText;
+  Fl_Button *mAnalyzeButton;
+private:
+  inline void cb_mAnalyzeButton_i(Fl_Button*, void*);
+  static void cb_mAnalyzeButton(Fl_Button*, void*);
+public:
+  Fl_Button *mLoadAnalysisDataButton;
+private:
+  inline void cb_mLoadAnalysisDataButton_i(Fl_Button*, void*);
+  static void cb_mLoadAnalysisDataButton(Fl_Button*, void*);
+public:
+  Fl_Button *mStoreAnalysisDataButton;
+private:
+  inline void cb_mStoreAnalysisDataButton_i(Fl_Button*, void*);
+  static void cb_mStoreAnalysisDataButton(Fl_Button*, void*);
+public:
+  Fl_Input *mAnalysisDataText;
+  Fl_Button *mLoadTransformationButton;
+private:
+  inline void cb_mLoadTransformationButton_i(Fl_Button*, void*);
+  static void cb_mLoadTransformationButton(Fl_Button*, void*);
+public:
+  Fl_Button *mTransformButton;
+private:
+  inline void cb_mTransformButton_i(Fl_Button*, void*);
+  static void cb_mTransformButton(Fl_Button*, void*);
+public:
+  Fl_Input *mTransformationFileText;
+  Fl_Button *mAnalyzeMelodyButton;
+private:
+  inline void cb_mAnalyzeMelodyButton_i(Fl_Button*, void*);
+  static void cb_mAnalyzeMelodyButton(Fl_Button*, void*);
+public:
+  Fl_Button *mStoreMelodyButton;
+private:
+  inline void cb_mStoreMelodyButton_i(Fl_Button*, void*);
+  static void cb_mStoreMelodyButton(Fl_Button*, void*);
+public:
+  Fl_Input *mMelodyFileText;
+  Fl_Button *mSynthesizeButton;
+private:
+  inline void cb_mSynthesizeButton_i(Fl_Button*, void*);
+  static void cb_mSynthesizeButton(Fl_Button*, void*);
+public:
+  Fl_Button *mStoreOutputSoundButton;
+private:
+  inline void cb_mStoreOutputSoundButton_i(Fl_Button*, void*);
+  static void cb_mStoreOutputSoundButton(Fl_Button*, void*);
+public:
+  Fl_Button *mDisplayOutputSoundButton;
+private:
+  inline void cb_mDisplayOutputSoundButton_i(Fl_Button*, void*);
+  static void cb_mDisplayOutputSoundButton(Fl_Button*, void*);
+public:
+  Fl_Input *mOutputSoundText;
+  Fl_Button *mStoreOutputSoundSinusoidalButton;
+private:
+  inline void cb_mStoreOutputSoundSinusoidalButton_i(Fl_Button*, void*);
+  static void cb_mStoreOutputSoundSinusoidalButton(Fl_Button*, void*);
+public:
+  Fl_Button *mDisplayOutputSoundSinusoidalButton;
+private:
+  inline void cb_mDisplayOutputSoundSinusoidalButton_i(Fl_Button*, void*);
+  static void cb_mDisplayOutputSoundSinusoidalButton(Fl_Button*, void*);
+public:
+  Fl_Input *mOutputSoundSinusoidalText;
+  Fl_Button *mStoreOutputSoundResidualButton;
+private:
+  inline void cb_mStoreOutputSoundResidualButton_i(Fl_Button*, void*);
+  static void cb_mStoreOutputSoundResidualButton(Fl_Button*, void*);
+public:
+  Fl_Button *mDisplayOutputSoundResidualButton;
+private:
+  inline void cb_mDisplayOutputSoundResidualButton_i(Fl_Button*, void*);
+  static void cb_mDisplayOutputSoundResidualButton(Fl_Button*, void*);
+public:
+  Fl_Input *mOutputSoundResidualText;
+  Fl_Button *mExitButton;
+private:
+  inline void cb_mExitButton_i(Fl_Button*, void*);
+  static void cb_mExitButton(Fl_Button*, void*);
   void LoadConfiguration(void);
-  void EditConfiguration(void);
   void DisplayInputSound(void);
-  void DisplayInputSpectrum(void);
   void Analyze(void);
   void LoadAnalysisData(void);
   void StoreAnalysisData(void);
   void Synthesize(void);
   void AnalyzeMelody(void);
   void StoreMelody(void);
-  void StoreOutputSound(void);
-  void DisplayOutputSound(void);
   void StoreOutputSoundResidual(void);
   void DisplayOutputSoundResidual(void);
   void StoreOutputSoundSinusoidal(void);
@@ -135,6 +120,5 @@ private:
   void LoadTransformation(void);
   void Transform(void);
   void Exit(void);
-  void Attach(Fl_Window* canvas);
 };
 #endif

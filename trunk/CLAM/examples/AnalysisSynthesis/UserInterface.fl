@@ -5,598 +5,212 @@ code_name {.cxx}
 gridx 5 
 gridy 5 
 snap 3
-decl {\#include "Fl_Smart_Tile.H"} {public
-} 
-
-decl {class Fl_Smart_Tile;} {public
-} 
-
-decl {\#include "SMSAnalysisSynthesisConfigForwardDeclaration.hxx"} {public
-} 
-
-decl {class AnalysisSynthesisExampleGUI;} {public
-} 
-
-decl {\#include "SMSAnalysisSynthesisConfig.hxx"} {} 
-
-class Configuration {} {
-  decl {public: CLAM::SMSAnalysisSynthesisConfig* mConfig;} {public
-  }
-  Function {Configuration(CLAM::SMSAnalysisSynthesisConfig* config)} {open
-  } {
-    code {mConfig = config;} {}
-    Fl_Window mWindow {
-      label {Configure the Analysis/Synthesis parameters}
-      callback {delete mWindow;} open
-      private xywh {37 23 536 740} color 16 hide
-      code0 {mWindow->show();}
-    } {
-      Fl_Box {} {
-        private xywh {10 15 515 115} box SHADOW_BOX color 16 labeltype NO_LABEL
-      }
-      Fl_Box {} {
-        label {Input & Output Files}
-        private xywh {15 5 120 20} box FLAT_BOX color 16 labelsize 12 align 16
-      }
-      Fl_Input mFileInName {
-        label {Input Sound File:}
-        private xywh {115 25 355 20} labelsize 12 textsize 12
-      }
-      Fl_Input mFileOutName {
-        label {Output Sound File:}
-        private xywh {125 50 345 20} labelsize 12 textsize 12
-      }
-      Fl_Input mXMLInName {
-        label {Input XML File:}
-        private xywh {105 75 365 20} labelsize 12 textsize 12
-      }
-      Fl_Input mXMLOutName {
-        label {Output XML File:}
-        private xywh {115 100 355 20} labelsize 12 textsize 12
-      }
-      Fl_Box {} {
-        private xywh {10 145 515 325} box SHADOW_BOX color 16 labeltype NO_LABEL
-      }
-      Fl_Box {} {
-        label {Analysis Parameters}
-        private xywh {15 135 120 20} box FLAT_BOX color 16 labelsize 12 align 16
-      }
-      Fl_Value_Input {} {
-        label {Hop size:}
-        callback {mConfig->SetAnalysisHopSize(o->value());}
-        private xywh {75 240 80 20} labelsize 12 textsize 12
-      }
-      Fl_Choice {} {
-        label {Analysis Window Size:}
-        callback {printf("Value= %d\\n",atoi(o->text()));
-mConfig->SetAnalysisWindowSize(o->value()*512);}
-        private xywh {20 170 235 20} labelsize 12 align 5 textsize 12
-      } {
-        menuitem {} {
-          label 512
-          private xywh {0 0 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 1024
-          private xywh {0 0 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 2048
-          private xywh {0 0 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 4096
-          private xywh {0 0 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 8192
-          private xywh {0 0 100 20} labelsize 12
-        }
-      }
-      Fl_Choice {} {
-        label {Analysis Window Type:}
-        private xywh {20 210 235 20} labelsize 12 align 5 textsize 12
-      } {
-        menuitem {} {
-          label {Kaiser-Bessel 17}
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 18}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 19}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 20}
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 25}
-          private xywh {60 60 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 30}
-          private xywh {70 70 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 35}
-          private xywh {80 80 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 74}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 62}
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 70}
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Hamming
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Triangular
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92 Trans Main Lobe}
-          private xywh {10 10 100 20} labelsize 12
-        }
-      }
-      Fl_Choice {} {
-        label {Residual Window Size:}
-        callback {printf("Value= %d\\n",atoi(o->text()));
-mConfig->SetAnalysisWindowSize(o->value()*512);}
-        private xywh {280 170 235 20} labelsize 12 align 5 textsize 12
-      } {
-        menuitem {} {
-          label 512
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 1024
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 2048
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 4096
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 8192
-          private xywh {10 10 100 20} labelsize 12
-        }
-      }
-      Fl_Choice {} {
-        label {Residual Window Type:}
-        private xywh {280 210 235 20} labelsize 12 align 5 textsize 12
-      } {
-        menuitem {} {
-          label {Kaiser-Bessel 17}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 18}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 19}
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 20}
-          private xywh {60 60 100 20} labelsize 13
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 25}
-          private xywh {70 70 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 30}
-          private xywh {80 80 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 35}
-          private xywh {90 90 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 74}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 62}
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 70}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92}
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Hamming
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Triangular
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92 Trans Main Lobe}
-          private xywh {20 20 100 20} labelsize 12
-        }
-      }
-      Fl_Value_Slider {} {
-        label {Zero Padding Factor:}
-        private xywh {140 270 375 20} type {Horz Fill} color 16 selection_color 24 labelsize 12 align 4 maximum 10000 step 10
-      }
-      Fl_Light_Button {} {
-        label {Analysis Harmonic}
-        private xywh {20 440 130 20} labelsize 12
-      }
-      Fl_Light_Button {} {
-        label {Do Clean Tracks}
-        private xywh {395 440 120 20} labelsize 12
-      }
-      Fl_Box {} {
-        private xywh {10 485 515 140} box SHADOW_BOX color 16 labeltype NO_LABEL
-      }
-      Fl_Box {} {
-        label {Synthesis Parameters}
-        private xywh {20 475 125 20} box FLAT_BOX color 16 labelsize 12 align 16
-      }
-      Fl_Choice {} {
-        label {Window Size:}
-        callback {printf("Value= %d\\n",atoi(o->text()));
-mConfig->SetAnalysisWindowSize(o->value()*512);}
-        private xywh {95 495 235 20} labelsize 12 textsize 12
-      } {
-        menuitem {} {
-          label 512
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 1024
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 2048
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 4096
-          private xywh {10 10 100 20} labelsize 12
-        }
-        menuitem {} {
-          label 8192
-          private xywh {10 10 100 20} labelsize 12
-        }
-      }
-      Fl_Choice {} {
-        label {Window Type:}
-        private xywh {100 520 235 20} labelsize 12 textsize 12
-      } {
-        menuitem {} {
-          label {Kaiser-Bessel 17}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 18}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 19}
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 20}
-          private xywh {60 60 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 25}
-          private xywh {70 70 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 30}
-          private xywh {80 80 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Kaiser-Bessel 35}
-          private xywh {90 90 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 74}
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 62}
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 70}
-          private xywh {30 30 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92}
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Hamming
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Triangular
-          private xywh {20 20 100 20} labelsize 12
-        }
-        menuitem {} {
-          label {Blackman-Harris 92 Trans Main Lobe}
-          private xywh {20 20 100 20} labelsize 12
-        }
-      }
-      Fl_Value_Input {} {
-        label {Hop size: }
-        callback {mConfig->SetAnalysisHopSize(o->value());}
-        private xywh {75 545 80 20} labelsize 12 textsize 12
-      }
-      Fl_Value_Input {} {
-        label {Zero Padding Factor:}
-        callback {mConfig->SetAnalysisHopSize(o->value());}
-        private xywh {140 570 80 20} labelsize 12 textsize 12
-      }
-      Fl_Choice {} {
-        label {Phase Management Type:}
-        private xywh {165 595 235 20} labelsize 12 textsize 12
-      } {
-        menuitem {} {
-          label Align
-          private xywh {40 40 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Random
-          private xywh {50 50 100 20} labelsize 12
-        }
-        menuitem {} {
-          label Continuation
-          private xywh {60 60 100 20} labelsize 12
-        }
-      }
-      Fl_Button {} {
-        label {Dump on an XML File...}
-        private xywh {215 705 155 25} labelsize 12
-      }
-      Fl_Button {} {
-        label {Set Configuration}
-        private xywh {390 705 135 25} labelsize 12
-      }
-      Fl_Button {} {
-        label {Load from an XML File...}
-        private xywh {35 705 155 25} labelsize 12
-      }
-    }
-  }
-} 
-
 class UserInterface {open
 } {
-  decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
+  decl {public: class AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
   Function {UserInterface()} {open
   } {
-    Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {2 24 1108 779} type Double color 23 hide resizable
-      code0 {mWindow2=NULL;}
-    } {
-      Fl_Input mConfigurationText {
-        label {Configuration File}
-        private xywh {105 25 985 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
-      }
-      Fl_Menu_Bar mMenuBar {
-        private xywh {0 0 1110 20} box THIN_UP_BOX labelsize 13 textsize 12
-      } {
-        submenu {} {
-          label Input
-          private xywh {5 5 100 20} labelsize 12
-        } {
-          menuitem {} {
-            label {Configure...}
-            callback {LoadConfiguration();
-//EditConfiguration();}
-            private xywh {5 5 100 20} labelsize 12
-          }
-          submenu {} {
-            label {Analysis Data}
-            private xywh {35 35 100 20} labelsize 12
-          } {
-            menuitem {} {
-              label {Load...}
-              callback {LoadAnalysisData();}
-              private xywh {35 35 100 20} labelsize 12
-            }
-            menuitem mStoreAnalysisData {
-              label {Store...}
-              callback {StoreAnalysisData();}
-              private xywh {35 35 100 20} labelsize 12 deactivate
-            }
-          }
-          submenu {} {
-            label Transformation
-            private xywh {15 15 100 20} labelsize 12
-          } {
-            menuitem {} {
-              label {Load...}
-              callback {LoadTransformation();}
-              private xywh {55 55 100 20} labelsize 12
-            }
-            menuitem mDoTransformation {
-              label Do
-              callback {Transform();}
-              private xywh {55 55 100 20} labelsize 12 deactivate
-            }
-          }
-          submenu mMelodySM {
-            label Melody
-            private xywh {15 15 100 20} labelsize 12 deactivate
-          } {
-            menuitem mMelodyAnalyze {
-              label Analyze
-              callback {AnalyzeMelody();}
-              private xywh {65 65 100 20} labelsize 12
-            }
-            menuitem mMelodyStore {
-              label Store
-              callback {StoreMelody();}
-              private xywh {65 65 100 20} labelsize 12 deactivate
-            }
-          }
-          submenu mDisplayInSM {
-            label Display
-            private xywh {10 10 100 20} labelsize 12 deactivate
-          } {
-            menuitem mDisplayInSound {
-              label Sound
-              callback {DisplayInputSound();}
-              private xywh {35 35 100 20} labelsize 12 deactivate
-            }
-            menuitem mDisplayInSpec {
-              label Spectrum
-              callback {DisplayInputSpectrum();}
-              private xywh {45 45 100 20} labelsize 12 deactivate
-            }
-          }
-        }
-        menuitem mAnalyze {
-          label Analyze
-          callback {Analyze();}
-          private xywh {35 35 100 20} shortcut 0x40061 labelsize 12 deactivate
-        }
-        menuitem mSynthesize {
-          label Synthesize
-          callback {Synthesize();}
-          private xywh {25 25 100 20} shortcut 0x40073 labelsize 12 deactivate
-        }
-        submenu mOutputSM {
-          label Output
-          private xywh {10 10 100 20} labelsize 12 deactivate
-        } {
-          submenu mStoreOutputs {
-            label Store
-            private xywh {0 0 100 20} labelsize 12
-          } {
-            menuitem {} {
-              label Sound
-              callback {StoreOutputSound();}
-              private xywh {20 20 100 20} labelsize 12
-            }
-            menuitem {} {
-              label Sinusoidal
-              callback {StoreOutputSoundSinusoidal();}
-              private xywh {50 50 100 20} labelsize 12
-            }
-            menuitem {} {
-              label Residual
-              callback {StoreOutputSoundResidual();}
-              private xywh {55 55 100 20} labelsize 12
-            }
-          }
-          submenu mVisualizeOutputs {
-            label Display
-            private xywh {5 5 100 20} labelsize 12
-          } {
-            menuitem {} {
-              label Sound
-              callback {DisplayOutputSound();}
-              private xywh {25 25 100 20} labelsize 12
-            }
-            menuitem {} {
-              label Sinusoidal
-              callback {DisplayOutputSoundSinusoidal();}
-              private xywh {45 45 100 20} labelsize 12
-            }
-            menuitem {} {
-              label Residual
-              callback {DisplayOutputSoundResidual();}
-              private xywh {50 50 100 20} labelsize 12
-            }
-          }
-        }
-        menuitem {} {
-          label Exit
-          callback {if(mWindow2!=NULL) delete mWindow2;
-Exit();}
-          private xywh {15 15 100 20} shortcut 0x40071 labelsize 12
-        }
-        menuitem {} {
-          label About
-          callback {AboutWindow()}
-          private xywh {10 10 100 20} labelfont 13 labelsize 12
-        }
-      }
-      Fl_Box mSmartTile {
-        private xywh {165 100 800 665} color 23 resizable
-        class Fl_Smart_Tile
-      }
-    }
-  }
-  Function {AboutWindow()} {private return_type void
-  } {
-    Fl_Window mWindow2 {
-      label {About this program...}
-      callback {delete mWindow2;
-mWindow2=NULL;}
-      private xywh {408 300 417 100} box ENGRAVED_BOX color 17 labeltype NORMAL_LABEL labelsize 10 hide
-      code0 {mWindow2->show();} noborder
+    Fl_Window mWindow {open selected
+      xywh {283 212 660 489} type Double visible
     } {
       Fl_Box {} {
         label {SMS Analysis/Synthesis Application}
-        private xywh {85 15 265 20} labelfont 3 labelsize 12
+        xywh {340 20 255 25} labelfont 3
       }
       Fl_Box {} {
-        label {by MTG - IUA - UPF (Barcelona, Spain)}
-        private xywh {85 40 265 20} labelfont 2 labelsize 12
+        label {MTG - UPF (Barcelona, Spain)}
+        xywh {340 45 255 25} labelfont 2
       }
       Fl_Box {} {
-        label {logos/iua.xpm}
-        private xywh {360 15 50 60} labeltype image
+        xywh {5 20 320 70} box ENGRAVED_FRAME
       }
       Fl_Box {} {
-        label {please visit us at http://www.iua.upf.es/mtg for more info}
-        private xywh {90 65 260 20} labelfont 2 labelsize 11
+        label Configuration
+        xywh {10 10 95 20} box FLAT_BOX labelfont 2 align 16
+      }
+      Fl_Button mLoadConfigurationButton {
+        label Load
+        callback {LoadConfiguration();}
+        xywh {15 30 65 25}
+      }
+      Fl_Input mConfigurationText {
+        xywh {15 60 300 25}
       }
       Fl_Box {} {
-        label {logos/mtg.xpm}
-        private xywh {10 20 75 55} labeltype image
+        xywh {5 105 320 125} box ENGRAVED_FRAME
+      }
+      Fl_Box {} {
+        label Analysis
+        xywh {10 95 60 20} box FLAT_BOX labelfont 2 align 16
+      }
+      Fl_Box {} {
+        xywh {10 125 310 70} box ENGRAVED_FRAME
+      }
+      Fl_Box {} {
+        label {Input Sound}
+        xywh {15 115 85 20} box FLAT_BOX align 16
+      }
+      Fl_Button mDisplayInputSoundButton {
+        label Display
+        callback {DisplayInputSound();}
+        xywh {250 135 65 25} deactivate
+      }
+      Fl_Input mInputSoundText {
+        xywh {15 165 300 25}
+      }
+      Fl_Button mAnalyzeButton {
+        label Analyze
+        callback {Analyze();}
+        xywh {10 200 70 25}
+      }
+      Fl_Box {} {
+        xywh {5 245 320 70} box ENGRAVED_FRAME
+      }
+      Fl_Box {} {
+        label {Analysis Data}
+        xywh {10 235 95 20} box FLAT_BOX labelfont 2 align 16
+      }
+      Fl_Button mLoadAnalysisDataButton {
+        label Load
+        callback {LoadAnalysisData();}
+        xywh {15 255 65 25} box THIN_UP_BOX
+      }
+      Fl_Button mStoreAnalysisDataButton {
+        label Store
+        callback {StoreAnalysisData();}
+        xywh {85 255 65 25} deactivate
+      }
+      Fl_Input mAnalysisDataText {
+        xywh {15 285 300 25}
+      }
+      Fl_Box {} {
+        xywh {5 330 320 70} box ENGRAVED_FRAME
+      }
+      Fl_Box {} {
+        label Transformation
+        xywh {10 320 100 20} box FLAT_BOX labelfont 2 align 16
+      }
+      Fl_Button mLoadTransformationButton {
+        label Load
+        callback {LoadTransformation();}
+        xywh {15 340 65 25} box THIN_UP_BOX
+      }
+      Fl_Button mTransformButton {
+        label Do
+        callback {Transform();}
+        xywh {85 340 65 25} deactivate
+      }
+      Fl_Input mTransformationFileText {
+        xywh {15 370 300 25}
+      }
+      Fl_Box {} {
+        xywh {5 415 320 70} box ENGRAVED_FRAME
+      }
+      Fl_Box {} {
+        label Melody
+        xywh {10 405 55 20} box FLAT_BOX labelfont 2 align 16
+      }
+      Fl_Button mAnalyzeMelodyButton {
+        label Analyze
+        callback {AnalyzeMelody();}
+        xywh {10 425 65 25} box THIN_UP_BOX deactivate
+      }
+      Fl_Button mStoreMelodyButton {
+        label Store
+        callback {StoreMelody();}
+        xywh {80 425 65 25} deactivate
+      }
+      Fl_Input mMelodyFileText {
+        xywh {10 455 300 25}
+      }
+      Fl_Box {} {
+        xywh {335 105 320 320} box ENGRAVED_FRAME
+      }
+      Fl_Box {} {
+        label Synthesis
+        xywh {340 95 70 20} box FLAT_BOX labelfont 2 align 16
+      }
+      Fl_Button mSynthesizeButton {
+        label Synthesize
+        callback {Synthesize();}
+        xywh {340 120 85 25} deactivate
+      }
+      Fl_Box {} {
+        xywh {340 160 310 70} box ENGRAVED_FRAME
+      }
+      Fl_Box {} {
+        label {Output Sound}
+        xywh {345 150 95 20} box FLAT_BOX labelfont 2 align 16
+      }
+      Fl_Button mStoreOutputSoundButton {
+        label Store
+        callback {StoreOutputSound();}
+        xywh {345 170 65 25} deactivate
+      }
+      Fl_Button mDisplayOutputSoundButton {
+        label Display
+        callback {DisplayOutputSound();}
+        xywh {585 170 60 25} deactivate
+      }
+      Fl_Input mOutputSoundText {
+        xywh {345 200 300 25}
+      }
+      Fl_Box {} {
+        xywh {340 240 310 70} box ENGRAVED_FRAME
+      }
+      Fl_Box {} {
+        label {Output Sound: Sinusoidal}
+        xywh {345 230 170 20} box FLAT_BOX labelfont 2 align 16
+      }
+      Fl_Button mStoreOutputSoundSinusoidalButton {
+        label Store
+        callback {StoreOutputSoundSinusoidal();}
+        xywh {345 250 65 25} deactivate
+      }
+      Fl_Button mDisplayOutputSoundSinusoidalButton {
+        label Display
+        callback {DisplayOutputSoundSinusoidal();}
+        xywh {585 250 60 25} deactivate
+      }
+      Fl_Input mOutputSoundSinusoidalText {
+        xywh {345 280 300 25}
+      }
+      Fl_Box {} {
+        xywh {340 325 310 70} box ENGRAVED_FRAME
+      }
+      Fl_Box {} {
+        label {Output Sound: Residual}
+        xywh {345 315 160 20} box FLAT_BOX labelfont 2 align 16
+      }
+      Fl_Button mStoreOutputSoundResidualButton {
+        label Store
+        callback {StoreOutputSoundResidual();}
+        xywh {345 335 65 25} deactivate
+      }
+      Fl_Button mDisplayOutputSoundResidualButton {
+        label Display
+        callback {DisplayOutputSoundResidual();}
+        xywh {585 335 60 25} deactivate
+      }
+      Fl_Input mOutputSoundResidualText {
+        xywh {345 365 300 25}
+      }
+      Fl_Button mExitButton {
+        label Exit
+        callback {Exit();}
+        xywh {595 70 60 25}
       }
     }
   }
   decl {void LoadConfiguration(void);} {}
-  decl {void EditConfiguration(void);} {}
   decl {void DisplayInputSound(void);} {}
-  decl {void DisplayInputSpectrum(void);} {}
   decl {void Analyze(void);} {}
   decl {void LoadAnalysisData(void);} {}
   decl {void StoreAnalysisData(void);} {}
   decl {void Synthesize(void);} {}
   decl {void AnalyzeMelody(void);} {}
   decl {void StoreMelody(void);} {}
-  decl {void StoreOutputSound(void);} {}
-  decl {void DisplayOutputSound(void);} {}
   decl {void StoreOutputSoundResidual(void);} {}
   decl {void DisplayOutputSoundResidual(void);} {}
   decl {void StoreOutputSoundSinusoidal(void);} {}
@@ -604,6 +218,4 @@ mWindow2=NULL;}
   decl {void LoadTransformation(void);} {}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
-  decl {void Attach(Fl_Window* canvas);} {selected
-  }
 } 
