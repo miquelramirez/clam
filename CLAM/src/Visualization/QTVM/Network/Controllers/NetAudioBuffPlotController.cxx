@@ -45,15 +45,18 @@ namespace CLAM
 	    // TODO: Because we have exclusive right for
 	    // to the data we could remove some of this copies
 
-	    if(_first && audio.GetBuffer().Size() > 0)
+	    if(_first && audio.GetBuffer().Size())
 	    {
 		Init(audio.GetBuffer().Size());
 	    }
 
-	    AddData(audio.GetBuffer());
-	    FullView();
+	    if(audio.GetBuffer().Size())
+	    {
+		AddData(audio.GetBuffer());
+		FullView();
 
-	    _renderer.Render();
+		_renderer.Render();
+	    }
 
 	    mMonitor->UnfreezeData();
 	}
