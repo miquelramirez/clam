@@ -21,6 +21,7 @@
 
 #include "InControl.hxx"
 #include "OutControl.hxx"
+#include "OutControlPublisher.hxx"
 #include "InControlArray.hxx"
 #include "InControlTmplArray.hxx"
 #include "BaseLoggable.hxx"
@@ -60,6 +61,11 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	CPPUNIT_TEST( testIsConnectedTo_WithOutControl_WhenControlsAreNotConnected );
 	CPPUNIT_TEST( testIsConnectedTo_WithInControl_WhenControlsAreConnected );
 	CPPUNIT_TEST( testIsConnectedTo_WithInControl_WhenControlsAreNotConnected );
+
+	// tests for Control Publishers
+	CPPUNIT_TEST( testOutControlPublisher );
+	CPPUNIT_TEST( testOutControlPublisher_GetsRegisteredToAProcessing );
+	CPPUNIT_TEST( testOutControlPublisher_ConnectControlsFromPublisher );
 
 	CPPUNIT_TEST_SUITE_END();
 	
@@ -240,6 +246,54 @@ private:
 		CLAM::InControl in("in");
 		CLAM::OutControl out("out");
 		CPPUNIT_ASSERT_EQUAL( false, out.IsConnectedTo(in) );
+	}
+
+	void testOutControlPublisher()
+	{
+		CLAM::InControl in("in");
+		CLAM::OutControl out("out");
+		CLAM::OutControlPublisher outPublisher;
+		outPublisher.PublishOutControl( out );
+		CLAM::OutControl& publisherBaseRef = outPublisher;
+		publisherBaseRef.AddLink( &in );
+		out.SendControl( 1.f );
+		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
+
+	}
+
+	
+	class DummyProcessing : public CLAM::Processing
+	{
+		public:
+
+			CLAM::OutControlPublisher outControlPublisher;
+			CLAM::InControl inControl;
+
+			DummyProcessing()
+				: outControlPublisher( "testOut", this ),
+				  inControl( "testIn", this ) {}
+
+			const char* GetClassName() const { return "dummy processing"; }
+			bool Do() { return false; }
+			const CLAM::ProcessingConfig& GetConfig() const { throw 0; }
+			bool ConcreteConfigure( const CLAM::ProcessingConfig& ) { return false; }
+	};
+
+	void testOutControlPublisher_GetsRegisteredToAProcessing()
+	{
+		DummyProcessing proc;
+		CPPUNIT_ASSERT( &proc.outControlPublisher == &(proc.GetOutControls().Get("testOut")) );
+	}
+
+	void testOutControlPublisher_ConnectControlsFromPublisher()
+	{
+		DummyProcessing proc;
+		CLAM::OutControl published("published");
+		proc.outControlPublisher.PublishOutControl( published );
+		proc.outControlPublisher.AddLink( &proc.inControl );
+		CPPUNIT_ASSERT( &proc.outControlPublisher == &proc.GetOutControls().Get("testOut") );
+		published.SendControl( 1.f );
+		CPPUNIT_ASSERT_EQUAL( 1.f, proc.inControl.GetLastValue() );
 	}
 
 };
