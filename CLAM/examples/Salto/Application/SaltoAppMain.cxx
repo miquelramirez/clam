@@ -235,11 +235,7 @@ protected:
 
 		mFileAudioOut.Configure( outcfg );
 
-#ifdef _WIN32
-		mAudioManager = new AudioManager( DSPCfg.GetSampleRate(), DSPCfg.GetHopSize());
-#else
 		mAudioManager = new AudioManager( DSPCfg.GetSampleRate(), DSPCfg.GetHopSize());	
-#endif
 
 		mAudioManager->SetInternalBuffersNumber(12);
 
@@ -250,12 +246,6 @@ protected:
 		iocfgR.SetName("right out");
 		iocfgR.SetChannelID(1);
 		mAudioOutL = new AudioOut(iocfgL);
-//		mAudioOutR = new AudioOut(iocfgR);
-		//iocfg.SetName("left in");
-		//mAudioIn = new AudioIn(iocfg);
-
-
-//		mDummyIn.SetSize( DSPCfg.GetHopSize() );
 	}
 
 	void RenderSynthesis(Audio& synthbuffer)
