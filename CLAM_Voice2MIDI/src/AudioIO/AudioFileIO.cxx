@@ -47,8 +47,6 @@ int AudioFileIO::Save(const char* fileName,Audio& in)
 	if(!file.IsWritable()) return -1;
 
 	MonoAudioFileWriterConfig cfg;
-	cfg.AddTargetFile();
-	cfg.UpdateData();
 	cfg.SetTargetFile(file);
 
 	MonoAudioFileWriter outfile;
