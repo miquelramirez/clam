@@ -46,7 +46,7 @@
 #include "AudioCircularBuffer.hxx"
 #include "CircularShift.hxx"
 
-#include "SnapshotGenerator.hxx"
+
 
 #include "SpectralAnalysis.hxx"
 

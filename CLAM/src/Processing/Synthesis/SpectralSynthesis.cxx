@@ -258,12 +258,12 @@ void SpectralSynthesis::ConfigureData()
 	mPO_AnalWindowGen.Start();
 	mPO_AnalWindowGen.Do(tmpWindow);
 	mPO_AnalWindowGen.Stop();
-//	CLAMGUI::showPDSnapshot(&tmpWindow,"InverseWindow");
+
 
 	//We now take only the mSynthWindowSize central samples of the inverse window
 	tmpWindow.GetAudioChunk((int)((TData)mConfig.GetAnalWindowSize()/2-(TData)mConfig.GetHopSize()),(int)((float)mConfig.GetAnalWindowSize()/2+(float)mConfig.GetHopSize()),mSynthWindow,false);
 
-//	CLAMGUI::showPDSnapshot(&mSynthWindow,"Inverse Window, only central samples");
+
 
 	/*Now we generate triangular synthesis window*/
 	tmpWindow.SetSize(mConfig.GetHopSize()*2+1);
@@ -271,7 +271,7 @@ void SpectralSynthesis::ConfigureData()
 	mPO_SynthWindowGen.Start();
 	mPO_SynthWindowGen.Do(tmpWindow);
 	mPO_SynthWindowGen.Stop();
-//	CLAMGUI::showPDSnapshot(&tmpWindow,"Triangular Window");
+
 	
 	/*Now we multiply both windows*/
 	mPO_AudioProduct.Do(tmpWindow,mSynthWindow,mSynthWindow);
@@ -279,7 +279,7 @@ void SpectralSynthesis::ConfigureData()
 	/*now we set it to even size leaving last sample out*/
 	mSynthWindow.SetSize(mConfig.GetHopSize()*2);
 
-//	CLAMGUI::showPDSnapshot(&mSynthWindow,"Final inverse window");
+
 
 }
 
@@ -311,22 +311,22 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 		tmpFlags.bComplex=1;
 	}
 	in.SetTypeSynchronize(tmpFlags); //convert MagPhase data to ComplexData
-//	CLAMGUI::showPDSnapshot(&in);
+
 	
 	mPO_IFFT.Do(in, mAudio0);
 
-//	CLAMGUI::showPDSnapshot(&mAudio1,"Output of the IFFT");
+
 	
 	mPO_CircularShift.Do(mAudio0,mAudio0);//Undoing Synthesis circular shift
 
-//	CLAMGUI::showPDSnapshot(&mAudio1,"Audio Frame without circular shift");
+
 
 //Undoing zero padding by hand seems a bit ugly but...
 	mAudio0.GetAudioChunk(0,mConfig.GetAnalWindowSize()*2,mAudio1,false);//XA_New
 
-//	CLAMGUI::showPDSnapshot(&mAudio2,"Audio Frame Without Zero Padding");
+
 	
-//	CLAMGUI::showPDSnapshot(&mSynthWindow, "Synthesis Window");
+
 
 	//Now we take the central samples to multiply with the window
 	int centerSample=mAudio1.GetSize()/2;
@@ -334,11 +334,11 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 
 	mPO_AudioProduct.Do(mAudio2, mSynthWindow,mAudio3);//Aplying inverse window
 	
-//	CLAMGUI::showPDSnapshot(&mAudio3,"Audio frame with inverse windowing");
+
 
 	mPO_OverlapAdd.Do(mAudio3, out);//overlapp and add
 	
-//	CLAMGUI::showPDSnapshot(&out,"Output of the SpectralSynthesis");
+
 
 	return true;
 }
