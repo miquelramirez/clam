@@ -71,6 +71,8 @@ public:
 		out2("out2", this), 
 		o0("0", this), o1("1", this), o2("2", this), o3("3", this), o4("4", this), o5("5", this)
 	{}
+	
+	const char * GetClassName() const {return "StaticControls";}
 
 private:
 	int CallBack1(TControlData d) {
@@ -119,6 +121,8 @@ public:
 		
 	}
 
+	const char * GetClassName() const {return "DynamicControls";}
+
 private:
 
 	int CallBack2(TControlData d) {
@@ -160,10 +164,10 @@ private:
 		// now let's do a lot of connections:
 		int j;
 		for (i=0; i<inCtrlsTmpl.size(); i++) {
-			for (j=0; j<outCtrls.size(); j++) outCtrls.at(j)->AddLink(inCtrlsTmpl.at(i));
+			for (j=0; j<outCtrls.size(); j++) outCtrls[j]->AddLink(inCtrlsTmpl[i]);
 		}
 		for (i=0; i<inCtrls.size(); i++) {
-			for (j=0; j<outCtrls.size(); j++) outCtrls.at(j)->AddLink(inCtrls.at(i));
+			for (j=0; j<outCtrls.size(); j++) outCtrls[j]->AddLink(inCtrls[i]);
 		}
 
 		return true;
