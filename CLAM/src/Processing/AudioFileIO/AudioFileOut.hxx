@@ -27,9 +27,10 @@
 #include "Processing.hxx"
 #include "Port.hxx"
 
-class SoundFileIO;
 
 namespace CLAM {
+
+	class SoundFileIO;
 
 	/** Class for audiofile output */
 	class AudioFileOut: public Processing
@@ -37,7 +38,7 @@ namespace CLAM {
 	protected:
 		/** Audiofile Configuration */
 		AudioFileConfig mConfig;
-		::SoundFileIO* mpSoundFileIO;
+		SoundFileIO* mpSoundFileIO;
 	private:
 		const char *GetClassName() {return "AudioFileOut";}
 

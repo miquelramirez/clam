@@ -66,13 +66,13 @@ namespace CLAM {
 		switch (mConfig.GetFiletype())
 		{
 			case EAudioFileType::eRaw:
-				mpSoundFileIO = new ::SoundFileIO;
+				mpSoundFileIO = new SoundFileIO;
 				break;			
 			case EAudioFileType::eWave:
-				mpSoundFileIO = new ::WaveFileIO;
+				mpSoundFileIO = new WaveFileIO;
 				break;			
 			case EAudioFileType::eAIFF:
-				mpSoundFileIO = new ::AIFFFileIO;;
+				mpSoundFileIO = new AIFFFileIO;;
 				break;			
 			default:
 				mStatus += "Unknown file type specified in config\n";
