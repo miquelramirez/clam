@@ -1,6 +1,5 @@
 PROGRAMS = \
            TestSnapshots \
-           TestMoc \
            TestEnum \
            TestComplex \
            TestPoint \
