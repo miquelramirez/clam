@@ -26,7 +26,10 @@
 #include "SpectrumProduct.hxx"
 #include "TestUtils.hxx"
 #include "OctaveVector.hxx"
-#include <limits>
+//TODO: To be unquoted when we use gcc 3.0
+//#include <limits> 
+
+
 
 namespace CLAMTest {
 	static const unsigned int ArraySize=40;
@@ -160,8 +163,9 @@ namespace CLAMTest {
 		SpectrumConfig cfg;
 		int proto1,proto2,proto3;
 		static int count=0;
-		//TData max_err = 0.00005;
-		TData max_err = std::numeric_limits<TData>::epsilon()*TData(1e3);
+		TData max_err = 0.00005;
+		//TODO: To be unquoted when we use gcc 3.0
+		//TData max_err = std::numeric_limits<TData>::epsilon()*TData(1e3);
 		product.Start();
 
 		cfg.AddBPFSize();
