@@ -63,7 +63,7 @@ namespace CLAM {
 		/**
 		 * The log-attack time is the (base 10) logarithm of the
 		 * rise time. For a silent signal, log-attack time is
-		 * -5 (approx. silence). Measured in log10(seconds).
+		 * -5. Measured in log10(seconds).
 		 */
 		DYN_ATTRIBUTE (3, public, TData, LogAttackTime);
 
