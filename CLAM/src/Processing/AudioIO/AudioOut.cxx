@@ -42,7 +42,7 @@ bool AudioOut::ConcreteConfigure(const ProcessingConfig& cfg)
 	AudioManager *m;
 
 	try {
-		m = &AudioManager::Singleton();
+		m = &(AudioManager::Current());
 	}
 	catch (Err &e) {
 		ErrProcessingObj ne("AudioOut::ConcreteConfigure(): No AudioManager found.",this);

@@ -1,10 +1,9 @@
-<!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by x (x) -->
 <SMSAnalysisSynthesisConfig>
 	<Name/>
-	<InputSoundFile>c:/1-100.wav</InputSoundFile>
-	<OutputSoundFile>c:/1_out.wav</OutputSoundFile>
-	<OutputAnalysisFile>c:/analysis.sdif</OutputAnalysisFile>
-	<InputAnalysisFile>c:/analysis.sdif</InputAnalysisFile>
+	<InputSoundFile>/1.wav</InputSoundFile>
+	<OutputSoundFile>/1_out.wav</OutputSoundFile>
+	<OutputAnalysisFile>/analysis.sdif</OutputAnalysisFile>
+	<InputAnalysisFile>/analysis.sdif</InputAnalysisFile>
 	<SamplingRate>44100</SamplingRate>
 	<AnalysisWindowSize>513</AnalysisWindowSize>
 	<AnalysisHopSize>256</AnalysisHopSize>

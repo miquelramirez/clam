@@ -1,4 +1,3 @@
-LIBRARIES=Rappid
 PROGRAMS=Rondebosse CMLRappid TestSoftSwitch TestAudioMixer TestAudioCompressor TestDynamicMixer TestRappidIO
 TOP=../..
 INCLUDE_DIRS=rondebosse/rondebosse /usr/include/kde

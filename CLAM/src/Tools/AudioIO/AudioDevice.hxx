@@ -88,6 +88,7 @@ public:
 		mName = name;
 		mNChannels = mNReadChannels = mNWriteChannels = 0;
 		mForceNChannels=false;
+		mAudioManager=0;
 	}
 	
 	/** Destructor of class*/
@@ -122,8 +123,9 @@ public:
 	virtual void SetNChannels(int channels);
 	
 protected:
-	bool Register(AudioIn& in);
-	bool Register(AudioOut& out);
+	
+	bool Register(AudioManager* am,AudioIn& in);
+	bool Register(AudioManager* am,AudioOut& out);
 	void Unregister(AudioIn& in);
 	void Unregister(AudioOut& out);
 	
@@ -131,6 +133,10 @@ protected:
 	int Latency(void);
 	unsigned NumberOfInternalBuffers();
 
+private:
+	AudioManager* mAudioManager;
+	AudioManager& _AudioManager(void);
+	void _SetAudioManager(AudioManager* am);
 };
 
 };//CLAM

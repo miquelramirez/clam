@@ -122,19 +122,6 @@ namespace CLAM {
 
 	void BaseAudioApplication::SAudioThreadCleanup(BaseAudioApplication *pThis)
 	{
-		/* mdeboer: i believe this is wrong! the audiomanager will be 
-		** defined in the AudioMain, and destructed right there.
-		** anyway, this is no way to call a destructor!
-		if (AudioManager::pSingleton) AudioManager::pSingleton->~AudioManager();
-		*/
-		//pThis->AppCleanup();
-
-		while (AudioManager::pSingleton)
-		{
-			printf("!\n");
-		}
-		
-		std::cout << "Clean up done" << std::endl;
 	}
 
 } // namespace CLAM

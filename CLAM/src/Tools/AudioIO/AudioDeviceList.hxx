@@ -45,6 +45,7 @@ private:
 protected:
 	std::vector<std::string> mAvailableDevices;
 
+	void AddMe(void);
 public:
 
 	/** Constructor of the AudioDeviceList class, with a string as parameter that contains the name of the concrete architecture by this list.

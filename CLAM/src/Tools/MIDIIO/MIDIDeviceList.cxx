@@ -33,23 +33,7 @@ MIDIDeviceList::~MIDIDeviceList()
 {
 }
 
-MIDIDeviceList* MIDIManager::FindList(const std::string& arch)
+void MIDIDeviceList::AddMe(void)
 {
-	unsigned int i;
-	std::string tmp = arch;
-
-	if (tmp == "default")
-		tmp = DEFAULT_MIDI_ARCH; 
-
-	/** Finding available devices for architecture arch
-	*/
-	for (i=0;i<Singleton().mDeviceLists.size();i++)
-	{
-		if (Singleton().mDeviceLists[i]->ArchName() == tmp)
-		{
-			return Singleton().mDeviceLists[i];
-		}
-	}
-
-	return 0;
+	MIDIManager::DeviceLists().push_back(this);
 }

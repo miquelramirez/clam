@@ -85,6 +85,7 @@ public:
 		mLastStatus = 0;
 		mIndex = 0;
 		mLength = 0;
+		mMIDIManager = 0;
 	}
 	
 	/** Destructor of class*/
@@ -112,27 +113,20 @@ public:
 	virtual void Read(void) throw(Err) = 0;
 
 protected:
-	bool Register(MIDIIn& in);
-//		bool Register(MIDIOut& out);
+	bool Register(MIDIManager* mm,MIDIIn& in);
+//		bool Register(MIDIManager* mm,MIDIOut& out);
 	void Unregister(MIDIIn& in);
 //		void Unregister(MIDIOut& out);
 
 	int GetMessageLength(unsigned char byte);
 
 	void HandleRawByte(unsigned char byte);
+
+private:
+	MIDIManager* mMIDIManager;
+	MIDIManager& _MIDIManager(void);
+	void _SetMIDIManager(MIDIManager* mm);
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 };//CLAM
 

@@ -44,6 +44,7 @@ private:
 protected:
 	std::vector<std::string> mAvailableDevices;
 
+	void AddMe(void);
 public:
 	typedef std::vector<MIDIDeviceList*>::const_iterator list_iterator;
 

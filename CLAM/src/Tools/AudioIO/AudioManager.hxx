@@ -40,16 +40,36 @@ class AudioManager
 {
 	friend class AudioIn;
 	friend class AudioOut;
+	friend class AudioDeviceList;
 private:
 	int mSampleRate, mLatency;
 	unsigned mInternalBuffersNumber;
+
 	std::vector<AudioDevice*> mDevices;
-	std::vector<AudioDeviceList*> mDeviceLists;
+
+	/** A Meyers-Singleton-style list of all DeviceList */
+	static std::vector<AudioDeviceList*>& DeviceLists(void)
+	{ 
+		static std::vector<AudioDeviceList*> sDeviceLists;
+		return sDeviceLists;
+	}
+	
+	static AudioManager* _Current(bool set = 0,AudioManager* m = 0)
+	{
+		static AudioManager* sCurrent = 0;
+		if (set)
+		{
+			if (m)
+			{
+				if (sCurrent) throw Err("Can only have one AudioManager at a time");
+			}
+			sCurrent = m;
+		}
+		return sCurrent;
+	}
 public:
 	typedef std::vector<AudioDevice*>::const_iterator device_iterator;
 	typedef std::vector<AudioDeviceList*>::const_iterator list_iterator;
-
-	static AudioManager* pSingleton;
 
 	/** Constructor of the class. It receives as parameter the sample rate and
 	 * latency
@@ -58,11 +78,19 @@ public:
 	 *  @param latency The latency that will be given to the
 	 *  AudioManager, and passed to the AudioDevice(s). The default is 512.
 	 */
-
-	AudioManager(int sampleRate = 48000, int latency = 512) throw(Err);
+	AudioManager(int sampleRate,int latency);
 
 	/** Destructor of the class*/
 	~AudioManager();
+
+	static AudioManager& Current()
+	{
+		AudioManager* p = _Current();
+		
+		if (p==0) throw Err("No AudioManager current");
+		
+		return *p;
+	}
 
 	/** Find a created AudioDevice, or NULL when not found 
 	 *  @param name The name of the AudioDevice we want to get
@@ -107,17 +135,7 @@ public:
 	{
 		return mInternalBuffersNumber;
 	}
-
-	/** Method to control that only exists one AudioManager instantiation
-	 *  @return the pointer to the AudioManager object
-	 *  @throw Error if is not an AudioManager initialized yet
-	 */		
-	static AudioManager& Singleton(void) throw(Err)
-	{ 
-		if (pSingleton) return *pSingleton;
-		else throw Err("No AudioManager initialized");
-	}
-
+	
  	/** Retrieve the list of devices available for a given architecture. You can then use the AvailableDevices() method to retrieve a list of the available devices for each AudioDeviceList.
 	 *  @param arch The name of architecture wich will be returned the devices. By default is set to "default"
 	 *  @return The list of AudioDevices
@@ -128,13 +146,14 @@ public:
 	 *	to obtain the device list for each existent architecture.
 	 *  @return The beginning list iterator
 	 */
-	list_iterator lists_begin() const {return mDeviceLists.begin();}
+	list_iterator lists_begin() const {return DeviceLists().begin();}
 
 	/** Global iterator interface for device lists. It can be used
 	 *	to obtain the device list for each existent architecture.
 	 *  @return The ending list iterator
 	 */
-	list_iterator lists_end() const {return mDeviceLists.end();}
+	list_iterator lists_end() const {return DeviceLists().end();}
+
 
 	/** Iterator interface for used audio devices. It will iterate through the list of devices which have been registered.
 	 *  @return The beginning list iterator

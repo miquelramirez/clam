@@ -26,8 +26,6 @@
 
 namespace CLAM {
 
-	extern MIDIDeviceList *sAlsaMIDIDeviceList;
-
 	class ALSAMIDIDevice: public MIDIDevice
 	{
 	private:
@@ -131,7 +129,7 @@ namespace CLAM {
 					break;
 			}
 
-			sAlsaMIDIDeviceList = this;
+			AddMe();
 		}
 	public:
 

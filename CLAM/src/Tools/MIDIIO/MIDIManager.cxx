@@ -30,28 +30,9 @@ using std::find ;
 namespace CLAM
 {
 
-// these have to be all in the some .cxx file, because of
-// unpredictable linking order!!
-
-MIDIManager* MIDIManager::pSingleton = 0;
-MIDIDeviceList* sAlsaMIDIDeviceList = 0;
-MIDIDeviceList* sPortMidiMIDIDeviceList = 0;
-
-
 MIDIManager::MIDIManager() throw(Err)
 {
-	if (pSingleton)
-		throw Err("can only have one midimanager at a time");
-	pSingleton = this;
-
-	if (sAlsaMIDIDeviceList)
-	{
-		Singleton().mDeviceLists.push_back(sAlsaMIDIDeviceList);
-	}
-	if (sPortMidiMIDIDeviceList)
-	{
-		Singleton().mDeviceLists.push_back(sPortMidiMIDIDeviceList);
-	}
+	_Current(true,this);
 }
 
 MIDIManager::~MIDIManager()
@@ -61,7 +42,7 @@ MIDIManager::~MIDIManager()
 	{
 		delete mDevices[i];
 	}
-	pSingleton = 0;
+	_Current(true,0);
 }
 
 MIDIDevice* MIDIManager::FindDevice(const std::string& name)
@@ -208,8 +189,9 @@ bool MIDIManager::Register(MIDIIn& in)
 	 *  and registering the object as an input of the device
 	 */
 	MIDIDevice* device = FindOrCreateDevice(in.mConfig.GetDevice());
-	return device->Register(in);
+	return device->Register(this,in);
 }
+
 /*
 bool MIDIManager::Register(MIDIOut& out)
 {
@@ -217,5 +199,27 @@ bool MIDIManager::Register(MIDIOut& out)
 	return device->Register(out);
 }
 */
+
+MIDIDeviceList* MIDIManager::FindList(const std::string& arch)
+{
+	unsigned int i;
+	std::string tmp = arch;
+
+	if (tmp == "default")
+		tmp = DEFAULT_MIDI_ARCH; 
+
+	/** Finding available devices for architecture arch
+	*/
+	for (i=0;i<DeviceLists().size();i++)
+	{
+		if (DeviceLists()[i]->ArchName() == tmp)
+		{
+			return DeviceLists()[i];
+		}
+	}
+
+	return 0;
+}
+
 
 }
