@@ -12,10 +12,12 @@ namespace CLAM
 	    SetnSamples(100);
 	    SetvRange(TData(0.0),TData(11025.0));
 	    mSlotNewData.Wrap(this,&NetSinTracksPlotController::OnNewData);
+	    mSinTracking.Start();
 	}
 
 	NetSinTracksPlotController::~NetSinTracksPlotController()
 	{
+	     mSinTracking.Stop();
 	}
 	
 	void NetSinTracksPlotController::SetData(const SpectralPeakArray& peaks)
@@ -45,15 +47,15 @@ namespace CLAM
 
 	void NetSinTracksPlotController::AddData(const SpectralPeakArray& data)
 	{
-	    if(!data.GetMagBuffer().Size()) return;
-	    
+	    SpectralPeakArray outPeaks;
+	    mSinTracking.Do(data,outPeaks);
 	    if(_peakMtx.Size() < GetnSamples())
 	    {
-		_peakMtx.AddElem(data);
+		_peakMtx.AddElem(outPeaks);
 	    }
 	    else
 	    {
-		_peakMtx[_index++] = data;
+		_peakMtx[_index++] = outPeaks;
 		if(_index == GetnSamples()) _index = 0;
 	    }
 	}
