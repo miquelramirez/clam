@@ -59,6 +59,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	ProcessingItem * audioout = new ProcessingItem( inputoutput, "AudioOut" );
+	ProcessingItem * audioin = new ProcessingItem( inputoutput, "AudioIn" );
 	
 	QListViewItem * files = new QListViewItem( this,"Audio File I/O" );
 	ProcessingItem * monoaudiofilereader = new ProcessingItem( files, "MonoAudioFileReader" );
@@ -72,7 +73,10 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	QListViewItem * synthesis = new QListViewItem( this,"Synthesis" );
 	ProcessingItem * ifft = new ProcessingItem( synthesis, "IFFT_rfftw" );	
 	ProcessingItem * smssynthesis = new ProcessingItem( synthesis, "SMSSynthesis" );	
-	
+
+	QListViewItem * smstrans = new QListViewItem(this, "SMS Transformations");
+	ProcessingItem * freqshift = new ProcessingItem( smstrans, "SMSFreqShift" );
+		
 	QListViewItem * utils = new QListViewItem( this, "Utils" );
 #ifndef WIN32
 	ProcessingItem * ladspaloader = new ProcessingItem( utils, "LadspaLoader" );

@@ -1,4 +1,4 @@
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 #include "Processing.hxx"
 #include "MultiChannelAudioFileReader.hxx"
 #include "MultiChannelAudioFileWriter.hxx"
@@ -21,14 +21,14 @@
 #include "PeaksPlotProcessing.hxx"
 #include "FundPlotProcessing.hxx"
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
+typedef CLAM::ProcessingFactory ProcessingFactory;
 
 // processings in draft directory
 static ProcessingFactory::Registrator<CLAM::FlagControl> regtFlagControl( "FlagControl" );
 static ProcessingFactory::Registrator<CLAM::Random> regtRandom( "Random" );
 static ProcessingFactory::Registrator<CLAM::OneOverF> regtOneOverF( "OneOverF" );
 static ProcessingFactory::Registrator<CLAM::SquareWave> regtSquareWave( "SquareWave" );
-
 #ifndef WIN32
 static ProcessingFactory::Registrator<CLAM::LadspaLoader> regtLadspaLoader( "LadspaLoader" );
 #endif
@@ -44,4 +44,5 @@ static ProcessingFactory::Registrator<CLAM::AudioPlotProcessing> regtAudioPlotPr
 static ProcessingFactory::Registrator<CLAM::SpectrumPlotProcessing> regtSpectrumPlotProcessing("SpectrumPlotProcessing");
 static ProcessingFactory::Registrator<CLAM::PeaksPlotProcessing> regtPeaksPlotProcessing("PeaksPlotProcessing");
 static ProcessingFactory::Registrator<CLAM::FundPlotProcessing> regtFundPlotProcessing("FundPlotProcessing");
+
 
