@@ -22,7 +22,7 @@
 #include "DataTypes.hxx"
 #include "Normalization.hxx"
 #include "BasicStatistics.hxx"
-
+#include "CLAM_Math.hxx"
 
 using namespace CLAM;
 

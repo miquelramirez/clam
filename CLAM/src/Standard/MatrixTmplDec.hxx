@@ -25,6 +25,7 @@
 
 #include <iosfwd>
 #include "Array.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAM
 {

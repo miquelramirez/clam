@@ -11,6 +11,11 @@
 #include "AudioOut.hxx"
 #include "Controller.hxx"
 
+// VC6 needs to see the whole types
+#include "Audio.hxx"
+#include "Spectrum.hxx"
+
+
 /**
  * In this cxx are defined the objects that will be in the factory by default. Including it 
  * in a project will let create objects of these types without include all the processings
