@@ -146,14 +146,13 @@ namespace CLAM {
 
 			
 		
-		/*In order to avoid confusion with indices we multiply the ones in the 
-		 * second peak array by a large number. Note that this has the problem that
-		 * if the process is applied recursively indices will grow out of bounds.*/
+		/*we first multiply indices in second input by 1000 in order
+		to avoid aliasing between indices. Note though that if this
+		process is applied recursively indices may end up getting out
+		of bounds*/
+		IndexArray& in2Index = in2.GetIndexArray();
 		int i;
-		for(i=0; i< nPeaks2)
-		{
-			in2Index[i] *= 1000;
-		} 
+		for (i=0; i<nPeaks2;i++) in2Index[i]*=1000;
 		
 		DataArray freq1 = in1.GetFreqBuffer();
 		DataArray freq2 = in2.GetFreqBuffer();
@@ -161,16 +160,16 @@ namespace CLAM {
 		/* We can now add up every peak array in both peakarray1 and 2*/
 		int nAdded1,nAdded2;
 		nAdded1=nAdded2=0;
-		while(nAddedPeaks1<=nPeaks1 && nAddedPeaks2<=nPeaks1)
+		while(nAdded1<=nPeaks1 && nAdded2<=nPeaks1)
 		{
 			if(freq1[nAdded1]<freq2[nAdded2])
 			{
-				out.AddSpectralPeak(in1.GetSpectralPeak(nAdded);
+				out.AddSpectralPeak(in1.GetSpectralPeak(nAdded1));
 				nAdded1++;
 			}
 			else
 			{
-				out.AddSpectralPeak(in1.GetSpectralPeak(nAdded2);
+				out.AddSpectralPeak(in2.GetSpectralPeak(nAdded2));
 				nAdded2++;
 			}
 		}

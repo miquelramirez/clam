@@ -33,10 +33,10 @@ namespace CLAM {
 		  mOut("Output",this)
 	{
 		AttachChildren();
-		Configure(FrameInterpConfig());
+		Configure(FrameAdderConfig());
 	}
 
-	FrameAdder::FrameAdder(const FrameInterpConfig &c)
+	FrameAdder::FrameAdder(const FrameAdderConfig &c)
 		: mIn1("Input 1",this),
 		  mIn2("Input 2",this),
 		  mOut("Output",this)
@@ -85,10 +85,10 @@ namespace CLAM {
 		SpectralPeakArray tmpPeakArray;
 		
 		mPO_PeaksAdder.Do(in1.GetSpectralPeakArray(),in2.GetSpectralPeakArray(),tmpPeakArray);
-		out.SetSpectralPeakArray(tmpPeakArray)
+		out.SetSpectralPeakArray(tmpPeakArray);
 		/** Finally we add residual spectrum */
 		mPO_SpectrumAdder.Do(in1.GetResidualSpec(),in2.GetResidualSpec(),out.GetResidualSpec());
-
+		
 		return true;
 	}
 
