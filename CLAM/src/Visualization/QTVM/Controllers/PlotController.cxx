@@ -101,6 +101,9 @@ namespace CLAM
 			_current = TData(_nSamples);
 			InitHRatio();
 			emit hZoomRatio(_hzRatio);
+			int hsv=GetHScrollValue();
+			emit hScrollMaxValue(GetnxPixels());
+			emit hScrollValue(hsv);
 		}
 
 		TSize PlotController::GetnSamples() const
@@ -114,6 +117,9 @@ namespace CLAM
 			_vcur = _vRange;
 			InitVRatio();
 			emit vZoomRatio(_vzRatio);
+			int vsv=GetVScrollValue();
+			emit vScrollMaxValue(GetnyPixels());
+			emit vScrollValue(vsv);
 		}
 
 		TData PlotController::GetvRange() const
@@ -318,7 +324,7 @@ namespace CLAM
 		}
 
 		void PlotController::InitHRatio()
-		{void EnterMouse();
+		{
 			int n = int(GetHMin());
 			int r = 1;
 			while(n < GetnSamples())
@@ -353,7 +359,7 @@ namespace CLAM
 			int vsv = GetVScrollValue();
 			emit vScrollMaxValue(GetnyPixels());
 			emit vScrollValue(vsv);
-		}void EnterMouse();
+		}
 
 		void PlotController::UpdateHViewport(int value)
 		{
