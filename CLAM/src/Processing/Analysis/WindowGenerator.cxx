@@ -477,7 +477,7 @@ void WindowGenerator::InvertWindow(const DataArray& originalWindow,
 		if(originalWindow[(int)(originalWindow.Size()/2)]!=0)
 			invertedWindow[(int)(originalWindow.Size()/2)]=
 				1/originalWindow[(int)(originalWindow.Size()/2)];
-	for(i=1;i<(int)(originalWindow.Size()/2);i++)
+	for(i=0;i<(int)(originalWindow.Size()/2);i++)
 	{
 		if(originalWindow[i]!=0)
 			invertedWindow[i]=invertedWindow[originalWindow.Size()-1-i]=1.0/originalWindow[i];
