@@ -17,6 +17,7 @@ namespace CLAM
 
 	SpectrumPlotProcessing::SpectrumPlotProcessing() 
 		: mInput("Spectrum Input", this)
+		, mOwnedPlot(false)
 	{
 		SpectrumPlotProcessingConfig cfg;
 		Configure(cfg);
@@ -26,6 +27,7 @@ namespace CLAM
 
 	SpectrumPlotProcessing::SpectrumPlotProcessing(const SpectrumPlotProcessingConfig& cfg)
 		: mInput("Spectrum Input", this)
+		, mOwnedPlot(false)
 	{
 		Configure(cfg);
 
@@ -34,7 +36,7 @@ namespace CLAM
 
 	SpectrumPlotProcessing::~SpectrumPlotProcessing()
 	{
-		if(mPlot) delete mPlot;
+		if(mOwnedPlot) delete mPlot;
 	}
 
 
@@ -59,8 +61,19 @@ namespace CLAM
 		return true;
 	}
 
+	void SpectrumPlotProcessing::SetPlot(VM::NetSpectrumPlot * plot )
+	{
+        	if (mOwnedPlot) delete mPlot;
+		mOwnedPlot = false;
+		mPlot = plot;
+		mPlot->Label(mConfig.GetCaption());
+		mPlot->SetBackgroundColor(VM::VMColor::Black());
+		mPlot->SetDataColor(VM::VMColor::Green());
+	}
+
 	void SpectrumPlotProcessing::InitSpectrumPlot()
 	{
+        	if (mOwnedPlot) delete mPlot;
 		mPlot = new VM::NetSpectrumPlot();
 		mPlot->Label(mConfig.GetCaption());
 		mPlot->SetBackgroundColor(VM::VMColor::Black());
@@ -79,8 +92,11 @@ namespace CLAM
 		if(mPlot) 
 		{
 		    mPlot->StopRendering();
-		    delete mPlot;
-		    mPlot = NULL;
+		    if (mOwnedPlot)
+		    {
+			    delete mPlot;
+			    mPlot = NULL;
+		    }
 		}
 		return true;
 	}

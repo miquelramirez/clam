@@ -16,25 +16,25 @@ namespace CLAM
     }
 
     PeaksPlotProcessing::PeaksPlotProcessing()
-	: mInput("Peaks Input", this)
+	: mPlot(0)
+	, mInput("Peaks Input", this)
+	, mOwnedPlot(false)
     {
 	PeaksPlotProcessingConfig cfg;
 	Configure(cfg);
-
-	mPlot = NULL;
     }
 
     PeaksPlotProcessing::PeaksPlotProcessing(const PeaksPlotProcessingConfig& cfg)
-	: mInput("Peaks Input", this)
+	: mPlot(0)
+	, mInput("Peaks Input", this)
+	, mOwnedPlot(false)
     {
 	Configure(cfg);
-
-	mPlot = NULL;
     }
 
     PeaksPlotProcessing::~PeaksPlotProcessing()
     {
-	if(mPlot) delete mPlot;
+	if(mOwnedPlot) delete mPlot;
     }
 
     bool PeaksPlotProcessing::Do()
@@ -69,15 +69,29 @@ namespace CLAM
 	if(mPlot) 
 	{
 	    mPlot->StopRendering();
-	    delete mPlot;
-	    mPlot = NULL;
+	    if (mOwnedPlot)
+	    {
+		    delete mPlot;
+		    mPlot = NULL;
+	    }
 	}
 	return true;
     }
 
+    void PeaksPlotProcessing::SetPlot(VM::NetPeaksPlot * plot)
+    {
+        if (mOwnedPlot) delete mPlot;
+	mOwnedPlot = false;
+	mPlot = plot;
+	mPlot->Label(mConfig.GetCaption());
+	mPlot->SetBackgroundColor(VM::VMColor::Black());
+	mPlot->SetPeaksColor(VM::VMColor::Cyan(), VM::VMColor::Red());
+    }
     void PeaksPlotProcessing::InitPeaksPlot()
     {
+        if (mOwnedPlot) delete mPlot;
 	mPlot = new VM::NetPeaksPlot();
+	mOwnedPlot = true;
 	mPlot->Label(mConfig.GetCaption());
 	mPlot->SetBackgroundColor(VM::VMColor::Black());
 	mPlot->SetPeaksColor(VM::VMColor::Cyan(), VM::VMColor::Red());
