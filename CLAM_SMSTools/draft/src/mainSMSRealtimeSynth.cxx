@@ -45,7 +45,7 @@ int main( int argc, char* argv[] )
 {
 	CheckArgs( argc, argv );
 
-	CLAM::AudioManager audioManager( 44100, 1024 );
+	CLAM::AudioManager audioManager( 44100, 512 );
 
 	std::cout << "\n >>> SMS Realtime Synth <<<\n\n";
 	std::cout << "Sample rate: " << "44100\n\n";
@@ -73,8 +73,8 @@ int main( int argc, char* argv[] )
 	std::cout << "And now the transfom:\n";  	
 	synth.DoTheTransform();
 
-	synth.Play();
-
+//	synth.Play();
+	synth.Stream();
 
 	return 0;
 }

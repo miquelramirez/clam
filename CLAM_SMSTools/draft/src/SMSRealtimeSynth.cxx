@@ -47,7 +47,6 @@ void SMSRealtimeSynth::DoTheTransform()
 	
 	TransformProcessing();
 
-	Synthesize();
 }
 
 void SMSRealtimeSynth::QueryState()
@@ -66,40 +65,88 @@ void SMSRealtimeSynth::Play()
 	PlayAudio( mAudioOut );
 }
 
+void SMSRealtimeSynth::Stream()
+{
+	ConfigureAudio();
+
+	CLAM::ConnectPorts( mSynthesis, "OutputAudio", outL, "Audio Input" );
+	CLAM::ConnectPorts( mSynthesis, "OutputAudio", outR, "Audio Input" );
+
+	DoSynthesis();
+}
+
+void SMSRealtimeSynth::DoSynthesis()
+{
+	SynthesisProcessing();
+}
+
+void SMSRealtimeSynth::SynthesisProcessing()
+{
+	mSynthesis.Configure( mSynthConfig );
+	mSynthesis.Start();
+
+	CLAM_ACTIVATE_FAST_ROUNDING;
+	GetSynthesis().Start();
+	
+	Audio tmpAudioFrame,tmpAudioFrame2;
+	tmpAudioFrame.SetSize(mSynthConfig.GetFrameSize());
+		
+	int nSynthFrames=mTransformedSegment.GetnFrames();
+
+
+	TSize synthFrameSize=mSynthConfig.GetFrameSize();
+	TIndex beginIndex=-synthFrameSize/2;
+	
+	TSize size=synthFrameSize*nSynthFrames;
+
+	mAudioOutSin.SetSize(size);
+	mAudioOutRes.SetSize(size);
+	mAudioOut.SetSize(size);
+
+
+	mTransformedSegment.mCurrentFrameIndex=0;
+
+	outL.Start();
+	outR.Start();
+
+	for( int i=0; i<nSynthFrames; i++ )
+	{
+		
+		if( !GetSynthesis().Do(mTransformedSegment) )
+			continue; // it is an analysis frame with negative center time and thus should not be used
+
+//		output = mTransformedSegment.GetFramesArray()[i].GetSinusoidalAudioFrame();
+//		output = mTransformedSegment.GetFramesArray()[i].GetResidualAudioFrame();
+		Audio& output = mTransformedSegment.GetFramesArray()[i].GetSynthAudioFrame();
+		outL.Do( output );
+		outR.Do( output );
+		//mAudioOutSin.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
+		//mAudioOutRes.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetResidualAudioFrame());
+		//mAudioOut.SetAudioChunk(beginIndex,mTransformedSegment.GetFramesArray()[i].GetSynthAudioFrame());
+		beginIndex+=synthFrameSize;
+	}
+	
+	mSynthesis.Stop();
+	outL.Stop(); 	
+	outR.Stop(); 	
+	GetState().SetHasAudioOut (true);
+	GetSynthesis().Stop();
+	CLAM_DEACTIVATE_FAST_ROUNDING;
+	
+}
+
 void SMSRealtimeSynth::PlayAudio( const CLAM::Audio& audio ) 
 {
-				int bufferSize = 128;
-
-//				outLCfg.SetDevice("alsa:default");
-                outLCfg.SetChannelID(0);
-//                outLCfg.SetSampleRate(mSampleRate);
-                outLCfg.SetSampleRate(44100);
-                outL.Configure(outLCfg);
-
-                std::cout << "SampleRate for playback is: " << mSampleRate << std::endl;
-                
-//				outRCfg.SetDevice("alsa:default");
-                outRCfg.SetChannelID(1);
-//                outRCfg.SetSampleRate(mSampleRate);
-                outLCfg.SetSampleRate(44100);
-                outR.Configure(outRCfg);
-                
-
-
-                CLAM::AudioManager::Current().Start();
-
+				int bufferSize = 512;
                 outL.Start();
                 outR.Start();
 
                 CLAM::Audio chunk;
 
-				std::cout << "mAudioOut.size(): " << mAudioOut.GetSize() << std::endl;
-				std::cout << "bufferSize: " << bufferSize << std::endl;
-
         int offset = 0;
 
         while ( offset + bufferSize  < audio.GetSize() ) {
-                audio.GetAudioChunk( offset, offset+bufferSize, chunk ) ;
+                audio.GetAudioChunk( offset, offset + bufferSize, chunk ) ;
                 outL.Do(chunk);
                 outR.Do(chunk);
                 offset += bufferSize;
@@ -109,6 +156,24 @@ void SMSRealtimeSynth::PlayAudio( const CLAM::Audio& audio )
         outR.Stop();
 }
 
+void SMSRealtimeSynth::ConfigureAudio() 
+{
+//				outLCfg.SetDevice("alsa:default");
+                outLCfg.SetChannelID(0);
+//              outLCfg.SetSampleRate(mSampleRate);
+                outLCfg.SetSampleRate(44100);
+                outL.Configure(outLCfg);
+
+                std::cout << "SampleRate for playback is: " << mSampleRate << std::endl;
+                
+//				outRCfg.SetDevice("alsa:default");
+                outRCfg.SetChannelID(1);
+//              outRCfg.SetSampleRate(mSampleRate);
+                outLCfg.SetSampleRate(44100);
+                outR.Configure(outRCfg);
+                
+                CLAM::AudioManager::Current().Start();
+}
 void SMSRealtimeSynth::TransformProcessing() 
 {
 	CLAM_ACTIVATE_FAST_ROUNDING;

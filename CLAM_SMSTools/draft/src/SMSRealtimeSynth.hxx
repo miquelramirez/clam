@@ -4,6 +4,9 @@
 #include "SMSBase.hxx"
 #include "StdOutProgress.hxx"
 #include "StdOutWaitMessage.hxx"
+#include "AudioOutPort.hxx"
+
+#include "SMSSynthesis.hxx"
 
 namespace CLAM
 {
@@ -13,7 +16,6 @@ class SMSRealtimeSynth : public SMSBase
 	public:
 			SMSRealtimeSynth( int sampleRate );
 			void Run() {}
-			void Play();
 			CLAMGUI::Progress* CreateProgress(const char* title,float from,float to)
 			{
 				return new CLAMGUI::StdOutProgress(title,from,to);
@@ -36,6 +38,14 @@ class SMSRealtimeSynth : public SMSBase
 
 			void DoTheTransform();
 
+			void DoSynthesis();
+
+			void SynthesisProcessing();
+
+			void Play();
+
+			void Stream();
+
 			void QueryState();
 
 	private:
@@ -44,8 +54,10 @@ class SMSRealtimeSynth : public SMSBase
 		  	CLAM::AudioIOConfig outRCfg;
 			CLAM::AudioOut outL;
 			CLAM::AudioOut outR;
-			
 
+			CLAM::SMSSynthesis mSynthesis;
+
+			void ConfigureAudio();
 			void PlayAudio( const CLAM::Audio& audio );
 			void TransformProcessing();
 };
