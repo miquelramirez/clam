@@ -21,10 +21,10 @@
 
 #include "AudioFileIn.hxx"
 #include "ErrProcessingObj.hxx"
-#include "SoundFileIO/SoundFileIO.hxx"
-#include "SoundFileIO/AIFFFileIO.hxx"
-#include "SoundFileIO/WaveFileIO.hxx"
-#include "SoundFileIO/SoundFileIOError.hxx"
+#include "SoundFileIO.hxx"
+#include "AIFFFileIO.hxx"
+#include "WaveFileIO.hxx"
+#include "ErrSoundFileIO.hxx"
 
 namespace CLAM {
 
@@ -131,7 +131,7 @@ namespace CLAM {
 			try {
 				mpSoundFileIO->Read(tmp,j);
 			}
-			catch (SoundFileIOError e) {
+			catch (ErrSoundFileIO e) {
 				throw ErrProcessingObj(e.mStr,this);
 			}
 			short* sptr = tmp;
@@ -232,7 +232,7 @@ namespace CLAM {
 		try {	
 			mpSoundFileIO->Open(mConfig.GetFilename().c_str(),WaveFileIO::eRead);
 		}
-		catch (SoundFileIOError err)
+		catch (ErrSoundFileIO err)
 		{
 			mStatus += "Error opening file: ";
 			mStatus += err.mStr;

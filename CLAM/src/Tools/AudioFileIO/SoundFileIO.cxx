@@ -1,5 +1,5 @@
 #include "SoundFileIO.hxx"
-#include "SoundFileIOError.hxx"
+#include "ErrSoundFileIO.hxx"
 
 SoundFileIO::SoundFileIO()
 {
@@ -41,7 +41,7 @@ void SoundFileIO::Open(const char* filename,EMode mode)
 			case eWrite:
 				mFile = stdout; break;
 			default:
-				throw SoundFileIOError("Invalid mode to open stdio");
+				throw ErrSoundFileIO("Invalid mode to open stdio");
 		}
 		mStdIO = true;
 	}
@@ -56,11 +56,11 @@ void SoundFileIO::Open(const char* filename,EMode mode)
 			case eDuplex:
 				cmode = "rb+"; break;
 			default:
-				throw SoundFileIOError("Invalid mode to open soundfile");
+				throw ErrSoundFileIO("Invalid mode to open soundfile");
 		}
 	
 		mFile = fopen(filename,cmode);
-		if (mFile==0) throw SoundFileIOError("File not found");
+		if (mFile==0) throw ErrSoundFileIO("File not found");
 	}
 
 	ReadHeader();
@@ -87,7 +87,7 @@ void SoundFileIO::Create(const char* filename,EMode mode,const SoundHeader& head
 			case eWrite:
 				mFile = stdout; break;
 			default:
-				throw SoundFileIOError("Invalid mode to open stdio");
+				throw ErrSoundFileIO("Invalid mode to open stdio");
 		}
 		mStdIO = true;
 	}
@@ -96,17 +96,17 @@ void SoundFileIO::Create(const char* filename,EMode mode,const SoundHeader& head
 		switch (mMode)
 		{
 			case eRead:
-				throw SoundFileIOError("Cannot create a file for reading");
+				throw ErrSoundFileIO("Cannot create a file for reading");
 			case eWrite:
 				cmode = "wb"; break;
 			case eDuplex:
 				cmode = "wb+"; break;
 			default:
-				throw SoundFileIOError("Invalid mode to open soundfile");
+				throw ErrSoundFileIO("Invalid mode to open soundfile");
 		}
 		mFile = fopen(filename,cmode);
 
-		if (mFile==0) throw SoundFileIOError("Cannot create file");
+		if (mFile==0) throw ErrSoundFileIO("Cannot create file");
 	}
 	WriteHeader();
 }
@@ -123,11 +123,11 @@ void SoundFileIO::Close(void)
 int SoundFileIO::Read(short *data,int size)
 {
 	if (mHeader.mSampleWidth !=16)
-		throw SoundFileIOError("Samplewidth doesn't match");
+		throw ErrSoundFileIO("Samplewidth doesn't match");
 		
 	int n = fread(data,2,size,mFile);
 	mPos += n;
-	if (n!=size) throw SoundFileIOError("Could not read requested size");
+	if (n!=size) throw ErrSoundFileIO("Could not read requested size");
 
 	if (mSwap)
 		for (int i=0;i<size;i++) Swap(data[i]);
@@ -138,7 +138,7 @@ int SoundFileIO::Read(short *data,int size)
 int SoundFileIO::Write(const short *data,int size)
 {
 	if (mHeader.mSampleWidth !=16)
-		throw SoundFileIOError("Samplewidth doesn't match");
+		throw ErrSoundFileIO("Samplewidth doesn't match");
 
 	int n = 0;
 	if (mSwap)
@@ -153,7 +153,7 @@ int SoundFileIO::Write(const short *data,int size)
 			}
 			m = fwrite(tmp,2,m,mFile);
 			if (m<-1) 
-				throw SoundFileIOError("Could not write requested size");
+				throw ErrSoundFileIO("Could not write requested size");
 			n += m;
 		}
 	}else{
@@ -161,7 +161,7 @@ int SoundFileIO::Write(const short *data,int size)
 	}
 	mPos += n;
 	if (mPos>mSize) mSize = mPos;
-	if (n!=size) throw SoundFileIOError("Could not write requested size");
+	if (n!=size) throw ErrSoundFileIO("Could not write requested size");
 	return n;
 }
 
@@ -169,7 +169,7 @@ int SoundFileIO::Read(int *data,int size)
 {
 	int n = fread(data,mHeader.mBytesPerSample,size,mFile);
 	mPos += n;
-	if (n!=size) throw SoundFileIOError("Could not read requested size");
+	if (n!=size) throw ErrSoundFileIO("Could not read requested size");
 
 	char* cdata = (char*) data;
 
@@ -195,7 +195,7 @@ int SoundFileIO::Read(int *data,int size)
 			if (mSwap)
 				for (int i=0;i<size;i++) Swap(data[i]);
 	}else{
-		throw SoundFileIOError("Incorrect samplewidth");
+		throw ErrSoundFileIO("Incorrect samplewidth");
 	}
 	
 	return n;
@@ -203,7 +203,7 @@ int SoundFileIO::Read(int *data,int size)
 
 int SoundFileIO::Write(const int *data,int size)
 {
-	throw SoundFileIOError("NOT IMPLEMENTED");
+	throw ErrSoundFileIO("NOT IMPLEMENTED");
 	return 0;
 /*
 	int n = 0;
@@ -219,7 +219,7 @@ int SoundFileIO::Write(const int *data,int size)
 			}
 			m = fwrite(tmp,mHeader.mBytesPerSample,m,mFile);
 			if (m<-1) 
-				throw SoundFileIOError("Could not write requested size");
+				throw ErrSoundFileIO("Could not write requested size");
 			n += m;
 		}
 	}else{
@@ -227,7 +227,7 @@ int SoundFileIO::Write(const int *data,int size)
 	}
 	mPos += n;
 	if (mPos>mSize) mSize = mPos;
-	if (n!=size) throw SoundFileIOError("Could not write requested size");
+	if (n!=size) throw ErrSoundFileIO("Could not write requested size");
 	return n;
 */
 }
@@ -237,10 +237,10 @@ void SoundFileIO::Seek(int pos)
 	mPos = pos;
 
 	if (mPos<0 || mPos>mSize)
-		throw SoundFileIOError("Position out of range");
+		throw ErrSoundFileIO("Position out of range");
 	
 	if (fseek(mFile,mOffset+mPos*mHeader.mBytesPerSample,SEEK_SET))
-		throw SoundFileIOError("Could not set requested file position");
+		throw ErrSoundFileIO("Could not set requested file position");
 }
 
 void SoundFileIO::SeekFrame(int frame)
