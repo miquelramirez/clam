@@ -23,10 +23,6 @@
 
 using namespace CLAM;
 
-AudioDeviceList *sAlsaAudioDeviceList = 0;
-AudioDeviceList *sDirectXAudioDeviceList = 0;
-AudioDeviceList *sPAAudioDeviceList = 0;
-AudioDeviceList *sRtAAudioDeviceList = 0;
 
 AudioDeviceList::AudioDeviceList(const std::string& arch)
 	:mArch(arch)
@@ -37,21 +33,3 @@ AudioDeviceList::~AudioDeviceList()
 {
 }
 
-AudioDeviceList* AudioManager::FindList(const std::string& arch)
-{
-	unsigned int i;
-	std::string tmp = arch;
-
-	if (tmp == "default")
-		tmp = DEFAULT_AUDIO_ARCH;
-
-	for (i=0;i<Singleton().mDeviceLists.size();i++)
-	{
-		if (Singleton().mDeviceLists[i]->ArchName() == tmp)
-		{
-			return Singleton().mDeviceLists[i];
-		}
-	}
-
-	return 0;
-}
