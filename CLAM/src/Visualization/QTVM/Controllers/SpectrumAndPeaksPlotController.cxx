@@ -42,6 +42,7 @@ namespace CLAM
 			CachePeaksData();
 			FullView();
 			_peaksRenderer.SetVBounds(_view.top,_view.bottom);
+			emit requestRefresh();
 		}
 
 		void SpectrumAndPeaksPlotController::SetPeaksColor(Color cline,Color cpoint)
