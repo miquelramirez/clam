@@ -19,6 +19,9 @@
 *
 */
 
+//DEPRECATED TO REMOVE
+//
+
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // needed for assertion_traits<bool>
 #include "InPort.hxx"
@@ -485,7 +488,7 @@ class PortsTest : public CppUnit::TestFixture, public CLAM::Processing
 
 		CPPUNIT_ASSERT_EQUAL( false, baseOutPort.IsConnectableTo(baseInPort) );
 	}
-	
+
 
 };
 
