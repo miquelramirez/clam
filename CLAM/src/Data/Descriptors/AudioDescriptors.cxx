@@ -28,11 +28,6 @@
 
 using namespace CLAM;
 
-void AudioDescriptors::DefaultInit()
-{
-	mpAudio=NULL;
-}
-
 AudioDescriptors::AudioDescriptors(Audio* pAudio): ProcessingData(eNumAttr)
 {
 	MandatoryInit();

@@ -73,15 +73,37 @@ namespace CLAM {
 //		friend class SpectralDescriptorsGen;
 		SpectralDescriptors(Spectrum* pSpectrum);
 
-		void DefaultInit();
+		const Spectrum* GetpSpectrum() const;
+		void SetpSpectrum(Spectrum* pSpectrum);
 
-		const Spectrum* GetpSpectrum() const{return mpSpectrum;}
-		void SetpSpectrum(Spectrum* pSpectrum) {mpSpectrum=pSpectrum;}
+	private:
+		void DefaultInit();
+		void CopyInit(const SpectralDescriptors & copied);
 
 	private:
 		Spectrum* mpSpectrum;
 
 	};
+
+
+
+// Implementation
+
+inline void SpectralDescriptors::DefaultInit() {
+	mpSpectrum=0;
+}
+
+inline void SpectralDescriptors::CopyInit(const SpectralDescriptors & copied) {
+	mpSpectrum=copied.mpSpectrum;
+}
+
+inline const Spectrum* SpectralDescriptors::GetpSpectrum() const {
+	return mpSpectrum;
+}
+
+inline void SpectralDescriptors::SetpSpectrum(Spectrum* pSpectrum) {
+	mpSpectrum=pSpectrum;
+}
 
 
 }
