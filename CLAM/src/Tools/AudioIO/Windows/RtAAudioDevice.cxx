@@ -142,11 +142,11 @@ namespace CLAM
 					// and are above zero
 					mIOModel = eFullDuplex;
 					mNChannels = outChannels;
-					mFramesPerBuffer = Latency()/mNChannels;
+					mFramesPerBuffer = Latency();
 
 					mDevice = new RtAudio();
 					mOutputStreamId= mDevice->openStream( mDevID,mNChannels, 0, 0, 
-										   RtAudio::RTAUDIO_SINT16, SampleRate()/mNChannels, &mFramesPerBuffer, NumberOfInternalBuffers() );
+										   RtAudio::RTAUDIO_SINT16, SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers() );
 					mInputStreamId= mDevice->openStream( 0, 0, mDevID, mNChannels, RtAudio::RTAUDIO_SINT16,
 											 SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers() );
 
@@ -162,7 +162,7 @@ namespace CLAM
 					mIOModel = eHalfDuplexOut;
 					mNChannels = outChannels;
 					// depending on outChannels value
-					mFramesPerBuffer = Latency()/mNChannels;
+					mFramesPerBuffer = Latency();
 					mDevice = new RtAudio();
 					mOutputStreamId= mDevice->openStream( mDevID,mNChannels, 0, 0, 
 										   RtAudio::RTAUDIO_SINT16, SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers() );
@@ -176,7 +176,7 @@ namespace CLAM
 					mIOModel = eHalfDuplexIn;
 					// depending on the value of inChannels
 					mNChannels = inChannels;
-					mFramesPerBuffer = Latency()/mNChannels;
+					mFramesPerBuffer = Latency();
 					mDevice = new RtAudio();
 					mInputStreamId= mDevice->openStream( 0, 0, mDevID, mNChannels, RtAudio::RTAUDIO_SINT16,
 											 SampleRate(), &mFramesPerBuffer, NumberOfInternalBuffers());
