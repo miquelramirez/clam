@@ -95,6 +95,7 @@ namespace CLAM
 
 	bool MonoAudioFileReader::ConcreteStart()
 	{
+		if (!mNativeStream) mNativeStream =mConfig.GetSourceFile().GetStream();
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
 		mEOFReached = false;
