@@ -25,30 +25,29 @@ decl {\#include "CLAMPresentations.hxx"} {public
 decl {\#include "CLAMViews.hxx"} {public
 } 
 
+decl {\#include "Signalv1.hxx"} {public
+} 
+
+decl {\#include "Slotv1.hxx"} {public
+} 
+
 class UserInterface {open
 } {
   decl {public: AnalysisSynthesisExampleGUI* mAnalysisSynthesisExample;} {public
   }
-  Function {UserInterface()} {open
-  } {
+  Function {UserInterface()} {} {
     code {Init();} {}
+    code {mSlot.Wrap( this, &UserInterface::ChangeTimeTag );} {}
     Fl_Window mWindow {
-      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)} open
-      xywh {192 296 872 548} resizable
+      label {SMS Analysis/Synthesis Application | MTG-UPF (Barcelona)}
+      xywh {494 495 872 548} resizable
       code0 {mWindow2=NULL;} visible
     } {
-      Fl_Box mResizable {selected
-        xywh {505 50 360 490} hide resizable
-      }
-      Fl_Output mConfigurationText {
-        label {Configuration File}
-        private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
-      }
-      Fl_Menu_Bar mMenuBar {open
+      Fl_Menu_Bar mMenuBar {
         private xywh {0 0 872 21} box THIN_UP_BOX labelsize 13 textsize 12
       } {
         submenu {} {
-          label Input open
+          label Input
           private xywh {5 5 100 20} labelsize 12
         } {
           menuitem {} {
@@ -78,7 +77,7 @@ class UserInterface {open
             menuitem mDisplayInSpec {
               label Spectrum
               callback {DisplayInputSpectrum();}
-              private xywh {45 45 100 20} labelsize 12 hide deactivate
+              private xywh {45 45 100 20} labelsize 12 deactivate
             }
           }
           menuitem mPlayInputSound {
@@ -105,6 +104,21 @@ class UserInterface {open
             label {Store...}
             callback {StoreAnalysisData();}
             private xywh {45 45 100 20} labelsize 12 deactivate
+          }
+          submenu mMelodySM {
+            label Melody
+            private xywh {25 25 100 20} labelsize 12 deactivate
+          } {
+            menuitem mMelodyAnalyze {
+              label Analyze
+              callback {AnalyzeMelody();}
+              private xywh {75 75 100 20} labelsize 12
+            }
+            menuitem mMelodyStore {
+              label Store
+              callback {StoreMelody();}
+              private xywh {75 75 100 20} labelsize 12 deactivate
+            }
           }
         }
         submenu {} {
@@ -133,17 +147,22 @@ class UserInterface {open
           }
         }
         submenu mOutputSM {
-          label Output open
+          label Output selected
           private xywh {10 10 100 20} labelsize 12 deactivate
         } {
           submenu mVisualizeOutputs {
-            label Display open
+            label Display
             private xywh {5 5 100 20} labelsize 12
           } {
             menuitem {} {
               label Sound
               callback {DisplayOutputSound();}
               private xywh {25 25 100 20} labelsize 12
+            }
+            menuitem {} {
+              label Spectrum
+              callback {DisplayOutputSpectrum();}
+              private xywh {55 55 100 20} labelsize 12 hide
             }
             menuitem {} {
               label Sinusoidal
@@ -174,21 +193,6 @@ class UserInterface {open
               label Residual
               callback {PlayResidual();}
               private xywh {0 0 100 20} labelsize 12
-            }
-          }
-          submenu mMelodySM {
-            label Melody
-            private xywh {20 20 100 20} labelsize 12 deactivate
-          } {
-            menuitem mMelodyAnalyze {
-              label Analyze
-              callback {AnalyzeMelody();}
-              private xywh {70 70 100 20} labelsize 12
-            }
-            menuitem mMelodyStore {
-              label Store
-              callback {StoreMelody();}
-              private xywh {70 70 100 20} labelsize 12 deactivate
             }
           }
           submenu mStoreOutputs {
@@ -224,9 +228,29 @@ Exit();}
           private xywh {10 10 100 20} labelsize 12
         }
       }
-      Fl_Box mSmartTile {
-        private xywh {5 50 860 490}
-        class Fl_Smart_Tile
+      Fl_Counter mCounter {
+        label {Frame }
+        callback {ChangeFrame();}
+        private xywh {330 525 190 20} box THIN_UP_BOX labelsize 12 align 4 minimum 0 maximum 0 step 1 deactivate
+      }
+      Fl_Group {} {
+        xywh {5 50 860 470} resizable
+      } {
+        Fl_Box mSmartTile {
+          private xywh {5 50 860 470}
+          class Fl_Smart_Tile
+        }
+      }
+      Fl_Group {} {
+        xywh {0 20 872 30}
+      } {
+        Fl_Output mConfigurationText {
+          label {Configuration File}
+          private xywh {105 25 400 20} box THIN_DOWN_BOX labelsize 12 align 132 textsize 12
+        }
+        Fl_Box {} {
+          xywh {505 20 367 30} resizable
+        }
       }
     }
   }
@@ -236,8 +260,8 @@ Exit();}
       label {About this program...}
       callback {delete mWindow2;
 mWindow2=NULL;}
-      private xywh {451 343 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10
-      code0 {mWindow2->show();} noborder visible
+      private xywh {516 493 417 100} box ENGRAVED_BOX labeltype NORMAL_LABEL labelsize 10 hide
+      code0 {mWindow2->show();} modal
     } {
       Fl_Box {} {
         label {SMS Analysis/Synthesis Application}
@@ -274,6 +298,7 @@ mWindow2=NULL;}
   decl {void StoreMelody(void);} {}
   decl {void StoreOutputSound(void);} {}
   decl {void DisplayOutputSound(void);} {}
+  decl {void DisplayOutputSpectrum(void);} {}
   decl {void StoreOutputSoundResidual(void);} {}
   decl {void DisplayOutputSoundResidual(void);} {}
   decl {void StoreOutputSoundSinusoidal(void);} {}
@@ -282,18 +307,30 @@ mWindow2=NULL;}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
   decl {Fl_Window* Attach( const char* title, CLAM::Audio* data );} {}
+  decl {Fl_Window* Attach( const char* title, CLAM::Spectrum* data, int type );} {}
   decl {static void _Detach(Fl_Window* buffer,UserInterface* ui);} {}
+  decl {static void _DetachSpectrum(Fl_Window* buffer,UserInterface* ui);} {}
   decl {void Detach(Fl_Window* buffer);} {}
+  decl {void DetachSpectrum(Fl_Window* buffer);} {}
   decl {void PlayInputSound();} {}
   decl {void PlayOutputSound();} {}
   decl {void PlaySinusoidal();} {}
   decl {void PlayResidual();} {}
   decl {void LoadSound();} {}
   decl {void Init();} {}
+  decl {void Update();} {}
+  decl {void DetachDisplays();} {}
+  decl {void ChangeFrame();} {}
+  decl {void ChangeTimeTag(double tag);} {}
   decl {Fl_Window* mAudioInputDisplay;} {}
   decl {Fl_Window* mAudioOutputDisplay;} {}
   decl {Fl_Window* mAudioOutputResidualDisplay;} {}
   decl {Fl_Window* mAudioOutputSinusoidalDisplay;} {}
-  decl {void Update();} {public
-  }
+  decl {Fl_Window* mInputSpectrum;} {}
+  decl {Fl_Window* mOutputSpectrum;} {}
+  decl {ProcDataView<Spectrum>* mInputSpectrumView;} {}
+  decl {ProcDataView<Spectrum>* mOutputSpectrumView;} {}
+  decl {Signalv1<TData> mFrameSignal;} {}
+  decl {Signalv1<bool> mPaintSignal;} {}
+  decl {Slotv1<double> mSlot;} {}
 } 
