@@ -100,8 +100,7 @@ void SegmentDescriptors::Compute()
 void SegmentDescriptors::ConcreteCompute()
 {
 	int nFrames=mpSegment->GetnFrames();
-	int i;
-	for (i=0;i<nFrames;i++)
+	for (int i=0;i<nFrames;i++)
 		GetFramesD()[i].Compute();
 	if(HasMeanD())
 		SetMeanD(mSegmentStats->GetMean());
@@ -109,9 +108,10 @@ void SegmentDescriptors::ConcreteCompute()
 		SetMaxD(mSegmentStats->GetMax());
 	if(HasMinD())
 		SetMinD(mSegmentStats->GetMin());
-	if(HasVarianceD()) {
+	if(HasVarianceD())
 		SetVarianceD(mSegmentStats->GetVariance());
-	}
+	if(HasAudioD())
+		GetAudioD().Compute();
 }
 
 } // namespace CLAM
