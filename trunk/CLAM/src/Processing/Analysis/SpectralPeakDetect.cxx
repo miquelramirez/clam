@@ -74,17 +74,23 @@ namespace CLAM {
 		return true;
 	}
 
-	/* The supervised Do() function */
 	bool  SpectralPeakDetect::Do(void)
 	{
-		if (mInput.GetData().GetScale() != EScale::eLog)
-		{
-			mInput.GetData().ToDB();
-		}
+		bool result = false;
+
 		mOutput.GetData().SetScale( EScale::eLog );
 
-		bool result = Do( mInput.GetData(), mOutput.GetData() );
-		mInput.GetData().ToLinear();
+		if (mInput.GetData().GetScale() != EScale::eLog)
+		{
+			Spectrum tmpLinearInSpectrum = mInput.GetData();
+			tmpLinearInSpectrum.ToDB();
+			result = Do( tmpLinearInSpectrum, mOutput.GetData() );
+		}
+		else
+		{
+			result = Do( mInput.GetData(), mOutput.GetData() );
+		}
+
 		mInput.Consume();
 		mOutput.Produce();
 		return result;
@@ -125,6 +131,7 @@ namespace CLAM {
 		// detection loop 
 		TSize nSpectralPeaks = 0;
 		TSize binWidth = 0;	 // BinWidth is in NumBins
+
 		int i;
 		for (i = 0; (i < nBins-2) && (nSpectralPeaks < maxPeaks); ++i)
 		{
