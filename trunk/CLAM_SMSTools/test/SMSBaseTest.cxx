@@ -40,6 +40,7 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 //	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
 //	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_sinusoidalGain );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_residualGain );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_FreqShift );
 //	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
 //	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
@@ -382,6 +383,26 @@ private:
 		bool transformedAudioAreEqual =
 			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
 		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+	}
+
+	void testTransformations_withLoadedScore_residualGain()
+	{
+		LoadTransformationScore( mPath + "/SMSTests/residualGain-transf.xml" );
+		LoadConfig( mPath + "/SMSTests/default-config_noise.xml");
+		InitConfigs();
+		LoadInputSound();
+		Analyze();
+		Transform();
+		Synthesize();
+
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_residualGain-transf";
+		double delta = 0.09;
+		std::string diagnostic;
+
+		bool transformedAudioAreEqual =
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
+		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+
 	}
 
 	void testTransformations_withLoadedScore_FreqShift ()
