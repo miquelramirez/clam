@@ -21,6 +21,9 @@ namespace CLAM
 	    void SetDataColor(Color c);
 	    void Draw();
 	    void SetMonitor(MonitorType & monitor);
+	
+	protected:
+	    void FullView();
 
 	private:
 	    MonitorType* mMonitor;
@@ -33,7 +36,6 @@ namespace CLAM
 	    void AddData(const DataArray& data);
 	  
 	    void Init(const TSize& frameSize);
-	    void FullView();
 	    void OnNewData();
 	    
 	};

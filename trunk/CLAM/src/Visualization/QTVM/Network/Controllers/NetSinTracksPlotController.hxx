@@ -18,6 +18,9 @@ namespace CLAM
 	    void SetData(const SpectralPeakArray& peaks);
 	    void Draw();
 
+	protected:
+	    void FullView();
+
 	private:
 	    Array<SpectralPeakArray> _peakMtx;
 	    SineTrackList _cachedTracks;

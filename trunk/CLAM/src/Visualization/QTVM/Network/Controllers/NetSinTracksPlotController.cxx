@@ -69,6 +69,11 @@ namespace CLAM
 	    _view.bottom = GetvMin();
 	}
 
+	void NetSinTracksPlotController::FullView()
+	{
+	    // TODO
+	}
+
     }
 }
 

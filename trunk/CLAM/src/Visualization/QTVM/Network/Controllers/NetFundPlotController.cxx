@@ -52,6 +52,7 @@ namespace CLAM
 			   SetCanGetData(true);
 			}
 			_renderer.Render();
+			NetPlotController::Draw();
 			return;
 		    }
 		    
@@ -64,12 +65,14 @@ namespace CLAM
 			if(First()) Init();
 			_renderer.Update(fund.GetFreq(0));
 			_renderer.Render();
+			NetPlotController::Draw();
 
 			mMonitor->UnfreezeData();
 		    }
 		    else
 		    {
 			_renderer.Render();
+			NetPlotController::Draw();
 		    }
 		}
 

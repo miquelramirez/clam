@@ -22,6 +22,9 @@ namespace CLAM
 	    void Draw();
 	    void SetMonitor(MonitorType & monitor);
 
+	protected:
+	    void FullView();
+
 	private:
 	    DataArray _cachedData;
 	    BuffDataRenderer _renderer;
@@ -33,7 +36,6 @@ namespace CLAM
 	    void AddData(const TData& data);
 	  
 	    void Init();
-	    void FullView();
 	    void OnNewData();
 
 	};

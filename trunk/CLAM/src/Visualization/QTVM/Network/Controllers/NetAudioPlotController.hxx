@@ -21,6 +21,9 @@ namespace CLAM
 			void SetDataColor(Color c);
 			virtual void Draw();
 			void SetMonitor(MonitorType & monitor);
+		    
+		protected:
+		        void FullView();
 
 		private:
 		        Audio _cacheData;
@@ -29,7 +32,6 @@ namespace CLAM
 			MonitorType * mMonitor;
 
 		        void Init(const TSize& frameSize);
-		        void FullView();
 		};
 	}
 }

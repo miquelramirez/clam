@@ -22,6 +22,9 @@ namespace CLAM
 			virtual void Draw();
 			void SetMonitor(MonitorType & monitor);
 
+	        protected:
+		        void FullView();
+
 		private:
 			DataArray _magBuffer;
 			DataArray _freqBuffer;
@@ -33,7 +36,6 @@ namespace CLAM
 
 			void ProcessPeakData();
 		        void Init();
-		        void FullView();
 		};
 	}
 }

@@ -23,6 +23,9 @@ namespace CLAM
 	    void Draw();
 	    void SetMonitor(MonitorType & monitor);
 
+	protected:
+	    void FullView();
+
 	private:
 	    MonitorType* mMonitor;
 	    Spectrum _spec;
@@ -36,7 +39,6 @@ namespace CLAM
 	    void AddData(const Spectrum& spec);
 	    void AdaptSpectralData();
 	  
-	    void FullView();
 	    void Init(const TSize& specSize);
 
 	    float ClampToRange(TData value) const;

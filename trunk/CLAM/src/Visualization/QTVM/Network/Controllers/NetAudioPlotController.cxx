@@ -50,6 +50,7 @@ namespace CLAM
 				SetCanGetData(true);
 			    }
 			    _renderer.Render();
+			    NetPlotController::Draw();
 			    return;
 			}
 		      
@@ -65,12 +66,14 @@ namespace CLAM
 			    _renderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize,NormalMode);
 
 			    _renderer.Render();
+			    NetPlotController::Draw();
 
 			    mMonitor->UnfreezeData();
 			}
 			else
 			{
 			    _renderer.Render();
+			    NetPlotController::Draw();
 			}
 		}
 
