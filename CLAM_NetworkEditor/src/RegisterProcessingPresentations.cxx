@@ -58,4 +58,9 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 	regtAudioPlotProcessing( "AudioPlotProcessing" );
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
 	regtSpectrumPlotProcessing( "SpectrumPlotProcessing" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtPeaksPlotProcessing( "PeaksPlotProcessing" );
+
+
+
 
