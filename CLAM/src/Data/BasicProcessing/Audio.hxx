@@ -61,19 +61,16 @@ namespace CLAM {
 
 	public:
 
-		/** @deprecated Use GetBuffer() instead */
-		DataArray& GetFloatBuffer() {
-			throw Err("Audio::GetFloatBuffer: Depracated method, use GetBuffer() instead");}
-
+	
 		/** @return the audio buffer size in samples*/
 		int GetSize() const {return GetBuffer().Size();}
 
-	        /** Getter for the end timing
+	    /** Getter for the end time
 		 *  @return The current end time for the buffer size */
 		TTime GetEndTime() const {return GetBeginTime()+GetTimeFromIndex(GetSize());}
 
-	        /** Method for get the total duration of Buffer
-		 *  @return The duration of the audio buffer */
+	    /** Method for getting the total duration of Buffer
+		 *  @return The duration of the audio buffer in miliseconds */
 		TTime GetDuration() const {return GetTimeFromIndex(GetSize());}
 
 		/** Resizes the array buffers to a size in samples.

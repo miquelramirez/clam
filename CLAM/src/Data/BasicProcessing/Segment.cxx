@@ -123,8 +123,6 @@ Frame& Segment::GetFrame(TIndex pos)
 
 void Segment::AddFrame(Frame& newFrame)
 {
-	//TODO: Now FramesArray is just an array, should be a DynamicBranch
-	//GetFramesArray().Push(newFrame);
 	if(GetHoldsData())
 	{
 		GetFramesArray().AddElem(newFrame);
@@ -136,8 +134,6 @@ void Segment::AddFrame(Frame& newFrame)
 
 void Segment::DeleteFrame(TIndex pos)
 {
-	//TODO: Now FramesArray is just an array, should be a DynamicBranch
-	//GetFramesArray().Delete(pos);
 	if(GetHoldsData())
 	{
 		GetFramesArray().DeleteElem(pos);
@@ -173,8 +169,6 @@ const Frame& Segment::GetFrame(TTime time) const
 
 void Segment::DeleteFrame(TTime time)
 {
-	//TODO: Now FramesArray is just an array, should be a DynamicBranch
-	//GetFramesArray().Delete(FindFrame(time));
 	DeleteFrame(FindFrame(time));
 }
 

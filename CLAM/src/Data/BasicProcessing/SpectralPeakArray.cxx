@@ -41,7 +41,7 @@ SpectralPeakArray::SpectralPeakArray(const SpectralPeak& prototype):ProcessingDa
 
 void SpectralPeakArray::DefaultInit()
 {
-	//Initializing minimum set of attributes (mag and freq)
+	//Initializing minimum set of attributes (mag, freq and scale)
 	AddFreqBuffer();
 	AddMagBuffer();
 	AddScale();
@@ -233,15 +233,13 @@ void SpectralPeakArray::DeleteSpectralPeak(TIndex pos,bool deleteIndex)
 /*Index functionality*/
 
 
-/*returns position in IndexArray with index='index'*/
 TIndex SpectralPeakArray::GetPositionFromIndex(TIndex index) const
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetPositionFromIndex: Index array is not instantiated");
 	CLAM_ASSERT(GetIsIndexUpToDate(),"SpectralPeakArray::GetPositionFromIndex: Index table is not up to date");
 	
-	//cannot use searching routines because index may not be sorted
-	//CCLAMTmplSearchArray<TIndex> tmpSearchArray(mIndexArray);
-	//TIndex guess=tmpSearchArray.Find(index);
+	//Note: cannot use searching routines because index may not be sorted
+
 	int i;
 	IndexArray& indexArray=GetIndexArray();
 	for(i=0;i<indexArray.Size();i++)

@@ -81,9 +81,8 @@ void Audio::GetAudioChunk(TTime beginTime, TTime endTime,Audio& chunk, bool conf
 void Audio::GetAudioChunk(TIndex beginIndex,TIndex endIndex,Audio& chunk, bool configureChunk) const
 {
 	
-	/*CLAM_ASSERT(beginIndex>=0&&endIndex>beginIndex&&beginIndex<GetSize(),
-	           "Audio::GetAudioChunk: Incorrect index boundaries for audio chunk");
-	*********Note that now begin index is allowed to be less than zero*/
+
+	/*Note that begin index is allowed to be less than zero*/
 
 	CLAM_ASSERT(endIndex>beginIndex&&beginIndex<GetSize(),
 	           "Audio::GetAudioChunk: Incorrect index boundaries for audio chunk");
