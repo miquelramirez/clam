@@ -102,22 +102,27 @@ namespace CLAM
 
 		} else if (p_x<=node[p_node-1].offset) {
 
-			p_x=node[p_node-1].offset+1;
+		   p_x=node[p_node-1].offset+1;
 
 		} else if ((p_node<node.size()-1) && (p_x>=node[p_node+1].offset)) {
-
-			p_x=node[p_node+1].offset-1;
+		  p_x=node[p_node+1].offset-1;
 		}
 
-		if (p_x>maxX_value) p_x=maxX_value;
-		if (p_x<minX_value) p_x=minX_value;
+		if (p_x>maxX_value) 
+		  {
+		    p_x=maxX_value;
+		  }
+		if (p_x<minX_value)
+		  {
+		    p_x=minX_value;
+		  }
 
 		if (p_y>maxY_value) p_y=maxY_value;
 		if (p_y<minY_value) p_y=minY_value;
 
 			node[p_node].offset=p_x;
 			node[p_node].value=p_y;
-
+		
 	}
 
 	int Envelope::add_node_at_offset( int p_x, int p_y) {

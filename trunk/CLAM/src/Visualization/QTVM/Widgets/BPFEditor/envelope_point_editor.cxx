@@ -283,6 +283,7 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 		node_end=envelope->get_node_offset( envelope->get_loop_end() )/mZoom;
 
 		painter.setPen(QColor(170,170,170));
+		//XAMAT: painter.setPen(QColor(0,200,0));
 
         	painter.drawLine((int)node_begin,0,(int)node_begin,cur_height);
         	painter.drawLine((int)node_end,0,(int)node_end,cur_height);
@@ -296,7 +297,8 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 		node_begin=envelope->get_node_offset( envelope->get_sustain_loop_begin() )/mZoom;
 		node_end=envelope->get_node_offset( envelope->get_sustain_loop_end() )/mZoom;
 
-		painter.setPen(QColor(220,220,220));
+		 painter.setPen(QColor(220,220,220));
+		//XAMAT:painter.setPen(QColor(0,200,0));
 
         	painter.drawLine((int)node_begin,0,(int)node_begin,cur_height);
         	painter.drawLine((int)node_end,0,(int)node_end,cur_height);
@@ -305,7 +307,7 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 	painter.fillRect(0,cur_height,cur_width,real_height-cur_height,QColor(0,0,0));
 
 	painter.setPen(QColor(200,200,200));
-
+	
 	for (int i=0;i<envelope->get_node_count();i++) {
 
 
@@ -326,7 +328,7 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 
 	char buf[200];
 
-//	painter.setPen(QColor(100, 200, 100));
+	painter.setPen(QColor(200, 200, 200));
 
 	/* This code calculates the increment for displaying the numbers, so they dont overlap */
 	float avg_string_width=(int)display_font_metrics.width("xxxxx");
@@ -348,7 +350,7 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 
 		int real_screen_offset=int((float)i/mZoom);
 
-		sprintf(buf,"%i",(int)i);
+		sprintf(buf,"%i",(int)i*mTimeFactor);
 		if (i>0.0f)
 			painter.drawText(real_screen_offset-display_font_metrics.width(buf)/2,cur_height+display_font_metrics.height(),buf);
 	}
@@ -361,7 +363,8 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 		sprintf(buf,"mZoom %i%%, %i nodes. ",int(mZoom*100.0),envelope->get_node_count());
 	}
 
-	painter.drawText(2,cur_height+3+display_font_metrics.height()*2,buf);
+	//XAMAT: we don't need this text:
+	//painter.drawText(2,cur_height+3+display_font_metrics.height()*2,buf);
 
 }
 
@@ -383,11 +386,11 @@ void Envelope_Point_Editor::draw_envelope_pos(int p_x,QPainter &painter) {
 
 	if (mPositionCache[p_x]) {
 
-		painter.setPen(QColor(255,255,255));
-
+	  painter.setPen(QColor(255,255,255));
+	  
 	} else {
 
-		painter.setPen(QColor(0,0,0));
+	  painter.setPen(QColor(0,0,0));
 	}
 
 	painter.drawLine(p_x,0,p_x,cur_height);
@@ -428,6 +431,7 @@ void Envelope_Point_Editor::draw_envelope_pos(int p_x,QPainter &painter) {
 	}
 
 	painter.setPen(QColor(200,200,255));
+	//XAMAT: painter.setPen(QColor(0,255,0));
 	int end=center+(line_size/2);
 
 	if (end>=(cur_height))
@@ -451,13 +455,15 @@ void Envelope_Point_Editor::draw_envelope_pos(int p_x,QPainter &painter) {
 	prev_val=cur_height-prev_val;
 
 
-	painter.setPen(QColor(140,80,80));
+	//XAMAT-g painter.setPen(QColor(140,80,80));
+	painter.setPen(QColor(0,255,0));
 	#define MIN(m_a,m_b) ( ((m_a)<(m_b))?(m_a):(m_b))
 	#define MAX(m_a,m_b) ( ((m_a)>(m_b))?(m_a):(m_b))
 	painter.drawLine(p_x,(int)MIN(prev_val,val)-1,p_x,(int)MAX(prev_val,val)+1); //must make it better
 
 
-	painter.setPen(QColor(255,150,150));
+	//XAMAT-g painter.setPen(QColor(255,150,150));
+	painter.setPen(QColor(0,255,0));
 	painter.drawLine(p_x,(int)prev_val,p_x,(int)val); //must make it better
 
 }
@@ -553,6 +559,7 @@ Envelope_Point_Editor::Envelope_Point_Editor(QWidget *p_parent) : QWidget(p_pare
 	
 	envelope=NULL;
 	mZoom=0.25f;
+	mTimeFactor = 1;
 
 	mDisplayFont.setFamily("fixed");
 	mDisplayFont.setPointSize(10);
