@@ -27,20 +27,25 @@ namespace CLAM
 {
 	namespace VM
 	{
-		void PlotAudioMarks(	const Audio& audio,
-								std::list<unsigned>& marks,
-								const std::string& label,
-								int x, int y, int w, int h	)
+	    void PlotAudioMarks(const Audio& audio,
+				std::list<unsigned>& marks,
+				const std::string& label,
+				int x, int y, int w, int h)
 		{
 			QtAppWrapper::Init();
 
 			QtAudioPlot plot;
 			plot.Label(label);
 			plot.Geometry(x,y,w,h);
-			plot.SetData(audio);
+			plot.SetBackgroundColor(VMColor::White());
+			plot.SetForegroundColor(VMColor::Blue());
+			plot.SetDialColor(VMColor::Black());
+			plot.SetRegionColor(VMColor::LightGray());
 			plot.SetMarks(marks);
+			plot.SetColor(VMColor::Blue());
 			plot.SetMarksColor(VMColor::Red());
 			plot.SwitchDisplayColors(true);
+			plot.SetData(audio);
 			plot.Show();
 
 			QtAppWrapper::Run();

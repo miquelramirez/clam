@@ -28,17 +28,21 @@ namespace CLAM
 	namespace VM
 	{
 
-		void PlotFundamental(	const Segment& segment,
-								const std::string& label,
-								int x, int y, int w, int h )
+	    void PlotFundamental(const Segment& segment,
+				 const std::string& label,
+				 int x, int y, int w, int h)
 		{
 			QtAppWrapper::Init();
 			
 			QtFundFreqPlot plot;
 			plot.Label(label);
 			plot.Geometry(x,y,w,h);
-			plot.SetData(segment);
+			plot.SetBackgroundColor(VMColor::White());
+			plot.SetForegroundColor(VMColor::Blue());
+			plot.SetDialColor(VMColor::Black());
+			plot.SetRegionColor(VMColor::LightGray());
 			plot.SwitchDisplayColors(true);
+			plot.SetData(segment);
 			plot.Show();
 			
 			QtAppWrapper::Run();
