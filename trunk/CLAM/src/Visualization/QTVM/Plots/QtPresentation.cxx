@@ -98,18 +98,19 @@ namespace CLAM
 			_btoggle_color->setText("CM");
 			QToolTip::add(_btoggle_color,"switch display colors");
 			SwitchDisplayColors(false);
-			_top->addWidget(topLeftHole,0);
+			_top->addWidget(topLeftHole);
 
 			_xRuler = new XRuler(this);
 			_top->addWidget(_xRuler);
 
 			topRightHole = new QFrame(this);
 			topRightHole->setFixedSize(20,40);
-			_top->addWidget(topRightHole,0);
+			_top->addWidget(topRightHole);
 			
 			// middle area (y ruler, display area, vertical scroll and zoom group)
 			_middle = new QHBoxLayout(_mainLayout);
 			_yRuler = new YRuler(this);
+			_yRuler->setFixedWidth(50);
 			_middle->addWidget(_yRuler,0);
 			
 			_surf = new DisplaySurface(this);
@@ -117,20 +118,20 @@ namespace CLAM
 			_middle->addWidget(_surf);
 			
 			_vs = new VScrollGroup(this);
-			_middle->addWidget(_vs,0);
+			_middle->addWidget(_vs);
 
 			// bottom area (horizontal scroll and zoom group)
 			_bottom = new QHBoxLayout(_mainLayout);
 			bottomLeftHole = new QFrame(this);
 			bottomLeftHole->setFixedSize(50,20);
-			_bottom->addWidget(bottomLeftHole,0);
+			_bottom->addWidget(bottomLeftHole);
 
 			_hs = new HScrollGroup(this);
 			_bottom->addWidget(_hs);
 
 			bottomRightHole = new QFrame(this);
 			bottomRightHole->setFixedSize(20,20);
-			_bottom->addWidget(bottomRightHole,0);
+			_bottom->addWidget(bottomRightHole);
 
 			// Connections vertical scroll and zoom
 			connect(_vs,SIGNAL(zoomIn()),this,SLOT(vZoomIn()));
