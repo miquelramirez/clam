@@ -75,6 +75,7 @@ namespace CLAM
 	{
         	if (mOwnedPlot) delete mPlot;
 		mPlot = new VM::NetSpectrumPlot();
+		mOwnedPlot = true;
 		mPlot->Label(mConfig.GetCaption());
 		mPlot->SetBackgroundColor(VM::VMColor::Black());
 		mPlot->SetDataColor(VM::VMColor::Green());
