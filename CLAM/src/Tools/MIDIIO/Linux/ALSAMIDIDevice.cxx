@@ -80,6 +80,11 @@ namespace CLAM {
 			snd_rawmidi_close(mHandleIn);
 			snd_rawmidi_status_free(mStatusIn);
 		}
+
+                if (mHandleOut) {
+			snd_rawmidi_drain(mHandleOut);
+			snd_rawmidi_close(mHandleOut);
+		}
 	}
 
 	void ALSAMIDIDevice::Write(unsigned char* msg,int size) throw(Err)
