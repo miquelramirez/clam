@@ -77,7 +77,6 @@ namespace CLAM
 	    _view.right=TData(GetnSamples());
 	    _view.bottom=GetvMin();
 	    _view.top=GetvMax();
-	    emit sendView(_view);
 	}
 
     }
