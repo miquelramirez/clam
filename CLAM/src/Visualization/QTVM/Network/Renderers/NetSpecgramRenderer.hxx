@@ -1,8 +1,7 @@
 #ifndef __NETSPECGRAMRENDERER__
 #define __NETSPECGRAMRENDERER__
 
-#include "Array.hxx"
-#include "QtPalette.hxx"
+#include <vector>
 #include "Renderer.hxx"
 
 namespace CLAM
@@ -15,15 +14,12 @@ namespace CLAM
 	    NetSpecgramRenderer();
 	    virtual ~NetSpecgramRenderer();
 
-	    void SetData(Array<DataArray>& data);
+	    void SetData(std::vector< std::vector<Color> >& data);
 
 	    void Render();
 
 	private:
-	    Array<DataArray> _data;
-	    QtPalette _palette;
-
-	    float ClampToRange(TData value) const;
+	    std::vector< std::vector<Color> > _data;
 
 	};
     }

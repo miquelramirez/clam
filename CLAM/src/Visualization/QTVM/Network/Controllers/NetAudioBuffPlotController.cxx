@@ -70,7 +70,7 @@ namespace CLAM
 	void NetAudioBuffPlotController::Init(const TSize& frameSize)
 	{
 	    _frameSize = frameSize;
-	    SetnSamples(_frameSize*200);
+	    SetnSamples(_frameSize*100);
 	    _cachedData.Init();
 	    _processedData.Resize(GetnSamples());
 	    _processedData.SetSize(GetnSamples());
