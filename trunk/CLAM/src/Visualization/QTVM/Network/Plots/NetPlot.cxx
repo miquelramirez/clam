@@ -38,18 +38,16 @@ namespace CLAM
 			setGeometry(x,y+18,w,h);
 		}
 
-		void NetPlot::Show()
+		void NetPlot::show()
 		{
-		    if(!_closed)
-		    {
-			show();
+			QWidget::show();
 			_surf->startRendering();
-		    }
 		}
 
-		void NetPlot::Hide()
+		void NetPlot::hide()
 		{
-			hide();
+			_surf->stopRendering();
+			QWidget::hide();
 		}
 
 		void NetPlot::SetController(NetPlotController* controller)
@@ -74,7 +72,7 @@ namespace CLAM
 		void NetPlot::closeEvent(QCloseEvent* ce)
 		{
 		    _closed = true;
-		    Hide();
+		    hide();
 		    QWidget::closeEvent(ce);
 		}
 

@@ -25,23 +25,22 @@ namespace CLAM
 
 			private slots:
 				void receivedView(SView);
-				void refresh();
 
 			protected slots:
 				void paintGL();
+				void resizeGL(int width, int height);
 
 			protected:
-				void resizeEvent(QResizeEvent* re);
 
 			private:
 				NetPlotController* _controller;
 
-				QTimer _timer;
+				QTimer & _timer;
 				int _w, _h;
 				double _left, _right, _bottom, _top;
 				double _r, _g, _b;
 				volatile bool _doResize;
-				unsigned _milisecondsPerFrame;
+				unsigned _refreshInterval;
 				
 				void InitView();
 		};

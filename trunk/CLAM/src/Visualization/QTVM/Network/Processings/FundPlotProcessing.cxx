@@ -48,7 +48,7 @@ namespace CLAM
 	{
 		if(!AbleToExecute()) return true;
 		mPlot->SetData(fund);
-		if(!mPlot->isVisible()) mPlot->Show();
+		if(!mPlot->isVisible()) mPlot->show();
 		return true;
 	}
 

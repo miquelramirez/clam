@@ -4,6 +4,7 @@
 #include "Spectrum.hxx"
 #include "DataRenderer.hxx"
 #include "NetPlotController.hxx"
+#include "PortMonitor.hxx"
 
 namespace CLAM
 {
@@ -11,21 +12,28 @@ namespace CLAM
 	{
 		class NetSpectrumPlotController : public NetPlotController
 		{
-			public:
-				NetSpectrumPlotController();
-				virtual ~NetSpectrumPlotController();
-				void SetData(const Spectrum& spec);
-				void SetDataColor(Color c);
+		public:
+			typedef SpectrumPortMonitor MonitorType;
+			NetSpectrumPlotController();
+			virtual ~NetSpectrumPlotController();
 
-				virtual void Draw();
-			protected:
-				void FullView();
-			private:
-				Spectrum  _spec;
-				DataRenderer _renderer;
-				
-				void AdaptSpectralData();
-				void CacheData();
+			void SetData(const Spectrum& spec);
+			void SetDataColor(Color c);
+			virtual void Draw();
+			void SetMonitor(MonitorType & monitor);
+
+		protected:
+			void FullView();
+
+		private:
+			Spectrum  _spec;
+
+			DataRenderer _renderer;
+
+			MonitorType * mMonitor;
+
+			void AdaptSpectralData();
+			void CacheData();
 		};
 	}
 }

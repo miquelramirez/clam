@@ -7,6 +7,8 @@ namespace CLAM
 		NetAudioPlotController::NetAudioPlotController() 
 		{
 			SetvRange(TData(-1.0),TData(1.0));
+			_cachedData.SetSize(256);
+			mMonitor = 0;
 		}
 
 		NetAudioPlotController::~NetAudioPlotController()
@@ -21,6 +23,11 @@ namespace CLAM
 			FullView();
 		}
 
+		void NetAudioPlotController::SetMonitor(MonitorType & monitor)
+		{
+			mMonitor = & monitor;
+		}
+
 		void NetAudioPlotController::SetDataColor(Color c)
 		{
 			_dRenderer.SetColor(c);
@@ -28,7 +35,25 @@ namespace CLAM
 
 		void NetAudioPlotController::Draw()
 		{
+			if (!mMonitor)
+			{
+				_dRenderer.Render();
+				return;
+			}
+			const Audio & audio = mMonitor->FreezeAndGetData();
+
+			// TODO: Because we have exclusive right for
+			// to the data we could remove some of this copies
+
+			_cachedData = audio;
+			TSize audioSize = _cachedData.GetBuffer().Size();
+			SetnSamples(audioSize);
+			_dRenderer.SetDataPtr(_cachedData.GetBuffer().GetPtr(),audioSize,NormalMode);
+			FullView();
+
 			_dRenderer.Render();
+
+			mMonitor->UnfreezeData();
 		}
 
 		void NetAudioPlotController::FullView()

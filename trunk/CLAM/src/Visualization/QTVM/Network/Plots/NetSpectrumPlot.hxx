@@ -6,17 +6,21 @@
 
 namespace CLAM
 {
+	class SpectrumPortMonitor;
+
 	namespace VM
 	{
 		class NetSpectrumPlot : public NetPlot
 		{
 			Q_OBJECT
 		public:
+			typedef SpectrumPortMonitor MonitorType;
 			NetSpectrumPlot(QWidget* parent=0, const char * name=0);
 			virtual ~NetSpectrumPlot();
 
 			void SetData(const Spectrum& spec);
 			void SetDataColor(Color c);
+			void SetMonitor(MonitorType & monitor);
 
 		protected:
 			virtual void SetPlotController();

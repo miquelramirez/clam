@@ -1,5 +1,6 @@
 #include "NetDisplaySurface.hxx"
 #include <qwidget.h>
+#include <iostream>
 
 namespace CLAM
 {
@@ -7,15 +8,16 @@ namespace CLAM
 	{
 		NetDisplaySurface::NetDisplaySurface(QWidget* parent) 
 			: QGLWidget(parent)
+			, _timer( * new QTimer(this) )
 		{
 			setAutoBufferSwap(false);
 			SetBackgroundColor(0.0,0.0,0.0);
 			InitView();
 			_doResize = false;
-			_milisecondsPerFrame = 50;
+			_refreshInterval = 200;
 
 			_controller = NULL;
-			connect(&_timer, SIGNAL(timeout()), SLOT(refresh()));
+			connect(&_timer, SIGNAL(timeout()), SLOT(updateGL()));
 		}
 
 		NetDisplaySurface::~NetDisplaySurface()
@@ -41,21 +43,19 @@ namespace CLAM
 
 		void NetDisplaySurface::startRendering()
 		{
-			_timer.start(_milisecondsPerFrame);
+			if (!_timer.isActive())
+				_timer.start(_refreshInterval,true);
 		}
 
 		void NetDisplaySurface::stopRendering()
 		{
-			_timer.stop();
+			if (_timer.isActive())
+				_timer.stop();
 		}
-		void NetDisplaySurface::refresh()
-		{
-			updateGL();
-		}
+
 		void NetDisplaySurface::paintGL()
 		{
 			if (!_controller) return;
-			makeCurrent();    
 			if(_doResize)
 			{
 				glViewport(0, 0, _w, _h);
@@ -71,16 +71,16 @@ namespace CLAM
 
 			_controller->Draw();
 			swapBuffers();
-			doneCurrent();
-			((QWidget*)parent())->update();
-			_timer.start(_milisecondsPerFrame);
+			if (!_timer.isActive())
+				_timer.start(_refreshInterval,true);
 		}
 
-		void NetDisplaySurface::resizeEvent(QResizeEvent* re)
+		void NetDisplaySurface::resizeGL(int width, int height)
 		{ 
-			_w = re->size().width();
-			_h = re->size().height();
+			_w = width;
+			_h = height;
 			_doResize = true;
+			update();
 		}
 
 		void NetDisplaySurface::receivedView(SView v)
