@@ -52,7 +52,6 @@ NetworkController::NetworkController()
 	SlotRemovePortConnection.Wrap( this, &NetworkController::RemovePortConnection );
 	
 	SlotCreateControlConnection.Wrap( this, &NetworkController::CreateControlConnection );
-//	SlotRemoveControlConnection.Wrap( this, &NetworkController::RemoveControlConnection );
 	
 	SlotRemoveProcessing.Wrap( this, &NetworkController::RemoveProcessing );
 	SlotConfigureProcessing.Wrap( this, &NetworkController::ConfigureProcessing );
@@ -63,8 +62,6 @@ NetworkController::NetworkController()
 	SlotProcessingNameChanged.Wrap( this, &NetworkController::ProcessingNameChanged );
 	
 	SlotChangeState.Wrap( this, &NetworkController::ChangeState );
-//	SlotSaveNetwork.Wrap( this, &NetworkController::SaveNetworkTo );
-//	SlotLoadNetwork.Wrap( this, &NetworkController::LoadNetworkFrom );
 	SlotClear.Wrap( this, &NetworkController::Clear );
 
 
@@ -165,13 +162,14 @@ bool NetworkController::ChangeKeyMap( const std::string & oldName, const std::st
 	return true;
 }
 
-void NetworkController::ChangeState( bool state)
+void NetworkController::ChangeState( bool start)
 {
-	if (state) // start the network
+	if (start) // start the network
 	{
 		if(mThread.IsRunning())
 			return;
 
+		mObserved->ReconfigureAllProcessings();
 		mObserved->Start();
 		mLoopCondition = true;
 		
