@@ -144,7 +144,7 @@ private:
 		
 		// Processing Object compliance methods.
 
-		const char *GetClassName() {return "SMSSynthesis";}
+		const char *GetClassName() const {return "SMSSynthesis";}
 
 
 		const ProcessingConfig &GetConfig() const {return mConfig;}

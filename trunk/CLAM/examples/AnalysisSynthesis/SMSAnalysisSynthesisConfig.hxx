@@ -32,7 +32,7 @@ namespace CLAM{
 class SMSAnalysisSynthesisConfig:public ProcessingConfig
 {
 
-	DYNAMIC_TYPE_USING_INTERFACE (SMSAnalysisSynthesisConfig,26,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (SMSAnalysisSynthesisConfig,25,ProcessingConfig);
 	DYN_ATTRIBUTE(0,public,std::string,Name);
 
 /** General	**/
@@ -62,8 +62,7 @@ class SMSAnalysisSynthesisConfig:public ProcessingConfig
 /** Synthesis **/
 	DYN_ATTRIBUTE(22,public,TSize,SynthesisFrameSize);
 	DYN_ATTRIBUTE(23,public,EWindowType,SynthesisWindowType);
-	DYN_ATTRIBUTE(24,public,TSize,SynthesisHopSize);
-	DYN_ATTRIBUTE(25,public,EPhaseGeneration,SynthesisPhaseManagementType);
+	DYN_ATTRIBUTE(24,public,EPhaseGeneration,SynthesisPhaseManagementType);
 
 		
 private:

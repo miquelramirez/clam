@@ -52,9 +52,6 @@
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
 
-#define MIN(a,b) ((a<=b)?(a):(b))
-#define MAX(a,b) ((a>=b)?(a):(b))
-
 using namespace CLAMGUI;
 using namespace CLAM;
 
@@ -100,7 +97,7 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 
 	int analHopSize;
 	if(mGlobalConfig.GetAnalysisHopSize()<0)
-		analHopSize=(analWindowSize-1)/2;
+		analHopSize=(resAnalWindowSize-1)/2;
 	else
 		analHopSize=mGlobalConfig.GetAnalysisHopSize();
 	
@@ -110,12 +107,6 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	else
 		synthFrameSize=mGlobalConfig.GetSynthesisFrameSize();
 
-	int synthHopSize;
-	if(mGlobalConfig.GetSynthesisHopSize()<0)
-		synthHopSize=synthFrameSize;
-	else
-		synthHopSize=mGlobalConfig.GetSynthesisHopSize();
-		
 	int samplingRate=int(mGlobalConfig.GetSamplingRate());
 	int analZeroPaddingFactor=mGlobalConfig.GetAnalysisZeroPaddingFactor();
 	// SMS Analysis configuration
@@ -128,11 +119,14 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mAnalConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
 
 	mAnalConfig.GetPeakDetect().SetMagThreshold(mGlobalConfig.GetAnalysisPeakDetectMagThreshold());
+	
+	mAnalConfig.GetSinTracking().SetnMaxSines(mGlobalConfig.GetAnalysisMaxSines());
+	mAnalConfig.GetPeakDetect().SetMaxPeaks(mGlobalConfig.GetAnalysisMaxSines());
 
 	//SMS Synthesis configuration
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
 	mSynthConfig.SetFrameSize(synthFrameSize);
-	mSynthConfig.SetHopSize(synthHopSize);
+	mSynthConfig.SetHopSize(synthFrameSize);
 	mSynthConfig.SetSamplingRate(TData(samplingRate));
 }
 
@@ -175,7 +169,6 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 	mGlobalConfig.HasAnalysisMaxFundCandidates() &&
 	mGlobalConfig.HasSynthesisFrameSize() &&
 	mGlobalConfig.HasSynthesisWindowType() &&
-	mGlobalConfig.HasSynthesisHopSize() &&
 	mGlobalConfig.HasSynthesisPhaseManagementType())
 	{	
 		mHaveConfig = true;
@@ -409,7 +402,7 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 	// The main analysis processing loop.
 	int k=0;
 	int step=mAnalConfig.GetHopSize();
-	
+	int initialOffset=mAnalConfig.GetInitialOffset();	
 
 	myAnalysis.Start();
 
@@ -419,7 +412,7 @@ void AnalysisSynthesisExampleBase::AnalysisProcessing()
 		mSegment.mCurrentFrameIndex++;
 	    k+=step;
 		mCurrentProgressIndicator->Update(float(k));
-	}  while(k<=size-step);
+	}  while(k<=size-step-initialOffset);
 
 	myAnalysis.Stop();
 
@@ -563,23 +556,18 @@ void AnalysisSynthesisExampleBase::SynthesisProcessing()
 
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
 	TIndex beginIndex=-synthFrameSize/2;
+	
+	mSegment.mCurrentFrameIndex=0;
 	for(i=0;i<nSynthFrames;i++){
-		
-		mSegment.GetFramesArray()[i].AddSinusoidalAudioFrame();
-		mSegment.GetFramesArray()[i].AddResidualAudioFrame();
-		mSegment.GetFramesArray()[i].AddSynthAudioFrame();
-		mSegment.GetFramesArray()[i].UpdateData();
-
-		mSegment.GetFramesArray()[i].GetSinusoidalAudioFrame().SetSize(mSynthConfig.GetFrameSize());
-		mSegment.GetFramesArray()[i].GetResidualAudioFrame().SetSize(mSynthConfig.GetFrameSize());
-		mSegment.GetFramesArray()[i].GetSynthAudioFrame().SetSize(mSynthConfig.GetFrameSize());
-		
-		mySynthesis.Do(mSegment.GetFramesArray()[i]);
-		mAudioOutSin.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
-		mAudioOutRes.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetResidualAudioFrame());
-		mAudioOut.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSynthAudioFrame());
-		beginIndex+=synthFrameSize;
-		mCurrentProgressIndicator->Update(float(i));
+		if(mySynthesis.Do(mSegment))
+		{
+			mAudioOutSin.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSinusoidalAudioFrame());
+			mAudioOutRes.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetResidualAudioFrame());
+			mAudioOut.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSynthAudioFrame());
+			beginIndex+=synthFrameSize;
+			mCurrentProgressIndicator->Update(float(i));
+		}
+		//else it is an analysis frame with negative center time and thus should not be used
 	}
 
 

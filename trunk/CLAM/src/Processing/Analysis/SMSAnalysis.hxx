@@ -87,6 +87,10 @@ public:
 	void SetSamplingRate(TData sr);
 	TData GetSamplingRate() const;
 
+/** Initial offset that is applied to analysis frame computed from windowSize and hopSize*/
+	TSize GetInitialOffset();
+
+
 private:
 
 	
