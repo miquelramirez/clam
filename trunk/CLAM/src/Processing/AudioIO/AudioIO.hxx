@@ -30,7 +30,11 @@
 //#define DEFAULT_AUDIO_ARCH "portaudio"
 #define DEFAULT_AUDIO_ARCH "rtaudio"
 #else
+#ifdef linux
 #define DEFAULT_AUDIO_ARCH "alsa"
+#else
+#define DEFAULT_AUDIO_ARCH "rtaudio"
+#endif
 #endif
 
 namespace CLAM {

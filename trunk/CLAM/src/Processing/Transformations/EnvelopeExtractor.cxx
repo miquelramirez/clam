@@ -435,7 +435,7 @@ namespace CLAM {
 		return res;
 	}
 
-	bool EnvelopeExtractor::Do(const Audio& inp, Envelope& env) throw(ErrProcessingObj)
+	bool EnvelopeExtractor::Do(const Audio& inp, Envelope& env)
 	{
 		CLAM_ASSERT(inp.GetSize() == mFrameSize,
 					"EnvelopeExtractor::Do(): Wrong audio size.");

@@ -58,7 +58,7 @@ namespace CLAM {
 		/** Port name */
 		std::string mName;
 		/** Processing to which this port belongs */
-		Processing *mObject;
+		Processing *mParent;
 		/** Number of data objects used in each Do */
 		unsigned int mLength;
 		/** Number of data objects discarded in each Do */
@@ -66,7 +66,7 @@ namespace CLAM {
 	public:
 		Port(const std::string &n, Processing *o, int length, int hop = 0) : 
 			mName(n),
-			mObject(o),
+			mParent(o),
 			mLength(length),
 			mHop(hop?hop:length)
 		{};
@@ -96,7 +96,7 @@ namespace CLAM {
 			mHop = hop?hop:length;
 		}
 		const std::string& GetName() const { return mName; }
-		Processing * GetProcessing() const { return mObject;}
+		Processing * GetProcessing() const { return mParent;}
 	};
 
 }

@@ -57,21 +57,29 @@ namespace CLAM {
 				}
 				else
 				{
-					for (int i=firstRelevant;i<MIDI::GetMessageInfo(status).length-1;i++)
+					if(MIDI::GetMessageInfo(status).length<=1)
+				    {
+						mOutControls.AddElem(new OutControl("non-data byte",this));
+						mOutControlInfos.AddElem(new OutControlInfo((MIDI::Message)status,0));
+					}
+					else
 					{
-						if (MIDI::GetMessageInfo(status).field[i])
+						for (int i=firstRelevant;i<MIDI::GetMessageInfo(status).length-1;i++)
 						{
+							if (MIDI::GetMessageInfo(status).field[i])
+							{
 	#ifdef DEBUGGING_MIDIIO
-							printf("adding %s:%s port\n",
-								MIDI::GetMessageInfo(status).name,
-								MIDI::GetMessageInfo(status).field[i]);
+								printf("adding %s:%s port\n",
+									   MIDI::GetMessageInfo(status).name,
+									   MIDI::GetMessageInfo(status).field[i]);
 	#endif							
-							char tmp[256];
-							sprintf(tmp,"%s:%s",
-								MIDI::GetMessageInfo(status).name,
-								MIDI::GetMessageInfo(status).field[i]);
-							mOutControls.AddElem(new OutControl(tmp,this));
-							mOutControlInfos.AddElem(new OutControlInfo((MIDI::Message)status,i));
+								char tmp[256];
+								sprintf(tmp,"%s:%s",
+										MIDI::GetMessageInfo(status).name,
+										MIDI::GetMessageInfo(status).field[i]);
+								mOutControls.AddElem(new OutControl(tmp,this));
+								mOutControlInfos.AddElem(new OutControlInfo((MIDI::Message)status,i));
+							}
 						}
 					}
 				}
@@ -109,6 +117,10 @@ namespace CLAM {
 						msg[mOutControlInfos[i]->mField+1]+
 						(msg[mOutControlInfos[i]->mField+2]<<7)
 					);
+				}
+				else if (mOutControlInfos[i]->mMessage == MIDI::eSystem)
+				{
+					SendControl(i,1);
 				}
 				else
 				{

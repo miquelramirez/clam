@@ -15,7 +15,7 @@ BasicFlowControl::BasicFlowControl( int frameSize )
 void BasicFlowControl::DoProcessings()
 {
 	Network::ProcessingsMap::iterator it;
-	for ( it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++ )
+	for ( it=mNetwork->BeginProcessings(); it!=mNetwork->EndProcessings(); it++ )
 	{
 		if (it->second->CanDoUsingPorts())
 			it->second->Do();

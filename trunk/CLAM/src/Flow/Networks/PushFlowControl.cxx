@@ -21,12 +21,12 @@ void PushFlowControl::ProcessingAddedToNetwork( Processing & added )
 
 	ConfigurePorts( added );
 	if (added.GetInPorts().Size() == 0) // if it's a generator
-		_generators.push_back( &added );
+		mGenerators.push_back( &added );
 }
 
 void PushFlowControl::DoProcessings()
 {
-	std::list< Processing* > toDo(_generators);
+	std::list< Processing* > toDo(mGenerators);
 	std::list< Processing* > done;
 
 	while (!toDo.empty())
@@ -62,11 +62,14 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 			break;
 		
 		// for each processing connected as a consumer to the node
-		std::list<InPort*> consumers = (*itOutPort)->GetNode()->GetReaders();
-		std::list< InPort* >::iterator itInPort;
-		for (itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++)
+//		std::list<InPort*> consumers = (*itOutPort)->GetNode()->GetReaders();
+		NodeBase::ReaderIterator consumers;
+//		std::list< InPort* >::iterator itInPort;
+		for (consumers=(*itOutPort)->GetNode()->BeginReaders(); 
+		     consumers!=(*itOutPort)->GetNode()->EndReaders(); 
+		     consumers++)
 		{
-			Processing * consumer = (Processing*)(*itInPort)->GetProcessing();
+			Processing * consumer = (Processing*)(*consumers)->GetProcessing();
 			if (AreAllProducersExecuted( consumer, executed ))
 				toDo.push_back( consumer );
 		}

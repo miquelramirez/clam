@@ -39,21 +39,20 @@ namespace CLAM {
 		: mpParent(0),
 		mInControls(this),
 		mOutControls(this),
+		  mInPorts(this),
 		mOutPorts(this),
-		mInPorts(this)
+		  mPreconfigureExecuted( false )
 	{
 		mState = Unconfigured;
 	}
 
-	bool Processing::Configure(const ProcessingConfig &c) throw(ErrProcessingObj)
+	void Processing::PreConcreteConfigure( const ProcessingConfig& c )
 	{
+		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
 		std::string config_name;
 		std::string old_name = mName;
 		mStatus = "";
-
-		if (mState == Running ||
-			mState == Disabled)
-			throw(ErrProcessingObj("Processing::Configure(): Object is running.",this));
 
 		// As we have no acces to the actual dynamic configuration object
 		// but via its abstract interface, we have no way to do apriori an
@@ -75,17 +74,56 @@ namespace CLAM {
 			else
 				mpParent->Insert(*this);
 		}
-		else if (name_change_requested)
-			if (!mpParent->NameChanged(*this,old_name))
-				throw ErrProcessingObj("Duplicated Processing Name Requested",this);
+		else if (name_change_requested) 
+			// if Processing name is duplicated it is changed silently to something
+			// acceptable
+			if (!mpParent->NameChanged(*this,old_name)) 
+				mName = mpParent->InsertAndGiveName( *this );
 
-		if (!ConcreteConfigure(c)) {
-			mState=Unconfigured;
-			mStatus+=" Configuration failed.";
+		mPreconfigureExecuted = true;
+
+	}
+
+	void Processing::PostConcreteConfigure()
+	{
+		CLAM_ASSERT(mState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(mState != Disabled, "Configuring a disabled Processing.");
+		CLAM_ASSERT(mPreconfigureExecuted, "PreConcreteConfigure was not being called" );
+
+		mState=Ready;
+		mStatus="Ready to be started";
+
+	}
+
+	bool Processing::Configure(const ProcessingConfig &c)
+	{
+		PreConcreteConfigure( c );
+		
+		try
+		{
+
+			if (!ConcreteConfigure(c)) 
+			{
+				mState=Unconfigured;
+				mPreconfigureExecuted = false;
+				mStatus+=" Configuration failed.";
+				return false;
+			}
+		}
+		catch( CLAM::Err& error )
+		{
+			mState = Unconfigured;
+			mPreconfigureExecuted = false;
+			mStatus += "Exception thrown during ConcreteConfigure:\n";
+			mStatus += error.what();
+			mStatus += "\n";
+			mStatus += "Configuration failed.";
+
 			return false;
 		}
-		mState=Ready;
-		mStatus="";
+		
+		PostConcreteConfigure();
+		
 		return true;
 	}
 
@@ -123,21 +161,28 @@ namespace CLAM {
 		
 	}
 
-	void Processing::Start(void)
+	void Processing::Start(void) throw ( ErrProcessingObj )
 	{
-		CLAM_ASSERT(mState==Ready,"Start(): Object not ready");
-		mState=Running;
+		CLAM_ASSERT(mState==Ready,AddStatus("Start(): Object not ready"));
 		
 		try {
 			if (!ConcreteStart())
 				mState=Unconfigured;
 		}
 		catch (Err &e) {
-			ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
+			//ErrProcessingObj new_e("Start(): Object failed to start properly.",this);
+			//new_e.Embed(e);
+			//CLAM_ASSERT( false, AddStatus(new_e.what()) );
+			
 			mState=Unconfigured;
-			new_e.Embed(e);
-			CLAM_ASSERT( false, new_e.what() );
+
+			AddStatus( "Start(): Object failed to start properly.\n" );
+			AddStatus( e.what() );
+			throw e; // Propagate exception
 		}
+
+		mState = Running;
+
 	}
 	
 	void Processing::Stop(void)
@@ -256,4 +301,34 @@ namespace CLAM {
 			mName = "";
 	}
 
+	const char* Processing::AddStatus(const std::string& a)
+	{
+		return AddStatus(a.c_str());
+	}
+
+	const char* Processing::AddStatus(const char* a)
+	{
+		static char ret[256];
+		int len_a = strlen(a);
+		int len_b = mStatus.length();
+		char* truncated_str = "[truncated]...";
+		int space_left = 255-strlen(truncated_str);
+		bool truncated = false;
+		if (len_a > space_left) {
+			len_a = space_left;
+			truncated = true;
+		}
+		space_left -= len_a; 
+		strncpy(ret,a,len_a);
+		if (len_b > space_left) {
+			len_b = space_left;
+			truncated = true;
+		}
+		strncpy(ret + len_a,mStatus.c_str(),len_b);
+		if (truncated)
+		{
+			strcpy(ret + len_a + len_b,truncated_str);
+		}
+		return ret;
+	}
 };//namespace CLAM

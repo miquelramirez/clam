@@ -105,7 +105,7 @@ public:
 	/**
 	* Concrete configuration change method. The generic  calls
 	* this one. It will accept such changes when not in running mode.
-	* @throw bad_cast exception when the argument is not a TokenDelayConfig object.
+	* @pre argument should be a TokenDelayConfig
 	*/
 	bool ConcreteConfigure(const ProcessingConfig& c);
 
@@ -218,7 +218,7 @@ bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c)
 template <class T> 
 bool TokenDelay<T>::Do(void)
 {
-	throw Err("TokenDelay : the Do() with parameters should be used instead of this one.");
+	CLAM_ASSERT(false,"TokenDelay : the Do() with parameters should be used instead of this one.");
 	return false;
 }
 

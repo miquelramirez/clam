@@ -20,6 +20,8 @@ InPort& PublishedInPorts::GetByNumber(int index) const
 		if (i==index) return *(*it);
 	}
 	CLAM_ASSERT(false, "PublishedInPorts::GetByNumber() index out of range");
+
+	return *(InPort*)NULL; // just to get rid of warnings
 }
 	
 InPort& PublishedInPorts::Get(std::string name) const
@@ -31,6 +33,8 @@ InPort& PublishedInPorts::Get(std::string name) const
 		if (name == (*it)->GetName()) return *(*it);
 	}
 	CLAM_ASSERT(false, "name not found in InPorts collection");
+
+	return *(InPort*)NULL; // just to get rid of warnings
 }
 
 int PublishedInPorts::Size() const

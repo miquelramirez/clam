@@ -46,8 +46,8 @@ public:
 	void ToPolar(const Array<ComplexTmpl<T> > &inputArray, 
 		Array<PolarTmpl<T> > &outputArray) const
 	{
-		if (outputArray.Size() != inputArray.Size())
-			throw Err("ComplexToPolarCnv::Convert: unable to convert buffers with different sizes");
+		CLAM_ASSERT(outputArray.Size() == inputArray.Size(),
+			"ComplexToPolarCnv::Convert: unable to convert buffers with different sizes");
 		
 		for (int i=0; i<inputArray.Size(); i++) {
 			outputArray[i].SetMag(inputArray[i].Mag());
@@ -59,8 +59,8 @@ public:
 	void ToComplex(const Array<PolarTmpl<T> > &inputArray, 
 		Array<ComplexTmpl<T> > &outputArray) const
 	{
-		if (outputArray.Size() != inputArray.Size())
-			throw Err("ComplexToPolarCnv::Convert: unable to convert buffers with different sizes");
+		CLAM_ASSERT(outputArray.Size() == inputArray.Size(),
+			"ComplexToPolarCnv::Convert: unable to convert buffers with different sizes");
 		
 		for (int i=0; i<inputArray.Size(); i++) {
 			outputArray[i].SetReal(inputArray[i].Real());

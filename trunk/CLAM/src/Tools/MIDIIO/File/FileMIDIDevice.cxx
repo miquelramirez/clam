@@ -69,6 +69,7 @@ namespace CLAM {
 	{
 		if (!mReadDone)
 		{
+			
 			mReadDone = true;
 			::MIDI::Reader reader(mFilename.c_str());
 			
@@ -78,10 +79,16 @@ namespace CLAM {
 					str += mFilename;
 					throw Err(str.c_str());
 			}
-			
-			reader.Read(mSong);
+			try{
+				reader.Read(mSong);
+			}
+			catch(::MIDI::Reader::Error err)
+			{
+				throw Err(err.mStr);
+			}
 			mSongPlayer.Init(&mSong);
 			mTempo.Init(&mSong);
+
 		}
 	}
 
@@ -109,6 +116,8 @@ namespace CLAM {
 				if (mHavePendingEvent)
 				{
 					mPendingTime = mTempo.TicksToTime(mPendingEvent.GetTicks());
+				}else{
+				  HandleRawByte(0xF0|int(MIDI::eStop)); // system stop
 				}
 			}
 			if (mHavePendingEvent) {
@@ -169,4 +178,10 @@ namespace CLAM {
 
 	FileMIDIDeviceList FileMIDIDeviceList::sDevices;
 }
+
+
+
+
+
+
 

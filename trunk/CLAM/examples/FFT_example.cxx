@@ -66,6 +66,7 @@ int main(int argc, char* argv[])
 		
 		// We set the number of samples that the signal will have
 		myaudio.SetSize(samples);
+		myaudio.SetSampleRate( sampleRate );
 		
 		// Synthesis loop. We use the following formula:
 		// x(n) = A0 + A1 * sin( 2*PI*f*(n/sampleRate) )
@@ -77,13 +78,22 @@ int main(int argc, char* argv[])
 		CLAM::Spectrum myspectrum;
 		// Helper class that defines the spectrum format
 		CLAM::SpecTypeFlags specFlags;
-
-		// We want the spectrum to be defined as an array of cartesian ( a+b·i )
+		
+		// To see all the available Spectrum supported in CLAM, let's set
+		// SpecTypeFlags object associated to myspectrum so all possible
+		// representations are used.
+		// We want the spectrum  as an array of cartesian ( a+b·i )
 		// complex numbers
 		specFlags.bComplex=1;
-		// we disable the representation consisting in a pair of arrays
-		// of floating-point numbers ( magnitude and phase )
-		specFlags.bMagPhase = 0;
+		// We also want the spectrum to be represented as a pair of floating-point
+		// values, the 'Magnitude buffer' and the 'Phase buffer'.
+		specFlags.bMagPhase = 1;
+		// We also want the spectrum represented as an array of polar numbers ( Mag·exp(Phase) )
+		specFlags.bPolar = 1;
+		// Finally, we also want the spectrum represented as a pair of implicit functions
+		// ( BPFs ) synonym to the MagPhase representation
+		specFlags.bMagPhaseBPF = 1;
+
 		// we apply the desired format on the object
 		myspectrum.SetType(specFlags);
 

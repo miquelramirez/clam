@@ -97,8 +97,8 @@ public:
 	Vector(const MatrixTmpl<T>& originalMatrix)
 		:MatrixTmpl<T>(originalMatrix.GetNumRows(), originalMatrix.GetNumColumns())
 	{
-		if ( (originalMatrix.GetNumRows() != 1) && (originalMatrix.GetNumColumns() !=1))
-			throw Err("conversion from matrix to columns not allowed");
+		CLAM_ASSERT ( (originalMatrix.GetNumRows() == 1) || (originalMatrix.GetNumColumns() ==1),
+			"One of the matrix dimensions should be 1 to convert it to Vector");
 		
 		mOwnsBuffer = true;
 		MatrixBuffer() = originalMatrix.MatrixBuffer();
@@ -208,8 +208,12 @@ public:
 	// Get subvector 
 	Vector<T> Subvector(TIndex begin, TSize size)
 	{
-		if( (size>GetDimension()) | (begin<0) | (begin+size-1 >= GetDimension()) )
-			throw Err("Vector::Subvector: not the correct begin and size");
+		CLAM_ASSERT(size>=0()
+			"Vector::Subvector: Negative size");
+		CLAM_ASSERT(begin>=0,
+			"Vector::Subvector: Negative begin");
+		CLAM_ASSERT(begin+size <= GetDimension(),
+			"Vector::Subvector: Beyond the end of vector");
 		
 		Vector<T> ret(size);
 		for (int i=0; i<size; i++)
@@ -230,8 +234,8 @@ public:
 	// Assignement operator
 	const Vector<T>& operator = (const MatrixTmpl<T>& matrix)
 	{
-		if ( (matrix.GetNumRows() != 1) && (matrix.GetNumColumns() !=1))
-			throw Err("conversion from matrix to columns not allowed");
+		CLAM_ASSERT( (matrix.GetNumRows() == 1) || (matrix.GetNumColumns() ==1)
+			"One of the Matrix dimensions should be 1 to convert it as Vector");
  
 		MatrixBuffer().Init();
 		MatrixBuffer() = matrix.MatrixBuffer();
@@ -243,8 +247,10 @@ public:
 	// Operator []  Added to matrix operators
 	T& operator [] (int iPosition) const 
 	{
-		if ( (iPosition >= GetDimension() ) | (iPosition < 0) )
-			throw Err("Index exceed vector dimension");
+		CLAM_ASSERT(iPosition < GetDimension(),
+			"Index exceed vector dimension");
+		CLAM_ASSERT(iPosition >= 0 ,
+			"Negative position indexin a vector");
 		if (mNumRows ==1)
 			return (*this)(0, iPosition);
 		else
@@ -300,31 +306,27 @@ public:
 	//    Scalar Product of two vectors. The vectors can be either row or column vectors 
 	friend T ScalarProduct(const Vector<T>& v1, const Vector<T>& v2) 
 	{
-		unsigned int i;
-		T ret;
-		if ( v1.GetDimension() != v2.GetDimension() ) 
-			throw Err("Scalar Product of vectors of different dimension not permitted"); 
-		else {
-			ret = 0;
-			for (i=0; i<v1.GetDimension(); i++)
-				ret += v1[i]*v2[i];
-			return ret;
-		}
+		CLAM_ASSERT( v1.GetDimension() == v2.GetDimension(),
+			"Scalar Product: Dimensions of vectors should be equal"); 
+		T ret = 0;
+		for (unsigned int i=0; i<v1.GetDimension(); i++)
+			ret += v1[i]*v2[i];
+		return ret;
 	}
 	 
 	//    Vector Product of two vectors (only for 3-dimensional vectors) that can be either row or column vectors
 	friend Vector<T> VectorProduct(const Vector<T>& v1, const Vector<T>& v2)
 	{
-		if ( (v1.GetDimension() != 3) | (v2.GetDimension() != 3) )
-			throw Err("Vector Product only allowed for 3-dimensional vectors");
-		else
-			{
-				Vector<T> ret(3);
-				ret[0] = v1[1]*v2[2] - v1[2]*v2[1];
-				ret[1] = v1[2]*v2[0] - v1[0]*v2[2];
-				ret[2] = v1[0]*v2[1] - v1[1]*v2[0]; 
-				return ret;
-			}
+		CLAM_ASSERT(v1.GetDimension() == 3,
+			"Vector Product only allowed for 3-dimensional vectors");
+		CLAM_ASSERT(v2.GetDimension() == 3,
+			"Vector Product only allowed for 3-dimensional vectors");
+
+		Vector<T> ret(3);
+		ret[0] = v1[1]*v2[2] - v1[2]*v2[1];
+		ret[1] = v1[2]*v2[0] - v1[0]*v2[2];
+		ret[2] = v1[0]*v2[1] - v1[1]*v2[0]; 
+		return ret;
 	}
 
 	//     Triple Scalar Product of three vectors (a x b).c that can be either row or column vectors
@@ -346,12 +348,14 @@ Vector<T>& v3)
 	}
 	
 	// Angle Between two vectors (only for 3-dimensional vectors) (in radians). The vectors can be either row or column vectors
-		friend float Angle(const Vector<T>& v1, const Vector<T>& v2)
+	friend float Angle(const Vector<T>& v1, const Vector<T>& v2)
 	{
-		if ((v1.GetDimension() != 3) | (v2.GetDimension() != 3))
-			throw Err("Allowed only for 3-dimensional vectors");
-		else
-			return acos( (v1*v2)/( v1.Module()*v2.Module() ) );
+		CLAM_ASSERT(v1.GetDimension() == 3,
+			"Allowed only for 3-dimensional vectors");
+		CLAM_ASSERT(v2.GetDimension() == 3,
+			"Allowed only for 3-dimensional vectors");
+
+		return acos( (v1*v2)/( v1.Module()*v2.Module() ) );
 	}
 protected:
 	

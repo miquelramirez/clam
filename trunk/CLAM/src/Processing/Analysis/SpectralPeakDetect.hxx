@@ -23,6 +23,8 @@
 #define _SpectralPeakDetect_
 
 #include "Processing.hxx"
+#include "InPortTmpl.hxx"
+#include "OutPortTmpl.hxx"
 #include "SpectralPeakDetectConfig.hxx"
 
 namespace CLAM {
@@ -46,8 +48,14 @@ namespace CLAM {
 	 *
 	 */
 	class SpectralPeakDetect: public Processing {
+
+	protected: // attributes
 		SpectralPeakDetectConfig mConfig;
 
+		InPortTmpl< Spectrum >           mInput;
+		OutPortTmpl< SpectralPeakArray > mOutput;
+
+	protected: // methods
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
 		 */
@@ -71,12 +79,14 @@ namespace CLAM {
 		/** Destructor of the class*/
  		~SpectralPeakDetect();
 
+		virtual void Attach( Spectrum& in, SpectralPeakArray& out );
+
 	       /** This method allows to obtain the SpectralPeakDetectConfig object of the class
 		*  @return The configuration of the class
 		*/
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
-		/** Supervised Do() function, not implemented yet*/
+		/** Supervised Do() function */
 		bool Do(void);
 
 		/** Unsupervised Do function, receives an Spectrum object input, and the output of method is an SpectralPeakArray (passed by parameter)

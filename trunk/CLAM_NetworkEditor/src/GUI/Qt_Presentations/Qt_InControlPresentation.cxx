@@ -1,7 +1,7 @@
 
 #include "Qt_InControlPresentation.hxx"
 #include <qpainter.h>
-
+#include <qbitmap.h>
 #include <qtooltip.h>
 
 namespace NetworkGUI
@@ -11,9 +11,24 @@ Qt_InControlPresentation::Qt_InControlPresentation( int id,  QWidget *parent, co
 	: QWidget( parent, name ),  mId(id)
 
 {	
-//	move(0,mId*7+3);
 	move(mId*13+12, 0);
 	setFixedSize(10,5);
+
+	QPointArray points;
+	points.putPoints(0,3, 0,0  , width(), 0  , width()/2, height() , 232);
+
+	QBitmap bm( size() );
+	bm.fill( color0 );			//transparent
+
+	QPainter paint;
+
+	paint.begin( &bm, this );
+	paint.setPen( QPen(color1, 1));
+	paint.setBrush( QBrush(color1));
+	paint.drawPolygon(points);
+
+	QRegion reg(bm);
+	mReg += reg;
 }
 
 Qt_InControlPresentation::~Qt_InControlPresentation()
@@ -38,20 +53,29 @@ void Qt_InControlPresentation::Hide()
 
 void Qt_InControlPresentation::paintEvent( QPaintEvent * )
 {
-	QColor c(200, 0, 0);
 	QPainter p( this );
-        p.setBrush( c );
+	p.setPen(QColor(0,0,0));
+	p.setBrush(QColor(200,0,0));
 
 	QPointArray points;
-//	points.putPoints(0,3, 0,height()  , width(), height()  , width()/2, 0 );
 	points.putPoints(0,3, 0,0  , width(), 0  , width()/2, height() , 232);
 	p.drawPolygon( points );
+
 }
 
 void Qt_InControlPresentation::mousePressEvent( QMouseEvent *m)
 {
 	AcquireInControlClicked.Emit(this);
 }
+
+QRegion Qt_InControlPresentation::GetRegion()
+{
+	QRegion reg(mReg);
+	reg.translate(pos().x(), pos().y());
+	return reg;
+
+}
+
 
 } // namespace NetworkGUI
 

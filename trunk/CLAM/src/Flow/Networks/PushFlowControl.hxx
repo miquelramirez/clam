@@ -13,7 +13,7 @@ class Processing;
 class PushFlowControl : public FlowControl
 {
 public:
-	PushFlowControl( int frameSize = 0 );
+	PushFlowControl( int frameSize = 512 );
 	virtual ~PushFlowControl(){}
 
 	void ProcessingAddedToNetwork( Processing & added );
@@ -24,7 +24,7 @@ private:
 					    std::list<Processing*> &,
 					    std::list<Processing*> & );
 	bool AreAllProducersExecuted( Processing * aProcessing, std::list<Processing*> & executedList );
-	std::list< Processing* > _generators;
+	std::list< Processing* > mGenerators;
 
 
 };

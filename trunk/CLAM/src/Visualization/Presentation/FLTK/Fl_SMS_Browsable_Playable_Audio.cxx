@@ -251,6 +251,8 @@ void Fl_SMS_Browsable_Playable_Audio::OnNewAudio( const DataArray& array, TTime 
 	mXAxis->maximum( end );
 	if ( mDisplay )
 		mDisplay->invalidate();
+	mXSlider->Reset();
+	mYSlider->Reset();
 	redraw();
 }
 	

@@ -107,8 +107,9 @@ namespace CLAM {
 	bool IFFT_rfftw::Do()
 	{
 
-		if (GetExecState() == Disabled)
+/*		if (GetExecState() == Disabled)
 			return true;
+
 		switch(mState) {
 		case sOther:
 		case sComplex:
@@ -116,6 +117,7 @@ namespace CLAM {
 		default:
 			CLAM_ASSERT(false,"IFFT_rfftw: Do(): Inconsistent state");
 		}
+*/
 		return Do(mInput.GetData(),mOutput.GetData());
 	};
 

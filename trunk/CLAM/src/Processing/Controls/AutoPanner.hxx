@@ -4,37 +4,51 @@
 
 #include "DataTypes.hxx"
 #include "OutControl.hxx"
+#include "Processing.hxx"
+#include "ProcessingConfig.hxx"
+#include <string>
 
 namespace CLAM
 {
-/**
- * \todo this class has to be a concrete Processing
- */
-class AutoPanner
+
+class AutoPannerConfig : public ProcessingConfig
+{
+public:
+	DYNAMIC_TYPE_USING_INTERFACE (AutoPannerConfig, 5, ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, std::string, Name);
+	DYN_ATTRIBUTE (1, public, TData, Frequency);
+	DYN_ATTRIBUTE (2, public, TData , SamplingRate);
+	DYN_ATTRIBUTE (3, public, TData , Phase);
+	DYN_ATTRIBUTE (4, public, int , FrameSize);
+protected:
+	void DefaultInit(void);
+};
+
+class AutoPanner : public Processing
 {
 private:
+	
 	TData mFreq;
 	TData mSamplingRate;
 	TData mPhase;
 	TData mDeltaPhase;
 	int mFrameSize;
 
-public:
+	AutoPannerConfig mConfig;
 	OutControl mLeft;
 	OutControl mRight;
 
 public:
-	AutoPanner(TData freq,
-		      TData samplingRate,
-		      TData phase = 0.0,
-		      int frameSize = 1);
+	AutoPanner();
+	AutoPanner( const AutoPannerConfig & );
 
-	void Configure(TData freq,
-		       TData samplingRate,
-		       TData phase,
-		       int frameSize);
 	bool Do();
 	virtual ~AutoPanner(){}
+	const char * GetClassName() const {return "AutoPanner";}
+	
+	inline const ProcessingConfig &GetConfig() const { return mConfig;}
+	bool ConcreteConfigure(const ProcessingConfig& c);
+
 };
 
 } //namespace CLAM

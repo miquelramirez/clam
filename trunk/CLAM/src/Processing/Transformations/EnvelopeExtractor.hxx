@@ -185,7 +185,7 @@ namespace CLAM
 
 		bool Do(void);
 
-		bool Do(const Audio& inp, Envelope& env) throw(ErrProcessingObj);
+		bool Do(const Audio& inp, Envelope& env);
 
 		void StoreOn(Storage &s) {};
 

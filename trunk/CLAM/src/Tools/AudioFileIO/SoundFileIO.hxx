@@ -2,6 +2,7 @@
 #define __SoundFileIO__
 
 #include "SoundHeader.hxx"
+#include "ErrSoundFileIO.hxx"
 #include <stdio.h>
 #include <string.h>
 
@@ -34,7 +35,7 @@ public:
 	virtual ~SoundFileIO();
 	void Init(void);
 
-	void Open(const char* filename,EMode mode);
+	void Open(const char* filename,EMode mode) throw ( ErrSoundFileIO );
 	void Create(const char* filename,EMode mode,const SoundHeader& header);
 	void Close(void);
 

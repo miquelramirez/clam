@@ -25,6 +25,8 @@ InControl& PublishedInControls::Get(std::string name) const
 		if (name == (*it)->GetName()) return *(*it);
 	}
 	CLAM_ASSERT(false, "name not found in InControls collection");
+
+	return *(InControl*)NULL; // just to get rid of warnings
 }
 int PublishedInControls::Size() const
 {

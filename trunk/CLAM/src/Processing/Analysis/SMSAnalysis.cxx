@@ -339,7 +339,12 @@ bool SMSAnalysis::Do()
 
 }
 
-bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,Spectrum& sinGlobalSpec,SpectralPeakArray& outPk,Fundamental& outFn,Spectrum& outResSpec)
+bool SMSAnalysis::Do( Audio& in, 
+		      Spectrum& outGlobalSpec,
+		      Spectrum& sinGlobalSpec,
+		      SpectralPeakArray& outPk,
+		      Fundamental& outFn,
+		      Spectrum& outResSpec )
 {
 	/* First we write new samples into stream buffer*/
 	Audio tmpAudio;
@@ -351,11 +356,23 @@ bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,Spectrum& sinGlobalSpec,
 	//Note: we do not need to keep it here because it will have to be synthesized in the synthesis
 	//process anyway.
 	Spectrum tmpSpec;
-	
+
+	// MRJ: I will comment the following DEBUG_ASSERTS, but the bug has not been
+	// fixed just walked around for now - waiting for some sort of tests to be
+	// available
+	//CLAM_DEBUG_ASSERT( mResSpec.GetSpectralRange() == in.GetSampleRate()/2,
+	//		   "mResSpec is not well, after all" );
+
 	//Synchronizing spectral ranges of other spectrums
-	outGlobalSpec.SetSpectralRange(mResSpec.GetSpectralRange());
-	outResSpec.SetSpectralRange(mResSpec.GetSpectralRange());
-	sinGlobalSpec.SetSpectralRange(mResSpec.GetSpectralRange());
+	//outGlobalSpec.SetSpectralRange(mResSpec.GetSpectralRange());
+	//outResSpec.SetSpectralRange(mResSpec.GetSpectralRange());
+	//sinGlobalSpec.SetSpectralRange(mResSpec.GetSpectralRange());
+
+	TData specRange = in.GetSampleRate()/2;
+
+	outGlobalSpec.SetSpectralRange( specRange );
+	outResSpec.SetSpectralRange( specRange );
+	sinGlobalSpec.SetSpectralRange( specRange );
 	
 	//first we try to get and activate both readers
 	if(!mStreamBuffer->GetAndActivate(mSinReader,mSinAudioFrame)||
@@ -374,6 +391,8 @@ bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,Spectrum& sinGlobalSpec,
 	//we can now leave and advance sinusoidal reader
 	mStreamBuffer->LeaveAndAdvance(mSinReader);
 	
+
+	mSinSpec.SetSpectralRange( in.GetSampleRate() / 2.0 );
 	//we call auxiliary method to compute sinusoidal peaks and fundamental frequency
 	SinusoidalAnalysis(mSinSpec,outPk,outFn);
 	
@@ -382,9 +401,15 @@ bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,Spectrum& sinGlobalSpec,
 	
 	//First we synthesize Sinusoidal Spectrum
 	mPO_SynthSineSpectrum.Do(outPk,tmpSpec);
-	
+
+	//CLAM_DEBUG_ASSERT( mResSpec.GetSpectralRange() == in.GetSampleRate() / 2,
+	//		   "mResSpec is wrong from the beginning" );
+
 	//Then we analyze the spectrum of the whole audio using residual config
 	 mPO_ResSpectralAnalysis.Do();
+
+	 //CLAM_DEBUG_ASSERT( mResSpec.GetSpectralRange() == in.GetSampleRate()/2,
+	 //		   "Spectral Analysis is doing dirty things on SMSAnalysis::mResSpec" );
 	
 	//we can now leave residual reader and advance it
 	mStreamBuffer->LeaveAndAdvance(mResReader);
@@ -396,6 +421,9 @@ bool SMSAnalysis::Do(Audio& in, Spectrum& outGlobalSpec,Spectrum& sinGlobalSpec,
 	//Finally we substract mResSpec-SinusoidalSpectrum
 	outResSpec.SetSize(mResSpec.GetSize());
 	mPO_SpecSubstract.Do(mResSpec,tmpSpec,outResSpec);
+
+	//CLAM_DEBUG_ASSERT( mResSpec.GetSpectralRange() == in.GetSampleRate()/2,
+	//		   "Spectrum Substracter is doing dirty things on SMSAnalysis::mResSpec" );
 
 	return true;
 
@@ -410,12 +438,20 @@ bool SMSAnalysis::Do(Frame& in)
 	in.GetSpectrum().SetSize(mConfig.GetSinSpectralAnalysis().GetFFT().GetAudioSize()/2+1);
 	in.GetFundamental().SetnMaxCandidates(1);
 	
-
-	
-
 	bool result=false;
 	//If we have written enough samples as to do the first processing result will be true
-	result=Do(in.GetAudioFrame(),in.GetSpectrum(),in.GetSinusoidalAnalSpectrum(),in.GetSpectralPeakArray(),in.GetFundamental(),in.GetResidualSpec());
+	result = Do( in.GetAudioFrame(), // windowed audio samples
+		    in.GetSpectrum(),   // spectrum for residual analysis
+		    in.GetSinusoidalAnalSpectrum(), // spectrum for sinusoidal analysis
+		    in.GetSpectralPeakArray(), // spectral peaks found
+		    in.GetFundamental(), // pitch found 
+		    in.GetResidualSpec() // residual spectrum
+		); 
+
+	// MRJ: Let's check the poscondition...
+	CLAM_DEBUG_ASSERT( in.GetResidualSpec().GetSpectralRange() > 0, 
+			   "Residual spectrum is not being properly configured" );
+
 	if (result)
 		//if we have been able to analyze something we set whether frame is voiced or not
 		in.SetIsHarmonic(in.GetFundamental().GetFreq(0)>0);

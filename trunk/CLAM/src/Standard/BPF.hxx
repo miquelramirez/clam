@@ -29,7 +29,7 @@
 
 namespace CLAM
 {
-//template <> const char * BPFTmpl<TData,TData>::GetClassName() const {return "BFP";}
+//template <> inline const char * BPFTmpl<TData,TData>::GetClassName() const {return "BFP";}
 	typedef BPFTmpl<TData,TData> BPF;
 
 //	CLAM_TYPEINFOGROUP(BasicCTypeInfo, BPF);

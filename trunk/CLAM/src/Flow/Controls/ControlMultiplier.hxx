@@ -29,7 +29,7 @@ namespace CLAM
 
 	
 	template <>
-	const char* BinaryControlOp< Multiply<TControlData> >::GetClassName() const
+	inline const char* BinaryControlOp< Multiply<TControlData> >::GetClassName() const
 	{
 		return "BinaryControlOperation_Multiply";
 	}

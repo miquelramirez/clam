@@ -66,7 +66,7 @@ namespace CLAMTest
 
 	protected:
 
-		virtual bool ConcreteConfigure( const ProcessingConfig& cfg ) throw ( std::bad_cast );
+		virtual bool ConcreteConfigure( const ProcessingConfig& cfg ) 
 
 		virtual bool ConcreteStart();
 

@@ -2,6 +2,8 @@
 #include "Network.hxx"
 #include "FlowControl.hxx"
 #include <algorithm>
+#include "ProcessingDefinitionAdapter.hxx"
+#include "ConnectionDefinitionAdapter.hxx"
 
 namespace CLAM
 {
@@ -14,37 +16,161 @@ namespace CLAM
 	// constructor / destructor
 
 	Network::Network() :
-		_name("Unnamed Network"),
-		_flowControl(0)
+		mName("Unnamed Network"),
+		mFlowControl(0)
 	{}
 	
 	Network::~Network()
 	{
-		if (_flowControl)
-			delete _flowControl;
+		if (mFlowControl)
+			delete mFlowControl;
 
-		std::for_each( 	_processings.begin(), _processings.end(), HelperFunctions::DeleteProcessing );
+		std::for_each( 	mProcessings.begin(), mProcessings.end(), HelperFunctions::DeleteProcessing );
+	}
+
+	void Network::StoreOn( Storage & storage)
+	{
+		// Storing an standard library string as an attribute
+		XMLAdapter<std::string> strAdapter( mName, "id");
+		storage.Store(&strAdapter);
+
+		ProcessingsMap::iterator it;
+		for(it=BeginProcessings();it!=EndProcessings();it++)
+		{
+			Processing * proc = it->second;
+			std::string name(it->first);
+			ProcessingDefinitionAdapter procDefinitionAdapter(proc, name);
+			XMLComponentAdapter procComponentAdapter(procDefinitionAdapter, "processing", true);
+			storage.Store(&procComponentAdapter);
+		}
+
+		// second iteration to store ports. 
+		// XR: maybe it should be all in one iteration but this way
+		// the xml file is clearer.
+
+		for(it=BeginProcessings();it!=EndProcessings();it++)
+		{
+			std::string name(it->first);
+			Processing * proc = it->second;
+			Processing::OutPortIterator itOutPort;
+			for (itOutPort=proc->GetOutPorts().Begin(); 
+			     itOutPort!=proc->GetOutPorts().End(); 
+			     itOutPort++)
+			{
+				if (!(*itOutPort)->GetNode())
+					break;
+	
+				std::string outPortName(name);
+				outPortName += ".";
+				outPortName += (*itOutPort)->GetName();
+
+				NamesList namesInPorts = GetInPortsConnectedTo(outPortName);
+				NamesList::iterator namesIterator;
+				for(namesIterator=namesInPorts.begin();
+				    namesIterator!=namesInPorts.end();
+				    namesIterator++)
+				{
+					ConnectionDefinitionAdapter connectionDefinitionAdapter( outPortName, *namesIterator );
+					XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "port_connection", true);
+					storage.Store(&connectionComponentAdapter);
+				}
+			}
+		}
+
+		// third iteration to store ports. 
+		// XR: maybe it should be all in one iteration but this way
+		// the xml file is clearer.
+
+		for(it=BeginProcessings();it!=EndProcessings();it++)
+		{
+			std::string name(it->first);
+			Processing * proc = it->second;
+			Processing::OutControlIterator itOutControl;
+			for (itOutControl=proc->GetOutControls().Begin(); 
+			     itOutControl!=proc->GetOutControls().End(); 
+			     itOutControl++)
+			{
+				std::string outControlName(name);
+				outControlName += ".";
+				outControlName += (*itOutControl)->GetName();
+
+				NamesList namesInControls = GetInControlsConnectedTo(outControlName);
+				NamesList::iterator namesIterator;
+				for(namesIterator=namesInControls.begin();
+				    namesIterator!=namesInControls.end();
+				    namesIterator++)
+				{
+					ConnectionDefinitionAdapter connectionDefinitionAdapter( outControlName, *namesIterator );
+					XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "control_connection", true);
+					storage.Store(&connectionComponentAdapter);
+				}
+			}
+		}
+
+
+	}
+
+	void Network::LoadFrom( Storage & storage)
+	{
+		XMLAdapter<std::string> strAdapter( mName, "id");
+		storage.Load(&strAdapter);
+
+		// how to iterate???
+		while(1)
+		{
+			ProcessingDefinitionAdapter procDefinitionAdapter;
+			XMLComponentAdapter procComponentAdapter(procDefinitionAdapter, "processing", true);
+			if(storage.Load(&procComponentAdapter) == false)
+				break;
+			
+			AddProcessing(procDefinitionAdapter.GetName(), procDefinitionAdapter.GetProcessing()); 
+
+		}
+
+		// second iteration to load ports. 
+		// XR: maybe it should be all in one iteration but this way
+		// the xml file is clearer.
+
+
+		while(1)
+		{
+			ConnectionDefinitionAdapter connectionDefinitionAdapter;
+			XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "port_connection", true);
+			if(storage.Load(&connectionComponentAdapter)==false)
+				break;
+			ConnectPorts( connectionDefinitionAdapter.GetOutName(), connectionDefinitionAdapter.GetInName() );			
+		}
+
+		while(1)
+		{
+			ConnectionDefinitionAdapter connectionDefinitionAdapter;
+			XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "control_connection", true);
+			if(storage.Load(&connectionComponentAdapter)==false)
+				break;
+			ConnectControls( connectionDefinitionAdapter.GetOutName(), connectionDefinitionAdapter.GetInName() );			
+		}
+
 	}
 
 	/** Gets the ownership of the FlowControl passed. So it will be deleted by the destructor */
 	void Network::AddFlowControl(FlowControl* flowControl)
 	{		
-		_flowControl = flowControl;
-		_flowControl->AttachToNetwork(this);
+		mFlowControl = flowControl;
+		mFlowControl->AttachToNetwork(this);
 	}
 
 	Processing& Network::GetProcessing( const std::string & name )
 	{
-		CLAM_ASSERT( HasProcessing(name), "No Processing with the given name" );
+		CLAM_ASSERT( HasProcessing(name), "No Processing with the given name");
 
-		ProcessingsMap::const_iterator it = _processings.find( name );
+		ProcessingsMap::const_iterator it = mProcessings.find( name );
 		return *it->second;
 	}
 
 	void Network::AssertFlowControlNotNull() const
 	{
 		CLAM_ASSERT( 
-			_flowControl, 
+			mFlowControl, 
 			"the Network should have a FlowControl. Use Network::AddFlowControl(FlowControl*)");
 	}
 
@@ -53,20 +179,20 @@ namespace CLAM
 		AssertFlowControlNotNull();
 
 		// returns false if the key was repeated.
-		if (!_processings.insert( ProcessingsMap::value_type( name, proc ) ).second )
+		if (!mProcessings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
 
-		_flowControl->ProcessingAddedToNetwork(*proc);
+		mFlowControl->ProcessingAddedToNetwork(*proc);
 	}
 
 	void Network::RemoveProcessing ( const std::string & name)
 	{
-		ProcessingsMap::const_iterator i = _processings.find( name );
-		if(i==_processings.end())
+		ProcessingsMap::const_iterator i = mProcessings.find( name );
+		if(i==mProcessings.end())
 			CLAM_ASSERT(false, "Network::RemoveProcessing() Trying to remove a processing that is not included in the network" );
 		
 		Processing * proc = i->second;
-		_processings.erase( name );
+		mProcessings.erase( name );
 
 		Processing::InPortIterator itInPort;
 		for(itInPort=proc->GetInPorts().Begin(); 
@@ -89,15 +215,15 @@ namespace CLAM
 
 	bool Network::HasProcessing( const std::string & name )
 	{
-		ProcessingsMap::const_iterator i = _processings.find( name );
-		return i!=_processings.end();
+		ProcessingsMap::const_iterator i = mProcessings.find( name );
+		return i!=mProcessings.end();
 	}
 
 
 	bool Network::ConnectPorts( const std::string & producer, const std::string & consumer )
 	{
 		AssertFlowControlNotNull();
-		_flowControl->NetworkTopologyChanged();
+		mFlowControl->NetworkTopologyChanged();
 
 		OutPort & outport = GetOutPortByCompleteName(producer);
 		InPort & inport = GetInPortByCompleteName(consumer);
@@ -133,7 +259,7 @@ namespace CLAM
 	bool Network::DisconnectPorts( const std::string & producer, const std::string & consumer)
 	{
 		AssertFlowControlNotNull();
-		_flowControl->NetworkTopologyChanged();
+		mFlowControl->NetworkTopologyChanged();
 
 		OutPort & outport = GetOutPortByCompleteName(producer);
 		InPort & inport = GetInPortByCompleteName(consumer);
@@ -165,11 +291,11 @@ namespace CLAM
 	void Network::DisconnectAllPorts()
 	{
 		AssertFlowControlNotNull();
-		_flowControl->NetworkTopologyChanged();
+		mFlowControl->NetworkTopologyChanged();
 
 		ProcessingsMap::iterator it;
 		// pass trough all the processing
-		for( it=_processings.begin(); it!=_processings.end(); it++)
+		for( it=mProcessings.begin(); it!=mProcessings.end(); it++)
 		{
 			Processing* proc = it->second;
 			PublishedInPorts::Iterator iteratorInPorts;
@@ -242,8 +368,8 @@ namespace CLAM
 			{
 				NodeBase * node = CreateAudioNodeWithDefaultStreamBuffer();
 				out.Attach(*node);
-				_nodes.push_back(node);
-				_flowControl->NetworkTopologyChanged();
+				mNodes.push_back(node);
+				mFlowControl->NetworkTopologyChanged();
 			}
 			return *out.GetNode();
 	}
@@ -253,7 +379,7 @@ namespace CLAM
 		//@todo
 		typedef CircularStreamImpl<TData> DefaultStreamBuffer;
 		NodeBase * node = new NodeTmpl<Audio, DefaultStreamBuffer>;
-		_nodesToConfigure.push_back( node );
+		mNodesToConfigure.push_back( node );
 		return node;
 		//return new AudioNodeTmpl;
 	}
@@ -262,11 +388,11 @@ namespace CLAM
 	{
 		AssertFlowControlNotNull();
 
-		Nodes::iterator it = _nodesToConfigure.begin();
-		while ( it!=_nodesToConfigure.end() )
-			_flowControl->ConfigureNode(**it++);
+		Nodes::iterator it = mNodesToConfigure.begin();
+		while ( it!=mNodesToConfigure.end() )
+			mFlowControl->ConfigureNode(**it++);
 		
-		_nodesToConfigure.clear();
+		mNodesToConfigure.clear();
 	}
 
 	void Network::Start()
@@ -290,47 +416,107 @@ namespace CLAM
 	void Network::DoProcessings()
 	{
 		AssertFlowControlNotNull();
-		_flowControl->DoProcessings();
+		mFlowControl->DoProcessings();
+	}
+
+
+	void Network::Clear()
+	{
+//		Stop();
+
+		Nodes::iterator itNodes;
+		for(itNodes=BeginNodes();itNodes!=EndNodes();itNodes++)
+			delete *itNodes;
+		mNodes.clear();
+		
+		std::for_each( 	mProcessings.begin(), mProcessings.end(), HelperFunctions::DeleteProcessing );
+		mProcessings.clear();	
 	}
 
 	Network::ProcessingsMap::iterator Network::BeginProcessings()
 	{
-		return _processings.begin();
+		return mProcessings.begin();
 	}
 
 	Network::ProcessingsMap::iterator Network::EndProcessings()
 	{
-		return _processings.end();
+		return mProcessings.end();
 	}
 	Network::ProcessingsMap::const_iterator Network::BeginProcessings() const
 	{
-		return _processings.begin();
+		return mProcessings.begin();
 	}
 
 	Network::ProcessingsMap::const_iterator Network::EndProcessings() const
 	{
-		return _processings.end();
+		return mProcessings.end();
 	}
 
 	Network::Nodes::iterator Network::BeginNodes()
 	{
-		return _nodes.begin();
+		return mNodes.begin();
 	}
 
 	Network::Nodes::iterator Network::EndNodes()
 	{
-		return _nodes.end();
+		return mNodes.end();
 	}
 
 	Network::Nodes::const_iterator Network::BeginNodes() const
 	{
-		return _nodes.begin();
+		return mNodes.begin();
 	}
 
 	Network::Nodes::const_iterator Network::EndNodes() const
 	{
-		return _nodes.end();
+		return mNodes.end();
 	}
 
+	Network::NamesList  Network::GetInPortsConnectedTo( const std::string & producer )
+	{		
+		OutPort & out = GetOutPortByCompleteName( producer );
+		CLAM_ASSERT( out.GetNode(), "Trying to access a node from an outport without connections");
+		NamesList consumers;
 
+		NodeBase::ReaderIterator it;
+		for(it=out.GetNode()->BeginReaders();
+		    it!=out.GetNode()->EndReaders();
+		    it++)
+		{
+			std::string completeName(GetNetworkId((*it)->GetProcessing()));
+			completeName += ".";
+			completeName += (*it)->GetName();
+			consumers.push_back(completeName);
+
+		}
+		return consumers;
+	}
+
+	Network::NamesList  Network::GetInControlsConnectedTo( const std::string & producer )
+	{		
+		OutControl & out = GetOutControlByCompleteName( producer );
+		NamesList consumers;
+
+		std::list<InControl*>::iterator it;
+		for(it=out.BeginInControlsConnected();
+		    it!=out.EndInControlsConnected();
+		    it++)
+		{
+			std::string completeName(GetNetworkId((*it)->GetProcessing()));
+			completeName += ".";
+			completeName += (*it)->GetName();
+			consumers.push_back(completeName);
+		}
+		return consumers;
+	}
+
+	const std::string &  Network::GetNetworkId(const Processing * proc)
+	{
+		ProcessingsMap::iterator it;
+		for(it=BeginProcessings(); it!=EndProcessings(); it++)
+			if(it->second == proc )
+				return it->first;
+
+		CLAM_ASSERT(false, "Trying to get a network id from a processing not present in it");
+	}
 }

@@ -86,7 +86,19 @@ namespace CLAM {
 	protected:
 
 		virtual bool ConcreteConfigure(const ProcessingConfig&) = 0;
+
+		/**
+		 * Concrete start implementation, called when the user calls 
+		 * Start() on the Processing(Composite), should be used to implement 
+		 * any specific start implementation required by classes deriving from 
+		 * this class. When overriding this function in a class derived from 
+		 * ProcessingComposite be sure to call the base class (so child Processings 
+		 * are properly started).
+		 */
 		virtual bool ConcreteStart();
+		/**
+		 * See ConcreteStart().
+		 */
 		virtual bool ConcreteStop();
 
 	public:

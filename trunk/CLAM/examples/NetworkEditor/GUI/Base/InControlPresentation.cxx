@@ -6,7 +6,7 @@ namespace NetworkGUI
 {
 
 InControlPresentation::InControlPresentation()
-	: mName( "unnamed inport" )
+	: mName( "unnamed in control" )
 {
 	SetName.Wrap( this, &InControlPresentation::OnNewName );
 }

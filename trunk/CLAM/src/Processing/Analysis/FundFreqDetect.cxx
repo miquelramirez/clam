@@ -112,7 +112,7 @@ namespace CLAM {
   /* The supervised Do() function */
 	bool  FundFreqDetect::Do(void) 
 	{
-		throw(ErrProcessingObj(CLASS"::Do(): Supervised mode not implemented"),this);
+		CLAM_ASSERT(false, "Do(): Supervised mode not implemented");
 		return false;
 	}
   

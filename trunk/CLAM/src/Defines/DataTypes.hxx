@@ -22,8 +22,6 @@
 #ifndef _CLAMDataTypes_
 #define _CLAMDataTypes_
 
-#include "CLAM_Math.hxx"
-
 namespace CLAM {
 
 typedef int TIndex;
@@ -60,24 +58,6 @@ enum EFFTType
 	eFFT_NREC,
 	eFFT_IUA
 };
-
-/*Non member function, returns absolute value of class T*/
-template <class T> inline T Abs(T value)
-{
-	if(value<0) return -value;
-	else return value;
-}
-
-/* DB */
-
-// Default scaling
-#define CLAM_DB_SCALING  20  
-
-inline double DB(double linData, int scaling=20) 
-{ 
-	return (scaling*log10(linData)); 
-}
-inline double Lin(double logData, int scaling=20) { return (pow(double(10),(logData/scaling)) ); }
 
 }
 

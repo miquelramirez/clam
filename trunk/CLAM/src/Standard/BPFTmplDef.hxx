@@ -180,26 +180,48 @@ namespace CLAM
 * @see : CLAM::SearchArray
 */
 	template <class TX,class TY>
-	void BPFTmpl<TX,TY>::Insert(const PointTmpl<TX,TY> &point)
+	TIndex BPFTmpl<TX,TY>::Insert(const PointTmpl<TX,TY> &point)
 	{
-		if(mArray.Size()==0||point.GetX()>mArray[Size()-1].GetX())
+		TIndex i; // index at which element was inserted
+		if (mArray.Size() == 0 || point.GetX() > mArray[Size()-1].GetX())
+		{
 			mArray.AddElem(point);
+			i = Size();
+		}
 		else
 		{
-			TIndex closestIndex=mSearch.Find(point);
-			if(closestIndex==-1)
+			TIndex closestIndex = mSearch.Find(point);
+			if (closestIndex == -1)
 			{
-				if(point.GetX()>GetXValue(Size()-1)) mArray.AddElem(point);
-				else mArray.InsertElem(0,point);
-			}
-			else{
-				if(GetXValue(closestIndex)==point.GetX())
-					SetValue(closestIndex,point.GetY());
+				if (point.GetX() > GetXValue(Size() - 1))
+				{
+					mArray.AddElem(point);
+					i = Size();
+				}
 				else
-					mArray.InsertElem(closestIndex+1,point);
+				{
+					mArray.InsertElem(0, point);
+					i = 0;
+				}
+			}
+			else
+			{
+				if (GetXValue(closestIndex) == point.GetX())
+				{
+					SetValue(closestIndex, point.GetY());
+					i = closestIndex;
+				}
+				else
+				{
+					mArray.InsertElem(closestIndex+1 ,point);
+					i = closestIndex+1;
+				}
 			}
 		}
-		mIsSplineUpdated=false;
+
+		mIsSplineUpdated = false;
+
+		return i;
 	}
 
 /**
@@ -211,10 +233,10 @@ namespace CLAM
 * @see : Insert
 */
 	template <class TX,class TY>
-	void BPFTmpl<TX,TY>::Insert(const TX &x,const TX &y)
+	TIndex BPFTmpl<TX,TY>::Insert(const TX &x,const TX &y)
 	{
 		PointTmpl<TX,TY> tmpPoint(x,y);
-		Insert(tmpPoint);
+		return Insert(tmpPoint);
 	}
 
 /**

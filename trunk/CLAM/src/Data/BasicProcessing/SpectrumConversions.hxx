@@ -26,6 +26,8 @@ namespace CLAM
 		
 		void Linear2LogMagnitude( const DataArray&, DataArray& );
 
+		void Complex2LogMagPhase(const Array<Complex> &src, DataArray &destMag, DataArray &destPhase);
+
 		// Inplace conversion function overloads
 
 		void Log2LinearMagnitude( DataArray& );

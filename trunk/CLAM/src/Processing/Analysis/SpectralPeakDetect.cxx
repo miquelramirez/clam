@@ -50,11 +50,15 @@ namespace CLAM {
 	/* Processing  object Method  implementations */
 
 	SpectralPeakDetect::SpectralPeakDetect()
+		: mInput( "Input spectrum", this, 1 ),
+		  mOutput( "Output spectral peak array", this, 1 )
 	{
 		Configure(SpectralPeakDetectConfig());
 	}
 
 	SpectralPeakDetect::SpectralPeakDetect(const SpectralPeakDetectConfig &c = SpectralPeakDetectConfig())
+		: mInput( "Input spectrum", this, 1 ),
+		  mOutput( "Output spectral peak array", this, 1 )
 	{
 		Configure(c);
 	}
@@ -89,12 +93,18 @@ namespace CLAM {
 		return true;
 	}
 
+	void SpectralPeakDetect::Attach( Spectrum& in, SpectralPeakArray& out )
+	{
+		mInput.Attach( in );
+		mOutput.Attach( out );
+	}
+
 	/* The supervised Do() function */
 
 	bool  SpectralPeakDetect::Do(void)
 	{
-		CLAM_ASSERT(false,CLASS"::Do(): Supervised mode not implemented");
-		return false;
+
+		return Do( mInput.GetData(), mOutput.GetData() );
 	}
 
 	/* The  unsupervised Do() function */

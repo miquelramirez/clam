@@ -10,28 +10,28 @@
 
 namespace CLAMVM
 {
-		using SigSlot::Signalv1;
-		using SigSlot::Signalv2;
-		using CLAM::Array;
-		using CLAM::TTime;
-		using CLAM::TData;
+	using SigSlot::Signalv1;
+	using SigSlot::Signalv2;
+	using CLAM::Array;
+	using CLAM::TTime;
+	using CLAM::TData;
 
 
-		class SinTracksModel
-		{
-		public:
+	class SinTracksModel
+	{
+	public:
 				
-				SinTracksModel( );
+		SinTracksModel( );
 				
-				virtual ~SinTracksModel();
+		virtual ~SinTracksModel();
 
 
-				// Signals
-				Signalv2< SineTrackList& , int > TrackListPublished;
-				Signalv1< TData >                SpectralRangePublished;
-				Signalv2< TTime, TTime >         DurationPublished;
+		// Signals
+		Signalv2< SineTrackList& , int > TrackListPublished;
+		Signalv1< TData >                SpectralRangePublished;
+		Signalv2< TTime, TTime >         DurationPublished;
 
-		};
+	};
 
 }
 

@@ -115,10 +115,10 @@ namespace CLAM {
 			mpSoundFileIO->Create(
 				mConfig.GetFilename().c_str(),SoundFileIO::eWrite,header);
 		}
-		catch (ErrSoundFileIO err)
+		catch (ErrSoundFileIO& err)
 		{
 			mStatus += "Error opening file: ";
-			mStatus += err.mStr;
+			mStatus += err.what();
 			mStatus += "\n";
 			return false;
 		}
@@ -164,8 +164,8 @@ namespace CLAM {
 				n -= m;
 			}
 		}
-		catch (ErrSoundFileIO orig) {
-			throw ErrProcessingObj(orig.mStr,this);
+		catch (ErrSoundFileIO& orig) {
+			throw ErrProcessingObj(orig.what(),this);
 		}
 				
 		return true;		
@@ -221,8 +221,8 @@ namespace CLAM {
 				n -= m/2;
 			}
 		}
-		catch (ErrSoundFileIO orig) {
-			throw ErrProcessingObj(orig.mStr,this);
+		catch (ErrSoundFileIO& orig) {
+			throw ErrProcessingObj(orig.what(),this);
 		}
 				
 		return true;		

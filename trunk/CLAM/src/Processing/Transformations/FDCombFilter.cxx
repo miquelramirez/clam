@@ -91,7 +91,7 @@ namespace CLAM {
 
 	bool  FDCombFilter::Do(void) 
 	{
-		throw(ErrProcessingObj(CLASS"::Do(): Supervised mode not implemented"),this);
+		CLAM_ASSERT(false,CLASS"::Do(): Supervised mode not implemented");
 		return false;
 	}
 

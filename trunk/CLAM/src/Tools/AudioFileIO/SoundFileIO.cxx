@@ -1,5 +1,4 @@
 #include "SoundFileIO.hxx"
-#include "ErrSoundFileIO.hxx"
 
 using namespace CLAM;
 
@@ -27,6 +26,7 @@ void SoundFileIO::Init(void)
 }
 
 void SoundFileIO::Open(const char* filename,EMode mode)
+	throw ( ErrSoundFileIO )
 {
 	char* cmode = 0;
 
@@ -43,7 +43,12 @@ void SoundFileIO::Open(const char* filename,EMode mode)
 			case eWrite:
 				mFile = stdout; break;
 			default:
-				throw ErrSoundFileIO("Invalid mode to open stdio");
+			{
+				// MRJ: I suspect this should be an assert
+				UnavailableSoundFile error( "Invalid mode to open stdio!" );
+				
+				throw error;
+			}
 		}
 		mStdIO = true;
 	}
@@ -58,13 +63,22 @@ void SoundFileIO::Open(const char* filename,EMode mode)
 			case eDuplex:
 				cmode = "rb+"; break;
 			default:
-				throw ErrSoundFileIO("Invalid mode to open soundfile");
+			{
+				// I suspect this should be an assert
+				UnavailableSoundFile error( "Invalid mode to open soundfile" );
+				
+				throw error;
+			}
 		}
 	
 		mFile = fopen(filename,cmode);
 
 		if (mFile==0) 
-		  throw ErrSoundFileIO("File not found");
+		{
+			UnavailableSoundFile error( "File was not found" );
+
+			throw error;		       
+		}
 	}
 
 	ReadHeader();
@@ -228,8 +242,10 @@ int SoundFileIO::Read(float *out,int& size)
 		}
 		else 
 		{
-			throw ErrSoundFileIO( "Unsupported PCM sample format: supported values are"
-								  "8, 16, 24 and 32 bits per sample");
+			UnsupportedSoundFileFormat error( "Unsupported PCM sample format: supported values are " 
+							  "8, 16, 24 and 32 bits per sample \n");
+
+			throw error;
 		}
 	}
 	else if ( mHeader.mFormatTag == 0x0003 ) // IEEE float
@@ -257,7 +273,12 @@ int SoundFileIO::Read(float *out,int& size)
 	}
 	else 
 	{
-		throw ErrSoundFileIO( "Unsupported encoding: only PCM and IEEE float encodings");
+
+		UnsupportedSoundFileSampleEncoding error( "Unsupported sample encoding: only PCM and IEEE float "
+							  "encodings are supported. Possibly the file is in some "
+							  "compressed sample format ( RLE, etc. )\n");
+
+		throw error;
 	}
 
 	return n;

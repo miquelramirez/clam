@@ -26,7 +26,7 @@ int _recursedir(
 	if (strcmp(dir,"")!=0)
 	{
 		stradd(dir);
-		stradd("\\");
+		stradd("/");
 	}
 	stradd("*.*");
 	strend();
@@ -42,7 +42,7 @@ int _recursedir(
 				char tmp2[2048];
 				strstart(tmp2,2048);
 				stradd(dir);
-				stradd("\\");
+				stradd("/");
 				stradd(fd.cFileName);
 				strend();
 				
@@ -67,7 +67,7 @@ int _recursedir(
 				char tmp2[2048];
 				strstart(tmp,2048);
 				stradd(dir);
-				stradd("\\");
+				stradd("/");
 				stradd(fd.cFileName);
 				strend();
 				if (f(tmp2,ptr)) {

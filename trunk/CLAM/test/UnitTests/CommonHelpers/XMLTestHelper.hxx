@@ -68,8 +68,19 @@ namespace CLAMTest {
 #endif//CLAM_USE_XML
 		CPPUNIT_ASSERT_EQUAL(in.str(),out.str());
 		return in.str()==out.str();
-
 	}
+
+	void checkXmlEqual( std::string expectedXml,
+		std::string actualXml,
+		CppUnit::SourceLine sourceLine );
+
+
+	/// Asserts that two XML strings are equivalent.
+	#define CLAMTEST_ASSERT_XML_EQUAL( expected, actual ) \
+		::CLAMTest::checkXmlEqual( expected, actual,      \
+		CPPUNIT_SOURCELINE() )
+
+
 }
 #endif//_XMLTESTHELPER_
 

@@ -23,6 +23,7 @@
 #include <exception>
 #include <string>
 #include "Audio.hxx"
+#include "SpectrumConfig.hxx"
 #include "Spectrum.hxx"
 #include "FFT_rfftw.hxx"
 #include "Err.hxx"

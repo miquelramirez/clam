@@ -4,18 +4,15 @@
 #include "OutPortAdapter.hxx"
 #include "Qt_InPortPresentation.hxx"
 #include "Qt_OutPortPresentation.hxx"
+#include "Qt_ProcessingConfigPresentation.hxx"
 
 #include "InControlAdapter.hxx"
 #include "OutControlAdapter.hxx"
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
-
-
 #include <qtooltip.h> 
 #include <qpainter.h>
 #include <cmath>
-
-#include <iostream>
 
 namespace NetworkGUI
 {
@@ -51,7 +48,6 @@ Qt_ProcessingPresentation::Qt_ProcessingPresentation( std::string nameFromNetwor
 	SetOutControlClicked.Wrap( this, &Qt_ProcessingPresentation::OnNewOutControlClicked);
 	SetOutControlAfterClickInControl.Wrap(this, &Qt_ProcessingPresentation::OnNewOutControlAfterClickInControl);
 	SetInControlAfterClickOutControl.Wrap(this, &Qt_ProcessingPresentation::OnNewInControlAfterClickOutControl);
-
 }
 
 Qt_ProcessingPresentation::~Qt_ProcessingPresentation()
@@ -118,10 +114,7 @@ void Qt_ProcessingPresentation::OnNewInControlAfterClickOutControl( const QPoint
 	{
 		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itin);
 		if (in->geometry().contains(real))
-		{
 			in->AcquireInControlClicked.Emit(in);
-			std::cout << in->GetName() << std::endl;
-		}
 	}
 }
 
@@ -138,10 +131,7 @@ void Qt_ProcessingPresentation::OnNewOutControlAfterClickInControl( const QPoint
 	{
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itout);
 		if (out->geometry().contains(real))
-		{
-			std::cout << out->GetName() << std::endl;
 			out->AcquireOutControlClicked.Emit(out);
-		}
 	}
 }	
 
@@ -273,10 +263,8 @@ void Qt_ProcessingPresentation::Show()
 	OutControlPresentationIterator itOutControl;
 	for ( itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end(); itOutControl++)
 		(*itOutControl)->Show();
-
-
-
 	show();
+
 }
 
 void Qt_ProcessingPresentation::Hide()
@@ -298,6 +286,10 @@ void Qt_ProcessingPresentation::Hide()
 		(*itOutControl)->Hide();
 
 	hide();
+
+	if(mConfig)
+		mConfig->Hide();
+
 }
 
 void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
@@ -324,14 +316,14 @@ void Qt_ProcessingPresentation::paintEvent( QPaintEvent * )
 	InControlPresentationIterator itInControl;
 	for (itInControl=mInControlPresentations.begin(); itInControl!=mInControlPresentations.end();itInControl++)
 	{
-		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl);
-		reg += in->geometry();
+		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl)
+;		reg += in->GetRegion();
 	}
 	OutControlPresentationIterator itOutControl;
 	for (itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end();itOutControl++)
 	{
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itOutControl);
-		reg += out->geometry();
+		reg += out->GetRegion();
 	}
 
 	setMask(reg);
@@ -358,7 +350,7 @@ void Qt_ProcessingPresentation::mousePressEvent( QMouseEvent *m)
 	}
 	else
 	{
-		EditConfiguration.Emit( mConfig );
+		mConfig->Show();
 	}
 	grabKeyboard();
 }
@@ -401,7 +393,7 @@ void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->AcquirePos.Emit( difference.x()+ posX, difference.y()+posY);
+		in->AcquirePos.Emit( difference.x()+ posX +5  , difference.y()+posY -2 );
 	}
 	OutControlPresentationIterator itOutControl;
 	for (itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end();itOutControl++)
@@ -409,7 +401,7 @@ void Qt_ProcessingPresentation::mouseMoveEvent( QMouseEvent *m)
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itOutControl);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->AcquirePos.Emit( difference.x() + posX , difference.y()+ posY );
+		out->AcquirePos.Emit( difference.x() + posX - 4, difference.y()+ posY +2 );
 	}
 	QWidget * parent = parentWidget();
 	parent->repaint();
@@ -439,7 +431,7 @@ void Qt_ProcessingPresentation::EmitPositionOfChildren()
 		Qt_InControlPresentation * in = (Qt_InControlPresentation*)(*itInControl);
 		int posX = in->pos().x();
 		int posY = in->pos().y() + in->height()/2;
-		in->AcquirePos.Emit( pos().x() + posX, pos().y() + posY);
+		in->AcquirePos.Emit( pos().x() + posX + 5, pos().y() + posY - 2 );
 	}
 	OutControlPresentationIterator itOutControl;
 	for (itOutControl=mOutControlPresentations.begin(); itOutControl!=mOutControlPresentations.end();itOutControl++)
@@ -447,7 +439,7 @@ void Qt_ProcessingPresentation::EmitPositionOfChildren()
 		Qt_OutControlPresentation * out = (Qt_OutControlPresentation*)(*itOutControl);
 		int posX = out->pos().x() + 10;
 		int posY = out->pos().y() + out->height()/2;
-		out->AcquirePos.Emit( pos().x() + posX , pos().y() + posY );
+		out->AcquirePos.Emit( pos().x() + posX - 4 , pos().y() + posY +2);
 	}
 }
 

@@ -4,6 +4,7 @@
 
 #include <string>
 #include <qwidget.h>
+#include <qregion.h>
 #include "InControlPresentation.hxx"
 #include "Signalv2.hxx"
 #include "Signalv1.hxx"
@@ -18,6 +19,8 @@ public:
 	virtual ~Qt_InControlPresentation();
 	virtual void Show();
 	virtual void Hide();
+	QRegion GetRegion();
+
 protected:
 	virtual void OnNewName(const std::string& name);
 
@@ -27,8 +30,10 @@ public: // signals
 	SigSlot::Signalv2< int , int >  AcquirePos;
 	SigSlot::Signalv1< Qt_InControlPresentation * > AcquireInControlClicked;
 
+protected:
 // qt stuff
 	int   mId;
+	QRegion mReg;
 };
 
 

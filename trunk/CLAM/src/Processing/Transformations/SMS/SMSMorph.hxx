@@ -57,8 +57,7 @@ namespace CLAM{
 			return mConfig;
 		}
 
-		bool ConcreteConfigure(const ProcessingConfig& c)
-			throw(std::bad_cast);
+		bool ConcreteConfigure(const ProcessingConfig& c);
 		bool ConcreteStart();
 		
 		/** Destructor of the class*/

@@ -1,6 +1,7 @@
 
 #include "Qt_ConnectionPresentation.hxx"
 
+
 #include <qpixmap.h>
 #include <iostream>
 #include <qpainter.h>
@@ -17,7 +18,7 @@ Qt_ConnectionPresentation::Qt_ConnectionPresentation( QWidget *parent, const cha
 	  mDown(false)
 {
 	setPalette( QPalette( QColor( 250, 250, 200) ) );
-//	setAutoMask(true);
+
 	SetOutPos.Wrap( this, &Qt_ConnectionPresentation::OnNewOutPos);
 	SetInPos.Wrap( this, &Qt_ConnectionPresentation::OnNewInPos);
 	setFixedSize(0,0);
@@ -26,16 +27,6 @@ Qt_ConnectionPresentation::Qt_ConnectionPresentation( QWidget *parent, const cha
 	mPositions[1] = QPoint(0,0);
 	mPositions[2] = QPoint(0,0);
 	mPositions[3] = QPoint(0,0);
-}
-
-void Qt_ConnectionPresentation::setAutoMask(bool b)
-{
-/*	if (b) 
-		setBackgroundMode( PaletteForeground );
-	else 
-		setBackgroundMode( PaletteBackground );
-	QWidget::setAutoMask(b);
-*/
 }
 
 
@@ -96,82 +87,8 @@ void Qt_ConnectionPresentation::UpdatePosition()
 
 	move (x,y);
 	setFixedSize(w + 1,h +1);
-//	updateMask();
-
 }
 
-void Qt_ConnectionPresentation::paintEvent( QPaintEvent * e)
-{ 
-
-
-	QBitmap bm( size() );
-	bm.fill( color0 );			//transparent
-
-	QPainter paint;
-	paint.begin( &bm, this );
-	paint.setPen( QPen(color1, 5));
-
-	UpdateBezierLine();
-	paint.drawCubicBezier(mPositions);
-	paint.end();
-
-    
-	QPixmap offscreen(size());
-	offscreen.fill(this, QPoint(0,0));
-
-
-	QPainter p( &offscreen );
-
-	p.setPen( QPen ( QColor( 240, 200, 200 ), 5));
-	p.drawCubicBezier(mPositions);
-	if (mDown)
-		p.setPen( QPen ( QColor( 200, 50, 50), 1 ) );
-	else
-		p.setPen( QPen ( QColor( 80, 80, 200), 1 ) );
-	p.drawCubicBezier(mPositions);
-	p.flush();
-        p.end();
-	setMask( bm );	
-        bitBlt(this, 0, 0, &offscreen);
-}
-
-void Qt_ConnectionPresentation::updateMask()	// paint clock mask
-{
-/*
-	QBitmap bm( size() );
-	bm.fill( color0 );			//transparent
-
-	QPainter paint;
-	paint.begin( &bm, this );
-//	paint.setBrush( color1 );		// use non-transparent color
-	paint.setPen( QPen(color1, 3));
-
-	UpdateBezierLine();
-	paint.drawCubicBezier(mPositions);
-	paint.end();
-	setMask( bm );
-*/
-}
-
-void Qt_ConnectionPresentation::UpdateBezierLine()
-{
-
-	if(((origin.x()<end.x()) && origin.y()<end.y()) || 
-	   ((origin.x()>end.x()) && origin.y()>end.y()))  // origin is in 1 o 3 quadrant of end
-	{
-		mPositions.setPoint(0, QPoint(mapFromParent( geometry().topLeft() )));
-		mPositions.setPoint(1, QPoint(mapFromParent(geometry().topRight() )));
-		mPositions.setPoint(2, QPoint(mapFromParent(geometry().bottomLeft() )));
-		mPositions.setPoint(3, QPoint(mapFromParent(geometry().bottomRight() )));
-	}
-	else
-	{	
-		mPositions.setPoint(0, QPoint(mapFromParent(geometry().bottomLeft() )));
-		mPositions.setPoint(1, QPoint(mapFromParent(geometry().bottomRight() )));	
-		mPositions.setPoint(2, QPoint(mapFromParent( geometry().topLeft() )));
-		mPositions.setPoint(3, QPoint(mapFromParent(geometry().topRight() )));
-	}
-}
 
 void Qt_ConnectionPresentation::mousePressEvent( QMouseEvent *m)
 {

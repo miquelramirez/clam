@@ -332,7 +332,8 @@ void SpectralPeakArray::InitIndices() // Initialize all indices to -1 and set si
 	int i;
 	IndexArray& indexArray=GetIndexArray();
 	TSize nPeaks=GetnPeaks(); 
-	indexArray.Resize(nPeaks);
+	TSize nMaxPeaks=GetnMaxPeaks();
+	indexArray.Resize(nMaxPeaks);
 	indexArray.SetSize(nPeaks);
 	for(i=0;i<nPeaks;i++)
 	{

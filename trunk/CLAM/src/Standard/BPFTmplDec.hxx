@@ -121,7 +121,7 @@ namespace CLAM
 * @param : point to insert
 * @see : CLAM::SearchArray 
 */
-		void Insert(const PointTmpl<TX,TY> &point);
+		TIndex Insert(const PointTmpl<TX,TY> &point);
 
 /**
 * Inserts a point made of an X and a Y value in the correct position. Note that 
@@ -131,7 +131,7 @@ namespace CLAM
 * @param : Y value
 * @see : Insert
 */
-		void Insert(const TX &x,const TX &y);
+		TIndex Insert(const TX &x,const TX &y);
 
 /**
 * Deletes the point found at the given index

@@ -4,6 +4,7 @@
 
 #include <string>
 #include <qwidget.h>
+#include <qregion.h>
 #include "OutControlPresentation.hxx"
 #include "Signalv2.hxx"
 #include "Signalv1.hxx"
@@ -19,18 +20,22 @@ public:
 	virtual void Show();
 	virtual void Hide();
 	void updatePosition();
+	QRegion GetRegion();
 protected:
 	virtual void OnNewName(const std::string& name);
 
 	void paintEvent( QPaintEvent * );
 	void mousePressEvent( QMouseEvent *);
 
+
 public: // signals
 	SigSlot::Signalv2< int , int >  AcquirePos;
 	SigSlot::Signalv1< Qt_OutControlPresentation * > AcquireOutControlClicked;
+
+protected:
 // qt stuff
 	int   mId;
-	bool        mDown;
+	QRegion mReg;
 };
 
 

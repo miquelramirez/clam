@@ -63,17 +63,67 @@ int main( int argc, char** argv )
 	// CLAM::EAudioFileType is an enum type that specifies CLAM Audio file I/O file formats supported
 	fileLoaderConfig.SetFiletype( CLAM::EAudioFileType::eWave ); 
 
-	// Now we attempt to configure the AudioFileIn object. Note that this may fail by a
-	// number of reasons, such as an unexpected file format or a corrupted file.
+	// When we Configure() or ConcreteConfigure() the AudioFileIn object it checks that the file specified in the
+	// configuration is ( in order ):
+	// 1) a valid file i.e. a readable, existing file
+	// 2) it is a valid WAVE/RIFF file
+	// 3) its encoding is supported by CLAM
+	// Since this may fail due to a user mishap ( or that CLAM does not support the
+	// encoding found on that file), we must be able to react to this condition by
+	// first, catching possible exceptions and giving the user the possibility to
+	// retry.
+	// The difference between Configure() and ConcreteConfigure() is that the later will
+	// throw exceptions with type so client applications can 'decorate' or handle different
+	// error conditions as they see fit for their purpose. Note also that when using
+	// ConcreteConfigure() instead of Configure() you must first call PreConcreteConfigure()
+	// then make the call to ConcreteConfigure and finally call PostConcreteConfigure()
 
-	if ( !fileLoader.Configure( fileLoaderConfig ) )
+	fileLoader.PreConcreteConfigure( fileLoaderConfig );
+	bool everythingOK = false;
+
+	while ( !everythingOK )
 	{
-		// the attempt to configure the fileLoader object has failed
-		// so we prompt an error message, and abort
-		
-		std::cerr << "ERROR: could not open " << filename << std::endl;
-		exit(-1);
+		try
+		{
+			fileLoader.ConcreteConfigure( fileLoaderConfig );
+
+			// if there are no problems everythingOK will be true
+			// and program will continue
+			everythingOK = true;
+		}
+		catch( CLAM::ErrSoundFileIO& error )
+		{
+			// We will build an 'error string' that conveys useful information
+			// for the user:
+			std::string messageShown = "Sorry, but I could not open the file \n";
+			messageShown += fileLoaderConfig.GetFilename();
+			messageShown += "\n";
+			messageShown += "due to the following problem: \n";
+			messageShown +=error.what();
+			
+			// We obtain a const char* from the string object
+			fl_message( messageShown.c_str() );
+			
+			// And now we tell the user to provide a new filename, just
+			// as we did before						
+			const char* filename = fl_file_chooser( "Please, select a .wav file", "*.wav", NULL );
+			
+			// the user might cancel the dialog, so we can default the filename variable value to some pre-established
+			// value, or just abort program execution
+			if ( filename == NULL )
+			{
+				std::cout << "User cancelled" << std::endl;
+				exit(0);
+			}
+
+			fileLoaderConfig.SetFilename( filename );
+
+			CLAM_ASSERT( fileLoader.Configure( fileLoaderConfig ),
+				     "Unable to configure fileLoader!" );
+		}
 	}
+	
+	fileLoader.PostConcreteConfigure();
 	
 	// Once the fileLoader object is configured we can ask him about two very important
 	// characteristics of the audio we have loaded: its size in samples, and its sampling rate
@@ -90,8 +140,11 @@ int main( int argc, char** argv )
 	// Now we are prepared to extract the actual samples from the file and dump them into our
 	// Audio object
 	
-	fileLoader.Start();      
+	// We start the processing: this implies that the file will be opened
+	// for reading audio data from the file
+	fileLoader.Start(); 
 	fileLoader.Do( signal );  // we tell the file loader to copy the actual samples into our Audio object
+	// Now the file will be closed
 	fileLoader.Stop();
 
 	// Once loaded into the Audio object, we could operate on the samples contained in it as we see fit. 

@@ -39,7 +39,7 @@ namespace CLAM {
 // Creation/Destruction
 
 OutControl::OutControl(std::string name, Processing* parent, const bool publish) :
-	mName(name)
+	mName(name), mParent(parent)
 {
 	if (parent && publish) 	parent->PublishOutControl(this);
 }
@@ -55,6 +55,18 @@ OutControl::~OutControl() {}
 }
 */
 // Methods
+
+std::list<InControl*>::iterator OutControl::BeginInControlsConnected()
+{
+	return mLinks.begin();
+}
+
+std::list<InControl*>::iterator OutControl::EndInControlsConnected()
+{
+	return mLinks.end();
+}
+
+
 
 void OutControl::AddLink(InControl* in)
 {

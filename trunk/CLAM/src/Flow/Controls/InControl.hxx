@@ -45,6 +45,7 @@ class InControl
 private:
 	TControlData mLastValue;
 	std::string mName;
+	Processing * mParent;
 
 // Methods:
 public:
@@ -56,6 +57,7 @@ public:
 	TControlData GetLastValue() const { return mLastValue; };
 	const std::string& GetName() const { return mName; }
 	bool IsConnectedTo( OutControl & );
+	Processing * GetProcessing() const { return mParent;}
 
 //Constructor/Destructor
 	/**
@@ -111,23 +113,23 @@ public:
 	* to publish the control if it is the case (publish flag set)
 	*/
 	InControlTmpl(const std::string &name, ProcObj* parent, TPtrMemberFunc f = 0,const bool publish=true )	:
-		InControl(name),
+		InControl(name,parent,publish),
 		mFunc(f),
 		mFuncId(0),
 		mProcObj(parent)
 
 		{
-			if (publish) mProcObj->PublishInControl(this);
+//			if (publish) mProcObj->PublishInControl(this);
 		};
 
 	InControlTmpl(int id,const std::string &name, ProcObj* parent, TPtrMemberFuncId f,const bool publish=true )	:
-		InControl(name),
+		InControl(name,parent,publish),
 		mFunc(0),
 		mFuncId(f),
 		mProcObj(parent),
 		mId(id)
 		{
-			if (publish && mProcObj) mProcObj->PublishInControl(this);
+//			if (publish && mProcObj) mProcObj->PublishInControl(this);
 		};
 
 	~InControlTmpl(){};

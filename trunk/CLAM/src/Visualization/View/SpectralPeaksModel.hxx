@@ -12,18 +12,18 @@ namespace CLAMVM
 	using CLAM::Array;
 
 
-		class SpectralPeaksModel
-		{
-		public:
+	class SpectralPeaksModel
+	{
+	public:
 				
-				SpectralPeaksModel(  );
+		SpectralPeaksModel(  );
 				
-				virtual ~SpectralPeaksModel();
+		virtual ~SpectralPeaksModel();
 								
-				// Signals
-				Signalv1< const Array<Partial>& >       ObjectPublished;
+		// Signals
+		Signalv1< const Array<Partial>& >       ObjectPublished;
 
-		};
+	};
 
 }
 

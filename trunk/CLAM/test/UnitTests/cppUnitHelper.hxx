@@ -37,11 +37,11 @@ namespace CLAMTest
 			for (unsigned i=0; i<n; i++) std::cout << " ";
 		}
 		typedef std::vector<CppUnit::Test *> Tests;
-		
+
 	public:
 		static void printTestNames(const CppUnit::Test* test, const unsigned ind=0)
 		{
-			
+
 			const CppUnit::TestSuite * suite = dynamic_cast<const CppUnit::TestSuite*>( test );
 			if (suite) {
 				std::cout << std::endl;
@@ -60,7 +60,7 @@ namespace CLAMTest
 			if (ind==0) {
 				std::cout << "\n\n";
 			}
-		} 
+		}
 	};
 
 #define CLAMTEST_ASSERT_EQUAL_RTTYPES( expected, actual ) \
@@ -74,6 +74,56 @@ namespace CLAMTest
 // Helper traits for assertions
 namespace CppUnit
 {
+	// Colorizing string diferences
+	namespace TestAssert
+	{
+		inline int firstMismatch(const std::string & one, const std::string & other)
+		{
+			int minLen=one.length()<other.length()?
+				one.length():other.length();
+			for ( int index = 0; index < minLen; index++ )
+					if (one[index] != other[index]) return index;
+			return minLen;
+		}
+#ifdef CPPUNIT_ENABLE_SOURCELINE_DEPRECATED
+		template <>
+		inline void assertEquals( const std::string& expected,
+		                   const std::string& actual,
+		                   long lineNumber,
+		                   std::string fileName )
+    	{
+			if ( !assertion_traits<std::string>::equal(expected,actual) )
+			{
+				unsigned int index = firstMismatch(expected, actual);
+				assertNotEqualImplementation(
+					expected.substr(0,index)+"\033[32;1m"+expected.substr(index)+"\033[0m",
+					actual.substr(0,index)+"\033[31;1m"+actual.substr(index)+"\033[0m",
+					lineNumber,
+					fileName );
+			}
+		}
+#else
+		template <>
+		inline void assertEquals( const std::string& expected,
+		                   const std::string& actual,
+		                   SourceLine sourceLine,
+		                   const std::string &message)
+		{
+			if ( !assertion_traits<std::string>::equal(expected,actual) )
+			{
+				unsigned int index = firstMismatch(expected, actual);
+				Asserter::failNotEqual(
+					expected.substr(0,index)+"\033[32;1m"+expected.substr(index)+"\033[0m",
+					actual.substr(0,index)+"\033[31;1m"+actual.substr(index)+"\033[0m",
+					sourceLine,
+					message );
+			}
+		}
+#endif
+
+	}
+
+	// type_info traits
 	template<>
 	struct assertion_traits< std::type_info >
 	{
@@ -118,9 +168,9 @@ namespace CppUnit
 		static std::string toString( const bool& x)
 		{
 			CppUnit::OStringStream ost;
-			if (x) 
+			if (x)
 				ost << "true";
-			else 
+			else
 				ost << "false";
 			return ost.str();
 		}

@@ -50,7 +50,12 @@ namespace CLAM
 #elif defined (__GNUC__) && defined  (__i386__)
 #define CLAM_BREAKPOINT {__asm__ (" int $3 "); }
 
+/* g++ on powerpc linux */
 #elif defined (__GNUC__) && defined  (__powerpc__)
+#define CLAM_BREAKPOINT {__asm__ (" .long 0x7d821008 "); }
+
+/* g++ on powerpc macosx */ 
+#elif defined (__GNUC__) && defined  (__POWERPC__)
 #define CLAM_BREAKPOINT {__asm__ (" .long 0x7d821008 "); }
 
 // Insert your compiler here

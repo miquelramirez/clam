@@ -21,13 +21,16 @@
 
 #include "XMLComponentAdapter.hxx"
 
-using namespace CLAM;
+namespace CLAM
+{
 
 //* Check the internal status for a class instance is valid
 bool XMLComponentAdapter::FulfilsInvariant() 
 {
 	return super::FulfilsInvariant();
-};
+}
+
+} // namespace CLAM;
 
 
 

@@ -12,6 +12,8 @@ namespace CLAM
 {
 	class OutPort;
 	class InPort;
+	class InControl;
+	class OutControl;
 	class Network;
 }
 
@@ -54,7 +56,7 @@ namespace CLAMVM
 			return "ConnectionAdapterTmpl";
 		}
 
-		virtual bool ConnectsInPort( IN &);
+		virtual bool ConnectsInElement( IN &);
 		virtual bool Publish();
 		virtual bool BindTo( const OUT &, const IN &, const CLAM::Network &);
 	};
@@ -113,17 +115,15 @@ namespace CLAMVM
 						    const IN & in, 
 						    const CLAM::Network & net )
 	{
-		mOutObserved = dynamic_cast< const OUT * > (&out);
-		mInObserved = dynamic_cast< const IN * > (&in);
-		mNetworkObserved = dynamic_cast< const CLAM::Network *> (&net);
-		
-		if ((!mOutObserved)  || (!mInObserved) || (!mNetworkObserved))
-			return false;
+		mOutObserved = &out;
+		mInObserved = &in;
+		mNetworkObserved = &net;
+
 		return true;
 	}
 
 	template<class OUT, class IN>
-	bool ConnectionAdapterTmpl<OUT,IN>::ConnectsInPort( IN & in)
+	bool ConnectionAdapterTmpl<OUT,IN>::ConnectsInElement( IN & in)
 	{
 		return (&in == mInObserved);
 	}

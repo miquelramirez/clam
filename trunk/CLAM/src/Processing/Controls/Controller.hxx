@@ -106,7 +106,7 @@ public:
 	}
 	
 	const ProcessingConfig&  GetConfig() const;
-	virtual bool ConcreteConfigure(const ProcessingConfig&); //throw(std::bad_cast);
+	virtual bool ConcreteConfigure(const ProcessingConfig&);
 	
 	
 

@@ -87,9 +87,9 @@ SMSMorph::SMSMorph(const SMSMorphConfig &c):
 	Configure(c);
 }
 
-bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
+bool SMSMorph::ConcreteConfigure(const ProcessingConfig& c) 
 {
-	mConfig=dynamic_cast<const SMSMorphConfig&>(c);
+	CopyAsConcreteConfig(mConfig,c);
 	mHaveInternalSegment=false;
 	
 	if(mConfig.HasFileName())

@@ -112,6 +112,10 @@ public:
 		if (channel<=0) return sAllChannelMask;
 		return sChannelMask[channel-1];
 	}
+	static unsigned short SysMsgMask(int sysmsg)
+	{
+		return sChannelMask[sysmsg];
+	}
 	
 	static const MessageInfo& GetMessageInfo(Message msg)
 	{

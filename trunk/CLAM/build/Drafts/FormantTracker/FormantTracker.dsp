@@ -237,11 +237,11 @@ SOURCE=..\..\..\src\Flow\Ports\Port.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\OutPort.cxx
+SOURCE=..\..\..\src\Flow\Ports\InPort.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\InPort.cxx
+SOURCE=..\..\..\src\Flow\Ports\OutPort.cxx
 # End Source File
 # End Group
 # Begin Group "Nodes Sources"
@@ -317,21 +317,6 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.cxx
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.cxx
 # End Source File
 # End Group
-# Begin Group "AudioFileIO Sources"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFile.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileIn.cxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileOut.cxx
-# End Source File
-# End Group
 # Begin Group "Analysis Sources"
 
 # Begin Source File
@@ -360,6 +345,21 @@ SOURCE=..\..\..\src\Processing\Analysis\SpectralAnalysis.cxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Processing\ArithOps\AudioMultiplier.cxx
+# End Source File
+# End Group
+# Begin Group "AudioFileIO Sources"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFile.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileIn.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileOut.cxx
 # End Source File
 # End Group
 # Begin Group "Synthesis Sources"
@@ -886,10 +886,6 @@ SOURCE=..\..\..\src\Flow\Ports\Port.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Flow\Ports\OutPort.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Flow\Ports\InPort.hxx
 # End Source File
 # Begin Source File
@@ -899,6 +895,10 @@ SOURCE=..\..\..\src\Flow\Ports\AudioInPortTmpl.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Flow\Ports\InPortTmpl.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Flow\Ports\OutPort.hxx
 # End Source File
 # Begin Source File
 
@@ -1005,15 +1005,15 @@ SOURCE=..\..\..\src\Standard\Matrix.hxx
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\Standard\IndexArray.hxx
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\..\src\Standard\GlobalEnums.hxx
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\..\src\Standard\CommonOps.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Standard\IndexArray.hxx
 # End Source File
 # Begin Source File
 
@@ -1133,21 +1133,6 @@ SOURCE=..\..\..\src\Processing\Base\ProcessingComposite.hxx
 SOURCE=..\..\..\src\Processing\Base\TopLevelProcessing.hxx
 # End Source File
 # End Group
-# Begin Group "AudioFileIO Headers"
-
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFile.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileIn.hxx
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileOut.hxx
-# End Source File
-# End Group
 # Begin Group "Analysis Headers"
 
 # Begin Source File
@@ -1196,6 +1181,21 @@ SOURCE=..\..\..\src\Processing\ArithOps\BinaryAudioOp.hxx
 # Begin Source File
 
 SOURCE=..\..\..\src\Processing\ArithOps\AudioMultiplier.hxx
+# End Source File
+# End Group
+# Begin Group "AudioFileIO Headers"
+
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFile.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileIn.hxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\Processing\AudioFileIO\AudioFileOut.hxx
 # End Source File
 # End Group
 # Begin Group "Synthesis Headers"

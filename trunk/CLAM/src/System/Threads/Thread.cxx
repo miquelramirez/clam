@@ -28,7 +28,8 @@ Thread::Thread(bool realtime):
 
 Thread::~Thread()
 {
-	CLAM_ASSERT( !mRunning, "Trying to destroy the thread without stopping it" );
+	if ( mRunning )
+		Stop();
 }
 
 void Thread::SetupPriorityPolicy()

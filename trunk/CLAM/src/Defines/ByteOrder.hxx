@@ -24,27 +24,41 @@
 
 #ifdef macintosh
 # define CLAM_BIG_ENDIAN
-#else
-# ifdef linux
-#  include <sys/param.h>
-#  ifdef __BYTE_ORDER
-#   if __BYTE_ORDER == __LITTLE_ENDIAN
-#    define CLAM_LITTLE_ENDIAN
-#   else
-#    if __BYTE_ORDER == __BIG_ENDIAN
-#     define CLAM_BIG_ENDIAN
-#    else
-Error: unknown byte order!
-#    endif
-#   endif
-#  else
-Error: unknown byte order!
-#  endif /* __BYTE_ORDER */
-# else
+#endif
+
+#ifdef __powerpc__
+# define CLAM_BIG_ENDIAN
+#endif
+
+#ifdef __POWERPC__
+# define CLAM_BIG_ENDIAN
+#endif
+
+#ifdef linux
+# include <sys/param.h>
+# if __BYTE_ORDER == __LITTLE_ENDIAN
 #  define CLAM_LITTLE_ENDIAN
+# endif
+# if __BYTE_ORDER == __BIG_ENDIAN
+#  define CLAM_BIG_ENDIAN
 # endif
 #endif
 
-
+#ifdef WIN32
+# define CLAM_LITTLE_ENDIAN
 #endif
 
+
+#ifdef CLAM_LITTLE_ENDIAN
+# ifdef CLAM_BIG_ENDIAN
+Error: confused about endianity
+# endif
+#endif
+
+#ifndef CLAM_LITTLE_ENDIAN
+# ifndef CLAM_BIG_ENDIAN
+Error: could not determine endianity
+# endif
+#endif
+
+#endif
