@@ -31,7 +31,7 @@
 #include "Array.hxx"
 
 #include "Frame.hxx" //TODO provisional
-#include "SMSTransformation.hxx" //TODO provisional
+#include "SegmentTransformation.hxx" //TODO provisional
 
 namespace CLAM{
 

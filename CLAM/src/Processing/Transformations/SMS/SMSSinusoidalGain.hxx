@@ -28,7 +28,7 @@
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "SpectralPeakArray.hxx"
-#include "SMSTransformationConfig.hxx"
+#include "SegmentTransformationConfig.hxx"
 #include "FrameTransformation.hxx"
 #include "FrameTransformationConfig.hxx"
 

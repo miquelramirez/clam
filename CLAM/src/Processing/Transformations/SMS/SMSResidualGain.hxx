@@ -28,7 +28,7 @@
 #include "InControl.hxx"
 #include "Frame.hxx"
 #include "Spectrum.hxx"
-#include "SMSTransformationConfig.hxx"
+#include "SegmentTransformationConfig.hxx"
 #include "FrameTransformation.hxx"
 #include "FrameTransformationConfig.hxx"
 

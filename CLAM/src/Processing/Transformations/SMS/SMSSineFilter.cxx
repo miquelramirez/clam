@@ -25,7 +25,7 @@
 using namespace CLAM;
 
 
-bool SMSSineFilter::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
+bool SMSSineFilter::Do(const SpectralPeakArray& in, SpectralPeakArray& out) // TODO make this method take a WindowGenerator object as a parameter and use it as a way to modify the filters
 {
 	out = in; // TODO big cludge for streaming refactoring
 
@@ -33,6 +33,7 @@ bool SMSSineFilter::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	DataArray& oMagArray=out.GetMagBuffer();
 	TSize nPeaks=in.GetnPeaks();
 	BPF filter=mConfig.GetBPFAmount();
+
 	for(int i=0;i<nPeaks;i++)
 	{
 		oMagArray[i]=iMagArray[i]+filter.GetValue(i);

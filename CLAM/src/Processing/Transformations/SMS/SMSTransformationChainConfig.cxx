@@ -22,7 +22,7 @@
 #include "SMSTransformationChain.hxx"
 
 //We should avoid having to include all SMS Transformations here: factory needed
-#include "SMSTransformationConfig.hxx"
+#include "SegmentTransformationConfig.hxx"
 #include "SMSMorphConfig.hxx"
 #include "SMSTimeStretchConfig.hxx"
 

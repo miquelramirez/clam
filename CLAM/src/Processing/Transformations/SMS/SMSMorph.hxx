@@ -23,7 +23,7 @@
 #ifndef _SMSMorph_
 #define _SMSMorph_
 
-#include "SMSTransformation.hxx"
+#include "SegmentTransformation.hxx"
 #include "SMSMorphConfig.hxx"
 #include "SDIFIn.hxx"
 #include "FrameInterpolator.hxx"

@@ -34,7 +34,7 @@
 #include "Frame.hxx"
 
 #include "FrameTransformationConfig.hxx"
-#include "SMSTransformationConfig.hxx"
+#include "SegmentTransformationConfig.hxx"
 
 
 namespace CLAM{
