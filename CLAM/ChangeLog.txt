@@ -26,7 +26,7 @@
      ** Did a little modification in the GUI so Audio displays are closed when editing configuration
 
 
-2002-11-26  CLAM_0_4_0-rel 
+2002-11-26  CLAM_0_4_0-rel
 'Fly examples, fly to seattle' release
   * General:
       ** Directory reorganization
@@ -55,14 +55,23 @@
       ** DOMPrint is not used anymore
       ** XMLStorage internal refactoring to improve mantainability, clearness
          and future improvements
+      ** Fix: Flags has implementation for Load (#47)
+      ** Fix: XMLxxxAdapter constructor gets const C strings as parameters (#67)
+      ** Fix: Non present optional elements don't break the XML loading
+      ** Array and Lists uses the aggregated class name for subelements
+  * Spectral processing
+      ** PeakDetect renamed as SpectralPeakDetect
+  * Time Domain Processing:
+      ** AudioProduct is no more, use AudioMultiplier instead
   * LADSPA
       ** Added support for writing LASDPA plug-ins
   * Examples
-      ** The following examples are now running and fairly debugged: SALTO, 
+      ** The following examples are now running and fairly debugged: SALTO,
          AnalysisSynthesis, SpectralDelay and Rappid
   * Unix build system
       ** Selective clean
       ** Include paths not shown on the command line
+      ** Fix: FFTW_HEADER is not substituted bug
   * Windows build system
       ** Workspaces reorganization
 
