@@ -130,6 +130,7 @@ namespace CLAM
 			}
 			break;
 		    case Edition:
+			if(mProcessingSelection) mProcessingSelection=false;
 			if(mLeftButtonPressed)
 			{
 			    if(!mHit && mKeyInsertPressed)
