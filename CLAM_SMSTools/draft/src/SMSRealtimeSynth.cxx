@@ -33,22 +33,6 @@ void SMSRealtimeSynth::LoadScoreFile( const std::string& scoreFile )
 	LoadTransformationScore( scoreFile );
 }
 
-void SMSRealtimeSynth::DoTheTransform()
-{
-	if(!GetState().GetHasTransformationScore())
-	{
-		std::cout<<"\n"<<"\n"<<"Error, there is no available transformation score"<<"\n";
-	}
-	
-	if(!GetState().GetHasAnalysis())
-	{
-		std::cout<<"\n"<<"\n"<<"Error, there is no available analysis"<<"\n";
-	}
-	
-	TransformProcessing();
-
-}
-
 void SMSRealtimeSynth::QueryState()
 {
 	std::cout << "Config: " << GetState().GetHasConfig() << std::endl;
@@ -69,54 +53,39 @@ void SMSRealtimeSynth::Stream()
 {
 	ConfigureAudio();
 
-	CLAM::ConnectPorts( mSynthesis, "OutputAudio", outL, "Audio Input" );
-	CLAM::ConnectPorts( mSynthesis, "OutputAudio", outR, "Audio Input" );
+	CLAM::ConnectPorts( GetSynthesis(), "OutputAudio", outL, "Audio Input" );
+	CLAM::ConnectPorts( GetSynthesis(), "OutputAudio", outR, "Audio Input" );
 
-	DoSynthesis();
-}
-
-void SMSRealtimeSynth::DoSynthesis()
-{
-	SynthesisProcessing();
-}
-
-void SMSRealtimeSynth::SynthesisProcessing()
-{
-	mSynthesis.Configure( mSynthConfig );
-	mSynthesis.Start();
+	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 
 	CLAM_ACTIVATE_FAST_ROUNDING;
-	GetSynthesis().Start();
 	
-	Audio tmpAudioFrame,tmpAudioFrame2;
-	tmpAudioFrame.SetSize(mSynthConfig.GetFrameSize());
-		
 	int nSynthFrames=mTransformedSegment.GetnFrames();
-
 
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
 	TIndex beginIndex=-synthFrameSize/2;
-	
 	TSize size=synthFrameSize*nSynthFrames;
-
 	mAudioOutSin.SetSize(size);
 	mAudioOutRes.SetSize(size);
 	mAudioOut.SetSize(size);
-
-
-	mTransformedSegment.mCurrentFrameIndex=0;
-
 	outL.Start();
 	outR.Start();
 
+	mTransformation.Configure(mTransformationScore);
+	mTransformation.Start();
+	GetState().SetHasTransformation(true);
+	mTransformedSegment.mCurrentFrameIndex=0;
+
+	GetSynthesis().Configure( mSynthConfig );
+	GetSynthesis().Start();
+
+	while(mTransformation.Do());
+
 	for( int i=0; i<nSynthFrames; i++ )
 	{
-		
 		if( !GetSynthesis().Do(mTransformedSegment) )
 			continue; // it is an analysis frame with negative center time and thus should not be used
 
-//		output = mTransformedSegment.GetFramesArray()[i].GetSinusoidalAudioFrame();
-//		output = mTransformedSegment.GetFramesArray()[i].GetResidualAudioFrame();
 		Audio& output = mTransformedSegment.GetFramesArray()[i].GetSynthAudioFrame();
 		outL.Do( output );
 		outR.Do( output );
@@ -126,11 +95,11 @@ void SMSRealtimeSynth::SynthesisProcessing()
 		beginIndex+=synthFrameSize;
 	}
 	
-	mSynthesis.Stop();
+	mTransformation.Stop();
+	GetSynthesis().Stop();
 	outL.Stop(); 	
 	outR.Stop(); 	
 	GetState().SetHasAudioOut (true);
-	GetSynthesis().Stop();
 	CLAM_DEACTIVATE_FAST_ROUNDING;
 	
 }
@@ -173,30 +142,6 @@ void SMSRealtimeSynth::ConfigureAudio()
                 outR.Configure(outRCfg);
                 
                 CLAM::AudioManager::Current().Start();
-}
-void SMSRealtimeSynth::TransformProcessing() 
-{
-	CLAM_ACTIVATE_FAST_ROUNDING;
-	//UpdateDataInTimeStretch();
-	mTransformation.Configure(mTransformationScore);
-	//ConfigureSMSMorph();
-	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
-	
-
-	mTransformation.Start();
-
-	//int i = 0;
-	while(mTransformation.Do())
-	{
-	//	CLAM_ASSERT( mCurrentProgressIndicator, 
-	//			"SMSBase::TransformProcessing mCurrentProgressIndicator should't be NULL"
-	//			" Probably you din't call Transfrom()" );
-	//	mCurrentProgressIndicator->Update(float(i++));
-	}
-	mTransformation.Stop();
-	GetState().SetHasTransformation(true);
-	CLAM_DEACTIVATE_FAST_ROUNDING;
-
 }
 
 } // namespace CLAM
