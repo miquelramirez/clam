@@ -49,15 +49,9 @@ namespace CLAM
 		    _thread.resizeViewport(w,h);
 		}
 
-		void NetDisplaySurface::paintEvent(QPaintEvent* pe)
+	        void NetDisplaySurface::paintEvent(QPaintEvent* pe)
 		{
 			// handled by the GLThread
-		}
-
-		void NetDisplaySurface::closeEvent(QCloseEvent* ce)
-		{
-			stopRendering();
-			QGLWidget::closeEvent(ce);
 		}
 
 		void NetDisplaySurface::receivedView(SView v)

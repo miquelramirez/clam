@@ -8,6 +8,11 @@ namespace CLAM
 		AddAll();       
 		UpdateData();	
 		SetName("AudioPlotProcessing");
+		SetCaption("Audio");
+		Setxpos(100);
+		Setypos(100);
+		Setwidth(200);
+		Setheight(75);
 	}
 
 	AudioPlotProcessing::AudioPlotProcessing() 
@@ -57,10 +62,10 @@ namespace CLAM
 	void AudioPlotProcessing::InitAudioPlot()
 	{
 		mPlot = new VM::NetAudioPlot();
-		mPlot->Label("Audio");
+		mPlot->Label(mConfig.GetCaption().c_str());
 		mPlot->SetBackgroundColor(VM::VMColor::Black());
 		mPlot->SetDataColor(VM::VMColor::Green());
-		mPlot->Geometry(100,100,300,150);
+		mPlot->Geometry(mConfig.Getxpos(),mConfig.Getypos(),mConfig.Getwidth(),mConfig.Getheight());
 	}
 
 	bool AudioPlotProcessing::ConcreteStart()

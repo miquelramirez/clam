@@ -8,6 +8,11 @@ namespace CLAM
 		AddAll();       
 		UpdateData();	
 		SetName("SpectrumPlotProcessing");
+		SetCaption("Spectrum");
+		Setxpos(100);
+		Setypos(100);
+		Setwidth(200);
+		Setheight(75);
 	}
 
 	SpectrumPlotProcessing::SpectrumPlotProcessing() 
@@ -57,10 +62,10 @@ namespace CLAM
 	void SpectrumPlotProcessing::InitSpectrumPlot()
 	{
 		mPlot = new VM::NetSpectrumPlot();
-		mPlot->Label("Spectrum");
+		mPlot->Label(mConfig.GetCaption());
 		mPlot->SetBackgroundColor(VM::VMColor::Black());
 		mPlot->SetDataColor(VM::VMColor::Green());
-		mPlot->Geometry(100,100,300,150);
+		mPlot->Geometry(mConfig.Getxpos(),mConfig.Getypos(),mConfig.Getwidth(),mConfig.Getheight());
 	}
 
 	bool SpectrumPlotProcessing::ConcreteStart()
