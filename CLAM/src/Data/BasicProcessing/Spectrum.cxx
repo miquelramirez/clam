@@ -72,13 +72,7 @@ void SpectrumConfig::DefaultValues()
 //
 //////////////////////////////////////////////////////////////////////
 
-/** This method synchronizes the Type attribute in the prConfig attribute
- * before returning it. 
- * The case of BPFSize is a little triky: the configuration object will have it
- * instantiated only if it's different from the spectrum size. 
- * When a Spectrum is configurated with a config without BPFSize, it's assumed
- * that the "normal" size will be used for the BPF
- */
+
 void Spectrum::GetConfig(SpectrumConfig& c) const
 {
 	SpecTypeFlags f;
@@ -178,7 +172,7 @@ void Spectrum::SetType(const SpecTypeFlags& tmpFlags)
 }
  
 
-/* TODO: These methods use a limit for -INFINITY dB and 0 linear, these limits should be
+/* @TODO: These methods use a limit for -INFINITY dB and 0 linear, these limits should be
 set as constants elsewhere */
 void Spectrum::ToDB()
 {
@@ -323,7 +317,7 @@ void Spectrum::ToLinear()
 	}
 }
 
-TData Spectrum::GetMag(TIndex pos)//inefficient Get, for efficiency work directly on the buffer
+TData Spectrum::GetMag(TIndex pos)
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -339,11 +333,11 @@ TData Spectrum::GetMag(TIndex pos)//inefficient Get, for efficiency work directl
 	return 0;
 }
 
-TData Spectrum::GetMag(TData freq)//inefficient Get, for efficiency work directly on the buffer
+TData Spectrum::GetMag(TData freq)
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
-	TIndex pos = roundInt(freq*((GetSize()-1)/GetSpectralRange()));
+	TIndex pos = IndexFromFreq(freq);
 	if (tmpFlags.bMagPhaseBPF)
 		return GetMagBPF().GetValue(freq);
 	if(tmpFlags.bMagPhase)
@@ -356,7 +350,7 @@ TData Spectrum::GetMag(TData freq)//inefficient Get, for efficiency work directl
 	return 0;
 }
 
-TData Spectrum::GetPhase(TIndex pos)//inefficient Get, for efficiency work directly on the buffer
+TData Spectrum::GetPhase(TIndex pos)
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -372,11 +366,11 @@ TData Spectrum::GetPhase(TIndex pos)//inefficient Get, for efficiency work direc
 	return 0;
 }
 
-TData Spectrum::GetPhase(TData freq)//inefficient Get, for efficiency work directly on the buffer
+TData Spectrum::GetPhase(TData freq)
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
-	TIndex pos = roundInt(freq*((GetSize()-1)/GetSpectralRange()));
+	TIndex pos = IndexFromFreq(freq);
 	if (tmpFlags.bMagPhaseBPF)
 		return GetPhaseBPF().GetValue(freq);
 	if(tmpFlags.bMagPhase)
@@ -389,7 +383,7 @@ TData Spectrum::GetPhase(TData freq)//inefficient Get, for efficiency work direc
 	return 0;
 }
 
-void Spectrum::SetMag(TIndex pos, TData newMag)//inefficient Set, for efficiency work directly on the buffer
+void Spectrum::SetMag(TIndex pos, TData newMag)
 {
 	SpecTypeFlags tmpFlags; 
 	GetType(tmpFlags);
@@ -405,6 +399,10 @@ void Spectrum::SetMag(TIndex pos, TData newMag)//inefficient Set, for efficiency
 		GetComplexArray()[pos].SetImag(newMag*sin(tmpAng));}
 }
 
+void Spectrum::SetMag(TData freq, TData newMag)
+{
+	SetMag(IndexFromFreq(freq),newMag);
+}
 	
 void Spectrum::SetPhase(TIndex pos,TData newPhase)//inefficient Set, for efficiency work directly on the buffer
 {
@@ -423,6 +421,10 @@ void Spectrum::SetPhase(TIndex pos,TData newPhase)//inefficient Set, for efficie
 	}
 }
 
+void Spectrum::SetPhase(TData freq, TData newPhase)
+{
+	SetPhase(IndexFromFreq(freq),newPhase);
+}
 
 void Spectrum::SynchronizeTo(const SpecTypeFlags& tmpFlags)
 {
@@ -519,21 +521,19 @@ void Spectrum::SynchronizeTo(const SpecTypeFlags& tmpFlags)
 
 ////////Converting routines////////////////
 
-/* Convert from Complex to Polar Buffer */
+
 void Spectrum::Complex2Polar() 
 {
 	ComplexToPolarCnv_ convert;
 	convert.ToPolar(GetComplexArray(), GetPolarArray());
 }
 
-/* Convert from Polar to Complex Buffer */
 void Spectrum::Polar2Complex() 
 {
 	ComplexToPolarCnv_ convert;
 	convert.ToComplex(GetPolarArray(),GetComplexArray());
 }
 
-/* Convert from Polar to Mag/Phase buffers */
 void Spectrum::Polar2MagPhase() 
 {
 	int size = GetSize();
@@ -547,7 +547,6 @@ void Spectrum::Polar2MagPhase()
 	}
 }
 
-/* Convert from Complex to Mag/Phase buffers */
 void Spectrum::Complex2MagPhase() 
 {
 	int size = GetSize();
@@ -561,8 +560,6 @@ void Spectrum::Complex2MagPhase()
 	}
 }
 
-
-/* Convert from Mag/Phase to Polar */
 void Spectrum::MagPhase2Polar() 
 {
 	int size = GetSize();
@@ -576,7 +573,6 @@ void Spectrum::MagPhase2Polar()
 	}
 }
 
-/* Convert from Mag/Phase to Complex */
 void Spectrum::MagPhase2Complex() 
 {
 	int size = GetSize();
@@ -595,7 +591,6 @@ void Spectrum::MagPhase2Complex()
 	}
 }
 
-/* Convert to BPF */
 void Spectrum::MagPhase2BPF() 
 {
 	int size = GetSize();
@@ -612,7 +607,6 @@ void Spectrum::MagPhase2BPF()
 	convert.ConvertToBPF(GetPhaseBPF(), freqBuffer, GetPhaseBuffer());
 }
 
-/*Convert from BPF to MagPhase*/
 void Spectrum::BPF2MagPhase()
 {
 	int i;
@@ -629,7 +623,6 @@ void Spectrum::BPF2MagPhase()
 }
 
 
-// WORK IN PROGRESS
 
 int Spectrum::GetSize() const
 {
@@ -746,4 +739,9 @@ void Spectrum::GetType(SpecTypeFlags& f) const
 	f.bMagPhase = HasMagBuffer() && HasPhaseBuffer();
 	f.bPolar = HasPolarArray();
 	f.bComplex = HasComplexArray();
+}
+
+TIndex Spectrum::IndexFromFreq(TData freq)
+{
+	return roundInt(freq*((GetSize()-1)/GetSpectralRange()));
 }

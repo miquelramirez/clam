@@ -153,11 +153,12 @@ protected:
 	void DefaultInit();
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-// Class Spectrum :
-//
 /** 
- * It allows the following representations: Mag/Phase, Complex, Polar and Break Point Function (BPF) 
+ *	Spectrum is a ProcessingData class that allows the following representations: 
+ *	Mag/Phase, Complex, Polar and Break Point Function (BPF). Different interfaces are
+ *	offered but for efficiency you should directly access buffers. Synchronization routines
+ *	between different possible representations are also offered.
+ *	@see ProcessingData
  */
 class Spectrum : public ProcessingData
 {
@@ -189,34 +190,74 @@ public:
  
 	void Configure(const SpectrumConfig &newConfig);
 
-	/** This is not just an accessor. The  */
+	/** This method synchronizes the Type attribute in the prConfig attribute
+	 * before returning it. 
+	 * The case of BPFSize is a little triky: the configuration object will have it
+	 * instantiated only if it's different from the spectrum size. 
+	 * When a Spectrum is configurated with a config without BPFSize, it's assumed
+	 * that the "normal" size will be used for the BPF
+	 */
 	void GetConfig(SpectrumConfig& c) const;
 protected:
 	void DefaultInit();
 
 public:
-	/** inefficient Get, for efficiency work directly on the buffer */
+	/** Returns spectral magnitude in a given bin position.
+	 *	Inefficient Get, for efficiency work directly on the buffer 
+	 */
 	TData GetMag(TIndex pos);
-	/** inefficient Get, for efficiency work directly on the buffer */
+	/** Returns spectral magnitude from a given frequency
+	 *	Inefficient Get, for efficiency work directly on the buffer 
+	 */
 	TData GetMag(TData freq);
-	/** inefficient Get, for efficiency work directly on the buffer */
+	/** Returns spectral phase in a given bin position
+	 *	Inefficient Get, for efficiency work directly on the buffer 
+	 */
 	TData GetPhase(TIndex pos);
-	/** inefficient Get, for efficiency work directly on the buffer */
+	/** Returns spectral phase from a given frequency
+	 *	Inefficient Get, for efficiency work directly on the buffer 
+	 */
 	TData GetPhase(TData freq);
-	/** inefficient Set, for efficiency work directly on the buffer */
+	/** Sets spectral magnitude in a given bin position
+	 *	Inefficient Set, for efficiency work directly on the buffer 
+	 */
 	void SetMag(TIndex pos,TData newMag);
-	/** inefficient Set, for efficiency work directly on the buffer */
+	/** Sets spectral magnitude from a given frequency
+	 *	Inefficient Set, for efficiency work directly on the buffer 
+	 */
+	void SetMag(TData freq,TData newMag);
+	/** Sets spectral phase in a given bin position
+	 *	Inefficient Set, for efficiency work directly on the buffer 
+	 */
 	void SetPhase(TIndex pos,TData newPhase);
+	/** Sets spectral phase from a given frequency
+	 *	Inefficient Set, for efficiency work directly on the buffer 
+	 */
+	void SetPhase(TData freq,TData newPhase);
 	/** Synchronizes all data to the one of the specified type */
 	void SynchronizeTo(const SpecTypeFlags& tmpFlags);
 
 
-	// Config shortcut interface.
+// Config shortcut interface.
 
+	/** Getter for accessing size of the spectrum */
 	int GetSize() const;
+	/** Sets spectrum size */
 	void SetSize(int s);
 
+	/** Getter for accessing BPF size, useful only if that representation is being used.
+	 *	Note that BPF size has nothing to do with spectral size, it is just
+	 *	the number of points used to represent the spectrum in a break-point
+	 *	function manner. 
+	 *	@see BPF
+	 */
 	int GetBPFSize() const;
+	/** Setter for BPF size, useful only if that representation is being used.
+	 *	Note that BPF size has nothing to do with spectral size, it is just
+	 *	the number of points used to represent the spectrum in a break-point
+	 *	function manner. 
+	 *	@see BPF
+	 */
 	void SetBPFSize(int s);
 	
 	/** This is not just an accessor. The Type attribute is updated in
@@ -224,15 +265,15 @@ public:
 	 */
 	void GetType(SpecTypeFlags& f) const;
 
-	/** This methods updates the instantiation of dynamic attributes
+	/** This method updates the instantiation of dynamic attributes
 	 * acording to the given flags, and sets up the attribute buffers
 	 * to the correct sice. 
 	 */
 	void SetType(const SpecTypeFlags& newFlags);
 	
 	/** Same as set Type but additionaly the data on new buffers is
-	* synchronized to existing data
-	*/
+	 * synchronized to existing data
+	 */
 	void SetTypeSynchronize(const SpecTypeFlags& newFlags);
 
 	/** Converts scale from linear to dB. If scale is already set to dB, it
@@ -251,15 +292,27 @@ private:
 	 * either the public SetType or the Configure method. It is actually
 	 * in charge of adding and removing buffers */
 	void PRSetType(const SpecTypeFlags& tmpFlags,int size,int bpfsize);
-	// Converting routines
+
+	/** Returns index from a given frequency */
+	TIndex IndexFromFreq(TData freq);
+
+// Converting routines
 public:
+	/** Convert from Complex to Polar Buffer */
 	void Complex2Polar() ;
+	/** Convert from Polar to Complex Buffer */
 	void Polar2Complex() ;
+	/** Convert from Complex to Mag/Phase buffers */
 	void Complex2MagPhase() ;
+	/** Convert from Polar to Mag/Phase buffers */
 	void Polar2MagPhase() ;
+	/** Convert from Mag/Phase to Polar */
 	void MagPhase2Polar() ;
+	/** Convert from Mag/Phase to Complex */
 	void MagPhase2Complex() ;
+	/** Convert to BPF */
 	void MagPhase2BPF() ;
+	/** Convert from BPF to MagPhase*/
 	void BPF2MagPhase();
 
 };
