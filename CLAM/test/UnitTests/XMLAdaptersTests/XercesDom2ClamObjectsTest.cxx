@@ -3,14 +3,6 @@
 
 #include "XMLStorage.hxx"
 #include "XmlMockUpObjects.hxx"
-#include "Component.hxx"
-#include <list>
-#include "XercesDomWriter.hxx"
-#include "XercesInitializer.hxx"
-#include <xercesc/dom/DOMElement.hpp>
-#include <xercesc/dom/DOMText.hpp>
-#include <xercesc/dom/DOMComment.hpp>
-#include <xercesc/dom/DOMProcessingInstruction.hpp>
 /*
 TOTEST:
 - Return values on error conditions
@@ -45,6 +37,9 @@ class XercesDomToClamObjectsTest : public CppUnit::TestCase
 	CPPUNIT_TEST(testForErrors_UnexpectedElementOnInner);
 	CPPUNIT_TEST(testForErrors_UnexpectedContentOnInner);
 	CPPUNIT_TEST(testForErrors_withXmlParseErrors);
+	CPPUNIT_TEST(testLoading_OnAInnerSelection);
+	CPPUNIT_TEST(testInsertObjectsIntoExistingXml);
+	CPPUNIT_TEST(testRestoreObjectsFromPartOfXml);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -386,6 +381,119 @@ private:
 		assertErrorGiven(expected, toLoad, xml, parsed);
 	}
 
+	void testLoading_OnAInnerSelection()
+	{
+		std::istringstream xml(
+			"<Doc>"
+			"<Element>"
+			"<SubElement>Content</SubElement>"
+			"</Element>"
+			"</Doc>"
+			);
+		CompositeOfXmlables toLoad;
+		XmlMockUpComponent component("SubElement",true);
+		component.setContent("PreviousElementContent");
+		toLoad.add(component);
+
+		std::string expected= 
+			"C'Content'\n"
+			"{\n"
+			"}\n";
+
+		XMLStorage loader;
+		loader.Read(xml);
+		loader.Select("/Doc/Element");
+		loader.RestoreObject(toLoad);
+
+		CPPUNIT_ASSERT_EQUAL(expected, toLoad.childStructureTrace(0));
+	}
+	// TODO; On this suite?
+	void testInsertObjectsIntoExistingXml()
+	{
+		std::istringstream xml(
+			"<Doc>"
+			"<Recipient>"
+			"<OldElement/>"
+			"OldElementContent"
+			"</Recipient>"
+			"</Doc>"
+			);
+
+		CompositeOfXmlables toAppend;
+		XmlMockUpComponent component("Element",true);
+		XmlMockUpBasic basic("SubElement",true);
+		basic.setContent("SubElementContent");
+		component.add(basic);
+		XmlMockUpComponent component2("Element2",true);
+		toAppend.add(component);
+		toAppend.add(component2);
+
+		XmlStorage storage;
+		storage.Read(xml);
+		storage.Select("Recipient");
+		storage.DumpObject(toAppend);
+		std::ostringstream os;
+		storage.Select("/");
+		storage.WriteSelection(os);
+		std::string expected =
+			"<Doc>"
+			"<Recipient>"
+				"<OldElement/>"
+				"OldElementContent"
+				"<Element>"
+				"<SubElement>"
+				"SubElementContent"
+				"</SubElement>"
+				"</Element>"
+				"<Element2/>"
+			"</Recipient>"
+			"</Doc>";
+		CPPUNIT_ASSERT_EQUAL(expected,os.str());
+	}
+
+	void testRestoreObjectsFromPartOfXml()
+	{
+		std::istringstream xml(
+			"<Doc>"
+			"<Recipient>"
+				"<Element>"
+				"<SubElement>"
+				"SubElementContent"
+				"</SubElement>"
+				"</Element>"
+				"<Element2>"
+				"Element2Content"
+				"</Element2>"
+			"</Recipient>"
+			"<OtherElement/>"
+			"</Doc>"
+			);
+
+		CompositeOfXmlables toExtract;
+		XmlMockUpComponent component("Element",true);
+		component.setContent("PreviousElementContent");
+		XmlMockUpBasic basic("SubElement",true);
+		basic.setContent("PreviousSubElementContent");
+		XmlMockUpComponent component2("Element2",true);
+		component.setContent("PreviousElement2Content");
+		component.add(basic);
+		toExtract.add(component);
+		toExtract.add(component2);
+
+		XmlStorage storage;
+		storage.Read(xml);
+		storage.Select("Recipient");
+		storage.RestoreObject(toExtract);
+		std::string expected = 
+			"C''\n"
+			"{\n"
+			".B'SubElementContent'\n"
+			"}\n"
+			"C'Element2Content'\n"
+			"{\n"
+			"}\n";
+		CPPUNIT_ASSERT_EQUAL(expected, toExtract.childStructureTrace(0));
+	}
 };
 
 
