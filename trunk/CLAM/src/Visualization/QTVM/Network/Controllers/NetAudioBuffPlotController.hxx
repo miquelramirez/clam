@@ -27,14 +27,13 @@ namespace CLAM
 	    DataArray _cachedData;
 	    BuffDataRenderer _renderer;
 	    int _index;
-	    bool _first;
 	    TSize _frameSize;
 	    
 	    void AddData(const DataArray& data);
 	  
 	    void Init(const TSize& frameSize);
 	    void FullView();
-
+	    
 	};
     }
 }

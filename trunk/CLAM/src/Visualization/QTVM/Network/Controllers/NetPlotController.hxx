@@ -3,6 +3,7 @@
 
 #include <qobject.h>
 #include "DataTypes.hxx"
+#include "Slotv0.hxx"
 
 namespace CLAM
 {
@@ -32,18 +33,31 @@ namespace CLAM
 			protected:
 				SView _view;
 
+                                SigSlot::Slotv0 mStartSlot;
+	                        SigSlot::Slotv0 mStopSlot;
+
 				void SetnSamples(const TSize& nSamples);
 				TSize GetnSamples() const;
 
 				void SetvRange(const TData& vmin, const TData& vmax);
 				TData GetvMin() const;
 				TData GetvMax() const;
+
+		                 void ConcreteStartMonitor();
+	                         void ConcreteStopMonitor();
+
+		                 bool MonitorIsRunning();
+
+		                 void SetFirst(bool first);
+		                 bool First();
 				
 			private:
 				TSize _nSamples;
 				TData _vmin;
-				TData _vmax;
-
+                 		TData _vmax;
+		                bool _first;
+		                bool _monitorIsRunning;
+		                
 				void InitView();
 				
 		};

@@ -11,6 +11,10 @@ namespace CLAM
 			_vmax = TData(1.0);
 			
 			InitView();
+			SetFirst(true);
+
+			mStartSlot.Wrap(this,&NetPlotController::ConcreteStartMonitor);
+			mStopSlot.Wrap(this,&NetPlotController::ConcreteStopMonitor);
 		}
 	
 		NetPlotController::~NetPlotController()
@@ -50,6 +54,33 @@ namespace CLAM
 			_view.bottom = 0.0f;
 			_view.top = 1.0f;
 		}
+	        
+	        void NetPlotController::ConcreteStartMonitor()
+		{
+		    _monitorIsRunning = true;
+		}
+
+	        void NetPlotController::ConcreteStopMonitor()
+		{
+		    _monitorIsRunning=false;
+		    SetFirst(true);
+		}
+
+	        bool NetPlotController::MonitorIsRunning()
+		{
+		    return _monitorIsRunning;
+		}
+
+	        void NetPlotController::SetFirst(bool first)
+		{
+		    _first=first;
+		}
+
+	        bool NetPlotController::First()
+		{
+		    return _first;
+		}
+	    
 	}
 }
 
