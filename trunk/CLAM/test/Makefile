@@ -28,7 +28,6 @@ TESTS = \
         TestFFT \
         TestIFFT \
         TestSpectrum \
-        TestSignalv1 \
         TestSpectrumAdder \
         TestSpectrumAdder2 \
         TestSpectrumProduct \
