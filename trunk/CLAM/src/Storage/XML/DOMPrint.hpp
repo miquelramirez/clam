@@ -6,16 +6,6 @@
 // path <xerces/whatever/etc> so since I don't feel like 
 // hacking the official xerces headers I think more reasonable
 // our files that attack directly the xerces headers
-#ifndef WIN32
-#include <util/PlatformUtils.hpp>
-#include <util/XMLString.hpp>
-#include <util/XMLUniDefs.hpp>
-#include <framework/XMLFormatter.hpp>
-#include <util/TranscodingException.hpp>
-#include <dom/DOM_DOMException.hpp>
-#include <dom/DOM.hpp>
-#include <parsers/DOMParser.hpp>
-#else
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
@@ -24,8 +14,6 @@
 #include <xercesc/dom/DOM_DOMException.hpp>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/DOMParser.hpp>
-
-#endif
 
 #include <iostream>
 #include <cstring>
@@ -56,7 +44,7 @@ public:
 		// Without the cast, it was printing the pointer value in hex.
 		// Quite annoying, considering every other platform printed
 		// the string with the explicit cast to char* below.
-		mpTarget->write((char *) toWrite, (int) count);
+		mpTarget->write((char *) toWrite, count);
 	};
 
 private:

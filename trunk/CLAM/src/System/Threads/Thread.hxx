@@ -41,6 +41,11 @@ public:
 		return mIsCancelled;
 	}
 
+	inline bool IsRunning() const
+	{
+		return mRunning;
+	}
+
 private:
 	bool               mHasCode;
 	bool               mHasCleanup;

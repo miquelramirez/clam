@@ -49,6 +49,8 @@ void GLWaveRenderer::ArrangeXScale()
 
 	for ( unsigned int k = 0; k < mIntertwined.size(); k++ )
 		mIntertwined[k].x = GLfloat( k * invNFs );
+	
+	mXConversionFactor = mSampRate;
 }
 
 void GLWaveRenderer::SetSamplingRate( TData value )

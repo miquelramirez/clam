@@ -89,6 +89,8 @@ public:
 			delete mpWrapper;
 	}
 
+	virtual void DisableAsynchronousRefresh() = 0;
+
 	virtual bool IsClosing() const = 0;
 
 	virtual void Tick() const = 0;

@@ -92,7 +92,9 @@ public:
 	//* @return A string with the extracted XML content
 	std::string XMLContent() 
 	{
-		std::stringstream str;
+		std::string s;
+		s.resize(size*15);
+		std::stringstream str(s);
 		for (unsigned int i=0; i<size; i++) {
 			str << mAdaptee[i];
 			if (i != size-1) str << " ";
@@ -107,7 +109,7 @@ public:
 		for (unsigned int i=0; i<size; i++) {
 			str >> mAdaptee[i];
 		}
-		return bool(str);
+		return bool(str.good());
 	}
 
 // Testing

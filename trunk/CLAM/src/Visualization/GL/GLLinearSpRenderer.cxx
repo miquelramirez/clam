@@ -49,6 +49,7 @@ void GLLinearSpRenderer::ArrangeXScale()
 	for ( unsigned int k = 0; k < mIntertwined.size(); k++ )
 		mIntertwined[k].x = GLfloat( k * invNFs ); 
 
+	mXConversionFactor = mIntertwined.size() /  mSampRate;
 }
 
 void GLLinearSpRenderer::SetSamplingRate( TData rate )

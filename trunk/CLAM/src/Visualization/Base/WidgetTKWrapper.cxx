@@ -59,4 +59,6 @@ WidgetTKWrapper* WidgetTKWrapper::GetWrapperFor( std::string toolkit )
 		throw ( ErrGUI( "None of supported toolkits was chosen. Check documentation\n"
 		      "about CLAM supported toolkits\n" ) );
 	}
+
+	return NULL;
 }

@@ -170,6 +170,15 @@ try{
 	/*std::cout<<"Press enter when ready\n";
 	std::cin>>c;*/
 
+/* Copy */
+	List<int> copyList, *copyList2;
+	copyList=testList;
+	CLAM_ASSERT(copyList.FulfillsInvariant(), "List does not fullfil invariant");
+	copyList2=new List<int>(testList);
+	CLAM_ASSERT(copyList2->FulfillsInvariant(), "List does not fullfil invariant");
+	delete copyList2;
+
+
 #ifdef CLAM_USE_XML
 	// Storing result to XML document and check if loading matches
 	CLAM_ASSERT(CLAMTest::XMLInputOutputMatches(testList, "ListTest.xml"), 

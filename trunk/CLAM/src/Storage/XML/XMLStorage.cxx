@@ -52,7 +52,7 @@ using namespace CLAM;
 
 namespace CLAM
 {
-	class XMLFrame {
+	class XMLLoadFrame {
 		public:
 			DOM_NamedNodeMap oldAttributes;
 			std::stringstream stream;
@@ -125,14 +125,19 @@ namespace CLAM
 			virtual void PrepareReadAtRoot() =0;
 
 			/**
+			 * Checks the parsing and clears the DOM
+			 */
+			virtual void ReleaseReadAtRoot() =0;
+
+			/**
 			 * Opens a read frame for a new
 			 * @param frame The old read frame
 			 * @param name The element to be searched from the DOM
 			 * @return Whether the named element exists or not
 			 */
-			virtual bool StartReadElement(XMLFrame & frame, const char *name)=0;
+			virtual bool StartReadElement(XMLLoadFrame & frame, const char *name)=0;
 
-			virtual void StopReadElement(XMLFrame & f)=0;
+			virtual void StopReadElement(XMLLoadFrame & f)=0;
 
 			/**
 			 *
@@ -149,12 +154,12 @@ namespace CLAM
 			/**
 			* Prepares available content nodes from the current reading node
 			*/
-			virtual void FetchContent() = 0;
+			virtual bool FetchContent() = 0;
 
 			/**
 			* Fetchs from the first not space on the content stream
 			*/
-			virtual void EatSpacesFromContent() = 0;
+			virtual bool EatSpacesFromContent() = 0;
 
 		// Factory methods
 			static XMLStorageImplementation * NewDefaultXMLImplementation();
@@ -236,7 +241,7 @@ namespace CLAM
 				// The inner elements can have set it to true
 				lastWasContent=false;
 			}
-			bool StartReadElement(XMLFrame & frame, const char *name) {
+			bool StartReadElement(XMLLoadFrame & frame, const char *name) {
 				frame.oldNode = mReadingNode;
 				if (!ChangeReadingNode(name)) return false;
 				// Change the current attributes
@@ -310,16 +315,17 @@ namespace CLAM
 				return *mTextNodesContent;
 			}
 			virtual void PrepareReadAtRoot() =0;
+			virtual void ReleaseReadAtRoot() =0;
 			virtual bool ChangeReadingNode(const char * name)=0;
-			virtual void StopReadElement(XMLFrame & f)=0;
+			virtual void StopReadElement(XMLLoadFrame & f)=0;
 			/**
 			* Prepares available content nodes from the current reading node
 			*/
-			virtual void FetchContent() = 0;
+			virtual bool FetchContent() = 0;
 			/**
 			* Fetchs from the first not space on the content stream
 			*/
-			virtual void EatSpacesFromContent() = 0;
+			virtual bool EatSpacesFromContent() = 0;
 
 		protected:
 			DOM_NamedNodeMap PushReadAttributes() {
@@ -340,7 +346,25 @@ namespace CLAM
 				mTextNodesContent=&mDummyStream;
 				mReadPosition=0;
 			}
-			bool ChangeReadingNode(const char * name) {
+			virtual void ReleaseReadAtRoot() {
+				// Check there is no content left
+				// TODO: Convert this to a trappable error/exception
+				if (FetchContent()) 
+					std::cerr << "Parsing error: There is plain content left in the node!" << std::endl;
+				else {
+					DOM_NodeList subNodes=mReadingNode.getChildNodes();
+					if (mReadPosition<subNodes.getLength()) {
+						DOM_Node candidateNode = subNodes.item(mReadPosition);
+						if (candidateNode.getNodeType()==DOM_Node::ELEMENT_NODE) 
+							std::cerr << "Parsing error: Unexpected named node '" << candidateNode.getNodeName() << "'" << std::endl;
+						else
+							std::cerr << "Parsing error: Unexpected node" << std::endl;
+					}
+				}
+			}
+			virtual bool ChangeReadingNode(const char * name) {
+				// If there is non space content return
+				if (FetchContent()) return false;
 				// Search the node
 				DOM_NodeList subNodes=mReadingNode.getChildNodes();
 				if (mReadPosition>=subNodes.getLength()) return false;
@@ -355,7 +379,14 @@ namespace CLAM
 				mReadPosition=0;
 				return true;
 			}
-			void StopReadElement(XMLFrame & frame) {
+			/**
+			 * Checks that the current reading node is completely read and restores 
+			 * the parent as current reading context
+			 */
+			void StopReadElement(XMLLoadFrame & frame) {
+				// Do release checks
+				ReleaseReadAtRoot();
+				// Restore the parent context
 				mTextNodesContent = frame.oldStream;
 				mReadPosition=mReadPositionsStack.back();
 				mReadPositionsStack.pop_back();
@@ -363,31 +394,40 @@ namespace CLAM
 				mReadingNode = frame.oldNode;
 			}
 			/**
-			* Prepares available content nodes from the current reading node
+			* Dumps the plain content available on the current reading position
+			* @return true if there is any non-space content available
 			*/
-			void FetchContent() {
+			bool FetchContent() {
 				DOM_NodeList subNodes=mReadingNode.getChildNodes();
-				EatSpacesFromContent();
 				const unsigned int maxNodes=subNodes.getLength();
 				for (; mReadPosition<maxNodes; mReadPosition++) {
-					if (subNodes.item(mReadPosition).getNodeType()!=DOM_Node::TEXT_NODE) {
+					// Stop when a text node is found
+					int nodeType= subNodes.item(mReadPosition).getNodeType();
+					if (nodeType==DOM_Node::COMMENT_NODE) 
+						continue;
+					if (nodeType!=DOM_Node::TEXT_NODE) 
 						break;
-					}
+					// Because the content stream may be on EOF state
 					mTextNodesContent->clear();
-					// Get the content
+					// Insert text node on the content stream
 					(*mTextNodesContent) << subNodes.item(mReadPosition).getNodeValue() << std::flush;
-					// Remove the visited node
-					EatSpacesFromContent();
 				}
+				return EatSpacesFromContent();
 			}
+
 			/**
-			* Fetchs from the first not space on the content stream
+			* Fetchs the content stream until the first non-space char.
+			* @returns true if there is non-space content left.
 			*/
-			void EatSpacesFromContent() {
+			bool EatSpacesFromContent() {
 				char c;
 				do mTextNodesContent->get(c);
 				while ((!mTextNodesContent->fail()) && isspace(c));
-				if (!mTextNodesContent->fail()) (*mTextNodesContent).putback(c);
+				if (!mTextNodesContent->fail()) {
+					(*mTextNodesContent).putback(c);
+					return true;
+				}
+				return false;
 			}
 	};
 	class XercesUnorderedXMLStorageImplementation : public XercesXMLStorageImplementation {
@@ -426,7 +466,7 @@ namespace CLAM
 					mAllNodesLeft.back().push_back(i);
 				return true;
 			}
-			virtual void StopReadElement(XMLFrame & frame) {
+			virtual void StopReadElement(XMLLoadFrame & frame) {
 				mTextNodesContent = frame.oldStream;
 				mAllNodesLeft.pop_back();
 				mAttributes = frame.oldAttributes;
@@ -435,7 +475,7 @@ namespace CLAM
 			/**
 			* Prepares available content nodes from the current reading node
 			*/
-			virtual void FetchContent() {
+			virtual bool FetchContent() {
 				std::list<unsigned int> & nodesLeft = mAllNodesLeft.back();
 				DOM_NodeList subNodes=mReadingNode.getChildNodes();
 				EatSpacesFromContent();
@@ -458,17 +498,21 @@ namespace CLAM
 			/**
 			* Fetchs from the first not space on the content stream
 			*/
-			virtual void EatSpacesFromContent() {
+			virtual bool EatSpacesFromContent() {
 				char c;
 				do mTextNodesContent->get(c);
 				while ((!mTextNodesContent->fail()) && isspace(c));
-				if (!mTextNodesContent->fail()) (*mTextNodesContent).putback(c);
+				if (!mTextNodesContent->fail()) {
+					(*mTextNodesContent).putback(c);
+					return true;
+				}
+				return false;
 			}
 
 	};
 
-//	typedef XercesOrderedXMLStorageImplementation CurrentXMLStorageImplementation;
-	typedef XercesUnorderedXMLStorageImplementation CurrentXMLStorageImplementation;
+	typedef XercesOrderedXMLStorageImplementation CurrentXMLStorageImplementation;
+//	typedef XercesUnorderedXMLStorageImplementation CurrentXMLStorageImplementation;
 
 }
 
@@ -481,13 +525,6 @@ XMLStorage::XMLStorage() {
 	mPM=NewXMLImplementation();
 }
 
-
-//* @deprecated use default constructor
-XMLStorage::XMLStorage(const char * rootElementName) {
-	CLAM_WARNING(true, "Using XMLStorage deprecated constructor");
-	mPM=NewXMLImplementation();
-	mPM->NewDocument(rootElementName);
-}
 
 XMLStorageImplementation * XMLStorage::NewXMLImplementation() {
 	return new CurrentXMLStorageImplementation;
@@ -519,21 +556,7 @@ void XMLStorage::Restore(Component & component, const std::string& recipientName
 	mPM->Parse(recipientName.c_str());
 	mPM->PrepareReadAtRoot();
 	component.LoadFrom(*this);
-}
-
-//* @deprecated: use Dump
-void XMLStorage::dumpOn(std::ostream & aStream) {
-	CLAM_WARNING(true, "Using deprecated method XMLStorage::dumpOn");
-	mPM->WriteDOM(aStream);
-//	Inspect(aStream,mPM->DOMDoc);
-//	aStream << mPM->DOMDoc << endl;
-}
-
-//* @deprecated: use Restore
-void XMLStorage::_restoreFrom(char * xmlFile) {
-	CLAM_WARNING(true, "Using deprecated method XMLStorage::_restoreFrom");
-	mPM->Parse(xmlFile);
-	mPM->PrepareReadAtRoot();
+	mPM->ReleaseReadAtRoot();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -556,7 +579,7 @@ bool XMLStorage::Load (Storable * object) {
 	else if (xmlObject->IsXMLElement()) {
 		TRACELOAD << "Element --" << std::endl;
 		// Init a new frame on the element if it exists
-		XMLFrame frame;
+		XMLLoadFrame frame;
 		if (!mPM->StartReadElement(frame,xmlObject->XMLName())) return false;
 		// Parsing content nodes that belongs to the element part
 		xmlObject->XMLContent(mPM->ExtractContent());
@@ -613,5 +636,32 @@ void XMLStorage::Store(Storable * object) {
 
 bool XercesXMLStorageImplementation::sPlatformUtilsInitialized = false;
 
+//////////////////////////////////////////////////////////////////////
+// Deprecated functions
+//////////////////////////////////////////////////////////////////////
+
+
+//* @deprecated use default constructor
+XMLStorage::XMLStorage(const char * rootElementName) {
+	CLAM_WARNING(true, "Using XMLStorage deprecated constructor");
+	mPM=NewXMLImplementation();
+	mPM->NewDocument(rootElementName);
+}
+
+//* @deprecated: use Dump
+void XMLStorage::dumpOn(std::ostream & aStream) {
+	CLAM_WARNING(true, "Using deprecated method XMLStorage::dumpOn");
+	mPM->WriteDOM(aStream);
+//	Inspect(aStream,mPM->DOMDoc);
+//	aStream << mPM->DOMDoc << endl;
+}
+
+//* @deprecated: use Restore
+void XMLStorage::_restoreFrom(char * xmlFile) {
+	CLAM_WARNING(true, "Using deprecated method XMLStorage::_restoreFrom");
+	mPM->Parse(xmlFile);
+	mPM->PrepareReadAtRoot();
+	mPM->ReleaseReadAtRoot();
+}
 
 

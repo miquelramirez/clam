@@ -8,6 +8,7 @@
 #endif
 
 /**
+ * @file
  *  This is a C-like interface  to statistical computations on Audio Data.
  *  The interface tries to be very basic, offering a single function to
  *  almost every value computed. 

@@ -130,10 +130,13 @@ void Segment::AddFrame(Frame& newFrame)
 	else if(pParent!=NULL)
 		pParent->GetFramesArray().AddElem(newFrame);
 	else throw Err("Segment::AddFrame:No available frame array attribute");
+	SetEndTime(newFrame.GetCenterTime());
+	
 }
 
 void Segment::DeleteFrame(TIndex pos)
 {
+	CLAM_ASSERT(pos<=GetnFrames(),"Segment::DeleteFrame:Index out of bounds")
 	if(GetHoldsData())
 	{
 		GetFramesArray().DeleteElem(pos);
@@ -141,6 +144,10 @@ void Segment::DeleteFrame(TIndex pos)
 	else if(pParent!=NULL)
 		pParent->GetFramesArray().DeleteElem(pos);
 	else throw Err("Segment::DeleteFrame:No available frame array attribute");
+	if(pos==GetnFrames())//it was the last frame
+		SetEndTime(GetFrame(GetnFrames()-1).GetCenterTime());
+	if(pos==0)//it was first frame
+		SetBeginTime(GetFrame(0).GetCenterTime());
 
 }
 

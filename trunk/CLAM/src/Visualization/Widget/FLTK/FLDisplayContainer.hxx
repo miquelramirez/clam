@@ -42,13 +42,12 @@ class FLDisplayContainer:public Fl_Group
 
 public:
 	GLPort*     mpDisplay;
-
-	MRuler*        mpHorRuler;
-	Fl_Scrollbar* mpHorScrollbar;
-	Fl_Slider*    mpHorSlider;
-	MRuler*        mpVerRuler;	
-	Fl_Scrollbar* mpVerScrollbar;
-	Fl_Slider*    mpVerSlider;
+	MRuler*          mpHorRuler;
+	Fl_Scrollbar*    mpHorScrollbar;
+	Fl_Slider*       mpHorSlider;
+	MRuler*          mpVerRuler;	
+	Fl_Scrollbar*    mpVerScrollbar;
+	Fl_Slider*       mpVerSlider;
 
 	static void SliderCB( Fl_Slider* slider, Fl_Scrollbar* scrollbar );
 	static void ScrollbarCB( Fl_Scrollbar* scrollbar, MRuler* ruler );
@@ -61,13 +60,13 @@ public:
 
 	void SetHorRange(double top,double total);
 	void SetVerRange(double top,double total);
-//	void Add( FLDisplay& display );
 	void Add( GLPort* port );
 
 	void redraw();
 
 	void draw();
 };
+
 
 }
 

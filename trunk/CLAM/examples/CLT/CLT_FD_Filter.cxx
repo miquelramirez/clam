@@ -7,31 +7,23 @@
 #include"XMLStorage.hxx"
 
 unsigned long CLT_FD_Filter::sBufferAudioSize = 2048;
-//bool CLT_FD_Filter::sBufferHasChanged = false;
 
 void CLT_FD_Filter::AdoptChildren()
 {
-		cout << "adoptchildren" << endl;
-
 		mFFT.SetParent(this);
 		mIFFT.SetParent(this);
 		mFilterR.SetParent(this);
 		mFilterL.SetParent(this);
-
-		cout << "adoptchildren" << endl;
 }
 
 CLT_FD_Filter::CLT_FD_Filter()
 {
-		cout << "constructor" << endl;
 		Configure(CLT_PluginConfig());
 		AdoptChildren();
-		cout << "constructor" << endl;
 }
 
 bool CLT_FD_Filter::ConfigureChildren()
 {
-		cout << "configure children" << endl;
 		static const char *filterR_name = "Filter Generator Right";
 		static const char *filterL_name = "Filter Generator Left";
 		static const char *fft_name = "Input FFT";
@@ -50,7 +42,6 @@ bool CLT_FD_Filter::ConfigureChildren()
 		cfg_fd.SetName(filterL_name);
 		mFilterL.Configure(cfg_fd);
 
-//segurament canviar aixo
 		CLAM::SpecTypeFlags fflags; // flags for all spectral data
 		fflags.bMagPhase = true;
 		fflags.bComplex = true;
@@ -64,15 +55,13 @@ bool CLT_FD_Filter::ConfigureChildren()
 		IFFTConfig cfg_ifft;
 		FFTConfig cfg_fft;
 
-		cfg_fft.SetAudioSize(2048); //nose
+		cfg_fft.SetAudioSize(2048);
 		cfg_fft.SetName(fft_name);
 		
 		cfg_prod.SetName(filter_name);
 
-		cfg_ifft.SetAudioSize(2048); //nose
+		cfg_ifft.SetAudioSize(2048);
 		cfg_ifft.SetName(ifft_name);
-
-//////config d'espectres
 
 		CLAM::SpecTypeFlags sflags; // flags for all spectral data
 		sflags.bMagPhase = false;
@@ -96,16 +85,11 @@ bool CLT_FD_Filter::ConfigureChildren()
 		mProduct.Configure(cfg_prod);
 		mIFFT.Configure(cfg_ifft);
 
-		cout << "configure children2" << endl;
-		
 		return true;
-
 }
 
 bool CLT_FD_Filter::ConfigureData(int size)
 {
-
-		cout << "configuredata" << endl;
 		mSpecR.SetSize(size+1);
 		mSpecL.SetSize(size+1);
 		mSpecRout.SetSize(size+1);
@@ -113,19 +97,15 @@ bool CLT_FD_Filter::ConfigureData(int size)
 		mSpecFilterR.SetSize(size+1);
 		mSpecFilterL.SetSize(size+1);
 
-		cout << "configuredata" << endl;
-
 		return true;
 }
 
 bool CLT_FD_Filter::ConcreteConfigure(const ProcessingConfig &c)
 		throw(std::bad_cast)
 {
-		cout << "concreteconfigure" << endl;
 		mConfig = dynamic_cast<const CLT_PluginConfig&>(c);
 		ConfigureChildren();
 		ConfigureData(1024);
-		cout << "concreteconfigure" << endl;
 		return true;
 }
 
@@ -160,13 +140,10 @@ LADSPA_Handle CLT_FD_Filter::Instantiate
 ( const struct _LADSPA_Descriptor* Descriptor, 
   unsigned long SampleRate )
 {
-		cout << "instantiate" << endl;
 		LADSPA_Handle ret = new CLT_FD_Filter;
-		cout << "instantiate done" << endl;
 		return ret;
 }
 
-////////////falta constructor i activate //////////////
 void CLT_FD_Filter::ChangeFFT(unsigned long SampleCount)
 {
 		if (GetExecState() == Running)
@@ -175,20 +152,17 @@ void CLT_FD_Filter::ChangeFFT(unsigned long SampleCount)
 		}
 
 		FFTConfig cfg_fft;
-		cfg_fft.SetAudioSize((TData)SampleCount); //nose
+		cfg_fft.SetAudioSize((TData)SampleCount);
 		mFFT.Configure(cfg_fft);
 		IFFTConfig cfg_ifft;
-		cfg_ifft.SetAudioSize((TData)SampleCount); //nose
+		cfg_ifft.SetAudioSize((TData)SampleCount);
 		mIFFT.Configure(cfg_ifft);
-		cout << "changed buffer fft" << endl;
 	
 		Start();
 }
 
 void CLT_FD_Filter::RunSelf(unsigned long SampleCount)
 {
-
- //canviar sizes etc.
 
 		 sIBufferR.GetBuffer().SetSize(SampleCount);
 		 sIBufferL.GetBuffer().SetSize(SampleCount);
@@ -198,7 +172,6 @@ void CLT_FD_Filter::RunSelf(unsigned long SampleCount)
 		 if (sBufferAudioSize != SampleCount)
 		 {
 				 sBufferAudioSize = SampleCount;
-//				 sBufferHasChanged = true;
 				 ChangeFFT(SampleCount);
 		 }
 		 Convert(sIBufferR);
@@ -208,16 +181,6 @@ void CLT_FD_Filter::RunSelf(unsigned long SampleCount)
 
 		 Deconvert(sOBufferR);
 		 Deconvert(sOBufferL);
-/*
-		 for (unsigned long i=0;i<SampleCount;i++)
-		 {
-				 printf ("%f    ",sIBufferR.GetBuffer()[i]);
-				 printf ("%f //   ",sIBufferL.GetBuffer()[i]);
-				 printf ("%f   ",sOBufferR.GetBuffer()[i]);
-				 printf ("%f\n",sOBufferL.GetBuffer()[i]);
-		 }
-*/
-
 }
 
 
@@ -226,23 +189,21 @@ bool CLT_FD_Filter::Do(Audio &inL, Audio &inR, Audio &outL,Audio &outR)
 
 		InControl &coffR = mFilterR.LowCutOff;
 		InControl &coffL = mFilterL.LowCutOff;
-//fer la fft
 
-		// Audio configuration and initialization.
 		mFFT.Do(inR,mSpecR);
 		mFFT.Do(inL,mSpecL);
-//mirem si hi ha de nou
+
 		coffR.DoControl(*mCutoffR);
 		coffL.DoControl(*mCutoffL);
 
-//calcular filtergen
+
 		mFilterR.Do(mSpecFilterR);
 		mFilterL.Do(mSpecFilterL);
 
-//multiplicar pel filtergen
+
 		mProduct.Do(mSpecR,mSpecFilterR,mSpecRout);
 		mProduct.Do(mSpecL,mSpecFilterL,mSpecLout);
-//fer la ifft
+
 		mIFFT.Do(mSpecRout,outR);
 		mIFFT.Do(mSpecLout,outL);
 
@@ -255,7 +216,7 @@ void initialise_CLT_FD_filter()
 
 		
 		FDF_Descriptor = new CLT_Descriptor
-				(1101,
+				(1103,
 				 "CLT_fdf",
 				 "CLAM Frequency Domain Filter",
 				 "Xavi Rubio (MTG)",
@@ -291,10 +252,10 @@ void initialise_CLT_FD_filter()
 		CONNECT( FDF_Descriptor , CLT_FD_Filter );
 
 		registerNewPluginDescriptor(FDF_Descriptor);
-		cout << "acabat init" << endl;
 }
 
 void finalise_CLT_FD_filter()
 {
 		delete FDF_Descriptor;
 }
+

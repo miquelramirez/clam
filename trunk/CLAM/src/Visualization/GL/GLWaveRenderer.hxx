@@ -33,7 +33,7 @@ namespace CLAMGUI
 	public:
 
 		GLWaveRenderer( unsigned char r = 0, unsigned char g = 255, unsigned char b = 0 )
-		: GLArrayRenderer( r, g, b ), mSampRate( 0 )
+			: GLArrayRenderer( r, g, b ), mSampRate( 0 ), mXConversionFactor(1)
 		{
 		}
 
@@ -48,12 +48,18 @@ namespace CLAMGUI
 		virtual void InitArray( unsigned int nelems );
 		virtual void XaxisTransform( TData left, TData right, TData& transleft, TData& transright, bool& integer );
 		virtual void YaxisTransform( TData top, TData bottom, TData& transtop, TData& transbottom, bool& integer );
+		virtual float GetXConversionFactor()
+		{
+			return mXConversionFactor;
+		}
+
 
 	private:
 
 		void ArrangeXScale();
 
 		TData mSampRate;
+		float mXConversionFactor;
 	};
 
 }

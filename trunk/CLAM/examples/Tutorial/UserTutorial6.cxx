@@ -19,7 +19,7 @@
  *
  */
 
-/** @file CLAM tutorial, example 6.
+/** @file UserTutorial6.cxx CLAM tutorial, example 6.
  *  Ilustrates how to use a processing object with controls.
  */
 #include <FDFilterGen.hxx>

@@ -20,6 +20,9 @@
  */
 
 #include "AudioIO.hxx"
+#include "AudioIn.hxx"
+#include "AudioOut.hxx"
+#include "AudioManager.hxx"
 #include "Oscillator.hxx"
 #include "Multiplier.hxx"
 #include "AudioApplication.hxx"

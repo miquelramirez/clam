@@ -19,7 +19,7 @@
  *
  */
 
-/** @file UserTutorial2.cxx
+/** @file UserTutorial3.cxx
  * Tutorial example ilustrating how to set and get the dynamic
  * attributes in a data object.
  */

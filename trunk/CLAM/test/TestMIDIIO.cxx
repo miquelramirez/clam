@@ -125,14 +125,14 @@ int main(void)
 		inCtrlCfg.SetDevice("default:default");
 		inCtrlCfg.SetChannelMask(MIDI::ChannelMask(1));
 		inCtrlCfg.SetMessageMask(MIDI::MessageMask(MIDI::eControlChange));
-		inCtrlCfg.SetFilter(0x0a);
+		inCtrlCfg.SetFilter(0x02); // breath control
 		
 		MIDIInControl inCtrl(inCtrlCfg);
 
 		MIDIInConfig inPitchBendCfg;
 		
 		inPitchBendCfg.SetName("inPitchBend");
-		inPitchBendCfg.SetDevice("default:hw:1,0");
+		inPitchBendCfg.SetDevice("default:default");
 		inPitchBendCfg.SetChannelMask(MIDI::ChannelMask(1));
 		inPitchBendCfg.SetMessageMask(MIDI::MessageMask(MIDI::ePitchbend));
 		

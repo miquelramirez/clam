@@ -65,11 +65,11 @@ namespace CLAM {
 		/** @return the audio buffer size in samples*/
 		int GetSize() const {return GetBuffer().Size();}
 
-	    /** Getter for the end time
+		/** Getter for the end time
 		 *  @return The current end time for the buffer size */
 		TTime GetEndTime() const {return GetBeginTime()+GetTimeFromIndex(GetSize());}
 
-	    /** Method for getting the total duration of Buffer
+	 	/** Method for getting the total duration of Buffer
 		 *  @return The duration of the audio buffer in miliseconds */
 		TTime GetDuration() const {return GetTimeFromIndex(GetSize());}
 

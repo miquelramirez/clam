@@ -1,5 +1,5 @@
 LIBRARIES=Rappid
-PROGRAMS=CMLRappid TestSoftSwitch TestAudioMixer TestAudioCompressor TestDynamicMixer TestRappidIO
+PROGRAMS=Rondebosse CMLRappid TestSoftSwitch TestAudioMixer TestAudioCompressor TestDynamicMixer TestRappidIO
 TOP=../..
-
+INCLUDE_DIRS=rondebosse/rondebosse /usr/include/kde
 include $(TOP)/unix_tools/make.rules

@@ -2,10 +2,10 @@
 DON'T EDIT THIS FILE BY HAND, IT IS GENERATED 
 BY THE SCRIPT SndPcmGen.pl FROM
 alsa-lib/test/latency.c
-SndPcm.cxx.in.head
-SndPcm.cxx.in.tail
-SndPcm.hxx.in.head
-SndPcm.hxx.in.tail
+SndPcm.in.head.cxx
+SndPcm.in.tail.cxx
+SndPcm.in.head.hxx
+SndPcm.in.tail.hxx
 */
 
 /*
@@ -46,7 +46,8 @@ class SndPcm
 public:
 	snd_pcm_format_t format;
 	int rate;
-	int channels;
+	int channels_in;
+	int channels_out;
 	int latency;
 	int latency_min;		/* in frames / 2 */
 	int latency_max;		/* in frames / 2 */
@@ -91,7 +92,7 @@ public:
 //			throw(SndPcmError("SndPcm::WriteBuf() Buffer Underrun!\n"));
 			RecoverXRun(data);
 	}
-	SndPcm(int irate,int ichannels,int ilatency,
+	SndPcm(int irate,int ichannels_in,int ichannels_out,int ilatency,
 		const char* pdevice,const char* cdevice);
 	~SndPcm();
 
@@ -135,6 +136,7 @@ private:
  */
 	int setparams_stream(snd_pcm_t *handle,
 			     snd_pcm_hw_params_t *params,
+					 int channels,
 			     const char *id);
 	int setparams_bufsize(snd_pcm_t *handle,
 			      snd_pcm_hw_params_t *params,

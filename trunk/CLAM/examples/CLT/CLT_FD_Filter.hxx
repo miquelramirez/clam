@@ -8,7 +8,6 @@
 #include "FFT_rfftw.hxx"
 #include "IFFT_rfftw.hxx"
 
-//per ara no posem el tipus de filtre
 #define R_CUTOFF 0
 #define L_CUTOFF 1
 #define R_INPUT 2
@@ -21,13 +20,11 @@ using namespace CLAM;
 class CLT_FD_Filter : public CLT_StereoPlugin
 {
 public:
-//controls
 		TData* mCutoffR;
 		TData* mCutoffL;
 
 private:
 		static unsigned long sBufferAudioSize;
-//		static bool sBufferHasChanged;
 		Spectrum                 mSpecFilterR;
 		Spectrum                 mSpecFilterL
 ;		Spectrum                       mSpecR;
@@ -47,13 +44,12 @@ public:
 
 		virtual ~CLT_FD_Filter(){}
 
-//		bool Do(void){return true;}
 		inline bool Do(Audio &inL, Audio &inR, Audio &outL, Audio &outR);
 		bool ConfigureChildren();
 		bool ConfigureData(int size);
 		void AdoptChildren();
 		bool ConcreteConfigure(const ProcessingConfig &c)
-				throw(std::bad_cast); //potser...
+				throw(std::bad_cast);
 
 		static LADSPA_Handle Instantiate
 		( const struct _LADSPA_Descriptor* Descriptor, 
@@ -71,5 +67,6 @@ public:
 static CLT_Descriptor * FDF_Descriptor=NULL;
 void initialise_CLT_FD_filter();
 void finalise_CLT_FD_filter();
+
 #endif
 

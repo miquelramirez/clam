@@ -30,8 +30,8 @@
 #include "Port.hxx"
 #include "Component.hxx"
 #include "Enum.hxx"
-#include <vector>
 #include <string>
+#include <deque>
 
 using std::string;
 
@@ -64,7 +64,7 @@ protected:
 		UpdateData();
 		SetName("");
 		SetDelay(0);
-		SetMaxDelay(1000);  //this value has no importance. It should be re-set by the user.	
+		SetMaxDelay(0);  
 	}
 
 };
@@ -90,19 +90,14 @@ private:
 	// Ports and control
 	InPortTmpl<T> mInput;
 	OutPortTmpl<T> mOutput;
-	InControlTmpl< TokenDelay<T> > mDelayControl;
-
-	/** Control change callback function */
-	int ChangeDelay(TControlData d);
+	InControl mDelayControl;
 
 public:
 	TokenDelay(const TokenDelayConfig& cfg = TokenDelayConfig() ) :
 		mInput ("In", this, 1),
 		mOutput ("Out", this, 1),
-		mDelayControl("Delay Control", this, &CLAM::TokenDelay<T>::ChangeDelay),
-		mLast(0),
-		mFirst(0),
-		mInstantToken(0)
+		mDelayControl("Delay Control", this),
+		mCapacity(0)
 	{
 		Configure(cfg);
 	}
@@ -149,20 +144,41 @@ public:
 
 	const char *GetClassName() {return "TokenDelay";}
 
-	unsigned RealDelay() const;
-
+	/**
+	 * Informative value about the current delay applied (different from the requested)
+	 */
+	TSize RealDelay() const {
+		return mTokenQueue.size();
+	} 
 
 private:
-// Circular buffer interface:
-	T* PopFirst();
-	void PushLast( T* in);
+	/** This method is applyed to every token discarded when the decreasing the delay amount*
+	 *  In this class the implementation is just "delete toDiscard"  <br/>
+	 *  But we can take different approaches by deriving from TokenDelay<T> and overriding 
+	 *  this method. For example we could use a token pool for reusing them.
+	 */
+	virtual void Discard(T* toDiscard);
+
+	/**
+	 * Returns a valid delay value given a control data value
+	 */
+	unsigned CastDelayControlValue(TControlData readControlValue);
+	/** 
+	 * Adjusts the internal circular buffer to adapt to the new
+	 * delay.
+	 */
+	void UpdateBuffersToDelay();
+
+
 // Implementation Details:
 
-	std::vector<T*> mVector;
-	unsigned mLast;
-	unsigned mFirst;
+	std::deque<T*> mTokenQueue;
+	/** The maximun number of elements in the queue. */
 	unsigned mCapacity;
-	T* mInstantToken;
+	/** The control value readed on the last started Do */
+	unsigned mGivenDelay;
+	/** The control value readed on the previous Do to the last started Do */
+	unsigned mLastDelay;
 
 };
 
@@ -173,46 +189,20 @@ private:
 
 
 #include "Err.hxx"
-	
-// Control change callback function 
+
 template <class T> 
-int TokenDelay<T>::ChangeDelay(TControlData d)
-{
-	unsigned i;
-
-	if (d >= mCapacity) {
-		d = TControlData(mCapacity);
-//		std::cout << "Token Delay: Maximum delay reached. Can't delay more than "<< d << " tokens.\n";
-		return -1;
-	}
-	long incr =(long int) d-RealDelay();
-	if (incr > 0) ;// mLast will increment step by step and mFirst will keep the same till the delay is reached.
-	//	if (incr + mLast < mCapacity) mLast += incr;
-	//	else mLast = incr - mCapacity - 1 + mLast;
-	else 
-		// the delay has decremented. So it's necessary to delete some unusefull data
-		if ( int(mLast+incr) >= 0) // mLast >= decrement
-		{
-			for (i=mLast+incr; i<mLast; i++)  delete mVector[i];
-			mLast += incr;
-		}
-		else
-		{ // the same, but turning the vector.
-			for (i=mLast; i>0; i--) delete mVector[i];
-			mLast = mCapacity + incr + mLast;
-			for (i=mCapacity-1; i>mLast; i--) delete mVector[i];
-		};
-
-	return 0;
+void TokenDelay<T>::Discard(T* toDiscard) {
+	CLAM_ASSERT(toDiscard, "TokenDelay: Discarding a null pointer");
+	delete toDiscard;
 }
-
+	
 template <class T> 
 bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 {
 	mConfig = dynamic_cast<const TokenDelayConfig&>(c);
 	mCapacity = mConfig.GetMaxDelay();
-	mVector.resize(mCapacity);
 	mDelayControl.DoControl(TControlData(mConfig.GetDelay()));
+	mGivenDelay = CastDelayControlValue(mDelayControl.GetLastValue());
 	return true;
 }
 
@@ -224,109 +214,73 @@ bool TokenDelay<T>::Do(void)
 	return false;
 }
 
+template <class T>
+unsigned TokenDelay<T>::CastDelayControlValue(TControlData readControlValue) {
+	if (readControlValue > mCapacity) return mCapacity;
+	if (readControlValue < 0) return 0;
+	return unsigned(readControlValue);
+}
+
 template <class T> 
 bool TokenDelay<T>::Do(T& in, T* & out)
 // implementation using the supervised-mode Do
 {
-	if (mDelayControl.GetLastValue()>0 || RealDelay()>0) {
-		
-		out = PopFirst();
-		PushLast(&in);
-		
-		mInstantToken=0;
-		if (!out) mInstantToken=out=&in;
-	} else mInstantToken = out = &in;
+	// @todo debug
+	mLastDelay = mGivenDelay;
+	mGivenDelay = CastDelayControlValue(mDelayControl.GetLastValue());
+	// If the value is different make the difference efective
+	if (mLastDelay != mGivenDelay)
+		UpdateBuffersToDelay();
 
-	//For debugging :
-	//Debug();
-	//FulfillsInvariant();
-
+	mTokenQueue.push_back(&in);
+	out=mTokenQueue.front();
+	if (mTokenQueue.size()>mGivenDelay)
+		mTokenQueue.pop_front();
 	return true;
+
 }
 
 
-// Circular buffer interface:
+// Delay change
 template <class T> 
-T* TokenDelay<T>::PopFirst()
+void TokenDelay<T>::UpdateBuffersToDelay()
 {
-	unsigned givenDelay = unsigned(mDelayControl.GetLastValue());
-	unsigned realDelay = unsigned(RealDelay());
-	T* ret;
-
-#ifdef HAVE_STANDARD_VECTOR_AT
-	if (mInstantToken) mVector.at(mFirst) = mInstantToken;
-	if (givenDelay) ret = mVector.at(mFirst);
-	else throw Err("TokenDelay at PopFirst() : givenDelay==0");
-#else
-	if (mInstantToken) mVector[mFirst] = mInstantToken;
-	if (givenDelay) ret = mVector[mFirst];
-	else throw Err("TokenDelay at PopFirst() : givenDelay==0");
-#endif
-
-	if (realDelay == givenDelay) 
-	{
-		if (mFirst < mCapacity-1) mFirst++; 
-		else mFirst = 0;
-		return ret;
+	while (mTokenQueue.size()>mGivenDelay) {
+		T* toDelete=mTokenQueue.front();
+		mTokenQueue.pop_front();
+		this->Discard(toDelete);
 	}
-	else if (realDelay > givenDelay) throw Err("TokenDelay at PopFirst() : realDelay>givenDelay");
-	return ret;
+	return;
 }
 
-template <class T> 
-void TokenDelay<T>::PushLast(T* in)
-{
-	// provisional test:
-	if(mLast <= mCapacity-1) 
-#		ifdef HAVE_STANDARD_VECTOR_AT
-			mVector.at(mLast) = in;
-#		else
-			mVector[mLast] = in;
-#		endif
-	else throw Err("TokenDelay at PushLast: mLast >= mCapacity");
-
-		if(mLast == mCapacity-1)
-		{ // making the turn of the circular buffer.
-			if( mFirst==0 ) throw Err("Token Delay at PushLast : Limit delay");
-			mLast=0;
-		} 
-		else mLast++;
-}
-
-template <class T> 
-unsigned TokenDelay<T>::RealDelay() const
-{
-	/** mLast points to the next place to write. and mFirst is the next element to be pop.
-	*/
-	return (mLast>=mFirst) ? mLast - mFirst : (mCapacity - mFirst + mLast);
-}
 
 template <class T> 
 void TokenDelay<T>::Debug() const
 {
-	unsigned given = unsigned(mDelayControl.GetLastValue());
+	/*
 	unsigned real = RealDelay();
 	unsigned size = mVector.size();
 	unsigned cap = mVector.capacity();
 
 	std::cout << "\n-- " << mConfig.GetName() << "\n-- (first,last)=(" << mFirst <<","<< mLast <<")\n-- "\
-		<< "(given,real delay)=("<< given <<"," << real << ")\n-- (vector size,capacity;mCapacity)=("\
+		<< "(given,real delay)=("<< mGivenDelay <<"," << real << ")\n-- (vector size,capacity;mCapacity)=("\
 		<< size <<","<< cap <<";"<< mCapacity <<")\n-- (mInstantToken,mVector[mFirst])=("<< mInstantToken\
 		<<","<< mVector[mFirst] <<")\n";
+	*/
 
 }
 
 template <class T> 
 void TokenDelay<T>::FulfillsInvariant() const
-{
-	unsigned real = RealDelay(), given=unsigned(mDelayControl.GetLastValue());
+{/*
+	unsigned real = RealDelay();
 	
 	if (mVector.capacity() < mCapacity) throw Err("TokenDelay : invariant not fullfilled!: vector capacity < req. capacity");
 	if (real && mFirst==mLast) throw Err("TokenDelay : invariant not fullfilled!: there is a 'real' delay and mFirst==mLast");
 	if (real > mCapacity) throw Err("TokenDelay : invariant not fullfilled!: real delay > mCapacity");
-	if (given > mCapacity) throw Err("TokenDelay : invariant not fullfilled!: given (by control) delay > mCapacity");
+	if (mGivenDelay > mCapacity) throw Err("TokenDelay : invariant not fullfilled!: given (by control) delay > mCapacity");
 	if (mFirst <0 || mLast<0 || mCapacity <= 0)  throw Err("TokenDelay : invariant not fullfilled!: some very bad thing...");
-
+*/
 }
 
 // Control Enumeration
@@ -350,7 +304,7 @@ public:
 	}
 	
 	ETokenDelayControls( string s )
-			: Enum( sEnumValues, s )
+		: Enum( sEnumValues, s )
 	{
 	}
 
@@ -364,9 +318,9 @@ public:
 	}
 
 	typedef enum 
-		{ 
-			delay = 0
-		} tEnum;
+	{ 
+		delay = 0
+	} tEnum;
 
 };
 

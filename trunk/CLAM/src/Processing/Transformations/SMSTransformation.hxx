@@ -93,9 +93,15 @@ namespace CLAM {
 		 */
 		virtual bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast)
 		{
+			bool ret=true;
 			mConfig=dynamic_cast<const SMSTransformationConfig&>(c);
-			mAmountCtrl.DoControl(mConfig.GetFAmount());
-			return true;
+			if(mConfig.HasFAmount())
+				mAmountCtrl.DoControl(mConfig.GetFAmount());
+			else if(mConfig.HasBPFAmount())
+				mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0));
+			else
+				ret=false;
+			return ret;
 		}
 
 		

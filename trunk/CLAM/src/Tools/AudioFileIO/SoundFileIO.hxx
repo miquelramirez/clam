@@ -9,11 +9,14 @@
 #include <byteswap.h>
 #endif
 
-#ifdef macintosh
+#include "ByteOrder.hxx"
+
+#ifdef CLAM_BIG_ENDIAN
 #define SOUNDFILEIO_BIG_ENDIAN
 #else
 #define SOUNDFILEIO_LITTLE_ENDIAN
 #endif
+
 
 namespace CLAM{
 

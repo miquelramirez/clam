@@ -149,9 +149,7 @@ void DebuggerGUI::RefreshBreakPanel()
 
 void DebuggerGUI::MakeViewFor( CLAM::Processing* p_obj )
 {
-	// :TODO: esta noche lo soñamos y mañana lo hacemos?
-
-	cout << "Vista hecha :) " << endl;
+	cout << "View Done " << endl;
 }
 
 void DebuggerGUI::MakePOBrowserFor( const std::string& str )

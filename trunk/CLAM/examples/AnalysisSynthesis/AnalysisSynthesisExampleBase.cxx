@@ -38,6 +38,7 @@
 #include "OnsetDetection.hxx"
 #include "Normalization.hxx"
 
+
 //Transformation class
 #include "SMSFreqShift.hxx"
 
@@ -47,41 +48,18 @@
 #include "XMLComponentAdapter.hxx"
 #include "XMLable.hxx"
 
+#include "AudioIO.hxx"
+#include "AudioOut.hxx"
+#include "AudioManager.hxx"
 
 #define MIN(a,b) ((a<=b)?(a):(b))
 #define MAX(a,b) ((a>=b)?(a):(b))
 
+using namespace CLAMGUI;
 using namespace CLAM;
 
-Progress::Progress(const char* title,float from,float to)
-{
-//	mTitle = strdup(title);
-	mTitle = new char[strlen(title)+1];
-	strncpy( mTitle, title, strlen(title)+1 );
-	mFrom = from;
-	mTo = to;
-}
-
-Progress::~Progress()
-{
-//	free(mTitle);
-	delete[] mTitle;
-}
-
-WaitMessage::WaitMessage(const char* title)
-{
-//	mTitle = strdup(title);
-	mTitle = new char[strlen(title)+1];
-	strncpy(mTitle,title, strlen(title)+1 );
-}
-
-WaitMessage::~WaitMessage()
-{
-//	free(mTitle);
-	delete[] mTitle;
-}
-
 AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
+	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
 {
 	mHaveConfig = false;
 	mHaveAnalysis = false;
@@ -92,6 +70,24 @@ AnalysisSynthesisExampleBase::AnalysisSynthesisExampleBase()
 	mHaveSpectrum = false;
 
 	mpTransformation=NULL;
+
+}
+
+void AnalysisSynthesisExampleBase::DestroyWaitMessage( )
+{
+	delete mCurrentWaitMessage;
+	mCurrentWaitMessage = NULL;
+}
+
+void AnalysisSynthesisExampleBase::DestroyProgressIndicator( )
+{
+	delete mCurrentProgressIndicator;
+	mCurrentProgressIndicator = NULL;
+}
+
+AnalysisSynthesisExampleBase::~AnalysisSynthesisExampleBase(void)
+{
+
 }
 
 void AnalysisSynthesisExampleBase::InitConfigs(void)
@@ -131,7 +127,6 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 	mAnalConfig.SetSinZeroPadding(analZeroPaddingFactor);
 	mAnalConfig.SetResWindowSize(resAnalWindowSize);
 	mAnalConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
-	//	analConfig.SetDisplayFlags(mGlobalConfig.GetAnalysisSynthesisDisplayFlags());
 
 	//SMS Synthesis configuration
 	mSynthConfig.SetAnalWindowSize(resAnalWindowSize);
@@ -143,7 +138,7 @@ void AnalysisSynthesisExampleBase::InitConfigs(void)
 
 void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 {
-	WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
+	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mGlobalConfig,inputFileName);
@@ -151,8 +146,8 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 	if(	
 	mGlobalConfig.HasInputSoundFile() &&
 	mGlobalConfig.HasOutputSoundFile() &&
-	mGlobalConfig.HasOutputXMLFile() &&
-	mGlobalConfig.HasInputXMLFile() &&
+	mGlobalConfig.HasOutputAnalysisFile() &&
+	mGlobalConfig.HasInputAnalysisFile() &&
 	mGlobalConfig.HasSamplingRate() &&
 	mGlobalConfig.HasAnalysisWindowSize() &&
 	mGlobalConfig.HasAnalysisHopSize() &&
@@ -180,62 +175,169 @@ void AnalysisSynthesisExampleBase::LoadConfig(const std::string& inputFileName)
 	delete wm;
 }
 
-void AnalysisSynthesisExampleBase::LoadAnalysis(const std::string& inputFileName)
+void AnalysisSynthesisExampleBase::StoreConfig(const std::string& inputFileName)
 {
-	WaitMessage *wm = CreateWaitMessage("Loading analysis data xml file, please wait");
-	//Loading analysis
+	CLAMGUI::WaitMessage *wm;
+	wm = CreateWaitMessage("Storing configuration xml file, please wait.");
+	//Loading configuration
 	XMLStorage x;
-	x.Restore(mSegment,inputFileName);
-	mHaveAnalysis = true;
-	mHaveSpectrum = false;
-	delete wm;
+	x.Restore(mGlobalConfig,inputFileName);
 }
 
-void AnalysisSynthesisExampleBase::StoreAnalysis(void)
+void AnalysisSynthesisExampleBase::DoLoadSDIFAnalysis()
 {
-	CLAM_ASSERT(mGlobalConfig.GetOutputXMLFile()!="","Not a valid file name");
+	LoadSDIFAnalysis();
+}
+
+void AnalysisSynthesisExampleBase::LoadSDIFAnalysis()
+{
+		
+	mSDIFReader.Start();
+	while(mSDIFReader.Do()) {}
+	mSDIFReader.Stop();
+	mHaveAnalysis = true;
+	mHaveSpectrum = false;
+}
+
+void AnalysisSynthesisExampleBase::DoLoadXMLAnalysis()
+{
+	LoadXMLAnalysis();
+}
+
+void AnalysisSynthesisExampleBase::LoadXMLAnalysis()
+{
+	XMLStorage x;
+	x.Restore(mSegment,mXMLInputFile);
+	mHaveAnalysis = true;
+	mHaveSpectrum = false;
+
+}
+
+void AnalysisSynthesisExampleBase::LoadAnalysis(const std::string& inputFileName)
+{
+	std::string ext=inputFileName.substr(inputFileName.length()-4,inputFileName.length());
+	if(ext=="sdif")
+	{
+		mCurrentWaitMessage = CreateWaitMessage("Loading analysis data sdif file, please wait");
+
+		SDIFInConfig cfg;
+		cfg.SetMaxNumPeaks(100);
+		cfg.SetFileName(inputFileName);
+		cfg.SetEnableResidual(true);
+		mSDIFReader.Configure(cfg);
+		
+		mSegment.AddAll();
+		mSegment.UpdateData();
+		mSDIFReader.Output.Attach(mSegment);
+		DoLoadSDIFAnalysis();
+
+		DestroyWaitMessage();
+	}
+	else if(ext==".xml")
+	{
+		mCurrentWaitMessage = CreateWaitMessage("Loading analysis data xml file, please wait");
+		//Loading analysis
+
+		DoLoadXMLAnalysis();
+
+		DestroyWaitMessage();
+	}
+	else throw Err("AnalysisSynthesisExampleBase::LoadAnalysis:wrong extension to load");
 	
-	WaitMessage *wm = CreateWaitMessage("Storing xml file, please wait");
-	//first we have to get rid of not wanted data
+}
+
+void AnalysisSynthesisExampleBase::StoreSDIFAnalysis()
+{
+	int i;
+	SDIFOutConfig cfg;
+	cfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
+	cfg.SetFileName(mGlobalConfig.GetOutputAnalysisFile());
+	cfg.SetEnableResidual(true);
+	SDIFOut SDIFWriter(cfg);
+	int nFrames=mSegment.GetnFrames();
+	SDIFWriter.Start();
+	for(i=0;i<nFrames;i++)
+	{
+		SDIFWriter.Do(mSegment.GetFrame(i));
+	}
+	SDIFWriter.Stop();
+	
+}
+
+void AnalysisSynthesisExampleBase::StoreXMLAnalysis()
+{
+		//first we have to get rid of not wanted data
 	mSegment.RemoveAudio();
 	mSegment.UpdateData();
 	int i=0;
 
+	int nFrames=mSegment.GetnFrames();
+	for(i=0;i<nFrames;i++)
+	{
 	
-	for(i=0;i<mSegment.GetnFrames();i++)
-		{
-			
-			Frame& tmpFrame=mSegment.GetFrame(i);
-			tmpFrame.RemoveAudioFrame();//windowed audio frame
-			tmpFrame.RemoveSinusoidalAudioFrame();
-			tmpFrame.RemoveResidualAudioFrame();
-			tmpFrame.RemoveSinusoidalSpec();
-			tmpFrame.RemoveSpectrum();//this could be kept for direct IFFT
-			//Now we remove auxiliary data formats for residual spectrum
-			SpecTypeFlags tmpFl;
-			tmpFrame.GetResidualSpec().SetType(tmpFl);
-			
-		}
+		Frame& tmpFrame=mSegment.GetFrame(i);
+		tmpFrame.RemoveAudioFrame();//windowed audio frame
+		tmpFrame.RemoveSinusoidalAudioFrame();
+		tmpFrame.RemoveResidualAudioFrame();
+		tmpFrame.RemoveSinusoidalSpec();
+		tmpFrame.RemoveSpectrum();//this could be kept for direct IFFT
+		//Now we remove auxiliary data formats for residual spectrum
+		SpecTypeFlags tmpFl;
+		tmpFrame.GetResidualSpec().SetType(tmpFl);
+		
+	}
+
+	XMLStorage x;
+	x.Dump(mSegment,"Analyzed_Segment",mGlobalConfig.GetOutputAnalysisFile());
 
 	//Now we add Spectrum back, it is needed for Melody analysis
 	for(i=0;i<mSegment.GetnFrames();i++)
-		{
-			
-			Frame& tmpFrame=mSegment.GetFrame(i);
-			tmpFrame.AddSpectrum();//this could be kept for direct IFFT
-			tmpFrame.UpdateData();			
-		}
-	
-	
+	{
+		
+		Frame& tmpFrame=mSegment.GetFrame(i);
+		tmpFrame.AddSpectrum();//this could be kept for direct IFFT
+		tmpFrame.UpdateData();			
+	}
 
-	XMLStorage x;
-	x.Dump(mSegment,"Analyzed_Segment",mGlobalConfig.GetOutputXMLFile());
-	delete wm;
+}
+
+void AnalysisSynthesisExampleBase::DoStoreSDIFAnalysis()
+{
+	StoreSDIFAnalysis();
+}
+
+void AnalysisSynthesisExampleBase::DoStoreXMLAnalysis()
+{
+	StoreXMLAnalysis();
+}
+
+void AnalysisSynthesisExampleBase::StoreAnalysis(void)
+{
+	CLAM_ASSERT(mGlobalConfig.GetOutputAnalysisFile()!="","Not a valid file name");
+	
+	std::string ext=mGlobalConfig.GetOutputAnalysisFile().substr(mGlobalConfig.GetOutputAnalysisFile().length()-4,mGlobalConfig.GetOutputAnalysisFile().length());
+	if(ext=="sdif")
+	{
+		mCurrentWaitMessage = CreateWaitMessage("Storing sdif file, please wait");
+		
+		DoStoreSDIFAnalysis();
+
+		DestroyWaitMessage();
+	}
+	else if(ext==".xml")
+	{
+		mCurrentWaitMessage = CreateWaitMessage("Storing xml file, please wait");
+
+		DoStoreXMLAnalysis();
+
+		DestroyWaitMessage();
+	}
+	
 }
 
 bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 {
-	bool displayAudio=false; //true;
+//	bool displayAudio=false; //true;
 
 	//The File In PO
 	AudioFileIn myAudioFileIn;
@@ -256,20 +358,22 @@ bool AnalysisSynthesisExampleBase::LoadInputSound(void)
 	myAudioFileIn.Start();
 	myAudioFileIn.Do(mAudioIn);
 	myAudioFileIn.Stop();
-		//Normalization
-	NormalizationConfig NCfg;
+
+	//Normalization is not needed for the time being
+	/*NormalizationConfig NCfg;
 	NCfg.SetType(3);
 	Normalization mNorm(NCfg);
 
-	//mNorm.Do(mAudioIn);
+	mNorm.Do(mAudioIn);*/
 	
 	mHaveAudioIn = true;
 
 	return mHaveAudioIn;
 }
 
-void AnalysisSynthesisExampleBase::Analyze(void)
+void AnalysisSynthesisExampleBase::AnalysisProcessing()
 {
+
 	TSize size = mAudioIn.GetSize();
 	
 	SMSAnalysis myAnalysis(mAnalConfig);
@@ -290,9 +394,8 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 	// The main analysis processing loop.
 	int k=0;
 	int step=mAnalConfig.GetHopSize();
-	//TODO: Using Sinusoidal Hop Size as global, check!
 	
-	Progress* pct = CreateProgress("Analysis Processing",0,float(size));
+
 	myAnalysis.Start();
 
 	do
@@ -300,30 +403,56 @@ void AnalysisSynthesisExampleBase::Analyze(void)
 		myAnalysis.Do(mSegment);
 		mSegment.mCurrentFrameIndex++;
 	    k+=step;
-		pct->Update(float(k));
+		mCurrentProgressIndicator->Update(float(k));
 	}  while(k<=size-step);
 
 	myAnalysis.Stop();
-	delete pct;
-	
-	/*Now I will try to clean Tracks (TODO:This should be done on a frame by frame basis
+
+
+}
+
+void AnalysisSynthesisExampleBase::TracksCleanupProcessing()
+{
+	CleanTracksConfig clcfg;
+	clcfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
+	clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
+	CleanTracks myCleanTracks;
+	myCleanTracks.Configure(clcfg);
+	myCleanTracks.Start();
+	myCleanTracks.Do(mSegment);
+	myCleanTracks.Stop();	
+
+}
+
+void AnalysisSynthesisExampleBase::DoAnalysis()
+{
+	AnalysisProcessing();
+}
+
+void AnalysisSynthesisExampleBase::DoTracksCleanup()
+{
+	TracksCleanupProcessing();
+}
+
+void AnalysisSynthesisExampleBase::Analyze(void)
+{
+	TSize size = mAudioIn.GetSize();
+
+	mCurrentProgressIndicator = CreateProgress("Analysis Processing",0,float(size));
+
+	DoAnalysis();
+
+	DestroyProgressIndicator();
+
+	/*Now we will clean Tracks (TODO:This should be done on a frame by frame basis
 	and included in SMSAnalysis*/
+	if ( HasToDoTracksCleaning() )
+		{	
+			mCurrentWaitMessage = CreateWaitMessage("Cleaning tracks, please wait");
+			DoTracksCleanup();
+			DestroyWaitMessage();
 
-	if( mGlobalConfig.GetDoCleanTracks() ){
-		WaitMessage *wm = CreateWaitMessage("Cleaning tracks, please wait");
-	
-		CleanTracksConfig clcfg;
-		clcfg.SetSamplingRate(mGlobalConfig.GetSamplingRate());
-		clcfg.SetSpecSize((mGlobalConfig.GetAnalysisWindowSize()-1)/2+1);
-		CleanTracks myCleanTracks;
-		myCleanTracks.Configure(clcfg);
-		myCleanTracks.Start();
-		myCleanTracks.Do(mSegment);
-		myCleanTracks.Stop();
-
-		delete wm;
-	}
-
+		}
 	mHaveAnalysis = true;
 	mHaveSpectrum = true;
 }
@@ -388,7 +517,12 @@ void AnalysisSynthesisExampleBase::StoreOutputSoundResidual(void)
 	myAudioFileOut.Do(mAudioOutRes);
 }
 
-void AnalysisSynthesisExampleBase::Synthesize(void)
+void AnalysisSynthesisExampleBase::DoSynthesis()
+{
+	SynthesisProcessing();
+}
+
+void AnalysisSynthesisExampleBase::SynthesisProcessing()
 {
 	//The output Audio 
 	TSize size=TSize((mSegment.GetEndTime()-mSegment.GetBeginTime())*mSegment.GetSamplingRate());
@@ -406,12 +540,9 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 	Audio tmpAudioFrame,tmpAudioFrame2;
 	tmpAudioFrame.SetSize(mSynthConfig.GetFrameSize());
 		
-	//This does not necessarily have to be true, look at OverlapAddTest above!
 	int nSynthFrames=size/mSynthConfig.GetFrameSize();
-	int windowsInFrame=(mSynthConfig.GetFrameSize()+1)/mSynthConfig.GetHopSize();
-	int k=0,i;
+	int i;
 
-	Progress* pct = CreateProgress("Synthesis Processing",0,float(nSynthFrames));
 
 	TSize synthFrameSize=mSynthConfig.GetFrameSize();
 	TIndex beginIndex=-synthFrameSize/2;
@@ -431,19 +562,37 @@ void AnalysisSynthesisExampleBase::Synthesize(void)
 		mAudioOutRes.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetResidualAudioFrame());
 		mAudioOut.SetAudioChunk(beginIndex,mSegment.GetFramesArray()[i].GetSynthAudioFrame());
 		beginIndex+=synthFrameSize;
-		//CLAMGUI::showPDSnapshot(&mAudioOutSin,"OutputAudio");
-		pct->Update(float(i));
+		mCurrentProgressIndicator->Update(float(i));
 	}
 
-	delete pct;	
 
 	mHaveAudioOut = true;
 
 	mySynthesis.Stop();
+
+}
+
+void AnalysisSynthesisExampleBase::Synthesize(void)
+{
+	TSize size=TSize((mSegment.GetEndTime()-mSegment.GetBeginTime())*mSegment.GetSamplingRate());
+	int nSynthFrames=size/mSynthConfig.GetFrameSize();
+
+	mCurrentProgressIndicator = CreateProgress("Synthesis Processing",0,float(nSynthFrames));
+
+	DoSynthesis();
+
+	DestroyProgressIndicator();	
+
 }
 
 void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 {
+	
+/* This function is just an example of the kind of things you are able to do departing from this
+Analysis Synthesis applcation. The algorithm and the result are by no mean supposed to be state-of-the-art
+in metadata extraction from an input sound.*/	
+	
+	
 	ComputeLowLevelDescriptors();
 	
 	TData frequencies[85]={32.703, 34.648, 36.708, 38.891, 41.203, 43.654, 46.249, 48.999, 51.913, 55.000, 58.270, 61.735,
@@ -514,7 +663,7 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 	//Segmentation//
 	////////////////
 			
-	//Configuration
+	//This new segmentator is still to be tested
 /*	OnsetDetectionConfig onsetconfig;
 	onsetconfig.SetFrameSize(analysisFrameSize);
 	onsetconfig.SetSmoothFiltSize(smoothFiltSize);
@@ -543,7 +692,6 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 		else
 			energy.AddElem(0);
 	}
-	int fr = 0;		
 	TData ff,aux,number =0,noteEnergy=0,lastFF=0,lastEnergy=0;
 	for(i=0;i<mSegment.GetChildren().Size();i++)
 	{
@@ -560,7 +708,7 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 		// Compute Fundamental frequency mean
 		TIndex b=roundInt(2*mSegment.GetChildren()[i].GetBeginTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());
 		TIndex e;
-		if(mSegment.GetChildren()[i].GetEndTime()<mSegment.GetEndTime())//don't know why but sometimes there is an error in last child
+		if(mSegment.GetChildren()[i].GetEndTime()<mSegment.GetEndTime())
 			e=roundInt(2*mSegment.GetChildren()[i].GetEndTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());	
 		else
 			e=roundInt(2*mSegment.GetEndTime()*mGlobalConfig.GetSamplingRate()/mGlobalConfig.GetAnalysisWindowSize());	
@@ -611,7 +759,6 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 				number++;
 			}
 		}
-//		CLAMGUI::showPDSnapshot(&testEnergyAudio);
 		if (number)
 			ff/=number;
 		else ff=0;
@@ -624,8 +771,7 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 		lastFF=ff;
 		lastEnergy=noteEnergy;
 		myNote.SetFundFreq(ff);
-		//testing!!!!!!
-		myNote.SetEnergy(maxEnergy/30);
+		myNote.SetEnergy(noteEnergy);
 		myNote.SetTime(time);
 		TData min = 10000;
 		TIndex m=0,n=0;
@@ -636,14 +782,9 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 			}
 		myNote.SetPitchNote(pitch[n]);		
 		if(noteEnergy>0.01&&((myNote.GetTime().GetEnd()-myNote.GetTime().GetBegin())>0.01))
-		//if(noteEnergy>0.005&&maxEnergy>0)
 		{
 			if((myNote.GetTime().GetEnd()-myNote.GetTime().GetBegin())<0.2)
 				myNote.GetTime().SetEnd(myNote.GetTime().GetBegin()+TData(0.2));
-/*			if(array.CurrentIndex()!=0&&myNote.GetTime().GetBegin()<array.Last().GetTime().GetEnd()){
-				array.Last().GetTime().SetEnd(myNote.GetTime().GetBegin()-0.05);
-				array.Last().GetTime().SetBegin(array.Last().GetTime().GetBegin()-0.05);}
-*/
 			array.AddElem(myNote);
 		}
 	}
@@ -655,8 +796,8 @@ void AnalysisSynthesisExampleBase::AnalyzeMelody(void)
 void AnalysisSynthesisExampleBase::StoreMelody(void)
 {
 	std::string melodyFilename(
-	mGlobalConfig.GetOutputXMLFile().
-			substr(0,mGlobalConfig.GetOutputXMLFile().length()-4));
+	mGlobalConfig.GetOutputAnalysisFile().
+			substr(0,mGlobalConfig.GetOutputAnalysisFile().length()-4));
 	melodyFilename += "_melody.xml";
 
 	XMLStorage x;
@@ -665,7 +806,7 @@ void AnalysisSynthesisExampleBase::StoreMelody(void)
 
 void AnalysisSynthesisExampleBase::LoadTransformationScore(const std::string& inputFileName)
 {
-	WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
+	CLAMGUI::WaitMessage *wm = CreateWaitMessage("Loading configuration xml file, please wait.");
 	//Loading configuration
 	XMLStorage x;
 	x.Restore(mTransformationScore,inputFileName);
@@ -680,7 +821,6 @@ void AnalysisSynthesisExampleBase::Transform(void)
 		SetTransformation(new SMSFreqShift);
 		def=true;
 	}
-	//mpTransformation->mAmountCtrl.DoControl(mTransformationScore.GetFAmount());
 	mpTransformation->Configure(mTransformationScore);
 	mpTransformation->Do(mSegment,mSegment);
 	if (def) {
@@ -720,4 +860,74 @@ void AnalysisSynthesisExampleBase::ComputeLowLevelDescriptors()
 		frameDesc.AddElem(tmpFrameD);
 	}
 
+}
+
+void AnalysisSynthesisExampleBase::PlayOutputSound()
+{
+	if(mHaveAudioOut)
+	{
+		Play(mAudioOut);
+	}
+}
+
+void AnalysisSynthesisExampleBase::PlayInputSound()
+{
+	if(mHaveAudioIn)
+	{
+		Play(mAudioIn);
+	}
+}
+
+void AnalysisSynthesisExampleBase::PlaySinusoidal()
+{
+	if(mHaveAudioIn)
+	{
+		Play(mAudioOutSin);
+	}
+}
+
+void AnalysisSynthesisExampleBase::PlayResidual()
+{
+	if(mHaveAudioIn)
+	{
+		Play(mAudioOutRes);
+	}
+}
+
+void AnalysisSynthesisExampleBase::Play(const Audio& audio)
+{
+	
+	TSize outBufferSize=256;
+	
+#ifdef WIN32
+	//When using RT implementation in windows, twice the sampling rate must be passed
+	//if a stereo sound is to be reproduced
+	AudioManager audioManager(2*mGlobalConfig.GetSamplingRate(),outBufferSize*2);
+#else
+	AudioManager audioManager(mGlobalConfig.GetSamplingRate(),outBufferSize*2);
+#endif
+	AudioIOConfig outCfgL;
+	AudioIOConfig outCfgR;
+
+	outCfgL.SetName("left out");
+	outCfgL.SetChannelID(0);
+	outCfgR.SetName("right out");
+	outCfgR.SetChannelID(1);
+
+	AudioOut outputL(outCfgL);
+	AudioOut outputR(outCfgR);
+	
+	Audio  tmpAudioBuffer;
+	tmpAudioBuffer.SetSize(outBufferSize);
+	TSize size=audio.GetSize();
+	AudioManager::Singleton().Start();
+	outputL.Start();
+	outputR.Start();
+	int i;
+	for(i=0;i<size;i+=outBufferSize)
+	{
+		audio.GetAudioChunk(i,i+outBufferSize,tmpAudioBuffer,false);
+		outputR.Do(tmpAudioBuffer);
+		outputL.Do(tmpAudioBuffer);
+	}
 }

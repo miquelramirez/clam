@@ -1,3 +1,19 @@
+  * General:
+      ** CLAM_WARNING macros with customizable behaviour
+  * Dynamic Types:
+      ** Attribute visitors
+  * Standard:
+      ** Enum method to get the symbol mapping
+  * XML:
+      ** Now a given order between sibling xml elements is always required to
+         boost the performance a little
+      ** Multiple XML implementations can be selected (currently XercesC++ and
+         Gnome-libxml)
+      ** DOMPrint is not used anymore
+      ** XMLStorage internal refactoring to improve mantainability, clearness
+         and future improvements
+
+
 2002-04-26  CLAM_0_3_0-rel
 
   * General:

@@ -80,7 +80,7 @@ public:
 	void SetResZeroPadding(int z);
 	int GetResZeroPadding() const;
 /** Global hop size used both for sinusoidal and residual components */
-	void SetHopSize(int h);
+	void SetHopSize(TSize h);
 	TSize GetHopSize() const;
 
 /** Sampling rate of the input audio*/

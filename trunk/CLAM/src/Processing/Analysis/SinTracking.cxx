@@ -17,7 +17,7 @@ using namespace CLAM;
 	{
 		SetThreshold(20);//in percents
 		SetnMaxSines(50);
-		SetIsHarmonic(false);
+		SetIsHarmonic(0);
 	}
 	
 	SinTracking::SinTracking()
@@ -405,7 +405,7 @@ already been assigned)*/
 		
 		int i;
 
-		for(i=0;i<mnMaxSines;i++)
+		/*for(i=0;i<mnMaxSines;i++)
 		{
 			pos=GetCandidate(out.GetSpectralPeak(i),in,d);
 			if(d<funFreq/2 && pos>-1)
@@ -415,8 +415,37 @@ already been assigned)*/
 				oPhaseBuffer[i]=iPhaseBuffer[pos];
 
 			}
-		}
+		}*/
 
+		//GILLES
+		TSize nPeaks=mnMaxSines;
+		i=0;
+		do
+		{
+			pos=GetCandidate(out.GetSpectralPeak(i),in,d);
+			if(d<funFreq/2 && pos>-1)
+			{
+				if(i==0 || iMagBuffer[pos]!=oMagBuffer[i-1])
+				{
+					oMagBuffer[i]=iMagBuffer[pos];
+					oFreqBuffer[i]=iFreqBuffer[pos];
+					oPhaseBuffer[i]=iPhaseBuffer[pos];
+					i++;
+				}
+				else
+				{
+					out.DeleteSpectralPeak(i);
+					nPeaks=nPeaks-1;
+					out.SetnPeaks(nPeaks);
+				}
+			}
+			else
+			{
+				out.DeleteSpectralPeak(i);
+				nPeaks=nPeaks-1;
+				out.SetnPeaks(nPeaks);
+			}
+		}while(i<out.GetnPeaks());
 	}
 	
 	void SinTracking::InitHarmonicTracks(SpectralPeakArray& peaks, TData funFreq)

@@ -18,7 +18,6 @@ public:
 		CLT_Amplifier()          {}
 		virtual ~CLT_Amplifier() {}
 
-//		bool Do(void){return true;}
 		inline bool Do(Audio &in, Audio &out);
 
 		static LADSPA_Handle Instantiate

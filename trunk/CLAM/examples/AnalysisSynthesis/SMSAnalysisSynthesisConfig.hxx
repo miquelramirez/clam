@@ -38,8 +38,8 @@ class SMSAnalysisSynthesisConfig:public ProcessingConfig
 /** General	**/
 	DYN_ATTRIBUTE(1,public,std::string,InputSoundFile);
 	DYN_ATTRIBUTE(2,public,std::string,OutputSoundFile);
-	DYN_ATTRIBUTE(3,public,std::string,OutputXMLFile);
-	DYN_ATTRIBUTE(4,public,std::string,InputXMLFile);
+	DYN_ATTRIBUTE(3,public,std::string,OutputAnalysisFile);
+	DYN_ATTRIBUTE(4,public,std::string,InputAnalysisFile);
 	DYN_ATTRIBUTE(5,public,TData,SamplingRate);
 /** Analysis **/
 	DYN_ATTRIBUTE(6,public,TSize,AnalysisWindowSize);

@@ -92,9 +92,9 @@ void POBrowser::ShowPresentPO()
 
 	// TODO: Create POIcons as needed
 
-	const	std::list< Processing* >& po_list = mRepository->GetThese( mPOType.c_str() );
+	const	std::list< CLAM::Processing* >& po_list = mRepository->GetThese( mPOType.c_str() );
 
-	std::list< Processing* >::const_iterator i = po_list.begin();
+	std::list< CLAM::Processing* >::const_iterator i = po_list.begin();
 
 	POIcon* placeholder;
 
@@ -105,7 +105,7 @@ void POBrowser::ShowPresentPO()
 		placeholder = new POIcon;
 		placeholder->SetObjectName( (*i)->GetName().c_str() );
 		placeholder->SetAvatar( (*i) );
-		placeholder->SetActionCallback( CBL::makeFunctor( (CBL::Functor1< Processing* >*)0, &DebuggerGUI::MakeViewFor ));
+		placeholder->SetActionCallback( CBL::makeFunctor( (CBL::Functor1< CLAM::Processing* >*)0, &DebuggerGUI::MakeViewFor ));
 		placeholder->SetSelectionCallback( CBL::makeFunctor( (CBL::Functor1<std::string& >*)0, *mScroll, &ObjectScroller::HandleLighting ) );
 		mScroll->AddObject( placeholder );
 		i++;

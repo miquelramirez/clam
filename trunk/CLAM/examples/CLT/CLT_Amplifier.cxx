@@ -44,10 +44,7 @@ bool CLT_Amplifier::Do(Audio &in, Audio &out)
 	TData* outp    = &(out.GetBuffer()[0]);
 	TData* inp     = &(in.GetBuffer()[0]);
 	TData value    = *mControl;
-	cout << "control: " << value << endl;
-	cout << "final: " << size << "  " << out.GetSize() << endl;
 	TData* endoutp = &(out.GetBuffer()[size-1]);
-	cout << "comensa el bucle" << endl;
 	
 	while( outp!=endoutp )
 	{
@@ -65,7 +62,7 @@ void initialise_CLT_amplifier()
 		(1100,
 		 "amp_mono_class",
 		 "CLAM Mono Amplifier",
-		 "Xavi Rubio (LADSPA test)",
+		 "Xavi Rubio, MTG (LADSPA test)",
 		 "None",
 		 3);
 	
@@ -82,7 +79,6 @@ void initialise_CLT_amplifier()
 	g_psDescriptor->ConnectPort(ampInput);
 	g_psDescriptor->ConnectPort(ampOutput);
 	
-//macro
 	CONNECT( g_psDescriptor , CLT_Amplifier );
 	
 	registerNewPluginDescriptor(g_psDescriptor);

@@ -1,13 +1,15 @@
-SUBDIRS=DescriptorsGUI Salto SpectralDelay PFC_SpectralDelay
+SUBDIRS=Salto SpectralDelay 
 PROGRAMS=\
 	Spectrum_example\
 	FFT_example\
 	FDFilterExample\
 	ProcessingObject_controls_example\
+	StereoToMonoFile\
 	POCompositeExample\
 	AudioIOExample\
 	MIDI_Synthesizer_example\
 	AudioApplicationExample\
+	GUIAudioApplicationExample\
 	FundamentalDetect\
 	XMLViewExample\
 	SIViewExample\

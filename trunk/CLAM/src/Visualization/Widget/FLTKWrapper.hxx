@@ -50,6 +50,8 @@ public:
 		CancelAllAsynchronousRefresh();
 	}
 
+	void DisableAsynchronousRefresh();
+
 	bool IsClosing() const;
 	
 	void Tick() const;
@@ -80,8 +82,6 @@ private:
 	FLTKWrapper()
 		: mNextSlot( 0 )
 	{
-		SetFPS( 30 );
-		ActivateAsynchronousRefresh();
 	}
 
 };

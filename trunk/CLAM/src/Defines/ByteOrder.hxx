@@ -20,12 +20,31 @@
  */
 
 #ifndef __ByteOrder__
-#define _ByteOrder__
+#define __ByteOrder__
 
 #ifdef macintosh
-#define CLAM_BIG_ENDIAN
+# define CLAM_BIG_ENDIAN
 #else
-#define CLAM_LITTLE_ENDIAN
+# ifdef linux
+#  include <sys/param.h>
+#  ifdef __BYTE_ORDER
+#   if __BYTE_ORDER == __LITTLE_ENDIAN
+#    define CLAM_LITTLE_ENDIAN
+#   else
+#    if __BYTE_ORDER == __BIG_ENDIAN
+#     define CLAM_BIG_ENDIAN
+#    else
+Error: unknown byte order!
+#    endif
+#   endif
+#  else
+Error: unknown byte order!
+#  endif /* __BYTE_ORDER */
+# else
+#  define CLAM_LITTLE_ENDIAN
+# endif
 #endif
 
+
 #endif
+

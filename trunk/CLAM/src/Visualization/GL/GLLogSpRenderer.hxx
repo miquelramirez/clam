@@ -32,7 +32,7 @@ namespace CLAMGUI
 	public:
 
 		GLLogSpRenderer( unsigned char r = 0, unsigned char g = 255, unsigned char b = 0 )
-		: GLLinearSpRenderer( r, g, b ), mDBScaling( 30 )
+		: GLLinearSpRenderer( r, g, b ), mDBScaling( 20 )
 		{
 		}
 

@@ -47,13 +47,12 @@ using namespace CLAM;
 	{
 		mConfig = dynamic_cast<const AudioFileConfig&>(c);
 		
-		if (mConfig.HasFilename()) {
-			if (mConfig.GetFilename()=="") {
-				mStatus += "Empty filename specified in config\n";
-				return false;
-			}
-		}else{
+		if (!mConfig.HasFilename()) {
 			mStatus += "No filename specified in config\n";
+			return false;
+		}
+		if (mConfig.GetFilename()=="") {
+			mStatus += "Empty filename specified in config\n";
 			return false;
 		}
 		

@@ -22,7 +22,7 @@
 #ifndef __SUPPORTEDTOOLKITS__
 #define __SUPPORTEDTOOLKITS__
 
-#include "QtWrapper.hxx"
+//#include "QtWrapper.hxx"
 #include "FLTKWrapper.hxx"
 
 #endif // SupportedToolkits.hxx

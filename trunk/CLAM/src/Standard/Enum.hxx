@@ -142,6 +142,13 @@ public:
 // Operations
 public:
 	/**
+	 * Returns the symbol map for the enum
+	 */
+	const tEnumValue * GetSymbolMap() {
+		return mEnumValues;
+	}
+
+	/**
 	 * Changes the value.
 	 * @param v The new numeric value
 	 */

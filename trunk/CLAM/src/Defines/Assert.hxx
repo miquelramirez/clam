@@ -50,6 +50,9 @@ namespace CLAM
 #elif defined (__GNUC__) && defined  (__i386__)
 #define CLAM_BREAKPOINT {__asm__ (" int $3 "); }
 
+#elif defined (__GNUC__) && defined  (__powerpc__)
+#define CLAM_BREAKPOINT {__asm__ (" .long 0x7d821008 "); }
+
 // Insert your compiler here
 #else
 #warning Breakpoint code unknown for the platform. You can add it defining the CLAM_BREAKPOINT macro at file Assert.hxx.

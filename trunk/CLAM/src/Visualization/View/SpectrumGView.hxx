@@ -96,20 +96,20 @@ namespace CLAMGUI
 	public:
 		
 		ProcDataView()
-			: View(), mObservedObj( NULL ), RenderMagnitude( NULL ), RenderPhase( NULL ),
-			  RenderSpectralRange( NULL ), RenderSpectralResolution( NULL ), RenderScale( NULL )
-			{
-				Release();
-			}
+		: View(), mObservedObj( NULL ), RenderMagnitude( NULL ), RenderPhase( NULL ),
+		  RenderSpectralRange( NULL ), RenderSpectralResolution( NULL ), RenderScale( NULL )
+		{
+			Release();
+		}
 		
 		virtual ~ProcDataView()
-			{
-			}
+		{
+		}
 		
 		virtual const char* GetClassName()
-			{
-				return "SpectrumView";
-			}
+		{
+			return "SpectrumView";
+		}
 		
 		virtual void Refresh();
 		
@@ -118,12 +118,12 @@ namespace CLAMGUI
 		virtual void Configure( Aspect& v );
 		
 		virtual void BindTo( Spectrum* obj )
-			{
-				CLAM_ASSERT( obj!=NULL, "Object was null!!!");
-				
-				mObservedObj = obj;
-				LockModel();
-			}
+		{
+			CLAM_ASSERT( obj!=NULL, "Object was null!!!");
+			
+			mObservedObj = obj;
+			LockModel();
+		}
 		
 	private:
 		
