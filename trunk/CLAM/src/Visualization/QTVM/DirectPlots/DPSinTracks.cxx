@@ -47,7 +47,7 @@ namespace CLAM
 		void PlotSinTracks(	const Array< SpectralPeakArray >& peakMtx, 
 							const TData& sr, 
 							const TData& dur,
-							const std::string& label="",
+							const std::string& label,
 							int x, int y, int w, int h )
 		{
 			QtAppWrapper::Init();
