@@ -27,13 +27,12 @@ namespace CLAM
 				virtual void Draw() = 0;
 
 			signals:
-				void requestRefresh();
 				void sendView(SView);
 
 			protected:
 				SView _view;
 
-				void SetnSamples(const TSize& n);
+				void SetnSamples(const TSize& nSamples);
 				TSize GetnSamples() const;
 
 				void SetvRange(const TData& vmin, const TData& vmax);

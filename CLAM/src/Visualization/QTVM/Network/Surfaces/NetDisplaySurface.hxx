@@ -2,8 +2,8 @@
 #define __NETDISPLAYSURFACE__
 
 #include <qgl.h>
-#include "DataTypes.hxx"
 #include "NetPlotController.hxx"
+#include "GLThread.hxx"
 
 namespace CLAM
 {
@@ -11,13 +11,6 @@ namespace CLAM
 	{
 		class NetDisplaySurface : public QGLWidget
 		{
-			typedef struct
-			{
-				double r;
-				double g;
-				double b;
-			} BkColor;
-
 			Q_OBJECT
 
 			public:
@@ -27,19 +20,21 @@ namespace CLAM
 				void SetBackgroundColor(double r, double g, double b);
 				void SetController(NetPlotController* controller);
 
+				void startRendering();
+				void stopRendering();
+
 			private slots:
 				void receivedView(SView);
-				void refresh();
 
 			protected:
-				virtual void initializeGL(); 
-				virtual void resizeGL(int w,int h); 
-				virtual void paintGL(); 
+				void resizeEvent(QResizeEvent* re);
+				void paintEvent(QPaintEvent* pe);
+				void closeEvent(QCloseEvent* ce);
 
 			private:
-				SView _view;
 				NetPlotController* _controller;
-				BkColor _bkColor;
+
+				GLThread _thread;
 				
 				void InitView();
 		};

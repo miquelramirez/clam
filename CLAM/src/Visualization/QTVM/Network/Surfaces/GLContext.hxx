@@ -1,0 +1,35 @@
+#ifndef __GLCONTEXT__
+#define __GLCONTEXT__
+
+#include <qapplication.h>
+#include <qgl.h>
+#if defined(Q_WS_X11)
+#include <GL/glx.h>
+#endif
+#if defined(Q_WS_MAC)
+#include <agl.h>
+#endif
+
+namespace CLAM
+{
+	namespace VM
+	{
+		class GLContext : public QGLContext
+		{
+			public:
+				GLContext(const QGLFormat& fmt, QPaintDevice* dev);
+
+			protected:
+#if defined(Q_WS_WIN)
+				int choosePixelFormat(void* p, HDC hdc);
+#elif defined(Q_WS_X11)
+				void* chooseVisual();
+#elif defined(Q_WS_MAC)
+				void* chooseMacVisual(GDHandle gdev);
+#endif
+		};
+	}
+}
+
+#endif
+

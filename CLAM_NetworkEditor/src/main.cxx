@@ -33,6 +33,10 @@
 #include <time.h>
 #include "MainWindow.hxx"
 
+#ifdef Q_WS_X11
+#include <X11/Xlib.h>
+#endif
+
 void ConfigureNetwork(CLAM::Network & net)
 {	
 	int frameSize = 512;
@@ -42,6 +46,9 @@ void ConfigureNetwork(CLAM::Network & net)
 
 int main( int argc, char **argv )
 {
+#ifdef Q_WS_X11
+	XInitThreads();
+#endif
 
 	CLAM::AudioManager audioManager( 44100, 512 );
 

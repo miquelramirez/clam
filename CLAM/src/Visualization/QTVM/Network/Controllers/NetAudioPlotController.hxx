@@ -24,9 +24,6 @@ namespace CLAM
 				
 			private:
 				DataRenderer _dRenderer;
-				bool _mustProcessData;
-				
-				void ProcessData();
 
 		};
 	}

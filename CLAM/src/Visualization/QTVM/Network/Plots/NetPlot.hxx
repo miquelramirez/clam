@@ -27,6 +27,8 @@ namespace CLAM
 			protected:
 				NetPlotController* _controller;
 
+				void closeEvent(QCloseEvent* ce);
+
 				void SetController(NetPlotController* controller);
 
 				virtual void SetPlotController()=0;
