@@ -113,7 +113,7 @@ namespace CLAM {
 		 * @see Stats::Slope
 		 */
 		DYN_ATTRIBUTE (17,public, TData, Slope); 
-		DYN_ATTRIBUTE (18,public, TData, HighFrequencyCoefficient);
+		DYN_ATTRIBUTE (18,public, TData, HighFrequencyContent);
 		DYN_ATTRIBUTE (19,public, Array<SpectralDescriptors>, BandDescriptors);
 
 		DYN_ATTRIBUTE (20,public, Array<TData>,PCP);
@@ -131,7 +131,7 @@ namespace CLAM {
 		void CopyInit(const SpectralDescriptors & copied);
 		
 		TData ComputeSpectralFlatness();
-		TData ComputeHighFrequencyCoefficient();
+		TData ComputeHighFrequencyContent();
 		TData ComputeMaxMagFreq();
 		TData ComputeLowFreqEnergyRelation();
 		TData ComputeRolloff();
@@ -239,10 +239,10 @@ inline SpectralDescriptors CLAM_max (const SpectralDescriptors& a,const Spectral
 		if(b.GetSlope()>a.GetSlope())
 			tmpD.SetSlope(b.GetSlope());
 	}
-	if(a.HasHighFrequencyCoefficient() && b.HasHighFrequencyCoefficient() )
+	if(a.HasHighFrequencyContent() && b.HasHighFrequencyContent() )
 	{
-		if(b.GetHighFrequencyCoefficient()>a.GetHighFrequencyCoefficient())
-			tmpD.SetHighFrequencyCoefficient(b.GetHighFrequencyCoefficient());
+		if(b.GetHighFrequencyContent()>a.GetHighFrequencyContent())
+			tmpD.SetHighFrequencyContent(b.GetHighFrequencyContent());
 	}
 	if(a.HasBandDescriptors() && b.HasBandDescriptors() )
 	{
@@ -350,10 +350,10 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 		if(b.GetSlope()<a.GetSlope())
 			tmpD.SetSlope(b.GetSlope());
 	}
-	if(a.HasHighFrequencyCoefficient() && b.HasHighFrequencyCoefficient() )
+	if(a.HasHighFrequencyContent() && b.HasHighFrequencyContent() )
 	{
-		if(b.GetHighFrequencyCoefficient()<a.GetHighFrequencyCoefficient())
-			tmpD.SetHighFrequencyCoefficient(b.GetHighFrequencyCoefficient());
+		if(b.GetHighFrequencyContent()<a.GetHighFrequencyContent())
+			tmpD.SetHighFrequencyContent(b.GetHighFrequencyContent());
 	}
 	if(a.HasBandDescriptors() && b.HasBandDescriptors() )
 	{
