@@ -131,15 +131,26 @@ namespace CLAM
 						       outputSamples.GetBuffer().GetPtr(),
 						       outputSamples.GetSize() );
 		
-		if ( mNativeStream->WasSomethingRead() )
+		
+		if ( mEOFReached )
 		{
-			outputSamples.SetBeginTime( mCurrentBeginTime );
-			mDeltaTime = outputSamples.GetSize() / mConfig.GetSourceFile().GetHeader().GetSampleRate();
-			mCurrentBeginTime += mDeltaTime;
-			outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
-		}
+			if (mConfig.GetLoop() )
+			{
+				ConcreteStop();
+				mNativeStream = mConfig.GetSourceFile().GetStream();
+				mNativeStream->DeactivateStrictStreaming();
+				ConcreteStart();
 
-		return mNativeStream->WasSomethingRead();
+			}
+			else
+				return false;
+		}
+		outputSamples.SetBeginTime( mCurrentBeginTime );
+		mDeltaTime = outputSamples.GetSize() / mConfig.GetSourceFile().GetHeader().GetSampleRate();
+		mCurrentBeginTime += mDeltaTime;
+		outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+		
+		return true;
 	}
 	
 }

@@ -37,8 +37,7 @@ namespace CLAM
 	class MonoAudioFileReaderConfig 
 		: public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE
-		( MonoAudioFileReaderConfig, 2, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( MonoAudioFileReaderConfig, 3, ProcessingConfig );
 
 		/**
 		 *  The file that will be the source of audio samples
@@ -54,6 +53,7 @@ namespace CLAM
 		 *  By default this value is set to zero.
 		 */
 		DYN_ATTRIBUTE( 1, public, TIndex, SelectedChannel );
+		DYN_ATTRIBUTE( 2, public, bool, Loop );
 		
 	protected:
 		void DefaultInit();
