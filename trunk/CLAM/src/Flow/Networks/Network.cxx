@@ -68,7 +68,7 @@ namespace CLAM
 		{
 			std::string name(it->first);
 			Processing * proc = it->second;
-			PublishedOutPorts::Iterator itOutPort;
+			OutPortRegistry::Iterator itOutPort;
 			for (itOutPort=proc->GetOutPorts().Begin(); 
 			     itOutPort!=proc->GetOutPorts().End(); 
 			     itOutPort++)
@@ -97,7 +97,7 @@ namespace CLAM
 		{
 			std::string name(it->first);
 			Processing * proc = it->second;
-			PublishedOutControls::Iterator itOutControl;
+			OutControlRegistry::Iterator itOutControl;
 			for (itOutControl=proc->GetOutControls().Begin(); 
 			     itOutControl!=proc->GetOutControls().End(); 
 			     itOutControl++)
@@ -221,14 +221,14 @@ namespace CLAM
 		Processing * proc = i->second;
 		mProcessings.erase( name );
 
-		PublishedInPorts::Iterator itInPort;
+		InPortRegistry::Iterator itInPort;
 		for(itInPort=proc->GetInPorts().Begin(); itInPort!=proc->GetInPorts().End(); itInPort++)
 		{
 			if((*itInPort)->GetAttachedOutPort())
 				(*itInPort)->Disconnect();
 		}
 
-		PublishedOutPorts::Iterator itOutPort;
+		OutPortRegistry::Iterator itOutPort;
 		for(itOutPort=proc->GetOutPorts().Begin(); itOutPort!=proc->GetOutPorts().End(); itOutPort++)
 		{
 			if((*itOutPort)->HasConnections())
@@ -328,7 +328,7 @@ namespace CLAM
 		for( it=mProcessings.begin(); it!=mProcessings.end(); it++)
 		{
 			Processing* proc = it->second;
-			PublishedInPorts::Iterator iteratorInPorts;
+			InPortRegistry::Iterator iteratorInPorts;
 
 			//unattach all the inports of each processing
 			for(iteratorInPorts=proc->GetInPorts().Begin();
