@@ -74,6 +74,7 @@ namespace CLAMTest
 // Helper traits for assertions
 namespace CppUnit
 {
+
 	// Colorizing string diferences
 	namespace TestAssert
 	{
@@ -85,6 +86,9 @@ namespace CppUnit
 					if (one[index] != other[index]) return index;
 			return minLen;
 		}
+
+#if !defined( _MSC_VER ) || _MSC_VER > 1310
+// MRJ: This causes all CPPUNIT_ASSERT_EQUALS not to compile under VC6
 #ifdef CPPUNIT_ENABLE_SOURCELINE_DEPRECATED
 		template <>
 		inline void assertEquals( const std::string& expected,
@@ -121,6 +125,7 @@ namespace CppUnit
 		}
 #endif
 
+#endif // end of VC6 guard 'ifdef'
 	}
 
 	// type_info traits

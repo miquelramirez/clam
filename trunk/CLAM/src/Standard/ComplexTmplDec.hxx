@@ -24,6 +24,7 @@
 #define _ComplexTmplDec_
 
 #include <iosfwd>
+#include "CLAM_Math.hxx"
 
 namespace CLAM
 {

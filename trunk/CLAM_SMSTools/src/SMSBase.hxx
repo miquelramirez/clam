@@ -114,7 +114,7 @@ namespace CLAM
 			mGlobalConfig.SetInputAnalysisFile( filename );
 		}
 
-		const std::string& GetAnalysisInputFile() const
+		std::string GetAnalysisInputFile() const
 		{
 			if ( !mGlobalConfig.HasInputAnalysisFile() )
 			{
@@ -134,7 +134,7 @@ namespace CLAM
 			mGlobalConfig.SetOutputAnalysisFile( filename );
 		}
 
-		const std::string& GetAnalysisOutputFile() const
+		std::string GetAnalysisOutputFile() const
 		{
 			if ( !mGlobalConfig.HasOutputAnalysisFile() )
 				return std::string( "" );

@@ -41,7 +41,7 @@ namespace CLAM
 		store.Load(&classNameAdapter);
 
 		mAdaptee = ProcessingFactory::GetInstance().Create(className);
-		ProcessingConfig & cfg((ProcessingConfig&)mAdaptee->GetConfig());
+		ProcessingConfig&  cfg = (ProcessingConfig&)mAdaptee->GetConfig();
 		XMLComponentAdapter configAdapter( cfg );
 		store.Load(&configAdapter);
 		mAdaptee->Configure(cfg);
