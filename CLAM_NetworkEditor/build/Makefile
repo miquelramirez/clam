@@ -1,7 +1,7 @@
 
 # Top points to the root directory of your project
 TOP = ../
-CLAM_PATH = ../../CLAM_Devel
+CLAM_PATH = ../../CLAM
 
 include $(CLAM_PATH)/build/Makefile.rules
 
