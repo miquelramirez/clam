@@ -69,7 +69,7 @@ namespace CLAM
 			_panel->addStretch(1);
 
 			_labelsGroup = new TimeSegmentLabelsGroup(this);
-			_labelsGroup->setFixedSize(186,25);
+			_labelsGroup->setMinimumSize(186,25);
 			_panel->addWidget(_labelsGroup);
 
 			righthole = new QFrame(this);
