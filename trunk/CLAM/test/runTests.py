@@ -4,12 +4,12 @@
 #TODO: 
 # - filter out ling srcdeps output in compilation errors
 # - fix number of tests faild in summary
-# - return true if all tests passed
 # - tests able to be marked as not-mandatory, so if failed just gives warning
 #----------------------------------------------------------------------
 # begin configuration
 
 enableSendMail = True
+enablePlaceCvsTags = True
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
@@ -196,7 +196,7 @@ sender = '"automatic tests script" <parumi@iua.upf.es>'
 # end configuration
 #--------------------------------------------------------------------
 
-from testResult import TestResult, TestResultSet
+from testResult import *
 
 # global vars. ugly, yes.
 foundCompilationErrors = False 
@@ -294,7 +294,11 @@ def parseExecutionErrors( executionOut ) :
 
 
 def isTest(path) :
-	return path.find('UnitTests/')>=0 or path.find('FunctionalTests/')>=0 
+	return isUnitTest(path) or isFunctionalTest(path)
+def isUnitTest(path):
+	return path.find('UnitTests/')>=0  
+def isFunctionalTest(path):
+	return path.find('FunctionalTests/')>=0  
 
 #----------------------------------------------------------------
 def getStatusOutput(cmd) :	
@@ -365,13 +369,14 @@ def compileAndRun(name, path) :
 		assert os.access(execcmd, os.X_OK), 'file should exist: ' + execcmd
 		
 		if isTest(path) :
-			# print 'isTest yes\nrunning tests'
 			ok, output = getStatusOutput( execcmd )
+			ok = (output.find("\n\nOK (") > 0)
 			foundTestsFailues = foundTestsFailures or not ok
 			runMessages, d = parseTestsFailures( output )
-#			testResult.nFailures(1)
+			if isUnitTest(path) :
+				testResult.unitTestsFailures(configuration, ok)
+			
 		else :
-			# print 'isTest no\nexecuting application for a while'
 			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
 			#TODO have into account that when segfault returns(?) 139
 			runMessages, d = parseExecutionErrors( output )
@@ -388,16 +393,17 @@ def compileAndRun(name, path) :
 mailTemplate = '''
 (This message has been automatically generated)
 
-Status of CLAM on tag: %s  And externals examples in main trunk)
-
--------  
-SUMMARY
--------
 %s
 
----------------------------------------
-DETAILS (only if finds errors/failures)
----------------------------------------
+Status of CLAM and externals examples, in main trunk
+
+	SUMMARY
+	-------
+
+%s
+
+	DETAILS (only if finds errors/failures)
+	---------------------------------------
 %s
 
 -----------------------------------------------------------
@@ -505,9 +511,10 @@ def runTests() :
 		sendError( 'ups, trying to remove devel sandbox !!' )
 		sys.exit(-1)
 
-	placeTestsOkCandidateTags("CLAM")
-	placeTestsOkCandidateTags("CLAM_NetworkEditor")
-	placeTestsOkCandidateTags("CLAM_SMSTools")
+	if enablePlaceCvsTags :
+		placeTestsOkCandidateTags("CLAM")
+		placeTestsOkCandidateTags("CLAM_NetworkEditor")
+		placeTestsOkCandidateTags("CLAM_SMSTools")
 
 	updateSandboxes()
 	totalSummary.append(checkPaths())
@@ -524,23 +531,23 @@ def runTests() :
 		totalSummary.append(aSummary)
 		totalDetails.append(aDetail)
 		resultSet.add( aTestResult )
-		print "test name: %s \t passed: %i " % (aTestResult.name, aTestResult.passed() )
+		print "test name: %s \t compiles: %i " % (aTestResult.name, aTestResult.compiles() )
 		print aSummary     # for console monitoring purposes
-	print "\nGlobal test result: %i ( %i tests) " % (resultSet.passed(), resultSet.nTests() )
+	print "\nGlobal test result (stability level) %i ( %i tests) " % (resultSet.stabilityLevel(), resultSet.nTests() )
 
+	guiltyReport = "Chasing-guilty-commits is DISABLED"
+	if enablePlaceCvsTags :
+		if resultSet.stabilityLevel() >= Compiles :
+			placeTestsOkTags("CLAM")
+			placeTestsOkTags("CLAM_NetworkEditor")
+			placeTestsOkTags("CLAM_SMSTools")
+			guiltyReport = ''
+		else :
+			guiltyReport = chaseTheGuiltyCommits("CLAM")
+			guiltyReport += chaseTheGuiltyCommits("CLAM_NetworkEditor")
+			guiltyReport += chaseTheGuiltyCommits("CLAM_SMSTools")
 	
-	if resultSet.passed() :
-	
-		placeTestsOkTags("CLAM")
-		placeTestsOkTags("CLAM_NetworkEditor")
-		placeTestsOkTags("CLAM_SMSTools")
-		guiltyReport = ''
-	else :
-		guiltyReport = chaseTheGuiltyCommits("CLAM")
-		guiltyReport += chaseTheGuiltyCommits("CLAM_NetworkEditor")
-		guiltyReport += chaseTheGuiltyCommits("CLAM_SMSTools")
-	
-	mailBody = guiltyReport + mailTemplate  % ( MODULE_TAG, "".join(totalSummary), "".join(totalDetails) )
+	mailBody = mailTemplate  % ( guiltyReport, "".join(totalSummary), "".join(totalDetails) )
 
 	#TODO depracate. use resultSet instead
 	if foundCompilationErrors : 
