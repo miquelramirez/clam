@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------
 # begin configuration
 
-enableSendMail = False
+enableSendMail = True
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
