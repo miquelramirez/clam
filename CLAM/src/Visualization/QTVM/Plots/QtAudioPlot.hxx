@@ -60,10 +60,6 @@ namespace CLAM
 
 				void UpdateRegion(MediaTime);
 
-                        public slots:
-			        void KeyPressEvent(QKeyEvent* );
-		                void KeyReleaseEvent(QKeyEvent* );
-
 			signals:
 				void regionTime(MediaTime);
 

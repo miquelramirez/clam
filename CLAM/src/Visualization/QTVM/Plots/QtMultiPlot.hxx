@@ -59,10 +59,6 @@ namespace CLAM
 
 		             	void SetDialColor(Color c);
 
-                        public slots:
-                                void KeyPressEvent(QKeyEvent* );
-		                void KeyReleaseEvent(QKeyEvent* );
-
 			private slots:
 				void updateXLabel(TData);
 				void updateYLabel(TData);

@@ -165,15 +165,6 @@ namespace CLAM
 	    }
 	}
 
-	void QtSpectrumPlot::KeyPressEvent(QKeyEvent* e)
-	{
-	    keyPressEvent(e);
-	}
-
-	void QtSpectrumPlot::KeyReleaseEvent(QKeyEvent* e)
-	{
-	    keyReleaseEvent(e);
-	}
     }
 }
 
