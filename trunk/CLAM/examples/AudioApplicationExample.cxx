@@ -103,7 +103,7 @@ void MyIOAudioApplication::AudioMain(void)
 
 		audioManager.Start();
 
-		TopLevelProcessing::GetInstance()->Start();
+		TopLevelProcessing::GetInstance().Start();
 
 		do
 		{
@@ -175,7 +175,7 @@ void MyOutAudioApplication::AudioMain(void)
 
 		audioManager.Start();
 
-		TopLevelProcessing::GetInstance()->Start();
+		TopLevelProcessing::GetInstance().Start();
 
 		do
 		{
