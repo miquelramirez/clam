@@ -36,7 +36,7 @@ namespace CLAM{
 	 *	Pitch shift with timbre preservation using the SMS model. In order to preserve timbre, 
 	 *	the original spectral shape is extracted and then applied back.
 	 */
-	class SMSTransformationChainIO: public SMSTransformationTmpl<Frame>
+	class SMSTransformationChainIO: public SMSTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -53,7 +53,7 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSTransformationChainIO(const SMSTransformationConfig &c):SMSTransformationTmpl<Frame>(c)
+		SMSTransformationChainIO(const SMSTransformationConfig &c):SMSTransformation(c)
 		{
 		}
 

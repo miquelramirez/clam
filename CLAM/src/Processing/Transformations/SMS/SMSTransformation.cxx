@@ -27,14 +27,14 @@ namespace CLAM
 		: mAmountCtrl("Amount",this), mOnCtrl("On",this), 
 		mInput(0), mOutput(0), mUseTemporalBPF( false )
 	{
-		mCurrentInputFrame=0;
+		mCurrentInputFrame = 0;
 	}
 
 	SMSTransformation::SMSTransformation(const SMSTransformationConfig& c)
 		:mAmountCtrl("Amount",this),mOnCtrl("On",this),
 		mInput(0),mOutput(0), mUseTemporalBPF( false )
 	{
-		mCurrentInputFrame=0;
+		mCurrentInputFrame = 0;
 		Configure(c);
 	}
 
@@ -78,7 +78,6 @@ namespace CLAM
 
 	bool SMSTransformation::ConcreteStart()
 	{
-		mCurrentInputFrame=0;
 		return true;
 	}
 

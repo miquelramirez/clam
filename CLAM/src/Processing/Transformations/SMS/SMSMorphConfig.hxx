@@ -66,7 +66,7 @@ namespace CLAM
 		/** Whether to use spectral Shapes or not */
 		DYN_ATTRIBUTE (14, public, bool, UseSpectralShapes );
 		/** Sampling rate of the input audios. WARNING: It must be the same for both audios! */
-		DYN_ATTRIBUTE (15, public, TSize, SamplingRate);
+		DYN_ATTRIBUTE (15, public, TData, SamplingRate);
 
 
 	protected:

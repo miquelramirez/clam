@@ -31,7 +31,7 @@
 namespace CLAM{
 
 
-	class SMSPitchDiscretization: public SMSTransformationTmpl<Frame>
+	class SMSPitchDiscretization: public SMSTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -48,13 +48,13 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSPitchDiscretization(const SMSTransformationConfig &c):SMSTransformationTmpl<Frame>(c)
+		SMSPitchDiscretization(const SMSTransformationConfig &c):SMSTransformation(c)
 		{
 		}
 
 		virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			SMSTransformationTmpl<Frame>::ConcreteConfigure(c);
+			SMSTransformation::ConcreteConfigure(c);
 			//configure member PitchShift by default
 			mPO_PitchShift.Configure(SMSTransformationConfig());
 			return true;

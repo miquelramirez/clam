@@ -29,7 +29,7 @@
 namespace CLAM{
 
 
-	class SMSSineFilter: public SMSTransformationTmpl<SpectralPeakArray>
+	class SMSSineFilter: public SMSTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -46,13 +46,13 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSSineFilter(const SMSTransformationConfig &c):SMSTransformationTmpl<SpectralPeakArray>(c)
+		SMSSineFilter(const SMSTransformationConfig &c):SMSTransformation(c)
 		{
 		}
 
 		virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			SMSTransformationTmpl<SpectralPeakArray>::ConcreteConfigure(c);
+			SMSTransformation::ConcreteConfigure(c);
 			//BPF will be used in a non temporal sense
 			mUseTemporalBPF=false;
 			return true;
@@ -61,6 +61,11 @@ namespace CLAM{
 		/** Destructor of the class*/
  		~SMSSineFilter()
 		{}
+
+		bool Do(const Frame& in, Frame& out)
+		{
+			return Do(in.GetSpectralPeakArray(), out.GetSpectralPeakArray());
+		}
 
 		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
 	

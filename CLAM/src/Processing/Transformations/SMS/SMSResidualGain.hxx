@@ -29,7 +29,7 @@
 namespace CLAM{
 
 
-	class SMSResidualGain: public SMSTransformationTmpl<Spectrum>
+	class SMSResidualGain: public SMSTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -46,7 +46,7 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSResidualGain(const SMSTransformationConfig &c):SMSTransformationTmpl<Spectrum>(c)
+		SMSResidualGain(const SMSTransformationConfig &c):SMSTransformation(c)
 		{
 		}
 
@@ -54,6 +54,11 @@ namespace CLAM{
 		/** Destructor of the class*/
  		~SMSResidualGain()
 		{}
+
+		bool Do(const Frame& in, Frame& out)
+		{
+			return Do(in.GetResidualSpec(), out.GetResidualSpec());
+		}
 
 		bool Do(const Spectrum& in, Spectrum& out);
 	

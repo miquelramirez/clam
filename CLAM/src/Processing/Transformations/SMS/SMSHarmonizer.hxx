@@ -31,7 +31,7 @@
 namespace CLAM{
 
 
-	class SMSHarmonizer: public SMSTransformationTmpl<Frame>
+	class SMSHarmonizer: public SMSTransformation
 	{
 		
 		/** This method returns the name of the object
@@ -48,13 +48,13 @@ namespace CLAM{
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSHarmonizer(const SMSTransformationConfig &c):SMSTransformationTmpl<Frame>(c)
+		SMSHarmonizer(const SMSTransformationConfig &c):SMSTransformation(c)
 		{
 		}
 
 		virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-			SMSTransformationTmpl<Frame>::ConcreteConfigure(c);
+			SMSTransformation::ConcreteConfigure(c);
 			//BPF will be used in a non temporal sense
 			mUseTemporalBPF=false;
 			//configure member PitchShift by default

@@ -27,12 +27,11 @@ using namespace CLAM;
 
 bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 {
-	int i;
 	DataArray& ifreqArray=in.GetFreqBuffer();
 	DataArray& ofreqArray=out.GetFreqBuffer();
 	TSize nPeaks=in.GetnPeaks();
 	TData amount=mAmountCtrl.GetLastValue();
-	for(i=0;i<nPeaks;i++)
+	for(int i=0;i<nPeaks;i++)
 	{
 		ofreqArray[i]=ifreqArray[i]+amount;
 	}

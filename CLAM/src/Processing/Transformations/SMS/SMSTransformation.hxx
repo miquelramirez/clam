@@ -39,8 +39,8 @@ namespace CLAM {
 
 	/** Abstract base class for all SMS Transformations. It implements all basic behaviour for
 	 *	SMS Transformations such as Configuration and Control handling but defers the selection
-	 *	of a particular Do overload to its template subclass SMSTransformationTmpl. 
-	 *	@see SMSTransformationTmpl
+	 *	of a particular Do overload to its template subclass SMSTransformation. 
+	 *	@see SMSTransformation
 	 */
 	class SMSTransformation:public Processing
 	{
@@ -83,10 +83,6 @@ namespace CLAM {
 			return Do(*mInput, *mOutput);
 		}
 
-		/** Pure virtual method that is implemented in the template subclass.
-		 *	@see SMSTransformationTmpl::Do(const Segment& in, Segment& out) */
-		virtual bool Do(const Segment& in, Segment& out)=0;
-		
 		/** Method to update the Amount control from an existing BPF configured in the
 		 *	configuration phase.
 		 */
@@ -100,103 +96,6 @@ namespace CLAM {
 
 	protected:
 		
-		/** Input frame counter */
-		TIndex mCurrentInputFrame;
-
-/**@TODO: The UnwrapProcessingData methods could possibly be moved to a more
- *	generic place, like the Segment class (becoming a friend operation?). */
-		
-		/** Particular method for unwrapping a Frame from a given Segment
-		 *	@return: current Frame in the Segment returned as a constant reference.
-		 *	@param in: input Segment (constant reference)
-		 *	@param Frame*: just used as the selector that indicates that this
-		 *	overload is to be used
-		 */
-		virtual const Frame& UnwrapProcessingData(const Segment& in,Frame*)
-		{
-			return in.GetFrame(mCurrentInputFrame);
-		}
-		/** Particular method for unwrapping a Frame from a given Segment
-		 *	@return: current Frame in the Segment returned as a non-constant reference.
-		 *	@param in: input Segment (non- constant reference)
-		 *	@param Frame*: just used as the selector that indicates that this
-		 *	overload is to be used
-		 */
-		virtual Frame& UnwrapProcessingData(Segment& out,Frame*)
-		{
-			if(mCurrentInputFrame==out.GetnFrames() && mInput->GetnFrames()>out.GetnFrames())
-				out.AddFrame(out.GetFrame((TIndex)out.GetnFrames()-1));
-			return out.GetFrame(mCurrentInputFrame);
-
-		}
-
-		/** Particular method for unwrapping an Audio from a given Segment
-		 *	@return: AudioFrame in current Frame in the Segment returned as a constant reference.
-		 *	@param in: input Segment (constant reference)
-		 *	@param Audio*: just used as the selector that indicates that this
-		 *	overload is to be used
-		 */
-		const Audio& UnwrapProcessingData(const Segment& in,Audio*)
-		{
-			Frame* pFrame = NULL;
-			return UnwrapProcessingData(in,pFrame).GetAudioFrame();
-		}
-		/** Particular method for unwrapping an Audio from a given Segment
-		 *	@return: AudioFrame in current Frame in the Segment returned as a non-constant reference.
-		 *	@param in: input Segment (non-constant reference)
-		 *	@param Audio*: just used as the selector that indicates that this
-		 *	overload is to be used
-		 */
-		Audio& UnwrapProcessingData(Segment& out,Audio*)
-		{
-			Frame* pFrame = NULL;
-			return UnwrapProcessingData(out,pFrame).GetAudioFrame();
-		}
-		/** Particular method for unwrapping a Spectrum from a given Segment
-		 *	@return: Residual Spectrum in current Frame in the Segment returned as a constant reference.
-		 *	@param in: input Segment (constant reference)
-		 *	@param Spectrum*: just used as the selector that indicates that this
-		 *	overload is to be used
-		 */
-		const Spectrum& UnwrapProcessingData(const Segment& in,Spectrum*)
-		{
-			Frame* pFrame = NULL;
-			return UnwrapProcessingData(in,pFrame).GetResidualSpec();
-		}
-		/** Particular method for unwrapping a Spectrum from a given Segment
-		 *	@return: Residual Spectrum in current Frame in the Segment returned as a non-constant reference.
-		 *	@param in: input Segment (non-constant reference)
-		 *	@param Spectrum*: just used as the selector that indicates that this
-		 *	overload is to be used
-		 */
-		Spectrum& UnwrapProcessingData(Segment& out,Spectrum*)
-		{
-			Frame* pFrame = NULL;
-			return UnwrapProcessingData(out,pFrame).GetResidualSpec();
-		}
-		/** Particular method for unwrapping a SpectralPeakArray from a given Segment
-		 *	@return: SpectralPeakArray in current Frame in the Segment returned as a constant reference.
-		 *	@param in: input Segment (constant reference)
-		 *	@param SpectralPeakArray*: just used as the selector that indicates that this
-		 *	overload is to be used
-		 */
-		const SpectralPeakArray& UnwrapProcessingData(const Segment& in,SpectralPeakArray*)
-		{
-			Frame* pFrame = NULL;
-			return UnwrapProcessingData(in,pFrame).GetSpectralPeakArray();
-		}
-		/** Particular method for unwrapping a SpectralPeakArray from a given Segment
-		 *	@return: SpectralPeakArray in current Frame in the Segment returned as a non-constant reference.
-		 *	@param in: input Segment (non-constant reference)
-		 *	@param SpectralPeakArray*: just used as the selector that indicates that this
-		 *	overload is to be used
-		 */
-		SpectralPeakArray& UnwrapProcessingData(Segment& out,SpectralPeakArray*)
-		{
-			Frame* pFrame = NULL;
-			return UnwrapProcessingData(out,pFrame).GetSpectralPeakArray();
-		}
-
 		/** Internally stored configuration */
 		SMSTransformationConfig mConfig;
 		/** Boolean member that indicates whether BPF or single value is to be used. This is not
@@ -223,26 +122,16 @@ namespace CLAM {
 		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
 		 *	transformation*/
 		Segment* mOutput;
-	};
-	
-	/** Template SMS Transformation abstract class. It derives from also abstract SMSTransformation
-	 *	class and adds behaviour for a particular Processing Data (Frame, Audio, Spectrum or 
-	 *	SpectralPeakArray).
-	 */
-	template <class UnwrappedProcessingData>
-	class SMSTransformationTmpl: public SMSTransformation
-	{
-	public:
-		/** Default constructor */
-		SMSTransformationTmpl() {}
-		/** Constructor taking a configuration as input argument.
-		 *	@see SMSTransformation::SMSTransformation(const SMSTransformationConfig& c) */
-		SMSTransformationTmpl(const SMSTransformationConfig& c):SMSTransformation(c){}
-		/** Virtual destructor.*/
-		virtual ~SMSTransformationTmpl(){}
-		/** Pure virtual method that must be implemented in any concrete transformation class.*/
-		virtual bool Do(const UnwrappedProcessingData& in,UnwrappedProcessingData& out)=0;
 
+		virtual bool Do(const Frame& in,Frame& out)=0;
+
+
+		void AddFramesToOutputIfInputIsLonger(int frameindex, const Segment& in, Segment& out)
+		{
+			if(frameindex==out.GetnFrames() && in.GetnFrames()>out.GetnFrames())
+				out.AddFrame(out.GetFrame((TIndex)out.GetnFrames()-1));
+		}
+		
 		/** Unsupervised Do function, receives a Segment as input and output. This overload is
 		 *	the one called from the supervised Do(). Note that if BPF parameter is used, the
 		 *	Amount control is also updated.
@@ -252,49 +141,48 @@ namespace CLAM {
 		 */
 		virtual bool Do(const Segment& in, Segment& out)
 		{
-			if (!mInput) mInput = &(Segment &)in;
-			if (!mOutput) mOutput = &out;
-			while(mCurrentInputFrame<in.mCurrentFrameIndex)
+			CLAM_ASSERT(mInput==&in, "sms transformation chain needs input segment");
+			//TODO find out why this finalization condition (and not just using size)
+			while( mCurrentInputFrame<in.mCurrentFrameIndex)
 			{
 				if(mUseTemporalBPF)
 					UpdateControlValueFromBPF(((TData)in.mCurrentFrameIndex)/in.GetnFrames());
-				Do(UnwrapSegment(in),UnwrapSegment(out));
+				
+				AddFramesToOutputIfInputIsLonger(mCurrentInputFrame, in, out);
+				
+				const Frame & inframe = in.GetFrame(mCurrentInputFrame);
+				Frame & outframe = out.GetFrame(mCurrentInputFrame);
+
+				Do( inframe, outframe );
 				if(&in!=&out)
 					out.mCurrentFrameIndex++;
+				
 				mCurrentInputFrame++;
 			}
 			return true;
 		}
-		
 
-	
 	protected:
-
-		/** Selector method that unwraps a particular ProcessingData (Frame, Audio, Spectrum or
-		 *	SpectralPeakArray) from a given Segment. For doing so it uses the concrete
-		 *	implementations  of the UnwrapProcessingData implemented in the base class.
-		 *	@return a const reference to the desired ProcessingData
-		 *	@param in a const reference to a Segment.
-		 */
-		const UnwrappedProcessingData& UnwrapSegment(const Segment& in)
+		//TODO remove. but now is used from TimeStreach
+		//! formerly corresponded to UnwrappedProcessingData
+		const Frame& GetCurrentFrame(const Segment& in)
 		{
-			return UnwrapProcessingData(in,(UnwrappedProcessingData*)(0));
+			return in.GetFrame(mCurrentInputFrame);
 		}
-		/** Selector method that unwraps a particular ProcessingData (Frame, Audio, Spectrum or
-		 *	SpectralPeakArray) from a given Segment. For doing so it uses the concrete
-		 *	implementations  of the UnwrapProcessingData implemented in the base class.
-		 *	@return a non-const reference to the desired ProcessingData
-		 *	@param in a non-const reference to a Segment.
-		 */
-		UnwrappedProcessingData& UnwrapSegment( Segment& in)
+		
+		//! formerly corresponded to UnwrappedProcessingData
+		Frame& GetCurrentFrame( Segment& out)
 		{
-			return UnwrapProcessingData(in,(UnwrappedProcessingData*)(0));
+			if(mCurrentInputFrame==out.GetnFrames() && mInput->GetnFrames()>out.GetnFrames())
+				out.AddFrame(out.GetFrame((TIndex)out.GetnFrames()-1));
+			return out.GetFrame(mCurrentInputFrame);
 		}
 
-				
+		//TODO remove. but now is used by SMSMorph
+		int mCurrentInputFrame;
+
 	};
-
-
+	
 };//namespace CLAM
 
 #endif // _SMSTransformation_

@@ -33,7 +33,7 @@ namespace CLAM{
 	
 	/** @todo: introduce interpolation of spectral shapes, before that, interpolations may be
 	 *	extracted to external Processing's*/
-	class SMSTimeStretch: public SMSTransformationTmpl<Frame>
+	class SMSTimeStretch: public SMSTransformation
 	{
 					
 	public:

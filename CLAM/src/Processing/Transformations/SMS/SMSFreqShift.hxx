@@ -24,29 +24,34 @@
 #define _SMSFreqShift_
 
 #include "SMSTransformation.hxx"
-
+#include "InPort.hxx"
+#include "OutPort.hxx"
 
 namespace CLAM{
 
 
-	class SMSFreqShift: public SMSTransformationTmpl<SpectralPeakArray>
+	class SMSFreqShift: public SMSTransformation
 	{
 		
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
 		 */
 		const char *GetClassName() const {return "SMSFreqShift";}
-
+		InPort<SpectralPeakArray> mIn;
+		OutPort<SpectralPeakArray> mOut;
 
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
-		SMSFreqShift()
+		SMSFreqShift() : mIn("In SpectralPreaks", this), mOut("Out SpectralPeaks", this)
 		{
 		}
 		/** Constructor with an object of SMSTransformationConfig class by parameter
 		 *  @param c SMSTransformationConfig object created by the user
 		*/
-		SMSFreqShift(const SMSTransformationConfig &c):SMSTransformationTmpl<SpectralPeakArray>(c)
+		SMSFreqShift(const SMSTransformationConfig &c):
+			SMSTransformation(c),
+			mIn("In SpectralPreaks", this), mOut("Out SpectralPeaks", this)
+
 		{
 		}
 
@@ -54,7 +59,20 @@ namespace CLAM{
  		~SMSFreqShift()
 		{}
 
+		bool Do(const Frame& in, Frame& out)
+		{
+			return Do(in.GetSpectralPeakArray(), out.GetSpectralPeakArray());
+		}
+
 		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
+
+		// Note that overriding this method breaks the processing chain functionality. 
+		bool Do()
+		{
+			return Do(mIn.GetData(), mOut.GetData());
+			mIn.Consume();
+			mOut.Produce();
+		}
 	
 	};		
 };//namespace CLAM
