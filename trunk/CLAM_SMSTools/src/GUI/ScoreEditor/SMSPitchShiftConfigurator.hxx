@@ -2,7 +2,7 @@
 #define __SMSPITCHSHIFTCONFIGURATOR__
 
 #include "SMS_Configurator.hxx"
-#include "SMSTransformationConfig.hxx"
+#include "SegmentTransformationConfig.hxx"
 
 class Fl_Widget;
 class Fl_Help_View;
