@@ -5,8 +5,8 @@ namespace CLAM
 {
 	void SpectrumPlotProcessingConfig::DefaultInit()
 	{
-		AddAll();       
-		UpdateData();	
+		AddAll();
+		UpdateData();
 		SetName("SpectrumPlotProcessing");
 		SetCaption("Spectrum");
 		Setxpos(100);
@@ -16,22 +16,20 @@ namespace CLAM
 	}
 
 	SpectrumPlotProcessing::SpectrumPlotProcessing() 
-		: mInput("Spectrum Input", this)
+		: mPlot(0)
+		, mInput("Spectrum Input", this)
 		, mOwnedPlot(false)
 	{
 		SpectrumPlotProcessingConfig cfg;
 		Configure(cfg);
-
-		mPlot = NULL;
 	}
 
 	SpectrumPlotProcessing::SpectrumPlotProcessing(const SpectrumPlotProcessingConfig& cfg)
-		: mInput("Spectrum Input", this)
+		: mPlot(0)
+		, mInput("Spectrum Input", this)
 		, mOwnedPlot(false)
 	{
 		Configure(cfg);
-
-		mPlot = NULL;
 	}
 
 	SpectrumPlotProcessing::~SpectrumPlotProcessing()
@@ -39,10 +37,9 @@ namespace CLAM
 		if(mOwnedPlot) delete mPlot;
 	}
 
-
 	bool SpectrumPlotProcessing::Do()
 	{
-		bool res = Do(mInput.GetData()); 
+		bool res = Do(mInput.GetData());
 		mInput.Consume();
 		return res;
 	}
@@ -61,27 +58,6 @@ namespace CLAM
 		return true;
 	}
 
-	void SpectrumPlotProcessing::SetPlot(VM::NetSpectrumPlot * plot )
-	{
-        	if (mOwnedPlot) delete mPlot;
-		mOwnedPlot = false;
-		mPlot = plot;
-		mPlot->Label(mConfig.GetCaption());
-		mPlot->SetBackgroundColor(VM::VMColor::Black());
-		mPlot->SetDataColor(VM::VMColor::Green());
-	}
-
-	void SpectrumPlotProcessing::InitSpectrumPlot()
-	{
-        	if (mOwnedPlot) delete mPlot;
-		mPlot = new VM::NetSpectrumPlot();
-		mOwnedPlot = true;
-		mPlot->Label(mConfig.GetCaption());
-		mPlot->SetBackgroundColor(VM::VMColor::Black());
-		mPlot->SetDataColor(VM::VMColor::Green());
-		mPlot->Geometry(mConfig.Getxpos(),mConfig.Getypos(),mConfig.Getwidth(),mConfig.Getheight());
-	}
-
 	bool SpectrumPlotProcessing::ConcreteStart()
 	{
 		if(!mPlot) InitSpectrumPlot();
@@ -92,15 +68,34 @@ namespace CLAM
 	{
 		if(mPlot) 
 		{
-		    mPlot->StopRendering();
-		    if (mOwnedPlot)
-		    {
-			    delete mPlot;
-			    mPlot = NULL;
-		    }
+			mPlot->StopRendering();
+			if (mOwnedPlot)
+			{
+				delete mPlot;
+				mPlot = NULL;
+			}
 		}
 		return true;
 	}
+
+	void SpectrumPlotProcessing::SetPlot(VM::NetSpectrumPlot * plot )
+	{
+		if (mOwnedPlot) delete mPlot;
+		mOwnedPlot = false;
+		mPlot = plot;
+	}
+
+	void SpectrumPlotProcessing::InitSpectrumPlot()
+	{
+		if (mOwnedPlot) delete mPlot;
+		mPlot = new VM::NetSpectrumPlot();
+		mOwnedPlot = true;
+		mPlot->Label(mConfig.GetCaption());
+		mPlot->SetBackgroundColor(VM::VMColor::Black());
+		mPlot->SetDataColor(VM::VMColor::Green());
+		mPlot->Geometry(mConfig.Getxpos(),mConfig.Getypos(),mConfig.Getwidth(),mConfig.Getheight());
+	}
+
 }
 
 // END
