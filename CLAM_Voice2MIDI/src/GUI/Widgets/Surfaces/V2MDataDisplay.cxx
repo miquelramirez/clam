@@ -50,9 +50,7 @@ void V2MDataDisplay::SetView(TData left,TData right,TData bottom,TData top)
 
 void V2MDataDisplay::SetData(const DataArray& data)
 {
-	mData.SetSize(0);
-	for(int i = 0;i < data.Size();i++)
-	    mData.AddElem(data[i]);
+	mData = data;
 }
 
 void V2MDataDisplay::initializeGL()
