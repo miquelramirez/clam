@@ -219,12 +219,15 @@ TData SpectralDescriptors::ComputeSpectralFlatness()
 it promoted into basicOps*/
 TData SpectralDescriptors::ComputeHighFrequencyContent()
 {
-	/*
-	TData temp = 0;
+	const DataArray & mag = mpSpectrum->GetMagBuffer();
+	const TSize size=mpSpectrum->GetSize();
+	double temp = 0.0;
 	for (int i=1;i<size;i++)
-		temp += pow(mag[i],2)*i;
-	*/ 
+		temp += mag[i]*mag[i]*i;
+	return temp;
+	/*
 	return WeightedPoweredSum<2>()(mpSpectrum->GetMagBuffer());
+	*/ 
 }
 
 /**
@@ -259,7 +262,6 @@ it promoted into basicOps*/
 TData SpectralDescriptors::ComputeLowFreqEnergyRelation() 
 { 
 	// Energy(0-100 Hz) / Total Energy
-	int size=mpSpectrum->GetSize();
 	TIndex index = Round(100.0/mDeltaFreq);
 	const DataArray & magnitudeBuffer = mpSpectrum->GetMagBuffer();
 	const DataArray data(const_cast<TData*>(magnitudeBuffer.GetPtr()), index);
