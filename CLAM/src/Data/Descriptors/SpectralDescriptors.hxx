@@ -42,7 +42,7 @@ namespace CLAM {
 
 	class SpectralDescriptors : public ProcessingData {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 17, ProcessingData);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralDescriptors, 22, ProcessingData);
 		
 		DYN_ATTRIBUTE (0, public, TData, Mean);
 		DYN_ATTRIBUTE (1, public, TData, GeometricMean);
@@ -61,10 +61,19 @@ namespace CLAM {
 		DYN_ATTRIBUTE (14,public, TData, HFC);
 		DYN_ATTRIBUTE (15,public, Array<TData>, MFCC);
 		DYN_ATTRIBUTE (16,public, Array<TData>, BandEnergy);
+		DYN_ATTRIBUTE (17,public, TData, MaxMagFreq); 
+		// Frequency of the maximun of the spectrum normalized by the spectral range
+		DYN_ATTRIBUTE (18,public, TData, LowFreqEnergyRelation); 
+		DYN_ATTRIBUTE (19,public, TData, Skewness); 
+		DYN_ATTRIBUTE (20,public, TData, Rolloff); 
+		DYN_ATTRIBUTE (21,public, Array<SpectralDescriptors>, BandDescriptors);
 
 	public:
-
+		// MERGE: Is this friendship necessary??
+//		friend class SpectralDescriptorsGen;
 		SpectralDescriptors(Spectrum* pSpectrum);
+
+		void DefaultInit();
 
 		const Spectrum* GetpSpectrum() const{return mpSpectrum;}
 		void SetpSpectrum(Spectrum* pSpectrum) {mpSpectrum=pSpectrum;}

@@ -66,6 +66,7 @@ public:
 	DYN_ATTRIBUTE (7, public, AudioDescriptors, SynthAudioFrameD);
 
 public:
+	void DefaultInit();
 
 	FrameDescriptors(Frame* pFrame);
 		

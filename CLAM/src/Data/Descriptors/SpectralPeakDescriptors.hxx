@@ -57,6 +57,7 @@ namespace CLAM {
 	public:
 
 		SpectralPeakDescriptors(SpectralPeakArray* pSpectralPeakArray);
+		void DefaultInit();
 		
 		const SpectralPeakArray* GetpSpectralPeakArray() const{return mpSpectralPeakArray;}
 		void SetpSpectralPeakArray(SpectralPeakArray* pSpectralPeakArray) {mpSpectralPeakArray=pSpectralPeakArray;}

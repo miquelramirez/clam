@@ -69,6 +69,8 @@ class SegmentDescriptors : public ProcessingData {
 	public:
 
 		SegmentDescriptors(Segment* pSegment);
+
+		void DefaultInit();
 				
 		const Segment* GetpSegment() const{return mpSegment;}
 		void SetpSegment(Segment* pSegment) {mpSegment=pSegment;}
