@@ -102,6 +102,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem(winplots, "SinTracksPlotProcessing");
 	new ProcessingItem(winplots, "FundTrackPlotProcessing");
 	new ProcessingItem(winplots, "SpecgramPlotProcessing");
+	new ProcessingItem(winplots, "AudioBuffPlotProcessing");
 
 	QListViewItem* canvasplots = new QListViewItem(this,"Plots in canvas");
 	new ProcessingItem(canvasplots,"AudioPortMonitor");
