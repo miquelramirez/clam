@@ -26,9 +26,10 @@
 #include "AudioFile.hxx"
 #include "Processing.hxx"
 #include "Port.hxx"
-class SoundFileIO;
 
 namespace CLAM {
+
+class SoundFileIO;
 
 	/** Class for audiofile Input */
 	class AudioFileIn: public Processing
@@ -36,7 +37,7 @@ namespace CLAM {
 	protected:
 		/** Audiofile Configuration */
 		AudioFileConfig mConfig;
-		::SoundFileIO* mpSoundFileIO;
+		SoundFileIO* mpSoundFileIO;
 		bool mKeepFrameSizes;
 
 		bool ConcreteStart();
