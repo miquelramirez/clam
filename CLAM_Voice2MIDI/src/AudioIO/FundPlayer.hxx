@@ -23,27 +23,31 @@ using SigSlot::Slotv0;
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;
 
-class FundPlayer 
+class FundPlayer
 {
 public:
-	FundPlayer(const Segment& originalSegment,
-			   Slotv0& slot0,
-		       Slotv1<DataArray>& slot1);
-	~FundPlayer();
+    FundPlayer(const Segment& originalSegment,
+	       Slotv0& slot0,
+	       Slotv1<DataArray>& slot1);
+
+    ~FundPlayer();
 
     void Stop();
 
 private:
-	pthread_t mThread;
-	Segment mSegment;
+    pthread_t mThread;
+    Segment mSegment;
 
-	Signalv0 mRequestStop;
-	Signalv1<DataArray> mSendData;
+    Signalv0 mRequestStop;
+    Signalv1<DataArray> mSendData;
 
-	bool active;
+    bool active;
 
     void PlayFundThreadSafe();
-	static void* sPlayFundThreadSafe(void* thisObject);
+    static void* sPlayFundThreadSafe(void* thisObject);
+
 };
 
 #endif
+
+

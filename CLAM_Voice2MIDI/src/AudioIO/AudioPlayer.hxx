@@ -4,7 +4,7 @@
  * Used to play original audio.
  *
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
-*/
+ */
 #ifndef _AUDIOPLAYER_
 #define _AUDIOPLAYER_
 
@@ -22,26 +22,30 @@ using SigSlot::Slotv0;
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;
 
-class AudioPlayer 
+class AudioPlayer
 {
 public:
-	AudioPlayer(const Audio& in,
-		        Slotv0& slot0,
-				Slotv1<DataArray>& slot1);
-	~AudioPlayer();
+    AudioPlayer(const Audio& in,
+		Slotv0& slot0,
+		Slotv1<DataArray>& slot1);
 
-	void Stop();
+    ~AudioPlayer();
+
+    void Stop();
 
 private:
-	pthread_t mThread;
-	Audio mAudio;
-	Signalv0 mRequestStop;
-	Signalv1<DataArray> mSendData;
+    pthread_t mThread;
+    Audio mAudio;
+    Signalv0 mRequestStop;
+    Signalv1<DataArray> mSendData;
 
-	bool active;
+    bool active;
 
-	void PlayingThreadSafe();
-	static void* sPlayingThreadSafe(void* thisObject);
+    void PlayingThreadSafe();
+    static void* sPlayingThreadSafe(void* thisObject);
+
 };
 
 #endif
+
+
