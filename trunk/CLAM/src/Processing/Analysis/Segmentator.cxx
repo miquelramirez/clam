@@ -210,17 +210,17 @@ bool Segmentator::Do()
 }
 
 
-bool Segmentator::Do(Segment& originalSegment)
+bool Segmentator::Do(Segment& originalSegment,SegmentDescriptors& descriptors)
 {
 	int nFrames=originalSegment.GetnFrames();
 	Matrix  descriptorsValues(mConfig.GetDescriptorsParams().Size(),nFrames);
-	UnwrapDescriptors(originalSegment,descriptorsValues);
+	UnwrapDescriptors(originalSegment, descriptors,descriptorsValues);
 	MyAlgorithm1(originalSegment,descriptorsValues);
 	return true;
 }
 
 
-void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descriptorsValues)
+void Segmentator::UnwrapDescriptors(const Segment& originalSegment, SegmentDescriptors& descriptors,Matrix& descriptorsValues)
 {
 	int i,z=0;
 	int nFrames=originalSegment.GetnFrames();
@@ -232,7 +232,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		TData value;
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralMeanId)
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetMean();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetMean();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -240,7 +240,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralGeometricMeanId )
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetGeometricMean();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetGeometricMean();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -248,7 +248,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralEnergyId)
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetEnergy();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetEnergy();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -256,7 +256,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralCentroidId )
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetCentroid();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetCentroid();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -264,7 +264,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralMoment2Id)
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetMoment2();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetMoment2();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -272,7 +272,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralMoment3Id)
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetMoment3();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetMoment3();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -280,7 +280,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralMoment4Id)
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetMoment4();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetMoment4();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -288,7 +288,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralMoment5Id)
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetMoment5();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetMoment5();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -296,7 +296,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralMoment6Id)
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetMoment6();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetMoment6();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -304,7 +304,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralIrregularityId)
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetIrregularity();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetIrregularity();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -312,7 +312,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralTiltId)
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetTilt();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetTilt();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -320,7 +320,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralFlatnessId )
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetFlatness();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetFlatness();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -328,7 +328,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralKurtosisId  )
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetKurtosis();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetKurtosis();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);
@@ -336,7 +336,7 @@ void Segmentator::UnwrapDescriptors(const Segment& originalSegment,Matrix& descr
 		}
 		if(z<nDescriptors&&mConfig.GetDescriptorsParams()[z]==SpectralStrongPeakId  )
 		{
-			value=originalSegment.GetFrame(i).GetSpectrum().GetDescriptors().GetStrongPeak();
+			value=descriptors.GetFrameD(i).GetSpectrumD().GetStrongPeak();
 			if(value>mConfig.GetDescriptorsParams()[z].threshold)
 				descriptorsValues.SetAt(z,i,value);
 			else descriptorsValues.SetAt(z,i,0);

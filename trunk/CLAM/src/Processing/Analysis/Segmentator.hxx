@@ -28,6 +28,7 @@
 #include "Array.hxx"
 #include "SearchArray.hxx"
 #include "Matrix.hxx"
+#include "SegmentDescriptors.hxx"
 #include <iosfwd>
 
 namespace CLAM{
@@ -129,7 +130,7 @@ public:
 	~Segmentator();
 	const ProcessingConfig& GetConfig() const {return mConfig;}
 	bool Do();
-	bool Do(Segment& originalSegment); //for the time being only inplace processing is enabled
+	bool Do(Segment& originalSegment,SegmentDescriptors& descriptors); //for the time being only inplace processing is enabled
 
 	void StoreOn(Storage &s) {};
 
@@ -139,7 +140,7 @@ private:
 
 	void DataFusion(Segment& s,const Array<DataArray>& segmentBoundaries);
 	bool ConcreteConfigure(const ProcessingConfig& c) throw(std::bad_cast);
-	void UnwrapDescriptors(const Segment& originalSegment,Matrix& descriptorsValues);
+	void UnwrapDescriptors(const Segment& originalSegment,SegmentDescriptors& descriptors ,Matrix& descriptorsValues);
 	/* All Algorithms should follow this prototype, taking as an input a segment and
 	// a Matrix where the descriptors values are stored
 	*/

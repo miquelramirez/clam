@@ -28,7 +28,7 @@
 
 #endif
 
-#include "PeakDetect.hxx"
+#include "SpectralPeakDetect.hxx"
 #include "FundFreqDetect.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
@@ -54,7 +54,7 @@ class SMSAnalysisConfig:public ProcessingConfig
 	DYN_ATTRIBUTE(1,public,SpectralAnalysisConfig, SinSpectralAnalysis);
 	DYN_ATTRIBUTE(2,public,SpectralAnalysisConfig, ResSpectralAnalysis);
 
-	DYN_ATTRIBUTE(3,public,PeakDetectConfig, PeakDetect);
+	DYN_ATTRIBUTE(3,public,SpectralPeakDetectConfig, PeakDetect);
 	DYN_ATTRIBUTE(4,public,FundFreqDetectConfig, FundFreqDetect);
 	DYN_ATTRIBUTE(5,public,SinTrackingConfig, SinTracking);
 /** Flags that are used in order to decide what debug display is shown*/
@@ -156,7 +156,7 @@ public:
 	SpectralAnalysis mPO_SinSpectralAnalysis;
 	SpectralAnalysis mPO_ResSpectralAnalysis;
 	FFT_rfftw		mPO_FFT;
-	PeakDetect		mPO_PeakDetect;
+	SpectralPeakDetect		mPO_PeakDetect;
 	FundFreqDetect  mPO_FundDetect;
 	SinTracking		mPO_SinTracking;
 	/**For Sinusoidal Synthesis*/
