@@ -69,6 +69,38 @@ namespace CLAM {
 		out.AddLink(&in);
 	}
 	
+	void ConnectPorts(
+			Processing & sender, unsigned outPortNumber, 
+			InPortBase & in )
+	{
+		OutPortBase & out = sender.GetOutPorts().GetByNumber(outPortNumber);
+		out.ConnectToIn(in);
+	}
+	
+	void ConnectPorts(
+			OutPortBase & out,
+			Processing & receiver, unsigned inPortNumber )
+	{
+		InPortBase & in = receiver.GetInPorts().GetByNumber(inPortNumber);
+		out.ConnectToIn(in);
+	}
+	
+	void ConnectPorts(
+			Processing & sender, std::string outPortName, 
+			InPortBase & in )
+	{
+		OutPortBase & out = sender.GetOutPorts().Get(outPortName);
+		out.ConnectToIn(in);
+	}
+	
+	void ConnectPorts(
+			OutPortBase & out,
+			Processing & receiver, std::string inPortName )
+	{
+		InPortBase & in = receiver.GetInPorts().Get(inPortName);
+		out.ConnectToIn(in);
+	}
+	
 	Processing::Processing() 
 		: mpParent(0),
 		mPreconfigureExecuted( false )
