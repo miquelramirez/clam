@@ -392,6 +392,16 @@ namespace CLAM
 			_leftChannel->SetMarksColor(c);
 			_rightChannel->SetMarksColor(c);
 		}
+
+	        void QtStereoAudioPlot::KeyPressEvent(QKeyEvent* e)
+		{
+		    keyPressEvent(e);
+		}
+
+		void QtStereoAudioPlot::KeyReleaseEvent(QKeyEvent* e)
+		{
+		    keyReleaseEvent(e);
+		}
 	}	
 }
 

@@ -174,6 +174,16 @@ namespace CLAM
 		{
 			((SinTracksPlotController*)_controller)->SetMarksColor(c);
 		}
+
+	        void QtSinTracksPlot::KeyPressEvent(QKeyEvent* e)
+		{
+		    keyPressEvent(e);
+		}
+
+	        void QtSinTracksPlot::KeyReleaseEvent(QKeyEvent* e)
+		{
+		    keyReleaseEvent(e);
+		}
 	}
 }
 

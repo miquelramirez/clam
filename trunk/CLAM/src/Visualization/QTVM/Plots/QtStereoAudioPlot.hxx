@@ -78,6 +78,9 @@ namespace CLAM
 				void setXRulerScaleDiv(QwtScaleDiv);
 
 				void switchColors();
+		    
+		                void KeyPressEvent(QKeyEvent* );
+		                void KeyReleaseEvent(QKeyEvent* );
 
 			protected slots:
 				void updateRegion(MediaTime);

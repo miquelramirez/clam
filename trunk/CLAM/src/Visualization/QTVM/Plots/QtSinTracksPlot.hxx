@@ -52,15 +52,17 @@ namespace CLAM
 				void SetDialColor(Color c);
 				void SetRegionColor(Color c);
 
+                        public slots:
+			        void KeyPressEvent(QKeyEvent* );
+		                void KeyReleaseEvent(QKeyEvent* );
+
 			protected slots:
 				void updateRegion(MediaTime);
 
 			protected:
-				virtual void keyPressEvent(QKeyEvent* e);
-				virtual void keyReleaseEvent( QKeyEvent* e);
-
-				virtual void SetPlotController();
-				virtual void Connect();
+		                virtual void keyPressEvent(QKeyEvent* e);
+		                virtual void keyReleaseEvent( QKeyEvent* e);
+		                virtual void SetPlotController();				virtual void Connect();
 
 				virtual void DisplayBackgroundBlack();
 				virtual void DisplayBackgroundWhite();
