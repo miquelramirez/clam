@@ -231,7 +231,7 @@ private:
 	{
 
 		DummyIOProcessing sender, receiver;
-		CLAM::ConnectPorts(sender, 0, receiver, 0);
+		CLAM::ConnectControls(sender, 0, receiver, 0);
 		receiver.inControl.DoControl(666); // A previous value
 		CLAM::TControlData event(1.7);
 		sender.outControl.SendControl(event);

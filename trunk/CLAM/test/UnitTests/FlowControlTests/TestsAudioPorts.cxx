@@ -26,7 +26,6 @@ public:
 	CPPUNIT_TEST( testAudioPortsProduceAndConsume_whenDifferentSizes );
 	CPPUNIT_TEST( testAudioInPortPublisher_PublishInPort_withIncorrectInPort );
 	CPPUNIT_TEST( testAudioInPortPublisher_PublishInPort_withProperInPort );
-	CPPUNIT_TEST( testAudioInPortPublisher_PublishInPort_withIncorrectInPort );
 	CPPUNIT_TEST_SUITE_END();
 
 	void testCreateAudioOutPorts()

@@ -21,6 +21,7 @@
 
 #include "MIDIInControl.hxx"
 #include "OutControl.hxx"
+#include "Factory.hxx"
 
 namespace CLAM {
 
@@ -175,6 +176,9 @@ void MIDIInControl::Handle(unsigned char* msg,int size)
 		}
 	}
 }
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<CLAM::MIDIInControl> regtMIDIInControl( "MIDIInControl" );
 
 } // namespace CLAM
 

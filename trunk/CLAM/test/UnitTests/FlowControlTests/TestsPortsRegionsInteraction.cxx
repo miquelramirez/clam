@@ -502,14 +502,14 @@ public:
 	void testAudioOutPort_DefaultSize()
 	{
 		CLAM::AudioOutPort out;
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Size not expected", 256, out.GetSize() );
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Hop not expected", 256, out.GetHop() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Size not expected", 512, out.GetSize() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Hop not expected", 512, out.GetHop() );
 	}
 	void testAudioInPort_DefaultSize()
 	{
 		CLAM::AudioInPort in;
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Size not expected", 256, in.GetSize() );
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Hop not exptected", 256, in.GetHop() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Size not expected", 512, in.GetSize() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Hop not exptected", 512, in.GetHop() );
 	}
 	
 	void testGetLastWrittenData_whenPortIsWrongType_throwsException()

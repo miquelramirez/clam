@@ -19,7 +19,6 @@
  *
  */
 
-
 #ifndef _SMSSineFilter_
 #define _SMSSineFilter_
 
@@ -41,16 +40,17 @@ namespace CLAM
 	{
 
 	   public:
-			DYNAMIC_TYPE_USING_INTERFACE (SMSSineFilterConfig, 2,ProcessingConfig);
+			DYNAMIC_TYPE_USING_INTERFACE (SMSSineFilterConfig, 1,ProcessingConfig);
 			/** Single Value Parameter */
-			DYN_ATTRIBUTE (0, public, TData, Amount);
+//			DYN_ATTRIBUTE (0, public, TData, Amount);
 			/** BPF (envelope-like) Parameter */
-			DYN_ATTRIBUTE (1, public, BPF, BPFAmount);
+			DYN_ATTRIBUTE (0, public, BPF, BPF);
 
 
 		private:
 
-			void SMSSineFilterConfig::DefaultInit()
+
+			void DefaultInit()
 			{
 				AddAll();
 				UpdateData();
@@ -59,7 +59,8 @@ namespace CLAM
 
 			void DefaultValues()
 			{
-				SetAmount(0);
+				GetBPF().Insert( 0, 0 );
+				GetBPF().Insert( 22050, 0 );
 			}
 
 	};
@@ -77,7 +78,6 @@ namespace CLAM
 
 		SMSSineFilterConfig mConfig;
 
-
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSSineFilter()
@@ -85,19 +85,25 @@ namespace CLAM
 			mInPeaks("In SpectralPeaks", this),
 			mOutPeaks("Out SpectralPeaks", this)
 		{
+			Configure( mConfig );
 		}
 		/** Constructor with an object of SegmentTransformationConfig class by parameter
 		 *  @param c SegmentTransformationConfig object created by the user
 		*/
-		SMSSineFilter(const SMSSineFilterConfig &c)
+		SMSSineFilter(const SMSSineFilterConfig& cfg )
 			:
 			mInPeaks("In SpectralPeaks", this),
 			mOutPeaks("Out SpectralPeaks", this)
 		{
-			Configure( SegmentTransformationConfig() );
+//			Configure( SegmentTransformationConfig() );
+			Configure( cfg );
 		}
 
-		virtual bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
+		virtual bool ConcreteConfigure(const ProcessingConfig& cfg) 
+		{
+			CopyAsConcreteConfig( mConfig, cfg );
+			return true; 
+		}
 
 		const ProcessingConfig& GetConfig() const { return mConfig; }
 

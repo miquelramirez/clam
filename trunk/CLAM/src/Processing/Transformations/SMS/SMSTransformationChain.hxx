@@ -325,6 +325,15 @@ namespace CLAM {
 				return;
 			}
 
+			if ( classname=="SMSSineFilter") 
+			{
+				SegmentTransformation* wrapper = new SegmentTransformation;	
+				Processing * proc = theFactory.Create(classname);
+				FrameTransformation* sineFilter = dynamic_cast<FrameTransformation*>(proc); 
+				wrapper->WrapFrameTransformation(sineFilter);
+				Insert( *wrapper );
+				return;
+			}
 			Insert( *( theFactory.Create( classname ) ) );
 		}
 		/** Helper method for updating frame counters both in ports and in internal data*/

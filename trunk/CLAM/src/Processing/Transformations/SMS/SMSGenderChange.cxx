@@ -35,7 +35,7 @@ bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks,
 	if(inFund.GetFreq(0))//we only transform voiced frames
 	{	
 		TData minPitch = 100;
-		TData maxPitch = 500;
+		TData maxPitch = 800;
 
 		//Maximum spectral shift
 		TData maxSss = 200;

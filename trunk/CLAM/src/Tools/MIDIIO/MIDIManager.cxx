@@ -33,6 +33,7 @@ namespace CLAM
 {
 
 MIDIManager::MIDIManager() throw(Err)
+:mStarted(false)
 {
 	_Current(true,this);
 }
@@ -68,8 +69,6 @@ MIDIDevice* MIDIManager::FindDevice(const std::string& name)
 
 void MIDIManager::Start(void) throw(Err)
 {
-	unsigned int i;
-
 	std::vector<MIDIDevice*>::iterator it;
 
 	it = mDevices.begin();
@@ -96,6 +95,8 @@ void MIDIManager::Start(void) throw(Err)
 	{
 		(*it)->Start();
 	}
+
+	mStarted = true;
 }
 
 void MIDIManager::Stop(void) throw(Err)
@@ -108,11 +109,15 @@ void MIDIManager::Stop(void) throw(Err)
 	{
 		(*it)->Stop();
 	}
+	
+	mStarted = false;
 }
 
 
 void MIDIManager::Check(void)
 {
+	CLAM_DEBUG_ASSERT(mStarted,"MIDIManager not started before calling MIDIManager::Check()\n");
+	
 	std::vector<MIDIDevice*>::iterator it;
 
 	/** Force all created devices to read data

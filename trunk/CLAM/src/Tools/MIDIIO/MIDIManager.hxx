@@ -155,6 +155,9 @@ protected:
 	/** Register an MIDIOut object. This is done by the MIDIOut object itself
 	 */
 	bool Register(MIDIOut& out);
+
+	/* flag to check if the MIDIManager has been started properly*/
+	bool mStarted;
 };
 
 

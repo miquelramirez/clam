@@ -38,6 +38,7 @@
 #include "ProcessingConfig.hxx"
 #include "Enum.hxx"
 #include "Filename.hxx"
+#include "BPF.hxx"
 
 
 namespace CLAMTest
@@ -114,7 +115,7 @@ namespace CLAMTest
 	class DummyConfig : public CLAM::ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,10,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (DummyConfig,11,ProcessingConfig);
 		DYN_ATTRIBUTE(0,public,std::string,Name);
 		DYN_ATTRIBUTE(1,public,std::string,ThisisAString);
 		DYN_ATTRIBUTE(2,public,CLAM::TData,ThisIsATData);
@@ -125,6 +126,8 @@ namespace CLAMTest
 		DYN_ATTRIBUTE(7,public,bool, ThisIsABool);
 		DYN_ATTRIBUTE(8,public,DummySubConfig, ThisIsDifferentSubConfig);
 		DYN_ATTRIBUTE(9,public,CLAM::Filename, ThisIsAFilename);
+		DYN_ATTRIBUTE(10,public,CLAM::BPF, ThisIsABPF);
+
 
 	private:
 
@@ -189,7 +192,7 @@ int main(int argc, char** argv)
 
 	// Use the configurators
 	DisplayQTConfigurator(config,argc,argv);
-	DisplayFLTKConfigurator(config);
+	//DisplayFLTKConfigurator(config);
 
 	// Display and store the results
 	CLAM::XmlStorage::Dump(config,"DummyConfig", xmlfilename);
