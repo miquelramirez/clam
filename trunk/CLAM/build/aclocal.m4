@@ -162,9 +162,9 @@ if test -d ../../fltk/include/FL/; then
 	AC_MSG_RESULT(yes)
 	found_fltk=yes
 	FLTK_INCLUDES="../../fltk/include"
-	FLTK_LIB_PATH="../../fltk/lib"
+	FLTK_LIB_PATH="/usr/X11R6/lib ../../fltk/lib"
 	FLAG_FLTK_INCLUDES="-I../../fltk/include"
-	FLAG_FLTK_LIB_PATH="-L../../fltk/lib"
+	FLAG_FLTK_LIB_PATH="-L/usr/X11R6/lib -L../../fltk/lib"
 	fltk_local=yes
 else
 	AC_MSG_RESULT(no)
