@@ -17,6 +17,8 @@
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileWriter.hxx"
 
+#include "AudioPlotProcessing.hxx"
+
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
@@ -36,4 +38,6 @@ static ProcessingFactory::Registrator<CLAM::MultiChannelAudioFileReader> regtMul
 static ProcessingFactory::Registrator<CLAM::MultiChannelAudioFileWriter> regtMultiChannelAudioFileWriter( "MultiChannelAudioFileWriter" );
 
 static ProcessingFactory::Registrator<CLAM::OutControlSender> regtOutControlSender( "OutControlSender" );
+
+static ProcessingFactory::Registrator<CLAM::AudioPlotProcessing> regtAudioPlotProcessing("AudioPlotProcessing");
 
