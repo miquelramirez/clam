@@ -183,3 +183,10 @@ void Qt_OutControlSenderPresentation::ExecuteResize( const QPoint & difference )
 
 } // namespace NetworkGUI
 
+#include "Factory.hxx"
+typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
+
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_OutControlSenderPresentation > 
+	regtOutControlSender( "OutControlSender" );
+
+
