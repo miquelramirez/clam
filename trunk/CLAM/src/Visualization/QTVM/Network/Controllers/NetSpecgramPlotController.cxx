@@ -6,7 +6,7 @@ namespace CLAM
     namespace VM
     {
 	NetSpecgramPlotController::NetSpecgramPlotController()
-	    : _index(0),_specSize(0),_first(true),_palette(0.0f)
+	    : mMonitor(0),_index(0),_specSize(0),_first(true),_palette(0.0f)
 	{
 	    SetnSamples(100);
 	}
@@ -23,9 +23,38 @@ namespace CLAM
 	    FullView();
 	}
 
+	void NetSpecgramPlotController::SetMonitor(MonitorType & monitor)
+	{
+	    mMonitor = & monitor;
+	}
+
 	void NetSpecgramPlotController::Draw()
 	{
-	    _renderer.Render();
+	    if(!mMonitor)
+	    {
+		_renderer.Render();
+		return;
+	    }
+
+	    const Spectrum & spec = mMonitor->FreezeAndGetData();
+
+	    // TODO: Because we have exclusive right for
+	    // to the data we could remove some of this copies
+
+	    
+	    if(_first && spec.GetMagBuffer().Size()) 
+	    {
+		Init(spec.GetMagBuffer().Size());
+	    }
+
+	    if(spec.GetMagBuffer().Size())
+	    {
+		AddData(spec);
+		FullView();
+		_renderer.Render();
+	    }
+
+	    mMonitor->UnfreezeData();
 	}
 
 	void NetSpecgramPlotController::AddData(const Spectrum& spec)

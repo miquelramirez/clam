@@ -6,6 +6,7 @@
 #include "QtPalette.hxx"
 #include "NetSpecgramRenderer.hxx"
 #include "NetPlotController.hxx"
+#include "PortMonitor.hxx"
 
 namespace CLAM
 {
@@ -14,13 +15,16 @@ namespace CLAM
 	class NetSpecgramPlotController : public NetPlotController 
 	{
 	public:
+	    typedef SpecgramPortMonitor MonitorType;
 	    NetSpecgramPlotController();
 	    virtual ~NetSpecgramPlotController();
 
 	    void SetData(const Spectrum& spec);
 	    void Draw();
+	    void SetMonitor(MonitorType & monitor);
 
 	private:
+	    MonitorType* mMonitor;
 	    Spectrum _spec;
 	    std::vector< std::vector<Color> > _cachedData;
 	    NetSpecgramRenderer _renderer;
