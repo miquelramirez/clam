@@ -328,6 +328,8 @@ namespace CLAM
 	bool MultiChannelAudioFileReader::ConcreteStop()
 	{
 		mNativeStream->Dispose();
+		delete mNativeStream;
+		mNativeStream = NULL;
 
 		return true;
 	}

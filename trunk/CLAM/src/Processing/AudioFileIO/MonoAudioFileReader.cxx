@@ -105,7 +105,9 @@ namespace CLAM
 	bool MonoAudioFileReader::ConcreteStop()
 	{
 		mNativeStream->Dispose();
-		
+		delete mNativeStream;
+		mNativeStream = NULL;
+
 		return true;
 	}
 	

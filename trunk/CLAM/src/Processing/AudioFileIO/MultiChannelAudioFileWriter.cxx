@@ -236,6 +236,8 @@ namespace CLAM
 	bool MultiChannelAudioFileWriter::ConcreteStop()
 	{
 		mNativeStream->Dispose();
+		delete mNativeStream;
+		mNativeStream = NULL;
 
 		return true;
 	}
