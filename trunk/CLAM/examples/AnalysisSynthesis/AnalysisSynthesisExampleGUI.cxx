@@ -26,8 +26,9 @@
 #include "Fl_WaitMessage.cxx"
 #include "AnalysisSynthesisExampleBase.hxx"
 #include "pthread.h"
-#include "CLAMViews.hxx"
-#include "CLAMPresentations.hxx"
+#include "DebugSnapshots.hxx" 
+#include "AudioSnapshot.hxx" 
+#include "SpectrumSnapshot.hxx" 
 
 /******* TRANSFORMATION *******/
 #include "SMSFreqShift.hxx"
@@ -443,32 +444,22 @@ void UserInterface::StoreAnalysisData(void)
 
 void UserInterface::DisplayInputSound(void)
 {
-	ProcDataView<Audio> *view = new ProcDataView<Audio>;
-	ProcDataPresentation<Audio> *presentation = 
-		new ProcDataPresentation<Audio>("Input Audio");
-
-	view->BindTo( &mAnalysisSynthesisExample->mAudioIn );
-	presentation->LinkWithView( view );
-
-	presentation->Show();
-	view->Refresh();
-
-//	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioIn,"Input Audio");
+	showSnapshotAudio(mAnalysisSynthesisExample->mAudioIn,"Input Audio");
 }
 
 void UserInterface::DisplayOutputSound(void)
 {
-	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioOut,"Output Audio");
+	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOut,"Output Audio");
 }
 
 void UserInterface::DisplayOutputSoundResidual(void)
 {
-	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioOutRes,"Output Audio Residual");
+	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutRes,"Output Audio Residual");
 }
 
 void UserInterface::DisplayOutputSoundSinusoidal(void)
 {
-	CLAMGUI::showPDSnapshot(&mAnalysisSynthesisExample->mAudioOutSin,"Output Audio Sinusoidal");
+	showSnapshotAudio(mAnalysisSynthesisExample->mAudioOutSin,"Output Audio Sinusoidal");
 }
 
 void UserInterface::StoreOutputSound(void)

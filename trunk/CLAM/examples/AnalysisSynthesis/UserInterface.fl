@@ -11,7 +11,7 @@ class UserInterface {open
   }
   Function {UserInterface()} {open
   } {
-    Fl_Window mWindow {open selected
+    Fl_Window mWindow {open
       xywh {283 212 660 489} type Double visible
     } {
       Fl_Box {} {
@@ -218,4 +218,7 @@ class UserInterface {open
   decl {void LoadTransformation(void);} {}
   decl {void Transform(void);} {}
   decl {void Exit(void);} {}
+  decl {void StoreOutputSound(void);} {}
+  decl {void DisplayOutputSound(void);} {selected
+  }
 } 
