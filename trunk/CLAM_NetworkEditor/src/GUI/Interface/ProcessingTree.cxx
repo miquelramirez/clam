@@ -76,6 +76,11 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 
 	QListViewItem * smstrans = new QListViewItem(this, "SMS Transformations");
 	ProcessingItem * freqshift = new ProcessingItem( smstrans, "SMSFreqShift" );
+	ProcessingItem * smspitchshift = new ProcessingItem( smstrans, "SMSPitchShift" );
+	ProcessingItem * smsresidualgain = new ProcessingItem( smstrans, "SMSResidualGain" );
+	ProcessingItem * smssinusoidalgain = new ProcessingItem( smstrans, "SMSSinusoidalGain" );
+	ProcessingItem * smsspectralshapeshift = new ProcessingItem( smstrans, "SMSSpectralShapeShift" );
+
 		
 	QListViewItem * utils = new QListViewItem( this, "Utils" );
 #ifndef WIN32

@@ -63,7 +63,15 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingP
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtFundPlotProcessing( "FundPlotProcessing" );
 
+// SMS Processings
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
         regtSMSFreqShift( "SMSFreqShift" );
-
-
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtSMSPitchShift( "SMSPitchShift" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtSMSResidualGain( "SMSResidualGain" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtSMSSinusoidalGain( "SMSSinusoidalGain" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ProcessingPresentation>
+        regtSMSSpectralShapeShift( "SMSSpectralShapeShift" );
+		
