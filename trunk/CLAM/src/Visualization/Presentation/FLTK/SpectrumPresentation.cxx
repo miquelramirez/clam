@@ -121,7 +121,7 @@ void ProcDataPresentation<Spectrum>::Init( const Geometry& g, const char* label)
 	mPort = new GLPort( Rect<int>( 0, 0, g.GetW(), g.GetH() ) );
 	mRenderer = new GLLinearSpRenderer( 0, 200, 0 );
 	
-	mDispContainer->Add( *mPort );
+	mDispContainer->Add( mPort );
 	
 	mWindow->resizable( mDispContainer );
 	

@@ -27,7 +27,6 @@
 #include "GLState.hxx"
 #include "Range.hxx"
 #include "CBL.hxx"
-#include "FLMultiDisplay.hxx"
 #include "FLTKWrapper.hxx"
 
 
@@ -40,13 +39,11 @@ public:
 
 	Range mVerRange;
 	Range mHorRange;
-	FLMultiDisplay* mInMultiDisplay;
 
 public:
 
 	GLPort( const Rect<int>& geometry, const char* label = 0 ) :
 		Fl_Gl_Window( geometry.GetX(), geometry.GetY(), geometry.GetW(), geometry.GetH(), label ),
-		mInMultiDisplay(0),
 		mIsConf( false ), mTimerLaunched( false )
 	{
 

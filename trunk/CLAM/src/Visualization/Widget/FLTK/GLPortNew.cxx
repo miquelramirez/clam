@@ -27,8 +27,11 @@ namespace CLAMGUI
 
 void GLPort::DrawSelf()
 {
-	static bool first_time_called = false;
 
+}
+
+void GLPort::draw()
+{
 	ApplyProjection(); // Window has been resized or something so projection must change
 	glPushAttrib( GL_ALL_ATTRIB_BITS );
 		
@@ -44,18 +47,6 @@ void GLPort::DrawSelf()
 		mRefreshSlot = tk->RequestAsynchronousRefresh( this );
 	
 		mTimerLaunched = true;
-	}
-}
-
-void GLPort::draw()
-{
-	if ( mInMultiDisplay )
-	{
-		mInMultiDisplay->draw();
-	}
-	else
-	{
-		DrawSelf();
 	}
 }
 

@@ -20,16 +20,25 @@
  */
 
 #include "FLDisplayContainer.hxx"
+#include "GLPortNew.hxx"
 #include "ErrGUI.hxx"
 
 using namespace CLAMGUI;
 
 void FLDisplayContainer::redraw()
 {
+	
 	Fl_Group::redraw();
 
-	mpMultiDisplay->redraw();
+}
 
+void FLDisplayContainer::draw()
+{
+	mpDisplay->SetHorRange( mHorRange );
+	mpDisplay->SetVerRange( mVerRange );
+
+
+	Fl_Group::draw();
 }
 
 void FLDisplayContainer::SliderCB(Fl_Slider* slider,Fl_Scrollbar* scrollbar)
@@ -48,9 +57,9 @@ void FLDisplayContainer::SliderCB(Fl_Slider* slider,Fl_Scrollbar* scrollbar)
 	if (v+r > max) 
 		v=max-r;
 	scrollbar->value( v, r, 0, max);
-	FLDisplayContainer* c = dynamic_cast< FLDisplayContainer* > (scrollbar->parent());
 	scrollbar->do_callback();	
-	c->mpMultiDisplay->redraw();
+
+	scrollbar->parent()->redraw();
 
 }
 
@@ -60,7 +69,7 @@ void FLDisplayContainer::ScrollbarCB( Fl_Scrollbar* scrollbar, MRuler* ruler)
 
 	ruler->FollowSlider( scrollbar );
 	ruler->redraw();
-	c->mpMultiDisplay->redraw();
+	c->redraw();
 }
 
 void FLDisplayContainer::HorSliderCB(Fl_Slider* slider)
@@ -70,7 +79,7 @@ void FLDisplayContainer::HorSliderCB(Fl_Slider* slider)
 	if (c == NULL ) throw ( ErrGUI( "Pointer was messed" )  );
 
 	SliderCB( c->mpHorSlider, c->mpHorScrollbar );
-	c->mpMultiDisplay->redraw();
+	c->redraw();
 
 }
 void FLDisplayContainer::HorScrollCB(Fl_Scrollbar* scrollbar)
@@ -80,9 +89,9 @@ void FLDisplayContainer::HorScrollCB(Fl_Scrollbar* scrollbar)
 	if (c == NULL ) throw ( GUIException( "Pointer was messed" )  );
 
 	ScrollbarCB( c->mpHorScrollbar, c->mpHorRuler );
-	c->mpMultiDisplay->mHorRange = c->mpHorRuler->mRange;
+	c->mHorRange = c->mpHorRuler->mRange;
 
-	c->mpMultiDisplay->redraw();
+	c->redraw();
 
 
 }
@@ -95,7 +104,7 @@ void FLDisplayContainer::VerSliderCB( Fl_Slider* slider )
 
 	SliderCB( c->mpVerSlider, c->mpVerScrollbar );
 	
-	c->mpMultiDisplay->redraw();
+	c->redraw();
 }
 
 void FLDisplayContainer::VerScrollCB(Fl_Scrollbar* scrollbar)
@@ -105,14 +114,14 @@ void FLDisplayContainer::VerScrollCB(Fl_Scrollbar* scrollbar)
 	if (c == NULL ) throw ( GUIException( "Pointer was messed" )  );
 
 	ScrollbarCB( c->mpVerScrollbar, c->mpVerRuler );
-	c->mpMultiDisplay->mVerRange = c->mpVerRuler->mRange;
-	c->mpMultiDisplay->redraw();
+	c->mVerRange = c->mpVerRuler->mRange;
+	c->redraw();
 
 }
 
 
 FLDisplayContainer::FLDisplayContainer(int x,int y,int w,int h)
-:Fl_Group(x,y,w,h)
+:Fl_Group(x,y,w,h), mpDisplay( NULL )
 {
 	mpHorRuler = NULL;
 	mpHorScrollbar = NULL;
@@ -146,17 +155,12 @@ FLDisplayContainer::FLDisplayContainer(int x,int y,int w,int h)
 	mpHorSlider->value(1);
 	mpVerSlider->value(1);
 
-	mpMultiDisplay = new FLMultiDisplay(x,y,w-70,h-60);
-	mpMultiDisplay->color(FL_BLACK);
-	mpMultiDisplay->end();
-
 	mpHorSlider->callback((Fl_Callback*)HorSliderCB);
 	mpHorScrollbar->callback((Fl_Callback*)HorScrollCB);
 
 	mpVerSlider->callback((Fl_Callback*)VerSliderCB);
 	mpVerScrollbar->callback((Fl_Callback*)VerScrollCB);
 
-	resizable(mpMultiDisplay);
 
 	end();
 }		
@@ -165,28 +169,30 @@ void FLDisplayContainer::SetHorRange( double top, double total )
 {
 	double pos = top, size = total<0?-total:total;
 
-	mpMultiDisplay->mHorRange.Set(pos,size,top,total);
+	mHorRange.Set(pos,size,top,total);
 	mpHorScrollbar->value(int(pos),int(size),int(top),int(total));
-	mpHorRuler->mRange = mpMultiDisplay->mHorRange;
+	mpHorRuler->mRange = mHorRange;
 }
 
 void FLDisplayContainer::SetVerRange(double top,double total)
 {
 	double pos = top, size = total<0?-total:total;
 
-	mpMultiDisplay->mVerRange.Set(pos,size,top,total);
+	mVerRange.Set(pos,size,top,total);
 	mpVerScrollbar->value(int(pos),int(size),int(top),int(total));
-	mpVerRuler->mRange = mpMultiDisplay->mVerRange;
+	mpVerRuler->mRange = mVerRange;
 }
 
-void FLDisplayContainer::Add( FLDisplay& display )
-{
-	mpMultiDisplay->mChildren.add( &display );
-	display.resize(x(),y(),w()-70,h()-60);
-}
 
-void FLDisplayContainer::Add( CLAMGUI::GLPort& port )
+void FLDisplayContainer::Add( GLPort* port )
 {
-	mpMultiDisplay->mChildren.add( &port );
-	port.resize( x(), y(), w() - 70, h() - 60 );
+	mpDisplay = port;
+	mpDisplay->SetHorRange( mHorRange );
+	mpDisplay->SetVerRange( mVerRange );
+
+	add( port );
+	resizable( port);
+
+	port->resize( x(), y(), w() - 70, h() - 60 );
+
 }

@@ -24,7 +24,6 @@
 
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Scrollbar.H>
-#include "FLMultiDisplay.hxx"
 #include "MRuler.hxx"
 
 
@@ -34,10 +33,15 @@ class Fl_Slider;
 namespace CLAMGUI
 {
 
+class GLPort;
+
 class FLDisplayContainer:public Fl_Group
 {
+	Range mVerRange;
+	Range mHorRange;
+
 public:
-	FLMultiDisplay* mpMultiDisplay;
+	GLPort*     mpDisplay;
 
 	MRuler*        mpHorRuler;
 	Fl_Scrollbar* mpHorScrollbar;
@@ -57,10 +61,12 @@ public:
 
 	void SetHorRange(double top,double total);
 	void SetVerRange(double top,double total);
-	void Add( FLDisplay& display );
-	void Add( CLAMGUI::GLPort& port );
+//	void Add( FLDisplay& display );
+	void Add( GLPort* port );
 
 	void redraw();
+
+	void draw();
 };
 
 }
