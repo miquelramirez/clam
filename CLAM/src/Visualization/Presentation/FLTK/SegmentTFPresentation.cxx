@@ -50,7 +50,7 @@ void SegmentTFPresentation::Init( const Geometry& g, const char* label )
 
 	mRenderer = new GLTF2DRenderer();
 
-	mDispContainer->Add( *mPort );
+	mDispContainer->Add( mPort );
 
 	mWindow->resizable( mDispContainer );
 
