@@ -44,6 +44,7 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 	CPPUNIT_TEST( testTransformations_withLoadedScore_FreqShift );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_PitchShift );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_OddEvenHarmonicRatio );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_SMSPitchDiscretization );
 //	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
 //	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
 	CPPUNIT_TEST_SUITE_END();
@@ -456,6 +457,25 @@ private:
 		Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_oddEvenHarmonicRatio-transf";
+		double delta = 0.09;
+		std::string diagnostic;
+
+		bool transformedAudioAreEqual =
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
+		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+	}
+	
+	void testTransformations_withLoadedScore_SMSPitchDiscretization()
+	{
+		LoadTransformationScore( mPath + "/SMSTests/pitchDiscretization-transf.xml" );
+		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		InitConfigs();
+		LoadInputSound();
+		Analyze();
+		Transform();
+		Synthesize();
+
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_pitchDiscretization-transf";
 		double delta = 0.09;
 		std::string diagnostic;
 
