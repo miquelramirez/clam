@@ -54,8 +54,9 @@ using namespace CLAM;
 SMSBase::SMSBase()
 	: mCurrentProgressIndicator( NULL ), mCurrentWaitMessage( NULL )
 {
-	mTransformation.mChainInput.Attach(mOriginalSegment);
-	mTransformation.mChainOutput.Attach(mTransformedSegment);
+	// @TODO: Needs InPort/OutPort fix
+	//mTransformation.mChainInput.Attach(mOriginalSegment);
+	//mTransformation.mChainOutput.Attach(mTransformedSegment);
 
 
 	mpAnalysis=new SMSAnalysis;
