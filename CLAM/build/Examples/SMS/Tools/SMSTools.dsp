@@ -113,6 +113,10 @@ SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\Fl_SMS_Gender_Selector.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\SMS_Configurator.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\examples\SMS\GUI\ScoreEditor\SMS_ScoreEditor_Helper.cxx
 # End Source File
 # Begin Source File
@@ -1387,14 +1391,6 @@ SOURCE=..\..\..\..\..\fltk\include\FL\Fl_Window.H
 # Begin Source File
 
 SOURCE=..\..\..\..\..\fltk\include\FL\gl.h
-# End Source File
-# End Group
-# Begin Group "Fl Headers No. 1"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\..\..\..\fltk\include\Fl\Fl_Group.H
 # End Source File
 # End Group
 # End Group
