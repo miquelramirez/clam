@@ -20,6 +20,10 @@
  */
 
 #include "AudioIO.hxx"
+#include "AudioIn.hxx"
+#include "AudioOut.hxx"
+#include "AudioManager.hxx"
+
 #include "ProcessingComposite.hxx"
 #include "OSDefines.hxx"
 #include <iostream>
