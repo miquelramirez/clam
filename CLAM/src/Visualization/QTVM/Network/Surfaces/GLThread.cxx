@@ -54,6 +54,7 @@ namespace CLAM
 			    _thread.Sleep(40);
 			}
 		    }
+		    _surf->doneCurrent();
 		}
 
 		void GLThread::Start()
