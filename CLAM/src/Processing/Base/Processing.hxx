@@ -75,6 +75,20 @@ namespace CLAM {
 			Processing & receiver, const std::string & inControlName );
 		
 	/**
+	 * Connects a free port to one belonging to a processing selecting it by the port number.
+	 * Short hand for sender.ConnectToIn(receiver.GetOutPort(inPortName))
+	 */
+	void ConnectPorts(
+			OutPortBase & sender, 
+			Processing & receiver, unsigned inPortNumber );
+	/**
+	 * Connects a processing port, selected by number, to a free in port.
+	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver)
+	 */
+	void ConnectPorts(
+			Processing & sender, unsigned outPortNumber, 
+			InPortBase & receiver );
+	/**
 	 * The base class for all the CLAM processing object classes.
 	 *
 	 * Processing is the base class for all the CLAM processing object classes.
