@@ -15,6 +15,18 @@
         *** Using atomic primitives for doing some similar hacks like writing
             fragments of the XML for an object to disk.
      ** This solves issue #0000045
+  * Network refactoring:
+     ** Published{In|Out}{Controls|Ports} -> {In|Out}{Control|Port}Registry
+  * Descriptors:
+     ** SpectralDescriptors::HighFrequencyCoefficent -> HighFrequencyContent
+        as specified by the original literature.
+  * Other:
+     ** ConnectPorts overloaded to connect free ports (that is not belonging
+        to any processing, normally used for injecting or extracting data)
+     ** Added processings implementing simple independent component analysis
+        (Original code contributed by Beiming Wang (QMUL))
+
+
 
 2004-11-18 CLAM_0_7_0
 'Easier deployment, better plots and Processing Networks'
