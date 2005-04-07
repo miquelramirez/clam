@@ -372,7 +372,6 @@ namespace CLAM
 	{
 	    if(mData.Size() == 1) 
 	    {
-		printf("where is the problem?");
 		mData.SetValue(0,y);
 		mData.SetXValue(0,x);
 
