@@ -6,9 +6,9 @@
 #include <list>
 #include <string>
 
-namespace CLAM{
+namespace CLAM_Annotator{
 
-  class LLDSchema:public DynamicType
+  class LLDSchema:public CLAM::DynamicType
   {
     DYNAMIC_TYPE(LLDSchema,1);
     DYN_CONTAINER_ATTRIBUTE(0,public, std::list<std::string>,LLDNames,Names);

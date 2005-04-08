@@ -26,10 +26,7 @@ FORMS	= AnnotatorBase.ui \
 	AboutBase.ui \
 	ConfigurationDialogBase.ui \
 	AnalyzeWindowBase.ui \
-	NewProjectDialogBase.ui \
-	NewProjectNameBase.ui \
-	OpenProjectDialogBase.ui \
-	SaveProjectAsDialogBase.ui
+	NewProjectDialogBase.ui
 IMAGES	= ../images/simac.png \
 	../images/graphmini.png \
 	../images/graph2.png \

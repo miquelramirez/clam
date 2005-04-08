@@ -257,6 +257,21 @@
     <item text="&amp;Edit" name="mEditMenu">
         <action name="editDelete_from_projectAction"/>
     </item>
+    <item text="Project" name="PopupMenuEditor">
+        <action name="projectSaveAction"/>
+        <item text="Save" name="ActionItem" accel="">
+            <action name="projectSaveSongListAction"/>
+            <action name="projectSaveSchemaAction"/>
+            <action name="projectSaveDescriptorsAction"/>
+            <action name="projectSaveAllAction"/>
+        </item>
+        <action name="projectLoadAction"/>
+        <item text="Load" name="ActionItem2" accel="">
+            <action name="projectLoadSongListAction"/>
+            <action name="projectLoadSchemaAction"/>
+            <action name="projectLoadDescriptorsAction"/>
+        </item>
+    </item>
     <item text="Analyze" name="SongMenu">
         <action name="songAnalyzeAction"/>
         <action name="songAnalyzeAllAction"/>
@@ -569,6 +584,86 @@
             <string>Delete (from project)</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>projectSaveAction</cstring>
+        </property>
+        <property name="text">
+            <string>Save</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>projectSaveSongListAction</cstring>
+        </property>
+        <property name="text">
+            <string>SongList</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>projectSaveSchemaAction</cstring>
+        </property>
+        <property name="text">
+            <string>Schema</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>projectSaveDescriptorsAction</cstring>
+        </property>
+        <property name="text">
+            <string>Descriptors</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>projectSaveAllAction</cstring>
+        </property>
+        <property name="text">
+            <string>All</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>projectLoadAction</cstring>
+        </property>
+        <property name="text">
+            <string>Load</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>projectLoadSongListAction</cstring>
+        </property>
+        <property name="text">
+            <string>SongList</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>projectLoadSchemaAction</cstring>
+        </property>
+        <property name="text">
+            <string>Schema</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>projectLoadDescriptorsAction</cstring>
+        </property>
+        <property name="text">
+            <string>Descriptors</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>helpnnAction</cstring>
+        </property>
+        <property name="text">
+            <string>nn</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -648,6 +743,48 @@
         <receiver>AnnotatorBase</receiver>
         <slot>AnnotatorBase_usesTextLabelChanged(bool)</slot>
     </connection>
+    <connection>
+        <sender>projectLoadSongListAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>loadSongList()</slot>
+    </connection>
+    <connection>
+        <sender>projectLoadSchemaAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>loadSchema()</slot>
+    </connection>
+    <connection>
+        <sender>projectLoadDescriptorsAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>loadDescriptors()</slot>
+    </connection>
+    <connection>
+        <sender>projectSaveSongListAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>saveSongList()</slot>
+    </connection>
+    <connection>
+        <sender>projectSaveSchemaAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>saveSchema()</slot>
+    </connection>
+    <connection>
+        <sender>projectSaveDescriptorsAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>saveDescriptors()</slot>
+    </connection>
+    <connection>
+        <sender>projectSaveAllAction</sender>
+        <signal>activated()</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>saveAll()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in declaration">ListViewItem.hxx</include>
@@ -713,6 +850,14 @@
     <slot specifier="pure virtual">analyze()</slot>
     <slot specifier="pure virtual">analyzeAll()</slot>
     <slot>AnnotatorBase_usesTextLabelChanged( bool )</slot>
+    <slot>loadSongList()</slot>
+    <slot>loadSchema()</slot>
+    <slot>loadDescriptors()</slot>
+    <slot>loadAll()</slot>
+    <slot>saveSongList()</slot>
+    <slot>saveSchema()</slot>
+    <slot>saveDescriptors()</slot>
+    <slot>saveAll()</slot>
 </slots>
 <functions>
     <function access="private">init()</function>
