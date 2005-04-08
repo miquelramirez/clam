@@ -92,7 +92,7 @@ void AnnotatorBase::songsClicked( QListViewItem * item )
 
 void AnnotatorBase::addSongsToProject()
 {
- std::cout<<"annotator base add songs to project"<<std::endl;
+
 }
 
 void AnnotatorBase::deleteSongsFromProject()
@@ -121,6 +121,54 @@ void AnnotatorBase::analyzeAll()
 
 
 void AnnotatorBase::AnnotatorBase_usesTextLabelChanged( bool )
+{
+
+}
+
+
+void AnnotatorBase::loadSongList()
+{
+
+}
+
+
+void AnnotatorBase::loadSchema()
+{
+
+}
+
+
+void AnnotatorBase::loadDescriptors()
+{
+
+}
+
+
+void AnnotatorBase::loadAll()
+{
+
+}
+
+
+void AnnotatorBase::saveSongList()
+{
+
+}
+
+
+void AnnotatorBase::saveSchema()
+{
+
+}
+
+
+void AnnotatorBase::saveDescriptors()
+{
+
+}
+
+
+void AnnotatorBase::saveAll()
 {
 
 }

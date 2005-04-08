@@ -4,6 +4,8 @@
 
 #include "DynamicType.hxx"
 
+namespace CLAM_Annotator{
+
 class SongFiles: public CLAM::DynamicType
 {
     DYNAMIC_TYPE(SongFiles,1);
@@ -16,5 +18,6 @@ class SongFiles: public CLAM::DynamicType
   }
 };
 
+};
 
 #endif
