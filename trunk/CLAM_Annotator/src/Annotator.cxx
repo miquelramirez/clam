@@ -213,9 +213,9 @@ void Annotator::initLLDescriptorsWidgets()
 	mBPFEditors.resize(nTabs);
 	for(it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
 	{
+	    QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
 	    *it = new CLAM::VM::BPFEditor(tabWidget2->page(i));
 	    (*it)->Hide();
-	    QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
 	    tabLayout->addWidget(*it);
 	}
 
