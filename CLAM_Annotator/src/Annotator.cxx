@@ -12,12 +12,8 @@
 #include <qeventloop.h>
 #include <qfiledialog.h>
 
-#include "AnalyzeWindow.hxx"
-#include "OpenProjectDialog.hxx"
-#include "NewProjectDialog.hxx"
-#include "AddSongsToProjectDialog.hxx"
-#include "SaveProjectAsDialog.hxx"
 
+#include "AnalyzeWindow.hxx"
 
 #include <algorithm>
 
@@ -33,7 +29,6 @@
 #include "TXTSongParser.hxx"
 
 
-#include "LLDSchema.hxx"
 #include "XMLStorage.hxx"
 
 #include "BPFEditor.hxx"
@@ -77,10 +72,20 @@ void Annotator::initInterface()
 
 void Annotator::initProject()
 {
-  CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
+  if (mProject.GetSongs()!="")
+  {
+    CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
+  }
   initSongs(name(), mSongFiles.GetFileNames());
+  
+  if (mProject.GetSchema()!="")
+  {
+    CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
+  }
   initLLDescriptorsWidgets();
   languageChange();
+  loadDescriptorPool();
+  
   mChanges = false;
 }
 
@@ -187,38 +192,35 @@ void Annotator::initLLDescriptorsWidgets()
   removeLLDTabs();
   
 
-  int nTabs = mLLDSchema.GetLLDNames().size();
+  int nTabs = mSchema.GetLLDSchema().GetLLDNames().size();
         
   mTabPages.resize(nTabs);
-	std::vector<QWidget*>::iterator it0;
-	std::string baseTabString("TabPage");
-	std::ostringstream tabString;
-	int i = 0;
-	for(it0 = mTabPages.begin(); it0 != mTabPages.end(); it0++,i++)
+  std::vector<QWidget*>::iterator it0;
+  std::string baseTabString("TabPage");
+  std::ostringstream tabString;
+  int i = 0;
+  for(it0 = mTabPages.begin(); it0 != mTabPages.end(); it0++,i++)
+    {
+      tabString.flush();
+      tabString << baseTabString;
+      if(it0 !=  mTabPages.begin())
 	{
-	  tabString.flush();
-	  tabString << baseTabString;
-	  if(it0 !=  mTabPages.begin())
-	  {
-	    tabString << "_" << i;
-	   (*it0) = new QWidget( tabWidget2, tabString.str().c_str());
-	   tabWidget2->insertTab( (*it0), QString("") );
-	  }
-	  else (*it0)=tabWidget2->page(0);
+	  tabString << "_" << i;
+	  (*it0) = new QWidget( tabWidget2, tabString.str().c_str());
+	  tabWidget2->insertTab( (*it0), QString("") );
 	}
-	
-	mBPFs.resize(nTabs);
-	i=0;
-	std::vector<CLAM::VM::BPFEditor*>::iterator it;
-	mBPFEditors.resize(nTabs);
-	for(it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
+      mBPFs.resize(nTabs);
+      i=0;
+      std::vector<CLAM::VM::BPFEditor*>::iterator it;
+      mBPFEditors.resize(nTabs);
+      for(it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
 	{
-	    QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
-	    *it = new CLAM::VM::BPFEditor(tabWidget2->page(i));
-	    (*it)->Hide();
-	    tabLayout->addWidget(*it);
+	  QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
+	  *it = new CLAM::VM::BPFEditor(tabWidget2->page(i));
+	  (*it)->Hide();
+	  tabLayout->addWidget(*it);
 	}
-
+    }
 }
 
 void Annotator::removeLLDTabs()
@@ -452,8 +454,9 @@ void Annotator::deleteSongsFromProject()
 
 void Annotator::addSongsToProject()
 {
-	AddSongsToProjectDialog * dialog = new AddSongsToProjectDialog( *mpData, this, "add songs to project", WDestructiveClose);
+  /*	AddSongsToProjectDialog * dialog = new AddSongsToProjectDialog( *mpData, this, "add songs to project", WDestructiveClose);
 	dialog->show();
+  */	
 }
 
 void Annotator::fileOpen()
@@ -464,7 +467,7 @@ void Annotator::fileOpen()
   {
     mProjectFileName = std::string(qFileName.ascii());
     CLAM::XMLStorage::Restore(mProject,mProjectFileName);
-    LoadDescriptorPool();
+    //loadDescriptorPool();
     initDataFacade();
     initInterface();
     initProject();
@@ -474,8 +477,12 @@ void Annotator::fileOpen()
 void Annotator::fileNew()
 {
   mProjectFileName = "";
+  mProject.SetSongs("");
+  mProject.SetDescriptorPool("");
+  mProject.SetSchema("");
   mSongFiles.GetFileNames().resize(0);
-  mLLDSchema.GetLLDNames().resize(0);
+  mSchema.GetLLDSchema().GetLLDNames().resize(0);
+  mSchema.GetHLDSchema().GetHLDs().resize(0);
   initInterface();
   initProject();
   mChanges = true;
@@ -488,9 +495,22 @@ void Annotator::fileSave()
 	if(mProjectFileName=="") fileSaveAs();
 	else
 	{
+	  //Before adding the suffix I should better remove the .xml maybe by doing:
+	  //songFile = mProjectFileName;
+	  //songFile.remove(songFile.find_last_of(".xml"),4);
 	  CLAM::XMLStorage::Dump(mProject,"Project",mProjectFileName);
-	  CLAM::XMLStorage::Dump(mSongFiles, "Songs", mProject.GetSongs());
-	  CLAM::XMLStorage::Dump(*mpDescriptorPool, "DescriptorPool",mProject.GetDescriptorPool());
+	  std::string songFile = mProject.GetSongs();
+	  if(songFile == "")
+	    songFile = mProjectFileName+".songs.xml";
+	  CLAM::XMLStorage::Dump(mSongFiles, "Songs", songFile);
+	  std::string descriptorPoolFile = mProject.GetDescriptorPool();
+	  if(descriptorPoolFile == "")
+	    descriptorPoolFile = mProjectFileName+".pool.xml";
+	  CLAM::XMLStorage::Dump(*mpDescriptorPool, "DescriptorPool",descriptorPoolFile);
+	  std::string schemaFile = mProject.GetSchema();
+	  if(schemaFile == "")
+	    schemaFile = mProjectFileName+".schema.xml";
+	  CLAM::XMLStorage::Dump(mSchema, "Schema",schemaFile);
 	}
 
 }
@@ -504,126 +524,114 @@ void Annotator::fileSaveAs()
     fileSave();
   }
 }
+void  Annotator::loadSongList()
+{
+  QString qFileName;
+  qFileName = QFileDialog::getOpenFileName(QString::null,"*.xml");
+  if(qFileName != QString::null)
+  {
+    mProject.SetSongs(std::string(qFileName.ascii()));
+    CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
+    //TODO: Does loading the song list affect all this
+    initDataFacade();
+    initInterface();
+    initProject();
+  }
+}
+
+void  Annotator::loadSchema()
+{
+  QString qFileName;
+  qFileName = QFileDialog::getOpenFileName(QString::null,"*.xml");
+  if(qFileName != QString::null)
+  {
+    mProject.SetSchema(std::string(qFileName.ascii()));
+    CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
+    //TODO: Does loading the schema affect all this
+    initDataFacade();
+    initInterface();
+    initProject();
+  }
+}
+
+void  Annotator::loadDescriptors()
+{
+  QString qFileName;
+  qFileName = QFileDialog::getOpenFileName(QString::null,"*.xml");
+  if(qFileName != QString::null)
+  {
+    mProject.SetDescriptorPool(std::string(qFileName.ascii()));
+    CLAM::XMLStorage::Restore(*mpDescriptorPool,mProject.GetDescriptorPool());
+    //TODO: Does loading the descriptors affect all this
+    initDataFacade();
+    initInterface();
+    initProject();
+  }
+
+}
+
+void  Annotator::saveSongList()
+{
+  QString qFileName;
+  qFileName = QFileDialog::getSaveFileName(QString::null,"*.xml");
+  if(qFileName != QString::null)
+  {
+    mProject.SetSongs(std::string(qFileName.ascii()));
+    CLAM::XMLStorage::Dump(mSongFiles,"Songs",mProject.GetSongs());
+  }
+
+}
+
+void  Annotator::saveSchema()
+{
+  QString qFileName;
+  qFileName = QFileDialog::getSaveFileName(QString::null,"*.xml");
+  if(qFileName != QString::null)
+  {
+    mProject.SetSchema(std::string(qFileName.ascii()));
+    CLAM::XMLStorage::Dump(mSchema,"Schema",mProject.GetSchema());
+  }
+
+}
+
+void  Annotator::saveDescriptors()
+{
+  QString qFileName;
+  qFileName = QFileDialog::getSaveFileName(QString::null,"*.xml");
+  if(qFileName != QString::null)
+  {
+    mProject.SetDescriptorPool(std::string(qFileName.ascii()));
+    CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mProject.GetDescriptorPool());
+  }
+
+}
+
+void  Annotator::saveAll()
+{
+  if(QMessageBox::information(this,QString("Saving Song List"),
+			      QString("Please choose Song List filename"),
+			      QString("OK"),QString("Cancel")) == 0)
+    saveSongList();
+  
+  if(QMessageBox::information(this,QString("Saving Schema"),
+			      QString("Please choose now Schema filename"),
+			      QString("OK"),QString("Cancel")) == 0)
+    saveSchema();
+
+  if(QMessageBox::information(this,QString("Saving Descriptors"),
+			      QString("Please finally choose Descriptors filename"),
+			      QString("OK"),QString("Cancel")) == 0)
+    saveSongList();
+ 
+
+}
+
 
 void Annotator::initSongs( const std::string & nameProject, const std::vector<std::string> & files)
 {
 	mLogicGroup->hide();
 	addSongs( files );	
 }
-
-void Annotator::drawDescriptorsName()
-{
-	mDescriptorsTable->setNumRows(8);
-	mDescriptorsTable->setItem(0,0,new TableItem(mDescriptorsTable,TableItem::Never,"Artists"));    
-	mDescriptorsTable->setItem(1,0,new TableItem(mDescriptorsTable,TableItem::Never,"Title"));
-	mDescriptorsTable->setItem(2,0,new TableItem(mDescriptorsTable,TableItem::Never,"Genre"));
-	mDescriptorsTable->setItem(3,0,new TableItem(mDescriptorsTable,TableItem::Never,"Danceability"));
-	mDescriptorsTable->setItem(4,0,new TableItem(mDescriptorsTable,TableItem::Never,"Tonality key") );
-	mDescriptorsTable->setItem(5,0,new TableItem(mDescriptorsTable,TableItem::Never,"Tonality mode") );
-	mDescriptorsTable->setItem(6,0,new TableItem(mDescriptorsTable,TableItem::Never,"Dynamic complexity") );
-	mDescriptorsTable->setItem(7,0,new TableItem(mDescriptorsTable,TableItem::Never,"Beats per minute") );
-}
-
-void Annotator::drawArtists( int index, bool computed = true )
-{
-	QString value = mSongDescriptors[index]["Artist"];
-	if(!computed) value = "?";
-	mDescriptorsTable->setItem(0,1,new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value));
-}
-
-void Annotator::drawTitle( int index, bool computed = true )
-{
-	QString value = QString( mSongDescriptors[index]["Title"].c_str() );
-	if(!computed) value = "?";
-	mDescriptorsTable->setItem(1,1,new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value));    
-
-}
-
-void Annotator::drawGenre( int index, bool computed = true )
-{
-	QString value = mpData->genreWithoutSinonims( mSongDescriptors[index]["genre"] );
-	if(!computed) value = "?";
-	QStringList listOfGenres;
-	createListOfGenres( listOfGenres, value);
-	std::vector<QStringList> listOfGenreslist;
-	listOfGenreslist.push_back( listOfGenres );
-	mDescriptorsTable->setItem(2,1,new ComboTableItem(mDescriptorsTable,listOfGenreslist,false)); 
-	
-}
-
-void Annotator::drawDynamicComplexity( int index, bool computed = true )
-{
-	QString value = mSongDescriptors[index]["Dynamic Complexity"];
-	if(!computed) value = "?";
-	double valueInDouble = value.toDouble();
-	valueInDouble = mpData->normalizeDynamicComplexity( valueInDouble ) *10.0;
-	int valueInInt = int(valueInDouble);
-	value.setNum( valueInInt );
-	mDescriptorsTable->setItem(6,1,new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent, value ) );
-	
-}
-
-void Annotator::drawDanceability( int index, bool computed = true )
-{
-	QString value = mSongDescriptors[index]["Danceability"];
-	if(!computed) value = "?";
-	double valueInDouble = value.toDouble() ;
-	valueInDouble = mpData->normalizeDanceability( valueInDouble )*10.0;
-	int valueInInt = int(valueInDouble);
-	value.setNum( valueInInt );
-	mDescriptorsTable->setItem(3,1,new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent, value ) );
-	
-}
-
-void Annotator::drawBPM( int index, bool computed = true )
-{
-	QString value = mSongDescriptors[index]["BPM"];
-	if(!computed) value = "?";
-	mDescriptorsTable->setItem(7,1, new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value) );
-}
-
-void Annotator::drawTonality( int index, bool computed = true )
-{
-	std::vector<QStringList> listOfKeysList;
-	QStringList listOfKeys;
-	QString key = QString( mSongDescriptors[index]["Tonal Descriptor: Key Note"].c_str() );
-	if(!computed) key = "?";
-	createListOfTonalKeys( listOfKeys, key );
-	listOfKeysList.push_back( listOfKeys );
-	mDescriptorsTable->setItem(4,1,new ComboTableItem( mDescriptorsTable, listOfKeysList, false ) );
-	
-	std::vector<QStringList> listOfModesList;
-	QStringList listOfModes;
-	QString value = mSongDescriptors[index]["Tonal Descriptor: Mode"];
-	if(!computed) value = "?";
-	if ( value == "Major" )
-		listOfModes<<"Major"<<"Minor";
-	else if ( value == "Minor" )
-		listOfModes<<"Minor"<<"Major";
-	else
-		listOfModes<<"?"<<"Major"<<"Minor";
-	listOfModesList.push_back( listOfModes );
-	mDescriptorsTable->setItem(5,1,new ComboTableItem( mDescriptorsTable, listOfModesList, false ) );
-}
-
-void Annotator::drawDescriptorsValue( int index, bool computed)
-{
-	drawArtists( index );
-	drawTitle( index );
-	drawGenre( index, computed );
-	drawDanceability( index, computed );
-	drawTonality( index, computed );
-	drawDynamicComplexity( index, computed );
-	drawBPM( index, computed );
-}
-
-void Annotator::fillGlobalDescriptors( int index)
-{
-   mDescriptorsTable->show();
-  drawDescriptorsName();
-  bool computed = mHaveHLDescriptors[index];
-  drawDescriptorsValue( index, computed );
-} 
 
 void Annotator::chooseColor()
 {
@@ -735,7 +743,7 @@ void Annotator::generateEnvelopesFromDescriptors()
 {
     unsigned i=0, editors_size = mBPFEditors.size();
     std::list<std::string>::iterator it;
-    std::list<std::string>& descriptorsNames = mLLDSchema.GetLLDNames();
+    std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
 
     for(it = descriptorsNames.begin();i < editors_size; i++, it++)
     {
@@ -802,7 +810,7 @@ void Annotator::languageChange()
     std::vector<QWidget*>::iterator it;
     std::list<std::string>::iterator it2;
     
-    std::list<std::string>& names = mLLDSchema.GetLLDNames();
+    std::list<std::string>& names = mSchema.GetLLDSchema().GetLLDNames();
     for(it2 = names.begin() ,it = mTabPages.begin(); 
 	it2 != names.end(); it++,it2++)
     {
@@ -811,16 +819,38 @@ void Annotator::languageChange()
     }
 }
 
-void Annotator::LoadDescriptorPool()
+void Annotator::loadDescriptorPool()
 {
-  //TODO: The user should select this schema
-  CLAM::XMLStorage::Restore(mLLDSchema,mProject.GetLLDSchema());
+ 
 
-  //Create Descriptors Pool Scheme and add attributes following loaded LLD schema
+  //Create Descriptors Pool Scheme and add attributes following loaded schema
   
-  std::list<std::string>::iterator it;
-  std::list<std::string>& descriptorsNames = mLLDSchema.GetLLDNames();
+  //First HLD's
+  std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();
+  std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
   mDescriptionScheme = CLAM::DescriptionScheme();//we need to initialize everything
+  for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
+  {
+    if((*it2).GetType()=="Float")
+    {
+      mDescriptionScheme.AddAttribute <float>("Song",(*it2).GetName());
+    }
+    else if((*it2).GetType()=="Int")
+    {
+      mDescriptionScheme.AddAttribute <int>("Song",(*it2).GetName());
+    }
+    else if((*it2).GetType()=="RestrictedString")
+    {
+      mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
+    }
+    else
+    {
+      mDescriptionScheme.AddAttribute <std::string>("Song",(*it2).GetName());
+    }
+  }
+  //And now LLD's  
+  std::list<std::string>::iterator it;
+  std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
   for(it = descriptorsNames.begin(); it != descriptorsNames.end(); it++)
   {
     mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
@@ -830,8 +860,9 @@ void Annotator::LoadDescriptorPool()
   if(mpDescriptorPool) delete mpDescriptorPool;
   mpDescriptorPool = new CLAM::DescriptionDataPool(mDescriptionScheme);
 
-  //Load Descriptors Pool
-  CLAM::XMLStorage::Restore((*mpDescriptorPool),mProject.GetDescriptorPool());
+   //Load Descriptors Pool
+  if(mProject.GetDescriptorPool()!="")
+    CLAM::XMLStorage::Restore((*mpDescriptorPool),mProject.GetDescriptorPool());
   
 }
 
@@ -858,6 +889,154 @@ bool Annotator::event(QEvent* e)
 	}
     }
     return QWidget::event(e);
+}
+
+
+/*Functions to make HLDs edition table */
+void Annotator::drawDescriptorsName()
+{
+  std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
+  mDescriptorsTable->setNumRows(hlds.size());
+  std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
+  int i;
+  for(it = hlds.begin(), i = 0 ; it != hlds.end(); it++, i++)
+  {
+    mDescriptorsTable->setItem(i,0,new TableItem(mDescriptorsTable,TableItem::Never, (*it).GetName()));
+  }
+}
+
+//TODO: mSongDescriptors has to be replaced by a list of Pools
+void Annotator::drawHLD(int songIndex, const std::string& descriptorName, std::string& value, bool computed = true)
+{
+  /*  QString qvalue = mSongDescriptors[songIndex][descriptorName.c_str()];
+  if(!computed) qvalue = "?";
+  mDescriptorsTable->setItem(findHLDescriptorIndex(),1,new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value));*/
+}
+
+void Annotator::drawHLD(int songIndex, const std::string& descriptorName, float value, bool computed = true)
+{
+
+}
+
+void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int value, bool computed = true)
+{
+
+}
+
+void Annotator::drawArtists( int index, bool computed = true )
+{
+  //drawHLD
+	QString value = mSongDescriptors[index]["Artist"];
+	if(!computed) value = "?";
+	mDescriptorsTable->setItem(0,1,new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value));
+}
+
+void Annotator::drawTitle( int index, bool computed = true )
+{
+	QString value = QString( mSongDescriptors[index]["Title"].c_str() );
+	if(!computed) value = "?";
+	mDescriptorsTable->setItem(1,1,new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value));    
+
+}
+
+void Annotator::drawGenre( int index, bool computed = true )
+{
+	QString value = mpData->genreWithoutSinonims( mSongDescriptors[index]["genre"] );
+	if(!computed) value = "?";
+	QStringList listOfGenres;
+	createListOfGenres( listOfGenres, value);
+	std::vector<QStringList> listOfGenreslist;
+	listOfGenreslist.push_back( listOfGenres );
+	mDescriptorsTable->setItem(2,1,new ComboTableItem(mDescriptorsTable,listOfGenreslist,false)); 
+	
+}
+
+void Annotator::drawDynamicComplexity( int index, bool computed = true )
+{
+	QString value = mSongDescriptors[index]["Dynamic Complexity"];
+	if(!computed) value = "?";
+	double valueInDouble = value.toDouble();
+	valueInDouble = mpData->normalizeDynamicComplexity( valueInDouble ) *10.0;
+	int valueInInt = int(valueInDouble);
+	value.setNum( valueInInt );
+	mDescriptorsTable->setItem(6,1,new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent, value ) );
+	
+}
+
+void Annotator::drawDanceability( int index, bool computed = true )
+{
+	QString value = mSongDescriptors[index]["Danceability"];
+	if(!computed) value = "?";
+	double valueInDouble = value.toDouble() ;
+	valueInDouble = mpData->normalizeDanceability( valueInDouble )*10.0;
+	int valueInInt = int(valueInDouble);
+	value.setNum( valueInInt );
+	mDescriptorsTable->setItem(3,1,new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent, value ) );
+	
+}
+
+void Annotator::drawBPM( int index, bool computed = true )
+{
+	QString value = mSongDescriptors[index]["BPM"];
+	if(!computed) value = "?";
+	mDescriptorsTable->setItem(7,1, new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value) );
+}
+
+void Annotator::drawTonality( int index, bool computed = true )
+{
+	std::vector<QStringList> listOfKeysList;
+	QStringList listOfKeys;
+	QString key = QString( mSongDescriptors[index]["Tonal Descriptor: Key Note"].c_str() );
+	if(!computed) key = "?";
+	createListOfTonalKeys( listOfKeys, key );
+	listOfKeysList.push_back( listOfKeys );
+	mDescriptorsTable->setItem(4,1,new ComboTableItem( mDescriptorsTable, listOfKeysList, false ) );
+	
+	std::vector<QStringList> listOfModesList;
+	QStringList listOfModes;
+	QString value = mSongDescriptors[index]["Tonal Descriptor: Mode"];
+	if(!computed) value = "?";
+	if ( value == "Major" )
+		listOfModes<<"Major"<<"Minor";
+	else if ( value == "Minor" )
+		listOfModes<<"Minor"<<"Major";
+	else
+		listOfModes<<"?"<<"Major"<<"Minor";
+	listOfModesList.push_back( listOfModes );
+	mDescriptorsTable->setItem(5,1,new ComboTableItem( mDescriptorsTable, listOfModesList, false ) );
+}
+
+void Annotator::drawDescriptorsValue( int index, bool computed)
+{
+	drawArtists( index );
+	drawTitle( index );
+	drawGenre( index, computed );
+	drawDanceability( index, computed );
+	drawTonality( index, computed );
+	drawDynamicComplexity( index, computed );
+	drawBPM( index, computed );
+}
+
+void Annotator::fillGlobalDescriptors( int index)
+{
+   mDescriptorsTable->show();
+  drawDescriptorsName();
+  bool computed = mHaveHLDescriptors[index];
+  drawDescriptorsValue( index, computed );
+} 
+
+int Annotator::findHLDescriptorIndex(const std::string& name)
+{
+  //TODO: should find a more efficient search algorithm
+
+  int i;
+  std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
+  std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
+  for(it = hlds.begin(), i = 0 ; it != hlds.end(); it++, i++)
+  {
+    if ((*it).GetName() == name) return i;
+  }
+  return -1;
 }
 
 double Annotator::GetMinY(const CLAM::BPF& bpf)
@@ -889,6 +1068,5 @@ double Annotator::GetMaxY(const CLAM::BPF& bpf)
     value += fabs(value)*0.1;
     return value;
 }
-
 
 
