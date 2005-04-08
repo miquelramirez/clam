@@ -11,7 +11,8 @@ namespace CLAM
     namespace VM
     {
 	BPFEditor::BPFEditor(QWidget* parent)
-	    : QWidget(parent)
+	    : QWidget(parent), 
+	      mColorScheme(EBlackOverWhite)
 	{
 	    InitBPFEditor();
 	}
@@ -268,6 +269,7 @@ namespace CLAM
 	}
     }
 }
+
 
 // END
 
