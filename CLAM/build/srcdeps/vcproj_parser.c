@@ -139,6 +139,17 @@ extern void vcproj_parse(const char* outFilename)
 	int nline = 0;
 
 	outfile = fopen(outFilename, "w");
+
+	if ( outfile == NULL )
+	{
+		fprintf( stderr, "Could not open output file '%s'", outFilename );
+		fprintf( stderr, "Check that:\n");
+		fprintf( stderr, "\t1) There is enough space on disk\n");
+		fprintf( stderr, "\t2) Current user has privileges to write on output file's folder\n");
+		fprintf( stderr, "\t3) Output file's path is valid, that parent folder exists etc\n");
+		exit(-1);
+	}
+
 	state = visualStudioProject;
 	while(empty_vcproj_lines[nline])
 	{
