@@ -29,7 +29,6 @@
 #include "AudioFile.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
 #include "MultiChannelAudioFileReader.hxx"
-#include "envelope_point_editor.hxx"
 #include "DataFacade.hxx"
 #include "TXTSongParser.hxx"
 
@@ -37,9 +36,15 @@
 #include "LLDSchema.hxx"
 #include "XMLStorage.hxx"
 
-using CLAM::VM::QtAudioPlot;
+#include "BPFEditor.hxx"
 
-Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f),mEnvelopes(0),mFunctionEditors(0),mCurrentIndex(0),mpTabLayout(0)
+using CLAM::VM::QtAudioPlot;
+using CLAM::VM::BPFEditor;
+
+using CLAM::TData;
+using CLAM::TIndex;
+
+Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f),mCurrentIndex(0),mpTabLayout(0)
 {
   //I should try to get rid of this constructor and pass things to the new one(see below)	
   setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
@@ -49,7 +54,7 @@ Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade
   initAudioWidget();
 }
 
-Annotator::Annotator():AnnotatorBase( 0, "annotator", WDestructiveClose),mEnvelopes(0),mFunctionEditors(0),mCurrentIndex(0),mpTabLayout(0)
+Annotator::Annotator():AnnotatorBase( 0, "annotator", WDestructiveClose),mCurrentIndex(0),mpTabLayout(0)
 {
   mpDescriptorPool = NULL;
   mpAudioPlot = NULL;
@@ -75,7 +80,6 @@ void Annotator::initProject()
   CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
   initSongs(name(), mSongFiles.GetFileNames());
   initLLDescriptorsWidgets();
-  initEnvelopes();
   languageChange();
   mChanges = false;
 }
@@ -202,18 +206,17 @@ void Annotator::initLLDescriptorsWidgets()
 	  }
 	  else (*it0)=tabWidget2->page(0);
 	}
-
-	std::vector<CLAM::Envelope_Point_Editor*>::iterator it;
-	std::vector<CLAM::Envelope*>::iterator it2;
+	
+	mBPFs.resize(nTabs);
 	i=0;
-	mFunctionEditors.resize(nTabs);
-	mEnvelopes.resize(nTabs);
-	for(it=mFunctionEditors.begin();it!=mFunctionEditors.end();it++,i++)
+	std::vector<CLAM::VM::BPFEditor*>::iterator it;
+	mBPFEditors.resize(nTabs);
+	for(it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
 	{
-	  *it = new CLAM::Envelope_Point_Editor(tabWidget2->page(i));
-	  (*it)->setTimeFactor((float)1.0/44100.0);//TODO: should be sampling rate
-	  QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
-	  tabLayout->addWidget(*it);
+	    *it = new CLAM::VM::BPFEditor(tabWidget2->page(i));
+	    (*it)->Hide();
+	    QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
+	    tabLayout->addWidget(*it);
 	}
 
 }
@@ -674,22 +677,24 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 
 void Annotator::drawLLDescriptors(int index)
 {
-  std::vector<CLAM::Envelope_Point_Editor*>::iterator it;
-  std::vector<CLAM::Envelope*>::iterator it2;
- 
-  int i;
+    generateEnvelopesFromDescriptors();
 
-  generateEnvelopesFromDescriptors();
-
-  for(it=mFunctionEditors.begin(),it2=mEnvelopes.begin();it!=mFunctionEditors.end();it++,it2++)
+    std::vector<CLAM::BPF>::iterator bpf_it = mBPFs.begin();
+    std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
+    for(;bpf_it != mBPFs.end(); bpf_it++, editors_it++)
     {
-     if(mHaveLLDescriptors[index])
+	if(mHaveLLDescriptors[index])
 	{
-	  (*it)->set_envelope(*it2);
-	  (*it)->show();
+	    (*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
+	    (*editors_it)->SetYRange(GetMinY((*bpf_it)),GetMaxY((*bpf_it)));
+	    (*editors_it)->SetData((*bpf_it));
+	    (*editors_it)->Show();
 	}
-      else (*it)->hide();
-    }
+	else
+	{
+	    (*editors_it)->Hide();
+	}
+  }
 
 }
 
@@ -726,105 +731,69 @@ void Annotator::loadAudioFile(const char* filename)
  
 }
 
-void Annotator::initEnvelopes()
-{
-  std::vector<CLAM::Envelope*>::iterator it;
-  for(it=mEnvelopes.begin();it!=mEnvelopes.end();it++)
-  {
-    (*it)=NULL;
-  }
-}
-
 void Annotator::generateEnvelopesFromDescriptors()
 {
-  std::vector<CLAM::Envelope*>::iterator it;
-  std::list<std::string>::iterator it2;
-  std::list<std::string>& descriptorsNames = mLLDSchema.GetLLDNames();
+    unsigned i=0, editors_size = mBPFEditors.size();
+    std::list<std::string>::iterator it;
+    std::list<std::string>& descriptorsNames = mLLDSchema.GetLLDNames();
 
-  for(it=mEnvelopes.begin(), it2 = descriptorsNames.begin();it!=mEnvelopes.end();it++, it2++)
-  {
-      if(*it)
-      {
-	delete (*it);
-	(*it)=NULL;
-      }
-      (*it)=generateEnvelopeFromDescriptor((*it2));
-  }
+    for(it = descriptorsNames.begin();i < editors_size; i++, it++)
+    {
+	mBPFs[i]=generateEnvelopeFromDescriptor((*it));
+    }
 }
   
 void Annotator::generateRandomEnvelopes()
 {
-  std::vector<CLAM::Envelope*>::iterator it;
-  
-  srand(time(NULL));
+    srand(time(NULL));
  
-  for(it=mEnvelopes.begin();it!=mEnvelopes.end();it++)
-  {
-      if(*it)
-      {
-	delete (*it);
-	(*it)=NULL;
-      }
-      (*it)=generateRandomEnvelope();
-  }
+    for(unsigned i=0; i < mBPFEditors.size(); i++)
+    {
+	mBPFs[i]=generateRandomEnvelope();
+    }
 }
 
-CLAM::Envelope* Annotator::generateRandomEnvelope()
+CLAM::BPF Annotator::generateRandomEnvelope()
 {
-  CLAM::Envelope* tmpEnvelope = new CLAM::Envelope();
-  int audioSize=mCurrentAudio.GetSize();
-  int i;
-  tmpEnvelope->set_maxY_value(100);
-  tmpEnvelope->set_minY_value(0);
-  tmpEnvelope->set_maxX_value(audioSize);
-  tmpEnvelope->set_minX_value(0);
-  tmpEnvelope->set_max_nodes(-1);
+    CLAM::BPF bpf;
+    int audioSize=mCurrentAudio.GetSize();
+    TData sr = mCurrentAudio.GetSampleRate();
+    int i;
    
-  int randomInt=(float (rand())/float(RAND_MAX))*100;
-  int randomIncr;
-  for(i=0;i<audioSize;i+=30000)
-  {
-     randomIncr = (float (rand())/float(RAND_MAX))*20-10;
-     randomInt += randomIncr;
-     if(randomInt>100) randomInt = 80;
-     if(randomInt<0) randomInt=20;
+    int randomInt=(float (rand())/float(RAND_MAX))*100;
+    int randomIncr;
+    for(i=0;i<audioSize;i+=30000)
+    {
+	randomIncr = (float (rand())/float(RAND_MAX))*20-10;
+	randomInt += randomIncr;
+	if(randomInt>100) randomInt = 80;
+	if(randomInt<0) randomInt=20;
      
-     tmpEnvelope->add_node_at_offset(i,randomInt);
-  }
-  return tmpEnvelope;
+	bpf.Insert(TData(i)/sr,TData(randomInt));
+    }
+    return bpf;
 }
 
 
-CLAM::Envelope* Annotator::generateEnvelopeFromDescriptor(const std::string& name)
+CLAM::BPF Annotator::generateEnvelopeFromDescriptor(const std::string& name)
 {
-  const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",name);
-  CLAM::Envelope* tmpEnvelope = new CLAM::Envelope();
-
-  int audioSize=mCurrentAudio.GetSize();
-  int i,x;
+    const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",name);
   
-  int nFrames = mpDescriptorPool->GetNumberOfContexts("Frame");
-  int frameSize = audioSize/nFrames;
+    int audioSize=mCurrentAudio.GetSize();
+    TData sr = mCurrentAudio.GetSampleRate();
+    int i,x;
+  
+    int nFrames = mpDescriptorPool->GetNumberOfContexts("Frame");
+    int frameSize = audioSize/nFrames;
 
-  tmpEnvelope->set_maxY_value(100);
-  tmpEnvelope->set_minY_value(0);
-  tmpEnvelope->set_maxX_value(audioSize);
-  tmpEnvelope->set_minX_value(0);
-  tmpEnvelope->set_max_nodes(-1);
-   
-  for(i=0, x=0; i<nFrames ; x+=frameSize, i++)
-  {
-    int value;
-    //we must make sure that the limits of the envelope are not surpassed
-    //TODO: we should have dynamic limits!
-    if(values[i]>100) value = 100;
-    else if(values[i]<0) value = 0;
-    else value = values[i];
+    CLAM::BPF bpf;
 
-    tmpEnvelope->add_node_at_offset(x,value);
-
-  }
-  return tmpEnvelope;
+    for(i=0, x=0; i<nFrames ; x+=frameSize, i++)
+    {
+	bpf.Insert(TData(x)/sr,TData(values[i]));
+    }
+  
+    return bpf;
 }
 
 void Annotator::languageChange()
@@ -890,4 +859,36 @@ bool Annotator::event(QEvent* e)
     }
     return QWidget::event(e);
 }
+
+double Annotator::GetMinY(const CLAM::BPF& bpf)
+{
+    double value=1E9;
+    for(TIndex i=0; i < bpf.Size(); i++)
+    {
+	double current = double(bpf.GetValueFromIndex(i));
+	if(current < value)
+	{
+	    value = current;
+	}
+    }
+    value -= fabs(value)*0.1;
+    return value;
+}
+
+double Annotator::GetMaxY(const CLAM::BPF& bpf)
+{
+    double value=-1E9;
+    for(TIndex i=0; i < bpf.Size(); i++)
+    {
+	double current = double(bpf.GetValueFromIndex(i));
+	if(current > value)
+	{
+	    value = current;
+	}
+    }
+    value += fabs(value)*0.1;
+    return value;
+}
+
+
 

@@ -8,8 +8,6 @@
 //xamat
 
 #include "Audio.hxx"
-#include "envelope_point_editor.hxx"
-#include "envelope.hxx"
 
 #include "LLDSchema.hxx"
 #include "DescriptionScheme.hxx"
@@ -18,11 +16,14 @@
 #include "SongFiles.hxx"
 #include "Project.hxx"
 
+#include "BPF.hxx"
+
 namespace CLAM {
-		namespace VM 
-		{
-				class QtAudioPlot;
-		};
+    namespace VM 
+    {
+	class QtAudioPlot;
+	class BPFEditor;
+    };
 };
 
 class QProgressDialog;
@@ -100,14 +101,17 @@ class Annotator : public AnnotatorBase
   
                 void doAnalysis();
                 void drawLLDescriptors(int index);
-                void initEnvelopes();
                 void generateRandomEnvelopes();
-		CLAM::Envelope* generateRandomEnvelope();
+		CLAM::BPF generateRandomEnvelope();
 
                 void generateEnvelopesFromDescriptors();
-                CLAM::Envelope* generateEnvelopeFromDescriptor(const std::string& name);
+                CLAM::BPF generateEnvelopeFromDescriptor(const std::string& name);
 
                 void LoadDescriptorPool();
+
+                double GetMinY(const CLAM::BPF& bpf);
+                double GetMaxY(const CLAM::BPF& bpf);
+
 	private:
 		bool mChanges;
 		AnnotatorDataFacade* mpData;
@@ -124,8 +128,8 @@ class Annotator : public AnnotatorBase
 		CLAM::VM::QtAudioPlot* mpAudioPlot;
                 CLAM::Audio mCurrentAudio;
 
-                std::vector<CLAM::Envelope_Point_Editor*> mFunctionEditors;
-                std::vector<CLAM::Envelope*> mEnvelopes;
+                std::vector<CLAM::BPF> mBPFs;
+                std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
                 
                 int mCurrentIndex;
                 
