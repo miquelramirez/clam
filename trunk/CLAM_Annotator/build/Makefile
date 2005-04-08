@@ -4,7 +4,7 @@ TOP = ../
 
 program_and_images : program
 
-interface : uic/AboutBase.h uic/AboutBase.cxx uic/ConfigurationDialogBase.cxx uic/ConfigurationDialogBase.h uic/AnalyzeWindowBase.h uic/AnalyzeWindowBase.cxx uic/AnnotatorBase.h uic/AnnotatorBase.cxx uic/OpenProjectDialogBase.h uic/OpenProjectDialogBase.cxx uic/NewProjectDialogBase.h uic/NewProjectDialogBase.cxx uic/NewProjectNameBase.h uic/NewProjectNameBase.cxx uic/AnnotatorEnterBase.h uic/AnnotatorEnterBase.cxx uic/SaveProjectAsDialogBase.h uic/SaveProjectAsDialogBase.cxx 
+interface : uic/AboutBase.h uic/AboutBase.cxx uic/ConfigurationDialogBase.cxx uic/ConfigurationDialogBase.h uic/AnalyzeWindowBase.h uic/AnalyzeWindowBase.cxx uic/AnnotatorBase.h uic/AnnotatorBase.cxx 
 
 include $(TOP)/build/Makefile.images.rules
 
