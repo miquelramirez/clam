@@ -47,6 +47,7 @@ namespace CLAM
 	void BPFEditor::SetXRange(const double& min, const double& max)
 	{
 	    mController->SetXRange(min,max);
+	    AdjustLeft(min,max);
 	}
 
 	void BPFEditor::SetYRange(const double& min, const double& max)
@@ -272,6 +273,12 @@ namespace CLAM
 
 	void BPFEditor::AlignLeft()
 	{
+	    if(labelsContainer->width() > mYRuler->width()) 
+	    {
+		mYRuler->setFixedWidth(labelsContainer->width());
+		return;
+	    }
+
 	    labelsContainer->setFixedWidth(mYRuler->width());
 
 	    mXLabelInfo->setGeometry(fixed_x_label->x()+fixed_x_label->width(),
@@ -283,6 +290,34 @@ namespace CLAM
 				     fixed_y_label->y(),
 				     mXLabelInfo->width(),
 				     fixed_y_label->height());
+	}
+
+	void BPFEditor::AdjustLeft(const double& min, const double& max)
+	{
+	    int length_min = QString::number(min,'f',2).length();
+	    int length_max = QString::number(max,'f',2).length();
+
+	    QFontMetrics fm(labelFont);
+
+	    int width = (length_min > length_max) ? fm.width(QString::number(min,'f',2)) : fm.width(QString::number(max,'f',2));
+	   
+	    width += (fixed_x_label->width()+2);
+
+	    if(width > mYRuler->width())
+	    {
+		mYRuler->setFixedWidth(width);
+		labelsContainer->setFixedWidth(width);
+
+		 mXLabelInfo->setGeometry(fixed_x_label->x()+fixed_x_label->width(),
+					  fixed_x_label->y(),
+					  labelsContainer->width()-fixed_x_label->width()-2,
+					  fixed_x_label->height());
+
+		 mYLabelInfo->setGeometry(fixed_y_label->x()+fixed_y_label->width(),
+					  fixed_y_label->y(),
+					  mXLabelInfo->width(),
+					  fixed_y_label->height());
+	    }
 	}
     }
 }

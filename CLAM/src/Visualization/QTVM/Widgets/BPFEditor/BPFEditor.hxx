@@ -63,6 +63,7 @@ namespace CLAM
 	    void BlackOverWhite();
 
 	    void AlignLeft();
+	    void AdjustLeft(const double& min, const double& max);
 	};
     }
 }
