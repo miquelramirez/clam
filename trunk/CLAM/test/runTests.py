@@ -552,40 +552,30 @@ def runTests() :
 		print aSummary     # for console monitoring purposes
 	
 	requiredStabilityLevel = PassUnitTests # Compiles 
+	clamIsBroken = resultSet.stabilityLevel() < requiredStabilityLevel
 	print "\nGlobal test results with %i tests. Stability level: %i Required: %i " % ( resultSet.nTests(), resultSet.stabilityLevel(), requiredStabilityLevel )
 	guiltyReport = "Chasing-guilty-commits is DISABLED"
 	if enablePlaceCvsTags :
-		if resultSet.stabilityLevel() >= requiredStabilityLevel :
+		if clamIsBroken :
+			guiltyReport = chaseTheGuiltyCommits("CLAM")
+			guiltyReport += chaseTheGuiltyCommits("CLAM_NetworkEditor")
+			guiltyReport += chaseTheGuiltyCommits("CLAM_SMSTools")
+		else :
 			placeTestsOkTags("CLAM")
 			placeTestsOkTags("CLAM_NetworkEditor")
 			placeTestsOkTags("CLAM_SMSTools")
 			guiltyReport = ''
-		else :
-			guiltyReport = chaseTheGuiltyCommits("CLAM")
-			guiltyReport += chaseTheGuiltyCommits("CLAM_NetworkEditor")
-			guiltyReport += chaseTheGuiltyCommits("CLAM_SMSTools")
 	
 	mailBody = mailTemplate  % ( guiltyReport, "".join(totalSummary), "".join(totalDetails) )
 
-	#TODO depracate. use resultSet instead
-	if foundCompilationErrors : 
-		subj.append(' - compilation err!')
-	if foundTestsFailures :
-		subj.append(' - tests failures!')
-	if foundExecutionErrors :
-		subj.append(' - execution errs!')
 
-	if foundCompilationErrors or foundTestsFailures or foundExecutionErrors :
+	if clamIsBroken :
 		sendReportTo = publicAddress
+		subj.append(" -- "+ resultSet.stabilityLevelString() )
 	else :
 		sendReportTo = privateAddress
 
-	if sendReportTo != '' :
-		sendmail( sender, sendReportTo, "".join(subj), mailBody )
-	else :
-		print 'nowbody to send report'
-		print 'subject: ', "".join(subj)
-		print mailBody
+	sendmail( sender, sendReportTo, "".join(subj), mailBody )
 
 	#write log
 	results = file(CLAM_SANDBOXES + "RunTestResults.txt", "w")

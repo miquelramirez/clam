@@ -34,7 +34,13 @@ class TestTestResultSet (unittest.TestCase) :
 		t.unitTestsFailures("debug", 1)
 		self.set.add( t )
 		assert (not self.set.passUnitTests() )
-	
+
+	def testStabilityLevel(self) :
+		t = TestResult()
+		t.unitTestsFailures("debug", 1)
+		self.set.add( t )
+		expected = "Reaches level 1 (Compiles), but don't reach level 2 (Pass Unit Tests)"
+		assert expected == self.set.stabilityLevelString()
 		
 class TestTestResult (unittest.TestCase) :
 	def setUp(self):
