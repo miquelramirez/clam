@@ -39,7 +39,7 @@ using CLAM::VM::BPFEditor;
 using CLAM::TData;
 using CLAM::TIndex;
 
-Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f),mCurrentIndex(0),mpTabLayout(0)
+Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f),mCurrentIndex(0),mpTabLayout(0),mBPFs(0),mBPFEditors(0)
 {
   //I should try to get rid of this constructor and pass things to the new one(see below)	
   setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
@@ -49,7 +49,7 @@ Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade
   initAudioWidget();
 }
 
-Annotator::Annotator():AnnotatorBase( 0, "annotator", WDestructiveClose),mCurrentIndex(0),mpTabLayout(0)
+Annotator::Annotator():AnnotatorBase( 0, "annotator", WDestructiveClose),mCurrentIndex(0),mpTabLayout(0),mBPFs(0),mBPFEditors(0)
 {
   mpDescriptorPool = NULL;
   mpAudioPlot = NULL;
@@ -215,10 +215,8 @@ void Annotator::initLLDescriptorsWidgets()
       mBPFEditors.resize(nTabs);
       for(it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
 	{
-	  QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
 	  *it = new CLAM::VM::BPFEditor(tabWidget2->page(i));
 	  (*it)->Hide();
-	  tabLayout->addWidget(*it);
 	}
     }
 }
@@ -689,14 +687,15 @@ void Annotator::drawLLDescriptors(int index)
 
     std::vector<CLAM::BPF>::iterator bpf_it = mBPFs.begin();
     std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
-    for(;bpf_it != mBPFs.end(); bpf_it++, editors_it++)
+    for(int i=0;bpf_it != mBPFs.end(); i++, bpf_it++, editors_it++)
     {
 	if(mHaveLLDescriptors[index])
 	{
+	    (*editors_it)->Show();
+	    (*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
+	    (*editors_it)->SetData((*bpf_it));
 	    (*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
 	    (*editors_it)->SetYRange(GetMinY((*bpf_it)),GetMaxY((*bpf_it)));
-	    (*editors_it)->SetData((*bpf_it));
-	    (*editors_it)->Show();
 	}
 	else
 	{
