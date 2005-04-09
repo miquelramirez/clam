@@ -45,9 +45,9 @@ namespace CLAM
 	    mMin=min;
 	    mMax=max;
 	    mSpan=mMax-mMin;
-
+	    ComputeMaxLabelWidth();
+	    if(mPosition==CLAM::VM::Left || mPosition==CLAM::VM::Right) setFixedWidth(mMaxLabelWidth+10);
 	    update();
-
 	    emit valueChanged(mMin,mMax);
 	}
 	
@@ -202,7 +202,7 @@ namespace CLAM
 	    {
 		case CLAM::VM::Left:
 		case CLAM::VM::Right:
-		    nTicks = height()/(mLabelHeight*3)+1;
+		    nTicks = height()/(mLabelHeight*2)+1;
 		    break;
 		case CLAM::VM::Bottom:
 		case CLAM::VM::Top:
@@ -238,6 +238,40 @@ namespace CLAM
 	    int nTicks = 0;
 	    if(mSpan < 0.05) nTicks =  MINTICKS; 
 	    return nTicks;
+	}
+
+	void Ruler::ComputeMaxLabelWidth()
+	{
+	    int length_min = QString::number(mMin,'f',2).length();
+	    int length_max = QString::number(mMax,'f',2).length();
+
+	    QFontMetrics font_metrics(mFont);
+	    
+	    if(length_min > length_max)
+	    {
+		if(mPosition==CLAM::VM::Left || mPosition==CLAM::VM::Right)
+		{
+		    mMaxLabelWidth = font_metrics.width(QString::number(mMin,'f',2)+"9");
+		}
+		
+		if(mPosition==CLAM::VM::Top || mPosition==CLAM::VM::Bottom)
+		{
+		    mMaxLabelWidth = font_metrics.width(QString::number(mMin,'f',2)+"99");
+		}
+		
+	    }
+	    else
+	    {
+		if(mPosition==CLAM::VM::Left || mPosition==CLAM::VM::Right)
+		{
+		    mMaxLabelWidth = font_metrics.width(QString::number(mMax,'f',2)+"9");
+		}
+
+		if(mPosition==CLAM::VM::Top || mPosition==CLAM::VM::Bottom)
+		{
+		    mMaxLabelWidth = font_metrics.width(QString::number(mMax,'f',2)+"99");
+		}	
+	    }
 	}
 
     }
