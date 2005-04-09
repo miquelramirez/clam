@@ -83,4 +83,11 @@ class TestResultSet :
 			return PassUnitTests
 		else :
 			return PassFunctionalTests
-			
+	def stabilityLevelString(self) :
+		strings = { DoesntCompile:"Doesn't compile",
+			Compiles:"Compiles",
+			PassUnitTests:"Pass Unit Tests",
+			PassFunctionalTests:"PassFunctionalTests" }
+		msg = "Reaches level %i (%s), but don't reach level %i (%s)"
+		currentLevel = self.stabilityLevel()
+		return msg % (currentLevel, strings[currentLevel], currentLevel+1, strings[currentLevel+1])
