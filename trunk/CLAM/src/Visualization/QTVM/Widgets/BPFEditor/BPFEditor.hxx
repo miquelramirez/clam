@@ -50,6 +50,7 @@ namespace CLAM
 	    QLabel *mXLabelInfo, *mYLabelInfo;
 	    QFrame* labelsContainer;
 	    QLabel *fixed_x_label, *fixed_y_label;
+	    QFont labelFont;
 	    
 	    enum { EWhiteOverBlack = 0, EBlackOverWhite };
 	    
@@ -60,6 +61,8 @@ namespace CLAM
 	    void SetScheme(int scheme);
 	    void WhiteOverBlack();
 	    void BlackOverWhite();
+
+	    void AlignLeft();
 	};
     }
 }

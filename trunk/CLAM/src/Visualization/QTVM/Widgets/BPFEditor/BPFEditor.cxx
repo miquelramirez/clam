@@ -52,6 +52,7 @@ namespace CLAM
 	void BPFEditor::SetYRange(const double& min, const double& max)
 	{
 	    mController->SetYRange(min,max);
+	    AlignLeft();
 	}
 	    
 	void BPFEditor::Show()
@@ -143,7 +144,6 @@ namespace CLAM
 	    labelsContainer->setFixedWidth(mYRuler->width());
 	    labelsContainer->setFixedHeight(mXRuler->height());
 
-	    QFont labelFont;
 	    labelFont.setFamily("fixed");
 	    labelFont.setPointSize(10);
 	    labelFont.setBold(true);
@@ -268,6 +268,21 @@ namespace CLAM
 	    mDisplaySurface->SetBackgroundColor(1.0f,1.0f,1.0f);
 
 	    mColorScheme = EBlackOverWhite;
+	}
+
+	void BPFEditor::AlignLeft()
+	{
+	    labelsContainer->setFixedWidth(mYRuler->width());
+
+	    mXLabelInfo->setGeometry(fixed_x_label->x()+fixed_x_label->width(),
+				     fixed_x_label->y(),
+				     labelsContainer->width()-fixed_x_label->width()-2,
+				     fixed_x_label->height());
+
+	    mYLabelInfo->setGeometry(fixed_y_label->x()+fixed_y_label->width(),
+				     fixed_y_label->y(),
+				     mXLabelInfo->width(),
+				     fixed_y_label->height());
 	}
     }
 }
