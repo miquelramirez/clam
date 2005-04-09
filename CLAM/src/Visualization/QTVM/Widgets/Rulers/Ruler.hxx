@@ -51,6 +51,8 @@ namespace CLAM
 	    int TestnTicksForSpan();
 
 	    QString GetLabel(int tick);
+
+	    void ComputeMaxLabelWidth();
 	};
     }
 }
