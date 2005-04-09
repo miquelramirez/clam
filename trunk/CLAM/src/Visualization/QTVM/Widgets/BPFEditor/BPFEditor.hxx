@@ -21,7 +21,7 @@ namespace CLAM
 	    Q_OBJECT
 
 	public:
-	    BPFEditor(QWidget* parent=0);
+	    BPFEditor(QWidget* parent=0, const char* name=0);
 	    ~BPFEditor();
 	    
 	    void Label(const std::string& label);
