@@ -10,8 +10,10 @@ namespace CLAM
 {
     namespace VM
     {
-	BPFEditor::BPFEditor(QWidget* parent)
-	    : QWidget(parent), 
+	BPFEditor::BPFEditor(QWidget* parent,const char* name)
+	    : QWidget(parent,name), 
+	      mController(0),
+	      mDisplaySurface(0),
 	      mColorScheme(EBlackOverWhite)
 	{
 	    InitBPFEditor();
