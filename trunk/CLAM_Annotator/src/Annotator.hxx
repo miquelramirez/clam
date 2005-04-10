@@ -110,7 +110,9 @@ private:
   
   void doAnalysis();
   void drawLLDescriptors(int index);
-  void drawHLD(int songIndex, const std::string& descriptorName, std::string& value, 
+  void drawHLD(int songIndex, const std::string& descriptorName, 
+			  const CLAM_Annotator::RestrictedString& value, bool computed);
+  void drawHLD(int songIndex, const std::string& descriptorName,const std::string& value, 
 	       bool computed );
   void drawHLD(int songIndex, const std::string& descriptorName, float value, bool computed);
   void drawHLD(int songIndex, const std::string& descriptorName, int value, bool computed);

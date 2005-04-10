@@ -16,6 +16,7 @@
 #include "AnalyzeWindow.hxx"
 
 #include <algorithm>
+#include <iostream>
 
 //xamat
 #include <time.h>
@@ -91,10 +92,10 @@ void Annotator::initProject()
 
 void Annotator::initDataFacade()
 {
-  DataFacade data;
+   DataFacade data;
   TXTSongParser songParser( "DataTest/", data );
   mpData = new AnnotatorDataFacade( data );
-
+  
   
 }
 
@@ -209,15 +210,22 @@ void Annotator::initLLDescriptorsWidgets()
 	  (*it0) = new QWidget( tabWidget2, tabString.str().c_str());
 	  tabWidget2->insertTab( (*it0), QString("") );
 	}
-      mBPFs.resize(nTabs);
-      i=0;
-      std::vector<CLAM::VM::BPFEditor*>::iterator it;
-      mBPFEditors.resize(nTabs);
-      for(it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
+      else
 	{
-	  *it = new CLAM::VM::BPFEditor(tabWidget2->page(i));
-	  (*it)->Hide();
+	  (*it0) = tabWidget2->page(0);
+
 	}
+    }
+  mBPFs.resize(nTabs);
+  i=0;
+  std::vector<CLAM::VM::BPFEditor*>::iterator it;
+  mBPFEditors.resize(nTabs);
+  for(it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
+    {
+      QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
+      *it = new CLAM::VM::BPFEditor(tabWidget2->page(i));
+      (*it)->Hide();
+      tabLayout->addWidget(*it);
     }
 }
 
@@ -905,120 +913,94 @@ void Annotator::drawDescriptorsName()
 }
 
 //TODO: mSongDescriptors has to be replaced by a list of Pools
-void Annotator::drawHLD(int songIndex, const std::string& descriptorName, std::string& value, bool computed = true)
+//TODO: Now I am operating as if I had only one song, have to have a map of pools??
+void Annotator::drawHLD(int songIndex, const std::string& descriptorName, const std::string& value, 
+			bool computed = true)
 {
-  /*  QString qvalue = mSongDescriptors[songIndex][descriptorName.c_str()];
+  QString qvalue = QString(value.c_str());
   if(!computed) qvalue = "?";
-  mDescriptorsTable->setItem(findHLDescriptorIndex(),1,new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value));*/
+  mDescriptorsTable->setItem(findHLDescriptorIndex(descriptorName),1,
+			     new TableItem(mDescriptorsTable,TableItem::WhenCurrent,qvalue));
+}
+
+void Annotator::drawHLD(int songIndex, const std::string& descriptorName, 
+			const CLAM_Annotator::RestrictedString& value, bool computed = true)
+{
+  QString qvalue = QString(value.GetString().c_str());
+  if(!computed) qvalue = "?";
+  QStringList qrestrictionStrings;
+  std::list<std::string> restrictionStrings;
+  restrictionStrings = mSchema.GetHLDSchema().FindElement(descriptorName).GetRestrictionValues();
+  std::list<std::string>::iterator it;
+  for(it = restrictionStrings.begin();it != restrictionStrings.end(); it++)
+  {
+    qrestrictionStrings << (*it);
+  }
+
+  std::vector<QStringList> qrestrictionStringslist;
+  qrestrictionStringslist.push_back( qrestrictionStrings );
+  mDescriptorsTable->setItem(findHLDescriptorIndex(descriptorName),1,new ComboTableItem(mDescriptorsTable,qrestrictionStringslist,false));
 }
 
 void Annotator::drawHLD(int songIndex, const std::string& descriptorName, float value, bool computed = true)
 {
+  /* TODO:RangeSelectionTableItem is harcoded between 0 and 10 and it only seems to work with ints */
 
+  std::ostringstream s;
+  s<<value;
+  QString qvalue = QString(s.str().c_str());
+  if(!computed) qvalue = "?";
+  mDescriptorsTable->setItem(findHLDescriptorIndex(descriptorName),1,
+			     new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent,qvalue));
 }
 
 void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int value, bool computed = true)
 {
+  /* TODO:RangeSelectionTableItem is harcoded between 0 and 10 and it only seems to work with ints */
 
-}
+  std::ostringstream s;
+  s<<value;
+  QString qvalue = QString(s.str().c_str());
+  if(!computed) qvalue = "?";
+  mDescriptorsTable->setItem(findHLDescriptorIndex(descriptorName),1,
+			     new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent,qvalue));
 
-void Annotator::drawArtists( int index, bool computed = true )
-{
-  //drawHLD
-	QString value = mSongDescriptors[index]["Artist"];
-	if(!computed) value = "?";
-	mDescriptorsTable->setItem(0,1,new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value));
-}
-
-void Annotator::drawTitle( int index, bool computed = true )
-{
-	QString value = QString( mSongDescriptors[index]["Title"].c_str() );
-	if(!computed) value = "?";
-	mDescriptorsTable->setItem(1,1,new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value));    
-
-}
-
-void Annotator::drawGenre( int index, bool computed = true )
-{
-	QString value = mpData->genreWithoutSinonims( mSongDescriptors[index]["genre"] );
-	if(!computed) value = "?";
-	QStringList listOfGenres;
-	createListOfGenres( listOfGenres, value);
-	std::vector<QStringList> listOfGenreslist;
-	listOfGenreslist.push_back( listOfGenres );
-	mDescriptorsTable->setItem(2,1,new ComboTableItem(mDescriptorsTable,listOfGenreslist,false)); 
-	
-}
-
-void Annotator::drawDynamicComplexity( int index, bool computed = true )
-{
-	QString value = mSongDescriptors[index]["Dynamic Complexity"];
-	if(!computed) value = "?";
-	double valueInDouble = value.toDouble();
-	valueInDouble = mpData->normalizeDynamicComplexity( valueInDouble ) *10.0;
-	int valueInInt = int(valueInDouble);
-	value.setNum( valueInInt );
-	mDescriptorsTable->setItem(6,1,new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent, value ) );
-	
-}
-
-void Annotator::drawDanceability( int index, bool computed = true )
-{
-	QString value = mSongDescriptors[index]["Danceability"];
-	if(!computed) value = "?";
-	double valueInDouble = value.toDouble() ;
-	valueInDouble = mpData->normalizeDanceability( valueInDouble )*10.0;
-	int valueInInt = int(valueInDouble);
-	value.setNum( valueInInt );
-	mDescriptorsTable->setItem(3,1,new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent, value ) );
-	
-}
-
-void Annotator::drawBPM( int index, bool computed = true )
-{
-	QString value = mSongDescriptors[index]["BPM"];
-	if(!computed) value = "?";
-	mDescriptorsTable->setItem(7,1, new TableItem(mDescriptorsTable,TableItem::WhenCurrent,value) );
-}
-
-void Annotator::drawTonality( int index, bool computed = true )
-{
-	std::vector<QStringList> listOfKeysList;
-	QStringList listOfKeys;
-	QString key = QString( mSongDescriptors[index]["Tonal Descriptor: Key Note"].c_str() );
-	if(!computed) key = "?";
-	createListOfTonalKeys( listOfKeys, key );
-	listOfKeysList.push_back( listOfKeys );
-	mDescriptorsTable->setItem(4,1,new ComboTableItem( mDescriptorsTable, listOfKeysList, false ) );
-	
-	std::vector<QStringList> listOfModesList;
-	QStringList listOfModes;
-	QString value = mSongDescriptors[index]["Tonal Descriptor: Mode"];
-	if(!computed) value = "?";
-	if ( value == "Major" )
-		listOfModes<<"Major"<<"Minor";
-	else if ( value == "Minor" )
-		listOfModes<<"Minor"<<"Major";
-	else
-		listOfModes<<"?"<<"Major"<<"Minor";
-	listOfModesList.push_back( listOfModes );
-	mDescriptorsTable->setItem(5,1,new ComboTableItem( mDescriptorsTable, listOfModesList, false ) );
 }
 
 void Annotator::drawDescriptorsValue( int index, bool computed)
 {
-	drawArtists( index );
-	drawTitle( index );
-	drawGenre( index, computed );
-	drawDanceability( index, computed );
-	drawTonality( index, computed );
-	drawDynamicComplexity( index, computed );
-	drawBPM( index, computed );
+  std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
+  std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
+  for(it = hlds.begin() ; it != hlds.end(); it++)
+  {
+    if ((*it).GetType() == "String")
+      {
+	drawHLD(index,(*it).GetName(),*mpDescriptorPool->
+		GetReadPool<std::string>("Song",(*it).GetName()),computed);
+      }
+    if ((*it).GetType() == "RestrictedString")
+      {
+	drawHLD(index,(*it).GetName(),*mpDescriptorPool->
+		GetReadPool<CLAM_Annotator::RestrictedString>("Song",(*it).GetName()),computed);
+      }
+    if ((*it).GetType() == "Float")
+      {
+	drawHLD(index,(*it).GetName(),*mpDescriptorPool->
+		GetReadPool<float>("Song",(*it).GetName()),computed);
+      }
+    if ((*it).GetType() == "Int")
+      {
+	drawHLD(index,(*it).GetName(),*mpDescriptorPool->
+		GetReadPool<int>("Song",(*it).GetName()),computed);
+      }
+
+  }
+
 }
 
 void Annotator::fillGlobalDescriptors( int index)
 {
-   mDescriptorsTable->show();
+  mDescriptorsTable->show();
   drawDescriptorsName();
   bool computed = mHaveHLDescriptors[index];
   drawDescriptorsValue( index, computed );
