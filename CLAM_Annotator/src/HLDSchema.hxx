@@ -25,7 +25,7 @@ namespace CLAM_Annotator{
     //TODO: this should better be an enum
     DYN_ATTRIBUTE(1, public, std::string, Type);
     /*In case type is a RestrictedString, an optional list of enumeration values must be offered*/
-    DYN_CONTAINER_ATTRIBUTE(2, public, std::list<std::string>, RestrictionValues, Value);
+    DYN_CONTAINER_ATTRIBUTE(2, public, std::list<std::string>, RestrictionValues, Restriction);
     //In case type is a number we need to add a range
     DYN_ATTRIBUTE(3, public, Range<float>, fRange);
     DYN_ATTRIBUTE(4, public, Range<int>, iRange);
@@ -57,26 +57,24 @@ namespace CLAM_Annotator{
     }
   public:
     template <class T>
+    bool ValidateDescriptor(T value,const std::string& name)
+    {
+      return ValidateDescriptor<T>(MakeDescriptor(value,name));
+    }
+
+    template <class T>
     bool ValidateDescriptor(const Descriptor<T>& descriptor)
     {
-      std::list<HLDSchemaElement>::iterator it;
       bool validated = true;
-      for(it = GetHLDs().begin(); it != GetHLDs().end(); it++)
-      {
-	if ((*it).GetName() == descriptor.GetName())
-	{
-	  validated = (*it).Validate(descriptor);
-	  CLAM_DEBUG_ASSERT(validated, std::string("Descriptor did not validate: " + 
+      
+      validated = FindElement(descriptor.GetName()).Validate(descriptor);
+      CLAM_DEBUG_ASSERT(validated, std::string("Descriptor did not validate: " + 
 						   descriptor.GetName()).c_str());
-	  return validated;
-	}
-	
-      }
-      CLAM_ASSERT(false,"NotValidated");
-      return false;
+      return validated;
     }
 
     bool Validate(const CLAM::DescriptionDataPool& pool);
+    HLDSchemaElement FindElement(const std::string& descriptorName) const;
     
   private:
     template <class T>
