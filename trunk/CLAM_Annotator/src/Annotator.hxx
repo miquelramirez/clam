@@ -75,9 +75,7 @@ protected:
   bool event(QEvent* e);
 
 private:
-  void value( const std::string & descriptor, std::string & descriptorValue ) const;
-  void createListOfGenres( QStringList &, const QString & ) const;
-  void createListOfTonalKeys( QStringList & list, const QString & value ) const;
+  //void value( const std::string & descriptor, std::string & descriptorValue ) const;
   bool somethingIsSelected() const;
   void initSpliters();
   void initView();
@@ -91,13 +89,7 @@ private:
   void markAllNoChanges();
   void drawDescriptorsName();
   void drawDescriptorsValue( int, bool );
-  void drawArtists( int, bool );
-  void drawTitle( int, bool );
-  void drawGenre( int, bool );
-  void drawDanceability( int, bool );
-  void drawTonality( int, bool );
-  void drawBPM( int, bool );
-  void drawDynamicComplexity( int, bool );
+
 //xamat
   void initDataFacade();
   void languageChange();

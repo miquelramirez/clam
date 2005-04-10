@@ -130,47 +130,6 @@ void Annotator::fileMenuAboutToShow()
 	fileSave_projectAction->setEnabled( mChanges );
 }
 
-void Annotator::createListOfGenres( QStringList & list, const QString & value) const
-{
-	AnnotatorDataFacade::StringList genres;
-	mpData->getGenres( genres );
-	AnnotatorDataFacade::StringList::iterator itValue = std::find( genres.begin(), genres.end(), value);
-	AnnotatorDataFacade::StringList::iterator itEnd = genres.end();
-	AnnotatorDataFacade::StringList::iterator itBegin = genres.begin();
-	if ( itValue == itEnd )
-	{
-		list<<"?";
-	}
-	for ( ; itValue != itEnd ; itValue++ )
-	{
-		list<<*itValue;
-	}
-	itValue = std::find( genres.begin(), genres.end(), value);
-	for ( ; itBegin != itValue ; itBegin++ )
-	{
-		list<<*itBegin;
-	}
-}
-
-void Annotator::createListOfTonalKeys( QStringList & list, const QString & value ) const
-{
-	static const std::string keys[13] = {"?","A","A#","B","C","C#","D","D#","E","F","F#","G","G#"};
-	int i;
-	for ( i = 0; i < 13 && keys[i] != std::string( value.ascii() ) ; i++)
-	{
-	}
-	for ( int j = i ; j<13 ; j++ )
-	{
-		list<<QString( keys[j].c_str() );
-	}
-	for ( int j = 0 ; j<i ; j++)
-	{
-		list<<QString( keys[j].c_str() );
-	}
-}
-
-
-
 void Annotator::initAudioWidget()
 {
         if(mpAudioPlot) delete mpAudioPlot;
@@ -348,6 +307,7 @@ void Annotator::changeCurrentFile()
 
 }
 
+/*
 void Annotator::value( const std::string & descriptor, std::string & descriptorValue ) const
 {
 	if ( descriptor == "Danceability" )
@@ -363,10 +323,12 @@ void Annotator::value( const std::string & descriptor, std::string & descriptorV
 		descriptorValue = std::string( QString().setNum( descValue ).ascii() );
 	}
 }
+*/
 
 void Annotator::descriptorsTableChanged(int row, int column)
 {
-	mChanges = true;
+  //TODO: how to deal with editiding functions?
+  /*	mChanges = true;
 	std::string nameOfDescriptor;
 	descriptor( nameOfDescriptor, row );
 	std::string nameOfTheFile;
@@ -378,6 +340,7 @@ void Annotator::descriptorsTableChanged(int row, int column)
 	mpData->setDescriptor( nameOfTheFile, nameOfDescriptor, valueOfDescriptor );
 	int index = mSongDescriptorsIndex[ nameOfTheFile ];
 	mSongDescriptors[ index ][ nameOfDescriptor ] = valueOfDescriptor;
+  */	
 }
 
 void Annotator::addSongs( const AnnotatorDataFacade::StringList & list)
