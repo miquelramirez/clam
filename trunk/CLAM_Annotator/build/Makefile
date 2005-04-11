@@ -4,7 +4,7 @@ TOP = ../
 
 program_and_images : program
 
-interface : uic/AboutBase.h uic/AboutBase.cxx uic/ConfigurationDialogBase.cxx uic/ConfigurationDialogBase.h uic/AnalyzeWindowBase.h uic/AnalyzeWindowBase.cxx uic/AnnotatorBase.h uic/AnnotatorBase.cxx 
+interface : uic/AboutBase.h uic/AboutBase.cxx uic/AnnotatorBase.h uic/AnnotatorBase.cxx 
 
 include $(TOP)/build/Makefile.images.rules
 
