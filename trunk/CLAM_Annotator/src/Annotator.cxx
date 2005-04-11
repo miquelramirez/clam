@@ -32,7 +32,6 @@
 #include "BPFEditor.hxx"
 
 using CLAM::VM::QtAudioPlot;
-using CLAM::VM::BPFEditor;
 
 using CLAM::TData;
 using CLAM::TIndex;
@@ -532,11 +531,10 @@ void Annotator::drawLLDescriptors(int index)
 
     std::vector<CLAM::BPF>::iterator bpf_it = mBPFs.begin();
     std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
-    for(int i=0;bpf_it != mBPFs.end(); i++, bpf_it++, editors_it++)
+    for(;bpf_it != mBPFs.end(); bpf_it++, editors_it++)
     {
       //if(mHaveLLDescriptors[index]) We assume all descriptors are loaded, not computed
       (*editors_it)->Show();
-      (*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
       (*editors_it)->SetData((*bpf_it));
       (*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
       (*editors_it)->SetYRange(GetMinY((*bpf_it)),GetMaxY((*bpf_it)));
