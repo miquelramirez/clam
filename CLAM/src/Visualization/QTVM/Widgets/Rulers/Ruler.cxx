@@ -18,9 +18,6 @@ namespace CLAM
 	    mMaxLabelWidth = font_metrics.width("9.99");
 	    mLabelHeight = font_metrics.height();
 
-	    if(mPosition==CLAM::VM::Left || mPosition==CLAM::VM::Right) setFixedWidth(mMaxLabelWidth+10);
-	    if(mPosition==CLAM::VM::Bottom || mPosition==CLAM::VM::Top) setFixedHeight(mLabelHeight+30);
-
 	    updateRange(0.0,1.0);
 	}
 
@@ -46,7 +43,6 @@ namespace CLAM
 	    mMax=max;
 	    mSpan=mMax-mMin;
 	    ComputeMaxLabelWidth();
-	    if(mPosition==CLAM::VM::Left || mPosition==CLAM::VM::Right) setFixedWidth(mMaxLabelWidth+10);
 	    update();
 	    emit valueChanged(mMin,mMax);
 	}
