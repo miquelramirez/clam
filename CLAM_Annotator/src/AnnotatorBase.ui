@@ -803,7 +803,6 @@
     <include location="local" impldecl="in declaration">About.hxx</include>
     <include location="local" impldecl="in declaration">ConfigurationDialog.hxx</include>
     <include location="local" impldecl="in declaration">AnalyzeWindow.hxx</include>
-    <include location="local" impldecl="in declaration">Song.hxx</include>
     <include location="local" impldecl="in implementation">AnnotatorBase.ui.h</include>
 </includes>
 <variables>
@@ -822,7 +821,6 @@
     <variable>bool structureItemViewed;</variable>
     <variable>bool mIntraSong2Viewed;</variable>
     <variable>ConfigurationDialog mConfigurationDialog;</variable>
-    <variable>std::vector &lt; Descriptors &gt;  mSongDescriptors;</variable>
 </variables>
 <slots>
     <slot>fileNew()</slot>

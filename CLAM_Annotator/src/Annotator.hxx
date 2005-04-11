@@ -2,7 +2,7 @@
 #define ANNOTATOR_HXX
 
 #include "AnnotatorBase.h"
-#include "AnnotatorDataFacade.hxx"
+
 #include <string>
 
 //xamat
@@ -34,8 +34,7 @@ class Annotator : public AnnotatorBase
   
 
 public:
-  Annotator( const std::string &, const AnnotatorDataFacade::StringList &, AnnotatorDataFacade &, QWidget * parent = 0, const char * name = 0, WFlags f = 0);
-  Annotator();
+  Annotator(const std::string & nameProject);
   void initSongs(const std::string &, const std::vector<std::string>&);
   void fillGlobalDescriptors( int index);
   void songsClicked( QListViewItem * item);
@@ -51,7 +50,7 @@ public slots:
   void fileNew();			
   void fileOpen();
   void addSongsToProject();
-  void addSongs( const AnnotatorDataFacade::StringList & );
+  void addSongs();
   
   void loadSongList();
   void loadSchema();
@@ -91,7 +90,6 @@ private:
   void drawDescriptorsValue( int, bool );
 
 //xamat
-  void initDataFacade();
   void languageChange();
   void initAudioWidget();
   void initLLDescriptorsWidgets();
@@ -110,6 +108,7 @@ private:
   void drawHLD(int songIndex, const std::string& descriptorName, int value, bool computed);
  
   int findHLDescriptorIndex(const std::string& name);
+  int getIndexFromFileName(const std::string& fileName);
 
   void initEnvelopes();
   void generateRandomEnvelopes();
@@ -129,12 +128,12 @@ private:
 
   CLAM_Annotator::Project mProject;
   CLAM_Annotator::SongFiles mSongFiles;
-  std::vector<Song::Segments> mSongSegments;
+  
   std::string mProjectFileName;
   std::map<std::string,int> mSongDescriptorsIndex;
 
   bool mChanges;
-  AnnotatorDataFacade* mpData;
+  
   std::vector<CLAM::BPF> mBPFs;
   std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
 

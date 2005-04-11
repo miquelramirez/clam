@@ -26,8 +26,7 @@
 #include "AudioFile.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
 #include "MultiChannelAudioFileReader.hxx"
-#include "DataFacade.hxx"
-#include "TXTSongParser.hxx"
+
 
 
 #include "XMLStorage.hxx"
@@ -40,18 +39,10 @@ using CLAM::VM::BPFEditor;
 using CLAM::TData;
 using CLAM::TIndex;
 
-Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f),mCurrentIndex(0),mpTabLayout(0)
-{
-  //I should try to get rid of this constructor and pass things to the new one(see below)	
-  setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
-  mpDescriptorPool = NULL;
-  mpAudioPlot = NULL;
-  initInterface();
-  initAudioWidget();
-}
 
-Annotator::Annotator():AnnotatorBase( 0, "annotator", WDestructiveClose),mCurrentIndex(0),mpTabLayout(0)
+Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "annotator", WDestructiveClose),mCurrentIndex(0),mpTabLayout(0),mBPFs(0),mBPFEditors(0)
 {
+  setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
   mpDescriptorPool = NULL;
   mpAudioPlot = NULL;
   initInterface();
@@ -60,7 +51,6 @@ Annotator::Annotator():AnnotatorBase( 0, "annotator", WDestructiveClose),mCurren
 
 void Annotator::initInterface()
 {
-  //  if (mpAudioPlot) delete mpAudioPlot;
   if (mpAudioPlot) mpAudioPlot->Hide();
   mProjectOverview->setSorting(-1);
   initView();
@@ -88,15 +78,6 @@ void Annotator::initProject()
   loadDescriptorPool();
   
   mChanges = false;
-}
-
-void Annotator::initDataFacade()
-{
-   DataFacade data;
-  TXTSongParser songParser( "DataTest/", data );
-  mpData = new AnnotatorDataFacade( data );
-  
-  
 }
 
 bool Annotator::somethingIsSelected() const
@@ -259,9 +240,9 @@ void Annotator::showAnalyzeWindow()
 void Annotator::makeConnections()
 {
   //connect(songAnalyzeAction,SIGNAL(activated()),this,SLOT(showAnalyzeWindow()));
-	connect(helpAboutAction,SIGNAL(activated()),&mAbout,SLOT(show()));
-	connect(configurationPreferencesAction,SIGNAL(activated()),&mConfigurationDialog,SLOT(show()));
-	connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) , this, SLOT( descriptorsTableChanged(int, int) ) );	
+  connect(helpAboutAction,SIGNAL(activated()),&mAbout,SLOT(show()));
+  connect(configurationPreferencesAction,SIGNAL(activated()),&mConfigurationDialog,SLOT(show()));
+  connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) , this, SLOT( descriptorsTableChanged(int, int) ) );	
 }
 
 void Annotator::descriptor( std::string & descriptor, int row)
@@ -307,23 +288,6 @@ void Annotator::changeCurrentFile()
 
 }
 
-/*
-void Annotator::value( const std::string & descriptor, std::string & descriptorValue ) const
-{
-	if ( descriptor == "Danceability" )
-	{
-		int previousDescValue = QString( descriptorValue.c_str() ).toInt();
-		double descValue = mpData->scaleDanceability( previousDescValue );
-		descriptorValue = std::string( QString().setNum( descValue ).ascii() );
-	}
-	else if ( descriptor == "Dynamic Complexity" )
-	{	
-		int previousDescValue = QString( descriptorValue.c_str() ).toInt();
-		double descValue = mpData->scaleDynamicComplexity( previousDescValue );
-		descriptorValue = std::string( QString().setNum( descValue ).ascii() );
-	}
-}
-*/
 
 void Annotator::descriptorsTableChanged(int row, int column)
 {
@@ -343,37 +307,16 @@ void Annotator::descriptorsTableChanged(int row, int column)
   */	
 }
 
-void Annotator::addSongs( const AnnotatorDataFacade::StringList & list)
+void Annotator::addSongs()
 {
   deleteAllSongsFromProject();
-        std::vector< std::string > songs;
-	QListViewItemIterator it( mProjectOverview );
-	while ( it.current() )
-	{
-		songs.push_back( std::string( it.current()->text(0).ascii() ) );
-		++it;
-	}
-
-	
-	Descriptors tmp;
-	for ( AnnotatorDataFacade::StringList::const_iterator it = list.begin() ; it != list.end() ; it++)
-	{
-		if ( std::find( songs.begin(), songs.end(), *it ) == songs.end() )
-		{
-			ListViewItem * item = new ListViewItem( mProjectOverview->childCount(), mProjectOverview, QString( it->c_str() ), tr("Yes"), tr("No") );
-			songs.push_back(*it);
-			tmp.clear();
-			mpData->getDescriptorsFromFile(*it, tmp);
-			mSongDescriptorsIndex[*it]= mSongDescriptors.size();
-			Song::Segments segments;
-			mpData->getSegmentInformationFromFile( segments, *it );
-			mSongSegments.push_back( segments );
-			mSongDescriptors.push_back(tmp);
-			//by default songs have HL descriptors but not LL
-			mHaveHLDescriptors.push_back(true);
-			mHaveLLDescriptors.push_back(false);
-		}
-	}
+  std::vector< std::string > songs = mSongFiles.GetFileNames();
+  for ( std::vector<std::string>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
+    {
+      ListViewItem * item = new ListViewItem( mProjectOverview->childCount(), mProjectOverview, QString( it->c_str() ), tr("Yes"), tr("No") );
+      mHaveHLDescriptors.push_back(true);
+      mHaveLLDescriptors.push_back(false);
+    }
 }
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
@@ -436,8 +379,6 @@ void Annotator::fileOpen()
   {
     mProjectFileName = std::string(qFileName.ascii());
     CLAM::XMLStorage::Restore(mProject,mProjectFileName);
-    //loadDescriptorPool();
-    initDataFacade();
     initInterface();
     initProject();
   }
@@ -502,7 +443,6 @@ void  Annotator::loadSongList()
     mProject.SetSongs(std::string(qFileName.ascii()));
     CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
     //TODO: Does loading the song list affect all this
-    initDataFacade();
     initInterface();
     initProject();
   }
@@ -517,7 +457,6 @@ void  Annotator::loadSchema()
     mProject.SetSchema(std::string(qFileName.ascii()));
     CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
     //TODO: Does loading the schema affect all this
-    initDataFacade();
     initInterface();
     initProject();
   }
@@ -532,7 +471,6 @@ void  Annotator::loadDescriptors()
     mProject.SetDescriptorPool(std::string(qFileName.ascii()));
     CLAM::XMLStorage::Restore(*mpDescriptorPool,mProject.GetDescriptorPool());
     //TODO: Does loading the descriptors affect all this
-    initDataFacade();
     initInterface();
     initProject();
   }
@@ -599,7 +537,7 @@ void  Annotator::saveAll()
 void Annotator::initSongs( const std::string & nameProject, const std::vector<std::string> & files)
 {
 	mLogicGroup->hide();
-	addSongs( files );	
+	addSongs();	
 }
 
 void Annotator::chooseColor()
@@ -617,7 +555,7 @@ void Annotator::songsClicked( QListViewItem * item)
 							"Cancel",file.GetHeader().GetLength(),
 							this);
 		mpProgressDialog->setProgress(0);
-		mCurrentIndex = mSongDescriptorsIndex[std::string(item->text(0).ascii()) ];
+		mCurrentIndex = getIndexFromFileName(std::string(item->text(0).ascii()));
 		fillGlobalDescriptors( mCurrentIndex );
 		drawAudio(item);
 		drawLLDescriptors(mCurrentIndex);
@@ -1026,3 +964,15 @@ double Annotator::GetMaxY(const CLAM::BPF& bpf)
 }
 
 
+int Annotator::getIndexFromFileName(const std::string& fileName)
+{
+  //TODO: have to optimize these tasks maybe by using a map or at least std::find
+  std::vector<std::string>::iterator it;
+  int i=0;
+  std::vector<std::string> fileNames = mSongFiles.GetFileNames();
+  for (it = fileNames.begin(), i=0 ; it != fileNames.end(); it++, i++)
+    {
+      if((*it) == fileName) return i;
+    }
+  return -1;
+}
