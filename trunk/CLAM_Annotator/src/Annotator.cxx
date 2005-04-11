@@ -40,7 +40,7 @@ using CLAM::VM::BPFEditor;
 using CLAM::TData;
 using CLAM::TIndex;
 
-Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f),mCurrentIndex(0),mpTabLayout(0),mBPFs(0),mBPFEditors(0)
+Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade::StringList & files , AnnotatorDataFacade & data, QWidget * parent, const char * name, WFlags f) : AnnotatorBase( parent, name, f),mCurrentIndex(0),mpTabLayout(0)
 {
   //I should try to get rid of this constructor and pass things to the new one(see below)	
   setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
@@ -50,7 +50,7 @@ Annotator::Annotator( const std::string & nameProject, const AnnotatorDataFacade
   initAudioWidget();
 }
 
-Annotator::Annotator():AnnotatorBase( 0, "annotator", WDestructiveClose),mCurrentIndex(0),mpTabLayout(0),mBPFs(0),mBPFEditors(0)
+Annotator::Annotator():AnnotatorBase( 0, "annotator", WDestructiveClose),mCurrentIndex(0),mpTabLayout(0)
 {
   mpDescriptorPool = NULL;
   mpAudioPlot = NULL;
@@ -182,7 +182,7 @@ void Annotator::initLLDescriptorsWidgets()
   for(it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
     {
       QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
-      *it = new CLAM::VM::BPFEditor(tabWidget2->page(i));
+      *it = new CLAM::VM::BPFEditor(tabWidget2->page(i),0,CLAM::VM::AllowVertical);
       (*it)->Hide();
       tabLayout->addWidget(*it);
     }
@@ -985,32 +985,44 @@ int Annotator::findHLDescriptorIndex(const std::string& name)
 
 double Annotator::GetMinY(const CLAM::BPF& bpf)
 {
-    double value=1E9;
+    double min_value=1E9;
+    double max_value=-1E9;
     for(TIndex i=0; i < bpf.Size(); i++)
     {
 	double current = double(bpf.GetValueFromIndex(i));
-	if(current < value)
+	if(current > max_value)
 	{
-	    value = current;
+	    max_value = current;
+	}
+	else if(current < min_value)
+	{
+	    min_value = current;
 	}
     }
-    value -= fabs(value)*0.1;
-    return value;
+    double span = max_value-min_value;
+    min_value -= span*0.1;
+    return min_value;
 }
 
 double Annotator::GetMaxY(const CLAM::BPF& bpf)
 {
-    double value=-1E9;
+    double min_value=1E9;
+    double max_value=-1E9;
     for(TIndex i=0; i < bpf.Size(); i++)
     {
 	double current = double(bpf.GetValueFromIndex(i));
-	if(current > value)
+	if(current > max_value)
 	{
-	    value = current;
+	    max_value = current;
+	}
+	else if(current < min_value)
+	{
+	    min_value = current;
 	}
     }
-    value += fabs(value)*0.1;
-    return value;
+    double span = max_value-min_value;
+    max_value += span*0.1;
+    return max_value;
 }
 
 
