@@ -244,13 +244,8 @@
         <action name="fileSave_projectAction"/>
         <action name="fileSave_project_asAction"/>
         <separator/>
-        <action name="filePublishAction"/>
         <separator/>
         <action name="fileAdd_to_projectAction"/>
-        <action name="fileExportAction"/>
-        <item text="E&amp;xport to" name="popupMenu_9" accel="">
-            <action name="fileExportto_MPEG7Action"/>
-        </item>
         <separator/>
         <action name="fileExitAction"/>
     </item>
@@ -272,15 +267,6 @@
             <action name="projectLoadDescriptorsAction"/>
         </item>
     </item>
-    <item text="Analyze" name="SongMenu">
-        <action name="songAnalyzeAction"/>
-        <action name="songAnalyzeAllAction"/>
-    </item>
-    <item text="&amp;Configuration" name="configuration">
-        <action name="configurationPreferencesAction"/>
-        <separator/>
-        <action name="configurationSave_configurationAction"/>
-    </item>
     <item text="&amp;Help" name="help">
         <action name="helpAboutAction"/>
     </item>
@@ -294,7 +280,6 @@
         <property name="label">
             <string>Toolbar</string>
         </property>
-        <action name="songAnalyzeAction"/>
     </toolbar>
     <toolbar dock="2">
         <property name="name">
@@ -356,79 +341,6 @@
         </property>
         <property name="menuText">
             <string>&amp;About</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>configurationPreferencesAction</cstring>
-        </property>
-        <property name="text">
-            <string>&amp;Preferences</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Preferences</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>configurationSave_configurationAction</cstring>
-        </property>
-        <property name="text">
-            <string>&amp;Save configuration</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Save configuration</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>songAnalyzeAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="iconSet">
-            <iconset>stock_autopilot.png</iconset>
-        </property>
-        <property name="text">
-            <string>&amp;AnalyzeLLDescriptors</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;AnalyzeLLDescriptors</string>
-        </property>
-        <property name="toolTip">
-            <string>Analyze</string>
-        </property>
-        <property name="accel">
-            <string>F9</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>fileExportAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="text">
-            <string>E&amp;xport to</string>
-        </property>
-        <property name="menuText">
-            <string>E&amp;xport to</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>fileExportto_MPEG7Action</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="text">
-            <string>&amp;MPEG7</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;MPEG7</string>
         </property>
     </action>
     <action>
@@ -511,43 +423,6 @@
         </property>
         <property name="menuText">
             <string>&amp;Add to project</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>filePublishAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="iconSet">
-            <iconset></iconset>
-        </property>
-        <property name="text">
-            <string>&amp;Publish</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Publish</string>
-        </property>
-        <property name="toolTip">
-            <string>Publish</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>songAnalyzeAllAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="text">
-            <string>&amp;AnalyzeAllDescriptors</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;AnalyzeAllDescriptors</string>
-        </property>
-        <property name="accel">
-            <string>F10</string>
         </property>
     </action>
     <action>
@@ -726,18 +601,6 @@
         <slot>songsClicked(QListViewItem*)</slot>
     </connection>
     <connection>
-        <sender>songAnalyzeAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>analyze()</slot>
-    </connection>
-    <connection>
-        <sender>songAnalyzeAllAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>analyzeAll()</slot>
-    </connection>
-    <connection>
         <sender>AnnotatorBase</sender>
         <signal>usesTextLabelChanged(bool)</signal>
         <receiver>AnnotatorBase</receiver>
@@ -801,26 +664,12 @@
     <include location="local" impldecl="in declaration">qcolordialog.h</include>
     <include location="local" impldecl="in declaration">iostream</include>
     <include location="local" impldecl="in declaration">About.hxx</include>
-    <include location="local" impldecl="in declaration">ConfigurationDialog.hxx</include>
-    <include location="local" impldecl="in declaration">AnalyzeWindow.hxx</include>
     <include location="local" impldecl="in implementation">AnnotatorBase.ui.h</include>
 </includes>
 <variables>
-    <variable>AnalyzeWindow mAnalyzeWindow;</variable>
     <variable>About mAbout;</variable>
-    <variable>QPopupMenu * mIntraSongViewMenu;</variable>
     <variable>bool play;</variable>
     <variable>bool mSongDescriptorsViewed;</variable>
-    <variable>bool mIntraSongViewed;</variable>
-    <variable>bool artistViewed;</variable>
-    <variable>bool titleViewed;</variable>
-    <variable>bool genreViewed;</variable>
-    <variable>bool happyMusicViewed;</variable>
-    <variable>bool lyricsViewed;</variable>
-    <variable>bool itemViewed;</variable>
-    <variable>bool structureItemViewed;</variable>
-    <variable>bool mIntraSong2Viewed;</variable>
-    <variable>ConfigurationDialog mConfigurationDialog;</variable>
 </variables>
 <slots>
     <slot>fileNew()</slot>
@@ -829,24 +678,12 @@
     <slot>fileSaveAs()</slot>
     <slot>filePrint()</slot>
     <slot>fileExit()</slot>
-    <slot>viewTitle()</slot>
-    <slot>viewArtist()</slot>
-    <slot>viewGenre()</slot>
-    <slot>viewLyrics()</slot>
-    <slot>viewItem()</slot>
-    <slot>viewStructureItem()</slot>
-    <slot>viewIntraSong()</slot>
-    <slot>viewSongDescriptors()</slot>
     <slot>chooseColor()</slot>
     <slot>changeViewMenu( QWidget * q )</slot>
-    <slot>viewIntraSongViewMenu()</slot>
     <slot>AnnotatorBrowserGLgroup_toggled( bool a )</slot>
     <slot>songsClicked( QListViewItem * item )</slot>
     <slot>addSongsToProject()</slot>
     <slot>deleteSongsFromProject()</slot>
-    <slot>songAnalyzeAction_activated()</slot>
-    <slot specifier="pure virtual">analyze()</slot>
-    <slot specifier="pure virtual">analyzeAll()</slot>
     <slot>AnnotatorBase_usesTextLabelChanged( bool )</slot>
     <slot>loadSongList()</slot>
     <slot>loadSchema()</slot>

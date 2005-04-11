@@ -37,47 +37,11 @@ void AnnotatorBase::fileExit()
 {
 }
 
-void AnnotatorBase::viewTitle()
-{
-}
-
-void AnnotatorBase::viewArtist()
-{
-}
-
-void AnnotatorBase::viewGenre()
-{
-}
-
-void AnnotatorBase::viewLyrics()
-{
-}
-
-void AnnotatorBase::viewItem()
-{
-}
-
-void AnnotatorBase::viewStructureItem()
-{
-}
-
-void AnnotatorBase::viewIntraSong()
-{
-}
-
-void AnnotatorBase::viewSongDescriptors()
-{
-}
-
 void AnnotatorBase::chooseColor()
 {
 }
 
 void AnnotatorBase::changeViewMenu( QWidget * q)
-{
-}
-
-void AnnotatorBase::viewIntraSongViewMenu()
 {
 }
 
@@ -101,22 +65,7 @@ void AnnotatorBase::deleteSongsFromProject()
 
 
 
-void AnnotatorBase::songAnalyzeAction_activated()
-{
 
-}
-
-
-void AnnotatorBase::analyze()
-{
-
-}
-
-
-void AnnotatorBase::analyzeAll()
-{
-
-}
 
 
 
