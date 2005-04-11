@@ -4,8 +4,9 @@ namespace CLAM
 {
     namespace VM
     {
-	BPFEditorController::BPFEditorController()
-	    : mLeftButtonPressed(false),
+	BPFEditorController::BPFEditorController(int eFlags)
+	    : mEFlags(eFlags), 
+	      mLeftButtonPressed(false),
 	      mRightButtonPressed(false),
 	      mKeyInsertPressed(false),
 	      mKeyDeletePressed(false),
@@ -176,8 +177,24 @@ namespace CLAM
 			}
 			else
 			{
-			    QCursor sacursor(Qt::SizeAllCursor);
-			    emit cursorChanged(sacursor);
+			    if((mEFlags & CLAM::VM::AllowVertical) && (mEFlags & CLAM::VM::AllowHorizontal))
+			    {
+				QCursor sacursor(Qt::SizeAllCursor);
+				emit cursorChanged(sacursor);
+			    }
+			    else
+			    {
+				if(mEFlags & CLAM::VM::AllowVertical)
+				{
+				    QCursor vcursor(Qt::SizeVerCursor);
+				    emit cursorChanged(vcursor);
+				}
+				else if(mEFlags & CLAM::VM::AllowHorizontal)
+				{
+				    QCursor hcursor(Qt::SizeHorCursor);
+				    emit cursorChanged(hcursor);
+				}
+			    }
 			}
 			mCurrentIndex=TIndex(index);
 			mHit=true;
@@ -193,7 +210,7 @@ namespace CLAM
 			    mHit=false;
 			}
 		    }
-
+		    
 		    if(mHit && mLeftButtonPressed)
 		    {
 			if(!mKeyDeletePressed)
@@ -218,7 +235,6 @@ namespace CLAM
 		emit cursorChanged(acursor);
 		emit labelsText(QString(""),QString(""));
 	    }
-	    emit requestRefresh();
 	}
 
 	void BPFEditorController::Draw()
@@ -372,8 +388,22 @@ namespace CLAM
 	{
 	    if(mData.Size() == 1) 
 	    {
-		mData.SetValue(0,y);
-		mData.SetXValue(0,x);
+		if((mEFlags & CLAM::VM::AllowVertical) && (mEFlags & CLAM::VM::AllowHorizontal))
+		{
+		    mData.SetValue(0,y);
+		    mData.SetXValue(0,x);
+		}
+		else
+		{
+		    if(mEFlags & CLAM::VM::AllowVertical)
+		    {
+			mData.SetValue(0,y);
+		    }
+		    else if(mEFlags & CLAM::VM::AllowHorizontal)
+		    {
+			mData.SetXValue(0,x);
+		    }
+		}
 
 		emit requestRefresh();
 
@@ -385,8 +415,22 @@ namespace CLAM
 		TData next_x = mData.GetXValue(mCurrentIndex+1);
 		if(IsValid(x,next_x))
 		{
-		    mData.SetValue(mCurrentIndex,y);
-		    mData.SetXValue(mCurrentIndex,x);
+		    if((mEFlags & CLAM::VM::AllowVertical) && (mEFlags & CLAM::VM::AllowHorizontal))
+		    {
+			mData.SetValue(mCurrentIndex,y);
+			mData.SetXValue(mCurrentIndex,x);
+		    }
+		    else
+		    {
+			if(mEFlags & CLAM::VM::AllowVertical)
+			{
+			    mData.SetValue(mCurrentIndex,y);
+			}
+			else if(mEFlags & CLAM::VM::AllowHorizontal)
+			{
+			    mData.SetXValue(mCurrentIndex,x);
+			}
+		    }
 		}
 		else
 		{
@@ -405,8 +449,22 @@ namespace CLAM
 		TData prior_x = mData.GetXValue(mCurrentIndex-1);
 		if(IsValid(prior_x,x))
 		{
-		    mData.SetValue(mCurrentIndex,y);
-		    mData.SetXValue(mCurrentIndex,x);
+		    if((mEFlags & CLAM::VM::AllowVertical) && (mEFlags & CLAM::VM::AllowHorizontal))
+		    {
+			mData.SetValue(mCurrentIndex,y);
+			mData.SetXValue(mCurrentIndex,x);
+		    }
+		    else
+		    {
+			if(mEFlags & CLAM::VM::AllowVertical)
+			{
+			    mData.SetValue(mCurrentIndex,y);
+			}
+			else if(mEFlags & CLAM::VM::AllowHorizontal)
+			{
+			    mData.SetXValue(mCurrentIndex,x);
+			}
+		    }
 		}
 		else
 		{
@@ -424,8 +482,22 @@ namespace CLAM
 	    TData next_x = mData.GetXValue(mCurrentIndex+1);
 	    if(IsValid(prior_x,x) && IsValid(x,next_x))
 	    {
-		mData.SetValue(mCurrentIndex,y);
-		mData.SetXValue(mCurrentIndex,x);
+		if((mEFlags & CLAM::VM::AllowVertical) && (mEFlags & CLAM::VM::AllowHorizontal))
+		{    
+		    mData.SetValue(mCurrentIndex,y);
+		    mData.SetXValue(mCurrentIndex,x);
+		}
+		else
+		{
+		    if(mEFlags & CLAM::VM::AllowVertical)
+		    {
+			mData.SetValue(mCurrentIndex,y);
+		    }
+		    else if(mEFlags & CLAM::VM::AllowHorizontal)
+		    {
+			mData.SetXValue(mCurrentIndex,x);
+		    }
+		}
 	    }
 	    else
 	    {

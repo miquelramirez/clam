@@ -3,7 +3,7 @@
 
 #include <string>
 #include <qwidget.h>
-#include "BPF.hxx"
+#include "BPFEditorController.hxx"
 
 class QLabel;
 class QFrame;
@@ -13,7 +13,6 @@ namespace CLAM
     namespace VM
     {
 	class Ruler;
-	class BPFEditorController;
 	class BPFEditorDisplaySurface;
 
 	class BPFEditor : public QWidget
@@ -21,7 +20,7 @@ namespace CLAM
 	    Q_OBJECT
 
 	public:
-	    BPFEditor(QWidget* parent=0, const char* name=0);
+	    BPFEditor(QWidget* parent=0, const char* name=0, int eFlags=CLAM::VM::AllowAll);
 	    ~BPFEditor();
 	    
 	    void Label(const std::string& label);
@@ -44,6 +43,7 @@ namespace CLAM
 	    void updateLabels(QString, QString);
 
 	private:
+	    int mEFlags;
 	    Ruler *mXRuler, *mYRuler;
 	    BPFEditorController* mController;
 	    BPFEditorDisplaySurface* mDisplaySurface;
@@ -62,8 +62,8 @@ namespace CLAM
 	    void WhiteOverBlack();
 	    void BlackOverWhite();
 
-	    void AlignLeft();
-	    void AdjustLeft(const double& min, const double& max);
+	    void AdjustLeft(const double& min, const double& max, bool y_axis=true);
+	    //void AdjustLeft(const double& min, const double& max);
 	};
     }
 }
