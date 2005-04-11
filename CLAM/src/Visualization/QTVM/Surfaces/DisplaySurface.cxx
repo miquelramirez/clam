@@ -180,6 +180,9 @@ namespace CLAM
 		    if(_controller)
 		    {
 			_controller->EnterMouse();
+			updateGL();
+			resizeGL(width(),height());
+			updateGL();
 		    }
 		}
 
