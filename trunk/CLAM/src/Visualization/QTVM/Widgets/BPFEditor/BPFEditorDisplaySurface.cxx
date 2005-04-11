@@ -158,6 +158,9 @@ namespace CLAM
 	    if(mController)
 	    {
 		mController->MouseOverDisplay(true);
+		updateGL();
+		resizeGL(width(),height());
+		updateGL();
 	    }
 	}
     }
