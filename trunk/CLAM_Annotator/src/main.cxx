@@ -11,7 +11,7 @@ int main( int argc, char ** argv )
     splash.setCursor( QCursor(Qt::WaitCursor) );
     splash.show();
     splash.message("Loading data ... ");
-    Annotator w;
+    Annotator w("DefaultProject");
     w.show();
     splash.finish(&w);
     QObject::connect( qApp, SIGNAL( lastWindowClosed() ), qApp, SLOT( quit() ) );
