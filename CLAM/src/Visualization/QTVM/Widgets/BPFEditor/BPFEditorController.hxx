@@ -14,6 +14,8 @@ namespace CLAM
 {
     namespace VM
     {
+	enum EFlags { AllowVertical=0x01, AllowHorizontal=0x02, AllowInsert=0x04, AllowRemove=0x08, AllowAll=0x0f };
+
 	class BPFEditorController : public QObject
 	{
 	    struct RulerRange
@@ -77,7 +79,7 @@ namespace CLAM
 	     Q_OBJECT
 
 	public:
-	    BPFEditorController();
+	    BPFEditorController(int eFlags=CLAM::VM::AllowAll);
 	    ~BPFEditorController();
 
 	    void SetData(const BPF& bpf);
@@ -118,7 +120,7 @@ namespace CLAM
 	    BPFEditorRenderer mRenderer;
 	    GLView mView;
 	    RulerRange mXRulerRange, mYRulerRange;
-	    bool mMustProcessData;
+	    int mEFlags;
 	    bool mLeftButtonPressed, mRightButtonPressed;
 	    bool mKeyInsertPressed, mKeyDeletePressed;
 	    bool mMouseOverDisplay;
