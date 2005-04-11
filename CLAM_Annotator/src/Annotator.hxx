@@ -66,9 +66,6 @@ public slots:
   void fileSave();
   void fileMenuAboutToShow();
   void editMenuAboutToShow();
-  void showAnalyzeWindow();
-  void analyze();
-  void analyzeAll();
 protected:
   void closeEvent( QCloseEvent * e);
   bool event(QEvent* e);
@@ -77,12 +74,10 @@ private:
   //void value( const std::string & descriptor, std::string & descriptorValue ) const;
   bool somethingIsSelected() const;
   void initSpliters();
-  void initView();
   void initPlay();
   void makeDescriptorTable();
   void makeAnnotatorBrowserGLMenu();
   void makeConnections();
-  void descriptor( std::string &, int);
   void currentFile( std::string &);
   void changeCurrentFile();
   void markAllNoChanges();
@@ -93,12 +88,11 @@ private:
   void languageChange();
   void initAudioWidget();
   void initLLDescriptorsWidgets();
+  void initHLDescriptorsTable();
   void removeLLDTabs();
   void drawAudio(QListViewItem * item);
   void loadAudioFile(const char* filename);
   void deleteAllSongsFromProject();
-  
-  void doAnalysis();
   void drawLLDescriptors(int index);
   void drawHLD(int songIndex, const std::string& descriptorName, 
 			  const CLAM_Annotator::RestrictedString& value, bool computed);

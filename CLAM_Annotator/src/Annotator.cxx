@@ -13,8 +13,6 @@
 #include <qfiledialog.h>
 
 
-#include "AnalyzeWindow.hxx"
-
 #include <algorithm>
 #include <iostream>
 
@@ -53,10 +51,8 @@ void Annotator::initInterface()
 {
   if (mpAudioPlot) mpAudioPlot->Hide();
   mProjectOverview->setSorting(-1);
-  initView();
   initFileMenu();
   initEditMenu();
-  makeDescriptorTable();
   makeConnections();
   
 }
@@ -74,6 +70,7 @@ void Annotator::initProject()
     CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
   }
   initLLDescriptorsWidgets();
+  initHLDescriptorsTable();
   languageChange();
   loadDescriptorPool();
   
@@ -169,6 +166,12 @@ void Annotator::initLLDescriptorsWidgets()
     }
 }
 
+void Annotator::initHLDescriptorsTable()
+{
+   makeDescriptorTable();
+   drawDescriptorsName();
+}
+
 void Annotator::removeLLDTabs()
 {
   int nPages = mTabPages.size();
@@ -181,90 +184,25 @@ void Annotator::removeLLDTabs()
   tabWidget2->changeTab(tabWidget2->page(0), tr("") );
 }
 
-void Annotator::initView()
-{	
-	mIntraSongViewed=mIntraSong2Viewed=false;
-	mSongDescriptorsViewed=true;
-	artistViewed=titleViewed=genreViewed=lyricsViewed=itemViewed=structureItemViewed=true;
-}
-
 void Annotator::makeDescriptorTable()
 {
-	mDescriptorsTable->setLeftMargin(0);
-	mDescriptorsTable->setLeftMargin(0);
-	mDescriptorsTable->setNumRows(0);
-	mDescriptorsTable->setNumCols(2);
-	mDescriptorsTable->setRowMovingEnabled(false);
-	mDescriptorsTable->setColumnMovingEnabled(false);
-	mDescriptorsTable->setReadOnly(false);
-	mDescriptorsTable->setSelectionMode(QTable::NoSelection);
-	mDescriptorsTable->horizontalHeader()->setLabel( 0, tr( "Descriptor" ) );
-	mDescriptorsTable->horizontalHeader()->setLabel( 1, tr( "Value" ) );
+  mDescriptorsTable->setLeftMargin(0);
+  mDescriptorsTable->setLeftMargin(0);
+  mDescriptorsTable->setNumRows(0);
+  mDescriptorsTable->setNumCols(2);
+  mDescriptorsTable->setRowMovingEnabled(false);
+  mDescriptorsTable->setColumnMovingEnabled(false);
+  mDescriptorsTable->setReadOnly(false);
+  mDescriptorsTable->setSelectionMode(QTable::NoSelection);
+  mDescriptorsTable->horizontalHeader()->setLabel( 0, tr( "Descriptor" ) );
+  mDescriptorsTable->horizontalHeader()->setLabel( 1, tr( "Value" ) );
 }
 
-void Annotator::analyze()
-{
-  mHaveLLDescriptors[mCurrentIndex]=true;
-
-  mHaveHLDescriptors[mCurrentIndex]=false;
-  
-  doAnalysis();
- 
-}
-
-void Annotator::doAnalysis()
-{
-  drawLLDescriptors(mCurrentIndex);
-  drawAudio(NULL);
-  fillGlobalDescriptors(mCurrentIndex);
-  mChanges=true;
-  changeCurrentFile();
-}
-
-void Annotator::analyzeAll()
-{
-  mHaveLLDescriptors[mCurrentIndex]=true;
-
-  mHaveHLDescriptors[mCurrentIndex]=true;
-  
-  doAnalysis();
-}
-
-void Annotator::showAnalyzeWindow()
-{
-  connect(&mAnalyzeWindow, SIGNAL( analyze() ), this, SLOT( analyze() ) );
-  connect(&mAnalyzeWindow, SIGNAL( analyzeAll() ), this, SLOT( analyzeAll() ) );
-  mAnalyzeWindow.show();
-}
 
 void Annotator::makeConnections()
 {
-  //connect(songAnalyzeAction,SIGNAL(activated()),this,SLOT(showAnalyzeWindow()));
   connect(helpAboutAction,SIGNAL(activated()),&mAbout,SLOT(show()));
-  connect(configurationPreferencesAction,SIGNAL(activated()),&mConfigurationDialog,SLOT(show()));
   connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) , this, SLOT( descriptorsTableChanged(int, int) ) );	
-}
-
-void Annotator::descriptor( std::string & descriptor, int row)
-{
-	if ( row == 0 )
-		descriptor = "artists";
-	else if ( row == 1 )
-		descriptor = "name";
-	else if ( row == 2 )
-		descriptor = "genre";
-	else if ( row == 3 )
-		descriptor = "Danceability";
-	else if ( row == 4 )
-		descriptor = "Tonal Descriptor: Key Note";
-	else if ( row == 5)
-		descriptor = "Tonal Descriptor: Mode";
-	else if ( row == 6 )
-		descriptor = "Dynamic Complexity";
-	else if ( row == 7 )
-		descriptor = "BPM";
-	else
-		std::cout<<"a descriptor has been changed that it is not known what to do"<<std::endl;
 }
 
 void Annotator::currentFile( std::string & nameOfTheFile )
@@ -547,25 +485,23 @@ void Annotator::chooseColor()
 
 void Annotator::songsClicked( QListViewItem * item)
 {
-         if (item != 0)
-	{
-	        CLAM::AudioFile file;
-	      	file.OpenExisting(item->text(0).ascii());
-	        mpProgressDialog = new QProgressDialog ("Loading Audio", 
-							"Cancel",file.GetHeader().GetLength(),
-							this);
-		mpProgressDialog->setProgress(0);
-		mCurrentIndex = getIndexFromFileName(std::string(item->text(0).ascii()));
-		fillGlobalDescriptors( mCurrentIndex );
-		drawAudio(item);
-		drawLLDescriptors(mCurrentIndex);
-		songAnalyzeAction->setEnabled( TRUE );
-		songAnalyzeAllAction->setEnabled (TRUE );
-		
-		delete mpProgressDialog;
-		mpProgressDialog = NULL;
-
-	}
+  if (item != 0)
+    {
+      CLAM::AudioFile file;
+      file.OpenExisting(item->text(0).ascii());
+      mpProgressDialog = new QProgressDialog ("Loading Audio", 
+					      "Cancel",file.GetHeader().GetLength(),
+					      this);
+      mpProgressDialog->setProgress(0);
+      mCurrentIndex = getIndexFromFileName(std::string(item->text(0).ascii()));
+      fillGlobalDescriptors( mCurrentIndex );
+      drawAudio(item);
+      drawLLDescriptors(mCurrentIndex);
+      
+      delete mpProgressDialog;
+      mpProgressDialog = NULL;
+      
+    }
 }
 
 void Annotator::drawAudio(QListViewItem * item=NULL)
@@ -598,18 +534,19 @@ void Annotator::drawLLDescriptors(int index)
     std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
     for(int i=0;bpf_it != mBPFs.end(); i++, bpf_it++, editors_it++)
     {
-	if(mHaveLLDescriptors[index])
-	{
-	    (*editors_it)->Show();
-	    (*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
-	    (*editors_it)->SetData((*bpf_it));
-	    (*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
-	    (*editors_it)->SetYRange(GetMinY((*bpf_it)),GetMaxY((*bpf_it)));
+      //if(mHaveLLDescriptors[index]) We assume all descriptors are loaded, not computed
+      (*editors_it)->Show();
+      (*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
+      (*editors_it)->SetData((*bpf_it));
+      (*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
+      (*editors_it)->SetYRange(GetMinY((*bpf_it)),GetMaxY((*bpf_it)));
+      /*
 	}
 	else
 	{
 	    (*editors_it)->Hide();
 	}
+      */
   }
 
 }
@@ -868,7 +805,7 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int va
 
 }
 
-void Annotator::drawDescriptorsValue( int index, bool computed)
+void Annotator::drawDescriptorsValue( int index, bool computed = true)
 {
   std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
   std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
@@ -902,9 +839,8 @@ void Annotator::drawDescriptorsValue( int index, bool computed)
 void Annotator::fillGlobalDescriptors( int index)
 {
   mDescriptorsTable->show();
-  drawDescriptorsName();
-  bool computed = mHaveHLDescriptors[index];
-  drawDescriptorsValue( index, computed );
+  //bool computed = mHaveHLDescriptors[index]; We assume all descriptors are loaded, not computed
+  drawDescriptorsValue(index);
 } 
 
 int Annotator::findHLDescriptorIndex(const std::string& name)
