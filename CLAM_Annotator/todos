@@ -1,20 +1,22 @@
 
-
-*Enhance the song loading process
-	* Convert textual format to XML using CLAM infrastructure.
-	* Remove initial dialog and add menu items
-		* Load Project (First simply a bunch of songs)
-		* Insert song into project
-		* Save project
-* Define a HLDescriptorScheme
-	* List of descriptors names + type
-* Load HLDescriptorScheme and init widgets
-* Add HLDescriptors to Pool
-* Unify LLD and HLD in a single scheme
-* Add menu items for loading scheme + descriptors
-	* Remove the Analysis items
-* Add segmentation marks to Pool (ask David)
 * Add everything to a single Project file:
 	* List of Song+Scheme+Pool
 * Save results of the editing process
-* Device a way in which sound files don't have to be loade every time
+* Device a way in which sound files don't have to be loaded every time
+
+previous:
+
+*Enhance the song loading process (done)
+	* Convert textual format to XML using CLAM infrastructure (done).
+	* Remove initial dialog and add menu items (done)
+		* Load Project (First simply a bunch of songs)
+		* Insert song into project
+		* Save project
+* Define a HLDescriptorScheme (done)
+	* List of descriptors names + type
+* Load HLDescriptorScheme and init widgets (done)
+* Add HLDescriptors to Pool (done)
+* Unify LLD and HLD in a single scheme (done)
+* Add menu items for loading scheme + descriptors (done)
+	* Remove the Analysis items (done)
+* Add segmentation marks to Pool (ask David) 
