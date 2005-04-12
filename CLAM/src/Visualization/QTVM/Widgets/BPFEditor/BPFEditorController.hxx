@@ -115,6 +115,9 @@ namespace CLAM
 	    void labelsText(QString, QString);
 	    void requestRefresh();
 
+	    void xValueChanged(TIndex, TData);
+	    void yValueChanged(TIndex, TData);
+
 	private:
 	    BPF mData;
 	    BPFEditorRenderer mRenderer;
@@ -135,6 +138,8 @@ namespace CLAM
 
 	    Point mCurrentPoint;
 	    TIndex mCurrentIndex;
+
+	    bool mXModified, mYModified;
 	    
 	    void PushSettings();
 	    void PopSettings();

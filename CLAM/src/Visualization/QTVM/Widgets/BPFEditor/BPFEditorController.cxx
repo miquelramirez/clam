@@ -14,7 +14,9 @@ namespace CLAM
 	      mProcessingSelection(false),
 	      mHit(false),
 	      mDisplayWidth(0),
-	      mDisplayHeight(0)
+	      mDisplayHeight(0),
+	      mXModified(false),
+	      mYModified(false)
 	{
 	    mData.SetSize(0);
 	}
@@ -90,6 +92,17 @@ namespace CLAM
 	    mLeftButtonPressed = pressed;
 	    if(!mLeftButtonPressed)
 	    {
+		if(mXModified)
+		{
+		    emit xValueChanged(mCurrentIndex, mData.GetXValue(mCurrentIndex));
+		    mXModified = false;
+		}
+		if(mYModified)
+		{
+		    emit yValueChanged(mCurrentIndex, mData.GetValueFromIndex(mCurrentIndex));
+		    mYModified = false;
+		}
+
 		QCursor acursor(Qt::ArrowCursor);
 		emit cursorChanged(acursor);
 		mHit=false;
@@ -392,16 +405,23 @@ namespace CLAM
 		{
 		    mData.SetValue(0,y);
 		    mData.SetXValue(0,x);
+
+		    if(!mXModified) mXModified = true;
+		    if(!mYModified) mYModified = true;
 		}
 		else
 		{
 		    if(mEFlags & CLAM::VM::AllowVertical)
 		    {
 			mData.SetValue(0,y);
+
+			if(!mYModified) mYModified = true;
 		    }
 		    else if(mEFlags & CLAM::VM::AllowHorizontal)
 		    {
 			mData.SetXValue(0,x);
+
+			if(!mXModified) mXModified = true;
 		    }
 		}
 
@@ -419,16 +439,23 @@ namespace CLAM
 		    {
 			mData.SetValue(mCurrentIndex,y);
 			mData.SetXValue(mCurrentIndex,x);
+
+			if(!mXModified) mXModified = true;
+			if(!mYModified) mYModified = true;
 		    }
 		    else
 		    {
 			if(mEFlags & CLAM::VM::AllowVertical)
 			{
 			    mData.SetValue(mCurrentIndex,y);
+
+			    if(!mYModified) mYModified = true;
 			}
 			else if(mEFlags & CLAM::VM::AllowHorizontal)
 			{
 			    mData.SetXValue(mCurrentIndex,x);
+
+			    if(!mXModified) mXModified = true;
 			}
 		    }
 		}
@@ -453,16 +480,23 @@ namespace CLAM
 		    {
 			mData.SetValue(mCurrentIndex,y);
 			mData.SetXValue(mCurrentIndex,x);
+
+			if(!mXModified) mXModified = true;
+			if(!mYModified) mYModified = true;
 		    }
 		    else
 		    {
 			if(mEFlags & CLAM::VM::AllowVertical)
 			{
 			    mData.SetValue(mCurrentIndex,y);
+
+			    if(!mYModified) mYModified = true;
 			}
 			else if(mEFlags & CLAM::VM::AllowHorizontal)
 			{
 			    mData.SetXValue(mCurrentIndex,x);
+			    
+			    if(!mXModified) mXModified = true;
 			}
 		    }
 		}
@@ -486,16 +520,23 @@ namespace CLAM
 		{    
 		    mData.SetValue(mCurrentIndex,y);
 		    mData.SetXValue(mCurrentIndex,x);
+
+		    if(!mXModified) mXModified = true;
+		    if(!mYModified) mYModified = true;
 		}
 		else
 		{
 		    if(mEFlags & CLAM::VM::AllowVertical)
 		    {
 			mData.SetValue(mCurrentIndex,y);
+
+			if(!mYModified) mYModified = true;
 		    }
 		    else if(mEFlags & CLAM::VM::AllowHorizontal)
 		    {
 			mData.SetXValue(mCurrentIndex,x);
+
+			if(!mXModified) mXModified = true;
 		    }
 		}
 	    }
