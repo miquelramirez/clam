@@ -95,21 +95,27 @@ private:
   void deleteAllSongsFromProject();
   void drawLLDescriptors(int index);
   void drawHLD(int songIndex, const std::string& descriptorName, 
-			  const CLAM_Annotator::RestrictedString& value, bool computed);
+	       	  const CLAM_Annotator::RestrictedString& value, bool computed);
   void drawHLD(int songIndex, const std::string& descriptorName,const std::string& value, 
 	       bool computed );
   void drawHLD(int songIndex, const std::string& descriptorName, float value, bool computed);
   void drawHLD(int songIndex, const std::string& descriptorName, int value, bool computed);
  
   int findHLDescriptorIndex(const std::string& name);
+  std::string getHLDescriptorNameFromIndex(int index);
+  void getHLDSchemaElementFromIndex(int index, CLAM_Annotator::HLDSchemaElement&);
+  void setHLDescriptorPoolFromString(const std::string& descriptorName, 
+				     const std::string& descriptorType,
+				     const std::string& descriptorValue);
+    
   int getIndexFromFileName(const std::string& fileName);
 
   void initEnvelopes();
-  void generateRandomEnvelopes();
-  CLAM::BPF generateRandomEnvelope();
-
+  
   void generateEnvelopesFromDescriptors();
   CLAM::BPF generateEnvelopeFromDescriptor(const std::string& name);
+  void generateDescriptorFromEnvelope(int bpfIndex, float* descriptors);
+  void generateDescriptorsFromEnvelopes();
 
   void loadDescriptorPool();
 
