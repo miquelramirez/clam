@@ -204,16 +204,6 @@ void Annotator::makeConnections()
   connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) , this, SLOT( descriptorsTableChanged(int, int) ) );	
 }
 
-void Annotator::currentFile( std::string & nameOfTheFile )
-{
-	QListViewItemIterator it( mProjectOverview );
-	for ( ; it.current() && !it.current()->isSelected() ; it++ );
-	if ( it.current() )
-	{		
-		nameOfTheFile = std::string( it.current()->text(0).ascii() );	
-	}
-}
-
 void Annotator::changeCurrentFile()
 {
 	QListViewItemIterator it( mProjectOverview );
@@ -228,21 +218,18 @@ void Annotator::changeCurrentFile()
 
 void Annotator::descriptorsTableChanged(int row, int column)
 {
-  //TODO: how to deal with editiding functions?
-  /*	mChanges = true;
-	std::string nameOfDescriptor;
-	descriptor( nameOfDescriptor, row );
-	std::string nameOfTheFile;
-	currentFile( nameOfTheFile );
-	changeCurrentFile();
-	std::string valueOfDescriptor;
-	valueOfDescriptor = std::string( mDescriptorsTable->text(row, column).ascii() );
-	value( nameOfDescriptor, valueOfDescriptor);
-	mpData->setDescriptor( nameOfTheFile, nameOfDescriptor, valueOfDescriptor );
-	int index = mSongDescriptorsIndex[ nameOfTheFile ];
-	mSongDescriptors[ index ][ nameOfDescriptor ] = valueOfDescriptor;
-  */	
-}
+  mChanges = true;
+  //We first take the HLDSchema element where we will find all necessary info
+  CLAM_Annotator::HLDSchemaElement hldSchemaElement;
+  getHLDSchemaElementFromIndex(row, hldSchemaElement);
+
+  std::string descriptorName = hldSchemaElement.GetName();
+  std::string descriptorType = hldSchemaElement.GetType();
+  std::string descriptorValue;
+  descriptorValue = std::string( mDescriptorsTable->text(row, column).ascii() );
+  setHLDescriptorPoolFromString(descriptorName, descriptorType, descriptorValue);
+  changeCurrentFile();
+ }
 
 void Annotator::addSongs()
 {
@@ -260,7 +247,9 @@ void Annotator::closeEvent ( QCloseEvent * e )
 {
 	if ( mChanges )
 	{
-		QMessageBox::question(this, "Close project", "Do you want to save the changes?", QMessageBox::Yes, QMessageBox::No );
+	  if(QMessageBox::question(this, "Close project", "Do you want to save the changes?", QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes)
+	    saveDescriptors();
+
 	}
 	e->accept();
 }
@@ -594,38 +583,6 @@ void Annotator::generateEnvelopesFromDescriptors()
     }
 }
   
-void Annotator::generateRandomEnvelopes()
-{
-    srand(time(NULL));
- 
-    for(unsigned i=0; i < mBPFEditors.size(); i++)
-    {
-	mBPFs[i]=generateRandomEnvelope();
-    }
-}
-
-CLAM::BPF Annotator::generateRandomEnvelope()
-{
-    CLAM::BPF bpf;
-    int audioSize=mCurrentAudio.GetSize();
-    TData sr = mCurrentAudio.GetSampleRate();
-    int i;
-   
-    int randomInt=(float (rand())/float(RAND_MAX))*100;
-    int randomIncr;
-    for(i=0;i<audioSize;i+=30000)
-    {
-	randomIncr = (float (rand())/float(RAND_MAX))*20-10;
-	randomInt += randomIncr;
-	if(randomInt>100) randomInt = 80;
-	if(randomInt<0) randomInt=20;
-     
-	bpf.Insert(TData(i)/sr,TData(randomInt));
-    }
-    return bpf;
-}
-
-
 CLAM::BPF Annotator::generateEnvelopeFromDescriptor(const std::string& name)
 {
     const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",name);
@@ -638,13 +595,35 @@ CLAM::BPF Annotator::generateEnvelopeFromDescriptor(const std::string& name)
     int frameSize = audioSize/nFrames;
 
     CLAM::BPF bpf;
-
+    
     for(i=0, x=0; i<nFrames ; x+=frameSize, i++)
     {
 	bpf.Insert(TData(x)/sr,TData(values[i]));
     }
   
     return bpf;
+}
+
+void Annotator::generateDescriptorsFromEnvelopes()
+{
+    unsigned i=0, editors_size = mBPFEditors.size();
+    std::list<std::string>::iterator it;
+    std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
+
+    for(it = descriptorsNames.begin() ;i < editors_size; i++, it++)
+    {
+      generateDescriptorFromEnvelope(i, mpDescriptorPool->GetWritePool<float>("Frame",(*it)));
+    }
+}
+
+void Annotator::generateDescriptorFromEnvelope(int bpfIndex, float* descriptor)
+{
+  int nPoints = mBPFs[bpfIndex].Size();
+  int i = 0;
+  for (i=0; i<nPoints; i++)
+    {
+      descriptor[i] = mBPFs[bpfIndex].GetValueFromIndex(i);
+    }
 }
 
 void Annotator::languageChange()
@@ -834,6 +813,38 @@ void Annotator::drawDescriptorsValue( int index, bool computed = true)
 
 }
 
+void Annotator::setHLDescriptorPoolFromString(const std::string& descriptorName, 
+					      const std::string& descriptorType,
+					      const std::string& descriptorValue)
+{
+  QString qValue(descriptorValue.c_str());
+  if (descriptorType == "String")
+    {
+      *(mpDescriptorPool->GetWritePool<std::string>("Song",descriptorName)) = descriptorValue;
+      std::cout<<"String descriptor "<< descriptorName << " set to "<< descriptorValue << std::endl;
+    }
+  if (descriptorType == "RestrictedString")
+    {
+      CLAM_Annotator::RestrictedString* rString = mpDescriptorPool->
+	GetWritePool<CLAM_Annotator::RestrictedString>("Song",descriptorName);
+      rString->SetString(descriptorValue);
+      std::cout<<"RestrictedString descriptor "<< descriptorName << " set to "<< descriptorValue << std::endl;
+    }
+  if (descriptorType == "Float")
+    {
+      *(mpDescriptorPool->GetWritePool<float>("Song",descriptorName)) = qValue.toFloat();
+      std::cout<<"Float descriptor "<< descriptorName << " set to "<< descriptorValue << std::endl;
+    }
+  if (descriptorType == "Int")
+    {
+      *(mpDescriptorPool->GetWritePool<int>("Song",descriptorName)) = qValue.toInt();
+      std::cout<<"Int descriptor "<< descriptorName << " set to "<< descriptorValue << std::endl;
+    }
+
+
+
+}
+
 void Annotator::fillGlobalDescriptors( int index)
 {
   mDescriptorsTable->show();
@@ -853,6 +864,31 @@ int Annotator::findHLDescriptorIndex(const std::string& name)
     if ((*it).GetName() == name) return i;
   }
   return -1;
+}
+
+std::string Annotator::getHLDescriptorNameFromIndex(int index)
+{
+  CLAM_Annotator::HLDSchemaElement hldSchemaElement;
+  getHLDSchemaElementFromIndex(index, hldSchemaElement);
+  return hldSchemaElement.GetName();
+}
+
+void Annotator::getHLDSchemaElementFromIndex(int index, CLAM_Annotator::HLDSchemaElement& element)
+{
+  /* TODO: This is not very efficient, wouldn't it be better to have HLDs as a vector instead of
+     a list? */
+  std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
+  std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
+  int i=0;
+  for(it = hlds.begin(), i = 0 ; it != hlds.end(); it++, i++)
+  {
+    if (i==index) {
+      element = (*it);
+      return;
+    }
+  }
+  CLAM_ASSERT(false, "Index does not exist for HLDSchema");;
+
 }
 
 double Annotator::GetMinY(const CLAM::BPF& bpf)
