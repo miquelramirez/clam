@@ -60,6 +60,7 @@ namespace CLAM
 	void BPFEditor::Show()
 	{
 	    show();
+	    if(mDisplaySurface) mDisplaySurface->updateGL();
 	}
 
 	void BPFEditor::Hide()
