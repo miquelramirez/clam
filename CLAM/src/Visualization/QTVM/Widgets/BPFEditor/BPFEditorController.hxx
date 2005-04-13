@@ -115,8 +115,8 @@ namespace CLAM
 	    void labelsText(QString, QString);
 	    void requestRefresh();
 
-	    void xValueChanged(TIndex, TData);
-	    void yValueChanged(TIndex, TData);
+	    void xValueChanged(int, float);
+	    void yValueChanged(int, float);
 
 	private:
 	    BPF mData;
