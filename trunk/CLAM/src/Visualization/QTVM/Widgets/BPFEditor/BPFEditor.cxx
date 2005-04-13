@@ -207,8 +207,8 @@ namespace CLAM
 	    connect(mController,SIGNAL(yRulerRange(double,double)),mYRuler,SLOT(updateRange(double,double)));
 	    connect(mController,SIGNAL(labelsText(QString,QString)),this,SLOT(updateLabels(QString,QString)));
 
-	    connect(mController,SIGNAL(xValueChanged(TIndex, TData)),this,SIGNAL(xValueChanged(TIndex, TData)));
-	    connect(mController,SIGNAL(yValueChanged(TIndex, TData)),this,SIGNAL(yValueChanged(TIndex, TData)));
+	    connect(mController,SIGNAL(xValueChanged(int, float)),this,SIGNAL(xValueChanged(int, float)));
+	    connect(mController,SIGNAL(yValueChanged(int, float)),this,SIGNAL(yValueChanged(int, float)));
 	    
 	    // set color scheme
 	    WhiteOverBlack();

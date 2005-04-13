@@ -36,8 +36,8 @@ namespace CLAM
 	    void Hide();
 	    
         signals:
-	    void xValueChanged(TIndex, TData);
-	    void yValueChanged(TIndex, TData);
+	    void xValueChanged(int, float);
+	    void yValueChanged(int, float);
 
 	protected:
 	    void keyPressEvent(QKeyEvent* e);
