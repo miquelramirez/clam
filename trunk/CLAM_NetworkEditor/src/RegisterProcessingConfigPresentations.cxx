@@ -119,6 +119,12 @@ static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MonoAudioFil
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MultiChannelAudioFileReaderConfig> > 
 	regtMultiChannelAudioFileReaderCfg( "MultiChannelAudioFileReaderConfig" );
 	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSAnalysisConfig> > 
+	regtSmsAnalysisCfg("SMSAnalysisConfig");
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSSynthesisConfig> > 
+	regtSmsSynthesisCfg("SMSSynthesisConfig");
+	
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MultiChannelAudioFileWriterConfigPresentation> 
 	regtMultiChannelAudioFileWriterCfg( "MultiChannelAudioFileWriterConfig" );
 
