@@ -105,11 +105,6 @@ void AnnotatorBase::saveSongList()
 }
 
 
-void AnnotatorBase::saveSchema()
-{
-
-}
-
 
 void AnnotatorBase::saveDescriptors()
 {
@@ -117,7 +112,3 @@ void AnnotatorBase::saveDescriptors()
 }
 
 
-void AnnotatorBase::saveAll()
-{
-
-}

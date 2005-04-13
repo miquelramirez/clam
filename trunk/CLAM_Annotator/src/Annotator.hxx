@@ -18,6 +18,9 @@
 
 #include "BPF.hxx"
 
+using CLAM::TIndex;
+using CLAM::TData;
+
 namespace CLAM {
     namespace VM 
     {
@@ -35,7 +38,7 @@ class Annotator : public AnnotatorBase
 
 public:
   Annotator(const std::string & nameProject);
-  void initSongs(const std::string &, const std::vector<std::string>&);
+  void initSongs();
   void fillGlobalDescriptors( int index);
   void songsClicked( QListViewItem * item);
   void playPause();
@@ -47,6 +50,7 @@ public:
   void initInterface();
 public slots:
   void descriptorsTableChanged( int, int);
+  void descriptorsBPFChanged(TIndex, TData);
   void fileNew();			
   void fileOpen();
   void addSongsToProject();
@@ -57,9 +61,7 @@ public slots:
   void loadDescriptors();
 
   void saveSongList();
-  void saveSchema();
   void saveDescriptors();
-  void saveAll();
 
   void deleteSongsFromProject();
   void fileSaveAs();
@@ -78,6 +80,7 @@ private:
   void makeDescriptorTable();
   void makeAnnotatorBrowserGLMenu();
   void makeConnections();
+  void connectBPFs();
   void currentFile( std::string &);
   void changeCurrentFile();
   void markAllNoChanges();
@@ -130,16 +133,17 @@ private:
   CLAM_Annotator::SongFiles mSongFiles;
   
   std::string mProjectFileName;
+  std::string mCurrentSoundFileName;
+  std::string mCurrentDescriptorsPoolFileName;
   std::map<std::string,int> mSongDescriptorsIndex;
 
-  bool mChanges;
-  
+
+  bool mGlobalChanges;
+  bool mHLDChanged;
+  bool mLLDChanged;
   std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
-              
-  int mCurrentIndex;
                 
-  std::vector<bool> mHaveLLDescriptors;
-  std::vector<bool> mHaveHLDescriptors;
+  int mCurrentIndex;     
                 
   QVBoxLayout* mpTabLayout;
   std::vector<QWidget*> mTabPages;

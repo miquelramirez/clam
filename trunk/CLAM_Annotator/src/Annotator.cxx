@@ -37,7 +37,12 @@ using CLAM::TData;
 using CLAM::TIndex;
 
 
-Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "annotator", WDestructiveClose),mCurrentIndex(0),mpTabLayout(0),mBPFEditors(0)
+
+Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "annotator", 
+									  WDestructiveClose),
+							   mCurrentIndex(0),mpTabLayout(0),
+							   mBPFEditors(0),mLLDChanged(false),
+							   mHLDChanged(false)
 {
   setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
   mpDescriptorPool = NULL;
@@ -62,7 +67,7 @@ void Annotator::initProject()
   {
     CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
   }
-  initSongs(name(), mSongFiles.GetFileNames());
+  initSongs();
   
   if (mProject.GetSchema()!="")
   {
@@ -71,9 +76,10 @@ void Annotator::initProject()
   initLLDescriptorsWidgets();
   initHLDescriptorsTable();
   languageChange();
-  loadDescriptorPool();
   
-  mChanges = false;
+  mGlobalChanges = false;
+  mLLDChanged = false;
+  mHLDChanged = false;
 }
 
 bool Annotator::somethingIsSelected() const
@@ -104,7 +110,7 @@ void Annotator::editMenuAboutToShow()
 
 void Annotator::fileMenuAboutToShow()
 {
-	fileSave_projectAction->setEnabled( mChanges );
+	fileSave_projectAction->setEnabled( mGlobalChanges );
 }
 
 void Annotator::initAudioWidget()
@@ -162,6 +168,7 @@ void Annotator::initLLDescriptorsWidgets()
       (*it)->Hide();
       tabLayout->addWidget(*it);
     }
+  connectBPFs();
 }
 
 void Annotator::initHLDescriptorsTable()
@@ -200,7 +207,19 @@ void Annotator::makeDescriptorTable()
 void Annotator::makeConnections()
 {
   connect(helpAboutAction,SIGNAL(activated()),&mAbout,SLOT(show()));
-  connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) , this, SLOT( descriptorsTableChanged(int, int) ) );	
+  connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) , this, 
+	  SLOT( descriptorsTableChanged(int, int) ) );
+  
+}
+
+void Annotator::connectBPFs()
+{
+  std::vector<CLAM::VM::BPFEditor*>::iterator it;
+  for(it = mBPFEditors.begin(); it != mBPFEditors.end(); it++)
+    {
+      connect( (*it), SIGNAL(yValueChanged(TIndex, TData)), this, 
+	      SLOT(descriptorsBPFChanged(TIndex, TData)));
+    }
 }
 
 void Annotator::changeCurrentFile()
@@ -217,7 +236,7 @@ void Annotator::changeCurrentFile()
 
 void Annotator::descriptorsTableChanged(int row, int column)
 {
-  mChanges = true;
+  mHLDChanged = true;
   //We first take the HLDSchema element where we will find all necessary info
   CLAM_Annotator::HLDSchemaElement hldSchemaElement;
   getHLDSchemaElementFromIndex(row, hldSchemaElement);
@@ -228,29 +247,47 @@ void Annotator::descriptorsTableChanged(int row, int column)
   descriptorValue = std::string( mDescriptorsTable->text(row, column).ascii() );
   setHLDescriptorPoolFromString(descriptorName, descriptorType, descriptorValue);
   changeCurrentFile();
- }
+}
+
+void Annotator::descriptorsBPFChanged(TIndex pointIndex,TData newValue)
+{
+  /*TODO: right now, no matter how many points have been edited all descriptors are updated. This
+    is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
+    in the class.*/
+  mLLDChanged = true;
+} 
 
 void Annotator::addSongs()
 {
   deleteAllSongsFromProject();
-  std::vector< std::string > songs = mSongFiles.GetFileNames();
-  for ( std::vector<std::string>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
+  std::vector< CLAM_Annotator::Song> songs = mSongFiles.GetFileNames();
+  for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
     {
-      ListViewItem * item = new ListViewItem( mProjectOverview->childCount(), mProjectOverview, QString( it->c_str() ), tr("Yes"), tr("No") );
-      mHaveHLDescriptors.push_back(true);
-      mHaveLLDescriptors.push_back(false);
+      ListViewItem * item = new ListViewItem( mProjectOverview->childCount(), mProjectOverview, QString( it->GetSoundFile().c_str() ), tr("Yes"), tr("No") );
     }
 }
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
 {
-	if ( mChanges )
+  if(mLLDChanged)
+    {
+      if(QMessageBox::question(this, "Descriptors Changed", 
+			       "Do you want to save the changes to current descriptors?", 
+			       QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes)
 	{
-	  if(QMessageBox::question(this, "Close project", "Do you want to save the changes?", QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes)
-	    saveDescriptors();
-
+	  generateDescriptorsFromEnvelopes();
+	  saveDescriptors();
 	}
-	e->accept();
+    }
+  if ( mGlobalChanges )
+    {
+      if(QMessageBox::question(this, "Close project", 
+			       "Do you want to save changes to the project?", 
+			       QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes)
+	saveDescriptors();
+      
+    }
+  e->accept();
 }
 
 void Annotator::markAllNoChanges()
@@ -299,7 +336,7 @@ void Annotator::addSongsToProject()
 void Annotator::fileOpen()
 {
   QString qFileName;
-  qFileName = QFileDialog::getOpenFileName(QString::null,"*.xml");
+  qFileName = QFileDialog::getOpenFileName(QString::null,"*.pro");
   if(qFileName != QString::null)
   {
     mProjectFileName = std::string(qFileName.ascii());
@@ -313,46 +350,34 @@ void Annotator::fileNew()
 {
   mProjectFileName = "";
   mProject.SetSongs("");
-  mProject.SetDescriptorPool("");
   mProject.SetSchema("");
   mSongFiles.GetFileNames().resize(0);
   mSchema.GetLLDSchema().GetLLDNames().resize(0);
   mSchema.GetHLDSchema().GetHLDs().resize(0);
   initInterface();
   initProject();
-  mChanges = true;
+  mGlobalChanges = true;
 }
 
 void Annotator::fileSave()
 {
-	mChanges = false;
-	markAllNoChanges();
-	if(mProjectFileName=="") fileSaveAs();
-	else
-	{
-	  //Before adding the suffix I should better remove the .xml maybe by doing:
-	  //songFile = mProjectFileName;
-	  //songFile.remove(songFile.find_last_of(".xml"),4);
-	  CLAM::XMLStorage::Dump(mProject,"Project",mProjectFileName);
-	  std::string songFile = mProject.GetSongs();
-	  if(songFile == "")
-	    songFile = mProjectFileName+".songs.xml";
-	  CLAM::XMLStorage::Dump(mSongFiles, "Songs", songFile);
-	  std::string descriptorPoolFile = mProject.GetDescriptorPool();
-	  if(descriptorPoolFile == "")
-	    descriptorPoolFile = mProjectFileName+".pool.xml";
-	  CLAM::XMLStorage::Dump(*mpDescriptorPool, "DescriptorPool",descriptorPoolFile);
-	  std::string schemaFile = mProject.GetSchema();
-	  if(schemaFile == "")
-	    schemaFile = mProjectFileName+".schema.xml";
-	  CLAM::XMLStorage::Dump(mSchema, "Schema",schemaFile);
-	}
+  mGlobalChanges = false;
+  markAllNoChanges();
+  if(mProjectFileName=="") fileSaveAs();
+  else
+    {
+      CLAM::XMLStorage::Dump(mProject,"Project",mProjectFileName);
+      std::string songFile = mProject.GetSongs();
+      if(songFile == "")
+	songFile = mProjectFileName+".sl";
+      CLAM::XMLStorage::Dump(mSongFiles, "Songs", songFile);
+    }
 
 }
 
 void Annotator::fileSaveAs()
 {
-  QString qFileName = QFileDialog::getSaveFileName(QString::null,"*.xml");
+  QString qFileName = QFileDialog::getSaveFileName(QString::null,"*.pro");
   if(qFileName != QString::null)
   {
     mProjectFileName = std::string(qFileName.ascii());
@@ -362,7 +387,7 @@ void Annotator::fileSaveAs()
 void  Annotator::loadSongList()
 {
   QString qFileName;
-  qFileName = QFileDialog::getOpenFileName(QString::null,"*.xml");
+  qFileName = QFileDialog::getOpenFileName(QString::null,"*.sl");
   if(qFileName != QString::null)
   {
     mProject.SetSongs(std::string(qFileName.ascii()));
@@ -376,7 +401,7 @@ void  Annotator::loadSongList()
 void  Annotator::loadSchema()
 {
   QString qFileName;
-  qFileName = QFileDialog::getOpenFileName(QString::null,"*.xml");
+  qFileName = QFileDialog::getOpenFileName(QString::null,"*.sc");
   if(qFileName != QString::null)
   {
     mProject.SetSchema(std::string(qFileName.ascii()));
@@ -390,11 +415,11 @@ void  Annotator::loadSchema()
 void  Annotator::loadDescriptors()
 {
   QString qFileName;
-  qFileName = QFileDialog::getOpenFileName(QString::null,"*.xml");
+  qFileName = QFileDialog::getOpenFileName(QString::null,"*.pool");
   if(qFileName != QString::null)
   {
-    mProject.SetDescriptorPool(std::string(qFileName.ascii()));
-    CLAM::XMLStorage::Restore(*mpDescriptorPool,mProject.GetDescriptorPool());
+    mCurrentDescriptorsPoolFileName = (std::string(qFileName.ascii()));
+    CLAM::XMLStorage::Restore(*mpDescriptorPool,mCurrentDescriptorsPoolFileName);
     //TODO: Does loading the descriptors affect all this
     initInterface();
     initProject();
@@ -405,7 +430,7 @@ void  Annotator::loadDescriptors()
 void  Annotator::saveSongList()
 {
   QString qFileName;
-  qFileName = QFileDialog::getSaveFileName(QString::null,"*.xml");
+  qFileName = QFileDialog::getSaveFileName(QString::null,"*.sl");
   if(qFileName != QString::null)
   {
     mProject.SetSongs(std::string(qFileName.ascii()));
@@ -414,52 +439,29 @@ void  Annotator::saveSongList()
 
 }
 
-void  Annotator::saveSchema()
-{
-  QString qFileName;
-  qFileName = QFileDialog::getSaveFileName(QString::null,"*.xml");
-  if(qFileName != QString::null)
-  {
-    mProject.SetSchema(std::string(qFileName.ascii()));
-    CLAM::XMLStorage::Dump(mSchema,"Schema",mProject.GetSchema());
-  }
-
-}
 
 void  Annotator::saveDescriptors()
 {
-  QString qFileName;
-  qFileName = QFileDialog::getSaveFileName(QString::null,"*.xml");
-  if(qFileName != QString::null)
-  {
-    mProject.SetDescriptorPool(std::string(qFileName.ascii()));
-    CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mProject.GetDescriptorPool());
-  }
-
-}
-
-void  Annotator::saveAll()
-{
-  if(QMessageBox::information(this,QString("Saving Song List"),
-			      QString("Please choose Song List filename"),
+  if(QMessageBox::question(this,QString("Save Descriptors"),
+			      QString("Do you want to save current song's descriptors?"),
 			      QString("OK"),QString("Cancel")) == 0)
-    saveSongList();
-  
-  if(QMessageBox::information(this,QString("Saving Schema"),
-			      QString("Please choose now Schema filename"),
-			      QString("OK"),QString("Cancel")) == 0)
-    saveSchema();
+    {
+      QString qFileName;
+      qFileName = QFileDialog::getSaveFileName(QString::null,"*.pool");
+      if(qFileName != QString::null)
+	{
+	  mCurrentDescriptorsPoolFileName = (std::string(qFileName.ascii()));
+	  CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mCurrentDescriptorsPoolFileName);
+	  mLLDChanged = false;
+	  mHLDChanged = false;
 
-  if(QMessageBox::information(this,QString("Saving Descriptors"),
-			      QString("Please finally choose Descriptors filename"),
-			      QString("OK"),QString("Cancel")) == 0)
-    saveSongList();
- 
+	}
+    }
 
 }
 
 
-void Annotator::initSongs( const std::string & nameProject, const std::vector<std::string> & files)
+void Annotator::initSongs()
 {
 	mLogicGroup->hide();
 	addSongs();	
@@ -472,21 +474,42 @@ void Annotator::chooseColor()
 
 void Annotator::songsClicked( QListViewItem * item)
 {
+  /* before doing anything with the new selected file we must update information for previously
+     selected song */
+  if(mLLDChanged||mHLDChanged) 
+    {
+      if(mLLDChanged||mHLDChanged) 
+	generateDescriptorsFromEnvelopes();
+      saveDescriptors();
+    }
+
   if (item != 0)
     {
-      CLAM::AudioFile file;
-      file.OpenExisting(item->text(0).ascii());
-      mpProgressDialog = new QProgressDialog ("Loading Audio", 
-					      "Cancel",file.GetHeader().GetLength(),
-					      this);
-      mpProgressDialog->setProgress(0);
       mCurrentIndex = getIndexFromFileName(std::string(item->text(0).ascii()));
-      fillGlobalDescriptors( mCurrentIndex );
-      drawAudio(item);
-      drawLLDescriptors(mCurrentIndex);
-      
-      delete mpProgressDialog;
-      mpProgressDialog = NULL;
+      if (mCurrentIndex >=0)
+	{
+	  mCurrentSoundFileName = mSongFiles.GetFileNames()[mCurrentIndex].GetSoundFile();
+	  if(mSongFiles.GetFileNames()[mCurrentIndex].HasPoolFile())
+	    {
+	      mCurrentDescriptorsPoolFileName = 
+		mSongFiles.GetFileNames()[mCurrentIndex].GetPoolFile();
+	    }
+	  else 
+	    mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + ".pool";
+	  CLAM::AudioFile file;
+	  file.OpenExisting(mCurrentSoundFileName);
+	  mpProgressDialog = new QProgressDialog ("Loading Audio", 
+						  "Cancel",file.GetHeader().GetLength(),
+						  this);
+	  mpProgressDialog->setProgress(0);
+	  loadDescriptorPool();
+	  fillGlobalDescriptors( mCurrentIndex );
+	  drawAudio(item);
+	  drawLLDescriptors(mCurrentIndex);
+	  
+	  delete mpProgressDialog;
+	  mpProgressDialog = NULL;
+	}
       
     }
 }
@@ -497,19 +520,15 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 	if(item)        
 	  loadAudioFile(item->text(0).ascii());
 	std::vector<unsigned> marks;
-	if(mHaveLLDescriptors[mCurrentIndex])
-	  {  
-	    int i;
-	    int randomIncr;
-	    for(i=0;i<mCurrentAudio.GetSize();i+=500000)
-	    {
-	      randomIncr = (float (rand())/float(RAND_MAX))*500000-250000;
-	      marks.push_back(i+randomIncr);
-	    }
+	int i;
+	int randomIncr;
+	for(i=0;i<mCurrentAudio.GetSize();i+=500000)
+	  {
+	    randomIncr = (float (rand())/float(RAND_MAX))*500000-250000;
+	    marks.push_back(i+randomIncr);
 	  }
 	mpAudioPlot->SetMarks(marks);
 	mpAudioPlot->SetData(mCurrentAudio);
-	//mpAudioPlot->SetForegroundColor(CLAM::VM::VMColor::Blue());
 	mpAudioPlot->Show();
 }
 
@@ -520,17 +539,9 @@ void Annotator::drawLLDescriptors(int index)
     std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
     for(;editors_it != mBPFEditors.end(); editors_it++)
     {
-      //if(mHaveLLDescriptors[index]) We assume all descriptors are loaded, not computed
       (*editors_it)->Show();
       (*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
       (*editors_it)->SetYRange(GetMinY((*editors_it)->GetData()),GetMaxY((*editors_it)->GetData()));
-      /*
-	}
-	else
-	{
-	    (*editors_it)->Hide();
-	}
-      */
   }
 
 }
@@ -604,11 +615,12 @@ CLAM::BPF Annotator::generateEnvelopeFromDescriptor(const std::string& name)
 
 void Annotator::generateDescriptorsFromEnvelopes()
 {
-    unsigned i=0, editors_size = mBPFEditors.size();
-    std::list<std::string>::iterator it;
-    std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
-
-    for(it = descriptorsNames.begin() ;i < editors_size; i++, it++)
+  mLLDChanged = false;
+  unsigned i=0, editors_size = mBPFEditors.size();
+  std::list<std::string>::iterator it;
+  std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
+  
+  for(it = descriptorsNames.begin() ;i < editors_size; i++, it++)
     {
       generateDescriptorFromEnvelope(i, mpDescriptorPool->GetWritePool<float>("Frame",(*it)));
     }
@@ -641,7 +653,8 @@ void Annotator::languageChange()
 
 void Annotator::loadDescriptorPool()
 {
- 
+  mLLDChanged = false;
+  mHLDChanged = false;
 
   //Create Descriptors Pool Scheme and add attributes following loaded schema
   
@@ -681,8 +694,8 @@ void Annotator::loadDescriptorPool()
   mpDescriptorPool = new CLAM::DescriptionDataPool(mDescriptionScheme);
 
    //Load Descriptors Pool
-  if(mProject.GetDescriptorPool()!="")
-    CLAM::XMLStorage::Restore((*mpDescriptorPool),mProject.GetDescriptorPool());
+  if(mCurrentDescriptorsPoolFileName!="")
+    CLAM::XMLStorage::Restore((*mpDescriptorPool),mCurrentDescriptorsPoolFileName);
   
 }
 
@@ -819,34 +832,26 @@ void Annotator::setHLDescriptorPoolFromString(const std::string& descriptorName,
   if (descriptorType == "String")
     {
       *(mpDescriptorPool->GetWritePool<std::string>("Song",descriptorName)) = descriptorValue;
-      std::cout<<"String descriptor "<< descriptorName << " set to "<< descriptorValue << std::endl;
     }
   if (descriptorType == "RestrictedString")
     {
       CLAM_Annotator::RestrictedString* rString = mpDescriptorPool->
 	GetWritePool<CLAM_Annotator::RestrictedString>("Song",descriptorName);
       rString->SetString(descriptorValue);
-      std::cout<<"RestrictedString descriptor "<< descriptorName << " set to "<< descriptorValue << std::endl;
     }
   if (descriptorType == "Float")
     {
       *(mpDescriptorPool->GetWritePool<float>("Song",descriptorName)) = qValue.toFloat();
-      std::cout<<"Float descriptor "<< descriptorName << " set to "<< descriptorValue << std::endl;
     }
   if (descriptorType == "Int")
     {
       *(mpDescriptorPool->GetWritePool<int>("Song",descriptorName)) = qValue.toInt();
-      std::cout<<"Int descriptor "<< descriptorName << " set to "<< descriptorValue << std::endl;
     }
-
-
-
 }
 
 void Annotator::fillGlobalDescriptors( int index)
 {
   mDescriptorsTable->show();
-  //bool computed = mHaveHLDescriptors[index]; We assume all descriptors are loaded, not computed
   drawDescriptorsValue(index);
 } 
 
@@ -935,12 +940,12 @@ double Annotator::GetMaxY(const CLAM::BPF& bpf)
 int Annotator::getIndexFromFileName(const std::string& fileName)
 {
   //TODO: have to optimize these tasks maybe by using a map or at least std::find
-  std::vector<std::string>::iterator it;
+  std::vector<CLAM_Annotator::Song>::iterator it;
   int i=0;
-  std::vector<std::string> fileNames = mSongFiles.GetFileNames();
+  std::vector<CLAM_Annotator::Song> fileNames = mSongFiles.GetFileNames();
   for (it = fileNames.begin(), i=0 ; it != fileNames.end(); it++, i++)
     {
-      if((*it) == fileName) return i;
+      if((*it).GetSoundFile() == fileName) return i;
     }
   return -1;
 }
