@@ -37,7 +37,7 @@ using CLAM::TData;
 using CLAM::TIndex;
 
 
-Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "annotator", WDestructiveClose),mCurrentIndex(0),mpTabLayout(0),mBPFs(0),mBPFEditors(0)
+Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "annotator", WDestructiveClose),mCurrentIndex(0),mpTabLayout(0),mBPFEditors(0)
 {
   setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
   mpDescriptorPool = NULL;
@@ -152,11 +152,10 @@ void Annotator::initLLDescriptorsWidgets()
 
 	}
     }
-  mBPFs.resize(nTabs);
-  i=0;
+  
   std::vector<CLAM::VM::BPFEditor*>::iterator it;
   mBPFEditors.resize(nTabs);
-  for(it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
+  for(i=0, it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
     {
       QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
       *it = new CLAM::VM::BPFEditor(tabWidget2->page(i),0,CLAM::VM::AllowVertical);
@@ -518,15 +517,13 @@ void Annotator::drawLLDescriptors(int index)
 {
     generateEnvelopesFromDescriptors();
 
-    std::vector<CLAM::BPF>::iterator bpf_it = mBPFs.begin();
     std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
-    for(;bpf_it != mBPFs.end(); bpf_it++, editors_it++)
+    for(;editors_it != mBPFEditors.end(); editors_it++)
     {
       //if(mHaveLLDescriptors[index]) We assume all descriptors are loaded, not computed
       (*editors_it)->Show();
-      (*editors_it)->SetData((*bpf_it));
       (*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
-      (*editors_it)->SetYRange(GetMinY((*bpf_it)),GetMaxY((*bpf_it)));
+      (*editors_it)->SetYRange(GetMinY((*editors_it)->GetData()),GetMaxY((*editors_it)->GetData()));
       /*
 	}
 	else
@@ -573,13 +570,14 @@ void Annotator::loadAudioFile(const char* filename)
 
 void Annotator::generateEnvelopesFromDescriptors()
 {
+    std::vector<CLAM::VM::BPFEditor*>::iterator ed_it = mBPFEditors.begin();
     unsigned i=0, editors_size = mBPFEditors.size();
     std::list<std::string>::iterator it;
     std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
 
-    for(it = descriptorsNames.begin();i < editors_size; i++, it++)
+    for(it = descriptorsNames.begin();i < editors_size; ed_it++, it++)
     {
-	mBPFs[i]=generateEnvelopeFromDescriptor((*it));
+	(*ed_it)->SetData( generateEnvelopeFromDescriptor((*it)) );
     }
 }
   
@@ -618,11 +616,11 @@ void Annotator::generateDescriptorsFromEnvelopes()
 
 void Annotator::generateDescriptorFromEnvelope(int bpfIndex, float* descriptor)
 {
-  int nPoints = mBPFs[bpfIndex].Size();
+  int nPoints = mBPFEditors[bpfIndex]->GetData().Size();
   int i = 0;
   for (i=0; i<nPoints; i++)
     {
-      descriptor[i] = mBPFs[bpfIndex].GetValueFromIndex(i);
+      descriptor[i] = mBPFEditors[bpfIndex]->GetData().GetValueFromIndex(i);
     }
 }
 

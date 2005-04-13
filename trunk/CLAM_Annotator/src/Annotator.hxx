@@ -134,10 +134,8 @@ private:
 
   bool mChanges;
   
-  std::vector<CLAM::BPF> mBPFs;
   std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
-
-                
+              
   int mCurrentIndex;
                 
   std::vector<bool> mHaveLLDescriptors;
