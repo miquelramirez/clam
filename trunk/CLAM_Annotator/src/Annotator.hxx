@@ -50,7 +50,7 @@ public:
   void initInterface();
 public slots:
   void descriptorsTableChanged( int, int);
-  void descriptorsBPFChanged(TIndex, TData);
+  void descriptorsBPFChanged(int, float);
   void fileNew();			
   void fileOpen();
   void addSongsToProject();

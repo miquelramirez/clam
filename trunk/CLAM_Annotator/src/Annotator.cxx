@@ -217,8 +217,8 @@ void Annotator::connectBPFs()
   std::vector<CLAM::VM::BPFEditor*>::iterator it;
   for(it = mBPFEditors.begin(); it != mBPFEditors.end(); it++)
     {
-      connect( (*it), SIGNAL(yValueChanged(TIndex, TData)), this, 
-	      SLOT(descriptorsBPFChanged(TIndex, TData)));
+      connect( (*it), SIGNAL(yValueChanged(int, float)), this, 
+	      SLOT(descriptorsBPFChanged(int, float)));
     }
 }
 
@@ -249,7 +249,7 @@ void Annotator::descriptorsTableChanged(int row, int column)
   changeCurrentFile();
 }
 
-void Annotator::descriptorsBPFChanged(TIndex pointIndex,TData newValue)
+void Annotator::descriptorsBPFChanged(int pointIndex,float newValue)
 {
   /*TODO: right now, no matter how many points have been edited all descriptors are updated. This
     is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
@@ -555,7 +555,7 @@ void Annotator::loadAudioFile(const char* filename)
 	std::vector<CLAM::Audio> audioFrameVector(nChannels);
 	int i;
 	for (i=0;i<nChannels;i++)
-			audioFrameVector[i].SetSize(readSize);
+	  audioFrameVector[i].SetSize(readSize);
 	CLAM::MultiChannelAudioFileReaderConfig cfg;
 	cfg.SetSourceFile( file );
 	CLAM::MultiChannelAudioFileReader reader(cfg);
