@@ -571,14 +571,14 @@ void Annotator::loadAudioFile(const char* filename)
 void Annotator::generateEnvelopesFromDescriptors()
 {
     std::vector<CLAM::VM::BPFEditor*>::iterator ed_it = mBPFEditors.begin();
-    unsigned i=0, editors_size = mBPFEditors.size();
     std::list<std::string>::iterator it;
     std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
 
-    for(it = descriptorsNames.begin();i < editors_size; ed_it++, it++)
+    for(it = descriptorsNames.begin();it != descriptorsNames.end(); ed_it++, it++)
     {
 	(*ed_it)->SetData( generateEnvelopeFromDescriptor((*it)) );
     }
+
 }
   
 CLAM::BPF Annotator::generateEnvelopeFromDescriptor(const std::string& name)
