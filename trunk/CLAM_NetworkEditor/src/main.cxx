@@ -19,7 +19,7 @@
  *
  */
 
-#include "Network.hxx"
+#include "OSCEnabledNetwork.hxx"
 #include "NetworkController.hxx"
 #include "PushFlowControl.hxx"
 #include "BasicFlowControl.hxx"
@@ -58,9 +58,10 @@ int main( int argc, char **argv )
 
 	srand(time(NULL)); // gui stuff
 
-	CLAM::Network net;
-	net.SetName("CLAM Network");
+	CLAM::OSCEnabledNetwork net;
+	net.SetName("CLAM OSCEnabledNetwork");
 	ConfigureNetwork(net);
+	net.Start();
 
 	CLAMVM::NetworkController controller;
 	controller.BindTo(net);
@@ -73,6 +74,9 @@ int main( int argc, char **argv )
 	app.setMainWidget(&mw);
 	mw.show();
 	app.connect( &app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()) );
-	return app.exec();
+	
+	int ret=app.exec();
+	net.Stop();
+	return ret;
 }
 
