@@ -250,8 +250,7 @@ namespace CLAM
 			SegmentationMarksPlotController::SetMousePos(x,ycoord);
 			TData t=GetMouseXPos()/_sampleRate;
 			TData amp=GetMouseYPos();
-			QString s;
-			s = "t="+(s.setNum(t,'f',3))+"s amp="+(s.setNum(amp,'f',3));
+			QString s = "t="+QString::number(t,'f',3)+"s amp="+QString::number(amp,'f',3);
 			emit toolTip(s);
 		}
 
