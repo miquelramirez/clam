@@ -51,6 +51,7 @@ public:
 public slots:
   void descriptorsTableChanged( int, int);
   void descriptorsBPFChanged(int, float);
+  void segmentationMarksChanged(int, unsigned);
   void fileNew();			
   void fileOpen();
   void addSongsToProject();
@@ -141,6 +142,7 @@ private:
   bool mGlobalChanges;
   bool mHLDChanged;
   bool mLLDChanged;
+  bool mSegmentsChanged;
   std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
                 
   int mCurrentIndex;     
