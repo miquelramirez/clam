@@ -7,7 +7,7 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>3</y>
+            <y>1</y>
             <width>836</width>
             <height>592</height>
         </rect>
@@ -160,7 +160,7 @@
                             <cstring>tab</cstring>
                         </property>
                         <attribute name="title">
-                            <string>Tab 1</string>
+                            <string>Descriptors?</string>
                         </attribute>
                     </widget>
                 </widget>
