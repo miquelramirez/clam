@@ -1,11 +1,17 @@
 
-* Add everything to a single Project file:
-	* List of Song+Scheme+Pool
-* Save results of the editing process
-* Device a way in which sound files don't have to be loaded every time
+* fix the hardcoded limit in "slider" control for HLD
+* add a waiting message when loading lld
+* beta-test everything thoroughly
+* generate "real" values for descriptors, options
+	* by hand
+	* parse what was in the txt descriptors
+	* include some extractors in Test
+* add labels to segments
+
 
 previous:
 
+* Save results of the editing process (done)
 *Enhance the song loading process (done)
 	* Convert textual format to XML using CLAM infrastructure (done).
 	* Remove initial dialog and add menu items (done)
