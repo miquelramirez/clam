@@ -24,7 +24,7 @@
 #include "AudioFile.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
 #include "MultiChannelAudioFileReader.hxx"
-
+#include "IndexArray.hxx"
 
 
 #include "XMLStorage.hxx"
@@ -42,7 +42,8 @@ Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "an
 									  WDestructiveClose),
 							   mCurrentIndex(0),mpTabLayout(0),
 							   mBPFEditors(0),mLLDChanged(false),
-							   mHLDChanged(false)
+							   mHLDChanged(false),
+							   mSegmentsChanged(false)
 {
   setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
   mpDescriptorPool = NULL;
@@ -80,6 +81,7 @@ void Annotator::initProject()
   mGlobalChanges = false;
   mLLDChanged = false;
   mHLDChanged = false;
+  mSegmentsChanged = false;
 }
 
 bool Annotator::somethingIsSelected() const
@@ -209,6 +211,7 @@ void Annotator::makeConnections()
   connect(helpAboutAction,SIGNAL(activated()),&mAbout,SLOT(show()));
   connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) , this, 
 	  SLOT( descriptorsTableChanged(int, int) ) );
+  connect(mpAudioPlot, SIGNAL(updatedMark(int, unsigned)),this,SLOT(segmentationMarksChanged(int, unsigned)));
   
 }
 
@@ -257,6 +260,25 @@ void Annotator::descriptorsBPFChanged(int pointIndex,float newValue)
   mLLDChanged = true;
 } 
 
+void Annotator::segmentationMarksChanged(int, unsigned)
+{
+  std::vector<unsigned int> marks;
+  CLAM::IndexArray* descriptorMarks = 
+    mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song","Segments");
+  marks = mpAudioPlot->GetMarks();
+  int nMarks = marks.size();
+  descriptorMarks->SetSize(nMarks);
+  descriptorMarks->Resize(nMarks);
+  int i;
+  for (i=0; i<nMarks; i++)
+    {
+      (*descriptorMarks)[i] = marks[i];
+    } 
+  mSegmentsChanged = true;
+
+
+}
+
 void Annotator::addSongs()
 {
   deleteAllSongsFromProject();
@@ -269,13 +291,13 @@ void Annotator::addSongs()
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
 {
-  if(mLLDChanged)
+  if(mLLDChanged||mHLDChanged||mSegmentsChanged)
     {
       if(QMessageBox::question(this, "Descriptors Changed", 
 			       "Do you want to save the changes to current descriptors?", 
 			       QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes)
 	{
-	  generateDescriptorsFromEnvelopes();
+	  if (mLLDChanged) generateDescriptorsFromEnvelopes();
 	  saveDescriptors();
 	}
     }
@@ -430,7 +452,7 @@ void  Annotator::loadDescriptors()
 void  Annotator::saveSongList()
 {
   QString qFileName;
-  qFileName = QFileDialog::getSaveFileName(QString::null,"*.sl");
+  qFileName = QFileDialog::getSaveFileName(QString(mProject.GetSongs().c_str()),"*.sl");
   if(qFileName != QString::null)
   {
     mProject.SetSongs(std::string(qFileName.ascii()));
@@ -447,13 +469,14 @@ void  Annotator::saveDescriptors()
 			      QString("OK"),QString("Cancel")) == 0)
     {
       QString qFileName;
-      qFileName = QFileDialog::getSaveFileName(QString::null,"*.pool");
+      qFileName = QFileDialog::getSaveFileName(QString(mCurrentDescriptorsPoolFileName.c_str()),"*.pool");
       if(qFileName != QString::null)
 	{
 	  mCurrentDescriptorsPoolFileName = (std::string(qFileName.ascii()));
 	  CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mCurrentDescriptorsPoolFileName);
 	  mLLDChanged = false;
 	  mHLDChanged = false;
+	  mSegmentsChanged = false;
 
 	}
     }
@@ -476,9 +499,9 @@ void Annotator::songsClicked( QListViewItem * item)
 {
   /* before doing anything with the new selected file we must update information for previously
      selected song */
-  if(mLLDChanged||mHLDChanged) 
+  if(mLLDChanged||mHLDChanged||mSegmentsChanged) 
     {
-      if(mLLDChanged||mHLDChanged) 
+      if(mLLDChanged) 
 	generateDescriptorsFromEnvelopes();
       saveDescriptors();
     }
@@ -520,12 +543,13 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 	if(item)        
 	  loadAudioFile(item->text(0).ascii());
 	std::vector<unsigned> marks;
+	const CLAM::IndexArray* descriptorsMarks = 
+	  mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song","Segments");
 	int i;
-	int randomIncr;
-	for(i=0;i<mCurrentAudio.GetSize();i+=500000)
+	int nMarks = descriptorsMarks->Size();
+	for(i=0;i<nMarks;i++)
 	  {
-	    randomIncr = (float (rand())/float(RAND_MAX))*500000-250000;
-	    marks.push_back(i+randomIncr);
+	    marks.push_back((*descriptorsMarks)[i]);
 	  }
 	mpAudioPlot->SetMarks(marks);
 	mpAudioPlot->SetData(mCurrentAudio);
@@ -655,6 +679,7 @@ void Annotator::loadDescriptorPool()
 {
   mLLDChanged = false;
   mHLDChanged = false;
+  mSegmentsChanged = false;
 
   //Create Descriptors Pool Scheme and add attributes following loaded schema
   
@@ -689,6 +714,9 @@ void Annotator::loadDescriptorPool()
     mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
   }
  
+  //Finally segmentation marks
+  mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
+
   //Create Descriptors Pool
   if(mpDescriptorPool) delete mpDescriptorPool;
   mpDescriptorPool = new CLAM::DescriptionDataPool(mDescriptionScheme);

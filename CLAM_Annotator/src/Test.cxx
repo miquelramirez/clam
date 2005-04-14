@@ -7,9 +7,14 @@
 #include "Project.hxx"
 
 #include "XMLStorage.hxx"
+#include "AudioFile.hxx"
+#include "IndexArray.hxx"
 
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
+void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, int frameSize);
 void FillSongNames(CLAM_Annotator::SongFiles& songFiles);
+int GetnSamples(const std::string& fileName);
+
 
 template <class T>
 CLAM_Annotator::Descriptor<T> MakeDescriptor(T value,const std::string& name);
@@ -180,20 +185,21 @@ int main()
   {
     scheme.AddAttribute <CLAM::TData>("Frame", (*it));
   }
+  //finally we add segmentation marks
+  scheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
 
   //Now we create a Pool for every sound file we have
   std::vector<CLAM_Annotator::Song>::iterator currentSong;
   srand(time(NULL));
+  int frameSize = 1024; //for example
   for (currentSong = songFiles.GetFileNames().begin(); currentSong != songFiles.GetFileNames().end(); currentSong++)
     {
 
+      int nSamples = GetnSamples((*currentSong).GetSoundFile());
+      int nFrames = nSamples/frameSize;
       //Create Descriptors Pool
       CLAM::DescriptionDataPool pool(scheme);
-      
-      //Define Number of frames
-     
-      int nFrames =(float (rand())/float(RAND_MAX))*200;
-      
+        
       pool.SetNumberOfContexts("Frame",nFrames);
       pool.SetNumberOfContexts("Song",1);
       
@@ -255,7 +261,10 @@ int main()
 	  CLAM::TData* values = pool.GetWritePool<CLAM::TData>("Frame",(*it));
 	  GenerateRandomDescriptorValues(values,nFrames);
 	}
-      
+      //Create segmentation marks
+      CLAM::IndexArray* segmentation = 
+	pool.GetWritePool<CLAM::IndexArray>("Song","Segments");
+      GenerateRandomSegmentationMarks(segmentation, nSamples, frameSize);
       //Dump Descriptors Pool
       std::string poolFile;
       if((*currentSong).HasPoolFile()) poolFile = (*currentSong).GetPoolFile();
@@ -334,4 +343,27 @@ void FillSongNames(CLAM_Annotator::SongFiles& songFiles)
   songFiles.GetFileNames().push_back(song);
   song.SetSoundFile("SongsTest/08B64B245C000000000072_07.mp3");
   songFiles.GetFileNames().push_back(song);
+}
+
+int GetnSamples(const std::string& fileName)
+{
+  CLAM::AudioFile file;
+  file.OpenExisting(fileName);
+  CLAM::TData duration = file.GetHeader().GetLength();
+  CLAM::TData sampleRate = file.GetHeader().GetSampleRate();
+  return (int)(duration*sampleRate/1000.);
+}
+
+void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, 
+				     int frameSize)
+{
+  int index = 0, randomIncr;
+  while(index<nSamples)
+    {
+      //random number between 10 and 30 frames
+      randomIncr = ((float (rand())/float(RAND_MAX))*200+100)*frameSize;
+      index += randomIncr;
+      (*segmentation).AddElem(index);
+    }
+
 }
