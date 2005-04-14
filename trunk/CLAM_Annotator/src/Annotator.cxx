@@ -48,8 +48,8 @@ Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "an
   setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
   mpDescriptorPool = NULL;
   mpAudioPlot = NULL;
-  initInterface();
   initAudioWidget();
+  initInterface();
 }
 
 void Annotator::initInterface()
