@@ -136,8 +136,6 @@ private:
   std::string mProjectFileName;
   std::string mCurrentSoundFileName;
   std::string mCurrentDescriptorsPoolFileName;
-  std::map<std::string,int> mSongDescriptorsIndex;
-
 
   bool mGlobalChanges;
   bool mHLDChanged;
