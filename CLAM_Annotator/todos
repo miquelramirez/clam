@@ -2,11 +2,13 @@
 * fix the hardcoded limit in "slider" control for HLD
 * add a waiting message when loading lld
 * beta-test everything thoroughly
+* write documentation
 * generate "real" values for descriptors, options
 	* by hand
 	* parse what was in the txt descriptors
 	* include some extractors in Test
 * change /common folder to /widgets
+* add unit and functional tests
 * add labels to segments
 
 
