@@ -267,8 +267,8 @@ void Annotator::segmentationMarksChanged(int, unsigned)
     mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song","Segments");
   marks = mpAudioPlot->GetMarks();
   int nMarks = marks.size();
-  descriptorMarks->SetSize(nMarks);
   descriptorMarks->Resize(nMarks);
+  descriptorMarks->SetSize(nMarks);
   int i;
   for (i=0; i<nMarks; i++)
     {
