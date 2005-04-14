@@ -6,6 +6,7 @@
 	* by hand
 	* parse what was in the txt descriptors
 	* include some extractors in Test
+* change /common folder to /widgets
 * add labels to segments
 
 
