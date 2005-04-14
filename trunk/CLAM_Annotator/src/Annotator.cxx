@@ -559,11 +559,12 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 void Annotator::drawLLDescriptors(int index)
 {
     generateEnvelopesFromDescriptors();
-
+   
     std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
-    for(;editors_it != mBPFEditors.end(); editors_it++)
+    for(int i=0; editors_it != mBPFEditors.end(); editors_it++, i++)
     {
       (*editors_it)->Show();
+      (*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
       (*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
       (*editors_it)->SetYRange(GetMinY((*editors_it)->GetData()),GetMaxY((*editors_it)->GetData()));
   }
