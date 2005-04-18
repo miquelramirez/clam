@@ -35,7 +35,7 @@ namespace CLAM
 			      int x=100, 
 			      int y=100, 
 			      int w=660, 
-			      int h=250 );
+			      int h=320 );
 
 	void PlotAudioStereo( std::vector<Audio> data,
 			      std::vector<unsigned>& marks,
@@ -43,7 +43,7 @@ namespace CLAM
 			      int x=100, 
 			      int y=100, 
 			      int w=660, 
-			      int h=250 );
+			      int h=320 );
     }
 }
 
