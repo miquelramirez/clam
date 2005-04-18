@@ -53,7 +53,7 @@ int main()
 	CLAM::VM::QtAppWrapper::Init();
 	QtMultiPlot multiPlot;
 	multiPlot.Label("MultiPlot");
-	multiPlot.Geometry(100,100,500,225);
+	multiPlot.Geometry(100,100,600,250);
 	multiPlot.AddData("data0",sig0);
 	multiPlot.AddData("data1",sig1);
 	multiPlot.SetColor("data0",CLAM::VM::VMColor::Blue());
