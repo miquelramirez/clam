@@ -48,6 +48,11 @@ namespace CLAM
 	    b=c.b;
 	    return *this;
 	}
+	
+	bool Color::operator==(Color c)
+	{
+	    return (r==c.r && g==c.g && b==c.b);
+	}
 
 	Color VMColor::Red()
 	{
