@@ -21,6 +21,8 @@ namespace CLAM
 	    void SetBackgroundColor(const Color& c);
 	    void SetForegroundColor(const Color& c);
 
+	    QFont& Font();
+
         signals:
 	    void valueChanged(double, double);
 	    

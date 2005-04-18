@@ -30,57 +30,56 @@ class QMouseEvent;
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	class DisplaySurface : public QGLWidget
 	{
-		class DisplaySurface : public QGLWidget
-		{
-			typedef struct
-			{
-				double r;
-				double g;
-				double b;
-			} BkColor;
+	    typedef struct
+	    {
+		double r;
+		double g;
+		double b;
+	    } BkColor;
 
-			Q_OBJECT
+	    Q_OBJECT
 
-			public:
-				DisplaySurface(QWidget* parent = 0);
-				virtual ~DisplaySurface();
+	public:
+	    DisplaySurface(QWidget* parent = 0);
+	    ~DisplaySurface();
 
-				void SetBackgroundColor(double r, double g, double b);
-				void SetController(PlotController* controller);
+	    void SetBackgroundColor(double r, double g, double b);
+	    void SetController(PlotController* controller);
 
-			signals:
-				void leavingMouse();
+	signals:
+	    void leavingMouse();
 
-			private slots:
-				void receivedView(View);
-				void updateToolTip(QString);
-		    
-		                void changeCursor(QCursor);
+	private slots:
+	    void receivedView(View);
+	    void updateToolTip(QString);
+	    void changeCursor(QCursor);
 
-			protected:
-				virtual void initializeGL(); 
-				virtual void resizeGL(int w,int h); 
-				virtual void paintGL(); 
+	protected:
+	    void paintGL(); 
 
-				virtual void mousePressEvent(QMouseEvent* e);
-		                virtual void mouseReleaseEvent(QMouseEvent* e);
-				virtual void mouseMoveEvent(QMouseEvent* e);
+	    void mousePressEvent(QMouseEvent* e);
+	    void mouseReleaseEvent(QMouseEvent* e);
+	    void mouseMoveEvent(QMouseEvent* e);
 
-				virtual void resizeEvent(QResizeEvent *e);
+	    void resizeEvent(QResizeEvent *e);
 
-				virtual void leaveEvent(QEvent* e);
-		                virtual void enterEvent(QEvent* e);
+	    void leaveEvent(QEvent* e);
+	    void enterEvent(QEvent* e);
 
-			private:
-				View _view;
-				PlotController* _controller;
-				BkColor _bkColor;
+	private:
+	    View _view;
+	    PlotController* _controller;
+	    BkColor _bkColor;
+	    int _width, _height;
+	    volatile bool _doResize;
 				
-				void InitView();
-		};
-	}
+	    void InitView();
+	};
+    }
 }
 
 #endif

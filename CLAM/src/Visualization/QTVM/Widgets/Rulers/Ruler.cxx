@@ -270,6 +270,11 @@ namespace CLAM
 	    }
 	}
 
+	QFont& Ruler::Font()
+	{
+	    return mFont;
+	}
+
     }
 }
 
