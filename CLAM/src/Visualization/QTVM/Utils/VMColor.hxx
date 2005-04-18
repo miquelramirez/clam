@@ -40,6 +40,7 @@ namespace CLAM
 		    ~Color();
 
 		    Color& operator=(Color c);
+		    bool operator==(Color c);
 		};
 		
 		class VMColor
