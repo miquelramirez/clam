@@ -7,6 +7,7 @@
 
 class QLabel;
 class QFrame;
+class QBoxLayout;
 
 namespace CLAM
 {
@@ -14,6 +15,7 @@ namespace CLAM
     {
 	class Ruler;
 	class BPFEditorDisplaySurface;
+	class VScrollGroup;
 
 	class BPFEditor : public QWidget
 	{
@@ -39,12 +41,21 @@ namespace CLAM
 	    void xValueChanged(int, float);
 	    void yValueChanged(int, float);
 
+	    void selectedXPos(double);
+
+	public slots:
+	    void setHBounds(double, double);
+	    void selectPointFromXCoord(double);
+
+	    void switchColors();
+
 	protected:
 	    void keyPressEvent(QKeyEvent* e);
 	    void keyReleaseEvent(QKeyEvent* e);
 
 	private slots:
 	    void updateLabels(QString, QString);
+	    void setMaxVScroll(int);
 
 	private:
 	    int mEFlags;
@@ -60,6 +71,12 @@ namespace CLAM
 	    
 	    int mColorScheme;
 
+	    VScrollGroup *mVScroll;
+	    QBoxLayout *mainLayout, *topLayout, *bottomLayout;
+	    QFrame *bottomRightHole;
+
+	    bool mWhiteOverBlackScheme;
+
 	    void InitBPFEditor();
 
 	    void SetScheme(int scheme);
@@ -67,7 +84,7 @@ namespace CLAM
 	    void BlackOverWhite();
 
 	    void AdjustLeft(const double& min, const double& max, bool y_axis=true);
-	    //void AdjustLeft(const double& min, const double& max);
+	    void CreateVScroll();
 	};
     }
 }

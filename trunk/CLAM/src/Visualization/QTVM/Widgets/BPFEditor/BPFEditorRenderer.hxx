@@ -19,11 +19,15 @@ namespace CLAM
 	    void SetHandlersColor(const Color& c);
 
 	    void Render();
+
+	    void SetSelectedIndex(const int& index);
 	    
 	private:
 	    BPF mData;
 	    Color mDataColor, mHandlersColor;
 	    enum { POINT_SIZE=3 };
+
+	    int mSelectedIndex;
 	    
 	    void DrawData();
 	    void DrawHandlers();

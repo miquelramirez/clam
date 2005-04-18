@@ -7,9 +7,13 @@ namespace CLAM
     namespace VM
     {
 	BPFEditorDisplaySurface::BPFEditorDisplaySurface(QWidget* parent)
-	    : QGLWidget(parent), mController(0)
+	    : QGLWidget(parent), 
+	      mController(0),
+	      mWidth(0),mHeight(0),
+	      mDoResize(false)
 	{
 	    setMouseTracking(true);
+	    setAutoBufferSwap(false);
 	    SetBackgroundColor(0.0f,0.0f,0.0f);
 	}
 
@@ -42,7 +46,6 @@ namespace CLAM
 	    mView.mRight = view.mRight;
 	    mView.mBottom = view.mBottom;
 	    mView.mTop = view.mTop;
-	    resizeGL(width(), height());
 	}
 
 	void BPFEditorDisplaySurface::changeCursor(QCursor cursor)
@@ -50,33 +53,23 @@ namespace CLAM
 	    setCursor(cursor);
 	}
 
-	void BPFEditorDisplaySurface::initializeGL()
+	void BPFEditorDisplaySurface::paintGL()
 	{
-	    glClearColor(GLfloat(mRed),GLfloat(mGreen),GLfloat(mBlue),1.0);
-	    glShadeModel(GL_FLAT);
-	}
-
-	void BPFEditorDisplaySurface::resizeGL(int w,int h)
-	{
-	    glViewport(0,0,w,h);
+	    if(!mController) return;
+	    if(mDoResize)
+	    {
+		glViewport(0,0,mWidth,mHeight);
+		mDoResize=false;
+	    }
 	    glMatrixMode(GL_PROJECTION);
 	    glLoadIdentity();
 	    glOrtho(mView.mLeft,mView.mRight,mView.mBottom,mView.mTop,-1.0,1.0);
 	    glMatrixMode(GL_MODELVIEW);
-	    if(mController)
-	    {
-		mController->DisplayDimensions(w,h);
-	    }
-	}
-
-	void BPFEditorDisplaySurface::paintGL()
-	{
+	    glShadeModel(GL_FLAT);
 	    glClearColor(GLfloat(mRed),GLfloat(mGreen),GLfloat(mBlue),1.0);
 	    glClear(GL_COLOR_BUFFER_BIT);
-	    if(mController)
-	    {
-		mController->Draw();
-	    }
+	    mController->Draw();
+	    swapBuffers();
 	}
 
 	void BPFEditorDisplaySurface::mousePressEvent(QMouseEvent* e)
@@ -158,10 +151,15 @@ namespace CLAM
 	    if(mController)
 	    {
 		mController->MouseOverDisplay(true);
-		updateGL();
-		resizeGL(width(),height());
-		updateGL();
 	    }
+	}
+	
+	void BPFEditorDisplaySurface::resizeEvent(QResizeEvent *e)
+	{
+	    mWidth = e->size().width();
+	    mHeight = e->size().height();
+	    mDoResize = true;
+	    if(mController) mController->DisplayDimensions(mWidth,mHeight);
 	}
     }
 }
