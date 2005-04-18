@@ -166,7 +166,7 @@ void Annotator::initLLDescriptorsWidgets()
   for(i=0, it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
     {
       QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
-      *it = new CLAM::VM::BPFEditor(tabWidget2->page(i),0,CLAM::VM::AllowVertical);
+      *it = new CLAM::VM::BPFEditor(tabWidget2->page(i),0,CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll);
       (*it)->Hide();
       tabLayout->addWidget(*it);
     }
@@ -217,11 +217,15 @@ void Annotator::makeConnections()
 
 void Annotator::connectBPFs()
 {
-  std::vector<CLAM::VM::BPFEditor*>::iterator it;
-  for(it = mBPFEditors.begin(); it != mBPFEditors.end(); it++)
+    std::vector<CLAM::VM::BPFEditor*>::iterator it;
+    for(it = mBPFEditors.begin(); it != mBPFEditors.end(); it++)
     {
       connect( (*it), SIGNAL(yValueChanged(int, float)), this, 
 	      SLOT(descriptorsBPFChanged(int, float)));
+      connect((*it),SIGNAL(selectedXPos(double)),mpAudioPlot,SLOT(setSelectedXPos(double)));
+      connect(mpAudioPlot,SIGNAL(xRulerRange(double,double)),(*it),SLOT(setHBounds(double,double)));
+      connect(mpAudioPlot,SIGNAL(selectedXPos(double)),(*it),SLOT(selectPointFromXCoord(double)));
+      connect(mpAudioPlot,SIGNAL(switchColorsRequested()),(*it),SLOT(switchColors()));
     }
 }
 
@@ -563,10 +567,10 @@ void Annotator::drawLLDescriptors(int index)
     std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
     for(int i=0; editors_it != mBPFEditors.end(); editors_it++, i++)
     {
-      (*editors_it)->Show();
-      (*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
       (*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
       (*editors_it)->SetYRange(GetMinY((*editors_it)->GetData()),GetMaxY((*editors_it)->GetData()));
+      (*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
+      (*editors_it)->Show();
   }
 
 }
