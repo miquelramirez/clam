@@ -1,6 +1,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qframe.h>
+#include "VScrollGroup.hxx"
 #include "Ruler.hxx"
 #include "BPFEditorController.hxx"
 #include "BPFEditorDisplaySurface.hxx"
@@ -15,7 +16,10 @@ namespace CLAM
 	      mEFlags(eFlags),
 	      mController(0),
 	      mDisplaySurface(0),
-	      mColorScheme(EBlackOverWhite)
+	      mColorScheme(EBlackOverWhite),
+	      mVScroll(0),
+	      bottomRightHole(0),
+	      mWhiteOverBlackScheme(true)
 	{
 	    InitBPFEditor();
 	}
@@ -60,7 +64,6 @@ namespace CLAM
 	void BPFEditor::Show()
 	{
 	    show();
-	    if(mDisplaySurface) mDisplaySurface->updateGL();
 	}
 
 	void BPFEditor::Hide()
@@ -136,10 +139,10 @@ namespace CLAM
 	    mController = new BPFEditorController(mEFlags);
 	    
 	    // main layout
-	    QBoxLayout* mainLayout = new QVBoxLayout(this);
+	    mainLayout = new QVBoxLayout(this);
 
 	    // top area: left ruler and display surface
-	    QBoxLayout* topLayout = new QHBoxLayout(mainLayout);
+	    topLayout = new QHBoxLayout(mainLayout);
 
 	    mYRuler = new Ruler(this,CLAM::VM::Left);
 	    mYRuler->setFixedWidth(10);
@@ -152,7 +155,7 @@ namespace CLAM
 	    topLayout->addWidget(mDisplaySurface);
 
 	    // bottom area:info labels and bottom ruler
-	    QBoxLayout* bottomLayout = new QHBoxLayout(mainLayout);
+	    bottomLayout = new QHBoxLayout(mainLayout);
 
 	    QFontMetrics fm(labelFont);
 
@@ -203,6 +206,12 @@ namespace CLAM
 	    bottomLayout->addWidget(labelsContainer);
 	    bottomLayout->addWidget(mXRuler);
 
+	    if((mEFlags & CLAM::VM::HasVerticalScroll) 
+	       && !(mEFlags & CLAM::VM::AllowZoomByMouse))
+	    {
+		CreateVScroll();
+	    }
+
 	    // connections
 	    connect(mController,SIGNAL(xRulerRange(double,double)),mXRuler,SLOT(updateRange(double,double)));
 	    connect(mController,SIGNAL(yRulerRange(double,double)),mYRuler,SLOT(updateRange(double,double)));
@@ -210,6 +219,8 @@ namespace CLAM
 
 	    connect(mController,SIGNAL(xValueChanged(int, float)),this,SIGNAL(xValueChanged(int, float)));
 	    connect(mController,SIGNAL(yValueChanged(int, float)),this,SIGNAL(yValueChanged(int, float)));
+
+	    connect(mController,SIGNAL(selectedXPos(double)),this,SIGNAL(selectedXPos(double)));
 	    
 	    // set color scheme
 	    WhiteOverBlack();
@@ -257,6 +268,8 @@ namespace CLAM
 	    mYLabelInfo->setPaletteForegroundColor(QColor(255,255,255));
 
 	    mDisplaySurface->SetBackgroundColor(0.0f,0.0f,0.0f);
+
+	    if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(QColor(0,0,0));
 	    
 	    mColorScheme = EWhiteOverBlack;
 	}
@@ -266,7 +279,7 @@ namespace CLAM
 	    if(mColorScheme==EBlackOverWhite) return;
 
 	    mController->SetDataColor(VMColor::Black());
-	    mController->SetHandlersColor(VMColor::Red());
+	    mController->SetHandlersColor(VMColor::Blue());
 	    mController->SetRectColor(VMColor::Black());
 
 	    mXRuler->SetBackgroundColor(VMColor::White());
@@ -287,6 +300,8 @@ namespace CLAM
 	    mYLabelInfo->setPaletteForegroundColor(QColor(0,0,0));
 
 	    mDisplaySurface->SetBackgroundColor(1.0f,1.0f,1.0f);
+	    
+	    if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(QColor(255,255,255));
 
 	    mColorScheme = EBlackOverWhite;
 	}
@@ -334,6 +349,54 @@ namespace CLAM
 				     mXLabelInfo->width(),
 				     fixed_y_label->height());
 	} 
+
+	void BPFEditor::setHBounds(double left, double right)
+	{
+	    mController->SetHBounds(left,right);
+	}
+
+	void BPFEditor::selectPointFromXCoord(double xcoord)
+	{
+	    mController->SelectPointFromXCoord(xcoord);
+	}
+
+	void BPFEditor::CreateVScroll()
+	{
+	    mVScroll = new VScrollGroup(this);
+	    topLayout->addWidget(mVScroll);
+	    bottomRightHole = new QFrame(this);
+	    bottomRightHole->setFixedSize(mVScroll->width(),mXRuler->height());
+	    bottomLayout->addWidget(bottomRightHole);
+
+	    // connections
+	    connect(mVScroll,SIGNAL(zoomIn()),mController,SLOT(vZoomIn()));
+	    connect(mVScroll,SIGNAL(zoomOut()),mController,SLOT(vZoomOut()));
+	    connect(mVScroll,SIGNAL(scrollValueChanged(int)),mController,SLOT(updateVScrollValue(int)));
+	    connect(mController,SIGNAL(vZoomRatio(int)),mVScroll,SLOT(updateZoomRatio(int)));
+	    connect(mController,SIGNAL(vScrollMaxValue(int)),this,SLOT(setMaxVScroll(int)));
+	    connect(mController,SIGNAL(vScrollValue(int)),mVScroll,SLOT(updateScrollValue(int)));
+
+	}
+
+	void BPFEditor::setMaxVScroll(int value)
+	{
+	    int max = value-mDisplaySurface->height();
+	    if(max < 0) max=0;
+	    mVScroll->setMaxScrollValue(max);
+	}
+
+	void BPFEditor::switchColors()
+	{
+	    mWhiteOverBlackScheme = !mWhiteOverBlackScheme;
+	    if(mWhiteOverBlackScheme)
+	    {
+		WhiteOverBlack();
+	    }
+	    else
+	    {
+		BlackOverWhite();
+	    }
+	}
 
     }
 }

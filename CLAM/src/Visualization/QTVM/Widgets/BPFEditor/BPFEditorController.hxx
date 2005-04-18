@@ -14,7 +14,8 @@ namespace CLAM
 {
     namespace VM
     {
-	enum EFlags { AllowVertical=0x01, AllowHorizontal=0x02, AllowInsert=0x04, AllowRemove=0x08, AllowAll=0x0f };
+	enum EFlags { AllowVerticalEdition=0x01, AllowHorizontalEdition=0x02, AllowInsert=0x04, AllowRemove=0x08, 
+		      AllowZoomByMouse=0x10, HasVerticalScroll=0x20, HasHorizontalScroll=0x40, AllowAll=0x7f };
 
 	class BPFEditorController : public QObject
 	{
@@ -107,6 +108,11 @@ namespace CLAM
 
 	    void DisplayDimensions(const int& w, const int& h);
 
+	    void SetHBounds(double left, double right);
+	    void SetVBounds(double bottom, double top);
+
+	    void SelectPointFromXCoord(double xcoord);
+
 	signals:
 	    void viewChanged(GLView);
 	    void cursorChanged(QCursor);
@@ -117,6 +123,18 @@ namespace CLAM
 
 	    void xValueChanged(int, float);
 	    void yValueChanged(int, float);
+
+	    void selectedXPos(double);
+
+	    void vZoomRatio(int);
+	    void vScrollMaxValue(int);
+	    void vScrollValue(int);
+
+	public slots:
+	    void vZoomIn();
+	    void vZoomOut();
+
+	    void updateVScrollValue(int);
 
 	private:
 	    BPF mData;
@@ -140,6 +158,15 @@ namespace CLAM
 	    TIndex mCurrentIndex;
 
 	    bool mXModified, mYModified;
+
+	    bool mSelectPoint;
+	    double mSpanX,mSpanY;
+	    double mMinSpanX,mMinSpanY;
+	    double mMinX,mMaxX;
+	    double mMinY,mMaxY;
+
+	    double mVCurrent;
+	    int mVZoomRatio;
 	    
 	    void PushSettings();
 	    void PopSettings();
@@ -165,6 +192,14 @@ namespace CLAM
 	    void UpdateBPF(const TData& x, const TData& y);
 
 	    bool IsValid(const TData& x0, const TData& x1);
+
+	    int GetnyPixels() const;
+	    int GetVScrollValue() const;
+
+	    void InitVZoomRatio();
+	    void InitVScroll();
+
+	    void UpdateVBounds(bool zin);
 	};
     }
 }

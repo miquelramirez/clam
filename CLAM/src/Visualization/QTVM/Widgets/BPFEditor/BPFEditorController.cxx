@@ -16,7 +16,14 @@ namespace CLAM
 	      mDisplayWidth(0),
 	      mDisplayHeight(0),
 	      mXModified(false),
-	      mYModified(false)
+	      mYModified(false),
+	      mSelectPoint(false),
+	      mSpanX(0.0),mSpanY(0.0),
+	      mMinSpanX(1.0),mMinSpanY(1.0),
+	      mMinX(0.0),mMaxX(0.0),
+	      mMinY(0.0),mMaxY(0.0),
+	      mVCurrent(0.0), 
+	      mVZoomRatio(0)
 	{
 	    mData.SetSize(0);
 	}
@@ -53,6 +60,10 @@ namespace CLAM
 
 	void BPFEditorController::SetXRange(const double& min, const double& max)
 	{
+	    if(min >= max) return;
+	    mSpanX = max-min;
+	    mMinX = min;
+	    mMaxX = max;
 	    mSettingStack.clear();
 	    mXRulerRange.mMin = min;
 	    mXRulerRange.mMax = max;
@@ -65,6 +76,10 @@ namespace CLAM
 
 	void BPFEditorController::SetYRange(const double& min, const double& max)
 	{
+	    if(min >= max) return;
+	    mSpanY = max-min;
+	    mMinY = min;
+	    mMaxY = max;
 	    mSettingStack.clear();
 	    mYRulerRange.mMin = min;
 	    mYRulerRange.mMax = max;
@@ -73,6 +88,7 @@ namespace CLAM
 	    emit viewChanged(mView);
 	    emit yRulerRange(mYRulerRange.mMin, mYRulerRange.mMax);
 	    emit requestRefresh();
+	    InitVScroll();
 	}
 
 	void BPFEditorController::SetKeyInsertPressed(bool pressed)
@@ -114,7 +130,10 @@ namespace CLAM
 	    mRightButtonPressed = pressed;
 	    if(!mRightButtonPressed)
 	    {
-		PopSettings();
+		if(mEFlags & CLAM::VM::AllowZoomByMouse)
+		{
+		    PopSettings();
+		}
 	    }
 	}
 
@@ -122,26 +141,39 @@ namespace CLAM
 	{
 	    if(mMouseOverDisplay)
 	    {
+		if(mLeftButtonPressed)
+		{
+		    if(mSelectPoint)
+		    {
+			mRenderer.SetSelectedIndex(mCurrentIndex);
+			mSelectPoint=false;
+			emit requestRefresh();
+			emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
+		    }
+		}
 		int mode = GetMode();
 		switch (mode)
 		{
 		    case Selection:
-			if(mLeftButtonPressed)
+			if(mEFlags & CLAM::VM::AllowZoomByMouse)
 			{
-			    mCorners[0].SetX(x);
-			    mCorners[0].SetY(y);
-			    mCorners[1].SetX(x);
-			    mCorners[1].SetY(y);
-			    mProcessingSelection=true;
-			}
-			else
-			{
-			    if(mProcessingSelection)
+			    if(mLeftButtonPressed)
 			    {
-				mProcessingSelection=false;
+				mCorners[0].SetX(x);
+				mCorners[0].SetY(y);
 				mCorners[1].SetX(x);
 				mCorners[1].SetY(y);
-				PushSettings();
+				mProcessingSelection=true;
+			    }
+			    else
+			    {
+				if(mProcessingSelection)
+				{
+				    mProcessingSelection=false;
+				    mCorners[1].SetX(x);
+				    mCorners[1].SetY(y);
+				    PushSettings();
+				}
 			    }
 			}
 			break;
@@ -185,30 +217,33 @@ namespace CLAM
 		    {
 			if(mKeyDeletePressed)
 			{
+			    mSelectPoint=false;
 			    QCursor cCursor(Qt::CrossCursor);
 			    emit cursorChanged(cCursor);
 			}
 			else
 			{
-			    if((mEFlags & CLAM::VM::AllowVertical) && (mEFlags & CLAM::VM::AllowHorizontal))
+			    if((mEFlags & CLAM::VM::AllowVerticalEdition) && 
+			       (mEFlags & CLAM::VM::AllowHorizontalEdition))
 			    {
 				QCursor sacursor(Qt::SizeAllCursor);
 				emit cursorChanged(sacursor);
 			    }
 			    else
 			    {
-				if(mEFlags & CLAM::VM::AllowVertical)
+				if(mEFlags & CLAM::VM::AllowVerticalEdition)
 				{
 				    QCursor vcursor(Qt::SizeVerCursor);
 				    emit cursorChanged(vcursor);
 				}
-				else if(mEFlags & CLAM::VM::AllowHorizontal)
+				else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 				{
 				    QCursor hcursor(Qt::SizeHorCursor);
 				    emit cursorChanged(hcursor);
 				}
 			    }
 			}
+			mSelectPoint=true;
 			mCurrentIndex=TIndex(index);
 			mHit=true;
 		    }
@@ -218,9 +253,10 @@ namespace CLAM
 			mCurrentPoint.SetY(y);
 			if(!mLeftButtonPressed)
 			{
+			    mHit=false;
+			    mSelectPoint=false;
 			    QCursor acursor(Qt::ArrowCursor);
 			    emit cursorChanged(acursor);
-			    mHit=false;
 			}
 		    }
 		    
@@ -254,7 +290,10 @@ namespace CLAM
 	{
 	    mRenderer.SetData(mData);
 	    mRenderer.Render();
-	    DrawRect();
+	    if(mEFlags & CLAM::VM::AllowZoomByMouse)
+	    {
+		DrawRect();
+	    }
 	}
 
 	void BPFEditorController::PushSettings()
@@ -401,7 +440,8 @@ namespace CLAM
 	{
 	    if(mData.Size() == 1) 
 	    {
-		if((mEFlags & CLAM::VM::AllowVertical) && (mEFlags & CLAM::VM::AllowHorizontal))
+		if((mEFlags & CLAM::VM::AllowVerticalEdition) 
+		   && (mEFlags & CLAM::VM::AllowHorizontalEdition))
 		{
 		    mData.SetValue(0,y);
 		    mData.SetXValue(0,x);
@@ -411,13 +451,13 @@ namespace CLAM
 		}
 		else
 		{
-		    if(mEFlags & CLAM::VM::AllowVertical)
+		    if(mEFlags & CLAM::VM::AllowVerticalEdition)
 		    {
 			mData.SetValue(0,y);
 
 			if(!mYModified) mYModified = true;
 		    }
-		    else if(mEFlags & CLAM::VM::AllowHorizontal)
+		    else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 		    {
 			mData.SetXValue(0,x);
 
@@ -435,7 +475,8 @@ namespace CLAM
 		TData next_x = mData.GetXValue(mCurrentIndex+1);
 		if(IsValid(x,next_x))
 		{
-		    if((mEFlags & CLAM::VM::AllowVertical) && (mEFlags & CLAM::VM::AllowHorizontal))
+		    if((mEFlags & CLAM::VM::AllowVerticalEdition) 
+		       && (mEFlags & CLAM::VM::AllowHorizontalEdition))
 		    {
 			mData.SetValue(mCurrentIndex,y);
 			mData.SetXValue(mCurrentIndex,x);
@@ -445,13 +486,13 @@ namespace CLAM
 		    }
 		    else
 		    {
-			if(mEFlags & CLAM::VM::AllowVertical)
+			if(mEFlags & CLAM::VM::AllowVerticalEdition)
 			{
 			    mData.SetValue(mCurrentIndex,y);
 
 			    if(!mYModified) mYModified = true;
 			}
-			else if(mEFlags & CLAM::VM::AllowHorizontal)
+			else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 			{
 			    mData.SetXValue(mCurrentIndex,x);
 
@@ -476,7 +517,8 @@ namespace CLAM
 		TData prior_x = mData.GetXValue(mCurrentIndex-1);
 		if(IsValid(prior_x,x))
 		{
-		    if((mEFlags & CLAM::VM::AllowVertical) && (mEFlags & CLAM::VM::AllowHorizontal))
+		    if((mEFlags & CLAM::VM::AllowVerticalEdition) 
+		       && (mEFlags & CLAM::VM::AllowHorizontalEdition))
 		    {
 			mData.SetValue(mCurrentIndex,y);
 			mData.SetXValue(mCurrentIndex,x);
@@ -486,13 +528,13 @@ namespace CLAM
 		    }
 		    else
 		    {
-			if(mEFlags & CLAM::VM::AllowVertical)
+			if(mEFlags & CLAM::VM::AllowVerticalEdition)
 			{
 			    mData.SetValue(mCurrentIndex,y);
 
 			    if(!mYModified) mYModified = true;
 			}
-			else if(mEFlags & CLAM::VM::AllowHorizontal)
+			else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 			{
 			    mData.SetXValue(mCurrentIndex,x);
 			    
@@ -516,7 +558,8 @@ namespace CLAM
 	    TData next_x = mData.GetXValue(mCurrentIndex+1);
 	    if(IsValid(prior_x,x) && IsValid(x,next_x))
 	    {
-		if((mEFlags & CLAM::VM::AllowVertical) && (mEFlags & CLAM::VM::AllowHorizontal))
+		if((mEFlags & CLAM::VM::AllowVerticalEdition) 
+		   && (mEFlags & CLAM::VM::AllowHorizontalEdition))
 		{    
 		    mData.SetValue(mCurrentIndex,y);
 		    mData.SetXValue(mCurrentIndex,x);
@@ -526,13 +569,13 @@ namespace CLAM
 		}
 		else
 		{
-		    if(mEFlags & CLAM::VM::AllowVertical)
+		    if(mEFlags & CLAM::VM::AllowVerticalEdition)
 		    {
 			mData.SetValue(mCurrentIndex,y);
 
 			if(!mYModified) mYModified = true;
 		    }
-		    else if(mEFlags & CLAM::VM::AllowHorizontal)
+		    else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 		    {
 			mData.SetXValue(mCurrentIndex,x);
 
@@ -554,6 +597,160 @@ namespace CLAM
 	{
 	    return (x0 < x1);
 	}
+	
+	void BPFEditorController::SetHBounds(double left, double right)
+	{
+	    if(left==mView.mLeft && right==mView.mRight) return;
+	    mView.mLeft = left;
+	    mView.mRight = right;
+	    mXRulerRange.mMin = mView.mLeft;
+	    mXRulerRange.mMax = mView.mRight;
+	    emit viewChanged(mView);
+	    emit xRulerRange(mXRulerRange.mMin, mXRulerRange.mMax);
+	    emit requestRefresh();
+	}
+
+	void BPFEditorController::SetVBounds(double bottom, double top)
+	{
+	    if(bottom==mView.mBottom && top==mView.mTop) return;
+	    mView.mBottom = bottom;
+	    mView.mTop = top;
+	    mYRulerRange.mMin = mView.mBottom;
+	    mYRulerRange.mMax = mView.mTop;
+	    emit viewChanged(mView);
+	    emit yRulerRange(mYRulerRange.mMin, mYRulerRange.mMax);
+	    emit requestRefresh();
+	}
+
+	void BPFEditorController::SelectPointFromXCoord(double xcoord)
+	{
+	    if(!mData.Size()) return;
+	    if(mData.Size()==1)
+	    {
+		mRenderer.SetSelectedIndex(0);
+		emit requestRefresh();
+		return;
+	    }
+	    TIndex index = -1;
+	    for(TIndex i=0; i < mData.Size(); i++)
+	    {
+		if(TData(xcoord)<=mData.GetXValue(i))
+		{
+		    index=i;
+		    break;
+		}
+	    }
+	    if(index != -1)
+	    {
+		if(xcoord==mData.GetXValue(index))
+		{
+		    mRenderer.SetSelectedIndex(index);
+		    emit requestRefresh();
+		    return;
+		}
+		double x0 = mData.GetXValue(index-1);
+		double x1 = mData.GetXValue(index);
+		if((xcoord-x0)<(x1-xcoord)) index--;
+		mRenderer.SetSelectedIndex(index);
+		emit requestRefresh();
+	    }
+	}
+
+	void BPFEditorController::vZoomIn()
+	{
+	    if(mVCurrent/2.0 > mMinSpanY)
+	    {
+		mVCurrent /= 2.0;
+		UpdateVBounds(true);
+		mVZoomRatio /= 2;
+		emit vZoomRatio(mVZoomRatio);
+		emit vScrollMaxValue(GetnyPixels());
+		emit vScrollValue(GetVScrollValue());
+	    }
+	}
+
+	void BPFEditorController::vZoomOut()
+	{
+	    if(mVCurrent*2.0 <= mSpanY)
+	    {
+		mVCurrent *= 2.0;
+		UpdateVBounds(false);
+		mVZoomRatio *= 2;
+		emit vZoomRatio(mVZoomRatio);
+		emit vScrollValue(GetVScrollValue());
+		emit vScrollMaxValue(GetnyPixels());
+	    } 
+	}
+
+	void BPFEditorController::updateVScrollValue(int value)
+	{
+	    double bottom = mSpanY/double(GetnyPixels())*double(value)-fabs(mMinY);
+	    double top = bottom+mVCurrent;
+	    SetVBounds(bottom,top);
+	}
+
+	int BPFEditorController::GetnyPixels() const
+	{
+	    double value = mSpanY*double(mDisplayHeight)/mVCurrent;
+	    return int(value);
+	}
+
+	void BPFEditorController::InitVZoomRatio()
+	{
+	    double n = mMinSpanY;
+	    int r = 1;
+	    while(n < mSpanY)
+	    {
+		n *= 2;
+		r *= 2;
+	    }
+	    mVZoomRatio = r/2;
+	}
+
+	void BPFEditorController::InitVScroll()
+	{
+	    mVCurrent = mSpanY;
+	    InitVZoomRatio();
+	    emit vZoomRatio(mVZoomRatio);
+	    int vsv=GetVScrollValue();
+	    emit vScrollMaxValue(GetnyPixels());
+	    emit vScrollValue(vsv);
+	}
+
+	int BPFEditorController::GetVScrollValue() const
+	{
+	    double value = (mView.mBottom+fabs(mMinY))*double(GetnyPixels())/mSpanY;
+	    return int(value);
+	}
+
+	void BPFEditorController::UpdateVBounds(bool zin)
+	{
+	    double bottom,top;
+	    bottom = mView.mBottom;
+	    top = mView.mTop;
+	    if(zin)
+	    {
+		bottom += mVCurrent/2.0;
+		top -= mVCurrent/2.0;
+	    }
+	    else
+	    {
+		bottom -= mVCurrent/4.0;
+		top += mVCurrent/4.0;
+		if(bottom < mMinY)
+		{
+		    bottom = mMinY;
+		    top = bottom+mVCurrent;
+		}
+		if(top > mMaxY)
+		{
+		    top = mMaxY;
+		    bottom = top-mVCurrent;
+		}
+	    }
+	    SetVBounds(bottom,top);
+	}
+
     }
 }
 

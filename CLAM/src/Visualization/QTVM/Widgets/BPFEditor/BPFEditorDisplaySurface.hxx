@@ -27,13 +27,13 @@ namespace CLAM
 	    void changeCursor(QCursor);
 
 	protected:
-	    void initializeGL(); 
-	    void resizeGL(int w,int h); 
 	    void paintGL(); 
 
 	    void mousePressEvent(QMouseEvent* e);
 	    void mouseReleaseEvent(QMouseEvent* e);
 	    void mouseMoveEvent(QMouseEvent* e);
+
+	    void resizeEvent(QResizeEvent *e);
 
 	    void leaveEvent(QEvent* e);
 	    void enterEvent(QEvent* e);
@@ -42,6 +42,8 @@ namespace CLAM
 	    GLView mView;
 	    float mRed, mGreen, mBlue;
 	    BPFEditorController* mController;
+	    int mWidth, mHeight;
+	    volatile bool mDoResize;
 	};
     }
 }
