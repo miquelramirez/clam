@@ -28,60 +28,60 @@
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	class SingleLabel;
+
+	class QtMultiPlot : public QtPresentation
 	{
-		class SingleLabel;
+	    Q_OBJECT
 
-		class QtMultiPlot : public QtPresentation
-		{
-			Q_OBJECT
+	public:
+	    QtMultiPlot(QWidget* parent=0);
+	    virtual ~QtMultiPlot();
 
-			public:
-				QtMultiPlot(QWidget* parent=0);
-				virtual ~QtMultiPlot();
+	    void AddData(std::string key, const DataArray& array);
+	    void AddData(std::string key, const BPF& data, int samples = 100);
+	    void RemoveData( std::string key );
+	    void RemoveAllData();
 
-				void AddData(std::string key, const DataArray& array);
-				void AddData(std::string key, const BPF& data, int samples = 100);
-				void RemoveData( std::string key );
-				void RemoveAllData();
+	    void SetColor(std::string key, Color c);
 
-				void SetColor(std::string key, Color c);
+	    void SetUnits(const std::string& xunits, const std::string& yunits);
+	    void SetToolTips(const std::string& xtooltip, const std::string& ytooltip);
 
-				void SetUnits(const std::string& xunits, const std::string& yunits);
-				void SetToolTips(const std::string& xtooltip, const std::string& ytooltip);
+	    void SetXRange(const TData& xmin, const TData& xmax);
+	    void SetYRange(const TData& ymin, const TData& ymax);
 
-				void SetXRange(const TData& xmin, const TData& xmax);
-				void SetYRange(const TData& ymin, const TData& ymax);
+	    void SetMarks(std::vector<unsigned>& marks);
+	    std::vector<unsigned>& GetMarks();
+	    void SetMarksColor(Color c);
 
-				void SetMarks(std::vector<unsigned>& marks);
-		                std::vector<unsigned>& GetMarks();
-				void SetMarksColor(Color c);
+	    void SetDialColor(Color c);
 
-		             	void SetDialColor(Color c);
+	private slots:
+	    void updateXLabel(TData);
+	    void updateYLabel(TData);
 
-			private slots:
-				void updateXLabel(TData);
-				void updateYLabel(TData);
+	    void clearLabels();
 
-				void clearLabels();
+	protected:
+	    virtual void keyPressEvent(QKeyEvent* e);
+	    virtual void keyReleaseEvent( QKeyEvent* e);
 
-			protected:
-		                virtual void keyPressEvent(QKeyEvent* e);
-				virtual void keyReleaseEvent( QKeyEvent* e);
+	    virtual void SetPlotController();				
+	    virtual void Connect();
 
-		                virtual void SetPlotController();				
-		                virtual void Connect();
+	    virtual void DisplayBackgroundBlack();
+	    virtual void DisplayBackgroundWhite();
 
-		                virtual void DisplayBackgroundBlack();
-				virtual void DisplayBackgroundWhite();
+	private:
+	    SingleLabel *_xLabel,*_yLabel;
 
-			private:
-				SingleLabel *_xLabel,*_yLabel;
+	    void InitMultiPlot();
 
-				void InitMultiPlot();
-
-		};
-	}
+	};
+    }
 }
 
 #endif

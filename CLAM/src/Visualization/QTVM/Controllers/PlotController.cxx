@@ -201,7 +201,7 @@ namespace CLAM
 				emit vScrollValue(GetVScrollValue());
 				emit requestRefresh();
 			}
-		void EnterMouse();}
+		}
 
 		void PlotController::SetHMin(const TData& min)
 		{
