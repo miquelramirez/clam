@@ -50,7 +50,7 @@ int main()
 
 	QtAudioPlot aPlot;
 	aPlot.Label("Audio");
-	aPlot.Geometry(100,100,500,225);
+	aPlot.Geometry(100,100,500,220);
 	aPlot.SetData(audio);
 	aPlot.SetForegroundColor(CLAM::VM::VMColor::Blue());
 	aPlot.Show();
