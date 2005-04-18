@@ -29,71 +29,74 @@
 
 namespace CLAM
 {
-	namespace VM
-	{
-		class TimeSegmentLabelsGroup;
-		class SingleLabel;
+    namespace VM
+    {
+	class TimeSegmentLabelsGroup;
+	class SingleLabel;
 	
-		class QtAudioPlot : public QtPresentation, public PlayablePlot
-		{
-			Q_OBJECT
+	class QtAudioPlot : public QtPresentation, public PlayablePlot
+	{
+	    Q_OBJECT
 
-			public:
+	public:
+	    QtAudioPlot(QWidget* parent=0);
+	    virtual ~QtAudioPlot();
 
-				QtAudioPlot(QWidget* parent=0);
-				virtual ~QtAudioPlot();
+	    void SetData(const Audio& audio);
 
-				void SetData(const Audio& audio);
+	    void SetMarks(std::vector<unsigned>& marks);
+	    std::vector<unsigned>& GetMarks();
+	    void SetMarksColor(Color c);
 
-				void SetMarks(std::vector<unsigned>& marks);
-		                std::vector<unsigned>& GetMarks();
-				void SetMarksColor(Color c);
+	    void SetForegroundColor(Color c);
+	    void SetDialColor(Color c);
+	    void SetRegionColor(Color c);
 
-				void SetForegroundColor(Color c);
-				void SetDialColor(Color c);
-				void SetRegionColor(Color c);
+	    void RemovePlayPanel();
 
-				void RemovePlayPanel();
+	    void SetKeyPressed(QKeyEvent* e);
+	    void SetKeyReleased(QKeyEvent* e);
 
-				void SetKeyPressed(QKeyEvent* e);
-				void SetKeyReleased(QKeyEvent* e);
+	    void UpdateRegion(MediaTime);
 
-				void UpdateRegion(MediaTime);
+	signals:
+	    void regionTime(MediaTime);
+	    
+	public slots:
+	    void setSelectedXPos(double);
+	    
+        protected slots:
+	    void initialYRulerRange(double,double);
+	    void updateRegion(MediaTime);
 
-			signals:
-				void regionTime(MediaTime);
+	protected:
+	    virtual void keyPressEvent(QKeyEvent* e);
+	    virtual void keyReleaseEvent( QKeyEvent* e);
 
-			protected slots:
-				void updateRegion(MediaTime);
+	    virtual void closeEvent(QCloseEvent* e);
 
-			protected:
-				virtual void keyPressEvent(QKeyEvent* e);
-				virtual void keyReleaseEvent( QKeyEvent* e);
+	    virtual void SetPlotController();
+	    virtual void Connect();
 
-				virtual void closeEvent(QCloseEvent* e);
+	    virtual void DisplayBackgroundBlack();
+	    virtual void DisplayBackgroundWhite();
 
-				virtual void SetPlotController();
-				virtual void Connect();
+	    void SetPData(const Audio& audio);
 
-				virtual void DisplayBackgroundBlack();
-				virtual void DisplayBackgroundWhite();
+	private:
+	    QBoxLayout* _panel;
+	    TimeSegmentLabelsGroup* _labelsGroup;
+	    SingleLabel *_leftAmpLab, *_rightAmpLab;
+	    MediaTime _playBounds;
+	    bool showRightAmp;
 
-				void SetPData(const Audio& audio);
-
-			private:
-				QBoxLayout* _panel;
-				TimeSegmentLabelsGroup* _labelsGroup;
-				SingleLabel *_leftAmpLab, *_rightAmpLab;
-				MediaTime _playBounds;
-				bool showRightAmp;
-
-				// holes
-				QFrame *lefthole,*righthole;
+	    // holes
+	    QFrame *lefthole,*righthole;
 				
-				void UpdateAmpLabels(MediaTime time);
-				void InitAudioPlot();
-		};
-	}
+	    void UpdateAmpLabels(MediaTime time);
+	    void InitAudioPlot();
+	};
+    }
 }
 
 #endif

@@ -41,9 +41,6 @@ namespace CLAM
 
 	void QtSpectrumPlot::InitSpectrumPlot()
 	{   
-	    SetXRulerLabelFormat('f',0,1);
-	    SetYRulerLabelFormat('f',0,1);
-
 	    QHBoxLayout* panel = new QHBoxLayout;
 	    panel->addStretch(1);
 			
@@ -93,8 +90,6 @@ namespace CLAM
 	void QtSpectrumPlot::Connect()
 	{
 	    // Connections
-	    connect(((SpectrumPlotController*)_controller),SIGNAL(xRulerScaleDiv(QwtScaleDiv)),this,SLOT(setXRulerScaleDiv(QwtScaleDiv)));
-	    connect(((SpectrumPlotController*)_controller),SIGNAL(yRulerScaleDiv(QwtScaleDiv)),this,SLOT(setYRulerScaleDiv(QwtScaleDiv)));
 	    connect(((SpectrumPlotController*)_controller),SIGNAL(mag(TData)),this,SLOT(updateMagLabel(TData)));
 	    connect(((SpectrumPlotController*)_controller),SIGNAL(freq(TData)),this,SLOT(updateFreqLabel(TData)));
 	}

@@ -29,46 +29,46 @@
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	class TimeSegmentLabelsGroup;
+
+	class QtSinTracksPlot : public QtPresentation
 	{
-		class TimeSegmentLabelsGroup;
+	    Q_OBJECT
 
-		class QtSinTracksPlot : public QtPresentation
-		{
-			Q_OBJECT
+	public:
+	    QtSinTracksPlot(QWidget* parent=0);
+	    virtual ~QtSinTracksPlot();
 
-			public:
-				QtSinTracksPlot(QWidget* parent=0);
-				virtual ~QtSinTracksPlot();
-
-				void SetData(const Segment& segment);
-				void SetData(	const Array< SpectralPeakArray >& peakMtx, 
+	    void SetData(const Segment& segment);
+	    void SetData(	const Array< SpectralPeakArray >& peakMtx, 
 								const TData& sr, const TData& dur	);
 
-				void SetMarks(std::vector<unsigned>& marks);
-		                std::vector<unsigned>& GetMarks();
-				void SetMarksColor(Color c);
+	    void SetMarks(std::vector<unsigned>& marks);
+	    std::vector<unsigned>& GetMarks();
+	    void SetMarksColor(Color c);
 
-				void SetDialColor(Color c);
-				void SetRegionColor(Color c);
+	    void SetDialColor(Color c);
+	    void SetRegionColor(Color c);
 
-			protected slots:
-				void updateRegion(MediaTime);
+        protected slots:
+	    void updateRegion(MediaTime);
 
-			protected:
-		                virtual void keyPressEvent(QKeyEvent* e);
-		                virtual void keyReleaseEvent( QKeyEvent* e);
-		                virtual void SetPlotController();				virtual void Connect();
+	protected:
+	    virtual void keyPressEvent(QKeyEvent* e);
+	    virtual void keyReleaseEvent( QKeyEvent* e);
+	    virtual void SetPlotController();				virtual void Connect();
 
-				virtual void DisplayBackgroundBlack();
-				virtual void DisplayBackgroundWhite();
+	    virtual void DisplayBackgroundBlack();
+	    virtual void DisplayBackgroundWhite();
 
-			private:
-				TimeSegmentLabelsGroup* _labelsGroup;
+	private:
+	    TimeSegmentLabelsGroup* _labelsGroup;
 
-				void InitSinTracksPlot();
-		};
-	}
+	    void InitSinTracksPlot();
+	};
+    }
 }
 
 #endif

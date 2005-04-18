@@ -27,57 +27,63 @@
 #include "QtPresentation.hxx"
 #include "PlayablePlot.hxx"
 
+class QFrame;
+
 namespace CLAM
 {
-	namespace VM
-	{
-		class TimeSegmentLabelsGroup;
-		class SingleLabel;
+    namespace VM
+    {
+	class TimeSegmentLabelsGroup;
+	class SingleLabel;
 	
-		class QtFundFreqPlot : public QtPresentation, public PlayablePlot
-		{
-			Q_OBJECT
+	class QtFundFreqPlot : public QtPresentation, public PlayablePlot
+	{
+	    Q_OBJECT
 
-			public:
+	public:
+	    QtFundFreqPlot(QWidget* parent=0);
+	    virtual ~QtFundFreqPlot();
 
-				QtFundFreqPlot(QWidget* parent=0);
-				virtual ~QtFundFreqPlot();
+	    void SetData(const Segment& segment);
 
-				void SetData(const Segment& segment);
+	    void SetMarks(std::vector<unsigned>& marks);
+	    std::vector<unsigned>& GetMarks();
+	    void SetMarksColor(Color c);
 
-				void SetMarks(std::vector<unsigned>& marks);
-		                std::vector<unsigned>& GetMarks();
-				void SetMarksColor(Color c);
+	    void SetForegroundColor(Color c);
+	    void SetDialColor(Color c);
+	    void SetRegionColor(Color c);
 
-				void SetForegroundColor(Color c);
-				void SetDialColor(Color c);
-				void SetRegionColor(Color c);
+	protected slots:
+	    void initialYRulerRange(double,double);
+	    void updateRegion(MediaTime);
 
-			protected slots:
-				void updateRegion(MediaTime);
+	protected:
+	    virtual void keyPressEvent(QKeyEvent* e);
+	    virtual void keyReleaseEvent( QKeyEvent* e);
 
-			protected:
-				virtual void keyPressEvent(QKeyEvent* e);
-				virtual void keyReleaseEvent( QKeyEvent* e);
+	    virtual void closeEvent(QCloseEvent* e);
 
-				virtual void closeEvent(QCloseEvent* e);
+	    virtual void SetPlotController();
+	    virtual void Connect();
 
-				virtual void SetPlotController();
-				virtual void Connect();
+	    virtual void DisplayBackgroundBlack();
+	    virtual void DisplayBackgroundWhite();
 
-				virtual void DisplayBackgroundBlack();
-				virtual void DisplayBackgroundWhite();
+	    void SetPData(const Segment& seg);
 
-				void SetPData(const Segment& seg);
+	private:
+	    TimeSegmentLabelsGroup* _labelsGroup;
+	    SingleLabel *_leftFreqLab, *_rightFreqLab;
 
-			private:
-				TimeSegmentLabelsGroup* _labelsGroup;
-				SingleLabel *_leftFreqLab, *_rightFreqLab;
+	    // holes
+	    QFrame *lefthole, *righthole;
 				
-				void InitFundFreqPlot();
-				void UpdateFreqLabels(MediaTime time);
-		};
-	}
+	    void InitFundFreqPlot();
+	    void UpdateFreqLabels(MediaTime time);
+
+	};
+    }
 }
 
 #endif

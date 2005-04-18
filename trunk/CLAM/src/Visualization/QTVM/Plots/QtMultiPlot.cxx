@@ -26,186 +26,185 @@
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	QtMultiPlot::QtMultiPlot(QWidget* parent)
 	{
-		QtMultiPlot::QtMultiPlot(QWidget* parent)
-		{
-			SetPlotController();
-			InitMultiPlot();
-			Connect();
-		}
+	    SetPlotController();
+	    InitMultiPlot();
+	    Connect();
+	}
 
-		QtMultiPlot::~QtMultiPlot()
-		{
-		}
+	QtMultiPlot::~QtMultiPlot()
+	{
+	}
 
-		void QtMultiPlot::InitMultiPlot()
-		{
-			QHBoxLayout* panel = new QHBoxLayout;
-			panel->addStretch(1);
+	void QtMultiPlot::InitMultiPlot()
+	{
+	    QHBoxLayout* panel = new QHBoxLayout;
+	    panel->addStretch(1);
 			
-			_xLabel = new SingleLabel(this);
-			panel->addWidget(_xLabel);
+	    _xLabel = new SingleLabel(this);
+	    panel->addWidget(_xLabel);
 
-			_yLabel = new SingleLabel(this);
-			panel->addWidget(_yLabel);
+	    _yLabel = new SingleLabel(this);
+	    panel->addWidget(_yLabel);
 
-			QFrame* righthole = new QFrame(this);
-			righthole->setFixedSize(20,_yLabel->height());
-			panel->addWidget(righthole);
+	    QFrame* righthole = new QFrame(this);
+	    righthole->setFixedSize(20,_yLabel->height());
+	    panel->addWidget(righthole);
 
-			AddToMainLayout(panel);
-
-		}
-
-		void QtMultiPlot::AddData(std::string key, const DataArray& array)
-		{
-			((MultiPlotController*)_controller)->AddData(key,array);
-		}
-		
-		void QtMultiPlot::AddData(std::string key, const BPF& data, int samples)
-		{
-			((MultiPlotController*)_controller)->AddData(key,data,samples);
-		}
-		
-		void QtMultiPlot::RemoveData( std::string key )
-		{
-			((MultiPlotController*)_controller)->RemoveData(key);
-		}
-		
-		void QtMultiPlot::RemoveAllData()
-		{
-			((MultiPlotController*)_controller)->RemoveAllData();
-		}
-
-		void QtMultiPlot::SetColor(std::string key, Color c)
-		{
-			((MultiPlotController*)_controller)->SetColor(key,c);
-		}
-
-		void QtMultiPlot::SetXRange(const TData& xmin, const TData& xmax)
-		{
-			((MultiPlotController*)_controller)->SetXRange(xmin,xmax);
-		}
-		
-		void QtMultiPlot::SetYRange(const TData& ymin, const TData& ymax)
-		{
-			((MultiPlotController*)_controller)->SetYRange(ymin,ymax);
-		}
-
-		void QtMultiPlot::SetPlotController()
-		{
-		    SetController(new MultiPlotController());
-		}
-
-	        void QtMultiPlot::Connect()
-		{
-		    connect(((MultiPlotController*)_controller),SIGNAL(xRulerScaleDiv(QwtScaleDiv)),this,SLOT(setXRulerScaleDiv(QwtScaleDiv)));
-		    connect(((MultiPlotController*)_controller),SIGNAL(yRulerScaleDiv(QwtScaleDiv)),this,SLOT(setYRulerScaleDiv(QwtScaleDiv)));
-		    connect(((MultiPlotController*)_controller),SIGNAL(xvalue(TData)),this,SLOT(updateXLabel(TData)));
-		    connect(((MultiPlotController*)_controller),SIGNAL(yvalue(TData)),this,SLOT(updateYLabel(TData)));
-		    connect(((MultiPlotController*)_controller),SIGNAL(leavingMouse()),this,SLOT(clearLabels()));
-		}
-
-	        void QtMultiPlot::DisplayBackgroundBlack()
-		{
-			SetBackgroundColor(VMColor::Black());
-			SetDialColor(VMColor::Red());
-			SetMarksColor(VMColor::Orange());
-		}
-
-		void QtMultiPlot::DisplayBackgroundWhite()
-		{
-			SetBackgroundColor(VMColor::White());
-			SetDialColor(VMColor::Black());
-			SetMarksColor(VMColor::Red());
-		}
-
-		void QtMultiPlot::SetUnits(const std::string& xunits, const std::string& yunits)
-		{
-			_xLabel->SetUnits(xunits.c_str());
-			_yLabel->SetUnits(yunits.c_str());
-		}
-
-		void QtMultiPlot::SetToolTips(const std::string& xtooltip, const std::string& ytooltip)
-		{
-			_xLabel->SetToolTip(xtooltip.c_str());
-			_yLabel->SetToolTip(ytooltip.c_str());
-		}
-
-		void QtMultiPlot::updateXLabel(TData value)
-		{
-			_xLabel->Update(value);
-		}
-
-		void QtMultiPlot::updateYLabel(TData value)
-		{
-			_yLabel->Update(value);
-		}
-
-		void QtMultiPlot::clearLabels()
-		{
-			_xLabel->setText("");
-			_yLabel->setText("");
-		}
-
-		void QtMultiPlot::SetMarks(std::vector<unsigned>& marks)
-		{
-			((MultiPlotController*)_controller)->SetMarks(marks);
-		}
-	    
-	        std::vector<unsigned>& QtMultiPlot::GetMarks()
-		{
-		    return ((MultiPlotController*)_controller)->GetMarks();
-		}
-
-		void QtMultiPlot::SetMarksColor(Color c)
-		{
-			((MultiPlotController*)_controller)->SetMarksColor(c);
-		}
-
-	        void QtMultiPlot::keyPressEvent(QKeyEvent* e)
-		{
-		    switch(e->key())
-		    {
-			case Qt::Key_Insert:
-			    ((MultiPlotController*)_controller)->SetKeyInsertPressed(true); 
-			    break;
-						
-			case Qt::Key_Delete:
-			    ((MultiPlotController*)_controller)->SetKeyDeletePressed(true); 
-			    break;
-				    
-			default:
-			    break;
-
-		    }
-		}
-
-	        void QtMultiPlot::keyReleaseEvent(QKeyEvent* e)
-		{
-		    switch(e->key())
-		    {
-			case Qt::Key_Insert:
-			    ((MultiPlotController*)_controller)->SetKeyInsertPressed(false); 
-			    break;
-						
-			case Qt::Key_Delete:
-			    ((MultiPlotController*)_controller)->SetKeyDeletePressed(false); 
-			    break;
-				    
-			default:
-			    break;
-
-		    }
-		}
-
-	    	void QtMultiPlot::SetDialColor(Color c)
-		{
-		    ((MultiPlotController*)_controller)->SetDialColor(c);
-		}
+	    AddToMainLayout(panel);
 
 	}
+
+	void QtMultiPlot::AddData(std::string key, const DataArray& array)
+	{
+	    ((MultiPlotController*)_controller)->AddData(key,array);
+	}
+		
+	void QtMultiPlot::AddData(std::string key, const BPF& data, int samples)
+	{
+	    ((MultiPlotController*)_controller)->AddData(key,data,samples);
+	}
+		
+	void QtMultiPlot::RemoveData( std::string key )
+	{
+	    ((MultiPlotController*)_controller)->RemoveData(key);
+	}
+		
+	void QtMultiPlot::RemoveAllData()
+	{
+	    ((MultiPlotController*)_controller)->RemoveAllData();
+	}
+
+	void QtMultiPlot::SetColor(std::string key, Color c)
+	{
+	    ((MultiPlotController*)_controller)->SetColor(key,c);
+	}
+
+	void QtMultiPlot::SetXRange(const TData& xmin, const TData& xmax)
+	{
+	    ((MultiPlotController*)_controller)->SetXRange(xmin,xmax);
+	}
+		
+	void QtMultiPlot::SetYRange(const TData& ymin, const TData& ymax)
+	{
+	    QtPresentation::initialYRulerRange(double(ymin),double(ymax));
+	    ((MultiPlotController*)_controller)->SetYRange(ymin,ymax);
+	}
+
+	void QtMultiPlot::SetPlotController()
+	{
+	    SetController(new MultiPlotController());
+	}
+
+	void QtMultiPlot::Connect()
+	{
+	    connect(((MultiPlotController*)_controller),SIGNAL(xvalue(TData)),this,SLOT(updateXLabel(TData)));
+	    connect(((MultiPlotController*)_controller),SIGNAL(yvalue(TData)),this,SLOT(updateYLabel(TData)));
+	    connect(((MultiPlotController*)_controller),SIGNAL(leavingMouse()),this,SLOT(clearLabels()));
+	}
+
+	void QtMultiPlot::DisplayBackgroundBlack()
+	{
+	    SetBackgroundColor(VMColor::Black());
+	    SetDialColor(VMColor::Red());
+	    SetMarksColor(VMColor::Orange());
+	}
+
+	void QtMultiPlot::DisplayBackgroundWhite()
+	{
+	    SetBackgroundColor(VMColor::White());
+	    SetDialColor(VMColor::Black());
+	    SetMarksColor(VMColor::Red());
+	}
+
+	void QtMultiPlot::SetUnits(const std::string& xunits, const std::string& yunits)
+	{
+	    _xLabel->SetUnits(xunits.c_str());
+	    _yLabel->SetUnits(yunits.c_str());
+	}
+
+	void QtMultiPlot::SetToolTips(const std::string& xtooltip, const std::string& ytooltip)
+	{
+	    _xLabel->SetToolTip(xtooltip.c_str());
+	    _yLabel->SetToolTip(ytooltip.c_str());
+	}
+
+	void QtMultiPlot::updateXLabel(TData value)
+	{
+	    _xLabel->Update(value);
+	}
+
+	void QtMultiPlot::updateYLabel(TData value)
+	{
+	    _yLabel->Update(value);
+	}
+
+	void QtMultiPlot::clearLabels()
+	{
+	    _xLabel->setText("");
+	    _yLabel->setText("");
+	}
+
+	void QtMultiPlot::SetMarks(std::vector<unsigned>& marks)
+	{
+	    ((MultiPlotController*)_controller)->SetMarks(marks);
+	}
+	    
+	std::vector<unsigned>& QtMultiPlot::GetMarks()
+	{
+	    return ((MultiPlotController*)_controller)->GetMarks();
+	}
+
+	void QtMultiPlot::SetMarksColor(Color c)
+	{
+	    ((MultiPlotController*)_controller)->SetMarksColor(c);
+	}
+
+	void QtMultiPlot::keyPressEvent(QKeyEvent* e)
+	{
+	    switch(e->key())
+	    {
+		case Qt::Key_Insert:
+		    ((MultiPlotController*)_controller)->SetKeyInsertPressed(true); 
+		    break;
+						
+		case Qt::Key_Delete:
+		    ((MultiPlotController*)_controller)->SetKeyDeletePressed(true); 
+		    break;
+				    
+		default:
+		    break;
+
+	    }
+	}
+
+	void QtMultiPlot::keyReleaseEvent(QKeyEvent* e)
+	{
+	    switch(e->key())
+	    {
+		case Qt::Key_Insert:
+		    ((MultiPlotController*)_controller)->SetKeyInsertPressed(false); 
+		    break;
+						
+		case Qt::Key_Delete:
+		    ((MultiPlotController*)_controller)->SetKeyDeletePressed(false); 
+		    break;
+				    
+		default:
+		    break;
+
+	    }
+	}
+
+	void QtMultiPlot::SetDialColor(Color c)
+	{
+	    ((MultiPlotController*)_controller)->SetDialColor(c);
+	}
+
+    }
 }
 
 // END
