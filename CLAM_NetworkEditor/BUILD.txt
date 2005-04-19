@@ -1,4 +1,7 @@
 
+Build instructions for GNU/Linux
+--------------------------------
+
 NetworkEditor currently it needs the oscpack library copied at the same dir level as CLAM/. This is just provisional till we provide a standard installer for oscpack.
 
 These are the steps needed to compile and run NetworkEditor:
