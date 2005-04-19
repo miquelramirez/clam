@@ -1,0 +1,19 @@
+
+NetworkEditor currently it needs the oscpack library copied at the same dir level as CLAM/. This is just provisional till we provide a standard installer for oscpack.
+
+These are the steps needed to compile and run NetworkEditor:
+
+1) go into CLAM/draft/OSCCLAM/oscpack-lib
+   or you can download oscpack-lib from the clam web.
+   and compile it with 'make'. this will create a new 'owcpack' dir.
+2) move this 'oscpack' dir at the same dir-level as CLAM/
+3) export LD_LIBRARY_PATH=/path/to/clam-sandoxes/oscpack/lib/
+4) compile NetworkEditor in the clam way:
+   - go to CLAM_NetworkEditor/build dir
+   - modify the 'clam-location.cfg' so it points to the CLAM path
+   - 'make depend'    [*]
+   - 'make CONFIG=release'
+5) run ./NetworkEditor
+
+[*] 'make depend' requires having the CLAM 'srcdeps' program compiled. 
+To do so just go to CLAM/build/srcdeps and do 'make'
