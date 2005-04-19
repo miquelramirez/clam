@@ -260,12 +260,12 @@
             <action name="projectLoadSchemaAction"/>
         </item>
     </item>
-    <item text="Song" name="unnamed">
+    <item text="Song" name="songMenu">
         <action name="songLoadDescriptorsAction"/>
         <action name="songSaveDescriptorsAction"/>
     </item>
-    <item text="&amp;Edit" name="mEditMenu">
-        <action name="editDelete_from_projectAction"/>
+    <item text="Audio" name="audioMenu">
+        <action name="audioAuralize_Segmentation_MarksAction"/>
     </item>
     <item text="&amp;Help" name="help">
         <action name="helpAboutAction"/>
@@ -561,6 +561,17 @@
             <string>SaveDescriptors</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>audioAuralize_Segmentation_MarksAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Auralize Segmentation Marks</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -658,6 +669,12 @@
         <receiver>AnnotatorBase</receiver>
         <slot>saveDescriptors()</slot>
     </connection>
+    <connection>
+        <sender>audioAuralize_Segmentation_MarksAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>playMarks(bool)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in declaration">ListViewItem.hxx</include>
@@ -701,6 +718,7 @@
     <slot>loadAll()</slot>
     <slot>saveSongList()</slot>
     <slot>saveDescriptors()</slot>
+    <slot>playMarks(bool)</slot>
 </slots>
 <functions>
     <function access="private">init()</function>

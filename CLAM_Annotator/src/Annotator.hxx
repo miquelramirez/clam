@@ -44,8 +44,7 @@ public:
   void playPause();
   void chooseColor();
   void initFileMenu();
-  void initEditMenu();
-
+ 
   void initProject();
   void initInterface();
 public slots:
@@ -68,7 +67,8 @@ public slots:
   void fileSaveAs();
   void fileSave();
   void fileMenuAboutToShow();
-  void editMenuAboutToShow();
+
+  void playMarks(bool);
 protected:
   void closeEvent( QCloseEvent * e);
   bool event(QEvent* e);
@@ -126,9 +126,13 @@ private:
   double GetMinY(const CLAM::BPF& bpf);
   double GetMaxY(const CLAM::BPF& bpf);
 
+  void auralizeMarks();
+
 private:
   CLAM::VM::QtAudioPlot* mpAudioPlot;
   CLAM::Audio mCurrentAudio;
+  CLAM::Audio mCurrentMarkedAudio;
+  std::vector<CLAM::Audio> mClick;
 
   CLAM_Annotator::Project mProject;
   CLAM_Annotator::SongFiles mSongFiles;

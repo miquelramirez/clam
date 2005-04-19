@@ -112,3 +112,9 @@ void AnnotatorBase::saveDescriptors()
 }
 
 
+
+
+void AnnotatorBase::playMarks( bool )
+{
+
+}
