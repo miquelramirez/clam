@@ -57,7 +57,6 @@ void Annotator::initInterface()
   if (mpAudioPlot) mpAudioPlot->Hide();
   mProjectOverview->setSorting(-1);
   initFileMenu();
-  initEditMenu();
   makeConnections();
   
 }
@@ -100,15 +99,6 @@ void Annotator::initFileMenu()
 	connect( mFileMenu, SIGNAL( aboutToShow() ), this, SLOT( fileMenuAboutToShow() ) );
 }
 
-void Annotator::initEditMenu()
-{
-	connect( mEditMenu, SIGNAL( aboutToShow() ), this, SLOT( editMenuAboutToShow() ) );
-}
-
-void Annotator::editMenuAboutToShow()
-{
-	editDelete_from_projectAction->setEnabled( somethingIsSelected() );
-}
 
 void Annotator::fileMenuAboutToShow()
 {
@@ -279,6 +269,7 @@ void Annotator::segmentationMarksChanged(int, unsigned)
       (*descriptorMarks)[i] = marks[i];
     } 
   mSegmentsChanged = true;
+  auralizeMarks();
 
 
 }
@@ -558,6 +549,7 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 	mpAudioPlot->SetMarks(marks);
 	mpAudioPlot->SetData(mCurrentAudio);
 	mpAudioPlot->Show();
+	auralizeMarks();
 }
 
 void Annotator::drawLLDescriptors(int index)
@@ -591,20 +583,18 @@ void Annotator::loadAudioFile(const char* filename)
 	reader.Start();
 	int beginSample=0;
 	mCurrentAudio.SetSize(0);
-	//	mpProgressDialog = new QProgressDialog("Loading Audio File", 
-	//					      "Cancel",file.GetHeader().GetSamples());
-//mpProgressDialog->setProgress( 0 );
 	float samplingRate = mCurrentAudio.GetSampleRate();
 	while(reader.Do(audioFrameVector))
 	{
-		mCurrentAudio.SetSize(mCurrentAudio.GetSize()+audioFrameVector[0].GetSize());
-		mCurrentAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
-		beginSample+=readSize;
-		qApp->eventLoop()->processEvents( QEventLoop::AllEvents );
-		mpProgressDialog->setProgress( beginSample/samplingRate*1000.0 );
-		if (mpProgressDialog->wasCanceled()) break;
+	  mCurrentAudio.SetSize(mCurrentAudio.GetSize()+audioFrameVector[0].GetSize());
+	  mCurrentAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
+	  beginSample+=readSize;
+	  qApp->eventLoop()->processEvents( QEventLoop::AllEvents );
+	  mpProgressDialog->setProgress( beginSample/samplingRate*1000.0 );
+	  if (mpProgressDialog->wasCanceled()) break;
 	}
 	reader.Stop();
+	
  
 }
 
@@ -981,4 +971,44 @@ int Annotator::getIndexFromFileName(const std::string& fileName)
       if((*it).GetSoundFile() == fileName) return i;
     }
   return -1;
+}
+
+void Annotator::auralizeMarks()
+{
+  if(mClick.size()==0)
+  {
+    mClick.resize(2);
+    CLAM::AudioFile file;
+    file.OpenExisting("click.mp3");
+    int nChannels = file.GetHeader().GetChannels();
+    CLAM::MultiChannelAudioFileReaderConfig cfg;
+    cfg.SetSourceFile( file );
+    CLAM::MultiChannelAudioFileReader reader(cfg);
+    mClick[0].SetSize(5000);
+    mClick[1].SetSize(5000);
+    reader.Start();
+    int beginSample=0;
+    reader.Do(mClick);
+    reader.Stop();
+  }
+  std::vector<unsigned int> marks;
+  marks = mpAudioPlot->GetMarks();
+  int nMarks = marks.size();
+  int i;
+  mCurrentMarkedAudio = mCurrentAudio;
+  int size = mCurrentMarkedAudio.GetSize();
+  for (i=0; i<nMarks; i++)
+  {
+    if(marks[i]<size)
+      mCurrentMarkedAudio.SetAudioChunk((int)marks[i],mClick[0]);
+  } 
+
+}
+
+void Annotator::playMarks(bool play)
+{
+  if(play)
+    mpAudioPlot->SetData(mCurrentMarkedAudio);
+  else
+    mpAudioPlot->SetData(mCurrentAudio);
 }
