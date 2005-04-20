@@ -65,13 +65,30 @@ void Annotator::initProject()
 {
   if (mProject.GetSongs()!="")
   {
-    CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
+    try{
+      CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
+    }
+    catch (CLAM::XmlStorageErr e)
+    {
+      QMessageBox::warning(this,"Error Loading Project File", 
+			   constructFileError(mProject.GetSongs(),e));
+      return;
+    }
   }
   initSongs();
   
   if (mProject.GetSchema()!="")
   {
-    CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
+    try{
+      CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
+    }
+    catch (CLAM::XmlStorageErr e)
+    {
+      QMessageBox::warning(this,"Error Loading Schema File", 
+			   constructFileError(mProject.GetSchema(),e));
+      return;
+    }
+    
   }
   initLLDescriptorsWidgets();
   initHLDescriptorsTable();
@@ -156,7 +173,8 @@ void Annotator::initLLDescriptorsWidgets()
   for(i=0, it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
     {
       QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
-      *it = new CLAM::VM::BPFEditor(tabWidget2->page(i),0,CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll);
+      *it = new CLAM::VM::BPFEditor(tabWidget2->page(i),0,
+				    CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll);
       (*it)->Hide();
       tabLayout->addWidget(*it);
     }
@@ -201,7 +219,8 @@ void Annotator::makeConnections()
   connect(helpAboutAction,SIGNAL(activated()),&mAbout,SLOT(show()));
   connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) , this, 
 	  SLOT( descriptorsTableChanged(int, int) ) );
-  connect(mpAudioPlot, SIGNAL(updatedMark(int, unsigned)),this,SLOT(segmentationMarksChanged(int, unsigned)));
+  connect(mpAudioPlot, SIGNAL(updatedMark(int, unsigned)),this,
+	  SLOT(segmentationMarksChanged(int, unsigned)));
   
 }
 
@@ -213,7 +232,8 @@ void Annotator::connectBPFs()
       connect( (*it), SIGNAL(yValueChanged(int, float)), this, 
 	      SLOT(descriptorsBPFChanged(int, float)));
       connect((*it),SIGNAL(selectedXPos(double)),mpAudioPlot,SLOT(setSelectedXPos(double)));
-      connect(mpAudioPlot,SIGNAL(xRulerRange(double,double)),(*it),SLOT(setHBounds(double,double)));
+      connect(mpAudioPlot,SIGNAL(xRulerRange(double,double)),(*it),
+	      SLOT(setHBounds(double,double)));
       connect(mpAudioPlot,SIGNAL(selectedXPos(double)),(*it),SLOT(selectPointFromXCoord(double)));
       connect(mpAudioPlot,SIGNAL(switchColorsRequested()),(*it),SLOT(switchColors()));
     }
@@ -280,7 +300,9 @@ void Annotator::addSongs()
   std::vector< CLAM_Annotator::Song> songs = mSongFiles.GetFileNames();
   for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
     {
-      ListViewItem * item = new ListViewItem( mProjectOverview->childCount(), mProjectOverview, QString( it->GetSoundFile().c_str() ), tr("Yes"), tr("No") );
+      ListViewItem * item = new ListViewItem( mProjectOverview->childCount(), mProjectOverview, 
+					      QString( it->GetSoundFile().c_str() ), tr("Yes"), 
+					      tr("No") );
     }
 }
 
@@ -325,7 +347,8 @@ void Annotator::deleteAllSongsFromProject()
 		toBeDeleted.push_back(*it);
 		++it;
 	}
-	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin() ; it != toBeDeleted.end() ; it++)
+	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin() ; 
+	      it != toBeDeleted.end() ; it++)
 		delete *it;
 }
 
@@ -339,7 +362,8 @@ void Annotator::deleteSongsFromProject()
 			toBeDeleted.push_back(*it);
 		++it;
 	}
-	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin() ; it != toBeDeleted.end() ; it++)
+	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin() ; 
+	      it != toBeDeleted.end() ; it++)
 		delete *it;
 }
 
@@ -357,7 +381,17 @@ void Annotator::fileOpen()
   if(qFileName != QString::null)
   {
     mProjectFileName = std::string(qFileName.ascii());
-    CLAM::XMLStorage::Restore(mProject,mProjectFileName);
+    try{
+      CLAM::XMLStorage::Restore(mProject,mProjectFileName);
+    }
+    catch (CLAM::XmlStorageErr e)
+    {
+      
+      QMessageBox::warning(this,"Error Loading Project File", 
+			   constructFileError(mProjectFileName,e));
+      return;
+    }
+    
     initInterface();
     initProject();
   }
@@ -408,7 +442,16 @@ void  Annotator::loadSongList()
   if(qFileName != QString::null)
   {
     mProject.SetSongs(std::string(qFileName.ascii()));
-    CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
+    try{
+      CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
+    }
+    catch (CLAM::XmlStorageErr e)
+    {
+      QMessageBox::warning(this,"Error Loading Songs List File", 
+			   constructFileError(mProject.GetSongs(),e));
+      return;
+    }
+    
     //TODO: Does loading the song list affect all this
     initInterface();
     initProject();
@@ -422,7 +465,16 @@ void  Annotator::loadSchema()
   if(qFileName != QString::null)
   {
     mProject.SetSchema(std::string(qFileName.ascii()));
-    CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
+    try{
+      CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
+    }
+    catch (CLAM::XmlStorageErr e)
+    {
+      QMessageBox::warning(this,"Error Loading Schema File", 
+			   constructFileError(mProject.GetSchema(),e));
+      return;
+    }
+    
     //TODO: Does loading the schema affect all this
     initInterface();
     initProject();
@@ -436,7 +488,15 @@ void  Annotator::loadDescriptors()
   if(qFileName != QString::null)
   {
     mCurrentDescriptorsPoolFileName = (std::string(qFileName.ascii()));
-    CLAM::XMLStorage::Restore(*mpDescriptorPool,mCurrentDescriptorsPoolFileName);
+    try{
+      CLAM::XMLStorage::Restore(*mpDescriptorPool,mCurrentDescriptorsPoolFileName);
+    }
+    catch (CLAM::XmlStorageErr e)
+    {
+      QMessageBox::warning(this,"Error Loading Descriptors File", 
+			   constructFileError(mCurrentDescriptorsPoolFileName,e));
+      return;
+    }
     //TODO: Does loading the descriptors affect all this
     initInterface();
     initProject();
@@ -464,7 +524,8 @@ void  Annotator::saveDescriptors()
 			      QString("OK"),QString("Cancel")) == 0)
     {
       QString qFileName;
-      qFileName = QFileDialog::getSaveFileName(QString(mCurrentDescriptorsPoolFileName.c_str()),"*.pool");
+      qFileName = QFileDialog::getSaveFileName(QString(mCurrentDescriptorsPoolFileName.c_str()),
+					       "*.pool");
       if(qFileName != QString::null)
 	{
 	  mCurrentDescriptorsPoolFileName = (std::string(qFileName.ascii()));
@@ -718,7 +779,18 @@ void Annotator::loadDescriptorPool()
 
    //Load Descriptors Pool
   if(mCurrentDescriptorsPoolFileName!="")
-    CLAM::XMLStorage::Restore((*mpDescriptorPool),mCurrentDescriptorsPoolFileName);
+  {
+    try{
+      CLAM::XMLStorage::Restore((*mpDescriptorPool),mCurrentDescriptorsPoolFileName);
+    }
+    catch (CLAM::XmlStorageErr e)
+    {
+      QMessageBox::warning(this,"Error Loading Descriptors Pool File", 
+			   constructFileError(mCurrentDescriptorsPoolFileName,e));
+      return;
+    }
+  }
+    
   
 }
 
@@ -761,8 +833,6 @@ void Annotator::drawDescriptorsName()
   }
 }
 
-//TODO: mSongDescriptors has to be replaced by a list of Pools
-//TODO: Now I am operating as if I had only one song, have to have a map of pools??
 void Annotator::drawHLD(int songIndex, const std::string& descriptorName, const std::string& value, 
 			bool computed = true)
 {
@@ -788,7 +858,8 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName,
 
   std::vector<QStringList> qrestrictionStringslist;
   qrestrictionStringslist.push_back( qrestrictionStrings );
-  mDescriptorsTable->setItem(findHLDescriptorIndex(descriptorName),1,new ComboTableItem(mDescriptorsTable,qrestrictionStringslist,false));
+  mDescriptorsTable->setItem(findHLDescriptorIndex(descriptorName),1,
+			     new ComboTableItem(mDescriptorsTable,qrestrictionStringslist,false));
 }
 
 void Annotator::drawHLD(int songIndex, const std::string& descriptorName, float value, bool computed = true)
@@ -800,7 +871,8 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, float 
   QString qvalue = QString(s.str().c_str());
   if(!computed) qvalue = "?";
   mDescriptorsTable->setItem(findHLDescriptorIndex(descriptorName),1,
-			     new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent,qvalue));
+			     new RangeSelectionTableItem(mDescriptorsTable,
+							 TableItem::WhenCurrent,qvalue));
 }
 
 void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int value, bool computed = true)
@@ -812,7 +884,8 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int va
   QString qvalue = QString(s.str().c_str());
   if(!computed) qvalue = "?";
   mDescriptorsTable->setItem(findHLDescriptorIndex(descriptorName),1,
-			     new RangeSelectionTableItem(mDescriptorsTable,TableItem::WhenCurrent,qvalue));
+			     new RangeSelectionTableItem(mDescriptorsTable,
+							 TableItem::WhenCurrent,qvalue));
 
 }
 
@@ -1011,4 +1084,16 @@ void Annotator::playMarks(bool play)
     mpAudioPlot->SetData(mCurrentMarkedAudio);
   else
     mpAudioPlot->SetData(mCurrentAudio);
+}
+
+QString Annotator::constructFileError(const std::string& fileName,const CLAM::XmlStorageErr& e)
+{
+  std::string errorMessage = "XML Error:";
+  errorMessage += e.what();
+  errorMessage += "\n";
+  errorMessage += "Check that your file ";
+  errorMessage += mProjectFileName;
+  errorMessage += "\n";
+  errorMessage += "is well formed and folllows the specifications";
+  return QString(errorMessage.c_str());
 }

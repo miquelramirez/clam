@@ -27,6 +27,7 @@ namespace CLAM {
 	class QtAudioPlot;
 	class BPFEditor;
     };
+  class XmlStorageErr;
 };
 
 class QProgressDialog;
@@ -74,7 +75,7 @@ protected:
   bool event(QEvent* e);
 
 private:
-  //void value( const std::string & descriptor, std::string & descriptorValue ) const;
+
   bool somethingIsSelected() const;
   void initSpliters();
   void initPlay();
@@ -89,6 +90,9 @@ private:
   void drawDescriptorsValue( int, bool );
 
 //xamat
+  
+  QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
+
   void languageChange();
   void initAudioWidget();
   void initLLDescriptorsWidgets();
