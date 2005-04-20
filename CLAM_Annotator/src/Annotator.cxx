@@ -262,7 +262,6 @@ void Annotator::descriptorsTableChanged(int row, int column)
   std::string descriptorType = hldSchemaElement.GetType();
   std::string descriptorValue;
   descriptorValue = std::string( mDescriptorsTable->text(row, column).ascii() );
-  printf("new value=%s\n",descriptorValue.c_str());
   setHLDescriptorPoolFromString(descriptorName, descriptorType, descriptorValue);
   changeCurrentFile();
 }
@@ -835,7 +834,7 @@ void Annotator::drawDescriptorsName()
 }
 
 void Annotator::drawHLD(int songIndex, const std::string& descriptorName, const std::string& value, 
-			bool computed = true)
+			bool computed)
 {
   QString qvalue = QString(value.c_str());
   if(!computed) qvalue = "?";
@@ -844,7 +843,7 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, const 
 }
 
 void Annotator::drawHLD(int songIndex, const std::string& descriptorName, 
-			const CLAM_Annotator::RestrictedString& value, bool computed = true)
+			const CLAM_Annotator::RestrictedString& value, bool computed)
 {
   QString qvalue = QString(value.GetString().c_str());
   if(!computed) qvalue = "?";
@@ -863,16 +862,8 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName,
 			     new ComboTableItem(mDescriptorsTable,qrestrictionStringslist,false));
 }
 
-void Annotator::drawHLD(int songIndex, const std::string& descriptorName, float value, bool computed = true)
+void Annotator::drawHLD(int songIndex, const std::string& descriptorName, float value, Range<float> range, bool computed)
 {
-  /* TODO:RangeSelectionTableItem is harcoded between 0 and 10 and it only seems to work with ints */
-
-  // only for testing - remove //
-    Range<float> range;
-    range.SetMin(0.0f);
-    range.SetMax(10.0f);
-  //////////////////////////////
-
   std::ostringstream s;
   s<<value;
   QString qvalue = QString(s.str().c_str());
@@ -882,15 +873,8 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, float 
 							 TableItem::WhenCurrent,qvalue,range));
 }
 
-void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int value, bool computed = true)
+void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int value, Range<int> range, bool computed)
 {
-  /* TODO:RangeSelectionTableItem is harcoded between 0 and 10 and it only seems to work with ints */
-
-  // only for testing - remove //
-    Range<float> range;
-    range.SetMin(0.0f);
-    range.SetMax(10.0f);
-  ///////////////////////////////
   std::ostringstream s;
   s<<value;
   QString qvalue = QString(s.str().c_str());
@@ -919,13 +903,15 @@ void Annotator::drawDescriptorsValue( int index, bool computed = true)
       }
     if ((*it).GetType() == "Float")
       {
+	  Range<float> range = (*it).GetfRange();
 	drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-		GetReadPool<float>("Song",(*it).GetName()),computed);
+		GetReadPool<float>("Song",(*it).GetName()),range,computed);
       }
     if ((*it).GetType() == "Int")
       {
+	  Range<int> range = (*it).GetiRange();
 	drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-		GetReadPool<int>("Song",(*it).GetName()),computed);
+		GetReadPool<int>("Song",(*it).GetName()),range,computed);
       }
 
   }
