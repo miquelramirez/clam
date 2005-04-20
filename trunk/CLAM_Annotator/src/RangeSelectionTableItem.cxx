@@ -15,10 +15,8 @@ RangeSelectionTableItem::RangeSelectionTableItem( QTable * table,
 	( (RangeSelectionTableItem*) this)->mProgressBar = new QProgressBar( table->viewport() );
 	mFloatRange.SetMin(fRange.GetMin());
 	mFloatRange.SetMax(fRange.GetMax());
-	std::string cad(value.ascii());
-	printf("initial value=%s\n",cad.c_str());
-	mProgressBar->setProgress( int(value.toFloat()*10.0f));
-	mProgressBar->setTotalSteps( int(mFloatRange.GetMax()*10.0f)-int(mFloatRange.GetMin()*10.0f) );
+	mProgressBar->setTotalSteps( int(mFloatRange.GetMax()*10.0f)-int(mFloatRange.GetMin()*10.0f));
+	mProgressBar->setProgress( int(value.toFloat()*10.0f)-int(mFloatRange.GetMin()*10.0f));
 }
 
 RangeSelectionTableItem::RangeSelectionTableItem( QTable * table, 
@@ -32,8 +30,8 @@ RangeSelectionTableItem::RangeSelectionTableItem( QTable * table,
 	( (RangeSelectionTableItem*) this)->mProgressBar = new QProgressBar( table->viewport() );
 	mIntegerRange.SetMin(iRange.GetMin());
 	mIntegerRange.SetMax(iRange.GetMax());
-	mProgressBar->setProgress(value.toInt());
 	mProgressBar->setTotalSteps(mIntegerRange.GetMax()-mIntegerRange.GetMin());
+	mProgressBar->setProgress(value.toInt()-mIntegerRange.GetMin());
 }
 
 QWidget * RangeSelectionTableItem::createEditor() const
@@ -100,12 +98,12 @@ void RangeSelectionTableItem::setContentFromEditor( QWidget * w)
 	{
 	    if(mHasIntegerRange)
 	    {
-		mProgressBar->setProgress( mSlider->intValue() );
+		mProgressBar->setProgress( mSlider->intValue()-mIntegerRange.GetMin() );
 		setText( QString::number( mSlider->intValue()) );
 	    }
 	    else if(mHasFloatRange)
 	    {
-		mProgressBar->setProgress( int(mSlider->floatValue()*10.0f) );
+		mProgressBar->setProgress( int(mSlider->floatValue()*10.0f)-int(mFloatRange.GetMin()*10.0f) );
 		setText( QString::number(mSlider->floatValue(),'f',1) );
 	    }
 	}
