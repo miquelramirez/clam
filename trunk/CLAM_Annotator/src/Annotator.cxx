@@ -866,26 +866,37 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, float 
 {
   /* TODO:RangeSelectionTableItem is harcoded between 0 and 10 and it only seems to work with ints */
 
+  // only for testing - remove //
+    Range<float> range;
+    range.SetMin(-5.0);
+    range.SetMax(5.0);
+  //////////////////////////////
+
   std::ostringstream s;
   s<<value;
   QString qvalue = QString(s.str().c_str());
   if(!computed) qvalue = "?";
   mDescriptorsTable->setItem(findHLDescriptorIndex(descriptorName),1,
 			     new RangeSelectionTableItem(mDescriptorsTable,
-							 TableItem::WhenCurrent,qvalue));
+							 TableItem::WhenCurrent,qvalue,range));
 }
 
 void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int value, bool computed = true)
 {
   /* TODO:RangeSelectionTableItem is harcoded between 0 and 10 and it only seems to work with ints */
 
+  // only for testing - remove //
+    Range<float> range;
+    range.SetMin(-5.0);
+    range.SetMax(5.0);
+  ///////////////////////////////
   std::ostringstream s;
   s<<value;
   QString qvalue = QString(s.str().c_str());
   if(!computed) qvalue = "?";
   mDescriptorsTable->setItem(findHLDescriptorIndex(descriptorName),1,
 			     new RangeSelectionTableItem(mDescriptorsTable,
-							 TableItem::WhenCurrent,qvalue));
+							 TableItem::WhenCurrent,qvalue,range));
 
 }
 
