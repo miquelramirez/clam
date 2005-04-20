@@ -19,8 +19,4 @@ SliderWithValue::~SliderWithValue()
 }
 
 
-int SliderWithValue::value()
-{
-    return mSlider->value();
-}
 

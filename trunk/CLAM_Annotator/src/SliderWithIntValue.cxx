@@ -8,6 +8,17 @@ SliderWithIntValue::SliderWithIntValue(QWidget * parent, const char * name , WFl
     connect( mSlider, SIGNAL( valueChanged(int) ), mValue, SLOT( setNum(int) ) );
 }
 
+float SliderWithIntValue::floatValue()
+{
+    // empty body for convenience
+    return 0.0f;
+}
+
+int SliderWithIntValue::intValue()
+{
+    return mSlider->value();
+}
+
 void SliderWithIntValue::setValue(int value)
 {
     mSlider->setValue( value );

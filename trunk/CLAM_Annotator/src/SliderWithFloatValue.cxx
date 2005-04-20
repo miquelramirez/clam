@@ -8,10 +8,21 @@ SliderWithFloatValue::SliderWithFloatValue(QWidget * parent, const char * name, 
     connect( mSlider, SIGNAL( valueChanged(int) ), this, SLOT( setLabelValue(int) ) );
 }
 
+int SliderWithFloatValue::intValue()
+{
+    // empty body for convenience
+    return 0;
+}
+
+float SliderWithFloatValue::floatValue()
+{
+    return float(mSlider->value())*0.1f;
+}
+
 void SliderWithFloatValue::setValue(int value)
 {
-    mSlider->setValue( value*10 );
-    mValue->setText( QString::number(double(value),'f',1) );
+    mSlider->setValue( value );
+    mValue->setText( QString::number(double(value)*0.1,'f',1) );
 }
 
 void SliderWithFloatValue::setMaxValue(int value)
