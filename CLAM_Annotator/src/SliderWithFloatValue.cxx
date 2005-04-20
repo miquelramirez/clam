@@ -10,8 +10,8 @@ SliderWithFloatValue::SliderWithFloatValue(QWidget * parent, const char * name, 
 
 void SliderWithFloatValue::setValue(int value)
 {
-    mSlider->setValue( value );
-    mValue->setText( QString::number(double(value)*0.1,'f',1) );
+    mSlider->setValue( value*10 );
+    mValue->setText( QString::number(double(value),'f',1) );
 }
 
 void SliderWithFloatValue::setMaxValue(int value)
