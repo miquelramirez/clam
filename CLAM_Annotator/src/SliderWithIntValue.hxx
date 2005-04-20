@@ -9,6 +9,9 @@ class SliderWithIntValue : public SliderWithValue
 public:
     SliderWithIntValue(QWidget * parent = 0, const char * = 0, WFlags f = 0);
 
+    float floatValue();
+    
+    int intValue();
     void setValue(int);
 
     void setMaxValue(int);

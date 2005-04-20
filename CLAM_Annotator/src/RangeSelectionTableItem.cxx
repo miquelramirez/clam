@@ -13,10 +13,12 @@ RangeSelectionTableItem::RangeSelectionTableItem( QTable * table,
       mHasIntegerRange(false)
 {
 	( (RangeSelectionTableItem*) this)->mProgressBar = new QProgressBar( table->viewport() );
-	mProgressBar->setTotalSteps(10);
-	mProgressBar->setProgress(value.toInt());
 	mFloatRange.SetMin(fRange.GetMin());
 	mFloatRange.SetMax(fRange.GetMax());
+	std::string cad(value.ascii());
+	printf("initial value=%s\n",cad.c_str());
+	mProgressBar->setProgress( int(value.toFloat()*10.0f));
+	mProgressBar->setTotalSteps( int(mFloatRange.GetMax()*10.0f)-int(mFloatRange.GetMin()*10.0f) );
 }
 
 RangeSelectionTableItem::RangeSelectionTableItem( QTable * table, 
@@ -28,10 +30,10 @@ RangeSelectionTableItem::RangeSelectionTableItem( QTable * table,
       mHasIntegerRange(true)
 {
 	( (RangeSelectionTableItem*) this)->mProgressBar = new QProgressBar( table->viewport() );
-	mProgressBar->setTotalSteps(10);
-	mProgressBar->setProgress(value.toInt());
 	mIntegerRange.SetMin(iRange.GetMin());
 	mIntegerRange.SetMax(iRange.GetMax());
+	mProgressBar->setProgress(value.toInt());
+	mProgressBar->setTotalSteps(mIntegerRange.GetMax()-mIntegerRange.GetMin());
 }
 
 QWidget * RangeSelectionTableItem::createEditor() const
@@ -48,18 +50,26 @@ QWidget * RangeSelectionTableItem::createEditor() const
 	((RangeSelectionTableItem*) this)->mSlider = new SliderWithFloatValue( table()->viewport(), "slider");
 	mSlider->setMinValue(int(mFloatRange.GetMin()));
 	mSlider->setMaxValue(int(mFloatRange.GetMax()));
-	mSlider->setValue( text().toInt() );
+	mSlider->setValue( int(text().toFloat()*10.0f) );
     }
     return mSlider; 
 }
 
 void RangeSelectionTableItem::setText( const QString &s )
 {
-	if ( mSlider )
+    if ( mSlider )
+    {
+	if(mHasIntegerRange)
 	{
-		mSlider->setValue( s.toInt() );
+	    mSlider->setValue( s.toInt() );
 	}
-	QTableItem::setText( s );
+	else if(mHasFloatRange)
+	{
+	    float value = s.toFloat();
+	    mSlider->setValue( int(value*10.0f) );
+	}
+    }
+    QTableItem::setText( s );
 }
 
 void RangeSelectionTableItem::paint( QPainter * p, const QColorGroup & cg, const QRect & cr, bool selected)
@@ -88,8 +98,16 @@ void RangeSelectionTableItem::setContentFromEditor( QWidget * w)
 {
 	if (w->inherits("SliderWithValue"))
 	{
-		mProgressBar->setProgress( mSlider->value() );
-		setText( QString().setNum( mSlider->value() ));
+	    if(mHasIntegerRange)
+	    {
+		mProgressBar->setProgress( mSlider->intValue() );
+		setText( QString::number( mSlider->intValue()) );
+	    }
+	    else if(mHasFloatRange)
+	    {
+		mProgressBar->setProgress( int(mSlider->floatValue()*10.0f) );
+		setText( QString::number(mSlider->floatValue(),'f',1) );
+	    }
 	}
 	else
 	{
