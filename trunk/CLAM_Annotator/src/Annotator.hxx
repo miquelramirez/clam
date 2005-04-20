@@ -103,11 +103,13 @@ private:
   void deleteAllSongsFromProject();
   void drawLLDescriptors(int index);
   void drawHLD(int songIndex, const std::string& descriptorName, 
-	       	  const CLAM_Annotator::RestrictedString& value, bool computed);
+	       	  const CLAM_Annotator::RestrictedString& value, bool computed=true);
   void drawHLD(int songIndex, const std::string& descriptorName,const std::string& value, 
-	       bool computed );
-  void drawHLD(int songIndex, const std::string& descriptorName, float value, bool computed);
-  void drawHLD(int songIndex, const std::string& descriptorName, int value, bool computed);
+	       bool computed=true);
+  void drawHLD(int songIndex, const std::string& descriptorName, float value, 
+	       CLAM_Annotator::Range<float> renge, bool computed=true);
+  void drawHLD(int songIndex, const std::string& descriptorName, int value, 
+	       CLAM_Annotator::Range<int> range, bool computed=true);
  
   int findHLDescriptorIndex(const std::string& name);
   std::string getHLDescriptorNameFromIndex(int index);
