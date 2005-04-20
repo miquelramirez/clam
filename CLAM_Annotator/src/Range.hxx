@@ -3,6 +3,7 @@
 #define _Range_
 
 #include "Component.hxx"
+#include "XMLAdapter.hxx"
 
 namespace CLAM_Annotator{
 
