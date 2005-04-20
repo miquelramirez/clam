@@ -262,6 +262,7 @@ void Annotator::descriptorsTableChanged(int row, int column)
   std::string descriptorType = hldSchemaElement.GetType();
   std::string descriptorValue;
   descriptorValue = std::string( mDescriptorsTable->text(row, column).ascii() );
+  printf("new value=%s\n",descriptorValue.c_str());
   setHLDescriptorPoolFromString(descriptorName, descriptorType, descriptorValue);
   changeCurrentFile();
 }
@@ -868,8 +869,8 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, float 
 
   // only for testing - remove //
     Range<float> range;
-    range.SetMin(-5.0);
-    range.SetMax(5.0);
+    range.SetMin(0.0f);
+    range.SetMax(10.0f);
   //////////////////////////////
 
   std::ostringstream s;
@@ -887,8 +888,8 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int va
 
   // only for testing - remove //
     Range<float> range;
-    range.SetMin(-5.0);
-    range.SetMax(5.0);
+    range.SetMin(0.0f);
+    range.SetMax(10.0f);
   ///////////////////////////////
   std::ostringstream s;
   s<<value;
