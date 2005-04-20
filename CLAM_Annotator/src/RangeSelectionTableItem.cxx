@@ -1,20 +1,56 @@
 #include "RangeSelectionTableItem.hxx"
-#include <SliderWithValue.hxx>
+#include "SliderWithFloatValue.hxx"
+#include "SliderWithIntValue.hxx"
 #include <qprogressbar.h>
 #include <qstyle.h>
 
-RangeSelectionTableItem::RangeSelectionTableItem( QTable * table, EditType et, const QString & value ) : TableItem( table, et, value)
+RangeSelectionTableItem::RangeSelectionTableItem( QTable * table, 
+						  EditType et, 
+						  const QString & value, 
+						  Range<float> fRange) 
+    : TableItem( table, et, value),
+      mHasFloatRange(true),
+      mHasIntegerRange(false)
 {
 	( (RangeSelectionTableItem*) this)->mProgressBar = new QProgressBar( table->viewport() );
 	mProgressBar->setTotalSteps(10);
 	mProgressBar->setProgress(value.toInt());
+	mFloatRange.SetMin(fRange.GetMin());
+	mFloatRange.SetMax(fRange.GetMax());
+}
+
+RangeSelectionTableItem::RangeSelectionTableItem( QTable * table, 
+						  EditType et, 
+						  const QString & value, 
+						  Range<int> iRange) 
+    : TableItem( table, et, value),
+      mHasFloatRange(false),
+      mHasIntegerRange(true)
+{
+	( (RangeSelectionTableItem*) this)->mProgressBar = new QProgressBar( table->viewport() );
+	mProgressBar->setTotalSteps(10);
+	mProgressBar->setProgress(value.toInt());
+	mIntegerRange.SetMin(iRange.GetMin());
+	mIntegerRange.SetMax(iRange.GetMax());
 }
 
 QWidget * RangeSelectionTableItem::createEditor() const
 {
-	((RangeSelectionTableItem*) this)->mSlider = new SliderWithValue( table()->viewport(), "slider");
+    if(mHasIntegerRange)
+    {
+	((RangeSelectionTableItem*) this)->mSlider = new SliderWithIntValue( table()->viewport(), "slider");
+	mSlider->setMinValue(mIntegerRange.GetMin());
+	mSlider->setMaxValue(mIntegerRange.GetMax());
 	mSlider->setValue( text().toInt() );
-	return mSlider; 
+    }
+    else if(mHasFloatRange)
+    {
+	((RangeSelectionTableItem*) this)->mSlider = new SliderWithFloatValue( table()->viewport(), "slider");
+	mSlider->setMinValue(int(mFloatRange.GetMin()));
+	mSlider->setMaxValue(int(mFloatRange.GetMax()));
+	mSlider->setValue( text().toInt() );
+    }
+    return mSlider; 
 }
 
 void RangeSelectionTableItem::setText( const QString &s )
