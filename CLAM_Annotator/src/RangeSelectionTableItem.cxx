@@ -46,8 +46,8 @@ QWidget * RangeSelectionTableItem::createEditor() const
     else if(mHasFloatRange)
     {
 	((RangeSelectionTableItem*) this)->mSlider = new SliderWithFloatValue( table()->viewport(), "slider");
-	mSlider->setMinValue(int(mFloatRange.GetMin()));
-	mSlider->setMaxValue(int(mFloatRange.GetMax()));
+	mSlider->setMinValue(int(mFloatRange.GetMin()*10.0f));
+	mSlider->setMaxValue(int(mFloatRange.GetMax()*10.0f));
 	mSlider->setValue( int(text().toFloat()*10.0f) );
     }
     return mSlider; 

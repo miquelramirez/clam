@@ -27,12 +27,12 @@ void SliderWithFloatValue::setValue(int value)
 
 void SliderWithFloatValue::setMaxValue(int value)
 {
-    mSlider->setMaxValue(value*10);
+    mSlider->setMaxValue(value);
 }
 
 void SliderWithFloatValue::setMinValue(int value)
 {
-    mSlider->setMinValue(value*10);
+    mSlider->setMinValue(value);
 }
 
 void SliderWithFloatValue::setLabelValue(int value)
