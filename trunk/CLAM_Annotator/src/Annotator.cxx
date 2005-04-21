@@ -903,15 +903,13 @@ void Annotator::drawDescriptorsValue( int index, bool computed = true)
       }
     if ((*it).GetType() == "Float")
       {
-	  Range<float> range = (*it).GetfRange();
 	drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-		GetReadPool<float>("Song",(*it).GetName()),range,computed);
+		GetReadPool<float>("Song",(*it).GetName()),(*it).GetfRange(),computed);
       }
     if ((*it).GetType() == "Int")
       {
-	  Range<int> range = (*it).GetiRange();
 	drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-		GetReadPool<int>("Song",(*it).GetName()),range,computed);
+		GetReadPool<int>("Song",(*it).GetName()),(*it).GetiRange(),computed);
       }
 
   }
