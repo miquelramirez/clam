@@ -46,8 +46,8 @@ QWidget * RangeSelectionTableItem::createEditor() const
     else if(mHasFloatRange)
     {
 	((RangeSelectionTableItem*) this)->mSlider = new SliderWithFloatValue( table()->viewport(), "slider");
-	mSlider->setMinValue(int(mFloatRange.GetMin()*10.0f));
-	mSlider->setMaxValue(int(mFloatRange.GetMax()*10.0f));
+	mSlider->setMinValue(int(mFloatRange.GetMin())*10);
+	mSlider->setMaxValue(int(mFloatRange.GetMax())*10);
 	mSlider->setValue( int(text().toFloat()*10.0f) );
     }
     return mSlider; 
@@ -87,7 +87,7 @@ void RangeSelectionTableItem::paint( QPainter * p, const QColorGroup & cg, const
 		flags |= QStyle::Style_Enabled;
 	table()->style().drawPrimitive( QStyle::PE_ProgressBarChunk, p, mProgressBar->rect(), *newCG, flags );
 	table()->style().drawControl ( QStyle::CE_ProgressBarGroove, p, mProgressBar, table()->style().subRect (QStyle::SR_ProgressBarGroove, mProgressBar) , *newCG, flags );
-	newCG->setBrush(QColorGroup::Highlight,QColor( 0, 0, static_cast<int>( static_cast<float>( mProgressBar->progress() )/10.0*255.0 ) ) );
+	newCG->setBrush(QColorGroup::Highlight,QColor( 0, 0, static_cast<int>( static_cast<float>( mProgressBar->progress() )/float(mProgressBar->totalSteps())*255.0 ) ) );
 	table()->style().drawControl ( QStyle::CE_ProgressBarContents, p, mProgressBar, table()->style().subRect (QStyle::SR_ProgressBarContents, mProgressBar ), *newCG, flags );  
 
 }
