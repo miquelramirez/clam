@@ -10,7 +10,7 @@
 #include "Assert.hxx"
 
 #include "EType.hxx"
-#include "Descriptor.hxx"
+#include "AnnotatorDescriptor.hxx"
 #include "RestrictedString.hxx"
 #include "Range.hxx"
 

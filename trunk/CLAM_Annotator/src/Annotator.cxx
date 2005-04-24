@@ -630,31 +630,31 @@ void Annotator::drawLLDescriptors(int index)
 
 void Annotator::loadAudioFile(const char* filename)
 {
-	const CLAM::TSize readSize = 1024;
-	CLAM::AudioFile file;
-	file.OpenExisting(filename);
-	int nChannels = file.GetHeader().GetChannels();
-	std::vector<CLAM::Audio> audioFrameVector(nChannels);
-	int i;
-	for (i=0;i<nChannels;i++)
-	  audioFrameVector[i].SetSize(readSize);
-	CLAM::MultiChannelAudioFileReaderConfig cfg;
-	cfg.SetSourceFile( file );
-	CLAM::MultiChannelAudioFileReader reader(cfg);
-	reader.Start();
-	int beginSample=0;
-	mCurrentAudio.SetSize(0);
-	float samplingRate = mCurrentAudio.GetSampleRate();
-	while(reader.Do(audioFrameVector))
-	{
-	  mCurrentAudio.SetSize(mCurrentAudio.GetSize()+audioFrameVector[0].GetSize());
-	  mCurrentAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
-	  beginSample+=readSize;
-	  qApp->eventLoop()->processEvents( QEventLoop::AllEvents );
-	  mpProgressDialog->setProgress( beginSample/samplingRate*1000.0 );
-	  if (mpProgressDialog->wasCanceled()) break;
-	}
-	reader.Stop();
+  const CLAM::TSize readSize = 1024;
+  CLAM::AudioFile file;
+  file.OpenExisting(filename);
+  int nChannels = file.GetHeader().GetChannels();
+  std::vector<CLAM::Audio> audioFrameVector(nChannels);
+  int i;
+  for (i=0;i<nChannels;i++)
+    audioFrameVector[i].SetSize(readSize);
+  CLAM::MultiChannelAudioFileReaderConfig cfg;
+  cfg.SetSourceFile( file );
+  CLAM::MultiChannelAudioFileReader reader(cfg);
+  reader.Start();
+  int beginSample=0;
+  mCurrentAudio.SetSize(0);
+  float samplingRate = mCurrentAudio.GetSampleRate();
+  while(reader.Do(audioFrameVector))
+    {
+      mCurrentAudio.SetSize(mCurrentAudio.GetSize()+audioFrameVector[0].GetSize());
+      mCurrentAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
+      beginSample+=readSize;
+      qApp->eventLoop()->processEvents( QEventLoop::AllEvents );
+      mpProgressDialog->setProgress( beginSample/samplingRate*1000.0 );
+      if (mpProgressDialog->wasCanceled()) break;
+    }
+  reader.Stop();
 	
  
 }

@@ -10,57 +10,140 @@
 #include "AudioFile.hxx"
 #include "IndexArray.hxx"
 
+//For Descriptor Computation
+#include "Segment.hxx"
+#include "SegmentDescriptors.hxx"
+#include "DescriptorComputation.hxx"
+#include "AudioFile.hxx"
+#include "MultiChannelAudioFileReader.hxx"
+#include "MultiChannelAudioFileReaderConfig.hxx"
+#include "FFT.hxx"
+#include "Spectrum.hxx"
+#include "SpectrumConfig.hxx"
+
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
 void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, int frameSize);
 void FillSongNames(CLAM_Annotator::SongFiles& songFiles);
 int GetnSamples(const std::string& fileName);
-
-
 template <class T>
 CLAM_Annotator::Descriptor<T> MakeDescriptor(T value,const std::string& name);
+void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema);
+void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema);
+void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme);
+void CreatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song,
+		CLAM::DescriptionDataPool& pool);
+void OpenSoundFile(const std::string& filename, CLAM::Audio& audio);
+void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s);
+void ComputeSegmentD(const CLAM::Audio& audio,CLAM::SegmentDescriptors& segmentD);
+void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDataPool& pool);
 
 int main()
 {
   //Create and store Project
   CLAM_Annotator::Project myProject;
-  myProject.SetSongs("Songs.sl");
-  myProject.SetSchema("Schema.sc");
-  CLAM::XMLStorage::Dump(myProject,"Project","Project.pro");
+  myProject.SetSongs("../Samples/Songs.sl");
+  myProject.SetSchema("../Samples/Schema.sc");
+  CLAM::XMLStorage::Dump(myProject,"Project","../Samples/Project.pro");
 
   //Create and store SongList
   CLAM_Annotator::SongFiles songFiles;
   FillSongNames(songFiles);
 
-  CLAM::XMLStorage::Dump(songFiles,"SongFiles","Songs.sl");
+  CLAM::XMLStorage::Dump(songFiles,"SongFiles","../Samples/Songs.sl");
   
 
   //Create and store custom LLDSchema (basically a list of strings)
   CLAM_Annotator::LLDSchema testLLDSchema;
-  testLLDSchema.GetLLDNames().push_back("Pitch");
-  testLLDSchema.GetLLDNames().push_back("SpectralCentroid");
-  testLLDSchema.GetLLDNames().push_back("SpectralSpread");
-  testLLDSchema.GetLLDNames().push_back("SpectralDeviation");
-  testLLDSchema.GetLLDNames().push_back("SpectralTilt");
-  testLLDSchema.GetLLDNames().push_back("TemporalCentroid");
-  testLLDSchema.GetLLDNames().push_back("LogAttackTime");
-  testLLDSchema.GetLLDNames().push_back("Harmonicity");
-
+  CreateLLSchema(testLLDSchema);
+  
   CLAM::XMLStorage::Dump(testLLDSchema, "LLDSchema", "LLDSchema.llsc");
   
    //Create and store custom HLDSchema
   CLAM_Annotator::HLDSchema testHLDSchema;
+  CreateHLSchema(testHLDSchema);
   
+  CLAM::XMLStorage::Dump(testHLDSchema, "HLDSchema","HLDSchema.hlsc");
+
+  //Create and dump complete schema by adding LL and HL
+  CLAM_Annotator::Schema testSchema;
+  testSchema.SetLLDSchema(testLLDSchema);
+  testSchema.SetHLDSchema(testHLDSchema);
+  CLAM::XMLStorage::Dump(testSchema, "Schema","../Samples/Schema.sc");
+
+   //Load Schema
+  CLAM_Annotator::Schema loadedSchema;
+  CLAM::XMLStorage::Restore(loadedSchema, "../Samples/Schema.sc");
+
+  //Create Descriptors Pool Scheme and add attributes following loaded schema
+  CLAM::DescriptionScheme scheme;
+  CreatePoolScheme(loadedSchema, scheme);
+
+  //Now we create a Pool for every sound file we have
+  CLAM::DescriptionDataPool pool(scheme);
+
+  std::vector<CLAM_Annotator::Song>::iterator currentSong;
+  srand(time(NULL));
+  
+  for (currentSong = songFiles.GetFileNames().begin(); currentSong != songFiles.GetFileNames().end(); currentSong++)
+  {
+    std::cout<<"Computing Descriptors for file "<<(*currentSong).GetSoundFile()
+	     <<" Please wait..."<<std::endl;
+    CreatePool(loadedSchema, *currentSong, pool);
+    //Dump Descriptors Pool
+    std::string poolFile;
+    if((*currentSong).HasPoolFile()) poolFile = (*currentSong).GetPoolFile();
+    else poolFile = (*currentSong).GetSoundFile()+".pool";
+    CLAM::XMLStorage::Dump(pool, "DescriptorsPool", poolFile);
+    
+    //Now we load the Pool and validate it with the schema
+    CLAM::DescriptionDataPool loadedDescriptorPool(scheme);
+    CLAM::XMLStorage::Restore(loadedDescriptorPool,poolFile);
+    
+    if(loadedSchema.GetHLDSchema().Validate(loadedDescriptorPool))
+      std::cout<<"Descriptor Pool Validated With Schema"<<std::endl;
+    else
+      std::cout<<"Descriptor Pool Did Not Validate With Schema"<<std::endl;
+  }
+
+  return 0;
+
+}
+
+void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema)
+{
+  llschema.GetLLDNames().push_back("Mean");
+  llschema.GetLLDNames().push_back("GeometricMean");
+  llschema.GetLLDNames().push_back("Energy");
+  llschema.GetLLDNames().push_back("Centroid");
+  llschema.GetLLDNames().push_back("Moment2");
+  llschema.GetLLDNames().push_back("Moment3");
+  llschema.GetLLDNames().push_back("Moment4");
+  llschema.GetLLDNames().push_back("Moment5");
+  llschema.GetLLDNames().push_back("Moment6");
+  llschema.GetLLDNames().push_back("Flatness");
+  llschema.GetLLDNames().push_back("MagnitudeKurtosis");
+  llschema.GetLLDNames().push_back("MaxMagFreq"); 
+  llschema.GetLLDNames().push_back("LowFreqEnergyRelation"); 
+  llschema.GetLLDNames().push_back("Spread");
+  llschema.GetLLDNames().push_back("MagnitudeSkewness");
+  llschema.GetLLDNames().push_back("Rolloff"); 
+  llschema.GetLLDNames().push_back("Slope"); 
+  llschema.GetLLDNames().push_back("HighFrequencyContent");
+}
+
+void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema)
+{
   {
     CLAM_Annotator::HLDSchemaElement testHLDesc;
     testHLDesc.SetName("Artist");
     testHLDesc.SetType("String");
-    testHLDSchema.GetHLDs().push_back(testHLDesc);
+    hlschema.GetHLDs().push_back(testHLDesc);
   }
   {
     CLAM_Annotator::HLDSchemaElement testHLDesc;
     testHLDesc.SetName("Title");
     testHLDesc.SetType("String");
-    testHLDSchema.GetHLDs().push_back(testHLDesc);
+    hlschema.GetHLDs().push_back(testHLDesc);
   }
   {
     CLAM_Annotator::HLDSchemaElement testHLDesc;
@@ -73,7 +156,7 @@ int main()
     testHLDesc.GetRestrictionValues().push_back("Jazz");
     testHLDesc.GetRestrictionValues().push_back("Rhythm&Blues");
     testHLDesc.GetRestrictionValues().push_back("Folk");
-    testHLDSchema.GetHLDs().push_back(testHLDesc);
+    hlschema.GetHLDs().push_back(testHLDesc);
   }
   {
     CLAM_Annotator::HLDSchemaElement testHLDesc;
@@ -85,7 +168,7 @@ int main()
     range.SetMin(0.);
     range.SetMax(10.);
     testHLDesc.SetfRange(range);
-    testHLDSchema.GetHLDs().push_back(testHLDesc);
+    hlschema.GetHLDs().push_back(testHLDesc);
   }
   {
     CLAM_Annotator::HLDSchemaElement testHLDesc;
@@ -105,7 +188,7 @@ int main()
     testHLDesc.GetRestrictionValues().push_back("F#");
     testHLDesc.GetRestrictionValues().push_back("G");
     testHLDesc.GetRestrictionValues().push_back("G#");
-    testHLDSchema.GetHLDs().push_back(testHLDesc);
+    hlschema.GetHLDs().push_back(testHLDesc);
   }
   {
     CLAM_Annotator::HLDSchemaElement testHLDesc;
@@ -115,7 +198,7 @@ int main()
     testHLDesc.UpdateData();
     testHLDesc.GetRestrictionValues().push_back("Minor");
     testHLDesc.GetRestrictionValues().push_back("Major");
-    testHLDSchema.GetHLDs().push_back(testHLDesc);
+    hlschema.GetHLDs().push_back(testHLDesc);
   }
   {
     CLAM_Annotator::HLDSchemaElement testHLDesc;
@@ -127,7 +210,7 @@ int main()
     range.SetMin(0.);
     range.SetMax(10.);
     testHLDesc.SetfRange(range);
-    testHLDSchema.GetHLDs().push_back(testHLDesc);
+    hlschema.GetHLDs().push_back(testHLDesc);
   }
   {
     CLAM_Annotator::HLDSchemaElement testHLDesc;
@@ -139,148 +222,114 @@ int main()
     range.SetMin(0);
     range.SetMax(240);
     testHLDesc.SetiRange(range);
-    testHLDSchema.GetHLDs().push_back(testHLDesc);
+    hlschema.GetHLDs().push_back(testHLDesc);
   }
-  CLAM::XMLStorage::Dump(testHLDSchema, "HLDSchema","HLDSchema.hlsc");
+}
 
-  //Create and dump complete schema by adding LL and HL
-  CLAM_Annotator::Schema testSchema;
-  testSchema.SetLLDSchema(testLLDSchema);
-  testSchema.SetHLDSchema(testHLDSchema);
-  CLAM::XMLStorage::Dump(testSchema, "Schema","Schema.sc");
-
-   //Load Schema
-  CLAM_Annotator::Schema loadedSchema;
-  CLAM::XMLStorage::Restore(loadedSchema, "Schema.sc");
-
-  //Create Descriptors Pool Scheme and add attributes following loaded schema
-  CLAM::DescriptionScheme scheme;
-  
-  //First we start with HLD
-  std::list<CLAM_Annotator::HLDSchemaElement>& hlds = loadedSchema.GetHLDSchema().GetHLDs();
+void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme)
+{
+    //First we start with HLD
+  std::list<CLAM_Annotator::HLDSchemaElement>& hlds = schema.GetHLDSchema().GetHLDs();
   std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
   for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
   {
     if((*it2).GetType()=="Float")
     {
-      scheme.AddAttribute <float>("Song",(*it2).GetName());
+      poolScheme.AddAttribute <float>("Song",(*it2).GetName());
     }
     else if((*it2).GetType()=="Int")
     {
-      scheme.AddAttribute <int>("Song",(*it2).GetName());
+      poolScheme.AddAttribute <int>("Song",(*it2).GetName());
     }
     else if((*it2).GetType()=="RestrictedString")
     {
-      scheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
+      poolScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
     }
     else
     {
-      scheme.AddAttribute <std::string>("Song",(*it2).GetName());
+      poolScheme.AddAttribute <std::string>("Song",(*it2).GetName());
     }
   }
   //And now we go into LLD
   std::list<std::string>::iterator it;
-  std::list<std::string>& descriptorsNames = loadedSchema.GetLLDSchema().GetLLDNames();
+  std::list<std::string>& descriptorsNames = schema.GetLLDSchema().GetLLDNames();
   for(it = descriptorsNames.begin(); it != descriptorsNames.end(); it++)
   {
-    scheme.AddAttribute <CLAM::TData>("Frame", (*it));
+    poolScheme.AddAttribute <CLAM::TData>("Frame", (*it));
   }
   //finally we add segmentation marks
-  scheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
+  poolScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
 
-  //Now we create a Pool for every sound file we have
-  std::vector<CLAM_Annotator::Song>::iterator currentSong;
-  srand(time(NULL));
-  int frameSize = 1024; //for example
-  for (currentSong = songFiles.GetFileNames().begin(); currentSong != songFiles.GetFileNames().end(); currentSong++)
+}
+
+void CreatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song, 
+		CLAM::DescriptionDataPool& pool)
+{
+  
+//Create Descriptors Pool
+  pool.SetNumberOfContexts("Song",1);
+    
+  //Generate LLDs values
+  CLAM::Audio audio;
+  CLAM::SegmentDescriptors segmentD;
+  OpenSoundFile(song.GetSoundFile(),audio);
+  ComputeSegmentD(audio,segmentD);
+  SegmentD2Pool(segmentD,pool);
+
+  //Create segmentation marks
+  CLAM::IndexArray* segmentation = 
+    pool.GetWritePool<CLAM::IndexArray>("Song","Segments");
+  GenerateRandomSegmentationMarks(segmentation, GetnSamples(song.GetSoundFile()), 1024);
+
+  //Write HLD values
+  std::list<CLAM_Annotator::HLDSchemaElement>& hlds = schema.GetHLDSchema().GetHLDs();
+  std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
+  for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
     {
-
-      int nSamples = GetnSamples((*currentSong).GetSoundFile());
-      int nFrames = nSamples/frameSize;
-      //Create Descriptors Pool
-      CLAM::DescriptionDataPool pool(scheme);
-        
-      pool.SetNumberOfContexts("Frame",nFrames);
-      pool.SetNumberOfContexts("Song",1);
-      
-      int nDescriptors = descriptorsNames.size();
-      int i;
-  
-      //Write HLD values
-      for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
+      if((*it2).GetName()=="Artist")
 	{
-	  if((*it2).GetName()=="Artist")
-	    {
-	      std::string* value = pool.GetWritePool<std::string>("Song",(*it2).GetName());
-	      *value = "Ruibal";
-	    }
-	  else if((*it2).GetName()=="Title")
-	    {
-	      std::string* value = pool.GetWritePool<std::string>("Song",(*it2).GetName());
-	      *value = "Pension_Triana";
-	    }
-	  else if((*it2).GetName()=="Genre")
-	    {
-	      CLAM_Annotator::RestrictedString* value = 
-		pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
-	      *value = "Folk";
-	    }
-	  else if((*it2).GetName()=="Danceability")
-	    {
-	      float* value = pool.GetWritePool<float>("Song",(*it2).GetName());
-	      *value = 7.2;
-	    }
-	  else if((*it2).GetName()=="Key")
-	    {
-	      CLAM_Annotator::RestrictedString* value = 
-		pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
-	      *value = "C";
-	    }
-	  else if((*it2).GetName()=="Mode")
-	    {
-	      CLAM_Annotator::RestrictedString* value = 
-		pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
-	      *value = "Minor";
-	    }
-	  else if((*it2).GetName()=="DynamicComplexity")
-	    {
-	      float* value = pool.GetWritePool<float>("Song",(*it2).GetName());
-	      *value = 8.1;
-	    }
-	  else if((*it2).GetName()=="BPM")
-	    {
-	      int* value = pool.GetWritePool<int>("Song",(*it2).GetName());
-	      *value = 100;
-	    }
+	  std::string* value = pool.GetWritePool<std::string>("Song",(*it2).GetName());
+	  *value = "Ruibal";
 	}
-  
-      //Generate random LLDs values
-      //srand(time(NULL));
-      for (i = 0,it = descriptorsNames.begin(); i < nDescriptors; i++,it++)
+      else if((*it2).GetName()=="Title")
 	{
-	  CLAM::TData* values = pool.GetWritePool<CLAM::TData>("Frame",(*it));
-	  GenerateRandomDescriptorValues(values,nFrames);
+	  std::string* value = pool.GetWritePool<std::string>("Song",(*it2).GetName());
+	  *value = "Pension_Triana";
 	}
-      //Create segmentation marks
-      CLAM::IndexArray* segmentation = 
-	pool.GetWritePool<CLAM::IndexArray>("Song","Segments");
-      GenerateRandomSegmentationMarks(segmentation, nSamples, frameSize);
-      //Dump Descriptors Pool
-      std::string poolFile;
-      if((*currentSong).HasPoolFile()) poolFile = (*currentSong).GetPoolFile();
-      else poolFile = (*currentSong).GetSoundFile()+".pool";
-      CLAM::XMLStorage::Dump(pool, "DescriptorsPool", poolFile);
-
-      //Now we are going to load the Pool and validate it with the schema
-      CLAM::DescriptionDataPool loadedDescriptorPool(scheme);
-      CLAM::XMLStorage::Restore(loadedDescriptorPool,poolFile);
-      
-      if(loadedSchema.GetHLDSchema().Validate(loadedDescriptorPool))
-	std::cout<<"Descriptor Pool Validated With Schema"<<std::endl;
-      else
-	std::cout<<"Descriptor Pool Did Not Validate With Schema"<<std::endl;
+      else if((*it2).GetName()=="Genre")
+	{
+	  CLAM_Annotator::RestrictedString* value = 
+	    pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
+	  *value = "Folk";
+	}
+      else if((*it2).GetName()=="Danceability")
+	{
+	  float* value = pool.GetWritePool<float>("Song",(*it2).GetName());
+	  *value = 7.2;
+	}
+      else if((*it2).GetName()=="Key")
+	{
+	  CLAM_Annotator::RestrictedString* value = 
+	    pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
+	  *value = "C";
+	}
+      else if((*it2).GetName()=="Mode")
+	{
+	  CLAM_Annotator::RestrictedString* value = 
+	    pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
+	  *value = "Minor";
+	}
+      else if((*it2).GetName()=="DynamicComplexity")
+	{
+	  float* value = pool.GetWritePool<float>("Song",(*it2).GetName());
+	  *value = 8.1;
+	}
+      else if((*it2).GetName()=="BPM")
+	{
+	  int* value = pool.GetWritePool<int>("Song",(*it2).GetName());
+	  *value = 100;
+	}
     }
-  return 0;
 
 }
 
@@ -305,43 +354,9 @@ void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
 void FillSongNames(CLAM_Annotator::SongFiles& songFiles)
 {
   CLAM_Annotator::Song song;
-  song.SetSoundFile("SongsTest/07276EC58D0000000000E8_02.mp3");
+  song.SetSoundFile("../Samples/SongsTest/07276EC58D0000000000E8_02.mp3");
   songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/07276EC58D0000000000E8_03.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/07276EC58D0000000000E8_04.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/07276EC58D0000000000E8_05.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/07276EC58D0000000000E8_06.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/07276EC58D0000000000E8_07.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/07FAB6C09A0000000000C7_01.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/07FAB6C09A0000000000C7_07.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/081290D29F00000000009A_03.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/081290D29F00000000009A_07.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/08785F4E190000000000A7_05.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/08785F4E190000000000A7_06.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/08B64B245C000000000072_01.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/08B64B245C000000000072_02.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/08B64B245C000000000072_03.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/08B64B245C000000000072_04.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/08B64B245C000000000072_05.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/08B64B245C000000000072_06.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("SongsTest/08B64B245C000000000072_07.mp3");
+  song.SetSoundFile("../Samples/SongsTest/07276EC58D0000000000E8_03.mp3");
   songFiles.GetFileNames().push_back(song);
 }
 
@@ -366,4 +381,205 @@ void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples
       (*segmentation).AddElem(index);
     }
 
+}
+
+void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDataPool& pool)
+{
+  int nFrames = segmentD.GetFramesD().Size();
+  pool.SetNumberOfContexts("Frame",nFrames);
+
+  CLAM::Array<CLAM::FrameDescriptors>& frameD = segmentD.GetFramesD();
+  CLAM::TData* values;
+  int i;
+  values = pool.GetWritePool<CLAM::TData>("Frame","Mean");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetMean();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","GeometricMean");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetGeometricMean();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Energy");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetEnergy();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Centroid");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetCentroid();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Moment2");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetMoment2();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Moment3");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetMoment3();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Moment4");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetMoment4();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Moment5");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetMoment5();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Moment6");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetMoment6();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Flatness");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetFlatness();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","MagnitudeKurtosis");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetMagnitudeKurtosis();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","MaxMagFreq");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetMaxMagFreq();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","LowFreqEnergyRelation");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetLowFreqEnergyRelation();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Spread");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetSpread();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","MagnitudeSkewness");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetMagnitudeSkewness();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Rolloff");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetRolloff();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","Slope");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetSlope();
+
+  }
+  values = pool.GetWritePool<CLAM::TData>("Frame","HighFrequencyContent");
+  for(i=0; i<nFrames; i++)
+  {
+    values[i]=frameD[i].GetSpectrumD().GetHighFrequencyContent();
+
+  }
+}
+
+void ComputeSegmentD(const CLAM::Audio& audio,CLAM::SegmentDescriptors& segmentDescriptors)
+{
+  CLAM::Segment segment;
+  FFTAnalysis(audio, segment);
+  
+  segmentDescriptors.AddAll();
+  segmentDescriptors.UpdateData();
+  
+  CLAM::SpectralDescriptors specProto;
+  specProto.AddAll();
+  specProto.UpdateData();
+
+  CLAM::FrameDescriptors frameProto;
+  frameProto.AddSpectrumD();
+  frameProto.UpdateData();
+  
+  frameProto.GetSpectrumD().SetPrototype(specProto);
+		
+  segmentDescriptors.SetFramePrototype(frameProto,segment.GetnFrames());
+  segmentDescriptors.SetpSegment(&segment);
+		
+  CLAM::DescriptorComputation processing;
+  processing.Do(segmentDescriptors);
+		
+		
+}
+
+void OpenSoundFile(const std::string& filename, CLAM::Audio& audio)
+{
+  const CLAM::TSize readSize = 1024;
+  CLAM::AudioFile file;
+  file.OpenExisting(filename);
+  int nChannels = file.GetHeader().GetChannels();
+  std::vector<CLAM::Audio> audioFrameVector(nChannels);
+  int i;
+  for (i=0;i<nChannels;i++)
+    audioFrameVector[i].SetSize(readSize);
+  CLAM::MultiChannelAudioFileReaderConfig cfg;
+  cfg.SetSourceFile( file );
+  CLAM::MultiChannelAudioFileReader reader(cfg);
+  reader.Start();
+  int beginSample=0;
+  audio.SetSize(0);
+  while(reader.Do(audioFrameVector))
+    {
+      audio.SetSize(audio.GetSize()+audioFrameVector[0].GetSize());
+      audio.SetAudioChunk(beginSample,audioFrameVector[0]);
+      beginSample+=readSize;
+    }
+  reader.Stop();
+
+
+}
+
+void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s)
+{
+  int frameSize = 1023;
+  CLAM::FFTConfig cfg;
+  cfg.SetAudioSize(frameSize);
+  CLAM::FFT fft(cfg);
+  fft.Start();
+  CLAM::SpectrumConfig spcfg;
+  spcfg.SetSize(512);
+  int i;
+  int audioSize = audio.GetSize();
+  
+  for (i=0; i< audioSize; i+=frameSize)
+  {
+    CLAM::Audio audioFrame;
+    audio.GetAudioChunk(i, i+frameSize, audioFrame);
+
+    CLAM::Spectrum spec(spcfg);
+    fft.Do(audioFrame, spec);
+
+    CLAM::Frame tmpFrame;
+    tmpFrame.AddSpectrum();
+    tmpFrame.UpdateData();
+    tmpFrame.SetSpectrum(spec);
+
+    s.AddFrame(tmpFrame);
+  }
 }
