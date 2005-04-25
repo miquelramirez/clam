@@ -10,6 +10,8 @@ namespace CLAM
     {
 	MIDIMelodyPlayer::MIDIMelodyPlayer()
 	    : mMIDIDevice(""),
+	      mEnqueuedDevice(""),
+	      mHasEnqueuedDevice(false),
 	      mMIDIProgram(0),
 	      mDuration(TData(0.0))
 	{
@@ -22,7 +24,15 @@ namespace CLAM
 
 	void MIDIMelodyPlayer::SetMIDIDevice(const std::string& device)
 	{
-	    mMIDIDevice = "default:"+device;
+	    if(!_thread.IsRunning())
+	    {
+		mMIDIDevice = "default:"+device;
+	    }
+	    else
+	    {
+		mEnqueuedDevice = "default:"+device;
+		mHasEnqueuedDevice = true;
+	    }
 	}
 
 	void MIDIMelodyPlayer::SetMIDIProgram(const int& program)
@@ -140,6 +150,12 @@ namespace CLAM
 
 	    if(!IsPaused()) _time.SetBegin(GetBeginTime());
 
+	    if(mHasEnqueuedDevice)
+	    {
+		mMIDIDevice = mEnqueuedDevice;
+		mHasEnqueuedDevice = false;
+	    }
+	       
 	}
 
 	unsigned MIDIMelodyPlayer::GetTime()
