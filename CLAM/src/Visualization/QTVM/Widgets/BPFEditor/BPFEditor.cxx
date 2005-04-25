@@ -5,6 +5,7 @@
 #include "Ruler.hxx"
 #include "BPFEditorController.hxx"
 #include "BPFEditorDisplaySurface.hxx"
+#include "QtBPFPlayer.hxx"
 #include "BPFEditor.hxx"
 
 namespace CLAM
@@ -38,9 +39,10 @@ namespace CLAM
 	    setGeometry(x,y,w,h);
 	}
 
-	void BPFEditor::BPFEditor::SetData(const BPF& bpf)
+	void BPFEditor::BPFEditor::SetData(const BPF& bpf, const TData& dur)
 	{
 	    mController->SetData(bpf);
+	    if(_player) ((QtBPFPlayer*)_player)->SetData(bpf,dur);
 	}
 
 	BPF& BPFEditor::GetData()
@@ -48,6 +50,17 @@ namespace CLAM
 	    return mController->GetData();
 	}
 
+	Melody& BPFEditor::GetMelody() 
+	{
+	    if(_player) mMelody = ((QtBPFPlayer*)_player)->GetMelody();
+	    return mMelody;
+	}
+
+	MIDIMelody& BPFEditor::GetMIDIMelody() 
+	{
+	    if(_player) mMIDIMelody = ((QtBPFPlayer*)_player)->GetMIDIMelody();
+	    return mMIDIMelody;;
+	}
 
 	void BPFEditor::SetXRange(const double& min, const double& max)
 	{
@@ -159,12 +172,24 @@ namespace CLAM
 
 	    QFontMetrics fm(labelFont);
 
-	    mXRuler = new Ruler(this,CLAM::VM::Bottom);
-	    mXRuler->setFixedHeight(fm.height()+30);
+	    int middle_panel_height=0;
 	    
+	    mXRuler = new Ruler(this,CLAM::VM::Bottom);
+	    if(mEFlags & CLAM::VM::HasPlayer)
+	    {
+		mXRuler->setFixedHeight(fm.height()+10);
+		_player = new QtBPFPlayer(this);
+		middle_panel_height = mXRuler->height()+_player->height();
+	    }
+	    else
+	    {
+		mXRuler->setFixedHeight(fm.height()+30);
+		middle_panel_height = mXRuler->height();
+	    }
+
 	    labelsContainer = new QFrame(this);
 	    labelsContainer->setFixedWidth(mYRuler->width());
-	    labelsContainer->setFixedHeight(mXRuler->height());
+	    labelsContainer->setFixedHeight(middle_panel_height);
 
 	    labelFont.setFamily("fixed");
 	    labelFont.setPointSize(10);
@@ -204,7 +229,10 @@ namespace CLAM
 				     fixed_y_label->height());
 
 	    bottomLayout->addWidget(labelsContainer);
-	    bottomLayout->addWidget(mXRuler);
+
+	    QBoxLayout* middlePanel = new QVBoxLayout(bottomLayout);
+	    middlePanel->addWidget(mXRuler);
+	    if(_player) middlePanel->addWidget(_player);
 
 	    if((mEFlags & CLAM::VM::HasVerticalScroll) 
 	       && !(mEFlags & CLAM::VM::AllowZoomByMouse))
@@ -221,6 +249,14 @@ namespace CLAM
 	    connect(mController,SIGNAL(yValueChanged(int, float)),this,SIGNAL(yValueChanged(int, float)));
 
 	    connect(mController,SIGNAL(selectedXPos(double)),this,SIGNAL(selectedXPos(double)));
+
+	    if(_player)
+	    {
+		connect(mController,SIGNAL(xValueChanged(int, float)),((QtBPFPlayer*)_player),SLOT(updateNoteDuration(int, float)));
+		connect(mController,SIGNAL(yValueChanged(int, float)),((QtBPFPlayer*)_player),SLOT(updateNotePitch(int, float)));
+		connect(mController,SIGNAL(elementAdded(int, float, float)),((QtBPFPlayer*)_player),SLOT(addNote(int, float, float)));
+		connect(mController,SIGNAL(elementRemoved(int)),((QtBPFPlayer*)_player),SLOT(removeNote(int)));
+	    }
 	    
 	    // set color scheme
 	    WhiteOverBlack();
@@ -270,6 +306,7 @@ namespace CLAM
 	    mDisplaySurface->SetBackgroundColor(0.0f,0.0f,0.0f);
 
 	    if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(QColor(0,0,0));
+	    if(_player) ((QtBPFPlayer*)_player)->SetColorMap(CLAM::VM::BlackBackground);
 	    
 	    mColorScheme = EWhiteOverBlack;
 	}
@@ -302,6 +339,7 @@ namespace CLAM
 	    mDisplaySurface->SetBackgroundColor(1.0f,1.0f,1.0f);
 	    
 	    if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(QColor(255,255,255));
+	    if(_player) ((QtBPFPlayer*)_player)->SetColorMap(CLAM::VM::WhiteBackground);
 
 	    mColorScheme = EBlackOverWhite;
 	}
@@ -365,7 +403,14 @@ namespace CLAM
 	    mVScroll = new VScrollGroup(this);
 	    topLayout->addWidget(mVScroll);
 	    bottomRightHole = new QFrame(this);
-	    bottomRightHole->setFixedSize(mVScroll->width(),mXRuler->height());
+	    if(_player)
+	    {
+		bottomRightHole->setFixedSize(mVScroll->width(),mXRuler->height()+_player->height());
+	    }
+	    else
+	    {
+		bottomRightHole->setFixedSize(mVScroll->width(),mXRuler->height());
+	    }
 	    bottomLayout->addWidget(bottomRightHole);
 
 	    // connections
@@ -396,6 +441,29 @@ namespace CLAM
 	    {
 		BlackOverWhite();
 	    }
+
+	}
+
+	void BPFEditor::setRegionTime(MediaTime time)
+	{
+	    if(_player) ((QtBPFPlayer*)_player)->SetPlaySegment(time);
+	}
+
+	void BPFEditor::setRegionTime(float begin, float end)
+	{
+	    if(_player)
+	    {
+		MediaTime time;
+		time.SetBegin(TData(begin));
+		time.SetEnd(TData(end));
+		((QtBPFPlayer*)_player)->SetPlaySegment(time);
+	    }
+	}
+
+	void BPFEditor::stopPendingTasks()
+	{
+	    if(!_player) return;
+	    ((QtBPFPlayer*)_player)->StopThread();
 	}
 
     }

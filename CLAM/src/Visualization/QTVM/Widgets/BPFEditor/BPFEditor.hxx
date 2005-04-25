@@ -3,6 +3,10 @@
 
 #include <string>
 #include <qwidget.h>
+#include "Melody.hxx"
+#include "MIDIMelody.hxx"
+#include "MediaTime.hxx"
+#include "PlayablePlot.hxx"
 #include "BPFEditorController.hxx"
 
 class QLabel;
@@ -17,7 +21,7 @@ namespace CLAM
 	class BPFEditorDisplaySurface;
 	class VScrollGroup;
 
-	class BPFEditor : public QWidget
+	class BPFEditor : public QWidget, public PlayablePlot
 	{
 	    Q_OBJECT
 
@@ -28,11 +32,14 @@ namespace CLAM
 	    void Label(const std::string& label);
 	    void Geometry(int x, int y, int w, int h);
 
-	    void SetData(const BPF& bpf);
+	    void SetData(const BPF& bpf, const TData& dur=TData(1.0));
 	    BPF& GetData();
 
 	    void SetXRange(const double& min, const double& max);
 	    void SetYRange(const double& min, const double& max);
+
+	    Melody& GetMelody();
+	    MIDIMelody& GetMIDIMelody();
 	    
 	    void Show();
 	    void Hide();
@@ -48,6 +55,11 @@ namespace CLAM
 	    void selectPointFromXCoord(double);
 
 	    void switchColors();
+
+	    void setRegionTime(MediaTime);
+	    void setRegionTime(float, float);
+
+	    void stopPendingTasks();
 
 	protected:
 	    void keyPressEvent(QKeyEvent* e);
@@ -74,6 +86,9 @@ namespace CLAM
 	    VScrollGroup *mVScroll;
 	    QBoxLayout *mainLayout, *topLayout, *bottomLayout;
 	    QFrame *bottomRightHole;
+
+	    Melody mMelody;
+	    MIDIMelody mMIDIMelody;
 
 	    bool mWhiteOverBlackScheme;
 
