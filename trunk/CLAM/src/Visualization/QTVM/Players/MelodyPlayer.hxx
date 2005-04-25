@@ -14,7 +14,7 @@
 	     MelodyPlayer();
 	     ~MelodyPlayer();
 
-	     void SetData(const Melody& melody);
+	     void SetData(const Melody& melody, const TData& dur);
 	     Melody& GetMelody();
 
 	     void UpdateNotePitch(const TIndex& index, const TData& newPitch);
@@ -29,6 +29,7 @@
 	 private:
 	     Melody mMelody;
 	     TData mSampleRate;
+	     TData mDuration;
 
 	     TIndex GetNoteIndex(bool first=true);
 	    

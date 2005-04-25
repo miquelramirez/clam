@@ -18,7 +18,7 @@ namespace CLAM
 	    void SetMIDIDevice(const std::string& device);
 	    void SetMIDIProgram(const int& program);
 	    
-	    void SetData(const MIDIMelody& melody, const std::string& device, const int& program);
+	    void SetData(const MIDIMelody& melody, const std::string& device, const int& program, const TData& dur);
 	    MIDIMelody& GetMIDIMelody();
 
 	    void UpdateNoteKey(const TIndex& index, const int& newKey);
@@ -34,7 +34,7 @@ namespace CLAM
 	    MIDIMelody mMIDIMelody;
 	    std::string mMIDIDevice;
 	    int mMIDIProgram;
-	    int mNumberOfNotes;
+	    TData mDuration;
 
 	    unsigned GetTime();
 	    TIndex GetNoteIndex(bool first=true);

@@ -10,7 +10,8 @@ namespace CLAM
     {
 	MIDIMelodyPlayer::MIDIMelodyPlayer()
 	    : mMIDIDevice(""),
-	      mMIDIProgram(0)
+	      mMIDIProgram(0),
+	      mDuration(TData(0.0))
 	{
 	    _thread.SetThreadCode(makeMemberFunctor0((*this), MIDIMelodyPlayer, thread_code));
 	}
@@ -29,17 +30,25 @@ namespace CLAM
 	    mMIDIProgram = program;
 	}
 		
-	void MIDIMelodyPlayer::SetData(const MIDIMelody& melody, const std::string& device, const int& program)
+	void MIDIMelodyPlayer::SetData(const MIDIMelody& melody, 
+				       const std::string& device, 
+				       const int& program, 
+				       const TData& dur)
 	{
 	    mMIDIMelody = melody;
 	    
 	    mMIDIDevice = "default:"+device;
 	    mMIDIProgram = program;
 
-	    MediaTime time;
-	    time.SetBegin(TData(0.0));
-	    time.SetEnd(mMIDIMelody.GetNoteArray()[mMIDIMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
-	    SetBounds(time);
+	    mDuration = dur;
+
+	    if(mMIDIMelody.GetNumberOfNotes())
+	    {
+		MediaTime time;
+		time.SetBegin(TData(0.0));
+		time.SetEnd(mMIDIMelody.GetNoteArray()[mMIDIMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
+		SetBounds(time);
+	    }
 	    
 	    HaveData(true);
 	}
@@ -188,17 +197,25 @@ namespace CLAM
 	    MIDINote midiNote;
 	    MediaTime time;
 	    time.SetBegin(beginTime);
-	    if(index >= mMIDIMelody.GetNumberOfNotes())
+	    if(mMIDIMelody.GetNumberOfNotes())
 	    {
-		time.SetEnd(mMIDIMelody.GetNoteArray()[mMIDIMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
-		addElem = true;
+		if(index >= mMIDIMelody.GetNumberOfNotes())
+		{
+		    time.SetEnd(mMIDIMelody.GetNoteArray()[mMIDIMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
+		    addElem = true;
+		}
+		else
+		{
+		    time.SetEnd(mMIDIMelody.GetNoteArray()[index].GetTime().GetBegin());
+		}
 	    }
 	    else
 	    {
-		time.SetEnd(mMIDIMelody.GetNoteArray()[index].GetTime().GetBegin());
+		time.SetEnd(mDuration);
+		_time.SetEnd(time.GetEnd());
 	    }
 
-	    if(index > 0)
+	    if(index > 0 && mMIDIMelody.GetNumberOfNotes())
 	    {
 		 if(addElem)
 		 {
@@ -214,7 +231,7 @@ namespace CLAM
 	    midiNote.SetVelocity(120);
 	    midiNote.SetTime(time);
 
-	    if(addElem)
+	    if(addElem || !mMIDIMelody.GetNumberOfNotes())
 	    {
 		mMIDIMelody.GetNoteArray().AddElem(midiNote);
 	    }
