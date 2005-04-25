@@ -22,7 +22,9 @@ namespace CLAM
 	    QtBPFPlayer(QWidget* parent=0);
 	    ~QtBPFPlayer();
 
-	    void SetData(const BPF& bpf, const TData& dur);
+	    void SetData(const BPF& bpf);
+
+	    void SetDuration(const TData& dur);
 
 	    Melody& GetMelody();
 	    MIDIMelody& GetMIDIMelody();
