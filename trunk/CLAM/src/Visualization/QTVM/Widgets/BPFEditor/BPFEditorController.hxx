@@ -15,7 +15,8 @@ namespace CLAM
     namespace VM
     {
 	enum EFlags { AllowVerticalEdition=0x01, AllowHorizontalEdition=0x02, AllowInsert=0x04, AllowRemove=0x08, 
-		      AllowZoomByMouse=0x10, HasVerticalScroll=0x20, HasHorizontalScroll=0x40, AllowAll=0x7f };
+		      AllowZoomByMouse=0x10, HasVerticalScroll=0x20, HasHorizontalScroll=0x40, HasPlayer=0x80,
+		      AllowAll=0xff };
 
 	class BPFEditorController : public QObject
 	{
@@ -129,6 +130,9 @@ namespace CLAM
 	    void vZoomRatio(int);
 	    void vScrollMaxValue(int);
 	    void vScrollValue(int);
+
+	    void elementAdded(int, float, float);
+	    void elementRemoved(int);
 
 	public slots:
 	    void vZoomIn();

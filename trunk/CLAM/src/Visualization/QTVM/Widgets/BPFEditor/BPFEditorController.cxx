@@ -183,13 +183,15 @@ namespace CLAM
 			{
 			    if(!mHit && mKeyInsertPressed)
 			    {
-				mData.Insert(mCurrentPoint.GetX(),mCurrentPoint.GetY());
+				TIndex index = mData.Insert(mCurrentPoint.GetX(),mCurrentPoint.GetY());
+				emit elementAdded(int(index),float(mCurrentPoint.GetX()), float(mCurrentPoint.GetY()));
 				emit requestRefresh();
 			    }
 
 			    if(mHit && mKeyDeletePressed)
 			    {
 				mData.DeleteIndex(mCurrentIndex);
+				emit elementRemoved(int(mCurrentIndex));
 				emit requestRefresh();
 			    }
 			}
