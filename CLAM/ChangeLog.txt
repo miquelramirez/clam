@@ -1,3 +1,9 @@
+  * Audio file I/O facilities:
+  	** Bug fixed that prevented XING headers from being used to compute
+	duration
+	** Bug fixed in conversion from milliseconds to seconds
+	** Feature addition: now the # of samples is computed for Vorbis
+	bitstreams
   * Memory leak review:
      ** FFT internal buffer was not freed on destruction
   * XML Storage Error Handling:
