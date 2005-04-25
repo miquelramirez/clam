@@ -9,7 +9,8 @@ namespace CLAM
     namespace VM
     {
 	MelodyPlayer::MelodyPlayer()
-	    : mSampleRate(TData(44100.0))
+	    : mSampleRate(TData(44100.0)),
+	      mDuration(TData(0.0))
 	{
 	    _thread.SetThreadCode(makeMemberFunctor0((*this), MelodyPlayer, thread_code));
 	}
@@ -18,15 +19,20 @@ namespace CLAM
 	{
 	}
 		
-	void MelodyPlayer::SetData(const Melody& melody)
+	void MelodyPlayer::SetData(const Melody& melody, const TData& dur)
 	{
 	    mMelody = melody;
 
-	    MediaTime time;
-	    time.SetBegin(TData(0.0));
-	    time.SetEnd(mMelody.GetNoteArray()[mMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
-	    SetBounds(time);
-	    
+	    mDuration = dur;
+
+	    if(mMelody.GetNumberOfNotes())
+	    {
+		MediaTime time;
+		time.SetBegin(TData(0.0));
+		time.SetEnd(mMelody.GetNoteArray()[mMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
+		SetBounds(time);
+	    }
+
 	    HaveData(true);
 	}
 
@@ -143,17 +149,25 @@ namespace CLAM
 	    MediaTime time;
 	    time.SetBegin(beginTime);
 
-	    if(index >= mMelody.GetNumberOfNotes())
+	    if(mMelody.GetNumberOfNotes())
 	    {
-		time.SetEnd(mMelody.GetNoteArray()[mMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
-		addElem = true;
+		if(index >= mMelody.GetNumberOfNotes())
+		{
+		    time.SetEnd(mMelody.GetNoteArray()[mMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
+		    addElem = true;
+		}
+		else
+		{
+		    time.SetEnd(mMelody.GetNoteArray()[index].GetTime().GetBegin());
+		}
 	    }
 	    else
 	    {
-		time.SetEnd(mMelody.GetNoteArray()[index].GetTime().GetBegin());
+		time.SetEnd(mDuration);
+		_time.SetEnd(time.GetEnd());
 	    }
 
-	    if(index > 0)
+	    if(index > 0 && mMelody.GetNumberOfNotes())
 	    {
 		 if(addElem)
 		 {
@@ -164,10 +178,11 @@ namespace CLAM
 		     mMelody.GetNoteArray()[index-1].GetTime().SetEnd(beginTime);
 		 }
 	    }
+	    
 	    note.SetFundFreq(pitch);
 	    note.SetTime(time);
 
-	    if(addElem)
+	    if(addElem || !mMelody.GetNumberOfNotes())
 	    {
 		mMelody.GetNoteArray().AddElem(note);
 	    }
