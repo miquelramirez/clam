@@ -33,11 +33,15 @@ namespace CLAM
 	    StopThread();
 	}
 
-	void QtBPFPlayer::SetData(const BPF& bpf, const TData& dur)
+	void QtBPFPlayer::SetData(const BPF& bpf)
 	{
 	    mOwnedBPF = bpf;
-	    mOwnedDuration = dur;
 	    mThread.Start();
+	}
+
+	void QtBPFPlayer::SetDuration(const TData& dur)
+	{
+	    mOwnedDuration = dur;
 	}
 
 	Melody& QtBPFPlayer::GetMelody()
