@@ -1,0 +1,1 @@
+<Project><Songs>../Samples/Songs.sl</Songs><Schema>../Samples/Schema.sc</Schema></Project>

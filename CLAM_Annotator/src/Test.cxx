@@ -20,6 +20,7 @@
 #include "FFT.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
+#include "Segmentator.hxx"
 
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
 void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, int frameSize);
@@ -34,8 +35,12 @@ void CreatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song
 		CLAM::DescriptionDataPool& pool);
 void OpenSoundFile(const std::string& filename, CLAM::Audio& audio);
 void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s);
-void ComputeSegmentD(const CLAM::Audio& audio,CLAM::SegmentDescriptors& segmentD);
+void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment, 
+		    CLAM::SegmentDescriptors& segmentD);
 void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDataPool& pool);
+void ComputeSegmentationMarks(CLAM::Segment& segment,CLAM::SegmentDescriptors& segmentD);
+void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray* marks);
+
 
 int main()
 {
@@ -271,15 +276,18 @@ void CreatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song
     
   //Generate LLDs values
   CLAM::Audio audio;
+  CLAM::Segment segment;
   CLAM::SegmentDescriptors segmentD;
   OpenSoundFile(song.GetSoundFile(),audio);
-  ComputeSegmentD(audio,segmentD);
+  ComputeSegment(audio,segment,segmentD);
   SegmentD2Pool(segmentD,pool);
 
   //Create segmentation marks
   CLAM::IndexArray* segmentation = 
     pool.GetWritePool<CLAM::IndexArray>("Song","Segments");
-  GenerateRandomSegmentationMarks(segmentation, GetnSamples(song.GetSoundFile()), 1024);
+  //GenerateRandomSegmentationMarks(segmentation, GetnSamples(song.GetSoundFile()), 1024);
+  ComputeSegmentationMarks(segment, segmentD);
+  Segment2Marks(segment,segmentation);
 
   //Write HLD values
   std::list<CLAM_Annotator::HLDSchemaElement>& hlds = schema.GetHLDSchema().GetHLDs();
@@ -501,9 +509,9 @@ void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDa
   }
 }
 
-void ComputeSegmentD(const CLAM::Audio& audio,CLAM::SegmentDescriptors& segmentDescriptors)
+void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment, 
+		     CLAM::SegmentDescriptors& segmentDescriptors)
 {
-  CLAM::Segment segment;
   FFTAnalysis(audio, segment);
   
   segmentDescriptors.AddAll();
@@ -566,7 +574,8 @@ void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s)
   spcfg.SetSize(512);
   int i;
   int audioSize = audio.GetSize();
-  
+  int samplingRate = audio.GetSampleRate();
+  int duration = 1000*frameSize/samplingRate;
   for (i=0; i< audioSize; i+=frameSize)
   {
     CLAM::Audio audioFrame;
@@ -579,7 +588,54 @@ void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s)
     tmpFrame.AddSpectrum();
     tmpFrame.UpdateData();
     tmpFrame.SetSpectrum(spec);
+    tmpFrame.SetDuration(duration);
+    tmpFrame.SetCenterTime(1000*(i+frameSize*0.5)/samplingRate);
 
     s.AddFrame(tmpFrame);
   }
+}
+
+void ComputeSegmentationMarks(CLAM::Segment& segment,CLAM::SegmentDescriptors& segmentD)
+{
+  CLAM::TData ePercentil, eThr, minLength;
+  bool useDefault=true;
+  if(useDefault) {
+    ePercentil = 400;
+    eThr = CLAM::TData(2.00);//0.0032;
+    minLength = 2;
+  }
+  CLAM::SegmentatorConfig sgConfig;
+  CLAM::TDescriptorsParams tmpParams;
+  tmpParams.id=CLAM::SpectralEnergyId;
+  tmpParams.percentil=ePercentil;
+  tmpParams.threshold=eThr;
+  sgConfig.AddDescParams(tmpParams);
+  sgConfig.SetMinSegmentLength(int(minLength));
+  CLAM::Segmentator mySegmentator(sgConfig);
+  mySegmentator.Start();
+
+  //Segmentate
+  mySegmentator.Do(segment,segmentD);
+
+
+
+}
+
+void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray* marks)
+{
+  CLAM::List<CLAM::Segment>& children = segment.GetChildren();
+  children.DoFirst();
+  int i=0;
+  int samplingRate = segment.GetSamplingRate();
+  int nSegments = children.Size();
+  int segmentDuration = segment.GetEndTime();
+  for (i=0; i<nSegments; i++)
+    {
+      int currentTime = children[i].GetEndTime();
+      if(currentTime>0&&currentTime<segmentDuration)
+      {
+	marks->AddElem(children[i].GetEndTime()/1000.*samplingRate);
+      }
+    }
+
 }
