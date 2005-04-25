@@ -61,6 +61,7 @@ namespace CLAM
 
 	signals:
 	    void regionTime(MediaTime);
+	    void regionTime(float, float);
 	    
 	public slots:
 	    void setSelectedXPos(double);
