@@ -154,6 +154,7 @@ namespace CLAM
 
 	    UpdateAmpLabels(time);
 	    emit regionTime(time);
+	    emit regionTime(float(time.GetBegin()), float(time.GetEnd()));
 	}
 
 	void QtAudioPlot::UpdateAmpLabels(MediaTime time)
