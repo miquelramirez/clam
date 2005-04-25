@@ -32,7 +32,7 @@ namespace CLAM
 	    void Label(const std::string& label);
 	    void Geometry(int x, int y, int w, int h);
 
-	    void SetData(const BPF& bpf, const TData& dur=TData(1.0));
+	    void SetData(const BPF& bpf);
 	    BPF& GetData();
 
 	    void SetXRange(const double& min, const double& max);
