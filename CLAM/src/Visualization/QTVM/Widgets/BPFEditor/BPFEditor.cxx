@@ -39,10 +39,10 @@ namespace CLAM
 	    setGeometry(x,y,w,h);
 	}
 
-	void BPFEditor::BPFEditor::SetData(const BPF& bpf, const TData& dur)
+	void BPFEditor::BPFEditor::SetData(const BPF& bpf)
 	{
 	    mController->SetData(bpf);
-	    if(_player) ((QtBPFPlayer*)_player)->SetData(bpf,dur);
+	    if(_player) ((QtBPFPlayer*)_player)->SetData(bpf);
 	}
 
 	BPF& BPFEditor::GetData()
@@ -65,6 +65,7 @@ namespace CLAM
 	void BPFEditor::SetXRange(const double& min, const double& max)
 	{
 	    mController->SetXRange(min,max);
+	    if(_player) ((QtBPFPlayer*)_player)->SetDuration(max);
 	    AdjustLeft(min,max,false);
 	}
 
