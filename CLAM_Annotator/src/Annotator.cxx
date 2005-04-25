@@ -174,7 +174,7 @@ void Annotator::initLLDescriptorsWidgets()
     {
       QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
       *it = new CLAM::VM::BPFEditor(tabWidget2->page(i),0,
-				    CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll);
+				    CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer);
       (*it)->Hide();
       tabLayout->addWidget(*it);
     }
@@ -236,6 +236,7 @@ void Annotator::connectBPFs()
 	      SLOT(setHBounds(double,double)));
       connect(mpAudioPlot,SIGNAL(selectedXPos(double)),(*it),SLOT(selectPointFromXCoord(double)));
       connect(mpAudioPlot,SIGNAL(switchColorsRequested()),(*it),SLOT(switchColors()));
+      connect(mpAudioPlot,SIGNAL(regionTime(float,float)),(*it),SLOT(setRegionTime(float,float)));
     }
 }
 
@@ -308,6 +309,12 @@ void Annotator::addSongs()
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
 {
+    std::vector<CLAM::VM::BPFEditor*>::iterator it = mBPFEditors.begin();
+    for(; it != mBPFEditors.end(); it++)
+    {
+	(*it)->stopPendingTasks();
+    }
+
   if(mLLDChanged||mHLDChanged||mSegmentsChanged)
     {
       if(QMessageBox::question(this, "Descriptors Changed", 
