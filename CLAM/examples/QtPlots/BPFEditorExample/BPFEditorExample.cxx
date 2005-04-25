@@ -31,7 +31,7 @@ int main()
     editor.Geometry(100,100,600,400);
     editor.SetXRange(0.0,duration);
     editor.SetYRange(double(min)-double(span)*0.1, double(max)+double(span)*0.1);
-    editor.SetData(bpf,duration);
+    editor.SetData(bpf);
     editor.Show();
 
     CLAM::VM::QtAppWrapper::Run();
