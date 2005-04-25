@@ -60,8 +60,7 @@ namespace CLAM
 		}
 		void SingleLabel::Update(float value)
 		{
-			QString s("");
-			s = " "+s.setNum(value,'f',3)+_units;
+			QString s=" "+QString::number(value,'f',3)+_units;
 			this->setText(s);
 		}
 	}
