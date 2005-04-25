@@ -80,9 +80,7 @@ namespace CLAM
 		}
 
 
-		mNativeStream = mConfig.GetSourceFile().GetStream();
-
-		if ( !mNativeStream ) // For some reason a stream could not be acquired
+		if ( !AcquireStream() ) // For some reason a stream could not be acquired
 		{
 			AddConfigErrorMessage("Could not get a valid audio file stream!");
 			return false;
@@ -93,9 +91,22 @@ namespace CLAM
 		return true;
 	}
 
+	bool MonoAudioFileReader::AcquireStream()
+	{
+
+		if ( mNativeStream == NULL )
+			mNativeStream = mConfig.GetSourceFile().GetStream();
+		else
+			return false;		
+	}
+       
+
 	bool MonoAudioFileReader::ConcreteStart()
 	{
-		if (!mNativeStream) mNativeStream =mConfig.GetSourceFile().GetStream();
+
+		if (!AcquireStream())
+			return false;
+		
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
 		mEOFReached = false;
