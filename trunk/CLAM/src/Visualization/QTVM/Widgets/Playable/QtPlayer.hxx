@@ -25,42 +25,50 @@
 #include <qwidget.h>
 #include "MediaTime.hxx"
 
+class QBoxLayout;
+class QFrame;
 class QPushButton;
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {	
+	enum ColorMap { WindowMode=0, BlackBackground, WhiteBackground };
+
+	class QtPlayer : public QWidget
 	{
-		class Player;
-		
-		class QtPlayer : public QWidget
-		{
-			Q_OBJECT
+	    Q_OBJECT
 			
-			public:
-				QtPlayer(QWidget* parent=0);
-				virtual ~QtPlayer();
+	public:
+	    QtPlayer(QWidget* parent=0);
+	    virtual ~QtPlayer();
 
-				void SetPlaySegment(const MediaTime& time);
-				bool IsPlaying();
-				
-			public slots:
-				void play();
-				void pause();
-				void stop();
+	    virtual void SetPlaySegment(const MediaTime& time)=0;
+	    virtual bool IsPlaying()=0;
 
-			protected:
-				Player* _player;
+	    virtual void SetColorMap(ColorMap map);
 				
-				void SetPlayer(Player* player);
-				
-			private:
-				QPushButton *_play,*_pause,*_stop;
+        public slots:
+	    virtual void play()=0;
+	    virtual void pause()=0;
+	    virtual void stop()=0;
 
-				void InitWidgets();
-				
-		};
-	}
+	protected:
+	    QBoxLayout* layout;
+	    QColor winBackground;
+
+	    virtual void WindowModeCM();
+	    virtual void BlackBackgroundCM();
+	    virtual void WhiteBackgroundCM();
+
+	private:
+	    QFrame* container;
+	    QPushButton *_play,*_pause,*_stop;
+
+	    void InitWidgets();
+		
+	};
+    }
 }
 
 #endif

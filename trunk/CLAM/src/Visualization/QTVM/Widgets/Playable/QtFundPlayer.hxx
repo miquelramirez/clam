@@ -23,21 +23,21 @@
 #define __QTFUNDPLAYER__
 
 #include "Segment.hxx"
-#include "QtPlayer.hxx"
+#include "QtSinglePlayer.hxx"
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	class QtFundPlayer : public QtSinglePlayer
 	{
-		class QtFundPlayer : public QtPlayer
-		{
-			public:
-				QtFundPlayer(QWidget* parent=0);
-				virtual ~QtFundPlayer();
+	public:
+	    QtFundPlayer(QWidget* parent=0);
+	    ~QtFundPlayer();
 
-				void SetData(const Segment& segment);
-		};
-	}
+	    void SetData(const Segment& segment);
+	};
+    }
 }
 
 #endif
