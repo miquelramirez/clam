@@ -196,7 +196,7 @@ namespace CLAM
 	    melody.SetNumberOfNotes(0);
 	    midiMelody.SetNumberOfNotes(0);
 
-	    if(mOwnedDuration < mOwnedBPF.GetXValue(mOwnedBPF.Size()-1)) 
+	    if(mOwnedBPF.Size() && mOwnedDuration < mOwnedBPF.GetXValue(mOwnedBPF.Size()-1)) 
 	    {
 		mOwnedDuration = mOwnedBPF.GetXValue(mOwnedBPF.Size()-1)+TData(0.2);
 	    }
@@ -237,10 +237,11 @@ namespace CLAM
 		midiMelody.SetNumberOfNotes(midiNotes.Size()); 
 
 		// set players' data
-		((MelodyPlayer*)mPlayers[MELODY_PLAYER])->SetData(melody);
+		((MelodyPlayer*)mPlayers[MELODY_PLAYER])->SetData(melody,mOwnedDuration);
 		((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetData(midiMelody, 
-								mMIDIDevices[mMIDIDevicesCB->currentItem()],
-								mMIDIPrograms[mMIDIInstrumentsCB->currentItem()]);
+								    mMIDIDevices[mMIDIDevicesCB->currentItem()],
+								    mMIDIPrograms[mMIDIInstrumentsCB->currentItem()],
+								    mOwnedDuration);
 	    }
 	    // remove informative tooltip
 	    QToolTip::remove(this);
