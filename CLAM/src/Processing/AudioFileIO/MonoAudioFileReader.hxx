@@ -48,6 +48,8 @@ namespace CLAM
 		virtual bool ConcreteConfigure( const ProcessingConfig& cfgObject );
 		virtual bool ConcreteStart();
 		virtual bool ConcreteStop();
+		// Acquires file stream
+		bool AcquireStream();
 
 
 	protected: // attributes
