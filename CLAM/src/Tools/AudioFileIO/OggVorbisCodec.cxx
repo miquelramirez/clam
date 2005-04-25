@@ -126,6 +126,7 @@ namespace AudioCodecs
 
 		hdr.AddSampleRate();
 		hdr.AddChannels();
+        hdr.AddSamples();
 		hdr.AddFormat();
 		hdr.AddEncoding();
 		hdr.AddEndianess();
@@ -139,6 +140,9 @@ namespace AudioCodecs
 		hdr.SetEncoding( EAudioFileEncoding::eDefault );
 		hdr.SetEndianess( EAudioFileEndianess::eDefault );
 
+        double duration = hdr.GetLength()/1000.;
+        hdr.SetSamples( duration*hdr.GetSampleRate() );
+        
 		// MRJ: No need to close the fileHandle since libvorbisfile takes
 		// its ownership if the ov_open call is successful
 		ov_clear( &vorbisFile );
