@@ -268,6 +268,7 @@ namespace AudioCodecs
 		   choice, i.e. if it's a VBR file with no Xing tag.
 		*/
 		
+		long numFrames = 0;
 
 		while ( !bitstream.FatalError() && bitstream.NextFrame() )
 		{
@@ -287,6 +288,7 @@ namespace AudioCodecs
 						   information, it's useless to us and we have to treat it as a
 						   normal VBR file */
 						hasXingHeader = true;
+                        numFrames = xingHeader.frames;
 						break;					
 					}
 				}	
@@ -307,7 +309,6 @@ namespace AudioCodecs
 			frameCount++;
 		}
 
-		long numFrames = 0;
 		mad_timer_t   madFmtTime;
 
 		if ( !isVBR )
@@ -321,6 +322,7 @@ namespace AudioCodecs
 
 			bitstream.Finish();
 
+            //std::cerr << "Not VBR: " << (TTime)mad_timer_count( madFmtTime, MAD_UNITS_MILLISECONDS )/1000.  << std::endl;
 			hdr.SetLength( (TTime)mad_timer_count( madFmtTime, MAD_UNITS_MILLISECONDS ) );
 		}
 		else if ( hasXingHeader )
@@ -331,18 +333,20 @@ namespace AudioCodecs
 
 			bitstream.Finish();
 
+            //std::cerr << "Has XING Header: "<< (TTime)mad_timer_count( madFmtTime, MAD_UNITS_MILLISECONDS )/1000.  << std::endl;
 			hdr.SetLength( (TTime)mad_timer_count( madFmtTime, MAD_UNITS_MILLISECONDS ) );
 		}
 		else
 		{ 
 
 			TTime decodedFramesLength = bitstream.Finish();
+            //std::cerr << "Brute force time guessing: " <<  decodedFramesLength/1000. << " s" << std::endl;
 			hdr.SetLength( decodedFramesLength );
 		}
 		
 		// @TODO@: Find a way to estimate reasonably well the actual
 		// number of samples.
-		hdr.SetSamples(  (hdr.GetLength()*1000.)/hdr.GetSampleRate() );
+		hdr.SetSamples(  (hdr.GetLength()/1000.)*hdr.GetSampleRate() );
 		hdr.SetEndianess( EAudioFileEndianess::eDefault );
 
 		fclose( handle );
