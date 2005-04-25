@@ -24,24 +24,24 @@
 
 #include <vector>
 #include "Audio.hxx"
-#include "QtPlayer.hxx"
+#include "QtSinglePlayer.hxx"
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	class QtAudioPlayer : public QtSinglePlayer
 	{
-		class QtAudioPlayer : public QtPlayer
-		{
-			public:
-				QtAudioPlayer(QWidget* parent=0);
-				virtual ~QtAudioPlayer();
+	public:
+	    QtAudioPlayer(QWidget* parent=0);
+	    ~QtAudioPlayer();
 
-				void SetData(std::vector<Audio> data);
+	    void SetData(std::vector<Audio> data);
 
-				void SetLeftChannelMuted(bool b);
-				void SetRightChannelMuted(bool b);
-		};
-	}
+	    void SetLeftChannelMuted(bool b);
+	    void SetRightChannelMuted(bool b);
+	};
+    }
 }
 
 #endif
