@@ -33,6 +33,8 @@ namespace CLAM
 	private:
 	    MIDIMelody mMIDIMelody;
 	    std::string mMIDIDevice;
+	    std::string mEnqueuedDevice;
+	    bool mHasEnqueuedDevice;
 	    int mMIDIProgram;
 	    TData mDuration;
 
