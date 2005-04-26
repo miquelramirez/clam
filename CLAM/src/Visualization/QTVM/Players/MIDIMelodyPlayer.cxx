@@ -15,6 +15,12 @@ namespace CLAM
 	      mMIDIProgram(0),
 	      mDuration(TData(0.0))
 	{
+	    mMIDIMelody.AddNumberOfNotes();
+	    mMIDIMelody.UpdateData();
+	    mMIDIMelody.SetNumberOfNotes(0);
+
+	    HaveData(true);
+	    
 	    _thread.SetThreadCode(makeMemberFunctor0((*this), MIDIMelodyPlayer, thread_code));
 	}
 		
@@ -59,8 +65,6 @@ namespace CLAM
 		time.SetEnd(mMIDIMelody.GetNoteArray()[mMIDIMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
 		SetBounds(time);
 	    }
-	    
-	    HaveData(true);
 	}
 
 	MIDIMelody& MIDIMelodyPlayer::GetMIDIMelody()
@@ -275,6 +279,11 @@ namespace CLAM
 		mMIDIMelody.GetNoteArray()[index-1].GetTime().SetEnd(newEndTime);
 	    }
 	    mMIDIMelody.GetNumberOfNotes()--;
+	}
+
+	void MIDIMelodyPlayer::SetDuration(const TData& dur)
+	{
+	    mDuration = dur;
 	}
 
     }

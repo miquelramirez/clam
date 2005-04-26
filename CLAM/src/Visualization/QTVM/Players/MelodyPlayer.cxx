@@ -12,6 +12,12 @@ namespace CLAM
 	    : mSampleRate(TData(44100.0)),
 	      mDuration(TData(0.0))
 	{
+	    mMelody.AddNumberOfNotes();
+	    mMelody.UpdateData();
+	    mMelody.SetNumberOfNotes(0);
+
+	    HaveData(true);
+
 	    _thread.SetThreadCode(makeMemberFunctor0((*this), MelodyPlayer, thread_code));
 	}
 		
@@ -32,8 +38,6 @@ namespace CLAM
 		time.SetEnd(mMelody.GetNoteArray()[mMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
 		SetBounds(time);
 	    }
-
-	    HaveData(true);
 	}
 
 	Melody& MelodyPlayer::GetMelody()
@@ -208,6 +212,11 @@ namespace CLAM
 		mMelody.GetNoteArray()[index-1].GetTime().SetEnd(newEndTime);
 	    }
 	    mMelody.GetNumberOfNotes()--;
+	}
+
+	void MelodyPlayer::SetDuration(const TData& dur)
+	{
+	    mDuration = dur;
 	}
 
     }
