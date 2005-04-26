@@ -79,29 +79,20 @@ namespace CLAM
 			return false;
 		}
 
-        mNativeStream = mConfig.GetSourceFile().GetStream();
+		mNativeStream = mConfig.GetSourceFile().GetStream();
 
 		mNativeStream->DeactivateStrictStreaming();
 
 		return true;
 	}
 
-	bool MonoAudioFileReader::AcquireStream()
-	{
-        return true;
-	}
-       
-
 	bool MonoAudioFileReader::ConcreteStart()
 	{
-        if ( mNativeStream == NULL )
-        {
-            mNativeStream = mConfig.GetSourceFile().GetStream();
-            mNativeStream->DeactivateStrictStreaming();
-            mCurrentBeginTime = 0.0;
-            mEOFReached = false;
-            return true;
-        }
+		if ( mNativeStream == NULL )
+		{
+			mNativeStream = mConfig.GetSourceFile().GetStream();
+			mNativeStream->DeactivateStrictStreaming();
+		}
 
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
