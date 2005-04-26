@@ -27,6 +27,8 @@ namespace CLAM
 	    void AddNote(const TIndex& index, const TData& beginTime, const int& key);
 	    void RemoveNote(const TIndex& index);
 
+	    void SetDuration(const TData& dur);
+
 	protected:
 	    void thread_code();
 

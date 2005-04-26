@@ -23,6 +23,8 @@
 	     void AddNote(const TIndex& index, const TData& beginTime, const TData& pitch);
 	     void RemoveNote(const TIndex& index);
 
+	     void SetDuration(const TData& dur);
+
 	 protected:
 	     void thread_code();
 
