@@ -42,6 +42,8 @@ namespace CLAM
 	void QtBPFPlayer::SetDuration(const TData& dur)
 	{
 	    mOwnedDuration = dur;
+	    ((MelodyPlayer*)mPlayers[MELODY_PLAYER])->SetDuration(mOwnedDuration);
+	    ((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetDuration(mOwnedDuration);
 	}
 
 	Melody& QtBPFPlayer::GetMelody()
