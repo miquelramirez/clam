@@ -95,7 +95,7 @@ namespace AudioCodecs
 	{
 		if ( newSize  > buffer.Size() )
 		{
-			buffer.Resize( 2 * newSize );
+			buffer.Resize( newSize );
 			buffer.SetSize( newSize );
 			return true;
 		}
