@@ -59,12 +59,12 @@ namespace CLAM
 	    _surf->SetController(_controller);
 			
 	    // vertical scroll and zoom ratio management 
-	    connect(_controller,SIGNAL(vZoomRatio(int)),this,SLOT(receivedVZoomRatio(int)));
+	    connect(_controller,SIGNAL(vZoomRatio(double)),this,SLOT(receivedVZoomRatio(double)));
 	    connect(_controller,SIGNAL(vScrollMaxValue(int)),this,SLOT(setMaxVScroll(int)));
 	    connect(_controller,SIGNAL(vScrollValue(int)),this,SLOT(updateVScroll(int)));
 
 	    // horizontal scroll and zoom ratio management
-	    connect(_controller,SIGNAL(hZoomRatio(int)),this,SLOT(receivedHZoomRatio(int)));
+	    connect(_controller,SIGNAL(hZoomRatio(double)),this,SLOT(receivedHZoomRatio(double)));
 	    connect(_controller,SIGNAL(hScrollMaxValue(int)),this,SLOT(setMaxHScroll(int)));
 	    connect(_controller,SIGNAL(hScrollValue(int)),this,SLOT(updateHScroll(int)));
 
@@ -197,7 +197,7 @@ namespace CLAM
 	    }
 	}
 
-	void QtPresentation::receivedHZoomRatio(int zr)
+	void QtPresentation::receivedHZoomRatio(double zr)
 	{
 	    // update horizontal zoom ratio indicator
 	    _hs->updateZoomRatio(zr);
@@ -255,7 +255,7 @@ namespace CLAM
 	    emit VZoomOut();
 	}
 
-	void QtPresentation::receivedVZoomRatio(int zr)
+	void QtPresentation::receivedVZoomRatio(double zr)
 	{
 	    // update vertical zoom ratio indicator
 	    _vs->updateZoomRatio(zr);

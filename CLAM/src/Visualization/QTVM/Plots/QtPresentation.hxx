@@ -79,7 +79,7 @@ namespace CLAM
 	    void HZoomIn();
 	    void HZoomOut();
 	    void HScrollValue(int);
-	    void HZoomRatio(int);
+	    void HZoomRatio(double);
 	    void HMaxScroll(int);
 	    void UpdatedHScroll(int);
 	    void HScrollClicked();
@@ -88,7 +88,7 @@ namespace CLAM
 	    void VZoomIn();
 	    void VZoomOut();
 	    void VScrollValue(int);
-	    void VZoomRatio(int);
+	    void VZoomRatio(double);
 	    void VMaxScroll(int);
 	    void UpdatedVScroll(int);
 	    void VScrollClicked();
@@ -111,14 +111,14 @@ namespace CLAM
 	    void hZoomIn();
 	    void hZoomOut();
 	    void hScrollValue(int);
-	    void receivedHZoomRatio(int);
+	    void receivedHZoomRatio(double);
 	    void setMaxHScroll(int);
 	    void updateHScroll(int);
 				
 	    void vZoomIn();
 	    void vZoomOut();				
 	    void vScrollValue(int);
-	    void receivedVZoomRatio(int);
+	    void receivedVZoomRatio(double);
 	    void setMaxVScroll(int);
 	    void updateVScroll(int);
 				
