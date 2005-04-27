@@ -1,6 +1,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qframe.h>
+#include <qpopupmenu.h>
 #include "VScrollGroup.hxx"
 #include "Ruler.hxx"
 #include "BPFEditorController.hxx"
@@ -15,11 +16,13 @@ namespace CLAM
 	BPFEditor::BPFEditor(QWidget* parent,const char* name,int eFlags)
 	    : QWidget(parent,name),
 	      mEFlags(eFlags),
+	      mActivePlayer(true), 
 	      mController(0),
 	      mDisplaySurface(0),
 	      mColorScheme(EBlackOverWhite),
 	      mVScroll(0),
 	      bottomRightHole(0),
+	      mHasData(false),
 	      mWhiteOverBlackScheme(true)
 	{
 	    InitBPFEditor();
@@ -42,7 +45,14 @@ namespace CLAM
 	void BPFEditor::BPFEditor::SetData(const BPF& bpf)
 	{
 	    mController->SetData(bpf);
-	    if(_player) ((QtBPFPlayer*)_player)->SetData(bpf);
+	    if(_player) 
+	    {
+		if(mActivePlayer)
+		{
+		    ((QtBPFPlayer*)_player)->SetData(bpf);
+		    mHasData = true;
+		}
+	    }
 	}
 
 	BPF& BPFEditor::GetData()
@@ -62,17 +72,39 @@ namespace CLAM
 	    return mMIDIMelody;;
 	}
 
-	void BPFEditor::SetXRange(const double& min, const double& max)
+	void BPFEditor::SetXRange(const double& min, const double& max, const EScale& scale)
 	{
-	    mController->SetXRange(min,max);
-	    if(_player) ((QtBPFPlayer*)_player)->SetDuration(max);
+	    mController->SetXRange(min,max,scale);
+	    mXRuler->SetScale(scale);
+	    if(_player)
+	    {
+		MediaTime time;
+		time.SetBegin(min);
+		time.SetEnd(max);
+		((QtBPFPlayer*)_player)->SetPlaySegment(time);
+		((QtBPFPlayer*)_player)->SetDuration(max-min);
+	    }
 	    AdjustLeft(min,max,false);
 	}
 
-	void BPFEditor::SetYRange(const double& min, const double& max)
+	void BPFEditor::SetYRange(const double& min, const double& max, const EScale& scale)
 	{
-	    mController->SetYRange(min,max);
+	    mController->SetYRange(min,max,scale);
+	    mYRuler->SetScale(scale);
+	    if(_player) ((QtBPFPlayer*)_player)->SetPitchBounds(min,max);
 	    AdjustLeft(min,max);
+	}
+
+	void BPFEditor::SetXScale(const EScale& scale)
+	{
+	    mXRuler->SetScale(scale);
+	    mController->SetXScale(scale);
+	}
+
+	void BPFEditor::SetYScale(const EScale& scale)
+	{
+	    mYRuler->SetScale(scale);
+	    mController->SetYScale(scale);
 	}
 	    
 	void BPFEditor::Show()
@@ -83,6 +115,21 @@ namespace CLAM
 	void BPFEditor::Hide()
 	{
 	    hide();
+	}
+
+	void BPFEditor::SetActivePlayer(bool active)
+	{
+	    if(_player)
+	    {
+		if(active)
+		{
+		    ShowPlayer();
+		}
+		else
+		{
+		    HidePlayer();
+		}
+	    }
 	}
 
 	void BPFEditor::keyPressEvent(QKeyEvent* e)
@@ -158,8 +205,17 @@ namespace CLAM
 	    // top area: left ruler and display surface
 	    topLayout = new QHBoxLayout(mainLayout);
 
+	    labelFont.setFamily("fixed");
+	    labelFont.setPointSize(10);
+	    labelFont.setBold(true);
+	    labelFont.setStyleHint(QFont::Courier,QFont::NoAntialias);
+
+	    QFontMetrics fm(labelFont);
+
+	    int initial_width=fm.width("X:0.0e+00");
+
 	    mYRuler = new Ruler(this,CLAM::VM::Left);
-	    mYRuler->setFixedWidth(10);
+	    mYRuler->setFixedWidth(initial_width);
 	    
 	    mDisplaySurface = new BPFEditorDisplaySurface(this);
 	    mDisplaySurface->setMinimumSize(200,100);
@@ -170,8 +226,6 @@ namespace CLAM
 
 	    // bottom area:info labels and bottom ruler
 	    bottomLayout = new QHBoxLayout(mainLayout);
-
-	    QFontMetrics fm(labelFont);
 
 	    int middle_panel_height=0;
 	    
@@ -190,12 +244,7 @@ namespace CLAM
 
 	    labelsContainer = new QFrame(this);
 	    labelsContainer->setFixedWidth(mYRuler->width());
-	    labelsContainer->setFixedHeight(middle_panel_height);
-
-	    labelFont.setFamily("fixed");
-	    labelFont.setPointSize(10);
-	    labelFont.setBold(true);
-	    labelFont.setStyleHint(QFont::Courier,QFont::NoAntialias);
+	    
 
 	    int fixed_label_width = fm.width("X:");
 	    int fixed_label_height = fm.height();
@@ -241,6 +290,8 @@ namespace CLAM
 		CreateVScroll();
 	    }
 
+	    InitPopupMenu();
+
 	    // connections
 	    connect(mController,SIGNAL(xRulerRange(double,double)),mXRuler,SLOT(updateRange(double,double)));
 	    connect(mController,SIGNAL(yRulerRange(double,double)),mYRuler,SLOT(updateRange(double,double)));
@@ -257,6 +308,7 @@ namespace CLAM
 		connect(mController,SIGNAL(yValueChanged(int, float)),((QtBPFPlayer*)_player),SLOT(updateNotePitch(int, float)));
 		connect(mController,SIGNAL(elementAdded(int, float, float)),((QtBPFPlayer*)_player),SLOT(addNote(int, float, float)));
 		connect(mController,SIGNAL(elementRemoved(int)),((QtBPFPlayer*)_player),SLOT(removeNote(int)));
+		connect(mController,SIGNAL(rightButtonPressed()),this,SLOT(showPopupMenu()));
 	    }
 	    
 	    // set color scheme
@@ -347,35 +399,24 @@ namespace CLAM
 
 	void BPFEditor::AdjustLeft(const double& min, const double& max, bool y_axis)
 	{
-	     int length_min = QString::number(min,'f',2).length();
-	     int length_max = QString::number(max,'f',2).length();
-
-	     QFontMetrics fm(labelFont);
-
-	     int width = (length_min > length_max) ? fm.width(QString::number(min,'f',2)) : fm.width(QString::number(max,'f',2));
-	   
-	     width += (fixed_x_label->width()+2);
-
-	     if(y_axis)
-	     {
-		 mYRuler->setFixedWidth(width);
-		 if(labelsContainer->width() > mYRuler->width()) 
-		 {
-		     mYRuler->setFixedWidth(labelsContainer->width());
-		 }
-		 else
-		 {
-		     labelsContainer->setFixedWidth(mYRuler->width());
-		 }
-	    }
-	    else
+	    if(y_axis)
 	    {
-		
-		if(width > mYRuler->width())
-		{
-		    mYRuler->setFixedWidth(width);
-		    labelsContainer->setFixedWidth(width);
-		}
+		if(mYRuler->GetScale() == EScale::eLog) return;
+	    }
+	    
+	    int length_min = QString::number(min,'f',2).length();
+	    int length_max = QString::number(max,'f',2).length();
+
+	    QFontMetrics fm(labelFont);
+
+	    int width = (length_min > length_max) ? fm.width(QString::number(min,'f',2)) : fm.width(QString::number(max,'f',2));
+	   
+	    width += (fixed_x_label->width()+2);
+
+	    if(width > mYRuler->width())
+	    {
+		mYRuler->setFixedWidth(width);
+		labelsContainer->setFixedWidth(mYRuler->width());
 	    }
 
 	    mXLabelInfo->setGeometry(fixed_x_label->x()+fixed_x_label->width(),
@@ -465,6 +506,81 @@ namespace CLAM
 	{
 	    if(!_player) return;
 	    ((QtBPFPlayer*)_player)->StopThread();
+	}
+
+	void BPFEditor::ShowPlayer()
+	{
+	    QFont f;
+	    f.setFamily("fixed");
+	    f.setPointSize(10);
+	    f.setBold(true);
+	    f.setStyleHint(QFont::Courier,QFont::NoAntialias);
+
+	    QFontMetrics fm(f);
+
+	    mXRuler->setFixedHeight(fm.height()+10);
+	    int middle_panel_height = mXRuler->height()+_player->height();
+	    labelsContainer->setFixedHeight(middle_panel_height);
+	    if(bottomRightHole) bottomRightHole->setFixedHeight(middle_panel_height);
+	    _player->show();
+	    if(!mHasData)
+	    {
+		((QtBPFPlayer*)_player)->SetData(GetData());
+		mHasData=true;
+	    }
+	    mActivePlayer = true;
+	}
+
+	void BPFEditor::HidePlayer()
+	{
+	    ((QtBPFPlayer*)_player)->stop();
+
+	    _player->hide();
+	    
+	    QFont f;
+	    f.setFamily("fixed");
+	    f.setPointSize(10);
+	    f.setBold(true);
+	    f.setStyleHint(QFont::Courier,QFont::NoAntialias);
+
+	    QFontMetrics fm(f);
+
+	    mXRuler->setFixedHeight(fm.height()+30);
+	    int middle_panel_height = mXRuler->height();
+	    labelsContainer->setFixedHeight(middle_panel_height);
+	    if(bottomRightHole) bottomRightHole->setFixedHeight(middle_panel_height);
+	    mActivePlayer = false;
+	    
+	}
+
+	void BPFEditor::InitPopupMenu()
+	{
+	    mPopupMenu = new QPopupMenu();
+	    mPopupMenu->insertItem("Auralize Descriptors",this,SLOT(activePlayer()),0,0); 
+	    mPopupMenu->setCheckable(true);
+	}
+
+	void BPFEditor::showPopupMenu()
+	{
+	    if(_player)
+	    {
+		mPopupMenu->exec(QCursor::pos());
+	    }
+	}
+
+	void BPFEditor::activePlayer()
+	{
+	    mActivePlayer = !mActivePlayer;
+	    if(mActivePlayer)
+	    {
+		SetActivePlayer(true);
+		mPopupMenu->setItemChecked(0,true);
+	    }
+	    else
+	    {
+		SetActivePlayer(false);
+		mPopupMenu->setItemChecked(0,false);
+	    }
 	}
 
     }

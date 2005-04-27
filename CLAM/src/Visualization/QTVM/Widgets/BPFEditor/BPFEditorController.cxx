@@ -6,6 +6,8 @@ namespace CLAM
     {
 	BPFEditorController::BPFEditorController(int eFlags)
 	    : mEFlags(eFlags), 
+	      mXScale(EScale(EScale::eLinear)),
+	      mYScale(EScale(EScale::eLinear)),
 	      mLeftButtonPressed(false),
 	      mRightButtonPressed(false),
 	      mKeyInsertPressed(false),
@@ -58,8 +60,9 @@ namespace CLAM
 	    mRectColor = c;
 	}
 
-	void BPFEditorController::SetXRange(const double& min, const double& max)
+	void BPFEditorController::SetXRange(const double& min, const double& max, const EScale& scale)
 	{
+	    mXScale = scale;
 	    if(min >= max) return;
 	    mSpanX = max-min;
 	    mMinX = min;
@@ -74,8 +77,9 @@ namespace CLAM
 	    emit requestRefresh();
 	}
 
-	void BPFEditorController::SetYRange(const double& min, const double& max)
+	void BPFEditorController::SetYRange(const double& min, const double& max, const EScale& scale)
 	{
+	    mYScale = scale;
 	    if(min >= max) return;
 	    mSpanY = max-min;
 	    mMinY = min;
@@ -89,6 +93,16 @@ namespace CLAM
 	    emit yRulerRange(mYRulerRange.mMin, mYRulerRange.mMax);
 	    emit requestRefresh();
 	    InitVScroll();
+	}
+
+	void BPFEditorController::SetXScale(const EScale& scale)
+	{
+	    mXScale = scale;
+	}
+
+	void BPFEditorController::SetYScale(const EScale& scale)
+	{
+	    mYScale = scale;
 	}
 
 	void BPFEditorController::SetKeyInsertPressed(bool pressed)
@@ -135,6 +149,7 @@ namespace CLAM
 		    PopSettings();
 		}
 	    }
+	    emit rightButtonPressed();
 	}
 
 	void BPFEditorController::SetPoint(const TData& x, const TData& y)
@@ -270,8 +285,29 @@ namespace CLAM
 			}
 		    }
 		}
+		
+		QString xlabel("");
+		QString ylabel("");
 
-		emit labelsText(QString::number(x,'f',2),QString::number(y,'f',2));
+		if(mXScale==EScale::eLinear)
+		{
+		    xlabel = QString::number(x,'f',2);
+		}
+		else if(mXScale==EScale::eLog)
+		{
+		    xlabel = QString::number(x,'e',1);
+		}
+
+		if(mYScale==EScale::eLinear)
+		{
+		    ylabel = QString::number(y,'f',2);
+		}
+		else if(mYScale==EScale::eLog)
+		{
+		    ylabel = QString::number(y,'e',1);
+		}
+
+		emit labelsText(xlabel,ylabel);
 	    }
 	}
 
@@ -285,6 +321,7 @@ namespace CLAM
 		QCursor acursor(Qt::ArrowCursor);
 		emit cursorChanged(acursor);
 		emit labelsText(QString(""),QString(""));
+
 	    }
 	}
 
