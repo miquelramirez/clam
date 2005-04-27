@@ -45,6 +45,9 @@ Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "an
 							   mHLDChanged(false),
 							   mSegmentsChanged(false)
 {
+	mpDescriptorPool = NULL;
+	mpAudioPlot = NULL;
+
 	QString title = "Music annotator.- ";
 	std::cerr << nameProject.c_str() << std::endl;
 	title += QString( nameProject.c_str() );
@@ -52,8 +55,6 @@ Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "an
 	setCaption( title );
 
 	//setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
-  mpDescriptorPool = NULL;
-  mpAudioPlot = NULL;
   initAudioWidget();
   initInterface();
 }
@@ -818,10 +819,11 @@ bool Annotator::event(QEvent* e)
     if(mpAudioPlot)
     {
 		std::cerr << typeid(e).name() << std::endl;
-	QKeyEvent* keyEvent=dynamic_cast<QKeyEvent*>(e);
+	QKeyEvent* keyEvent=(QKeyEvent*)(e);
 	if(keyEvent)
 	{
-	    if(!mpAudioPlot->hasFocus())
+	    if(!mpAudioPlot) return false;
+		if(!mpAudioPlot->hasFocus())
 	    {
 		switch(keyEvent->key())
 		{
