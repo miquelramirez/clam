@@ -175,6 +175,7 @@ void Annotator::initLLDescriptorsWidgets()
       QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
       *it = new CLAM::VM::BPFEditor(tabWidget2->page(i),0,
 				    CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer);
+      (*it)->SetActivePlayer(false);
       (*it)->Hide();
       tabLayout->addWidget(*it);
     }
@@ -627,11 +628,16 @@ void Annotator::drawLLDescriptors(int index)
     std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
     for(int i=0; editors_it != mBPFEditors.end(); editors_it++, i++)
     {
-      (*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
-      (*editors_it)->SetYRange(GetMinY((*editors_it)->GetData()),GetMaxY((*editors_it)->GetData()));
-      (*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
-      (*editors_it)->Show();
-  }
+	CLAM::EScale scale;
+	TData min_y = GetMinY((*editors_it)->GetData());
+	TData max_y = GetMaxY((*editors_it)->GetData());
+	bool scale_log = (fabs(min_y) > 9999.99 || fabs(max_y) > 9999.99);
+	scale = (scale_log) ? CLAM::EScale::eLog : CLAM::EScale::eLinear;
+	(*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
+	(*editors_it)->SetYRange(min_y,max_y,scale);
+	(*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
+	(*editors_it)->Show();
+    }
 
 }
 
