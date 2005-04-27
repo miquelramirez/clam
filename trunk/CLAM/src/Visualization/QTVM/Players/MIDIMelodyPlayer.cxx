@@ -214,11 +214,15 @@ namespace CLAM
 
 	void MIDIMelodyPlayer::UpdateNoteKey(const TIndex& index, const int& newKey)
 	{
+	    int nNotes = mMIDIMelody.GetNumberOfNotes();
+	    if(!nNotes || index < 0 || index > nNotes-1) return;
 	    mMIDIMelody.GetNoteArray()[index].SetKey(newKey);
 	}
 
 	void MIDIMelodyPlayer::UpdateNoteDuration(const TIndex& index, const TData& beginTime)
 	{
+	    int nNotes = mMIDIMelody.GetNumberOfNotes();
+	    if(!nNotes || index < 0 || index > nNotes-1) return;
 	    mMIDIMelody.GetNoteArray()[index].GetTime().SetBegin(beginTime);
 	    if(index > 0) mMIDIMelody.GetNoteArray()[index-1].GetTime().SetEnd(beginTime);
 	}
@@ -278,6 +282,8 @@ namespace CLAM
 
 	void MIDIMelodyPlayer::RemoveNote(const TIndex& index)
 	{
+	    int nNotes = mMIDIMelody.GetNumberOfNotes();
+	    if(!nNotes || index < 0 || index > nNotes-1) return;
 	    TData newEndTime = TData(0.0);
 	    bool modify_prior = false;
 	    if(index > 0)
