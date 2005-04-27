@@ -459,7 +459,7 @@ namespace CLAM
 	    connect(mVScroll,SIGNAL(zoomIn()),mController,SLOT(vZoomIn()));
 	    connect(mVScroll,SIGNAL(zoomOut()),mController,SLOT(vZoomOut()));
 	    connect(mVScroll,SIGNAL(scrollValueChanged(int)),mController,SLOT(updateVScrollValue(int)));
-	    connect(mController,SIGNAL(vZoomRatio(int)),mVScroll,SLOT(updateZoomRatio(int)));
+	    connect(mController,SIGNAL(vZoomRatio(double)),mVScroll,SLOT(updateZoomRatio(double)));
 	    connect(mController,SIGNAL(vScrollMaxValue(int)),this,SLOT(setMaxVScroll(int)));
 	    connect(mController,SIGNAL(vScrollValue(int)),mVScroll,SLOT(updateScrollValue(int)));
 
