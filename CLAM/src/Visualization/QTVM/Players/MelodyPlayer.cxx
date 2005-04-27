@@ -150,11 +150,15 @@ namespace CLAM
 
 	void MelodyPlayer::UpdateNotePitch(const TIndex& index, const TData& newPitch)
 	{
+	    int nNotes = mMelody.GetNumberOfNotes();
+	    if(!nNotes || index < 0 || index > nNotes-1) return;
 	    mMelody.GetNoteArray()[index].SetFundFreq(newPitch);
 	}
 
 	void MelodyPlayer::UpdateNoteDuration(const TIndex& index, const TData& beginTime)
 	{
+	    int nNotes = mMelody.GetNumberOfNotes();
+	    if(!nNotes || index < 0 || index > nNotes-1) return;
 	    mMelody.GetNoteArray()[index].GetTime().SetBegin(beginTime);
 	    if(index > 0) mMelody.GetNoteArray()[index-1].GetTime().SetEnd(beginTime);
 	}
@@ -212,6 +216,8 @@ namespace CLAM
 
 	void MelodyPlayer::RemoveNote(const TIndex& index)
 	{
+	    int nNotes = mMelody.GetNumberOfNotes();
+	    if(!nNotes || index < 0 || index > nNotes-1) return;
 	    TData newEndTime = TData(0.0);
 	    bool modify_prior = false;
 	    if(index > 0)
