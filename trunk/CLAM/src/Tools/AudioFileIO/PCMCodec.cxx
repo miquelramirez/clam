@@ -117,7 +117,7 @@ namespace AudioCodecs
 			hdr.UpdateData();
 						
 			hdr.SetSampleRate( (TData)fileHeaderInfo.samplerate );
-			hdr.SetSamples( (TSize)fileHeaderInfo.frames / fileHeaderInfo.channels );
+			hdr.SetSamples( (TSize)fileHeaderInfo.frames );
 			hdr.SetChannels( (TSize)fileHeaderInfo.channels );
 			hdr.SetFormat( fileHeaderInfo.format & SF_FORMAT_TYPEMASK );
 			hdr.SetEncoding( fileHeaderInfo.format & SF_FORMAT_SUBMASK );
