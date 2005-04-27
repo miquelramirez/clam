@@ -87,6 +87,16 @@ namespace CLAM
 
 	void QtPresentation::Init()
 	{
+	    // no comment - begin /////////////////////////////
+	    QFont ref;
+	    ref.setFamily("fixed");
+	    ref.setPointSize(10);
+	    ref.setBold(true);
+	    ref.setStyleHint(QFont::Courier,QFont::NoAntialias);
+	    QFontMetrics fm(ref);
+	    int initial_yruler_width=fm.width("X:0.0e+00");
+	    // no comment - end ////////////////////////////////
+
 	    _controller = NULL;
 
 	    QFont f("Sans",8);
@@ -99,7 +109,7 @@ namespace CLAM
 	    // top area (x ruler)
 	    _top = new QHBoxLayout(_mainLayout);
 	    topLeftHole = new QFrame(this);
-	    topLeftHole->setFixedSize(50,40);
+	    topLeftHole->setFixedSize(initial_yruler_width,40);
 	    _btoggle_color = new QPushButton(topLeftHole);
 	    _btoggle_color->setFont(f);
 	    _btoggle_color->setFixedSize(25,25);
@@ -121,7 +131,7 @@ namespace CLAM
 	    // middle area (y ruler, display area, vertical scroll and zoom group)
 	    _middle = new QHBoxLayout(_mainLayout);
 	    _yRuler = new Ruler(this,CLAM::VM::Left);
-	    _yRuler->setFixedWidth(50);
+	    _yRuler->setFixedWidth(initial_yruler_width);
 	    _middle->addWidget(_yRuler);
 			
 	    _surf = new DisplaySurface(this);
@@ -134,7 +144,7 @@ namespace CLAM
 	    // bottom area (horizontal scroll and zoom group)
 	    _bottom = new QHBoxLayout(_mainLayout);
 	    bottomLeftHole = new QFrame(this);
-	    bottomLeftHole->setFixedSize(50,20);
+	    bottomLeftHole->setFixedSize(initial_yruler_width,20);
 	    _bottom->addWidget(bottomLeftHole);
 
 	    _hs = new HScrollGroup(this);
@@ -417,7 +427,7 @@ namespace CLAM
 	    int width = (length_min > length_max) ? fm.width(QString::number(min,'f',2)) : fm.width(QString::number(max,'f',2));
 	    width += 10;
 
-	    if(width > 50)
+	    if(width > YRulerWidth())
 	    {
 		int bt_x = (width-_btoggle_color->width())/2;
 		topLeftHole->setFixedSize(width,topLeftHole->height());
