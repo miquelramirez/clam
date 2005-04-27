@@ -48,14 +48,14 @@ namespace CLAM
 				void zoomIn();
 				void zoomOut();
 				void scrollValueChanged(int);
-				void zoomRatio(int);
+				void zoomRatio(double);
 				void maxScrollValue(int);
 				void updatedScrollValue(int);
 				void scrollBarClicked();
 				void scrollBarReleased();
 			
 			public slots:
-				void updateZoomRatio(int);
+				void updateZoomRatio(double);
 				void updateScrollValue(int);
 				void setMaxScrollValue(int);
 			

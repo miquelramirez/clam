@@ -85,13 +85,21 @@ namespace CLAM
 			connect(_sb,SIGNAL(released()),this,SIGNAL(scrollBarReleased()));
 		}
 
-		void HScrollGroup::updateZoomRatio(int value)
+		void HScrollGroup::updateZoomRatio(double value)
 		{
-			// update zoom ratio indicator
-			QString s;
-			s = "1:"+(s.setNum(value));
-			_label->setText(s);
-			emit zoomRatio(value);
+		    if(value < 1) value = 1.0;
+		    // update zoom ratio indicator
+		    QString s("1:");
+		    if(value > 999999)
+		    {
+			s += QString::number(value,'e',1);
+		    }
+		    else
+		    {
+			s += QString::number(value,'f',0);
+		    }
+		    _label->setText(s);
+		    emit zoomRatio(value);
 		}
 
 		void HScrollGroup::updateScrollValue(int value)
