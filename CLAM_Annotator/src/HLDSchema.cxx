@@ -1,5 +1,5 @@
 #include "HLDSchema.hxx"
-
+#include <algorithm>
 namespace CLAM_Annotator{
 
   /**************** HLDSchemaElement **************/

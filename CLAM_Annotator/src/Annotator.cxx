@@ -45,7 +45,13 @@ Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "an
 							   mHLDChanged(false),
 							   mSegmentsChanged(false)
 {
-  setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
+	QString title = "Music annotator.- ";
+	std::cerr << nameProject.c_str() << std::endl;
+	title += QString( nameProject.c_str() );
+
+	setCaption( title );
+
+	//setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
   mpDescriptorPool = NULL;
   mpAudioPlot = NULL;
   initAudioWidget();
@@ -811,6 +817,7 @@ bool Annotator::event(QEvent* e)
 {
     if(mpAudioPlot)
     {
+		std::cerr << typeid(e).name() << std::endl;
 	QKeyEvent* keyEvent=dynamic_cast<QKeyEvent*>(e);
 	if(keyEvent)
 	{
@@ -842,7 +849,7 @@ void Annotator::drawDescriptorsName()
   int i;
   for(it = hlds.begin(), i = 0 ; it != hlds.end(); it++, i++)
   {
-    mDescriptorsTable->setItem(i,0,new TableItem(mDescriptorsTable,TableItem::Never, (*it).GetName()));
+    mDescriptorsTable->setItem(i,0,new TableItem(mDescriptorsTable,TableItem::Never, QString((*it).GetName().c_str())));
   }
 }
 
@@ -866,7 +873,7 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName,
   std::list<std::string>::iterator it;
   for(it = restrictionStrings.begin();it != restrictionStrings.end(); it++)
   {
-    qrestrictionStrings << (*it);
+    qrestrictionStrings << QString((*it).c_str());
   }
 
   std::vector<QStringList> qrestrictionStringslist;

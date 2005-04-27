@@ -39,6 +39,7 @@ class Annotator : public AnnotatorBase
 
 public:
   Annotator(const std::string & nameProject);
+  virtual ~Annotator() {}
   void initSongs();
   void fillGlobalDescriptors( int index);
   void songsClicked( QListViewItem * item);
