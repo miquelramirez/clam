@@ -654,6 +654,7 @@ void Annotator::loadAudioFile(const char* filename)
   CLAM::AudioFile file;
   file.OpenExisting(filename);
   int nChannels = file.GetHeader().GetChannels();
+  int nSamples = file.GetHeader().GetLength()/1000*file.GetHeader().GetSampleRate()+readSize;
   std::vector<CLAM::Audio> audioFrameVector(nChannels);
   int i;
   for (i=0;i<nChannels;i++)
@@ -665,16 +666,19 @@ void Annotator::loadAudioFile(const char* filename)
   int beginSample=0;
   mCurrentAudio.SetSize(0);
   float samplingRate = mCurrentAudio.GetSampleRate();
+  
+  mCurrentAudio.SetSize(nSamples);
   while(reader.Do(audioFrameVector))
     {
-      mCurrentAudio.SetSize(mCurrentAudio.GetSize()+audioFrameVector[0].GetSize());
       mCurrentAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
       beginSample+=readSize;
       qApp->eventLoop()->processEvents( QEventLoop::AllEvents );
       mpProgressDialog->setProgress( beginSample/samplingRate*1000.0 );
       if (mpProgressDialog->wasCanceled()) break;
+	  if(beginSample+readSize>nSamples) break;
     }
-  reader.Stop();
+	mCurrentAudio.SetSize(beginSample);
+	reader.Stop();
 	
  
 }
