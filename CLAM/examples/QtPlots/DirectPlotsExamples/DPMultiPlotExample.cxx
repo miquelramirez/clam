@@ -50,7 +50,7 @@ int main()
 	}
 	DPMultiPlot plot;
 	plot.Label("MultiPlot");
-	plot.Geometry(100,100,500,225);
+	plot.Geometry(100,100,500,220);
 	plot.AddData("data0",sig0);
 	plot.AddData("data1",sig1);
 	plot.SetColor("data0",CLAM::VM::VMColor::Cyan());
