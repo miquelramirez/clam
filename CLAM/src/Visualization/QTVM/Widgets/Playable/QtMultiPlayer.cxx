@@ -51,7 +51,10 @@ namespace CLAM
 	void QtMultiPlayer::SetPlaySegment(const MediaTime& time)
 	{
 	    if(!mPlayers.size()) return;
-	    mPlayers[mCurrentPlayer]->SetBounds(time);
+	    for(unsigned i=0; i < mPlayers.size(); i++)
+	    {
+		mPlayers[i]->SetBounds(time);
+	    }
 	}
 
 	bool QtMultiPlayer::IsPlaying()
