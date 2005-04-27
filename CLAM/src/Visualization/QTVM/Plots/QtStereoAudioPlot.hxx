@@ -71,7 +71,7 @@ namespace CLAM
 	    void hScrollValue(int);
 	    void hMaxScroll(int);
 	    void updateHScroll(int);
-	    void receivedHZoomRatio(int);
+	    void receivedHZoomRatio(double);
 				
 	    void switchColors();
 
@@ -98,8 +98,8 @@ namespace CLAM
 	    QPushButton* _btoggle_color;
 	    TimeSegmentLabelsGroup *_labelsGroup;
 
-	    int _maxHZRatio;
-	    int _currentHZRatio;
+	    double _maxHZRatio;
+	    double _currentHZRatio;
 
 	    void InitStereoAudioPlot();
 	    void DirtyTrick();
