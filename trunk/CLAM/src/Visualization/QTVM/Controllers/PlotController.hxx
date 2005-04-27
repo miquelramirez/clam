@@ -85,11 +85,11 @@ namespace CLAM
 	    void requestRefresh();
 	    void sendView(View);
 
-	    void hZoomRatio(int);
+	    void hZoomRatio(double);
 	    void hScrollValue(int);
 	    void hScrollMaxValue(int);
 
-	    void vZoomRatio(int);
+	    void vZoomRatio(double);
 	    void vScrollValue(int);
 	    void vScrollMaxValue(int);
 
@@ -156,8 +156,8 @@ namespace CLAM
 	    TData _vRange;
 	    TData _vcur;
 
-	    int _hzRatio;
-	    int _vzRatio;
+	    double _hzRatio;
+	    double _vzRatio;
 
 	    TData _mouseXPos;
 	    TData _mouseYPos;

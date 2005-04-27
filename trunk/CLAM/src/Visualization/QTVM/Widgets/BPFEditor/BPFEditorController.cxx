@@ -25,7 +25,7 @@ namespace CLAM
 	      mMinX(0.0),mMaxX(0.0),
 	      mMinY(0.0),mMaxY(0.0),
 	      mVCurrent(0.0), 
-	      mVZoomRatio(0)
+	      mVZoomRatio(1.0)
 	{
 	    mData.SetSize(0);
 	}
@@ -701,7 +701,7 @@ namespace CLAM
 	    {
 		mVCurrent /= 2.0;
 		UpdateVBounds(true);
-		mVZoomRatio /= 2;
+		mVZoomRatio /= 2.0;
 		emit vZoomRatio(mVZoomRatio);
 		emit vScrollMaxValue(GetnyPixels());
 		emit vScrollValue(GetVScrollValue());
@@ -714,7 +714,7 @@ namespace CLAM
 	    {
 		mVCurrent *= 2.0;
 		UpdateVBounds(false);
-		mVZoomRatio *= 2;
+		mVZoomRatio *= 2.0;
 		emit vZoomRatio(mVZoomRatio);
 		emit vScrollValue(GetVScrollValue());
 		emit vScrollMaxValue(GetnyPixels());
@@ -737,13 +737,13 @@ namespace CLAM
 	void BPFEditorController::InitVZoomRatio()
 	{
 	    double n = mMinSpanY;
-	    int r = 1;
+	    double r = 1.0;
 	    while(n < mSpanY)
 	    {
-		n *= 2;
-		r *= 2;
+		n *= 2.0;
+		r *= 2.0;
 	    }
-	    mVZoomRatio = r/2;
+	    mVZoomRatio = r/2.0;
 	}
 
 	void BPFEditorController::InitVScroll()

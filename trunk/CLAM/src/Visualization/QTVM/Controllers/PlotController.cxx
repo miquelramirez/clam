@@ -40,8 +40,8 @@ namespace CLAM
 			_current = _nSamples;
 			_vcur = _vRange;
 
-			_hzRatio = 1;
-			_vzRatio = 1;
+			_hzRatio = 1.0;
+			_vzRatio = 1.0;
 
 			_isLeftButtonPressed=false;
 			_isAbleToEdit=false;
@@ -137,7 +137,7 @@ namespace CLAM
 				emit sendView(_view);
 				TData left = GetLeftBound();
 				TData right = GetRightBound();
-				_hzRatio /= 2;
+				_hzRatio /= 2.0;
 				emit hZoomRatio(_hzRatio);
 				emit hScrollMaxValue(GetnxPixels());
 				emit hScrollValue(GetHScrollValue());
@@ -156,7 +156,7 @@ namespace CLAM
 				emit sendView(_view);
 				TData left = GetLeftBound();
 				TData right = GetRightBound();
-				_hzRatio *= 2;
+				_hzRatio *= 2.0;
 				emit hZoomRatio(_hzRatio);
 				emit hScrollMaxValue(GetnxPixels());
 				SetHBounds(left,right);
@@ -175,7 +175,7 @@ namespace CLAM
 				emit sendView(_view);
 				TData bottom = GetBottomBound();
 				TData top = GetTopBound();
-				_vzRatio /= 2;
+				_vzRatio /= 2.0;
 				emit vZoomRatio(_vzRatio);
 				emit vScrollMaxValue(GetnyPixels());
 				emit vScrollValue(GetVScrollValue());
@@ -194,7 +194,7 @@ namespace CLAM
 				emit sendView(_view);
 				TData bottom = GetBottomBound();
 				TData top = GetTopBound();
-				_vzRatio *= 2;
+				_vzRatio *= 2.0;
 				emit vZoomRatio(_vzRatio);
 				emit vScrollMaxValue(GetnyPixels());
 				SetVBounds(bottom,top);
@@ -325,26 +325,26 @@ namespace CLAM
 
 		void PlotController::InitHRatio()
 		{
-			int n = int(GetHMin());
-			int r = 1;
+			double n = double(GetHMin());
+			double r = 1.0;
 			while(n < GetnSamples())
 			{
-				n *= 2;
-				r *= 2;
+				n *= 2.0;
+				r *= 2.0;
 			}
-			_hzRatio = r/2;
+			_hzRatio = r/2.0;
 		}
 
 		void PlotController::InitVRatio()
 		{
 			TData n = GetVMin();
-			int r = 1;
+			double r = 1.0;
 			while(n < GetvRange())
 			{
-				n *= 2;
-				r *= 2;
+				n *= 2.0;
+				r *= 2.0;
 			}
-			_vzRatio = r/2;
+			_vzRatio = r/2.0;
 		}
 
 		void PlotController::SurfaceDimensions(int w,int h)

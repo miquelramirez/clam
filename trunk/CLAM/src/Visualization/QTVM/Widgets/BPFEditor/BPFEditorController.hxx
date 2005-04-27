@@ -130,7 +130,7 @@ namespace CLAM
 
 	    void selectedXPos(double);
 
-	    void vZoomRatio(int);
+	    void vZoomRatio(double);
 	    void vScrollMaxValue(int);
 	    void vScrollValue(int);
 
@@ -176,7 +176,7 @@ namespace CLAM
 	    double mMinY,mMaxY;
 
 	    double mVCurrent;
-	    int mVZoomRatio;
+	    double mVZoomRatio;
 	    
 	    void PushSettings();
 	    void PopSettings();
