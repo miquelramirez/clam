@@ -42,7 +42,7 @@ namespace CLAM
 	    setGeometry(x,y,w,h);
 	}
 
-	void BPFEditor::BPFEditor::SetData(const BPF& bpf)
+	void BPFEditor::SetData(const BPF& bpf)
 	{
 	    mController->SetData(bpf);
 	    if(_player) 
