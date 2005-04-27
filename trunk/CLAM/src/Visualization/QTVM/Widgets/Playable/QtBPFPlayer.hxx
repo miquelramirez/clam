@@ -25,9 +25,11 @@ namespace CLAM
 	    void SetData(const BPF& bpf);
 
 	    void SetDuration(const TData& dur);
-
+	    
 	    Melody& GetMelody();
 	    MIDIMelody& GetMIDIMelody();
+
+	    void SetPitchBounds(const TData& lowest, const TData& highest);
 
 	    void SetColorMap(ColorMap map);
 
@@ -61,6 +63,8 @@ namespace CLAM
 	    bool mThreadIsCancelled;
 	    BPF mOwnedBPF;
 	    TData mOwnedDuration;
+	    TData global_max;
+	    bool mMustDoMapping;
 
 	    QFrame *radioPanel,*midiSettingsPanel;
 	    QRadioButton *mPlayAudio, *mPlayMIDI;
