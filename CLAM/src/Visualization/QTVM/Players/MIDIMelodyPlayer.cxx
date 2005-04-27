@@ -52,19 +52,9 @@ namespace CLAM
 				       const TData& dur)
 	{
 	    mMIDIMelody = melody;
-	    
 	    mMIDIDevice = "default:"+device;
 	    mMIDIProgram = program;
-
 	    mDuration = dur;
-
-	    if(mMIDIMelody.GetNumberOfNotes())
-	    {
-		MediaTime time;
-		time.SetBegin(TData(0.0));
-		time.SetEnd(mMIDIMelody.GetNoteArray()[mMIDIMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
-		SetBounds(time);
-	    }
 	}
 
 	MIDIMelody& MIDIMelodyPlayer::GetMIDIMelody()
@@ -174,7 +164,8 @@ namespace CLAM
 
 	TIndex MIDIMelodyPlayer::GetNoteIndex(bool first)
 	{
-	    if(mMIDIMelody.GetNumberOfNotes()==1)
+	    int nNotes = mMIDIMelody.GetNumberOfNotes();
+	    if(nNotes==1)
 	    {
 		return 0;
 	    }
@@ -187,16 +178,37 @@ namespace CLAM
 	    {
 		searchValue = _time.GetEnd();
 	    }
+
+	    if(searchValue <= mMIDIMelody.GetNoteArray()[0].GetTime().GetBegin()) return 0;
+	    if(searchValue >= mMIDIMelody.GetNoteArray()[nNotes-1].GetTime().GetEnd()) return nNotes-1;
+	    if(searchValue >= mMIDIMelody.GetNoteArray()[0].GetTime().GetBegin() &&
+	       searchValue <= mMIDIMelody.GetNoteArray()[0].GetTime().GetEnd()) return 0;
+	    if(searchValue >= mMIDIMelody.GetNoteArray()[nNotes-1].GetTime().GetBegin() &&
+	       searchValue <= mMIDIMelody.GetNoteArray()[nNotes-1].GetTime().GetEnd())
+		return nNotes-1;
+
 	    TIndex index = 0;
-	    for(TIndex i=0; i < mMIDIMelody.GetNumberOfNotes(); i++)
+	    TIndex currentIndex = 0;
+	    TIndex left_index = 0;
+	    TIndex right_index = nNotes-1;
+	    while(left_index <= right_index)
 	    {
-		if(searchValue >= mMIDIMelody.GetNoteArray()[i].GetTime().GetBegin() &&
-		   searchValue <= mMIDIMelody.GetNoteArray()[i].GetTime().GetEnd())
+		currentIndex = (left_index+right_index)/2;
+		if(searchValue >= mMIDIMelody.GetNoteArray()[currentIndex].GetTime().GetBegin() &&
+		   searchValue <= mMIDIMelody.GetNoteArray()[currentIndex].GetTime().GetEnd())
 		{
-		    index=i;
+		    index=currentIndex;
 		    break;
 		}
-	    }	   
+		if(searchValue < mMIDIMelody.GetNoteArray()[currentIndex].GetTime().GetBegin())
+		{
+		    right_index = currentIndex-1;
+		}
+		else if(searchValue > mMIDIMelody.GetNoteArray()[currentIndex].GetTime().GetBegin())
+		{
+		    left_index = currentIndex+1;
+		}
+	    }
 	    return index;
 	}
 

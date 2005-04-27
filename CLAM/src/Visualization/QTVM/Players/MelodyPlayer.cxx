@@ -28,16 +28,7 @@ namespace CLAM
 	void MelodyPlayer::SetData(const Melody& melody, const TData& dur)
 	{
 	    mMelody = melody;
-
 	    mDuration = dur;
-
-	    if(mMelody.GetNumberOfNotes())
-	    {
-		MediaTime time;
-		time.SetBegin(TData(0.0));
-		time.SetEnd(mMelody.GetNoteArray()[mMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
-		SetBounds(time);
-	    }
 	}
 
 	Melody& MelodyPlayer::GetMelody()
@@ -109,7 +100,8 @@ namespace CLAM
 
 	TIndex MelodyPlayer::GetNoteIndex(bool first)
 	{
-	    if(mMelody.GetNumberOfNotes()==1)
+	    int nNotes = mMelody.GetNumberOfNotes();
+	    if(nNotes==1)
 	    {
 		return 0;
 	    }
@@ -122,14 +114,35 @@ namespace CLAM
 	    {
 		searchValue = _time.GetEnd();
 	    }
+
+	    if(searchValue <= mMelody.GetNoteArray()[0].GetTime().GetBegin()) return 0;
+	    if(searchValue >= mMelody.GetNoteArray()[nNotes-1].GetTime().GetEnd()) return nNotes-1;
+	    if(searchValue >= mMelody.GetNoteArray()[0].GetTime().GetBegin() &&
+	       searchValue <= mMelody.GetNoteArray()[0].GetTime().GetEnd()) return 0;
+	    if(searchValue >= mMelody.GetNoteArray()[nNotes-1].GetTime().GetBegin() &&
+	       searchValue <= mMelody.GetNoteArray()[nNotes-1].GetTime().GetEnd())
+		return nNotes-1;
+
 	    TIndex index = 0;
-	    for(TIndex i=0; i < mMelody.GetNumberOfNotes(); i++)
+	    TIndex currentIndex = 0;
+	    TIndex left_index = 0;
+	    TIndex right_index = nNotes-1;
+	    while(left_index <= right_index)
 	    {
-		if(searchValue >= mMelody.GetNoteArray()[i].GetTime().GetBegin() &&
-		   searchValue <= mMelody.GetNoteArray()[i].GetTime().GetEnd())
+		currentIndex = (left_index+right_index)/2;
+		if(searchValue >= mMelody.GetNoteArray()[currentIndex].GetTime().GetBegin() &&
+		   searchValue <= mMelody.GetNoteArray()[currentIndex].GetTime().GetEnd())
 		{
-		    index=i;
+		    index=currentIndex;
 		    break;
+		}
+		if(searchValue < mMelody.GetNoteArray()[currentIndex].GetTime().GetBegin())
+		{
+		    right_index = currentIndex-1;
+		}
+		else if(searchValue > mMelody.GetNoteArray()[currentIndex].GetTime().GetBegin())
+		{
+		    left_index = currentIndex+1;
 		}
 	    }
 	    return index;
