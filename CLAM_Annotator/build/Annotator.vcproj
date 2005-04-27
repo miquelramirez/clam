@@ -3,8 +3,11 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="Annotator"
+	ProjectGUID="{4C4A9B22-0D41-4289-AF21-AE522F7263C0}"
 	SccProjectName="empty"
-	SccLocalPath=".">
+	SccAuxPath=""
+	SccLocalPath="."
+	SccProvider="MSSCCI:Microsoft Visual SourceSafe">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
@@ -23,7 +26,7 @@
 				AdditionalOptions="/Zm1000 "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor&quot;;&quot;c:\CLAM-CVS\CLAM\externals\CbLib&quot;;&quot;c:\CLAM-CVS\CLAM\..\id3lib\include&quot;;&quot;c:\CLAM-CVS\CLAM\..\libmad\include&quot;;&quot;c:\CLAM-CVS\CLAM\..\oggvorbis\include&quot;;&quot;c:\CLAM-CVS\CLAM\..\portmidi\include&quot;;&quot;c:\CLAM-CVS\CLAM\..\pthreads\include&quot;;C:\Qt\3.2.2\include;&quot;c:\CLAM-CVS\CLAM\..\libsndfile\include&quot;;&quot;c:\CLAM-CVS\CLAM\..\xercesc\include&quot;;..\src\common;&quot;c:\CLAM-CVS\CLAM\src\Base&quot;;&quot;c:\CLAM-CVS\CLAM\src\Data\Base&quot;;&quot;c:\CLAM-CVS\CLAM\src\Data\BasicProcessing&quot;;&quot;c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody&quot;;&quot;c:\CLAM-CVS\CLAM\src\Data\Descriptors\Pool&quot;;&quot;c:\CLAM-CVS\CLAM\src\Defines&quot;;&quot;c:\CLAM-CVS\CLAM\src\Defines\Windows&quot;;&quot;c:\CLAM-CVS\CLAM\src\Errors&quot;;&quot;c:\CLAM-CVS\CLAM\src\Flow\Controls&quot;;&quot;c:\CLAM-CVS\CLAM\src\Flow\Ports&quot;;&quot;c:\CLAM-CVS\CLAM\src\Processing\AudioFileIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Processing\AudioIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Processing\Base&quot;;&quot;c:\CLAM-CVS\CLAM\src\Processing\Generators&quot;;&quot;c:\CLAM-CVS\CLAM\src\Processing\MIDIIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Standard&quot;;&quot;c:\CLAM-CVS\CLAM\src\Storage\Base&quot;;&quot;c:\CLAM-CVS\CLAM\src\Storage\XML&quot;;&quot;c:\CLAM-CVS\CLAM\src\System\Threads&quot;;&quot;c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Tools\AudioIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Tools\MIDIIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Players&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Plots&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Surfaces&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\SysPlot&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Utils&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Label&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Rulers&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll&quot;;.\uic;&quot;C:\CLAM-CVS\CLAM_Annotator\src&quot;"
+				AdditionalIncludeDirectories="C:\CLAM_Sandbox\CLAM_Annotator\build\moc;C:\CLAM_Sandbox\CLAM_Annotator\build\uic;C:\CLAM_Sandbox\CLAM_Annotator\src;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor;c:\CLAM_Sandbox\CLAM\externals\CbLib;c:\CLAM_Sandbox\CLAM\..\id3lib\include;c:\CLAM_Sandbox\CLAM\..\libmad\include;c:\CLAM_Sandbox\CLAM\..\oggvorbis\include;c:\CLAM_Sandbox\CLAM\..\portmidi\include;c:\CLAM_Sandbox\CLAM\..\pthreads\include;C:\Qt\3.2.2\include;c:\CLAM_Sandbox\CLAM\..\libsndfile\include;c:\CLAM_Sandbox\CLAM\..\xercesc\include;..\src\common;c:\CLAM_Sandbox\CLAM\src\Base;c:\CLAM_Sandbox\CLAM\src\Data\Base;c:\CLAM_Sandbox\CLAM\src\Data\BasicProcessing;c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody;c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Pool;c:\CLAM_Sandbox\CLAM\src\Defines;c:\CLAM_Sandbox\CLAM\src\Defines\Windows;c:\CLAM_Sandbox\CLAM\src\Errors;c:\CLAM_Sandbox\CLAM\src\Flow\Controls;c:\CLAM_Sandbox\CLAM\src\Flow\Ports;c:\CLAM_Sandbox\CLAM\src\Processing\AudioFileIO;c:\CLAM_Sandbox\CLAM\src\Processing\AudioIO;c:\CLAM_Sandbox\CLAM\src\Processing\Base;c:\CLAM_Sandbox\CLAM\src\Processing\Generators;c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO;c:\CLAM_Sandbox\CLAM\src\Standard;c:\CLAM_Sandbox\CLAM\src\Storage\Base;c:\CLAM_Sandbox\CLAM\src\Storage\XML;c:\CLAM_Sandbox\CLAM\src\System\Threads;c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO;c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO;c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Players;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Plots;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Surfaces;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\SysPlot;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Utils;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Label;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll;.\uic"
 				PreprocessorDefinitions="CLAM_FLOAT;CLAM_USE_XML;HAS_FFTW=1;HAS_SFFTW=1;HAS_XERCES=1;HAS_FLTK=1;HAS_QT=1;HAS_SNDFILE=1;HAS_OGGVORBIS=1;HAS_LADSPA=0;HAS_PORTMIDI=1;HAS_ALSA=0;HAS_MAD=1;HAS_ID3=1;HAS_RTAUDIO=1;HAS_PTHREADS=1;HAS_DIRECTX=1;USE_FFTW=0;USE_SFFTW=0;USE_XERCES=1;USE_FLTK=0;USE_QT=1;USE_SNDFILE=1;USE_OGGVORBIS=1;USE_LADSPA=0;USE_PORTMIDI=1;USE_ALSA=0;USE_MAD=1;USE_ID3=1;USE_RTAUDIO=1;USE_PTHREADS=1;USE_DIRECTX=0;ID3LIB_LINKOPTION=1;QT_DLL;QT_THREAD_SUPPORT;VISUAL;__WINDOWS_DS__;HAVE_STANDARD_SSTREAM;HAVE_STANDARD_SSTREAM_STR;HAVE_STANDARD_UNICODE;HAVE_STANDARD_VECTOR_AT;WIN32;_CONSOLE;_MBCS"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -43,7 +46,7 @@
 				AdditionalDependencies="dsound.lib dxerr8.lib user32.lib gdi32.lib id3lib_vc7.lib zlib_vc7.lib libmad.lib ogg_static.lib vorbis_static.lib vorbisenc_static.lib vorbisfile_static.lib portmidi.lib porttime.lib winmm.lib pthreadVC.lib C:\Qt\3.2.2/lib/qt-mt322.lib C:\Qt\3.2.2/lib/qtmain.lib advapi32.lib comctl32.lib comdlg32.lib gdi32.lib kernel32.lib ole32.lib oleaut32.lib shell32.lib user32.lib uuid.lib winspool.lib wsock32.lib advapi32.lib comctl32.lib comdlg32.lib gdi32.lib kernel32.lib ole32.lib oleaut32.lib shell32.lib user32.lib uuid.lib winspool.lib wsock32.lib advapi32.lib comctl32.lib comdlg32.lib gdi32.lib kernel32.lib ole32.lib oleaut32.lib shell32.lib user32.lib uuid.lib winspool.lib wsock32.lib delayimp.lib imm32.lib winmm.lib libsndfile.lib xerces-c_2.lib advapi32.lib comctl32.lib comdlg32.lib gdi32.lib kernel32.lib ole32.lib oleaut32.lib shell32.lib user32.lib uuid.lib winspool.lib wsock32.lib delayimp.lib imm32.lib winmm.lib glu32.lib opengl32.lib"
 				OutputFile=".\VC7ReleaseFiles/bin/Annotator.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="c:\CLAM-CVS\CLAM\..\dxsdk\lib,c:\CLAM-CVS\CLAM\..\id3lib\lib,c:\CLAM-CVS\CLAM\..\libmad\lib,c:\CLAM-CVS\CLAM\..\oggvorbis\lib,c:\CLAM-CVS\CLAM\..\portmidi\lib,c:\CLAM-CVS\CLAM\..\pthreads\lib,C:\Qt\3.2.2\lib,c:\CLAM-CVS\CLAM\..\libsndfile\lib,c:\CLAM-CVS\CLAM\..\xercesc\lib"
+				AdditionalLibraryDirectories="c:\CLAM_Sandbox\CLAM\..\dxsdk\lib,c:\CLAM_Sandbox\CLAM\..\id3lib\lib,c:\CLAM_Sandbox\CLAM\..\libmad\lib,c:\CLAM_Sandbox\CLAM\..\oggvorbis\lib,c:\CLAM_Sandbox\CLAM\..\portmidi\lib,c:\CLAM_Sandbox\CLAM\..\pthreads\lib,C:\Qt\3.2.2\lib,c:\CLAM_Sandbox\CLAM\..\libsndfile\lib,c:\CLAM_Sandbox\CLAM\..\xercesc\lib"
 				IgnoreDefaultLibraryNames="MSVCRTD"
 				ProgramDatabaseFile=".\VC7ReleaseFiles/bin/MIDIOut.pdb"
 				SubSystem="1"
@@ -81,7 +84,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm1000 "
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\CLAM-CVS\CLAM_Annotator\src&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor&quot;;&quot;c:\CLAM-CVS\CLAM\externals\CbLib&quot;;&quot;c:\CLAM-CVS\CLAM\..\id3lib\include&quot;;&quot;c:\CLAM-CVS\CLAM\..\libmad\include&quot;;&quot;c:\CLAM-CVS\CLAM\..\oggvorbis\include&quot;;&quot;c:\CLAM-CVS\CLAM\..\portmidi\include&quot;;&quot;c:\CLAM-CVS\CLAM\..\pthreads\include&quot;;C:\Qt\3.2.2\include;&quot;c:\CLAM-CVS\CLAM\..\libsndfile\include&quot;;&quot;c:\CLAM-CVS\CLAM\..\xercesc\include&quot;;..\src\common;&quot;c:\CLAM-CVS\CLAM\src\Base&quot;;&quot;c:\CLAM-CVS\CLAM\src\Data\Base&quot;;&quot;c:\CLAM-CVS\CLAM\src\Data\BasicProcessing&quot;;&quot;c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody&quot;;&quot;c:\CLAM-CVS\CLAM\src\Data\Descriptors\Pool&quot;;&quot;c:\CLAM-CVS\CLAM\src\Defines&quot;;&quot;c:\CLAM-CVS\CLAM\src\Defines\Windows&quot;;&quot;c:\CLAM-CVS\CLAM\src\Errors&quot;;&quot;c:\CLAM-CVS\CLAM\src\Flow\Controls&quot;;&quot;c:\CLAM-CVS\CLAM\src\Flow\Ports&quot;;&quot;c:\CLAM-CVS\CLAM\src\Processing\AudioFileIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Processing\AudioIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Processing\Base&quot;;&quot;c:\CLAM-CVS\CLAM\src\Processing\Generators&quot;;&quot;c:\CLAM-CVS\CLAM\src\Processing\MIDIIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Standard&quot;;&quot;c:\CLAM-CVS\CLAM\src\Storage\Base&quot;;&quot;c:\CLAM-CVS\CLAM\src\Storage\XML&quot;;&quot;c:\CLAM-CVS\CLAM\src\System\Threads&quot;;&quot;c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Tools\AudioIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Tools\MIDIIO&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Players&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Plots&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Surfaces&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\SysPlot&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Utils&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Label&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Rulers&quot;;&quot;c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll&quot;;.\uic"
+				AdditionalIncludeDirectories="C:\CLAM_Sandbox\CLAM_Annotator\build\moc;C:\CLAM_Sandbox\CLAM_Annotator\build\uic;C:\CLAM_Sandbox\CLAM_Annotator\src;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor;c:\CLAM_Sandbox\CLAM\externals\CbLib;c:\CLAM_Sandbox\CLAM\..\id3lib\include;c:\CLAM_Sandbox\CLAM\..\libmad\include;c:\CLAM_Sandbox\CLAM\..\oggvorbis\include;c:\CLAM_Sandbox\CLAM\..\portmidi\include;c:\CLAM_Sandbox\CLAM\..\pthreads\include;C:\Qt\3.2.2\include;c:\CLAM_Sandbox\CLAM\..\libsndfile\include;c:\CLAM_Sandbox\CLAM\..\xercesc\include;..\src\common;c:\CLAM_Sandbox\CLAM\src\Base;c:\CLAM_Sandbox\CLAM\src\Data\Base;c:\CLAM_Sandbox\CLAM\src\Data\BasicProcessing;c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody;c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Pool;c:\CLAM_Sandbox\CLAM\src\Defines;c:\CLAM_Sandbox\CLAM\src\Defines\Windows;c:\CLAM_Sandbox\CLAM\src\Errors;c:\CLAM_Sandbox\CLAM\src\Flow\Controls;c:\CLAM_Sandbox\CLAM\src\Flow\Ports;c:\CLAM_Sandbox\CLAM\src\Processing\AudioFileIO;c:\CLAM_Sandbox\CLAM\src\Processing\AudioIO;c:\CLAM_Sandbox\CLAM\src\Processing\Base;c:\CLAM_Sandbox\CLAM\src\Processing\Generators;c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO;c:\CLAM_Sandbox\CLAM\src\Standard;c:\CLAM_Sandbox\CLAM\src\Storage\Base;c:\CLAM_Sandbox\CLAM\src\Storage\XML;c:\CLAM_Sandbox\CLAM\src\System\Threads;c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO;c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO;c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Players;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Plots;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Surfaces;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\SysPlot;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Utils;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Label;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers;c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll;.\uic"
 				PreprocessorDefinitions="CLAM_FLOAT;CLAM_USE_XML;HAS_FFTW=1;HAS_SFFTW=1;HAS_XERCES=1;HAS_FLTK=1;HAS_QT=1;HAS_SNDFILE=1;HAS_OGGVORBIS=1;HAS_LADSPA=0;HAS_PORTMIDI=1;HAS_ALSA=0;HAS_MAD=1;HAS_ID3=1;HAS_RTAUDIO=1;HAS_PTHREADS=1;HAS_DIRECTX=1;USE_FFTW=0;USE_SFFTW=0;USE_XERCES=1;USE_FLTK=0;USE_QT=1;USE_SNDFILE=1;USE_OGGVORBIS=1;USE_LADSPA=0;USE_PORTMIDI=1;USE_ALSA=0;USE_MAD=1;USE_ID3=1;USE_RTAUDIO=1;USE_PTHREADS=1;USE_DIRECTX=0;ID3LIB_LINKOPTION=1;QT_DLL;QT_THREAD_SUPPORT;VISUAL;__WINDOWS_DS__;HAVE_STANDARD_SSTREAM;HAVE_STANDARD_SSTREAM_STR;HAVE_STANDARD_UNICODE;HAVE_STANDARD_VECTOR_AT;WIN32;_CONSOLE;_MBCS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -101,7 +104,7 @@
 				AdditionalDependencies="dsound.lib dxerr8.lib user32.lib gdi32.lib id3libd_vc7.lib zlibD_vc7.lib libmadd.lib ogg_static_d.lib vorbis_static_d.lib vorbisenc_static_d.lib vorbisfile_static_d.lib portmidid.lib porttimed.lib winmm.lib pthreadVC.lib C:\Qt\3.2.2/lib/qt-mt322.lib C:\Qt\3.2.2/lib/qtmain.lib advapi32.lib comctl32.lib comdlg32.lib gdi32.lib kernel32.lib ole32.lib oleaut32.lib shell32.lib user32.lib uuid.lib winspool.lib wsock32.lib advapi32.lib comctl32.lib comdlg32.lib gdi32.lib kernel32.lib ole32.lib oleaut32.lib shell32.lib user32.lib uuid.lib winspool.lib wsock32.lib advapi32.lib comctl32.lib comdlg32.lib gdi32.lib kernel32.lib ole32.lib oleaut32.lib shell32.lib user32.lib uuid.lib winspool.lib wsock32.lib delayimp.lib imm32.lib winmm.lib libsndfiled.lib xerces-c_2d.lib advapi32.lib comctl32.lib comdlg32.lib gdi32.lib kernel32.lib ole32.lib oleaut32.lib shell32.lib user32.lib uuid.lib winspool.lib wsock32.lib delayimp.lib imm32.lib winmm.lib glu32.lib opengl32.lib"
 				OutputFile=".\VC7DebugFiles/bin/Annotator.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="c:\CLAM-CVS\CLAM\..\dxsdk\lib,c:\CLAM-CVS\CLAM\..\id3lib\lib,c:\CLAM-CVS\CLAM\..\libmad\lib,c:\CLAM-CVS\CLAM\..\oggvorbis\lib,c:\CLAM-CVS\CLAM\..\portmidi\lib,c:\CLAM-CVS\CLAM\..\pthreads\lib,C:\Qt\3.2.2\lib,c:\CLAM-CVS\CLAM\..\libsndfile\lib,c:\CLAM-CVS\CLAM\..\xercesc\lib"
+				AdditionalLibraryDirectories="c:\CLAM_Sandbox\CLAM\..\dxsdk\lib,c:\CLAM_Sandbox\CLAM\..\id3lib\lib,c:\CLAM_Sandbox\CLAM\..\libmad\lib,c:\CLAM_Sandbox\CLAM\..\oggvorbis\lib,c:\CLAM_Sandbox\CLAM\..\portmidi\lib,c:\CLAM_Sandbox\CLAM\..\pthreads\lib,C:\Qt\3.2.2\lib,c:\CLAM_Sandbox\CLAM\..\libsndfile\lib,c:\CLAM_Sandbox\CLAM\..\xercesc\lib"
 				IgnoreDefaultLibraryNames="MSVCRT"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\VC7DebugFiles/bin/MIDIOut.pdb"
@@ -167,7 +170,7 @@
 				Name="c: Sources"
 				Filter="">
 				<Filter
-					Name="CLAM-CVS Sources"
+					Name="CLAM_Sandbox Sources"
 					Filter="">
 					<Filter
 						Name="CLAM Sources"
@@ -179,32 +182,32 @@
 								Name="AudioIO Sources"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\AudioDevice.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\AudioDevice.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\AudioDeviceList.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\AudioDeviceList.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\AudioManager.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\AudioManager.cxx">
 								</File>
 								<Filter
 									Name="Windows Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\Windows\DirectXAudioDevice.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\Windows\DirectXAudioDevice.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\Windows\DXFullDuplex.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\Windows\DXFullDuplex.cxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="RtAudio Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\RtAudio\RtAAudioDevice.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\RtAudio\RtAAudioDevice.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\RtAudio\RtAudio.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\RtAudio\RtAudio.cxx">
 									</File>
 								</Filter>
 							</Filter>
@@ -212,41 +215,41 @@
 								Name="MIDIIO Sources"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\MIDIDevice.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\MIDIDevice.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\MIDIDeviceList.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\MIDIDeviceList.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\MIDIEnums.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\MIDIEnums.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\MIDIManager.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\MIDIManager.cxx">
 								</File>
 								<Filter
 									Name="File Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\FileMIDIDevice.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\FileMIDIDevice.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDIReader.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDIReader.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDISong.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDISong.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDISongPlayer.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDISongPlayer.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDITempo.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDITempo.cxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="PortMIDI Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\PortMIDI\PORTMIDIDevice.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\PortMIDI\PORTMIDIDevice.cxx">
 									</File>
 								</Filter>
 							</Filter>
@@ -254,43 +257,43 @@
 								Name="AudioFileIO Sources"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioCodec.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioCodec.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioCodecs_Stream.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioCodecs_Stream.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioFile.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioFile.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioFileFormats.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioFileFormats.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioFileHeader.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioFileHeader.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioTextDescriptors.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioTextDescriptors.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\MpegAudioStream.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\MpegAudioStream.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\MpegBitstream.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\MpegBitstream.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\MpegCodec.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\MpegCodec.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\OggVorbisAudioStream.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\OggVorbisAudioStream.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\OggVorbisCodec.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\OggVorbisCodec.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\PCMAudioStream.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\PCMAudioStream.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\PCMCodec.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\PCMCodec.cxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -298,26 +301,26 @@
 							Name="Errors Sources"
 							Filter="">
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Errors\Err.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Errors\Err.cxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Errors\ErrDynamicType.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Errors\ErrDynamicType.cxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Errors\ErrOutOfMemory.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Errors\ErrOutOfMemory.cxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Errors\ErrProcessingObj.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Errors\ErrProcessingObj.cxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Errors\ErrSystem.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Errors\ErrSystem.cxx">
 							</File>
 						</Filter>
 						<Filter
 							Name="Defines Sources"
 							Filter="">
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Defines\Assert.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Defines\Assert.cxx">
 							</File>
 						</Filter>
 						<Filter
@@ -327,19 +330,19 @@
 								Name="XML Sources"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\BasicXMLable.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\BasicXMLable.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XercesDomWriter.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XercesDomWriter.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XMLAdapter.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XMLAdapter.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XMLComponentAdapter.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XMLComponentAdapter.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XMLStorage.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XMLStorage.cxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -347,29 +350,29 @@
 							Name="Base Sources"
 							Filter="">
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Base\DynamicType.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Base\DynamicType.cxx">
 							</File>
 						</Filter>
 						<Filter
 							Name="Standard Sources"
 							Filter="">
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\Array.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\Array.cxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\BPF.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\BPF.cxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\Enum.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\Enum.cxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\GlobalEnums.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\GlobalEnums.cxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\Point.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\Point.cxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\Text.cxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\Text.cxx">
 							</File>
 						</Filter>
 						<Filter
@@ -379,7 +382,7 @@
 								Name="BasicProcessing Sources"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Data\BasicProcessing\Audio.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\BasicProcessing\Audio.cxx">
 								</File>
 							</Filter>
 							<Filter
@@ -389,22 +392,22 @@
 									Name="Melody Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\MediaTime.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\MediaTime.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\Melody.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\Melody.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\MIDIMelody.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\MIDIMelody.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\MIDINote.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\MIDINote.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\Note.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\Note.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\PitchNote.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\PitchNote.cxx">
 									</File>
 								</Filter>
 							</Filter>
@@ -416,68 +419,68 @@
 								Name="Base Sources No. 1"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\InControlRegistry.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\InControlRegistry.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\InPortRegistry.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\InPortRegistry.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\OutControlRegistry.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\OutControlRegistry.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\OutPortRegistry.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\OutPortRegistry.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\Processing.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\Processing.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\ProcessingComposite.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\ProcessingComposite.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\TopLevelProcessing.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\TopLevelProcessing.cxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="AudioIO Sources No. 1"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\AudioIO\AudioIn.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\AudioIO\AudioIn.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\AudioIO\AudioOut.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\AudioIO\AudioOut.cxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="MIDIIO Sources No. 1"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\MIDIIO\MIDIClocker.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO\MIDIClocker.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\MIDIIO\MIDIIn.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO\MIDIIn.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\MIDIIO\MIDIOut.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO\MIDIOut.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\MIDIIO\MIDIOutControl.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO\MIDIOutControl.cxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="AudioFileIO Sources No. 1"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReader.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReader.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReaderConfig.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReaderConfig.cxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="Generators Sources"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Generators\SimpleOscillator.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Generators\SimpleOscillator.cxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -488,29 +491,29 @@
 								Name="Ports Sources"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\AudioInPort.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\AudioInPort.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\AudioOutPort.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\AudioOutPort.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\InPort.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\InPort.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\OutPort.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\OutPort.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\Region.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\Region.cxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="Controls Sources"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Controls\InControl.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Controls\InControl.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Controls\OutControl.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Controls\OutControl.cxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -524,26 +527,26 @@
 									Name="Utils Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Utils\MIDISettings.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Utils\MIDISettings.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Utils\QtAppWrapper.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Utils\QtAppWrapper.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Utils\VMColor.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Utils\VMColor.cxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="Plots Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Plots\QtAudioPlot.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Plots\QtAudioPlot.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Plots\QtPlot.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Plots\QtPlot.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Plots\QtPresentation.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Plots\QtPresentation.cxx">
 									</File>
 								</Filter>
 								<Filter
@@ -553,74 +556,74 @@
 										Name="Playable Sources"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayableList.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayableList.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayablePlot.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayablePlot.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtAudioPlayer.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtAudioPlayer.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtBPFPlayer.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtBPFPlayer.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtMultiPlayer.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtMultiPlayer.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtPlayer.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtPlayer.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtSinglePlayer.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtSinglePlayer.cxx">
 										</File>
 									</Filter>
 									<Filter
 										Name="BPFEditor Sources"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditor.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditor.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorController.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorController.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorDisplaySurface.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorDisplaySurface.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorRenderer.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorRenderer.cxx">
 										</File>
 									</Filter>
 									<Filter
 										Name="Rulers Sources"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Rulers\Ruler.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers\Ruler.cxx">
 										</File>
 									</Filter>
 									<Filter
 										Name="Scroll Sources"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll\HScrollGroup.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\HScrollGroup.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll\ScrollBar.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\ScrollBar.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll\VScrollGroup.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\VScrollGroup.cxx">
 										</File>
 									</Filter>
 									<Filter
 										Name="Label Sources"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Label\SingleLabel.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Label\SingleLabel.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Label\TimeSegmentLabelsGroup.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Label\TimeSegmentLabelsGroup.cxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Label\VZLabel.cxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Label\VZLabel.cxx">
 										</File>
 									</Filter>
 								</Filter>
@@ -628,68 +631,68 @@
 									Name="SysPlot Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\SysPlot\QtPlotter.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\SysPlot\QtPlotter.cxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="Controllers Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\AudioPlotController.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\AudioPlotController.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\PlotController.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\PlotController.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\SegmentationMarksPlotController.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\SegmentationMarksPlotController.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\SelPosPlotController.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\SelPosPlotController.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\SelTimeRegionPlotController.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\SelTimeRegionPlotController.cxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="Surfaces Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Surfaces\DisplaySurface.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Surfaces\DisplaySurface.cxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="Renderers Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers\DataRenderer.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers\DataRenderer.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers\Dial.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers\Dial.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers\RegionMarker.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers\RegionMarker.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers\Renderer.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers\Renderer.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers\VLineArrayRenderer.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers\VLineArrayRenderer.cxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="Players Sources"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Players\APlayer.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Players\APlayer.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Players\MelodyPlayer.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Players\MelodyPlayer.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Players\MIDIMelodyPlayer.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Players\MIDIMelodyPlayer.cxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Players\Player.cxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Players\Player.cxx">
 									</File>
 								</Filter>
 							</Filter>
@@ -701,13 +704,13 @@
 								Name="Threads Sources"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\System\Threads\Condition.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\System\Threads\Condition.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\System\Threads\Mutex.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\System\Threads\Mutex.cxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\System\Threads\Thread.cxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\System\Threads\Thread.cxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -735,13 +738,6 @@
 				Filter="">
 				<File
 					RelativePath="..\src\AnnotatorBrowserGL\AnnotatorBrowserGL.cxx">
-				</File>
-			</Filter>
-			<Filter
-				Name="uic Sources"
-				Filter="">
-				<File
-					RelativePath="uic\qmake_image_collection.cxx">
 				</File>
 			</Filter>
 		</Filter>
@@ -833,7 +829,7 @@
 				Name="c: Headers"
 				Filter="">
 				<Filter
-					Name="CLAM-CVS Headers"
+					Name="CLAM_Sandbox Headers"
 					Filter="">
 					<Filter
 						Name="CLAM Headers"
@@ -842,19 +838,19 @@
 							Name="Errors Headers"
 							Filter="">
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Errors\Err.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Errors\Err.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Errors\ErrDynamicType.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Errors\ErrDynamicType.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Errors\ErrOutOfMemory.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Errors\ErrOutOfMemory.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Errors\ErrProcessingObj.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Errors\ErrProcessingObj.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Errors\ErrSystem.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Errors\ErrSystem.hxx">
 							</File>
 						</Filter>
 						<Filter
@@ -864,26 +860,26 @@
 								Name="AudioIO Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\AudioDevice.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\AudioDevice.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\AudioDeviceList.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\AudioDeviceList.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\AudioManager.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\AudioManager.hxx">
 								</File>
 								<Filter
 									Name="Windows Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\Windows\DXFullDuplex.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\Windows\DXFullDuplex.hxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="RtAudio Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioIO\RtAudio\RtAudio.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioIO\RtAudio\RtAudio.hxx">
 									</File>
 								</Filter>
 							</Filter>
@@ -891,49 +887,49 @@
 								Name="MIDIIO Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\MIDIDevice.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\MIDIDevice.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\MIDIDeviceList.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\MIDIDeviceList.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\MIDIEnums.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\MIDIEnums.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\MIDIManager.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\MIDIManager.hxx">
 								</File>
 								<Filter
 									Name="File Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\Defines.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\Defines.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDIChunkType.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDIChunkType.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDIDataTypes.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDIDataTypes.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDIEvent.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDIEvent.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDIMessage.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDIMessage.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDIReader.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDIReader.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDISong.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDISong.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDISongPlayer.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDISongPlayer.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDITempo.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDITempo.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Tools\MIDIIO\File\MIDITrack.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\MIDIIO\File\MIDITrack.hxx">
 									</File>
 								</Filter>
 							</Filter>
@@ -941,43 +937,43 @@
 								Name="AudioFileIO Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioCodec.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioCodec.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioCodecs_Stream.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioCodecs_Stream.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioFile.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioFile.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioFileFormats.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioFileFormats.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioFileHeader.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioFileHeader.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\AudioTextDescriptors.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\AudioTextDescriptors.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\MpegAudioStream.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\MpegAudioStream.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\MpegBitstream.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\MpegBitstream.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\MpegCodec.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\MpegCodec.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\OggVorbisAudioStream.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\OggVorbisAudioStream.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\OggVorbisCodec.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\OggVorbisCodec.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\PCMAudioStream.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\PCMAudioStream.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Tools\AudioFileIO\PCMCodec.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Tools\AudioFileIO\PCMCodec.hxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -985,34 +981,34 @@
 							Name="Defines Headers"
 							Filter="">
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Defines\Assert.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Defines\Assert.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Defines\CLAM_Math.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Defines\CLAM_Math.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Defines\CLAMGL.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Defines\CLAMGL.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Defines\DataTypes.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Defines\DataTypes.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Defines\OSDefines.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Defines\OSDefines.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Defines\StaticBool.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Defines\StaticBool.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Defines\TypeInfo.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Defines\TypeInfo.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Defines\TypeInfoStd.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Defines\TypeInfoStd.hxx">
 							</File>
 							<Filter
 								Name="Windows Headers No. 1"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Defines\Windows\CLAM_windows.h">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Defines\Windows\CLAM_windows.h">
 								</File>
 							</Filter>
 						</Filter>
@@ -1023,59 +1019,59 @@
 								Name="Base Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\Base\Storable.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\Base\Storable.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\Base\Storage.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\Base\Storage.hxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="XML Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\BasicXMLable.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\BasicXMLable.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XercesDomDocumentHandler.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XercesDomDocumentHandler.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XercesDomReader.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XercesDomReader.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XercesDomReadingContext.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XercesDomReadingContext.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XercesDomWriter.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XercesDomWriter.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XercesDomWritingContext.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XercesDomWritingContext.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XercesEncodings.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XercesEncodings.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XercesInitializer.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XercesInitializer.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XMLable.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XMLable.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XMLAdapter.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XMLAdapter.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XMLArrayAdapter.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XMLArrayAdapter.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XMLComponentAdapter.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XMLComponentAdapter.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XMLIterableAdapter.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XMLIterableAdapter.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XMLStorage.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XMLStorage.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Storage\XML\XmlStorageErr.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Storage\XML\XmlStorageErr.hxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -1083,68 +1079,68 @@
 							Name="Base Headers No. 1"
 							Filter="">
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Base\Component.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Base\Component.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Base\DynamicType.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Base\DynamicType.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Base\DynamicTypeMacros.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Base\DynamicTypeMacros.hxx">
 							</File>
 						</Filter>
 						<Filter
 							Name="Standard Headers"
 							Filter="">
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\Array.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\Array.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\BPF.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\BPF.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\BPFTmpl.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\BPFTmpl.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\BPFTmplDec.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\BPFTmplDec.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\BPFTmplDef.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\BPFTmplDef.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\Enum.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\Enum.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\FastRounding.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\FastRounding.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\Filename.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\Filename.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\GlobalEnums.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\GlobalEnums.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\IndexArray.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\IndexArray.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\List.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\List.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\Point.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\Point.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\PointTmpl.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\PointTmpl.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\PointTmplDec.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\PointTmplDec.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\PointTmplDef.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\PointTmplDef.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\SearchArray.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\SearchArray.hxx">
 							</File>
 							<File
-								RelativePath="c:\CLAM-CVS\CLAM\src\Standard\Text.hxx">
+								RelativePath="c:\CLAM_Sandbox\CLAM\src\Standard\Text.hxx">
 							</File>
 						</Filter>
 						<Filter
@@ -1154,17 +1150,17 @@
 								Name="Base Headers No. 2"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Data\Base\ProcessingData.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Base\ProcessingData.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Data\Base\ProcessingDataConfig.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Base\ProcessingDataConfig.hxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="BasicProcessing Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Data\BasicProcessing\Audio.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\BasicProcessing\Audio.hxx">
 								</File>
 							</Filter>
 							<Filter
@@ -1174,44 +1170,44 @@
 									Name="Pool Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Pool\AttributePool.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Pool\AttributePool.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Pool\DescriptionAttributes.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Pool\DescriptionAttributes.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Pool\DescriptionScheme.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Pool\DescriptionScheme.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Pool\DescriptionScope.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Pool\DescriptionScope.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Pool\Pool.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Pool\Pool.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Pool\ScopePool.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Pool\ScopePool.hxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="Melody Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\MediaTime.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\MediaTime.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\Melody.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\Melody.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\MIDIMelody.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\MIDIMelody.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\MIDINote.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\MIDINote.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\Note.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\Note.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Data\Descriptors\Melody\PitchNote.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Data\Descriptors\Melody\PitchNote.hxx">
 									</File>
 								</Filter>
 							</Filter>
@@ -1223,77 +1219,77 @@
 								Name="Base Headers No. 3"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\InControlRegistry.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\InControlRegistry.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\InPortRegistry.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\InPortRegistry.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\OutControlRegistry.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\OutControlRegistry.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\OutPortRegistry.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\OutPortRegistry.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\Processing.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\Processing.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\ProcessingComposite.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\ProcessingComposite.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\ProcessingConfig.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\ProcessingConfig.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Base\TopLevelProcessing.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Base\TopLevelProcessing.hxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="AudioIO Headers No. 1"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\AudioIO\AudioIn.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\AudioIO\AudioIn.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\AudioIO\AudioIO.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\AudioIO\AudioIO.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\AudioIO\AudioOut.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\AudioIO\AudioOut.hxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="MIDIIO Headers No. 1"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\MIDIIO\MIDIClocker.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO\MIDIClocker.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\MIDIIO\MIDIIn.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO\MIDIIn.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\MIDIIO\MIDIIOConfig.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO\MIDIIOConfig.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\MIDIIO\MIDIOut.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO\MIDIOut.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\MIDIIO\MIDIOutControl.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\MIDIIO\MIDIOutControl.hxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="AudioFileIO Headers No. 1"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReader.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReader.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReaderConfig.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\AudioFileIO\MultiChannelAudioFileReaderConfig.hxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="Generators Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Processing\Generators\SimpleOscillator.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Processing\Generators\SimpleOscillator.hxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -1304,47 +1300,47 @@
 								Name="Ports Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\AudioInPort.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\AudioInPort.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\AudioOutPort.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\AudioOutPort.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\InPort.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\InPort.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\InPortPublisher.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\InPortPublisher.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\OutPort.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\OutPort.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\PhantomBuffer.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\PhantomBuffer.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\ReadingRegion.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\ReadingRegion.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\Region.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\Region.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\StreamImpl.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\StreamImpl.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Ports\WritingRegion.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Ports\WritingRegion.hxx">
 								</File>
 							</Filter>
 							<Filter
 								Name="Controls Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Controls\ControlLinker.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Controls\ControlLinker.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Controls\InControl.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Controls\InControl.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\Flow\Controls\OutControl.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\Flow\Controls\OutControl.hxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -1355,10 +1351,10 @@
 								Name="include Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\..\portmidi\include\portmidi.h">
+									RelativePath="c:\CLAM_Sandbox\CLAM\..\portmidi\include\portmidi.h">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\..\portmidi\include\porttime.h">
+									RelativePath="c:\CLAM_Sandbox\CLAM\..\portmidi\include\porttime.h">
 								</File>
 							</Filter>
 						</Filter>
@@ -1372,46 +1368,46 @@
 									Name="Utils Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Utils\GLView.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Utils\GLView.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Utils\IconData.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Utils\IconData.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Utils\MIDISettings.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Utils\MIDISettings.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Utils\QtAppWrapper.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Utils\QtAppWrapper.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Utils\VMColor.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Utils\VMColor.hxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="Plots Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Plots\QtAudioPlot.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Plots\QtAudioPlot.hxx">
 										<FileConfiguration
 											Name="Debug|Win32">
 											<Tool
 												Name="VCCustomBuildTool"
-												Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Plots\QtAudioPlot.hxx"
+												Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Plots\QtAudioPlot.hxx"
 												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 												Outputs=".\moc\$(InputName)_moc.cxx"/>
 										</FileConfiguration>
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Plots\QtPlot.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Plots\QtPlot.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Plots\QtPresentation.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Plots\QtPresentation.hxx">
 										<FileConfiguration
 											Name="Debug|Win32">
 											<Tool
 												Name="VCCustomBuildTool"
-												Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Plots\QtPresentation.hxx"
+												Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Plots\QtPresentation.hxx"
 												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 												Outputs=".\moc\$(InputName)_moc.cxx"/>
@@ -1425,107 +1421,107 @@
 										Name="Playable Headers"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayableList.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayableList.hxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayablePlot.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\PlayablePlot.hxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtAudioPlayer.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtAudioPlayer.hxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtBPFPlayer.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtBPFPlayer.hxx">
 											<FileConfiguration
 												Name="Debug|Win32">
 												<Tool
 													Name="VCCustomBuildTool"
-													Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtBPFPlayer.hxx"
+													Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtBPFPlayer.hxx"
 													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 													Outputs=".\moc\$(InputName)_moc.cxx"/>
 											</FileConfiguration>
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtMultiPlayer.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtMultiPlayer.hxx">
 											<FileConfiguration
 												Name="Debug|Win32">
 												<Tool
 													Name="VCCustomBuildTool"
-													Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtMultiPlayer.hxx"
+													Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtMultiPlayer.hxx"
 													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 													Outputs=".\moc\$(InputName)_moc.cxx"/>
 											</FileConfiguration>
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtPlayer.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtPlayer.hxx">
 											<FileConfiguration
 												Name="Debug|Win32">
 												<Tool
 													Name="VCCustomBuildTool"
-													Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtPlayer.hxx"
+													Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtPlayer.hxx"
 													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 													Outputs=".\moc\$(InputName)_moc.cxx"/>
 											</FileConfiguration>
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Playable\QtSinglePlayer.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Playable\QtSinglePlayer.hxx">
 										</File>
 									</Filter>
 									<Filter
 										Name="BPFEditor Headers"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditor.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditor.hxx">
 											<FileConfiguration
 												Name="Debug|Win32">
 												<Tool
 													Name="VCCustomBuildTool"
-													Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditor.hxx"
+													Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditor.hxx"
 													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 													Outputs=".\moc\$(InputName)_moc.cxx"/>
 											</FileConfiguration>
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorController.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorController.hxx">
 											<FileConfiguration
 												Name="Debug|Win32">
 												<Tool
 													Name="VCCustomBuildTool"
-													Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorController.hxx"
+													Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorController.hxx"
 													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 													Outputs=".\moc\$(InputName)_moc.cxx"/>
 											</FileConfiguration>
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorDisplaySurface.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorDisplaySurface.hxx">
 											<FileConfiguration
 												Name="Debug|Win32">
 												<Tool
 													Name="VCCustomBuildTool"
-													Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorDisplaySurface.hxx"
+													Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorDisplaySurface.hxx"
 													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 													Outputs=".\moc\$(InputName)_moc.cxx"/>
 											</FileConfiguration>
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorRenderer.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\BPFEditor\BPFEditorRenderer.hxx">
 										</File>
 									</Filter>
 									<Filter
 										Name="Rulers Headers"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Rulers\Ruler.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers\Ruler.hxx">
 											<FileConfiguration
 												Name="Debug|Win32">
 												<Tool
 													Name="VCCustomBuildTool"
-													Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Rulers\Ruler.hxx"
+													Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Rulers\Ruler.hxx"
 													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 													Outputs=".\moc\$(InputName)_moc.cxx"/>
@@ -1536,36 +1532,36 @@
 										Name="Scroll Headers"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll\HScrollGroup.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\HScrollGroup.hxx">
 											<FileConfiguration
 												Name="Debug|Win32">
 												<Tool
 													Name="VCCustomBuildTool"
-													Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll\HScrollGroup.hxx"
+													Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\HScrollGroup.hxx"
 													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 													Outputs=".\moc\$(InputName)_moc.cxx"/>
 											</FileConfiguration>
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll\ScrollBar.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\ScrollBar.hxx">
 											<FileConfiguration
 												Name="Debug|Win32">
 												<Tool
 													Name="VCCustomBuildTool"
-													Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll\ScrollBar.hxx"
+													Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\ScrollBar.hxx"
 													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 													Outputs=".\moc\$(InputName)_moc.cxx"/>
 											</FileConfiguration>
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll\VScrollGroup.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\VScrollGroup.hxx">
 											<FileConfiguration
 												Name="Debug|Win32">
 												<Tool
 													Name="VCCustomBuildTool"
-													Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Scroll\VScrollGroup.hxx"
+													Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Scroll\VScrollGroup.hxx"
 													CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 													Outputs=".\moc\$(InputName)_moc.cxx"/>
@@ -1576,13 +1572,13 @@
 										Name="Label Headers"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Label\SingleLabel.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Label\SingleLabel.hxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Label\TimeSegmentLabelsGroup.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Label\TimeSegmentLabelsGroup.hxx">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Widgets\Label\VZLabel.hxx">
+											RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Widgets\Label\VZLabel.hxx">
 										</File>
 									</Filter>
 								</Filter>
@@ -1590,58 +1586,58 @@
 									Name="SysPlot Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\SysPlot\QtPlotter.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\SysPlot\QtPlotter.hxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="Controllers Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\AudioPlotController.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\AudioPlotController.hxx">
 										<FileConfiguration
 											Name="Debug|Win32">
 											<Tool
 												Name="VCCustomBuildTool"
-												Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\AudioPlotController.hxx"
+												Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\AudioPlotController.hxx"
 												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 												Outputs=".\moc\$(InputName)_moc.cxx"/>
 										</FileConfiguration>
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\PlotController.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\PlotController.hxx">
 										<FileConfiguration
 											Name="Debug|Win32">
 											<Tool
 												Name="VCCustomBuildTool"
-												Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\PlotController.hxx"
+												Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\PlotController.hxx"
 												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 												Outputs=".\moc\$(InputName)_moc.cxx"/>
 										</FileConfiguration>
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\SegmentationMarksPlotController.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\SegmentationMarksPlotController.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\SelPosPlotController.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\SelPosPlotController.hxx">
 										<FileConfiguration
 											Name="Debug|Win32">
 											<Tool
 												Name="VCCustomBuildTool"
-												Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\SelPosPlotController.hxx"
+												Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\SelPosPlotController.hxx"
 												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 												Outputs=".\moc\$(InputName)_moc.cxx"/>
 										</FileConfiguration>
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\SelTimeRegionPlotController.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\SelTimeRegionPlotController.hxx">
 										<FileConfiguration
 											Name="Debug|Win32">
 											<Tool
 												Name="VCCustomBuildTool"
-												Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Controllers\SelTimeRegionPlotController.hxx"
+												Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Controllers\SelTimeRegionPlotController.hxx"
 												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 												Outputs=".\moc\$(InputName)_moc.cxx"/>
@@ -1652,12 +1648,12 @@
 									Name="Surfaces Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Surfaces\DisplaySurface.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Surfaces\DisplaySurface.hxx">
 										<FileConfiguration
 											Name="Debug|Win32">
 											<Tool
 												Name="VCCustomBuildTool"
-												Description="MOCing c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Surfaces\DisplaySurface.hxx"
+												Description="MOCing c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Surfaces\DisplaySurface.hxx"
 												CommandLine="$(QTDIR)\bin\moc.exe $(InputPath) -o .\moc\$(InputName)_moc.cxx
 "
 												Outputs=".\moc\$(InputName)_moc.cxx"/>
@@ -1668,35 +1664,35 @@
 									Name="Renderers Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers\DataRenderer.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers\DataRenderer.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers\Dial.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers\Dial.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers\RegionMarker.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers\RegionMarker.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers\Renderer.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers\Renderer.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Renderers\VLineArrayRenderer.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Renderers\VLineArrayRenderer.hxx">
 									</File>
 								</Filter>
 								<Filter
 									Name="Players Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Players\APlayer.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Players\APlayer.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Players\MelodyPlayer.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Players\MelodyPlayer.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Players\MIDIMelodyPlayer.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Players\MIDIMelodyPlayer.hxx">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\src\Visualization\QTVM\Players\Player.hxx">
+										RelativePath="c:\CLAM_Sandbox\CLAM\src\Visualization\QTVM\Players\Player.hxx">
 									</File>
 								</Filter>
 							</Filter>
@@ -1708,7 +1704,7 @@
 								Name="include Headers No. 1"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\..\libsndfile\include\sndfile.h">
+									RelativePath="c:\CLAM_Sandbox\CLAM\..\libsndfile\include\sndfile.h">
 								</File>
 							</Filter>
 						</Filter>
@@ -1725,68 +1721,68 @@
 										Name="util Headers"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\util\PlatformUtils.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\util\PlatformUtils.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\util\XercesDefs.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\util\XercesDefs.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\util\XMLString.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\util\XMLString.hpp">
 										</File>
 									</Filter>
 									<Filter
 										Name="parsers Headers"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\parsers\XercesDOMParser.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\parsers\XercesDOMParser.hpp">
 										</File>
 									</Filter>
 									<Filter
 										Name="framework Headers"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\framework\MemBufFormatTarget.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\framework\MemBufFormatTarget.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\framework\MemBufInputSource.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\framework\MemBufInputSource.hpp">
 										</File>
 									</Filter>
 									<Filter
 										Name="sax Headers"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\sax\HandlerBase.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\sax\HandlerBase.hpp">
 										</File>
 									</Filter>
 									<Filter
 										Name="dom Headers"
 										Filter="">
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\dom\DOMDocument.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\dom\DOMDocument.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\dom\DOMElement.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\dom\DOMElement.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\dom\DOMImplementation.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\dom\DOMImplementation.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\dom\DOMImplementationLS.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\dom\DOMImplementationLS.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\dom\DOMImplementationRegistry.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\dom\DOMImplementationRegistry.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\dom\DOMNamedNodeMap.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\dom\DOMNamedNodeMap.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\dom\DOMNodeList.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\dom\DOMNodeList.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\dom\DOMText.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\dom\DOMText.hpp">
 										</File>
 										<File
-											RelativePath="c:\CLAM-CVS\CLAM\..\xercesc\include\xercesc\dom\DOMWriter.hpp">
+											RelativePath="c:\CLAM_Sandbox\CLAM\..\xercesc\include\xercesc\dom\DOMWriter.hpp">
 										</File>
 									</Filter>
 								</Filter>
@@ -1799,7 +1795,7 @@
 								Name="include Headers No. 3"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\..\pthreads\include\pthread.h">
+									RelativePath="c:\CLAM_Sandbox\CLAM\..\pthreads\include\pthread.h">
 								</File>
 							</Filter>
 						</Filter>
@@ -1810,43 +1806,43 @@
 								Name="CbLib Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\CBL.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\CBL.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\CBLMacros.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\CBLMacros.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\Functor0.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\Functor0.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\Functor0R.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\Functor0R.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\Functor1.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\Functor1.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\Functor1R.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\Functor1R.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\Functor2.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\Functor2.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\Functor2R.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\Functor2R.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\Functor3.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\Functor3.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\Functor3R.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\Functor3R.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\Functor4.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\Functor4.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\Functor4R.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\Functor4R.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\externals\CbLib\FunctorBase.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\externals\CbLib\FunctorBase.hxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -1857,19 +1853,19 @@
 								Name="Threads Headers"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\System\Threads\Condition.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\System\Threads\Condition.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\System\Threads\Lock.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\System\Threads\Lock.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\System\Threads\Mutex.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\System\Threads\Mutex.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\System\Threads\Thread.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\System\Threads\Thread.hxx">
 								</File>
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\src\System\Threads\xtime.hxx">
+									RelativePath="c:\CLAM_Sandbox\CLAM\src\System\Threads\xtime.hxx">
 								</File>
 							</Filter>
 						</Filter>
@@ -1883,13 +1879,13 @@
 									Name="vorbis Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\..\oggvorbis\include\vorbis\codec.h">
+										RelativePath="c:\CLAM_Sandbox\CLAM\..\oggvorbis\include\vorbis\codec.h">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\..\oggvorbis\include\vorbis\vorbisenc.h">
+										RelativePath="c:\CLAM_Sandbox\CLAM\..\oggvorbis\include\vorbis\vorbisenc.h">
 									</File>
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\..\oggvorbis\include\vorbis\vorbisfile.h">
+										RelativePath="c:\CLAM_Sandbox\CLAM\..\oggvorbis\include\vorbis\vorbisfile.h">
 									</File>
 								</Filter>
 							</Filter>
@@ -1901,7 +1897,7 @@
 								Name="include Headers No. 5"
 								Filter="">
 								<File
-									RelativePath="c:\CLAM-CVS\CLAM\..\libmad\include\mad.h">
+									RelativePath="c:\CLAM_Sandbox\CLAM\..\libmad\include\mad.h">
 								</File>
 							</Filter>
 						</Filter>
@@ -1915,7 +1911,7 @@
 									Name="id3 Headers"
 									Filter="">
 									<File
-										RelativePath="c:\CLAM-CVS\CLAM\..\id3lib\include\id3\tag.h">
+										RelativePath="c:\CLAM_Sandbox\CLAM\..\id3lib\include\id3\tag.h">
 									</File>
 								</Filter>
 							</Filter>
@@ -1966,12 +1962,6 @@
 								RelativePath="C:\Qt\3.2.2\include\qdesktopwidget.h">
 							</File>
 							<File
-								RelativePath="C:\Qt\3.2.2\include\qdict.h">
-							</File>
-							<File
-								RelativePath="C:\Qt\3.2.2\include\qdragobject.h">
-							</File>
-							<File
 								RelativePath="C:\Qt\3.2.2\include\qevent.h">
 							</File>
 							<File
@@ -2018,9 +2008,6 @@
 							</File>
 							<File
 								RelativePath="C:\Qt\3.2.2\include\qiconset.h">
-							</File>
-							<File
-								RelativePath="C:\Qt\3.2.2\include\qimage.h">
 							</File>
 							<File
 								RelativePath="C:\Qt\3.2.2\include\qintdict.h">
@@ -2269,13 +2256,29 @@ $(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
 			</File>
 		</Filter>
 		<Filter
+			Name="uic"
+			Filter="">
+			<File
+				RelativePath=".\uic\AboutBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\AboutBase.h">
+			</File>
+			<File
+				RelativePath=".\uic\AnnotatorBase.cxx">
+			</File>
+			<File
+				RelativePath=".\uic\AnnotatorBase.h">
+			</File>
+			<File
+				RelativePath=".\uic\qmake_image_collection.cxx">
+			</File>
+		</Filter>
+		<Filter
 			Name="moc"
 			Filter="">
 			<File
 				RelativePath=".\moc\AboutBase_moc.cxx">
-			</File>
-			<File
-				RelativePath=".\moc\AnalyzeWindowBase_moc.cxx">
 			</File>
 			<File
 				RelativePath=".\moc\Annotator_moc.cxx">
@@ -2285,9 +2288,6 @@ $(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
 			</File>
 			<File
 				RelativePath=".\moc\AnnotatorBrowserGL_moc.cxx">
-			</File>
-			<File
-				RelativePath=".\moc\AnnotatorEnterBase_moc.cxx">
 			</File>
 			<File
 				RelativePath=".\moc\AudioPlotController_moc.cxx">
@@ -2302,22 +2302,10 @@ $(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
 				RelativePath=".\moc\BPFEditorDisplaySurface_moc.cxx">
 			</File>
 			<File
-				RelativePath=".\moc\ConfigurationDialogBase_moc.cxx">
-			</File>
-			<File
 				RelativePath=".\moc\DisplaySurface_moc.cxx">
 			</File>
 			<File
 				RelativePath=".\moc\HScrollGroup_moc.cxx">
-			</File>
-			<File
-				RelativePath=".\moc\NewProjectDialogBase_moc.cxx">
-			</File>
-			<File
-				RelativePath=".\moc\NewProjectNameBase_moc.cxx">
-			</File>
-			<File
-				RelativePath=".\moc\OpenProjectDialogBase_moc.cxx">
 			</File>
 			<File
 				RelativePath=".\moc\PlotController_moc.cxx">
@@ -2339,9 +2327,6 @@ $(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
 			</File>
 			<File
 				RelativePath=".\moc\Ruler_moc.cxx">
-			</File>
-			<File
-				RelativePath=".\moc\SaveProjectAsDialogBase_moc.cxx">
 			</File>
 			<File
 				RelativePath=".\moc\ScrollBar_moc.cxx">
@@ -2368,64 +2353,25 @@ $(QTDIR)\bin\moc.exe .\uic\$(InputName).h -o .\moc\$(InputName)_moc.cxx
 				RelativePath=".\moc\VScrollGroup_moc.cxx">
 			</File>
 		</Filter>
-		<Filter
-			Name="uic"
-			Filter="">
-			<File
-				RelativePath=".\uic\AboutBase.cxx">
-			</File>
-			<File
-				RelativePath=".\uic\AboutBase.h">
-			</File>
-			<File
-				RelativePath=".\uic\AnalyzeWindowBase.cxx">
-			</File>
-			<File
-				RelativePath=".\uic\AnalyzeWindowBase.h">
-			</File>
-			<File
-				RelativePath=".\uic\AnnotatorBase.cxx">
-			</File>
-			<File
-				RelativePath=".\uic\AnnotatorBase.h">
-			</File>
-			<File
-				RelativePath=".\uic\AnnotatorEnterBase.cxx">
-			</File>
-			<File
-				RelativePath=".\uic\AnnotatorEnterBase.h">
-			</File>
-			<File
-				RelativePath=".\uic\ConfigurationDialogBase.cxx">
-			</File>
-			<File
-				RelativePath=".\uic\ConfigurationDialogBase.h">
-			</File>
-			<File
-				RelativePath=".\uic\NewProjectDialogBase.cxx">
-			</File>
-			<File
-				RelativePath=".\uic\NewProjectDialogBase.h">
-			</File>
-			<File
-				RelativePath=".\uic\NewProjectNameBase.cxx">
-			</File>
-			<File
-				RelativePath=".\uic\NewProjectNameBase.h">
-			</File>
-			<File
-				RelativePath=".\uic\OpenProjectDialogBase.cxx">
-			</File>
-			<File
-				RelativePath=".\uic\OpenProjectDialogBase.h">
-			</File>
-			<File
-				RelativePath=".\uic\SaveProjectAsDialogBase.cxx">
-			</File>
-			<File
-				RelativePath=".\uic\SaveProjectAsDialogBase.h">
-			</File>
-		</Filter>
+		<File
+			RelativePath="settings.cfg">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="c:\CLAM_Sandbox\CLAM\build\srcdeps\srcdeps.exe settings.cfg
+"
+					Outputs="buildstamp"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="c:\CLAM_Sandbox\CLAM\build\srcdeps\srcdeps.exe settings.cfg
+"
+					Outputs="buildstamp"/>
+			</FileConfiguration>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
