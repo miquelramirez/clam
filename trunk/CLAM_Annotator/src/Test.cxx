@@ -22,6 +22,8 @@
 #include "SpectrumConfig.hxx"
 #include "Segmentator.hxx"
 
+#include <time.h>
+
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
 void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, int frameSize);
 void FillSongNames(CLAM_Annotator::SongFiles& songFiles);
@@ -292,17 +294,21 @@ void CreatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song
   //Write HLD values
   std::list<CLAM_Annotator::HLDSchemaElement>& hlds = schema.GetHLDSchema().GetHLDs();
   std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
-  for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
+  int i=0;
+  for(it2 = hlds.begin(); it2 != hlds.end(); it2++,i++)
     {
       if((*it2).GetName()=="Artist")
 	{
 	  std::string* value = pool.GetWritePool<std::string>("Song",(*it2).GetName());
-	  *value = "Ruibal";
+	  *value = "Triana";
 	}
       else if((*it2).GetName()=="Title")
 	{
 	  std::string* value = pool.GetWritePool<std::string>("Song",(*it2).GetName());
-	  *value = "Pension_Triana";
+	  if(i==0)
+		*value = "Pájaro_de_Alas_Blancas";
+	  else
+		*value = "En_una_Esquina_Cualquiera";
 	}
       else if((*it2).GetName()=="Genre")
 	{
@@ -362,9 +368,9 @@ void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
 void FillSongNames(CLAM_Annotator::SongFiles& songFiles)
 {
   CLAM_Annotator::Song song;
-  song.SetSoundFile("../Samples/SongsTest/07276EC58D0000000000E8_02.mp3");
+  song.SetSoundFile("../Samples/SongsTest/02.mp3");
   songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("../Samples/SongsTest/07276EC58D0000000000E8_03.mp3");
+  song.SetSoundFile("../Samples/SongsTest/03.mp3");
   songFiles.GetFileNames().push_back(song);
 }
 
@@ -551,12 +557,13 @@ void OpenSoundFile(const std::string& filename, CLAM::Audio& audio)
   CLAM::MultiChannelAudioFileReader reader(cfg);
   reader.Start();
   int beginSample=0;
-  audio.SetSize(0);
+  int nSamples = file.GetHeader().GetSamples(); 
+  audio.SetSize(nSamples);
   while(reader.Do(audioFrameVector))
     {
-      audio.SetSize(audio.GetSize()+audioFrameVector[0].GetSize());
       audio.SetAudioChunk(beginSample,audioFrameVector[0]);
       beginSample+=readSize;
+	  if(beginSample+readSize>nSamples) break;
     }
   reader.Stop();
 
