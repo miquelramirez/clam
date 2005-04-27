@@ -138,11 +138,13 @@ namespace CLAM
 	void QtBPFPlayer::uncheckAudio()
 	{
 	    mPlayAudio->setChecked(false);
+	    mPlayMIDI->setChecked(true);
 	}
 
 	void QtBPFPlayer::uncheckMIDI()
 	{
 	    mPlayMIDI->setChecked(false);
+	    mPlayAudio->setChecked(true);
 	}
 
 	void QtBPFPlayer::setMIDIDevice(int index)
