@@ -2,6 +2,7 @@
 #define __RULER__
 
 #include <qwidget.h>
+#include "GlobalEnums.hxx"
 #include "VMColor.hxx"
 
 namespace CLAM
@@ -15,9 +16,12 @@ namespace CLAM
 	    Q_OBJECT
 
 	public:
-	    Ruler(QWidget* parent, const  Position& pos);
+	    Ruler(QWidget* parent, const  Position& pos, const EScale& scale=EScale::eLinear);
 	    ~Ruler();
 
+	    void SetScale(const EScale& scale);
+	    const EScale& GetScale() const;
+	    
 	    void SetBackgroundColor(const Color& c);
 	    void SetForegroundColor(const Color& c);
 
@@ -34,6 +38,7 @@ namespace CLAM
 
 	private:
 	    Position mPosition;
+	    EScale mScale;
 	    double mMin, mMax, mSpan;
 	    int mTicks;
 

@@ -86,13 +86,16 @@ namespace CLAM
 
 	    void SetData(const BPF& bpf);
 	    BPF& GetData();
-
+	        
 	    void SetDataColor(const Color& c);
 	    void SetHandlersColor(const Color& c);
 	    void SetRectColor(const Color& c);
 
-	    void SetXRange(const double& min, const double& max);
-	    void SetYRange(const double& min, const double& max);
+	    void SetXRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
+	    void SetYRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
+
+	    void SetXScale(const EScale& scale);
+	    void SetYScale(const EScale& scale);
 
 	    void SetKeyInsertPressed(bool pressed);
 	    void SetKeyDeletePressed(bool pressed);
@@ -134,6 +137,8 @@ namespace CLAM
 	    void elementAdded(int, float, float);
 	    void elementRemoved(int);
 
+	    void rightButtonPressed();
+
 	public slots:
 	    void vZoomIn();
 	    void vZoomOut();
@@ -146,6 +151,7 @@ namespace CLAM
 	    GLView mView;
 	    RulerRange mXRulerRange, mYRulerRange;
 	    int mEFlags;
+	    EScale mXScale, mYScale;
 	    bool mLeftButtonPressed, mRightButtonPressed;
 	    bool mKeyInsertPressed, mKeyDeletePressed;
 	    bool mMouseOverDisplay;

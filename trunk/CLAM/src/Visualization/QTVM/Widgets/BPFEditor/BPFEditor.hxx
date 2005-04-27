@@ -12,6 +12,7 @@
 class QLabel;
 class QFrame;
 class QBoxLayout;
+class QPopupMenu;
 
 namespace CLAM
 {
@@ -35,14 +36,19 @@ namespace CLAM
 	    void SetData(const BPF& bpf);
 	    BPF& GetData();
 
-	    void SetXRange(const double& min, const double& max);
-	    void SetYRange(const double& min, const double& max);
+	    void SetXRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
+	    void SetYRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
+
+	    void SetXScale(const EScale& scale);
+	    void SetYScale(const EScale& scale);
 
 	    Melody& GetMelody();
 	    MIDIMelody& GetMIDIMelody();
 	    
 	    void Show();
 	    void Hide();
+
+	    void SetActivePlayer(bool active);
 	    
         signals:
 	    void xValueChanged(int, float);
@@ -69,8 +75,12 @@ namespace CLAM
 	    void updateLabels(QString, QString);
 	    void setMaxVScroll(int);
 
+	    void showPopupMenu();
+	    void activePlayer();
+
 	private:
 	    int mEFlags;
+	    bool mActivePlayer;
 	    Ruler *mXRuler, *mYRuler;
 	    BPFEditorController* mController;
 	    BPFEditorDisplaySurface* mDisplaySurface;
@@ -90,7 +100,10 @@ namespace CLAM
 	    Melody mMelody;
 	    MIDIMelody mMIDIMelody;
 
+	    bool mHasData;
 	    bool mWhiteOverBlackScheme;
+
+	    QPopupMenu* mPopupMenu;
 
 	    void InitBPFEditor();
 
@@ -100,6 +113,12 @@ namespace CLAM
 
 	    void AdjustLeft(const double& min, const double& max, bool y_axis=true);
 	    void CreateVScroll();
+
+	    void ShowPlayer();
+	    void HidePlayer();
+
+	    void InitPopupMenu();
+	    
 	};
     }
 }

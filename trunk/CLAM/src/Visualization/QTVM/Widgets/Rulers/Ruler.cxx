@@ -6,8 +6,10 @@ namespace CLAM
     namespace VM
     {
 	
-	Ruler::Ruler(QWidget* parent, const Position& pos)
-	    : QWidget(parent), mPosition(pos)
+	Ruler::Ruler(QWidget* parent, const Position& pos, const EScale& scale)
+	    : QWidget(parent), 
+	      mPosition(pos), 
+	      mScale(scale)
 	{
 	    mFont.setFamily("fixed");
 	    mFont.setPointSize(10);
@@ -23,6 +25,16 @@ namespace CLAM
 
 	Ruler::~Ruler()
 	{
+	}
+
+	void Ruler::SetScale(const EScale& scale)
+	{
+	    mScale = scale;
+	}
+
+	const EScale& Ruler::GetScale() const
+	{
+	    return mScale;
 	}
 
 	void Ruler::SetBackgroundColor(const Color& c)
@@ -225,8 +237,30 @@ namespace CLAM
 	    double value = mMin + (double(tick)*mSpan)/double(mTicks-1);
 	    int tmp = int(value);
 	    double frac = value-double(tmp);
-	    if(frac) return QString::number(value,'f',2);
-	    return QString::number(value,'f',0);;
+	    if(!tmp)
+	    {
+		if(fabs(frac) < 1E-2) value = 0;
+	    } 
+	    QString label("");
+	    switch(mScale)
+	    {
+		case EScale::eLinear:	   
+		    if(value)
+		    { 
+			label =  QString::number(value,'f',2);
+		    }
+		    else
+		    {
+			label =  QString::number(value,'f',0);
+		    }
+		    break;
+		case EScale::eLog:
+		    label = QString::number(value,'e',1);
+		    break;
+		default:
+		    break;
+	    }
+	    return label;
 	}
 
 	int Ruler::TestnTicksForSpan()
