@@ -557,8 +557,7 @@ void  Annotator::saveDescriptors()
 
 void Annotator::initSongs()
 {
-	mLogicGroup->hide();
-	addSongs();	
+  addSongs();	
 }
 
 void Annotator::chooseColor()
