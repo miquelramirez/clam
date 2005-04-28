@@ -6,7 +6,9 @@ namespace CLAM
     namespace VM
     {
 	BPFEditorRenderer::BPFEditorRenderer()
-	    : mSelectedIndex(-1)
+	    : mLeftIndex(0),
+	      mRightIndex(0),
+	      mSelectedIndex(-1)
 	{
 	    SetDataColor(VMColor::White());
 	    SetHandlersColor(VMColor::White());
@@ -36,12 +38,18 @@ namespace CLAM
 	    DrawData();
 	    DrawHandlers();
 	}
+
+	void BPFEditorRenderer::SetBounds(const TIndex& left, const TIndex& right)
+	{
+	    mLeftIndex=left;
+	    mRightIndex=right;
+	}
 	
 	void BPFEditorRenderer::DrawData()
 	{
 	    glColor3ub(GLubyte(mDataColor.r),GLubyte(mDataColor.g),GLubyte(mDataColor.b));
 	    glBegin(GL_LINE_STRIP);
-	    for(TIndex i=0; i < mData.Size(); i++)
+	    for(TIndex i=mLeftIndex; i < mRightIndex; i++)
 	    {
 		glVertex2f(GLfloat(mData.GetXValue(i)),GLfloat(mData.GetValueFromIndex(i)));
 	    }
@@ -71,7 +79,7 @@ namespace CLAM
 	    glPointSize(POINT_SIZE);
 	    glColor3ub(GLubyte(mHandlersColor.r),GLubyte(mHandlersColor.g),GLubyte(mHandlersColor.b));
 	    glBegin(GL_POINTS);
-	    for(TIndex i=0; i < mData.Size(); i++)
+	    for(TIndex i=mLeftIndex; i < mRightIndex; i++)
 	    {
 		if(i != mSelectedIndex)
 		{
