@@ -16,8 +16,8 @@ quickTestForScriptDebuging = False  # important: to be enabled for debuging puro
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
-updateLevelForCLAM = 1 
-updateLevelForExamples = 1
+updateLevelForCLAM = 2 
+updateLevelForExamples = 2
 updateLevelForTestData = 1 
 
 # When false keeps already compiled objects
@@ -84,6 +84,7 @@ sandboxes = [ # Module, Sandbox name, Tag, Update level
 	( 'CLAM_SDIFDisplay', 'clean-CLAM_SDIFDisplay', '', updateLevelForExamples ),
 	( 'CLAM_SpectralDelay', 'clean-CLAM_SpectralDelay', '', updateLevelForExamples ),
 	( 'CLAM_SMSTools', 'clean-CLAM_SMSTools', '', updateLevelForExamples ),
+	( 'CLAM_Annotator', 'clean-CLAM_Annotator', '', updateLevelForExamples ),
 	( 'CLAM_Salto', 'clean-CLAM_Salto', '', updateLevelForExamples ),
 	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', '', updateLevelForExamples ),
 	( 'CLAM-TestData', 'CLAM-TestData', '', updateLevelForTestData )
@@ -109,6 +110,7 @@ externalApplications = [
 	( 'NetworkEditor', baseDirOf('NetworkEditor')+'/build/' ),
 	( 'Voice2MIDI', baseDirOf('CLAM_Voice2MIDI')+'/build/' ),
 	( 'SMSTools', baseDirOf('SMSTools')+'/build/Tools/' ),
+	( 'Annotator', baseDirOf('Annotator')+'/build/' ),
 	( 'SMSBatch', baseDirOf('SMSTools')+'/build/Batch/' ),
 	( 'SMSConsole', baseDirOf('SMSTools')+'/build/Console/' ),
 	( 'SDIFDisplay', baseDirOf('SDIFDisplay')+'/build/' )
