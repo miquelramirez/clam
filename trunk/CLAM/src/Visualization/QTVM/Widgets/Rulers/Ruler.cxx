@@ -1,5 +1,6 @@
 #include <qpainter.h>
 #include "Ruler.hxx"
+#include "CLAM_Math.hxx"
 
 namespace CLAM
 {
