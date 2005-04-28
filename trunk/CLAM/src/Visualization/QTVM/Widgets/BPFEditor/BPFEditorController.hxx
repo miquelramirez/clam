@@ -210,6 +210,8 @@ namespace CLAM
 	    void InitVScroll();
 
 	    void UpdateVBounds(bool zin);
+
+	    TIndex GetBound(bool left=true);
 	};
     }
 }
