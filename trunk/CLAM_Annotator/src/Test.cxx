@@ -368,9 +368,7 @@ void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
 void FillSongNames(CLAM_Annotator::SongFiles& songFiles)
 {
   CLAM_Annotator::Song song;
-  song.SetSoundFile("../Samples/SongsTest/02.mp3");
-  songFiles.GetFileNames().push_back(song);
-  song.SetSoundFile("../Samples/SongsTest/03.mp3");
+  song.SetSoundFile("../../CLAM-TestData/trumpet.wav");
   songFiles.GetFileNames().push_back(song);
 }
 
