@@ -71,6 +71,7 @@ public slots:
   void fileMenuAboutToShow();
 
   void playMarks(bool);
+  void playOriginalAudioAndLLD(bool);
 protected:
   void closeEvent( QCloseEvent * e);
   bool event(QEvent* e);
@@ -152,6 +153,7 @@ private:
   bool mHLDChanged;
   bool mLLDChanged;
   bool mSegmentsChanged;
+  bool mHasAudio;
   std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
                 
   int mCurrentIndex;     
