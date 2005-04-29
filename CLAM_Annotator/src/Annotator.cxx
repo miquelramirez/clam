@@ -650,8 +650,8 @@ void Annotator::drawLLDescriptors(int index)
 
 void Annotator::loadAudioFile(const char* filename)
 {
+    hideBPFEditors();
     setMenuAudioItemsEnabled(false);
-
   const CLAM::TSize readSize = 1024;
   CLAM::AudioFile file;
   file.OpenExisting(filename);
@@ -1159,4 +1159,9 @@ void Annotator::setMenuAudioItemsEnabled(bool enabled)
 	audioAuralize_Segmentation_MarksAction->setEnabled(false);
 	audioOriginal_Audio__LLDAction->setEnabled(false);
     }
+}
+
+void Annotator::hideBPFEditors()
+{
+    for(unsigned i=0; i < mBPFEditors.size(); i++) mBPFEditors[i]->Hide();
 }
