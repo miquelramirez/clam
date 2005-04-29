@@ -136,6 +136,7 @@ private:
 
   void auralizeMarks();
   void setMenuAudioItemsEnabled(bool);
+  void hideBPFEditors();
 
 private:
   CLAM::VM::QtAudioPlot* mpAudioPlot;
