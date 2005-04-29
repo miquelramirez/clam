@@ -1108,7 +1108,7 @@ void Annotator::playMarks(bool play)
 {
     if(play)
     {
-	mpAudioPlot->SetData(mCurrentMarkedAudio);
+	mpAudioPlot->SetData(mCurrentMarkedAudio,false);
 	for(unsigned i=0; i < mBPFEditors.size(); i++)
 	{
 	    mBPFEditors[i]->SetAudioPtr(&mCurrentMarkedAudio);
@@ -1116,7 +1116,7 @@ void Annotator::playMarks(bool play)
     }
     else
     {
-	mpAudioPlot->SetData(mCurrentAudio);
+	mpAudioPlot->SetData(mCurrentAudio,false);
 	for(unsigned i=0; i < mBPFEditors.size(); i++)
 	{
 	    mBPFEditors[i]->SetAudioPtr(&mCurrentAudio);
