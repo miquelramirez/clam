@@ -132,6 +132,11 @@ namespace CLAM
 	    }
 	}
 
+	void BPFEditor::SetAudioPtr(const Audio* audio)
+	{
+	    if(_player) ((QtBPFPlayer*)_player)->SetAudioPtr(audio);
+	}
+
 	void BPFEditor::keyPressEvent(QKeyEvent* e)
 	{
 	    switch(e->key())
@@ -205,16 +210,14 @@ namespace CLAM
 	    // top area: left ruler and display surface
 	    topLayout = new QHBoxLayout(mainLayout);
 
-	    labelFont.setFamily("fixed");
-	    labelFont.setPointSize(10);
-	    labelFont.setBold(true);
-	    labelFont.setStyleHint(QFont::Courier,QFont::NoAntialias);
+	    mYRuler = new Ruler(this,CLAM::VM::Left);
+
+	    labelFont = mYRuler->Font();
 
 	    QFontMetrics fm(labelFont);
 
-	    int initial_width=fm.width("X:0.0e+00");
+	    int initial_width=fm.width("X:-0.0e+00");
 
-	    mYRuler = new Ruler(this,CLAM::VM::Left);
 	    mYRuler->setFixedWidth(initial_width);
 	    
 	    mDisplaySurface = new BPFEditorDisplaySurface(this);
@@ -506,6 +509,15 @@ namespace CLAM
 	{
 	    if(!_player) return;
 	    ((QtBPFPlayer*)_player)->StopThread();
+	}
+
+	void BPFEditor::playSimultaneously(bool both)
+	{
+	    if(_player)
+	    {
+		((QtBPFPlayer*)_player)->PlaySimultaneously(both);
+	    }
+	    
 	}
 
 	void BPFEditor::ShowPlayer()
