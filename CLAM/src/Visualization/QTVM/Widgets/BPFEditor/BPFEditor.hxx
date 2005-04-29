@@ -16,6 +16,8 @@ class QPopupMenu;
 
 namespace CLAM
 {
+    class Audio;
+
     namespace VM
     {
 	class Ruler;
@@ -49,6 +51,8 @@ namespace CLAM
 	    void Hide();
 
 	    void SetActivePlayer(bool active);
+
+	    void SetAudioPtr(const Audio* audio);
 	    
         signals:
 	    void xValueChanged(int, float);
@@ -66,6 +70,8 @@ namespace CLAM
 	    void setRegionTime(float, float);
 
 	    void stopPendingTasks();
+
+	    void playSimultaneously(bool);
 
 	protected:
 	    void keyPressEvent(QKeyEvent* e);
