@@ -35,7 +35,11 @@ namespace CLAM
 
 		PlayablePlot::~PlayablePlot()
 		{
-			if(_player) delete _player;
+		    if(_player) 
+		    {
+			Stop();
+			delete _player;
+		    }
 		}
 				
 		void PlayablePlot::Play()
