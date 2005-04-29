@@ -695,6 +695,7 @@ void Annotator::generateEnvelopesFromDescriptors()
     for(it = descriptorsNames.begin();it != descriptorsNames.end(); ed_it++, it++)
     {
 	(*ed_it)->SetData( generateEnvelopeFromDescriptor((*it)) );
+	(*ed_it)->SetAudioPtr(&mCurrentAudio);
     }
 
 }
