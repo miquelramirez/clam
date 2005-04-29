@@ -1146,6 +1146,9 @@ void Annotator::playOriginalAudioAndLLD(bool both)
 
 void Annotator::setMenuAudioItemsEnabled(bool enabled)
 {
+    audioAuralize_Segmentation_MarksAction->setOn(false); 
+    audioOriginal_Audio__LLDAction->setOn(false);
+
     if(enabled)
     {
 	audioAuralize_Segmentation_MarksAction->setEnabled(true);
