@@ -8,7 +8,8 @@ namespace CLAM
     {
 	QtMultiPlayer::QtMultiPlayer(QWidget* parent) 
 	    : QtPlayer(parent),
-	      mCurrentPlayer(0)
+	      mCurrentPlayer(0),
+	      mAllPlayers(false)
 	{
 	}
 		
@@ -29,13 +30,33 @@ namespace CLAM
 	{
 	    if(!mPlayers.size()) return;
 	    PlayableList::Stop();
-	    mPlayers[mCurrentPlayer]->Play();
+	    if(!mAllPlayers)
+	    {
+		mPlayers[mCurrentPlayer]->Play();
+	    }
+	    else
+	    {
+		for(unsigned i=0; i < mPlayers.size(); i++)
+		{
+		    mPlayers[i]->Play();
+		}
+	    }
 	}
 		
 	void QtMultiPlayer::pause()
 	{
 	    if(!mPlayers.size()) return; 
-	    mPlayers[mCurrentPlayer]->Pause();
+	    if(!mAllPlayers)
+	    {
+		mPlayers[mCurrentPlayer]->Pause();
+	    }
+	    else
+	    {
+		for(unsigned i=0; i < mPlayers.size(); i++)
+		{
+		    mPlayers[i]->Pause();
+		}
+	    }
 	}
 		
 	void QtMultiPlayer::stop()
@@ -70,6 +91,12 @@ namespace CLAM
 		}
 	    }
 	    return playing;
+	}
+
+	void QtMultiPlayer::AllPlayers(bool all)
+	{
+	    // be careful
+	    mAllPlayers = all;
 	}
 		
     }

@@ -21,7 +21,8 @@ namespace CLAM
 	      mThreadIsCancelled(false),
 	      mOwnedDuration(TData(0.0)),
 	      global_max(TData(1.0)), // prevent to divide by zero
-	      mMustDoMapping(false)
+	      mMustDoMapping(false),
+	      mPlaySimultaneously(false)
 	{
 	    setFixedHeight(30);
 	    AddPlayer(new MelodyPlayer());
@@ -42,6 +43,11 @@ namespace CLAM
 	{
 	    mOwnedBPF = bpf;
 	    mThread.Start();
+	}
+
+	void QtBPFPlayer::SetAudioPtr(const Audio* audio)
+	{
+	    ((MelodyPlayer*)mPlayers[MELODY_PLAYER])->SetAudioPtr(audio);
 	}
 
 	void QtBPFPlayer::SetDuration(const TData& dur)
@@ -126,11 +132,13 @@ namespace CLAM
 	    if(!mPlayAudio->isChecked() && !mPlayMIDI->isChecked()) return;
 	    if(mPlayAudio->isChecked())
 	    {
+		((MelodyPlayer*)mPlayers[MELODY_PLAYER])->PlayMelody(true);
 		SetCurrentPlayer(MELODY_PLAYER);
 	    }
 	    else if(mPlayMIDI->isChecked())
 	    {
-		SetCurrentPlayer(MIDI_PLAYER);
+		((MelodyPlayer*)mPlayers[MELODY_PLAYER])->PlayMelody(false);
+		AllPlayers(true);
 	    }
 	    QtMultiPlayer::play(); 
 	}
@@ -160,6 +168,7 @@ namespace CLAM
 	void QtBPFPlayer::SetCurrentPlayer(int playerID)
 	{
 	    mCurrentPlayer = playerID;
+	    AllPlayers(false);
 	}
 
 	void QtBPFPlayer::WindowModeCM()
@@ -417,6 +426,12 @@ namespace CLAM
 	{
 	    mThreadIsCancelled = true;
 	    if(mThread.IsRunning()) mThread.Stop();
+	}
+
+	void QtBPFPlayer::PlaySimultaneously(bool psi)
+	{
+	    mPlaySimultaneously = psi;
+	    ((MelodyPlayer*)mPlayers[MELODY_PLAYER])->PlayAudio(mPlaySimultaneously);
 	}
     }
 }

@@ -29,11 +29,14 @@ namespace CLAM
 	protected:
 	    std::vector<Player*> mPlayers;
 	    int mCurrentPlayer;
+	    bool mAllPlayers;
 	    		
 	    void AddPlayer(Player* player);
 
 	    virtual void SetCurrentPlayer(int playerID)=0;
-							
+
+	    void AllPlayers(bool all);					
+	   
 	};
     }
 }
