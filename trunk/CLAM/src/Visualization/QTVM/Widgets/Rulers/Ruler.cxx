@@ -238,16 +238,16 @@ namespace CLAM
 	    double value = mMin + (double(tick)*mSpan)/double(mTicks-1);
 	    int tmp = int(value);
 	    double frac = value-double(tmp);
-	    if(!tmp)
-	    {
-		if(fabs(frac) < 1E-2) value = 0;
-	    } 
 	    QString label("");
 	    switch(mScale)
 	    {
 		case EScale::eLinear:	   
 		    if(value)
 		    { 
+			if(!tmp)
+			{
+			    if(fabs(frac) < 1E-2) value = 0;
+			} 
 			label =  QString::number(value,'f',2);
 		    }
 		    else
