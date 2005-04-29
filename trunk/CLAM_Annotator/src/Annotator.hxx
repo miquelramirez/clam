@@ -135,6 +135,7 @@ private:
   double GetMaxY(const CLAM::BPF& bpf);
 
   void auralizeMarks();
+  void setMenuAudioItemsEnabled(bool);
 
 private:
   CLAM::VM::QtAudioPlot* mpAudioPlot;
@@ -153,7 +154,6 @@ private:
   bool mHLDChanged;
   bool mLLDChanged;
   bool mSegmentsChanged;
-  bool mHasAudio;
   std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
                 
   int mCurrentIndex;     
