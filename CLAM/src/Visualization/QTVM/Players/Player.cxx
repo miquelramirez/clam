@@ -35,11 +35,7 @@ namespace CLAM
 		
 		Player::~Player()
 		{
-			if(IsPlaying()) 
-			{
-				Stop();
-				SetPlaying(false);
-			}
+		    Stop();
 		}
 			
 		void Player::Play()
