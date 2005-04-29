@@ -22,7 +22,7 @@ namespace CLAM
 	      mColorScheme(EBlackOverWhite),
 	      mVScroll(0),
 	      bottomRightHole(0),
-	      mHasData(false),
+	      mHasPlayData(false),
 	      mWhiteOverBlackScheme(true)
 	{
 	    InitBPFEditor();
@@ -44,13 +44,14 @@ namespace CLAM
 
 	void BPFEditor::SetData(const BPF& bpf)
 	{
+	    mHasPlayData = false;
 	    mController->SetData(bpf);
 	    if(_player) 
 	    {
 		if(mActivePlayer)
 		{
 		    ((QtBPFPlayer*)_player)->SetData(bpf);
-		    mHasData = true;
+		    mHasPlayData = true;
 		}
 	    }
 	}
@@ -535,10 +536,10 @@ namespace CLAM
 	    labelsContainer->setFixedHeight(middle_panel_height);
 	    if(bottomRightHole) bottomRightHole->setFixedHeight(middle_panel_height);
 	    _player->show();
-	    if(!mHasData)
+	    if(!mHasPlayData)
 	    {
 		((QtBPFPlayer*)_player)->SetData(GetData());
-		mHasData=true;
+		mHasPlayData=true;
 	    }
 	    mActivePlayer = true;
 	}
