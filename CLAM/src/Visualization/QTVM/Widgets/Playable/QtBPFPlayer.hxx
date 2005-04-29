@@ -13,6 +13,8 @@ class QComboBox;
 
 namespace CLAM
 {
+    class Audio;
+
     namespace VM
     {
 	class QtBPFPlayer : public QtMultiPlayer
@@ -23,6 +25,7 @@ namespace CLAM
 	    ~QtBPFPlayer();
 
 	    void SetData(const BPF& bpf);
+	    void SetAudioPtr(const Audio* audio);
 
 	    void SetDuration(const TData& dur);
 	    
@@ -34,6 +37,8 @@ namespace CLAM
 	    void SetColorMap(ColorMap map);
 
 	    void StopThread();
+
+	    void PlaySimultaneously(bool psi);
 
 	public slots:
 	    void play();
@@ -65,6 +70,7 @@ namespace CLAM
 	    TData mOwnedDuration;
 	    TData global_max;
 	    bool mMustDoMapping;
+	    bool mPlaySimultaneously;
 
 	    QFrame *radioPanel,*midiSettingsPanel;
 	    QRadioButton *mPlayAudio, *mPlayMIDI;
