@@ -15,10 +15,6 @@ namespace CLAM
 		
 	QtMultiPlayer::~QtMultiPlayer()
 	{
-	    for(unsigned i=0; i < mPlayers.size(); i++)
-	    {
-		if(mPlayers[i]->IsPlaying()) mPlayers[i]->Stop();
-	    }
 	}
 		
 	void QtMultiPlayer::AddPlayer(Player* player)
