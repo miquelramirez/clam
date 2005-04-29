@@ -43,7 +43,8 @@ Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "an
 							   mCurrentIndex(0),mpTabLayout(0),
 							   mBPFEditors(0),mLLDChanged(false),
 							   mHLDChanged(false),
-							   mSegmentsChanged(false)
+							   mSegmentsChanged(false),
+							   mHasAudio(false)
 {
 	mpDescriptorPool = NULL;
 	mpAudioPlot = NULL;
@@ -637,7 +638,7 @@ void Annotator::drawLLDescriptors(int index)
 	CLAM::EScale scale;
 	TData min_y = GetMinY((*editors_it)->GetData());
 	TData max_y = GetMaxY((*editors_it)->GetData());
-	bool scale_log = (fabs(min_y) > 9999.99 || fabs(max_y) > 9999.99);
+	bool scale_log = (fabs(min_y) > 9999.99 || fabs(max_y) > 9999.99 || max_y-min_y < TData(5E-2));
 	scale = (scale_log) ? CLAM::EScale::eLog : CLAM::EScale::eLinear;
 	(*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
 	(*editors_it)->SetYRange(min_y,max_y,scale);
@@ -649,6 +650,8 @@ void Annotator::drawLLDescriptors(int index)
 
 void Annotator::loadAudioFile(const char* filename)
 {
+  mHasAudio = false;
+
   const CLAM::TSize readSize = 1024;
   CLAM::AudioFile file;
   file.OpenExisting(filename);
@@ -676,6 +679,7 @@ void Annotator::loadAudioFile(const char* filename)
       if (mpProgressDialog->wasCanceled()) break;
 	  if(beginSample+readSize>nSamples) break;
     }
+        mHasAudio = true;
 	mCurrentAudio.SetSize(beginSample);
 	reader.Stop();
 	
@@ -1101,10 +1105,28 @@ void Annotator::auralizeMarks()
 
 void Annotator::playMarks(bool play)
 {
-  if(play)
-    mpAudioPlot->SetData(mCurrentMarkedAudio);
-  else
-    mpAudioPlot->SetData(mCurrentAudio);
+   // IMR: be careful; maybe the audio is not loaded yet
+    if(!mHasAudio) 
+    {
+	audioAuralize_Segmentation_MarksAction->setOn(false); // set uncheked
+	return;
+    }
+    if(play)
+    {
+	mpAudioPlot->SetData(mCurrentMarkedAudio);
+	for(unsigned i=0; i < mBPFEditors.size(); i++)
+	{
+	    mBPFEditors[i]->SetAudioPtr(&mCurrentMarkedAudio);
+	}
+    }
+    else
+    {
+	mpAudioPlot->SetData(mCurrentAudio);
+	for(unsigned i=0; i < mBPFEditors.size(); i++)
+	{
+	    mBPFEditors[i]->SetAudioPtr(&mCurrentAudio);
+	}
+    }
 }
 
 QString Annotator::constructFileError(const std::string& fileName,const CLAM::XmlStorageErr& e)
@@ -1117,4 +1139,17 @@ QString Annotator::constructFileError(const std::string& fileName,const CLAM::Xm
   errorMessage += "\n";
   errorMessage += "is well formed and folllows the specifications";
   return QString(errorMessage.c_str());
+}
+
+void Annotator::playOriginalAudioAndLLD(bool both)
+{
+    if(!mBPFEditors.size())
+    {
+	audioOriginal_Audio__LLDAction->setOn(false); // set unckecked
+	return;
+    }
+    for(unsigned i=0; i < mBPFEditors.size(); i++)
+    {
+	mBPFEditors[i]->playSimultaneously(both);
+    }
 }

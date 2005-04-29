@@ -118,3 +118,9 @@ void AnnotatorBase::playMarks( bool )
 {
 
 }
+
+
+void AnnotatorBase::playOriginalAudioAndLLD( bool )
+{
+
+}

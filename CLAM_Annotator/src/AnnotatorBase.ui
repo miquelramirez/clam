@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>AnnotatorBase</class>
 <widget class="QMainWindow">
     <property name="name">
@@ -185,11 +185,11 @@
     </item>
     <item text="Project" name="PopupMenuEditor">
         <action name="projectSaveAction"/>
-        <item text="Save" name="ActionItem" accel="">
+        <item text="Save" name="popupMenu_10" accel="">
             <action name="projectSaveSongListAction"/>
         </item>
         <action name="projectLoadAction"/>
-        <item text="Load" name="ActionItem2" accel="">
+        <item text="Load" name="popupMenu_12" accel="">
             <action name="projectLoadSongListAction"/>
             <action name="projectLoadSchemaAction"/>
         </item>
@@ -200,6 +200,7 @@
     </item>
     <item text="Audio" name="audioMenu">
         <action name="audioAuralize_Segmentation_MarksAction"/>
+        <action name="audioOriginal_Audio__LLDAction"/>
     </item>
     <item text="&amp;Help" name="help">
         <action name="helpAboutAction"/>
@@ -274,7 +275,7 @@
             <cstring>fileNew_projectAction</cstring>
         </property>
         <property name="iconSet">
-            <iconset>stock_new-document-32.png</iconset>
+            <iconset></iconset>
         </property>
         <property name="text">
             <string>&amp;New project</string>
@@ -291,7 +292,7 @@
             <cstring>fileSave_projectAction</cstring>
         </property>
         <property name="iconSet">
-            <iconset>stock_save_as.png</iconset>
+            <iconset></iconset>
         </property>
         <property name="text">
             <string>&amp;Save project</string>
@@ -325,7 +326,7 @@
             <cstring>fileOpen_projectAction_2</cstring>
         </property>
         <property name="iconSet">
-            <iconset>stock_open.png</iconset>
+            <iconset></iconset>
         </property>
         <property name="text">
             <string>&amp;Open project</string>
@@ -392,12 +393,18 @@
         <property name="text">
             <string>Save</string>
         </property>
+        <property name="menuText">
+            <string>Save</string>
+        </property>
     </action>
     <action>
         <property name="name">
             <cstring>projectSaveSongListAction</cstring>
         </property>
         <property name="text">
+            <string>SongList</string>
+        </property>
+        <property name="menuText">
             <string>SongList</string>
         </property>
     </action>
@@ -408,12 +415,18 @@
         <property name="text">
             <string>Schema</string>
         </property>
+        <property name="menuText">
+            <string>Schema</string>
+        </property>
     </action>
     <action>
         <property name="name">
             <cstring>projectSaveDescriptorsAction</cstring>
         </property>
         <property name="text">
+            <string>Descriptors</string>
+        </property>
+        <property name="menuText">
             <string>Descriptors</string>
         </property>
     </action>
@@ -424,12 +437,18 @@
         <property name="text">
             <string>All</string>
         </property>
+        <property name="menuText">
+            <string>All</string>
+        </property>
     </action>
     <action>
         <property name="name">
             <cstring>projectLoadAction</cstring>
         </property>
         <property name="text">
+            <string>Load</string>
+        </property>
+        <property name="menuText">
             <string>Load</string>
         </property>
     </action>
@@ -440,12 +459,18 @@
         <property name="text">
             <string>SongList</string>
         </property>
+        <property name="menuText">
+            <string>SongList</string>
+        </property>
     </action>
     <action>
         <property name="name">
             <cstring>projectLoadSchemaAction</cstring>
         </property>
         <property name="text">
+            <string>Schema</string>
+        </property>
+        <property name="menuText">
             <string>Schema</string>
         </property>
     </action>
@@ -456,12 +481,18 @@
         <property name="text">
             <string>Descriptors</string>
         </property>
+        <property name="menuText">
+            <string>Descriptors</string>
+        </property>
     </action>
     <action>
         <property name="name">
             <cstring>helpnnAction</cstring>
         </property>
         <property name="text">
+            <string>nn</string>
+        </property>
+        <property name="menuText">
             <string>nn</string>
         </property>
     </action>
@@ -475,6 +506,9 @@
         <property name="text">
             <string>LoadDescriptors</string>
         </property>
+        <property name="menuText">
+            <string>LoadDescriptors</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -484,6 +518,9 @@
             <bool>false</bool>
         </property>
         <property name="text">
+            <string>SaveDescriptors</string>
+        </property>
+        <property name="menuText">
             <string>SaveDescriptors</string>
         </property>
     </action>
@@ -497,11 +534,28 @@
         <property name="text">
             <string>Auralize Segmentation Marks</string>
         </property>
+        <property name="menuText">
+            <string>Auralize Segmentation Marks</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>audioOriginal_Audio__LLDAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Original Audio + LLD</string>
+        </property>
+        <property name="menuText">
+            <string>Original Audio + LLD</string>
+        </property>
     </action>
 </actions>
 <images>
     <image name="image0">
-        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
+        <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>
     </image>
 </images>
 <connections>
@@ -601,6 +655,12 @@
         <receiver>AnnotatorBase</receiver>
         <slot>playMarks(bool)</slot>
     </connection>
+    <connection>
+        <sender>audioOriginal_Audio__LLDAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>playOriginalAudioAndLLD(bool)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in declaration">ListViewItem.hxx</include>
@@ -645,6 +705,7 @@
     <slot>saveSongList()</slot>
     <slot>saveDescriptors()</slot>
     <slot>playMarks( bool )</slot>
+    <slot>playOriginalAudioAndLLD( bool )</slot>
 </slots>
 <functions>
     <function access="private">init()</function>
