@@ -9,8 +9,11 @@ namespace CLAM
     namespace VM
     {
 	MelodyPlayer::MelodyPlayer()
-	    : mSampleRate(TData(44100.0)),
-	      mDuration(TData(0.0))
+	    : mAudioPtr(0), 
+	      mSampleRate(TData(44100.0)),
+	      mDuration(TData(0.0)),
+	      mPlayMelody(true),
+	      mPlayAudio(false)
 	{
 	    mMelody.AddNumberOfNotes();
 	    mMelody.UpdateData();
@@ -41,15 +44,23 @@ namespace CLAM
 	    if(!mMelody.GetNumberOfNotes()) return;
 
 	    TSize frameSize = 512;                    
-
+	    if(mAudioPtr) mSampleRate = mAudioPtr->GetSampleRate();
 	    AudioManager manager((int)mSampleRate,(int)frameSize);  
-	    AudioOut channel;   
-	    AudioIOConfig audioOutCfg;     
-	    audioOutCfg.SetChannelID(0);    
-	    channel.Configure(audioOutCfg); 
+
+	    AudioOut channelL;   
+	    AudioIOConfig audioOutCfgL;     
+	    audioOutCfgL.SetChannelID(0);    
+	    channelL.Configure(audioOutCfgL); 
+
+	    AudioOut channelR;   
+	    AudioIOConfig audioOutCfgR;     
+	    audioOutCfgR.SetChannelID(1);    
+	    channelR.Configure(audioOutCfgR); 
+			
 			
 	    AudioManager::Current().Start();                            
-	    channel.Start();  
+	    channelL.Start();  
+	    channelR.Start();
 
 	    SimpleOscillatorConfig oscCfg;
 	    oscCfg.SetSamplingRate(mSampleRate);
@@ -58,8 +69,10 @@ namespace CLAM
 			
 	    InControl& freqControl = osc.GetInControls().Get("Pitch");
     
-	    Audio samples;                
-	    samples.SetSize(frameSize);
+	    Audio samplesL;             
+	    Audio samplesR;
+	    samplesL.SetSize(frameSize);
+	    samplesR.SetSize(frameSize);
 				
 	    TIndex firstIndex=GetNoteIndex();
 	    TIndex lastIndex=GetNoteIndex(false);
@@ -68,6 +81,9 @@ namespace CLAM
 	    TIndex start = int(_time.GetBegin()*mSampleRate);
 	    int nSamples = start+int((mMelody.GetNoteArray()[lastIndex].GetTime().GetEnd()-mMelody.GetNoteArray()[firstIndex].GetTime().GetBegin())*mSampleRate);
 	    
+	    TIndex leftIndex = start;        
+	    TIndex rightIndex = leftIndex+frameSize;
+
 	    osc.Start();
 
 	    for(TIndex i=start; i < nSamples; i+=frameSize)
@@ -81,20 +97,57 @@ namespace CLAM
 
 		if(TData(i/mSampleRate) >= mMelody.GetNoteArray()[k].GetTime().GetEnd()) k++;
 
-		if(TData(i/mSampleRate) >= mMelody.GetNoteArray()[k].GetTime().GetBegin() &&
-		   TData(i/mSampleRate) < mMelody.GetNoteArray()[k].GetTime().GetEnd())
+		if(mPlayMelody)
 		{
-		    freqControl.DoControl(mMelody.GetNoteArray()[k].GetFundFreq());
+		    if(TData(i/mSampleRate) >= mMelody.GetNoteArray()[k].GetTime().GetBegin() &&
+		       TData(i/mSampleRate) < mMelody.GetNoteArray()[k].GetTime().GetEnd())
+		    {
+			freqControl.DoControl(mMelody.GetNoteArray()[k].GetFundFreq());
+		    }
+		    else
+		    {
+			freqControl.DoControl(0);
+		    }
 		}
 		else
 		{
 		    freqControl.DoControl(0);
 		}
-		osc.Do(samples);
-		channel.Do(samples);
+
+		if(mPlayMelody && mPlayAudio)
+		{
+		    osc.Do(samplesL);
+		    if(mAudioPtr) mAudioPtr->GetAudioChunk(leftIndex,rightIndex,samplesR);
+		}		
+		else
+		{ 
+		    if(mPlayAudio)
+		    {
+			if(mAudioPtr) mAudioPtr->GetAudioChunk(leftIndex,rightIndex,samplesL);
+		    }
+		    else
+		    {
+			osc.Do(samplesL);
+		    }
+		}
+
+		if(mPlayMelody && mPlayAudio)
+		{
+		    channelL.Do(samplesL);
+		    channelR.Do(samplesR);
+		}
+		else
+		{
+		    channelL.Do(samplesL);
+		    channelR.Do(samplesL);
+		}
+
+		leftIndex += frameSize;
+		rightIndex += frameSize;
 	    }
 	    osc.Stop();
-	    channel.Stop(); 
+	    channelL.Stop(); 
+	    channelR.Stop();
 	    if(!IsPaused()) _time.SetBegin(GetBeginTime());
 	}
 
@@ -236,6 +289,21 @@ namespace CLAM
 	void MelodyPlayer::SetDuration(const TData& dur)
 	{
 	    mDuration = dur;
+	}
+
+	void MelodyPlayer::SetAudioPtr(const Audio* audio)
+	{
+	    mAudioPtr = audio;
+	}
+
+	void MelodyPlayer::PlayMelody(bool play)
+	{
+	    mPlayMelody = play;
+	}
+
+	void MelodyPlayer::PlayAudio(bool play)
+	{
+	    mPlayAudio = play;
 	}
 
     }

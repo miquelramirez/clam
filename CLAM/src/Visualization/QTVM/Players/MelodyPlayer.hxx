@@ -6,6 +6,8 @@
 
  namespace CLAM
  {
+     class Audio;
+
      namespace VM
      {
 	 class MelodyPlayer : public Player
@@ -25,13 +27,20 @@
 
 	     void SetDuration(const TData& dur);
 
+	     void SetAudioPtr(const Audio* audio);
+
+	     void PlayMelody(bool play);
+	     void PlayAudio(bool play);
+
 	 protected:
 	     void thread_code();
 
 	 private:
 	     Melody mMelody;
+	     const Audio* mAudioPtr;
 	     TData mSampleRate;
 	     TData mDuration;
+	     bool mPlayMelody, mPlayAudio;
 
 	     TIndex GetNoteIndex(bool first=true);
 	    
