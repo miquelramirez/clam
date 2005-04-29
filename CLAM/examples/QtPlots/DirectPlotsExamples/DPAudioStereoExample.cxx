@@ -36,7 +36,7 @@ int main()
 		exit(1);
 	}
 
-	CLAM::VM::PlotAudioStereo(channels); 
+	CLAM::VM::PlotAudioStereo(channels[0], channels[1]); 
 
 	return 0;
 }
