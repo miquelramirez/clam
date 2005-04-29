@@ -43,8 +43,7 @@ Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "an
 							   mCurrentIndex(0),mpTabLayout(0),
 							   mBPFEditors(0),mLLDChanged(false),
 							   mHLDChanged(false),
-							   mSegmentsChanged(false),
-							   mHasAudio(false)
+							   mSegmentsChanged(false)
 {
 	mpDescriptorPool = NULL;
 	mpAudioPlot = NULL;
@@ -58,6 +57,7 @@ Annotator::Annotator(const std::string & nameProject = ""):AnnotatorBase( 0, "an
 	//setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
   initAudioWidget();
   initInterface();
+  setMenuAudioItemsEnabled(false);
 }
 
 void Annotator::initInterface()
@@ -650,7 +650,7 @@ void Annotator::drawLLDescriptors(int index)
 
 void Annotator::loadAudioFile(const char* filename)
 {
-  mHasAudio = false;
+    setMenuAudioItemsEnabled(false);
 
   const CLAM::TSize readSize = 1024;
   CLAM::AudioFile file;
@@ -679,8 +679,8 @@ void Annotator::loadAudioFile(const char* filename)
       if (mpProgressDialog->wasCanceled()) break;
 	  if(beginSample+readSize>nSamples) break;
     }
-        mHasAudio = true;
 	mCurrentAudio.SetSize(beginSample);
+	setMenuAudioItemsEnabled(true);
 	reader.Stop();
 	
  
@@ -1106,12 +1106,6 @@ void Annotator::auralizeMarks()
 
 void Annotator::playMarks(bool play)
 {
-   // IMR: be careful; maybe the audio is not loaded yet
-    if(!mHasAudio) 
-    {
-	audioAuralize_Segmentation_MarksAction->setOn(false); // set uncheked
-	return;
-    }
     if(play)
     {
 	mpAudioPlot->SetData(mCurrentMarkedAudio);
@@ -1144,13 +1138,22 @@ QString Annotator::constructFileError(const std::string& fileName,const CLAM::Xm
 
 void Annotator::playOriginalAudioAndLLD(bool both)
 {
-    if(!mBPFEditors.size())
-    {
-	audioOriginal_Audio__LLDAction->setOn(false); // set unckecked
-	return;
-    }
     for(unsigned i=0; i < mBPFEditors.size(); i++)
     {
 	mBPFEditors[i]->playSimultaneously(both);
+    }
+}
+
+void Annotator::setMenuAudioItemsEnabled(bool enabled)
+{
+    if(enabled)
+    {
+	audioAuralize_Segmentation_MarksAction->setEnabled(true);
+	audioOriginal_Audio__LLDAction->setEnabled(true);
+    }
+    else
+    {
+	audioAuralize_Segmentation_MarksAction->setEnabled(false);
+	audioOriginal_Audio__LLDAction->setEnabled(false);
     }
 }
