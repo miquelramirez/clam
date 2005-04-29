@@ -202,13 +202,12 @@ namespace CLAM
 	    connect(_rightChannel,SIGNAL(updatedMark(int,unsigned)),_leftChannel,SLOT(updateMark(int,unsigned)));
 	}
 
-	void QtStereoAudioPlot::SetData(std::vector<Audio> data)
+	void QtStereoAudioPlot::SetData(const Audio& leftChannel, const Audio& rightChannel)
 	{
-	    CLAM_ASSERT(data.size()==2,"Number of channels must be two.");
-	    CLAM_ASSERT(data[0].GetSize() == data[1].GetSize(),"Size of channels left and right must be the same!");
-	    _leftChannel->SetData(data[0]);
-	    _rightChannel->SetData(data[1]);
-	    SetPData(data);
+	    CLAM_ASSERT(leftChannel.GetSize() == rightChannel.GetSize(),"Size of channels left and right must be the same!");
+	    _leftChannel->SetData(leftChannel);
+	    _rightChannel->SetData(rightChannel);
+	    SetPData(leftChannel, rightChannel);
 	}
 
 	void QtStereoAudioPlot::SetBackgroundColor(Color c)
@@ -260,7 +259,6 @@ namespace CLAM
 	    if(_currentHZRatio != 1)
 	    {
 		_leftChannel->hZoomIn();
-		DirtyTrick();
 	    }
 	}
 
@@ -269,7 +267,6 @@ namespace CLAM
 	    if(_currentHZRatio != _maxHZRatio)
 	    {
 		_leftChannel->hZoomOut();
-		DirtyTrick();
 	    }
 	}
 
@@ -332,31 +329,25 @@ namespace CLAM
 	    _rightChannel->SetKeyReleased(e);
 	}
 
+	void QtStereoAudioPlot::hideEvent(QHideEvent* e)
+	{
+	    ((QtAudioPlayer*)_player)->stop();
+	    QWidget::hideEvent(e);
+	}
+
 	void QtStereoAudioPlot::closeEvent(QCloseEvent* e)
 	{
 	    RemoveFromPlayList();
 	    QtPlot::closeEvent(e);
 	}
 
-	void QtStereoAudioPlot::SetPData(std::vector<Audio> data)
+	void QtStereoAudioPlot::SetPData(const Audio& leftChannel, const Audio& rightChannel)
 	{
-	    ((QtAudioPlayer*)_player)->SetData(data);
-	}
-
-	void QtStereoAudioPlot::DirtyTrick()
-	{
-	    if(isMaximized())
-	    {
-		_leftChannel->resize(_leftChannel->width()+1,_leftChannel->height());
-		_rightChannel->resize(_rightChannel->width()+1,_rightChannel->height());
-		_leftChannel->resize(_leftChannel->width()-1,_leftChannel->height());
-		_rightChannel->resize(_rightChannel->width()-1,_rightChannel->height());
-	    }
-	    else
-	    {
-		resize(width()+1,height());
-		resize(width()-1,height());
-	    }
+	    std::vector<const Audio*> dataPtr;
+	    dataPtr.resize(2);
+	    dataPtr[0]=&leftChannel;
+	    dataPtr[1]=&rightChannel;
+	    ((QtAudioPlayer*)_player)->SetData(dataPtr,true);
 	}
 
 	void QtStereoAudioPlot::SwitchDisplayColors(bool b)

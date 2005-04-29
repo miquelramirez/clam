@@ -71,10 +71,11 @@ namespace CLAM
 	    void updateRegion(MediaTime);
 
 	protected:
-	    virtual void keyPressEvent(QKeyEvent* e);
-	    virtual void keyReleaseEvent( QKeyEvent* e);
+	    void keyPressEvent(QKeyEvent* e);
+	    void keyReleaseEvent( QKeyEvent* e);
 
-	    virtual void closeEvent(QCloseEvent* e);
+	    void hideEvent(QHideEvent* e);
+	    void closeEvent(QCloseEvent* e);
 
 	    virtual void SetPlotController();
 	    virtual void Connect();

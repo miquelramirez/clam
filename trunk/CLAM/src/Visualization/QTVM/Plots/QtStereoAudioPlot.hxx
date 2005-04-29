@@ -47,7 +47,7 @@ namespace CLAM
 	    QtStereoAudioPlot(QWidget* parent=0);
 	    virtual ~QtStereoAudioPlot();
 
-	    void SetData(std::vector<Audio> data);
+	    void SetData(const Audio& leftChannel, const Audio& rightChannel);
 
 	    void SetMarks(std::vector<unsigned>& marks);
 	    std::vector<unsigned>& GetMarks();
@@ -83,12 +83,13 @@ namespace CLAM
 	    void rightChannelClicked();
 
 	protected:
-	    virtual void keyPressEvent(QKeyEvent* e);
-	    virtual void keyReleaseEvent( QKeyEvent* e);
+	    void keyPressEvent(QKeyEvent* e);
+	    void keyReleaseEvent( QKeyEvent* e);
 
-	    virtual void closeEvent(QCloseEvent* e);
+	    void hideEvent(QHideEvent* e);
+	    void closeEvent(QCloseEvent* e);
 
-	    void SetPData(std::vector<Audio> data);
+	    void SetPData(const Audio& leftChannel, const Audio& rightChannel);
 
 	private:
 	    QtAudioPlot *_leftChannel,*_rightChannel;
@@ -102,7 +103,7 @@ namespace CLAM
 	    double _currentHZRatio;
 
 	    void InitStereoAudioPlot();
-	    void DirtyTrick();
+       
 	};
     }
 }

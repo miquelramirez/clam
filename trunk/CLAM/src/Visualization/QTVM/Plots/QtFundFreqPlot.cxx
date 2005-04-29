@@ -200,6 +200,12 @@ namespace CLAM
 	    SetMarksColor(VMColor::Red());
 	}
 
+	void QtFundFreqPlot::hideEvent(QHideEvent* e)
+	{
+	    ((QtFundPlayer*)_player)->stop();
+	    QWidget::hideEvent(e);
+	}
+
 	void QtFundFreqPlot::closeEvent(QCloseEvent *e)
 	{
 	    RemoveFromPlayList();

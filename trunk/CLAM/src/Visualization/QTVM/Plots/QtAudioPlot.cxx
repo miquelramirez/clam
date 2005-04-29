@@ -223,6 +223,12 @@ namespace CLAM
 	    SetMarksColor(VMColor::Red());
 	}
 
+	void QtAudioPlot::hideEvent(QHideEvent* e)
+	{
+	    ((QtAudioPlayer*)_player)->stop();
+	    QWidget::hideEvent(e);
+	}
+
 	void QtAudioPlot::closeEvent(QCloseEvent *e)
 	{
 	    RemoveFromPlayList();
