@@ -23,11 +23,12 @@
  #define __APLAYER__ 
  
 #include <vector>
-#include "Audio.hxx"
 #include "Player.hxx"
  
  namespace CLAM
  {
+        class Audio;
+
 	namespace VM
 	{
 		class APlayer : public Player
@@ -36,7 +37,7 @@
 				APlayer();
 				virtual ~APlayer();
 				
-				void SetData(std::vector<Audio> data);
+				void SetData(std::vector<const Audio*> data, bool setTime=true);
 
 				void SetLeftChannelMuted(bool b);
 				void SetRightChannelMuted(bool b);
@@ -45,8 +46,8 @@
 				void thread_code();
 				
 			private:
-				Audio _leftChannel;
-				Audio _rightChannel;
+				const Audio* _leftChannel;
+				const Audio* _rightChannel;
 
 				bool _muteLeft,_muteRight;
 

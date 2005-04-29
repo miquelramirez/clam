@@ -29,16 +29,19 @@ namespace CLAM
 	namespace VM
 	{
 		APlayer::APlayer()
+		    : _leftChannel(0),
+		      _rightChannel(0),
+		      _muteLeft(false),
+		      _muteRight(false)
 		{
-			_muteLeft=false;
-			_muteRight=false;
+		     _thread.SetThreadCode(makeMemberFunctor0((*this), APlayer, thread_code));
 		}
 		
 		APlayer::~APlayer()
 		{
 		}
 		
-		void APlayer::SetData(std::vector<Audio> data)
+		void APlayer::SetData(std::vector<const Audio*> data, bool setTime)
 		{
 			if(data.size()==1)
 			{
@@ -50,17 +53,23 @@ namespace CLAM
 				_leftChannel = data[0];
 				_rightChannel = data[1];
 			}
-			MediaTime time;
-			time.SetBegin(TData(0.0));
-			time.SetEnd(TData(_leftChannel.GetSize())/_leftChannel.GetSampleRate());
-			SetBounds(time);
-			_thread.SetThreadCode(makeMemberFunctor0((*this), APlayer, thread_code));
+
+			if(setTime)
+			{
+			    MediaTime time;
+			    time.SetBegin(TData(0.0));
+			    time.SetEnd(TData(_leftChannel->GetSize())/_leftChannel->GetSampleRate());
+			    SetBounds(time);
+			}
+			
 			HaveData(true);
 		}
 		
 		void APlayer::thread_code()
 		{       
-			TData sampleRate = _leftChannel.GetSampleRate(); 
+		        if(!_leftChannel || !_rightChannel) return;
+
+			TData sampleRate = _leftChannel->GetSampleRate(); 
 			TSize frameSize = 512;                    
 
 			AudioManager manager((int)sampleRate,(int)frameSize);  
@@ -95,8 +104,8 @@ namespace CLAM
 					SetPlaying(false);
 				}
 				if(!IsPlaying()) break;
-			    _leftChannel.GetAudioChunk(leftIndex,rightIndex,samplesL);
-				_rightChannel.GetAudioChunk(leftIndex,rightIndex,samplesR);
+			        _leftChannel->GetAudioChunk(leftIndex,rightIndex,samplesL);
+				_rightChannel->GetAudioChunk(leftIndex,rightIndex,samplesR);
 				if(!isMutedLChannel())
 				{
 					channelL.Do(samplesL);
