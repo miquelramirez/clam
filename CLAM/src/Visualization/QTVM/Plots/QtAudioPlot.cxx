@@ -79,10 +79,17 @@ namespace CLAM
 	    AddToMainLayout(_panel);	
 	}
 
-	void QtAudioPlot::SetData(const Audio& audio)
+	void QtAudioPlot::SetData(const Audio& audio, bool to_controller)
 	{
-	    ((AudioPlotController*)_controller)->SetData(audio);
-	    SetPData(audio);
+	    if(to_controller)
+	    {
+		((AudioPlotController*)_controller)->SetData(audio);
+		SetPData(audio,true);
+	    }
+	    else
+	    {
+		SetPData(audio,false);
+	    }
 	}
 
 	void QtAudioPlot::SetForegroundColor(Color c)
@@ -190,12 +197,12 @@ namespace CLAM
 	    connect(((AudioPlotController*)_controller),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
 	}
 
-	void QtAudioPlot::SetPData(const Audio& audio)
+	void QtAudioPlot::SetPData(const Audio& audio, bool setTime)
 	{
-	    std::vector<Audio> data;
+	    std::vector<const Audio*> data;
 	    data.resize(1);
-	    data[0]=audio;
-	    ((QtAudioPlayer*)_player)->SetData(data);
+	    data[0]=&audio;
+	    ((QtAudioPlayer*)_player)->SetData(data, setTime);
 	}
 
 	void QtAudioPlot::DisplayBackgroundBlack()

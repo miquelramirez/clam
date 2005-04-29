@@ -42,7 +42,7 @@ namespace CLAM
 	    QtAudioPlot(QWidget* parent=0);
 	    virtual ~QtAudioPlot();
 
-	    void SetData(const Audio& audio);
+	    void SetData(const Audio& audio, bool to_controller=true);
 
 	    void SetMarks(std::vector<unsigned>& marks);
 	    std::vector<unsigned>& GetMarks();
@@ -82,7 +82,7 @@ namespace CLAM
 	    virtual void DisplayBackgroundBlack();
 	    virtual void DisplayBackgroundWhite();
 
-	    void SetPData(const Audio& audio);
+	    void SetPData(const Audio& audio, bool setTime);
 
 	private:
 	    QBoxLayout* _panel;
