@@ -27,7 +27,8 @@ namespace CLAM
 {
     namespace VM
     {
-	void PlotAudioStereo( std::vector<Audio> data,
+	void PlotAudioStereo( const Audio& leftChannel,
+			      const Audio& rightChannel,
 			      const std::string& label,
 			      int x, int y, int w, int h)
 	{
@@ -41,13 +42,14 @@ namespace CLAM
 	    plot.SetDialColor(VMColor::Black());
 	    plot.SetRegionColor(VMColor::LightGray());
 	    plot.SwitchDisplayColors(true);
-	    plot.SetData(data);
+	    plot.SetData(leftChannel,rightChannel);
 	    plot.Show();
 
 	    QtAppWrapper::Run();
 	}
 
-	void PlotAudioStereo( std::vector<Audio> data,
+	void PlotAudioStereo( const Audio& leftChannel,
+			      const Audio& rightChannel,
 			      std::vector<unsigned>& marks,
 			      const std::string& label,
 			      int x, int y, int w, int h )
@@ -61,7 +63,7 @@ namespace CLAM
 	    plot.SetForegroundColor(VMColor::Blue());
 	    plot.SetDialColor(VMColor::Black());
 	    plot.SetRegionColor(VMColor::LightGray());
-	    plot.SetData(data);
+	    plot.SetData(leftChannel,rightChannel);
 	    plot.SetMarks(marks);
 	    plot.SetMarksColor(VMColor::Red());
 	    plot.SwitchDisplayColors(true);
