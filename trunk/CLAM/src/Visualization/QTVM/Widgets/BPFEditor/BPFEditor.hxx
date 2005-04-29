@@ -106,7 +106,7 @@ namespace CLAM
 	    Melody mMelody;
 	    MIDIMelody mMIDIMelody;
 
-	    bool mHasData;
+	    bool mHasPlayData;
 	    bool mWhiteOverBlackScheme;
 
 	    QPopupMenu* mPopupMenu;
