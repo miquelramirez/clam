@@ -36,9 +36,9 @@ namespace CLAM
 	{
 	}
 
-	void QtAudioPlayer::SetData(std::vector<Audio> data)
+	void QtAudioPlayer::SetData(std::vector<const Audio*> data, bool setTime)
 	{
-	    ((APlayer*)_player)->SetData(data);
+	    ((APlayer*)_player)->SetData(data,setTime);
 	}
 
 	void QtAudioPlayer::SetLeftChannelMuted(bool b)

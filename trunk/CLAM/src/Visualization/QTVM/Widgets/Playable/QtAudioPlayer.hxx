@@ -36,7 +36,7 @@ namespace CLAM
 	    QtAudioPlayer(QWidget* parent=0);
 	    ~QtAudioPlayer();
 
-	    void SetData(std::vector<Audio> data);
+	    void SetData(std::vector<const Audio*> data, bool setTime);
 
 	    void SetLeftChannelMuted(bool b);
 	    void SetRightChannelMuted(bool b);
