@@ -87,16 +87,6 @@ namespace CLAM
 
 	void QtPresentation::Init()
 	{
-	    // no comment - begin /////////////////////////////
-	    QFont ref;
-	    ref.setFamily("fixed");
-	    ref.setPointSize(10);
-	    ref.setBold(true);
-	    ref.setStyleHint(QFont::Courier,QFont::NoAntialias);
-	    QFontMetrics fm(ref);
-	    int initial_yruler_width=fm.width("X:0.0e+00");
-	    // no comment - end ////////////////////////////////
-
 	    _controller = NULL;
 
 	    QFont f("Sans",8);
@@ -107,6 +97,12 @@ namespace CLAM
 	    _mainLayout->setSpacing(0);
 
 	    // top area (x ruler)
+	     _xRuler = new Ruler(this,CLAM::VM::Top);
+
+	     QFont ref = _xRuler->Font();
+	     QFontMetrics fm(ref);
+	     int initial_yruler_width=fm.width("X:-0.0e+00");
+	    
 	    _top = new QHBoxLayout(_mainLayout);
 	    topLeftHole = new QFrame(this);
 	    topLeftHole->setFixedSize(initial_yruler_width,40);
@@ -118,14 +114,14 @@ namespace CLAM
 	    _btoggle_color->setText("CM");
 	    QToolTip::add(_btoggle_color,"switch display colors");
 	    SwitchDisplayColors(false);
-	    _top->addWidget(topLeftHole);
 
-	    _xRuler = new Ruler(this,CLAM::VM::Top);
 	    _xRuler->setFixedHeight(topLeftHole->height());
-	    _top->addWidget(_xRuler);
-
+	    
 	    topRightHole = new QFrame(this);
 	    topRightHole->setFixedSize(20,40);
+
+	    _top->addWidget(topLeftHole);
+	    _top->addWidget(_xRuler);
 	    _top->addWidget(topRightHole);
 			
 	    // middle area (y ruler, display area, vertical scroll and zoom group)
