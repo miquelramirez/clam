@@ -486,8 +486,8 @@ namespace CLAM
 					mData.SetValue(0,y);
 					mData.SetXValue(0,x);
 
-					if(!mXModified) mXModified = true;
-					if(!mYModified) mYModified = true;
+					mXModified = true;
+					mYModified = true;
 				}
 				else
 				{
@@ -495,13 +495,13 @@ namespace CLAM
 					{
 						mData.SetValue(0,y);
 
-						if(!mYModified) mYModified = true;
+						mYModified = true;
 					}
 					else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 					{
 						mData.SetXValue(0,x);
 
-						if(!mXModified) mXModified = true;
+						mXModified = true;
 					}
 				}
 
@@ -521,8 +521,8 @@ namespace CLAM
 						mData.SetValue(mCurrentIndex,y);
 						mData.SetXValue(mCurrentIndex,x);
 
-						if(!mXModified) mXModified = true;
-						if(!mYModified) mYModified = true;
+						mXModified = true;
+						mYModified = true;
 					}
 					else
 					{
@@ -530,13 +530,13 @@ namespace CLAM
 						{
 							mData.SetValue(mCurrentIndex,y);
 
-							if(!mYModified) mYModified = true;
+							mYModified = true;
 						}
 						else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 						{
 							mData.SetXValue(mCurrentIndex,x);
 
-							if(!mXModified) mXModified = true;
+							mXModified = true;
 						}
 					}
 				}
@@ -563,8 +563,8 @@ namespace CLAM
 						mData.SetValue(mCurrentIndex,y);
 						mData.SetXValue(mCurrentIndex,x);
 
-						if(!mXModified) mXModified = true;
-						if(!mYModified) mYModified = true;
+						mXModified = true;
+						mYModified = true;
 					}
 					else
 					{
@@ -572,13 +572,13 @@ namespace CLAM
 						{
 							mData.SetValue(mCurrentIndex,y);
 
-							if(!mYModified) mYModified = true;
+							mYModified = true;
 						}
 						else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 						{
 							mData.SetXValue(mCurrentIndex,x);
 							
-							if(!mXModified) mXModified = true;
+							mXModified = true;
 						}
 					}
 				}
@@ -604,8 +604,8 @@ namespace CLAM
 					mData.SetValue(mCurrentIndex,y);
 					mData.SetXValue(mCurrentIndex,x);
 
-					if(!mXModified) mXModified = true;
-					if(!mYModified) mYModified = true;
+					mXModified = true;
+					mYModified = true;
 				}
 				else
 				{
@@ -613,13 +613,13 @@ namespace CLAM
 					{
 						mData.SetValue(mCurrentIndex,y);
 
-						if(!mYModified) mYModified = true;
+						mYModified = true;
 					}
 					else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 					{
 						mData.SetXValue(mCurrentIndex,x);
 
-						if(!mXModified) mXModified = true;
+						mXModified = true;
 					}
 				}
 			}
