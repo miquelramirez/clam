@@ -685,30 +685,17 @@ namespace CLAM
 				}
 			}
 
-			TIndex ret;
-			if(index>=nPoints-1)
-			{
-				ret=nPoints-1;
-			}
-			if(index==nPoints-2)
-			{
-				ret=index+1;
-			}
-			else 
-			{
-				ret=index+2;
-			}
-			return ret;
+			if(index>=nPoints-1) return nPoints-1;
+			if(index==nPoints-2) return index+1;
+			return index+2
 
 		}
 		TIndex BPFEditorController::GetLeftBound()
 		{
 			int nPoints = mData.Size();
 			if(!nPoints) return 0;
-			if(nPoints==1)
-			{
-				return 0;
-			}
+			if(nPoints==1) return 0;
+
 			TData searchValue;
 			searchValue = TData(mView.mLeft);
 
