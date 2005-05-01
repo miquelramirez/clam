@@ -199,6 +199,9 @@ namespace CLAM
 					{
 						mData.DeleteIndex(mCurrentIndex);
 						emit elementRemoved(int(mCurrentIndex));
+						if (mCurrentIndex) mCurrentIndex--;
+						mRenderer.SetSelectedIndex(mCurrentIndex);
+						emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
 						emit requestRefresh();
 					}
 					break;
@@ -268,6 +271,7 @@ namespace CLAM
 				}
 			}
 			
+			emit requestRefresh();
 			UpdateXYLabels(x,y);
 		}
 
@@ -479,9 +483,6 @@ namespace CLAM
 				mData.SetXValue(mCurrentIndex,x);
 				mXModified = true;
 			}
-
-			emit requestRefresh();
-
 		}
 
 		bool BPFEditorController::IsValid(const TData& x0, const TData& x1)
