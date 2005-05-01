@@ -5,28 +5,28 @@ namespace CLAM
 	namespace VM
 	{
 		BPFEditorController::BPFEditorController(int eFlags)
-			: mEFlags(eFlags), 
-			  mXScale(EScale(EScale::eLinear)),
-			  mYScale(EScale(EScale::eLinear)),
-			  mLeftButtonPressed(false),
-			  mRightButtonPressed(false),
-			  mKeyInsertPressed(false),
-			  mKeyDeletePressed(false),
-			  mMouseOverDisplay(false),
-			  mProcessingSelection(false),
-			  mHit(false),
-			  mDisplayWidth(0),
-			  mDisplayHeight(0),
-			  mCurrentIndex(0),
-			  mXModified(false),
-			  mYModified(false),
-			  mSelectPoint(false),
-			  mSpanX(0.0),mSpanY(0.0),
-			  mMinSpanX(1.0),mMinSpanY(1.0),
-			  mMinX(0.0),mMaxX(0.0),
-			  mMinY(0.0),mMaxY(0.0),
-			  mVCurrent(0.0), 
-			  mVZoomRatio(1.0)
+			: mEFlags(eFlags) 
+			, mXScale(EScale(EScale::eLinear))
+			, mYScale(EScale(EScale::eLinear))
+			, mLeftButtonPressed(false)
+			, mRightButtonPressed(false)
+			, mKeyInsertPressed(false)
+			, mKeyDeletePressed(false)
+			, mMouseOverDisplay(false)
+			, mProcessingSelection(false)
+			, mHit(false)
+			, mDisplayWidth(0)
+			, mDisplayHeight(0)
+			, mCurrentIndex(0)
+			, mXModified(false)
+			, mYModified(false)
+			, mSelectPoint(false)
+			, mSpanX(0.0), mSpanY(0.0)
+			, mMinSpanX(1.0), mMinSpanY(1.0)
+			, mMinX(0.0), mMaxX(0.0)
+			, mMinY(0.0), mMaxY(0.0)
+			, mVCurrent(0.0)
+			, mVZoomRatio(1.0)
 		{
 			mData.SetSize(0);
 		}
@@ -155,10 +155,9 @@ namespace CLAM
 
 		void BPFEditorController::SetPoint(const TData& x, const TData& y)
 		{
-			if(!mMouseOverDisplay) return;
 			if(mLeftButtonPressed)
 			{
-				if(mSelectPoint || true)
+				if(mSelectPoint)
 				{
 					mRenderer.SetSelectedIndex(mCurrentIndex);
 					mSelectPoint=false;
@@ -170,45 +169,37 @@ namespace CLAM
 			switch (mode)
 			{
 				case Selection:
-					if(mEFlags & CLAM::VM::AllowZoomByMouse)
+					if(!(mEFlags & CLAM::VM::AllowZoomByMouse)) break;
+					if(mLeftButtonPressed)
 					{
-						if(mLeftButtonPressed)
-						{
-							mCorners[0].SetX(x);
-							mCorners[0].SetY(y);
-							mCorners[1].SetX(x);
-							mCorners[1].SetY(y);
-							mProcessingSelection=true;
-						}
-						else
-						{
-							if(mProcessingSelection)
-							{
-								mProcessingSelection=false;
-								mCorners[1].SetX(x);
-								mCorners[1].SetY(y);
-								PushSettings();
-							}
-						}
+						mCorners[0].SetX(x);
+						mCorners[0].SetY(y);
+						mCorners[1].SetX(x);
+						mCorners[1].SetY(y);
+						mProcessingSelection=true;
+					}
+					else if(mProcessingSelection)
+					{
+						mProcessingSelection=false;
+						mCorners[1].SetX(x);
+						mCorners[1].SetY(y);
+						PushSettings();
 					}
 					break;
 				case Edition:
 					mProcessingSelection=false;
-					if(mLeftButtonPressed)
+					if(!mLeftButtonPressed) break;
+					if(!mHit && mKeyInsertPressed)
 					{
-						if(!mHit && mKeyInsertPressed)
-						{
-							TIndex index = mData.Insert(mCurrentPoint.GetX(),mCurrentPoint.GetY());
-							emit elementAdded(int(index),float(mCurrentPoint.GetX()), float(mCurrentPoint.GetY()));
-							emit requestRefresh();
-						}
-
-						if(mHit && mKeyDeletePressed)
-						{
-							mData.DeleteIndex(mCurrentIndex);
-							emit elementRemoved(int(mCurrentIndex));
-							emit requestRefresh();
-						}
+						TIndex index = mData.Insert(mCurrentPoint.GetX(),mCurrentPoint.GetY());
+						emit elementAdded(int(index),float(mCurrentPoint.GetX()), float(mCurrentPoint.GetY()));
+						emit requestRefresh();
+					}
+					if(mHit && mKeyDeletePressed)
+					{
+						mData.DeleteIndex(mCurrentIndex);
+						emit elementRemoved(int(mCurrentIndex));
+						emit requestRefresh();
 					}
 					break;
 				default:
@@ -218,7 +209,6 @@ namespace CLAM
 
 		void BPFEditorController::UpdatePoint(const TData& x, const TData& y)
 		{
-			if(!mMouseOverDisplay) return;
 			if(mProcessingSelection)
 			{
 				mCorners[1].SetX(x);
@@ -310,15 +300,6 @@ namespace CLAM
 		void BPFEditorController::MouseOverDisplay(bool over)
 		{
 			mMouseOverDisplay = over;
-			if(!mMouseOverDisplay)
-			{
-				mHit = false;
-				mProcessingSelection=false;
-				QCursor acursor(Qt::ArrowCursor);
-				emit cursorChanged(acursor);
-				emit labelsText(QString(""),QString(""));
-
-			}
 		}
 
 		void BPFEditorController::Draw()
