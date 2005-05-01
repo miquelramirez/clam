@@ -196,7 +196,7 @@ namespace CLAM
 	    Pixel GetPixel(const TData& x, const TData& y);
 	    bool Match(const Pixel& p, const Pixel& q);
 	    int Hit(const TData& x, const TData& y);
-	    void UpdateXYLabels(TData x, TData y)
+	    void UpdateXYLabels(TData x, TData y);
 
 	    int GetMode();
 	    
