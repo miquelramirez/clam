@@ -684,7 +684,7 @@ namespace CLAM
 
 			if(index>=nPoints-1) return nPoints-1;
 			if(index==nPoints-2) return index+1;
-			return index+2
+			return index+2;
 
 		}
 		TIndex BPFEditorController::GetLeftBound()
@@ -698,7 +698,6 @@ namespace CLAM
 			if(searchValue <= mData.GetXValue(0)) return 0;
 			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints-1;
 			
-			TIndex index = 0;
 			TIndex currentIndex = 0;
 			TIndex left_index = 0;
 			TIndex right_index = nPoints-1;
@@ -724,7 +723,7 @@ namespace CLAM
 				}
 			}
 
-			return index;
+			return 0;
 
 		}
 
