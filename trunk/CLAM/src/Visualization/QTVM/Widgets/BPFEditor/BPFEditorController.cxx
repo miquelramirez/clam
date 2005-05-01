@@ -647,12 +647,9 @@ namespace CLAM
 		{
 			int nPoints = mData.Size();
 			if(!nPoints) return 0;
-			if(nPoints==1)
-			{
-				return 0;
-			}
-			TData searchValue;
-			searchValue = TData(mView.mRight);
+			if(nPoints==1) return 0;
+
+			TData searchValue = TData(mView.mRight);
 
 			if(searchValue <= mData.GetXValue(0)) return 0;
 			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints-1;
@@ -696,8 +693,7 @@ namespace CLAM
 			if(!nPoints) return 0;
 			if(nPoints==1) return 0;
 
-			TData searchValue;
-			searchValue = TData(mView.mLeft);
+			TData searchValue = TData(mView.mLeft);
 
 			if(searchValue <= mData.GetXValue(0)) return 0;
 			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints-1;
@@ -711,14 +707,12 @@ namespace CLAM
 				currentIndex = (left_index+right_index)/2;
 				if(currentIndex>=nPoints-1)
 				{
-					index=currentIndex;
-					break;
+					return currentIndex;
 				}
 				if(searchValue >= mData.GetXValue(currentIndex) &&
 				   searchValue <= mData.GetXValue(currentIndex+1))
 				{
-					index = currentIndex;
-					break;
+					return currentIndex;
 				}
 				if(searchValue < mData.GetXValue(currentIndex))
 				{
