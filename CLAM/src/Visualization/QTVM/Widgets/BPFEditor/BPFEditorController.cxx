@@ -683,7 +683,7 @@ namespace CLAM
 			}
 
 			if(index>=nPoints-1) return nPoints-1;
-			if(index==nPoints-2) return index+1;
+			if(index==nPoints-2) return nPoints-1;
 			return index+2;
 
 		}
