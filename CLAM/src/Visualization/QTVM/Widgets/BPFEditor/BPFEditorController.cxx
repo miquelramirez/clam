@@ -478,111 +478,47 @@ namespace CLAM
 
 		void BPFEditorController::UpdateBPF(const TData& x, const TData& y)
 		{
-			if(mData.Size() == 1) 
+			if (mData.Size() != 1)
 			{
-				if(mEFlags & CLAM::VM::AllowVerticalEdition)
+				if (mCurrentIndex!=0)
 				{
-					mData.SetValue(0,y);
-
-					mYModified = true;
-				}
-				if(mEFlags & CLAM::VM::AllowHorizontalEdition)
-				{
-					mData.SetXValue(0,x);
-
-					mXModified = true;
-				}
-
-				emit requestRefresh();
-
-				return;
-			}
-
-			if(mCurrentIndex == 0)
-			{
-				TData next_x = mData.GetXValue(mCurrentIndex+1);
-				if(IsValid(x,next_x))
-				{
-					if(mEFlags & CLAM::VM::AllowVerticalEdition)
+					TData prior_x = mData.GetXValue(mCurrentIndex-1);
+					if(!IsValid(prior_x,x))
 					{
-						mData.SetValue(mCurrentIndex,y);
-
-						mYModified = true;
-					}
-					if(mEFlags & CLAM::VM::AllowHorizontalEdition)
-					{
-						mData.SetXValue(mCurrentIndex,x);
-
-						mXModified = true;
+						mHit=false;
+						QCursor acursor(Qt::ArrowCursor);
+						emit cursorChanged(acursor);
+						emit requestRefresh();
+						return;
 					}
 				}
-				else
+				if(mCurrentIndex!=mData.Size()-1)
 				{
-					mHit=false;
-					QCursor acursor(Qt::ArrowCursor);
-					emit cursorChanged(acursor);
-				}
-
-				emit requestRefresh();
-
-				return;
-			}
-
-			if(mCurrentIndex==mData.Size()-1)
-			{
-				TData prior_x = mData.GetXValue(mCurrentIndex-1);
-				if(IsValid(prior_x,x))
-				{
-					if(mEFlags & CLAM::VM::AllowVerticalEdition)
+					TData next_x = mData.GetXValue(mCurrentIndex+1);
+					if(!IsValid(x,next_x))
 					{
-						mData.SetValue(mCurrentIndex,y);
-
-						mYModified = true;
-					}
-					if(mEFlags & CLAM::VM::AllowHorizontalEdition)
-					{
-						mData.SetXValue(mCurrentIndex,x);
-						
-						mXModified = true;
+						mHit=false;
+						QCursor acursor(Qt::ArrowCursor);
+						emit cursorChanged(acursor);
+						emit requestRefresh();
+						return;
 					}
 				}
-				else
-				{
-					mHit=false;
-					QCursor acursor(Qt::ArrowCursor);
-					emit cursorChanged(acursor);
-				}
-
-				emit requestRefresh();
-
-				return;
 			}
-			
-			TData prior_x = mData.GetXValue(mCurrentIndex-1);
-			TData next_x = mData.GetXValue(mCurrentIndex+1);
-			if(IsValid(prior_x,x) && IsValid(x,next_x))
+
+			if(mEFlags & CLAM::VM::AllowVerticalEdition)
 			{
-				if(mEFlags & CLAM::VM::AllowVerticalEdition)
-				{
-					mData.SetValue(mCurrentIndex,y);
-
-					mYModified = true;
-				}
-				if(mEFlags & CLAM::VM::AllowHorizontalEdition)
-				{
-					mData.SetXValue(mCurrentIndex,x);
-
-					mXModified = true;
-				}
+				mData.SetValue(mCurrentIndex,y);
+				mYModified = true;
 			}
-			else
+			if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 			{
-				mHit=false;
-				QCursor acursor(Qt::ArrowCursor);
-				emit cursorChanged(acursor);
+				mData.SetXValue(mCurrentIndex,x);
+				mXModified = true;
 			}
 
 			emit requestRefresh();
+
 		}
 
 		bool BPFEditorController::IsValid(const TData& x0, const TData& x1)
