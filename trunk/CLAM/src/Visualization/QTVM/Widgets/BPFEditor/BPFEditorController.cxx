@@ -220,91 +220,93 @@ namespace CLAM
 
 		void BPFEditorController::UpdatePoint(const TData& x, const TData& y)
 		{
-			if(mMouseOverDisplay)
+			if(!mMouseOverDisplay) return;
+			if(mProcessingSelection)
 			{
-				if(mProcessingSelection)
-				{
-					mCorners[1].SetX(x);
-					mCorners[1].SetY(y);
-					emit requestRefresh();
-				}
-				else
-				{
-					int index=Hit(x,y);
-					if(index != -1) 
-					{
-						if(mKeyDeletePressed)
-						{
-							mSelectPoint=false;
-							QCursor cCursor(Qt::CrossCursor);
-							emit cursorChanged(cCursor);
-						}
-						else if(
-							(mEFlags & CLAM::VM::AllowVerticalEdition) && 
-							(mEFlags & CLAM::VM::AllowHorizontalEdition))
-						{
-							QCursor sacursor(Qt::SizeAllCursor);
-							emit cursorChanged(sacursor);
-						}
-						else if(mEFlags & CLAM::VM::AllowVerticalEdition)
-						{
-							QCursor vcursor(Qt::SizeVerCursor);
-							emit cursorChanged(vcursor);
-						}
-						else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
-						{
-							QCursor hcursor(Qt::SizeHorCursor);
-							emit cursorChanged(hcursor);
-						}
-						mSelectPoint=true;
-						mCurrentIndex=TIndex(index);
-						mHit=true;
-					}
-					else
-					{
-						mCurrentPoint.SetX(x);
-						mCurrentPoint.SetY(y);
-						if(!mLeftButtonPressed)
-						{
-							mHit=false;
-							mSelectPoint=false;
-							QCursor acursor(Qt::ArrowCursor);
-							emit cursorChanged(acursor);
-						}
-					}
-					
-					if(mHit && mLeftButtonPressed)
-					{
-						if(!mKeyDeletePressed)
-						{
-							UpdateBPF(x,y);
-						}
-					}
-				}
-				
-				QString xlabel("");
-				QString ylabel("");
-
-				if(mXScale==EScale::eLinear)
-				{
-					xlabel = QString::number(x,'f',2);
-				}
-				else if(mXScale==EScale::eLog)
-				{
-					xlabel = QString::number(x,'e',1);
-				}
-
-				if(mYScale==EScale::eLinear)
-				{
-					ylabel = QString::number(y,'f',2);
-				}
-				else if(mYScale==EScale::eLog)
-				{
-					ylabel = QString::number(y,'e',1);
-				}
-
-				emit labelsText(xlabel,ylabel);
+				mCorners[1].SetX(x);
+				mCorners[1].SetY(y);
+				emit requestRefresh();
+				UpdateXYLabels(x,y);
+				return;
 			}
+			int index=Hit(x,y);
+			if(index != -1) 
+			{
+				if(mKeyDeletePressed)
+				{
+					mSelectPoint=false;
+					QCursor cCursor(Qt::CrossCursor);
+					emit cursorChanged(cCursor);
+				}
+				else if(
+					(mEFlags & CLAM::VM::AllowVerticalEdition) && 
+					(mEFlags & CLAM::VM::AllowHorizontalEdition))
+				{
+					QCursor sacursor(Qt::SizeAllCursor);
+					emit cursorChanged(sacursor);
+				}
+				else if(mEFlags & CLAM::VM::AllowVerticalEdition)
+				{
+					QCursor vcursor(Qt::SizeVerCursor);
+					emit cursorChanged(vcursor);
+				}
+				else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
+				{
+					QCursor hcursor(Qt::SizeHorCursor);
+					emit cursorChanged(hcursor);
+				}
+				mSelectPoint=true;
+				mCurrentIndex=TIndex(index);
+				mHit=true;
+			}
+			else
+			{
+				mCurrentPoint.SetX(x);
+				mCurrentPoint.SetY(y);
+				if(!mLeftButtonPressed)
+				{
+					mHit=false;
+					mSelectPoint=false;
+					QCursor acursor(Qt::ArrowCursor);
+					emit cursorChanged(acursor);
+				}
+			}
+			
+			if(mHit && mLeftButtonPressed)
+			{
+				if(!mKeyDeletePressed)
+				{
+					UpdateBPF(x,y);
+				}
+			}
+			
+			UpdateXYLabels(x,y);
+		}
+
+		void BPFEditorController::UpdateXYLabels(TData x, TData y)
+		{
+			QString xlabel("");
+			QString ylabel("");
+
+			if(mXScale==EScale::eLinear)
+			{
+				xlabel = QString::number(x,'f',2);
+			}
+			else if(mXScale==EScale::eLog)
+			{
+				xlabel = QString::number(x,'e',1);
+			}
+
+			if(mYScale==EScale::eLinear)
+			{
+				ylabel = QString::number(y,'f',2);
+			}
+			else if(mYScale==EScale::eLog)
+			{
+				ylabel = QString::number(y,'e',1);
+			}
+
+			emit labelsText(xlabel,ylabel);
 		}
 
 		void BPFEditorController::MouseOverDisplay(bool over)
