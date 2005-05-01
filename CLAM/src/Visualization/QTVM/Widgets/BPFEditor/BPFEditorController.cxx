@@ -155,66 +155,64 @@ namespace CLAM
 
 		void BPFEditorController::SetPoint(const TData& x, const TData& y)
 		{
-			if(mMouseOverDisplay)
+			if(!mMouseOverDisplay) return;
+			if(mLeftButtonPressed)
 			{
-				if(mLeftButtonPressed)
+				if(mSelectPoint || true)
 				{
-					if(mSelectPoint)
-					{
-						mRenderer.SetSelectedIndex(mCurrentIndex);
-						mSelectPoint=false;
-						emit requestRefresh();
-						emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
-					}
+					mRenderer.SetSelectedIndex(mCurrentIndex);
+					mSelectPoint=false;
+					emit requestRefresh();
+					emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
 				}
-				int mode = GetMode();
-				switch (mode)
-				{
-					case Selection:
-						if(mEFlags & CLAM::VM::AllowZoomByMouse)
-						{
-							if(mLeftButtonPressed)
-							{
-								mCorners[0].SetX(x);
-								mCorners[0].SetY(y);
-								mCorners[1].SetX(x);
-								mCorners[1].SetY(y);
-								mProcessingSelection=true;
-							}
-							else
-							{
-								if(mProcessingSelection)
-								{
-									mProcessingSelection=false;
-									mCorners[1].SetX(x);
-									mCorners[1].SetY(y);
-									PushSettings();
-								}
-							}
-						}
-						break;
-					case Edition:
-						if(mProcessingSelection) mProcessingSelection=false;
+			}
+			int mode = GetMode();
+			switch (mode)
+			{
+				case Selection:
+					if(mEFlags & CLAM::VM::AllowZoomByMouse)
+					{
 						if(mLeftButtonPressed)
 						{
-							if(!mHit && mKeyInsertPressed)
+							mCorners[0].SetX(x);
+							mCorners[0].SetY(y);
+							mCorners[1].SetX(x);
+							mCorners[1].SetY(y);
+							mProcessingSelection=true;
+						}
+						else
+						{
+							if(mProcessingSelection)
 							{
-								TIndex index = mData.Insert(mCurrentPoint.GetX(),mCurrentPoint.GetY());
-								emit elementAdded(int(index),float(mCurrentPoint.GetX()), float(mCurrentPoint.GetY()));
-								emit requestRefresh();
-							}
-
-							if(mHit && mKeyDeletePressed)
-							{
-								mData.DeleteIndex(mCurrentIndex);
-								emit elementRemoved(int(mCurrentIndex));
-								emit requestRefresh();
+								mProcessingSelection=false;
+								mCorners[1].SetX(x);
+								mCorners[1].SetY(y);
+								PushSettings();
 							}
 						}
-						break;
-					default:
-						break;
-				}
+					}
+					break;
+				case Edition:
+					mProcessingSelection=false;
+					if(mLeftButtonPressed)
+					{
+						if(!mHit && mKeyInsertPressed)
+						{
+							TIndex index = mData.Insert(mCurrentPoint.GetX(),mCurrentPoint.GetY());
+							emit elementAdded(int(index),float(mCurrentPoint.GetX()), float(mCurrentPoint.GetY()));
+							emit requestRefresh();
+						}
+
+						if(mHit && mKeyDeletePressed)
+						{
+							mData.DeleteIndex(mCurrentIndex);
+							emit elementRemoved(int(mCurrentIndex));
+							emit requestRefresh();
+						}
+					}
+					break;
+				default:
+					break;
 			}
 		}
 
@@ -448,19 +446,14 @@ namespace CLAM
 
 		TIndex BPFEditorController::Hit(const TData& x, const TData& y)
 		{
-			TIndex i;
-			bool hit=false;
 			Pixel selected_pixel=GetPixel(x,y);
-			for(i=0; i < mData.Size(); i++)
+			for(TIndex i=0; i < mData.Size(); i++)
 			{
 				Pixel owned_pixel=GetPixel(mData.GetXValue(i),mData.GetValueFromIndex(i));
 				if(Match(selected_pixel,owned_pixel))
-				{
-					hit=true;
-					break;
-				}
+					return i;
 			}
-			return (hit) ? i : -1;
+			return -1;
 		}
 
 		void BPFEditorController::DisplayDimensions(const int& w, const int& h)
