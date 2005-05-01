@@ -199,7 +199,7 @@ namespace CLAM
 
 	    int GetMode();
 	    
-	    void UpdateBPF(const TData& x, const TData& y);
+	    void UpdateBPF(TData x, TData y);
 
 	    bool IsValid(const TData& x0, const TData& x1);
 

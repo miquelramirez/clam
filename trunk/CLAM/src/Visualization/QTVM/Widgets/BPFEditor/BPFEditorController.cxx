@@ -17,6 +17,7 @@ namespace CLAM
 			  mHit(false),
 			  mDisplayWidth(0),
 			  mDisplayHeight(0),
+			  mCurrentIndex(0),
 			  mXModified(false),
 			  mYModified(false),
 			  mSelectPoint(false),
@@ -476,33 +477,19 @@ namespace CLAM
 			return (!mHit && !mKeyInsertPressed && !mKeyDeletePressed) ? Selection : Edition;
 		}
 
-		void BPFEditorController::UpdateBPF(const TData& x, const TData& y)
+		void BPFEditorController::UpdateBPF(TData x, TData y)
 		{
 			if (mData.Size() != 1)
 			{
 				if (mCurrentIndex!=0)
 				{
 					TData prior_x = mData.GetXValue(mCurrentIndex-1);
-					if(!IsValid(prior_x,x))
-					{
-						mHit=false;
-						QCursor acursor(Qt::ArrowCursor);
-						emit cursorChanged(acursor);
-						emit requestRefresh();
-						return;
-					}
+					if(x<prior_x) x=prior_x;
 				}
 				if(mCurrentIndex!=mData.Size()-1)
 				{
 					TData next_x = mData.GetXValue(mCurrentIndex+1);
-					if(!IsValid(x,next_x))
-					{
-						mHit=false;
-						QCursor acursor(Qt::ArrowCursor);
-						emit cursorChanged(acursor);
-						emit requestRefresh();
-						return;
-					}
+					if(x>next_x) x=next_x;
 				}
 			}
 
