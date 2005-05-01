@@ -212,7 +212,8 @@ namespace CLAM
 
 	    void UpdateVBounds(bool zin);
 
-	    TIndex GetBound(bool left=true);
+	    TIndex GetLeftBound();
+	    TIndex GetRightBound();
 	};
     }
 }

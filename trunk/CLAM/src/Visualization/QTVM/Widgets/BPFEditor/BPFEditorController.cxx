@@ -309,7 +309,7 @@ namespace CLAM
 		void BPFEditorController::Draw()
 		{
 			mRenderer.SetData(mData);
-			mRenderer.SetBounds(GetBound(),GetBound(false));
+			mRenderer.SetBounds(GetLeftBound(),GetRightBound());
 			mRenderer.Render();
 			if(mEFlags & CLAM::VM::AllowZoomByMouse)
 			{
@@ -643,8 +643,79 @@ namespace CLAM
 			SetVBounds(bottom,top);
 		}
 
-		TIndex BPFEditorController::GetBound(bool left)
+		TIndex BPFEditorController::GetRightBound()
 		{
+			bool left=false;
+			int nPoints = mData.Size();
+			if(!nPoints) return 0;
+			if(nPoints==1)
+			{
+				return 0;
+			}
+			TData searchValue;
+			if(left)
+			{
+				searchValue = TData(mView.mLeft);
+			}
+			else
+			{
+				searchValue = TData(mView.mRight);
+			}
+
+			if(searchValue <= mData.GetXValue(0)) return 0;
+			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints-1;
+			
+			TIndex index = 0;
+			TIndex currentIndex = 0;
+			TIndex left_index = 0;
+			TIndex right_index = nPoints-1;
+			while(left_index <= right_index)
+			{
+				currentIndex = (left_index+right_index)/2;
+				if(currentIndex>=nPoints-1)
+				{
+					index=currentIndex;
+					break;
+				}
+				if(searchValue >= mData.GetXValue(currentIndex) &&
+				   searchValue <= mData.GetXValue(currentIndex+1))
+				{
+					index = currentIndex;
+					break;
+				}
+				if(searchValue < mData.GetXValue(currentIndex))
+				{
+					right_index = currentIndex-1;
+				}
+				else if(searchValue > mData.GetXValue(currentIndex))
+				{
+					left_index = currentIndex+1;
+				}
+			}
+
+			if(!left)
+			{
+				TIndex ret;
+				if(index>=nPoints-1)
+				{
+					ret=nPoints-1;
+				}
+				if(index==nPoints-2)
+				{
+					ret=index+1;
+				}
+				else 
+				{
+					ret=index+2;
+				}
+				return ret;
+			}
+			return index;
+
+		}
+		TIndex BPFEditorController::GetLeftBound()
+		{
+			bool left=true;
 			int nPoints = mData.Size();
 			if(!nPoints) return 0;
 			if(nPoints==1)
