@@ -13,6 +13,7 @@ namespace CLAM
 	      mDoResize(false)
 	{
 	    setMouseTracking(true);
+	    setFocusPolicy(StrongFocus);
 	    setAutoBufferSwap(false);
 	    SetBackgroundColor(0.0f,0.0f,0.0f);
 	}
