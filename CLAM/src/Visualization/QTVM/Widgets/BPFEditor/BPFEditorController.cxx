@@ -645,7 +645,6 @@ namespace CLAM
 
 		TIndex BPFEditorController::GetRightBound()
 		{
-			bool left=false;
 			int nPoints = mData.Size();
 			if(!nPoints) return 0;
 			if(nPoints==1)
@@ -653,14 +652,7 @@ namespace CLAM
 				return 0;
 			}
 			TData searchValue;
-			if(left)
-			{
-				searchValue = TData(mView.mLeft);
-			}
-			else
-			{
-				searchValue = TData(mView.mRight);
-			}
+			searchValue = TData(mView.mRight);
 
 			if(searchValue <= mData.GetXValue(0)) return 0;
 			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints-1;
@@ -693,29 +685,24 @@ namespace CLAM
 				}
 			}
 
-			if(!left)
+			TIndex ret;
+			if(index>=nPoints-1)
 			{
-				TIndex ret;
-				if(index>=nPoints-1)
-				{
-					ret=nPoints-1;
-				}
-				if(index==nPoints-2)
-				{
-					ret=index+1;
-				}
-				else 
-				{
-					ret=index+2;
-				}
-				return ret;
+				ret=nPoints-1;
 			}
-			return index;
+			if(index==nPoints-2)
+			{
+				ret=index+1;
+			}
+			else 
+			{
+				ret=index+2;
+			}
+			return ret;
 
 		}
 		TIndex BPFEditorController::GetLeftBound()
 		{
-			bool left=true;
 			int nPoints = mData.Size();
 			if(!nPoints) return 0;
 			if(nPoints==1)
@@ -723,14 +710,7 @@ namespace CLAM
 				return 0;
 			}
 			TData searchValue;
-			if(left)
-			{
-				searchValue = TData(mView.mLeft);
-			}
-			else
-			{
-				searchValue = TData(mView.mRight);
-			}
+			searchValue = TData(mView.mLeft);
 
 			if(searchValue <= mData.GetXValue(0)) return 0;
 			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints-1;
@@ -763,23 +743,6 @@ namespace CLAM
 				}
 			}
 
-			if(!left)
-			{
-				TIndex ret;
-				if(index>=nPoints-1)
-				{
-					ret=nPoints-1;
-				}
-				if(index==nPoints-2)
-				{
-					ret=index+1;
-				}
-				else 
-				{
-					ret=index+2;
-				}
-				return ret;
-			}
 			return index;
 
 		}
