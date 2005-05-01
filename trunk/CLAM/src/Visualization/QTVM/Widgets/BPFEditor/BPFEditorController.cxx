@@ -450,6 +450,7 @@ namespace CLAM
 
 		void BPFEditorController::UpdateBPF(TData x, TData y)
 		{
+			// Bound movement
 			if (mData.Size() != 1)
 			{
 				if (mCurrentIndex!=0)
@@ -463,6 +464,10 @@ namespace CLAM
 					if(x>next_x) x=next_x;
 				}
 			}
+			if (x<mMinX) x=mMinX;
+			if (x>mMaxX) x=mMaxX;
+			if (y<mMinY) y=mMinY;
+			if (y>mMaxY) y=mMaxY;
 
 			if(mEFlags & CLAM::VM::AllowVerticalEdition)
 			{
