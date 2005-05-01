@@ -239,27 +239,22 @@ namespace CLAM
 							QCursor cCursor(Qt::CrossCursor);
 							emit cursorChanged(cCursor);
 						}
-						else
+						else if(
+							(mEFlags & CLAM::VM::AllowVerticalEdition) && 
+							(mEFlags & CLAM::VM::AllowHorizontalEdition))
 						{
-							if((mEFlags & CLAM::VM::AllowVerticalEdition) && 
-							   (mEFlags & CLAM::VM::AllowHorizontalEdition))
-							{
-								QCursor sacursor(Qt::SizeAllCursor);
-								emit cursorChanged(sacursor);
-							}
-							else
-							{
-								if(mEFlags & CLAM::VM::AllowVerticalEdition)
-								{
-									QCursor vcursor(Qt::SizeVerCursor);
-									emit cursorChanged(vcursor);
-								}
-								else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
-								{
-									QCursor hcursor(Qt::SizeHorCursor);
-									emit cursorChanged(hcursor);
-								}
-							}
+							QCursor sacursor(Qt::SizeAllCursor);
+							emit cursorChanged(sacursor);
+						}
+						else if(mEFlags & CLAM::VM::AllowVerticalEdition)
+						{
+							QCursor vcursor(Qt::SizeVerCursor);
+							emit cursorChanged(vcursor);
+						}
+						else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
+						{
+							QCursor hcursor(Qt::SizeHorCursor);
+							emit cursorChanged(hcursor);
 						}
 						mSelectPoint=true;
 						mCurrentIndex=TIndex(index);
