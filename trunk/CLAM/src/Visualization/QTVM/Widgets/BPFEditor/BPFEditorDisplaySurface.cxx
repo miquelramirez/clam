@@ -30,6 +30,7 @@ namespace CLAM
 			connect(mController,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
 			connect(mController,SIGNAL(viewChanged(GLView)),this,SLOT(updateView(GLView)));
 			connect(mController,SIGNAL(cursorChanged(QCursor)),this,SLOT(changeCursor(QCursor)));
+			connect(mController,SIGNAL(requestUpdate()),this,SLOT(update()));
 		}
 
 		void BPFEditorDisplaySurface::SetBackgroundColor(const float& r, const float& g, const float& b)
