@@ -139,6 +139,27 @@ namespace CLAM
 			}
 		}
 
+		void BPFEditorDisplaySurface::keyReleaseEvent(QKeyEvent * e)
+		{
+			if (!mController) return;
+			int step = (e->state() & ControlButton) ? 1:5;
+			switch (e->key())
+			{
+				case Qt::Key_Up:
+					mController->MoveCurrentPointDelta(0,step);
+					break;
+				case Qt::Key_Down:
+					mController->MoveCurrentPointDelta(0,-step);
+					break;
+				case Qt::Key_Right:
+					mController->MoveCurrentPointDelta(step,0);
+					break;
+				case Qt::Key_Left:
+					mController->MoveCurrentPointDelta(-step,0);
+					break;
+			}
+		}
+
 		void BPFEditorDisplaySurface::leaveEvent(QEvent* e)
 		{
 			if(mController)

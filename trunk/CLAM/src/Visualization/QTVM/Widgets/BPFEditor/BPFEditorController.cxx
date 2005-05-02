@@ -210,6 +210,17 @@ namespace CLAM
 			}
 		}
 
+		void BPFEditorController::MoveCurrentPointDelta(int stepX, int stepY)
+		{
+			TData stepXSize = (mMaxX - mMinX) / 100;
+			TData stepYSize = (mMaxY - mMinY) / 100;
+			TData x = mData.GetXValue(mCurrentIndex);
+			TData y = mData.GetValueFromIndex(mCurrentIndex);
+			UpdateBPF(x + stepX*stepXSize, y + stepY*stepYSize);
+			emit requestRefresh();
+			UpdateXYLabels(x,y);
+		}
+
 		void BPFEditorController::UpdatePoint(const TData& x, const TData& y)
 		{
 			if(mProcessingSelection)
