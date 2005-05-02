@@ -163,18 +163,16 @@ namespace CLAM
 		
 		void BPFEditor::keyReleaseEvent(QKeyEvent* e)
 		{
-			int ascii_code = e->ascii();
-			if(ascii_code==87 || ascii_code==119)
-			{
-				BlackOverWhite();
-			}
-			if(ascii_code==66 || ascii_code==98)
-			{
-				WhiteOverBlack();
-			}
-
 			switch(e->key())
 			{
+				case Qt::Key_B:
+					WhiteOverBlack();
+					break;
+
+				case Qt::Key_W:
+					BlackOverWhite();
+					break;
+
 				case Qt::Key_Insert:
 					if(mEFlags & CLAM::VM::AllowInsert)
 					{
