@@ -25,9 +25,6 @@ namespace CLAM
 			  mHasPlayData(false),
 			  mWhiteOverBlackScheme(true)
 		{
-		        mSlotPlayingTimeReceived.Wrap(this,&BPFEditor::PlayingTime);
-		        mSlotStopPlayingReceived.Wrap(this,&BPFEditor::StopPlaying);
-
 			InitBPFEditor();
 		}
 
@@ -123,22 +120,16 @@ namespace CLAM
 
 		void BPFEditor::SetActivePlayer(bool active)
 		{
-			if(_player)
-			{
-				if(active)
-				{
-					ShowPlayer();
-				}
-				else
-				{
-					HidePlayer();
-				}
-			}
+			if(!_player) return;
+
+			if(active) ShowPlayer();
+			else HidePlayer();
 		}
 
 		void BPFEditor::SetAudioPtr(const Audio* audio)
 		{
-			if(_player) ((QtBPFPlayer*)_player)->SetAudioPtr(audio);
+			if(!_player) return;
+			((QtBPFPlayer*)_player)->SetAudioPtr(audio);
 		}
 
 		void BPFEditor::keyPressEvent(QKeyEvent* e)
@@ -162,6 +153,7 @@ namespace CLAM
 				default:
 					break;
 			}
+			QWidget::keyPressEvent(e);
 		}
 		
 		void BPFEditor::keyReleaseEvent(QKeyEvent* e)
@@ -193,6 +185,7 @@ namespace CLAM
 				default:
 					break;
 			}
+			QWidget::keyReleaseEvent(e);
 		}
 
 		void BPFEditor::updateLabels(QString xLabel, QString yLabel)
@@ -239,8 +232,6 @@ namespace CLAM
 			{
 				mXRuler->setFixedHeight(fm.height()+10);
 				_player = new QtBPFPlayer(this);
-				((QtBPFPlayer*)_player)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
-				((QtBPFPlayer*)_player)->SetSlotStopPlaying(mSlotStopPlayingReceived);
 				middle_panel_height = mXRuler->height()+_player->height();
 			}
 			else
@@ -316,8 +307,6 @@ namespace CLAM
 				connect(mController,SIGNAL(elementAdded(int, float, float)),((QtBPFPlayer*)_player),SLOT(addNote(int, float, float)));
 				connect(mController,SIGNAL(elementRemoved(int)),((QtBPFPlayer*)_player),SLOT(removeNote(int)));
 				connect(mController,SIGNAL(rightButtonPressed()),this,SLOT(showPopupMenu()));
-				connect(mController,SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
-				connect(mController,SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
 			}
 			
 			// set color scheme
@@ -347,7 +336,6 @@ namespace CLAM
 			mController->SetDataColor(VMColor::White());
 			mController->SetHandlersColor(VMColor::Cyan());
 			mController->SetRectColor(VMColor::White());
-			mController->SetDialColor(VMColor::Red());
 
 			mXRuler->SetBackgroundColor(VMColor::Black());
 			mXRuler->SetForegroundColor(VMColor::White());
@@ -381,7 +369,6 @@ namespace CLAM
 			mController->SetDataColor(VMColor::Black());
 			mController->SetHandlersColor(VMColor::Blue());
 			mController->SetRectColor(VMColor::Black());
-			mController->SetDialColor(VMColor::Black());
 
 			mXRuler->SetBackgroundColor(VMColor::White());
 			mXRuler->SetForegroundColor(VMColor::Black());
@@ -602,26 +589,6 @@ namespace CLAM
 				mPopupMenu->setItemChecked(0,false);
 			}
 		}
-
-	    	void BPFEditor::PlayingTime(TData time)
-		{
-		    mController->UpdateTimePos(time);
-		}
-
-	    void BPFEditor::StopPlaying(TData time)
-	    {
-		mController->StopPlaying(time);
-	    }
-
-	    void BPFEditor::setCurrentPlayingTime(float t)
-	    {
-		mController->UpdateTimePos(TData(t));
-	    }
-
-	    void BPFEditor::receivedStopPlaying(float t)
-	    {
-		mController->StopPlaying(TData(t));
-	    }
 
 	}
 }
