@@ -36,9 +36,13 @@ namespace CLAM
 {
     namespace VM
     {
-	QtStereoAudioPlot::QtStereoAudioPlot(QWidget* parent) : QtPlot(parent)
+	QtStereoAudioPlot::QtStereoAudioPlot(QWidget* parent) 
+	    : QtPlot(parent),
+	      _maxHZRatio(-1.0)
 	{
-	    _maxHZRatio=-1.0;
+	    mSlotPlayingTimeReceived.Wrap(this,&QtStereoAudioPlot::PlayingTime);
+	    mSlotStopPlayingReceived.Wrap(this,&QtStereoAudioPlot::StopPlaying);
+
 	    InitStereoAudioPlot();
 	}
 
@@ -54,12 +58,13 @@ namespace CLAM
 
 	    //create player
 	    _player = new QtAudioPlayer(this);
+	    ((QtAudioPlayer*)_player)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
+	    ((QtAudioPlayer*)_player)->SetSlotStopPlaying(mSlotStopPlayingReceived);
 	    _player->setFixedSize(75,30);
 
 	    // top area (x ruler)
 	    QHBoxLayout* top = new QHBoxLayout(main);
 	    QFrame* topLeftHole = new QFrame(this);
-	    topLeftHole->setFixedSize(77,40);
 	    _btoggle_color = new QPushButton(topLeftHole);
 	    _btoggle_color->setFixedSize(25,25);
 	    _btoggle_color->setGeometry(0,8,25,25);
@@ -69,7 +74,7 @@ namespace CLAM
 	    SwitchDisplayColors(false);
 	    top->addWidget(topLeftHole,0);
 	    _xRuler = new Ruler(this,CLAM::VM::Top);
-	    _xRuler->setFixedHeight(topLeftHole->height());
+	    _xRuler->setFixedHeight(40);
 	    top->addWidget(_xRuler);
 
 	    // middle area - channels left and right
@@ -95,6 +100,10 @@ namespace CLAM
 	    left->addStretch(1);
 
 	    _leftChannel = new QtAudioPlot(this);
+	    QFont ref = _leftChannel->RulerFont();
+	    QFontMetrics fm(ref);
+	    int yruler_width=fm.width("-0.00")+8;
+	    _leftChannel->SetYRulerWidth(yruler_width);
 	    _leftChannel->SetFlag(true);
 	    _leftChannel->RemoveXRuler();
 	    _leftChannel->RemoveVScrollGroup();
@@ -125,6 +134,7 @@ namespace CLAM
 	    right->addStretch(1);
 
 	    _rightChannel = new QtAudioPlot(this);
+	    _rightChannel->SetYRulerWidth(yruler_width);
 	    _rightChannel->SetFlag(true);
 	    _rightChannel->RemoveXRuler();
 	    _rightChannel->RemoveVScrollGroup();
@@ -135,7 +145,6 @@ namespace CLAM
 	    // bottom area (horizontal scroll and zoom group)
 	    QHBoxLayout* bottom = new QHBoxLayout(main);
 	    QFrame* bottomLeftHole = new QFrame(this);
-	    bottomLeftHole->setFixedSize(77,20);
 	    bottom->addWidget(bottomLeftHole,0);
 
 	    _hs = new HScrollGroup(this);
@@ -145,8 +154,11 @@ namespace CLAM
 	    QHBoxLayout* panel = new QHBoxLayout(main);
 			
 	    QFrame* leftpphole = new QFrame(this);
-	    leftpphole->setFixedSize(77,30);
 	    panel->addWidget(leftpphole);
+
+	    topLeftHole->setFixedSize(yruler_width+25,40);
+	    bottomLeftHole->setFixedSize(topLeftHole->width(),20);
+	    leftpphole->setFixedSize(topLeftHole->width(),30);
 
 	    // add player to panel
 	    panel->addWidget(_player);
@@ -200,6 +212,10 @@ namespace CLAM
 
 	    connect(_leftChannel,SIGNAL(updatedMark(int,unsigned)),_rightChannel,SLOT(updateMark(int,unsigned)));
 	    connect(_rightChannel,SIGNAL(updatedMark(int,unsigned)),_leftChannel,SLOT(updateMark(int,unsigned)));
+
+	    // playing pos sync
+	    connect(_leftChannel,SIGNAL(currentPlayingTime(float)),_rightChannel,SLOT(setCurrentPlayingTime(float)));
+	    connect(_leftChannel,SIGNAL(stopPlaying(float)),_rightChannel,SLOT(receivedStopPlaying(float)));
 	}
 
 	void QtStereoAudioPlot::SetData(const Audio& leftChannel, const Audio& rightChannel)
@@ -378,6 +394,16 @@ namespace CLAM
 	{
 	    _leftChannel->SetMarksColor(c);
 	    _rightChannel->SetMarksColor(c);
+	}
+
+	void QtStereoAudioPlot::PlayingTime(TData time)
+	{
+	    _leftChannel->setCurrentPlayingTime(float(time));
+	}
+
+	void QtStereoAudioPlot::StopPlaying(TData time)
+	{
+	    _leftChannel->receivedStopPlaying(float(time));
 	}
 
     }	

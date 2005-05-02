@@ -26,6 +26,9 @@
 #include "MediaTime.hxx"
 #include "QtPresentation.hxx"
 #include "PlayablePlot.hxx"
+#include "Slotv1.hxx"
+
+using SigSlot::Slotv1;
 
 class QFrame;
 
@@ -54,6 +57,16 @@ namespace CLAM
 	    void SetDialColor(Color c);
 	    void SetRegionColor(Color c);
 
+	signals:
+	    void regionTime(MediaTime);
+
+	    void currentPlayingTime(float);
+	    void stopPlaying(float);
+
+	public slots:
+	    void setCurrentPlayingTime(float);
+	    void receivedStopPlaying(float);
+
 	protected slots:
 	    void initialYRulerRange(double,double);
 	    void updateRegion(MediaTime);
@@ -74,6 +87,9 @@ namespace CLAM
 	    void SetPData(const Segment& seg);
 
 	private:
+	    Slotv1<TData> mSlotPlayingTimeReceived;
+	    Slotv1<TData> mSlotStopPlayingReceived;
+
 	    TimeSegmentLabelsGroup* _labelsGroup;
 	    SingleLabel *_leftFreqLab, *_rightFreqLab;
 
@@ -82,6 +98,9 @@ namespace CLAM
 				
 	    void InitFundFreqPlot();
 	    void UpdateFreqLabels(MediaTime time);
+	    
+	    void PlayingTime(TData time);
+	    void StopPlaying(TData time);
 
 	};
     }

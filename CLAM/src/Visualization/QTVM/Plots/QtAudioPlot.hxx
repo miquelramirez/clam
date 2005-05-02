@@ -26,6 +26,9 @@
 #include "MediaTime.hxx"
 #include "QtPresentation.hxx"
 #include "PlayablePlot.hxx"
+#include "Slotv1.hxx"
+
+using SigSlot::Slotv1;
 
 namespace CLAM
 {
@@ -57,14 +60,18 @@ namespace CLAM
 	    void SetKeyPressed(QKeyEvent* e);
 	    void SetKeyReleased(QKeyEvent* e);
 
-	    void UpdateRegion(MediaTime);
-
 	signals:
 	    void regionTime(MediaTime);
 	    void regionTime(float, float);
+
+	    void currentPlayingTime(float);
+	    void stopPlaying(float);
 	    
 	public slots:
 	    void setSelectedXPos(double);
+
+	    void setCurrentPlayingTime(float);
+	    void receivedStopPlaying(float);
 	    
         protected slots:
 	    void initialYRulerRange(double,double);
@@ -92,11 +99,17 @@ namespace CLAM
 	    MediaTime _playBounds;
 	    bool showRightAmp;
 
+	    Slotv1<TData> mSlotPlayingTimeReceived;
+	    Slotv1<TData> mSlotStopPlayingReceived;
+
 	    // holes
 	    QFrame *lefthole,*righthole;
 				
 	    void UpdateAmpLabels(MediaTime time);
 	    void InitAudioPlot();
+
+	    void PlayingTime(TData time);
+	    void StopPlaying(TData time);
 	};
     }
 }

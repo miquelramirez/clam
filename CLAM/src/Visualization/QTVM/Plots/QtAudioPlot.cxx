@@ -34,6 +34,9 @@ namespace CLAM
     {
 	QtAudioPlot::QtAudioPlot(QWidget* parent) : QtPresentation(parent)
 	{
+	    mSlotPlayingTimeReceived.Wrap(this,&QtAudioPlot::PlayingTime);
+	    mSlotStopPlayingReceived.Wrap(this,&QtAudioPlot::StopPlaying);
+
 	    _playBounds.SetBegin(-1.0);
 	    _playBounds.SetEnd(-1.0);
 	    showRightAmp=true;
@@ -56,6 +59,8 @@ namespace CLAM
 
 	    _player = new QtAudioPlayer(this);
 	    _player->setFixedSize(75,30);
+	    ((QtAudioPlayer*)_player)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
+	    ((QtAudioPlayer*)_player)->SetSlotStopPlaying(mSlotStopPlayingReceived);
 	    _panel->addWidget(_player);
 
 	    _panel->addStretch(1);
@@ -195,6 +200,8 @@ namespace CLAM
 	    // Connections
 	    connect(((AudioPlotController*)_controller),SIGNAL(initialYRulerRange(double,double)),this,SLOT(initialYRulerRange(double,double)));
 	    connect(((AudioPlotController*)_controller),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
+	    connect(((AudioPlotController*)_controller),SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
+	    connect(((AudioPlotController*)_controller),SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
 	}
 
 	void QtAudioPlot::SetPData(const Audio& audio, bool setTime)
@@ -282,6 +289,26 @@ namespace CLAM
 	void QtAudioPlot::setSelectedXPos(double xpos)
 	{
 	    ((AudioPlotController*)_controller)->SetSelectedXPos(xpos);
+	}
+
+	void QtAudioPlot::PlayingTime(TData time)
+	{
+	    ((AudioPlotController*)_controller)->UpdateTimePos(time);
+	}
+
+	void QtAudioPlot::StopPlaying(TData time)
+	{
+	    ((AudioPlotController*)_controller)->StopPlaying(time);
+	}
+
+	void QtAudioPlot::setCurrentPlayingTime(float t)
+	{
+	    ((AudioPlotController*)_controller)->UpdateTimePos(TData(t));
+	}
+
+	void QtAudioPlot::receivedStopPlaying(float t)
+	{
+	    ((AudioPlotController*)_controller)->StopPlaying(TData(t));
 	}
 
     }	
