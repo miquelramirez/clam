@@ -222,6 +222,7 @@ namespace CLAM
 
 		void BPFEditorController::ChooseCurrentPoint(int index)
 		{
+			if (mCurrentIndex == index) return;
 			mCurrentIndex=index;
 			if (mCurrentIndex<0) mCurrentIndex=0;
 			if (mCurrentIndex>=mData.Size()) mCurrentIndex=mData.Size()-1;
@@ -538,21 +539,28 @@ namespace CLAM
 		void BPFEditorController::SelectPointFromXCoord(double xcoord)
 		{
 			if(!mData.Size()) return;
-			if(mData.Size()==1)
+			TData x = xcoord;
+			if(mData.Size()==1 || x < mData.GetXValue(0))
 			{
 				ChooseCurrentPoint(0);
 				return;
 			}
 			for(TIndex i=1; i < mData.Size(); i++)
 			{
-				if(TData(xcoord)<=mData.GetXValue(i))
+				if(x <= mData.GetXValue(i))
 				{
 					double x0 = mData.GetXValue(i-1);
 					double x1 = mData.GetXValue(i);
 					if((xcoord-x0)<(x1-xcoord))
+					{
 						ChooseCurrentPoint(i-1);
+						return;
+					}
 					else
+					{
 						ChooseCurrentPoint(i);
+						return;
+					}
 				}
 			}
 			ChooseCurrentPoint(mData.Size()-1);
