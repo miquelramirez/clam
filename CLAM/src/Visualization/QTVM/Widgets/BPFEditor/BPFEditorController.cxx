@@ -193,7 +193,7 @@ namespace CLAM
 					{
 						TIndex index = mData.Insert(mCurrentPoint.GetX(),mCurrentPoint.GetY());
 						emit elementAdded(int(index),float(mCurrentPoint.GetX()), float(mCurrentPoint.GetY()));
-						emit requestRefresh();
+						ChooseCurrentPoint(index);
 					}
 					if(mHit && mKeyDeletePressed)
 					{
