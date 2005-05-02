@@ -9,6 +9,7 @@
 #include "Point.hxx"
 #include "GLView.hxx"
 #include "BPFEditorRenderer.hxx"
+#include "Dial.hxx"
 
 namespace CLAM
 {
@@ -90,6 +91,7 @@ namespace CLAM
 	    void SetDataColor(const Color& c);
 	    void SetHandlersColor(const Color& c);
 	    void SetRectColor(const Color& c);
+	    void SetDialColor(const Color& c);
 
 	    void SetXRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
 	    void SetYRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
@@ -105,8 +107,6 @@ namespace CLAM
 
 	    void SetPoint(const TData& x, const TData& y);
 	    void UpdatePoint(const TData& x, const TData& y);
-
-	    void InsertBPFNode(TData x, TData y);
 	    void MoveCurrentPointDelta(int stepX, int stepY);
 	    void ChooseCurrentPointByJumping(int step);
 	    void ChooseCurrentPoint(int pointIndex);
@@ -120,6 +120,9 @@ namespace CLAM
 	    void SetVBounds(double bottom, double top);
 
 	    void SelectPointFromXCoord(double xcoord);
+
+	    void UpdateTimePos(const TData& time);
+	    void StopPlaying(const TData& time);
 
 	signals:
 	    void viewChanged(GLView);
@@ -143,6 +146,11 @@ namespace CLAM
 
 	    void rightButtonPressed();
 
+	     void requestUpdate();
+
+	    void currentPlayingTime(float);
+	    void stopPlaying(float);
+
 	public slots:
 	    void vZoomIn();
 	    void vZoomOut();
@@ -151,6 +159,7 @@ namespace CLAM
 
 	private:
 	    BPF mData;
+	    Dial mDial;
 	    BPFEditorRenderer mRenderer;
 	    GLView mView;
 	    RulerRange mXRulerRange, mYRulerRange;
@@ -180,6 +189,9 @@ namespace CLAM
 
 	    double mVCurrent;
 	    double mVZoomRatio;
+
+	    bool mIsPlaying;
+	    TIndex mLightedPointIndex;
 	    
 	    void PushSettings();
 	    void PopSettings();
@@ -213,8 +225,9 @@ namespace CLAM
 
 	    void UpdateVBounds(bool zin);
 
-	    TIndex GetLeftBound();
-	    TIndex GetRightBound();
+	    TIndex GetBound(const TData& searchValue, bool left=true);
+
+	    void InsertBPFNode(TData x, TData y);
 	};
     }
 }
