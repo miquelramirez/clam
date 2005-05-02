@@ -28,41 +28,54 @@
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	class SelTimeRegionPlotController : public SelPosPlotController
 	{
-		class SelTimeRegionPlotController : public SelPosPlotController
-		{
-			Q_OBJECT
+	    Q_OBJECT
 
-			public:
-				SelTimeRegionPlotController();
-				virtual ~SelTimeRegionPlotController();
+	public:
+	    SelTimeRegionPlotController();
+	    virtual ~SelTimeRegionPlotController();
 
-				virtual void SetSelPos(const TData& value);
-				virtual void Draw();
+	    virtual void SetSelPos(const TData& value);
+	    virtual void Draw();
 
-				void SetRegionColor(Color c);
-				void SetKeyShiftPressed(bool pr);
+	    void SetRegionColor(Color c);
+	    void SetKeyShiftPressed(bool pr);
 
-			signals:
-				void selectedRegion(MediaTime);
+	    void UpdateTimePos(const TData& time);
+	    void StopPlaying(const TData& time);
+	    
+	signals:
+	    void selectedRegion(MediaTime);
+	    
+	    void currentPlayingTime(float);
+	    void stopPlaying(float);
 			
-			protected:
-				virtual void SetHBounds(const TData& left,const TData& right);
-				virtual void SetVBounds(const TData& bottom,const TData& top);
+	protected:
+	    TData _sampleRate;
+	    TData _duration;
 
-			private:
-				RegionMarker _rMarker;
-				bool _keyShiftPressed;
+	    virtual void SetHBounds(const TData& left,const TData& right);
+	    virtual void SetVBounds(const TData& bottom,const TData& top);
+
+	    bool CanDrawSelectedPos();
+
+	private:
+	    RegionMarker _rMarker;
+	    bool _keyShiftPressed;
+	    bool _isPlaying;
 				
-				TData GetBeginRegion() const;
-				TData GetEndRegion() const;
-				void SetBeginRegion(const TData& value);
-				void SetEndRegion(const TData& value);
+	    TData GetBeginRegion() const;
+	    TData GetEndRegion() const;
+	    void SetBeginRegion(const TData& value);
+	    void SetEndRegion(const TData& value);
 
-				MediaTime GetRegionTime() const;
-		};
-	}
+	    MediaTime GetRegionTime() const;
+	    
+	};
+    }
 }
 
 #endif

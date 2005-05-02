@@ -28,35 +28,32 @@
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	class SelPosPlotController : public SegmentationMarksPlotController
 	{
-		class SelPosPlotController : public SegmentationMarksPlotController
-		{
-			Q_OBJECT
+	    Q_OBJECT
 			
-			public:
-				SelPosPlotController();
-				virtual ~SelPosPlotController();
+	public:
+	    SelPosPlotController();
+	    virtual ~SelPosPlotController();
 
-				virtual void SetSelPos(const TData& value);
-				virtual void Draw();
+	    virtual void SetSelPos(const TData& value);
+	    virtual void Draw();
 
-				void SetDialColor(Color c);
+	    void SetDialColor(Color c);
 				
-			protected:
-				TData _sampleRate;
-				TData _duration;
-
-				virtual void SetHBounds(const TData& left,const TData& right);
-				virtual void SetVBounds(const TData& bottom,const TData& top);
-				void UpdateDial(const TData& value);
-				TData GetDialPos() const;
+	protected:
+	    virtual void SetHBounds(const TData& left,const TData& right);
+	    virtual void SetVBounds(const TData& bottom,const TData& top);
+	    void UpdateDial(const TData& value);
+	    TData GetDialPos() const;
 			
-			private:
-				Dial _dial;
+	private:
+	    Dial _dial;
 
-		};
-	}
+	};
+    }
 }
 
 #endif
