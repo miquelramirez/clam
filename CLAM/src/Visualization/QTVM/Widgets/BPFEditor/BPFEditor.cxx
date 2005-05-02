@@ -120,16 +120,22 @@ namespace CLAM
 
 		void BPFEditor::SetActivePlayer(bool active)
 		{
-			if(!_player) return;
-
-			if(active) ShowPlayer();
-			else HidePlayer();
+			if(_player)
+			{
+				if(active)
+				{
+					ShowPlayer();
+				}
+				else
+				{
+					HidePlayer();
+				}
+			}
 		}
 
 		void BPFEditor::SetAudioPtr(const Audio* audio)
 		{
-			if(!_player) return;
-			((QtBPFPlayer*)_player)->SetAudioPtr(audio);
+			if(_player) ((QtBPFPlayer*)_player)->SetAudioPtr(audio);
 		}
 
 		void BPFEditor::keyPressEvent(QKeyEvent* e)
@@ -153,7 +159,6 @@ namespace CLAM
 				default:
 					break;
 			}
-			QWidget::keyPressEvent(e);
 		}
 		
 		void BPFEditor::keyReleaseEvent(QKeyEvent* e)
@@ -185,7 +190,6 @@ namespace CLAM
 				default:
 					break;
 			}
-			QWidget::keyReleaseEvent(e);
 		}
 
 		void BPFEditor::updateLabels(QString xLabel, QString yLabel)
