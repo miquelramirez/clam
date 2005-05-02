@@ -27,7 +27,7 @@ namespace CLAM
 	{
 		Renderer::Renderer()
 		{
-			SetHBounds(TData(0.0),TData(1.0));
+			SetHBounds(TData(0.0),TData(0.0));
 			SetVBounds(TData(1.0),TData(-1.0));
 			SetEnabled(true);
 			SetColor(VMColor::Green());
