@@ -238,7 +238,7 @@ namespace CLAM
 			if (mCurrentIndex>=mData.Size()) mCurrentIndex=mData.Size()-1;
 
 			if (mCurrentIndex>=0)
-				emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
+			    //emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
 			emit requestRefresh();
 		}
 
@@ -337,7 +337,6 @@ namespace CLAM
 		{
 			mRenderer.SetData(mData);
 			mRenderer.SetBounds(GetBound(mView.mLeft),GetBound(mView.mRight,false));
-			if(!mIsPlaying) mRenderer.SetSelectedIndex(mCurrentIndex);
 			mRenderer.Render();
 			mDial.Render();
 			if(mEFlags & CLAM::VM::AllowZoomByMouse)
@@ -510,6 +509,7 @@ namespace CLAM
 				mXModified = true;
 			}
 		}
+
 		void BPFEditorController::InsertBPFNode(TData x, TData y)
 		{
 			if (x<mMinX) x=mMinX;
@@ -547,29 +547,33 @@ namespace CLAM
 			emit requestRefresh();
 		}
 
-		void BPFEditorController::SelectPointFromXCoord(double xcoord)
+	    	void BPFEditorController::SelectPointFromXCoord(double xcoord)
 		{
-			if(!mData.Size()) return;
-			if(mData.Size()==1)
+		    if(!mData.Size() || mIsPlaying) return;
+		    if(mData.Size()==1)
+		    {
+			mRenderer.SetSelectedIndex(0);
+			emit requestRefresh();
+			return;
+		    }
+		    TIndex index = GetBound(TData(xcoord));
+		    if(index != -1)
+		    {
+			if(index == mData.Size()-1)
 			{
-				ChooseCurrentPoint(0);
-				return;
+			    mRenderer.SetSelectedIndex(index);
 			}
-			for(TIndex i=1; i < mData.Size(); i++)
+			else
 			{
-				if(TData(xcoord)<=mData.GetXValue(i))
-				{
-					double x0 = mData.GetXValue(i-1);
-					double x1 = mData.GetXValue(i);
-					if((xcoord-x0)<(x1-xcoord))
-						ChooseCurrentPoint(i-1);
-					else
-						ChooseCurrentPoint(i);
-				}
+			    double x0 = mData.GetXValue(index);
+			    double x1 = mData.GetXValue(index+1);
+			    if((xcoord-x0)>(x1-xcoord)) index++;
+			    mRenderer.SetSelectedIndex(index);
 			}
-			ChooseCurrentPoint(mData.Size()-1);
+			emit requestRefresh();
+		    }
 		}
-
+	
 		void BPFEditorController::vZoomIn()
 		{
 			if(mVCurrent/2.0 > mMinSpanY)
