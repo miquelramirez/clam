@@ -40,7 +40,6 @@ namespace CLAM
 		{
 			if(IsEnabled())
 			{
-				if(_data < _bounds.left || _data > _bounds.right) return;
 				Draw();
 			}
 		}
