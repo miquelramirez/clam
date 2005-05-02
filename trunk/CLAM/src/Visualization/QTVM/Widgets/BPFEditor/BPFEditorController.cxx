@@ -681,32 +681,21 @@ namespace CLAM
 			if(searchValue <= mData.GetXValue(0)) return 0;
 			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints-1;
 			
-			TIndex currentIndex = 0;
 			TIndex left_index = 0;
 			TIndex right_index = nPoints-1;
-			while(left_index <= right_index)
+			while(left_index + 1 < right_index)
 			{
-				currentIndex = (left_index+right_index)/2;
-				if(currentIndex>=nPoints-1)
+				TIndex currentIndex = (left_index+right_index)/2;
+				if (searchValue > mData.GetXValue(currentIndex))
 				{
-					return currentIndex;
-				}
-				if(searchValue >= mData.GetXValue(currentIndex) &&
-				   searchValue <= mData.GetXValue(currentIndex+1))
-				{
-					return currentIndex;
+					left_index = currentIndex;
 				}
 				if(searchValue < mData.GetXValue(currentIndex))
 				{
-					right_index = currentIndex-1;
-				}
-				else if(searchValue > mData.GetXValue(currentIndex))
-				{
-					left_index = currentIndex+1;
+					right_index = currentIndex;
 				}
 			}
-
-			return 0;
+			return left_index;
 
 		}
 
