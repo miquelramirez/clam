@@ -61,11 +61,13 @@ namespace CLAM
 	    connect(_controller,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
 	    connect(this,SIGNAL(leavingMouse()),_controller,SIGNAL(leavingMouse()));
 	    connect(_controller,SIGNAL(changeCursor(QCursor)),this,SLOT(changeCursor(QCursor)));
+	    connect(_controller,SIGNAL(requestUpdate()),this,SLOT(update()));
 	}
 
 	void DisplaySurface::paintGL()
 	{
 	    if(!_controller) return;
+	    
 	    if(_doResize)
 	    {
 		glViewport(0, 0, _width, _height);
@@ -185,7 +187,6 @@ namespace CLAM
 	{
 	    setCursor(cursor);
 	}
-
     }
 }
 
