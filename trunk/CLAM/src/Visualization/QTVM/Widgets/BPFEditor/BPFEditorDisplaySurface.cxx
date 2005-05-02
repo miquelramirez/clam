@@ -157,6 +157,12 @@ namespace CLAM
 				case Qt::Key_Left:
 					mController->MoveCurrentPointDelta(-step,0);
 					break;
+				case Qt::Key_Prior:
+					mController->ChooseCurrentPointByJumping(-1);
+					break;
+				case Qt::Key_Next:
+					mController->ChooseCurrentPointByJumping(1);
+					break;
 			}
 		}
 

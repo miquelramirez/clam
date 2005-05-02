@@ -106,6 +106,7 @@ namespace CLAM
 	    void SetPoint(const TData& x, const TData& y);
 	    void UpdatePoint(const TData& x, const TData& y);
 	    void MoveCurrentPointDelta(int stepX, int stepY);
+	    void ChooseCurrentPointByJumping(int step);
 
 	    void MouseOverDisplay(bool over);
 
