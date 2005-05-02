@@ -228,7 +228,6 @@ namespace CLAM
 			if (mCurrentIndex<0) mCurrentIndex=0;
 			if (mCurrentIndex>=mData.Size()) mCurrentIndex=mData.Size()-1;
 
-			mRenderer.SetSelectedIndex(mCurrentIndex);
 			if (mCurrentIndex>=0)
 				emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
 			emit requestRefresh();
@@ -329,6 +328,7 @@ namespace CLAM
 		{
 			mRenderer.SetData(mData);
 			mRenderer.SetBounds(GetLeftBound(),GetRightBound());
+			mRenderer.SetSelectedIndex(mCurrentIndex);
 			mRenderer.Render();
 			if(mEFlags & CLAM::VM::AllowZoomByMouse)
 			{
