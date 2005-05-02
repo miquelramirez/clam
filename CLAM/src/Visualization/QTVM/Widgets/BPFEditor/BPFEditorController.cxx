@@ -221,6 +221,18 @@ namespace CLAM
 			UpdateXYLabels(x,y);
 		}
 
+		void BPFEditorController::ChooseCurrentPointByJumping(int step)
+		{
+			mCurrentIndex+=step;
+			if (mCurrentIndex<0) mCurrentIndex=0;
+			if (mCurrentIndex>=mData.Size()) mCurrentIndex=mData.Size()-1;
+
+			mRenderer.SetSelectedIndex(mCurrentIndex);
+			emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
+			emit requestRefresh();
+
+		}
+
 		void BPFEditorController::UpdatePoint(const TData& x, const TData& y)
 		{
 			if(mProcessingSelection)
