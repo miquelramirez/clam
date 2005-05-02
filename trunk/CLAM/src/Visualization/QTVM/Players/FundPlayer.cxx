@@ -91,12 +91,18 @@ namespace CLAM
 				freqControl.DoControl(_segment.GetFrame(int(leftIndex*nFrames/nSamples)).GetFundamental().GetFreq(0));
 				osc.Do(samples);
 				channel.Do(samples);
+
+				mSigPlayingTime.Emit(TData(leftIndex)/sampleRate);
+
 				leftIndex += frameSize;
 				rightIndex += frameSize;
 			 }
 			 osc.Stop();
 			 channel.Stop(); 
 			 if(!IsPaused()) _time.SetBegin(GetBeginTime());
+
+			 TData stopTime = (IsStopped()) ? TData(leftIndex)/sampleRate : (IsPaused()) ? _time.GetBegin() : _time.GetEnd();
+			 mSigStop.Emit(stopTime);
 		}
 	}
 }
