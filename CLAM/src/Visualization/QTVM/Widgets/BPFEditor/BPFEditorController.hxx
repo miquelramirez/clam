@@ -105,6 +105,8 @@ namespace CLAM
 
 	    void SetPoint(const TData& x, const TData& y);
 	    void UpdatePoint(const TData& x, const TData& y);
+
+	    void InsertBPFNode(TData x, TData y);
 	    void MoveCurrentPointDelta(int stepX, int stepY);
 	    void ChooseCurrentPointByJumping(int step);
 	    void ChooseCurrentPoint(int pointIndex);
