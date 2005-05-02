@@ -8,9 +8,11 @@ namespace CLAM
     {
 	
 	Ruler::Ruler(QWidget* parent, const Position& pos, const EScale& scale)
-	    : QWidget(parent), 
-	      mPosition(pos), 
-	      mScale(scale)
+	   : QWidget(parent) 
+	   , mPosition(pos)
+	   , mScale(scale)
+	   , mMin(0)
+	   , mMax(100)
 	{
 	    mFont.setFamily("fixed");
 	    mFont.setPointSize(10);
