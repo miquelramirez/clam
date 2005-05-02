@@ -203,8 +203,6 @@ namespace CLAM
 	    
 	    void UpdateBPF(TData x, TData y);
 
-	    bool IsValid(const TData& x0, const TData& x1);
-
 	    int GetnyPixels() const;
 	    int GetVScrollValue() const;
 
