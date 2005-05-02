@@ -109,7 +109,6 @@ namespace CLAM
 	    void ChooseCurrentPointByJumping(int step);
 	    void ChooseCurrentPoint(int pointIndex);
 
-	    void MouseOverDisplay(bool over);
 
 	    void Draw();
 
@@ -157,7 +156,6 @@ namespace CLAM
 	    EScale mXScale, mYScale;
 	    bool mLeftButtonPressed, mRightButtonPressed;
 	    bool mKeyInsertPressed, mKeyDeletePressed;
-	    bool mMouseOverDisplay;
 	    bool mProcessingSelection;
 	    bool mHit;
 	    Color mRectColor;
