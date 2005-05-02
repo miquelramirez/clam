@@ -94,6 +94,22 @@ namespace CLAM
 	    // be careful
 	    mAllPlayers = all;
 	}
+
+	void QtMultiPlayer::SetSlotPlayingTime(Slotv1<TData>& slot)
+	{
+	    for(unsigned i=0; i < mPlayers.size(); i++)
+	    {
+		mPlayers[i]->SetSlotPlayingTime(slot);
+	    }
+	}
+
+	void QtMultiPlayer::SetSlotStopPlaying(Slotv1<TData>& slot)
+	{
+	    for(unsigned i=0; i < mPlayers.size(); i++)
+	    {
+		mPlayers[i]->SetSlotStopPlaying(slot);
+	    }  
+	}
 		
     }
 }

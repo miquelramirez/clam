@@ -52,6 +52,16 @@ namespace CLAM
 	    if(_player) return _player->IsPlaying();
 	    return false;
 	}
+
+	void QtSinglePlayer::SetSlotPlayingTime(Slotv1<TData>& slot)
+	{
+	    if(_player) _player->SetSlotPlayingTime(slot);
+	}
+
+	void QtSinglePlayer::SetSlotStopPlaying(Slotv1<TData>& slot)
+	{
+	    if(_player) _player->SetSlotStopPlaying(slot);
+	}
 		
     }
 }
