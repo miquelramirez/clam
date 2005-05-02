@@ -8,7 +8,6 @@
 #include "BPF.hxx"
 #include "Point.hxx"
 #include "GLView.hxx"
-#include "Dial.hxx"
 #include "BPFEditorRenderer.hxx"
 
 namespace CLAM
@@ -91,7 +90,6 @@ namespace CLAM
 	    void SetDataColor(const Color& c);
 	    void SetHandlersColor(const Color& c);
 	    void SetRectColor(const Color& c);
-	    void SetDialColor(Color c);
 
 	    void SetXRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
 	    void SetYRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
@@ -108,7 +106,11 @@ namespace CLAM
 	    void SetPoint(const TData& x, const TData& y);
 	    void UpdatePoint(const TData& x, const TData& y);
 
-	    void MouseOverDisplay(bool over);
+	    void InsertBPFNode(TData x, TData y);
+	    void MoveCurrentPointDelta(int stepX, int stepY);
+	    void ChooseCurrentPointByJumping(int step);
+	    void ChooseCurrentPoint(int pointIndex);
+
 
 	    void Draw();
 
@@ -118,9 +120,6 @@ namespace CLAM
 	    void SetVBounds(double bottom, double top);
 
 	    void SelectPointFromXCoord(double xcoord);
-
-	    void UpdateTimePos(const TData& time);
-	    void StopPlaying(const TData& time);
 
 	signals:
 	    void viewChanged(GLView);
@@ -144,11 +143,6 @@ namespace CLAM
 
 	    void rightButtonPressed();
 
-	    void requestUpdate();
-
-	    void currentPlayingTime(float);
-	    void stopPlaying(float);
-
 	public slots:
 	    void vZoomIn();
 	    void vZoomOut();
@@ -157,7 +151,6 @@ namespace CLAM
 
 	private:
 	    BPF mData;
-	    Dial mDial;
 	    BPFEditorRenderer mRenderer;
 	    GLView mView;
 	    RulerRange mXRulerRange, mYRulerRange;
@@ -165,7 +158,6 @@ namespace CLAM
 	    EScale mXScale, mYScale;
 	    bool mLeftButtonPressed, mRightButtonPressed;
 	    bool mKeyInsertPressed, mKeyDeletePressed;
-	    bool mMouseOverDisplay;
 	    bool mProcessingSelection;
 	    bool mHit;
 	    Color mRectColor;
@@ -188,9 +180,6 @@ namespace CLAM
 
 	    double mVCurrent;
 	    double mVZoomRatio;
-
-	    bool mIsPlaying;
-	    TIndex mLightedPointIndex;
 	    
 	    void PushSettings();
 	    void PopSettings();
@@ -210,12 +199,11 @@ namespace CLAM
 	    Pixel GetPixel(const TData& x, const TData& y);
 	    bool Match(const Pixel& p, const Pixel& q);
 	    int Hit(const TData& x, const TData& y);
+	    void UpdateXYLabels(TData x, TData y);
 
 	    int GetMode();
 	    
-	    void UpdateBPF(const TData& x, const TData& y);
-
-	    bool IsValid(const TData& x0, const TData& x1);
+	    void UpdateBPF(TData x, TData y);
 
 	    int GetnyPixels() const;
 	    int GetVScrollValue() const;
@@ -225,7 +213,8 @@ namespace CLAM
 
 	    void UpdateVBounds(bool zin);
 
-	    TIndex GetBound(const TData& value, bool left=true);
+	    TIndex GetLeftBound();
+	    TIndex GetRightBound();
 	};
     }
 }
