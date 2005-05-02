@@ -190,9 +190,7 @@ namespace CLAM
 					if(!mLeftButtonPressed) break;
 					if(!mHit && mKeyInsertPressed)
 					{
-						TIndex index = mData.Insert(mCurrentPoint.GetX(),mCurrentPoint.GetY());
-						emit elementAdded(int(index),float(mCurrentPoint.GetX()), float(mCurrentPoint.GetY()));
-						ChooseCurrentPoint(index);
+						InsertBPFNode(mCurrentPoint.GetX(),mCurrentPoint.GetY());
 					}
 					if(mHit && mKeyDeletePressed)
 					{
@@ -499,6 +497,18 @@ namespace CLAM
 				mData.SetXValue(mCurrentIndex,x);
 				mXModified = true;
 			}
+		}
+		void BPFEditorController::InsertBPFNode(TData x, TData y)
+		{
+			if (x<mMinX) x=mMinX;
+			if (x>mMaxX) x=mMaxX;
+			if (y<mMinY) y=mMinY;
+			if (y>mMaxY) y=mMaxY;
+
+
+			TIndex index = mData.Insert(x,y);
+			emit elementAdded(int(index),float(x), float(y));
+			ChooseCurrentPoint(index);
 		}
 
 		void BPFEditorController::SetHBounds(double left, double right)
