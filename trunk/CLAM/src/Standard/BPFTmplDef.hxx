@@ -176,52 +176,47 @@ namespace CLAM
 /**
 * Inserts a point in the correct position. Note that points in the array are always sorted
 * according to their X value. Must therefore perform a previous serch.
-* @param : point to insert
-* @see : CLAM::SearchArray
+* @param point to insert
+* @return the index at which the element was inserted
+* @see CLAM::SearchArray
 */
 	template <class TX,class TY>
 	TIndex BPFTmpl<TX,TY>::Insert(const PointTmpl<TX,TY> &point)
 	{
-		TIndex i; // index at which element was inserted
+		mIsSplineUpdated = false;
 		if (mArray.Size() == 0 || point.GetX() > mArray[Size()-1].GetX())
 		{
 			mArray.AddElem(point);
-			i = Size();
+			return Size()-1;
 		}
-		else
+
+		TIndex closestIndex = mSearch.Find(point);
+		if (closestIndex == -1)
 		{
-			TIndex closestIndex = mSearch.Find(point);
-			if (closestIndex == -1)
+			if (point.GetX() >= GetXValue(Size() - 1))
 			{
-				if (point.GetX() > GetXValue(Size() - 1))
-				{
-					mArray.AddElem(point);
-					i = Size();
-				}
-				else
-				{
-					mArray.InsertElem(0, point);
-					i = 0;
-				}
+				mArray.AddElem(point);
+				return Size()-1;
 			}
 			else
 			{
-				if (GetXValue(closestIndex) == point.GetX())
-				{
-					SetValue(closestIndex, point.GetY());
-					i = closestIndex;
-				}
-				else
-				{
-					mArray.InsertElem(closestIndex+1 ,point);
-					i = closestIndex+1;
-				}
+				mArray.InsertElem(0, point);
+				return 0;
 			}
 		}
-
-		mIsSplineUpdated = false;
-
-		return i;
+		else
+		{
+			if (GetXValue(closestIndex) == point.GetX())
+			{
+				SetValue(closestIndex, point.GetY());
+				return closestIndex;
+			}
+			else
+			{
+				mArray.InsertElem(closestIndex+1 ,point);
+				return closestIndex+1;
+			}
+		}
 	}
 
 /**
