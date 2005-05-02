@@ -24,23 +24,23 @@
 
 namespace CLAM
 {
-	namespace VM
+    namespace VM
+    {
+	QtPlot::QtPlot(QWidget* parent) : QWidget(parent)
 	{
-		QtPlot::QtPlot(QWidget* parent) : QWidget(parent)
-		{
-		}
-		
-		QtPlot::~QtPlot()
-		{
-		}
-
-		void QtPlot::closeEvent(QCloseEvent *e)
-		{
-			QtPlotter::Remove(this);
-			e->accept();
-		}
-
 	}
+		
+	QtPlot::~QtPlot()
+	{
+	}
+
+	void QtPlot::closeEvent(QCloseEvent *e)
+	{
+	    QtPlotter::Remove(this);
+	    e->accept();
+	}
+
+    }
 }
 
 // END
