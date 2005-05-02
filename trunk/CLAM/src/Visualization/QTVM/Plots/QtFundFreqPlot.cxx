@@ -33,6 +33,9 @@ namespace CLAM
     {
 	QtFundFreqPlot::QtFundFreqPlot(QWidget* parent) : QtPresentation(parent)
 	{
+	    mSlotPlayingTimeReceived.Wrap(this,&QtFundFreqPlot::PlayingTime);
+	    mSlotStopPlayingReceived.Wrap(this,&QtFundFreqPlot::StopPlaying);
+
 	    SetPlotController();
 	    InitFundFreqPlot();
 	    Connect();
@@ -51,6 +54,8 @@ namespace CLAM
 	    panel->addWidget(lefthole);
 
 	    _player = new QtFundPlayer(this);
+	    ((QtFundPlayer*)_player)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
+	    ((QtFundPlayer*)_player)->SetSlotStopPlaying(mSlotStopPlayingReceived);
 	    _player->setFixedSize(75,30);
 	    panel->addWidget(_player);
 
@@ -175,6 +180,8 @@ namespace CLAM
 	    // Connections
 	      connect(((FundPlotController*)_controller),SIGNAL(initialYRulerRange(double,double)),this,SLOT(initialYRulerRange(double,double)));
 	    connect(((FundPlotController*)_controller),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
+	    connect(((FundPlotController*)_controller),SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
+	    connect(((FundPlotController*)_controller),SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
 	}
 
 	void QtFundFreqPlot::SetPData(const Segment& seg)
@@ -231,6 +238,26 @@ namespace CLAM
 	{
 	    QtPresentation::initialYRulerRange(min,max);
 	    lefthole->setFixedSize(YRulerWidth(),lefthole->height());
+	}
+	
+	void QtFundFreqPlot::PlayingTime(TData time)
+	{
+	    ((FundPlotController*)_controller)->UpdateTimePos(time);
+	}
+
+	void QtFundFreqPlot::StopPlaying(TData time)
+	{
+	    ((FundPlotController*)_controller)->StopPlaying(time);
+	}
+
+	void QtFundFreqPlot::setCurrentPlayingTime(float t)
+	{
+	    ((FundPlotController*)_controller)->UpdateTimePos(TData(t));
+	}
+
+	void QtFundFreqPlot::receivedStopPlaying(float t)
+	{
+	    ((FundPlotController*)_controller)->StopPlaying(TData(t));
 	}
 	     
     }	

@@ -27,6 +27,9 @@
 #include "MediaTime.hxx"
 #include "QtPlot.hxx"
 #include "PlayablePlot.hxx"
+#include "Slotv1.hxx"
+
+using SigSlot::Slotv1;
 
 class QPushButton;
 
@@ -102,8 +105,13 @@ namespace CLAM
 	    double _maxHZRatio;
 	    double _currentHZRatio;
 
+	    Slotv1<TData> mSlotPlayingTimeReceived;
+	    Slotv1<TData> mSlotStopPlayingReceived;
+
 	    void InitStereoAudioPlot();
        
+	    void PlayingTime(TData time);
+	    void StopPlaying(TData tiem);
 	};
     }
 }
