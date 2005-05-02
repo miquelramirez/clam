@@ -530,33 +530,22 @@ namespace CLAM
 			if(!mData.Size()) return;
 			if(mData.Size()==1)
 			{
-				mRenderer.SetSelectedIndex(0);
-				emit requestRefresh();
+				ChooseCurrentPoint(0);
 				return;
 			}
-			TIndex index = -1;
-			for(TIndex i=0; i < mData.Size(); i++)
+			for(TIndex i=1; i < mData.Size(); i++)
 			{
 				if(TData(xcoord)<=mData.GetXValue(i))
 				{
-					index=i;
-					break;
+					double x0 = mData.GetXValue(i-1);
+					double x1 = mData.GetXValue(i);
+					if((xcoord-x0)<(x1-xcoord))
+						ChooseCurrentPoint(i-1);
+					else
+						ChooseCurrentPoint(i);
 				}
 			}
-			if(index != -1)
-			{
-				if(xcoord==mData.GetXValue(index))
-				{
-					mRenderer.SetSelectedIndex(index);
-					emit requestRefresh();
-					return;
-				}
-				double x0 = mData.GetXValue(index-1);
-				double x1 = mData.GetXValue(index);
-				if((xcoord-x0)<(x1-xcoord)) index--;
-				mRenderer.SetSelectedIndex(index);
-				emit requestRefresh();
-			}
+			ChooseCurrentPoint(mData.Size()-1);
 		}
 
 		void BPFEditorController::vZoomIn()
