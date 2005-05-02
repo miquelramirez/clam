@@ -8,9 +8,6 @@
 #include "MediaTime.hxx"
 #include "PlayablePlot.hxx"
 #include "BPFEditorController.hxx"
-#include "Slotv1.hxx"
-
-using SigSlot::Slotv1;
 
 class QLabel;
 class QFrame;
@@ -63,9 +60,6 @@ namespace CLAM
 
 	    void selectedXPos(double);
 
-	    void currentPlayingTime(float);
-	    void stopPlaying(float);
-
 	public slots:
 	    void setHBounds(double, double);
 	    void selectPointFromXCoord(double);
@@ -79,14 +73,9 @@ namespace CLAM
 
 	    void playSimultaneously(bool);
 
-	    void setCurrentPlayingTime(float);
-	    void receivedStopPlaying(float);
-
 	protected:
 	    void keyPressEvent(QKeyEvent* e);
 	    void keyReleaseEvent(QKeyEvent* e);
-
-	    void hideEvent(QHideEvent* e);
 
 	private slots:
 	    void updateLabels(QString, QString);
@@ -122,9 +111,6 @@ namespace CLAM
 
 	    QPopupMenu* mPopupMenu;
 
-	    Slotv1<TData> mSlotPlayingTimeReceived;
-	    Slotv1<TData> mSlotStopPlayingReceived;
-
 	    void InitBPFEditor();
 
 	    void SetScheme(int scheme);
@@ -138,9 +124,6 @@ namespace CLAM
 	    void HidePlayer();
 
 	    void InitPopupMenu();
-
-	    void PlayingTime(TData time);
-	    void StopPlaying(TData time);
 	    
 	};
     }
