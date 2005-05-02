@@ -474,18 +474,15 @@ namespace CLAM
 		void BPFEditorController::UpdateBPF(TData x, TData y)
 		{
 			// Bound movement
-			if (mData.Size() != 1)
+			if (mCurrentIndex!=0)
 			{
-				if (mCurrentIndex!=0)
-				{
-					TData prior_x = mData.GetXValue(mCurrentIndex-1);
-					if(x<prior_x) x=prior_x;
-				}
-				if(mCurrentIndex!=mData.Size()-1)
-				{
-					TData next_x = mData.GetXValue(mCurrentIndex+1);
-					if(x>next_x) x=next_x;
-				}
+				TData prior_x = mData.GetXValue(mCurrentIndex-1);
+				if(x<prior_x) x=prior_x;
+			}
+			if(mCurrentIndex!=mData.Size()-1)
+			{
+				TData next_x = mData.GetXValue(mCurrentIndex+1);
+				if(x>next_x) x=next_x;
 			}
 			if (x<mMinX) x=mMinX;
 			if (x>mMaxX) x=mMaxX;
@@ -504,11 +501,6 @@ namespace CLAM
 			}
 		}
 
-		bool BPFEditorController::IsValid(const TData& x0, const TData& x1)
-		{
-			return (x0 < x1);
-		}
-		
 		void BPFEditorController::SetHBounds(double left, double right)
 		{
 			if(left==mView.mLeft && right==mView.mRight) return;
