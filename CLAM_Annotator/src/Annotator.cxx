@@ -246,6 +246,10 @@ void Annotator::connectBPFs()
       connect(mpAudioPlot,SIGNAL(selectedXPos(double)),(*it),SLOT(selectPointFromXCoord(double)));
       connect(mpAudioPlot,SIGNAL(switchColorsRequested()),(*it),SLOT(switchColors()));
       connect(mpAudioPlot,SIGNAL(regionTime(float,float)),(*it),SLOT(setRegionTime(float,float)));
+      connect(mpAudioPlot,SIGNAL(currentPlayingTime(float)),(*it),SLOT(setCurrentPlayingTime(float)));
+      connect(mpAudioPlot,SIGNAL(stopPlaying(float)),(*it),SLOT(receivedStopPlaying(float)));
+      connect((*it),SIGNAL(currentPlayingTime(float)),mpAudioPlot,SLOT(setCurrentPlayingTime(float)));
+      connect((*it),SIGNAL(stopPlaying(float)),mpAudioPlot,SLOT(receivedStopPlaying(float)));
     }
 }
 
@@ -828,7 +832,7 @@ bool Annotator::event(QEvent* e)
 {
     if(mpAudioPlot)
     {
-		std::cerr << typeid(e).name() << std::endl;
+	//std::cerr << typeid(e).name() << std::endl;
 	QKeyEvent* keyEvent=(QKeyEvent*)(e);
 	if(keyEvent)
 	{
