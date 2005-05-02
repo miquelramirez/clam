@@ -248,6 +248,7 @@ namespace CLAM
 			int index=Hit(x,y);
 			if(index != -1) 
 			{
+				ChooseCurrentPoint(index);
 				if(mKeyDeletePressed)
 				{
 					mSelectPoint=false;
