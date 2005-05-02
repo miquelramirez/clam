@@ -274,6 +274,8 @@ void Annotator::descriptorsTableChanged(int row, int column)
   descriptorValue = std::string( mDescriptorsTable->text(row, column).ascii() );
   setHLDescriptorPoolFromString(descriptorName, descriptorType, descriptorValue);
   changeCurrentFile();
+  mDescriptorsTable->adjustColumn(0);
+  mDescriptorsTable->adjustColumn(1);
 }
 
 void Annotator::descriptorsBPFChanged(int pointIndex,float newValue)
@@ -975,6 +977,8 @@ void Annotator::fillGlobalDescriptors( int index)
 {
   mDescriptorsTable->show();
   drawDescriptorsValue(index);
+  mDescriptorsTable->adjustColumn(0);
+  mDescriptorsTable->adjustColumn(1);
 } 
 
 int Annotator::findHLDescriptorIndex(const std::string& name)
