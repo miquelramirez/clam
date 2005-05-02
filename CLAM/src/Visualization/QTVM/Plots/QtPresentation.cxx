@@ -412,7 +412,7 @@ namespace CLAM
 	{
 	    return _yRuler->width();
 	}
-	    
+    
 	void QtPresentation::initialYRulerRange(double min, double max)
 	{
 	    int length_min = QString::number(min,'f',2).length();
@@ -433,6 +433,15 @@ namespace CLAM
 	    }
 	}
 
+	QFont& QtPresentation::RulerFont()
+	{
+	    return _yRuler->Font();
+	}
+
+	void QtPresentation::SetYRulerWidth(int w)
+	{
+	    _yRuler->setFixedWidth(w);
+	}
     }
 }
 

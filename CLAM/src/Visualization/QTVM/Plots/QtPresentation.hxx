@@ -74,6 +74,9 @@ namespace CLAM
 	    void RemoveVScrollGroup();
 
 	    void SetFlag(bool f);
+	    
+	    QFont& RulerFont();
+	    void SetYRulerWidth(int);
 
 	signals:
 	    void HZoomIn();
