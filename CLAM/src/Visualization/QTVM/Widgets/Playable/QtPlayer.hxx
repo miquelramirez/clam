@@ -24,6 +24,9 @@
 
 #include <qwidget.h>
 #include "MediaTime.hxx"
+#include "Slotv1.hxx"
+
+using SigSlot::Slotv1;
 
 class QBoxLayout;
 class QFrame;
@@ -47,6 +50,9 @@ namespace CLAM
 	    virtual bool IsPlaying()=0;
 
 	    virtual void SetColorMap(ColorMap map);
+
+	    virtual void SetSlotPlayingTime(Slotv1<TData>& slot)=0;
+	    virtual void SetSlotStopPlaying(Slotv1<TData>& slot)=0;
 				
         public slots:
 	    virtual void play()=0;
