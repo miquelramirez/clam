@@ -36,9 +36,6 @@ namespace CLAM
 
 	    void resizeEvent(QResizeEvent *e);
 
-	    void leaveEvent(QEvent* e);
-	    void enterEvent(QEvent* e);
-
 	private:
 	    GLView mView;
 	    float mRed, mGreen, mBlue;

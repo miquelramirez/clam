@@ -167,22 +167,6 @@ namespace CLAM
 			QGLWidget::keyReleaseEvent(e);
 		}
 
-		void BPFEditorDisplaySurface::leaveEvent(QEvent* e)
-		{
-			if(mController)
-			{
-				mController->MouseOverDisplay(false);
-			}
-		}
-
-		void BPFEditorDisplaySurface::enterEvent(QEvent* e)
-		{
-			if(mController)
-			{
-				mController->MouseOverDisplay(true);
-			}
-		}
-		
 		void BPFEditorDisplaySurface::resizeEvent(QResizeEvent *e)
 		{
 			mWidth = e->size().width();

@@ -12,7 +12,6 @@ namespace CLAM
 			, mRightButtonPressed(false)
 			, mKeyInsertPressed(false)
 			, mKeyDeletePressed(false)
-			, mMouseOverDisplay(false)
 			, mProcessingSelection(false)
 			, mHit(false)
 			, mDisplayWidth(0)
@@ -324,11 +323,6 @@ namespace CLAM
 			}
 
 			emit labelsText(xlabel,ylabel);
-		}
-
-		void BPFEditorController::MouseOverDisplay(bool over)
-		{
-			mMouseOverDisplay = over;
 		}
 
 		void BPFEditorController::Draw()
