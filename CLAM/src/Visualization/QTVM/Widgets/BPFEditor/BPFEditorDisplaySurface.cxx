@@ -164,6 +164,7 @@ namespace CLAM
 					mController->ChooseCurrentPointByJumping(1);
 					break;
 			}
+			QGLWidget::keyReleaseEvent(e);
 		}
 
 		void BPFEditorDisplaySurface::leaveEvent(QEvent* e)
