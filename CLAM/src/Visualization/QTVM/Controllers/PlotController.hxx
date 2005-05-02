@@ -108,7 +108,9 @@ namespace CLAM
 	    void xRulerRange(double,double);
 	    void yRulerRange(double,double);
 
-	     void selectedXPos(double);
+	    void selectedXPos(double);
+
+	    void requestUpdate();
 
 	protected:
 	    View _view;
