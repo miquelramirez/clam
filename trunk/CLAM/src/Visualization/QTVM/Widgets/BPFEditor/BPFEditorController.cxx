@@ -273,7 +273,6 @@ namespace CLAM
 					emit cursorChanged(hcursor);
 				}
 				mSelectPoint=true;
-				mCurrentIndex=TIndex(index);
 				mHit=true;
 			}
 			else
