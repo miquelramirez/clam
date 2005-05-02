@@ -199,10 +199,7 @@ namespace CLAM
 					{
 						mData.DeleteIndex(mCurrentIndex);
 						emit elementRemoved(int(mCurrentIndex));
-						if (mCurrentIndex) mCurrentIndex--;
-						mRenderer.SetSelectedIndex(mCurrentIndex);
-						emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
-						emit requestRefresh();
+						ChooseCurrentPointByJumping(-1);
 					}
 					break;
 				default:
@@ -223,14 +220,19 @@ namespace CLAM
 
 		void BPFEditorController::ChooseCurrentPointByJumping(int step)
 		{
-			mCurrentIndex+=step;
+			ChooseCurrentPoint(mCurrentIndex+step);
+		}
+
+		void BPFEditorController::ChooseCurrentPoint(int index)
+		{
+			mCurrentIndex=index;
 			if (mCurrentIndex<0) mCurrentIndex=0;
 			if (mCurrentIndex>=mData.Size()) mCurrentIndex=mData.Size()-1;
 
 			mRenderer.SetSelectedIndex(mCurrentIndex);
-			emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
+			if (mCurrentIndex>=0)
+				emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
 			emit requestRefresh();
-
 		}
 
 		void BPFEditorController::UpdatePoint(const TData& x, const TData& y)
