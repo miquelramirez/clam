@@ -99,7 +99,7 @@ namespace CLAM
 	    progChg.GetInControls().GetByNumber(0).DoControl(TControlData(mMIDIProgram)); // set program
 	    volCtrl.GetInControls().GetByNumber(0).DoControl(120); // set volume
         
-	    unsigned t_begin = unsigned(_time.GetBegin())*1000;
+	    unsigned t_begin = unsigned(_time.GetBegin()*TData(1000.0));
 	    
 	    t0 = GetTime();
 
@@ -113,7 +113,7 @@ namespace CLAM
 		    SetPlaying(false);
 		}
 
-		if(!IsPlaying() || (t1-t0) >= unsigned(_time.GetEnd())*1000) break;
+		if(!IsPlaying() || (t1-t0) >= unsigned(_time.GetEnd()*TData(1000.0))) break;
 		
 		if((t1-t0) >= mMIDIMelody.GetNoteArray()[noteNumber].GetTime().GetBegin()*1000 && isBegin)
 		{
@@ -131,6 +131,8 @@ namespace CLAM
 		    noteNumber++;
 		    isBegin = true;
 		}
+	
+		mSigPlayingTime.Emit(TData(t1-t0)/TData(1000.0));
 	    }
 
 	    // send panic
@@ -149,6 +151,9 @@ namespace CLAM
 		mMIDIDevice = mEnqueuedDevice;
 		mHasEnqueuedDevice = false;
 	    }
+
+	    TData stopTime = (IsStopped()) ? TData(t1-t0)/TData(1000.0) : (IsPaused()) ? _time.GetBegin() : _time.GetEnd();
+	    mSigStop.Emit(stopTime);
 	       
 	}
 

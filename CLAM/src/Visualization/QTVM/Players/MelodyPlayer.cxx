@@ -142,6 +142,8 @@ namespace CLAM
 		    channelR.Do(samplesL);
 		}
 
+		mSigPlayingTime.Emit(TData(leftIndex)/mSampleRate);
+
 		leftIndex += frameSize;
 		rightIndex += frameSize;
 	    }
@@ -149,6 +151,9 @@ namespace CLAM
 	    channelL.Stop(); 
 	    channelR.Stop();
 	    if(!IsPaused()) _time.SetBegin(GetBeginTime());
+
+	    TData stopTime = (IsStopped()) ? TData(leftIndex)/mSampleRate : (IsPaused()) ? _time.GetBegin() : _time.GetEnd();
+	    mSigStop.Emit(stopTime);
 	}
 
 	TIndex MelodyPlayer::GetNoteIndex(bool first)
