@@ -61,7 +61,7 @@ namespace CLAM
 	    virtual void SetHBounds(const TData& left, const TData& right);
 	    virtual void SetVBounds(const TData& bottom, const TData& top);
 
-	    bool CanDrawSelectedPos();
+	    virtual bool CanDrawSelectedPos();
 
 	private:
 	    std::vector<unsigned> _marks;
