@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>AnnotatorBase</class>
 <widget class="QMainWindow">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>836</width>
-            <height>585</height>
+            <width>1036</width>
+            <height>668</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -29,144 +29,152 @@
     <property name="caption">
         <string>Music Annotator</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget">
+        <widget class="Table" row="1" column="0">
             <property name="name">
-                <cstring>layout6</cstring>
+                <cstring>mDescriptorsTable</cstring>
             </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QListView">
-                    <column>
-                        <property name="text">
-                            <string>File</string>
-                        </property>
-                        <property name="clickable">
-                            <bool>false</bool>
-                        </property>
-                        <property name="resizable">
-                            <bool>true</bool>
-                        </property>
-                    </column>
-                    <column>
-                        <property name="text">
-                            <string>Calculated</string>
-                        </property>
-                        <property name="clickable">
-                            <bool>true</bool>
-                        </property>
-                        <property name="resizable">
-                            <bool>true</bool>
-                        </property>
-                    </column>
-                    <column>
-                        <property name="text">
-                            <string>Changed</string>
-                        </property>
-                        <property name="clickable">
-                            <bool>true</bool>
-                        </property>
-                        <property name="resizable">
-                            <bool>true</bool>
-                        </property>
-                    </column>
-                    <property name="name">
-                        <cstring>mProjectOverview</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>0</width>
-                            <height>225</height>
-                        </size>
-                    </property>
-                    <property name="selectionMode">
-                        <enum>Single</enum>
-                    </property>
-                    <property name="rootIsDecorated">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QFrame">
-                    <property name="name">
-                        <cstring>frame3</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>7</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>700</width>
-                            <height>225</height>
-                        </size>
-                    </property>
-                    <property name="frameShape">
-                        <enum>StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Raised</enum>
-                    </property>
-                </widget>
-            </hbox>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>150</width>
+                    <height>250</height>
+                </size>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>300</width>
+                    <height>32767</height>
+                </size>
+            </property>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QListView" row="0" column="0">
+            <column>
+                <property name="text">
+                    <string>File</string>
+                </property>
+                <property name="clickable">
+                    <bool>false</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Calculated</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Changed</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
             <property name="name">
-                <cstring>layout5</cstring>
+                <cstring>mProjectOverview</cstring>
             </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="Table">
-                    <property name="name">
-                        <cstring>mDescriptorsTable</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>7</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>0</width>
-                            <height>250</height>
-                        </size>
-                    </property>
-                </widget>
-                <widget class="QTabWidget">
-                    <property name="name">
-                        <cstring>tabWidget2</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>700</width>
-                            <height>250</height>
-                        </size>
-                    </property>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>tab</cstring>
-                        </property>
-                        <attribute name="title">
-                            <string>Descriptors?</string>
-                        </attribute>
-                    </widget>
-                </widget>
-            </hbox>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>150</width>
+                    <height>225</height>
+                </size>
+            </property>
+            <property name="maximumSize">
+                <size>
+                    <width>300</width>
+                    <height>32767</height>
+                </size>
+            </property>
+            <property name="selectionMode">
+                <enum>Single</enum>
+            </property>
+            <property name="rootIsDecorated">
+                <bool>true</bool>
+            </property>
         </widget>
-    </vbox>
+        <widget class="QFrame" row="0" column="1">
+            <property name="name">
+                <cstring>frame3</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>700</width>
+                    <height>225</height>
+                </size>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+        </widget>
+        <widget class="QTabWidget" row="1" column="1">
+            <property name="name">
+                <cstring>tabWidget2</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>700</width>
+                    <height>250</height>
+                </size>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Descriptors?</string>
+                </attribute>
+            </widget>
+        </widget>
+    </grid>
 </widget>
 <menubar>
     <property name="name">
@@ -275,7 +283,7 @@
             <cstring>fileNew_projectAction</cstring>
         </property>
         <property name="iconSet">
-            <iconset></iconset>
+            <iconset>stock_new-document-32.png</iconset>
         </property>
         <property name="text">
             <string>&amp;New project</string>
@@ -292,7 +300,7 @@
             <cstring>fileSave_projectAction</cstring>
         </property>
         <property name="iconSet">
-            <iconset></iconset>
+            <iconset>stock_save_as.png</iconset>
         </property>
         <property name="text">
             <string>&amp;Save project</string>
@@ -326,7 +334,7 @@
             <cstring>fileOpen_projectAction_2</cstring>
         </property>
         <property name="iconSet">
-            <iconset></iconset>
+            <iconset>stock_open.png</iconset>
         </property>
         <property name="text">
             <string>&amp;Open project</string>
@@ -555,7 +563,7 @@
 </actions>
 <images>
     <image name="image0">
-        <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>
+        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
     </image>
 </images>
 <connections>
