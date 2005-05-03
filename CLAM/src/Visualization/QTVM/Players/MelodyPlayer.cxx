@@ -79,7 +79,7 @@ namespace CLAM
 	    TIndex k=firstIndex;
 
 	    TIndex start = int(_time.GetBegin()*mSampleRate);
-	    int nSamples = start+int((mMelody.GetNoteArray()[lastIndex].GetTime().GetEnd()-mMelody.GetNoteArray()[firstIndex].GetTime().GetBegin())*mSampleRate);
+	    int nSamples = int(mMelody.GetNoteArray()[lastIndex].GetTime().GetEnd()*mSampleRate);
 	    
 	    TIndex leftIndex = start;        
 	    TIndex rightIndex = leftIndex+frameSize;
