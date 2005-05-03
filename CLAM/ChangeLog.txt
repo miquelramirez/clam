@@ -1,3 +1,14 @@
+  * SMS Transformations on the network editor:
+     ** 
+  * New Prototyping way:
+     ** Prototyper: Allows to bind a Qt desinger interface to a
+        Network XML definition so you can have an CLAM GUI application
+        up an running without a single line of code. Current features:
+        *** It uses the widget names and classes to Automagically relate
+            widgets to processings, ports and controls.
+        *** Binds sliders, knobs and so to in-controls on the network
+        *** Binds monitoring plots to out-ports on the network
+        *** Binds buttons to play/stop actions on the network
   * Audio file I/O facilities:
      ** MP3 I/O: Bug fixed: that prevented XING headers from being used to
         compute duration
@@ -6,6 +17,8 @@
         Vorbis bitstreams
   * Memory leak review:
      ** FFT internal buffer was not freed on destruction
+  * XercesC 2.6 is required in order to pass the tests and be memory
+    leak free (even 2.3 should be enough to compile and run CLAM).
   * XML Storage Error Handling:
      ** Catchable CLAM::XmlStorageErr excepetions are thrown whenever:
         *** I/O error happens
