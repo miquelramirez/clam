@@ -706,15 +706,11 @@ namespace CLAM
 
 			if (left && !(left_index <= right_index)) return index;
 
-			if(!left)
-			{
-				TIndex ret=0;
-				if(index>=nPoints-1) ret=nPoints-1;
-				if(index==nPoints-2) ret=index+1;
-				else ret=index+2;
-				return ret+1;
-			}
-			return index;
+			TIndex ret=0;
+			if(index>=nPoints-1) ret=nPoints-1;
+			if(index==nPoints-2) ret=index+1;
+			else ret=index+2;
+			return ret+1;
 		}
 
 		void BPFEditorController::UpdateTimePos(const TData& time)
