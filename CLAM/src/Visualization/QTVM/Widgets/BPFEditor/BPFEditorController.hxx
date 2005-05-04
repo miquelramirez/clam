@@ -146,7 +146,8 @@ namespace CLAM
 
 	    void rightButtonPressed();
 
-	     void requestUpdate();
+	    void startPlaying();
+	    void stopPlaying();
 
 	    void currentPlayingTime(float);
 	    void stopPlaying(float);
