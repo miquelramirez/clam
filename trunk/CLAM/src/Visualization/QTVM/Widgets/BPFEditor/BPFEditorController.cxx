@@ -683,12 +683,14 @@ namespace CLAM
 				const TIndex currentIndex = (left_index+right_index)/2;
 				if(currentIndex>=nPoints-1)
 				{
+					if (left) return currentIndex;
 					index=currentIndex;
 					break;
 				}
 				if(searchValue >= mData.GetXValue(currentIndex) &&
 					searchValue <= mData.GetXValue(currentIndex+1))
 				{
+					if (left) return currentIndex;
 					index = currentIndex;
 					break;
 				}
