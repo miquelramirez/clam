@@ -236,9 +236,6 @@ namespace CLAM
 			mCurrentIndex=index;
 			if (mCurrentIndex<0) mCurrentIndex=0;
 			if (mCurrentIndex>=mData.Size()) mCurrentIndex=mData.Size()-1;
-
-			if (mCurrentIndex>=0)
-			 	// emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
 			emit requestRefresh();
 		}
 
