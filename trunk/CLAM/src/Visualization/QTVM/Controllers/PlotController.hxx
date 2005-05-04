@@ -110,8 +110,6 @@ namespace CLAM
 
 	    void selectedXPos(double);
 
-	    void requestUpdate();
-
 	protected:
 	    View _view;
 	    Viewport _viewport;
