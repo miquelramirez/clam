@@ -180,21 +180,24 @@ namespace CLAM
 			if(mController) mController->DisplayDimensions(mWidth,mHeight);
 		}
 
-	        void BPFEditorDisplaySurface::startTimer()
+	    void BPFEditorDisplaySurface::startTimer()
 		{
-		    if(!mTimer) mTimer = new QTimer(this);
-		    connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
-		    mTimer->start(TIMER_INTERVAL,true);
+		    if(!mTimer) 
+			{
+				mTimer = new QTimer(this);
+				connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
+				mTimer->start(TIMER_INTERVAL,true);
+			}
 		}
 
 	        void BPFEditorDisplaySurface::stopTimer()
 		{
 		    if(mTimer)
 		    {
-			mTimer->stop();
-			delete mTimer;
-			mTimer = 0;
-			update();
+				mTimer->stop();
+				delete mTimer;
+				mTimer = 0;
+				update();
 		    }
 		}
 	}
