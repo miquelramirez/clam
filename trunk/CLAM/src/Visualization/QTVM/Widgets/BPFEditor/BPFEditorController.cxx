@@ -708,8 +708,7 @@ namespace CLAM
 
 			if(index>=nPoints-1) return nPoints;
 			if(index==nPoints-2) return nPoints;
-			else return index+3;
-			return ret+1;
+			return index+3;
 		}
 
 		void BPFEditorController::UpdateTimePos(const TData& time)
