@@ -210,7 +210,7 @@ namespace CLAM
 	    double Min(double a, double b);
 
 	    Pixel GetPixel(const TData& x, const TData& y);
-	    bool Match(const Pixel& p, const Pixel& q);
+	    bool Match(const Pixel& p, const Pixel& q, TData tolerance);
 	    int Hit(const TData& x, const TData& y);
 	    void UpdateXYLabels(TData x, TData y);
 
