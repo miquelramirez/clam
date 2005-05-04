@@ -169,7 +169,6 @@ namespace CLAM
 			{
 				if(mSelectPoint)
 				{
-					mRenderer.SetSelectedIndex(mCurrentIndex);
 					mSelectPoint=false;
 					emit requestRefresh();
 					emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
@@ -566,7 +565,7 @@ namespace CLAM
 					double x0 = mData.GetXValue(index);
 					double x1 = mData.GetXValue(index+1);
 					if((xcoord-x0)>(x1-xcoord)) index++;
-					mRenderer.SetSelectedIndex(index);
+					mCurrentIndex=index;
 				}
 				emit requestRefresh();
 			}
@@ -720,7 +719,7 @@ namespace CLAM
 				emit startPlaying();
 			}
 			mDial.Update(time);
-			if(time >= mData.GetXValue(mLightedPointIndex) && mLightedPointIndex < mData.Size())
+			if (mLightedPointIndex < mData.Size() && time >= mData.GetXValue(mLightedPointIndex))
 			{
 				mRenderer.SetSelectedIndex(int(mLightedPointIndex++));
 			}
