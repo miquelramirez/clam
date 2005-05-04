@@ -706,8 +706,7 @@ namespace CLAM
 
 			if (left) return index;
 
-			TIndex ret=0;
-			if(index>=nPoints-1) ret=nPoints-1;
+			if(index>=nPoints-1) return nPoints;
 			if(index==nPoints-2) return nPoints;
 			else return index+3;
 			return ret+1;
