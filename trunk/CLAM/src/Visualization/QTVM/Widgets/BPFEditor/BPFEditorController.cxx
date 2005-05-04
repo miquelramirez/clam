@@ -736,6 +736,7 @@ namespace CLAM
 		    {
 			mLightedPointIndex=GetBound(time);
 			mIsPlaying =true;
+			emit startPlaying();
 		    }
 		    mDial.Update(time);
 		    if(time >= mData.GetXValue(mLightedPointIndex) && mLightedPointIndex < mData.Size())
@@ -743,17 +744,16 @@ namespace CLAM
 			mRenderer.SetSelectedIndex(int(mLightedPointIndex++));
 		    }
 		    emit currentPlayingTime(float(time));
-		    emit requestUpdate();
 		}
 
-	    void BPFEditorController::StopPlaying(const TData& time)
-	    {
-		if(!mIsPlaying) return;
-		mIsPlaying=false;
-		mDial.Update(time);
-		emit stopPlaying(float(time));
-		emit requestUpdate();
-	    }
+	        void BPFEditorController::StopPlaying(const TData& time)
+		{
+		    if(!mIsPlaying) return;
+		    mIsPlaying=false;
+		    mDial.Update(time);
+		    emit stopPlaying(float(time));
+		    emit stopPlaying();
+		}
 
 	}
 }
