@@ -450,9 +450,9 @@ namespace CLAM
 			return p;
 		}
 
-		bool BPFEditorController::Match(const Pixel& p, const Pixel& q)
+		bool BPFEditorController::Match(const Pixel& p, const Pixel& q, TData tolerance)
 		{
-			return ((abs(int(p.x-q.x))<=1)&&(abs(int(p.y-q.y))<=1));
+			return ((abs(int(p.x-q.x))<=tolerance)&&(abs(int(p.y-q.y))<=tolerance));
 		}
 
 		TIndex BPFEditorController::Hit(const TData& x, const TData& y)
@@ -461,7 +461,7 @@ namespace CLAM
 			for(TIndex i=0; i < mData.Size(); i++)
 			{
 				Pixel owned_pixel=GetPixel(mData.GetXValue(i),mData.GetValueFromIndex(i));
-				if(Match(selected_pixel,owned_pixel))
+				if(Match(selected_pixel,owned_pixel,3))
 					return i;
 			}
 			return -1;
