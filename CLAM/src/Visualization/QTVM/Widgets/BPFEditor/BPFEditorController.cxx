@@ -63,10 +63,10 @@ namespace CLAM
 			mRectColor = c;
 		}
 
-	         void BPFEditorController::SetDialColor(const Color& c)
-		 {
-		     mDial.SetColor(c);
-		 }
+		void BPFEditorController::SetDialColor(const Color& c)
+		{
+			mDial.SetColor(c);
+		}
 
 		void BPFEditorController::SetXRange(const double& min, const double& max, const EScale& scale)
 		{
@@ -238,7 +238,7 @@ namespace CLAM
 			if (mCurrentIndex>=mData.Size()) mCurrentIndex=mData.Size()-1;
 
 			if (mCurrentIndex>=0)
-			    //emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
+			 	// emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
 			emit requestRefresh();
 		}
 
@@ -547,31 +547,31 @@ namespace CLAM
 			emit requestRefresh();
 		}
 
-	    	void BPFEditorController::SelectPointFromXCoord(double xcoord)
+		void BPFEditorController::SelectPointFromXCoord(double xcoord)
 		{
-		    if(!mData.Size() || mIsPlaying) return;
-		    if(mData.Size()==1)
-		    {
-			mRenderer.SetSelectedIndex(0);
-			emit requestRefresh();
-			return;
-		    }
-		    TIndex index = GetBound(TData(xcoord));
-		    if(index != -1)
-		    {
-			if(index == mData.Size()-1)
+			if(!mData.Size() || mIsPlaying) return;
+			if(mData.Size()==1)
 			{
-			    mRenderer.SetSelectedIndex(index);
+				mRenderer.SetSelectedIndex(0);
+				emit requestRefresh();
+				return;
 			}
-			else
+			TIndex index = GetBound(TData(xcoord));
+			if(index != -1)
 			{
-			    double x0 = mData.GetXValue(index);
-			    double x1 = mData.GetXValue(index+1);
-			    if((xcoord-x0)>(x1-xcoord)) index++;
-			    mRenderer.SetSelectedIndex(index);
+				if(index == mData.Size()-1)
+				{
+					mRenderer.SetSelectedIndex(index);
+				}
+				else
+				{
+					double x0 = mData.GetXValue(index);
+					double x1 = mData.GetXValue(index+1);
+					if((xcoord-x0)>(x1-xcoord)) index++;
+					mRenderer.SetSelectedIndex(index);
+				}
+				emit requestRefresh();
 			}
-			emit requestRefresh();
-		    }
 		}
 	
 		void BPFEditorController::vZoomIn()
@@ -669,90 +669,90 @@ namespace CLAM
 			SetVBounds(bottom,top);
 		}
 
-	        TIndex BPFEditorController::GetBound(const TData& searchValue, bool left)
+		TIndex BPFEditorController::GetBound(const TData& searchValue, bool left)
 		{
-		    int nPoints = mData.Size();
-		    if(!nPoints) return 0;
-		    if(nPoints==1)
-		    {
-			return 0;
-		    }
-	  
-		    if(searchValue <= mData.GetXValue(0)) return 0;
-		    if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints;
-	    
-		    TIndex index = -1;
-		    TIndex currentIndex = 0;
-		    TIndex left_index = 0;
-		    TIndex right_index = nPoints-1;
-		    while(left_index <= right_index)
-		    {
-			currentIndex = (left_index+right_index)/2;
-			if(currentIndex>=nPoints-1)
+			int nPoints = mData.Size();
+			if(!nPoints) return 0;
+			if(nPoints==1)
 			{
-			    index=currentIndex;
-			    break;
+				return 0;
 			}
-			if(searchValue >= mData.GetXValue(currentIndex) &&
-			   searchValue <= mData.GetXValue(currentIndex+1))
+
+			if(searchValue <= mData.GetXValue(0)) return 0;
+			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints;
+
+			TIndex index = -1;
+			TIndex currentIndex = 0;
+			TIndex left_index = 0;
+			TIndex right_index = nPoints-1;
+			while(left_index <= right_index)
 			{
-			    index = currentIndex;
-			    break;
+				currentIndex = (left_index+right_index)/2;
+				if(currentIndex>=nPoints-1)
+				{
+					index=currentIndex;
+					break;
+				}
+				if(searchValue >= mData.GetXValue(currentIndex) &&
+					searchValue <= mData.GetXValue(currentIndex+1))
+				{
+					index = currentIndex;
+					break;
+				}
+				if(searchValue < mData.GetXValue(currentIndex))
+				{
+					right_index = currentIndex-1;
+				}
+				else if(searchValue > mData.GetXValue(currentIndex))
+				{
+					left_index = currentIndex+1;
+				}
 			}
-			if(searchValue < mData.GetXValue(currentIndex))
+
+			if(!left)
 			{
-			    right_index = currentIndex-1;
-			}
-			else if(searchValue > mData.GetXValue(currentIndex))
-			{
-			    left_index = currentIndex+1;
-			}
-		    }
-		    
-		    if(!left)
-		    {
 			TIndex ret=0;
 			if(index>=nPoints-1)
 			{
-			    ret=nPoints-1;
+				ret=nPoints-1;
 			}
 			if(index==nPoints-2)
 			{
-			    ret=index+1;
+				ret=index+1;
 			}
 			else 
 			{
-			    ret=index+2;
+				ret=index+2;
 			}
 			return ret+1;
-		    }
-		    return index;
+			}
+			return index;
 		}
 
-	    	void BPFEditorController::UpdateTimePos(const TData& time)
+			void BPFEditorController::UpdateTimePos(const TData& time)
 		{
-		    if(mIsPlaying && time <= mDial.GetPos()) return;
-		    if(!mIsPlaying) 
-		    {
+			if(mIsPlaying && time <= mDial.GetPos()) return;
+			if(!mIsPlaying) 
+			{
 			mLightedPointIndex=GetBound(time);
 			mIsPlaying =true;
 			emit startPlaying();
-		    }
-		    mDial.Update(time);
-		    if(time >= mData.GetXValue(mLightedPointIndex) && mLightedPointIndex < mData.Size())
-		    {
+			}
+			mDial.Update(time);
+			if(time >= mData.GetXValue(mLightedPointIndex) && mLightedPointIndex < mData.Size())
+			{
 			mRenderer.SetSelectedIndex(int(mLightedPointIndex++));
-		    }
-		    emit currentPlayingTime(float(time));
+			}
+			emit currentPlayingTime(float(time));
 		}
 
-	        void BPFEditorController::StopPlaying(const TData& time)
+			void BPFEditorController::StopPlaying(const TData& time)
 		{
-		    if(!mIsPlaying) return;
-		    mIsPlaying=false;
-		    mDial.Update(time);
-		    emit stopPlaying(float(time));
-		    emit stopPlaying();
+			if(!mIsPlaying) return;
+			mIsPlaying=false;
+			mDial.Update(time);
+			emit stopPlaying(float(time));
+			emit stopPlaying();
 		}
 
 	}
