@@ -19,7 +19,8 @@
  *
  */
 
-#include <qevent.h>
+//#include <qevent.h>
+#include <qtimer.h>
 #include <qtooltip.h>
 #include "PlotController.hxx"
 #include "DisplaySurface.hxx"
@@ -32,7 +33,8 @@ namespace CLAM
 	    : QGLWidget(parent),
 	      _controller(NULL),
 	      _width(0),_height(0),
-	      _doResize(false)
+	      _doResize(false),
+	      _timer(0)
 	{
 	    SetBackgroundColor(1.0,1.0,1.0);
 	    InitView();
@@ -61,7 +63,8 @@ namespace CLAM
 	    connect(_controller,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
 	    connect(this,SIGNAL(leavingMouse()),_controller,SIGNAL(leavingMouse()));
 	    connect(_controller,SIGNAL(changeCursor(QCursor)),this,SLOT(changeCursor(QCursor)));
-	    connect(_controller,SIGNAL(requestUpdate()),this,SLOT(update()));
+	    connect(_controller,SIGNAL(startPlaying()),this,SLOT(startTimer()));
+	    connect(_controller,SIGNAL(stopPlaying()),this,SLOT(stopTimer()));
 	}
 
 	void DisplaySurface::paintGL()
@@ -82,6 +85,7 @@ namespace CLAM
 	    glClear(GL_COLOR_BUFFER_BIT);
 	    _controller->Draw();
 	    swapBuffers();
+	    if(_timer) if(!_timer->isActive()) _timer->start(TIMER_INTERVAL,true);
 	}
 
 	void DisplaySurface::mousePressEvent(QMouseEvent * e) 
@@ -186,6 +190,24 @@ namespace CLAM
 	void DisplaySurface::changeCursor(QCursor cursor)
 	{
 	    setCursor(cursor);
+	}
+
+	void DisplaySurface::startTimer()
+	{
+	    if(!_timer) _timer = new QTimer(this);
+	    connect(_timer,SIGNAL(timeout()),this,SLOT(updateGL()));
+	    _timer->start(TIMER_INTERVAL,true);
+	}
+
+	void DisplaySurface::stopTimer()
+	{
+	    if(_timer)
+	    {
+		_timer->stop();
+		delete _timer;
+		_timer = 0;
+		update();
+	    }
 	}
     }
 }

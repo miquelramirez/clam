@@ -26,7 +26,8 @@
 #include "DataTypes.hxx"
 #include "PlotController.hxx"
 
-class QMouseEvent;
+//class QMouseEvent;
+class QTimer;
 
 namespace CLAM
 {
@@ -58,6 +59,9 @@ namespace CLAM
 	    void updateToolTip(QString);
 	    void changeCursor(QCursor);
 
+	    void startTimer();
+	    void stopTimer();
+
 	protected:
 	    void paintGL(); 
 
@@ -76,6 +80,9 @@ namespace CLAM
 	    BkColor _bkColor;
 	    int _width, _height;
 	    volatile bool _doResize;
+	    QTimer* _timer;
+
+	    enum { TIMER_INTERVAL=10 };
 				
 	    void InitView();
 	};
