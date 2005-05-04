@@ -101,12 +101,17 @@ namespace CLAM
         
 	    TData stopTime = _time.GetEnd();
 
+	    unsigned playing_t0 = GetTime();
+	    unsigned playing_t1;
+
 	    unsigned t_begin = unsigned(_time.GetBegin()*TData(1000.0));
 	    
 	    t0 = GetTime();
-
+	    
 	    while(true)
 	    {
+		playing_t1 = GetTime();
+
 		t1 = GetTime()+t_begin;
 		
 		if(IsPaused())
@@ -137,8 +142,12 @@ namespace CLAM
 		    noteNumber++;
 		    isBegin = true;
 		}
-	
-		mSigPlayingTime.Emit(TData(t1-t0)/TData(1000.0));
+		
+		if(playing_t1-playing_t0 >= 110)
+		{
+		    mSigPlayingTime.Emit(TData(t1-t0)/TData(1000.0));
+		    playing_t0 = GetTime();
+		}
 	    }
 	    
 	    if(IsPaused()) stopTime =  _time.GetBegin(); 
