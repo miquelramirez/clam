@@ -676,12 +676,11 @@ namespace CLAM
 			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints;
 
 			TIndex index = -1;
-			TIndex currentIndex = 0;
 			TIndex left_index = 0;
 			TIndex right_index = nPoints-1;
 			while(left_index <= right_index)
 			{
-				currentIndex = (left_index+right_index)/2;
+				const TIndex currentIndex = (left_index+right_index)/2;
 				if(currentIndex>=nPoints-1)
 				{
 					index=currentIndex;
