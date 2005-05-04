@@ -670,11 +670,7 @@ namespace CLAM
 		TIndex BPFEditorController::GetBound(const TData& searchValue, bool left)
 		{
 			int nPoints = mData.Size();
-			if(!nPoints) return 0;
-			if(nPoints==1)
-			{
-				return 0;
-			}
+			if(nPoints<=1) return 0;
 
 			if(searchValue <= mData.GetXValue(0)) return 0;
 			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints;
