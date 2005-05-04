@@ -704,7 +704,7 @@ namespace CLAM
 				}
 			}
 
-			if (left && left_index>right_index) return index;
+			if (left) return index;
 
 			TIndex ret=0;
 			if(index>=nPoints-1) ret=nPoints-1;
