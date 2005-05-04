@@ -1,3 +1,4 @@
+#include <qtimer.h>
 #include "DataTypes.hxx"
 #include "BPFEditorController.hxx"
 #include "BPFEditorDisplaySurface.hxx"
@@ -10,7 +11,8 @@ namespace CLAM
 			: QGLWidget(parent), 
 			  mController(0),
 			  mWidth(0),mHeight(0),
-			  mDoResize(false)
+			  mDoResize(false),
+			  mTimer(0)
 		{
 			setMouseTracking(true);
 			setFocusPolicy(StrongFocus);
@@ -30,7 +32,8 @@ namespace CLAM
 			connect(mController,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
 			connect(mController,SIGNAL(viewChanged(GLView)),this,SLOT(updateView(GLView)));
 			connect(mController,SIGNAL(cursorChanged(QCursor)),this,SLOT(changeCursor(QCursor)));
-			connect(mController,SIGNAL(requestUpdate()),this,SLOT(update()));
+			connect(mController,SIGNAL(startPlaying()),this,SLOT(startTimer()));
+			connect(mController,SIGNAL(stopPlaying()),this,SLOT(stopTimer()));
 		}
 
 		void BPFEditorDisplaySurface::SetBackgroundColor(const float& r, const float& g, const float& b)
@@ -72,6 +75,7 @@ namespace CLAM
 			glClear(GL_COLOR_BUFFER_BIT);
 			mController->Draw();
 			swapBuffers();
+			if(mTimer) if(!mTimer->isActive()) mTimer->start(TIMER_INTERVAL,true);
 		}
 
 		void BPFEditorDisplaySurface::mousePressEvent(QMouseEvent* e)
@@ -174,6 +178,24 @@ namespace CLAM
 			mHeight = e->size().height();
 			mDoResize = true;
 			if(mController) mController->DisplayDimensions(mWidth,mHeight);
+		}
+
+	        void BPFEditorDisplaySurface::startTimer()
+		{
+		    if(!mTimer) mTimer = new QTimer(this);
+		    connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
+		    mTimer->start(TIMER_INTERVAL,true);
+		}
+
+	        void BPFEditorDisplaySurface::stopTimer()
+		{
+		    if(mTimer)
+		    {
+			mTimer->stop();
+			delete mTimer;
+			mTimer = 0;
+			update();
+		    }
 		}
 	}
 }

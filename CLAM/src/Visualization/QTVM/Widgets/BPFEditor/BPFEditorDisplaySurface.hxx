@@ -5,6 +5,8 @@
 #include <qcursor.h>
 #include "GLView.hxx"
 
+class QTimer;
+
 namespace CLAM
 {
     namespace VM
@@ -26,6 +28,9 @@ namespace CLAM
 	    void updateView(GLView);
 	    void changeCursor(QCursor);
 
+	    void startTimer();
+	    void stopTimer();
+
 	protected:
 	    void paintGL(); 
 
@@ -42,6 +47,9 @@ namespace CLAM
 	    BPFEditorController* mController;
 	    int mWidth, mHeight;
 	    volatile bool mDoResize;
+	    QTimer* mTimer;
+
+	    enum { TIMER_INTERVAL=10 };
 	};
     }
 }
