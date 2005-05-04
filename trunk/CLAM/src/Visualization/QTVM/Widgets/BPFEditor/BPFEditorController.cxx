@@ -710,18 +710,9 @@ namespace CLAM
 			if(!left)
 			{
 				TIndex ret=0;
-				if(index>=nPoints-1)
-				{
-					ret=nPoints-1;
-				}
-				if(index==nPoints-2)
-				{
-					ret=index+1;
-				}
-				else 
-				{
-					ret=index+2;
-				}
+				if(index>=nPoints-1) ret=nPoints-1;
+				if(index==nPoints-2) ret=index+1;
+				else ret=index+2;
 				return ret+1;
 			}
 			return index;
