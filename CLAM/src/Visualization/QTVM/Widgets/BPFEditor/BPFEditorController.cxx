@@ -347,10 +347,10 @@ namespace CLAM
 		{
 			BPFEditorSettings settings(mXRulerRange, mYRulerRange, mView);
 			mSettingStack.push_front(settings);
-			mView.mLeft = XMin();
-			mView.mRight = XMax();
-			mView.mBottom = YMin();
-			mView.mTop = YMax();
+			mView.mLeft = SelectionBoxMinX();
+			mView.mRight = SelectionBoxMaxX();
+			mView.mBottom = SelectionBoxMinY();
+			mView.mTop = SelectionBoxMaxY();
 			mXRulerRange.mMin = mView.mLeft;
 			mXRulerRange.mMax = mView.mRight;
 			mYRulerRange.mMin = mView.mBottom;
@@ -399,22 +399,22 @@ namespace CLAM
 			}
 		}
 
-		double BPFEditorController::XMin()
+		double BPFEditorController::SelectionBoxMinX()
 		{
 			return Min(double(mCorners[0].GetX()), double(mCorners[1].GetX()));
 		}
 
-		double BPFEditorController::XMax()
+		double BPFEditorController::SelectionBoxMaxX()
 		{
 			return Max(double(mCorners[0].GetX()), double(mCorners[1].GetX()));
 		}
 
-		double BPFEditorController::YMin()
+		double BPFEditorController::SelectionBoxMinY()
 		{
 			return Min(double(mCorners[0].GetY()), double(mCorners[1].GetY()));
 		}
 
-		double BPFEditorController::YMax()
+		double BPFEditorController::SelectionBoxMaxY()
 		{
 			return Max(double(mCorners[0].GetY()), double(mCorners[1].GetY()));
 		}
