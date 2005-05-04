@@ -148,10 +148,13 @@ namespace CLAM
 	void SelTimeRegionPlotController::UpdateTimePos(const TData& time)
 	{
 	    if(_isPlaying && time<=GetDialPos()/_sampleRate) return;
-	    if(!_isPlaying) _isPlaying =true;
+	    if(!_isPlaying) 
+	    {
+		_isPlaying =true;
+		emit startPlaying();
+	    }
 	    UpdateDial(time*_sampleRate);
 	    emit currentPlayingTime(float(time));
-	    emit requestUpdate();
 	}
 
 	void SelTimeRegionPlotController::StopPlaying(const TData& time)
@@ -160,7 +163,7 @@ namespace CLAM
 	    _isPlaying=false;
 	    UpdateDial(time*_sampleRate);
 	    emit stopPlaying(float(time));
-	    emit requestUpdate();
+	    emit stopPlaying();
 	}
 
 	bool SelTimeRegionPlotController::CanDrawSelectedPos()
