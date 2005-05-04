@@ -22,14 +22,15 @@ namespace CLAM
 	{
 		CopyAsConcreteConfig(mConf,c);
 
-		if (mTransmitPort==NULL)
-		{
-			//Use of InitializeNetworking is actually useless under POSIX because
-			// it does nothing -- should revise it if things change just in case
-			InitializeNetworking();
-			unsigned long hostAddress=GetHostByName(mConf.GetHostName().c_str());
-			mTransmitPort=new UdpTransmitPort (hostAddress, mConf.GetPort());
-		}
+		if (mTransmitPort)
+			delete mTransmitPort;
+		
+		//Use of InitializeNetworking is actually useless under POSIX because
+		// it does nothing -- should revise it if things change just in case
+		InitializeNetworking();
+		unsigned long hostAddress=GetHostByName(mConf.GetHostName().c_str());
+		mTransmitPort=new UdpTransmitPort (hostAddress, mConf.GetPort());
+		
 	
 		return true;
 	}
