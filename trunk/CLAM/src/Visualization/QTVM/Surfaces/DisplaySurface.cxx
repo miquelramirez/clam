@@ -194,19 +194,22 @@ namespace CLAM
 
 	void DisplaySurface::startTimer()
 	{
-	    if(!_timer) _timer = new QTimer(this);
-	    connect(_timer,SIGNAL(timeout()),this,SLOT(updateGL()));
-	    _timer->start(TIMER_INTERVAL,true);
+	    if(!_timer) 
+		{
+			_timer = new QTimer(this);
+			connect(_timer,SIGNAL(timeout()),this,SLOT(updateGL()));
+			_timer->start(TIMER_INTERVAL,true);
+		}
 	}
 
 	void DisplaySurface::stopTimer()
 	{
 	    if(_timer)
 	    {
-		_timer->stop();
-		delete _timer;
-		_timer = 0;
-		update();
+			_timer->stop();
+			delete _timer;
+			_timer = 0;
+			update();
 	    }
 	}
     }
