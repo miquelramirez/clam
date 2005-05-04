@@ -334,6 +334,7 @@ namespace CLAM
 		{
 			mRenderer.SetData(mData);
 			mRenderer.SetBounds(GetBound(mView.mLeft),GetBound(mView.mRight,false));
+			mRenderer.SetSelectedIndex(mCurrentIndex);
 			mRenderer.Render();
 			mDial.Render();
 			if(mEFlags & CLAM::VM::AllowZoomByMouse)
