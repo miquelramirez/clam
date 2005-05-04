@@ -52,6 +52,9 @@ namespace CLAM
 	    
 	    void currentPlayingTime(float);
 	    void stopPlaying(float);
+
+	    void startPlaying();
+	    void stopPlaying();
 			
 	protected:
 	    TData _sampleRate;
