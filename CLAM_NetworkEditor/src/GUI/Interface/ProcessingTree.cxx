@@ -61,6 +61,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem( controls, "FlagControl" );	
 	new ProcessingItem( controls, "Random" );	
 	new ProcessingItem( controls, "OneOverF" );	
+	new ProcessingItem( controls, "OSCSender" );	
 	
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	new ProcessingItem( inputoutput, "AudioOut" );

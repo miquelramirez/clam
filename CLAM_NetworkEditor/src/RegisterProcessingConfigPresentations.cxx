@@ -58,6 +58,7 @@
 #include "Random.hxx"
 #include "OneOverF.hxx"
 #include "SquareWave.hxx"
+#include "OSCSender.hxx"
 
 // Controls
 #include "Fundamental2Control.hxx"
@@ -161,6 +162,9 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SquareWaveConfig> > 
 	regtSquareWaveCfg( "SquareWaveConfig" );
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::OSCSenderConfig> > 
+	regtOSCSenderCfg( "OSCSenderConfig" );
 
 // Controls
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::Fundamental2ControlConfig> >
