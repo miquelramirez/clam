@@ -704,6 +704,8 @@ namespace CLAM
 				}
 			}
 
+			if (left && !(left_index <= right_index)) return index;
+
 			if(!left)
 			{
 				TIndex ret=0;
