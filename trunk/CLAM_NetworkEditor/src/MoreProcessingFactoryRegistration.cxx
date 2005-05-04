@@ -15,6 +15,7 @@
 #include "OutControlSender.hxx"
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileWriter.hxx"
+#include "OSCSender.hxx"
 
 #include "AudioPlotProcessing.hxx"
 #include "SpectrumPlotProcessing.hxx"
@@ -32,6 +33,7 @@ static ProcessingFactory::Registrator<CLAM::FlagControl> regtFlagControl( "FlagC
 static ProcessingFactory::Registrator<CLAM::Random> regtRandom( "Random" );
 static ProcessingFactory::Registrator<CLAM::OneOverF> regtOneOverF( "OneOverF" );
 static ProcessingFactory::Registrator<CLAM::SquareWave> regtSquareWave( "SquareWave" );
+static ProcessingFactory::Registrator<CLAM::OSCSender> regtOSCSender( "OSCSender" );
 #ifndef WIN32
 static ProcessingFactory::Registrator<CLAM::LadspaLoader> regtLadspaLoader( "LadspaLoader" );
 #endif
