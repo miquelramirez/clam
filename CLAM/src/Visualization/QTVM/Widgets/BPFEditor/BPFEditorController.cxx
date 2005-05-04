@@ -709,42 +709,42 @@ namespace CLAM
 
 			if(!left)
 			{
-			TIndex ret=0;
-			if(index>=nPoints-1)
-			{
-				ret=nPoints-1;
-			}
-			if(index==nPoints-2)
-			{
-				ret=index+1;
-			}
-			else 
-			{
-				ret=index+2;
-			}
-			return ret+1;
+				TIndex ret=0;
+				if(index>=nPoints-1)
+				{
+					ret=nPoints-1;
+				}
+				if(index==nPoints-2)
+				{
+					ret=index+1;
+				}
+				else 
+				{
+					ret=index+2;
+				}
+				return ret+1;
 			}
 			return index;
 		}
 
-			void BPFEditorController::UpdateTimePos(const TData& time)
+		void BPFEditorController::UpdateTimePos(const TData& time)
 		{
 			if(mIsPlaying && time <= mDial.GetPos()) return;
 			if(!mIsPlaying) 
 			{
-			mLightedPointIndex=GetBound(time);
-			mIsPlaying =true;
-			emit startPlaying();
+				mLightedPointIndex=GetBound(time);
+				mIsPlaying =true;
+				emit startPlaying();
 			}
 			mDial.Update(time);
 			if(time >= mData.GetXValue(mLightedPointIndex) && mLightedPointIndex < mData.Size())
 			{
-			mRenderer.SetSelectedIndex(int(mLightedPointIndex++));
+				mRenderer.SetSelectedIndex(int(mLightedPointIndex++));
 			}
 			emit currentPlayingTime(float(time));
 		}
 
-			void BPFEditorController::StopPlaying(const TData& time)
+		void BPFEditorController::StopPlaying(const TData& time)
 		{
 			if(!mIsPlaying) return;
 			mIsPlaying=false;
