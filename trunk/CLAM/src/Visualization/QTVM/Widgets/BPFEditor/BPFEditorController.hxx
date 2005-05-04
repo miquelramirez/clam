@@ -201,10 +201,10 @@ namespace CLAM
 
 	    void ProcessData();
 
-	    double XMin();
-	    double XMax();
-	    double YMin();
-	    double YMax();
+	    double SelectionBoxMinX();
+	    double SelectionBoxMaxX();
+	    double SelectionBoxMinY();
+	    double SelectionBoxMaxY();
 
 	    double Max(double a, double b);
 	    double Min(double a, double b);
