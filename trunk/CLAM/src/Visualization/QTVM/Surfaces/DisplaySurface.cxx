@@ -198,7 +198,7 @@ namespace CLAM
 		{
 			_timer = new QTimer(this);
 			connect(_timer,SIGNAL(timeout()),this,SLOT(update()));
-			_timer->start(TIMER_INTERVAL,true);
+			update();
 		}
 	}
 
