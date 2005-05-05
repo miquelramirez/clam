@@ -99,13 +99,13 @@ namespace CLAM
 	    progChg.GetInControls().GetByNumber(0).DoControl(TControlData(mMIDIProgram)); // set program
 	    volCtrl.GetInControls().GetByNumber(0).DoControl(120); // set volume
         
-	    TData stopTime = _time.GetEnd();
+	    TData stopTime;
 
 	    unsigned playing_t0 = GetTime();
 	    unsigned playing_t1;
 
 	    unsigned t_begin = unsigned(_time.GetBegin()*TData(1000.0));
-	    
+
 	    t0 = GetTime();
 	    
 	    while(true)
@@ -113,7 +113,7 @@ namespace CLAM
 		playing_t1 = GetTime();
 
 		t1 = GetTime()+t_begin;
-		
+
 		if(IsPaused())
 		{
 		    _time.SetBegin(TData(t1-t0)/TData(1000.0));
@@ -125,7 +125,7 @@ namespace CLAM
 		    stopTime = TData(t1-t0)/TData(1000.0);
 		    break;
 		}
-	      
+
 		if((t1-t0) >= mMIDIMelody.GetNoteArray()[noteNumber].GetTime().GetBegin()*1000 && isBegin)
 		{
 		    // note on
@@ -150,7 +150,8 @@ namespace CLAM
 		}
 	    }
 	    
-	    if(IsPaused()) stopTime =  _time.GetBegin(); 
+	    if(IsPaused()) stopTime = _time.GetBegin(); else if(!IsStopped()) stopTime = _time.GetEnd();
+	    
 	    mSigStop.Emit(stopTime);
 
 	    // send panic
