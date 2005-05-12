@@ -138,7 +138,6 @@ bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
 
-	std::cout << "SMSSynthesis::ConcreteConfigure()" << std::endl;
 	//CONFIGURE CHILDREN AND DATA
 	ConfigureChildren();
 
