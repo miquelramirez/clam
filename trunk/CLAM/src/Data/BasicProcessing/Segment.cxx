@@ -176,6 +176,7 @@ TIndex Segment::FindFrame(TTime time) const
 		return pParent->FindFrame(time);
 	Frame tmpFrame;
 	tmpFrame.SetCenterTime(time);
+	if (GetnFrames()<1) return -1;
 	return GetFramesSearch().Find(tmpFrame);
 
 }
