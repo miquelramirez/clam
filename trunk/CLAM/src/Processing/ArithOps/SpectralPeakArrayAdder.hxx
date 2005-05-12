@@ -68,11 +68,9 @@ namespace CLAM {
 
 		const ProcessingConfig &GetConfig() const { return mConfig;}
 
-		bool Do(void);
+		bool Do(void) {return false;}
 
 		bool Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2, SpectralPeakArray& out);
-		bool Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2,const Spectrum& spectralShape, SpectralPeakArray& out);
-	
 
 		/** Ports */
 		InPort<SpectralPeakArray> mIn1;
