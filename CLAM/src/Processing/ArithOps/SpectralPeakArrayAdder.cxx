@@ -65,7 +65,9 @@ namespace CLAM {
 		if (GetExecState() == Disabled)
 			return true;
 		
-		//we initialize output peak array
+		//we initialize output peak array making sure index array is present
+		out.AddIndexArray();
+		out.UpdateData();
 		out.SetnPeaks(0);
 		
 		int nPeaks1=in1.GetnPeaks();
@@ -82,7 +84,7 @@ namespace CLAM {
 			return true;
 		}
 
-				
+		IndexArray& in1Index = in1.GetIndexArray();
 		/*we first multiply indices in second input by 1000 in order
 		to avoid aliasing between indices. Note though that if this
 		process is applied recursively indices may end up getting out
@@ -104,12 +106,13 @@ namespace CLAM {
 			 * the synthesis process will work by adding their energy */
 			if(in1.GetFreq(nSelected1)<in2.GetFreq(nSelected2))
 			{
-				out.AddSpectralPeak(in1.GetSpectralPeak(nSelected1));
+				out.AddSpectralPeak(in1.GetSpectralPeak(nSelected1), true, in1Index[nSelected1]);
+				//std::cout<<"peak index"<<in1Index[nSelected1]<<std::endl;
 				nSelected1++;
 			}
 			else
 			{
-				out.AddSpectralPeak(in2.GetSpectralPeak(nSelected2));
+				out.AddSpectralPeak(in2.GetSpectralPeak(nSelected2), true, in2Index[nSelected2]);
 				nSelected2++;
 			}
 			
@@ -118,71 +121,4 @@ namespace CLAM {
 		return true;
 	}
 
-	// Unsupervised Do() function.
-	bool SpectralPeakArrayAdder::Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2,const Spectrum& spectralShape, SpectralPeakArray& out)
-	{
-		CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-		                  GetExecState() != Ready,
-		                  "SpectralPeakArrayAdder::Do(): Not in execution mode");
-
-		if (GetExecState() == Disabled)
-			return true;
-
-		out.SetnPeaks(0);
-		
-		int nPeaks1=in1.GetnPeaks();
-		int nPeaks2=in2.GetnPeaks();
-
-		if(nPeaks1==0)
-		{
-			out=in2;
-			return true;
-		}
-		if(nPeaks2==0)
-		{
-			out=in1;
-			return true;
-		}
-
-			
-		
-		/*we first multiply indices in second input by 1000 in order
-		to avoid aliasing between indices. Note though that if this
-		process is applied recursively indices may end up getting out
-		of bounds*/
-		IndexArray& in2Index = in2.GetIndexArray();
-		int i;
-		for (i=0; i<nPeaks2;i++) in2Index[i]*=1000;
-		
-		DataArray freq1 = in1.GetFreqBuffer();
-		DataArray freq2 = in2.GetFreqBuffer();
-		
-		/* We can now add up every peak array in both peakarray1 and 2*/
-		int nAdded1,nAdded2;
-		nAdded1=nAdded2=0;
-		while(nAdded1<=nPeaks1 && nAdded2<=nPeaks1)
-		{
-			if(freq1[nAdded1]<freq2[nAdded2])
-			{
-				out.AddSpectralPeak(in1.GetSpectralPeak(nAdded1));
-				nAdded1++;
-			}
-			else
-			{
-				out.AddSpectralPeak(in2.GetSpectralPeak(nAdded2));
-				nAdded2++;
-			}
-		}
-		
-		return true;
-	}
-
-	bool SpectralPeakArrayAdder::Do(void)
-	{
-		return Do(mIn1.GetData(),mIn2.GetData(),mOut.GetData());
-	}
-
-	
-
-}
-
+};
