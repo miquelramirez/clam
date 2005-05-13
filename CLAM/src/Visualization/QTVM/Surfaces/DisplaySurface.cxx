@@ -63,8 +63,11 @@ namespace CLAM
 	    connect(_controller,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
 	    connect(this,SIGNAL(leavingMouse()),_controller,SIGNAL(leavingMouse()));
 	    connect(_controller,SIGNAL(changeCursor(QCursor)),this,SLOT(changeCursor(QCursor)));
-	    connect(_controller,SIGNAL(startPlaying()),this,SLOT(startTimer()));
-	    connect(_controller,SIGNAL(stopPlaying()),this,SLOT(stopTimer()));
+	    if(_controller->IsPlayable())
+	    {
+		connect(_controller,SIGNAL(startPlaying()),this,SLOT(startTimer()));
+		connect(_controller,SIGNAL(stopPlaying()),this,SLOT(stopTimer()));
+	    }
 	}
 
 	void DisplaySurface::paintGL()
