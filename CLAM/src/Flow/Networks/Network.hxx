@@ -64,6 +64,12 @@ public:
 	void DoProcessings();
 	void AddFlowControl( FlowControl* );
 	void Clear();
+
+	//Methods related to OSClistening, needed to keep independance in NetEditor
+	virtual const bool GetListeningOSC() const { return false;}
+	virtual void StartListeningOSC() {}
+	virtual void StopListeningOSC(){}
+
 	// serialization methods
 	virtual void StoreOn( Storage & storage) const;
 	virtual void LoadFrom( Storage & storage);

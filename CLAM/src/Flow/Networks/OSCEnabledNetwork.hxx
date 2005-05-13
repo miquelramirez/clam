@@ -37,11 +37,13 @@ namespace CLAM
 		};
 		
 	private:
+
 		/*static*/ UdpPacketListenerPort *mListenerPort;
 		OscReceivePacketListener mListener;
 		int mPort;
 		std::queue<std::string> mMessageLog;
-		
+		bool mListeningOSC;		
+
 		int GetPort(void) const
 		{
 			return mPort;
@@ -50,14 +52,16 @@ namespace CLAM
 	public:
 		OSCEnabledNetwork(const int port=7000);
 
-		void Start();
-		void Stop();
+		virtual void StartListeningOSC();
+		virtual void StopListeningOSC();
 		//Gets the first message in the log queue
 		const std::string GetLogMessage(void);
 		void SetPort(const int p)
 		{
 			mPort=p;
 		}
+		
+		virtual const bool GetListeningOSC() const { return mListeningOSC; }
 
 	protected:
 		//Adds the specified message to the log queue
