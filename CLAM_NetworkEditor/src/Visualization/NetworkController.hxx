@@ -40,7 +40,7 @@
 
 #include "Thread.hxx"
 
-
+#include "OSCEnabledNetwork.hxx"
 
 namespace CLAM
 {
@@ -89,6 +89,7 @@ namespace CLAMVM
 
 		void Clear();
 		void ChangeState( bool);
+		void ChangeOSCState( bool);
 		
 		/** When a connection is removed from GUI, this method is called. 
 		 * It leaves the event in a list to execute if the audio thread is running, 
@@ -233,6 +234,7 @@ namespace CLAMVM
 
 	public:
 		SigSlot::Slotv1< bool > SlotChangeState;
+		SigSlot::Slotv1< bool > SlotChangeOSCState;
 		
 		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemovePortConnection;
 		SigSlot::Slotv2< const std::string &, const std::string& > SlotCreatePortConnection;

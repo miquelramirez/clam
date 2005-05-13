@@ -56,6 +56,7 @@ namespace NetworkGUI
 		statusBar()->message( "Ready to edit" );
 
 		SignalChangeNetworkState.Connect( mNetworkPresentation.SlotChangeState );
+		SignalChangeOSCState.Connect( mNetworkPresentation.SlotChangeOSCState );
 
 
 		QPopupMenu * file = new QPopupMenu( this );
@@ -121,6 +122,18 @@ namespace NetworkGUI
 	    stopNetwork->setMenuText( tr( "&Stop Network" ) );
 		stopNetwork->setAccel( tr( "Esc" ) );
 		connect( stopNetwork, SIGNAL( activated() ), this, SLOT( StopNetwork() ) );
+
+		QAction* startOSCListening = new QAction( this, "StartOSCListening" );
+		startOSCListening->addTo( networkActions );
+	    startOSCListening->setMenuText( tr( "Start Listening OSC Packets" ) );
+		startOSCListening->setAccel( tr( "O" ) );
+		connect( startOSCListening, SIGNAL( activated() ), this, SLOT( StartOSCListening() ) );
+
+		QAction* stopOSCListening = new QAction( this, "StopOSCListening" );
+		stopOSCListening->addTo( networkActions );
+	    stopOSCListening->setMenuText( tr( "Stop Listening OSC Packets" ) );
+		stopOSCListening->setAccel( tr( "P" ) );
+		connect( stopOSCListening, SIGNAL( activated() ), this, SLOT( StopOSCListening() ) );
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -217,6 +230,16 @@ namespace NetworkGUI
 	void MainWindow::StopNetwork()
 	{
 		SignalChangeNetworkState.Emit(false);
+	}
+
+	void MainWindow::StartOSCListening()
+	{
+		SignalChangeOSCState.Emit(true);
+	}
+
+	void MainWindow::StopOSCListening()
+	{
+		SignalChangeOSCState.Emit(false);
 	}
 
 	void MainWindow::ShowProcMenu()

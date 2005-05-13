@@ -61,6 +61,7 @@ NetworkController::NetworkController()
 	SlotProcessingNameChanged.Wrap( this, &NetworkController::ProcessingNameChanged );
 	
 	SlotChangeState.Wrap( this, &NetworkController::ChangeState );
+	SlotChangeOSCState.Wrap( this, &NetworkController::ChangeOSCState );
 	SlotClear.Wrap( this, &NetworkController::Clear );
 
 
@@ -193,6 +194,14 @@ void NetworkController::ChangeState( bool start)
 							    it->second->GetProcessingStatus() );	
 
 	}
+}
+
+void NetworkController::ChangeOSCState( bool start)
+{
+  if (start && !mObserved->GetListeningOSC())
+	mObserved->StartListeningOSC();
+  else if (!start && mObserved->GetListeningOSC())
+	mObserved->StopListeningOSC();
 }
 
 void NetworkController::CreatePortConnection( const std::string & out, const std::string& in)
