@@ -20,22 +20,23 @@ namespace CLAM
 		
 		mListener.AttachToNetwork(this);
 		SetPort(port);
+
+		mListeningOSC=false;
+
 	}
 	
-	void OSCEnabledNetwork::Start()
+	void OSCEnabledNetwork::StartListeningOSC()
 	{
 		InitializeNetworking();
 		mListenerPort = new UdpPacketListenerPort( GetPort(), &mListener );
-		
-		Network::Start();
+		mListeningOSC=true;
 	}
 	
-	void OSCEnabledNetwork::Stop()
+	void OSCEnabledNetwork::StopListeningOSC()
 	{
-		Network::Stop();
-		
 		delete mListenerPort;
 		TerminateNetworking();
+		mListeningOSC=false;
 	}
 	
 	const string OSCEnabledNetwork::GetLogMessage(void)
