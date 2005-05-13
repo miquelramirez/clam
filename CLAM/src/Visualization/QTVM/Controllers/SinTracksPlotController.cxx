@@ -210,6 +210,11 @@ namespace CLAM
 		      
 	    emit toolTip(s);
 	}
+
+	bool SinTracksPlotController::IsPlayable()
+	{
+	    return false;
+	}
     }
 }
 

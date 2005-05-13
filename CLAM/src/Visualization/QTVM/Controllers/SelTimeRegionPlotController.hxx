@@ -46,6 +46,8 @@ namespace CLAM
 
 	    void UpdateTimePos(const TData& time);
 	    void StopPlaying(const TData& time);
+
+	    virtual bool IsPlayable();
 	    
 	signals:
 	    void selectedRegion(MediaTime);

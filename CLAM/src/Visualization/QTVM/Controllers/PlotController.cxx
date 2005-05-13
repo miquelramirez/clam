@@ -465,6 +465,11 @@ namespace CLAM
 		    return _isAbleToEdit;
 		}
 
+	        bool PlotController::IsPlayable()
+		{
+		    return false;
+		}
+
 	}
 }
 

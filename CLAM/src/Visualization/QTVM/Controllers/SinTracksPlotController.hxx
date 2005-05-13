@@ -46,6 +46,8 @@ namespace CLAM
 	    void Draw();
 
 	    void SetMousePos(TData x,TData y);
+
+	    bool IsPlayable();
 	
 	protected:
 	    virtual void SetHBounds(const TData& left,const TData& right);
