@@ -80,6 +80,8 @@ namespace CLAM
 	    virtual void InsertMark(unsigned elem)=0;
 	    virtual void RemoveMark(int index, unsigned elem)=0;
 	    virtual void UpdateMark(int index, unsigned elem)=0;
+
+	    virtual bool IsPlayable();
 		    
 	signals:
 	    void requestRefresh();

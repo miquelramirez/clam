@@ -170,7 +170,13 @@ namespace CLAM
 	{
 	    return (!_isPlaying && SegmentationMarksPlotController::CanDrawSelectedPos());
 	}
+
+	bool SelTimeRegionPlotController::IsPlayable()
+	{
+	    return true;
+	}
     }
+    
 }
 
 // END
