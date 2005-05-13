@@ -61,11 +61,14 @@ public: //slots
 	void SaveAsNetwork();
 	void StartNetwork();
 	void StopNetwork();
+	void StartOSCListening();
+	void StopOSCListening();
 	void ShowProcMenu();
 	void ShowAboutDlg();
 
 public: // CLAM signals
 	SigSlot::Signalv1 < bool > SignalChangeNetworkState;
+	SigSlot::Signalv1 < bool > SignalChangeOSCState;
 	SigSlot::Signalv0 SignalNewNetworkSignal;
 
 };

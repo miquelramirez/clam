@@ -88,6 +88,7 @@ public:
 protected:
 	virtual void SetName(const std::string& name) = 0; 
 	virtual void ChangeState( bool );
+	virtual void ChangeOSCState( bool );
 
 	void RemoveProcessing( ProcessingPresentation* );
 	void AddProcessing2Remove( const std::string & , CLAM::Processing * );
@@ -114,6 +115,7 @@ protected:
 
 public: 
 	SigSlot::Slotv1< bool > SlotChangeState;
+	SigSlot::Slotv1< bool > SlotChangeOSCState;
 //	SigSlot::Signalv1< bool > SignalChangeState;
 //	SigSlot::Signalv1< const std::string & > SignalLoadNetworkFrom;
 //	SigSlot::Signalv1< const std::string & > SignalSaveNetworkTo;

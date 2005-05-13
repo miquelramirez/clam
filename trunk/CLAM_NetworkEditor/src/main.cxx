@@ -61,7 +61,6 @@ int main( int argc, char **argv )
 	CLAM::OSCEnabledNetwork net;
 	net.SetName("CLAM OSCEnabledNetwork");
 	ConfigureNetwork(net);
-	net.Start();
 
 	CLAMVM::NetworkController controller;
 	controller.BindTo(net);
@@ -75,8 +74,6 @@ int main( int argc, char **argv )
 	mw.show();
 	app.connect( &app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()) );
 	
-	int ret=app.exec();
-	net.Stop();
-	return ret;
+	return app.exec();
 }
 
