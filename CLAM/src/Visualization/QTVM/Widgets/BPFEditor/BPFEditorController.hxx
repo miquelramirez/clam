@@ -101,6 +101,7 @@ namespace CLAM
 
 	    void SetKeyInsertPressed(bool pressed);
 	    void SetKeyDeletePressed(bool pressed);
+	    void SetKeyControlPressed(bool pressed);
 	    
 	    void SetLeftButtonPressed(bool pressed);
 	    void SetRightButtonPressed(bool pressed);
@@ -123,6 +124,8 @@ namespace CLAM
 
 	    void UpdateTimePos(const TData& time);
 	    void StopPlaying(const TData& time);
+
+	    void MouseOverDisplay(bool over);
 
 	signals:
 	    void viewChanged(GLView);
@@ -167,9 +170,11 @@ namespace CLAM
 	    int mEFlags;
 	    EScale mXScale, mYScale;
 	    bool mLeftButtonPressed, mRightButtonPressed;
-	    bool mKeyInsertPressed, mKeyDeletePressed;
+	    bool mKeyInsertPressed, mKeyDeletePressed, mKeyControlPressed;
+	    bool mMouseOverDisplay;
 	    bool mProcessingSelection;
 	    bool mHit;
+	    bool mQueryZoomOut;
 	    Color mRectColor;
 	    Point mCorners[2];
 	    SettingStack mSettingStack;

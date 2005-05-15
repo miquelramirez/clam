@@ -1,3 +1,5 @@
+#include <qpixmap.h>
+#include "IconData.hxx"
 #include "BPFEditorController.hxx"
 
 namespace CLAM
@@ -12,8 +14,11 @@ namespace CLAM
 			, mRightButtonPressed(false)
 			, mKeyInsertPressed(false)
 			, mKeyDeletePressed(false)
+			, mKeyControlPressed(false)
+			, mMouseOverDisplay(false)
 			, mProcessingSelection(false)
 			, mHit(false)
+			, mQueryZoomOut(false)
 			, mDisplayWidth(0)
 			, mDisplayHeight(0)
 			, mCurrentIndex(0)
@@ -127,6 +132,26 @@ namespace CLAM
 			mKeyDeletePressed = pressed;
 			mProcessingSelection = false;
 		}
+
+	        void BPFEditorController::SetKeyControlPressed(bool pressed)
+		{
+		    mKeyControlPressed = pressed;
+		    mProcessingSelection = false;
+		    if(mKeyControlPressed && mMouseOverDisplay)
+		    {
+			if(!mSettingStack.size()) return;
+			QPixmap icon_zoomout((const char**)icon_zoomout);
+			QCursor zoutCursor(icon_zoomout);
+			emit cursorChanged(zoutCursor);
+			mQueryZoomOut = true;
+		    }
+		    else
+		    {
+			QCursor acursor(Qt::ArrowCursor);
+			emit cursorChanged(acursor);
+			mQueryZoomOut = false;
+		    }
+		}
 			
 		void BPFEditorController::SetLeftButtonPressed(bool pressed)
 		{
@@ -144,27 +169,39 @@ namespace CLAM
 					mYModified = false;
 				}
 
-				QCursor acursor(Qt::ArrowCursor);
-				emit cursorChanged(acursor);
-				mHit=false;
+				if(!mQueryZoomOut)
+				{
+				    QCursor acursor(Qt::ArrowCursor);
+				    emit cursorChanged(acursor);
+				}
+				
+				mHit = false;
+			      
 			}
+		
 		}
 
 		void BPFEditorController::SetRightButtonPressed(bool pressed)
 		{
 			mRightButtonPressed = pressed;
-			if(!mRightButtonPressed)
-			{
-				if(mEFlags & CLAM::VM::AllowZoomByMouse)
-				{
-					PopSettings();
-				}
-			}
 			emit rightButtonPressed();
 		}
 
 		void BPFEditorController::SetPoint(const TData& x, const TData& y)
 		{
+		        if(mQueryZoomOut && mLeftButtonPressed) 
+			{
+			    mHit = false;
+			    PopSettings();
+			    if(!mSettingStack.size())
+			    {
+				QCursor acursor(Qt::ArrowCursor);
+				emit cursorChanged(acursor);
+				mQueryZoomOut=false;
+			    }
+			    return;
+			}
+			
 			if(mLeftButtonPressed)
 			{
 				if(mSelectPoint)
@@ -240,6 +277,7 @@ namespace CLAM
 
 		void BPFEditorController::UpdatePoint(const TData& x, const TData& y)
 		{
+		        if(mQueryZoomOut) return;
 			if(mProcessingSelection)
 			{
 				mCorners[1].SetX(x);
@@ -733,6 +771,15 @@ namespace CLAM
 			mDial.Update(time);
 			emit stopPlaying(float(time));
 			emit stopPlaying();
+		}
+
+	        void BPFEditorController::MouseOverDisplay(bool over)
+		{
+		    mMouseOverDisplay = over;
+		    if(!mMouseOverDisplay)
+		    {
+			emit labelsText("","");
+		    }
 		}
 
 	}
