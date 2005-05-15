@@ -29,6 +29,8 @@ namespace CLAM
 			mSlotStopPlayingReceived.Wrap(this,&BPFEditor::StopPlaying);
 
 			InitBPFEditor();
+
+			SetActivePlayer(false);
 		}
 
 		BPFEditor::~BPFEditor()
@@ -158,6 +160,10 @@ namespace CLAM
 						mController->SetKeyDeletePressed(true); 
 					}
 					break;
+
+			        case Qt::Key_Control:
+				        mController->SetKeyControlPressed(true);
+				        break;
 									
 				default:
 					break;
@@ -189,6 +195,10 @@ namespace CLAM
 						mController->SetKeyDeletePressed(false); 
 					}
 					break;
+
+				case Qt::Key_Control:
+				        mController->SetKeyControlPressed(false);
+				        break;
 									
 				default:
 					break;
@@ -582,7 +592,7 @@ namespace CLAM
 		void BPFEditor::InitPopupMenu()
 		{
 			mPopupMenu = new QPopupMenu();
-			mPopupMenu->insertItem("Auralize Descriptors",this,SLOT(activePlayer()),0,0); 
+			mPopupMenu->insertItem("Auralize",this,SLOT(activePlayer()),0,0); 
 			mPopupMenu->setCheckable(true);
 		}
 
