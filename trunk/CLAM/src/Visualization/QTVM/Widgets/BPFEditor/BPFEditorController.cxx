@@ -637,7 +637,7 @@ namespace CLAM
 
 		void BPFEditorController::updateVScrollValue(int value)
 		{
-			double bottom = mSpanY/double(GetnyPixels())*double(value)-fabs(mMinY);
+		        double bottom = mSpanY/double(GetnyPixels())*double(value)+mMinY;
 			double top = bottom+mVCurrent;
 			SetVBounds(bottom,top);
 		}
@@ -672,7 +672,7 @@ namespace CLAM
 
 		int BPFEditorController::GetVScrollValue() const
 		{
-			double value = (mView.mBottom+fabs(mMinY))*double(GetnyPixels())/mSpanY;
+			double value = (mView.mBottom-mMinY)*double(GetnyPixels())/mSpanY;
 			return int(value);
 		}
 
