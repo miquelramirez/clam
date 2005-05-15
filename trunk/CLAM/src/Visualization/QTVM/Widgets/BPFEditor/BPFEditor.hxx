@@ -92,6 +92,7 @@ namespace CLAM
 	private slots:
 	    void updateLabels(QString, QString);
 	    void setMaxVScroll(int);
+	    void setMaxHScroll(int);
 
 	    void showPopupMenu();
 	    void activePlayer();

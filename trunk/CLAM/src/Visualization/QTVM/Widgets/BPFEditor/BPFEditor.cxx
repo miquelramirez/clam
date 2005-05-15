@@ -548,9 +548,16 @@ namespace CLAM
 
 	        void BPFEditor::CreateHScroll()
 		{
-		    mHScroll = new HScrollGroup(this);
+		        mHScroll = new HScrollGroup(this);
 
-		    // connections
+		        // connections
+		    	connect(mHScroll,SIGNAL(zoomIn()),mController,SLOT(hZoomIn()));
+			connect(mHScroll,SIGNAL(zoomOut()),mController,SLOT(hZoomOut()));
+			connect(mHScroll,SIGNAL(scrollValueChanged(int)),mController,SLOT(updateHScrollValue(int)));
+			connect(mController,SIGNAL(hZoomRatio(double)),mHScroll,SLOT(updateZoomRatio(double)));
+			connect(mController,SIGNAL(hScrollMaxValue(int)),this,SLOT(setMaxHScroll(int)));
+			connect(mController,SIGNAL(hScrollValue(int)),mHScroll,SLOT(updateScrollValue(int)));
+
 		}
 
 		void BPFEditor::setMaxVScroll(int value)
@@ -559,6 +566,13 @@ namespace CLAM
 			if(max < 0) max=0;
 			mVScroll->setMaxScrollValue(max);
 		}
+
+	        void BPFEditor::setMaxHScroll(int value)
+	        {
+		    	int max = value-mDisplaySurface->width();
+			if(max < 0) max=0;
+			mHScroll->setMaxScrollValue(max);
+	        }
 
 		void BPFEditor::switchColors()
 		{
