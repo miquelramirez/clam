@@ -200,6 +200,18 @@ namespace CLAM
 				update();
 		    }
 		}
+
+	        void BPFEditorDisplaySurface::enterEvent(QEvent *e)
+		{
+		    mController->MouseOverDisplay(true);
+		    QWidget::enterEvent(e);
+		}
+
+	        void BPFEditorDisplaySurface::leaveEvent(QEvent *e)
+		{
+		    mController->MouseOverDisplay(false);
+		    QWidget::leaveEvent(e);
+		}
 	}
 }
 
