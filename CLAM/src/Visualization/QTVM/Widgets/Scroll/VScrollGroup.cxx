@@ -64,6 +64,7 @@ namespace CLAM
 			layout->addWidget(_zIn,0);
 
 			_label = new VZLabel(this);
+			_label->setPaletteBackgroundColor(_zIn->paletteBackgroundColor());
 			layout->addWidget(_label);
 
 			_sb = new ScrollBar(QScrollBar::Vertical,this);
