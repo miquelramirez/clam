@@ -144,6 +144,10 @@ namespace CLAM
 	    void vScrollMaxValue(int);
 	    void vScrollValue(int);
 
+	    void hZoomRatio(double);
+	    void hScrollMaxValue(int);
+	    void hScrollValue(int);
+
 	    void elementAdded(int, float, float);
 	    void elementRemoved(int);
 
@@ -158,8 +162,11 @@ namespace CLAM
 	public slots:
 	    void vZoomIn();
 	    void vZoomOut();
+	    void hZoomIn();
+	    void hZoomOut();
 
 	    void updateVScrollValue(int);
+	    void updateHScrollValue(int);
 
 	private:
 	    BPF mData;
@@ -193,8 +200,8 @@ namespace CLAM
 	    double mMinX,mMaxX;
 	    double mMinY,mMaxY;
 
-	    double mVCurrent;
-	    double mVZoomRatio;
+	    double mVCurrent, mHCurrent;
+	    double mVZoomRatio, mHZoomRatio;
 
 	    bool mIsPlaying;
 	    TIndex mLightedPointIndex;
@@ -203,8 +210,6 @@ namespace CLAM
 	    void PopSettings();
 
 	    void DrawRect();
-
-	    void ProcessData();
 
 	    double SelectionBoxMinX();
 	    double SelectionBoxMaxX();
@@ -231,9 +236,20 @@ namespace CLAM
 
 	    void UpdateVBounds(bool zin);
 
+	    int GetnxPixels() const;
+	    int GetHScrollValue() const;
+
+	    void InitHZoomRatio();
+	    void InitHScroll();
+
+	    void UpdateHBounds(bool zin);
+
 	    TIndex GetBound(const TData& searchValue, bool left=true);
 
 	    void InsertBPFNode(TData x, TData y);
+
+	    bool ReferenceIsVisible();
+	    double GetReference() const;
 	};
     }
 }

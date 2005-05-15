@@ -30,7 +30,9 @@ namespace CLAM
 			, mMinX(0.0), mMaxX(0.0)
 			, mMinY(0.0), mMaxY(0.0)
 			, mVCurrent(0.0)
+			, mHCurrent(0.0)
 			, mVZoomRatio(1.0)
+			, mHZoomRatio(1.0)
 			, mIsPlaying(false)
 			, mLightedPointIndex(0)
 		{
@@ -90,6 +92,7 @@ namespace CLAM
 			emit viewChanged(mView);
 			emit xRulerRange(mXRulerRange.mMin, mXRulerRange.mMax);
 			emit requestRefresh();
+			InitHScroll();
 		}
 
 		void BPFEditorController::SetYRange(const double& min, const double& max, const EScale& scale)
@@ -702,6 +705,124 @@ namespace CLAM
 				}
 			}
 			SetVBounds(bottom,top);
+		}
+
+	        void BPFEditorController::hZoomIn()
+		{
+		    	if(mHCurrent/2.0 > mMinSpanX)
+			{
+				mHCurrent /= 2.0;
+				UpdateHBounds(true);
+				mHZoomRatio /= 2.0;
+				emit hZoomRatio(mHZoomRatio);
+				emit hScrollMaxValue(GetnxPixels());
+				emit hScrollValue(GetHScrollValue());
+			}
+		}
+
+	        void BPFEditorController::hZoomOut()
+		{
+		        if(mHCurrent*2.0 <= mSpanX)
+			{
+				mHCurrent *= 2.0;
+				UpdateHBounds(false);
+				mHZoomRatio *= 2.0;
+				emit hZoomRatio(mHZoomRatio);
+				emit hScrollValue(GetHScrollValue());
+				emit hScrollMaxValue(GetnxPixels());
+			} 
+		}
+
+	        void BPFEditorController::updateHScrollValue(int value)
+		{
+		        double left = mSpanX/double(GetnxPixels())*double(value)+mMinX;
+			double right = left+mHCurrent;
+			SetHBounds(left,right);
+		}
+
+	        int BPFEditorController::GetnxPixels() const
+		{
+		        double value = mSpanX*double(mDisplayWidth)/mHCurrent;
+			return int(value);
+		}
+
+	        int BPFEditorController::GetHScrollValue() const
+		{
+			double value = (mView.mLeft-mMinX)*double(GetnxPixels())/mSpanX;
+			return int(value);
+		}
+
+	        void BPFEditorController::InitHZoomRatio()
+		{
+		    	double n = mMinSpanX;
+			double r = 1.0;
+			while(n < mSpanX)
+			{
+				n *= 2.0;
+				r *= 2.0;
+			}
+			mHZoomRatio = r/2.0;
+		}
+
+	        void BPFEditorController::InitHScroll()
+		{
+		    	mHCurrent = mSpanX;
+			InitHZoomRatio();
+			emit hZoomRatio(mHZoomRatio);
+			int hsv=GetHScrollValue();
+			emit hScrollMaxValue(GetnxPixels());
+			emit hScrollValue(hsv);
+		}
+
+	        void BPFEditorController::UpdateHBounds(bool zin)
+		{ 
+		        double left,right;
+			left = mView.mLeft;
+			right = mView.mRight;
+			if(zin)
+			{
+			    if(ReferenceIsVisible())
+			    {
+				double ref = GetReference();
+				if(ref-mMinX >= mHCurrent/2.0)
+				{
+				    left = ref-mHCurrent/2.0;
+				}
+				right = left+mHCurrent;
+			    }
+			    else
+			    {
+				left += mHCurrent/2.0;
+				right -= mHCurrent/2.0;
+			    }
+			}
+			else
+			{
+				left -= mHCurrent/4.0;
+				right += mHCurrent/4.0;
+				if(left < mMinX)
+				{
+					left = mMinX;
+					right = left+mHCurrent;
+				}
+				if(right > mMaxX)
+				{
+					right = mMaxX;
+					left = right-mHCurrent;
+				}
+			}
+			SetHBounds(left,right);
+		}
+
+	        bool BPFEditorController::ReferenceIsVisible()
+		{
+		    double value = (mIsPlaying) ? double(mDial.GetPos()) : double(mData.GetXValue(mCurrentIndex));
+		    return (value > mXRulerRange.mMin && value < mXRulerRange.mMax);
+		}
+
+	        double BPFEditorController::GetReference() const
+		{
+		    return (mIsPlaying) ? double(mDial.GetPos()) : double(mData.GetXValue(mCurrentIndex));
 		}
 
 		TIndex BPFEditorController::GetBound(const TData& searchValue, bool left)
