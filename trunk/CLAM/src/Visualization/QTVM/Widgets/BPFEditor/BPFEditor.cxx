@@ -3,6 +3,7 @@
 #include <qframe.h>
 #include <qpopupmenu.h>
 #include "VScrollGroup.hxx"
+#include "HScrollGroup.hxx"
 #include "Ruler.hxx"
 #include "BPFEditorController.hxx"
 #include "BPFEditorDisplaySurface.hxx"
@@ -16,12 +17,18 @@ namespace CLAM
 		BPFEditor::BPFEditor(QWidget* parent,const char* name,int eFlags)
 			: QWidget(parent,name),
 			  mEFlags(eFlags),
-			  mActivePlayer(true), 
+			  mActivePlayer(true),
+			  mXRuler(0),
+			  mYRuler(0),
 			  mController(0),
 			  mDisplaySurface(0),
 			  mColorScheme(EBlackOverWhite),
 			  mVScroll(0),
+			  mHScroll(0),
+			  topLeftHole(0),
+			  topRightHole(0),
 			  bottomRightHole(0),
+			  playerHole(0),
 			  mHasPlayData(false),
 			  mWhiteOverBlackScheme(true)
 		{
@@ -160,7 +167,7 @@ namespace CLAM
 						mController->SetKeyDeletePressed(true); 
 					}
 					break;
-
+					
 			        case Qt::Key_Control:
 				        mController->SetKeyControlPressed(true);
 				        break;
@@ -196,7 +203,7 @@ namespace CLAM
 					}
 					break;
 
-				case Qt::Key_Control:
+			        case Qt::Key_Control:
 				        mController->SetKeyControlPressed(false);
 				        break;
 									
@@ -225,8 +232,26 @@ namespace CLAM
 			// main layout
 			mainLayout = new QVBoxLayout(this);
 
-			// top area: left ruler and display surface
-			topLayout = new QHBoxLayout(mainLayout);
+			if((mEFlags & CLAM::VM::HasHorizontalScroll) 
+			   && !(mEFlags & CLAM::VM::AllowZoomByMouse))
+			{
+			    // top area xRuler
+			    topLayout = new QHBoxLayout(mainLayout);
+			    mXRuler = new Ruler(this,CLAM::VM::Top);
+			    topLeftHole = new QFrame(this);
+			    topLayout->addWidget(topLeftHole);
+			    topLayout->addWidget(mXRuler);
+			    if((mEFlags & CLAM::VM::HasVerticalScroll) 
+			       && !(mEFlags & CLAM::VM::AllowZoomByMouse))
+			    {
+				topRightHole = new QFrame(this);
+				topLayout->addWidget(topRightHole);
+			    }
+			
+			}
+
+			// middle area: left ruler and display surface
+			middleLayout = new QHBoxLayout(mainLayout);
 
 			mYRuler = new Ruler(this,CLAM::VM::Left);
 
@@ -242,22 +267,38 @@ namespace CLAM
 			mDisplaySurface->setMinimumSize(200,100);
 			mDisplaySurface->SetController(mController);
 
-			topLayout->addWidget(mYRuler);
-			topLayout->addWidget(mDisplaySurface);
+			middleLayout->addWidget(mYRuler);
+			middleLayout->addWidget(mDisplaySurface);
 
 			// bottom area:info labels and bottom ruler
 			bottomLayout = new QHBoxLayout(mainLayout);
 
 			int middle_panel_height=0;
 			
-			mXRuler = new Ruler(this,CLAM::VM::Bottom);
+			if(mXRuler)
+			{
+			    CreateHScroll();
+			}
+			else
+			{
+			    mXRuler = new Ruler(this,CLAM::VM::Bottom);
+			}
+			
 			if(mEFlags & CLAM::VM::HasPlayer)
 			{
-				mXRuler->setFixedHeight(fm.height()+10);
 				_player = new QtBPFPlayer(this);
 				((QtBPFPlayer*)_player)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
 				((QtBPFPlayer*)_player)->SetSlotStopPlaying(mSlotStopPlayingReceived);
-				middle_panel_height = mXRuler->height()+_player->height();
+				if(mHScroll)
+				{
+				    mXRuler->setFixedHeight(fm.height()+30);
+				    middle_panel_height = mXRuler->height();
+				}
+				else
+				{
+				    mXRuler->setFixedHeight(fm.height()+10);
+				    middle_panel_height = mXRuler->height()+_player->height();
+				}
 			}
 			else
 			{
@@ -265,8 +306,10 @@ namespace CLAM
 				middle_panel_height = mXRuler->height();
 			}
 
+			if(topLeftHole) topLeftHole->setFixedSize(mYRuler->width(),mXRuler->height());
+
 			labelsContainer = new QFrame(this);
-			labelsContainer->setFixedWidth(mYRuler->width());
+			labelsContainer->setFixedSize(mYRuler->width(),middle_panel_height);
 			
 
 			int fixed_label_width = fm.width("X:");
@@ -304,7 +347,18 @@ namespace CLAM
 			bottomLayout->addWidget(labelsContainer);
 
 			QBoxLayout* middlePanel = new QVBoxLayout(bottomLayout);
-			middlePanel->addWidget(mXRuler);
+			if(mHScroll)
+			{
+			    playerHole = new QFrame(this);
+			    playerHole->setFixedHeight(labelsContainer->height()-mHScroll->height()+10);
+			    middlePanel->addWidget(mHScroll);
+			    middlePanel->addWidget(playerHole);
+			}
+			else
+			{
+			    middlePanel->addWidget(mXRuler);
+			}
+
 			if(_player) middlePanel->addWidget(_player);
 
 			if((mEFlags & CLAM::VM::HasVerticalScroll) 
@@ -360,6 +414,8 @@ namespace CLAM
 		{
 			if(mColorScheme==EWhiteOverBlack) return;
 
+			setPaletteBackgroundColor(QColor(0,0,0));
+
 			mController->SetDataColor(VMColor::White());
 			mController->SetHandlersColor(VMColor::Cyan());
 			mController->SetRectColor(VMColor::White());
@@ -393,6 +449,8 @@ namespace CLAM
 		void BPFEditor::BlackOverWhite()
 		{
 			if(mColorScheme==EBlackOverWhite) return;
+
+			setPaletteBackgroundColor(QColor(255,255,255));
 
 			mController->SetDataColor(VMColor::Black());
 			mController->SetHandlersColor(VMColor::Blue());
@@ -443,7 +501,8 @@ namespace CLAM
 			if(width > mYRuler->width())
 			{
 				mYRuler->setFixedWidth(width);
-				labelsContainer->setFixedWidth(mYRuler->width());
+				labelsContainer->setFixedWidth(width);
+				if(topLeftHole) topLeftHole->setFixedWidth(width);
 			}
 
 			mXLabelInfo->setGeometry(fixed_x_label->x()+fixed_x_label->width(),
@@ -470,17 +529,12 @@ namespace CLAM
 		void BPFEditor::CreateVScroll()
 		{
 			mVScroll = new VScrollGroup(this);
-			topLayout->addWidget(mVScroll);
+			middleLayout->addWidget(mVScroll);
 			bottomRightHole = new QFrame(this);
-			if(_player)
-			{
-				bottomRightHole->setFixedSize(mVScroll->width(),mXRuler->height()+_player->height());
-			}
-			else
-			{
-				bottomRightHole->setFixedSize(mVScroll->width(),mXRuler->height());
-			}
+			bottomRightHole->setFixedSize(mVScroll->width(),labelsContainer->height());
 			bottomLayout->addWidget(bottomRightHole);
+
+			if(topRightHole) topRightHole->setFixedSize(mVScroll->width(),mXRuler->height());
 
 			// connections
 			connect(mVScroll,SIGNAL(zoomIn()),mController,SLOT(vZoomIn()));
@@ -490,6 +544,13 @@ namespace CLAM
 			connect(mController,SIGNAL(vScrollMaxValue(int)),this,SLOT(setMaxVScroll(int)));
 			connect(mController,SIGNAL(vScrollValue(int)),mVScroll,SLOT(updateScrollValue(int)));
 
+		}
+
+	        void BPFEditor::CreateHScroll()
+		{
+		    mHScroll = new HScrollGroup(this);
+
+		    // connections
 		}
 
 		void BPFEditor::setMaxVScroll(int value)
@@ -546,17 +607,21 @@ namespace CLAM
 
 		void BPFEditor::ShowPlayer()
 		{
-			QFont f;
-			f.setFamily("fixed");
-			f.setPointSize(10);
-			f.setBold(true);
-			f.setStyleHint(QFont::Courier,QFont::NoAntialias);
-
+			QFont f=mXRuler->Font();
 			QFontMetrics fm(f);
 
-			mXRuler->setFixedHeight(fm.height()+10);
-			int middle_panel_height = mXRuler->height()+_player->height();
-			labelsContainer->setFixedHeight(middle_panel_height);
+			int middle_panel_height=labelsContainer->height();
+			if(!mHScroll)
+			{
+			    mXRuler->setFixedHeight(fm.height()+10);
+			    middle_panel_height = mXRuler->height()+_player->height();
+			    labelsContainer->setFixedHeight(middle_panel_height);
+			}
+			else
+			{
+			    playerHole->hide();
+			}
+			
 			if(bottomRightHole) bottomRightHole->setFixedHeight(middle_panel_height);
 			_player->show();
 			if(!mHasPlayData)
@@ -573,17 +638,20 @@ namespace CLAM
 
 			_player->hide();
 			
-			QFont f;
-			f.setFamily("fixed");
-			f.setPointSize(10);
-			f.setBold(true);
-			f.setStyleHint(QFont::Courier,QFont::NoAntialias);
-
+			QFont f=mXRuler->Font();
 			QFontMetrics fm(f);
 
-			mXRuler->setFixedHeight(fm.height()+30);
-			int middle_panel_height = mXRuler->height();
-			labelsContainer->setFixedHeight(middle_panel_height);
+			int middle_panel_height = labelsContainer->height();
+			if(!mHScroll)
+			{
+			    mXRuler->setFixedHeight(fm.height()+30);
+			    middle_panel_height = mXRuler->height();
+			    labelsContainer->setFixedHeight(middle_panel_height);
+			}
+			else
+			{
+			    playerHole->show();
+			}
 			if(bottomRightHole) bottomRightHole->setFixedHeight(middle_panel_height);
 			mActivePlayer = false;
 			

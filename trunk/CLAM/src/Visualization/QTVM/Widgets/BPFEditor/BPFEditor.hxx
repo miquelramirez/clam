@@ -26,6 +26,7 @@ namespace CLAM
 	class Ruler;
 	class BPFEditorDisplaySurface;
 	class VScrollGroup;
+	class HScrollGroup;
 
 	class BPFEditor : public QWidget, public PlayablePlot
 	{
@@ -111,8 +112,9 @@ namespace CLAM
 	    int mColorScheme;
 
 	    VScrollGroup *mVScroll;
-	    QBoxLayout *mainLayout, *topLayout, *bottomLayout;
-	    QFrame *bottomRightHole;
+	    HScrollGroup *mHScroll;
+	    QBoxLayout *mainLayout, *topLayout, *middleLayout, *bottomLayout;
+	    QFrame *topLeftHole, *topRightHole, *bottomRightHole, *playerHole;
 
 	    Melody mMelody;
 	    MIDIMelody mMIDIMelody;
@@ -133,6 +135,7 @@ namespace CLAM
 
 	    void AdjustLeft(const double& min, const double& max, bool y_axis=true);
 	    void CreateVScroll();
+	    void CreateHScroll();
 
 	    void ShowPlayer();
 	    void HidePlayer();
