@@ -26,13 +26,27 @@ int main()
 
     CLAM::VM::QtAppWrapper::Init();
 
-    CLAM::VM::BPFEditor editor;
-    editor.Label("BPFEditor");
-    editor.Geometry(100,100,600,400);
-    editor.SetXRange(0.0,duration);
-    editor.SetYRange(double(min)-double(span)*0.1, double(max)+double(span)*0.1);
-    editor.SetData(bpf);
-    editor.Show();
+    CLAM::VM::BPFEditor editor0;
+    editor0.Label("BPFEditor0");
+    editor0.Geometry(100,10,600,300);
+    editor0.SetXRange(0.0,duration);
+    editor0.SetYRange(double(min)-double(span)*0.1, double(max)+double(span)*0.1);
+    editor0.SetData(bpf);
+
+     CLAM::VM::BPFEditor editor1(0,0,
+				 CLAM::VM::AllowHorizontalEdition | 
+				 CLAM::VM::AllowVerticalEdition |
+				 CLAM::VM::HasHorizontalScroll | 
+				 CLAM::VM::HasVerticalScroll | 
+				 CLAM::VM::HasPlayer);
+    editor1.Label("BPFEditor1");
+    editor1.Geometry(100,335,600,300);
+    editor1.SetXRange(0.0,duration);
+    editor1.SetYRange(double(min)-double(span)*0.1, double(max)+double(span)*0.1);
+    editor1.SetData(bpf);
+
+    editor0.Show();
+    editor1.Show();
 
     CLAM::VM::QtAppWrapper::Run();
 
