@@ -77,7 +77,7 @@ namespace CLAM
 			QToolTip::add(_zOut,"Zoom Out");
 			layout->addWidget(_zOut,0);
 
-			_label->setPaletteBackgroundColor(_zIn->paletteBackgroundColor());
+			setPaletteBackgroundColor(_zIn->paletteBackgroundColor());
 
 			// connections
 			connect(_zIn,SIGNAL(clicked()),this,SIGNAL(zoomIn()));
