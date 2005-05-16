@@ -64,7 +64,6 @@ namespace CLAM
 			layout->addWidget(_zIn,0);
 
 			_label = new VZLabel(this);
-			_label->setPaletteBackgroundColor(_zIn->paletteBackgroundColor());
 			layout->addWidget(_label);
 
 			_sb = new ScrollBar(QScrollBar::Vertical,this);
@@ -74,6 +73,8 @@ namespace CLAM
 			layout->addWidget(_sb,1);
 
 			setFixedWidth(20);
+
+			setPaletteBackgroundColor(_zIn->paletteBackgroundColor());
 
 			// connections
 			connect(_zIn,SIGNAL(clicked()),this,SIGNAL(zoomIn()));
