@@ -34,6 +34,8 @@ int main()
     editor0.SetData(bpf);
 
      CLAM::VM::BPFEditor editor1(0,0,
+				 CLAM::VM::AllowInsert |
+				 CLAM::VM::AllowRemove |
 				 CLAM::VM::AllowHorizontalEdition | 
 				 CLAM::VM::AllowVerticalEdition |
 				 CLAM::VM::HasHorizontalScroll | 
