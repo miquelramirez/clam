@@ -223,10 +223,11 @@ bool SMSSynthesis::Do(
 
 
 //	mPhaseMan.mCurrentTime.DoControl(mCurrentTimeControl.GetLastValue()); //TODO used in SMSBase (Synth from segment)
-	mCurrentFrame ++;
 	int framesize = outputAudio.GetSize();
-	TData samplerate = outputAudio.GetSampleRate();
-	mPhaseMan.mCurrentTime.DoControl( TData( mCurrentFrame*framesize ) / samplerate  );
+	TData samplerate = inputResidualSpectrum.GetSpectralRange()*2;
+	TData currentTime =  TData( mCurrentFrame*framesize ) / samplerate;
+	mPhaseMan.mCurrentTime.DoControl( currentTime );
+	mCurrentFrame ++;
 	
 	mPhaseMan.mCurrentPitch.DoControl(mCurrentPitch.GetLastValue());
 	mPhaseMan.Do(inputSinusoidalPeaks);
