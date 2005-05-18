@@ -1,5 +1,6 @@
 1280 953
-Random Generator	58 75	131 54
-OSCSender	95 219	101 54
-out	549 438	95 54
-Oscillator	332 397	143 54
+OSCSender	535 478	101 58
+Oscillator	5 149	129 58
+Random Generator	371 329	146 58
+out	52 347	87 58
+OutControlSender_0	424 115	56 121
