@@ -137,11 +137,9 @@ void SMSSynthesis::ConfigureData()
 bool SMSSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
-
-	//CONFIGURE CHILDREN AND DATA
 	ConfigureChildren();
-
 	ConfigureData();
+	mCurrentTimeControl.DoControl(-1.0); 
 	return true;
 }
 
@@ -223,9 +221,17 @@ bool SMSSynthesis::Do(
 
 
 //	mPhaseMan.mCurrentTime.DoControl(mCurrentTimeControl.GetLastValue()); //TODO used in SMSBase (Synth from segment)
-	int framesize = outputAudio.GetSize();
-	TData samplerate = inputResidualSpectrum.GetSpectralRange()*2;
-	TData currentTime =  TData( mCurrentFrame*framesize ) / samplerate;
+	TData currentTime = 0;	
+	if (mCurrentTimeControl.GetLastValue() < -0.9)
+	{
+		int framesize = outputAudio.GetSize();
+		TData samplerate = inputResidualSpectrum.GetSpectralRange()*2;
+		currentTime =  TData( mCurrentFrame*framesize ) / samplerate;
+	} 
+	else 
+	{
+		currentTime = mCurrentTimeControl.GetLastValue();
+	}
 	mPhaseMan.mCurrentTime.DoControl( currentTime );
 	mCurrentFrame ++;
 	
