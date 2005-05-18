@@ -65,7 +65,6 @@ SMSAnalysisCore::~SMSAnalysisCore()
 
 bool SMSAnalysisCore::ConcreteConfigure(const ProcessingConfig& cfg)
 {
-	std::cout << "SMSAnalysisCore::ConcreteConfigure() \n";
 	CopyAsConcreteConfig(mConfig,cfg);
 	ConfigureChildren();
 	ConfigureData();
@@ -167,16 +166,6 @@ bool SMSAnalysisCore::ConcreteStart()
 //	mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->CenterEvenRegions();
 	mInputAudio.GetAttachedOutPort()->CenterEvenRegions();
 		
-	std::cout << "SMSAnalysisCore::ConcreteStart Regions Centered!"<< std::endl;
-	
-	std::cout << "SMSAnalysisCore::ConcreteStart "<< std::endl <<
-		"\tInput(not publisher) size : " << mSinSpectralAnalysis.GetInPort("Input").GetSize() << std::endl <<
-		"\tInput size : " << mSinSpectralAnalysis.GetInPort("Input").GetSize() << std::endl <<
-		"\tInput hop : " << mSinSpectralAnalysis.GetInPort("Input").GetHop() << std::endl <<
-		"\tOutput Res Spectrum size : " << mOutputResSpectrum.GetSize() << std::endl <<
-		"\tOutput Res Spectrum hop : " << mOutputResSpectrum.GetHop() << std::endl <<
-		"\tOutput Spectral peaks size : " << mOutputSpectralPeaks.GetSize() <<
-		"\tOutput Spectral peaks hop : " << mOutputSpectralPeaks.GetHop() << std::endl;
 	return ProcessingComposite::ConcreteStart();
 }
 
