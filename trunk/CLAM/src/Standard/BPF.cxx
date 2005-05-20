@@ -28,7 +28,7 @@
 namespace CLAM
 {
 
-	template BPFTmpl<TData,TData>;
+	template class BPFTmpl<TData,TData>;
 
 }
 

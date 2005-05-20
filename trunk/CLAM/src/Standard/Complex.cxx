@@ -28,7 +28,7 @@
 namespace CLAM
 {
 
-	template ComplexTmpl<TData>;
+	template class ComplexTmpl<TData>;
 
 	template 
 	std::istream& operator >> (std::istream &stream, ComplexTmpl<TData> &a);

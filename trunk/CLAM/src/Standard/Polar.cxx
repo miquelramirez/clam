@@ -28,7 +28,7 @@
 namespace CLAM
 {
 
-	template PolarTmpl<TData>;
+	template class PolarTmpl<TData>;
 
 	template 
 	std::istream& operator >> (std::istream &stream, PolarTmpl<TData> &a);

@@ -301,7 +301,7 @@ public:
 	}
 protected:
 	virtual bool IsSetFlag(unsigned int whichOne) const {
-		return test(whichOne);
+		return std::bitset<N>::test(whichOne);
 	}
 	virtual void SetFlag(unsigned int whichOne, bool value=true) {
 		this->set(whichOne, value);
