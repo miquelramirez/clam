@@ -197,11 +197,14 @@ namespace CLAM
 	    ycoord /= TData(_viewport.h);
 	    ycoord += bBound;
 	    PlotController::SetMousePos(xcoord,ycoord);
-	    TData freq=GetMouseXPos();
-	    TData dB=GetMouseYPos();
-	    QString s = "freq="+QString::number(freq,'f',0)+"Hz amp="+QString::number(dB,'f',0)+"dB";
+	    if(!HasSentTag())
+	    {
+		TData freq=GetMouseXPos();
+		TData dB=GetMouseYPos();
+		QString s = "freq="+QString::number(freq,'f',0)+"Hz amp="+QString::number(dB,'f',0)+"dB";
 			
-	    emit toolTip(s);
+		emit toolTip(s);
+	    }
 	}
        	
     }

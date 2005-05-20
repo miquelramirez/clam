@@ -311,6 +311,11 @@ namespace CLAM
 	    ((AudioPlotController*)_controller)->StopPlaying(TData(t));
 	}
 
+	std::vector<QString> QtAudioPlot::GetSegmentationTags()
+	{
+	    return ((AudioPlotController*)_controller)->GetTags();
+	}
+
     }	
 }
 

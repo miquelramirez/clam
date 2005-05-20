@@ -38,6 +38,7 @@ namespace CLAM
 	class Ruler;
 	class HScrollGroup;
 	class VScrollGroup;
+	class EditTagDialog;
 		
 	/*
 	 * This class implements a common presentation. 
@@ -58,6 +59,8 @@ namespace CLAM
 	    virtual void SetMarks(std::vector<unsigned>& marks)=0;
 	    virtual std::vector<unsigned>& GetMarks()=0;
 	    virtual void SetMarksColor(Color c)=0;
+
+	    virtual std::vector<QString> GetSegmentationTags()=0;
 
 	    void SetBackgroundColor(Color c);
 	    void Label(const std::string& label);
@@ -108,6 +111,8 @@ namespace CLAM
 	    void removedMark(int, unsigned);
 	    void updatedMark(int, unsigned);
 
+	    void updatedTag(int, QString);
+
 	    void selectedXPos(double);
 	    
 	public slots:
@@ -136,8 +141,13 @@ namespace CLAM
 	    void removeMark(int, unsigned);
 	    void updateMark(int, unsigned);
 
+	    void updateTag(int, QString);
+
 	protected slots:
 	    virtual void initialYRulerRange(double, double);
+
+	private slots:
+	    void showEditTagDialog();
 
 	protected:
 	    PlotController* _controller;
@@ -169,6 +179,9 @@ namespace CLAM
 	    // holes
 	    QFrame *topLeftHole,*topRightHole;
 	    QFrame *bottomLeftHole,*bottomRightHole;
+
+	    // edit tag dialog
+	    EditTagDialog* editTagDlg;
 
 	    void Init();
 	};

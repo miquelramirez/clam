@@ -204,11 +204,14 @@ namespace CLAM
 	    ycoord /= TData(_viewport.h);
 	    ycoord += bBound;
 	    SegmentationMarksPlotController::SetMousePos(x,ycoord);
-	    TData t=GetMouseXPos()/_sampleRate;
-	    TData freq=GetMouseYPos();
-	    QString s ="t="+QString::number(t,'f',3)+"s freq="+QString::number(freq,'f',0)+"Hz";
+	    if(!HasSentTag())
+	    {
+		TData t=GetMouseXPos()/_sampleRate;
+		TData freq=GetMouseYPos();
+		QString s ="t="+QString::number(t,'f',3)+"s freq="+QString::number(freq,'f',0)+"Hz";
 		      
-	    emit toolTip(s);
+		emit toolTip(s);
+	    }
 	}
 
 	bool SinTracksPlotController::IsPlayable()

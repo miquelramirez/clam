@@ -32,7 +32,7 @@ namespace CLAM
     {
 	class SegmentationMarksPlotController : public PlotController
 	{
- 
+	    Q_OBJECT
 	public:
 	    SegmentationMarksPlotController();
 	    virtual ~SegmentationMarksPlotController();
@@ -57,14 +57,24 @@ namespace CLAM
 	    void RemoveMark(int index, unsigned elem);
 	    void UpdateMark(int index, unsigned elem);
 
+	    void UpdateTag(int index, const QString& tag);
+
+	    void OnDoubleClick();
+	    QString GetTag() const;
+	    void SetSegmentationTag(const QString& tag);
+	    std::vector<QString> GetTags();
+
 	protected:
 	    virtual void SetHBounds(const TData& left, const TData& right);
 	    virtual void SetVBounds(const TData& bottom, const TData& top);
 
 	    virtual bool CanDrawSelectedPos();
 
+	    bool HasSentTag() const;
+
 	private:
 	    std::vector<unsigned> _marks;
+	    std::vector<QString> _tags;
 	    VLineArrayRenderer _marksRenderer;
 	    bool _mustProcessMarks;
 	    bool _hit;
@@ -72,6 +82,7 @@ namespace CLAM
 	    int _currentIndex;
 	    bool _keyInsertPressed;
 	    bool _keyDeletePressed;
+	    bool _hasSentTag;
 
 	    void ProcessMarksData();
 

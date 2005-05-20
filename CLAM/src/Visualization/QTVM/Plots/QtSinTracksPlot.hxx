@@ -48,6 +48,8 @@ namespace CLAM
 	    void SetMarks(std::vector<unsigned>& marks);
 	    std::vector<unsigned>& GetMarks();
 	    void SetMarksColor(Color c);
+	    
+	    std::vector<QString> GetSegmentationTags();
 
 	    void SetDialColor(Color c);
 	    void SetRegionColor(Color c);

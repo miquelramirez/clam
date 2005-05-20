@@ -46,6 +46,8 @@ namespace CLAM
 	    virtual std::vector<unsigned>& GetMarks()=0; 
 	    virtual void SetMarksColor(Color c)=0;
 
+	    virtual std::vector<QString> GetSegmentationTags()=0;
+
 	protected:
 	    virtual void closeEvent(QCloseEvent *);
 	};

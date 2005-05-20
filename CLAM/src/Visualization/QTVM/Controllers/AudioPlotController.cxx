@@ -229,10 +229,13 @@ namespace CLAM
 	    ycoord /= TData(_viewport.h);
 	    ycoord += bBound;
 	    SegmentationMarksPlotController::SetMousePos(x,ycoord);
-	    TData t=GetMouseXPos()/_sampleRate;
-	    TData amp=GetMouseYPos();
-	    QString s = "t="+QString::number(t,'f',3)+"s amp="+QString::number(amp,'f',3);
-	    emit toolTip(s);
+	    if(!HasSentTag())
+	    {
+		TData t=GetMouseXPos()/_sampleRate;
+		TData amp=GetMouseYPos();
+		QString s = "t="+QString::number(t,'f',3)+"s amp="+QString::number(amp,'f',3);
+		emit toolTip(s);
+	    }
 	}
 
 	void AudioPlotController::SetSelPos(const TData& value)

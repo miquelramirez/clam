@@ -44,6 +44,8 @@ namespace CLAM
 	    std::vector<unsigned>& GetMarks();
 	    void SetMarksColor(Color c);
 
+	    std::vector<QString> GetSegmentationTags();
+
 	    void SetForegroundColor(Color c);
 	    void SetVLineColor(Color c);
 

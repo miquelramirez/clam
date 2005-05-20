@@ -216,6 +216,10 @@ namespace CLAM
 	    // playing pos sync
 	    connect(_leftChannel,SIGNAL(currentPlayingTime(float)),_rightChannel,SLOT(setCurrentPlayingTime(float)));
 	    connect(_leftChannel,SIGNAL(stopPlaying(float)),_rightChannel,SLOT(receivedStopPlaying(float)));
+
+	    // segmentation tags sync
+	    connect(_leftChannel,SIGNAL(updatedTag(int,QString)),_rightChannel,SLOT(updateTag(int,QString)));
+	    connect(_rightChannel,SIGNAL(updatedTag(int,QString)),_leftChannel,SLOT(updateTag(int,QString)));
 	}
 
 	void QtStereoAudioPlot::SetData(const Audio& leftChannel, const Audio& rightChannel)
@@ -404,6 +408,11 @@ namespace CLAM
 	void QtStereoAudioPlot::StopPlaying(TData time)
 	{
 	    _leftChannel->receivedStopPlaying(float(time));
+	}
+
+	std::vector<QString> QtStereoAudioPlot::GetSegmentationTags()
+	{
+	    return _leftChannel->GetSegmentationTags();
 	}
 
     }	
