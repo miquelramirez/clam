@@ -195,7 +195,8 @@ public: // Inner classes. Public for better testing
 
 		bool CommonAddCreator( RegistryKey& creatorId, CreatorMethod creator) {
 			// returns false if the key was repeated.
-			return  _creators.insert( CreatorMap::value_type( creatorId, creator ) ).second;
+			typedef typename CreatorMap::value_type ValueType;
+			return  _creators.insert( ValueType( creatorId, creator ) ).second;
 		}
 
 	};

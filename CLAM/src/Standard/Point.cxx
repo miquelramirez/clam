@@ -28,7 +28,7 @@
 namespace CLAM
 {
 
-	template PointTmpl<TData>;
+	template class PointTmpl<TData>;
 
 	template 
 	std::istream& operator >> (std::istream &stream, PointTmpl<TData> &a);

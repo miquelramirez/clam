@@ -99,7 +99,7 @@ namespace CLAM {
 	{
 		for(int i=0;i<originalBPF.Size();i++)
 		{
-			 newYArray.AddElem(originalBPF.GetValueFromIndex(i));
+			 newArray.AddElem(originalBPF.GetValueFromIndex(i));
 		}
 	}
 

@@ -47,16 +47,11 @@ namespace CLAM {
 	};
 
 	// Default TypeInfo definition
-	template <typename T> class TypeInfo : public DefaultTypeInfo {
-	/*	public:
-			static const char* name;*/
-	};
-	//template <typename T> const char* TypeInfo<T>::name="UndefinedName";
+	template <typename T> class TypeInfo : public DefaultTypeInfo {};
 
 	// A short for defining a class belonging to a TypeInfo group
-
 #define CLAM_TYPEINFOGROUP(GROUP, TYPE) \
-	template <> class CLAM::TypeInfo< TYPE > : public GROUP  { };
+	template <> class TypeInfo< TYPE > : public GROUP  {};
 
 	CLAM_TYPEINFOGROUP(BasicCTypeInfo, char);
 	CLAM_TYPEINFOGROUP(BasicCTypeInfo, unsigned char);

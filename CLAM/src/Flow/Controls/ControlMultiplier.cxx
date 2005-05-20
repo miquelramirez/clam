@@ -22,5 +22,5 @@
 #include "ControlMultiplier.hxx"
 using namespace CLAM;
 
-template BinaryControlOp< Multiply<TControlData> >;
+template class BinaryControlOp< Multiply<TControlData> >;
 

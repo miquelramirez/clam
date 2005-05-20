@@ -30,6 +30,6 @@
 //CLAM_NATIVE_C_TYPE (std::string);
 namespace CLAM
 {
-	CLAM_TYPEINFOGROUP( CLAM::BasicCTypeInfo, std::string );
+	CLAM_TYPEINFOGROUP( BasicCTypeInfo, std::string );
 }
 #endif//_TYPEINFOSTD_H_

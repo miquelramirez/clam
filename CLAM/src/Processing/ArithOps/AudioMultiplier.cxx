@@ -20,6 +20,7 @@
  */
 
 #include "AudioMultiplier.hxx"
-using namespace CLAM;
-
-template BinaryAudioOp< Multiply<TData> >;
+namespace CLAM
+{
+	template class BinaryAudioOp< Multiply<TData> >;
+}
