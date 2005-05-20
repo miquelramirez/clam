@@ -57,6 +57,8 @@ namespace CLAM
 	    std::vector<unsigned>& GetMarks();
 	    void SetMarksColor(Color c);
 
+	    std::vector<QString> GetSegmentationTags();
+
 	    void SetDialColor(Color c);
 
 	private slots:

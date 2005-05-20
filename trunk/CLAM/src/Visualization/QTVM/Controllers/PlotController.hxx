@@ -82,6 +82,12 @@ namespace CLAM
 	    virtual void UpdateMark(int index, unsigned elem)=0;
 
 	    virtual bool IsPlayable();
+
+	    virtual void OnDoubleClick()=0;
+	    virtual QString GetTag() const=0;
+	    virtual void SetSegmentationTag(const QString& tag)=0;
+
+	    virtual void UpdateTag(int index, const QString& tag)=0;
 		    
 	signals:
 	    void requestRefresh();
@@ -106,11 +112,15 @@ namespace CLAM
 	    void removedMark(int, unsigned);
 	    void updatedMark(int, unsigned);
 
+	    void updatedTag(int, QString);
+
 	    void initialYRulerRange(double,double);
 	    void xRulerRange(double,double);
 	    void yRulerRange(double,double);
 
 	    void selectedXPos(double);
+
+	    void requestSegmentationTag();
 
 	protected:
 	    View _view;

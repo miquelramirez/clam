@@ -259,6 +259,11 @@ namespace CLAM
 	{
 	    ((FundPlotController*)_controller)->StopPlaying(TData(t));
 	}
+
+	std::vector<QString> QtFundFreqPlot::GetSegmentationTags()
+	{
+	    return ((FundPlotController*)_controller)->GetTags();
+	}
 	     
     }	
 }

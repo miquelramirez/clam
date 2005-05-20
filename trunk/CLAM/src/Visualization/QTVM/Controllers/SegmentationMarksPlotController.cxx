@@ -31,7 +31,8 @@ namespace CLAM
 	      _currentElem(0),
 	      _currentIndex(0), 
 	      _keyInsertPressed(false), 
-	      _keyDeletePressed(false)
+	      _keyDeletePressed(false),
+	      _hasSentTag(false)
 	{
 	    _mustProcessMarks=false;
 	}
@@ -44,6 +45,8 @@ namespace CLAM
 	{
 	    _marks = marks;
 	    sort(_marks.begin(),_marks.end());
+	    _tags.clear();
+	    _tags.resize(_marks.size());
 	    _mustProcessMarks=true;
 	    emit requestRefresh();
 	}
@@ -76,6 +79,7 @@ namespace CLAM
 
 	void SegmentationMarksPlotController::SetMousePos(TData x, TData y)
 	{
+	    _hasSentTag=false;
 	    PlotController::SetMousePos(x,y);
 	    if(IsAbleToEdit())
 	    {
@@ -94,6 +98,11 @@ namespace CLAM
 		    }
 		    _currentIndex=index;
 		    _hit=true;
+		    if(!_tags[_currentIndex].isEmpty())
+		    {
+			_hasSentTag=true;
+			emit toolTip(_tags[_currentIndex]);
+		    }
 		}
 		else
 		{
@@ -152,11 +161,13 @@ namespace CLAM
 	{
 	    if(HaveElem(elem)) return;
 	    std::vector<unsigned>::iterator pos = _marks.begin();
-	    for(; pos != _marks.end(); pos++)
+	    std::vector<QString>::iterator tag_pos = _tags.begin();
+	    for(; pos != _marks.end(); pos++, tag_pos++)
 	    {
 		if((*pos) > elem) break;
 	    } 
 	    _marks.insert(pos,elem);
+	    _tags.insert(tag_pos,QString(""));
 	    
 	    _mustProcessMarks=true;
 	    emit requestRefresh();
@@ -169,6 +180,10 @@ namespace CLAM
 	    unsigned elem = _marks[index];
 	    std::vector<unsigned>::iterator pos = find(_marks.begin(),_marks.end(),elem);
 	    _marks.erase(pos);
+
+	    QString tag = _tags[index];
+	    std::vector<QString>::iterator tag_pos = find(_tags.begin(),_tags.end(),tag);
+	    _tags.erase(tag_pos);
 
 	    _mustProcessMarks=true;
 	    emit requestRefresh();
@@ -271,6 +286,37 @@ namespace CLAM
 	{
 	    if(_marks[index] == elem) return;
 	    Update(index,elem);
+	}
+
+	void SegmentationMarksPlotController::OnDoubleClick()
+	{
+	    if(_hit) emit requestSegmentationTag();
+	}
+
+	QString SegmentationMarksPlotController::GetTag() const
+	{
+	    return _tags[_currentIndex];
+	}
+
+	void SegmentationMarksPlotController::SetSegmentationTag(const QString& tag)
+	{
+	    _tags[_currentIndex]=tag;
+	    emit updatedTag(_currentIndex,tag);
+	}
+
+	std::vector<QString> SegmentationMarksPlotController::GetTags()
+	{
+	    return _tags;
+	}
+
+	bool SegmentationMarksPlotController::HasSentTag() const
+	{
+	    return _hasSentTag;
+	}
+
+	void SegmentationMarksPlotController::UpdateTag(int index, const QString& tag)
+	{
+	    _tags[index]=tag;
 	}
     }
 }

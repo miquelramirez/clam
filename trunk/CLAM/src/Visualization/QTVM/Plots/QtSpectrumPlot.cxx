@@ -160,6 +160,11 @@ namespace CLAM
 	    }
 	}
 
+	std::vector<QString> QtSpectrumPlot::GetSegmentationTags()
+	{
+	    return  ((SpectrumPlotController*)_controller)->GetTags();
+	}
+
     }
 }
 

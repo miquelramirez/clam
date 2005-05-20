@@ -171,6 +171,11 @@ namespace CLAM
 	    ((SinTracksPlotController*)_controller)->SetMarksColor(c);
 	}
 
+	std::vector<QString> QtSinTracksPlot::GetSegmentationTags()
+	{
+	    return ((SinTracksPlotController*)_controller)->GetTags();
+	}
+
     }
 }
 

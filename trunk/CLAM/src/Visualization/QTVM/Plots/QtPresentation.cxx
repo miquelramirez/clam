@@ -29,12 +29,14 @@
 #include "HScrollGroup.hxx"
 #include "VScrollGroup.hxx"
 #include "QtPresentation.hxx"
+#include "EditTagDialog.hxx"
 
 namespace CLAM
 {
     namespace VM
     {
-	QtPresentation::QtPresentation(QWidget* parent) : QtPlot(parent)
+	QtPresentation::QtPresentation(QWidget* parent) 
+	    : QtPlot(parent), editTagDlg(0)
 	{
 	    flag=false;
 	    Init();
@@ -83,6 +85,11 @@ namespace CLAM
 	    // selected x pos
 	    connect(_controller,SIGNAL(selectedXPos(double)),this,SIGNAL(selectedXPos(double)));
 
+	    // to show edit tag dialog
+	    connect(_controller,SIGNAL(requestSegmentationTag()),this,SLOT(showEditTagDialog()));
+
+	    // signal updated tag 
+	    connect(_controller,SIGNAL(updatedTag(int,QString)),this,SIGNAL(updatedTag(int,QString)));
 	}
 
 	void QtPresentation::Init()
@@ -441,6 +448,26 @@ namespace CLAM
 	void QtPresentation::SetYRulerWidth(int w)
 	{
 	    _yRuler->setFixedWidth(w);
+	}
+
+	void QtPresentation::showEditTagDialog()
+	{
+	    if(editTagDlg)
+	    {
+		delete editTagDlg;
+		editTagDlg=0;    
+	    }
+
+	    editTagDlg = new EditTagDialog(_controller->GetTag(),this);
+	    if( editTagDlg->exec() == QDialog::Accepted )
+	    {
+		_controller->SetSegmentationTag(editTagDlg->text());
+	    }
+	}
+
+	void QtPresentation::updateTag(int index, QString tag)
+	{
+	    _controller->UpdateTag(index, tag);
 	}
     }
 }

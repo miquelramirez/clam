@@ -204,6 +204,11 @@ namespace CLAM
 	    ((MultiPlotController*)_controller)->SetDialColor(c);
 	}
 
+	std::vector<QString> QtMultiPlot::GetSegmentationTags()
+	{
+	    return ((MultiPlotController*)_controller)->GetTags();
+	}
+
     }
 }
 

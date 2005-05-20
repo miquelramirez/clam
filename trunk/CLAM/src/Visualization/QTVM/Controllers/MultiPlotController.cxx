@@ -204,6 +204,7 @@ namespace CLAM
 	    ycoord /= TData(_viewport.h);
 	    ycoord += bBound;
 	    SegmentationMarksPlotController::SetMousePos(x,ycoord);
+	    
 	    TData global_max=TData(GetnSamples());
 	    TData local_max=_xmax+_xmin;
 	    TData xval=(GetMouseXPos()*local_max/global_max)-_xmin;
