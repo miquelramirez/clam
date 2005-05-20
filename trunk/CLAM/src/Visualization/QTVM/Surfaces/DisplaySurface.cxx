@@ -215,6 +215,17 @@ namespace CLAM
 			update();
 	    }
 	}
+
+	void DisplaySurface::mouseDoubleClickEvent(QMouseEvent* e)
+	{
+	    if(_controller)
+	    {
+		if(e->button()==LeftButton)
+		{
+		    _controller->OnDoubleClick();
+		}
+	    }
+	}
     }
 }
 
