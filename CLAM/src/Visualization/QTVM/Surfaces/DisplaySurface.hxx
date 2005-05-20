@@ -74,6 +74,8 @@ namespace CLAM
 	    void leaveEvent(QEvent* e);
 	    void enterEvent(QEvent* e);
 
+	    void mouseDoubleClickEvent(QMouseEvent* e);
+
 	private:
 	    View _view;
 	    PlotController* _controller;
