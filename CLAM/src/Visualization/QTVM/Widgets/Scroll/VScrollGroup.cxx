@@ -45,21 +45,21 @@ namespace CLAM
 			QFont f("Sans",8);
 			f.setBold(true);
 
-			QPixmap icon_zoomin((const char**)icon_zoomin);
-			QPixmap icon_zoomout((const char**)icon_zoomout);
+			QPixmap iconZoomin((const char**)icon_zoomin);
+			QPixmap iconZoomout((const char**)icon_zoomout);
 
 			QVBoxLayout* layout = new QVBoxLayout(this);
 			_zOut = new QPushButton(this);
 			_zOut->setAutoRepeat(true);
 			_zOut->setFixedSize(20,20);
-			_zOut->setPixmap(icon_zoomout);
+			_zOut->setPixmap(iconZoomout);
 			QToolTip::add(_zOut,"Zoom Out");
 			layout->addWidget(_zOut,0);
 
 			_zIn = new QPushButton(this);
 			_zIn->setAutoRepeat(true);
 			_zIn->setFixedSize(20,20);
-			_zIn->setPixmap(icon_zoomin);
+			_zIn->setPixmap(iconZoomin);
 			QToolTip::add(_zIn,"Zoom In");
 			layout->addWidget(_zIn,0);
 

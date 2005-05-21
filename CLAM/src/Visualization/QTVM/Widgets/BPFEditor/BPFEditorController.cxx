@@ -143,8 +143,8 @@ namespace CLAM
 		    if(mKeyControlPressed && mMouseOverDisplay)
 		    {
 			if(!mSettingStack.size()) return;
-			QPixmap icon_zoomout((const char**)icon_zoomout);
-			QCursor zoutCursor(icon_zoomout);
+			QPixmap iconZoomout((const char**)icon_zoomout);
+			QCursor zoutCursor(iconZoomout);
 			emit cursorChanged(zoutCursor);
 			mQueryZoomOut = true;
 		    }
