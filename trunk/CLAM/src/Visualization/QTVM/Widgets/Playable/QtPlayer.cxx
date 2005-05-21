@@ -98,13 +98,13 @@ namespace CLAM
 	    _pause->setPaletteBackgroundColor(winBackground);
 	    _stop->setPaletteBackgroundColor(winBackground);
 
-	    QPixmap icon_play((const char**)icon_play);
-	    QPixmap icon_pause((const char**)icon_pause);
-	    QPixmap icon_stop((const char**)icon_stop);
+	    QPixmap iconPlay((const char**)icon_play);
+	    QPixmap iconPause((const char**)icon_pause);
+	    QPixmap iconStop((const char**)icon_stop);
 
-	    _play->setPixmap(icon_play);
-	    _pause->setPixmap(icon_pause);
-	    _stop->setPixmap(icon_stop);
+	    _play->setPixmap(iconPlay);
+	    _pause->setPixmap(iconPause);
+	    _stop->setPixmap(iconStop);
 	}
 
 	void QtPlayer::BlackBackgroundCM()
@@ -116,13 +116,13 @@ namespace CLAM
 	    _pause->setPaletteBackgroundColor(bkcolor);
 	    _stop->setPaletteBackgroundColor(bkcolor);
 
-	    QPixmap icon_play((const char**)icon_play_cyan);
-	    QPixmap icon_pause((const char**)icon_pause_cyan);
-	    QPixmap icon_stop((const char**)icon_stop_cyan);
+	    QPixmap iconPlay((const char**)icon_play_cyan);
+	    QPixmap iconPause((const char**)icon_pause_cyan);
+	    QPixmap iconStop((const char**)icon_stop_cyan);
 
-	    _play->setPixmap(icon_play);
-	    _pause->setPixmap(icon_pause);
-	    _stop->setPixmap(icon_stop);
+	    _play->setPixmap(iconPlay);
+	    _pause->setPixmap(iconPause);
+	    _stop->setPixmap(iconStop);
 	}
 
 	void QtPlayer::WhiteBackgroundCM()
@@ -134,13 +134,13 @@ namespace CLAM
 	    _pause->setPaletteBackgroundColor(bkcolor);
 	    _stop->setPaletteBackgroundColor(bkcolor);
 
-	    QPixmap icon_play((const char**)icon_play);
-	    QPixmap icon_pause((const char**)icon_pause);
-	    QPixmap icon_stop((const char**)icon_stop);
+	    QPixmap iconPlay((const char**)icon_play);
+	    QPixmap iconPause((const char**)icon_pause);
+	    QPixmap iconStop((const char**)icon_stop);
 
-	    _play->setPixmap(icon_play);
-	    _pause->setPixmap(icon_pause);
-	    _stop->setPixmap(icon_stop); 
+	    _play->setPixmap(iconPlay);
+	    _pause->setPixmap(iconPause);
+	    _stop->setPixmap(iconStop); 
 	}
 		
     }
