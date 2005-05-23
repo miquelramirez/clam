@@ -35,6 +35,7 @@ configurations = ['release']
 publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
 privateAddress = 'parumi@iua.upf.es' # To know the test has been runned
 subject = 'nightly tests report'
+maxLinesPerMail = 200
 
 #this will be used only when it's not set in the environment
 #CVSROOT = ':ext:parumi@iua-share.upf.es:/mnt/cvsroot'
@@ -567,7 +568,10 @@ def runTests() :
 			placeTestsOkTags("CLAM_NetworkEditor")
 			placeTestsOkTags("CLAM_SMSTools")
 			guiltyReport = ''
-	
+
+	if len(totalDetails) > maxLinesPerMail :
+		totalDetails = ["Too long output. So skiping the details section."]
+
 	mailBody = mailTemplate  % ( guiltyReport, "".join(totalSummary), "".join(totalDetails) )
 
 
