@@ -44,9 +44,12 @@ public:
 
 	virtual void Next() = 0;
 	virtual bool IsInsideScope() const = 0;
-
+	
 protected:
-
+	const std::string GetScope() const
+	{
+		return _scope;
+	}
 	std::string _attribute;
 	std::string _scope;
 };
@@ -96,7 +99,9 @@ public:
 	{
 		_current = 0;
 		_pool = &pool;
-		_data = _pool->template GetReadPool<AttributeType>(_scope,_attribute);
+		const std::string & scope = Hook<AttributeType>::_scope;
+		const std::string & attribute = Hook<AttributeType>::_attribute;
+		_data = _pool->template GetReadPool<AttributeType>(scope,attribute);
 		if (_chained) _chained->Init(pool);
 	}
 
@@ -109,7 +114,8 @@ public:
 	virtual bool IsInsideScope() const
 	{
 		if (_chained) return _chained->IsInsideScope();
-		return _current < _pool->GetNumberOfContexts(_scope);
+		const std::string & scope = Hook<AttributeType>::_scope;
+		return _current < _pool->GetNumberOfContexts(scope);
 	}
 
 protected:
@@ -118,7 +124,8 @@ protected:
 		if (!_chained) return _current;
 
 		unsigned indirection = _chained->GetForReading();
-		CLAM_ASSERT(indirection<_pool->GetNumberOfContexts(_scope),
+		const std::string & scope = Hook<AttributeType>::_scope;
+		CLAM_ASSERT(indirection<_pool->GetNumberOfContexts(scope),
 			"Invalid cross-scope reference");
 		return indirection;
 	}
@@ -162,7 +169,9 @@ public:
 	{
 		_pool = &pool;
 		_current = 0;
-		_data = _pool->template GetWritePool<AttributeType>(_scope,_attribute);
+		const std::string & scope = Hook<AttributeType>::_scope;
+		const std::string & attribute = Hook<AttributeType>::_attribute;
+		_data = _pool->template GetWritePool<AttributeType>(scope,attribute);
 	}
 
 	AttributeType & GetForWriting() const
@@ -177,7 +186,8 @@ public:
 
 	virtual bool IsInsideScope() const
 	{
-		return _current < _pool->GetNumberOfContexts(_scope);
+		const std::string & scope = Hook<AttributeType>::_scope;
+		return _current < _pool->GetNumberOfContexts(scope);
 	}
 
 protected:
