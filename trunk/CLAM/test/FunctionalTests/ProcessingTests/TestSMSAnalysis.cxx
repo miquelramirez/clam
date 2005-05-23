@@ -121,12 +121,12 @@ public: // TestFixture interface
 		mPathToTestData = GetTestDataDirectory();
 
 		mPathToAnalysisTestData = mPathToTestData + "SMSAnalysisTests/";
-		mReader.GetOutPort("Samples read").ConnectToIn( mAnalysis.GetInPort("Input Audio"));
+		mReader.GetOutPort("Samples Read").ConnectToIn( mAnalysis.GetInPort("Input Audio"));
 		CLAM::TSize frameSize = 256;		
 
-		mReader.GetOutPort("Samples read").SetSize( frameSize );
-		mReader.GetOutPort("Samples read").SetHop( frameSize );
-		//mReader.GetOutPort("Samples read").CenterEvenRegions();
+		mReader.GetOutPort("Samples Read").SetSize( frameSize );
+		mReader.GetOutPort("Samples Read").SetHop( frameSize );
+		//mReader.GetOutPort("Samples Read").CenterEvenRegions();
 	}
 	
 	void setUp()
@@ -153,8 +153,8 @@ public: // TestFixture interface
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );
 		CLAM::MonoAudioFileReader wholeFileReader;
-		wholeFileReader.GetOutPort("Samples read").SetSize( file.GetHeader().GetSamples() );
-		wholeFileReader.GetOutPort("Samples read").SetHop( file.GetHeader().GetSamples() );
+		wholeFileReader.GetOutPort("Samples Read").SetSize( file.GetHeader().GetSamples() );
+		wholeFileReader.GetOutPort("Samples Read").SetHop( file.GetHeader().GetSamples() );
 		
 		wholeFileReader.Configure(cfg);
 		wholeFileReader.Start();
@@ -162,7 +162,7 @@ public: // TestFixture interface
 		wholeFileReader.Stop();
 
 		CLAM::Segment segment;
-		CLAM::OutPortBase & outAudio  = wholeFileReader.GetOutPort("Samples read" );
+		CLAM::OutPortBase & outAudio  = wholeFileReader.GetOutPort("Samples Read" );
 		segment.SetAudio( CLAM::AudioOutPort::GetLastWrittenAudio( outAudio ) );
 
 		CLAM::SMSAnalysisConfig cfgAnalysis;
@@ -188,8 +188,8 @@ public: // TestFixture interface
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );
 		CLAM::MonoAudioFileReader wholeFileReader;
-		wholeFileReader.GetOutPort( "Samples read" ).SetSize( file.GetHeader().GetSamples() );
-		wholeFileReader.GetOutPort( "Samples read" ).SetHop( file.GetHeader().GetSamples() );
+		wholeFileReader.GetOutPort( "Samples Read" ).SetSize( file.GetHeader().GetSamples() );
+		wholeFileReader.GetOutPort( "Samples Read" ).SetHop( file.GetHeader().GetSamples() );
 		
 		wholeFileReader.Configure( cfg );
 		wholeFileReader.Start();
@@ -197,7 +197,7 @@ public: // TestFixture interface
 		wholeFileReader.Stop();
 
 		CLAM::Segment segment;
-		CLAM::OutPortBase & outAudio  = wholeFileReader.GetOutPort("Samples read" );
+		CLAM::OutPortBase & outAudio  = wholeFileReader.GetOutPort("Samples Read" );
 		segment.SetAudio( CLAM::AudioOutPort::GetLastWrittenAudio( outAudio ) );
 
 		CLAM::SMSAnalysisConfig cfgAnalysis;
@@ -223,8 +223,8 @@ public: // TestFixture interface
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );
 		CLAM::MonoAudioFileReader wholeFileReader;
-		wholeFileReader.GetOutPort( "Samples read" ).SetSize( file.GetHeader().GetSamples() );
-		wholeFileReader.GetOutPort( "Samples read" ).SetHop( file.GetHeader().GetSamples() );
+		wholeFileReader.GetOutPort( "Samples Read" ).SetSize( file.GetHeader().GetSamples() );
+		wholeFileReader.GetOutPort( "Samples Read" ).SetHop( file.GetHeader().GetSamples() );
 		
 		wholeFileReader.Configure( cfg );
 		wholeFileReader.Start();
@@ -232,7 +232,7 @@ public: // TestFixture interface
 		wholeFileReader.Stop();
 
 		CLAM::Segment segment;
-		CLAM::OutPortBase & outAudio  = wholeFileReader.GetOutPort("Samples read" );
+		CLAM::OutPortBase & outAudio  = wholeFileReader.GetOutPort("Samples Read" );
 		segment.SetAudio( CLAM::AudioOutPort::GetLastWrittenAudio( outAudio ) );
 
 		CLAM::SMSAnalysisConfig cfgAnalysis;
