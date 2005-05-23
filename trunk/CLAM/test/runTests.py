@@ -362,7 +362,7 @@ def compileAndRun(name, path) :
 		# compilation phase
 		if doCleanMake or len(configurations)>1:
 			getStatusOutput('make clean')
-		makecmd = 'make depend && make CONFIG=%s' % (configuration)
+		makecmd = 'make depend 2> /dev/null && make CONFIG=%s' % (configuration)
 		ok, output = getStatusOutput( makecmd )
 		foundCompilationErrors = foundCompilationErrors or not ok
 		if not ok :
