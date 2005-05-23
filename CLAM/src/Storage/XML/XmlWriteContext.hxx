@@ -109,7 +109,8 @@ class XmlWriteContext
 		void InsertAttribute(const std::string &name, const T & content)
 		{
 			CLAM_ASSERT(mTagOpened, "Appending attribute outside a tag");
-			mTarget << " " << name << "='" << content << "'";
+			mTarget << std::string(" ") << name << std::string("='") 
+				<< content << std::string("'");
 		}
 
 		/**
