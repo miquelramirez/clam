@@ -39,7 +39,7 @@ bool Controller::ConcreteConfigure(const ProcessingConfig& c)
 				 "Controller::ConcreteConfigure(): Size can not change.");
 
 	if (!OutControls.Size())
-		OutControls.Configure(n,"Output",this);
+		OutControls.Resize(n,"Output",this);
 
 	OutValues.resize(n);
 

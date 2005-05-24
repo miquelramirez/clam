@@ -26,6 +26,7 @@
 #define _Controller_
 
 #include "OutControl.hxx"
+#include "OutControlArray.hxx"
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
 
