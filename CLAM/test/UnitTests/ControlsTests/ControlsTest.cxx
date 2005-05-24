@@ -22,6 +22,7 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "OutControlPublisher.hxx"
+#include "InControlPublisher.hxx"
 #include "InControlArray.hxx"
 #include "InControlTmplArray.hxx"
 #include "BaseLoggable.hxx"
@@ -67,6 +68,11 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	CPPUNIT_TEST( testOutControlPublisher_GetsRegisteredToAProcessing );
 	CPPUNIT_TEST( testOutControlPublisher_ConnectControlsFromPublisher );
 
+	CPPUNIT_TEST( testInControlPublisher );
+	CPPUNIT_TEST( testInControlPublisher_GetsRegisteredToAProcessing );
+	CPPUNIT_TEST( testInControlPublisher_ConnectControlsFromPublisher );
+	
+	
 	CPPUNIT_TEST_SUITE_END();
 	
 	// Testing pattern: Self Shunt
@@ -164,9 +170,9 @@ private:
 
 	void testInControlArray_Constructor_GeneratesCorrectName()
 	{
-		CLAM::InControlArray inControls (4, "root_name");
+		CLAM::InControlArray inControls (4, "name",this);
 		CPPUNIT_ASSERT_EQUAL( 
-			std::string("root_name_0"),
+			std::string("name_0"),
 			inControls[0].GetName() );
 
 	}
@@ -256,18 +262,35 @@ private:
 		out.SendControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
 	}
-
+	
+	void testInControlPublisher()
+	{
+		CLAM::InControl in("in");
+		CLAM::OutControl out("out");
+		CLAM::InControlPublisher inPublisher;
+		inPublisher.PublishInControl( in );
+		CLAM::InControl& publisherBaseRef = inPublisher;
+		out.AddLink( &publisherBaseRef );
+		out.SendControl( 1.f );
+		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
+	}
+	
 	
 	class DummyProcessing : public CLAM::Processing
 	{
 		public:
 
 			CLAM::OutControlPublisher outControlPublisher;
+			CLAM::InControlPublisher inControlPublisher;
 			CLAM::InControl inControl;
+			CLAM::OutControl outControl;
 
 			DummyProcessing()
 				: outControlPublisher( "testOut", this ),
-				  inControl( "testIn", this ) {}
+					inControlPublisher( "testIn", this ),
+				  	inControl( "testIn", this ),
+				  	outControl( "testOut", this )
+				  	 {}
 
 			const char* GetClassName() const { return "dummy processing"; }
 			bool Do() { return false; }
@@ -279,6 +302,12 @@ private:
 	{
 		DummyProcessing proc;
 		CPPUNIT_ASSERT( &proc.outControlPublisher == &(proc.GetOutControls().Get("testOut")) );
+	}
+	
+	void testInControlPublisher_GetsRegisteredToAProcessing()
+	{
+		DummyProcessing proc;
+		CPPUNIT_ASSERT( &proc.inControlPublisher == &(proc.GetInControls().Get("testIn")) );
 	}
 
 	void testOutControlPublisher_ConnectControlsFromPublisher()
@@ -292,6 +321,17 @@ private:
 		CPPUNIT_ASSERT_EQUAL( 1.f, proc.inControl.GetLastValue() );
 	}
 
+	void testInControlPublisher_ConnectControlsFromPublisher()
+	{
+		DummyProcessing proc;
+		CLAM::InControl published("published");
+		proc.inControlPublisher.PublishInControl( published );
+		proc.outControl.AddLink(&proc.inControlPublisher);
+		CPPUNIT_ASSERT( &proc.inControlPublisher == &proc.GetInControls().Get("testIn") );
+		proc.outControl.SendControl( 1.f );
+		CPPUNIT_ASSERT_EQUAL( 1.f, proc.inControlPublisher.GetLastValue() );
+	}
+	
 };
 
 
