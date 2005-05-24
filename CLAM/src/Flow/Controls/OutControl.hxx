@@ -25,8 +25,7 @@
 #include "InControl.hxx" // TControlData defined there.
 #include <list>
 #include <string>
-#include "Array.hxx"
-
+#include "Assert.hxx"
 
 namespace CLAM {
 
@@ -60,7 +59,7 @@ public:
 	* to publish the control if it is the case (publish flag set)
 	* \todo improve construction mechanism (params set)
 	*/
-	OutControl( std::string name, Processing* parent=0, const bool publish=true );	
+	OutControl(const std::string& name, Processing* parent=0, const bool publish=true );	
 	
 	
 //Methods
@@ -85,57 +84,6 @@ public:
 	bool IsConnectedTo( InControl & );
 	Processing * GetProcessing() const { return mParent;}
 };
-
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//  Control Arrays
-//
-
-
-class OutControlArray
-{
-	Array<OutControl*> mArray;
-public:
-    inline OutControlArray() {};
-	inline OutControlArray(int size, const std::string &name, Processing* whereToPublish=0);
-	inline void Configure(int size, const std::string &name, Processing* whereToPublish=0);
-	inline ~OutControlArray();
-
-	inline OutControl       &operator[](int i)        { return *mArray[i]; }
-	inline const OutControl &operator[](int i) const  { return *mArray[i]; }
-
-	inline int Size() const {return mArray.Size();}
-};
-
-
-OutControlArray::OutControlArray(int size,
-								 const std::string &name,
-								 Processing *wtp)
-{
-	Configure(size,name,wtp);
-}
-
-void OutControlArray::Configure(int size,
-								const std::string &name,
-								Processing *wtp)
-{
-	CLAM_ASSERT(mArray.Size() == 0,
-				"OutControlArray::Configure(): Called twice.");
-	mArray.Resize(size);
-	mArray.SetSize(size);
-	for (int i=0; i<size; i++) {
-		std::stringstream str("");
-		str << name << "_" << i;
-		mArray[i] = new OutControl(str.str(),wtp);
-	}
-}
-
-OutControlArray::~OutControlArray()
-{
-	int size = mArray.Size();
-	for (int i=0; i<size; i++)
-		delete mArray[i];
-}
 
 
 

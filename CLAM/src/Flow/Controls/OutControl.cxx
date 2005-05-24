@@ -38,7 +38,7 @@ namespace CLAM {
 
 // Creation/Destruction
 
-OutControl::OutControl(std::string name, Processing* parent, const bool publish) :
+OutControl::OutControl(const std::string& name, Processing* parent, const bool publish) :
 	mName(name), mParent(parent)
 {
 	if (parent && publish) 	parent->GetOutControls().Publish(this);
@@ -113,5 +113,9 @@ bool OutControl::IsConnectedTo( InControl & in)
 //  {
 //  	return 0;  //TODO: works well as a null iterator?
 //  }
+
+
+
+
 
 }; //namespace CLAM
