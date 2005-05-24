@@ -24,6 +24,8 @@
 
 #include "InControl.hxx"
 #include <vector>
+#include <list>
+#include <string>
 
 namespace CLAM
 {
@@ -36,40 +38,29 @@ class InControlArray
 	typedef std::vector<InControl*> Controls;
 	Controls mControls;
 public:
+//Constructors
+	InControlArray();
+	InControlArray(int size, const std::string &name, Processing* parent);
+	InControlArray(int size, const std::list<std::string> &names, Processing* parent);
+	
 
-	inline InControlArray(
-		int size, 
-		const std::string &name, 
-		Processing* parent = 0);
+	~InControlArray();
 
-	inline ~InControlArray();
+	InControl       &operator[](int i)        { return *mControls[i]; }
+	const InControl &operator[](int i) const  { return *mControls[i]; }
 
-	inline InControl       &operator[](int i)        { return *mControls[i]; }
-	inline const InControl &operator[](int i) const  { return *mControls[i]; }
+	void Resize(int size, const std::string &name, Processing* parent);
+	void Resize(int size, const std::list<std::string>& names, Processing* parent);
+				
+
+	int Size() const {return mControls.size();}
+
+protected:
+	void Shrink(int size);
 };
 
 
-InControlArray::InControlArray(int size,
-                               const std::string &name,
-                               Processing *parent /*0 by default. See decl above*/)
-{
-	mControls.resize(size);
-	for (int i=0; i<size; i++) {
-		std::stringstream str;
-		str << name << "_" << i;
-		if (parent)
-			mControls[i] = new InControl(str.str(),parent);
-		else
-			mControls[i] = new InControl(str.str());
-	}
-}
 
-InControlArray::~InControlArray()
-{
-	for (std::size_t i=0; i<mControls.size(); i++)
-		delete mControls[i];
-}
-
-} //namespace CLAM
+}; //namespace CLAM
 
 #endif

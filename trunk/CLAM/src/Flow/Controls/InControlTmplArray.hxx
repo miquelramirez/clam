@@ -39,12 +39,26 @@ class InControlTmplArray
 	Controls mControls;
 
 public:
-	InControlTmplArray(int size, const std::string &name, TProcessing* parent,
-		TPtrMemberFuncId f, const bool publish=true);
+	InControlTmplArray(int size, const std::string &name, TProcessing* parent,	TPtrMemberFuncId f);
+	/** Overloaded constructor in which a list of names is passed for each of the
+	 * controls*/
+	InControlTmplArray(int size, const std::list<std::string>& names, TProcessing* parent, TPtrMemberFuncId f);
+	/* This overload could be substituted by giving the size parameter a default value but this would	
+	 * not be backward compatible*/
+	InControlTmplArray();
+
 	~InControlTmplArray();
 
-	inline TInControl& operator[](int i) { return *mControls[i]; }
-	inline const TInControl& operator[](int i) const { return *mControls[i]; }
+	TInControl& operator[](int i) { return *mControls[i]; }
+	const TInControl& operator[](int i) const { return *mControls[i]; }
+
+	void Resize(int size, const std::string& name, TProcessing* parent, TPtrMemberFuncId f);
+	void Resize(int size, const std::list<std::string>& names, TProcessing* parent, TPtrMemberFuncId f);
+
+	int Size() const {return mControls.size();}
+
+protected:
+	void Shrink(int size);
 
 };
 
@@ -55,17 +69,77 @@ InControlTmplArray<TProcessing>::InControlTmplArray(
 		int size, 
 		const std::string &name,
 		TProcessing *parent, 
-		TPtrMemberFuncId f,
-		const bool publish )
+		TPtrMemberFuncId f)
 {
+	CLAM_ASSERT(parent, "InControlTmplArray must be published. Check ctr processing* parameter");
+	Resize(size,name,parent,f);
+}
+
+template <class TProcessing>
+InControlTmplArray<TProcessing>::InControlTmplArray(
+		int size, 
+		const std::list<std::string>& names,
+		TProcessing *parent, 
+		TPtrMemberFuncId f)
+{
+	CLAM_ASSERT(parent, "InControlTmplArray must be published. Check ctr processing* parameter");
+	Resize(size, names, parent,f);
+}
+
+template <class TProcessing>
+InControlTmplArray<TProcessing>::InControlTmplArray()
+{
+	mControls.resize(0);
+}
+
+template <class TProcessing>
+void InControlTmplArray<TProcessing>::Resize(int size, const std::string& name, TProcessing* parent, TPtrMemberFuncId f)
+{
+	int previousSize = mControls.size();
+	if(size < previousSize) 
+	{
+		Shrink(size);
+		return;
+	}
+	
 	mControls.resize(size);
-	for (int i=0; i<size; i++) {
+	for (int i = previousSize; i<size; i++) {
 		std::stringstream str;
 		str << name << "_" << i;
-		CLAM_ASSERT(parent, "InControlTmplArray must be published. Check ctr processing* parameter");
 		mControls[i] = new TInControl(i, str.str(), parent, f);	
 	}
 }
+
+template <class TProcessing>
+void InControlTmplArray<TProcessing>::Resize(int size, const std::list<std::string>& names , TProcessing* parent, TPtrMemberFuncId f)
+{
+	int previousSize = mControls.size();
+	if(size < previousSize) 
+	{
+		Shrink(size);
+		return;
+	}
+	
+	CLAM_ASSERT(size-previousSize <= names.size(), "InControlTmplArray::Resize not enoough labels are given");
+	mControls.resize(size);
+	std::list<std::string>::iterator name = names.begin();
+	for (int i = previousSize; i<size; i++) {
+		mControls[i] = new TInControl(i, *name, parent, f);	
+	}
+}
+
+template <class TProcessing>
+void InControlTmplArray<TProcessing>::Shrink(int size)
+{
+	int previousSize = mControls.size();
+	CLAM_ASSERT(size < previousSize, "InControlArray::Cannot Shrink a Control Array to a larger size");
+	for (int i = previousSize; i >= size; i--) {
+		delete mControls[i];	
+	}
+	mControls.resize(size);
+}
+
+
 template <class TProcessing>
 InControlTmplArray<TProcessing>::~InControlTmplArray()
 {
