@@ -24,6 +24,7 @@
 
 #include "DataTypes.hxx"
 #include "Processing.hxx"
+#include "Array.hxx"
 #include "FundFreqDetectConfig.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
