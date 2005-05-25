@@ -340,7 +340,6 @@ namespace CLAM {
 		void NextFrame()
 		{
 			mpChainInput->mCurrentFrameIndex++;
-			mpChainInput->mCurrentFrameIndex++;
 		}
 		/** Returns true if current frame pointer at input port is pointing past the last
 		 *	frame in the segment
