@@ -29,7 +29,7 @@
 namespace CLAM
 {
 
-template MatrixTmpl<TData>;
+template class MatrixTmpl<TData>;
 
 template 
 std::istream& operator >> (std::istream &stream, MatrixTmpl<TData> &a);
