@@ -66,15 +66,15 @@ namespace CLAM{
 		bool Do(const Segment& in, Segment& out);
 		bool CanProcessInplace() {return false;}
 		bool IsLastFrame();
-		bool UpdateControlValueFromBPF(TData pos);
-
+		
+		Frame& GetCurrentFrame(Segment& out);
+		const Frame& GetCurrentFrame(const Segment& in);
+		
 			
 	protected:
 		bool HaveFinished();
 		void UpdateTimeAndIndex(const Segment& in);
-		const Frame& UnwrapProcessingData(const Segment& in,Frame*);
-		Frame& UnwrapProcessingData(Segment& out,Frame*);
-
+		
 		TTime mSynthesisTime;
 		TTime mAnalysisTime;
 		TIndex mnSynthesisFrames;

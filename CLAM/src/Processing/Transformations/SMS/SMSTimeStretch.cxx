@@ -111,7 +111,7 @@ bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 
 bool SMSTimeStretch::Do(const Segment& in, Segment& out)
 {
-
+	char test;
 	if(mCurrentInputFrame>-1)
 	{
 		while(mCurrentInputFrame<in.mCurrentFrameIndex&&!HaveFinished())
@@ -150,18 +150,19 @@ void SMSTimeStretch::UpdateTimeAndIndex(const Segment& in)
 	}
 }
 
-const Frame& SMSTimeStretch::UnwrapProcessingData(const Segment& in,Frame*)
+const Frame& SMSTimeStretch::GetCurrentFrame(const Segment& in)
 {
 	return in.GetFrame(mCurrentInputFrame);
 }
 
 
-Frame& SMSTimeStretch::UnwrapProcessingData(Segment& out,Frame*)
+Frame& SMSTimeStretch::GetCurrentFrame(Segment& out)
 {
 	if(mnSynthesisFrames==out.GetnFrames())
 		out.AddFrame(out.GetFrame(out.GetnFrames()-1));
 	return out.GetFrame(mnSynthesisFrames);
 }
+
 
 bool SMSTimeStretch::HaveFinished()
 {
@@ -180,16 +181,5 @@ bool SMSTimeStretch::IsLastFrame()
 	}
 	return isLast;
 }
-
-bool SMSTimeStretch::UpdateControlValueFromBPF(TData pos)
-{
-	if(mConcreteConfig.HasBPFAmount())
-	{
-		mAmountCtrl.DoControl(mConcreteConfig.GetBPFAmount().GetValue(pos));
-		return true;
-	}
-	else return false;
-}
-
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<CLAM::SMSTimeStretch> regtSMSTimeStretch( "SMSTimeStretch" );
