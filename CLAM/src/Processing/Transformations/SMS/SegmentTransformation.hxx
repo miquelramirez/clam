@@ -126,7 +126,7 @@ namespace CLAM {
 		void AddFramesToOutputIfInputIsLonger(int frameindex, const Segment& in, Segment& out)
 		{
 			if(frameindex==out.GetnFrames() && in.GetnFrames()>out.GetnFrames())
-				out.AddFrame(out.GetFrame((TIndex)out.GetnFrames()-1));
+					out.AddFrame(out.GetFrame((TIndex)out.GetnFrames()-1));
 		}
 		
 		/** Unsupervised Do function, receives a Segment as input and output. This overload is
@@ -140,13 +140,13 @@ namespace CLAM {
 
 		//TODO remove. but now is used from Time-Stretch
 		//! formerly corresponded to UnwrappedProcessingData
-		const Frame& GetCurrentFrame(const Segment& in)
+		virtual const Frame& GetCurrentFrame(const Segment& in)
 		{
 			return in.GetFrame(mCurrentInputFrame);
 		}
 		
 		//! formerly corresponded to UnwrappedProcessingData
-		Frame& GetCurrentFrame( Segment& out)
+		virtual Frame& GetCurrentFrame( Segment& out)
 		{
 			if(mCurrentInputFrame==out.GetnFrames() && mInput->GetnFrames()>out.GetnFrames())
 				out.AddFrame(out.GetFrame((TIndex)out.GetnFrames()-1));
