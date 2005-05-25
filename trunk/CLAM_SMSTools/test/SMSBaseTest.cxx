@@ -39,15 +39,16 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 //	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
 //	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
 //	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
-//	CPPUNIT_TEST( testTransformations_withLoadedScore_sinusoidalGain );
-//	CPPUNIT_TEST( testTransformations_withLoadedScore_residualGain );
-//	CPPUNIT_TEST( testTransformations_withLoadedScore_FreqShift );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_sinusoidalGain );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_residualGain );
+	CPPUNIT_TEST( testTransformations_withLoadedScore_FreqShift );
 //	CPPUNIT_TEST( testTransformations_withLoadedScore_PitchShift );
 //	CPPUNIT_TEST( testTransformations_withLoadedScore_OddEvenHarmonicRatio );
-	CPPUNIT_TEST( testTransformations_withLoadedScore_SMSPitchDiscretization );
-	CPPUNIT_TEST( testTransformations_withLoadedScore_SMSSpectralShapeShift );
-//	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestreach );
-//	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestreachMorph );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_SMSPitchDiscretization );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_SMSSpectralShapeShift );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestretch );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestretchMorph );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_Timestretch );
 	CPPUNIT_TEST_SUITE_END();
 
 
@@ -351,9 +352,9 @@ private:
 		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
 	}
 
-	void testTransformations_withLoadedScore_HarmonizerTimestreach()
+	void testTransformations_withLoadedScore_HarmonizerTimestretch()
 	{ 
-		LoadTransformationScore( mPath + "/SMSTests/harmonizer_timestreach-transf.xml" );
+		LoadTransformationScore( mPath + "/SMSTests/harmonizer_timestretch-transf.xml" );
 		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
 		InitConfigs();
 		LoadInputSound();
@@ -361,7 +362,7 @@ private:
 		Transform();
 		Synthesize();
 
-		const std::string expectedAudioFile = mPath+"/SMSTests/out_harmonizer-timestreach-transf";
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_harmonizer-timestretch-transf";
 		double delta = 0.09;
 		std::string diagnostic;
 
@@ -370,6 +371,28 @@ private:
 		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
 	}
 
+      
+	void testTransformations_withLoadedScore_Timestretch()
+	{ 
+		LoadTransformationScore( mPath + "/SMSTests/timestretch-transf.xml" );
+		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		InitConfigs();
+		LoadInputSound();
+		Analyze();
+		std::cout<<"After analysis original segment has "<< mOriginalSegment.GetnFrames() <<"frames" <<std::endl;
+		Transform();
+		std::cout<<"After transformation original segment has "<< mOriginalSegment.GetnFrames() <<"frames" <<std::endl;
+		std::cout<<"After transformation transformed segment has "<< mTransformedSegment.GetnFrames() <<"frames" <<std::endl;
+		Synthesize();
+
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_timestretch-transf";
+		double delta = 0.09;
+		std::string diagnostic;
+
+		bool transformedAudioAreEqual =
+			helperAudioIsEqualToAudioFile( accessorSynthesizedAudio(), expectedAudioFile+".wav", diagnostic, delta );
+		CPPUNIT_ASSERT_MESSAGE( diagnostic, transformedAudioAreEqual );
+	}
 	void testTransformations_withLoadedScore_sinusoidalGain()
 	{
 		LoadTransformationScore( mPath + "/SMSTests/sinusoidalGain-transf.xml" );
@@ -508,11 +531,11 @@ private:
 	
 
 
-	void testTransformations_withLoadedScore_TimestreachMorph()
+	void testTransformations_withLoadedScore_TimestretchMorph()
 	{
 //		CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
 			
-		LoadTransformationScore( mPath + "/SMSTests/timestreach_morph-transf.xml" );
+		LoadTransformationScore( mPath + "/SMSTests/timestretch_morph-transf.xml" );
 		LoadConfig( mPath + "/SMSTests/elvisMorphConfig.xml");
 		InitConfigs();
 		LoadInputSound();
@@ -520,7 +543,7 @@ private:
 		Transform();
 		Synthesize();
 
-		const std::string expectedAudioFile = mPath+"/SMSTests/out_timestreach_morph-transf";
+		const std::string expectedAudioFile = mPath+"/SMSTests/out_timestretch_morph-transf";
 		double delta = 0.09;
 		std::string diagnostic;
 
