@@ -28,6 +28,7 @@
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "OutControl.hxx"
+#include "Array.hxx"
 
 namespace CLAM {
 
@@ -36,7 +37,7 @@ namespace CLAM {
 	class Fundamental;
 	class SpectralPeakArray;
 	class IndexArray;
-
+	
 	/**    This class estimates a fundamental frequency value
 	*     in the spectral domain for one single spectral Frame.
 	*     The input is a set of spectral peaks stored in the class CLAM::SpectralPeakArray
