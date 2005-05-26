@@ -39,36 +39,37 @@ namespace CLAMTest {
 
 	template<class T>
 		class MyArray : public std::vector<T> {
+		typedef std::vector<T> Super;
 	public:
-		typedef std::vector<T>::iterator iterator;
-		typedef std::vector<T>::const_iterator const_iterator;
+		typedef typename std::vector<T>::iterator iterator;
+		typedef typename std::vector<T>::const_iterator const_iterator;
 		MyArray(TSize size = 0) : std::vector<T>(size){}
-		void Init() { reserve(0); resize(0); }
+		void Init() { Super::reserve(0); Super::resize(0); }
 		MyArray(T* ptr,int size = 0) {
 			throw(Err("MyArray::MyArray(T*): Not implemented"));
 		}
 		bool OwnsMemory() const { return true; }
-		int Size() const { return size(); }
-		int SizeInBytes() const { return size() * sizeof(T); }
-		int AllocatedSize() const { return capacity(); }
-		int AllocatedSizeInBytes() const { return capacity() * sizeof(T); }
-		void SetSize(int size) { resize(size); }
-		void Resize(int size) { reserve(size); }
+		int Size() const { return Super::size(); }
+		int SizeInBytes() const { return Super::size() * sizeof(T); }
+		int AllocatedSize() const { return Super::capacity(); }
+		int AllocatedSizeInBytes() const { return Super::capacity() * sizeof(T); }
+		void SetSize(int size) { Super::resize(size); }
+		void Resize(int size) { Super::reserve(size); }
 		const T* GetPtr(void) const {return &(*this)[0];}
 		T* GetPtr(void) {return &(*this)[0];}
 //		void SetPtr(T* ptr) {
 //			throw(Err("MyArray::SetPtr(T*): Not implemented"));
 //		}
-		void AddElem(const T& elem) {push_back(elem);}
-		void InsertElem(int pos, const T& elem) {insert(iterator(&(operator[](pos))),elem);}
-		void DeleteElem(int where) { erase(iterator(&operator[](where)));}
+		void AddElem(const T& elem) {Super::push_back(elem);}
+		void InsertElem(int pos, const T& elem) {Super::insert(iterator(&(Super::operator[](pos))),elem);}
+		void DeleteElem(int where) { Super::erase(iterator(&Super::operator[](where)));}
 		MyArray<T>& operator += (const MyArray<T>& src) {
-			insert(end(),src.begin(),src.end());
+			Super::insert(Super::end(),src.begin(),src.end());
 			return *this;
 		}
 		void Apply( T (*f)(T,int),int parameter ){
 			int i; 
-			int s=size();
+			int s=Super::size();
 			for (i=0; i<s; i++)
 				(*this)[i] = f( (*this)[i], parameter );
 		}
