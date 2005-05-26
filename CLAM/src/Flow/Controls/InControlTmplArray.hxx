@@ -133,7 +133,7 @@ void InControlTmplArray<TProcessing>::Shrink(int size)
 {
 	int previousSize = mControls.size();
 	CLAM_ASSERT(size < previousSize, "InControlArray::Cannot Shrink a Control Array to a larger size");
-	for (int i = previousSize; i >= size; i--) {
+	for (int i = previousSize-1; i >= size; i--) {
 		delete mControls[i];	
 	}
 	mControls.resize(size);
@@ -143,8 +143,7 @@ void InControlTmplArray<TProcessing>::Shrink(int size)
 template <class TProcessing>
 InControlTmplArray<TProcessing>::~InControlTmplArray()
 {
-	for (std::size_t i=0; i<mControls.size(); i++)
-		delete mControls[i];
+	Shrink(0)
 }
 
 } //namespace CLAM

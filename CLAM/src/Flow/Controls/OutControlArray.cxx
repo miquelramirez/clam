@@ -46,9 +46,7 @@ OutControlArray::OutControlArray(
 
 OutControlArray::~OutControlArray()
 {
-	int size = mControls.size();
-	for (int i=0; i<size; i++)
-		delete mControls[i];
+	Shrink(0);
 }
 
 
@@ -88,7 +86,7 @@ void OutControlArray::Shrink(int size)
 {
 	int previousSize = mControls.size();
 	CLAM_ASSERT(size < previousSize, "OutControlArray::Cannot Shrink a Control Array to a larger size");
-	for (int i = previousSize; i >= size; i--) {
+	for (int i = previousSize-1; i >= size; i--) {
 		delete mControls[i];	
 	}
 	mControls.resize(size);
