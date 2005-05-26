@@ -21,14 +21,14 @@
 
  #include "InControlArray.hxx"
  
+//TODO remove
+#include <iostream>
  namespace CLAM{
  	
-InControlArray::InControlArray(int size,
-								 const std::string &name,
-								 Processing *wtp)
+InControlArray::InControlArray(int size, const std::string &name, Processing *parent)
 {
-  mControls.resize(0);
-  Resize(size,name,wtp);
+	mControls.resize(0);
+	Resize(size,name,parent);
 }
 
 InControlArray::InControlArray()
@@ -41,8 +41,8 @@ InControlArray::InControlArray(
 		const std::list<std::string>& names,
 		Processing *parent)
 {
-  mControls.resize(0);
-  Resize(size, names, parent);
+	mControls.resize(0);
+	Resize(size, names, parent);
 }
 
 void InControlArray::Resize(int size, const std::string &name, Processing* parent)
@@ -59,6 +59,7 @@ void InControlArray::Resize(int size, const std::string &name, Processing* paren
 		str << name << "_" << i;
 		mControls[i] = new InControl(str.str(), parent);	
 	}
+	
 }
 
 void InControlArray::Resize(int size, const std::list<std::string>& names, Processing* parent)
@@ -81,7 +82,7 @@ void InControlArray::Shrink(int size)
 {
 	int previousSize = mControls.size();
 	CLAM_ASSERT(size < previousSize, "InControlArray::Cannot Shrink a Control Array to a larger size");
-	for (int i = previousSize; i >= size; i--) {
+	for (int i = previousSize-1; i >= size; i--) {
 		delete mControls[i];	
 	}
 	mControls.resize(size);
@@ -89,7 +90,7 @@ void InControlArray::Shrink(int size)
 
 InControlArray::~InControlArray()
 {
-	Resize(0, NULL, NULL);
+	Shrink(0);	
 }
 
  	
