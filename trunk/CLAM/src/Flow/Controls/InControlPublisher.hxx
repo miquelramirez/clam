@@ -7,12 +7,11 @@
 
 // TODO: Refactoring...
 // Extract common interface from InControlPublisher, InControl and create a common base class
-
 namespace CLAM
 {
     class InControlPublisher : public InControl
 	{
-			InControl* mPublished;
+		InControl* mPublished; //TODO should be a list, in the future
 
 		public:
 			InControlPublisher() 
@@ -27,7 +26,6 @@ namespace CLAM
 			}
 	                int DoControl(TControlData val)
 	                {
-			        InControl::DoControl(val);
 			        return mPublished->DoControl(val);
 			}
 
