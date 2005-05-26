@@ -143,7 +143,7 @@ void InControlTmplArray<TProcessing>::Shrink(int size)
 template <class TProcessing>
 InControlTmplArray<TProcessing>::~InControlTmplArray()
 {
-	Shrink(0)
+	Shrink(0);
 }
 
 } //namespace CLAM
