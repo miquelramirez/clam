@@ -21,8 +21,6 @@
 
  #include "InControlArray.hxx"
  
-//TODO remove
-#include <iostream>
  namespace CLAM{
  	
 InControlArray::InControlArray(int size, const std::string &name, Processing *parent)
@@ -90,7 +88,8 @@ void InControlArray::Shrink(int size)
 
 InControlArray::~InControlArray()
 {
-	Shrink(0);	
+
+	Shrink(0);
 }
 
  	
