@@ -46,12 +46,14 @@ namespace CLAM
 
 	private:
 	    Array<Spectrum> mCacheData;
+	    std::vector< std::vector<TData> > mComputedData;
 	    SpectrogramRenderer mRenderer;
 	    TData mDuration;
 	    TData mSpectralRange;
 	    QtPalette mPalette;
 	    bool mMustProcessData;
-	    int mCurrentWidth;
+
+	    enum { MaxSpectrums=513, MaxSpectrumSize=1025};
 
 	    void ProcessData();
 	    void Colorize();
@@ -66,6 +68,10 @@ namespace CLAM
 	    void ComputeIndexes();
 
 	    QString TimeToStr(const TData& seconds);
+
+	    void ComputeData();
+	    TData MatrixBlockMean(const TIndex& firstRow, const TIndex& lastRow, 
+				  const TIndex& firstCol, const TIndex& lastCol);
 			
 	};
     }

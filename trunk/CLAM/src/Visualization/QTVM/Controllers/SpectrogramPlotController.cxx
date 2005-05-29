@@ -1,7 +1,6 @@
-#include <vector>
+#include <numeric>
 #include "SpecTypeFlags.hxx"
 #include "CLAM_Math.hxx"
-#include "VMColor.hxx"
 #include "SpectrogramPlotController.hxx"
 
 namespace CLAM
@@ -68,11 +67,11 @@ namespace CLAM
 	    ycoord /= TData(_viewport.h);
 	    ycoord += bBound;
 	    PlotController::SetMousePos(xcoord,ycoord);    
-	    TIndex specIndex = TIndex(x);
+	    int specIndex = int(x);
 	    TData hz = ycoord*mSpectralRange/GetvRange();
-	    TIndex bucket = TIndex(ycoord);
-	    TData dB = mCacheData[specIndex].GetMagBuffer()[bucket];
-	    emit sendLabels(QString::number(hz,'f',0),QString::number(dB,'f',0),QString::number(int(specIndex)));
+	    int bucket = int(ycoord);
+	    TData dB = mComputedData[specIndex][bucket];
+	    emit sendLabels(QString::number(hz,'f',0),QString::number(dB,'f',0),QString::number(specIndex+1));
 	    if(!HasSentTag())
 	    {
 		QString s = QString::number(dB,'f',0)+" dB at "+QString::number(hz,'f',0)+" Hz  t: "+TimeToStr(xcoord);
@@ -115,20 +114,20 @@ namespace CLAM
 
 	void SpectrogramPlotController::Colorize()
 	{
-	    TSize dataSize = mCacheData.Size();
-	    TSize specSize = mCacheData[0].GetMagBuffer().Size();
+	    int dataSize = mComputedData.size();
+	    int specSize = mComputedData[0].size();
 	 
 	    std::vector< std::vector<Color> > black_white_matrix(dataSize);
 	    std::vector< std::vector<Color> > color_matrix(dataSize);
 	    std::vector<Color> black_white_vector(specSize);
 	    std::vector<Color> color_vector(specSize);
 
-	    for(TIndex i=0; i < dataSize; i++)
+	    for(int i=0; i < dataSize; i++)
 	    {
-		for(TIndex j = 0; j < specSize; j++)
+		for(int j = 0; j < specSize; j++)
 		{
 		    Color c;
-		    float value = ClampToRange(mCacheData[i].GetMagBuffer()[j]);
+		    float value = ClampToRange(mComputedData[i][j]);
 		    // cplor
 		    TIndex colorIndex = mPalette.Get(value);
 		    mPalette.GetRGBFromIndex( colorIndex, c.r, c.g, c.b);
@@ -157,6 +156,7 @@ namespace CLAM
 	void SpectrogramPlotController::CacheData()
 	{
 	    AdaptSpectralData();
+	    ComputeData();
 	    Colorize();
 	}
 
@@ -187,8 +187,8 @@ namespace CLAM
 
 	void SpectrogramPlotController::FullView()
 	{
-	    SetnSamples(mCacheData.Size()-1);
-	    SetvRange(mCacheData[0].GetMagBuffer().Size()-1);
+	    SetnSamples(mComputedData.size()-1);
+	    SetvRange(TData(mComputedData[0].size()-1));
 	    SetSelPos(TData(0.0));
 	    _view.left = TData(0.0);
 	    _view.right = TData(GetnSamples());
@@ -202,8 +202,8 @@ namespace CLAM
 
 	void SpectrogramPlotController::ComputeIndexes()
 	{
-	    TSize nSamples = mCacheData.Size();
-	    TSize specSize = mCacheData[0].GetMagBuffer().Size();
+	    TIndex nSamples = int(mComputedData.size());
+	    TIndex specSize = int(mComputedData[0].size());
 	    TIndex leftIndex, rightIndex, bottomIndex, topIndex;
 
 	    bottomIndex=TIndex(GetBottomBound());
@@ -284,7 +284,7 @@ namespace CLAM
 
 	int SpectrogramPlotController::TotalSlices() const
 	{
-	    return mCacheData.Size();
+	    return mComputedData.size()-1;
 	}
 
 	int SpectrogramPlotController::SpectralRange() const
@@ -296,6 +296,104 @@ namespace CLAM
 	{
 	    SegmentationMarksPlotController::LeaveMouse();
 	    emit sendLabels("--","--","--");
+	}
+
+	void SpectrogramPlotController::ComputeData()
+	{
+	    double dx = 1.0;
+	    double dy = 1.0;
+
+	    int nSpectrums = mCacheData.Size();
+	    int specSize = mCacheData[0].GetMagBuffer().Size();
+
+	    mComputedData.clear();
+
+	    if(nSpectrums > MaxSpectrums)
+	    {
+		dx = double(nSpectrums)/double(MaxSpectrums);
+		nSpectrums = MaxSpectrums;
+	    }
+
+	    if(specSize > MaxSpectrumSize)
+	    {
+		dy = double(specSize)/double(MaxSpectrumSize);
+		specSize = MaxSpectrumSize;
+	    }
+
+	    mComputedData.resize(nSpectrums);
+	    for(unsigned i=0; i < mComputedData.size(); i++) mComputedData[i].resize(specSize);
+	    
+	    double row_diff = dx - double(int(dx));
+	    double col_diff = dy - double(int(dy));
+
+	    double row_accum = 0.0;
+	    double col_accum = 0.0;
+
+	    int total_spectrums = mCacheData.Size();
+	    int original_spectrum_size = mCacheData[0].GetMagBuffer().Size();
+
+	    TIndex row_step = int(dx);
+	    TIndex col_step = int(dy);
+
+	    TIndex i_step = row_step;
+	    TIndex j_step = col_step;
+	    int n, m;
+	    TIndex i,j;
+	    for(i=0, n=0; i < total_spectrums; i+=i_step, n++)
+	    {
+		for(j=0, m=0; j < original_spectrum_size; j+=j_step, m++)
+		{
+		    mComputedData[n][m] = MatrixBlockMean(i,i+row_step,j,j+col_step);
+		    if(m == specSize-1)
+		    {
+			j_step = original_spectrum_size-j;
+		    }
+		    else
+		    {
+			col_accum += col_diff;
+			if(col_accum >= 1.0)
+			{
+			    j_step = col_step+1;
+			    col_accum -= 1.0;
+			}
+			else
+			{
+			    j_step = col_step;
+			}
+		    }
+		}
+		if(n == nSpectrums-1)
+		{
+		    i_step = total_spectrums-i;
+		}
+		else
+		{
+		    row_accum += row_diff;
+		    if(row_accum >= 1.0)
+		    {
+			i_step = row_step+1;
+			row_accum -= 1.0;
+		    }
+		    else
+		    {
+			i_step = row_step;
+		    }
+		}
+	    }
+	    
+	}
+
+	TData SpectrogramPlotController::MatrixBlockMean(const TIndex& firstRow, const TIndex& lastRow, 
+							 const TIndex& firstCol, const TIndex& lastCol)
+	{
+	    TData sum = TData(0.0);
+	    for(TIndex i=firstRow; i < lastRow; i++)
+	    {
+		sum = std::accumulate(mCacheData[i].GetMagBuffer().GetPtr()+firstCol,
+				      mCacheData[i].GetMagBuffer().GetPtr()+lastCol,
+				      sum);
+	    }
+	    return sum/TData((lastRow-firstRow)*(lastCol-firstCol));
 	}
     }
 }
