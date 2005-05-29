@@ -53,7 +53,7 @@ namespace CLAM
 	    QtPalette mPalette;
 	    bool mMustProcessData;
 
-	    enum { MaxSpectrums=513, MaxSpectrumSize=1025};
+	    enum { MaxSpectrums=513, MaxSpectrumSize=513};
 
 	    void ProcessData();
 	    void Colorize();
