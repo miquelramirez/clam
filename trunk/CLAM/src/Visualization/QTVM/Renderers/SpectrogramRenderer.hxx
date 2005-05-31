@@ -26,14 +26,12 @@ namespace CLAM
 	    void Render();
 
 	    void SetRenderingMode(CLAM::VM::SonogramCM colorMap);
-	    void SetLineWidth(const float& lineWidth);
 
 	private:
 	    std::vector< std::vector<Color> > mColorData;
 	    std::vector< std::vector<Color> > mBWData;
 	    TIndex mLeftIndex, mRightIndex, mBottomIndex, mTopIndex;
-	    CLAM::VM::SonogramCM mColorMap;
-	    float mLineWidth;
+	    CLAM::VM::SonogramCM mColorMap;;
 
 	    void DrawColorData();
 	    void DrawBWData();
