@@ -46,7 +46,6 @@ namespace CLAM
 	NetPlotController::NetPlotController()
 	{
 	    _monitorIsRunning=false;
-	    _mouseOverDisplay=false;
 		
 	    SetnSamples(0);
 	    SetvRange(TData(0.0),TData(1.0));
@@ -139,21 +138,18 @@ namespace CLAM
 	
 	void NetPlotController::SetPoint(const TData& x, const TData& y)
 	{
-	    if(_mouseOverDisplay)
+	    if(_leftButtonPressed)
 	    {
-		if(_leftButtonPressed)
-		{
-		    _corners[0].SetX(x);
-		    _corners[0].SetY(y);
-		    _corners[1].SetX(x);
-		    _corners[1].SetY(y);
-		}
-		else
-		{
-		    _corners[1].SetX(x);
-		    _corners[1].SetY(y);
-		    PushView();
-		}
+		_corners[0].SetX(AdjustX(x));
+		_corners[0].SetY(AdjustY(y));
+		_corners[1].SetX(AdjustX(x));
+		_corners[1].SetY(AdjustY(y));
+	    }
+	    else
+	    {
+		_corners[1].SetX(AdjustX(x));
+		_corners[1].SetY(AdjustY(y));
+		PushView();
 	    }
 	}
 
@@ -161,8 +157,8 @@ namespace CLAM
 	{
 	    if(_leftButtonPressed)
 	    {
-		_corners[1].SetX(x);
-		_corners[1].SetY(y);
+		_corners[1].SetX(AdjustX(x));
+		_corners[1].SetY(AdjustY(y));
 	    }
 	}
 
@@ -194,16 +190,6 @@ namespace CLAM
 		glVertex2f((GLfloat)_corners[0].GetX(),(GLfloat)_corners[0].GetY());
 		glEnd();
 	    }
-	}
-
-	void NetPlotController::EnterEvent()
-	{
-	    _mouseOverDisplay=true;
-	}
-
-	void NetPlotController::LeaveEvent()
-	{
-	    _mouseOverDisplay=false;
 	}
 
 	void NetPlotController::PushView()
@@ -262,6 +248,22 @@ namespace CLAM
 	float NetPlotController::Min(float a, float b)
 	{
 	    return (a <= b) ? a : b;
+	}
+
+	TData NetPlotController::AdjustX(const TData& value)
+	{
+	    TData x = value;
+	    if(x < 0) x = 0;
+	    if(x > GetnSamples()) x = TData(GetnSamples());
+	    return x;
+	}
+
+       	TData NetPlotController::AdjustY(const TData& value)
+	{
+	    TData y = value;
+	    if(y < GetvMin()) y = GetvMin();
+	    if(y > GetvMax()) y = GetvMax();
+	    return y;
 	}
 	    
     }

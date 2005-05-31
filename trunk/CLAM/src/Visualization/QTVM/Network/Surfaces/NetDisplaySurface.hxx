@@ -37,9 +37,6 @@ namespace CLAM
 		                void mouseReleaseEvent(QMouseEvent* e);
 				void mouseMoveEvent(QMouseEvent* e);
 
-		                void leaveEvent(QEvent* e);
-		                void enterEvent(QEvent* e);
-
 			private:
 				NetPlotController* _controller;
 
