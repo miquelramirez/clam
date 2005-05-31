@@ -14,7 +14,7 @@ namespace CLAM
 	      _tooltip(""),
 	      _renderingIsDone(false)
 	{
-	    SetnSamples(100);
+	    SetnSamples(99);
 	    mSlotNewData.Wrap(this,&NetSpecgramPlotController::OnNewData);
 	}
 
@@ -122,7 +122,7 @@ namespace CLAM
 	    _cachedData.clear();
 	    _spectralRange=spectralRange;
 	    _specSize = specSize;
-	    SetvRange(TData(0.0),TData(_specSize));
+	    SetvRange(TData(0.0),TData(_specSize-1));
 	    SetFirst(false);
 	    FullView();
 	}
@@ -160,7 +160,7 @@ namespace CLAM
 	void NetSpecgramPlotController::ComputeIndexes()
 	{
 	   _bottomBound=TIndex(_view.bottom);
-	    _topBound=TIndex(_view.top);
+	   _topBound=TIndex(_view.top);
 	    if(_topBound < (TIndex)_specSize) _topBound+=1;
 	    
 	    unsigned width=unsigned(_view.right-_view.left);
