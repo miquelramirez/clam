@@ -167,23 +167,6 @@ namespace CLAM
 		    }
 		}  
 	
-
-	        void NetDisplaySurface::leaveEvent(QEvent* e)
-		{
-		    if(_controller)
-		    {
-			_controller->LeaveEvent();
-		    }
-		}
-
-		void NetDisplaySurface::enterEvent(QEvent* e)
-		{
-		    if(_controller)
-		    {
-			_controller->EnterEvent();
-		    }
-		}
-
 	        void NetDisplaySurface::updateToolTip(QString s)
 		{
 		    if(!s.isEmpty())

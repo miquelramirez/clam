@@ -44,9 +44,6 @@ namespace CLAM
 	    void SetLeftButtonPressed(bool pressed);
 	    void SetRightButtonPressed(bool pressed);
 
-	    void EnterEvent();
-	    void LeaveEvent();
-
 	signals:
 	    void sendView(SView);
 	    void toolTip(QString);
@@ -89,7 +86,6 @@ namespace CLAM
 	    bool _canGetData;
 	    bool _leftButtonPressed;
 	    bool _rightButtonPressed;
-	    bool _mouseOverDisplay;
 	    Point _corners[2];
 	    ViewStack _viewStack;
 	                
@@ -103,6 +99,9 @@ namespace CLAM
 
 	    float Max(float a, float b);
 	    float Min(float a, float b);
+
+	    TData AdjustX(const TData& value);
+	    TData AdjustY(const TData& value);
 				
 	};
     }
