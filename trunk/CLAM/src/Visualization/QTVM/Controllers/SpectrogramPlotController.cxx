@@ -13,7 +13,8 @@ namespace CLAM
 	      mPalette(0.0f),
 	      mMustProcessData(false)
 	{
-	    SetVMin(TData(16.0));
+	    SetHMin(TData(8.0));
+	    SetVMin(TData(8.0));
 	}
 
 	SpectrogramPlotController::~SpectrogramPlotController()
