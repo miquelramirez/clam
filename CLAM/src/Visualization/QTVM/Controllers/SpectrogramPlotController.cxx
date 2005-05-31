@@ -13,7 +13,7 @@ namespace CLAM
 	      mPalette(0.0f),
 	      mMustProcessData(false)
 	{
-	    SetVMin(TData(50.0));
+	    SetVMin(TData(16.0));
 	}
 
 	SpectrogramPlotController::~SpectrogramPlotController()
@@ -202,32 +202,12 @@ namespace CLAM
 
 	void SpectrogramPlotController::ComputeIndexes()
 	{
-	    TIndex nSamples = int(mComputedData.size());
-	    TIndex specSize = int(mComputedData[0].size());
-	    TIndex leftIndex, rightIndex, bottomIndex, topIndex;
+	    TIndex bottomIndex=TIndex(GetBottomBound());
+	    TIndex topIndex=TIndex(GetTopBound())+1;
+	    TIndex leftIndex = TIndex(GetLeftBound());
+	    TIndex rightIndex = TIndex(GetRightBound())+1;
 
-	    bottomIndex=TIndex(GetBottomBound());
-	    topIndex=TIndex(GetTopBound());
-	    leftIndex = TIndex(GetLeftBound());
-	    rightIndex = TIndex(GetRightBound());
-	    if(topIndex < specSize-2)
-		topIndex+=3;
-	    else if(topIndex < specSize-1)
-		topIndex+=2;
-	    else if(topIndex < specSize)
-		topIndex++;
-	    if(rightIndex < nSamples-2)
-		rightIndex+=3;
-	    else if(rightIndex < nSamples-1)
-		rightIndex+=2;
-	    else if(rightIndex < nSamples)
-		rightIndex++;
-	    mRenderer.SetIndexes(leftIndex, rightIndex, bottomIndex, topIndex);
-	    float lineWidth = float(TData(_viewport.h)/(GetTopBound()-GetBottomBound()));
-	    if(lineWidth > 1) 
-		mRenderer.SetLineWidth(float(int(lineWidth))+1.0f);
-	    else
-		mRenderer.SetLineWidth(1.0f);
+	    mRenderer.SetIndexes(leftIndex, rightIndex, bottomIndex, topIndex);	    
 	}
 
 	std::vector<Color> SpectrogramPlotController::GetColorScale(const int& size)

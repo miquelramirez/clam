@@ -10,8 +10,7 @@ namespace CLAM
 	      mRightIndex(0),
 	      mBottomIndex(0),
 	      mTopIndex(0),
-	      mColorMap(CLAM::VM::ColorSonogram),
-	      mLineWidth(1.0f)
+	      mColorMap(CLAM::VM::ColorSonogram)
 	{
 	}
 
@@ -41,7 +40,6 @@ namespace CLAM
 
 	void SpectrogramRenderer::Render()
 	{
-	    glLineWidth(GLfloat(mLineWidth));
 	    switch(mColorMap)
 	    {
 		case CLAM::VM::ColorSonogram:
@@ -52,7 +50,6 @@ namespace CLAM
 		default:
 		    break;
 	    }
-	    glLineWidth(1.0);
 	}
 
 	void SpectrogramRenderer::SetRenderingMode(CLAM::VM::SonogramCM colorMap)
@@ -60,21 +57,19 @@ namespace CLAM
 	    mColorMap = colorMap;
 	}
 
-	void SpectrogramRenderer::SetLineWidth(const float& lineWidth)
-	{
-	    mLineWidth = lineWidth;
-	}
-
 	void SpectrogramRenderer::DrawColorData()
 	{
 	    for(TIndex i = mBottomIndex; i < mTopIndex; i++)
 	    {
-		glBegin(GL_LINE_STRIP);
+		glBegin(GL_QUAD_STRIP);
 		TIndex k=0;
-		for(TIndex j = mLeftIndex; j < mRightIndex; j++)
+		glVertex2f(GLfloat(k),GLfloat(i));
+		glVertex2f(GLfloat(k),GLfloat(i+1));
+		for(TIndex j = mLeftIndex; j < mRightIndex; j++,k++)
 		{
 		    glColor3ub(GLubyte(mColorData[j][i].r),GLubyte(mColorData[j][i].g),GLubyte(mColorData[j][i].b));
-		    glVertex2f(GLfloat(k++),GLfloat(i));
+		    glVertex2f(GLfloat(k+1),GLfloat(i));
+		    glVertex2f(GLfloat(k+1),GLfloat(i+1));
 		}
 		glEnd();
 	    }
@@ -84,12 +79,15 @@ namespace CLAM
 	{
 	    for(TIndex i = mBottomIndex; i < mTopIndex; i++)
 	    {
-		glBegin(GL_LINE_STRIP);
+		glBegin(GL_QUAD_STRIP);
 		TIndex k=0;
-		for(TIndex j = mLeftIndex; j < mRightIndex; j++)
+		glVertex2f(GLfloat(k),GLfloat(i));
+		glVertex2f(GLfloat(k),GLfloat(i+1));
+		for(TIndex j = mLeftIndex; j < mRightIndex; j++,k++)
 		{
 		    glColor3ub(GLubyte(mBWData[j][i].r),GLubyte(mBWData[j][i].g),GLubyte(mBWData[j][i].b));
-		    glVertex2f(GLfloat(k++),GLfloat(i));
+		    glVertex2f(GLfloat(k+1),GLfloat(i));
+		    glVertex2f(GLfloat(k+1),GLfloat(i+1));
 		}
 		glEnd();
 	    }
