@@ -44,25 +44,31 @@ namespace CLAM
 	{
 	    for(TIndex i = _bottomBound; i < _topBound; i++)
 	    {
-		glBegin(GL_LINE_STRIP);
+		glBegin(GL_QUAD_STRIP);
 		TIndex j,k=_begin;
-		for(j = _leftIndex1; j < _rightIndex1; j++)
+		glVertex2f(GLfloat(k),GLfloat(i));
+		glVertex2f(GLfloat(k),GLfloat(i+1));
+		for(j = _leftIndex1; j < _rightIndex1; j++,k++)
 		{
 		    if(i > (TIndex)_data[j].size()-1) // ensure correct size
 		    {
 			break;
 		    }
 		    glColor3ub(GLubyte(_data[j][i].r),GLubyte(_data[j][i].g),GLubyte(_data[j][i].b));
-		    glVertex2f(GLfloat(k++),GLfloat(i));
+		    glVertex2f(GLfloat(k+1),GLfloat(i));
+		    glVertex2f(GLfloat(k+1),GLfloat(i+1));
 		}
-		for(j = _leftIndex2; j < _rightIndex2; j++)
+		glVertex2f(GLfloat(k),GLfloat(i));
+		glVertex2f(GLfloat(k),GLfloat(i+1));
+		for(j = _leftIndex2; j < _rightIndex2; j++,k++)
 		{
 		    if(i > (TIndex)_data[j].size()-1) // ensure correct size
 		    {
 			break;
 		    }
 		    glColor3ub(GLubyte(_data[j][i].r),GLubyte(_data[j][i].g),GLubyte(_data[j][i].b));
-		    glVertex2f(GLfloat(k++),GLfloat(i));
+		    glVertex2f(GLfloat(k+1),GLfloat(i));
+		    glVertex2f(GLfloat(k+1),GLfloat(i+1));
 		}
 		glEnd();
 	    }
