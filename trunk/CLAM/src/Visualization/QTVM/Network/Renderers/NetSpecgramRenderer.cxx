@@ -58,8 +58,6 @@ namespace CLAM
 		    glVertex2f(GLfloat(k+1),GLfloat(i));
 		    glVertex2f(GLfloat(k+1),GLfloat(i+1));
 		}
-		glVertex2f(GLfloat(k),GLfloat(i));
-		glVertex2f(GLfloat(k),GLfloat(i+1));
 		for(j = _leftIndex2; j < _rightIndex2; j++,k++)
 		{
 		    if(i > (TIndex)_data[j].size()-1) // ensure correct size
