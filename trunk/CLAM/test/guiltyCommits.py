@@ -85,7 +85,7 @@ def queryLogs(module) :
 		type, file, fst, sec =  getFilenameAndTags(diff)
 		if type != ChangedFile:  #TODO have into account new/removed cases
 			continue
-		cmd = "cvs rlog -N -r%s -r%s %s" % (fst, sec, file)
+		cmd = "cvs rlog -N -r%s::%s %s" % (fst, sec, file)
 		print "issuing:",cmd
 		log = getoutput(cmd)
 		logs.append( "\n\n%s\n"%file + cleanLogOutput(log) )
