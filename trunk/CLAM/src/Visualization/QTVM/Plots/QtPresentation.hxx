@@ -53,7 +53,7 @@ namespace CLAM
 	    Q_OBJECT		
 	
 	public:
-	    QtPresentation(QWidget* parent = 0);
+	    QtPresentation(QWidget* parent = 0, const char * name = 0, WFlags f = 0);
 	    virtual ~QtPresentation();
 			
 	    virtual void SetMarks(std::vector<unsigned>& marks)=0;

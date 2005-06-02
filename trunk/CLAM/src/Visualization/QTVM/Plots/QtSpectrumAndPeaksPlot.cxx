@@ -26,8 +26,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		QtSpectrumAndPeaksPlot::QtSpectrumAndPeaksPlot(QWidget* parent)
-			: QtSpectrumPlot(parent)
+		QtSpectrumAndPeaksPlot::QtSpectrumAndPeaksPlot(QWidget* parent, const char * name, WFlags f)
+			: QtSpectrumPlot(parent,name,f)
 		{
 			SetPlotController();
 			Connect();

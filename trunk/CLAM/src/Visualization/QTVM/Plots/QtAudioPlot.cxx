@@ -32,7 +32,8 @@ namespace CLAM
 {
     namespace VM
     {
-	QtAudioPlot::QtAudioPlot(QWidget* parent) : QtPresentation(parent)
+	QtAudioPlot::QtAudioPlot(QWidget* parent, const char * name, WFlags f) 
+	    : QtPresentation(parent,name,f)
 	{
 	    mSlotPlayingTimeReceived.Wrap(this,&QtAudioPlot::PlayingTime);
 	    mSlotStopPlayingReceived.Wrap(this,&QtAudioPlot::StopPlaying);
@@ -239,7 +240,7 @@ namespace CLAM
 	void QtAudioPlot::closeEvent(QCloseEvent *e)
 	{
 	    RemoveFromPlayList();
-	    QtPlot::closeEvent(e);
+	    e->accept();
 	}
 
 	void QtAudioPlot::RemovePlayPanel()

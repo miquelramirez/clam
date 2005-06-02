@@ -31,7 +31,8 @@ namespace CLAM
 {
     namespace VM
     {
-	QtFundFreqPlot::QtFundFreqPlot(QWidget* parent) : QtPresentation(parent)
+	QtFundFreqPlot::QtFundFreqPlot(QWidget* parent, const char * name, WFlags f) 
+	    : QtPresentation(parent,name,f)
 	{
 	    mSlotPlayingTimeReceived.Wrap(this,&QtFundFreqPlot::PlayingTime);
 	    mSlotStopPlayingReceived.Wrap(this,&QtFundFreqPlot::StopPlaying);
@@ -216,7 +217,7 @@ namespace CLAM
 	void QtFundFreqPlot::closeEvent(QCloseEvent *e)
 	{
 	    RemoveFromPlayList();
-	    QtPlot::closeEvent(e);
+	    e->accept();
 	}
 
 	void QtFundFreqPlot::SetMarks(std::vector<unsigned>& marks)

@@ -47,8 +47,8 @@ namespace CLAM
 	    Q_OBJECT
 
 	public:
-	    QtStereoAudioPlot(QWidget* parent=0);
-	    virtual ~QtStereoAudioPlot();
+	    QtStereoAudioPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
+	    ~QtStereoAudioPlot();
 
 	    void SetData(const Audio& leftChannel, const Audio& rightChannel);
 

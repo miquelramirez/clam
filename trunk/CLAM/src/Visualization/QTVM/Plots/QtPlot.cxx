@@ -19,25 +19,19 @@
  *
  */
 
-#include "QtPlotter.hxx"
 #include "QtPlot.hxx"
 
 namespace CLAM
 {
     namespace VM
     {
-	QtPlot::QtPlot(QWidget* parent) : QWidget(parent)
+	QtPlot::QtPlot(QWidget* parent, const char * name, WFlags f) 
+	    : QWidget(parent,name,f)
 	{
 	}
 		
 	QtPlot::~QtPlot()
 	{
-	}
-
-	void QtPlot::closeEvent(QCloseEvent *e)
-	{
-	    QtPlotter::Remove(this);
-	    e->accept();
 	}
 
     }

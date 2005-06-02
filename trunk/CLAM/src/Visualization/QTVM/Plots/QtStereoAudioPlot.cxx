@@ -36,8 +36,8 @@ namespace CLAM
 {
     namespace VM
     {
-	QtStereoAudioPlot::QtStereoAudioPlot(QWidget* parent) 
-	    : QtPlot(parent),
+	QtStereoAudioPlot::QtStereoAudioPlot(QWidget* parent, const char * name, WFlags f) 
+	    : QtPlot(parent,name,f),
 	      _maxHZRatio(-1.0)
 	{
 	    mSlotPlayingTimeReceived.Wrap(this,&QtStereoAudioPlot::PlayingTime);
@@ -358,7 +358,7 @@ namespace CLAM
 	void QtStereoAudioPlot::closeEvent(QCloseEvent* e)
 	{
 	    RemoveFromPlayList();
-	    QtPlot::closeEvent(e);
+	    e->accept();
 	}
 
 	void QtStereoAudioPlot::SetPData(const Audio& leftChannel, const Audio& rightChannel)

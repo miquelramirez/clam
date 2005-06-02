@@ -38,8 +38,8 @@ namespace CLAM
 	    Q_OBJECT
 
 	public:
-	    QtSinTracksPlot(QWidget* parent=0);
-	    virtual ~QtSinTracksPlot();
+	    QtSinTracksPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0);
+	    ~QtSinTracksPlot();
 
 	    void SetData(const Segment& segment);
 	    void SetData(	const Array< SpectralPeakArray >& peakMtx, 
@@ -58,12 +58,12 @@ namespace CLAM
 	    void updateRegion(MediaTime);
 
 	protected:
-	    virtual void keyPressEvent(QKeyEvent* e);
-	    virtual void keyReleaseEvent( QKeyEvent* e);
-	    virtual void SetPlotController();				virtual void Connect();
+	    void keyPressEvent(QKeyEvent* e);
+	    void keyReleaseEvent( QKeyEvent* e);
+	    void SetPlotController();				virtual void Connect();
 
-	    virtual void DisplayBackgroundBlack();
-	    virtual void DisplayBackgroundWhite();
+	    void DisplayBackgroundBlack();
+	    void DisplayBackgroundWhite();
 
 	private:
 	    TimeSegmentLabelsGroup* _labelsGroup;

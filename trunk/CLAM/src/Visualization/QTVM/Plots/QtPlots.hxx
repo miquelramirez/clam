@@ -29,5 +29,6 @@
 #include "QtSpectrumAndPeaksPlot.hxx"
 #include "QtSinTracksPlot.hxx"
 #include "QtMultiPlot.hxx"
+#include "QtSpectrogram.hxx"
 
 #endif

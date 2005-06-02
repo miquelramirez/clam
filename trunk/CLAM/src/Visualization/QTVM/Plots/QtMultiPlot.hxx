@@ -37,8 +37,8 @@ namespace CLAM
 	    Q_OBJECT
 
 	public:
-	    QtMultiPlot(QWidget* parent=0);
-	    virtual ~QtMultiPlot();
+	    QtMultiPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
+	    ~QtMultiPlot();
 
 	    void AddData(std::string key, const DataArray& array);
 	    void AddData(std::string key, const BPF& data, int samples = 100);
@@ -68,14 +68,14 @@ namespace CLAM
 	    void clearLabels();
 
 	protected:
-	    virtual void keyPressEvent(QKeyEvent* e);
-	    virtual void keyReleaseEvent( QKeyEvent* e);
+	    void keyPressEvent(QKeyEvent* e);
+	    void keyReleaseEvent( QKeyEvent* e);
 
-	    virtual void SetPlotController();				
-	    virtual void Connect();
+	    void SetPlotController();				
+	    void Connect();
 
-	    virtual void DisplayBackgroundBlack();
-	    virtual void DisplayBackgroundWhite();
+	    void DisplayBackgroundBlack();
+	    void DisplayBackgroundWhite();
 
 	private:
 	    SingleLabel *_xLabel,*_yLabel;

@@ -34,10 +34,10 @@ namespace CLAM
 			Q_OBJECT
 
 			public:
-				QtSpectrumAndPeaksPlot(QWidget* parent=0);
+				QtSpectrumAndPeaksPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0);
 				virtual ~QtSpectrumAndPeaksPlot();
 
-				virtual void SetData(const Spectrum& spec,const SpectralPeakArray& peaks);
+		                void SetData(const Spectrum& spec,const SpectralPeakArray& peaks);
 				void SetPeaksColor(Color cline,Color cpoint);
 
 			protected:

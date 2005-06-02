@@ -17,7 +17,7 @@ namespace CLAM
 	    Q_OBJECT
 
 	public:
-	    QtSpectrogram(QWidget* parent=0);
+	    QtSpectrogram(QWidget* parent=0,const char * name = 0, WFlags f = 0);
 	    ~QtSpectrogram();
 
 	    void SetData(const Array<Spectrum>& specMtx, const TData& dur);
@@ -27,8 +27,6 @@ namespace CLAM
 	    void SetMarksColor(Color c);
 	    
 	    std::vector<QString> GetSegmentationTags();
-
-	    void SetDialColor(Color c);
 
 	protected slots:
 	    void updateLabels(QString, QString, QString);

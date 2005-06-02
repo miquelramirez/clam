@@ -35,8 +35,9 @@ namespace CLAM
 {
     namespace VM
     {
-	QtPresentation::QtPresentation(QWidget* parent) 
-	    : QtPlot(parent), editTagDlg(0)
+	QtPresentation::QtPresentation(QWidget* parent, const char * name, WFlags f) 
+	    : QtPlot(parent,name,f), 
+	      editTagDlg(0)
 	{
 	    flag=false;
 	    Init();

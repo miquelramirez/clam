@@ -44,8 +44,8 @@ namespace CLAM
 	    Q_OBJECT
 
 	public:
-	    QtFundFreqPlot(QWidget* parent=0);
-	    virtual ~QtFundFreqPlot();
+	    QtFundFreqPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
+	    ~QtFundFreqPlot();
 
 	    void SetData(const Segment& segment);
 
@@ -80,11 +80,11 @@ namespace CLAM
 	    void hideEvent(QHideEvent* e);
 	    void closeEvent(QCloseEvent* e);
 
-	    virtual void SetPlotController();
-	    virtual void Connect();
+	    void SetPlotController();
+	    void Connect();
 
-	    virtual void DisplayBackgroundBlack();
-	    virtual void DisplayBackgroundWhite();
+	    void DisplayBackgroundBlack();
+	    void DisplayBackgroundWhite();
 
 	    void SetPData(const Segment& seg);
 
