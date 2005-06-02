@@ -16,10 +16,16 @@ namespace CLAM
 
 		public:
 			OutControlPublisher() 
-				: OutControl( "OutControlPublisher", 0 ) {} 
+				: OutControl( "OutControlPublisher", 0 ) 
+			{
+				mPublished=NULL;
+			} 
 
 			OutControlPublisher( const std::string& name, Processing* father )
-				: OutControl( name, father ) {}
+				: OutControl( name, father ) 
+			{
+				mPublished=NULL;
+			}
 
 			void PublishOutControl( OutControl& out )
 			{
@@ -29,7 +35,7 @@ namespace CLAM
 			void AddLink( InControl* in )
 			{
 				OutControl::AddLink( in );
-				mPublished->AddLink( in );
+				if(mPublished) mPublished->AddLink( in );
 			}
 	};
 
