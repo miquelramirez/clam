@@ -177,6 +177,7 @@ private:
 		CPPUNIT_ASSERT_EQUAL( 
 			std::string("name_0"),
 			inControls[0].GetName() );
+		
 
 	}
 
@@ -285,15 +286,11 @@ private:
 
 			CLAM::OutControlPublisher outControlPublisher;
 			CLAM::InControlPublisher inControlPublisher;
-			CLAM::InControl inControl;
-			CLAM::OutControl outControl;
 
 			DummyProcessing()
-				: outControlPublisher( "testOut", this ),
-					inControlPublisher( "testIn", this ),
-				  	inControl( "testIn", this ),
-				  	outControl( "testOut", this )
-				  	 {}
+				: outControlPublisher( "PublisherTestOut", this ),
+				inControlPublisher( "PublisherTestIn", this )
+			 {}
 
 			const char* GetClassName() const { return "dummy processing"; }
 			bool Do() { return false; }
@@ -304,35 +301,35 @@ private:
 	void testOutControlPublisher_GetsRegisteredToAProcessing()
 	{
 		DummyProcessing proc;
-		CPPUNIT_ASSERT( &proc.outControlPublisher == &(proc.GetOutControls().Get("testOut")) );
+		CPPUNIT_ASSERT( &proc.outControlPublisher == &(proc.GetOutControls().Get("PublisherTestOut")) );
 	}
 	
 	void testInControlPublisher_GetsRegisteredToAProcessing()
 	{
 		DummyProcessing proc;
-		CPPUNIT_ASSERT( &proc.inControlPublisher == &(proc.GetInControls().Get("testIn")) );
+		CPPUNIT_ASSERT( &proc.inControlPublisher == &(proc.GetInControls().Get("PublisherTestIn")) );
 	}
 
 	void testOutControlPublisher_ConnectControlsFromPublisher()
 	{
 		DummyProcessing proc;
-		CLAM::OutControl published("published");
-		proc.outControlPublisher.PublishOutControl( published );
-		proc.outControlPublisher.AddLink( &proc.inControl );
-		CPPUNIT_ASSERT( &proc.outControlPublisher == &proc.GetOutControls().Get("testOut") );
-		published.SendControl( 1.f );
-		CPPUNIT_ASSERT_EQUAL( 1.f, proc.inControl.GetLastValue() );
+		CLAM::OutControl innerControlPublished("published"); // does the role of a "hidden" inner control
+		CLAM::InControl receiver("receiver");
+		proc.outControlPublisher.PublishOutControl( innerControlPublished );
+		proc.outControlPublisher.AddLink( &receiver );
+		innerControlPublished.SendControl( 1.f );
+		CPPUNIT_ASSERT_EQUAL( 1.f, receiver.GetLastValue() );
 	}
 
 	void testInControlPublisher_ConnectControlsFromPublisher()
 	{
 		DummyProcessing proc;
-		CLAM::InControl published("published");
-		proc.inControlPublisher.PublishInControl( published );
-		proc.outControl.AddLink(&proc.inControlPublisher);
-		CPPUNIT_ASSERT( &proc.inControlPublisher == &proc.GetInControls().Get("testIn") );
-		proc.outControl.SendControl( 1.f );
-		CPPUNIT_ASSERT_EQUAL( 1.f, proc.inControlPublisher.GetLastValue() );
+		CLAM::InControl innerControlPublished("published"); // does the role of a "hidden" inner control
+		CLAM::OutControl sender("sender");
+		proc.inControlPublisher.PublishInControl( innerControlPublished );
+		sender.AddLink( &proc.inControlPublisher );
+		sender.SendControl( 1.f );
+		CPPUNIT_ASSERT_EQUAL( 1.f, innerControlPublished.GetLastValue() );
 	}
 
 	void testOutControlPublisher_SendControlWhenNothingPublished()
