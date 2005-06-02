@@ -67,10 +67,13 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	CPPUNIT_TEST( testOutControlPublisher );
 	CPPUNIT_TEST( testOutControlPublisher_GetsRegisteredToAProcessing );
 	CPPUNIT_TEST( testOutControlPublisher_ConnectControlsFromPublisher );
+	CPPUNIT_TEST( testOutControlPublisher_SendControlWhenNothingPublished );
+	
 
 	CPPUNIT_TEST( testInControlPublisher );
 	CPPUNIT_TEST( testInControlPublisher_GetsRegisteredToAProcessing );
 	CPPUNIT_TEST( testInControlPublisher_ConnectControlsFromPublisher );
+	CPPUNIT_TEST( testInControlPublisher_DoControlWhenNothingPublished );
 	
 	
 	CPPUNIT_TEST_SUITE_END();
@@ -330,6 +333,22 @@ private:
 		CPPUNIT_ASSERT( &proc.inControlPublisher == &proc.GetInControls().Get("testIn") );
 		proc.outControl.SendControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 1.f, proc.inControlPublisher.GetLastValue() );
+	}
+
+	void testOutControlPublisher_SendControlWhenNothingPublished()
+	{
+		CLAM::OutControlPublisher publisher;
+		CLAM::InControl receiver("receiver");
+		publisher.AddLink(&receiver);
+		publisher.SendControl(1.f);
+		CPPUNIT_ASSERT_EQUAL( 1.f, receiver.GetLastValue() );		
+	}
+	
+	void testInControlPublisher_DoControlWhenNothingPublished()
+	{
+		CLAM::InControlPublisher publisher;
+		publisher.DoControl(1.f);
+		CPPUNIT_ASSERT_EQUAL( 1.f, publisher.GetLastValue() );
 	}
 	
 };
