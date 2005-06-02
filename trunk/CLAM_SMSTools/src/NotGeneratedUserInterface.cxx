@@ -38,7 +38,7 @@ using namespace CLAMGUI;
 void UserInterface::EditConfiguration(void)
 {
 	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
-	configurator->SetConfig(mSMS->mGlobalConfig);
+	configurator->SetConfig(mSMS->GetGlobalConfig());
 	configurator->SetApplyCallback(makeMemberFunctor0((*this), UserInterface, Update ));
 	configurator->show();	
 }
@@ -62,8 +62,8 @@ void UserInterface::Update()
 	mSMS->GetState().SetHasConfig(true);
 	UpdateState();
 	mSMS->SegmentExplorer().CloseAll();
-	mSMS->SegmentExplorer().SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
-					      mSMS->mGlobalConfig.GetAnalysisHighestFundFreq());
+	mSMS->SegmentExplorer().SetFundFreqRangeHint( mSMS->GetGlobalConfig().GetAnalysisLowestFundFreq(),
+					      mSMS->GetGlobalConfig().GetAnalysisHighestFundFreq());
 	mWindow->redraw();
 }
 
@@ -85,8 +85,8 @@ void UserInterface::LoadConfiguration(void)
 		}
 
 		mSMS->SegmentExplorer().CloseAll();
-		mSMS->SegmentExplorer().SetFundFreqRangeHint( mSMS->mGlobalConfig.GetAnalysisLowestFundFreq(),
-						      mSMS->mGlobalConfig.GetAnalysisHighestFundFreq());
+		mSMS->SegmentExplorer().SetFundFreqRangeHint( mSMS->GetGlobalConfig().GetAnalysisLowestFundFreq(),
+						      mSMS->GetGlobalConfig().GetAnalysisHighestFundFreq());
 
 		mWindow->redraw();
 	}		
@@ -100,7 +100,7 @@ bool UserInterface::LoadSound(void)
 		return false;
 	}
 
-	mSMS->SegmentExplorer().NewInputAudio( mSMS->mOriginalSegment.GetAudio());
+	mSMS->SegmentExplorer().NewInputAudio( mSMS->GetOriginalSegment().GetAudio());
 	
 	return true;
 }
@@ -155,7 +155,7 @@ void UserInterface::LoadAnalysisData(void)
 	UpdateState();
 	InitCounter();
 	DeactivateFrameDataMenuItems();
-	mSMS->SegmentExplorer().NewSegment( mSMS->mOriginalSegment );
+	mSMS->SegmentExplorer().NewSegment( mSMS->GetOriginalSegment() );
 	// @todo: determine what has to do the UserInterface for obtaining frame data when it is being loaded
 	// so that one cannot rely on the fact that it is available in the segment object
 	// mSMS->SegmentExplorer().NewFrame( mSMS->mSegment.GetFramesArray()[0]);
@@ -176,8 +176,8 @@ void UserInterface::Analyze(void)
 		UpdateState();
 		InitCounter();
 		mFrameDataAvailable = true;
-		mSMS->SegmentExplorer().NewSegment( mSMS->mOriginalSegment );
-		mSMS->SegmentExplorer().NewFrame( mSMS->mOriginalSegment.GetFramesArray()[0],
+		mSMS->SegmentExplorer().NewSegment( mSMS->GetOriginalSegment() );
+		mSMS->SegmentExplorer().NewFrame( mSMS->GetOriginalSegment().GetFramesArray()[0],
 					  FrameDataAvailable());
 		mWindow->redraw();
 	}
@@ -190,9 +190,9 @@ void UserInterface::Synthesize(void)
 	{
 		UpdateState();
 	}
-	mSMS->SegmentExplorer().NewSynthesizedAudio(mSMS->mAudioOut);
-	mSMS->SegmentExplorer().NewSynthesizedSinusoidal(mSMS->mAudioOutSin);
-	mSMS->SegmentExplorer().NewSynthesizedResidual( mSMS->mAudioOutRes );
+	mSMS->SegmentExplorer().NewSynthesizedAudio(mSMS->GetSynthesizedSound());
+	mSMS->SegmentExplorer().NewSynthesizedSinusoidal(mSMS->GetSynthesizedSinusoidal());
+	mSMS->SegmentExplorer().NewSynthesizedResidual( mSMS->GetSynthesizedResidual() );
 	mWindow->redraw();
 }
 
@@ -240,8 +240,8 @@ void UserInterface::Transform(void)
 	mSMS->Transform();
 	UpdateState();
 	mSMS->SegmentExplorer().CloseAll();
-	mSMS->SegmentExplorer().NewSegment( mSMS->mTransformedSegment );
-	mSMS->SegmentExplorer().NewFrame( mSMS->mTransformedSegment.GetFramesArray()[0],
+	mSMS->SegmentExplorer().NewSegment( mSMS->GetTransformedSegment() );
+	mSMS->SegmentExplorer().NewFrame( mSMS->GetTransformedSegment().GetFramesArray()[0],
 												   FrameDataAvailable() );
 	mWindow->redraw();
 
@@ -254,8 +254,8 @@ void UserInterface::UndoTransform()
 	InitCounter();
 	mFrameDataAvailable = true;
 	
-	mSMS->SegmentExplorer().NewSegment( mSMS->mOriginalSegment );
-	mSMS->SegmentExplorer().NewFrame( mSMS->mOriginalSegment.GetFramesArray()[0],
+	mSMS->SegmentExplorer().NewSegment( mSMS->GetOriginalSegment() );
+	mSMS->SegmentExplorer().NewFrame( mSMS->GetOriginalSegment().GetFramesArray()[0],
 													   FrameDataAvailable());
 
 	mWindow->redraw();
@@ -268,10 +268,10 @@ void UserInterface::ChangeFrame()
 	if ( mFrameDataAvailable )
 	{
 		if(mSMS->GetState().GetHasTransformation())
-			mSMS->SegmentExplorer().NewFrame( mSMS->mTransformedSegment.GetFramesArray()[nframe],
+			mSMS->SegmentExplorer().NewFrame( mSMS->GetTransformedSegment().GetFramesArray()[nframe],
 													   FrameDataAvailable() );
 		else
-			mSMS->SegmentExplorer().NewFrame( mSMS->mOriginalSegment.GetFramesArray()[nframe],
+			mSMS->SegmentExplorer().NewFrame( mSMS->GetOriginalSegment().GetFramesArray()[nframe],
 													   FrameDataAvailable() );
 	}
 }
@@ -401,9 +401,9 @@ void UserInterface::ApplyInitialState()
 void UserInterface::InitCounter()
 {
 	mCounter->activate();
-	mCounter->range( 0, mSMS->mOriginalSegment.GetnFrames() );
+	mCounter->range( 0, mSMS->GetOriginalSegment().GetnFrames() );
 	mCounter->step( 1 );
-	mCounter->lstep( mSMS->mOriginalSegment.GetnFrames()/10 );
+	mCounter->lstep( mSMS->GetOriginalSegment().GetnFrames()/10 );
 }
 
 void UserInterface::DeactivateFrameDataMenuItems()

@@ -22,7 +22,7 @@ class SMSTools
 {
 public:
 
-	friend class UserInterface;
+//	friend class UserInterface;
 
 	SMSTools();
 
@@ -30,6 +30,29 @@ public:
 
 	void Run();
 
+
+	void StoreSound(const CLAM::Audio& audio);
+	void StoreOutputSound();
+	void StoreOutputSoundResidual();
+	void StoreOutputSoundSinusoidal();
+	void StoreMelody();
+	
+	bool LoadAnalysis();
+	
+	virtual bool LoadInputSound();
+
+	void StoreAnalysis();
+	void ExecuteMelodyAnalysis();
+	void AnalyzeMelody();
+	
+	/** Load transformation score */
+	virtual void LoadTransformationScore(const std::string& inputFileName);
+	
+	bool DoLoadAnalysis();
+
+	bool DoStoreAnalysis();
+	
+	
 	Progress* CreateProgress(const char* title,float from,float to);
 
 	WaitMessage* CreateWaitMessage(const char* title);
@@ -47,9 +70,7 @@ protected: // methods
 	/** callback for the SetScore slot */
 	virtual void OnNewScore( const CLAM::SMSTransformationChainConfig& cfg );
 
-	/** Load transformation score */
-	virtual void LoadTransformationScore(const std::string& inputFileName);
-
+	
 
 	void DoAnalysis();
 
@@ -57,9 +78,6 @@ protected: // methods
 
 	void DoTracksCleanup();
 
-	bool DoLoadAnalysis();
-
-	bool DoStoreAnalysis();
 	
 	void DoTransformation();
 
@@ -68,26 +86,15 @@ protected: // methods
 	void DoMorphAnalysis();
 	void DoMorphTracksCleanup();
 
-	bool LoadAnalysis();
 	virtual bool LoadSound(const std::string& filename,CLAM::Segment& segment);
 
-	virtual bool LoadInputSound();
-
-	void StoreAnalysis();
-	void ExecuteMelodyAnalysis();
-	void AnalyzeMelody();
-
-	void StoreSound(const CLAM::Audio& audio);
-	void StoreOutputSound();
-	void StoreOutputSoundResidual();
-	void StoreOutputSoundSinusoidal();
-	void StoreMelody();
-
+	
+	
 private:
 
 	void ExecuteMethodOnThreadKeepingScreenUpToDate( CBL::Functor0 method );
 
-protected: // methods
+public: // methods
 	
 	CLAMVM::SMS_DataExplorer& SegmentExplorer();
 
