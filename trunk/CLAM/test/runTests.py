@@ -16,14 +16,14 @@ quickTestForScriptDebuging = False  # important: to be enabled for debuging puro
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
-updateLevelForCLAM = 2 
-updateLevelForExamples = 2
+updateLevelForCLAM = 1
+updateLevelForExamples = 1
 updateLevelForTestData = 1 
 
 # When false keeps already compiled objects
-doCleanMake = True
+doCleanMake = False
 # When false does not run autoconf and configure unless a new checkout
-doAutoconf = True
+doAutoconf = False
 configureOptions = '--without-portmidi  --without-portaudio'
 # Non-test are runned those seconds and then killed
 executionTime = 15
@@ -149,7 +149,7 @@ notPortedTests = [
         ( 'SpectrumAdderTest', nonPortedTestsPath+'SpectrumAdder/'),
         ( 'SpectrumAdder2Test', nonPortedTestsPath+'SpectrumAdder2/'),
         ( 'SpectrumProductTest', nonPortedTestsPath+'SpectrumProduct/'),
-        ( 'TabFunctTest', nonPortedTestsPath+'TabFunct/'),
+#        ( 'TabFunctTest', nonPortedTestsPath+'TabFunct/'),
         ( 'ThreadingTest', nonPortedTestsPath+'Threading/'),
         ( 'WaveGeneratorTest', nonPortedTestsPath+'WaveGenerator/'),
         ( 'WindowingTest', nonPortedTestsPath+'Windowing/')
@@ -190,7 +190,8 @@ simpleExamples = [
         ( 'SimplePortsUsage', simpleExamplesPath+'SimplePortsUsage/'),
         ( 'SinglePlot', simpleExamplesPath+'SinglePlot/'),
         ( 'SpectrumExample', simpleExamplesPath+'Spectrum/'),
-        ( 'ThreadedProcessing', simpleExamplesPath+'ThreadedProcessing/')
+        ( 'ThreadedProcessing', simpleExamplesPath+'ThreadedProcessing/'),
+	( 'BPFEditorExample', simpleExamplesPath+'BPFEditorExample/')
 ]
 
 
