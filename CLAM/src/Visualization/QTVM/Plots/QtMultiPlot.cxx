@@ -28,7 +28,8 @@ namespace CLAM
 {
     namespace VM
     {
-	QtMultiPlot::QtMultiPlot(QWidget* parent)
+	QtMultiPlot::QtMultiPlot(QWidget* parent, const char * name, WFlags f)
+	    : QtPresentation(parent,name,f)
 	{
 	    SetPlotController();
 	    InitMultiPlot();

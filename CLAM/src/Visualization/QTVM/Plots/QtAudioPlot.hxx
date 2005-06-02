@@ -42,8 +42,8 @@ namespace CLAM
 	    Q_OBJECT
 
 	public:
-	    QtAudioPlot(QWidget* parent=0);
-	    virtual ~QtAudioPlot();
+	    QtAudioPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
+	    ~QtAudioPlot();
 
 	    void SetData(const Audio& audio, bool to_controller=true);
 
@@ -86,11 +86,11 @@ namespace CLAM
 	    void hideEvent(QHideEvent* e);
 	    void closeEvent(QCloseEvent* e);
 
-	    virtual void SetPlotController();
-	    virtual void Connect();
+	    void SetPlotController();
+	    void Connect();
 
-	    virtual void DisplayBackgroundBlack();
-	    virtual void DisplayBackgroundWhite();
+	    void DisplayBackgroundBlack();
+	    void DisplayBackgroundWhite();
 
 	    void SetPData(const Audio& audio, bool setTime);
 

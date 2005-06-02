@@ -35,7 +35,7 @@ namespace CLAM
 
 	    Q_OBJECT
 	public:
-	    QtSpectrumPlot(QWidget* parent=0);
+	    QtSpectrumPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0);
 	    virtual ~QtSpectrumPlot();
 
 	    virtual void SetData(const Spectrum& spec);
@@ -54,8 +54,8 @@ namespace CLAM
 	    void updateFreqLabel(TData);
 
 	protected:				
-	    virtual void keyPressEvent(QKeyEvent* e);
-	    virtual void keyReleaseEvent( QKeyEvent* e);
+	    void keyPressEvent(QKeyEvent* e);
+	    void keyReleaseEvent( QKeyEvent* e);
 
 	    virtual void SetPlotController();
 	    virtual void Connect();

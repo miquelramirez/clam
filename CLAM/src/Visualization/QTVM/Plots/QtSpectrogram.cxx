@@ -9,8 +9,8 @@ namespace CLAM
 {
     namespace VM
     {
-	QtSpectrogram::QtSpectrogram(QWidget* parent) 
-	    : QtPresentation(parent),
+	QtSpectrogram::QtSpectrogram(QWidget* parent, const char * name, WFlags f) 
+	    : QtPresentation(parent,name,f),
 	      mColorSonogram(true)
 	{
 	    SetPlotController();
@@ -27,11 +27,6 @@ namespace CLAM
 	{
 	    ((SpectrogramPlotController*)_controller)->SetData(specMtx,dur);
 	    FillRightGroupLabels();
-	}
-
-	void QtSpectrogram::SetDialColor(Color c)
-	{
-	    ((SpectrogramPlotController*)_controller)->SetDialColor(c);
 	}
 
 	void QtSpectrogram::keyPressEvent(QKeyEvent* e)
