@@ -15,18 +15,34 @@ namespace CLAM
 
 		public:
 			InControlPublisher() 
-				: InControl( "InControlPublisher", 0 ) {} 
+				: InControl( "InControlPublisher", 0 ) 
+			{
+				mPublished=NULL;
+			} 
 
 			InControlPublisher( const std::string& name, Processing* father )
-				: InControl( name, father ) {}
+				: InControl( name, father ) 
+			{
+				mPublished=NULL;
+			}
 
 			void PublishInControl( InControl& in )
 			{
 				mPublished = &in;
 			}
-	                int DoControl(TControlData val)
-	                {
-			        return mPublished->DoControl(val);
+			int DoControl(TControlData val)
+			{
+				if(mPublished)
+					return mPublished->DoControl(val);
+				else
+					return InControl::DoControl(val);
+			}
+			TControlData GetLastValue() const 
+			{ 
+				if(mPublished)
+					return mPublished->GetLastValue();
+				else
+					return mLastValue; 
 			}
 
 	};

@@ -41,7 +41,7 @@ typedef float TControlData;
 class InControl
 {
 // Attributes:
-private:
+protected:
 	TControlData mLastValue;
 	std::string mName;
 	Processing * mParent;
@@ -53,7 +53,7 @@ public:
 	 * using \c GetLastValue
 	 */
 	virtual int DoControl(TControlData val) { mLastValue = val; return 0;};
-	TControlData GetLastValue() const { return mLastValue; };
+	virtual TControlData GetLastValue() const { return mLastValue; };
 	const std::string& GetName() const { return mName; }
 	bool IsConnectedTo( OutControl & );
 	Processing * GetProcessing() const { return mParent;}
