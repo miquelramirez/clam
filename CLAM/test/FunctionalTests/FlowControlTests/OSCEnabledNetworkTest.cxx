@@ -7,14 +7,11 @@
 #include <iostream>
 #include <string>
 
-#include <osc/OscOutboundPacketStream.h>
-#include <ip/NetworkingUtils.h>
-#include <ip/UdpTransmitPort.h>
+#include <oscpack/osc/OscOutboundPacketStream.h>
+#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/UdpTransmitPort.h>
 
 #define IP_MTU_SIZE 1536
-
-using namespace CLAM; //TODO avoid using namespace
-
 
 namespace CLAMTest {
 	
@@ -36,7 +33,7 @@ class OSCEnabledNetworkTest : public CppUnit::TestFixture
 	char buffer[IP_MTU_SIZE];
 	osc::OutboundPacketStream *p;
 	UdpTransmitPort *transmitPort;
-	OSCEnabledNetwork *mNet;
+	CLAM::OSCEnabledNetwork *mNet;
  
 public: 
 
@@ -47,8 +44,8 @@ public:
 		p= new osc::OutboundPacketStream(buffer, IP_MTU_SIZE );
 		transmitPort = new UdpTransmitPort( GetHostByName("localhost"), 7000 );
 		
-		mNet = new OSCEnabledNetwork(7000);
-		mNet->AddFlowControl(new PushFlowControl(512));
+		mNet = new CLAM::OSCEnabledNetwork(7000);
+		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
 		mNet->Start();
 	}
 	
@@ -96,13 +93,13 @@ private:
 
 	void testReceivedPacket_WhenProcessingHasNoSuchControl()
 	{
-		PrintControlConfig conf;
+		CLAM::PrintControlConfig conf;
 		conf.AddAll();
 		conf.UpdateData();
 		conf.SetName("processing1");
 		conf.SetMessage("This is a message");
 	
-		mNet->AddProcessing("processing1",new PrintControl(conf));	
+		mNet->AddProcessing("processing1",new CLAM::PrintControl(conf));	
 
 		Send("processing1","wronginput",1983);
 		sleep(1);
@@ -114,12 +111,12 @@ private:
 
 	void testReceivedPacket_EverythingOK()
 	{
-		PrintControlConfig conf;
+		CLAM::PrintControlConfig conf;
 		conf.AddAll();
 		conf.UpdateData();
 		conf.SetName("processing1");
 		conf.SetMessage("This is a message");
-		mNet->AddProcessing("processing1",new PrintControl(conf));	
+		mNet->AddProcessing("processing1",new CLAM::PrintControl(conf));	
 
 		Send("processing1","input",1983);
 		sleep(1);
@@ -127,8 +124,8 @@ private:
 		std::string expectedLog("[RECEIVED] processing1.input 1983 - Delivered");
 		CPPUNIT_ASSERT_EQUAL ( expectedLog, mNet->GetLogMessage() );
 
-		TControlData resultCtl = mNet->GetProcessing("processing1").GetInControl("input").GetLastValue();
-		CPPUNIT_ASSERT_EQUAL (  TControlData(1983), resultCtl );
+		CLAM::TControlData resultCtl = mNet->GetProcessing("processing1").GetInControl("input").GetLastValue();
+		CPPUNIT_ASSERT_EQUAL (  CLAM::TControlData(1983), resultCtl );
 	}
 
 	//Case regarding packet without control parameter
