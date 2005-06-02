@@ -31,7 +31,7 @@ bool SMSResidualGain::Do(const Spectrum& in, Spectrum& out)
 	TSize spectrumSize=in.GetSize();
 	if(in.GetScale()==EScale::eLinear)
 	{
-		TData amount=Lin(mGainAmount.GetLastValue());
+		TData amount=Lin(mAmount.GetLastValue());
 		for(int i=0;i<spectrumSize;i++)
 		{
 			out.SetMag(i,in.GetMag(i)*amount);
@@ -39,7 +39,7 @@ bool SMSResidualGain::Do(const Spectrum& in, Spectrum& out)
 	}
 	else
 	{
-		TData amount=mGainAmount.GetLastValue();
+		TData amount=mAmount.GetLastValue();
 		for(int i=0;i<spectrumSize;i++)
 		{
 			out.SetMag(i,in.GetMag(i)+amount);

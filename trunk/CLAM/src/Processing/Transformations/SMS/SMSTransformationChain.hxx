@@ -236,6 +236,8 @@ namespace CLAM {
 
 		void AddChainee(const std::string& classname)
 		{
+			//TODO: Instead of connecting controls, use the publishing mechanism
+			//TODO2: If all amount controls were named the same I might be able to get rid of the string comparison
 			Factory<Processing> & theFactory = ProcessingFactory::GetInstance();
 			
 			if ( classname=="SMSFreqShift") 
@@ -244,7 +246,8 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* freqshift = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(freqshift);
-				ConnectControls(*wrapper,"Out Control", *freqshift, "Shift Amount");
+				wrapper->mAmountCtrl.PublishInControl(freqshift->GetInControls().Get("Amount"));
+//				ConnectControls(*wrapper,"Out Control", *freqshift, "Shift Amount");
 				Insert( *wrapper );
 				return;
 			}
@@ -255,7 +258,8 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* singain = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(singain);
-				ConnectControls(*wrapper,"Out Control", *singain, "Gain Amount");
+				wrapper->mAmountCtrl.PublishInControl(singain->GetInControls().Get("Amount"));
+//				ConnectControls(*wrapper,"Out Control", *singain, "Gain Amount");
 				Insert( *wrapper );
 				return;
 			}
@@ -266,7 +270,8 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* resgain = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(resgain);
-				ConnectControls(*wrapper,"Out Control", *resgain, "Gain Amount");
+				wrapper->mAmountCtrl.PublishInControl(resgain->GetInControls().Get("Amount"));
+//				ConnectControls(*wrapper,"Out Control", *resgain, "Gain Amount");
 				Insert( *wrapper );
 				return;
 			}
@@ -277,7 +282,8 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* pitchshift = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(pitchshift);
-				ConnectControls(*wrapper,"Out Control", *pitchshift, "Shift Amount");
+				wrapper->mAmountCtrl.PublishInControl(pitchshift->GetInControls().Get("Amount"));
+//				ConnectControls(*wrapper,"Out Control", *pitchshift, "Shift Amount");
 				Insert( *wrapper );
 				return;
 			}
@@ -288,7 +294,8 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* oddEvenHarmRatio = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(oddEvenHarmRatio);
-				ConnectControls(*wrapper,"Out Control", *oddEvenHarmRatio, "Odd Harmonics Factor");
+				wrapper->mAmountCtrl.PublishInControl(oddEvenHarmRatio->GetInControls().Get("Amount"));
+//				ConnectControls(*wrapper,"Out Control", *oddEvenHarmRatio, "Odd Harmonics Factor");
 				Insert( *wrapper );
 				return;
 			}
@@ -299,7 +306,8 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* spectralShapeShift = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(spectralShapeShift);
-				ConnectControls(*wrapper,"Out Control", *spectralShapeShift, "Shift Amount");
+				wrapper->mAmountCtrl.PublishInControl(spectralShapeShift->GetInControls().Get("Amount"));
+//				ConnectControls(*wrapper,"Out Control", *spectralShapeShift, "Shift Amount");
 				Insert( *wrapper );
 				return;
 			}
@@ -320,7 +328,8 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* genderChange = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(genderChange);
-				ConnectControls(*wrapper,"Out Control", *genderChange, "Gender Factor");
+				wrapper->mAmountCtrl.PublishInControl(genderChange->GetInControls().Get("Amount"));
+//				ConnectControls(*wrapper,"Out Control", *genderChange, "Gender Factor");
 				Insert( *wrapper );
 				return;
 			}
@@ -355,6 +364,17 @@ namespace CLAM {
 
 		}
 
+		/** Returns first transformation in chain belonging to a given class
+		 * 	or NULL if not found
+		 * */
+		SegmentTransformation* GetTransformation(const std::string& name)
+		{
+			for(iterator obj=composite_begin(); obj!=composite_end(); obj++)
+			{
+				if(name == (*obj)->GetClassName()) return dynamic_cast<SegmentTransformation*>((*obj));;
+			}
+			return NULL;
+		}
 
 	};
 

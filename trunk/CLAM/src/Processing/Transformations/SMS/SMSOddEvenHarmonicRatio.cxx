@@ -31,7 +31,7 @@ bool SMSOddEvenHarmonicRatio::Do(const SpectralPeakArray& in, SpectralPeakArray&
 	DataArray& iMagArray=in.GetMagBuffer();
 	DataArray& oMagArray=out.GetMagBuffer();
 	TSize nPeaks=in.GetnPeaks();
-	TData oddFactor=mOddFactor.GetLastValue()*0.5;
+	TData oddFactor=mAmount.GetLastValue()*0.5;
 	TData evenFactor=-oddFactor;
 
 	for(int i=0;i<nPeaks-1;i+=2)

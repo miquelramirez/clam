@@ -49,7 +49,7 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-		InControl mShiftAmount;
+//		InControl mShiftAmount;
 
 		FrameTransformationConfig mConfig;
 
@@ -58,8 +58,7 @@ namespace CLAM{
 		SMSSpectralShapeShift() 
 			: 
 			mIn( "In SpectralPeaks", this), 
-			mOut( "Out SpectralPeaks", this),
-			mShiftAmount( "Shift Amount", this )
+			mOut( "Out SpectralPeaks", this)
 		{
 			Configure( SegmentTransformationConfig() );
 			mSpectralRange=22050;	//default

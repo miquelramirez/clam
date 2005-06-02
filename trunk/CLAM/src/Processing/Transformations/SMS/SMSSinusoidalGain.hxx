@@ -42,7 +42,7 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-		InControl mGainAmount;
+//		InControl mGainAmount;
 
 		FrameTransformationConfig mConfig;
 
@@ -51,9 +51,7 @@ namespace CLAM{
 		SMSSinusoidalGain() 
 			: 
 			mIn("In SpectralPeaks", this), 
-			mOut("Out SpectralPeaks", this),
-			mGainAmount("Gain Amount", this)
-
+			mOut("Out SpectralPeaks", this)
 		{
 			Configure( SegmentTransformationConfig() );
 		}

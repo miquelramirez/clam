@@ -42,7 +42,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 
 	TData spectralRange = 22050; // default for SampleRate = 44100;
 
-	TData amount=mShiftAmount.GetLastValue();
+	TData amount=mAmount.GetLastValue();
 	if(amount==1)//no pitch shift
 		return true;
 	

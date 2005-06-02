@@ -37,7 +37,7 @@ bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out, bool 
 	DataArray& ifreqArray=in.GetFreqBuffer();
 	DataArray& ofreqArray=out.GetFreqBuffer();
 	TSize nPeaks=in.GetnPeaks();
-	TData amount=mShiftAmount.GetLastValue();
+	TData amount=mAmount.GetLastValue();
 	
 	for(int i=0;i<nPeaks;i++)
 	{

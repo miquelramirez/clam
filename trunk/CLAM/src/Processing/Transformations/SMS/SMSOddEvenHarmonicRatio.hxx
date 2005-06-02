@@ -43,8 +43,6 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-		InControl mOddFactor;
-
 		FrameTransformationConfig mConfig;
 
 	public:
@@ -52,8 +50,7 @@ namespace CLAM{
 		SMSOddEvenHarmonicRatio() 
 			: 
 			mIn("In SpectralPeaks", this), 
-			mOut("Out SpectralPeaks", this),
-			mOddFactor("Odd Harmonics Factor", this)
+			mOut("Out SpectralPeaks", this)
 		{
 			Configure( SegmentTransformationConfig() );
 
