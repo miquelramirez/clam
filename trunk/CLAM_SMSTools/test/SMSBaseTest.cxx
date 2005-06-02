@@ -17,12 +17,34 @@
 namespace CLAMTest
 {
 
+/** Simple redifinition of the SMSBase class in order to avoid abstract methods*/
+class SMSBaseTest: public CLAM::SMSBase
+{
+public:
+// ---------------------------------------------------------------------------------------------------
+
+	// implementation of CLAM::SMSBase virtual methods 
+	CLAMGUI::Progress* CreateProgress(const char* title, float from, float to)
+	{
+		return new CLAMGUI::StdOutProgress(title, from, to);
+	}
+	CLAMGUI::WaitMessage* CreateWaitMessage(const char * title)
+	{
+		return new CLAMGUI::StdOutWaitMessage(title);
+	}
+
+	void Run(){}
+	
+};
 
 class SMSExampleTest;
 
 CPPUNIT_TEST_SUITE_REGISTRATION( SMSExampleTest );
 
-class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
+
+//TODO: Add stress tests that repeatedly analyze/synthesize and analyze/transform/synthesize
+//TODO: Look for apparent memory leaks in the above procedure
+class SMSExampleTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( SMSExampleTest );
 //	CPPUNIT_TEST( testhelperAudiosAreEqual_WhenDifferentSizes );
@@ -35,10 +57,10 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 //	CPPUNIT_TEST( testLoadInputSound_WithAnExistingSoundFile );
 //	CPPUNIT_TEST( testLoadInputSound_CalledMultipleTimes );
 //	CPPUNIT_TEST( testhelperLoadAudioFromFile );
-//	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav );
-//	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
-//	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
-//	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
+	CPPUNIT_TEST( testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav );
+	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav );
+	CPPUNIT_TEST( testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav );
+	CPPUNIT_TEST( testTwoSimpleTransformations_withLoadedScore );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_sinusoidalGain );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_residualGain );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_FreqShift );
@@ -56,24 +78,32 @@ class SMSExampleTest : public CppUnit::TestFixture, public CLAM::SMSBase
 //  TestFixture atributes:
 	
 	CLAM::Audio mLoadedTestAudio;
+	SMSBaseTest* mpBase;
 
 	//! relative path to the CLAM-TestData dir. Defined below the class declaration.
 	std::string mPath;
 
 public:
+	SMSExampleTest()
+	{
+		mpBase = NULL;
+	}
+	
 	//! Common initialization, executed before each test method
 	void setUp() 
 	{ 
 		mPath = "../../../CLAM-TestData/";
+		CPPUNIT_ASSERT_EQUAL( true, mpBase == NULL );
+		mpBase = new SMSBaseTest;
 	}
 
 	//! Common clean up, executed after each test method
 	void tearDown() 
 	{ 
-		mGlobalConfig.SetInputSoundFile("");
+		CPPUNIT_ASSERT_EQUAL( false, mpBase == NULL );
+		delete mpBase;
+		mpBase = NULL;
 	}
-
-	void Run(){}
 
 private:
 	
@@ -125,17 +155,6 @@ private:
 		CPPUNIT_ASSERT_EQUAL( std::string(""), diagnostic );
 	}
 	
-// ---------------------------------------------------------------------------------------------------
-
-	// implementation of CLAM::SMSBase virtual methods 
-	CLAMGUI::Progress* CreateProgress(const char* title, float from, float to)
-	{
-		return new CLAMGUI::StdOutProgress(title, from, to);
-	}
-	CLAMGUI::WaitMessage* CreateWaitMessage(const char * title)
-	{
-		return new CLAMGUI::StdOutWaitMessage(title);
-	}
 
 // ---------------------------------------------------------------------------------------------------
 
@@ -143,8 +162,8 @@ private:
 
 	void testInitConfigs_GenerateCompatibleConfig()
 	{
-		InitConfigs();
-		CPPUNIT_ASSERT_MESSAGE("after InitConfigs, HaveCompatibleConfig() should be true", HaveCompatibleConfig() );
+		mpBase->InitConfigs();
+		CPPUNIT_ASSERT_MESSAGE("after InitConfigs, mpBase->HaveCompatibleConfig() should be true", mpBase->HaveCompatibleConfig() );
 	}
 
 
@@ -187,46 +206,46 @@ private:
 
 	void testLoadInputSound_WithABadFileName()
 	{
-		InitConfigs();
-		mGlobalConfig.SetInputSoundFile("thisFileShouldAbsolutelyNotExist.wav");
-		CPPUNIT_ASSERT_EQUAL( false, LoadInputSound() );
-		mGlobalConfig.SetInputSoundFile("");
+		mpBase->InitConfigs();
+		mpBase->GetGlobalConfig().SetInputSoundFile("thisFileShouldAbsolutelyNotExist.wav");
+		CPPUNIT_ASSERT_EQUAL( false, mpBase->LoadInputSound() );
+		mpBase->GetGlobalConfig().SetInputSoundFile("");
 
 	}
 
 	void testLoadInputSound_WithAnExistingSoundFile()
 	{
-		InitConfigs();
-		mGlobalConfig.SetInputSoundFile( mPath+"sweep.wav");
-		CPPUNIT_ASSERT_EQUAL( true, LoadInputSound() );
-		mGlobalConfig.SetInputSoundFile("");
+		mpBase->InitConfigs();
+		mpBase->GetGlobalConfig().SetInputSoundFile( mPath+"sweep.wav");
+		CPPUNIT_ASSERT_EQUAL( true, mpBase->LoadInputSound() );
+		mpBase->GetGlobalConfig().SetInputSoundFile("");
 	}
 
 	void testLoadInputSound_CalledMultipleTimes()
 	{
-		InitConfigs();
-		mGlobalConfig.SetInputSoundFile( mPath+"sweep.wav");
-		CPPUNIT_ASSERT_EQUAL( true, LoadInputSound() );
-		CPPUNIT_ASSERT_EQUAL( true, LoadInputSound() );
-		mGlobalConfig.SetInputSoundFile("");
+		mpBase->InitConfigs();
+		mpBase->GetGlobalConfig().SetInputSoundFile( mPath+"sweep.wav");
+		CPPUNIT_ASSERT_EQUAL( true, mpBase->LoadInputSound() );
+		CPPUNIT_ASSERT_EQUAL( true, mpBase->LoadInputSound() );
+		mpBase->GetGlobalConfig().SetInputSoundFile("");
 	}
 	
 
 	CLAM::Audio& accessorOriginalAudio()
 	{
-		return mOriginalSegment.GetAudio();
+		return mpBase->GetOriginalSegment().GetAudio();
 	}
 	CLAM::Audio& accessorSynthesizedAudio()
 	{
-		return mAudioOut;
+		return mpBase->GetSynthesizedSound();
 	}
 	CLAM::Audio& accessorSinusoidalAudio()
 	{
-		return mAudioOutSin;
+		return mpBase->GetSynthesizedSinusoidal();
 	}
 	CLAM::Audio& accessorResidualAudio()
 	{
-		return mAudioOutRes;
+		return mpBase->GetSynthesizedResidual();
 	}
 
 
@@ -250,12 +269,12 @@ private:
 	void testAnalysisSynthesis_WithDefaultConfig_UsingSine_Wav()
 	{
 		// TODO: make it with default config	
-		LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
-		mGlobalConfig.SetInputSoundFile( mPath+"sine.wav");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Synthesize();
+		mpBase->LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
+		mpBase->GetGlobalConfig().SetInputSoundFile( mPath+"sine.wav");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_sine_defaultConfig";		
 		double delta=0.09;
@@ -280,11 +299,11 @@ private:
 
 	void testAnalysisSynthesis_WithLoadedConfig_UsingSweep_Wav()
 	{
-		LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Synthesize();
+		mpBase->LoadConfig( mPath + "/SMSTests/sweepConfig.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_sweep_loadedConfig";
 		double delta=0.09;
@@ -306,11 +325,11 @@ private:
 
 	void testAnalysisSynthesis_WithLoadedConfig_UsingElvis_Wav()
 	{
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Synthesize();
+		mpBase->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_elvis_loadedConfig";
 		double delta=0.09;
@@ -335,13 +354,13 @@ private:
 
 	void testTwoSimpleTransformations_withLoadedScore()
 	{ 
-		LoadTransformationScore( mPath + "/SMSTests/wierdfemale-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/wierdfemale-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Transform();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_wierdfemale-transf";
 		double delta = 0.09;
@@ -354,13 +373,13 @@ private:
 
 	void testTransformations_withLoadedScore_HarmonizerTimestretch()
 	{ 
-		LoadTransformationScore( mPath + "/SMSTests/harmonizer_timestretch-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/harmonizer_timestretch-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Transform();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_harmonizer-timestretch-transf";
 		double delta = 0.09;
@@ -374,16 +393,16 @@ private:
       
 	void testTransformations_withLoadedScore_Timestretch()
 	{ 
-		LoadTransformationScore( mPath + "/SMSTests/timestretch-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		std::cout<<"After analysis original segment has "<< mOriginalSegment.GetnFrames() <<"frames" <<std::endl;
-		Transform();
-		std::cout<<"After transformation original segment has "<< mOriginalSegment.GetnFrames() <<"frames" <<std::endl;
-		std::cout<<"After transformation transformed segment has "<< mTransformedSegment.GetnFrames() <<"frames" <<std::endl;
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/timestretch-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		std::cout<<"After analysis original segment has "<< mpBase->GetOriginalSegment().GetnFrames() <<"frames" <<std::endl;
+		mpBase->Transform();
+		std::cout<<"After transformation original segment has "<< mpBase->GetOriginalSegment().GetnFrames() <<"frames" <<std::endl;
+		std::cout<<"After transformation transformed segment has "<< mpBase->GetTransformedSegment().GetnFrames() <<"frames" <<std::endl;
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_timestretch-transf";
 		double delta = 0.09;
@@ -395,13 +414,13 @@ private:
 	}
 	void testTransformations_withLoadedScore_sinusoidalGain()
 	{
-		LoadTransformationScore( mPath + "/SMSTests/sinusoidalGain-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/default-config_sine.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/sinusoidalGain-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/default-config_sine.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Transform();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_sinusoidalGain-transf";
 		double delta = 0.09;
@@ -414,13 +433,13 @@ private:
 
 	void testTransformations_withLoadedScore_residualGain()
 	{
-		LoadTransformationScore( mPath + "/SMSTests/residualGain-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/default-config_noise.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/residualGain-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/default-config_noise.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Transform();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_residualGain-transf";
 		double delta = 0.09;
@@ -434,13 +453,13 @@ private:
 
 	void testTransformations_withLoadedScore_FreqShift ()
 	{
-		LoadTransformationScore( mPath + "/SMSTests/freqshift-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/freqshift-config.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/freqshift-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/freqshift-config.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Transform();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_freqshift-transf";
 		double delta = 0.09;
@@ -453,13 +472,13 @@ private:
 
 	void testTransformations_withLoadedScore_PitchShift ()
 	{
-		LoadTransformationScore( mPath + "/SMSTests/pitchshift-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/pitchshift-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Transform();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_pitchshift-transf";
 		double delta = 0.09;
@@ -472,13 +491,13 @@ private:
 	
 	void testTransformations_withLoadedScore_OddEvenHarmonicRatio()
 	{
-		LoadTransformationScore( mPath + "/SMSTests/oddEvenHarmonicRatio-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/oddEvenHarmonicRatio-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Transform();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_oddEvenHarmonicRatio-transf";
 		double delta = 0.09;
@@ -493,13 +512,13 @@ private:
 	{
 		// the transformation used for this test is actually a chain containing 
 		// a pitchshift transformation before the actual pitch discretization
-		LoadTransformationScore( mPath + "/SMSTests/pitchDiscretization-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/pitchDiscretization-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Transform();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_pitchDiscretization-transf";
 		double delta = 0.09;
@@ -512,13 +531,13 @@ private:
 	
 	void testTransformations_withLoadedScore_SMSSpectralShapeShift()
 	{
-		LoadTransformationScore( mPath + "/SMSTests/spectralShapeShift-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/spectralShapeShift-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/elvisConfig.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Transform();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_spectralShapeShift-transf";
 		double delta = 0.09;
@@ -535,13 +554,13 @@ private:
 	{
 //		CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
 			
-		LoadTransformationScore( mPath + "/SMSTests/timestretch_morph-transf.xml" );
-		LoadConfig( mPath + "/SMSTests/elvisMorphConfig.xml");
-		InitConfigs();
-		LoadInputSound();
-		Analyze();
-		Transform();
-		Synthesize();
+		mpBase->LoadTransformationScore( mPath + "/SMSTests/timestretch_morph-transf.xml" );
+		mpBase->LoadConfig( mPath + "/SMSTests/elvisMorphConfig.xml");
+		mpBase->InitConfigs();
+		mpBase->LoadInputSound();
+		mpBase->Analyze();
+		mpBase->Transform();
+		mpBase->Synthesize();
 
 		const std::string expectedAudioFile = mPath+"/SMSTests/out_timestretch_morph-transf";
 		double delta = 0.09;
