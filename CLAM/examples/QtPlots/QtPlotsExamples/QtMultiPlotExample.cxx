@@ -24,9 +24,11 @@
 #include "Array.hxx"
 #include "QtAppWrapper.hxx"
 #include "QtMultiPlot.hxx"
+
 using CLAM::TData;
 using CLAM::DataArray;
 using CLAM::VM::QtMultiPlot;
+
 int main()
 {
 	DataArray sig0;
