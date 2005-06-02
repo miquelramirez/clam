@@ -8,9 +8,9 @@
 
 
 //OSC dependencies
-#include <ip/NetworkingUtils.h>
-#include <ip/UdpPacketListenerPort.h>
-#include <osc/OscReceivedElements.h>
+#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/UdpPacketListenerPort.h>
+#include <oscpack/osc/OscReceivedElements.h>
 
 //Other dependencies
 #include <queue>

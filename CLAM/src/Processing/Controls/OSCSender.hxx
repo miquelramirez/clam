@@ -4,9 +4,9 @@
 #include "Processing.hxx"
 #include "ProcessingConfig.hxx"
 #include "InControl.hxx"
-#include <osc/OscOutboundPacketStream.h>
-#include <ip/NetworkingUtils.h>
-#include <ip/UdpTransmitPort.h>
+#include <oscpack/osc/OscOutboundPacketStream.h>
+#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/UdpTransmitPort.h>
 #include <string>
 
 #define IP_MTU_SIZE 1536
