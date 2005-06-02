@@ -56,7 +56,7 @@ namespace CLAM{
 		OutPort<Spectrum> mOutSpectrum;
 
 		InControl mIsHarmonic;
-		InControl mShiftAmount;
+//		InControl mShiftAmount;
 
 		FrameTransformationConfig mConfig;
 
@@ -69,8 +69,7 @@ namespace CLAM{
 			mOutFundamental("Out Fundamental", this),
 			mInSpectrum("In Spectrum", this), 
 			mOutSpectrum("Out Spectrum", this), 
-			mIsHarmonic("Harmonic",this),
-			mShiftAmount("Shift Amount", this)
+			mIsHarmonic("Harmonic",this)
 		{
 			Configure( SegmentTransformationConfig() );
 		}

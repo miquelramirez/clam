@@ -29,6 +29,7 @@
 #include "OutPort.hxx"
 #include "OutControl.hxx"
 #include "InControl.hxx"
+#include "InControlPublisher.hxx"
 #include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
@@ -44,8 +45,7 @@ namespace CLAM {
 		FrameTransformation* mFrameTransformation;
 
 	protected:
-		OutControl mSendAmount; //TODO privatize
-
+//		OutControl mSendAmount; //TODO privatize
 		/** Internally stored configuration */
 		SegmentTransformationConfig mConfig;
 		/** Boolean member that indicates whether BPF or single value is to be used. This is not
@@ -54,11 +54,6 @@ namespace CLAM {
 		 *	it more explicit.
 		 */
 		bool mUseTemporalBPF;
-		/** Control for the amount of the concrete transformation that will be applied. This control
-		 *	value can be manually updated or automatically from the values in the BPF envelope-like
-		 *	configuration parameter.
-		 */
-		InControl mAmountCtrl;
 		/** Control to state whether a particular transformation is on or off. This control may be
 		 *	used as a bypass when the transformation is connected in a Chain.
 		 */
@@ -66,6 +61,13 @@ namespace CLAM {
 		
 		Segment* mInput;
 		Segment* mOutput;
+	public:
+		/** Control for the amount of the concrete transformation that will be applied. This control
+		 *	value can be manually updated or automatically from the values in the BPF envelope-like
+		 *	configuration parameter.
+		 */
+		InControlPublisher mAmountCtrl;
+		
 
 	public:
 		void AttachIn( Segment& data ){ mInput = &data; }

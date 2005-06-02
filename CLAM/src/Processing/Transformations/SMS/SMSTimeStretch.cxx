@@ -24,7 +24,7 @@
 
 using namespace CLAM;
 
-SMSTimeStretch::SMSTimeStretch()
+SMSTimeStretch::SMSTimeStretch():mAmount("Amount",this)
 {
 	mSynthesisTime=0;
 	mAnalysisTime=0;
@@ -32,7 +32,7 @@ SMSTimeStretch::SMSTimeStretch()
 	Configure(SMSTimeStretchConfig());
 }
 
-SMSTimeStretch::SMSTimeStretch(const SegmentTransformationConfig &c):SegmentTransformation(c)
+SMSTimeStretch::SMSTimeStretch(const SegmentTransformationConfig &c):SegmentTransformation(c),mAmount("Amount",this)
 {
 	mSynthesisTime=0;
 	mAnalysisTime=0;
@@ -46,12 +46,12 @@ bool SMSTimeStretch::ConcreteConfigure(const ProcessingConfig& cfg)
 	CopyAsConcreteConfig(mConcreteConfig,cfg);
 	mUseTemporalBPF=false;
 	if(mConcreteConfig.HasAmount())
-		mAmountCtrl.DoControl(mConcreteConfig.GetAmount());
+		mAmount.DoControl(mConcreteConfig.GetAmount());
 	else if(mConcreteConfig.HasBPFAmount()){
-		mAmountCtrl.DoControl(mConcreteConfig.GetBPFAmount().GetValue(0));
+		mAmount.DoControl(mConcreteConfig.GetBPFAmount().GetValue(0));
 		mUseTemporalBPF=true;}
 	else
-		mAmountCtrl.DoControl(0);
+		mAmount.DoControl(0);
 	
 	FrameInterpConfig tmpCfg;
 	tmpCfg.SetHarmonic(mConcreteConfig.GetHarmonic());
@@ -142,7 +142,7 @@ bool SMSTimeStretch::Do(const Segment& in, Segment& out)
 
 void SMSTimeStretch::UpdateTimeAndIndex(const Segment& in)
 {
-	mAnalysisTime+=(TData)mConcreteConfig.GetHopSize()*mAmountCtrl.GetLastValue()/mConcreteConfig.GetSamplingRate();
+	mAnalysisTime+=(TData)mConcreteConfig.GetHopSize()*mAmount.GetLastValue()/mConcreteConfig.GetSamplingRate();
 	while(mAnalysisTime>mLeftFrame.GetCenterTime()+mConcreteConfig.GetHopSize()/mConcreteConfig.GetSamplingRate()&&mCurrentInputFrame<=in.GetnFrames())
 	{
 		mLeftFrame=in.GetFrame(mCurrentInputFrame);

@@ -30,8 +30,7 @@ namespace CLAM
 	}
 	
 	SegmentTransformation::SegmentTransformation()
-		: mSendAmount("Out Control", this)
-		, mAmountCtrl("Amount",this)
+		: mAmountCtrl("Amount",this)
 		, mOnCtrl("On",this)
 	{
 		mInput = 0;
@@ -42,8 +41,7 @@ namespace CLAM
 	}
 
 	SegmentTransformation::SegmentTransformation(const SegmentTransformationConfig& c) 
-		: mSendAmount("Out Control", this)
-		, mAmountCtrl("Amount",this)
+		: mAmountCtrl("Amount",this)
 		, mOnCtrl("On",this)
 	{
 		mInput = 0;
@@ -100,17 +98,14 @@ namespace CLAM
 		if(mConfig.HasAmount())
 		{
 			mAmountCtrl.DoControl(mConfig.GetAmount());								
-			mSendAmount.SendControl(mConfig.GetAmount());						
 		}
 		else if(mConfig.HasBPFAmount()){
 			mAmountCtrl.DoControl(mConfig.GetBPFAmount().GetValue(0)); 		
-			mSendAmount.SendControl(mConfig.GetBPFAmount().GetValue(0)); 
 			mUseTemporalBPF=true;
 		}
 		else
 		{
 			mAmountCtrl.DoControl(0);										
-			mSendAmount.SendControl(0);									
 		}
 
 		return true;
@@ -122,7 +117,6 @@ namespace CLAM
 		{
 			TControlData amount = mConfig.GetBPFAmount().GetValue(pos);
 			mAmountCtrl.DoControl(amount);
-			mSendAmount.SendControl(amount);		
 			return true;
 		}
 		else return false;

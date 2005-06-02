@@ -43,7 +43,7 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
-		InControl mGainAmount;
+//		InControl mGainAmount;
 
 		FrameTransformationConfig mConfig;
 
@@ -52,8 +52,7 @@ namespace CLAM{
 		SMSResidualGain() 
 			: 
 			mIn("In Spectrum", this), 
-			mOut("Out Spectrum", this),
-			mGainAmount( "Gain Amount", this)
+			mOut("Out Spectrum", this)
 		{
 			Configure( SegmentTransformationConfig() );
 		}

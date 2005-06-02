@@ -37,7 +37,7 @@ bool SMSSpectralShapeShift::Do(const SpectralPeakArray&
  	
 	mSpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope);
 
-	TData amount=mShiftAmount.GetLastValue();
+	TData amount=mAmount.GetLastValue();
 
 	//Shift spectral shape
 	BPF& magBPF=mSpectralEnvelope.GetMagBPF();

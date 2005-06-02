@@ -51,7 +51,7 @@ bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks,
 
 		
 		//if amount is zero it means from male to female, else from female to male
-		TData amount=mGenderFactor.GetLastValue();
+		TData amount=mAmount.GetLastValue();
 
 		TData pitchTransposition;
 
@@ -65,9 +65,9 @@ bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks,
 			pitchTransposition=2;
 		}
 
-		mSpectralShapeShift.GetInControl("Shift Amount").DoControl(sssAmount);
+		mSpectralShapeShift.GetInControl("Amount").DoControl(sssAmount);
 
-		mPitchShift.GetInControl("Shift Amount").DoControl(pitchTransposition);
+		mPitchShift.GetInControl("Amount").DoControl(pitchTransposition);
 
 		SpectralPeakArray tmpSpectralPeaks;
 		mSpectralShapeShift.Do(inPeaks,tmpSpectralPeaks, false /* dont preserve out*/);

@@ -95,7 +95,6 @@ namespace CLAM
 			mInPeaks("In SpectralPeaks", this),
 			mOutPeaks("Out SpectralPeaks", this)
 		{
-//			Configure( SegmentTransformationConfig() );
 			Configure( cfg );
 		}
 
