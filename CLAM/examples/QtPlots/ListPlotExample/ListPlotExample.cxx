@@ -22,17 +22,37 @@
 #include <stdlib.h>
 #include "XMLStorage.hxx"
 #include "AudioFileLoader.hxx"
-#include "PlotFactory.hxx"
 #include "QtPlotter.hxx"
 
-using CLAM::VM::QtAudioPlot;
-using CLAM::VM::QtFundFreqPlot;
-using CLAM::VM::PlotFactory;
+using CLAM::TData;
+using CLAM::DataArray;
 using CLAM::VM::QtPlotter;
 
 int main()
 {
-	Audio audio;
+        // make functions for multiplot 
+    	DataArray sig0;
+	DataArray sig1;
+	sig0.Resize(11025);
+	sig1.Resize(11025);
+	sig0.SetSize(11025);
+	sig1.SetSize(11025);
+	double f=20.0;
+	double fs=11025.0;
+	double t=0.0;
+	double x0,x1;
+	int j=0;
+	while(t <= 1)
+	{
+		x0=cos(2*PI*f*t);
+		x1=sin(2*PI*f*t);
+		sig0[j]=TData(x0);
+		sig1[j]=TData(x1);
+		t+=1.0/fs;
+		j++;
+	}
+
+	CLAM::Audio audio;
 	AudioFileLoader fLoader;
 	
 	// get audio data
@@ -47,16 +67,33 @@ int main()
 	// get fundamental frequency data from XML file
 	CLAM::XMLStorage::Restore(seg,"../data/fundfreq_data.xml");
 	
-	// get plots from the factory
-	QtAudioPlot* aPlot = PlotFactory::GetAudioPlot(audio,"Audio",50,50);
-	QtFundFreqPlot* fPlot = PlotFactory::GetFundFreqPlot(seg,"Fundamental",50,300); 
-
 	// add plots to plotter
-	QtPlotter::Add(aPlot);
-	QtPlotter::Add(fPlot);
-	
+	QtPlotter::Add("audio_plot",audio);
+	QtPlotter::Add("fundamental_plot",seg,CLAM::VM::FundamentalPlot);
+	QtPlotter::Add("multi_plot","data0",sig0);
+
+	// assign labels to plots 
+	QtPlotter::SetLabel("audio_plot","Audio");
+	QtPlotter::SetLabel("fundamental_plot","Fundamental");
+	QtPlotter::SetLabel("multi_plot","MultiPlot");
+
+	// add data to multiplot
+	QtPlotter::AddData("multi_plot","data1",sig1);
+
+	// set color to multiplot data
+	QtPlotter::SetDataColor("multi_plot","data0",CLAM::VM::VMColor::Cyan());
+	QtPlotter::SetDataColor("multi_plot","data1",CLAM::VM::VMColor::Magenta());
+
+	// set units and tooltips to multiplot
+	QtPlotter::SetUnits("multi_plot","s","");
+	QtPlotter::SetToolTips("multi_plot","Instant Time","Amplitude");
+
+	// set x y range to multiplot
+	QtPlotter::SetXRange("multi_plot",0.0,1.0);
+	QtPlotter::SetYRange("multi_plot",-1.5,1.5);
+
 	// Display plots
-	QtPlotter::ShowAll();
+	QtPlotter::Run();
 
 	return 0;
 }
