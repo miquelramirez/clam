@@ -427,7 +427,8 @@ fi
 if test x$found_in_sandbox_fftw = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_fftw"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -646,7 +647,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in dfftw drfftw
+					for tmp in $lib_dirs_fftw
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in dfftw drfftw
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -812,7 +817,8 @@ fi
 if test x$found_in_sandbox_sfftw = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_sfftw"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -1031,7 +1037,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_sfftw
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -1197,7 +1207,8 @@ fi
 if test x$found_in_sandbox_xerces = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_xerces"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -1396,7 +1407,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_xerces
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -1557,7 +1572,8 @@ fi
 if test x$found_in_sandbox_fltk = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_fltk"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -1764,7 +1780,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_fltk
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -1898,6 +1918,13 @@ then
 			AC_MSG_RESULT([yes: $dir])
 			include_dirs_qt=$dir
 			lib_dirs_qt=`echo $dir | sed -e 's=/include=/lib='`
+			if test x"$dir" == x"$QTDIR/include"
+			then
+				setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_qt"
+			        setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+				AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+
+			fi
 			AC_MSG_RESULT([yes: $dir, assuming lib-dir $lib_dirs_qt])
 			if test x"qt-mt" != x
 			then
@@ -1968,6 +1995,10 @@ int main()
 						LDFLAGS=$old_LDFLAGS
 						tmp_libs=""
 						sep=""
+						for tmp in $lib_dirs_qt
+						do
+							LDFLAGS="$LDFLAGS -L$tmp"
+						done	
 						for tmp in qt
 						do
 							LDFLAGS="$LDFLAGS -l$tmp"
@@ -2143,7 +2174,8 @@ fi
 if test x$found_in_sandbox_qwt = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_qwt"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -2350,7 +2382,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_qwt
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -2516,7 +2552,8 @@ fi
 if test x$found_in_sandbox_sndfile = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_sndfile"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -2719,7 +2756,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_sndfile
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -2881,7 +2922,8 @@ fi
 if test x$found_in_sandbox_oggvorbis = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_oggvorbis"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -3108,7 +3150,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_oggvorbis
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -3276,7 +3322,8 @@ fi
 if test x$found_in_sandbox_ladspa = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_ladspa"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -3479,7 +3526,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_ladspa
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -3641,7 +3692,8 @@ fi
 if test x$found_in_sandbox_portmidi = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_portmidi"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -3836,7 +3888,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in portmidi
+					for tmp in $lib_dirs_portmidi
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in portmidi
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -3996,7 +4052,8 @@ fi
 if test x$found_in_sandbox_portaudio = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_portaudio"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -4191,7 +4248,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_portaudio
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -4351,7 +4412,8 @@ fi
 if test x$found_in_sandbox_alsa = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_alsa"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -4550,7 +4612,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_alsa
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -4711,7 +4777,8 @@ fi
 if test x$found_in_sandbox_mad = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_mad"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -4910,7 +4977,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_mad
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -5071,7 +5142,8 @@ fi
 if test x$found_in_sandbox_id3 = xyes
 then
 	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_id3"
-	AC_MSG_NOTICE([DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
 	LIBS=
 	old_CXXFLAGS=$CXXFLAGS
 	old_LDFLAGS=$LDFLAGS
@@ -5266,7 +5338,11 @@ int main()
 					LDFLAGS=$old_LDFLAGS
 					tmp_libs=""
 					sep=""
-					for tmp in 
+					for tmp in $lib_dirs_id3
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
 					do
 						LDFLAGS="$LDFLAGS -l$tmp"
 						tmp_libs="$tmp_libs$sep$tmp"
@@ -5312,6 +5388,371 @@ int main()
 	else
 	    AC_MSG_RESULT([no])
 	    found_id3=no
+	fi
+    fi
+fi
+
+fi
+#####################################################################
+# Check if oscpack is going to be used
+#
+# source: acv/check_package_enable.acv 
+#####################################################################
+AC_MSG_CHECKING([oscpack usage specified])
+#
+AC_ARG_WITH(
+	[oscpack],AC_HELP_STRING([--with-oscpack],
+	[use oscpack (default is yes)]),[
+	if test x$enableval = xyes
+	then
+		AC_MSG_RESULT([yes])
+		enabled_oscpack=yes
+	else
+		AC_MSG_RESULT([no])
+		enabled_oscpack=no
+	fi
+],[
+	AC_MSG_RESULT([yes (default)])
+	enabled_oscpack=yes
+])
+found_oscpack=no
+#####################################################################
+
+#####################################################################
+# IF oscpack is enabled THEN
+#
+# source: acv/package_enabled_start.acv 
+#####################################################################
+if test x$enabled_oscpack = xyes
+then
+#####################################################################
+
+#####################################################################
+# Look for oscpack in the sandbox
+#
+# source: acv/package_in_sandbox.acv 
+#####################################################################
+AC_MSG_CHECKING([oscpack in sandbox])
+if test x$sandbox_location = x
+then
+	if test x$enabled_sandbox = xno
+	then
+		AC_MSG_RESULT([no - sandbox disabled])	
+	else
+		AC_MSG_RESULT([no - sandbox not found])	
+	fi
+else
+	AC_MSG_RESULT([searching headers])	
+	if test x$found_oscpack = xno
+	then
+		found=1
+		for file in oscpack/ip/NetworkingUtils.h
+		do
+			AC_MSG_CHECKING([$file for oscpack in sandbox])
+			if test -r $sandbox_location/oscpack/include/$file
+			then
+				AC_MSG_RESULT([yes])
+				include_dirs_oscpack="$sandbox_location/oscpack/include"
+			else
+				AC_MSG_RESULT([no])
+				found=0
+			fi
+		done
+		AC_MSG_CHECKING([[oscpack header(s) found in sandbox]])
+		if test $found = 1
+		then
+			AC_MSG_RESULT([yes])
+			sep=""
+			found=1
+			libdirset=no
+			for file in oscpack
+			do
+				AC_MSG_CHECKING([lib$file for oscpack in sandbox])
+				if test -r $sandbox_location/oscpack/lib/lib$file.$dllext
+					then
+					AC_MSG_RESULT([yes])
+					libs_in_sandbox_oscpack="$libs_in_sandbox_oscpack$sep$file"
+					if test x$libdirset = xno
+					then
+						lib_dirs_oscpack="$sandbox_location/oscpack/lib"
+						libdirset=yes
+					fi
+					sep=" "
+				else
+					AC_MSG_RESULT([no])
+					found=0
+				fi
+			done
+			AC_MSG_CHECKING([[all oscpack lib(s) found in sandbox]])
+			if test $found = 1
+			then
+				AC_MSG_RESULT([yes - adding to library path])
+				found_oscpack=yes
+				found_in_sandbox_oscpack=yes
+			else
+				AC_MSG_RESULT([no])
+				found_oscpack=no
+			fi
+		else
+			AC_MSG_RESULT([no])
+			found_oscpack=no
+		fi
+	fi
+fi
+if test x$found_in_sandbox_oscpack = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_oscpack"
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_oscpack
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_oscpack
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for oscpack])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include <oscpack/ip/NetworkingUtils.h>
+int main()
+{
+	InitializeNetworking();
+	TerminateNetworking();
+	return 0;
+}
+
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_oscpack pthread
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include <oscpack/ip/NetworkingUtils.h>
+int main()
+{
+	InitializeNetworking();
+	TerminateNetworking();
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_oscpack=$tmp_libs
+			found_oscpack=yes
+			AC_MSG_RESULT([$libs_oscpack])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
+#####################################################################
+# pkgconfig routine for finding oscpack
+#
+# source: acv/pkg_config_find.acv 
+#####################################################################
+if test x$enabled_oscpack = xyes
+    then
+    if test x$found_oscpack = xno
+	then
+	AC_MSG_CHECKING([oscpack has pkg-config])
+	if test x$pkg_config_status = xenabled
+	    then
+	    $pkg_config --exists oscpack
+	    if test $? = 0
+		then
+		AC_MSG_RESULT([yes])
+		found_oscpack=yes
+		include_dirs_oscpack=`$pkg_config oscpack --cflags-only-I | sed -e 's/ -I/ /g' |  sed -e 's/^-I/ /g' | sed -e 's/^ //'`
+		libs_oscpack=`$pkg_config oscpack --libs-only-l | sed -e 's/ -l/ /g' |  sed -e 's/^-l/ /g' | sed -e 's/^ //'`
+		lib_dirs_oscpack=`$pkg_config oscpack --libs-only-L | sed -e 's/ -L/ /g' | sed -e 's/^-L/ /g' | sed -e 's/^ //'`
+	    else
+		AC_MSG_RESULT([no])
+		found_oscpack=no
+	    fi
+	else
+	    if test x$pkg_config_status = xdisabled
+		then
+		AC_MSG_RESULT([no: pkg-config disabled])
+	    else
+		AC_MSG_RESULT([no: pkg-config is not installed])
+	    fi
+	fi
+    fi
+fi
+#####################################################################
+
+#####################################################################
+# Standard routine for finding oscpack
+#
+# source: acv/standard_find.acv 
+#####################################################################
+if test x$enabled_oscpack = xyes
+then
+  if test x$found_oscpack = xno
+	then
+	found=1
+	for file in oscpack/ip/NetworkingUtils.h
+	do
+		AC_CHECK_HEADER($file,[filefound=1],[filefound=0])
+		AC_MSG_CHECKING([$file for oscpack in standard locations])
+		if test $filefound = 1
+		then
+			AC_MSG_RESULT([yes])
+		else
+	    AC_MSG_RESULT([no])
+	    found=0
+		fi
+	done
+	AC_MSG_CHECKING([[oscpack header(s) found in standard locations]])
+	if test $found = 1
+	then
+		AC_MSG_RESULT([yes])
+		if test x"oscpack" != x
+		then
+			LIBS=
+			old_CXXFLAGS=$CXXFLAGS
+			old_LDFLAGS=$LDFLAGS
+			for tmp in $include_dirs_oscpack
+			do
+				CXXFLAGS="$CXXFLAGS -I$tmp"
+			done
+			for tmp in $lib_dirs_oscpack
+			do
+				LDFLAGS="$LDFLAGS -L$tmp"
+			done
+			AC_MSG_CHECKING([libraries needed for oscpack])
+			AC_COMPILE_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include <oscpack/ip/NetworkingUtils.h>
+int main()
+{
+	InitializeNetworking();
+	TerminateNetworking();
+	return 0;
+}
+
+]]	
+			)],[
+				links_ok=0
+				tmp_libs=""
+				sep=""
+				for tmp in oscpack pthread
+				do
+					LDFLAGS="$LDFLAGS -l$tmp"
+					tmp_libs="$tmp_libs$sep$tmp"
+					sep=" "
+					AC_LINK_IFELSE(
+					[
+						AC_LANG_SOURCE(
+[[
+#include <oscpack/ip/NetworkingUtils.h>
+int main()
+{
+	InitializeNetworking();
+	TerminateNetworking();
+	return 0;
+}
+;
+]])	
+					],[
+						links_ok=yes
+					],[
+					]
+					)
+					if test x$links_ok = xyes; then
+						break 2
+					fi
+				done
+				if test x$links_ok = xyes; then
+					libs_oscpack=$tmp_libs
+					found_oscpack=yes
+					AC_MSG_RESULT([$libs_oscpack])
+				else
+					# trying alternative libs
+					LDFLAGS=$old_LDFLAGS
+					tmp_libs=""
+					sep=""
+					for tmp in $lib_dirs_oscpack
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
+					do
+						LDFLAGS="$LDFLAGS -l$tmp"
+						tmp_libs="$tmp_libs$sep$tmp"
+						sep=" "
+						AC_LINK_IFELSE(
+						[
+							AC_LANG_SOURCE(
+[[
+#include <oscpack/ip/NetworkingUtils.h>
+int main()
+{
+	InitializeNetworking();
+	TerminateNetworking();
+	return 0;
+}
+;
+]])	
+						],[
+							links_ok=yes
+						],[
+						]
+						)
+						if test x$links_ok = xyes; then
+							break 2
+						fi
+					done
+					if test x$links_ok = xyes; then
+						libs_oscpack=$tmp_libs
+						found_oscpack=yes
+						AC_MSG_RESULT([$libs_oscpack])
+					else
+						AC_MSG_RESULT([linking failed])
+					fi
+				fi
+			],[
+				AC_MSG_RESULT([compilation failed])
+			])
+			CXXFLAGS=$old_CXXFLAGS
+			LDFLAGS=$old_LDFLAGS
+		else
+			# no libs to checks
+			found_oscpack=yes
+		fi
+	else
+	    AC_MSG_RESULT([no])
+	    found_oscpack=no
 	fi
     fi
 fi
@@ -6362,6 +6803,78 @@ fi
 
 fi
 #####################################################################
+# IF oscpack is enabled THEN
+#
+# source: acv/package_enabled_start.acv 
+#####################################################################
+if test x$enabled_oscpack = xyes
+then
+#####################################################################
+
+#####################################################################
+# Default test, to test oscpack
+#
+# source: acv/default_test.acv 
+#####################################################################
+failure=no
+if test $found_oscpack
+then
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_oscpack
+	  do
+	  CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_oscpack
+	  do
+	  LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	for tmp in $libs_oscpack
+	  do
+	  LDFLAGS="$LDFLAGS -l$tmp"
+	done
+	AC_MSG_CHECKING([compiling, linking and running with oscpack])
+	AC_RUN_IFELSE(
+	    [
+		AC_LANG_SOURCE(
+		    [[
+			    #include <oscpack/ip/NetworkingUtils.h>
+int main()
+{
+	InitializeNetworking();
+	TerminateNetworking();
+	return 0;
+}
+
+			    ]])	
+		],[
+		AC_MSG_RESULT(ok)
+		],[
+			AC_MSG_RESULT(failed)
+			failure=yes
+		]
+	)
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+else
+	failure=yes
+fi
+if test x$failure = xyes
+then
+	AC_MSG_FAILURE([
+Configure-checks for oscpack failed.
+Please check the configure output to see which checks failed, and the
+config.log file for more details.
+Note that you can disable the use of oscpack altogether, running configure
+with the
+  --without-oscpack
+option.
+])
+fi
+#####################################################################
+
+fi
+#####################################################################
 # Give a warning when fftw is disabled
 #
 # source: acv/disabled_package_warning.acv 
@@ -6669,6 +7182,28 @@ srcdeps: configuration specifies USE_ID3=1, but HAS_ID3=0
 fi
 #####################################################################
 
+#####################################################################
+# Give a warning when oscpack is disabled
+#
+# source: acv/disabled_package_warning.acv 
+#####################################################################
+if test x$enabled_oscpack = x
+then
+	AC_MSG_ERROR('oscpack with/without checking not done')
+fi
+if test x$enabled_oscpack = xno
+then
+	AC_MSG_WARN([without oscpack
+======================================================================
+You deactivated usage of package oscpack. Note that this may cause 
+that certain examples and tests will not compile. Typically running
+'make depend' may give you an error that says:
+
+srcdeps: configuration specifies USE_OSCPACK=1, but HAS_OSCPACK=0
+======================================================================])
+fi
+#####################################################################
+
 # substs for fftw
 FFTW_INCLUDES=$include_dirs_fftw
 FFTW_LIBS=$libs_fftw
@@ -6893,6 +7428,22 @@ AC_SUBST(ID3_INCLUDES)
 AC_SUBST(ID3_LIB_PATH)
 AC_SUBST(ID3_LIBS)
 AC_SUBST(HAS_ID3)
+# substs for oscpack
+OSCPACK_INCLUDES=$include_dirs_oscpack
+OSCPACK_LIBS=$libs_oscpack
+OSCPACK_LIB_PATH=$lib_dirs_oscpack
+#echo OSCPACK_INCLUDES=$include_dirs_oscpack
+#echo OSCPACK_LIBS=$libs_oscpack
+#echo OSCPACK_LIB_PATH=$lib_dirs_oscpack
+if test x$found_oscpack = xyes; then
+	HAS_OSCPACK=1
+else
+	HAS_OSCPACK=0
+fi
+AC_SUBST(OSCPACK_INCLUDES)
+AC_SUBST(OSCPACK_LIB_PATH)
+AC_SUBST(OSCPACK_LIBS)
+AC_SUBST(HAS_OSCPACK)
 GL_INCLUDES=
 GL_LIB_PATH=
 GL_LIBS=GL
