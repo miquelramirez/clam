@@ -278,7 +278,7 @@ sub ac_package_substs
 }
 
 # important: qt should come before qwt
-@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','qwt','sndfile','oggvorbis','ladspa','portmidi','portaudio','alsa','mad','id3');
+@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','qwt','sndfile','oggvorbis','ladspa','portmidi','portaudio','alsa','mad','id3', 'oscpack');
 
 if ($ARGV[0] eq '-u')
 {
@@ -562,6 +562,23 @@ int main()
 	return 0;
 }
 EOF
+
+
+$sandbox{'oscpack'} = 'oscpack';
+$headers{'oscpack'} = 'oscpack/ip/NetworkingUtils.h';
+$libs{'oscpack'} = 'oscpack';
+$alt_libs{'oscpack'} = '';
+$ext_libs{'oscpack'} = 'pthread';
+$source{'oscpack'} = <<EOF;
+#include <oscpack/ip/NetworkingUtils.h>
+int main()
+{
+	InitializeNetworking();
+	TerminateNetworking();
+	return 0;
+}
+EOF
+
 
 &ac_sed();
 
