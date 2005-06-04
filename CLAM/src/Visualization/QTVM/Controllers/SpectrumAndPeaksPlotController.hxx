@@ -44,7 +44,7 @@ namespace CLAM
 				SpectralPeakArray _peaks;
 				DataArray _processedPeaks;
 				DataArray _cacheData;
-
+		                
 				SpectralPeaksRenderer _peaksRenderer;
 
 				void CachePeaksData();

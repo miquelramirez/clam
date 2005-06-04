@@ -37,17 +37,16 @@ namespace CLAM
 		void SpectrumAndPeaksPlotController::SetData(const Spectrum& spec,
 							     const SpectralPeakArray& peaks)
 		{
-			SpectrumPlotController::SetData(spec);
-			_peaks = peaks;
-			CachePeaksData();
-			FullView();
-			_peaksRenderer.SetVBounds(_view.top,_view.bottom);
-			emit requestRefresh();
+		    SpectrumPlotController::SetData(spec);
+		    _peaks = peaks;
+		    CachePeaksData();
+		    _peaksRenderer.SetVBounds(_view.top,_view.bottom);
+		    emit requestRefresh();
 		}
 
 		void SpectrumAndPeaksPlotController::SetPeaksColor(Color cline,Color cpoint)
 		{
-			_peaksRenderer.SetPeakColor(cline,cpoint);
+		    _peaksRenderer.SetPeakColor(cline,cpoint);
 		}
 
 		void SpectrumAndPeaksPlotController::Draw()
@@ -73,13 +72,16 @@ namespace CLAM
 			{
 				value = _peaks.GetMagBuffer()[i];
 				if(linear) value = 20.0*log10(value);
+				if(value >= 0) value = -0.1;
 				index = int(_peaks.GetFreqBuffer()[i]*TData(size)/GetSpectralRange());
 				_cacheData[index] = value;
 			}
+			ProcessPeaksData();
 		}
 
 		void SpectrumAndPeaksPlotController::ProcessPeaksData()
 		{
+		        if(!_cacheData.Size()) return;
 			TSize offset = TSize(GetLeftBound());
 			TSize len = TSize(GetRightBound() - GetLeftBound())+1;
 
