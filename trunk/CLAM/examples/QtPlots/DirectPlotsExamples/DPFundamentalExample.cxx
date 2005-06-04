@@ -19,18 +19,29 @@
  *
  */
 
-#include "XMLStorage.hxx"
+#include <stdlib.h>
 #include "DPFundamental.hxx"
+#include "audio_file_utils.hxx"
+#include "analysis_utils.hxx"
 
 int main()
 {
-	CLAM::Segment seg;
-	// load data from XML file 
-	CLAM::XMLStorage::Restore(seg,"../../data/fundfreq_data.xml");
+    CLAM::Audio audio;
+    if(qtvm_examples_utils::load_audio("../../data/birthday.wav",audio))
+    {
+	printf("File Error: \'birthday.wav\' audio file not found!\n");
+	exit(1);
+    }
 
-	CLAM::VM::PlotFundamental(seg,"Fundamental"); 
+    CLAM::Segment seg;
+    
+    printf("Analysing audio...\n");
+    qtvm_examples_utils::analyze(audio,seg);
+    printf("done!\n");
 
-	return 0;
+    CLAM::VM::PlotFundamental(seg,"Fundamental"); 
+
+    return 0;
 }
 
 
