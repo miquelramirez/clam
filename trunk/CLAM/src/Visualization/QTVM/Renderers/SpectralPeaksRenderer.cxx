@@ -27,6 +27,7 @@ namespace CLAM
 	namespace VM
 	{
 		SpectralPeaksRenderer::SpectralPeaksRenderer()
+		    : _nElems(0)
 		{
 			SetPeakColor(VMColor::Cyan(),VMColor::Red());
 		}

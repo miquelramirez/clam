@@ -201,7 +201,7 @@ namespace CLAM
 	    {
 		TData freq=GetMouseXPos();
 		TData dB=GetMouseYPos();
-		QString s = "freq="+QString::number(freq,'f',0)+"Hz amp="+QString::number(dB,'f',0)+"dB";
+		QString s = "freq="+QString::number(freq,'f',0)+"Hz mag="+QString::number(dB,'f',0)+"dB";
 			
 		emit toolTip(s);
 	    }

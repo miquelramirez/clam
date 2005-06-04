@@ -172,6 +172,7 @@ namespace CLAM
 		if(spFlags.bComplex)
 		{
 		    for(TIndex i=0; i < mCacheData.Size(); i++) mCacheData[i].Complex2MagPhase();
+		    
 		}
 		else if(spFlags.bPolar)
 		{
