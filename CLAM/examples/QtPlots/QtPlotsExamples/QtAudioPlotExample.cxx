@@ -18,37 +18,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
-#include <qmessagebox.h>
-#include "Audio.hxx"
-#include "AudioFileLoader.hxx"
+#include <stdlib.h>
 #include "QtAudioPlot.hxx"
 #include "QtAppWrapper.hxx"
-
-using CLAM::VM::QtAudioPlot;
+#include "audio_file_utils.hxx"
 
 int main()
 {
-	AudioFileLoader fLoader;
-	Audio audio;
+    
+	CLAM::Audio audio;
+
+	if(qtvm_examples_utils::load_audio("../../data/birthday.wav",audio))
+	{
+	    printf("File Error: \'birthday.wav\' audio file not found!\n");
+	    exit(1);
+	}
 
 	CLAM::VM::QtAppWrapper::Init();
 
-	int err = fLoader.Load("../../data/birthday.wav",audio);
-	if(err)
-	{
-		QMessageBox message("File Error",
-							"Unable to open \'birthday.wav\'",
-							QMessageBox::Critical,
-							QMessageBox::Ok,
-							QMessageBox::NoButton,
-							QMessageBox::NoButton); 
-		message.exec();
-		CLAM::VM::QtAppWrapper::Quit();
-		return 0;
-	}	
-
-	QtAudioPlot aPlot;
+	CLAM::VM::QtAudioPlot aPlot;
 	aPlot.Label("Audio");
 	aPlot.Geometry(100,100,500,220);
 	aPlot.SetData(audio);

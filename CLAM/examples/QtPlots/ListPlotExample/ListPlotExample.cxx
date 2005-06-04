@@ -20,9 +20,9 @@
  */
 
 #include <stdlib.h>
-#include "XMLStorage.hxx"
-#include "AudioFileLoader.hxx"
 #include "QtPlotter.hxx"
+#include "audio_file_utils.hxx"
+#include "analysis_utils.hxx"
 
 using CLAM::TData;
 using CLAM::DataArray;
@@ -52,30 +52,37 @@ int main()
 		j++;
 	}
 
-	CLAM::Audio audio;
-	AudioFileLoader fLoader;
-	
-	// get audio data
-	int err = fLoader.Load("../data/birthday.wav",audio);
-	if(err)
+	std::vector<Audio> channels;
+	if(qtvm_examples_utils::load_audio_st("../data/imagine.mp3",channels))
 	{
-		printf("\'birthday.wav\' audio file not found!\n");
-		exit(1);
+	    printf("File Error: \'imagine.mp3\' audio file not found!\n");
+	    exit(1);
+	}
+
+	CLAM::Audio audio;
+	if(qtvm_examples_utils::load_audio("../data/birthday.wav",audio))
+	{
+	    printf("File Error: \'birthday.wav\' audio file not found!\n");
+	    exit(1);
 	}
 
 	CLAM::Segment seg;
-	// get fundamental frequency data from XML file
-	CLAM::XMLStorage::Restore(seg,"../data/fundfreq_data.xml");
+    
+	printf("Analysing audio...\n");
+	qtvm_examples_utils::analyze(audio,seg);
+	printf("done!\n");
 	
 	// add plots to plotter
 	QtPlotter::Add("audio_plot",audio);
 	QtPlotter::Add("fundamental_plot",seg,CLAM::VM::FundamentalPlot);
 	QtPlotter::Add("multi_plot","data0",sig0);
+	QtPlotter::Add("audiost_plot",channels[0],channels[1]);
 
 	// assign labels to plots 
 	QtPlotter::SetLabel("audio_plot","Audio");
 	QtPlotter::SetLabel("fundamental_plot","Fundamental");
 	QtPlotter::SetLabel("multi_plot","MultiPlot");
+	QtPlotter::SetLabel("audiost_plot","Audio Stereo");
 
 	// add data to multiplot
 	QtPlotter::AddData("multi_plot","data1",sig1);

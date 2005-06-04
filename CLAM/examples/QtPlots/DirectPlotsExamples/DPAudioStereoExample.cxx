@@ -20,19 +20,17 @@
  */
 
 #include <stdlib.h>
-#include "AudioFileLoader.hxx"
 #include "DPAudioStereo.hxx"
+#include "audio_file_utils.hxx"
 
 int main()
 {
 	std::vector<Audio> channels;
-	AudioFileLoader fLoader;
 	
 	// get audio data
-	int err = fLoader.LoadST("../../data/imagine.mp3",channels);
-	if(err)
+	if(qtvm_examples_utils::load_audio_st("../../data/imagine.mp3",channels))
 	{
-		printf("\'imagine.mp3\' audio file not found!\n");
+		printf("File Error: \'imagine.mp3\' audio file not found!\n");
 		exit(1);
 	}
 

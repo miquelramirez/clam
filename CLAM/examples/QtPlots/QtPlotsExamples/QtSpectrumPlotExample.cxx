@@ -19,45 +19,44 @@
  *
  */
 
-#include <qmessagebox.h>
-#include "Spectrum.hxx"
-#include "XMLStorage.hxx"
 #include "QtAppWrapper.hxx"
 #include "QtSpectrumPlot.hxx"
-using CLAM::Spectrum;
-using CLAM::XMLStorage;
-using CLAM::VM::QtSpectrumPlot;
+#include "wave_utils.hxx"
+#include "analysis_utils.hxx"
+
 int main()
 {
-	FILE *fp = NULL;
+    CLAM::Audio audio;
+    CLAM::Segment seg;
 
-	CLAM::VM::QtAppWrapper::Init();
-	if((fp=fopen("../../data/spectrum_data.xml","r"))==NULL)
-	{
-		QMessageBox message("Required file not found",
-		                "spectrum_data.xml not found!",
-						QMessageBox::Critical,
-						QMessageBox::Ok,
-						QMessageBox::NoButton,
-						QMessageBox::NoButton); 
-		message.exec();
-		CLAM::VM::QtAppWrapper::Quit();
-		return 0;
-	}
-	else
-	{
-		fclose(fp);
-	}
-	Spectrum spec;
-	XMLStorage::Restore(spec,"../../data/spectrum_data.xml");
+    TData frequency = TData(1000.0);
+    TData amplitude = TData(0.7);
+    TData duration = TData(0.5);
+    TData sampleRate = TData(11025.0);
+
+    printf("Buidding sine wave: freq=%.0f Hz amp=%.1f duration=%.1f sec. sample rate=%.0f Hz\n", 
+	   frequency, amplitude, duration, sampleRate);
+    qtvm_examples_utils::sine(frequency, amplitude, duration, sampleRate, audio);
+
+    printf("Analysing...\n");
+    qtvm_examples_utils::analyze(audio,seg);
+    printf("done!\n");
+
+    int index = seg.GetnFrames()/2;
+    
+    CLAM::VM::QtAppWrapper::Init();
 	
-	QtSpectrumPlot specPlot;
-	specPlot.Label("Spectrum");
-	specPlot.Geometry(100,100,500,225);
-	specPlot.SetData(spec);
-	specPlot.SetForegroundColor(CLAM::VM::VMColor::Blue());
-	specPlot.Show();
-	return CLAM::VM::QtAppWrapper::Run();
+    CLAM::VM::QtSpectrumPlot specPlot;
+    specPlot.Label("Spectrum");
+    specPlot.Geometry(100,100,500,225);
+    specPlot.SetData(seg.GetFrame(index).GetSpectrum());
+    specPlot.SetForegroundColor(CLAM::VM::VMColor::Blue());
+    specPlot.Show();
+
+    return CLAM::VM::QtAppWrapper::Run();
 }
+
 // END
+
+
 

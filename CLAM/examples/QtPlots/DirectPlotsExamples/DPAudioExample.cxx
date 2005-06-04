@@ -18,24 +18,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
 #include <stdlib.h>
-#include "AudioFileLoader.hxx"
 #include "DPAudio.hxx"
+#include "audio_file_utils.hxx"
 
 int main()
 {
-	Audio audio;
-	AudioFileLoader fLoader;
+	CLAM::Audio audio;
 	
-	// get audio data
-	int err = fLoader.Load("../../data/birthday.wav",audio);
-	if(err)
+	if(qtvm_examples_utils::load_audio("../../data/birthday.wav",audio))
 	{
-		printf("\'birthday.wav\' audio file not found!\n");
-		exit(1);
+	    printf("File Error: \'birthday.wav\' audio file not found!\n");
+	    exit(1);
 	}
-
+	
 	CLAM::VM::PlotAudio(audio); 
 
 	return 0;
