@@ -5,12 +5,10 @@
 
 using CLAM::Audio;
 using CLAM::Segment;
-using CLAM::DataArray;
 
 namespace qtvm_examples_utils
 {
     void analyze(const Audio& in, Segment& out); 
-    void energy(const Audio& in, DataArray& out);
 }
 
 #endif
