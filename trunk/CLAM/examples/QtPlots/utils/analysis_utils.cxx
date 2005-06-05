@@ -1,5 +1,4 @@
-#include "SegmentDescriptors.hxx"
-#include "Analyzer.hxx"
+#include "SMSAnalysis.hxx"
 #include "analysis_utils.hxx"
 
 using namespace CLAM;
@@ -14,113 +13,30 @@ namespace qtvm_examples_utils
 	out.SetAudio(in);
 	out.SetBeginTime(0);
 	out.SetSamplingRate(out.GetAudio().GetSampleRate());
+	out.mCurrentFrameIndex=0;
 
-	TSize wSize = 2049;
-	TSize hopSize = 256;
-	TData sampleRate = out.GetSamplingRate();
+	SMSAnalysisConfig cfg;
+	cfg.SetSinWindowType(EWindowType::eBlackmanHarris92);
+	cfg.SetResWindowType(EWindowType::eBlackmanHarris92);
+	cfg.SetSinWindowSize(2049);
+	cfg.SetResWindowSize(1025);
+	cfg.SetHopSize(256);
+	cfg.SetSinZeroPadding(2);
+	cfg.SetResZeroPadding(0);
+	cfg.SetSamplingRate(out.GetSamplingRate());
+	cfg.GetPeakDetect().SetMagThreshold(-150);
 
-	AnalyzerConfig cfg;
-	Analyzer analyzer;
-	
-	cfg.SetWindowSize(wSize);
-	cfg.SetSamplingRate(sampleRate);
-	
+	SMSAnalysis analyzer;
 	analyzer.Configure(cfg);
-
+	
 	analyzer.Start();
-
-	TSize nSamples = out.GetAudio().GetSize();
-	TSize frameSize = cfg.GetWindowSize();
-
-	Frame frame;
-	frame.AddAudioFrame();
-	frame.UpdateData();
-
-	frame.SetDuration(TData(hopSize/sampleRate));
-	frame.GetAudioFrame().SetSize(frameSize);    
-  
-	TIndex leftIndex = 0;
-	TIndex rightIndex = frameSize;
-
-	while(leftIndex < nSamples)
+	while(analyzer.Do(out))
 	{
-	    out.GetAudio().GetAudioChunk(leftIndex,rightIndex,frame.GetAudioFrame()); 
-	    analyzer.Do(frame);         
-	    out.AddFrame(frame);    
-
-	    leftIndex += hopSize;
-	    rightIndex = leftIndex + frameSize;
-	}
+	    printf(".");
+	}         
 	analyzer.Stop();
 	out.SetEndTime(out.GetAudio().GetSize()/out.GetAudio().GetSampleRate());
-    }
-
-   
-
-    void energy(const Audio& in, DataArray& out)
-    {
-	Segment seg;
-	seg.AddAudio();
-	seg.UpdateData();
-
-	seg.SetAudio(in);
-	seg.SetBeginTime(0);
-	seg.SetSamplingRate(seg.GetAudio().GetSampleRate());
-
-	TSize wSize = 513;
-	TSize hopSize = 256;
-	TData sampleRate = seg.GetSamplingRate();
-
-	AnalyzerConfig cfg;
-	Analyzer analyzer;
-	
-	cfg.SetWindowSize(wSize);
-	cfg.SetZeroPadding(2);
-	cfg.SetSamplingRate(sampleRate);
-	
-	analyzer.Configure(cfg);
-
-	analyzer.Start();
-
-	TSize nSamples = seg.GetAudio().GetSize();
-	TSize frameSize = cfg.GetWindowSize();
-
-	Frame frame;
-	frame.AddAudioFrame();
-	frame.UpdateData();
-
-	frame.SetDuration(TData(hopSize/sampleRate));
-	frame.GetAudioFrame().SetSize(frameSize);    
-  
-	TIndex leftIndex = 0;
-	TIndex rightIndex = frameSize;
-
-	while(leftIndex < nSamples)
-	{
-	    seg.GetAudio().GetAudioChunk(leftIndex,rightIndex,frame.GetAudioFrame()); 
-	    analyzer.Do(frame);         
-	    seg.AddFrame(frame);    
-
-	    leftIndex += hopSize;
-	    rightIndex = leftIndex + frameSize;
-	}
-	analyzer.Stop();
-
-	SegmentDescriptors desc  = analyzer.GetDescriptors();
-	TSize nFrames = desc.GetFramesD().Size();
-	out.Resize(nFrames);  
-	out.SetSize(nFrames);  
-	for(TIndex i=0;i < nFrames; i++)
-	{
-	    out[i] = desc.GetFrameD(i).GetSpectrumD().GetEnergy();
-	}
-    }
-
-  
-
-   
-
-   
+    }   
 }
 
 // END
