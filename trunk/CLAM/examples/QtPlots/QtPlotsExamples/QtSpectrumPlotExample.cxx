@@ -38,9 +38,9 @@ int main()
 	   frequency, amplitude, duration, sampleRate);
     qtvm_examples_utils::sine(frequency, amplitude, duration, sampleRate, audio);
 
-    printf("Analysing...\n");
+    printf("Analysing");
     qtvm_examples_utils::analyze(audio,seg);
-    printf("done!\n");
+    printf("\ndone!\n");
 
     int index = seg.GetnFrames()/2;
     
@@ -49,7 +49,7 @@ int main()
     CLAM::VM::QtSpectrumPlot specPlot;
     specPlot.Label("Spectrum");
     specPlot.Geometry(100,100,500,225);
-    specPlot.SetData(seg.GetFrame(index).GetSpectrum());
+    specPlot.SetData(seg.GetFrame(index).GetSinusoidalAnalSpectrum());
     specPlot.SetForegroundColor(CLAM::VM::VMColor::Blue());
     specPlot.Show();
 

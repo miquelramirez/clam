@@ -68,9 +68,9 @@ int main()
 
 	CLAM::Segment seg;
     
-	printf("Analysing audio...\n");
+	printf("Analysing audio");
 	qtvm_examples_utils::analyze(audio,seg);
-	printf("done!\n");
+	printf("\ndone!\n");
 	
 	// add plots to plotter
 	QtPlotter::Add("audio_plot",audio);

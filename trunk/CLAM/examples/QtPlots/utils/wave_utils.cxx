@@ -6,23 +6,24 @@ using namespace CLAM;
 
 namespace qtvm_examples_utils
 {
-    void chirp(const TData& freq0, const TData& freq1, const TData& duration, const TData& sampleRate, Audio& out)
+    void chirp(const double& freq0, const double& freq1, const double& duration, const double& sampleRate, Audio& out)
     {
-	const float pi = 3.14159265359;
+	const double pi = 3.141592653589793;
 
 	TSize nSamples = TSize(duration*sampleRate);
 	out.SetSize(nSamples);
-	out.SetSampleRate(sampleRate);
+	out.SetSampleRate(TData(sampleRate));
+	out.SetBeginTime(0.0);
 
-	std::complex<float> j = std::complex<float>(0.0f,1.0f);
-	float dt = TData(1.0)/sampleRate;
-	float mu = (freq1-freq0)/(2.0f*float(duration));
+	std::complex<double> j = std::complex<double>(0.0,1.0);
+	double dt = 1.0/sampleRate;
+	double mu = (freq1-freq0)/(2.0*duration);
 	
 	for(TIndex i=0; i < nSamples; i++)
 	{
-	    float psi = 2.0f*pi*(float(freq0)*float(i)*dt+mu*float(i)*dt*float(i)*dt);
+	    double psi = 2.0*pi*(freq0*double(i)*dt+mu*double(i)*dt*double(i)*dt);
 	    out.GetBuffer()[i]=TData(std::exp(j*psi).real());
-	}
+	}	
     }
 
     void sine(const TData& freq, const TData& amplitude, const TData& duration, const TData& sampleRate, Audio& out)

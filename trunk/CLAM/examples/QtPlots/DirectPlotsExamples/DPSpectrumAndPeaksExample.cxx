@@ -38,13 +38,14 @@ int main()
 	   frequency, amplitude, duration, sampleRate);
     qtvm_examples_utils::sine(frequency, amplitude, duration, sampleRate, audio);
 
-    printf("Analysing...\n");
+    printf("Analysing");
     qtvm_examples_utils::analyze(audio,seg);
-    printf("done!\n");
+    printf("\ndone!\n");
+
+    int index = seg.GetnFrames()/2;
 
     // plot data
-    int index = seg.GetnFrames()/2;
-    CLAM::VM::PlotSpectrumAndPeaks(seg.GetFrame(index).GetSpectrum(),
+    CLAM::VM::PlotSpectrumAndPeaks(seg.GetFrame(index).GetSinusoidalAnalSpectrum(),
 				   seg.GetFrame(index).GetSpectralPeakArray(),
 				   "Spectrum and Peaks"); 
 
