@@ -1,5 +1,11 @@
-  * SMS Transformations on the network editor:
+   * SMS Transformations on the network editor:
      ** 
+  * QtPlots add-ons: 
+     ** Editable segmentation marks on all the plots   
+     ** QtSpectrogram:
+	*** Plot to view sonogram (Color/B&W)
+     ** BPFEditor:
+	*** Editable/auralizable plot (Audio and MIDI support)
   * New Prototyping way:
      ** Prototyper: Allows to bind a Qt desinger interface to a
         Network XML definition so you can have an CLAM GUI application
