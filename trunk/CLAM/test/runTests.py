@@ -191,7 +191,9 @@ simpleExamples = [
         ( 'SinglePlot', simpleExamplesPath+'SinglePlot/'),
         ( 'SpectrumExample', simpleExamplesPath+'Spectrum/'),
         ( 'ThreadedProcessing', simpleExamplesPath+'ThreadedProcessing/'),
-	( 'BPFEditorExample', simpleExamplesPath+'BPFEditorExample/')
+	( 'BPFEditor', simpleExamplesPath+'QtPlots/BPFEditorExample/'),
+	( 'SinTracks', simpleExamplesPath+'QtPlots/QtPlotsExamples/SinTracksPlotExample/'),
+	( 'Spectrogram', simpleExamplesPath+'QtPlots/QtPlotsExamples/SpectrogramExample/')
 ]
 
 
