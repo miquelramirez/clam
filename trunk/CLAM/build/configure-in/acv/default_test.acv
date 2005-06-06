@@ -41,15 +41,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for $$package failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for $$package failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of $$package altogether, running configure
 with the
   --without-$$package
 option.
-])
+		])
+	else
+		result_$$package_esc=fail
+	fi
+else
+	result_$$package_esc=ok
 fi
 #####################################################################
 

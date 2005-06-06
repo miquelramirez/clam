@@ -2053,396 +2053,6 @@ int main()
 	fi
 fi
 fi
-# source add_qt_include_path
-
-if test x$found_qt = xyes
-then
-	before_adding_qt_include_path_CXXFLAGS=$CXXFLAGS
-	before_adding_qt_include_path_CPPFLAGS=$CPPFLAGS
-	for tmp in $include_dirs_qt
-	do
-		CXXFLAGS="$CXXFLAGS -I$tmp"
-		CPPFLAGS="$CPPFLAGS -I$tmp"
-	done
-fi
-#####################################################################
-# Check if qwt is going to be used
-#
-# source: acv/check_package_enable.acv 
-#####################################################################
-AC_MSG_CHECKING([qwt usage specified])
-#
-AC_ARG_WITH(
-	[qwt],AC_HELP_STRING([--with-qwt],
-	[use qwt (default is yes)]),[
-	if test x$enableval = xyes
-	then
-		AC_MSG_RESULT([yes])
-		enabled_qwt=yes
-	else
-		AC_MSG_RESULT([no])
-		enabled_qwt=no
-	fi
-],[
-	AC_MSG_RESULT([yes (default)])
-	enabled_qwt=yes
-])
-found_qwt=no
-#####################################################################
-
-#####################################################################
-# IF qwt is enabled THEN
-#
-# source: acv/package_enabled_start.acv 
-#####################################################################
-if test x$enabled_qwt = xyes
-then
-#####################################################################
-
-#####################################################################
-# Look for qwt in the sandbox
-#
-# source: acv/package_in_sandbox.acv 
-#####################################################################
-AC_MSG_CHECKING([qwt in sandbox])
-if test x$sandbox_location = x
-then
-	if test x$enabled_sandbox = xno
-	then
-		AC_MSG_RESULT([no - sandbox disabled])	
-	else
-		AC_MSG_RESULT([no - sandbox not found])	
-	fi
-else
-	AC_MSG_RESULT([searching headers])	
-	if test x$found_qwt = xno
-	then
-		found=1
-		for file in qwt/qwt_math.h
-		do
-			AC_MSG_CHECKING([$file for qwt in sandbox])
-			if test -r $sandbox_location/qwt/include/$file
-			then
-				AC_MSG_RESULT([yes])
-				include_dirs_qwt="$sandbox_location/qwt/include"
-			else
-				AC_MSG_RESULT([no])
-				found=0
-			fi
-		done
-		AC_MSG_CHECKING([[qwt header(s) found in sandbox]])
-		if test $found = 1
-		then
-			AC_MSG_RESULT([yes])
-			sep=""
-			found=1
-			libdirset=no
-			for file in qwt
-			do
-				AC_MSG_CHECKING([lib$file for qwt in sandbox])
-				if test -r $sandbox_location/qwt/lib/lib$file.$dllext
-					then
-					AC_MSG_RESULT([yes])
-					libs_in_sandbox_qwt="$libs_in_sandbox_qwt$sep$file"
-					if test x$libdirset = xno
-					then
-						lib_dirs_qwt="$sandbox_location/qwt/lib"
-						libdirset=yes
-					fi
-					sep=" "
-				else
-					AC_MSG_RESULT([no])
-					found=0
-				fi
-			done
-			AC_MSG_CHECKING([[all qwt lib(s) found in sandbox]])
-			if test $found = 1
-			then
-				AC_MSG_RESULT([yes - adding to library path])
-				found_qwt=yes
-				found_in_sandbox_qwt=yes
-			else
-				AC_MSG_RESULT([no])
-				found_qwt=no
-			fi
-		else
-			AC_MSG_RESULT([no])
-			found_qwt=no
-		fi
-	fi
-fi
-if test x$found_in_sandbox_qwt = xyes
-then
-	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_qwt"
-	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
-	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
-	LIBS=
-	old_CXXFLAGS=$CXXFLAGS
-	old_LDFLAGS=$LDFLAGS
-	for tmp in $include_dirs_qwt
-	do
-		CXXFLAGS="$CXXFLAGS -I$tmp"
-	done
-	for tmp in $lib_dirs_qwt
-	do
-		LDFLAGS="$LDFLAGS -L$tmp"
-	done
-	AC_MSG_CHECKING([libraries needed for qwt])
-	AC_COMPILE_IFELSE(
-	[
-		AC_LANG_SOURCE(
-[[
-#include<qwt/qwt_math.h>
-int main()
-{
-	if (qwtCeil125(1.1)==2.0)
-	{
-		return 0;
-	}
-	return -1;
-}
-
-]]	
-	)],[
-		links_ok=0
-		tmp_libs=""
-		sep=""
-		for tmp in $libs_in_sandbox_qwt 
-		do
-			LDFLAGS="$LDFLAGS -l$tmp"
-			tmp_libs="$tmp_libs$sep$tmp"
-			sep=" "
-			AC_LINK_IFELSE(
-			[
-				AC_LANG_SOURCE(
-[[
-#include<qwt/qwt_math.h>
-int main()
-{
-	if (qwtCeil125(1.1)==2.0)
-	{
-		return 0;
-	}
-	return -1;
-}
-;
-]])	
-			],[
-				links_ok=yes
-			],[
-			]
-			)
-			if test x$links_ok = xyes; then
-				break 2
-			fi
-		done
-		if test x$links_ok = xyes; then
-			libs_qwt=$tmp_libs
-			found_qwt=yes
-			AC_MSG_RESULT([$libs_qwt])
-		else
-			AC_MSG_RESULT([linking failed])
-		fi
-	],[
-		AC_MSG_RESULT([compilation failed])
-	])
-	CXXFLAGS=$old_CXXFLAGS
-	LDFLAGS=$old_LDFLAGS
-fi
-#####################################################################
-# pkgconfig routine for finding qwt
-#
-# source: acv/pkg_config_find.acv 
-#####################################################################
-if test x$enabled_qwt = xyes
-    then
-    if test x$found_qwt = xno
-	then
-	AC_MSG_CHECKING([qwt has pkg-config])
-	if test x$pkg_config_status = xenabled
-	    then
-	    $pkg_config --exists qwt
-	    if test $? = 0
-		then
-		AC_MSG_RESULT([yes])
-		found_qwt=yes
-		include_dirs_qwt=`$pkg_config qwt --cflags-only-I | sed -e 's/ -I/ /g' |  sed -e 's/^-I/ /g' | sed -e 's/^ //'`
-		libs_qwt=`$pkg_config qwt --libs-only-l | sed -e 's/ -l/ /g' |  sed -e 's/^-l/ /g' | sed -e 's/^ //'`
-		lib_dirs_qwt=`$pkg_config qwt --libs-only-L | sed -e 's/ -L/ /g' | sed -e 's/^-L/ /g' | sed -e 's/^ //'`
-	    else
-		AC_MSG_RESULT([no])
-		found_qwt=no
-	    fi
-	else
-	    if test x$pkg_config_status = xdisabled
-		then
-		AC_MSG_RESULT([no: pkg-config disabled])
-	    else
-		AC_MSG_RESULT([no: pkg-config is not installed])
-	    fi
-	fi
-    fi
-fi
-#####################################################################
-
-#####################################################################
-# Standard routine for finding qwt
-#
-# source: acv/standard_find.acv 
-#####################################################################
-if test x$enabled_qwt = xyes
-then
-  if test x$found_qwt = xno
-	then
-	found=1
-	for file in qwt/qwt_math.h
-	do
-		AC_CHECK_HEADER($file,[filefound=1],[filefound=0])
-		AC_MSG_CHECKING([$file for qwt in standard locations])
-		if test $filefound = 1
-		then
-			AC_MSG_RESULT([yes])
-		else
-	    AC_MSG_RESULT([no])
-	    found=0
-		fi
-	done
-	AC_MSG_CHECKING([[qwt header(s) found in standard locations]])
-	if test $found = 1
-	then
-		AC_MSG_RESULT([yes])
-		if test x"qwt" != x
-		then
-			LIBS=
-			old_CXXFLAGS=$CXXFLAGS
-			old_LDFLAGS=$LDFLAGS
-			for tmp in $include_dirs_qwt
-			do
-				CXXFLAGS="$CXXFLAGS -I$tmp"
-			done
-			for tmp in $lib_dirs_qwt
-			do
-				LDFLAGS="$LDFLAGS -L$tmp"
-			done
-			AC_MSG_CHECKING([libraries needed for qwt])
-			AC_COMPILE_IFELSE(
-			[
-				AC_LANG_SOURCE(
-[[
-#include<qwt/qwt_math.h>
-int main()
-{
-	if (qwtCeil125(1.1)==2.0)
-	{
-		return 0;
-	}
-	return -1;
-}
-
-]]	
-			)],[
-				links_ok=0
-				tmp_libs=""
-				sep=""
-				for tmp in qwt 
-				do
-					LDFLAGS="$LDFLAGS -l$tmp"
-					tmp_libs="$tmp_libs$sep$tmp"
-					sep=" "
-					AC_LINK_IFELSE(
-					[
-						AC_LANG_SOURCE(
-[[
-#include<qwt/qwt_math.h>
-int main()
-{
-	if (qwtCeil125(1.1)==2.0)
-	{
-		return 0;
-	}
-	return -1;
-}
-;
-]])	
-					],[
-						links_ok=yes
-					],[
-					]
-					)
-					if test x$links_ok = xyes; then
-						break 2
-					fi
-				done
-				if test x$links_ok = xyes; then
-					libs_qwt=$tmp_libs
-					found_qwt=yes
-					AC_MSG_RESULT([$libs_qwt])
-				else
-					# trying alternative libs
-					LDFLAGS=$old_LDFLAGS
-					tmp_libs=""
-					sep=""
-					for tmp in $lib_dirs_qwt
-					do
-						LDFLAGS="$LDFLAGS -L$tmp"
-					done
-		for tmp in 
-					do
-						LDFLAGS="$LDFLAGS -l$tmp"
-						tmp_libs="$tmp_libs$sep$tmp"
-						sep=" "
-						AC_LINK_IFELSE(
-						[
-							AC_LANG_SOURCE(
-[[
-#include<qwt/qwt_math.h>
-int main()
-{
-	if (qwtCeil125(1.1)==2.0)
-	{
-		return 0;
-	}
-	return -1;
-}
-;
-]])	
-						],[
-							links_ok=yes
-						],[
-						]
-						)
-						if test x$links_ok = xyes; then
-							break 2
-						fi
-					done
-					if test x$links_ok = xyes; then
-						libs_qwt=$tmp_libs
-						found_qwt=yes
-						AC_MSG_RESULT([$libs_qwt])
-					else
-						AC_MSG_RESULT([linking failed])
-					fi
-				fi
-			],[
-				AC_MSG_RESULT([compilation failed])
-			])
-			CXXFLAGS=$old_CXXFLAGS
-			LDFLAGS=$old_LDFLAGS
-		else
-			# no libs to checks
-			found_qwt=yes
-		fi
-	else
-	    AC_MSG_RESULT([no])
-	    found_qwt=no
-	fi
-    fi
-fi
-
-fi
-# source add_qt_include_path_done
-CXXFLAGS=$before_adding_qt_include_path_CXXFLAGS
-CPPFLAGS=$before_adding_qt_include_path_CPPFLAGS
 #####################################################################
 # Check if sndfile is going to be used
 #
@@ -5822,15 +5432,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for fftw failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for fftw failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of fftw altogether, running configure
 with the
   --without-fftw
 option.
-])
+		])
+	else
+		result_fftw=fail
+	fi
+else
+	result_fftw=ok
 fi
 #####################################################################
 
@@ -5899,15 +5517,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for sfftw failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for sfftw failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of sfftw altogether, running configure
 with the
   --without-sfftw
 option.
-])
+		])
+	else
+		result_sfftw=fail
+	fi
+else
+	result_sfftw=ok
 fi
 #####################################################################
 
@@ -5971,15 +5597,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for xerces failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for xerces failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of xerces altogether, running configure
 with the
   --without-xerces
 option.
-])
+		])
+	else
+		result_xerces=fail
+	fi
+else
+	result_xerces=ok
 fi
 #####################################################################
 
@@ -6045,15 +5679,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for fltk failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for fltk failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of fltk altogether, running configure
 with the
   --without-fltk
 option.
-])
+		])
+	else
+		result_fltk=fail
+	fi
+else
+	result_fltk=ok
 fi
 #####################################################################
 
@@ -6118,108 +5760,27 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for qt failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for qt failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of qt altogether, running configure
 with the
   --without-qt
 option.
-])
-fi
-#####################################################################
-
-fi
-# source add_qt_include_path
-
-if test x$found_qt = xyes
-then
-	before_adding_qt_include_path_CXXFLAGS=$CXXFLAGS
-	before_adding_qt_include_path_CPPFLAGS=$CPPFLAGS
-	for tmp in $include_dirs_qt
-	do
-		CXXFLAGS="$CXXFLAGS -I$tmp"
-		CPPFLAGS="$CPPFLAGS -I$tmp"
-	done
-fi
-#####################################################################
-# IF qwt is enabled THEN
-#
-# source: acv/package_enabled_start.acv 
-#####################################################################
-if test x$enabled_qwt = xyes
-then
-#####################################################################
-
-#####################################################################
-# Default test, to test qwt
-#
-# source: acv/default_test.acv 
-#####################################################################
-failure=no
-if test $found_qwt
-then
-	old_CXXFLAGS=$CXXFLAGS
-	old_LDFLAGS=$LDFLAGS
-	for tmp in $include_dirs_qwt
-	  do
-	  CXXFLAGS="$CXXFLAGS -I$tmp"
-	done
-	for tmp in $lib_dirs_qwt
-	  do
-	  LDFLAGS="$LDFLAGS -L$tmp"
-	done
-	for tmp in $libs_qwt
-	  do
-	  LDFLAGS="$LDFLAGS -l$tmp"
-	done
-	AC_MSG_CHECKING([compiling, linking and running with qwt])
-	AC_RUN_IFELSE(
-	    [
-		AC_LANG_SOURCE(
-		    [[
-			    #include<qwt/qwt_math.h>
-int main()
-{
-	if (qwtCeil125(1.1)==2.0)
-	{
-		return 0;
-	}
-	return -1;
-}
-
-			    ]])	
-		],[
-		AC_MSG_RESULT(ok)
-		],[
-			AC_MSG_RESULT(failed)
-			failure=yes
-		]
-	)
-	CXXFLAGS=$old_CXXFLAGS
-	LDFLAGS=$old_LDFLAGS
+		])
+	else
+		result_qt=fail
+	fi
 else
-	failure=yes
-fi
-if test x$failure = xyes
-then
-	AC_MSG_FAILURE([
-Configure-checks for qwt failed.
-Please check the configure output to see which checks failed, and the
-config.log file for more details.
-Note that you can disable the use of qwt altogether, running configure
-with the
-  --without-qwt
-option.
-])
+	result_qt=ok
 fi
 #####################################################################
 
 fi
-# source add_qt_include_path_done
-CXXFLAGS=$before_adding_qt_include_path_CXXFLAGS
-CPPFLAGS=$before_adding_qt_include_path_CPPFLAGS
 #####################################################################
 # IF sndfile is enabled THEN
 #
@@ -6280,15 +5841,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for sndfile failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for sndfile failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of sndfile altogether, running configure
 with the
   --without-sndfile
 option.
-])
+		])
+	else
+		result_sndfile=fail
+	fi
+else
+	result_sndfile=ok
 fi
 #####################################################################
 
@@ -6359,15 +5928,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for oggvorbis failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for oggvorbis failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of oggvorbis altogether, running configure
 with the
   --without-oggvorbis
 option.
-])
+		])
+	else
+		result_oggvorbis=fail
+	fi
+else
+	result_oggvorbis=ok
 fi
 #####################################################################
 
@@ -6432,15 +6009,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for ladspa failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for ladspa failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of ladspa altogether, running configure
 with the
   --without-ladspa
 option.
-])
+		])
+	else
+		result_ladspa=fail
+	fi
+else
+	result_ladspa=ok
 fi
 #####################################################################
 
@@ -6503,15 +6088,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for portmidi failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for portmidi failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of portmidi altogether, running configure
 with the
   --without-portmidi
 option.
-])
+		])
+	else
+		result_portmidi=fail
+	fi
+else
+	result_portmidi=ok
 fi
 #####################################################################
 
@@ -6574,15 +6167,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for portaudio failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for portaudio failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of portaudio altogether, running configure
 with the
   --without-portaudio
 option.
-])
+		])
+	else
+		result_portaudio=fail
+	fi
+else
+	result_portaudio=ok
 fi
 #####################################################################
 
@@ -6646,15 +6247,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for alsa failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for alsa failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of alsa altogether, running configure
 with the
   --without-alsa
 option.
-])
+		])
+	else
+		result_alsa=fail
+	fi
+else
+	result_alsa=ok
 fi
 #####################################################################
 
@@ -6718,15 +6327,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for mad failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for mad failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of mad altogether, running configure
 with the
   --without-mad
 option.
-])
+		])
+	else
+		result_mad=fail
+	fi
+else
+	result_mad=ok
 fi
 #####################################################################
 
@@ -6789,15 +6406,23 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for id3 failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for id3 failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of id3 altogether, running configure
 with the
   --without-id3
 option.
-])
+		])
+	else
+		result_id3=fail
+	fi
+else
+	result_id3=ok
 fi
 #####################################################################
 
@@ -6861,349 +6486,602 @@ else
 fi
 if test x$failure = xyes
 then
-	AC_MSG_FAILURE([
-Configure-checks for oscpack failed.
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for oscpack failed. Exiting because you run with the
+flag --enable-exit_on_failure.
 Please check the configure output to see which checks failed, and the
 config.log file for more details.
 Note that you can disable the use of oscpack altogether, running configure
 with the
   --without-oscpack
 option.
-])
+		])
+	else
+		result_oscpack=fail
+	fi
+else
+	result_oscpack=ok
 fi
 #####################################################################
 
 fi
 #####################################################################
-# Give a warning when fftw is disabled
+# Check if exit_on_failure is enabled
 #
-# source: acv/disabled_package_warning.acv 
+# source: acv/check_feature_enable.acv 
 #####################################################################
-if test x$enabled_fftw = x
-then
-	AC_MSG_ERROR('fftw with/without checking not done')
-fi
+AC_MSG_CHECKING([exit_on_failure enabled])
+#
+AC_ARG_ENABLE(
+	[exit_on_failure],AC_HELP_STRING([--enable-exit_on_failure],
+	[use exit_on_failure (default is no)]),[
+	if test x$enableval = xyes
+	then
+		AC_MSG_RESULT([yes])
+		enabled_exit_on_failure=yes
+	else
+		AC_MSG_RESULT([no])
+		enabled_exit_on_failure=no
+	fi
+],[
+	AC_MSG_RESULT([no (default)])
+	enabled_exit_on_failure=no
+])
+found_exit_on_failure=no
+#####################################################################
+
+AC_MSG_RESULT(
+[==================== Results of package tests ==================== 
+Please see below for more information
+==================================================================
+[Package-name] [enabled] [check-result] [srcdeps variables]
+------------------------------------------------------------------])
 if test x$enabled_fftw = xno
 then
-	AC_MSG_WARN([without fftw
-======================================================================
-You deactivated usage of package fftw. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_FFTW=1, but HAS_FFTW=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_fftw = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when sfftw is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_sfftw = x
+if test x$result_fftw = xfail
 then
-	AC_MSG_ERROR('sfftw with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_fftw = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_fftw = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_fftw = xyes; then
+        HAS_FFTW=1
+else
+        HAS_FFTW=0
+fi
+tmp1=`echo 'fftw' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[fftw$tmp2 $enabledstr   $resultstr HAS_FFTW=$HAS_FFTW USE_FFTW])
 if test x$enabled_sfftw = xno
 then
-	AC_MSG_WARN([without sfftw
-======================================================================
-You deactivated usage of package sfftw. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_SFFTW=1, but HAS_SFFTW=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_sfftw = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when xerces is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_xerces = x
+if test x$result_sfftw = xfail
 then
-	AC_MSG_ERROR('xerces with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_sfftw = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_sfftw = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_sfftw = xyes; then
+        HAS_SFFTW=1
+else
+        HAS_SFFTW=0
+fi
+tmp1=`echo 'sfftw' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[sfftw$tmp2 $enabledstr   $resultstr HAS_SFFTW=$HAS_SFFTW USE_SFFTW])
 if test x$enabled_xerces = xno
 then
-	AC_MSG_WARN([without xerces
-======================================================================
-You deactivated usage of package xerces. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_XERCES=1, but HAS_XERCES=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_xerces = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when fltk is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_fltk = x
+if test x$result_xerces = xfail
 then
-	AC_MSG_ERROR('fltk with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_xerces = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_xerces = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_xerces = xyes; then
+        HAS_XERCES=1
+else
+        HAS_XERCES=0
+fi
+tmp1=`echo 'xerces' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[xerces$tmp2 $enabledstr   $resultstr HAS_XERCES=$HAS_XERCES USE_XERCES])
 if test x$enabled_fltk = xno
 then
-	AC_MSG_WARN([without fltk
-======================================================================
-You deactivated usage of package fltk. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_FLTK=1, but HAS_FLTK=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_fltk = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when qt is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_qt = x
+if test x$result_fltk = xfail
 then
-	AC_MSG_ERROR('qt with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_fltk = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_fltk = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_fltk = xyes; then
+        HAS_FLTK=1
+else
+        HAS_FLTK=0
+fi
+tmp1=`echo 'fltk' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[fltk$tmp2 $enabledstr   $resultstr HAS_FLTK=$HAS_FLTK USE_FLTK])
 if test x$enabled_qt = xno
 then
-	AC_MSG_WARN([without qt
-======================================================================
-You deactivated usage of package qt. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_QT=1, but HAS_QT=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_qt = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when qwt is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_qwt = x
+if test x$result_qt = xfail
 then
-	AC_MSG_ERROR('qwt with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_qt = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_qt = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
-if test x$enabled_qwt = xno
-then
-	AC_MSG_WARN([without qwt
-======================================================================
-You deactivated usage of package qwt. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_QWT=1, but HAS_QWT=0
-======================================================================])
+if test x$found_qt = xyes; then
+        HAS_QT=1
+else
+        HAS_QT=0
 fi
-#####################################################################
-
-#####################################################################
-# Give a warning when sndfile is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_sndfile = x
-then
-	AC_MSG_ERROR('sndfile with/without checking not done')
-fi
+tmp1=`echo 'qt' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[qt$tmp2 $enabledstr   $resultstr HAS_QT=$HAS_QT USE_QT])
 if test x$enabled_sndfile = xno
 then
-	AC_MSG_WARN([without sndfile
-======================================================================
-You deactivated usage of package sndfile. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_SNDFILE=1, but HAS_SNDFILE=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_sndfile = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when oggvorbis is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_oggvorbis = x
+if test x$result_sndfile = xfail
 then
-	AC_MSG_ERROR('oggvorbis with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_sndfile = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_sndfile = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_sndfile = xyes; then
+        HAS_SNDFILE=1
+else
+        HAS_SNDFILE=0
+fi
+tmp1=`echo 'sndfile' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[sndfile$tmp2 $enabledstr   $resultstr HAS_SNDFILE=$HAS_SNDFILE USE_SNDFILE])
 if test x$enabled_oggvorbis = xno
 then
-	AC_MSG_WARN([without oggvorbis
-======================================================================
-You deactivated usage of package oggvorbis. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_OGGVORBIS=1, but HAS_OGGVORBIS=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_oggvorbis = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when ladspa is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_ladspa = x
+if test x$result_oggvorbis = xfail
 then
-	AC_MSG_ERROR('ladspa with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_oggvorbis = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_oggvorbis = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_oggvorbis = xyes; then
+        HAS_OGGVORBIS=1
+else
+        HAS_OGGVORBIS=0
+fi
+tmp1=`echo 'oggvorbis' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[oggvorbis$tmp2 $enabledstr   $resultstr HAS_OGGVORBIS=$HAS_OGGVORBIS USE_OGGVORBIS])
 if test x$enabled_ladspa = xno
 then
-	AC_MSG_WARN([without ladspa
-======================================================================
-You deactivated usage of package ladspa. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_LADSPA=1, but HAS_LADSPA=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_ladspa = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when portmidi is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_portmidi = x
+if test x$result_ladspa = xfail
 then
-	AC_MSG_ERROR('portmidi with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_ladspa = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_ladspa = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_ladspa = xyes; then
+        HAS_LADSPA=1
+else
+        HAS_LADSPA=0
+fi
+tmp1=`echo 'ladspa' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[ladspa$tmp2 $enabledstr   $resultstr HAS_LADSPA=$HAS_LADSPA USE_LADSPA])
 if test x$enabled_portmidi = xno
 then
-	AC_MSG_WARN([without portmidi
-======================================================================
-You deactivated usage of package portmidi. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_PORTMIDI=1, but HAS_PORTMIDI=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_portmidi = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when portaudio is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_portaudio = x
+if test x$result_portmidi = xfail
 then
-	AC_MSG_ERROR('portaudio with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_portmidi = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_portmidi = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_portmidi = xyes; then
+        HAS_PORTMIDI=1
+else
+        HAS_PORTMIDI=0
+fi
+tmp1=`echo 'portmidi' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[portmidi$tmp2 $enabledstr   $resultstr HAS_PORTMIDI=$HAS_PORTMIDI USE_PORTMIDI])
 if test x$enabled_portaudio = xno
 then
-	AC_MSG_WARN([without portaudio
-======================================================================
-You deactivated usage of package portaudio. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_PORTAUDIO=1, but HAS_PORTAUDIO=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_portaudio = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when alsa is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_alsa = x
+if test x$result_portaudio = xfail
 then
-	AC_MSG_ERROR('alsa with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_portaudio = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_portaudio = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_portaudio = xyes; then
+        HAS_PORTAUDIO=1
+else
+        HAS_PORTAUDIO=0
+fi
+tmp1=`echo 'portaudio' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[portaudio$tmp2 $enabledstr   $resultstr HAS_PORTAUDIO=$HAS_PORTAUDIO USE_PORTAUDIO])
 if test x$enabled_alsa = xno
 then
-	AC_MSG_WARN([without alsa
-======================================================================
-You deactivated usage of package alsa. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_ALSA=1, but HAS_ALSA=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_alsa = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when mad is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_mad = x
+if test x$result_alsa = xfail
 then
-	AC_MSG_ERROR('mad with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_alsa = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_alsa = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_alsa = xyes; then
+        HAS_ALSA=1
+else
+        HAS_ALSA=0
+fi
+tmp1=`echo 'alsa' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[alsa$tmp2 $enabledstr   $resultstr HAS_ALSA=$HAS_ALSA USE_ALSA])
 if test x$enabled_mad = xno
 then
-	AC_MSG_WARN([without mad
-======================================================================
-You deactivated usage of package mad. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_MAD=1, but HAS_MAD=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_mad = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when id3 is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_id3 = x
+if test x$result_mad = xfail
 then
-	AC_MSG_ERROR('id3 with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_mad = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_mad = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_mad = xyes; then
+        HAS_MAD=1
+else
+        HAS_MAD=0
+fi
+tmp1=`echo 'mad' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[mad$tmp2 $enabledstr   $resultstr HAS_MAD=$HAS_MAD USE_MAD])
 if test x$enabled_id3 = xno
 then
-	AC_MSG_WARN([without id3
-======================================================================
-You deactivated usage of package id3. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_ID3=1, but HAS_ID3=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_id3 = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
-#####################################################################
-# Give a warning when oscpack is disabled
-#
-# source: acv/disabled_package_warning.acv 
-#####################################################################
-if test x$enabled_oscpack = x
+if test x$result_id3 = xfail
 then
-	AC_MSG_ERROR('oscpack with/without checking not done')
+  resultstr='FAILED  '
+else
+  if test x$result_id3 = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_id3 = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
 fi
+if test x$found_id3 = xyes; then
+        HAS_ID3=1
+else
+        HAS_ID3=0
+fi
+tmp1=`echo 'id3' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[id3$tmp2 $enabledstr   $resultstr HAS_ID3=$HAS_ID3 USE_ID3])
 if test x$enabled_oscpack = xno
 then
-	AC_MSG_WARN([without oscpack
-======================================================================
-You deactivated usage of package oscpack. Note that this may cause 
-that certain examples and tests will not compile. Typically running
-'make depend' may give you an error that says:
-
-srcdeps: configuration specifies USE_OSCPACK=1, but HAS_OSCPACK=0
-======================================================================])
+  enabledstr='NO   '
+else
+  if test x$enabled_oscpack = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
 fi
-#####################################################################
 
+if test x$result_oscpack = xfail
+then
+  resultstr='FAILED  '
+else
+  if test x$result_oscpack = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_oscpack = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
+fi
+if test x$found_oscpack = xyes; then
+        HAS_OSCPACK=1
+else
+        HAS_OSCPACK=0
+fi
+tmp1=`echo 'oscpack' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[oscpack$tmp2 $enabledstr   $resultstr HAS_OSCPACK=$HAS_OSCPACK USE_OSCPACK])
+AC_MSG_RESULT(
+[==================================================================
+If you disabled checking for a specific package, or the test failed,
+certain examples and tests may not compile. Typically running
+'make depend' may give you an error that says:
+ srcdeps: configuration specifies USE_[package]=1, but HAS_[package]=0
+If a check failed, please read the configure output to see why it failed,
+and the config.log file for more details. If you want configure to exit
+immediately when a package test fails, use the --enable-exit_on_failure
+flag
+==================================================================])
+
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
+# OBSOLETE
 # substs for fftw
 FFTW_INCLUDES=$include_dirs_fftw
 FFTW_LIBS=$libs_fftw
@@ -7284,22 +7162,6 @@ AC_SUBST(QT_INCLUDES)
 AC_SUBST(QT_LIB_PATH)
 AC_SUBST(QT_LIBS)
 AC_SUBST(HAS_QT)
-# substs for qwt
-QWT_INCLUDES=$include_dirs_qwt
-QWT_LIBS=$libs_qwt
-QWT_LIB_PATH=$lib_dirs_qwt
-#echo QWT_INCLUDES=$include_dirs_qwt
-#echo QWT_LIBS=$libs_qwt
-#echo QWT_LIB_PATH=$lib_dirs_qwt
-if test x$found_qwt = xyes; then
-	HAS_QWT=1
-else
-	HAS_QWT=0
-fi
-AC_SUBST(QWT_INCLUDES)
-AC_SUBST(QWT_LIB_PATH)
-AC_SUBST(QWT_LIBS)
-AC_SUBST(HAS_QWT)
 # substs for sndfile
 SNDFILE_INCLUDES=$include_dirs_sndfile
 SNDFILE_LIBS=$libs_sndfile

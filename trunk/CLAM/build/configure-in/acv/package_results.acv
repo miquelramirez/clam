@@ -1,0 +1,6 @@
+AC_MSG_RESULT(
+[==================== Results of package tests ==================== 
+Please see below for more information
+==================================================================
+[Package-name] [enabled] [check-result] [srcdeps variables]
+------------------------------------------------------------------])
