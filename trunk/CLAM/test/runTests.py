@@ -24,7 +24,7 @@ updateLevelForTestData = 1
 doCleanMake = True
 # When false does not run autoconf and configure unless a new checkout
 doAutoconf = True
-configureOptions = '--without-portmidi  --without-portaudio'
+configureOptions = ''
 # Non-test are runned those seconds and then killed
 executionTime = 15
 
@@ -191,9 +191,13 @@ simpleExamples = [
         ( 'SinglePlot', simpleExamplesPath+'SinglePlot/'),
         ( 'SpectrumExample', simpleExamplesPath+'Spectrum/'),
         ( 'ThreadedProcessing', simpleExamplesPath+'ThreadedProcessing/'),
+<<<<<<< runTests.py
+	( 'BPFEditorExample', simpleExamplesPath+'QtPlots/BPFEditorExample/')
+=======
 	( 'BPFEditor', simpleExamplesPath+'QtPlots/BPFEditorExample/'),
 	( 'SinTracks', simpleExamplesPath+'QtPlots/QtPlotsExamples/SinTracksPlotExample/'),
 	( 'Spectrogram', simpleExamplesPath+'QtPlots/QtPlotsExamples/SpectrogramExample/')
+>>>>>>> 1.30
 ]
 
 
