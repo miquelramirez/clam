@@ -191,13 +191,9 @@ simpleExamples = [
         ( 'SinglePlot', simpleExamplesPath+'SinglePlot/'),
         ( 'SpectrumExample', simpleExamplesPath+'Spectrum/'),
         ( 'ThreadedProcessing', simpleExamplesPath+'ThreadedProcessing/'),
-<<<<<<< runTests.py
 	( 'BPFEditorExample', simpleExamplesPath+'QtPlots/BPFEditorExample/')
-=======
-	( 'BPFEditor', simpleExamplesPath+'QtPlots/BPFEditorExample/'),
 	( 'SinTracks', simpleExamplesPath+'QtPlots/QtPlotsExamples/SinTracksPlotExample/'),
 	( 'Spectrogram', simpleExamplesPath+'QtPlots/QtPlotsExamples/SpectrogramExample/')
->>>>>>> 1.30
 ]
 
 
