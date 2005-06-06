@@ -614,6 +614,7 @@ foreach $f (@packagedlibs)
 		&ac_default_find($f);
 	}
 }
+&ac_check_feature_enabled('exit_on_failure','no');
 foreach $f (@packagedlibs) { 
 	if ($f eq 'qwt')
 	{
@@ -625,7 +626,6 @@ foreach $f (@packagedlibs) {
 	}
 }
 #foreach $f (@packagedlibs) { &ac_introspect($f); }
-&ac_check_feature_enabled('exit_on_failure','no');
 &parse_acv_file("acv/package_results.acv");
 foreach $f (@packagedlibs) { &ac_package_result($f); }
 &parse_acv_file("acv/package_results_end.acv");
