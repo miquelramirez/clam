@@ -277,8 +277,18 @@ sub ac_package_substs
 	&parse_acv_file("acv/package_substs.acv");
 }
 
-# important: qt should come before qwt
-@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','qwt','sndfile','oggvorbis','ladspa','portmidi','portaudio','alsa','mad','id3', 'oscpack');
+sub ac_package_result
+{
+	local $package = shift;
+	local $package_esc = $package;
+	$package_esc =~ s/-/_/g;
+	local $uc_package_esc = uc($package_esc);		
+
+	&parse_acv_file("acv/package_result.acv");
+}
+
+@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','sndfile','oggvorbis','ladspa','portmidi','portaudio','alsa','mad','id3', 'oscpack');
+#@packagedlibs = ('fftw');
 
 if ($ARGV[0] eq '-u')
 {
@@ -615,6 +625,10 @@ foreach $f (@packagedlibs) {
 	}
 }
 #foreach $f (@packagedlibs) { &ac_introspect($f); }
+&ac_check_feature_enabled('exit_on_failure','no');
+&parse_acv_file("acv/package_results.acv");
+foreach $f (@packagedlibs) { &ac_package_result($f); }
+&parse_acv_file("acv/package_results_end.acv");
 foreach $f (@packagedlibs) { &ac_disabled_package_warning($f); }
 foreach $f (@packagedlibs) { &ac_package_substs($f); }
 
