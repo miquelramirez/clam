@@ -47,7 +47,7 @@ import sys
 
 doAutoconf = doAutoconf or updateLevelForCLAM == 2
 
-CLAM_SANDBOXES = os.path.dirname( os.path.abspath( sys.argv[0])+'/../..' ) + '/'
+CLAM_SANDBOXES = os.path.dirname( os.path.abspath( sys.argv[0])) + '/../../'
 print 'CLAM_SANDBOXES=',CLAM_SANDBOXES
 
 MODULE_TAG = '' #'development-branch'
