@@ -34,4 +34,4 @@ fi
 tmp1=`echo '$$package' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[$$package$tmp2 $enabledstr   $resultstr HAS_$$uc_package_esc=$HAS_$$uc_package_esc USE_$$uc_package_esc])
+[$$package$tmp2 $enabledstr   $resultstr     HAS_$$uc_package_esc=$HAS_$$uc_package_esc , USE_$$uc_package_esc])

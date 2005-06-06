@@ -5369,6 +5369,31 @@ fi
 
 fi
 #####################################################################
+# Check if exit_on_failure is enabled
+#
+# source: acv/check_feature_enable.acv 
+#####################################################################
+AC_MSG_CHECKING([exit_on_failure enabled])
+#
+AC_ARG_ENABLE(
+	[exit_on_failure],AC_HELP_STRING([--enable-exit_on_failure],
+	[use exit_on_failure (default is no)]),[
+	if test x$enableval = xyes
+	then
+		AC_MSG_RESULT([yes])
+		enabled_exit_on_failure=yes
+	else
+		AC_MSG_RESULT([no])
+		enabled_exit_on_failure=no
+	fi
+],[
+	AC_MSG_RESULT([no (default)])
+	enabled_exit_on_failure=no
+])
+found_exit_on_failure=no
+#####################################################################
+
+#####################################################################
 # IF fftw is enabled THEN
 #
 # source: acv/package_enabled_start.acv 
@@ -6507,31 +6532,6 @@ fi
 #####################################################################
 
 fi
-#####################################################################
-# Check if exit_on_failure is enabled
-#
-# source: acv/check_feature_enable.acv 
-#####################################################################
-AC_MSG_CHECKING([exit_on_failure enabled])
-#
-AC_ARG_ENABLE(
-	[exit_on_failure],AC_HELP_STRING([--enable-exit_on_failure],
-	[use exit_on_failure (default is no)]),[
-	if test x$enableval = xyes
-	then
-		AC_MSG_RESULT([yes])
-		enabled_exit_on_failure=yes
-	else
-		AC_MSG_RESULT([no])
-		enabled_exit_on_failure=no
-	fi
-],[
-	AC_MSG_RESULT([no (default)])
-	enabled_exit_on_failure=no
-])
-found_exit_on_failure=no
-#####################################################################
-
 AC_MSG_RESULT(
 [==================== Results of package tests ==================== 
 Please see below for more information
@@ -6574,7 +6574,7 @@ fi
 tmp1=`echo 'fftw' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[fftw$tmp2 $enabledstr   $resultstr HAS_FFTW=$HAS_FFTW USE_FFTW])
+[fftw$tmp2 $enabledstr   $resultstr     HAS_FFTW=$HAS_FFTW , USE_FFTW])
 if test x$enabled_sfftw = xno
 then
   enabledstr='NO   '
@@ -6611,7 +6611,7 @@ fi
 tmp1=`echo 'sfftw' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[sfftw$tmp2 $enabledstr   $resultstr HAS_SFFTW=$HAS_SFFTW USE_SFFTW])
+[sfftw$tmp2 $enabledstr   $resultstr     HAS_SFFTW=$HAS_SFFTW , USE_SFFTW])
 if test x$enabled_xerces = xno
 then
   enabledstr='NO   '
@@ -6648,7 +6648,7 @@ fi
 tmp1=`echo 'xerces' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[xerces$tmp2 $enabledstr   $resultstr HAS_XERCES=$HAS_XERCES USE_XERCES])
+[xerces$tmp2 $enabledstr   $resultstr     HAS_XERCES=$HAS_XERCES , USE_XERCES])
 if test x$enabled_fltk = xno
 then
   enabledstr='NO   '
@@ -6685,7 +6685,7 @@ fi
 tmp1=`echo 'fltk' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[fltk$tmp2 $enabledstr   $resultstr HAS_FLTK=$HAS_FLTK USE_FLTK])
+[fltk$tmp2 $enabledstr   $resultstr     HAS_FLTK=$HAS_FLTK , USE_FLTK])
 if test x$enabled_qt = xno
 then
   enabledstr='NO   '
@@ -6722,7 +6722,7 @@ fi
 tmp1=`echo 'qt' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[qt$tmp2 $enabledstr   $resultstr HAS_QT=$HAS_QT USE_QT])
+[qt$tmp2 $enabledstr   $resultstr     HAS_QT=$HAS_QT , USE_QT])
 if test x$enabled_sndfile = xno
 then
   enabledstr='NO   '
@@ -6759,7 +6759,7 @@ fi
 tmp1=`echo 'sndfile' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[sndfile$tmp2 $enabledstr   $resultstr HAS_SNDFILE=$HAS_SNDFILE USE_SNDFILE])
+[sndfile$tmp2 $enabledstr   $resultstr     HAS_SNDFILE=$HAS_SNDFILE , USE_SNDFILE])
 if test x$enabled_oggvorbis = xno
 then
   enabledstr='NO   '
@@ -6796,7 +6796,7 @@ fi
 tmp1=`echo 'oggvorbis' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[oggvorbis$tmp2 $enabledstr   $resultstr HAS_OGGVORBIS=$HAS_OGGVORBIS USE_OGGVORBIS])
+[oggvorbis$tmp2 $enabledstr   $resultstr     HAS_OGGVORBIS=$HAS_OGGVORBIS , USE_OGGVORBIS])
 if test x$enabled_ladspa = xno
 then
   enabledstr='NO   '
@@ -6833,7 +6833,7 @@ fi
 tmp1=`echo 'ladspa' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[ladspa$tmp2 $enabledstr   $resultstr HAS_LADSPA=$HAS_LADSPA USE_LADSPA])
+[ladspa$tmp2 $enabledstr   $resultstr     HAS_LADSPA=$HAS_LADSPA , USE_LADSPA])
 if test x$enabled_portmidi = xno
 then
   enabledstr='NO   '
@@ -6870,7 +6870,7 @@ fi
 tmp1=`echo 'portmidi' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[portmidi$tmp2 $enabledstr   $resultstr HAS_PORTMIDI=$HAS_PORTMIDI USE_PORTMIDI])
+[portmidi$tmp2 $enabledstr   $resultstr     HAS_PORTMIDI=$HAS_PORTMIDI , USE_PORTMIDI])
 if test x$enabled_portaudio = xno
 then
   enabledstr='NO   '
@@ -6907,7 +6907,7 @@ fi
 tmp1=`echo 'portaudio' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[portaudio$tmp2 $enabledstr   $resultstr HAS_PORTAUDIO=$HAS_PORTAUDIO USE_PORTAUDIO])
+[portaudio$tmp2 $enabledstr   $resultstr     HAS_PORTAUDIO=$HAS_PORTAUDIO , USE_PORTAUDIO])
 if test x$enabled_alsa = xno
 then
   enabledstr='NO   '
@@ -6944,7 +6944,7 @@ fi
 tmp1=`echo 'alsa' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[alsa$tmp2 $enabledstr   $resultstr HAS_ALSA=$HAS_ALSA USE_ALSA])
+[alsa$tmp2 $enabledstr   $resultstr     HAS_ALSA=$HAS_ALSA , USE_ALSA])
 if test x$enabled_mad = xno
 then
   enabledstr='NO   '
@@ -6981,7 +6981,7 @@ fi
 tmp1=`echo 'mad' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[mad$tmp2 $enabledstr   $resultstr HAS_MAD=$HAS_MAD USE_MAD])
+[mad$tmp2 $enabledstr   $resultstr     HAS_MAD=$HAS_MAD , USE_MAD])
 if test x$enabled_id3 = xno
 then
   enabledstr='NO   '
@@ -7018,7 +7018,7 @@ fi
 tmp1=`echo 'id3' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[id3$tmp2 $enabledstr   $resultstr HAS_ID3=$HAS_ID3 USE_ID3])
+[id3$tmp2 $enabledstr   $resultstr     HAS_ID3=$HAS_ID3 , USE_ID3])
 if test x$enabled_oscpack = xno
 then
   enabledstr='NO   '
@@ -7055,7 +7055,7 @@ fi
 tmp1=`echo 'oscpack' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
-[oscpack$tmp2 $enabledstr   $resultstr HAS_OSCPACK=$HAS_OSCPACK USE_OSCPACK])
+[oscpack$tmp2 $enabledstr   $resultstr     HAS_OSCPACK=$HAS_OSCPACK , USE_OSCPACK])
 AC_MSG_RESULT(
 [==================================================================
 If you disabled checking for a specific package, or the test failed,
