@@ -30,7 +30,7 @@ namespace CLAM
 			((NetPeaksPlotController*)_controller)->SetPeaksColor(cline, cpoint);
 		}
 
-		void NetPeaksPlot::NetPeaksPlot::SetPlotController()
+		void NetPeaksPlot::SetPlotController()
 		{
 			SetController(new NetPeaksPlotController());
 		}
