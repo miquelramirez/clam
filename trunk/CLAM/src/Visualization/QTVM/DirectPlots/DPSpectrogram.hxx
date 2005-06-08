@@ -11,8 +11,6 @@ namespace CLAM
     {
 	/**
 	 * Viewing sonogram directly.
-	 *
-	 * @ingroup QTVM
 	 */
 
 	void PlotSpectrogram( const Array<Spectrum>& specMtx,

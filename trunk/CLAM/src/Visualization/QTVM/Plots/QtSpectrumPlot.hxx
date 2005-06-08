@@ -28,13 +28,14 @@ namespace CLAM
 {
     namespace VM
     {	
+
+	class SingleLabel;
+
 	/**
 	 * Allows viewing a single spectrum.
 	 *
 	 * @ingroup QTVM
 	 */
-
-	class SingleLabel;
 
 	class QtSpectrumPlot : public QtPresentation
 	{

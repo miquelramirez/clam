@@ -30,11 +30,8 @@ namespace CLAM
 {
     namespace VM
     {
-		/**
-	 *
-	 * Viewing a single spectrum directly
-	 *
-	 * @ingroup QTVM
+	/**
+	 * Viewing a single spectrum directly.
 	 */
 
 	void PlotSpectrum( const Spectrum& spec,

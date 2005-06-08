@@ -29,6 +29,7 @@ namespace CLAM
 {
 	namespace VM
 	{
+	      
 	       /** 
 	        * Allows viewing a single spectrum with peaks.
 	        *

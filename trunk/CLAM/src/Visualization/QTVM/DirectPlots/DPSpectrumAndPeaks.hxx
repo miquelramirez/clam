@@ -32,8 +32,6 @@ namespace CLAM
 	{
 	       /**
 	        * Viewing a single spectrum with peaks directly.
-	        *
-	        * @ingroup QTVM
 	        */
 
 		void PlotSpectrumAndPeaks(	const Spectrum& spec,
