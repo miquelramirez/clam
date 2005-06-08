@@ -9,6 +9,11 @@ namespace CLAM
 {
     namespace VM
     {
+	/**
+	 * Viewing sonogram directly.
+	 *
+	 * @ingroup QTVM
+	 */
 
 	void PlotSpectrogram( const Array<Spectrum>& specMtx,
 			      const TData& duration,

@@ -30,6 +30,12 @@ namespace CLAM
 {
     namespace VM
     {
+	 /**
+	 *
+	 * Viewing Fundamental directly.
+	 *
+	 * @ingroup QTVM
+	 */
 
 	void PlotFundamental( const Segment& segment,
 			      const std::string& label="",
