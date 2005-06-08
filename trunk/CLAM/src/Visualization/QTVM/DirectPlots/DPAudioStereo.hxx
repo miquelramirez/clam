@@ -30,6 +30,12 @@ namespace CLAM
 {
     namespace VM
     {
+         /**		
+	 * Viewing audio stereo directly (two audio channels)
+	 *
+	 * @ingroup QTVM
+	 */
+
 	void PlotAudioStereo( const Audio& leftChannel,
 			      const Audio& rightChannel,
 			      const std::string& label="",

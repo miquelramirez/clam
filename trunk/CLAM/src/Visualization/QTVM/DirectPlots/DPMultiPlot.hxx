@@ -32,6 +32,13 @@ namespace CLAM
 {
 	namespace VM
 	{
+	    	/**
+	        *
+	        * Viewing several functions.
+	        *
+	        * @ingroup QTVM
+	        */
+
 		class QtMultiPlot;
 
 		class DPMultiPlot

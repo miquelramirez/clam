@@ -30,6 +30,12 @@ namespace CLAM
 {
     namespace VM
     {
+	/**
+	 *
+	 * Viewing sinusoidal tracks directly
+	 *
+	 * @ingroup QTVM
+	 */
 
 	void PlotSinTracks( const Segment& segment,
 			    const std::string& label="",
