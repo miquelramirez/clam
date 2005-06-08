@@ -10,6 +10,13 @@ namespace CLAM
 {
     namespace VM
     {
+		/**
+	 *
+	 * Allows viewing sonogram.
+	 *
+	 * @ingroup QTVM
+	 */
+
 	class ColorScale;
 
 	class QtSpectrogram : public QtPresentation

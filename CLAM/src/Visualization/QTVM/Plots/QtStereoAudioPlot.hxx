@@ -37,6 +37,13 @@ namespace CLAM
 {
     namespace VM
     {
+		/**
+	 *
+	 * Allows viewing audio stereo (two audio channels)
+	 *
+	 * @ingroup QTVM
+	 */
+
 	class Ruler;
 	class HScrollGroup;
 	class QtAudioPlot;
