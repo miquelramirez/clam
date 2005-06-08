@@ -23,16 +23,16 @@ namespace CLAM
 
     namespace VM
     {
+	class Ruler;
+	class BPFEditorDisplaySurface;
+	class VScrollGroup;
+	class HScrollGroup;
+
 	/**
 	 * Editable/auralizable plot.
 	 *
 	 * @ingroup QTVM
 	 */
-
-	class Ruler;
-	class BPFEditorDisplaySurface;
-	class VScrollGroup;
-	class HScrollGroup;
 
 	class BPFEditor : public QWidget, public PlayablePlot
 	{

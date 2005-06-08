@@ -31,13 +31,13 @@ namespace CLAM
 {
     namespace VM
     {
+	class TimeSegmentLabelsGroup;
+
 	/**
 	 * Allows viewing sinusoidal tracks.
 	 *
 	 * @ingroup QTVM
 	 */
-
-	class TimeSegmentLabelsGroup;
 
 	class QtSinTracksPlot : public QtPresentation
 	{

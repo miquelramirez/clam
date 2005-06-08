@@ -32,8 +32,6 @@ namespace CLAM
     {
 	/**
 	 * Viewing Fundamental directly.
-	 *
-	 * @ingroup QTVM
 	 */
 
 	void PlotFundamental( const Segment& segment,

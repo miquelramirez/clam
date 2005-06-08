@@ -32,10 +32,8 @@ namespace CLAM
     {
 	/**
 	 * Viewing CLAM::Audio directly.
-	 *
-	 * @ingroup QTVM
 	 */
-
+  
 	void PlotAudio(	const Audio& audio,
 			const std::string& label="",
 			int x=100, 

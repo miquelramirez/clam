@@ -34,13 +34,14 @@ namespace CLAM
 {
     namespace VM
     {
+	enum WhichPlot { FundamentalPlot=0, SinTracksPlot };
+
 	/**
 	 * Allows viewing several qtplots simultaneously.
 	 *
 	 * @ingroup QTVM
 	 */
 
-	enum WhichPlot { FundamentalPlot=0, SinTracksPlot };
 	class QtPlotter
 	{
 	    typedef std::map<std::string,int> PlotMap;

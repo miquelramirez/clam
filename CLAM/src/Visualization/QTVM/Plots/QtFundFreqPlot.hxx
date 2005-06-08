@@ -36,14 +36,14 @@ namespace CLAM
 {
     namespace VM
     {
+	class TimeSegmentLabelsGroup;
+	class SingleLabel;
+
 	/**
 	 * Allows viewing Fundamental evolution along time.
 	 *
 	 * @ingroup QTVM
 	 */
-
-	class TimeSegmentLabelsGroup;
-	class SingleLabel;
 	
 	class QtFundFreqPlot : public QtPresentation, public PlayablePlot
 	{

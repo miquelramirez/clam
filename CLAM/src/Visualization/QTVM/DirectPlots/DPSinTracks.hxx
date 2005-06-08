@@ -31,9 +31,7 @@ namespace CLAM
     namespace VM
     {
 	/**
-	 * Viewing sinusoidal tracks directly
-	 *
-	 * @ingroup QTVM
+	 * Viewing sinusoidal tracks directly.
 	 */
 
 	void PlotSinTracks( const Segment& segment,
