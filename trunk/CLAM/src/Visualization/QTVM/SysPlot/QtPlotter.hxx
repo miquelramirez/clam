@@ -34,6 +34,12 @@ namespace CLAM
 {
     namespace VM
     {
+	/**
+	 * Allows viewing several qtplots simultaneously.
+	 *
+	 * @ingroup QTVM
+	 */
+
 	enum WhichPlot { FundamentalPlot=0, SinTracksPlot };
 	class QtPlotter
 	{

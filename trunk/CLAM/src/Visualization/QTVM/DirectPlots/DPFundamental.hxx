@@ -30,8 +30,7 @@ namespace CLAM
 {
     namespace VM
     {
-	 /**
-	 *
+	/**
 	 * Viewing Fundamental directly.
 	 *
 	 * @ingroup QTVM

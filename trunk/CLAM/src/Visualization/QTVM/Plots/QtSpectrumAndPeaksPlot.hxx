@@ -29,6 +29,12 @@ namespace CLAM
 {
 	namespace VM
 	{
+	       /** 
+	        * Allows viewing a single spectrum with peaks.
+	        *
+	        * @ingroup QTVM
+	        */
+
 		class QtSpectrumAndPeaksPlot : public QtSpectrumPlot
 		{
 			Q_OBJECT

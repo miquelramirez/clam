@@ -30,8 +30,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-	    	/**
-	        *
+	       /**
 	        * Viewing a single spectrum with peaks directly.
 	        *
 	        * @ingroup QTVM
