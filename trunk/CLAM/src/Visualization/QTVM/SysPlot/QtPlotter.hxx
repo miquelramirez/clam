@@ -55,7 +55,7 @@ namespace CLAM
 	    static void Add(const std::string& plotKey, const std::string& dataKey, const BPF& data, int samples=100);
 	    static void Add(const std::string& plotKey, 
 			    const Array<SpectralPeakArray>& data, 
-			    const TData sampleRate, 
+			    const TData& sampleRate, 
 			    const TData& duration);
 
 	    static void SetLabel(const std::string& plotKey, const std::string& label);
