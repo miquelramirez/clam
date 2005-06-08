@@ -23,6 +23,12 @@ namespace CLAM
 
     namespace VM
     {
+	/**
+	 * Editable/auralizable plot.
+	 *
+	 * @ingroup QTVM
+	 */
+
 	class Ruler;
 	class BPFEditorDisplaySurface;
 	class VScrollGroup;

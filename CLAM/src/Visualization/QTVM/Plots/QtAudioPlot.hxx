@@ -36,7 +36,6 @@ namespace CLAM
     {
 
 	/**
-	 *
 	 * Allows viewing CLAM::Audio data.
 	 *
 	 * @ingroup QTVM

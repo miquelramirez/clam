@@ -31,7 +31,6 @@ namespace CLAM
     namespace VM
     {
 	/**
-	 *
 	 * Viewing CLAM::Audio directly.
 	 *
 	 * @ingroup QTVM

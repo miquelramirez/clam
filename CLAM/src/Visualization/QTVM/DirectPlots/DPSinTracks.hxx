@@ -31,7 +31,6 @@ namespace CLAM
     namespace VM
     {
 	/**
-	 *
 	 * Viewing sinusoidal tracks directly
 	 *
 	 * @ingroup QTVM

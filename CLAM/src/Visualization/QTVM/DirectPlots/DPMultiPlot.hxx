@@ -32,8 +32,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-	    	/**
-	        *
+	       /**
 	        * Viewing several functions.
 	        *
 	        * @ingroup QTVM

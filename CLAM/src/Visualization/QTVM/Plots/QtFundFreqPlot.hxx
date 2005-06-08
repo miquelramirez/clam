@@ -37,7 +37,6 @@ namespace CLAM
     namespace VM
     {
 	/**
-	 *
 	 * Allows viewing Fundamental evolution along time.
 	 *
 	 * @ingroup QTVM

@@ -30,8 +30,7 @@ namespace CLAM
 {
     namespace VM
     {
-		/**
-	 *
+	/**
 	 * Allows viewing multiple functions.
 	 * Uses CLAM::DataArray or CLAM::BPF.
 	 *

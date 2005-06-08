@@ -10,8 +10,7 @@ namespace CLAM
 {
     namespace VM
     {
-		/**
-	 *
+	/**
 	 * Allows viewing sonogram.
 	 *
 	 * @ingroup QTVM
