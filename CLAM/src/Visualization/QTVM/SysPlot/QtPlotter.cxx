@@ -170,7 +170,7 @@ namespace CLAM
 
 	void QtPlotter::Add(const std::string& plotKey, 
 			    const Array<SpectralPeakArray>& data, 
-			    const TData sampleRate, 
+			    const TData& sampleRate, 
 			    const TData& duration)
 	{
 	    if(Exist(plotKey))

@@ -140,7 +140,7 @@
  }
  @endcode
  *
- * The first paramenter is a key to identify the plot. Note thst when the data is a CLAM::Segment you must 
+ * The first paramenter is a key to identify the plot. Note that when the data is a CLAM::Segment you must 
  * specify which plot you wish to see by means of a third parameter.
  *
  *@section BPFEditor BPFEditor
