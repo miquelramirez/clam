@@ -34,6 +34,14 @@ namespace CLAM
 {
     namespace VM
     {
+
+	/**
+	 *
+	 * Allows viewing CLAM::Audio data.
+	 *
+	 * @ingroup QTVM
+	 */
+
 	class TimeSegmentLabelsGroup;
 	class SingleLabel;
 	

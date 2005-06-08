@@ -30,6 +30,14 @@ namespace CLAM
 {
     namespace VM
     {
+		/**
+	 *
+	 * Allows viewing multiple functions.
+	 * Uses CLAM::DataArray or CLAM::BPF.
+	 *
+	 * @ingroup QTVM
+	 */
+
 	class SingleLabel;
 
 	class QtMultiPlot : public QtPresentation
