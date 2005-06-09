@@ -47,10 +47,12 @@ public:
 		mNet = new CLAM::OSCEnabledNetwork(7000);
 		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
 		mNet->Start();
+		mNet->StartListeningOSC();
 	}
 	
 	void tearDown(void)
 	{
+		mNet->StopListeningOSC();
 		mNet->Stop();
 		delete mNet;
 
