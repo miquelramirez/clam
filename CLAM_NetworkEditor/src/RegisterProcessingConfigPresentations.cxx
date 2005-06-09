@@ -150,7 +150,6 @@ static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresen
 static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::ConfigPresentationTmpl<CLAM::CircularShiftConfig> > 
 	regtCircularShiftCfg( "CircularShiftConfig" );
 
-// in draft
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FlagControlConfig> > 
 	regtFlagControlCfg( "FlagControlConfig" );
 	
