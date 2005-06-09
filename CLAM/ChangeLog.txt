@@ -1,6 +1,6 @@
 
 2005-06-07 CLAM_0_8_0
-'Prototyper'
+'Prototyper with streaming SMS transformations'
   * SMS Transformations on the network editor:
      ** All SMS Transformations have been refactored in order to work
         in streaming mode and not only in offline mode.
