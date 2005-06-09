@@ -28,7 +28,6 @@
 
 typedef CLAM::ProcessingFactory ProcessingFactory;
 
-// processings in draft directory
 static ProcessingFactory::Registrator<CLAM::FlagControl> regtFlagControl( "FlagControl" );
 static ProcessingFactory::Registrator<CLAM::Random> regtRandom( "Random" );
 static ProcessingFactory::Registrator<CLAM::OneOverF> regtOneOverF( "OneOverF" );
