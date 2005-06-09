@@ -1,11 +1,9 @@
-   * SMS Transformations on the network editor:
-     ** 
-  * QtPlots add-ons: 
-     ** Editable segmentation marks on all the plots   
-     ** QtSpectrogram:
-	*** Plot to view sonogram (Color/B&W)
-     ** BPFEditor:
-	*** Editable/auralizable plot (Audio and MIDI support)
+
+2005-06-07 CLAM_0_8_0
+'Prototyper'
+  * SMS Transformations on the network editor:
+     ** All SMS Transformations have been refactored in order to work
+        in streaming mode and not only in offline mode.
   * New Prototyping way:
      ** Prototyper: Allows to bind a Qt desinger interface to a
         Network XML definition so you can have an CLAM GUI application
@@ -15,6 +13,12 @@
         *** Binds sliders, knobs and so to in-controls on the network
         *** Binds monitoring plots to out-ports on the network
         *** Binds buttons to play/stop actions on the network
+  * QtPlots add-ons: 
+     ** Editable segmentation marks on all the plots   
+     ** QtSpectrogram:
+	*** Plot to view sonogram (Color/B&W)
+     ** BPFEditor:
+	*** Editable/auralizable plot (Audio and MIDI support)
   * Audio file I/O facilities:
      ** MP3 I/O: Bug fixed: that prevented XING headers from being used to
         compute duration
@@ -50,7 +54,9 @@
         to any processing, normally used for injecting or extracting data)
      ** Added processings implementing simple independent component analysis
         (Original code contributed by Beiming Wang (QMUL))
-
+  * Build System:
+     ** Changes in order to not abort ./configure script when some library is not 
+     found (and not specifyed with the --without-libname option)
 
 
 2004-11-18 CLAM_0_7_0
