@@ -16,7 +16,7 @@ quickTestForScriptDebuging = False  # important: to be enabled for debuging puro
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
-updateLevelForCLAM = 2
+updateLevelForCLAM = 2 
 updateLevelForExamples = 2
 updateLevelForTestData = 1 
 
@@ -25,7 +25,7 @@ doCleanMake = True
 # When false does not run autoconf and configure unless a new checkout
 doAutoconf = True
 configureOptions = ''
-# Non-test are runned those seconds and then killed
+# Non-automatic-test are runned those seconds and then killed
 executionTime = 15
 
 #configurations = ['debug', 'release'] 
@@ -191,7 +191,7 @@ simpleExamples = [
         ( 'SinglePlot', simpleExamplesPath+'SinglePlot/'),
         ( 'SpectrumExample', simpleExamplesPath+'Spectrum/'),
         ( 'ThreadedProcessing', simpleExamplesPath+'ThreadedProcessing/'),
-	( 'BPFEditorExample', simpleExamplesPath+'QtPlots/BPFEditorExample/')
+	( 'BPFEditorExample', simpleExamplesPath+'QtPlots/BPFEditorExample/'),
 	( 'SinTracks', simpleExamplesPath+'QtPlots/QtPlotsExamples/SinTracksPlotExample/'),
 	( 'Spectrogram', simpleExamplesPath+'QtPlots/QtPlotsExamples/SpectrogramExample/')
 ]
@@ -207,7 +207,7 @@ testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
 
 if quickTestForScriptDebuging :
-	testsToRun = [( 'UnitTests', unitTestsPath ),( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/') ]
+	testsToRun = [( 'UnitTests', unitTestsPath )]
 	
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
@@ -499,6 +499,10 @@ def deployClamBuildSystem() :
 	# BuildSrcDeps
 	os.chdir(BUILDPATH+'srcdeps/')
 	executeMandatory('make clean && make')
+
+	# Remove not public dirs
+	os.chdir(BUILDPATH+'../')
+	executeMandatory('find | grep not-public | while read a; do a=`dirname $a`; rm -rf $a; done')
 
 	# ConfigureClam
 	os.chdir(BUILDPATH)
