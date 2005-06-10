@@ -19,6 +19,8 @@
 	*** Plot to view sonogram (Color/B&W)
      ** BPFEditor:
 	*** Editable/auralizable plot (Audio and MIDI support)
+  * Compiler compatibility:
+     ** CLAM and its applications now compiles in GNU g++3.4 (as well as 3.3)
   * Audio file I/O facilities:
      ** MP3 I/O: Bug fixed: that prevented XING headers from being used to
         compute duration
