@@ -32,7 +32,7 @@
 #include "QtSpectrogram.hxx"
 
 /**
- *@defgroup QTVM QTVM
+ *@defgroup QTVM QT Visualization Module
  *
  * The namespace CLAM::VM offers a set of classes to view the data contained CLAM's 
  * ProcessingData. Various tools are available which allow the user to visually check 
