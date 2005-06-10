@@ -192,6 +192,6 @@
   </port_connection>
   <control_connection>
     <out>OutControlSender_0.out</out>
-    <in>SMSFreqShift.Shift Amount</in>
+    <in>SMSFreqShift.Amount</in>
   </control_connection>
 </network>
