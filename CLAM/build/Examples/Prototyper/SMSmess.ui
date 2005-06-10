@@ -162,12 +162,12 @@
                         <string>SMS Freq Shift</string>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>InControl__SMSFreqShift__Shift___Amount</cstring>
+                        <cstring>InControl__SMSFreqShift__Amount</cstring>
                     </property>
                 </widget>
                 <widget class="QSlider" row="0" column="1">
                     <property name="name">
-                        <cstring>InControl__SMSFreqShift__Shift___Amount</cstring>
+                        <cstring>InControl__SMSFreqShift__Amount</cstring>
                     </property>
                     <property name="minValue">
                         <number>-400</number>
@@ -184,7 +184,7 @@
                 </widget>
                 <widget class="QSlider" row="2" column="1">
                     <property name="name">
-                        <cstring>InControlFloat__SMSSinusoidalGain__Gain___Amount</cstring>
+                        <cstring>InControlFloat__SMSSinusoidalGain__Amount</cstring>
                     </property>
                     <property name="maxValue">
                         <number>199</number>
@@ -223,7 +223,7 @@
                 </widget>
                 <widget class="QSlider" row="1" column="1">
                     <property name="name">
-                        <cstring>InControlFloat__SMSResidualGain__Gain___Amount</cstring>
+                        <cstring>InControlFloat__SMSResidualGain__Amount</cstring>
                     </property>
                     <property name="maxValue">
                         <number>199</number>
@@ -259,7 +259,7 @@
                         <string>SMS Residual Gain</string>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>InControlFloat__SMSResidualGain__Gain___Amount</cstring>
+                        <cstring>InControlFloat__SMSResidualGain__Amount</cstring>
                     </property>
                 </widget>
                 <widget class="QLCDNumber" row="0" column="2">
@@ -295,7 +295,7 @@
                         <string>SMS Sinusoidal Gain</string>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>InControlFloat__SMSSinusoidalGain__Gain___Amount</cstring>
+                        <cstring>InControlFloat__SMSSinusoidalGain__Amount</cstring>
                     </property>
                 </widget>
                 <widget class="QLCDNumber" row="2" column="2">
@@ -387,19 +387,19 @@
 </widget>
 <connections>
     <connection>
-        <sender>InControlFloat__SMSSinusoidalGain__Gain___Amount</sender>
+        <sender>InControlFloat__SMSSinusoidalGain__Amount</sender>
         <signal>valueChanged(int)</signal>
         <receiver>lCDNumber1_2</receiver>
         <slot>display(int)</slot>
     </connection>
     <connection>
-        <sender>InControlFloat__SMSResidualGain__Gain___Amount</sender>
+        <sender>InControlFloat__SMSResidualGain__Amount</sender>
         <signal>valueChanged(int)</signal>
         <receiver>lCDNumber1</receiver>
         <slot>display(int)</slot>
     </connection>
     <connection>
-        <sender>InControl__SMSFreqShift__Shift___Amount</sender>
+        <sender>InControl__SMSFreqShift__Amount</sender>
         <signal>valueChanged(int)</signal>
         <receiver>lCDNumber1_2_2</receiver>
         <slot>display(int)</slot>
@@ -424,9 +424,9 @@
     </connection>
 </connections>
 <tabstops>
-    <tabstop>InControl__SMSFreqShift__Shift___Amount</tabstop>
-    <tabstop>InControlFloat__SMSResidualGain__Gain___Amount</tabstop>
-    <tabstop>InControlFloat__SMSSinusoidalGain__Gain___Amount</tabstop>
+    <tabstop>InControl__SMSFreqShift__Amount</tabstop>
+    <tabstop>InControlFloat__SMSResidualGain__Amount</tabstop>
+    <tabstop>InControlFloat__SMSSinusoidalGain__Amount</tabstop>
     <tabstop>PlayButton</tabstop>
     <tabstop>StopButton</tabstop>
     <tabstop>CloseButton</tabstop>
