@@ -32,23 +32,23 @@ namespace CLAM
 	{
 		class SinTracksRenderer : public Renderer
 		{
-			public:
-				SinTracksRenderer();
-				virtual ~SinTracksRenderer();
+		public:
+			SinTracksRenderer();
+			~SinTracksRenderer();
 
-				void SetPalette(QtPalette& palette);
+			void SetPalette(QtPalette& palette);
 
-				void SetSpanLists( SineTrackSpanEnds& heads, 
-									SineTrackSpanEnds& tails,
-									const TData& left,
-									const TData& right );
-				void Render();
+			void SetSpanLists( SineTrackSpanEnds& heads, 
+							   SineTrackSpanEnds& tails,
+							   const TData& left,
+							   const TData& right );
+			void Render();
 
-			private:
-				SineTrackSpanEnds* _heads;
-				SineTrackSpanEnds* _tails;
-				QtPalette* _palette;
-				TData _left,_right;
+		private:
+			SineTrackSpanEnds* mHeads;
+			SineTrackSpanEnds* mTails;
+			QtPalette* mPalette;
+			TData mLeft, mRight;
 		};
 	}
 }

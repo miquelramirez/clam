@@ -28,7 +28,7 @@ namespace CLAM
 	{
 		RegionMarker::RegionMarker()
 		{
-			_data[0] = _data[1] = 0;
+			mData[0] = mData[1] = TData(0.0);
 			SetColor(VMColor::LightGray());
 		}
 
@@ -38,16 +38,13 @@ namespace CLAM
 
 		void RegionMarker::Render()
 		{
-			if(IsEnabled())
+			if(mData[0] < mData[1])	
 			{
-				if(_data[0] < _data[1])	
-				{
-					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-					glEnable(GL_BLEND);
-					glColor4ub(GLubyte(_color.r),GLubyte(_color.g),GLubyte(_color.b),185);
-					DrawRegion(GetDrawMode(0));
-					glDisable(GL_BLEND);
-				}
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+				glEnable(GL_BLEND);
+				glColor4ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b),185);
+				DrawRegion(GetDrawMode(0));
+				glDisable(GL_BLEND);
 			}
 		}
 
@@ -58,12 +55,12 @@ namespace CLAM
 			// 2 -> the first point is visible but the second is not
 			// 3 -> the second point is visible but the first is not
 			// 4 -> both points are visible
-			TData p1 = _data[index];
-			TData p2 = _data[index+1];
-			if(p1 < _bounds.left && p2 > _bounds.right) return 1;
-			if(p1 >= _bounds.left && p2 > _bounds.right) return 2;
-			if(p1 < _bounds.left && p2 <= _bounds.right) return 3;
-			if(p1 >= _bounds.left && p2 <= _bounds.right) return 4;
+			TData p1 = mData[index];
+			TData p2 = mData[index+1];
+			if(p1 < LeftBound() && p2 > RightBound()) return 1;
+			if(p1 >= LeftBound() && p2 > RightBound()) return 2;
+			if(p1 < LeftBound() && p2 <= RightBound()) return 3;
+			if(p1 >= LeftBound() && p2 <= RightBound()) return 4;
 			return 0;
 		}
 
@@ -73,59 +70,59 @@ namespace CLAM
 			switch(mode)
 			{
 				case 1:
-						// the region is visible but the points are not
-						glVertex2f(0.0f,float(_top));
-						glVertex2f(float(_bounds.right-_bounds.left),float(_top));
-						glVertex2f(float(_bounds.right-_bounds.left),float(_bottom));
-						glVertex2f(0.0f,float(_bottom));
-						break;
+					// the region is visible but the points are not
+					glVertex2f(0.0f,float(TopBound()));
+					glVertex2f(float(RightBound()-LeftBound()),float(TopBound()));
+					glVertex2f(float(RightBound()-LeftBound()),float(BottomBound()));
+					glVertex2f(0.0f,float(BottomBound()));
+					break;
 				case 2:
-						// the first point is visible but the second is not
-						glVertex2f(float(_data[0]-_bounds.left),float(_top));
-						glVertex2f(float(_bounds.right-_bounds.left),float(_top));
-						glVertex2f(float(_bounds.right-_bounds.left),float(_bottom));
-						glVertex2f(float(_data[0]-_bounds.left),float(_bottom));
-						break;
+					// the first point is visible but the second is not
+					glVertex2f(float(mData[0]-LeftBound()),float(TopBound()));
+					glVertex2f(float(RightBound()-LeftBound()),float(TopBound()));
+					glVertex2f(float(RightBound()-LeftBound()),float(BottomBound()));
+					glVertex2f(float(mData[0]-LeftBound()),float(BottomBound()));
+					break;
 				case 3:
-						// the second point is visible but the first is not
-						glVertex2f(0.0f,float(_top));
-						glVertex2f(float(_data[1]-_bounds.left),float(_top));
-						glVertex2f(float(_data[1]-_bounds.left),float(_bottom));
-						glVertex2f(0.0f,float(_bottom));
-						break;
+					// the second point is visible but the first is not
+					glVertex2f(0.0f,float(TopBound()));
+					glVertex2f(float(mData[1]-LeftBound()),float(TopBound()));
+					glVertex2f(float(mData[1]-LeftBound()),float(BottomBound()));
+					glVertex2f(0.0f,float(BottomBound()));
+					break;
 				case 4:
-						// both points are visible
-						glVertex2f(float(_data[0]-_bounds.left),float(_top));
-						glVertex2f(float(_data[1]-_bounds.left),float(_top));
-						glVertex2f(float(_data[1]-_bounds.left),float(_bottom));
-						glVertex2f(float(_data[0]-_bounds.left),float(_bottom));
-						break;
+					// both points are visible
+					glVertex2f(float(mData[0]-LeftBound()),float(TopBound()));
+					glVertex2f(float(mData[1]-LeftBound()),float(TopBound()));
+					glVertex2f(float(mData[1]-LeftBound()),float(BottomBound()));
+					glVertex2f(float(mData[0]-LeftBound()),float(BottomBound()));
+					break;
 				default:
-					    // neither the points nor the region are visible
-						break;
+					// neither the points nor the region are visible
+					break;
 			}
 			glEnd();
 		}
 
 		void RegionMarker::SetBegin(const TData& value)
 		{
-			_data[0] = value;
+			mData[0] = value;
 		}
 
 		void RegionMarker::SetEnd(const TData& value)
 		{
-			_data[1] = value;
+			mData[1] = value;
 		}
 
-		TData RegionMarker::GetBegin() const
+		const TData& RegionMarker::GetBegin() const
 		{
-			return _data[0];
+			return mData[0];
 
 		}
 
-		TData RegionMarker::GetEnd() const
+		const TData& RegionMarker::GetEnd() const
 		{
-			return _data[1];
+			return mData[1];
 		}
 	}
 }

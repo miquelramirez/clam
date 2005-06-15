@@ -29,38 +29,37 @@ namespace CLAM
 {
 	namespace VM
 	{
-		typedef struct{
-			TData left;
-			TData right;
-		} HBounds;
-
 		class Renderer
 		{
-			public:
-				Renderer();
-				virtual ~Renderer();
+		public:
+			Renderer();
+			virtual ~Renderer();
 
-				void SetHBounds(const TData& left, const TData& right);
-				void SetVBounds(const TData& top,const TData& bottom);
-				void SetColor(Color c);
-				Color GetColor() const;
+			void SetHBounds(const TData& left, const TData& right);
+			void SetVBounds(const TData& top,const TData& bottom);
+			void SetColor(const Color& c);
+			const Color& GetColor() const;
 
-				void SetEnabled(bool e);
+			void SetEnabled(bool e);
 
-				virtual void Render() = 0;
+			virtual void Render() = 0;
 
-			protected:
-				HBounds	_bounds;
-				TData _top;
-				TData _bottom;
-				Color	_color;
+		protected:
+			const bool& IsEnabled() const;
 
-				bool IsEnabled();
+			const TData& LeftBound() const;
+			const TData& RightBound() const;
+			const TData& BottomBound() const;
+			const TData& TopBound() const;
 
-			private:
-				bool _enabled;
+		private:
+			bool mEnabled;
+			TData mLeftBound;
+			TData mRightBound;
+			TData mTopBound;
+			TData mBottomBound;
+			Color mColor;
 
-				void Init();
 		};
 	}
 }

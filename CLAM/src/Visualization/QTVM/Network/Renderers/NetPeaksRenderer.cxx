@@ -5,9 +5,9 @@ namespace CLAM
 {
 	namespace VM
 	{
-	    	NetPeaksRenderer::NetPeaksRenderer()
+		NetPeaksRenderer::NetPeaksRenderer()
+			: mElems(0)
 		{
-		    _nElems = 0;
 		    SetPeakColor(VMColor::Cyan(),VMColor::Red());
 		}
 
@@ -17,35 +17,35 @@ namespace CLAM
 
 		void NetPeaksRenderer::SetDataPtr(const TData* magBuff, const TData* freqBuff, int nElems)
 		{
-		    _magBuff = magBuff;
-		    _freqBuff = freqBuff;
-		    _nElems = nElems;
+		    mMagBuff = magBuff;
+		    mFreqBuff = freqBuff;
+		    mElems = nElems;
 		}
 
-		void NetPeaksRenderer::SetPeakColor(Color cline, Color cpoint)
+		void NetPeaksRenderer::SetPeakColor(const Color& cline, const Color& cpoint)
 		{
-		    _cline = cline;
-		    _cpoint = cpoint;
+		    mCline = cline;
+		    mCpoint = cpoint;
 		}
 
 		void NetPeaksRenderer::Render()
 		{
 		    glPointSize(2);
 
-		    for(int i=0;i < _nElems;i++)
+		    for(int i=0;i < mElems;i++)
 		    {
-                        // draw point
-			glColor3ub(GLubyte(_cpoint.r),GLubyte(_cpoint.g),GLubyte(_cpoint.b));
-			glBegin(GL_POINTS);
-			glVertex2f(float(_freqBuff[i]),float(_magBuff[i]));
-			glEnd();
+				// draw point
+				glColor3ub(GLubyte(mCpoint.r),GLubyte(mCpoint.g),GLubyte(mCpoint.b));
+				glBegin(GL_POINTS);
+				glVertex2f(float(mFreqBuff[i]),float(mMagBuff[i]));
+				glEnd();
 
-                        // draw vline
-			glColor3ub(GLubyte(_cline.r),GLubyte(_cline.g),GLubyte(_cline.b));
-			glBegin(GL_LINES);
-			glVertex2f(float(_freqBuff[i]),float(_magBuff[i]));
-			glVertex2f(float(_freqBuff[i]),float(_bottom));
-			glEnd();
+				// draw vline
+				glColor3ub(GLubyte(mCline.r),GLubyte(mCline.g),GLubyte(mCline.b));
+				glBegin(GL_LINES);
+				glVertex2f(float(mFreqBuff[i]),float(mMagBuff[i]));
+				glVertex2f(float(mFreqBuff[i]),float(BottomBound()));
+				glEnd();
 		    }
 		}
 	}	

@@ -7,23 +7,23 @@ namespace CLAM
 {
     namespace VM
     {
-	class BuffDataRenderer : public Renderer
-	{
-	public:
-	    BuffDataRenderer();
-	    virtual ~BuffDataRenderer();
+		class BuffDataRenderer : public Renderer
+		{
+		public:
+			BuffDataRenderer();
+			~BuffDataRenderer();
 
-	    void SetDataPtr(const TData* data);
-	    void SetIndexes(const TIndex& left1, const TIndex& right1, 
-			    const TIndex& left2, const TIndex& right2, 
-			    const TIndex& begin);
-	    void Render();
+			void SetDataPtr(const TData* data);
+			void SetIndexes(const TIndex& left1, const TIndex& right1, 
+							const TIndex& left2, const TIndex& right2, 
+							const TIndex& begin);
+			void Render();
 
-	private:
-	    const TData* _data;
-	    TIndex _leftIndex1, _rightIndex1, _leftIndex2, _rightIndex2;
-	    TIndex _begin;
-	};
+		private:
+			const TData* mData;
+			TIndex mLeftIndex1, mRightIndex1, mLeftIndex2, mRightIndex2;
+			TIndex mBegin;
+		};
     }
 }
 

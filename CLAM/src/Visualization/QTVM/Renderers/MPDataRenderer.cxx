@@ -35,23 +35,23 @@ namespace CLAM
 		{
 		}
 
-		void MPDataRenderer::SetData(const TData* data,unsigned nElems)
+		void MPDataRenderer::SetData(const TData* data, unsigned nElems)
 		{
-			_data.Resize(nElems);
-			_data.SetSize(nElems);
-			for(int i=0; i < _data.Size(); i++)
+			mData.Resize(nElems);
+			mData.SetSize(nElems);
+			for(TIndex i=0; i < mData.Size(); i++)
 			{
-				_data[i]=data[i];
+				mData[i] = data[i];
 			}
 		}
 
 		void MPDataRenderer::Render()
 		{
-			glColor3ub(GLubyte(_color.r),GLubyte(_color.g),GLubyte(_color.b));
+			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
 			glBegin(GL_LINE_STRIP);
-			for(unsigned i = 0; i < unsigned(_data.Size()); i++)
+			for(TIndex i = 0; i < mData.Size(); i++)
 			{
-				glVertex3f(float(i),float(_data[i]),-1.0f);
+				glVertex3f(float(i),float(mData[i]),-1.0f);
 			}
 			glEnd();
 		}

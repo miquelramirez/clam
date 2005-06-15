@@ -30,19 +30,18 @@ namespace CLAM
 	{
 		class Dial : public Renderer
 		{
-			public:
-				Dial();
-				~Dial();
+		public:
+			Dial();
+			~Dial();
 			
-				virtual void Render();
+			void Render();
 
-				void Update(const TData& value);
-				TData GetPos() const;
+			void Update(const TData& value);
+			const TData& GetPos() const;
 		
-			private:
-				TData _data;
+		private:
+			TData mPosition;
 
-				void Draw();
 		};
 	}
 }

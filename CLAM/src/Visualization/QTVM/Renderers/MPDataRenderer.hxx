@@ -31,15 +31,15 @@ namespace CLAM
 	{
 		class MPDataRenderer : public Renderer
 		{
-			public:
-				MPDataRenderer();
-				virtual ~MPDataRenderer();
+		public:
+			MPDataRenderer();
+			~MPDataRenderer();
 
-				void SetData(const TData* data,unsigned nElems);
-				void Render();
+			void SetData(const TData* data, unsigned nElems);
+			void Render();
 
-			private:
-				DataArray _data;
+		private:
+			DataArray mData;
 				
 		};
 	}
