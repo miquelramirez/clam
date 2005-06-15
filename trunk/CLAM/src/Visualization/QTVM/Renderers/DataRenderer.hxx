@@ -33,27 +33,27 @@ namespace CLAM
 
 		class DataRenderer : public Renderer
 		{
-			public:
-				DataRenderer();
-				virtual ~DataRenderer();
+		public:
+			DataRenderer();
+			~DataRenderer();
 
-				void SetDataPtr(const TData* data,unsigned nElems,int mode);
-				void SetArrays(const TData* maxsArray,const TData* minsArray,TSize nElems);
-				void SetStep(const TData& step);
-				TData GetStep() const;
-				void Render();
+			void SetDataPtr(const TData* data,unsigned nElems,int mode);
+			void SetArrays(const TData* maxsArray,const TData* minsArray,TSize nElems);
+			void SetStep(const TData& step);
+			const TData& GetStep() const;
+			void Render();
 
-			private:
-				const TData* _data;
-				const TData* _maxsPtr;
-				const TData* _minsPtr;
-				unsigned _nElems;
-				int _mode;
-				TData _step;
+		private:
+			const TData *mData;
+			const TData* mMaxsPtr;
+			const TData* mMinsPtr;
+			unsigned mElems;
+			int mMode;
+			TData mStep;
 
-				void RenderingNormalMode();
-				void RenderingDetailMode();
-				void RenderingHugeMode();
+			void RenderingNormalMode();
+			void RenderingDetailMode();
+			void RenderingHugeMode();
 		};
 	}
 }

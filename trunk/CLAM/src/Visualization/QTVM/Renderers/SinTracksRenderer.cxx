@@ -29,7 +29,10 @@ namespace CLAM
 	namespace VM
 	{
 		SinTracksRenderer::SinTracksRenderer()
-			: _heads(NULL), _tails(NULL), _left(TData(0.0)), _right(TData(1.0))
+			: mHeads(0)
+			, mTails(0)
+			, mLeft(TData(0.0))
+			, mRight(TData(0.0))
 		{
 		}
 
@@ -39,37 +42,39 @@ namespace CLAM
 
 		void SinTracksRenderer::SetPalette(QtPalette& palette)
 		{
-			_palette = &palette;
+			mPalette = &palette;
 		}
 
 		void SinTracksRenderer::SetSpanLists( SineTrackSpanEnds& heads, 
-												SineTrackSpanEnds& tails,
-												const TData& left,
-												const TData& right )
+											  SineTrackSpanEnds& tails,
+											  const TData& left,
+											  const TData& right )
 		{
-			_heads = &heads;
-			_tails = &tails;
-			_left = left;
-			_right = right;
+			mHeads = &heads;
+			mTails = &tails;
+			mLeft = left;
+			mRight = right;
 		}
 
 		void SinTracksRenderer::Render()
 		{
-			CLAM_ASSERT( _palette!=NULL, "No palette was given!" );
+			CLAM_ASSERT( mPalette!=NULL, "SinTracksRenderer::Render(): No palette was given!" );
 
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
 			glLoadIdentity();
-			glOrtho(_left,_right,_bottom,_top,-1.0,1.0);
+			glOrtho(mLeft,mRight,BottomBound(),TopBound(),-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			Color c;
+
 			SineTrackSpanEnds::iterator currStart, currEnd;
 					
-			currStart = _heads->begin();
-			currEnd = _tails->begin();
+			currStart = mHeads->begin();
+			currEnd = mTails->begin();
 		
-			while ( currStart != _heads->end() && currEnd !=_tails->end() )
+			while ( currStart != mHeads->end() && currEnd != mTails->end() )
 			{
 				SinusoidalTrack::iterator trackBegin, trackEnd;
 				trackBegin = *currStart;
@@ -88,8 +93,8 @@ namespace CLAM
 					}
 
 
-					_palette->GetRGBFromIndex( (*trackBegin).mColorIndex, _color.r, _color.g, _color.b);
-					glColor3ub(GLubyte(_color.r),GLubyte(_color.g),GLubyte(_color.b));
+					mPalette->GetRGBFromIndex( (*trackBegin).mColorIndex, c.r, c.g, c.b);
+					glColor3ub(GLubyte(c.r),GLubyte(c.g),GLubyte(c.b));
 					glVertex3f(GLfloat((*trackBegin).mTimeIndex),GLfloat((*trackBegin).mFreq),-1.0f);
 					trackBegin++;
 				}

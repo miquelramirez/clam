@@ -27,9 +27,9 @@ namespace CLAM
 	namespace VM
 	{
 		DataRenderer::DataRenderer()
+			: mElems(0)
+			, mStep(TData(1.0))
 		{
-		        _nElems=0;
-			SetStep(TData(1.0));
 			SetColor(VMColor::Blue());
 		}
 	
@@ -39,27 +39,27 @@ namespace CLAM
 	
 		void DataRenderer::SetDataPtr(const TData* data,unsigned nElems,int mode)
 		{
-			_data = data;
-			_nElems = nElems;
-			_mode = mode;
+			mData = data;
+			mElems = nElems;
+			mMode = mode;
 		}
 	
 		void DataRenderer::Render()
 		{
-			glColor3ub(GLubyte(_color.r),GLubyte(_color.g),GLubyte(_color.b));
-			switch (_mode)
+			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
+			switch (mMode)
 			{
 				case NormalMode:
-									RenderingNormalMode();
-									break;
+					RenderingNormalMode();
+					break;
 				case DetailMode:
-									RenderingDetailMode();
-									break;
+					RenderingDetailMode();
+					break;
 				case HugeMode:
-									RenderingHugeMode();
-									break;
+					RenderingHugeMode();
+					break;
 				default:
-									break;
+					break;
 			}
 			
 		}
@@ -68,47 +68,47 @@ namespace CLAM
 		{
 			float x = 0.0f;
 			glBegin(GL_LINE_STRIP);
-			for(unsigned i = 0;i < _nElems;i++)
+			for(unsigned i = 0;i < mElems;i++)
 			{
-				glVertex3f(x,float(_data[i]),-1.0f);
-				x += float(_step);
+				glVertex3f(x,float(mData[i]),-1.0f);
+				x += float(mStep);
 			}
 			glEnd();
 		}
 
 		void DataRenderer::RenderingDetailMode()
 		{
-			const TData halfHop = TData(0.5);
+			const float halfHop = TData(0.5);
 			float x = 0.0f;
 
 			glBegin( GL_LINE_STRIP );
-			for(unsigned i = 0; i < _nElems; i++)
+			for(unsigned i = 0; i < mElems; i++)
 			{
-				glVertex3f(x - halfHop,_data[i],-1.0f);
-				glVertex3f(x + halfHop,_data[i],-1.0f);
-				x += float(_step);
+				glVertex3f(x - halfHop,float(mData[i]),-1.0f);
+				glVertex3f(x + halfHop,float(mData[i]),-1.0f);
+				x += float(mStep);
 			}
 			glEnd();
 		}
 
 		void DataRenderer::RenderingHugeMode()
 		{
-			CLAM_ASSERT( (_maxsPtr != NULL && _nElems > 0), "Invalid pointer!" );
-			CLAM_ASSERT( (_minsPtr != NULL && _nElems > 0), "Invalid pointer!" );
+			CLAM_ASSERT((mMaxsPtr != NULL && mElems > 0), "DataRenderer::RenderingHugeMode(): Invalid pointer!" );
+			CLAM_ASSERT((mMinsPtr != NULL && mElems > 0), "DataRenderer::RenderingHugeMode(): Invalid pointer!" );
 
-			TData right = TData(_nElems);
+			TData right = TData(mElems);
 
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
 			glLoadIdentity();
-			glOrtho(0.0,right,_bottom,_top,-1.0,1.0);
+			glOrtho(0.0,right,BottomBound(),TopBound(),-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 			glClear(GL_COLOR_BUFFER_BIT);
 			glBegin(GL_LINE_STRIP);
-			for(unsigned i = 0; i < _nElems;i++)
+			for(unsigned i = 0; i < mElems;i++)
 			{
-				glVertex3f(float(i),float(*_maxsPtr++),-1.0f);
-				glVertex3f(float(i),float(*_minsPtr++),-1.0f);			
+				glVertex3f(float(i),float(*mMaxsPtr++),-1.0f);
+				glVertex3f(float(i),float(*mMinsPtr++),-1.0f);			
 			}
 			glEnd();
 			glMatrixMode(GL_PROJECTION);
@@ -118,20 +118,20 @@ namespace CLAM
 
 		void DataRenderer::SetArrays(const TData* maxsArray,const TData* minsArray,TSize nElems)
 		{
-			_maxsPtr = maxsArray;
-			_minsPtr = minsArray;
-			_nElems = nElems;
-			_mode = HugeMode;
+			mMaxsPtr = maxsArray;
+			mMinsPtr = minsArray;
+			mElems = nElems;
+			mMode = HugeMode;
 		}
 
 		void DataRenderer::SetStep(const TData& step)
 		{
-			_step = step;
+			mStep = step;
 		}
 
-		TData DataRenderer::GetStep() const
+		const TData& DataRenderer::GetStep() const
 		{
-			return _step;
+			return mStep;
 		}
 	}
 }

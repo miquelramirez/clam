@@ -30,20 +30,20 @@ namespace CLAM
 	{
 		class SpectralPeaksRenderer : public Renderer
 		{
-			public:
-				SpectralPeaksRenderer();
-				virtual ~SpectralPeaksRenderer();
+		public:
+			SpectralPeaksRenderer();
+			~SpectralPeaksRenderer();
 
-				void SetDataPtr(const TData* data,int nElems);
-				void SetPeakColor(Color cline,Color cpoint);
-				void Render();
+			void SetDataPtr(const TData* data,int nElems);
+			void SetPeakColor(const Color& cline, const Color& cpoint);
+			void Render();
 
-			private:
-				const TData* _data;
-				int _nElems;
+		private:
+			const TData* mData;
+			int mElems;
 
-				Color _cLine;
-				Color _cPoint;
+			Color mCLine;
+			Color mCPoint;
 		};
 	}
 }

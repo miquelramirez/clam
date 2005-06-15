@@ -9,20 +9,20 @@ namespace CLAM
 {
     namespace VM
     {
-	class NetSinTracksRenderer : public Renderer
-	{
-	public:
-	    NetSinTracksRenderer();
-	    virtual ~NetSinTracksRenderer();
+		class NetSinTracksRenderer : public Renderer
+		{
+		public:
+			NetSinTracksRenderer();
+			~NetSinTracksRenderer();
 
-	    void SetData(std::vector< std::vector<SinTrackNode> >& data);
+			void SetData(std::vector< std::vector<SinTrackNode> >& data);
 
-	    void Render();
+			void Render();
 
-	private:
-	     std::vector< std::vector<SinTrackNode> > _tracks;
+		private:
+			std::vector< std::vector<SinTrackNode> > mTracks;
 
-	};
+		};
     }
 }
 

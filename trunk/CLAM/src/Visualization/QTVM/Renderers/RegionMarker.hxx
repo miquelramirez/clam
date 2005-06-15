@@ -30,22 +30,22 @@ namespace CLAM
 	{
 		class RegionMarker : public Renderer
 		{
-			public:
-				RegionMarker();
-				virtual ~RegionMarker();
+		public:
+			RegionMarker();
+			~RegionMarker();
 
-				virtual void Render();
+			void Render();
 
-				void SetBegin(const TData& value);
-				void SetEnd(const TData& value);
-				TData GetBegin() const;
-				TData GetEnd() const;
+			void SetBegin(const TData& value);
+			void SetEnd(const TData& value);
+			const TData& GetBegin() const;
+			const TData& GetEnd() const;
 
-			private:
-				TData _data[2];
+		private:
+			TData mData[2];
 
-				int GetDrawMode(int index);
-				void DrawRegion(int mode);
+			int GetDrawMode(int index);
+			void DrawRegion(int mode);
 		};
 	}
 }

@@ -31,16 +31,15 @@ namespace CLAM
 	{
 		class VLineArrayRenderer : public Renderer
 		{
-			public:
-				VLineArrayRenderer();
-				virtual ~VLineArrayRenderer();
+		public:
+			VLineArrayRenderer();
+			~VLineArrayRenderer();
 
-				void SetData(const Array<unsigned>& data);
-				void Render();
+			void SetData(const Array<unsigned>& data);
+			void Render();
 
-			private:
-				Array<unsigned> _data;
-				int _nElems;
+		private:
+			Array<unsigned> mData;
 
 		};
 	}

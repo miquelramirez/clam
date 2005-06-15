@@ -26,11 +26,13 @@ namespace CLAM
 	namespace VM
 	{
 		Renderer::Renderer()
+			: mEnabled(true)
+			, mLeftBound(TData(0.0))
+			, mRightBound(TData(0.0))
+			, mTopBound(TData(0.0))
+			, mBottomBound(TData(0.0))
+			, mColor(VMColor::Green())
 		{
-			SetHBounds(TData(0.0),TData(0.0));
-			SetVBounds(TData(1.0),TData(-1.0));
-			SetEnabled(true);
-			SetColor(VMColor::Green());
 		}
 
 		Renderer::~Renderer()
@@ -39,37 +41,56 @@ namespace CLAM
 
 		void Renderer::SetHBounds(const TData& left, const TData& right)
 		{
-			_bounds.left = left;
-			_bounds.right = right;
+			mLeftBound = left;
+			mRightBound = right;
 		}
 
 		void Renderer::SetVBounds(const TData& top,const TData& bottom)
 		{
-			_top = top;
-			_bottom = bottom;
+		    mTopBound = top;
+			mBottomBound = bottom;
 		}
 
-		void Renderer::SetColor(Color c)
+		void Renderer::SetColor(const Color& c)
 		{
-			_color.r = c.r;
-			_color.g = c.g;
-			_color.b = c.b;
+			mColor = c;
 		}
 
-		Color Renderer::GetColor() const
+		const Color& Renderer::GetColor() const
 		{
-			return _color;
+			return mColor;;
 		}
 
 		void Renderer::SetEnabled(bool e)
 		{
-			_enabled = e;
+		    mEnabled = e;
 		}
 
-		bool Renderer::IsEnabled()
+		const bool& Renderer::IsEnabled() const
 		{
-			return _enabled;
+			return mEnabled;
 		}
+
+		const TData& Renderer::LeftBound() const
+		{
+			return mLeftBound;
+		}
+
+		const TData& Renderer::RightBound() const
+		{
+			return mRightBound;
+		}
+
+		const TData& Renderer::BottomBound() const
+		{
+			return mBottomBound;
+		}
+
+		const TData& Renderer::TopBound() const
+		{
+			return mTopBound;
+		}
+
 	}
 }
 

@@ -8,29 +8,30 @@ namespace CLAM
 {
     namespace VM
     {
-	class NetSpecgramRenderer : public Renderer
-	{
-	public:
-	    NetSpecgramRenderer();
-	    virtual ~NetSpecgramRenderer();
+		class NetSpecgramRenderer : public Renderer
+		{
+		public:
+			NetSpecgramRenderer();
+			~NetSpecgramRenderer();
 
 	    
-	    void SetIndexes(const TIndex& leftIndex1, const TIndex& rightIndex1,
-			    const TIndex& leftIndex2, const TIndex& rightIndex2,
-			    const TIndex& begin);
+			void SetIndexes(const TIndex& leftIndex1, const TIndex& rightIndex1,
+							const TIndex& leftIndex2, const TIndex& rightIndex2,
+							const TIndex& begin);
 
-	    void SetData(std::vector< std::vector<Color> >& data, 
-			 const TIndex& bottom, const TIndex& top);
+			void SetData(std::vector< std::vector<Color> >& data, 
+						 const TIndex& bottom, 
+						 const TIndex& top);
 
-	    void Render();
+			void Render();
 
-	private:
-	    std::vector< std::vector<Color> > _data;
-	    TIndex _bottomBound, _topBound;
-	    TIndex _leftIndex1, _rightIndex1, _leftIndex2, _rightIndex2;
-	    TIndex _begin;
+		private:
+			std::vector< std::vector<Color> > mData;
+			TIndex mBottomBound, mTopBound;
+			TIndex mLeftIndex1, mRightIndex1, mLeftIndex2, mRightIndex2;
+			TIndex mBegin;
 
-	};
+		};
     }
 }
 

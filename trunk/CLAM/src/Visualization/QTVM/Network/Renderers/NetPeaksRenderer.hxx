@@ -10,17 +10,17 @@ namespace CLAM
 	    class NetPeaksRenderer : public Renderer
 	    {
 	    public:
-		NetPeaksRenderer();
-		virtual ~NetPeaksRenderer();
+			NetPeaksRenderer();
+			~NetPeaksRenderer();
 
-		void SetDataPtr(const TData* magBuff, const TData* freqBuff, int nElems);
-		void SetPeakColor(Color cline, Color cpoint);
-		void Render();
+			void SetDataPtr(const TData* magBuff, const TData* freqBuff, int nElems);
+			void SetPeakColor(const Color& cline, const Color& cpoint);
+			void Render();
 		
 	    private:
-		const TData *_magBuff, *_freqBuff;
-		Color _cline, _cpoint;
-		int _nElems;
+			const TData *mMagBuff, *mFreqBuff;
+			Color mCline, mCpoint;
+			int mElems;
 	    };
 
 	}

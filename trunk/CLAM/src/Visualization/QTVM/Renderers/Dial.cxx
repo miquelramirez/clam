@@ -27,8 +27,8 @@ namespace CLAM
 	namespace VM
 	{
 		Dial::Dial()
+			: mPosition(TData(0.0))
 		{
-			_data = 0;
 			SetColor(VMColor::Black());
 		}
 
@@ -38,29 +38,21 @@ namespace CLAM
 
 		void Dial::Render()
 		{
-			if(IsEnabled())
-			{
-				Draw();
-			}
-		}
-
-		void Dial::Draw()
-		{
-			glColor3ub(GLubyte(_color.r),GLubyte(_color.g),GLubyte(_color.b));
+			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
 			glBegin(GL_LINES);
-				glVertex2f(float(_data-_bounds.left),float(_top));
-				glVertex2f(float(_data-_bounds.left),float(_bottom));
+			glVertex2f(float(mPosition-LeftBound()),float(TopBound()));
+			glVertex2f(float(mPosition-LeftBound()),float(BottomBound()));
 			glEnd();
 		}
 
 		void Dial::Update(const TData& value)
 		{
-			_data = value;
+			mPosition = value;
 		}
 
-		TData Dial::GetPos() const
+		const TData& Dial::GetPos() const
 		{
-			return _data;
+			return mPosition;
 		}
 	}
 }

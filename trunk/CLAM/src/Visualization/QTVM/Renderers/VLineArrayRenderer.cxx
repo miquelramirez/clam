@@ -37,18 +37,18 @@ namespace CLAM
 
 		void VLineArrayRenderer::SetData(const Array<unsigned>& data)
 		{
-			_data = data;
+			mData = data;
 		}
 
 		void VLineArrayRenderer::Render()
 		{
-			for(int i=0;i < _data.Size();i++)
+			for(TIndex i=0;i < mData.Size(); i++)
 			{
 				// draw vline
-				glColor3ub(GLubyte(_color.r),GLubyte(_color.g),GLubyte(_color.b));
+				glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
 				glBegin(GL_LINES);
-					glVertex2f(float(_data[i]-_bounds.left),float(_top));
-					glVertex2f(float(_data[i]-_bounds.left),float(_bottom));
+				glVertex2f(float(mData[i]-LeftBound()),float(TopBound()));
+				glVertex2f(float(mData[i]-LeftBound()),float(BottomBound()));
 				glEnd();
 			}
 		}
