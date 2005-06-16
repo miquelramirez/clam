@@ -28,131 +28,132 @@ namespace CLAM
 {
     namespace VM
     {
-	APlayer::APlayer()
-	    : _leftChannel(0),
-	      _rightChannel(0),
-	      _muteLeft(false),
-	      _muteRight(false)
-	{
-	    _thread.SetThreadCode(makeMemberFunctor0((*this), APlayer, thread_code));
-	}
+		APlayer::APlayer()
+			: mLeftChannel(0)
+			, mRightChannel(0)
+			, mMuteLeft(false)
+			, mMuteRight(false)
+		{
+			mThread.SetThreadCode(makeMemberFunctor0((*this), APlayer, thread_code));
+		}
 		
-	APlayer::~APlayer()
-	{
-	}
+		APlayer::~APlayer()
+		{
+		}
 		
-	void APlayer::SetData(std::vector<const Audio*> data, bool setTime)
-	{
-	    if(data.size()==1)
-	    {
-		_leftChannel = data[0];
-		_rightChannel = data[0];
-	    }
-	    else
-	    {
-		_leftChannel = data[0];
-		_rightChannel = data[1];
-	    }
+		void APlayer::SetData(std::vector<const Audio*> data, bool setTime)
+		{
+			if(!data.size()) return;
 
-	    if(setTime)
-	    {
-		MediaTime time;
-		time.SetBegin(TData(0.0));
-		time.SetEnd(TData(_leftChannel->GetSize())/_leftChannel->GetSampleRate());
-		SetBounds(time);
-	    }
-			
-	    HaveData(true);
-	}
+			if(data.size()==1)
+			{
+				mLeftChannel = data[0];
+				mRightChannel = data[0];
+			}
+			else 
+			{
+				mLeftChannel = data[0];
+				mRightChannel = data[1];
+			}
+
+			if(setTime)
+			{
+				MediaTime time;
+				time.SetBegin(TData(0.0));
+				time.SetEnd(TData(mLeftChannel->GetSize())/mLeftChannel->GetSampleRate());
+				SetBounds(time);
+			}	
+			HaveData(true);
+		}
 		
-	void APlayer::thread_code()
-	{       
-	    if(!_leftChannel || !_rightChannel) return;
+		void APlayer::thread_code()
+		{       
+			if(!mLeftChannel || !mRightChannel) return;
 
-	    TData sampleRate = _leftChannel->GetSampleRate(); 
-	    TSize frameSize = 512;                    
+			TData sampleRate = mLeftChannel->GetSampleRate(); 
+			TSize frameSize = 512;                    
 
-	    AudioManager manager((int)sampleRate,(int)frameSize);  
-	    AudioOut channelL;   
-	    AudioOut channelR;
-	    AudioIOConfig audioOutCfgL;     
-	    AudioIOConfig audioOutCfgR; 
-	    audioOutCfgL.SetChannelID(0);    
-	    audioOutCfgR.SetChannelID(1);
-	    channelL.Configure(audioOutCfgL); 
-	    channelR.Configure(audioOutCfgR);
-	    AudioManager::Current().Start();                            
-	    channelL.Start();              
-	    channelR.Start();
+			AudioManager manager((int)sampleRate,(int)frameSize);  
+			AudioOut channelL;   
+			AudioOut channelR;
+			AudioIOConfig audioOutCfgL;     
+			AudioIOConfig audioOutCfgR; 
+			audioOutCfgL.SetChannelID(0);    
+			audioOutCfgR.SetChannelID(1);
+			channelL.Configure(audioOutCfgL); 
+			channelR.Configure(audioOutCfgR);
+			AudioManager::Current().Start();                            
+			channelL.Start();              
+			channelR.Start();
     
-	    Audio samplesL;  
-	    Audio samplesR;
-	    samplesL.SetSize(frameSize);
-	    samplesR.SetSize(frameSize);
+			Audio samplesL;  
+			Audio samplesR;
+			samplesL.SetSize(frameSize);
+			samplesR.SetSize(frameSize);
 
-	    Audio silence;
-	    silence.SetSize(frameSize);
+			Audio silence;
+			silence.SetSize(frameSize);
 								
-	    TIndex leftIndex = TIndex(_time.GetBegin()*sampleRate);        
-	    TIndex rightIndex = leftIndex+frameSize;
+			TIndex leftIndex = TIndex(mTime.GetBegin()*sampleRate);        
+			TIndex rightIndex = leftIndex+frameSize;
 
-	    while(leftIndex < TIndex(_time.GetEnd()*sampleRate))
-	    {
-		if(IsPaused())
-		{
-		    _time.SetBegin(TData(leftIndex)/sampleRate);
-		    SetPlaying(false);
+			while(leftIndex < TIndex(mTime.GetEnd()*sampleRate))
+			{
+				if(IsPaused())
+				{
+					mTime.SetBegin(TData(leftIndex)/sampleRate);
+					SetPlaying(false);
+				}
+				if(!IsPlaying()) break;
+				mLeftChannel->GetAudioChunk(leftIndex,rightIndex,samplesL);
+				mRightChannel->GetAudioChunk(leftIndex,rightIndex,samplesR);
+				if(!IsMutedLChannel())
+				{
+					channelL.Do(samplesL);
+				}
+				else
+				{
+					channelL.Do(silence);
+				}
+				if(!IsMutedRChannel())
+				{
+					channelR.Do(samplesR);
+				}
+				else
+				{
+					channelR.Do(silence);
+				}
+				mSigPlayingTime.Emit(TData(leftIndex)/sampleRate);
+				leftIndex += frameSize;
+				rightIndex += frameSize;
+			}
+			channelL.Stop(); 
+			channelR.Stop();
+			if(!IsPaused()) mTime.SetBegin(GetBeginTime());
+
+			TData stopTime = (IsStopped()) ? TData(leftIndex)/sampleRate : (IsPaused()) ? mTime.GetBegin() : mTime.GetEnd();
+			mSigStop.Emit(stopTime);
 		}
-		if(!IsPlaying()) break;
-		_leftChannel->GetAudioChunk(leftIndex,rightIndex,samplesL);
-		_rightChannel->GetAudioChunk(leftIndex,rightIndex,samplesR);
-		if(!isMutedLChannel())
+
+		void APlayer::SetLeftChannelMuted(bool b)
 		{
-		    channelL.Do(samplesL);
+			mMuteLeft = b;
 		}
-		else
+
+		void APlayer::SetRightChannelMuted(bool b)
 		{
-		    channelL.Do(silence);
+			mMuteRight=b;
 		}
-		if(!isMutedRChannel())
+
+		const bool& APlayer::IsMutedLChannel() const
 		{
-		    channelR.Do(samplesR);
+			return mMuteLeft;
 		}
-		else
+
+		const bool& APlayer::IsMutedRChannel() const
 		{
-		    channelR.Do(silence);
+			return mMuteRight;
 		}
-		mSigPlayingTime.Emit(TData(leftIndex)/sampleRate);
-		leftIndex += frameSize;
-		rightIndex += frameSize;
-	    }
-	    channelL.Stop(); 
-	    channelR.Stop();
-	    if(!IsPaused()) _time.SetBegin(GetBeginTime());
-
-	    TData stopTime = (IsStopped()) ? TData(leftIndex)/sampleRate : (IsPaused()) ? _time.GetBegin() : _time.GetEnd();
-	    mSigStop.Emit(stopTime);
-	}
-
-	void APlayer::SetLeftChannelMuted(bool b)
-	{
-	    _muteLeft=b;
-	}
-
-	void APlayer::SetRightChannelMuted(bool b)
-	{
-	    _muteRight=b;
-	}
-
-	bool APlayer::isMutedLChannel()
-	{
-	    return _muteLeft;
-	}
-
-	bool APlayer::isMutedRChannel()
-	{
-	    return _muteRight;
-	}
     }
 }
 

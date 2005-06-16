@@ -34,53 +34,53 @@ namespace CLAM
 {
     namespace VM
     {
-	class Player 
-	{
-	public:
-	    Player();
-	    virtual ~Player();
+		class Player 
+		{
+		public:
+			Player();
+			virtual ~Player();
 				
-	    void Play();
-	    void Pause();
-	    void Stop();
+			void Play();
+			void Pause();
+			void Stop();
 
-	    bool IsPlaying();
+			const bool& IsPlaying() const;
 
-	    void SetBounds(const MediaTime& time);
+			void SetBounds(const MediaTime& time);
 
-	    void SetSlotPlayingTime(Slotv1<TData>& slot);
-	    void SetSlotStopPlaying(Slotv1<TData>& slot);
+			void SetSlotPlayingTime(Slotv1<TData>& slot);
+			void SetSlotStopPlaying(Slotv1<TData>& slot);
 	
-	protected:
-	    Thread _thread;
-	    MediaTime _time;
-	    Signalv1<TData> mSigPlayingTime;
-	    Signalv1<TData> mSigStop;
+		protected:
+			Thread mThread;
+			MediaTime mTime;
+			Signalv1<TData> mSigPlayingTime;
+			Signalv1<TData> mSigStop;
 
-	    virtual void thread_code()=0;
+			virtual void thread_code()=0;
 				
-	    void HaveData(bool d);
-	    void SetPlaying(bool playing);
-	    void SetPaused(bool paused);
+			void HaveData(bool d);
+			void SetPlaying(bool playing);
+			void SetPaused(bool paused);
 
-	    bool IsPaused();
-	    bool IsStopped();
+			const bool& IsPaused() const;
+			const bool& IsStopped() const;
 					
-	    bool HaveData();
+			const bool& HaveData() const;
 								
-	    void SetBeginTime(const TData& begin);
-	    TData GetBeginTime() const;
+			void SetBeginTime(const TData& begin);
+			const TData& GetBeginTime() const;
 				
-	private:
-	    TData _beginTime;
-	    bool _haveData;
-	    bool _isPlaying;
-	    bool _isPaused;
-	    bool _isStopped;
+		private:
+			TData mBeginTime;
+			bool mHaveData;
+			bool mIsPlaying;
+			bool mIsPaused;
+			bool mIsStopped;
 
-	    void SetStopped(bool stopped);
+			void SetStopped(bool stopped);
 				
-	};
+		};
     }
 }
 

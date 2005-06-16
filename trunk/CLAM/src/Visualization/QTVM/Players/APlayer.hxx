@@ -20,42 +20,42 @@
  */
 
 #ifndef __APLAYER__ 
- #define __APLAYER__ 
+#define __APLAYER__ 
  
 #include <vector>
 #include "Player.hxx"
  
- namespace CLAM
- {
-        class Audio;
+namespace CLAM
+{
+	class Audio;
 
 	namespace VM
 	{
 		class APlayer : public Player
 		{
-			public:
-				APlayer();
-				virtual ~APlayer();
+		public:
+			APlayer();
+			~APlayer();
 				
-				void SetData(std::vector<const Audio*> data, bool setTime=true);
+			void SetData(std::vector<const Audio*> data, bool setTime=true);
 
-				void SetLeftChannelMuted(bool b);
-				void SetRightChannelMuted(bool b);
+			void SetLeftChannelMuted(bool b);
+			void SetRightChannelMuted(bool b);
 				
-			protected:
-				void thread_code();
+		protected:
+			void thread_code();
 				
-			private:
-				const Audio* _leftChannel;
-				const Audio* _rightChannel;
+		private:
+			const Audio* mLeftChannel;
+			const Audio* mRightChannel;
 
-				bool _muteLeft,_muteRight;
+			bool mMuteLeft, mMuteRight;
 
-				bool isMutedLChannel();
-				bool isMutedRChannel();
+			const bool& IsMutedLChannel() const;
+			const bool& IsMutedRChannel() const;
 		};
 	}
- }
+}
  
- #endif
+#endif
  

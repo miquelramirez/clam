@@ -20,33 +20,34 @@
  */
 
 #ifndef __FUNDPLAYER__
- #define __FUNDPLAYER__
+#define __FUNDPLAYER__
 
- #include "Segment.hxx"
- #include "Player.hxx"
+#include "Segment.hxx"
+#include "Player.hxx"
 
- namespace CLAM
- {
+namespace CLAM
+{
 	namespace VM
 	{
 		class FundPlayer : public Player
 		{
-			public:
-				FundPlayer();
-				virtual ~FundPlayer();
+		public:
+			FundPlayer();
+			~FundPlayer();
 
-				void SetData(const Segment& segment);
+			void SetData(const Segment& segment);
 
-			protected:
-				void thread_code();
+		protected:
+			void thread_code();
 
-			private:
-				Segment _segment;
+		private:
+			Segment mSegment;
 		};
 	}
- }
+}
 
 #endif
+
 
 
 
