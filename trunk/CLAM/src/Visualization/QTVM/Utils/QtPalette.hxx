@@ -74,7 +74,7 @@ namespace CLAM
 		inline void QtPalette::value(float v)
 		{
 			//D/ Adjust the color scale.
-			value_=v; CalcColorMap();
+			mValue=v; CalcColorMap();
 		}
 
 		inline int QtPalette::Get(float v) 
