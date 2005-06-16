@@ -28,13 +28,13 @@ namespace CLAM
 	namespace VM
 	{
 		void SinTrackHorClipper::Cull( TIndex start_frame, TIndex end_frame, 
-						SineTrackSpanEnds& line_starts,
-						SineTrackSpanEnds& line_ends )
+									   SineTrackSpanEnds& line_starts,
+									   SineTrackSpanEnds& line_ends )
 		{
 			line_starts.clear();
 			line_ends.clear();
 			// Some defensive programming...
-			CLAM_ASSERT( mList != NULL, "No list to clip!" );
+			CLAM_ASSERT( mList != 0, "No list to clip!" );
 			CLAM_DEBUG_ASSERT( end_frame > start_frame, "End frame must be greater than start Frame\n" );
 			CLAM_DEBUG_ASSERT( ( end_frame - start_frame ) >= 3, "Three frames span is the minimum meaningful\n" ); 
 
@@ -70,7 +70,7 @@ namespace CLAM
 		}
 
 		void SinTrackHorClipper::DetermineSpanPeaks( TIndex frame0, TIndex frame1, SineTrackList::iterator itrack,
-								peak_iterator& start, peak_iterator& end )
+													 peak_iterator& start, peak_iterator& end )
 		{
 			// "Best" case: the span can be trivially rejected		
 			if ( itrack->front() > frame1 ) // track is to the right of the spanned frames

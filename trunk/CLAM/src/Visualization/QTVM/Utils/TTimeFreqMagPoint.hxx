@@ -45,39 +45,39 @@ namespace CLAM
 			~TimeFreqMagPoint();
 
 			bool isValid() const
-			{
-				return ( mTimeIndex >= 0 );
-			}
+				{
+					return ( mTimeIndex >= 0 );
+				}
 
 			bool operator==( TIndex i ) 
-			{
-				return mTimeIndex==i;
-			}
+				{
+					return mTimeIndex==i;
+				}
 
 			bool operator==( TIndex i ) const
-			{
-				return mTimeIndex==i;
-			}
+				{
+					return mTimeIndex==i;
+				}
 
 			bool operator<( TIndex i )
-			{
-				return mTimeIndex<i;
-			}
+				{
+					return mTimeIndex<i;
+				}
 					
 			bool operator<( TIndex i ) const
-			{
-				return mTimeIndex<i;
-			}
+				{
+					return mTimeIndex<i;
+				}
 
 			bool operator>( TIndex i )
-			{
-				return mTimeIndex>i;
-			}
+				{
+					return mTimeIndex>i;
+				}
 					
 			bool operator>( TIndex i ) const
-			{
-				return mTimeIndex>i;
-			}
+				{
+					return mTimeIndex>i;
+				}
 					
 
 		};

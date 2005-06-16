@@ -30,13 +30,13 @@ namespace CLAM
 	{
 
 		SinTrackBuilder::SinTrackBuilder(  )
-			: mSineTrackList( NULL )
+			: mSineTrackList(0)
 		{
 		}
 
 		void SinTrackBuilder::AddFrame( const Array<Partial>& a, TIndex frame_idx )
 		{
-			CLAM_ASSERT( mSineTrackList!=NULL, "No assigned track list" );
+			CLAM_ASSERT( mSineTrackList!=0, "No assigned track list" );
 			SineTrackList& trackList = *mSineTrackList;
 	
 			for ( int i = 0; i < a.Size(); i++ )

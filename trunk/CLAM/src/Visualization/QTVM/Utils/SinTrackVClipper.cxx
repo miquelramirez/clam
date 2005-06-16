@@ -76,7 +76,7 @@ namespace CLAM
 		}
 
 		void SinTrackVerClipper::ClipSpans( TData f_lower, TData f_upper, peak_iterator& si, peak_iterator& ei, 
-							SineTrackSpanEnds& pl_s, SineTrackSpanEnds& pl_e  )
+											SineTrackSpanEnds& pl_s, SineTrackSpanEnds& pl_e  )
 		{
 			if ( si == ei )
 				return;

@@ -31,22 +31,22 @@ namespace CLAM
 	{
 		class SineTracksAdapter
 		{
-			public:
-				SineTracksAdapter();
-				virtual ~SineTracksAdapter();
+		public:
+			SineTracksAdapter();
+			~SineTracksAdapter();
 
-				SineTrackList& GetTrackList(const Segment& seg);
-				SineTrackList& GetTrackList(const Array< SpectralPeakArray >& peakMtx);
+			SineTrackList& GetTrackList(const Segment& seg);
+			SineTrackList& GetTrackList(const Array< SpectralPeakArray >& peakMtx);
 
-			private:
-				const Segment*	_segment;
-				const Array< SpectralPeakArray >*	_matrix;
-				Array< Partial >	_partialBuffer;
-				SineTrackList	_extractedList;
-				SinTrackBuilder	_trackBuilder;
+		private:
+			const Segment*                    mSegment;
+			const Array< SpectralPeakArray >* mMatrix;
+			Array< Partial >                  mPartialBuffer;
+			SineTrackList                     mExtractedList;
+			SinTrackBuilder                   mTrackBuilder;
 
-				bool TranscribePeakArray( const SpectralPeakArray& peakArray );
-				void TransmitPeakArrays();
+			bool TranscribePeakArray( const SpectralPeakArray& peakArray );
+			void TransmitPeakArrays();
 		};
 	}
 }
