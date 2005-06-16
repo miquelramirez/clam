@@ -25,114 +25,114 @@ namespace CLAM
 {
     namespace VM
     {
-	Player::Player()
-	{
-	    HaveData(false);
-	    SetPlaying(false);
-	    SetPaused(false);
-	    SetStopped(false);
-	    SetBeginTime(TData(0.0));
-	}
+		Player::Player()
+			: mBeginTime(TData(0.0))
+			, mHaveData(false)
+			, mIsPlaying(false)
+			, mIsPaused(false)
+			, mIsStopped(false)
+		{
+		}
 		
-	Player::~Player()
-	{
-	    Stop();
-	}
+		Player::~Player()
+		{
+			Stop();
+		}
 			
-	void Player::Play()
-	{
-	    CLAM_ASSERT(HaveData(),"The player has no data to play!");
-	    if(IsPaused()) SetPaused(false);
-	    if(IsStopped()) SetStopped(false);
-	    if(IsPlaying()) Stop();
-	    _thread.Start();
-	    SetPlaying(true);
-	}
+		void Player::Play()
+		{
+			if(!HaveData()) return;
+			if(IsPaused()) SetPaused(false);
+			if(IsStopped()) SetStopped(false);
+			if(IsPlaying()) Stop();
+			SetPlaying(true);
+			mThread.Start();
+		}
 		
-	void Player::Stop()
-	{
-	    if(IsPlaying())
-	    {
-		SetPaused(false);
-		SetPlaying(false);
-		SetStopped(true);
-		_thread.Stop();
-	    }
-	}
+		void Player::Stop()
+		{
+			if(IsPlaying())
+			{
+				SetPaused(false);
+				SetPlaying(false);
+				SetStopped(true);
+				mThread.Stop();
+			}
+		}
 		
-	void Player::Pause()
-	{
-	    SetPaused(true);
-	    SetPlaying(false);
-	    SetStopped(false);
-	}
+		void Player::Pause()
+		{
+			SetPaused(true);
+			SetPlaying(false);
+			SetStopped(false);
+		}
 				
-	void Player::SetBounds(const MediaTime& time)
-	{
-	    _beginTime = time.GetBegin();
-	    _time.SetBegin(time.GetBegin());
-	    _time.SetEnd(time.GetEnd());
-	}
+		void Player::SetBounds(const MediaTime& time)
+		{
+			mBeginTime = time.GetBegin();
+			mTime.SetBegin(time.GetBegin());
+			mTime.SetEnd(time.GetEnd());
+		}
 
-	void Player::SetSlotPlayingTime(Slotv1<TData>& slot)
-	{
-	    mSigPlayingTime.Connect(slot);
-	}
+		void Player::SetSlotPlayingTime(Slotv1<TData>& slot)
+		{
+			mSigPlayingTime.Connect(slot);
+		}
 
-	void Player::SetSlotStopPlaying(Slotv1<TData>& slot)
-	{
-	    mSigStop.Connect(slot);
-	}
+		void Player::SetSlotStopPlaying(Slotv1<TData>& slot)
+		{
+			mSigStop.Connect(slot);
+		}
 
-	void Player::HaveData(bool d)
-	{
-	    _haveData = d;
-	}
+		void Player::HaveData(bool d)
+		{
+			mHaveData = d;
+		}
 
-	bool Player::HaveData()
-	{
-	    return _haveData;
-	}
+		const bool& Player::HaveData() const
+		{
+			return mHaveData;
+		}
 
-	void Player::SetPlaying(bool playing)
-	{
-	    _isPlaying = playing;
-	}
+		void Player::SetPlaying(bool playing)
+		{
+			mIsPlaying = playing;
+		}
 
-	bool Player::IsPlaying()
-	{
-	    return _isPlaying;
-	}
+		const bool& Player::IsPlaying() const
+		{
+			return mIsPlaying;
+		}
 
-	void Player::SetPaused(bool paused)
-	{
-	    _isPaused = paused;
-	}
+		void Player::SetPaused(bool paused)
+		{
+			mIsPaused = paused;
+		}
 
-	bool Player::IsPaused()
-	{
-	    return _isPaused;
-	}
+		const bool& Player::IsPaused() const
+		{
+			return mIsPaused;
+		}
 
-	void Player::SetBeginTime(const TData& begin)
-	{
-	    _beginTime = begin;
-	}
+		void Player::SetBeginTime(const TData& begin)
+		{
+			mBeginTime = begin;
+		}
 
-	TData Player::GetBeginTime() const
-	{
-	    return _beginTime;
-	}
+		const TData& Player::GetBeginTime() const
+		{
+			return mBeginTime;
+		}
 
-	void Player::SetStopped(bool stopped)
-	{
-	    _isStopped = stopped;
-	}
+		void Player::SetStopped(bool stopped)
+		{
+			mIsStopped = stopped;
+		}
 
-	bool Player::IsStopped()
-	{
-	    return _isStopped;
-	}
+		const bool& Player::IsStopped() const
+		{
+			return mIsStopped;
+		}
     }
 }
 

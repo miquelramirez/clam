@@ -31,6 +31,7 @@ namespace CLAM
 	{
 		FundPlayer::FundPlayer()
 		{
+			mThread.SetThreadCode(makeMemberFunctor0((*this), FundPlayer, thread_code));
 		}
 		
 		FundPlayer::~FundPlayer()
@@ -39,19 +40,18 @@ namespace CLAM
 		
 		void FundPlayer::SetData(const Segment& segment)
 		{
-			_segment = segment;
+			mSegment = segment;
 			MediaTime time;
-			time.SetBegin(TData(_segment.GetBeginTime()));
-			time.SetEnd(TData(_segment.GetEndTime()));
+			time.SetBegin(TData(mSegment.GetBeginTime()));
+			time.SetEnd(TData(mSegment.GetEndTime()));
 			SetBounds(time);
-			_thread.SetThreadCode(makeMemberFunctor0((*this), FundPlayer, thread_code));
 			HaveData(true);
 		}
 		
 		void FundPlayer::thread_code()
 		{
-			TData sampleRate = _segment.GetSamplingRate(); 
-			TSize nSamples = TSize((_segment.GetEndTime()-_segment.GetBeginTime())*sampleRate);         
+			TData sampleRate = mSegment.GetSamplingRate(); 
+			TSize nSamples = TSize((mSegment.GetEndTime()-mSegment.GetBeginTime())*sampleRate);         
 			TSize frameSize = 512;                    
 
 			AudioManager manager((int)sampleRate,(int)frameSize);  
@@ -73,36 +73,34 @@ namespace CLAM
 			Audio samples;                
 			samples.SetSize(frameSize);
 																		
-			int nFrames = _segment.GetnFrames();
+			int nFrames = mSegment.GetnFrames();
 
 			osc.Start();
 
-			TIndex leftIndex = TIndex(_time.GetBegin()*sampleRate);        
-			TIndex rightIndex = leftIndex+frameSize;
+			TIndex index = TIndex(mTime.GetBegin()*sampleRate);        
 
-			while(leftIndex < TIndex(_time.GetEnd()*sampleRate))
+			while(index < TIndex(mTime.GetEnd()*sampleRate))
 			{
 				if(IsPaused())
 				{
-					_time.SetBegin(TData(leftIndex)/sampleRate);
+					mTime.SetBegin(TData(index)/sampleRate);
 					SetPlaying(false);
 				}
 				if(!IsPlaying()) break;
-				freqControl.DoControl(_segment.GetFrame(int(leftIndex*nFrames/nSamples)).GetFundamental().GetFreq(0));
+				freqControl.DoControl(mSegment.GetFrame(int(index*nFrames/nSamples)).GetFundamental().GetFreq(0));
 				osc.Do(samples);
 				channel.Do(samples);
 
-				mSigPlayingTime.Emit(TData(leftIndex)/sampleRate);
+				mSigPlayingTime.Emit(TData(index)/sampleRate);
 
-				leftIndex += frameSize;
-				rightIndex += frameSize;
-			 }
-			 osc.Stop();
-			 channel.Stop(); 
-			 if(!IsPaused()) _time.SetBegin(GetBeginTime());
+				index += frameSize;
+			}
+			osc.Stop();
+			channel.Stop(); 
+			if(!IsPaused()) mTime.SetBegin(GetBeginTime());
 
-			 TData stopTime = (IsStopped()) ? TData(leftIndex)/sampleRate : (IsPaused()) ? _time.GetBegin() : _time.GetEnd();
-			 mSigStop.Emit(stopTime);
+			TData stopTime = (IsStopped()) ? TData(index)/sampleRate : (IsPaused()) ? mTime.GetBegin() : mTime.GetEnd();
+			mSigStop.Emit(stopTime);
 		}
 	}
 }
