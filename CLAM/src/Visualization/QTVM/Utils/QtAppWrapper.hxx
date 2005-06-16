@@ -32,15 +32,15 @@ namespace CLAM
 		{
 			typedef QApplication* Wrapper; 
 			
-			public:
-				static void Init();
-				static void Quit();
-				static int Run();
+		public:
+			static void Init();
+			static void Quit();
+			static int Run();
 				
-			private:
-				static Wrapper _app;
-				
-				static bool IsInitiated();
+		private:
+			static Wrapper mApp;
+
+			static bool IsInitiated();
 				
 		};
 	}

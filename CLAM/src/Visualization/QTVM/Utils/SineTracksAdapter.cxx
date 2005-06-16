@@ -26,9 +26,10 @@ namespace CLAM
 	namespace VM
 	{
 		SineTracksAdapter::SineTracksAdapter()
-			: _segment(NULL), _matrix(NULL)
+			: mSegment(0) 
+			, mMatrix(0)
 		{
-			_trackBuilder.SetTrackList( _extractedList );
+			mTrackBuilder.SetTrackList( mExtractedList );
 		}
 
 		SineTracksAdapter::~SineTracksAdapter()
@@ -37,32 +38,32 @@ namespace CLAM
 
 		SineTrackList& SineTracksAdapter::GetTrackList(const Segment& seg)
 		{
-			_matrix=NULL;
-			_segment = &seg;
+			mMatrix = 0;
+			mSegment = &seg;
 
-			CLAM_ASSERT( _segment->HasSamplingRate(), "Not a valid segment: it doesn't know its sampling rate " );
-			CLAM_ASSERT( _segment->HasBeginTime(), "Not a valid segment: it doesn't know its begin time " );
-			CLAM_ASSERT( _segment->HasEndTime(), "Not a valid segment: it doesn't know its end time " );
+			CLAM_ASSERT( mSegment->HasSamplingRate(), "Not a valid segment: it doesn't know its sampling rate " );
+			CLAM_ASSERT( mSegment->HasBeginTime(), "Not a valid segment: it doesn't know its begin time " );
+			CLAM_ASSERT( mSegment->HasEndTime(), "Not a valid segment: it doesn't know its end time " );
 
 			// new object, new list
-			_trackBuilder.Flush();
-			_extractedList.clear();
+			mTrackBuilder.Flush();
+			mExtractedList.clear();
 			TransmitPeakArrays();
 			
-			return _extractedList;
+			return mExtractedList;
 		}
 
 		SineTrackList& SineTracksAdapter::GetTrackList(const Array< SpectralPeakArray >& peakMtx)
 		{
-			_segment=NULL;
-			_matrix = &peakMtx;
+			mSegment = 0;
+			mMatrix = &peakMtx;
 
-			_trackBuilder.Flush();
-			_extractedList.clear();
+			mTrackBuilder.Flush();
+			mExtractedList.clear();
 
 			TransmitPeakArrays();
 
-			return _extractedList;
+			return mExtractedList;
 		}
 
 		bool SineTracksAdapter::TranscribePeakArray( const SpectralPeakArray& peakArray )
@@ -90,62 +91,57 @@ namespace CLAM
 
 			bool thereAreIndexes = peakArray.HasIndexArray();
 
-			const Array<TIndex>* pIndexBuff = NULL;
+			const Array<TIndex>* pIndexBuff = 0;
 
 			if ( thereAreIndexes )
 				pIndexBuff = &peakArray.GetIndexArray();
 
-			_partialBuffer.Resize( nPeaks );
-			_partialBuffer.SetSize( nPeaks );
+			mPartialBuffer.Resize( nPeaks );
+			mPartialBuffer.SetSize( nPeaks );
+
+			bool isLinear = (peakArray.GetScale() == EScale::eLinear);
 
 			for ( int i = 0; i < nPeaks; i++ )
 			{
-				_partialBuffer[i].mMag = magBuff[i];
-				_partialBuffer[i].mFreq = freqBuff[i];
-				_partialBuffer[i].mPhase = phaseBuff[i];
-				_partialBuffer[i].mTrackId = (thereAreIndexes) ? (*pIndexBuff)[i] : i;
+				mPartialBuffer[i].mMag = (isLinear) ? 20.0f*log10(magBuff[i]) : magBuff[i];
+				mPartialBuffer[i].mFreq = freqBuff[i];
+				mPartialBuffer[i].mPhase = phaseBuff[i];
+				mPartialBuffer[i].mTrackId = (thereAreIndexes) ? (*pIndexBuff)[i] : i;
 			}
-				
-			if ( peakArray.GetScale() == EScale::eLinear )
-			{
-				for ( int i=0; i < nPeaks; i++ )
-					_partialBuffer[i].mMag = 20.0f*log10( _partialBuffer[i].mMag );
-			}
-
 			return true;
 		}
 
 		void SineTracksAdapter::TransmitPeakArrays()
 		{
-			CLAM_ASSERT( _segment!=NULL || _matrix!=NULL, "Precondition violation!" );
+			CLAM_ASSERT( mSegment!=0 || mMatrix!=0, "Precondition violation!" );
 
 			TSize numFrames = 0;
 
-			if ( _segment )
+			if ( mSegment )
 			{
-				numFrames = _segment->GetnFrames();
+				numFrames = mSegment->GetnFrames();
 				TSize idx = 0;
 				
 				while ( idx < numFrames )
 				{
-					const Frame& f = _segment->GetFrame( idx );
+					const Frame& f = mSegment->GetFrame( idx );
 					
 					if ( TranscribePeakArray( f.GetSpectralPeakArray() ) )
-						_trackBuilder.AddFrame( _partialBuffer, idx );
+						mTrackBuilder.AddFrame( mPartialBuffer, idx );
 					
 					idx++;
 				}
 					
 			}
-			else if ( _matrix )
+			else if ( mMatrix )
 			{
-				numFrames = _matrix->Size();
+				numFrames = mMatrix->Size();
 				TSize idx = 0;
 
 				while( idx < numFrames )
 				{
-					if ( TranscribePeakArray( (*_matrix)[idx] ) )
-						_trackBuilder.AddFrame( _partialBuffer, idx );
+					if ( TranscribePeakArray( (*mMatrix)[idx] ) )
+						mTrackBuilder.AddFrame( mPartialBuffer, idx );
 					idx++;
 				}
 			}

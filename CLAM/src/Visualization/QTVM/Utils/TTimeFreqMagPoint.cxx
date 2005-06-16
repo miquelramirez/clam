@@ -27,7 +27,8 @@ namespace CLAM
 	{
 
 		TimeFreqMagPoint::TimeFreqMagPoint()
-			: mAttribute( 0 ), mTimeIndex( -1 )
+			: mAttribute( 0 )
+			, mTimeIndex( -1 )
 		{
 		}
 			
@@ -39,8 +40,7 @@ namespace CLAM
 		}
 			
 		const TimeFreqMagPoint& TimeFreqMagPoint::operator=( const TimeFreqMagPoint& p )
-		{				
-			//return *this;
+		{	
 			return p;
 		}
 

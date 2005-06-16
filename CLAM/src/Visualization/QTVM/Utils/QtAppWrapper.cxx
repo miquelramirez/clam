@@ -26,31 +26,31 @@ namespace CLAM
 {
 	namespace VM
 	{
-		QtAppWrapper::Wrapper QtAppWrapper::_app;
+		QtAppWrapper::Wrapper QtAppWrapper::mApp=0;
 
 		void QtAppWrapper::Init()
 		{
 			if(!IsInitiated())
 			{
 				int argc=1;
-				_app = new QApplication(argc,NULL);
+				mApp = new QApplication(argc,0);
 			}
 		}
 
 		void QtAppWrapper::Quit()
 		{
-			_app->quit();
+			mApp->quit();
 		}
 
 		int QtAppWrapper::Run()
 		{
-			_app->connect(_app,SIGNAL(lastWindowClosed()),_app,SLOT(quit()));
-			return _app->exec();
+			mApp->connect(mApp,SIGNAL(lastWindowClosed()),mApp,SLOT(quit()));
+			return mApp->exec();
 		}
 
 		bool QtAppWrapper::IsInitiated()
 		{
-			return _app;
+			return mApp;
 		}
 
 	}
