@@ -28,48 +28,48 @@ namespace CLAM
     namespace VM
     {
 
-	void PlotFundamental( const Segment& segment,
-			      const std::string& label,
-			      int x, int y, int w, int h )
-	{
-	    QtAppWrapper::Init();
+		void PlotFundamental( const Segment& segment,
+							  const std::string& label,
+							  int x, int y, int w, int h )
+		{
+			QtAppWrapper::Init();
 			
-	    QtFundFreqPlot plot;
-	    plot.Label(label);
-	    plot.Geometry(x,y,w,h);
-	    plot.SetBackgroundColor(VMColor::White());
-	    plot.SetForegroundColor(VMColor::Blue());
-	    plot.SetDialColor(VMColor::Black());
-	    plot.SetRegionColor(VMColor::LightGray());
-	    plot.SwitchDisplayColors(true);
-	    plot.SetData(segment);
-	    plot.Show();
+			QtFundFreqPlot plot;
+			plot.Label(label);
+			plot.Geometry(x,y,w,h);
+			plot.SetBackgroundColor(VMColor::White());
+			plot.SetForegroundColor(VMColor::Blue());
+			plot.SetDialColor(VMColor::Black());
+			plot.SetRegionColor(VMColor::LightGray());
+			plot.SwitchDisplayColors(true);
+			plot.SetData(segment);
+			plot.Show();
 			
-	    QtAppWrapper::Run();
-	}
+			QtAppWrapper::Run();
+		}
 
-	void PlotFundamental( const Segment& segment,
-			      std::vector<unsigned>& marks,
-			      const std::string& label,
-			      int x, int y, int w, int h )
-	{
-	    QtAppWrapper::Init();
+		void PlotFundamental( const Segment& segment,
+							  std::vector<unsigned>& marks,
+							  const std::string& label,
+							  int x, int y, int w, int h )
+		{
+			QtAppWrapper::Init();
 			
-	    QtFundFreqPlot plot;
-	    plot.Label(label);
-	    plot.Geometry(x,y,w,h);
-	    plot.SetBackgroundColor(VMColor::White());
-	    plot.SetForegroundColor(VMColor::Blue());
-	    plot.SetDialColor(VMColor::Black());
-	    plot.SetRegionColor(VMColor::LightGray());
-	    plot.SetData(segment);
-	    plot.SetMarks(marks);
-	    plot.SetMarksColor(VMColor::Red());
-	    plot.SwitchDisplayColors(true);
-	    plot.Show();
+			QtFundFreqPlot plot;
+			plot.Label(label);
+			plot.Geometry(x,y,w,h);
+			plot.SetBackgroundColor(VMColor::White());
+			plot.SetForegroundColor(VMColor::Blue());
+			plot.SetDialColor(VMColor::Black());
+			plot.SetRegionColor(VMColor::LightGray());
+			plot.SetData(segment);
+			plot.SetMarks(marks);
+			plot.SetMarksColor(VMColor::Red());
+			plot.SwitchDisplayColors(true);
+			plot.Show();
 			
-	    QtAppWrapper::Run();
-	}
+			QtAppWrapper::Run();
+		}
 					
     }
 }

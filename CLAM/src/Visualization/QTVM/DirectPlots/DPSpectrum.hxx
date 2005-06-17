@@ -30,24 +30,24 @@ namespace CLAM
 {
     namespace VM
     {
-	/**
-	 * Viewing a single spectrum directly.
-	 */
+		/**
+		 * Viewing a single spectrum directly.
+		 */
 
-	void PlotSpectrum( const Spectrum& spec,
-			   const std::string& label="",
-			   int x=100,
-			   int y=100,
-			   int w=500,
-			   int h=225 );
+		void PlotSpectrum( const Spectrum& spec,
+						   const std::string& label="",
+						   int x=100,
+						   int y=100,
+						   int w=500,
+						   int h=225 );
 
-	void PlotSpectrum( const Spectrum& spec,
-			   std::vector<unsigned>& marks,
-			   const std::string& label="",
-			   int x=100,
-			   int y=100,
-			   int w=500,
-			   int h=225 );
+		void PlotSpectrum( const Spectrum& spec,
+						   std::vector<unsigned>& marks,
+						   const std::string& label="",
+						   int x=100,
+						   int y=100,
+						   int w=500,
+						   int h=225 );
     }
 }
 

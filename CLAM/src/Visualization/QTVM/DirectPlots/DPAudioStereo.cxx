@@ -27,50 +27,50 @@ namespace CLAM
 {
     namespace VM
     {
-	void PlotAudioStereo( const Audio& leftChannel,
-			      const Audio& rightChannel,
-			      const std::string& label,
-			      int x, int y, int w, int h)
-	{
-	    QtAppWrapper::Init();
+		void PlotAudioStereo( const Audio& leftChannel,
+							  const Audio& rightChannel,
+							  const std::string& label,
+							  int x, int y, int w, int h)
+		{
+			QtAppWrapper::Init();
 
-	    QtStereoAudioPlot plot;
-	    plot.Label(label);
-	    plot.Geometry(x,y,w,h);
-	    plot.SetBackgroundColor(VMColor::White());
-	    plot.SetForegroundColor(VMColor::Blue());
-	    plot.SetDialColor(VMColor::Black());
-	    plot.SetRegionColor(VMColor::LightGray());
-	    plot.SwitchDisplayColors(true);
-	    plot.SetData(leftChannel,rightChannel);
-	    plot.Show();
+			QtStereoAudioPlot plot;
+			plot.Label(label);
+			plot.Geometry(x,y,w,h);
+			plot.SetBackgroundColor(VMColor::White());
+			plot.SetForegroundColor(VMColor::Blue());
+			plot.SetDialColor(VMColor::Black());
+			plot.SetRegionColor(VMColor::LightGray());
+			plot.SwitchDisplayColors(true);
+			plot.SetData(leftChannel,rightChannel);
+			plot.Show();
 
-	    QtAppWrapper::Run();
-	}
+			QtAppWrapper::Run();
+		}
 
-	void PlotAudioStereo( const Audio& leftChannel,
-			      const Audio& rightChannel,
-			      std::vector<unsigned>& marks,
-			      const std::string& label,
-			      int x, int y, int w, int h )
-	{
-	    QtAppWrapper::Init();
+		void PlotAudioStereo( const Audio& leftChannel,
+							  const Audio& rightChannel,
+							  std::vector<unsigned>& marks,
+							  const std::string& label,
+							  int x, int y, int w, int h )
+		{
+			QtAppWrapper::Init();
 
-	    QtStereoAudioPlot plot;
-	    plot.Label(label);
-	    plot.Geometry(x,y,w,h);
-	    plot.SetBackgroundColor(VMColor::White());
-	    plot.SetForegroundColor(VMColor::Blue());
-	    plot.SetDialColor(VMColor::Black());
-	    plot.SetRegionColor(VMColor::LightGray());
-	    plot.SetData(leftChannel,rightChannel);
-	    plot.SetMarks(marks);
-	    plot.SetMarksColor(VMColor::Red());
-	    plot.SwitchDisplayColors(true);
-	    plot.Show();
+			QtStereoAudioPlot plot;
+			plot.Label(label);
+			plot.Geometry(x,y,w,h);
+			plot.SetBackgroundColor(VMColor::White());
+			plot.SetForegroundColor(VMColor::Blue());
+			plot.SetDialColor(VMColor::Black());
+			plot.SetRegionColor(VMColor::LightGray());
+			plot.SetData(leftChannel,rightChannel);
+			plot.SetMarks(marks);
+			plot.SetMarksColor(VMColor::Red());
+			plot.SwitchDisplayColors(true);
+			plot.Show();
 
-	    QtAppWrapper::Run();
-	}
+			QtAppWrapper::Run();
+		}
     }
 }
 

@@ -30,24 +30,24 @@ namespace CLAM
 {
     namespace VM
     {
-	/**
-	 * Viewing CLAM::Audio directly.
-	 */
+		/**
+		 * Viewing CLAM::Audio directly.
+		 */
   
-	void PlotAudio(	const Audio& audio,
-			const std::string& label="",
-			int x=100, 
-			int y=100, 
-			int w=500, 
-			int h=225 );
+		void PlotAudio(	const Audio& audio,
+						const std::string& label="",
+						int x=100, 
+						int y=100, 
+						int w=500, 
+						int h=225 );
 
-	void PlotAudios( const Audio& audio,
-			 std::vector<unsigned>& marks,
-			 const std::string& label="",
-			 int x=100, 
-			 int y=100, 
-			 int w=500, 
-			 int h=225 );
+		void PlotAudios( const Audio& audio,
+						 std::vector<unsigned>& marks,
+						 const std::string& label="",
+						 int x=100, 
+						 int y=100, 
+						 int w=500, 
+						 int h=225 );
 	}
 }
 

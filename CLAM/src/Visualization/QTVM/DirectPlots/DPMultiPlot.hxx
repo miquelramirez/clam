@@ -34,38 +34,38 @@ namespace CLAM
 	{
 		class QtMultiPlot;
 
-	    	/**
-	         * Viewing several functions at time.
-	         *
-	         * @ingroup QTVM
-	         */
+		/**
+		 * Viewing several functions at time.
+		 *
+		 * @ingroup QTVM
+		 */
 
 		class DPMultiPlot
 		{
-			public:
-				DPMultiPlot();
-				virtual ~DPMultiPlot();
+		public:
+			DPMultiPlot();
+			~DPMultiPlot();
 				
-				void Label(const std::string& label);
-				void Geometry(int x, int y, int w, int h);
+			void Label(const std::string& label);
+			void Geometry(int x, int y, int w, int h);
 
-				void AddData(const std::string& key, const DataArray& array);
-				void AddData(std::string key, const BPF& data, int samples = 100);
+			void AddData(const std::string& key, const DataArray& array);
+			void AddData(std::string key, const BPF& data, int samples = 100);
 
-				void SetColor(std::string key, Color c);
+			void SetColor(std::string key, Color c);
 
-				void SetMarks(std::vector<unsigned>& marks);
+			void SetMarks(std::vector<unsigned>& marks);
 				
-				void SetXRange(const TData& xmin, const TData& xmax);
-				void SetYRange(const TData& ymin, const TData& ymax);
+			void SetXRange(const TData& xmin, const TData& xmax);
+			void SetYRange(const TData& ymin, const TData& ymax);
 
-				void SetUnits(const std::string& xunits, const std::string& yunits);
-				void SetToolTips(const std::string& xtooltip, const std::string& ytooltip);
+			void SetUnits(const std::string& xunits, const std::string& yunits);
+			void SetToolTips(const std::string& xtooltip, const std::string& ytooltip);
 
-				void Run();
+			void Run();
 
-			private:
-				QtMultiPlot* _plot;
+		private:
+			QtMultiPlot* mPlot;
 				
 		};
 	}
