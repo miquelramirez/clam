@@ -51,7 +51,7 @@ namespace CLAM
 
 			QHBoxLayout* layout = new QHBoxLayout(this);
 			mScrollBar = new ScrollBar(QScrollBar::Horizontal,this);
-			mScrollBarb->setFixedHeight(mScrollBar->sizeHint().height());
+			mScrollBar->setFixedHeight(mScrollBar->sizeHint().height());
 			mScrollBar->setRange(0,0);
 			mScrollBar->setSteps(20,100);
 			layout->addWidget(mScrollBar,1);
