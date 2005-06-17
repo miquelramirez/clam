@@ -41,7 +41,7 @@ namespace CLAM
 		void VZLabel::InitLabel()
 		{
 			mFont.setFamily("Sans");
-			nFont.setPointSize(8);
+			mFont.setPointSize(8);
 			mFont.setBold(true);
 
 			this->setMinimumSize(20,25);

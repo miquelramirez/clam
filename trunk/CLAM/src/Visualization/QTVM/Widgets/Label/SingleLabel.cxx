@@ -62,7 +62,7 @@ namespace CLAM
 			QToolTip::add(this,text);
 		}
 
-		void SingleLabel::Update(const float& value, int prec)
+		void SingleLabel::Update(const float& value, const int& prec)
 		{
 			QString s = " "+QString::number(value,'f',prec)+" "+mUnits;
 			this->setText(s);
