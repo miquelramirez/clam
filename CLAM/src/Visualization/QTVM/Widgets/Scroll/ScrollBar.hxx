@@ -32,17 +32,17 @@ namespace CLAM
 		{
 			Q_OBJECT
 			
-			signals:
-				void clicked();
-				void released();
+		public: 
+			ScrollBar(Orientation orientation, QWidget * parent);
+			~ScrollBar();
+
+		signals:
+			void clicked();
+			void released();
 			
-			public: 
-				ScrollBar(Orientation orientation, QWidget * parent);
-				virtual ~ScrollBar();
-			
-			protected:
-				virtual void mousePressEvent(QMouseEvent * e);
-				virtual void mouseReleaseEvent(QMouseEvent * e);
+		protected:
+			void mousePressEvent(QMouseEvent * e);
+			void mouseReleaseEvent(QMouseEvent * e);
 		};
 	}
 }

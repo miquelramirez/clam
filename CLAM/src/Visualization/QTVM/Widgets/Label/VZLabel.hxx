@@ -31,25 +31,27 @@ namespace CLAM
 
 		class VZLabel : public QFrame
 		{
-			public:
-				VZLabel(QWidget* parent);
-				virtual ~VZLabel();
+		public:
+			VZLabel(QWidget* parent);
+			~VZLabel();
 
-				void setText(const QString& text);
+			void setText(const QString& text);
 
-			protected:
-				virtual void drawContents(QPainter* p);
+		protected:
+			void drawContents(QPainter* p);
 
-			private:
-				QFont _f;
-				QString _text;
-				int _align;
+		private:
+			QFont   mFont;
+			QString mText;
+			int     mAlign;
 
-				void InitLabel();
+			void InitLabel();
 		};
 	}
 }
+
 #endif
+
 
 
 

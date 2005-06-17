@@ -21,12 +21,13 @@
 
 #include <qtooltip.h>
 #include "SingleLabel.hxx"
+
 namespace CLAM
 {
 	namespace VM
 	{
-		SingleLabel::SingleLabel(QWidget* parent,const QString& units,const QString& tooltip) 
-								 : QLabel(parent)
+		SingleLabel::SingleLabel(QWidget* parent,const QString& units,const QString& tooltip)
+			: QLabel(parent)
 		{
 			SetUnits(units);
 			SetToolTip(tooltip);
@@ -44,27 +45,30 @@ namespace CLAM
 
 			this->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			this->setLineWidth(2);
-			this->setMinimumSize(40,20);						
+			this->setMinimumSize(40,20);
 			this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
 			this->setAlignment(Qt::AlignCenter);
 			this->setFont(f);
 			this->setText("");
 		}
+
 		void SingleLabel::SetUnits(const QString& text)
 		{
-			_units = text;
+			mUnits = text;
 		}
+
 		void SingleLabel::SetToolTip(const QString& text)
 		{
 			QToolTip::add(this,text);
 		}
-		void SingleLabel::Update(float value)
+
+		void SingleLabel::Update(const float& value, int prec)
 		{
-			QString s=" "+QString::number(value,'f',3)+_units;
+			QString s = " "+QString::number(value,'f',prec)+" "+mUnits;
 			this->setText(s);
 		}
 	}
 }
-// END
 
+// END
 

@@ -37,34 +37,35 @@ namespace CLAM
 		{
 			Q_OBJECT
 
-			public:
-				HScrollGroup(QWidget* parent=0);
-				virtual ~HScrollGroup();
+		public:
+			HScrollGroup(QWidget* parent=0);
+			~HScrollGroup();
 
-				int GetScrollValue() const;
-				int GetMaxScrollValue() const;
+			int GetScrollValue() const;
+			int GetMaxScrollValue() const;
 			
-			signals:
-				void zoomIn();
-				void zoomOut();
-				void scrollValueChanged(int);
-				void zoomRatio(double);
-				void maxScrollValue(int);
-				void updatedScrollValue(int);
-				void scrollBarClicked();
-				void scrollBarReleased();
+	    signals:
+			void zoomIn();
+			void zoomOut();
+			void scrollValueChanged(int);
+			void zoomRatio(double);
+			void maxScrollValue(int);
+			void updatedScrollValue(int);
+			void scrollBarClicked();
+			void scrollBarReleased();
 			
-			public slots:
-				void updateZoomRatio(double);
-				void updateScrollValue(int);
-				void setMaxScrollValue(int);
+		public slots:
+			void updateZoomRatio(double);
+			void updateScrollValue(int);
+			void setMaxScrollValue(int);
 			
-			private:
-				ScrollBar* _sb;
-				QLabel* _label;
-				QPushButton *_zIn,*_zOut;
+		private:
+			ScrollBar*   mScrollBar;
+			QLabel*      mLabel;
+			QPushButton* mZIn;
+			QPushButton* mZOut;
 
-				void Init();
+			void Init();
 		};
 	}
 }
