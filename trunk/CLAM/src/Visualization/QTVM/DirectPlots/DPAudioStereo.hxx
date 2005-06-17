@@ -30,26 +30,26 @@ namespace CLAM
 {
     namespace VM
     {
-	/**
-	 * Viewing audio stereo (two channels).
-	 */
+		/**
+		 * Viewing audio stereo (two channels).
+		 */
 
-	void PlotAudioStereo( const Audio& leftChannel,
-			      const Audio& rightChannel,
-			      const std::string& label="",
-			      int x=100, 
-			      int y=100, 
-			      int w=660, 
-			      int h=320 );
+		void PlotAudioStereo( const Audio& leftChannel,
+							  const Audio& rightChannel,
+							  const std::string& label="",
+							  int x=100, 
+							  int y=100, 
+							  int w=660, 
+							  int h=320 );
 
-	void PlotAudioStereo( const Audio& leftChannel,
-			      const Audio& rightChannel,
-			      std::vector<unsigned>& marks,
-			      const std::string& label="",
-			      int x=100, 
-			      int y=100, 
-			      int w=660, 
-			      int h=320 );
+		void PlotAudioStereo( const Audio& leftChannel,
+							  const Audio& rightChannel,
+							  std::vector<unsigned>& marks,
+							  const std::string& label="",
+							  int x=100, 
+							  int y=100, 
+							  int w=660, 
+							  int h=320 );
     }
 }
 

@@ -9,26 +9,26 @@ namespace CLAM
 {
     namespace VM
     {
-	/**
-	 * Viewing sonogram directly.
-	 */
+		/**
+		 * Viewing sonogram directly.
+		 */
 
-	void PlotSpectrogram( const Array<Spectrum>& specMtx,
-			      const TData& duration,
-			      const std::string& label="",
-			      int x=100,
-			      int y=100,
-			      int w=600,
-			      int h=300 );
+		void PlotSpectrogram( const Array<Spectrum>& specMtx,
+							  const TData& duration,
+							  const std::string& label="",
+							  int x=100,
+							  int y=100,
+							  int w=600,
+							  int h=300 );
 
-	void PlotSpectrogram( const Array<Spectrum>& specMtx,
-			      const TData& duration,
-			      std::vector<unsigned>& marks,
-			      const std::string& label="",
-			      int x=100,
-			      int y=100,
-			      int w=600,
-			      int h=300 );
+		void PlotSpectrogram( const Array<Spectrum>& specMtx,
+							  const TData& duration,
+							  std::vector<unsigned>& marks,
+							  const std::string& label="",
+							  int x=100,
+							  int y=100,
+							  int w=600,
+							  int h=300 );
     }
 }
 

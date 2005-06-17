@@ -30,9 +30,9 @@ namespace CLAM
 {
 	namespace VM
 	{
-	       /**
-	        * Viewing a single spectrum with peaks directly.
-	        */
+		/**
+		 * Viewing a single spectrum with peaks directly.
+		 */
 
 		void PlotSpectrumAndPeaks(	const Spectrum& spec,
 									const SpectralPeakArray& peaks,

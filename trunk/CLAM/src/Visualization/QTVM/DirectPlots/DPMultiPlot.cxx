@@ -30,61 +30,61 @@ namespace CLAM
 		DPMultiPlot::DPMultiPlot()
 		{
 			QtAppWrapper::Init();
-			_plot = new QtMultiPlot();
-			_plot->Geometry(100,100,500,225);
-			_plot->SetDialColor(VMColor::Black());
-			_plot->SwitchDisplayColors(true);
-			_plot->Show();
+			mPlot = new QtMultiPlot();
+			mPlot->Geometry(100,100,500,225);
+			mPlot->SetDialColor(VMColor::Black());
+			mPlot->SwitchDisplayColors(true);
+			mPlot->Show();
 		}
 
 		DPMultiPlot::~DPMultiPlot()
 		{
-			delete _plot;
+			delete mPlot;
 		}
 
 		void DPMultiPlot::Label(const std::string& label)
 		{
-			_plot->Label(label);
+			mPlot->Label(label);
 		}
 				
 		void DPMultiPlot::Geometry(int x, int y, int w, int h)
 		{
-			_plot->Geometry(x,y,w,h);
+			mPlot->Geometry(x,y,w,h);
 		}
 
 		void DPMultiPlot::AddData(const std::string& key, const DataArray& array)
 		{
-			_plot->AddData(key,array);
+			mPlot->AddData(key,array);
 		}
 
 		void DPMultiPlot::AddData(std::string key, const BPF& data, int samples)
 		{
-			_plot->AddData(key,data,samples);
+			mPlot->AddData(key,data,samples);
 		}
 
 		void DPMultiPlot::SetColor(std::string key, Color c)
 		{
-			_plot->SetColor(key,c);
+			mPlot->SetColor(key,c);
 		}
 				
 		void DPMultiPlot::SetXRange(const TData& xmin, const TData& xmax)
 		{
-			_plot->SetXRange(xmin,xmax);
+			mPlot->SetXRange(xmin,xmax);
 		}
 
 		void DPMultiPlot::SetYRange(const TData& ymin, const TData& ymax)
 		{
-			_plot->SetYRange(ymin,ymax);
+			mPlot->SetYRange(ymin,ymax);
 		}
 
 		void DPMultiPlot::SetUnits(const std::string& xunits, const std::string& yunits)
 		{
-			_plot->SetUnits(xunits,yunits);
+			mPlot->SetUnits(xunits,yunits);
 		}
 
 		void DPMultiPlot::SetToolTips(const std::string& xtooltip, const std::string& ytooltip)
 		{
-			_plot->SetToolTips(xtooltip,ytooltip);
+			mPlot->SetToolTips(xtooltip,ytooltip);
 		}
 
 		void DPMultiPlot::Run()
@@ -94,8 +94,8 @@ namespace CLAM
 
 		void DPMultiPlot::SetMarks(std::vector<unsigned>& marks)
 		{
-			_plot->SetMarks(marks);
-			_plot->SetMarksColor(VMColor::Red());
+			mPlot->SetMarks(marks);
+			mPlot->SetMarksColor(VMColor::Red());
 		}
 	}
 }

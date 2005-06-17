@@ -29,9 +29,9 @@ namespace CLAM
 	{
 
 	    void PlotSpectrumAndPeaks(const Spectrum& spec,
-				      const SpectralPeakArray& peaks,
-				      const std::string& label,
-				      int x, int y, int w, int h )
+								  const SpectralPeakArray& peaks,
+								  const std::string& label,
+								  int x, int y, int w, int h )
 		{
 			QtAppWrapper::Init();
 
