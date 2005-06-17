@@ -31,22 +31,24 @@ namespace CLAM
 
 		class SingleLabel : public QLabel
 		{
-			public:
-				SingleLabel(QWidget* parent,const QString& units="",const QString& tooltip="");
-				virtual ~SingleLabel();
+		public:
+			SingleLabel(QWidget* parent,const QString& units="",const QString& tooltip="");
+			~SingleLabel();
 
-				void SetUnits(const QString& text);
-				void SetToolTip(const QString& text);
-				void Update(float value);
+			void SetUnits(const QString& text);
+			void SetToolTip(const QString& text);
+			void Update(const float& value, const int& prec=3);
 
-			private:
-				QString _units;
+		private:
+			QString mUnits;
 
-				void InitLabel();
+			void InitLabel();
 		};
 	}
 }
+
 #endif
+
 
 
 

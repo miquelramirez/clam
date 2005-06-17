@@ -31,7 +31,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		VScrollGroup::VScrollGroup(QWidget* parent) : QWidget(parent)
+		VScrollGroup::VScrollGroup(QWidget* parent) 
+			: QWidget(parent)
 		{
 			Init();
 		}
@@ -49,39 +50,39 @@ namespace CLAM
 			QPixmap iconZoomout((const char**)icon_zoomout);
 
 			QVBoxLayout* layout = new QVBoxLayout(this);
-			_zOut = new QPushButton(this);
-			_zOut->setAutoRepeat(true);
-			_zOut->setFixedSize(20,20);
-			_zOut->setPixmap(iconZoomout);
-			QToolTip::add(_zOut,"Zoom Out");
-			layout->addWidget(_zOut,0);
+			mZOut = new QPushButton(this);
+			mZOut->setAutoRepeat(true);
+			mZOut->setFixedSize(20,20);
+			mZOut->setPixmap(iconZoomout);
+			QToolTip::add(mZOut,"Zoom Out");
+			layout->addWidget(mZOut,0);
 
-			_zIn = new QPushButton(this);
-			_zIn->setAutoRepeat(true);
-			_zIn->setFixedSize(20,20);
-			_zIn->setPixmap(iconZoomin);
-			QToolTip::add(_zIn,"Zoom In");
-			layout->addWidget(_zIn,0);
+			mZIn = new QPushButton(this);
+			mZIn->setAutoRepeat(true);
+			mZIn->setFixedSize(20,20);
+			mZIn->setPixmap(iconZoomin);
+			QToolTip::add(mZIn,"Zoom In");
+			layout->addWidget(mZIn,0);
 
-			_label = new VZLabel(this);
-			layout->addWidget(_label);
+			mLabel = new VZLabel(this);
+			layout->addWidget(mLabel);
 
-			_sb = new ScrollBar(QScrollBar::Vertical,this);
-			_sb->setFixedWidth(_sb->sizeHint().width());
-			_sb->setRange(0,0);
-			_sb->setSteps(20,100);
-			layout->addWidget(_sb,1);
+			mScrollBar= new ScrollBar(QScrollBar::Vertical,this);
+			mScrollBar->setFixedWidth(mScrollBar->sizeHint().width());
+			mScrollBar->setRange(0,0);
+			mScrollBar->setSteps(20,100);
+			layout->addWidget(mScrollBar,1);
 
 			setFixedWidth(20);
 
-			setPaletteBackgroundColor(_zIn->paletteBackgroundColor());
+			setPaletteBackgroundColor(mZIn->paletteBackgroundColor());
 
 			// connections
-			connect(_zIn,SIGNAL(clicked()),this,SIGNAL(zoomIn()));
-		    connect(_zOut,SIGNAL(clicked()),this,SIGNAL(zoomOut()));
-			connect(_sb,SIGNAL(valueChanged(int)),this,SIGNAL(scrollValueChanged(int)));
-			connect(_sb,SIGNAL(clicked()),this,SIGNAL(scrollBarClicked()));
-			connect(_sb,SIGNAL(released()),this,SIGNAL(scrollBarReleased()));
+			connect(mZIn,SIGNAL(clicked()),this,SIGNAL(zoomIn()));
+		    connect(mZOut,SIGNAL(clicked()),this,SIGNAL(zoomOut()));
+			connect(mScrollBar,SIGNAL(valueChanged(int)),this,SIGNAL(scrollValueChanged(int)));
+			connect(mScrollBar,SIGNAL(clicked()),this,SIGNAL(scrollBarClicked()));
+			connect(mScrollBar,SIGNAL(released()),this,SIGNAL(scrollBarReleased()));
 		}
 
 		void VScrollGroup::updateZoomRatio(double value)
@@ -91,42 +92,42 @@ namespace CLAM
 		    QString s("1:");
 		    if(value > 999999)
 		    {
-			s += QString::number(value,'e',1);
+				s += QString::number(value,'e',1);
 		    }
 		    else
 		    {
-			s += QString::number(value,'f',0);
+				s += QString::number(value,'f',0);
 		    }
-		    _label->setText(s);
+		    mLabel->setText(s);
 		    emit zoomRatio(value);
 		}
 
 		void VScrollGroup::updateScrollValue(int value)
 		{
-			if(_sb->value() != value)
+			if(mScrollBar->value() != value)
 			{
-				_sb->setValue(value);
+				mScrollBar->setValue(value);
 				emit updatedScrollValue(value);
 			}
 		}
 
 		void VScrollGroup::setMaxScrollValue(int value)
 		{
-			if(value >= 0 && _sb->maxValue() != value)
+			if(value >= 0 && mScrollBar->maxValue() != value)
 			{
-				_sb->setMaxValue(value);
+				mScrollBar->setMaxValue(value);
 				emit maxScrollValue(value);
 			}
 		}
 
 		int VScrollGroup::GetScrollValue() const
 		{
-			return _sb->value();
+			return mScrollBar->value();
 		}
 
 		int VScrollGroup::GetMaxScrollValue() const
 		{
-			return _sb->maxValue();
+			return mScrollBar->maxValue();
 		}
 	}
 }

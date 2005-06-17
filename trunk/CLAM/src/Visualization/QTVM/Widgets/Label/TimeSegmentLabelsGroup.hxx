@@ -33,17 +33,19 @@ namespace CLAM
 	{
 		class TimeSegmentLabelsGroup : public QWidget
 		{
-			public:
-				TimeSegmentLabelsGroup(QWidget* parent=0);
-				virtual ~TimeSegmentLabelsGroup();
+		public:
+			TimeSegmentLabelsGroup(QWidget* parent=0);
+			~TimeSegmentLabelsGroup();
 				
-				void UpdateLabels(MediaTime time);
+			void UpdateLabels(MediaTime time);
 			
-			private:
-				QLabel *_beginTimeLab, *_endTimeLab, *_durTimeLab;
+		private:
+			QLabel* mBeginTimeLab; 
+			QLabel* mEndTimeLab; 
+			QLabel* mDurTimeLab;
 
-				void InitLabelsGroup();
-				QString GetText(const TData& value);
+			void InitLabelsGroup();
+			QString GetText(const TData& value);
 				
 		};
 	}

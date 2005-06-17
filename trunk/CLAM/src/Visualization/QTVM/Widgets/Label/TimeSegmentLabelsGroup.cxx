@@ -40,42 +40,42 @@ namespace CLAM
 
 		void TimeSegmentLabelsGroup::InitLabelsGroup()
 		{
-		        QBoxLayout* layout = new QHBoxLayout(this);
+			QBoxLayout* layout = new QHBoxLayout(this);
 			layout->setMargin(0);
 			layout->setSpacing(0);
 			
 			QFont f("Sans",8);
 			f.setBold(true);
 
-			_beginTimeLab = new QLabel(this);
-			_beginTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-			_beginTimeLab->setLineWidth(2);
-			_beginTimeLab->setFixedHeight(20);
-			_beginTimeLab->setFont(f);
-			_beginTimeLab->setText("00:00,000");
-			_beginTimeLab->setAlignment(Qt::AlignCenter);
-			QToolTip::add(_beginTimeLab,"Begin Time");
-			layout->addWidget(_beginTimeLab);
+			mBeginTimeLab = new QLabel(this);
+			mBeginTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+			mBeginTimeLab->setLineWidth(2);
+			mBeginTimeLab->setFixedHeight(20);
+			mBeginTimeLab->setFont(f);
+			mBeginTimeLab->setText("00:00,000");
+			mBeginTimeLab->setAlignment(Qt::AlignCenter);
+			QToolTip::add(mBeginTimeLab,"Begin Time");
+			layout->addWidget(mBeginTimeLab);
 
-			_endTimeLab = new QLabel(this);
-			_endTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-			_endTimeLab->setLineWidth(2);
-			_endTimeLab->setFixedHeight(20);
-			_endTimeLab->setFont(f);
-			_endTimeLab->setText("");
-			_endTimeLab->setAlignment(Qt::AlignCenter);
-			QToolTip::add(_endTimeLab,"End Time");
-			layout->addWidget(_endTimeLab);
+			mEndTimeLab = new QLabel(this);
+			mEndTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+			mEndTimeLab->setLineWidth(2);
+			mEndTimeLab->setFixedHeight(20);
+			mEndTimeLab->setFont(f);
+			mEndTimeLab->setText("");
+			mEndTimeLab->setAlignment(Qt::AlignCenter);
+			QToolTip::add(mEndTimeLab,"End Time");
+			layout->addWidget(mEndTimeLab);
 
-			_durTimeLab = new QLabel(this);
-			_durTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-			_durTimeLab->setLineWidth(2);
-			_durTimeLab->setFixedHeight(20);
-			_durTimeLab->setFont(f);
-			_durTimeLab->setText("");
-			_durTimeLab->setAlignment(Qt::AlignCenter);
-			QToolTip::add(_durTimeLab,"Duration");
-			layout->addWidget(_durTimeLab);
+			mDurTimeLab = new QLabel(this);
+			mDurTimeLab->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+			mDurTimeLab->setLineWidth(2);
+			mDurTimeLab->setFixedHeight(20);
+			mDurTimeLab->setFont(f);
+			mDurTimeLab->setText("");
+			mDurTimeLab->setAlignment(Qt::AlignCenter);
+			QToolTip::add(mDurTimeLab,"Duration");
+			layout->addWidget(mDurTimeLab);
 		}
 
 		QString TimeSegmentLabelsGroup::GetText(const TData& value)
@@ -94,15 +94,15 @@ namespace CLAM
 		{
 			if(time.HasDuration())
 			{
-			    _beginTimeLab->setText(GetText(time.GetBegin()));
-				_endTimeLab->setText(GetText(time.GetEnd()));
-				_durTimeLab->setText(GetText(time.GetDuration()));
+			    mBeginTimeLab->setText(GetText(time.GetBegin()));
+				mEndTimeLab->setText(GetText(time.GetEnd()));
+				mDurTimeLab->setText(GetText(time.GetDuration()));
 			}
 			else
 			{
-				_beginTimeLab->setText(GetText(time.GetBegin()));
-				_endTimeLab->clear();
-				_durTimeLab->clear();
+				mBeginTimeLab->setText(GetText(time.GetBegin()));
+				mEndTimeLab->clear();
+				mDurTimeLab->clear();
 			}
 		}
 		

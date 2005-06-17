@@ -22,13 +22,15 @@
 #include <qpainter.h>
 #include <qtooltip.h>
 #include "VZLabel.hxx"
+
 namespace CLAM
 {
 	namespace VM
 	{
-		VZLabel::VZLabel(QWidget* parent) : QFrame(parent)
+		VZLabel::VZLabel(QWidget* parent) 
+			: QFrame(parent)
+			, mAlign(AlignCenter) 
 		{
-			_align = AlignCenter;
 			InitLabel();
 		} 
 
@@ -38,9 +40,9 @@ namespace CLAM
 
 		void VZLabel::InitLabel()
 		{
-			_f.setFamily("Sans");
-			_f.setPointSize(8);
-			_f.setBold(true);
+			mFont.setFamily("Sans");
+			nFont.setPointSize(8);
+			mFont.setBold(true);
 
 			this->setMinimumSize(20,25);
 			this->setFixedWidth(20);
@@ -48,26 +50,28 @@ namespace CLAM
 			QToolTip::add(this,"Zoom Ratio");
 			this->setText("");
 		}
+
 		void VZLabel::drawContents(QPainter* p)
 		{
 			QRect r = rect();
-			p->setFont(_f);
+			p->setFont(mFont);
 			p->translate(r.x(),r.y()+r.height());
 			p->rotate(-90.0);
-			p->drawText(0,0,r.height(),r.width(),_align,_text);
+			p->drawText(0,0,r.height(),r.width(),mAlign,mText);
 			p->resetXForm();
 		}
 
 		void VZLabel::setText(const QString& text)
 		{
-			_text = text;
-			int h = _text.length()*_f.pointSize();
+			mText = text;
+			int h = mText.length()*mFont.pointSize();
 			this->setFixedHeight(h);
 			update();
 		}
 
 	}
 }
+
 // END
 
 
