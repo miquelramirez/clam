@@ -25,7 +25,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <qworkspace.h>
 #include "QtPlots.hxx"
 
 class QWorkspace;
@@ -34,69 +33,69 @@ namespace CLAM
 {
     namespace VM
     {
-	enum WhichPlot { FundamentalPlot=0, SinTracksPlot };
+		enum WhichPlot { FundamentalPlot=0, SinTracksPlot };
 
-	/**
-	 * Allows viewing several qtplots simultaneously.
-	 *
-	 * @ingroup QTVM
-	 */
+		/**
+		 * Allows viewing several qtplots simultaneously.
+		 *
+		 * @ingroup QTVM
+		 */
 
-	class QtPlotter
-	{
-	    typedef std::map<std::string,int> PlotMap;
-	    typedef std::vector<QtPlot*> PlotList;
-	    typedef std::vector<bool> MultiPlot;
-	    typedef int PlotIndex;
-	    typedef bool HaveWorkspace;
-	    typedef QWorkspace* Workspace;
+		class QtPlotter
+		{
+			typedef std::map<std::string,int> PlotMap;
+			typedef std::vector<QtPlot*> PlotList;
+			typedef std::vector<bool> MultiPlot;
+			typedef int PlotIndex;
+			typedef bool HaveWorkspace;
+			typedef QWorkspace* Workspace;
 
-	public:
-	    static void Add(const std::string& plotKey, const Audio& data);
-	    static void Add(const std::string& plotKey, const Audio& leftChannel, const Audio& rightChannel);
-	    static void Add(const std::string& plotKey, const Segment& data, WhichPlot type);
-	    static void Add(const std::string& plotKey, const Spectrum& data);
-	    static void Add(const std::string& plotKey, const Spectrum& spec, const SpectralPeakArray& peaks);
-	    static void Add(const std::string& plotKey, const Array<Spectrum>& data, const TData& duration);
-	    static void Add(const std::string& plotKey, const std::string& dataKey, const DataArray& data);
-	    static void Add(const std::string& plotKey, const std::string& dataKey, const BPF& data, int samples=100);
-	    static void Add(const std::string& plotKey, 
-			    const Array<SpectralPeakArray>& data, 
-			    const TData& sampleRate, 
-			    const TData& duration);
+		public:
+			static void Add(const std::string& plotKey, const Audio& data);
+			static void Add(const std::string& plotKey, const Audio& leftChannel, const Audio& rightChannel);
+			static void Add(const std::string& plotKey, const Segment& data, WhichPlot type);
+			static void Add(const std::string& plotKey, const Spectrum& data);
+			static void Add(const std::string& plotKey, const Spectrum& spec, const SpectralPeakArray& peaks);
+			static void Add(const std::string& plotKey, const Array<Spectrum>& data, const TData& duration);
+			static void Add(const std::string& plotKey, const std::string& dataKey, const DataArray& data);
+			static void Add(const std::string& plotKey, const std::string& dataKey, const BPF& data, int samples=100);
+			static void Add(const std::string& plotKey, 
+							const Array<SpectralPeakArray>& data, 
+							const TData& sampleRate, 
+							const TData& duration);
 
-	    static void SetLabel(const std::string& plotKey, const std::string& label);
-	    static void SetMarks(const std::string& plotKey, std::vector<unsigned>& marks);
+			static void SetLabel(const std::string& plotKey, const std::string& label);
+			static void SetMarks(const std::string& plotKey, std::vector<unsigned>& marks);
 
-	    static void Run();
+			static void Run();
 
-	    // only for QtMultiPlot
-	    static void AddData(const std::string& plotKey, const std::string& dataKey, const DataArray& data);
-	    static void AddData(const std::string& plotKey, const std::string& dataKey, const BPF& data,int samples=100);
-	    static void SetDataColor(const std::string& plotKey, const std::string& dataKey, Color c);
-	    static void SetXRange(const std::string& plotKey, const TData& xmin, const TData& xmax);
-	    static void SetYRange(const std::string& plotKey, const TData& ymin, const TData& ymax);
-	    static void SetUnits(const std::string& plotKey, const std::string& xunits, const std::string& yunits);
-	    static void SetToolTips(const std::string& plotKey,const std::string& xtooltip,const std::string& ytooltip);
+			// only for QtMultiPlot
+			static void AddData(const std::string& plotKey, const std::string& dataKey, const DataArray& data);
+			static void AddData(const std::string& plotKey, const std::string& dataKey, const BPF& data,int samples=100);
+			static void SetDataColor(const std::string& plotKey, const std::string& dataKey, Color c);
+			static void SetXRange(const std::string& plotKey, const TData& xmin, const TData& xmax);
+			static void SetYRange(const std::string& plotKey, const TData& ymin, const TData& ymax);
+			static void SetUnits(const std::string& plotKey, const std::string& xunits, const std::string& yunits);
+			static void SetToolTips(const std::string& plotKey,const std::string& xtooltip,const std::string& ytooltip);
 				
-	private:				
-	    static Workspace ws;
-	    static PlotMap mPlotMap;
-	    static PlotList mPlotList;
-	    static MultiPlot  mMultiPlot;
-	    static PlotIndex mPlotIndex;
-	    static HaveWorkspace mHaveWorkspace;
+		private:				
+			static Workspace     ws;
+			static PlotMap       mPlotMap;
+			static PlotList      mPlotList;
+			static MultiPlot     mMultiPlot;
+			static PlotIndex     mPlotIndex;
+			static HaveWorkspace mHaveWorkspace;
 
-	    static bool IsMultiPlot(const int& index);
-	    static bool Exist(const std::string& key);
-	    static void CreateWorkspace();
-	    static void Register(const std::string& pKey, QtPlot* plot, bool isMultiPlot=false);
+			static bool IsMultiPlot(const int& index);
+			static bool Exist(const std::string& key);
+			static void CreateWorkspace();
+			static void Register(const std::string& pKey, QtPlot* plot, bool isMultiPlot=false);
 
-	    static void NonExistentKeyMsg(const std::string& methodName, const std::string& plotKey);
-	    static void DuplicatedKeyMsg(const std::string& methodName, const std::string& plotKey);
-	    static void NonMultiPlotMsg(const std::string& methodName, const std::string& plotKey);
+			static void NonExistentKeyMsg(const std::string& methodName, const std::string& plotKey);
+			static void DuplicatedKeyMsg(const std::string& methodName, const std::string& plotKey);
+			static void NonMultiPlotMsg(const std::string& methodName, const std::string& plotKey);
 
-	};
+		};
     }
 }
 
