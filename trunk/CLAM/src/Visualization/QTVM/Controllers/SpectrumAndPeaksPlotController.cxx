@@ -35,24 +35,24 @@ namespace CLAM
 		}
 
 		void SpectrumAndPeaksPlotController::SetData(const Spectrum& spec,
-							     const SpectralPeakArray& peaks)
+													 const SpectralPeakArray& peaks)
 		{
 		    SpectrumPlotController::SetData(spec);
-		    _peaks = peaks;
+		    mPeaks = peaks;
 		    CachePeaksData();
-		    _peaksRenderer.SetVBounds(_view.top,_view.bottom);
+		    mPeaksRenderer.SetVBounds(mView.top,mView.bottom);
 		    emit requestRefresh();
 		}
 
 		void SpectrumAndPeaksPlotController::SetPeaksColor(Color cline,Color cpoint)
 		{
-		    _peaksRenderer.SetPeakColor(cline,cpoint);
+		    mPeaksRenderer.SetPeakColor(cline,cpoint);
 		}
 
 		void SpectrumAndPeaksPlotController::Draw()
 		{
 		    if(MustProcessData()) ProcessPeaksData();
-		    _peaksRenderer.Render();
+		    mPeaksRenderer.Render();
 		    SpectrumPlotController::Draw();
 		}
 
@@ -61,39 +61,39 @@ namespace CLAM
 			int i,index;
 			TData value;
 			TSize size = GetnSamples();
-			TSize nPeaks = _peaks.GetMagBuffer().Size();
-			bool linear = (_peaks.GetScale() == EScale::eLinear);
+			TSize nPeaks = mPeaks.GetMagBuffer().Size();
+			bool linear = (mPeaks.GetScale() == EScale::eLinear);
 
-			_cacheData.Init();
-			_cacheData.Resize(size);;
-			_cacheData.SetSize(size);
+			mCacheData.Init();
+			mCacheData.Resize(size);;
+			mCacheData.SetSize(size);
 				
 			for(i = 0;i < nPeaks;i++)
 			{
-				value = _peaks.GetMagBuffer()[i];
+				value = mPeaks.GetMagBuffer()[i];
 				if(linear) value = 20.0*log10(value);
 				if(value >= 0) value = -0.1;
-				index = int(_peaks.GetFreqBuffer()[i]*TData(size)/GetSpectralRange());
-				_cacheData[index] = value;
+				index = int(mPeaks.GetFreqBuffer()[i]*TData(size)/GetSpectralRange());
+				mCacheData[index] = value;
 			}
 			ProcessPeaksData();
 		}
 
 		void SpectrumAndPeaksPlotController::ProcessPeaksData()
 		{
-		        if(!_cacheData.Size()) return;
+			if(!mCacheData.Size()) return;
 			TSize offset = TSize(GetLeftBound());
 			TSize len = TSize(GetRightBound() - GetLeftBound())+1;
 
-			if(_processedPeaks.Size() <= len)
-				_processedPeaks.Resize(len+1);
-			_processedPeaks.SetSize(len+1);
+			if(mProcessedPeaks.Size() <= len)
+				mProcessedPeaks.Resize(len+1);
+			mProcessedPeaks.SetSize(len+1);
 
-			std::copy(_cacheData.GetPtr()+offset,_cacheData.GetPtr()+offset+len+1,_processedPeaks.GetPtr());
+			std::copy(mCacheData.GetPtr()+offset,mCacheData.GetPtr()+offset+len+1,mProcessedPeaks.GetPtr());
 
-			for(int i=0;i < _processedPeaks.Size();i++) _processedPeaks[i] += GetvRange();
+			for(int i=0;i < mProcessedPeaks.Size();i++) mProcessedPeaks[i] += GetvRange();
 
-			_peaksRenderer.SetDataPtr(_processedPeaks.GetPtr(),_processedPeaks.Size());
+			mPeaksRenderer.SetDataPtr(mProcessedPeaks.GetPtr(),mProcessedPeaks.Size());
 		}
 
 	}

@@ -32,15 +32,15 @@ namespace CLAM
 		
 		class PlayableList
 		{
-			typedef std::list<PlayablePlot*> PlayablePlotsList;
+			typedef std::list<PlayablePlot*> PlayablePlotList;
 				
-			public:
-				static void Add(PlayablePlot* plot);
-				static void Remove(PlayablePlot* plot);
-				static void Stop();
+		public:
+			static void Add(PlayablePlot* plot);
+			static void Remove(PlayablePlot* plot);
+			static void Stop();
 
-			private:
-				static PlayablePlotsList _pList;
+		private:
+			static PlayablePlotList mList;
 		};
 	}
 }

@@ -26,26 +26,26 @@ namespace CLAM
 {
     namespace VM
     {
-	class QtPlayer;
+		class QtPlayer;
 		
-	class PlayablePlot 
-	{
-	public:
-	    PlayablePlot();
-	    virtual ~PlayablePlot();
+		class PlayablePlot 
+		{
+		public:
+			PlayablePlot();
+			~PlayablePlot();
 				
-	    void Play();
-	    void Pause();
-	    void Stop();
+			void Play();
+			void Pause();
+			void Stop();
 				
-	    bool IsPlaying();
+			bool IsPlaying();
 			
-	protected:
-	    QtPlayer* _player;
+		protected:
+			QtPlayer* mPlayer;
 
-	    void RemoveFromPlayList();
+			void RemoveFromPlayList();
 
-	};
+		};
     }
 }
 

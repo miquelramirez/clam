@@ -36,44 +36,44 @@ namespace CLAM
 {
     namespace VM
     {	
-	enum ColorMap { WindowMode=0, BlackBackground, WhiteBackground };
+		enum ColorMap { WindowMode=0, BlackBackground, WhiteBackground };
 
-	class QtPlayer : public QWidget
-	{
-	    Q_OBJECT
+		class QtPlayer : public QWidget
+		{
+			Q_OBJECT
 			
-	public:
-	    QtPlayer(QWidget* parent=0);
-	    virtual ~QtPlayer();
+		public:
+			QtPlayer(QWidget* parent=0);
+			virtual ~QtPlayer();
 
-	    virtual void SetPlaySegment(const MediaTime& time)=0;
-	    virtual bool IsPlaying()=0;
+			virtual void SetPlaySegment(const MediaTime& time)=0;
+			virtual bool IsPlaying()=0;
 
-	    virtual void SetColorMap(ColorMap map);
+			virtual void SetColorMap(ColorMap map);
 
-	    virtual void SetSlotPlayingTime(Slotv1<TData>& slot)=0;
-	    virtual void SetSlotStopPlaying(Slotv1<TData>& slot)=0;
+			virtual void SetSlotPlayingTime(Slotv1<TData>& slot)=0;
+			virtual void SetSlotStopPlaying(Slotv1<TData>& slot)=0;
 				
         public slots:
-	    virtual void play()=0;
-	    virtual void pause()=0;
-	    virtual void stop()=0;
+			virtual void play()=0;
+			virtual void pause()=0;
+			virtual void stop()=0;
 
-	protected:
-	    QBoxLayout* layout;
-	    QColor winBackground;
+		protected:
+			QBoxLayout* layout;
+			QColor winBackground;
 
-	    virtual void WindowModeCM();
-	    virtual void BlackBackgroundCM();
-	    virtual void WhiteBackgroundCM();
+			virtual void WindowModeCM();
+			virtual void BlackBackgroundCM();
+			virtual void WhiteBackgroundCM();
 
-	private:
-	    QFrame* container;
-	    QPushButton *_play,*_pause,*_stop;
+		private:
+			QFrame* container;
+			QPushButton *mPlay, *mPause, *mStop;
 
-	    void InitWidgets();
+			void InitWidgets();
 		
-	};
+		};
     }
 }
 

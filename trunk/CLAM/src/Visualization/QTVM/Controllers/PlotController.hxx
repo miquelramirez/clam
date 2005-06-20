@@ -31,169 +31,169 @@ namespace CLAM
 {
     namespace VM
     {
-	typedef struct
-	{
-	    float left;
-	    float right;
-	    float bottom;
-	    float top;
-	} View;
+		typedef struct
+		{
+			float left;
+			float right;
+			float bottom;
+			float top;
+		} View;
 
-	typedef struct
-	{
-	    int x;
-	    int y;
-	    int w;
-	    int h;
-	} Viewport;
+		typedef struct
+		{
+			int x;
+			int y;
+			int w;
+			int h;
+		} Viewport;
 
-	class PlotController : public QObject
-	{
-	    Q_OBJECT
+		class PlotController : public QObject
+		{
+			Q_OBJECT
 
-	public:
-	    PlotController();
-	    virtual ~PlotController();
+		public:
+			PlotController();
+			virtual ~PlotController();
 
-	    virtual void Draw() = 0;
-	    virtual void SetSelPos(const TData& value);
-	    virtual void SurfaceDimensions(int w,int h);
-	    virtual void SetMousePos(TData x,TData y);
+			virtual void Draw() = 0;
+			virtual void SetSelPos(const TData& value);
+			virtual void SurfaceDimensions(int w,int h);
+			virtual void SetMousePos(TData x,TData y);
 
-	    void HZoomIn();
-	    void HZoomOut();
-	    void VZoomIn();
-	    void VZoomOut();
+			void HZoomIn();
+			void HZoomOut();
+			void VZoomIn();
+			void VZoomOut();
 
-	    void UpdateHViewport(int value);
-	    TData GetLeftBound() const;
-	    TData GetRightBound() const;
+			void UpdateHViewport(int value);
+			TData GetLeftBound() const;
+			TData GetRightBound() const;
 
-	    void UpdateVViewport(int value);
-	    TData GetBottomBound() const;
-	    TData GetTopBound() const;
+			void UpdateVViewport(int value);
+			TData GetBottomBound() const;
+			TData GetTopBound() const;
 
-	    virtual void SetLeftButtonPressed(bool pressed);
-	    virtual void LeaveMouse();
-	    virtual void EnterMouse();
+			virtual void SetLeftButtonPressed(bool pressed);
+			virtual void LeaveMouse();
+			virtual void EnterMouse();
 
-	    virtual void InsertMark(unsigned elem)=0;
-	    virtual void RemoveMark(int index, unsigned elem)=0;
-	    virtual void UpdateMark(int index, unsigned elem)=0;
+			virtual void InsertMark(unsigned elem)=0;
+			virtual void RemoveMark(int index, unsigned elem)=0;
+			virtual void UpdateMark(int index, unsigned elem)=0;
 
-	    virtual bool IsPlayable();
+			virtual bool IsPlayable();
 
-	    virtual void OnDoubleClick()=0;
-	    virtual QString GetTag() const=0;
-	    virtual void SetSegmentationTag(const QString& tag)=0;
+			virtual void OnDoubleClick()=0;
+			virtual QString GetTag() const=0;
+			virtual void SetSegmentationTag(const QString& tag)=0;
 
-	    virtual void UpdateTag(int index, const QString& tag)=0;
+			virtual void UpdateTag(int index, const QString& tag)=0;
 		    
-	signals:
-	    void requestRefresh();
-	    void sendView(View);
+		signals:
+			void requestRefresh();
+			void sendView(View);
 
-	    void hZoomRatio(double);
-	    void hScrollValue(int);
-	    void hScrollMaxValue(int);
+			void hZoomRatio(double);
+			void hScrollValue(int);
+			void hScrollMaxValue(int);
 
-	    void vZoomRatio(double);
-	    void vScrollValue(int);
-	    void vScrollMaxValue(int);
+			void vZoomRatio(double);
+			void vScrollValue(int);
+			void vScrollMaxValue(int);
 
-	    void selPos(TData);
-	    void toolTip(QString);
+			void selPos(TData);
+			void toolTip(QString);
 
-	    void leavingMouse();
+			void leavingMouse();
 		    
-	    void changeCursor(QCursor);
+			void changeCursor(QCursor);
 
-	    void insertedMark(unsigned);
-	    void removedMark(int, unsigned);
-	    void updatedMark(int, unsigned);
+			void insertedMark(unsigned);
+			void removedMark(int, unsigned);
+			void updatedMark(int, unsigned);
 
-	    void updatedTag(int, QString);
+			void updatedTag(int, QString);
 
-	    void initialYRulerRange(double,double);
-	    void xRulerRange(double,double);
-	    void yRulerRange(double,double);
+			void initialYRulerRange(double,double);
+			void xRulerRange(double,double);
+			void yRulerRange(double,double);
 
-	    void selectedXPos(double);
+			void selectedXPos(double);
 
-	    void requestSegmentationTag();
+			void requestSegmentationTag();
 
-	protected:
-	    View _view;
-	    Viewport _viewport;
+		protected:
+			View mView;
+			Viewport mViewport;
 
-	    virtual void SetHBounds(const TData& left, const TData& right);
-	    virtual void SetVBounds(const TData& bottom, const TData& top);
+			virtual void SetHBounds(const TData& left, const TData& right);
+			virtual void SetVBounds(const TData& bottom, const TData& top);
 
-	    TData GetSelPos() const;
+			TData GetSelPos() const;
 
-	    void SetnSamples(const TSize& n);
-	    TSize GetnSamples() const;
+			void SetnSamples(const TSize& n);
+			TSize GetnSamples() const;
 
-	    void SetvRange(const TData& vr);
-	    TData GetvRange() const;
+			void SetvRange(const TData& vr);
+			TData GetvRange() const;
 
-	    void SetHMin(const TData& min);
-	    TData GetHMin() const;
+			void SetHMin(const TData& min);
+			TData GetHMin() const;
 
-	    TData GetVCur() const;
-	    void SetVMin(const TData& min);
-	    TData GetVMin() const;
+			TData GetVCur() const;
+			void SetVMin(const TData& min);
+			TData GetVMin() const;
 
-	    TData GetCurrent() const;
+			TData GetCurrent() const;
 
-	    TData GetMouseXPos() const;
-	    TData GetMouseYPos() const;
+			TData GetMouseXPos() const;
+			TData GetMouseYPos() const;
 
-	    bool IsLeftButtonPressed();
-	    bool IsAbleToEdit();
+			bool IsLeftButtonPressed();
+			bool IsAbleToEdit();
 
-	private:
-	    TData _lBound;
-	    TData _rBound;
-	    TData _bBound;
-	    TData _tBound;
+		private:
+			TData mLeftBound;
+			TData mRightBound;
+			TData mBottomBound;
+			TData mTopBound;
 
-	    TData _selPos;
-	    TData _hMin;
-	    TData _vMin;
+			TData mSelPos;
+			TData mHMin;
+			TData mVMin;
 
-	    TSize _nSamples;
-	    TData _current;
+			TSize mSamples;
+			TData mCurrent;
 
-	    TData _vRange;
-	    TData _vcur;
+			TData mVRange;
+			TData mVCur;
 
-	    double _hzRatio;
-	    double _vzRatio;
+			double mHZRatio;
+			double mVZRatio;
 
-	    TData _mouseXPos;
-	    TData _mouseYPos;
+			TData mMouseXPos;
+			TData mMouseYPos;
 
-	    bool _isLeftButtonPressed;
-	    bool _isAbleToEdit;
+			bool mIsLeftButtonPressed;
+			bool mIsAbleToEdit;
 
-	    void InitView();
+			void InitView();
 				
-	    void UpdateHBounds(bool zin=false);
-	    void UpdateVBounds(bool zin=false);
+			void UpdateHBounds(bool zin=false);
+			void UpdateVBounds(bool zin=false);
 
-	    void InitHRatio();
-	    void InitVRatio();
+			void InitHRatio();
+			void InitVRatio();
 
-	    int GetnxPixels() const;
-	    int GetHScrollValue() const;
+			int GetnxPixels() const;
+			int GetHScrollValue() const;
 
-	    int GetnyPixels() const;
-	    int GetVScrollValue() const;
+			int GetnyPixels() const;
+			int GetVScrollValue() const;
 
-	    bool IsVisibleSelPos();
+			bool IsVisibleSelPos();
 
-	};
+		};
     }
 }
 

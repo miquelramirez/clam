@@ -31,240 +31,240 @@ namespace CLAM
 {
     namespace VM
     {
-	QtFundFreqPlot::QtFundFreqPlot(QWidget* parent, const char * name, WFlags f) 
-	    : QtPresentation(parent,name,f)
-	{
-	    mSlotPlayingTimeReceived.Wrap(this,&QtFundFreqPlot::PlayingTime);
-	    mSlotStopPlayingReceived.Wrap(this,&QtFundFreqPlot::StopPlaying);
+		QtFundFreqPlot::QtFundFreqPlot(QWidget* parent, const char * name, WFlags f) 
+			: QtPresentation(parent,name,f)
+		{
+			mSlotPlayingTimeReceived.Wrap(this,&QtFundFreqPlot::PlayingTime);
+			mSlotStopPlayingReceived.Wrap(this,&QtFundFreqPlot::StopPlaying);
 
-	    SetPlotController();
-	    InitFundFreqPlot();
-	    Connect();
-	}
+			SetPlotController();
+			InitFundFreqPlot();
+			Connect();
+		}
 
-	QtFundFreqPlot::~QtFundFreqPlot()
-	{
-	}
+		QtFundFreqPlot::~QtFundFreqPlot()
+		{
+		}
 
-	void QtFundFreqPlot::InitFundFreqPlot()
-	{
-	    QHBoxLayout* panel = new QHBoxLayout;
+		void QtFundFreqPlot::InitFundFreqPlot()
+		{
+			QHBoxLayout* panel = new QHBoxLayout;
 			
-	    lefthole = new QFrame(this);
-	    lefthole->setFixedSize(50,30);
-	    panel->addWidget(lefthole);
+			lefthole = new QFrame(this);
+			lefthole->setFixedSize(50,30);
+			panel->addWidget(lefthole);
 
-	    _player = new QtFundPlayer(this);
-	    ((QtFundPlayer*)_player)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
-	    ((QtFundPlayer*)_player)->SetSlotStopPlaying(mSlotStopPlayingReceived);
-	    _player->setFixedSize(75,30);
-	    panel->addWidget(_player);
+			mPlayer = new QtFundPlayer(this);
+			((QtFundPlayer*)mPlayer)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
+			((QtFundPlayer*)mPlayer)->SetSlotStopPlaying(mSlotStopPlayingReceived);
+			mPlayer->setFixedSize(75,30);
+			panel->addWidget(mPlayer);
 
-	    panel->addStretch(1);
+			panel->addStretch(1);
 
-	    _leftFreqLab = new SingleLabel(this," Hz ","Frequency");
-	    _rightFreqLab = new SingleLabel(this," Hz ","Frequency Right");
+			mLeftFreqLab = new SingleLabel(this," Hz ","Frequency");
+			mRightFreqLab = new SingleLabel(this," Hz ","Frequency Right");
 
-	    panel->addWidget(_leftFreqLab);
-	    panel->addWidget(_rightFreqLab);
+			panel->addWidget(mLeftFreqLab);
+			panel->addWidget(mRightFreqLab);
 
-	    panel->addStretch(1);
+			panel->addStretch(1);
 			
-	    _labelsGroup = new TimeSegmentLabelsGroup(this);
-	    _labelsGroup->setMinimumSize(186,25);
-	    panel->addWidget(_labelsGroup);
+			mLabelsGroup = new TimeSegmentLabelsGroup(this);
+			mLabelsGroup->setMinimumSize(186,25);
+			panel->addWidget(mLabelsGroup);
 
-	    righthole = new QFrame(this);
-	    righthole->setFixedSize(20,30);
-	    panel->addWidget(righthole);
+			righthole = new QFrame(this);
+			righthole->setFixedSize(20,30);
+			panel->addWidget(righthole);
 
-	    AddToMainLayout(panel);
-	}
+			AddToMainLayout(panel);
+		}
 
-	void QtFundFreqPlot::SetData(const Segment& segment)
-	{
-	    ((FundPlotController*)_controller)->SetData(segment);
-	    SetPData(segment);
-	}
+		void QtFundFreqPlot::SetData(const Segment& segment)
+		{
+			((FundPlotController*)mController)->SetData(segment);
+			SetPData(segment);
+		}
 
-	void QtFundFreqPlot::SetForegroundColor(Color c)
-	{
-	    ((FundPlotController*)_controller)->SetDataColor(c);
-	}
+		void QtFundFreqPlot::SetForegroundColor(Color c)
+		{
+			((FundPlotController*)mController)->SetDataColor(c);
+		}
 
-	void QtFundFreqPlot::SetDialColor(Color c)
-	{
-	    ((FundPlotController*)_controller)->SetDialColor(c);
-	}
+		void QtFundFreqPlot::SetDialColor(Color c)
+		{
+			((FundPlotController*)mController)->SetDialColor(c);
+		}
 
-	void QtFundFreqPlot::SetRegionColor(Color c)
-	{
-	    ((FundPlotController*)_controller)->SetRegionColor(c);
-	}
+		void QtFundFreqPlot::SetRegionColor(Color c)
+		{
+			((FundPlotController*)mController)->SetRegionColor(c);
+		}
 
-	void QtFundFreqPlot::keyPressEvent(QKeyEvent* e)
-	{
-	    switch(e->key())
-	    {
-		case Qt::Key_Shift:
-		    ((FundPlotController*)_controller)->SetKeyShiftPressed(true);
-		    break;
+		void QtFundFreqPlot::keyPressEvent(QKeyEvent* e)
+		{
+			switch(e->key())
+			{
+				case Qt::Key_Shift:
+					((FundPlotController*)mController)->SetKeyShiftPressed(true);
+					break;
 
-		case Qt::Key_Insert:
-		    ((FundPlotController*)_controller)->SetKeyInsertPressed(true); 
-		    break;
+				case Qt::Key_Insert:
+					((FundPlotController*)mController)->SetKeyInsertPressed(true); 
+					break;
 						
-		case Qt::Key_Delete:
-		    ((FundPlotController*)_controller)->SetKeyDeletePressed(true); 
-		    break;
+				case Qt::Key_Delete:
+					((FundPlotController*)mController)->SetKeyDeletePressed(true); 
+					break;
 
-		default:
-		    break;
-	    }
-	}
+				default:
+					break;
+			}
+		}
 
-	void QtFundFreqPlot::keyReleaseEvent(QKeyEvent* e)
-	{
-	    switch(e->key())
-	    {
-		case Qt::Key_Shift:
-		    ((FundPlotController*)_controller)->SetKeyShiftPressed(false);			
-		    break;
+		void QtFundFreqPlot::keyReleaseEvent(QKeyEvent* e)
+		{
+			switch(e->key())
+			{
+				case Qt::Key_Shift:
+					((FundPlotController*)mController)->SetKeyShiftPressed(false);			
+					break;
 
-		case Qt::Key_Insert:
-		    ((FundPlotController*)_controller)->SetKeyInsertPressed(false); 
-		    break;
+				case Qt::Key_Insert:
+					((FundPlotController*)mController)->SetKeyInsertPressed(false); 
+					break;
 						
-		case Qt::Key_Delete:
-		    ((FundPlotController*)_controller)->SetKeyDeletePressed(false); 
-		    break;
+				case Qt::Key_Delete:
+					((FundPlotController*)mController)->SetKeyDeletePressed(false); 
+					break;
 
-		default:
-		    break;
-	    }
-	}
+				default:
+					break;
+			}
+		}
 
-	void QtFundFreqPlot::updateRegion(MediaTime time)
-	{
-	    _player->stop();
-	    _player->SetPlaySegment(time);
-	    _labelsGroup->UpdateLabels(time);
+		void QtFundFreqPlot::updateRegion(MediaTime time)
+		{
+			mPlayer->stop();
+			mPlayer->SetPlaySegment(time);
+			mLabelsGroup->UpdateLabels(time);
 
-	    UpdateFreqLabels(time);
-	}
+			UpdateFreqLabels(time);
+		}
 
-	void QtFundFreqPlot::UpdateFreqLabels(MediaTime time)
-	{
-	    if(time.HasDuration())
-	    {
-		_leftFreqLab->Update(((FundPlotController*)_controller)->GetFreq(time.GetBegin()));
-		_leftFreqLab->SetToolTip("Frequency Left");
-		_rightFreqLab->Update(((FundPlotController*)_controller)->GetFreq(time.GetEnd()));
-		_rightFreqLab->show();
-	    }
-	    else
-	    {
-		_leftFreqLab->Update(((FundPlotController*)_controller)->GetFreq(time.GetBegin()));
-		_leftFreqLab->SetToolTip("Frequency");
-		_rightFreqLab->clear();
-		_rightFreqLab->hide();
-	    }
-	}
+		void QtFundFreqPlot::UpdateFreqLabels(MediaTime time)
+		{
+			if(time.HasDuration())
+			{
+				mLeftFreqLab->Update(((FundPlotController*)mController)->GetFreq(time.GetBegin()));
+				mLeftFreqLab->SetToolTip("Frequency Left");
+				mRightFreqLab->Update(((FundPlotController*)mController)->GetFreq(time.GetEnd()));
+				mRightFreqLab->show();
+			}
+			else
+			{
+				mLeftFreqLab->Update(((FundPlotController*)mController)->GetFreq(time.GetBegin()));
+				mLeftFreqLab->SetToolTip("Frequency");
+				mRightFreqLab->clear();
+				mRightFreqLab->hide();
+			}
+		}
 
-	void QtFundFreqPlot::SetPlotController()
-	{
-	    SetController(new FundPlotController());
-	}
+		void QtFundFreqPlot::SetPlotController()
+		{
+			SetController(new FundPlotController());
+		}
 
-	void QtFundFreqPlot::Connect()
-	{
-	    // Connections
-	      connect(((FundPlotController*)_controller),SIGNAL(initialYRulerRange(double,double)),this,SLOT(initialYRulerRange(double,double)));
-	    connect(((FundPlotController*)_controller),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
-	    connect(((FundPlotController*)_controller),SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
-	    connect(((FundPlotController*)_controller),SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
-	}
+		void QtFundFreqPlot::Connect()
+		{
+			// Connections
+			connect(((FundPlotController*)mController),SIGNAL(initialYRulerRange(double,double)),this,SLOT(initialYRulerRange(double,double)));
+			connect(((FundPlotController*)mController),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
+			connect(((FundPlotController*)mController),SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
+			connect(((FundPlotController*)mController),SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
+		}
 
-	void QtFundFreqPlot::SetPData(const Segment& seg)
-	{
-	    ((QtFundPlayer*)_player)->SetData(seg);
-	}
+		void QtFundFreqPlot::SetPData(const Segment& seg)
+		{
+			((QtFundPlayer*)mPlayer)->SetData(seg);
+		}
 
-	void QtFundFreqPlot::DisplayBackgroundBlack()
-	{
-	    SetBackgroundColor(VMColor::Black());
-	    SetForegroundColor(VMColor::Green());
-	    SetDialColor(VMColor::Red());
-	    SetRegionColor(VMColor::LightGray());
-	    SetMarksColor(VMColor::Orange());
-	}
+		void QtFundFreqPlot::DisplayBackgroundBlack()
+		{
+			SetBackgroundColor(VMColor::Black());
+			SetForegroundColor(VMColor::Green());
+			SetDialColor(VMColor::Red());
+			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Orange());
+		}
 
-	void QtFundFreqPlot::DisplayBackgroundWhite()
-	{
-	    SetBackgroundColor(VMColor::White());
-	    SetForegroundColor(VMColor::Blue());
-	    SetDialColor(VMColor::Black());
-	    SetRegionColor(VMColor::LightGray());
-	    SetMarksColor(VMColor::Red());
-	}
+		void QtFundFreqPlot::DisplayBackgroundWhite()
+		{
+			SetBackgroundColor(VMColor::White());
+			SetForegroundColor(VMColor::Blue());
+			SetDialColor(VMColor::Black());
+			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Red());
+		}
 
-	void QtFundFreqPlot::hideEvent(QHideEvent* e)
-	{
-	    ((QtFundPlayer*)_player)->stop();
-	    QWidget::hideEvent(e);
-	}
+		void QtFundFreqPlot::hideEvent(QHideEvent* e)
+		{
+			((QtFundPlayer*)mPlayer)->stop();
+			QWidget::hideEvent(e);
+		}
 
-	void QtFundFreqPlot::closeEvent(QCloseEvent *e)
-	{
-	    RemoveFromPlayList();
-	    e->accept();
-	}
+		void QtFundFreqPlot::closeEvent(QCloseEvent *e)
+		{
+			RemoveFromPlayList();
+			e->accept();
+		}
 
-	void QtFundFreqPlot::SetMarks(std::vector<unsigned>& marks)
-	{
-	    ((FundPlotController*)_controller)->SetMarks(marks);
-	}
+		void QtFundFreqPlot::SetMarks(std::vector<unsigned>& marks)
+		{
+			((FundPlotController*)mController)->SetMarks(marks);
+		}
 
-	std::vector<unsigned>& QtFundFreqPlot::GetMarks()
-	{
-	    return ((FundPlotController*)_controller)->GetMarks();
-	}
+		std::vector<unsigned>& QtFundFreqPlot::GetMarks()
+		{
+			return ((FundPlotController*)mController)->GetMarks();
+		}
 
-	void QtFundFreqPlot::SetMarksColor(Color c)
-	{
-	    ((FundPlotController*)_controller)->SetMarksColor(c);
-	}
+		void QtFundFreqPlot::SetMarksColor(Color c)
+		{
+			((FundPlotController*)mController)->SetMarksColor(c);
+		}
 
-	void QtFundFreqPlot::initialYRulerRange(double min, double max)
-	{
-	    QtPresentation::initialYRulerRange(min,max);
-	    lefthole->setFixedSize(YRulerWidth(),lefthole->height());
-	}
+		void QtFundFreqPlot::initialYRulerRange(double min, double max)
+		{
+			QtPresentation::initialYRulerRange(min,max);
+			lefthole->setFixedSize(YRulerWidth(),lefthole->height());
+		}
 	
-	void QtFundFreqPlot::PlayingTime(TData time)
-	{
-	    ((FundPlotController*)_controller)->UpdateTimePos(time);
-	}
+		void QtFundFreqPlot::PlayingTime(TData time)
+		{
+			((FundPlotController*)mController)->UpdateTimePos(time);
+		}
 
-	void QtFundFreqPlot::StopPlaying(TData time)
-	{
-	    ((FundPlotController*)_controller)->StopPlaying(time);
-	}
+		void QtFundFreqPlot::StopPlaying(TData time)
+		{
+			((FundPlotController*)mController)->StopPlaying(time);
+		}
 
-	void QtFundFreqPlot::setCurrentPlayingTime(float t)
-	{
-	    ((FundPlotController*)_controller)->UpdateTimePos(TData(t));
-	}
+		void QtFundFreqPlot::setCurrentPlayingTime(float t)
+		{
+			((FundPlotController*)mController)->UpdateTimePos(TData(t));
+		}
 
-	void QtFundFreqPlot::receivedStopPlaying(float t)
-	{
-	    ((FundPlotController*)_controller)->StopPlaying(TData(t));
-	}
+		void QtFundFreqPlot::receivedStopPlaying(float t)
+		{
+			((FundPlotController*)mController)->StopPlaying(TData(t));
+		}
 
-	std::vector<QString> QtFundFreqPlot::GetSegmentationTags()
-	{
-	    return ((FundPlotController*)_controller)->GetTags();
-	}
+		std::vector<QString> QtFundFreqPlot::GetSegmentationTags()
+		{
+			return ((FundPlotController*)mController)->GetTags();
+		}
 	     
     }	
 }

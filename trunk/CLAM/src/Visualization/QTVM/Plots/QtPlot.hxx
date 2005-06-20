@@ -31,24 +31,24 @@ namespace CLAM
 {
     namespace VM
     {
-	class QtPlot : public QWidget
-	{	
-	public:
-	    QtPlot(QWidget* parent = 0, const char * name = 0, WFlags f = 0);
-	    virtual ~QtPlot();
+		class QtPlot : public QWidget
+		{	
+		public:
+			QtPlot(QWidget* parent = 0, const char * name = 0, WFlags f = 0);
+			virtual ~QtPlot();
 			
-	    virtual void Label(const std::string& label)=0;
-	    virtual void Geometry(int x,int y,int w,int h)=0;
-	    virtual void Show()=0;
-	    virtual void Hide()=0;
+			virtual void Label(const std::string& label)=0;
+			virtual void Geometry(int x,int y,int w,int h)=0;
+			virtual void Show()=0;
+			virtual void Hide()=0;
 
-	    virtual void SetMarks(std::vector<unsigned>& marks)=0;
-	    virtual std::vector<unsigned>& GetMarks()=0; 
-	    virtual void SetMarksColor(Color c)=0;
+			virtual void SetMarks(std::vector<unsigned>& marks)=0;
+			virtual std::vector<unsigned>& GetMarks()=0; 
+			virtual void SetMarksColor(Color c)=0;
 
-	    virtual std::vector<QString> GetSegmentationTags()=0;
+			virtual std::vector<QString> GetSegmentationTags()=0;
 
-	};
+		};
     }
 }
 

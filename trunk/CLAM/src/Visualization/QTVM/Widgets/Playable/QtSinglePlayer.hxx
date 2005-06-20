@@ -7,31 +7,31 @@ namespace CLAM
 {
     namespace VM
     {
-	class Player;
+		class Player;
 		
-	class QtSinglePlayer : public QtPlayer
-	{	
-	public:
-	    QtSinglePlayer(QWidget* parent=0);
-	    ~QtSinglePlayer();
+		class QtSinglePlayer : public QtPlayer
+		{	
+		public:
+			QtSinglePlayer(QWidget* parent=0);
+			~QtSinglePlayer();
 
-	    void SetPlaySegment(const MediaTime& time);
-	    bool IsPlaying();
+			void SetPlaySegment(const MediaTime& time);
+			bool IsPlaying();
 
-	    void SetSlotPlayingTime(Slotv1<TData>& slot);
-	    void SetSlotStopPlaying(Slotv1<TData>& slot);
+			void SetSlotPlayingTime(Slotv1<TData>& slot);
+			void SetSlotStopPlaying(Slotv1<TData>& slot);
 				
         public slots:
-	    void play();
-	    void pause();
-	    void stop();
+			void play();
+			void pause();
+			void stop();
 
-	protected:
-	    Player* _player;
+		protected:
+			Player* mPlayer;
 				
-	    void SetPlayer(Player* player);
+			void SetPlayer(Player* player);
 							
-	};
+		};
     }
 }
 

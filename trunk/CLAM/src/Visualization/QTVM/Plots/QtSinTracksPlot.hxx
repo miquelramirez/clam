@@ -31,51 +31,50 @@ namespace CLAM
 {
     namespace VM
     {
-	class TimeSegmentLabelsGroup;
+		class TimeSegmentLabelsGroup;
 
-	/**
-	 * Allows viewing sinusoidal tracks.
-	 *
-	 * @ingroup QTVM
-	 */
+		/**
+		 * Allows viewing sinusoidal tracks.
+		 *
+		 * @ingroup QTVM
+		 */
 
-	class QtSinTracksPlot : public QtPresentation
-	{
-	    Q_OBJECT
+		class QtSinTracksPlot : public QtPresentation
+		{
+			Q_OBJECT
 
-	public:
-	    QtSinTracksPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0);
-	    ~QtSinTracksPlot();
+		public:
+			QtSinTracksPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0);
+			~QtSinTracksPlot();
 
-	    void SetData(const Segment& segment);
-	    void SetData(	const Array< SpectralPeakArray >& peakMtx, 
-								const TData& sr, const TData& dur	);
+			void SetData(const Segment& segment);
+			void SetData(const Array< SpectralPeakArray >& peakMtx, 
+						 const TData& sr, const TData& dur	);
 
-	    void SetMarks(std::vector<unsigned>& marks);
-	    std::vector<unsigned>& GetMarks();
-	    void SetMarksColor(Color c);
+			void SetMarks(std::vector<unsigned>& marks);
+			std::vector<unsigned>& GetMarks();
+			void SetMarksColor(Color c);
 	    
-	    std::vector<QString> GetSegmentationTags();
+			std::vector<QString> GetSegmentationTags();
 
-	    void SetDialColor(Color c);
-	    void SetRegionColor(Color c);
+			void SetDialColor(Color c);
+			void SetRegionColor(Color c);
 
-        protected slots:
-	    void updateRegion(MediaTime);
+		protected slots:
+			void updateRegion(MediaTime);
 
-	protected:
-	    void keyPressEvent(QKeyEvent* e);
-	    void keyReleaseEvent( QKeyEvent* e);
-	    void SetPlotController();				virtual void Connect();
+		protected:
+			void keyPressEvent(QKeyEvent* e);
+			void keyReleaseEvent( QKeyEvent* e);
+			void SetPlotController();				virtual void Connect();
+			void DisplayBackgroundBlack();
+			void DisplayBackgroundWhite();
 
-	    void DisplayBackgroundBlack();
-	    void DisplayBackgroundWhite();
+		private:
+			TimeSegmentLabelsGroup* mLabelsGroup;
 
-	private:
-	    TimeSegmentLabelsGroup* _labelsGroup;
-
-	    void InitSinTracksPlot();
-	};
+			void InitSinTracksPlot();
+		};
     }
 }
 

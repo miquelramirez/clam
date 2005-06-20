@@ -29,14 +29,14 @@ namespace CLAM
 {
     namespace VM
     {
-	class QtFundPlayer : public QtSinglePlayer
-	{
-	public:
-	    QtFundPlayer(QWidget* parent=0);
-	    ~QtFundPlayer();
+		class QtFundPlayer : public QtSinglePlayer
+		{
+		public:
+			QtFundPlayer(QWidget* parent=0);
+			~QtFundPlayer();
 
-	    void SetData(const Segment& segment);
-	};
+			void SetData(const Segment& segment);
+		};
     }
 }
 

@@ -15,242 +15,247 @@ namespace CLAM
 {
     namespace VM
     {
-	enum EFlags { AllowVerticalEdition=0x01, AllowHorizontalEdition=0x02, AllowInsert=0x04, AllowRemove=0x08, 
-		      AllowZoomByMouse=0x10, HasVerticalScroll=0x20, HasHorizontalScroll=0x40, HasPlayer=0x80,
-		      AllowAll=0xff };
+		enum EFlags { AllowVerticalEdition=0x01, AllowHorizontalEdition=0x02, AllowInsert=0x04, AllowRemove=0x08, 
+					  AllowZoomByMouse=0x10, HasVerticalScroll=0x20, HasHorizontalScroll=0x40, HasPlayer=0x80,
+					  AllowAll=0xff };
 
-	class BPFEditorController : public QObject
-	{
-	    struct RulerRange
-	    {
-		double mMin, mMax;
+		class BPFEditorController : public QObject
+		{
+			struct RulerRange
+			{
+				double mMin, mMax;
 		
-		RulerRange()
-		    : mMin(0.0), mMax(1.0)
-		    {
-		    }
-		RulerRange(const double& min, const double& max)
-		    : mMin(min), mMax(max)
-		    {
-		    }
-		RulerRange(const RulerRange& range) 
-		    : mMin(range.mMin), mMax(range.mMax)
-		    {
-		    }
-		~RulerRange(){}
+				RulerRange()
+					: mMin(0.0) 
+					, mMax(1.0)
+					{
+					}
+				RulerRange(const double& min, const double& max)
+					: mMin(min)
+					, mMax(max)
+					{
+					}
+				RulerRange(const RulerRange& range) 
+					: mMin(range.mMin)
+					, mMax(range.mMax)
+					{
+					}
+				~RulerRange(){}
 
-		RulerRange& operator=(const RulerRange& range)
-		    {
-			mMin = range.mMin;
-			mMax = range.mMax;
-			return *this;
-		    }
-	    };
+				RulerRange& operator=(const RulerRange& range)
+					{
+						mMin = range.mMin;
+						mMax = range.mMax;
+						return *this;
+					}
+			};
 
-	    struct BPFEditorSettings
-	    {
-		RulerRange mXRange, mYRange;
-		GLView mView;
+			struct BPFEditorSettings
+			{
+				RulerRange mXRange, mYRange;
+				GLView mView;
 
-		BPFEditorSettings(){}
-		BPFEditorSettings(const RulerRange& xRange, const RulerRange& yRange, const GLView& view)
-		    : mXRange(xRange), mYRange(yRange), mView(view) 
-		    {
-		    }
-		BPFEditorSettings(const BPFEditorSettings& settings)
-		    : mXRange(settings.mXRange), mYRange(settings.mYRange), mView(settings.mView)
-		    {
-		    }
-		~BPFEditorSettings(){}
+				BPFEditorSettings(){}
+				BPFEditorSettings(const RulerRange& xRange, const RulerRange& yRange, const GLView& view)
+					: mXRange(xRange)
+					, mYRange(yRange)
+					, mView(view) 
+					{
+					}
+				BPFEditorSettings(const BPFEditorSettings& settings)
+					: mXRange(settings.mXRange)
+					, mYRange(settings.mYRange)
+					, mView(settings.mView)
+					{
+					}
+				~BPFEditorSettings(){}
 
-		BPFEditorSettings& operator=(const BPFEditorSettings& settings)
-		    {
-			mView = settings.mView;
-			mXRange = settings.mXRange;
-			mYRange = settings.mYRange;
-			return *this;
-		    }
-	    };
+				BPFEditorSettings& operator=(const BPFEditorSettings& settings)
+					{
+						mView = settings.mView;
+						mXRange = settings.mXRange;
+						mYRange = settings.mYRange;
+						return *this;
+					}
+			};
 
-	    struct Pixel
-	    {
-		unsigned x, y;
-	    };
+			struct Pixel
+			{
+				unsigned x, y;
+			};
 
-	    typedef std::list<BPFEditorSettings> SettingStack;
+			typedef std::list<BPFEditorSettings> SettingStack;
 
-	     Q_OBJECT
+			Q_OBJECT
 
-	public:
-	    BPFEditorController(int eFlags=CLAM::VM::AllowAll);
-	    ~BPFEditorController();
+		public:
+			BPFEditorController(int eFlags=CLAM::VM::AllowAll);
+			~BPFEditorController();
 
-	    void SetData(const BPF& bpf);
-	    BPF& GetData();
+			void SetData(const BPF& bpf);
+			BPF& GetData();
 	        
-	    void SetDataColor(const Color& c);
-	    void SetHandlersColor(const Color& c);
-	    void SetRectColor(const Color& c);
-	    void SetDialColor(const Color& c);
+			void SetDataColor(const Color& c);
+			void SetHandlersColor(const Color& c);
+			void SetRectColor(const Color& c);
+			void SetDialColor(const Color& c);
 
-	    void SetXRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
-	    void SetYRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
+			void SetXRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
+			void SetYRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
 
-	    void SetXScale(const EScale& scale);
-	    void SetYScale(const EScale& scale);
+			void SetXScale(const EScale& scale);
+			void SetYScale(const EScale& scale);
 
-	    void SetKeyInsertPressed(bool pressed);
-	    void SetKeyDeletePressed(bool pressed);
-	    void SetKeyControlPressed(bool pressed);
+			void SetKeyInsertPressed(bool pressed);
+			void SetKeyDeletePressed(bool pressed);
+			void SetKeyControlPressed(bool pressed);
 	    
-	    void SetLeftButtonPressed(bool pressed);
-	    void SetRightButtonPressed(bool pressed);
+			void SetLeftButtonPressed(bool pressed);
+			void SetRightButtonPressed(bool pressed);
 
-	    void SetPoint(const TData& x, const TData& y);
-	    void UpdatePoint(const TData& x, const TData& y);
-	    void MoveCurrentPointDelta(int stepX, int stepY);
-	    void ChooseCurrentPointByJumping(int step);
-	    void ChooseCurrentPoint(int pointIndex);
+			void SetPoint(const TData& x, const TData& y);
+			void UpdatePoint(const TData& x, const TData& y);
+			void MoveCurrentPointDelta(int stepX, int stepY);
+			void ChooseCurrentPointByJumping(int step);
+			void ChooseCurrentPoint(int pointIndex);
 
+			void Draw();
 
-	    void Draw();
+			void DisplayDimensions(const int& w, const int& h);
 
-	    void DisplayDimensions(const int& w, const int& h);
+			void SetHBounds(double left, double right);
+			void SetVBounds(double bottom, double top);
 
-	    void SetHBounds(double left, double right);
-	    void SetVBounds(double bottom, double top);
+			void SelectPointFromXCoord(double xcoord);
 
-	    void SelectPointFromXCoord(double xcoord);
+			void UpdateTimePos(const TData& time);
+			void StopPlaying(const TData& time);
 
-	    void UpdateTimePos(const TData& time);
-	    void StopPlaying(const TData& time);
+			void MouseOverDisplay(bool over);
 
-	    void MouseOverDisplay(bool over);
+		signals:
+			void viewChanged(GLView);
+			void cursorChanged(QCursor);
+			void xRulerRange(double, double);
+			void yRulerRange(double, double);
+			void labelsText(QString, QString);
+			void requestRefresh();
+			void xValueChanged(int, float);
+			void yValueChanged(int, float);
+			void selectedXPos(double);
+			void vZoomRatio(double);
+			void vScrollMaxValue(int);
+			void vScrollValue(int);
+			void hZoomRatio(double);
+			void hScrollMaxValue(int);
+			void hScrollValue(int);
+			void elementAdded(int, float, float);
+			void elementRemoved(int);
+			void rightButtonPressed();
+			void startPlaying();
+			void stopPlaying();
+			void currentPlayingTime(float);
+			void stopPlaying(float);
 
-	signals:
-	    void viewChanged(GLView);
-	    void cursorChanged(QCursor);
-	    void xRulerRange(double, double);
-	    void yRulerRange(double, double);
-	    void labelsText(QString, QString);
-	    void requestRefresh();
+		public slots:
+			void vZoomIn();
+			void vZoomOut();
+			void hZoomIn();
+			void hZoomOut();
+			void updateVScrollValue(int);
+			void updateHScrollValue(int);
 
-	    void xValueChanged(int, float);
-	    void yValueChanged(int, float);
-
-	    void selectedXPos(double);
-
-	    void vZoomRatio(double);
-	    void vScrollMaxValue(int);
-	    void vScrollValue(int);
-
-	    void hZoomRatio(double);
-	    void hScrollMaxValue(int);
-	    void hScrollValue(int);
-
-	    void elementAdded(int, float, float);
-	    void elementRemoved(int);
-
-	    void rightButtonPressed();
-
-	    void startPlaying();
-	    void stopPlaying();
-
-	    void currentPlayingTime(float);
-	    void stopPlaying(float);
-
-	public slots:
-	    void vZoomIn();
-	    void vZoomOut();
-	    void hZoomIn();
-	    void hZoomOut();
-
-	    void updateVScrollValue(int);
-	    void updateHScrollValue(int);
-
-	private:
-	    BPF mData;
-	    Dial mDial;
-	    BPFEditorRenderer mRenderer;
-	    GLView mView;
-	    RulerRange mXRulerRange, mYRulerRange;
-	    int mEFlags;
-	    EScale mXScale, mYScale;
-	    bool mLeftButtonPressed, mRightButtonPressed;
-	    bool mKeyInsertPressed, mKeyDeletePressed, mKeyControlPressed;
-	    bool mMouseOverDisplay;
-	    bool mProcessingSelection;
-	    bool mHit;
-	    bool mQueryZoomOut;
-	    Color mRectColor;
-	    Point mCorners[2];
-	    SettingStack mSettingStack;
-	    int mDisplayWidth, mDisplayHeight;
+		private:
+			BPF                      mData;
+			Dial                     mDial;
+			BPFEditorRenderer        mRenderer;
+			GLView                   mView;
+			RulerRange               mXRulerRange;
+			RulerRange               mYRulerRange;
+			int                      mEFlags;
+			EScale                   mXScale;
+			EScale                   mYScale;
+			bool                     mLeftButtonPressed;
+			bool                     mRightButtonPressed;
+			bool                     mKeyInsertPressed;
+			bool                     mKeyDeletePressed;
+			bool                     mKeyControlPressed;
+			bool                     mMouseOverDisplay;
+			bool                     mProcessingSelection;
+			bool                     mHit;
+			bool                     mQueryZoomOut;
+			Color                    mRectColor;
+			Point                    mCorners[2];
+			SettingStack             mSettingStack;
+			int                      mDisplayWidth;
+			int                      mDisplayHeight;
+			Point                    mCurrentPoint;
+			TIndex                   mCurrentIndex;
+			bool                     mXModified;
+			bool                     mYModified;
+			bool                     mSelectPoint;
+			double                   mSpanX;
+			double                   mSpanY;
+			double                   mMinSpanX;
+			double                   mMinSpanY;
+			double                   mMinX;
+			double                   mMaxX;
+			double                   mMinY;
+			double                   mMaxY;
+			double                   mVCurrent;
+			double                   mHCurrent;
+			double                   mVZoomRatio;
+			double                   mHZoomRatio;
+			bool                     mIsPlaying;
+			TIndex                   mLightedPointIndex;
        
-	    enum { Selection=0, Edition };
-
-	    Point mCurrentPoint;
-	    TIndex mCurrentIndex;
-
-	    bool mXModified, mYModified;
-
-	    bool mSelectPoint;
-	    double mSpanX,mSpanY;
-	    double mMinSpanX,mMinSpanY;
-	    double mMinX,mMaxX;
-	    double mMinY,mMaxY;
-
-	    double mVCurrent, mHCurrent;
-	    double mVZoomRatio, mHZoomRatio;
-
-	    bool mIsPlaying;
-	    TIndex mLightedPointIndex;
+			enum { Selection=0, Edition };
 	    
-	    void PushSettings();
-	    void PopSettings();
+			void PushSettings();
+			void PopSettings();
 
-	    void DrawRect();
+			void DrawRect();
 
-	    double SelectionBoxMinX();
-	    double SelectionBoxMaxX();
-	    double SelectionBoxMinY();
-	    double SelectionBoxMaxY();
+			double SelectionBoxMinX();
+			double SelectionBoxMaxX();
+			double SelectionBoxMinY();
+			double SelectionBoxMaxY();
 
-	    double Max(double a, double b);
-	    double Min(double a, double b);
+			double Max(double a, double b);
+			double Min(double a, double b);
 
-	    Pixel GetPixel(const TData& x, const TData& y);
-	    bool Match(const Pixel& p, const Pixel& q, TData tolerance);
-	    int Hit(const TData& x, const TData& y);
-	    void UpdateXYLabels(TData x, TData y);
+			Pixel GetPixel(const TData& x, const TData& y);
+			bool Match(const Pixel& p, const Pixel& q, TData tolerance);
+			int Hit(const TData& x, const TData& y);
+			void UpdateXYLabels(TData x, TData y);
 
-	    int GetMode();
+			int GetMode();
 	    
-	    void UpdateBPF(TData x, TData y);
+			void UpdateBPF(TData x, TData y);
 
-	    int GetnyPixels() const;
-	    int GetVScrollValue() const;
+			int GetnyPixels() const;
+			int GetVScrollValue() const;
 
-	    void InitVZoomRatio();
-	    void InitVScroll();
+			void InitVZoomRatio();
+			void InitVScroll();
 
-	    void UpdateVBounds(bool zin);
+			void UpdateVBounds(bool zin);
 
-	    int GetnxPixels() const;
-	    int GetHScrollValue() const;
+			int GetnxPixels() const;
+			int GetHScrollValue() const;
 
-	    void InitHZoomRatio();
-	    void InitHScroll();
+			void InitHZoomRatio();
+			void InitHScroll();
 
-	    void UpdateHBounds(bool zin);
+			void UpdateHBounds(bool zin);
 
-	    TIndex GetBound(const TData& searchValue, bool left=true);
+			TIndex GetBound(const TData& searchValue, bool left=true);
 
-	    void InsertBPFNode(TData x, TData y);
+			void InsertBPFNode(TData x, TData y);
 
-	    bool ReferenceIsVisible();
-	    double GetReference() const;
-	};
+			bool ReferenceIsVisible();
+			double GetReference() const;
+		};
     }
 }
 

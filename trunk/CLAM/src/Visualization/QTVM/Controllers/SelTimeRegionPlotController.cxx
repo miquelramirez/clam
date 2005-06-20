@@ -26,157 +26,157 @@ namespace CLAM
 {
     namespace VM
     {
-	SelTimeRegionPlotController::SelTimeRegionPlotController()
-	    : _sampleRate(TData(44100.0)),
-	      _duration(TData(0.0)),
-	      _isPlaying(false)
-	{
-	    SetKeyShiftPressed(false);
-	}
-		
-	SelTimeRegionPlotController::~SelTimeRegionPlotController()
-	{
-	}
-
-	void SelTimeRegionPlotController::SetSelPos(const TData& value)
-	{
-	    if(CanDrawSelectedPos())
-	    {
-		if(_keyShiftPressed)
+		SelTimeRegionPlotController::SelTimeRegionPlotController()
+			: mSampleRate(TData(44100.0))
+			, mDuration(TData(0.0))
+			, mKeyShiftPressed(false)
+			, mIsPlaying(false)
 		{
-		    if(value > GetBeginRegion() && value < GetEndRegion())
-		    {
-			if(value > GetBeginRegion()+((GetEndRegion()-GetBeginRegion())/TData(2.0)))
+		}
+		
+		SelTimeRegionPlotController::~SelTimeRegionPlotController()
+		{
+		}
+
+		void SelTimeRegionPlotController::SetSelPos(const TData& value)
+		{
+			if(CanDrawSelectedPos())
 			{
-			    SetEndRegion(value);
+				if(mKeyShiftPressed)
+				{
+					if(value > GetBeginRegion() && value < GetEndRegion())
+					{
+						if(value > GetBeginRegion()+((GetEndRegion()-GetBeginRegion())/TData(2.0)))
+						{
+							SetEndRegion(value);
+						}
+						else
+						{
+							SetBeginRegion(value);
+						}
+					}
+					else
+					{
+						if(value > GetEndRegion())
+						{
+							SetEndRegion(value);
+						}
+						if(value < GetBeginRegion())
+						{
+							SetBeginRegion(value);
+						}
+					}
+					UpdateDial(value);
+					PlotController::SetSelPos(GetBeginRegion()+((GetEndRegion()-GetBeginRegion())/TData(2.0)));
+				}
+				else
+				{
+					SelPosPlotController::SetSelPos(value);
+					SetBeginRegion(GetSelPos());
+					SetEndRegion(GetSelPos());
+				}
+				emit selectedRegion(GetRegionTime());
+			}
+		}
+		
+		void SelTimeRegionPlotController::Draw()
+		{
+			SelPosPlotController::Draw();
+			mRegionMarker.Render();
+		}
+
+		void SelTimeRegionPlotController::SetRegionColor(Color c)
+		{
+			mRegionMarker.SetColor(c);
+		}
+		
+		void SelTimeRegionPlotController::SetKeyShiftPressed(bool pr)
+		{
+			mKeyShiftPressed = pr;
+		}
+
+		void SelTimeRegionPlotController::SetHBounds(const TData& left,const TData& right)
+		{
+			SelPosPlotController::SetHBounds(left,right);
+			mRegionMarker.SetHBounds(GetLeftBound(),GetRightBound());
+		}
+
+		void SelTimeRegionPlotController::SetVBounds(const TData& bottom,const TData& top)
+		{
+			SelPosPlotController::SetVBounds(bottom,top);
+			mRegionMarker.SetVBounds(GetBottomBound(),GetTopBound());
+		}
+
+		void SelTimeRegionPlotController::SetBeginRegion(const TData& value)
+		{
+			mRegionMarker.SetBegin(value);
+		}
+
+		void SelTimeRegionPlotController::SetEndRegion(const TData& value)
+		{
+			mRegionMarker.SetEnd(value);
+		}
+
+		TData SelTimeRegionPlotController::GetBeginRegion() const
+		{
+			return mRegionMarker.GetBegin();
+		}
+
+		TData SelTimeRegionPlotController::GetEndRegion() const
+		{
+			return mRegionMarker.GetEnd();
+		}
+
+		MediaTime SelTimeRegionPlotController::GetRegionTime() const
+		{
+			MediaTime time;
+			time.SetBegin(GetBeginRegion()/mSampleRate);
+			time.SetEnd(GetEndRegion()/mSampleRate);
+			if(time.GetBegin() < time.GetEnd())
+			{
+				time.AddDuration();
+				time.UpdateData();
+				time.SetDuration(time.GetEnd()-time.GetBegin());
 			}
 			else
 			{
-			    SetBeginRegion(value);
+				time.SetEnd(mDuration);
 			}
-		    }
-		    else
-		    {
-			if(value > GetEndRegion())
-			{
-			    SetEndRegion(value);
-			}
-			if(value < GetBeginRegion())
-			{
-			    SetBeginRegion(value);
-			}
-		    }
-		    UpdateDial(value);
-		    PlotController::SetSelPos(GetBeginRegion()+((GetEndRegion()-GetBeginRegion())/TData(2.0)));
+			return time;
 		}
-		else
+
+		void SelTimeRegionPlotController::UpdateTimePos(const TData& time)
 		{
-		    SelPosPlotController::SetSelPos(value);
-		    SetBeginRegion(GetSelPos());
-		    SetEndRegion(GetSelPos());
+			if(mIsPlaying && time<=GetDialPos()/mSampleRate) return;
+			if(!mIsPlaying) 
+			{
+				mIsPlaying =true;
+				emit startPlaying();
+			}
+			UpdateDial(time*mSampleRate);
+			emit currentPlayingTime(float(time));
 		}
-		emit selectedRegion(GetRegionTime());
-	    }
-	}
-		
-	void SelTimeRegionPlotController::Draw()
-	{
-	    SelPosPlotController::Draw();
-	    _rMarker.Render();
-	}
 
-	void SelTimeRegionPlotController::SetRegionColor(Color c)
-	{
-	    _rMarker.SetColor(c);
-	}
-		
-	void SelTimeRegionPlotController::SetKeyShiftPressed(bool pr)
-	{
-	    _keyShiftPressed = pr;
-	}
+		void SelTimeRegionPlotController::StopPlaying(const TData& time)
+		{
+			if(!mIsPlaying) return;
+			mIsPlaying=false;
+			UpdateDial(time*mSampleRate);
+			emit stopPlaying(float(time));
+			emit stopPlaying();
+		}
 
-	void SelTimeRegionPlotController::SetHBounds(const TData& left,const TData& right)
-	{
-	    SelPosPlotController::SetHBounds(left,right);
-	    _rMarker.SetHBounds(GetLeftBound(),GetRightBound());
-	}
+		bool SelTimeRegionPlotController::CanDrawSelectedPos()
+		{
+			return (!mIsPlaying && SegmentationMarksPlotController::CanDrawSelectedPos());
+		}
 
-	void SelTimeRegionPlotController::SetVBounds(const TData& bottom,const TData& top)
-	{
-	    SelPosPlotController::SetVBounds(bottom,top);
-	    _rMarker.SetVBounds(GetBottomBound(),GetTopBound());
-	}
+		bool SelTimeRegionPlotController::IsPlayable()
+		{
+			return true;
+		}
 
-	void SelTimeRegionPlotController::SetBeginRegion(const TData& value)
-	{
-	    _rMarker.SetBegin(value);
-	}
-
-	void SelTimeRegionPlotController::SetEndRegion(const TData& value)
-	{
-	    _rMarker.SetEnd(value);
-	}
-
-	TData SelTimeRegionPlotController::GetBeginRegion() const
-	{
-	    return _rMarker.GetBegin();
-	}
-
-	TData SelTimeRegionPlotController::GetEndRegion() const
-	{
-	    return _rMarker.GetEnd();
-	}
-
-	MediaTime SelTimeRegionPlotController::GetRegionTime() const
-	{
-	    MediaTime time;
-	    time.SetBegin(GetBeginRegion()/_sampleRate);
-	    time.SetEnd(GetEndRegion()/_sampleRate);
-	    if(time.GetBegin() < time.GetEnd())
-	    {
-		time.AddDuration();
-		time.UpdateData();
-		time.SetDuration(time.GetEnd()-time.GetBegin());
-	    }
-	    else
-	    {
-		time.SetEnd(_duration);
-	    }
-	    return time;
-	}
-
-	void SelTimeRegionPlotController::UpdateTimePos(const TData& time)
-	{
-	    if(_isPlaying && time<=GetDialPos()/_sampleRate) return;
-	    if(!_isPlaying) 
-	    {
-		_isPlaying =true;
-		emit startPlaying();
-	    }
-	    UpdateDial(time*_sampleRate);
-	    emit currentPlayingTime(float(time));
-	}
-
-	void SelTimeRegionPlotController::StopPlaying(const TData& time)
-	{
-	    if(!_isPlaying) return;
-	    _isPlaying=false;
-	    UpdateDial(time*_sampleRate);
-	    emit stopPlaying(float(time));
-	    emit stopPlaying();
-	}
-
-	bool SelTimeRegionPlotController::CanDrawSelectedPos()
-	{
-	    return (!_isPlaying && SegmentationMarksPlotController::CanDrawSelectedPos());
-	}
-
-	bool SelTimeRegionPlotController::IsPlayable()
-	{
-	    return true;
-	}
-    }
-    
+    }    
 }
 
 // END

@@ -26,68 +26,58 @@
 #include "DataTypes.hxx"
 #include "PlotController.hxx"
 
-//class QMouseEvent;
 class QTimer;
 
 namespace CLAM
 {
     namespace VM
     {
-	class DisplaySurface : public QGLWidget
-	{
-	    typedef struct
-	    {
-		double r;
-		double g;
-		double b;
-	    } BkColor;
+		class DisplaySurface : public QGLWidget
+		{
+			Q_OBJECT
 
-	    Q_OBJECT
+		public:
+			DisplaySurface(QWidget* parent = 0);
+			~DisplaySurface();
 
-	public:
-	    DisplaySurface(QWidget* parent = 0);
-	    ~DisplaySurface();
+			void SetBackgroundColor(double r, double g, double b);
+			void SetController(PlotController* controller);
 
-	    void SetBackgroundColor(double r, double g, double b);
-	    void SetController(PlotController* controller);
+		signals:
+			void leavingMouse();
 
-	signals:
-	    void leavingMouse();
+		private slots:
+			void receivedView(View);
+			void updateToolTip(QString);
+			void changeCursor(QCursor);
+			void startTimer();
+			void stopTimer();
 
-	private slots:
-	    void receivedView(View);
-	    void updateToolTip(QString);
-	    void changeCursor(QCursor);
+		protected:
+			void paintGL(); 
+			void mousePressEvent(QMouseEvent* e);
+			void mouseReleaseEvent(QMouseEvent* e);
+			void mouseMoveEvent(QMouseEvent* e);
+			void resizeEvent(QResizeEvent *e);
+			void leaveEvent(QEvent* e);
+			void enterEvent(QEvent* e);
+			void mouseDoubleClickEvent(QMouseEvent* e);
 
-	    void startTimer();
-	    void stopTimer();
+		private:
+			View            mView;
+			PlotController* mController;
+			double          mRed;
+			double          mGreen;
+			double          mBlue;
+			int             mWidth;
+			int             mHeight;
+			volatile bool   mDoResize;
+			QTimer*         mTimer;
 
-	protected:
-	    void paintGL(); 
-
-	    void mousePressEvent(QMouseEvent* e);
-	    void mouseReleaseEvent(QMouseEvent* e);
-	    void mouseMoveEvent(QMouseEvent* e);
-
-	    void resizeEvent(QResizeEvent *e);
-
-	    void leaveEvent(QEvent* e);
-	    void enterEvent(QEvent* e);
-
-	    void mouseDoubleClickEvent(QMouseEvent* e);
-
-	private:
-	    View _view;
-	    PlotController* _controller;
-	    BkColor _bkColor;
-	    int _width, _height;
-	    volatile bool _doResize;
-	    QTimer* _timer;
-
-	    enum { TIMER_INTERVAL=10 };
+			enum { TIMER_INTERVAL=10 };
 				
-	    void InitView();
-	};
+			void InitView();
+		};
     }
 }
 

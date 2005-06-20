@@ -32,290 +32,289 @@ namespace CLAM
 {
     namespace VM
     {
-	QtAudioPlot::QtAudioPlot(QWidget* parent, const char * name, WFlags f) 
-	    : QtPresentation(parent,name,f)
-	{
-	    mSlotPlayingTimeReceived.Wrap(this,&QtAudioPlot::PlayingTime);
-	    mSlotStopPlayingReceived.Wrap(this,&QtAudioPlot::StopPlaying);
-
-	    _playBounds.SetBegin(-1.0);
-	    _playBounds.SetEnd(-1.0);
-	    showRightAmp=true;
-	    SetPlotController();
-	    InitAudioPlot();	
-	    Connect();
-	}
-
-	QtAudioPlot::~QtAudioPlot()
-	{
-	}
-
-	void QtAudioPlot::InitAudioPlot()
-	{
-	    _panel = new QHBoxLayout;
-			
-	    lefthole = new QFrame(this);
-	    lefthole->setFixedSize(50,30);
-	    _panel->addWidget(lefthole);
-
-	    _player = new QtAudioPlayer(this);
-	    _player->setFixedSize(75,30);
-	    ((QtAudioPlayer*)_player)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
-	    ((QtAudioPlayer*)_player)->SetSlotStopPlaying(mSlotStopPlayingReceived);
-	    _panel->addWidget(_player);
-
-	    _panel->addStretch(1);
-
-	    _leftAmpLab = new SingleLabel(this,"","Amplitude");
-	    _rightAmpLab = new SingleLabel(this,"","Amplitude Right");
-
-	    _panel->addWidget(_leftAmpLab);
-	    _panel->addWidget(_rightAmpLab);
-
-	    _panel->addStretch(1);
-
-	    _labelsGroup = new TimeSegmentLabelsGroup(this);
-	    _labelsGroup->setMinimumSize(186,25);
-	    _panel->addWidget(_labelsGroup);
-
-	    righthole = new QFrame(this);
-	    righthole->setFixedSize(20,30);
-	    _panel->addWidget(righthole);
-
-	    AddToMainLayout(_panel);	
-	}
-
-	void QtAudioPlot::SetData(const Audio& audio, bool to_controller)
-	{
-	    if(to_controller)
-	    {
-		((AudioPlotController*)_controller)->SetData(audio);
-		SetPData(audio,true);
-	    }
-	    else
-	    {
-		SetPData(audio,false);
-	    }
-	}
-
-	void QtAudioPlot::SetForegroundColor(Color c)
-	{
-	    ((AudioPlotController*)_controller)->SetDataColor(c);
-	}
-
-	void QtAudioPlot::SetDialColor(Color c)
-	{
-	    ((AudioPlotController*)_controller)->SetDialColor(c);
-	}
-
-	void QtAudioPlot::SetRegionColor(Color c)
-	{
-	    ((AudioPlotController*)_controller)->SetRegionColor(c);
-	}
-
-	void QtAudioPlot::keyPressEvent(QKeyEvent* e)
-	{
-	    switch(e->key())
-	    {
-		case Qt::Key_Shift:
-		    ((AudioPlotController*)_controller)->SetKeyShiftPressed(true);
-		    break;
-
-		case Qt::Key_Insert:
-		    ((AudioPlotController*)_controller)->SetKeyInsertPressed(true); 
-		    break;
-						
-		case Qt::Key_Delete:
-		    ((AudioPlotController*)_controller)->SetKeyDeletePressed(true); 
-		    break;
-				    
-		default:
-		    break;
-	    }
-	}
-
-	void QtAudioPlot::keyReleaseEvent(QKeyEvent* e)
-	{
-	    switch(e->key())
-	    {
-		case Qt::Key_Shift:
-		    ((AudioPlotController*)_controller)->SetKeyShiftPressed(false);
-		    break;
-
-		case Qt::Key_Insert:
-		    ((AudioPlotController*)_controller)->SetKeyInsertPressed(false); 
-		    break;
-						
-		case Qt::Key_Delete:
-		    ((AudioPlotController*)_controller)->SetKeyDeletePressed(false); 
-		    break;
-
-		default:
-		    break;
-	    }
-	}
-
-	void QtAudioPlot::updateRegion(MediaTime time)
-	{
-	    if(	time.GetBegin()==_playBounds.GetBegin() &&
-		time.GetEnd()==_playBounds.GetEnd()) return;
-	
-	    _playBounds=time;
-	    _player->stop();
-	    _player->SetPlaySegment(time);
-	    _labelsGroup->UpdateLabels(time);
-
-	    UpdateAmpLabels(time);
-	    emit regionTime(time);
-	    emit regionTime(float(time.GetBegin()), float(time.GetEnd()));
-	}
-
-	void QtAudioPlot::UpdateAmpLabels(MediaTime time)
-	{
-	    if(time.HasDuration())
-	    {
-		_leftAmpLab->Update(((AudioPlotController*)_controller)->GetAmp(time.GetBegin()));
-		_leftAmpLab->SetToolTip("Amplitude Left");
-		_rightAmpLab->Update(((AudioPlotController*)_controller)->GetAmp(time.GetEnd()));
-		if(showRightAmp)
+		QtAudioPlot::QtAudioPlot(QWidget* parent, const char * name, WFlags f) 
+			: QtPresentation(parent,name,f)
+			, mShowRightAmp(false)
 		{
-		    _rightAmpLab->show();
+			mSlotPlayingTimeReceived.Wrap(this,&QtAudioPlot::PlayingTime);
+			mSlotStopPlayingReceived.Wrap(this,&QtAudioPlot::StopPlaying);
+
+			mPlayBounds.SetBegin(-1.0);
+			mPlayBounds.SetEnd(-1.0);
+			SetPlotController();
+			InitAudioPlot();	
+			Connect();
 		}
-	    }
-	    else
-	    {
-		_leftAmpLab->Update(((AudioPlotController*)_controller)->GetAmp(time.GetBegin()));
-		_leftAmpLab->SetToolTip("Amplitude");
-		_rightAmpLab->clear();
-		_rightAmpLab->hide();
-	    }
-	}
 
-	void QtAudioPlot::SetPlotController()
-	{
-	    SetController(new AudioPlotController());
-	}
+		QtAudioPlot::~QtAudioPlot()
+		{
+		}
 
-	void QtAudioPlot::Connect()
-	{
-	    // Connections
-	    connect(((AudioPlotController*)_controller),SIGNAL(initialYRulerRange(double,double)),this,SLOT(initialYRulerRange(double,double)));
-	    connect(((AudioPlotController*)_controller),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
-	    connect(((AudioPlotController*)_controller),SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
-	    connect(((AudioPlotController*)_controller),SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
-	}
+		void QtAudioPlot::InitAudioPlot()
+		{
+			mPanel = new QHBoxLayout;
+			
+			lefthole = new QFrame(this);
+			lefthole->setFixedSize(50,30);
+			mPanel->addWidget(lefthole);
 
-	void QtAudioPlot::SetPData(const Audio& audio, bool setTime)
-	{
-	    std::vector<const Audio*> data;
-	    data.resize(1);
-	    data[0]=&audio;
-	    ((QtAudioPlayer*)_player)->SetData(data, setTime);
-	}
+			mPlayer = new QtAudioPlayer(this);
+			mPlayer->setFixedSize(75,30);
+			((QtAudioPlayer*)mPlayer)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
+			((QtAudioPlayer*)mPlayer)->SetSlotStopPlaying(mSlotStopPlayingReceived);
+			mPanel->addWidget(mPlayer);
 
-	void QtAudioPlot::DisplayBackgroundBlack()
-	{
-	    SetBackgroundColor(VMColor::Black());
-	    SetForegroundColor(VMColor::Green());
-	    SetDialColor(VMColor::Red());
-	    SetRegionColor(VMColor::LightGray());
-	    SetMarksColor(VMColor::Orange());
-	}
+			mPanel->addStretch(1);
 
-	void QtAudioPlot::DisplayBackgroundWhite()
-	{
-	    SetBackgroundColor(VMColor::White());
-	    SetForegroundColor(VMColor::Blue());
-	    SetDialColor(VMColor::Black());
-	    SetRegionColor(VMColor::LightGray());
-	    SetMarksColor(VMColor::Red());
-	}
+			mLeftAmpLab = new SingleLabel(this,"","Amplitude");
+			mRightAmpLab = new SingleLabel(this,"","Amplitude Right");
+			mPanel->addWidget(mLeftAmpLab);
+			mPanel->addWidget(mRightAmpLab);
 
-	void QtAudioPlot::hideEvent(QHideEvent* e)
-	{
-	    ((QtAudioPlayer*)_player)->stop();
-	    QWidget::hideEvent(e);
-	}
+			mPanel->addStretch(1);
 
-	void QtAudioPlot::closeEvent(QCloseEvent *e)
-	{
-	    RemoveFromPlayList();
-	    e->accept();
-	}
+			mLabelsGroup = new TimeSegmentLabelsGroup(this);
+			mLabelsGroup->setMinimumSize(186,25);
+			mPanel->addWidget(mLabelsGroup);
 
-	void QtAudioPlot::RemovePlayPanel()
-	{
-	    RemoveFromMainLayout(_panel);
-	    lefthole->hide();
-	    righthole->hide();
-	    _player->hide();
-	    _leftAmpLab->hide();
-	    _rightAmpLab->hide();
-	    _labelsGroup->hide();
-	    showRightAmp=false;
-	}
+			righthole = new QFrame(this);
+			righthole->setFixedSize(20,30);
+			mPanel->addWidget(righthole);
 
-	void QtAudioPlot::SetKeyPressed(QKeyEvent* e)
-	{
-	    keyPressEvent(e);
-	}
+			AddToMainLayout(mPanel);	
+		}
 
-	void QtAudioPlot::SetKeyReleased(QKeyEvent* e)
-	{
-	    keyReleaseEvent(e);
-	}
+		void QtAudioPlot::SetData(const Audio& audio, bool to_controller)
+		{
+			if(to_controller)
+			{
+				((AudioPlotController*)mController)->SetData(audio);
+				SetPData(audio,true);
+			}
+			else
+			{
+				SetPData(audio,false);
+			}
+		}
 
-	void QtAudioPlot::SetMarks(std::vector<unsigned>& marks)
-	{
-	    ((AudioPlotController*)_controller)->SetMarks(marks);
-	}
+		void QtAudioPlot::SetForegroundColor(Color c)
+		{
+			((AudioPlotController*)mController)->SetDataColor(c);
+		}
+
+		void QtAudioPlot::SetDialColor(Color c)
+		{
+			((AudioPlotController*)mController)->SetDialColor(c);
+		}
+
+		void QtAudioPlot::SetRegionColor(Color c)
+		{
+			((AudioPlotController*)mController)->SetRegionColor(c);
+		}
+
+		void QtAudioPlot::keyPressEvent(QKeyEvent* e)
+		{
+			switch(e->key())
+			{
+				case Qt::Key_Shift:
+					((AudioPlotController*)mController)->SetKeyShiftPressed(true);
+					break;
+
+				case Qt::Key_Insert:
+					((AudioPlotController*)mController)->SetKeyInsertPressed(true); 
+					break;
+						
+				case Qt::Key_Delete:
+					((AudioPlotController*)mController)->SetKeyDeletePressed(true); 
+					break;
+				    
+				default:
+					break;
+			}
+		}
+
+		void QtAudioPlot::keyReleaseEvent(QKeyEvent* e)
+		{
+			switch(e->key())
+			{
+				case Qt::Key_Shift:
+					((AudioPlotController*)mController)->SetKeyShiftPressed(false);
+					break;
+
+				case Qt::Key_Insert:
+					((AudioPlotController*)mController)->SetKeyInsertPressed(false); 
+					break;
+						
+				case Qt::Key_Delete:
+					((AudioPlotController*)mController)->SetKeyDeletePressed(false); 
+					break;
+
+				default:
+					break;
+			}
+		}
+
+		void QtAudioPlot::updateRegion(MediaTime time)
+		{
+			if(	time.GetBegin()==mPlayBounds.GetBegin() &&
+				time.GetEnd()==mPlayBounds.GetEnd()) return;
+	
+			mPlayBounds=time;
+			mPlayer->stop();
+			mPlayer->SetPlaySegment(time);
+			mLabelsGroup->UpdateLabels(time);
+
+			UpdateAmpLabels(time);
+			emit regionTime(time);
+			emit regionTime(float(time.GetBegin()), float(time.GetEnd()));
+		}
+
+		void QtAudioPlot::UpdateAmpLabels(MediaTime time)
+		{
+			if(time.HasDuration())
+			{
+				mLeftAmpLab->Update(((AudioPlotController*)mController)->GetAmp(time.GetBegin()));
+				mLeftAmpLab->SetToolTip("Amplitude Left");
+				mRightAmpLab->Update(((AudioPlotController*)mController)->GetAmp(time.GetEnd()));
+				if(mShowRightAmp)
+				{
+					mRightAmpLab->show();
+				}
+			}
+			else
+			{
+				mLeftAmpLab->Update(((AudioPlotController*)mController)->GetAmp(time.GetBegin()));
+				mLeftAmpLab->SetToolTip("Amplitude");
+				mRightAmpLab->clear();
+				mRightAmpLab->hide();
+			}
+		}
+
+		void QtAudioPlot::SetPlotController()
+		{
+			SetController(new AudioPlotController());
+		}
+
+		void QtAudioPlot::Connect()
+		{
+			// Connections
+			connect(((AudioPlotController*)mController),SIGNAL(initialYRulerRange(double,double)),this,SLOT(initialYRulerRange(double,double)));
+			connect(((AudioPlotController*)mController),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
+			connect(((AudioPlotController*)mController),SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
+			connect(((AudioPlotController*)mController),SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
+		}
+
+		void QtAudioPlot::SetPData(const Audio& audio, bool setTime)
+		{
+			std::vector<const Audio*> data;
+			data.resize(1);
+			data[0]=&audio;
+			((QtAudioPlayer*)mPlayer)->SetData(data, setTime);
+		}
+
+		void QtAudioPlot::DisplayBackgroundBlack()
+		{
+			SetBackgroundColor(VMColor::Black());
+			SetForegroundColor(VMColor::Green());
+			SetDialColor(VMColor::Red());
+			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Orange());
+		}
+
+		void QtAudioPlot::DisplayBackgroundWhite()
+		{
+			SetBackgroundColor(VMColor::White());
+			SetForegroundColor(VMColor::Blue());
+			SetDialColor(VMColor::Black());
+			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Red());
+		}
+
+		void QtAudioPlot::hideEvent(QHideEvent* e)
+		{
+			((QtAudioPlayer*)mPlayer)->stop();
+			QWidget::hideEvent(e);
+		}
+
+		void QtAudioPlot::closeEvent(QCloseEvent *e)
+		{
+			RemoveFromPlayList();
+			e->accept();
+		}
+
+		void QtAudioPlot::RemovePlayPanel()
+		{
+			RemoveFromMainLayout(mPanel);
+			lefthole->hide();
+			righthole->hide();
+			mPlayer->hide();
+			mLeftAmpLab->hide();
+			mRightAmpLab->hide();
+			mLabelsGroup->hide();
+			mShowRightAmp=false;
+		}
+
+		void QtAudioPlot::SetKeyPressed(QKeyEvent* e)
+		{
+			keyPressEvent(e);
+		}
+
+		void QtAudioPlot::SetKeyReleased(QKeyEvent* e)
+		{
+			keyReleaseEvent(e);
+		}
+
+		void QtAudioPlot::SetMarks(std::vector<unsigned>& marks)
+		{
+			((AudioPlotController*)mController)->SetMarks(marks);
+		}
 	    
-	std::vector<unsigned>& QtAudioPlot::GetMarks()
-	{
-	    return ((AudioPlotController*)_controller)->GetMarks();
-	}
+		std::vector<unsigned>& QtAudioPlot::GetMarks()
+		{
+			return ((AudioPlotController*)mController)->GetMarks();
+		}
 
 
-	void QtAudioPlot::SetMarksColor(Color c)
-	{
-	    ((AudioPlotController*)_controller)->SetMarksColor(c);
-	}
+		void QtAudioPlot::SetMarksColor(Color c)
+		{
+			((AudioPlotController*)mController)->SetMarksColor(c);
+		}
 
-	void QtAudioPlot::initialYRulerRange(double min, double max)
-	{
-	    QtPresentation::initialYRulerRange(min,max);
-	    lefthole->setFixedSize(YRulerWidth(),lefthole->height());
-	}
+		void QtAudioPlot::initialYRulerRange(double min, double max)
+		{
+			QtPresentation::initialYRulerRange(min,max);
+			lefthole->setFixedSize(YRulerWidth(),lefthole->height());
+		}
 
-	void QtAudioPlot::setSelectedXPos(double xpos)
-	{
-	    ((AudioPlotController*)_controller)->SetSelectedXPos(xpos);
-	}
+		void QtAudioPlot::setSelectedXPos(double xpos)
+		{
+			((AudioPlotController*)mController)->SetSelectedXPos(xpos);
+		}
 
-	void QtAudioPlot::PlayingTime(TData time)
-	{
-	    ((AudioPlotController*)_controller)->UpdateTimePos(time);
-	}
+		void QtAudioPlot::PlayingTime(TData time)
+		{
+			((AudioPlotController*)mController)->UpdateTimePos(time);
+		}
 
-	void QtAudioPlot::StopPlaying(TData time)
-	{
-	    ((AudioPlotController*)_controller)->StopPlaying(time);
-	}
+		void QtAudioPlot::StopPlaying(TData time)
+		{
+			((AudioPlotController*)mController)->StopPlaying(time);
+		}
 
-	void QtAudioPlot::setCurrentPlayingTime(float t)
-	{
-	    ((AudioPlotController*)_controller)->UpdateTimePos(TData(t));
-	}
+		void QtAudioPlot::setCurrentPlayingTime(float t)
+		{
+			((AudioPlotController*)mController)->UpdateTimePos(TData(t));
+		}
 
-	void QtAudioPlot::receivedStopPlaying(float t)
-	{
-	    ((AudioPlotController*)_controller)->StopPlaying(TData(t));
-	}
+		void QtAudioPlot::receivedStopPlaying(float t)
+		{
+			((AudioPlotController*)mController)->StopPlaying(TData(t));
+		}
 
-	std::vector<QString> QtAudioPlot::GetSegmentationTags()
-	{
-	    return ((AudioPlotController*)_controller)->GetTags();
-	}
+		std::vector<QString> QtAudioPlot::GetSegmentationTags()
+		{
+			return ((AudioPlotController*)mController)->GetTags();
+		}
 
     }	
 }

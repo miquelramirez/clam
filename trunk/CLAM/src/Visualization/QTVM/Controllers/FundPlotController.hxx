@@ -30,42 +30,42 @@ namespace CLAM
 {
     namespace VM
     {
-	class FundPlotController : public SelTimeRegionPlotController
-	{
-	    Q_OBJECT
+		class FundPlotController : public SelTimeRegionPlotController
+		{
+			Q_OBJECT
 
-	public:
-	    FundPlotController();
-	    virtual ~FundPlotController();
+		public:
+			FundPlotController();
+			~FundPlotController();
 
-	    void SetData(const Segment& segment);
-	    void SetDataColor(Color c);
-	    void SurfaceDimensions(int w,int h);
-	    void Draw();
+			void SetData(const Segment& segment);
+			void SetDataColor(Color c);
+			void SurfaceDimensions(int w,int h);
+			void Draw();
 
-	    TData GetFreq(TData t) const;
+			TData GetFreq(TData t) const;
 
-	    void SetMousePos(TData x,TData y);
+			void SetMousePos(TData x,TData y);
 
-	protected:
-	    virtual void SetHBounds(const TData& left,const TData& right);
-	    virtual void SetVBounds(const TData& bottom,const TData& top);
+		protected:
+			void SetHBounds(const TData& left,const TData& right);
+			void SetVBounds(const TData& bottom,const TData& top);
 
-	private:
-	    Segment _segment;
-	    DataRenderer _renderer;
-	    DataArray _cacheData;
-	    DataArray _processedData;
-	    bool _mustProcessData;
-	    TData _maxFreq;
+		private:
+			Segment      mSegment;
+			DataRenderer mRenderer;
+			DataArray    mCacheData;
+			DataArray    mProcessedData;
+			bool         mMustProcessData;
+			TData        mMaxFreq;
 
-	    void FullView();
-	    void CacheData();
-	    void ProcessData();
-	    void SetRenderingStep();
+			void FullView();
+			void CacheData();
+			void ProcessData();
+			void SetRenderingStep();
 
-	    void InitialRegionTime();
-	};
+			void InitialRegionTime();
+		};
     }
 }
 

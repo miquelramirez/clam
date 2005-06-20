@@ -26,298 +26,297 @@ namespace CLAM
 {
     namespace VM
     {
-	SegmentationMarksPlotController::SegmentationMarksPlotController()
-	    : _hit(false), 
-	      _currentElem(0),
-	      _currentIndex(0), 
-	      _keyInsertPressed(false), 
-	      _keyDeletePressed(false),
-	      _hasSentTag(false)
-	{
-	    _mustProcessMarks=false;
-	}
-
-	SegmentationMarksPlotController::~SegmentationMarksPlotController()
-	{
-	}
-
-	void SegmentationMarksPlotController::SetMarks(std::vector<unsigned>& marks)
-	{
-	    _marks = marks;
-	    sort(_marks.begin(),_marks.end());
-	    _tags.clear();
-	    _tags.resize(_marks.size());
-	    _mustProcessMarks=true;
-	    emit requestRefresh();
-	}
-
-	std::vector<unsigned>& SegmentationMarksPlotController::GetMarks()
-	{
-	    return _marks;
-	}
-
-	void SegmentationMarksPlotController::SetMarksColor(Color c)
-	{
-	    _marksRenderer.SetColor(c);
-	}
-
-	void SegmentationMarksPlotController::Draw()
-	{
-	    if(_marks.size() > 0)
-	    {
-		if(_mustProcessMarks) ProcessMarksData();
-		_marksRenderer.Render();
-	    }
-			
-	}
-
-	void SegmentationMarksPlotController::SurfaceDimensions(int w,int h)
-	{
-	    PlotController::SurfaceDimensions(w,h);
-	    _mustProcessMarks=true;
-	}
-
-	void SegmentationMarksPlotController::SetMousePos(TData x, TData y)
-	{
-	    _hasSentTag=false;
-	    PlotController::SetMousePos(x,y);
-	    if(IsAbleToEdit())
-	    {
-		int index=Hit(x);
-		if(index != -1) 
+		SegmentationMarksPlotController::SegmentationMarksPlotController()
+			: mMustProcessMarks(false) 
+			, mHit(false) 
+			, mCurrentElem(0)
+			, mCurrentIndex(0)
+			, mKeyInsertPressed(false)
+			, mKeyDeletePressed(false)
+			, mHasSentTag(false)
 		{
-		    if(_keyDeletePressed)
-		    {
-			QCursor cCursor(Qt::CrossCursor);
-			emit changeCursor(cCursor);
-		    }
-		    else
-		    {
-			QCursor hcursor(Qt::SizeHorCursor);
-			emit changeCursor(hcursor);
-		    }
-		    _currentIndex=index;
-		    _hit=true;
-		    if(!_tags[_currentIndex].isEmpty())
-		    {
-			_hasSentTag=true;
-			emit toolTip(_tags[_currentIndex]);
-		    }
 		}
-		else
-		{
-		    _currentElem = unsigned(x);
-		    if(!IsLeftButtonPressed())
-		    {
-			QCursor acursor(Qt::ArrowCursor);
-			emit changeCursor(acursor);
-			_hit=false;
-		    }
-		}
-	    }
 
-	    if(_hit && IsLeftButtonPressed())
-	    {
-		if(!_keyDeletePressed)
+		SegmentationMarksPlotController::~SegmentationMarksPlotController()
 		{
-		    Update(_currentIndex,unsigned(x));
 		}
-	    }
-	}
 
-	void SegmentationMarksPlotController::SetHBounds(const TData& left, const TData& right)
+		void SegmentationMarksPlotController::SetMarks(std::vector<unsigned>& marks)
+		{
+			mMarks = marks;
+			sort(mMarks.begin(),mMarks.end());
+			mTags.clear();
+			mTags.resize(mMarks.size());
+			mMustProcessMarks=true;
+			emit requestRefresh();
+		}
+
+		std::vector<unsigned>& SegmentationMarksPlotController::GetMarks()
+		{
+			return mMarks;
+		}
+
+		void SegmentationMarksPlotController::SetMarksColor(Color c)
+		{
+			mMarksRenderer.SetColor(c);
+		}
+
+		void SegmentationMarksPlotController::Draw()
+		{
+			if(mMarks.size() > 0)
+			{
+				if(mMustProcessMarks) ProcessMarksData();
+				mMarksRenderer.Render();
+			}	
+		}
+
+		void SegmentationMarksPlotController::SurfaceDimensions(int w,int h)
+		{
+			PlotController::SurfaceDimensions(w,h);
+			mMustProcessMarks=true;
+		}
+
+		void SegmentationMarksPlotController::SetMousePos(TData x, TData y)
+		{
+			mHasSentTag=false;
+			PlotController::SetMousePos(x,y);
+			if(IsAbleToEdit())
+			{
+				int index=Hit(x);
+				if(index != -1) 
+				{
+					if(mKeyDeletePressed)
+					{
+						QCursor cCursor(Qt::CrossCursor);
+						emit changeCursor(cCursor);
+					}
+					else
+					{
+						QCursor hcursor(Qt::SizeHorCursor);
+						emit changeCursor(hcursor);
+					}
+					mCurrentIndex=index;
+					mHit=true;
+					if(!mTags[mCurrentIndex].isEmpty())
+					{
+						mHasSentTag=true;
+						emit toolTip(mTags[mCurrentIndex]);
+					}
+				}
+				else
+				{
+					mCurrentElem = unsigned(x);
+					if(!IsLeftButtonPressed())
+					{
+						QCursor acursor(Qt::ArrowCursor);
+						emit changeCursor(acursor);
+						mHit=false;
+					}
+				}
+			}
+
+			if(mHit && IsLeftButtonPressed())
+			{
+				if(!mKeyDeletePressed)
+				{
+					Update(mCurrentIndex,unsigned(x));
+				}
+			}
+		}
+
+		void SegmentationMarksPlotController::SetHBounds(const TData& left, const TData& right)
         {
-	    PlotController::SetHBounds(left,right);
-	    _marksRenderer.SetHBounds(GetLeftBound(),GetRightBound());
-	    _mustProcessMarks=true;
-	}
+			PlotController::SetHBounds(left,right);
+			mMarksRenderer.SetHBounds(GetLeftBound(),GetRightBound());
+			mMustProcessMarks=true;
+		}
 
-	void SegmentationMarksPlotController::SetVBounds(const TData& bottom, const TData& top)
-	{
-	    PlotController::SetVBounds(bottom,top);
-	    _marksRenderer.SetVBounds(GetBottomBound(),GetTopBound());
-	    _mustProcessMarks=true;
-	}
+		void SegmentationMarksPlotController::SetVBounds(const TData& bottom, const TData& top)
+		{
+			PlotController::SetVBounds(bottom,top);
+			mMarksRenderer.SetVBounds(GetBottomBound(),GetTopBound());
+			mMustProcessMarks=true;
+		}
 
-	void SegmentationMarksPlotController::ProcessMarksData()
+		void SegmentationMarksPlotController::ProcessMarksData()
         {
-	    unsigned left = unsigned(GetLeftBound());
-	    unsigned right = unsigned(GetRightBound());
+			unsigned left = unsigned(GetLeftBound());
+			unsigned right = unsigned(GetRightBound());
 
-	    Array<unsigned> processedMarks;
+			Array<unsigned> processedMarks;
 
-	    std::vector<unsigned>::iterator it = _marks.begin();
-	    for(;it != _marks.end();it++)
-	    {
-		if((*it) > right) break;
-		if((*it) >= left) processedMarks.AddElem((*it));
-	    }
+			std::vector<unsigned>::iterator it = mMarks.begin();
+			for(;it != mMarks.end();it++)
+			{
+				if((*it) > right) break;
+				if((*it) >= left) processedMarks.AddElem((*it));
+			}
 
-	    _marksRenderer.SetData(processedMarks);
-	    _mustProcessMarks=false;
-	}
+			mMarksRenderer.SetData(processedMarks);
+			mMustProcessMarks=false;
+		}
 
-	void SegmentationMarksPlotController::InsertElem(unsigned elem)
-	{
-	    if(HaveElem(elem)) return;
-	    std::vector<unsigned>::iterator pos = _marks.begin();
-	    std::vector<QString>::iterator tag_pos = _tags.begin();
-	    for(; pos != _marks.end(); pos++, tag_pos++)
-	    {
-		if((*pos) > elem) break;
-	    } 
-	    _marks.insert(pos,elem);
-	    _tags.insert(tag_pos,QString(""));
+		void SegmentationMarksPlotController::InsertElem(unsigned elem)
+		{
+			if(HaveElem(elem)) return;
+			std::vector<unsigned>::iterator pos = mMarks.begin();
+			std::vector<QString>::iterator tag_pos = mTags.begin();
+			for(; pos != mMarks.end(); pos++, tag_pos++)
+			{
+				if((*pos) > elem) break;
+			} 
+			mMarks.insert(pos,elem);
+			mTags.insert(tag_pos,QString(""));
 	    
-	    _mustProcessMarks=true;
-	    emit requestRefresh();
-	    emit insertedMark(elem);
-	}
+			mMustProcessMarks=true;
+			emit requestRefresh();
+			emit insertedMark(elem);
+		}
 
-	void SegmentationMarksPlotController::RemoveElem(int index)
-	{
-	    if(index < 0 || index > (int)_marks.size()-1) return;
-	    unsigned elem = _marks[index];
-	    std::vector<unsigned>::iterator pos = find(_marks.begin(),_marks.end(),elem);
-	    _marks.erase(pos);
+		void SegmentationMarksPlotController::RemoveElem(int index)
+		{
+			if(index < 0 || index > (int)mMarks.size()-1) return;
+			unsigned elem = mMarks[index];
+			std::vector<unsigned>::iterator pos = find(mMarks.begin(),mMarks.end(),elem);
+			mMarks.erase(pos);
 
-	    QString tag = _tags[index];
-	    std::vector<QString>::iterator tag_pos = find(_tags.begin(),_tags.end(),tag);
-	    _tags.erase(tag_pos);
+			QString tag = mTags[index];
+			std::vector<QString>::iterator tag_pos = find(mTags.begin(),mTags.end(),tag);
+			mTags.erase(tag_pos);
 
-	    _mustProcessMarks=true;
-	    emit requestRefresh();
-	    emit removedMark(index,elem);
-	}
+			mMustProcessMarks=true;
+			emit requestRefresh();
+			emit removedMark(index,elem);
+		}
 	    
-	bool SegmentationMarksPlotController::HaveElem(unsigned elem)
-	{
-	    return find(_marks.begin(),_marks.end(),elem) != _marks.end();
-	}
+		bool SegmentationMarksPlotController::HaveElem(unsigned elem)
+		{
+			return find(mMarks.begin(),mMarks.end(),elem) != mMarks.end();
+		}
 
-	void SegmentationMarksPlotController::Update(int index, unsigned elem)
-	{
-	    _marks[index]=elem;
+		void SegmentationMarksPlotController::Update(int index, unsigned elem)
+		{
+			mMarks[index]=elem;
 	    
-	    _mustProcessMarks=true;
-	    emit requestRefresh();
-	    emit updatedMark(index,elem);
-	}
+			mMustProcessMarks=true;
+			emit requestRefresh();
+			emit updatedMark(index,elem);
+		}
 
-	unsigned SegmentationMarksPlotController::GetPixel(const TData& x) const
-	{
-	    TData w=_viewport.w;
-	    TData left=GetLeftBound();
-	    TData right=GetRightBound();
-	    TData xcoord=x-left;
-	    TData pixel=xcoord*w/(right-left);
-	    return (unsigned)pixel;
-	}
+		unsigned SegmentationMarksPlotController::GetPixel(const TData& x) const
+		{
+			TData w=mViewport.w;
+			TData left=GetLeftBound();
+			TData right=GetRightBound();
+			TData xcoord=x-left;
+			TData pixel=xcoord*w/(right-left);
+			return (unsigned)pixel;
+		}
 	  
-	int SegmentationMarksPlotController::Hit(const TData& x)
-	{
-	    unsigned i;
-	    bool hit=false;
-	    unsigned selected_pixel=GetPixel(x);
-	    for(i=0; i < _marks.size(); i++)
-	    {
-		unsigned owned_pixel=GetPixel(TData(_marks[i]));
-		if(abs(int(selected_pixel-owned_pixel)) <= 1)
+		int SegmentationMarksPlotController::Hit(const TData& x)
 		{
-		    hit=true;
-		    break;
+			unsigned i;
+			bool hit=false;
+			unsigned selected_pixel=GetPixel(x);
+			for(i=0; i < mMarks.size(); i++)
+			{
+				unsigned owned_pixel=GetPixel(TData(mMarks[i]));
+				if(abs(int(selected_pixel-owned_pixel)) <= 1)
+				{
+					hit=true;
+					break;
+				}
+			}
+			return (hit) ? int(i) : -1;
 		}
-	    }
-	    return (hit) ? int(i) : -1;
-	}
 
-	void SegmentationMarksPlotController::LeaveMouse()
-	{
-	    _hit=false;
-	    PlotController::LeaveMouse();
-	    QCursor cursor(ArrowCursor);
-	    emit changeCursor(cursor);
-	}
+		void SegmentationMarksPlotController::LeaveMouse()
+		{
+			mHit=false;
+			PlotController::LeaveMouse();
+			QCursor cursor(ArrowCursor);
+			emit changeCursor(cursor);
+		}
 	
-	void SegmentationMarksPlotController::SetKeyInsertPressed(bool pressed)
-	{
-	    _keyInsertPressed=pressed;
-	}
-
-	void SegmentationMarksPlotController::SetKeyDeletePressed(bool pressed)
-	{
-	    _keyDeletePressed=pressed;
-	}
-
-	bool SegmentationMarksPlotController::CanDrawSelectedPos()
-	{
-	    return (!_hit && !_keyInsertPressed);
-	}
-
-	void SegmentationMarksPlotController::SetLeftButtonPressed(bool pressed)
-	{
-	    PlotController::SetLeftButtonPressed(pressed);
-	    if(IsLeftButtonPressed())
-	    {
-		if(!_hit && _keyInsertPressed)
+		void SegmentationMarksPlotController::SetKeyInsertPressed(bool pressed)
 		{
-		    InsertElem(_currentElem);
+			mKeyInsertPressed=pressed;
 		}
 
-		if(_hit && _keyDeletePressed)
+		void SegmentationMarksPlotController::SetKeyDeletePressed(bool pressed)
 		{
-		    RemoveElem(_currentIndex);
+			mKeyDeletePressed=pressed;
 		}
-	    }
-	}
 
-	void SegmentationMarksPlotController::InsertMark(unsigned elem)
-	{
-	    InsertElem(elem);
-	}
+		bool SegmentationMarksPlotController::CanDrawSelectedPos()
+		{
+			return (!mHit && !mKeyInsertPressed);
+		}
 
-	void SegmentationMarksPlotController::RemoveMark(int index, unsigned elem)
-	{
-	    if(_marks[index] != elem) return;
-	    RemoveElem(index);
-	}
+		void SegmentationMarksPlotController::SetLeftButtonPressed(bool pressed)
+		{
+			PlotController::SetLeftButtonPressed(pressed);
+			if(IsLeftButtonPressed())
+			{
+				if(!mHit && mKeyInsertPressed)
+				{
+					InsertElem(mCurrentElem);
+				}
 
-	void SegmentationMarksPlotController::UpdateMark(int index, unsigned elem)
-	{
-	    if(_marks[index] == elem) return;
-	    Update(index,elem);
-	}
+				if(mHit && mKeyDeletePressed)
+				{
+					RemoveElem(mCurrentIndex);
+				}
+			}
+		}
 
-	void SegmentationMarksPlotController::OnDoubleClick()
-	{
-	    if(_hit) emit requestSegmentationTag();
-	}
+		void SegmentationMarksPlotController::InsertMark(unsigned elem)
+		{
+			InsertElem(elem);
+		}
 
-	QString SegmentationMarksPlotController::GetTag() const
-	{
-	    return _tags[_currentIndex];
-	}
+		void SegmentationMarksPlotController::RemoveMark(int index, unsigned elem)
+		{
+			if(mMarks[index] != elem) return;
+			RemoveElem(index);
+		}
 
-	void SegmentationMarksPlotController::SetSegmentationTag(const QString& tag)
-	{
-	    _tags[_currentIndex]=tag;
-	    emit updatedTag(_currentIndex,tag);
-	}
+		void SegmentationMarksPlotController::UpdateMark(int index, unsigned elem)
+		{
+			if(mMarks[index] == elem) return;
+			Update(index,elem);
+		}
 
-	std::vector<QString> SegmentationMarksPlotController::GetTags()
-	{
-	    return _tags;
-	}
+		void SegmentationMarksPlotController::OnDoubleClick()
+		{
+			if(mHit) emit requestSegmentationTag();
+		}
 
-	bool SegmentationMarksPlotController::HasSentTag() const
-	{
-	    return _hasSentTag;
-	}
+		QString SegmentationMarksPlotController::GetTag() const
+		{
+			return mTags[mCurrentIndex];
+		}
 
-	void SegmentationMarksPlotController::UpdateTag(int index, const QString& tag)
-	{
-	    _tags[index]=tag;
-	}
+		void SegmentationMarksPlotController::SetSegmentationTag(const QString& tag)
+		{
+			mTags[mCurrentIndex]=tag;
+			emit updatedTag(mCurrentIndex,tag);
+		}
+
+		std::vector<QString> SegmentationMarksPlotController::GetTags()
+		{
+			return mTags;
+		}
+
+		bool SegmentationMarksPlotController::HasSentTag() const
+		{
+			return mHasSentTag;
+		}
+
+		void SegmentationMarksPlotController::UpdateTag(int index, const QString& tag)
+		{
+			mTags[index]=tag;
+		}
     }
 }
 

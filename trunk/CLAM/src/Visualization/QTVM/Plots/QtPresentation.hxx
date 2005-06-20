@@ -33,158 +33,160 @@ namespace CLAM
 {
     namespace VM
     {
-	class PlotController;
-	class DisplaySurface;
-	class Ruler;
-	class HScrollGroup;
-	class VScrollGroup;
-	class EditTagDialog;
+		class PlotController;
+		class DisplaySurface;
+		class Ruler;
+		class HScrollGroup;
+		class VScrollGroup;
+		class EditTagDialog;
 		
-	/*
-	 * This class implements a common presentation. 
-	 * A view with: 
-	 *   - surface 
-	 *   - scroll bars
-	 *   - rulers: horizontal/vertical 
-	 *   - zoom controls: in/out 
-	 */ 
-	class QtPresentation : public QtPlot
-	{
-	    Q_OBJECT		
+		/*
+		 * This class implements a common presentation. 
+		 * A view with: 
+		 *   - surface 
+		 *   - scroll bars
+		 *   - rulers: horizontal/vertical 
+		 *   - zoom controls: in/out 
+		 */ 
+		class QtPresentation : public QtPlot
+		{
+			Q_OBJECT		
 	
-	public:
-	    QtPresentation(QWidget* parent = 0, const char * name = 0, WFlags f = 0);
-	    virtual ~QtPresentation();
+		public:
+			QtPresentation(QWidget* parent = 0, const char * name = 0, WFlags f = 0);
+			virtual ~QtPresentation();
 			
-	    virtual void SetMarks(std::vector<unsigned>& marks)=0;
-	    virtual std::vector<unsigned>& GetMarks()=0;
-	    virtual void SetMarksColor(Color c)=0;
+			virtual void SetMarks(std::vector<unsigned>& marks)=0;
+			virtual std::vector<unsigned>& GetMarks()=0;
+			virtual void SetMarksColor(Color c)=0;
 
-	    virtual std::vector<QString> GetSegmentationTags()=0;
+			virtual std::vector<QString> GetSegmentationTags()=0;
 
-	    void SetBackgroundColor(Color c);
-	    void Label(const std::string& label);
-	    void Geometry(int x,int y,int w,int h);
-	    void Show();
-	    void Hide();
+			void SetBackgroundColor(Color c);
+			void Label(const std::string& label);
+			void Geometry(int x,int y,int w,int h);
+			void Show();
+			void Hide();
 
-	    void SetToggleColorOn(bool b);
-	    void SwitchDisplayColors(bool b);
+			void SetToggleColorOn(bool b);
+			void SwitchDisplayColors(bool b);
 
-	    void RemoveXRuler();
-	    void RemoveYRuler();
-	    void RemoveHScrollGroup();
-	    void RemoveVScrollGroup();
+			void RemoveXRuler();
+			void RemoveYRuler();
+			void RemoveHScrollGroup();
+			void RemoveVScrollGroup();
 
-	    void SetFlag(bool f);
+			void SetFlag(bool f);
 	    
-	    QFont& RulerFont();
-	    void SetYRulerWidth(int);
+			QFont& RulerFont();
+			void SetYRulerWidth(int);
 
-	signals:
-	    void HZoomIn();
-	    void HZoomOut();
-	    void HScrollValue(int);
-	    void HZoomRatio(double);
-	    void HMaxScroll(int);
-	    void UpdatedHScroll(int);
-	    void HScrollClicked();
-	    void HScrollReleased();
+		signals:
+			void HZoomIn();
+			void HZoomOut();
+			void HScrollValue(int);
+			void HZoomRatio(double);
+			void HMaxScroll(int);
+			void UpdatedHScroll(int);
+			void HScrollClicked();
+			void HScrollReleased();
 
-	    void VZoomIn();
-	    void VZoomOut();
-	    void VScrollValue(int);
-	    void VZoomRatio(double);
-	    void VMaxScroll(int);
-	    void UpdatedVScroll(int);
-	    void VScrollClicked();
-	    void VScrollReleased();
+			void VZoomIn();
+			void VZoomOut();
+			void VScrollValue(int);
+			void VZoomRatio(double);
+			void VMaxScroll(int);
+			void UpdatedVScroll(int);
+			void VScrollClicked();
+			void VScrollReleased();
 
-	    void xRulerRange(double, double);
-	    void yRulerRange(double, double);
+			void xRulerRange(double, double);
+			void yRulerRange(double, double);
 
-	    void switchColorsRequested();
+			void switchColorsRequested();
 
-	    void selPos(TData);
+			void selPos(TData);
 
-	    void insertedMark(unsigned);
-	    void removedMark(int, unsigned);
-	    void updatedMark(int, unsigned);
+			void insertedMark(unsigned);
+			void removedMark(int, unsigned);
+			void updatedMark(int, unsigned);
 
-	    void updatedTag(int, QString);
+			void updatedTag(int, QString);
 
-	    void selectedXPos(double);
+			void selectedXPos(double);
 	    
-	public slots:
-	    void hZoomIn();
-	    void hZoomOut();
-	    void hScrollValue(int);
-	    void receivedHZoomRatio(double);
-	    void setMaxHScroll(int);
-	    void updateHScroll(int);
+		public slots:
+			void hZoomIn();
+			void hZoomOut();
+			void hScrollValue(int);
+			void receivedHZoomRatio(double);
+			void setMaxHScroll(int);
+			void updateHScroll(int);
 				
-	    void vZoomIn();
-	    void vZoomOut();				
-	    void vScrollValue(int);
-	    void receivedVZoomRatio(double);
-	    void setMaxVScroll(int);
-	    void updateVScroll(int);
+			void vZoomIn();
+			void vZoomOut();				
+			void vScrollValue(int);
+			void receivedVZoomRatio(double);
+			void setMaxVScroll(int);
+			void updateVScroll(int);
 				
-	    void setXRulerRange(double, double);
-	    void setYRulerRange(double, double);
+			void setXRulerRange(double, double);
+			void setYRulerRange(double, double);
 
-	    void switchColors();
+			void switchColors();
 
-	    void setSelPos(TData);
+			void setSelPos(TData);
 
-	    void insertMark(unsigned);
-	    void removeMark(int, unsigned);
-	    void updateMark(int, unsigned);
+			void insertMark(unsigned);
+			void removeMark(int, unsigned);
+			void updateMark(int, unsigned);
 
-	    void updateTag(int, QString);
+			void updateTag(int, QString);
 
-	protected slots:
-	    virtual void initialYRulerRange(double, double);
+		protected slots:
+			virtual void initialYRulerRange(double, double);
 
-	private slots:
-	    void showEditTagDialog();
+		private slots:
+			void showEditTagDialog();
 
-	protected:
-	    PlotController* _controller;
+		protected:
+			PlotController* mController;
 				
-	    void SetController(PlotController* controller);
+			void SetController(PlotController* controller);
 
-	    void AddToMainLayout(QLayout* layout);
-	    void RemoveFromMainLayout(QLayout* layout);
+			void AddToMainLayout(QLayout* layout);
+			void RemoveFromMainLayout(QLayout* layout);
 
-	    virtual void SetPlotController()=0;
-	    virtual void Connect()=0;
+			virtual void SetPlotController()=0;
+			virtual void Connect()=0;
 
-	    virtual void DisplayBackgroundBlack()=0;
-	    virtual void DisplayBackgroundWhite()=0;
+			virtual void DisplayBackgroundBlack()=0;
+			virtual void DisplayBackgroundWhite()=0;
 
-	    int YRulerWidth();
+			int YRulerWidth();
 
-	private:
-	    DisplaySurface* _surf;
-	    QBoxLayout *_mainLayout,*_top,*_middle,*_bottom;
-	    Ruler *_xRuler, *_yRuler; 
-	    HScrollGroup* _hs;
-	    VScrollGroup* _vs;
+		private:
+			DisplaySurface* mDisplaySurface;
+			QBoxLayout*     mMainLayout;
+			QBoxLayout*     mTopLayout;
+			QBoxLayout*     mMiddleLayout;
+			QBoxLayout*     mBottomLayout;
+			Ruler*          mXRuler;
+			Ruler*          mYRuler; 
+			HScrollGroup*   mHScrollBar;
+			VScrollGroup*   mVScrollBar;
+			QPushButton*    mToggleColor;
+			bool            mFlag;
 
-	    QPushButton* _btoggle_color;
+			// holes
+			QFrame *topLeftHole,*topRightHole;
+			QFrame *bottomLeftHole,*bottomRightHole;
 
-	    bool flag;
+			// edit tag dialog
+			EditTagDialog* editTagDlg;
 
-	    // holes
-	    QFrame *topLeftHole,*topRightHole;
-	    QFrame *bottomLeftHole,*bottomRightHole;
-
-	    // edit tag dialog
-	    EditTagDialog* editTagDlg;
-
-	    void Init();
-	};
+			void Init();
+		};
     }
 }
 

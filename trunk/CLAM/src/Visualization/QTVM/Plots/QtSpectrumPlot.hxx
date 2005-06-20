@@ -29,52 +29,51 @@ namespace CLAM
     namespace VM
     {	
 
-	class SingleLabel;
+		class SingleLabel;
 
-	/**
-	 * Allows viewing a single spectrum.
-	 *
-	 * @ingroup QTVM
-	 */
+		/**
+		 * Allows viewing a single spectrum.
+		 *
+		 * @ingroup QTVM
+		 */
 
-	class QtSpectrumPlot : public QtPresentation
-	{
+		class QtSpectrumPlot : public QtPresentation
+		{
 
-	    Q_OBJECT
-	public:
-	    QtSpectrumPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0);
-	    virtual ~QtSpectrumPlot();
+			Q_OBJECT
+		public:
+			QtSpectrumPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0);
+			virtual ~QtSpectrumPlot();
 
-	    virtual void SetData(const Spectrum& spec);
+			virtual void SetData(const Spectrum& spec);
 
-	    void SetMarks(std::vector<unsigned>& marks);
-	    std::vector<unsigned>& GetMarks();
-	    void SetMarksColor(Color c);
+			void SetMarks(std::vector<unsigned>& marks);
+			std::vector<unsigned>& GetMarks();
+			void SetMarksColor(Color c);
 
-	    std::vector<QString> GetSegmentationTags();
+			std::vector<QString> GetSegmentationTags();
 
-	    void SetForegroundColor(Color c);
-	    void SetVLineColor(Color c);
+			void SetForegroundColor(Color c);
+			void SetVLineColor(Color c);
 
         protected slots:
             void updateMagLabel(TData);
-	    void updateFreqLabel(TData);
+			void updateFreqLabel(TData);
 
-	protected:				
-	    void keyPressEvent(QKeyEvent* e);
-	    void keyReleaseEvent( QKeyEvent* e);
+		protected:				
+			void keyPressEvent(QKeyEvent* e);
+			void keyReleaseEvent( QKeyEvent* e);
+			virtual void SetPlotController();
+			virtual void Connect();
+			virtual void DisplayBackgroundBlack();
+			virtual void DisplayBackgroundWhite();
 
-	    virtual void SetPlotController();
-	    virtual void Connect();
-
-	    virtual void DisplayBackgroundBlack();
-	    virtual void DisplayBackgroundWhite();
-
-	private:
-	    SingleLabel *_magLabel,*_freqLabel;
+		private:
+			SingleLabel* mMagLabel;
+			SingleLabel* mFreqLabel;
 	    
-	    void InitSpectrumPlot();
-	};
+			void InitSpectrumPlot();
+		};
     }
 }
 

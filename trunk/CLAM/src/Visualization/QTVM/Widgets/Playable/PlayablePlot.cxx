@@ -27,46 +27,46 @@ namespace CLAM
 {
     namespace VM
     {
-	PlayablePlot::PlayablePlot() 
-	{
-	    _player = NULL;
-	    PlayableList::Add(this);
-	}
+		PlayablePlot::PlayablePlot() 
+			: mPlayer(0)
+		{
+			PlayableList::Add(this);
+		}
 
-	PlayablePlot::~PlayablePlot()
-	{
-	    if(_player) 
-	    {
-		Stop();
-		delete _player;
-	    }
-	}
+		PlayablePlot::~PlayablePlot()
+		{
+			if(mPlayer) 
+			{
+				Stop();
+				delete mPlayer;
+			}
+		}
 				
-	void PlayablePlot::Play()
-	{
-	    if(_player) _player->play();
-	}
+		void PlayablePlot::Play()
+		{
+			if(mPlayer) mPlayer->play();
+		}
 
-	void PlayablePlot::Pause()
-	{
-	    if(_player) _player->pause();
-	}
+		void PlayablePlot::Pause()
+		{
+			if(mPlayer) mPlayer->pause();
+		}
 
-	void PlayablePlot::Stop()
-	{
-	    if(_player) _player->stop();
-	}
+		void PlayablePlot::Stop()
+		{
+			if(mPlayer) mPlayer->stop();
+		}
 				
-	bool PlayablePlot::IsPlaying()
-	{
-	    if(_player) return _player->IsPlaying();
-	    return false;
-	}
+		bool PlayablePlot::IsPlaying()
+		{
+			if(mPlayer) return mPlayer->IsPlaying();
+			return false;
+		}
 
-	void PlayablePlot::RemoveFromPlayList()
-	{
-	    PlayableList::Remove(this);
-	}
+		void PlayablePlot::RemoveFromPlayList()
+		{
+			PlayableList::Remove(this);
+		}
     }
 }
 

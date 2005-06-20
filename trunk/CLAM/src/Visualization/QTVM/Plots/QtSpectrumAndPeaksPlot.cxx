@@ -39,12 +39,12 @@ namespace CLAM
 
 		void QtSpectrumAndPeaksPlot::SetData(const Spectrum& spec,const SpectralPeakArray& peaks)		
 		{			
-		    ((SpectrumAndPeaksPlotController*)_controller)->SetData(spec,peaks);
+		    ((SpectrumAndPeaksPlotController*)mController)->SetData(spec,peaks);
 		}
 
 		void QtSpectrumAndPeaksPlot::SetPeaksColor(Color cline,Color cpoint)
 		{
-			((SpectrumAndPeaksPlotController*)_controller)->SetPeaksColor(cline,cpoint);
+			((SpectrumAndPeaksPlotController*)mController)->SetPeaksColor(cline,cpoint);
 		}
 
 		void QtSpectrumAndPeaksPlot::SetData(const Spectrum& spec)
@@ -59,8 +59,8 @@ namespace CLAM
 
 		void QtSpectrumAndPeaksPlot::Connect()
 		{
-		    connect(((SpectrumAndPeaksPlotController*)_controller),SIGNAL(mag(TData)),this,SLOT(updateMagLabel(TData)));
-		    connect(((SpectrumAndPeaksPlotController*)_controller),SIGNAL(freq(TData)),this,SLOT(updateFreqLabel(TData)));
+		    connect(((SpectrumAndPeaksPlotController*)mController),SIGNAL(mag(TData)),this,SLOT(updateMagLabel(TData)));
+		    connect(((SpectrumAndPeaksPlotController*)mController),SIGNAL(freq(TData)),this,SLOT(updateFreqLabel(TData)));
 		}
 
 		void QtSpectrumAndPeaksPlot::DisplayBackgroundBlack()

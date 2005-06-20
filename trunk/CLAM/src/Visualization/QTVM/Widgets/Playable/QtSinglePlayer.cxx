@@ -6,62 +6,62 @@ namespace CLAM
 {
     namespace VM
     {
-	QtSinglePlayer::QtSinglePlayer(QWidget* parent) 
-	    : QtPlayer(parent),
-	      _player(0)
-	{
-	}
+		QtSinglePlayer::QtSinglePlayer(QWidget* parent) 
+			: QtPlayer(parent)
+			, mPlayer(0)
+		{
+		}
 		
-	QtSinglePlayer::~QtSinglePlayer()
-	{
-	    if(_player) delete _player;
-	}
+		QtSinglePlayer::~QtSinglePlayer()
+		{
+			if(mPlayer) delete mPlayer;
+		}
 		
-	void QtSinglePlayer::SetPlayer(Player* player)
-	{
-	    _player = player;
-	}
+		void QtSinglePlayer::SetPlayer(Player* player)
+		{
+			mPlayer = player;
+		}
 
-	void QtSinglePlayer::play()
-	{
-	    if(_player)
-	    {
-		PlayableList::Stop();
-		_player->Play();
-	    }
-	}
+		void QtSinglePlayer::play()
+		{
+			if(mPlayer)
+			{
+				PlayableList::Stop();
+				mPlayer->Play();
+			}
+		}
 		
-	void QtSinglePlayer::pause()
-	{
-	    if(_player) _player->Pause();
-	}
+		void QtSinglePlayer::pause()
+		{
+			if(mPlayer) mPlayer->Pause();
+		}
 		
-	void QtSinglePlayer::stop()
-	{
-	    if(_player) _player->Stop();
-	}
+		void QtSinglePlayer::stop()
+		{
+			if(mPlayer) mPlayer->Stop();
+		}
 		
    
-	void QtSinglePlayer::SetPlaySegment(const MediaTime& time)
-	{
-	    if(_player) _player->SetBounds(time);
-	}
+		void QtSinglePlayer::SetPlaySegment(const MediaTime& time)
+		{
+			if(mPlayer) mPlayer->SetBounds(time);
+		}
 
-	bool QtSinglePlayer::IsPlaying()
-	{
-	    if(_player) return _player->IsPlaying();
-	    return false;
-	}
+		bool QtSinglePlayer::IsPlaying()
+		{
+			if(mPlayer) return mPlayer->IsPlaying();
+			return false;
+		}
 
-	void QtSinglePlayer::SetSlotPlayingTime(Slotv1<TData>& slot)
-	{
-	    if(_player) _player->SetSlotPlayingTime(slot);
-	}
+		void QtSinglePlayer::SetSlotPlayingTime(Slotv1<TData>& slot)
+		{
+			if(mPlayer) mPlayer->SetSlotPlayingTime(slot);
+		}
 
-	void QtSinglePlayer::SetSlotStopPlaying(Slotv1<TData>& slot)
-	{
-	    if(_player) _player->SetSlotStopPlaying(slot);
-	}
+		void QtSinglePlayer::SetSlotStopPlaying(Slotv1<TData>& slot)
+		{
+			if(mPlayer) mPlayer->SetSlotStopPlaying(slot);
+		}
 		
     }
 }
