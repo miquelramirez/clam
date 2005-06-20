@@ -30,51 +30,51 @@ namespace CLAM
 {
     namespace VM
     {
-	class AudioPlotController : public SelTimeRegionPlotController
-	{
-	    Q_OBJECT
+		class AudioPlotController : public SelTimeRegionPlotController
+		{
+			Q_OBJECT
 
-	public:
-	    AudioPlotController();
-	    virtual ~AudioPlotController();
+		public:
+			AudioPlotController();
+			~AudioPlotController();
 
-	    void SetData(const Audio& audio);
-	    void SetDataColor(Color c);
-	    void SurfaceDimensions(int w,int h);
-	    void Draw();
+			void SetData(const Audio& audio);
+			void SetDataColor(Color c);
+			void SurfaceDimensions(int w,int h);
+			void Draw();
 
-	    void SetSelPos(const TData& value);
-	    void SetMousePos(TData x,TData y);
+			void SetSelPos(const TData& value);
+			void SetMousePos(TData x,TData y);
 
-	    TData GetAmp(TData t) const;
+			TData GetAmp(TData t) const;
 
-	    void SetSelectedXPos(double xpos);
+			void SetSelectedXPos(double xpos);
 
-	protected:
-	    virtual void SetHBounds(const TData& left,const TData& right);
-	    virtual void SetVBounds(const TData& bottom,const TData& top);
+		protected:
+			void SetHBounds(const TData& left,const TData& right);
+			void SetVBounds(const TData& bottom,const TData& top);
 
-	    void FullView();
-	    bool MustProcessData() const;
+			void FullView();
+			bool MustProcessData() const;
 				
-	private:
-	    DataRenderer _dRenderer;
-	    Audio _audio;
-	    DataArray _maxs;
-	    DataArray _mins;
-	    DataArray _processedData;
-	    bool _mustProcessData;
-	    bool _hugeArrayCondition;
+		private:
+			DataRenderer mRenderer;
+			Audio        mAudio;
+			DataArray    mMaxs;
+			DataArray    mMins;
+			DataArray    mProcessedData;
+			bool         mMustProcessData;
+			bool         mHugeArrayCondition;
 				
-	    void DrawAxis();
+			void DrawAxis();
 
-	    void DetermineVisibleSamples();
-	    void ProcessData();
-	    void BuildMaxMinArrays(TSize offset,TSize len);
+			void DetermineVisibleSamples();
+			void ProcessData();
+			void BuildMaxMinArrays(TSize offset,TSize len);
 
-	    void InitialRegionTime();
+			void InitialRegionTime();
 
-	};
+		};
     }
 }
 

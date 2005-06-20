@@ -11,56 +11,59 @@ namespace CLAM
     namespace VM
     {
 
-	class ColorScale;
+		class ColorScale;
 
-	/**
-	 * Allows viewing sonogram.
-	 *
-	 * @ingroup QTVM
-	 */
+		/**
+		 * Allows viewing sonogram.
+		 *
+		 * @ingroup QTVM
+		 */
 
-	class QtSpectrogram : public QtPresentation
-	{
-	    Q_OBJECT
+		class QtSpectrogram : public QtPresentation
+		{
+			Q_OBJECT
 
-	public:
-	    QtSpectrogram(QWidget* parent=0,const char * name = 0, WFlags f = 0);
-	    ~QtSpectrogram();
+		public:
+			QtSpectrogram(QWidget* parent=0,const char * name = 0, WFlags f = 0);
+			~QtSpectrogram();
 
-	    void SetData(const Array<Spectrum>& specMtx, const TData& dur);
+			void SetData(const Array<Spectrum>& specMtx, const TData& dur);
 
-	    void SetMarks(std::vector<unsigned>& marks);
-	    std::vector<unsigned>& GetMarks();
-	    void SetMarksColor(Color c);
+			void SetMarks(std::vector<unsigned>& marks);
+			std::vector<unsigned>& GetMarks();
+			void SetMarksColor(Color c);
 	    
-	    std::vector<QString> GetSegmentationTags();
+			std::vector<QString> GetSegmentationTags();
 
-	protected slots:
-	    void updateLabels(QString, QString, QString);
-	    void updateColorScale(int);
+		protected slots:
+			void updateLabels(QString, QString, QString);
+			void updateColorScale(int);
 
-	protected:
-	    void keyPressEvent(QKeyEvent* e);
-	    void keyReleaseEvent( QKeyEvent* e);
-	    void SetPlotController();				
-	    void Connect();
+		protected:
+			void keyPressEvent(QKeyEvent* e);
+			void keyReleaseEvent( QKeyEvent* e);
+			void SetPlotController();				
+			void Connect();
+			void DisplayBackgroundBlack();
+			void DisplayBackgroundWhite();
 
-	    void DisplayBackgroundBlack();
-	    void DisplayBackgroundWhite();
+		private:
+			QLabel*     mFrequency;
+			QLabel*     mDecibels;
+			QLabel*     mSlice;
+			QLabel*     mFFTSize;
+			QLabel*     mTotalSlices;
+			QLabel*     mSpectralRange;
+			ColorScale* mColorScale;
+			bool        mColorSonogram;
 
-	private:
-	    QLabel *mFrequency, *mDecibels, *mSlice;
-	    QLabel *mFFTSize, *mTotalSlices, *mSpectralRange;
-	    ColorScale* mColorScale;
-	    bool mColorSonogram;
+			void InitSpectrogram();
 
-	    void InitSpectrogram();
+			QWidget* LeftGroup();
+			QWidget* RightGroup();
 
-	    QWidget* LeftGroup();
-	    QWidget* RightGroup();
-
-	    void FillRightGroupLabels();
-	};
+			void FillRightGroupLabels();
+		};
     }
 }
 

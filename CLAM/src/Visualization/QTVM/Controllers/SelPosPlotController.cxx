@@ -25,55 +25,55 @@ namespace CLAM
 {
     namespace VM
     {
-	SelPosPlotController::SelPosPlotController()
-	{
-	}
+		SelPosPlotController::SelPosPlotController()
+		{
+		}
 
-	SelPosPlotController::~SelPosPlotController()
-	{
-	}
+		SelPosPlotController::~SelPosPlotController()
+		{
+		}
 
-	void SelPosPlotController::SetSelPos(const TData& value)
-	{
-	    if(CanDrawSelectedPos())
-	    {
-		PlotController::SetSelPos(value);
-		UpdateDial(GetSelPos());
-	    }
-	}
+		void SelPosPlotController::SetSelPos(const TData& value)
+		{
+			if(CanDrawSelectedPos())
+			{
+				PlotController::SetSelPos(value);
+				UpdateDial(GetSelPos());
+			}
+		}
 
-	void SelPosPlotController::Draw()
-	{
-	    SegmentationMarksPlotController::Draw();
-	    _dial.Render();
-	}
+		void SelPosPlotController::Draw()
+		{
+			SegmentationMarksPlotController::Draw();
+			mDial.Render();
+		}
 
-	void SelPosPlotController::SetDialColor(Color c)
-	{
-	    _dial.SetColor(c);
-	}
+		void SelPosPlotController::SetDialColor(Color c)
+		{
+			mDial.SetColor(c);
+		}
 				
-	void SelPosPlotController::SetHBounds(const TData& left,const TData& right)
-	{
-	    SegmentationMarksPlotController::SetHBounds(left,right);
-	    _dial.SetHBounds(GetLeftBound(),GetRightBound());
-	}
+		void SelPosPlotController::SetHBounds(const TData& left,const TData& right)
+		{
+			SegmentationMarksPlotController::SetHBounds(left,right);
+			mDial.SetHBounds(GetLeftBound(),GetRightBound());
+		}
 
-	void SelPosPlotController::SetVBounds(const TData& bottom,const TData& top)
-	{
-	    SegmentationMarksPlotController::SetVBounds(bottom,top);
-	    _dial.SetVBounds(GetBottomBound(),GetTopBound());
-	}
+		void SelPosPlotController::SetVBounds(const TData& bottom,const TData& top)
+		{
+			SegmentationMarksPlotController::SetVBounds(bottom,top);
+			mDial.SetVBounds(GetBottomBound(),GetTopBound());
+		}
 
-	void SelPosPlotController::UpdateDial(const TData& value)
-	{
-	    _dial.Update(value);
-	}
+		void SelPosPlotController::UpdateDial(const TData& value)
+		{
+			mDial.Update(value);
+		}
 
-	TData SelPosPlotController::GetDialPos() const
-	{
-	    return _dial.GetPos();
-	}
+		TData SelPosPlotController::GetDialPos() const
+		{
+			return mDial.GetPos();
+		}
     }
 }
 

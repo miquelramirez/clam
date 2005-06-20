@@ -30,66 +30,64 @@ namespace CLAM
 {
     namespace VM
     {
-	class SingleLabel;
+		class SingleLabel;
 	
-	/**
-	 * Allows viewing multiple functions.
-	 * Uses CLAM::DataArray or CLAM::BPF.
-	 *
-	 * @ingroup QTVM
-	 */
+		/**
+		 * Allows viewing multiple functions.
+		 * Uses CLAM::DataArray or CLAM::BPF.
+		 *
+		 * @ingroup QTVM
+		 */
 
-	class QtMultiPlot : public QtPresentation
-	{
-	    Q_OBJECT
+		class QtMultiPlot : public QtPresentation
+		{
+			Q_OBJECT
 
-	public:
-	    QtMultiPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
-	    ~QtMultiPlot();
+		public:
+			QtMultiPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
+			~QtMultiPlot();
 
-	    void AddData(std::string key, const DataArray& array);
-	    void AddData(std::string key, const BPF& data, int samples = 100);
-	    void RemoveData( std::string key );
-	    void RemoveAllData();
+			void AddData(std::string key, const DataArray& array);
+			void AddData(std::string key, const BPF& data, int samples = 100);
+			void RemoveData( std::string key );
+			void RemoveAllData();
 
-	    void SetColor(std::string key, Color c);
+			void SetColor(std::string key, Color c);
 
-	    void SetUnits(const std::string& xunits, const std::string& yunits);
-	    void SetToolTips(const std::string& xtooltip, const std::string& ytooltip);
+			void SetUnits(const std::string& xunits, const std::string& yunits);
+			void SetToolTips(const std::string& xtooltip, const std::string& ytooltip);
 
-	    void SetXRange(const TData& xmin, const TData& xmax);
-	    void SetYRange(const TData& ymin, const TData& ymax);
+			void SetXRange(const TData& xmin, const TData& xmax);
+			void SetYRange(const TData& ymin, const TData& ymax);
 
-	    void SetMarks(std::vector<unsigned>& marks);
-	    std::vector<unsigned>& GetMarks();
-	    void SetMarksColor(Color c);
+			void SetMarks(std::vector<unsigned>& marks);
+			std::vector<unsigned>& GetMarks();
+			void SetMarksColor(Color c);
 
-	    std::vector<QString> GetSegmentationTags();
+			std::vector<QString> GetSegmentationTags();
 
-	    void SetDialColor(Color c);
+			void SetDialColor(Color c);
 
-	private slots:
-	    void updateXLabel(TData);
-	    void updateYLabel(TData);
+		private slots:
+			void updateXLabel(TData);
+			void updateYLabel(TData);
+			void clearLabels();
 
-	    void clearLabels();
+		protected:
+			void keyPressEvent(QKeyEvent* e);
+			void keyReleaseEvent( QKeyEvent* e);
+			void SetPlotController();				
+			void Connect();
+			void DisplayBackgroundBlack();
+			void DisplayBackgroundWhite();
 
-	protected:
-	    void keyPressEvent(QKeyEvent* e);
-	    void keyReleaseEvent( QKeyEvent* e);
+		private:
+			SingleLabel* mXLabel;
+			SingleLabel* mYLabel;
 
-	    void SetPlotController();				
-	    void Connect();
+			void InitMultiPlot();
 
-	    void DisplayBackgroundBlack();
-	    void DisplayBackgroundWhite();
-
-	private:
-	    SingleLabel *_xLabel,*_yLabel;
-
-	    void InitMultiPlot();
-
-	};
+		};
     }
 }
 

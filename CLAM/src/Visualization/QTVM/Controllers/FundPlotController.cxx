@@ -25,164 +25,164 @@ namespace CLAM
 {
     namespace VM
     {
-	FundPlotController::FundPlotController()
-	{
-	    _maxFreq = TData(0.0);
-	    _mustProcessData = false;
-	    SetVMin(10.0);
-	}
+		FundPlotController::FundPlotController()
+			: mMustProcessData(false)
+			, mMaxFreq(TData(0.0))
+		{
+			SetVMin(10.0);
+		}
 
-	FundPlotController::~FundPlotController()
-	{
-	}
+		FundPlotController::~FundPlotController()
+		{
+		}
 
-	void FundPlotController::SetData(const Segment& segment)
-	{
-	    _segment = segment;
-	    _sampleRate = _segment.GetSamplingRate();
-	    _duration = _segment.GetEndTime()-_segment.GetBeginTime();
-	    CacheData();
-	    FullView();
-	    SetnSamples(TSize(_duration*_sampleRate));
-	    SetvRange(TData(_maxFreq));
-	    InitialRegionTime();
-	    _mustProcessData = true;
-	    SetSelPos(TData(0.0));
-	    emit requestRefresh();
-	}
+		void FundPlotController::SetData(const Segment& segment)
+		{
+			mSegment = segment;
+			mSampleRate = mSegment.GetSamplingRate();
+			mDuration = mSegment.GetEndTime()-mSegment.GetBeginTime();
+			CacheData();
+			FullView();
+			SetnSamples(TSize(mDuration*mSampleRate));
+			SetvRange(TData(mMaxFreq));
+			InitialRegionTime();
+			mMustProcessData = true;
+			SetSelPos(TData(0.0));
+			emit requestRefresh();
+		}
 
-	void FundPlotController::SetDataColor(Color c)
-	{
-	    _renderer.SetColor(c);
-	}
+		void FundPlotController::SetDataColor(Color c)
+		{
+			mRenderer.SetColor(c);
+		}
 
-	void FundPlotController::SetHBounds(const TData& left,const TData& right)
-	{
-	    SelTimeRegionPlotController::SetHBounds(left,right);
-	    _mustProcessData = true;
+		void FundPlotController::SetHBounds(const TData& left,const TData& right)
+		{
+			SelTimeRegionPlotController::SetHBounds(left,right);
+			mMustProcessData = true;
 			
-	    double lBound = double(GetLeftBound()/_sampleRate);
-	    double hBound = double(GetRightBound()/_sampleRate);
+			double lBound = double(GetLeftBound()/mSampleRate);
+			double hBound = double(GetRightBound()/mSampleRate);
 			
-	    emit xRulerRange(lBound,hBound);	
-	}
+			emit xRulerRange(lBound,hBound);	
+		}
 
-	void FundPlotController::SetVBounds(const TData& bottom,const TData& top)
-	{
-	    SelTimeRegionPlotController::SetVBounds(bottom,top);
+		void FundPlotController::SetVBounds(const TData& bottom,const TData& top)
+		{
+			SelTimeRegionPlotController::SetVBounds(bottom,top);
 			
-	    double bBound = double(GetBottomBound());
-	    double tBound = double(GetTopBound());
+			double bBound = double(GetBottomBound());
+			double tBound = double(GetTopBound());
 	    
-	    emit yRulerRange(bBound,tBound);
-	}
+			emit yRulerRange(bBound,tBound);
+		}
 
-	void FundPlotController::SurfaceDimensions(int w,int h)
-	{
-	    PlotController::SurfaceDimensions(w,h);
+		void FundPlotController::SurfaceDimensions(int w,int h)
+		{
+			PlotController::SurfaceDimensions(w,h);
 		
-	    double lBound = double(GetLeftBound()/_sampleRate);
-	    double hBound = double(GetRightBound()/_sampleRate);
+			double lBound = double(GetLeftBound()/mSampleRate);
+			double hBound = double(GetRightBound()/mSampleRate);
 			
-	    emit xRulerRange(lBound,hBound);
+			emit xRulerRange(lBound,hBound);
 
-	    double bBound = double(GetBottomBound());
-	    double tBound = double(GetTopBound());
+			double bBound = double(GetBottomBound());
+			double tBound = double(GetTopBound());
 			
-	    emit yRulerRange(bBound,tBound);
-	}
+			emit yRulerRange(bBound,tBound);
+		}
 
-	void FundPlotController::Draw()
-	{
-	    if(_mustProcessData) ProcessData();
-	    _renderer.Render();
-	    SelTimeRegionPlotController::Draw();
-	}
+		void FundPlotController::Draw()
+		{
+			if(mMustProcessData) ProcessData();
+			mRenderer.Render();
+			SelTimeRegionPlotController::Draw();
+		}
 
-	void FundPlotController::ProcessData()
-	{
-	    int nFrames = _segment.GetnFrames();
-	    TSize offset = TSize(GetLeftBound()*nFrames/GetnSamples());
-	    TSize len = TSize(GetRightBound()*nFrames/GetnSamples())-offset+1;
+		void FundPlotController::ProcessData()
+		{
+			int nFrames = mSegment.GetnFrames();
+			TSize offset = TSize(GetLeftBound()*nFrames/GetnSamples());
+			TSize len = TSize(GetRightBound()*nFrames/GetnSamples())-offset+1;
 			
-	    if(_processedData.Size() <=len)
-		_processedData.Resize(len+1);
-	    _processedData.SetSize(len+1);
+			if(mProcessedData.Size() <=len)
+				mProcessedData.Resize(len+1);
+			mProcessedData.SetSize(len+1);
 
-	    std::copy(_cacheData.GetPtr()+offset,_cacheData.GetPtr()+offset+len+1,_processedData.GetPtr());
-	    _renderer.SetDataPtr(_processedData.GetPtr(),_processedData.Size(),NormalMode);	
-	    _mustProcessData = false;
-	}
+			std::copy(mCacheData.GetPtr()+offset,mCacheData.GetPtr()+offset+len+1,mProcessedData.GetPtr());
+			mRenderer.SetDataPtr(mProcessedData.GetPtr(),mProcessedData.Size(),NormalMode);	
+			mMustProcessData = false;
+		}
 
-	void FundPlotController::SetRenderingStep()
-	{
-	    int nFrames = _segment.GetnFrames();
-	    _renderer.SetStep(_duration*_sampleRate/TData(nFrames));
-	    SetHMin(_renderer.GetStep()*TData(5.0));
-	}
+		void FundPlotController::SetRenderingStep()
+		{
+			int nFrames = mSegment.GetnFrames();
+			mRenderer.SetStep(mDuration*mSampleRate/TData(nFrames));
+			SetHMin(mRenderer.GetStep()*TData(5.0));
+		}
 
-	void FundPlotController::FullView()
-	{
-	    _maxFreq += TData(50.0);
-	    _view.left = TData(0.0);
-	    _view.right = TData(_duration*_sampleRate);
-	    _view.top = _maxFreq;
-	    _view.bottom = TData(0.0);
-	    SetHBounds(_view.left,_view.right);
-	    SetVBounds(_view.bottom,_view.top);
-	    SetRenderingStep();
-	    emit sendView(_view);
-	    emit initialYRulerRange(double(_view.bottom),double(_view.top));
-	}
+		void FundPlotController::FullView()
+		{
+			mMaxFreq += TData(50.0);
+			mView.left = TData(0.0);
+			mView.right = TData(mDuration*mSampleRate);
+			mView.top = mMaxFreq;
+			mView.bottom = TData(0.0);
+			SetHBounds(mView.left,mView.right);
+			SetVBounds(mView.bottom,mView.top);
+			SetRenderingStep();
+			emit sendView(mView);
+			emit initialYRulerRange(double(mView.bottom),double(mView.top));
+		}
 
-	void FundPlotController::CacheData()
-	{
-	    _maxFreq = TData(0.0);
-	    int nFrames = _segment.GetnFrames();
-	    _cacheData.Resize(nFrames);
-	    _cacheData.SetSize(nFrames);
-	    TData curFreq;
-	    for(int i = 0; i < nFrames; i++)
-	    {
-		curFreq = _segment.GetFrame(i).GetFundamental().GetFreq(0);
-		if(curFreq > _maxFreq) _maxFreq = curFreq;
-		_cacheData[i] = curFreq;	
-	    }
-	}
+		void FundPlotController::CacheData()
+		{
+			mMaxFreq = TData(0.0);
+			int nFrames = mSegment.GetnFrames();
+			mCacheData.Resize(nFrames);
+			mCacheData.SetSize(nFrames);
+			TData curFreq;
+			for(int i = 0; i < nFrames; i++)
+			{
+				curFreq = mSegment.GetFrame(i).GetFundamental().GetFreq(0);
+				if(curFreq > mMaxFreq) mMaxFreq = curFreq;
+				mCacheData[i] = curFreq;	
+			}
+		}
 
-	TData FundPlotController::GetFreq(TData t) const
-	{
-	    TData value = t*_sampleRate;
-	    int nFrames = _segment.GetnFrames();
-	    int index = int(value*nFrames/GetnSamples());
-	    return _cacheData[index];
-	}
+		TData FundPlotController::GetFreq(TData t) const
+		{
+			TData value = t*mSampleRate;
+			int nFrames = mSegment.GetnFrames();
+			int index = int(value*nFrames/GetnSamples());
+			return mCacheData[index];
+		}
 
-	void FundPlotController::InitialRegionTime() 
-	{
-	    MediaTime time;
-	    time.SetBegin(TData(0.0));
-	    emit selectedRegion(time);
-	}
+		void FundPlotController::InitialRegionTime() 
+		{
+			MediaTime time;
+			time.SetBegin(TData(0.0));
+			emit selectedRegion(time);
+		}
 
-	void FundPlotController::SetMousePos(TData x,TData y)
-	{
-	    TData tbound = GetTopBound()-GetBottomBound();
-	    TData bBound = GetBottomBound();
-	    TData ycoord=y;
-	    ycoord *= tbound;
-	    ycoord /= TData(_viewport.h);
-	    ycoord += bBound;
-	    SegmentationMarksPlotController::SetMousePos(x,ycoord);
-	    if(!HasSentTag())
-	    {
-		TData t=GetMouseXPos()/_sampleRate;
-		TData freq=GetMouseYPos();
-		QString s = "t="+QString::number(t,'f',3)+"s freq="+QString::number(freq,'f',0)+"Hz";
+		void FundPlotController::SetMousePos(TData x,TData y)
+		{
+			TData tbound = GetTopBound()-GetBottomBound();
+			TData bBound = GetBottomBound();
+			TData ycoord=y;
+			ycoord *= tbound;
+			ycoord /= TData(mViewport.h);
+			ycoord += bBound;
+			SegmentationMarksPlotController::SetMousePos(x,ycoord);
+			if(!HasSentTag())
+			{
+				TData t=GetMouseXPos()/mSampleRate;
+				TData freq=GetMouseYPos();
+				QString s = "t="+QString::number(t,'f',3)+"s freq="+QString::number(freq,'f',0)+"Hz";
 			
-		emit toolTip(s);
-	    }
-	}
+				emit toolTip(s);
+			}
+		}
     }
 }
 

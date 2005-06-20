@@ -30,70 +30,70 @@ namespace CLAM
 {
     namespace VM
     {
-	class SegmentationMarksPlotController : public PlotController
-	{
-	    Q_OBJECT
-	public:
-	    SegmentationMarksPlotController();
-	    virtual ~SegmentationMarksPlotController();
+		class SegmentationMarksPlotController : public PlotController
+		{
+			Q_OBJECT
+		public:
+			SegmentationMarksPlotController();
+			virtual ~SegmentationMarksPlotController();
 
-	    void SetMarks(std::vector<unsigned>& marks);
-	    std::vector<unsigned>& GetMarks();
+			void SetMarks(std::vector<unsigned>& marks);
+			std::vector<unsigned>& GetMarks();
 
-	    void SetMarksColor(Color c);
+			void SetMarksColor(Color c);
 
-	    virtual void Draw();
-	    virtual void SurfaceDimensions(int w,int h);
+			virtual void Draw();
+			virtual void SurfaceDimensions(int w,int h);
 
-	    virtual void SetMousePos(TData x, TData y);
-	    virtual void LeaveMouse();
+			virtual void SetMousePos(TData x, TData y);
+			virtual void LeaveMouse();
 
-	    virtual void SetLeftButtonPressed(bool pressed);
+			virtual void SetLeftButtonPressed(bool pressed);
 
-	    void SetKeyInsertPressed(bool pressed);
-	    void SetKeyDeletePressed(bool pressed);
+			void SetKeyInsertPressed(bool pressed);
+			void SetKeyDeletePressed(bool pressed);
 
-	    void InsertMark(unsigned elem);
-	    void RemoveMark(int index, unsigned elem);
-	    void UpdateMark(int index, unsigned elem);
+			void InsertMark(unsigned elem);
+			void RemoveMark(int index, unsigned elem);
+			void UpdateMark(int index, unsigned elem);
 
-	    void UpdateTag(int index, const QString& tag);
+			void UpdateTag(int index, const QString& tag);
 
-	    void OnDoubleClick();
-	    QString GetTag() const;
-	    void SetSegmentationTag(const QString& tag);
-	    std::vector<QString> GetTags();
+			void OnDoubleClick();
+			QString GetTag() const;
+			void SetSegmentationTag(const QString& tag);
+			std::vector<QString> GetTags();
 
-	protected:
-	    virtual void SetHBounds(const TData& left, const TData& right);
-	    virtual void SetVBounds(const TData& bottom, const TData& top);
+		protected:
+			virtual void SetHBounds(const TData& left, const TData& right);
+			virtual void SetVBounds(const TData& bottom, const TData& top);
 
-	    virtual bool CanDrawSelectedPos();
+			virtual bool CanDrawSelectedPos();
 
-	    bool HasSentTag() const;
+			bool HasSentTag() const;
 
-	private:
-	    std::vector<unsigned> _marks;
-	    std::vector<QString> _tags;
-	    VLineArrayRenderer _marksRenderer;
-	    bool _mustProcessMarks;
-	    bool _hit;
-	    unsigned _currentElem;
-	    int _currentIndex;
-	    bool _keyInsertPressed;
-	    bool _keyDeletePressed;
-	    bool _hasSentTag;
+		private:
+			std::vector<unsigned> mMarks;
+			std::vector<QString>  mTags;
+			VLineArrayRenderer    mMarksRenderer;
+			bool                  mMustProcessMarks;
+			bool                  mHit;
+			unsigned              mCurrentElem;
+			int                   mCurrentIndex;
+			bool                  mKeyInsertPressed;
+			bool                  mKeyDeletePressed;
+			bool                  mHasSentTag;
 
-	    void ProcessMarksData();
+			void ProcessMarksData();
 
-	    bool HaveElem(unsigned elem);
-	    void InsertElem(unsigned elem);
-	    void RemoveElem(int index);
-	    void Update(int index, unsigned elem);
+			bool HaveElem(unsigned elem);
+			void InsertElem(unsigned elem);
+			void RemoveElem(int index);
+			void Update(int index, unsigned elem);
 
-	    unsigned GetPixel(const TData& x) const;
-	    int Hit(const TData& x);
-	};
+			unsigned GetPixel(const TData& x) const;
+			int Hit(const TData& x);
+		};
     }
 }
 

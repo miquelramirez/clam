@@ -32,46 +32,46 @@ namespace CLAM
 {
     namespace VM
     {
-	class SinTracksPlotController : public SelTimeRegionPlotController 
-	{
-	    Q_OBJECT
+		class SinTracksPlotController : public SelTimeRegionPlotController 
+		{
+			Q_OBJECT
 
-	public:
-	    SinTracksPlotController();
-	    virtual ~SinTracksPlotController();
+		public:
+			SinTracksPlotController();
+			~SinTracksPlotController();
 
-	    void SetData(const Segment& segment);
-	    void SetData(const Array< SpectralPeakArray >& peakMtx, const TData& sr, const TData& dur);
-	    void SurfaceDimensions(int w,int h);
-	    void Draw();
+			void SetData(const Segment& segment);
+			void SetData(const Array< SpectralPeakArray >& peakMtx, const TData& sr, const TData& dur);
+			void SurfaceDimensions(int w,int h);
+			void Draw();
 
-	    void SetMousePos(TData x,TData y);
+			void SetMousePos(TData x,TData y);
 
-	    bool IsPlayable();
+			bool IsPlayable();
 	
-	protected:
-	    virtual void SetHBounds(const TData& left,const TData& right);
-	    virtual void SetVBounds(const TData& bottom,const TData& top);
+		protected:
+			void SetHBounds(const TData& left,const TData& right);
+			void SetVBounds(const TData& bottom,const TData& top);
 
-	private:
-	    SineTrackList _cachedTracks;
-	    SinTrackHorClipper _horClipper;
-	    SinTrackVerClipper _verClipper;
-	    SinTracksRenderer _renderer;
-	    SineTrackSpanEnds _starts;
-	    SineTrackSpanEnds _ends;
-	    bool _mustProcessData;
-	    int	_nFrames;
+		private:
+			SineTrackList      mCachedTracks;
+			SinTrackHorClipper mHorClipper;
+			SinTrackVerClipper mVerClipper;
+			SinTracksRenderer  mRenderer;
+			SineTrackSpanEnds  mStarts;
+			SineTrackSpanEnds  mEnds;
+			bool               mMustProcessData;
+			int	               mNumberOfFrames;
 
-	    void FullView();
+			void FullView();
 
-	    void ProcessData();
-	    void Colorize();
+			void ProcessData();
+			void Colorize();
 
-	    float ClampToRange(TData value) const;
-	    void InitialRegionTime();
+			float ClampToRange(TData value) const;
+			void InitialRegionTime();
 			
-	};
+		};
     }
 }
 

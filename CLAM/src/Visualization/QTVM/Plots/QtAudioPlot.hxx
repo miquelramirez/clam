@@ -34,91 +34,85 @@ namespace CLAM
 {
     namespace VM
     {
-	class TimeSegmentLabelsGroup;
-	class SingleLabel;
+		class TimeSegmentLabelsGroup;
+		class SingleLabel;
 
-	 /**
-	  * Allows viewing CLAM::Audio data.
-	  *
-	  * @ingroup QTVM
-	  */
+		/**
+		 * Allows viewing CLAM::Audio data.
+		 *
+		 * @ingroup QTVM
+		 */
 	
-	class QtAudioPlot : public QtPresentation, public PlayablePlot
-	{
-	    Q_OBJECT
+		class QtAudioPlot : public QtPresentation, public PlayablePlot
+		{
+			Q_OBJECT
 
-	public:
-	    QtAudioPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
-	    ~QtAudioPlot();
+		public:
+			QtAudioPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
+			~QtAudioPlot();
 
-	    void SetData(const Audio& audio, bool to_controller=true);
+			void SetData(const Audio& audio, bool to_controller=true);
 
-	    void SetMarks(std::vector<unsigned>& marks);
-	    std::vector<unsigned>& GetMarks();
-	    void SetMarksColor(Color c);
+			void SetMarks(std::vector<unsigned>& marks);
+			std::vector<unsigned>& GetMarks();
+			void SetMarksColor(Color c);
 
-	    std::vector<QString> GetSegmentationTags();
+			std::vector<QString> GetSegmentationTags();
 
-	    void SetForegroundColor(Color c);
-	    void SetDialColor(Color c);
-	    void SetRegionColor(Color c);
+			void SetForegroundColor(Color c);
+			void SetDialColor(Color c);
+			void SetRegionColor(Color c);
 
-	    void RemovePlayPanel();
+			void RemovePlayPanel();
 
-	    void SetKeyPressed(QKeyEvent* e);
-	    void SetKeyReleased(QKeyEvent* e);
+			void SetKeyPressed(QKeyEvent* e);
+			void SetKeyReleased(QKeyEvent* e);
 
-	signals:
-	    void regionTime(MediaTime);
-	    void regionTime(float, float);
-
-	    void currentPlayingTime(float);
-	    void stopPlaying(float);
+		signals:
+			void regionTime(MediaTime);
+			void regionTime(float, float);
+			void currentPlayingTime(float);
+			void stopPlaying(float);
 	    
-	public slots:
-	    void setSelectedXPos(double);
-
-	    void setCurrentPlayingTime(float);
-	    void receivedStopPlaying(float);
-	    
+		public slots:
+			void setSelectedXPos(double);
+			void setCurrentPlayingTime(float);
+			void receivedStopPlaying(float);
+	   
         protected slots:
-	    void initialYRulerRange(double,double);
-	    void updateRegion(MediaTime);
+			void initialYRulerRange(double,double);
+			void updateRegion(MediaTime);
 
-	protected:
-	    void keyPressEvent(QKeyEvent* e);
-	    void keyReleaseEvent( QKeyEvent* e);
+		protected:
+			void keyPressEvent(QKeyEvent* e);
+			void keyReleaseEvent( QKeyEvent* e);
+			void hideEvent(QHideEvent* e);
+			void closeEvent(QCloseEvent* e);
+			void SetPlotController();
+			void Connect();
+			void DisplayBackgroundBlack();
+			void DisplayBackgroundWhite();
+			void SetPData(const Audio& audio, bool setTime);
 
-	    void hideEvent(QHideEvent* e);
-	    void closeEvent(QCloseEvent* e);
+		private:
+			QBoxLayout*             mPanel;
+			TimeSegmentLabelsGroup* mLabelsGroup;
+			SingleLabel*            mLeftAmpLab; 
+			SingleLabel*            mRightAmpLab;
+			MediaTime               mPlayBounds;
+			bool                    mShowRightAmp;
+			Slotv1<TData>           mSlotPlayingTimeReceived;
+			Slotv1<TData>           mSlotStopPlayingReceived;
 
-	    void SetPlotController();
-	    void Connect();
-
-	    void DisplayBackgroundBlack();
-	    void DisplayBackgroundWhite();
-
-	    void SetPData(const Audio& audio, bool setTime);
-
-	private:
-	    QBoxLayout* _panel;
-	    TimeSegmentLabelsGroup* _labelsGroup;
-	    SingleLabel *_leftAmpLab, *_rightAmpLab;
-	    MediaTime _playBounds;
-	    bool showRightAmp;
-
-	    Slotv1<TData> mSlotPlayingTimeReceived;
-	    Slotv1<TData> mSlotStopPlayingReceived;
-
-	    // holes
-	    QFrame *lefthole,*righthole;
+			// holes
+			QFrame *lefthole,*righthole;
 				
-	    void UpdateAmpLabels(MediaTime time);
-	    void InitAudioPlot();
+			void UpdateAmpLabels(MediaTime time);
+			void InitAudioPlot();
 
-	    void PlayingTime(TData time);
-	    void StopPlaying(TData time);
-	};
+			void PlayingTime(TData time);
+			void StopPlaying(TData time);
+		};
     }
 }
 

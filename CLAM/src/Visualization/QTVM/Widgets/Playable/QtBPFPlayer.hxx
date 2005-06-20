@@ -17,80 +17,70 @@ namespace CLAM
 
     namespace VM
     {
-	class QtBPFPlayer : public QtMultiPlayer
-	{
-	    Q_OBJECT
-	public:
-	    QtBPFPlayer(QWidget* parent=0);
-	    ~QtBPFPlayer();
+		class QtBPFPlayer : public QtMultiPlayer
+		{
+			Q_OBJECT
+		public:
+			QtBPFPlayer(QWidget* parent=0);
+			~QtBPFPlayer();
 
-	    void SetData(const BPF& bpf);
-	    void SetAudioPtr(const Audio* audio);
+			void SetData(const BPF& bpf);
+			void SetAudioPtr(const Audio* audio);
 
-	    void SetDuration(const TData& dur);
+			void SetDuration(const TData& dur);
 	    
-	    Melody& GetMelody();
-	    MIDIMelody& GetMIDIMelody();
+			Melody& GetMelody();
+			MIDIMelody& GetMIDIMelody();
 
-	    void SetPitchBounds(const TData& lowest, const TData& highest);
+			void SetPitchBounds(const TData& lowest, const TData& highest);
+			void SetColorMap(ColorMap map);
+			void StopThread();
+			void PlaySimultaneously(bool psi);
 
-	    void SetColorMap(ColorMap map);
+		public slots:
+			void play();
+			void updateNotePitch(int, float);
+			void updateNoteDuration(int, float);
+			void addNote(int, float, float);
+			void removeNote(int);
 
-	    void StopThread();
+		private slots:
+			void uncheckAudio();
+			void uncheckMIDI();
+			void setMIDIDevice(int);
+			void setMIDIProgram(int);
 
-	    void PlaySimultaneously(bool psi);
+		protected:
+			void SetCurrentPlayer(int playerID);
+			void WindowModeCM();
+			void BlackBackgroundCM();
+			void WhiteBackgroundCM();
 
-	public slots:
-	    void play();
+		private:
+			Thread mThread;
+			bool   mThreadIsCancelled;
+			BPF    mOwnedBPF;
+			TData  mOwnedDuration;
+			TData  global_max;
+			bool   mMustDoMapping;
+			bool   mPlaySimultaneously;
 
-	    void updateNotePitch(int, float);
-	    void updateNoteDuration(int, float);
+			QFrame *radioPanel,*midiSettingsPanel;
+			QRadioButton *mPlayAudio, *mPlayMIDI;
+			QComboBox *mMIDIInstrumentsCB, *mMIDIDevicesCB;
 
-	    void addNote(int, float, float);
-	    void removeNote(int);
+			std::vector<int>         mMIDIPrograms;
+			std::vector<std::string> mMIDIDevices;
 
-	private slots:
-	    void uncheckAudio();
-	    void uncheckMIDI();
-
-	    void setMIDIDevice(int);
-	    void setMIDIProgram(int);
-
-	protected:
-	    void SetCurrentPlayer(int playerID);
-
-	    void WindowModeCM();
-	    void BlackBackgroundCM();
-	    void WhiteBackgroundCM();
-
-	private:
-	    Thread mThread;
-	    bool mThreadIsCancelled;
-	    BPF mOwnedBPF;
-	    TData mOwnedDuration;
-	    TData global_max;
-	    bool mMustDoMapping;
-	    bool mPlaySimultaneously;
-
-	    QFrame *radioPanel,*midiSettingsPanel;
-	    QRadioButton *mPlayAudio, *mPlayMIDI;
-	    QComboBox *mMIDIInstrumentsCB, *mMIDIDevicesCB;
-
-	    std::vector<int> mMIDIPrograms;
-	    std::vector<std::string> mMIDIDevices;
-
-	    enum { MELODY_PLAYER=0, MIDI_PLAYER };
+			enum { MELODY_PLAYER=0, MIDI_PLAYER };
 	    
-	    void BuildMelodies();
+			void BuildMelodies();
+			void BuildPlayer();
+			void LoadMIDIDevices();
+			void LoadMIDIInstruments();
+			void thread_code();
 
-	    void BuildPlayer();
-
-	    void LoadMIDIDevices();
-	    void LoadMIDIInstruments();
-
-	    void thread_code();
-
-	};
+		};
     }
 }
 

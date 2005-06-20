@@ -20,14 +20,14 @@ class QPopupMenu;
 namespace CLAM
 {
 	class Audio;
-
+	
     namespace VM
     {
 		class Ruler;
 		class BPFEditorDisplaySurface;
 		class VScrollGroup;
 		class HScrollGroup;
-
+		
 		/**
 		 * Editable/auralizable plot.
 		 *
@@ -67,49 +67,43 @@ namespace CLAM
 		signals:
 			void xValueChanged(int, float);
 			void yValueChanged(int, float);
-
 			void selectedXPos(double);
-
 			void currentPlayingTime(float);
 			void stopPlaying(float);
 
 		public slots:
 			void setHBounds(double, double);
 			void selectPointFromXCoord(double);
-
 			void switchColors();
-
 			void setRegionTime(MediaTime);
 			void setRegionTime(float, float);
-
 			void stopPendingTasks();
-
 			void playSimultaneously(bool);
-
 			void setCurrentPlayingTime(float);
 			void receivedStopPlaying(float);
 
 		protected:
 			void keyPressEvent(QKeyEvent* e);
 			void keyReleaseEvent(QKeyEvent* e);
-
 			void hideEvent(QHideEvent* e);
 
 		private slots:
 			void updateLabels(QString, QString);
 			void setMaxVScroll(int);
 			void setMaxHScroll(int);
-
 			void showPopupMenu();
 			void activePlayer();
 
 		private:
-			int mEFlags;
-			bool mActivePlayer;
-			Ruler *mXRuler, *mYRuler;
-			BPFEditorController* mController;
+			int                      mEFlags;
+			bool                     mActivePlayer;
+			Ruler*                   mXRuler; 
+			Ruler*                   mYRuler;
+			BPFEditorController*     mController;
 			BPFEditorDisplaySurface* mDisplaySurface;
-			QLabel *mXLabelInfo, *mYLabelInfo;
+			QLabel*                  mXLabelInfo; 
+			QLabel*                  mYLabelInfo;
+
 			QFrame* labelsContainer;
 			QLabel *fixed_x_label, *fixed_y_label;
 			QFont labelFont;
@@ -118,12 +112,13 @@ namespace CLAM
 	    
 			int mColorScheme;
 
-			VScrollGroup *mVScroll;
-			HScrollGroup *mHScroll;
+			VScrollGroup* mVScroll;
+			HScrollGroup* mHScroll;
+
 			QBoxLayout *mainLayout, *topLayout, *middleLayout, *bottomLayout;
 			QFrame *topLeftHole, *topRightHole, *bottomRightHole, *playerHole;
 
-			Melody mMelody;
+			Melody     mMelody;
 			MIDIMelody mMIDIMelody;
 
 			bool mHasPlayData;
@@ -146,7 +141,7 @@ namespace CLAM
 
 			void ShowPlayer();
 			void HidePlayer();
-
+			
 			void InitPopupMenu();
 	    
 			void PlayingTime(TData time);

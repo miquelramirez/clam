@@ -136,23 +136,23 @@ namespace CLAM
 			mProcessingSelection = false;
 		}
 
-	        void BPFEditorController::SetKeyControlPressed(bool pressed)
+		void BPFEditorController::SetKeyControlPressed(bool pressed)
 		{
 		    mKeyControlPressed = pressed;
 		    mProcessingSelection = false;
 		    if(mKeyControlPressed && mMouseOverDisplay)
 		    {
-			if(!mSettingStack.size()) return;
-			QPixmap iconZoomout((const char**)icon_zoomout);
-			QCursor zoutCursor(iconZoomout);
-			emit cursorChanged(zoutCursor);
-			mQueryZoomOut = true;
+				if(!mSettingStack.size()) return;
+				QPixmap iconZoomout((const char**)icon_zoomout);
+				QCursor zoutCursor(iconZoomout);
+				emit cursorChanged(zoutCursor);
+				mQueryZoomOut = true;
 		    }
 		    else
 		    {
-			QCursor acursor(Qt::ArrowCursor);
-			emit cursorChanged(acursor);
-			mQueryZoomOut = false;
+				QCursor acursor(Qt::ArrowCursor);
+				emit cursorChanged(acursor);
+				mQueryZoomOut = false;
 		    }
 		}
 			
@@ -177,9 +177,7 @@ namespace CLAM
 				    QCursor acursor(Qt::ArrowCursor);
 				    emit cursorChanged(acursor);
 				}
-				
-				mHit = false;
-			      
+				mHit = false;      
 			}
 		
 		}
@@ -192,15 +190,15 @@ namespace CLAM
 
 		void BPFEditorController::SetPoint(const TData& x, const TData& y)
 		{
-		        if(mQueryZoomOut && mLeftButtonPressed) 
+			if(mQueryZoomOut && mLeftButtonPressed) 
 			{
 			    mHit = false;
 			    PopSettings();
 			    if(!mSettingStack.size())
 			    {
-				QCursor acursor(Qt::ArrowCursor);
-				emit cursorChanged(acursor);
-				mQueryZoomOut=false;
+					QCursor acursor(Qt::ArrowCursor);
+					emit cursorChanged(acursor);
+					mQueryZoomOut=false;
 			    }
 			    return;
 			}
@@ -280,7 +278,7 @@ namespace CLAM
 
 		void BPFEditorController::UpdatePoint(const TData& x, const TData& y)
 		{
-		        if(mQueryZoomOut) return;
+			if(mQueryZoomOut) return;
 			if(mProcessingSelection)
 			{
 				mCorners[1].SetX(x);
@@ -299,9 +297,8 @@ namespace CLAM
 					QCursor cCursor(Qt::CrossCursor);
 					emit cursorChanged(cCursor);
 				}
-				else if(
-					(mEFlags & CLAM::VM::AllowVerticalEdition) && 
-					(mEFlags & CLAM::VM::AllowHorizontalEdition))
+				else if((mEFlags & CLAM::VM::AllowVerticalEdition) && 
+						(mEFlags & CLAM::VM::AllowHorizontalEdition))
 				{
 					QCursor sacursor(Qt::SizeAllCursor);
 					emit cursorChanged(sacursor);
@@ -458,7 +455,7 @@ namespace CLAM
 		{
 			return Max(double(mCorners[0].GetY()), double(mCorners[1].GetY()));
 		}
-
+		
 		double BPFEditorController::Max(double a, double b)
 		{
 			return (a >= b) ? a : b;
@@ -486,7 +483,7 @@ namespace CLAM
 			Pixel p;
 			p.x=unsigned(px);
 			p.y=unsigned(py);
-
+			
 			return p;
 		}
 
@@ -555,7 +552,7 @@ namespace CLAM
 			if (y<mMinY) y=mMinY;
 			if (y>mMaxY) y=mMaxY;
 
-
+			
 			TIndex index = mData.Insert(x,y);
 			emit elementAdded(int(index),float(x), float(y));
 			ChooseCurrentPoint(index);
@@ -640,7 +637,7 @@ namespace CLAM
 
 		void BPFEditorController::updateVScrollValue(int value)
 		{
-		        double bottom = mSpanY/double(GetnyPixels())*double(value)+mMinY;
+			double bottom = mSpanY/double(GetnyPixels())*double(value)+mMinY;
 			double top = bottom+mVCurrent;
 			SetVBounds(bottom,top);
 		}
@@ -707,9 +704,9 @@ namespace CLAM
 			SetVBounds(bottom,top);
 		}
 
-	        void BPFEditorController::hZoomIn()
+		void BPFEditorController::hZoomIn()
 		{
-		    	if(mHCurrent/2.0 > mMinSpanX)
+			if(mHCurrent/2.0 > mMinSpanX)
 			{
 				mHCurrent /= 2.0;
 				UpdateHBounds(true);
@@ -720,9 +717,9 @@ namespace CLAM
 			}
 		}
 
-	        void BPFEditorController::hZoomOut()
+		void BPFEditorController::hZoomOut()
 		{
-		        if(mHCurrent*2.0 <= mSpanX)
+			if(mHCurrent*2.0 <= mSpanX)
 			{
 				mHCurrent *= 2.0;
 				UpdateHBounds(false);
@@ -733,28 +730,28 @@ namespace CLAM
 			} 
 		}
 
-	        void BPFEditorController::updateHScrollValue(int value)
+		void BPFEditorController::updateHScrollValue(int value)
 		{
-		        double left = mSpanX/double(GetnxPixels())*double(value)+mMinX;
+			double left = mSpanX/double(GetnxPixels())*double(value)+mMinX;
 			double right = left+mHCurrent;
 			SetHBounds(left,right);
 		}
 
-	        int BPFEditorController::GetnxPixels() const
+		int BPFEditorController::GetnxPixels() const
 		{
-		        double value = mSpanX*double(mDisplayWidth)/mHCurrent;
+			double value = mSpanX*double(mDisplayWidth)/mHCurrent;
 			return int(value);
 		}
 
-	        int BPFEditorController::GetHScrollValue() const
+		int BPFEditorController::GetHScrollValue() const
 		{
 			double value = (mView.mLeft-mMinX)*double(GetnxPixels())/mSpanX;
 			return int(value);
 		}
 
-	        void BPFEditorController::InitHZoomRatio()
+		void BPFEditorController::InitHZoomRatio()
 		{
-		    	double n = mMinSpanX;
+			double n = mMinSpanX;
 			double r = 1.0;
 			while(n < mSpanX)
 			{
@@ -764,9 +761,9 @@ namespace CLAM
 			mHZoomRatio = r/2.0;
 		}
 
-	        void BPFEditorController::InitHScroll()
+		void BPFEditorController::InitHScroll()
 		{
-		    	mHCurrent = mSpanX;
+			mHCurrent = mSpanX;
 			InitHZoomRatio();
 			emit hZoomRatio(mHZoomRatio);
 			int hsv=GetHScrollValue();
@@ -774,26 +771,26 @@ namespace CLAM
 			emit hScrollValue(hsv);
 		}
 
-	        void BPFEditorController::UpdateHBounds(bool zin)
+		void BPFEditorController::UpdateHBounds(bool zin)
 		{ 
-		        double left,right;
+			double left,right;
 			left = mView.mLeft;
 			right = mView.mRight;
 			if(zin)
 			{
 			    if(ReferenceIsVisible())
 			    {
-				double ref = GetReference();
-				if(ref-mMinX >= mHCurrent/2.0)
-				{
-				    left = ref-mHCurrent/2.0;
-				}
-				right = left+mHCurrent;
+					double ref = GetReference();
+					if(ref-mMinX >= mHCurrent/2.0)
+					{
+						left = ref-mHCurrent/2.0;
+					}
+					right = left+mHCurrent;
 			    }
 			    else
 			    {
-				left += mHCurrent/2.0;
-				right -= mHCurrent/2.0;
+					left += mHCurrent/2.0;
+					right -= mHCurrent/2.0;
 			    }
 			}
 			else
@@ -814,13 +811,13 @@ namespace CLAM
 			SetHBounds(left,right);
 		}
 
-	        bool BPFEditorController::ReferenceIsVisible()
+		bool BPFEditorController::ReferenceIsVisible()
 		{
 		    double value = (mIsPlaying) ? double(mDial.GetPos()) : double(mData.GetXValue(mCurrentIndex));
 		    return (value > mXRulerRange.mMin && value < mXRulerRange.mMax);
 		}
 
-	        double BPFEditorController::GetReference() const
+		double BPFEditorController::GetReference() const
 		{
 		    return (mIsPlaying) ? double(mDial.GetPos()) : double(mData.GetXValue(mCurrentIndex));
 		}
@@ -846,7 +843,7 @@ namespace CLAM
 					break;
 				}
 				if(searchValue >= mData.GetXValue(currentIndex) &&
-					searchValue <= mData.GetXValue(currentIndex+1))
+				   searchValue <= mData.GetXValue(currentIndex+1))
 				{
 					if (left) return currentIndex;
 					index = currentIndex;
@@ -863,7 +860,7 @@ namespace CLAM
 			}
 
 			if (left) return index;
-
+			
 			if(index>=nPoints-2) return nPoints;
 			return index+3;
 		}
@@ -894,12 +891,12 @@ namespace CLAM
 			emit stopPlaying();
 		}
 
-	        void BPFEditorController::MouseOverDisplay(bool over)
+		void BPFEditorController::MouseOverDisplay(bool over)
 		{
 		    mMouseOverDisplay = over;
 		    if(!mMouseOverDisplay)
 		    {
-			emit labelsText("","");
+				emit labelsText("","");
 		    }
 		}
 

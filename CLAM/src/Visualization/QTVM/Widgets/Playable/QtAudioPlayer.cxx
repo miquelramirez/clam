@@ -26,30 +26,30 @@ namespace CLAM
 {
     namespace VM
     {
-	QtAudioPlayer::QtAudioPlayer(QWidget* parent) 
-	    : QtSinglePlayer(parent)
-	{
-	    SetPlayer(new APlayer());
-	}
+		QtAudioPlayer::QtAudioPlayer(QWidget* parent) 
+			: QtSinglePlayer(parent)
+		{
+			SetPlayer(new APlayer());
+		}
 		
-	QtAudioPlayer::~QtAudioPlayer()
-	{
-	}
+		QtAudioPlayer::~QtAudioPlayer()
+		{
+		}
 
-	void QtAudioPlayer::SetData(std::vector<const Audio*> data, bool setTime)
-	{
-	    ((APlayer*)_player)->SetData(data,setTime);
-	}
+		void QtAudioPlayer::SetData(std::vector<const Audio*> data, bool setTime)
+		{
+			((APlayer*)mPlayer)->SetData(data,setTime);
+		}
 
-	void QtAudioPlayer::SetLeftChannelMuted(bool b)
-	{
-	    ((APlayer*)_player)->SetLeftChannelMuted(b);
-	}
+		void QtAudioPlayer::SetLeftChannelMuted(bool b)
+		{
+			((APlayer*)mPlayer)->SetLeftChannelMuted(b);
+		}
 
-	void QtAudioPlayer::SetRightChannelMuted(bool b)
-	{
-	    ((APlayer*)_player)->SetRightChannelMuted(b);
-	}
+		void QtAudioPlayer::SetRightChannelMuted(bool b)
+		{
+			((APlayer*)mPlayer)->SetRightChannelMuted(b);
+		}
     }
 }
 

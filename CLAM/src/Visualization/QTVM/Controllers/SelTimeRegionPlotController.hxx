@@ -30,56 +30,54 @@ namespace CLAM
 {
     namespace VM
     {
-	class SelTimeRegionPlotController : public SelPosPlotController
-	{
-	    Q_OBJECT
+		class SelTimeRegionPlotController : public SelPosPlotController
+		{
+			Q_OBJECT
 
-	public:
-	    SelTimeRegionPlotController();
-	    virtual ~SelTimeRegionPlotController();
+		public:
+			SelTimeRegionPlotController();
+			virtual ~SelTimeRegionPlotController();
 
-	    virtual void SetSelPos(const TData& value);
-	    virtual void Draw();
+			virtual void SetSelPos(const TData& value);
+			virtual void Draw();
 
-	    void SetRegionColor(Color c);
-	    void SetKeyShiftPressed(bool pr);
+			void SetRegionColor(Color c);
+			void SetKeyShiftPressed(bool pr);
 
-	    void UpdateTimePos(const TData& time);
-	    void StopPlaying(const TData& time);
+			void UpdateTimePos(const TData& time);
+			void StopPlaying(const TData& time);
 
-	    virtual bool IsPlayable();
+			virtual bool IsPlayable();
 	    
-	signals:
-	    void selectedRegion(MediaTime);
-	    
-	    void currentPlayingTime(float);
-	    void stopPlaying(float);
-
-	    void startPlaying();
-	    void stopPlaying();
+		signals:
+			void selectedRegion(MediaTime);
+			void currentPlayingTime(float);
+			void stopPlaying(float);
+			void startPlaying();
+			void stopPlaying();
 			
-	protected:
-	    TData _sampleRate;
-	    TData _duration;
+		protected:
+			TData mSampleRate;
+			TData mDuration;
 
-	    virtual void SetHBounds(const TData& left,const TData& right);
-	    virtual void SetVBounds(const TData& bottom,const TData& top);
+			virtual void SetHBounds(const TData& left,const TData& right);
+			virtual void SetVBounds(const TData& bottom,const TData& top);
 
-	    bool CanDrawSelectedPos();
+			bool CanDrawSelectedPos();
 
-	private:
-	    RegionMarker _rMarker;
-	    bool _keyShiftPressed;
-	    bool _isPlaying;
+		private:
+			RegionMarker mRegionMarker;
+			bool         mKeyShiftPressed;
+			bool         mIsPlaying;
 				
-	    TData GetBeginRegion() const;
-	    TData GetEndRegion() const;
-	    void SetBeginRegion(const TData& value);
-	    void SetEndRegion(const TData& value);
+			TData GetBeginRegion() const;
+			TData GetEndRegion() const;
+			void SetBeginRegion(const TData& value);
+			void SetEndRegion(const TData& value);
 
-	    MediaTime GetRegionTime() const;
+			MediaTime GetRegionTime() const;
 	    
-	};
+		};
     }
 }
 

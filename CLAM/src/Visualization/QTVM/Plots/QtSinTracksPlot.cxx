@@ -29,153 +29,148 @@ namespace CLAM
 {
     namespace VM
     {
-	QtSinTracksPlot::QtSinTracksPlot(QWidget* parent, const char * name, WFlags f) 
-	    : QtPresentation(parent,name,f)
-	{
-	    SetPlotController();
-	    InitSinTracksPlot();
-	    Connect();
-	}
+		QtSinTracksPlot::QtSinTracksPlot(QWidget* parent, const char * name, WFlags f) 
+			: QtPresentation(parent,name,f)
+		{
+			SetPlotController();
+			InitSinTracksPlot();
+			Connect();
+		}
 
-	QtSinTracksPlot::~QtSinTracksPlot()
-	{
-	}
+		QtSinTracksPlot::~QtSinTracksPlot()
+		{
+		}
 
-	void QtSinTracksPlot::SetData(const Segment& segment)
-	{
-	    ((SinTracksPlotController*)_controller)->SetData(segment);
-	}
+		void QtSinTracksPlot::SetData(const Segment& segment)
+		{
+			((SinTracksPlotController*)mController)->SetData(segment);
+		}
 
-	void QtSinTracksPlot::SetData(const Array< SpectralPeakArray >& peakMtx, 
-				      const TData& sr, const TData& dur)
-	{
-	    ((SinTracksPlotController*)_controller)->SetData(peakMtx,sr,dur);
-	}
+		void QtSinTracksPlot::SetData(const Array< SpectralPeakArray >& peakMtx, 
+									  const TData& sr, const TData& dur)
+		{
+			((SinTracksPlotController*)mController)->SetData(peakMtx,sr,dur);
+		}
 
-	void QtSinTracksPlot::SetDialColor(Color c)
-	{
-	    ((SinTracksPlotController*)_controller)->SetDialColor(c);
-	}
+		void QtSinTracksPlot::SetDialColor(Color c)
+		{
+			((SinTracksPlotController*)mController)->SetDialColor(c);
+		}
 
-	void QtSinTracksPlot::SetRegionColor(Color c)
-	{
-	    ((SinTracksPlotController*)_controller)->SetRegionColor(c);
-	}
+		void QtSinTracksPlot::SetRegionColor(Color c)
+		{
+			((SinTracksPlotController*)mController)->SetRegionColor(c);
+		}
 
-	void QtSinTracksPlot::updateRegion(MediaTime time)
-	{
-	    _labelsGroup->UpdateLabels(time);
-	}
+		void QtSinTracksPlot::updateRegion(MediaTime time)
+		{
+			mLabelsGroup->UpdateLabels(time);
+		}
 
-	void QtSinTracksPlot::keyPressEvent(QKeyEvent* e)
-	{
-	    switch(e->key())
-	    {
-		case Qt::Key_Shift:
-		    ((SinTracksPlotController*)_controller)->SetKeyShiftPressed(true);
-		    break;
+		void QtSinTracksPlot::keyPressEvent(QKeyEvent* e)
+		{
+			switch(e->key())
+			{
+				case Qt::Key_Shift:
+					((SinTracksPlotController*)mController)->SetKeyShiftPressed(true);
+					break;
 
-		case Qt::Key_Insert:
-		    ((SinTracksPlotController*)_controller)->SetKeyInsertPressed(true); 
-		    break;
+				case Qt::Key_Insert:
+					((SinTracksPlotController*)mController)->SetKeyInsertPressed(true); 
+					break;
 						
-		case Qt::Key_Delete:
-		    ((SinTracksPlotController*)_controller)->SetKeyDeletePressed(true); 
-		    break;
+				case Qt::Key_Delete:
+					((SinTracksPlotController*)mController)->SetKeyDeletePressed(true); 
+					break;
 
-		default:
-		    break;
-	    }
-	}
+				default:
+					break;
+			}
+		}
 
-	void QtSinTracksPlot::keyReleaseEvent( QKeyEvent* e)
-	{
-	    switch(e->key())
-	    {
-		case Qt::Key_Shift:
-		    ((SinTracksPlotController*)_controller)->SetKeyShiftPressed(false);			
-		    break;
+		void QtSinTracksPlot::keyReleaseEvent( QKeyEvent* e)
+		{
+			switch(e->key())
+			{
+				case Qt::Key_Shift:
+					((SinTracksPlotController*)mController)->SetKeyShiftPressed(false);			
+					break;
 
-		case Qt::Key_Insert:
-		    ((SinTracksPlotController*)_controller)->SetKeyInsertPressed(false); 
-		    break;
+				case Qt::Key_Insert:
+					((SinTracksPlotController*)mController)->SetKeyInsertPressed(false); 
+					break;
 						
-		case Qt::Key_Delete:
-		    ((SinTracksPlotController*)_controller)->SetKeyDeletePressed(false); 
-		    break;
+				case Qt::Key_Delete:
+					((SinTracksPlotController*)mController)->SetKeyDeletePressed(false); 
+					break;
 
-		default:
-		    break;
-	    }
-	}
+				default:
+					break;
+			}
+		}
 
-	void QtSinTracksPlot::SetPlotController()
-	{			
-	    SetController(new SinTracksPlotController());		
-	}		
+		void QtSinTracksPlot::SetPlotController()
+		{			
+			SetController(new SinTracksPlotController());		
+		}		
 
-	void QtSinTracksPlot::Connect()
-	{
-	    // Connections
-	    connect(((SinTracksPlotController*)_controller),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
-	}
+		void QtSinTracksPlot::Connect()
+		{
+			// Connections
+			connect(((SinTracksPlotController*)mController),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
+		}
 
-	void QtSinTracksPlot::InitSinTracksPlot()
-	{
-	    QHBoxLayout* panel = new QHBoxLayout;
+		void QtSinTracksPlot::InitSinTracksPlot()
+		{
+			QHBoxLayout* panel = new QHBoxLayout;
+			panel->addStretch(1);
 			
-	    QFrame* lefthole = new QFrame(this);
-	    lefthole->setFixedSize(50,30);
-	    panel->addWidget(lefthole);
+			mLabelsGroup = new TimeSegmentLabelsGroup(this);
+			mLabelsGroup->setMinimumSize(186,25);
+			panel->addWidget(mLabelsGroup);
 
-	    panel->addStretch(1);
-			
-	    _labelsGroup = new TimeSegmentLabelsGroup(this);
-	    _labelsGroup->setMinimumSize(186,25);
-	    panel->addWidget(_labelsGroup);
+			QFrame* righthole = new QFrame(this);
+			righthole->setFixedSize(20,30);
+			panel->addWidget(righthole);
 
-	    QFrame* righthole = new QFrame(this);
-	    righthole->setFixedSize(20,30);
-	    panel->addWidget(righthole);
+			AddToMainLayout(panel);
+		}
 
-	    AddToMainLayout(panel);
-	}
+		void QtSinTracksPlot::DisplayBackgroundBlack()
+		{
+			SetBackgroundColor(VMColor::Black());
+			SetDialColor(VMColor::Red());
+			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Orange());
+		}
 
-	void QtSinTracksPlot::DisplayBackgroundBlack()
-	{
-	    SetBackgroundColor(VMColor::Black());
-	    SetDialColor(VMColor::Red());
-	    SetRegionColor(VMColor::LightGray());
-	    SetMarksColor(VMColor::Orange());
-	}
+		void QtSinTracksPlot::DisplayBackgroundWhite()
+		{
+			SetBackgroundColor(VMColor::White());
+			SetDialColor(VMColor::Black());
+			SetRegionColor(VMColor::LightGray());
+			SetMarksColor(VMColor::Red());
+		}
 
-	void QtSinTracksPlot::DisplayBackgroundWhite()
-	{
-	    SetBackgroundColor(VMColor::White());
-	    SetDialColor(VMColor::Black());
-	    SetRegionColor(VMColor::LightGray());
-	    SetMarksColor(VMColor::Red());
-	}
+		void QtSinTracksPlot::SetMarks(std::vector<unsigned>& marks)
+		{
+			((SinTracksPlotController*)mController)->SetMarks(marks);
+		}
 
-	void QtSinTracksPlot::SetMarks(std::vector<unsigned>& marks)
-	{
-	    ((SinTracksPlotController*)_controller)->SetMarks(marks);
-	}
+		std::vector<unsigned>& QtSinTracksPlot::GetMarks()
+		{
+			return ((SinTracksPlotController*)mController)->GetMarks();
+		}
 
-	std::vector<unsigned>& QtSinTracksPlot::GetMarks()
-	{
-	    return ((SinTracksPlotController*)_controller)->GetMarks();
-	}
+		void QtSinTracksPlot::SetMarksColor(Color c)
+		{
+			((SinTracksPlotController*)mController)->SetMarksColor(c);
+		}
 
-	void QtSinTracksPlot::SetMarksColor(Color c)
-	{
-	    ((SinTracksPlotController*)_controller)->SetMarksColor(c);
-	}
-
-	std::vector<QString> QtSinTracksPlot::GetSegmentationTags()
-	{
-	    return ((SinTracksPlotController*)_controller)->GetTags();
-	}
+		std::vector<QString> QtSinTracksPlot::GetSegmentationTags()
+		{
+			return ((SinTracksPlotController*)mController)->GetTags();
+		}
 
     }
 }

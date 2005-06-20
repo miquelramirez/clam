@@ -30,31 +30,29 @@ namespace CLAM
 	namespace VM
 	{
 	      
-	       /** 
-	        * Allows viewing a single spectrum with peaks.
-	        *
-	        * @ingroup QTVM
-	        */
+		/** 
+		 * Allows viewing a single spectrum with peaks.
+		 *
+		 * @ingroup QTVM
+		 */
 
 		class QtSpectrumAndPeaksPlot : public QtSpectrumPlot
 		{
 			Q_OBJECT
 
-			public:
-				QtSpectrumAndPeaksPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0);
-				virtual ~QtSpectrumAndPeaksPlot();
+		public:
+			QtSpectrumAndPeaksPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0);
+			~QtSpectrumAndPeaksPlot();
 
-		                void SetData(const Spectrum& spec,const SpectralPeakArray& peaks);
-				void SetPeaksColor(Color cline,Color cpoint);
+			void SetData(const Spectrum& spec,const SpectralPeakArray& peaks);
+			void SetPeaksColor(Color cline,Color cpoint);
 
-			protected:
-				void SetData(const Spectrum& spec);
-
-				virtual void SetPlotController();
-				virtual void Connect();
-
-				virtual void DisplayBackgroundBlack();
-				virtual void DisplayBackgroundWhite();
+		protected:
+			void SetData(const Spectrum& spec);
+			void SetPlotController();
+			void Connect();
+			void DisplayBackgroundBlack();
+			void DisplayBackgroundWhite();
 			
 		};
 	}

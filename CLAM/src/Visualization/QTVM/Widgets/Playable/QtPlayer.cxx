@@ -29,119 +29,119 @@ namespace CLAM
 {
     namespace VM
     {
-	QtPlayer::QtPlayer(QWidget* parent) 
-	    : QWidget(parent)
-	{	       
-	    InitWidgets();
-	    SetColorMap(CLAM::VM::WindowMode);
-	}
+		QtPlayer::QtPlayer(QWidget* parent) 
+			: QWidget(parent)
+		{	       
+			InitWidgets();
+			SetColorMap(CLAM::VM::WindowMode);
+		}
 		
-	QtPlayer::~QtPlayer()
-	{
-	}
+		QtPlayer::~QtPlayer()
+		{
+		}
 
-	void QtPlayer::InitWidgets()
-	{
-	    winBackground = this->paletteBackgroundColor();
+		void QtPlayer::InitWidgets()
+		{
+			winBackground = this->paletteBackgroundColor();
 
-	    layout = new QHBoxLayout(this);
+			layout = new QHBoxLayout(this);
 	    
-	    container = new QFrame(this);
-	    container->setFixedSize(75,30);
+			container = new QFrame(this);
+			container->setFixedSize(75,30);
 	   
-	    _play = new QPushButton(container);
-	    _play->setFixedSize(25,20);
-	    _play->setGeometry(0,5,25,20);
-	    QToolTip::add(_play,"Play");
+			mPlay = new QPushButton(container);
+			mPlay->setFixedSize(25,20);
+			mPlay->setGeometry(0,5,25,20);
+			QToolTip::add(mPlay,"Play");
 
-	    _pause = new QPushButton(container);
-	    _pause->setFixedSize(25,20);
-	    _pause->setGeometry(_play->width(),_play->y(),25,20);
-	    QToolTip::add(_pause,"Pause");
+			mPause = new QPushButton(container);
+			mPause->setFixedSize(25,20);
+			mPause->setGeometry(mPlay->width(),mPlay->y(),25,20);
+			QToolTip::add(mPause,"Pause");
 
-	    _stop = new QPushButton(container);
-	    _stop->setFixedSize(25,20);
-	    _stop->setGeometry(_pause->x()+_pause->width(),_play->y(),25,20);
-	    QToolTip::add(_stop,"Stop");
+			mStop = new QPushButton(container);
+			mStop->setFixedSize(25,20);
+			mStop->setGeometry(mPause->x()+mPause->width(),mPlay->y(),25,20);
+			QToolTip::add(mStop,"Stop");
 
-	    layout->addWidget(container);
+			layout->addWidget(container);
 
-	    // Connections
-	    connect(_play,SIGNAL(clicked()),this,SLOT(play()));
-	    connect(_pause,SIGNAL(clicked()),this,SLOT(pause()));
-	    connect(_stop,SIGNAL(clicked()),this,SLOT(stop()));
-	}
+			// Connections
+			connect(mPlay,SIGNAL(clicked()),this,SLOT(play()));
+			connect(mPause,SIGNAL(clicked()),this,SLOT(pause()));
+			connect(mStop,SIGNAL(clicked()),this,SLOT(stop()));
+		}
 
-	 void QtPlayer::SetColorMap(ColorMap map)
-	 {
-	     switch(map)
-	     {
-		 case CLAM::VM::WindowMode:
-		     WindowModeCM();
-		     break;
-		 case CLAM::VM::BlackBackground:
-		     BlackBackgroundCM();
-		     break;
-		 case CLAM::VM::WhiteBackground:
-		     WhiteBackgroundCM();
-		     break;
-		 default:
-		     break;
-	     }
-	 }
+		void QtPlayer::SetColorMap(ColorMap map)
+		{
+			switch(map)
+			{
+				case CLAM::VM::WindowMode:
+					WindowModeCM();
+					break;
+				case CLAM::VM::BlackBackground:
+					BlackBackgroundCM();
+					break;
+				case CLAM::VM::WhiteBackground:
+					WhiteBackgroundCM();
+					break;
+				default:
+					break;
+			}
+		}
 
-	void QtPlayer::WindowModeCM()
-	{
-	    this->setPaletteBackgroundColor(winBackground);
-	    container->setPaletteBackgroundColor(winBackground);
-	    _play->setPaletteBackgroundColor(winBackground);
-	    _pause->setPaletteBackgroundColor(winBackground);
-	    _stop->setPaletteBackgroundColor(winBackground);
+		void QtPlayer::WindowModeCM()
+		{
+			this->setPaletteBackgroundColor(winBackground);
+			container->setPaletteBackgroundColor(winBackground);
+			mPlay->setPaletteBackgroundColor(winBackground);
+			mPause->setPaletteBackgroundColor(winBackground);
+			mStop->setPaletteBackgroundColor(winBackground);
 
-	    QPixmap iconPlay((const char**)icon_play);
-	    QPixmap iconPause((const char**)icon_pause);
-	    QPixmap iconStop((const char**)icon_stop);
+			QPixmap iconPlay((const char**)icon_play);
+			QPixmap iconPause((const char**)icon_pause);
+			QPixmap iconStop((const char**)icon_stop);
 
-	    _play->setPixmap(iconPlay);
-	    _pause->setPixmap(iconPause);
-	    _stop->setPixmap(iconStop);
-	}
+			mPlay->setPixmap(iconPlay);
+			mPause->setPixmap(iconPause);
+			mStop->setPixmap(iconStop);
+		}
 
-	void QtPlayer::BlackBackgroundCM()
-	{
-	    QColor bkcolor(0,0,0);
-	    this->setPaletteBackgroundColor(bkcolor);
-	    container->setPaletteBackgroundColor(bkcolor);
-	    _play->setPaletteBackgroundColor(bkcolor);
-	    _pause->setPaletteBackgroundColor(bkcolor);
-	    _stop->setPaletteBackgroundColor(bkcolor);
+		void QtPlayer::BlackBackgroundCM()
+		{
+			QColor bkcolor(0,0,0);
+			this->setPaletteBackgroundColor(bkcolor);
+			container->setPaletteBackgroundColor(bkcolor);
+			mPlay->setPaletteBackgroundColor(bkcolor);
+			mPause->setPaletteBackgroundColor(bkcolor);
+			mStop->setPaletteBackgroundColor(bkcolor);
 
-	    QPixmap iconPlay((const char**)icon_play_cyan);
-	    QPixmap iconPause((const char**)icon_pause_cyan);
-	    QPixmap iconStop((const char**)icon_stop_cyan);
+			QPixmap iconPlay((const char**)icon_play_cyan);
+			QPixmap iconPause((const char**)icon_pause_cyan);
+			QPixmap iconStop((const char**)icon_stop_cyan);
 
-	    _play->setPixmap(iconPlay);
-	    _pause->setPixmap(iconPause);
-	    _stop->setPixmap(iconStop);
-	}
+			mPlay->setPixmap(iconPlay);
+			mPause->setPixmap(iconPause);
+			mStop->setPixmap(iconStop);
+		}
 
-	void QtPlayer::WhiteBackgroundCM()
-	{
-	    QColor bkcolor(255,255,255);
-	    this->setPaletteBackgroundColor(bkcolor);
-	    container->setPaletteBackgroundColor(bkcolor);
-	    _play->setPaletteBackgroundColor(bkcolor);
-	    _pause->setPaletteBackgroundColor(bkcolor);
-	    _stop->setPaletteBackgroundColor(bkcolor);
+		void QtPlayer::WhiteBackgroundCM()
+		{
+			QColor bkcolor(255,255,255);
+			this->setPaletteBackgroundColor(bkcolor);
+			container->setPaletteBackgroundColor(bkcolor);
+			mPlay->setPaletteBackgroundColor(bkcolor);
+			mPause->setPaletteBackgroundColor(bkcolor);
+			mStop->setPaletteBackgroundColor(bkcolor);
 
-	    QPixmap iconPlay((const char**)icon_play);
-	    QPixmap iconPause((const char**)icon_pause);
-	    QPixmap iconStop((const char**)icon_stop);
+			QPixmap iconPlay((const char**)icon_play);
+			QPixmap iconPause((const char**)icon_pause);
+			QPixmap iconStop((const char**)icon_stop);
 
-	    _play->setPixmap(iconPlay);
-	    _pause->setPixmap(iconPause);
-	    _stop->setPixmap(iconStop); 
-	}
+			mPlay->setPixmap(iconPlay);
+			mPause->setPixmap(iconPause);
+			mStop->setPixmap(iconStop); 
+		}
 		
     }
 }

@@ -11,49 +11,48 @@ namespace CLAM
 {
     namespace VM
     {
-	class BPFEditorController;
+		class BPFEditorController;
 
-	class BPFEditorDisplaySurface : public QGLWidget
-	{
-	    Q_OBJECT
+		class BPFEditorDisplaySurface : public QGLWidget
+		{
+			Q_OBJECT
 
-	public:
-	    BPFEditorDisplaySurface(QWidget* parent=0);
-	    ~BPFEditorDisplaySurface();
+		public:
+			BPFEditorDisplaySurface(QWidget* parent=0);
+			~BPFEditorDisplaySurface();
 
-	    void SetController(BPFEditorController* controller);
-	    void SetBackgroundColor(const float& r, const float& g, const float& b);
+			void SetController(BPFEditorController* controller);
+			void SetBackgroundColor(const float& r, const float& g, const float& b);
 
-	private slots:
-	    void updateView(GLView);
-	    void changeCursor(QCursor);
+		private slots:
+			void updateView(GLView);
+			void changeCursor(QCursor);
+			void startTimer();
+			void stopTimer();
 
-	    void startTimer();
-	    void stopTimer();
+		protected:
+			void paintGL(); 
+			void mousePressEvent(QMouseEvent* e);
+			void mouseReleaseEvent(QMouseEvent* e);
+			void mouseMoveEvent(QMouseEvent* e);
+			void keyReleaseEvent(QKeyEvent * e);
+			void resizeEvent(QResizeEvent *e);
+			void enterEvent(QEvent *e); 
+			void leaveEvent(QEvent *e); 
 
-	protected:
-	    void paintGL(); 
+		private:
+			GLView               mView;
+			float                mRed;
+			float                mGreen; 
+			float                mBlue;
+			BPFEditorController* mController;
+			int                  mWidth;
+			int                  mHeight;
+			volatile bool        mDoResize;
+			QTimer*              mTimer;
 
-	    void mousePressEvent(QMouseEvent* e);
-	    void mouseReleaseEvent(QMouseEvent* e);
-	    void mouseMoveEvent(QMouseEvent* e);
-	    void keyReleaseEvent(QKeyEvent * e);
-
-	    void resizeEvent(QResizeEvent *e);
-
-	    void enterEvent(QEvent *e); 
-	    void leaveEvent(QEvent *e); 
-
-	private:
-	    GLView mView;
-	    float mRed, mGreen, mBlue;
-	    BPFEditorController* mController;
-	    int mWidth, mHeight;
-	    volatile bool mDoResize;
-	    QTimer* mTimer;
-
-	    enum { TIMER_INTERVAL=10 };
-	};
+			enum { TIMER_INTERVAL=10 };
+		};
     }
 }
 

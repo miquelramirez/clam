@@ -8,39 +8,38 @@ namespace CLAM
 {
     namespace VM
     {
-	class Player;
+		class Player;
 		
-	class QtMultiPlayer : public QtPlayer
-	{
-	    Q_OBJECT
+		class QtMultiPlayer : public QtPlayer
+		{
+			Q_OBJECT
 
-	public:
-	    QtMultiPlayer(QWidget* parent=0);
-	    ~QtMultiPlayer();
+		public:
+			QtMultiPlayer(QWidget* parent=0);
+			virtual ~QtMultiPlayer();
 
-	    void SetPlaySegment(const MediaTime& time);
-	    bool IsPlaying();
+			void SetPlaySegment(const MediaTime& time);
+			bool IsPlaying();
 
-	    void SetSlotPlayingTime(Slotv1<TData>& slot);
-	    void SetSlotStopPlaying(Slotv1<TData>& slot);
+			void SetSlotPlayingTime(Slotv1<TData>& slot);
+			void SetSlotStopPlaying(Slotv1<TData>& slot);
 		
         public slots:
-	    virtual void play();
-	    virtual void pause();
-	    virtual void stop();
+			virtual void play();
+			virtual void pause();
+			virtual void stop();
 
-	protected:
-	    std::vector<Player*> mPlayers;
-	    int mCurrentPlayer;
-	    bool mAllPlayers;
-	    		
-	    void AddPlayer(Player* player);
+		protected:
+			std::vector<Player*> mPlayers;
+			int                  mCurrentPlayer;
+			bool                 mAllPlayers;
+	    	
+			virtual void SetCurrentPlayer(int playerID)=0;
 
-	    virtual void SetCurrentPlayer(int playerID)=0;
-
-	    void AllPlayers(bool all);					
+			void AddPlayer(Player* player);
+			void AllPlayers(bool all);					
 	   
-	};
+		};
     }
 }
 

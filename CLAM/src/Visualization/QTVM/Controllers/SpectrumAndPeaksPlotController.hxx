@@ -32,23 +32,22 @@ namespace CLAM
 	{
 		class SpectrumAndPeaksPlotController : public SpectrumPlotController
 		{
-			public:
-				SpectrumAndPeaksPlotController();
-				virtual ~SpectrumAndPeaksPlotController();
+		public:
+			SpectrumAndPeaksPlotController();
+			~SpectrumAndPeaksPlotController();
 
-				void SetData(const Spectrum& spec,const SpectralPeakArray& peaks);
-				void SetPeaksColor(Color cline,Color cpoint);
-				void Draw();
+			void SetData(const Spectrum& spec,const SpectralPeakArray& peaks);
+			void SetPeaksColor(Color cline,Color cpoint);
+			void Draw();
 
-			private:
-				SpectralPeakArray _peaks;
-				DataArray _processedPeaks;
-				DataArray _cacheData;
-		                
-				SpectralPeaksRenderer _peaksRenderer;
+		private:
+			SpectralPeakArray     mPeaks;
+			DataArray             mProcessedPeaks;
+			DataArray             mCacheData;        
+			SpectralPeaksRenderer mPeaksRenderer;
 
-				void CachePeaksData();
-				void ProcessPeaksData();
+			void CachePeaksData();
+			void ProcessPeaksData();
 		};
 	}
 }

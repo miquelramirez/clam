@@ -8,11 +8,11 @@ namespace CLAM
 	namespace VM
 	{
 		BPFEditorDisplaySurface::BPFEditorDisplaySurface(QWidget* parent)
-			: QGLWidget(parent), 
-			  mController(0),
-			  mWidth(0),mHeight(0),
-			  mDoResize(false),
-			  mTimer(0)
+			: QGLWidget(parent)
+			, mController(0)
+			, mWidth(0),mHeight(0)
+			, mDoResize(false)
+			, mTimer(0)
 		{
 			setMouseTracking(true);
 			setFocusPolicy(StrongFocus);
@@ -190,7 +190,7 @@ namespace CLAM
 			}
 		}
 
-	        void BPFEditorDisplaySurface::stopTimer()
+		void BPFEditorDisplaySurface::stopTimer()
 		{
 		    if(mTimer)
 		    {
@@ -201,13 +201,13 @@ namespace CLAM
 		    }
 		}
 
-	        void BPFEditorDisplaySurface::enterEvent(QEvent *e)
+		void BPFEditorDisplaySurface::enterEvent(QEvent *e)
 		{
 		    mController->MouseOverDisplay(true);
 		    QWidget::enterEvent(e);
 		}
 
-	        void BPFEditorDisplaySurface::leaveEvent(QEvent *e)
+		void BPFEditorDisplaySurface::leaveEvent(QEvent *e)
 		{
 		    mController->MouseOverDisplay(false);
 		    QWidget::leaveEvent(e);

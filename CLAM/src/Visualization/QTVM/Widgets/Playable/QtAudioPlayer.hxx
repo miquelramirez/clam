@@ -30,17 +30,17 @@ namespace CLAM
 {
     namespace VM
     {
-	class QtAudioPlayer : public QtSinglePlayer
-	{
-	public:
-	    QtAudioPlayer(QWidget* parent=0);
-	    ~QtAudioPlayer();
+		class QtAudioPlayer : public QtSinglePlayer
+		{
+		public:
+			QtAudioPlayer(QWidget* parent=0);
+			~QtAudioPlayer();
 
-	    void SetData(std::vector<const Audio*> data, bool setTime);
+			void SetData(std::vector<const Audio*> data, bool setTime);
 
-	    void SetLeftChannelMuted(bool b);
-	    void SetRightChannelMuted(bool b);
-	};
+			void SetLeftChannelMuted(bool b);
+			void SetRightChannelMuted(bool b);
+		};
     }
 }
 

@@ -29,51 +29,50 @@ namespace CLAM
 {
     namespace VM
     {
-	class SpectrumPlotController : public SelPosPlotController
-	{
-	    Q_OBJECT
+		class SpectrumPlotController : public SelPosPlotController
+		{
+			Q_OBJECT
 
-	public:
-	    SpectrumPlotController();
-	    virtual ~SpectrumPlotController();
+		public:
+			SpectrumPlotController();
+			virtual ~SpectrumPlotController();
 
-	    void SetData(const Spectrum& spec);
-	    void SetDataColor(Color c);
-	    void SurfaceDimensions(int w,int h);
+			void SetData(const Spectrum& spec);
+			void SetDataColor(Color c);
+			void SurfaceDimensions(int w,int h);
 
-	    virtual void Draw();
-	    void SetMousePos(TData x,TData y);
+			virtual void Draw();
+			void SetMousePos(TData x,TData y);
 
-	    virtual void SetSelPos(const TData& value);
+			void SetSelPos(const TData& value);
 
-	signals:
-	    void mag(TData);
-	    void freq(TData);
+		signals:
+			void mag(TData);
+			void freq(TData);
 
-	protected:
-	    virtual void SetHBounds(const TData& left,const TData& right);				
-	    virtual void SetVBounds(const TData& bottom,const TData& top);
-	    void FullView();				
-	    TData GetSpectralRange() const;				
-	    bool MustProcessData() const;
+		protected:
+			void SetHBounds(const TData& left,const TData& right);				
+			void SetVBounds(const TData& bottom,const TData& top);
+			void FullView();				
+			TData GetSpectralRange() const;				
+			bool MustProcessData() const;
 
-	private:
-	    Spectrum  _spec;
-	    DataRenderer _renderer;
-	    DataArray _magBuffer;
-	    DataArray _phaseBuffer;
-	    DataArray _processedData;
+		private:
+			Spectrum     mSpec;
+			DataRenderer mRenderer;
+			DataArray    mMagBuffer;
+			DataArray    mPhaseBuffer;
+			DataArray    mProcessedData;
+			bool         mMustProcessData;
+			TData        mSpectralRange;
 
-	    bool _mustProcessData;
-	    TData _spectralRange;
+			void AdaptSpectralData();
+			void CacheData();
+			void ProcessData();
+			int GetXMaxMajStep(int ref) const;				
+			int GetYMaxMajStep(int ref) const;
 
-	    void AdaptSpectralData();
-	    void CacheData();
-	    void ProcessData();
-	    int GetXMaxMajStep(int ref) const;				
-	    int GetYMaxMajStep(int ref) const;
-
-	};
+		};
     }
 }
 

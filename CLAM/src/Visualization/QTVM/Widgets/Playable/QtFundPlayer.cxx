@@ -26,20 +26,20 @@ namespace CLAM
 {
     namespace VM
     {
-	QtFundPlayer::QtFundPlayer(QWidget* parent) 
-	    : QtSinglePlayer(parent)
-	{
-	    SetPlayer(new FundPlayer());
-	}
+		QtFundPlayer::QtFundPlayer(QWidget* parent) 
+			: QtSinglePlayer(parent)
+		{
+			SetPlayer(new FundPlayer());
+		}
 		
-	QtFundPlayer::~QtFundPlayer()
-	{
-	}
+		QtFundPlayer::~QtFundPlayer()
+		{
+		}
 
-	void QtFundPlayer::SetData(const Segment& segment)
-	{
-	    ((FundPlayer*)_player)->SetData(segment);
-	}
+		void QtFundPlayer::SetData(const Segment& segment)
+		{
+			((FundPlayer*)mPlayer)->SetData(segment);
+		}
     }
 }
 

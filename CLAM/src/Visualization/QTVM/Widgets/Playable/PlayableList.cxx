@@ -26,21 +26,21 @@ namespace CLAM
 {
 	namespace VM
 	{
-		PlayableList::PlayablePlotsList PlayableList::_pList;
+		PlayableList::PlayablePlotList PlayableList::mList;
 
 		void PlayableList::Add(PlayablePlot* plot)
 		{
-			_pList.push_back(plot);
+			mList.push_back(plot);
 		}
 		
 		void PlayableList::Remove(PlayablePlot* plot)
 		{
-			PlayablePlotsList::iterator it = _pList.begin();
-			for(;it != _pList.end();it++)
+			PlayablePlotList::iterator it = mList.begin();
+			for(;it != mList.end();it++)
 			{
 				if((*it)==plot)
 				{
-					_pList.erase(it);
+					mList.erase(it);
 					break;
 				}
 			}
@@ -48,8 +48,8 @@ namespace CLAM
 		
 		void PlayableList::Stop()
 		{
-			PlayablePlotsList::iterator it = _pList.begin();
-			for(;it != _pList.end();it++)
+			PlayablePlotList::iterator it = mList.begin();
+			for(;it != mList.end();it++)
 			{
 				if((*it)->IsPlaying())
 				{

@@ -26,26 +26,22 @@ namespace CLAM
 	namespace VM
 	{
 		PlotController::PlotController()
-		{
-			_lBound = TData(0.0);
-			_rBound = TData(1.0);
-			_bBound = TData(0.0);
-			_tBound = TData(1.0);
-
-			_selPos = TData(0.0);
-			_hMin = TData(50.0);
-			_vMin = TData(50.0);
-		    _nSamples = 0; 
-			_vRange = TData(0.0);
-			_current = _nSamples;
-			_vcur = _vRange;
-
-			_hzRatio = 1.0;
-			_vzRatio = 1.0;
-
-			_isLeftButtonPressed=false;
-			_isAbleToEdit=false;
-			
+			: mLeftBound(TData(0.0))
+			, mRightBound(TData(1.0))
+			, mBottomBound(TData(0.0))
+			, mTopBound(TData(1.0))
+			, mSelPos(TData(0.0))
+			, mHMin(TData(50.0))
+			, mVMin(TData(50.0))
+			, mSamples(0) 
+			, mCurrent(0)
+			, mVRange(TData(0.0))
+			, mVCur(0)
+			, mHZRatio(1.0)
+			, mVZRatio(1.0)
+			, mIsLeftButtonPressed(false)
+			, mIsAbleToEdit(false)
+		{	
 			InitView();
 		}
 	
@@ -55,52 +51,52 @@ namespace CLAM
 
 		void PlotController::SetHBounds(const TData& left, const TData& right)
 		{
-			_lBound = left;
-			_rBound = right;
+			mLeftBound = left;
+			mRightBound = right;
 		}
 
 		void PlotController::SetVBounds(const TData& bottom, const TData& top)
 		{
-			_bBound = bottom;
-			_tBound = top;
+			mBottomBound = bottom;
+			mTopBound = top;
 		}
 
 		TData PlotController::GetLeftBound() const
 		{
-			return _lBound;
+			return mLeftBound;
 		}
 
 		TData PlotController::GetRightBound() const
 		{
-			return _rBound;
+			return mRightBound;
 		}
 
 		TData PlotController::GetBottomBound() const
 		{
-			return _bBound;
+			return mBottomBound;
 		}
 
 		TData PlotController::GetTopBound() const
 		{
-			return _tBound;
+			return mTopBound;
 		}
 
 		void PlotController::SetSelPos(const TData& value)
 		{
-			_selPos = value;
+			mSelPos = value;
 		}
 
 		TData PlotController::GetSelPos() const
 		{
-			return _selPos;
+			return mSelPos;
 		}
 
 		void PlotController::SetnSamples(const TSize& n)
 		{
-			_nSamples = n;
-			_current = TData(_nSamples);
+			mSamples = n;
+			mCurrent = TData(mSamples);
 			InitHRatio();
-			emit hZoomRatio(_hzRatio);
+			emit hZoomRatio(mHZRatio);
 			int hsv=GetHScrollValue();
 			emit hScrollMaxValue(GetnxPixels());
 			emit hScrollValue(hsv);
@@ -108,15 +104,15 @@ namespace CLAM
 
 		TSize PlotController::GetnSamples() const
 		{
-			return _nSamples;
+			return mSamples;
 		}
 
 		void PlotController::SetvRange(const TData& vr)
 		{
-			_vRange = vr;
-			_vcur = _vRange;
+			mVRange = vr;
+			mVCur = mVRange;
 			InitVRatio();
-			emit vZoomRatio(_vzRatio);
+			emit vZoomRatio(mVZRatio);
 			int vsv=GetVScrollValue();
 			emit vScrollMaxValue(GetnyPixels());
 			emit vScrollValue(vsv);
@@ -124,21 +120,21 @@ namespace CLAM
 
 		TData PlotController::GetvRange() const
 		{
-			return _vRange;
+			return mVRange;
 		}
 
 		void PlotController::HZoomIn()
 		{
-			if(_current/2.0f > GetHMin())
+			if(mCurrent/TData(2.0) > GetHMin())
 			{
-				_current /= 2.0f;
-				_view.right = _current;
+				mCurrent /= TData(2.0);
+				mView.right = mCurrent;
 				UpdateHBounds(true);
-				emit sendView(_view);
+				emit sendView(mView);
 				TData left = GetLeftBound();
 				TData right = GetRightBound();
-				_hzRatio /= 2.0;
-				emit hZoomRatio(_hzRatio);
+				mHZRatio /= 2.0;
+				emit hZoomRatio(mHZRatio);
 				emit hScrollMaxValue(GetnxPixels());
 				emit hScrollValue(GetHScrollValue());
 				SetHBounds(left,right);
@@ -148,16 +144,16 @@ namespace CLAM
 
 		void PlotController::HZoomOut()
 		{
-		    if(_current*2.0f <= GetnSamples())
+		    if(mCurrent*TData(2.0) <= GetnSamples())
 			{
-				_current *= 2.0f;
-				_view.right = _current;
+				mCurrent *= TData(2.0);
+				mView.right = mCurrent;
 				UpdateHBounds();
-				emit sendView(_view);
+				emit sendView(mView);
 				TData left = GetLeftBound();
 				TData right = GetRightBound();
-				_hzRatio *= 2.0;
-				emit hZoomRatio(_hzRatio);
+				mHZRatio *= 2.0;
+				emit hZoomRatio(mHZRatio);
 				emit hScrollMaxValue(GetnxPixels());
 				SetHBounds(left,right);
 				emit hScrollValue(GetHScrollValue());
@@ -167,16 +163,16 @@ namespace CLAM
 
 		void PlotController::VZoomIn()
 		{
-			if(_vcur/2.0f > GetVMin())
+			if(mVCur/TData(2.0) > GetVMin())
 			{
-				_vcur /= 2.0f;
-				_view.top = _vcur;
+				mVCur /= TData(2.0);
+				mView.top = mVCur;
 				UpdateVBounds(true);
-				emit sendView(_view);
+				emit sendView(mView);
 				TData bottom = GetBottomBound();
 				TData top = GetTopBound();
-				_vzRatio /= 2.0;
-				emit vZoomRatio(_vzRatio);
+				mVZRatio /= 2.0;
+				emit vZoomRatio(mVZRatio);
 				emit vScrollMaxValue(GetnyPixels());
 				emit vScrollValue(GetVScrollValue());
 				SetVBounds(bottom,top);
@@ -186,16 +182,16 @@ namespace CLAM
 
 		void PlotController::VZoomOut()
 		{
-			if(_vcur*2.0f <= GetvRange())
+			if(mVCur*TData(2.0) <= GetvRange())
 			{
-				_vcur *= 2.0f;
-				_view.top = _vcur;
+				mVCur *= TData(2.0);
+				mView.top = mVCur;
 				UpdateVBounds();
-				emit sendView(_view);
+				emit sendView(mView);
 				TData bottom = GetBottomBound();
 				TData top = GetTopBound();
-				_vzRatio *= 2.0;
-				emit vZoomRatio(_vzRatio);
+				mVZRatio *= 2.0;
+				emit vZoomRatio(mVZRatio);
 				emit vScrollMaxValue(GetnyPixels());
 				SetVBounds(bottom,top);
 				emit vScrollValue(GetVScrollValue());
@@ -205,35 +201,35 @@ namespace CLAM
 
 		void PlotController::SetHMin(const TData& min)
 		{
-			_hMin = min;
+			mHMin = min;
 		}
 
 		TData PlotController::GetHMin() const
 		{
-			return _hMin;
+			return mHMin;
 		}
 
 		void PlotController::SetVMin(const TData& min)
 		{
-			_vMin = min;
+			mVMin = min;
 		}
 
 		TData PlotController::GetVMin() const
 		{
-			return _vMin;
+			return mVMin;
 		}
 
 		void PlotController::InitView()
 		{
-			_view.left = 0.0f;
-			_view.right = 1.0f;
-			_view.bottom = 0.0f;
-			_view.top = 1.0f;
+			mView.left = 0.0f;
+			mView.right = 1.0f;
+			mView.bottom = 0.0f;
+			mView.top = 1.0f;
 
-			_viewport.x = 0;
-			_viewport.y = 0;
-			_viewport.w = 1;
-			_viewport.h = 1;
+			mViewport.x = 0;
+			mViewport.y = 0;
+			mViewport.w = 1;
+			mViewport.h = 1;
 		}
 
 		void PlotController::UpdateHBounds(bool zin)
@@ -242,23 +238,23 @@ namespace CLAM
 			left = GetLeftBound();
 			if(zin)
 			{
-				right = _current;
+				right = mCurrent;
 				TData pos = GetSelPos()-left;
 				if(IsVisibleSelPos())
 				{
-					if(pos >= (_current/2.0f))
+					if(pos >= (mCurrent/TData(2.0)))
 					{
-						left += pos-_current/2.0f;
+						left += pos-mCurrent/TData(2.0);
 					}
 				}
 				else
 				{
-					left += _current/2.0f;
+					left += mCurrent/TData(2.0);
 				}
 				if(right+left > GetnSamples())
 				{
 					right = TData(GetnSamples());
-					_view.right = right-left;
+					mView.right = right-left;
 				}
 				else
 				{
@@ -268,18 +264,18 @@ namespace CLAM
 			else
 			{
 				right = GetRightBound();
-				TData aux = _current/4.0f;
+				TData aux = mCurrent/TData(4.0);
 				left -= aux;	
 				right += aux;
 				if(left < 0)
 				{
-					left = 0.0f;
-					right = _current;
+					left = TData(0.0);
+					right = mCurrent;
 				}
 				if(right > GetnSamples())
 				{
 					right = TData(GetnSamples());
-					left = right-_current;
+					left = right-mCurrent;
 				}
 			}
 			SetHBounds(left,right);
@@ -291,12 +287,12 @@ namespace CLAM
 			bottom = GetBottomBound();
 			if(zin)
 			{
-				top = _vcur;
-				bottom += _vcur/2.0f;
+				top = mVCur;
+				bottom += mVCur/TData(2.0);
 				if(top+bottom > GetvRange())
 				{
 					top = GetvRange();
-					_view.top = top-bottom;
+					mView.top = top-bottom;
 				}
 				else
 				{
@@ -306,18 +302,18 @@ namespace CLAM
 			else
 			{
 				top = GetTopBound();
-				TData aux = _vcur/4.0f;
+				TData aux = mVCur/TData(4.0);
 				bottom -= aux;	
 				top += aux;
 				if(bottom < 0)
 				{
-					bottom = 0.0f;
-					top = _vcur;
+					bottom = TData(0.0);
+					top = mVCur;
 				}
 				if(top > GetvRange())
 				{
 					top = GetvRange();
-					bottom = top-_vcur;
+					bottom = top-mVCur;
 				}
 			}
 			SetVBounds(bottom,top);
@@ -332,7 +328,7 @@ namespace CLAM
 				n *= 2.0;
 				r *= 2.0;
 			}
-			_hzRatio = r/2.0;
+			mHZRatio = r/2.0;
 		}
 
 		void PlotController::InitVRatio()
@@ -344,13 +340,13 @@ namespace CLAM
 				n *= 2.0;
 				r *= 2.0;
 			}
-			_vzRatio = r/2.0;
+			mVZRatio = r/2.0;
 		}
 
 		void PlotController::SurfaceDimensions(int w,int h)
 		{
-			_viewport.w = w;
-			_viewport.h = h;
+			mViewport.w = w;
+			mViewport.h = h;
 
 			int hsv = GetHScrollValue();
 			emit hScrollMaxValue(GetnxPixels());
@@ -376,33 +372,33 @@ namespace CLAM
 			TData top = GetVCur();
 			top += bottom;
 			SetVBounds(bottom,top);
-			_view.bottom = GetBottomBound();
-			_view.top = GetTopBound();
-			emit sendView(_view);
+			mView.bottom = GetBottomBound();
+			mView.top = GetTopBound();
+			emit sendView(mView);
 			emit requestRefresh();
 		}
 
 		int PlotController::GetnxPixels() const
 		{
-			TData value = TData(GetnSamples())*TData(_viewport.w)/GetCurrent();
+			TData value = TData(GetnSamples())*TData(mViewport.w)/GetCurrent();
 			return int(value);
 		}
 
 		int PlotController::GetnyPixels() const
 		{
-			TData value = GetvRange()*TData(_viewport.h)/GetVCur();
+			TData value = GetvRange()*TData(mViewport.h)/GetVCur();
 			return int(value);
 		}
 
 		TData PlotController::GetCurrent() const
 		{
-			TData value = _current;
+			TData value = mCurrent;
 			return (value > GetnSamples()) ? TData(GetnSamples()) : value;
 		}
 
 		TData PlotController::GetVCur() const
 		{
-			TData value = _vcur;
+			TData value = mVCur;
 			return (value > GetvRange()) ? GetvRange() : value;
 		}
 
@@ -426,46 +422,46 @@ namespace CLAM
 
 		void PlotController::SetMousePos(TData x,TData y)
 		{
-			_mouseXPos=x;
-			_mouseYPos=y;
+			mMouseXPos=x;
+			mMouseYPos=y;
 		}
 
 		TData PlotController::GetMouseXPos() const
 		{
-			return _mouseXPos;
+			return mMouseXPos;
 		}
 
 		TData PlotController::GetMouseYPos() const
 		{
-			return _mouseYPos;
+			return mMouseYPos;
 		}
 
-	        void PlotController::SetLeftButtonPressed(bool pressed)
+		void PlotController::SetLeftButtonPressed(bool pressed)
 		{
-		    _isLeftButtonPressed=pressed;
+		    mIsLeftButtonPressed=pressed;
 		}
 
-	        bool PlotController::IsLeftButtonPressed()
+		bool PlotController::IsLeftButtonPressed()
 		{
-		    return _isLeftButtonPressed;
+		    return mIsLeftButtonPressed;
 		}
 
-	        void PlotController::LeaveMouse()
+		void PlotController::LeaveMouse()
 		{
-		    _isAbleToEdit=false;
+		    mIsAbleToEdit=false;
 		}
 
-	        void PlotController::EnterMouse()
+		void PlotController::EnterMouse()
 		{
-		    _isAbleToEdit=true;
+		    mIsAbleToEdit=true;
 		}
 
-                bool PlotController::IsAbleToEdit()
+		bool PlotController::IsAbleToEdit()
 		{
-		    return _isAbleToEdit;
+		    return mIsAbleToEdit;
 		}
 
-	        bool PlotController::IsPlayable()
+		bool PlotController::IsPlayable()
 		{
 		    return false;
 		}

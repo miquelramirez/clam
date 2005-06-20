@@ -36,81 +36,77 @@ namespace CLAM
 {
     namespace VM
     {
-	class TimeSegmentLabelsGroup;
-	class SingleLabel;
+		class TimeSegmentLabelsGroup;
+		class SingleLabel;
 
-	/**
-	 * Allows viewing Fundamental evolution along time.
-	 *
-	 * @ingroup QTVM
-	 */
+		/**
+		 * Allows viewing Fundamental evolution along time.
+		 *
+		 * @ingroup QTVM
+		 */
 	
-	class QtFundFreqPlot : public QtPresentation, public PlayablePlot
-	{
-	    Q_OBJECT
+		class QtFundFreqPlot : public QtPresentation, public PlayablePlot
+		{
+			Q_OBJECT
 
-	public:
-	    QtFundFreqPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
-	    ~QtFundFreqPlot();
+		public:
+			QtFundFreqPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
+			~QtFundFreqPlot();
 
-	    void SetData(const Segment& segment);
+			void SetData(const Segment& segment);
 
-	    void SetMarks(std::vector<unsigned>& marks);
-	    std::vector<unsigned>& GetMarks();
-	    void SetMarksColor(Color c);
+			void SetMarks(std::vector<unsigned>& marks);
+			std::vector<unsigned>& GetMarks();
+			void SetMarksColor(Color c);
 
-	    std::vector<QString> GetSegmentationTags();
+			std::vector<QString> GetSegmentationTags();
 
-	    void SetForegroundColor(Color c);
-	    void SetDialColor(Color c);
-	    void SetRegionColor(Color c);
+			void SetForegroundColor(Color c);
+			void SetDialColor(Color c);
+			void SetRegionColor(Color c);
 
-	signals:
-	    void regionTime(MediaTime);
+		signals:
+			void regionTime(MediaTime);
+			void currentPlayingTime(float);
+			void stopPlaying(float);
 
-	    void currentPlayingTime(float);
-	    void stopPlaying(float);
+		public slots:
+			void setCurrentPlayingTime(float);
+			void receivedStopPlaying(float);
 
-	public slots:
-	    void setCurrentPlayingTime(float);
-	    void receivedStopPlaying(float);
+		protected slots:
+			void initialYRulerRange(double,double);
+			void updateRegion(MediaTime);
 
-	protected slots:
-	    void initialYRulerRange(double,double);
-	    void updateRegion(MediaTime);
+		protected:
+			void keyPressEvent(QKeyEvent* e);
+			void keyReleaseEvent( QKeyEvent* e);
+			void hideEvent(QHideEvent* e);
+			void closeEvent(QCloseEvent* e);
 
-	protected:
-	    void keyPressEvent(QKeyEvent* e);
-	    void keyReleaseEvent( QKeyEvent* e);
+			void SetPlotController();
+			void Connect();
+			void DisplayBackgroundBlack();
+			void DisplayBackgroundWhite();
+			void SetPData(const Segment& seg);
 
-	    void hideEvent(QHideEvent* e);
-	    void closeEvent(QCloseEvent* e);
+		private:
+			Slotv1<TData> mSlotPlayingTimeReceived;
+			Slotv1<TData> mSlotStopPlayingReceived;
 
-	    void SetPlotController();
-	    void Connect();
+			TimeSegmentLabelsGroup* mLabelsGroup;
+			SingleLabel*            mLeftFreqLab; 
+			SingleLabel*            mRightFreqLab;
 
-	    void DisplayBackgroundBlack();
-	    void DisplayBackgroundWhite();
-
-	    void SetPData(const Segment& seg);
-
-	private:
-	    Slotv1<TData> mSlotPlayingTimeReceived;
-	    Slotv1<TData> mSlotStopPlayingReceived;
-
-	    TimeSegmentLabelsGroup* _labelsGroup;
-	    SingleLabel *_leftFreqLab, *_rightFreqLab;
-
-	    // holes
-	    QFrame *lefthole, *righthole;
+			// holes
+			QFrame *lefthole, *righthole;
 				
-	    void InitFundFreqPlot();
-	    void UpdateFreqLabels(MediaTime time);
-	    
-	    void PlayingTime(TData time);
-	    void StopPlaying(TData time);
+			void InitFundFreqPlot();
+			void UpdateFreqLabels(MediaTime time);
+			void PlayingTime(TData time);
+			void StopPlaying(TData time);
 
-	};
+		};
     }
 }
 

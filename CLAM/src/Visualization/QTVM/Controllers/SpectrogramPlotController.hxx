@@ -10,70 +10,70 @@ namespace CLAM
 {
     namespace VM
     {
-	class SpectrogramPlotController : public SelPosPlotController 
-	{
-	    Q_OBJECT
+		class SpectrogramPlotController : public SelPosPlotController 
+		{
+			Q_OBJECT
 
-	public:
-	    SpectrogramPlotController();
-	    ~SpectrogramPlotController();
+		public:
+			SpectrogramPlotController();
+			~SpectrogramPlotController();
 
-	    void SetData(const Array<Spectrum>& specMtx, const TData& dur);
-	    void SurfaceDimensions(int w,int h);
-	    void Draw();
+			void SetData(const Array<Spectrum>& specMtx, const TData& dur);
+			void SurfaceDimensions(int w,int h);
+			void Draw();
 
-	    void SetMousePos(TData x,TData y);
+			void SetMousePos(TData x,TData y);
 
-	    bool IsPlayable();
+			bool IsPlayable();
 
-	    std::vector<Color> GetColorScale(const int& size);
-	    std::vector<Color> GetGrayScale(const int& size);
+			std::vector<Color> GetColorScale(const int& size);
+			std::vector<Color> GetGrayScale(const int& size);
 
-	    void SetRenderingMode(CLAM::VM::SonogramCM colorMap);
+			void SetRenderingMode(CLAM::VM::SonogramCM colorMap);
 
-	    int FFTSize() const;
-	    int TotalSlices() const;
-	    int SpectralRange() const;
+			int FFTSize() const;
+			int TotalSlices() const;
+			int SpectralRange() const;
 
-	    void LeaveMouse();
+			void LeaveMouse();
 
-	signals:
-	    void sendLabels(QString, QString, QString);
+		signals:
+			void sendLabels(QString, QString, QString);
 
-	protected:
-	    void SetHBounds(const TData& left,const TData& right);
-	    void SetVBounds(const TData& bottom,const TData& top);
+		protected:
+			void SetHBounds(const TData& left,const TData& right);
+			void SetVBounds(const TData& bottom,const TData& top);
 
-	private:
-	    Array<Spectrum> mCacheData;
-	    std::vector< std::vector<TData> > mComputedData;
-	    SpectrogramRenderer mRenderer;
-	    TData mDuration;
-	    TData mSpectralRange;
-	    QtPalette mPalette;
-	    bool mMustProcessData;
+		private:
+			Array<Spectrum>                   mCacheData;
+			std::vector< std::vector<TData> > mComputedData;
+			SpectrogramRenderer               mRenderer;
+			TData                             mDuration;
+			TData                             mSpectralRange;
+			QtPalette                         mPalette;
+			bool                              mMustProcessData;
 
-	    enum { MaxSpectrums=513, MaxSpectrumSize=513};
+			enum { MaxSpectrums=513, MaxSpectrumSize=513};
 
-	    void ProcessData();
-	    void Colorize();
+			void ProcessData();
+			void Colorize();
 
-	    float ClampToRange(TData value) const;
+			float ClampToRange(TData value) const;
 	    
-	    void CacheData();
-	    void AdaptSpectralData();
+			void CacheData();
+			void AdaptSpectralData();
 
-	    void FullView();
+			void FullView();
 
-	    void ComputeIndexes();
+			void ComputeIndexes();
 
-	    QString TimeToStr(const TData& seconds);
+			QString TimeToStr(const TData& seconds);
 
-	    void ComputeData();
-	    TData MatrixBlockMean(const TIndex& firstRow, const TIndex& lastRow, 
-				  const TIndex& firstCol, const TIndex& lastCol);
+			void ComputeData();
+			TData MatrixBlockMean(const TIndex& firstRow, const TIndex& lastRow, 
+								  const TIndex& firstCol, const TIndex& lastCol);
 			
-	};
+		};
     }
 }
 

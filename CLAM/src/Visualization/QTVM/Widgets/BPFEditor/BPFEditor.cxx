@@ -15,24 +15,24 @@ namespace CLAM
 	namespace VM
 	{
 		BPFEditor::BPFEditor(QWidget* parent,const char* name,int eFlags)
-			: QWidget(parent,name),
-			  mEFlags(eFlags),
-			  mActivePlayer(true),
-			  mXRuler(0),
-			  mYRuler(0),
-			  mController(0),
-			  mDisplaySurface(0),
-			  mColorScheme(EBlackOverWhite),
-			  mVScroll(0),
-			  mHScroll(0),
-			  topLeftHole(0),
-			  topRightHole(0),
-			  bottomRightHole(0),
-			  playerHole(0),
-			  mHasPlayData(false),
-			  mWhiteOverBlackScheme(true)
+			: QWidget(parent,name)
+			, mEFlags(eFlags)
+			, mActivePlayer(true)
+			, mXRuler(0)
+			, mYRuler(0)
+			, mController(0)
+			, mDisplaySurface(0)
+			, mColorScheme(EBlackOverWhite)
+			, mVScroll(0)
+			, mHScroll(0)
+			, topLeftHole(0)
+			, topRightHole(0)
+			, bottomRightHole(0)
+			, playerHole(0)
+			, mHasPlayData(false)
+			, mWhiteOverBlackScheme(true)
 		{
-		        mSlotPlayingTimeReceived.Wrap(this,&BPFEditor::PlayingTime);
+			mSlotPlayingTimeReceived.Wrap(this,&BPFEditor::PlayingTime);
 			mSlotStopPlayingReceived.Wrap(this,&BPFEditor::StopPlaying);
 
 			InitBPFEditor();
@@ -58,11 +58,11 @@ namespace CLAM
 		{
 			mHasPlayData = false;
 			mController->SetData(bpf);
-			if(_player) 
+			if(mPlayer) 
 			{
 				if(mActivePlayer)
 				{
-					((QtBPFPlayer*)_player)->SetData(bpf);
+					((QtBPFPlayer*)mPlayer)->SetData(bpf);
 					mHasPlayData = true;
 				}
 			}
@@ -75,13 +75,13 @@ namespace CLAM
 
 		Melody& BPFEditor::GetMelody() 
 		{
-			if(_player) mMelody = ((QtBPFPlayer*)_player)->GetMelody();
+			if(mPlayer) mMelody = ((QtBPFPlayer*)mPlayer)->GetMelody();
 			return mMelody;
 		}
 
 		MIDIMelody& BPFEditor::GetMIDIMelody() 
 		{
-			if(_player) mMIDIMelody = ((QtBPFPlayer*)_player)->GetMIDIMelody();
+			if(mPlayer) mMIDIMelody = ((QtBPFPlayer*)mPlayer)->GetMIDIMelody();
 			return mMIDIMelody;;
 		}
 
@@ -89,13 +89,13 @@ namespace CLAM
 		{
 			mController->SetXRange(min,max,scale);
 			mXRuler->SetScale(scale);
-			if(_player)
+			if(mPlayer)
 			{
 				MediaTime time;
 				time.SetBegin(min);
 				time.SetEnd(max);
-				((QtBPFPlayer*)_player)->SetPlaySegment(time);
-				((QtBPFPlayer*)_player)->SetDuration(max-min);
+				((QtBPFPlayer*)mPlayer)->SetPlaySegment(time);
+				((QtBPFPlayer*)mPlayer)->SetDuration(max-min);
 			}
 			AdjustLeft(min,max,false);
 		}
@@ -104,7 +104,7 @@ namespace CLAM
 		{
 			mController->SetYRange(min,max,scale);
 			mYRuler->SetScale(scale);
-			if(_player) ((QtBPFPlayer*)_player)->SetPitchBounds(min,max);
+			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetPitchBounds(min,max);
 			AdjustLeft(min,max);
 		}
 
@@ -132,7 +132,7 @@ namespace CLAM
 
 		void BPFEditor::SetActivePlayer(bool active)
 		{
-			if(_player)
+			if(mPlayer)
 			{
 				if(active)
 				{
@@ -147,7 +147,7 @@ namespace CLAM
 
 		void BPFEditor::SetAudioPtr(const Audio* audio)
 		{
-			if(_player) ((QtBPFPlayer*)_player)->SetAudioPtr(audio);
+			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetAudioPtr(audio);
 		}
 
 		void BPFEditor::keyPressEvent(QKeyEvent* e)
@@ -168,9 +168,9 @@ namespace CLAM
 					}
 					break;
 					
-			        case Qt::Key_Control:
-				        mController->SetKeyControlPressed(true);
-				        break;
+				case Qt::Key_Control:
+					mController->SetKeyControlPressed(true);
+					break;
 									
 				default:
 					break;
@@ -202,19 +202,19 @@ namespace CLAM
 						mController->SetKeyDeletePressed(false); 
 					}
 					break;
-
-			        case Qt::Key_Control:
-				        mController->SetKeyControlPressed(false);
-				        break;
+					
+				case Qt::Key_Control:
+					mController->SetKeyControlPressed(false);
+					break;
 									
 				default:
 					break;
 			}
 		}
 
-	    	void BPFEditor::hideEvent(QHideEvent* e)
+		void BPFEditor::hideEvent(QHideEvent* e)
 		{
-		    if(_player) ((QtBPFPlayer*)_player)->stop();
+		    if(mPlayer) ((QtBPFPlayer*)mPlayer)->stop();
 		    QWidget::hideEvent(e);
 		}
 
@@ -244,8 +244,8 @@ namespace CLAM
 			    if((mEFlags & CLAM::VM::HasVerticalScroll) 
 			       && !(mEFlags & CLAM::VM::AllowZoomByMouse))
 			    {
-				topRightHole = new QFrame(this);
-				topLayout->addWidget(topRightHole);
+					topRightHole = new QFrame(this);
+					topLayout->addWidget(topRightHole);
 			    }
 			
 			}
@@ -272,7 +272,7 @@ namespace CLAM
 
 			// bottom area:info labels and bottom ruler
 			bottomLayout = new QHBoxLayout(mainLayout);
-
+			
 			int middle_panel_height=0;
 			
 			if(mXRuler)
@@ -286,9 +286,9 @@ namespace CLAM
 			
 			if(mEFlags & CLAM::VM::HasPlayer)
 			{
-				_player = new QtBPFPlayer(this);
-				((QtBPFPlayer*)_player)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
-				((QtBPFPlayer*)_player)->SetSlotStopPlaying(mSlotStopPlayingReceived);
+				mPlayer = new QtBPFPlayer(this);
+				((QtBPFPlayer*)mPlayer)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
+				((QtBPFPlayer*)mPlayer)->SetSlotStopPlaying(mSlotStopPlayingReceived);
 				if(mHScroll)
 				{
 				    mXRuler->setFixedHeight(fm.height()+30);
@@ -297,7 +297,7 @@ namespace CLAM
 				else
 				{
 				    mXRuler->setFixedHeight(fm.height()+10);
-				    middle_panel_height = mXRuler->height()+_player->height();
+				    middle_panel_height = mXRuler->height()+mPlayer->height();
 				}
 			}
 			else
@@ -359,7 +359,7 @@ namespace CLAM
 			    middlePanel->addWidget(mXRuler);
 			}
 
-			if(_player) middlePanel->addWidget(_player);
+			if(mPlayer) middlePanel->addWidget(mPlayer);
 
 			if((mEFlags & CLAM::VM::HasVerticalScroll) 
 			   && !(mEFlags & CLAM::VM::AllowZoomByMouse))
@@ -373,18 +373,18 @@ namespace CLAM
 			connect(mController,SIGNAL(xRulerRange(double,double)),mXRuler,SLOT(updateRange(double,double)));
 			connect(mController,SIGNAL(yRulerRange(double,double)),mYRuler,SLOT(updateRange(double,double)));
 			connect(mController,SIGNAL(labelsText(QString,QString)),this,SLOT(updateLabels(QString,QString)));
-
+			
 			connect(mController,SIGNAL(xValueChanged(int, float)),this,SIGNAL(xValueChanged(int, float)));
 			connect(mController,SIGNAL(yValueChanged(int, float)),this,SIGNAL(yValueChanged(int, float)));
 
 			connect(mController,SIGNAL(selectedXPos(double)),this,SIGNAL(selectedXPos(double)));
 
-			if(_player)
+			if(mPlayer)
 			{
-				connect(mController,SIGNAL(xValueChanged(int, float)),((QtBPFPlayer*)_player),SLOT(updateNoteDuration(int, float)));
-				connect(mController,SIGNAL(yValueChanged(int, float)),((QtBPFPlayer*)_player),SLOT(updateNotePitch(int, float)));
-				connect(mController,SIGNAL(elementAdded(int, float, float)),((QtBPFPlayer*)_player),SLOT(addNote(int, float, float)));
-				connect(mController,SIGNAL(elementRemoved(int)),((QtBPFPlayer*)_player),SLOT(removeNote(int)));
+				connect(mController,SIGNAL(xValueChanged(int, float)),((QtBPFPlayer*)mPlayer),SLOT(updateNoteDuration(int, float)));
+				connect(mController,SIGNAL(yValueChanged(int, float)),((QtBPFPlayer*)mPlayer),SLOT(updateNotePitch(int, float)));
+				connect(mController,SIGNAL(elementAdded(int, float, float)),((QtBPFPlayer*)mPlayer),SLOT(addNote(int, float, float)));
+				connect(mController,SIGNAL(elementRemoved(int)),((QtBPFPlayer*)mPlayer),SLOT(removeNote(int)));
 				connect(mController,SIGNAL(rightButtonPressed()),this,SLOT(showPopupMenu()));
 				connect(mController,SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
 				connect(mController,SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
@@ -441,7 +441,7 @@ namespace CLAM
 			mDisplaySurface->SetBackgroundColor(0.0f,0.0f,0.0f);
 
 			if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(QColor(0,0,0));
-			if(_player) ((QtBPFPlayer*)_player)->SetColorMap(CLAM::VM::BlackBackground);
+			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetColorMap(CLAM::VM::BlackBackground);
 			
 			mColorScheme = EWhiteOverBlack;
 		}
@@ -449,7 +449,7 @@ namespace CLAM
 		void BPFEditor::BlackOverWhite()
 		{
 			if(mColorScheme==EBlackOverWhite) return;
-
+			
 			setPaletteBackgroundColor(QColor(255,255,255));
 
 			mController->SetDataColor(VMColor::Black());
@@ -477,7 +477,7 @@ namespace CLAM
 			mDisplaySurface->SetBackgroundColor(1.0f,1.0f,1.0f);
 			
 			if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(QColor(255,255,255));
-			if(_player) ((QtBPFPlayer*)_player)->SetColorMap(CLAM::VM::WhiteBackground);
+			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetColorMap(CLAM::VM::WhiteBackground);
 
 			mColorScheme = EBlackOverWhite;
 		}
@@ -546,12 +546,12 @@ namespace CLAM
 
 		}
 
-	        void BPFEditor::CreateHScroll()
+		void BPFEditor::CreateHScroll()
 		{
-		        mHScroll = new HScrollGroup(this);
+			mHScroll = new HScrollGroup(this);
 
-		        // connections
-		    	connect(mHScroll,SIGNAL(zoomIn()),mController,SLOT(hZoomIn()));
+			// connections
+			connect(mHScroll,SIGNAL(zoomIn()),mController,SLOT(hZoomIn()));
 			connect(mHScroll,SIGNAL(zoomOut()),mController,SLOT(hZoomOut()));
 			connect(mHScroll,SIGNAL(scrollValueChanged(int)),mController,SLOT(updateHScrollValue(int)));
 			connect(mController,SIGNAL(hZoomRatio(double)),mHScroll,SLOT(updateZoomRatio(double)));
@@ -567,13 +567,13 @@ namespace CLAM
 			mVScroll->setMaxScrollValue(max);
 		}
 
-	        void BPFEditor::setMaxHScroll(int value)
-	        {
-		    	int max = value-mDisplaySurface->width();
+		void BPFEditor::setMaxHScroll(int value)
+		{
+			int max = value-mDisplaySurface->width();
 			if(max < 0) max=0;
 			mHScroll->setMaxScrollValue(max);
-	        }
-
+		}
+		
 		void BPFEditor::switchColors()
 		{
 			mWhiteOverBlackScheme = !mWhiteOverBlackScheme;
@@ -585,36 +585,35 @@ namespace CLAM
 			{
 				BlackOverWhite();
 			}
-
 		}
 
 		void BPFEditor::setRegionTime(MediaTime time)
 		{
-			if(_player) ((QtBPFPlayer*)_player)->SetPlaySegment(time);
+			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetPlaySegment(time);
 		}
 
 		void BPFEditor::setRegionTime(float begin, float end)
 		{
-			if(_player)
+			if(mPlayer)
 			{
 				MediaTime time;
 				time.SetBegin(TData(begin));
 				time.SetEnd(TData(end));
-				((QtBPFPlayer*)_player)->SetPlaySegment(time);
+				((QtBPFPlayer*)mPlayer)->SetPlaySegment(time);
 			}
 		}
 
 		void BPFEditor::stopPendingTasks()
 		{
-			if(!_player) return;
-			((QtBPFPlayer*)_player)->StopThread();
+			if(!mPlayer) return;
+			((QtBPFPlayer*)mPlayer)->StopThread();
 		}
 
 		void BPFEditor::playSimultaneously(bool both)
 		{
-			if(_player)
+			if(mPlayer)
 			{
-				((QtBPFPlayer*)_player)->PlaySimultaneously(both);
+				((QtBPFPlayer*)mPlayer)->PlaySimultaneously(both);
 			}
 			
 		}
@@ -628,7 +627,7 @@ namespace CLAM
 			if(!mHScroll)
 			{
 			    mXRuler->setFixedHeight(fm.height()+10);
-			    middle_panel_height = mXRuler->height()+_player->height();
+			    middle_panel_height = mXRuler->height()+mPlayer->height();
 			    labelsContainer->setFixedHeight(middle_panel_height);
 			}
 			else
@@ -637,10 +636,10 @@ namespace CLAM
 			}
 			
 			if(bottomRightHole) bottomRightHole->setFixedHeight(middle_panel_height);
-			_player->show();
+			mPlayer->show();
 			if(!mHasPlayData)
 			{
-				((QtBPFPlayer*)_player)->SetData(GetData());
+				((QtBPFPlayer*)mPlayer)->SetData(GetData());
 				mHasPlayData=true;
 			}
 			mActivePlayer = true;
@@ -648,9 +647,9 @@ namespace CLAM
 
 		void BPFEditor::HidePlayer()
 		{
-			((QtBPFPlayer*)_player)->stop();
+			((QtBPFPlayer*)mPlayer)->stop();
 
-			_player->hide();
+			mPlayer->hide();
 			
 			QFont f=mXRuler->Font();
 			QFontMetrics fm(f);
@@ -680,7 +679,7 @@ namespace CLAM
 
 		void BPFEditor::showPopupMenu()
 		{
-			if(_player)
+			if(mPlayer)
 			{
 				mPopupMenu->exec(QCursor::pos());
 			}
@@ -701,29 +700,28 @@ namespace CLAM
 			}
 		}
 
-	    	void BPFEditor::PlayingTime(TData time)
+		void BPFEditor::PlayingTime(TData time)
 		{
 		    mController->UpdateTimePos(time);
 		}
 
-	        void BPFEditor::StopPlaying(TData time)
+		void BPFEditor::StopPlaying(TData time)
 		{
 		    mController->StopPlaying(time);
 		}
 
-	        void BPFEditor::setCurrentPlayingTime(float t)
+		void BPFEditor::setCurrentPlayingTime(float t)
 		{
 		    mController->UpdateTimePos(TData(t));
 		}
 
-	        void BPFEditor::receivedStopPlaying(float t)
+		void BPFEditor::receivedStopPlaying(float t)
 		{
 		    mController->StopPlaying(TData(t));
 		}
 
 	}
 }
-
 
 // END
 

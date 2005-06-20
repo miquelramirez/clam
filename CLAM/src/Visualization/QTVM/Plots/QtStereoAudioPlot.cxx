@@ -36,384 +36,384 @@ namespace CLAM
 {
     namespace VM
     {
-	QtStereoAudioPlot::QtStereoAudioPlot(QWidget* parent, const char * name, WFlags f) 
-	    : QtPlot(parent,name,f),
-	      _maxHZRatio(-1.0)
-	{
-	    mSlotPlayingTimeReceived.Wrap(this,&QtStereoAudioPlot::PlayingTime);
-	    mSlotStopPlayingReceived.Wrap(this,&QtStereoAudioPlot::StopPlaying);
+		QtStereoAudioPlot::QtStereoAudioPlot(QWidget* parent, const char * name, WFlags f) 
+			: QtPlot(parent,name,f)
+			, mMaxHZRatio(-1.0)
+		{
+			mSlotPlayingTimeReceived.Wrap(this,&QtStereoAudioPlot::PlayingTime);
+			mSlotStopPlayingReceived.Wrap(this,&QtStereoAudioPlot::StopPlaying);
 
-	    InitStereoAudioPlot();
-	}
+			InitStereoAudioPlot();
+		}
 
-	QtStereoAudioPlot::~QtStereoAudioPlot()
-	{
-	}
+		QtStereoAudioPlot::~QtStereoAudioPlot()
+		{
+		}
 
-	void QtStereoAudioPlot::InitStereoAudioPlot()
-	{
-	    QVBoxLayout* main = new QVBoxLayout(this);
-	    main->setMargin(5);
-	    main->setSpacing(0);
+		void QtStereoAudioPlot::InitStereoAudioPlot()
+		{
+			QVBoxLayout* main = new QVBoxLayout(this);
+			main->setMargin(5);
+			main->setSpacing(0);
 
-	    //create player
-	    _player = new QtAudioPlayer(this);
-	    ((QtAudioPlayer*)_player)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
-	    ((QtAudioPlayer*)_player)->SetSlotStopPlaying(mSlotStopPlayingReceived);
-	    _player->setFixedSize(75,30);
+			//create player
+			mPlayer = new QtAudioPlayer(this);
+			((QtAudioPlayer*)mPlayer)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
+			((QtAudioPlayer*)mPlayer)->SetSlotStopPlaying(mSlotStopPlayingReceived);
+			mPlayer->setFixedSize(75,30);
 
-	    // top area (x ruler)
-	    QHBoxLayout* top = new QHBoxLayout(main);
-	    QFrame* topLeftHole = new QFrame(this);
-	    _btoggle_color = new QPushButton(topLeftHole);
-	    _btoggle_color->setFixedSize(25,25);
-	    _btoggle_color->setGeometry(0,8,25,25);
-	    _btoggle_color->setToggleButton(true);
-	    _btoggle_color->setText("CM");
-	    QToolTip::add(_btoggle_color,"switch display colors");
-	    SwitchDisplayColors(false);
-	    top->addWidget(topLeftHole,0);
-	    _xRuler = new Ruler(this,CLAM::VM::Top);
-	    _xRuler->setFixedHeight(40);
-	    top->addWidget(_xRuler);
+			// top area (x ruler)
+			QHBoxLayout* top = new QHBoxLayout(main);
+			QFrame* topLeftHole = new QFrame(this);
+			mToggleColor = new QPushButton(topLeftHole);
+			mToggleColor->setFixedSize(25,25);
+			mToggleColor->setGeometry(0,8,25,25);
+			mToggleColor->setToggleButton(true);
+			mToggleColor->setText("CM");
+			QToolTip::add(mToggleColor,"switch display colors");
+			SwitchDisplayColors(false);
+			top->addWidget(topLeftHole,0);
+			mXRuler = new Ruler(this,CLAM::VM::Top);
+			mXRuler->setFixedHeight(40);
+			top->addWidget(mXRuler);
 
-	    // middle area - channels left and right
-	    QHBoxLayout* leftChannel = new QHBoxLayout(main);
+			// middle area - channels left and right
+			QHBoxLayout* leftChannel = new QHBoxLayout(main);
 			
-	    QVBoxLayout* left = new QVBoxLayout(leftChannel);
-	    QLabel* leftlabel= new QLabel(this);
-	    leftlabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	    leftlabel->setFixedSize(25,20);
-	    leftlabel->setText("L");
-	    leftlabel->setAlignment(Qt::AlignCenter);
-	    QToolTip::add(leftlabel,"Left Channel");
-	    left->addWidget(leftlabel);
+			QVBoxLayout* left = new QVBoxLayout(leftChannel);
+			QLabel* leftlabel= new QLabel(this);
+			leftlabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+			leftlabel->setFixedSize(25,20);
+			leftlabel->setText("L");
+			leftlabel->setAlignment(Qt::AlignCenter);
+			QToolTip::add(leftlabel,"Left Channel");
+			left->addWidget(leftlabel);
 
-	    _muteLeft = new QPushButton(this);
-	    _muteLeft->setFixedSize(25,20);
-	    _muteLeft->setToggleButton(true);
-	    _muteLeft->setDown(false);
-	    _muteLeft->setOn(false);
-	    _muteLeft->setText("M");
-	    QToolTip::add(_muteLeft,"Mute Left Channel");
-	    left->addWidget(_muteLeft);
-	    left->addStretch(1);
+			mMuteLeft = new QPushButton(this);
+			mMuteLeft->setFixedSize(25,20);
+			mMuteLeft->setToggleButton(true);
+			mMuteLeft->setDown(false);
+			mMuteLeft->setOn(false);
+			mMuteLeft->setText("M");
+			QToolTip::add(mMuteLeft,"Mute Left Channel");
+			left->addWidget(mMuteLeft);
+			left->addStretch(1);
 
-	    _leftChannel = new QtAudioPlot(this);
-	    QFont ref = _leftChannel->RulerFont();
-	    QFontMetrics fm(ref);
-	    int yruler_width=fm.width("-0.00")+8;
-	    _leftChannel->SetYRulerWidth(yruler_width);
-	    _leftChannel->SetFlag(true);
-	    _leftChannel->RemoveXRuler();
-	    _leftChannel->RemoveVScrollGroup();
-	    _leftChannel->RemoveHScrollGroup();
-	    _leftChannel->RemovePlayPanel();
-	    leftChannel->addWidget(_leftChannel);
+			mLeftChannel = new QtAudioPlot(this);
+			QFont ref = mLeftChannel->RulerFont();
+			QFontMetrics fm(ref);
+			int yruler_width=fm.width("-0.00")+8;
+			mLeftChannel->SetYRulerWidth(yruler_width);
+			mLeftChannel->SetFlag(true);
+			mLeftChannel->RemoveXRuler();
+			mLeftChannel->RemoveVScrollGroup();
+			mLeftChannel->RemoveHScrollGroup();
+			mLeftChannel->RemovePlayPanel();
+			leftChannel->addWidget(mLeftChannel);
 
-	    QHBoxLayout* rightChannel = new QHBoxLayout(main);
+			QHBoxLayout* rightChannel = new QHBoxLayout(main);
 
-	    QVBoxLayout* right = new QVBoxLayout(rightChannel);
-	    QLabel* rightlabel = new QLabel(this);
-	    rightlabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	    rightlabel->setFixedSize(25,20);
-	    rightlabel->setText("R");
-	    rightlabel->setAlignment(Qt::AlignCenter);
-	    QToolTip::add(rightlabel,"Right Channel");
-	    right->addWidget(rightlabel);
+			QVBoxLayout* right = new QVBoxLayout(rightChannel);
+			QLabel* rightlabel = new QLabel(this);
+			rightlabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+			rightlabel->setFixedSize(25,20);
+			rightlabel->setText("R");
+			rightlabel->setAlignment(Qt::AlignCenter);
+			QToolTip::add(rightlabel,"Right Channel");
+			right->addWidget(rightlabel);
 
-	    _muteRight = new QPushButton(this);
-	    _muteRight->setFixedSize(25,20);
-	    _muteRight->setToggleButton(true);
-	    _muteRight->setDown(false);
-	    _muteRight->setOn(false);
-	    _muteRight->setText("M");
-	    QToolTip::add(_muteRight,"Mute Right Channel");
-	    right->addWidget(_muteRight);
+			mMuteRight = new QPushButton(this);
+			mMuteRight->setFixedSize(25,20);
+			mMuteRight->setToggleButton(true);
+			mMuteRight->setDown(false);
+			mMuteRight->setOn(false);
+			mMuteRight->setText("M");
+			QToolTip::add(mMuteRight,"Mute Right Channel");
+			right->addWidget(mMuteRight);
 
-	    right->addStretch(1);
+			right->addStretch(1);
 
-	    _rightChannel = new QtAudioPlot(this);
-	    _rightChannel->SetYRulerWidth(yruler_width);
-	    _rightChannel->SetFlag(true);
-	    _rightChannel->RemoveXRuler();
-	    _rightChannel->RemoveVScrollGroup();
-	    _rightChannel->RemoveHScrollGroup();
-	    _rightChannel->RemovePlayPanel();
-	    rightChannel->addWidget(_rightChannel);
+			mRightChannel = new QtAudioPlot(this);
+			mRightChannel->SetYRulerWidth(yruler_width);
+			mRightChannel->SetFlag(true);
+			mRightChannel->RemoveXRuler();
+			mRightChannel->RemoveVScrollGroup();
+			mRightChannel->RemoveHScrollGroup();
+			mRightChannel->RemovePlayPanel();
+			rightChannel->addWidget(mRightChannel);
 
-	    // bottom area (horizontal scroll and zoom group)
-	    QHBoxLayout* bottom = new QHBoxLayout(main);
-	    QFrame* bottomLeftHole = new QFrame(this);
-	    bottom->addWidget(bottomLeftHole,0);
+			// bottom area (horizontal scroll and zoom group)
+			QHBoxLayout* bottom = new QHBoxLayout(main);
+			QFrame* bottomLeftHole = new QFrame(this);
+			bottom->addWidget(bottomLeftHole,0);
 
-	    _hs = new HScrollGroup(this);
-	    bottom->addWidget(_hs);
+			mHScrollBar= new HScrollGroup(this);
+			bottom->addWidget(mHScrollBar);
 
-	    // play panel
-	    QHBoxLayout* panel = new QHBoxLayout(main);
+			// play panel
+			QHBoxLayout* panel = new QHBoxLayout(main);
 			
-	    QFrame* leftpphole = new QFrame(this);
-	    panel->addWidget(leftpphole);
+			QFrame* leftpphole = new QFrame(this);
+			panel->addWidget(leftpphole);
 
-	    topLeftHole->setFixedSize(yruler_width+25,40);
-	    bottomLeftHole->setFixedSize(topLeftHole->width(),20);
-	    leftpphole->setFixedSize(topLeftHole->width(),30);
+			topLeftHole->setFixedSize(yruler_width+25,40);
+			bottomLeftHole->setFixedSize(topLeftHole->width(),20);
+			leftpphole->setFixedSize(topLeftHole->width(),30);
 
-	    // add player to panel
-	    panel->addWidget(_player);
+			// add player to panel
+			panel->addWidget(mPlayer);
 
-	    panel->addStretch(1);
+			panel->addStretch(1);
 
-	    _labelsGroup = new TimeSegmentLabelsGroup(this);
-	    _labelsGroup->setMinimumSize(186,25);
-	    panel->addWidget(_labelsGroup);
+			mLabelsGroup = new TimeSegmentLabelsGroup(this);
+			mLabelsGroup->setMinimumSize(186,25);
+			panel->addWidget(mLabelsGroup);
 			
-	    // connection to switch colors 
-	    connect(_btoggle_color,SIGNAL(clicked()),this,SLOT(switchColors()));
+			// connection to switch colors 
+			connect(mToggleColor,SIGNAL(clicked()),this,SLOT(switchColors()));
 
-	    // connections for select channel buttons
-	    connect(_muteLeft,SIGNAL(clicked()),this,SLOT(leftChannelClicked()));
-	    connect(_muteRight,SIGNAL(clicked()),this,SLOT(rightChannelClicked()));
+			// connections for select channel buttons
+			connect(mMuteLeft,SIGNAL(clicked()),this,SLOT(leftChannelClicked()));
+			connect(mMuteRight,SIGNAL(clicked()),this,SLOT(rightChannelClicked()));
 
-	    // xRuler
-	    connect(_leftChannel,SIGNAL(xRulerRange(double,double)),_xRuler,SLOT(updateRange(double,double)));
+			// xRuler
+			connect(mLeftChannel,SIGNAL(xRulerRange(double,double)),mXRuler,SLOT(updateRange(double,double)));
 
-	    // horizontal zoom ratio 
-	    connect(_leftChannel,SIGNAL(HZoomRatio(double)),this,SLOT(receivedHZoomRatio(double)));
+			// horizontal zoom ratio 
+			connect(mLeftChannel,SIGNAL(HZoomRatio(double)),this,SLOT(receivedHZoomRatio(double)));
 
-	    // zoom in/out
-	    connect(_leftChannel,SIGNAL(HZoomIn()),_rightChannel,SLOT(hZoomIn()));
-	    connect(_leftChannel,SIGNAL(HZoomOut()),_rightChannel,SLOT(hZoomOut()));
+			// zoom in/out
+			connect(mLeftChannel,SIGNAL(HZoomIn()),mRightChannel,SLOT(hZoomIn()));
+			connect(mLeftChannel,SIGNAL(HZoomOut()),mRightChannel,SLOT(hZoomOut()));
 
-	    // max and updated horizontal scroll values
-	    connect(_rightChannel,SIGNAL(HMaxScroll(int)),this,SLOT(hMaxScroll(int)));
-	    connect(_rightChannel,SIGNAL(UpdatedHScroll(int)),this,SLOT(updateHScroll(int)));
+			// max and updated horizontal scroll values
+			connect(mRightChannel,SIGNAL(HMaxScroll(int)),this,SLOT(hMaxScroll(int)));
+			connect(mRightChannel,SIGNAL(UpdatedHScroll(int)),this,SLOT(updateHScroll(int)));
 
-	    // Connections horizontal scroll and zoom group
-	    connect(_hs,SIGNAL(zoomIn()),this,SLOT(hZoomIn()));
-	    connect(_hs,SIGNAL(zoomOut()),this,SLOT(hZoomOut()));
-	    connect(_hs,SIGNAL(scrollValueChanged(int)),this,SLOT(hScrollValue(int)));
+			// Connections horizontal scroll and zoom group
+			connect(mHScrollBar,SIGNAL(zoomIn()),this,SLOT(hZoomIn()));
+			connect(mHScrollBar,SIGNAL(zoomOut()),this,SLOT(hZoomOut()));
+			connect(mHScrollBar,SIGNAL(scrollValueChanged(int)),this,SLOT(hScrollValue(int)));
 
-	    // region time labels
-	    connect(_leftChannel,SIGNAL(regionTime(MediaTime)),this,SLOT(updateRegion(MediaTime)));
-	    connect(_rightChannel,SIGNAL(regionTime(MediaTime)),this,SLOT(updateRegion(MediaTime)));
+			// region time labels
+			connect(mLeftChannel,SIGNAL(regionTime(MediaTime)),this,SLOT(updateRegion(MediaTime)));
+			connect(mRightChannel,SIGNAL(regionTime(MediaTime)),this,SLOT(updateRegion(MediaTime)));
 
-	    // sel pos sync
-	    connect(_leftChannel,SIGNAL(selPos(TData)),_rightChannel,SLOT(setSelPos(TData)));
-	    connect(_rightChannel,SIGNAL(selPos(TData)),_leftChannel,SLOT(setSelPos(TData)));
+			// sel pos sync
+			connect(mLeftChannel,SIGNAL(selPos(TData)),mRightChannel,SLOT(setSelPos(TData)));
+			connect(mRightChannel,SIGNAL(selPos(TData)),mLeftChannel,SLOT(setSelPos(TData)));
 
-	    // segmentation marks sync
-	    connect(_leftChannel,SIGNAL(insertedMark(unsigned)),_rightChannel,SLOT(insertMark(unsigned)));
-	    connect(_rightChannel,SIGNAL(insertedMark(unsigned)),_leftChannel,SLOT(insertMark(unsigned)));
+			// segmentation marks sync
+			connect(mLeftChannel,SIGNAL(insertedMark(unsigned)),mRightChannel,SLOT(insertMark(unsigned)));
+			connect(mRightChannel,SIGNAL(insertedMark(unsigned)),mLeftChannel,SLOT(insertMark(unsigned)));
 
-	    connect(_leftChannel,SIGNAL(removedMark(int,unsigned)),_rightChannel,SLOT(removeMark(int,unsigned)));
-	    connect(_rightChannel,SIGNAL(removedMark(int,unsigned)),_leftChannel,SLOT(removeMark(int,unsigned)));
+			connect(mLeftChannel,SIGNAL(removedMark(int,unsigned)),mRightChannel,SLOT(removeMark(int,unsigned)));
+			connect(mRightChannel,SIGNAL(removedMark(int,unsigned)),mLeftChannel,SLOT(removeMark(int,unsigned)));
 
-	    connect(_leftChannel,SIGNAL(updatedMark(int,unsigned)),_rightChannel,SLOT(updateMark(int,unsigned)));
-	    connect(_rightChannel,SIGNAL(updatedMark(int,unsigned)),_leftChannel,SLOT(updateMark(int,unsigned)));
+			connect(mLeftChannel,SIGNAL(updatedMark(int,unsigned)),mRightChannel,SLOT(updateMark(int,unsigned)));
+			connect(mRightChannel,SIGNAL(updatedMark(int,unsigned)),mLeftChannel,SLOT(updateMark(int,unsigned)));
 
-	    // playing pos sync
-	    connect(_leftChannel,SIGNAL(currentPlayingTime(float)),_rightChannel,SLOT(setCurrentPlayingTime(float)));
-	    connect(_leftChannel,SIGNAL(stopPlaying(float)),_rightChannel,SLOT(receivedStopPlaying(float)));
+			// playing pos sync
+			connect(mLeftChannel,SIGNAL(currentPlayingTime(float)),mRightChannel,SLOT(setCurrentPlayingTime(float)));
+			connect(mLeftChannel,SIGNAL(stopPlaying(float)),mRightChannel,SLOT(receivedStopPlaying(float)));
 
-	    // segmentation tags sync
-	    connect(_leftChannel,SIGNAL(updatedTag(int,QString)),_rightChannel,SLOT(updateTag(int,QString)));
-	    connect(_rightChannel,SIGNAL(updatedTag(int,QString)),_leftChannel,SLOT(updateTag(int,QString)));
-	}
+			// segmentation tags sync
+			connect(mLeftChannel,SIGNAL(updatedTag(int,QString)),mRightChannel,SLOT(updateTag(int,QString)));
+			connect(mRightChannel,SIGNAL(updatedTag(int,QString)),mLeftChannel,SLOT(updateTag(int,QString)));
+		}
 
-	void QtStereoAudioPlot::SetData(const Audio& leftChannel, const Audio& rightChannel)
-	{
-	    CLAM_ASSERT(leftChannel.GetSize() == rightChannel.GetSize(),"Size of channels left and right must be the same!");
-	    _leftChannel->SetData(leftChannel);
-	    _rightChannel->SetData(rightChannel);
-	    SetPData(leftChannel, rightChannel);
-	}
+		void QtStereoAudioPlot::SetData(const Audio& leftChannel, const Audio& rightChannel)
+		{
+			CLAM_ASSERT(leftChannel.GetSize() == rightChannel.GetSize(),"Size of channels left and right must be the same!");
+			mLeftChannel->SetData(leftChannel);
+			mRightChannel->SetData(rightChannel);
+			SetPData(leftChannel, rightChannel);
+		}
 
-	void QtStereoAudioPlot::SetBackgroundColor(Color c)
-	{
-	    _leftChannel->SetBackgroundColor(c);
-	    _rightChannel->SetForegroundColor(c);
-	}
+		void QtStereoAudioPlot::SetBackgroundColor(Color c)
+		{
+			mLeftChannel->SetBackgroundColor(c);
+			mRightChannel->SetForegroundColor(c);
+		}
 
-	void QtStereoAudioPlot::SetForegroundColor(Color c)
-	{
-	    _leftChannel->SetForegroundColor(c);
-	    _rightChannel->SetForegroundColor(c);
-	}
+		void QtStereoAudioPlot::SetForegroundColor(Color c)
+		{
+			mLeftChannel->SetForegroundColor(c);
+			mRightChannel->SetForegroundColor(c);
+		}
 
-	void QtStereoAudioPlot::SetDialColor(Color c)
-	{
-	    _leftChannel->SetDialColor(c);
-	    _rightChannel->SetDialColor(c);
-	}
+		void QtStereoAudioPlot::SetDialColor(Color c)
+		{
+			mLeftChannel->SetDialColor(c);
+			mRightChannel->SetDialColor(c);
+		}
 
-	void QtStereoAudioPlot::SetRegionColor(Color c)
-	{
-	    _leftChannel->SetRegionColor(c);
-	    _rightChannel->SetRegionColor(c);
-	}
+		void QtStereoAudioPlot::SetRegionColor(Color c)
+		{
+			mLeftChannel->SetRegionColor(c);
+			mRightChannel->SetRegionColor(c);
+		}
 
-	void QtStereoAudioPlot::Label(const std::string& label)
-	{
-	    setCaption(label.c_str());
-	}
+		void QtStereoAudioPlot::Label(const std::string& label)
+		{
+			setCaption(label.c_str());
+		}
 
-	void QtStereoAudioPlot::Geometry(int x,int y,int w,int h)
-	{
-	    setGeometry(x,y,w,h);
-	}
+		void QtStereoAudioPlot::Geometry(int x,int y,int w,int h)
+		{
+			setGeometry(x,y,w,h);
+		}
 
-	void QtStereoAudioPlot::Show()
-	{
-	    show();
-	}
+		void QtStereoAudioPlot::Show()
+		{
+			show();
+		}
 
-	void QtStereoAudioPlot::Hide()
-	{
-	    hide();
-	}
+		void QtStereoAudioPlot::Hide()
+		{
+			hide();
+		}
 
-	void QtStereoAudioPlot::hZoomIn()
-	{
-	    if(_currentHZRatio != 1)
-	    {
-		_leftChannel->hZoomIn();
-	    }
-	}
+		void QtStereoAudioPlot::hZoomIn()
+		{
+			if(mCurrentHZRatio != 1)
+			{
+				mLeftChannel->hZoomIn();
+			}
+		}
 
-	void QtStereoAudioPlot::hZoomOut()
-	{
-	    if(_currentHZRatio != _maxHZRatio)
-	    {
-		_leftChannel->hZoomOut();
-	    }
-	}
+		void QtStereoAudioPlot::hZoomOut()
+		{
+			if(mCurrentHZRatio != mMaxHZRatio)
+			{
+				mLeftChannel->hZoomOut();
+			}
+		}
 
-	void QtStereoAudioPlot::hScrollValue(int value)
-	{
-	    _leftChannel->hScrollValue(value);
-	    _rightChannel->hScrollValue(value);	
-	}
+		void QtStereoAudioPlot::hScrollValue(int value)
+		{
+			mLeftChannel->hScrollValue(value);
+			mRightChannel->hScrollValue(value);	
+		}
 
-	void QtStereoAudioPlot::hMaxScroll(int value)
-	{
-	    if(value >=0 && _hs->GetMaxScrollValue() != value)
-	    {
-		_hs->setMaxScrollValue(value);
-	    }
-	}
+		void QtStereoAudioPlot::hMaxScroll(int value)
+		{
+			if(value >=0 && mHScrollBar->GetMaxScrollValue() != value)
+			{
+				mHScrollBar->setMaxScrollValue(value);
+			}
+		}
 
-	void QtStereoAudioPlot::updateHScroll(int value)
-	{
-	    if(_hs->GetScrollValue() != value)
-	    {
-		_hs->updateScrollValue(value);
-	    }
-	}
+		void QtStereoAudioPlot::updateHScroll(int value)
+		{
+			if(mHScrollBar->GetScrollValue() != value)
+			{
+				mHScrollBar->updateScrollValue(value);
+			}
+		}
 
-	void QtStereoAudioPlot::receivedHZoomRatio(double zr)
-	{
-	    if(_maxHZRatio < zr) _maxHZRatio = zr;
-	    // update horizontal zoom ratio indicator
-	    _hs->updateZoomRatio(zr);
-	    _currentHZRatio = zr;
-	}
+		void QtStereoAudioPlot::receivedHZoomRatio(double zr)
+		{
+			if(mMaxHZRatio < zr) mMaxHZRatio = zr;
+			// update horizontal zoom ratio indicator
+			mHScrollBar->updateZoomRatio(zr);
+			mCurrentHZRatio = zr;
+		}
 		
-	void QtStereoAudioPlot::leftChannelClicked()
-	{
-	    ((QtAudioPlayer*)_player)->SetLeftChannelMuted(_muteLeft->isOn());
-	}
+		void QtStereoAudioPlot::leftChannelClicked()
+		{
+			((QtAudioPlayer*)mPlayer)->SetLeftChannelMuted(mMuteLeft->isOn());
+		}
 
-	void QtStereoAudioPlot::rightChannelClicked()
-	{
-	    ((QtAudioPlayer*)_player)->SetRightChannelMuted(_muteRight->isOn());
-	}
+		void QtStereoAudioPlot::rightChannelClicked()
+		{
+			((QtAudioPlayer*)mPlayer)->SetRightChannelMuted(mMuteRight->isOn());
+		}
 
-	void QtStereoAudioPlot::updateRegion(MediaTime time)
-	{
-	    _player->stop();
-	    _player->SetPlaySegment(time);
-	    _labelsGroup->UpdateLabels(time);
-	}
+		void QtStereoAudioPlot::updateRegion(MediaTime time)
+		{
+			mPlayer->stop();
+			mPlayer->SetPlaySegment(time);
+			mLabelsGroup->UpdateLabels(time);
+		}
 
-	void QtStereoAudioPlot::keyPressEvent(QKeyEvent* e)
-	{
-	    _leftChannel->SetKeyPressed(e);
-	    _rightChannel->SetKeyPressed(e);
-	}
+		void QtStereoAudioPlot::keyPressEvent(QKeyEvent* e)
+		{
+			mLeftChannel->SetKeyPressed(e);
+			mRightChannel->SetKeyPressed(e);
+		}
 
-	void QtStereoAudioPlot::keyReleaseEvent( QKeyEvent* e)
-	{
-	    _leftChannel->SetKeyReleased(e);
-	    _rightChannel->SetKeyReleased(e);
-	}
+		void QtStereoAudioPlot::keyReleaseEvent( QKeyEvent* e)
+		{
+			mLeftChannel->SetKeyReleased(e);
+			mRightChannel->SetKeyReleased(e);
+		}
 
-	void QtStereoAudioPlot::hideEvent(QHideEvent* e)
-	{
-	    ((QtAudioPlayer*)_player)->stop();
-	    QWidget::hideEvent(e);
-	}
+		void QtStereoAudioPlot::hideEvent(QHideEvent* e)
+		{
+			((QtAudioPlayer*)mPlayer)->stop();
+			QWidget::hideEvent(e);
+		}
 
-	void QtStereoAudioPlot::closeEvent(QCloseEvent* e)
-	{
-	    RemoveFromPlayList();
-	    e->accept();
-	}
+		void QtStereoAudioPlot::closeEvent(QCloseEvent* e)
+		{
+			RemoveFromPlayList();
+			e->accept();
+		}
 
-	void QtStereoAudioPlot::SetPData(const Audio& leftChannel, const Audio& rightChannel)
-	{
-	    std::vector<const Audio*> dataPtr;
-	    dataPtr.resize(2);
-	    dataPtr[0]=&leftChannel;
-	    dataPtr[1]=&rightChannel;
-	    ((QtAudioPlayer*)_player)->SetData(dataPtr,true);
-	}
+		void QtStereoAudioPlot::SetPData(const Audio& leftChannel, const Audio& rightChannel)
+		{
+			std::vector<const Audio*> dataPtr;
+			dataPtr.resize(2);
+			dataPtr[0]=&leftChannel;
+			dataPtr[1]=&rightChannel;
+			((QtAudioPlayer*)mPlayer)->SetData(dataPtr,true);
+		}
 
-	void QtStereoAudioPlot::SwitchDisplayColors(bool b)
-	{
-	    (b) ? _btoggle_color->show() : _btoggle_color->hide();
-	}
+		void QtStereoAudioPlot::SwitchDisplayColors(bool b)
+		{
+			(b) ? mToggleColor->show() : mToggleColor->hide();
+		}
 		
-	void QtStereoAudioPlot::switchColors()
-	{
-	    _leftChannel->SetToggleColorOn(_btoggle_color->isOn());
-	    _rightChannel->SetToggleColorOn(_btoggle_color->isOn());
-	    _leftChannel->switchColors();
-	    _rightChannel->switchColors();
-	}
+		void QtStereoAudioPlot::switchColors()
+		{
+			mLeftChannel->SetToggleColorOn(mToggleColor->isOn());
+			mRightChannel->SetToggleColorOn(mToggleColor->isOn());
+			mLeftChannel->switchColors();
+			mRightChannel->switchColors();
+		}
 
-	void QtStereoAudioPlot::SetMarks(std::vector<unsigned>& marks)
-	{
-	    _leftChannel->SetMarks(marks);
-	    _rightChannel->SetMarks(marks);
-	}
+		void QtStereoAudioPlot::SetMarks(std::vector<unsigned>& marks)
+		{
+			mLeftChannel->SetMarks(marks);
+			mRightChannel->SetMarks(marks);
+		}
 
-	std::vector<unsigned>& QtStereoAudioPlot::GetMarks()
-	{
-	    return _leftChannel->GetMarks();
-	}
+		std::vector<unsigned>& QtStereoAudioPlot::GetMarks()
+		{
+			return mLeftChannel->GetMarks();
+		}
 
-	void QtStereoAudioPlot::SetMarksColor(Color c)
-	{
-	    _leftChannel->SetMarksColor(c);
-	    _rightChannel->SetMarksColor(c);
-	}
+		void QtStereoAudioPlot::SetMarksColor(Color c)
+		{
+			mLeftChannel->SetMarksColor(c);
+			mRightChannel->SetMarksColor(c);
+		}
 
-	void QtStereoAudioPlot::PlayingTime(TData time)
-	{
-	    _leftChannel->setCurrentPlayingTime(float(time));
-	}
+		void QtStereoAudioPlot::PlayingTime(TData time)
+		{
+			mLeftChannel->setCurrentPlayingTime(float(time));
+		}
 
-	void QtStereoAudioPlot::StopPlaying(TData time)
-	{
-	    _leftChannel->receivedStopPlaying(float(time));
-	}
+		void QtStereoAudioPlot::StopPlaying(TData time)
+		{
+			mLeftChannel->receivedStopPlaying(float(time));
+		}
 
-	std::vector<QString> QtStereoAudioPlot::GetSegmentationTags()
-	{
-	    return _leftChannel->GetSegmentationTags();
-	}
+		std::vector<QString> QtStereoAudioPlot::GetSegmentationTags()
+		{
+			return mLeftChannel->GetSegmentationTags();
+		}
 
     }	
 }
