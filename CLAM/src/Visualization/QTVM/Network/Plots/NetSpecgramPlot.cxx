@@ -5,35 +5,35 @@ namespace CLAM
 {
     namespace VM
     {
-	NetSpecgramPlot::NetSpecgramPlot(QWidget* parent, const char * name)
-	    : NetPlot(parent,name)
-	{
-	    InitNetSpecgramPlot();
-	}
+		NetSpecgramPlot::NetSpecgramPlot(QWidget* parent, const char * name)
+			: NetPlot(parent,name)
+		{
+			InitNetSpecgramPlot();
+		}
 
-	NetSpecgramPlot::~NetSpecgramPlot()
-	{
-	}
+		NetSpecgramPlot::~NetSpecgramPlot()
+		{
+		}
 
-	void NetSpecgramPlot::SetData(const Spectrum& spec)
-	{
-	    ((NetSpecgramPlotController*)_controller)->SetData(spec);
-	}
+		void NetSpecgramPlot::SetData(const Spectrum& spec)
+		{
+			((NetSpecgramPlotController*)mController)->SetData(spec);
+		}
 
-	void NetSpecgramPlot::SetMonitor(MonitorType & monitor)
-	{
-	    ((NetSpecgramPlotController*)_controller)->SetMonitor(monitor);
-	}
+		void NetSpecgramPlot::SetMonitor(MonitorType & monitor)
+		{
+			((NetSpecgramPlotController*)mController)->SetMonitor(monitor);
+		}
 
-	void NetSpecgramPlot::SetPlotController()
-	{
-	    SetController(new NetSpecgramPlotController());
-	}
+		void NetSpecgramPlot::SetPlotController()
+		{
+			SetController(new NetSpecgramPlotController());
+		}
 	
-	void NetSpecgramPlot::InitNetSpecgramPlot()
-	{
-	    SetPlotController();
-	}
+		void NetSpecgramPlot::InitNetSpecgramPlot()
+		{
+			SetPlotController();
+		}
     }
 }
 

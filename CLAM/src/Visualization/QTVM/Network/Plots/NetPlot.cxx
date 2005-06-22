@@ -10,9 +10,9 @@ namespace CLAM
 	{
 		NetPlot::NetPlot(QWidget* parent, const char * name)
 			: QWidget(parent,name)
+			, mController(0)
+			, mIsClosed(false)
 		{
-		        _controller=NULL;
-		        _closed = false;
 			InitNetPlot();
 		}
 		
@@ -26,7 +26,7 @@ namespace CLAM
 			double g = double(c.g)/255.0;
 			double b = double(c.b)/255.0;
 
-			_surf->SetBackgroundColor(r,g,b);
+			mDisplaySurface->SetBackgroundColor(r,g,b);
 		}
         
 		void NetPlot::Label(const std::string& label)
@@ -41,23 +41,23 @@ namespace CLAM
 
 		void NetPlot::show()
 		{
-		    if(!_closed)
+		    if(!mIsClosed)
 		    {
-			QWidget::show();
-			_surf->startRendering();
+				QWidget::show();
+				mDisplaySurface->startRendering();
 		    }
 		}
 
 		void NetPlot::hide()
 		{
-			_surf->stopRendering();
+			mDisplaySurface->stopRendering();
 			QWidget::hide();
 		}
 
 		void NetPlot::SetController(NetPlotController* controller)
 		{
-			_controller = controller;
-			_surf->SetController(_controller);
+			mController = controller;
+			mDisplaySurface->SetController(mController);
 		}
 
 		void NetPlot::InitNetPlot()
@@ -66,22 +66,22 @@ namespace CLAM
 			layout->setMargin(0);
 			layout->setSpacing(0);
 
-			_surf = new NetDisplaySurface(this);
-			GLContext* glc = new GLContext(_surf->format(), _surf);
-			_surf->setContext(glc);
-			_surf->setMinimumSize(100,20);
-			layout->addWidget(_surf);
+			mDisplaySurface = new NetDisplaySurface(this);
+			GLContext* glc = new GLContext(mDisplaySurface->format(), mDisplaySurface);
+			mDisplaySurface->setContext(glc);
+			mDisplaySurface->setMinimumSize(100,20);
+			layout->addWidget(mDisplaySurface);
 		}
 
 		void NetPlot::closeEvent(QCloseEvent* ce)
 		{
-		    _closed = true;
+		    mIsClosed= true;
 		    QWidget::closeEvent(ce);
 		}
 
-	        void NetPlot::StopRendering()
+		void NetPlot::StopRendering()
 		{
-		    _surf->stopRendering();
+			mDisplaySurface->stopRendering();
 		}
 	     
 	}

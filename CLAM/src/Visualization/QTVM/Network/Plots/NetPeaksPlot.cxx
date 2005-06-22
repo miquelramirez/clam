@@ -17,17 +17,17 @@ namespace CLAM
 
 		void NetPeaksPlot::SetData(const SpectralPeakArray& peaks)
 		{
-			((NetPeaksPlotController*)_controller)->SetData(peaks);
+			((NetPeaksPlotController*)mController)->SetData(peaks);
 		}
 
 		void NetPeaksPlot::SetMonitor(MonitorType & monitor)
 		{
-			((NetPeaksPlotController*)_controller)->SetMonitor(monitor);
+			((NetPeaksPlotController*)mController)->SetMonitor(monitor);
 		}
 
 		void NetPeaksPlot::SetPeaksColor(Color cline, Color cpoint)
 		{
-			((NetPeaksPlotController*)_controller)->SetPeaksColor(cline, cpoint);
+			((NetPeaksPlotController*)mController)->SetPeaksColor(cline, cpoint);
 		}
 
 		void NetPeaksPlot::SetPlotController()

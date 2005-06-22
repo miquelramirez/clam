@@ -10,23 +10,23 @@ namespace CLAM
 
     namespace VM
     {
-	class NetSpecgramPlot : public NetPlot
-	{
-	    Q_OBJECT
-	public:
-	    typedef SpecgramPortMonitor MonitorType;
-	    NetSpecgramPlot(QWidget* parent = 0, const char * name = 0);
-	    virtual ~NetSpecgramPlot();
+		class NetSpecgramPlot : public NetPlot
+		{
+			Q_OBJECT
+		public:
+			typedef SpecgramPortMonitor MonitorType;
+			NetSpecgramPlot(QWidget* parent = 0, const char * name = 0);
+			~NetSpecgramPlot();
 
-	    void SetData(const Spectrum& spec);
-	    void SetMonitor(MonitorType & monitor);
+			void SetData(const Spectrum& spec);
+			void SetMonitor(MonitorType & monitor);
 
-	protected:
-	    virtual void SetPlotController();
+		protected:
+			void SetPlotController();
 
-	private:
-	    void InitNetSpecgramPlot();
-	};
+		private:
+			void InitNetSpecgramPlot();
+		};
     }
 }
 

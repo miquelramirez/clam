@@ -28,18 +28,16 @@ namespace CLAM
 			void StopRendering();
 
 		protected:
-			NetPlotController* _controller;
+			NetPlotController* mController;
 
 			void closeEvent(QCloseEvent* ce);
-
 			void SetController(NetPlotController* controller);
-
 			virtual void SetPlotController()=0;
 
 		private:
-			NetDisplaySurface* _surf;
-			bool _active;
-			bool _closed;
+			NetDisplaySurface* mDisplaySurface;
+			bool               mIsActive;
+			bool               mIsClosed;
 
 			void InitNetPlot();
 		};

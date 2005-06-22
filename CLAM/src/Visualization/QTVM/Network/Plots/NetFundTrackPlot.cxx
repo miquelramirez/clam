@@ -10,24 +10,24 @@ namespace CLAM
 		{
 			InitNetFundTrackPlot();
 		}
-
+		
 		NetFundTrackPlot::~NetFundTrackPlot()
 		{
 		}
 
 		void NetFundTrackPlot::SetData(const Fundamental& fund)
 		{
-			((NetFundTrackPlotController*)_controller)->SetData(fund);
+			((NetFundTrackPlotController*)mController)->SetData(fund);
 		}
 
 		void NetFundTrackPlot::SetDataColor(Color c)
 		{
-			((NetFundTrackPlotController*)_controller)->SetDataColor(c);
+			((NetFundTrackPlotController*)mController)->SetDataColor(c);
 		}
 
-	    	void NetFundTrackPlot::SetMonitor(MonitorType & monitor)
+		void NetFundTrackPlot::SetMonitor(MonitorType & monitor)
 		{
-			((NetFundTrackPlotController*)_controller)->SetMonitor(monitor);
+			((NetFundTrackPlotController*)mController)->SetMonitor(monitor);
 		}
 
 		void NetFundTrackPlot::SetPlotController()

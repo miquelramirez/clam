@@ -17,17 +17,17 @@ namespace CLAM
 
 		void NetSpectrumPlot::SetData(const Spectrum& spec)
 		{
-			((NetSpectrumPlotController*)_controller)->SetData(spec);
+			((NetSpectrumPlotController*)mController)->SetData(spec);
 		}
 
 		void NetSpectrumPlot::SetMonitor(MonitorType & monitor)
 		{
-			((NetSpectrumPlotController*)_controller)->SetMonitor(monitor);
+			((NetSpectrumPlotController*)mController)->SetMonitor(monitor);
 		}
 
 		void NetSpectrumPlot::SetDataColor(Color c)
 		{
-			((NetSpectrumPlotController*)_controller)->SetDataColor(c);
+			((NetSpectrumPlotController*)mController)->SetDataColor(c);
 		}
 
 		void NetSpectrumPlot::SetPlotController()

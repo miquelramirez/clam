@@ -16,14 +16,14 @@ namespace CLAM
 		public:
 			typedef SpectrumPortMonitor MonitorType;
 			NetSpectrumPlot(QWidget* parent=0, const char * name=0);
-			virtual ~NetSpectrumPlot();
+			~NetSpectrumPlot();
 
 			void SetData(const Spectrum& spec);
 			void SetDataColor(Color c);
 			void SetMonitor(MonitorType & monitor);
 
 		protected:
-			virtual void SetPlotController();
+			void SetPlotController();
 
 		private:
 			void InitNetSpectrumPlot();
