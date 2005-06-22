@@ -13,41 +13,43 @@ namespace CLAM
 		{
 			Q_OBJECT
 
-			public:
-				NetDisplaySurface(QWidget* parent = 0);
-				virtual ~NetDisplaySurface();
+		public:
+			NetDisplaySurface(QWidget* parent = 0);
+			~NetDisplaySurface();
 
-				void SetBackgroundColor(double r, double g, double b);
-				void SetController(NetPlotController* controller);
+			void SetBackgroundColor(double r, double g, double b);
+			void SetController(NetPlotController* controller);
 
-				void startRendering();
-				void stopRendering();
+			void startRendering();
+			void stopRendering();
 
-			private slots:
-				void receivedView(SView);
-		                void updateToolTip(QString);
+		private slots:
+			void receivedView(SView);
+			void updateToolTip(QString);
 
-			protected slots:
-				void paintGL();
+		protected:
+			void paintGL();
+			void resizeEvent(QResizeEvent* re);
+			void mousePressEvent(QMouseEvent* e);
+			void mouseReleaseEvent(QMouseEvent* e);
+			void mouseMoveEvent(QMouseEvent* e);
 
-			protected:
-		                void resizeEvent(QResizeEvent* re);
-
-		                void mousePressEvent(QMouseEvent* e);
-		                void mouseReleaseEvent(QMouseEvent* e);
-				void mouseMoveEvent(QMouseEvent* e);
-
-			private:
-				NetPlotController* _controller;
-
-				QTimer & _timer;
-				int _w, _h;
-				double _left, _right, _bottom, _top;
-				double _r, _g, _b;
-				volatile bool _doResize;
-				unsigned _refreshInterval;
+		private:
+			NetPlotController* mController;
+			QTimer&            mTimer;
+			int                mWidth;
+			int                mHeight;
+			double             mLeft;
+			double             mRight;
+			double             mBottom;
+			double             mTop;
+			double             mRed;
+			double             mGreen;
+			double             mBlue;
+			volatile bool      mDoResize;
+			unsigned           mRefreshInterval;
 				
-				void InitView();
+			void InitView();
 		};
 	}
 }

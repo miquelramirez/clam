@@ -8,39 +8,37 @@ namespace CLAM
 {
     namespace VM
     {
-	struct SinTrackNode
-	{
-	    TData freq;
-	    TIndex timeIndex;
-	    Color color;
-
-	    SinTrackNode()
-		: freq(TData(0.0)),
-		  timeIndex(0)
-		{}
-
-	    SinTrackNode(const TData& f, const TIndex& ti, const Color& c)
-		: freq(f),
-		  timeIndex(ti),
-		  color(c)
-		{}
-
-	    SinTrackNode(const SinTrackNode& node)
-		: freq(node.freq),
-		  timeIndex(node.timeIndex),
-		  color(node.color)
-		{}
-
-	    SinTrackNode& operator=(const SinTrackNode& node)
+		struct SinTrackNode
 		{
-		    freq=node.freq;
-		    timeIndex=node.timeIndex;
-		    color.r=node.color.r;
-		    color.g=node.color.g;
-		    color.b=node.color.b;
-		    return *this;
-		}
-	};
+			TData freq;
+			TIndex timeIndex;
+			Color color;
+
+			SinTrackNode()
+				: freq(TData(0.0))
+				, timeIndex(0)
+				{}
+
+			SinTrackNode(const TData& f, const TIndex& ti, const Color& c)
+				: freq(f)
+				, timeIndex(ti)
+				, color(c)
+				{}
+
+			SinTrackNode(const SinTrackNode& node)
+				: freq(node.freq)
+				, timeIndex(node.timeIndex)
+				, color(node.color)
+				{}
+
+			SinTrackNode& operator=(const SinTrackNode& node)
+				{
+					freq = node.freq;
+					timeIndex = node.timeIndex;
+					color = node.color;
+					return *this;
+				}
+		};
     }
 
 }

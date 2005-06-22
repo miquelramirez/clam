@@ -11,33 +11,37 @@ namespace CLAM
 {
     namespace VM
     {
-	class NetSinTracking
-	{
-	public:
-	    NetSinTracking();
-	    ~NetSinTracking();
+		class NetSinTracking
+		{
+		public:
+			NetSinTracking();
+			~NetSinTracking();
 
-	    void SetIndexes(const TIndex& left1, const TIndex& right1, 
-			    const TIndex& left2, const TIndex& right2, 
-			    const TIndex& begin);
-	    std::vector< std::vector<SinTrackNode> >& GetTracks(const Array<SpectralPeakArray>& peakMtx);
+			void SetIndexes(const TIndex& left1, const TIndex& right1, 
+							const TIndex& left2, const TIndex& right2, 
+							const TIndex& begin);
 
-	private:
-	    std::map<TIndex,unsigned> _table;
-	    std::vector< std::vector<SinTrackNode> > _tracks;
-	    QtPalette _palette;
-	    TIndex _time;
-	    TIndex _leftIndex1,_rightIndex1,_leftIndex2,_rightIndex2;
-	    TIndex _begin;
+			std::vector< std::vector<SinTrackNode> >& GetTracks(const Array<SpectralPeakArray>& peakMtx);
 
-	    void AddToTable(const TIndex& trackId, const unsigned& index);
-	    bool HasTrackId(const TIndex& trackId);
-	    unsigned GetIndex(const TIndex& trackId);
+		private:
+			std::map<TIndex,unsigned>                mTable;
+			std::vector< std::vector<SinTrackNode> > mTracks;
+			QtPalette                                mPalette;
+			TIndex                                   mTime;
+			TIndex                                   mLeftIndex1; 
+			TIndex                                   mRightIndex1; 
+			TIndex                                   mLeftIndex2; 
+			TIndex                                   mRightIndex2;
+			TIndex                                   mBegin;
 
-	    void AddNodes(const SpectralPeakArray& peaks);
+			void AddToTable(const TIndex& trackId, const unsigned& index);
+			bool HasTrackId(const TIndex& trackId);
+			unsigned GetIndex(const TIndex& trackId);
 
-	    float ClampToRange(TData value) const;
-	};
+			void AddNodes(const SpectralPeakArray& peaks);
+
+			float ClampToRange(TData value) const;
+		};
     }
 }
 

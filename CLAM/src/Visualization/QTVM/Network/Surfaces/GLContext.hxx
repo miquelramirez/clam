@@ -16,18 +16,18 @@ namespace CLAM
 	{
 		class GLContext : public QGLContext
 		{
-			public:
-				GLContext(const QGLFormat& fmt, QPaintDevice* dev);
+		public:
+			GLContext(const QGLFormat& fmt, QPaintDevice* dev);
 
-			protected:
-				//TODO PA: (refactoring) the platform specific should be hiden into 
-				//     the implementation, not affecting the class interface
+		protected:
+			//TODO PA: (refactoring) the platform specific should be hiden into 
+			//     the implementation, not affecting the class interface
 #if defined(Q_WS_WIN)
-				int choosePixelFormat(void* p, HDC hdc);
+			int choosePixelFormat(void* p, HDC hdc);
 #elif defined(Q_WS_X11)
-				void* chooseVisual();
+			void* chooseVisual();
 #elif defined(Q_WS_MAC)
-				void* chooseMacVisual(GDHandle gdev);
+			void* chooseMacVisual(GDHandle gdev);
 #endif
 		};
 	}
