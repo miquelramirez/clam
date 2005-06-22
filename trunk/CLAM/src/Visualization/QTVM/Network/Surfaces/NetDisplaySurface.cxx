@@ -9,170 +9,168 @@ namespace CLAM
 	{
 		NetDisplaySurface::NetDisplaySurface(QWidget* parent) 
 			: QGLWidget(parent)
-			, _timer( * new QTimer(this) )
+			, mController(0)
+			, mTimer( * new QTimer(this) )
+			, mDoResize(false)
+			, mRefreshInterval(200)
 		{
-		        setMouseTracking(true);
+			setMouseTracking(true);
 			setAutoBufferSwap(false);
 			SetBackgroundColor(0.0,0.0,0.0);
 			InitView();
-			_doResize = false;
-			_refreshInterval = 200;
-
-			_controller = NULL;
-			connect(&_timer, SIGNAL(timeout()), SLOT(updateGL()));
+			connect(&mTimer, SIGNAL(timeout()), SLOT(updateGL()));
 		}
 
 		NetDisplaySurface::~NetDisplaySurface()
 		{
-			if(_controller) 
+			if(mController) 
 			{
-				delete _controller;
+				delete mController;
 			}
 		}
 
 		void NetDisplaySurface::SetBackgroundColor(double r, double g, double b)
 		{
-			_r = r;
-			_g = g;
-			_b = b;
+			mRed = r;
+			mGreen = g;
+			mBlue = b;
 		}
 
 		void NetDisplaySurface::SetController(NetPlotController* controller)
 		{
-			_controller = controller;
-			connect(_controller,SIGNAL(sendView(SView)),this,SLOT(receivedView(SView)));
-			connect(_controller,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
+			mController = controller;
+			connect(mController,SIGNAL(sendView(SView)),this,SLOT(receivedView(SView)));
+			connect(mController,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
 			setMouseTracking(true);
 		}
 
 		void NetDisplaySurface::startRendering()
 		{
-			if (!_timer.isActive())
-				_timer.start(_refreshInterval,true);
+			if (!mTimer.isActive())
+				mTimer.start(mRefreshInterval,true);
 		}
 
 		void NetDisplaySurface::stopRendering()
 		{
-			if (_timer.isActive())
-				_timer.stop();
+			if (mTimer.isActive())
+				mTimer.stop();
 		}
 
 		void NetDisplaySurface::paintGL()
 		{
-			if (!_controller) return;
-			if(_doResize)
+			if (!mController) return;
+			if(mDoResize)
 			{
-				glViewport(0, 0, _w, _h);
-				_doResize = false;
+				glViewport(0, 0, mWidth, mHeight);
+				mDoResize = false;
 			}
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			glOrtho(_left, _right, _bottom, _top, -1.0, 1.0);
+			glOrtho(mLeft, mRight, mBottom, mTop, -1.0, 1.0);
 			glMatrixMode(GL_MODELVIEW);
 			glShadeModel(GL_FLAT);
-			glClearColor(_r, _g, _b, 1.0);
+			glClearColor(mRed, mGreen, mBlue, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT);
-
-			_controller->Draw();
+			mController->Draw();
 			swapBuffers();
-			if (!_timer.isActive())
-				_timer.start(_refreshInterval,true);
+			if (!mTimer.isActive())
+				mTimer.start(mRefreshInterval,true);
 		}
 
-	        void NetDisplaySurface::resizeEvent(QResizeEvent* re)
-	        {
-		    _w = re->size().width();
-		    _h = re->size().height();
-		    _doResize = true;
-	        }
+		void NetDisplaySurface::resizeEvent(QResizeEvent* re)
+		{
+			mWidth = re->size().width();
+			mHeight = re->size().height();
+		    mDoResize = true;
+		}
 
 		void NetDisplaySurface::receivedView(SView v)
 		{
-			_left = v.left;
-			_right = v.right;
-			_bottom = v.bottom;
-			_top = v.top;
+			mLeft = v.left;
+			mRight = v.right;
+			mBottom = v.bottom;
+			mTop = v.top;
 		}
 
 		void NetDisplaySurface::InitView()
 		{
-			_left = 0.0;
-			_right = 1.0;
-			_bottom = -1.0;
-			_top = 1.0;
+			mLeft = 0.0;
+			mRight = 1.0;
+			mBottom = -1.0;
+			mTop = 1.0;
 		}
 	    
-	        void NetDisplaySurface::mousePressEvent(QMouseEvent* e)
+		void NetDisplaySurface::mousePressEvent(QMouseEvent* e)
 		{
-		    if(_controller)
+		    if(mController)
 		    {
-			if(e->button() == LeftButton)
-			{
-			    _controller->SetLeftButtonPressed(true);
-			    double xcoord = double(e->x());
-			    xcoord *= (_right-_left);
-			    xcoord /= double(width());
-			    xcoord += _left;
-			    double ycoord = double(-e->y())+double(height());
-			    ycoord *= (_top-_bottom);
-			    ycoord /= double(height());
-			    ycoord += _bottom;
-			    _controller->SetPoint(TData(xcoord),TData(ycoord));
+				if(e->button() == LeftButton)
+				{
+					mController->SetLeftButtonPressed(true);
+					double xcoord = double(e->x());
+					xcoord *= (mRight-mLeft);
+					xcoord /= double(width());
+					xcoord += mLeft;
+					double ycoord = double(-e->y())+double(height());
+					ycoord *= (mTop-mBottom);
+					ycoord /= double(height());
+					ycoord += mBottom;
+					mController->SetPoint(TData(xcoord),TData(ycoord));
 			    
-			}
-			if(e->button() == RightButton)
-			{
-			    _controller->SetRightButtonPressed(true);
-			}
+				}
+				if(e->button() == RightButton)
+				{
+					mController->SetRightButtonPressed(true);
+				}
 		    }
 		}
 
-	        void NetDisplaySurface::mouseReleaseEvent(QMouseEvent* e)
+		void NetDisplaySurface::mouseReleaseEvent(QMouseEvent* e)
 		{
-		    if(_controller)
+		    if(mController)
 		    {
-			if(e->button() == LeftButton)
-			{
-			    _controller->SetLeftButtonPressed(false);
-			    double xcoord = double(e->x());
-			    xcoord *= (_right-_left);
-			    xcoord /= double(width());
-			    xcoord += _left;
-			    double ycoord = double(-e->y())+double(height());
-			    ycoord *= (_top-_bottom);
-			    ycoord /= double(height());
-			    ycoord += _bottom;
-			    _controller->SetPoint(TData(xcoord),TData(ycoord));	    
-			}
-			if(e->button() == RightButton)
-			{
-			    _controller->SetRightButtonPressed(false);
-			}
+				if(e->button() == LeftButton)
+				{
+					mController->SetLeftButtonPressed(false);
+					double xcoord = double(e->x());
+					xcoord *= (mRight-mLeft);
+					xcoord /= double(width());
+					xcoord += mLeft;
+					double ycoord = double(-e->y())+double(height());
+					ycoord *= (mTop-mBottom);
+					ycoord /= double(height());
+					ycoord += mBottom;
+					mController->SetPoint(TData(xcoord),TData(ycoord));	    
+				}
+				if(e->button() == RightButton)
+				{
+					mController->SetRightButtonPressed(false);
+				}
 		    }  
 		}
 
 		void NetDisplaySurface::mouseMoveEvent(QMouseEvent* e)
 		{
-		    if(_controller)
+		    if(mController)
 		    {
-			double xcoord = double(e->x());
-			xcoord *= (_right-_left);
-			xcoord /= double(width());
-			xcoord += _left;
-			double ycoord = double(-e->y())+double(height());
-			ycoord *= (_top-_bottom);
-			ycoord /= double(height());
-			ycoord += _bottom;
-			_controller->UpdatePoint(TData(xcoord),TData(ycoord));
+				double xcoord = double(e->x());
+				xcoord *= (mRight-mLeft);
+				xcoord /= double(width());
+				xcoord += mLeft;
+				double ycoord = double(-e->y())+double(height());
+				ycoord *= (mTop-mBottom);
+				ycoord /= double(height());
+				ycoord += mBottom;
+				mController->UpdatePoint(TData(xcoord),TData(ycoord));
 		    }
 		}  
 	
-	        void NetDisplaySurface::updateToolTip(QString s)
+		void NetDisplaySurface::updateToolTip(QString s)
 		{
 		    if(!s.isEmpty())
 		    {
-			QToolTip::remove(this);
-			QToolTip::add(this,s);
+				QToolTip::remove(this);
+				QToolTip::add(this,s);
 		    }
 		}
 
