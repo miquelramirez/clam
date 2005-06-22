@@ -17,17 +17,17 @@ namespace CLAM
 
 		void NetAudioPlot::SetData(const Audio& audio)
 		{
-			((NetAudioPlotController*)_controller)->SetData(audio);
+			((NetAudioPlotController*)mController)->SetData(audio);
 		}
 
 		void NetAudioPlot::SetMonitor(MonitorType & monitor)
 		{
-			((NetAudioPlotController*)_controller)->SetMonitor(monitor);
+			((NetAudioPlotController*)mController)->SetMonitor(monitor);
 		}
 
 		void NetAudioPlot::SetDataColor(Color c)
 		{
-			((NetAudioPlotController*)_controller)->SetDataColor(c);
+			((NetAudioPlotController*)mController)->SetDataColor(c);
 		}
 
 		void NetAudioPlot::SetPlotController()

@@ -17,17 +17,17 @@ namespace CLAM
 
 		void NetFundPlot::SetData(const Fundamental& fund)
 		{
-			((NetFundPlotController*)_controller)->SetData(fund);
+			((NetFundPlotController*)mController)->SetData(fund);
 		}
 
 		void NetFundPlot::SetMonitor(MonitorType & monitor)
 		{
-			((NetFundPlotController*)_controller)->SetMonitor(monitor);
+			((NetFundPlotController*)mController)->SetMonitor(monitor);
 		}
 
 		void NetFundPlot::SetDataColor(Color c)
 		{
-			((NetFundPlotController*)_controller)->SetDataColor(c);
+			((NetFundPlotController*)mController)->SetDataColor(c);
 		}
 
 		void NetFundPlot::SetPlotController()

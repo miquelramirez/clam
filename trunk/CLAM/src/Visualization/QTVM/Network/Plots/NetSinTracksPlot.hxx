@@ -6,7 +6,7 @@
 
 namespace CLAM
 {
-        class SinTracksPortMonitor;
+	class SinTracksPortMonitor;
 
 	namespace VM
 	{
@@ -16,13 +16,13 @@ namespace CLAM
 		public:
 			typedef SinTracksPortMonitor MonitorType;
 			NetSinTracksPlot(QWidget* parent = 0, const char * name = 0);
-			virtual ~NetSinTracksPlot();
+			~NetSinTracksPlot();
 
 			void SetData(const SpectralPeakArray& peaks);
-		        void SetMonitor(MonitorType & monitor);
+			void SetMonitor(MonitorType & monitor);
 
 		protected:
-			virtual void SetPlotController();
+			void SetPlotController();
 
 		private:
 			void InitNetSinTracksPlot();

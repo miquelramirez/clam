@@ -17,17 +17,17 @@ namespace CLAM
 
 		void NetAudioBuffPlot::SetData(const Audio& audio)
 		{
-			((NetAudioBuffPlotController*)_controller)->SetData(audio);
+			((NetAudioBuffPlotController*)mController)->SetData(audio);
 		}
 
 		void NetAudioBuffPlot::SetMonitor(MonitorType & monitor)
 		{
-			((NetAudioBuffPlotController*)_controller)->SetMonitor(monitor);
+			((NetAudioBuffPlotController*)mController)->SetMonitor(monitor);
 		}
 
 		void NetAudioBuffPlot::SetDataColor(Color c)
 		{
-			((NetAudioBuffPlotController*)_controller)->SetDataColor(c);
+			((NetAudioBuffPlotController*)mController)->SetDataColor(c);
 		}
 
 		void NetAudioBuffPlot::SetPlotController()

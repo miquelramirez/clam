@@ -16,14 +16,14 @@ namespace CLAM
 		public:
 			typedef FundamentalPortMonitor MonitorType;
 			NetFundPlot(QWidget* parent = 0, const char * name = 0);
-			virtual ~NetFundPlot();
+			~NetFundPlot();
 
 			void SetData(const Fundamental& spec);
 			void SetDataColor(Color c);
 			void SetMonitor(MonitorType & monitor);
 
 		protected:
-			virtual void SetPlotController();
+			void SetPlotController();
 
 		private:
 			void InitNetFundPlot();

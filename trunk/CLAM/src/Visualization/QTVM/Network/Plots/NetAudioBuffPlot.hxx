@@ -16,14 +16,14 @@ namespace CLAM
 		public:
 			typedef AudioBuffPortMonitor MonitorType;
 			NetAudioBuffPlot(QWidget* parent = 0, const char * name = 0);
-			virtual ~NetAudioBuffPlot();
+			~NetAudioBuffPlot();
 
 			void SetData(const Audio& audio);
 			void SetDataColor(Color c);
 			void SetMonitor(MonitorType & monitor);
 
 		protected:
-			virtual void SetPlotController();
+			void SetPlotController();
 
 		private:
 			void InitNetAudioBuffPlot();
