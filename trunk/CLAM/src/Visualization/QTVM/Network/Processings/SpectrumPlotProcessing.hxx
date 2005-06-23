@@ -37,11 +37,11 @@ namespace CLAM
 	public:
 		SpectrumPlotProcessing();
 		SpectrumPlotProcessing(const SpectrumPlotProcessingConfig& cfg);
-		virtual ~SpectrumPlotProcessing();
+		~SpectrumPlotProcessing();
 
 		bool Do();
 		bool Do(const Spectrum& spec);
-
+		
 		const char * GetClassName() const {return "SpectrumPlotProcessing";}
 
 		inline const ProcessingConfig &GetConfig() const { return mConfig;}
@@ -54,9 +54,9 @@ namespace CLAM
 
 	private:
 		SpectrumPlotProcessingConfig mConfig;
-		VM::NetSpectrumPlot* mPlot;
-		InPort<Spectrum> mInput;
-		bool mOwnedPlot;
+		VM::NetSpectrumPlot*         mPlot;
+		InPort<Spectrum>             mInput;
+		bool                         mOwnedPlot;
 
 		void InitSpectrumPlot();
 	};

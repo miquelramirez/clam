@@ -11,99 +11,99 @@ namespace CLAM
 {
     namespace VM
     {
-	struct SView
-	{
-	    float left;
-	    float right;
-	    float bottom;
-	    float top;
+		struct SView
+		{
+			float left;
+			float right;
+			float bottom;
+			float top;
 
-	    SView();
-	    SView(float, float, float, float);
-	    SView(const SView& v);
-	    ~SView();
+			SView();
+			SView(float, float, float, float);
+			SView(const SView& v);
+			~SView();
 	    
-	    void operator=(SView v);
-	};
+			void operator=(SView v);
+		};
 
-	class NetPlotController : public QObject
-	{
-	    typedef std::list<SView> ViewStack;
+		class NetPlotController : public QObject
+		{
+			typedef std::list<SView> ViewStack;
 
-	    Q_OBJECT
+			Q_OBJECT
 	    
-	public:
-	    NetPlotController();
-	    virtual ~NetPlotController();
+		public:
+			NetPlotController();
+			virtual ~NetPlotController();
 
-	    virtual void Draw();
+			virtual void Draw();
 
-	    void SetPoint(const TData& x, const TData& y);
-	    virtual void UpdatePoint(const TData& x, const TData& y);
+			void SetPoint(const TData& x, const TData& y);
+			virtual void UpdatePoint(const TData& x, const TData& y);
 
-	    void SetLeftButtonPressed(bool pressed);
-	    void SetRightButtonPressed(bool pressed);
+			void SetLeftButtonPressed(bool pressed);
+			void SetRightButtonPressed(bool pressed);
 
-	signals:
-	    void sendView(SView);
-	    void toolTip(QString);
+		signals:
+			void sendView(SView);
+			void toolTip(QString);
 
-	protected:
-	    SView _view;
+		protected:
+			SView mView;
 
-	    SigSlot::Slotv0 mStartSlot;
-	    SigSlot::Slotv0 mStopSlot;
+			SigSlot::Slotv0 mStartSlot;
+			SigSlot::Slotv0 mStopSlot;
 
-	    virtual void FullView() = 0;
+			virtual void FullView() = 0;
 
-	    void SetnSamples(const TSize& nSamples);
-	    TSize GetnSamples() const;
+			void SetnSamples(const TSize& nSamples);
+			TSize GetnSamples() const;
 
-	    void SetvRange(const TData& vmin, const TData& vmax);
-	    TData GetvMin() const;
-	    TData GetvMax() const;
+			void SetvRange(const TData& vmin, const TData& vmax);
+			TData GetvMin() const;
+			TData GetvMax() const;
 
-	    void ConcreteStartMonitor();
-	    void ConcreteStopMonitor();
+			void ConcreteStartMonitor();
+			void ConcreteStopMonitor();
 
-	    bool MonitorIsRunning();
+			bool MonitorIsRunning();
 
-	    void SetFirst(bool first);
-	    bool First();
+			void SetFirst(bool first);
+			bool First();
 
-	    void SetCanGetData(bool canget);
-	    void SetCanSendData(bool cansend);
-	    bool CanGetData();
-	    bool CanSendData();
+			void SetCanGetData(bool canget);
+			void SetCanSendData(bool cansend);
+			bool CanGetData();
+			bool CanSendData();
 				
-	private:
-	    TSize _nSamples;
-	    TData _vmin;
-            TData _vmax;
-	    bool _first;
-	    bool _monitorIsRunning;
-	    bool _canSendData;
-	    bool _canGetData;
-	    bool _leftButtonPressed;
-	    bool _rightButtonPressed;
-	    Point _corners[2];
-	    ViewStack _viewStack;
+		private:
+			TSize     mSamples;
+			TData     mVMin;
+            TData     mVMax;
+			bool      mFirst;
+			bool      mMonitorIsRunning;
+			bool      mCanGetData;
+			bool      mCanSendData;
+			bool      mLeftButtonPressed;
+			bool      mRightButtonPressed;
+			Point     mCorners[2];
+			ViewStack mViewStack;
 	                
-	    void PushView();
-	    void PopView();
+			void PushView();
+			void PopView();
 
-	    float XMax();
-	    float XMin();
-	    float YMax();
-	    float YMin();
+			float XMax();
+			float XMin();
+			float YMax();
+			float YMin();
 
-	    float Max(float a, float b);
-	    float Min(float a, float b);
+			float Max(float a, float b);
+			float Min(float a, float b);
 
-	    TData AdjustX(const TData& value);
-	    TData AdjustY(const TData& value);
+			TData AdjustX(const TData& value);
+			TData AdjustY(const TData& value);
 				
-	};
+		};
     }
 }
 

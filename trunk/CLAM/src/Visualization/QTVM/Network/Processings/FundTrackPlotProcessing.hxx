@@ -37,7 +37,7 @@ namespace CLAM
 	public:
 		FundTrackPlotProcessing();
 		FundTrackPlotProcessing(const FundTrackPlotProcessingConfig& cfg);
-		virtual ~FundTrackPlotProcessing();
+		~FundTrackPlotProcessing();
 
 		bool Do();
 		bool Do(const Fundamental& fund);
@@ -54,9 +54,9 @@ namespace CLAM
 
 	private:
 		FundTrackPlotProcessingConfig mConfig;
-		VM::NetFundTrackPlot* mPlot;
-		InPort<Fundamental> mInput;
-		bool mOwnedPlot;
+		VM::NetFundTrackPlot*         mPlot;
+		InPort<Fundamental>           mInput;
+		bool                          mOwnedPlot;
 
 		void InitFundTrackPlot();
 	};

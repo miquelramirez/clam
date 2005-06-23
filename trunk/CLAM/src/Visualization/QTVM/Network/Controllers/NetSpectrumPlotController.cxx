@@ -6,11 +6,11 @@ namespace CLAM
 	namespace VM
 	{
 		NetSpectrumPlotController::NetSpectrumPlotController()
-		    : mMonitor(0),
-		      _spectralRange(TData(0.0)),
-		      _hasData(false),
-		      _tooltip(""),
-		      _renderingIsDone(false)
+		    : mMonitor(0)
+			, mSpectralRange(TData(0.0))
+			, mHasData(false)
+		    , mRenderingIsDone(false)
+			, mTooltip("")
 		{
 		    SetDataColor(VMColor::Green());
 		    SetvRange(TData(-150.0),TData(0.0));
@@ -25,11 +25,11 @@ namespace CLAM
 		    if(!spec.GetMagBuffer().Size()) return;
 		    if(CanGetData())
 		    {
-			SetCanSendData(false);
-			_spec = spec;
-			if(First()) Init(_spec.GetMagBuffer().Size());
-			AdaptSpectralData();
-			SetCanSendData(true);
+				SetCanSendData(false);
+				mSpec = spec;
+				if(First()) Init(mSpec.GetMagBuffer().Size());
+				AdaptSpectralData();
+				SetCanSendData(true);
 		    }
 		}
 
@@ -42,111 +42,107 @@ namespace CLAM
 
 		void NetSpectrumPlotController::SetDataColor(Color c)
 		{
-			_renderer.SetColor(c);
+			mRenderer.SetColor(c);
 		}
 
 		void NetSpectrumPlotController::Draw()
 		{
-		    if (!mMonitor)
+		    if(!mMonitor)
 		    {
-			if(CanSendData())
-			{
-			    SetCanGetData(false);
-			    _renderer.SetDataPtr(_spec.GetMagBuffer().GetPtr(), _spec.GetMagBuffer().Size(), NormalMode);
-			    SetCanGetData(true);
-			}
-			_renderer.Render();
-			NetPlotController::Draw();
-
-			_renderingIsDone=true;
-
-			return;
+				if(CanSendData())
+				{
+					SetCanGetData(false);
+					mRenderer.SetDataPtr(mSpec.GetMagBuffer().GetPtr(), mSpec.GetMagBuffer().Size(), NormalMode);
+					SetCanGetData(true);
+				}
+				mRenderer.Render();
+				NetPlotController::Draw();
+				mRenderingIsDone=true;
+				return;
 		    }
 
 		    if(MonitorIsRunning())
 		    {
-			const Spectrum & spectrum = mMonitor->FreezeAndGetData();
+				const Spectrum & spectrum = mMonitor->FreezeAndGetData();
 
-			// TODO: Because we have exclusive right for
-			// to the data we could remove some of this copies
+				// TODO: Because we have exclusive right for
+				// to the data we could remove some of this copies
 
-			_spec = spectrum;
-			TSize specSize = _spec.GetMagBuffer().Size();
-			if(First() && specSize) Init(specSize);
-			AdaptSpectralData();
-			_renderer.SetDataPtr(_spec.GetMagBuffer().GetPtr(), _spec.GetMagBuffer().Size(), NormalMode);
-			_renderer.Render();
-			NetPlotController::Draw();
-
-			mMonitor->UnfreezeData();
+				mSpec = spectrum;
+				TSize specSize = mSpec.GetMagBuffer().Size();
+				if(First() && specSize) Init(specSize);
+				AdaptSpectralData();
+				mRenderer.SetDataPtr(mSpec.GetMagBuffer().GetPtr(), mSpec.GetMagBuffer().Size(), NormalMode);
+				mRenderer.Render();
+				NetPlotController::Draw();
+				mMonitor->UnfreezeData();
 		    }
 		    else
 		    {
-			_renderer.Render();
-			NetPlotController::Draw();
+				mRenderer.Render();
+				NetPlotController::Draw();
 		    }
-
-		    _renderingIsDone=true;
+		    mRenderingIsDone=true;
 		}
 
 		void NetSpectrumPlotController::FullView()	
 		{
-			_view.left = TData(0.0);
-			_view.right = TData(GetnSamples());
-			_view.top = GetvMax();
-			_view.bottom = GetvMin();
-			emit sendView(_view);
+			mView.left = TData(0.0);
+			mView.right = TData(GetnSamples());
+			mView.top = GetvMax();
+			mView.bottom = GetvMin();
+			emit sendView(mView);
 		}
 
 		void NetSpectrumPlotController::AdaptSpectralData()
 		{
 			SpecTypeFlags spFlags;
-			_spec.GetType(spFlags);
+			mSpec.GetType(spFlags);
 
 			if(!spFlags.bMagPhase)
 			{
 				// check for conversions
 				if(spFlags.bComplex)
 				{
-					_spec.Complex2MagPhase();
+					mSpec.Complex2MagPhase();
 				}
 				else if(spFlags.bPolar)
 				{
-					_spec.Polar2MagPhase();
+					mSpec.Polar2MagPhase();
 				}
 				else if(spFlags.bMagPhaseBPF)
 				{
-					_spec.BPF2MagPhase();
+					mSpec.BPF2MagPhase();
 				}
 			}
 			// convert to dB
-			_spec.ToDB();
+			mSpec.ToDB();
 		}
 
-	        void NetSpectrumPlotController::Init(const TSize& size)
+		void NetSpectrumPlotController::Init(const TSize& size)
 		{
-		    _hasData=true;
-		    _spectralRange=_spec.GetSpectralRange();
+		    mHasData=true;
+		    mSpectralRange=mSpec.GetSpectralRange();
 		    SetnSamples(size);
 		    SetFirst(false);
 		    FullView();
 		}
 
-	        void NetSpectrumPlotController::UpdatePoint(const TData& x, const TData& y)
+		void NetSpectrumPlotController::UpdatePoint(const TData& x, const TData& y)
 		{
 		    TData xvalue=x;
 		    NetPlotController::UpdatePoint(x,y);
-		    _tooltip="";
-		    if(_hasData)
+		    mTooltip="";
+		    if(mHasData)
 		    {
-			xvalue*=_spectralRange;
-			xvalue/=TData(GetnSamples());
-			_tooltip = "frequency="+(_tooltip.setNum(xvalue,'f',0))+"Hz "+"magnitude="+(_tooltip.setNum(y,'f',0))+"dB";  
+				xvalue*=mSpectralRange;
+				xvalue/=TData(GetnSamples());
+				mTooltip = "frequency="+(mTooltip.setNum(xvalue,'f',0))+"Hz "+"magnitude="+(mTooltip.setNum(y,'f',0))+"dB";  
 		    }
-		    if(_renderingIsDone)
+		    if(mRenderingIsDone)
 		    {
-			_renderingIsDone=false;
-			emit toolTip(_tooltip);
+				mRenderingIsDone=false;
+				emit toolTip(mTooltip);
 		    }
 		}
 	}

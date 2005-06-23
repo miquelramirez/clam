@@ -10,41 +10,38 @@ namespace CLAM
 {
     namespace VM
     {
-	class NetFundTrackPlotController : public NetPlotController 
-	{
-	public:
-	    typedef FundTrackPortMonitor MonitorType;
-	    NetFundTrackPlotController();
-	    virtual ~NetFundTrackPlotController();
+		class NetFundTrackPlotController : public NetPlotController 
+		{
+		public:
+			typedef FundTrackPortMonitor MonitorType;
+			NetFundTrackPlotController();
+			~NetFundTrackPlotController();
 
-	    void SetData(const Fundamental& fund);
-	    void SetDataColor(Color c);
-	    void Draw();
-	    void SetMonitor(MonitorType & monitor);
+			void SetData(const Fundamental& fund);
+			void SetDataColor(Color c);
+			void Draw();
+			void SetMonitor(MonitorType & monitor);
 
-	    void UpdatePoint(const TData& x, const TData& y);
+			void UpdatePoint(const TData& x, const TData& y);
 
-	protected:
-	    void FullView();
+		protected:
+			void FullView();
 
-	private:
-	    DataArray _cachedData;
-	    BuffDataRenderer _renderer;
-	    int _index;
-	    SigSlot::Slotv0 mSlotNewData;
-
-	    MonitorType* mMonitor;
+		private:
+			MonitorType*     mMonitor;
+			DataArray        mCachedData;
+			BuffDataRenderer mRenderer;
+			int              mIndex;	    
+			bool             mHasData;
+			bool             mRenderingIsDone;
+			QString          mTooltip;
+			SigSlot::Slotv0  mSlotNewData;
 	    
-	    bool _hasData;
-	    QString _tooltip;
-	    bool _renderingIsDone;
-	    
-	    void AddData(const TData& data);
-	  
-	    void Init();
-	    void OnNewData();
+			void AddData(const TData& data);
+			void Init();
+			void OnNewData();
 
-	};
+		};
     }
 }
 

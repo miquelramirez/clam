@@ -15,33 +15,30 @@ namespace CLAM
 		public:
 			typedef PeaksPortMonitor MonitorType;
 			NetPeaksPlotController();
-			virtual ~NetPeaksPlotController();
+			~NetPeaksPlotController();
 
 			void SetData(const SpectralPeakArray& peaks);
 			void SetPeaksColor(Color cline, Color cpoint);
-			virtual void Draw();
+			void Draw();
 			void SetMonitor(MonitorType & monitor);
 
-		        void UpdatePoint(const TData& x, const TData& y);
+			void UpdatePoint(const TData& x, const TData& y);
 
-	        protected:
-		        void FullView();
+		protected:
+			void FullView();
 
 		private:
-			DataArray _magBuffer;
-			DataArray _freqBuffer;
-			
-			NetPeaksRenderer _renderer;
-
-			MonitorType * mMonitor;
-
-		        bool _linear;
-		        bool _hasData;
-		        QString _tooltip;
-		        bool _renderingIsDone;
+			MonitorType*     mMonitor;
+			DataArray        mMagBuffer;
+			DataArray        mFreqBuffer;
+			NetPeaksRenderer mRenderer;
+			bool             mLinear;
+			bool             mHasData;
+			bool             mRenderingIsDone;
+			QString          mTooltip;
 
 			void ProcessPeakData();
-		        void Init();
+			void Init();
 		};
 	}
 }

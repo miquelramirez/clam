@@ -5,16 +5,16 @@ namespace CLAM
 	namespace VM
 	{
 		NetFundPlotController::NetFundPlotController() 
-		    : mMonitor(0),
-		      _hasData(false),
-		      _tooltip(""),
-		      _renderingIsDone(false)
+		    : mMonitor(0)
+		    , mHasData(false)
+			, mRenderingIsDone(false)
+		    , mTooltip("")  
 		{
 		    SetDataColor(VMColor::Green());
 		    SetvRange(TData(0.0),TData(1.0));
 		    SetnSamples(22050);
-		    _renderer.SetVBounds(TData(0.7),TData(0.0));
-		    _renderer.SetHBounds(TData(0.0),TData(GetnSamples()));
+		    mRenderer.SetVBounds(TData(0.7),TData(0.0));
+		    mRenderer.SetHBounds(TData(0.0),TData(GetnSamples()));
 		}
 
 		NetFundPlotController::~NetFundPlotController()
@@ -25,10 +25,10 @@ namespace CLAM
 		{
 		    if(CanGetData())
 		    {
-			SetCanSendData(false);
-			_fund=data;
-			if(First()) Init();
-			SetCanSendData(true);
+				SetCanSendData(false);
+				mFund=data;
+				if(First()) Init();
+				SetCanSendData(true);
 		    }
 		}
 
@@ -41,77 +41,73 @@ namespace CLAM
 
 		void NetFundPlotController::SetDataColor(Color c)
 		{
-			_renderer.SetColor(c);
+			mRenderer.SetColor(c);
 		}
 
 		void NetFundPlotController::Draw()
 		{
 		    if (!mMonitor)
 		    {
-			if(CanSendData())
-			{
-			   SetCanGetData(false);
-			   _renderer.Update(_fund.GetFreq(0));
-			   SetCanGetData(true);
-			}
-			_renderer.Render();
-			NetPlotController::Draw();
-
-			_renderingIsDone=true;
-
-			return;
+				if(CanSendData())
+				{
+					SetCanGetData(false);
+					mRenderer.Update(mFund.GetFreq(0));
+					SetCanGetData(true);
+				}
+				mRenderer.Render();
+				NetPlotController::Draw();
+				mRenderingIsDone=true;
+				return;
 		    }
 		    
 		    if(MonitorIsRunning())
 		    {
-			const Fundamental & fund = mMonitor->FreezeAndGetData();
+				const Fundamental & fund = mMonitor->FreezeAndGetData();
 
-			// TODO: Because we have exclusive right for
-			// to the data we could remove some of this copies
-			if(First()) Init();
-			_renderer.Update(fund.GetFreq(0));
-			_renderer.Render();
-			NetPlotController::Draw();
-
-			mMonitor->UnfreezeData();
+				// TODO: Because we have exclusive right for
+				// to the data we could remove some of this copies
+				if(First()) Init();
+				mRenderer.Update(fund.GetFreq(0));
+				mRenderer.Render();
+				NetPlotController::Draw();
+				mMonitor->UnfreezeData();
 		    }
 		    else
 		    {
-			_renderer.Render();
-			NetPlotController::Draw();
+				mRenderer.Render();
+				NetPlotController::Draw();
 		    }
-
-		    _renderingIsDone=true;
+		    mRenderingIsDone=true;
 		}
 
 		void NetFundPlotController::FullView()
 		{
-			_view.left = TData(0.0);
-			_view.right = TData(GetnSamples());
-			_view.top = GetvMax();
-			_view.bottom = GetvMin();
-			emit sendView(_view);
+			mView.left = TData(0.0);
+			mView.right = TData(GetnSamples());
+			mView.top = GetvMax();
+			mView.bottom = GetvMin();
+			emit sendView(mView);
 		}
 
-	        void NetFundPlotController::Init()
+		void NetFundPlotController::Init()
 		{
-		    _hasData=true;
+		    mHasData=true;
 		    SetFirst(false);
 		    FullView();
 		}
 
-	        void NetFundPlotController::UpdatePoint(const TData& x, const TData& y)
+		void NetFundPlotController::UpdatePoint(const TData& x, const TData& y)
 		{
 		    NetPlotController::UpdatePoint(x,y);
-		    _tooltip="";
-		    if(_hasData)
+		    mTooltip="";
+		    if(mHasData)
 		    {
-			_tooltip = "frequency="+(_tooltip.setNum(x,'f',0))+"Hz";  
+				mTooltip = "frequency="+(mTooltip.setNum(x,'f',0))+"Hz";  
 		    }
-		    if(_renderingIsDone)
+		    if(mRenderingIsDone)
 		    {
-			_renderingIsDone=false;
-			emit toolTip(_tooltip);
+				mRenderingIsDone=false;
+				emit toolTip(mTooltip);
 		    }
 		}
 	}
