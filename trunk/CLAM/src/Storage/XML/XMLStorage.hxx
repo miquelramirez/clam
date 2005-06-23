@@ -39,15 +39,11 @@ namespace CLAM
 class XMLable;
 class Component;
 class XercesDomDocumentHandler;
-class XercesDomWritingContext;
-class XercesDomReadingContext;
 
 
 class XmlStorage : public Storage
 {
 	XercesDomDocumentHandler * _documentHandler;
-	XercesDomWritingContext * _writeContext;
-	XercesDomReadingContext * _readContext;
 	bool _lastWasContent;
 	bool _useIndentation;
 	std::string _errors;

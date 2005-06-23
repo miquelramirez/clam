@@ -22,18 +22,21 @@
 #ifndef _XercesDomReadingContext_hxx_
 #define _XercesDomReadingContext_hxx_
 
-#include "XercesDomDocumentHandler.hxx"
 
 #ifndef CLAM_USE_XML
 
 // Dummy implementation that will fail when used
 
+#include "Assert.hxx"
+#include "XercesEncodings.hxx"
 #include <sstream>
 #include <list>
 #include <string>
 
 namespace CLAM 
 {
+
+class XercesDomDocumentHandler;
 
 /**
  * Keeps the booking when loading one Xerces-C DOM single element into CLAM data.
@@ -43,10 +46,8 @@ class XercesDomReadingContext
 	std::stringstream _plainContentToParse;
 
 public:
-	XercesDomReadingContext(XercesDomDocumentHandler & docHandler)
-	{
-		CLAM_ASSERT(false, "Using XML with CLAM_USE_XML disabled");
-	}
+	XercesDomReadingContext(XercesDomDocumentHandler & docHandler);
+
 	XercesDomReadingContext(XercesDomReadingContext * oldContext, const char * name)
 	{
 		CLAM_ASSERT(false, "Using XML with CLAM_USE_XML disabled");
@@ -89,6 +90,8 @@ public:
 #else//CLAM_USE_XML
 
 
+#include "Assert.hxx"
+#include "XercesEncodings.hxx"
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMNamedNodeMap.hpp>
 #include <xercesc/dom/DOMNodeList.hpp>
@@ -98,6 +101,7 @@ public:
 
 namespace CLAM 
 {
+class XercesDomDocumentHandler;
 
 /**
  * Keeps the booking when loading one Xerces-C DOM single element into CLAM data.
@@ -120,11 +124,8 @@ public:
 		setAt(element);
 	}
 	// TODO: Test this
-	XercesDomReadingContext(XercesDomDocumentHandler & docHandler)
-	{
-		_parentContext=0;
-		setAt(docHandler.getSelection());
-	}
+	XercesDomReadingContext(XercesDomDocumentHandler & docHandler);
+
 	XercesDomReadingContext(XercesDomReadingContext * oldContext, const char * name)
 	{
 		_parentContext=oldContext;

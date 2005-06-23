@@ -27,6 +27,7 @@
 #ifdef CLAM_USE_XML
 
 #include <xercesc/dom/DOMText.hpp>
+#include <xercesc/dom/DOMDocument.hpp>
 
 namespace CLAM
 {
@@ -41,11 +42,7 @@ public:
 		_parent = 0;
 		_currentElement = element;
 	}
-	XercesDomWritingContext(XercesDomDocumentHandler & docHandler)
-	{
-		_parent=0;
-		_currentElement = docHandler.getSelection();
-	}
+	XercesDomWritingContext(XercesDomDocumentHandler & docHandler);
 
 	XercesDomWritingContext(XercesDomWritingContext * parent, const char * name)
 	{
@@ -82,9 +79,7 @@ class XercesDomWritingContext
 {
 	XercesDomWritingContext * _parent;
 public:
-	XercesDomWritingContext(XercesDomDocumentHandler & docHandler)
-	{
-	}
+	XercesDomWritingContext(XercesDomDocumentHandler & docHandler);
 
 	XercesDomWritingContext(XercesDomWritingContext * parent, const char * name)
 	{
