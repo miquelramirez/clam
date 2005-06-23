@@ -37,11 +37,11 @@ namespace CLAM
 	public:
 		FundPlotProcessing();
 		FundPlotProcessing(const FundPlotProcessingConfig& cfg);
-		virtual ~FundPlotProcessing();
+		~FundPlotProcessing();
 
 		bool Do();
 		bool Do(const Fundamental& fund);
-
+		
 		const char * GetClassName() const {return "FundPlotProcessing";}
 
 		inline const ProcessingConfig &GetConfig() const { return mConfig;}
@@ -54,9 +54,9 @@ namespace CLAM
 
 	private:
 		FundPlotProcessingConfig mConfig;
-		VM::NetFundPlot* mPlot;
-		InPort<Fundamental> mInput;
-		bool mOwnedPlot;
+		VM::NetFundPlot*         mPlot;
+		InPort<Fundamental>      mInput;
+		bool                     mOwnedPlot;
 
 		void InitFundPlot();
 	};

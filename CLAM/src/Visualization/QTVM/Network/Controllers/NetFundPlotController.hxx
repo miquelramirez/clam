@@ -15,29 +15,27 @@ namespace CLAM
 		public:
 			typedef FundamentalPortMonitor MonitorType;
 			NetFundPlotController();
-			virtual ~NetFundPlotController();
+			~NetFundPlotController();
 
 			void SetData(const Fundamental& data);
 			void SetDataColor(Color c);
 			void Draw();
 			void SetMonitor(MonitorType & monitor);
 
-		        void UpdatePoint(const TData& x, const TData& y);
+			void UpdatePoint(const TData& x, const TData& y);
 
 		protected:
-		        void FullView();
+			void FullView();
 
 		private:
-		        Fundamental _fund;
-			Dial _renderer;
-
-			MonitorType * mMonitor;
+			MonitorType* mMonitor;
+			Fundamental  mFund;
+			Dial         mRenderer;    
+			bool         mHasData;
+			bool         mRenderingIsDone;
+			QString      mTooltip;
 		        
-		        bool _hasData;
-		        QString _tooltip;
-		        bool _renderingIsDone;
-
-		        void Init();
+			void Init();
 		};
 	}
 }

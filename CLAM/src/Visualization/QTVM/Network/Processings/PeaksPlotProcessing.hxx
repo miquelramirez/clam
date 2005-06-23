@@ -37,7 +37,7 @@ namespace CLAM
 	public:
 		PeaksPlotProcessing();
 		PeaksPlotProcessing(const PeaksPlotProcessingConfig& cfg);
-		virtual ~PeaksPlotProcessing();
+		~PeaksPlotProcessing();
 
 		bool Do();
 		bool Do(const SpectralPeakArray& peaks);
@@ -54,9 +54,9 @@ namespace CLAM
 
 	private:
 		PeaksPlotProcessingConfig mConfig;
-		VM::NetPeaksPlot* mPlot;
+		VM::NetPeaksPlot*         mPlot;
 		InPort<SpectralPeakArray> mInput;
-		bool mOwnedPlot;
+		bool                      mOwnedPlot;
 
 		void InitPeaksPlot();
 	};

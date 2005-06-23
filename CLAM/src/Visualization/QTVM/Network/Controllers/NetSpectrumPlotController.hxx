@@ -15,33 +15,29 @@ namespace CLAM
 		public:
 			typedef SpectrumPortMonitor MonitorType;
 			NetSpectrumPlotController();
-			virtual ~NetSpectrumPlotController();
+			~NetSpectrumPlotController();
 
 			void SetData(const Spectrum& spec);
 			void SetDataColor(Color c);
-			virtual void Draw();
+			void Draw();
 			void SetMonitor(MonitorType & monitor);
 
-		        void UpdatePoint(const TData& x, const TData& y);
+			void UpdatePoint(const TData& x, const TData& y);
 
 		protected:
-		        void FullView();
+			void FullView();
 
 		private:
-			Spectrum  _spec;
-
-			DataRenderer _renderer;
-
-			MonitorType * mMonitor;
-		       
-		        TData _spectralRange;
-		        bool _hasData;
-		        QString _tooltip;
-		        bool _renderingIsDone;
+			Spectrum     mSpec;
+			DataRenderer mRenderer;
+			MonitorType* mMonitor;
+			TData        mSpectralRange;
+			bool         mHasData;    
+			bool         mRenderingIsDone;
+			QString      mTooltip;
 		    
-
 			void AdaptSpectralData();
-		        void Init(const TSize& size);
+			void Init(const TSize& size);
 		};
 	}
 }

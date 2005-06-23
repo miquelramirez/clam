@@ -11,41 +11,44 @@ namespace CLAM
 {
     namespace VM
     {
-	class NetSinTracksPlotController : public NetPlotController 
-	{
-	public:
-	    typedef SinTracksPortMonitor MonitorType;
-	    NetSinTracksPlotController();
-	    virtual ~NetSinTracksPlotController();
+		class NetSinTracksPlotController : public NetPlotController 
+		{
+		public:
+			typedef SinTracksPortMonitor MonitorType;
+			NetSinTracksPlotController();
+			~NetSinTracksPlotController();
 
-	    void SetData(const SpectralPeakArray& peaks);
-	    void Draw();
-	    void SetMonitor(MonitorType & monitor);
+			void SetData(const SpectralPeakArray& peaks);
+			void Draw();
+			void SetMonitor(MonitorType & monitor);
 
-	    void UpdatePoint(const TData& x, const TData& y);
+			void UpdatePoint(const TData& x, const TData& y);
 
-	protected:
-	    void FullView();
+		protected:
+			void FullView();
 
-	private:
-	    MonitorType* mMonitor;
-	    Array<SpectralPeakArray> _peakMtx;
-	    NetSinTracksRenderer _renderer;
-	    SigSlot::Slotv0 mSlotNewData;
-	    int _index;
-	    SinTracking mSinTracking;
-	    TIndex _leftIndex1,_rightIndex1,_leftIndex2,_rightIndex2;
-	    bool _hasData;
-	    QString _tooltip;
-	    bool _renderingIsDone;
+		private:
+			MonitorType*             mMonitor;
+			Array<SpectralPeakArray> mPeakMtx;
+			NetSinTracksRenderer     mRenderer;
+			SigSlot::Slotv0          mSlotNewData;
+			SinTracking              mSinTracking;
+			int                      mIndex;
+			TIndex                   mLeftIndex1;
+			TIndex                   mRightIndex1;
+			TIndex                   mLeftIndex2;
+			TIndex                   mRightIndex2;
+			bool                     mHasData;
+			bool                     mRenderingIsDone;
+			QString                  mTooltip;
 
-	    void AddData(const SpectralPeakArray& data);
+			void AddData(const SpectralPeakArray& data);
 	  
-	    void Init();
-	    void OnNewData();
-	    void ComputeIndexes();
+			void Init();
+			void OnNewData();
+			void ComputeIndexes();
 
-	};
+		};
     }
 }
 

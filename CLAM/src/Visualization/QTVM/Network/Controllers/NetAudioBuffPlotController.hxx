@@ -10,41 +10,44 @@ namespace CLAM
 {
     namespace VM
     {
-	class NetAudioBuffPlotController : public NetPlotController 
-	{
-	public:
-	    typedef AudioBuffPortMonitor MonitorType;
-	    NetAudioBuffPlotController();
-	    virtual ~NetAudioBuffPlotController();
+		class NetAudioBuffPlotController : public NetPlotController 
+		{
+		public:
+			typedef AudioBuffPortMonitor MonitorType;
+			NetAudioBuffPlotController();
+			~NetAudioBuffPlotController();
 
-	    void SetData(const Audio& audio);
-	    void SetDataColor(Color c);
-	    void Draw();
-	    void SetMonitor(MonitorType & monitor);
+			void SetData(const Audio& audio);
+			void SetDataColor(Color c);
+			void Draw();
+			void SetMonitor(MonitorType & monitor);
 
-	    void UpdatePoint(const TData& x, const TData& y);
+			void UpdatePoint(const TData& x, const TData& y);
 	
-	protected:
-	    void FullView();
+		protected:
+			void FullView();
 
-	private:
-	    MonitorType* mMonitor;
-	    DataArray _cachedData;
-	    BuffDataRenderer _renderer;
-	    int _index;
-	    TSize _frameSize;
-	    TIndex _leftIndex1,_rightIndex1,_leftIndex2,_rightIndex2;
-	    SigSlot::Slotv0 mSlotNewData;
-	    bool _hasData;
-	    QString _tooltip;
-	    bool _renderingIsDone;
+		private:
+			MonitorType*     mMonitor;
+			DataArray        mCachedData;
+			BuffDataRenderer mRenderer;
+			int              mIndex;
+			TSize            mFrameSize;
+			TIndex           mLeftIndex1;
+			TIndex           mRightIndex1;
+			TIndex           mLeftIndex2;
+			TIndex           mRightIndex2;
+			bool             mHasData;
+			QString          mTooltip;
+			bool             mRenderingIsDone;
+			SigSlot::Slotv0  mSlotNewData;
 
-	    void AddData(const DataArray& data);
+			void AddData(const DataArray& data);
 	  
-	    void Init(const TSize& frameSize);
-	    void OnNewData();
-	    void ComputeIndexes();
-	};
+			void Init(const TSize& frameSize);
+			void OnNewData();
+			void ComputeIndexes();
+		};
     }
 }
 

@@ -5,10 +5,10 @@ namespace CLAM
 	namespace VM
 	{
 		NetAudioPlotController::NetAudioPlotController() 
-		    : mMonitor(0),
-		      _hasData(false),
-		      _tooltip(""),
-		      _renderingIsDone(false)
+		    : mMonitor(0)
+			, mHasData(false)
+			, mRenderingIsDone(false)
+			, mTooltip("")
 		{
 		    SetDataColor(VMColor::Green());
 		    SetvRange(TData(-1.0),TData(1.0));
@@ -23,10 +23,10 @@ namespace CLAM
 		    if(!audio.GetBuffer().Size()) return;
 		    if(CanGetData())
 		    {
-			SetCanSendData(false);
-			_cacheData=audio;
-			if(First()) Init(_cacheData.GetBuffer().Size());
-			SetCanSendData(true);
+				SetCanSendData(false);
+				mCacheData=audio;
+				if(First()) Init(mCacheData.GetBuffer().Size());
+				SetCanSendData(true);
 		    }
 		}
 
@@ -39,7 +39,7 @@ namespace CLAM
 
 		void NetAudioPlotController::SetDataColor(Color c)
 		{
-			_renderer.SetColor(c);
+			mRenderer.SetColor(c);
 		}
 
 		void NetAudioPlotController::Draw()
@@ -48,14 +48,13 @@ namespace CLAM
 			{
 			    if(CanSendData())
 			    {
-				SetCanGetData(false);
-				_renderer.SetDataPtr(_cacheData.GetBuffer().GetPtr(),_cacheData.GetBuffer().Size(),NormalMode);
-				SetCanGetData(true);
+					SetCanGetData(false);
+					mRenderer.SetDataPtr(mCacheData.GetBuffer().GetPtr(),mCacheData.GetBuffer().Size(),NormalMode);
+					SetCanGetData(true);
 			    }
-			    _renderer.Render();
+			    mRenderer.Render();
 			    NetPlotController::Draw();
-			    
-			    _renderingIsDone=true;
+			    mRenderingIsDone=true;
 			    
 			    return;
 			}
@@ -69,51 +68,49 @@ namespace CLAM
 
 			    TSize audioSize = audio.GetBuffer().Size();
 			    if(First() && audioSize) Init(audioSize);
-			    _renderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize,NormalMode);
+			    mRenderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize,NormalMode);
 
-			    _renderer.Render();
+			    mRenderer.Render();
 			    NetPlotController::Draw();
-
 			    mMonitor->UnfreezeData();
 			}
 			else
 			{
-			    _renderer.Render();
+			    mRenderer.Render();
 			    NetPlotController::Draw();
 			}
-			
-			_renderingIsDone=true;
+			mRenderingIsDone=true;
 		}
 
 		void NetAudioPlotController::FullView()
 		{
-			_view.left = TData(0.0);
-			_view.right = TData(GetnSamples());
-			_view.top = GetvMax();
-			_view.bottom = GetvMin();
-			emit sendView(_view);
+			mView.left = TData(0.0);
+			mView.right = TData(GetnSamples());
+			mView.top = GetvMax();
+			mView.bottom = GetvMin();
+			emit sendView(mView);
 		}
 
-	        void NetAudioPlotController::Init(const TSize& frameSize)
+		void NetAudioPlotController::Init(const TSize& frameSize)
 		{
-		    _hasData=true;
+		    mHasData=true;
 		    SetnSamples(frameSize);
 		    SetFirst(false);
 		    FullView();
 		}
 
-	        void NetAudioPlotController::UpdatePoint(const TData& x, const TData& y)
+		void NetAudioPlotController::UpdatePoint(const TData& x, const TData& y)
 		{
 		    NetPlotController::UpdatePoint(x,y);
-		    _tooltip="";
-		    if(_hasData)
+		    mTooltip="";
+		    if(mHasData)
 		    {
-			_tooltip = "amplitude="+(_tooltip.setNum(y,'f',3));  
+				mTooltip = "amplitude="+(mTooltip.setNum(y,'f',3));  
 		    }
-		    if(_renderingIsDone)
+		    if(mRenderingIsDone)
 		    {
-			_renderingIsDone=false;
-			emit toolTip(_tooltip);
+				mRenderingIsDone=false;
+				emit toolTip(mTooltip);
 		    }
 		}
 

@@ -84,7 +84,7 @@ namespace CLAM
 		mOwnedPlot = false;
 		mPlot = plot;
 	}
-
+	
 	void FundPlotProcessing::InitFundPlot()
 	{
 		if (mOwnedPlot) delete mPlot;

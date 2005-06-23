@@ -15,29 +15,26 @@ namespace CLAM
 		public:
 			typedef AudioPortMonitor MonitorType;
 			NetAudioPlotController();
-			virtual ~NetAudioPlotController();
+			~NetAudioPlotController();
 
 			void SetData(const Audio& audio);
 			void SetDataColor(Color c);
-			virtual void Draw();
+			void Draw();
 			void SetMonitor(MonitorType & monitor);
-
-		        void UpdatePoint(const TData& x, const TData& y);
+			void UpdatePoint(const TData& x, const TData& y);
 		    
 		protected:
-		        void FullView();
+			void FullView();
 
 		private:
-		        Audio _cacheData;
-			DataRenderer _renderer;
+			Audio        mCacheData;
+			DataRenderer mRenderer;
+			MonitorType* mMonitor;
+			bool         mHasData;
+			bool         mRenderingIsDone;
+			QString      mTooltip;
 
-			MonitorType * mMonitor;
-
-		        bool _hasData;
-		        QString _tooltip;
-		        bool _renderingIsDone;
-
-		        void Init(const TSize& frameSize);
+			void Init(const TSize& frameSize);
 		};
 	}
 }

@@ -37,13 +37,13 @@ namespace CLAM
 	public:
 		AudioBuffPlotProcessing();
 		AudioBuffPlotProcessing(const AudioBuffPlotProcessingConfig& cfg);
-		virtual ~AudioBuffPlotProcessing();
+		~AudioBuffPlotProcessing();
 
 		bool Do();
 		bool Do(const Audio& audio);
 
 		const char * GetClassName() const {return "AudioBuffPlotProcessing";}
-
+		
 		inline const ProcessingConfig &GetConfig() const { return mConfig;}
 		bool ConcreteConfigure(const ProcessingConfig& c);
 		void SetPlot(VM::NetAudioBuffPlot * plot);
@@ -54,9 +54,9 @@ namespace CLAM
 
 	private:
 		AudioBuffPlotProcessingConfig mConfig;
-		VM::NetAudioBuffPlot* mPlot;
-		AudioInPort mInput;
-		bool mOwnedPlot;
+		VM::NetAudioBuffPlot*         mPlot;
+		AudioInPort                   mInput;
+		bool                          mOwnedPlot;
 
 		void InitAudioBuffPlot();
 	};

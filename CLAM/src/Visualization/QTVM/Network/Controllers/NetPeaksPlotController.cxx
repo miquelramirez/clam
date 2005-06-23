@@ -6,15 +6,15 @@ namespace CLAM
 	namespace VM
 	{
 		NetPeaksPlotController::NetPeaksPlotController()
-		    : mMonitor(0),
-		      _linear(false),
-		      _hasData(false),
-		      _tooltip(""),
-		      _renderingIsDone(false)
+		    : mMonitor(0)
+			, mLinear(false)
+		    , mHasData(false)
+		    , mRenderingIsDone(false)
+			, mTooltip("")
 		{
 		    SetPeaksColor(VMColor::Cyan(),VMColor::Red());
 		    SetvRange(TData(-150.0),TData(0.0));
-		    _renderer.SetVBounds(TData(0.0),TData(-150.0));
+		    mRenderer.SetVBounds(TData(0.0),TData(-150.0));
 		    SetnSamples(22050);
 		}
 
@@ -27,13 +27,13 @@ namespace CLAM
 		    if(!peaks.GetMagBuffer().Size()) return;
 		    if(CanGetData())
 		    {
-			SetCanSendData(false);
-			_magBuffer = peaks.GetMagBuffer();
-			_freqBuffer = peaks.GetFreqBuffer();
-			_linear = (peaks.GetScale() == EScale::eLinear);
-			if(First()) Init();
-			ProcessPeakData();
-			SetCanSendData(true);
+				SetCanSendData(false);
+				mMagBuffer = peaks.GetMagBuffer();
+				mFreqBuffer = peaks.GetFreqBuffer();
+				mLinear = (peaks.GetScale() == EScale::eLinear);
+				if(First()) Init();
+				ProcessPeakData();
+				SetCanSendData(true);
 		    }
 		}
 
@@ -46,93 +46,88 @@ namespace CLAM
 
 		void NetPeaksPlotController::SetPeaksColor(Color cline, Color cpoint)
 		{
-			_renderer.SetPeakColor(cline, cpoint);
+			mRenderer.SetPeakColor(cline, cpoint);
 		}
 
 		void NetPeaksPlotController::Draw()
 		{
-			if (!mMonitor)
+			if(!mMonitor)
 			{
 			    if(CanSendData())
 			    {
-				SetCanGetData(false);
-				_renderer.SetDataPtr(_magBuffer.GetPtr(), _freqBuffer.GetPtr(), _magBuffer.Size());
-				SetCanGetData(true);
+					SetCanGetData(false);
+					mRenderer.SetDataPtr(mMagBuffer.GetPtr(), mFreqBuffer.GetPtr(), mMagBuffer.Size());
+					SetCanGetData(true);
 			    }
-			    _renderer.Render();
+			    mRenderer.Render();
 			    NetPlotController::Draw();
-
-			    _renderingIsDone=true;
-
+			    mRenderingIsDone=true;
 			    return;
 			}
-
 			if(MonitorIsRunning())
 			{
 			    const CLAM::SpectralPeakArray & peaks = mMonitor->FreezeAndGetData();
 
 			    // TODO: Because we have exclusive right for
 			    // to the data we could remove some of this copies
-			    _magBuffer = peaks.GetMagBuffer();
-			    _freqBuffer = peaks.GetFreqBuffer();
-			    _linear = (peaks.GetScale() == EScale::eLinear);
-			    if(First() && _magBuffer.Size()) Init();
+			    mMagBuffer = peaks.GetMagBuffer();
+			    mFreqBuffer = peaks.GetFreqBuffer();
+			    mLinear = (peaks.GetScale() == EScale::eLinear);
+			    if(First() && mMagBuffer.Size()) Init();
 			    ProcessPeakData();
-                            _renderer.SetDataPtr(_magBuffer.GetPtr(), _freqBuffer.GetPtr(), _magBuffer.Size());
-			    _renderer.Render();
+				mRenderer.SetDataPtr(mMagBuffer.GetPtr(), mFreqBuffer.GetPtr(), mMagBuffer.Size());
+			    mRenderer.Render();
 			    NetPlotController::Draw();
-
 			    mMonitor->UnfreezeData();
 			}
 			else
 			{
-			    _renderer.Render();
+			    mRenderer.Render();
 			    NetPlotController::Draw();
 			}
-
-			_renderingIsDone=true;
+			mRenderingIsDone=true;
 		}
 
 		void NetPeaksPlotController::FullView()
 		{
-			_view.left = TData(0.0);
-			_view.right = TData(GetnSamples());
-			_view.top = GetvMax();
-			_view.bottom = GetvMin();
-			emit sendView(_view);
+			mView.left = TData(0.0);
+			mView.right = TData(GetnSamples());
+			mView.top = GetvMax();
+			mView.bottom = GetvMin();
+			emit sendView(mView);
 		}
 
 		void NetPeaksPlotController::ProcessPeakData()
 		{
-		    if(_linear)
+		    if(mLinear)
 		    {
-			TSize nPeaks = _magBuffer.Size();
-			for(int i = 0; i < nPeaks; i++)
-			{
-			    _magBuffer[i] = 20.0*log10(_magBuffer[i]);
-			}
+				TSize nPeaks = mMagBuffer.Size();
+				for(int i = 0; i < nPeaks; i++)
+				{
+					mMagBuffer[i] = 20.0*log10(mMagBuffer[i]);
+				}
 		    }
 		}
 
-	        void NetPeaksPlotController::Init()
+		void NetPeaksPlotController::Init()
 		{
-		    _hasData=true;
+		    mHasData=true;
 		    SetFirst(false);
 		    FullView();
 		}
 
-	        void NetPeaksPlotController::UpdatePoint(const TData& x, const TData& y)
+		void NetPeaksPlotController::UpdatePoint(const TData& x, const TData& y)
 		{
 		    NetPlotController::UpdatePoint(x,y);
-		    _tooltip="";
-		    if(_hasData)
+		    mTooltip="";
+		    if(mHasData)
 		    {
-			_tooltip = "frequency="+(_tooltip.setNum(x,'f',0))+"Hz "+"magnitude="+(_tooltip.setNum(y,'f',0))+"dB";  
+				mTooltip = "frequency="+(mTooltip.setNum(x,'f',0))+"Hz "+"magnitude="+(mTooltip.setNum(y,'f',0))+"dB";  
 		    }
-		    if(_renderingIsDone)
+		    if(mRenderingIsDone)
 		    {
-			_renderingIsDone=false;
-			emit toolTip(_tooltip);
+				mRenderingIsDone=false;
+				emit toolTip(mTooltip);
 		    }
 		}
 	}

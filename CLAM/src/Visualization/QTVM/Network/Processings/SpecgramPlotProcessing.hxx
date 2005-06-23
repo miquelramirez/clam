@@ -37,7 +37,7 @@ namespace CLAM
 	public:
 		SpecgramPlotProcessing();
 		SpecgramPlotProcessing(const SpecgramPlotProcessingConfig& cfg);
-		virtual ~SpecgramPlotProcessing();
+		~SpecgramPlotProcessing();
 
 		bool Do();
 		bool Do(const Spectrum& spec);
@@ -54,9 +54,9 @@ namespace CLAM
 
 	private:
 		SpecgramPlotProcessingConfig mConfig;
-		VM::NetSpecgramPlot* mPlot;
-		InPort<Spectrum> mInput;
-		bool mOwnedPlot;
+		VM::NetSpecgramPlot*         mPlot;
+		InPort<Spectrum>             mInput;
+		bool                         mOwnedPlot;
 
 		void InitSpecgramPlot();
 	};

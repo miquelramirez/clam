@@ -12,49 +12,53 @@ namespace CLAM
 {
     namespace VM
     {
-	class NetSpecgramPlotController : public NetPlotController 
-	{
-	public:
-	    typedef SpecgramPortMonitor MonitorType;
-	    NetSpecgramPlotController();
-	    virtual ~NetSpecgramPlotController();
+		class NetSpecgramPlotController : public NetPlotController 
+		{
+		public:
+			typedef SpecgramPortMonitor MonitorType;
+			NetSpecgramPlotController();
+			~NetSpecgramPlotController();
 
-	    void SetData(const Spectrum& spec);
-	    void Draw();
-	    void SetMonitor(MonitorType & monitor);
+			void SetData(const Spectrum& spec);
+			void Draw();
+			void SetMonitor(MonitorType & monitor);
 
-	    void UpdatePoint(const TData& x, const TData& y);
+			void UpdatePoint(const TData& x, const TData& y);
 
-	protected:
-	    void FullView();
+		protected:
+			void FullView();
 
-	private:
-	    MonitorType* mMonitor;
-	    Spectrum _spec;
-	    std::vector< std::vector<Color> > _cachedData;
-	    NetSpecgramRenderer _renderer;
-	    int _index;
-	    int _specSize;
-	    QtPalette _palette;
-	    SigSlot::Slotv0 mSlotNewData;
-	    TIndex _leftIndex1, _rightIndex1, _leftIndex2, _rightIndex2;
-	    TIndex _bottomBound, _topBound;
-	    TData _spectralRange;
-	    bool _hasData;
-	    QString _tooltip;
-	    bool _renderingIsDone;
+		private:
+			MonitorType*                      mMonitor;
+			Spectrum                          mSpec;
+			std::vector< std::vector<Color> > mCachedData;
+			NetSpecgramRenderer               mRenderer;
+			int                               mIndex;
+			int                               mSpecSize;
+			QtPalette                         mPalette;
+			SigSlot::Slotv0                   mSlotNewData;
+			TIndex                            mLeftIndex1;
+			TIndex                            mRightIndex1;
+			TIndex                            mLeftIndex2;
+			TIndex                            mRightIndex2;
+			TIndex                            mBottomBound;
+			TIndex                            mTopBound;
+			TData                             mSpectralRange;
+			bool                              mHasData;
+			bool                              mRenderingIsDone;
+			QString                           mTooltip;
 	    
-	    void AddData(const Spectrum& spec);
-	    void AdaptSpectralData();
+			void AddData(const Spectrum& spec);
+			void AdaptSpectralData();
 	  
-	    void Init(const TSize& specSize, const TData& spectralRange);
+			void Init(const TSize& specSize, const TData& spectralRange);
 
-	    float ClampToRange(TData value) const;
+			float ClampToRange(TData value) const;
 
-	    void OnNewData();
-	    void ComputeIndexes();
+			void OnNewData();
+			void ComputeIndexes();
 
-	};
+		};
     }
 }
 

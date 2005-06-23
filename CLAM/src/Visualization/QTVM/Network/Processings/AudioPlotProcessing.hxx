@@ -37,7 +37,7 @@ namespace CLAM
 	public:
 		AudioPlotProcessing();
 		AudioPlotProcessing(const AudioPlotProcessingConfig& cfg);
-		virtual ~AudioPlotProcessing();
+		~AudioPlotProcessing();
 
 		bool Do();
 		bool Do(const Audio& audio);
@@ -54,9 +54,9 @@ namespace CLAM
 
 	private:
 		AudioPlotProcessingConfig mConfig;
-		VM::NetAudioPlot* mPlot;
-		AudioInPort mInput;
-		bool mOwnedPlot;
+		VM::NetAudioPlot*         mPlot;
+		AudioInPort               mInput;
+		bool                      mOwnedPlot;
 
 		void InitAudioPlot();
 	};

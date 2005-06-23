@@ -78,9 +78,9 @@ namespace CLAM
 		inline const DataType & FreezeAndGetData();
 		inline void UnfreezeData();
 
-	        void AttachStartSlot(SigSlot::Slotv0& slot) {mSigStart.Connect(slot);}
-	        void AttachStopSlot(SigSlot::Slotv0& slot) { mSigStop.Connect(slot);}
-	        void AttachSlotNewData(SigSlot::Slotv0& slot) { mSigNewData.Connect(slot);}
+		void AttachStartSlot(SigSlot::Slotv0& slot) {mSigStart.Connect(slot);}
+		void AttachStopSlot(SigSlot::Slotv0& slot) { mSigStop.Connect(slot);}
+		void AttachSlotNewData(SigSlot::Slotv0& slot) { mSigNewData.Connect(slot);}
 
 	protected:
 		bool ConcreteConfigure(const ProcessingConfig& c) {return true;}
@@ -90,14 +90,13 @@ namespace CLAM
 
 	private:
 		PortMonitorConfig mConfig;
-		PortType mInput;
-		DataType mData[2];
-		TryMutex mSwitchMutex;
-		unsigned mWhichDataToRead;
-
-	        SigSlot::Signalv0 mSigStart;
-	        SigSlot::Signalv0 mSigStop;
-	        SigSlot::Signalv0 mSigNewData;
+		PortType          mInput;
+		DataType          mData[2];
+		TryMutex          mSwitchMutex;
+		unsigned          mWhichDataToRead;
+		SigSlot::Signalv0 mSigStart;
+		SigSlot::Signalv0 mSigStop;
+		SigSlot::Signalv0 mSigNewData;
 	};
 
 	template <typename PortDataType, typename PortType>
@@ -166,30 +165,30 @@ namespace CLAM
 	public:
 		const char * GetClassName() const {return "PeaksPortMonitor";}
 	};
-        class SinTracksPortMonitor : public PortMonitor<SpectralPeakArray>
+	class SinTracksPortMonitor : public PortMonitor<SpectralPeakArray>
 	{
 	public:
-	        const char * GetClassName() const {return "SinTracksPortMonitor";}
+		const char * GetClassName() const {return "SinTracksPortMonitor";}
 	};
 	class SpectrumPortMonitor : public PortMonitor <Spectrum>
 	{
 	public:
 		const char * GetClassName() const {return "SpectrumPortMonitor";}
 	};
-        class SpecgramPortMonitor : public PortMonitor<Spectrum>
+	class SpecgramPortMonitor : public PortMonitor<Spectrum>
 	{
 	public:
-	        const char * GetClassName() const {return "SpecgramPortMonitor";}
+		const char * GetClassName() const {return "SpecgramPortMonitor";}
 	};
 	class FundamentalPortMonitor : public PortMonitor <Fundamental>
 	{
 	public:
 		const char * GetClassName() const {return "FundamentalPortMonitor";}
 	};
-        class FundTrackPortMonitor : public PortMonitor<Fundamental>
+	class FundTrackPortMonitor : public PortMonitor<Fundamental>
 	{
 	public:
-	        const char * GetClassName() const {return "FundTrackPortMonitor";}
+		const char * GetClassName() const {return "FundTrackPortMonitor";}
 	};
 
 	template <>
@@ -201,17 +200,15 @@ namespace CLAM
 	template <>
 	PortMonitor<Audio,AudioInPort>::PortMonitor(const PortMonitorConfig& cfg);
 
-
 	class AudioPortMonitor : public PortMonitor <Audio,AudioInPort>
 	{
 	public:
 		const char * GetClassName() const {return "AudioPortMonitor";}
 	};
-
-        class AudioBuffPortMonitor : public PortMonitor<Audio,AudioInPort>
+	class AudioBuffPortMonitor : public PortMonitor<Audio,AudioInPort>
 	{
 	public:
-	        const char * GetClassName() const {return  "AudioBuffPortMonitor";}
+		const char * GetClassName() const {return  "AudioBuffPortMonitor";}
 	};
 }
 
