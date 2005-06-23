@@ -18,6 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#ifndef XercesDomReader_hxx
+#define XercesDomReader_hxx
 
 #include "XercesEncodings.hxx"
 #include "XercesInitializer.hxx"
@@ -140,3 +142,4 @@ class XercesDomReader : private xercesc::HandlerBase
 
 
 }
+#endif//XercesDomReader_hxx

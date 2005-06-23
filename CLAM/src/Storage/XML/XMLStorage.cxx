@@ -31,8 +31,6 @@
 #include "Component.hxx"
 #include "Assert.hxx"
 #include "XercesDomDocumentHandler.hxx"
-#include "XercesDomWritingContext.hxx"
-#include "XercesDomReadingContext.hxx"
 #include <fstream>
 
 namespace CLAM
@@ -70,18 +68,18 @@ namespace CLAM
 
 	void XmlStorage::DumpObject(const Component & component)
 	{
-		XercesDomWritingContext rootContext(*_documentHandler);
-		_writeContext = & rootContext;
+		XercesDomDocumentHandler::WritingContext rootContext(*_documentHandler);
+		_documentHandler->SetWritingContext( & rootContext);
 		component.StoreOn(*this);
 	}
 
 	void XmlStorage::RestoreObject(Component & component)
 	{
-		XercesDomReadingContext rootContext(*_documentHandler);
-		_readContext = & rootContext;
+		XercesDomDocumentHandler::ReadingContext rootContext(*_documentHandler);
+		_documentHandler->SetReadingContext(&rootContext);
 		component.LoadFrom(*this);
-		_readContext->release();
-		_errors += concat(_readContext->errors());
+		_documentHandler->GetReadingContext()->release();
+		_errors += concat(_documentHandler->GetReadingContext()->errors());
 		if (_errors!="")
 			throw XmlStorageErr(_errors);
 	}
@@ -99,8 +97,8 @@ namespace CLAM
 	XmlStorage::XmlStorage()
 	{
 		_documentHandler=new XercesDomDocumentHandler;
-		_readContext = 0;
-		_writeContext = 0;
+		_documentHandler->SetReadingContext(0);
+		_documentHandler->SetWritingContext(0);
 		_lastWasContent = true;
 		_useIndentation = false;
 	}
@@ -152,16 +150,16 @@ namespace CLAM
 		}
 		if (xmlable->IsXMLAttribute())
 		{
-			_writeContext->addAttribute(name,xmlable->XMLContent().c_str());
+			_documentHandler->GetWritingContext()->addAttribute(name,xmlable->XMLContent().c_str());
 			return;
 		}
 		if (xmlable->IsXMLElement())
 		{
 			_lastWasContent=false;
-			XercesDomWritingContext newContext(_writeContext, name);
-			_writeContext = & newContext;
+			XercesDomDocumentHandler::WritingContext newContext(_documentHandler->GetWritingContext(), name);
+			_documentHandler->SetWritingContext(& newContext);
 			StoreContentAndChildren(xmlable);
-			_writeContext = newContext.release();
+			_documentHandler->SetWritingContext(newContext.release());
 			_lastWasContent=false;
 			return;
 		}
@@ -178,12 +176,12 @@ namespace CLAM
 
 		if (xmlable->IsXMLElement())
 		{
-			if (!_readContext->findElement(xmlable->XMLName()))
+			if (!_documentHandler->GetReadingContext()->findElement(xmlable->XMLName()))
 				return false;
-			XercesDomReadingContext innerContext(_readContext, xmlable->XMLName());
-			_readContext = &innerContext;
+			XercesDomDocumentHandler::ReadingContext innerContext(_documentHandler->GetReadingContext(), xmlable->XMLName());
+			_documentHandler->SetReadingContext(&innerContext);
 			LoadContentAndChildren(xmlable);
-			_readContext = innerContext.release();
+			_documentHandler->SetReadingContext(innerContext.release());
 			_errors += concat(innerContext.errors());
 			return true;
 		}
@@ -192,7 +190,7 @@ namespace CLAM
 		if (xmlable->IsXMLAttribute())
 		{
 			std::stringstream stream;
-			if (!_readContext->extractAttribute(xmlable->XMLName(), stream))
+			if (!_documentHandler->GetReadingContext()->extractAttribute(xmlable->XMLName(), stream))
 				return false;
 			return xmlable->XMLContent(stream);
 		}
@@ -205,7 +203,7 @@ namespace CLAM
 
 	bool XmlStorage::LoadContentAndChildren(XMLable* xmlable)
 	{
-		bool result = xmlable->XMLContent(_readContext->reachableContent());
+		bool result = xmlable->XMLContent(_documentHandler->GetReadingContext()->reachableContent());
 		Component * component = dynamic_cast<Component*>(xmlable);
 		if (component) component->LoadFrom(*this);
 		return result;
@@ -227,8 +225,8 @@ namespace CLAM
 	{
 		if (content=="") return;
 		if (_lastWasContent)
-			_writeContext->addContent(" ");
-		_writeContext->addContent(content.c_str());
+			_documentHandler->GetWritingContext()->addContent(" ");
+		_documentHandler->GetWritingContext()->addContent(content.c_str());
 		_lastWasContent = true;
 	}
 

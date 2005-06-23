@@ -23,9 +23,11 @@
 
 #ifdef CLAM_USE_XML
 
+#include "XercesEncodings.hxx"
+#include "XercesDomReadingContext.hxx"
+#include "XercesDomWritingContext.hxx"
 #include "XercesDomReader.hxx"
 #include "XercesDomWriter.hxx"
-#include "XercesEncodings.hxx"
 #include "XercesInitializer.hxx"
 
 
@@ -36,9 +38,33 @@
 
 namespace CLAM 
 {
+class XercesDomReadingContext;
+class XercesDomWritingContext;
 
 class XercesDomDocumentHandler
 {
+public:
+	typedef XercesDomWritingContext WritingContext;
+	typedef XercesDomReadingContext ReadingContext;
+	ReadingContext * GetReadingContext()
+	{
+		return _currentReadContext;
+	}
+	void SetReadingContext(ReadingContext * context)
+	{
+		_currentReadContext = context;
+	}
+	WritingContext * GetWritingContext()
+	{
+		return _currentWriteContext;
+	}
+	void SetWritingContext(WritingContext * context)
+	{
+		_currentWriteContext = context;
+	}
+private:
+	ReadingContext * _currentReadContext;
+	WritingContext * _currentWriteContext;
 	xercesc::DOMDocument * _document;
 	xercesc::DOMElement * _selection;
 	xercesc::XercesDOMParser * _parser;
@@ -170,7 +196,9 @@ public:
 	~XercesDomDocumentHandler()
 	{
 	}
-	void selectPath(const char * path){}
+	void selectPath(const char * path)
+	{
+	}
 	void create(const char * rootName)
 	{
 	}
