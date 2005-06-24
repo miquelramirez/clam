@@ -6,12 +6,15 @@
 #include "Component.hxx"
 #include <list>
 #include "XercesDomWriter.hxx"
+#include "XercesDomReader.hxx"
+#include "XercesInitializer.hxx"
+#include "XercesDomReadingContext.hxx"
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMText.hpp>
 #include <xercesc/dom/DOMComment.hpp>
+#include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMProcessingInstruction.hpp>
-#include "XercesInitializer.hxx"
-#include "XercesDomReadingContext.hxx"
+#include <xercesc/dom/DOMImplementation.hpp>
 
 /*
 TOTEST:
