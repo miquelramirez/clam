@@ -30,7 +30,7 @@
 #include "XMLable.hxx"
 #include "Component.hxx"
 #include "Assert.hxx"
-#include "XercesDomDocumentHandler.hxx"
+#include "DomDocumentHandler.hxx"
 #include <fstream>
 
 namespace CLAM
@@ -68,14 +68,14 @@ namespace CLAM
 
 	void XmlStorage::DumpObject(const Component & component)
 	{
-		XercesDomDocumentHandler::WritingContext rootContext(*_documentHandler);
+		DomDocumentHandler::WritingContext rootContext(*_documentHandler);
 		_documentHandler->SetWritingContext( & rootContext);
 		component.StoreOn(*this);
 	}
 
 	void XmlStorage::RestoreObject(Component & component)
 	{
-		XercesDomDocumentHandler::ReadingContext rootContext(*_documentHandler);
+		DomDocumentHandler::ReadingContext rootContext(*_documentHandler);
 		_documentHandler->SetReadingContext(&rootContext);
 		component.LoadFrom(*this);
 		_documentHandler->GetReadingContext()->release();
@@ -96,7 +96,7 @@ namespace CLAM
 // Static sumarized interface
 	XmlStorage::XmlStorage()
 	{
-		_documentHandler=new XercesDomDocumentHandler;
+		_documentHandler=new DomDocumentHandler;
 		_documentHandler->SetReadingContext(0);
 		_documentHandler->SetWritingContext(0);
 		_lastWasContent = true;
@@ -156,7 +156,7 @@ namespace CLAM
 		if (xmlable->IsXMLElement())
 		{
 			_lastWasContent=false;
-			XercesDomDocumentHandler::WritingContext newContext(_documentHandler->GetWritingContext(), name);
+			DomDocumentHandler::WritingContext newContext(_documentHandler->GetWritingContext(), name);
 			_documentHandler->SetWritingContext(& newContext);
 			StoreContentAndChildren(xmlable);
 			_documentHandler->SetWritingContext(newContext.release());
@@ -178,7 +178,7 @@ namespace CLAM
 		{
 			if (!_documentHandler->GetReadingContext()->findElement(xmlable->XMLName()))
 				return false;
-			XercesDomDocumentHandler::ReadingContext innerContext(_documentHandler->GetReadingContext(), xmlable->XMLName());
+			DomDocumentHandler::ReadingContext innerContext(_documentHandler->GetReadingContext(), xmlable->XMLName());
 			_documentHandler->SetReadingContext(&innerContext);
 			LoadContentAndChildren(xmlable);
 			_documentHandler->SetReadingContext(innerContext.release());
