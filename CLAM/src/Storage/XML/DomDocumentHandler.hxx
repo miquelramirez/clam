@@ -21,9 +21,9 @@
 #ifndef _DomDocumentHandler_hxx_
 #define _DomDocumentHandler_hxx_
 
-#ifdef CLAM_USE_XML
 /**
  * @class CLAM::DomDocumentHandler
+ * @ingroup XmlImplementation
  * This class subclasses from the proper DomDocumentHandler depending
  * on the configuration.
  * If you have defined CLAM_USE_XML in your settings.cfg, then a
@@ -34,6 +34,7 @@
  * @see NullDomDocumentHandler
  */
 
+#ifdef CLAM_USE_XML
 #include "XercesDomDocumentHandler.hxx"
 namespace CLAM 
 {
@@ -41,15 +42,39 @@ namespace CLAM
 }
 
 #else
-
 #include "NullDomDocumentHandler.hxx"
 namespace CLAM 
 {
 	class DomDocumentHandler : public NullDomDocumentHandler {};
 }
-
-
 #endif//CLAM_USE_XML
+
+/**
+ * @module XmlImplementation XML Implementations
+ * @ingroup XML
+ *
+ * CLAM has support for using different XML libraries.
+ * This can be done by implementing the DomDocumentHandler class and
+ * its children classes, DomDocumentWritingContext and DomDocumentReadingContext.
+ * The DocumentHandler provides abstraction for DOM construction and traveling
+ * in the way CLAM automatic serialization does.
+ * The writing and reading contexts keeps the context when dumping ore restoring
+ * CLAM objects on a given XML tree node.
+ * Usualy a XXXReader and a XXXWriter are implemented in order to build 
+ * a DOM tree from an XML file and to write it given the DOM Document.
+ * The Document Handler also keeps the selected node in order to do partial operations
+ * like adding object on a given tree position or dumping a document fragment.
+ * 
+ * Currently, the following implementations are available:
+ * - NullDomDocumentHandler: 
+ *   A dummy one, that just assert false when it is instanciated,
+ *   just in case XML is used and it is disabled.
+ * - XercesDomDocumentHandler:
+ *   Based on the Xerces-C++ library
+ * - LibXmlDomDocumentHandler: (Experimental)
+ *   Based on the libxml++ library
+ */
+
 
 #endif//_XercesDomDocumentHandler_hxx_
 
