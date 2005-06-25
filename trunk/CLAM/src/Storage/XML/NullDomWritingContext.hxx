@@ -19,17 +19,48 @@
  *
  */
 
-#include "XercesDomWritingContext.hxx"
-#include "XercesDomDocumentHandler.hxx"
+#ifndef _NullDomWritingContext_hxx_
+#define _NullDomWritingContext_hxx_
+
+class NullDomDocumentHandler;
+
 
 namespace CLAM
 {
 
-	XercesDomWritingContext::XercesDomWritingContext(XercesDomDocumentHandler & docHandler)
+/**
+ * Dummy implementation of a DomDocumentWritingContext when XML is disabled.
+ */
+class NullDomWritingContext
+{
+	NullDomWritingContext * _parent;
+public:
+	NullDomWritingContext(NullDomDocumentHandler & docHandler)
 	{
-		_parent=0;
-		_currentElement = docHandler.getSelection();
+		CLAM_ASSERT(false, "Using XML support, but it is disabled on compile time (CLAM_USE_XML=0).");
 	}
+
+	NullDomWritingContext(NullDomWritingContext * parent, const char * name)
+	{
+		CLAM_ASSERT(false, "Using XML support, but it is disabled on compile time (CLAM_USE_XML=0).");
+	}
+
+	NullDomWritingContext * release()
+	{
+		return 0;
+	}
+	
+	void addAttribute(const char * name, const char * value)
+	{
+	}
+	void addContent(const char * content)
+	{
+	}
+};
+
 }
+
+
+#endif//_NullDomWritingContext_hxx_
 
 

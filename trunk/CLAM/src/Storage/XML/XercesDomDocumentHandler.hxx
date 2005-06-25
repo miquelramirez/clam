@@ -21,8 +21,6 @@
 #ifndef _XercesDomDocumentHandler_hxx_
 #define _XercesDomDocumentHandler_hxx_
 
-#ifdef CLAM_USE_XML
-
 #include "XercesEncodings.hxx"
 #include "XercesDomReadingContext.hxx"
 #include "XercesDomWritingContext.hxx"
@@ -68,20 +66,6 @@ private:
 	xercesc::DOMDocument * _document;
 	xercesc::DOMElement * _selection;
 	xercesc::XercesDOMParser * _parser;
-	void releaseIfAnyDocument()
-	{
-		if (!_document) return;
-		if (_parser)
-		{
-			delete _parser;
-			_parser=0;
-		}
-		else 
-		{
-			_document->release();
-		}
-		_document=0;
-	}
 public:
 	XercesDomDocumentHandler()
 	{
@@ -141,6 +125,20 @@ public:
 		writer.write(os,_selection);
 	}
 private:
+	void releaseIfAnyDocument()
+	{
+		if (!_document) return;
+		if (_parser)
+		{
+			delete _parser;
+			_parser=0;
+		}
+		else 
+		{
+			_document->release();
+		}
+		_document=0;
+	}
 	xercesc::DOMElement * absoluteSelection(const std::string & path)
 	{
 		xercesc::DOMElement * root = (xercesc::DOMElement*) _document->getDocumentElement();
@@ -182,40 +180,6 @@ private:
 
 }
 
-#else // No CLAM_USE_XML
-namespace CLAM
-{
-
-class XercesDomDocumentHandler
-{
-public:
-	XercesDomDocumentHandler()
-	{
-		CLAM_ASSERT(false, "Using XML but not linked");
-	}
-	~XercesDomDocumentHandler()
-	{
-	}
-	void selectPath(const char * path)
-	{
-	}
-	void create(const char * rootName)
-	{
-	}
-	void read(std::istream & stream)
-	{
-	}
-	void writeDocument(std::ostream & os, bool useIndentation=false)
-	{
-	}
-	void writeSelection(std::ostream & os, bool useIndentation=false)
-	{
-	}
-};
-
-}
-
-#endif//CLAM_USE_XML
 
 #endif//_XercesDomDocumentHandler_hxx_
 

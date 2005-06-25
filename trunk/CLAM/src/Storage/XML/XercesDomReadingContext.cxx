@@ -25,18 +25,11 @@
 namespace CLAM
 {
 
-#ifndef CLAM_USE_XML
-	XercesDomReadingContext::XercesDomReadingContext(XercesDomDocumentHandler & docHandler)
-	{
-		CLAM_ASSERT(false, "Using XML with CLAM_USE_XML disabled");
-	}
-#else
 	XercesDomReadingContext::XercesDomReadingContext(XercesDomDocumentHandler & docHandler)
 	{
 		_parentContext=0;
 		setAt(docHandler.getSelection());
 	}
-#endif
 }
 
 

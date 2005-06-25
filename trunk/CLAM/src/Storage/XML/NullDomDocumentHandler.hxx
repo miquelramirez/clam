@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+#ifndef _NullDomDocumentHandler_hxx_
+#define _NullDomDocumentHandler_hxx_
+
+class NullDomReadingContext;
+class NullDomWritingContext;
+
+namespace CLAM
+{
+
+/**
+ * Dummy implementation of a DomDocumentHandler when XML is disabled.
+ */
+class NullDomDocumentHandler
+{
+	typedef NullDomWritingContext WritingContext;
+	typedef NullDomReadingContext ReadingContext;
+	ReadingContext * GetReadingContext()
+	{
+		return _currentReadContext;
+	}
+	void SetReadingContext(ReadingContext * context)
+	{
+		_currentReadContext = context;
+	}
+	WritingContext * GetWritingContext()
+	{
+		return _currentWriteContext;
+	}
+	void SetWritingContext(WritingContext * context)
+	{
+		_currentWriteContext = context;
+	}
+private:
+	ReadingContext * _currentReadContext;
+	WritingContext * _currentWriteContext;
+public:
+	NullDomDocumentHandler()
+	{
+		CLAM_ASSERT(false, "Using XML support, but it is disabled on compile time (CLAM_USE_XML=0).");
+	}
+	~NullDomDocumentHandler()
+	{
+	}
+	void selectPath(const char * path)
+	{
+	}
+	void create(const char * rootName)
+	{
+	}
+	void read(std::istream & stream)
+	{
+	}
+	void writeDocument(std::ostream & os, bool useIndentation=false)
+	{
+	}
+	void writeSelection(std::ostream & os, bool useIndentation=false)
+	{
+	}
+};
+
+}
+
+#endif//_NullDomDocumentHandler_hxx_
+
