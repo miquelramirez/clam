@@ -22,13 +22,14 @@
 #ifndef _XercesDomWritingContext_hxx_
 #define _XercesDomWritingContext_hxx_
 
-#include "XercesDomDocumentHandler.hxx"
-
 #include <xercesc/dom/DOMText.hpp>
 #include <xercesc/dom/DOMDocument.hpp>
+#include <xercesc/dom/DOMElement.hpp>
+#include "XercesEncodings.hxx"
 
 namespace CLAM
 {
+class XercesDomDocumentHandler;
 
 class XercesDomWritingContext
 {
