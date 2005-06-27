@@ -37,14 +37,13 @@ class LibXmlDomDocumentHandler;
  */
 class LibXmlDomReadingContext
 {
-	std::stringstream _plainContentToParse;
-	typedef xmlpp::Node::NodeList NodeList;
-	NodeList::iterator _currentChild;
-	xmlpp::Element * _context;
-	NodeList _children;
 	LibXmlDomReadingContext * _parentContext;
-	std::list<std::string> _errors;
+	xmlpp::Element * _context;
+	xmlpp::Node::NodeList _children;
+	xmlpp::Node::NodeList::iterator _currentChild;
 	xmlpp::Element::AttributeList _attributes;
+	std::stringstream _plainContentToParse;
+	std::list<std::string> _errors;
 
 public:
 	LibXmlDomReadingContext(xmlpp::Element * element)
