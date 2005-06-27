@@ -32,6 +32,8 @@
 #include "Assert.hxx"
 #include "DomDocumentHandler.hxx"
 #include <fstream>
+#include <list>
+#include <string>
 
 namespace CLAM
 {
