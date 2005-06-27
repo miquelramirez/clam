@@ -65,7 +65,6 @@ class LibXmlDomReader
 			}
 			catch (xmlpp::parse_error & e)
 			{
-				xmlpp::Document *doc = parser->get_document();
 				throw XmlStorageErr(
 					std::string("\nXML Parser Errors:\n")+e.what()+"\n");
 			}
