@@ -33,6 +33,7 @@ namespace CLAM
  */
 class NullDomDocumentHandler
 {
+public:
 	typedef NullDomWritingContext WritingContext;
 	typedef NullDomReadingContext ReadingContext;
 	ReadingContext * GetReadingContext()
