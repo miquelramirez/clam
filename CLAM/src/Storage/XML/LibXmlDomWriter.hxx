@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef _XERCES_DOM_WRITER_HXX_
-#define _XERCES_DOM_WRITER_HXX_
+#ifndef _LibXmlDomWriter_hxx_
+#define _LibXmlDomWriter_hxx_
 
 #include <iosfwd>
 #include <libxml++/document.h>
@@ -32,6 +32,11 @@ namespace xmlpp
 namespace CLAM
 {
 
+/**
+ * Encapsulates de dumping of a DOM Document into a file using the libxml++ library.
+ * @ingroup XmlBackends_LibXml
+ * @todo dumping selections
+ */
 class LibXmlDomWriter
 {
 	public:
@@ -65,5 +70,5 @@ class LibXmlDomWriter
 
 
 }
-#endif//_XERCES_DOM_WRITER_HXX_
+#endif//_LibXmlDomWriter_hxx_
 
