@@ -31,6 +31,10 @@ namespace CLAM
 {
 class XercesDomDocumentHandler;
 
+/**
+ * Keeps the booking when mapping CLAM data into a single Xerces-C DOM element.
+ * @ingroup XmlBackends_Xerces
+ */
 class XercesDomWritingContext
 {
 	xercesc::DOMElement * _currentElement;

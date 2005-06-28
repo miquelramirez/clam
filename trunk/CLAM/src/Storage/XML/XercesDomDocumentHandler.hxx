@@ -39,6 +39,10 @@ namespace CLAM
 class XercesDomReadingContext;
 class XercesDomWritingContext;
 
+/**
+ * XML implementation backend for the Xerces-C library.
+ * @ingroup XmlBackends_Xerces
+ */
 class XercesDomDocumentHandler
 {
 public:
@@ -129,14 +133,10 @@ private:
 	{
 		if (!_document) return;
 		if (_parser)
-		{
 			delete _parser;
-			_parser=0;
-		}
 		else 
-		{
 			_document->release();
-		}
+		_parser=0;
 		_document=0;
 	}
 	xercesc::DOMElement * absoluteSelection(const std::string & path)
@@ -180,6 +180,10 @@ private:
 
 }
 
+/**
+ * @defgroup XmlBackends_Xerces XML Backend for Apache's Xerces-C
+ * @ingroup XmlBackends
+ */
 
 #endif//_XercesDomDocumentHandler_hxx_
 

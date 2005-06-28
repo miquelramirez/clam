@@ -34,6 +34,10 @@ namespace xercesc = XERCES_CPP_NAMESPACE;
 namespace CLAM
 {
 
+/**
+ * Controls the Xerces-C DOM serializer.
+ * @ingroup XmlBackends_Xerces
+ */
 class XercesDomWriter
 {
 	public:

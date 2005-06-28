@@ -38,6 +38,10 @@ namespace xercesc = XERCES_CPP_NAMESPACE;
 namespace CLAM
 {
 
+/**
+ * Controls the Xerces-C DOM parser.
+ * @ingroup XmlBackends_Xerces
+ */
 class XercesDomReader : private xercesc::HandlerBase
 {
 	xercesc::XercesDOMParser * parser;
