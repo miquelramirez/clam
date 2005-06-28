@@ -25,7 +25,7 @@
  * @class CLAM::DomDocumentHandler
  * @ingroup XmlBackends
  * @brief This class subclasses from the proper DomDocumentHandler depending
- * on the build configuration (./configure and settings.cfg).
+ * on the build time configuration (configure parameters and settings.cfg directives).
  *
  * If you have defined CLAM_USE_XML in your settings.cfg, then a
  * XercesC++ based implementation will be used.
