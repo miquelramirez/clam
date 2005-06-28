@@ -22,6 +22,8 @@
 #ifndef _NullDomWritingContext_hxx_
 #define _NullDomWritingContext_hxx_
 
+#include "Assert.hxx"
+
 class NullDomDocumentHandler;
 
 
@@ -30,6 +32,7 @@ namespace CLAM
 
 /**
  * Dummy implementation of a DomDocumentWritingContext when XML is disabled.
+ * @ingroup XmlBackends_Null
  */
 class NullDomWritingContext
 {

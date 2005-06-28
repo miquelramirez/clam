@@ -26,7 +26,6 @@
 // Dummy implementation that will fail when used
 
 #include "Assert.hxx"
-#include "NullEncodings.hxx"
 #include <sstream>
 #include <list>
 #include <string>
@@ -38,6 +37,7 @@ class NullDomDocumentHandler;
 
 /**
  * Dummy implementation of a DomDocumentReadingContext when XML is disabled.
+ * @ingroup XmlBackends_Null
  */
 class NullDomReadingContext
 {
