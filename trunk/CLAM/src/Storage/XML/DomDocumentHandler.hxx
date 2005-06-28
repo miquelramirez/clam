@@ -38,12 +38,20 @@
  */
 
 #ifdef CLAM_USE_XML
+#if !USE_XERCES
+#include "LibXmlDomDocumentHandler.hxx"
+namespace CLAM 
+{
+	class DomDocumentHandler : public LibXmlDomDocumentHandler {};
+}
+
+#else
 #include "XercesDomDocumentHandler.hxx"
 namespace CLAM 
 {
 	class DomDocumentHandler : public XercesDomDocumentHandler {};
 }
-
+#endif
 #else
 #include "NullDomDocumentHandler.hxx"
 namespace CLAM 
