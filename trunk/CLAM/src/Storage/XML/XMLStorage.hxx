@@ -352,6 +352,10 @@ typedef XmlStorage XMLStorage;
  * - If you only need to output XML quickly and you don't want to 
  *   define an object to be dumped, see @link XmlScoped XmlScoped @endlink.
  *   This method works only for writing.
+ *
+ * - If you want to understand how CLAM choses different XML libraries
+ *   backends (Xerces-C, libxml++, no support...),
+ *   see @link XmlBackends Xml Implementation Backends @endlink.
  * 
  * @author David Garcia.
  */
