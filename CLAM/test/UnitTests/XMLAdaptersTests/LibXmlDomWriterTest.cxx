@@ -2,12 +2,7 @@
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
 #include "LibXmlDomWriter.hxx"
-#include <libxml++-2.6/libxml++/libxml++.h>
-//#include "LibXmlEncodings.hxx"
-//#include <xercesc/dom/DOMDocument.hpp>
-//#include <xercesc/dom/DOMElement.hpp>
-//#include <xercesc/dom/DOMText.hpp>
-//#include <xercesc/dom/DOMImplementation.hpp>
+#include <libxml++/libxml++.h>
 
 namespace CLAM
 {
