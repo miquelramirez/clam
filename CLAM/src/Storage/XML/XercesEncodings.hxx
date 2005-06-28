@@ -28,17 +28,20 @@ namespace xercesc=XERCES_CPP_NAMESPACE;
 
 namespace CLAM
 {
-
-class Local2XercesUnicode
+/**
+ * Converts local encoding char* into Xerces Unicode String
+ * @ingroup XmlBackends_Xerces
+ */
+class XercesLocal2Unicode
 {
 public :
-	Local2XercesUnicode(const char* const toTranscode)
+	XercesLocal2Unicode(const char* const toTranscode)
 	{
 		// Call the private transcoding method
 		_unicodeForm = xercesc::XMLString::transcode(toTranscode);
 	}
 
-	~Local2XercesUnicode()
+	~XercesLocal2Unicode()
 	{
 		xercesc::XMLString::release(&_unicodeForm);
 	}
@@ -52,10 +55,10 @@ private :
 	XMLCh*   _unicodeForm;
 };
 
-// ---------------------------------------------------------------------------
-//  This is a simple class that lets us do easy (though not terribly efficient)
-//  trancoding of XMLCh data to local code page for display.
-// ---------------------------------------------------------------------------
+/**
+ * Converts Xerces Unicode String into local encoding char* 
+ * @ingroup XmlBackends_Xerces
+ */
 class XercesUnicode2Local
 {
 public :
@@ -79,7 +82,7 @@ private :
     char*   _localForm;
 };
 
-#define X(str) ::CLAM::Local2XercesUnicode(str).unicodeForm()
+#define X(str) ::CLAM::XercesLocal2Unicode(str).unicodeForm()
 #define L(str) ::CLAM::XercesUnicode2Local(str).localForm()
 
 }
