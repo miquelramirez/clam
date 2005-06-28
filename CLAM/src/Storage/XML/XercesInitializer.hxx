@@ -25,6 +25,25 @@
 namespace CLAM
 {
 
+/**
+ * Ensures that Xerces-C library initialization and termination
+ * occurs once and only when needed.
+ * @ingroup XmlBackends_Xerces
+ *
+ * At any time you need the xerces library (this is handled by
+ * the @link XmlBackends_Xerces Xerces-C XML Backend @endlink,
+ * so you won't normally need to), you should call:
+ * @code
+ * ::CLAM::XercesInitializer::require();
+ * @endcode
+ * Calling that multiple times is safe and painless.
+ *
+ * Only if you called the previous static method at any time in
+ * your program,
+ * the Xerces termination will be automagically performed
+ * when the program ends.
+ * @author David Garcia
+ */
 class XercesInitializer
 {
 	XercesInitializer()
