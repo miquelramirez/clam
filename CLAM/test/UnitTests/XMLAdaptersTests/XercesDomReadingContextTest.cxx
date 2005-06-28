@@ -1,7 +1,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
-#include "XMLStorage.hxx"
 #include "XmlMockUpObjects.hxx"
 #include "Component.hxx"
 #include <list>
