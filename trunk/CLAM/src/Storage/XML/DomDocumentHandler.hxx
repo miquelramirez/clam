@@ -23,15 +23,18 @@
 
 /**
  * @class CLAM::DomDocumentHandler
- * @ingroup XmlImplementation
- * This class subclasses from the proper DomDocumentHandler depending
- * on the configuration.
+ * @ingroup XmlBackends
+ * @brief This class subclasses from the proper DomDocumentHandler depending
+ * on the build configuration (./configure and settings.cfg).
+ *
  * If you have defined CLAM_USE_XML in your settings.cfg, then a
  * XercesC++ based implementation will be used.
  * If not, then a null implementation will be used, that it assert
  * false whenever you try to use the DOM based XML support in CLAM.
  * @see XercesDomDocumentHandler
+ * @see LibXmlDomDocumentHandler
  * @see NullDomDocumentHandler
+ * @author David Garcia.
  */
 
 #ifdef CLAM_USE_XML
@@ -50,29 +53,37 @@ namespace CLAM
 #endif//CLAM_USE_XML
 
 /**
- * @module XmlImplementation XML Implementations
- * @ingroup XML
+ * @defgroup XmlBackends XML Implementation Backends
+ * @ingroup Xml
+ * @brief This documentation module explains the XML implementation backends.
  *
- * CLAM has support for using different XML libraries.
+ * CLAM supports different XML libraries as backend for the XML support.
  * This can be done by implementing the DomDocumentHandler class and
- * its children classes, DomDocumentWritingContext and DomDocumentReadingContext.
- * The DocumentHandler provides abstraction for DOM construction and traveling
- * in the way CLAM automatic serialization does.
- * The writing and reading contexts keeps the context when dumping ore restoring
- * CLAM objects on a given XML tree node.
- * Usualy a XXXReader and a XXXWriter are implemented in order to build 
+ * its nested classes, DomDocumentWritingContext and DomDocumentReadingContext.
+ *
+ * A DocumentHandler provides the abstraction that CLAM::XmlStorage
+ * uses to perform its tasks:
+ * DOM construction and exploration, and file reading and writing.
+ *
+ * Two inner classes (or typedefs) named DomDocumentReadingContext and
+ * DomDocumentWritingContext, must be defined.
+ * Those inner classes keeps the context while mapping for reading and writting
+ * CLAM::Objects to a given XML tree element.
+ * 
+ * Usually a XXXReader and a XXXWriter are implemented in order to build 
  * a DOM tree from an XML file and to write it given the DOM Document.
  * The Document Handler also keeps the selected node in order to do partial operations
  * like adding object on a given tree position or dumping a document fragment.
  * 
  * Currently, the following implementations are available:
- * - NullDomDocumentHandler: 
+ * - CLAM::NullDomDocumentHandler: 
  *   A dummy one, that just assert false when it is instanciated,
  *   just in case XML is used and it is disabled.
- * - XercesDomDocumentHandler:
+ * - CLAM::XercesDomDocumentHandler:
  *   Based on the Xerces-C++ library
- * - LibXmlDomDocumentHandler: (Experimental)
- *   Based on the libxml++ library
+ * - CLAM::LibXmlDomDocumentHandler:
+ *   Based on the libxml++ library (Experimental)
+ * @author David Garcia.
  */
 
 

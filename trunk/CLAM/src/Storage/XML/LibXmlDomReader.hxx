@@ -32,6 +32,10 @@
 namespace CLAM
 {
 
+/**
+ * Controls the libxml++ DOM parser.
+ * @ingroup XmlBackends_LibXml
+ */
 class LibXmlDomReader
 {
 	xmlpp::DomParser * parser;
