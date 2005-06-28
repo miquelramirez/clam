@@ -21,14 +21,15 @@
 #ifndef _NullDomDocumentHandler_hxx_
 #define _NullDomDocumentHandler_hxx_
 
-class NullDomReadingContext;
-class NullDomWritingContext;
+#include "NullDomReadingContext.hxx"
+#include "NullDomWritingContext.hxx"
 
 namespace CLAM
 {
 
 /**
  * Dummy implementation of a DomDocumentHandler when XML is disabled.
+ * @ingroup XmlBackends_Null
  */
 class NullDomDocumentHandler
 {
@@ -79,6 +80,10 @@ public:
 };
 
 }
+/**
+ * @defgroup XmlBackends_Null XML Backend to compile with disabled XML
+ * @ingroup XmlBackends
+ */
 
 #endif//_NullDomDocumentHandler_hxx_
 
