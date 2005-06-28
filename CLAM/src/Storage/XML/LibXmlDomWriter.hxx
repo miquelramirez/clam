@@ -33,7 +33,7 @@ namespace CLAM
 {
 
 /**
- * Encapsulates de dumping of a DOM Document into a file using the libxml++ library.
+ * Controls the libxml++ DOM serializer.
  * @ingroup XmlBackends_LibXml
  * @todo dumping selections
  */
