@@ -100,12 +100,12 @@ public:
 	/**
 	 * Dumps a Component as XML onto the named file with name as the root element.
 	 */
-	static void Dump(const Component & obj, const std::string & rootName, std::ostream & os)
+	static void Dump(const Component & obj, const std::string & rootName, std::ostream & os, bool indentate=true)
 	{
 		XmlStorage storage;
 		storage.Create(rootName);
 		storage.DumpObject(obj);
-//		storage.UseIndentation(true);
+		storage.UseIndentation(indentate);
 		storage.WriteDocument(os);
 	}
 
