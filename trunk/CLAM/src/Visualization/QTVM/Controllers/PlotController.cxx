@@ -19,6 +19,7 @@
  *
  */
 
+#include <algorithm>
 #include "PlotController.hxx"
 
 namespace CLAM
@@ -26,75 +27,102 @@ namespace CLAM
 	namespace VM
 	{
 		PlotController::PlotController()
-			: mLeftBound(TData(0.0))
-			, mRightBound(TData(1.0))
-			, mBottomBound(TData(0.0))
-			, mTopBound(TData(1.0))
-			, mSelPos(TData(0.0))
-			, mHMin(TData(50.0))
-			, mVMin(TData(50.0))
-			, mSamples(0) 
-			, mCurrent(0)
-			, mVRange(TData(0.0))
-			, mVCur(0)
+			: mDisplayWidth(1)
+			, mDisplayHeight(1)
+			, mLeftBound(0.0)
+			, mRightBound(1.0)
+			, mBottomBound(0.0)
+			, mTopBound(1.0)
+			, mSelPos(0.0)
+			, mMinSpanX(1.0)
+			, mMinSpanY(1.0)
+			, mSamples(1.0) 
+			, mSpanX(1.0)
+			, mMaxSpanY(1.0)
+			, mSpanY(1.0)
+			, mMinY(0.0)
+			, mMaxY(0.0)
 			, mHZRatio(1.0)
 			, mVZRatio(1.0)
 			, mIsLeftButtonPressed(false)
 			, mIsAbleToEdit(false)
+			, mMustProcessMarks(false) 
+			, mHit(false) 
+			, mCurrentElem(0)
+			, mCurrentIndex(0)
+			, mKeyInsertPressed(false)
+			, mKeyDeletePressed(false)
+			, mKeyShiftPressed(false)
+			, mHasSentTag(false)
 		{	
-			InitView();
 		}
 	
 		PlotController::~PlotController()
 		{
 		}
 
-		void PlotController::SetHBounds(const TData& left, const TData& right)
+		void PlotController::SetHBounds(const double& left, const double& right)
 		{
 			mLeftBound = left;
 			mRightBound = right;
+			mView.left = 0.0;
+			mView.right = mRightBound-mLeftBound;
+			emit viewChanged(mView);
+			mMarksRenderer.SetHBounds(mLeftBound, mRightBound);
+			mMustProcessMarks=true;
+			mDial.SetHBounds(mLeftBound, mRightBound);
 		}
 
-		void PlotController::SetVBounds(const TData& bottom, const TData& top)
+		void PlotController::SetVBounds(const double& bottom, const double& top)
 		{
 			mBottomBound = bottom;
 			mTopBound = top;
+			mView.bottom = mBottomBound;
+			mView.top = mTopBound;
+			emit viewChanged(mView);
+			mMarksRenderer.SetVBounds(mBottomBound, mTopBound);
+			mMustProcessMarks=true;
+			mDial.SetVBounds(mBottomBound, mTopBound);
 		}
 
-		TData PlotController::GetLeftBound() const
+		const double& PlotController::GetLeftBound() const
 		{
 			return mLeftBound;
 		}
 
-		TData PlotController::GetRightBound() const
+	    const double& PlotController::GetRightBound() const
 		{
 			return mRightBound;
 		}
 
-		TData PlotController::GetBottomBound() const
+		const double& PlotController::GetBottomBound() const
 		{
 			return mBottomBound;
 		}
 
-		TData PlotController::GetTopBound() const
+		const double& PlotController::GetTopBound() const
 		{
 			return mTopBound;
 		}
 
-		void PlotController::SetSelPos(const TData& value)
+		void PlotController::SetSelPos(const double& value, bool render)
 		{
 			mSelPos = value;
+			if(CanDrawSelectedPos() && render)
+			{
+				mDial.Update(mSelPos);
+			}
 		}
 
-		TData PlotController::GetSelPos() const
+		const double& PlotController::GetSelPos() const
 		{
 			return mSelPos;
 		}
 
-		void PlotController::SetnSamples(const TSize& n)
+		void PlotController::SetnSamples(const double& samples)
 		{
-			mSamples = n;
-			mCurrent = TData(mSamples);
+			mSamples = samples;
+			mSpanX = mSamples;
 			InitHRatio();
 			emit hZoomRatio(mHZRatio);
 			int hsv=GetHScrollValue();
@@ -102,15 +130,17 @@ namespace CLAM
 			emit hScrollValue(hsv);
 		}
 
-		TSize PlotController::GetnSamples() const
+		const double& PlotController::GetnSamples() const
 		{
 			return mSamples;
 		}
 
-		void PlotController::SetvRange(const TData& vr)
+		void PlotController::SetYRange(const double& min, const double& max)
 		{
-			mVRange = vr;
-			mVCur = mVRange;
+			mMinY = min;
+			mMaxY = max;
+			mMaxSpanY = mMaxY-mMinY;
+			mSpanY = mMaxSpanY;
 			InitVRatio();
 			emit vZoomRatio(mVZRatio);
 			int vsv=GetVScrollValue();
@@ -118,164 +148,118 @@ namespace CLAM
 			emit vScrollValue(vsv);
 		}
 
-		TData PlotController::GetvRange() const
+		const double& PlotController::GetMaxSpanY() const
 		{
-			return mVRange;
+			return mMaxSpanY;
 		}
 
-		void PlotController::HZoomIn()
+		void PlotController::hZoomIn()
 		{
-			if(mCurrent/TData(2.0) > GetHMin())
+			if(mSpanX/2.0 > mMinSpanX)
 			{
-				mCurrent /= TData(2.0);
-				mView.right = mCurrent;
+				mSpanX /= 2.0;
 				UpdateHBounds(true);
-				emit sendView(mView);
-				TData left = GetLeftBound();
-				TData right = GetRightBound();
 				mHZRatio /= 2.0;
 				emit hZoomRatio(mHZRatio);
 				emit hScrollMaxValue(GetnxPixels());
 				emit hScrollValue(GetHScrollValue());
-				SetHBounds(left,right);
-				emit requestRefresh();
 			}
 		}
 
-		void PlotController::HZoomOut()
+		void PlotController::hZoomOut()
 		{
-		    if(mCurrent*TData(2.0) <= GetnSamples())
+			if(mSpanX*2.0 <= mSamples)
 			{
-				mCurrent *= TData(2.0);
-				mView.right = mCurrent;
-				UpdateHBounds();
-				emit sendView(mView);
-				TData left = GetLeftBound();
-				TData right = GetRightBound();
+				mSpanX *= 2.0;
+				UpdateHBounds(false);
 				mHZRatio *= 2.0;
 				emit hZoomRatio(mHZRatio);
-				emit hScrollMaxValue(GetnxPixels());
-				SetHBounds(left,right);
 				emit hScrollValue(GetHScrollValue());
-				emit requestRefresh();
-			}
+				emit hScrollMaxValue(GetnxPixels());
+			} 
 		}
 
-		void PlotController::VZoomIn()
+		void PlotController::vZoomIn()
 		{
-			if(mVCur/TData(2.0) > GetVMin())
+			if(mSpanY/2.0 > mMinSpanY)
 			{
-				mVCur /= TData(2.0);
-				mView.top = mVCur;
+				mSpanY /= 2.0;
 				UpdateVBounds(true);
-				emit sendView(mView);
-				TData bottom = GetBottomBound();
-				TData top = GetTopBound();
 				mVZRatio /= 2.0;
 				emit vZoomRatio(mVZRatio);
 				emit vScrollMaxValue(GetnyPixels());
 				emit vScrollValue(GetVScrollValue());
-				SetVBounds(bottom,top);
-				emit requestRefresh();
 			}
 		}
 
-		void PlotController::VZoomOut()
+		void PlotController::vZoomOut()
 		{
-			if(mVCur*TData(2.0) <= GetvRange())
+			if(mSpanY*2.0 <= mMaxSpanY)
 			{
-				mVCur *= TData(2.0);
-				mView.top = mVCur;
-				UpdateVBounds();
-				emit sendView(mView);
-				TData bottom = GetBottomBound();
-				TData top = GetTopBound();
+				mSpanY *= 2.0;
+				UpdateVBounds(false);
 				mVZRatio *= 2.0;
 				emit vZoomRatio(mVZRatio);
-				emit vScrollMaxValue(GetnyPixels());
-				SetVBounds(bottom,top);
 				emit vScrollValue(GetVScrollValue());
-				emit requestRefresh();
-			}
+				emit vScrollMaxValue(GetnyPixels());
+			} 
 		}
 
-		void PlotController::SetHMin(const TData& min)
+		void PlotController::SetMinSpanX(const double& min)
 		{
-			mHMin = min;
+			mMinSpanX = min;
 		}
 
-		TData PlotController::GetHMin() const
+		const double& PlotController::GetMinSpanX() const
 		{
-			return mHMin;
+			return mMinSpanX;
+		}	
+	  
+		void PlotController::SetMinSpanY(const double& min)
+		{
+			mMinSpanY = min;
 		}
 
-		void PlotController::SetVMin(const TData& min)
+		const double& PlotController::GetMinSpanY() const
 		{
-			mVMin = min;
-		}
-
-		TData PlotController::GetVMin() const
-		{
-			return mVMin;
-		}
-
-		void PlotController::InitView()
-		{
-			mView.left = 0.0f;
-			mView.right = 1.0f;
-			mView.bottom = 0.0f;
-			mView.top = 1.0f;
-
-			mViewport.x = 0;
-			mViewport.y = 0;
-			mViewport.w = 1;
-			mViewport.h = 1;
+			return mMinSpanY;
 		}
 
 		void PlotController::UpdateHBounds(bool zin)
 		{
-			TData left,right;
-			left = GetLeftBound();
+			double left,right;
+			left = mLeftBound;
+			right = mRightBound;
 			if(zin)
 			{
-				right = mCurrent;
-				TData pos = GetSelPos()-left;
-				if(IsVisibleSelPos())
-				{
-					if(pos >= (mCurrent/TData(2.0)))
+			    if(ReferenceIsVisible())
+			    {
+					double ref = GetReference();
+					if(ref >= mSpanX/2.0)
 					{
-						left += pos-mCurrent/TData(2.0);
+						left = ref-mSpanX/2.0;
 					}
-				}
-				else
-				{
-					left += mCurrent/TData(2.0);
-				}
-				if(right+left > GetnSamples())
-				{
-					right = TData(GetnSamples());
-					mView.right = right-left;
-				}
-				else
-				{
-					right += left;
-				}
+					right = left+mSpanX;
+			    }
+			    else
+			    {
+					left += mSpanX/2.0;
+					right -= mSpanX/2.0;
+			    }
 			}
 			else
 			{
-				right = GetRightBound();
-				TData aux = mCurrent/TData(4.0);
-				left -= aux;	
-				right += aux;
+				left -= mSpanX/4.0;
+				right += mSpanX/4.0;
 				if(left < 0)
 				{
-					left = TData(0.0);
-					right = mCurrent;
+					left = 0;
+					right = mSpanX;
 				}
-				if(right > GetnSamples())
+				if(right > mSamples)
 				{
-					right = TData(GetnSamples());
-					left = right-mCurrent;
+					right = double(mSamples);
+					left = right-mSpanX;
 				}
 			}
 			SetHBounds(left,right);
@@ -283,37 +267,27 @@ namespace CLAM
 
 		void PlotController::UpdateVBounds(bool zin)
 		{
-			TData bottom,top;
-			bottom = GetBottomBound();
+			double bottom,top;
+			bottom = mView.bottom;
+			top = mView.top;
 			if(zin)
 			{
-				top = mVCur;
-				bottom += mVCur/TData(2.0);
-				if(top+bottom > GetvRange())
-				{
-					top = GetvRange();
-					mView.top = top-bottom;
-				}
-				else
-				{
-					top += bottom;
-				}
+				bottom += mSpanY/2.0;
+				top -= mSpanY/2.0;
 			}
 			else
 			{
-				top = GetTopBound();
-				TData aux = mVCur/TData(4.0);
-				bottom -= aux;	
-				top += aux;
-				if(bottom < 0)
+				bottom -= mSpanY/4.0;
+				top += mSpanY/4.0;
+				if(bottom < mMinY)
 				{
-					bottom = TData(0.0);
-					top = mVCur;
+					bottom = mMinY;
+					top = bottom+mSpanY;
 				}
-				if(top > GetvRange())
+				if(top > mMaxY)
 				{
-					top = GetvRange();
-					bottom = top-mVCur;
+					top = mMaxY;
+					bottom = top-mSpanY;
 				}
 			}
 			SetVBounds(bottom,top);
@@ -321,9 +295,9 @@ namespace CLAM
 
 		void PlotController::InitHRatio()
 		{
-			double n = double(GetHMin());
+			double n = mMinSpanX;
 			double r = 1.0;
-			while(n < GetnSamples())
+			while(n < mSamples)
 			{
 				n *= 2.0;
 				r *= 2.0;
@@ -333,9 +307,9 @@ namespace CLAM
 
 		void PlotController::InitVRatio()
 		{
-			TData n = GetVMin();
+			double n = mMinSpanY;
 			double r = 1.0;
-			while(n < GetvRange())
+			while(n < mMaxSpanY)
 			{
 				n *= 2.0;
 				r *= 2.0;
@@ -343,10 +317,10 @@ namespace CLAM
 			mVZRatio = r/2.0;
 		}
 
-		void PlotController::SurfaceDimensions(int w,int h)
+		void PlotController::DisplayDimensions(const int& w, const int& h)
 		{
-			mViewport.w = w;
-			mViewport.h = h;
+			mDisplayWidth = w;
+			mDisplayHeight = h;
 
 			int hsv = GetHScrollValue();
 			emit hScrollMaxValue(GetnxPixels());
@@ -355,83 +329,121 @@ namespace CLAM
 			int vsv = GetVScrollValue();
 			emit vScrollMaxValue(GetnyPixels());
 			emit vScrollValue(vsv);
+
+			mMustProcessMarks = true;
 		}
 
-		void PlotController::UpdateHViewport(int value)
+		void PlotController::updateHScrollValue(int value)
 		{
-			TData left = TData(GetnSamples())/TData(GetnxPixels())*TData(value);
-			TData right = GetCurrent();
-			right += left;
+			double left = double(mSamples)/double(GetnxPixels())*double(value);
+			double right = left+mSpanX;
 			SetHBounds(left,right);
-			emit requestRefresh();
 		}
 
-		void PlotController::UpdateVViewport(int value)
+		void PlotController::updateVScrollValue(int value)
 		{
-			TData bottom = GetvRange()/TData(GetnyPixels())*TData(value);
-			TData top = GetVCur();
-			top += bottom;
+			double bottom = mMaxSpanY/double(GetnyPixels())*double(value)+mMinY;
+			double top = bottom+mSpanY;
 			SetVBounds(bottom,top);
-			mView.bottom = GetBottomBound();
-			mView.top = GetTopBound();
-			emit sendView(mView);
-			emit requestRefresh();
 		}
 
 		int PlotController::GetnxPixels() const
 		{
-			TData value = TData(GetnSamples())*TData(mViewport.w)/GetCurrent();
-			return int(value);
+			return int(double(mSamples)*double(mDisplayWidth)/mSpanX);
 		}
 
 		int PlotController::GetnyPixels() const
 		{
-			TData value = GetvRange()*TData(mViewport.h)/GetVCur();
-			return int(value);
+			return int(mMaxSpanY*double(mDisplayHeight)/mSpanY);
 		}
 
-		TData PlotController::GetCurrent() const
+		const double& PlotController::GetSpanX() const
 		{
-			TData value = mCurrent;
-			return (value > GetnSamples()) ? TData(GetnSamples()) : value;
+			return mSpanX; 
 		}
 
-		TData PlotController::GetVCur() const
+		const double& PlotController::GetSpanY() const
 		{
-			TData value = mVCur;
-			return (value > GetvRange()) ? GetvRange() : value;
+			return mSpanY;
 		}
 
 		int PlotController::GetHScrollValue() const
 		{
-			TData value = GetLeftBound()*TData(GetnxPixels())/TData(GetnSamples());
-			return int(value);
+			return int(mLeftBound*double(GetnxPixels())/double(mSamples));
 		}
 
 		int PlotController::GetVScrollValue() const
 		{
-			TData value = GetBottomBound()*TData(GetnyPixels())/GetvRange();
-			return int(value);
+			return int((mView.bottom-mMinY)*double(GetnyPixels())/mMaxSpanY);
 		}
 
-		bool PlotController::IsVisibleSelPos()
+		bool PlotController::ReferenceIsVisible()
 		{
-			TData pos = GetSelPos();
-			return (pos >= GetLeftBound() && pos <= GetRightBound());
+			// TODO: revise when incorpore Dial rendering
+			return (mSelPos >= mLeftBound && mSelPos <= mRightBound);
 		}
 
-		void PlotController::SetMousePos(TData x,TData y)
+		const double& PlotController::GetReference() const 
 		{
+			// TODO: revise when incorporate Dial rendering
+			return mSelPos;
+		}
+
+		void PlotController::SetMousePos(const double& x, const double& y)
+		{
+			mHasSentTag=false;
 			mMouseXPos=x;
 			mMouseYPos=y;
+			if(IsAbleToEdit())
+			{
+				int index=Hit(x);
+				if(index != -1) 
+				{
+					if(mKeyDeletePressed)
+					{
+						QCursor cCursor(Qt::CrossCursor);
+						emit cursorChanged(cCursor);
+					}
+					else
+					{
+						QCursor hcursor(Qt::SizeHorCursor);
+						emit cursorChanged(hcursor);
+					}
+					mCurrentIndex=index;
+					mHit=true;
+					if(!mTags[mCurrentIndex].isEmpty())
+					{
+						mHasSentTag=true;
+						emit toolTip(mTags[mCurrentIndex]);
+					}
+				}
+				else
+				{
+					mCurrentElem = unsigned(x);
+					if(!mIsLeftButtonPressed)
+					{
+						QCursor acursor(Qt::ArrowCursor);
+						emit cursorChanged(acursor);
+						mHit=false;
+					}
+				}
+			}
+
+			if(mHit && mIsLeftButtonPressed)
+			{
+				if(!mKeyDeletePressed)
+				{
+					Update(mCurrentIndex,unsigned(x));
+				}
+			}
 		}
 
-		TData PlotController::GetMouseXPos() const
+		const double& PlotController::GetMouseXPos() const
 		{
 			return mMouseXPos;
 		}
 
-		TData PlotController::GetMouseYPos() const
+		const double& PlotController::GetMouseYPos() const
 		{
 			return mMouseYPos;
 		}
@@ -439,6 +451,18 @@ namespace CLAM
 		void PlotController::SetLeftButtonPressed(bool pressed)
 		{
 		    mIsLeftButtonPressed=pressed;
+			if(mIsLeftButtonPressed)
+			{
+				if(!mHit && mKeyInsertPressed)
+				{
+					InsertElem(mCurrentElem);
+				}
+
+				if(mHit && mKeyDeletePressed)
+				{
+					RemoveElem(mCurrentIndex);
+				}
+			}
 		}
 
 		bool PlotController::IsLeftButtonPressed()
@@ -446,9 +470,17 @@ namespace CLAM
 		    return mIsLeftButtonPressed;
 		}
 
+		bool PlotController::IsKeyShiftPressed()
+		{
+			return mKeyShiftPressed;
+		}
+
 		void PlotController::LeaveMouse()
 		{
+			mHit=false;
 		    mIsAbleToEdit=false;
+			QCursor cursor(ArrowCursor);
+			emit cursorChanged(cursor);
 		}
 
 		void PlotController::EnterMouse()
@@ -464,6 +496,231 @@ namespace CLAM
 		bool PlotController::IsPlayable()
 		{
 		    return false;
+		}
+
+		const int& PlotController::GetDisplayWidth() const
+		{
+			return mDisplayWidth;
+		}
+
+		const int& PlotController::GetDisplayHeight() const
+		{
+			return mDisplayHeight;
+		}
+
+		void PlotController::Draw()
+		{
+			if(mMarks.size() > 0)
+			{
+				if(mMustProcessMarks) ProcessMarks();
+				mMarksRenderer.Render();
+			}
+			mDial.Render();
+		}
+
+		void PlotController::SetMarks(std::vector<unsigned>& marks)
+		{
+			mMarks = marks;
+			sort(mMarks.begin(),mMarks.end());
+			mTags.clear();
+			mTags.resize(mMarks.size());
+			mMustProcessMarks=true;
+			emit requestRefresh();
+		}
+
+		std::vector<unsigned>& PlotController::GetMarks()
+		{
+			return mMarks;
+		}
+
+		void PlotController::SetMarksColor(Color c)
+		{
+			mMarksRenderer.SetColor(c);
+		}
+
+		void PlotController::SetKeyInsertPressed(bool pressed)
+		{
+			mKeyInsertPressed=pressed;
+		}
+
+		void PlotController::SetKeyDeletePressed(bool pressed)
+		{
+			mKeyDeletePressed=pressed;
+		}
+
+		void PlotController::SetKeyShiftPressed(bool pressed)
+		{
+			mKeyShiftPressed = pressed;
+		}
+
+		void PlotController::insertMark(unsigned elem)
+		{
+			InsertElem(elem);
+		}
+
+		void PlotController::removeMark(int index, unsigned elem)
+		{
+			if(mMarks[index] != elem) return;
+			RemoveElem(index);
+		}
+
+		void PlotController::updateMark(int index, unsigned elem)
+		{
+			if(mMarks[index] == elem) return;
+			Update(index,elem);
+		}
+
+		void PlotController::updateTag(int index, QString tag)
+		{
+			mTags[index]=tag;
+		}
+
+		void PlotController::OnDoubleClick()
+		{
+			if(mHit) emit requestSegmentationTag();
+		}
+
+		void PlotController::SetSegmentationTag(const QString& tag)
+		{
+			mTags[mCurrentIndex]=tag;
+			emit updatedTag(mCurrentIndex,tag);
+		}
+
+		QString PlotController::GetTag() const
+		{
+			return mTags[mCurrentIndex];
+		}
+
+		std::vector<QString> PlotController::GetTags()
+		{
+			return mTags;
+		}
+
+		bool PlotController::CanDrawSelectedPos()
+		{
+			return (!mHit && !mKeyInsertPressed);
+		}
+
+		bool PlotController::HasSentTag() const
+		{
+			return mHasSentTag;
+		}
+
+		void PlotController::ProcessMarks()
+		{
+			unsigned left = unsigned(GetLeftBound());
+			unsigned right = unsigned(GetRightBound());
+
+			Array<unsigned> processedMarks;
+
+			std::vector<unsigned>::iterator it = mMarks.begin();
+			for(;it != mMarks.end();it++)
+			{
+				if((*it) > right) break;
+				if((*it) >= left) processedMarks.AddElem((*it));
+			}
+
+			mMarksRenderer.SetData(processedMarks);
+			mMustProcessMarks=false;
+		}
+
+		bool PlotController::HaveElem(unsigned elem)
+		{
+			return find(mMarks.begin(),mMarks.end(),elem) != mMarks.end();
+		}
+
+		void PlotController::InsertElem(unsigned elem)
+		{
+			if(HaveElem(elem)) return;
+			std::vector<unsigned>::iterator pos = mMarks.begin();
+			std::vector<QString>::iterator tag_pos = mTags.begin();
+			for(; pos != mMarks.end(); pos++, tag_pos++)
+			{
+				if((*pos) > elem) break;
+			} 
+			mMarks.insert(pos,elem);
+			mTags.insert(tag_pos,QString(""));
+	    
+			mMustProcessMarks=true;
+			emit requestRefresh();
+			emit insertedMark(elem);
+		}
+
+		void PlotController::RemoveElem(int index)
+		{
+			if(index < 0 || index > (int)mMarks.size()-1) return;
+			unsigned elem = mMarks[index];
+			std::vector<unsigned>::iterator pos = find(mMarks.begin(),mMarks.end(),elem);
+			mMarks.erase(pos);
+
+			QString tag = mTags[index];
+			std::vector<QString>::iterator tag_pos = find(mTags.begin(),mTags.end(),tag);
+			mTags.erase(tag_pos);
+
+			mMustProcessMarks=true;
+			emit requestRefresh();
+			emit removedMark(index,elem);
+		}
+
+		void PlotController::Update(int index, unsigned elem)
+		{
+			mMarks[index]=elem;
+	    
+			mMustProcessMarks=true;
+			emit requestRefresh();
+			emit updatedMark(index,elem);
+		}
+
+		unsigned PlotController::GetPixel(const double& x) const
+		{
+			double w = double(GetDisplayWidth());
+			double left = GetLeftBound();
+			double right = GetRightBound();
+			double xcoord = x-left;
+			double pixel = xcoord*w/(right-left);
+			return unsigned(pixel);
+		}
+
+		int PlotController::Hit(const double& x)
+		{
+			unsigned i;
+			bool hit=false;
+			unsigned selected_pixel=GetPixel(x);
+			for(i=0; i < mMarks.size(); i++)
+			{
+				unsigned owned_pixel=GetPixel(double(mMarks[i]));
+				if(abs(int(selected_pixel-owned_pixel)) <= 1)
+				{
+					hit=true;
+					break;
+				}
+			}
+			return (hit) ? int(i) : -1;
+		}
+
+		void PlotController::SetDialColor(Color c)
+		{
+			mDial.SetColor(c);
+		}
+
+		void PlotController::UpdateDial(const double& value)
+		{
+			mDial.Update(value);
+		}
+
+		const double& PlotController::GetDialPos() const
+		{
+			return mDial.GetPos();
+		}
+
+		const double& PlotController::GetMinY() const
+		{
+			return mMinY;
+		}
+
+		const double& PlotController::GetMaxY() const
+		{
+			return mMaxY;
 		}
 
 	}
