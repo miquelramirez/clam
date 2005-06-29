@@ -23,9 +23,11 @@
 #include "DataTypes.hxx"
 #include "Array.hxx"
 #include "DPMultiPlot.hxx"
+
 using CLAM::TData;
 using CLAM::DataArray;
 using CLAM::VM::DPMultiPlot;
+
 int main()
 {
 	DataArray sig0;
@@ -39,15 +41,16 @@ int main()
 	double t=0.0;
 	double x0,x1;
 	int j=0;
-	while(t <= 1)
+	while(t <= 1.0)
 	{
-		x0=cos(2*PI*f*t);
-		x1=sin(2*PI*f*t);
+		x0=cos(2.0*PI*f*t);
+		x1=sin(2.0*PI*f*t);
 		sig0[j]=TData(x0);
 		sig1[j]=TData(x1);
 		t+=1.0/fs;
 		j++;
 	}
+
 	DPMultiPlot plot;
 	plot.Label("MultiPlot");
 	plot.Geometry(100,100,500,220);
@@ -59,8 +62,9 @@ int main()
 	plot.SetYRange(-1.5,1.5);
 	plot.SetUnits("s","");
 	plot.SetToolTips("Instant Time","Amplitude");
-
+	
 	plot.Run();
 }
+
 // END
 

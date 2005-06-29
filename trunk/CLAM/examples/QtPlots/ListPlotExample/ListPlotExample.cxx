@@ -30,8 +30,8 @@ using CLAM::VM::QtPlotter;
 
 int main()
 {
-        // make functions for multiplot 
-    	DataArray sig0;
+	// make functions for multiplot 
+	DataArray sig0;
 	DataArray sig1;
 	sig0.Resize(11025);
 	sig1.Resize(11025);
@@ -44,8 +44,8 @@ int main()
 	int j=0;
 	while(t <= 1)
 	{
-		x0=cos(2*PI*f*t);
-		x1=sin(2*PI*f*t);
+		x0=cos(2.0*PI*f*t);
+		x1=sin(2.0*PI*f*t);
 		sig0[j]=TData(x0);
 		sig1[j]=TData(x1);
 		t+=1.0/fs;
@@ -86,7 +86,7 @@ int main()
 
 	// add data to multiplot
 	QtPlotter::AddData("multi_plot","data1",sig1);
-
+	
 	// set color to multiplot data
 	QtPlotter::SetDataColor("multi_plot","data0",CLAM::VM::VMColor::Cyan());
 	QtPlotter::SetDataColor("multi_plot","data1",CLAM::VM::VMColor::Magenta());
@@ -98,12 +98,12 @@ int main()
 	// set x y range to multiplot
 	QtPlotter::SetXRange("multi_plot",0.0,1.0);
 	QtPlotter::SetYRange("multi_plot",-1.5,1.5);
-
+	
 	// Display plots
 	QtPlotter::Run();
-
+	
 	return 0;
 }
 
-
 // END
+
