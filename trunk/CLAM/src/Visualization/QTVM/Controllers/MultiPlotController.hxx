@@ -24,15 +24,14 @@
 
 #include <map>
 #include <string>
-#include "BPF.hxx"
-#include "MPDataRenderer.hxx"
-#include "SelPosPlotController.hxx"
+#include "MultiPlotRenderer.hxx"
+#include "PlotController.hxx"
 
 namespace CLAM
 {
     namespace VM
     {
-		class MultiPlotController : public SelPosPlotController
+		class MultiPlotController : public PlotController
 		{
 			Q_OBJECT
 
@@ -40,44 +39,47 @@ namespace CLAM
 			MultiPlotController();
 			~MultiPlotController();
 
-			void SetXRange(const TData& xmin, const TData& xmax);
-			void SetYRange(const TData& ymin, const TData& ymax);
+			void SetXRulerRange(const double& xmin, const double& xmax);
+			void SetYRulerRange(const double& ymin, const double& ymax);
 
 			void AddData(std::string key, const DataArray& array);
-			void AddData(std::string key, const BPF& data, int samples = 100);
 			void RemoveData( std::string key );
 			void RemoveAllData();
 
 			void SetColor(std::string key, Color c);
-			void SurfaceDimensions(int w,int h);
+			void DisplayDimensions(const int& w, const int& h);
 			void Draw();
 
-			void SetMousePos(TData x,TData y);
+			void SetMousePos(const double& x, const double& y);
+			void SetSelPos(const double& value, bool render);
 
 		signals:
-			void xvalue(TData);
-			void yvalue(TData);
+			void sendXYValues(double,double);
+
+		public slots:
+			void setHBounds(double, double);
+			void setSelectedXPos(double);
 
 		protected:
-			void SetHBounds(const TData& left,const TData& right);
-			void SetVBounds(const TData& bottom,const TData& top);
+			void SetHBounds(const double& left, const double& right);
+			void SetVBounds(const double& bottom,const double& top);
+
+			void FullView();
 
 		private:
-			std::map<std::string, MPDataRenderer*> mRenderers;
-			std::map<std::string, DataArray>       mCacheData;
-			DataArray                              mProcessedData;
-			DataArray                              mAux;
-			bool                                   mMustProcessData;
-			bool                                   mHaveData;
-			TData                                  mXMin;
-			TData                                  mXMax;
-			TData                                  mYMin;
-			TData                                  mYMax;
-
+			std::map<std::string, MultiPlotRenderer*> mRenderers;
+			std::map<std::string, DataArray>          mCacheData;
+			DataArray                                 mAux;
+			double                                    mXMin;
+			double                                    mXMax;
+			bool                                      mMustProcessData;
+			bool                                      mHasData;
+			bool                                      mHasXRange;
+			bool                                      mHasYRange;
+		
 			void CreateNewRenderer(std::string key);
 			bool ExistRenderer(std::string key);
 
-			void FullView();
 			void ProcessData();
 				
 			void SetInitialSettings();

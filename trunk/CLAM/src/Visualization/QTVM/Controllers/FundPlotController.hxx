@@ -24,13 +24,13 @@
 
 #include "Segment.hxx"
 #include "DataRenderer.hxx"
-#include "SelTimeRegionPlotController.hxx"
+#include "PlayablePlotController.hxx"
 
 namespace CLAM
 {
     namespace VM
     {
-		class FundPlotController : public SelTimeRegionPlotController
+		class FundPlotController : public PlayablePlotController
 		{
 			Q_OBJECT
 
@@ -40,16 +40,21 @@ namespace CLAM
 
 			void SetData(const Segment& segment);
 			void SetDataColor(Color c);
-			void SurfaceDimensions(int w,int h);
+			void DisplayDimensions(const int& w, const int& h);
 			void Draw();
 
-			TData GetFreq(TData t) const;
+			void SetSelPos(const double& value, bool render);
+			void SetMousePos(const double& x, const double& y);
 
-			void SetMousePos(TData x,TData y);
+		public slots:
+			void setHBounds(double, double);
+			void setSelectedXPos(double);
 
 		protected:
-			void SetHBounds(const TData& left,const TData& right);
-			void SetVBounds(const TData& bottom,const TData& top);
+			void SetHBounds(const double& left,const double& right);
+			void SetVBounds(const double& bottom,const double& top);
+
+			void FullView();
 
 		private:
 			Segment      mSegment;
@@ -57,9 +62,10 @@ namespace CLAM
 			DataArray    mCacheData;
 			DataArray    mProcessedData;
 			bool         mMustProcessData;
+			bool         mHasData;
 			TData        mMaxFreq;
 
-			void FullView();
+			
 			void CacheData();
 			void ProcessData();
 			void SetRenderingStep();

@@ -26,13 +26,13 @@
 #include "SinTrackHClipper.hxx"
 #include "SinTrackVClipper.hxx"
 #include "SinTracksRenderer.hxx"
-#include "SelTimeRegionPlotController.hxx"
+#include "PlotController.hxx"
 
 namespace CLAM
 {
     namespace VM
     {
-		class SinTracksPlotController : public SelTimeRegionPlotController 
+		class SinTracksPlotController : public PlotController 
 		{
 			Q_OBJECT
 
@@ -41,17 +41,25 @@ namespace CLAM
 			~SinTracksPlotController();
 
 			void SetData(const Segment& segment);
-			void SetData(const Array< SpectralPeakArray >& peakMtx, const TData& sr, const TData& dur);
-			void SurfaceDimensions(int w,int h);
+			void SetData(const Array< SpectralPeakArray >& peakMtx, const double& sr, const double& dur);
+			void DisplayDimensions(const int& w, const int& h);
 			void Draw();
 
-			void SetMousePos(TData x,TData y);
+			void SetMousePos(const double& x, const double& y);
+			void SetSelPos(const double& value, bool render);
 
-			bool IsPlayable();
+		signals:
+			void sendTimeFreq(double, double);
+
+		public slots:
+			void setHBounds(double, double);
+			void setSelectedXPos(double);
 	
 		protected:
-			void SetHBounds(const TData& left,const TData& right);
-			void SetVBounds(const TData& bottom,const TData& top);
+			void SetHBounds(const double& left, const double& right);
+			void SetVBounds(const double& bottom,const double& top);
+
+			void FullView();
 
 		private:
 			SineTrackList      mCachedTracks;
@@ -60,17 +68,17 @@ namespace CLAM
 			SinTracksRenderer  mRenderer;
 			SineTrackSpanEnds  mStarts;
 			SineTrackSpanEnds  mEnds;
+			double             mSampleRate;
+			double             mDuration;
+			bool               mHasData;
 			bool               mMustProcessData;
 			int	               mNumberOfFrames;
-
-			void FullView();
 
 			void ProcessData();
 			void Colorize();
 
-			float ClampToRange(TData value) const;
-			void InitialRegionTime();
-			
+			float ClampToRange(float value) const;
+		   
 		};
     }
 }

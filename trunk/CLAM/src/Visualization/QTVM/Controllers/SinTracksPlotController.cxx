@@ -28,10 +28,14 @@ namespace CLAM
     namespace VM
     {
 		SinTracksPlotController::SinTracksPlotController()
-			: mMustProcessData(false)
+			: mSampleRate(44100.0)
+			, mDuration(0.0)
+			, mHasData(false)
+			, mMustProcessData(false)
 			, mNumberOfFrames(0)
 		{
-			SetVMin(50.0);
+			SetMinSpanX(50.0);
+			SetMinSpanY(50.0);
 		}
 
 		SinTracksPlotController::~SinTracksPlotController()
@@ -40,27 +44,29 @@ namespace CLAM
 
 		void SinTracksPlotController::SetData(const Segment& segment)
 		{
+			mHasData = false;
 			mNumberOfFrames = segment.GetnFrames();
 			SineTracksAdapter adapter;
 			mCachedTracks = adapter.GetTrackList(segment);
 			mHorClipper.SetTrackList( mCachedTracks );
 			mStarts.clear();
 			mEnds.clear();
-			mSampleRate = segment.GetSamplingRate();
-			mDuration = segment.GetEndTime()-segment.GetBeginTime();
+			mSampleRate = double(segment.GetSamplingRate());
+			mDuration = double(segment.GetEndTime()-segment.GetBeginTime());
 			FullView();
-			SetnSamples(TSize(mDuration*mSampleRate));
-			SetvRange(mSampleRate/TData(2.0));
+			SetnSamples(mDuration*mSampleRate);
+			SetYRange(0.0,mSampleRate/2.0);
 			Colorize();
-			InitialRegionTime();
+			mHasData = true;
 			mMustProcessData = true;
-			SetSelPos(TData(0.0));
+			SetSelPos(0.0,true);
 			emit requestRefresh();
 		}
 
 		void SinTracksPlotController::SetData(const Array< SpectralPeakArray >& peakMtx, 
-											  const TData& sr, const TData& dur)
+											  const double& sr, const double& dur)
 		{
+			mHasData = false;
 			mNumberOfFrames = peakMtx.Size();
 			SineTracksAdapter adapter;
 			mCachedTracks = adapter.GetTrackList(peakMtx);
@@ -70,26 +76,26 @@ namespace CLAM
 			mSampleRate = sr;
 			mDuration = dur;
 			FullView();
-			SetnSamples(TSize(mDuration*mSampleRate));
-			SetvRange(mSampleRate/TData(2.0));
+			SetnSamples(mDuration*mSampleRate);
+			SetYRange(0.0,mSampleRate/2.0);
 			Colorize();
-			InitialRegionTime();
+			mHasData = true;
 			mMustProcessData = true;
-			SetSelPos(TData(0.0));
+			SetSelPos(0.0,true);
 			emit requestRefresh();
 		}
 
-		void SinTracksPlotController::SurfaceDimensions(int w,int h)
+		void SinTracksPlotController::DisplayDimensions(const int& w, const int& h)
 		{
-			PlotController::SurfaceDimensions(w,h);
+			PlotController::DisplayDimensions(w,h);
 		
-			double lBound = double(GetLeftBound()/mSampleRate);
-			double hBound = double(GetRightBound()/mSampleRate);
+			double lBound = GetLeftBound()/mSampleRate;
+			double hBound = GetRightBound()/mSampleRate;
 			
 			emit xRulerRange(lBound,hBound);
 
-			double bBound = double(GetBottomBound());
-			double tBound = double(GetTopBound());
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
 			
 			emit yRulerRange(bBound,tBound);
 		}
@@ -98,56 +104,58 @@ namespace CLAM
 		{
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
-			SelTimeRegionPlotController::Draw();
+			PlotController::Draw();
 		}
 
-		void SinTracksPlotController::SetHBounds(const TData& left,const TData& right)
+		void SinTracksPlotController::SetHBounds(const double& left, const double& right)
 		{
-			SelTimeRegionPlotController::SetHBounds(left,right);
+			PlotController::SetHBounds(left,right);
 			mMustProcessData = true;
 			
-			double lBound = double(GetLeftBound()/mSampleRate);
-			double hBound = double(GetRightBound()/mSampleRate);
+			double lBound = GetLeftBound()/mSampleRate;
+			double hBound = GetRightBound()/mSampleRate;
 			
+			if(mHasData) emit requestRefresh();
 			emit xRulerRange(lBound,hBound);
 		}
 
-		void SinTracksPlotController::SetVBounds(const TData& bottom,const TData& top)
+		void SinTracksPlotController::SetVBounds(const double& bottom, const double& top)
 		{
-			SelTimeRegionPlotController::SetVBounds(bottom,top);
+			PlotController::SetVBounds(bottom,top);
 			mMustProcessData = true;
 			
-			double bBound = double(GetBottomBound());
-			double tBound = double(GetTopBound());
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
 		       
+			if(mHasData) emit requestRefresh();
 			emit yRulerRange(bBound,tBound);
 		}
 
 		void SinTracksPlotController::FullView()
 		{
-			TData stp = mDuration*mSampleRate/TData(mNumberOfFrames);
-			SetHMin(stp*TData(5.0));
+			TData stp = mDuration*mSampleRate/double(mNumberOfFrames);
+			SetMinSpanX(stp*5.0);
 
-			mView.left = TData(0.0);
-			mView.right = TData(mDuration*mSampleRate);
-			mView.top = mSampleRate/TData(2.0);
-			mView.bottom = TData(0.0);
+			mView.left = 0.0;
+			mView.right = mDuration*mSampleRate;
+			mView.top = mSampleRate/2.0;
+			mView.bottom = 0.0;
 			SetHBounds(mView.left,mView.right);
 			SetVBounds(mView.bottom,mView.top);
-			emit sendView(mView);
+			emit viewChanged(mView);
 		}
 
 		void SinTracksPlotController::ProcessData()
 		{
-			TIndex left = TIndex(GetLeftBound()*TData(mNumberOfFrames)/TData(GetnSamples()));
-			TIndex right = TIndex(GetRightBound()*TData(mNumberOfFrames)/TData(GetnSamples()));
+			TIndex left = TIndex(GetLeftBound()*double(mNumberOfFrames)/GetnSamples());
+			TIndex right = TIndex(GetRightBound()*double(mNumberOfFrames)/GetnSamples());
 			TIndex bottom = TIndex(GetBottomBound());
 			TIndex top = TIndex(GetTopBound());
 
 			mVerClipper.Cull(TData(bottom), TData(top), mStarts, mEnds );
 			mHorClipper.Cull(left, right, mStarts, mEnds );
 
-			mRenderer.SetVBounds(GetTopBound(),GetBottomBound());
+			mRenderer.SetVBounds(GetBottomBound(),GetTopBound());
 			mRenderer.SetSpanLists(mStarts, mEnds, TData(left), TData(right));
 
 			mMustProcessData = false;
@@ -167,7 +175,7 @@ namespace CLAM
 
 				while( itrack!=endtrack )
 				{
-					itrack->mColorIndex = palette.Get( ClampToRange( itrack->mMag ) );
+					itrack->mColorIndex = palette.Get( ClampToRange( float(itrack->mMag) ) );
 					itrack++;
 				}
 				i++;
@@ -175,7 +183,7 @@ namespace CLAM
 			mRenderer.SetPalette(palette);
 		}
 
-		float SinTracksPlotController::ClampToRange(TData value) const
+		float SinTracksPlotController::ClampToRange(float value) const
 		{
 			if ( value > 0.0 ) // 0 dB is the maximum
 				return 1.0f;
@@ -188,35 +196,46 @@ namespace CLAM
 			return value;
 		}
 
-		void SinTracksPlotController::InitialRegionTime()
+		void SinTracksPlotController::SetMousePos(const double& x, const double& y)
 		{
-			MediaTime time;
-			time.SetBegin(TData(0.0));
-			emit selectedRegion(time);
-		}
-
-		void SinTracksPlotController::SetMousePos(TData x,TData y)
-		{
-			TData tbound = GetTopBound()-GetBottomBound();
-			TData bBound = GetBottomBound();
-			TData ycoord=y;
-			ycoord *= tbound;
-			ycoord /= TData(mViewport.h);
-			ycoord += bBound;
-			SegmentationMarksPlotController::SetMousePos(x,ycoord);
+			if(x < 0 || x > GetnSamples()) return;
+			if(y < 0 || y > GetMaxSpanY()) return;
+			
+			PlotController::SetMousePos(x,y);
+			double t=GetMouseXPos()/mSampleRate;
+			double f=GetMouseYPos();
+			emit sendTimeFreq(t,f);
 			if(!HasSentTag())
 			{
-				TData t=GetMouseXPos()/mSampleRate;
-				TData freq=GetMouseYPos();
-				QString s ="t="+QString::number(t,'f',3)+"s freq="+QString::number(freq,'f',0)+"Hz";
-		      
+				QString s ="t="+QString::number(t,'f',3)+"s freq="+QString::number(f,'f',0)+"Hz"; 
 				emit toolTip(s);
 			}
 		}
 
-		bool SinTracksPlotController::IsPlayable()
+		void SinTracksPlotController::SetSelPos(const double& value, bool render)
 		{
-			return false;
+			if(CanDrawSelectedPos())
+			{
+				if(GetDialPos() != value)
+				{
+					PlotController::SetSelPos(value, render);
+					emit requestRefresh();
+					emit selectedXPos(value/mSampleRate);
+				}
+			}
+		}
+
+		void SinTracksPlotController::setHBounds(double xmin, double xmax)
+		{
+			double left = xmin*mSampleRate;
+			double right = xmax*mSampleRate;
+			SetHBounds(left,right);
+		}
+
+		void SinTracksPlotController::setSelectedXPos(double xpos)
+		{
+			SetSelPos(xpos*mSampleRate,true);
+			emit requestRefresh();
 		}
     }
 }
