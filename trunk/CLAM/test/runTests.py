@@ -501,8 +501,9 @@ def deployClamBuildSystem() :
 	executeMandatory('make clean && make')
 
 	# Remove not public dirs
-	os.chdir(BUILDPATH+'../')
-	executeMandatory('find | grep not-public | while read a; do a=`dirname $a`; rm -rf $a; done')
+	if False : # disabled because some tests are in not-public
+	 	os.chdir(BUILDPATH+'../')
+		executeMandatory('find | grep not-public | while read a; do a=`dirname $a`; rm -rf $a; done')
 
 	# ConfigureClam
 	os.chdir(BUILDPATH)
