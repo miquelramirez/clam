@@ -28,11 +28,16 @@ namespace CLAM
     namespace VM
     {
 		SpectrumPlotController::SpectrumPlotController()
-			: mMustProcessData(false)
-			, mSpectralRange(TData(0.0))
+			: mSpectralRange(11025.0)
+			, mMustProcessData(false)
+			, mHasData(false)
+			, mHasPeaks(false)
+			
 		{
-			SetVMin(TData(5.0));
-			SetvRange(TData(150.0));
+			SetMinSpanX(50.0);
+			SetMinSpanY(5.0);
+			SetYRange(-150.0,0.0);
+			mPeaksRenderer.SetVBounds(-150.0,0.0);
 		}
 		
 		SpectrumPlotController::~SpectrumPlotController()
@@ -41,16 +46,32 @@ namespace CLAM
 
 		void SpectrumPlotController::SetData(const Spectrum& spec)
 		{
+			mHasData = false;
 			mSpec = spec;
 			CacheData();
-			mSpectralRange = mSpec.GetSpectralRange();
-			SetnSamples(mMagBuffer.Size());
+			mSpectralRange = double(mSpec.GetSpectralRange());
+			SetnSamples(double(mMagBuffer.Size()));
 			FullView();
 			mMustProcessData = true;
-			SetSelPos(TData(0.0));
+			SetSelPos(0.0,true);
+			mHasData = true;
 			emit requestRefresh();
-			emit freq(TData(0.0));
-			emit mag(mMagBuffer[0]);
+		}
+
+		void SpectrumPlotController::SetData(const Spectrum& spec,const SpectralPeakArray& peaks)
+		{
+			mHasData = false;
+			mHasPeaks = true;
+			mSpec = spec;
+			mPeaks = peaks;
+			mSpectralRange = double(mSpec.GetSpectralRange());
+			SetnSamples(double(mSpec.GetMagBuffer().Size()));
+			CacheData();
+			FullView();
+			mMustProcessData = true;
+			SetSelPos(0.0,true);
+			mHasData = true;
+			emit requestRefresh();
 		}
 
 		void SpectrumPlotController::SetDataColor(Color c)
@@ -58,47 +79,56 @@ namespace CLAM
 			mRenderer.SetColor(c);
 		}
 
-		void SpectrumPlotController::SetHBounds(const TData& left,const TData& right)
+		void SpectrumPlotController::SetPeaksColor(Color cline,Color cpoint)
 		{
-			SelPosPlotController::SetHBounds(left,right);
+			mPeaksRenderer.SetPeakColor(cline,cpoint);
+		}
+
+		void SpectrumPlotController::SetHBounds(const double& left, const double& right)
+		{
+			PlotController::SetHBounds(left,right);
 			mMustProcessData = true;
 			
-			double lBound = double(GetLeftBound()*mSpectralRange/TData(GetnSamples()));
-			double hBound = double(GetRightBound()*mSpectralRange/TData(GetnSamples()));
+			double lBound = GetLeftBound()*mSpectralRange/GetnSamples();
+			double hBound = GetRightBound()*mSpectralRange/GetnSamples();
 		 
+			if(mHasData) emit requestRefresh();
 			emit xRulerRange(lBound,hBound);
 		}
 
-		void SpectrumPlotController::SetVBounds(const TData& bottom,const TData& top)
+		void SpectrumPlotController::SetVBounds(const double& bottom, const double& top)
 		{
-			SelPosPlotController::SetVBounds(bottom,top);
+			PlotController::SetVBounds(bottom,top);
 			
-			double bBound = double(GetBottomBound()-GetvRange());
-			double tBound = double(GetTopBound()-GetvRange());
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
 		       
+			if(mHasData) emit requestRefresh();
 			emit yRulerRange(bBound,tBound);
 		}
 
-		void SpectrumPlotController::SurfaceDimensions(int w,int h)
+		void SpectrumPlotController::DisplayDimensions(const int& w, const int& h)
 		{
-			PlotController::SurfaceDimensions(w,h);
+			PlotController::DisplayDimensions(w,h);
 		
-			double lBound = double(GetLeftBound()*mSpectralRange/TData(GetnSamples()));
-			double hBound = double(GetRightBound()*mSpectralRange/TData(GetnSamples()));
+			double lBound = GetLeftBound()*mSpectralRange/GetnSamples();
+			double hBound = GetRightBound()*mSpectralRange/GetnSamples();
 			
 			emit xRulerRange(lBound,hBound);
 				
-			double bBound = double(GetBottomBound()-GetvRange());
-			double tBound = double(GetTopBound()-GetvRange());
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
 			
 			emit yRulerRange(bBound,tBound);
 		}
 
 		void SpectrumPlotController::Draw()
 		{
+			if(!mHasData) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
-			SelPosPlotController::Draw();
+			if(mHasPeaks) mPeaksRenderer.Render();
+			PlotController::Draw();
 		}
 
 		void SpectrumPlotController::AdaptSpectralData()
@@ -129,20 +159,20 @@ namespace CLAM
 		void SpectrumPlotController::CacheData()
 		{
 			AdaptSpectralData();
-
 			mMagBuffer=mSpec.GetMagBuffer();
-			mPhaseBuffer=mSpec.GetPhaseBuffer();
+			if(mHasPeaks) CachePeaksData();
 		}
 
 		void SpectrumPlotController::FullView()
 		{
-			mView.left = TData(0.0);
-			mView.right = TData(mMagBuffer.Size());
-			mView.top = TData(150.0);
-			mView.bottom = TData(0.0);
+			mView.left = 0.0;
+			mView.right = double(mMagBuffer.Size());
+			mView.top = 0.0;
+			mView.bottom = -150.0;
 			SetHBounds(mView.left,mView.right);
 			SetVBounds(mView.bottom,mView.top);
-			emit sendView(mView);
+			emit viewChanged(mView);
+			emit initialYRulerRange(-150.0,0.0);
 		}
 
 		void SpectrumPlotController::ProcessData()
@@ -156,55 +186,89 @@ namespace CLAM
 
 			std::copy(mMagBuffer.GetPtr()+offset,mMagBuffer.GetPtr()+offset+len,mProcessedData.GetPtr());
 
-			for(int i = 0;i < mProcessedData.Size();i++) mProcessedData[i] += TData(150.0);
-
-			TData range = GetRightBound()-GetLeftBound();
-			TData threshold = GetHMin()*TData(2.0);
+			double range = GetRightBound()-GetLeftBound();
+			double threshold = GetMinSpanX()*2.0;
 			int mode = (range < threshold) ? DetailMode : NormalMode;
-			mRenderer.SetDataPtr(mProcessedData.GetPtr(),mProcessedData.Size(),mode);	
+			mRenderer.SetDataPtr(mProcessedData.GetPtr(),mProcessedData.Size(),mode);
+			if(mHasPeaks) ProcessPeaksData();
 			mMustProcessData = false;
 		}
 
-		void SpectrumPlotController::SetSelPos(const TData& value)
+		void SpectrumPlotController::CachePeaksData()
 		{
-			SelPosPlotController::SetSelPos(value);
+			TData magnitude;
+			TData span = TData(GetnSamples());
+			TSize nPeaks = mPeaks.GetMagBuffer().Size();
+			bool linear = (mPeaks.GetScale() == EScale::eLinear);
 
-			int index = int(value);
-			emit mag(mMagBuffer[index]);
-			emit freq(value*mSpectralRange/TData(GetnSamples()));
-		}
+			mCachedPeaks.resize(nPeaks);
 
-		TData SpectrumPlotController::GetSpectralRange() const
-		{
-			return mSpectralRange;
-		}
-
-		bool SpectrumPlotController::MustProcessData() const
-		{
-			return mMustProcessData;
-		}
-        
-		void SpectrumPlotController::SetMousePos(TData x,TData y)
-		{
-			SegmentationMarksPlotController::SetMousePos(x,y);
-			TData xcoord=x;
-			xcoord *= mSpectralRange;
-			xcoord /= TData(GetnSamples());
-			TData tbound = GetTopBound()-GetBottomBound();
-			TData bBound = GetBottomBound()-TData(150.0);
-			TData ycoord=y;
-			ycoord *= tbound;
-			ycoord /= TData(mViewport.h);
-			ycoord += bBound;
-			PlotController::SetMousePos(xcoord,ycoord);
-			if(!HasSentTag())
+			for(int i = 0;i < nPeaks; i++)
 			{
-				TData freq=GetMouseXPos();
-				TData dB=GetMouseYPos();
-				QString s = "freq="+QString::number(freq,'f',0)+"Hz mag="+QString::number(dB,'f',0)+"dB";
+				magnitude = mPeaks.GetMagBuffer()[i];
+				if(linear) magnitude = 20.0*log10(magnitude);
+				mCachedPeaks[i].mag = magnitude;
+				mCachedPeaks[i].freq = mPeaks.GetFreqBuffer()[i]*span/TData(mSpectralRange);
+			}
+		}
+
+		void SpectrumPlotController::ProcessPeaksData()
+		{
+			mProcessedPeaks.clear();
+			double left = GetLeftBound();
+			double right = GetRightBound();
+			for(unsigned i = 0; i < mCachedPeaks.size(); i++)
+			{
+				double current = double(mCachedPeaks[i].freq);
+				if(current > right) break;
+				if(current >= left) mProcessedPeaks.push_back(mCachedPeaks[i]);
+			}
+			mPeaksRenderer.SetHBounds(left, right);
+			mPeaksRenderer.SetData(mProcessedPeaks);
+		}
+
+		void SpectrumPlotController::SetSelPos(const double& value, bool render)
+		{
+			if(CanDrawSelectedPos())
+			{
+				if(GetDialPos() != value)
+				{
+					PlotController::SetSelPos(value, render);
+					emit requestRefresh();
+					emit selectedXPos(value*mSpectralRange/GetnSamples());
+				}
+			}
+		}
+
+		void SpectrumPlotController::SetMousePos(const double& x, const double& y)
+		{
+			if(x < 0 || x > GetnSamples()) return;
+			if(y < GetMinY() || y > GetMaxY()) return;
 			
+			PlotController::SetMousePos(x,y);
+			double f = x;
+			f *= mSpectralRange;
+			f /= GetnSamples();
+			double m = y;
+			emit sendMagFreq(m,f);
+			if(!HasSentTag())
+			{	
+				QString s = "mag="+QString::number(m,'f',0)+"dB freq="+QString::number(f,'f',0)+"Hz";
 				emit toolTip(s);
 			}
+		}
+
+		void SpectrumPlotController::setHBounds(double xmin, double xmax)
+		{
+			double left = xmin*GetnSamples()/mSpectralRange;
+			double right = xmax*GetnSamples()/mSpectralRange;
+			SetHBounds(left,right);
+		}
+
+		void SpectrumPlotController::setSelectedXPos(double xpos)
+		{
+			SetSelPos(xpos*GetnSamples()/mSpectralRange,true);
+			emit requestRefresh();
 		}
        	
     }
