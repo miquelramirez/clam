@@ -44,12 +44,12 @@ namespace CLAM
 			void Render();
 
 		private:
-			const TData *mData;
+			const TData* mData;
 			const TData* mMaxsPtr;
 			const TData* mMinsPtr;
-			unsigned mElems;
-			int mMode;
-			TData mStep;
+			unsigned     mElems;
+			int          mMode;
+			TData        mStep;
 
 			void RenderingNormalMode();
 			void RenderingDetailMode();

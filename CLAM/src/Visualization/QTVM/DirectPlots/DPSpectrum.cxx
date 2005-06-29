@@ -39,7 +39,7 @@ namespace CLAM
 			plot.Geometry(x,y,w,h);
 			plot.SetBackgroundColor(VMColor::White());
 			plot.SetForegroundColor(VMColor::Blue());
-			plot.SetVLineColor(VMColor::Black());
+			plot.SetDialColor(VMColor::Black());
 			plot.SwitchDisplayColors(true);
 			plot.SetData(spec);
 			plot.Show();
@@ -59,7 +59,7 @@ namespace CLAM
 			plot.Geometry(x,y,w,h);
 			plot.SetBackgroundColor(VMColor::White());
 			plot.SetForegroundColor(VMColor::Blue());
-			plot.SetVLineColor(VMColor::Black());
+			plot.SetDialColor(VMColor::Black());
 			plot.SetMarks(marks);
 			plot.SetMarksColor(VMColor::Red());
 			plot.SwitchDisplayColors(true);

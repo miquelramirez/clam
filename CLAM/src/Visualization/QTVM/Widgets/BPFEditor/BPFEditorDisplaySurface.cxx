@@ -10,7 +10,8 @@ namespace CLAM
 		BPFEditorDisplaySurface::BPFEditorDisplaySurface(QWidget* parent)
 			: QGLWidget(parent)
 			, mController(0)
-			, mWidth(0),mHeight(0)
+			, mWidth(0)
+			, mHeight(0)
 			, mDoResize(false)
 			, mTimer(0)
 		{
@@ -47,10 +48,7 @@ namespace CLAM
 
 		void BPFEditorDisplaySurface::updateView(GLView view)
 		{
-			mView.mLeft = view.mLeft;
-			mView.mRight = view.mRight;
-			mView.mBottom = view.mBottom;
-			mView.mTop = view.mTop;
+			mView = view;
 		}
 
 		void BPFEditorDisplaySurface::changeCursor(QCursor cursor)
@@ -68,7 +66,7 @@ namespace CLAM
 			}
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			glOrtho(mView.mLeft,mView.mRight,mView.mBottom,mView.mTop,-1.0,1.0);
+			glOrtho(mView.left,mView.right,mView.bottom,mView.top,-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 			glShadeModel(GL_FLAT);
 			glClearColor(GLfloat(mRed),GLfloat(mGreen),GLfloat(mBlue),1.0);
@@ -86,13 +84,13 @@ namespace CLAM
 				{
 					mController->SetLeftButtonPressed(true);
 					double xcoord = double(e->x());
-					xcoord *= (mView.mRight-mView.mLeft);
+					xcoord *= (mView.right-mView.left);
 					xcoord /= double(width());
-					xcoord += mView.mLeft;
+					xcoord += mView.left;
 					double ycoord = double(-e->y())+double(height());
-					ycoord *= (mView.mTop-mView.mBottom);
+					ycoord *= (mView.top-mView.bottom);
 					ycoord /= double(height());
-					ycoord += mView.mBottom;
+					ycoord += mView.bottom;
 					mController->SetPoint(TData(xcoord),TData(ycoord));
 				}
 
@@ -111,13 +109,13 @@ namespace CLAM
 				{
 					mController->SetLeftButtonPressed(false);
 					double xcoord = double(e->x());
-					xcoord *= (mView.mRight-mView.mLeft);
+					xcoord *= (mView.right-mView.left);
 					xcoord /= double(width());
-					xcoord += mView.mLeft;
+					xcoord += mView.left;
 					double ycoord = double(-e->y())+double(height());
-					ycoord *= (mView.mTop-mView.mBottom);
+					ycoord *= (mView.top-mView.bottom);
 					ycoord /= double(height());
-					ycoord += mView.mBottom;
+					ycoord += mView.bottom;
 					mController->SetPoint(TData(xcoord),TData(ycoord));			
 				}
 
@@ -133,13 +131,13 @@ namespace CLAM
 			if(mController)
 			{
 				double xcoord = double(e->x());
-				xcoord *= (mView.mRight-mView.mLeft);
+				xcoord *= (mView.right-mView.left);
 				xcoord /= double(width());
-				xcoord += mView.mLeft;
+				xcoord += mView.left;
 				double ycoord = double(-e->y())+double(height());
-				ycoord *= (mView.mTop-mView.mBottom);
+				ycoord *= (mView.top-mView.bottom);
 				ycoord /= double(height());
-				ycoord += mView.mBottom;
+				ycoord += mView.bottom;
 				mController->UpdatePoint(TData(xcoord),TData(ycoord));
 			}
 		}

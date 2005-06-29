@@ -26,11 +26,10 @@ namespace CLAM
 	namespace VM
 	{
 		Renderer::Renderer()
-			: mEnabled(true)
-			, mLeftBound(TData(0.0))
-			, mRightBound(TData(0.0))
-			, mTopBound(TData(0.0))
-			, mBottomBound(TData(0.0))
+			: mLeftBound(0.0)
+			, mRightBound(1.0)
+			, mTopBound(1.0)
+			, mBottomBound(0.0)
 			, mColor(VMColor::Green())
 		{
 		}
@@ -39,13 +38,13 @@ namespace CLAM
 		{
 		}
 
-		void Renderer::SetHBounds(const TData& left, const TData& right)
+		void Renderer::SetHBounds(const double& left, const double& right)
 		{
 			mLeftBound = left;
 			mRightBound = right;
 		}
 
-		void Renderer::SetVBounds(const TData& top,const TData& bottom)
+		void Renderer::SetVBounds(const double& bottom, const double& top)
 		{
 		    mTopBound = top;
 			mBottomBound = bottom;
@@ -61,32 +60,22 @@ namespace CLAM
 			return mColor;;
 		}
 
-		void Renderer::SetEnabled(bool e)
-		{
-		    mEnabled = e;
-		}
-
-		const bool& Renderer::IsEnabled() const
-		{
-			return mEnabled;
-		}
-
-		const TData& Renderer::LeftBound() const
+		const double& Renderer::LeftBound() const
 		{
 			return mLeftBound;
 		}
 
-		const TData& Renderer::RightBound() const
+		const double& Renderer::RightBound() const
 		{
 			return mRightBound;
 		}
 
-		const TData& Renderer::BottomBound() const
+		const double& Renderer::BottomBound() const
 		{
 			return mBottomBound;
 		}
 
-		const TData& Renderer::TopBound() const
+		const double& Renderer::TopBound() const
 		{
 			return mTopBound;
 		}

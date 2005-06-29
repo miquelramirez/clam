@@ -20,7 +20,7 @@
  */
 
 #include "QtAppWrapper.hxx"
-#include "QtSpectrumAndPeaksPlot.hxx"
+#include "QtSpectrumPlot.hxx"
 #include "DPSpectrumAndPeaks.hxx"
 
 namespace CLAM
@@ -35,12 +35,12 @@ namespace CLAM
 		{
 			QtAppWrapper::Init();
 
-			QtSpectrumAndPeaksPlot plot;
+			QtSpectrumPlot plot;
 			plot.Label(label);
 			plot.Geometry(x,y,w,h);
 			plot.SetBackgroundColor(VMColor::White());
 			plot.SetForegroundColor(VMColor::Blue());
-			plot.SetVLineColor(VMColor::Black());
+			plot.SetDialColor(VMColor::Black());
 			plot.SetPeaksColor(VMColor::Cyan(),VMColor::Red());
 			plot.SwitchDisplayColors(true);
 			plot.SetData(spec,peaks);

@@ -47,8 +47,9 @@ namespace CLAM
 		private:
 			SineTrackSpanEnds* mHeads;
 			SineTrackSpanEnds* mTails;
-			QtPalette* mPalette;
-			TData mLeft, mRight;
+			QtPalette*         mPalette;
+			TData              mLeft; 
+			TData              mRight;
 		};
 	}
 }

@@ -47,9 +47,9 @@ namespace CLAM
 			this->setLineWidth(2);
 			this->setMinimumSize(40,20);
 			this->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
-			this->setAlignment(Qt::AlignCenter);
+			this->setAlignment(Qt::AlignRight);
 			this->setFont(f);
-			this->setText("");
+			this->setText("--");
 		}
 
 		void SingleLabel::SetUnits(const QString& text)
@@ -62,10 +62,15 @@ namespace CLAM
 			QToolTip::add(this,text);
 		}
 
-		void SingleLabel::Update(const float& value, const int& prec)
+		void SingleLabel::Update(const double& value, const int& prec)
 		{
 			QString s = " "+QString::number(value,'f',prec)+" "+mUnits;
 			this->setText(s);
+		}
+
+		void SingleLabel::Clear()
+		{
+			this->setText("--");
 		}
 	}
 }

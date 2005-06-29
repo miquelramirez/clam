@@ -36,13 +36,13 @@ namespace CLAM
 
 			void Render();
 
-			void SetBegin(const TData& value);
-			void SetEnd(const TData& value);
-			const TData& GetBegin() const;
-			const TData& GetEnd() const;
+			void SetBegin(const double& value);
+			void SetEnd(const double& value);
+			const double& GetBegin() const;
+			const double& GetEnd() const;
 
 		private:
-			TData mData[2];
+			double mData[2];
 
 			int GetDrawMode(int index);
 			void DrawRegion(int mode);

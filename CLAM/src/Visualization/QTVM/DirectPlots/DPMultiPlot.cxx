@@ -57,11 +57,6 @@ namespace CLAM
 			mPlot->AddData(key,array);
 		}
 
-		void DPMultiPlot::AddData(std::string key, const BPF& data, int samples)
-		{
-			mPlot->AddData(key,data,samples);
-		}
-
 		void DPMultiPlot::SetColor(std::string key, Color c)
 		{
 			mPlot->SetColor(key,c);

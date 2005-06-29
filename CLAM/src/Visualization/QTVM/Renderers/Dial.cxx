@@ -27,7 +27,7 @@ namespace CLAM
 	namespace VM
 	{
 		Dial::Dial()
-			: mPosition(TData(0.0))
+			: mPosition(0.0)
 		{
 			SetColor(VMColor::Black());
 		}
@@ -45,12 +45,12 @@ namespace CLAM
 			glEnd();
 		}
 
-		void Dial::Update(const TData& value)
+		void Dial::Update(const double& value)
 		{
 			mPosition = value;
 		}
 
-		const TData& Dial::GetPos() const
+		const double& Dial::GetPos() const
 		{
 			return mPosition;
 		}

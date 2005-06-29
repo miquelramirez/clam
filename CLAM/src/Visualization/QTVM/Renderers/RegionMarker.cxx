@@ -28,7 +28,7 @@ namespace CLAM
 	{
 		RegionMarker::RegionMarker()
 		{
-			mData[0] = mData[1] = TData(0.0);
+			mData[0] = mData[1] = 0.0;
 			SetColor(VMColor::LightGray());
 		}
 
@@ -55,8 +55,8 @@ namespace CLAM
 			// 2 -> the first point is visible but the second is not
 			// 3 -> the second point is visible but the first is not
 			// 4 -> both points are visible
-			TData p1 = mData[index];
-			TData p2 = mData[index+1];
+			double p1 = mData[index];
+			double p2 = mData[index+1];
 			if(p1 < LeftBound() && p2 > RightBound()) return 1;
 			if(p1 >= LeftBound() && p2 > RightBound()) return 2;
 			if(p1 < LeftBound() && p2 <= RightBound()) return 3;
@@ -104,23 +104,23 @@ namespace CLAM
 			glEnd();
 		}
 
-		void RegionMarker::SetBegin(const TData& value)
+		void RegionMarker::SetBegin(const double& value)
 		{
 			mData[0] = value;
 		}
 
-		void RegionMarker::SetEnd(const TData& value)
+		void RegionMarker::SetEnd(const double& value)
 		{
 			mData[1] = value;
 		}
 
-		const TData& RegionMarker::GetBegin() const
+		const double& RegionMarker::GetBegin() const
 		{
 			return mData[0];
 
 		}
 
-		const TData& RegionMarker::GetEnd() const
+		const double& RegionMarker::GetEnd() const
 		{
 			return mData[1];
 		}

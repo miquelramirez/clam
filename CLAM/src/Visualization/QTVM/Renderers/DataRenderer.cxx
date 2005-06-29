@@ -78,7 +78,7 @@ namespace CLAM
 
 		void DataRenderer::RenderingDetailMode()
 		{
-			const float halfHop = TData(0.5);
+			const float halfHop = 0.5f;
 			float x = 0.0f;
 
 			glBegin( GL_LINE_STRIP );
@@ -96,7 +96,7 @@ namespace CLAM
 			CLAM_ASSERT((mMaxsPtr != NULL && mElems > 0), "DataRenderer::RenderingHugeMode(): Invalid pointer!" );
 			CLAM_ASSERT((mMinsPtr != NULL && mElems > 0), "DataRenderer::RenderingHugeMode(): Invalid pointer!" );
 
-			TData right = TData(mElems);
+			double right = double(mElems);
 
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();

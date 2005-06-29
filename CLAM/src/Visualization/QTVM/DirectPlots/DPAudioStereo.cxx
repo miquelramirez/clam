@@ -20,7 +20,7 @@
  */
 
 #include "QtAppWrapper.hxx"
-#include "QtStereoAudioPlot.hxx"
+#include "QtAudioStereoPlot.hxx"
 #include "DPAudioStereo.hxx"
 
 namespace CLAM
@@ -34,7 +34,7 @@ namespace CLAM
 		{
 			QtAppWrapper::Init();
 
-			QtStereoAudioPlot plot;
+			QtAudioStereoPlot plot;
 			plot.Label(label);
 			plot.Geometry(x,y,w,h);
 			plot.SetBackgroundColor(VMColor::White());
@@ -56,7 +56,7 @@ namespace CLAM
 		{
 			QtAppWrapper::Init();
 
-			QtStereoAudioPlot plot;
+			QtAudioStereoPlot plot;
 			plot.Label(label);
 			plot.Geometry(x,y,w,h);
 			plot.SetBackgroundColor(VMColor::White());
