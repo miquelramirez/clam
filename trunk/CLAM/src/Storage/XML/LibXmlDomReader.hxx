@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef XercesDomReader_hxx
-#define XercesDomReader_hxx
+#ifndef LibXmlDomReader_hxx
+#define LibXmlDomReader_hxx
 
 #include "XmlStorageErr.hxx"
 
@@ -81,4 +81,4 @@ class LibXmlDomReader
 
 
 }
-#endif//XercesDomReader_hxx
+#endif//LibXmlDomReader_hxx
