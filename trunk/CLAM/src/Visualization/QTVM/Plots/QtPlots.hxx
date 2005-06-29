@@ -23,10 +23,9 @@
 #define __QTPLOTS__
 
 #include "QtAudioPlot.hxx"
-#include "QtStereoAudioPlot.hxx"
+#include "QtAudioStereoPlot.hxx"
 #include "QtFundFreqPlot.hxx"
 #include "QtSpectrumPlot.hxx"
-#include "QtSpectrumAndPeaksPlot.hxx"
 #include "QtSinTracksPlot.hxx"
 #include "QtMultiPlot.hxx"
 #include "QtSpectrogram.hxx"
@@ -56,13 +55,12 @@
  * The QtPlots are real widgets and can be integrated into a user's own Qt application.
  *
  * - CLAM::VM::QtAudioPlot
+ * - CLAM::VM::QtAudioStereoPlot
  * - CLAM::VM::QtFundFreqPlot
  * - CLAM::VM::QtMultiPlot
  * - CLAM::VM::QtSinTracksPlot
  * - CLAM::VM::QtSpectrogram
- * - CLAM::VM::QtSpectrumAndPeaksPlot
  * - CLAM::VM::QtSpectrumPlot
- * - CLAM::VM::QtStereoAudioPlot
  *
  *@section DirectPlots Direct plots
  * 
