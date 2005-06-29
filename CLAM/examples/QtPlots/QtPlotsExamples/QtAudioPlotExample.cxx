@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+
 #include <stdlib.h>
 #include "QtAudioPlot.hxx"
 #include "QtAppWrapper.hxx"
@@ -27,7 +28,7 @@ int main()
 {
     
 	CLAM::Audio audio;
-
+	
 	if(qtvm_examples_utils::load_audio("../../data/birthday.wav",audio))
 	{
 	    printf("File Error: \'birthday.wav\' audio file not found!\n");
@@ -42,10 +43,10 @@ int main()
 	aPlot.SetData(audio);
 	aPlot.SetForegroundColor(CLAM::VM::VMColor::Blue());
 	aPlot.Show();
-       
+	
 	return CLAM::VM::QtAppWrapper::Run();
 	
 }
 
-
 // END
+

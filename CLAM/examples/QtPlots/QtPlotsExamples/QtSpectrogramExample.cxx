@@ -14,7 +14,7 @@ int main()
     double sampleRate = 8000.0;
 
     printf("Building a chirp signal freq=%.0lf..%.0lf Hz duration=%.0lf sec. sample rate=%.0lf Hz\n",
-	   freq0,freq1,duration,sampleRate);
+		   freq0,freq1,duration,sampleRate);
     qtvm_examples_utils::chirp(freq0,freq1,duration,sampleRate,audio);
 
     printf("Analysing");
@@ -26,8 +26,8 @@ int main()
     printf("\nBuilding spectrum matrix");
     for(CLAM::TIndex i=0; i < segment.GetnFrames(); i++)
     {
-	specMtx[i]=segment.GetFrame(i).GetSinusoidalAnalSpectrum();
-	printf(".");
+		specMtx[i]=segment.GetFrame(i).GetSinusoidalAnalSpectrum();
+		printf(".");
     }
     printf("\ndone!\n");
 
@@ -38,7 +38,7 @@ int main()
     plot.SetData(specMtx,duration);
     plot.Show();
     return CLAM::VM::QtAppWrapper::Run();
-
+	
 }
 
 // END

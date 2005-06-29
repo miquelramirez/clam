@@ -29,8 +29,8 @@ int main()
     CLAM::Audio audio;
     if(qtvm_examples_utils::load_audio("../../data/birthday.wav",audio))
     {
-	printf("File Error: \'birthday.wav\' audio file not found!\n");
-	exit(1);
+		printf("File Error: \'birthday.wav\' audio file not found!\n");
+		exit(1);
     }
 
     CLAM::Segment seg;
