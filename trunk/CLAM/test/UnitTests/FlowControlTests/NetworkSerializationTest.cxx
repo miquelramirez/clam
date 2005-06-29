@@ -85,7 +85,7 @@ private:
 		CLAM::Network foo;
 		foo.SetName( "FooNetwork" );
 
-		CLAM::XMLStorage::Dump(foo, "network", _output);
+		CLAM::XMLStorage::Dump(foo, "network", _output, false);
 
 		assertXmlBodyEquals( "<network id=\"FooNetwork\"/>" );
 	}
@@ -113,7 +113,7 @@ private:
 		foo.AddFlowControl( new CLAM::BasicFlowControl );
 		foo.AddProcessing("oscillator", osc);
 
-		CLAM::XMLStorage::Dump(foo, "network",_output);
+		CLAM::XMLStorage::Dump(foo, "network",_output, false);
 
 		assertXmlBodyEquals(
 			"<network id=\"FooNetworkWithOneProcessing\">"
@@ -155,7 +155,7 @@ private:
 		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
 		foo.AddProcessing("fftw", new CLAM::FFT_rfftw );
 
-		CLAM::XMLStorage::Dump(foo, "network", _output );
+		CLAM::XMLStorage::Dump(foo, "network", _output, false );
 		
 		assertXmlBodyEquals(
 			"<network id=\"FooNetworkWithMoreThanOneProcessing\">"
@@ -196,7 +196,7 @@ private:
 		foo.AddProcessing("oscillator", new CLAM::Oscillator );
 		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
 		foo.ConnectPorts("oscillator.Audio Output", "multiplier.First Audio Input");
-		CLAM::XMLStorage::Dump(foo, "network", _output );
+		CLAM::XMLStorage::Dump(foo, "network", _output, false );
 		
 		assertXmlBodyEquals(
 			"<network id=\"FooNetworkWithPortsConnection\">"
@@ -241,7 +241,7 @@ private:
 		foo.AddProcessing("oscillator", new CLAM::Oscillator );
 		foo.AddProcessing("panner", new CLAM::AutoPanner );
 		foo.ConnectControls("panner.Left Control","oscillator.Amplitude");
-		CLAM::XMLStorage::Dump(foo, "network", _output );
+		CLAM::XMLStorage::Dump(foo, "network", _output, false );
 
 		assertXmlBodyEquals(
 			"<network id=\"FooNetworkWithControlsConnection\">"
