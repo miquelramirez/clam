@@ -27,6 +27,7 @@
 namespace xmlpp
 {
 	class Document;
+	class Node;
 }
 
 namespace CLAM
@@ -44,6 +45,13 @@ class LibXmlDomWriter
 		{
 			mShouldIndent=false;
 			mShouldCanonicalize=false;
+		}
+
+		void write(std::ostream & target, xmlpp::Node * node)
+		{
+			xmlpp::Document document;
+			document.create_root_node_by_import(node);
+			write(target, &document);
 		}
 
 		void write(std::ostream & target, xmlpp::Document * node)
