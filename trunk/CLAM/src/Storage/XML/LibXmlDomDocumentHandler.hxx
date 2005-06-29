@@ -114,14 +114,12 @@ public:
 		writer.DoIndentedFormat(useIndentation);
 		writer.write(os,_document);
 	}
-/*
 	void writeSelection(std::ostream & os, bool useIndentation=false)
 	{
 		LibXmlDomWriter writer;
 		writer.DoIndentedFormat(useIndentation);
 		writer.write(os,_selection);
 	}
-*/
 private:
 	void releaseIfAnyDocument()
 	{
