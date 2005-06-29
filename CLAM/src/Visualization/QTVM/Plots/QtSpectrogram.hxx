@@ -2,7 +2,7 @@
 #define __QTSPECTROGRAM__
 
 #include "Spectrum.hxx"
-#include "QtPresentation.hxx"
+#include "SingleDisplayPlot.hxx"
 
 class QLabel;
 
@@ -19,7 +19,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class QtSpectrogram : public QtPresentation
+		class QtSpectrogram : public SingleDisplayPlot
 		{
 			Q_OBJECT
 
@@ -27,25 +27,17 @@ namespace CLAM
 			QtSpectrogram(QWidget* parent=0,const char * name = 0, WFlags f = 0);
 			~QtSpectrogram();
 
-			void SetData(const Array<Spectrum>& specMtx, const TData& dur);
-
-			void SetMarks(std::vector<unsigned>& marks);
-			std::vector<unsigned>& GetMarks();
-			void SetMarksColor(Color c);
-	    
-			std::vector<QString> GetSegmentationTags();
-
-		protected slots:
-			void updateLabels(QString, QString, QString);
-			void updateColorScale(int);
+			void SetData(const Array<Spectrum>& specMtx, const double& dur);
 
 		protected:
-			void keyPressEvent(QKeyEvent* e);
-			void keyReleaseEvent( QKeyEvent* e);
 			void SetPlotController();				
 			void Connect();
 			void DisplayBackgroundBlack();
 			void DisplayBackgroundWhite();
+
+		private slots:
+			void updateLabels(QString, QString, QString);
+			void updateColorScale(int);
 
 		private:
 			QLabel*     mFrequency;

@@ -23,8 +23,7 @@
 #define __QTMULTIPLOT__
 
 #include "Array.hxx"
-#include "BPF.hxx"
-#include "QtPresentation.hxx"
+#include "SingleDisplayPlot.hxx"
 
 namespace CLAM
 {
@@ -39,7 +38,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class QtMultiPlot : public QtPresentation
+		class QtMultiPlot : public SingleDisplayPlot
 		{
 			Q_OBJECT
 
@@ -48,7 +47,6 @@ namespace CLAM
 			~QtMultiPlot();
 
 			void AddData(std::string key, const DataArray& array);
-			void AddData(std::string key, const BPF& data, int samples = 100);
 			void RemoveData( std::string key );
 			void RemoveAllData();
 
@@ -57,25 +55,13 @@ namespace CLAM
 			void SetUnits(const std::string& xunits, const std::string& yunits);
 			void SetToolTips(const std::string& xtooltip, const std::string& ytooltip);
 
-			void SetXRange(const TData& xmin, const TData& xmax);
-			void SetYRange(const TData& ymin, const TData& ymax);
-
-			void SetMarks(std::vector<unsigned>& marks);
-			std::vector<unsigned>& GetMarks();
-			void SetMarksColor(Color c);
-
-			std::vector<QString> GetSegmentationTags();
-
-			void SetDialColor(Color c);
+			void SetXRange(const double& xmin, const double& xmax);
+			void SetYRange(const double& ymin, const double& ymax);
 
 		private slots:
-			void updateXLabel(TData);
-			void updateYLabel(TData);
-			void clearLabels();
-
+			void updateLabels(double,double);
+			
 		protected:
-			void keyPressEvent(QKeyEvent* e);
-			void keyReleaseEvent( QKeyEvent* e);
 			void SetPlotController();				
 			void Connect();
 			void DisplayBackgroundBlack();

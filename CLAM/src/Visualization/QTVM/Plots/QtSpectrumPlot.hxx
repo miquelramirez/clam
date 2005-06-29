@@ -21,8 +21,10 @@
 
 #ifndef __QTSPECTRUMPLOT__
 #define __QTSPECTRUMPLOT__
+
 #include "Spectrum.hxx"
-#include "QtPresentation.hxx"
+#include "SpectralPeakArray.hxx"
+#include "SingleDisplayPlot.hxx"
 
 namespace CLAM
 {
@@ -32,41 +34,34 @@ namespace CLAM
 		class SingleLabel;
 
 		/**
-		 * Allows viewing a single spectrum.
+		 * Allows viewing a single spectrum or a single spectrum with his peaks.
 		 *
 		 * @ingroup QTVM
 		 */
 
-		class QtSpectrumPlot : public QtPresentation
+		class QtSpectrumPlot : public SingleDisplayPlot
 		{
 
 			Q_OBJECT
+
 		public:
 			QtSpectrumPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0);
-			virtual ~QtSpectrumPlot();
+			~QtSpectrumPlot();
 
-			virtual void SetData(const Spectrum& spec);
-
-			void SetMarks(std::vector<unsigned>& marks);
-			std::vector<unsigned>& GetMarks();
-			void SetMarksColor(Color c);
-
-			std::vector<QString> GetSegmentationTags();
+			void SetData(const Spectrum& spec);
+			void SetData(const Spectrum& spec, const SpectralPeakArray& peaks);
 
 			void SetForegroundColor(Color c);
-			void SetVLineColor(Color c);
-
-        protected slots:
-            void updateMagLabel(TData);
-			void updateFreqLabel(TData);
+			void SetPeaksColor(Color cline,Color cpoint);
 
 		protected:				
-			void keyPressEvent(QKeyEvent* e);
-			void keyReleaseEvent( QKeyEvent* e);
 			virtual void SetPlotController();
 			virtual void Connect();
 			virtual void DisplayBackgroundBlack();
 			virtual void DisplayBackgroundWhite();
+
+		private slots:
+            void updateLabels(double,double);
 
 		private:
 			SingleLabel* mMagLabel;

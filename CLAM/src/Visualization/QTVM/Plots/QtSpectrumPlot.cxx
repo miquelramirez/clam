@@ -29,7 +29,7 @@ namespace CLAM
     namespace VM
     {
 		QtSpectrumPlot::QtSpectrumPlot(QWidget* parent, const char * name, WFlags f) 
-			: QtPresentation(parent,name,f)
+			: SingleDisplayPlot(parent,name,f)
 		{
 			SetPlotController();
 			InitSpectrumPlot();
@@ -63,24 +63,25 @@ namespace CLAM
 			((SpectrumPlotController*)mController)->SetData(spec);
 		}
 
+		void QtSpectrumPlot::SetData(const Spectrum& spec, const SpectralPeakArray& peaks)		
+		{			
+		    ((SpectrumPlotController*)mController)->SetData(spec,peaks);
+		}
+
 		void QtSpectrumPlot::SetForegroundColor(Color c)
 		{
 			((SpectrumPlotController*)mController)->SetDataColor(c);
 		}
 
-		void QtSpectrumPlot::SetVLineColor(Color c)
+		void QtSpectrumPlot::SetPeaksColor(Color cline,Color cpoint)
 		{
-			((SpectrumPlotController*)mController)->SetDialColor(c);
+			((SpectrumPlotController*)mController)->SetPeaksColor(cline,cpoint);
 		}
 
-		void QtSpectrumPlot::updateMagLabel(TData value)
+		void QtSpectrumPlot::updateLabels(double mag, double freq)
 		{
-			mMagLabel->Update(value);
-		}
-
-		void QtSpectrumPlot::updateFreqLabel(TData value)
-		{
-			mFreqLabel->Update(value);
+			mMagLabel->Update(mag,0);
+			mFreqLabel->Update(freq,0);
 		}
 
 		void QtSpectrumPlot::SetPlotController()
@@ -91,79 +92,26 @@ namespace CLAM
 		void QtSpectrumPlot::Connect()
 		{
 			// Connections
-			connect(((SpectrumPlotController*)mController),SIGNAL(mag(TData)),this,SLOT(updateMagLabel(TData)));
-			connect(((SpectrumPlotController*)mController),SIGNAL(freq(TData)),this,SLOT(updateFreqLabel(TData)));
+			connect(((SpectrumPlotController*)mController),SIGNAL(sendMagFreq(double,double)),
+					this,SLOT(updateLabels(double,double)));
 		}
 
 		void QtSpectrumPlot::DisplayBackgroundBlack()
 		{
 			SetBackgroundColor(VMColor::Black());
 			SetForegroundColor(VMColor::Green());
-			SetVLineColor(VMColor::Red());
+			SetDialColor(VMColor::Red());
 			SetMarksColor(VMColor::Orange());
+			SetPeaksColor(VMColor::Yellow(),VMColor::Red());
 		}
 
 		void QtSpectrumPlot::DisplayBackgroundWhite()
 		{
 			SetBackgroundColor(VMColor::White());
 			SetForegroundColor(VMColor::Blue());
-			SetVLineColor(VMColor::Black());
+			SetDialColor(VMColor::Black());
 			SetMarksColor(VMColor::Red());
-		}
-
-		void QtSpectrumPlot::SetMarks(std::vector<unsigned>& marks)
-		{			
-			((SpectrumPlotController*)mController)->SetMarks(marks);
-		}
-
-		std::vector<unsigned>& QtSpectrumPlot::GetMarks()
-		{
-			return ((SpectrumPlotController*)mController)->GetMarks();
-		}
-	
-		void QtSpectrumPlot::SetMarksColor(Color c)
-		{
-			((SpectrumPlotController*)mController)->SetMarksColor(c);
-		}
-
-		void QtSpectrumPlot::keyPressEvent(QKeyEvent* e)
-		{
-			switch(e->key())
-			{
-				case Qt::Key_Insert:
-					((SpectrumPlotController*)mController)->SetKeyInsertPressed(true); 
-					break;
-						
-				case Qt::Key_Delete:
-					((SpectrumPlotController*)mController)->SetKeyDeletePressed(true); 
-					break;
-				    
-				default:
-					break;
-
-			}
-		}
-
-		void QtSpectrumPlot::keyReleaseEvent(QKeyEvent* e)
-		{
-			switch(e->key())
-			{
-				case Qt::Key_Insert:
-					((SpectrumPlotController*)mController)->SetKeyInsertPressed(false); 
-					break;
-						
-				case Qt::Key_Delete:
-					((SpectrumPlotController*)mController)->SetKeyDeletePressed(false); 
-					break;
-				    
-				default:
-					break;
-			}
-		}
-
-		std::vector<QString> QtSpectrumPlot::GetSegmentationTags()
-		{
-			return  ((SpectrumPlotController*)mController)->GetTags();
+			SetPeaksColor(VMColor::Cyan(),VMColor::Red());
 		}
 
     }

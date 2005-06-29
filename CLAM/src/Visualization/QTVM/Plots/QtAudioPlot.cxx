@@ -24,7 +24,6 @@
 #include <qframe.h>
 #include "AudioPlotController.hxx"
 #include "QtAudioPlayer.hxx"
-#include "SingleLabel.hxx"
 #include "TimeSegmentLabelsGroup.hxx"
 #include "QtAudioPlot.hxx"
 
@@ -33,14 +32,13 @@ namespace CLAM
     namespace VM
     {
 		QtAudioPlot::QtAudioPlot(QWidget* parent, const char * name, WFlags f) 
-			: QtPresentation(parent,name,f)
-			, mShowRightAmp(false)
+			: SingleDisplayPlot(parent,name,f)
 		{
 			mSlotPlayingTimeReceived.Wrap(this,&QtAudioPlot::PlayingTime);
 			mSlotStopPlayingReceived.Wrap(this,&QtAudioPlot::StopPlaying);
 
-			mPlayBounds.SetBegin(-1.0);
-			mPlayBounds.SetEnd(-1.0);
+			mPlayBounds.SetBegin(TData(-1.0));
+			mPlayBounds.SetEnd(TData(-1.0));
 			SetPlotController();
 			InitAudioPlot();	
 			Connect();
@@ -52,36 +50,29 @@ namespace CLAM
 
 		void QtAudioPlot::InitAudioPlot()
 		{
-			mPanel = new QHBoxLayout;
+			QBoxLayout* panel = new QHBoxLayout;
 			
-			lefthole = new QFrame(this);
-			lefthole->setFixedSize(50,30);
-			mPanel->addWidget(lefthole);
-
+			QFrame* lefthole = new QFrame(this);
+			lefthole->setFixedSize(YRulerWidth(),30);
+			
 			mPlayer = new QtAudioPlayer(this);
 			mPlayer->setFixedSize(75,30);
 			((QtAudioPlayer*)mPlayer)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
 			((QtAudioPlayer*)mPlayer)->SetSlotStopPlaying(mSlotStopPlayingReceived);
-			mPanel->addWidget(mPlayer);
-
-			mPanel->addStretch(1);
-
-			mLeftAmpLab = new SingleLabel(this,"","Amplitude");
-			mRightAmpLab = new SingleLabel(this,"","Amplitude Right");
-			mPanel->addWidget(mLeftAmpLab);
-			mPanel->addWidget(mRightAmpLab);
-
-			mPanel->addStretch(1);
-
+			
 			mLabelsGroup = new TimeSegmentLabelsGroup(this);
 			mLabelsGroup->setMinimumSize(186,25);
-			mPanel->addWidget(mLabelsGroup);
-
-			righthole = new QFrame(this);
+			
+			QFrame* righthole = new QFrame(this);
 			righthole->setFixedSize(20,30);
-			mPanel->addWidget(righthole);
+			
+			panel->addWidget(lefthole);
+			panel->addWidget(mPlayer);
+			panel->addStretch(1);
+			panel->addWidget(mLabelsGroup);
+			panel->addWidget(righthole);
 
-			AddToMainLayout(mPanel);	
+			AddToMainLayout(panel);	
 		}
 
 		void QtAudioPlot::SetData(const Audio& audio, bool to_controller)
@@ -102,56 +93,9 @@ namespace CLAM
 			((AudioPlotController*)mController)->SetDataColor(c);
 		}
 
-		void QtAudioPlot::SetDialColor(Color c)
-		{
-			((AudioPlotController*)mController)->SetDialColor(c);
-		}
-
 		void QtAudioPlot::SetRegionColor(Color c)
 		{
 			((AudioPlotController*)mController)->SetRegionColor(c);
-		}
-
-		void QtAudioPlot::keyPressEvent(QKeyEvent* e)
-		{
-			switch(e->key())
-			{
-				case Qt::Key_Shift:
-					((AudioPlotController*)mController)->SetKeyShiftPressed(true);
-					break;
-
-				case Qt::Key_Insert:
-					((AudioPlotController*)mController)->SetKeyInsertPressed(true); 
-					break;
-						
-				case Qt::Key_Delete:
-					((AudioPlotController*)mController)->SetKeyDeletePressed(true); 
-					break;
-				    
-				default:
-					break;
-			}
-		}
-
-		void QtAudioPlot::keyReleaseEvent(QKeyEvent* e)
-		{
-			switch(e->key())
-			{
-				case Qt::Key_Shift:
-					((AudioPlotController*)mController)->SetKeyShiftPressed(false);
-					break;
-
-				case Qt::Key_Insert:
-					((AudioPlotController*)mController)->SetKeyInsertPressed(false); 
-					break;
-						
-				case Qt::Key_Delete:
-					((AudioPlotController*)mController)->SetKeyDeletePressed(false); 
-					break;
-
-				default:
-					break;
-			}
 		}
 
 		void QtAudioPlot::updateRegion(MediaTime time)
@@ -164,30 +108,8 @@ namespace CLAM
 			mPlayer->SetPlaySegment(time);
 			mLabelsGroup->UpdateLabels(time);
 
-			UpdateAmpLabels(time);
 			emit regionTime(time);
 			emit regionTime(float(time.GetBegin()), float(time.GetEnd()));
-		}
-
-		void QtAudioPlot::UpdateAmpLabels(MediaTime time)
-		{
-			if(time.HasDuration())
-			{
-				mLeftAmpLab->Update(((AudioPlotController*)mController)->GetAmp(time.GetBegin()));
-				mLeftAmpLab->SetToolTip("Amplitude Left");
-				mRightAmpLab->Update(((AudioPlotController*)mController)->GetAmp(time.GetEnd()));
-				if(mShowRightAmp)
-				{
-					mRightAmpLab->show();
-				}
-			}
-			else
-			{
-				mLeftAmpLab->Update(((AudioPlotController*)mController)->GetAmp(time.GetBegin()));
-				mLeftAmpLab->SetToolTip("Amplitude");
-				mRightAmpLab->clear();
-				mRightAmpLab->hide();
-			}
 		}
 
 		void QtAudioPlot::SetPlotController()
@@ -198,10 +120,9 @@ namespace CLAM
 		void QtAudioPlot::Connect()
 		{
 			// Connections
-			connect(((AudioPlotController*)mController),SIGNAL(initialYRulerRange(double,double)),this,SLOT(initialYRulerRange(double,double)));
 			connect(((AudioPlotController*)mController),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
 			connect(((AudioPlotController*)mController),SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
-			connect(((AudioPlotController*)mController),SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
+			connect(((AudioPlotController*)mController),SIGNAL(stopPlayingTime(float)),this,SIGNAL(stopPlayingTime(float)));
 		}
 
 		void QtAudioPlot::SetPData(const Audio& audio, bool setTime)
@@ -241,79 +162,25 @@ namespace CLAM
 			RemoveFromPlayList();
 			e->accept();
 		}
-
-		void QtAudioPlot::RemovePlayPanel()
-		{
-			RemoveFromMainLayout(mPanel);
-			lefthole->hide();
-			righthole->hide();
-			mPlayer->hide();
-			mLeftAmpLab->hide();
-			mRightAmpLab->hide();
-			mLabelsGroup->hide();
-			mShowRightAmp=false;
-		}
-
-		void QtAudioPlot::SetKeyPressed(QKeyEvent* e)
-		{
-			keyPressEvent(e);
-		}
-
-		void QtAudioPlot::SetKeyReleased(QKeyEvent* e)
-		{
-			keyReleaseEvent(e);
-		}
-
-		void QtAudioPlot::SetMarks(std::vector<unsigned>& marks)
-		{
-			((AudioPlotController*)mController)->SetMarks(marks);
-		}
-	    
-		std::vector<unsigned>& QtAudioPlot::GetMarks()
-		{
-			return ((AudioPlotController*)mController)->GetMarks();
-		}
-
-
-		void QtAudioPlot::SetMarksColor(Color c)
-		{
-			((AudioPlotController*)mController)->SetMarksColor(c);
-		}
-
-		void QtAudioPlot::initialYRulerRange(double min, double max)
-		{
-			QtPresentation::initialYRulerRange(min,max);
-			lefthole->setFixedSize(YRulerWidth(),lefthole->height());
-		}
-
-		void QtAudioPlot::setSelectedXPos(double xpos)
-		{
-			((AudioPlotController*)mController)->SetSelectedXPos(xpos);
-		}
-
+	
 		void QtAudioPlot::PlayingTime(TData time)
 		{
-			((AudioPlotController*)mController)->UpdateTimePos(time);
+			((AudioPlotController*)mController)->updateTimePos(float(time));
 		}
 
 		void QtAudioPlot::StopPlaying(TData time)
 		{
-			((AudioPlotController*)mController)->StopPlaying(time);
+			((AudioPlotController*)mController)->stopPlaying(float(time));
 		}
 
 		void QtAudioPlot::setCurrentPlayingTime(float t)
 		{
-			((AudioPlotController*)mController)->UpdateTimePos(TData(t));
+			((AudioPlotController*)mController)->updateTimePos(t);
 		}
 
 		void QtAudioPlot::receivedStopPlaying(float t)
 		{
-			((AudioPlotController*)mController)->StopPlaying(TData(t));
-		}
-
-		std::vector<QString> QtAudioPlot::GetSegmentationTags()
-		{
-			return ((AudioPlotController*)mController)->GetTags();
+			((AudioPlotController*)mController)->stopPlaying(t);
 		}
 
     }	
