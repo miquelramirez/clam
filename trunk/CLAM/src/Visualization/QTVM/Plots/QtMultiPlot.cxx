@@ -29,7 +29,7 @@ namespace CLAM
     namespace VM
     {
 		QtMultiPlot::QtMultiPlot(QWidget* parent, const char * name, WFlags f)
-			: QtPresentation(parent,name,f)
+			: SingleDisplayPlot(parent,name,f)
 		{
 			SetPlotController();
 			InitMultiPlot();
@@ -63,11 +63,6 @@ namespace CLAM
 			((MultiPlotController*)mController)->AddData(key,array);
 		}
 		
-		void QtMultiPlot::AddData(std::string key, const BPF& data, int samples)
-		{
-			((MultiPlotController*)mController)->AddData(key,data,samples);
-		}
-		
 		void QtMultiPlot::RemoveData( std::string key )
 		{
 			((MultiPlotController*)mController)->RemoveData(key);
@@ -83,15 +78,15 @@ namespace CLAM
 			((MultiPlotController*)mController)->SetColor(key,c);
 		}
 
-		void QtMultiPlot::SetXRange(const TData& xmin, const TData& xmax)
+		void QtMultiPlot::SetXRange(const double& xmin, const double& xmax)
 		{
-			((MultiPlotController*)mController)->SetXRange(xmin,xmax);
+			((MultiPlotController*)mController)->SetXRulerRange(xmin,xmax);
 		}
 		
-		void QtMultiPlot::SetYRange(const TData& ymin, const TData& ymax)
+		void QtMultiPlot::SetYRange(const double& ymin, const double& ymax)
 		{
-			QtPresentation::initialYRulerRange(double(ymin),double(ymax));
-			((MultiPlotController*)mController)->SetYRange(ymin,ymax);
+			SingleDisplayPlot::initialYRulerRange(ymin,ymax);
+			((MultiPlotController*)mController)->SetYRulerRange(ymin,ymax);
 		}
 
 		void QtMultiPlot::SetPlotController()
@@ -101,9 +96,8 @@ namespace CLAM
 
 		void QtMultiPlot::Connect()
 		{
-			connect(((MultiPlotController*)mController),SIGNAL(xvalue(TData)),this,SLOT(updateXLabel(TData)));
-			connect(((MultiPlotController*)mController),SIGNAL(yvalue(TData)),this,SLOT(updateYLabel(TData)));
-			connect(((MultiPlotController*)mController),SIGNAL(leavingMouse()),this,SLOT(clearLabels()));
+			connect(((MultiPlotController*)mController),SIGNAL(sendXYValues(double,double)),
+					this,SLOT(updateLabels(double,double)));
 		}
 
 		void QtMultiPlot::DisplayBackgroundBlack()
@@ -132,79 +126,10 @@ namespace CLAM
 			mYLabel->SetToolTip(ytooltip.c_str());
 		}
 
-		void QtMultiPlot::updateXLabel(TData value)
+		void QtMultiPlot::updateLabels(double xvalue, double yvalue)
 		{
-			mXLabel->Update(value);
-		}
-
-		void QtMultiPlot::updateYLabel(TData value)
-		{
-			mYLabel->Update(value);
-		}
-
-		void QtMultiPlot::clearLabels()
-		{
-			mXLabel->setText("");
-			mYLabel->setText("");
-		}
-
-		void QtMultiPlot::SetMarks(std::vector<unsigned>& marks)
-		{
-			((MultiPlotController*)mController)->SetMarks(marks);
-		}
-	    
-		std::vector<unsigned>& QtMultiPlot::GetMarks()
-		{
-			return ((MultiPlotController*)mController)->GetMarks();
-		}
-
-		void QtMultiPlot::SetMarksColor(Color c)
-		{
-			((MultiPlotController*)mController)->SetMarksColor(c);
-		}
-
-		void QtMultiPlot::keyPressEvent(QKeyEvent* e)
-		{
-			switch(e->key())
-			{
-				case Qt::Key_Insert:
-					((MultiPlotController*)mController)->SetKeyInsertPressed(true); 
-					break;
-						
-				case Qt::Key_Delete:
-					((MultiPlotController*)mController)->SetKeyDeletePressed(true); 
-					break;
-				    
-				default:
-					break;
-			}
-		}
-
-		void QtMultiPlot::keyReleaseEvent(QKeyEvent* e)
-		{
-			switch(e->key())
-			{
-				case Qt::Key_Insert:
-					((MultiPlotController*)mController)->SetKeyInsertPressed(false); 
-					break;
-						
-				case Qt::Key_Delete:
-					((MultiPlotController*)mController)->SetKeyDeletePressed(false); 
-					break;
-				    
-				default:
-					break;
-			}
-		}
-
-		void QtMultiPlot::SetDialColor(Color c)
-		{
-			((MultiPlotController*)mController)->SetDialColor(c);
-		}
-
-		std::vector<QString> QtMultiPlot::GetSegmentationTags()
-		{
-			return ((MultiPlotController*)mController)->GetTags();
+			mXLabel->Update(xvalue,2);
+			mYLabel->Update(yvalue,2);
 		}
 
     }

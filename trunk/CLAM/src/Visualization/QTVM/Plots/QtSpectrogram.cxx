@@ -10,7 +10,7 @@ namespace CLAM
     namespace VM
     {
 		QtSpectrogram::QtSpectrogram(QWidget* parent, const char * name, WFlags f) 
-			: QtPresentation(parent,name,f)
+			: SingleDisplayPlot(parent,name,f)
 			, mColorSonogram(true)
 		{
 			SetPlotController();
@@ -23,44 +23,10 @@ namespace CLAM
 		{
 		}
 
-		void QtSpectrogram::SetData(const Array<Spectrum>& specMtx, const TData& dur)
+		void QtSpectrogram::SetData(const Array<Spectrum>& specMtx, const double& dur)
 		{
 			((SpectrogramPlotController*)mController)->SetData(specMtx,dur);
 			FillRightGroupLabels();
-		}
-
-		void QtSpectrogram::keyPressEvent(QKeyEvent* e)
-		{
-			switch(e->key())
-			{
-				case Qt::Key_Insert:
-					((SpectrogramPlotController*)mController)->SetKeyInsertPressed(true); 
-					break;
-						
-				case Qt::Key_Delete:
-					((SpectrogramPlotController*)mController)->SetKeyDeletePressed(true); 
-					break;
-
-				default:
-					break;
-			}
-		}
-
-		void QtSpectrogram::keyReleaseEvent( QKeyEvent* e)
-		{
-			switch(e->key())
-			{
-				case Qt::Key_Insert:
-					((SpectrogramPlotController*)mController)->SetKeyInsertPressed(false); 
-					break;
-						
-				case Qt::Key_Delete:
-					((SpectrogramPlotController*)mController)->SetKeyDeletePressed(false); 
-					break;
-
-				default:
-					break;
-			}
 		}
 
 		void QtSpectrogram::SetPlotController()
@@ -71,7 +37,6 @@ namespace CLAM
 		void QtSpectrogram::Connect()
 		{
 			// Connections
-			connect(((SpectrogramPlotController*)mController),SIGNAL(initialYRulerRange(double,double)),this,SLOT(initialYRulerRange(double,double)));
 			connect(((SpectrogramPlotController*)mController),SIGNAL(sendLabels(QString,QString,QString)),this,SLOT(updateLabels(QString,QString,QString)));
 			connect(mColorScale,SIGNAL(widthChanged(int)),this,SLOT(updateColorScale(int)));
 		}
@@ -105,26 +70,6 @@ namespace CLAM
 			((SpectrogramPlotController*)mController)->SetRenderingMode(CLAM::VM::ColorSonogram);
 			mColorScale->SetScale(((SpectrogramPlotController*)mController)->GetColorScale(mColorScale->width()));
 			mColorSonogram=true;
-		}
-
-		void QtSpectrogram::SetMarks(std::vector<unsigned>& marks)
-		{
-			((SpectrogramPlotController*)mController)->SetMarks(marks);
-		}
-
-		std::vector<unsigned>& QtSpectrogram::GetMarks()
-		{
-			return ((SpectrogramPlotController*)mController)->GetMarks();
-		}
-
-		void QtSpectrogram::SetMarksColor(Color c)
-		{
-			// empty body
-		}
-
-		std::vector<QString> QtSpectrogram::GetSegmentationTags()
-		{
-			return ((SpectrogramPlotController*)mController)->GetTags();
 		}
 
 		QWidget* QtSpectrogram::LeftGroup()

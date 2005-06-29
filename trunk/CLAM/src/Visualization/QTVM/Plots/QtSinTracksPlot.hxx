@@ -24,14 +24,13 @@
 
 #include "Segment.hxx"
 #include "SpectralPeakArray.hxx"
-#include "MediaTime.hxx"
-#include "QtPresentation.hxx"
+#include "SingleDisplayPlot.hxx"
 
 namespace CLAM
 {
     namespace VM
     {
-		class TimeSegmentLabelsGroup;
+		class SingleLabel;
 
 		/**
 		 * Allows viewing sinusoidal tracks.
@@ -39,7 +38,7 @@ namespace CLAM
 		 * @ingroup QTVM
 		 */
 
-		class QtSinTracksPlot : public QtPresentation
+		class QtSinTracksPlot : public SingleDisplayPlot
 		{
 			Q_OBJECT
 
@@ -49,29 +48,20 @@ namespace CLAM
 
 			void SetData(const Segment& segment);
 			void SetData(const Array< SpectralPeakArray >& peakMtx, 
-						 const TData& sr, const TData& dur	);
-
-			void SetMarks(std::vector<unsigned>& marks);
-			std::vector<unsigned>& GetMarks();
-			void SetMarksColor(Color c);
-	    
-			std::vector<QString> GetSegmentationTags();
-
-			void SetDialColor(Color c);
-			void SetRegionColor(Color c);
-
-		protected slots:
-			void updateRegion(MediaTime);
+						 const double& sr, const double& dur	);
 
 		protected:
-			void keyPressEvent(QKeyEvent* e);
-			void keyReleaseEvent( QKeyEvent* e);
-			void SetPlotController();				virtual void Connect();
+			void SetPlotController();
+			void Connect();
 			void DisplayBackgroundBlack();
 			void DisplayBackgroundWhite();
 
+		private slots:
+			void updateLabels(double, double);
+
 		private:
-			TimeSegmentLabelsGroup* mLabelsGroup;
+			SingleLabel* mTimeLabel;
+			SingleLabel* mFreqLabel;
 
 			void InitSinTracksPlot();
 		};

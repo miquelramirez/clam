@@ -24,7 +24,7 @@
 
 #include "Segment.hxx"
 #include "MediaTime.hxx"
-#include "QtPresentation.hxx"
+#include "SingleDisplayPlot.hxx"
 #include "PlayablePlot.hxx"
 #include "Slotv1.hxx"
 
@@ -37,15 +37,14 @@ namespace CLAM
     namespace VM
     {
 		class TimeSegmentLabelsGroup;
-		class SingleLabel;
-
+	
 		/**
 		 * Allows viewing Fundamental evolution along time.
 		 *
 		 * @ingroup QTVM
 		 */
 	
-		class QtFundFreqPlot : public QtPresentation, public PlayablePlot
+		class QtFundFreqPlot : public SingleDisplayPlot, public PlayablePlot
 		{
 			Q_OBJECT
 
@@ -55,20 +54,14 @@ namespace CLAM
 
 			void SetData(const Segment& segment);
 
-			void SetMarks(std::vector<unsigned>& marks);
-			std::vector<unsigned>& GetMarks();
-			void SetMarksColor(Color c);
-
-			std::vector<QString> GetSegmentationTags();
-
 			void SetForegroundColor(Color c);
-			void SetDialColor(Color c);
 			void SetRegionColor(Color c);
 
 		signals:
 			void regionTime(MediaTime);
+			void regionTime(float, float);
 			void currentPlayingTime(float);
-			void stopPlaying(float);
+			void stopPlayingTime(float);
 
 		public slots:
 			void setCurrentPlayingTime(float);
@@ -76,33 +69,31 @@ namespace CLAM
 
 		protected slots:
 			void initialYRulerRange(double,double);
-			void updateRegion(MediaTime);
-
+			
 		protected:
-			void keyPressEvent(QKeyEvent* e);
-			void keyReleaseEvent( QKeyEvent* e);
 			void hideEvent(QHideEvent* e);
 			void closeEvent(QCloseEvent* e);
-
 			void SetPlotController();
 			void Connect();
 			void DisplayBackgroundBlack();
 			void DisplayBackgroundWhite();
 			void SetPData(const Segment& seg);
+			
+		private slots:
+			void updateRegion(MediaTime);
 
 		private:
 			Slotv1<TData> mSlotPlayingTimeReceived;
 			Slotv1<TData> mSlotStopPlayingReceived;
 
+			MediaTime               mPlayBounds;
 			TimeSegmentLabelsGroup* mLabelsGroup;
-			SingleLabel*            mLeftFreqLab; 
-			SingleLabel*            mRightFreqLab;
 
 			// holes
-			QFrame *lefthole, *righthole;
+			QFrame *lefthole;
 				
 			void InitFundFreqPlot();
-			void UpdateFreqLabels(MediaTime time);
+		 
 			void PlayingTime(TData time);
 			void StopPlaying(TData time);
 

@@ -24,7 +24,7 @@
 
 #include "Audio.hxx"
 #include "MediaTime.hxx"
-#include "QtPresentation.hxx"
+#include "SingleDisplayPlot.hxx"
 #include "PlayablePlot.hxx"
 #include "Slotv1.hxx"
 
@@ -35,15 +35,13 @@ namespace CLAM
     namespace VM
     {
 		class TimeSegmentLabelsGroup;
-		class SingleLabel;
-
 		/**
 		 * Allows viewing CLAM::Audio data.
 		 *
 		 * @ingroup QTVM
 		 */
 	
-		class QtAudioPlot : public QtPresentation, public PlayablePlot
+		class QtAudioPlot : public SingleDisplayPlot, public PlayablePlot
 		{
 			Q_OBJECT
 
@@ -53,39 +51,20 @@ namespace CLAM
 
 			void SetData(const Audio& audio, bool to_controller=true);
 
-			void SetMarks(std::vector<unsigned>& marks);
-			std::vector<unsigned>& GetMarks();
-			void SetMarksColor(Color c);
-
-			std::vector<QString> GetSegmentationTags();
-
 			void SetForegroundColor(Color c);
-			void SetDialColor(Color c);
 			void SetRegionColor(Color c);
-
-			void RemovePlayPanel();
-
-			void SetKeyPressed(QKeyEvent* e);
-			void SetKeyReleased(QKeyEvent* e);
 
 		signals:
 			void regionTime(MediaTime);
 			void regionTime(float, float);
 			void currentPlayingTime(float);
-			void stopPlaying(float);
+			void stopPlayingTime(float);
 	    
 		public slots:
-			void setSelectedXPos(double);
 			void setCurrentPlayingTime(float);
 			void receivedStopPlaying(float);
 	   
-        protected slots:
-			void initialYRulerRange(double,double);
-			void updateRegion(MediaTime);
-
 		protected:
-			void keyPressEvent(QKeyEvent* e);
-			void keyReleaseEvent( QKeyEvent* e);
 			void hideEvent(QHideEvent* e);
 			void closeEvent(QCloseEvent* e);
 			void SetPlotController();
@@ -94,20 +73,15 @@ namespace CLAM
 			void DisplayBackgroundWhite();
 			void SetPData(const Audio& audio, bool setTime);
 
+		private slots:
+			void updateRegion(MediaTime);
+
 		private:
-			QBoxLayout*             mPanel;
 			TimeSegmentLabelsGroup* mLabelsGroup;
-			SingleLabel*            mLeftAmpLab; 
-			SingleLabel*            mRightAmpLab;
 			MediaTime               mPlayBounds;
-			bool                    mShowRightAmp;
 			Slotv1<TData>           mSlotPlayingTimeReceived;
 			Slotv1<TData>           mSlotStopPlayingReceived;
 
-			// holes
-			QFrame *lefthole,*righthole;
-				
-			void UpdateAmpLabels(MediaTime time);
 			void InitAudioPlot();
 
 			void PlayingTime(TData time);
