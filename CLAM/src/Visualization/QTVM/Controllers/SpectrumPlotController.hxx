@@ -22,55 +22,72 @@
 #ifndef __SPECTRUMPLOTCONTROLLER__
 #define __SPECTRUMPLOTCONTROLLER__
 
+#include <vector>
 #include "Spectrum.hxx"
 #include "DataRenderer.hxx"
-#include "SelPosPlotController.hxx"
+#include "SpectralPeakArray.hxx"
+#include "SpectralPeaksRenderer.hxx"
+#include "PlotController.hxx"
+
 namespace CLAM
 {
     namespace VM
     {
-		class SpectrumPlotController : public SelPosPlotController
+		class SpectrumPlotController : public PlotController
 		{
 			Q_OBJECT
 
 		public:
 			SpectrumPlotController();
-			virtual ~SpectrumPlotController();
+			~SpectrumPlotController();
 
 			void SetData(const Spectrum& spec);
+			void SetData(const Spectrum& spec,const SpectralPeakArray& peaks);
+ 
 			void SetDataColor(Color c);
-			void SurfaceDimensions(int w,int h);
+			void SetPeaksColor(Color cline,Color cpoint);
 
-			virtual void Draw();
-			void SetMousePos(TData x,TData y);
+			void DisplayDimensions(const int& w, const int& h);
 
-			void SetSelPos(const TData& value);
+			void Draw();
+			void SetMousePos(const double& x, const double& y);
+
+			void SetSelPos(const double& value, bool render);
 
 		signals:
-			void mag(TData);
-			void freq(TData);
+			void sendMagFreq(double,double);
+
+		public slots:
+			void setHBounds(double, double);
+			void setSelectedXPos(double);
 
 		protected:
-			void SetHBounds(const TData& left,const TData& right);				
-			void SetVBounds(const TData& bottom,const TData& top);
-			void FullView();				
-			TData GetSpectralRange() const;				
-			bool MustProcessData() const;
+			void SetHBounds(const double& left,const double& right);				
+			void SetVBounds(const double& bottom,const double& top);
 
+			void FullView();				
+		   
 		private:
 			Spectrum     mSpec;
 			DataRenderer mRenderer;
 			DataArray    mMagBuffer;
-			DataArray    mPhaseBuffer;
 			DataArray    mProcessedData;
+			double       mSpectralRange;
 			bool         mMustProcessData;
-			TData        mSpectralRange;
+			bool         mHasData;
+
+			SpectralPeakArray         mPeaks;
+			std::vector<FreqMagPoint> mProcessedPeaks;
+			std::vector<FreqMagPoint> mCachedPeaks;        
+			SpectralPeaksRenderer     mPeaksRenderer;
+			bool                      mHasPeaks;
 
 			void AdaptSpectralData();
 			void CacheData();
 			void ProcessData();
-			int GetXMaxMajStep(int ref) const;				
-			int GetYMaxMajStep(int ref) const;
+
+			void CachePeaksData();
+			void ProcessPeaksData();
 
 		};
     }
