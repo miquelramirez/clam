@@ -27,8 +27,7 @@ namespace CLAM
 	namespace VM
 	{
 		SpectralPeaksRenderer::SpectralPeaksRenderer()
-		    : mElems(0)
-			, mCLine(VMColor::Cyan())
+		    : mCLine(VMColor::Cyan())
 			, mCPoint(VMColor::Red())
 		{
 		}
@@ -37,10 +36,9 @@ namespace CLAM
 		{
 		}
 
-		void SpectralPeaksRenderer::SetDataPtr(const TData* data,int nElems)
+		void SpectralPeaksRenderer::SetData(std::vector<FreqMagPoint>& data)
 		{
 			mData = data;
-			mElems = nElems;
 		}
 
 		void SpectralPeaksRenderer::SetPeakColor(const Color& cline, const Color& cpoint)
@@ -51,27 +49,24 @@ namespace CLAM
 
 		void SpectralPeaksRenderer::Render()
 		{
-			// points: (i,data[i])
-			// vlines: top    (i,data[i]) 
-			//		   bottom (i,_bottom)
+			// points: (t,data[i].mMag)
+			// vlines: top    (t,data[i].mMag) 
+			//		   bottom (t,bottombound)
 			glPointSize(2);
-			for(int i=0;i < mElems;i++)
+			for(unsigned i=0;i < mData.size(); i++)
 			{
-				if(mData[i] < 150)
-				{
-					// draw point
-					glColor3ub(GLubyte(mCPoint.r),GLubyte(mCPoint.g),GLubyte(mCPoint.b));
-					glBegin(GL_POINTS);
-						glVertex2f(float(i),float(mData[i]));
-					glEnd();
+				// draw point
+				glColor3ub(GLubyte(mCPoint.r),GLubyte(mCPoint.g),GLubyte(mCPoint.b));
+				glBegin(GL_POINTS);
+				glVertex2f(float(mData[i].freq-LeftBound()),float(mData[i].mag));
+				glEnd();
 
-					// draw vline
-					glColor3ub(GLubyte(mCLine.r),GLubyte(mCLine.g),GLubyte(mCLine.b));
-					glBegin(GL_LINES);
-						glVertex2f(float(i),float(mData[i]));
-						glVertex2f(float(i),float(BottomBound()));
-					glEnd();
-				}
+				// draw vline
+				glColor3ub(GLubyte(mCLine.r),GLubyte(mCLine.g),GLubyte(mCLine.b));
+				glBegin(GL_LINES);
+				glVertex2f(float(mData[i].freq-LeftBound()),float(mData[i].mag));
+				glVertex2f(float(mData[i].freq-LeftBound()),float(BottomBound()));
+				glEnd();
 			}
 		}
 	}

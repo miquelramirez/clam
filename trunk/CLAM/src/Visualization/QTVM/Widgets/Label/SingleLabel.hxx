@@ -37,7 +37,8 @@ namespace CLAM
 
 			void SetUnits(const QString& text);
 			void SetToolTip(const QString& text);
-			void Update(const float& value, const int& prec=3);
+			void Update(const double& value, const int& prec=3);
+			void Clear();
 
 		private:
 			QString mUnits;

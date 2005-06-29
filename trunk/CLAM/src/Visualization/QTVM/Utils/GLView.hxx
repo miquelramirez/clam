@@ -1,37 +1,35 @@
 #ifndef __GLVIEW__
 #define __GLVIEW__
 
-#include "CLAMGL.hxx"
-
 namespace CLAM
 {
     namespace VM
     {
 		struct GLView
 		{
-			GLdouble mLeft, mRight, mBottom, mTop;
+			double left, right, bottom, top;
 
 			GLView()
-				: mLeft(0.0)
-				, mRight(1.0)
-				, mBottom(0.0)
-				, mTop(1.0)
+				: left(0.0)
+				, right(1.0)
+				, bottom(0.0)
+				, top(1.0)
 				{
 				}
 
-			GLView(const GLdouble& left, const GLdouble& right, const GLdouble& bottom, const GLdouble& top)
-				: mLeft(left)
-				, mRight(right)
-				, mBottom(bottom)
-				, mTop(top)
+			GLView(const double& left, const double& right, const double& bottom, const double& top)
+				: left(left)
+				, right(right)
+				, bottom(bottom)
+				, top(top)
 				{
 				}
 
 			GLView(const GLView& view)
-				: mLeft(view.mLeft)
-				, mRight(view.mRight)
-				, mBottom(view.mBottom)
-				, mTop(view.mTop) 
+				: left(view.left)
+				, right(view.right)
+				, bottom(view.bottom)
+				, top(view.top) 
 				{
 				}
 
@@ -39,10 +37,10 @@ namespace CLAM
 	    
 			GLView& operator=(const GLView& view)
 				{
-					mLeft = view.mLeft;
-					mRight = view.mRight;
-					mBottom = view.mBottom;
-					mTop = view.mTop;
+					left = view.left;
+					right = view.right;
+					bottom = view.bottom;
+					top = view.top;
 					return *this;
 				}
 

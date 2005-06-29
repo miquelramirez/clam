@@ -22,7 +22,6 @@
 #ifndef __RENDERER__
 #define __RENDERER__
 
-#include "DataTypes.hxx"
 #include "VMColor.hxx"
 
 namespace CLAM
@@ -35,30 +34,25 @@ namespace CLAM
 			Renderer();
 			virtual ~Renderer();
 
-			void SetHBounds(const TData& left, const TData& right);
-			void SetVBounds(const TData& top,const TData& bottom);
+			void SetHBounds(const double& left, const double& right);
+			void SetVBounds(const double& bottom, const double& top);
 			void SetColor(const Color& c);
 			const Color& GetColor() const;
-
-			void SetEnabled(bool e);
 
 			virtual void Render() = 0;
 
 		protected:
-			const bool& IsEnabled() const;
-
-			const TData& LeftBound() const;
-			const TData& RightBound() const;
-			const TData& BottomBound() const;
-			const TData& TopBound() const;
+			const double& LeftBound() const;
+			const double& RightBound() const;
+			const double& BottomBound() const;
+			const double& TopBound() const;
 
 		private:
-			bool mEnabled;
-			TData mLeftBound;
-			TData mRightBound;
-			TData mTopBound;
-			TData mBottomBound;
-			Color mColor;
+			double mLeftBound;
+			double mRightBound;
+			double mTopBound;
+			double mBottomBound;
+			Color  mColor;
 
 		};
 	}

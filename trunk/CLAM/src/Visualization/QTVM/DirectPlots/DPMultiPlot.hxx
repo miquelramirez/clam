@@ -50,8 +50,7 @@ namespace CLAM
 			void Geometry(int x, int y, int w, int h);
 
 			void AddData(const std::string& key, const DataArray& array);
-			void AddData(std::string key, const BPF& data, int samples = 100);
-
+		   
 			void SetColor(std::string key, Color c);
 
 			void SetMarks(std::vector<unsigned>& marks);

@@ -23,8 +23,8 @@
 #define __DISPLAYSURFACE__
 
 #include <qgl.h>
-#include "DataTypes.hxx"
-#include "PlotController.hxx"
+#include <qcursor.h>
+#include "GLView.hxx"
 
 class QTimer;
 
@@ -32,6 +32,8 @@ namespace CLAM
 {
     namespace VM
     {
+		class PlotController;
+
 		class DisplaySurface : public QGLWidget
 		{
 			Q_OBJECT
@@ -40,14 +42,11 @@ namespace CLAM
 			DisplaySurface(QWidget* parent = 0);
 			~DisplaySurface();
 
-			void SetBackgroundColor(double r, double g, double b);
 			void SetController(PlotController* controller);
-
-		signals:
-			void leavingMouse();
-
+			void SetBackgroundColor(const double& r, const double& g, const double& b);
+			
 		private slots:
-			void receivedView(View);
+			void updateView(GLView);
 			void updateToolTip(QString);
 			void changeCursor(QCursor);
 			void startTimer();
@@ -64,7 +63,7 @@ namespace CLAM
 			void mouseDoubleClickEvent(QMouseEvent* e);
 
 		private:
-			View            mView;
+			GLView          mView;
 			PlotController* mController;
 			double          mRed;
 			double          mGreen;
@@ -76,7 +75,6 @@ namespace CLAM
 
 			enum { TIMER_INTERVAL=10 };
 				
-			void InitView();
 		};
     }
 }

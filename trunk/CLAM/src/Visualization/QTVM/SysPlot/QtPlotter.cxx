@@ -60,7 +60,7 @@ namespace CLAM
 			}
 			QtAppWrapper::Init();
 			if(!mHaveWorkspace) CreateWorkspace();
-			QtStereoAudioPlot* plot = new QtStereoAudioPlot(ws,0,wflags);
+			QtAudioStereoPlot* plot = new QtAudioStereoPlot(ws,0,wflags);
 			plot->SetData(leftChannel,rightChannel);
 			plot->SwitchDisplayColors(true);
 			Register(plotKey,plot);
@@ -115,7 +115,7 @@ namespace CLAM
 			}
 			QtAppWrapper::Init();
 			if(!mHaveWorkspace) CreateWorkspace();
-			QtSpectrumAndPeaksPlot* plot = new QtSpectrumAndPeaksPlot(ws,0,wflags);
+			QtSpectrumPlot* plot = new QtSpectrumPlot(ws,0,wflags);
 			plot->SetData(spec,peaks);
 			plot->SwitchDisplayColors(true);
 			Register(plotKey,plot);
@@ -147,21 +147,6 @@ namespace CLAM
 			if(!mHaveWorkspace) CreateWorkspace();
 			QtMultiPlot* plot = new QtMultiPlot(ws,0,wflags);
 			plot->AddData(dataKey,data);
-			plot->SwitchDisplayColors(true);
-			Register(plotKey,plot,true);
-		}
-
-		void QtPlotter::Add(const std::string& plotKey, const std::string& dataKey, const BPF& data, int samples)
-		{
-			if(Exist(plotKey))
-			{
-				DuplicatedKeyMsg("Add(const std::string& plotKey, const std::string& dataKey, const BPF& data, int samples)",plotKey);
-				return;
-			}
-			QtAppWrapper::Init();
-			if(!mHaveWorkspace) CreateWorkspace();
-			QtMultiPlot* plot = new QtMultiPlot(ws,0,wflags);
-			plot->AddData(dataKey,data,samples);
 			plot->SwitchDisplayColors(true);
 			Register(plotKey,plot,true);
 		}
@@ -224,21 +209,6 @@ namespace CLAM
 				return;
 			}
 			((QtMultiPlot*)mPlotList[mPlotMap[plotKey]])->AddData(dataKey,data);
-		}
-
-		void QtPlotter::AddData(const std::string& plotKey, const std::string& dataKey, const BPF& data,int samples)
-		{
-			if(!Exist(plotKey))
-			{
-				NonExistentKeyMsg("AddData(const std::string& plotKey, const std::string& dataKey, const BPF& data,int samples)",plotKey);
-				return;
-			}
-			if(!IsMultiPlot(mPlotMap[plotKey]))
-			{
-				NonMultiPlotMsg("AddData(const std::string& plotKey, const std::string& dataKey, const BPF& data,int samples)",plotKey);
-				return;
-			}
-			((QtMultiPlot*)mPlotList[mPlotMap[plotKey]])->AddData(dataKey,data,samples);
 		}
 
 		void QtPlotter::SetDataColor(const std::string& plotKey, const std::string& dataKey, Color c)

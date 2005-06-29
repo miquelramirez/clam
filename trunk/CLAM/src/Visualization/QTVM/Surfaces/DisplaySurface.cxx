@@ -39,7 +39,6 @@ namespace CLAM
 			, mDoResize(false)
 			, mTimer(0)
 		{
-			InitView();
 			setMouseTracking(true);
 			setAutoBufferSwap(false);
 		}
@@ -49,21 +48,21 @@ namespace CLAM
 			if(mController) delete mController;
 		}
 
-		void DisplaySurface::SetBackgroundColor(double r, double g, double b)
+		void DisplaySurface::SetBackgroundColor(const double& r, const double& g, const double& b)
 		{
 			mRed = r;
 			mGreen= g;
 			mBlue= b;
+			updateGL();
 		}
 
 		void DisplaySurface::SetController(PlotController* controller)
 		{
 			mController = controller;
-			connect(mController,SIGNAL(sendView(View)),this,SLOT(receivedView(View)));
+			connect(mController,SIGNAL(viewChanged(GLView)),this,SLOT(updateView(GLView)));
 			connect(mController,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
 			connect(mController,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
-			connect(this,SIGNAL(leavingMouse()),mController,SIGNAL(leavingMouse()));
-			connect(mController,SIGNAL(changeCursor(QCursor)),this,SLOT(changeCursor(QCursor)));
+			connect(mController,SIGNAL(cursorChanged(QCursor)),this,SLOT(changeCursor(QCursor)));
 			if(mController->IsPlayable())
 			{
 				connect(mController,SIGNAL(startPlaying()),this,SLOT(startTimer()));
@@ -73,8 +72,6 @@ namespace CLAM
 
 		void DisplaySurface::paintGL()
 		{
-			if(!mController) return;
-	    
 			if(mDoResize)
 			{
 				glViewport(0, 0, mWidth, mHeight);
@@ -94,69 +91,43 @@ namespace CLAM
 
 		void DisplaySurface::mousePressEvent(QMouseEvent * e) 
 		{
-			if(mController)
+			if(e->button() == LeftButton)
 			{
-				if(e->button() == LeftButton)
-				{
-					mController->SetLeftButtonPressed(true);
-					float left = float(mController->GetLeftBound());
-					float right = float(mController->GetRightBound());
-					float xcoord = e->x();
-					xcoord *= float(mView.right);
-					xcoord /= float(width());
-					xcoord += left;
-					if(xcoord >= left && xcoord <= right)
-					{
-						mController->SetSelPos(TData(xcoord));
-						updateGL();
-					}
-				}
+				mController->SetLeftButtonPressed(true);
+				double left = mController->GetLeftBound();
+				double xcoord = double(e->x());
+				xcoord *= mView.right;
+				xcoord /= width();
+				xcoord += left;
+				mController->SetSelPos(xcoord,true);
 			}
 		}
 
 		void DisplaySurface::mouseReleaseEvent(QMouseEvent* e)
 		{
-			if(mController)
+			if(e->button() == LeftButton)
 			{
-				if(e->button() == LeftButton)
-				{
-					mController->SetLeftButtonPressed(false);
-				}
+				mController->SetLeftButtonPressed(false);
 			}
 		}
 
 		void DisplaySurface::mouseMoveEvent(QMouseEvent* e)
 		{
-			if(mController)
-			{
-				float left = float(mController->GetLeftBound());
-				float right = float(mController->GetRightBound());
-				float xcoord = float(e->x());
-				xcoord *= float(mView.right);
-				xcoord /= float(width());
-				xcoord += left;
-				float ycoord = float(-e->y())+float(height());
-				if(xcoord >= left && xcoord <= right)
-				{
-					mController->SetMousePos(TData(xcoord),TData(ycoord));
-				}
-			}
+			double left = mController->GetLeftBound();
+			double xcoord = double(e->x());
+			xcoord *= mView.right;
+			xcoord /= double(width());
+			xcoord += left;
+			double ycoord = double(-e->y()+height());
+			ycoord *= (mView.top-mView.bottom);
+			ycoord /= double(height());
+			ycoord += mView.bottom;
+			mController->SetMousePos(xcoord,ycoord);
 		}
 
-		void DisplaySurface::receivedView(View v)
+		void DisplaySurface::updateView(GLView v)
 		{
-			mView.left = v.left;
-			mView.right = v.right;
-			mView.bottom = v.bottom;
-			mView.top = v.top;
-		}
-
-		void DisplaySurface::InitView()
-		{
-			mView.left = 0.0f;
-			mView.right = 1.0f;
-			mView.bottom = -1.0f;
-			mView.top = 1.0f;
+			mView = v;
 		}
 
 		void DisplaySurface::resizeEvent(QResizeEvent *e)
@@ -164,7 +135,7 @@ namespace CLAM
 			mWidth = e->size().width();
 			mHeight = e->size().height();
 			mDoResize = true;
-			if(mController) mController->SurfaceDimensions(mWidth,mHeight);
+			if(mController) mController->DisplayDimensions(mWidth,mHeight);
 		}
 
 		void DisplaySurface::updateToolTip(QString s)
@@ -175,20 +146,14 @@ namespace CLAM
 
 		void DisplaySurface::leaveEvent(QEvent* e)
 		{
-			if(mController)
-			{
-				mController->LeaveMouse();
-			}
-			QWidget::leaveEvent(e);
-			emit leavingMouse();
+			mController->LeaveMouse();
+		    QWidget::leaveEvent(e);
 		}
 
 		void DisplaySurface::enterEvent(QEvent* e)
 		{
-			if(mController)
-			{
-				mController->EnterMouse();
-			}
+			mController->EnterMouse();
+		    QWidget::enterEvent(e);
 		}
 
 		void DisplaySurface::changeCursor(QCursor cursor)
@@ -219,12 +184,9 @@ namespace CLAM
 
 		void DisplaySurface::mouseDoubleClickEvent(QMouseEvent* e)
 		{
-			if(mController)
+			if(e->button()==LeftButton)
 			{
-				if(e->button()==LeftButton)
-				{
-					mController->OnDoubleClick();
-				}
+				mController->OnDoubleClick();
 			}
 		}
     }

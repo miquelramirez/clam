@@ -36,11 +36,11 @@ namespace CLAM
 			
 			void Render();
 
-			void Update(const TData& value);
-			const TData& GetPos() const;
+			void Update(const double& value);
+			const double& GetPos() const;
 		
 		private:
-			TData mPosition;
+		    double mPosition;
 
 		};
 	}

@@ -22,6 +22,8 @@
 #ifndef __SPECTRALPEAKSRENDERER__
 #define __SPECTRALPEAKSRENDERER__
 
+#include <vector>
+#include "FreqMagPoint.hxx"
 #include "Renderer.hxx"
 
 namespace CLAM
@@ -34,13 +36,12 @@ namespace CLAM
 			SpectralPeaksRenderer();
 			~SpectralPeaksRenderer();
 
-			void SetDataPtr(const TData* data,int nElems);
+			void SetData(std::vector<FreqMagPoint>& data);
 			void SetPeakColor(const Color& cline, const Color& cpoint);
 			void Render();
 
 		private:
-			const TData* mData;
-			int mElems;
+			std::vector<FreqMagPoint> mData;
 
 			Color mCLine;
 			Color mCPoint;

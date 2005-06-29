@@ -1,4 +1,5 @@
 #include <qpixmap.h>
+#include "CLAMGL.hxx"
 #include "IconData.hxx"
 #include "BPFEditorController.hxx"
 
@@ -85,8 +86,8 @@ namespace CLAM
 			mSettingStack.clear();
 			mXRulerRange.mMin = min;
 			mXRulerRange.mMax = max;
-			mView.mLeft = min;
-			mView.mRight = max;
+			mView.left = min;
+			mView.right = max;
 			mDial.Update(mXRulerRange.mMin);
 			mDial.SetHBounds(TData(0.0),TData(0.0));
 			emit viewChanged(mView);
@@ -105,8 +106,8 @@ namespace CLAM
 			mSettingStack.clear();
 			mYRulerRange.mMin = min;
 			mYRulerRange.mMax = max;
-			mView.mBottom = min;
-			mView.mTop = max;
+			mView.bottom = min;
+			mView.top = max;
 			mDial.SetVBounds(mYRulerRange.mMin,mYRulerRange.mMax);
 			emit viewChanged(mView);
 			emit yRulerRange(mYRulerRange.mMin, mYRulerRange.mMax);
@@ -370,7 +371,7 @@ namespace CLAM
 		void BPFEditorController::Draw()
 		{
 			mRenderer.SetData(mData);
-			mRenderer.SetBounds(GetBound(mView.mLeft),GetBound(mView.mRight,false));
+			mRenderer.SetBounds(GetBound(mView.left),GetBound(mView.right,false));
 			if(!mIsPlaying) mRenderer.SetSelectedIndex(mCurrentIndex);
 			mRenderer.Render();
 			mDial.Render();
@@ -384,15 +385,15 @@ namespace CLAM
 		{
 			BPFEditorSettings settings(mXRulerRange, mYRulerRange, mView);
 			mSettingStack.push_front(settings);
-			mView.mLeft = SelectionBoxMinX();
-			mView.mRight = SelectionBoxMaxX();
-			mView.mBottom = SelectionBoxMinY();
-			mView.mTop = SelectionBoxMaxY();
-			mXRulerRange.mMin = mView.mLeft;
-			mXRulerRange.mMax = mView.mRight;
-			mYRulerRange.mMin = mView.mBottom;
-			mYRulerRange.mMax = mView.mTop;
-			if((mView.mLeft!=mView.mRight)&&(mView.mTop!=mView.mBottom))
+			mView.left = SelectionBoxMinX();
+			mView.right = SelectionBoxMaxX();
+			mView.bottom = SelectionBoxMinY();
+			mView.top = SelectionBoxMaxY();
+			mXRulerRange.mMin = mView.left;
+			mXRulerRange.mMax = mView.right;
+			mYRulerRange.mMin = mView.bottom;
+			mYRulerRange.mMax = mView.top;
+			if((mView.left!=mView.right)&&(mView.top!=mView.bottom))
 			{
 				emit viewChanged(mView);
 				emit xRulerRange(mXRulerRange.mMin, mXRulerRange.mMax);
@@ -469,14 +470,14 @@ namespace CLAM
 		BPFEditorController::Pixel BPFEditorController::GetPixel(const TData& x, const TData& y)
 		{
 			TData width=TData(mDisplayWidth);
-			TData left=mView.mLeft;
-			TData right=mView.mRight;
+			TData left=mView.left;
+			TData right=mView.right;
 			TData xcoord=x-left;
 			TData px=xcoord*width/(right-left);
 			
 			TData height=TData(mDisplayHeight);
-			TData bottom=mView.mBottom;
-			TData top=mView.mTop;
+			TData bottom=mView.bottom;
+			TData top=mView.top;
 			TData ycoord=y-bottom;
 			TData py=ycoord*height/(top-bottom);
 			
@@ -560,11 +561,11 @@ namespace CLAM
 
 		void BPFEditorController::SetHBounds(double left, double right)
 		{
-			if(left==mView.mLeft && right==mView.mRight) return;
-			mView.mLeft = left;
-			mView.mRight = right;
-			mXRulerRange.mMin = mView.mLeft;
-			mXRulerRange.mMax = mView.mRight;
+			if(left==mView.left && right==mView.right) return;
+			mView.left = left;
+			mView.right = right;
+			mXRulerRange.mMin = mView.left;
+			mXRulerRange.mMax = mView.right;
 			emit viewChanged(mView);
 			emit xRulerRange(mXRulerRange.mMin, mXRulerRange.mMax);
 			emit requestRefresh();
@@ -572,11 +573,11 @@ namespace CLAM
 
 		void BPFEditorController::SetVBounds(double bottom, double top)
 		{
-			if(bottom==mView.mBottom && top==mView.mTop) return;
-			mView.mBottom = bottom;
-			mView.mTop = top;
-			mYRulerRange.mMin = mView.mBottom;
-			mYRulerRange.mMax = mView.mTop;
+			if(bottom==mView.bottom && top==mView.top) return;
+			mView.bottom = bottom;
+			mView.top = top;
+			mYRulerRange.mMin = mView.bottom;
+			mYRulerRange.mMax = mView.top;
 			emit viewChanged(mView);
 			emit yRulerRange(mYRulerRange.mMin, mYRulerRange.mMax);
 			emit requestRefresh();
@@ -672,15 +673,15 @@ namespace CLAM
 
 		int BPFEditorController::GetVScrollValue() const
 		{
-			double value = (mView.mBottom-mMinY)*double(GetnyPixels())/mSpanY;
+			double value = (mView.bottom-mMinY)*double(GetnyPixels())/mSpanY;
 			return int(value);
 		}
 
 		void BPFEditorController::UpdateVBounds(bool zin)
 		{
 			double bottom,top;
-			bottom = mView.mBottom;
-			top = mView.mTop;
+			bottom = mView.bottom;
+			top = mView.top;
 			if(zin)
 			{
 				bottom += mVCurrent/2.0;
@@ -745,7 +746,7 @@ namespace CLAM
 
 		int BPFEditorController::GetHScrollValue() const
 		{
-			double value = (mView.mLeft-mMinX)*double(GetnxPixels())/mSpanX;
+			double value = (mView.left-mMinX)*double(GetnxPixels())/mSpanX;
 			return int(value);
 		}
 
@@ -774,8 +775,8 @@ namespace CLAM
 		void BPFEditorController::UpdateHBounds(bool zin)
 		{ 
 			double left,right;
-			left = mView.mLeft;
-			right = mView.mRight;
+			left = mView.left;
+			right = mView.right;
 			if(zin)
 			{
 			    if(ReferenceIsVisible())
