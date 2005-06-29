@@ -22,8 +22,8 @@
 #ifndef __QTPLOT__
 #define __QTPLOT__
 
-#include <string>
 #include <vector>
+#include <string>
 #include <qwidget.h>
 #include "VMColor.hxx"
 
@@ -43,10 +43,11 @@ namespace CLAM
 			virtual void Hide()=0;
 
 			virtual void SetMarks(std::vector<unsigned>& marks)=0;
-			virtual std::vector<unsigned>& GetMarks()=0; 
+			virtual std::vector<unsigned>& GetMarks()=0;
 			virtual void SetMarksColor(Color c)=0;
 
 			virtual std::vector<QString> GetSegmentationTags()=0;
+
 
 		};
     }
