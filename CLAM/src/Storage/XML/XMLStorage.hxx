@@ -106,7 +106,7 @@ public:
 		storage.Create(rootName);
 		storage.DumpObject(obj);
 //		storage.UseIndentation(true);
-		storage.WriteSelection(os);
+		storage.WriteDocument(os);
 	}
 
 	/**
