@@ -55,6 +55,7 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 
 	std::string mPathToTestData;
+	std::stringstream _output;
 
 public: // TestFixture interface
 	void setUp()
@@ -62,6 +63,12 @@ public: // TestFixture interface
 		mPathToTestData = GetTestDataDirectory("networkTestsData/");
 	}
 private:
+	void assertXmlBodyEquals(const std::string & expectedXmlBody)
+	{
+		std::string xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>";
+		CPPUNIT_ASSERT_EQUAL(xmlHeader+expectedXmlBody, _output.str());
+	}
+
 	void TestLoadEmptyNetwork()
 	{
 		CLAM::Network foo;
@@ -78,14 +85,9 @@ private:
 		CLAM::Network foo;
 		foo.SetName( "FooNetwork" );
 
-		std::stringstream output("");
-		std::string result( "<network id=\"FooNetwork\"/>" );
+		CLAM::XMLStorage::Dump(foo, "network", _output);
 
-		CLAM::XMLStorage::Dump(foo, "network", output);
-		std::string outputString(output.str());
-		CPPUNIT_ASSERT_EQUAL( result, outputString );
-		
-
+		assertXmlBodyEquals( "<network id=\"FooNetwork\"/>" );
 	}
 	
 	void TestLoadNetworkWithOneProcessing()
@@ -111,9 +113,9 @@ private:
 		foo.AddFlowControl( new CLAM::BasicFlowControl );
 		foo.AddProcessing("oscillator", osc);
 
-		std::stringstream output("");
-		CLAM::XMLStorage::Dump(foo, "network",output);
-		std::string result(
+		CLAM::XMLStorage::Dump(foo, "network",_output);
+
+		assertXmlBodyEquals(
 			"<network id=\"FooNetworkWithOneProcessing\">"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
 			"<Frequency>440</Frequency>"
@@ -124,9 +126,6 @@ private:
 			"</processing>"
 			"</network>"
 			);
-		std::string outputString(output.str());
-
-		CPPUNIT_ASSERT_EQUAL( result, outputString );
 	}
 
 	void TestLoadNetworkWithMoreThanOneProcessing()
@@ -148,9 +147,17 @@ private:
 	{		
 		CLAM::Network foo;
 		std::string name("FooNetworkWithMoreThanOneProcessing");
-		std::stringstream output("");
 
-		std::string result(
+		
+		foo.SetName(name);
+		foo.AddFlowControl( new CLAM::BasicFlowControl );
+		foo.AddProcessing("oscillator", new CLAM::Oscillator );
+		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
+		foo.AddProcessing("fftw", new CLAM::FFT_rfftw );
+
+		CLAM::XMLStorage::Dump(foo, "network", _output );
+		
+		assertXmlBodyEquals(
 			"<network id=\"FooNetworkWithMoreThanOneProcessing\">"
 			"<processing id=\"fftw\" type=\"FFT_rfftw\">"
 			"<AudioSize>0</AudioSize>"
@@ -165,18 +172,6 @@ private:
 			"</processing>"
 			"</network>" 
 			);
-		
-		foo.SetName(name);
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
-		foo.AddProcessing("oscillator", new CLAM::Oscillator );
-		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
-		foo.AddProcessing("fftw", new CLAM::FFT_rfftw );
-
-		CLAM::XMLStorage::Dump(foo, "network", output );
-		std::string outputString(output.str());
-		
-		CPPUNIT_ASSERT_EQUAL( result, outputString );
-
 	}
 
 	void TestLoadNetworkWithPortsConnection()
@@ -195,9 +190,15 @@ private:
 	{
 		CLAM::Network foo;
 		std::string name("FooNetworkWithPortsConnection");
-		std::stringstream output("");
 		
-		std::string result(
+		foo.SetName(name);
+		foo.AddFlowControl( new CLAM::BasicFlowControl );
+		foo.AddProcessing("oscillator", new CLAM::Oscillator );
+		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
+		foo.ConnectPorts("oscillator.Audio Output", "multiplier.First Audio Input");
+		CLAM::XMLStorage::Dump(foo, "network", _output );
+		
+		assertXmlBodyEquals(
 			"<network id=\"FooNetworkWithPortsConnection\">"
 			"<processing id=\"multiplier\" type=\"AudioMultiplier\"/>"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
@@ -213,17 +214,6 @@ private:
 			"</port_connection>"
 			"</network>" 
 			);
-		
-		foo.SetName(name);
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
-		foo.AddProcessing("oscillator", new CLAM::Oscillator );
-		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
-		foo.ConnectPorts("oscillator.Audio Output", "multiplier.First Audio Input");
-		CLAM::XMLStorage::Dump(foo, "network", output );
-		std::string outputString(output.str());
-		
-		CPPUNIT_ASSERT_EQUAL( result, outputString );
-	
 	}
 
 	void TestLoadNetworkWithControlsConnection()
@@ -245,9 +235,15 @@ private:
 	{		
 		CLAM::Network foo;
 		std::string name("FooNetworkWithControlsConnection");
-		std::stringstream output("");
 		
-		std::string result(
+		foo.SetName(name);
+		foo.AddFlowControl( new CLAM::BasicFlowControl );
+		foo.AddProcessing("oscillator", new CLAM::Oscillator );
+		foo.AddProcessing("panner", new CLAM::AutoPanner );
+		foo.ConnectControls("panner.Left Control","oscillator.Amplitude");
+		CLAM::XMLStorage::Dump(foo, "network", _output );
+
+		assertXmlBodyEquals(
 			"<network id=\"FooNetworkWithControlsConnection\">"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
 			"<Frequency>440</Frequency>"
@@ -268,17 +264,6 @@ private:
 			"</control_connection>"
 			"</network>" 
 			);
-		
-		foo.SetName(name);
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
-		foo.AddProcessing("oscillator", new CLAM::Oscillator );
-		foo.AddProcessing("panner", new CLAM::AutoPanner );
-		foo.ConnectControls("panner.Left Control","oscillator.Amplitude");
-		CLAM::XMLStorage::Dump(foo, "network", output );
-		std::string outputString(output.str());
-		
-		CPPUNIT_ASSERT_EQUAL( result, outputString );
-
 	}
 };
 

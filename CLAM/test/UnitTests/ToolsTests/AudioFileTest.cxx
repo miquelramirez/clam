@@ -517,22 +517,13 @@ namespace CLAMTest
 			CLAM::AudioFile file;
 			file.OpenExisting( mPathToTestData + CLAM::Text( "trumpet.mp3" ) );
 
-			std::ofstream outputFile( "AudioFile_0001.xml" );
-			outputFile << "<?xml version=\"1.0\" ?>" << std::endl;
-
-			CLAM::XMLStorage::Dump( file, "AudioFile", outputFile );
-
-			outputFile.close();
+			CLAM::XMLStorage::Dump( file, "AudioFile", "AudioFile_0001.xml" );
 
 			CLAM::AudioFile file2;
 
 			CLAM::XMLStorage::Restore( file2, "AudioFile_0001.xml" );
 
-			std::ofstream outputFile2( "CopyOf_AudioFile_0001.xml" );
-			outputFile2 << "<?xml version=\"1.0\" ?>" << std::endl;
-			
-			CLAM::XMLStorage::Dump( file2, file2.GetClassName(), outputFile2 );
-			outputFile2.close();
+			CLAM::XMLStorage::Dump( file2, file2.GetClassName(),"AudioFile_0001.xml" );
 			
 			const CLAM::AudioTextDescriptors& txtDesc = file.GetTextDescriptors();
 			
