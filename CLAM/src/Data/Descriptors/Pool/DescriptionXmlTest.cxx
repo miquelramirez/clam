@@ -96,6 +96,12 @@ private:
 		std::string _dummyMember;
 	};
 
+	void assertXmlBodyEquals(const std::string & expectedXmlBody)
+	{
+		std::string xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>";
+		CPPUNIT_ASSERT_EQUAL(xmlHeader+expectedXmlBody, _targetStream.str());
+	}
+
 	void testDumpAttributePool_withSimpleData()
 	{
 		CLAM::Attribute<int> attribute("MyAttribute");
@@ -105,13 +111,13 @@ private:
 		int * data = (int*) pool.GetData();
 		for (unsigned int i = 0; i<3; i++) data[i]= -i;
 
-		CLAM::XmlStorage::Dump(pool,"AttributePool",_targetStream);
+		CLAM::XmlStorage::Dump(pool,"AttributePool",_targetStream,false);
 
-		CPPUNIT_ASSERT_EQUAL(std::string(
+		assertXmlBodyEquals(
 			"<AttributePool name=\"MyAttribute\">"
 			"0 -1 -2"
 			"</AttributePool>"
-			),_targetStream.str());
+			);
 
 		pool.Deallocate();
 	}
@@ -126,15 +132,15 @@ private:
 		data[1].SetValue("value1");
 		data[2].SetValue("value2");
 
-		CLAM::XmlStorage::Dump(pool,"AttributePool",_targetStream);
+		CLAM::XmlStorage::Dump(pool,"AttributePool",_targetStream,false);
 
-		CPPUNIT_ASSERT_EQUAL(std::string(
+		assertXmlBodyEquals(
 			"<AttributePool name=\"MyAttribute\">"
 				"<DummyComponent DummyMember=\"value0\"/>"
 				"<DummyComponent DummyMember=\"value1\"/>"
 				"<DummyComponent DummyMember=\"value2\"/>"
 			"</AttributePool>"
-			),_targetStream.str());
+			);
 
 		pool.Deallocate();
 	}
@@ -315,10 +321,10 @@ private:
 		CLAM::DescriptionScope scope("TestScope");
 		CLAM::ScopePool pool(scope,20);
 
-		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream);
-		CPPUNIT_ASSERT_EQUAL(std::string(
+		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream,false);
+		assertXmlBodyEquals(
 			"<ScopePool name=\"TestScope\" size=\"20\"/>"
-			),_targetStream.str());
+			);
 	}
 	void testDumpScopePool_withAttributesAndZeroSize()
 	{
@@ -326,13 +332,13 @@ private:
 		scope.Add<std::string>("MyAttribute");
 		CLAM::ScopePool pool(scope,0);
 
-		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream);
-		CPPUNIT_ASSERT_EQUAL(std::string(
+		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream,false);
+		assertXmlBodyEquals(
 			"<ScopePool name=\"TestScope\" size=\"0\">"
 			"<AttributePool name=\"MyAttribute\">"
 			"</AttributePool>"
 			"</ScopePool>"
-			),_targetStream.str());
+			);
 	}
 	void testDumpScopePool_withAttributes()
 	{
@@ -344,14 +350,14 @@ private:
 		values[1]="value1";
 		values[2]="value2";
 
-		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream);
-		CPPUNIT_ASSERT_EQUAL(std::string(
+		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream,false);
+		assertXmlBodyEquals(
 			"<ScopePool name=\"TestScope\" size=\"3\">"
 			"<AttributePool name=\"MyAttribute\">"
 				"value0 value1 value2"
 			"</AttributePool>"
 			"</ScopePool>"
-			),_targetStream.str());
+			);
 	}
 	void testDumpScopePool_withIntegerAttributes()
 	{
@@ -363,14 +369,14 @@ private:
 		values[1]=2;
 		values[2]=3;
 
-		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream);
-		CPPUNIT_ASSERT_EQUAL(std::string(
+		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream,false);
+		assertXmlBodyEquals(
 			"<ScopePool name=\"TestScope\" size=\"3\">"
 			"<AttributePool name=\"MyAttribute\">"
 				"1 2 3"
 			"</AttributePool>"
 			"</ScopePool>"
-			),_targetStream.str());
+			);
 	}
 	void testDumpScopePool_withComponentAttributes()
 	{
@@ -382,8 +388,8 @@ private:
 		values[1].SetValue("value1");
 		values[2].SetValue("value2");
 
-		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream);
-		CPPUNIT_ASSERT_EQUAL(std::string(
+		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream,false);
+		assertXmlBodyEquals(
 			"<ScopePool name=\"TestScope\" size=\"3\">"
 			"<AttributePool name=\"MyAttribute\">"
 				"<DummyComponent DummyMember=\"value0\"/>"
@@ -391,7 +397,7 @@ private:
 				"<DummyComponent DummyMember=\"value2\"/>"
 			"</AttributePool>"
 			"</ScopePool>"
-			),_targetStream.str());
+			);
 	}
 	void testDumpScopePool_withNonInstantiatedAttributes()
 	{
@@ -399,10 +405,10 @@ private:
 		scope.Add<DummyComponent>("MyAttribute");
 		CLAM::ScopePool pool(scope,3);
 
-		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream);
-		CPPUNIT_ASSERT_EQUAL(std::string(
+		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream,false);
+		assertXmlBodyEquals(
 			"<ScopePool name=\"TestScope\" size=\"3\"/>"
-			),_targetStream.str());
+			);
 	}
 	void testDumpDescriptionDataPool_withAllKindsOfData()
 	{
@@ -435,8 +441,8 @@ private:
 			values[3]=3;
 		}
 
-		CLAM::XmlStorage::Dump(pool,"DescriptionData",_targetStream);
-		CPPUNIT_ASSERT_EQUAL(std::string(
+		CLAM::XmlStorage::Dump(pool,"DescriptionData",_targetStream,false);
+		assertXmlBodyEquals(
 		"<DescriptionData>"
 			"<ScopePool name=\"TestScope1\" size=\"3\">"
 			"<AttributePool name=\"DummyComponentAttribute\">"
@@ -454,7 +460,7 @@ private:
 			"</AttributePool>"
 			"</ScopePool>"
 		"</DescriptionData>"
-			),_targetStream.str());
+		);
 	}
 
 	void testRestoreDescriptionDataPool_withAllKindsOfData()
