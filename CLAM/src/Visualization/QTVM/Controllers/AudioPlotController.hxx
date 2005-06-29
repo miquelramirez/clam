@@ -24,13 +24,13 @@
 
 #include "Audio.hxx"
 #include "DataRenderer.hxx"
-#include "SelTimeRegionPlotController.hxx"
+#include "PlayablePlotController.hxx"
 
 namespace CLAM
 {
     namespace VM
     {
-		class AudioPlotController : public SelTimeRegionPlotController
+		class AudioPlotController : public PlayablePlotController
 		{
 			Q_OBJECT
 
@@ -40,22 +40,21 @@ namespace CLAM
 
 			void SetData(const Audio& audio);
 			void SetDataColor(Color c);
-			void SurfaceDimensions(int w,int h);
+			void DisplayDimensions(const int& w, const int& h);
 			void Draw();
 
-			void SetSelPos(const TData& value);
-			void SetMousePos(TData x,TData y);
+			void SetSelPos(const double& value, bool render);
+			void SetMousePos(const double& x, const double& y);
 
-			TData GetAmp(TData t) const;
-
-			void SetSelectedXPos(double xpos);
+		public slots:
+			void setHBounds(double, double);
+			void setSelectedXPos(double);
 
 		protected:
-			void SetHBounds(const TData& left,const TData& right);
-			void SetVBounds(const TData& bottom,const TData& top);
+			void SetHBounds(const double& left,const double& right);
+			void SetVBounds(const double& bottom,const double& top);
 
 			void FullView();
-			bool MustProcessData() const;
 				
 		private:
 			DataRenderer mRenderer;
@@ -65,6 +64,7 @@ namespace CLAM
 			DataArray    mProcessedData;
 			bool         mMustProcessData;
 			bool         mHugeArrayCondition;
+			bool         mHasData;
 				
 			void DrawAxis();
 

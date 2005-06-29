@@ -4,13 +4,13 @@
 #include "Spectrum.hxx"
 #include "QtPalette.hxx"
 #include "SpectrogramRenderer.hxx"
-#include "SelPosPlotController.hxx"
+#include "PlotController.hxx"
 
 namespace CLAM
 {
     namespace VM
     {
-		class SpectrogramPlotController : public SelPosPlotController 
+		class SpectrogramPlotController : public PlotController 
 		{
 			Q_OBJECT
 
@@ -18,13 +18,11 @@ namespace CLAM
 			SpectrogramPlotController();
 			~SpectrogramPlotController();
 
-			void SetData(const Array<Spectrum>& specMtx, const TData& dur);
-			void SurfaceDimensions(int w,int h);
+			void SetData(const Array<Spectrum>& specMtx, const double& dur);
+			void DisplayDimensions(const int& w, const int& h);
 			void Draw();
 
-			void SetMousePos(TData x,TData y);
-
-			bool IsPlayable();
+			void SetMousePos(const double& x, const double& y);
 
 			std::vector<Color> GetColorScale(const int& size);
 			std::vector<Color> GetGrayScale(const int& size);
@@ -37,33 +35,40 @@ namespace CLAM
 
 			void LeaveMouse();
 
+			void SetSelPos(const double& value, bool render);
+
 		signals:
 			void sendLabels(QString, QString, QString);
 
+		public slots:
+			void setHBounds(double, double);
+			void setSelectedXPos(double);
+
 		protected:
-			void SetHBounds(const TData& left,const TData& right);
-			void SetVBounds(const TData& bottom,const TData& top);
+			void SetHBounds(const double& left, const double& right);
+			void SetVBounds(const double& bottom,const double& top);
+
+			void FullView();
 
 		private:
 			Array<Spectrum>                   mCacheData;
 			std::vector< std::vector<TData> > mComputedData;
 			SpectrogramRenderer               mRenderer;
-			TData                             mDuration;
-			TData                             mSpectralRange;
+			double                            mDuration;
+			double                            mSpectralRange;
 			QtPalette                         mPalette;
 			bool                              mMustProcessData;
+			bool                              mHasData;
 
 			enum { MaxSpectrums=513, MaxSpectrumSize=513};
 
 			void ProcessData();
 			void Colorize();
 
-			float ClampToRange(TData value) const;
+			float ClampToRange(float value) const;
 	    
 			void CacheData();
 			void AdaptSpectralData();
-
-			void FullView();
 
 			void ComputeIndexes();
 

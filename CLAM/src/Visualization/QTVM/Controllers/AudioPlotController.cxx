@@ -31,9 +31,11 @@ namespace CLAM
 		AudioPlotController::AudioPlotController() 
 			: mMustProcessData(false)
 			, mHugeArrayCondition(false)
+			, mHasData(false)
 		{
-			SetVMin(TData(0.2));
-			SetvRange(TData(2.0));
+			SetMinSpanX(50.0);
+			SetMinSpanY(0.2);
+			SetYRange(-1.0, 1.0);
 		}
 
 		AudioPlotController::~AudioPlotController()
@@ -42,14 +44,16 @@ namespace CLAM
 
 		void AudioPlotController::SetData(const Audio& audio)
 		{
+			mHasData = false;
 			mAudio = audio;
-			mSampleRate = mAudio.GetSampleRate();
+			SetSampleRate( double(mAudio.GetSampleRate()) );
 			FullView();
-			SetnSamples(mAudio.GetBuffer().Size());
+			SetnSamples(double(mAudio.GetBuffer().Size()));
 			InitialRegionTime();
-			mDuration = TData(GetnSamples())/mSampleRate;
+			SetDuration( double(GetnSamples())/GetSampleRate() );
 			mMustProcessData = true;
-			SetSelPos(TData(0.0));
+			SetSelPos(0.0,true);
+			mHasData = true;
 			emit requestRefresh();
 		}
 
@@ -63,54 +67,56 @@ namespace CLAM
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
 			DrawAxis();
-			SelTimeRegionPlotController::Draw();
+			PlayablePlotController::Draw();
 		}
 
 		void AudioPlotController::FullView()
 		{
-			mView.left = TData(0.0);
-			mView.right = TData(mAudio.GetBuffer().Size());
-			mView.top = TData(2.0);
-			mView.bottom = TData(0.0);
+			mView.left = 0.0;
+			mView.right = double(mAudio.GetBuffer().Size());
+			mView.bottom = -1.0;
+			mView.top = 1.0;
 			SetHBounds(mView.left,mView.right);
 			SetVBounds(mView.bottom,mView.top);
-			emit sendView(mView);
+			emit viewChanged(mView);
 			emit initialYRulerRange(-1.0,1.0);
 		}
 
-		void AudioPlotController::SetHBounds(const TData& left,const TData& right)
+		void AudioPlotController::SetHBounds(const double& left,const double& right)
 		{
-			SelTimeRegionPlotController::SetHBounds(left,right);
+			PlayablePlotController::SetHBounds(left,right);
 			mMustProcessData = true;
 			
-			double lBound = double(GetLeftBound()/mSampleRate);
-			double hBound = double(GetRightBound()/mSampleRate);
+			double lBound = GetLeftBound()/GetSampleRate();
+			double hBound = GetRightBound()/GetSampleRate();
 	    
+			if(mHasData) emit requestRefresh();
 			emit xRulerRange(lBound,hBound);	
 		}
 
-		void AudioPlotController::SetVBounds(const TData& bottom,const TData& top)
+		void AudioPlotController::SetVBounds(const double& bottom, const double& top)
 		{
-			SelTimeRegionPlotController::SetVBounds(bottom,top);
+			PlayablePlotController::SetVBounds(bottom,top);
 			
-			double bBound = double(GetBottomBound()-1.0);
-			double tBound = double(GetTopBound()-1.0);
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
 			
+			if(mHasData) emit requestRefresh();
 			emit yRulerRange(bBound,tBound);
 		}
 
-		void AudioPlotController::SurfaceDimensions(int w,int h)
+		void AudioPlotController::DisplayDimensions(const int& w, const int& h)
 		{
-			PlotController::SurfaceDimensions(w,h);
+			PlotController::DisplayDimensions(w,h);
 			mMustProcessData = true;
 			
-			double lBound = double(GetLeftBound()/mSampleRate);
-			double hBound = double(GetRightBound()/mSampleRate);
+			double lBound = GetLeftBound()/GetSampleRate();
+			double hBound = GetRightBound()/GetSampleRate();
 			
 			emit xRulerRange(lBound,hBound);
 
-			double bBound = double(GetBottomBound()-1.0);
-			double tBound = double(GetTopBound()-1.0);
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
 		      
 			emit yRulerRange(bBound,tBound);
 		}
@@ -120,8 +126,8 @@ namespace CLAM
 			Color c = mRenderer.GetColor();
 			glColor3ub(c.r,c.g,c.b);
 			glBegin(GL_LINES);
-			glVertex3f(0.0f,1.0,-1.0f);
-			glVertex3f(GetCurrent(),1.0f,-1.0f);
+			glVertex3f(0.0f,1.0f,-1.0f);
+			glVertex3f(float(GetSpanX()),1.0f,-1.0f);
 			glEnd();
 		}
 
@@ -131,14 +137,12 @@ namespace CLAM
 			if(mHugeArrayCondition)
 			{
 				mRenderer.SetArrays(mMaxs.GetPtr(), mMins.GetPtr(), mMaxs.Size());
-				mRenderer.SetVBounds(mView.top,mView.bottom);
+				mRenderer.SetVBounds(mView.bottom,mView.top);
 				return;
 			}
 
-			for(int i=0;i < mProcessedData.Size();i++) mProcessedData[i] += TData(1.0);
-
-			TData range = GetRightBound()-GetLeftBound();
-			TData threshold = GetHMin()*TData(2.0);
+			double range = GetRightBound()-GetLeftBound();
+			double threshold = GetMinSpanX()*2.0;
 			int mode = (range < threshold) ? DetailMode : NormalMode;
 			mRenderer.SetDataPtr(mProcessedData.GetPtr(),mProcessedData.Size(),mode);	
 			mMustProcessData = false;
@@ -149,7 +153,7 @@ namespace CLAM
 			TSize offset = TSize(GetLeftBound());
 			TSize len = TSize(GetRightBound() - GetLeftBound())+1;
 
-			if(len/5 >= mViewport.w)
+			if(len/5 >= GetDisplayWidth())
 			{
 				mHugeArrayCondition = true;
 				BuildMaxMinArrays(offset,len);
@@ -168,7 +172,7 @@ namespace CLAM
 		void AudioPlotController::BuildMaxMinArrays(TSize offset,TSize len)
 		{
 			TSize startSearch, endSearch, searchIntervalLen, searchRemIntervalLen;
-			TSize maxs = mViewport.w;
+			TSize maxs = GetDisplayWidth();
 
 			if(mMaxs.Size() < maxs) mMaxs.Resize(maxs);
 			if(mMins.Size() < maxs)	mMins.Resize(maxs);
@@ -186,74 +190,64 @@ namespace CLAM
 
 			for(int i = 0; i < firstPassIterations; i++)
 			{
-				mMaxs[i] = *std::max_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+endSearch)+TData(1.0);
-				mMins[i] = *std::min_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+endSearch)+TData(1.0);
+				mMaxs[i] = *std::max_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+endSearch);
+				mMins[i] = *std::min_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+endSearch);
 							
 				startSearch = endSearch;
 				endSearch += searchIntervalLen;	
 			}
 			if(searchRemIntervalLen)
 			{
-				mMaxs[maxs-1] = *std::max_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+startSearch+searchRemIntervalLen)+TData(1.0);
-				mMins[maxs-1] = *std::min_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+startSearch+searchRemIntervalLen)+TData(1.0);
+				mMaxs[maxs-1] = *std::max_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+startSearch+searchRemIntervalLen);
+				mMins[maxs-1] = *std::min_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+startSearch+searchRemIntervalLen);
 			}
-		}
-
-		TData AudioPlotController::GetAmp(TData t) const
-		{
-			TIndex index = TIndex(t*mSampleRate);
-			TData value = mAudio.GetBuffer()[index];
-			return (fabs(value) >= 0.002) ? value : TData(0.0);
 		}
 
 		void AudioPlotController::InitialRegionTime()
 		{
 			MediaTime time;
 			time.SetBegin(TData(0.0));
-			time.SetEnd(TData(GetnSamples())/mSampleRate);
+			time.SetEnd(TData(GetnSamples()/GetSampleRate()));
 			emit selectedRegion(time);
 		}
 
-		bool AudioPlotController::MustProcessData() const
+		void AudioPlotController::SetMousePos(const double& x, const double& y)
 		{
-			return mMustProcessData;
-		}
-
-		void AudioPlotController::SetMousePos(TData x,TData y)
-		{
-			TData tbound = GetTopBound()-GetBottomBound();
-			TData bBound = GetBottomBound()-TData(1.0);
-			TData ycoord=y;
-			ycoord *= tbound;
-			ycoord /= TData(mViewport.h);
-			ycoord += bBound;
-			SegmentationMarksPlotController::SetMousePos(x,ycoord);
+			PlotController::SetMousePos(x,y);
 			if(!HasSentTag())
 			{
-				TData t=GetMouseXPos()/mSampleRate;
-				TData amp=GetMouseYPos();
+				double t=GetMouseXPos()/GetSampleRate();
+				double amp=GetMouseYPos();
 				QString s = "t="+QString::number(t,'f',3)+"s amp="+QString::number(amp,'f',3);
 				emit toolTip(s);
 			}
 		}
 
-		void AudioPlotController::SetSelPos(const TData& value)
+		void AudioPlotController::SetSelPos(const double& value, bool render)
 		{
 			if(CanDrawSelectedPos())
 			{
 				if(GetDialPos() != value)
 				{
-					SelTimeRegionPlotController::SetSelPos(value);
+					PlayablePlotController::SetSelPos(value, render);
 					emit requestRefresh();
-					emit selPos(value);
-					emit selectedXPos(value/mSampleRate);
+					emit selectedXPos(value/GetSampleRate());
 				}
 			}
 		}
 
-		void AudioPlotController::SetSelectedXPos(double xpos)
+		void AudioPlotController::setSelectedXPos(double xpos)
 		{
-			SetSelPos(TData(xpos)*mSampleRate);
+			SetSelPos(xpos*GetSampleRate(),true);
+			emit requestRefresh();
+		}
+
+			
+		void AudioPlotController::setHBounds(double xmin, double xmax)
+		{
+			double left = xmin*GetSampleRate();
+			double right = xmax*GetSampleRate();
+			SetHBounds(left,right);
 		}
     }
 }

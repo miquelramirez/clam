@@ -29,14 +29,13 @@ namespace CLAM
     namespace VM
     {
 		MultiPlotController::MultiPlotController()
-			: mMustProcessData(false)
-			, mHaveData(false)
-			, mXMin(TData(0.0))
-			, mXMax(TData(1.0))
-			, mYMin(TData(0.0))
-			, mYMax(TData(1.0))
+			: mXMin(0.0)
+			, mXMax(1.0)
+			, mMustProcessData(false)
+			, mHasData(false)
+			, mHasXRange(false)
+			, mHasYRange(false)
 		{
-			SetnSamples(1);
 		}
 		
 		MultiPlotController::~MultiPlotController()
@@ -44,32 +43,27 @@ namespace CLAM
 			RemoveAllData();
 		}
 
-		void MultiPlotController::SetXRange(const TData& xmin, const TData& xmax)
+		void MultiPlotController::SetXRulerRange(const double& xmin, const double& xmax)
 		{
 			if(xmax <= xmin) return;
-			mXMin=fabs(xmin);
-			mXMax=fabs(xmax);
-			HZoomIn();
-			HZoomOut();
+			mXMin=xmin;
+			mXMax=xmax;
+			SetMinSpanX(GetnSamples()*0.05);
+			FullView();
+			mHasXRange = true;
 		}
 
-		void MultiPlotController::SetYRange(const TData& ymin, const TData& ymax)
+		void MultiPlotController::SetYRulerRange(const double& ymin, const double& ymax)
 		{
 			if(ymax <= ymin) return;
-			mYMin=fabs(ymin);
-			mYMax=fabs(ymax);
-			SetvRange(mYMax+mYMin);
-			VZoomIn();
-			VZoomOut();
+			SetMinSpanY((ymax-ymin)*0.05);
+			SetYRange(ymin,ymax);
+			FullView();
+			mHasYRange = true;
 		}
 
 		void MultiPlotController::AddData(std::string key, const DataArray& array)
 		{
-			if(mHaveData)
-			{
-				CLAM_ASSERT(mAux.Size()==array.Size(),"Data size not match!");
-			}
-
 			if(!ExistRenderer(key))
 			{
 				CreateNewRenderer(key);	
@@ -77,62 +71,20 @@ namespace CLAM
 
 			mCacheData[key]=array; // cache data
 			
-			if(!mHaveData)
+			if(array.Size() > GetnSamples() || !mHasData)
 			{
 				mAux=array;
 				SetInitialSettings();
 				FullView();
-				mHaveData=true;
 			}
-			mMustProcessData=true;
-			emit requestRefresh();
-		}
-		
-		void MultiPlotController::AddData(std::string key, const BPF& data, int samples)
-		{
-			DataArray array;
-			TData start = data.GetXValue(0);
-			TData end = data.GetXValue(data.Size() - 1);
-
-			TData dx = fabs(end - start) / TData(samples);
-
-			array.Resize(samples+1);
-			array.SetSize(samples+1);
-
-			TData x = start;
-
-			for(int i = 0; i < array.Size(); i++)
-			{
-				array[i] = data.GetValue(x);
-				x += dx;
-			}
-
-			if(mHaveData)
-			{
-				CLAM_ASSERT(mAux.Size()==array.Size(),"Data size not match!");
-			}
-
-			if(!ExistRenderer(key))
-			{
-				CreateNewRenderer(key);
-			}
-
-			mCacheData[key]=array;
-
-			if(!mHaveData)
-			{
-				mAux=array;
-				SetInitialSettings();
-				FullView();
-				mHaveData=true;
-			}	
+			mHasData = true;
 			mMustProcessData=true;
 			emit requestRefresh();
 		}
 		
 		void MultiPlotController::RemoveData( std::string key )
 		{
-			std::map<std::string,MPDataRenderer*>::iterator rit= mRenderers.find(key);
+			std::map<std::string,MultiPlotRenderer*>::iterator rit= mRenderers.find(key);
 			if(rit == mRenderers.end()) return;
 
 			delete mRenderers[key];
@@ -146,7 +98,7 @@ namespace CLAM
 		
 		void MultiPlotController::RemoveAllData()
 		{
-			std::map<std::string,MPDataRenderer*>::iterator it = mRenderers.begin();
+			std::map<std::string,MultiPlotRenderer*>::iterator it = mRenderers.begin();
 			for(; it != mRenderers.end(); it++) delete it->second;
 				
 			mRenderers.clear();
@@ -160,97 +112,83 @@ namespace CLAM
 			mRenderers[key]->SetColor(c);
 			emit requestRefresh();
 		}
-		
-		void MultiPlotController::SurfaceDimensions(int w,int h)
-		{
-			PlotController::SurfaceDimensions(w,h);
-		
-			TData global_max=TData(GetnSamples());
-			TData local_max=mXMax+mXMin;
 
-			double lBound = double(GetLeftBound()*local_max/global_max);
-			double hBound = double(GetRightBound()*local_max/global_max);
-			lBound-=double(mXMin); 
-			hBound-=double(mXMin);
+		void MultiPlotController::DisplayDimensions(const int& w, const int& h)
+		{
+			PlotController::DisplayDimensions(w,h);
+		
+			double global_max = GetnSamples();
+			double local_max = mXMax-mXMin; 
+
+			double lBound = (GetLeftBound()*local_max/global_max)+mXMin;
+			double hBound = (GetRightBound()*local_max/global_max)+mXMin;
 			
 			emit xRulerRange(lBound,hBound);
 			
-			global_max=GetvRange();
-			local_max=mYMax+fabs(mYMin);
-
-			double bBound = double(GetBottomBound()*local_max/global_max);
-			double tBound = double(GetTopBound()*local_max/global_max);
-			bBound-=double(mYMin); 
-			tBound-=double(mYMin);
-			
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
+		  
 			emit yRulerRange(bBound,tBound);
 		}
 		
 		void MultiPlotController::Draw()
 		{
 			if(mMustProcessData) ProcessData();
-			std::map<std::string,MPDataRenderer*>::iterator it=mRenderers.begin();
+			std::map<std::string,MultiPlotRenderer*>::iterator it=mRenderers.begin();
 			for(; it != mRenderers.end(); it++)
 			{
 				(it->second)->Render();
 			}
-			SelPosPlotController::Draw();
+			PlotController::Draw();
 		}
 
-		void MultiPlotController::SetMousePos(TData x,TData y)
+		void MultiPlotController::SetMousePos(const double& x, const double& y)
 		{
-			TData tbound = GetTopBound()-GetBottomBound();
-			TData bBound = GetBottomBound()-mYMin;
-			TData ycoord=y;
-			ycoord *= tbound;
-			ycoord /= TData(mViewport.h);
-			ycoord += bBound;
-			SegmentationMarksPlotController::SetMousePos(x,ycoord);
-	    
-			TData global_max=TData(GetnSamples());
-			TData local_max=mXMax+mXMin;
-			TData xval=(GetMouseXPos()*local_max/global_max)-mXMin;
-			TData yval=GetMouseYPos();
-	
-			emit xvalue(xval);
-			emit yvalue(yval);
+			if(x < 0 || x > GetnSamples()) return;
+			if(y < GetMinY() || y > GetMaxY()) return;
+
+			PlotController::SetMousePos(x,y);
+			double global_max = GetnSamples();
+			double local_max = mXMax-mXMin;
+			double xval = (GetMouseXPos()*local_max/global_max)+mXMin;
+			double yval = GetMouseYPos();
+			emit sendXYValues(xval,yval);
+			if(!HasSentTag())
+			{	
+				QString s = "x="+QString::number(xval,'f',2)+" y="+QString::number(yval,'f',2);
+				emit toolTip(s);
+			}
 		}
 
-		void MultiPlotController::SetHBounds(const TData& left,const TData& right)
+		void MultiPlotController::SetHBounds(const double& left, const double& right)
 		{
-			SelPosPlotController::SetHBounds(left,right);
+			PlotController::SetHBounds(left,right);
 			mMustProcessData=true;
 		
-			TData global_max=TData(GetnSamples());
-			TData local_max=mXMax+mXMin;
+			double global_max = GetnSamples();
+			double local_max = mXMax-mXMin;
 
-			double lBound = double(GetLeftBound()*local_max/global_max);
-			double hBound = double(GetRightBound()*local_max/global_max);
-			lBound-=double(mXMin); 
-			hBound-=double(mXMin);
+			double lBound = (GetLeftBound()*local_max/global_max)+mXMin;
+			double hBound = (GetRightBound()*local_max/global_max)+mXMin;
 			
+			if(mHasData) emit requestRefresh();
 			emit xRulerRange(lBound,hBound);
 		}
 
-		void MultiPlotController::SetVBounds(const TData& bottom,const TData& top)
+		void MultiPlotController::SetVBounds(const double& bottom, const double& top)
 		{
-			SelPosPlotController::SetVBounds(bottom,top);
-			mMustProcessData=true;
-
-			TData global_max=GetvRange();
-			TData local_max=mYMax+fabs(mYMin);
-
-			double bBound = double(GetBottomBound()*local_max/global_max);
-			double tBound = double(GetTopBound()*local_max/global_max);
-			bBound-=double(mYMin); 
-			tBound-=double(mYMin);
+			PlotController::SetVBounds(bottom,top);
 			
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
+			
+			if(mHasData) emit requestRefresh();
 			emit yRulerRange(bBound,tBound);
 		}
 
 		void MultiPlotController::CreateNewRenderer(std::string key)
 		{
-			mRenderers[key] = new MPDataRenderer;
+			mRenderers[key] = new MultiPlotRenderer;
 		}
 
 		bool MultiPlotController::ExistRenderer(std::string key)
@@ -260,60 +198,104 @@ namespace CLAM
 
 		void MultiPlotController::FullView()
 		{
-			mView.left = TData(0.0);
+			mView.left = 0.0;
 			mView.right = GetnSamples();
-			mView.top = GetvRange();
-			mView.bottom = TData(0.0);
+			mView.top = GetMaxY();
+			mView.bottom = GetMinY();
 			SetHBounds(mView.left,mView.right);
 			SetVBounds(mView.bottom,mView.top);
-			emit sendView(mView);
 		}
 
 		void MultiPlotController::ProcessData()
 		{
 			std::string key;
 			TSize offset = TSize(GetLeftBound());
-			TSize len = TSize(GetRightBound() - GetLeftBound())+1;
+			TSize global_len = TSize(GetRightBound() - GetLeftBound())+1;
 			
-			if(mProcessedData.Size() < len+1)
-			{
-				mProcessedData.Resize(len+1);
-				mProcessedData.SetSize(len+1);
-			}
-
 			std::map<std::string, DataArray>::iterator dit = mCacheData.begin();
 			for(; dit != mCacheData.end(); dit++)
 			{
-				std::copy((*dit).second.GetPtr()+offset,(*dit).second.GetPtr()+offset+len+1,mProcessedData.GetPtr());
-			
-				for(int i=0;i < mProcessedData.Size();i++) mProcessedData[i] += mYMin;
-				key=(*dit).first;
-				mRenderers[key]->SetData(mProcessedData.GetPtr(),mProcessedData.Size());	
+				TSize local_len = global_len;
+				TSize current_size = (*dit).second.Size();
+				if(current_size < offset) continue;
+				if(current_size < global_len) local_len = current_size;
+				DataArray processed_data;
+				processed_data.Resize(local_len+1);
+				processed_data.SetSize(local_len+1);
+				std::copy((*dit).second.GetPtr()+offset,
+						  (*dit).second.GetPtr()+offset+local_len+1,
+						  processed_data.GetPtr());
+				key = (*dit).first;
+				mRenderers[key]->SetData(processed_data);	
 			}
 			mMustProcessData = false;
 		}
 				
 		void MultiPlotController::SetInitialSettings()
 		{
-			TData samples = TData(mAux.Size());
-			TData hmin=samples*TData(5.0)/TData(100.0);
-			if(hmin > 50) hmin=TData(50.0);
-			SetHMin(hmin);
+			double samples = double(mAux.Size());
+			double hmin = samples*0.05;
+			if(hmin > 50) hmin = 50.0;
+			SetMinSpanX(hmin);
 
-			TData vmax=TData(-1000000.0);
-			TData vmin=TData(1000000.0);
-			for(int i=0; i < mAux.Size(); i++)
+			unsigned len = unsigned(samples);
+			double vmax = double(*std::max_element(mAux.GetPtr(), mAux.GetPtr()+len));
+			double vmin = double(*std::min_element(mAux.GetPtr(), mAux.GetPtr()+len));
+
+			if(!mHasYRange)
 			{
-				if(vmax < mAux[i]) vmax=mAux[i];
-				if(vmin > mAux[i]) vmin=mAux[i];
+				if(vmin != GetMinY() || vmax != GetMaxY() || !mHasData)
+				{
+					SetMinSpanY((vmax-vmin)*0.05);
+					SetYRange(vmin,vmax);
+				}
 			}
-			SetVMin((vmax+fabs(vmin))*TData(5.0)/TData(100.0));
-			SetvRange(vmax+fabs(vmin));
+			else
+			{
+				SetMinSpanY((GetMaxY()-GetMinY())*0.05);
+				SetYRange(GetMinY(),GetMaxY());
+			}
 
-			mXMin=TData(0.0); mXMax=mAux.Size();
-			mYMin=fabs(vmin); mYMax=fabs(vmax);
-			SetnSamples(mAux.Size());
+			SetnSamples(samples);
+
+			if(!mHasXRange)
+			{
+				mXMin = 0.0;
+				mXMax = samples;
+			}
 		}
+
+		void MultiPlotController::SetSelPos(const double& value, bool render)
+		{
+			if(CanDrawSelectedPos())
+			{
+				if(GetDialPos() != value)
+				{
+					PlotController::SetSelPos(value, render);
+					emit requestRefresh();
+					double span = mXMax-mXMin;
+					double xpos = (value*span/GetnSamples())+mXMin;
+					emit selectedXPos(xpos);
+				}
+			}
+		}
+
+		void MultiPlotController::setHBounds(double xmin, double xmax)
+		{
+			double span = xmax-xmin;
+			double left = (xmin-mXMin)*GetnSamples()/span;
+			double right = (xmax-mXMin)*GetnSamples()/span;
+			SetHBounds(left,right);
+		}
+
+		void MultiPlotController::setSelectedXPos(double xpos)
+		{
+			double span = mXMax-mXMin;
+			double pos = (xpos-mXMin)*GetnSamples()/span;
+			SetSelPos(pos,true);
+			emit requestRefresh();
+		}
+
     }
 }
 
