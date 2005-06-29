@@ -149,7 +149,7 @@ namespace CLAMTest {
 
 			std::stringstream stream;
 			XMLStorage storage;
-			storage.Dump(component, "object", stream);
+			storage.Dump(component, "object", stream, false);
 
 			std::string expected = 
 				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
