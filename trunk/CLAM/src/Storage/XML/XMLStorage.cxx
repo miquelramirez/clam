@@ -135,7 +135,7 @@ namespace CLAM
 		storage.Select("/");
 		{
 			std::ofstream os(filename.c_str());
-			storage.WriteSelection(os);
+			storage.WriteDocument(os);
 		}
 	}
 
