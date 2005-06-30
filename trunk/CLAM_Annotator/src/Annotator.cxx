@@ -250,7 +250,7 @@ void Annotator::connectBPFs()
 		connect(mpAudioPlot,SIGNAL(switchColorsRequested()),(*it),SLOT(switchColors()));
 		connect(mpAudioPlot,SIGNAL(regionTime(float,float)),(*it),SLOT(setRegionTime(float,float)));
 		connect(mpAudioPlot,SIGNAL(currentPlayingTime(float)),(*it),SLOT(setCurrentPlayingTime(float)));
-		connect(mpAudioPlot,SIGNAL(stopPlaying(float)),(*it),SLOT(receivedStopPlaying(float)));
+		connect(mpAudioPlot,SIGNAL(stopPlayingTime(float)),(*it),SLOT(receivedStopPlaying(float)));
 		connect((*it),SIGNAL(currentPlayingTime(float)),mpAudioPlot,SLOT(setCurrentPlayingTime(float)));
 		connect((*it),SIGNAL(stopPlaying(float)),mpAudioPlot,SLOT(receivedStopPlaying(float)));
 	}
