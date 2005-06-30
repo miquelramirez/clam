@@ -90,8 +90,8 @@ namespace CLAM
 			double lBound = GetLeftBound()/GetSampleRate();
 			double hBound = GetRightBound()/GetSampleRate();
 	    
-			if(mHasData) emit requestRefresh();
-			emit xRulerRange(lBound,hBound);	
+			emit xRulerRange(lBound,hBound);
+			if(mHasData) emit requestRefresh();	
 		}
 
 		void AudioPlotController::SetVBounds(const double& bottom, const double& top)
@@ -101,8 +101,8 @@ namespace CLAM
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 			
-			if(mHasData) emit requestRefresh();
 			emit yRulerRange(bBound,tBound);
+			if(mHasData) emit requestRefresh();
 		}
 
 		void AudioPlotController::DisplayDimensions(const int& w, const int& h)
