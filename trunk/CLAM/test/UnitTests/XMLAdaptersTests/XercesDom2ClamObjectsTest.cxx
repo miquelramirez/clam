@@ -436,9 +436,9 @@ private:
 		storage.Select("Recipient");
 		storage.DumpObject(toAppend);
 		std::ostringstream os;
-		storage.Select("/");
-		storage.WriteSelection(os);
+		storage.WriteDocument(os);
 		std::string expected =
+			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
 			"<Doc>"
 			"<Recipient>"
 				"<OldElement/>"
@@ -479,6 +479,7 @@ private:
 		XmlStorage::AppendToDocument(toAppend, "/Doc/Recipient", "deleteme.xml");
 
 		std::string expected =
+			"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
 			"<Doc>"
 			"<Recipient>"
 				"<OldElement/>"
