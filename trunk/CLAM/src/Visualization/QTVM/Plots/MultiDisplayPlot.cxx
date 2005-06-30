@@ -128,9 +128,9 @@ namespace CLAM
 						 "MultiDisplayPlot::GetSyncDialPos: invalid senderId." );
 			for(unsigned i=0; i < mControllers.size(); i++)
 			{
-				if(i == (unsigned)senderId) continue;
+				if(i == unsigned(senderId)) continue;
 				connect(mControllers[senderId],SIGNAL(selectedXPos(double)),
-						mControllers[i],SLOT(setSelectedXPos(double)));
+						mControllers[i],SLOT(setSelectedXPos(double)));	
 			}
 		}
 
@@ -140,7 +140,7 @@ namespace CLAM
 						 "MultiDisplayPlot::GetSyncInsertMarkBySampleIndex: invalid senderId." );
 			for(unsigned i=0; i < mControllers.size(); i++)
 			{
-				if(i == (unsigned)senderId) continue;
+				if(i == unsigned(senderId)) continue;
 				connect(mControllers[senderId],SIGNAL(insertedMark(unsigned)),
 						mControllers[i],SLOT(insertMark(unsigned)));
 			}
@@ -153,7 +153,7 @@ namespace CLAM
 						 "MultiDisplayPlot::GetSyncRemoveMarkBySampleIndex: invalid senderId." );
 			for(unsigned i=0; i < mControllers.size(); i++)
 			{
-				if(i == (unsigned)senderId) continue;
+				if(i == unsigned(senderId)) continue;
 				connect(mControllers[senderId],SIGNAL(removedMark(int,unsigned)),
 						mControllers[i],SLOT(removeMark(int,unsigned)));
 			}
@@ -166,7 +166,7 @@ namespace CLAM
 						 "MultiDisplayPlot::GetSyncUpdateMarkBySampleIndex: invalid senderId." );
 			for(unsigned i=0; i < mControllers.size(); i++)
 			{
-				if(i == (unsigned)senderId) continue;
+				if(i == unsigned(senderId)) continue;
 				connect(mControllers[senderId],SIGNAL(updatedMark(int,unsigned)),
 						mControllers[i],SLOT(updateMark(int,unsigned)));
 			}
@@ -178,7 +178,7 @@ namespace CLAM
 						 "MultiDisplayPlot::GetSyncUpdateTag: invalid senderId." );
 			for(unsigned i=0; i < mControllers.size(); i++)
 			{
-				if(i == (unsigned)senderId) continue;
+				if(i == unsigned(senderId)) continue;
 				connect(mControllers[senderId],SIGNAL(updatedTag(int,QString)),
 						mControllers[i],SLOT(updateTag(int,QString)));
 			}
@@ -210,7 +210,7 @@ namespace CLAM
 			CLAM_ASSERT(mMasterId >= 0,"MultiDisplayPlot::SyncHZoom: the master controller has not been created yet." );
 			for(unsigned i=0; i < mControllers.size(); i++)
 			{
-				if(i == (unsigned)mMasterId) continue;
+				if(i == unsigned(mMasterId)) continue;
 				connect(mControllers[mMasterId],SIGNAL(xRulerRange(double,double)),
 						mControllers[i],SLOT(setHBounds(double,double)));
 			}

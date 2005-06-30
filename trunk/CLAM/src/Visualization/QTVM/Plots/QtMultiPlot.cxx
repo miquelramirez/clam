@@ -102,16 +102,16 @@ namespace CLAM
 
 		void QtMultiPlot::DisplayBackgroundBlack()
 		{
-			SetBackgroundColor(VMColor::Black());
 			SetDialColor(VMColor::Red());
 			SetMarksColor(VMColor::Orange());
+			SetBackgroundColor(VMColor::Black());
 		}
 
 		void QtMultiPlot::DisplayBackgroundWhite()
 		{
-			SetBackgroundColor(VMColor::White());
 			SetDialColor(VMColor::Black());
 			SetMarksColor(VMColor::Red());
+			SetBackgroundColor(VMColor::White());
 		}
 
 		void QtMultiPlot::SetUnits(const std::string& xunits, const std::string& yunits)

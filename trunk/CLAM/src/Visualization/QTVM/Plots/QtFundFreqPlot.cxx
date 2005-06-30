@@ -125,20 +125,20 @@ namespace CLAM
 
 		void QtFundFreqPlot::DisplayBackgroundBlack()
 		{
-			SetBackgroundColor(VMColor::Black());
 			SetForegroundColor(VMColor::Green());
 			SetDialColor(VMColor::Red());
 			SetRegionColor(VMColor::LightGray());
 			SetMarksColor(VMColor::Orange());
+			SetBackgroundColor(VMColor::Black());
 		}
 
 		void QtFundFreqPlot::DisplayBackgroundWhite()
 		{
-			SetBackgroundColor(VMColor::White());
 			SetForegroundColor(VMColor::Blue());
 			SetDialColor(VMColor::Black());
 			SetRegionColor(VMColor::LightGray());
 			SetMarksColor(VMColor::Red());
+			SetBackgroundColor(VMColor::White());
 		}
 
 		void QtFundFreqPlot::hideEvent(QHideEvent* e)
