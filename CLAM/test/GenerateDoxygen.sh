@@ -44,11 +44,11 @@ GenerateDoxygen()
 
 if [ "$1" == "main" ]
 then
-	GenerateDoxygen "CLAM" "" "CLAM-doxygen" ""
+	GenerateDoxygen "CLAM" "-rCLAM-stable" "CLAM-doxygen" ""
 elif [ "$1" == "devel" ]
 then
 	Date=`date -u +"%Y-%m-%d"`
-	GenerateDoxygen "CLAM-development" "-r development-branch" "CLAM-devel-doxygen" "__$Date"
+	GenerateDoxygen "CLAM-development" "" "CLAM-devel-doxygen" "__$Date"
 else
 	echo "For main branch:  $0 main "  >&2
 	echo "For devel branch:  $0 devel "  >&2
