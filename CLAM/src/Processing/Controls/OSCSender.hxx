@@ -47,7 +47,7 @@ namespace CLAM{
 		AddAll();
 		UpdateData();
 		SetHostName("localhost");
-		SetPort(6000);
+		SetPort(7000);
 		SetPath("/processing/control");
 	}
 	};
