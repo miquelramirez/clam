@@ -3,9 +3,9 @@
 
 #include "Audio.hxx"
 #include "MediaTime.hxx"
-#include "Slotv1.hxx"
 #include "PlayablePlot.hxx"
 #include "MultiDisplayPlot.hxx"
+#include "Slotv1.hxx"
 
 using SigSlot::Slotv1;
 
@@ -64,7 +64,7 @@ namespace CLAM
 			Slotv1<TData>           mSlotStopPlayingReceived;
 			TimeSegmentLabelsGroup* mLabelsGroup;
 
-			enum { MASTER=0, SLAVE };
+			enum { MASTER=0, SLAVE=1 };
 			
 			void InitAudioStereoPlot();
 

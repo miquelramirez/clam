@@ -148,7 +148,7 @@ namespace CLAM
 
 		void QtAudioStereoPlot::InitAudioStereoPlot()
 		{
-			// mute panels
+			// mute controls
 			QLabel* labelL = new QLabel(this);
 			labelL->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 			labelL->setFixedSize(25,20);
@@ -249,7 +249,7 @@ namespace CLAM
 			innerLayout->addWidget(GetHScrollGroup(),3,2);
 			innerLayout->addMultiCellWidget(pLeftHole,4,4,0,1);
 			innerLayout->addLayout(play_panel,4,2);
-			
+		
 			// bind controllers to surfaces
 			CreateControllers();
 			BindToSurfaces();
@@ -309,3 +309,8 @@ namespace CLAM
 
 	}
 }
+
+// END
+
+
+

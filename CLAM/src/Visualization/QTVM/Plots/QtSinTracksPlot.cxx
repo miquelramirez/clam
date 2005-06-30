@@ -84,16 +84,16 @@ namespace CLAM
 
 		void QtSinTracksPlot::DisplayBackgroundBlack()
 		{
+			SetDialColor(VMColor::Red());
+			SetMarksColor(VMColor::Orange());
 			SetBackgroundColor(VMColor::Black());
-			((SinTracksPlotController*)mController)->SetDialColor(VMColor::Red());
-			((SinTracksPlotController*)mController)->SetMarksColor(VMColor::Orange());
 		}
 
 		void QtSinTracksPlot::DisplayBackgroundWhite()
 		{
+			SetDialColor(VMColor::Black());
+			SetMarksColor(VMColor::Red());
 			SetBackgroundColor(VMColor::White());
-			((SinTracksPlotController*)mController)->SetDialColor(VMColor::Black());
-			((SinTracksPlotController*)mController)->SetMarksColor(VMColor::Red());
 		}
 
 		void QtSinTracksPlot::updateLabels(double time, double freq)

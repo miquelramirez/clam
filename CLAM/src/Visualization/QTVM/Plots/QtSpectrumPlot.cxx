@@ -98,20 +98,20 @@ namespace CLAM
 
 		void QtSpectrumPlot::DisplayBackgroundBlack()
 		{
-			SetBackgroundColor(VMColor::Black());
 			SetForegroundColor(VMColor::Green());
 			SetDialColor(VMColor::Red());
 			SetMarksColor(VMColor::Orange());
 			SetPeaksColor(VMColor::Yellow(),VMColor::Red());
+			SetBackgroundColor(VMColor::Black());
 		}
 
 		void QtSpectrumPlot::DisplayBackgroundWhite()
 		{
-			SetBackgroundColor(VMColor::White());
 			SetForegroundColor(VMColor::Blue());
 			SetDialColor(VMColor::Black());
 			SetMarksColor(VMColor::Red());
 			SetPeaksColor(VMColor::Cyan(),VMColor::Red());
+			SetBackgroundColor(VMColor::White());
 		}
 
     }
