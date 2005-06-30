@@ -67,10 +67,10 @@ namespace CLAM
 			mRightBound = right;
 			mView.left = 0.0;
 			mView.right = mRightBound-mLeftBound;
-			emit viewChanged(mView);
 			mMarksRenderer.SetHBounds(mLeftBound, mRightBound);
-			mMustProcessMarks=true;
 			mDial.SetHBounds(mLeftBound, mRightBound);
+			mMustProcessMarks = true;
+			emit viewChanged(mView);
 		}
 
 		void PlotController::SetVBounds(const double& bottom, const double& top)
@@ -79,10 +79,10 @@ namespace CLAM
 			mTopBound = top;
 			mView.bottom = mBottomBound;
 			mView.top = mTopBound;
-			emit viewChanged(mView);
 			mMarksRenderer.SetVBounds(mBottomBound, mTopBound);
-			mMustProcessMarks=true;
 			mDial.SetVBounds(mBottomBound, mTopBound);
+			mMustProcessMarks=true;
+			emit viewChanged(mView);
 		}
 
 		const double& PlotController::GetLeftBound() const
@@ -235,9 +235,9 @@ namespace CLAM
 			    if(ReferenceIsVisible())
 			    {
 					double ref = GetReference();
-					if(ref >= mSpanX/2.0)
+					if(ref-mLeftBound > mSpanX/2.0)
 					{
-						left = ref-mSpanX/2.0;
+						left = (ref+mSpanX/2.0 < mSamples) ? ref-mSpanX/2.0 : ref-(mSpanX-(mSamples-ref));
 					}
 					right = left+mSpanX;
 			    }
@@ -335,7 +335,7 @@ namespace CLAM
 
 		void PlotController::updateHScrollValue(int value)
 		{
-			double left = double(mSamples)/double(GetnxPixels())*double(value);
+			double left = mSamples/double(GetnxPixels())*double(value);
 			double right = left+mSpanX;
 			SetHBounds(left,right);
 		}
