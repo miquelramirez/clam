@@ -188,7 +188,11 @@ sub ac_pkg_config_find
 
 	local $package = shift;
 	local $package_esc = $package;
-	$package_esc =~ s/-/_/g;
+	$package_esc =~ s/-\+/_/g;
+
+	if ( defined( $pkg_config_names{$package} ) ) {
+		$package = $pkg_config_names{$package};
+	}
 
 	&parse_acv_file("acv/pkg_config_find.acv");
 
@@ -287,7 +291,7 @@ sub ac_package_result
 	&parse_acv_file("acv/package_result.acv");
 }
 
-@packagedlibs = ('fftw','sfftw','xerces','fltk','qt','sndfile','oggvorbis','ladspa','portmidi','portaudio','alsa','mad','id3', 'oscpack');
+@packagedlibs = ('fftw','sfftw','xerces', 'xmlpp','fltk','qt','sndfile','oggvorbis','ladspa','portmidi','portaudio','alsa','mad','id3', 'oscpack');
 #@packagedlibs = ('fftw');
 
 if ($ARGV[0] eq '-u')
@@ -458,6 +462,24 @@ int main()
 	return 0;
 }
 EOF
+
+$sandbox{'xmlpp'} = 'libxml++';
+$headers{'xmlpp'} = 'libxml++/libxml++.h';
+$pkg_config_names{'xmlpp'} = 'libxml++-2.6';
+$libs{'xmlpp'} = 'xml++-2.6';
+$alt_libs{'xmlpp'} = '';
+$ext_libs{'xmlpp'} = '';
+$source{'xmlpp'} = <<EOF;
+#include <libxml++/libxml++.h>
+
+int main( int argc, char** argv )
+{
+	xmlpp::Document document;
+
+	return 0;
+}
+EOF
+
 
 $sandbox{'fltk'} = 'fltk';
 $headers{'fltk'} = 'FL/gl.h';
