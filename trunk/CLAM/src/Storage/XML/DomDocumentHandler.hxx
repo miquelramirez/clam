@@ -51,14 +51,14 @@ namespace CLAM
 	class DomDocumentHandler : public NullDomDocumentHandler {};
 }
 #else
-#if USE_XERCES
+#ifdef USE_XERCES_TRUE
 #include "XercesDomDocumentHandler.hxx"
 namespace CLAM 
 {
 	class DomDocumentHandler : public XercesDomDocumentHandler {};
 }
 #else
-#if USE_XMLPP
+#ifdef USE_XMLPP_TRUE
 #include "LibXmlDomDocumentHandler.hxx"
 namespace CLAM 
 {
@@ -66,7 +66,7 @@ namespace CLAM
 }
 
 #else
-#	error CLAM_USE_XML active but no backend available (libxml++, xerces...)
+#error CLAM_USE_XML active but no backend available (libxml++, xerces...)
 #endif//USE_XMLPP
 #endif//USE_XERCES
 #endif//CLAM_USE_XML
