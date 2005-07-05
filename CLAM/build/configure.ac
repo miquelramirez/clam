@@ -1464,6 +1464,376 @@ fi
 
 fi
 #####################################################################
+# Check if xmlpp is going to be used
+#
+# source: acv/check_package_enable.acv 
+#####################################################################
+AC_MSG_CHECKING([xmlpp usage specified])
+#
+AC_ARG_WITH(
+	[xmlpp],AC_HELP_STRING([--with-xmlpp],
+	[use xmlpp (default is yes)]),[
+	if test x$enableval = xyes
+	then
+		AC_MSG_RESULT([yes])
+		enabled_xmlpp=yes
+	else
+		AC_MSG_RESULT([no])
+		enabled_xmlpp=no
+	fi
+],[
+	AC_MSG_RESULT([yes (default)])
+	enabled_xmlpp=yes
+])
+found_xmlpp=no
+#####################################################################
+
+#####################################################################
+# IF xmlpp is enabled THEN
+#
+# source: acv/package_enabled_start.acv 
+#####################################################################
+if test x$enabled_xmlpp = xyes
+then
+#####################################################################
+
+#####################################################################
+# Look for xmlpp in the sandbox
+#
+# source: acv/package_in_sandbox.acv 
+#####################################################################
+AC_MSG_CHECKING([xmlpp in sandbox])
+if test x$sandbox_location = x
+then
+	if test x$enabled_sandbox = xno
+	then
+		AC_MSG_RESULT([no - sandbox disabled])	
+	else
+		AC_MSG_RESULT([no - sandbox not found])	
+	fi
+else
+	AC_MSG_RESULT([searching headers])	
+	if test x$found_xmlpp = xno
+	then
+		found=1
+		for file in libxml++/libxml++.h
+		do
+			AC_MSG_CHECKING([$file for xmlpp in sandbox])
+			if test -r $sandbox_location/libxml++/include/$file
+			then
+				AC_MSG_RESULT([yes])
+				include_dirs_xmlpp="$sandbox_location/libxml++/include"
+			else
+				AC_MSG_RESULT([no])
+				found=0
+			fi
+		done
+		AC_MSG_CHECKING([[xmlpp header(s) found in sandbox]])
+		if test $found = 1
+		then
+			AC_MSG_RESULT([yes])
+			sep=""
+			found=1
+			libdirset=no
+			for file in xml++-2.6
+			do
+				AC_MSG_CHECKING([lib$file for xmlpp in sandbox])
+				if test -r $sandbox_location/libxml++/lib/lib$file.$dllext
+					then
+					AC_MSG_RESULT([yes])
+					libs_in_sandbox_xmlpp="$libs_in_sandbox_xmlpp$sep$file"
+					if test x$libdirset = xno
+					then
+						lib_dirs_xmlpp="$sandbox_location/libxml++/lib"
+						libdirset=yes
+					fi
+					sep=" "
+				else
+					AC_MSG_RESULT([no])
+					found=0
+				fi
+			done
+			AC_MSG_CHECKING([[all xmlpp lib(s) found in sandbox]])
+			if test $found = 1
+			then
+				AC_MSG_RESULT([yes - adding to library path])
+				found_xmlpp=yes
+				found_in_sandbox_xmlpp=yes
+			else
+				AC_MSG_RESULT([no])
+				found_xmlpp=no
+			fi
+		else
+			AC_MSG_RESULT([no])
+			found_xmlpp=no
+		fi
+	fi
+fi
+if test x$found_in_sandbox_xmlpp = xyes
+then
+	setenv DYLD_LIBRARY_PATH "$DYLD_LIBRARY_PATH:$lib_dirs_xmlpp"
+	setenv LD_LIBRARY_PATH "$DYLD_LIBRARY_PATH"
+	AC_MSG_NOTICE([LD_LIBRARY_PATH / DYLD_LIBRARY_PATH is now $DYLD_LIBRARY_PATH])
+	LIBS=
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_xmlpp
+	do
+		CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_xmlpp
+	do
+		LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	AC_MSG_CHECKING([libraries needed for xmlpp])
+	AC_COMPILE_IFELSE(
+	[
+		AC_LANG_SOURCE(
+[[
+#include <libxml++/libxml++.h>
+
+int main( int argc, char** argv )
+{
+	xmlpp::Document document;
+
+	return 0;
+}
+
+]]	
+	)],[
+		links_ok=0
+		tmp_libs=""
+		sep=""
+		for tmp in $libs_in_sandbox_xmlpp 
+		do
+			LDFLAGS="$LDFLAGS -l$tmp"
+			tmp_libs="$tmp_libs$sep$tmp"
+			sep=" "
+			AC_LINK_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include <libxml++/libxml++.h>
+
+int main( int argc, char** argv )
+{
+	xmlpp::Document document;
+
+	return 0;
+}
+;
+]])	
+			],[
+				links_ok=yes
+			],[
+			]
+			)
+			if test x$links_ok = xyes; then
+				break 2
+			fi
+		done
+		if test x$links_ok = xyes; then
+			libs_xmlpp=$tmp_libs
+			found_xmlpp=yes
+			AC_MSG_RESULT([$libs_xmlpp])
+		else
+			AC_MSG_RESULT([linking failed])
+		fi
+	],[
+		AC_MSG_RESULT([compilation failed])
+	])
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+fi
+#####################################################################
+# pkgconfig routine for finding libxml++-2.6
+#
+# source: acv/pkg_config_find.acv 
+#####################################################################
+if test x$enabled_xmlpp = xyes
+    then
+    if test x$found_xmlpp = xno
+	then
+	AC_MSG_CHECKING([libxml++-2.6 has pkg-config])
+	if test x$pkg_config_status = xenabled
+	    then
+	    $pkg_config --exists libxml++-2.6
+	    if test $? = 0
+		then
+		AC_MSG_RESULT([yes])
+		found_xmlpp=yes
+		include_dirs_xmlpp=`$pkg_config libxml++-2.6 --cflags-only-I | sed -e 's/ -I/ /g' |  sed -e 's/^-I/ /g' | sed -e 's/^ //'`
+		libs_xmlpp=`$pkg_config libxml++-2.6 --libs-only-l | sed -e 's/ -l/ /g' |  sed -e 's/^-l/ /g' | sed -e 's/^ //'`
+		lib_dirs_xmlpp=`$pkg_config libxml++-2.6 --libs-only-L | sed -e 's/ -L/ /g' | sed -e 's/^-L/ /g' | sed -e 's/^ //'`
+	    else
+		AC_MSG_RESULT([no])
+		found_xmlpp=no
+	    fi
+	else
+	    if test x$pkg_config_status = xdisabled
+		then
+		AC_MSG_RESULT([no: pkg-config disabled])
+	    else
+		AC_MSG_RESULT([no: pkg-config is not installed])
+	    fi
+	fi
+    fi
+fi
+#####################################################################
+
+#####################################################################
+# Standard routine for finding xmlpp
+#
+# source: acv/standard_find.acv 
+#####################################################################
+if test x$enabled_xmlpp = xyes
+then
+  if test x$found_xmlpp = xno
+	then
+	found=1
+	for file in libxml++/libxml++.h
+	do
+		AC_CHECK_HEADER($file,[filefound=1],[filefound=0])
+		AC_MSG_CHECKING([$file for xmlpp in standard locations])
+		if test $filefound = 1
+		then
+			AC_MSG_RESULT([yes])
+		else
+	    AC_MSG_RESULT([no])
+	    found=0
+		fi
+	done
+	AC_MSG_CHECKING([[xmlpp header(s) found in standard locations]])
+	if test $found = 1
+	then
+		AC_MSG_RESULT([yes])
+		if test x"xml++-2.6" != x
+		then
+			LIBS=
+			old_CXXFLAGS=$CXXFLAGS
+			old_LDFLAGS=$LDFLAGS
+			for tmp in $include_dirs_xmlpp
+			do
+				CXXFLAGS="$CXXFLAGS -I$tmp"
+			done
+			for tmp in $lib_dirs_xmlpp
+			do
+				LDFLAGS="$LDFLAGS -L$tmp"
+			done
+			AC_MSG_CHECKING([libraries needed for xmlpp])
+			AC_COMPILE_IFELSE(
+			[
+				AC_LANG_SOURCE(
+[[
+#include <libxml++/libxml++.h>
+
+int main( int argc, char** argv )
+{
+	xmlpp::Document document;
+
+	return 0;
+}
+
+]]	
+			)],[
+				links_ok=0
+				tmp_libs=""
+				sep=""
+				for tmp in xml++-2.6 
+				do
+					LDFLAGS="$LDFLAGS -l$tmp"
+					tmp_libs="$tmp_libs$sep$tmp"
+					sep=" "
+					AC_LINK_IFELSE(
+					[
+						AC_LANG_SOURCE(
+[[
+#include <libxml++/libxml++.h>
+
+int main( int argc, char** argv )
+{
+	xmlpp::Document document;
+
+	return 0;
+}
+;
+]])	
+					],[
+						links_ok=yes
+					],[
+					]
+					)
+					if test x$links_ok = xyes; then
+						break 2
+					fi
+				done
+				if test x$links_ok = xyes; then
+					libs_xmlpp=$tmp_libs
+					found_xmlpp=yes
+					AC_MSG_RESULT([$libs_xmlpp])
+				else
+					# trying alternative libs
+					LDFLAGS=$old_LDFLAGS
+					tmp_libs=""
+					sep=""
+					for tmp in $lib_dirs_xmlpp
+					do
+						LDFLAGS="$LDFLAGS -L$tmp"
+					done
+		for tmp in 
+					do
+						LDFLAGS="$LDFLAGS -l$tmp"
+						tmp_libs="$tmp_libs$sep$tmp"
+						sep=" "
+						AC_LINK_IFELSE(
+						[
+							AC_LANG_SOURCE(
+[[
+#include <libxml++/libxml++.h>
+
+int main( int argc, char** argv )
+{
+	xmlpp::Document document;
+
+	return 0;
+}
+;
+]])	
+						],[
+							links_ok=yes
+						],[
+						]
+						)
+						if test x$links_ok = xyes; then
+							break 2
+						fi
+					done
+					if test x$links_ok = xyes; then
+						libs_xmlpp=$tmp_libs
+						found_xmlpp=yes
+						AC_MSG_RESULT([$libs_xmlpp])
+					else
+						AC_MSG_RESULT([linking failed])
+					fi
+				fi
+			],[
+				AC_MSG_RESULT([compilation failed])
+			])
+			CXXFLAGS=$old_CXXFLAGS
+			LDFLAGS=$old_LDFLAGS
+		else
+			# no libs to checks
+			found_xmlpp=yes
+		fi
+	else
+	    AC_MSG_RESULT([no])
+	    found_xmlpp=no
+	fi
+    fi
+fi
+
+fi
+#####################################################################
 # Check if fltk is going to be used
 #
 # source: acv/check_package_enable.acv 
@@ -5644,6 +6014,87 @@ fi
 
 fi
 #####################################################################
+# IF xmlpp is enabled THEN
+#
+# source: acv/package_enabled_start.acv 
+#####################################################################
+if test x$enabled_xmlpp = xyes
+then
+#####################################################################
+
+#####################################################################
+# Default test, to test xmlpp
+#
+# source: acv/default_test.acv 
+#####################################################################
+failure=no
+if test $found_xmlpp
+then
+	old_CXXFLAGS=$CXXFLAGS
+	old_LDFLAGS=$LDFLAGS
+	for tmp in $include_dirs_xmlpp
+	  do
+	  CXXFLAGS="$CXXFLAGS -I$tmp"
+	done
+	for tmp in $lib_dirs_xmlpp
+	  do
+	  LDFLAGS="$LDFLAGS -L$tmp"
+	done
+	for tmp in $libs_xmlpp
+	  do
+	  LDFLAGS="$LDFLAGS -l$tmp"
+	done
+	AC_MSG_CHECKING([compiling, linking and running with xmlpp])
+	AC_RUN_IFELSE(
+	    [
+		AC_LANG_SOURCE(
+		    [[
+			    #include <libxml++/libxml++.h>
+
+int main( int argc, char** argv )
+{
+	xmlpp::Document document;
+
+	return 0;
+}
+
+			    ]])	
+		],[
+		AC_MSG_RESULT(ok)
+		],[
+			AC_MSG_RESULT(failed)
+			failure=yes
+		]
+	)
+	CXXFLAGS=$old_CXXFLAGS
+	LDFLAGS=$old_LDFLAGS
+else
+	failure=yes
+fi
+if test x$failure = xyes
+then
+	if test x$enabled_exit_on_failure = xyes
+	then
+		AC_MSG_FAILURE([
+Configure-checks for xmlpp failed. Exiting because you run with the
+flag --enable-exit_on_failure.
+Please check the configure output to see which checks failed, and the
+config.log file for more details.
+Note that you can disable the use of xmlpp altogether, running configure
+with the
+  --without-xmlpp
+option.
+		])
+	else
+		result_xmlpp=fail
+	fi
+else
+	result_xmlpp=ok
+fi
+#####################################################################
+
+fi
+#####################################################################
 # IF fltk is enabled THEN
 #
 # source: acv/package_enabled_start.acv 
@@ -6649,6 +7100,43 @@ tmp1=`echo 'xerces' | sed s/././g`
 tmp2=`echo '            ' | sed s/$tmp1//`
 AC_MSG_RESULT(
 [xerces$tmp2 $enabledstr   $resultstr     HAS_XERCES=$HAS_XERCES , USE_XERCES])
+if test x$enabled_xmlpp = xno
+then
+  enabledstr='NO   '
+else
+  if test x$enabled_xmlpp = xyes
+  then
+    enabledstr='YES  '
+  else
+    enabledstr='ERROR'
+  fi
+fi
+
+if test x$result_xmlpp = xfail
+then
+  resultstr='FAILED  '
+else
+  if test x$result_xmlpp = xok
+  then
+    resultstr='SUCCESS '
+  else
+    if test x$enabled_xmlpp = xno
+    then
+      resultstr='DISABLED'
+    else
+      resultstr='ERROR   '
+    fi
+  fi
+fi
+if test x$found_xmlpp = xyes; then
+        HAS_XMLPP=1
+else
+        HAS_XMLPP=0
+fi
+tmp1=`echo 'xmlpp' | sed s/././g`
+tmp2=`echo '            ' | sed s/$tmp1//`
+AC_MSG_RESULT(
+[xmlpp$tmp2 $enabledstr   $resultstr     HAS_XMLPP=$HAS_XMLPP , USE_XMLPP])
 if test x$enabled_fltk = xno
 then
   enabledstr='NO   '
@@ -7082,6 +7570,7 @@ flag
 # OBSOLETE
 # OBSOLETE
 # OBSOLETE
+# OBSOLETE
 # substs for fftw
 FFTW_INCLUDES=$include_dirs_fftw
 FFTW_LIBS=$libs_fftw
@@ -7130,6 +7619,22 @@ AC_SUBST(XERCES_INCLUDES)
 AC_SUBST(XERCES_LIB_PATH)
 AC_SUBST(XERCES_LIBS)
 AC_SUBST(HAS_XERCES)
+# substs for xmlpp
+XMLPP_INCLUDES=$include_dirs_xmlpp
+XMLPP_LIBS=$libs_xmlpp
+XMLPP_LIB_PATH=$lib_dirs_xmlpp
+#echo XMLPP_INCLUDES=$include_dirs_xmlpp
+#echo XMLPP_LIBS=$libs_xmlpp
+#echo XMLPP_LIB_PATH=$lib_dirs_xmlpp
+if test x$found_xmlpp = xyes; then
+	HAS_XMLPP=1
+else
+	HAS_XMLPP=0
+fi
+AC_SUBST(XMLPP_INCLUDES)
+AC_SUBST(XMLPP_LIB_PATH)
+AC_SUBST(XMLPP_LIBS)
+AC_SUBST(HAS_XMLPP)
 # substs for fltk
 FLTK_INCLUDES=$include_dirs_fltk
 FLTK_LIBS=$libs_fltk
