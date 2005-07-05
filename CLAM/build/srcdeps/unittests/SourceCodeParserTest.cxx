@@ -91,7 +91,7 @@ private:
 
   a.hxx   with_no_impl.hxx   b.hxx    subdir/c.hxx               e.hxx -> f.hxx -> g.hxx
     ^          ^             ^               ^                      ^                 ^
-	|          |             |               |                      |                 |
+    |          |             |               |                      |                 |
   a.cxx         -----b.cxx---             --- --subdir/c.cxx     e.cxx             g.cxx
                                          |         
                                         d.cxx      
