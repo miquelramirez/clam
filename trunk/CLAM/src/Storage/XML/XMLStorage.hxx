@@ -24,8 +24,8 @@
 // Description: A storage in XML format for CLAM objects
 //////////////////////////////////////////////////////////////////////
 
-#ifndef _XMLStorage_
-#define _XMLStorage_
+#ifndef _XMLStorage_hxx_
+#define _XMLStorage_hxx_
 
 #include "Storage.hxx"
 #include "XmlStorageErr.hxx"
@@ -687,4 +687,4 @@ void ConcreteDT::LoadOn(CLAM::Storage & storage)
  * @author David Garcia.
  */
 
-#endif//_XMLStorage_
+#endif//_XMLStorage_hxx_
