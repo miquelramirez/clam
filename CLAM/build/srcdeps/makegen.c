@@ -210,15 +210,31 @@ static void generate_depends_var( FILE* outfile )
 
 static void generate_includes_var( FILE* outfile )
 {
-	item* i = includepaths->first;
 	fprintf(outfile,"INCLUDES =");
-	while (i)
+	
+	/* the guessed needed include paths */
 	{
-		if (i->str && i->str[0]!=0)
-			if (list_find(needed_includepaths,i->str))
+		item* i = includepaths->first;
+		while (i)
+		{
+			if (i->str && i->str[0]!=0)
+				if (list_find(needed_includepaths,i->str))
+					fprintf(outfile,"\\\n -I%s",i->str);
+			
+			i = i->next;
+		}
+	}
+	
+	/* the specified (by USE_....) external library include paths */
+	{
+		listkey* k = listhash_find(config,"EXTERNAL_INCLUDES");
+		item* i = (k && k->l) ? k->l->first : 0;
+		while (i)
+		{
+			if (i->str && i->str[0]!=0)
 				fprintf(outfile,"\\\n -I%s",i->str);
-		
-		i = i->next;
+			i = i->next;
+		}
 	}
 	fprintf(outfile,"\n\n");
 }
