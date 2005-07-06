@@ -27,13 +27,14 @@
 #include "OSDefines.hxx"
 #include "Err.hxx"
 #include "ProcessingData.hxx"
-
 #include "Enum.hxx"
 
-namespace CLAM {
+namespace CLAM
+{
 
 	// Class EPitch
-	class EPitch : public Enum	{
+	class EPitch : public Enum
+	{
 	public:
 		EPitch() : Enum(ValueTable(), eNone) {}
 		EPitch(tValue v) : Enum(ValueTable(), v) {};
@@ -73,8 +74,7 @@ namespace CLAM {
 	///////////////////////////////////////////////////////
 	// Class PitchNote:
 	//
-	
-	
+
 	/** Pitch note type definition = pitch + octave 
 	 **/
 	class PitchNote: public ProcessingData
@@ -84,10 +84,12 @@ namespace CLAM {
 		DYN_ATTRIBUTE (0, public, EPitch, Pitch);   
 		DYN_ATTRIBUTE (1, public, int,    Octave);
 		
+		void SetMIDIPitch(int);
+	protected:
 		void DefaultInit();
 	};
 	
-}; // namespace CLAM
+} // namespace CLAM
 
 #endif // _PitchNote_
 

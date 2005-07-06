@@ -36,5 +36,14 @@ void PitchNote::DefaultInit()
 	SetOctave(0);
 }
 
+void PitchNote::SetMIDIPitch(int val)
+{
+	int pitch = val%12;
+	// octave begins in -1 (0..11 notes)
+	int octave = val/12-1;
+	SetPitch(pitch);
+	SetOctave(octave);
+}
+
 } // namespace CLAM
 
