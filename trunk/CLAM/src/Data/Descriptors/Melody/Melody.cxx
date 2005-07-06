@@ -21,13 +21,15 @@
 
 #include "Melody.hxx"
 
-using namespace CLAM;
+namespace CLAM
+{
 
-void Melody::DefaultInit() {
+void Melody::DefaultInit()
+{
 
 	// Initializing attributes
 	AddNoteArray();
 	UpdateData();
 }
-	
 
+} // namespace CLAM

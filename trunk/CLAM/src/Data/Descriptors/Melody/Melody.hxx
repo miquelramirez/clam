@@ -31,18 +31,22 @@
 
 #include "Note.hxx"
 
-namespace CLAM{
+namespace CLAM
+{
 
 //////////////////////////////////////////////////////
 // Class Melody:
 //
 /**class Melody, used to store the melodic description of an AudioSegment
 @@see SegmentDescriptors
+@@see FFHDescriptors
+@@see DistributionDescriptors
+@@see Key
 **/
 
- class Melody: public ProcessingData
- {
- public:
+class Melody: public ProcessingData
+{
+public:
 	DYNAMIC_TYPE_USING_INTERFACE (Melody, 4, ProcessingData);
 	/** Array of notes belonging to the melody **/
 	DYN_ATTRIBUTE (0, public, List<Note>, NoteArray); 
@@ -53,9 +57,11 @@ namespace CLAM{
 	/* MelodicContour: Parsons Code or different interval quantization */
 	DYN_ATTRIBUTE (3, public, List<TData>, Contour); 
 
- protected:
-	 void DefaultInit();	
- };
-}; // namespace CLAM
+protected:
+	void DefaultInit();	
+};
+
+} // namespace CLAM
 
 #endif // _Melody _
+
