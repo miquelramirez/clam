@@ -54,7 +54,7 @@ public:
 	DYN_ATTRIBUTE (1, public, TSize, NumberOfNotes); 
 	/** Tessitura in Hz: difference between the minimum and maximum pitch **/
 	DYN_ATTRIBUTE (2, public, TData, Tessitura); 
-	/* MelodicContour: Parsons Code or different interval quantization */
+	/** MelodicContour: Parsons Code or different interval quantization */
 	DYN_ATTRIBUTE (3, public, List<TData>, Contour); 
 
 protected:
