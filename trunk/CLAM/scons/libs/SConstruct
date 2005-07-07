@@ -1,0 +1,119 @@
+from buildtools.thorough_check import ThoroughPackageCheck
+from buildtools.tool_checks import *
+from buildtools.package_checks import *
+from buildtools.generic_checks import * 
+
+# helper functions
+
+def setup_build_options( env ) :
+	# configuration options:
+	opts = Options('clam.conf')
+	
+	opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr'))
+	opts.Add( BoolOption( 'release', 'Build CLAM using optimization and stripping debug symbols', 'yes'))
+	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
+	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
+	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','none')) )
+	opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))
+	
+	opts.Update(env)
+	opts.Save('clam.conf', env) # Save, so user doesn't have to 
+				  				# specify PREFIX every time
+
+	Help(opts.GenerateHelpText(env))
+
+ 
+def make_install_dirnames( env ) :
+	install_prefix = env['prefix']
+	install_lib    = env['prefix']+'/lib'
+	install_bin    = env['prefix']+'/bin'
+	install_inc    = env['prefix']+'/include'
+	install_data   = env['prefix']+'/share'
+	Export('install_prefix install_lib install_bin install_inc install_data')
+	print """\
+#############################################
+### INSTALL DIRECTORY INFORMATION         ###
+#############################################"""
+	print "Directory to install under:", install_prefix
+	print "\tLibrary files will be installed at:", install_lib
+	print "\tExecutable files will be installed at:", install_bin
+	print "\tInclude files will be installed at:", install_inc
+	print "\tDocumentation, data and examples will be installed at:", install_data
+
+
+# SConstruct file for CLAM
+clam_env = Environment()
+
+Export('clam_env')
+
+setup_build_options( clam_env )
+
+
+custom_check_routines = dict()
+
+for check_name, check_routine in package_checks.items() :
+	custom_check_routines[check_name] = check_routine
+
+for check_name, check_routine in tool_checks.items() :
+	custom_check_routines[check_name] = check_routine
+
+for check_name, check_routine in generic_checks.items() :
+	custom_check_routines[check_name] = check_routine
+
+conf = Configure( clam_env, custom_tests = custom_check_routines )
+
+# clam env
+# check for pkg-config, compiler support, bash features, et.
+print """\
+############################################
+### GLOBAL CLAM DEPENDENCIES CHECKING    ###
+############################################"""
+
+if not conf.check_pkg_config( conf ) :
+	print 'WARNING: pkg-config is not installed'
+	clam_env['pkg_config_available'] = False
+else :
+	clam_env['pkg_config_available'] = True
+
+
+print """\
+############################################
+### CLAM MODULES DEPENDENCIES CHECKING   ###
+############################################"""
+
+clam_env = conf.Finish()
+
+# core env, CLAM core module checks
+
+core_env = Environment()
+Export('core_env')
+
+conf = Configure( core_env, custom_tests = custom_check_routines )
+
+if clam_env['xmlbackend'] == 'xercesc' :
+	
+	if not conf.check_xerces_c( conf ) :
+		print "xerces c code compile/link/run test failed! Check config.log for details..."
+		core_env['xmlbackend'] = 'none'
+elif clam_env['xmlbackend'] == 'xmlpp' :
+	if clam_env['pkg_config_available'] :
+		res = conf.pkg_config_check_existence( conf, name='libxml++-2.6' )
+		core_env.ParseConfig( 'pkg-config --cflags --libs libxml++-2.6' )
+			
+	if not conf.check_xmlpp( conf ) : 
+		print "\tERROR: libxml++ code compile/link/run test failed! Check config.log for details"
+		clam_env['xmlbackend'] = 'none'
+
+
+core_env = conf.Finish()
+
+
+make_install_dirnames(clam_env)
+
+#building
+
+print """\
+##############################################
+### BUILDING CLAM LIBRARIES                ###
+##############################################"""
+
