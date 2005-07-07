@@ -14,7 +14,7 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','none')) )
-	opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))
+	#opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))
 	
 	opts.Update(env)
 	opts.Save('clam.conf', env) # Save, so user doesn't have to 
@@ -75,6 +75,8 @@ if not conf.check_pkg_config( conf ) :
 else :
 	clam_env['pkg_config_available'] = True
 
+if clam_env['double'] :
+	clam_env.Append( CPPFLAGS='-DCLAM_DOUBLE' )
 
 print """\
 ############################################
@@ -85,7 +87,7 @@ clam_env = conf.Finish()
 
 # core env, CLAM core module checks
 
-core_env = Environment()
+core_env = clam_env.Copy()
 Export('core_env')
 
 conf = Configure( core_env, custom_tests = custom_check_routines )
