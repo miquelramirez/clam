@@ -1,0 +1,4 @@
+# SConstruct file for CLAMcore
+Import('env')
+
+Export('env')
