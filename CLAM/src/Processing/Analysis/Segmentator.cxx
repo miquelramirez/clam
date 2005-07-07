@@ -148,7 +148,8 @@ void SegmentatorConfig::DefaultInit()
 void SegmentatorConfig::AddDescParams(const TDescriptorsParams& descParams)
 {
 	TIndex position;
-	if(GetDescriptorsParams().Size()==0) GetDescriptorsParams().AddElem(descParams);
+	if(GetDescriptorsParams().Size()==0) 
+		GetDescriptorsParams().AddElem(descParams);
 	else if ((position=GetDescriptorsSearch().Find(descParams))==-1)
 	{
 		if(descParams<GetDescriptorsParams()[0])
@@ -170,7 +171,7 @@ bool SegmentatorConfig::FindDescParams(TDescriptorsParams& descParams)
 		descParams.threshold=GetDescriptorsParams()[pos].threshold;
 		return true;
 	}
-	else return false;
+	return false;
 }
 
 void SegmentatorConfig::ClearDescParams() {

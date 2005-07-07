@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _Segmentator_
-#define _Segmentator_
+#ifndef _Segmentator_hxx_
+#define _Segmentator_hxx_
 
 #include "Processing.hxx"
 #include "SegmentatorConfig.hxx"
@@ -32,7 +32,8 @@
 	 leave it for later. MDB
 */
 
-namespace CLAM{
+namespace CLAM
+{
 
 class Segment;
 class SegmentDescriptors;
@@ -67,10 +68,7 @@ enum {
 };
 
 
-	/* SegmentatorConfig moved to SegmentatorConfig.hxx */
-
-	
-class Segmentator:public Processing
+class Segmentator : public Processing
 {
 public:
 	Segmentator();
@@ -96,5 +94,5 @@ protected:
 
 } //namespace CLAM
 
-#endif // Segmentator
+#endif // _Segmentator_hxx_
 
