@@ -1,4 +1,14 @@
 # SConstruct file for CLAMcore
-Import('env')
+Import('core_env version')
+from buildtools.pkggen import PackageData
 
-Export('env')
+
+print """\
+##############################################
+### BUILDING CLAM CORE LIBRARY             ###
+##############################################"""
+
+print "Creating pkg-config descriptor...",
+pkg_data = PackageData( 'clam_core', version, [] )
+pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
+print "ok"
