@@ -14,7 +14,7 @@ namespace CLAM
 		{
 		    SetPeaksColor(VMColor::Cyan(),VMColor::Red());
 		    SetvRange(TData(-150.0),TData(0.0));
-		    mRenderer.SetVBounds(TData(0.0),TData(-150.0));
+		    mRenderer.SetVBounds(TData(-150.0),TData(0.0));
 		    SetnSamples(22050);
 		}
 
