@@ -13,6 +13,9 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'release', 'Build CLAM using optimization and stripping debug symbols', 'yes'))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
+	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'no' ) )
+	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
+	
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','none')) )
 	#opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))
 	
@@ -40,13 +43,90 @@ def make_install_dirnames( env ) :
 	print "\tDocumentation, data and examples will be installed at:", install_data
 
 
+def setup_global_environment( clam_env, custom_check_routines ) :
+	conf = Configure( clam_env, custom_tests = custom_check_routines )
+	
+	# clam env
+	# check for pkg-config, compiler support, bash features, et.
+	print """\
+############################################
+### GLOBAL CLAM DEPENDENCIES CHECKING    ###
+############################################"""
 
+	if not conf.check_pkg_config( conf ) :
+		print 'WARNING: pkg-config is not installed'
+		clam_env['pkg_config_available'] = False
+	else :
+		clam_env['pkg_config_available'] = True
+
+	if clam_env['double'] :
+		clam_env.Append( CPPFLAGS=['-DCLAM_DOUBLE'] )
+	else :
+		clam_env.Append( CPPFLAGS=['-DCLAM_FLOAT'] )
+
+	if not clam_env['checks'] :
+		clam_env.Append( CPPFLAGS=['-DCLAM_DISABLE_CHECKS'] )
+
+	if clam_env['release_asserts'] :
+		clam_env.Append( CPPFLAGS=['-DCLAM_USE_RELEASE_ASSERTS'] )
+
+	if clam_env['release'] :
+		clam_env.Append( CCFLAGS=Split('-O2 -fomit-frame-pointer -Wall') )
+	else :
+		clam_env.Append( CCFLAGS=Split('-g -Wall') )
+
+	clam_env.Append( CPPFLAGS=['-DUSE_PTHREADS=1'] )
+	clam_env.Append( LIBS=['pthread'] )
+	clam_env['preinclude'] = 'preinclude.hxx'
+
+	clam_env = conf.Finish()
+
+
+def setup_core_environment( core_env, custom_check_routines ) :
+	conf = Configure( core_env, custom_tests = custom_check_routines )
+
+	if core_env['xmlbackend'] == 'xercesc' :
+		failed = False	
+		if not failed and not conf.CheckCXXHeader('xercesc/util/PlatformUtils.hpp') :
+			print "Could not find xerces c headers! Defaulting to the null xml backend"
+			failed = True
+		if not failed and not conf.check_xerces_c( conf ) :
+			print "xerces c code compile/link/run test failed! Check config.log for details..."
+			failed = True
+		if failed :
+			core_env['xmlbackend'] = 'none'
+	elif core_env['xmlbackend'] == 'xmlpp' :
+		failed = False
+		if core_env['pkg_config_available'] :
+			res = conf.pkg_config_check_existence( conf, name='libxml++-2.6' )
+			if res :
+				core_env.ParseConfig( 'pkg-config --cflags --libs libxml++-2.6' )
+			else :
+				failed = True
+		else :
+			failed = True
+			
+		if not conf.check_xmlpp( conf ) : 
+			print "\tERROR: libxml++ code compile/link/run test failed! Check config.log for details"
+			failed = True
+
+		if failed :
+			core_env['xmlbackend'] = 'none'
+		else :
+			core_env.Append( CPPFLAGS=['-DCLAM_USE_XML'] )
+
+	core_env = conf.Finish()
+
+	
 
 # SConstruct file for CLAM
-#
+# Main section
 
 version = '0.8'
 Export('version')
+
+top = '../..'
+Export('top')
 
 clam_env = Environment()
 
@@ -55,6 +135,7 @@ Export('clam_env')
 setup_build_options( clam_env )
 
 
+#registering custom checks
 custom_check_routines = dict()
 
 for check_name, check_routine in package_checks.items() :
@@ -66,56 +147,26 @@ for check_name, check_routine in tool_checks.items() :
 for check_name, check_routine in generic_checks.items() :
 	custom_check_routines[check_name] = check_routine
 
-conf = Configure( clam_env, custom_tests = custom_check_routines )
 
-# clam env
-# check for pkg-config, compiler support, bash features, et.
-print """\
-############################################
-### GLOBAL CLAM DEPENDENCIES CHECKING    ###
-############################################"""
-
-if not conf.check_pkg_config( conf ) :
-	print 'WARNING: pkg-config is not installed'
-	clam_env['pkg_config_available'] = False
-else :
-	clam_env['pkg_config_available'] = True
-
-if clam_env['double'] :
-	clam_env.Append( CPPFLAGS='-DCLAM_DOUBLE' )
-
-clam_env['preinclude'] = 'preinclude.hxx'
+# core env, CLAM core module checks
+setup_global_environment( clam_env, custom_check_routines )
 
 print """\
 ############################################
 ### CLAM MODULES DEPENDENCIES CHECKING   ###
 ############################################"""
 
-clam_env = conf.Finish()
-
-# core env, CLAM core module checks
-
 core_env = clam_env.Copy()
 Export('core_env')
 
-conf = Configure( core_env, custom_tests = custom_check_routines )
+setup_core_environment( core_env, custom_check_routines )
 
-if clam_env['xmlbackend'] == 'xercesc' :
-	
-	if not conf.check_xerces_c( conf ) :
-		print "xerces c code compile/link/run test failed! Check config.log for details..."
-		core_env['xmlbackend'] = 'none'
-elif clam_env['xmlbackend'] == 'xmlpp' :
-	if clam_env['pkg_config_available'] :
-		res = conf.pkg_config_check_existence( conf, name='libxml++-2.6' )
-		core_env.ParseConfig( 'pkg-config --cflags --libs libxml++-2.6' )
-			
-	if not conf.check_xmlpp( conf ) : 
-		print "\tERROR: libxml++ code compile/link/run test failed! Check config.log for details"
-		clam_env['xmlbackend'] = 'none'
+clam_env['xmlbackend'] = core_env['xmlbackend']
+print clam_env['xmlbackend']
+if clam_env['xmlbackend'] != 'none' :
+	clam_env.Append( CPPFLAGS=['-DCLAM_USE_XML'] )
 
 
-core_env = conf.Finish()
 
 make_install_dirnames(clam_env)
 
