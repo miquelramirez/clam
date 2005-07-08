@@ -268,44 +268,12 @@ namespace CLAM
 
 		void SingleDisplayPlot::keyPressEvent(QKeyEvent* e)
 		{
-			switch(e->key())
-			{
-				case Qt::Key_Shift:
-					mController->SetKeyShiftPressed(true);
-					break;
-
-				case Qt::Key_Insert:
-					mController->SetKeyInsertPressed(true); 
-					break;
-						
-				case Qt::Key_Delete:
-					mController->SetKeyDeletePressed(true); 
-					break;
-				    
-				default:
-					break;
-			}
+			mController->KeyPressEvent(e);
 		}
 
 		void SingleDisplayPlot::keyReleaseEvent(QKeyEvent* e)
 		{
-			switch(e->key())
-			{
-				case Qt::Key_Shift:
-					mController->SetKeyShiftPressed(false);
-					break;
-
-				case Qt::Key_Insert:
-					mController->SetKeyInsertPressed(false); 
-					break;
-						
-				case Qt::Key_Delete:
-					mController->SetKeyDeletePressed(false); 
-					break;
-
-				default:
-					break;
-			}
+			mController->KeyReleaseEvent(e);
 		}
 
 		void SingleDisplayPlot::SetMarks(std::vector<unsigned>& marks)
