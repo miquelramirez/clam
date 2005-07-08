@@ -155,8 +155,8 @@ namespace CLAM
 			mVerClipper.Cull(TData(bottom), TData(top), mStarts, mEnds );
 			mHorClipper.Cull(left, right, mStarts, mEnds );
 
-			mRenderer.SetVBounds(GetBottomBound(),GetTopBound());
-			mRenderer.SetSpanLists(mStarts, mEnds, TData(left), TData(right));
+			mRenderer.SetVBounds(GetBottomBound(),GetTopBound()-2.0);
+			mRenderer.SetSpanLists(mStarts,mEnds,TData(left),TData(right)-TData(2.0));
 
 			mMustProcessData = false;
 		}
