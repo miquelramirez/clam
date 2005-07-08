@@ -13,7 +13,7 @@ namespace CLAM
 		    SetDataColor(VMColor::Green());
 		    SetvRange(TData(0.0),TData(1.0));
 		    SetnSamples(22050);
-		    mRenderer.SetVBounds(TData(0.7),TData(0.0));
+		    mRenderer.SetVBounds(TData(0.0),TData(0.7));
 		    mRenderer.SetHBounds(TData(0.0),TData(GetnSamples()));
 		}
 
