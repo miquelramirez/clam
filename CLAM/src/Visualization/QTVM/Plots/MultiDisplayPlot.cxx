@@ -218,23 +218,17 @@ namespace CLAM
 
 		void MultiDisplayPlot::keyPressEvent(QKeyEvent* e)
 		{
-			int key = e->key();
 			for(unsigned i=0; i < mControllers.size(); i++)
 			{
-				if(key == Qt::Key_Shift) mControllers[i]->SetKeyShiftPressed(true);
-				if(key == Qt::Key_Insert) mControllers[i]->SetKeyInsertPressed(true); 
-				if(key == Qt::Key_Delete) mControllers[i]->SetKeyDeletePressed(true);
+				mControllers[i]->KeyPressEvent(e);
 			}
 		}
 
 		void MultiDisplayPlot::keyReleaseEvent( QKeyEvent* e)
 		{
-			int key = e->key();
 			for(unsigned i=0; i < mControllers.size(); i++)
 			{
-				if(key == Qt::Key_Shift) mControllers[i]->SetKeyShiftPressed(false);
-				if(key == Qt::Key_Insert) mControllers[i]->SetKeyInsertPressed(false); 
-				if(key == Qt::Key_Delete) mControllers[i]->SetKeyDeletePressed(false);
+				mControllers[i]->KeyReleaseEvent(e);
 			}
 		}
 
