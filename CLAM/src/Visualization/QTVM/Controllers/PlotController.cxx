@@ -538,19 +538,46 @@ namespace CLAM
 			mMarksRenderer.SetColor(c);
 		}
 
-		void PlotController::SetKeyInsertPressed(bool pressed)
+		void PlotController::KeyPressEvent(QKeyEvent* e)
 		{
-			mKeyInsertPressed=pressed;
+			switch(e->key())
+			{
+				case Qt::Key_Shift:
+					mKeyShiftPressed = true;;
+					break;
+
+				case Qt::Key_Insert:
+					mKeyInsertPressed = true;; 
+					break;
+						
+				case Qt::Key_Delete:
+					mKeyDeletePressed = true;; 
+					break;
+
+				default:
+					break;
+			}
 		}
 
-		void PlotController::SetKeyDeletePressed(bool pressed)
+		void PlotController::KeyReleaseEvent(QKeyEvent* e)
 		{
-			mKeyDeletePressed=pressed;
-		}
+			switch(e->key())
+			{
+				case Qt::Key_Shift:
+					mKeyShiftPressed = false;
+					break;
 
-		void PlotController::SetKeyShiftPressed(bool pressed)
-		{
-			mKeyShiftPressed = pressed;
+				case Qt::Key_Insert:
+					mKeyInsertPressed = false;; 
+					break;
+						
+				case Qt::Key_Delete:
+					mKeyDeletePressed = false; 
+					break;
+
+				default:
+					break;
+			}
 		}
 
 		void PlotController::insertMark(unsigned elem)
