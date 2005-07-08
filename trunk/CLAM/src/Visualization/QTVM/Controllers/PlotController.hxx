@@ -57,9 +57,8 @@ namespace CLAM
 			void SetMarks(std::vector<unsigned>& marks);
 			std::vector<unsigned>& GetMarks();
 			void SetMarksColor(Color c);
-			void SetKeyInsertPressed(bool pressed);
-			void SetKeyDeletePressed(bool pressed);
-			void SetKeyShiftPressed(bool pressed);
+			void KeyPressEvent(QKeyEvent* e);
+			void KeyReleaseEvent(QKeyEvent* e);
 			void OnDoubleClick();
 			void SetSegmentationTag(const QString& tag);
 			QString GetTag() const;
