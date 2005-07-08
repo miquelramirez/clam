@@ -1,10 +1,10 @@
+from buildtools import *
 from buildtools.thorough_check import ThoroughPackageCheck
 from buildtools.tool_checks import *
 from buildtools.package_checks import *
 from buildtools.generic_checks import * 
 
 # helper functions
-
 def setup_build_options( env ) :
 	# configuration options:
 	opts = Options('clam.conf')
@@ -22,7 +22,6 @@ def setup_build_options( env ) :
 
 	Help(opts.GenerateHelpText(env))
 
- 
 def make_install_dirnames( env ) :
 	install_prefix = env['prefix']
 	install_lib    = env['prefix']+'/lib'
@@ -41,7 +40,14 @@ def make_install_dirnames( env ) :
 	print "\tDocumentation, data and examples will be installed at:", install_data
 
 
+
+
 # SConstruct file for CLAM
+#
+
+version = '0.8'
+Export('version')
+
 clam_env = Environment()
 
 Export('clam_env')
@@ -78,6 +84,8 @@ else :
 if clam_env['double'] :
 	clam_env.Append( CPPFLAGS='-DCLAM_DOUBLE' )
 
+clam_env['preinclude'] = 'preinclude.hxx'
+
 print """\
 ############################################
 ### CLAM MODULES DEPENDENCIES CHECKING   ###
@@ -109,7 +117,6 @@ elif clam_env['xmlbackend'] == 'xmlpp' :
 
 core_env = conf.Finish()
 
-
 make_install_dirnames(clam_env)
 
 #building
@@ -119,3 +126,4 @@ print """\
 ### BUILDING CLAM LIBRARIES                ###
 ##############################################"""
 
+SConscript('core/SConscript')
