@@ -14,13 +14,14 @@ pkg_data = PackageData( 'clam_core', version, [] )
 pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
 print "ok"
 
+
 print "Gathering necessary source files...",
 if not os.path.exists('src') :
 	os.mkdir('src')
 if not os.path.exists('include' ) :
 	os.makedirs('include/CLAM')
 
-core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing', 'src/Data/Descriptors/Pool', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib']
+core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing', 'src/Data/Descriptors/Pool', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib', 'src/Processing/Controls']
 
 if sys.platform == 'windows' :
 	core_folders.append('src/Defines/Windows')
@@ -38,6 +39,13 @@ elif core_env['xmlbackend'] == 'xmlpp' :
 else :
 	blacklist.append( 'Xerces.+' )
 	blacklist.append( 'LibXml.+' )
+
+if not core_env['with_ladspa_support'] :
+	blacklist.append( 'Ladspa.+' )
+
+if not core_env['with_osc_support'] :
+	blacklist.append( 'OSC.+')
+
 file_retriever = FileRetriever( top+'/..', core_folders, blacklist )
 
 file_retriever.scan()
