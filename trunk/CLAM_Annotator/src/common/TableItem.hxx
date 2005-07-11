@@ -1,10 +1,10 @@
 #ifndef TABLE_ITEM_H
 #define TABLE_ITEM_H
 
-#include "qtable.h"
-#include "qpainter.h"
-#include "qcolor.h"
-#include "qrect.h"
+#include <qtable.h>
+#include <qpainter.h>
+#include <qcolor.h>
+#include <qrect.h>
 
 class TableItem : public QTableItem
 {

@@ -1,5 +1,4 @@
 #include "TableItem.hxx"
-#include "qcolor.h"
 
 
 void TableItem::paint(QPainter * p, const QColorGroup & cg, const QRect & cr, bool selected )

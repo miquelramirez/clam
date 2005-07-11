@@ -1,7 +1,7 @@
 #ifndef LIST_VIEW_ITEM
 #define LIST_VIEW_ITEM
 
-#include "qlistview.h"
+#include <qlistview.h>
 
 class ListViewItem : public QListViewItem
 {
