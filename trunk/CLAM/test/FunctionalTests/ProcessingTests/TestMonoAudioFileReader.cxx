@@ -22,8 +22,6 @@ namespace CLAMTest
 	{
 		CPPUNIT_TEST_SUITE( MonoAudioFileReaderFunctionalTest );
 
-
-
 		// Configuration values checking tests
 		CPPUNIT_TEST( testConfigure_ReturnsTrueWithJustFilename );
 		CPPUNIT_TEST( testConfigure_ReturnsFalseWithoutAudioFileInConfig );
@@ -47,7 +45,6 @@ namespace CLAMTest
 		CPPUNIT_TEST( testDo_JustOneFrame_SampleRateIsOK );
 
 		CPPUNIT_TEST( test_WindowsMedia_WAVE_File );
-
 
 		CPPUNIT_TEST_SUITE_END();
 
@@ -308,28 +305,21 @@ namespace CLAMTest
 
 			proc.Configure( cfg );
 			
-			CLAM::Audio readSamples_1;
-			readSamples_1.SetSampleRate( file.GetHeader().GetSampleRate() );
-			readSamples_1.SetSize( 256 );
+			CLAM::Audio readSamples;
+			readSamples.SetSampleRate( file.GetHeader().GetSampleRate() );
+			readSamples.SetSize( 256 );
 
 			CLAM::TTime previousBeginTime = 0.0;
-
-
 			proc.Start();
-
-			proc.Do(readSamples_1);
-
-			previousBeginTime = readSamples_1.GetBeginTime();
-
-			proc.Do(readSamples_1);
-
+			proc.Do(readSamples);
+			previousBeginTime = readSamples.GetBeginTime();
+			proc.Do(readSamples);
 			proc.Stop();
 			
-			CLAM::TTime truth = CLAM::TTime( readSamples_1.GetSize() ) / file.GetHeader().GetSampleRate();
-			CLAM::TTime valueObtained = readSamples_1.GetBeginTime() - previousBeginTime;
+			CLAM::TTime truth = CLAM::TTime( readSamples.GetSize() ) / file.GetHeader().GetSampleRate();
+			CLAM::TTime valueObtained = readSamples.GetBeginTime() - previousBeginTime;
 
 			CPPUNIT_ASSERT( fabs( truth - valueObtained ) < 1e-4 );
-
 		}
 
 		void testDo_JustOneFrame_SampleRateIsOK()
