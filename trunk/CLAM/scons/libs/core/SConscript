@@ -20,14 +20,14 @@ if not os.path.exists('src') :
 if not os.path.exists('include' ) :
 	os.makedirs('include/CLAM')
 
-core_folders = ['src/Base', 'src/Data/Base', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib']
+core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing', 'src/Data/Descriptors/Pool', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib']
 
 if sys.platform == 'windows' :
 	core_folders.append('src/Defines/Windows')
 else :
 	core_folders.append('src/Defines/Unix')	
 
-blacklist = [ 'Audio.+', 'SMS.+', 'ProcessingChain.+', 'ScaleCnv.+', 'DefaultProcessingFactoryRegistration.+' ]
+blacklist = [ 'SMS.+', 'ProcessingChain.+', 'DefaultProcessingFactoryRegistration.+', '.+Test.+' ]
 
 if core_env['xmlbackend'] == 'xercesc' :
 	blacklist.append( 'LibXml.+')
