@@ -17,7 +17,10 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
 	
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','none')) )
-	#opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))
+	opts.Add( BoolOption( 'with_ladspa_support', 'Ladspa plugin support', 'yes') )
+	opts.Add( BoolOption( 'with_osc_support', 'Enables/Disables OSC support', 'yes') )
+	opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))
+	opts.Add( BoolOption( 'with_nr_fft', 'Selects whether to use Numerical Recipes fft algorithm implementation or not', 'yes') )
 	
 	opts.Update(env)
 	opts.Save('clam.conf', env) # Save, so user doesn't have to 
@@ -95,6 +98,8 @@ def setup_global_environment( clam_env, custom_check_routines ) :
 
 	clam_env['preinclude'] = 'preinclude.hxx'
 
+	clam_env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
+
 	clam_env = conf.Finish()
 
 
@@ -134,8 +139,131 @@ def setup_core_environment( core_env, custom_check_routines ) :
 		else :
 			core_env['xmlbackend'] = 'none'	
 
+	if core_env['with_ladspa_support'] :
+		result = conf.CheckCHeader( 'ladspa.h' )
+		if not result :
+			print "ladspa SDK header was not found"
+			print "Either install ladspa SDK or disable the option by issuing the option"
+			print "$ scons with_ladspa_support=no"
+			Exit(1)
+			#core_env['with_ladspa_support'] = False
+		else :
+			core_env.Append( CPPFLAGS=['-DUSE_LADSPA=1'])
+	
+	if core_env['with_osc_support'] :
+		result = conf.CheckCXXHeader( 'oscpack/ip/NetworkingUtils.h' )
+		if not result :	
+			print "liboscpack headers not found!"
+			print "Either install liboscpack or disable OSC support by issuing"
+			print "$scons with_osc_support=no"
+			Exit(1)
+		result = conf.CheckLibWithHeader( 'oscpack', 'oscpack/ip/NetworkingUtils.h', 'cxx', call='InitializeNetworking();')
+		if not result :
+			print "liboscpack binaries not found!"
+			print "Either install liboscpack or disable OSC support by issuing"
+			print "$scons with_osc_support=no"
+			Exit(1)
+		result = conf.check_oscpack()
+		if not result :
+			print "liboscpack compile/link/run test failed! check config.log for details..."
+			print "Either install liboscpack or disable OSC support by issuing"
+			print "$scons with_osc_support=no"
+			Exit(1)
+		core_env.Append(CPPFLAGS='-DUSE_OSCPACK=1')	
+
 	core_env = conf.Finish()
 
+
+def setup_processing_environment( processing_env, custom_check_routines ) :
+	conf = Configure( processing_env, custom_check_routines )
+	if core_env['with_fftw'] :
+		if core_env['double'] : # CLAM uses double for TData
+			double_prefixed = False
+			result = conf.CheckCHeader( 'fftw.h' )
+			if not result :
+				result = conf.CheckCHeader( 'dfftw.h' )
+				if result : 
+					double_prefixed = True
+				else :
+					print "Could not find fftw library headers...!"
+					print "Install the library or deactivate its usage issuing the following command:"
+					print "$ scons with_fftw=no"
+					Exit(1)
+			if not double_prefixed :
+				result = conf.CheckCHeader( 'rfftw.h' )
+			else :
+				result = conf.CheckCHeader( 'drfftw.h' )
+			if not result :
+				print "Could not find some of the fftw library headers...!"
+				print "Please check that all fftw headers are installed"
+				Exit(1)
+			if not double_prefixed :
+				result = conf.CheckLib( 'fftw', 'fftw_sizeof_fftw_real')
+			else :
+				result = conf.CheckLib( 'dfftw', 'fftw_sizeof_fftw_real')
+			if not result :
+				print "Could not find libfftw (or libdfftw)"
+				print "Please check that fftw is properly installed"
+				Exit(1)
+			if not double_prefixed :
+				result = conf.CheckLib( 'rfftw', 'rfftw_create_plan' )
+			else :
+				result = conf.CheckLib( 'drfftw', 'rfftw_create_plan' )
+			if not result :
+				print "Could not find librfftw (or libdrfftw)"
+				print "Please check that fftw is properly installed"
+				Exit(1)
+	
+			if not double_prefixed :
+				result = conf.check_fftw_double_wo_prefix()
+			else :
+				result = conf.check_fftw_double_w_prefix()
+			if not result :
+				print "fftw compile/link/run tests failed! Check config.log for details"
+				Exit(1)
+			if not double_prefixed :
+				result = conf.check_rfftw_double_wo_prefix()
+			else :
+				result = conf.check_rfftw_double_w_prefix()
+			if not result :
+				print "rfftw compile/link/run tests failed! Check config.log for details"
+				Exit(1)
+			
+		else :
+			result = conf.CheckCHeader( 'sfftw.h' )
+			if not result :
+				print "Could not find fftw library headers...!"
+				print "Install the library or deactivate its usage issuing the following command:"
+				print "$ scons with_fftw=no"
+				Exit(1)
+			result = conf.CheckCHeader( 'srfftw.h' )
+			if not result :
+				print "Could not find some of the fftw library headers...!"
+				print "Please check that all fftw headers are installed"
+				Exit(1)
+			result = conf.CheckLib( 'sfftw', 'fftw_sizeof_fftw_real')
+			if not result :
+				print "Could not find libsfftw"
+				print "Please check that fftw is properly installed"
+				Exit(1)
+			result = conf.CheckLib( 'srfftw', 'rfftw_create_plan' )
+			if not result :
+				print "Could not find libsrfftw"
+				print "Please check that fftw is properly installed"
+				Exit(1)
+	
+			result = conf.check_fftw_float_w_prefix()
+			if not result :
+				print "fftw compile/link/run tests failed! Check config.log for details"
+				Exit(1)
+			result = conf.check_rfftw_float_w_prefix()
+			if not result :
+				print "rfftw compile/link/run tests failed! Check config.log for details"
+				Exit(1)
+
+		processing_env.Append( CPPFLAGS=['-DUSE_FFTW=1'] )
+
+	processing_env = conf.Finish()
 	
 
 # SConstruct file for CLAM
@@ -185,6 +313,10 @@ if clam_env['xmlbackend'] != 'none' :
 	clam_env.Append( CPPFLAGS=['-DCLAM_USE_XML'] )
 
 
+processing_env = clam_env.Copy()
+Export('processing_env')
+
+setup_processing_environment( processing_env, custom_check_routines )
 
 make_install_dirnames(clam_env)
 
@@ -196,3 +328,4 @@ print """\
 ##############################################"""
 
 SConscript('core/SConscript')
+SConscript('processing/SConscript')
