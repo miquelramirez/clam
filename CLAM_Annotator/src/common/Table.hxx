@@ -1,7 +1,7 @@
 #ifndef TABLE_H
 #define TABLE_H
 
-#include "qtable.h"
+#include <qtable.h>
 
 class Table : public QTable
 {
