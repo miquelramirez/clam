@@ -133,6 +133,9 @@ private:
 			if (synthesis.CanConsumeAndProduce())
 			{
 				synthesis.Do();
+			}
+			if (audioWriter.CanConsumeAndProduce())
+			{
 				audioWriter.Do();
 			}
 		}
