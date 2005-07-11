@@ -26,7 +26,8 @@ class ThoroughPackageCheck :
 			lastLIBS = context.env['LIBS']
 		except KeyError :
 			lastLIBS = None
-		context.env.Append( LIBS=self.lib )
+		if self.lib is not None :
+			context.env.Append( LIBS=self.lib )
 		result = context.TryLink( self.test_code, self.test_code_extension )
 		context.Result(result)
 		if not result :
