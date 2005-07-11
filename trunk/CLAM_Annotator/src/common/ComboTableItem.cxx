@@ -1,9 +1,9 @@
 #include "ComboTableItem.hxx"
-#include "qstyle.h"
-#include "qpainter.h"
-#include "qcolor.h"
-#include "qrect.h"
-#include "qapplication.h"
+#include <qstyle.h>
+#include <qpainter.h>
+#include <qcolor.h>
+#include <qrect.h>
+#include <qapplication.h>
 
 #include <iostream>
 
