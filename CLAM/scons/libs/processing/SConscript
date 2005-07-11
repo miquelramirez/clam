@@ -1,0 +1,44 @@
+# SConstruct file for CLAMprocessing
+Import('processing_env version top install_prefix install_lib install_bin install_inc install_data')
+from buildtools.pkggen import PackageData
+from buildtools.file_retriever import FileRetriever
+import os, sys
+
+print """\
+##############################################
+### BUILDING CLAM PROCESSINGS LIBRARY      ###
+##############################################"""
+
+print "Creating pkg-config descriptor...",
+pkg_data = PackageData( 'clam_processing', version, [] )
+pkg_data.create_pkg_descriptor( processing_env, 'clam_processing.pc' )
+print "ok"
+
+print "Gathering necessary source files...",
+if not os.path.exists('src') :
+	os.mkdir('src')
+if not os.path.exists('include' ) :
+	os.makedirs('include/CLAM')
+
+folders = ['src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec' ]
+
+blacklist = ['GT_FilterBank','OnsetDetector']
+
+if not processing_env['with_fftw'] :
+	blacklist.append('.+rfftw.+')
+if not processing_env['with_nr_fft'] :
+	blacklist.append('.*numrecipes.+')
+	blacklist.append('.+numrec.+')
+
+file_retriever = FileRetriever( top+'/..', folders, blacklist )
+
+file_retriever.scan()
+
+print "ok"
+processing_env.Append(CPPPATH=['include/CLAM','../core/include/CLAM'])
+processing_env.Append(CCFLAGS='-include %s'%processing_env['preinclude'])
+processing_env.Append(LIBS=['clam_core'])
+processing_env.Append(LIBPATH=['../core'])
+
+processing_env.SharedLibrary( 'clam_processing', file_retriever.sources )
+
