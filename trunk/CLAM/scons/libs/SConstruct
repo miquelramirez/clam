@@ -1,3 +1,4 @@
+import sys
 from buildtools import *
 from buildtools.thorough_check import ThoroughPackageCheck
 from buildtools.tool_checks import *
@@ -9,6 +10,7 @@ def setup_build_options( env ) :
 	# configuration options:
 	opts = Options('clam.conf')
 	
+	# global options
 	opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr'))
 	opts.Add( BoolOption( 'release', 'Build CLAM using optimization and stripping debug symbols', 'yes'))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
@@ -16,11 +18,27 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'no' ) )
 	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
 	
+	# clam_core options
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','none')) )
 	opts.Add( BoolOption( 'with_ladspa_support', 'Ladspa plugin support', 'yes') )
 	opts.Add( BoolOption( 'with_osc_support', 'Enables/Disables OSC support', 'yes') )
+	
+	# clam_processing options
 	opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))
 	opts.Add( BoolOption( 'with_nr_fft', 'Selects whether to use Numerical Recipes fft algorithm implementation or not', 'yes') )
+
+	# clam_audioio options
+	opts.Add( BoolOption( 'with_sndfile', 'Enables PCM files reading and writing', 'yes' ) )	
+	opts.Add( BoolOption( 'with_oggvorbis', 'Enables ogg/vorbis reading and writing support', 'yes' ) )
+	opts.Add( BoolOption( 'with_mad', 'Enables mpeg 1 layer 3 files reading and writing support', 'yes' ) )
+	opts.Add( BoolOption( 'with_id3', 'Enables support for accesing ID3 tags on mpeg audio streams', 'yes') )
+	if sys.platform == 'linux2' :
+		opts.Add( BoolOption( 'with_alsa', 'Enables PCM and MIDI device I/O through ALSA', 'yes' ) )
+	elif sys.platform == 'win32' :
+		opts.Add( BoolOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
+	else :
+		opts.Add( BoolOption( 'audio_backend', 'Selects audio PCM i/o library used CLAM backend', 'rtaudio', ('rtaudio',) ) )
+	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
 	
 	opts.Update(env)
 	opts.Save('clam.conf', env) # Save, so user doesn't have to 
@@ -28,7 +46,7 @@ def setup_build_options( env ) :
 
 	Help(opts.GenerateHelpText(env))
 
-def make_install_dirnames( env ) :
+def compose_install_dirnames( env ) :
 	install_prefix = env['prefix']
 	install_lib    = env['prefix']+'/lib'
 	install_bin    = env['prefix']+'/bin'
@@ -96,6 +114,9 @@ def setup_global_environment( clam_env, custom_check_routines ) :
 		clam_env.Append( CPPFLAGS=['-DUSE_PTHREADS=1'] )
 		#clam_env.Append( LIBS=['pthread'] )
 
+	if sys.platform == 'win32' :
+		clam_env.Append( CPPFLAGS=['-DWIN32'] )
+
 	clam_env['preinclude'] = 'preinclude.hxx'
 
 	clam_env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
@@ -147,8 +168,13 @@ def setup_core_environment( core_env, custom_check_routines ) :
 			print "$ scons with_ladspa_support=no"
 			Exit(1)
 			#core_env['with_ladspa_support'] = False
-		else :
-			core_env.Append( CPPFLAGS=['-DUSE_LADSPA=1'])
+		result = conf.check_ladspa()
+		if not result :
+			print "ladspa SDK compile test failed! Check config.log for details"
+			print "Check that your installed ladspa headers match the version required by CLAM"
+			Exit(1)			
+
+		core_env.Append( CPPFLAGS=['-DUSE_LADSPA=1'])
 	
 	if core_env['with_osc_support'] :
 		result = conf.CheckCXXHeader( 'oscpack/ip/NetworkingUtils.h' )
@@ -264,7 +290,117 @@ def setup_processing_environment( processing_env, custom_check_routines ) :
 		processing_env.Append( CPPFLAGS=['-DUSE_FFTW=1'] )
 
 	processing_env = conf.Finish()
+
+def setup_audioio_environment( audioio_env, custom_check_routines ) :
+	conf = Configure( audioio_env, custom_check_routines )
+
+	if audioio_env['with_sndfile'] :
+		result = conf.CheckCHeader( 'sndfile.h' )
+		if not result :
+			print "Could not find libsndfile headers! Please check your libsndfile installation"
+			Exit(1)
+		result = conf.CheckLib( library='sndfile', symbol='sf_open_fd' )
+		if not result :
+			print "Could not find libnsndfile binaries! Please check your libsndfile installation"
+			Exit(1)
+		result = conf.check_libsndfile()
+		if not result :
+			print "libsndfile compile/link/run tests failed! Check config.log for details..."
+			Exit(1)
+		
+		audioio_env.Append( CPPFLAGS=['-DUSE_SNDFILE=1'])
+	if audioio_env['with_oggvorbis'] :
+		result = conf.CheckCHeader( 'ogg/ogg.h' )
+		if not result :
+			print "Could not find libogg headers! Please check your libogg installation"
+			Exit(1)
+		result = conf.CheckLib( library='ogg', symbol='oggpack_writeinit' )
+		if not result :
+			print "Could not find libogg binaries! Please check you libogg installation" 
+			Exit(1)
+		result = conf.check_libogg()
+		if not result :
+			print "libogg compile/link/run tests failed! Check config.log for details"
+			Exit(1)
+		result = conf.CheckCHeader( 'vorbis/vorbisenc.h' )
+		if not result :
+			print "Could not find libvorbis headers! Please check your libvorbis installation"
+			Exit(1)
+		audioio_env.Append( LIBS=['vorbisenc'] )
+		result = conf.CheckLib( library='vorbis', symbol='vorbis_encode_setup_init')
+		if not result :
+			print "Could not find libvorbis binaries! Please check you libvorbis installation"
+			Exit(1)
+		result = conf.check_libvorbis()
+		if not result :
+			print "libvorbis compile/link/run test failed! Check config.log for details"
+			Exit(1)	
+		result = conf.CheckCHeader( 'vorbis/vorbisfile.h' )
+		if not result :
+			print "Could not find libvorbisfile headers! Please check your libvorbisfile installation"
+			Exit(1)
+		result = conf.CheckLib( library="vorbisfile", symbol="ov_test_open" )
+		if not result :
+			print "Could not find libvorbisfile binaries! Please check your libvorbisfile installation"
+			Exit(1)
+		result = conf.check_libvorbisfile()
+		if not result :
+			print "libvorbisfile compile/link/run test failed! Please check config.log for details"
+			Exit(1)
+		audioio_env.Append( CPPFLAGS=['-DUSE_OGGVORBIS=1'] )
+	if audioio_env['with_mad'] :
+		result = conf.CheckCHeader( 'mad.h' )
+		if not result :
+			print "Could not find libmad headers! Please check your libmad installation"
+			Exit(1)
+		result = conf.CheckLib( library='mad', symbol='mad_stream_init' )
+		if not result :
+			print "Could not find libmad binaries! Please check your libmad installation"
+			Exit(1)
+		result = conf.check_libmad( )
+		if not result :
+			print "libmad compile/link/run tests failed! Please check config.log for details"
+			Exit(1)
+		audioio_env.Append( CPPFLAGS=['-DUSE_MAD=1'] )
+	if audioio_env['with_id3'] :
+		result = conf.CheckCXXHeader('id3/tag.h')
+		if not result :
+			print "Could not find id3lib headers! Please check your id3lib installation"
+			Exit(1)
+		result = conf.CheckLibWithHeader( 'id3', 'id3/tag.h', 'cxx', call='ID3_Tag myTag;' )
+		if not result :
+			print "Could not find id3lib binaries! Please check your id3lib installation"
+			Exit(1)
+		result = conf.check_id3lib()
+		if not result :
+			print "id3lib compile/link/run tests failed! Please check config.log for details"
+			Exit(1)
+		audioio_env.Append( CPPFLAGS=['-DUSE_ID3=1'] )
+	if sys.platform == 'linux2' and audioio_env['with_alsa'] :
+		result = conf.CheckCHeader( 'alsa/asoundlib.h' )
+		if not result :
+			print "Could not find libasound development headers! Please check your libasound installation"
+			Exit(1)
+		result = conf.CheckLib( library='asound', symbol='snd_card_next' )	
+		if not result :
+			print "Could not find libasound binaries! Please check your libasound installation"
+			Exit(1)
+		result = conf.check_libasound()
+		if not result :
+			print "libasound compile/link/run tests failed! Please check config.log for details..."
+			Exit(1)
+		audioio_env.Append( CPPFLAGS=['-DUSE_ALSA=1'] )
+	if not sys.platform == 'linux2' :
+		if sys.platform == 'win32' and audioio_env['audio_backend'] == 'directx' :
+			raise RuntimeError, "Not implemented yet!"
+		if audioio_env['audio_backend'] == 'portaudio' :
+			raise RuntimeError, "Not implemented yet!"
+		if audioio_env['audio_backend'] == 'rtaudio' :
+			raise RuntimeError, "Not implemented yet!"
+	if audioio_env['with_portmidi'] :
+		raise RuntimeError, "Not implemented yet!"
 	
+	audioio_env = conf.Finish()	
 
 # SConstruct file for CLAM
 # Main section
@@ -318,7 +454,13 @@ Export('processing_env')
 
 setup_processing_environment( processing_env, custom_check_routines )
 
-make_install_dirnames(clam_env)
+audioio_env = clam_env.Copy()
+Export('audioio_env')
+
+setup_audioio_environment( audioio_env, custom_check_routines )
+
+# install dirs composition
+compose_install_dirnames(clam_env)
 
 #building
 
@@ -329,3 +471,4 @@ print """\
 
 SConscript('core/SConscript')
 SConscript('processing/SConscript')
+SConscript('audioio/SConscript')

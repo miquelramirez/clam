@@ -1,0 +1,60 @@
+# SConstruct file for CLAM i/o
+from buildtools.pkggen import PackageData
+from buildtools.file_retriever import FileRetriever
+import os, sys
+
+print """\
+##############################################
+### BOOTSTRAPPING CLAM AUDIO I/O LIBRARY   ###
+##############################################"""
+
+Import('audioio_env version top install_prefix install_lib install_bin install_inc install_data')
+
+print "Creating pkg-config descriptor...",
+pkg_data = PackageData( 'clam_audioio', version, [] )
+pkg_data.create_pkg_descriptor( audioio_env, 'clam_audioio.pc' )
+print "ok"
+
+print "Gathering necessary source files...",
+if not os.path.exists('src') :
+	os.mkdir('src')
+if not os.path.exists('include' ) :
+	os.makedirs('include/CLAM')
+
+folders = ['src/Processing/AudioFileIO', 'src/Processing/AudioIO', 'src/Processing/MIDIIO', 'src/Tools/MIDIIO', 'src/Tools/MIDIIO/File', 'src/Tools/MIDIIO/TextFile', 'src/Tools/AudioIO', 'src/Tools/AudioFileIO', 'src/Processing/AudioIO*.*xx']
+
+if audioio_env['with_portmidi'] :
+	folders.append( 'src/Tools/PortMIDI' )
+
+if sys.platform == 'linux2' :
+	if audioio_env['with_alsa'] :
+		folders.append( 'src/Tools/MIDIIO/Linux' )
+		folders.append( 'src/Tools/AudioIO/Linux')
+elif sys.platform == 'win32':
+	if audioio_env['audio_backend'] == 'rtaudio' :
+		folders += ['src/Tools/AudioIO/RtAudio']
+	elif audioio_env['audio_backend'] == 'directx' :
+		folders += ['src/Tools/AudioIO/Windows/DirectXAudioDevice.cxx', 'src/Tools/AudioIO/Windows/DXFullDuplex.*xx']
+	elif audioio_env['audio_backend'] == 'portaudio' :
+		folders += ['src/Tools/AudioIO/Windows/PAAudio*.*xx', 
+				'src/Tools/AudioIO/Windows/PACLAM*.*xx', 
+				'src/Tools/AudioIO/Windows/PortAudioUtils.*', 
+				'src/Tools/AudioIO/Windows/DoubleBuffer.*xx']
+else :
+	if audioio_env['audio_backend'] == 'rtaudio' :
+		folders += ['src/Tools/AudioIO/RtAudio']
+
+blacklist = [ 'foo.cxx']
+
+file_retriever = FileRetriever( top+'/..', folders, blacklist )
+
+file_retriever.scan()
+
+print "ok"
+audioio_env.Append(CPPPATH=['include/CLAM','../core/include/CLAM','../processing/include/CLAM'])
+audioio_env.Append(CCFLAGS='-include %s'%audioio_env['preinclude'])
+audioio_env.Append(LIBS=['clam_core','clam_processing'])
+audioio_env.Append(LIBPATH=['../core','../processing'])
+
+audioio_env.SharedLibrary( 'clam_audioio', file_retriever.sources )
+

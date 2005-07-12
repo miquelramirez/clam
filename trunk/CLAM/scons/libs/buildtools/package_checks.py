@@ -178,4 +178,109 @@ int main()
 
 package_checks['check_oscpack'] = ThoroughPackageCheck( 'oscpack', 'c++', None, liboscpack_test_code )
 
+ladspa_test_code = """\
+#include <ladspa.h>
+const LADSPA_Descriptor * ladspa_descriptor(unsigned long Index)
+{ return 0; }
+int main()
+{
+	ladspa_descriptor(0);
+	return 0;
+}
+"""
 
+package_checks['check_ladspa'] = ThoroughPackageCheck( 'ladspa', 'c', None, ladspa_test_code )
+
+libsndfile_test_code = """\
+#include <sndfile.h>
+
+int main()
+{
+	SF_INFO sfinfo;
+	sf_open_fd(fileno(stdout),SFM_WRITE,&sfinfo,0);
+	return 0;
+}
+"""
+
+package_checks['check_libsndfile'] = ThoroughPackageCheck( 'libsndfile', 'c', None, libsndfile_test_code )
+
+libogg_test_code = """\
+#include <ogg/ogg.h>
+
+int main( int argc, char** argv )
+{
+	oggpack_buffer b;
+
+	oggpack_writeinit(&b);
+
+	return 0;
+}
+"""
+
+package_checks['check_libogg'] = ThoroughPackageCheck( 'libogg', 'c', None, libogg_test_code )
+
+libvorbis_test_code = """\
+#include <vorbis/vorbisenc.h>
+
+int main( int argc, char** argv )
+{
+	vorbis_info vi;
+	vorbis_info_init( &vi );
+	vorbis_encode_setup_init( &vi );
+
+	return 0;
+}
+"""
+
+package_checks['check_libvorbis'] = ThoroughPackageCheck( 'libvorbis', 'c', None, libvorbis_test_code )
+
+libvorbisfile_test_code = """\
+#include <vorbis/vorbisfile.h>
+
+int main( int argc, char** argv )
+{
+	OggVorbis_File vf;
+	
+	ov_test_open( &vf );
+
+	return 0;
+}
+
+"""
+
+package_checks['check_libvorbisfile'] = ThoroughPackageCheck( 'libvorbisfile', 'c', None, libvorbisfile_test_code )
+
+libmad_test_code = """\
+#include<mad.h>
+int main()
+{
+	struct mad_stream s;
+	mad_stream_init(&s);
+	return 0;
+}
+"""
+
+package_checks['check_libmad'] = ThoroughPackageCheck( 'libmad', 'c', None, libmad_test_code )
+
+libasound_test_code = """\
+#include<alsa/asoundlib.h>
+int main()
+{
+	int card = 0;
+	snd_card_next(&card);
+	return 0;
+}
+"""
+
+package_checks['check_libasound'] = ThoroughPackageCheck( 'libasound', 'c', None, libasound_test_code )
+
+id3lib_test_code = """\
+#include <id3/tag.h>
+int main()
+{
+	ID3_Tag myTag;
+	return 0;
+}
+"""
+
+package_checks['check_id3lib'] = ThoroughPackageCheck( 'id3lib', 'c++', None, id3lib_test_code )
