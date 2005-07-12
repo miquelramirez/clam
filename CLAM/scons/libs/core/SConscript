@@ -1,13 +1,14 @@
 # SConstruct file for CLAMcore
-Import('core_env version top install_prefix install_lib install_bin install_inc install_data')
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
 
 print """\
 ##############################################
-### BUILDING CLAM CORE LIBRARY             ###
+### BOOTSTRAPPING CLAM CORE LIBRARY        ###
 ##############################################"""
+
+Import('core_env version top install_prefix install_lib install_bin install_inc install_data')
 
 print "Creating pkg-config descriptor...",
 pkg_data = PackageData( 'clam_core', version, [] )
@@ -21,7 +22,7 @@ if not os.path.exists('src') :
 if not os.path.exists('include' ) :
 	os.makedirs('include/CLAM')
 
-core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing', 'src/Data/Descriptors/Pool', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib', 'src/Processing/Controls']
+core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing/Audio.*', 'src/Data/Descriptors/Pool', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib', 'src/Processing/Controls']
 
 if sys.platform == 'windows' :
 	core_folders.append('src/Defines/Windows')

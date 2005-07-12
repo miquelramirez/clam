@@ -1,14 +1,14 @@
 # SConstruct file for CLAMprocessing
-Import('processing_env version top install_prefix install_lib install_bin install_inc install_data')
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
 
 print """\
 ##############################################
-### BUILDING CLAM PROCESSINGS LIBRARY      ###
+### BOOTSTRAPPING CLAM PROCESSINGS LIBRARY ###
 ##############################################"""
 
+Import('processing_env version top install_prefix install_lib install_bin install_inc install_data')
 print "Creating pkg-config descriptor...",
 pkg_data = PackageData( 'clam_processing', version, [] )
 pkg_data.create_pkg_descriptor( processing_env, 'clam_processing.pc' )
@@ -20,9 +20,9 @@ if not os.path.exists('src') :
 if not os.path.exists('include' ) :
 	os.makedirs('include/CLAM')
 
-folders = ['src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec' ]
+folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx' ]
 
-blacklist = ['GT_FilterBank','OnsetDetector']
+blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+']
 
 if not processing_env['with_fftw'] :
 	blacklist.append('.+rfftw.+')
