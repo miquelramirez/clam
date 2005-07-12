@@ -9,6 +9,11 @@ namespace CLAM
 	
 	class ProcessingFactory : public Factory<Processing>
 	{
+		public:
+
+			static Factory<Processing>& GetInstance();
+			
+			virtual ~ProcessingFactory();
 	};
 
 } //namespace CLAM
