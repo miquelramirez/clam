@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2005 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -18,19 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
 #include "ProcessingFactory.hxx"
-#include "Oscillator.hxx"
-#include "SimpleOscillator.hxx"
-#include "AudioMultiplier.hxx"
-#include "AudioAdder.hxx"
-#include "AudioMixer.hxx"
-#include "AutoPanner.hxx"
-#include "FFT_rfftw.hxx"
-#include "IFFT_rfftw.hxx"
-#include "Controller.hxx"
-#include "ADSR.hxx"
-
+#include "AudioOut.hxx"
 
 /**
  * In this cxx are defined the objects that will be in the factory by default. Including it 
@@ -43,14 +32,8 @@
  */
 typedef CLAM::ProcessingFactory ProcessingFactory;
 
-static ProcessingFactory::Registrator<CLAM::SimpleOscillator> regtSimpleOscillator( "SimpleOscillator" );
-static ProcessingFactory::Registrator<CLAM::Oscillator> regtOscillator( "Oscillator" );
-static ProcessingFactory::Registrator<CLAM::AudioMultiplier> regtAudioMultiplier( "AudioMultiplier" );
-static ProcessingFactory::Registrator<CLAM::AudioAdder> regtAudioAdder( "AudioAdder" );
-static ProcessingFactory::Registrator<CLAM::AudioMixer> regtAudioMixer( "AudioMixer" );
-static ProcessingFactory::Registrator<CLAM::FFT_rfftw> regtFFT_rfftw( "FFT_rfftw" );
-static ProcessingFactory::Registrator<CLAM::IFFT_rfftw> regtIFFT_rfftw( "IFFT_rfftw" );
-static ProcessingFactory::Registrator<CLAM::AutoPanner> regtAutoPanner( "AutoPanner" );
-static ProcessingFactory::Registrator<CLAM::Controller> regtController( "Controller" );
-static ProcessingFactory::Registrator<CLAM::ADSR> regtADSR( "ADSR" );
+static ProcessingFactory::Registrator<CLAM::AudioOut> regtAudioOut( "AudioOut" );
+
+
+
 
