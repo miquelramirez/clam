@@ -1,37 +1,44 @@
 
-#ifndef _EType_
-#define _EType_
+#ifndef _EType_hxx__
+#define _EType_hxx_
 
 #include "Enum.hxx"
 
-namespace CLAM_Annotator{
-
-/** Interpolation
-   *   Enumeration to use for specifying the type of interpolation used
-   */
-  class EType: public CLAM::Enum
-  {
-  public:
-	
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	EType() : Enum(sEnumValues, sDefault) {}
-	EType(tValue v) : Enum(sEnumValues, v) {}
-	EType(std::string s) : Enum(sEnumValues, s) {}
-
-	typedef enum {
-		eInt,
-		eFloat,
-		eString,
-		eRestrictedString,
-		eNone
-	} tEnum;
-
-	virtual CLAM::Component* Species() const
+namespace CLAM_Annotator
+{
+	/**
+	 * Specifies the kind of descriptors
+	 */
+	class EType: public CLAM::Enum
 	{
-		return (CLAM::Component*) new EType;
-	}
-  };
-};
+	public:
+		EType() : Enum(ValueTable(), eNone) {}
+		EType(tValue v) : Enum(ValueTable(), v) {}
+		EType(const std::string & s) : Enum(ValueTable(), s) {}
+		virtual CLAM::Component* Species() const { return new EType; }
 
-#endif
+		typedef enum {
+			eInt,
+			eFloat,
+			eString,
+			eRestrictedString,
+			eNone
+		} tEnum;
+
+		static tEnumValue * ValueTable()
+		{
+			static tEnumValue sValueTable[] = 
+			{
+				{eInt,"Int"},
+				{eFloat,"Float"},
+				{eString,"String"},
+				{eRestrictedString,"RestrictedString"},
+				{eNone,"None"},
+				{0,NULL}
+			};
+			return sValueTable;
+		}
+	};
+}
+
+#endif//_EType_hxx_
