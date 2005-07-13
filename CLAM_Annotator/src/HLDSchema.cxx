@@ -17,8 +17,8 @@ namespace CLAM_Annotator{
 		validated = (std::find(GetRestrictionValues().begin(),
 			GetRestrictionValues().end(),descriptor.GetValue().GetString())!=
 			GetRestrictionValues().end());
-		CLAM_DEBUG_ASSERT(validated, std::string("Descriptor did not validate: " + 
-							 descriptor.GetName()).c_str());
+		CLAM_DEBUG_ASSERT(validated,
+			std::string("Descriptor did not validate: " + descriptor.GetName()).c_str());
 		return validated;
 		
 	}
@@ -28,8 +28,8 @@ namespace CLAM_Annotator{
 		bool validated = true;
 		validated = (descriptor.GetValue()>=GetiRange().GetMin()&&
 			descriptor.GetValue()<=GetiRange().GetMax());
-		CLAM_DEBUG_ASSERT(validated, std::string("Descriptor did not validate: " + 
-							 descriptor.GetName()).c_str());
+		CLAM_DEBUG_ASSERT(validated,
+			std::string("Descriptor did not validate: " + descriptor.GetName()).c_str());
 		return validated;
 	}
 	
@@ -38,8 +38,8 @@ namespace CLAM_Annotator{
 		bool validated = true;
 		validated = (descriptor.GetValue()>=GetfRange().GetMin()&&
 			descriptor.GetValue()<=GetfRange().GetMax());
-		CLAM_DEBUG_ASSERT(validated, std::string("Descriptor did not validate: " + 
-							 descriptor.GetName()).c_str());
+		CLAM_DEBUG_ASSERT(validated,
+			std::string("Descriptor did not validate: " + descriptor.GetName()).c_str());
 		return validated;
 	}
 
@@ -52,22 +52,24 @@ namespace CLAM_Annotator{
 		bool validated = true;
 		for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
 		{
-			if((*it2).GetType()=="Int")
+			const std::string & type = it2->GetType();
+			const std::string & name = it2->GetName();
+			if(type=="Int")
 				validated = validated && 
 					ValidateDescriptor(MakeDescriptor(
-						*pool.GetReadPool<int>("Song",(*it2).GetName()),(*it2).GetName()));
-			else if((*it2).GetType()=="Float")
+						*pool.GetReadPool<int>("Song",name),name));
+			else if(type=="Float")
 				validated = validated && 
 					ValidateDescriptor(MakeDescriptor(
-						*pool.GetReadPool<float>("Song",(*it2).GetName()),(*it2).GetName()));
-			else if((*it2).GetType()=="RestrictedString")
+						*pool.GetReadPool<float>("Song",name),name));
+			else if(type=="RestrictedString")
 				validated = validated && 
 					ValidateDescriptor(MakeDescriptor(
-						*pool.GetReadPool<RestrictedString>("Song",(*it2).GetName()),(*it2).GetName()));
-			else if((*it2).GetType()=="String")
+						*pool.GetReadPool<RestrictedString>("Song",name),name));
+			else if(type=="String")
 				validated = validated &&
 					ValidateDescriptor(MakeDescriptor(
-						*pool.GetReadPool<std::string>("Song",(*it2).GetName()),(*it2).GetName()));
+						*pool.GetReadPool<std::string>("Song",name),name));
 			CLAM_ASSERT(validated,"NotValidated");
 		}
 		return validated;
@@ -76,13 +78,10 @@ namespace CLAM_Annotator{
 	HLDSchemaElement HLDSchema::FindElement(const std::string& descriptorName) const
 	{
 		std::list<HLDSchemaElement>::iterator it;
-		bool validated = true;
 		for(it = GetHLDs().begin(); it != GetHLDs().end(); it++)
 		{
-			if ((*it).GetName() == descriptorName)
-			{
+			if (it->GetName() == descriptorName)
 				return (*it);
-			}
 		}
 		CLAM_ASSERT(false, "Descriptor not found in Scheme");
 	}
@@ -97,12 +96,10 @@ namespace CLAM_Annotator{
 	{
 		return "Float";
 	}
-
 	std::string GetTypeFromValue(const std::string& s)
 	{
 		return "String";
 	}
-	
 	std::string GetTypeFromValue(const CLAM_Annotator::RestrictedString& r)
 	{
 		return "RestrictedString";
