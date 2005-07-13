@@ -19,7 +19,7 @@ namespace CLAMTest
 	{
 		CPPUNIT_TEST_SUITE( FFTFunctionalTest );
 		CPPUNIT_TEST( test_FFTW_WithPowerOfTwoInput );
-/*		CPPUNIT_TEST( test_NumRec_WithPowerOfTwoInput );
+		CPPUNIT_TEST( test_NumRec_WithPowerOfTwoInput );
 		CPPUNIT_TEST( test_Ooura_WithPowerOfTwoInput );
 		CPPUNIT_TEST( test_FFTW_WithNonPowerOfTwoInput );
 		CPPUNIT_TEST( test_NumRec_WithNonPowerOfTwoInput );
@@ -33,7 +33,7 @@ namespace CLAMTest
 		CPPUNIT_TEST( test_FFTW_WithComplex );
 		CPPUNIT_TEST( test_FFTW_WithPolar );
 		CPPUNIT_TEST( test_FFTW_WithBPF );
-*/		CPPUNIT_TEST_SUITE_END();
+		CPPUNIT_TEST_SUITE_END();
 
 	protected:
 
@@ -68,38 +68,30 @@ namespace CLAMTest
 				return *(CLAM::FFT_base*)NULL;
 		}
 
-		void setupSine_F0400Hz_SR8kHz_1024samples( CLAM::Audio& object )
+		void setupSine_F0400Hz_SR8kHz( CLAM::Audio& audio, int nSamples ) 
 		{
-			const CLAM::TSize samples = 1024;
 			const CLAM::TSize sampleRate = 8000;
 			const CLAM::TData sineFreq = 400.0f;
 
-			object.SetSize( samples );
-			object.SetSampleRate( sampleRate );
-			object.SetBeginTime( CLAM::TTime(0.0) );
-			object.SetEndTime( (CLAM::TTime(samples)/CLAM::TTime(sampleRate))*1000. );
+			audio.SetSize( nSamples );
+			audio.SetSampleRate( sampleRate );
+			audio.SetBeginTime( CLAM::TTime(0.0) );
 
-			for ( CLAM::TSize i=0; i<samples; i++ )
-				object.GetBuffer()[i]=0.625+0.5*sin(2.0*sineFreq*400.0*(((float)i)/sampleRate));
+			for ( CLAM::TSize i=0; i<nSamples; i++ )
+				audio.GetBuffer()[i]=0.625+0.5*sin(2.0*sineFreq*400.0*(((float)i)/sampleRate));
 		}
 
-		void setupSine_F0400Hz_SR8kHz_884samples( CLAM::Audio& object )
+		void setupSine_F0400Hz_SR8kHz_1024samples( CLAM::Audio& audio )
 		{
-			const CLAM::TSize samples = 884;
-			const CLAM::TSize sampleRate = 8000;
-			const CLAM::TData sineFreq = 400.0f;
-
-			object.SetSize( samples );
-			object.SetSampleRate( sampleRate );
-			object.SetBeginTime( CLAM::TTime(0.0) );
-			object.SetEndTime( CLAM::TTime(samples)/CLAM::TTime(sampleRate) *1000.);
-
-			for ( CLAM::TSize i=0; i<samples; i++ )
-				object.GetBuffer()[i]=0.625+0.5*sin(2.0*sineFreq*400.0*(((float)i)/sampleRate));
-			
+			setupSine_F0400Hz_SR8kHz(audio, 1024);
 		}
 
-		void setupSpectrumToStoreFFTOutput( CLAM::Spectrum& object )
+		void setupSine_F0400Hz_SR8kHz_884samples( CLAM::Audio& audio )
+		{
+			setupSine_F0400Hz_SR8kHz(audio, 884);
+		}
+
+		void setupSpectrumToStoreFFTOutput( CLAM::Spectrum& spectrum )
 		{
 			CLAM::SpecTypeFlags specFlags;
 			specFlags.bComplex = 1;
@@ -107,14 +99,13 @@ namespace CLAMTest
 			specFlags.bPolar = 1;
 			specFlags.bMagPhaseBPF = 1;
 
-			object.SetType( specFlags );
+			spectrum.SetType( specFlags );
 		}
 
 		static void loadBack2BackDataset( const std::string& pathToTestData )
 		{
 			if ( !smBack2BackDataLoaded )
 			{
-				std::cout << "loading backdata\n" <<std::flush;
 
 				CLAM::XMLStorage::Restore( smReferenceP2Spectrum,
 							   pathToTestData + "OneSineSpectrum_RectWindow_P2.xml" );
@@ -150,31 +141,18 @@ namespace CLAMTest
 			setupSpectrumToStoreFFTOutput( output );
 
 			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
 			processingConfig.SetAudioSize( input.GetSize() );
 
 			processing.Configure( processingConfig );
-			
 			processing.Start();
-			
 			processing.Do( input, output );
-
 			processing.Stop();
-		
-			std::cout << "back size: "<< smReferenceP2Spectrum.GetMagBuffer().Size()
-				<< " at: " << &(smReferenceP2Spectrum.GetMagBuffer() ) << std::endl;
-			std::cout << "output size: "<< output.GetMagBuffer().Size()
-				<< " at: " << &(output.GetMagBuffer() ) << std::endl;
-
 
 			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
 								output.GetMagBuffer() );
-			std::cout << "--- end test\n" << std::flush;
-
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
-			// "Output spectrum magnitude buffer suspicious!" );
 		}
 		
 		void test_NumRec_WithBPF()
@@ -190,7 +168,6 @@ namespace CLAMTest
 			CLAM::FFT_base&      processing = createFFTObject( "NumRec" );
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			//setupSpectrumToStoreFFTOutput( output );
 
 			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
 
@@ -214,7 +191,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
 			
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 
@@ -231,7 +207,6 @@ namespace CLAMTest
 			CLAM::FFT_base&      processing = createFFTObject( "NumRec" );
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			//setupSpectrumToStoreFFTOutput( output );
 
 			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
 
@@ -251,7 +226,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 		void test_NumRec_WithComplex()
@@ -267,7 +241,6 @@ namespace CLAMTest
 			CLAM::FFT_base&      processing = createFFTObject( "NumRec" );
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			//setupSpectrumToStoreFFTOutput( output );
 
 			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
 
@@ -288,7 +261,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 		
@@ -319,7 +291,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 
@@ -336,7 +307,6 @@ namespace CLAMTest
 			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			//setupSpectrumToStoreFFTOutput( output );
 
 			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
 
@@ -360,7 +330,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
 			
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 
@@ -377,7 +346,6 @@ namespace CLAMTest
 			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			//setupSpectrumToStoreFFTOutput( output );
 
 			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
 
@@ -397,7 +365,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 		void test_Ooura_WithComplex()
@@ -413,7 +380,6 @@ namespace CLAMTest
 			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			//setupSpectrumToStoreFFTOutput( output );
 
 			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
 
@@ -433,7 +399,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 		
@@ -466,7 +431,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
 
-			// "Output spectrum magnitude buffer suspicious!" );
 
 		}
 
@@ -507,7 +471,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
 			
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 
@@ -524,7 +487,6 @@ namespace CLAMTest
 			CLAM::FFT_base&      processing = createFFTObject( "FFTW" );
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			//setupSpectrumToStoreFFTOutput( output );
 
 			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
 
@@ -545,7 +507,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 		void test_FFTW_WithComplex()
@@ -561,7 +522,6 @@ namespace CLAMTest
 			CLAM::FFT_base&      processing = createFFTObject( "FFTW" );
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			//setupSpectrumToStoreFFTOutput( output );
 
 			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
 
@@ -582,7 +542,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 
@@ -614,7 +573,6 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
 
-			// "Output spectrum magnitude buffer suspicious!" );
 			
 		}
 
