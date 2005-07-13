@@ -78,21 +78,33 @@ namespace CLAM {
 		 *  @param s The new size in samples */
 		void SetSize(int s);
 
+		/** 
+		 *  @depracated use ResizeToEndTime instead
+		 */
+		void SetEndTime(TTime time);
+
 		/** Resizes the array buffer to last from the begin time
 		 *  until the specified time position (time in miliseconds)
 		 *  @todo Document how data in the buffer is discarded
 		 *  @param time End time of the buffer once resized
 		 *  @see SetSize
 		 */
-		void SetEndTime(TTime time);
+		void ResizeToEndTime(TTime time);
 
+		/** 
+		 *  @depracated use ResizeToDuration instead
+		 */
+		void SetDuration(TTime duration);
+		
 		/** Resizes the array buffer to last the specified
 		 *  time duration (miliseconds).
 		 *  @todo Document how data in the buffer is discarded
 		 *  @param duration The required duration for the buffer once resized
 		 *  @see SetSize
+		 *
+		 *  @depracated use ResizeToDuration instead
 		 */
-		void SetDuration(TTime duration);
+		void ResizeToDuration(TTime duration);
 
 		/** Method for copying an audio chunk out of the existing data. Time in milliseconds.
 		 *  @param beginTime Beginning of the chunk in time measure.

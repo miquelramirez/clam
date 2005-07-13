@@ -19,7 +19,8 @@
  *
  */
 
-#include"Audio.hxx"
+#include "Audio.hxx"
+#include "CLAM_Math.hxx"
 
 using namespace CLAM;
 
@@ -39,7 +40,14 @@ void Audio::DefaultInit(void)
 
 void Audio::SetEndTime(TTime time)
 {
-	SetSize(int((time-GetBeginTime())/1000*GetSampleRate()));
+	CLAM_WARNING(false, "Audio::SetEndTime is about to be depracated. Please use Audio::ResizeToEndTime instead");
+	ResizeToEndTime(time);
+}
+
+void Audio::ResizeToEndTime(TTime time)
+{
+	const int newsizeRound = Round((time-GetBeginTime())/1000*GetSampleRate());
+	SetSize(newsizeRound);
 }
 
 void Audio::SetSize(int s)
@@ -58,6 +66,12 @@ void Audio::SetSize(int s)
 
 void Audio::SetDuration(TTime duration)
 {
+	CLAM_WARNING(false, "Audio::SetDuration is about to be depracated. Please use Audio::ResizeToDuration instead");
+	ResizeToDuration(GetIndexFromTime(duration));
+}
+
+void Audio::ResizeToDuration(TTime duration)
+{
 	SetSize(GetIndexFromTime(duration));
 }
 
@@ -68,7 +82,7 @@ TTime Audio::GetTimeFromIndex(TIndex index) const
 
 TIndex Audio::GetIndexFromTime(TTime time) const
 {
-        return (TIndex) (time*((TData)GetSampleRate()/1000.0));
+        return Round(time*((TData)GetSampleRate()/1000.0));
 }
 
 void Audio::GetAudioChunk(TTime beginTime, TTime endTime,Audio& chunk, bool configureChunk) const
