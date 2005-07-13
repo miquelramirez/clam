@@ -19,7 +19,7 @@ namespace CLAMTest
 	{
 	}
 	
-	static double evaluateAverage( CLAM::DataArray& left )
+	static double evaluateAverage( const CLAM::DataArray& left )
 	{
 		double avg = 0.0;
 
@@ -33,7 +33,7 @@ namespace CLAMTest
 		return avg;
 	}
 
-	static double evaluateCovariance( CLAM::DataArray& left,
+	static double evaluateCovariance( const CLAM::DataArray& left,
 					  double leftAverage,
 					  CLAM::DataArray& right,
 					  double rightAverage )
@@ -53,7 +53,7 @@ namespace CLAMTest
 		return cov;
 	}
 
-	static double evaluateVariance( CLAM::DataArray& vector,
+	static double evaluateVariance( const CLAM::DataArray& vector,
 					double average )
 	{
 		if ( vector.Size() <= 0 )
@@ -73,10 +73,12 @@ namespace CLAMTest
 		return var;
 	}
 
-	double evaluateSimilarity( CLAM::DataArray& left,
+	double evaluateSimilarity( const CLAM::DataArray& left,
 				   CLAM::DataArray& right ) throw( DataSizeMismatch )
 	{
 	
+		std::cout << "left size: " << left.Size() << " at: " << &left << std::endl;
+		std::cout << "right size: " << right.Size() << " at: " << &right << std::endl;
 		double leftAverage = evaluateAverage( left );
 		double rightAverage = evaluateAverage( right );
 
