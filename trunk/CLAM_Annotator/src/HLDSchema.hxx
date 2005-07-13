@@ -68,8 +68,8 @@ namespace CLAM_Annotator{
 			bool validated = true;
 			
 			validated = FindElement(descriptor.GetName()).Validate(descriptor);
-			CLAM_DEBUG_ASSERT(validated, std::string("Descriptor did not validate: " + 
-							 descriptor.GetName()).c_str());
+			CLAM_DEBUG_ASSERT(validated,
+				std::string("Descriptor did not validate: " + descriptor.GetName()).c_str());
 			return validated;
 		}
 
