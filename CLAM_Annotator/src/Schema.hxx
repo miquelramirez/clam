@@ -1,5 +1,5 @@
-#ifndef _Schema_
-#define _Schema_
+#ifndef _Schema_hxx_
+#define _Schema_hxx_
 
 #include "DynamicType.hxx"
 #include "HLDSchema.hxx"
@@ -8,11 +8,11 @@
 namespace CLAM_Annotator{
 
 
-	class Schema:public CLAM::DynamicType
+	class Schema : public CLAM::DynamicType
 	{
 		DYNAMIC_TYPE(Schema,2);
-		DYN_ATTRIBUTE(0,public, HLDSchema, HLDSchema);
-		DYN_ATTRIBUTE(1,public, LLDSchema, LLDSchema);
+		DYN_ATTRIBUTE(0, public, HLDSchema, HLDSchema);
+		DYN_ATTRIBUTE(1, public, LLDSchema, LLDSchema);
 
 		void DefaultInit()
 		{
@@ -23,4 +23,4 @@ namespace CLAM_Annotator{
 
 };
 
-#endif
+#endif//_Schema_hxx_
