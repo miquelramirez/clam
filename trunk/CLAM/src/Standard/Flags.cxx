@@ -156,13 +156,11 @@ std::ostream & CLAM::operator << (std::ostream & os, const FlagsBase & f) {
 /**
 * Checks that the object is internally consistent.
 * It tests that: 
-* <ul>
-* <li>the names array is not a NULL pointer (it still could be invalid)
-* <li>the names array is shorter than the number of flags plus one for the NULL name
-* <li>a NULL name is present at the end of the names array
-* <li>the names array has no value replication
-* <li>the names array has no name replication
-* </ul>
+* - the names array is not a NULL pointer (it still could be invalid)
+* - the names array is shorter than the number of flags plus one for the NULL name
+* - a NULL name is present at the end of the names array
+* - the names array has no value replication
+* - the names array has no name replication
 * @todo TODO: Check blanks in names
 */
 
