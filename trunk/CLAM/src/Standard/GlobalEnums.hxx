@@ -34,11 +34,10 @@ class EInterpolation: public Enum
 {
 public:
 	
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	EInterpolation() : Enum(sEnumValues, sDefault) {}
-	EInterpolation(tValue v) : Enum(sEnumValues, v) {};
-	EInterpolation(std::string s) : Enum(sEnumValues, s) {};
+	EInterpolation() : Enum(ValueTable(), eLinear) {}
+	EInterpolation(tValue v) : Enum(ValueTable(), v) {};
+	EInterpolation(std::string s) : Enum(ValueTable(), s) {};
+	virtual Component* Species() const { return new EInterpolation; }
 
 	typedef enum {
 		eStep,
@@ -52,10 +51,23 @@ public:
 		ePolynomialn
 	} tEnum;
 
-	virtual Component* Species() const
+	static tEnumValue * ValueTable()
 	{
-		return (Component*) new EInterpolation;
-	};
+		static tEnumValue sValueTable[] =
+		{
+			{eStep,"Step"},
+			{eRound,"Round"},
+			{eLinear,"Linear"},
+			{eSpline,"Spline"},
+			{ePolynomial2,"2ond_order_Polynomial"},
+			{ePolynomial3,"3rd_order_Polynomial"},
+			{ePolynomial4,"4th_order_Polynomial"},
+			{ePolynomial5,"5th_order_Polynomial"},
+			{ePolynomialn,"nth_order_Polynomial"},
+			{0,NULL}
+		};
+		return sValueTable;
+	}
 };
 
 /** Interpolation
@@ -66,22 +78,26 @@ class EScale : public Enum
 {
 public:
 	
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	EScale() : Enum(sEnumValues, sDefault) {}
-	EScale(tValue v) : Enum(sEnumValues, v) {};
-	EScale(std::string s) : Enum(sEnumValues, s) {};
+	EScale() : Enum(ValueTable(), eLinear) {}
+	EScale(tValue v) : Enum(ValueTable(), v) {};
+	EScale(std::string s) : Enum(ValueTable(), s) {};
+	virtual Component* Species() const { return new EScale; };
 
 	typedef enum {
 		eLinear,
 		eLog
 	};
 
-	virtual Component* Species() const
+	static tEnumValue * ValueTable()
 	{
-		// TODO: This is a xapusa. I want a default constructor!
-		return (Component*) new EScale;
-	};
+		static tEnumValue sValueTable[] =
+		{
+			{EScale::eLinear,"Linear"},
+			{EScale::eLog,"Log"},
+			{0,NULL}
+		};
+		return sValueTable;
+	}
 };
 
 
@@ -89,11 +105,10 @@ class EWindowType : public Enum
 {
 public:
 	
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-	EWindowType() : Enum(sEnumValues, sDefault) {}
-	EWindowType(tValue v) : Enum(sEnumValues, v) {};
-	EWindowType(std::string s) : Enum(sEnumValues, s) {};
+	EWindowType() : Enum(ValueTable(), eHamming) {}
+	EWindowType(tValue v) : Enum(ValueTable(), v) {};
+	EWindowType(std::string s) : Enum(ValueTable(), s) {};
+	virtual Component* Species() const { return new EWindowType(eHamming); }
 
 	typedef enum {
 		eKaiserBessel17,
@@ -115,10 +130,31 @@ public:
 		eSine
 	};
 
-	virtual Component* Species() const
+	static tEnumValue * ValueTable()
 	{
-		return (Component*) new EWindowType(eHamming);
-	};
+		static tEnumValue sValueTable[] =
+		{
+			{eKaiserBessel17,"KaiserBessel17"},
+			{eKaiserBessel18,"KaiserBessel18"},
+			{eKaiserBessel19,"KaiserBessel19"},
+			{eKaiserBessel20,"KaiserBessel20"},
+			{eKaiserBessel25,"KaiserBessel25"},
+			{eKaiserBessel30,"KaiserBessel30"},
+			{eKaiserBessel35,"KaiserBessel35"},
+			{eBlackmanHarris74,"BlackmanHarris74"},
+			{eBlackmanHarris62,"BlackmanHarris62"},
+			{eBlackmanHarris70,"BlackmanHarris70"},
+			{eBlackmanHarris92,"BlackmanHarris92"},
+			{eHamming,"Hamming"},
+			{eTriangular,"Triangular"},
+			{eBlackmanHarris92TransMainLobe,"BlackmanHarris92 MainLobe"},
+			{eGaussian,"Gaussian"},
+			{eBlackmanHarrisLike,"BlackmanHarrisLike"},
+			{eSine,"Sine"},
+			{0,NULL}
+		};
+		return sValueTable;
+	}
 };
 
 
