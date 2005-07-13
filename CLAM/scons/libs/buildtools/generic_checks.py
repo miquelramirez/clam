@@ -2,7 +2,7 @@ generic_checks = dict()
 
 def pkg_config_check_existence(context, *args, **kwargs):
 	name = kwargs['name']
-	context.Message( 'Checking for %s... ' % name )
+	context.Message( 'Checking for %s registered in pkg-config... ' % name )
 	ret = context.TryAction('pkg-config --exists \'%s\'' % name)[0]
 	context.Result( ret )
 	return ret

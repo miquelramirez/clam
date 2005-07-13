@@ -136,7 +136,7 @@ def setup_core_environment( core_env, custom_check_routines ) :
 			failed = True
 		
 		if not failed :
-			core_env.Append( CPPFLAGS=['-DUSE_XERCES', '-DCLAM_USE_XML'] )
+			core_env.Append( CPPFLAGS=['-DUSE_XERCES_TRUE', '-DCLAM_USE_XML'] )
 		else :
 			core_env['xmlbackend'] = 'none'
 			
@@ -156,7 +156,7 @@ def setup_core_environment( core_env, custom_check_routines ) :
 			failed = True
 		
 		if not failed:
-			core_env.Append( CPPFLAGS=['-DUSE_XMLPP','-DCLAM_USE_XML'] )
+			core_env.Append( CPPFLAGS=['-DUSE_XMLPP_TRUE','-DCLAM_USE_XML'] )
 		else :
 			core_env['xmlbackend'] = 'none'	
 
@@ -402,6 +402,60 @@ def setup_audioio_environment( audioio_env, custom_check_routines ) :
 	
 	audioio_env = conf.Finish()	
 
+def check_opengl( env, conf ) :
+	
+	result = conf.CheckCHeader('GL/gl.h')
+	if not result :
+		print "Could not find OpenGL headers! Please install the headers supplied by your OpenGL driver vendor"
+		return False
+	result = conf.CheckLib( 'GL', 'glBegin' )
+	if not result :
+		print "Could not find OpenGL library! Please install the development library supplied by your OpenGL driver vendor"
+		return False
+	result = conf.check_opengl()
+	if not result :
+		print "OpenGL compile/link/run test failed! Please check config.log for details..."
+		return False
+	result = conf.CheckCHeader( 'GL/glu.h' )
+	if not result :
+		print "Could not find GLU (OpenGL Utility library) headers!  Please install the headers supplied by your OpenGL driver vendor" 
+		return False
+	result = conf.CheckLib( 'GLU', 'gluPerspective' )
+	if not result : 
+		print "Could not find GLU (OpenGL Utility library) binaries! Please install the development library supplied by your OpenGL driver vendor"
+		return False
+	result = conf.check_glu()
+	if not result :
+		print "GLU compile/link/run tests failed! Check config.log for details..."
+		return False
+
+	env.Append( CPPFLAGS=['-DUSE_GL=1'] )
+
+	return True
+
+def setup_vmfl_environment( vmfl_env, custom_check_routines ) :
+	conf = Configure( vmfl_env, custom_check_routines )
+
+	if not check_opengl( vmfl_env, conf ) :
+		Exit(1)
+
+	vmfl_env.Append( LINKFLAGS=[''] )
+	result = conf.check_fltk_config()
+	if not result :
+		print "fltk-config tool was not found on your system. Please check your FLTK installation"
+		Exit(1)
+	
+	vmfl_env.ParseConfig('fltk-config --cflags --cxxflags --ldflags --libs --use-gl --use-images --use-glut --use-forms')
+
+	
+	result = conf.check_fltk()
+	if not result :
+		print "FLTK compile/link/run test failed! Please check config.log for details"
+		Exit(1)
+
+	vmfl_env.Append( CPPFLAGS=['-DUSE_FLTK=1'] )
+	vmfl_env = conf.Finish() 
+
 # SConstruct file for CLAM
 # Main section
 
@@ -459,6 +513,11 @@ Export('audioio_env')
 
 setup_audioio_environment( audioio_env, custom_check_routines )
 
+vmfl_env = clam_env.Copy()
+Export('vmfl_env')
+
+setup_vmfl_environment( vmfl_env, custom_check_routines )
+
 # install dirs composition
 compose_install_dirnames(clam_env)
 
@@ -472,3 +531,4 @@ print """\
 SConscript('core/SConscript')
 SConscript('processing/SConscript')
 SConscript('audioio/SConscript')
+SConscript('vmfl/SConscript')
