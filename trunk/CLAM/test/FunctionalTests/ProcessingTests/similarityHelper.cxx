@@ -76,9 +76,6 @@ namespace CLAMTest
 	double evaluateSimilarity( const CLAM::DataArray& left,
 				   CLAM::DataArray& right ) throw( DataSizeMismatch )
 	{
-	
-		std::cout << "left size: " << left.Size() << " at: " << &left << std::endl;
-		std::cout << "right size: " << right.Size() << " at: " << &right << std::endl;
 		double leftAverage = evaluateAverage( left );
 		double rightAverage = evaluateAverage( right );
 
