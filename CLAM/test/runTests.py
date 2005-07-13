@@ -9,14 +9,14 @@
 
 
 	
-enableSendMail = True
+enableSendMail = True 
 enablePlaceCvsTags = True
 
-quickTestForScriptDebuging = False  # important: to be enabled for debuging puroposes only
+quickTestForScriptDebuging = False  # Danger! flag to be enabled for debuging puroposes only
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
-updateLevelForCLAM = 2 
+updateLevelForCLAM = 2
 updateLevelForExamples = 2
 updateLevelForTestData = 1 
 
@@ -25,11 +25,11 @@ doCleanMake = True
 # When false does not run autoconf and configure unless a new checkout
 doAutoconf = True
 configureOptions = ''
-# Non-automatic-test are runned those seconds and then killed
+# Non-automatic-test are run the following seconds and then killed
 executionTime = 15
 
-#configurations = ['debug', 'release'] 
-configurations = ['release'] 
+configurations = ['debug', 'release'] 
+#configurations = ['release'] 
 
 # Mail report settings
 publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
@@ -71,7 +71,7 @@ simpleExamplesPath = BUILDPATH + 'Examples/Simple/'
 if quickTestForScriptDebuging : 
 	enableSendMail = False
 	enablePlaceCvsTags = False
-	updateLevelForCLAM = 1 
+	updateLevelForCLAM = 0
 	updateLevelForExamples = 0
 	updateLevelForTestData = 0 
 	doCleanMake = False
@@ -207,8 +207,9 @@ testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
 
 if quickTestForScriptDebuging :
-	testsToRun = [( 'UnitTests', unitTestsPath )]
-	
+	#testsToRun = [( 'UnitTests', unitTestsPath )]
+	testsToRun = automaticTests
+		
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
 # end configuration
@@ -396,8 +397,12 @@ def compileAndRun(name, path) :
 			runMessages, d = parseTestsFailures( output )
 			if isUnitTest(path) :
 				failures = 0 
-				if not ok : failures = 1 #TODO parse output to obtain failures
+				if not ok : failures = 1 #TODO parse output to obtain number of failures
 				testResult.unitTestsFailures(configuration, failures)
+			elif isFunctionalTest(path):
+				failures = 0
+				if not ok : failures = 1 #TODO idem
+				testResult.functionalTestsFailures(configuration, failures)
 			
 		else :
 			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
@@ -498,6 +503,7 @@ def updateSandboxes() :
 def deployClamBuildSystem() :
 	# BuildSrcDeps
 	os.chdir(BUILDPATH+'srcdeps/')
+	print "Compiling srcdeps. ",
 	executeMandatory('make clean && make')
 
 	# Remove not public dirs
@@ -562,9 +568,10 @@ def runTests() :
 		print "test name: %s \t compiles: %i " % (aTestResult.name, aTestResult.compiles() )
 		print aSummary     # for console monitoring purposes
 	
-	requiredStabilityLevel = PassUnitTests # Compiles 
+	requiredStabilityLevel = PassFunctionalTests # PassUnitTests # Compiles 
 	clamIsBroken = resultSet.stabilityLevel() < requiredStabilityLevel
-	print "\nGlobal test results with %i tests. Stability level: %i Required: %i " % ( resultSet.nTests(), resultSet.stabilityLevel(), requiredStabilityLevel )
+	print resultSet.stabilityLevelString(requiredStabilityLevel), resultSet.stabilityLevelList()
+
 	guiltyReport = "Chasing-guilty-commits is DISABLED"
 	if enablePlaceCvsTags :
 		if clamIsBroken :
@@ -585,7 +592,7 @@ def runTests() :
 
 	if clamIsBroken :
 		sendReportTo = publicAddress
-		subj.append(" -- "+ resultSet.stabilityLevelString() )
+		subj.append(" -- "+ resultSet.stabilityLevelString(requiredStabilityLevel) )
 	else :
 		sendReportTo = privateAddress
 
