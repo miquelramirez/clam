@@ -284,3 +284,48 @@ int main()
 """
 
 package_checks['check_id3lib'] = ThoroughPackageCheck( 'id3lib', 'c++', None, id3lib_test_code )
+
+fltk_test_code = """\
+#include<FL/Fl_Gl_Window.H>
+#include<FL/Fl_PNG_Image.H>
+#include<FL/fl_draw.H>
+int main()
+{
+	Fl_Gl_Window w(0,0);
+	Fl_PNG_Image png("");
+	return 0;
+}
+"""
+
+package_checks['check_fltk'] = ThoroughPackageCheck( 'fltk', 'c++', None, fltk_test_code )
+
+opengl_test_code = """\
+#include <GL/gl.h>
+
+int main( int argc, char** argv )
+{
+	glBegin(GL_LINES);
+		glVertex2f(0.0,0.0);
+		glVertex2f(1.0,0.0);
+	glEnd();
+
+	return 0;
+}"""
+
+package_checks['check_opengl'] = ThoroughPackageCheck( 'opengl', 'c', None, opengl_test_code )
+
+glu_test_code = """\
+#include <GL/glu.h>
+
+int main( int argc, char** argv )
+{
+	GLUquadricObj *sphereObj;
+	sphereObj = gluNewQuadric();
+
+	gluSphere(sphereObj, 1.0, 8, 8);
+
+	return 0;
+}"""
+
+package_checks['check_glu'] = ThoroughPackageCheck( 'glu', 'c', None, glu_test_code )
+

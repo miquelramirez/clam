@@ -7,3 +7,11 @@ def check_pkg_config(context, *args, **kwords):
 	return ret
 
 tool_checks['check_pkg_config'] = check_pkg_config
+
+def check_fltk_config( context, *args, **kwargs) :
+	context.Message( 'Checking for fltk-config...' )
+	res, _ = context.TryAction('fltk-config --api-version')
+	context.Result(res)
+	return res
+
+tool_checks['check_fltk_config'] = check_fltk_config

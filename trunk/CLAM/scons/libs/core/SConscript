@@ -29,7 +29,7 @@ if sys.platform == 'windows' :
 else :
 	core_folders.append('src/Defines/Unix')	
 
-blacklist = [ 'SMS.+', 'ProcessingChain.+', 'DefaultProcessingFactoryRegistration.+', '.+Test.+' ]
+blacklist = ['ScaleCnv']
 
 if core_env['xmlbackend'] == 'xercesc' :
 	blacklist.append( 'LibXml.+')
