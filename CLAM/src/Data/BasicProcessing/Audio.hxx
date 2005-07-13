@@ -102,7 +102,6 @@ namespace CLAM {
 		 *  @param duration The required duration for the buffer once resized
 		 *  @see SetSize
 		 *
-		 *  @depracated use ResizeToDuration instead
 		 */
 		void ResizeToDuration(TTime duration);
 

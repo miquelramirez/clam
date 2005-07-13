@@ -46,7 +46,7 @@ void Audio::SetEndTime(TTime time)
 
 void Audio::ResizeToEndTime(TTime time)
 {
-	const int newsizeRound = Round((time-GetBeginTime())/1000*GetSampleRate());
+	const int newsizeRound = Round((time-GetBeginTime())/1000.0*GetSampleRate());
 	SetSize(newsizeRound);
 }
 
