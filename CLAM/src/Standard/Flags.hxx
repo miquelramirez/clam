@@ -96,13 +96,11 @@ public:
 	/**
 	* Checks that the object is internally consistent.
 	* It tests that: 
-	* <ul>
-	* <li>the names array is not a NULL pointer (it still could be invalid)
-	* <li>the names array is shorter than the number of flags plus one for the NULL name
-	* <li>a NULL name is present at the end of the names array
-	* <li>the names array has no value replication
-	* <li>the names array has no name replication
-	* </ul>
+	* - the names array is not a NULL pointer (it still could be invalid)
+	* - the names array is shorter than the number of flags plus one for the NULL name
+	* - a NULL name is present at the end of the names array
+	* - the names array has no value replication
+	* - the names array has no name replication
 	* @todo TODO: Check blanks in names
 	*/
 	inline bool CheckInvariant();
@@ -115,27 +113,26 @@ std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 * Instances of this class represents objects containing a set
 * of booleans values (flags) that can be accessed by their
 * symbolic name.
-* <p>
+* 
 * Because Flags derives from std::bitset<N> it provides all the
 * standard operations like bitwise operators and so.
 * This interface has been fattened to provide symbolic
 * representation (name string) for each flag.
 * If symbolic names for flags are not useful to you, consider
 * use std::bitset instead which has a pure positional approach.
-* <p>
-* <ul>
-* <li>Bitwise operators
-* <li>Several ways to access to individual flags
-* <li>Formated input and output to an std::stream as symbols
+* 
+* - Bitwise operators
+* - Several ways to access to individual flags
+* - Formated input and output to an std::stream as symbols
 * with the insertion (&lt;&lt;) and extraction (&gt;&gt;)
 * operators
-* <li>Implements the Component interface: StoreOn, DeepCopy,
+* - Implements the Component interface: StoreOn, DeepCopy,
 * ShallowCopy...
-* <li>Runtime symbolic representation
-* <li>Runtime checking of the values
-* </ul>
-* <h3>Accessing individual flags</h3>
-* <p>
+* - Runtime symbolic representation
+* - Runtime checking of the values
+*
+* @section ind Accessing individual flags
+* 
 * You can acces an individual flag of the Flags object in
 * different ways:
 * <table border='0'>
@@ -143,7 +140,7 @@ std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 * <tr><td>Access by indexation plus enums:</td>	<td>flags[MyFlagsClass::eFlagName]</td></tr>
 * <tr><td>Access by symbol:</td>	<td>flags["FlagName"]</td></tr>
 * </table>
-* <p>
+*
 * You can use references this individual flags like any reference to a boolean.
 * Moreover, you can use some extra operations like <tt>flip</tt> that inverses
 * the actual value of the flag:
@@ -153,9 +150,9 @@ std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 * 	flags.bFlagName=true;
 * 	flags.bFlagName.flip();
 * @endcode
-* <h3>Bitwise operations</h3>
-* <h3>Non Standard operations</h3>
-* <p>
+* @section FlagsBitwise Bitwise operations
+* @section FlagsNonStandard Non Standard operations
+*
 * Because older versions of this class didn't derive from bitfield,
 * a different interface for a few functions was used. This old interface
 * has the advantage that uses the same function name convention as the
@@ -168,15 +165,15 @@ std::ostream & operator << (std::ostream & os, const FlagsBase & f);
 * <tr><td>NFlags</td><td>not present</td><td>Revise This!!!!</td></tr>
 * <tr><td>operator int</td><td>operator int</td><td>The interface is unchanged but throws a </td></tr>
 * </table>
-* <h3>Creating your own flags</h3>
-* <p>The way to define a new Flags type is by subclassing
+* @section CustomFlags Creating your own flags
+* The way to define a new Flags type is by subclassing
 * <tt>Flags<N></tt>.
 * The subclass MUST redefine its constructors by
 * providing the Flags constructor an array of tFlagsValue's,
 * which defines the mapping between numeric and symbolic
 * values, and an initialization value, than can be both a
 * symbol (char* or std::string) or an integer.
-* </p>
+* 
 * @code
 	// MyFlags.hxx
 	class MyFlags : public Flags<5> {
