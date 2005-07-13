@@ -9,22 +9,22 @@ class QLabel;
 
 class SliderWithValue : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    SliderWithValue( QWidget * parent = 0, const char * = 0, WFlags f = 0);
-    virtual ~SliderWithValue();
+	SliderWithValue( QWidget * parent = 0, const char * = 0, WFlags f = 0);
+	virtual ~SliderWithValue();
 
-    virtual int intValue()=0;
-    virtual float floatValue()=0;
+	virtual int intValue()=0;
+	virtual float floatValue()=0;
 
-    virtual void setValue(int)=0;
-    virtual void setMaxValue(int)=0;
-    virtual void setMinValue(int)=0;
+	virtual void setValue(int)=0;
+	virtual void setMaxValue(int)=0;
+	virtual void setMinValue(int)=0;
 
 protected:
-    QGuardedPtr<QSlider> mSlider;
-    QGuardedPtr<QLabel> mValue;
+	QGuardedPtr<QSlider> mSlider;
+	QGuardedPtr<QLabel> mValue;
 		
 };
 
