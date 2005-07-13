@@ -39,8 +39,14 @@ class TestTestResultSet (unittest.TestCase) :
 		t = TestResult()
 		t.unitTestsFailures("debug", 1)
 		self.set.add( t )
-		expected = "Reaches level 1 (Compiles), but don't reach level 2 (Pass Unit Tests)"
-		assert expected == self.set.stabilityLevelString()
+		expected = "Reaches level 1 (Everything compiles), but don't reach level 2 (Pass unit tests)"
+		assert expected == self.set.stabilityLevelString(PassUnitTests), self.set.stabilityLevelString(PassUnitTests)
+	
+	def testStabilityLevelReachesPassFunctionalTests(self) :
+		t = TestResult()
+		self.set.add( t )
+		expected = "Reaches level 3 (Pass functional tests), but don't reach level 4 (Clean of warnings)"
+		assert expected == self.set.stabilityLevelString(CleanOfWarnings), self.set.stabilityLevelString(CleanOfWarnings)
 		
 class TestTestResult (unittest.TestCase) :
 	def setUp(self):
@@ -72,6 +78,13 @@ class TestTestResult (unittest.TestCase) :
 	def testPassUnitTests_whenReleaseFailures(self):
 		self.test.unitTestsFailures("release", 1)
 		self.assert_( not self.test.passUnitTests() )
+
+	def testPassFuncTests_trueByDefault(self):
+		self.assert_( self.test.passFunctionalTests() )
+
+	def testPassFuncTests_whenDebugFailures(self):
+		self.test.functionalTestsFailures("debug", 1)
+		self.assert_( not self.test.passFunctionalTests() )
 
 if __name__ == "__main__":
 	unittest.main()

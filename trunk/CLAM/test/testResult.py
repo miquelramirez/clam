@@ -3,6 +3,7 @@ class ConfigurationResult :
 	def __init__(self) :
 		self.compilationOk = True
 		self.unitTestsFailures = 0 
+		self.functionalTestsFailures = 0 
 		
 class TestResult :
 	"info obtained from execution of a test"
@@ -16,6 +17,9 @@ class TestResult :
 	
 	def passUnitTests(self): 
 		return self.debug.unitTestsFailures == 0 and self.release.unitTestsFailures==0
+
+	def passFunctionalTests(self):
+		return self.debug.functionalTestsFailures == 0 and self.release.functionalTestsFailures==0
 	
 	def compilationOk(self, config, ok):
 		self.__checkConfig(config)
@@ -30,6 +34,13 @@ class TestResult :
 			self.debug.unitTestsFailures = nfailures
 		else :
 			self.release.unitTestsFailures = nfailures
+
+	def functionalTestsFailures(self, config, nfailures):
+		self.__checkConfig(config)
+		if config == "debug" :
+			self.debug.functionalTestsFailures = nfailures
+		else :
+			self.release.unitTestsFailures = nfailures
 	
 	# (pseudo) private methods
 	def __checkConfig(self, config) :
@@ -41,11 +52,17 @@ DoesntCompile = 0
 Compiles = 1
 PassUnitTests = 2
 PassFunctionalTests = 3
+CleanOfWarnings = 4
 # etc: AppsExecutionOk, valgrind-related
 
 class TestResultSet :
 	def __init__(self) :
 		self.tests = []
+		self.levelDic = { DoesntCompile:"Ground level",
+			Compiles:"Everything compiles",
+			PassUnitTests:"Pass unit tests",
+			PassFunctionalTests:"Pass functional tests",
+			CleanOfWarnings:"Clean of warnings" }
 
 	def nTests(self) :
 		return len(self.tests)
@@ -68,7 +85,11 @@ class TestResultSet :
 				return False
 		return True
 
-	def passFunctionalTests(self) : pass
+	def passFunctionalTests(self) :
+		for t in self.tests :
+			if not t.passFunctionalTests():
+				return False
+		return True
 	
 	def stabilityLevel(self) :
 		assert DoesntCompile < Compiles, "bad order in stability levels"
@@ -83,11 +104,12 @@ class TestResultSet :
 			return PassUnitTests
 		else :
 			return PassFunctionalTests
-	def stabilityLevelString(self) :
-		strings = { DoesntCompile:"Doesn't compile",
-			Compiles:"Compiles",
-			PassUnitTests:"Pass Unit Tests",
-			PassFunctionalTests:"PassFunctionalTests" }
-		msg = "Reaches level %i (%s), but don't reach level %i (%s)"
+
+
+	def stabilityLevelList(self) :
+		return "Levels list = [%s]\n" % ", ".join(self.levelDic.values() )
+
+	def stabilityLevelString(self, levelNeeded) :
+		msg = "Reaches level %i (%s), but don't reach stability level fixed on %i (%s)"
 		currentLevel = self.stabilityLevel()
-		return msg % (currentLevel, strings[currentLevel], currentLevel+1, strings[currentLevel+1])
+		return msg % (currentLevel, self.levelDic[currentLevel], levelNeeded, self.levelDic[levelNeeded])
