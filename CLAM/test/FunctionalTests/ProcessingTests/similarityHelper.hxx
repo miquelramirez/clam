@@ -26,7 +26,7 @@ namespace CLAMTest
 	 *
 	 *  r(x,y) = Cov( x,y ) / stdDeviation(x)*stdDeviation(y);
 	 */
-	double evaluateSimilarity( CLAM::DataArray& left,
+	double evaluateSimilarity( const CLAM::DataArray& left,
 				   CLAM::DataArray& right ) throw ( DataSizeMismatch );
 
 	/**
