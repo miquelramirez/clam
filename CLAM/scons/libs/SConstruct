@@ -1,4 +1,5 @@
 import sys
+import os
 from buildtools import *
 from buildtools.thorough_check import ThoroughPackageCheck
 from buildtools.tool_checks import *
@@ -39,6 +40,10 @@ def setup_build_options( env ) :
 	else :
 		opts.Add( BoolOption( 'audio_backend', 'Selects audio PCM i/o library used CLAM backend', 'rtaudio', ('rtaudio',) ) )
 	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
+
+	# clam_vmqt options
+	opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/usr/include/qt3' ) )
+	opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/usr/lib' ) )
 	
 	opts.Update(env)
 	opts.Save('clam.conf', env) # Save, so user doesn't have to 
@@ -456,6 +461,33 @@ def setup_vmfl_environment( vmfl_env, custom_check_routines ) :
 	vmfl_env.Append( CPPFLAGS=['-DUSE_FLTK=1'] )
 	vmfl_env = conf.Finish() 
 
+def setup_vmqt_environment( vmqt_env, custom_check_routines ) :
+	conf = Configure( vmqt_env, custom_check_routines )
+
+	if not check_opengl( vmqt_env, conf ) :
+		Exit(1)
+
+	vmqt_env.Append( CPPPATH=['%s'%vmqt_env['qt_includes']] )
+	vmqt_env.Append( LIBPATH=['%s'%vmqt_env['qt_libs']] )
+
+	result = conf.CheckCXXHeader( 'qapplication.h' )
+	if not result :
+		print "Could not find Qt 3 headers! Check your Qt 3 installation..."
+		Exit(1)
+
+	result = conf.CheckLibWithHeader( 'qt-mt', 'qapplication.h', 'cxx', call='QApplication qapp(0,0);')
+	if not result :
+		print "Could not find multithreaded Qt 3 binaries (libqt-mt)! Check your Qt 3 installation..."
+		Exit(1)
+
+	result = conf.check_qt()
+	if not result :
+		print "Qt 3 compile/link/run tests failed! Check config.log for details..."
+		Exit(1)
+
+	vmqt_env.Append( CPPFLAGS=['-DUSE_QT=1'] )
+	vmqt_env = conf.Finish()
+
 # SConstruct file for CLAM
 # Main section
 
@@ -465,7 +497,7 @@ Export('version')
 top = '../..'
 Export('top')
 
-clam_env = Environment()
+clam_env = Environment( ENV=os.environ)
 
 Export('clam_env')
 
@@ -518,6 +550,11 @@ Export('vmfl_env')
 
 setup_vmfl_environment( vmfl_env, custom_check_routines )
 
+vmqt_env = clam_env.Copy()
+Export('vmqt_env')
+
+setup_vmqt_environment( vmqt_env, custom_check_routines )
+
 # install dirs composition
 compose_install_dirnames(clam_env)
 
@@ -532,3 +569,4 @@ SConscript('core/SConscript')
 SConscript('processing/SConscript')
 SConscript('audioio/SConscript')
 SConscript('vmfl/SConscript')
+SConscript('vmqt/SConscript')

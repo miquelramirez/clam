@@ -1,0 +1,47 @@
+# SConstruct file for CLAM vmqt
+from buildtools.pkggen import PackageData
+from buildtools.file_retriever import FileRetriever
+import os, sys
+
+print """\
+####################################################################
+### BOOTSTRAPPING CLAM QT-BASED VISUALIZATION MODULE LIBRARY   ###
+####################################################################"""
+
+Import('vmqt_env version top install_prefix install_lib install_bin install_inc install_data')
+
+print "Creating pkg-config descriptor...",
+pkg_data = PackageData( 'clam_vmqt', version, [] )
+pkg_data.create_pkg_descriptor( vmqt_env, 'clam_vmqt.pc' )
+print "ok"
+
+print "Gathering necessary source files...",
+if not os.path.exists('src') :
+	os.mkdir('src')
+if not os.path.exists('include' ) :
+	os.makedirs('include/CLAM')
+
+basedir =  top+'/..'
+
+folders = []
+
+for root, _, _ in os.walk( basedir+'/'+'src/Visualization/QTVM' ) :
+	if not 'CVS' in root :
+		folders.append( root.split('../')[-1] )
+
+
+blacklist = []
+
+file_retriever = FileRetriever( basedir, folders, blacklist )
+
+file_retriever.scan()
+
+print "ok"
+vmqt_env.Append(CPPPATH=['include/CLAM','../core/include/CLAM','../processing/include/CLAM','../audioio/include/CLAM'])
+vmqt_env.Append(CCFLAGS='-include %s'%vmqt_env['preinclude'])
+vmqt_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
+vmqt_env.Append(LIBPATH=['../core','../processing','../audioio'])
+
+
+vmqt_env.SharedLibrary( 'clam_vmqt', file_retriever.sources )
+
