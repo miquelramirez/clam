@@ -1,4 +1,5 @@
 # SConstruct file for CLAMcore
+from buildtools import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
@@ -8,7 +9,7 @@ print """\
 ### BOOTSTRAPPING CLAM CORE LIBRARY        ###
 ##############################################"""
 
-Import('core_env version top install_dirs')
+Import('core_env version top install_dirs header_db')
 
 print "Creating pkg-config descriptor...",
 pkg_data = PackageData( 'clam_core', version, [] )
@@ -50,6 +51,8 @@ if not core_env['with_osc_support'] :
 file_retriever = FileRetriever( top+'/..', core_folders, blacklist )
 
 file_retriever.scan()
+
+store_headers_in_db( header_db )
 
 print "ok"
 core_env.Append(CPPPATH='include/CLAM')

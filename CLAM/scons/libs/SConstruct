@@ -1,5 +1,6 @@
 import sys
 import os
+import shelve
 # tools for build configuration
 from buildtools import *
 from buildtools.thorough_check import ThoroughPackageCheck
@@ -74,13 +75,19 @@ def compose_install_dirnames( env ) :
 	print "\tInclude files will be installed at:", install_dirs.inc
 	print "\tDocumentation, data and examples will be installed at:", install_dirs.data
 
+def gather_custom_checks() :
+	custom_check_routines = dict()
 
+	for check_name, check_routine in package_checks.items() :
+		custom_check_routines[check_name] = check_routine
 
+	for check_name, check_routine in tool_checks.items() :
+		custom_check_routines[check_name] = check_routine
 
+	for check_name, check_routine in generic_checks.items() :
+		custom_check_routines[check_name] = check_routine
 
-
-
-
+	return custom_check_routines
 
 
 # SConstruct file for CLAM
@@ -93,26 +100,20 @@ top = '../..'
 Export('top')
 
 clam_env = Environment( ENV=os.environ)
-
 Export('clam_env')
 
+header_db = shelve.open( 'header.db' )
+Export('header_db')
+
 setup_build_options( clam_env )
-
-
 #registering custom checks
-custom_check_routines = dict()
+custom_check_routines = gather_custom_checks()
 
-for check_name, check_routine in package_checks.items() :
-	custom_check_routines[check_name] = check_routine
+print """\
+############################################
+### CLAM GLOBAL DEPENDENCIES CHECKING    ###
+############################################"""
 
-for check_name, check_routine in tool_checks.items() :
-	custom_check_routines[check_name] = check_routine
-
-for check_name, check_routine in generic_checks.items() :
-	custom_check_routines[check_name] = check_routine
-
-
-# core env, CLAM core module checks
 conf = Configure( clam_env, custom_tests = custom_check_routines )
 if not setup_global_environment( clam_env, conf ) :
 	Exit(1)
@@ -123,13 +124,13 @@ print """\
 ### CLAM MODULES DEPENDENCIES CHECKING   ###
 ############################################"""
 
+# core env, CLAM core module checks
 core_env = clam_env.Copy()
 Export('core_env')
 conf = Configure( core_env, custom_tests = custom_check_routines )
 if not setup_core_environment( core_env, conf ) :
 	Exit(1)
 core_env = conf.Finish()
-
 clam_env['xmlbackend'] = core_env['xmlbackend']
 if clam_env['xmlbackend'] != 'none' :
 	clam_env.Append( CPPFLAGS=['-DCLAM_USE_XML'] )
@@ -145,7 +146,6 @@ processing_env = conf.Finish()
 
 audioio_env = clam_env.Copy()
 Export('audioio_env')
-
 conf = Configure( audioio_env, custom_check_routines )
 if not setup_audioio_environment( audioio_env, conf ) :
 	Exit(1)
@@ -154,7 +154,6 @@ audioio_env = conf.Finish()
 
 vmfl_env = clam_env.Copy()
 Export('vmfl_env')
-
 conf = Configure( vmfl_env, custom_check_routines )
 if not setup_vmfl_environment( vmfl_env, conf ) :
 	Exit(1)
@@ -162,7 +161,6 @@ vmfl_env = conf.Finish()
 
 vmqt_env = clam_env.Copy()
 Export('vmqt_env')
-
 conf = Configure( vmqt_env, custom_check_routines )
 if not setup_vmqt_environment( vmqt_env, conf ) :
 	Exit(1)
@@ -173,13 +171,13 @@ compose_install_dirnames(clam_env)
 
 #building
 
-print """\
-##############################################
-### BUILDING CLAM LIBRARIES                ###
-##############################################"""
-
 SConscript('core/SConscript')
 SConscript('processing/SConscript')
 SConscript('audioio/SConscript')
 SConscript('vmfl/SConscript')
 SConscript('vmqt/SConscript')
+
+print """\
+##############################################
+### BUILDING CLAM LIBRARIES                ###
+##############################################"""
