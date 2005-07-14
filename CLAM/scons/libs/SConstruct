@@ -1,10 +1,13 @@
 import sys
 import os
+# tools for build configuration
 from buildtools import *
 from buildtools.thorough_check import ThoroughPackageCheck
 from buildtools.tool_checks import *
 from buildtools.package_checks import *
-from buildtools.generic_checks import * 
+from buildtools.generic_checks import *
+from buildtools.installdirs import * 
+# module check sequences
 
 # helper functions
 def setup_build_options( env ) :
@@ -52,21 +55,18 @@ def setup_build_options( env ) :
 	Help(opts.GenerateHelpText(env))
 
 def compose_install_dirnames( env ) :
-	install_prefix = env['prefix']
-	install_lib    = env['prefix']+'/lib'
-	install_bin    = env['prefix']+'/bin'
-	install_inc    = env['prefix']+'/include'
-	install_data   = env['prefix']+'/share'
-	Export('install_prefix install_lib install_bin install_inc install_data')
+	install_dirs = InstallDirs()
+	install_dirs.compose( env )
+	Export('install_dirs')
 	print """\
 #############################################
 ### INSTALL DIRECTORY INFORMATION         ###
 #############################################"""
-	print "Directory to install under:", install_prefix
-	print "\tLibrary files will be installed at:", install_lib
-	print "\tExecutable files will be installed at:", install_bin
-	print "\tInclude files will be installed at:", install_inc
-	print "\tDocumentation, data and examples will be installed at:", install_data
+	print "Directory to install under:", install_dirs.prefix
+	print "\tLibrary files will be installed at:", install_dirs.lib
+	print "\tExecutable files will be installed at:", install_dirs.bin
+	print "\tInclude files will be installed at:", install_dirs.inc
+	print "\tDocumentation, data and examples will be installed at:", install_dirs.data
 
 
 def setup_global_environment( clam_env, custom_check_routines ) :

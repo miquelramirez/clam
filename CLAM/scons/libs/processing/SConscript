@@ -8,7 +8,7 @@ print """\
 ### BOOTSTRAPPING CLAM PROCESSINGS LIBRARY ###
 ##############################################"""
 
-Import('processing_env version top install_prefix install_lib install_bin install_inc install_data')
+Import('processing_env version top install_dirs')
 print "Creating pkg-config descriptor...",
 pkg_data = PackageData( 'clam_processing', version, [] )
 pkg_data.create_pkg_descriptor( processing_env, 'clam_processing.pc' )
