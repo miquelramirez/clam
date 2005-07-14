@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include "ProcessingFactory.hxx"
+#include "Factory.hxx"
 #include "AudioOut.hxx"
 
 /**
@@ -30,7 +30,7 @@
  * The way processings are registered in factory could be changed in a future.
  * Warning: This file has a lot of dependencies.
  */
-typedef CLAM::ProcessingFactory ProcessingFactory;
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 static ProcessingFactory::Registrator<CLAM::AudioOut> regtAudioOut( "AudioOut" );
 

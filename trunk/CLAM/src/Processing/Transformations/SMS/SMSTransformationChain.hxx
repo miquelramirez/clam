@@ -30,7 +30,7 @@
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControlTmplArray.hxx"
-#include "ProcessingFactory.hxx"
+#include "Factory.hxx"
 #include "Array.hxx"
 
 #include "FrameTransformation.hxx"
@@ -238,7 +238,7 @@ namespace CLAM {
 		{
 			//TODO: Instead of connecting controls, use the publishing mechanism
 			//TODO2: If all amount controls were named the same I might be able to get rid of the string comparison
-			Factory<Processing> & theFactory = ProcessingFactory::GetInstance();
+			Factory<Processing> & theFactory = Factory<Processing>::GetInstance();
 			
 			if ( classname=="SMSFreqShift") 
 			{

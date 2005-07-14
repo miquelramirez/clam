@@ -27,7 +27,6 @@
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControlTmplArray.hxx"
-#include "ProcessingFactory.hxx"
 #include "Array.hxx"
 
 #include "Frame.hxx" //TODO provisional
