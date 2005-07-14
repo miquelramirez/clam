@@ -1,4 +1,5 @@
 # SConstruct file for CLAM i/o
+from buildtools import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
@@ -8,7 +9,7 @@ print """\
 ### BOOTSTRAPPING CLAM AUDIO I/O LIBRARY   ###
 ##############################################"""
 
-Import('audioio_env version top install_dirs')
+Import('audioio_env version top install_dirs header_db')
 
 print "Creating pkg-config descriptor...",
 pkg_data = PackageData( 'clam_audioio', version, [] )
@@ -49,6 +50,8 @@ blacklist = [ 'foo.cxx']
 file_retriever = FileRetriever( top+'/..', folders, blacklist )
 
 file_retriever.scan()
+
+store_headers_in_db( header_db )
 
 print "ok"
 audioio_env.Append(CPPPATH=['include/CLAM','../core/include/CLAM','../processing/include/CLAM'])
