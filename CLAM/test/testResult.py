@@ -40,7 +40,7 @@ class TestResult :
 		if config == "debug" :
 			self.debug.functionalTestsFailures = nfailures
 		else :
-			self.release.unitTestsFailures = nfailures
+			self.release.functionalTestsFailures = nfailures
 	
 	# (pseudo) private methods
 	def __checkConfig(self, config) :
@@ -110,6 +110,10 @@ class TestResultSet :
 		return "Levels list = [%s]\n" % ", ".join(self.levelDic.values() )
 
 	def stabilityLevelString(self, levelNeeded) :
-		msg = "Reaches level %i (%s), but don't reach stability level fixed on %i (%s)"
 		currentLevel = self.stabilityLevel()
+		if currentLevel >= levelNeeded :
+			msg = "Stable level! : Reaches level %i (%s), and stability level is fixed on %i (%s)"
+		else :
+			msg = "UNESTABLE level! : Reaches level %i (%s), but doesn't reach stability level fixed on %i (%s)"
+	
 		return msg % (currentLevel, self.levelDic[currentLevel], levelNeeded, self.levelDic[levelNeeded])
