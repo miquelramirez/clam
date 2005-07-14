@@ -19,10 +19,10 @@
  *
  */
 
-#include "ProcessingFactory.hxx"
+#include "Factory.hxx"
 #include "SMSAnalysisCore.hxx"
 #include "SMSSynthesis.hxx"
 
 
-static CLAM::ProcessingFactory::Registrator<CLAM::SMSAnalysisCore> regtSMSAnalysisCore( "SMSAnalysisCore" );
-static CLAM::ProcessingFactory::Registrator<CLAM::SMSSynthesis> regtSMSSynthesis( "SMSSynthesis" );
+static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SMSAnalysisCore> regtSMSAnalysisCore( "SMSAnalysisCore" );
+static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SMSSynthesis> regtSMSSynthesis( "SMSSynthesis" );
