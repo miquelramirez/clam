@@ -8,7 +8,7 @@ print """\
 ### BOOTSTRAPPING CLAM QT-BASED VISUALIZATION MODULE LIBRARY   ###
 ####################################################################"""
 
-Import('vmqt_env version top install_prefix install_lib install_bin install_inc install_data')
+Import('vmqt_env version top install_dirs')
 
 print "Creating pkg-config descriptor...",
 pkg_data = PackageData( 'clam_vmqt', version, [] )
