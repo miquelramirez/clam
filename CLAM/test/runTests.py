@@ -28,8 +28,8 @@ configureOptions = ''
 # Non-automatic-test are run the following seconds and then killed
 executionTime = 15
 
-configurations = ['debug', 'release'] 
-#configurations = ['release'] 
+#configurations = ['debug', 'release'] 
+configurations = ['release'] 
 
 # Mail report settings
 publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
@@ -207,8 +207,8 @@ testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
 
 if quickTestForScriptDebuging :
-	#testsToRun = [( 'UnitTests', unitTestsPath )]
-	testsToRun = automaticTests
+	testsToRun = [( 'UnitTests', unitTestsPath )]
+#	testsToRun = automaticTests
 		
 sender = '"automatic tests script" <parumi@iua.upf.es>'
 
@@ -399,10 +399,12 @@ def compileAndRun(name, path) :
 				failures = 0 
 				if not ok : failures = 1 #TODO parse output to obtain number of failures
 				testResult.unitTestsFailures(configuration, failures)
+				print "found unit tests failures. path:", path
 			elif isFunctionalTest(path):
 				failures = 0
 				if not ok : failures = 1 #TODO idem
 				testResult.functionalTestsFailures(configuration, failures)
+				print "found functional tests failures. path:", path
 			
 		else :
 			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
