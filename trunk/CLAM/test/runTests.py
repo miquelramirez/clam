@@ -420,10 +420,13 @@ def compileAndRun(name, path) :
 
 mailTemplate = '''
 (This message has been automatically generated)
+Stability status: 
 
 %s
 
-Status of CLAM and externals examples, in main trunk
+%s
+
+Detailed status of CLAM and externals apps.
 
 	SUMMARY
 	-------
@@ -570,8 +573,9 @@ def runTests() :
 	
 	requiredStabilityLevel = PassFunctionalTests # PassUnitTests # Compiles 
 	clamIsBroken = resultSet.stabilityLevel() < requiredStabilityLevel
-	print resultSet.stabilityLevelString(requiredStabilityLevel), resultSet.stabilityLevelList()
-
+	stabilityStatus = resultSet.stabilityLevelString(requiredStabilityLevel) + "\n" + resultSet.stabilityLevelList()
+	print stabilityStatus
+	
 	guiltyReport = "Chasing-guilty-commits is DISABLED"
 	if enablePlaceCvsTags :
 		if clamIsBroken :
@@ -587,7 +591,7 @@ def runTests() :
 	if len(totalDetails) > maxLinesPerMail :
 		totalDetails = ["Too long output. So skiping the details section."]
 
-	mailBody = mailTemplate  % ( guiltyReport, "".join(totalSummary), "".join(totalDetails) )
+	mailBody = mailTemplate  % ( stabilityStatus, guiltyReport, "".join(totalSummary), "".join(totalDetails) )
 
 
 	if clamIsBroken :
