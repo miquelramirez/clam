@@ -54,9 +54,13 @@ file_retriever.scan()
 
 store_headers_in_db( header_db )
 
+
 print "ok"
 core_env.Append(CPPPATH='include/CLAM')
 core_env.Append(CCFLAGS='-include %s'%core_env['preinclude'])
+soname = 'libclam_core.so.%s'%version.split('.')[0]
+core_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 
-core_env.SharedLibrary( 'clam_core', file_retriever.sources )
+lib = core_env.SharedLibrary( 'clam_core', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version )
 
+core_env.AddPostAction( lib, Action(make_lib_names) )

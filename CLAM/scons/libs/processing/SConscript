@@ -43,5 +43,10 @@ processing_env.Append(CCFLAGS='-include %s'%processing_env['preinclude'])
 processing_env.Append(LIBS=['clam_core'])
 processing_env.Append(LIBPATH=['../core'])
 
-processing_env.SharedLibrary( 'clam_processing', file_retriever.sources )
+soname = 'libclam_processing.so.%s'%version.split('.')[0]
+processing_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
+
+lib = processing_env.SharedLibrary( 'clam_processing', file_retriever.sources,  SHLIBSUFFIX='.so.%s'%version  )
+
+processing_env.AddPostAction( lib,  Action(make_lib_names) )
 
