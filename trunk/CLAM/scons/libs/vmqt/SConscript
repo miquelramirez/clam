@@ -45,6 +45,9 @@ vmqt_env.Append(CCFLAGS='-include %s'%vmqt_env['preinclude'])
 vmqt_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
 vmqt_env.Append(LIBPATH=['../core','../processing','../audioio'])
 
+soname = 'libclam_vmqt.so.%s'%version.split('.')[0]
+vmqt_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname] )
 
-vmqt_env.SharedLibrary( 'clam_vmqt', file_retriever.sources )
+lib = vmqt_env.SharedLibrary( 'clam_vmqt', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version )
 
+vmqt_env.AddPostAction( lib, Action(make_lib_names) )

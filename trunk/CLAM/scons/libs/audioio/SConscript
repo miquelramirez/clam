@@ -59,5 +59,9 @@ audioio_env.Append(CCFLAGS='-include %s'%audioio_env['preinclude'])
 audioio_env.Append(LIBS=['clam_core','clam_processing'])
 audioio_env.Append(LIBPATH=['../core','../processing'])
 
-audioio_env.SharedLibrary( 'clam_audioio', file_retriever.sources )
+soname = 'libclam_audioio.so.%s'%version.split('.')[0]
+audioio_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 
+lib = audioio_env.SharedLibrary( 'clam_audioio', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version  )
+
+audioio_env.AddPostAction( lib,  Action(make_lib_names) )

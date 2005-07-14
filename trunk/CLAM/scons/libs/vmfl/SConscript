@@ -38,5 +38,9 @@ vmfl_env.Append(CCFLAGS='-include %s'%vmfl_env['preinclude'])
 vmfl_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
 vmfl_env.Append(LIBPATH=['../core','../processing','../audioio'])
 
-vmfl_env.SharedLibrary( 'clam_vmfl', file_retriever.sources )
+soname = 'libclam_vmfl.so.%s'%version.split('.')[0]
+vmfl_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 
+lib = vmfl_env.SharedLibrary( 'clam_vmfl', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version  )
+
+vmfl_env.AddPostAction( lib, Action(make_lib_names) )
