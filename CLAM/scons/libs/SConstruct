@@ -8,6 +8,12 @@ from buildtools.package_checks import *
 from buildtools.generic_checks import *
 from buildtools.installdirs import * 
 # module check sequences
+from modconf import *
+from modconf.core import * 
+from modconf.processing import *
+from modconf.audioio import *
+from modconf.vmfl import *
+from modconf.vmqt import *
 
 # helper functions
 def setup_build_options( env ) :
@@ -69,424 +75,13 @@ def compose_install_dirnames( env ) :
 	print "\tDocumentation, data and examples will be installed at:", install_dirs.data
 
 
-def setup_global_environment( clam_env, custom_check_routines ) :
-	conf = Configure( clam_env, custom_tests = custom_check_routines )
-	
-	# clam env
-	# check for pkg-config, compiler support, bash features, et.
-	print """\
-############################################
-### GLOBAL CLAM DEPENDENCIES CHECKING    ###
-############################################"""
-
-	if not conf.check_pkg_config( conf ) :
-		print 'WARNING: pkg-config is not installed'
-		clam_env['pkg_config_available'] = False
-	else :
-		clam_env['pkg_config_available'] = True
-
-	if clam_env['double'] :
-		clam_env.Append( CPPFLAGS=['-DCLAM_DOUBLE'] )
-	else :
-		clam_env.Append( CPPFLAGS=['-DCLAM_FLOAT'] )
-
-	if not clam_env['checks'] :
-		clam_env.Append( CPPFLAGS=['-DCLAM_DISABLE_CHECKS'] )
-
-	if clam_env['release_asserts'] :
-		clam_env.Append( CPPFLAGS=['-DCLAM_USE_RELEASE_ASSERTS'] )
-
-	if clam_env['release'] :
-		clam_env.Append( CCFLAGS=Split('-O2 -fomit-frame-pointer -Wall') )
-	else :
-		clam_env.Append( CCFLAGS=Split('-g -Wall') )
-
-	# pthreads testing
-	result = conf.CheckCHeader('pthread.h')
-	if not result :
-		print "Could not find pthread (Posix Threads) library headers!"
-		Exit(1)
-	result = conf.CheckLib( 'pthread', 'pthread_join' )
-	if not result :
-		print "Could not find pthread (Posix Threads) library binaries!"
-		Exit(1)
-	result = conf.check_pthread()
-	if not result :
-		print "Thorough pthread check failed! Check config.log for details..."
-		Exit(1)
-	
-	if result :
-		clam_env.Append( CPPFLAGS=['-DUSE_PTHREADS=1'] )
-		#clam_env.Append( LIBS=['pthread'] )
-
-	if sys.platform == 'win32' :
-		clam_env.Append( CPPFLAGS=['-DWIN32'] )
-
-	clam_env['preinclude'] = 'preinclude.hxx'
-
-	clam_env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
-
-	clam_env = conf.Finish()
 
 
-def setup_core_environment( core_env, custom_check_routines ) :
-	conf = Configure( core_env, custom_tests = custom_check_routines )
-	if core_env['xmlbackend'] == 'xercesc' :
-		failed = False	
-		if not failed and not conf.CheckCXXHeader('xercesc/util/PlatformUtils.hpp') :
-			print "Could not find xerces c headers! Defaulting to the null xml backend"
-			failed = True
-		if not failed and not conf.check_xerces_c( conf ) :
-			print "xerces c code compile/link/run test failed! Check config.log for details..."
-			failed = True
-		
-		if not failed :
-			core_env.Append( CPPFLAGS=['-DUSE_XERCES_TRUE', '-DCLAM_USE_XML'] )
-		else :
-			core_env['xmlbackend'] = 'none'
-			
-	elif core_env['xmlbackend'] == 'xmlpp' :
-		failed = False
-		if core_env['pkg_config_available'] :
-			res = conf.pkg_config_check_existence( conf, name='libxml++-2.6' )
-			if res :
-				core_env.ParseConfig( 'pkg-config --cflags --libs libxml++-2.6' )
-			else :
-				failed = True
-		else :
-			failed = True
-			
-		if not failed and not conf.check_xmlpp( conf ) : 
-			print "\tERROR: libxml++ code compile/link/run test failed! Check config.log for details"
-			failed = True
-		
-		if not failed:
-			core_env.Append( CPPFLAGS=['-DUSE_XMLPP_TRUE','-DCLAM_USE_XML'] )
-		else :
-			core_env['xmlbackend'] = 'none'	
-
-	if core_env['with_ladspa_support'] :
-		result = conf.CheckCHeader( 'ladspa.h' )
-		if not result :
-			print "ladspa SDK header was not found"
-			print "Either install ladspa SDK or disable the option by issuing the option"
-			print "$ scons with_ladspa_support=no"
-			Exit(1)
-			#core_env['with_ladspa_support'] = False
-		result = conf.check_ladspa()
-		if not result :
-			print "ladspa SDK compile test failed! Check config.log for details"
-			print "Check that your installed ladspa headers match the version required by CLAM"
-			Exit(1)			
-
-		core_env.Append( CPPFLAGS=['-DUSE_LADSPA=1'])
-	
-	if core_env['with_osc_support'] :
-		result = conf.CheckCXXHeader( 'oscpack/ip/NetworkingUtils.h' )
-		if not result :	
-			print "liboscpack headers not found!"
-			print "Either install liboscpack or disable OSC support by issuing"
-			print "$scons with_osc_support=no"
-			Exit(1)
-		result = conf.CheckLibWithHeader( 'oscpack', 'oscpack/ip/NetworkingUtils.h', 'cxx', call='InitializeNetworking();')
-		if not result :
-			print "liboscpack binaries not found!"
-			print "Either install liboscpack or disable OSC support by issuing"
-			print "$scons with_osc_support=no"
-			Exit(1)
-		result = conf.check_oscpack()
-		if not result :
-			print "liboscpack compile/link/run test failed! check config.log for details..."
-			print "Either install liboscpack or disable OSC support by issuing"
-			print "$scons with_osc_support=no"
-			Exit(1)
-		core_env.Append(CPPFLAGS='-DUSE_OSCPACK=1')	
-
-	core_env = conf.Finish()
 
 
-def setup_processing_environment( processing_env, custom_check_routines ) :
-	conf = Configure( processing_env, custom_check_routines )
-	if core_env['with_fftw'] :
-		if core_env['double'] : # CLAM uses double for TData
-			double_prefixed = False
-			result = conf.CheckCHeader( 'fftw.h' )
-			if not result :
-				result = conf.CheckCHeader( 'dfftw.h' )
-				if result : 
-					double_prefixed = True
-				else :
-					print "Could not find fftw library headers...!"
-					print "Install the library or deactivate its usage issuing the following command:"
-					print "$ scons with_fftw=no"
-					Exit(1)
-			if not double_prefixed :
-				result = conf.CheckCHeader( 'rfftw.h' )
-			else :
-				result = conf.CheckCHeader( 'drfftw.h' )
-			if not result :
-				print "Could not find some of the fftw library headers...!"
-				print "Please check that all fftw headers are installed"
-				Exit(1)
-			if not double_prefixed :
-				result = conf.CheckLib( 'fftw', 'fftw_sizeof_fftw_real')
-			else :
-				result = conf.CheckLib( 'dfftw', 'fftw_sizeof_fftw_real')
-			if not result :
-				print "Could not find libfftw (or libdfftw)"
-				print "Please check that fftw is properly installed"
-				Exit(1)
-			if not double_prefixed :
-				result = conf.CheckLib( 'rfftw', 'rfftw_create_plan' )
-			else :
-				result = conf.CheckLib( 'drfftw', 'rfftw_create_plan' )
-			if not result :
-				print "Could not find librfftw (or libdrfftw)"
-				print "Please check that fftw is properly installed"
-				Exit(1)
-	
-			if not double_prefixed :
-				result = conf.check_fftw_double_wo_prefix()
-			else :
-				result = conf.check_fftw_double_w_prefix()
-			if not result :
-				print "fftw compile/link/run tests failed! Check config.log for details"
-				Exit(1)
-			if not double_prefixed :
-				result = conf.check_rfftw_double_wo_prefix()
-			else :
-				result = conf.check_rfftw_double_w_prefix()
-			if not result :
-				print "rfftw compile/link/run tests failed! Check config.log for details"
-				Exit(1)
-			
-		else :
-			result = conf.CheckCHeader( 'sfftw.h' )
-			if not result :
-				print "Could not find fftw library headers...!"
-				print "Install the library or deactivate its usage issuing the following command:"
-				print "$ scons with_fftw=no"
-				Exit(1)
-			result = conf.CheckCHeader( 'srfftw.h' )
-			if not result :
-				print "Could not find some of the fftw library headers...!"
-				print "Please check that all fftw headers are installed"
-				Exit(1)
-			result = conf.CheckLib( 'sfftw', 'fftw_sizeof_fftw_real')
-			if not result :
-				print "Could not find libsfftw"
-				print "Please check that fftw is properly installed"
-				Exit(1)
-			result = conf.CheckLib( 'srfftw', 'rfftw_create_plan' )
-			if not result :
-				print "Could not find libsrfftw"
-				print "Please check that fftw is properly installed"
-				Exit(1)
-	
-			result = conf.check_fftw_float_w_prefix()
-			if not result :
-				print "fftw compile/link/run tests failed! Check config.log for details"
-				Exit(1)
-			result = conf.check_rfftw_float_w_prefix()
-			if not result :
-				print "rfftw compile/link/run tests failed! Check config.log for details"
-				Exit(1)
 
-		processing_env.Append( CPPFLAGS=['-DUSE_FFTW=1'] )
 
-	processing_env = conf.Finish()
 
-def setup_audioio_environment( audioio_env, custom_check_routines ) :
-	conf = Configure( audioio_env, custom_check_routines )
-
-	if audioio_env['with_sndfile'] :
-		result = conf.CheckCHeader( 'sndfile.h' )
-		if not result :
-			print "Could not find libsndfile headers! Please check your libsndfile installation"
-			Exit(1)
-		result = conf.CheckLib( library='sndfile', symbol='sf_open_fd' )
-		if not result :
-			print "Could not find libnsndfile binaries! Please check your libsndfile installation"
-			Exit(1)
-		result = conf.check_libsndfile()
-		if not result :
-			print "libsndfile compile/link/run tests failed! Check config.log for details..."
-			Exit(1)
-		
-		audioio_env.Append( CPPFLAGS=['-DUSE_SNDFILE=1'])
-	if audioio_env['with_oggvorbis'] :
-		result = conf.CheckCHeader( 'ogg/ogg.h' )
-		if not result :
-			print "Could not find libogg headers! Please check your libogg installation"
-			Exit(1)
-		result = conf.CheckLib( library='ogg', symbol='oggpack_writeinit' )
-		if not result :
-			print "Could not find libogg binaries! Please check you libogg installation" 
-			Exit(1)
-		result = conf.check_libogg()
-		if not result :
-			print "libogg compile/link/run tests failed! Check config.log for details"
-			Exit(1)
-		result = conf.CheckCHeader( 'vorbis/vorbisenc.h' )
-		if not result :
-			print "Could not find libvorbis headers! Please check your libvorbis installation"
-			Exit(1)
-		audioio_env.Append( LIBS=['vorbisenc'] )
-		result = conf.CheckLib( library='vorbis', symbol='vorbis_encode_setup_init')
-		if not result :
-			print "Could not find libvorbis binaries! Please check you libvorbis installation"
-			Exit(1)
-		result = conf.check_libvorbis()
-		if not result :
-			print "libvorbis compile/link/run test failed! Check config.log for details"
-			Exit(1)	
-		result = conf.CheckCHeader( 'vorbis/vorbisfile.h' )
-		if not result :
-			print "Could not find libvorbisfile headers! Please check your libvorbisfile installation"
-			Exit(1)
-		result = conf.CheckLib( library="vorbisfile", symbol="ov_test_open" )
-		if not result :
-			print "Could not find libvorbisfile binaries! Please check your libvorbisfile installation"
-			Exit(1)
-		result = conf.check_libvorbisfile()
-		if not result :
-			print "libvorbisfile compile/link/run test failed! Please check config.log for details"
-			Exit(1)
-		audioio_env.Append( CPPFLAGS=['-DUSE_OGGVORBIS=1'] )
-	if audioio_env['with_mad'] :
-		result = conf.CheckCHeader( 'mad.h' )
-		if not result :
-			print "Could not find libmad headers! Please check your libmad installation"
-			Exit(1)
-		result = conf.CheckLib( library='mad', symbol='mad_stream_init' )
-		if not result :
-			print "Could not find libmad binaries! Please check your libmad installation"
-			Exit(1)
-		result = conf.check_libmad( )
-		if not result :
-			print "libmad compile/link/run tests failed! Please check config.log for details"
-			Exit(1)
-		audioio_env.Append( CPPFLAGS=['-DUSE_MAD=1'] )
-	if audioio_env['with_id3'] :
-		result = conf.CheckCXXHeader('id3/tag.h')
-		if not result :
-			print "Could not find id3lib headers! Please check your id3lib installation"
-			Exit(1)
-		result = conf.CheckLibWithHeader( 'id3', 'id3/tag.h', 'cxx', call='ID3_Tag myTag;' )
-		if not result :
-			print "Could not find id3lib binaries! Please check your id3lib installation"
-			Exit(1)
-		result = conf.check_id3lib()
-		if not result :
-			print "id3lib compile/link/run tests failed! Please check config.log for details"
-			Exit(1)
-		audioio_env.Append( CPPFLAGS=['-DUSE_ID3=1'] )
-	if sys.platform == 'linux2' and audioio_env['with_alsa'] :
-		result = conf.CheckCHeader( 'alsa/asoundlib.h' )
-		if not result :
-			print "Could not find libasound development headers! Please check your libasound installation"
-			Exit(1)
-		result = conf.CheckLib( library='asound', symbol='snd_card_next' )	
-		if not result :
-			print "Could not find libasound binaries! Please check your libasound installation"
-			Exit(1)
-		result = conf.check_libasound()
-		if not result :
-			print "libasound compile/link/run tests failed! Please check config.log for details..."
-			Exit(1)
-		audioio_env.Append( CPPFLAGS=['-DUSE_ALSA=1'] )
-	if not sys.platform == 'linux2' :
-		if sys.platform == 'win32' and audioio_env['audio_backend'] == 'directx' :
-			raise RuntimeError, "Not implemented yet!"
-		if audioio_env['audio_backend'] == 'portaudio' :
-			raise RuntimeError, "Not implemented yet!"
-		if audioio_env['audio_backend'] == 'rtaudio' :
-			raise RuntimeError, "Not implemented yet!"
-	if audioio_env['with_portmidi'] :
-		raise RuntimeError, "Not implemented yet!"
-	
-	audioio_env = conf.Finish()	
-
-def check_opengl( env, conf ) :
-	
-	result = conf.CheckCHeader('GL/gl.h')
-	if not result :
-		print "Could not find OpenGL headers! Please install the headers supplied by your OpenGL driver vendor"
-		return False
-	result = conf.CheckLib( 'GL', 'glBegin' )
-	if not result :
-		print "Could not find OpenGL library! Please install the development library supplied by your OpenGL driver vendor"
-		return False
-	result = conf.check_opengl()
-	if not result :
-		print "OpenGL compile/link/run test failed! Please check config.log for details..."
-		return False
-	result = conf.CheckCHeader( 'GL/glu.h' )
-	if not result :
-		print "Could not find GLU (OpenGL Utility library) headers!  Please install the headers supplied by your OpenGL driver vendor" 
-		return False
-	result = conf.CheckLib( 'GLU', 'gluPerspective' )
-	if not result : 
-		print "Could not find GLU (OpenGL Utility library) binaries! Please install the development library supplied by your OpenGL driver vendor"
-		return False
-	result = conf.check_glu()
-	if not result :
-		print "GLU compile/link/run tests failed! Check config.log for details..."
-		return False
-
-	env.Append( CPPFLAGS=['-DUSE_GL=1'] )
-
-	return True
-
-def setup_vmfl_environment( vmfl_env, custom_check_routines ) :
-	conf = Configure( vmfl_env, custom_check_routines )
-
-	if not check_opengl( vmfl_env, conf ) :
-		Exit(1)
-
-	vmfl_env.Append( LINKFLAGS=[''] )
-	result = conf.check_fltk_config()
-	if not result :
-		print "fltk-config tool was not found on your system. Please check your FLTK installation"
-		Exit(1)
-	
-	vmfl_env.ParseConfig('fltk-config --cflags --cxxflags --ldflags --libs --use-gl --use-images --use-glut --use-forms')
-
-	
-	result = conf.check_fltk()
-	if not result :
-		print "FLTK compile/link/run test failed! Please check config.log for details"
-		Exit(1)
-
-	vmfl_env.Append( CPPFLAGS=['-DUSE_FLTK=1'] )
-	vmfl_env = conf.Finish() 
-
-def setup_vmqt_environment( vmqt_env, custom_check_routines ) :
-	conf = Configure( vmqt_env, custom_check_routines )
-
-	if not check_opengl( vmqt_env, conf ) :
-		Exit(1)
-
-	vmqt_env.Append( CPPPATH=['%s'%vmqt_env['qt_includes']] )
-	vmqt_env.Append( LIBPATH=['%s'%vmqt_env['qt_libs']] )
-
-	result = conf.CheckCXXHeader( 'qapplication.h' )
-	if not result :
-		print "Could not find Qt 3 headers! Check your Qt 3 installation..."
-		Exit(1)
-
-	result = conf.CheckLibWithHeader( 'qt-mt', 'qapplication.h', 'cxx', call='QApplication qapp(0,0);')
-	if not result :
-		print "Could not find multithreaded Qt 3 binaries (libqt-mt)! Check your Qt 3 installation..."
-		Exit(1)
-
-	result = conf.check_qt()
-	if not result :
-		print "Qt 3 compile/link/run tests failed! Check config.log for details..."
-		Exit(1)
-
-	vmqt_env.Append( CPPFLAGS=['-DUSE_QT=1'] )
-	vmqt_env = conf.Finish()
 
 # SConstruct file for CLAM
 # Main section
@@ -518,7 +113,10 @@ for check_name, check_routine in generic_checks.items() :
 
 
 # core env, CLAM core module checks
-setup_global_environment( clam_env, custom_check_routines )
+conf = Configure( clam_env, custom_tests = custom_check_routines )
+if not setup_global_environment( clam_env, conf ) :
+	Exit(1)
+clam_env = conf.Finish()
 
 print """\
 ############################################
@@ -527,8 +125,10 @@ print """\
 
 core_env = clam_env.Copy()
 Export('core_env')
-
-setup_core_environment( core_env, custom_check_routines )
+conf = Configure( core_env, custom_tests = custom_check_routines )
+if not setup_core_environment( core_env, conf ) :
+	Exit(1)
+core_env = conf.Finish()
 
 clam_env['xmlbackend'] = core_env['xmlbackend']
 if clam_env['xmlbackend'] != 'none' :
@@ -537,23 +137,36 @@ if clam_env['xmlbackend'] != 'none' :
 
 processing_env = clam_env.Copy()
 Export('processing_env')
+conf = Configure( processing_env, custom_check_routines )
+if not setup_processing_environment( processing_env, conf ) :
+	Exit(1)
+processing_env = conf.Finish()
 
-setup_processing_environment( processing_env, custom_check_routines )
 
 audioio_env = clam_env.Copy()
 Export('audioio_env')
 
-setup_audioio_environment( audioio_env, custom_check_routines )
+conf = Configure( audioio_env, custom_check_routines )
+if not setup_audioio_environment( audioio_env, conf ) :
+	Exit(1)
+audioio_env = conf.Finish()
+
 
 vmfl_env = clam_env.Copy()
 Export('vmfl_env')
 
-setup_vmfl_environment( vmfl_env, custom_check_routines )
+conf = Configure( vmfl_env, custom_check_routines )
+if not setup_vmfl_environment( vmfl_env, conf ) :
+	Exit(1)
+vmfl_env = conf.Finish()
 
 vmqt_env = clam_env.Copy()
 Export('vmqt_env')
 
-setup_vmqt_environment( vmqt_env, custom_check_routines )
+conf = Configure( vmqt_env, custom_check_routines )
+if not setup_vmqt_environment( vmqt_env, conf ) :
+	Exit(1)
+vmqt_env = conf.Finish()
 
 # install dirs composition
 compose_install_dirnames(clam_env)
