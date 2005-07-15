@@ -17,6 +17,7 @@ pkg_data = PackageData( 'clam_core', version, [] )
 pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
 print "ok"
 
+lib_descriptor = core_env.File( 'clam_core.pc' )
 
 print "Gathering necessary source files...",
 if not os.path.exists('src') :
@@ -65,8 +66,24 @@ print "ok"
 core_env.Append(CPPPATH='include')
 core_env.Append(CCFLAGS='-include CLAM/%s'%core_env['preinclude'])
 soname = 'libclam_core.so.%s'%version.split('.')[0]
+linker_name = 'libclam_core.so'
 core_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
+
+headers = [ File(header) for header in file_retriever.headers ]
 
 lib = core_env.SharedLibrary( 'clam_core', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version )
 
-core_env.AddPostAction( lib, Action(make_lib_names) )
+soname_lib = core_env.SonameLink( soname, lib )
+linkername_lib = core_env.LinkerNameLink( linker_name, soname_lib)
+
+core_env.Alias( 'core', linkername_lib )
+
+install_headers = core_env.Install( install_dirs.inc+'/CLAM', headers )
+core_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
+install_lib = core_env.Install( install_dirs.lib, lib )
+core_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
+install_descriptor = core_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
+
+core_env.Alias( 'install_core', install_headers )
+core_env.Alias( 'install_core', install_lib )
+core_env.Alias( 'install_core', install_descriptor )

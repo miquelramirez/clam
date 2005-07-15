@@ -16,6 +16,8 @@ pkg_data = PackageData( 'clam_processing', version, [] )
 pkg_data.create_pkg_descriptor( processing_env, 'clam_processing.pc' )
 print "ok"
 
+lib_descriptor = processing_env.File( 'clam_processing.pc' )
+
 print "Gathering necessary source files...",
 if not os.path.exists('src') :
 	os.mkdir('src')
@@ -50,9 +52,23 @@ processing_env.Append(LIBS=['clam_core'])
 processing_env.Append(LIBPATH=['../core'])
 
 soname = 'libclam_processing.so.%s'%version.split('.')[0]
+linker_name = 'libclam_processing.so'
 processing_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 
 lib = processing_env.SharedLibrary( 'clam_processing', file_retriever.sources,  SHLIBSUFFIX='.so.%s'%version  )
+soname_lib = processing_env.SonameLink( soname, lib )
+linkername_lib = processing_env.LinkerNameLink( linker_name, soname_lib)
 
-processing_env.AddPostAction( lib,  Action(make_lib_names) )
+headers = [ File(header) for header in file_retriever.headers ]
 
+processing_env.Alias( 'processing', linkername_lib )
+
+install_headers = processing_env.Install( install_dirs.inc+'/CLAM', headers )
+processing_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
+install_lib = processing_env.Install( install_dirs.lib, lib )
+processing_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
+install_descriptor = processing_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
+
+processing_env.Alias( 'install_processing', install_headers )
+processing_env.Alias( 'install_processing', install_lib )
+processing_env.Alias( 'install_processing', install_descriptor )

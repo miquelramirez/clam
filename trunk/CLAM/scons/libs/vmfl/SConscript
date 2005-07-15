@@ -16,6 +16,7 @@ print "Creating pkg-config descriptor...",
 pkg_data = PackageData( 'clam_vmfl', version, [] )
 pkg_data.create_pkg_descriptor( vmfl_env, 'clam_vmfl.pc' )
 print "ok"
+lib_descriptor = vmfl_env.File( 'clam_vmfl.pc' )
 
 print "Gathering necessary source files...",
 if not os.path.exists('src') :
@@ -37,6 +38,7 @@ for filename in file_retriever.headers :
 for filename in file_retriever.sources :
 	update_includes( header_db, filename )
 
+headers = [ File(header) for header in file_retriever.headers ]
 
 print "ok"
 vmfl_env.Append(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
@@ -45,8 +47,22 @@ vmfl_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
 vmfl_env.Append(LIBPATH=['../core','../processing','../audioio'])
 
 soname = 'libclam_vmfl.so.%s'%version.split('.')[0]
+linker_name = 'libclam_vmfl.so'
 vmfl_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 
 lib = vmfl_env.SharedLibrary( 'clam_vmfl', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version  )
 
-vmfl_env.AddPostAction( lib, Action(make_lib_names) )
+soname_lib = vmfl_env.SonameLink( soname, lib )
+linkername_lib = vmfl_env.LinkerNameLink( linker_name, soname_lib)
+
+vmfl_env.Alias( 'vmfl', linkername_lib )
+
+install_headers = vmfl_env.Install( install_dirs.inc+'/CLAM', headers )
+vmfl_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
+install_lib = vmfl_env.Install( install_dirs.lib, lib )
+vmfl_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
+install_descriptor = vmfl_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
+
+vmfl_env.Alias( 'install_vmfl', install_headers )
+vmfl_env.Alias( 'install_vmfl', install_lib )
+vmfl_env.Alias( 'install_vmfl', install_descriptor )
