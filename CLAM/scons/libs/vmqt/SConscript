@@ -16,6 +16,7 @@ print "Creating pkg-config descriptor...",
 pkg_data = PackageData( 'clam_vmqt', version, [] )
 pkg_data.create_pkg_descriptor( vmqt_env, 'clam_vmqt.pc' )
 print "ok"
+lib_descriptor = vmqt_env.File( 'clam_vmqt.pc' )
 
 print "Gathering necessary source files...",
 if not os.path.exists('src') :
@@ -44,6 +45,7 @@ for filename in file_retriever.headers :
 for filename in file_retriever.sources :
 	update_includes( header_db, filename )
 
+headers = [ File(header) for header in file_retriever.headers ]
 
 print "ok"
 vmqt_env.Append(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
@@ -52,8 +54,23 @@ vmqt_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
 vmqt_env.Append(LIBPATH=['../core','../processing','../audioio'])
 
 soname = 'libclam_vmqt.so.%s'%version.split('.')[0]
+linker_name = 'libclam_vmqt.so'
 vmqt_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname] )
 
 lib = vmqt_env.SharedLibrary( 'clam_vmqt', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version )
 
-vmqt_env.AddPostAction( lib, Action(make_lib_names) )
+soname_lib = vmqt_env.SonameLink( soname, lib )
+linkername_lib = vmqt_env.LinkerNameLink( linker_name, soname_lib)
+
+vmqt_env.Alias( 'vmqt', linkername_lib )
+#vmqt_env.Alias( 'all', linkername_lib )
+
+install_headers = vmqt_env.Install( install_dirs.inc+'/CLAM', headers )
+vmqt_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
+install_lib = vmqt_env.Install( install_dirs.lib, lib )
+vmqt_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
+install_descriptor = vmqt_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
+
+vmqt_env.Alias( 'install_vmqt', install_headers )
+vmqt_env.Alias( 'install_vmqt', install_lib )
+vmqt_env.Alias( 'install_vmqt', install_descriptor )

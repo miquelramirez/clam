@@ -17,6 +17,9 @@ pkg_data = PackageData( 'clam_audioio', version, [] )
 pkg_data.create_pkg_descriptor( audioio_env, 'clam_audioio.pc' )
 print "ok"
 
+lib_descriptor = audioio_env.File( 'clam_audioio.pc' )
+
+
 print "Gathering necessary source files...",
 if not os.path.exists('src') :
 	os.mkdir('src')
@@ -58,6 +61,7 @@ for filename in file_retriever.headers :
 for filename in file_retriever.sources :
 	update_includes( header_db, filename )
 
+headers = [ File(header) for header in file_retriever.headers ]
 
 print "ok"
 audioio_env.Append(CPPPATH=['include','../core/include','../processing/include'])
@@ -66,8 +70,22 @@ audioio_env.Append(LIBS=['clam_core','clam_processing'])
 audioio_env.Append(LIBPATH=['../core','../processing'])
 
 soname = 'libclam_audioio.so.%s'%version.split('.')[0]
+linker_name = 'libclam_audioio.so'
 audioio_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 
 lib = audioio_env.SharedLibrary( 'clam_audioio', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version  )
 
-audioio_env.AddPostAction( lib,  Action(make_lib_names) )
+soname_lib = audioio_env.SonameLink( soname, lib )
+linkername_lib = audioio_env.LinkerNameLink( linker_name, soname_lib)
+
+audioio_env.Alias( 'audioio', linkername_lib )
+
+install_headers = audioio_env.Install( install_dirs.inc+'/CLAM', headers )
+audioio_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
+install_lib = audioio_env.Install( install_dirs.lib, lib )
+audioio_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
+install_descriptor = audioio_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
+
+audioio_env.Alias( 'install_audioio', install_headers )
+audioio_env.Alias( 'install_audioio', install_lib )
+audioio_env.Alias( 'install_audioio', install_descriptor )

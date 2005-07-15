@@ -3,6 +3,7 @@ import os
 import shelve
 # tools for build configuration
 from buildtools import *
+from buildtools.custom_builders import * 
 from buildtools.thorough_check import ThoroughPackageCheck
 from buildtools.tool_checks import *
 from buildtools.package_checks import *
@@ -89,6 +90,11 @@ def gather_custom_checks() :
 
 	return custom_check_routines
 
+def create_custom_builders( env ) :
+	bld = Builder( action=Action(generate_so_name,generate_so_name_message) )
+	env.Append( BUILDERS={'SonameLink' : bld} )	
+	bld = Builder( action=Action(generate_linker_name, generate_linker_name_message) )
+	env.Append( BUILDERS={'LinkerNameLink' : bld} )
 
 # SConstruct file for CLAM
 # Main section
@@ -108,6 +114,9 @@ Export('header_db')
 setup_build_options( clam_env )
 #registering custom checks
 custom_check_routines = gather_custom_checks()
+
+#registering custom_builders
+create_custom_builders(clam_env)
 
 print """\
 ############################################
@@ -176,6 +185,9 @@ SConscript('processing/SConscript')
 SConscript('audioio/SConscript')
 SConscript('vmfl/SConscript')
 SConscript('vmqt/SConscript')
+
+Alias( 'all', ['core', 'processing', 'audioio', 'vmfl', 'vmqt' ] )
+Alias( 'install', ['install_core', 'install_processing', 'install_audioio', 'install_vmfl', 'install_vmqt'] )
 
 print """\
 ##############################################
