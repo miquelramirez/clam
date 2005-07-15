@@ -1,6 +1,8 @@
 #ifndef __MIDIMELODYPLAYER__
 #define __MIDIMELODYPLAYER__
 
+#include <map>
+#include <vector>
 #include <string>
 #include "MIDIMelody.hxx"
 #include "Player.hxx"
@@ -11,6 +13,9 @@ namespace CLAM
     {
 		class MIDIMelodyPlayer : public Player
 		{
+			typedef std::map<std::string,unsigned> IndexTable;
+			typedef std::vector<MIDIMelody>        Melodies;
+
 		public:
 			MIDIMelodyPlayer();
 			~MIDIMelodyPlayer();
@@ -18,8 +23,8 @@ namespace CLAM
 			void SetMIDIDevice(const std::string& device);
 			void SetMIDIProgram(const int& program);
 	    
-			void SetData(const MIDIMelody& melody, const std::string& device, const int& program, const TData& dur);
-			MIDIMelody& GetMIDIMelody();
+			void AddData(const std::string& key, const MIDIMelody& melody, const TData& dur);
+			MIDIMelody& GetMIDIMelody(const std::string& key);
 
 			void UpdateNoteKey(const TIndex& index, const int& newKey);
 			void UpdateNoteDuration(const TIndex& index, const TData& beginTime);
@@ -28,20 +33,28 @@ namespace CLAM
 			void RemoveNote(const TIndex& index);
 
 			void SetDuration(const TData& dur);
+			void SetCurrent(const std::string& current);
 
 		protected:
 			void thread_code();
 
 		private:
-			MIDIMelody mMIDIMelody;
+			IndexTable  mIndexTable;
+			Melodies    mMelodies;
+			std::string mCurrent;
 			std::string mMIDIDevice;
 			std::string mEnqueuedDevice;
-			bool mHasEnqueuedDevice;
-			int mMIDIProgram;
-			TData mDuration;
+			bool        mHasEnqueuedDevice;
+			int         mMIDIProgram;
+			TData       mDuration;
 
 			unsigned GetTime();
 			TIndex GetNoteIndex(bool first=true);
+
+			void InitTables();
+			void AddMelody(const std::string& key, const MIDIMelody& melody);
+			bool HaveKey(const std::string& key);
+			unsigned GetMelodyIndex(const std::string& key);
 	    
 		};
     }	 
