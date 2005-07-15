@@ -179,13 +179,13 @@ void Annotator::initLLDescriptorsWidgets()
 		}
 	}
 
+	const int eFlags = CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer;
 	std::vector<CLAM::VM::BPFEditor*>::iterator it;
 	mBPFEditors.resize(nTabs);
 	for(i=0, it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
 	{
 		QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
-		*it = new CLAM::VM::BPFEditor(tabWidget2->page(i),0,
-			CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer);
+		*it = new CLAM::VM::BPFEditor(eFlags, tabWidget2->page(i));
 		(*it)->SetActivePlayer(false);
 		(*it)->Hide();
 		tabLayout->addWidget(*it);
