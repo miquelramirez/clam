@@ -1,5 +1,6 @@
 # SConstruct file for CLAM vmfl
 from buildtools import *
+from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
@@ -24,17 +25,22 @@ if not os.path.exists('include' ) :
 
 folders = ['src/Visualization/Base','src/Visualization/GL', 'src/Visualization/Plot', 'src/Visualization/Presentation/Base' ,'src/Visualization/Presentation/FLTK', 'src/Visualization/Util', 'src/Visualization/View', 'src/Visualization/Widget/FLTKWrapper.*xx', 'src/Visualization/Widget/FLTK' ]
 
-blacklist = ['GLLogPowSpRenderer','GLLogSpRenderer','ProcessingController','Fl_Range']
+blacklist = ['GLLogPowSpRenderer','GLLogSpRenderer','ProcessingController','Fl_Range','FDFilterController','TokenDelayController']
 
 file_retriever = FileRetriever( top+'/..', folders, blacklist )
 
 file_retriever.scan()
 
 store_headers_in_db( header_db )
+for filename in file_retriever.headers :
+	update_includes( header_db, filename )
+for filename in file_retriever.sources :
+	update_includes( header_db, filename )
+
 
 print "ok"
-vmfl_env.Append(CPPPATH=['include/CLAM','../core/include/CLAM','../processing/include/CLAM','../audioio/include/CLAM'])
-vmfl_env.Append(CCFLAGS='-include %s'%vmfl_env['preinclude'])
+vmfl_env.Append(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
+vmfl_env.Append(CCFLAGS='-include CLAM/%s'%vmfl_env['preinclude'])
 vmfl_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
 vmfl_env.Append(LIBPATH=['../core','../processing','../audioio'])
 

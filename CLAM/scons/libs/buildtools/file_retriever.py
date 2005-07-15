@@ -45,7 +45,7 @@ class FileRetriever :
 				return True
 		return False
 
-	def scan( self ) :
+	def scan( self, header_db = None ) :
 		for target in self.scantargets :
 			if not os.path.isdir( target ) :
 				base = os.path.dirname(target)

@@ -1,5 +1,6 @@
 # SConstruct file for CLAMprocessing
 from buildtools import *
+from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
@@ -36,10 +37,15 @@ file_retriever = FileRetriever( top+'/..', folders, blacklist )
 file_retriever.scan()
 
 store_headers_in_db( header_db )
+for filename in file_retriever.headers :
+	update_includes( header_db, filename )
+for filename in file_retriever.sources :
+	update_includes( header_db, filename )
+
 
 print "ok"
-processing_env.Append(CPPPATH=['include/CLAM','../core/include/CLAM'])
-processing_env.Append(CCFLAGS='-include %s'%processing_env['preinclude'])
+processing_env.Append(CPPPATH=['include','../core/include'])
+processing_env.Append(CCFLAGS='-include CLAM/%s'%processing_env['preinclude'])
 processing_env.Append(LIBS=['clam_core'])
 processing_env.Append(LIBPATH=['../core'])
 

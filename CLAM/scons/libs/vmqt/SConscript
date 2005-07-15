@@ -1,5 +1,6 @@
 # SConstruct file for CLAM vmqt
 from buildtools import *
+from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
@@ -38,10 +39,15 @@ file_retriever = FileRetriever( basedir, folders, blacklist )
 file_retriever.scan()
 
 store_headers_in_db( header_db )
+for filename in file_retriever.headers :
+	update_includes( header_db, filename )
+for filename in file_retriever.sources :
+	update_includes( header_db, filename )
+
 
 print "ok"
-vmqt_env.Append(CPPPATH=['include/CLAM','../core/include/CLAM','../processing/include/CLAM','../audioio/include/CLAM'])
-vmqt_env.Append(CCFLAGS='-include %s'%vmqt_env['preinclude'])
+vmqt_env.Append(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
+vmqt_env.Append(CCFLAGS='-include CLAM/%s'%vmqt_env['preinclude'])
 vmqt_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
 vmqt_env.Append(LIBPATH=['../core','../processing','../audioio'])
 
