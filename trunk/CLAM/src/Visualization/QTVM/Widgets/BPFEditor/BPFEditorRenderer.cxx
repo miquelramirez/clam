@@ -10,8 +10,7 @@ namespace CLAM
 			, mRightIndex(0)
 			, mSelectedIndex(-1)
 		{
-			SetDataColor(VMColor::White());
-			SetHandlersColor(VMColor::White());
+			SetDataColor(VMColor::White(),VMColor::White());
 		}
 	
 		BPFEditorRenderer::~BPFEditorRenderer()
@@ -23,14 +22,10 @@ namespace CLAM
 			mData = bpf;
 		}
 
-		void BPFEditorRenderer::SetDataColor(const Color& c)
+		void BPFEditorRenderer::SetDataColor(const Color& lines_color, const Color& handlers_color)
 		{
-			mDataColor = c;
-		}
-
-		void BPFEditorRenderer::SetHandlersColor(const Color& c)
-		{
-			mHandlersColor = c;
+			mDataColor = lines_color;
+			mHandlersColor = handlers_color;
 		}
 
 		void BPFEditorRenderer::Render()

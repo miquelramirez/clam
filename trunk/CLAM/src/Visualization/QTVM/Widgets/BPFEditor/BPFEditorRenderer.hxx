@@ -15,9 +15,8 @@ namespace CLAM
 			~BPFEditorRenderer();
 
 			void SetData(const BPF& bpf);
-			void SetDataColor(const Color& c);
-			void SetHandlersColor(const Color& c);
-
+			void SetDataColor(const Color& lines_color, const Color& handlers_color);
+			
 			void Render();
 			void SetBounds(const TIndex& left, const TIndex& right);
 			void SetSelectedIndex(const int& index);
