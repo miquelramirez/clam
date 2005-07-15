@@ -27,6 +27,7 @@ namespace CLAM
 		class BPFEditorDisplaySurface;
 		class VScrollGroup;
 		class HScrollGroup;
+		class ListItemChooser;
 		
 		/**
 		 * Editable/auralizable plot.
@@ -39,14 +40,11 @@ namespace CLAM
 			Q_OBJECT
 
 		public:
-			BPFEditor(QWidget* parent=0, const char* name=0, int eFlags=CLAM::VM::AllowAll);
+			BPFEditor(int eFlags=CLAM::VM::AllowAll, QWidget* parent=0, const char* name=0, WFlags f=0);
 			~BPFEditor();
 	    
 			void Label(const std::string& label);
 			void Geometry(int x, int y, int w, int h);
-
-			void SetData(const BPF& bpf);
-			BPF& GetData();
 
 			void SetXRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
 			void SetYRange(const double& min, const double& max, const EScale& scale=EScale::eLinear);
@@ -54,15 +52,29 @@ namespace CLAM
 			void SetXScale(const EScale& scale);
 			void SetYScale(const EScale& scale);
 
-			Melody& GetMelody();
-			MIDIMelody& GetMIDIMelody();
-	    
 			void Show();
 			void Hide();
 
 			void SetActivePlayer(bool active);
-
 			void SetAudioPtr(const Audio* audio);
+
+			/*
+			 * methods to use when you wish a single BPF only
+			 * use them also to set the first BPF (default).
+			 */
+			void SetData(const BPF& bpf);
+			BPF& GetData();
+			Melody& GetMelody();
+			MIDIMelody& GetMIDIMelody();
+
+			/*
+			 * methods to add/get data using a key (multiple BPF management)
+			 */
+			void AddData(const std::string& key, const BPF& bpf);
+			void SetDataColor(const std::string& key, const Color& lines_color, const Color& handlers_color);
+			BPF& GetData(const std::string& key);
+			Melody& GetMelody(const std::string& key);
+			MIDIMelody& GetMIDIMelody(const std::string& key);
 	    
 		signals:
 			void xValueChanged(int, float);
@@ -85,6 +97,7 @@ namespace CLAM
 		protected:
 			void keyPressEvent(QKeyEvent* e);
 			void keyReleaseEvent(QKeyEvent* e);
+			void showEvent(QShowEvent* e);
 			void hideEvent(QHideEvent* e);
 
 		private slots:
@@ -93,6 +106,7 @@ namespace CLAM
 			void setMaxHScroll(int);
 			void showPopupMenu();
 			void activePlayer();
+			void showChooseBPFDlg();
 
 		private:
 			int                      mEFlags;
@@ -121,10 +135,10 @@ namespace CLAM
 			Melody     mMelody;
 			MIDIMelody mMIDIMelody;
 
-			bool mHasPlayData;
 			bool mWhiteOverBlackScheme;
 
-			QPopupMenu* mPopupMenu;
+			QPopupMenu*      mPopupMenu;
+			ListItemChooser* mChooseBPFDialog;
 
 			Slotv1<TData> mSlotPlayingTimeReceived;
 			Slotv1<TData> mSlotStopPlayingReceived;

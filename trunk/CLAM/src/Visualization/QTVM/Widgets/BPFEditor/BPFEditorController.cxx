@@ -1,3 +1,4 @@
+#include <iostream>
 #include <qpixmap.h>
 #include "CLAMGL.hxx"
 #include "IconData.hxx"
@@ -36,8 +37,12 @@ namespace CLAM
 			, mHZoomRatio(1.0)
 			, mIsPlaying(false)
 			, mLightedPointIndex(0)
+			, mCurrentBPF("default")
+			, mIsModified(false)
+			, mActiveRendering(true)
 		{
-			mData.SetSize(0);
+			InitTables();
+			SetRectColor(VMColor::White());
 			SetDialColor(VMColor::Red());
 		}
 
@@ -45,25 +50,42 @@ namespace CLAM
 		{
 		}
 
-		void BPFEditorController::SetData(const BPF& bpf)
+		void BPFEditorController::AddData(const std::string& key, const BPF& bpf)
 		{
-			mData = bpf;
+			AddBPF(key,bpf);
 			emit requestRefresh();
 		}
 
-		BPF& BPFEditorController::GetData()
+		BPF& BPFEditorController::GetData(const std::string& key)
 		{
-			return mData;
+			bool haveKey = HaveKey(key);
+			unsigned index = (haveKey) ? GetBPFIndex(key) : GetBPFIndex(mCurrentBPF);
+			if(!haveKey)
+			{
+				std::cout << "WARNING: BPFEditorController::GetData(const std::string& key)" << std::endl;
+				std::cout << key << " not exist, returning current BPF";
+			}
+			return mBPFs[index];
 		}
 
-		void BPFEditorController::SetDataColor(const Color& c)
+		void BPFEditorController::SetDataColor(const std::string& key, 
+											   const Color& lines_color, 
+											   const Color& handlers_color)
 		{
-			mRenderer.SetDataColor(c);
+			if(key == "default")
+			{
+				std::cout << "INFO: default is a reserved key." << std::endl;
+				return;
+			}
+			if(!HaveKey(key)) return;
+			unsigned index = GetBPFIndex(key);
+			mRenderers[index].SetDataColor(lines_color, handlers_color);
+			emit requestRefresh();
 		}
 
-		void BPFEditorController::SetHandlersColor(const Color& c)
+		void BPFEditorController::SetDataColor(const Color& lines_color, const Color& handlers_color)
 		{
-			mRenderer.SetHandlersColor(c);
+			mRenderers[0].SetDataColor(lines_color, handlers_color);
 		}
 
 		void BPFEditorController::SetRectColor(const Color& c)
@@ -162,14 +184,15 @@ namespace CLAM
 			mLeftButtonPressed = pressed;
 			if(!mLeftButtonPressed)
 			{
+				unsigned index = GetBPFIndex(mCurrentBPF);
 				if(mXModified)
 				{
-					emit xValueChanged(mCurrentIndex, mData.GetXValue(mCurrentIndex));
+					emit xValueChanged(mCurrentIndex, mBPFs[index].GetXValue(mCurrentIndex));
 					mXModified = false;
 				}
 				if(mYModified)
 				{
-					emit yValueChanged(mCurrentIndex, mData.GetValueFromIndex(mCurrentIndex));
+					emit yValueChanged(mCurrentIndex, mBPFs[index].GetValueFromIndex(mCurrentIndex));
 					mYModified = false;
 				}
 
@@ -203,14 +226,14 @@ namespace CLAM
 			    }
 			    return;
 			}
-			
+			unsigned index = GetBPFIndex(mCurrentBPF);
 			if(mLeftButtonPressed)
 			{
 				if(mSelectPoint)
 				{
 					mSelectPoint=false;
 					emit requestRefresh();
-					emit selectedXPos(double(mData.GetXValue(mCurrentIndex)));
+					emit selectedXPos(double(mBPFs[index].GetXValue(mCurrentIndex)));
 				}
 			}
 			int mode = GetMode();
@@ -243,8 +266,9 @@ namespace CLAM
 					}
 					if(mHit && mKeyDeletePressed)
 					{
-						mData.DeleteIndex(mCurrentIndex);
+						mBPFs[index].DeleteIndex(mCurrentIndex);
 						emit elementRemoved(int(mCurrentIndex));
+						mIsModified = true;
 						ChooseCurrentPointByJumping(-1);
 					}
 					break;
@@ -255,11 +279,14 @@ namespace CLAM
 
 		void BPFEditorController::MoveCurrentPointDelta(int stepX, int stepY)
 		{
+			unsigned index = GetBPFIndex(mCurrentBPF);
 			TData stepXSize = (mMaxX - mMinX) / 100;
 			TData stepYSize = (mMaxY - mMinY) / 100;
-			TData x = mData.GetXValue(mCurrentIndex);
-			TData y = mData.GetValueFromIndex(mCurrentIndex);
+			TData x = mBPFs[index].GetXValue(mCurrentIndex);
+			TData y = mBPFs[index].GetValueFromIndex(mCurrentIndex);
 			UpdateBPF(x + stepX*stepXSize, y + stepY*stepYSize);
+			emit xValueChanged(mCurrentIndex, mBPFs[index].GetXValue(mCurrentIndex));
+			emit yValueChanged(mCurrentIndex, mBPFs[index].GetValueFromIndex(mCurrentIndex));
 			emit requestRefresh();
 			UpdateXYLabels(x,y);
 		}
@@ -271,9 +298,10 @@ namespace CLAM
 
 		void BPFEditorController::ChooseCurrentPoint(int index)
 		{
+			unsigned i = GetBPFIndex(mCurrentBPF);
 			mCurrentIndex=index;
 			if (mCurrentIndex<0) mCurrentIndex=0;
-			if (mCurrentIndex>=mData.Size()) mCurrentIndex=mData.Size()-1;
+			if (mCurrentIndex>=mBPFs[i].Size()) mCurrentIndex=mBPFs[i].Size()-1;
 			emit requestRefresh();
 		}
 
@@ -370,10 +398,11 @@ namespace CLAM
 
 		void BPFEditorController::Draw()
 		{
-			mRenderer.SetData(mData);
-			mRenderer.SetBounds(GetBound(mView.left),GetBound(mView.right,false));
-			if(!mIsPlaying) mRenderer.SetSelectedIndex(mCurrentIndex);
-			mRenderer.Render();
+			if(!mActiveRendering) return;
+			CheckForModifiedBPF();
+			SetRenderersBounds();
+			CheckReferencePoint();
+			Render();
 			mDial.Render();
 			if(mEFlags & CLAM::VM::AllowZoomByMouse)
 			{
@@ -495,10 +524,11 @@ namespace CLAM
 
 		TIndex BPFEditorController::Hit(const TData& x, const TData& y)
 		{
+			unsigned index = GetBPFIndex(mCurrentBPF);
 			Pixel selected_pixel=GetPixel(x,y);
-			for(TIndex i=0; i < mData.Size(); i++)
+			for(TIndex i=0; i < mBPFs[index].Size(); i++)
 			{
-				Pixel owned_pixel=GetPixel(mData.GetXValue(i),mData.GetValueFromIndex(i));
+				Pixel owned_pixel=GetPixel(mBPFs[index].GetXValue(i),mBPFs[index].GetValueFromIndex(i));
 				if(Match(selected_pixel,owned_pixel,3))
 					return i;
 			}
@@ -518,15 +548,16 @@ namespace CLAM
 
 		void BPFEditorController::UpdateBPF(TData x, TData y)
 		{
+			unsigned index = GetBPFIndex(mCurrentBPF);
 			// Bound movement
 			if (mCurrentIndex!=0)
 			{
-				TData prior_x = mData.GetXValue(mCurrentIndex-1);
+				TData prior_x = mBPFs[index].GetXValue(mCurrentIndex-1);
 				if(x<prior_x) x=prior_x;
 			}
-			if(mCurrentIndex!=mData.Size()-1)
+			if(mCurrentIndex!=mBPFs[index].Size()-1)
 			{
-				TData next_x = mData.GetXValue(mCurrentIndex+1);
+				TData next_x = mBPFs[index].GetXValue(mCurrentIndex+1);
 				if(x>next_x) x=next_x;
 			}
 			if (x<mMinX) x=mMinX;
@@ -536,14 +567,15 @@ namespace CLAM
 
 			if(mEFlags & CLAM::VM::AllowVerticalEdition)
 			{
-				mData.SetValue(mCurrentIndex,y);
+				mBPFs[index].SetValue(mCurrentIndex,y);
 				mYModified = true;
 			}
 			if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 			{
-				mData.SetXValue(mCurrentIndex,x);
+				mBPFs[index].SetXValue(mCurrentIndex,x);
 				mXModified = true;
 			}
+			mIsModified = true;
 		}
 
 		void BPFEditorController::InsertBPFNode(TData x, TData y)
@@ -553,8 +585,9 @@ namespace CLAM
 			if (y<mMinY) y=mMinY;
 			if (y>mMaxY) y=mMaxY;
 
-			
-			TIndex index = mData.Insert(x,y);
+			unsigned i = GetBPFIndex(mCurrentBPF);
+			TIndex index = mBPFs[i].Insert(x,y);
+			mIsModified = true;
 			emit elementAdded(int(index),float(x), float(y));
 			ChooseCurrentPoint(index);
 		}
@@ -585,24 +618,25 @@ namespace CLAM
 
 		void BPFEditorController::SelectPointFromXCoord(double xcoord)
 		{
-			if(!mData.Size() || mIsPlaying) return;
-			if(mData.Size()==1)
+			unsigned bpf_index = GetBPFIndex(mCurrentBPF);
+			if(!mBPFs[bpf_index].Size() || mIsPlaying) return;
+			if(mBPFs[bpf_index].Size()==1)
 			{
-				mRenderer.SetSelectedIndex(0);
+				mRenderers[bpf_index].SetSelectedIndex(0);
 				emit requestRefresh();
 				return;
 			}
-			TIndex index = GetBound(TData(xcoord));
+			TIndex index = GetBound(bpf_index,TData(xcoord));
 			if(index != -1)
 			{
-				if(index == mData.Size()-1)
+				if(index == mBPFs[bpf_index].Size()-1)
 				{
-					mRenderer.SetSelectedIndex(index);
+					mRenderers[bpf_index].SetSelectedIndex(index);
 				}
 				else
 				{
-					double x0 = mData.GetXValue(index);
-					double x1 = mData.GetXValue(index+1);
+					double x0 = mBPFs[bpf_index].GetXValue(index);
+					double x1 = mBPFs[bpf_index].GetXValue(index+1);
 					if((xcoord-x0)>(x1-xcoord)) index++;
 					mCurrentIndex=index;
 				}
@@ -814,22 +848,24 @@ namespace CLAM
 
 		bool BPFEditorController::ReferenceIsVisible()
 		{
-		    double value = (mIsPlaying) ? double(mDial.GetPos()) : double(mData.GetXValue(mCurrentIndex));
+			unsigned index = GetBPFIndex(mCurrentBPF);
+		    double value = (mIsPlaying) ? double(mDial.GetPos()) : double(mBPFs[index].GetXValue(mCurrentIndex));
 		    return (value > mXRulerRange.mMin && value < mXRulerRange.mMax);
 		}
 
-		double BPFEditorController::GetReference() const
+		double BPFEditorController::GetReference() 
 		{
-		    return (mIsPlaying) ? double(mDial.GetPos()) : double(mData.GetXValue(mCurrentIndex));
+			unsigned index = GetBPFIndex(mCurrentBPF);
+		    return (mIsPlaying) ? double(mDial.GetPos()) : double(mBPFs[index].GetXValue(mCurrentIndex));
 		}
 
-		TIndex BPFEditorController::GetBound(const TData& searchValue, bool left)
+		TIndex BPFEditorController::GetBound(unsigned bpf_index, const TData& searchValue, bool left)
 		{
-			int nPoints = mData.Size();
+			int nPoints = mBPFs[bpf_index].Size();
 			if(nPoints<=1) return 0;
 
-			if(searchValue <= mData.GetXValue(0)) return 0;
-			if(searchValue >= mData.GetXValue(nPoints-1)) return nPoints;
+			if(searchValue <= mBPFs[bpf_index].GetXValue(0)) return 0;
+			if(searchValue >= mBPFs[bpf_index].GetXValue(nPoints-1)) return nPoints;
 
 			TIndex index = -1;
 			TIndex left_index = 0;
@@ -843,18 +879,18 @@ namespace CLAM
 					index=currentIndex;
 					break;
 				}
-				if(searchValue >= mData.GetXValue(currentIndex) &&
-				   searchValue <= mData.GetXValue(currentIndex+1))
+				if(searchValue >= mBPFs[bpf_index].GetXValue(currentIndex) &&
+				   searchValue <= mBPFs[bpf_index].GetXValue(currentIndex+1))
 				{
 					if (left) return currentIndex;
 					index = currentIndex;
 					break;
 				}
-				if(searchValue < mData.GetXValue(currentIndex))
+				if(searchValue < mBPFs[bpf_index].GetXValue(currentIndex))
 				{
 					right_index = currentIndex-1;
 				}
-				else if(searchValue > mData.GetXValue(currentIndex))
+				else if(searchValue > mBPFs[bpf_index].GetXValue(currentIndex))
 				{
 					left_index = currentIndex+1;
 				}
@@ -868,17 +904,18 @@ namespace CLAM
 
 		void BPFEditorController::UpdateTimePos(const TData& time)
 		{
+			unsigned bpf_index = GetBPFIndex(mCurrentBPF);
 			if(mIsPlaying && time <= mDial.GetPos()) return;
 			if(!mIsPlaying) 
 			{
-				mLightedPointIndex=GetBound(time);
+				mLightedPointIndex=GetBound(bpf_index,time);
 				mIsPlaying =true;
 				emit startPlaying();
 			}
 			mDial.Update(time);
-			if (mLightedPointIndex < mData.Size() && time >= mData.GetXValue(mLightedPointIndex))
+			if (mLightedPointIndex < mBPFs[bpf_index].Size() && time >= mBPFs[bpf_index].GetXValue(mLightedPointIndex))
 			{
-				mRenderer.SetSelectedIndex(int(mLightedPointIndex++));
+				mRenderers[bpf_index].SetSelectedIndex(int(mLightedPointIndex++));
 			}
 			emit currentPlayingTime(float(time));
 		}
@@ -901,6 +938,122 @@ namespace CLAM
 		    }
 		}
 
+		void BPFEditorController::SetCurrentBPF(const std::string& current)
+		{
+			if(!HaveKey(current)) return;
+			mCurrentBPF = current;
+		}
+
+		void BPFEditorController::InitTables()
+		{
+			mIndexTable["default"]=0;
+			mBPFs.resize(1);
+			mRenderers.resize(1);
+		}
+
+		void BPFEditorController::AddBPF(const std::string& key, const BPF& bpf)
+		{
+			unsigned index = 0;
+			bool haveKey = false;
+			if(HaveKey(key)) 
+			{
+				index = GetBPFIndex(key);
+				haveKey = true;
+			}
+			if(haveKey)
+			{
+				mBPFs[index] = bpf;
+				mRenderers[index].SetData(bpf);
+			}
+			else
+			{
+				unsigned currentSize = mBPFs.size();
+				mIndexTable[key] = currentSize;
+				mBPFs.resize(currentSize+1);
+				mRenderers.resize(currentSize+1);
+				mBPFs[currentSize] = bpf;
+				mRenderers[currentSize].SetData(bpf);
+			}
+		}
+
+		bool BPFEditorController::HaveKey(const std::string& key)
+		{
+			return mIndexTable.find(key) != mIndexTable.end();
+		}
+
+		unsigned BPFEditorController::GetBPFIndex(const std::string& key)
+		{
+			return mIndexTable[key];
+		}
+
+		void BPFEditorController::Render()
+		{
+			for(unsigned i=0; i < mRenderers.size(); i++)
+			{
+				mRenderers[i].Render();
+			}
+		}
+
+		void BPFEditorController::CheckForModifiedBPF()
+		{
+			if(!mIsModified) return;
+			unsigned index = GetBPFIndex(mCurrentBPF);
+			mRenderers[index].SetData(mBPFs[index]);
+			mIsModified = false;
+		}
+
+		void BPFEditorController::SetRenderersBounds()
+		{
+			for(unsigned i=0; i < mRenderers.size(); i++)
+			{
+				mRenderers[i].SetBounds(GetBound(i,mView.left),GetBound(i,mView.right,false));
+			}
+		}
+
+		void BPFEditorController::CheckReferencePoint()
+		{
+			if(mIsPlaying) return;
+			unsigned index = GetBPFIndex(mCurrentBPF);
+			for(unsigned i=0; i < mRenderers.size(); i++)
+			{
+				if(i == index)
+				{
+					mRenderers[i].SetSelectedIndex(mCurrentIndex);
+				}
+				else
+				{
+					mRenderers[i].SetSelectedIndex(-1);
+				}
+			}
+		}
+
+		bool BPFEditorController::HasMultipleBPF() const
+		{
+			return (mBPFs.size() > 1);
+		}
+
+		std::list<QString> BPFEditorController::GetBPFNamesList()
+		{
+			std::list<QString> ret;
+			std::map<std::string, unsigned>::iterator it = mIndexTable.begin();
+			for(; it != mIndexTable.end(); it++)
+			{
+				if((*it).first != "default")
+				{
+					ret.push_back((*it).first.c_str());
+				}
+			}
+			ret.sort();
+			ret.push_front("default");
+			ret.reverse();
+			return ret;
+		}
+
+		void BPFEditorController::ActiveRendering(bool active)
+		{
+			mActiveRendering = active;
+		}
+	   
 	}
 }
 
