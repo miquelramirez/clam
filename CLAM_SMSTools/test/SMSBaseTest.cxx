@@ -68,9 +68,9 @@ class SMSExampleTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testTransformations_withLoadedScore_OddEvenHarmonicRatio );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_SMSPitchDiscretization );
 	CPPUNIT_TEST( testTransformations_withLoadedScore_SMSSpectralShapeShift );
-	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestretch );
-	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestretchMorph );
-	CPPUNIT_TEST( testTransformations_withLoadedScore_Timestretch );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_HarmonizerTimestretch );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_TimestretchMorph );
+//	CPPUNIT_TEST( testTransformations_withLoadedScore_Timestretch );
 	CPPUNIT_TEST_SUITE_END();
 
 
