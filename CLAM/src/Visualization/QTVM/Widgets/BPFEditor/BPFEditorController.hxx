@@ -1,6 +1,9 @@
 #ifndef __BPFEDITORCONTROLLER__
 #define __BPFEDITORCONTROLLER__
 
+#include <map>
+#include <vector>
+#include <string>
 #include <list>
 #include <qobject.h>
 #include <qstring.h>
@@ -84,7 +87,10 @@ namespace CLAM
 				unsigned x, y;
 			};
 
-			typedef std::list<BPFEditorSettings> SettingStack;
+			typedef std::map<std::string, unsigned> IndexTable;
+			typedef std::vector<BPF>                BPFs;
+			typedef std::vector<BPFEditorRenderer>  Renderers;
+			typedef std::list<BPFEditorSettings>   SettingStack;
 
 			Q_OBJECT
 
@@ -92,11 +98,12 @@ namespace CLAM
 			BPFEditorController(int eFlags=CLAM::VM::AllowAll);
 			~BPFEditorController();
 
-			void SetData(const BPF& bpf);
-			BPF& GetData();
-	        
-			void SetDataColor(const Color& c);
-			void SetHandlersColor(const Color& c);
+			void AddData(const std::string& key, const BPF& bpf);
+			BPF& GetData(const std::string& key);
+
+	        void SetCurrentBPF(const std::string& key);
+			void SetDataColor(const std::string& key, const Color& lines_color, const Color& handlers_color);
+			void SetDataColor(const Color& lines_color, const Color& handlers_color);
 			void SetRectColor(const Color& c);
 			void SetDialColor(const Color& c);
 
@@ -132,6 +139,11 @@ namespace CLAM
 			void StopPlaying(const TData& time);
 
 			void MouseOverDisplay(bool over);
+			
+			bool HasMultipleBPF() const;
+			std::list<QString> GetBPFNamesList();
+
+			void ActiveRendering(bool active);
 
 		signals:
 			void viewChanged(GLView);
@@ -166,48 +178,52 @@ namespace CLAM
 			void updateHScrollValue(int);
 
 		private:
-			BPF                      mData;
-			Dial                     mDial;
-			BPFEditorRenderer        mRenderer;
-			GLView                   mView;
-			RulerRange               mXRulerRange;
-			RulerRange               mYRulerRange;
-			int                      mEFlags;
-			EScale                   mXScale;
-			EScale                   mYScale;
-			bool                     mLeftButtonPressed;
-			bool                     mRightButtonPressed;
-			bool                     mKeyInsertPressed;
-			bool                     mKeyDeletePressed;
-			bool                     mKeyControlPressed;
-			bool                     mMouseOverDisplay;
-			bool                     mProcessingSelection;
-			bool                     mHit;
-			bool                     mQueryZoomOut;
-			Color                    mRectColor;
-			Point                    mCorners[2];
-			SettingStack             mSettingStack;
-			int                      mDisplayWidth;
-			int                      mDisplayHeight;
-			Point                    mCurrentPoint;
-			TIndex                   mCurrentIndex;
-			bool                     mXModified;
-			bool                     mYModified;
-			bool                     mSelectPoint;
-			double                   mSpanX;
-			double                   mSpanY;
-			double                   mMinSpanX;
-			double                   mMinSpanY;
-			double                   mMinX;
-			double                   mMaxX;
-			double                   mMinY;
-			double                   mMaxY;
-			double                   mVCurrent;
-			double                   mHCurrent;
-			double                   mVZoomRatio;
-			double                   mHZoomRatio;
-			bool                     mIsPlaying;
-			TIndex                   mLightedPointIndex;
+			IndexTable   mIndexTable;
+			BPFs         mBPFs;
+			Renderers    mRenderers;
+			SettingStack mSettingStack;
+			Dial         mDial;
+			GLView       mView;
+			RulerRange   mXRulerRange;
+			RulerRange   mYRulerRange;
+			int          mEFlags;
+			EScale       mXScale;
+			EScale       mYScale;
+			bool         mLeftButtonPressed;
+			bool         mRightButtonPressed;
+			bool         mKeyInsertPressed;
+			bool         mKeyDeletePressed;
+			bool         mKeyControlPressed;
+			bool         mMouseOverDisplay;
+			bool         mProcessingSelection;
+			bool         mHit;
+			bool         mQueryZoomOut;
+			Color        mRectColor;
+			Point        mCorners[2];
+			int          mDisplayWidth;
+			int          mDisplayHeight;
+			Point        mCurrentPoint;
+			TIndex       mCurrentIndex;
+			bool         mXModified;
+			bool         mYModified;
+			bool         mSelectPoint;
+			double       mSpanX;
+			double       mSpanY;
+			double       mMinSpanX;
+			double       mMinSpanY;
+			double       mMinX;
+			double       mMaxX;
+			double       mMinY;
+			double       mMaxY;
+			double       mVCurrent;
+			double       mHCurrent;
+			double       mVZoomRatio;
+			double       mHZoomRatio;
+			bool         mIsPlaying;
+			TIndex       mLightedPointIndex;
+			std::string  mCurrentBPF;
+			bool         mIsModified;
+			bool         mActiveRendering;
        
 			enum { Selection=0, Edition };
 	    
@@ -249,12 +265,22 @@ namespace CLAM
 
 			void UpdateHBounds(bool zin);
 
-			TIndex GetBound(const TData& searchValue, bool left=true);
+			TIndex GetBound(unsigned bpf_index, const TData& searchValue, bool left=true);
 
 			void InsertBPFNode(TData x, TData y);
 
 			bool ReferenceIsVisible();
-			double GetReference() const;
+			double GetReference();
+
+			void InitTables();
+			void AddBPF(const std::string& key, const BPF& bpf);
+			bool HaveKey(const std::string& key);
+			unsigned GetBPFIndex(const std::string& key);
+
+			void Render();
+			void CheckForModifiedBPF();
+			void SetRenderersBounds();
+			void CheckReferencePoint();
 		};
     }
 }

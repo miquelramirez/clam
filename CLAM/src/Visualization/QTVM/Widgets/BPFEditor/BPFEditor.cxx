@@ -8,14 +8,15 @@
 #include "BPFEditorController.hxx"
 #include "BPFEditorDisplaySurface.hxx"
 #include "QtBPFPlayer.hxx"
+#include "ListItemChooser.hxx"
 #include "BPFEditor.hxx"
 
 namespace CLAM
 {
 	namespace VM
 	{
-		BPFEditor::BPFEditor(QWidget* parent,const char* name,int eFlags)
-			: QWidget(parent,name)
+		BPFEditor::BPFEditor(int eFlags, QWidget* parent,const char* name, WFlags f)
+			: QWidget(parent,name,f)
 			, mEFlags(eFlags)
 			, mActivePlayer(true)
 			, mXRuler(0)
@@ -29,8 +30,9 @@ namespace CLAM
 			, topRightHole(0)
 			, bottomRightHole(0)
 			, playerHole(0)
-			, mHasPlayData(false)
 			, mWhiteOverBlackScheme(true)
+			, mPopupMenu(0)
+			, mChooseBPFDialog(0)
 		{
 			mSlotPlayingTimeReceived.Wrap(this,&BPFEditor::PlayingTime);
 			mSlotStopPlayingReceived.Wrap(this,&BPFEditor::StopPlaying);
@@ -56,33 +58,61 @@ namespace CLAM
 
 		void BPFEditor::SetData(const BPF& bpf)
 		{
-			mHasPlayData = false;
-			mController->SetData(bpf);
+			mController->AddData("default",bpf);
 			if(mPlayer) 
 			{
-				if(mActivePlayer)
-				{
-					((QtBPFPlayer*)mPlayer)->SetData(bpf);
-					mHasPlayData = true;
-				}
+				((QtBPFPlayer*)mPlayer)->AddData("default",bpf);	
 			}
 		}
 
 		BPF& BPFEditor::GetData()
 		{
-			return mController->GetData();
+			return mController->GetData("default");
 		}
 
 		Melody& BPFEditor::GetMelody() 
 		{
-			if(mPlayer) mMelody = ((QtBPFPlayer*)mPlayer)->GetMelody();
+			if(mPlayer) mMelody = ((QtBPFPlayer*)mPlayer)->GetMelody("default");
 			return mMelody;
 		}
 
 		MIDIMelody& BPFEditor::GetMIDIMelody() 
 		{
-			if(mPlayer) mMIDIMelody = ((QtBPFPlayer*)mPlayer)->GetMIDIMelody();
-			return mMIDIMelody;;
+			if(mPlayer) mMIDIMelody = ((QtBPFPlayer*)mPlayer)->GetMIDIMelody("default");
+			return mMIDIMelody;
+		}
+
+		void BPFEditor::AddData(const std::string& key, const BPF& bpf)
+		{
+			mController->AddData(key,bpf);
+			if(mPlayer) 
+			{
+				((QtBPFPlayer*)mPlayer)->AddData(key,bpf);	
+			}
+		}
+
+		void BPFEditor::SetDataColor(const std::string& key, 
+									 const Color& lines_color, 
+									 const Color& handlers_color)
+		{
+			mController->SetDataColor(key, lines_color, handlers_color);
+		}
+
+		BPF& BPFEditor::GetData(const std::string& key)
+		{
+			return mController->GetData(key);
+		}
+
+		Melody& BPFEditor::GetMelody(const std::string& key)
+		{
+			if(mPlayer) mMelody = ((QtBPFPlayer*)mPlayer)->GetMelody(key);
+			return mMelody;
+		}
+
+		MIDIMelody& BPFEditor::GetMIDIMelody(const std::string& key)
+		{
+			if(mPlayer) mMIDIMelody = ((QtBPFPlayer*)mPlayer)->GetMIDIMelody(key);
+			return mMIDIMelody;
 		}
 
 		void BPFEditor::SetXRange(const double& min, const double& max, const EScale& scale)
@@ -212,8 +242,15 @@ namespace CLAM
 			}
 		}
 
+		void BPFEditor::showEvent(QShowEvent* e)
+		{
+			mController->ActiveRendering(true);
+			QWidget::showEvent(e);
+		}
+
 		void BPFEditor::hideEvent(QHideEvent* e)
 		{
+			mController->ActiveRendering(false);
 		    if(mPlayer) ((QtBPFPlayer*)mPlayer)->stop();
 		    QWidget::hideEvent(e);
 		}
@@ -367,8 +404,6 @@ namespace CLAM
 				CreateVScroll();
 			}
 
-			InitPopupMenu();
-
 			// connections
 			connect(mController,SIGNAL(xRulerRange(double,double)),mXRuler,SLOT(updateRange(double,double)));
 			connect(mController,SIGNAL(yRulerRange(double,double)),mYRuler,SLOT(updateRange(double,double)));
@@ -416,8 +451,7 @@ namespace CLAM
 
 			setPaletteBackgroundColor(QColor(0,0,0));
 
-			mController->SetDataColor(VMColor::White());
-			mController->SetHandlersColor(VMColor::Cyan());
+			mController->SetDataColor(VMColor::White(),VMColor::Cyan());
 			mController->SetRectColor(VMColor::White());
 			mController->SetDialColor(VMColor::Red());
 
@@ -452,8 +486,7 @@ namespace CLAM
 			
 			setPaletteBackgroundColor(QColor(255,255,255));
 
-			mController->SetDataColor(VMColor::Black());
-			mController->SetHandlersColor(VMColor::Blue());
+			mController->SetDataColor(VMColor::Black(),VMColor::Blue());
 			mController->SetRectColor(VMColor::Black());
 			mController->SetDialColor(VMColor::Black());
 
@@ -637,11 +670,6 @@ namespace CLAM
 			
 			if(bottomRightHole) bottomRightHole->setFixedHeight(middle_panel_height);
 			mPlayer->show();
-			if(!mHasPlayData)
-			{
-				((QtBPFPlayer*)mPlayer)->SetData(GetData());
-				mHasPlayData=true;
-			}
 			mActivePlayer = true;
 		}
 
@@ -672,14 +700,27 @@ namespace CLAM
 
 		void BPFEditor::InitPopupMenu()
 		{
+			if(mPopupMenu) 
+			{
+				delete mPopupMenu;
+				mPopupMenu = 0;
+			}
 			mPopupMenu = new QPopupMenu();
-			mPopupMenu->insertItem("Auralize",this,SLOT(activePlayer()),0,0); 
-			mPopupMenu->setCheckable(true);
+			if(mPlayer)
+			{
+				mPopupMenu->insertItem("Auralize",this,SLOT(activePlayer()),0,0); 
+				mPopupMenu->setCheckable(true);
+			}
+			if(mController->HasMultipleBPF())
+			{
+				mPopupMenu->insertItem("Select...",this,SLOT(showChooseBPFDlg()));
+			}
 		}
 
 		void BPFEditor::showPopupMenu()
 		{
-			if(mPlayer)
+			InitPopupMenu();
+			if(mPlayer || mController->HasMultipleBPF())
 			{
 				mPopupMenu->exec(QCursor::pos());
 			}
@@ -718,6 +759,22 @@ namespace CLAM
 		void BPFEditor::receivedStopPlaying(float t)
 		{
 		    mController->StopPlaying(TData(t));
+		}
+
+		void BPFEditor::showChooseBPFDlg()
+		{
+			if(mChooseBPFDialog)
+			{
+				delete mChooseBPFDialog;
+				mChooseBPFDialog=0;    
+			}
+
+			mChooseBPFDialog = new ListItemChooser("Choose BPF","Available BPFs",mController->GetBPFNamesList(),this);
+			if( mChooseBPFDialog->exec() == QDialog::Accepted )
+			{
+				mController->SetCurrentBPF(mChooseBPFDialog->selection().ascii());
+				if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetCurrentBPF(mChooseBPFDialog->selection().ascii());
+			}
 		}
 
 	}
