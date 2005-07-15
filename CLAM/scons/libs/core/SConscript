@@ -39,8 +39,8 @@ if core_env['xmlbackend'] == 'xercesc' :
 	blacklist.append( 'Null.+' )
 elif core_env['xmlbackend'] == 'xmlpp' :
 	blacklist.append( 'Xerces.+')
-	blacklist.append( 'Null.+' ) 
-else :
+	blacklist.append( 'Null.+' )
+elif core_env['xmlbackend'] == 'none' :
 	blacklist.append( 'Xerces.+' )
 	blacklist.append( 'LibXml.+' )
 

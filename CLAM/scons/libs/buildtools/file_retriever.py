@@ -6,6 +6,8 @@ class FileRetriever :
 
 
 	def __init__(self, basedir, folders, blacklist  ) :
+		self.out_inc = 'include/CLAM'
+		self.out_src = 'src'
 		self.headerREs = []
 		
 		for ext in self.__hdr_extensions :
@@ -52,20 +54,20 @@ class FileRetriever :
 				for file in glob.glob(target ) :
 					if not self.is_blacklisted(file) :
 						if self.is_header(file) :
-							os.system( 'cp %s include/CLAM'%(file) )
-							self.headers.append( 'include/CLAM/%s'%os.path.split(file)[1] )
+							os.system( 'cp %s %s'%(file,self.out_inc) )
+							self.headers.append( '%s/%s'%(self.out_inc,os.path.basename(file)) )
 						if self.is_source(file) :
-							os.system( 'cp %s src'%(file) )
-							self.sources.append( 'src/%s'%os.path.split(file)[1] )
+							os.system( 'cp %s %s'%(file,self.out_src) )
+							self.sources.append( '%s/%s'%(self.out_src,os.path.basename(file)) )
 			else :
 
 				for file in os.listdir(target) :
 					if not self.is_blacklisted(file) :
 						if self.is_header(file) :
-							os.system( 'cp %s/%s include/CLAM'%(target,file) )
-							self.headers.append( 'include/CLAM/%s'%file )
+							os.system( 'cp %s/%s %s'%(target,file,self.out_inc) )
+							self.headers.append( '%s/%s'%(self.out_inc,file) )
 						if self.is_source(file) :
-							os.system( 'cp %s/%s src'%(target,file) )
-							self.sources.append( 'src/%s'%file )
+							os.system( 'cp %s/%s %s'%(target,file,self.out_src) )
+							self.sources.append( '%s/%s'%(self.out_src,file) )
 
 			

@@ -1,5 +1,5 @@
 def setup_core_environment( core_env, conf ) :
-	if core_env['xmlbackend'] == 'xercesc' :
+	if core_env['xmlbackend'] == 'both' or core_env['xmlbackend'] == 'xercesc' :
 		failed = False	
 		if not failed and not conf.CheckCXXHeader('xercesc/util/PlatformUtils.hpp') :
 			print "Could not find xerces c headers! Defaulting to the null xml backend"
@@ -13,7 +13,7 @@ def setup_core_environment( core_env, conf ) :
 		else :
 			core_env['xmlbackend'] = 'none'
 			
-	elif core_env['xmlbackend'] == 'xmlpp' :
+	if core_env['xmlbackend'] == 'both' or core_env['xmlbackend'] == 'xmlpp' :
 		failed = False
 		if core_env['pkg_config_available'] :
 			res = conf.pkg_config_check_existence( conf, name='libxml++-2.6' )

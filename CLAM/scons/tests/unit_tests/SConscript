@@ -1,0 +1,33 @@
+Import('tests_env')
+import sys, os
+sys.path +=['../../libs']
+from buildtools.include_rename import update_includes
+from buildtools.file_retriever import FileRetriever
+import shelve
+
+header_db = shelve.open( '../../libs/header.db' )
+
+if not os.path.exists('src') :
+	os.mkdir('src')
+if not os.path.exists('include') :
+	os.mkdir('include')
+
+folders = ['UnitTests', 'UnitTests/CommonHelpers','UnitTests/ControlTests', 'UnitTests/DescriptorsTests', 'UnitTests/DynamicTypeTests', 'UnitTests/FactoryTest', 'UnitTests/FlowControlTests', 'UnitTests/NonComponentData','UnitTests/PortsTest', 'UnitTests/ProcessingBaseTests', 'UnitTests/ProcessingDataTests', 'UnitTests/ProcessingsTests','UnitTests/StandardTests', 'UnitTests/ToolsTests','UnitTests/XMLAdaptersTests']
+blacklist = ['TestRunnerQt.+','PolymorphicTest.+','AudioMixer.+']
+
+file_retriever = FileRetriever( '../../../test', folders, blacklist )
+file_retriever.out_inc = 'include'
+
+file_retriever.scan()
+
+for filename in file_retriever.headers :
+	update_includes( header_db, filename )
+for filename in file_retriever.sources :
+	update_includes( header_db, filename )
+
+tests_env.Append( CPPPATH=['include'] )
+unit_tests = tests_env.Program( 'AllUnitTests', file_retriever.sources )
+
+test_alias = Alias( 'run_unit_tests', [unit_tests], unit_tests[0].abspath )
+
+AlwaysBuild( test_alias )
