@@ -1,5 +1,6 @@
 # SConstruct file for CLAM i/o
 from buildtools import *
+from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
@@ -52,10 +53,15 @@ file_retriever = FileRetriever( top+'/..', folders, blacklist )
 file_retriever.scan()
 
 store_headers_in_db( header_db )
+for filename in file_retriever.headers :
+	update_includes( header_db, filename )
+for filename in file_retriever.sources :
+	update_includes( header_db, filename )
+
 
 print "ok"
-audioio_env.Append(CPPPATH=['include/CLAM','../core/include/CLAM','../processing/include/CLAM'])
-audioio_env.Append(CCFLAGS='-include %s'%audioio_env['preinclude'])
+audioio_env.Append(CPPPATH=['include','../core/include','../processing/include'])
+audioio_env.Append(CCFLAGS='-include CLAM/%s'%audioio_env['preinclude'])
 audioio_env.Append(LIBS=['clam_core','clam_processing'])
 audioio_env.Append(LIBPATH=['../core','../processing'])
 

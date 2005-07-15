@@ -1,5 +1,6 @@
 # SConstruct file for CLAMcore
 from buildtools import *
+from buildtools.include_rename import update_includes
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
@@ -54,10 +55,15 @@ file_retriever.scan()
 
 store_headers_in_db( header_db )
 
+for filename in file_retriever.headers :
+	update_includes( header_db, filename )
+for filename in file_retriever.sources :
+	update_includes( header_db, filename )
+
 
 print "ok"
-core_env.Append(CPPPATH='include/CLAM')
-core_env.Append(CCFLAGS='-include %s'%core_env['preinclude'])
+core_env.Append(CPPPATH='include')
+core_env.Append(CCFLAGS='-include CLAM/%s'%core_env['preinclude'])
 soname = 'libclam_core.so.%s'%version.split('.')[0]
 core_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 
