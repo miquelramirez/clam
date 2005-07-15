@@ -157,10 +157,10 @@
  * Zoom in/out is a common feature available in all the plots.
  * Some plots are able to play some data. Playable plots are the
  * following:
- * - CLAM::VM::QtAudioPlot
- * - CLAM::VM::QtFundFreqPlot
- * - CLAM::VM::QtStereoAudioPlot
  * - CLAM::VM::BPFEditor
+ * - CLAM::VM::QtAudioPlot
+ * - CLAM::VM::QtAudioStereoPlot
+ * - CLAM::VM::QtFundFreqPlot
  *
  * Selecting regions can be made by the following way on plots provided with a time axis:
  * 
