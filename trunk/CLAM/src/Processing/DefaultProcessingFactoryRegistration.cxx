@@ -41,7 +41,7 @@
  * The way processings are registered in factory could be changed in a future.
  * Warning: This file has a lot of dependencies.
  */
-typedef CLAM::Factory<Processing> ProcessingFactory;
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 static ProcessingFactory::Registrator<CLAM::SimpleOscillator> regtSimpleOscillator( "SimpleOscillator" );
 static ProcessingFactory::Registrator<CLAM::Oscillator> regtOscillator( "Oscillator" );
