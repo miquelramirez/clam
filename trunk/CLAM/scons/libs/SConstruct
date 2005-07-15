@@ -31,7 +31,7 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
 	
 	# clam_core options
-	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','none')) )
+	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
 	opts.Add( BoolOption( 'with_ladspa_support', 'Ladspa plugin support', 'yes') )
 	opts.Add( BoolOption( 'with_osc_support', 'Enables/Disables OSC support', 'yes') )
 	

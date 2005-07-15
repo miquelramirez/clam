@@ -14,11 +14,14 @@ class PackageData :
 		print >> out
 		print >> out, "Name: %s"%self.name	
 		print >> out, "Version: %s"%self.version
+		print >> out, "Description: C++ Framework for analysis, synthesis and transformation of music audio signals"
 		print >> out, "Requires: %s"%" ".join(self.depends)
 		print >> out, "Conflicts: "
 		print >> out, "Libs: -L${libdir} -l%s"%self.name
 		edict = env.Dictionary()
 		cppflags = edict.get('CPPFLAGS', [''])
-		print >> out, "Cflags: -I${includedir} %s -include ${includedir}/%s"%( " ".join(cppflags), env['preinclude'])
+		cppaths = edict.get('CPPPATH', [''])
+		cpppaths = [ '-I'+path for path in cppaths ]
+		print >> out, "Cflags: -I${includedir} %s -include CLAM/%s"%( " ".join(cppflags+cpppaths), env['preinclude'])
 
 		out.close()
