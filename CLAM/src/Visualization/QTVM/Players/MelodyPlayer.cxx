@@ -1,3 +1,4 @@
+#include <iostream>
 #include "AudioIO.hxx" 
 #include "AudioManager.hxx" 
 #include "AudioOut.hxx" 
@@ -9,16 +10,14 @@ namespace CLAM
     namespace VM
     {
 		MelodyPlayer::MelodyPlayer()
-			: mAudioPtr(0)
+			: mCurrent("default")
+			, mAudioPtr(0)
 			, mSampleRate(TData(44100.0))
 			, mDuration(TData(0.0))
 			, mPlayMelody(true)
 			, mPlayAudio(false)
 		{
-			mMelody.AddNumberOfNotes();
-			mMelody.UpdateData();
-			mMelody.SetNumberOfNotes(0);
-
+			InitTables();
 			HaveData(true);
 
 			mThread.SetThreadCode(makeMemberFunctor0((*this), MelodyPlayer, thread_code));
@@ -28,21 +27,29 @@ namespace CLAM
 		{
 		}
 		
-		void MelodyPlayer::SetData(const Melody& melody, const TData& dur)
+		void MelodyPlayer::AddData(const std::string& key, const Melody& melody, const TData& dur)
 		{
-			mMelody = melody;
+			AddMelody(key,melody);
 			mDuration = dur;
 		}
 
-		Melody& MelodyPlayer::GetMelody()
+		Melody& MelodyPlayer::GetMelody(const std::string& key)
 		{
-			return mMelody;
+			bool haveKey = HaveKey(key);
+			unsigned index = (haveKey) ? GetMelodyIndex(key) : GetMelodyIndex(mCurrent);
+			if(!haveKey)
+			{
+				std::cout << "WARNING: MelodyPlayer::GetMelody(const std::string& key)" << std::endl;
+				std::cout << key << " not exist, returning current melody";
+			}
+			return mMelodies[index];
 		}
 		
 		void MelodyPlayer::thread_code()
 		{
-			if(!mMelody.GetNumberOfNotes()) return;
-
+			unsigned melodyIndex = GetMelodyIndex(mCurrent);
+			if(!mMelodies[melodyIndex].GetNumberOfNotes()) return;
+		
 			TSize frameSize = 512;                    
 			if(mAudioPtr) mSampleRate = mAudioPtr->GetSampleRate();
 			AudioManager manager((int)mSampleRate,(int)frameSize);  
@@ -79,7 +86,7 @@ namespace CLAM
 			TIndex k = firstIndex;
 
 			TIndex start = int(mTime.GetBegin()*mSampleRate);
-			int nSamples = int(mMelody.GetNoteArray()[lastIndex].GetTime().GetEnd()*mSampleRate);
+			int nSamples = int(mMelodies[melodyIndex].GetNoteArray()[lastIndex].GetTime().GetEnd()*mSampleRate);
 	    
 			TIndex leftIndex = start;        
 			TIndex rightIndex = leftIndex+frameSize;
@@ -95,14 +102,14 @@ namespace CLAM
 				}
 				if(!IsPlaying()) break;
 
-				if(TData(i/mSampleRate) >= mMelody.GetNoteArray()[k].GetTime().GetEnd()) k++;
+				if(TData(i/mSampleRate) >= mMelodies[melodyIndex].GetNoteArray()[k].GetTime().GetEnd()) k++;
 
 				if(mPlayMelody)
 				{
-					if(TData(i/mSampleRate) >= mMelody.GetNoteArray()[k].GetTime().GetBegin() &&
-					   TData(i/mSampleRate) < mMelody.GetNoteArray()[k].GetTime().GetEnd())
+					if(TData(i/mSampleRate) >= mMelodies[melodyIndex].GetNoteArray()[k].GetTime().GetBegin() &&
+					   TData(i/mSampleRate) < mMelodies[melodyIndex].GetNoteArray()[k].GetTime().GetEnd())
 					{
-						freqControl.DoControl(mMelody.GetNoteArray()[k].GetFundFreq());
+						freqControl.DoControl(mMelodies[melodyIndex].GetNoteArray()[k].GetFundFreq());
 					}
 					else
 					{
@@ -117,13 +124,25 @@ namespace CLAM
 				if(mPlayMelody && mPlayAudio)
 				{
 					osc.Do(samplesL);
-					if(mAudioPtr) mAudioPtr->GetAudioChunk(leftIndex,rightIndex,samplesR);
+					if(mAudioPtr) 
+					{
+						if(rightIndex < mAudioPtr->GetSize())
+						{
+							mAudioPtr->GetAudioChunk(leftIndex,rightIndex,samplesR);
+						}
+					}
 				}		
 				else
 				{ 
 					if(mPlayAudio)
 					{
-						if(mAudioPtr) mAudioPtr->GetAudioChunk(leftIndex,rightIndex,samplesL);
+						if(mAudioPtr) 
+						{
+							if(rightIndex < mAudioPtr->GetSize())
+							{
+								mAudioPtr->GetAudioChunk(leftIndex,rightIndex,samplesL);
+							}
+						}
 					}
 					else
 					{
@@ -158,27 +177,19 @@ namespace CLAM
 
 		TIndex MelodyPlayer::GetNoteIndex(bool first)
 		{
-			int nNotes = mMelody.GetNumberOfNotes();
+			unsigned melodyIndex = GetMelodyIndex(mCurrent);
+			int nNotes = mMelodies[melodyIndex].GetNumberOfNotes();
 			if(nNotes==1)
 			{
 				return 0;
 			}
-			TData searchValue;
-			if(first)
-			{
-				searchValue = mTime.GetBegin();
-			}
-			else
-			{
-				searchValue = mTime.GetEnd();
-			}
-
-			if(searchValue <= mMelody.GetNoteArray()[0].GetTime().GetBegin()) return 0;
-			if(searchValue >= mMelody.GetNoteArray()[nNotes-1].GetTime().GetEnd()) return nNotes-1;
-			if(searchValue >= mMelody.GetNoteArray()[0].GetTime().GetBegin() &&
-			   searchValue <= mMelody.GetNoteArray()[0].GetTime().GetEnd()) return 0;
-			if(searchValue >= mMelody.GetNoteArray()[nNotes-1].GetTime().GetBegin() &&
-			   searchValue <= mMelody.GetNoteArray()[nNotes-1].GetTime().GetEnd())
+			TData searchValue = (first) ? mTime.GetBegin() : mTime.GetEnd();
+			if(searchValue <= mMelodies[melodyIndex].GetNoteArray()[0].GetTime().GetBegin()) return 0;
+			if(searchValue >= mMelodies[melodyIndex].GetNoteArray()[nNotes-1].GetTime().GetEnd()) return nNotes-1;
+			if(searchValue >= mMelodies[melodyIndex].GetNoteArray()[0].GetTime().GetBegin() &&
+			   searchValue <= mMelodies[melodyIndex].GetNoteArray()[0].GetTime().GetEnd()) return 0;
+			if(searchValue >= mMelodies[melodyIndex].GetNoteArray()[nNotes-1].GetTime().GetBegin() &&
+			   searchValue <= mMelodies[melodyIndex].GetNoteArray()[nNotes-1].GetTime().GetEnd())
 				return nNotes-1;
 
 			TIndex index = 0;
@@ -188,17 +199,17 @@ namespace CLAM
 			while(left_index <= right_index)
 			{
 				currentIndex = (left_index+right_index)/2;
-				if(searchValue >= mMelody.GetNoteArray()[currentIndex].GetTime().GetBegin() &&
-				   searchValue <= mMelody.GetNoteArray()[currentIndex].GetTime().GetEnd())
+				if(searchValue >= mMelodies[melodyIndex].GetNoteArray()[currentIndex].GetTime().GetBegin() &&
+				   searchValue <= mMelodies[melodyIndex].GetNoteArray()[currentIndex].GetTime().GetEnd())
 				{
 					index=currentIndex;
 					break;
 				}
-				if(searchValue < mMelody.GetNoteArray()[currentIndex].GetTime().GetBegin())
+				if(searchValue < mMelodies[melodyIndex].GetNoteArray()[currentIndex].GetTime().GetBegin())
 				{
 					right_index = currentIndex-1;
 				}
-				else if(searchValue > mMelody.GetNoteArray()[currentIndex].GetTime().GetBegin())
+				else if(searchValue > mMelodies[melodyIndex].GetNoteArray()[currentIndex].GetTime().GetBegin())
 				{
 					left_index = currentIndex+1;
 				}
@@ -208,36 +219,39 @@ namespace CLAM
 
 		void MelodyPlayer::UpdateNotePitch(const TIndex& index, const TData& newPitch)
 		{
-			int nNotes = mMelody.GetNumberOfNotes();
+			unsigned melodyIndex = GetMelodyIndex(mCurrent);
+			int nNotes = mMelodies[melodyIndex].GetNumberOfNotes();
 			if(!nNotes || index < 0 || index > nNotes-1) return;
-			mMelody.GetNoteArray()[index].SetFundFreq(newPitch);
+			mMelodies[melodyIndex].GetNoteArray()[index].SetFundFreq(newPitch);
 		}
 
 		void MelodyPlayer::UpdateNoteDuration(const TIndex& index, const TData& beginTime)
 		{
-			int nNotes = mMelody.GetNumberOfNotes();
+			unsigned melodyIndex = GetMelodyIndex(mCurrent);
+			int nNotes = mMelodies[melodyIndex].GetNumberOfNotes();
 			if(!nNotes || index < 0 || index > nNotes-1) return;
-			mMelody.GetNoteArray()[index].GetTime().SetBegin(beginTime);
-			if(index > 0) mMelody.GetNoteArray()[index-1].GetTime().SetEnd(beginTime);
+			mMelodies[melodyIndex].GetNoteArray()[index].GetTime().SetBegin(beginTime);
+			if(index > 0) mMelodies[melodyIndex].GetNoteArray()[index-1].GetTime().SetEnd(beginTime);
 		}
 
 		void MelodyPlayer::AddNote(const TIndex& index, const TData& beginTime, const TData& pitch)
 		{
+			unsigned melodyIndex = GetMelodyIndex(mCurrent);
 			bool addElem = false;
 			Note note;
 			MediaTime time;
 			time.SetBegin(beginTime);
 
-			if(mMelody.GetNumberOfNotes())
+			if(mMelodies[melodyIndex].GetNumberOfNotes())
 			{
-				if(index >= mMelody.GetNumberOfNotes())
+				if(index >= mMelodies[melodyIndex].GetNumberOfNotes())
 				{
-					time.SetEnd(mMelody.GetNoteArray()[mMelody.GetNumberOfNotes()-1].GetTime().GetEnd());
+					time.SetEnd(mMelodies[melodyIndex].GetNoteArray()[mMelodies[melodyIndex].GetNumberOfNotes()-1].GetTime().GetEnd());
 					addElem = true;
 				}
 				else
 				{
-					time.SetEnd(mMelody.GetNoteArray()[index].GetTime().GetBegin());
+					time.SetEnd(mMelodies[melodyIndex].GetNoteArray()[index].GetTime().GetBegin());
 				}
 			}
 			else
@@ -246,49 +260,50 @@ namespace CLAM
 				mTime.SetEnd(time.GetEnd());
 			}
 
-			if(index > 0 && mMelody.GetNumberOfNotes())
+			if(index > 0 && mMelodies[melodyIndex].GetNumberOfNotes())
 			{
 				if(addElem)
 				{
-					mMelody.GetNoteArray()[mMelody.GetNumberOfNotes()-1].GetTime().SetEnd(beginTime);
+					mMelodies[melodyIndex].GetNoteArray()[mMelodies[melodyIndex].GetNumberOfNotes()-1].GetTime().SetEnd(beginTime);
 				}
 				else
 				{
-					mMelody.GetNoteArray()[index-1].GetTime().SetEnd(beginTime);
+					mMelodies[melodyIndex].GetNoteArray()[index-1].GetTime().SetEnd(beginTime);
 				}
 			}
 	    
 			note.SetFundFreq(pitch);
 			note.SetTime(time);
 
-			if(addElem || !mMelody.GetNumberOfNotes())
+			if(addElem || !mMelodies[melodyIndex].GetNumberOfNotes())
 			{
-				mMelody.GetNoteArray().AddElem(note);
+				mMelodies[melodyIndex].GetNoteArray().AddElem(note);
 			}
 			else
 			{
-				mMelody.GetNoteArray().InsertElem(note,index);
+				mMelodies[melodyIndex].GetNoteArray().InsertElem(note,index);
 			}
-			mMelody.GetNumberOfNotes()++;
+			mMelodies[melodyIndex].GetNumberOfNotes()++;
 		}
 
 		void MelodyPlayer::RemoveNote(const TIndex& index)
 		{
-			int nNotes = mMelody.GetNumberOfNotes();
+			unsigned melodyIndex = GetMelodyIndex(mCurrent);
+			int nNotes = mMelodies[melodyIndex].GetNumberOfNotes();
 			if(!nNotes || index < 0 || index > nNotes-1) return;
 			TData newEndTime = TData(0.0);
 			bool modify_prior = false;
 			if(index > 0)
 			{
-				newEndTime = mMelody.GetNoteArray()[index].GetTime().GetEnd();
+				newEndTime = mMelodies[melodyIndex].GetNoteArray()[index].GetTime().GetEnd();
 				modify_prior = true;
 			}
-			mMelody.GetNoteArray().DeleteElem(index);
+			mMelodies[melodyIndex].GetNoteArray().DeleteElem(index);
 			if(modify_prior)
 			{
-				mMelody.GetNoteArray()[index-1].GetTime().SetEnd(newEndTime);
+				mMelodies[melodyIndex].GetNoteArray()[index-1].GetTime().SetEnd(newEndTime);
 			}
-			mMelody.GetNumberOfNotes()--;
+			mMelodies[melodyIndex].GetNumberOfNotes()--;
 		}
 
 		void MelodyPlayer::SetDuration(const TData& dur)
@@ -309,6 +324,53 @@ namespace CLAM
 		void MelodyPlayer::PlayAudio(bool play)
 		{
 			mPlayAudio = play;
+		}
+
+		void MelodyPlayer::SetCurrent(const std::string& current)
+		{
+			if(!HaveKey(current)) return;
+			mCurrent = current;
+		}
+
+		void MelodyPlayer::InitTables()
+		{
+			mIndexTable["default"]=0;
+			mMelodies.resize(1);
+			mMelodies[0].AddNumberOfNotes();
+			mMelodies[0].UpdateData();
+			mMelodies[0].SetNumberOfNotes(0);
+		}
+
+		void MelodyPlayer::AddMelody(const std::string& key, const Melody& melody)
+		{
+			unsigned index = 0;
+			bool haveKey = false;
+			if(HaveKey(key)) 
+			{
+				index = GetMelodyIndex(key);
+				haveKey = true;
+			}
+			if(haveKey)
+			{
+				mMelodies[index] = melody;
+			}
+			else
+			{
+				unsigned currentSize = mMelodies.size();
+				mIndexTable[key] = currentSize;
+				mMelodies.resize(currentSize+1);
+				mMelodies[currentSize] = melody;
+			}
+		}
+		
+		bool MelodyPlayer::HaveKey(const std::string& key)
+		{
+			return mIndexTable.find(key) != mIndexTable.end();
+		}
+
+		unsigned  MelodyPlayer::GetMelodyIndex(const std::string& key)
+		{
+			return mIndexTable[key];
 		}
 
     }
