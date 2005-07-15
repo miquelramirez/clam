@@ -1,4 +1,4 @@
-#include "ProcessingFactory.hxx"
+#include "Factory.hxx"
 #include "Processing.hxx"
 #include "MultiChannelAudioFileReader.hxx"
 #include "MultiChannelAudioFileWriter.hxx"
@@ -26,7 +26,7 @@
 #include "SpecgramPlotProcessing.hxx"
 #include "AudioBuffPlotProcessing.hxx"
 
-typedef CLAM::ProcessingFactory ProcessingFactory;
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 static ProcessingFactory::Registrator<CLAM::FlagControl> regtFlagControl( "FlagControl" );
 static ProcessingFactory::Registrator<CLAM::Random> regtRandom( "Random" );
