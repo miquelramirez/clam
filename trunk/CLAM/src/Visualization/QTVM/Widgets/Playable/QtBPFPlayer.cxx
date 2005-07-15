@@ -30,6 +30,7 @@ namespace CLAM
 			BuildPlayer();
 			LoadMIDIDevices();
 			LoadMIDIInstruments();
+			InitialMIDISettings();
 
 			mThread.SetThreadCode(makeMemberFunctor0((*this), QtBPFPlayer, thread_code));
 		}
@@ -39,10 +40,11 @@ namespace CLAM
 			StopThread();
 		}
 
-		void QtBPFPlayer::SetData(const BPF& bpf)
+		void QtBPFPlayer::AddData(const std::string& key, const BPF& bpf)
 		{
-			mOwnedBPF = bpf;
-			mThread.Start();
+			mKeys.push(key);
+			mBPFs.push(bpf);
+			ProcessIncomingBPF();
 		}
 
 		void QtBPFPlayer::SetAudioPtr(const Audio* audio)
@@ -71,14 +73,14 @@ namespace CLAM
 			mMustDoMapping = highest > max+inc;
 		}
 
-		Melody& QtBPFPlayer::GetMelody()
+		Melody& QtBPFPlayer::GetMelody(const std::string& key)
 		{
-			return ((MelodyPlayer*)mPlayers[MELODY_PLAYER])->GetMelody();
+			return ((MelodyPlayer*)mPlayers[MELODY_PLAYER])->GetMelody(key);
 		}
 
-		MIDIMelody& QtBPFPlayer::GetMIDIMelody()
+		MIDIMelody& QtBPFPlayer::GetMIDIMelody(const std::string& key)
 		{
-			return ((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->GetMIDIMelody();
+			return ((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->GetMIDIMelody(key);
 		}
 
 		void QtBPFPlayer::updateNotePitch(int index, float newPitch)
@@ -288,18 +290,21 @@ namespace CLAM
 				midiMelody.SetNoteArray(midiNotes);
 				midiMelody.SetNumberOfNotes(midiNotes.Size()); 
 
+				std::string key = mKeys.front(); // get current key
 				// set players' data
-				((MelodyPlayer*)mPlayers[MELODY_PLAYER])->SetData(melody,mOwnedDuration);
-				((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetData(midiMelody, 
-																	mMIDIDevices[mMIDIDevicesCB->currentItem()],
-																	mMIDIPrograms[mMIDIInstrumentsCB->currentItem()],
-																	mOwnedDuration);
+				((MelodyPlayer*)mPlayers[MELODY_PLAYER])->AddData(key,melody,mOwnedDuration);
+				((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->AddData(key,midiMelody,mOwnedDuration);
+				// pop processed key/data
+				mKeys.pop();
+				mBPFs.pop();
 			}
 			// remove informative tooltip
 			QToolTip::remove(this);
 
 			// enable widget when the melodies are fully loaded
 			this->setEnabled(true);
+
+			CheckPendent();
 		}
 
 		void QtBPFPlayer::BuildPlayer()
@@ -414,6 +419,12 @@ namespace CLAM
 			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIProgram(mMIDIPrograms[mMIDIInstrumentsCB->currentItem()]);
 		}
 
+		void QtBPFPlayer::InitialMIDISettings()
+		{
+			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIDevice(mMIDIDevices[mMIDIDevicesCB->currentItem()]);
+			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIProgram(mMIDIPrograms[mMIDIInstrumentsCB->currentItem()]);
+		}
+
 		void QtBPFPlayer::thread_code()
 		{
 			// is better buid the melodies on a second plane (maybe the player gets a huge bpf)
@@ -430,6 +441,27 @@ namespace CLAM
 		{
 			mPlaySimultaneously = psi;
 			((MelodyPlayer*)mPlayers[MELODY_PLAYER])->PlayAudio(mPlaySimultaneously);
+		}
+
+		void QtBPFPlayer::ProcessIncomingBPF()
+		{
+			if(mThread.IsRunning() || mThreadIsCancelled) return;
+			mOwnedBPF = mBPFs.front();
+			mThread.Start();
+		}
+
+		void QtBPFPlayer::CheckPendent()
+		{
+			if(mBPFs.empty() || mThreadIsCancelled) return;
+			mThread.Stop();
+			mOwnedBPF = mBPFs.front();
+			mThread.Start();
+		}
+
+		void QtBPFPlayer::SetCurrentBPF(const std::string& current)
+		{
+			((MelodyPlayer*)mPlayers[MELODY_PLAYER])->SetCurrent(current);
+			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetCurrent(current);
 		}
     }
 }
