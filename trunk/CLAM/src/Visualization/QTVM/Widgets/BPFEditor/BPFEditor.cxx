@@ -721,7 +721,7 @@ namespace CLAM
 		{
 			if(!mPlayer && !mController->HasMultipleBPF()) return;
 			InitPopupMenu();
-			PopupMenu->exec(QCursor::pos());
+			mPopupMenu->exec(QCursor::pos());
 		}
 
 		void BPFEditor::activePlayer()
