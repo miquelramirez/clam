@@ -160,7 +160,7 @@ namespace CLAM
 	    
 			void PlayingTime(TData time);
 			void StopPlaying(TData time);
-	    
+
 		};
     }
 }

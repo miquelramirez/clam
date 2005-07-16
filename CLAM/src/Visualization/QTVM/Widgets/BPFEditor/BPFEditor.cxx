@@ -61,7 +61,7 @@ namespace CLAM
 			mController->AddData("default",bpf);
 			if(mPlayer) 
 			{
-				((QtBPFPlayer*)mPlayer)->AddData("default",bpf);	
+				((QtBPFPlayer*)mPlayer)->AddData("default",bpf);
 			}
 		}
 
@@ -134,7 +134,6 @@ namespace CLAM
 		{
 			mController->SetYRange(min,max,scale);
 			mYRuler->SetScale(scale);
-			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetPitchBounds(min,max);
 			AdjustLeft(min,max);
 		}
 
@@ -706,14 +705,14 @@ namespace CLAM
 				mPopupMenu = 0;
 			}
 			mPopupMenu = new QPopupMenu();
+			//mPopupMenu->setCheckable(true);
 			if(mPlayer)
 			{
-				mPopupMenu->insertItem("Auralize",this,SLOT(activePlayer()),0,0); 
-				mPopupMenu->setCheckable(true);
+				mPopupMenu->insertItem("Auralize",this,SLOT(activePlayer()),0,0);
 			}
 			if(mController->HasMultipleBPF())
 			{
-				mPopupMenu->insertItem("Select...",this,SLOT(showChooseBPFDlg()));
+				mPopupMenu->insertItem("Select...",this,SLOT(showChooseBPFDlg()),0,1);
 			}
 		}
 
