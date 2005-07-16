@@ -705,10 +705,11 @@ namespace CLAM
 				mPopupMenu = 0;
 			}
 			mPopupMenu = new QPopupMenu();
-			//mPopupMenu->setCheckable(true);
+			mPopupMenu->setCheckable(true);
 			if(mPlayer)
 			{
 				mPopupMenu->insertItem("Auralize",this,SLOT(activePlayer()),0,0);
+				if(mActivePlayer) mPopupMenu->setItemChecked(0,true);
 			}
 			if(mController->HasMultipleBPF())
 			{
@@ -718,11 +719,9 @@ namespace CLAM
 
 		void BPFEditor::showPopupMenu()
 		{
+			if(!mPlayer && !mController->HasMultipleBPF()) return;
 			InitPopupMenu();
-			if(mPlayer || mController->HasMultipleBPF())
-			{
-				mPopupMenu->exec(QCursor::pos());
-			}
+			PopupMenu->exec(QCursor::pos());
 		}
 
 		void BPFEditor::activePlayer()
@@ -731,12 +730,10 @@ namespace CLAM
 			if(mActivePlayer)
 			{
 				SetActivePlayer(true);
-				mPopupMenu->setItemChecked(0,true);
 			}
 			else
 			{
 				SetActivePlayer(false);
-				mPopupMenu->setItemChecked(0,false);
 			}
 		}
 
