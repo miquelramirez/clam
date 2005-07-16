@@ -22,6 +22,7 @@ namespace CLAM
 		{
 			typedef std::queue<std::string> Q_Keys;
 			typedef std::queue<BPF>         Q_BPFs;
+			typedef std::queue<bool>        Q_Maps;
 
 			Q_OBJECT
 		public:
@@ -35,7 +36,6 @@ namespace CLAM
 			void SetAudioPtr(const Audio* audio);
 			void SetDuration(const TData& dur);
 	    
-			void SetPitchBounds(const TData& lowest, const TData& highest);
 			void SetColorMap(ColorMap map);
 			void StopThread();
 			void PlaySimultaneously(bool psi);
@@ -66,9 +66,10 @@ namespace CLAM
 			bool   mThreadIsCancelled;
 			BPF    mOwnedBPF;
 			TData  mOwnedDuration;
-			TData  global_max;
 			bool   mMustDoMapping;
 			bool   mPlaySimultaneously;
+			TData  mMinYValue;
+			TData  mMaxYValue;
 
 			QFrame *radioPanel,*midiSettingsPanel;
 			QRadioButton *mPlayAudio, *mPlayMIDI;
@@ -79,6 +80,7 @@ namespace CLAM
 
 			Q_Keys mKeys;
 			Q_BPFs mBPFs;
+			Q_Maps mDoMapping;
 
 			enum { MELODY_PLAYER=0, MIDI_PLAYER };
 	    
@@ -91,6 +93,11 @@ namespace CLAM
 
 			void ProcessIncomingBPF();
 			void CheckPendent();
+
+			TData GetMinY(const BPF& bpf);
+			TData GetMaxY(const BPF& bpf);
+			
+			void SetPitchBounds(const BPF& bpf);
 
 		};
     }

@@ -13,14 +13,13 @@ namespace CLAM
 {
     namespace VM
     {
-		const TData min_ref = 8.1758;            // 8.1758Hz = key MIDI 0
-		const TData local_max = 12545.9+min_ref; // 12545.9 = key MIDI 127
+		const TData min_ref = 8.1758;  // 8.1758Hz = key MIDI 0
+		const TData max_ref = 12545.9; // 12545.9Hz = key MIDI 127
 
 		QtBPFPlayer::QtBPFPlayer(QWidget* parent) 
 			: QtMultiPlayer(parent)
 			, mThreadIsCancelled(false)
 			, mOwnedDuration(TData(0.0))
-			, global_max(TData(1.0)) // prevent to divide by zero
 			, mMustDoMapping(false)
 			, mPlaySimultaneously(false)
 		{
@@ -44,6 +43,7 @@ namespace CLAM
 		{
 			mKeys.push(key);
 			mBPFs.push(bpf);
+			SetPitchBounds(bpf);
 			ProcessIncomingBPF();
 		}
 
@@ -59,18 +59,18 @@ namespace CLAM
 			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetDuration(mOwnedDuration);
 		}
 
-		void QtBPFPlayer::SetPitchBounds(const TData& lowest, const TData& highest)
+		void QtBPFPlayer::SetPitchBounds(const BPF& bpf)
 		{
-			TData max = local_max-min_ref;
-			TData inc = (highest-lowest)*0.1;
-			global_max = highest+lowest;
-			if(highest < TData(50.0)) 
+			const double lowest = GetMinY(bpf);
+			const double highest = GetMaxY(bpf);
+			if(lowest >= min_ref && highest <= max_ref) 
 			{
-				mMustDoMapping = true;
-				return;
+				mDoMapping.push(false);
 			}
-			if(highest <= local_max-min_ref) return;
-			mMustDoMapping = highest > max+inc;
+			else
+			{
+				mDoMapping.push(true);
+			}
 		}
 
 		Melody& QtBPFPlayer::GetMelody(const std::string& key)
@@ -85,6 +85,14 @@ namespace CLAM
 
 		void QtBPFPlayer::updateNotePitch(int index, float newPitch)
 		{
+			if(newPitch < min_ref ) 
+			{
+				newPitch = min_ref;
+			}
+			else if(newPitch > max_ref)
+			{
+				newPitch = max_ref;
+			}
 			((MelodyPlayer*)mPlayers[MELODY_PLAYER])->UpdateNotePitch(TIndex(index), TData(newPitch));
 			Note note;
 			note.SetFundFreq(newPitch);
@@ -99,6 +107,14 @@ namespace CLAM
 
 		void QtBPFPlayer::addNote(int index, float beginTime, float pitch)
 		{
+			if(pitch < min_ref ) 
+			{
+				pitch = min_ref;
+			}
+			else if(pitch > max_ref)
+			{
+				pitch = max_ref;
+			}
 			((MelodyPlayer*)mPlayers[MELODY_PLAYER])->AddNote(TIndex(index), TData(beginTime), TData(pitch));
 			Note note;
 			note.SetFundFreq(pitch);
@@ -224,7 +240,15 @@ namespace CLAM
 
 			// informative tooltip
 			QToolTip::add(this,"Please wait: disabled while building a huge melody.");
-	    
+			
+			mMustDoMapping = mDoMapping.front();
+
+			if(mMustDoMapping)
+			{
+			    mMinYValue = GetMinY(mOwnedBPF);
+			    mMaxYValue= GetMaxY(mOwnedBPF);
+			}
+
 			Melody melody;
 			MIDIMelody midiMelody;
 			melody.AddNumberOfNotes();
@@ -261,16 +285,16 @@ namespace CLAM
 
 				if(mMustDoMapping)
 				{
-					pitch = pitch*local_max/global_max+min_ref;
+					pitch = (pitch-mMinYValue)*(max_ref-min_ref)/(mMaxYValue-mMinYValue)+min_ref;
 				}
 
 				if(pitch < min_ref)
 				{
 					pitch = min_ref;
 				}
-				else if(pitch > local_max-min_ref)
+				else if(pitch > max_ref)
 				{
-					pitch = local_max-min_ref;
+					pitch = max_ref;
 				}
 		  
 				note.SetFundFreq(pitch);
@@ -297,6 +321,7 @@ namespace CLAM
 				// pop processed key/data
 				mKeys.pop();
 				mBPFs.pop();
+				mDoMapping.pop();
 			}
 			// remove informative tooltip
 			QToolTip::remove(this);
@@ -462,6 +487,34 @@ namespace CLAM
 		{
 			((MelodyPlayer*)mPlayers[MELODY_PLAYER])->SetCurrent(current);
 			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetCurrent(current);
+		}
+
+		TData QtBPFPlayer::GetMinY(const CLAM::BPF& bpf)
+		{
+			TData min_value=TData(1E9);
+			for(TIndex i=0; i < bpf.Size(); i++)
+			{
+				TData current = bpf.GetValueFromIndex(i);
+				if(current < min_value)
+				{
+					min_value = current;
+				}
+			}
+			return min_value;
+		}
+
+		TData QtBPFPlayer::GetMaxY(const CLAM::BPF& bpf)
+		{
+			TData max_value=-1E9;
+			for(TIndex i=0; i < bpf.Size(); i++)
+			{
+				TData current = bpf.GetValueFromIndex(i);
+				if(current > max_value)
+				{
+					max_value = current;
+				}
+			}
+			return max_value;
 		}
     }
 }
