@@ -727,14 +727,7 @@ namespace CLAM
 		void BPFEditor::activePlayer()
 		{
 			mActivePlayer = !mActivePlayer;
-			if(mActivePlayer)
-			{
-				SetActivePlayer(true);
-			}
-			else
-			{
-				SetActivePlayer(false);
-			}
+			SetActivePlayer(mActivePlayer);
 		}
 
 		void BPFEditor::PlayingTime(TData time)
