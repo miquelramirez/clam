@@ -4,52 +4,72 @@ from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
+Import('vmqt_env version top install_dirs header_db')
 
-print """\
+def define_module_contents() :
+	print "Gathering necessary source files...",
+	if not os.path.exists('src') :
+		os.mkdir('src')
+	if not os.path.exists('include' ) :
+		os.makedirs('include/CLAM')
+
+	basedir =  top+'/..'
+
+	folders = []
+
+	for root, _, _ in os.walk( basedir+'/'+'src/Visualization/QTVM' ) :
+		if not 'CVS' in root :
+			folders.append( root.split('../')[-1] )
+
+
+	blacklist = []
+
+	file_retriever = FileRetriever( basedir, folders, blacklist )
+
+	file_retriever.scan()
+
+	store_headers_in_db( header_db )
+	for filename in file_retriever.headers :
+		update_includes( header_db, filename )
+	for filename in file_retriever.sources :
+		update_includes( header_db, filename )
+
+	manifest = Manifest()
+	manifest.store( file_retriever.headers, file_retriever.sources )
+
+	print "ok"
+	return file_retriever.headers, file_retriever.sources
+
+
+if not vmqt_env.GetOption('clean') :
+	print """\
 ####################################################################
 ### BOOTSTRAPPING CLAM QT-BASED VISUALIZATION MODULE LIBRARY   ###
 ####################################################################"""
+	print "Creating pkg-config descriptor...",
+	pkg_data = PackageData( 'clam_vmqt', version, [] )
+	pkg_data.create_pkg_descriptor( vmqt_env, 'clam_vmqt.pc' )
+	print "ok"
 
-Import('vmqt_env version top install_dirs header_db')
 
-print "Creating pkg-config descriptor...",
-pkg_data = PackageData( 'clam_vmqt', version, [] )
-pkg_data.create_pkg_descriptor( vmqt_env, 'clam_vmqt.pc' )
-print "ok"
 lib_descriptor = vmqt_env.File( 'clam_vmqt.pc' )
 
-print "Gathering necessary source files...",
-if not os.path.exists('src') :
-	os.mkdir('src')
-if not os.path.exists('include' ) :
-	os.makedirs('include/CLAM')
-
-basedir =  top+'/..'
-
-folders = []
-
-for root, _, _ in os.walk( basedir+'/'+'src/Visualization/QTVM' ) :
-	if not 'CVS' in root :
-		folders.append( root.split('../')[-1] )
+if not vmqt_env.GetOption('clean') :
+	header_files, source_files = define_module_contents()
+else :
+	manifest = Manifest()
+	header_files = []
+	source_files = []
+	manifest.load( header_files, source_files )
 
 
-blacklist = []
+headers = [ File(header) for header in header_files ]
 
-file_retriever = FileRetriever( basedir, folders, blacklist )
-
-file_retriever.scan()
-
-store_headers_in_db( header_db )
-for filename in file_retriever.headers :
-	update_includes( header_db, filename )
-for filename in file_retriever.sources :
-	update_includes( header_db, filename )
-
-headers = [ File(header) for header in file_retriever.headers ]
-
-print "ok"
 vmqt_env.Append(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
-vmqt_env.Append(CCFLAGS='-include CLAM/%s'%vmqt_env['preinclude'])
+
+if not vmqt_env.GetOption('clean') :
+	vmqt_env.Append(CCFLAGS='-include CLAM/%s'%vmqt_env['preinclude'])
+
 vmqt_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
 vmqt_env.Append(LIBPATH=['../core','../processing','../audioio'])
 
@@ -57,13 +77,12 @@ soname = 'libclam_vmqt.so.%s'%version.split('.')[0]
 linker_name = 'libclam_vmqt.so'
 vmqt_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname] )
 
-lib = vmqt_env.SharedLibrary( 'clam_vmqt', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version )
+lib = vmqt_env.SharedLibrary( 'clam_vmqt', source_files, SHLIBSUFFIX='.so.%s'%version )
 
 soname_lib = vmqt_env.SonameLink( soname, lib )
 linkername_lib = vmqt_env.LinkerNameLink( linker_name, soname_lib)
 
-vmqt_env.Alias( 'vmqt', linkername_lib )
-#vmqt_env.Alias( 'all', linkername_lib )
+vmqt_tgt = vmqt_env.Alias( 'vmqt', linkername_lib )
 
 install_headers = vmqt_env.Install( install_dirs.inc+'/CLAM', headers )
 vmqt_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
@@ -71,6 +90,6 @@ install_lib = vmqt_env.Install( install_dirs.lib, lib )
 vmqt_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
 install_descriptor = vmqt_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 
-vmqt_env.Alias( 'install_vmqt', install_headers )
-vmqt_env.Alias( 'install_vmqt', install_lib )
-vmqt_env.Alias( 'install_vmqt', install_descriptor )
+vmqt_install_tgt = vmqt_env.Alias( 'install_vmqt', [install_headers, install_lib, install_descriptor] )
+
+Return( 'vmqt_tgt', 'vmqt_install_tgt' )

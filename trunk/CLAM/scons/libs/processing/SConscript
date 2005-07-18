@@ -5,49 +5,72 @@ from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
 
-print """\
+Import('processing_env version top install_dirs header_db')
+
+
+def define_module_contents() :
+	print "Gathering necessary source files...",
+	if not os.path.exists('src') :
+		os.mkdir('src')
+	if not os.path.exists('include' ) :
+		os.makedirs('include/CLAM')
+
+	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS' ]
+
+	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+']
+
+	if not processing_env['with_fftw'] :
+		blacklist.append('.+rfftw.+')
+	if not processing_env['with_nr_fft'] :
+		blacklist.append('.*numrecipes.+')
+		blacklist.append('.+numrec.+')
+
+	file_retriever = FileRetriever( top+'/..', folders, blacklist )
+
+	file_retriever.scan()
+
+	store_headers_in_db( header_db )
+	for filename in file_retriever.headers :
+		update_includes( header_db, filename )
+	for filename in file_retriever.sources :
+		update_includes( header_db, filename )
+
+	manifest = Manifest()
+	manifest.store( file_retriever.headers, file_retriever.sources )
+
+	print "ok"
+
+	return file_retriever.headers, file_retriever.sources 
+
+
+# Module dependencies and tasks
+
+if not processing_env.GetOption('clean') :
+	print """\
 ##############################################
 ### BOOTSTRAPPING CLAM PROCESSINGS LIBRARY ###
 ##############################################"""
 
-Import('processing_env version top install_dirs header_db')
-print "Creating pkg-config descriptor...",
-pkg_data = PackageData( 'clam_processing', version, [] )
-pkg_data.create_pkg_descriptor( processing_env, 'clam_processing.pc' )
-print "ok"
+	print "Creating pkg-config descriptor...",
+	pkg_data = PackageData( 'clam_processing', version, [] )
+	pkg_data.create_pkg_descriptor( processing_env, 'clam_processing.pc' )
+	print "ok"
 
 lib_descriptor = processing_env.File( 'clam_processing.pc' )
 
-print "Gathering necessary source files...",
-if not os.path.exists('src') :
-	os.mkdir('src')
-if not os.path.exists('include' ) :
-	os.makedirs('include/CLAM')
+if not processing_env.GetOption('clean') :
+	header_files, source_files = define_module_contents()
+else :
+	manifest = Manifest()
+	header_files = []
+	source_files = []
+	manifest.load( header_files, source_files )
 
-folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*' ]
-
-blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+']
-
-if not processing_env['with_fftw'] :
-	blacklist.append('.+rfftw.+')
-if not processing_env['with_nr_fft'] :
-	blacklist.append('.*numrecipes.+')
-	blacklist.append('.+numrec.+')
-
-file_retriever = FileRetriever( top+'/..', folders, blacklist )
-
-file_retriever.scan()
-
-store_headers_in_db( header_db )
-for filename in file_retriever.headers :
-	update_includes( header_db, filename )
-for filename in file_retriever.sources :
-	update_includes( header_db, filename )
-
-
-print "ok"
+	
 processing_env.Append(CPPPATH=['include','../core/include'])
-processing_env.Append(CCFLAGS='-include CLAM/%s'%processing_env['preinclude'])
+if not processing_env.GetOption('clean') :
+	processing_env.Append(CCFLAGS='-include CLAM/%s'%processing_env['preinclude'])
+
 processing_env.Append(LIBS=['clam_core'])
 processing_env.Append(LIBPATH=['../core'])
 
@@ -55,13 +78,12 @@ soname = 'libclam_processing.so.%s'%version.split('.')[0]
 linker_name = 'libclam_processing.so'
 processing_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 
-lib = processing_env.SharedLibrary( 'clam_processing', file_retriever.sources,  SHLIBSUFFIX='.so.%s'%version  )
+headers = [ File(header) for header in header_files ]
+lib = processing_env.SharedLibrary( 'clam_processing', source_files,  SHLIBSUFFIX='.so.%s'%version  )
 soname_lib = processing_env.SonameLink( soname, lib )
 linkername_lib = processing_env.LinkerNameLink( linker_name, soname_lib)
 
-headers = [ File(header) for header in file_retriever.headers ]
-
-processing_env.Alias( 'processing', linkername_lib )
+processing_tgt = processing_env.Alias( 'processing', linkername_lib )
 
 install_headers = processing_env.Install( install_dirs.inc+'/CLAM', headers )
 processing_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
@@ -69,6 +91,6 @@ install_lib = processing_env.Install( install_dirs.lib, lib )
 processing_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
 install_descriptor = processing_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 
-processing_env.Alias( 'install_processing', install_headers )
-processing_env.Alias( 'install_processing', install_lib )
-processing_env.Alias( 'install_processing', install_descriptor )
+processing_install_tgt = processing_env.Alias( 'install_processing', [install_headers,install_lib, install_descriptor] )
+
+Return( 'processing_tgt', 'processing_install_tgt' )
