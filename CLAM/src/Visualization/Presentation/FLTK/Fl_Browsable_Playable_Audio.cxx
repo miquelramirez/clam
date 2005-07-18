@@ -108,13 +108,13 @@ void Fl_Browsable_Playable_Audio::stop( Fl_Widget*, void* data)
 void Fl_Browsable_Playable_Audio::Play(  )
 { 
 	AudioPlayer::StopFromGUIThread(  );
-	Audio* tempAudio = new Audio;
+	Audio* tempAudio = new Audio();
 	tempAudio->SetSampleRate( mDrawMgr.GetTimeInfo(  ).sampleRate );
 	tempAudio->SetBeginTime( 0 );
 	tempAudio->SetBuffer( mDrawMgr.GetDataCached(  ) );
 
 	mIsThisPlaying = true;
-	mAudioPlayer = new AudioPlayer( tempAudio, mStopSlot );
+	mAudioPlayer = new AudioPlayer( tempAudio, mStopSlot, 0.0 );
 }
 
 void Fl_Browsable_Playable_Audio::Stop(  )
