@@ -12,71 +12,91 @@ print """\
 
 Import('core_env version top install_dirs header_db')
 
-print "Creating pkg-config descriptor...",
-pkg_data = PackageData( 'clam_core', version, [] )
-pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
-print "ok"
+def define_module_contents() :
+	print "Gathering necessary source files...",
+	if not os.path.exists('src') :
+		os.mkdir('src')
+	if not os.path.exists('include' ) :
+		os.makedirs('include/CLAM')
+
+	core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing/Audio.*', 'src/Data/Descriptors/Pool', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib', 'src/Processing/Controls']
+
+	if sys.platform == 'windows' :
+		core_folders.append('src/Defines/Windows')
+	else :
+		core_folders.append('src/Defines/Unix')	
+
+	blacklist = ['ScaleCnv', 'LadspaBridge']
+
+	if core_env['xmlbackend'] == 'xercesc' :
+		blacklist.append( 'LibXml.+')
+		blacklist.append( 'Null.+' )
+	elif core_env['xmlbackend'] == 'xmlpp' :
+		blacklist.append( 'Xerces.+')
+		blacklist.append( 'Null.+' )
+	elif core_env['xmlbackend'] == 'none' :
+		blacklist.append( 'Xerces.+' )
+		blacklist.append( 'LibXml.+' )
+
+	if not core_env['with_ladspa_support'] :
+		blacklist.append( 'Ladspa.+' )
+
+	if not core_env['with_osc_support'] :
+		blacklist.append( 'OSC.+')
+
+	file_retriever = FileRetriever( top+'/..', core_folders, blacklist )
+
+	file_retriever.scan()
+
+	store_headers_in_db( header_db )
+
+	for filename in file_retriever.headers :
+		update_includes( header_db, filename )
+	for filename in file_retriever.sources :
+		update_includes( header_db, filename )
+
+	manifest = Manifest()
+	manifest.store( file_retriever.headers, file_retriever.sources )
+
+	header_files = file_retriever.headers
+	source_files = file_retriever.sources
+
+	print "ok"
+	return file_retriever.headers, file_retriever.sources
+
+
+if not core_env.GetOption('clean') :
+	print "Creating pkg-config descriptor...",
+	pkg_data = PackageData( 'clam_core', version, [] )
+	pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
+	print "ok"
 
 lib_descriptor = core_env.File( 'clam_core.pc' )
 
-print "Gathering necessary source files...",
-if not os.path.exists('src') :
-	os.mkdir('src')
-if not os.path.exists('include' ) :
-	os.makedirs('include/CLAM')
-
-core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing/Audio.*', 'src/Data/Descriptors/Pool', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib', 'src/Processing/Controls']
-
-if sys.platform == 'windows' :
-	core_folders.append('src/Defines/Windows')
+if not core_env.GetOption('clean') : 
+	header_files, source_files = define_module_contents()
 else :
-	core_folders.append('src/Defines/Unix')	
+	manifest = Manifest()
+	header_files = []
+	source_files = []
+	manifest.load( header_files, source_files )
 
-blacklist = ['ScaleCnv']
+if not core_env.GetOption('clean') :
+	core_env.Append(CPPPATH='include')
+	core_env.Append(CCFLAGS='-include CLAM/%s'%core_env['preinclude'])
 
-if core_env['xmlbackend'] == 'xercesc' :
-	blacklist.append( 'LibXml.+')
-	blacklist.append( 'Null.+' )
-elif core_env['xmlbackend'] == 'xmlpp' :
-	blacklist.append( 'Xerces.+')
-	blacklist.append( 'Null.+' )
-elif core_env['xmlbackend'] == 'none' :
-	blacklist.append( 'Xerces.+' )
-	blacklist.append( 'LibXml.+' )
-
-if not core_env['with_ladspa_support'] :
-	blacklist.append( 'Ladspa.+' )
-
-if not core_env['with_osc_support'] :
-	blacklist.append( 'OSC.+')
-
-file_retriever = FileRetriever( top+'/..', core_folders, blacklist )
-
-file_retriever.scan()
-
-store_headers_in_db( header_db )
-
-for filename in file_retriever.headers :
-	update_includes( header_db, filename )
-for filename in file_retriever.sources :
-	update_includes( header_db, filename )
-
-
-print "ok"
-core_env.Append(CPPPATH='include')
-core_env.Append(CCFLAGS='-include CLAM/%s'%core_env['preinclude'])
 soname = 'libclam_core.so.%s'%version.split('.')[0]
 linker_name = 'libclam_core.so'
 core_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 
-headers = [ File(header) for header in file_retriever.headers ]
+headers = [ File(header) for header in header_files ]
 
-lib = core_env.SharedLibrary( 'clam_core', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version )
+lib = core_env.SharedLibrary( 'clam_core', source_files, SHLIBSUFFIX='.so.%s'%version )
 
 soname_lib = core_env.SonameLink( soname, lib )
 linkername_lib = core_env.LinkerNameLink( linker_name, soname_lib)
 
-core_env.Alias( 'core', linkername_lib )
+core_tgt = core_env.Alias( 'core', linkername_lib )
 
 install_headers = core_env.Install( install_dirs.inc+'/CLAM', headers )
 core_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
@@ -84,6 +104,6 @@ install_lib = core_env.Install( install_dirs.lib, lib )
 core_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
 install_descriptor = core_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 
-core_env.Alias( 'install_core', install_headers )
-core_env.Alias( 'install_core', install_lib )
-core_env.Alias( 'install_core', install_descriptor )
+core_install_tgt = core_env.Alias( 'install_core', [install_headers, install_lib, install_descriptor] )
+
+Return( 'core_tgt','core_install_tgt' )

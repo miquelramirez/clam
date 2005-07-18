@@ -4,45 +4,68 @@ from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 import os, sys
+Import('vmfl_env version top install_dirs header_db')
 
-print """\
+def define_module_contents() :
+	print "Gathering necessary source files...",
+	if not os.path.exists('src') :
+		os.mkdir('src')
+	if not os.path.exists('include' ) :
+		os.makedirs('include/CLAM')
+
+	folders = ['src/Visualization/Base','src/Visualization/GL', 'src/Visualization/Plot', 'src/Visualization/Presentation/Base' ,'src/Visualization/Presentation/FLTK', 'src/Visualization/Util', 'src/Visualization/View', 'src/Visualization/Widget/FLTKWrapper.*xx', 'src/Visualization/Widget/FLTK' ]
+
+	blacklist = ['GLLogPowSpRenderer','GLLogSpRenderer','ProcessingController','Fl_Range','FDFilterController','TokenDelayController']
+
+	file_retriever = FileRetriever( top+'/..', folders, blacklist )
+	
+	file_retriever.scan()
+
+	store_headers_in_db( header_db )
+	for filename in file_retriever.headers :
+		update_includes( header_db, filename )
+	for filename in file_retriever.sources :
+		update_includes( header_db, filename )
+
+	manifest = Manifest()
+	manifest.store( file_retriever.headers, file_retriever.sources )
+
+	print "ok"
+
+	return file_retriever.headers, file_retriever.sources
+
+# Module task and depedencies definition
+
+if not vmfl_env.GetOption('clean') :
+	print """\
 ####################################################################
 ### BOOTSTRAPPING CLAM FLTK-BASED VISUALIZATION MODULE LIBRARY   ###
 ####################################################################"""
 
-Import('vmfl_env version top install_dirs header_db')
+	print "Creating pkg-config descriptor...",
+	pkg_data = PackageData( 'clam_vmfl', version, [] )
+	pkg_data.create_pkg_descriptor( vmfl_env, 'clam_vmfl.pc' )
+	print "ok"
 
-print "Creating pkg-config descriptor...",
-pkg_data = PackageData( 'clam_vmfl', version, [] )
-pkg_data.create_pkg_descriptor( vmfl_env, 'clam_vmfl.pc' )
-print "ok"
+
 lib_descriptor = vmfl_env.File( 'clam_vmfl.pc' )
 
-print "Gathering necessary source files...",
-if not os.path.exists('src') :
-	os.mkdir('src')
-if not os.path.exists('include' ) :
-	os.makedirs('include/CLAM')
+if not vmfl_env.GetOption('clean') :
+	header_files, source_files = define_module_contents()
+else :
+	manifest = Manifest()
+	header_files = []
+	source_files = []
+	manifest.load( header_files, source_files )
 
-folders = ['src/Visualization/Base','src/Visualization/GL', 'src/Visualization/Plot', 'src/Visualization/Presentation/Base' ,'src/Visualization/Presentation/FLTK', 'src/Visualization/Util', 'src/Visualization/View', 'src/Visualization/Widget/FLTKWrapper.*xx', 'src/Visualization/Widget/FLTK' ]
 
-blacklist = ['GLLogPowSpRenderer','GLLogSpRenderer','ProcessingController','Fl_Range','FDFilterController','TokenDelayController']
+headers = [ File(header) for header in header_files]
 
-file_retriever = FileRetriever( top+'/..', folders, blacklist )
-
-file_retriever.scan()
-
-store_headers_in_db( header_db )
-for filename in file_retriever.headers :
-	update_includes( header_db, filename )
-for filename in file_retriever.sources :
-	update_includes( header_db, filename )
-
-headers = [ File(header) for header in file_retriever.headers ]
-
-print "ok"
 vmfl_env.Append(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
-vmfl_env.Append(CCFLAGS='-include CLAM/%s'%vmfl_env['preinclude'])
+
+if not vmfl_env.GetOption('clean') :
+	vmfl_env.Append(CCFLAGS='-include CLAM/%s'%vmfl_env['preinclude'])
+
 vmfl_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
 vmfl_env.Append(LIBPATH=['../core','../processing','../audioio'])
 
@@ -50,12 +73,12 @@ soname = 'libclam_vmfl.so.%s'%version.split('.')[0]
 linker_name = 'libclam_vmfl.so'
 vmfl_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 
-lib = vmfl_env.SharedLibrary( 'clam_vmfl', file_retriever.sources, SHLIBSUFFIX='.so.%s'%version  )
+lib = vmfl_env.SharedLibrary( 'clam_vmfl', source_files, SHLIBSUFFIX='.so.%s'%version  )
 
 soname_lib = vmfl_env.SonameLink( soname, lib )
 linkername_lib = vmfl_env.LinkerNameLink( linker_name, soname_lib)
 
-vmfl_env.Alias( 'vmfl', linkername_lib )
+vmfl_target = vmfl_env.Alias( 'vmfl', linkername_lib )
 
 install_headers = vmfl_env.Install( install_dirs.inc+'/CLAM', headers )
 vmfl_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
@@ -63,6 +86,6 @@ install_lib = vmfl_env.Install( install_dirs.lib, lib )
 vmfl_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
 install_descriptor = vmfl_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 
-vmfl_env.Alias( 'install_vmfl', install_headers )
-vmfl_env.Alias( 'install_vmfl', install_lib )
-vmfl_env.Alias( 'install_vmfl', install_descriptor )
+vmfl_install_target = vmfl_env.Alias( 'install_vmfl', [install_headers, install_lib, install_descriptor] )
+
+Return( 'vmfl_target', 'vmfl_install_target' )

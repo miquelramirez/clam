@@ -42,7 +42,7 @@ def parse_conf(env, output):
 			ind = i
 	if ind != -1 :
 		new_parm = ' '.join( params[ind:ind+2] )
-	env.Append( CCFLAGS=new_parm )
+	env.AppendUnique( CCFLAGS=new_parm )
 		
 	params = params[:ind]+params[ind+2:]
 
@@ -69,6 +69,34 @@ def parse_conf(env, output):
 		else:
 			dict['CCFLAGS'].append(arg)
 
-	apply(env.Append, (), dict)
+	apply(env.AppendUnique, (), dict)
 	return static_libs
+
+class Manifest :
+	
+	def __init__(self) :
+		pass
+
+	def store( self, hdrs, srcs ) :
+		hdr_out = open( 'header.manifest' , 'w' )
+		for filename in hdrs :
+			print >> hdr_out, filename
+		hdr_out.close()
+
+		src_out = open( 'source.manifest', 'w' )
+		for filename in srcs :
+			print >> src_out, filename
+		src_out.close()
+
+	def load( self, hdrs, srcs ) :
+		hdr_in = open('header.manifest')
+		for line in hdr_in :
+			hdrs.append( line.strip() )
+		hdr_in.close()
+
+		src_in = open('source.manifest')
+		for line in src_in :
+			srcs.append( line.strip() ) 
+		src_in.close()	
+
 
