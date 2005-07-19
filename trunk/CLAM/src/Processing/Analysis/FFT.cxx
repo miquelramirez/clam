@@ -29,14 +29,6 @@ namespace CLAM {
 
 	SpecTypeFlags FFT_base::mComplexflags;
 
-	void FFTConfig::DefaultInit(void)
-	{
-		AddAudioSize();
-		UpdateData();
-		SetAudioSize(0);
-	}
-
-
 	FFT_base::FFT_base() :
 		mSize(0),
 		mInput("Audio Input",this),
