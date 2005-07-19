@@ -15,9 +15,12 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS' ]
+	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Controls' ]
 
 	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+']
+
+	if not processing_env['with_osc_support'] :
+		blacklist.append('OSCSender')
 
 	if not processing_env['with_fftw'] :
 		blacklist.append('.+rfftw.+')
