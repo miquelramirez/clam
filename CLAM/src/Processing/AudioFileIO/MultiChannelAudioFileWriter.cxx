@@ -20,14 +20,24 @@
  */
 
 #include "MultiChannelAudioFileWriter.hxx"
-#include <sstream>
 #include "AudioCodecs_Stream.hxx"
 #include "FileSystem.hxx"
 #include "AudioInPort.hxx"
 #include "Audio.hxx"
+#include "Factory.hxx"
+
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<MultiChannelAudioFileWriter> regtMultiChannelAudioFileWriter( "MultiChannelAudioFileWriter" );
+	}
+	
+	
 	MultiChannelAudioFileWriter::MultiChannelAudioFileWriter()
 		: mNativeStream( NULL )
 	{

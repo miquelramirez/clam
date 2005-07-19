@@ -21,9 +21,18 @@
 
 #include "MonoAudioFileReader.hxx"
 #include "AudioCodecs_Stream.hxx"
+#include "Factory.hxx"
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<MonoAudioFileReader> regtMonoAudioFileReader( "MonoAudioFileReader" );
+	}
+	
+	
 	MonoAudioFileReader::MonoAudioFileReader()
 		: mOutput( "Samples Read", this  ),
 		  mNativeStream( NULL )

@@ -22,8 +22,9 @@
 #include "SMSSpectralShapeShift.hxx"
 #include "Factory.hxx"
 
-using namespace CLAM;
-
+namespace CLAM
+{
+	
 bool SMSSpectralShapeShift::Do(const SpectralPeakArray& 
 			inPeaks,SpectralPeakArray& outPeaks,
 			bool preserveOutput)
@@ -52,5 +53,7 @@ bool SMSSpectralShapeShift::Do(const SpectralPeakArray&
 	return true;
 }
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<CLAM::SMSSpectralShapeShift> regtSpectralShapeShift( "SMSSpectralShapeShift" );
+typedef Factory<Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<SMSSpectralShapeShift> regtSpectralShapeShift( "SMSSpectralShapeShift" );
+
+}

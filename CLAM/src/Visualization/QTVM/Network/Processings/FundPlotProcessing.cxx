@@ -1,8 +1,18 @@
 #include "NetFundPlot.hxx"
 #include "FundPlotProcessing.hxx"
+#include "Factory.hxx"
+
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<FundPlotProcessing> regtFundPlotProcessing("FundPlotProcessing");
+	}
+	
+	
 	void FundPlotProcessingConfig::DefaultInit()
 	{
 		AddAll();

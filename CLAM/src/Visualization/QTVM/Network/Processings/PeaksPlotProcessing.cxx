@@ -1,8 +1,18 @@
 #include "NetPeaksPlot.hxx"
 #include "PeaksPlotProcessing.hxx"
+#include "Factory.hxx"
+
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<PeaksPlotProcessing> regtPeaksPlotProcessing("PeaksPlotProcessing");
+	}
+	
+	
 	void PeaksPlotProcessingConfig::DefaultInit()
 	{
 		AddAll();

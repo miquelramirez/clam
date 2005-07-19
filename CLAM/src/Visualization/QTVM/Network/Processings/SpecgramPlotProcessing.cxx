@@ -1,8 +1,18 @@
 #include "NetSpecgramPlot.hxx"
 #include "SpecgramPlotProcessing.hxx"
+#include "Factory.hxx"
+
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<SpecgramPlotProcessing> regtSpecgramPlotProcessing("SpecgramPlotProcessing");
+	}
+	
+	
 	void SpecgramPlotProcessingConfig::DefaultInit()
 	{
 		AddAll();

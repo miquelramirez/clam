@@ -22,7 +22,11 @@
 #include "SMSOddEvenHarmonicRatio.hxx"
 #include "Factory.hxx"
 
-using namespace CLAM;
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
+namespace CLAM
+{
 
 
 bool SMSOddEvenHarmonicRatio::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
@@ -42,5 +46,9 @@ bool SMSOddEvenHarmonicRatio::Do(const SpectralPeakArray& in, SpectralPeakArray&
 	return true;
 }
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<CLAM::SMSOddEvenHarmonicRatio> regtSMSOddEvenHarmonicRatio( "SMSOddEvenHarmonicRatio" );
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<SMSOddEvenHarmonicRatio> regtSMSOddEvenHarmonicRatio( "SMSOddEvenHarmonicRatio" );
+	}
+
+}

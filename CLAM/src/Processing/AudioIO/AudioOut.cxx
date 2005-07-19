@@ -21,9 +21,19 @@
 
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
+#include "Factory.hxx"
 
-using namespace CLAM;
 
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
+namespace CLAM
+{
+
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<AudioOut> regtAudioOut( "AudioOut" );
+	}
+	
 AudioOut::AudioOut() 
 	: mInput( "Audio Input", this )
 { 
@@ -101,4 +111,6 @@ bool AudioOut::Do()
 	bool res = Do(mInput.GetAudio());
 	mInput.Consume();;
 	return res;
+}
+
 }

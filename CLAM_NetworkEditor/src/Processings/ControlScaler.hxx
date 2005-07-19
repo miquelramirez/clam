@@ -38,12 +38,7 @@ class ControlScalerConfig : public ProcessingConfig
 		DYN_ATTRIBUTE ( 0, public, TData, Amount );
 
 	private:
-		void DefaultInit()
-		{
-			AddAll();
-			UpdateData();
-			SetAmount( 1.0 );
-		}
+		void DefaultInit();
 };
 
 class ControlScaler : public Processing
@@ -57,34 +52,14 @@ class ControlScaler : public Processing
 		const char *GetClassName() const { return "ControlScaler"; }
 
 
-		ControlScaler()
-		:
-		mInControl( "Control In", this ),
-		mOutControl( "Control Out", this )
-		{
-			Configure( mConfig );	
-		}
+		ControlScaler();
+		ControlScaler( const ControlScalerConfig& cfg );
 
-		ControlScaler( const ControlScalerConfig& cfg ) 
-		:
-		mInControl( "Control In", this ),
-		mOutControl( "Control Out", this )
-		{ 
-			Configure( cfg );
-		}
-
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) 
-		{ 
-			CopyAsConcreteConfig( mConfig, cfg );
-			return true; 
-		}
+		bool ConcreteConfigure( const ProcessingConfig& cfg ); 
 
 		const ProcessingConfig& GetConfig() const { return mConfig; }
 
-		bool Do()
-		{
-			return mOutControl.SendControl( mInControl.GetLastValue() * mConfig.GetAmount() );
-		}
+		bool Do();
 };
 
 }

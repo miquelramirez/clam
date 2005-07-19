@@ -112,7 +112,6 @@ namespace CLAM {
     };
 }
 
-// We include the default implementation here.
 #include "IFFT_rfftw.hxx"
 
 #endif // _IFFT

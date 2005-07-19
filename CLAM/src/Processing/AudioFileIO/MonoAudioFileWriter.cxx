@@ -22,9 +22,18 @@
 #include "MonoAudioFileWriter.hxx"
 #include "AudioCodecs_Stream.hxx"
 #include "FileSystem.hxx"
+#include "Factory.hxx"
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<MonoAudioFileWriter> regtMonoAudioFileWriter( "MonoAudioFileWriter" );
+	}
+	
+	
 	MonoAudioFileWriter::MonoAudioFileWriter()
 		: mInput( "Samples Write", this ),
 		  mOutStream( NULL )

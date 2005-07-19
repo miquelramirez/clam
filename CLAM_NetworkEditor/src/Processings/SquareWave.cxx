@@ -20,9 +20,19 @@
  */
 
 #include "SquareWave.hxx"
+#include "Factory.hxx"
+
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<SquareWave> regtSquareWave( "SquareWave" );
+	}
+	
+	
 
 // SquareWave controls enumeration
 

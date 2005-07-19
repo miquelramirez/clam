@@ -22,7 +22,8 @@
 #include "SMSFreqShift.hxx"
 #include "Factory.hxx"
 
-using namespace CLAM;
+namespace CLAM
+{
 
 
 bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out, bool preserveOuts)
@@ -46,6 +47,8 @@ bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out, bool 
 	return true;
 }
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+typedef Factory<Processing> ProcessingFactory;
 
-static ProcessingFactory::Registrator<CLAM::SMSFreqShift> regtFreqShift( "SMSFreqShift" );
+static ProcessingFactory::Registrator<SMSFreqShift> regtFreqShift( "SMSFreqShift" );
+
+}

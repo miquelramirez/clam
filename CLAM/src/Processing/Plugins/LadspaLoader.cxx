@@ -25,12 +25,17 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "Audio.hxx"
+#include "Factory.hxx"
 
-#include <iostream> // TODO: remove
 
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<LadspaLoader> regtLadspaLoader( "LadspaLoader" );
+	}
 
 LadspaPluginExaminer::LadspaPluginExaminer( const std::string & library )
 {

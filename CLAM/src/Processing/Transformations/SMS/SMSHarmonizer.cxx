@@ -22,8 +22,8 @@
 #include "SMSHarmonizer.hxx"
 #include "Factory.hxx"
 
-using namespace CLAM;
-
+namespace CLAM
+{
 
 
 bool SMSHarmonizer::Do(const Frame& in, Frame& out)
@@ -81,5 +81,7 @@ void SMSHarmonizer::Gain(Frame& inputFrame, TData gain)
 	}
 }
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<CLAM::SMSHarmonizer> regtSMSHarmonizer( "SMSHarmonizer" );
+typedef Factory<Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<SMSHarmonizer> regtSMSHarmonizer( "SMSHarmonizer" );
+
+}

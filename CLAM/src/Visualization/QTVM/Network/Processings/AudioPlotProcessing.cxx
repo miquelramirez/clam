@@ -1,8 +1,18 @@
 #include "NetAudioPlot.hxx"
 #include "AudioPlotProcessing.hxx"
+#include "Factory.hxx"
+
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<AudioPlotProcessing> regtAudioPlotProcessing("AudioPlotProcessing");
+	}
+	
+	
 	void AudioPlotProcessingConfig::DefaultInit()
 	{
 		AddAll();

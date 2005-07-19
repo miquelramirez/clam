@@ -22,7 +22,11 @@
 #include "SMSPitchShift.hxx"
 #include "Factory.hxx"
 
-using namespace CLAM;
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
+namespace CLAM
+{
 
 
 bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
@@ -109,6 +113,9 @@ bool SMSPitchShift::Do(const Frame& in, Frame& out)
 
 }
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+namespace detail
+{
+	static ProcessingFactory::Registrator<SMSPitchShift> regtSMSPitchShift( "SMSPitchShift" );
+}
 
-static ProcessingFactory::Registrator<CLAM::SMSPitchShift> regtSMSPitchShift( "SMSPitchShift" );
+}

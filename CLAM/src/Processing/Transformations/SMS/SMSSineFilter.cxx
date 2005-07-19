@@ -22,7 +22,10 @@
 #include "SMSSineFilter.hxx"
 #include "Factory.hxx"
 
-using namespace CLAM;
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
+namespace CLAM
+{
 
 
 bool SMSSineFilter::Do(const SpectralPeakArray& in, SpectralPeakArray& out) // TODO make this method take a WindowGenerator object as a parameter and use it as a way to modify the filters
@@ -48,5 +51,9 @@ bool SMSSineFilter::Do(const SpectralPeakArray& in, SpectralPeakArray& out) // T
 	return true;
 }
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<CLAM::SMSSineFilter> regtSMSSineFilter( "SMSSineFilter" );
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<SMSSineFilter> regtSMSSineFilter( "SMSSineFilter" );
+	}
+
+}

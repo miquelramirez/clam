@@ -21,8 +21,18 @@
 
 
 #include "ADSR.hxx"
+#include "Factory.hxx"
 
-using namespace CLAM;
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
+namespace CLAM
+{
+
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<ADSR> regtADSR( "ADSR" );
+	}
 
 void ADSRConfig::DefaultInit(void)
 {
@@ -207,5 +217,7 @@ bool ADSR::Do()
 	mOutput.Produce();
 	return res;
 
+
+}
 
 }
