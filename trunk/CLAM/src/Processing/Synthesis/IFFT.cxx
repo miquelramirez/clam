@@ -27,13 +27,6 @@
 
 namespace CLAM {
 
-	void IFFTConfig::DefaultInit(void)
-	{
-		AddAudioSize();
-		UpdateData();
-		SetAudioSize(0);
-	}
-
 	IFFT_base::IFFT_base() :
 		mSize(CLAM_DEFAULT_IFFT_SIZE),
 		mInput("Spectrum Input",this),

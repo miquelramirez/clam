@@ -1,7 +1,16 @@
 #include "FlagControl.hxx"
+#include "Factory.hxx"
+
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<FlagControl> regtFlagControl( "FlagControl" );
+	}
 
 void FlagControlConfig::DefaultInit(void)
 {

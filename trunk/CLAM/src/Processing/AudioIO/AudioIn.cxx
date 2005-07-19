@@ -21,8 +21,17 @@
 
 #include "AudioIn.hxx"
 #include "AudioManager.hxx"
+#include "Factory.hxx"
 
-using namespace CLAM;
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
+namespace CLAM
+{
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<AudioIn> regtAudioOut( "AudioIn" );
+	}
+
 
 bool AudioIn::ConcreteConfigure(const ProcessingConfig& c)
 {
@@ -80,4 +89,6 @@ bool AudioIn::Do()
 	bool res = Do(mOutput.GetAudio());
 	mOutput.Produce();
 	return res;
+}
+
 }

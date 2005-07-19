@@ -22,11 +22,18 @@
 #include "MultiChannelAudioFileReader.hxx"
 #include "AudioCodecs_Stream.hxx"
 #include "AudioOutPort.hxx"
-#include <sstream>
-#include <iostream>
+#include "Factory.hxx"
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<MultiChannelAudioFileReader> regtMultiChannelAudioFileReader( "MultiChannelAudioFileReader" );
+	}
+	
+	
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader()
 		: mNativeStream( NULL )
 	{

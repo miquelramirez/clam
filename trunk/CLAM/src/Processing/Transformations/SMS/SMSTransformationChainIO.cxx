@@ -22,7 +22,11 @@
 #include "SMSTransformationChainIO.hxx"
 #include "Factory.hxx"
 
-using namespace CLAM;
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
+namespace CLAM
+{
 
 
 bool SMSTransformationChainIO::Do(const Frame& in, Frame& out)
@@ -31,5 +35,9 @@ bool SMSTransformationChainIO::Do(const Frame& in, Frame& out)
 	return true;
 }
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<CLAM::SMSTransformationChainIO> regtSMSTransformationChainIO( "SMSTransformationChainIO" );
+namespace detail
+{
+	static ProcessingFactory::Registrator<SMSTransformationChainIO> regtSMSTransformationChainIO( "SMSTransformationChainIO" );
+}
+
+}

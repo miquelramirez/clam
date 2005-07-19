@@ -1,8 +1,19 @@
 #include "NetSpectrumPlot.hxx"
 #include "SpectrumPlotProcessing.hxx"
+#include "Factory.hxx"
+
+
+	typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<SpectrumPlotProcessing> regtSpectrumPlotProcessing("SpectrumPlotProcessing");
+	}
+	
+	
 	void SpectrumPlotProcessingConfig::DefaultInit()
 	{
 		AddAll();

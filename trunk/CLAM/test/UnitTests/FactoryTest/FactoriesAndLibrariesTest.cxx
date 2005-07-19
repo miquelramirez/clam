@@ -3,6 +3,8 @@
 #include <CLAM/Factory.hxx>
 #include <CLAM/Processing.hxx>
 
+	
+
 namespace CLAMTest
 {
 
@@ -24,10 +26,12 @@ public:
 
 private:
 
-	typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 	void testCreate_LibraryRegisteredProduct()
 	{
+
+		typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+		
 		ProcessingFactory& factory = ProcessingFactory::GetInstance();
 
 		CLAM::Processing* product = factory.Create("SimpleOscillator");

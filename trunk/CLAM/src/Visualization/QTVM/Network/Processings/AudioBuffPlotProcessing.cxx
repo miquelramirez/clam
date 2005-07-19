@@ -1,8 +1,18 @@
 #include "NetAudioBuffPlot.hxx"
 #include "AudioBuffPlotProcessing.hxx"
+#include "Factory.hxx"
+
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<AudioBuffPlotProcessing> regtAudioBuffPlotProcessing("AudioBuffPlotProcessing");
+	}
+
+	
 	void AudioBuffPlotProcessingConfig::DefaultInit()
 	{
 		AddAll();

@@ -22,9 +22,11 @@
 #ifndef _IFFTConfig_
 #define _IFFTConfig_
 
+
+#include "ProcessingConfig.hxx"
+
 namespace CLAM {
 
-	#include "ProcessingConfig.hxx"
 
 	/**
 	 * Config class for the IFFT Processing

@@ -37,12 +37,7 @@ class ControlPrinterConfig : public ProcessingConfig
 		DYN_ATTRIBUTE (0, public, std::string, Identifier);
 
 	private:
-		void DefaultInit()
-		{
-			AddAll();
-			UpdateData();
-			SetIdentifier( "Controlprinter" );
-		}
+		void DefaultInit();
 };
 
 class ControlPrinter : public Processing
@@ -55,36 +50,13 @@ class ControlPrinter : public Processing
 		const char *GetClassName() const { return "ControlPrinter"; }
 
 
-		ControlPrinter()
-		:
-		mInControl( "Control In", this )
-		{
-			Configure( mConfig );	
-		}
+		ControlPrinter();
+		ControlPrinter( const ControlPrinterConfig& cfg ); 
 
-		ControlPrinter( const ControlPrinterConfig& cfg ) 
-		:
-		mInControl( "Control In", this )
-		{ 
-			Configure( cfg );
-		}
-
-		bool ConcreteConfigure( const ProcessingConfig& cfg ) 
-		{ 
-			CopyAsConcreteConfig( mConfig, cfg );
-			return true; 
-		}
-
+		bool ConcreteConfigure( const ProcessingConfig& cfg ); 
 		const ProcessingConfig& GetConfig() const { return mConfig; }
 
-		bool Do()
-		{
-			std::cout 	<< mConfig.GetIdentifier() 
-						<< ": " 
-						<< mInControl.GetLastValue()
-						<< std::endl;
-			return true;
-		}
+		bool Do();
 };
 
 }

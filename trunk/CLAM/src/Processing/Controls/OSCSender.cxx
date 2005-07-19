@@ -20,9 +20,19 @@
  */
 
 #include "OSCSender.hxx"
+#include "Factory.hxx"
+
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<OSCSender> regtOSCSender( "OSCSender" );
+	}
+	
+	
 	int OSCSender::InputControlCB(TControlData val)
 	{
 		osc::OutboundPacketStream p( mBuffer, IP_MTU_SIZE);

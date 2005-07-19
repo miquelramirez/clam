@@ -18,13 +18,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include <iostream>
-#include <fstream>
 #include "SMSMorph.hxx"
 #include "Factory.hxx"
 #include "SpectrumConfig.hxx"
 
-using namespace CLAM;
+namespace CLAM
+{
 
 
 SMSMorph::SMSMorph():
@@ -374,5 +373,7 @@ void SMSMorph::SetSegmentToMorph(Segment& segmentToMorph)
 	mHaveInternalSegment=true;
 }
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<CLAM::SMSMorph> regtSMSMorph( "SMSMorph" );
+typedef Factory<Processing> ProcessingFactory;
+static ProcessingFactory::Registrator<SMSMorph> regtSMSMorph( "SMSMorph" );
+
+}
