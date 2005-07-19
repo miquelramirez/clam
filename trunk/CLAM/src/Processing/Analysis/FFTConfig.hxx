@@ -23,6 +23,8 @@
 #ifndef _FFTConfig_
 #define _FFTConfig_
 
+#include "ProcessingConfig.hxx"
+
 namespace CLAM {
 
 	/** Configuration class for FFT classes
