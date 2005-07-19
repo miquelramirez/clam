@@ -24,13 +24,18 @@
 #include "Fundamental.hxx"
 #include "SpectrumConfig.hxx"
 #include "SMSAnalysisCore.hxx"
+#include "Factory.hxx"
 
-// TODO: remove
-#include "XMLStorage.hxx"
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+	namespace detail 
+	{
+		static ProcessingFactory::Registrator<SMSAnalysisCore> regtSMSAnalysisCore( "SMSAnalysisCore" );
+	}
 
+	
 SMSAnalysisCore::SMSAnalysisCore()
 	: mInputAudio("Input Audio",this ),
 	mOutputResSpectrum("Residual Branch Spectrum",this ),

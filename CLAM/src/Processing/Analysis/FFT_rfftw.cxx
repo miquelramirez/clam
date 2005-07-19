@@ -25,11 +25,17 @@
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
+#include "Factory.hxx"
 
-#include <iostream> // TODO: remove
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM {
-
+	
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<FFT_rfftw> regtFFT_rfftw( "FFT_rfftw" );
+	}
 
 	bool FFT_rfftw::ConcreteConfigure(const ProcessingConfig& c)
 	{
