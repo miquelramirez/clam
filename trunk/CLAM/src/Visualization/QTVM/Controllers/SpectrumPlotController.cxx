@@ -138,19 +138,8 @@ namespace CLAM
 
 			if(!spFlags.bMagPhase)
 			{
-				// check for conversions
-				if(spFlags.bComplex)
-				{
-					mSpec.Complex2MagPhase();
-				}
-				else if(spFlags.bPolar)
-				{
-					mSpec.Polar2MagPhase();
-				}
-				else if(spFlags.bMagPhaseBPF)
-				{
-					mSpec.BPF2MagPhase();
-				}
+				SpecTypeFlags newFlags;
+				mSpec.SetTypeSynchronize(newFlags);
 			}
 			// convert to dB
 			mSpec.ToDB();
