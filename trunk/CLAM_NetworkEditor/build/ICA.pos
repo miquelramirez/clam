@@ -1,7 +1,0 @@
-800 600
-AudioOut_0	540 140	95 54
-AudioOut_1	553 271	95 54
-CrossMixer_1	353 186	107 54
-ICA_0	387 41	65 54
-MonoAudioFileReader_0	49 68	161 54
-MonoAudioFileReader_1	25 226	161 54
