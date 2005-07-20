@@ -301,6 +301,7 @@ def parseTestsFailures( testsOut ) :
 			assert False, 'error parsing tests failures'
 	if state == 'TESTS_INFO' :
 		summary += 'could not terminate!'
+		details = testsOut 
 	return summary, details
 
 def parseExecutionErrors( executionOut ) :
