@@ -1,4 +1,4 @@
-#include "qwidgetplugin.h"
+#include <qwidgetplugin.h>
 
 #include "NetAudioPlot.hxx"
 #include "NetSpectrumPlot.hxx"
