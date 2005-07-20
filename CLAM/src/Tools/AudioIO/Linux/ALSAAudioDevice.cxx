@@ -44,7 +44,7 @@ namespace CLAM {
 		int mReadBufSize;
 		Array<short> mReadBuf;
 
-		SndPcm* sndpcm;
+		SndPcm* mSndpcm;
 		std::string mDevice;
 
 		int HighestChannelID();
@@ -60,7 +60,8 @@ namespace CLAM {
 	};
 
 	ALSAAudioDevice::ALSAAudioDevice(const std::string& name,const std::string& device): 
-		AudioDevice(name)
+		AudioDevice(name), 
+		mSndpcm(0)
 	{
 		//printf("ALSAAudioDevice::ALSAAudioDevice\n");
 
@@ -74,7 +75,6 @@ namespace CLAM {
 		for (i=0;i<256;i++)
 			mChannelsRead[i] = false;
 			
-		sndpcm = 0;
 		mDevice = device;
 	}
 
@@ -119,19 +119,19 @@ namespace CLAM {
 		{
 			if ( HighestChannelID() + 1 != mNChannels)
 			{
-				if (sndpcm) {
-					sndpcm->Stop();
-					delete sndpcm;
-					sndpcm = 0;
+				if (mSndpcm) {
+					mSndpcm->Stop();
+					delete mSndpcm;
+					mSndpcm = 0;
 				}
 				mNChannels = HighestChannelID() + 1;
 			}
 		}
 
-		if (sndpcm==0)
+		if (mSndpcm==0)
 		{
 			try {
-				sndpcm = new ::SndPcm(SampleRate(),mNReadChannels,mNWriteChannels,Latency(),mDevice.c_str(),mDevice.c_str());
+				mSndpcm = new ::SndPcm(SampleRate(),mNReadChannels,mNWriteChannels,Latency(),mDevice.c_str(),mDevice.c_str());
 			}
 			catch (SndPcmError &e) {
 				Err ne("ALSAAudioDevice::Start(): Failed to create PCM device.");
@@ -141,7 +141,7 @@ namespace CLAM {
 			needs_start = true;
 		}
 
-		int bufSize = sndpcm->latency * mNChannels;
+		int bufSize = mSndpcm->latency * mNChannels;
 		mReadBuf.Resize(bufSize);
 		mWriteBuf.Resize(bufSize);
 		mReadBuf.SetSize(bufSize);
@@ -158,22 +158,22 @@ namespace CLAM {
 		mWriteBufSize = 0;
 
 		if (needs_start)
-			sndpcm->Start();
+			mSndpcm->Start();
 	}
 
 	void ALSAAudioDevice::Stop(void) throw(Err)
 	{
 		//printf("ALSAAudioDevice::Stop\n");
-		if (sndpcm) {
-			sndpcm->Stop();
+		if (mSndpcm) {
+			mSndpcm->Stop();
 		}
 	}
 	ALSAAudioDevice::~ALSAAudioDevice()
 	{
 		//printf("ALSAAudioDevice::~ALSAAudioDevice\n");
 		Stop();
-		if (sndpcm) {
-			delete sndpcm;
+		if (mSndpcm) {
+			delete mSndpcm;
 		}
 	}
 
@@ -189,20 +189,20 @@ namespace CLAM {
 		if (mChannelsRead[channelID]) 
 			throw Err("ALSAAudioDevice::Read(): Tried to read "
 				  "twice from a channel in a single time frame!");
-		if (!sndpcm)
+		if (!mSndpcm)
 			throw Err("ALSAAudioDevice::Read(): Device not configured.");
 		
 		if (mReadBufSize==0) mReadBufSize=audio.GetSize();
 		else{
 			CLAM_ASSERT(mReadBufSize==audio.GetSize(),"Inconsistent Audio size");
 		}
-		if (mReadBufSize>sndpcm->latency) 
+		if (mReadBufSize>mSndpcm->latency) 
 			throw Err("You are trying to read audio in blocks bigger than the latency");
 		
 		if (mNChannelsRead == 0)
 		{
-			sndpcm->Poll();
-			sndpcm->ReadBuf(mReadBuf.GetPtr(),mReadBufSize);
+			mSndpcm->Poll();
+			mSndpcm->ReadBuf(mReadBuf.GetPtr(),mReadBufSize);
 		}
 
 		n = mReadBufSize;
@@ -237,14 +237,14 @@ namespace CLAM {
 			CLAM_ASSERT(mWriteBufSize==audio.GetSize(),"Inconsistent Audio size");
 		}
 			
-		if (mWriteBufSize>sndpcm->latency) 
+		if (mWriteBufSize>mSndpcm->latency) 
 			throw Err("You are trying to write audio in blocks bigger than the latency");
 
 
 		if (mChannelsWritten[channelID])
 			throw Err("ALSAAudioDevice::Write(): Tried to write "
 					  "twice into a channel in a single time frame.");
-		if (!sndpcm)
+		if (!mSndpcm)
 			throw Err("ALSAAudioDevice::Write(): Device not configured.");
 
 		n = mWriteBufSize;
@@ -259,8 +259,8 @@ namespace CLAM {
 
 		if (mNChannelsWritten==mNWriteChannels)
 		{
-			if (mNReadChannels==0) sndpcm->Poll();
-			sndpcm->WriteBuf(mWriteBuf.GetPtr(),mWriteBufSize);
+			if (mNReadChannels==0) mSndpcm->Poll();
+			mSndpcm->WriteBuf(mWriteBuf.GetPtr(),mWriteBufSize);
 						
 			mNChannelsWritten = 0;
 			for (i=0;i<mNChannels;i++)
