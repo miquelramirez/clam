@@ -35,7 +35,6 @@ class QProgressDialog;
 class Annotator : public AnnotatorBase
 {
 	Q_OBJECT
-  
 
 public:
 	Annotator(const std::string & nameProject);
@@ -157,7 +156,7 @@ private:
 	bool mSegmentsChanged;
 	std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
 
-	int mCurrentIndex;     
+	int mCurrentIndex;
 
 	QVBoxLayout* mpTabLayout;
 	std::vector<QWidget*> mTabPages;
@@ -168,7 +167,7 @@ private:
 
 	QProgressDialog* mpProgressDialog;
 
-               
+
 };
 
 #endif
