@@ -32,7 +32,7 @@
 #include <qapplication.h>
 
 #include <cmath>
-#include <time.h>
+#include <ctime>
 #include "MainWindow.hxx"
 
 #ifdef Q_WS_X11
