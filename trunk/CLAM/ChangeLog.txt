@@ -1,5 +1,5 @@
 
-2005-06-07 CLAM_0_8_0
+2005-07-21 CLAM_0_8_0
 'Prototyper with streaming SMS transformations'
   * SMS Transformations on the network editor:
      ** All SMS Transformations have been refactored in order to work
@@ -29,23 +29,30 @@
         Vorbis bitstreams
   * Memory leak review:
      ** FFT internal buffer was not freed on destruction
-  * XercesC 2.6 is required in order to pass the tests and be memory
-    leak free (even 2.3 should be enough to compile and run CLAM).
-  * XML Storage Error Handling:
-     ** Catchable CLAM::XmlStorageErr excepetions are thrown whenever:
-        *** I/O error happens
-        *** Malformed XML is readed
-        *** Read elements or contents does not match with CLAM objects
-            structure
-        *** CLAM objects detect some semantic constraints.
-     ** This solves issue #0000022
-  * XPath (like) navegation:
-     ** The implementation of XmlStorage::Select allows using:
-        *** XmlStorage::AppendToDocument(object, path, filename)
-        *** XmlStorage::RestoreFromFragment(object, path, istream)
-        *** Using atomic primitives for doing some similar hacks like writing
-            fragments of the XML for an object to disk.
-     ** This solves issue #0000045
+  * XML related changes:
+     ** Now XmlStorage::Dump does indentation by default. A new optional
+        parameter disables indentation.
+     ** XercesC 2.6 is required in order to pass the tests and be memory
+        leak free (even 2.3 should be enough to compile and run CLAM).
+     ** XML Storage Error Handling (This solves issue #0000022):
+        *** Catchable CLAM::XmlStorageErr excepetions are thrown whenever:
+            **** I/O error happens
+            **** Malformed XML is readed
+            **** Read elements or contents does not match with CLAM objects
+                 structure
+            **** CLAM objects detect some semantic constraints.
+     ** XPath (like) navigation (This solves issue #0000045):
+        *** The implementation of XmlStorage::Select allows using:
+            **** XmlStorage::AppendToDocument(object, path, filename)
+            **** XmlStorage::RestoreFromFragment(object, path, istream)
+            **** Using atomic primitives for doing some similar hacks like
+                 writing fragments of the XML for an object to disk.
+     ** Alternative XML Backends (LibXml++)
+        *** Unification of the way XmlStorage interfaces the library dependant
+            code.
+        *** LibXml++ Backend implemented. It is planned to be the default
+            backend on future releases but still some work is needed to get
+            the error messages correctly reported.
   * Network refactoring:
      ** Published{In|Out}{Controls|Ports} -> {In|Out}{Control|Port}Registry
   * Descriptors:
@@ -54,11 +61,9 @@
   * Other:
      ** ConnectPorts overloaded to connect free ports (that is not belonging
         to any processing, normally used for injecting or extracting data)
-     ** Added processings implementing simple independent component analysis
-        (Original code contributed by Beiming Wang (QMUL))
   * Build System:
-     ** Changes in order to not abort ./configure script when some library is not 
-     found (and not specifyed with the --without-libname option)
+     ** Changes in order to not abort ./configure script when some library is 
+        not found (and not specifyed with the --without-libname option)
 
 
 2004-11-18 CLAM_0_7_0
