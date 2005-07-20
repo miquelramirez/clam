@@ -166,19 +166,10 @@ namespace CLAM
 
 			if(!spFlags.bMagPhase)
 			{
-				// check for conversions
-				if(spFlags.bComplex)
+				SpecTypeFlags newFlags;
+				for(TIndex i=0; i < mCacheData.Size(); i++) 
 				{
-					for(TIndex i=0; i < mCacheData.Size(); i++) mCacheData[i].Complex2MagPhase();
-		    
-				}
-				else if(spFlags.bPolar)
-				{
-					for(TIndex i=0; i < mCacheData.Size(); i++) mCacheData[i].Polar2MagPhase();
-				}
-				else if(spFlags.bMagPhaseBPF)
-				{
-					for(TIndex i=0; i < mCacheData.Size(); i++) mCacheData[i].BPF2MagPhase();
+					mCacheData[i].SetTypeSynchronize(newFlags);
 				}
 			}
 			// convert to dB
