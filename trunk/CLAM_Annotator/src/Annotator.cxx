@@ -403,25 +403,23 @@ void Annotator::addSongsToProject()
 
 void Annotator::fileOpen()
 {
-	QString qFileName;
-	qFileName = QFileDialog::getOpenFileName(QString::null,"*.pro");
-	if(qFileName != QString::null)
-	{
-		mProjectFileName = std::string(qFileName.ascii());
-		try
-		{
-			CLAM::XMLStorage::Restore(mProject,mProjectFileName);
-		}
-		catch (CLAM::XmlStorageErr e)
-		{
+	QString qFileName = QFileDialog::getOpenFileName(QString::null,"*.pro");
+	if(qFileName == QString::null) return;
 
-			QMessageBox::warning(this,"Error Loading Project File", 
-				constructFileError(mProjectFileName,e));
-			return;
-		}
-		initInterface();
-		initProject();
+	mProjectFileName = std::string(qFileName.ascii());
+	try
+	{
+		CLAM::XMLStorage::Restore(mProject,mProjectFileName);
 	}
+	catch (CLAM::XmlStorageErr e)
+	{
+
+		QMessageBox::warning(this,"Error Loading Project File", 
+			constructFileError(mProjectFileName,e));
+		return;
+	}
+	initInterface();
+	initProject();
 }
 
 void Annotator::fileNew()
@@ -456,19 +454,17 @@ void Annotator::fileSave()
 void Annotator::fileSaveAs()
 {
 	QString qFileName = QFileDialog::getSaveFileName(QString::null,"*.pro");
-	if(qFileName != QString::null)
-	{
-		mProjectFileName = std::string(qFileName.ascii());
-		fileSave();
-	}
+	if(qFileName == QString::null) return;
+
+	mProjectFileName = std::string(qFileName.ascii());
+	fileSave();
 }
 void  Annotator::loadSongList()
 {
-	QString qFileName;
-	qFileName = QFileDialog::getOpenFileName(QString::null,"*.sl");
-	if(qFileName != QString::null)
-	{
-		mProject.SetSongs(std::string(qFileName.ascii()));
+	QString qFileName = QFileDialog::getOpenFileName(QString::null,"*.sl");
+	if(qFileName == QString::null) return;
+
+	mProject.SetSongs(std::string(qFileName.ascii()));
 	try
 	{
 		CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
@@ -483,17 +479,16 @@ void  Annotator::loadSongList()
 	//TODO: Does loading the song list affect all this
 	initInterface();
 	initProject();
-	}
 }
 
 void  Annotator::loadSchema()
 {
-	QString qFileName;
-	qFileName = QFileDialog::getOpenFileName(QString::null,"*.sc");
+	QString qFileName = QFileDialog::getOpenFileName(QString::null,"*.sc");
 	if(qFileName == QString::null) return;
 
 	mProject.SetSchema(std::string(qFileName.ascii()));
-	try{
+	try
+	{
 		CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
 	}
 	catch (CLAM::XmlStorageErr e)
@@ -510,9 +505,9 @@ void  Annotator::loadSchema()
 
 void  Annotator::loadDescriptors()
 {
-	QString qFileName;
-	qFileName = QFileDialog::getOpenFileName(QString::null,"*.pool");
+	QString qFileName = QFileDialog::getOpenFileName(QString::null,"*.pool");
 	if(qFileName == QString::null) return;
+
 	mCurrentDescriptorsPoolFileName = (std::string(qFileName.ascii()));
 	try
 	{
@@ -629,7 +624,7 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 
 void Annotator::drawLLDescriptors(int index)
 {
-generateEnvelopesFromDescriptors();
+	generateEnvelopesFromDescriptors();
 
 	std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
 	for(int i=0; editors_it != mBPFEditors.end(); editors_it++, i++)
@@ -769,21 +764,23 @@ void Annotator::loadDescriptorPool()
 	mDescriptionScheme = CLAM::DescriptionScheme();//we need to initialize everything
 	for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
 	{
-		if((*it2).GetType()=="Float")
+		const std::string & name = it2->GetName();
+		const std::string & type = it2->GetType();
+		if(type=="Float")
 		{
-			mDescriptionScheme.AddAttribute <float>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <float>("Song",name);
 		}
-		else if((*it2).GetType()=="Int")
+		else if(type=="Int")
 		{
-			mDescriptionScheme.AddAttribute <int>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <int>("Song",name);
 		}
-		else if((*it2).GetType()=="RestrictedString")
+		else if(type=="RestrictedString")
 		{
-			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",name);
 		}
 		else
 		{
-			mDescriptionScheme.AddAttribute <std::string>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <std::string>("Song",name);
 		}
 	}
 	//And now LLD's  
