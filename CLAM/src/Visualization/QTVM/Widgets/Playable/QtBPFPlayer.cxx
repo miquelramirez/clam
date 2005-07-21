@@ -20,7 +20,6 @@ namespace CLAM
 			: QtMultiPlayer(parent)
 			, mThreadIsCancelled(false)
 			, mOwnedDuration(TData(0.0))
-			, mMustDoMapping(false)
 			, mPlaySimultaneously(false)
 		{
 			setFixedHeight(30);
@@ -41,9 +40,7 @@ namespace CLAM
 
 		void QtBPFPlayer::AddData(const std::string& key, const BPF& bpf)
 		{
-			mKeys.push(key);
-			mBPFs.push(bpf);
-			SetPitchBounds(bpf);
+			EnqueueData(key,bpf);
 			ProcessIncomingBPF();
 		}
 
@@ -59,18 +56,12 @@ namespace CLAM
 			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetDuration(mOwnedDuration);
 		}
 
-		void QtBPFPlayer::SetPitchBounds(const BPF& bpf)
+		void QtBPFPlayer::EnqueueData(const std::string& key, const BPF& bpf)
 		{
-			const double lowest = GetMinY(bpf);
-			const double highest = GetMaxY(bpf);
-			if(lowest >= min_ref && highest <= max_ref) 
-			{
-				mDoMapping.push(false);
-			}
-			else
-			{
-				mDoMapping.push(true);
-			}
+			const TData lowest = GetMinY(bpf);
+			const TData highest = GetMaxY(bpf);
+			bool do_mapping = (lowest >= min_ref && highest <= max_ref) ? false : true;
+			mEnqueuedData.push(DataInfo(key,bpf,lowest,highest,do_mapping));
 		}
 
 		Melody& QtBPFPlayer::GetMelody(const std::string& key)
@@ -241,13 +232,8 @@ namespace CLAM
 			// informative tooltip
 			QToolTip::add(this,"Please wait: disabled while building a huge melody.");
 			
-			mMustDoMapping = mDoMapping.front();
-
-			if(mMustDoMapping)
-			{
-			    mMinYValue = GetMinY(mOwnedBPF);
-			    mMaxYValue= GetMaxY(mOwnedBPF);
-			}
+			const BPF& currentBPF = mEnqueuedData.front().data;
+			const bool& mustDoMapping = mEnqueuedData.front().mapping;
 
 			Melody melody;
 			MIDIMelody midiMelody;
@@ -258,34 +244,36 @@ namespace CLAM
 			melody.SetNumberOfNotes(0);
 			midiMelody.SetNumberOfNotes(0);
 
-			if(mOwnedBPF.Size() && mOwnedDuration < mOwnedBPF.GetXValue(mOwnedBPF.Size()-1)) 
+			if(currentBPF.Size() && mOwnedDuration < currentBPF.GetXValue(currentBPF.Size()-1)) 
 			{
-				mOwnedDuration = mOwnedBPF.GetXValue(mOwnedBPF.Size()-1)+TData(0.2);
+				mOwnedDuration = currentBPF.GetXValue(currentBPF.Size()-1)+TData(0.2);
 			}
 			List<Note> notes;
 			List<MIDINote> midiNotes;
-			for(TIndex i=0; i < mOwnedBPF.Size(); i++)
+			for(TIndex i=0; i < currentBPF.Size(); i++)
 			{
 				if(mThreadIsCancelled) break;
 
 				MediaTime time;
 				Note note;
 				MIDINote midiNote;
-				time.SetBegin(mOwnedBPF.GetXValue(i));
-				if(i == mOwnedBPF.Size()-1)
+				time.SetBegin(currentBPF.GetXValue(i));
+				if(i == currentBPF.Size()-1)
 				{
 					time.SetEnd(mOwnedDuration);
 				}
 				else
 				{
-					time.SetEnd(mOwnedBPF.GetXValue(i+1));
+					time.SetEnd(currentBPF.GetXValue(i+1));
 				}
 
-				TData pitch = mOwnedBPF.GetValueFromIndex(i);
+				TData pitch = currentBPF.GetValueFromIndex(i);
 
-				if(mMustDoMapping)
+				if(mustDoMapping)
 				{
-					pitch = (pitch-mMinYValue)*(max_ref-min_ref)/(mMaxYValue-mMinYValue)+min_ref;
+					const TData& minYValue = mEnqueuedData.front().min;
+					const TData& maxYValue = mEnqueuedData.front().max;
+					pitch = (pitch-minYValue)*(max_ref-min_ref)/(maxYValue-minYValue)+min_ref;
 				}
 
 				if(pitch < min_ref)
@@ -314,14 +302,12 @@ namespace CLAM
 				midiMelody.SetNoteArray(midiNotes);
 				midiMelody.SetNumberOfNotes(midiNotes.Size()); 
 
-				std::string key = mKeys.front(); // get current key
+				const std::string& key = mEnqueuedData.front().key; // get current key
 				// set players' data
 				((MelodyPlayer*)mPlayers[MELODY_PLAYER])->AddData(key,melody,mOwnedDuration);
 				((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->AddData(key,midiMelody,mOwnedDuration);
-				// pop processed key/data
-				mKeys.pop();
-				mBPFs.pop();
-				mDoMapping.pop();
+				// pop processed data
+				mEnqueuedData.pop();
 			}
 			// remove informative tooltip
 			QToolTip::remove(this);
@@ -471,15 +457,13 @@ namespace CLAM
 		void QtBPFPlayer::ProcessIncomingBPF()
 		{
 			if(mThread.IsRunning() || mThreadIsCancelled) return;
-			mOwnedBPF = mBPFs.front();
 			mThread.Start();
 		}
 
 		void QtBPFPlayer::CheckPendent()
 		{
-			if(mBPFs.empty() || mThreadIsCancelled) return;
+			if(mEnqueuedData.empty() || mThreadIsCancelled) return;
 			mThread.Stop();
-			mOwnedBPF = mBPFs.front();
 			mThread.Start();
 		}
 
