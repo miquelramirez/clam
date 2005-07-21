@@ -32,6 +32,7 @@ using namespace osc;
 namespace CLAM
 {
 	OSCEnabledNetwork::OSCEnabledNetwork(const int port)
+		: mListenerPort(NULL)
 	{
 		// The constructor call is not needed as it is automatically summoned
 		//Network::Network();
@@ -55,7 +56,8 @@ namespace CLAM
 	
 	void OSCEnabledNetwork::StopListeningOSC()
 	{
-		delete mListenerPort;
+		if (mListenerPort != NULL)
+			delete mListenerPort;
 		TerminateNetworking();
 		mListeningOSC=false;
 	}
