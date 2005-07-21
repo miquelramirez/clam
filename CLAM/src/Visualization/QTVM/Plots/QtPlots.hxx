@@ -75,6 +75,7 @@
  * - CLAM::VM::PlotSpectrum
  * - CLAM::VM::PlotSpectrumAndPeaks
  * - CLAM::VM::DPMultiPlot
+ * - CLAM::VM::MultiBPFViewer
  *
  * Viewing audio data with a DirectPlot could be done as follows:
  @code 
