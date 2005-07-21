@@ -195,6 +195,9 @@ if not clam_env.GetOption('clean') :
 # install dirs composition
 compose_install_dirnames(clam_env)
 
+if clam_env.GetOption('clean') :
+	os.remove('header.db')
+
 #building
 
 core_tgt, core_install_tgt = SConscript('core/SConscript')
