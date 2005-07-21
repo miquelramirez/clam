@@ -413,13 +413,14 @@ namespace CLAM
 
 			connect(mController,SIGNAL(selectedXPos(double)),this,SIGNAL(selectedXPos(double)));
 
+			connect(mController,SIGNAL(rightButtonPressed()),this,SLOT(showPopupMenu()));
+
 			if(mPlayer)
 			{
 				connect(mController,SIGNAL(xValueChanged(int, float)),((QtBPFPlayer*)mPlayer),SLOT(updateNoteDuration(int, float)));
 				connect(mController,SIGNAL(yValueChanged(int, float)),((QtBPFPlayer*)mPlayer),SLOT(updateNotePitch(int, float)));
 				connect(mController,SIGNAL(elementAdded(int, float, float)),((QtBPFPlayer*)mPlayer),SLOT(addNote(int, float, float)));
 				connect(mController,SIGNAL(elementRemoved(int)),((QtBPFPlayer*)mPlayer),SLOT(removeNote(int)));
-				connect(mController,SIGNAL(rightButtonPressed()),this,SLOT(showPopupMenu()));
 				connect(mController,SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
 				connect(mController,SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
 			}
