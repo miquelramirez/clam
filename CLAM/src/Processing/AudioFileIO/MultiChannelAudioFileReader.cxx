@@ -115,23 +115,18 @@ namespace CLAM
 						       mConfig.GetSelectedChannels().Size(),
 						       mSamplesMatrix.GetPtr(),
 						       sizeTmp );
-
-		if ( mNativeStream->WasSomethingRead() )
+		// Audio 'simple meta-data' setup
+		
+		for ( OutputVec::iterator i = outputs.begin();
+				i != outputs.end(); i++ )
 		{
-			// Audio 'simple meta-data' setup
-			
-			for ( OutputVec::iterator i = outputs.begin();
-			      i != outputs.end(); i++ )
-			{
-				(*i).SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
-				(*i).SetBeginTime( mCurrentBeginTime );
-			}
-			
-			
-			mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
-			mCurrentBeginTime += mDeltaTime;
-			
+			(*i).SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+			(*i).SetBeginTime( mCurrentBeginTime );
 		}
+		
+		
+		mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
+		mCurrentBeginTime += mDeltaTime;	
 		
 		return mNativeStream->WasSomethingRead();
 
@@ -191,22 +186,19 @@ namespace CLAM
 						       mSamplesMatrix.GetPtr(),
 						       sizeTmp );
 
-		if ( mNativeStream->WasSomethingRead() )
+		// Audio 'simple meta-data' setup
+		
+		for ( OutRefsVector::iterator i = outRefs.begin();
+				i != outRefs.end(); i++ )
 		{
-			// Audio 'simple meta-data' setup
-			
-			for ( OutRefsVector::iterator i = outRefs.begin();
-			      i != outRefs.end(); i++ )
-			{
-				(*i)->SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
-				(*i)->SetBeginTime( mCurrentBeginTime );
-			}
-			
-			
-			mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
-			mCurrentBeginTime += mDeltaTime;
-			
+			(*i)->SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+			(*i)->SetBeginTime( mCurrentBeginTime );
 		}
+		
+		
+		mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
+		mCurrentBeginTime += mDeltaTime;
+			
 		
 		for ( OutputVector::iterator i = mOutputs.begin();
 		      i!= mOutputs.end(); i++ )
@@ -325,6 +317,8 @@ namespace CLAM
 
 	bool MultiChannelAudioFileReader::ConcreteStart()
 	{
+		if (mNativeStream == NULL) 
+			mNativeStream = mConfig.GetSourceFile().GetStream();
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
 		mEOFReached = false;

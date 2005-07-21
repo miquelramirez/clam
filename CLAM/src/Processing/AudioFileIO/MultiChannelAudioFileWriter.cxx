@@ -238,6 +238,8 @@ namespace CLAM
 
 	bool MultiChannelAudioFileWriter::ConcreteStart()
 	{
+		if (mNativeStream == NULL )
+			mNativeStream = mConfig.GetTargetFile().GetStream();
 		mNativeStream->PrepareWriting();
 
 		return true;
