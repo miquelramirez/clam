@@ -23,7 +23,6 @@
 #define __MIDIDISPATCHER__
 
 #include "Array.hxx"
-#include "Instrument.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
 
@@ -40,14 +39,7 @@ namespace CLAM
 		DYN_ATTRIBUTE ( 1, public, int, NumberOfVoices );
 
 	protected:
-		void DefaultInit(void)
-		{
-			AddNumberOfVoices();
-			AddNumberOfInControls();
-			UpdateData();
-			SetNumberOfVoices( 2 );
-			SetNumberOfInControls( 2 );
-		}
+		void DefaultInit(void);
 	};
 
 	class MIDIDispatcher : public Processing
@@ -69,8 +61,6 @@ namespace CLAM
 		};
 
 		MIDIDispatcherConfig                      mConfig;
-//		Array< Instrument* >                  mInstruments;
-//		Array< OutControl* >                  mValuesOut;
 		InControlTmpl< MIDIDispatcher >           mStateIn;
 		InControlTmpl< MIDIDispatcher >           mNoteIn;
 		InControlTmpl< MIDIDispatcher >           mVelocityIn;
@@ -83,27 +73,10 @@ namespace CLAM
 	protected:
 
 		int UpdateState( TControlData availableInstr )
-		{
-			std::cout << "MD - State updated: " << availableInstr << std::endl;
-			std::list<VoiceStatus>::iterator it;
-
-			for (it=mVoiceStatusList.begin();it!=mVoiceStatusList.end();it++)
-			{
-				if ((*it).mId == availableInstr)
-				{
-					mVoiceStatusList.erase(it);
-					VoiceStatus status = { -1,-1, int(availableInstr) };
-					mVoiceStatusList.push_front(status);
-					return 0;
-				}
-			}
-			return 0;
-		}
 
 
 		int UpdateVel( TControlData value )
 		{
-			std::cout << "MD - Velocity updated: " << value << std::endl;
 			mVelocity = value;
 
 			return 0;
@@ -112,7 +85,6 @@ namespace CLAM
 
 		int UpdateNote( TControlData value )
 		{
-			std::cout << "MD - Note updated: " << value << std::endl;
 			mNote = value;
 			Dispatch();
 
@@ -123,27 +95,8 @@ namespace CLAM
 
 	public:
 
-		MIDIDispatcher()
-			:
-		  mStateIn("StateIn",this,&MIDIDispatcher::UpdateState),
-		  mNoteIn( "Note", this, &MIDIDispatcher::UpdateNote ),
-		  mVelocityIn( "Velocity", this, &MIDIDispatcher::UpdateVel ),
-		  mVelocity( 0 ),
-		  mNote( 0 )
-		{
-			Configure( mConfig );
-		}
-
-		MIDIDispatcher( const MIDIDispatcherConfig& cfg ) 
-			:
-		  mStateIn("",this,&MIDIDispatcher::UpdateState),
-		  mNoteIn( "Note", this, &MIDIDispatcher::UpdateNote ),
-		  mVelocityIn( "Velocity", this, &MIDIDispatcher::UpdateVel ),
-		  mVelocity( 0 ),
-		  mNote( 0 )
-		{
-			  Configure( cfg );
-		}
+		MIDIDispatcher();
+		MIDIDispatcher( const MIDIDispatcherConfig& cfg );
 
 		bool ModifiesPortsAndControlsAtConfiguration() { return true; }
 

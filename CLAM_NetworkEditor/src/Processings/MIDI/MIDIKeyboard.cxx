@@ -4,8 +4,16 @@
 #include "Factory.hxx"
 #include "MIDIKeyboard.hxx"
 
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
 namespace CLAM 
 {
+
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<CLAM::MIDIKeyboard> regtMIDIKeyboard( "MIDIKeyboard" );
+	}
 
 void MIDIKeyboardConfig::DefaultInit(void)
 {
@@ -117,8 +125,6 @@ bool MIDIKeyboard::ConfigureAndCheck( Processing& p, ProcessingConfig& cfg )
 	return configurationOk; 
 }
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<CLAM::MIDIKeyboard> regtMIDIKeyboard( "MIDIKeyboard" );
 
 } // namespace CLAM 
 
