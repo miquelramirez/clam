@@ -20,9 +20,53 @@ namespace CLAM
     {
 		class QtBPFPlayer : public QtMultiPlayer
 		{
-			typedef std::queue<std::string> Q_Keys;
-			typedef std::queue<BPF>         Q_BPFs;
-			typedef std::queue<bool>        Q_Maps;
+			struct DataInfo
+			{
+				std::string key;
+				BPF         data;
+				TData       min;
+				TData       max;
+				bool        mapping;
+
+				DataInfo()
+					: key("default")
+					, min(TData(0.0))
+					, max(TData(1.0))
+					, mapping(false)
+					{
+					}
+				DataInfo(const std::string& key_, 
+						 const BPF& bpf_, 
+						 const TData& min_, 
+						 const TData& max_, 
+						 const bool& mapping_)
+					: key(key_)
+					, data(bpf_)
+					, min(min_)
+					, max(max_)
+					, mapping(mapping_)
+					{
+					}
+				DataInfo(const DataInfo& dataInfo)
+					: key(dataInfo.key)
+					, data(dataInfo.data)
+					, min(dataInfo.min)
+					, max(dataInfo.max)
+					, mapping(dataInfo.mapping)
+					{
+					}
+				DataInfo& operator=(const DataInfo& dataInfo)
+					{
+						key = dataInfo.key;
+						data = dataInfo.data;
+						min = dataInfo.min;
+						max = dataInfo.max;
+						mapping = dataInfo.mapping;
+						return *this;
+					}
+			};
+
+			typedef std::queue<DataInfo> IncomingData;
 
 			Q_OBJECT
 		public:
@@ -64,12 +108,8 @@ namespace CLAM
 		private:
 			Thread mThread;
 			bool   mThreadIsCancelled;
-			BPF    mOwnedBPF;
 			TData  mOwnedDuration;
-			bool   mMustDoMapping;
 			bool   mPlaySimultaneously;
-			TData  mMinYValue;
-			TData  mMaxYValue;
 
 			QFrame *radioPanel,*midiSettingsPanel;
 			QRadioButton *mPlayAudio, *mPlayMIDI;
@@ -78,9 +118,7 @@ namespace CLAM
 			std::vector<int>         mMIDIPrograms;
 			std::vector<std::string> mMIDIDevices;
 
-			Q_Keys mKeys;
-			Q_BPFs mBPFs;
-			Q_Maps mDoMapping;
+			IncomingData mEnqueuedData;
 
 			enum { MELODY_PLAYER=0, MIDI_PLAYER };
 	    
@@ -97,7 +135,7 @@ namespace CLAM
 			TData GetMinY(const BPF& bpf);
 			TData GetMaxY(const BPF& bpf);
 			
-			void SetPitchBounds(const BPF& bpf);
+			void EnqueueData(const std::string& key, const BPF& bpf);
 
 		};
     }
