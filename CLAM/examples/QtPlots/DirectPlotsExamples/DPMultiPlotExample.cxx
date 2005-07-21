@@ -30,6 +30,8 @@ using CLAM::VM::DPMultiPlot;
 
 int main()
 {
+	const double PI = 3.14159265359;
+
 	DataArray sig0;
 	DataArray sig1;
 	sig0.Resize(11025);
