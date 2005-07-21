@@ -67,7 +67,7 @@ namespace CLAMTest
 
 		void setUp()
 		{
-			mPathToTestData = GetTestDataDirectory("spectralData/");
+			mPathToTestData = GetTestDataDirectory("");
 		}
 
 		void tearDown()
@@ -306,21 +306,18 @@ namespace CLAMTest
 
 			proc.Configure( cfg );
 			
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 256 );
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 256 );
-
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			proc.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
+			std::vector<CLAM::Audio> samples(2);
+			for ( int k = 0; k < 2; k++ )
+				samples[k].SetSize(256);
+			
 
 			proc.Start();
-			proc.Do();
+			proc.Do(samples);
 			proc.Stop();
 
 			double similarityLeft = 0.0, similarityRight = 0.0;
 
-			fileSimilarity( file, readSamplesLeft, readSamplesRight,
+			fileSimilarity( file, samples[0], samples[1],
 					similarityLeft, similarityRight );
 						
 			CPPUNIT_ASSERT(  similarityLeft  >= 0.9999 );
@@ -341,49 +338,45 @@ namespace CLAMTest
 			proc.Configure( cfg );
 			
 
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 256 );
+			std::vector<CLAM::Audio> samples(2);
+			for ( int k = 0; k < 2; k++ )
+				samples[k].SetSize(256);
+			
+			
 
 			CLAM::DataArray prevLeftSamples;
 			prevLeftSamples.Resize( 256 );
 			prevLeftSamples.SetSize( 256 );
 
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 256 );
-
 			CLAM::DataArray prevRightSamples;
 			prevRightSamples.Resize( 256 );
 			prevRightSamples.SetSize( 256 );
 
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			proc.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
-
-
 			proc.Start();
 
-			proc.Do();
+			proc.Do(samples);
 			
 			// Save this frame to arrays
-			std::copy( readSamplesLeft.GetBuffer().GetPtr(),
-				   readSamplesLeft.GetBuffer().GetPtr() 
-				   + readSamplesLeft.GetBuffer().Size(),
+			std::copy( samples[0].GetBuffer().GetPtr(),
+				   samples[0].GetBuffer().GetPtr() 
+				   + samples[0].GetBuffer().Size(),
 				   prevLeftSamples.GetPtr() );
 			
-			std::copy( readSamplesRight.GetBuffer().GetPtr(),
-				   readSamplesRight.GetBuffer().GetPtr()
-				   + readSamplesRight.GetBuffer().Size(),				   
+			std::copy( samples[1].GetBuffer().GetPtr(),
+				   samples[1].GetBuffer().GetPtr()
+				   + samples[1].GetBuffer().Size(),				   
 				   prevRightSamples.GetPtr() );
 
 			// call the Do again
-			proc.Do();
+			proc.Do(samples);
 
 			proc.Stop();
 
 			double similarityLeft = 0.0, similarityRight = 0.0;
 
-			similarityLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(),
+			similarityLeft = evaluateSimilarity( samples[0].GetBuffer(),
 							     prevLeftSamples );
-			similarityRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
+			similarityRight = evaluateSimilarity( samples[1].GetBuffer(),
 							      prevRightSamples );
 		       
 
@@ -405,24 +398,21 @@ namespace CLAMTest
 			CLAM::MultiChannelAudioFileReader proc;
 
 			proc.Configure( cfg );
+		
+			std::vector<CLAM::Audio> samples(2);
 			
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 256 );
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 256 );
-
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			proc.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );	
+			samples[0].SetSize( 256 );
+			samples[1].SetSize( 256 );
 
 			proc.Start();
-			proc.Do();
+			proc.Do(samples);
 			proc.Stop();
 
 			
 			CPPUNIT_ASSERT_EQUAL( file.GetHeader().GetSampleRate(),
-					      readSamplesLeft.GetSampleRate() );
+					      samples[0].GetSampleRate() );
 			CPPUNIT_ASSERT_EQUAL( file.GetHeader().GetSampleRate(),
-					      readSamplesRight.GetSampleRate() );
+					      samples[1].GetSampleRate() );
 		}
 
 		void testDo_JustTwoFrames_BeginTimesAreOK()
@@ -436,43 +426,40 @@ namespace CLAMTest
 			CLAM::MultiChannelAudioFileReader proc;
 
 			proc.Configure( cfg );
+		
+			std::vector<CLAM::Audio> samples(2);
 			
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 256 );
+			samples[0].SetSize( 256 );
 
 			CLAM::TTime firstLeftBeginTime = 0.0;
 
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 256 );
+			samples[1].SetSize( 256 );
 
 			CLAM::TTime firstRightBeginTime = 0.0;
 
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			proc.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
-			
 			proc.Start();
 
-			proc.Do();
+			proc.Do(samples);
 			
 			// Save Begin Time's
 
-			firstLeftBeginTime = readSamplesLeft.GetBeginTime();
-			firstRightBeginTime = readSamplesRight.GetBeginTime();
+			firstLeftBeginTime = samples[0].GetBeginTime();
+			firstRightBeginTime = samples[1].GetBeginTime();
 
 			// call the Do again
-			proc.Do();
+			proc.Do(samples);
 
 			proc.Stop();
 
-			CLAM::TTime truthLeft = CLAM::TTime( readSamplesLeft.GetSize() ) / file.GetHeader().GetSampleRate();
-			CLAM::TTime yieldLeft = readSamplesLeft.GetBeginTime() - firstLeftBeginTime; 
+			CLAM::TTime truthLeft = CLAM::TTime( samples[0].GetSize() ) / file.GetHeader().GetSampleRate();
+			CLAM::TTime yieldLeft = samples[0].GetBeginTime() - firstLeftBeginTime; 
 
 			CPPUNIT_ASSERT( fabs( truthLeft - yieldLeft ) < 1e-4 );
 
-			CLAM::TTime truthRight = CLAM::TTime( readSamplesRight.GetSize() ) / file.GetHeader().GetSampleRate(); 
-			CLAM::TTime yieldRight = readSamplesRight.GetBeginTime() - firstRightBeginTime;
+			CLAM::TTime truthRight = CLAM::TTime( samples[1].GetSize() ) / file.GetHeader().GetSampleRate(); 
+			CLAM::TTime yieldRight = samples[1].GetBeginTime() - firstRightBeginTime;
 			
-			CPPUNIT_ASSERT( fabs( truthRight - truthLeft ) < 1e-4 );
+			CPPUNIT_ASSERT( fabs( truthRight - yieldRight ) < 1e-4 );
 
 		}
 
@@ -488,21 +475,17 @@ namespace CLAMTest
 
 			proc.Configure( cfg );
 			
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 256 );
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 256 );
-
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			proc.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
+			std::vector<CLAM::Audio> samples(2);
+			samples[0].SetSize( 256 );
+			samples[1].SetSize( 256 );
 
 			proc.Start();
-			proc.Do();
+			proc.Do(samples);
 			proc.Stop();
 
 			double similarityLeft = 0.0, similarityRight = 0.0;
 
-			fileSimilarity( file, readSamplesLeft, readSamplesRight,
+			fileSimilarity( file, samples[0], samples[1],
 					similarityLeft, similarityRight );
 						
 			CPPUNIT_ASSERT(  similarityLeft  >= 0.9999 );
@@ -522,50 +505,44 @@ namespace CLAMTest
 
 			proc.Configure( cfg );
 			
-
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 256 );
+			std::vector<CLAM::Audio> samples(2);
+			samples[0].SetSize( 256 );
 
 			CLAM::DataArray prevLeftSamples;
 			prevLeftSamples.Resize( 256 );
 			prevLeftSamples.SetSize( 256 );
 
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 256 );
+			samples[1].SetSize( 256 );
 
 			CLAM::DataArray prevRightSamples;
 			prevRightSamples.Resize( 256 );
 			prevRightSamples.SetSize( 256 );
 
-			proc.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			proc.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
-
-
 			proc.Start();
 
-			proc.Do();
+			proc.Do(samples);
 			
 			// Save this frame to arrays
-			std::copy( readSamplesLeft.GetBuffer().GetPtr(),
-				   readSamplesLeft.GetBuffer().GetPtr() 
-				   + readSamplesLeft.GetBuffer().Size(),
+			std::copy( samples[0].GetBuffer().GetPtr(),
+				   samples[0].GetBuffer().GetPtr() 
+				   + samples[0].GetBuffer().Size(),
 				   prevLeftSamples.GetPtr() );
 			
-			std::copy( readSamplesRight.GetBuffer().GetPtr(),
-				   readSamplesRight.GetBuffer().GetPtr()
-				   + readSamplesRight.GetBuffer().Size(),				   
+			std::copy( samples[1].GetBuffer().GetPtr(),
+				   samples[1].GetBuffer().GetPtr()
+				   + samples[1].GetBuffer().Size(),				   
 				   prevRightSamples.GetPtr() );
 
 			// call the Do again
-			proc.Do();
+			proc.Do(samples);
 
 			proc.Stop();
 
 			double similarityLeft = 0.0, similarityRight = 0.0;
 
-			similarityLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(),
+			similarityLeft = evaluateSimilarity( samples[0].GetBuffer(),
 							     prevLeftSamples );
-			similarityRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
+			similarityRight = evaluateSimilarity( samples[1].GetBuffer(),
 							      prevRightSamples );
 
 			// MRJ: In Windows this is giving out very strange values
@@ -586,18 +563,10 @@ namespace CLAMTest
 		{
 			CLAM::AudioFile inputFile;
 
-			inputFile.OpenExisting( mPathToTestData + "trumpet.wav");
-			CLAM_ASSERT( inputFile.IsReadable(), "collons, amb wav tampoc");
-			
-			inputFile.OpenExisting(std::string(mPathToTestData+"test-stereo-decoding-128_44.mp3"));
-			CLAM_ASSERT( inputFile.IsReadable(), "absolute path to : test-stereo-decoding-128_44.mp3" );
-
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-128_44.mp3" ) );
 			CLAM_ASSERT( inputFile.IsReadable(), "can't find: test-stereo-decoding-128_44.mp3" );
 
 			CLAM::AudioFile outputFile;
-			outputFile.OpenExisting( "test-mp3-128-44.wav" );			
-
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
@@ -621,17 +590,9 @@ namespace CLAMTest
 					      procWriter.Configure( cfgWriter ) );
 
 
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 4096 );
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 4096 );
-
-
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
-
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+			std::vector<CLAM::Audio> samples(2);
+			samples[0].SetSize( 4096 );
+			samples[1].SetSize( 4096 );
 
 
 			procReader.Start();
@@ -639,11 +600,11 @@ namespace CLAMTest
 
 			CLAM::TSize framesRead = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(samples) )
 			{
 				framesRead++;
 
-				procWriter.Do();
+				procWriter.Do(samples);
 			}
 
 			procReader.Stop();
@@ -657,13 +618,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
-			CLAM::Audio readSamplesLeft2;
-			readSamplesLeft2.SetSize( 4096 );
-			CLAM::Audio readSamplesRight2;
-			readSamplesRight2.SetSize( 4096 );
+			std::vector<CLAM::Audio> samples2(2);
+			samples2[0].SetSize( 4096 );
+			samples2[1].SetSize( 4096 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
-			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
 			
 			procReader.Start();
 			procReader2.Start();
@@ -683,14 +641,14 @@ namespace CLAMTest
 			double averageSimRight = 0.0;
 
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(samples) && procReader2.Do(samples2) )
 			{
 				framesChecked++;
-				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
-								     readSamplesLeft2.GetBuffer() );
+				double simLeft = evaluateSimilarity( samples[0].GetBuffer(), 
+								     samples2[0].GetBuffer() );
 
-				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
-								      readSamplesRight2.GetBuffer() );
+				double simRight = evaluateSimilarity( samples[1].GetBuffer(),
+								      samples2[1].GetBuffer() );
 
 
 				if ( simLeft > maxSimLeft )
@@ -765,8 +723,6 @@ namespace CLAMTest
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-192_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.OpenExisting( "test-mp3-192-44.wav" );			
-
 			CLAM::AudioFileHeader outputFileHeader;
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    inputFile.GetHeader().GetChannels(),
@@ -788,17 +744,10 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 4096 );
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 4096 );
-
-
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
-
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+			std::vector<CLAM::Audio> samples(2);
+			
+			samples[0].SetSize( 4096 );
+			samples[1].SetSize( 4096 );
 
 
 			procReader.Start();
@@ -806,11 +755,11 @@ namespace CLAMTest
 
 			CLAM::TSize framesRead = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(samples) )
 			{
 				framesRead++;
 
-				procWriter.Do();
+				procWriter.Do(samples);
 			}
 
 			procReader.Stop();
@@ -824,14 +773,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
-			CLAM::Audio readSamplesLeft2;
-			readSamplesLeft2.SetSize( 4096 );
-			CLAM::Audio readSamplesRight2;
-			readSamplesRight2.SetSize( 4096 );
+			std::vector<CLAM::Audio> samples2(2);
+			samples2[0].SetSize( 4096 );
+			samples2[1].SetSize( 4096 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
-			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
-			
 			procReader.Start();
 			procReader2.Start();
 
@@ -850,14 +795,14 @@ namespace CLAMTest
 			double averageSimRight = 0.0;
 
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(samples) && procReader2.Do(samples2) )
 			{
 				framesChecked++;
-				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
-								     readSamplesLeft2.GetBuffer() );
+				double simLeft = evaluateSimilarity( samples[0].GetBuffer(), 
+								     samples2[0].GetBuffer() );
 
-				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
-								      readSamplesRight2.GetBuffer() );
+				double simRight = evaluateSimilarity( samples[1].GetBuffer(),
+								      samples2[1].GetBuffer() );
 
 
 				if ( simLeft > maxSimLeft )
@@ -933,8 +878,6 @@ namespace CLAMTest
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-64_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.OpenExisting( "test-mp3-64-44.wav" );			
-
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
@@ -957,17 +900,9 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 4096 );
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 4096 );
-
-
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
-
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+			std::vector<CLAM::Audio> samples(2);
+			samples[0].SetSize( 4096 );
+			samples[1].SetSize( 4096 );
 
 
 			procReader.Start();
@@ -975,11 +910,11 @@ namespace CLAMTest
 
 			CLAM::TSize framesRead = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(samples) )
 			{
 				framesRead++;
 
-				procWriter.Do();
+				procWriter.Do(samples);
 			}
 
 			procReader.Stop();
@@ -993,14 +928,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
-			CLAM::Audio readSamplesLeft2;
-			readSamplesLeft2.SetSize( 4096 );
-			CLAM::Audio readSamplesRight2;
-			readSamplesRight2.SetSize( 4096 );
+			std::vector<CLAM::Audio> samples2(2);
+			samples2[0].SetSize( 4096 );
+			samples2[1].SetSize( 4096 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
-			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
-			
 			procReader.Start();
 			procReader2.Start();
 
@@ -1019,14 +950,14 @@ namespace CLAMTest
 			double averageSimRight = 0.0;
 
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(samples) && procReader2.Do(samples2) )
 			{
 				framesChecked++;
-				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
-								     readSamplesLeft2.GetBuffer() );
+				double simLeft = evaluateSimilarity( samples[0].GetBuffer(), 
+								     samples2[0].GetBuffer() );
 
-				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
-								      readSamplesRight2.GetBuffer() );
+				double simRight = evaluateSimilarity( samples[1].GetBuffer(),
+								      samples2[1].GetBuffer() );
 
 
 				if ( simLeft > maxSimLeft )
@@ -1101,8 +1032,6 @@ namespace CLAMTest
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-320_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.OpenExisting( "test-mp3-320-44.wav" );			
-
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
@@ -1124,17 +1053,9 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 4096 );
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 4096 );
-
-
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
-
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+			std::vector<CLAM::Audio> samples(2);
+			samples[0].SetSize( 4096 );
+			samples[1].SetSize( 4096 );
 
 
 			procReader.Start();
@@ -1142,11 +1063,11 @@ namespace CLAMTest
 
 			CLAM::TSize framesRead = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(samples) )
 			{
 				framesRead++;
 
-				procWriter.Do();
+				procWriter.Do(samples);
 			}
 
 			procReader.Stop();
@@ -1160,13 +1081,9 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
-			CLAM::Audio readSamplesLeft2;
-			readSamplesLeft2.SetSize( 4096 );
-			CLAM::Audio readSamplesRight2;
-			readSamplesRight2.SetSize( 4096 );
-
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
-			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
+			std::vector<CLAM::Audio> samples2(2);
+			samples2[0].SetSize( 4096 );
+			samples2[1].SetSize( 4096 );
 			
 			procReader.Start();
 			procReader2.Start();
@@ -1186,14 +1103,14 @@ namespace CLAMTest
 			double averageSimRight = 0.0;
 
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(samples) && procReader2.Do(samples2) )
 			{
 				framesChecked++;
-				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
-								     readSamplesLeft2.GetBuffer() );
+				double simLeft = evaluateSimilarity( samples[0].GetBuffer(), 
+								     samples2[0].GetBuffer() );
 
-				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
-								      readSamplesRight2.GetBuffer() );
+				double simRight = evaluateSimilarity( samples[1].GetBuffer(),
+								      samples2[1].GetBuffer() );
 
 
 				if ( simLeft > maxSimLeft )
@@ -1268,8 +1185,6 @@ namespace CLAMTest
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-LowVBR_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.OpenExisting( "test-mp3-LowVBR-44.wav" );			
-
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
@@ -1292,29 +1207,20 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 4096 );
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 4096 );
-
-
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
-
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
-
+			std::vector<CLAM::Audio> samples(2);
+			samples[0].SetSize( 4096 );
+			samples[1].SetSize( 4096 );
 
 			procReader.Start();
 			procWriter.Start();
 
 			CLAM::TSize framesRead = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(samples) )
 			{
 				framesRead++;
 
-				procWriter.Do();
+				procWriter.Do(samples);
 			}
 
 			procReader.Stop();
@@ -1328,14 +1234,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
-			CLAM::Audio readSamplesLeft2;
-			readSamplesLeft2.SetSize( 4096 );
-			CLAM::Audio readSamplesRight2;
-			readSamplesRight2.SetSize( 4096 );
+			std::vector<CLAM::Audio> samples2(2);
+			samples2[0].SetSize( 4096 );
+			samples2[1].SetSize( 4096 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
-			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
-			
 			procReader.Start();
 			procReader2.Start();
 
@@ -1354,14 +1256,14 @@ namespace CLAMTest
 			double averageSimRight = 0.0;
 
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(samples) && procReader2.Do(samples2) )
 			{
 				framesChecked++;
-				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
-								     readSamplesLeft2.GetBuffer() );
+				double simLeft = evaluateSimilarity( samples[0].GetBuffer(), 
+								     samples2[0].GetBuffer() );
 
-				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
-								      readSamplesRight2.GetBuffer() );
+				double simRight = evaluateSimilarity( samples[1].GetBuffer(),
+								      samples2[1].GetBuffer() );
 
 
 				if ( simLeft > maxSimLeft )
@@ -1437,7 +1339,6 @@ namespace CLAMTest
 
 			CLAM::AudioFile outputFile;
 			outputFile.OpenExisting( "test-mp3-HighVBR-44.wav" );			
->>>>>>> 1.1.4.10
 
 			CLAM::AudioFileHeader outputFileHeader;
 					
@@ -1461,29 +1362,20 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 4096 );
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 4096 );
-
-
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
-
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
-
+			std::vector<CLAM::Audio> samples(2);
+			samples[0].SetSize( 4096 );
+			samples[1].SetSize( 4096 );
 
 			procReader.Start();
 			procWriter.Start();
 
 			CLAM::TSize framesRead = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(samples) )
 			{
 				framesRead++;
 
-				procWriter.Do();
+				procWriter.Do(samples);
 			}
 
 			procReader.Stop();
@@ -1497,14 +1389,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
-			CLAM::Audio readSamplesLeft2;
-			readSamplesLeft2.SetSize( 4096 );
-			CLAM::Audio readSamplesRight2;
-			readSamplesRight2.SetSize( 4096 );
+			std::vector<CLAM::Audio> samples2(2);
+			samples2[0].SetSize( 4096 );
+			samples2[1].SetSize( 4096 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
-			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
-			
 			procReader.Start();
 			procReader2.Start();
 
@@ -1523,14 +1411,14 @@ namespace CLAMTest
 			double averageSimRight = 0.0;
 
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(samples) && procReader2.Do(samples2) )
 			{
 				framesChecked++;
-				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
-								     readSamplesLeft2.GetBuffer() );
+				double simLeft = evaluateSimilarity( samples[0].GetBuffer(), 
+								     samples2[0].GetBuffer() );
 
-				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
-								      readSamplesRight2.GetBuffer() );
+				double simRight = evaluateSimilarity( samples[1].GetBuffer(),
+								      samples2[1].GetBuffer() );
 
 
 				if ( simLeft > maxSimLeft )
@@ -1606,8 +1494,6 @@ namespace CLAMTest
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-AvgVBR_44.mp3" ) );
 
 			CLAM::AudioFile outputFile;
-			outputFile.OpenExisting( "test-mp3-AvgVBR-44.wav" );			
-
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
@@ -1630,17 +1516,9 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
-			CLAM::Audio readSamplesLeft;
-			readSamplesLeft.SetSize( 4096 );
-			CLAM::Audio readSamplesRight;
-			readSamplesRight.SetSize( 4096 );
-
-
-			procReader.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procReader.GetOutPorts().GetByNumber(1).Attach( readSamplesRight );
-
-			procWriter.GetInPorts().GetByNumber(0).Attach( readSamplesLeft );
-			procWriter.GetInPorts().GetByNumber(1).Attach( readSamplesRight );
+			std::vector<CLAM::Audio> samples(2);
+			samples[0].SetSize( 4096 );
+			samples[1].SetSize( 4096 );
 
 
 			procReader.Start();
@@ -1648,11 +1526,11 @@ namespace CLAMTest
 
 			CLAM::TSize framesRead = 0;
 
-			while( procReader.Do() )
+			while( procReader.Do(samples) )
 			{
 				framesRead++;
 
-				procWriter.Do();
+				procWriter.Do(samples);
 			}
 
 			procReader.Stop();
@@ -1666,14 +1544,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( inputFile );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
-			CLAM::Audio readSamplesLeft2;
-			readSamplesLeft2.SetSize( 4096 );
-			CLAM::Audio readSamplesRight2;
-			readSamplesRight2.SetSize( 4096 );
+			std::vector<CLAM::Audio> samples2(2);
+			samples2[0].SetSize( 4096 );
+			samples2[1].SetSize( 4096 );
 
-			procReader2.GetOutPorts().GetByNumber(0).Attach( readSamplesLeft2 );
-			procReader2.GetOutPorts().GetByNumber(1).Attach( readSamplesRight2 );
-			
 			procReader.Start();
 			procReader2.Start();
 
@@ -1692,14 +1566,14 @@ namespace CLAMTest
 			double averageSimRight = 0.0;
 
 
-			while( procReader.Do() && procReader2.Do() )
+			while( procReader.Do(samples) && procReader2.Do(samples2) )
 			{
 				framesChecked++;
-				double simLeft = evaluateSimilarity( readSamplesLeft.GetBuffer(), 
-								     readSamplesLeft2.GetBuffer() );
+				double simLeft = evaluateSimilarity( samples[0].GetBuffer(), 
+								     samples2[0].GetBuffer() );
 
-				double simRight = evaluateSimilarity( readSamplesRight.GetBuffer(),
-								      readSamplesRight2.GetBuffer() );
+				double simRight = evaluateSimilarity( samples[1].GetBuffer(),
+								      samples2[1].GetBuffer() );
 
 
 				if ( simLeft > maxSimLeft )
