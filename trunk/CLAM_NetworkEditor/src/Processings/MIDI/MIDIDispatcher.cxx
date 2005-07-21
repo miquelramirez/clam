@@ -22,8 +22,48 @@
 #include "Factory.hxx"
 #include "MIDIDispatcher.hxx"
 
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+
 namespace CLAM 
 {
+
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<CLAM::MIDIDispatcher> regtMIDIDispatcher( "MIDIDispatcher" );
+	}
+
+void MIDIDispatcherConfig::DefaultInit()
+{
+	AddNumberOfVoices();
+	AddNumberOfInControls();
+	UpdateData();
+	SetNumberOfVoices( 2 );
+	SetNumberOfInControls( 2 );
+}
+
+
+MIDIDispatcher::MIDIDispatcher()
+	:   mStateIn("StateIn",this,&MIDIDispatcher::UpdateState),
+		  mNoteIn( "Note", this, &MIDIDispatcher::UpdateNote ),
+		  mVelocityIn( "Velocity", this, &MIDIDispatcher::UpdateVel ),
+		  mVelocity( 0 ),
+		  mNote( 0 )
+{
+	Configure( mConfig );
+}
+
+MIDIDispatcher::MIDIDispatcher( const MIDIDispatcherConfig& cfg )
+	:  mStateIn("",this,&MIDIDispatcher::UpdateState),
+  		mNoteIn( "Note", this, &MIDIDispatcher::UpdateNote ),
+		mVelocityIn( "Velocity", this, &MIDIDispatcher::UpdateVel ),
+		mVelocity( 0 ),
+		mNote( 0 )
+{
+	Configure( cfg );
+}
+	
+	
 
 bool MIDIDispatcher::ConcreteConfigure( const ProcessingConfig& cfg )
 {
@@ -35,6 +75,26 @@ bool MIDIDispatcher::ConcreteConfigure( const ProcessingConfig& cfg )
 	return true;
 }
 
+
+int MIDIDispatcher::UpdateState( TControlData availableInstr )
+{
+	std::list<VoiceStatus>::iterator it;
+
+	for (it=mVoiceStatusList.begin();it!=mVoiceStatusList.end();it++)
+	{
+		if ((*it).mId == availableInstr)
+		{
+			mVoiceStatusList.erase(it);
+			VoiceStatus status = { -1,-1, int(availableInstr) };
+			mVoiceStatusList.push_front(status);
+			return 0;
+		}
+	}
+
+	return 0;
+
+}
+	
 
 
 void MIDIDispatcher::Dispatch(void)
@@ -116,8 +176,6 @@ void MIDIDispatcher::RemoveControls()
 	mInputControls.clear();
 }
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<CLAM::MIDIDispatcher> regtMIDIDispatcher( "MIDIDispatcher" );
 
 } // namespace CLAM
 
