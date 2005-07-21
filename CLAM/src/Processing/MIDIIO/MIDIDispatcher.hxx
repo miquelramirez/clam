@@ -25,6 +25,8 @@
 #include "Array.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
+#include "Processing.hxx"
+#include "ProcessingConfig.hxx"
 
 #include <algorithm>
 
@@ -72,7 +74,7 @@ namespace CLAM
 	
 	protected:
 
-		int UpdateState( TControlData availableInstr )
+		int UpdateState( TControlData availableInstr );
 
 
 		int UpdateVel( TControlData value )
