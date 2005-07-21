@@ -25,7 +25,7 @@ def process_folder( header_db, folder, mustRecurse ) :
 	for fname in sources( folder ) :
 		print >> sys.stdout, "Updating file",fname
 		count+=1
-		#update_includes( header_db, fname )
+		update_includes( header_db, fname )
 	print count, "files updated..."
 
 def usage() :
