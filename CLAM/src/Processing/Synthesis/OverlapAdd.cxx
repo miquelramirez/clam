@@ -60,7 +60,7 @@ bool OverlapAdd::ConcreteConfigure(const ProcessingConfig& c)
 	mOutput.SetSize( frameSize );
 	mOutput.SetHop( frameSize );
 
-	mTmp.SetSize( frameSize*2  );
+	mTmp.SetSize( frameSize*2 +1  );
 
 	for(int i=0;i<mTmp.GetSize();i++)
 		mTmp.GetBuffer()[i]=0.0f;
