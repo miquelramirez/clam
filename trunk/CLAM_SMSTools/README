@@ -1,4 +1,4 @@
-How to compile SMSTools in GNU/Linux :
+How to compile SMSTools in GNU/Linux 
 --------------------------------------
 
 1. Make shure that you have unpacked both CLAM and CLAM_SMSTools tarballs 
@@ -18,10 +18,17 @@ How to compile SMSTools in GNU/Linux :
   - Edit CLAM_SMSTools/build/clam-location.cfg so that CLAM_LOCATION
     variable is the *absolute* path to the CLAM dir.
   - Go into CLAM_SMSTools/build/Tools and run :
-    $ make depend && make
+    $ make depend && make CONFIG=release   
+      
 
 Now you should be able to run ./SMSTools
         
+
+------
+
+
+Further information in chapters 16 and 17 of the online documentation
+http://www.iua.upf.es/mtg/clam  (doc)
 
 
 ------
