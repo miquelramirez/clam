@@ -1,0 +1,54 @@
+How to compile NetworkEditor in GNU/Linux 
+-------------------------------------------
+
+1. Make shure that you have unpacked both CLAM and CLAM_NetworkEditor tarballs 
+   in the same directory.
+
+2. Configure CLAM
+   NetworkEditor currently it needs the oscpack library installed. You will find 
+   the tarball in the CLAM web (download).
+
+   - Go into CLAM/build/srcdeps and run 'make'
+   - Go into CLAM/build and run:
+     $ autoconf -f
+     $ ./configure
+     This script will complain if doesn't found some needed dependent libraries.
+     Some of them are completely optional: libportaudio, libportmidi,
+     libxml++. So don't worry if ./configure reports failure on any of these.
+     (See also the list of needed packages at the end)
+
+3. Build NetworkEditor 
+  - Edit CLAM_NetworkEditor/build/clam-location.cfg so that CLAM_LOCATION
+    variable is the path (absolute or relative) to the CLAM dir.
+  - Go into CLAM_NetworkEditor/build/Tools and run :
+    $ make depend && make CONFIG=release 
+
+Now you should be able to run ./NetworkEditor
+
+You can also use the .xml files of networks patched with NetworkEditor with the Prototyper.
+CLAM/build/Examples/Prototyper/
+
+------
+
+Further information in chapters 16 and 17 of the online documentation
+http://www.iua.upf.es/mtg/clam  (doc)
+
+
+------
+
+
+CLAM dependent (debian) packages :
+
+libxerces26-dev
+fftw-dev
+sfftw-dev
+libfltk1.1-dev
+libqt-mt-dev
+libqwt-dev
+libasound2-dev
+libvorbis-dev
+libsndfile-dev
+libmad0-dev
+libid3-3.8.3-dev
+  
+   
