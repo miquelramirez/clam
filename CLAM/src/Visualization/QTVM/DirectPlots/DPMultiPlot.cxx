@@ -28,6 +28,7 @@ namespace CLAM
 	namespace VM
 	{
 		DPMultiPlot::DPMultiPlot()
+			: mPlot(0)
 		{
 			QtAppWrapper::Init();
 			mPlot = new QtMultiPlot();
@@ -57,7 +58,7 @@ namespace CLAM
 			mPlot->AddData(key,array);
 		}
 
-		void DPMultiPlot::SetColor(std::string key, Color c)
+		void DPMultiPlot::SetColor(const std::string& key, const Color& c)
 		{
 			mPlot->SetColor(key,c);
 		}

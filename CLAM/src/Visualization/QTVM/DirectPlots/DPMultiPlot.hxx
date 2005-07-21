@@ -25,7 +25,6 @@
 #include <vector>
 #include <string>
 #include "Array.hxx"
-#include "BPF.hxx"
 #include "VMColor.hxx"
 
 namespace CLAM
@@ -51,7 +50,7 @@ namespace CLAM
 
 			void AddData(const std::string& key, const DataArray& array);
 		   
-			void SetColor(std::string key, Color c);
+			void SetColor(const std::string& key, const Color& c);
 
 			void SetMarks(std::vector<unsigned>& marks);
 				
