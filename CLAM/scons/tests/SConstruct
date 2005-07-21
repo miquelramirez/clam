@@ -14,7 +14,7 @@ opts.Save('unit_tests.conf', tests_env)
 Help(opts.GenerateHelpText(tests_env))
 
 tests_env.Append( LIBS=['cppunit','dl'] )
-tests_env.Append( CCFLAGS=['-g','-Wall'] )
+tests_env.Append( CCFLAGS=['-O2','-Wall'] )
 
 # read flags from pkg-config clam library descriptors
 
@@ -23,5 +23,6 @@ tests_env.ParseConfig( 'pkg-config --cflags --libs clam_processing', function=pa
 tests_env.ParseConfig( 'pkg-config --cflags --libs clam_audioio', function=parse_conf )
 
 SConscript('unit_tests/SConscript')
+SConscript('functional_tests/SConscript')
 
-Alias( 'all', ['run_unit_tests'] )
+Alias( 'all', ['run_unit_tests','run_functional_tests'] )
