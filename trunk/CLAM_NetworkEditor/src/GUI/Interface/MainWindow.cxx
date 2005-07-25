@@ -123,6 +123,7 @@ namespace NetworkGUI
 		stopNetwork->setAccel( tr( "Esc" ) );
 		connect( stopNetwork, SIGNAL( activated() ), this, SLOT( StopNetwork() ) );
 
+#if USE_OSCPACK		
 		QAction* startOSCListening = new QAction( this, "StartOSCListening" );
 		startOSCListening->addTo( networkActions );
 	    startOSCListening->setMenuText( tr( "Start Listening OSC Packets" ) );
@@ -134,6 +135,7 @@ namespace NetworkGUI
 	    stopOSCListening->setMenuText( tr( "Stop Listening OSC Packets" ) );
 		stopOSCListening->setAccel( tr( "P" ) );
 		connect( stopOSCListening, SIGNAL( activated() ), this, SLOT( StopOSCListening() ) );
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 
