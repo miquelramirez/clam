@@ -8,23 +8,23 @@ Import('vmqt_env version top install_dirs header_db')
 
 def define_module_contents() :
 	print "Gathering necessary source files...",
-	if not os.path.exists('src') :
-		os.mkdir('src')
-	if not os.path.exists('include' ) :
-		os.makedirs('include/CLAM')
+	if not os.path.exists('CLAM' ) :
+		os.makedirs('CLAM')
 
 	basedir =  top+'/..'
 
-	folders = []
+	qtvm_base = 'src/Visualization/QTVM/'
 
-	for root, _, _ in os.walk( basedir+'/'+'src/Visualization/QTVM' ) :
-		if not 'CVS' in root :
-			folders.append( root.split('../')[-1] )
+	folders = ['Controllers','DirectPlots','Network/Controllers','Network/Plots','Network/Processings','Network/Renderers','Network/Surfaces','Network/Utils','Players','Plots','Renderers','Surfaces','SysPlot','Utils','Widgets','Widgets/BPFEditor','Widgets/Label','Widgets/Misc','Widgets/Playable','Widgets/Rulers','Widgets/Scroll']
 
+	folders = [ qtvm_base+folder for folder in folders]
+	folders.append(qtvm_base)
 
 	blacklist = []
 
 	file_retriever = FileRetriever( basedir, folders, blacklist )
+	file_retriever.out_src = 'CLAM'
+	file_retriever.out_inc = 'CLAM'
 
 	file_retriever.scan()
 
@@ -51,7 +51,6 @@ if not vmqt_env.GetOption('clean') :
 	pkg_data.create_pkg_descriptor( vmqt_env, 'clam_vmqt.pc' )
 	print "ok"
 
-
 lib_descriptor = vmqt_env.File( 'clam_vmqt.pc' )
 
 if not vmqt_env.GetOption('clean') :
@@ -65,7 +64,7 @@ else :
 
 headers = [ File(header) for header in header_files ]
 
-vmqt_env.Append(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
+vmqt_env.Append(CPPPATH=['.','../core/include','../processing/include','../audioio/include'])
 
 if not vmqt_env.GetOption('clean') :
 	vmqt_env.Append(CCFLAGS='-include CLAM/%s'%vmqt_env['preinclude'])
@@ -77,7 +76,7 @@ soname = 'libclam_vmqt.so.%s'%version.split('.')[0]
 linker_name = 'libclam_vmqt.so'
 vmqt_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname] )
 
-lib = vmqt_env.SharedLibrary( 'clam_vmqt', source_files, SHLIBSUFFIX='.so.%s'%version )
+lib = vmqt_env.SharedLibrary( 'clam_vmqt', source_files, SHLIBSUFFIX='.so.%s'%version, QT_LIB='qt-mt' )
 
 soname_lib = vmqt_env.SonameLink( soname, lib )
 linkername_lib = vmqt_env.LinkerNameLink( linker_name, soname_lib)
