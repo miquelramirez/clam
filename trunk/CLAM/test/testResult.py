@@ -114,6 +114,6 @@ class TestResultSet :
 		if currentLevel >= levelNeeded :
 			msg = "Stable level! : Reaches level %i (%s), and stability level is fixed on %i (%s)"
 		else :
-			msg = "UNESTABLE level! : Reaches level %i (%s), but doesn't reach stability level fixed on %i (%s)"
+			msg = "UNSTABLE level! : Reaches level %i (%s), but doesn't reach stability level fixed on %i (%s)"
 	
 		return msg % (currentLevel, self.levelDic[currentLevel], levelNeeded, self.levelDic[levelNeeded])
