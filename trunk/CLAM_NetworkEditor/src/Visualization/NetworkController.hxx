@@ -40,7 +40,11 @@
 
 #include "Thread.hxx"
 
+#if USE_OSCPACK
 #include "OSCEnabledNetwork.hxx"
+#else
+#include "Network.hxx"
+#endif
 
 namespace CLAM
 {

@@ -19,7 +19,12 @@
  *
  */
 
+#if USE_OSCPACK
 #include "OSCEnabledNetwork.hxx"
+#else
+#include "Network.hxx"
+#endif
+
 #include "NetworkController.hxx"
 #include "PushFlowControl.hxx"
 #include "BasicFlowControl.hxx"
@@ -55,11 +60,16 @@ int main( int argc, char **argv )
 	CLAM::AudioManager audioManager( 44100, 1024 ); //was 44100, 512
 
 	CLAM::MIDIManager midiManager;
-
+	
 	srand(time(NULL)); // gui stuff
 
+#if USE_OSCPACK
 	CLAM::OSCEnabledNetwork net;
 	net.SetName("CLAM OSCEnabledNetwork");
+#else
+	CLAM::Network net;
+	net.SetName("CLAM Network");
+#endif
 	ConfigureNetwork(net);
 
 	CLAMVM::NetworkController controller;
