@@ -2,6 +2,7 @@ from modconf.glchecks import *
 
 def setup_vmqt_environment( vmqt_env, conf ) :
 
+	vmqt_env.Replace( QT_LIB=['qt-mt'])
 	if not check_opengl( vmqt_env, conf ) :
 		return False
 
