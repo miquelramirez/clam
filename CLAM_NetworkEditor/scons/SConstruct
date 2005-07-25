@@ -1,0 +1,83 @@
+import sys, os, string, glob
+
+def parse_conf(env, output):
+	dict = {
+		'ASFLAGS'       : [],
+		'CCFLAGS'       : [],
+		'CPPFLAGS'      : [],
+		'CPPPATH'       : [],
+		'LIBPATH'       : [],
+		'LIBS'          : [],
+		'LINKFLAGS'     : [],
+	}
+	static_libs = []
+    
+	params = string.split(output)
+
+	ind = -1
+	for i in range(len(params)) :
+		if params[i] == '-include' :
+			ind = i
+	if ind != -1 :
+		new_parm = ' '.join( params[ind:ind+2] )
+	env.AppendUnique( CCFLAGS=new_parm )
+		
+	params = params[:ind]+params[ind+2:]
+
+
+
+	for arg in params:
+		if arg[0] != '-':
+			static_libs.append(arg)
+		elif arg[:2] == '-L':
+			dict['LIBPATH'].append(arg[2:])
+		elif arg[:2] == '-l':
+			dict['LIBS'].append(arg[2:])
+		elif arg[:2] == '-I':
+			dict['CPPPATH'].append(arg[2:])
+		elif arg[:4] == '-Wa,':
+			dict['ASFLAGS'].append(arg)
+		elif arg[:4] == '-Wl,':
+			dict['LINKFLAGS'].append(arg)
+		elif arg[:4] == '-Wp,':
+			dict['CPPFLAGS'].append(arg)
+		elif arg == '-pthread':
+			dict['CCFLAGS'].append(arg)
+			dict['LINKFLAGS'].append(arg)
+		else:
+			dict['CCFLAGS'].append(arg)
+
+	apply(env.AppendUnique, (), dict)
+	return static_libs
+
+neted_env = Environment( tools=['default','qt'], ENV=os.environ )
+
+neted_env.Replace(QT_LIB='qt-mt')
+
+opts = Options('NetworkEditor.conf')
+opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+opts.Add( BoolOption( 'release', 'Build network editor enabling compiler optimizations', 'yes') )
+opts.Update(neted_env)
+opts.Save('NetworkEditor.conf', neted_env)
+Help(opts.GenerateHelpText(neted_env))
+
+if neted_env['release'] :
+	neted_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+else :
+	neted_env.Append( CCFLAGS=['-g', '-Wall'] )
+
+
+neted_env.ParseConfig( 'pkg-config --cflags --libs clam_core', function=parse_conf  )
+neted_env.ParseConfig( 'pkg-config --cflags --libs clam_processing', function=parse_conf )
+neted_env.ParseConfig( 'pkg-config --cflags --libs clam_audioio', function=parse_conf )
+neted_env.ParseConfig( 'pkg-config --cflags --libs clam_vmqt', function=parse_conf )
+neted_env.ParseConfig( 'pkg-config --cflags --libs clam_vmfl', function=parse_conf )
+
+source_dirs = ['../src','../src/GUI','../src/GUI/Base','../src/GUI/Interface','../src/GUI/Qt_Presentations','../src/GUI/Qt_Presentations/ConcretePresentations', '../src/Processings','../src/Visualization']
+
+neted_env.Append(CPPPATH=source_dirs)
+sourcefiles = []
+for dir in source_dirs :
+	sourcefiles += glob.glob(dir+'/*.cxx')
+	sourcefiles += glob.glob(dir+'/*.ui')
+neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-rdynamic'] )
