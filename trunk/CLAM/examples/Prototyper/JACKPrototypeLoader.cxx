@@ -41,17 +41,19 @@ public:
     , _stopped(true)
 
   {
-    _network.AddFlowControl( new CLAM::PushFlowControl( /*frameSize*/ 512 ));
-    CLAM::XmlStorage::Restore(_network,networkFile);
-    _thread.SetThreadCode( makeMemberFunctor0( *this, NetworkPlayer, Do ) );
+	CLAM::PushFlowControl * fc = new CLAM::PushFlowControl(512);
+	_network.AddFlowControl( fc );
+	CLAM::XmlStorage::Restore(_network,networkFile);
+	fc->AddOutsiderGenerator( &_oscil );
+	_thread.SetThreadCode( makeMemberFunctor0( *this, NetworkPlayer, Do ) );
 
     //    CONNECT PORTS
     CLAM::Processing & entrada=_network.GetProcessing("SMSAnalysisCore");
     CLAM::Processing & sortida=_network.GetProcessing("SMSSynthesis");
 
-    //_network.AddProcessing("SimpleOscillator",&_oscil);
-
-    //_network.ConnectPorts("SimpleOscillator.Audio Output","SMSAnalysisCore.Input Audio");
+//    _network.AddProcessing("SimpleOscillator",&_oscil);
+//    _network.ConnectPorts("SimpleOscillator.Audio Output","SMSAnalysisCore.Input Audio");
+    
     ConnectPorts(_oscil,"Audio Output",entrada,"Input Audio");
     ConnectPorts(sortida,"OutputAudio",_aout,"Audio Input");
   }
@@ -68,7 +70,7 @@ public:
   {
     while (!_stopped)
       {
-	if (_oscil.CanConsumeAndProduce())
+	if (false && _oscil.CanConsumeAndProduce())
 	  {
 	    std::cout <<"\nDO\n";
 	    _oscil.Do();
