@@ -1,9 +1,7 @@
 800 600
-AudioOut	565 22	71 52
-MonoAudioFileReader	48 51	122 52
-OutControlSender_0	327 31	190 46
-SMSAnalysisCore	59 227	103 52
-SMSFreqShift	360 195	88 52
-SMSResidualGain	180 349	104 52
-SMSSinusoidalGain	178 138	110 52
-SMSSynthesis	433 405	90 52
+OutControlSender_0	327 31	86 46
+SMSAnalysisCore	59 227	123 60
+SMSFreqShift	360 195	102 60
+SMSResidualGain	180 349	123 60
+SMSSinusoidalGain	178 138	130 60
+SMSSynthesis	433 405	106 60
