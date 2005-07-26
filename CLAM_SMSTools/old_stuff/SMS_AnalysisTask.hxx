@@ -1,7 +1,7 @@
 #ifndef __SMS_ANALYSISTASK__
 #define __SMS_ANALYSISTASK__
 
-#include "Audio.hxx"
+#include <CLAM/Audio.hxx>
 #include "SMSAnalysisSynthesisConfig.hxx"
 #include "SMS_ParameterChange.hxx"
 #include <string>

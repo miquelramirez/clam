@@ -1,16 +1,16 @@
 #ifndef _OnsetDetection_
 #define _OnsetDetection_
 
-#include "ProcessingComposite.hxx"
-#include "Segment.hxx"
-#include "AudioFileIn.hxx"
-#include "FFT_rfftw.hxx"
-#include "DataTypes.hxx"
-#include "Array.hxx"
-#include "Matrix.hxx"
+#include <CLAM/ProcessingComposite.hxx>
+#include <CLAM/Segment.hxx>
+#include <CLAM/AudioFileIn.hxx>
+#include <CLAM/FFT_rfftw.hxx>
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/Array.hxx>
+#include <CLAM/Matrix.hxx>
 #include "TimeIndex.hxx"
 #include "MFCCGen.hxx"
-#include "Point.hxx"
+#include <CLAM/Point.hxx>
 
 using namespace CLAM;
 
