@@ -22,6 +22,6 @@ class PackageData :
 		cppflags = edict.get('CPPFLAGS', [''])
 		cppaths = edict.get('CPPPATH', [''])
 		cpppaths = [ '-I'+path for path in cppaths ]
-		print >> out, "Cflags: -I${includedir} %s -include CLAM/%s"%( " ".join(cppflags+cpppaths), env['preinclude'])
+		print >> out, "Cflags: -I${includedir} %s"%" ".join(cppflags+cpppaths)
 
 		out.close()

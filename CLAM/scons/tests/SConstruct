@@ -18,9 +18,7 @@ tests_env.Append( CCFLAGS=['-O2','-Wall'] )
 
 # read flags from pkg-config clam library descriptors
 
-tests_env.ParseConfig( 'pkg-config --cflags --libs clam_core', function=parse_conf  )
-tests_env.ParseConfig( 'pkg-config --cflags --libs clam_processing', function=parse_conf )
-tests_env.ParseConfig( 'pkg-config --cflags --libs clam_audioio', function=parse_conf )
+tests_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio')
 
 SConscript('unit_tests/SConscript')
 SConscript('functional_tests/SConscript')
