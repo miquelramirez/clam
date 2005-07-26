@@ -1,7 +1,7 @@
 #ifndef __FL_SLIDER_EXT__
 #define __FL_SLIDER_EXT__
 
-#include "Signalv1.hxx"
+#include <CLAM/Signalv1.hxx>
 #include <FL/Fl_Slider.H>
 
 namespace CLAMVM

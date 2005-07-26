@@ -1,8 +1,8 @@
 #include "SMS_AnalysisTask.hxx"
-#include "AudioFileIn.hxx"
-#include "GlobalEnums.hxx"
+#include <CLAM/AudioFileIn.hxx>
+#include <CLAM/GlobalEnums.hxx>
 #include "SMS_Errors.hxx"
-#include "ErrSoundFileIO.hxx"
+#include <CLAM/ErrSoundFileIO.hxx>
 #include <algorithm>
 #include <sstream>
 
