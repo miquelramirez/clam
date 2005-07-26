@@ -50,6 +50,11 @@ void PushFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 	if (removed.GetInPorts().Size() == 0) // if it's a generator
 		mGenerators.remove( &removed );
 }
+void PushFlowControl::AddOutsiderGenerator( Processing* outsiderGenerator)
+{
+	mGenerators.push_back(outsiderGenerator);
+}
+
 void PushFlowControl::DoProcessings()
 {
 	std::list< Processing* > toDo(mGenerators);
@@ -69,6 +74,7 @@ void PushFlowControl::DoProcessings()
 		AddNewPossibleProcessingsToDo(next, toDo, done);
 	}
 }
+
 
 
 void PushFlowControl::AddNewPossibleProcessingsToDo(

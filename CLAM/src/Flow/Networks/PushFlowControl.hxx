@@ -39,6 +39,8 @@ public:
 
 	void ProcessingAddedToNetwork( Processing & added );
 	void ProcessingRemovedFromNetwork( Processing & removed );
+	//TODO remove
+	void AddOutsiderGenerator( Processing* outsiderGenerator); 
 
 	void DoProcessings();
 
