@@ -1,0 +1,30 @@
+import sys, os, string, glob
+
+v2m_env = Environment( tools=['default','qt'], ENV=os.environ )
+
+v2m_env.Replace(QT_LIB='qt-mt')
+
+opts = Options('NetworkEditor.conf')
+opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+opts.Add( BoolOption( 'release', 'Build voice2midi enabling compiler optimizations', 'yes') )
+opts.Update(v2m_env)
+opts.Save('NetworkEditor.conf', v2m_env)
+Help(opts.GenerateHelpText(v2m_env))
+
+if v2m_env['release'] :
+	v2m_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+else :
+	v2m_env.Append( CCFLAGS=['-g', '-Wall'] )
+
+
+v2m_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'  )
+
+source_dirs = ['../src', '../src/Analysis', '../src/AudioIO', '../src/Controller', '../src/GUI', '../src/GUI/MainWindow','../src/GUI/Widgets','../src/GUI/Widgets/Surfaces', '../src/MIDIOut', '../src/misc' ]
+
+v2m_env.Append(CPPPATH=source_dirs)
+v2m_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+sourcefiles = []
+for dir in source_dirs :
+	sourcefiles += glob.glob(dir+'/*.cxx')
+	sourcefiles += glob.glob(dir+'/*.ui')
+v2m_bin = v2m_env.Program( 'Voice2MIDI', sourcefiles, LINKFLAGS=['-rdynamic'] )
