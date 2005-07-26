@@ -1,7 +1,7 @@
 #ifndef __PROGRESSGUI__
 #define __PROGRESSGUI__
 
-#include "Fl_Progress.hxx"
+#include "SMS_Fl_Progress.hxx"
 #include "Progress.hxx"
 #include <pthread.h>
 
