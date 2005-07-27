@@ -29,9 +29,12 @@ namespace CLAM
     namespace VM
     {
 		QtPlotter::PlotMap QtPlotter::mPlotMap;
+		QtPlotter::BPFEditorMap QtPlotter::mBPFEditorMap;
 		QtPlotter::PlotList QtPlotter::mPlotList;
+		QtPlotter::BPFEditorList QtPlotter::mBPFEditorList;
 		QtPlotter::MultiPlot QtPlotter::mMultiPlot;
 		QtPlotter::PlotIndex QtPlotter::mPlotIndex = 0;
+		QtPlotter::BPFEditorIndex QtPlotter::mBPFEditorIndex = 0;
 		QtPlotter::Workspace QtPlotter::ws;
 		QtPlotter::HaveWorkspace QtPlotter::mHaveWorkspace = false;
 		const unsigned wflags = Qt::WStyle_Customize | Qt::WStyle_Title | Qt::WStyle_SysMenu | Qt::WStyle_Minimize;
@@ -151,6 +154,21 @@ namespace CLAM
 			Register(plotKey,plot,true);
 		}
 
+		void QtPlotter::Add(const std::string& plotKey, const BPF& data)
+		{
+			if(ExistBPF(plotKey))
+			{
+				DuplicatedKeyMsg("Add(const std::string& plotKey, const BPF& data)", plotKey);
+				return;
+			}
+			QtAppWrapper::Init();
+			if(!mHaveWorkspace) CreateWorkspace();
+			int eFlags = CLAM::VM::HasVerticalScroll | CLAM::VM::HasHorizontalScroll | CLAM::VM::HasPlayer;
+			BPFEditor* plot = new BPFEditor(eFlags,ws,0,wflags);
+			plot->SetData(data);
+			Register(plotKey,plot);
+		}
+
 		void QtPlotter::Add(const std::string& plotKey, 
 							const Array<SpectralPeakArray>& data, 
 							const TData& sampleRate, 
@@ -171,16 +189,21 @@ namespace CLAM
 
 		void QtPlotter::SetLabel(const std::string& plotKey, const std::string& label)
 		{
-			if(!Exist(plotKey))
+			if(!Exist(plotKey) && !ExistBPF(plotKey))
 			{
 				NonExistentKeyMsg("SetLabel(const std::string& plotKey, const std::string& label)",plotKey);
 				return;
 			}
-			mPlotList[mPlotMap[plotKey]]->Label(label);
+			(Exist(plotKey)) ? mPlotList[mPlotMap[plotKey]]->Label(label) : mBPFEditorList[mBPFEditorMap[plotKey]]->Label(label);
 		}
 
 		void QtPlotter::SetMarks(const std::string& plotKey, std::vector<unsigned>& marks)
 		{
+			if(ExistBPF(plotKey))
+			{
+				std::cout << "Sorry, BPFEditor has not segmentation marks." << std::endl;
+				return;
+			}
 			if(!Exist(plotKey))
 			{
 				NonExistentKeyMsg("SetMarks(const std::string& plotKey, std::vector<unsigned>& marks)",plotKey);
@@ -211,7 +234,7 @@ namespace CLAM
 			((QtMultiPlot*)mPlotList[mPlotMap[plotKey]])->AddData(dataKey,data);
 		}
 
-		void QtPlotter::SetDataColor(const std::string& plotKey, const std::string& dataKey, Color c)
+		void QtPlotter::SetDataColor(const std::string& plotKey, const std::string& dataKey, const Color& c)
 		{
 			if(!Exist(plotKey))
 			{
@@ -286,6 +309,73 @@ namespace CLAM
 			((QtMultiPlot*)mPlotList[mPlotMap[plotKey]])->SetToolTips(xtooltip,ytooltip);
 		}
 
+		void QtPlotter::SetXRange(const std::string& plotKey, 
+								  const double& min, const double& max, 
+								  const EScale& scale)
+		{
+			if(!ExistBPF(plotKey))
+			{
+				NonExistentKeyMsg("SetXRange(const std::string& plotKey, const double& min, const double& max, const EScale& scale)",plotKey);
+				return;
+			}
+			mBPFEditorList[mBPFEditorMap[plotKey]]->SetXRange(min,max,scale);
+		}
+
+		void QtPlotter::SetYRange(const std::string& plotKey,
+								  const double& min, const double& max, 
+								  const EScale& scale)
+		{
+			if(!ExistBPF(plotKey))
+			{
+				NonExistentKeyMsg("SetYRange(const std::string& plotKey, const double& min, const double& max, const EScale& scale)",plotKey);
+				return;
+			}
+			mBPFEditorList[mBPFEditorMap[plotKey]]->SetYRange(min,max,scale);
+		}
+
+		void QtPlotter::SetXScale(const std::string& plotKey, const EScale& scale)
+		{
+			if(!ExistBPF(plotKey))
+			{
+				NonExistentKeyMsg("SetXScale(const std::string& plotKey, const EScale& scale)",plotKey);
+				return;
+			}
+			mBPFEditorList[mBPFEditorMap[plotKey]]->SetXScale(scale);
+		}
+
+		void QtPlotter::SetYScale(const std::string& plotKey, const EScale& scale)
+		{
+			if(!ExistBPF(plotKey))
+			{
+				NonExistentKeyMsg("SetYScale(const std::string& plotKey, const EScale& scale)",plotKey);
+				return;
+			}
+			mBPFEditorList[mBPFEditorMap[plotKey]]->SetYScale(scale);
+		}
+
+		void QtPlotter::AddData(const std::string& plotKey, const std::string& dataKey, const BPF& data)
+		{
+			if(!ExistBPF(plotKey))
+			{
+				NonExistentKeyMsg("AddData(const std::string& plotKey, const std::string& dataKey, const BPF& data)",plotKey);
+				return;
+			}
+			mBPFEditorList[mBPFEditorMap[plotKey]]->AddData(dataKey,data);
+		}
+
+		void QtPlotter::SetDataColor(const std::string& plotKey, 
+									 const std::string& dataKey, 
+									 const Color& lines_color,
+									 const Color& handlers_color)
+		{
+			if(!ExistBPF(plotKey))
+			{
+				NonExistentKeyMsg("SetDataColor(const std::string& plotKey, const std::string& dataKey, const Color& lines_color, const Color& handlers_color)",plotKey);
+				return;
+			}
+			mBPFEditorList[mBPFEditorMap[plotKey]]->SetDataColor(dataKey,lines_color,handlers_color);
+		}
+
 		bool QtPlotter::IsMultiPlot(const int& index)
 		{
 			return mMultiPlot[index];
@@ -294,6 +384,11 @@ namespace CLAM
 		bool QtPlotter::Exist(const std::string& key)
 		{
 			return mPlotMap.find(key) != mPlotMap.end();
+		}
+
+		bool QtPlotter::ExistBPF(const std::string& key)
+		{
+			return mBPFEditorMap.find(key) != mBPFEditorMap.end();
 		}
 
 		void QtPlotter::CreateWorkspace()
@@ -310,6 +405,13 @@ namespace CLAM
 			mPlotMap[pKey] = mPlotIndex++;
 			mPlotList.push_back(plot);
 			mMultiPlot.push_back(isMultiPlot);
+		}
+
+		void QtPlotter::Register(const std::string& pKey, BPFEditor* plot)
+		{
+			plot->setMinimumSize(500,200);
+			mBPFEditorMap[pKey] = mBPFEditorIndex++;
+			mBPFEditorList.push_back(plot);
 		}
 
 		void QtPlotter::NonExistentKeyMsg(const std::string& methodName, const std::string& plotKey)
