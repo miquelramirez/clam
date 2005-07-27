@@ -29,6 +29,7 @@
 #include "QtSinTracksPlot.hxx"
 #include "QtMultiPlot.hxx"
 #include "QtSpectrogram.hxx"
+#include "BPFEditor.hxx"
 
 /**
  *@defgroup QTVM QT Visualization Module
