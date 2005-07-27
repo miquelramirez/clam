@@ -1,0 +1,70 @@
+import sys, os, glob
+
+# builder for embedding images into a cxx file
+#
+
+def embed_images( target, source, env ) :
+	output_file_str = str(target[0])
+	input_files = [ str(src_item) for src_item in source ]
+	input_files_str = ' '.join( input_files )
+	cmd_str = 'uic -embed Annotator %s -o %s'%(input_files_str, output_file_str)
+	os.system( cmd_str )
+
+def embed_images_message( target, source, env ) :
+	print "Embedding images into", str(target)
+	for item in source :
+		print "\t", str(item), "..."
+
+bld = Builder( action = Action(embed_images, embed_images_message),
+				suffix = '.cxx',
+				src_suffix = '' )
+
+annotator_env = Environment( tools=['default','qt'], 
+							ENV=os.environ)
+annotator_env.Append( BUILDERS = {'EmbedImages' : bld} )
+
+annotator_env.Replace(QT_LIB='qt-mt')
+
+opts = Options('Annotator.conf')
+opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+opts.Add( BoolOption( 'release', 'Build CLAM Annotator enabling compiler optimizations', 'yes') )
+opts.Update(annotator_env)
+opts.Save('Annotator.conf', annotator_env)
+Help(opts.GenerateHelpText(annotator_env))
+
+if annotator_env['release'] :
+	annotator_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+else :
+	annotator_env.Append( CCFLAGS=['-g', '-Wall'] )
+
+
+annotator_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'  )
+
+source_dirs = ['../src', '../src/AnnotatorBrowserGL', '../src/common', '../src/common/Clipboard' ]
+
+sourcefiles = []
+
+for dir in source_dirs :
+	sourcefiles += glob.glob(dir+'/*.cxx')
+	sourcefiles += glob.glob(dir+'/*.ui')
+
+sourcefiles.remove( '../src/main.cxx' )
+sourcefiles.remove( '../src/Test.cxx' )
+
+image_dirs = ['../images']
+image_files = []
+for dir in image_dirs :
+	image_files += glob.glob(dir+'/*.png')
+
+image_source = annotator_env.EmbedImages( 'image_collection.cxx', image_files )
+
+sourcefiles.append(image_source)
+
+bin_main_object = annotator_env.Object('../src/main.cxx')
+
+bin_objects = [ annotator_env.Object(source) for source in sourcefiles ]
+
+annotator_env.Append(CPPPATH=source_dirs)
+annotator_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+
+annotator_bin = annotator_env.Program( 'Annotator', bin_main_object + bin_objects, LINKFLAGS=['-rdynamic'] )
