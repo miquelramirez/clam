@@ -20,6 +20,7 @@
  */
 
 #include <stdlib.h>
+#include "XMLStorage.hxx"
 #include "QtPlotter.hxx"
 #include "audio_file_utils.hxx"
 #include "analysis_utils.hxx"
@@ -27,6 +28,8 @@
 using CLAM::TData;
 using CLAM::DataArray;
 using CLAM::VM::QtPlotter;
+
+void ExtractData(const CLAM::Melody& in, CLAM::BPF& out, TData& min, TData& max);
 
 int main()
 {
@@ -98,11 +101,55 @@ int main()
 	// set x y range to multiplot
 	QtPlotter::SetXRange("multi_plot",0.0,1.0);
 	QtPlotter::SetYRange("multi_plot",-1.5,1.5);
+
+	// BPF prepared data
+	CLAM::Melody melody;
+    CLAM::XMLStorage::Restore(melody,"../data/melody.xml");
+
+    TData duration = melody.GetNoteArray()[melody.GetNumberOfNotes()-1].GetTime().GetEnd();
+
+	TData max = -1E9;
+	TData min = 1E9;
+	
+    CLAM::BPF bpf0,bpf1,bpf2;
+	
+	ExtractData(melody,bpf0,min,max);
+	CLAM::XMLStorage::Restore(melody,"../data/melody1.xml");
+	ExtractData(melody,bpf1,min,max);
+	CLAM::XMLStorage::Restore(melody,"../data/melody2.xml");
+    ExtractData(melody,bpf2,min,max);
+
+    TData span = max-min;
+	// end prepared data
+
+	// Add to QtPlotter
+	QtPlotter::Add("bpf_viewer",bpf0);
+	QtPlotter::AddData("bpf_viewer","star-wars",bpf1);
+	QtPlotter::AddData("bpf_viewer","2001",bpf2);
+	// set colors
+	QtPlotter::SetDataColor("bpf_viewer","star-wars",CLAM::VM::VMColor::Red(),CLAM::VM::VMColor::Yellow());
+	QtPlotter::SetDataColor("bpf_viewer","2001",CLAM::VM::VMColor::Green(),CLAM::VM::VMColor::Magenta());
+	// label and x/y range
+	QtPlotter::SetLabel("bpf_viewer","BPF");
+	QtPlotter::SetXRange("bpf_viewer",0.0,double(duration),CLAM::EScale::eLinear);
+	QtPlotter::SetYRange("bpf_viewer",double(min)-double(span)*0.1, double(max)+double(span)*0.1,CLAM::EScale::eLinear);
 	
 	// Display plots
 	QtPlotter::Run();
 	
 	return 0;
+}
+
+
+void ExtractData(const CLAM::Melody& in, CLAM::BPF& out, CLAM::TData& min, CLAM::TData& max)
+{
+	for(int i=0; i < in.GetNumberOfNotes(); i++)
+    {
+		CLAM::TData value = in.GetNoteArray()[i].GetFundFreq();
+		if(value < min) min = value;
+		if(value > max) max = value;
+		out.Insert(in.GetNoteArray()[i].GetTime().GetBegin(), value);
+    }
 }
 
 // END
