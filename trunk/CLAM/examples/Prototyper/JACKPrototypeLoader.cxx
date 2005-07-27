@@ -120,8 +120,12 @@ public:
   void Do(const jack_nframes_t nframes)
   {
     JACK2Port(nframes);
-    
+
+    //ProcessInputPorts(); JACK --> CLAM
+ 
     _network.DoProcessings();
+
+    //ProcessOutputPorts(); CLAM --> JACK
   }
   
   void Start()
