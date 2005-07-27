@@ -37,7 +37,7 @@ class OutPortBase
 {
 public:
 	typedef std::list<InPortBase*> InPortsList;
-	OutPortBase( const std::string & name = "unnamed in port", Processing * proc = 0 );
+	OutPortBase( const std::string & name = "unnamed out port", Processing * proc = 0 );
 	virtual ~OutPortBase();
 	const std::string & GetName();
 	Processing * GetProcessing();
@@ -72,7 +72,7 @@ class OutPort : public OutPortBase
 	typedef InPort<Token> ProperInPort;
 	typedef WritingRegion<Token> ProperWritingRegion;
 public:
-	OutPort( const std::string & name = "unnamed in port", Processing * proc = 0 );
+	OutPort( const std::string & name = "unnamed out port", Processing * proc = 0 );
 	virtual ~OutPort();
 
 	void DisconnectFromAll();
