@@ -55,6 +55,11 @@ void PushFlowControl::AddOutsiderGenerator( Processing* outsiderGenerator)
 	mGenerators.push_back(outsiderGenerator);
 }
 
+void PushFlowControl::ForceGenerator( Processing* insideGenerator)
+{
+	mGenerators.push_back(insideGenerator);
+}
+
 void PushFlowControl::DoProcessings()
 {
 	std::list< Processing* > toDo(mGenerators);
@@ -87,8 +92,8 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 	OutPortRegistry::Iterator itOutPort;
 	
 	for (itOutPort=producer->GetOutPorts().Begin(); 
-	     itOutPort!=producer->GetOutPorts().End(); 
-	     itOutPort++)
+			 itOutPort!=producer->GetOutPorts().End(); 
+			 itOutPort++)
 	{
 		Network::InPortsList consumers;
 		consumers = mNetwork->GetInPortsConnectedTo( **itOutPort );
