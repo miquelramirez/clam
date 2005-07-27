@@ -31,7 +31,7 @@ namespace CLAM
 class AudioOutPort : public OutPort<TData>
 {
 public:
-	AudioOutPort( const std::string & name = "unnamed in port", Processing * proc = 0 );
+	AudioOutPort( const std::string & name = "unnamed out port", Processing * proc = 0 );
 	virtual ~AudioOutPort();
 	Audio & GetAudio();
 	void SetSampleRate( TData sampleRate );
