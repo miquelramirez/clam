@@ -32,7 +32,7 @@ class OutPortPublisher : public OutPortBase
 {
 	typedef OutPort<Token> ProperOutPort;
 public:
-	OutPortPublisher( const std::string & name = "unnamed in port", Processing * proc = 0 )
+	OutPortPublisher( const std::string & name = "unnamed out port publisher", Processing * proc = 0 )
 		: OutPortBase( name, proc ), mPublishedOutPort(0)
 	{
 		
