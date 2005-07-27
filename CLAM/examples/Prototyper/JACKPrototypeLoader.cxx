@@ -6,8 +6,6 @@
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "XMLStorage.hxx"
-#include "Thread.hxx"
-#include "AudioManager.hxx"
 #include "QtSlot2Control.hxx"
 #include "NetAudioPlot.hxx"
 #include "NetPeaksPlot.hxx"
@@ -20,83 +18,166 @@
 
 #include "PortMonitor.hxx"
 
-////////////////Temporary includes
+/////////////Temporary includes
 #include "SimpleOscillator.hxx"
-#include "AudioOut.hxx"
+#include "AudioOutPort.hxx"
 
-class NetworkPlayer
+#include "BasicFlowControl.hxx"
+
+////////JACK CODE
+#include <jack/jack.h>
+
+int jack_process (jack_nframes_t nframes, void *arg);
+void jack_shutdown (void *arg);
+
+class JACKNetworkPlayer
 {
-  CLAM::AudioManager _audioManager;
   CLAM::Network _network;
-  CLAM::Thread _thread;
-  bool _stopped;
 
   CLAM::SimpleOscillator _oscil;
-  CLAM::AudioOut _aout;
+  CLAM::AudioOutPort _outport;
+
+  float _samplerate;
+
+  //JACK CODE
+  jack_port_t *input_port;
+  jack_client_t *client;
 
 public:
-  NetworkPlayer(const std::string & networkFile)
-    : _audioManager( 44100, 512 )
-    , _thread(/*realtime*/true)
-    , _stopped(true)
-
+  JACKNetworkPlayer(const std::string & networkFile)
   {
-	CLAM::PushFlowControl * fc = new CLAM::PushFlowControl(512);
-	_network.AddFlowControl( fc );
-	CLAM::XmlStorage::Restore(_network,networkFile);
-	fc->AddOutsiderGenerator( &_oscil );
-	_thread.SetThreadCode( makeMemberFunctor0( *this, NetworkPlayer, Do ) );
+    CLAM::PushFlowControl * fc = new CLAM::PushFlowControl(512);
+    //fc->AddOutsiderGenerator( &_oscil );
+    _network.AddFlowControl( fc );
 
-    //    CONNECT PORTS
-    CLAM::Processing & entrada=_network.GetProcessing("SMSAnalysisCore");
-    CLAM::Processing & sortida=_network.GetProcessing("SMSSynthesis");
-
-//    _network.AddProcessing("SimpleOscillator",&_oscil);
-//    _network.ConnectPorts("SimpleOscillator.Audio Output","SMSAnalysisCore.Input Audio");
+    CLAM::XmlStorage::Restore(_network,networkFile);
     
-    ConnectPorts(_oscil,"Audio Output",entrada,"Input Audio");
-    ConnectPorts(sortida,"OutputAudio",_aout,"Audio Input");
+    //CONNECT PORTS
+    CLAM::Processing & entrada=_network.GetProcessing("SMSAnalysisCore");
+
+    fc->ForceGenerator( &entrada );
+
+    //EP: REVISA METODE, A LA DOC HI SURT PERO AL src NO
+    //ConnectPorts( _outport, entrada, "Input Audio");
+
+    ConnectPorts( _outport, entrada, 0);
+
+    //JACK CODE
+    //init client
+    if ((client = jack_client_new ("CLAM client")) == 0) {
+      fprintf (stderr, "JACK ERROR: server not running?\n");
+      exit(1);
+    }
+    
+    //registra callback
+    jack_set_process_callback (client, jack_process, this);
+    
+    //registra funcio shutdown
+    jack_on_shutdown (client, jack_shutdown, this);
+    
+    _samplerate=(float)jack_get_sample_rate (client);
+
+    ManageInputPorts();
+    ManageOutputPorts();
   }
+  
+  void ManageInputPorts(void)
+  {
+    //Get them from the Network
+    //Connect them to local outports
+    //And then register into the JACK server
+
+    //Register the port
+    input_port = jack_port_register (client, "input", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
+    
+  }
+  
+  void ManageOutputPorts(void)
+  {
+    //Get them from the Network
+    //Connect them to local inports
+    //Then register these into the JACK server
+  }
+  
+  void JACK2Port(const jack_nframes_t nframes)
+  {
+    if (_outport.CanProduce())
+      {
+	jack_default_audio_sample_t *in = 
+	  (jack_default_audio_sample_t *) jack_port_get_buffer (input_port, nframes);
+	
+	_outport.SetSize(nframes);
+
+	CLAM::Audio& so=_outport.GetAudio();
+	
+	//JACK's datatype for audio is the same as ours, range (-1,1) in a float
+	std::copy(in, in+nframes, so.GetBuffer().GetPtr());
+	
+	_outport.Produce();
+      }    
+  }
+  
+  void Do(const jack_nframes_t nframes)
+  {
+    JACK2Port(nframes);
+    
+    _network.DoProcessings();
+  }
+  
   void Start()
   {
-    _stopped=false;
-    _network.Start();
-    _thread.Start();
-
     _oscil.Start();
-    _aout.Start();
+    
+    _network.Start();
+
+    //JACK CODE (the init order of network, ... should be decided)
+    if (jack_activate (client)) {
+      fprintf (stderr, "JACK ERROR: cannot activate client");
+      exit(1);
+    }
   }
-  void Do()
-  {
-    while (!_stopped)
-      {
-	if (false && _oscil.CanConsumeAndProduce())
-	  {
-	    std::cout <<"\nDO\n";
-	    _oscil.Do();
-	  }
-	
-	_network.DoProcessings();
-      }
-  }
+  
   void Stop()
   {
-    _aout.Stop();
-    _oscil.Stop();
+    //JACK CODE (the init order of network, ... should be decided)
+    if (jack_deactivate (client))
+      {
+	fprintf (stderr, "cannot activate client");
+	exit(1);
+      }
 
-    _stopped=true;
-    _thread.Stop();
     _network.Stop();
+
+    _oscil.Stop();
   }
-  ~NetworkPlayer()
+  ~JACKNetworkPlayer()
   {
     Stop();
+    
+    //JACK CODE
+    jack_client_close (client);
   }
   CLAM::Network & Network()
   {
     return _network;
   }
 };
+
+//JACK CODE
+int jack_process (jack_nframes_t nframes, void *arg)
+{
+  JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
+  player->Do(nframes);
+
+  return 0;
+}
+
+void jack_shutdown (void *arg)
+{
+  JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
+  delete player;
+}
+
 
 static std::string getMonitorNumber()
 {
@@ -112,7 +193,7 @@ class PrototypeLoader
   char * _networkFile;
   char * _interfaceFile;
   QWidget * _mainWidget;
-  NetworkPlayer _player;
+  JACKNetworkPlayer _player;
   std::list<CLAM::VM::NetPlot * > _portMonitors;
 public:
   PrototypeLoader(char * networkFile)
