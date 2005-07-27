@@ -7,11 +7,12 @@ def embed_images( target, source, env ) :
 	output_file_str = str(target[0])
 	input_files = [ str(src_item) for src_item in source ]
 	input_files_str = ' '.join( input_files )
-	cmd_str = 'uic -embed Annotator %s -o %s'%(input_files_str, output_file_str)
+	cmd_str = '%s -embed %s %s -o %s'%(env['QT_UIC'], env['project'], input_files_str, output_file_str)
+
 	os.system( cmd_str )
 
 def embed_images_message( target, source, env ) :
-	print "Embedding images into", str(target)
+	print "Embedding images into", str(target[0])
 	for item in source :
 		print "\t", str(item), "..."
 
@@ -22,7 +23,7 @@ bld = Builder( action = Action(embed_images, embed_images_message),
 annotator_env = Environment( tools=['default','qt'], 
 							ENV=os.environ)
 annotator_env.Append( BUILDERS = {'EmbedImages' : bld} )
-
+annotator_env.Replace( QT_UIC='/usr/bin/uic' )
 annotator_env.Replace(QT_LIB='qt-mt')
 
 opts = Options('Annotator.conf')
@@ -31,6 +32,8 @@ opts.Add( BoolOption( 'release', 'Build CLAM Annotator enabling compiler optimiz
 opts.Update(annotator_env)
 opts.Save('Annotator.conf', annotator_env)
 Help(opts.GenerateHelpText(annotator_env))
+
+annotator_env['project'] = 'Annotator'
 
 if annotator_env['release'] :
 	annotator_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
