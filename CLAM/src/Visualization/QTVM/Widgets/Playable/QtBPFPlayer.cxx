@@ -28,7 +28,10 @@ namespace CLAM
 			BuildPlayer();
 			LoadMIDIDevices();
 			LoadMIDIInstruments();
-			InitialMIDISettings();
+			// MRJ: If no MIDI devices were found, there's no point in
+			// initializing MIDI settings, is there?
+			if ( mMIDIDevices.size() > 0 )
+				InitialMIDISettings();
 
 			mThread.SetThreadCode(makeMemberFunctor0((*this), QtBPFPlayer, thread_code));
 		}
@@ -432,6 +435,7 @@ namespace CLAM
 
 		void QtBPFPlayer::InitialMIDISettings()
 		{
+			
 			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIDevice(mMIDIDevices[mMIDIDevicesCB->currentItem()]);
 			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIProgram(mMIDIPrograms[mMIDIInstrumentsCB->currentItem()]);
 		}
