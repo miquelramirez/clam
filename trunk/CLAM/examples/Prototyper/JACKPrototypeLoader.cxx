@@ -119,7 +119,7 @@ public:
 	{
 		if (!_outport.CanProduce())
 		{
-			//std::cout << "_outport cant produce" << std::endl;
+			std::cout << "_outport cant produce" << std::endl;
 			return;
 		}
 		jack_default_audio_sample_t *in = 
@@ -137,7 +137,7 @@ public:
 	{
 		if (!_inport.CanConsume())
 		{
-			//std::cout << "_inport cant consume" << std::endl;
+			std::cout << "_inport cant consume" << std::endl;
 			return;
 		}
 		jack_default_audio_sample_t *out = 
@@ -155,6 +155,7 @@ public:
 	{
 		ProcessInputPorts(nframes); //JACK --> CLAM
  
+		_network.DoProcessings();
 		_network.DoProcessings();
 
 		ProcessOutputPorts(nframes); //CLAM --> JACK
