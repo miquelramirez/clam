@@ -54,8 +54,14 @@ const std::string & InPortBase::GetName()
 	return mName;
 }
 
+bool InPortBase::HasProcessing()
+{
+	return mProcessing!=0;
+}
+
 Processing * InPortBase::GetProcessing()
 {
+	CLAM_ASSERT(mProcessing, "InPort::BaseGetProcessing() - InPort has no parent processing.");
 	return mProcessing;
 }
 

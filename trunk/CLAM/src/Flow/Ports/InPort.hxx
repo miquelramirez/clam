@@ -40,6 +40,7 @@ public:
 	OutPortBase * GetAttachedOutPort(); 
 	void SetAttachedOutPort( OutPortBase* );
 	const std::string & GetName();
+	bool HasProcessing();
 	Processing * GetProcessing();
 	virtual bool CanConsume()=0;
 	virtual int GetSize()=0;
