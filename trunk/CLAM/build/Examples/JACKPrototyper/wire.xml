@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="CLAM OSCEnabledNetwork">
+
+  <processing id="AudioAdder" type="AudioAdder"/>
+
+  <processing id="SimpleOscillator" type="SimpleOscillator">
+    <Frequency>440</Frequency>
+    <Amplitude>0</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <port_connection>
+    <out>SimpleOscillator.Audio Output</out>
+    <in>AudioAdder.Second Audio Input</in>
+  </port_connection>
+
+</network>
