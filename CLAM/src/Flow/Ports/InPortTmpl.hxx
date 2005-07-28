@@ -19,6 +19,8 @@
  *
  */
 
+//TODO DELETE FILE -- deprecated
+
 #ifndef _InPortTmpl_hxx_
 #define _InPortTmpl_hxx_
 
