@@ -50,10 +50,6 @@ void PushFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 	if (removed.GetInPorts().Size() == 0) // if it's a generator
 		mGenerators.remove( &removed );
 }
-void PushFlowControl::AddOutsiderGenerator( Processing* outsiderGenerator)
-{
-	mGenerators.push_back(outsiderGenerator);
-}
 
 void PushFlowControl::ForceGenerator( Processing* insideGenerator)
 {
@@ -75,6 +71,11 @@ void PushFlowControl::DoProcessings()
 		{
 			next->Do();
 			done.push_back(next);
+			//std::cerr << "\n+"<<next->GetClassName();
+		}
+		else
+		{
+		  //std::cerr << "\n-"<<next->GetClassName();
 		}
 		AddNewPossibleProcessingsToDo(next, toDo, done);
 	}
@@ -101,10 +102,18 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 		Network::InPortsList::iterator itInPort;
 
 		for (itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++)
-		{
+		  {	
+		        //ignore orphan inports
+			if (!(*itInPort)->HasProcessing())
+				continue;
+			
 			Processing * proc = (*itInPort)->GetProcessing();
-			if (proc->CanConsumeAndProduce())				
+
+			if (proc->CanConsumeAndProduce())
+			  {
+			    //std::cerr <<"\n\t CAN"<<proc->GetClassName();
 				toDo.push_back( proc );
+			  }
 		}
 	}
 }
