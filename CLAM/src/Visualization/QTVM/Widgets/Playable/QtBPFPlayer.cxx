@@ -3,10 +3,10 @@
 #include <qradiobutton.h>
 #include <qcombobox.h>
 #include <qtooltip.h>
-#include <qmessagebox.h>
 #include "MelodyPlayer.hxx"
 #include "MIDIMelodyPlayer.hxx"
 #include "MIDISettings.hxx"
+#include "ShowMessage.hxx"
 #include "QtBPFPlayer.hxx"
 
 namespace CLAM
@@ -28,11 +28,7 @@ namespace CLAM
 			BuildPlayer();
 			LoadMIDIDevices();
 			LoadMIDIInstruments();
-			// MRJ: If no MIDI devices were found, there's no point in
-			// initializing MIDI settings, is there?
-			if ( mMIDIDevices.size() > 0 )
-				InitialMIDISettings();
-
+		   
 			mThread.SetThreadCode(makeMemberFunctor0((*this), QtBPFPlayer, thread_code));
 		}
 		
@@ -385,14 +381,7 @@ namespace CLAM
 			mMIDIDevices = settings.GetMIDIDevices();
 			if(!mMIDIDevices.size())
 			{
-				QMessageBox message("MIDI support not available",
-									"Seems that your system has not MIDI support. MIDI settings will be deactivated",
-									QMessageBox::Warning,
-									QMessageBox::Ok,
-									QMessageBox::NoButton,
-									QMessageBox::NoButton); 
-
-				message.exec();
+				ShowMessage::NoMIDISupport();
 			}
 			else
 			{
@@ -430,13 +419,6 @@ namespace CLAM
 				mMIDIInstrumentsCB->insertItem(QString((*it).c_str()),index);
 			}
 			// set default MIDI program
-			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIProgram(mMIDIPrograms[mMIDIInstrumentsCB->currentItem()]);
-		}
-
-		void QtBPFPlayer::InitialMIDISettings()
-		{
-			
-			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIDevice(mMIDIDevices[mMIDIDevicesCB->currentItem()]);
 			((MIDIMelodyPlayer*)mPlayers[MIDI_PLAYER])->SetMIDIProgram(mMIDIPrograms[mMIDIInstrumentsCB->currentItem()]);
 		}
 

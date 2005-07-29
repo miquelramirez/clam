@@ -126,7 +126,6 @@ namespace CLAM
 			void BuildPlayer();
 			void LoadMIDIDevices();
 			void LoadMIDIInstruments();
-			void InitialMIDISettings();
 			void thread_code();
 
 			void ProcessIncomingBPF();
