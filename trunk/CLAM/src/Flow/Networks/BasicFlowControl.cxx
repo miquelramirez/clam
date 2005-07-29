@@ -44,4 +44,10 @@ void BasicFlowControl::DoProcessings()
 	
 }
 
+
+void BasicFlowControl::DoProcessingsLoop()
+{
+	DoProcessings();	
+}
+
 } // namespace CLAM

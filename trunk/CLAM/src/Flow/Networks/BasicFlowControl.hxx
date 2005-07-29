@@ -37,6 +37,7 @@ public:
 	virtual ~BasicFlowControl(){}
 
 	void DoProcessings();
+	void DoProcessingsLoop();
 };
 
 } // namespace CLAM
