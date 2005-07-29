@@ -441,6 +441,7 @@ namespace CLAM
 				it->second->Start();		
 
 	}
+	
 	void Network::Stop()
 	{
 		ProcessingsMap::iterator it;
@@ -449,12 +450,18 @@ namespace CLAM
 				it->second->Stop();
 	
 	}
+	
 	void Network::DoProcessings()
 	{
 		AssertFlowControlNotNull();
 		mFlowControl->DoProcessings();
 	}
 
+	void Network::DoProcessingsLoop()
+	{
+		AssertFlowControlNotNull();
+		mFlowControl->DoProcessingsLoop();
+	}
 
 	void Network::Clear()
 	{
