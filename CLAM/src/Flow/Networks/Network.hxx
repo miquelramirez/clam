@@ -62,6 +62,7 @@ public:
 	void Start();
 	void Stop();
 	void DoProcessings();
+	void DoProcessingsLoop();
 	void AddFlowControl( FlowControl* );
 	void Clear();
 
