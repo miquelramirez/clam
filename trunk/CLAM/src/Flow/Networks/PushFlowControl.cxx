@@ -81,7 +81,29 @@ void PushFlowControl::DoProcessings()
 	}
 }
 
+void PushFlowControl::DoProcessingsLoop()
+{
+	std::list< Processing* > toDo(mGenerators);
+	std::list< Processing* > done;
 
+	while (!toDo.empty())
+	{
+		// pop the next processing
+		Processing * next = *(toDo.begin()); // the first
+		toDo.pop_front();
+
+		if(next->CanConsumeAndProduce())
+		{
+			next->Do();
+			//std::cerr << "\n+"<<next->GetClassName();
+		}
+		else
+		{
+		  //std::cerr << "\n-"<<next->GetClassName();
+		}
+		AddNewPossibleProcessingsToDo(next, toDo, done);
+	}
+}
 
 void PushFlowControl::AddNewPossibleProcessingsToDo(
 	Processing * producer, 
@@ -106,7 +128,7 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 		        //ignore orphan inports
 			if (!(*itInPort)->HasProcessing())
 				continue;
-			
+
 			Processing * proc = (*itInPort)->GetProcessing();
 
 			if (proc->CanConsumeAndProduce())

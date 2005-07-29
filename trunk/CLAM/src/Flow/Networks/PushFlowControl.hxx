@@ -43,6 +43,7 @@ public:
 	void ForceGenerator( Processing* insideGenerator);
 
 	void DoProcessings();
+	void DoProcessingsLoop();
 
 private:
 	void AddNewPossibleProcessingsToDo( Processing * father, 
