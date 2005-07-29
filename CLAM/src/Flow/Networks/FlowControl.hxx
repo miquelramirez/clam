@@ -48,6 +48,7 @@ public:
 
 	// to implement in each type of flowcontrol
 	virtual void DoProcessings() = 0;
+	virtual void DoProcessingsLoop() = 0;
 
 	void NetworkTopologyChanged() { mNetworkChanged=true;}
 

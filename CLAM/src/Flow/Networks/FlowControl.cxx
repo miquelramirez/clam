@@ -80,15 +80,4 @@ void FlowControl::ProcessingRemovedFromNetwork( Processing& removed )
 	NetworkTopologyChanged();
 }
 
-void FlowControl::DoProcessings()
-{
-	Network::ProcessingsMap::iterator it;
-	for ( it=mNetwork->BeginProcessings(); it!=mNetwork->EndProcessings(); it++ )
-	{
-		if (it->second->CanConsumeAndProduce())
-			it->second->Do();
-	}
-}
-
-
 }
