@@ -3,6 +3,7 @@
 #include <qwidget.h>
 #include <qobjectlist.h>
 #include <iostream>
+#include <string>
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "XMLStorage.hxx"
@@ -19,8 +20,8 @@
 #include "PortMonitor.hxx"
 
 /////////////Temporary includes
-#include "SimpleOscillator.hxx"
 #include "AudioOutPort.hxx"
+#include "AudioInPort.hxx"
 
 #include "BasicFlowControl.hxx"
 
@@ -30,15 +31,126 @@
 int jack_process (jack_nframes_t nframes, void *arg);
 void jack_shutdown (void *arg);
 
+namespace CLAM
+{
+	
+class ExternalPortConfig : public ProcessingConfig
+{
+public:
+	DYNAMIC_TYPE_USING_INTERFACE( ExternalPortConfig, 3, ProcessingConfig);	
+	DYN_ATTRIBUTE( 0, public, std::string, Name);
+	DYN_ATTRIBUTE( 1, public, int, ExternalBufferSize);
+	DYN_ATTRIBUTE( 2, public, int, ExternalSamplingRate);
+protected:
+	void DefaultInit()
+	{
+		AddAll();
+		UpdateData();
+		SetName("Unnamed External Port");
+		SetExternalBufferSize(1024);
+		SetExternalSamplingRate(44100);
+	}
+};
+	
+class ExternalOutPort : public Processing
+{
+public:
+	ExternalOutPort()
+		: mOut("AudioOut", this)
+	{
+	}
+	
+	ExternalOutPort(const ExternalPortConfig &conf)
+		: mOut("AudioOut", this)
+	{
+		Configure(conf);
+	}
+	
+	void CopyExternalBuffer( TData* buff, int nframes )
+	{
+		if (!mOut.CanProduce())
+		{
+	//		std::cout << "_outport cant produce" << std::endl;
+			return;
+		}
+
+		CLAM::Audio& so=mOut.GetAudio();
+		//JACK's datatype for audio is the same as ours, range (-1,1) in a float
+		std::copy(buff, buff+nframes, so.GetBuffer().GetPtr());
+		mOut.Produce();
+	}
+	bool Do() {return true;}
+	const ProcessingConfig& GetConfig() const {return mConf;}
+	const char* GetClassName() const { return "ExternalOutPort";}
+	bool ConcreteConfigure(const ProcessingConfig& conf)
+	{
+		CopyAsConcreteConfig(mConf,conf);
+
+		mOut.SetSize( mConf.GetExternalBufferSize() );
+		mOut.SetHop( mConf.GetExternalBufferSize() );
+		mOut.SetSampleRate( mConf.GetExternalSamplingRate() );
+		
+		return true;
+	}
+private:
+	ExternalPortConfig mConf;
+	AudioOutPort mOut;		
+};
+
+class ExternalInPort : public Processing
+{
+public:
+	ExternalInPort()
+		: mIn("AudioIn", this)
+	{
+	}
+	
+	ExternalInPort(const ExternalPortConfig &conf)
+		: mIn("AudioIn", this)
+	{
+		Configure(conf);
+	}
+	
+	void CopyToExternalBuffer( TData* buff, int nframes )
+	{
+		if (!mIn.CanConsume())
+		{
+	//		std::cout << "_outport cant produce" << std::endl;
+			return;
+		}
+
+		const CLAM::Audio& so=mIn.GetAudio();
+		//JACK's datatype for audio is the same as ours, range (-1,1) in a float
+		std::copy(so.GetBuffer().GetPtr(), so.GetBuffer().GetPtr()+nframes, buff);
+		mIn.Consume();
+	}
+	bool Do() {return true;}
+	const ProcessingConfig& GetConfig() const {return mConf;}
+	const char* GetClassName() const { return "ExternalInPort";}
+	bool ConcreteConfigure(const ProcessingConfig& conf)
+	{
+		CopyAsConcreteConfig(mConf,conf);
+
+		mIn.SetSize( mConf.GetExternalBufferSize() );
+		mIn.SetHop( mConf.GetExternalBufferSize() );
+		mIn.SetSampleRate( mConf.GetExternalSamplingRate() );
+		
+		return true;
+	}
+private:
+	ExternalPortConfig mConf;
+	AudioInPort mIn;		
+};
+}
+
 class JACKNetworkPlayer
 {
 	CLAM::Network _network;
 
-	CLAM::SimpleOscillator _oscil;
-	CLAM::AudioOutPort _outport;
-	CLAM::AudioInPort _inport;
 
-	float _samplerate;
+	CLAM::ExternalInPort* _networkDestination;
+	CLAM::ExternalOutPort* _networkSource;
+	int _jsamplerate, _jbuffersize;
 
 	//JACK CODE
 	jack_port_t *input_port;
@@ -55,16 +167,20 @@ public:
 		
 		//CONNECT PORTS
 		//CLAM::Processing & entrada=_network.GetProcessing("SMSAnalysisCore");
-		CLAM::Processing & entrada=_network.GetProcessing("AudioAdder");
+		//CLAM::Processing & entrada=_network.GetProcessing("AudioAdder");
 		//CLAM::Processing & sortida=_network.GetProcessing("SMSSynthesis");
-		CLAM::Processing & sortida=_network.GetProcessing("AudioAdder");
+		//CLAM::Processing & sortida=_network.GetProcessing("AudioAdder");
 
+		_networkSource=new CLAM::ExternalOutPort();
+		_networkDestination=new CLAM::ExternalInPort();
+
+		//TODO  remove from Network 
 		//fc->ForceGenerator( &entrada );
-
 
 		//JACK CODE
 		//init client
-		if ((client = jack_client_new ("CLAM client")) == 0) {
+		if ((client = jack_client_new ("CLAM client")) == 0)
+		{
 			fprintf (stderr, "JACK ERROR: server not running?\n");
 			exit(1);
 		}
@@ -75,21 +191,27 @@ public:
 		//registra funcio shutdown
 		jack_on_shutdown (client, jack_shutdown, this);
 		
-		_samplerate=(float)jack_get_sample_rate (client);
+		_jsamplerate=(int)jack_get_sample_rate (client);
+		_jbuffersize=(int)jack_get_buffer_size (client);
 
-		_inport.SetSize(1024);
-		_inport.SetHop(1024);
-		_inport.SetSampleRate(44100);
-		_outport.SetSize(1024);
-		_outport.SetHop(1024);
-		_outport.SetSampleRate(44100);
 		//EP: REVISA METODE, A LA DOC HI SURT PERO AL src NO
 		//ConnectPorts( _outport, entrada, "Input Audio");
 
-		ConnectPorts( _outport, entrada, 0);
-		//ConnectPorts( sortida, 2, _inport);
-		ConnectPorts( sortida, 0, _inport);
+		CLAM::ExternalPortConfig conf;
+		conf.SetName("CLAM_Prototype_Input");
+		conf.SetExternalBufferSize(_jbuffersize);
+		conf.SetExternalSamplingRate(_jsamplerate);
+		
+		_networkSource->Configure(conf);
 
+		conf.SetName("CLAM_Prototype_Output");
+		_networkDestination->Configure(conf);
+		
+		_network.AddProcessing("ExternalOutPort",_networkSource);
+		_network.ConnectPorts("ExternalOutPort.AudioOut","SMSAnalysisCore.Input Audio");
+		_network.AddProcessing("ExternalInPort",_networkDestination);
+		_network.ConnectPorts("SMSSynthesis.OutputAudio","ExternalInPort.AudioIn");
+		
 		ManageInputPorts();
 		ManageOutputPorts();
 	}
@@ -102,7 +224,6 @@ public:
 
 		//Register the port
 		input_port = jack_port_register (client, "input", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
-		
 	}
 	
 	void ManageOutputPorts(void)
@@ -115,56 +236,24 @@ public:
 		output_port = jack_port_register (client, "output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 	}
 	
-	void ProcessInputPorts(const jack_nframes_t nframes)
-	{
-		if (!_outport.CanProduce())
-		{
-			std::cout << "_outport cant produce" << std::endl;
-			return;
-		}
-		jack_default_audio_sample_t *in = 
-			(jack_default_audio_sample_t *) jack_port_get_buffer (input_port, nframes);
-
-		CLAM::Audio& so=_outport.GetAudio();
-
-		//JACK's datatype for audio is the same as ours, range (-1,1) in a float
-		std::copy(in, in+nframes, so.GetBuffer().GetPtr());
-
-		_outport.Produce();
-	}
-	
-	void ProcessOutputPorts(const jack_nframes_t nframes)
-	{
-		if (!_inport.CanConsume())
-		{
-			std::cout << "_inport cant consume" << std::endl;
-			return;
-		}
-		jack_default_audio_sample_t *out = 
-			(jack_default_audio_sample_t *) jack_port_get_buffer (output_port, nframes);
-	
-		const CLAM::Audio& so=_inport.GetAudio();
-		
-		//JACK's datatype for audio is the same as ours, range (-1,1) in a float
-		std::copy(so.GetBuffer().GetPtr(), so.GetBuffer().GetPtr()+nframes, out);
-	
-		_inport.Consume();
-	}
-
 	void Do(const jack_nframes_t nframes)
 	{
-		ProcessInputPorts(nframes); //JACK --> CLAM
- 
-		_network.DoProcessings();
-		_network.DoProcessings();
+		jack_default_audio_sample_t *jackInBuffer = 
+			(jack_default_audio_sample_t*) jack_port_get_buffer (input_port, nframes);
+		
+		_networkSource->CopyExternalBuffer( (CLAM::TData*)jackInBuffer, nframes );
 
-		ProcessOutputPorts(nframes); //CLAM --> JACK
+		_network.DoProcessingsLoop();
+		_network.DoProcessingsLoop();
+
+		jack_default_audio_sample_t *jackOutBuffer = 
+			(jack_default_audio_sample_t *) jack_port_get_buffer (output_port, nframes);
+
+		_networkDestination->CopyToExternalBuffer(( CLAM::TData*)jackOutBuffer, nframes);
 	}
 	
 	void Start()
 	{
-		_oscil.Start();
-		
 		_network.Start();
 
 		//JACK CODE (the init order of network, ... should be decided)
@@ -184,8 +273,6 @@ public:
 			}
 
 		_network.Stop();
-
-		_oscil.Stop();
 	}
 	
 	~JACKNetworkPlayer()
@@ -216,7 +303,6 @@ void jack_shutdown (void *arg)
 	JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
 	delete player;
 }
-
 
 static std::string getMonitorNumber()
 {
