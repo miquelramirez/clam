@@ -311,9 +311,9 @@ public:
 		out.DisconnectFromAll();
 
 		CPPUNIT_ASSERT( out.BeginConnectedInPorts() == out.EndConnectedInPorts() );
-		CPPUNIT_ASSERT( 0 == in1.GetProcessing() );
-		CPPUNIT_ASSERT( 0 == in2.GetProcessing() );
-		CPPUNIT_ASSERT( 0 == in3.GetProcessing() );
+		CPPUNIT_ASSERT( !in1.HasProcessing() );
+		CPPUNIT_ASSERT( !in2.HasProcessing() );
+		CPPUNIT_ASSERT( !in3.HasProcessing() );
 	}
 
 	void testOutPort_IsConnectableTo_WhenInPortIsTheSameType()
