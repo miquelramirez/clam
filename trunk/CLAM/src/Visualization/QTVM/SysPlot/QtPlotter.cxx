@@ -20,7 +20,6 @@
  */
 
 #include <iostream>
-#include <qworkspace.h>
 #include "QtAppWrapper.hxx"
 #include "QtPlotter.hxx"
 
@@ -35,7 +34,7 @@ namespace CLAM
 		QtPlotter::MultiPlot QtPlotter::mMultiPlot;
 		QtPlotter::PlotIndex QtPlotter::mPlotIndex = 0;
 		QtPlotter::BPFEditorIndex QtPlotter::mBPFEditorIndex = 0;
-		QtPlotter::Workspace QtPlotter::ws;
+		QtPlotter::Workspace QtPlotter::ws=0;
 		QtPlotter::HaveWorkspace QtPlotter::mHaveWorkspace = false;
 		const unsigned wflags = Qt::WStyle_Customize | Qt::WStyle_Title | Qt::WStyle_SysMenu | Qt::WStyle_Minimize;
 
@@ -393,7 +392,7 @@ namespace CLAM
 
 		void QtPlotter::CreateWorkspace()
 		{
-			ws = new QWorkspace(0);
+			ws = new PWorkspace(0);
 			ws->setCaption("QtPlotter");
 			ws->setScrollBarsEnabled(true);
 			mHaveWorkspace = true;
@@ -427,6 +426,19 @@ namespace CLAM
 		void QtPlotter::NonMultiPlotMsg(const std::string& methodName, const std::string& plotKey)
 		{
 			std::cout << "QtPlotter::" << methodName << ": " << plotKey << " is not a QtMultiPlot object." << std::endl;
+		}
+
+		void QtPlotter::Clear()
+		{
+			mPlotMap.clear();
+			mPlotList.clear();
+			mMultiPlot.clear();
+			mBPFEditorMap.clear();
+			mBPFEditorList.clear();
+			mPlotIndex = 0;
+			mBPFEditorIndex = 0;
+			ws = 0;
+			mHaveWorkspace = false;
 		}
     }
 }
