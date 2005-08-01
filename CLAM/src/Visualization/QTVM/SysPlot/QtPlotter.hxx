@@ -25,9 +25,8 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <qworkspace.h>
 #include "QtPlots.hxx"
-
-class QWorkspace;
 
 namespace CLAM
 {
@@ -43,6 +42,19 @@ namespace CLAM
 
 		class QtPlotter
 		{
+			class PWorkspace : public QWorkspace
+			{
+			public:
+				PWorkspace(QWidget* parent=0)
+					: QWorkspace(parent)
+					{}
+				~PWorkspace(){}
+
+			protected:
+				void closeEvent(QCloseEvent *e){ e->accept(); QtPlotter::Clear(); }
+
+			};
+
 			typedef std::map<std::string,int> PlotMap;
 			typedef std::map<std::string,int> BPFEditorMap;
 			typedef std::vector<QtPlot*>      PlotList;
@@ -51,7 +63,7 @@ namespace CLAM
 			typedef int                       PlotIndex;
 			typedef int                       BPFEditorIndex;
 			typedef bool                      HaveWorkspace;
-			typedef QWorkspace*               Workspace;
+			typedef PWorkspace*               Workspace;
 
 		public:
 			static void Add(const std::string& plotKey, const Audio& data);
@@ -90,7 +102,7 @@ namespace CLAM
 									 const std::string& dataKey, 
 									 const Color& lines_color,
 									 const Color& handlers_color);
-				
+	
 		private:				
 			static Workspace      ws;
 			static PlotMap        mPlotMap;
@@ -113,6 +125,8 @@ namespace CLAM
 			static void NonExistentKeyMsg(const std::string& methodName, const std::string& plotKey);
 			static void DuplicatedKeyMsg(const std::string& methodName, const std::string& plotKey);
 			static void NonMultiPlotMsg(const std::string& methodName, const std::string& plotKey);
+
+			static void Clear();
 
 		};
     }
