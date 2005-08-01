@@ -18,4 +18,6 @@ public:
   void timeout(void);
   float mValue;
 };
+
+
 #endif
