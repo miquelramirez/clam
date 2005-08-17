@@ -26,6 +26,8 @@ namespace CLAM
 
 		MultiDisplayPlot::~MultiDisplayPlot()
 		{
+			mControllers.clear();
+			mSurfaces.clear();
 		}
 
 		void MultiDisplayPlot::Label(const std::string& label)
