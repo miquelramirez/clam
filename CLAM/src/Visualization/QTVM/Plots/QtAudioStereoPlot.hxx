@@ -69,7 +69,7 @@ namespace CLAM
 			void InitAudioStereoPlot();
 
 			void PlayingTime(TData time);
-			void StopPlaying(TData tiem);
+			void StopPlaying(TData time);
 
 			void SynchronizeRegionTime();
 			void SynchronizePlayingPos();
