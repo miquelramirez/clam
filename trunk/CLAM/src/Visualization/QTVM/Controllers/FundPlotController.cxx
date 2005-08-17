@@ -28,10 +28,9 @@ namespace CLAM
 		FundPlotController::FundPlotController()
 			: mMustProcessData(false)
 			, mHasData(false)
-			, mMaxFreq(TData(0.0))
 		{
 			SetMinSpanX(50.0);
-			SetMinSpanY(10.0);
+			SetMinSpanY(40.0);
 		}
 
 		FundPlotController::~FundPlotController()
@@ -47,7 +46,7 @@ namespace CLAM
 			CacheData();
 			FullView();
 			SetnSamples(GetDuration()*GetSampleRate());
-			SetYRange(0.0,double(mMaxFreq));
+			SetYRange(0.0,GetSampleRate()/2.0);
 			InitialRegionTime();
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
@@ -100,6 +99,7 @@ namespace CLAM
 
 		void FundPlotController::Draw()
 		{
+			if(!mHasData || !IsRenderingActive()) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
 			PlayablePlotController::Draw();
@@ -129,10 +129,9 @@ namespace CLAM
 
 		void FundPlotController::FullView()
 		{
-			mMaxFreq += TData(50.0);
 			mView.left = 0.0;
 			mView.right = GetDuration()*GetSampleRate();
-			mView.top = double(mMaxFreq);
+			mView.top = GetSampleRate()/2.0;
 			mView.bottom = 0.0;
 			SetHBounds(mView.left,mView.right);
 			SetVBounds(mView.bottom,mView.top);
@@ -142,16 +141,12 @@ namespace CLAM
 
 		void FundPlotController::CacheData()
 		{
-			mMaxFreq = TData(0.0);
 			int nFrames = mSegment.GetnFrames();
 			mCacheData.Resize(nFrames);
 			mCacheData.SetSize(nFrames);
-			TData curFreq;
 			for(int i = 0; i < nFrames; i++)
 			{
-				curFreq = mSegment.GetFrame(i).GetFundamental().GetFreq(0);
-				if(curFreq > mMaxFreq) mMaxFreq = curFreq;
-				mCacheData[i] = curFreq;	
+				mCacheData[i] = mSegment.GetFrame(i).GetFundamental().GetFreq(0);
 			}
 		}
 
@@ -200,6 +195,11 @@ namespace CLAM
 			double left = xmin*GetSampleRate();
 			double right = xmax*GetSampleRate();
 			SetHBounds(left,right);
+		}
+
+		void FundPlotController::setVBounds(double ymin, double ymax)
+		{
+			SetVBounds(ymin,ymax);
 		}
     }
 }

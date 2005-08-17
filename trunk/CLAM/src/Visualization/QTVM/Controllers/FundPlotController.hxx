@@ -48,6 +48,7 @@ namespace CLAM
 
 		public slots:
 			void setHBounds(double, double);
+			void setVBounds(double, double);
 			void setSelectedXPos(double);
 
 		protected:
@@ -63,8 +64,6 @@ namespace CLAM
 			DataArray    mProcessedData;
 			bool         mMustProcessData;
 			bool         mHasData;
-			TData        mMaxFreq;
-
 			
 			void CacheData();
 			void ProcessData();
