@@ -33,7 +33,7 @@ namespace CLAM
 			, mHugeArrayCondition(false)
 			, mHasData(false)
 		{
-			SetMinSpanX(50.0);
+			SetMinSpanX(100.0);
 			SetMinSpanY(0.2);
 			SetYRange(-1.0, 1.0);
 		}
@@ -64,6 +64,7 @@ namespace CLAM
 
 		void AudioPlotController::Draw()
 		{
+			if(!mHasData || !IsRenderingActive()) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
 			DrawAxis();
@@ -248,6 +249,11 @@ namespace CLAM
 			double left = xmin*GetSampleRate();
 			double right = xmax*GetSampleRate();
 			SetHBounds(left,right);
+		}
+
+		void AudioPlotController::setVBounds(double ymin, double ymax)
+		{
+			SetVBounds(ymin,ymax);
 		}
     }
 }

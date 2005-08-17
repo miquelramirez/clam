@@ -58,6 +58,7 @@ namespace CLAM
 
 		public slots:
 			void setHBounds(double, double);
+			void setVBounds(double, double);
 			void setSelectedXPos(double);
 
 		protected:

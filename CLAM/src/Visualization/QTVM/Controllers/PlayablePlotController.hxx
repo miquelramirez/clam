@@ -31,6 +31,7 @@ namespace CLAM
 
 		public slots:
 			virtual void setHBounds(double, double)=0;
+			virtual void setVBounds(double, double)=0;
 			virtual void setSelectedXPos(double)=0;
 			
 			void updateTimePos(float);

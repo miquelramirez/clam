@@ -67,6 +67,9 @@ namespace CLAM
 			void SetDialColor(Color c);
 
 			virtual bool IsPlayable();
+			
+			void SetSegmentationMarksEnabled(bool e);
+			void ActiveRendering(bool active);
 		    
 		signals:
 			void requestRefresh();
@@ -88,6 +91,7 @@ namespace CLAM
 			void yRulerRange(double,double);
 			void selectedXPos(double);
 			void requestSegmentationTag();
+			void mouseOverDisplay(bool);
 
 		public slots:
 			void hZoomIn();
@@ -103,6 +107,7 @@ namespace CLAM
 			void updateTag(int, QString);
 			
 			virtual void setHBounds(double, double)=0;
+			virtual void setVBounds(double, double)=0;
 			virtual void setSelectedXPos(double)=0;
 
 		protected:
@@ -140,6 +145,8 @@ namespace CLAM
 
 			virtual void FullView()=0;
 
+			bool IsRenderingActive() const;
+
 		private:
 			int    mDisplayWidth;
 			int    mDisplayHeight;
@@ -174,6 +181,8 @@ namespace CLAM
 			bool                  mKeyDeletePressed;
 			bool                  mKeyShiftPressed;
 			bool                  mHasSentTag;
+			bool                  mSegmentationMarksEnabled;
+			bool                  mActiveRendering;
 			
 			Dial mDial;
 

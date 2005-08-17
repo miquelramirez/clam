@@ -53,6 +53,7 @@ namespace CLAM
 
 		void SpectrogramPlotController::Draw()
 		{
+			if(!mHasData || !IsRenderingActive()) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
 			PlotController::Draw();
@@ -391,6 +392,11 @@ namespace CLAM
 			double left = xmin*GetnSamples()/mDuration;
 			double right = xmax*GetnSamples()/mDuration;
 			SetHBounds(left,right);
+		}
+
+		void SpectrogramPlotController::setVBounds(double ymin, double ymax)
+		{
+			SetVBounds(ymin*GetMaxSpanY()/mSpectralRange,ymax*GetMaxSpanY()/mSpectralRange);
 		}
     }
 }

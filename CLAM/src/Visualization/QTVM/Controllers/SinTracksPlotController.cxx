@@ -102,6 +102,7 @@ namespace CLAM
 
 		void SinTracksPlotController::Draw()
 		{
+			if(!mHasData || !IsRenderingActive()) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
 			PlotController::Draw();
@@ -151,6 +152,16 @@ namespace CLAM
 			TIndex right = TIndex(GetRightBound()*double(mNumberOfFrames)/GetnSamples());
 			TIndex bottom = TIndex(GetBottomBound());
 			TIndex top = TIndex(GetTopBound());
+
+			if(right-left < 3)
+			{
+				right = left + 3;
+				if(right >= mNumberOfFrames)
+				{
+					right = mNumberOfFrames - 1;
+					left = right - 3;
+				}
+			}
 
 			mVerClipper.Cull(TData(bottom), TData(top), mStarts, mEnds );
 			mHorClipper.Cull(left, right, mStarts, mEnds );
@@ -236,6 +247,11 @@ namespace CLAM
 		{
 			SetSelPos(xpos*mSampleRate,true);
 			emit requestRefresh();
+		}
+
+		void SinTracksPlotController::setVBounds(double ymin, double ymax)
+		{
+			SetVBounds(ymin,ymax);
 		}
     }
 }

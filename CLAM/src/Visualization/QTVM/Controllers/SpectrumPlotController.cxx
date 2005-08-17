@@ -124,6 +124,7 @@ namespace CLAM
 
 		void SpectrumPlotController::Draw()
 		{
+			if(!mHasData || !IsRenderingActive()) return;
 			if(!mHasData) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
@@ -258,6 +259,11 @@ namespace CLAM
 		{
 			SetSelPos(xpos*GetnSamples()/mSpectralRange,true);
 			emit requestRefresh();
+		}
+
+		void SpectrumPlotController::setVBounds(double ymin, double ymax)
+		{
+			SetVBounds(ymin,ymax);
 		}
        	
     }

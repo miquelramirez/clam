@@ -54,6 +54,8 @@ namespace CLAM
 			, mKeyDeletePressed(false)
 			, mKeyShiftPressed(false)
 			, mHasSentTag(false)
+			, mSegmentationMarksEnabled(true)
+			, mActiveRendering(true)
 		{	
 		}
 	
@@ -481,11 +483,13 @@ namespace CLAM
 		    mIsAbleToEdit=false;
 			QCursor cursor(ArrowCursor);
 			emit cursorChanged(cursor);
+			emit mouseOverDisplay(false);
 		}
 
 		void PlotController::EnterMouse()
 		{
 		    mIsAbleToEdit=true;
+			emit mouseOverDisplay(true);
 		}
 
 		bool PlotController::IsAbleToEdit()
@@ -658,6 +662,7 @@ namespace CLAM
 
 		void PlotController::InsertElem(unsigned elem)
 		{
+			if(!mSegmentationMarksEnabled) return;
 			if(HaveElem(elem)) return;
 			std::vector<unsigned>::iterator pos = mMarks.begin();
 			std::vector<QString>::iterator tag_pos = mTags.begin();
@@ -748,6 +753,21 @@ namespace CLAM
 		const double& PlotController::GetMaxY() const
 		{
 			return mMaxY;
+		}
+
+		void PlotController::SetSegmentationMarksEnabled(bool e)
+		{
+			mSegmentationMarksEnabled = e;
+		}
+
+		void PlotController::ActiveRendering(bool active)
+		{
+			mActiveRendering = active;
+		}
+
+		bool PlotController::IsRenderingActive() const
+		{
+			return mActiveRendering;
 		}
 
 	}

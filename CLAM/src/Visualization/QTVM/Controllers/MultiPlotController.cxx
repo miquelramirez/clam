@@ -133,6 +133,7 @@ namespace CLAM
 		
 		void MultiPlotController::Draw()
 		{
+			if(!mHasData || !IsRenderingActive()) return;
 			if(mMustProcessData) ProcessData();
 			std::map<std::string,MultiPlotRenderer*>::iterator it=mRenderers.begin();
 			for(; it != mRenderers.end(); it++)
@@ -294,6 +295,11 @@ namespace CLAM
 			double pos = (xpos-mXMin)*GetnSamples()/span;
 			SetSelPos(pos,true);
 			emit requestRefresh();
+		}
+
+		void MultiPlotController::setVBounds(double ymin, double ymax)
+		{
+			SetVBounds(ymin,ymax);
 		}
 
     }
