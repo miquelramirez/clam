@@ -172,9 +172,6 @@ namespace CLAM
 				mMIDIDevice = mEnqueuedDevice;
 				mHasEnqueuedDevice = false;
 			}
-
-			SetPlaying(false);
-	       
 		}
 
 		unsigned MIDIMelodyPlayer::GetTime()

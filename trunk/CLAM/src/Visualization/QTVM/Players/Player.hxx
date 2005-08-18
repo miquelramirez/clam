@@ -50,6 +50,8 @@ namespace CLAM
 
 			void SetSlotPlayingTime(Slotv1<TData>& slot);
 			void SetSlotStopPlaying(Slotv1<TData>& slot);
+
+			bool IsRunning() const;
 	
 		protected:
 			Thread mThread;

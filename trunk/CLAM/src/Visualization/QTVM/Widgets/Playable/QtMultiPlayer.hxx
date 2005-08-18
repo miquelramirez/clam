@@ -20,6 +20,7 @@ namespace CLAM
 
 			void SetPlaySegment(const MediaTime& time);
 			bool IsPlaying();
+			bool IsRunning();
 
 			void SetSlotPlayingTime(Slotv1<TData>& slot);
 			void SetSlotStopPlaying(Slotv1<TData>& slot);
