@@ -133,6 +133,11 @@ namespace CLAM
 		{
 			return mIsStopped;
 		}
+
+		bool Player::IsRunning() const
+		{
+			return mThread.IsRunning();
+		}
     }
 }
 

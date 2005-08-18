@@ -173,8 +173,6 @@ namespace CLAM
 
 			TData stopTime = (IsStopped()) ? TData(leftIndex)/mSampleRate : (IsPaused()) ? mTime.GetBegin() : mTime.GetEnd();
 			mSigStop.Emit(stopTime);
-
-			SetPlaying(false);
 		}
 
 		TIndex MelodyPlayer::GetNoteIndex(bool first)

@@ -133,8 +133,6 @@ namespace CLAM
 
 			TData stopTime = (IsStopped()) ? TData(leftIndex)/sampleRate : (IsPaused()) ? mTime.GetBegin() : mTime.GetEnd();
 			mSigStop.Emit(stopTime);
-
-			SetPlaying(false);
 		}
 
 		void APlayer::SetLeftChannelMuted(bool b)

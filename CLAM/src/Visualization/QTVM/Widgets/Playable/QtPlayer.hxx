@@ -48,6 +48,7 @@ namespace CLAM
 
 			virtual void SetPlaySegment(const MediaTime& time)=0;
 			virtual bool IsPlaying()=0;
+			virtual bool IsRunning()=0;
 
 			virtual void SetColorMap(ColorMap map);
 

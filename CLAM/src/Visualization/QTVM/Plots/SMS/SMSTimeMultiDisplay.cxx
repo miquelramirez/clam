@@ -449,7 +449,7 @@ namespace CLAM
 					isAudioData = false;
 					break;
 			}
-			if(mPlayer->IsPlaying())
+			if(mPlayer->IsRunning())
 			{
 				mHasEnqueuedPlayListItem = true;
 				mEnqueuedDataId = dataId;

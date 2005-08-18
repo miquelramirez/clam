@@ -89,6 +89,21 @@ namespace CLAM
 			return playing;
 		}
 
+		bool QtMultiPlayer::IsRunning()
+		{
+			if(!mPlayers.size()) return false;
+			bool running = false;
+			for(unsigned i=0; i < mPlayers.size(); i++)
+			{
+				if(mPlayers[i]->IsRunning()) 
+				{
+					running=true;
+					break;
+				}
+			}
+			return running;
+		}
+
 		void QtMultiPlayer::AllPlayers(bool all)
 		{
 			// be careful
