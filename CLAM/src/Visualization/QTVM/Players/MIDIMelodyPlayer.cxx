@@ -171,7 +171,9 @@ namespace CLAM
 			{
 				mMIDIDevice = mEnqueuedDevice;
 				mHasEnqueuedDevice = false;
-			}	    
+			}
+
+			SetPlaying(false);
 	       
 		}
 
