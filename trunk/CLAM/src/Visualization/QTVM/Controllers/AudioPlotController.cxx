@@ -35,7 +35,6 @@ namespace CLAM
 		{
 			SetMinSpanX(100.0);
 			SetMinSpanY(0.2);
-			SetYRange(-1.0, 1.0);
 		}
 
 		AudioPlotController::~AudioPlotController()
@@ -77,6 +76,7 @@ namespace CLAM
 			mView.right = double(mAudio.GetBuffer().Size());
 			mView.bottom = -1.0;
 			mView.top = 1.0;
+			SetYRange(mView.bottom, mView.top);
 			SetHBounds(mView.left,mView.right);
 			SetVBounds(mView.bottom,mView.top);
 			emit viewChanged(mView);

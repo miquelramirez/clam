@@ -61,7 +61,7 @@ namespace CLAM
 			bool                              mMustProcessData;
 			bool                              mHasData;
 
-			enum { MaxSpectrums=513, MaxSpectrumSize=513};
+			enum { MaxSpectrums=257, MaxSpectrumSize=257};
 
 			void ProcessData();
 			void Colorize();
