@@ -36,7 +36,6 @@ namespace CLAM
 		{
 			SetMinSpanX(50.0);
 			SetMinSpanY(5.0);
-			SetYRange(-150.0,0.0);
 			mPeaksRenderer.SetVBounds(-150.0,0.0);
 		}
 		
@@ -159,6 +158,7 @@ namespace CLAM
 			mView.right = double(mMagBuffer.Size());
 			mView.top = 0.0;
 			mView.bottom = -150.0;
+			SetYRange(mView.bottom, mView.top);
 			SetHBounds(mView.left,mView.right);
 			SetVBounds(mView.bottom,mView.top);
 			emit viewChanged(mView);
