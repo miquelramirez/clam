@@ -1136,17 +1136,8 @@ void Annotator::setMenuAudioItemsEnabled(bool enabled)
 {
 	audioAuralize_Segmentation_MarksAction->setOn(false); 
 	audioOriginal_Audio__LLDAction->setOn(false);
-
-	if(enabled)
-	{
-		audioAuralize_Segmentation_MarksAction->setEnabled(true);
-		audioOriginal_Audio__LLDAction->setEnabled(true);
-	}
-	else
-	{
-		audioAuralize_Segmentation_MarksAction->setEnabled(false);
-		audioOriginal_Audio__LLDAction->setEnabled(false);
-	}
+	audioAuralize_Segmentation_MarksAction->setEnabled(enabled);
+	audioOriginal_Audio__LLDAction->setEnabled(enabled);
 }
 
 void Annotator::hideBPFEditors()
