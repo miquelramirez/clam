@@ -85,7 +85,7 @@ private:
 	void connectBPFs();
 	void currentFile( std::string &);
 	void changeCurrentFile();
-	void markAllNoChanges();
+	void markAllSongsUnchanged();
 	void drawDescriptorsName();
 	void drawDescriptorsValue( int, bool );
 

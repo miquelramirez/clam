@@ -352,7 +352,7 @@ void Annotator::closeEvent ( QCloseEvent * e )
 	e->accept();
 }
 
-void Annotator::markAllNoChanges()
+void Annotator::markAllSongsUnchanged()
 {
 	QListViewItemIterator it (mProjectOverview);
 	for ( ; it.current() ; ++it )
@@ -445,7 +445,7 @@ void Annotator::fileNew()
 void Annotator::fileSave()
 {
 	mGlobalChanges = false;
-	markAllNoChanges();
+	markAllSongsUnchanged();
 	if(mProjectFileName=="") fileSaveAs();
 	else
 	{
