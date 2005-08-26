@@ -45,10 +45,6 @@ void AnnotatorBase::changeViewMenu( QWidget * q)
 {
 }
 
-void AnnotatorBase::AnnotatorBrowserGLgroup_toggled(bool a)
-{
-}
-
 void AnnotatorBase::songsClicked( QListViewItem * item )
 {
   std::cout<<"I'm at the base";
@@ -62,12 +58,6 @@ void AnnotatorBase::addSongsToProject()
 void AnnotatorBase::deleteSongsFromProject()
 {
 }
-
-
-
-
-
-
 
 void AnnotatorBase::AnnotatorBase_usesTextLabelChanged( bool )
 {

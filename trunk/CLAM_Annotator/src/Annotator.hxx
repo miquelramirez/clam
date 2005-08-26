@@ -81,7 +81,6 @@ private:
 	void initSpliters();
 	void initPlay();
 	void makeDescriptorTable();
-	void makeAnnotatorBrowserGLMenu();
 	void makeConnections();
 	void connectBPFs();
 	void currentFile( std::string &);
