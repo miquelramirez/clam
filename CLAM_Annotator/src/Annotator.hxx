@@ -138,9 +138,9 @@ private:
 
 private:
 	CLAM::VM::QtAudioPlot* mpAudioPlot;
-	CLAM::Audio mCurrentAudio;
-	CLAM::Audio mCurrentMarkedAudio;
-	std::vector<CLAM::Audio> mClick;
+	CLAM::Audio mCurrentAudio; ///< The current audio piece
+	CLAM::Audio mCurrentMarkedAudio; ///< Current audio with segmentation marks inserted
+	std::vector<CLAM::Audio> mClick; ///< A vector of audios to click
 
 	CLAM_Annotator::Project mProject;
 	CLAM_Annotator::SongFiles mSongFiles;
