@@ -308,8 +308,6 @@ void Annotator::segmentationMarksChanged(int, unsigned)
 	} 
 	mSegmentsChanged = true;
 	auralizeMarks();
-
-
 }
 
 void Annotator::addSongs()
@@ -1092,23 +1090,13 @@ void Annotator::auralizeMarks()
 
 }
 
-void Annotator::playMarks(bool play)
+void Annotator::playMarks(bool playThem)
 {
-	if(play)
+	CLAM::Audio * audioToPlay = playThem ? &mCurrentMarkedAudio : &mCurrentAudio;
+	mpAudioPlot->SetData(audioToPlay,false);
+	for(unsigned i=0; i < mBPFEditors.size(); i++)
 	{
-		mpAudioPlot->SetData(mCurrentMarkedAudio,false);
-		for(unsigned i=0; i < mBPFEditors.size(); i++)
-		{
-			mBPFEditors[i]->SetAudioPtr(&mCurrentMarkedAudio);
-		}
-	}
-	else
-	{
-		mpAudioPlot->SetData(mCurrentAudio,false);
-		for(unsigned i=0; i < mBPFEditors.size(); i++)
-		{
-			mBPFEditors[i]->SetAudioPtr(&mCurrentAudio);
-		}
+		mBPFEditors[i]->SetAudioPtr(audioToPlay);
 	}
 }
 
