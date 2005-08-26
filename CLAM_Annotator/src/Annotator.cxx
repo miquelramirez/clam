@@ -154,7 +154,6 @@ void Annotator::initLLDescriptorsWidgets()
 
 	removeLLDTabs();
 
-
 	int nTabs = mSchema.GetLLDSchema().GetLLDNames().size();
 
 	mTabPages.resize(nTabs);
@@ -175,7 +174,6 @@ void Annotator::initLLDescriptorsWidgets()
 		else
 		{
 			(*it0) = tabWidget2->page(0);
-
 		}
 	}
 
@@ -297,7 +295,7 @@ void Annotator::segmentationMarksChanged(int, unsigned)
 {
 	std::vector<unsigned int> marks;
 	CLAM::IndexArray* descriptorMarks = 
-	mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song","Segments");
+		mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song","Segments");
 	marks = mpAudioPlot->GetMarks();
 	int nMarks = marks.size();
 	descriptorMarks->Resize(nMarks);
@@ -373,7 +371,7 @@ void Annotator::deleteAllSongsFromProject()
 		++it;
 	}
 	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin() ; 
-	      it != toBeDeleted.end() ; it++)
+		it != toBeDeleted.end() ; it++)
 		delete *it;
 }
 
@@ -394,9 +392,20 @@ void Annotator::deleteSongsFromProject()
 
 void Annotator::addSongsToProject()
 {
-  /*	AddSongsToProjectDialog * dialog = new AddSongsToProjectDialog( *mpData, this, "add songs to project", WDestructiveClose);
-	dialog->show();
-  */	
+	QStringList files = QFileDialog::getOpenFileNames(
+		"Songs (*.wav *.mp3 *.ogg)",
+		"/home",
+		this,
+		"open files dialog",
+		"Select one or more files to open" );
+	QStringList list = files;
+	QStringList::Iterator it = list.begin();
+	for (; it != list.end(); it++ )
+	{
+		std::cout << *it << std::endl;
+	}
+	QMessageBox::information(this, "Not implemented",
+		"Adding songs to a project is still not implemented");
 }
 
 void Annotator::fileOpen()
