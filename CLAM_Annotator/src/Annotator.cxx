@@ -1093,7 +1093,7 @@ void Annotator::auralizeMarks()
 void Annotator::playMarks(bool playThem)
 {
 	CLAM::Audio * audioToPlay = playThem ? &mCurrentMarkedAudio : &mCurrentAudio;
-	mpAudioPlot->SetData(audioToPlay,false);
+	mpAudioPlot->SetData(*audioToPlay,false);
 	for(unsigned i=0; i < mBPFEditors.size(); i++)
 	{
 		mBPFEditors[i]->SetAudioPtr(audioToPlay);
