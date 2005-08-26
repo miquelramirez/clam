@@ -701,7 +701,6 @@
     <slot>fileExit()</slot>
     <slot>chooseColor()</slot>
     <slot>changeViewMenu( QWidget * q )</slot>
-    <slot>AnnotatorBrowserGLgroup_toggled( bool a )</slot>
     <slot>songsClicked( QListViewItem * item )</slot>
     <slot>addSongsToProject()</slot>
     <slot>deleteSongsFromProject()</slot>
