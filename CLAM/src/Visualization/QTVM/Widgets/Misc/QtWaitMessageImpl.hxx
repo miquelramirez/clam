@@ -3,7 +3,6 @@
 
 #include <string>
 #include <qdialog.h>
-#include "Thread.hxx"
 
 class QLabel;
 
@@ -20,18 +19,12 @@ namespace CLAM
 			~QtWaitMessageImpl();
 
 			void LabelText(const std::string& label);
-
+			
 		private:
 			QLabel*           mLabel;
 			WaitMsgIndicator* mIndicator;
-			Thread            mThread;
-			bool              mIsActive;
 
-			enum { REFRESH_TIME=20 };
-
-			void thread_code();
-			unsigned GetTime();
-		
+			enum { REFRESH_INTERVAL=20 };
 		};
 	}
 }

@@ -21,10 +21,10 @@ namespace CLAM
 			void paintEvent(QPaintEvent* pe);
 
 		private:
-			int mLeftXCoord;
-			int mState;
+			int     mLeftXCoord;
+			int     mState;
 
-			enum { MOV_TO_RIGHT=0, MOV_TO_LEFT=1, STEP=3, RECTWIDTH=60 };
+			enum { MOV_TO_RIGHT=0, MOV_TO_LEFT=1, STEP=3, RECTWIDTH=60, REFRESH_INTERVAL=20 };
 		};
 	}
 }

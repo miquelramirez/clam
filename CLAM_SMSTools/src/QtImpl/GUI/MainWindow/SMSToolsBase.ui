@@ -1,0 +1,816 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>SMSToolsBase</class>
+<widget class="QMainWindow">
+    <property name="name">
+        <cstring>SMSToolsBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>668</width>
+            <height>480</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>SMS Tools 2 | MTG-UPF (Barcelona)</string>
+    </property>
+</widget>
+<menubar>
+    <property name="name">
+        <cstring>mMenuBar</cstring>
+    </property>
+    <item text="File" name="mMenuFile">
+        <action name="fileConfig"/>
+        <item text="Configuration" name="mFileCfg" accel="">
+            <action name="mMenuFileNewCfg"/>
+            <action name="mMenuFileLoadCfg"/>
+        </item>
+        <action name="fileSMSAnalysis"/>
+        <item text="SMS Analysis" name="mFileSMSAnalysis" accel="">
+            <action name="mMenuFileLoadAnalysis"/>
+            <action name="mMenuFileStoreAnalysis"/>
+        </item>
+        <action name="fileMelody"/>
+        <item text="Melody" name="mFileMelody" accel="">
+            <action name="mMenuFileSaveMelody"/>
+        </item>
+        <action name="fileSMSTransform"/>
+        <item text="SMS Transformation" name="mFileTransformation" accel="">
+            <action name="mMenuFileNewScore"/>
+            <action name="mMenuFileLoadScore"/>
+        </item>
+        <action name="fileSMSSynthesis"/>
+        <item text="SMS Synthesis" name="mFileSMSSynthesis" accel="">
+            <action name="mMenuFileSaveSynSound"/>
+            <action name="mMenuFileSaveSynSinusoidal"/>
+            <action name="mMenuFileSaveSynResidual"/>
+        </item>
+        <separator/>
+        <action name="fileExitAction"/>
+    </item>
+    <item text="SMS Analysis" name="mMenuAnalysis">
+        <action name="mMenuAnalysisAnalyze"/>
+        <action name="mMenuAnalysisExtractMelody"/>
+    </item>
+    <item text="SMS Transformation" name="mMenuTransformation">
+        <action name="mMenuTransformApply"/>
+        <action name="mMenuTransformUndo"/>
+    </item>
+    <item text="SMS Synthesis" name="mMenuSynthesis">
+        <action name="mMenuSynthSinthesize"/>
+    </item>
+    <item text="View" name="mMenuView">
+        <action name="mMenuViewOriginalAudio"/>
+        <action name="mMenuViewFundFreq"/>
+        <action name="mMenuViewSinTracks"/>
+        <action name="viewSonogram"/>
+        <item text="Sonogram" name="mViewSonogram" accel="">
+            <action name="mMenuViewColorSonogram"/>
+            <action name="mMenuViewBWSonogram"/>
+        </item>
+        <action name="viewFrameData"/>
+        <item text="Frame Data" name="mViewFrameData" accel="">
+            <action name="mMenuViewSpecPeaks"/>
+            <action name="mMenuViewSinSpec"/>
+            <action name="mMenuViewResSpec"/>
+        </item>
+        <separator/>
+        <action name="mMenuViewSynAudio"/>
+        <action name="mMenuViewSynSinusoidal"/>
+        <action name="mMenuViewSynResidual"/>
+    </item>
+    <item text="?" name="mMenuHelp">
+        <action name="mMenuOnlineHelp"/>
+        <action name="mMenuLicense"/>
+        <action name="mMenuAbout"/>
+    </item>
+</menubar>
+<toolbars>
+</toolbars>
+<actions>
+    <action>
+        <property name="name">
+            <cstring>fileConfig</cstring>
+        </property>
+        <property name="text">
+            <string>Configuration</string>
+        </property>
+        <property name="menuText">
+            <string>Configuration</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuFileNewCfg</cstring>
+        </property>
+        <property name="text">
+            <string>New...</string>
+        </property>
+        <property name="menuText">
+            <string>New...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuFileLoadCfg</cstring>
+        </property>
+        <property name="text">
+            <string>Load...</string>
+        </property>
+        <property name="menuText">
+            <string>Load...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileSMSAnalysis</cstring>
+        </property>
+        <property name="text">
+            <string>SMS Analysis</string>
+        </property>
+        <property name="menuText">
+            <string>SMS Analysis</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuFileLoadAnalysis</cstring>
+        </property>
+        <property name="text">
+            <string>Load Analysis Data...</string>
+        </property>
+        <property name="menuText">
+            <string>Load Analysis Data...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuFileStoreAnalysis</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Store Analysis Data...</string>
+        </property>
+        <property name="menuText">
+            <string>Store Analysis Data...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileMelody</cstring>
+        </property>
+        <property name="text">
+            <string>Melody</string>
+        </property>
+        <property name="menuText">
+            <string>Melody</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuFileSaveMelody</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Save Extracted Melody...</string>
+        </property>
+        <property name="menuText">
+            <string>Save Extracted Melody...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileSMSTransform</cstring>
+        </property>
+        <property name="text">
+            <string>SMS Transformation</string>
+        </property>
+        <property name="menuText">
+            <string>SMS Transformation</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuFileNewScore</cstring>
+        </property>
+        <property name="text">
+            <string>New Score...</string>
+        </property>
+        <property name="menuText">
+            <string>New Score...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuFileLoadScore</cstring>
+        </property>
+        <property name="text">
+            <string>Load Score...</string>
+        </property>
+        <property name="menuText">
+            <string>Load Score...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileSMSSynthesis</cstring>
+        </property>
+        <property name="text">
+            <string>SMS Synthesis</string>
+        </property>
+        <property name="menuText">
+            <string>SMS Synthesis</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuFileSaveSynSound</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Save synthesized sound...</string>
+        </property>
+        <property name="menuText">
+            <string>Save synthesized sound...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuFileSaveSynSinusoidal</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Save synthesized sinusoidal...</string>
+        </property>
+        <property name="menuText">
+            <string>Save synthesized sinusoidal...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuFileSaveSynResidual</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Save synthesized residual...</string>
+        </property>
+        <property name="menuText">
+            <string>Save synthesized residual...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>fileExitAction</cstring>
+        </property>
+        <property name="text">
+            <string>Exit</string>
+        </property>
+        <property name="menuText">
+            <string>Exit</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+Q</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuAnalysisAnalyze</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Analyze</string>
+        </property>
+        <property name="menuText">
+            <string>Analyze</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuAnalysisExtractMelody</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Melody Extraction</string>
+        </property>
+        <property name="menuText">
+            <string>Melody Extraction</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuTransformApply</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Apply</string>
+        </property>
+        <property name="menuText">
+            <string>Apply</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuTransformUndo</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Undo Transformation</string>
+        </property>
+        <property name="menuText">
+            <string>Undo Transformation</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuSynthSinthesize</cstring>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Synthesize</string>
+        </property>
+        <property name="menuText">
+            <string>Synthesize</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuOnlineHelp</cstring>
+        </property>
+        <property name="text">
+            <string>Help...</string>
+        </property>
+        <property name="menuText">
+            <string>Help...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuLicense</cstring>
+        </property>
+        <property name="text">
+            <string>License...</string>
+        </property>
+        <property name="menuText">
+            <string>License...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuAbout</cstring>
+        </property>
+        <property name="text">
+            <string>About SMS Tools 2...</string>
+        </property>
+        <property name="menuText">
+            <string>About SMS Tools 2...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewSinTracks</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Sinusoidal Tracks</string>
+        </property>
+        <property name="menuText">
+            <string>Sinusoidal Tracks</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewFundFreq</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Fundametal Frequency</string>
+        </property>
+        <property name="menuText">
+            <string>Fundametal Frequency</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewSonogram</cstring>
+        </property>
+        <property name="text">
+            <string>Sonogram</string>
+        </property>
+        <property name="menuText">
+            <string>Sonogram</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewColorSonogram</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Color</string>
+        </property>
+        <property name="menuText">
+            <string>Color</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewBWSonogram</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>B&amp;W</string>
+        </property>
+        <property name="menuText">
+            <string>B&amp;&amp;W</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>viewFrameData</cstring>
+        </property>
+        <property name="text">
+            <string>Frame Data</string>
+        </property>
+        <property name="menuText">
+            <string>Frame Data</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewSpecPeaks</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Spectrum and Peaks</string>
+        </property>
+        <property name="menuText">
+            <string>Spectrum and Peaks</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewSinSpec</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Sinusoidal Spectrum</string>
+        </property>
+        <property name="menuText">
+            <string>Sinusoidal Spectrum</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewResSpec</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Residual Spectrum</string>
+        </property>
+        <property name="menuText">
+            <string>Residual Spectrum</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewSynSinusoidal</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Synthesized Sinusoidal</string>
+        </property>
+        <property name="menuText">
+            <string>Synthesized Sinusoidal</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewSynResidual</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Synthesized Residual</string>
+        </property>
+        <property name="menuText">
+            <string>Synthesized Residual</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewSynAudio</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Synthesized Audio</string>
+        </property>
+        <property name="menuText">
+            <string>Synthesized Audio</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mMenuViewOriginalAudio</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="text">
+            <string>Original Audio</string>
+        </property>
+        <property name="menuText">
+            <string>Original Audio</string>
+        </property>
+    </action>
+</actions>
+<connections>
+    <connection>
+        <sender>mMenuAnalysisAnalyze</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>analyze()</slot>
+    </connection>
+    <connection>
+        <sender>fileExitAction</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuFileLoadCfg</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>loadConfiguration()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuFileNewCfg</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>newConfiguration()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuFileSaveMelody</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>storeExtractedMelody()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuFileLoadAnalysis</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>loadAnalysisData()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuFileStoreAnalysis</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>storeAnalysisData()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuFileSaveSynSound</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>saveSynthesizedAudio()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuFileSaveSynSinusoidal</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>saveSynthesizedSinusoidal()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuFileSaveSynResidual</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>saveSynthesizedResidua()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuFileLoadScore</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>loadTransformationScore()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuFileNewScore</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>newTransformationScore()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuAnalysisExtractMelody</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>melodyExtraction()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuTransformApply</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>doTransformation()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuTransformUndo</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>undoTransformation()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewBWSonogram</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displayBWSonogram(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewColorSonogram</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displayColorSonogram(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewFundFreq</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displayFundamentalFrequency(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewOriginalAudio</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displayOriginalAudio(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewResSpec</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displayResidualSpectrum(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewSinSpec</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displaySinusoidalSpectrum(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewSinTracks</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displaySinusoidalTracks(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewSpecPeaks</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displaySpectrumAndPeaks(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewSynAudio</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displaySynthesizedSound(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewSynResidual</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displaySynthesizedResidual(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuViewSynSinusoidal</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>displaySynthesizedSinusoidal(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mMenuOnlineHelp</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>showOnlineHelp()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuLicense</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>showLicense()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuAbout</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>showAboutBox()</slot>
+    </connection>
+    <connection>
+        <sender>mMenuSynthSinthesize</sender>
+        <signal>activated()</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>synthesize()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">SMSToolsBase.ui.h</include>
+</includes>
+<slots>
+    <slot>loadConfiguration()</slot>
+    <slot>newConfiguration()</slot>
+    <slot>storeExtractedMelody()</slot>
+    <slot>loadAnalysisData()</slot>
+    <slot>storeAnalysisData()</slot>
+    <slot>saveSynthesizedAudio()</slot>
+    <slot>saveSynthesizedSinusoidal()</slot>
+    <slot>saveSynthesizedResidua()</slot>
+    <slot>loadTransformationScore()</slot>
+    <slot>newTransformationScore()</slot>
+    <slot>analyze()</slot>
+    <slot>melodyExtraction()</slot>
+    <slot>doTransformation()</slot>
+    <slot>undoTransformation()</slot>
+    <slot>displayBWSonogram( bool )</slot>
+    <slot>displayColorSonogram( bool )</slot>
+    <slot>displayFundamentalFrequency( bool )</slot>
+    <slot>displayOriginalAudio( bool )</slot>
+    <slot>displayResidualSpectrum( bool )</slot>
+    <slot>displaySinusoidalSpectrum( bool )</slot>
+    <slot>displaySinusoidalTracks( bool )</slot>
+    <slot>displaySpectrumAndPeaks( bool )</slot>
+    <slot>displaySynthesizedSound( bool )</slot>
+    <slot>displaySynthesizedResidual( bool )</slot>
+    <slot>displaySynthesizedSinusoidal( bool )</slot>
+    <slot>showOnlineHelp()</slot>
+    <slot>showLicense()</slot>
+    <slot>showAboutBox()</slot>
+    <slot>synthesize()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
