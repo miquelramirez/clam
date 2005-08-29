@@ -1,3 +1,4 @@
+#include <qtimer.h>
 #include <qpainter.h>
 #include "Message.hxx"
 #include "WaitMsgIndicator.hxx"
@@ -12,6 +13,10 @@ namespace CLAM
 			, mState(MOV_TO_RIGHT)
 		{
 			setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
+			QTimer* timer = new QTimer(this);
+			timer->start(REFRESH_INTERVAL);
+			connect(timer,SIGNAL(timeout()),SLOT(refresh()));
 		}
 
 		WaitMsgIndicator::~WaitMsgIndicator()
@@ -49,7 +54,7 @@ namespace CLAM
 				default:
 					break;
 			}
-			repaint();
+			update();
 		}
 	}
 }
