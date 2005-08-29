@@ -44,6 +44,7 @@ namespace CLAM
 			void Flush();
 
 		signals:
+			void currentTime(float);
 			void dataType(QString);
 
 		protected:
@@ -73,6 +74,7 @@ namespace CLAM
 			void sinusoidalTracks(bool);
 			void updateRegion(MediaTime);
 			void setCurrentPlayer(int);
+			void selectedXPos(double);
 
 		private:
 			std::vector<const Audio*> mAudioPtrs;

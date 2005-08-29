@@ -52,7 +52,7 @@ namespace CLAM
 		void QtSMSPlayer::play()
 		{
 			if(mCurrentPlayer < AUDIO || mCurrentPlayer > FUNDAMENTAL) return;
-			int sentinel = LookIfAvailable(); 
+			int sentinel = LookIfAvailable();
 			switch(sentinel)
 			{
 				case AUDIO:

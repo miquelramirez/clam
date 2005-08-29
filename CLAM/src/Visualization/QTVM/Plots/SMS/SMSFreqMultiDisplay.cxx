@@ -46,7 +46,7 @@ namespace CLAM
 			topHole->setFixedSize(20,GetXRuler()->height());
 			leftHole->setFixedSize(y_ruler_width,20);
 			rightHole->setFixedSize(20,20);
-			bottomHole->setFixedHeight(20);
+			bottomHole->setFixedHeight(10);
 
 			// toggle frame
 			CreateToggleColorFrame();

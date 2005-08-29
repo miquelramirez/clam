@@ -267,7 +267,6 @@ namespace CLAM
 			{
 				if(mAudioPtrs[i])
 				{
-					delete mAudioPtrs[i];
 					mAudioPtrs[i] = 0;
 				}
 			}
@@ -287,6 +286,7 @@ namespace CLAM
 			mControllers.push_back(new FundPlotController());
 			mControllers.push_back(new SinTracksPlotController());
 			SetMasterId(MASTER);
+			connect(mControllers[MASTER],SIGNAL(selectedXPos(double)),this,SLOT(selectedXPos(double)));
 		}
 
 		void SMSTimeMultiDisplay::CreateSurfaces()
@@ -419,6 +419,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::updateRegion(MediaTime time)
 		{
+			if(time.GetEnd() <= time.GetBegin()) return;
 			mPlayer->stop();
 			mPlayer->SetPlaySegment(time);
 			mLabelsGroup->UpdateLabels(time);
@@ -463,6 +464,11 @@ namespace CLAM
 					((QtSMSPlayer*)mPlayer)->SetData(data,!mHasAudioData);
 				}
 			}
+		}
+
+		void SMSTimeMultiDisplay::selectedXPos(double xpos)
+		{
+			emit currentTime(float(xpos));
 		}
 
 		void SMSTimeMultiDisplay::SynchronizeVZoom()
@@ -711,6 +717,9 @@ namespace CLAM
 			middleHole->setFixedSize(50,30);
 
 			mCBPlayList = new QComboBox(this);
+			QFontMetrics fm(mCBPlayList->font());
+			int cbox_width=fm.width("Synthesized Sinusoidal")+35;
+			mCBPlayList->setFixedWidth(cbox_width);
 			mCBPlayList->setDuplicatesEnabled(false);
 			QToolTip::add(mCBPlayList,"Play List");
 			
@@ -811,16 +820,17 @@ namespace CLAM
 		{
 			if(id < MASTER || id > FUNDAMENTAL) return;
 			const QString& item = mPlayList[id];
-			int index=-1;
+			std::vector<std::string> tmpLst;
 			for(int i=0; i < mCBPlayList->count(); i++)
 			{
-				if(!mCBPlayList->text(i).compare(item))
-				{
-					index = i;
-					break;
-				}
+				if(!mCBPlayList->text(i).compare(item)) continue;
+				tmpLst.push_back((mCBPlayList->text(i)));
 			}
-			if(index != -1) mCBPlayList->removeItem(index);
+			mCBPlayList->clear();
+			for(unsigned i=0; i < tmpLst.size(); i++)
+			{
+				mCBPlayList->insertItem(tmpLst[i].c_str());
+			}
 			if(mCBPlayList->count()) 
 			{
 				mCBPlayList->setCurrentItem(0);
