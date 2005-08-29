@@ -685,7 +685,6 @@
     <include location="local" impldecl="in declaration">qcolordialog.h</include>
     <include location="local" impldecl="in declaration">iostream</include>
     <include location="local" impldecl="in declaration">About.hxx</include>
-    <include location="local" impldecl="in implementation">AnnotatorBase.ui.h</include>
 </includes>
 <variables>
     <variable>About mAbout;</variable>
