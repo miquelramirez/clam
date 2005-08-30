@@ -43,11 +43,10 @@ public:
 	void fillGlobalDescriptors( int index);
 	void songsClicked( QListViewItem * item);
 	void playPause();
-	void chooseColor();
-	void initFileMenu();
 
 	void initProject();
 	void initInterface();
+	void markProjectChanged(bool changed);
 public slots:
 	void descriptorsTableChanged( int, int);
 	void descriptorsBPFChanged(int, float);
@@ -67,7 +66,6 @@ public slots:
 	void deleteSongsFromProject();
 	void fileSaveAs();
 	void fileSave();
-	void fileMenuAboutToShow();
 
 	void playMarks(bool);
 	void playOriginalAudioAndLLD(bool);
@@ -77,7 +75,6 @@ protected:
 
 private:
 
-	bool somethingIsSelected() const;
 	void initSpliters();
 	void initPlay();
 	void makeDescriptorTable();

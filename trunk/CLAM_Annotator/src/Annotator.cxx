@@ -66,9 +66,14 @@ void Annotator::initInterface()
 {
 	if (mpAudioPlot) mpAudioPlot->Hide();
 	mProjectOverview->setSorting(-1);
-	initFileMenu();
 	makeConnections();
 
+}
+
+void Annotator::markProjectChanged(bool changed)
+{
+	mGlobalChanges = changed;
+	fileSave_projectAction->setEnabled( changed );
 }
 
 void Annotator::initProject()
@@ -105,33 +110,12 @@ void Annotator::initProject()
 	initHLDescriptorsTable();
 	languageChange();
 	
-	mGlobalChanges = false;
+	markProjectChanged(false);
 	mLLDChanged = false;
 	mHLDChanged = false;
 	mSegmentsChanged = false;
 }
 
-bool Annotator::somethingIsSelected() const
-{
-	QListViewItemIterator it( mProjectOverview );
-	for ( ; it.current() && !it.current()->isSelected() ; it++ );
-	if ( it.current() )
-	{
-		return true;
-	}
-	return false;
-}
-
-void Annotator::initFileMenu()
-{
-	connect( mFileMenu, SIGNAL( aboutToShow() ), this, SLOT( fileMenuAboutToShow() ) );
-}
-
-
-void Annotator::fileMenuAboutToShow()
-{
-	fileSave_projectAction->setEnabled( mGlobalChanges );
-}
 
 void Annotator::initAudioWidget()
 {
@@ -439,12 +423,12 @@ void Annotator::fileNew()
 	mSchema.GetHLDSchema().GetHLDs().resize(0);
 	initInterface();
 	initProject();
-	mGlobalChanges = true;
+	markProjectChanged(true);
 }
 
 void Annotator::fileSave()
 {
-	mGlobalChanges = false;
+	markProjectChanged(false);
 	markAllSongsUnchanged();
 	if(mProjectFileName=="") fileSaveAs();
 	else
@@ -564,11 +548,6 @@ void  Annotator::saveDescriptors()
 void Annotator::initSongs()
 {
 	addSongs();	
-}
-
-void Annotator::chooseColor()
-{
-	QColorDialog::getColor();
 }
 
 void Annotator::songsClicked( QListViewItem * item)
