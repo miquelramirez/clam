@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>AnnotatorBase</class>
 <widget class="QMainWindow">
     <property name="name">
@@ -122,31 +122,6 @@
                 <bool>true</bool>
             </property>
         </widget>
-        <widget class="QFrame" row="0" column="1">
-            <property name="name">
-                <cstring>frame3</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>7</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>700</width>
-                    <height>225</height>
-                </size>
-            </property>
-            <property name="frameShape">
-                <enum>StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-        </widget>
         <widget class="QTabWidget" row="1" column="1">
             <property name="name">
                 <cstring>tabWidget2</cstring>
@@ -174,6 +149,31 @@
                 </attribute>
             </widget>
         </widget>
+        <widget class="QFrame" row="0" column="1">
+            <property name="name">
+                <cstring>frame3</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>700</width>
+                    <height>225</height>
+                </size>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+        </widget>
     </grid>
 </widget>
 <menubar>
@@ -182,25 +182,15 @@
     </property>
     <item text="&amp;File" name="mFileMenu">
         <action name="fileNew_projectAction"/>
-        <action name="fileOpen_projectAction_2"/>
+        <action name="fileOpen_projectAction"/>
         <action name="fileSave_projectAction"/>
         <action name="fileSave_project_asAction"/>
         <separator/>
-        <separator/>
-        <action name="fileAdd_to_projectAction"/>
-        <separator/>
         <action name="fileExitAction"/>
     </item>
-    <item text="Project" name="PopupMenuEditor">
-        <action name="projectSaveAction"/>
-        <item text="Save" name="popupMenu_10" accel="">
-            <action name="projectSaveSongListAction"/>
-        </item>
-        <action name="projectLoadAction"/>
-        <item text="Load" name="popupMenu_12" accel="">
-            <action name="projectLoadSongListAction"/>
-            <action name="projectLoadSchemaAction"/>
-        </item>
+    <item text="&amp;Project" name="Project">
+        <action name="projectLoadSchemaAction"/>
+        <action name="fileAdd_to_projectAction"/>
     </item>
     <item text="Song" name="songMenu">
         <action name="songLoadDescriptorsAction"/>
@@ -227,7 +217,7 @@
             <string>Intrasong toolbar</string>
         </property>
         <action name="fileNew_projectAction"/>
-        <action name="fileOpen_projectAction_2"/>
+        <action name="fileOpen_projectAction"/>
         <action name="fileSave_projectAction"/>
     </toolbar>
 </toolbars>
@@ -283,7 +273,7 @@
             <cstring>fileNew_projectAction</cstring>
         </property>
         <property name="iconSet">
-            <iconset>stock_new-document-32.png</iconset>
+            <iconset></iconset>
         </property>
         <property name="text">
             <string>&amp;New project</string>
@@ -300,7 +290,7 @@
             <cstring>fileSave_projectAction</cstring>
         </property>
         <property name="iconSet">
-            <iconset>stock_save_as.png</iconset>
+            <iconset></iconset>
         </property>
         <property name="text">
             <string>&amp;Save project</string>
@@ -331,10 +321,10 @@
     </action>
     <action>
         <property name="name">
-            <cstring>fileOpen_projectAction_2</cstring>
+            <cstring>fileOpen_projectAction</cstring>
         </property>
         <property name="iconSet">
-            <iconset>stock_open.png</iconset>
+            <iconset></iconset>
         </property>
         <property name="text">
             <string>&amp;Open project</string>
@@ -354,10 +344,10 @@
             <cstring>fileAdd_to_projectAction</cstring>
         </property>
         <property name="text">
-            <string>&amp;Add to project</string>
+            <string>&amp;Add songs to project</string>
         </property>
         <property name="menuText">
-            <string>&amp;Add to project</string>
+            <string>&amp;Add songs to project</string>
         </property>
     </action>
     <action>
@@ -396,39 +386,6 @@
     </action>
     <action>
         <property name="name">
-            <cstring>projectSaveAction</cstring>
-        </property>
-        <property name="text">
-            <string>Save</string>
-        </property>
-        <property name="menuText">
-            <string>Save</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>projectSaveSongListAction</cstring>
-        </property>
-        <property name="text">
-            <string>SongList</string>
-        </property>
-        <property name="menuText">
-            <string>SongList</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>projectSaveSchemaAction</cstring>
-        </property>
-        <property name="text">
-            <string>Schema</string>
-        </property>
-        <property name="menuText">
-            <string>Schema</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
             <cstring>projectSaveDescriptorsAction</cstring>
         </property>
         <property name="text">
@@ -440,46 +397,13 @@
     </action>
     <action>
         <property name="name">
-            <cstring>projectSaveAllAction</cstring>
-        </property>
-        <property name="text">
-            <string>All</string>
-        </property>
-        <property name="menuText">
-            <string>All</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>projectLoadAction</cstring>
-        </property>
-        <property name="text">
-            <string>Load</string>
-        </property>
-        <property name="menuText">
-            <string>Load</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>projectLoadSongListAction</cstring>
-        </property>
-        <property name="text">
-            <string>SongList</string>
-        </property>
-        <property name="menuText">
-            <string>SongList</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
             <cstring>projectLoadSchemaAction</cstring>
         </property>
         <property name="text">
-            <string>Schema</string>
+            <string>Set &amp;Schema</string>
         </property>
         <property name="menuText">
-            <string>Schema</string>
+            <string>Set &amp;Schema</string>
         </property>
     </action>
     <action>
@@ -491,17 +415,6 @@
         </property>
         <property name="menuText">
             <string>Descriptors</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>helpnnAction</cstring>
-        </property>
-        <property name="text">
-            <string>nn</string>
-        </property>
-        <property name="menuText">
-            <string>nn</string>
         </property>
     </action>
     <action>
@@ -563,7 +476,7 @@
 </actions>
 <images>
     <image name="image0">
-        <data format="XPM.GZ" length="45">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523250004143a55a6b2e0026630c4f</data>
+        <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>
     </image>
 </images>
 <connections>
@@ -586,7 +499,7 @@
         <slot>fileNew()</slot>
     </connection>
     <connection>
-        <sender>fileOpen_projectAction_2</sender>
+        <sender>fileOpen_projectAction</sender>
         <signal>activated()</signal>
         <receiver>AnnotatorBase</receiver>
         <slot>fileOpen()</slot>
@@ -628,12 +541,6 @@
         <slot>AnnotatorBase_usesTextLabelChanged(bool)</slot>
     </connection>
     <connection>
-        <sender>projectLoadSongListAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>loadSongList()</slot>
-    </connection>
-    <connection>
         <sender>projectLoadSchemaAction</sender>
         <signal>activated()</signal>
         <receiver>AnnotatorBase</receiver>
@@ -644,12 +551,6 @@
         <signal>activated()</signal>
         <receiver>AnnotatorBase</receiver>
         <slot>loadDescriptors()</slot>
-    </connection>
-    <connection>
-        <sender>projectSaveSongListAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>saveSongList()</slot>
     </connection>
     <connection>
         <sender>songSaveDescriptorsAction</sender>
@@ -704,7 +605,6 @@
     <slot>addSongsToProject()</slot>
     <slot>deleteSongsFromProject()</slot>
     <slot>AnnotatorBase_usesTextLabelChanged( bool )</slot>
-    <slot>loadSongList()</slot>
     <slot>loadSchema()</slot>
     <slot>loadDescriptors()</slot>
     <slot>loadAll()</slot>

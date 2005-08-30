@@ -73,15 +73,17 @@ void Annotator::initInterface()
 void Annotator::markProjectChanged(bool changed)
 {
 	mGlobalChanges = changed;
-	fileSave_projectAction->setEnabled( changed );
+	fileSave_projectAction->setEnabled(changed);
 }
 
 void Annotator::initProject()
 {
-	if (mProject.GetSongs()!="")
+	if (!mProject.HasSongList() && mProject.GetSongs()!="")
 	{
 		try{
-			CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
+			mProject.AddSongList();
+			mProject.UpdateData();
+			CLAM::XMLStorage::Restore(mProject.GetSongList(), mProject.GetSongs());
 		}
 		catch (CLAM::XmlStorageErr e)
 		{
@@ -295,7 +297,7 @@ void Annotator::segmentationMarksChanged(int, unsigned)
 void Annotator::addSongs()
 {
 	deleteAllSongsFromProject();
-	std::vector< CLAM_Annotator::Song> songs = mSongFiles.GetFileNames();
+	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongList().GetFileNames();
 	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
 	{
 		ListViewItem * item = new ListViewItem(
@@ -348,29 +350,26 @@ void Annotator::markAllSongsUnchanged()
 void Annotator::deleteAllSongsFromProject()
 {
 	std::vector< QListViewItem * > toBeDeleted;
-	QListViewItemIterator it( mProjectOverview );
-	while ( it.current() )
-	{
+	for ( QListViewItemIterator it(mProjectOverview);
+			it.current(); it++ )
 		toBeDeleted.push_back(*it);
-		++it;
-	}
 	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin() ; 
-		it != toBeDeleted.end() ; it++)
+			it != toBeDeleted.end() ; it++)
 		delete *it;
 }
 
 void Annotator::deleteSongsFromProject()
 {
 	std::vector< QListViewItem * > toBeDeleted;
-	QListViewItemIterator it( mProjectOverview );
-	while ( it.current() )
-	{
+	
+	for ( QListViewItemIterator it(mProjectOverview);
+			it.current(); it++ )
 		if ( it.current()->isSelected() )
 			toBeDeleted.push_back(*it);
-		++it;
-	}
-	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin() ; 
-	      it != toBeDeleted.end() ; it++)
+
+	
+	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin();
+			it!= toBeDeleted.end(); it++ )
 		delete *it;
 }
 
@@ -404,7 +403,6 @@ void Annotator::fileOpen()
 	}
 	catch (CLAM::XmlStorageErr e)
 	{
-
 		QMessageBox::warning(this,"Error Loading Project File", 
 			constructFileError(mProjectFileName,e));
 		return;
@@ -418,28 +416,12 @@ void Annotator::fileNew()
 	mProjectFileName = "";
 	mProject.SetSongs("");
 	mProject.SetSchema("");
-	mSongFiles.GetFileNames().resize(0);
+	mProject.GetSongList().GetFileNames().resize(0);
 	mSchema.GetLLDSchema().GetLLDNames().resize(0);
 	mSchema.GetHLDSchema().GetHLDs().resize(0);
 	initInterface();
 	initProject();
 	markProjectChanged(true);
-}
-
-void Annotator::fileSave()
-{
-	markProjectChanged(false);
-	markAllSongsUnchanged();
-	if(mProjectFileName=="") fileSaveAs();
-	else
-	{
-		CLAM::XMLStorage::Dump(mProject,"Project",mProjectFileName);
-		std::string songFile = mProject.GetSongs();
-		if(songFile == "")
-			songFile = mProjectFileName+".sl";
-		CLAM::XMLStorage::Dump(mSongFiles, "Songs", songFile);
-	}
-
 }
 
 void Annotator::fileSaveAs()
@@ -450,26 +432,17 @@ void Annotator::fileSaveAs()
 	mProjectFileName = std::string(qFileName.ascii());
 	fileSave();
 }
-void  Annotator::loadSongList()
-{
-	QString qFileName = QFileDialog::getOpenFileName(QString::null,"*.sl");
-	if(qFileName == QString::null) return;
 
-	mProject.SetSongs(std::string(qFileName.ascii()));
-	try
+void Annotator::fileSave()
+{
+	markProjectChanged(false);
+	markAllSongsUnchanged();
+	if(mProjectFileName=="")
 	{
-		CLAM::XMLStorage::Restore(mSongFiles,mProject.GetSongs());
-	}
-	catch (CLAM::XmlStorageErr e)
-	{
-		QMessageBox::warning(this,"Error Loading Songs List File", 
-			constructFileError(mProject.GetSongs(),e));
+		fileSaveAs();
 		return;
 	}
-
-	//TODO: Does loading the song list affect all this
-	initInterface();
-	initProject();
+	CLAM::XMLStorage::Dump(mProject,"Project",mProjectFileName);
 }
 
 void  Annotator::loadSchema()
@@ -515,17 +488,6 @@ void  Annotator::loadDescriptors()
 	initProject();
 }
 
-void  Annotator::saveSongList()
-{
-	QString qFileName;
-	qFileName = QFileDialog::getSaveFileName(QString(mProject.GetSongs().c_str()),"*.sl");
-	if(qFileName == QString::null) return;
-
-	mProject.SetSongs(std::string(qFileName.ascii()));
-	CLAM::XMLStorage::Dump(mSongFiles,"Songs",mProject.GetSongs());
-}
-
-
 void  Annotator::saveDescriptors()
 {
 	if(QMessageBox::question(this,QString("Save Descriptors"),
@@ -565,11 +527,11 @@ void Annotator::songsClicked( QListViewItem * item)
 
 	mCurrentIndex = getIndexFromFileName(std::string(item->text(0).ascii()));
 	if (mCurrentIndex <0) return;
-	mCurrentSoundFileName = mSongFiles.GetFileNames()[mCurrentIndex].GetSoundFile();
-	if(mSongFiles.GetFileNames()[mCurrentIndex].HasPoolFile())
+	mCurrentSoundFileName = mProject.GetSongList().GetFileNames()[mCurrentIndex].GetSoundFile();
+	if (mProject.GetSongList().GetFileNames()[mCurrentIndex].HasPoolFile())
 	{
 		mCurrentDescriptorsPoolFileName = 
-		mSongFiles.GetFileNames()[mCurrentIndex].GetPoolFile();
+			mProject.GetSongList().GetFileNames()[mCurrentIndex].GetPoolFile();
 	}
 	else 
 		mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + ".pool";
@@ -1038,7 +1000,7 @@ double Annotator::GetMaxY(const CLAM::BPF& bpf)
 int Annotator::getIndexFromFileName(const std::string& fileName)
 {
 	//TODO: have to optimize these tasks maybe by using a map or at least std::find
-	std::vector<CLAM_Annotator::Song> fileNames = mSongFiles.GetFileNames();
+	std::vector<CLAM_Annotator::Song> fileNames = mProject.GetSongList().GetFileNames();
 	std::vector<CLAM_Annotator::Song>::iterator it = fileNames.begin();
 	for (int i=0 ; it != fileNames.end(); it++, i++)
 	{
@@ -1118,7 +1080,8 @@ void Annotator::setMenuAudioItemsEnabled(bool enabled)
 
 void Annotator::hideBPFEditors()
 {
-	for(unsigned i=0; i < mBPFEditors.size(); i++) mBPFEditors[i]->Hide();
+	for(unsigned i=0; i < mBPFEditors.size(); i++)
+		mBPFEditors[i]->Hide();
 }
 
 
