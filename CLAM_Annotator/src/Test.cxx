@@ -24,17 +24,16 @@
 
 #include <time.h>
 
-void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
-void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, int frameSize);
-void FillSongNames(CLAM_Annotator::Project& project);
-int GetnSamples(const std::string& fileName);
-template <class T>
-CLAM_Annotator::Descriptor<T> MakeDescriptor(T value,const std::string& name);
+void BuildAndDumpSchema(const char * schemaLocation);
 void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema);
 void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema);
 void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme);
-void CreatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song,
+template <class T> CLAM_Annotator::Descriptor<T> MakeDescriptor(T value,const std::string& name);
+
+void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song,
 		CLAM::DescriptionDataPool& pool);
+void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
+void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, int frameSize);
 void OpenSoundFile(const std::string& filename, CLAM::Audio& audio);
 void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s);
 void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment, 
@@ -42,44 +41,34 @@ void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment,
 void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDataPool& pool);
 void ComputeSegmentationMarks(CLAM::Segment& segment,CLAM::SegmentDescriptors& segmentD);
 void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray* marks);
-
+int GetnSamples(const std::string& fileName);
 
 int main()
 {
+	const char * schemaLocation = "../Samples/Schema.sc";
+	const char * projectLocation = "../Samples/Project.pro";
+	const char* songFileNames[] =
+	{
+		"../../CLAM-TestData/trumpet.mp3",
+		"../../CLAM-TestData/Elvis.ogg",
+		"../Samples/SongsTest/02.mp3",
+		"../Samples/SongsTest/03.mp3",
+		0
+	};
+
+	BuildAndDumpSchema(schemaLocation);
+
 	//Create and store Project
 	CLAM_Annotator::Project myProject;
-	myProject.SetSongs("../Samples/Songs.sl");
-	myProject.SetSchema("../Samples/Schema.sc");
+	myProject.SetSchema(schemaLocation);
+	for (const char ** filename = songFileNames; *filename; filename++)
+		project.AppendSong(*filename);
 
-	//Create and store SongList
-	FillSongNames(myProject);
-
-	CLAM::XMLStorage::Dump(myProject,"Project","../Samples/Project.pro");
-
-	// This file is deprecated
-	CLAM::XMLStorage::Dump(myProject.GetSongList(),"SongFiles","../Samples/Songs.sl");
-
-	//Create and store custom LLDSchema (basically a list of strings)
-	CLAM_Annotator::LLDSchema testLLDSchema;
-	CreateLLSchema(testLLDSchema);
-
-	CLAM::XMLStorage::Dump(testLLDSchema, "LLDSchema", "LLDSchema.llsc");
-
-	//Create and store custom HLDSchema
-	CLAM_Annotator::HLDSchema testHLDSchema;
-	CreateHLSchema(testHLDSchema);
-
-	CLAM::XMLStorage::Dump(testHLDSchema, "HLDSchema","HLDSchema.hlsc");
-
-	//Create and dump complete schema by adding LL and HL
-	CLAM_Annotator::Schema testSchema;
-	testSchema.SetLLDSchema(testLLDSchema);
-	testSchema.SetHLDSchema(testHLDSchema);
-	CLAM::XMLStorage::Dump(testSchema, "Schema","../Samples/Schema.sc");
+	CLAM::XMLStorage::Dump(myProject,"Project",projectLocation);
 
 	//Load Schema
 	CLAM_Annotator::Schema loadedSchema;
-	CLAM::XMLStorage::Restore(loadedSchema, "../Samples/Schema.sc");
+	CLAM::XMLStorage::Restore(loadedSchema, schemaLocation);
 
 	//Create Descriptors Pool Scheme and add attributes following loaded schema
 	CLAM::DescriptionScheme scheme;
@@ -92,13 +81,13 @@ int main()
 	srand(time(NULL));
 
 	for (
-		currentSong = myProject.GetSongList().GetFileNames().begin();
-		currentSong != myProject.GetSongList().GetFileNames().end();
+		currentSong = myProject.GetSongs().begin();
+		currentSong != myProject.GetSongs().end();
 		currentSong++)
 	{
 		std::cout<<"Computing Descriptors for file "<<(*currentSong).GetSoundFile()
 		     <<" Please wait..."<<std::endl;
-		CreatePool(loadedSchema, *currentSong, pool);
+		PopulatePool(loadedSchema, *currentSong, pool);
 		//Dump Descriptors Pool
 		std::string poolFile;
 		if((*currentSong).HasPoolFile()) poolFile = (*currentSong).GetPoolFile();
@@ -117,6 +106,15 @@ int main()
 
 	return 0;
 
+}
+
+void BuildAndDumpSchema(const char * schemaLocation)
+{
+	CLAM_Annotator::Schema testSchema;
+	CreateLLSchema(testSchema.GetLLDSchema());
+	CreateHLSchema(testSchema.GetHLDSchema());
+
+	CLAM::XMLStorage::Dump(testSchema, "Schema",schemaLocation);
 }
 
 void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema)
@@ -272,7 +270,7 @@ void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionSch
 
 }
 
-void CreatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song, 
+void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song, 
 		CLAM::DescriptionDataPool& pool)
 {
   
@@ -364,20 +362,6 @@ void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
 	}
 
 
-}
-
-void FillSongNames(CLAM_Annotator::Project& project)
-{
-	const char* files[] =
-	{
-		"../../CLAM-TestData/trumpet.mp3",
-		"../../CLAM-TestData/Elvis.ogg",
-		"../Samples/SongsTest/02.mp3",
-		"../Samples/SongsTest/03.mp3",
-		0
-	};
-	for (const char ** file = files; *file; file++)
-		project.AppendSong(*file);
 }
 
 int GetnSamples(const std::string& fileName)
@@ -568,8 +552,6 @@ void OpenSoundFile(const std::string& filename, CLAM::Audio& audio)
 		if(beginSample+readSize>nSamples) break;
 	}
 	reader.Stop();
-
-
 }
 
 void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s)

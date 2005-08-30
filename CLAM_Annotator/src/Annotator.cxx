@@ -78,20 +78,6 @@ void Annotator::markProjectChanged(bool changed)
 
 void Annotator::initProject()
 {
-	if (!mProject.HasSongList() && mProject.GetSongs()!="")
-	{
-		try{
-			mProject.AddSongList();
-			mProject.UpdateData();
-			CLAM::XMLStorage::Restore(mProject.GetSongList(), mProject.GetSongs());
-		}
-		catch (CLAM::XmlStorageErr e)
-		{
-			QMessageBox::warning(this,"Error Loading Project File", 
-				 constructFileError(mProject.GetSongs(),e));
-			return;
-		}
-	}
 	updateSongListWidget();
 	
 	if (mProject.GetSchema()!="")
@@ -106,7 +92,6 @@ void Annotator::initProject()
 				constructFileError(mProject.GetSchema(),e));
 			return;
 		}
-		
 	}
 	initLLDescriptorsWidgets();
 	initHLDescriptorsTable();
@@ -297,7 +282,7 @@ void Annotator::segmentationMarksChanged(int, unsigned)
 void Annotator::updateSongListWidget()
 {
 	mProjectOverview->clear();
-	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongList().GetFileNames();
+	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongs();
 	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
 	{
 		ListViewItem * item = new ListViewItem(
@@ -407,9 +392,8 @@ void Annotator::fileOpen()
 void Annotator::fileNew()
 {
 	mProjectFileName = "";
-	mProject.SetSongs("");
 	mProject.SetSchema("");
-	mProject.GetSongList().GetFileNames().resize(0);
+	mProject.GetSongs().resize(0);
 	mSchema.GetLLDSchema().GetLLDNames().resize(0);
 	mSchema.GetHLDSchema().GetHLDs().resize(0);
 	initInterface();
@@ -515,11 +499,11 @@ void Annotator::songsClicked( QListViewItem * item)
 
 	mCurrentIndex = getIndexFromFileName(std::string(item->text(0).ascii()));
 	if (mCurrentIndex <0) return;
-	mCurrentSoundFileName = mProject.GetSongList().GetFileNames()[mCurrentIndex].GetSoundFile();
-	if (mProject.GetSongList().GetFileNames()[mCurrentIndex].HasPoolFile())
+	mCurrentSoundFileName = mProject.GetSongs()[mCurrentIndex].GetSoundFile();
+	if (mProject.GetSongs()[mCurrentIndex].HasPoolFile())
 	{
 		mCurrentDescriptorsPoolFileName = 
-			mProject.GetSongList().GetFileNames()[mCurrentIndex].GetPoolFile();
+			mProject.GetSongs()[mCurrentIndex].GetPoolFile();
 	}
 	else 
 		mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + ".pool";
@@ -988,7 +972,7 @@ double Annotator::GetMaxY(const CLAM::BPF& bpf)
 int Annotator::getIndexFromFileName(const std::string& fileName)
 {
 	//TODO: have to optimize these tasks maybe by using a map or at least std::find
-	std::vector<CLAM_Annotator::Song> fileNames = mProject.GetSongList().GetFileNames();
+	std::vector<CLAM_Annotator::Song> fileNames = mProject.GetSongs();
 	std::vector<CLAM_Annotator::Song>::iterator it = fileNames.begin();
 	for (int i=0 ; it != fileNames.end(); it++, i++)
 	{
