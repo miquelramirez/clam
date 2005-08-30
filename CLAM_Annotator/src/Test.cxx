@@ -62,7 +62,7 @@ int main()
 	CLAM_Annotator::Project myProject;
 	myProject.SetSchema(schemaLocation);
 	for (const char ** filename = songFileNames; *filename; filename++)
-		project.AppendSong(*filename);
+		myProject.AppendSong(*filename);
 
 	CLAM::XMLStorage::Dump(myProject,"Project",projectLocation);
 
