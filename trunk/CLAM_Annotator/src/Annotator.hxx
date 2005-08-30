@@ -56,11 +56,9 @@ public slots:
 	void addSongsToProject();
 	void addSongs();
 
-	void loadSongList();
 	void loadSchema();
 	void loadDescriptors();
 
-	void saveSongList();
 	void saveDescriptors();
 
 	void deleteSongsFromProject();
@@ -74,6 +72,7 @@ protected:
 	bool event(QEvent* e);
 
 private:
+	bool saveProject();
 
 	void initSpliters();
 	void initPlay();
@@ -140,7 +139,6 @@ private:
 	std::vector<CLAM::Audio> mClick; ///< A vector of audios to click
 
 	CLAM_Annotator::Project mProject;
-	CLAM_Annotator::SongFiles mSongFiles;
 
 	std::string mProjectFileName;
 	std::string mCurrentSoundFileName;
