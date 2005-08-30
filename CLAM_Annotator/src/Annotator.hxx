@@ -39,7 +39,6 @@ class Annotator : public AnnotatorBase
 public:
 	Annotator(const std::string & nameProject);
 	virtual ~Annotator() {}
-	void initSongs();
 	void fillGlobalDescriptors( int index);
 	void songsClicked( QListViewItem * item);
 	void playPause();
@@ -54,7 +53,6 @@ public slots:
 	void fileNew();			
 	void fileOpen();
 	void addSongsToProject();
-	void addSongs();
 
 	void loadSchema();
 	void loadDescriptors();
@@ -72,6 +70,7 @@ protected:
 	bool event(QEvent* e);
 
 private:
+	void updateSongListWidget();
 	bool saveProject();
 
 	void initSpliters();

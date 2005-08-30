@@ -92,7 +92,7 @@ void Annotator::initProject()
 			return;
 		}
 	}
-	initSongs();
+	updateSongListWidget();
 	
 	if (mProject.GetSchema()!="")
 	{
@@ -245,7 +245,7 @@ void Annotator::changeCurrentFile()
 	QListViewItemIterator it( mProjectOverview );
 	for ( ; it.current() && !it.current()->isSelected() ; it++ );
 	if ( it.current() )
-	{		
+	{
 		it.current()->setText(2, "Yes");	
 	}
 
@@ -294,9 +294,9 @@ void Annotator::segmentationMarksChanged(int, unsigned)
 	auralizeMarks();
 }
 
-void Annotator::addSongs()
+void Annotator::updateSongListWidget()
 {
-	deleteAllSongsFromProject();
+	mProjectOverview->clear();
 	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongList().GetFileNames();
 	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
 	{
@@ -349,13 +349,6 @@ void Annotator::markAllSongsUnchanged()
 
 void Annotator::deleteAllSongsFromProject()
 {
-	std::vector< QListViewItem * > toBeDeleted;
-	for ( QListViewItemIterator it(mProjectOverview);
-			it.current(); it++ )
-		toBeDeleted.push_back(*it);
-	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin() ; 
-			it != toBeDeleted.end() ; it++)
-		delete *it;
 }
 
 void Annotator::deleteSongsFromProject()
@@ -385,10 +378,10 @@ void Annotator::addSongsToProject()
 	QStringList::Iterator it = list.begin();
 	for (; it != list.end(); it++ )
 	{
-		std::cout << *it << std::endl;
+		mProject.AppendSong((*it).ascii());
 	}
-	QMessageBox::information(this, "Not implemented",
-		"Adding songs to a project is still not implemented");
+	updateSongListWidget();
+	markProjectChanged(true);
 }
 
 void Annotator::fileOpen()
@@ -506,11 +499,6 @@ void  Annotator::saveDescriptors()
 	mSegmentsChanged = false;
 }
 
-
-void Annotator::initSongs()
-{
-	addSongs();	
-}
 
 void Annotator::songsClicked( QListViewItem * item)
 {
