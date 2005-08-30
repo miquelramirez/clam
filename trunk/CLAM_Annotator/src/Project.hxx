@@ -19,6 +19,13 @@ class Project : public CLAM::DynamicType
 		AddAll();
 		UpdateData();
 	}
+public:
+	void AppendSong(const std::string & songFileName)
+	{
+		std::vector<Song> & songs = GetSongList().GetFileNames();
+		songs.push_back(Song());
+		songs.back().SetSoundFile(songFileName);
+	}
 };
 
 }
