@@ -9,10 +9,10 @@ namespace CLAM_Annotator
 
 class Project : public CLAM::DynamicType
 {
-	DYNAMIC_TYPE(Project,3);
-	DYN_ATTRIBUTE(0, public, std::string, Songs);
-	DYN_ATTRIBUTE(1, public, std::string, Schema);
-	DYN_ATTRIBUTE(2, public, SongFiles, SongList);
+	DYNAMIC_TYPE(Project,2);
+//	DYN_ATTRIBUTE(0, public, std::string, Songs);
+	DYN_ATTRIBUTE(0, public, std::string, Schema);
+	DYN_ATTRIBUTE(1, public, SongFiles, SongList);
 
 	void DefaultInit()
 	{
@@ -25,6 +25,10 @@ public:
 		std::vector<Song> & songs = GetSongList().GetFileNames();
 		songs.push_back(Song());
 		songs.back().SetSoundFile(songFileName);
+	}
+	std::vector<Song> & GetSongs()
+	{
+		return GetSongList().GetFileNames();
 	}
 };
 
