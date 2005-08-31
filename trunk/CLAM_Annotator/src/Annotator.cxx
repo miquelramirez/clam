@@ -532,13 +532,14 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 	mpAudioPlot->Hide();
 	if(item)
 		loadAudioFile(item->text(0).ascii());
-	std::vector<unsigned> marks;
+
 	const CLAM::IndexArray* descriptorsMarks = 
 		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song","Segments");
 	int nMarks = descriptorsMarks->Size();
+	std::vector<unsigned> marks(nMarks);
 	for(int i=0;i<nMarks;i++)
 	{
-		marks.push_back((*descriptorsMarks)[i]);
+		marks[i] = (unsigned)(*descriptorsMarks)[i];
 	}
 	mpAudioPlot->SetMarks(marks);
 	mpAudioPlot->SetData(mCurrentAudio);
@@ -573,11 +574,12 @@ void Annotator::loadAudioFile(const char* filename)
 {
 	hideBPFEditors();
 	setMenuAudioItemsEnabled(false);
-	const CLAM::TSize readSize = 1024;
+	const CLAM::TSize readSize = 4096;
 	CLAM::AudioFile file;
 	file.OpenExisting(filename);
 	int nChannels = file.GetHeader().GetChannels();
-	int nSamples = file.GetHeader().GetLength()/1000*file.GetHeader().GetSampleRate()+readSize;
+	float samplingRate = file.GetHeader().GetSampleRate();
+	int nSamples = file.GetHeader().GetLength()/1000.0*samplingRate+readSize;
 	std::vector<CLAM::Audio> audioFrameVector(nChannels);
 	for (int i=0;i<nChannels;i++)
 		audioFrameVector[i].SetSize(readSize);
@@ -585,16 +587,15 @@ void Annotator::loadAudioFile(const char* filename)
 	cfg.SetSourceFile( file );
 	CLAM::MultiChannelAudioFileReader reader(cfg);
 	reader.Start();
-	int beginSample=0;
 	mCurrentAudio.SetSize(0);
-	float samplingRate = mCurrentAudio.GetSampleRate();
-
 	mCurrentAudio.SetSize(nSamples);
+	mCurrentAudio.SetSampleRate(samplingRate);
+	int beginSample=0;
 	while(reader.Do(audioFrameVector))
 	{
 		mCurrentAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
 		beginSample+=readSize;
-		qApp->eventLoop()->processEvents( QEventLoop::AllEvents );
+		qApp->processEvents( 30 /* miliseconds max */ );
 		mpProgressDialog->setProgress( beginSample/samplingRate*1000.0 );
 		if (mpProgressDialog->wasCanceled()) break;
 		if (beginSample+readSize>nSamples) break;
@@ -602,8 +603,6 @@ void Annotator::loadAudioFile(const char* filename)
 	mCurrentAudio.SetSize(beginSample);
 	setMenuAudioItemsEnabled(true);
 	reader.Stop();
-
- 
 }
 
 void Annotator::generateEnvelopesFromDescriptors()
