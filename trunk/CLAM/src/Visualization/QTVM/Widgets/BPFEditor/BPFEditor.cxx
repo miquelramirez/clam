@@ -449,7 +449,7 @@ namespace CLAM
 		{
 			if(mColorScheme==EWhiteOverBlack) return;
 
-			setPaletteBackgroundColor(QColor(0,0,0));
+			setPaletteBackgroundColor(Qt::black);
 
 			mController->SetDataColor(VMColor::White(),VMColor::Cyan());
 			mController->SetRectColor(VMColor::White());
@@ -460,21 +460,21 @@ namespace CLAM
 			mYRuler->SetBackgroundColor(VMColor::Black());
 			mYRuler->SetForegroundColor(VMColor::White());
 
-			labelsContainer->setPaletteBackgroundColor(QColor(0,0,0));
+			labelsContainer->setPaletteBackgroundColor(Qt::black);
 
-			fixed_x_label->setPaletteBackgroundColor(QColor(0,0,0));
-			fixed_x_label->setPaletteForegroundColor(QColor(255,255,255));
-			fixed_y_label->setPaletteBackgroundColor(QColor(0,0,0));
-			fixed_y_label->setPaletteForegroundColor(QColor(255,255,255));
+			fixed_x_label->setPaletteBackgroundColor(Qt::black);
+			fixed_x_label->setPaletteForegroundColor(Qt::white);
+			fixed_y_label->setPaletteBackgroundColor(Qt::black);
+			fixed_y_label->setPaletteForegroundColor(Qt::white);
 
-			mXLabelInfo->setPaletteBackgroundColor(QColor(0,0,0));
-			mXLabelInfo->setPaletteForegroundColor(QColor(255,255,255));
-			mYLabelInfo->setPaletteBackgroundColor(QColor(0,0,0));
-			mYLabelInfo->setPaletteForegroundColor(QColor(255,255,255));
+			mXLabelInfo->setPaletteBackgroundColor(Qt::black);
+			mXLabelInfo->setPaletteForegroundColor(Qt::white);
+			mYLabelInfo->setPaletteBackgroundColor(Qt::black);
+			mYLabelInfo->setPaletteForegroundColor(Qt::white);
 
 			mDisplaySurface->SetBackgroundColor(0.0f,0.0f,0.0f);
 
-			if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(QColor(0,0,0));
+			if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(Qt::black);
 			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetColorMap(CLAM::VM::BlackBackground);
 			
 			mColorScheme = EWhiteOverBlack;
@@ -484,7 +484,7 @@ namespace CLAM
 		{
 			if(mColorScheme==EBlackOverWhite) return;
 			
-			setPaletteBackgroundColor(QColor(255,255,255));
+			setPaletteBackgroundColor(Qt::white);
 
 			mController->SetDataColor(VMColor::Black(),VMColor::Blue());
 			mController->SetRectColor(VMColor::Black());
@@ -495,21 +495,21 @@ namespace CLAM
 			mYRuler->SetBackgroundColor(VMColor::White());
 			mYRuler->SetForegroundColor(VMColor::Black());
 			
-			labelsContainer->setPaletteBackgroundColor(QColor(255,255,255));
+			labelsContainer->setPaletteBackgroundColor(Qt::white);
 
-			fixed_x_label->setPaletteBackgroundColor(QColor(255,255,255));
-			fixed_x_label->setPaletteForegroundColor(QColor(0,0,0));
-			fixed_y_label->setPaletteBackgroundColor(QColor(255,255,255));
-			fixed_y_label->setPaletteForegroundColor(QColor(0,0,0));
+			fixed_x_label->setPaletteBackgroundColor(Qt::white);
+			fixed_x_label->setPaletteForegroundColor(Qt::black);
+			fixed_y_label->setPaletteBackgroundColor(Qt::white);
+			fixed_y_label->setPaletteForegroundColor(Qt::black);
 
-			mXLabelInfo->setPaletteBackgroundColor(QColor(255,255,255));
-			mXLabelInfo->setPaletteForegroundColor(QColor(0,0,0));
-			mYLabelInfo->setPaletteBackgroundColor(QColor(255,255,255));
-			mYLabelInfo->setPaletteForegroundColor(QColor(0,0,0));
+			mXLabelInfo->setPaletteBackgroundColor(Qt::white);
+			mXLabelInfo->setPaletteForegroundColor(Qt::black);
+			mYLabelInfo->setPaletteBackgroundColor(Qt::white);
+			mYLabelInfo->setPaletteForegroundColor(Qt::black);
 
 			mDisplaySurface->SetBackgroundColor(1.0f,1.0f,1.0f);
 			
-			if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(QColor(255,255,255));
+			if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(Qt::white);
 			if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetColorMap(CLAM::VM::WhiteBackground);
 
 			mColorScheme = EBlackOverWhite;
