@@ -119,7 +119,7 @@ private:
 	void initEnvelopes();
 
 	void generateEnvelopesFromDescriptors();
-	CLAM::BPF generateEnvelopeFromDescriptor(const std::string& name);
+	void fillEnvelopeWithLLDValues(CLAM::BPF & bpf, const std::string& descriptorName);
 	void generateDescriptorFromEnvelope(int bpfIndex, float* descriptors);
 	void generateDescriptorsFromEnvelopes();
 
