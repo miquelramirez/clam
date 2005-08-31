@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Schema>
-
   <HLDSchema>
     <HLDs>
       <HLD>
@@ -52,9 +51,7 @@
       </HLD>
     </HLDs>
   </HLDSchema>
-
   <LLDSchema>
     <LLDNames>Mean GeometricMean Energy Centroid Moment2 Moment3 Moment4 Moment5 Moment6 Flatness MagnitudeKurtosis MaxMagFreq LowFreqEnergyRelation Spread MagnitudeSkewness Rolloff Slope HighFrequencyContent</LLDNames>
   </LLDSchema>
-
 </Schema>
