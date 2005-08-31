@@ -614,15 +614,17 @@ void Annotator::generateEnvelopesFromDescriptors()
 
 	for(it = descriptorsNames.begin();it != descriptorsNames.end(); ed_it++, it++)
 	{
-		(*ed_it)->SetData( generateEnvelopeFromDescriptor((*it)) );
+		CLAM::BPF transcribed;
+		fillEnvelopeWithLLDValues(transcribed, *it);
+		(*ed_it)->SetData( transcribed );
 		(*ed_it)->SetAudioPtr(&mCurrentAudio);
 	}
 
 }
   
-CLAM::BPF Annotator::generateEnvelopeFromDescriptor(const std::string& name)
+void Annotator::fillEnvelopeWithLLDValues(CLAM::BPF & bpf, const std::string& descriptorName)
 {
-	const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",name);
+	const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",descriptorName);
 
 	int audioSize=mCurrentAudio.GetSize();
 	TData sr = mCurrentAudio.GetSampleRate();
@@ -630,14 +632,13 @@ CLAM::BPF Annotator::generateEnvelopeFromDescriptor(const std::string& name)
 	int nFrames = mpDescriptorPool->GetNumberOfContexts("Frame");
 	int frameSize = audioSize/nFrames;
 
-	CLAM::BPF bpf;
-
+	bpf.Resize(nFrames);
+	bpf.SetSize(nFrames);
 	for(int i=0, x=0; i<nFrames ; x+=frameSize, i++)
 	{
-		bpf.Insert(TData(x)/sr,TData(values[i]));
+		bpf.SetXValue(i,TData(x)/sr);
+		bpf.SetValue(i,TData(values[i]));
 	}
-
-	return bpf;
 }
 
 void Annotator::generateDescriptorsFromEnvelopes()
