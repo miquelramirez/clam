@@ -3,6 +3,7 @@
 
 #include "DynamicType.hxx"
 #include "SongFiles.hxx"
+#include <vector>
 
 namespace CLAM_Annotator
 {
@@ -11,7 +12,7 @@ class Project : public CLAM::DynamicType
 {
 	DYNAMIC_TYPE(Project,2);
 	DYN_ATTRIBUTE(0, public, std::string, Schema);
-	DYN_ATTRIBUTE(1, public, SongFiles, SongList);
+	DYN_CONTAINER_ATTRIBUTE(1,public, std::vector<Song>, Songs, Song);
 
 	void DefaultInit()
 	{
@@ -21,13 +22,9 @@ class Project : public CLAM::DynamicType
 public:
 	void AppendSong(const std::string & songFileName)
 	{
-		std::vector<Song> & songs = GetSongList().GetFileNames();
+		std::vector<Song> & songs = GetSongs();
 		songs.push_back(Song());
 		songs.back().SetSoundFile(songFileName);
-	}
-	std::vector<Song> & GetSongs()
-	{
-		return GetSongList().GetFileNames();
 	}
 };
 
