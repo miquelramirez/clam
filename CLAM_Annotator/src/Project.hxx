@@ -10,7 +10,6 @@ namespace CLAM_Annotator
 class Project : public CLAM::DynamicType
 {
 	DYNAMIC_TYPE(Project,2);
-//	DYN_ATTRIBUTE(0, public, std::string, Songs);
 	DYN_ATTRIBUTE(0, public, std::string, Schema);
 	DYN_ATTRIBUTE(1, public, SongFiles, SongList);
 
