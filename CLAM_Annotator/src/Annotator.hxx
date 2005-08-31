@@ -4,6 +4,7 @@
 #include "AnnotatorBase.h"
 
 #include <string>
+#include <utility>
 
 //xamat
 
@@ -124,8 +125,7 @@ private:
 
 	void loadDescriptorPool();
 
-	double GetMinY(const CLAM::BPF& bpf);
-	double GetMaxY(const CLAM::BPF& bpf);
+	std::pair<double, double> GetMinMaxY(const CLAM::BPF& bpf);
 
 	void auralizeMarks();
 	void setMenuAudioItemsEnabled(bool);

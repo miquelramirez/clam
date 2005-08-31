@@ -15,6 +15,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <utility>
 
 //xamat
 #include <time.h>
@@ -122,7 +123,6 @@ void Annotator::initAudioWidget()
 
 void Annotator::initLLDescriptorsWidgets()
 {
-
 	removeLLDTabs();
 
 	int nTabs = mSchema.GetLLDSchema().GetLLDNames().size();
@@ -199,7 +199,7 @@ void Annotator::makeConnections()
 {
 	connect(helpAboutAction,SIGNAL(activated()),&mAbout,SLOT(show()));
 	connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) , this, 
-		SLOT( descriptorsTableChanged(int, int) ) );
+		SLOT(descriptorsTableChanged(int, int) ) );
 	connect(mpAudioPlot, SIGNAL(updatedMark(int, unsigned)),this,
 		SLOT(segmentationMarksChanged(int, unsigned)));
 
@@ -515,9 +515,13 @@ void Annotator::songsClicked( QListViewItem * item)
 			this);
 	mpProgressDialog->setProgress(0);
 	loadDescriptorPool();
+	std::cout << "Filling Global Descriptors..." << std::endl;
 	fillGlobalDescriptors( mCurrentIndex );
+	std::cout << "Drawing Audio..." << std::endl;
 	drawAudio(item);
+	std::cout << "Drawing LLD..." << std::endl;
 	drawLLDescriptors(mCurrentIndex);
+	std::cout << "Done" << std::endl;
 
 	delete mpProgressDialog;
 	mpProgressDialog = NULL;
@@ -544,14 +548,17 @@ void Annotator::drawAudio(QListViewItem * item=NULL)
 
 void Annotator::drawLLDescriptors(int index)
 {
+	std::cout << "Loading LLD Data..." << std::endl;
 	generateEnvelopesFromDescriptors();
+	std::cout << "Adjusting BPF's..." << std::endl;
 
 	std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
 	for(int i=0; editors_it != mBPFEditors.end(); editors_it++, i++)
 	{
 		CLAM::EScale scale;
-		TData min_y = GetMinY((*editors_it)->GetData());
-		TData max_y = GetMaxY((*editors_it)->GetData());
+		std::pair<TData, TData> minmaxy = GetMinMaxY((*editors_it)->GetData());
+		TData min_y = minmaxy.first;
+		TData max_y = minmaxy.second;
 		bool scale_log = (fabs(min_y) > 9999.99 || fabs(max_y) > 9999.99 || max_y-min_y < TData(5E-2));
 		scale = (scale_log) ? CLAM::EScale::eLog : CLAM::EScale::eLinear;
 		(*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
@@ -926,7 +933,7 @@ void Annotator::getHLDSchemaElementFromIndex(int index, CLAM_Annotator::HLDSchem
 
 }
 
-double Annotator::GetMinY(const CLAM::BPF& bpf)
+std::pair<double,double> Annotator::GetMinMaxY(const CLAM::BPF& bpf)
 {
 	double min_value=1E9;
 	double max_value=-1E9;
@@ -944,28 +951,8 @@ double Annotator::GetMinY(const CLAM::BPF& bpf)
 	}
 	double span = max_value-min_value;
 	min_value -= span*0.1;
-	return min_value;
-}
-
-double Annotator::GetMaxY(const CLAM::BPF& bpf)
-{
-	double min_value=1E9;
-	double max_value=-1E9;
-	for(TIndex i=0; i < bpf.Size(); i++)
-	{
-		double current = double(bpf.GetValueFromIndex(i));
-		if(current > max_value)
-		{
-			max_value = current;
-		}
-		else if(current < min_value)
-		{
-			min_value = current;
-		}
-	}
-	double span = max_value-min_value;
 	max_value += span*0.1;
-	return max_value;
+	return std::make_pair(min_value, max_value);
 }
 
 
