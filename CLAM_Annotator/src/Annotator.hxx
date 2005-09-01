@@ -31,8 +31,6 @@ namespace CLAM {
 	class XmlStorageErr;
 };
 
-class QProgressDialog;
-
 class Annotator : public AnnotatorBase
 {
 	Q_OBJECT
@@ -138,6 +136,7 @@ private:
 	std::vector<CLAM::Audio> mClick; ///< A vector of audios to click
 
 	CLAM_Annotator::Project mProject;
+	int mCurrentIndex;
 
 	std::string mProjectFileName;
 	std::string mCurrentSoundFileName;
@@ -149,18 +148,12 @@ private:
 	bool mSegmentsChanged;
 	std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
 
-	int mCurrentIndex;
-
 	QVBoxLayout* mpTabLayout;
 	std::vector<QWidget*> mTabPages;
 
 	CLAM_Annotator::Schema mSchema;
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM::DescriptionDataPool* mpDescriptorPool;
-
-	QProgressDialog* mpProgressDialog;
-
-
 };
 
 #endif
