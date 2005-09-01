@@ -49,8 +49,8 @@ int main()
 	const char * projectLocation = "../Samples/Project.pro";
 	const char* songFileNames[] =
 	{
-		"../../CLAM-TestData/trumpet.mp3",
-		"../../CLAM-TestData/Elvis.ogg",
+		"../../CLAM-TestData/trumpet.wav",
+		"../../CLAM-TestData/Elvis.wav",
 		"../Samples/SongsTest/02.mp3",
 		"../Samples/SongsTest/03.mp3",
 		0
@@ -119,119 +119,120 @@ void BuildAndDumpSchema(const char * schemaLocation)
 
 void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema)
 {
-	llschema.GetLLDNames().push_back("Mean");
-	llschema.GetLLDNames().push_back("GeometricMean");
-	llschema.GetLLDNames().push_back("Energy");
-	llschema.GetLLDNames().push_back("Centroid");
-	llschema.GetLLDNames().push_back("Moment2");
-	llschema.GetLLDNames().push_back("Moment3");
-	llschema.GetLLDNames().push_back("Moment4");
-	llschema.GetLLDNames().push_back("Moment5");
-	llschema.GetLLDNames().push_back("Moment6");
-	llschema.GetLLDNames().push_back("Flatness");
-	llschema.GetLLDNames().push_back("MagnitudeKurtosis");
-	llschema.GetLLDNames().push_back("MaxMagFreq"); 
-	llschema.GetLLDNames().push_back("LowFreqEnergyRelation"); 
-	llschema.GetLLDNames().push_back("Spread");
-	llschema.GetLLDNames().push_back("MagnitudeSkewness");
-	llschema.GetLLDNames().push_back("Rolloff"); 
-	llschema.GetLLDNames().push_back("Slope"); 
-	llschema.GetLLDNames().push_back("HighFrequencyContent");
+	const char * lowLevelDescriptorsNames[] =
+	{
+		"Mean",
+		"GeometricMean",
+		"Energy",
+		"Centroid",
+		"Moment2",
+		"Moment3",
+		"Moment4",
+		"Moment5",
+		"Moment6",
+		"Flatness",
+		"MagnitudeKurtosis",
+		"MaxMagFreq",
+		"LowFreqEnergyRelation",
+		"Spread",
+		"MagnitudeSkewness",
+		"Rolloff",
+		"Slope",
+		"HighFrequencyContent",
+		0
+	};
+	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
+		llschema.GetLLDNames().push_back(*name);
+}
+
+void AddRestrictedStringHLAttribute(
+		CLAM_Annotator::HLDSchema& hlschema,
+		const std::string & attribute,
+		const char ** availableValues)
+{
+	CLAM_Annotator::HLDSchemaElement testHLDesc;
+	testHLDesc.SetName(attribute);
+	testHLDesc.SetType("RestrictedString");
+	testHLDesc.AddRestrictionValues();
+	testHLDesc.UpdateData();
+	for (const char ** value = availableValues; *value; value++)
+		testHLDesc.GetRestrictionValues().push_back(*value);
+	hlschema.GetHLDs().push_back(testHLDesc);
+}
+void AddRangedIntHLAttribute(
+		CLAM_Annotator::HLDSchema& hlschema,
+		const std::string & attribute,
+		int min, int max)
+{
+	CLAM_Annotator::HLDSchemaElement testHLDesc;
+	testHLDesc.SetName(attribute);
+	testHLDesc.SetType("Int");
+	testHLDesc.AddiRange();
+	testHLDesc.UpdateData();
+	CLAM_Annotator::Range<int> range;
+	range.SetMin(min);
+	range.SetMax(max);
+	testHLDesc.SetiRange(range);
+	hlschema.GetHLDs().push_back(testHLDesc);
+}
+
+void AddRangedRealHLAttribute(
+		CLAM_Annotator::HLDSchema& hlschema,
+		const std::string & attribute,
+		double min, double max)
+{
+	CLAM_Annotator::HLDSchemaElement testHLDesc;
+	testHLDesc.SetName(attribute);
+	testHLDesc.SetType("Float");
+	testHLDesc.AddfRange();
+	testHLDesc.UpdateData();
+	CLAM_Annotator::Range<float> range;
+	range.SetMin(min);
+	range.SetMax(max);
+	testHLDesc.SetfRange(range);
+	hlschema.GetHLDs().push_back(testHLDesc);
+}
+void AddStringHLAttribute(
+		CLAM_Annotator::HLDSchema& hlschema,
+		const std::string & attribute)
+{
+	CLAM_Annotator::HLDSchemaElement testHLDesc;
+	testHLDesc.SetName(attribute);
+	testHLDesc.SetType("String");
+	hlschema.GetHLDs().push_back(testHLDesc);
 }
 
 void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema)
 {
+	AddStringHLAttribute(hlschema, "Artist");
+	AddStringHLAttribute(hlschema, "Title");
+	const char * genreValues[] =
 	{
-		CLAM_Annotator::HLDSchemaElement testHLDesc;
-		testHLDesc.SetName("Artist");
-		testHLDesc.SetType("String");
-		hlschema.GetHLDs().push_back(testHLDesc);
-	}
+		"Dance",
+		"Classic",
+		"Jazz",
+		"Rhythm&Blues",
+		"Folk",
+		0
+	};
+	AddRestrictedStringHLAttribute(hlschema, "Genre", genreValues);
+	AddRangedRealHLAttribute(hlschema, "Danceability", 0., 10.);
+	const char * keyValues[] =
 	{
-		CLAM_Annotator::HLDSchemaElement testHLDesc;
-		testHLDesc.SetName("Title");
-		testHLDesc.SetType("String");
-		hlschema.GetHLDs().push_back(testHLDesc);
-	}
+		"A", "A#", "B", "C", "C#",
+		"D", "D#", "E", "F", "F#",
+		"G", "G#", 0
+	};
+	AddRestrictedStringHLAttribute(hlschema, "Key", keyValues);
+	const char * modeValues[] =
 	{
-		CLAM_Annotator::HLDSchemaElement testHLDesc;
-		testHLDesc.SetName("Genre");
-		testHLDesc.SetType("RestrictedString");
-		testHLDesc.AddRestrictionValues();
-		testHLDesc.UpdateData();
-		testHLDesc.GetRestrictionValues().push_back("Dance");
-		testHLDesc.GetRestrictionValues().push_back("Classic");
-		testHLDesc.GetRestrictionValues().push_back("Jazz");
-		testHLDesc.GetRestrictionValues().push_back("Rhythm&Blues");
-		testHLDesc.GetRestrictionValues().push_back("Folk");
-		hlschema.GetHLDs().push_back(testHLDesc);
-	}
-	{
-		CLAM_Annotator::HLDSchemaElement testHLDesc;
-		testHLDesc.SetName("Danceability");
-		testHLDesc.SetType("Float");
-		testHLDesc.AddfRange();
-		testHLDesc.UpdateData();
-		CLAM_Annotator::Range<float> range;
-		range.SetMin(0.);
-		range.SetMax(10.);
-		testHLDesc.SetfRange(range);
-		hlschema.GetHLDs().push_back(testHLDesc);
-	}
-	{
-		CLAM_Annotator::HLDSchemaElement testHLDesc;
-		testHLDesc.SetName("Key");
-		testHLDesc.SetType("RestrictedString");
-		testHLDesc.AddRestrictionValues();
-		testHLDesc.UpdateData();
-		testHLDesc.GetRestrictionValues().push_back("A");
-		testHLDesc.GetRestrictionValues().push_back("A#");
-		testHLDesc.GetRestrictionValues().push_back("B");
-		testHLDesc.GetRestrictionValues().push_back("C");
-		testHLDesc.GetRestrictionValues().push_back("C#");
-		testHLDesc.GetRestrictionValues().push_back("D");
-		testHLDesc.GetRestrictionValues().push_back("D#");
-		testHLDesc.GetRestrictionValues().push_back("E");
-		testHLDesc.GetRestrictionValues().push_back("F");
-		testHLDesc.GetRestrictionValues().push_back("F#");
-		testHLDesc.GetRestrictionValues().push_back("G");
-		testHLDesc.GetRestrictionValues().push_back("G#");
-		hlschema.GetHLDs().push_back(testHLDesc);
-	}
-	{
-		CLAM_Annotator::HLDSchemaElement testHLDesc;
-		testHLDesc.SetName("Mode");
-		testHLDesc.SetType("RestrictedString");
-		testHLDesc.AddRestrictionValues();
-		testHLDesc.UpdateData();
-		testHLDesc.GetRestrictionValues().push_back("Minor");
-		testHLDesc.GetRestrictionValues().push_back("Major");
-		hlschema.GetHLDs().push_back(testHLDesc);
-	}
-	{
-		CLAM_Annotator::HLDSchemaElement testHLDesc;
-		testHLDesc.SetName("DynamicComplexity");
-		testHLDesc.SetType("Float");
-		testHLDesc.AddfRange();
-		testHLDesc.UpdateData();
-		CLAM_Annotator::Range<float> range;
-		range.SetMin(0.);
-		range.SetMax(10.);
-		testHLDesc.SetfRange(range);
-		hlschema.GetHLDs().push_back(testHLDesc);
-	}
-	{
-		CLAM_Annotator::HLDSchemaElement testHLDesc;
-		testHLDesc.SetName("BPM");
-		testHLDesc.SetType("Int");
-		testHLDesc.AddiRange();
-		testHLDesc.UpdateData();
-		CLAM_Annotator::Range<int> range;
-		range.SetMin(0);
-		range.SetMax(240);
-		testHLDesc.SetiRange(range);
-		hlschema.GetHLDs().push_back(testHLDesc);
-	}
+		"Minor",
+		"Major",
+		0
+	};
+	AddRestrictedStringHLAttribute(hlschema, "Mode", modeValues);
+	AddRangedRealHLAttribute(hlschema, "DynamicComplexity", 0., 10.);
+	AddRangedIntHLAttribute(hlschema, "BPM", 0, 240);
 }
 
 void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme)
