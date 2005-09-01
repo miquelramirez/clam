@@ -46,7 +46,7 @@ namespace CLAM
 			topHole->setFixedSize(20,GetXRuler()->height());
 			leftHole->setFixedSize(y_ruler_width,20);
 			rightHole->setFixedSize(20,20);
-			bottomHole->setFixedHeight(10);
+			bottomHole->setFixedHeight(5);
 
 			// toggle frame
 			CreateToggleColorFrame();
@@ -69,7 +69,7 @@ namespace CLAM
 			scrollLayout->addWidget(mVScrollBar);
 
 			// layout
-			QGridLayout* innerLayout = new QGridLayout(this,4,3,2);
+			QGridLayout* innerLayout = new QGridLayout(this,4,3,1);
 			innerLayout->addWidget(GetToggleColorFrame(),0,0);
 			innerLayout->addWidget(GetXRuler(),0,1);
 			innerLayout->addWidget(topHole,0,2);
@@ -97,7 +97,8 @@ namespace CLAM
 			SynchronizeUpdateMark();
 			SynchronizeUpdateTag();
 			SynchronizeYRulers();
-
+			SynchronizeFocusIn();
+			
 			HideDisplays();
 		}
 
