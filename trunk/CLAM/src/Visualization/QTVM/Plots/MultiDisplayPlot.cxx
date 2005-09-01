@@ -218,6 +218,14 @@ namespace CLAM
 			}
 		}
 
+		void MultiDisplayPlot::SynchronizeFocusIn()
+		{
+			for(unsigned i=0; i < mSurfaces.size(); i++)
+			{
+				connect(mSurfaces[i],SIGNAL(focusIn()),SLOT(focusInReceived()));
+			}
+		}
+
 		void MultiDisplayPlot::keyPressEvent(QKeyEvent* e)
 		{
 			for(unsigned i=0; i < mControllers.size(); i++)
@@ -350,6 +358,14 @@ namespace CLAM
 			{
 				mControllers[mMasterId]->SetSegmentationTag(editTagDlg->text());
 			}
+		}
+		
+		
+		void MultiDisplayPlot::focusInReceived()
+		{
+			if(hasFocus()) return;
+			setFocus();
+			emit focusIn();
 		}
 	}
 }

@@ -44,6 +44,7 @@ namespace CLAM
 
 		signals:
 			void switchColorsRequested();
+			void focusIn();
 
 		public slots:
 			void switchColors();
@@ -74,6 +75,8 @@ namespace CLAM
 			void BindToSurfaces();
 			void SynchronizeHZoom();
 
+			void SynchronizeFocusIn();
+			
 			void keyPressEvent(QKeyEvent* e);
 			void keyReleaseEvent( QKeyEvent* e);
 
@@ -93,6 +96,7 @@ namespace CLAM
 		private slots:
 			void setMaxHScroll(int);
 			void showEditTagDialog();
+			void focusInReceived();
 
 		private:
 			int           mMasterId;
