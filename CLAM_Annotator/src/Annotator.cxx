@@ -490,6 +490,7 @@ void Annotator::songsClicked( QListViewItem * item)
 	selected song */
 	if(mLLDChanged||mHLDChanged||mSegmentsChanged) 
 	{
+		std::cout << "Saving Previous Song Descriptors..." << std::endl;
 		if(mLLDChanged) 
 			generateDescriptorsFromEnvelopes();
 		saveDescriptors();
@@ -497,6 +498,7 @@ void Annotator::songsClicked( QListViewItem * item)
 
 	if (item == 0) return;
 
+	std::cout << "Loading Song Descriptors..." << std::endl;
 	mCurrentIndex = getIndexFromFileName(std::string(item->text(0).ascii()));
 	if (mCurrentIndex <0) return;
 	mCurrentSoundFileName = mProject.GetSongs()[mCurrentIndex].GetSoundFile();
@@ -507,13 +509,6 @@ void Annotator::songsClicked( QListViewItem * item)
 	}
 	else 
 		mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + ".pool";
-	CLAM::AudioFile file;
-	file.OpenExisting(mCurrentSoundFileName);
-	mpProgressDialog = 
-		new QProgressDialog ("Loading Audio", 
-			"Cancel",file.GetHeader().GetLength(),
-			this);
-	mpProgressDialog->setProgress(0);
 	loadDescriptorPool();
 	std::cout << "Filling Global Descriptors..." << std::endl;
 	fillGlobalDescriptors( mCurrentIndex );
@@ -522,9 +517,6 @@ void Annotator::songsClicked( QListViewItem * item)
 	std::cout << "Drawing LLD..." << std::endl;
 	drawLLDescriptors(mCurrentIndex);
 	std::cout << "Done" << std::endl;
-
-	delete mpProgressDialog;
-	mpProgressDialog = NULL;
 }
 
 void Annotator::drawAudio(QListViewItem * item=NULL)
@@ -590,6 +582,11 @@ void Annotator::loadAudioFile(const char* filename)
 	mCurrentAudio.SetSize(0);
 	mCurrentAudio.SetSize(nSamples);
 	mCurrentAudio.SetSampleRate(samplingRate);
+	mpProgressDialog = 
+		new QProgressDialog ("Loading Audio", 
+			"Cancel",file.GetHeader().GetLength(),
+			this);
+	mpProgressDialog->setProgress(0);
 	int beginSample=0;
 	while(reader.Do(audioFrameVector))
 	{
@@ -603,6 +600,9 @@ void Annotator::loadAudioFile(const char* filename)
 	mCurrentAudio.SetSize(beginSample);
 	setMenuAudioItemsEnabled(true);
 	reader.Stop();
+
+	delete mpProgressDialog;
+	mpProgressDialog = NULL;
 }
 
 void Annotator::generateEnvelopesFromDescriptors()
