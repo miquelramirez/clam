@@ -45,6 +45,10 @@ namespace CLAM
 			void SetController(PlotController* controller);
 			void SetBackgroundColor(const double& r, const double& g, const double& b);
 			
+		signals:
+			void focusIn();
+			void focusOut();
+	
 		private slots:
 			void updateView(GLView);
 			void updateToolTip(QString);
@@ -61,6 +65,8 @@ namespace CLAM
 			void leaveEvent(QEvent* e);
 			void enterEvent(QEvent* e);
 			void mouseDoubleClickEvent(QMouseEvent* e);
+			void focusInEvent(QFocusEvent* e);
+			void focusOutEvent(QFocusEvent* e);
 
 		private:
 			GLView          mView;

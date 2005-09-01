@@ -41,6 +41,7 @@ namespace CLAM
 		{
 			setMouseTracking(true);
 			setAutoBufferSwap(false);
+			setFocusPolicy(StrongFocus);
 		}
 
 		DisplaySurface::~DisplaySurface()
@@ -123,6 +124,18 @@ namespace CLAM
 			ycoord /= double(height());
 			ycoord += mView.bottom;
 			mController->SetMousePos(xcoord,ycoord);
+		}
+
+		void DisplaySurface::focusInEvent(QFocusEvent* e)
+		{
+			QWidget::focusInEvent(e);
+			emit focusIn();
+		}
+
+		void DisplaySurface::focusOutEvent(QFocusEvent* e)
+		{
+			QWidget::focusOutEvent(e);
+			emit focusOut();
 		}
 
 		void DisplaySurface::updateView(GLView v)
