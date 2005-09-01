@@ -236,7 +236,7 @@ namespace CLAM
 			play_panel->addWidget(mLabelsGroup);
 
 			// layout
-			QGridLayout* innerLayout = new QGridLayout(this,5,3,2);
+			QGridLayout* innerLayout = new QGridLayout(this,5,3,1);
 			innerLayout->addMultiCellWidget(GetToggleColorFrame(),0,0,0,1);
 			innerLayout->addWidget(GetXRuler(),0,2);
 			innerLayout->addLayout(mute_left_panel,1,0);
@@ -266,6 +266,8 @@ namespace CLAM
 			SynchronizeUpdateTag();
 			SynchronizeRegionTime();
 			SynchronizePlayingPos();
+			SynchronizeFocusIn();
+
 			connect(mControllers[MASTER],SIGNAL(yRulerRange(double,double)),mYRulerL,SLOT(updateRange(double,double)));
 			connect(mControllers[SLAVE],SIGNAL(yRulerRange(double,double)),mYRulerR,SLOT(updateRange(double,double)));
 			connect(mMuteL,SIGNAL(clicked()),this,SLOT(muteLeftChannel()));
