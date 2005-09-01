@@ -182,3 +182,15 @@ void SMSToolsBase::synthesize()
 {
 
 }
+
+
+void SMSToolsBase::backgroundBlack( bool )
+{
+
+}
+
+
+void SMSToolsBase::backgroundWhite( bool )
+{
+
+}

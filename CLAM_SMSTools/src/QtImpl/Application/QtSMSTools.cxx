@@ -1,5 +1,7 @@
 #include <qfiledialog.h>
 #include <qaction.h>
+#include <qlabel.h>
+#include <qstatusbar.h>
 #include "Message.hxx"
 #include "Engine.hxx"
 #include "ViewManager.hxx"
@@ -22,7 +24,12 @@ namespace QtSMS
 	{
 		mEngine = Engine::Instance();
 		setCentralWidget(Engine::DisplayManager()->GetView(this));
+		InitStatusBar();
 		InitialState();
+		InitMenuViewItems();
+
+		connect(Engine::DisplayManager(),SIGNAL(dataType(QString)),SLOT(setLeftSBLabelText(QString)));
+		connect(Engine::DisplayManager(),SIGNAL(sampleRateDuration(QString)),SLOT(setRightSBLabelText(QString)));
 	}
 
 	void QtSMSTools::loadConfiguration()
@@ -33,6 +40,7 @@ namespace QtSMS
 		{
 			Engine::DisplayManager()->Flush(); // we have a new config
 			Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
+			InitMenuViewItems();
 			ShowIncomingAudio();
 			UpdateState();
 		}
@@ -54,7 +62,6 @@ namespace QtSMS
 		QString filename = QFileDialog::getSaveFileName("extracted_melody_out.xml","*.xml",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreMelody((filename));
-
 	}
 
 	void QtSMSTools::loadAnalysisData()
@@ -105,9 +112,11 @@ namespace QtSMS
 
 	void QtSMSTools::analyze()
 	{
+		setLeftSBLabelText("analysis processing...");
 		mEngine->Analyze();
 		Engine::DisplayManager()->SetAnalyzedData();
 		UpdateState();
+		setLeftSBLabelText("ready");
 	}
 
 	void QtSMSTools::melodyExtraction()
@@ -263,6 +272,32 @@ namespace QtSMS
 		}
 	}
 
+	void QtSMSTools::backgroundBlack(bool on)
+	{
+		if(on)
+		{
+			Engine::DisplayManager()->SetBackgroundBlack();
+			mBackgroundWhite->setOn(false);
+		}
+		else
+		{
+			if(!mBackgroundWhite->isOn()) mBackgroundBlack->setOn(true);
+		}
+	}
+
+	void QtSMSTools::backgroundWhite(bool on)
+	{
+		if(on)
+		{
+			Engine::DisplayManager()->SetBackgroundWhite();
+			mBackgroundBlack->setOn(false);
+		}
+		else
+		{
+			if(!mBackgroundBlack->isOn()) mBackgroundWhite->setOn(true);
+		}
+	}
+
 	void QtSMSTools::showOnlineHelp()
 	{
 		// TODO
@@ -279,6 +314,30 @@ namespace QtSMS
 	{
 		// TODO
 		NotImplemented();
+	}
+
+	void QtSMSTools::setLeftSBLabelText(QString str)
+	{
+		if(str.isEmpty())
+		{
+			mLeftSBLabel->setText("ready");
+		}
+		else
+		{
+			mLeftSBLabel->setText(str);
+		}
+	}
+
+	void QtSMSTools::setRightSBLabelText(QString str)
+	{
+		if(str.isEmpty())
+		{
+			mRightSBLabel->setText("sr: --      dur: --:--,--- ");
+		}
+		else
+		{
+			mRightSBLabel->setText(str);
+		}
 	}
 
 	void QtSMSTools::InitialState()
@@ -379,6 +438,35 @@ namespace QtSMS
 	{		
 		mMenuViewOriginalAudio->setOn(true);
 		displayOriginalAudio(true);
+	}
+
+	void QtSMSTools::InitStatusBar()
+	{
+		mLeftSBLabel = new QLabel(this);
+		mLeftSBLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+		mLeftSBLabel->setAlignment(AlignLeft);
+		mLeftSBLabel->setText("ready");
+		mRightSBLabel = new QLabel(this);
+		mRightSBLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+		mRightSBLabel->setAlignment(AlignLeft);
+		mRightSBLabel->setText("sr: --      dur: --:--,--- ");
+		statusBar()->addWidget(mLeftSBLabel,1);
+		statusBar()->addWidget(mRightSBLabel,0);
+	}
+
+	void QtSMSTools::InitMenuViewItems()
+	{
+		mMenuViewOriginalAudio->setOn(false);
+		mMenuViewFundFreq->setOn(false);
+		mMenuViewSinTracks->setOn(false);
+		mMenuViewColorSonogram->setOn(false);
+		mMenuViewBWSonogram->setOn(false);
+		mMenuViewSpecPeaks->setOn(false);
+		mMenuViewSinSpec->setOn(false);
+		mMenuViewResSpec->setOn(false);
+		mMenuViewSynAudio->setOn(false);
+		mMenuViewSynSinusoidal->setOn(false);
+		mMenuViewSynResidual->setOn(false);
 	}
 
 	void QtSMSTools::NotImplemented()

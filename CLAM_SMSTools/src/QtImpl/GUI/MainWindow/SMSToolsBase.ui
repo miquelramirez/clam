@@ -20,14 +20,14 @@
     <property name="name">
         <cstring>mMenuBar</cstring>
     </property>
-    <item text="File" name="mMenuFile">
+    <item text="&amp;File" name="mMenuFile">
         <action name="fileConfig"/>
-        <item text="Configuration" name="mFileCfg" accel="">
+        <item text="Configuration" name="mFileConfig" accel="">
             <action name="mMenuFileNewCfg"/>
             <action name="mMenuFileLoadCfg"/>
         </item>
         <action name="fileSMSAnalysis"/>
-        <item text="SMS Analysis" name="mFileSMSAnalysis" accel="">
+        <item text="SMS Analysis" name="mFilsSMSAnalysis" accel="">
             <action name="mMenuFileLoadAnalysis"/>
             <action name="mMenuFileStoreAnalysis"/>
         </item>
@@ -36,7 +36,7 @@
             <action name="mMenuFileSaveMelody"/>
         </item>
         <action name="fileSMSTransform"/>
-        <item text="SMS Transformation" name="mFileTransformation" accel="">
+        <item text="SMS Transformation" name="mFileSMSTransformation" accel="">
             <action name="mMenuFileNewScore"/>
             <action name="mMenuFileLoadScore"/>
         </item>
@@ -49,18 +49,18 @@
         <separator/>
         <action name="fileExitAction"/>
     </item>
-    <item text="SMS Analysis" name="mMenuAnalysis">
+    <item text="SMS &amp;Analysis" name="mMenuAnalysis">
         <action name="mMenuAnalysisAnalyze"/>
         <action name="mMenuAnalysisExtractMelody"/>
     </item>
-    <item text="SMS Transformation" name="mMenuTransformation">
+    <item text="SMS &amp;Transformation" name="mMenuTransformation">
         <action name="mMenuTransformApply"/>
         <action name="mMenuTransformUndo"/>
     </item>
-    <item text="SMS Synthesis" name="mMenuSynthesis">
+    <item text="SMS &amp;Synthesis" name="mMenuSynthesis">
         <action name="mMenuSynthSinthesize"/>
     </item>
-    <item text="View" name="mMenuView">
+    <item text="&amp;View" name="mMenuView">
         <action name="mMenuViewOriginalAudio"/>
         <action name="mMenuViewFundFreq"/>
         <action name="mMenuViewSinTracks"/>
@@ -79,8 +79,14 @@
         <action name="mMenuViewSynAudio"/>
         <action name="mMenuViewSynSinusoidal"/>
         <action name="mMenuViewSynResidual"/>
+        <separator/>
+        <action name="viewSchemeAction"/>
+        <item text="Scheme" name="mViewScheme" accel="">
+            <action name="mBackgroundBlack"/>
+            <action name="mBackgroundWhite"/>
+        </item>
     </item>
-    <item text="?" name="mMenuHelp">
+    <item text="&amp;?" name="mMenuHelp">
         <action name="mMenuOnlineHelp"/>
         <action name="mMenuLicense"/>
         <action name="mMenuAbout"/>
@@ -595,6 +601,48 @@
             <string>Original Audio</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>viewSchemeAction</cstring>
+        </property>
+        <property name="text">
+            <string>Scheme</string>
+        </property>
+        <property name="menuText">
+            <string>Scheme</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mBackgroundBlack</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="on">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Background black</string>
+        </property>
+        <property name="menuText">
+            <string>Background black</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>mBackgroundWhite</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Background white</string>
+        </property>
+        <property name="menuText">
+            <string>Background white</string>
+        </property>
+    </action>
 </actions>
 <connections>
     <connection>
@@ -777,6 +825,18 @@
         <receiver>SMSToolsBase</receiver>
         <slot>synthesize()</slot>
     </connection>
+    <connection>
+        <sender>mBackgroundBlack</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>backgroundBlack(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mBackgroundWhite</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SMSToolsBase</receiver>
+        <slot>backgroundWhite(bool)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">SMSToolsBase.ui.h</include>
@@ -811,6 +871,8 @@
     <slot>showLicense()</slot>
     <slot>showAboutBox()</slot>
     <slot>synthesize()</slot>
+    <slot>backgroundBlack( bool )</slot>
+    <slot>backgroundWhite( bool )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

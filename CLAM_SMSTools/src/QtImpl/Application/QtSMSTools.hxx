@@ -3,6 +3,8 @@
 
 #include "SMSToolsBase.h"
 
+class QLabel;
+
 namespace QtSMS
 {
 	class Engine;
@@ -46,18 +48,29 @@ namespace QtSMS
 		void displaySynthesizedSound( bool );
 		void displaySynthesizedResidual( bool );
 		void displaySynthesizedSinusoidal( bool );
+		void backgroundBlack( bool );
+		void backgroundWhite( bool );
 		// menu help
 		void showOnlineHelp();
 		void showLicense();
 		void showAboutBox();
 
+		// status bar
+		void setLeftSBLabelText(QString);
+		void setRightSBLabelText(QString);
+
 	private:
 		Engine* mEngine;
+		QLabel* mLeftSBLabel;
+		QLabel* mRightSBLabel;
 
 		void InitSMSTools();
 		void InitialState();
 		void UpdateState();
 		void ShowIncomingAudio();
+
+		void InitStatusBar();
+		void InitMenuViewItems();
 
 		void NotImplemented();
 	};
