@@ -40,13 +40,13 @@ using CLAM::TIndex;
 
 
 Annotator::Annotator(const std::string & nameProject = "")
-	:AnnotatorBase( 0, "annotator", WDestructiveClose)
+	: AnnotatorBase( 0, "annotator", WDestructiveClose)
 	, mCurrentIndex(0)
-	, mpTabLayout(0)
-	, mBPFEditors(0)
-	, mLLDChanged(false)
 	, mHLDChanged(false)
+	, mLLDChanged(false)
 	, mSegmentsChanged(false)
+	, mBPFEditors(0)
+	, mpTabLayout(0)
 {
 	mpDescriptorPool = NULL;
 	mpAudioPlot = NULL;
@@ -575,34 +575,30 @@ void Annotator::loadAudioFile(const char* filename)
 	std::vector<CLAM::Audio> audioFrameVector(nChannels);
 	for (int i=0;i<nChannels;i++)
 		audioFrameVector[i].SetSize(readSize);
+	mCurrentAudio.SetSize(0);
+	mCurrentAudio.SetSize(nSamples);
+	mCurrentAudio.SetSampleRate(samplingRate);
 	CLAM::MultiChannelAudioFileReaderConfig cfg;
 	cfg.SetSourceFile( file );
 	CLAM::MultiChannelAudioFileReader reader(cfg);
 	reader.Start();
-	mCurrentAudio.SetSize(0);
-	mCurrentAudio.SetSize(nSamples);
-	mCurrentAudio.SetSampleRate(samplingRate);
-	mpProgressDialog = 
-		new QProgressDialog ("Loading Audio", 
+	QProgressDialog progressDialog("Loading Audio", 
 			"Cancel",file.GetHeader().GetLength(),
 			this);
-	mpProgressDialog->setProgress(0);
+	progressDialog.setProgress(0);
 	int beginSample=0;
 	while(reader.Do(audioFrameVector))
 	{
 		mCurrentAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
 		beginSample+=readSize;
 		qApp->processEvents( 30 /* miliseconds max */ );
-		mpProgressDialog->setProgress( beginSample/samplingRate*1000.0 );
-		if (mpProgressDialog->wasCanceled()) break;
+		progressDialog.setProgress( beginSample/samplingRate*1000.0 );
+		if (progressDialog.wasCanceled()) break;
 		if (beginSample+readSize>nSamples) break;
 	}
 	mCurrentAudio.SetSize(beginSample);
 	setMenuAudioItemsEnabled(true);
 	reader.Stop();
-
-	delete mpProgressDialog;
-	mpProgressDialog = NULL;
 }
 
 void Annotator::generateEnvelopesFromDescriptors()
@@ -972,22 +968,22 @@ void Annotator::auralizeMarks()
 {
 	if(mClick.size()==0)
 	{
-		mClick.resize(2);
 		CLAM::AudioFile file;
 		file.OpenExisting("click.mp3");
 		int nChannels = file.GetHeader().GetChannels();
+		mClick.resize(nChannels);
+		for (int i=0; i<nChannels; i++)
+			mClick[i].SetSize(5000);
+
 		CLAM::MultiChannelAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( file );
 		CLAM::MultiChannelAudioFileReader reader(cfg);
-		mClick[0].SetSize(5000);
-		mClick[1].SetSize(5000);
 		reader.Start();
 		int beginSample=0;
 		reader.Do(mClick);
 		reader.Stop();
 	}
-	std::vector<unsigned int> marks;
-	marks = mpAudioPlot->GetMarks();
+	const std::vector<unsigned int> & marks = mpAudioPlot->GetMarks();
 	int nMarks = marks.size();
 	mCurrentMarkedAudio = mCurrentAudio;
 	int size = mCurrentMarkedAudio.GetSize();
