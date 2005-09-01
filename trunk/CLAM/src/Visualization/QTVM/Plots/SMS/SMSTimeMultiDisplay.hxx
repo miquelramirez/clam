@@ -46,6 +46,11 @@ namespace CLAM
 		signals:
 			void currentTime(float);
 			void dataType(QString);
+			void startPlaying();
+			void stopPlaying();
+
+		public slots:
+			void setCurrentTime(double);
 
 		protected:
 			void CreateControllers();
@@ -92,6 +97,11 @@ namespace CLAM
 			bool                      mHasEnqueuedPlayListItem;
 			int                       mEnqueuedDataId;
 			int	                      mEnqueuedPlayerId;
+			bool                      mIsPlaying;
+
+			// cpntainers
+			QFrame*  mAudioDisplaysContainer;
+			QFrame*  mFreqDisplaysContainer;
 
 			// player holes /////////////
 			QFrame* leftHole;
@@ -129,8 +139,9 @@ namespace CLAM
 			void CheckAudioVScrollVisibility();
 			void CheckFrequencyVScrollVisibility();
 
-			QLayout* CreateAudioDisplays();
-			QLayout* CreateFrequencyDisplays();
+		    void CreateAudioDisplays();
+			void CreateFrequencyDisplays();
+
 			QLayout* CreatePlayer();
 
 			void ShowPlayer();

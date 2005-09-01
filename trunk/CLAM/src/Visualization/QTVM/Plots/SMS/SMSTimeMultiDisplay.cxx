@@ -1,4 +1,5 @@
 #include <qlayout.h>
+#include <qsplitter.h>
 #include <qframe.h>
 #include <qcombobox.h>
 #include <qtooltip.h>
@@ -23,6 +24,7 @@ namespace CLAM
 			, mHasAudioData(false)
 			, mHasFundamentalData(false)
 			, mHasEnqueuedPlayListItem(false)
+			, mIsPlaying(false)
 		{
 			mSlotPlayingTimeReceived.Wrap(this,&SMSTimeMultiDisplay::PlayingTime);
 			mSlotStopPlayingReceived.Wrap(this,&SMSTimeMultiDisplay::StopPlaying);
@@ -38,6 +40,14 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::InitSMSTimePlot()
 		{
+			QSplitter* splitter = new QSplitter(Qt::Vertical,this);
+
+			mAudioDisplaysContainer = new QFrame(splitter);
+			mFreqDisplaysContainer = new QFrame(splitter);
+
+			mAudioDisplaysContainer->hide();
+			mFreqDisplaysContainer->hide();
+
 				// x ruler
 			CreateXRuler();
 
@@ -75,19 +85,21 @@ namespace CLAM
 			CreateControllers();
 			BindToSurfaces();
 
+			CreateAudioDisplays();
+			CreateFrequencyDisplays();
+
 			// layout
-			QGridLayout* innerLayout = new QGridLayout(this,5,3,2);
+			QGridLayout* innerLayout = new QGridLayout(this,4,3,1);
 			innerLayout->addWidget(GetToggleColorFrame(),0,0);
 			innerLayout->addWidget(GetXRuler(),0,1);
 			innerLayout->addWidget(topHole,0,2);
-			innerLayout->addMultiCellLayout(CreateAudioDisplays(),1,1,0,2);		
-			innerLayout->addMultiCellLayout(CreateFrequencyDisplays(),2,2,0,2);
-			innerLayout->addWidget(sleftHole,3,0);
-			innerLayout->addWidget(GetHScrollGroup(),3,1);
-			innerLayout->addWidget(srightHole,3,2);
-			innerLayout->addWidget(leftHole,4,0);
-			innerLayout->addLayout(CreatePlayer(),4,1);
-			innerLayout->addWidget(rightHole,4,2);
+			innerLayout->addMultiCellWidget(splitter,1,1,0,2);
+			innerLayout->addWidget(sleftHole,2,0);
+			innerLayout->addWidget(GetHScrollGroup(),2,1);
+			innerLayout->addWidget(srightHole,2,2);
+			innerLayout->addWidget(leftHole,3,0);
+			innerLayout->addLayout(CreatePlayer(),3,1);
+			innerLayout->addWidget(rightHole,3,2);
 
 			ConnectXRuler();
 			ConnectHScrollGroup();
@@ -104,7 +116,8 @@ namespace CLAM
 			SynchronizeYRulers();
 			SynchronizeRegionTime();
 			SynchronizePlayingPos();
-
+			SynchronizeFocusIn();
+			
 			InitPlayList();
 			InitAudioPtrs();
 
@@ -212,16 +225,19 @@ namespace CLAM
 				case SYNTHESIZED:
 				case SINUSOIDAL:
 				case RESIDUAL:
+					if(!mAudioDisplaysContainer->isVisible()) mAudioDisplaysContainer->show();
 					if(!mAudioVScroll->isVisible()) mAudioVScroll->show();
 					AddAudioItem(id);
 					if(!mPlayer->isVisible()) ShowPlayer();
 					break;
 				case FUNDAMENTAL:
+					if(!mFreqDisplaysContainer->isVisible()) mFreqDisplaysContainer->show();
 					if(!mFrequencyVScroll->isVisible()) mFrequencyVScroll->show();
 					AddFundFreqItem(id);
 					if(!mPlayer->isVisible()) ShowPlayer();
 					break;
 				case SINTRACKS:
+					if(!mFreqDisplaysContainer->isVisible()) mFreqDisplaysContainer->show();
 					if(!mFrequencyVScroll->isVisible()) mFrequencyVScroll->show();
 					break;
 				default:
@@ -277,6 +293,11 @@ namespace CLAM
 			((QtSMSPlayer*)mPlayer)->Flush();
 		}
 
+		void SMSTimeMultiDisplay::setCurrentTime(double time)
+		{
+			((AudioPlotController*)mControllers[MASTER])->setSelectedXPos(time);
+		}
+
 		void SMSTimeMultiDisplay::CreateControllers()
 		{
 			for(int i=MASTER; i <= RESIDUAL; i++)
@@ -291,10 +312,16 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::CreateSurfaces()
 		{
-			for(int i=MASTER; i <= SINTRACKS; i++)
+			for(int i=MASTER; i <= RESIDUAL; i++)
 			{
-				mSurfaces.push_back(new DisplaySurface(this));
-				mYRulers.push_back(new Ruler(this,CLAM::VM::Left));
+				mSurfaces.push_back(new DisplaySurface(mAudioDisplaysContainer));
+				mYRulers.push_back(new Ruler(mAudioDisplaysContainer,CLAM::VM::Left));
+				mSurfaces[i]->setMinimumSize(200,20);
+			}
+			for(int i=FUNDAMENTAL; i <= SINTRACKS; i++)
+			{
+				mSurfaces.push_back(new DisplaySurface(mFreqDisplaysContainer));
+				mYRulers.push_back(new Ruler(mFreqDisplaysContainer,CLAM::VM::Left));
 				mSurfaces[i]->setMinimumSize(200,20);
 			}
 		}
@@ -581,6 +608,11 @@ namespace CLAM
 		void SMSTimeMultiDisplay::PlayingTime(TData time)
 		{
 			((AudioPlotController*)mControllers[MASTER])->updateTimePos(time);
+			if(!mIsPlaying)
+			{
+				mIsPlaying = true;
+				emit startPlaying();
+			}
 		}
 
 		void SMSTimeMultiDisplay::StopPlaying(TData time)
@@ -597,6 +629,8 @@ namespace CLAM
 					((QtSMSPlayer*)mPlayer)->SetData(data,!mHasAudioData);
 				}
 			}
+			mIsPlaying = false;
+			emit stopPlaying();
 		}
 
 		void SMSTimeMultiDisplay::SynchronizeRegionTime()
@@ -636,7 +670,11 @@ namespace CLAM
 					break;
 				}
 			}
-			if(!flag) mAudioVScroll->hide();
+			if(!flag) 
+			{
+				mAudioVScroll->hide();
+				mAudioDisplaysContainer->hide();
+			}
 		}
 
 		void SMSTimeMultiDisplay::CheckPlayerVisibility()
@@ -664,14 +702,18 @@ namespace CLAM
 					break;
 				}
 			}
-			if(!flag) mFrequencyVScroll->hide();
+			if(!flag) 
+			{
+				mFrequencyVScroll->hide();
+				mFreqDisplaysContainer->hide();
+			}
 		}
 
-		QLayout* SMSTimeMultiDisplay::CreateAudioDisplays()
+	    void SMSTimeMultiDisplay::CreateAudioDisplays()
 		{
-			mAudioVScroll = new VScrollGroup(this);
+			mAudioVScroll = new VScrollGroup(mAudioDisplaysContainer);
 
-			QBoxLayout* displayLayout = new QHBoxLayout;
+			QBoxLayout* displayLayout = new QHBoxLayout(mAudioDisplaysContainer,0,1);
 			QBoxLayout* rulersLayout = new QVBoxLayout(displayLayout);
 			QBoxLayout* surferLayout = new QVBoxLayout(displayLayout);
 			QBoxLayout* scrollLayout = new QVBoxLayout(displayLayout); 
@@ -682,15 +724,13 @@ namespace CLAM
 				surferLayout->addWidget(mSurfaces[i]);
 			}
 			scrollLayout->addWidget(mAudioVScroll);
-
-			return displayLayout;
 		}
 
-		QLayout* SMSTimeMultiDisplay::CreateFrequencyDisplays()
+		void SMSTimeMultiDisplay::CreateFrequencyDisplays()
 		{
-			mFrequencyVScroll = new VScrollGroup(this);
+			mFrequencyVScroll = new VScrollGroup(mFreqDisplaysContainer);
 
-			QBoxLayout* displayLayout = new QHBoxLayout;
+			QBoxLayout* displayLayout = new QHBoxLayout(mFreqDisplaysContainer,0,1);
 			QBoxLayout* rulersLayout = new QVBoxLayout(displayLayout);
 			QBoxLayout* surferLayout = new QVBoxLayout(displayLayout);
 			QBoxLayout* scrollLayout = new QVBoxLayout(displayLayout); 
@@ -702,8 +742,6 @@ namespace CLAM
 			surferLayout->addWidget(mSurfaces[SINTRACKS]);
 
 			scrollLayout->addWidget(mFrequencyVScroll);
-
-			return displayLayout;
 		}
 
 		QLayout* SMSTimeMultiDisplay::CreatePlayer()
