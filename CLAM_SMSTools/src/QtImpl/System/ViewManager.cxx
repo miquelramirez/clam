@@ -1,6 +1,8 @@
 #include <qlayout.h>
-#include <qwidget.h>
+#include <qsplitter.h>
+#include <qframe.h>
 #include "Message.hxx"
+#include "Navigator.hxx"
 #include "SMSTimeMultiDisplay.hxx"
 #include "SMSFreqMultiDisplay.hxx"
 #include "Engine.hxx"
@@ -19,11 +21,12 @@ namespace QtSMS
 		return mInstance;
 	}
 
-	ViewManager::ViewManager():mCurrentTime(0.0f),mLastFrame(0){}
+	ViewManager::ViewManager():mCurrentTime(0.0f),mLastFrame(0),mSentinel(false){}
 	ViewManager::~ViewManager(){ mInstance=0; mPlotList.clear(); }
 
 	void ViewManager::SetAudio(eView id)
 	{
+		bool hasAudio = true;
 		switch (id)
 		{
 			case ORIGINAL_AUDIO:
@@ -43,26 +46,22 @@ namespace QtSMS
 					Engine::Instance()->GetSynthesizedResidual() );
 				break;
 			default:
+				hasAudio = false;
 				break;
 		}
+		emit sampleRateDuration(GetSampleRateDuration(hasAudio));
 	}
 
 	void ViewManager::SetAnalyzedData()
 	{
-		CLAM::Segment segment = Engine::Instance()->GetOriginalSegment();
-		CLAM::Frame frame = segment.GetFrame(GetFrameNumber());
+		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->SetAnalyzedSegment(
+			Engine::Instance()->GetOriginalSegment() );
 
-		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->SetAnalyzedSegment(segment);
-		 
-		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetSpectrumAndPeaks(
-			frame.GetSinusoidalAnalSpectrum(),
-			frame.GetSpectralPeakArray() );
-		
-		// TODO: At this moment the frame hasn't sinusoidal spectrum attribute, change it later
-		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetSinusoidalSpectrum(
-			frame.GetSinusoidalAnalSpectrum() );
-		
-		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetResidualSpectrum(frame.GetResidualSpec());
+		UpdateSpectrumView(GetFrameNumber());
+
+		mFrameNavigator->setRange(0,Engine::Instance()->GetOriginalSegment().GetnFrames()-1);
+		mFrameNavigator->setValue(GetFrameNumber());
+		SetNavigatorEnabled(true);
 	}
 
 	void ViewManager::SetSynthesizedData()
@@ -75,17 +74,28 @@ namespace QtSMS
 		
 	void ViewManager::ShowConcreteView(eView group_id, eView view_id)
 	{
+		bool isVisible = true;
 		switch(group_id)
 		{
 			case TIME_GROUP_VIEW:
+				if(!mTimeViewContainer->isVisible()) mTimeViewContainer->show();
 				((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->ShowDisplay(view_id);
 				break;
 			case SPECTRUM_GROUP_VIEW:
+				if(!mSpecViewContainer->isVisible()) mSpecViewContainer->show();
 				((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->ShowDisplay(view_id);
 				break;
 			default:
+				isVisible = false;
 				break;
-		}		
+		}
+		if(isVisible)
+		{
+			if(!mFrameNavigator->isVisible())
+			{
+				SetNavigatorVisible(true);
+			}
+		}
 	}
 
 	void ViewManager::HideConcreteView(eView group_id, eView view_id)
@@ -101,6 +111,38 @@ namespace QtSMS
 			default:
 				break;
 		}
+		if(!((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->isVisible())
+		{
+			mTimeViewContainer->hide();
+		}
+		if(!((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->isVisible())
+		{
+			mSpecViewContainer->hide();
+		}
+		bool isVisible = ( ((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->isVisible() ||
+						   ((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->isVisible() );
+		if(!isVisible)
+		{
+			SetNavigatorVisible(false);
+		}
+	}
+
+	void ViewManager::SetBackgroundBlack()
+	{
+		for(unsigned i=0; i < mPlotList.size(); i++)
+		{
+			mPlotList[i]->SetToggleColorOn(true);
+			mPlotList[i]->switchColors();
+		}
+	}
+
+	void ViewManager::SetBackgroundWhite()
+	{
+		for(unsigned i=0; i < mPlotList.size(); i++)
+		{
+			mPlotList[i]->SetToggleColorOn(false);
+			mPlotList[i]->switchColors();
+		}
 	}
 
 	void ViewManager::Flush()
@@ -115,56 +157,134 @@ namespace QtSMS
 		}
 		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->Flush();
 		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->Flush();
+		mFrameNavigator->setValue(0);
+		mTimeViewContainer->hide();
+		mSpecViewContainer->hide();
+		mFrameNavigator->setEnabled(false);
+		SetNavigatorVisible(false);
+		emit sampleRateDuration(GetSampleRateDuration(false));
 	}
 	
 	QWidget* ViewManager::GetView(QWidget* parent)
 	{
 		QWidget* view = new QWidget(parent);
+		QSplitter* splitter = new QSplitter(Qt::Vertical,view);
 
-		mPlotList.push_back(new CLAM::VM::SMSTimeMultiDisplay(view));
-		mPlotList.push_back(new CLAM::VM::SMSFreqMultiDisplay(view));
+		mTimeViewContainer = new QFrame(splitter);
+		mSpecViewContainer = new QFrame(splitter);
 
-		for(unsigned i=0; i < mPlotList.size(); i++)
-		{
-			mPlotList[i]->SetToggleColorOn(true);
-			mPlotList[i]->switchColors();
-		}
+		mTimeViewContainer->hide();
+		mSpecViewContainer->hide();
+
+		mPlotList.push_back(new CLAM::VM::SMSTimeMultiDisplay(mTimeViewContainer));
+		mPlotList.push_back(new CLAM::VM::SMSFreqMultiDisplay(mSpecViewContainer));
+
+		timeViewLayout = new QHBoxLayout(mTimeViewContainer);
+		specViewLayout = new QHBoxLayout(mSpecViewContainer);
+
+		timeViewLayout->addWidget(mPlotList[TIME_GROUP_VIEW]);
+		specViewLayout->addWidget(mPlotList[SPECTRUM_GROUP_VIEW]);
+
+		// navigator
+		mFrameNavigator = new CLAM::VM::Navigator(view);
+		mFrameNavigator->setEnabled(false);
+		mFrameNavigator->hide();
+		hole = new QFrame(view);
+		hole->setFixedSize(GetHoleWidth(),mFrameNavigator->height());
+		hole->hide();
+
+		SetBackgroundBlack();
+
 		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->ShowDisplayOnNewData(false);
 		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->ShowDisplayOnNewData(false);
 		
+		QBoxLayout* navigator = new QHBoxLayout;
+		navigator->addWidget(hole);
+		navigator->addWidget(mFrameNavigator);
+		navigator->addStretch();
+
 		QBoxLayout* layout = new QVBoxLayout(view);
-		for(unsigned i=0; i < mPlotList.size(); i++)
-		{
-			layout->addWidget(mPlotList[i]);
-		}
+		layout->addWidget(splitter);
+		layout->addLayout(navigator);
 		
 		connect(((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW]),
-				SIGNAL(currentTime(float)),this,SLOT(onNewTime(float)));
+				SIGNAL(currentTime(float)),SLOT(onNewTime(float)));
+		connect(((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW]),
+				SIGNAL(startPlaying()),SLOT(onStartPlaying())); 
+		connect(((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW]),
+				SIGNAL(stopPlaying()),SLOT(onStopPlaying())); 
+		connect(((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW]),
+				SIGNAL(dataType(QString)),SIGNAL(dataType(QString)));
+		connect(((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW]),
+				SIGNAL(dataType(QString)),SIGNAL(dataType(QString)));
+		connect(((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW]),
+				SIGNAL(focusIn()),SLOT(onTimeViewFocusIn()));
+		connect(((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW]),
+				SIGNAL(focusIn()),SLOT(onSpectrumViewFocusIn()));
+		connect(mFrameNavigator,SIGNAL(valueChanged(int)),SLOT(onNewFrame(int)));
 
 		return view;
 	}
 
 	void ViewManager::onNewTime(float time)
 	{
+		if(mSentinel) 
+		{
+			mSentinel = false;
+			return;
+		}
 		mCurrentTime = time;
 		if(!Engine::Instance()->State().GetHasAnalysis()) return;
 		int current_frame = GetFrameNumber();
-		if(current_frame != mLastFrame)
+		if(current_frame != mLastFrame && Engine::Instance()->State().GetHasAnalysis())
 		{
 			mLastFrame = current_frame;
-			CLAM::Frame frame = Engine::Instance()->GetOriginalSegment().GetFrame(mLastFrame);
-
-			((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetSpectrumAndPeaks(
-				frame.GetSinusoidalAnalSpectrum(),
-				frame.GetSpectralPeakArray() );
-		
-			// TODO: At this moment the frame hasn't sinusoidal spectrum attribute, change it later
-			((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetSinusoidalSpectrum(
-				frame.GetSinusoidalAnalSpectrum() );
-		
-			((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetResidualSpectrum(
-				frame.GetResidualSpec() );
+			UpdateSpectrumView(mLastFrame);
+			mFrameNavigator->setValue(mLastFrame);
 		}
+	
+	}
+
+	void ViewManager::onNewFrame(int frameNumber)
+	{
+		if(frameNumber == mLastFrame) return;
+		mSentinel = true;
+		UpdateSpectrumView(frameNumber);
+		CLAM::Segment segment = Engine::Instance()->GetOriginalSegment();
+		float duration = float(segment.GetEndTime());
+		float n_frames = float(segment.GetnFrames());
+		float time = frameNumber*duration/n_frames;
+		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->setCurrentTime(double(time));
+	}
+
+	void ViewManager::onStartPlaying()
+	{
+		SetNavigatorEnabled(false);
+	}
+	
+	void ViewManager::onStopPlaying()
+	{
+		SetNavigatorEnabled(true);
+	}
+
+	void ViewManager::onTimeViewFocusIn()
+	{
+		specViewLayout->setMargin(0);
+		mSpecViewContainer->setLineWidth(0);
+		mSpecViewContainer->setFrameStyle(QFrame::MenuBarPanel | QFrame::Plain);
+		timeViewLayout->setMargin(4);
+		mTimeViewContainer->setLineWidth(4);
+		mTimeViewContainer->setFrameStyle(QFrame::Box | QFrame::Plain);
+	}
+
+	void ViewManager::onSpectrumViewFocusIn()
+	{
+		timeViewLayout->setMargin(0);
+		mTimeViewContainer->setLineWidth(0);
+		mTimeViewContainer->setFrameStyle(QFrame::MenuBarPanel | QFrame::Plain);
+		specViewLayout->setMargin(4);
+		mSpecViewContainer->setLineWidth(4);
+		mSpecViewContainer->setFrameStyle(QFrame::Box | QFrame::Plain);
 	}
 
 	int ViewManager::GetFrameNumber()
@@ -172,9 +292,76 @@ namespace QtSMS
 		CLAM::Segment segment = Engine::Instance()->GetOriginalSegment();
 		float duration = float(segment.GetEndTime());
 		float n_frames = float(segment.GetnFrames());
-		int current_frame = int(mCurrentTime*n_frames/duration);
-		if(current_frame >= n_frames) current_frame--;
-		return current_frame;
+		int frame_number = int(mCurrentTime*n_frames/duration);
+		return (frame_number >= int(n_frames)) ? --frame_number : frame_number;
+	}
+
+	void ViewManager::UpdateSpectrumView(int frameNumber)
+	{
+		CLAM::Frame frame = Engine::Instance()->GetOriginalSegment().GetFrame(frameNumber);
+
+		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetSpectrumAndPeaks(
+			frame.GetSinusoidalAnalSpectrum(),
+			frame.GetSpectralPeakArray() );
+		
+		// TODO: At this moment the frame hasn't sinusoidal spectrum attribute, change it later
+		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetSinusoidalSpectrum(
+			frame.GetSinusoidalAnalSpectrum() );
+		
+		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetResidualSpectrum(
+			frame.GetResidualSpec() );
+	}
+
+	void ViewManager::SetNavigatorEnabled(bool enabled)
+	{
+		if(!Engine::Instance()->State().GetHasAnalysis()) return;
+		mFrameNavigator->setEnabled(enabled);
+	}
+
+	void ViewManager::SetNavigatorVisible(bool visible)
+	{
+		if(visible)
+		{
+			hole->show();
+			mFrameNavigator->show();
+		}
+		else
+		{
+			hole->hide();
+			mFrameNavigator->hide();
+		}
+	}
+
+	int ViewManager::GetHoleWidth()
+	{
+		// no comment
+		QFont f;
+		f.setFamily("fixed");
+		f.setPointSize(10);
+		f.setBold(true);
+		f.setStyleHint(QFont::Courier,QFont::NoAntialias);
+		QFontMetrics fm(f);       
+		return fm.width("X:-0.0e+00")+1;
+	}
+
+	QString ViewManager::GetSampleRateDuration(bool hasAudio)
+	{
+		if(!hasAudio) return "sr: --      dur: --:--,--- ";
+		float sr = float(Engine::Instance()->GetOriginalSegment().GetAudio().GetSampleRate());
+		float dur = float(Engine::Instance()->GetOriginalSegment().GetAudio().GetDuration())/1000.0f;
+		return "sr: "+QString::number(sr,'f',0)+" Hz  "+"dur: "+TimeToStr(dur)+" ";
+	}
+
+	QString ViewManager::TimeToStr(float time)
+	{
+		QString s("");
+		int tmp = int(time*1000);
+		int sec = tmp/1000;
+		int min = sec/60;
+		sec %= 60;
+		int msec = tmp%1000;
+		s = s.sprintf("%02d:%02d,%03d",min,sec,msec);
+		return s;
 	}
 
 }

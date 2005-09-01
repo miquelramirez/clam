@@ -3,15 +3,19 @@
 
 #include <vector>
 #include <qobject.h>
+#include <qstring.h>
 #include "Segment.hxx"
 
 class QWidget;
+class QFrame;
+class QBoxLayout;
 
 namespace CLAM
 {
 	namespace VM
 	{
 		class MultiDisplayPlot;
+		class Navigator;
 	}
 }
 
@@ -34,7 +38,6 @@ namespace QtSMS
 
 	class ViewManager : public QObject
 	{
-
 		typedef std::vector<CLAM::VM::MultiDisplayPlot*> PlotList;
 
 		Q_OBJECT
@@ -51,23 +54,51 @@ namespace QtSMS
 		void ShowConcreteView(eView group_id, eView view_id);
 		void HideConcreteView(eView group_id, eView view_id);
 
+		void SetBackgroundBlack();
+		void SetBackgroundWhite();
+
 		void Flush();
 
 		QWidget* GetView(QWidget* parent);
 
+	signals:
+		void dataType(QString);
+		void sampleRateDuration(QString);
+
 	private slots:
 		void onNewTime(float);
-
+		void onNewFrame(int);
+		void onStartPlaying();
+		void onStopPlaying();
+		void onTimeViewFocusIn();
+		void onSpectrumViewFocusIn();
+		
 	private:
 		ViewManager();
 
 		static ViewManager* mInstance;
 		
-		PlotList mPlotList;
-		float    mCurrentTime;
-		int      mLastFrame;
+		PlotList             mPlotList;
+		CLAM::VM::Navigator* mFrameNavigator;
+		float                mCurrentTime;
+		int                  mLastFrame;
+		bool                 mSentinel;
+
+		QFrame* hole;
+		QFrame* mTimeViewContainer;
+		QFrame* mSpecViewContainer;
+
+		QBoxLayout* timeViewLayout;
+		QBoxLayout* specViewLayout;
 
 		int GetFrameNumber();
+		void UpdateSpectrumView(int frameNumber);
+		void SetNavigatorEnabled(bool enabled);
+		void SetNavigatorVisible(bool visible);
+		
+		int GetHoleWidth();
+		QString GetSampleRateDuration(bool hasAudio);
+		QString TimeToStr(float time);
 	};
 }
 
