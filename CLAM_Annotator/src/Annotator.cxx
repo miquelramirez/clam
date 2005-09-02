@@ -11,6 +11,7 @@
 #include <qapplication.h>
 #include <qeventloop.h>
 #include <qfiledialog.h>
+#include <qthread.h>
 
 
 #include <algorithm>
@@ -37,38 +38,121 @@ using CLAM::VM::QtAudioPlot;
 using CLAM::TData;
 using CLAM::TIndex;
 
+class AudioLoadThread : public QThread
+{
+	bool mAborted;
+	CLAM::Audio & mAudio;
+	const CLAM::TSize readSize;
+	unsigned nSamples;
+	CLAM::AudioFile file;
+	std::vector<CLAM::Audio> audioFrameVector;
+	unsigned mNumber;
+public:
+	static unsigned number()
+	{
+		static unsigned number = 0;
+		return number++;
+	}
+	AudioLoadThread(CLAM::Audio & audio, const std::string audioFileName)
+		: mAborted(false)
+		, mAudio(audio)
+		, readSize(4096)
+		, mNumber(number())
+	{
+		std::cout << "AudioLoader " << mNumber << " created..." << std::endl;
+		file.OpenExisting(audioFileName);
+		int nChannels = file.GetHeader().GetChannels();
+		float samplingRate = file.GetHeader().GetSampleRate();
+		nSamples = file.GetHeader().GetLength()/1000.0*samplingRate;
+		audioFrameVector.resize(nChannels);
+		for (int i=0;i<nChannels;i++)
+			audioFrameVector[i].SetSize(readSize);
+		mAudio.SetSize(0);
+		mAudio.SetSize(nSamples);
+		mAudio.SetSampleRate(samplingRate);
+	}
+	~AudioLoadThread()
+	{
+		std::cout << "Aborting audio loader " << mNumber << "..." << std::endl;
+		mAborted=true;
+		wait();
+		std::cout << "AudioLoader " << mNumber << " destroyed..." << std::endl;
+	}
+	void run()
+	{
+		std::cout << "AudioLoader " << mNumber << " running..." << std::endl;
+		CLAM::MultiChannelAudioFileReaderConfig cfg;
+		cfg.SetSourceFile( file );
+		CLAM::MultiChannelAudioFileReader reader(cfg);
+		reader.Start();
+		int beginSample=0;
+		while(reader.Do(audioFrameVector))
+		{
+			mAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
+			beginSample+=readSize;
+			if (mAborted) break;
+			if (beginSample+readSize>nSamples) break;
+		}
+//		mAudio.SetSize(beginSample);
+		reader.Stop();
+		std::cout << "AudioLoader " << mNumber << " finished..." << std::endl;
+	}
+};
 
+void Annotator::abortLoader()
+{
+	if (!mAudioLoaderThread) return;
+	delete mAudioLoaderThread;
+	mAudioLoaderThread=0;
+}
+void Annotator::loaderCreate(CLAM::Audio & audio, const char * filename)
+{
+	abortLoader();
+	mAudioLoaderThread = new AudioLoadThread(audio, filename);
+}
+
+void Annotator::loaderLaunch()
+{
+	CLAM_ASSERT(mAudioLoaderThread, "Launching a loader when none created");
+	mAudioLoaderThread->start();
+}
+bool Annotator::loaderFinished()
+{
+	if (!mAudioLoaderThread) return true;
+	if (!mAudioLoaderThread->finished()) return false;
+	abortLoader();
+	return true;
+}
 
 Annotator::Annotator(const std::string & nameProject = "")
 	: AnnotatorBase( 0, "annotator", WDestructiveClose)
 	, mCurrentIndex(0)
+	, mpDescriptorPool(0)
 	, mHLDChanged(false)
 	, mLLDChanged(false)
 	, mSegmentsChanged(false)
 	, mBPFEditors(0)
 	, mpTabLayout(0)
+	, mpAudioPlot(0)
+	, mAudioRefreshTimer(new QTimer(this))
+	, mAudioLoaderThread(0)
 {
-	mpDescriptorPool = NULL;
-	mpAudioPlot = NULL;
-
-	QString title = "Music annotator.- ";
-	std::cerr << nameProject.c_str() << std::endl;
-	title += QString( nameProject.c_str() );
-
-	setCaption( title );
-
-	//setCaption( QString("Music annotator.- ") + QString( nameProject.c_str() ) );
 	initAudioWidget();
 	initInterface();
 	setMenuAudioItemsEnabled(false);
+	connect (mAudioRefreshTimer, SIGNAL(timeout()), this, SLOT(refreshAudioData()) );
+}
+
+Annotator::~Annotator()
+{
+	abortLoader();
 }
 
 void Annotator::initInterface()
 {
 	if (mpAudioPlot) mpAudioPlot->Hide();
-	mProjectOverview->setSorting(-1);
+	mProjectOverview->setSorting(-1); // Unordered
 	makeConnections();
-
 }
 
 void Annotator::markProjectChanged(bool changed)
@@ -233,7 +317,6 @@ void Annotator::changeCurrentFile()
 	{
 		it.current()->setText(2, "Yes");	
 	}
-
 }
 
 
@@ -412,14 +495,14 @@ void Annotator::fileSaveAs()
 
 void Annotator::fileSave()
 {
-	markProjectChanged(false);
-	markAllSongsUnchanged();
 	if(mProjectFileName=="")
 	{
 		fileSaveAs();
 		return;
 	}
 	CLAM::XMLStorage::Dump(mProject,"Project",mProjectFileName);
+	markAllSongsUnchanged();
+	markProjectChanged(false);
 }
 
 void  Annotator::loadSchema()
@@ -499,7 +582,8 @@ void Annotator::songsClicked( QListViewItem * item)
 	if (item == 0) return;
 
 	std::cout << "Loading Song Descriptors..." << std::endl;
-	mCurrentIndex = getIndexFromFileName(std::string(item->text(0).ascii()));
+	const char * filename = item->text(0).ascii();
+	mCurrentIndex = getIndexFromFileName(filename);
 	if (mCurrentIndex <0) return;
 	mCurrentSoundFileName = mProject.GetSongs()[mCurrentIndex].GetSoundFile();
 	if (mProject.GetSongs()[mCurrentIndex].HasPoolFile())
@@ -513,30 +597,13 @@ void Annotator::songsClicked( QListViewItem * item)
 	std::cout << "Filling Global Descriptors..." << std::endl;
 	fillGlobalDescriptors( mCurrentIndex );
 	std::cout << "Drawing Audio..." << std::endl;
-	drawAudio(item);
+	mAudioRefreshTimer->stop();
+	drawAudio(filename);
 	std::cout << "Drawing LLD..." << std::endl;
 	drawLLDescriptors(mCurrentIndex);
 	std::cout << "Done" << std::endl;
-}
-
-void Annotator::drawAudio(QListViewItem * item=NULL)
-{
-	mpAudioPlot->Hide();
-	if(item)
-		loadAudioFile(item->text(0).ascii());
-
-	const CLAM::IndexArray* descriptorsMarks = 
-		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song","Segments");
-	int nMarks = descriptorsMarks->Size();
-	std::vector<unsigned> marks(nMarks);
-	for(int i=0;i<nMarks;i++)
-	{
-		marks[i] = (unsigned)(*descriptorsMarks)[i];
-	}
-	mpAudioPlot->SetMarks(marks);
-	mpAudioPlot->SetData(mCurrentAudio);
-	mpAudioPlot->Show();
-	auralizeMarks();
+	loaderLaunch();
+	mAudioRefreshTimer->start(0, false);
 }
 
 void Annotator::drawLLDescriptors(int index)
@@ -559,46 +626,38 @@ void Annotator::drawLLDescriptors(int index)
 		(*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
 		(*editors_it)->Show();
 	}
-
 }
 
-void Annotator::loadAudioFile(const char* filename)
+void Annotator::refreshAudioData()
 {
+	if (!loaderFinished())
+		mAudioRefreshTimer->start(2000, false);
+	else
+		auralizeMarks();
+	std::cout << "Refreshing..." << std::endl;
+	mpAudioPlot->SetData(mCurrentAudio);
+}
+
+void Annotator::drawAudio(const char * filename)
+{
+	mpAudioPlot->Hide();
 	hideBPFEditors();
 	setMenuAudioItemsEnabled(false);
-	const CLAM::TSize readSize = 4096;
-	CLAM::AudioFile file;
-	file.OpenExisting(filename);
-	int nChannels = file.GetHeader().GetChannels();
-	float samplingRate = file.GetHeader().GetSampleRate();
-	int nSamples = file.GetHeader().GetLength()/1000.0*samplingRate+readSize;
-	std::vector<CLAM::Audio> audioFrameVector(nChannels);
-	for (int i=0;i<nChannels;i++)
-		audioFrameVector[i].SetSize(readSize);
-	mCurrentAudio.SetSize(0);
-	mCurrentAudio.SetSize(nSamples);
-	mCurrentAudio.SetSampleRate(samplingRate);
-	CLAM::MultiChannelAudioFileReaderConfig cfg;
-	cfg.SetSourceFile( file );
-	CLAM::MultiChannelAudioFileReader reader(cfg);
-	reader.Start();
-	QProgressDialog progressDialog("Loading Audio", 
-			"Cancel",file.GetHeader().GetLength(),
-			this);
-	progressDialog.setProgress(0);
-	int beginSample=0;
-	while(reader.Do(audioFrameVector))
-	{
-		mCurrentAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
-		beginSample+=readSize;
-		qApp->processEvents( 30 /* miliseconds max */ );
-		progressDialog.setProgress( beginSample/samplingRate*1000.0 );
-		if (progressDialog.wasCanceled()) break;
-		if (beginSample+readSize>nSamples) break;
-	}
-	mCurrentAudio.SetSize(beginSample);
+	loaderCreate(mCurrentAudio, filename);
 	setMenuAudioItemsEnabled(true);
-	reader.Stop();
+
+	const CLAM::IndexArray* descriptorsMarks = 
+		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song","Segments");
+	int nMarks = descriptorsMarks->Size();
+	std::vector<unsigned> marks(nMarks);
+	for(int i=0;i<nMarks;i++)
+	{
+		marks[i] = (unsigned)(*descriptorsMarks)[i];
+	}
+	mpAudioPlot->SetMarks(marks);
+	mpAudioPlot->SetData(mCurrentAudio);
+	mpAudioPlot->Show();
+	auralizeMarks();
 }
 
 void Annotator::generateEnvelopesFromDescriptors()
