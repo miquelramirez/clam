@@ -178,9 +178,7 @@ void Annotator::initProject()
 			return;
 		}
 	}
-	initLLDescriptorsWidgets();
-	initHLDescriptorsTable();
-	languageChange();
+	AdaptInterfaceToCurrentSchema();
 	
 	markProjectChanged(false);
 	mLLDChanged = false;
@@ -188,6 +186,12 @@ void Annotator::initProject()
 	mSegmentsChanged = false;
 }
 
+void Annotator::AdaptInterfaceToCurrentSchema()
+{
+	initLLDescriptorsWidgets();
+	initHLDescriptorsTable();
+	languageChange();
+}
 
 void Annotator::initAudioWidget()
 {

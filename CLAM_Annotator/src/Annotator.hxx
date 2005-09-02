@@ -138,6 +138,9 @@ private:
 	bool loaderFinished(); ///< Clears the loader if it is finished returns if it was or there wasn't any.
 	void abortLoader(); ///< Clears the loader 
 
+	void SetSchema(const std::string & schemaFile);
+	void AdaptInterfaceToCurrentSchema();
+
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
 	CLAM::Audio mCurrentMarkedAudio; ///< Current audio with segmentation marks inserted
