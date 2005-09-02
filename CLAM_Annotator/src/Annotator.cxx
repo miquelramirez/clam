@@ -188,8 +188,8 @@ void Annotator::initProject()
 
 void Annotator::AdaptInterfaceToCurrentSchema()
 {
-	initLLDescriptorsWidgets();
-	initHLDescriptorsTable();
+	AdaptDescriptorsTableToCurrentHLDSchema();
+	AdaptEnvelopesToCurrentLLDSchema();
 }
 
 void Annotator::initAudioWidget()
@@ -208,7 +208,7 @@ void Annotator::initAudioWidget()
 	mpAudioPlot->Hide();
 }
 
-void Annotator::initLLDescriptorsWidgets()
+void Annotator::AdaptEnvelopesToCurrentLLDSchema()
 {
 	removeLLDTabs();
 
@@ -240,10 +240,29 @@ void Annotator::initLLDescriptorsWidgets()
 	connectBPFs();
 }
 
-void Annotator::initHLDescriptorsTable()
+void Annotator::AdaptDescriptorsTableToCurrentHLDSchema()
 {
-	makeDescriptorTable();
-	drawDescriptorsName();
+	mDescriptorsTable->setLeftMargin(0);
+	mDescriptorsTable->setLeftMargin(0);
+	mDescriptorsTable->setNumRows(0);
+	mDescriptorsTable->setNumCols(2);
+	mDescriptorsTable->setRowMovingEnabled(false);
+	mDescriptorsTable->setColumnMovingEnabled(false);
+	mDescriptorsTable->setReadOnly(false);
+	mDescriptorsTable->setSelectionMode(QTable::NoSelection);
+	mDescriptorsTable->horizontalHeader()->setLabel( 0, tr( "Descriptor" ) );
+	mDescriptorsTable->horizontalHeader()->setLabel( 1, tr( "Value" ) );
+
+	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
+	mDescriptorsTable->setNumRows(hlds.size());
+	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
+	for(int i = 0 ; it != hlds.end(); it++, i++)
+	{
+		mDescriptorsTable->setItem(i,0,
+			new TableItem(mDescriptorsTable,
+				TableItem::Never,
+				QString((*it).GetName().c_str())));
+	}
 }
 
 void Annotator::removeLLDTabs()
@@ -256,20 +275,6 @@ void Annotator::removeLLDTabs()
 		nPages--;
 	}
 	tabWidget2->changeTab(tabWidget2->page(0), tr("") );
-}
-
-void Annotator::makeDescriptorTable()
-{
-	mDescriptorsTable->setLeftMargin(0);
-	mDescriptorsTable->setLeftMargin(0);
-	mDescriptorsTable->setNumRows(0);
-	mDescriptorsTable->setNumCols(2);
-	mDescriptorsTable->setRowMovingEnabled(false);
-	mDescriptorsTable->setColumnMovingEnabled(false);
-	mDescriptorsTable->setReadOnly(false);
-	mDescriptorsTable->setSelectionMode(QTable::NoSelection);
-	mDescriptorsTable->horizontalHeader()->setLabel( 0, tr( "Descriptor" ) );
-	mDescriptorsTable->horizontalHeader()->setLabel( 1, tr( "Value" ) );
 }
 
 
@@ -799,21 +804,6 @@ bool Annotator::event(QEvent* e)
 	return QWidget::event(e);
 }
 
-
-/*Functions to make HLDs edition table */
-void Annotator::drawDescriptorsName()
-{
-	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
-	mDescriptorsTable->setNumRows(hlds.size());
-	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
-	for(int i = 0 ; it != hlds.end(); it++, i++)
-	{
-		mDescriptorsTable->setItem(i,0,
-			new TableItem(mDescriptorsTable,
-				TableItem::Never,
-				QString((*it).GetName().c_str())));
-	}
-}
 
 void Annotator::drawHLD(int songIndex, const std::string& descriptorName, const std::string& value, 
 			bool computed)
