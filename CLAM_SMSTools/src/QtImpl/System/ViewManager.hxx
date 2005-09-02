@@ -83,6 +83,8 @@ namespace QtSMS
 		float                mCurrentTime;
 		int                  mLastFrame;
 		bool                 mSentinel;
+		bool                 mHasTimeViewFocus;
+		bool                 mHasSpecViewFocus;
 
 		QFrame* hole;
 		QFrame* mTimeViewContainer;
