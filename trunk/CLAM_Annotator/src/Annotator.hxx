@@ -19,6 +19,8 @@
 
 #include "BPF.hxx"
 
+class QTimer;
+class AudioLoadThread;
 using CLAM::TIndex;
 using CLAM::TData;
 
@@ -37,7 +39,7 @@ class Annotator : public AnnotatorBase
 
 public:
 	Annotator(const std::string & nameProject);
-	virtual ~Annotator() {}
+	virtual ~Annotator();
 	void fillGlobalDescriptors( int index);
 	void songsClicked( QListViewItem * item);
 	void playPause();
@@ -64,6 +66,7 @@ public slots:
 
 	void playMarks(bool);
 	void playOriginalAudioAndLLD(bool);
+	void refreshAudioData();
 protected:
 	void closeEvent( QCloseEvent * e);
 	bool event(QEvent* e);
@@ -92,8 +95,7 @@ private:
 	void initLLDescriptorsWidgets();
 	void initHLDescriptorsTable();
 	void removeLLDTabs();
-	void drawAudio(QListViewItem * item);
-	void loadAudioFile(const char* filename);
+	void drawAudio(const char * filename);
 	void deleteAllSongsFromProject();
 	void drawLLDescriptors(int index);
 	void drawHLD(int songIndex, const std::string& descriptorName, 
@@ -128,32 +130,41 @@ private:
 	void auralizeMarks();
 	void setMenuAudioItemsEnabled(bool);
 	void hideBPFEditors();
+	
+	// Functions to control de audio loader
+	void loaderCreate(CLAM::Audio & audio, const char * filename);
+		///< Creates a loader for the audio after clearing any existing one.
+	void loaderLaunch(); ///< Starts the execution of the created loader
+	bool loaderFinished(); ///< Clears the loader if it is finished returns if it was or there wasn't any.
+	void abortLoader(); ///< Clears the loader 
 
 private:
-	CLAM::VM::QtAudioPlot* mpAudioPlot;
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
 	CLAM::Audio mCurrentMarkedAudio; ///< Current audio with segmentation marks inserted
-	std::vector<CLAM::Audio> mClick; ///< A vector of audios to click
+	std::vector<CLAM::Audio> mClick; ///< A vector of audios to produce click
 
 	CLAM_Annotator::Project mProject;
-	int mCurrentIndex;
+	std::string mProjectFileName; 
 
-	std::string mProjectFileName;
+	int mCurrentIndex;
 	std::string mCurrentSoundFileName;
 	std::string mCurrentDescriptorsPoolFileName;
+
+	CLAM_Annotator::Schema mSchema;
+	CLAM::DescriptionScheme mDescriptionScheme;
+	CLAM::DescriptionDataPool* mpDescriptorPool;
 
 	bool mGlobalChanges;
 	bool mHLDChanged;
 	bool mLLDChanged;
 	bool mSegmentsChanged;
-	std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
 
+	std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
 	QVBoxLayout* mpTabLayout;
 	std::vector<QWidget*> mTabPages;
-
-	CLAM_Annotator::Schema mSchema;
-	CLAM::DescriptionScheme mDescriptionScheme;
-	CLAM::DescriptionDataPool* mpDescriptorPool;
+	CLAM::VM::QtAudioPlot* mpAudioPlot;
+	QTimer * mAudioRefreshTimer;
+	AudioLoadThread * mAudioLoaderThread;
 };
 
 #endif
