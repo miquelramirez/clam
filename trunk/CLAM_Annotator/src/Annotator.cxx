@@ -161,23 +161,28 @@ void Annotator::markProjectChanged(bool changed)
 	fileSave_projectAction->setEnabled(changed);
 }
 
-void Annotator::initProject()
+void Annotator::LoadSchema(const std::string & filename)
 {
-	updateSongListWidget();
-	
-	if (mProject.GetSchema()!="")
+	if (filename!="")
 	{
 		try
 		{
-			CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
+			CLAM::XMLStorage::Restore(mSchema,filename);
 		}
 		catch (CLAM::XmlStorageErr e)
 		{
 			QMessageBox::warning(this,"Error Loading Schema File", 
-				constructFileError(mProject.GetSchema(),e));
+				constructFileError(filename,e));
 			return;
 		}
 	}
+}
+
+void Annotator::initProject()
+{
+	updateSongListWidget();
+
+	LoadSchema(mProject.GetSchema());
 	AdaptInterfaceToCurrentSchema();
 	
 	markProjectChanged(false);
@@ -267,14 +272,14 @@ void Annotator::AdaptDescriptorsTableToCurrentHLDSchema()
 
 void Annotator::removeLLDTabs()
 {
-	int nPages = mTabPages.size();
-	mTabPages.resize(0);
-	while(nPages>1)
+	const unsigned nTabs = mTabPages.size();
+	if (!nTabs) return;
+	for (unsigned i = mTabPages.size(); --i; ) // reverse, 0 not included
 	{
-		tabWidget2->removePage(tabWidget2->page(nPages-1));
-		nPages--;
+		tabWidget2->removePage(tabWidget2->page(i));
 	}
-	tabWidget2->changeTab(tabWidget2->page(0), tr("") );
+	tabWidget2->changeTab(tabWidget2->page(0), tr("No Low Level Descriptors") );
+	mTabPages.resize(0);
 }
 
 
@@ -510,18 +515,8 @@ void  Annotator::loadSchema()
 	if(qFileName == QString::null) return;
 
 	mProject.SetSchema(std::string(qFileName.ascii()));
-	try
-	{
-		CLAM::XMLStorage::Restore(mSchema,mProject.GetSchema());
-	}
-	catch (CLAM::XmlStorageErr e)
-	{
-		QMessageBox::warning(this,"Error Loading Schema File", 
-			constructFileError(mProject.GetSchema(),e));
-		return;
-	}
+	LoadSchema(qFileName.ascii());
 
-	//TODO: Does loading the schema affect all this
 	initInterface();
 	initProject();
 }
