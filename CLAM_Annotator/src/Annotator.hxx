@@ -87,6 +87,7 @@ private:
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
 
 	void initAudioWidget();
+	void LoadSchema(const std::string & schemaFile);
 	void AdaptInterfaceToCurrentSchema();
 	void AdaptEnvelopesToCurrentLLDSchema();
 	void AdaptDescriptorsTableToCurrentHLDSchema();
@@ -134,7 +135,6 @@ private:
 	bool loaderFinished(); ///< Clears the loader if it is finished returns if it was or there wasn't any.
 	void abortLoader(); ///< Clears the loader 
 
-	void SetSchema(const std::string & schemaFile);
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
