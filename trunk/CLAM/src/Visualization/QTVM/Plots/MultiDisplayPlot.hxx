@@ -45,7 +45,7 @@ namespace CLAM
 		signals:
 			void switchColorsRequested();
 			void focusIn();
-
+			
 		public slots:
 			void switchColors();
 
@@ -96,7 +96,6 @@ namespace CLAM
 		private slots:
 			void setMaxHScroll(int);
 			void showEditTagDialog();
-			void focusInReceived();
 
 		private:
 			int           mMasterId;

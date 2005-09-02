@@ -222,7 +222,7 @@ namespace CLAM
 		{
 			for(unsigned i=0; i < mSurfaces.size(); i++)
 			{
-				connect(mSurfaces[i],SIGNAL(focusIn()),SLOT(focusInReceived()));
+				connect(mSurfaces[i],SIGNAL(focusIn()),SIGNAL(focusIn()));
 			}
 		}
 
@@ -359,14 +359,7 @@ namespace CLAM
 				mControllers[mMasterId]->SetSegmentationTag(editTagDlg->text());
 			}
 		}
-		
-		
-		void MultiDisplayPlot::focusInReceived()
-		{
-			if(hasFocus()) return;
-			setFocus();
-			emit focusIn();
-		}
+	  
 	}
 }
 

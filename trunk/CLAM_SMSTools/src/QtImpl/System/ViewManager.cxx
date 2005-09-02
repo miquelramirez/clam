@@ -21,7 +21,14 @@ namespace QtSMS
 		return mInstance;
 	}
 
-	ViewManager::ViewManager():mCurrentTime(0.0f),mLastFrame(0),mSentinel(false){}
+	ViewManager::ViewManager()
+		: mCurrentTime(0.0f)
+		, mLastFrame(0)
+		, mSentinel(false)
+		, mHasTimeViewFocus(false)
+		, mHasSpecViewFocus(false)
+	{}
+
 	ViewManager::~ViewManager(){ mInstance=0; mPlotList.clear(); }
 
 	void ViewManager::SetAudio(eView id)
@@ -206,7 +213,7 @@ namespace QtSMS
 		QBoxLayout* layout = new QVBoxLayout(view);
 		layout->addWidget(splitter);
 		layout->addLayout(navigator);
-		
+
 		connect(((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW]),
 				SIGNAL(currentTime(float)),SLOT(onNewTime(float)));
 		connect(((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW]),
@@ -269,6 +276,9 @@ namespace QtSMS
 
 	void ViewManager::onTimeViewFocusIn()
 	{
+		if(mHasTimeViewFocus) return;
+		mHasTimeViewFocus = true;
+		mHasSpecViewFocus = false;
 		specViewLayout->setMargin(0);
 		mSpecViewContainer->setLineWidth(0);
 		mSpecViewContainer->setFrameStyle(QFrame::MenuBarPanel | QFrame::Plain);
@@ -279,6 +289,9 @@ namespace QtSMS
 
 	void ViewManager::onSpectrumViewFocusIn()
 	{
+		if(mHasSpecViewFocus) return;
+		mHasSpecViewFocus = true;
+		mHasTimeViewFocus = false;
 		timeViewLayout->setMargin(0);
 		mTimeViewContainer->setLineWidth(0);
 		mTimeViewContainer->setFrameStyle(QFrame::MenuBarPanel | QFrame::Plain);
