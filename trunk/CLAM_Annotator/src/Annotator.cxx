@@ -190,7 +190,6 @@ void Annotator::AdaptInterfaceToCurrentSchema()
 {
 	initLLDescriptorsWidgets();
 	initHLDescriptorsTable();
-	languageChange();
 }
 
 void Annotator::initAudioWidget()
@@ -213,39 +212,30 @@ void Annotator::initLLDescriptorsWidgets()
 {
 	removeLLDTabs();
 
-	int nTabs = mSchema.GetLLDSchema().GetLLDNames().size();
-
+	std::list<std::string>& names = mSchema.GetLLDSchema().GetLLDNames();
+	const unsigned nTabs = names.size();
+	const int eFlags = CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer;
 	mTabPages.resize(nTabs);
-	std::vector<QWidget*>::iterator it0;
-	std::string baseTabString("TabPage");
-	std::ostringstream tabString;
-	int i = 0;
-	for(it0 = mTabPages.begin(); it0 != mTabPages.end(); it0++,i++)
+	mBPFEditors.resize(nTabs);
+	std::list<std::string>::iterator name = names.begin();
+	for (unsigned i = 0; i<nTabs; name++, i++)
 	{
-		tabString.flush();
-		tabString << baseTabString;
-		if(it0 !=  mTabPages.begin())
+		if (i==0)
 		{
-			tabString << "_" << i;
-			(*it0) = new QWidget( tabWidget2, tabString.str().c_str());
-			tabWidget2->insertTab( (*it0), QString("") );
+			mTabPages[0] = tabWidget2->page(0);
 		}
 		else
 		{
-			(*it0) = tabWidget2->page(0);
+			mTabPages[i] = new QWidget( tabWidget2, "Dummy");
+			tabWidget2->insertTab( mTabPages[i], QString("") );
 		}
-	}
 
-	const int eFlags = CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer;
-	std::vector<CLAM::VM::BPFEditor*>::iterator it;
-	mBPFEditors.resize(nTabs);
-	for(i=0, it=mBPFEditors.begin();it!=mBPFEditors.end();it++,i++)
-	{
-		QVBoxLayout* tabLayout = new QVBoxLayout( tabWidget2->page(i));
-		*it = new CLAM::VM::BPFEditor(eFlags, tabWidget2->page(i));
-		(*it)->SetActivePlayer(false);
-		(*it)->Hide();
-		tabLayout->addWidget(*it);
+		tabWidget2->changeTab( mTabPages[i], (*name).c_str() );
+		QVBoxLayout* tabLayout = new QVBoxLayout( mTabPages[i]);
+		mBPFEditors[i] = new CLAM::VM::BPFEditor(eFlags, mTabPages[i]);
+		mBPFEditors[i]->SetActivePlayer(false);
+		mBPFEditors[i]->Hide();
+		tabLayout->addWidget(mBPFEditors[i]);
 	}
 	connectBPFs();
 }
@@ -721,20 +711,6 @@ void Annotator::generateDescriptorFromEnvelope(int bpfIndex, float* descriptor)
 	}
 }
 
-void Annotator::languageChange()
-{
-	AnnotatorBase::languageChange();
-	std::vector<QWidget*>::iterator it;
-	std::list<std::string>::iterator it2;
-
-	std::list<std::string>& names = mSchema.GetLLDSchema().GetLLDNames();
-	for(it2 = names.begin() ,it = mTabPages.begin(); 
-		it2 != names.end(); it++,it2++)
-	{
-		tabWidget2->changeTab( (*it), tr((*it2).c_str() ) );
-
-	}
-}
 
 void Annotator::loadDescriptorPool()
 {

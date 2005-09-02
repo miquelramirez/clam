@@ -90,7 +90,6 @@ private:
 
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
 
-	void languageChange();
 	void initAudioWidget();
 	void initLLDescriptorsWidgets();
 	void initHLDescriptorsTable();
