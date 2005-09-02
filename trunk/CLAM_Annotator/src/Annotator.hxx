@@ -75,15 +75,11 @@ private:
 	void updateSongListWidget();
 	bool saveProject();
 
-	void initSpliters();
-	void initPlay();
-	void makeDescriptorTable();
 	void makeConnections();
 	void connectBPFs();
 	void currentFile( std::string &);
 	void changeCurrentFile();
 	void markAllSongsUnchanged();
-	void drawDescriptorsName();
 	void drawDescriptorsValue( int, bool );
 
 	//xamat
@@ -91,8 +87,9 @@ private:
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
 
 	void initAudioWidget();
-	void initLLDescriptorsWidgets();
-	void initHLDescriptorsTable();
+	void AdaptInterfaceToCurrentSchema();
+	void AdaptEnvelopesToCurrentLLDSchema();
+	void AdaptDescriptorsTableToCurrentHLDSchema();
 	void removeLLDTabs();
 	void drawAudio(const char * filename);
 	void deleteAllSongsFromProject();
@@ -138,7 +135,6 @@ private:
 	void abortLoader(); ///< Clears the loader 
 
 	void SetSchema(const std::string & schemaFile);
-	void AdaptInterfaceToCurrentSchema();
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
