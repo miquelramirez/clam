@@ -27,7 +27,7 @@ namespace CLAM
 {
 
 	template <class T>
-	MatrixTmpl<T>::MatrixTmpl<T>()
+	MatrixTmpl<T>::MatrixTmpl()
 	{
 		mpMatrixBuffer=new Array<T>;
 		mNumRows = 0;
@@ -36,7 +36,7 @@ namespace CLAM
 	}
 
 	template <class T>
-	MatrixTmpl<T>::~MatrixTmpl<T>()
+	MatrixTmpl<T>::~MatrixTmpl()
 	{
 		if(mpMatrixBuffer)
 		{
@@ -47,7 +47,7 @@ namespace CLAM
 
 
 	template <class T>
-	MatrixTmpl<T>::MatrixTmpl<T>(unsigned int dim1, unsigned int dim2)
+	MatrixTmpl<T>::MatrixTmpl(unsigned int dim1, unsigned int dim2)
 	{
 		mpMatrixBuffer=new Array<T>(dim1*dim2);
 		mNumRows = dim1;
@@ -56,7 +56,7 @@ namespace CLAM
 	}
 
 	template <class T>
-	MatrixTmpl<T>::MatrixTmpl<T>(const MatrixTmpl<T>& originalMatrix)
+	MatrixTmpl<T>::MatrixTmpl(const MatrixTmpl<T>& originalMatrix)
 	{
 		mpMatrixBuffer=new Array<T> (originalMatrix.GetNumElements());
 		*this = originalMatrix; 
