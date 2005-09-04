@@ -35,7 +35,7 @@ namespace CLAM
 * Default constructor: takes interpolation to be linear by default
 */
 	template <class TX,class TY>
-	BPFTmpl<TX,TY>::BPFTmpl<TX,TY>() : 
+	BPFTmpl<TX,TY>::BPFTmpl() : 
 		mArray(0),
 		mSearch(mArray),
 		mClosestPoints(10),
@@ -60,7 +60,7 @@ namespace CLAM
 * @argument Interpolation Type: EInterpolation (linear, polynomical, spline...)
 */
 	template <class TX,class TY>
-	BPFTmpl<TX,TY>::BPFTmpl<TX,TY>(const EInterpolation& eInterpolation) : 
+	BPFTmpl<TX,TY>::BPFTmpl(const EInterpolation& eInterpolation) : 
 		mArray(0),
 		mSearch(mArray),
 		mClosestPoints(10),
@@ -86,7 +86,7 @@ namespace CLAM
 * @argument Interpolation Type: EInterpolation (linear, polynomical, spline...)
 */
 	template <class TX,class TY>
-	BPFTmpl<TX,TY>::BPFTmpl<TX,TY>(TSize size) : 
+	BPFTmpl<TX,TY>::BPFTmpl(TSize size) : 
 		mArray(size),
 		mSearch(mArray),
 		mClosestPoints(10),
@@ -112,7 +112,7 @@ namespace CLAM
 * @argument Interpolation Type: EInterpolation (linear, polynomical, spline...)
 */
 	template <class TX,class TY>
-	BPFTmpl<TX,TY>::BPFTmpl<TX,TY>(TSize size,const EInterpolation& eInterpolation) :
+	BPFTmpl<TX,TY>::BPFTmpl(TSize size,const EInterpolation& eInterpolation) :
 		mArray(size),
 		mSearch(mArray),
 		mClosestPoints(10),
@@ -135,7 +135,7 @@ namespace CLAM
 * @argument originalBPF
 */
 	template <class TX,class TY>
-	BPFTmpl<TX,TY>::BPFTmpl<TX,TY>(const BPFTmpl<TX,TY>& orig)	:
+	BPFTmpl<TX,TY>::BPFTmpl(const BPFTmpl<TX,TY>& orig)	:
 		meInterpolation(orig.meInterpolation),
 		mArray(orig.mArray),
 		mClosestPoints(orig.mClosestPoints.AllocatedSize()),
