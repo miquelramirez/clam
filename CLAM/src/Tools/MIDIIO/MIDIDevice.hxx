@@ -32,6 +32,10 @@
 
 namespace CLAM{
 
+class MIDIIn;
+class MIDIOut;
+class MIDIClocker;
+class MIDIManager;
 
 /** This is the abstract base class for an midi device. With an midi device
  * we refer to any kind of midi input/output.
