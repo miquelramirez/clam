@@ -4,7 +4,8 @@ TOP = ../../
 
 interface_and_program: interface program
 
-interface: uic/SMSToolsBase.h uic/SMSToolsBase.cxx
+interface: 	uic/SMSToolsBase.h uic/SMSToolsBase.cxx \
+			uic/SMSConfigDlgBase.h uic/SMSConfigDlgBase.cxx \
 
 include $(TOP)/build/Makefile.rules
 
