@@ -31,6 +31,11 @@ namespace CLAM
 		{
 			mLabel->setText(label.c_str());
 		}
+
+		void QtWaitMessageImpl::closeEvent(QCloseEvent* e)
+		{
+			/* empty body */
+		}
 	}
 }
 
