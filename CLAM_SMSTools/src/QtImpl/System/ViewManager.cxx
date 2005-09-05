@@ -64,7 +64,7 @@ namespace QtSMS
 		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->SetAnalyzedSegment(
 			Engine::Instance()->GetOriginalSegment() );
 
-		UpdateSpectrumView(0);
+		UpdateSpectrumView(0,false);
 
 		mFrameNavigator->setRange(0,Engine::Instance()->GetOriginalSegment().GetnFrames()-1);
 		mFrameNavigator->setValue(0);
@@ -310,20 +310,20 @@ namespace QtSMS
 		return (frame_number >= int(n_frames)) ? --frame_number : frame_number;
 	}
 
-	void ViewManager::UpdateSpectrumView(int frameNumber)
+	void ViewManager::UpdateSpectrumView(int frameNumber, bool update)
 	{
 		CLAM::Frame frame = Engine::Instance()->GetOriginalSegment().GetFrame(frameNumber);
 
 		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetSpectrumAndPeaks(
 			frame.GetSinusoidalAnalSpectrum(),
-			frame.GetSpectralPeakArray() );
+			frame.GetSpectralPeakArray(), update );
 		
 		// TODO: At this moment the frame hasn't sinusoidal spectrum attribute, change it later
 		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetSinusoidalSpectrum(
-			frame.GetSinusoidalAnalSpectrum() );
+			frame.GetSinusoidalAnalSpectrum(), update );
 		
 		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetResidualSpectrum(
-			frame.GetResidualSpec() );
+			frame.GetResidualSpec(), update );
 	}
 
 	void ViewManager::SetNavigatorEnabled(bool enabled)

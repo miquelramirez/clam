@@ -96,7 +96,7 @@ namespace QtSMS
 		QBoxLayout* specViewLayout;
 
 		int GetFrameNumber();
-		void UpdateSpectrumView(int frameNumber);
+		void UpdateSpectrumView(int frameNumber, bool update=true);
 		void SetNavigatorEnabled(bool enabled);
 		void SetNavigatorVisible(bool visible);
 		
