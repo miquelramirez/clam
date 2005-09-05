@@ -43,6 +43,10 @@ namespace CLAM
 
 			void SetData(const Spectrum& spec);
 			void SetData(const Spectrum& spec,const SpectralPeakArray& peaks);
+
+			void UpdateData(const Spectrum& spec);
+			void UpdateData(const Spectrum& spec,const SpectralPeakArray& peaks);
+ 
  
 			void SetDataColor(Color c);
 			void SetPeaksColor(Color cline,Color cpoint);
