@@ -629,7 +629,7 @@ void Annotator::refreshAudioData()
 	else
 		auralizeMarks();
 	std::cout << "Refreshing..." << std::endl;
-	mpAudioPlot->SetData(mCurrentAudio);
+	mpAudioPlot->UpdateData(mCurrentAudio);
 }
 
 void Annotator::drawAudio(const char * filename)
