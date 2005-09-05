@@ -144,7 +144,7 @@ namespace CLAM
 		void QtFundFreqPlot::hideEvent(QHideEvent* e)
 		{
 			((QtFundPlayer*)mPlayer)->stop();
-			QWidget::hideEvent(e);
+			SingleDisplayPlot::hideEvent(e);
 		}
 
 		void QtFundFreqPlot::closeEvent(QCloseEvent *e)

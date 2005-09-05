@@ -151,7 +151,7 @@ namespace CLAM
 		void SMSFreqMultiDisplay::ShowDisplay(int id)
 		{
 			if(id < 0 || id > 2) return;
-			mControllers[id]->ActiveRendering(true);
+			mControllers[id]->enableRendering();
 			mYRulers[id]->show();
 			mSurfaces[id]->show();
 			if(!isVisible()) show();
@@ -160,7 +160,7 @@ namespace CLAM
 		void SMSFreqMultiDisplay::HideDisplay(int id)
 		{
 			if(id < 0 || id > 2) return;
-			mControllers[id]->ActiveRendering(false);
+			mControllers[id]->disableRendering();
 			mYRulers[id]->hide();
 			mSurfaces[id]->hide();
 			CheckVisibility();

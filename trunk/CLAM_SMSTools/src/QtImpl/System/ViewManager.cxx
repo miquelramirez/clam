@@ -64,10 +64,10 @@ namespace QtSMS
 		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->SetAnalyzedSegment(
 			Engine::Instance()->GetOriginalSegment() );
 
-		UpdateSpectrumView(GetFrameNumber());
+		UpdateSpectrumView(0);
 
 		mFrameNavigator->setRange(0,Engine::Instance()->GetOriginalSegment().GetnFrames()-1);
-		mFrameNavigator->setValue(GetFrameNumber());
+		mFrameNavigator->setValue(0);
 		SetNavigatorEnabled(true);
 	}
 
@@ -204,7 +204,7 @@ namespace QtSMS
 
 		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->ShowDisplayOnNewData(false);
 		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->ShowDisplayOnNewData(false);
-		
+
 		QBoxLayout* navigator = new QHBoxLayout;
 		navigator->addWidget(hole);
 		navigator->addWidget(mFrameNavigator);
@@ -241,10 +241,10 @@ namespace QtSMS
 			return;
 		}
 		mCurrentTime = time;
-		if(!Engine::Instance()->State().GetHasAnalysis()) return;
+		if(!Engine::Instance()->GetState().GetHasAnalysis()) return;
 		int current_frame = GetFrameNumber();
-		if(current_frame != mLastFrame && Engine::Instance()->State().GetHasAnalysis())
-		{
+		if(current_frame != mLastFrame && Engine::Instance()->GetState().GetHasAnalysis())
+		{			
 			mLastFrame = current_frame;
 			UpdateSpectrumView(mLastFrame);
 			mFrameNavigator->setValue(mLastFrame);
@@ -256,7 +256,8 @@ namespace QtSMS
 	{
 		if(frameNumber == mLastFrame) return;
 		mSentinel = true;
-		UpdateSpectrumView(frameNumber);
+		mLastFrame = frameNumber;
+		UpdateSpectrumView(mLastFrame);
 		CLAM::Segment segment = Engine::Instance()->GetOriginalSegment();
 		float duration = float(segment.GetEndTime());
 		float n_frames = float(segment.GetnFrames());
@@ -327,7 +328,7 @@ namespace QtSMS
 
 	void ViewManager::SetNavigatorEnabled(bool enabled)
 	{
-		if(!Engine::Instance()->State().GetHasAnalysis()) return;
+		if(!Engine::Instance()->GetState().GetHasAnalysis()) return;
 		mFrameNavigator->setEnabled(enabled);
 	}
 
@@ -375,6 +376,12 @@ namespace QtSMS
 		int msec = tmp%1000;
 		s = s.sprintf("%02d:%02d,%03d",min,sec,msec);
 		return s;
+	}
+
+	void ViewManager::Reset()
+	{
+		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->Stop();
+		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->setCurrentTime(0.0);
 	}
 
 }

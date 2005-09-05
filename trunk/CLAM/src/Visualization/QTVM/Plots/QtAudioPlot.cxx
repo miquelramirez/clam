@@ -154,7 +154,7 @@ namespace CLAM
 		void QtAudioPlot::hideEvent(QHideEvent* e)
 		{
 			((QtAudioPlayer*)mPlayer)->stop();
-			QWidget::hideEvent(e);
+			SingleDisplayPlot::hideEvent(e);
 		}
 
 		void QtAudioPlot::closeEvent(QCloseEvent *e)

@@ -61,6 +61,8 @@ namespace QtSMS
 
 		QWidget* GetView(QWidget* parent);
 
+		void Reset();
+
 	signals:
 		void dataType(QString);
 		void sampleRateDuration(QString);

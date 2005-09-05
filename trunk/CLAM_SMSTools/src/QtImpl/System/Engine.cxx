@@ -106,6 +106,42 @@ namespace QtSMS
 		SMSBase::Synthesize();
 	}
 
+	bool Engine::HasValidAudioInput()
+	{
+		CLAM::Filename filename= mGlobalConfig.GetInputSoundFile();
+		CLAM::AudioFile selectedFile;
+		selectedFile.OpenExisting( filename );
+
+		if ( !selectedFile.IsReadable() )
+		{
+			std::string messageShown;
+			messageShown = "Sorry, but the file ";
+			messageShown += filename;
+			messageShown += " \ncannot be used: \n";
+			messageShown += "Unable to open or unrecognized format";
+
+			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2",messageShown.c_str());
+
+			return false;
+		}
+
+		if ( selectedFile.GetHeader().GetChannels() > 1 )
+		{
+			std::string messageShown;
+			messageShown = "The file ";
+			messageShown += filename;
+			messageShown += " \nhas several channels, but SMSTools only \n";
+			messageShown += "can process mono channel signals. By default\n";
+			messageShown += "the channel to be analyzed will be the first\n";
+			messageShown +="channel in the file.\n";
+
+			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2",messageShown.c_str());
+			
+			return false;
+		}
+		return true;
+	}
+
 	bool  Engine::LoadInputSound()
 	{
 		GetState().SetHasAudioIn(LoadSound(mGlobalConfig.GetInputSoundFile(),GetOriginalSegment()));
@@ -113,7 +149,7 @@ namespace QtSMS
 		{
 			CLAM::VM::Message( QMessageBox::Critical,
 							   "SMS Tools 2",
-							   "Unavailable to get input sound." );
+							   "Unable to get the input sound." );
 		}
 		GetState().SetHasAudioMorph (LoadSound(mGlobalConfig.GetMorphSoundFile(),mMorphSegment));
 		return GetState().GetHasAudioIn();
@@ -151,6 +187,7 @@ namespace QtSMS
 
 			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2",messageShown.c_str());
 			
+			return false;
 		}
 		
 		int selectedChannel = 0;
