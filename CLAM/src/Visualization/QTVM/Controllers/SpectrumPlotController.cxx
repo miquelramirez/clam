@@ -73,6 +73,27 @@ namespace CLAM
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
+		void SpectrumPlotController::UpdateData(const Spectrum& spec)
+		{
+			mHasData = false;
+			mSpec = spec;
+			CacheData();
+			mMustProcessData = true;
+			mHasData = true;
+			if(IsRenderingEnabled()) emit requestRefresh();
+		}
+
+		void SpectrumPlotController::UpdateData(const Spectrum& spec,const SpectralPeakArray& peaks)
+		{
+			mHasData = false;
+			mSpec = spec;
+			mPeaks = peaks;
+			CacheData();
+			mMustProcessData = true;
+			mHasData = true;
+			if(IsRenderingEnabled()) emit requestRefresh();
+		}
+
 		void SpectrumPlotController::SetDataColor(Color c)
 		{
 			mRenderer.SetColor(c);
