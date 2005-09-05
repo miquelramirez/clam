@@ -76,6 +76,9 @@ namespace CLAM
 		protected:
 			PlotController* mController;
 			
+			virtual void showEvent(QShowEvent* e);
+			virtual void hideEvent(QHideEvent* e);
+
 			virtual void SetPlotController()=0;
 			virtual void Connect()=0;
 			virtual void DisplayBackgroundBlack()=0;

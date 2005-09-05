@@ -300,7 +300,18 @@ namespace CLAM
 		{
 			mController->setSelectedXPos(xpos);
 		}
-			
+		
+		void SingleDisplayPlot::showEvent(QShowEvent* e)
+		{
+			mController->enableRendering();
+			QWidget::showEvent(e);
+		}
+
+		void SingleDisplayPlot::hideEvent(QHideEvent* e)
+		{
+			mController->disableRendering();
+			QWidget::hideEvent(e);
+		}
     }
 }
 
