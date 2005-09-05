@@ -55,7 +55,7 @@ namespace CLAM
 			, mKeyShiftPressed(false)
 			, mHasSentTag(false)
 			, mSegmentationMarksEnabled(true)
-			, mActiveRendering(true)
+			, mIsRenderingEnabled(true)
 		{	
 		}
 	
@@ -376,7 +376,7 @@ namespace CLAM
 
 		int PlotController::GetVScrollValue() const
 		{
-			return int((mView.bottom-mMinY)*double(GetnyPixels())/mMaxSpanY);
+		    return int((mView.bottom-mMinY)*double(GetnyPixels())/mMaxSpanY);
 		}
 
 		bool PlotController::ReferenceIsVisible()
@@ -529,7 +529,7 @@ namespace CLAM
 			mTags.clear();
 			mTags.resize(mMarks.size());
 			mMustProcessMarks=true;
-			emit requestRefresh();
+			if(mIsRenderingEnabled) emit requestRefresh();
 		}
 
 		std::vector<unsigned>& PlotController::GetMarks()
@@ -674,7 +674,7 @@ namespace CLAM
 			mTags.insert(tag_pos,QString(""));
 	    
 			mMustProcessMarks=true;
-			emit requestRefresh();
+			if(mIsRenderingEnabled) emit requestRefresh();
 			emit insertedMark(elem);
 		}
 
@@ -690,7 +690,7 @@ namespace CLAM
 			mTags.erase(tag_pos);
 
 			mMustProcessMarks=true;
-			emit requestRefresh();
+			if(mIsRenderingEnabled) emit requestRefresh();
 			emit removedMark(index,elem);
 		}
 
@@ -699,7 +699,7 @@ namespace CLAM
 			mMarks[index]=elem;
 	    
 			mMustProcessMarks=true;
-			emit requestRefresh();
+			if(!mIsRenderingEnabled) emit requestRefresh();
 			emit updatedMark(index,elem);
 		}
 
@@ -760,16 +760,20 @@ namespace CLAM
 			mSegmentationMarksEnabled = e;
 		}
 
-		void PlotController::ActiveRendering(bool active)
+		void PlotController::enableRendering()
 		{
-			mActiveRendering = active;
+			mIsRenderingEnabled = true;
 		}
 
-		bool PlotController::IsRenderingActive() const
+		void PlotController::disableRendering()
 		{
-			return mActiveRendering;
+			mIsRenderingEnabled = false;
 		}
 
+		bool PlotController::IsRenderingEnabled() const
+		{
+			return mIsRenderingEnabled;
+		}
 	}
 }
 

@@ -42,9 +42,12 @@ namespace CLAM
 		{
 			mSegment = segment;
 			MediaTime time;
-			time.SetBegin(TData(mSegment.GetBeginTime()));
-			time.SetEnd(TData(mSegment.GetEndTime()));
-			SetBounds(time);
+			if(mSegment.HasAudio())
+			{
+				time.SetBegin(TData(0.0));
+				time.SetEnd(TData(mSegment.GetAudio().GetSize())/segment.GetAudio().GetSampleRate());
+				SetBounds(time);
+			}
 			HaveData(true);
 		}
 		

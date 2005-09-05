@@ -10,12 +10,15 @@ namespace CLAM
 		SpectrogramPlotController::SpectrogramPlotController()
 			: mDuration(0.0)
 			, mSpectralRange(11025.0)
+			, mSampleRate(22050.0)
+			, mLocalMaxX(0.0)
+			, mLocalMaxY(0.0)
 			, mPalette(0.0f)
 			, mMustProcessData(false)
 			, mHasData(false)
 		{
-			SetMinSpanX(8.0);
-			SetMinSpanY(8.0);
+			SetMinSpanX(50.0);
+			SetMinSpanY(40.0);
 		}
 
 		SpectrogramPlotController::~SpectrogramPlotController()
@@ -32,7 +35,7 @@ namespace CLAM
 			FullView();
 			mMustProcessData = true;
 			mHasData = true;
-			emit requestRefresh();
+			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SpectrogramPlotController::DisplayDimensions(const int& w, const int& h)
@@ -40,20 +43,20 @@ namespace CLAM
 			PlotController::DisplayDimensions(w,h);
 			mMustProcessData = true;
 		
-			double lBound = GetLeftBound()*mDuration/GetnSamples();
-			double hBound = GetRightBound()*mDuration/GetnSamples();
+			double lBound = GetLeftBound()/mSampleRate;
+			double hBound = GetRightBound()/mSampleRate;
 			
 			emit xRulerRange(lBound,hBound);
 
-			double bBound = GetBottomBound()*mSpectralRange/GetMaxSpanY();
-			double tBound = GetTopBound()*mSpectralRange/GetMaxSpanY();
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
 			
 			emit yRulerRange(bBound,tBound);
 		}
 
 		void SpectrogramPlotController::Draw()
 		{
-			if(!mHasData || !IsRenderingActive()) return;
+			if(!mHasData || !IsRenderingEnabled()) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
 			PlotController::Draw();
@@ -65,13 +68,11 @@ namespace CLAM
 			if(y < 0 || y > GetMaxSpanY()) return;
 			
 			PlotController::SetMousePos(x,y);
-			double xcoord=x;
-			xcoord *= mDuration;
-			xcoord /= GetnSamples();
-
-			int specIndex = int(x);
-			int bucket = int(y);
-			double hz = y*mSpectralRange/GetMaxSpanY();
+			double xcoord=x/mSampleRate;
+			
+			int specIndex = int(x*mLocalMaxX/GetnSamples());
+			int bucket = int(y*mLocalMaxY/GetMaxSpanY());
+			double hz = y;
 			double dB = mComputedData[specIndex][bucket];
 			emit sendLabels(QString::number(hz,'f',0),QString::number(dB,'f',0),QString::number(specIndex+1));
 			if(!HasSentTag())
@@ -87,10 +88,10 @@ namespace CLAM
 			PlotController::SetHBounds(left,right);
 			mMustProcessData = true;
 			
-			double lBound = GetLeftBound()*mDuration/GetnSamples();
-			double hBound = GetRightBound()*mDuration/GetnSamples();
+			double lBound = GetLeftBound()/mSampleRate;
+			double hBound = GetRightBound()/mSampleRate;
 			
-			if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 			emit xRulerRange(lBound,hBound);
 		}
 
@@ -99,10 +100,10 @@ namespace CLAM
 			PlotController::SetVBounds(bottom,top);
 			mMustProcessData = true;
 			
-			double bBound = GetBottomBound()*mSpectralRange/GetMaxSpanY();
-			double tBound = GetTopBound()*mSpectralRange/GetMaxSpanY();
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
 		       
-			if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 			emit yRulerRange(bBound,tBound);
 		}
 
@@ -179,8 +180,11 @@ namespace CLAM
 
 		void SpectrogramPlotController::FullView()
 		{
-			SetnSamples(double(mComputedData.size()-1));
-			SetYRange(0.0,double(mComputedData[0].size()-1));
+			mSampleRate = mSpectralRange*2.0;
+			mLocalMaxX = double(mComputedData.size()-1);
+			mLocalMaxY = double(mComputedData[0].size()-1);
+			SetnSamples(mDuration*mSampleRate);
+			SetYRange(0.0,mSpectralRange);
 			SetSelPos(0.0,true);
 			mView.left = 0.0;
 			mView.right = GetnSamples();
@@ -194,11 +198,17 @@ namespace CLAM
 
 		void SpectrogramPlotController::ComputeIndexes()
 		{
-			TIndex bottomIndex=TIndex(GetBottomBound());
-			TIndex topIndex=TIndex(GetTopBound())+1;
-			TIndex leftIndex = TIndex(GetLeftBound());
-			TIndex rightIndex = TIndex(GetRightBound())+1;
+			double bottom = GetBottomBound()*mLocalMaxY/GetMaxSpanY();
+			double top = GetTopBound()*mLocalMaxY/GetMaxSpanY();
+			double left = GetLeftBound()*mLocalMaxX/GetnSamples();
+			double right = GetRightBound()*mLocalMaxX/GetnSamples();
+			TIndex bottomIndex=TIndex(bottom);
+			TIndex topIndex=TIndex(top)+1;
+			TIndex leftIndex = TIndex(left);
+			TIndex rightIndex = TIndex(right)+1;
 
+			mRenderer.SetHBounds(0.0,right-left);
+			mRenderer.SetVBounds(bottom,top);
 			mRenderer.SetIndexes(leftIndex, rightIndex, bottomIndex, topIndex);	    
 		}
 
@@ -246,7 +256,7 @@ namespace CLAM
 		void SpectrogramPlotController::SetRenderingMode(CLAM::VM::SonogramCM colorMap)
 		{
 			mRenderer.SetRenderingMode(colorMap);
-			emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		int SpectrogramPlotController::FFTSize() const
@@ -375,28 +385,28 @@ namespace CLAM
 				if(GetDialPos() != value)
 				{
 					PlotController::SetSelPos(value, render);
-					emit requestRefresh();
-					emit selectedXPos(value*mDuration/GetnSamples());
+					if(mHasData && IsRenderingEnabled()) emit requestRefresh();
+					emit selectedXPos(value/mSampleRate);
 				}
 			}
 		}
 
 		void SpectrogramPlotController::setSelectedXPos(double xpos)
 		{
-			SetSelPos(xpos*GetnSamples()/mDuration,true);
-			emit requestRefresh();
+			SetSelPos(xpos*mSampleRate,true);
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SpectrogramPlotController::setHBounds(double xmin, double xmax)
 		{
-			double left = xmin*GetnSamples()/mDuration;
-			double right = xmax*GetnSamples()/mDuration;
+			double left = xmin*mSampleRate;
+			double right = xmax*mSampleRate;
 			SetHBounds(left,right);
 		}
 
 		void SpectrogramPlotController::setVBounds(double ymin, double ymax)
 		{
-			SetVBounds(ymin*GetMaxSpanY()/mSpectralRange,ymax*GetMaxSpanY()/mSpectralRange);
+			SetVBounds(ymin,ymax);
 		}
     }
 }

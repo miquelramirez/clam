@@ -54,7 +54,7 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
-			emit requestRefresh();
+			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SpectrumPlotController::SetData(const Spectrum& spec,const SpectralPeakArray& peaks)
@@ -70,7 +70,7 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
-			emit requestRefresh();
+			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SpectrumPlotController::SetDataColor(Color c)
@@ -91,7 +91,7 @@ namespace CLAM
 			double lBound = GetLeftBound()*mSpectralRange/GetnSamples();
 			double hBound = GetRightBound()*mSpectralRange/GetnSamples();
 		 
-			if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 			emit xRulerRange(lBound,hBound);
 		}
 
@@ -102,7 +102,7 @@ namespace CLAM
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 		       
-			if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 			emit yRulerRange(bBound,tBound);
 		}
 
@@ -123,7 +123,7 @@ namespace CLAM
 
 		void SpectrumPlotController::Draw()
 		{
-			if(!mHasData || !IsRenderingActive()) return;
+			if(!mHasData || !IsRenderingEnabled()) return;
 			if(!mHasData) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
@@ -224,7 +224,7 @@ namespace CLAM
 				if(GetDialPos() != value)
 				{
 					PlotController::SetSelPos(value, render);
-					emit requestRefresh();
+					if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 					emit selectedXPos(value*mSpectralRange/GetnSamples());
 				}
 			}
@@ -258,7 +258,7 @@ namespace CLAM
 		void SpectrumPlotController::setSelectedXPos(double xpos)
 		{
 			SetSelPos(xpos*GetnSamples()/mSpectralRange,true);
-			emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SpectrumPlotController::setVBounds(double ymin, double ymax)

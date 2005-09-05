@@ -44,6 +44,7 @@ namespace CLAM
 
 		void SinTracksPlotController::SetData(const Segment& segment)
 		{
+			mCachedTracks.clear();
 			mHasData = false;
 			mNumberOfFrames = segment.GetnFrames();
 			SineTracksAdapter adapter;
@@ -60,12 +61,13 @@ namespace CLAM
 			mHasData = true;
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
-			emit requestRefresh();
+			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SinTracksPlotController::SetData(const Array< SpectralPeakArray >& peakMtx, 
 											  const double& sr, const double& dur)
 		{
+			mCachedTracks.clear();
 			mHasData = false;
 			mNumberOfFrames = peakMtx.Size();
 			SineTracksAdapter adapter;
@@ -82,7 +84,7 @@ namespace CLAM
 			mHasData = true;
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
-			emit requestRefresh();
+			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SinTracksPlotController::DisplayDimensions(const int& w, const int& h)
@@ -102,7 +104,7 @@ namespace CLAM
 
 		void SinTracksPlotController::Draw()
 		{
-			if(!mHasData || !IsRenderingActive()) return;
+			if(!mHasData || !IsRenderingEnabled()) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
 			PlotController::Draw();
@@ -116,7 +118,8 @@ namespace CLAM
 			double lBound = GetLeftBound()/mSampleRate;
 			double hBound = GetRightBound()/mSampleRate;
 			
-			if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
+			
 			emit xRulerRange(lBound,hBound);
 		}
 
@@ -128,7 +131,7 @@ namespace CLAM
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 		       
-			if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 			emit yRulerRange(bBound,tBound);
 		}
 
@@ -230,7 +233,7 @@ namespace CLAM
 				if(GetDialPos() != value)
 				{
 					PlotController::SetSelPos(value, render);
-					emit requestRefresh();
+					if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 					emit selectedXPos(value/mSampleRate);
 				}
 			}
@@ -246,7 +249,7 @@ namespace CLAM
 		void SinTracksPlotController::setSelectedXPos(double xpos)
 		{
 			SetSelPos(xpos*mSampleRate,true);
-			emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SinTracksPlotController::setVBounds(double ymin, double ymax)

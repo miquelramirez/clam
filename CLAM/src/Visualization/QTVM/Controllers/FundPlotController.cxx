@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
+ * along with this program; ifreq not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
@@ -42,7 +42,14 @@ namespace CLAM
 			mHasData = false;
 			mSegment = segment;
 			SetSampleRate( double(mSegment.GetSamplingRate()) );
-			SetDuration(  double(mSegment.GetEndTime()-mSegment.GetBeginTime()) );
+			if(segment.HasAudio())
+			{
+				SetDuration( double(segment.GetAudio().GetSize())/double(segment.GetAudio().GetSampleRate()) );
+			}
+			else
+			{
+				SetDuration(  double(mSegment.GetEndTime())- double(mSegment.GetBeginTime()) );
+			}
 			CacheData();
 			FullView();
 			SetnSamples(GetDuration()*GetSampleRate());
@@ -51,7 +58,7 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
-			emit requestRefresh();
+			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void FundPlotController::SetDataColor(Color c)
@@ -67,7 +74,7 @@ namespace CLAM
 			double lBound = GetLeftBound()/GetSampleRate();
 			double hBound = GetRightBound()/GetSampleRate();
 			
-			 if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 			emit xRulerRange(lBound,hBound);	
 		}
 
@@ -78,7 +85,7 @@ namespace CLAM
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 	    
-			if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 			emit yRulerRange(bBound,tBound);
 		}
 
@@ -91,15 +98,15 @@ namespace CLAM
 			
 			emit xRulerRange(lBound,hBound);
 
-			double bBound = double(GetBottomBound());
-			double tBound = double(GetTopBound());
+			double bBound = GetBottomBound();
+			double tBound = GetTopBound();
 			
 			emit yRulerRange(bBound,tBound);
 		}
 
 		void FundPlotController::Draw()
 		{
-			if(!mHasData || !IsRenderingActive()) return;
+			if(!mHasData || !IsRenderingEnabled()) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
 			PlayablePlotController::Draw();
@@ -154,7 +161,7 @@ namespace CLAM
 		{
 			MediaTime time;
 			time.SetBegin(TData(0.0));
-			time.SetEnd(TData(GetnSamples()/GetSampleRate()));
+			time.SetEnd(TData(GetDuration()));
 			emit selectedRegion(time);
 		}
 
@@ -174,7 +181,7 @@ namespace CLAM
 		void FundPlotController::setSelectedXPos(double xpos)
 		{
 			SetSelPos(xpos*GetSampleRate(),true);
-			emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void FundPlotController::SetSelPos(const double& value, bool render)
@@ -184,7 +191,7 @@ namespace CLAM
 				if(GetDialPos() != value)
 				{
 					PlayablePlotController::SetSelPos(value, render);
-					emit requestRefresh();
+					if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 					emit selectedXPos(value/GetSampleRate());
 				}
 			}

@@ -53,7 +53,7 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
-			emit requestRefresh();
+			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void AudioPlotController::SetDataColor(Color c)
@@ -63,7 +63,7 @@ namespace CLAM
 
 		void AudioPlotController::Draw()
 		{
-			if(!mHasData || !IsRenderingActive()) return;
+			if(!mHasData || !IsRenderingEnabled()) return;
 			if(mMustProcessData) ProcessData();
 			mRenderer.Render();
 			DrawAxis();
@@ -92,7 +92,7 @@ namespace CLAM
 			double hBound = GetRightBound()/GetSampleRate();
 	    
 			emit xRulerRange(lBound,hBound);
-			if(mHasData) emit requestRefresh();	
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();	
 		}
 
 		void AudioPlotController::SetVBounds(const double& bottom, const double& top)
@@ -103,7 +103,7 @@ namespace CLAM
 			double tBound = GetTopBound();
 			
 			emit yRulerRange(bBound,tBound);
-			if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void AudioPlotController::DisplayDimensions(const int& w, const int& h)
@@ -208,7 +208,7 @@ namespace CLAM
 		{
 			MediaTime time;
 			time.SetBegin(TData(0.0));
-			time.SetEnd(TData(GetnSamples()/GetSampleRate()));
+			time.SetEnd(TData(GetDuration()));
 			emit selectedRegion(time);
 		}
 
@@ -231,7 +231,7 @@ namespace CLAM
 				if(GetDialPos() != value)
 				{
 					PlayablePlotController::SetSelPos(value, render);
-					emit requestRefresh();
+					if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 					emit selectedXPos(value/GetSampleRate());
 				}
 			}
@@ -240,7 +240,7 @@ namespace CLAM
 		void AudioPlotController::setSelectedXPos(double xpos)
 		{
 			SetSelPos(xpos*GetSampleRate(),true);
-			emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
 			

@@ -57,6 +57,9 @@ namespace CLAM
 			SpectrogramRenderer               mRenderer;
 			double                            mDuration;
 			double                            mSpectralRange;
+			double                            mSampleRate;
+			double                            mLocalMaxX;
+			double                            mLocalMaxY;
 			QtPalette                         mPalette;
 			bool                              mMustProcessData;
 			bool                              mHasData;
