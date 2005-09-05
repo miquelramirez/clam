@@ -1,14 +1,15 @@
 
-#include "ProcessingData.hxx"
 #include "TimeIndex.hxx"
 
+namespace CLAM
+{
 
-namespace CLAM {
+	void TimeIndex::DefaultInit()
+	{
+		AddPosition();
+		AddWeight();
+		UpdateData();
+	}
 
-  void TimeIndex::DefaultInit()
-  {
-    AddPosition();
-    AddWeight();
-    UpdateData();
-  }
-}
+} // namespace CLAM
+
