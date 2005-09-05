@@ -62,8 +62,6 @@ namespace CLAM
 			void SetEndRegion(const double& value);
 
 			MediaTime GetRegionTime() const;
-
-			double GetStopDialPos(double time);
 	    
 		};
     }
