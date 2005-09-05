@@ -60,6 +60,13 @@ namespace CLAM
 
 		void SpectrogramRenderer::DrawColorData()
 		{
+			glMatrixMode(GL_PROJECTION);
+			glPushMatrix();
+			glLoadIdentity();
+			glOrtho(LeftBound(),RightBound(),BottomBound(),TopBound(),-1.0,1.0);
+			glMatrixMode(GL_MODELVIEW);
+			glClear(GL_COLOR_BUFFER_BIT);
+
 			for(TIndex i = mBottomIndex; i < mTopIndex; i++)
 			{
 				glBegin(GL_QUAD_STRIP);
@@ -74,10 +81,23 @@ namespace CLAM
 				}
 				glEnd();
 			}
+
+			glMatrixMode(GL_PROJECTION);
+			glPopMatrix();
+			glMatrixMode(GL_MODELVIEW);
+			glShadeModel( GL_FLAT );
 		}
 
 		void SpectrogramRenderer::DrawBWData()
 		{
+			glMatrixMode(GL_PROJECTION);
+			glPushMatrix();
+			glLoadIdentity();
+			glOrtho(LeftBound(),RightBound(),BottomBound(),TopBound(),-1.0,1.0);
+			glMatrixMode(GL_MODELVIEW);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+
 			for(TIndex i = mBottomIndex; i < mTopIndex; i++)
 			{
 				glBegin(GL_QUAD_STRIP);
@@ -92,6 +112,11 @@ namespace CLAM
 				}
 				glEnd();
 			}
+
+			glMatrixMode(GL_PROJECTION);
+			glPopMatrix();
+			glMatrixMode(GL_MODELVIEW);
+			glShadeModel( GL_FLAT );
 		}
     }
 }
