@@ -39,6 +39,7 @@ namespace CLAM
 			~AudioPlotController();
 
 			void SetData(const Audio& audio);
+			void UpdateData(const Audio& audio);
 			void SetDataColor(Color c);
 			void DisplayDimensions(const int& w, const int& h);
 			void Draw();

@@ -50,6 +50,7 @@ namespace CLAM
 			~QtAudioPlot();
 
 			void SetData(const Audio& audio, bool to_controller=true);
+			void UpdateData(const Audio& audio);
 
 			void SetForegroundColor(Color c);
 			void SetRegionColor(Color c);

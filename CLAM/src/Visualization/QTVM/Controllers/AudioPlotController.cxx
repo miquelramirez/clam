@@ -56,6 +56,15 @@ namespace CLAM
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
+		void AudioPlotController::UpdateData(const Audio& audio)
+		{
+			mHasData = false;
+			mAudio = audio;
+			mMustProcessData = true;
+			mHasData = true;
+			if(IsRenderingEnabled()) emit requestRefresh();
+		}
+
 		void AudioPlotController::SetDataColor(Color c)
 		{
 			mRenderer.SetColor(c);

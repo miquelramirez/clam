@@ -88,6 +88,11 @@ namespace CLAM
 			}
 		}
 
+		void QtAudioPlot::UpdateData(const Audio& audio)
+		{
+			((AudioPlotController*)mController)->UpdateData(audio);
+		}
+
 		void QtAudioPlot::SetForegroundColor(Color c)
 		{
 			((AudioPlotController*)mController)->SetDataColor(c);
