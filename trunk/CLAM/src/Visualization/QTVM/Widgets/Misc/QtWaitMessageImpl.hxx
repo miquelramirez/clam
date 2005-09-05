@@ -19,7 +19,10 @@ namespace CLAM
 			~QtWaitMessageImpl();
 
 			void LabelText(const std::string& label);
-			
+		
+		protected:
+			void closeEvent(QCloseEvent* e);
+
 		private:
 			QLabel*           mLabel;
 			WaitMsgIndicator* mIndicator;
