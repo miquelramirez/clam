@@ -18,9 +18,9 @@ namespace CLAM
 			SMSFreqMultiDisplay(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
 			~SMSFreqMultiDisplay();
 
-			void SetSpectrumAndPeaks(const Spectrum& spec, const SpectralPeakArray& peaks);
-			void SetSinusoidalSpectrum(const Spectrum& spec);
-			void SetResidualSpectrum(const Spectrum& spec);
+			void SetSpectrumAndPeaks(const Spectrum& spec, const SpectralPeakArray& peaks, bool update=false);
+			void SetSinusoidalSpectrum(const Spectrum& spec, bool update=false);
+			void SetResidualSpectrum(const Spectrum& spec, bool update=false);
 
 			void SetForegroundColor(Color c);
 			void SetPeaksColor(Color cline,Color cpoint);

@@ -102,14 +102,21 @@ namespace CLAM
 			HideDisplays();
 		}
 
-		void SMSFreqMultiDisplay::SetSpectrumAndPeaks(const Spectrum& spec, const SpectralPeakArray& peaks)
+		void SMSFreqMultiDisplay::SetSpectrumAndPeaks(const Spectrum& spec, const SpectralPeakArray& peaks, bool update)
 		{
-			((SpectrumPlotController*)mControllers[MASTER])->SetData(spec,peaks);
+			if(update)
+			{
+				((SpectrumPlotController*)mControllers[MASTER])->UpdateData(spec,peaks);
+			}
+			else
+			{
+				((SpectrumPlotController*)mControllers[MASTER])->SetData(spec,peaks);
+			}
 			mHasMasterData = true;
 			if(mShowOnNewData) ShowDisplay(MASTER);
 		}
 
-		void SMSFreqMultiDisplay::SetSinusoidalSpectrum(const Spectrum& spec)
+		void SMSFreqMultiDisplay::SetSinusoidalSpectrum(const Spectrum& spec, bool update)
 		{
 			if(!mHasMasterData) 
 			{
@@ -117,18 +124,32 @@ namespace CLAM
 				((SpectrumPlotController*)mControllers[MASTER])->SetData(spec);
 				mHasMasterData = true;
 			}
-			((SpectrumPlotController*)mControllers[SINUSOIDAL])->SetData(spec);
+			if(update)
+			{
+				((SpectrumPlotController*)mControllers[SINUSOIDAL])->UpdateData(spec);
+			}
+			else
+			{
+				((SpectrumPlotController*)mControllers[SINUSOIDAL])->SetData(spec);
+			}
 			if(mShowOnNewData) ShowDisplay(SINUSOIDAL);
 		}
 
-		void SMSFreqMultiDisplay::SetResidualSpectrum(const Spectrum& spec)
+		void SMSFreqMultiDisplay::SetResidualSpectrum(const Spectrum& spec, bool update)
 		{
 			if(!mHasMasterData) 
 			{
 				// dummy
 				((SpectrumPlotController*)mControllers[MASTER])->SetData(spec);
 			}
-			((SpectrumPlotController*)mControllers[RESIDUAL])->SetData(spec);
+			if(update)
+			{
+				((SpectrumPlotController*)mControllers[RESIDUAL])->UpdateData(spec);
+			}
+			else
+			{
+				((SpectrumPlotController*)mControllers[RESIDUAL])->SetData(spec);
+			}
 			if(mShowOnNewData) ShowDisplay(RESIDUAL);
 		}
 
