@@ -5,6 +5,8 @@
 #include "Message.hxx"
 #include "Engine.hxx"
 #include "ViewManager.hxx"
+#include "SMSConfigDlg.hxx"
+#include "QtWaitMessage.hxx"
 #include "QtSMSTools.hxx"
 
 namespace QtSMS
@@ -27,16 +29,16 @@ namespace QtSMS
 		InitStatusBar();
 		InitialState();
 		InitMenuViewItems();
-
+		
 		connect(Engine::DisplayManager(),SIGNAL(dataType(QString)),SLOT(setLeftSBLabelText(QString)));
 		connect(Engine::DisplayManager(),SIGNAL(sampleRateDuration(QString)),SLOT(setRightSBLabelText(QString)));
 	}
 
 	void QtSMSTools::loadConfiguration()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"*.xml",this);
+		QString filename = QFileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
-		if(mEngine->LoadConfiguration(filename))
+		if(mEngine->LoadConfiguration((filename)))
 		{
 			Engine::DisplayManager()->Flush(); // we have a new config
 			Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
@@ -52,8 +54,26 @@ namespace QtSMS
 
 	void QtSMSTools::newConfiguration()
 	{
-		// TODO
-		NotImplemented();
+		SMSConfigDlg* configDlg = new SMSConfigDlg(mEngine->GetGlobalConfig());
+		if( configDlg->exec() == QDialog::Accepted )
+		{
+			configDlg->Apply();
+			if(mEngine->HasValidAudioInput())
+			{
+				QString filename = QFileDialog::getSaveFileName("new_config.xml","*.xml",this);
+				if(!filename.isEmpty())
+				{
+					mEngine->StoreConfiguration((filename));
+					mEngine->LoadConfiguration((filename));
+					Engine::DisplayManager()->Flush(); // we have a new config
+					Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
+					InitMenuViewItems();
+					ShowIncomingAudio();
+					UpdateState();
+				}
+			}
+		}
+		delete configDlg;
 	}
 
 	void QtSMSTools::storeExtractedMelody()
@@ -72,7 +92,7 @@ namespace QtSMS
 
 	void QtSMSTools::storeAnalysisData()
 	{
-		QString filename = QFileDialog::getSaveFileName("analysis_data_out.xml","*.xml",this);
+		QString filename = QFileDialog::getSaveFileName("analysis_data_out.xml","(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreAnalysis((filename));
 	}
@@ -112,11 +132,10 @@ namespace QtSMS
 
 	void QtSMSTools::analyze()
 	{
-		setLeftSBLabelText("analysis processing...");
+		InitMenuViewItems(false);
+		Engine::DisplayManager()->Reset();
 		mEngine->Analyze();
-		Engine::DisplayManager()->SetAnalyzedData();
-		UpdateState();
-		setLeftSBLabelText("ready");
+		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendAnalyzedDataToViewManager));
 	}
 
 	void QtSMSTools::melodyExtraction()
@@ -143,9 +162,10 @@ namespace QtSMS
    
 	void QtSMSTools::synthesize()
 	{
+		ResetMenuViewAudioItems();
+		Engine::DisplayManager()->Reset();
 		mEngine->Synthesize();
-		Engine::DisplayManager()->SetSynthesizedData();
-		UpdateState();
+		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendSynthesizedDataToViewManager));
 	}
 
 	void QtSMSTools::displayBWSonogram(bool on)
@@ -153,7 +173,7 @@ namespace QtSMS
 		if(mMenuViewColorSonogram->isOn()) mMenuViewColorSonogram->setOn(false);
  
 		// TODO
-		NotImplemented();
+//		NotImplemented();
 	}
 
 	void QtSMSTools::displayColorSonogram(bool on)
@@ -161,7 +181,7 @@ namespace QtSMS
 		if(mMenuViewBWSonogram->isOn()) mMenuViewBWSonogram->setOn(false);
 
 		// TODO
-		NotImplemented();
+//		NotImplemented();
 	}
 
 	void QtSMSTools::displayFundamentalFrequency(bool on)
@@ -383,20 +403,20 @@ namespace QtSMS
 	{
 		InitialState();
 
-		if(mEngine->State().GetHasConfig())
+		if(mEngine->GetState().GetHasConfig())
 		{
-			if(mEngine->State().GetHasAudioIn())
+			if(mEngine->GetState().GetHasAudioIn())
 			{
 				mMenuAnalysisAnalyze->setEnabled(true);
 				mMenuViewOriginalAudio->setEnabled(true);
 			}
-			if(mEngine->State().GetHasAnalysis())
+			if(mEngine->GetState().GetHasAnalysis())
 			{
 				mMenuSynthSinthesize->setEnabled(true);
 			}
 		}
 
-		if(mEngine->State().GetHasAnalysis())
+		if(mEngine->GetState().GetHasAnalysis())
 		{
 			mMenuFileStoreAnalysis->setEnabled(true);
 			mMenuAnalysisExtractMelody->setEnabled(true);
@@ -407,18 +427,18 @@ namespace QtSMS
 			mMenuViewSpecPeaks->setEnabled(true);
 			mMenuViewSinSpec->setEnabled(true);
 			mMenuViewResSpec->setEnabled(true);
-			if(mEngine->State().GetHasTransformationScore())
+			if(mEngine->GetState().GetHasTransformationScore())
 			{
 				mMenuTransformApply->setEnabled(true);
 			}
 		}
 
-		if(mEngine->State().GetHasMelody())
+		if(mEngine->GetState().GetHasMelody())
 		{
 			mMenuFileSaveMelody->setEnabled(true);
 		}
 
-		if(mEngine->State().GetHasAudioOut())
+		if(mEngine->GetState().GetHasAudioOut())
 		{
 			mMenuFileSaveSynSound->setEnabled(true);
 			mMenuFileSaveSynSinusoidal->setEnabled(true);
@@ -428,7 +448,7 @@ namespace QtSMS
 			mMenuViewSynResidual->setEnabled(true);
 		}
 
-		if(mEngine->State().GetHasTransformation())
+		if(mEngine->GetState().GetHasTransformation())
 		{
 			mMenuTransformUndo->setEnabled(true);
 		}
@@ -454,9 +474,12 @@ namespace QtSMS
 		statusBar()->addWidget(mRightSBLabel,0);
 	}
 
-	void QtSMSTools::InitMenuViewItems()
+	void QtSMSTools::InitMenuViewItems(bool flag)
 	{
-		mMenuViewOriginalAudio->setOn(false);
+		if(flag)
+		{
+			mMenuViewOriginalAudio->setOn(false);
+		}
 		mMenuViewFundFreq->setOn(false);
 		mMenuViewSinTracks->setOn(false);
 		mMenuViewColorSonogram->setOn(false);
@@ -467,6 +490,35 @@ namespace QtSMS
 		mMenuViewSynAudio->setOn(false);
 		mMenuViewSynSinusoidal->setOn(false);
 		mMenuViewSynResidual->setOn(false);
+	}
+
+	void QtSMSTools::ResetMenuViewAudioItems()
+	{
+		mMenuViewSynAudio->setOn(false);
+		mMenuViewSynSinusoidal->setOn(false);
+		mMenuViewSynResidual->setOn(false);
+	}
+
+	void QtSMSTools::SendAnalyzedDataToViewManager()
+	{
+		CLAMGUI::QtWaitMessage* msg = new CLAMGUI::QtWaitMessage("Building Graphic Data....");
+		Engine::DisplayManager()->SetAnalyzedData();
+		delete msg;
+		UpdateState();
+	}
+
+	void QtSMSTools::SendSynthesizedDataToViewManager()
+	{
+		CLAMGUI::QtWaitMessage* msg = new CLAMGUI::QtWaitMessage("Building Graphic Data...");
+		Engine::DisplayManager()->SetSynthesizedData();
+		delete msg;
+		UpdateState();
+	}
+
+	void QtSMSTools::LaunchMethodOnThread(CBL::Functor0 method)
+	{
+		mThread.SetThreadCode(method);
+		mThread.Start();
 	}
 
 	void QtSMSTools::NotImplemented()

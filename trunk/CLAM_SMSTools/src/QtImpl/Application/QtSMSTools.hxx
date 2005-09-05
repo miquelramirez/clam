@@ -1,6 +1,7 @@
 #ifndef __QTSMSTOOLS__
 #define __QTSMSTOOLS__
 
+#include "Thread.hxx"
 #include "SMSToolsBase.h"
 
 class QLabel;
@@ -60,9 +61,10 @@ namespace QtSMS
 		void setRightSBLabelText(QString);
 
 	private:
-		Engine* mEngine;
-		QLabel* mLeftSBLabel;
-		QLabel* mRightSBLabel;
+		Engine*       mEngine;
+		CLAM::Thread  mThread;
+		QLabel*       mLeftSBLabel;
+		QLabel*       mRightSBLabel;
 
 		void InitSMSTools();
 		void InitialState();
@@ -70,7 +72,11 @@ namespace QtSMS
 		void ShowIncomingAudio();
 
 		void InitStatusBar();
-		void InitMenuViewItems();
+		void InitMenuViewItems(bool flag=true);
+		void ResetMenuViewAudioItems();
+		void SendAnalyzedDataToViewManager();
+		void SendSynthesizedDataToViewManager();
+		void LaunchMethodOnThread(CBL::Functor0 method);
 
 		void NotImplemented();
 	};
