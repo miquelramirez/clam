@@ -68,6 +68,16 @@ namespace CLAM
 		    ((SpectrumPlotController*)mController)->SetData(spec,peaks);
 		}
 
+		void QtSpectrumPlot::UpdateData(const Spectrum& spec)
+		{
+			((SpectrumPlotController*)mController)->UpdateData(spec);
+		}
+
+		void QtSpectrumPlot::UpdateData(const Spectrum& spec, const SpectralPeakArray& peaks)		
+		{			
+		    ((SpectrumPlotController*)mController)->UpdateData(spec,peaks);
+		}
+
 		void QtSpectrumPlot::SetForegroundColor(Color c)
 		{
 			((SpectrumPlotController*)mController)->SetDataColor(c);
