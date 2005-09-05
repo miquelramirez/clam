@@ -134,7 +134,8 @@ namespace CLAM
 			if(!mIsPlaying) return;
 			mIsPlaying=false;
 			emit stopPlayingTime(time);
-			UpdateDial(time*mSampleRate);
+			UpdateDial(GetStopDialPos(double(time)));
+//			UpdateDial(time*mSampleRate);
 			emit stopPlaying();
 		}
 
@@ -166,6 +167,12 @@ namespace CLAM
 		const double& PlayablePlotController::GetDuration() const
 		{
 			return mDuration;
+		}
+
+		double PlayablePlotController::GetStopDialPos(double time)
+		{
+			if(time*mSampleRate < GetnSamples() || GetBeginRegion() < GetEndRegion()) return time*mSampleRate;
+			return GetSelPos();
 		}
 
     }    
