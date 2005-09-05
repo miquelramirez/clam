@@ -33,8 +33,8 @@ namespace QtSMS
 		void UndoTransformations();
 		void Synthesize();
 
-		CLAM::SMSAppState& State() { return GetState(); }
-	  
+		bool HasValidAudioInput();
+
 	protected:
 		void Run(){ /* empty body */ }
 

@@ -216,7 +216,7 @@ namespace CLAM
 		void SMSTimeMultiDisplay::ShowDisplay(int id)
 		{
 			if(id < MASTER || id > SINTRACKS) return;
-			mControllers[id]->ActiveRendering(true);
+			mControllers[id]->enableRendering();
 			mYRulers[id]->show();
 			mSurfaces[id]->show();
 			switch(id)
@@ -249,7 +249,7 @@ namespace CLAM
 		void SMSTimeMultiDisplay::HideDisplay(int id)
 		{
 			if(id < MASTER || id > SINTRACKS) return;
-			mControllers[id]->ActiveRendering(false);
+			mControllers[id]->disableRendering();
 			mYRulers[id]->hide();
 			mSurfaces[id]->hide();
 			switch(id)
@@ -755,9 +755,11 @@ namespace CLAM
 			middleHole->setFixedSize(50,30);
 
 			mCBPlayList = new QComboBox(this);
+
 			QFontMetrics fm(mCBPlayList->font());
 			int cbox_width=fm.width("Synthesized Sinusoidal")+35;
 			mCBPlayList->setFixedWidth(cbox_width);
+
 			mCBPlayList->setDuplicatesEnabled(false);
 			QToolTip::add(mCBPlayList,"Play List");
 			
