@@ -69,7 +69,6 @@ namespace CLAM
 			virtual bool IsPlayable();
 			
 			void SetSegmentationMarksEnabled(bool e);
-			void ActiveRendering(bool active);
 		    
 		signals:
 			void requestRefresh();
@@ -105,6 +104,9 @@ namespace CLAM
 			void removeMark(int, unsigned);
 			void updateMark(int, unsigned);
 			void updateTag(int, QString);
+
+			void enableRendering();
+			void disableRendering();
 			
 			virtual void setHBounds(double, double)=0;
 			virtual void setVBounds(double, double)=0;
@@ -145,7 +147,7 @@ namespace CLAM
 
 			virtual void FullView()=0;
 
-			bool IsRenderingActive() const;
+			bool IsRenderingEnabled() const;
 
 		private:
 			int    mDisplayWidth;
@@ -182,7 +184,7 @@ namespace CLAM
 			bool                  mKeyShiftPressed;
 			bool                  mHasSentTag;
 			bool                  mSegmentationMarksEnabled;
-			bool                  mActiveRendering;
+			bool                  mIsRenderingEnabled;
 			
 			Dial mDial;
 

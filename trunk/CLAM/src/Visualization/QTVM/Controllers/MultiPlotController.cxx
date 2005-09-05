@@ -79,7 +79,7 @@ namespace CLAM
 			}
 			mHasData = true;
 			mMustProcessData=true;
-			emit requestRefresh();
+			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 		
 		void MultiPlotController::RemoveData( std::string key )
@@ -93,7 +93,7 @@ namespace CLAM
 			std::map<std::string,DataArray>::iterator dit=mCacheData.find(key);
 			mCacheData.erase(dit);
 
-			emit requestRefresh();
+			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 		
 		void MultiPlotController::RemoveAllData()
@@ -103,14 +103,14 @@ namespace CLAM
 				
 			mRenderers.clear();
 			mCacheData.clear();
-			emit requestRefresh();
+			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void MultiPlotController::SetColor(std::string key, Color c)
 		{
 			if(!ExistRenderer(key)) return;
 			mRenderers[key]->SetColor(c);
-			emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void MultiPlotController::DisplayDimensions(const int& w, const int& h)
@@ -133,7 +133,7 @@ namespace CLAM
 		
 		void MultiPlotController::Draw()
 		{
-			if(!mHasData || !IsRenderingActive()) return;
+			if(!mHasData || !IsRenderingEnabled()) return;
 			if(mMustProcessData) ProcessData();
 			std::map<std::string,MultiPlotRenderer*>::iterator it=mRenderers.begin();
 			for(; it != mRenderers.end(); it++)
@@ -172,7 +172,7 @@ namespace CLAM
 			double lBound = (GetLeftBound()*local_max/global_max)+mXMin;
 			double hBound = (GetRightBound()*local_max/global_max)+mXMin;
 			
-			if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 			emit xRulerRange(lBound,hBound);
 		}
 
@@ -183,7 +183,7 @@ namespace CLAM
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 			
-			if(mHasData) emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 			emit yRulerRange(bBound,tBound);
 		}
 
@@ -273,7 +273,7 @@ namespace CLAM
 				if(GetDialPos() != value)
 				{
 					PlotController::SetSelPos(value, render);
-					emit requestRefresh();
+					if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 					double span = mXMax-mXMin;
 					double xpos = (value*span/GetnSamples())+mXMin;
 					emit selectedXPos(xpos);
@@ -294,7 +294,7 @@ namespace CLAM
 			double span = mXMax-mXMin;
 			double pos = (xpos-mXMin)*GetnSamples()/span;
 			SetSelPos(pos,true);
-			emit requestRefresh();
+			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void MultiPlotController::setVBounds(double ymin, double ymax)
