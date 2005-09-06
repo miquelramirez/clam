@@ -380,6 +380,7 @@ namespace QtSMS
 
 	void ViewManager::Reset()
 	{
+		SetNavigatorEnabled(false);
 		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->Stop();
 		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->setCurrentTime(0.0);
 	}
