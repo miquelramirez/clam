@@ -27,6 +27,7 @@
 #include "MultiChannelAudioFileReaderConfig.hxx"
 #include "MultiChannelAudioFileReader.hxx"
 #include "IndexArray.hxx"
+#include "Text.hxx"
 
 
 #include "XMLStorage.hxx"
@@ -748,7 +749,7 @@ void Annotator::loadDescriptorPool()
 		}
 		else
 		{
-			mDescriptionScheme.AddAttribute <std::string>("Song",name);
+			mDescriptionScheme.AddAttribute <CLAM::Text>("Song",name);
 		}
 	}
 	//And now LLD's  
@@ -806,7 +807,7 @@ bool Annotator::event(QEvent* e)
 }
 
 
-void Annotator::drawHLD(int songIndex, const std::string& descriptorName, const std::string& value, 
+void Annotator::drawHLD(int songIndex, const std::string& descriptorName, const CLAM::Text & value, 
 			bool computed)
 {
 	QString qvalue = QString(value.c_str());
@@ -867,22 +868,22 @@ void Annotator::drawDescriptorsValue( int index, bool computed = true)
 		if ((*it).GetType() == "String")
 		{
 			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-			GetReadPool<std::string>("Song",(*it).GetName()),computed);
+				GetReadPool<CLAM::Text>("Song",(*it).GetName()),computed);
 		}
 		if ((*it).GetType() == "RestrictedString")
 		{
 			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-			GetReadPool<CLAM_Annotator::RestrictedString>("Song",(*it).GetName()),computed);
+				GetReadPool<CLAM_Annotator::RestrictedString>("Song",(*it).GetName()),computed);
 		}
 		if ((*it).GetType() == "Float")
 		{
 			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-			GetReadPool<float>("Song",(*it).GetName()),(*it).GetfRange(),computed);
+				GetReadPool<float>("Song",(*it).GetName()),(*it).GetfRange(),computed);
 		}
 		if ((*it).GetType() == "Int")
 		{
 			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-			GetReadPool<int>("Song",(*it).GetName()),(*it).GetiRange(),computed);
+				GetReadPool<int>("Song",(*it).GetName()),(*it).GetiRange(),computed);
 		}
 
 	}
@@ -896,7 +897,7 @@ void Annotator::setHLDescriptorPoolFromString(const std::string& descriptorName,
 	QString qValue(descriptorValue.c_str());
 	if (descriptorType == "String")
 	{
-		*(mpDescriptorPool->GetWritePool<std::string>("Song",descriptorName)) = descriptorValue;
+		*(mpDescriptorPool->GetWritePool<CLAM::Text>("Song",descriptorName)) = descriptorValue;
 	}
 	if (descriptorType == "RestrictedString")
 	{

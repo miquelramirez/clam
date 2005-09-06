@@ -4,7 +4,7 @@
 #include "DynamicType.hxx"
 
 #include <list>
-#include <string>
+#include "Text.hxx"
 
 #include "Pool.hxx"
 #include "Assert.hxx"
@@ -91,7 +91,7 @@ namespace CLAM_Annotator{
 
 	std::string GetTypeFromValue(int i);
 	std::string GetTypeFromValue(float f);
-	std::string GetTypeFromValue(const std::string& s);
+	std::string GetTypeFromValue(const CLAM::Text& s);
 	std::string GetTypeFromValue(const CLAM_Annotator::RestrictedString& r);
 };
 
