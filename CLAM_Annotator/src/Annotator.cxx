@@ -597,7 +597,7 @@ void Annotator::songsClicked( QListViewItem * item)
 	drawLLDescriptors(mCurrentIndex);
 	std::cout << "Done" << std::endl;
 	loaderLaunch();
-	mAudioRefreshTimer->start(0, false);
+	mAudioRefreshTimer->start(4000, true);
 }
 
 void Annotator::drawLLDescriptors(int index)
@@ -624,12 +624,18 @@ void Annotator::drawLLDescriptors(int index)
 
 void Annotator::refreshAudioData()
 {
-	if (!loaderFinished())
-		mAudioRefreshTimer->start(2000, false);
-	else
+	std::cout << "Refresing audio..." << std::endl;
+	bool finished= loaderFinished();
+	if (finished)
+	{
+		std::cout << "Last refresh, updating marks..." << std::endl;
+		mAudioRefreshTimer->stop();
 		auralizeMarks();
-	std::cout << "Refreshing..." << std::endl;
+	}
 	mpAudioPlot->UpdateData(mCurrentAudio);
+
+	if (!finished)
+		mAudioRefreshTimer->start(2000, true);
 }
 
 void Annotator::drawAudio(const char * filename)
