@@ -28,13 +28,11 @@ void BuildAndDumpSchema(const char * schemaLocation);
 void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema);
 void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema);
 void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme);
-template <class T> CLAM_Annotator::Descriptor<T> MakeDescriptor(T value,const std::string& name);
-
 void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song,
 		CLAM::DescriptionDataPool& pool);
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
 void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, int frameSize);
-void OpenSoundFile(const std::string& filename, CLAM::Audio& audio);
+void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text & artist, CLAM::Text & title);
 void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s);
 void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment, 
 		    CLAM::SegmentDescriptors& segmentD);
@@ -49,6 +47,8 @@ int main()
 	const char * projectLocation = "../Samples/Project.pro";
 	const char* songFileNames[] =
 	{
+		"../../CLAM-TestData/trumpet.mp3",
+		"../../CLAM-TestData/Elvis.ogg",
 		"../../CLAM-TestData/trumpet.wav",
 		"../../CLAM-TestData/Elvis.wav",
 		"../Samples/SongsTest/02.mp3",
@@ -256,7 +256,7 @@ void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionSch
 		}
 		else
 		{
-			poolScheme.AddAttribute <std::string>("Song",(*it2).GetName());
+			poolScheme.AddAttribute <CLAM::Text>("Song",(*it2).GetName());
 		}
 	}
 	//And now we go into LLD
@@ -282,7 +282,9 @@ void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::So
 	CLAM::Audio audio;
 	CLAM::Segment segment;
 	CLAM::SegmentDescriptors segmentD;
-	OpenSoundFile(song.GetSoundFile(),audio);
+	CLAM::Text artist="unknown";
+	CLAM::Text title="unknown";
+	OpenSoundFile(song.GetSoundFile(),audio, artist, title);
 	ComputeSegment(audio,segment,segmentD);
 	SegmentD2Pool(segmentD,pool);
 
@@ -300,16 +302,13 @@ void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::So
 	{
 		if((*it2).GetName()=="Artist")
 		{
-			std::string* value = pool.GetWritePool<std::string>("Song",(*it2).GetName());
-			*value = "Triana";
+			CLAM::Text* value = pool.GetWritePool<CLAM::Text>("Song",(*it2).GetName());
+			*value = artist;
 		}
 		else if((*it2).GetName()=="Title")
 		{
-			std::string* value = pool.GetWritePool<std::string>("Song",(*it2).GetName());
-			if(i==0)
-				*value = "Pájaro_de_Alas_Blancas";
-			else
-				*value = "En_una_Esquina_Cualquiera";
+			CLAM::Text* value = pool.GetWritePool<CLAM::Text>("Song",(*it2).GetName());
+			*value = title;
 		}
 		else if((*it2).GetName()=="Genre")
 		{
@@ -530,11 +529,14 @@ void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment,
 	processing.Do(segmentDescriptors);
 }
 
-void OpenSoundFile(const std::string& filename, CLAM::Audio& audio)
+void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text & artist, CLAM::Text & title)
 {
 	const CLAM::TSize readSize = 1024;
 	CLAM::AudioFile file;
 	file.OpenExisting(filename);
+	const CLAM::AudioTextDescriptors & textDescriptors = file.GetTextDescriptors();
+	if (textDescriptors.HasArtist()) artist = textDescriptors.GetArtist();
+	if (textDescriptors.HasTitle()) title = textDescriptors.GetTitle();
 	int nChannels = file.GetHeader().GetChannels();
 	std::vector<CLAM::Audio> audioFrameVector(nChannels);
 	for (int i=0;i<nChannels;i++)

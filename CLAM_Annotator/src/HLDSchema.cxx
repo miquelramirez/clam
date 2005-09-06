@@ -1,5 +1,7 @@
 #include "HLDSchema.hxx"
+#include "Text.hxx"
 #include <algorithm>
+
 namespace CLAM_Annotator{
 
 	/**************** HLDSchemaElement **************/
@@ -69,7 +71,7 @@ namespace CLAM_Annotator{
 			else if(type=="String")
 				validated = validated &&
 					ValidateDescriptor(MakeDescriptor(
-						*pool.GetReadPool<std::string>("Song",name),name));
+						*pool.GetReadPool<CLAM::Text>("Song",name),name));
 			CLAM_ASSERT(validated,"NotValidated");
 		}
 		return validated;
@@ -96,7 +98,7 @@ namespace CLAM_Annotator{
 	{
 		return "Float";
 	}
-	std::string GetTypeFromValue(const std::string& s)
+	std::string GetTypeFromValue(const CLAM::Text& s)
 	{
 		return "String";
 	}
