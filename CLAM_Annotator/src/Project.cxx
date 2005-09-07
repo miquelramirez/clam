@@ -61,6 +61,11 @@ const Project::SongScopeSchema & Project::GetSongScopeSchema()
 {
 	return GetAnnotatorSchema().GetHLDSchema().GetHLDs();
 }
+const std::list<std::string> & Project::GetFrameScopeAttributeNames()
+{
+	return GetAnnotatorSchema().GetLLDSchema().GetLLDNames();
+}
 
+	
 }
 
