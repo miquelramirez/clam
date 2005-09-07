@@ -64,10 +64,7 @@ int main()
 	CLAM::XMLStorage::Dump(myProject,"Project",projectLocation);
 
 	//Load Schema
-	CLAM::XMLStorage::Restore(myProject.GetAnnotatorSchema(), schemaLocation);
-
-	//Create Descriptors Pool Scheme and add attributes following loaded schema
-	myProject.CreatePoolScheme(myProject.GetAnnotatorSchema(), myProject.GetDescriptionScheme());
+	myProject.LoadScheme(schemaLocation);
 
 	//Now we create a Pool for every sound file we have
 	CLAM::DescriptionDataPool pool(myProject.GetDescriptionScheme());
