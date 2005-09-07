@@ -95,7 +95,8 @@ private:
 	void deleteAllSongsFromProject();
 	void drawLLDescriptors(int index);
 	void drawHLD(int songIndex, const std::string& descriptorName, 
-		const CLAM_Annotator::RestrictedString& value, bool computed=true);
+		const CLAM_Annotator::RestrictedString& value, 
+		const std::list<std::string> & options, bool computed=true);
 	void drawHLD(int songIndex, const std::string& descriptorName,const CLAM::Text& value, 
 		bool computed=true);
 	void drawHLD(int songIndex, const std::string& descriptorName, float value, 
