@@ -87,7 +87,6 @@ private:
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
 
 	void initAudioWidget();
-	void LoadSchema(const std::string & schemaFile);
 	void AdaptInterfaceToCurrentSchema();
 	void AdaptEnvelopesToCurrentLLDSchema();
 	void AdaptDescriptorsTableToCurrentHLDSchema();

@@ -187,33 +187,20 @@ void Annotator::markProjectChanged(bool changed)
 	fileSave_projectAction->setEnabled(changed);
 }
 
-void Annotator::LoadSchema(const std::string & filename)
-{
-	mProject.GetAnnotatorSchema() = CLAM_Annotator::Schema();
-	if (filename!="")
-	{
-		try
-		{
-			CLAM::XMLStorage::Restore(mProject.GetAnnotatorSchema(),filename);
-		}
-		catch (CLAM::XmlStorageErr e)
-		{
-			QMessageBox::warning(this,"Error Loading Schema File", 
-				constructFileError(filename,e));
-			return;
-		}
-	}
-
-	//Create Descriptors Pool Scheme and add attributes following loaded schema
-	mProject.GetDescriptionScheme() = CLAM::DescriptionScheme();//we need to initialize everything
-	mProject.CreatePoolScheme(mProject.GetAnnotatorSchema(), mProject.GetDescriptionScheme());
-}
-
 void Annotator::initProject()
 {
 	updateSongListWidget();
 
-	LoadSchema(mProject.GetSchema());
+	try
+	{
+		mProject.LoadScheme(mProject.GetSchema());
+	}
+	catch(CLAM::XmlStorageErr & e)
+	{
+		QMessageBox::warning(this,"Error Loading Schema File",
+			constructFileError(mProject.GetSchema(),e));
+		return;
+	}
 	AdaptInterfaceToCurrentSchema();
 	
 	markProjectChanged(false);
@@ -546,8 +533,16 @@ void  Annotator::loadSchema()
 	QString qFileName = QFileDialog::getOpenFileName(QString::null,"*.sc");
 	if(qFileName == QString::null) return;
 
-	mProject.SetSchema(std::string(qFileName.ascii()));
-	LoadSchema(qFileName.ascii());
+	try
+	{
+		mProject.LoadScheme(qFileName.ascii());
+	}
+	catch (CLAM::XmlStorageErr & e)
+	{
+		QMessageBox::warning(this,"Error Loading Schema File",
+			constructFileError(qFileName.ascii(),e));
+		return;
+	}
 
 	initInterface();
 	initProject();
