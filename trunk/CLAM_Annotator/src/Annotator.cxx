@@ -236,12 +236,12 @@ void Annotator::AdaptEnvelopesToCurrentLLDSchema()
 {
 	removeLLDTabs();
 
-	std::list<std::string>& names = mProject.GetAnnotatorSchema().GetLLDSchema().GetLLDNames();
+	const std::list<std::string>& names = mProject.GetFrameScopeAttributeNames();
 	const unsigned nTabs = names.size();
 	const int eFlags = CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer;
 	mTabPages.resize(nTabs);
 	mBPFEditors.resize(nTabs);
-	std::list<std::string>::iterator name = names.begin();
+	std::list<std::string>::const_iterator name = names.begin();
 	for (unsigned i = 0; i<nTabs; name++, i++)
 	{
 		if (i==0)
@@ -664,8 +664,8 @@ void Annotator::drawAudio(const char * filename)
 void Annotator::generateEnvelopesFromDescriptors()
 {
 	std::vector<CLAM::VM::BPFEditor*>::iterator ed_it = mBPFEditors.begin();
-	std::list<std::string>::iterator it;
-	std::list<std::string>& descriptorsNames = mProject.GetAnnotatorSchema().GetLLDSchema().GetLLDNames();
+	std::list<std::string>::const_iterator it;
+	const std::list<std::string>& descriptorsNames = mProject.GetFrameScopeAttributeNames();
 
 	for(it = descriptorsNames.begin();it != descriptorsNames.end(); ed_it++, it++)
 	{
@@ -700,8 +700,8 @@ void Annotator::generateDescriptorsFromEnvelopes()
 {
 	mLLDChanged = false;
 	unsigned i=0, editors_size = mBPFEditors.size();
-	std::list<std::string>::iterator it;
-	std::list<std::string>& descriptorsNames = mProject.GetAnnotatorSchema().GetLLDSchema().GetLLDNames();
+	std::list<std::string>::const_iterator it;
+	const std::list<std::string>& descriptorsNames = mProject.GetFrameScopeAttributeNames();
 
 	for(it = descriptorsNames.begin() ;i < editors_size; i++, it++)
 	{
