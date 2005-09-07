@@ -1,4 +1,5 @@
 #include "Annotator.hxx"
+#include "Project.hxx"
 #include "RangeSelectionTableItem.hxx"
 #include <qaction.h>
 #include <qsplitter.h>
@@ -276,7 +277,7 @@ void Annotator::AdaptDescriptorsTableToCurrentHLDSchema()
 	mDescriptorsTable->horizontalHeader()->setLabel( 0, tr( "Descriptor" ) );
 	mDescriptorsTable->horizontalHeader()->setLabel( 1, tr( "Value" ) );
 
-	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mProject.GetAnnotatorSchema().GetHLDSchema().GetHLDs();
+	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
 	mDescriptorsTable->setNumRows(hlds.size());
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
 	for(int i = 0 ; it != hlds.end(); it++, i++)
@@ -821,7 +822,7 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int va
 
 void Annotator::drawDescriptorsValue( int index, bool computed = true)
 {
-	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mProject.GetAnnotatorSchema().GetHLDSchema().GetHLDs();
+	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
 	for(it = hlds.begin() ; it != hlds.end(); it++)
 	{
@@ -887,7 +888,7 @@ int Annotator::findHLDescriptorIndex(const std::string& name)
 {
 	//TODO: should find a more efficient search algorithm
 
-	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mProject.GetAnnotatorSchema().GetHLDSchema().GetHLDs();
+	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
 	for(int i = 0 ; it != hlds.end(); it++, i++)
 	{
@@ -907,7 +908,7 @@ void Annotator::getHLDSchemaElementFromIndex(int index, CLAM_Annotator::HLDSchem
 {
 	/* TODO: This is not very efficient, wouldn't it be better to have HLDs as a vector instead of
 	a list? */
-	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mProject.GetAnnotatorSchema().GetHLDSchema().GetHLDs();
+	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
 	for(int i = 0 ; it != hlds.end(); it++, i++)
 	{
