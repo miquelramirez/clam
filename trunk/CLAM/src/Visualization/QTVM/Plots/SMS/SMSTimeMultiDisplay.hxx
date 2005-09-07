@@ -12,6 +12,7 @@ using SigSlot::Slotv1;
 class QFrame;
 class QComboBox;
 class QLayout;
+class QLabel;
 
 namespace CLAM
 {
@@ -19,6 +20,7 @@ namespace CLAM
 	{
 		class VScrollGroup;
 		class TimeSegmentLabelsGroup;
+		class ColorScale;
 
 		class SMSTimeMultiDisplay : public MultiDisplayPlot, public PlayablePlot
 		{
@@ -51,6 +53,8 @@ namespace CLAM
 
 		public slots:
 			void setCurrentTime(double);
+			void colorSonogram();
+			void blackAndWhiteSonogram();
 
 		protected:
 			void CreateControllers();
@@ -77,9 +81,12 @@ namespace CLAM
 			void residualAudio(bool);
 			void fundamentalFreq(bool);
 			void sinusoidalTracks(bool);
+			void spectrogram(bool);
 			void updateRegion(MediaTime);
 			void setCurrentPlayer(int);
 			void selectedXPos(double);
+			void updateLabels(QString, QString, QString);
+			void updateColorScale(int);
 
 		private:
 			std::vector<const Audio*> mAudioPtrs;
@@ -98,6 +105,7 @@ namespace CLAM
 			int                       mEnqueuedDataId;
 			int	                      mEnqueuedPlayerId;
 			bool                      mIsPlaying;
+			bool                      mColorSonogram;
 
 			// cpntainers
 			QFrame*  mAudioDisplaysContainer;
@@ -109,9 +117,26 @@ namespace CLAM
 			QFrame* rightHole;
 			/////////////////////////////
 
+			// spectrogram panel //////
+			QFrame*     leftGroup;
+			QFrame*     rightGroup;
+			QLabel*     freqTxtLabel;
+			QLabel*     mFrequency;
+			QLabel*     decibelTxtLabel;
+			QLabel*     mDecibels;
+			QLabel*     sliceTxtLabel;
+			QLabel*     mSlice;
+			QLabel*     mFFTSize;
+			QLabel*     mTotalSlices;
+			QLabel*     mSpectralRange;
+			QLabel*     leftTag;
+			QLabel*     rightTag;
+			ColorScale* mColorScale;
+			/////////////////////////////
+
 			std::vector<std::string>  mPlayList;
 		   
-			enum { MASTER=0, SYNTHESIZED=1, SINUSOIDAL=2, RESIDUAL=3, FUNDAMENTAL=4, SINTRACKS=5 };
+			enum { MASTER=0, SYNTHESIZED=1, SINUSOIDAL=2, RESIDUAL=3, FUNDAMENTAL=4, SINTRACKS=5, SONOGRAM=6 };
 			enum { AUDIO_PLAYER=0, FUND_PLAYER=1 };
 
 			void InitSMSTimePlot();
@@ -143,9 +168,14 @@ namespace CLAM
 			void CreateFrequencyDisplays();
 
 			QLayout* CreatePlayer();
+			QLayout* CreateSpectrogramPanel();
 
 			void ShowPlayer();
 			void HidePlayer();
+
+			void ShowSpectrogramPanel();
+			void HideSpectrogramPanel();
+
 
 			void InitPlayList();
 			void AddAudioItem(int id);
@@ -153,6 +183,8 @@ namespace CLAM
 			void RemovePlayListItem(int id);
 
 			int GetPlayDataId(const QString& item);
+
+			void FillRightGroupLabels();
 
 		};
 	}

@@ -1,16 +1,19 @@
 #include <qlayout.h>
 #include <qsplitter.h>
 #include <qframe.h>
+#include <qlabel.h>
 #include <qcombobox.h>
 #include <qtooltip.h>
 #include "Ruler.hxx"
 #include "VScrollGroup.hxx"
 #include "TimeSegmentLabelsGroup.hxx"
+#include "ColorScale.hxx"
 #include "DisplaySurface.hxx"
 #include "QtSMSPlayer.hxx"
 #include "AudioPlotController.hxx"
 #include "FundPlotController.hxx"
 #include "SinTracksPlotController.hxx"
+#include "SpectrogramPlotController.hxx"
 #include "SMSTimeMultiDisplay.hxx"
 
 namespace CLAM
@@ -25,6 +28,7 @@ namespace CLAM
 			, mHasFundamentalData(false)
 			, mHasEnqueuedPlayListItem(false)
 			, mIsPlaying(false)
+			, mColorSonogram(true)
 		{
 			mSlotPlayingTimeReceived.Wrap(this,&SMSTimeMultiDisplay::PlayingTime);
 			mSlotStopPlayingReceived.Wrap(this,&SMSTimeMultiDisplay::StopPlaying);
@@ -89,7 +93,7 @@ namespace CLAM
 			CreateFrequencyDisplays();
 
 			// layout
-			QGridLayout* innerLayout = new QGridLayout(this,4,3,1);
+			QGridLayout* innerLayout = new QGridLayout(this,5,3,1);
 			innerLayout->addWidget(GetToggleColorFrame(),0,0);
 			innerLayout->addWidget(GetXRuler(),0,1);
 			innerLayout->addWidget(topHole,0,2);
@@ -97,9 +101,10 @@ namespace CLAM
 			innerLayout->addWidget(sleftHole,2,0);
 			innerLayout->addWidget(GetHScrollGroup(),2,1);
 			innerLayout->addWidget(srightHole,2,2);
-			innerLayout->addWidget(leftHole,3,0);
-			innerLayout->addLayout(CreatePlayer(),3,1);
-			innerLayout->addWidget(rightHole,3,2);
+			innerLayout->addMultiCellLayout(CreateSpectrogramPanel(),3,3,0,2);
+			innerLayout->addWidget(leftHole,4,0);
+			innerLayout->addLayout(CreatePlayer(),4,1);
+			innerLayout->addWidget(rightHole,4,2);
 
 			ConnectXRuler();
 			ConnectHScrollGroup();
@@ -185,6 +190,19 @@ namespace CLAM
 			}
 			((FundPlotController*)mControllers[FUNDAMENTAL])->SetData(segment);
 			((SinTracksPlotController*)mControllers[SINTRACKS])->SetData(segment);
+			// build spectrum matrix
+			Array<Spectrum> specMtx;
+			specMtx.Resize(segment.GetnFrames());
+			specMtx.SetSize(segment.GetnFrames());
+			for(TIndex i=0; i < segment.GetnFrames(); i++)
+			{
+				specMtx[i]=segment.GetFrame(i).GetSinusoidalAnalSpectrum();
+			}
+			double duration = (segment.HasAudio()) 
+				? segment.GetAudio().GetSize()/segment.GetAudio().GetSampleRate() 
+				: segment.GetEndTime();
+			((SpectrogramPlotController*)mControllers[SONOGRAM])->SetData(specMtx,duration);
+			FillRightGroupLabels();
 			// data to player
 			((QtSMSPlayer*)mPlayer)->SetData(segment);
 			mHasFundamentalData = true;
@@ -192,6 +210,7 @@ namespace CLAM
 			{
 				ShowDisplay(FUNDAMENTAL);
 				ShowDisplay(SINTRACKS);
+				ShowDisplay(SONOGRAM);
 			}
 			
 		}
@@ -213,12 +232,28 @@ namespace CLAM
 			}
 		}
 
+		void SMSTimeMultiDisplay::colorSonogram()
+		{
+			((SpectrogramPlotController*)mControllers[SONOGRAM])->SetRenderingMode(CLAM::VM::ColorSonogram);
+			mColorScale->SetScale(((SpectrogramPlotController*)mControllers[SONOGRAM])->GetColorScale(mColorScale->width()));
+			mColorSonogram = true;
+		}
+
+		void SMSTimeMultiDisplay::blackAndWhiteSonogram()
+		{
+			((SpectrogramPlotController*)mControllers[SONOGRAM])->SetRenderingMode(CLAM::VM::BlackWhiteSonogram);
+			mColorScale->SetScale(((SpectrogramPlotController*)mControllers[SONOGRAM])->GetGrayScale(mColorScale->width()));
+			mColorSonogram=false;
+		}
+
+
 		void SMSTimeMultiDisplay::ShowDisplay(int id)
 		{
-			if(id < MASTER || id > SINTRACKS) return;
+			if(id < MASTER || id > SONOGRAM) return;
 			mControllers[id]->enableRendering();
 			mYRulers[id]->show();
 			mSurfaces[id]->show();
+			if(id == SONOGRAM) ShowSpectrogramPanel();
 			switch(id)
 			{
 				case MASTER:
@@ -237,6 +272,7 @@ namespace CLAM
 					if(!mPlayer->isVisible()) ShowPlayer();
 					break;
 				case SINTRACKS:
+				case SONOGRAM:
 					if(!mFreqDisplaysContainer->isVisible()) mFreqDisplaysContainer->show();
 					if(!mFrequencyVScroll->isVisible()) mFrequencyVScroll->show();
 					break;
@@ -248,10 +284,11 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::HideDisplay(int id)
 		{
-			if(id < MASTER || id > SINTRACKS) return;
+			if(id < MASTER || id > SONOGRAM) return;
 			mControllers[id]->disableRendering();
 			mYRulers[id]->hide();
 			mSurfaces[id]->hide();
+			if(id == SONOGRAM) HideSpectrogramPanel();
 			switch(id)
 			{
 				case MASTER:
@@ -262,6 +299,7 @@ namespace CLAM
 					break;
 				case FUNDAMENTAL:
 				case SINTRACKS:
+				case SONOGRAM:
 					CheckFrequencyVScrollVisibility();
 					break;
 				default:
@@ -279,6 +317,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::Flush()
 		{
+			HideDisplays();
 			for(unsigned i=0; i < mAudioPtrs.size(); i++)
 			{
 				if(mAudioPtrs[i])
@@ -286,6 +325,8 @@ namespace CLAM
 					mAudioPtrs[i] = 0;
 				}
 			}
+			for(unsigned i=0; i < mControllers.size(); i++) mControllers[i]->ClearMarks();
+			mColorSonogram = true;
 			mHasMasterData = false;
 			mHasAudioData = false;
 			mHasFundamentalData = false;
@@ -306,6 +347,7 @@ namespace CLAM
 			}
 			mControllers.push_back(new FundPlotController());
 			mControllers.push_back(new SinTracksPlotController());
+			mControllers.push_back(new SpectrogramPlotController());
 			SetMasterId(MASTER);
 			connect(mControllers[MASTER],SIGNAL(selectedXPos(double)),this,SLOT(selectedXPos(double)));
 		}
@@ -318,7 +360,7 @@ namespace CLAM
 				mYRulers.push_back(new Ruler(mAudioDisplaysContainer,CLAM::VM::Left));
 				mSurfaces[i]->setMinimumSize(200,20);
 			}
-			for(int i=FUNDAMENTAL; i <= SINTRACKS; i++)
+			for(int i=FUNDAMENTAL; i <= SONOGRAM; i++)
 			{
 				mSurfaces.push_back(new DisplaySurface(mFreqDisplaysContainer));
 				mYRulers.push_back(new Ruler(mFreqDisplaysContainer,CLAM::VM::Left));
@@ -328,7 +370,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::SynchronizeDialPos()
 		{
-			for(int i=MASTER; i <= SINTRACKS; i++)
+			for(int i=MASTER; i <= SONOGRAM; i++)
 			{
 				SyncDialPos(i);
 			}
@@ -336,7 +378,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::SynchronizeInsertMark()
 		{
-			for(int i=MASTER; i <= SINTRACKS; i++)
+			for(int i=MASTER; i <= SONOGRAM; i++)
 			{
 				SyncInsertMarkBySampleIndex(i);
 			}
@@ -344,7 +386,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::SynchronizeRemoveMark()
 		{
-			for(int i=MASTER; i <= SINTRACKS; i++)
+			for(int i=MASTER; i <= SONOGRAM; i++)
 			{
 				SyncRemoveMarkBySampleIndex(i);
 			}
@@ -352,7 +394,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::SynchronizeUpdateMark()
 		{
-			for(int i=MASTER; i <= SINTRACKS; i++)
+			for(int i=MASTER; i <= SONOGRAM; i++)
 			{
 				SyncUpdateMarkBySampleIndex(i);
 			}
@@ -360,7 +402,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::SynchronizeUpdateTag()
 		{
-			for(int i=MASTER; i <= SINTRACKS; i++)
+			for(int i=MASTER; i <= SONOGRAM; i++)
 			{
 				SyncUpdateTag(i);
 			}
@@ -444,12 +486,34 @@ namespace CLAM
 			(over) ? emit dataType("sinusoidal tracks") : emit dataType("");
 		}
 
+		void SMSTimeMultiDisplay::spectrogram(bool over)
+		{
+			(over) ? emit dataType("sonogram") : emit dataType("");
+		}
+
+
 		void SMSTimeMultiDisplay::updateRegion(MediaTime time)
 		{
 			if(time.GetEnd() <= time.GetBegin()) return;
 			mPlayer->stop();
 			mPlayer->SetPlaySegment(time);
 			mLabelsGroup->UpdateLabels(time);
+		}
+
+		void SMSTimeMultiDisplay::updateLabels(QString freq, QString dB, QString slice)
+		{
+			mFrequency->setText(freq);
+			mDecibels->setText(dB);
+			mSlice->setText(slice);
+		}
+
+		void SMSTimeMultiDisplay::updateColorScale(int width)
+		{
+			if(mColorSonogram)
+				mColorScale->SetScale(((SpectrogramPlotController*)mControllers[SONOGRAM])->GetColorScale(width));
+			else
+				mColorScale->SetScale(((SpectrogramPlotController*)mControllers[SONOGRAM])->GetGrayScale(width));
+		
 		}
 
 		void SMSTimeMultiDisplay::setCurrentPlayer(int id)
@@ -505,9 +569,11 @@ namespace CLAM
 				connect(mControllers[MASTER],SIGNAL(yRulerRange(double,double)),
 						mControllers[i],SLOT(setVBounds(double,double)));
 			}
-			connect(mControllers[FUNDAMENTAL],SIGNAL(yRulerRange(double,double)),
-					mControllers[SINTRACKS],SLOT(setVBounds(double,double)));
-			
+			for(int i=SINTRACKS; i <= SONOGRAM; i++)
+			{
+				connect(mControllers[FUNDAMENTAL],SIGNAL(yRulerRange(double,double)),
+						mControllers[i],SLOT(setVBounds(double,double)));
+			}		
 		}
 
 		void SMSTimeMultiDisplay::CheckVisibility()
@@ -561,7 +627,7 @@ namespace CLAM
 			{
 				SyncAudioYRuler(i);
 			}
-			for(int i=FUNDAMENTAL; i <= SINTRACKS; i++)
+			for(int i=FUNDAMENTAL; i <= SONOGRAM; i++)
 			{
 				SyncFrequencyYRuler(i);
 			}
@@ -579,7 +645,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::SyncFrequencyYRuler(int id)
 		{
-			for(int i=FUNDAMENTAL; i <= SINTRACKS; i++)
+			for(int i=FUNDAMENTAL; i <= SONOGRAM; i++)
 			{
 				if(i == id) continue;
 				connect(mControllers[id],SIGNAL(yRulerRange(double,double)),
@@ -603,6 +669,7 @@ namespace CLAM
 			connect(mControllers[RESIDUAL],SIGNAL(mouseOverDisplay(bool)),this,SLOT(residualAudio(bool)));
 			connect(mControllers[FUNDAMENTAL],SIGNAL(mouseOverDisplay(bool)),this,SLOT(fundamentalFreq(bool)));
 			connect(mControllers[SINTRACKS],SIGNAL(mouseOverDisplay(bool)),this,SLOT(sinusoidalTracks(bool)));
+			connect(mControllers[SONOGRAM],SIGNAL(mouseOverDisplay(bool)),this,SLOT(spectrogram(bool)));
 		}
 
 		void SMSTimeMultiDisplay::PlayingTime(TData time)
@@ -694,7 +761,7 @@ namespace CLAM
 		void SMSTimeMultiDisplay::CheckFrequencyVScrollVisibility()
 		{ 
 			bool flag = false;
-			for(int i=FUNDAMENTAL; i <= SINTRACKS; i++)
+			for(int i=FUNDAMENTAL; i <= SONOGRAM; i++)
 			{
 				if(mYRulers[i]->isVisible()) 
 				{
@@ -737,11 +804,102 @@ namespace CLAM
 			// add widgets
 			rulersLayout->addWidget(mYRulers[FUNDAMENTAL]);
 			rulersLayout->addWidget(mYRulers[SINTRACKS]);
+			rulersLayout->addWidget(mYRulers[SONOGRAM]);
 
 			surferLayout->addWidget(mSurfaces[FUNDAMENTAL]);			
 			surferLayout->addWidget(mSurfaces[SINTRACKS]);
+			surferLayout->addWidget(mSurfaces[SONOGRAM]);
 
 			scrollLayout->addWidget(mFrequencyVScroll);
+		}
+
+		QLayout* SMSTimeMultiDisplay::CreateSpectrogramPanel()
+		{
+			// left panel
+			leftGroup = new QFrame(this);
+			leftGroup->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+			QFontMetrics fm(font());
+			int width = fm.width("Frequency (Hz): 00000")+6;
+			leftGroup->setFixedSize(width,66);
+
+			QBoxLayout* lfMainLayout = new QVBoxLayout(leftGroup);
+			lfMainLayout->setMargin(3);
+			QBoxLayout* lfInnerTopLayout = new QHBoxLayout(lfMainLayout);
+			QBoxLayout* lfInnerMiddleLayout = new QHBoxLayout(lfMainLayout);
+			QBoxLayout* lfInnerBottomLayout = new QHBoxLayout(lfMainLayout);
+
+			freqTxtLabel = new QLabel(leftGroup);
+			freqTxtLabel->setText("Frequency (Hz): ");
+			mFrequency = new QLabel(leftGroup);
+			mFrequency->setFixedWidth(leftGroup->width()-freqTxtLabel->width()-6);
+			mFrequency->setAlignment(Qt::AlignRight);
+			mFrequency->setText("--");
+			lfInnerTopLayout->addWidget(freqTxtLabel);
+			lfInnerTopLayout->addWidget(mFrequency);
+	
+			decibelTxtLabel = new QLabel(leftGroup);
+			decibelTxtLabel->setText("Decibels (dB): ");
+			mDecibels = new QLabel(leftGroup);
+			mDecibels->setFixedWidth(leftGroup->width()-decibelTxtLabel->width()-6);
+			mDecibels->setAlignment(Qt::AlignRight);
+			mDecibels->setText("--");
+			lfInnerMiddleLayout->addWidget(decibelTxtLabel);
+			lfInnerMiddleLayout->addWidget(mDecibels);
+
+			sliceTxtLabel = new QLabel(leftGroup);
+			sliceTxtLabel->setText("Slice: ");
+			mSlice = new QLabel(leftGroup);
+			mSlice->setFixedWidth(leftGroup->width()-sliceTxtLabel->width()-6);
+			mSlice->setAlignment(Qt::AlignRight);
+			mSlice->setText("--");
+			lfInnerBottomLayout->addWidget(sliceTxtLabel);
+			lfInnerBottomLayout->addWidget(mSlice);
+
+			// right panel
+			rightGroup = new QFrame(this);
+			rightGroup->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+			rightGroup->setFixedHeight(66);
+
+			QBoxLayout* rfMainLayout = new QVBoxLayout(rightGroup);
+			rfMainLayout->setMargin(3);
+			QBoxLayout* rfInnerTopLayout = new QHBoxLayout(rfMainLayout);
+			rfInnerTopLayout->setSpacing(5);
+			QBoxLayout* rfInnerMiddleLayout = new QHBoxLayout(rfMainLayout);
+			QBoxLayout* rfInnerBottomLayout = new QHBoxLayout(rfMainLayout);
+			rfInnerBottomLayout->setSpacing(3);
+
+			mFFTSize = new QLabel(rightGroup);
+			mTotalSlices = new QLabel(rightGroup);
+			rfInnerTopLayout->addWidget(mFFTSize);
+			rfInnerTopLayout->addWidget(mTotalSlices);
+			rfInnerTopLayout->addStretch();
+
+			mSpectralRange = new QLabel(rightGroup);
+			rfInnerMiddleLayout->addWidget(mSpectralRange);
+			rfInnerMiddleLayout->addStretch();
+
+				leftTag = new QLabel(rightGroup);
+			leftTag->setText("0 dB");
+			rightTag = new QLabel(rightGroup);
+			rightTag->setText("-150 dB");
+			mColorScale = new ColorScale(rightGroup);
+			rfInnerBottomLayout->addWidget(leftTag);
+			rfInnerBottomLayout->addWidget(mColorScale,1);
+			rfInnerBottomLayout->addWidget(rightTag);
+			rfInnerBottomLayout->addStretch();
+
+			// main layout
+			QBoxLayout* mainLayout = new QHBoxLayout;
+		   
+			mainLayout->addWidget(leftGroup);
+			mainLayout->addWidget(rightGroup);
+
+			// connectiona
+			connect(((SpectrogramPlotController*)mControllers[SONOGRAM]),SIGNAL(sendLabels(QString,QString,QString)),
+					this,SLOT(updateLabels(QString,QString,QString)));
+			connect(mColorScale,SIGNAL(widthChanged(int)),this,SLOT(updateColorScale(int)));
+
+			return mainLayout;
 		}
 
 		QLayout* SMSTimeMultiDisplay::CreatePlayer()
@@ -805,6 +963,42 @@ namespace CLAM
 			leftHole->hide();
 			middleHole->hide();
 			rightHole->hide();
+		}
+
+		void SMSTimeMultiDisplay::ShowSpectrogramPanel()
+		{
+			leftGroup->show();
+			rightGroup->show();
+			freqTxtLabel->show();
+			mFrequency->show();
+			decibelTxtLabel->show();
+			mDecibels->show();
+			sliceTxtLabel->show();
+			mSlice->show();
+			mFFTSize->show();
+			mTotalSlices->show();
+			mSpectralRange->show();
+			leftTag->show();
+			rightTag->show();
+			mColorScale->show();
+		}
+
+		void SMSTimeMultiDisplay::HideSpectrogramPanel()
+		{
+			leftGroup->hide();
+			rightGroup->hide();
+			freqTxtLabel->hide();
+			mFrequency->hide();
+			decibelTxtLabel->hide();
+			mDecibels->hide();
+			sliceTxtLabel->hide();
+			mSlice->hide();
+			mFFTSize->hide();
+			mTotalSlices->hide();
+			mSpectralRange->hide();
+			leftTag->hide();
+			rightTag->hide();
+			mColorScale->hide();
 		}
 
 		void SMSTimeMultiDisplay::InitPlayList()
@@ -885,6 +1079,16 @@ namespace CLAM
 			if(item.contains("Residual")) return RESIDUAL;
 			if(item.contains("Fundamental")) return FUNDAMENTAL;
 			return SYNTHESIZED;
+		}
+
+		void SMSTimeMultiDisplay::FillRightGroupLabels()
+		{
+			QString fftSize = "FFT Size: "+QString::number(((SpectrogramPlotController*)mControllers[SONOGRAM])->FFTSize());
+			QString totalSlices = "Slices: "+QString::number(((SpectrogramPlotController*)mControllers[SONOGRAM])->TotalSlices());
+			QString spectralRange = "Spectral Range (Hz): "+QString::number(((SpectrogramPlotController*)mControllers[SONOGRAM])->SpectralRange());
+			mFFTSize->setText(fftSize);
+			mTotalSlices->setText(totalSlices);
+			mSpectralRange->setText(spectralRange);
 		}
 
 	}
