@@ -29,6 +29,7 @@ namespace QtSMS
 		, SYNTH_RESIDUAL      = 3 
 		, FUND_FREQ           = 4 
 		, SIN_TRACKS          = 5 
+		, SONOGRAM            = 6
 		, SPEC_AND_PEAKS      = 0 
 		, SIN_SPEC            = 1 
 		, RES_SPEC            = 2 
@@ -57,12 +58,16 @@ namespace QtSMS
 		void SetBackgroundBlack();
 		void SetBackgroundWhite();
 
+		void ColorSonogram();
+		void BlackAndWhiteSonogram();
+
 		void Flush();
 
 		QWidget* GetView(QWidget* parent);
 
 		void Reset();
-
+		void HideDisplays();
+		
 	signals:
 		void dataType(QString);
 		void sampleRateDuration(QString);
@@ -97,8 +102,8 @@ namespace QtSMS
 
 		int GetFrameNumber();
 		void UpdateSpectrumView(int frameNumber, bool update=true);
-		void SetNavigatorEnabled(bool enabled);
 		void SetNavigatorVisible(bool visible);
+		void SetNavigatorEnabled(bool enabled);
 		
 		int GetHoleWidth();
 		QString GetSampleRateDuration(bool hasAudio);

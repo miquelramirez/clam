@@ -77,6 +77,7 @@ namespace QtSMS
 		{
 			SetAudio((eView)i);
 		}
+		SetNavigatorEnabled(true);
 	}
 		
 	void ViewManager::ShowConcreteView(eView group_id, eView view_id)
@@ -150,6 +151,16 @@ namespace QtSMS
 			mPlotList[i]->SetToggleColorOn(false);
 			mPlotList[i]->switchColors();
 		}
+	}
+
+	void ViewManager::ColorSonogram()
+	{
+		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->colorSonogram();
+	}
+
+	void ViewManager::BlackAndWhiteSonogram()
+	{
+		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->blackAndWhiteSonogram();
 	}
 
 	void ViewManager::Flush()
@@ -376,6 +387,18 @@ namespace QtSMS
 		int msec = tmp%1000;
 		s = s.sprintf("%02d:%02d,%03d",min,sec,msec);
 		return s;
+	}
+
+	void ViewManager::HideDisplays()
+	{
+		for(int i=SYNTH_AUDIO; i <= SONOGRAM; i++)
+		{
+			HideConcreteView(TIME_GROUP_VIEW,(eView)i);
+		}
+		for(int i=SPEC_AND_PEAKS; i <= RES_SPEC; i++)
+		{
+			HideConcreteView(SPECTRUM_GROUP_VIEW,(eView)i);
+		}
 	}
 
 	void ViewManager::Reset()
