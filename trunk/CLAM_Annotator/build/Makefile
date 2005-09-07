@@ -6,7 +6,7 @@ $(shell make -f Makefile.images.rules > removeme)
 
 program_and_images : interface program
 
-interface : uic/AboutBase.h uic/AboutBase.cxx uic/AnnotatorBase.h uic/AnnotatorBase.cxx 
+interface : uic/About.h uic/About.cxx uic/AnnotatorBase.h uic/AnnotatorBase.cxx 
 
 
 
