@@ -1,6 +1,4 @@
 #include "Schema.hxx"
-#include "LLDSchema.hxx"
-#include "HLDSchema.hxx"
 #include "DescriptionScheme.hxx"
 #include "Pool.hxx"
 #include "SongFiles.hxx"
@@ -27,7 +25,6 @@
 void BuildAndDumpSchema(const char * schemaLocation);
 void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema);
 void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema);
-void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme);
 void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song,
 		CLAM::DescriptionDataPool& pool);
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
@@ -72,7 +69,7 @@ int main()
 
 	//Create Descriptors Pool Scheme and add attributes following loaded schema
 	CLAM::DescriptionScheme scheme;
-	CreatePoolScheme(loadedSchema, scheme);
+	myProject.CreatePoolScheme(loadedSchema, scheme);
 
 	//Now we create a Pool for every sound file we have
 	CLAM::DescriptionDataPool pool(scheme);
@@ -235,41 +232,6 @@ void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema)
 	AddRangedIntHLAttribute(hlschema, "BPM", 0, 240);
 }
 
-void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme)
-{
-	//First we start with HLD
-	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = schema.GetHLDSchema().GetHLDs();
-	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
-	for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
-	{
-		if((*it2).GetType()=="Float")
-		{
-			poolScheme.AddAttribute <float>("Song",(*it2).GetName());
-		}
-		else if((*it2).GetType()=="Int")
-		{
-			poolScheme.AddAttribute <int>("Song",(*it2).GetName());
-		}
-		else if((*it2).GetType()=="RestrictedString")
-		{
-			poolScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
-		}
-		else
-		{
-			poolScheme.AddAttribute <CLAM::Text>("Song",(*it2).GetName());
-		}
-	}
-	//And now we go into LLD
-	std::list<std::string>::iterator it;
-	std::list<std::string>& descriptorsNames = schema.GetLLDSchema().GetLLDNames();
-	for(it = descriptorsNames.begin(); it != descriptorsNames.end(); it++)
-	{
-		poolScheme.AddAttribute <CLAM::TData>("Frame", (*it));
-	}
-	//finally we add segmentation marks
-	poolScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
-
-}
 
 void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song, 
 		CLAM::DescriptionDataPool& pool)

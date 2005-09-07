@@ -56,7 +56,6 @@ public slots:
 	void addSongsToProject();
 
 	void loadSchema();
-	void loadDescriptors();
 
 	void saveDescriptors();
 
