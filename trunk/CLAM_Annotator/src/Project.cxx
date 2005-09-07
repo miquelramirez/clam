@@ -50,7 +50,7 @@ bool Project::LoadScheme(const std::string & schemeFileName)
 	CLAM::XMLStorage::Restore(tempSchema,schemeFileName); // May throw an exception
 
 	// Successfull file, just change it
-	SetSchema(schemeFileName);
+	SetSchema(std::string(schemeFileName)); // temp created to support self assigns
 	GetAnnotatorSchema() = tempSchema;
 	GetDescriptionScheme() = CLAM::DescriptionScheme();
 	CreatePoolScheme(GetAnnotatorSchema(), GetDescriptionScheme());
