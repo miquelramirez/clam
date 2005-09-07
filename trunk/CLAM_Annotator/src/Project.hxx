@@ -1,14 +1,11 @@
 #ifndef _Project_hxx_
 #define _Project_hxx_
 
+#include "Schema.hxx"
 #include "DynamicType.hxx"
 #include "SongFiles.hxx"
+#include "DescriptionScheme.hxx"
 #include <vector>
-
-namespace CLAM
-{
-class DescriptionScheme;
-}
 
 namespace CLAM_Annotator
 {
@@ -33,6 +30,17 @@ public:
 		songs.back().SetSoundFile(songFileName);
 	}
 	void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme);
+	CLAM::DescriptionScheme & GetDescriptionScheme()
+	{
+		return mDescriptionScheme;
+	}
+	CLAM_Annotator::Schema & GetAnnotatorSchema()
+	{
+		return mSchema;
+	}
+private:
+	CLAM::DescriptionScheme mDescriptionScheme;
+	CLAM_Annotator::Schema mSchema;
 };
 
 }
