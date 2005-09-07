@@ -953,6 +953,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::HidePlayer()
 		{
+			Stop();
 			// player
 			mPlayer->hide();
 			// combo
