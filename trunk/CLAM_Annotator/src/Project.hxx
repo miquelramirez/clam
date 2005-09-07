@@ -34,6 +34,7 @@ public:
 	{
 		return mDescriptionScheme;
 	}
+	bool LoadScheme(const std::string & schemeFileName);
 	CLAM_Annotator::Schema & GetAnnotatorSchema()
 	{
 		return mSchema;

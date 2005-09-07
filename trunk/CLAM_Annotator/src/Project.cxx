@@ -2,6 +2,8 @@
 #include "Text.hxx"
 #include "RestrictedString.hxx"
 #include "IndexArray.hxx"
+#include "XMLStorage.hxx"
+
 
 namespace CLAM_Annotator
 {
@@ -40,6 +42,19 @@ void Project::CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::Descr
 	//finally we add segmentation marks
 	poolScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
 
+}
+
+bool Project::LoadScheme(const std::string & schemeFileName)
+{
+	CLAM_Annotator::Schema tempSchema;
+	CLAM::XMLStorage::Restore(tempSchema,schemeFileName); // May throw an exception
+
+	// Successfull file, just change it
+	SetSchema(schemeFileName);
+	GetAnnotatorSchema() = tempSchema;
+	GetDescriptionScheme() = CLAM::DescriptionScheme();
+	CreatePoolScheme(GetAnnotatorSchema(), GetDescriptionScheme());
+	return true;
 }
 
 }
