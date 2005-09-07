@@ -133,6 +133,7 @@ namespace QtSMS
 	void QtSMSTools::analyze()
 	{
 		InitMenuViewItems(false);
+		Engine::DisplayManager()->HideDisplays();
 		Engine::DisplayManager()->Reset();
 		mEngine->Analyze();
 		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendAnalyzedDataToViewManager));
@@ -170,18 +171,37 @@ namespace QtSMS
 
 	void QtSMSTools::displayBWSonogram(bool on)
 	{
-		if(mMenuViewColorSonogram->isOn()) mMenuViewColorSonogram->setOn(false);
- 
-		// TODO
-//		NotImplemented();
+		if(on)
+		{
+			mMenuViewColorSonogram->setOn(false);
+			Engine::DisplayManager()->BlackAndWhiteSonogram();
+			Engine::DisplayManager()->ShowConcreteView(TIME_GROUP_VIEW,SONOGRAM);
+		}
+		else
+		{
+			if(!mMenuViewColorSonogram->isOn())
+			{
+				Engine::DisplayManager()->HideConcreteView(TIME_GROUP_VIEW,SONOGRAM);
+			}
+		}
+		
 	}
 
 	void QtSMSTools::displayColorSonogram(bool on)
 	{
-		if(mMenuViewBWSonogram->isOn()) mMenuViewBWSonogram->setOn(false);
-
-		// TODO
-//		NotImplemented();
+		if(on)
+		{
+			mMenuViewBWSonogram->setOn(false);
+			Engine::DisplayManager()->ColorSonogram();
+			Engine::DisplayManager()->ShowConcreteView(TIME_GROUP_VIEW,SONOGRAM);
+		}
+		else
+		{
+			if(!mMenuViewBWSonogram->isOn())
+			{
+				Engine::DisplayManager()->HideConcreteView(TIME_GROUP_VIEW,SONOGRAM);
+			}
+		}
 	}
 
 	void QtSMSTools::displayFundamentalFrequency(bool on)
