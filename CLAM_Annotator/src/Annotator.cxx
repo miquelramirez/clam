@@ -12,6 +12,7 @@
 #include <qeventloop.h>
 #include <qfiledialog.h>
 #include <qthread.h>
+#include <qprocess.h>
 
 
 #include <algorithm>
@@ -112,6 +113,30 @@ void Annotator::loaderCreate(CLAM::Audio & audio, const char * filename)
 	mAudioLoaderThread = new AudioLoadThread(audio, filename);
 }
 
+void Annotator::computeSongDescriptors()
+{
+	std::cout << "Launching Extractor..." << std::endl;
+	QProcess extractor(this);
+	extractor.addArgument("echo");
+	extractor.addArgument("This is the executable");
+	if (!extractor.start())
+	{
+		std::cout << "Launch failed..." << std::endl;
+		return;
+	}
+	while (extractor.isRunning())
+	{
+		while (extractor.canReadLineStdout())
+			std::cout << extractor.readLineStdout() << std::endl;
+		while (extractor.canReadLineStderr())
+			std::cout << extractor.readLineStderr() << std::endl;
+	}
+	while (extractor.canReadLineStdout())
+		std::cout << extractor.readLineStdout() << std::endl;
+	while (extractor.canReadLineStderr())
+		std::cout << extractor.readLineStderr() << std::endl;
+}
+
 void Annotator::loaderLaunch()
 {
 	CLAM_ASSERT(mAudioLoaderThread, "Launching a loader when none created");
@@ -164,12 +189,12 @@ void Annotator::markProjectChanged(bool changed)
 
 void Annotator::LoadSchema(const std::string & filename)
 {
-	mSchema = CLAM_Annotator::Schema();
+	mProject.GetAnnotatorSchema() = CLAM_Annotator::Schema();
 	if (filename!="")
 	{
 		try
 		{
-			CLAM::XMLStorage::Restore(mSchema,filename);
+			CLAM::XMLStorage::Restore(mProject.GetAnnotatorSchema(),filename);
 		}
 		catch (CLAM::XmlStorageErr e)
 		{
@@ -180,8 +205,8 @@ void Annotator::LoadSchema(const std::string & filename)
 	}
 
 	//Create Descriptors Pool Scheme and add attributes following loaded schema
-	mDescriptionScheme = CLAM::DescriptionScheme();//we need to initialize everything
-	mProject.CreatePoolScheme(mSchema, mDescriptionScheme);
+	mProject.GetDescriptionScheme() = CLAM::DescriptionScheme();//we need to initialize everything
+	mProject.CreatePoolScheme(mProject.GetAnnotatorSchema(), mProject.GetDescriptionScheme());
 }
 
 void Annotator::initProject()
@@ -223,7 +248,7 @@ void Annotator::AdaptEnvelopesToCurrentLLDSchema()
 {
 	removeLLDTabs();
 
-	std::list<std::string>& names = mSchema.GetLLDSchema().GetLLDNames();
+	std::list<std::string>& names = mProject.GetAnnotatorSchema().GetLLDSchema().GetLLDNames();
 	const unsigned nTabs = names.size();
 	const int eFlags = CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer;
 	mTabPages.resize(nTabs);
@@ -264,7 +289,7 @@ void Annotator::AdaptDescriptorsTableToCurrentHLDSchema()
 	mDescriptorsTable->horizontalHeader()->setLabel( 0, tr( "Descriptor" ) );
 	mDescriptorsTable->horizontalHeader()->setLabel( 1, tr( "Value" ) );
 
-	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
+	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mProject.GetAnnotatorSchema().GetHLDSchema().GetHLDs();
 	mDescriptorsTable->setNumRows(hlds.size());
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
 	for(int i = 0 ; it != hlds.end(); it++, i++)
@@ -488,8 +513,8 @@ void Annotator::fileNew()
 	mProjectFileName = "";
 	mProject.SetSchema("");
 	mProject.GetSongs().resize(0);
-	mSchema.GetLLDSchema().GetLLDNames().resize(0);
-	mSchema.GetHLDSchema().GetHLDs().resize(0);
+	mProject.GetAnnotatorSchema().GetLLDSchema().GetLLDNames().resize(0);
+	mProject.GetAnnotatorSchema().GetHLDSchema().GetHLDs().resize(0);
 	initInterface();
 	initProject();
 	markProjectChanged(true);
@@ -647,7 +672,7 @@ void Annotator::generateEnvelopesFromDescriptors()
 {
 	std::vector<CLAM::VM::BPFEditor*>::iterator ed_it = mBPFEditors.begin();
 	std::list<std::string>::iterator it;
-	std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
+	std::list<std::string>& descriptorsNames = mProject.GetAnnotatorSchema().GetLLDSchema().GetLLDNames();
 
 	for(it = descriptorsNames.begin();it != descriptorsNames.end(); ed_it++, it++)
 	{
@@ -683,7 +708,7 @@ void Annotator::generateDescriptorsFromEnvelopes()
 	mLLDChanged = false;
 	unsigned i=0, editors_size = mBPFEditors.size();
 	std::list<std::string>::iterator it;
-	std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
+	std::list<std::string>& descriptorsNames = mProject.GetAnnotatorSchema().GetLLDSchema().GetLLDNames();
 
 	for(it = descriptorsNames.begin() ;i < editors_size; i++, it++)
 	{
@@ -708,8 +733,8 @@ void Annotator::loadDescriptorPool()
 	mSegmentsChanged = false;
 
 	//Create Descriptors Pool
-	if(mpDescriptorPool) delete mpDescriptorPool;
-	mpDescriptorPool = new CLAM::DescriptionDataPool(mDescriptionScheme);
+	if (mpDescriptorPool) delete mpDescriptorPool;
+	mpDescriptorPool = new CLAM::DescriptionDataPool(mProject.GetDescriptionScheme());
 
 	//Load Descriptors Pool
 	CLAM_ASSERT(mCurrentDescriptorsPoolFileName!="", "Empty file name");
@@ -763,7 +788,7 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName,
 	if(!computed) qvalue = "?";
 	QStringList qrestrictionStrings;
 	std::list<std::string> restrictionStrings;
-	restrictionStrings = mSchema.GetHLDSchema().FindElement(descriptorName).GetRestrictionValues();
+	restrictionStrings = mProject.GetAnnotatorSchema().GetHLDSchema().FindElement(descriptorName).GetRestrictionValues();
 	std::list<std::string>::iterator it;
 	for(it = restrictionStrings.begin();it != restrictionStrings.end(); it++)
 	{
@@ -801,7 +826,7 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int va
 
 void Annotator::drawDescriptorsValue( int index, bool computed = true)
 {
-	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
+	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mProject.GetAnnotatorSchema().GetHLDSchema().GetHLDs();
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
 	for(it = hlds.begin() ; it != hlds.end(); it++)
 	{
@@ -867,7 +892,7 @@ int Annotator::findHLDescriptorIndex(const std::string& name)
 {
 	//TODO: should find a more efficient search algorithm
 
-	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
+	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mProject.GetAnnotatorSchema().GetHLDSchema().GetHLDs();
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
 	for(int i = 0 ; it != hlds.end(); it++, i++)
 	{
@@ -887,7 +912,7 @@ void Annotator::getHLDSchemaElementFromIndex(int index, CLAM_Annotator::HLDSchem
 {
 	/* TODO: This is not very efficient, wouldn't it be better to have HLDs as a vector instead of
 	a list? */
-	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mSchema.GetHLDSchema().GetHLDs();
+	std::list<CLAM_Annotator::HLDSchemaElement> hlds = mProject.GetAnnotatorSchema().GetHLDSchema().GetHLDs();
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
 	for(int i = 0 ; it != hlds.end(); it++, i++)
 	{

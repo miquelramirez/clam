@@ -1,6 +1,4 @@
 #include "Project.hxx"
-#include "Schema.hxx"
-#include "DescriptionScheme.hxx"
 #include "Text.hxx"
 #include "RestrictedString.hxx"
 #include "IndexArray.hxx"

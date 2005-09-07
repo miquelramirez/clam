@@ -59,6 +59,7 @@ public slots:
 
 	void saveDescriptors();
 
+	void computeSongDescriptors();
 	void deleteSongsFromProject();
 	void fileSaveAs();
 	void fileSave();
@@ -147,8 +148,6 @@ private:
 	std::string mCurrentSoundFileName;
 	std::string mCurrentDescriptorsPoolFileName;
 
-	CLAM_Annotator::Schema mSchema;
-	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM::DescriptionDataPool* mpDescriptorPool;
 
 	bool mGlobalChanges;

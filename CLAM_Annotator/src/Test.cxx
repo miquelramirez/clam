@@ -68,11 +68,10 @@ int main()
 	CLAM::XMLStorage::Restore(loadedSchema, schemaLocation);
 
 	//Create Descriptors Pool Scheme and add attributes following loaded schema
-	CLAM::DescriptionScheme scheme;
-	myProject.CreatePoolScheme(loadedSchema, scheme);
+	myProject.CreatePoolScheme(loadedSchema, myProject.GetDescriptionScheme());
 
 	//Now we create a Pool for every sound file we have
-	CLAM::DescriptionDataPool pool(scheme);
+	CLAM::DescriptionDataPool pool(myProject.GetDescriptionScheme());
 
 	std::vector<CLAM_Annotator::Song>::iterator currentSong;
 	srand(time(NULL));
@@ -92,7 +91,7 @@ int main()
 		CLAM::XMLStorage::Dump(pool, "DescriptorsPool", poolFile);
 
 		//Now we load the Pool and validate it with the schema
-		CLAM::DescriptionDataPool loadedDescriptorPool(scheme);
+		CLAM::DescriptionDataPool loadedDescriptorPool(myProject.GetDescriptionScheme());
 		CLAM::XMLStorage::Restore(loadedDescriptorPool,poolFile);
 
 		if(loadedSchema.GetHLDSchema().Validate(loadedDescriptorPool))
