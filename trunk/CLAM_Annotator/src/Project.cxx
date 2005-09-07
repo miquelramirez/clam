@@ -53,7 +53,7 @@ bool Project::LoadScheme(const std::string & schemeFileName)
 	SetSchema(std::string(schemeFileName)); // temp created to support self assigns
 	GetAnnotatorSchema() = tempSchema;
 	GetDescriptionScheme() = CLAM::DescriptionScheme();
-	CreatePoolScheme(GetAnnotatorSchema(), GetDescriptionScheme());
+	CreatePoolScheme();
 	return true;
 }
 
