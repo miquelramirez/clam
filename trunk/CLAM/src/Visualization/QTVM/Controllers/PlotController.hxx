@@ -69,6 +69,7 @@ namespace CLAM
 			virtual bool IsPlayable();
 			
 			void SetSegmentationMarksEnabled(bool e);
+			void ClearMarks();
 		    
 		signals:
 			void requestRefresh();

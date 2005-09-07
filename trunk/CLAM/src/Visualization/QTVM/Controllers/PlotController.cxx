@@ -529,7 +529,7 @@ namespace CLAM
 			mTags.clear();
 			mTags.resize(mMarks.size());
 			mMustProcessMarks=true;
-			if(mIsRenderingEnabled) emit requestRefresh();
+			emit requestRefresh();
 		}
 
 		std::vector<unsigned>& PlotController::GetMarks()
@@ -672,8 +672,8 @@ namespace CLAM
 			} 
 			mMarks.insert(pos,elem);
 			mTags.insert(tag_pos,QString(""));
-	    
-			mMustProcessMarks=true;
+//			mMustProcessMarks=true;
+			ProcessMarks();
 			if(mIsRenderingEnabled) emit requestRefresh();
 			emit insertedMark(elem);
 		}
@@ -688,8 +688,8 @@ namespace CLAM
 			QString tag = mTags[index];
 			std::vector<QString>::iterator tag_pos = find(mTags.begin(),mTags.end(),tag);
 			mTags.erase(tag_pos);
-
-			mMustProcessMarks=true;
+//			mMustProcessMarks=true;
+			ProcessMarks();
 			if(mIsRenderingEnabled) emit requestRefresh();
 			emit removedMark(index,elem);
 		}
@@ -697,9 +697,9 @@ namespace CLAM
 		void PlotController::Update(int index, unsigned elem)
 		{
 			mMarks[index]=elem;
-	    
-			mMustProcessMarks=true;
-			if(!mIsRenderingEnabled) emit requestRefresh();
+//			mMustProcessMarks=true;
+			ProcessMarks();
+			if(mIsRenderingEnabled) emit requestRefresh();
 			emit updatedMark(index,elem);
 		}
 
@@ -773,6 +773,14 @@ namespace CLAM
 		bool PlotController::IsRenderingEnabled() const
 		{
 			return mIsRenderingEnabled;
+		}
+
+		void PlotController::ClearMarks()
+		{
+			mMarks.clear();
+			mTags.clear();
+			ProcessMarks();
+
 		}
 	}
 }

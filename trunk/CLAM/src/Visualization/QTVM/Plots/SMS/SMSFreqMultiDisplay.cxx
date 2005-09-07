@@ -195,6 +195,8 @@ namespace CLAM
 		void SMSFreqMultiDisplay::Flush()
 		{
 			mHasMasterData = false;
+			HideDisplays();
+			for(int i=0; i < 3; i++) mControllers[i]->ClearMarks();
 		}
 
 		void SMSFreqMultiDisplay::CreateControllers()
@@ -202,6 +204,7 @@ namespace CLAM
 			for(int i=0; i < 3; i++)
 			{
 				mControllers.push_back(new SpectrumPlotController());
+				mControllers[i]->SetSegmentationMarksEnabled(false); // disable segmentation marks 
 			}
 			SetMasterId(MASTER);
 		}

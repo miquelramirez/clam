@@ -30,11 +30,13 @@ namespace CLAM
 
 		void SpectrogramRenderer::SetColorData(std::vector< std::vector<Color> >& cdata)
 		{
+			mColorData.clear();
 			mColorData = cdata;
 		}
 
 		void SpectrogramRenderer::SetBWData(std::vector< std::vector<Color> >& bwdata)
 		{
+			mBWData.clear();
 			mBWData = bwdata;
 		}
 
