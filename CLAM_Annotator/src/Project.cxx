@@ -8,39 +8,39 @@
 namespace CLAM_Annotator
 {
 
-void Project::CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme)
+void Project::CreatePoolScheme()
 {
 	//First we start with HLD
-	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = schema.GetHLDSchema().GetHLDs();
+	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
 	for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
 	{
 		if((*it2).GetType()=="Float")
 		{
-			poolScheme.AddAttribute <float>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <float>("Song",(*it2).GetName());
 		}
 		else if((*it2).GetType()=="Int")
 		{
-			poolScheme.AddAttribute <int>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <int>("Song",(*it2).GetName());
 		}
 		else if((*it2).GetType()=="RestrictedString")
 		{
-			poolScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
 		}
 		else
 		{
-			poolScheme.AddAttribute <CLAM::Text>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <CLAM::Text>("Song",(*it2).GetName());
 		}
 	}
 	//And now we go into LLD
 	std::list<std::string>::iterator it;
-	std::list<std::string>& descriptorsNames = schema.GetLLDSchema().GetLLDNames();
+	std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
 	for(it = descriptorsNames.begin(); it != descriptorsNames.end(); it++)
 	{
-		poolScheme.AddAttribute <CLAM::TData>("Frame", (*it));
+		mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
 	}
 	//finally we add segmentation marks
-	poolScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
+	mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
 
 }
 
