@@ -499,10 +499,7 @@ void Annotator::fileOpen()
 void Annotator::fileNew()
 {
 	mProjectFileName = "";
-	mProject.SetSchema("");
-	mProject.GetSongs().resize(0);
-	mProject.GetAnnotatorSchema().GetLLDSchema().GetLLDNames().resize(0);
-	mProject.GetAnnotatorSchema().GetHLDSchema().GetHLDs().resize(0);
+	mProject = CLAM_Annotator::Project();
 	initInterface();
 	initProject();
 	markProjectChanged(true);
