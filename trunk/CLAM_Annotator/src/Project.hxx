@@ -38,6 +38,8 @@ public:
 	{
 		return mSchema;
 	}
+	typedef std::list<CLAM_Annotator::HLDSchemaElement> SongScopeSchema;
+	const SongScopeSchema & GetSongScopeSchema();
 private:
 	void CreatePoolScheme();
 	CLAM::DescriptionScheme mDescriptionScheme;

@@ -57,5 +57,10 @@ bool Project::LoadScheme(const std::string & schemeFileName)
 	return true;
 }
 
+const Project::SongScopeSchema & Project::GetSongScopeSchema()
+{
+	return GetAnnotatorSchema().GetHLDSchema().GetHLDs();
+}
+
 }
 
