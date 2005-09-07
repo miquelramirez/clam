@@ -5,8 +5,14 @@
 #include "SongFiles.hxx"
 #include <vector>
 
+namespace CLAM
+{
+class DescriptionScheme;
+}
+
 namespace CLAM_Annotator
 {
+class Schema;
 
 class Project : public CLAM::DynamicType
 {
@@ -26,6 +32,7 @@ public:
 		songs.push_back(Song());
 		songs.back().SetSoundFile(songFileName);
 	}
+	void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme);
 };
 
 }

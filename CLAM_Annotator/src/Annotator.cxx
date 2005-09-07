@@ -164,6 +164,7 @@ void Annotator::markProjectChanged(bool changed)
 
 void Annotator::LoadSchema(const std::string & filename)
 {
+	mSchema = CLAM_Annotator::Schema();
 	if (filename!="")
 	{
 		try
@@ -177,6 +178,10 @@ void Annotator::LoadSchema(const std::string & filename)
 			return;
 		}
 	}
+
+	//Create Descriptors Pool Scheme and add attributes following loaded schema
+	mDescriptionScheme = CLAM::DescriptionScheme();//we need to initialize everything
+	mProject.CreatePoolScheme(mSchema, mDescriptionScheme);
 }
 
 void Annotator::initProject()
@@ -371,10 +376,11 @@ void Annotator::updateSongListWidget()
 {
 	mProjectOverview->clear();
 	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongs();
-	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
+	unsigned i = 0;
+	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++, i++)
 	{
 		ListViewItem * item = new ListViewItem(
-			mProjectOverview->childCount(), mProjectOverview, 
+			i, mProjectOverview, 
 			QString( it->GetSoundFile().c_str() ),
 			tr("Yes"), tr("No") );
 	}
@@ -522,27 +528,6 @@ void  Annotator::loadSchema()
 	initProject();
 }
 
-void  Annotator::loadDescriptors()
-{
-	QString qFileName = QFileDialog::getOpenFileName(QString::null,"*.pool");
-	if(qFileName == QString::null) return;
-
-	mCurrentDescriptorsPoolFileName = (std::string(qFileName.ascii()));
-	try
-	{
-		CLAM::XMLStorage::Restore(*mpDescriptorPool,mCurrentDescriptorsPoolFileName);
-	}
-	catch (CLAM::XmlStorageErr e)
-	{
-		QMessageBox::warning(this,"Error Loading Descriptors File", 
-			constructFileError(mCurrentDescriptorsPoolFileName,e));
-		return;
-	}
-	//TODO: Does loading the descriptors affect all this
-	initInterface();
-	initProject();
-}
-
 void  Annotator::saveDescriptors()
 {
 	if(QMessageBox::question(this,QString("Save Descriptors"),
@@ -576,16 +561,13 @@ void Annotator::songsClicked( QListViewItem * item)
 
 	if (item == 0) return;
 
-	std::cout << "Loading Song Descriptors..." << std::endl;
 	const char * filename = item->text(0).ascii();
 	mCurrentIndex = getIndexFromFileName(filename);
 	if (mCurrentIndex <0) return;
-	mCurrentSoundFileName = mProject.GetSongs()[mCurrentIndex].GetSoundFile();
-	if (mProject.GetSongs()[mCurrentIndex].HasPoolFile())
-	{
-		mCurrentDescriptorsPoolFileName = 
-			mProject.GetSongs()[mCurrentIndex].GetPoolFile();
-	}
+	CLAM_Annotator::Song & currentSong = mProject.GetSongs()[mCurrentIndex];
+	mCurrentSoundFileName = currentSong.GetSoundFile();
+	if (currentSong.HasPoolFile())
+		mCurrentDescriptorsPoolFileName = currentSong.GetPoolFile();
 	else 
 		mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + ".pool";
 	loadDescriptorPool();
@@ -725,64 +707,22 @@ void Annotator::loadDescriptorPool()
 	mHLDChanged = false;
 	mSegmentsChanged = false;
 
-	//Create Descriptors Pool Scheme and add attributes following loaded schema
-
-	//First HLD's
-	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();
-	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
-	mDescriptionScheme = CLAM::DescriptionScheme();//we need to initialize everything
-	for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
-	{
-		const std::string & name = it2->GetName();
-		const std::string & type = it2->GetType();
-		if(type=="Float")
-		{
-			mDescriptionScheme.AddAttribute <float>("Song",name);
-		}
-		else if(type=="Int")
-		{
-			mDescriptionScheme.AddAttribute <int>("Song",name);
-		}
-		else if(type=="RestrictedString")
-		{
-			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",name);
-		}
-		else
-		{
-			mDescriptionScheme.AddAttribute <CLAM::Text>("Song",name);
-		}
-	}
-	//And now LLD's  
-	std::list<std::string>::iterator it;
-	std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
-	for(it = descriptorsNames.begin(); it != descriptorsNames.end(); it++)
-	{
-		mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
-	}
-
-	//Finally segmentation marks
-	mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
-
 	//Create Descriptors Pool
 	if(mpDescriptorPool) delete mpDescriptorPool;
 	mpDescriptorPool = new CLAM::DescriptionDataPool(mDescriptionScheme);
 
 	//Load Descriptors Pool
-	if(mCurrentDescriptorsPoolFileName!="")
+	CLAM_ASSERT(mCurrentDescriptorsPoolFileName!="", "Empty file name");
+	try
 	{
-		try
-		{
-			CLAM::XMLStorage::Restore((*mpDescriptorPool),mCurrentDescriptorsPoolFileName);
-		}
-		catch (CLAM::XmlStorageErr e)
-		{
-			QMessageBox::warning(this,"Error Loading Descriptors Pool File", 
-				constructFileError(mCurrentDescriptorsPoolFileName,e));
-			return;
-		}
+		CLAM::XMLStorage::Restore(*mpDescriptorPool,mCurrentDescriptorsPoolFileName);
 	}
-    
-  
+	catch (CLAM::XmlStorageErr e)
+	{
+		QMessageBox::warning(this,"Error Loading Descriptors Pool File", 
+			constructFileError(mCurrentDescriptorsPoolFileName,e));
+		return;
+	}
 }
 
 bool Annotator::event(QEvent* e)

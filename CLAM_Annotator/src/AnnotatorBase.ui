@@ -228,7 +228,6 @@
         <action name="fileAdd_to_projectAction"/>
     </item>
     <item text="Song" name="songMenu">
-        <action name="songLoadDescriptorsAction"/>
         <action name="songSaveDescriptorsAction"/>
         <action name="songComputeDescriptorsAction"/>
     </item>
@@ -462,20 +461,6 @@
     </action>
     <action>
         <property name="name">
-            <cstring>songLoadDescriptorsAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="text">
-            <string>LoadDescriptors</string>
-        </property>
-        <property name="menuText">
-            <string>LoadDescriptors</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
             <cstring>songSaveDescriptorsAction</cstring>
         </property>
         <property name="enabled">
@@ -628,12 +613,6 @@
         <slot>loadSchema()</slot>
     </connection>
     <connection>
-        <sender>songLoadDescriptorsAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>loadDescriptors()</slot>
-    </connection>
-    <connection>
         <sender>songSaveDescriptorsAction</sender>
         <signal>activated()</signal>
         <receiver>AnnotatorBase</receiver>
@@ -666,7 +645,7 @@
     <include location="local" impldecl="in declaration">qpoint.h</include>
     <include location="local" impldecl="in declaration">qcolordialog.h</include>
     <include location="local" impldecl="in declaration">iostream</include>
-    <include location="local" impldecl="in declaration">About.hxx</include>
+    <include location="local" impldecl="in declaration">About.h</include>
 </includes>
 <variables>
     <variable>About mAbout;</variable>
@@ -687,8 +666,6 @@
     <slot>deleteSongsFromProject()</slot>
     <slot>AnnotatorBase_usesTextLabelChanged( bool )</slot>
     <slot>loadSchema()</slot>
-    <slot>loadDescriptors()</slot>
-    <slot>loadAll()</slot>
     <slot>saveSongList()</slot>
     <slot>saveDescriptors()</slot>
     <slot>playMarks( bool )</slot>
