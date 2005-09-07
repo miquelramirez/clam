@@ -775,15 +775,14 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, const 
 }
 
 void Annotator::drawHLD(int songIndex, const std::string& descriptorName, 
-			const CLAM_Annotator::RestrictedString& value, bool computed)
+			const CLAM_Annotator::RestrictedString& value, 
+			const std::list<std::string> & options, bool computed)
 {
 	QString qvalue = QString(value.GetString().c_str());
 	if(!computed) qvalue = "?";
 	QStringList qrestrictionStrings;
-	std::list<std::string> restrictionStrings;
-	restrictionStrings = mProject.GetAnnotatorSchema().GetHLDSchema().FindElement(descriptorName).GetRestrictionValues();
-	std::list<std::string>::iterator it;
-	for(it = restrictionStrings.begin();it != restrictionStrings.end(); it++)
+	std::list<std::string>::const_iterator it;
+	for(it = options.begin();it != options.end(); it++)
 	{
 		qrestrictionStrings << QString((*it).c_str());
 	}
@@ -830,8 +829,10 @@ void Annotator::drawDescriptorsValue( int index, bool computed = true)
 		}
 		if ((*it).GetType() == "RestrictedString")
 		{
+			const std::list<std::string> & options = it->GetRestrictionValues();
 			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-				GetReadPool<CLAM_Annotator::RestrictedString>("Song",(*it).GetName()),computed);
+				GetReadPool<CLAM_Annotator::RestrictedString>("Song",(*it).GetName()),
+				options,computed);
 		}
 		if ((*it).GetType() == "Float")
 		{
