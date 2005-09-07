@@ -29,7 +29,6 @@ public:
 		songs.push_back(Song());
 		songs.back().SetSoundFile(songFileName);
 	}
-	void CreatePoolScheme(const CLAM_Annotator::Schema& schema, CLAM::DescriptionScheme& poolScheme);
 	CLAM::DescriptionScheme & GetDescriptionScheme()
 	{
 		return mDescriptionScheme;
@@ -40,6 +39,7 @@ public:
 		return mSchema;
 	}
 private:
+	void CreatePoolScheme();
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM_Annotator::Schema mSchema;
 };
