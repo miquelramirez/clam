@@ -27,6 +27,9 @@ namespace CLAM
 
 		void SpectrogramPlotController::SetData(const Array<Spectrum>& specMtx, const double& dur)
 		{
+			mCacheData.Resize(0);
+			mCacheData.SetSize(0);
+			mComputedData.clear();
 			mHasData = false;
 			mCacheData = specMtx;
 			mDuration = dur;
