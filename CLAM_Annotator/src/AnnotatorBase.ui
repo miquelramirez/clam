@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>764</width>
-            <height>640</height>
+            <width>748</width>
+            <height>608</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -94,17 +94,11 @@
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
-                                    <hsizetype>1</hsizetype>
+                                    <hsizetype>3</hsizetype>
                                     <vsizetype>1</vsizetype>
                                     <horstretch>0</horstretch>
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>225</height>
-                                </size>
                             </property>
                             <property name="selectionMode">
                                 <enum>Single</enum>
@@ -129,17 +123,11 @@
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
-                                    <hsizetype>1</hsizetype>
+                                    <hsizetype>4</hsizetype>
                                     <vsizetype>1</vsizetype>
-                                    <horstretch>0</horstretch>
+                                    <horstretch>6</horstretch>
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>250</height>
-                                </size>
                             </property>
                             <property name="numRows">
                                 <number>0</number>
