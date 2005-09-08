@@ -92,7 +92,6 @@ private:
 	void AdaptDescriptorsTableToCurrentHLDSchema();
 	void removeLLDTabs();
 	void drawAudio(const char * filename);
-	void deleteAllSongsFromProject();
 	void drawLLDescriptors(int index);
 	void drawHLD(int songIndex, const std::string& descriptorName, 
 		const CLAM_Annotator::RestrictedString& value, 

@@ -207,7 +207,7 @@
                         </widget>
                         <widget class="QFrame">
                             <property name="name">
-                                <cstring>frame3</cstring>
+                                <cstring>mAudioPlotContainer</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>

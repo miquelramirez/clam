@@ -220,8 +220,8 @@ void Annotator::AdaptInterfaceToCurrentSchema()
 void Annotator::initAudioWidget()
 {
 	if(mpAudioPlot) delete mpAudioPlot;
-	mpAudioPlot = new QtAudioPlot(frame3);
-	mpTabLayout = new QVBoxLayout(frame3);
+	mpAudioPlot = new QtAudioPlot(mAudioPlotContainer);
+	mpTabLayout = new QVBoxLayout(mAudioPlotContainer);
 	mpTabLayout->addWidget(mpAudioPlot);
 	mpAudioPlot->Label("Audio");
 	mCurrentAudio.SetSize(20000);
@@ -272,7 +272,7 @@ void Annotator::AdaptDescriptorsTableToCurrentHLDSchema()
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
 	for(int i = 0 ; it != hlds.end(); it++, i++)
 	{
-		mDescriptorsTable->setItem(i,0,
+		mDescriptorsTable->setItem(i, 0,
 			new TableItem(mDescriptorsTable,
 				TableItem::Never,
 				QString((*it).GetName().c_str())));
@@ -445,10 +445,6 @@ void Annotator::markAllSongsUnchanged()
 	{
 		it.current()->setText(2, "No");
 	}
-}
-
-void Annotator::deleteAllSongsFromProject()
-{
 }
 
 void Annotator::deleteSongsFromProject()
@@ -961,7 +957,7 @@ int Annotator::getIndexFromFileName(const std::string& fileName)
 	std::vector<CLAM_Annotator::Song>::iterator it = fileNames.begin();
 	for (int i=0 ; it != fileNames.end(); it++, i++)
 	{
-		if((*it).GetSoundFile() == fileName) return i;
+		if ((*it).GetSoundFile() == fileName) return i;
 	}
 	return -1;
 }
