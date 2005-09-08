@@ -41,10 +41,12 @@ public:
 	typedef std::list<CLAM_Annotator::HLDSchemaElement> SongScopeSchema;
 	const SongScopeSchema & GetSongScopeSchema();
 	const std::list<std::string> & GetFrameScopeAttributeNames();
+	const std::list<std::string> & GetSongSegmentationNames();
 private:
 	void CreatePoolScheme();
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM_Annotator::Schema mSchema;
+	std::list<std::string> mSongSegmentationNames;
 };
 
 }

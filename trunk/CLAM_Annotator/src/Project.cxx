@@ -15,21 +15,23 @@ void Project::CreatePoolScheme()
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
 	for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
 	{
-		if((*it2).GetType()=="Float")
+		const std::string & type = it2->GetType();
+		const std::string & name = it2->GetName();
+		if (type=="Float")
 		{
-			mDescriptionScheme.AddAttribute <float>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <float>("Song",name);
 		}
-		else if((*it2).GetType()=="Int")
+		else if (type=="Int")
 		{
-			mDescriptionScheme.AddAttribute <int>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <int>("Song",name);
 		}
-		else if((*it2).GetType()=="RestrictedString")
+		else if (type=="RestrictedString")
 		{
-			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",name);
 		}
-		else
+		else if (type=="Text")
 		{
-			mDescriptionScheme.AddAttribute <CLAM::Text>("Song",(*it2).GetName());
+			mDescriptionScheme.AddAttribute <CLAM::Text>("Song",name);
 		}
 	}
 	//And now we go into LLD
@@ -39,9 +41,10 @@ void Project::CreatePoolScheme()
 	{
 		mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
 	}
-	//finally we add segmentation marks
 	mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
-
+	mSongSegmentationNames.clear();
+	mSongSegmentationNames.push_back("Segments");
+	mSongSegmentationNames.push_back("RandomSegments");
 }
 
 bool Project::LoadScheme(const std::string & schemeFileName)
@@ -66,6 +69,10 @@ const std::list<std::string> & Project::GetFrameScopeAttributeNames()
 	return GetAnnotatorSchema().GetLLDSchema().GetLLDNames();
 }
 
-	
+const std::list<std::string> & Project::GetSongSegmentationNames()
+{
+	return mSongSegmentationNames;
+}
+
 }
 
