@@ -19,18 +19,22 @@ void Project::CreatePoolScheme()
 		const std::string & name = it2->GetName();
 		if (type=="Float")
 		{
+			mSongScopeSchema.push_back(*it2);
 			mDescriptionScheme.AddAttribute <float>("Song",name);
 		}
 		else if (type=="Int")
 		{
+			mSongScopeSchema.push_back(*it2);
 			mDescriptionScheme.AddAttribute <int>("Song",name);
 		}
 		else if (type=="RestrictedString")
 		{
+			mSongScopeSchema.push_back(*it2);
 			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",name);
 		}
 		else if (type=="String")
 		{
+			mSongScopeSchema.push_back(*it2);
 			mDescriptionScheme.AddAttribute <CLAM::Text>("Song",name);
 		}
 		else if (type=="Segmentation")
@@ -63,7 +67,7 @@ bool Project::LoadScheme(const std::string & schemeFileName)
 
 const Project::SongScopeSchema & Project::GetSongScopeSchema()
 {
-	return GetAnnotatorSchema().GetHLDSchema().GetHLDs();
+	return mSongScopeSchema;
 }
 const std::list<std::string> & Project::GetFrameScopeAttributeNames()
 {

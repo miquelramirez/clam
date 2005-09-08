@@ -47,6 +47,7 @@ private:
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM_Annotator::Schema mSchema;
 	std::list<std::string> mSongSegmentationNames;
+	std::list<CLAM_Annotator::HLDSchemaElement> mSongScopeSchema;
 };
 
 }
