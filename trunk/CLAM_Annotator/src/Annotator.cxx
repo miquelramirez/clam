@@ -372,11 +372,29 @@ void Annotator::descriptorsTableChanged(int row, int column)
 	CLAM_Annotator::HLDSchemaElement hldSchemaElement;
 	getHLDSchemaElementFromIndex(row, hldSchemaElement);
 
-	std::string descriptorName = hldSchemaElement.GetName();
-	std::string descriptorType = hldSchemaElement.GetType();
-	std::string descriptorValue;
-	descriptorValue = std::string( mDescriptorsTable->text(row, column).ascii() );
-	setHLDescriptorPoolFromString(descriptorName, descriptorType, descriptorValue);
+	const std::string & name = hldSchemaElement.GetName();
+	const std::string & type = hldSchemaElement.GetType();
+	QString qValue = mDescriptorsTable->text(row, column);
+	const std::string & value = qValue.ascii();
+
+	if (type == "String")
+	{
+		*(mpDescriptorPool->GetWritePool<CLAM::Text>("Song",name)) = value;
+	}
+	if (type == "RestrictedString")
+	{
+		CLAM_Annotator::RestrictedString* rString = mpDescriptorPool->
+		GetWritePool<CLAM_Annotator::RestrictedString>("Song",name);
+		rString->SetString(value);
+	}
+	if (type == "Float")
+	{
+		*(mpDescriptorPool->GetWritePool<float>("Song",name)) = qValue.toFloat();
+	}
+	if (type == "Int")
+	{
+		*(mpDescriptorPool->GetWritePool<int>("Song",name)) = qValue.toInt();
+	}
 	changeCurrentFile();
 	mDescriptorsTable->adjustColumn(0);
 	mDescriptorsTable->adjustColumn(1);
@@ -622,6 +640,7 @@ void Annotator::songsClicked( QListViewItem * item)
 
 void Annotator::drawLLDescriptors(int index)
 {
+	if (!mpDescriptorPool) return;
 	std::cout << "Loading LLD Data..." << std::endl;
 	generateEnvelopesFromDescriptors();
 	std::cout << "Adjusting BPF's..." << std::endl;
@@ -674,6 +693,7 @@ void Annotator::drawAudio(const char * filename)
 void Annotator::refreshMarksView()
 {
 	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
+	if (!mpDescriptorPool) return;
 	const CLAM::IndexArray* descriptorsMarks = 
 		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation);
 	int nMarks = descriptorsMarks->Size();
@@ -847,59 +867,37 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int va
 
 void Annotator::drawDescriptorsValue( int index, bool computed = true)
 {
+	if (!mpDescriptorPool) return;
 	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
 	for(it = hlds.begin() ; it != hlds.end(); it++)
 	{
-		if ((*it).GetType() == "String")
+		const std::string & type = it->GetType();
+		const std::string & name = it->GetName();
+		if (type == "String")
 		{
 			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-				GetReadPool<CLAM::Text>("Song",(*it).GetName()),computed);
+				GetReadPool<CLAM::Text>("Song",name),computed);
 		}
-		if ((*it).GetType() == "RestrictedString")
+		if (type == "RestrictedString")
 		{
 			const std::list<std::string> & options = it->GetRestrictionValues();
 			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-				GetReadPool<CLAM_Annotator::RestrictedString>("Song",(*it).GetName()),
+				GetReadPool<CLAM_Annotator::RestrictedString>("Song",name),
 				options,computed);
 		}
-		if ((*it).GetType() == "Float")
+		if (type == "Float")
 		{
 			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-				GetReadPool<float>("Song",(*it).GetName()),(*it).GetfRange(),computed);
+				GetReadPool<float>("Song",name),it->GetfRange(),computed);
 		}
-		if ((*it).GetType() == "Int")
+		if (type == "Int")
 		{
 			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-				GetReadPool<int>("Song",(*it).GetName()),(*it).GetiRange(),computed);
+				GetReadPool<int>("Song",name),it->GetiRange(),computed);
 		}
 	}
 
-}
-
-void Annotator::setHLDescriptorPoolFromString(const std::string& descriptorName, 
-					      const std::string& descriptorType,
-					      const std::string& descriptorValue)
-{
-	QString qValue(descriptorValue.c_str());
-	if (descriptorType == "String")
-	{
-		*(mpDescriptorPool->GetWritePool<CLAM::Text>("Song",descriptorName)) = descriptorValue;
-	}
-	if (descriptorType == "RestrictedString")
-	{
-		CLAM_Annotator::RestrictedString* rString = mpDescriptorPool->
-		GetWritePool<CLAM_Annotator::RestrictedString>("Song",descriptorName);
-		rString->SetString(descriptorValue);
-	}
-	if (descriptorType == "Float")
-	{
-		*(mpDescriptorPool->GetWritePool<float>("Song",descriptorName)) = qValue.toFloat();
-	}
-	if (descriptorType == "Int")
-	{
-		*(mpDescriptorPool->GetWritePool<int>("Song",descriptorName)) = qValue.toInt();
-	}
 }
 
 void Annotator::fillGlobalDescriptors( int index)
@@ -918,7 +916,7 @@ int Annotator::findHLDescriptorIndex(const std::string& name)
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
 	for(int i = 0 ; it != hlds.end(); it++, i++)
 	{
-		if ((*it).GetName() == name) return i;
+		if (it->GetName() == name) return i;
 	}
 	return -1;
 }

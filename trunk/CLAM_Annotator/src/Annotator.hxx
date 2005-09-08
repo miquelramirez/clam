@@ -107,10 +107,6 @@ private:
 	int findHLDescriptorIndex(const std::string& name);
 	std::string getHLDescriptorNameFromIndex(int index);
 	void getHLDSchemaElementFromIndex(int index, CLAM_Annotator::HLDSchemaElement&);
-	void setHLDescriptorPoolFromString(const std::string& descriptorName, 
-		const std::string& descriptorType,
-		const std::string& descriptorValue);
-
 	int getIndexFromFileName(const std::string& fileName);
 
 	void initEnvelopes();
