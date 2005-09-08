@@ -317,18 +317,36 @@ void Annotator::connectBPFs()
 	std::vector<CLAM::VM::BPFEditor*>::iterator it;
 	for(it = mBPFEditors.begin(); it != mBPFEditors.end(); it++)
 	{
-		connect( (*it), SIGNAL(yValueChanged(int, float)), this, 
-			SLOT(descriptorsBPFChanged(int, float)));
-		connect((*it),SIGNAL(selectedXPos(double)),mpAudioPlot,SLOT(setSelectedXPos(double)));
-		connect(mpAudioPlot,SIGNAL(xRulerRange(double,double)),(*it),
-			SLOT(setHBounds(double,double)));
-		connect(mpAudioPlot,SIGNAL(selectedXPos(double)),(*it),SLOT(selectPointFromXCoord(double)));
-		connect(mpAudioPlot,SIGNAL(switchColorsRequested()),(*it),SLOT(switchColors()));
-		connect(mpAudioPlot,SIGNAL(regionTime(float,float)),(*it),SLOT(setRegionTime(float,float)));
-		connect(mpAudioPlot,SIGNAL(currentPlayingTime(float)),(*it),SLOT(setCurrentPlayingTime(float)));
-		connect(mpAudioPlot,SIGNAL(stopPlayingTime(float)),(*it),SLOT(receivedStopPlaying(float)));
-		connect((*it),SIGNAL(currentPlayingTime(float)),mpAudioPlot,SLOT(setCurrentPlayingTime(float)));
-		connect((*it),SIGNAL(stopPlaying(float)),mpAudioPlot,SLOT(receivedStopPlaying(float)));
+		CLAM::VM::BPFEditor* bpfEditor = *it;
+		connect( bpfEditor, SIGNAL(yValueChanged(int, float)),
+			this, SLOT(descriptorsBPFChanged(int, float)));
+
+		connect( bpfEditor, SIGNAL(selectedXPos(double)),
+			mpAudioPlot, SLOT(setSelectedXPos(double)));
+
+		connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
+			bpfEditor, SLOT(setHBounds(double,double)));
+
+		connect(mpAudioPlot, SIGNAL(selectedXPos(double)),
+			bpfEditor, SLOT(selectPointFromXCoord(double)));
+
+		connect(mpAudioPlot, SIGNAL(switchColorsRequested()),
+			bpfEditor, SLOT(switchColors()));
+
+		connect(mpAudioPlot, SIGNAL(regionTime(float,float)),
+			bpfEditor, SLOT(setRegionTime(float,float)));
+
+		connect(mpAudioPlot, SIGNAL(currentPlayingTime(float)),
+			bpfEditor, SLOT(setCurrentPlayingTime(float)));
+
+		connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
+			bpfEditor, SLOT(receivedStopPlaying(float)));
+
+		connect(bpfEditor, SIGNAL(currentPlayingTime(float)),
+			mpAudioPlot, SLOT(setCurrentPlayingTime(float)));
+
+		connect(bpfEditor, SIGNAL(stopPlaying(float)),
+			mpAudioPlot, SLOT(receivedStopPlaying(float)));
 	}
 }
 
@@ -725,22 +743,26 @@ void Annotator::loadDescriptorPool()
 	mHLDChanged = false;
 	mSegmentsChanged = false;
 
-	//Create Descriptors Pool
-	if (mpDescriptorPool) delete mpDescriptorPool;
-	mpDescriptorPool = new CLAM::DescriptionDataPool(mProject.GetDescriptionScheme());
+	CLAM::DescriptionDataPool * tempPool = new CLAM::DescriptionDataPool(mProject.GetDescriptionScheme());
 
 	//Load Descriptors Pool
 	CLAM_ASSERT(mCurrentDescriptorsPoolFileName!="", "Empty file name");
 	try
 	{
-		CLAM::XMLStorage::Restore(*mpDescriptorPool,mCurrentDescriptorsPoolFileName);
+		CLAM::XMLStorage::Restore(*tempPool,mCurrentDescriptorsPoolFileName);
 	}
 	catch (CLAM::XmlStorageErr e)
 	{
 		QMessageBox::warning(this,"Error Loading Descriptors Pool File", 
 			constructFileError(mCurrentDescriptorsPoolFileName,e));
+		delete tempPool;
 		return;
 	}
+
+	//Create Descriptors Pool
+	if (mpDescriptorPool) delete mpDescriptorPool;
+	mpDescriptorPool = tempPool;
+
 }
 
 bool Annotator::event(QEvent* e)
@@ -997,12 +1019,12 @@ void Annotator::playMarks(bool playThem)
 
 QString Annotator::constructFileError(const std::string& fileName,const CLAM::XmlStorageErr& e)
 {
-	std::string errorMessage = "XML Error:";
+	std::string errorMessage = "<p><b>XML Error: ";
 	errorMessage += e.what();
-	errorMessage += "\n";
-	errorMessage += "Check that your file ";
+	errorMessage += "</b></p>";
+	errorMessage += "Check that your file '<tt>";
 	errorMessage += mProjectFileName;
-	errorMessage += "\n";
+	errorMessage += "</tt>'\n";
 	errorMessage += "is well formed and folllows the specifications";
 	return QString(errorMessage.c_str());
 }
