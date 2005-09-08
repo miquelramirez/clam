@@ -193,6 +193,15 @@ void AddStringHLAttribute(
 	hlschema.GetHLDs().push_back(testHLDesc);
 }
 
+void AddSegmentationHLAttribute(CLAM_Annotator::HLDSchema& hlschema,
+		const std::string & attribute)
+{
+	CLAM_Annotator::HLDSchemaElement testHLDesc;
+	testHLDesc.SetName(attribute);
+	testHLDesc.SetType("Segmentation");
+	hlschema.GetHLDs().push_back(testHLDesc);
+}
+
 void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema)
 {
 	AddStringHLAttribute(hlschema, "Artist");
@@ -224,6 +233,8 @@ void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema)
 	AddRestrictedStringHLAttribute(hlschema, "Mode", modeValues);
 	AddRangedRealHLAttribute(hlschema, "DynamicComplexity", 0., 10.);
 	AddRangedIntHLAttribute(hlschema, "BPM", 0, 240);
+	AddSegmentationHLAttribute(hlschema, "Segments");
+	AddSegmentationHLAttribute(hlschema, "RandomSegments");
 }
 
 

@@ -3,6 +3,12 @@
   <Schema>../Samples/Schema.sc</Schema>
   <Songs>
     <Song>
+      <SoundFile>../../CLAM-TestData/trumpet.mp3</SoundFile>
+    </Song>
+    <Song>
+      <SoundFile>../../CLAM-TestData/Elvis.ogg</SoundFile>
+    </Song>
+    <Song>
       <SoundFile>../../CLAM-TestData/trumpet.wav</SoundFile>
     </Song>
     <Song>
