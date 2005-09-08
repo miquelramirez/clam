@@ -29,7 +29,7 @@ void Project::CreatePoolScheme()
 		{
 			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",name);
 		}
-		else if (type=="Text")
+		else if (type=="String")
 		{
 			mDescriptionScheme.AddAttribute <CLAM::Text>("Song",name);
 		}
