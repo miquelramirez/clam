@@ -57,14 +57,13 @@ int main()
 
 	//Create and store Project
 	CLAM_Annotator::Project myProject;
-	myProject.SetSchema(schemaLocation);
 	for (const char ** filename = songFileNames; *filename; filename++)
 		myProject.AppendSong(*filename);
 
+	myProject.LoadScheme(schemaLocation);
+
 	CLAM::XMLStorage::Dump(myProject,"Project",projectLocation);
 
-	//Load Schema
-	myProject.LoadScheme(schemaLocation);
 
 	//Now we create a Pool for every sound file we have
 	CLAM::DescriptionDataPool pool(myProject.GetDescriptionScheme());
