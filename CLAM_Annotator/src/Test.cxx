@@ -246,10 +246,13 @@ void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::So
 
 	//Create segmentation marks
 	CLAM::IndexArray* segmentation = 
-	pool.GetWritePool<CLAM::IndexArray>("Song","Segments");
-	//GenerateRandomSegmentationMarks(segmentation, GetnSamples(song.GetSoundFile()), 1024);
+		pool.GetWritePool<CLAM::IndexArray>("Song","Segments");
 	ComputeSegmentationMarks(segment, segmentD);
 	Segment2Marks(segment,segmentation);
+	
+	CLAM::IndexArray* randomSegmentation = 
+		pool.GetWritePool<CLAM::IndexArray>("Song","RandomSegments");
+	GenerateRandomSegmentationMarks(randomSegmentation, GetnSamples(song.GetSoundFile()), 1024);
 
 	//Write HLD values
 	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = schema.GetHLDSchema().GetHLDs();

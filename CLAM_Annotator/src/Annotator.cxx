@@ -197,7 +197,7 @@ void Annotator::initProject()
 	{
 		mProject.LoadScheme(mProject.GetSchema());
 	}
-	catch(CLAM::XmlStorageErr & e)
+	catch (CLAM::XmlStorageErr & e)
 	{
 		QMessageBox::warning(this,"Error Loading Schema File",
 			constructFileError(mProject.GetSchema(),e));
@@ -213,8 +213,9 @@ void Annotator::initProject()
 
 void Annotator::AdaptInterfaceToCurrentSchema()
 {
-	AdaptDescriptorsTableToCurrentHLDSchema();
-	AdaptEnvelopesToCurrentLLDSchema();
+	AdaptDescriptorsTableToCurrentSchema();
+	AdaptEnvelopesToCurrentSchema();
+	AdaptSegmentationsToCurrentSchema();
 }
 
 void Annotator::initAudioWidget()
@@ -233,7 +234,20 @@ void Annotator::initAudioWidget()
 	mpAudioPlot->Hide();
 }
 
-void Annotator::AdaptEnvelopesToCurrentLLDSchema()
+void Annotator::AdaptSegmentationsToCurrentSchema()
+{
+	mSegmentationSelection->clear();
+	const std::list<std::string> & segmentationNames =
+		mProject.GetSongSegmentationNames();
+	for (std::list<std::string>::const_iterator it =  segmentationNames.begin();
+		it != segmentationNames.end();
+		it++)
+	{
+		mSegmentationSelection->insertItem(it->c_str());
+	}
+}
+
+void Annotator::AdaptEnvelopesToCurrentSchema()
 {
 	removeLLDTabs();
 
@@ -265,7 +279,7 @@ void Annotator::AdaptEnvelopesToCurrentLLDSchema()
 	connectBPFs();
 }
 
-void Annotator::AdaptDescriptorsTableToCurrentHLDSchema()
+void Annotator::AdaptDescriptorsTableToCurrentSchema()
 {
 	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
 	mDescriptorsTable->setNumRows(hlds.size());
@@ -379,8 +393,9 @@ void Annotator::descriptorsBPFChanged(int pointIndex,float newValue)
 void Annotator::segmentationMarksChanged(int, unsigned)
 {
 	std::vector<unsigned int> marks;
+	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	CLAM::IndexArray* descriptorMarks = 
-		mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song","Segments");
+		mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song",currentSegmentation);
 	marks = mpAudioPlot->GetMarks();
 	int nMarks = marks.size();
 	descriptorMarks->Resize(nMarks);
@@ -552,14 +567,14 @@ void  Annotator::loadSchema()
 
 void  Annotator::saveDescriptors()
 {
-	if(QMessageBox::question(this,QString("Save Descriptors"),
+	if (QMessageBox::question(this,QString("Save Descriptors"),
 		QString("Do you want to save current song's descriptors?"),
 		QString("OK"),QString("Cancel")) != 0) return;
 
 	QString qFileName;
 	qFileName = QFileDialog::getSaveFileName(QString(mCurrentDescriptorsPoolFileName.c_str()),
 			"*.pool");
-	if(qFileName == QString::null) return;
+	if (qFileName == QString::null) return;
 
 	mCurrentDescriptorsPoolFileName = (std::string(qFileName.ascii()));
 	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mCurrentDescriptorsPoolFileName);
@@ -651,8 +666,9 @@ void Annotator::drawAudio(const char * filename)
 	loaderCreate(mCurrentAudio, filename);
 	setMenuAudioItemsEnabled(true);
 
+	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	const CLAM::IndexArray* descriptorsMarks = 
-		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song","Segments");
+		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation);
 	int nMarks = descriptorsMarks->Size();
 	std::vector<unsigned> marks(nMarks);
 	for(int i=0;i<nMarks;i++)
@@ -852,7 +868,6 @@ void Annotator::drawDescriptorsValue( int index, bool computed = true)
 			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
 				GetReadPool<int>("Song",(*it).GetName()),(*it).GetiRange(),computed);
 		}
-
 	}
 
 }
