@@ -666,6 +666,13 @@ void Annotator::drawAudio(const char * filename)
 	loaderCreate(mCurrentAudio, filename);
 	setMenuAudioItemsEnabled(true);
 
+	refreshMarksView();
+	mpAudioPlot->SetData(mCurrentAudio);
+	mpAudioPlot->Show();
+}
+
+void Annotator::refreshMarksView()
+{
 	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	const CLAM::IndexArray* descriptorsMarks = 
 		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation);
@@ -676,8 +683,6 @@ void Annotator::drawAudio(const char * filename)
 		marks[i] = (unsigned)(*descriptorsMarks)[i];
 	}
 	mpAudioPlot->SetMarks(marks);
-	mpAudioPlot->SetData(mCurrentAudio);
-	mpAudioPlot->Show();
 	auralizeMarks();
 }
 

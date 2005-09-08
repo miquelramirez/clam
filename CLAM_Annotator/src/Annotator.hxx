@@ -85,7 +85,7 @@ private:
 	//xamat
 
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
-
+	void refreshMarksView();
 	void initAudioWidget();
 	void AdaptInterfaceToCurrentSchema();
 	void AdaptEnvelopesToCurrentSchema();
