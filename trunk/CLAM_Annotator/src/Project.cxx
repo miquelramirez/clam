@@ -41,8 +41,9 @@ void Project::CreatePoolScheme()
 	{
 		mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
 	}
-	mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
 	mSongSegmentationNames.clear();
+	mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
+	mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song","RandomSegments");
 	mSongSegmentationNames.push_back("Segments");
 	mSongSegmentationNames.push_back("RandomSegments");
 }

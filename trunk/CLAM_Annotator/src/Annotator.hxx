@@ -88,8 +88,9 @@ private:
 
 	void initAudioWidget();
 	void AdaptInterfaceToCurrentSchema();
-	void AdaptEnvelopesToCurrentLLDSchema();
-	void AdaptDescriptorsTableToCurrentHLDSchema();
+	void AdaptEnvelopesToCurrentSchema();
+	void AdaptDescriptorsTableToCurrentSchema();
+	void AdaptSegmentationsToCurrentSchema();
 	void removeLLDTabs();
 	void drawAudio(const char * filename);
 	void drawLLDescriptors(int index);
