@@ -226,11 +226,6 @@
                                 <cstring>unnamed</cstring>
                             </property>
                             <widget class="QComboBox">
-                                <item>
-                                    <property name="text">
-                                        <string>No Segmentation</string>
-                                    </property>
-                                </item>
                                 <property name="name">
                                     <cstring>mSegmentationSelection</cstring>
                                 </property>
@@ -665,9 +660,9 @@
     </connection>
     <connection>
         <sender>mSegmentationSelection</sender>
-        <signal>highlighted(const QString&amp;)</signal>
+        <signal>activated(const QString&amp;)</signal>
         <receiver>AnnotatorBase</receiver>
-        <slot>changeCurrentSegmentation(const QString&amp;)</slot>
+        <slot>refreshMarksView()</slot>
     </connection>
 </connections>
 <includes>
@@ -709,7 +704,7 @@
     <slot>playMarks( bool )</slot>
     <slot>playOriginalAudioAndLLD( bool )</slot>
     <slot>computeSongDescriptors()</slot>
-    <slot>changeCurrentSegmentation(const QString&amp; selected)</slot>
+    <slot>refreshMarksView()</slot>
 </slots>
 <functions>
     <function access="private">init()</function>
