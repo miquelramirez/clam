@@ -164,6 +164,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mAudioRefreshTimer(new QTimer(this))
 	, mAudioLoaderThread(0)
 {
+	mDescriptorsTable->setLeftMargin(0);
 	initAudioWidget();
 	initInterface();
 	setMenuAudioItemsEnabled(false);
@@ -266,17 +267,6 @@ void Annotator::AdaptEnvelopesToCurrentLLDSchema()
 
 void Annotator::AdaptDescriptorsTableToCurrentHLDSchema()
 {
-	mDescriptorsTable->setLeftMargin(0);
-	mDescriptorsTable->setLeftMargin(0);
-	mDescriptorsTable->setNumRows(0);
-	mDescriptorsTable->setNumCols(2);
-	mDescriptorsTable->setRowMovingEnabled(false);
-	mDescriptorsTable->setColumnMovingEnabled(false);
-	mDescriptorsTable->setReadOnly(false);
-	mDescriptorsTable->setSelectionMode(QTable::NoSelection);
-	mDescriptorsTable->horizontalHeader()->setLabel( 0, tr( "Descriptor" ) );
-	mDescriptorsTable->horizontalHeader()->setLabel( 1, tr( "Value" ) );
-
 	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
 	mDescriptorsTable->setNumRows(hlds.size());
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
