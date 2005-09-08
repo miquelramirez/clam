@@ -49,6 +49,14 @@
           <Min>0</Min>
         </iRange>
       </HLD>
+      <HLD>
+        <Name>Segments</Name>
+        <Type>Segmentation</Type>
+      </HLD>
+      <HLD>
+        <Name>RandomSegments</Name>
+        <Type>Segmentation</Type>
+      </HLD>
     </HLDs>
   </HLDSchema>
   <LLDSchema>

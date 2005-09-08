@@ -33,6 +33,11 @@ void Project::CreatePoolScheme()
 		{
 			mDescriptionScheme.AddAttribute <CLAM::Text>("Song",name);
 		}
+		else if (type=="Segmentation")
+		{
+			mSongSegmentationNames.push_back(name);
+			mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song",name);
+		}
 	}
 	//And now we go into LLD
 	std::list<std::string>::iterator it;
@@ -41,11 +46,6 @@ void Project::CreatePoolScheme()
 	{
 		mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
 	}
-	mSongSegmentationNames.clear();
-	mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song","Segments");
-	mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song","RandomSegments");
-	mSongSegmentationNames.push_back("Segments");
-	mSongSegmentationNames.push_back("RandomSegments");
 }
 
 bool Project::LoadScheme(const std::string & schemeFileName)
