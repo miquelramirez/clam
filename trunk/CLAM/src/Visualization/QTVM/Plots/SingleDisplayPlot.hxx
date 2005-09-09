@@ -51,6 +51,8 @@ namespace CLAM
 			void SetToggleColorOn(bool b);
 			void SwitchDisplayColors(bool b);
 
+			void SetEditTagDialogEnabled(bool e);
+
 		signals:
 			void xRulerRange(double, double);
 			void yRulerRange(double, double);
@@ -60,6 +62,7 @@ namespace CLAM
 			void updatedMark(int, unsigned);
 			void updatedTag(int, QString);
 			void selectedXPos(double);
+			void requestSegmentationTag(unsigned);
 	    
 		public slots:	
 			void switchColors();
@@ -100,13 +103,15 @@ namespace CLAM
 			HScrollGroup*   mHScrollBar;
 			VScrollGroup*   mVScrollBar;
 			QPushButton*    mToggleColor;
-
+			
 			// holes
 			QFrame* topLeftHole;
 			QFrame* bottomLeftHole;
 
 			// edit tag dialog
 			EditTagDialog* editTagDlg;
+
+			bool            mIsEditTagDialogEnabled;
 
 			void Init();
 		};
