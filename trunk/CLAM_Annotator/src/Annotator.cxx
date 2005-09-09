@@ -167,6 +167,8 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mAudioLoaderThread(0)
 {
 	mDescriptorsTable->setLeftMargin(0);
+	mSegmentDescriptorsTable->setLeftMargin(0);
+	mSegmentDescriptorsTable->hide();
 	initAudioWidget();
 	initInterface();
 	setMenuAudioItemsEnabled(false);
@@ -381,6 +383,7 @@ void Annotator::descriptorsTableChanged(int row, int column)
 void Annotator::changeCurrentSegment(unsigned current)
 {
 	std::cout << "Segment changed to " << current << std::endl;
+	mSegmentDescriptorsTable->show();
 }
 
 void Annotator::updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row)
@@ -437,6 +440,12 @@ void Annotator::updateSegmentations()
 	} 
 	mSegmentsChanged = true;
 	auralizeMarks();
+	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
+	if (childScope != "")
+	{
+		adaptDescriptorsTableToCurrentSchema(mSegmentDescriptorsTable, childScope);
+		mSegmentDescriptorsTable->show();
+	}
 }
 
 void Annotator::segmentationMarksChanged(int, unsigned)
