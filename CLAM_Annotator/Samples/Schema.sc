@@ -50,12 +50,14 @@
         </iRange>
       </HLD>
       <HLD>
-        <Name>Segments</Name>
+        <Name>Onsets</Name>
         <Type>Segmentation</Type>
+        <ChildScope>Onset</ChildScope>
       </HLD>
       <HLD>
         <Name>RandomSegments</Name>
         <Type>Segmentation</Type>
+        <ChildScope></ChildScope>
       </HLD>
     </HLDs>
   </HLDSchema>
