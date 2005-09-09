@@ -40,7 +40,6 @@ class Annotator : public AnnotatorBase
 public:
 	Annotator(const std::string & nameProject);
 	virtual ~Annotator();
-	void fillGlobalDescriptors();
 	void songsClicked( QListViewItem * item);
 	void playPause();
 
@@ -80,7 +79,7 @@ private:
 	void currentFile( std::string &);
 	void changeCurrentFile();
 	void markAllSongsUnchanged();
-	void drawDescriptorsValue(bool computed=true);
+	void refreshGlobalDescriptorsTable();
 
 	//xamat
 
@@ -94,15 +93,15 @@ private:
 	void removeLLDTabs();
 	void drawAudio(const char * filename);
 	void drawLLDescriptors(int index);
-	void refreshDescriptorsTable(QTable * table, const std::string & scope, unsigned element, bool computed);
+	void refreshDescriptorsTable(QTable * table, const std::string & scope, unsigned element);
 	void drawHLD(QTable * table, int row, const CLAM_Annotator::RestrictedString& value, 
-		const std::list<std::string> & options, bool computed=true);
+		const std::list<std::string> & options);
 	void drawHLD(QTable * table, int row,const CLAM::Text& value, 
 		bool computed=true);
 	void drawHLD(QTable * table, int row, float value, 
-		CLAM_Annotator::Range<float> renge, bool computed=true);
+		CLAM_Annotator::Range<float> renge);
 	void drawHLD(QTable * table, int row, int value, 
-		CLAM_Annotator::Range<int> range, bool computed=true);
+		CLAM_Annotator::Range<int> range);
 
 	int findHLDescriptorIndex(const std::string& name);
 	std::string getHLDescriptorNameFromIndex(int index);
