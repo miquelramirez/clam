@@ -18,6 +18,7 @@ namespace CLAM
 			: QtPlot(parent,name,f)
 			, mController(0)
 			, editTagDlg(0)
+			, mIsEditTagDialogEnabled(true)
 		{
 			Init();
 		}
@@ -253,16 +254,23 @@ namespace CLAM
 
 		void SingleDisplayPlot::showEditTagDialog()
 		{
-			if(editTagDlg)
+			if(mIsEditTagDialogEnabled)
 			{
-				delete editTagDlg;
-				editTagDlg=0;    
-			}
+				if(editTagDlg)
+				{
+					delete editTagDlg;
+					editTagDlg=0;    
+				}
 
-			editTagDlg = new EditTagDialog(mController->GetTag(),this);
-			if( editTagDlg->exec() == QDialog::Accepted )
+				editTagDlg = new EditTagDialog(mController->GetTag(),this);
+				if( editTagDlg->exec() == QDialog::Accepted )
+				{
+					mController->SetSegmentationTag(editTagDlg->text());
+				}
+			}
+			else
 			{
-				mController->SetSegmentationTag(editTagDlg->text());
+				emit requestSegmentationTag(mController->GetMarkIndex());
 			}
 		}
 
@@ -311,6 +319,11 @@ namespace CLAM
 		{
 			mController->disableRendering();
 			QWidget::hideEvent(e);
+		}
+
+		void SingleDisplayPlot::SetEditTagDialogEnabled(bool e)
+		{
+			mIsEditTagDialogEnabled = e;
 		}
     }
 }
