@@ -117,9 +117,11 @@ void Annotator::loaderCreate(CLAM::Audio & audio, const char * filename)
 void Annotator::computeSongDescriptors()
 {
 	std::cout << "Launching Extractor..." << std::endl;
+	if (!mProjectOverview->selectedItem()) return;
+	QString filename = mProjectOverview->selectedItem()->text(0);
 	QProcess extractor(this);
-	extractor.addArgument("echo");
-	extractor.addArgument("This is the executable");
+	extractor.addArgument("../buildTest/Test");
+	extractor.addArgument(filename);
 	if (!extractor.start())
 	{
 		std::cout << "Launch failed..." << std::endl;
