@@ -22,11 +22,8 @@
 
 #include <time.h>
 
-void BuildAndDumpSchema(const char * schemaLocation);
-void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema);
-void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema);
-void PopulatePool(const CLAM_Annotator::Schema& schema, const std::string& song,
-		CLAM::DescriptionDataPool& pool);
+void BuildAndDumpTestSchema(const char * schemaLocation);
+void PopulatePool(const std::string& song, CLAM::DescriptionDataPool& pool);
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
 void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, int frameSize);
 void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text & artist, CLAM::Text & title);
@@ -53,7 +50,7 @@ int main()
 		0
 	};
 
-	BuildAndDumpSchema(schemaLocation);
+	BuildAndDumpTestSchema(schemaLocation);
 
 	//Create and store Project
 	CLAM_Annotator::Project myProject;
@@ -78,18 +75,18 @@ int main()
 	{
 		std::cout<<"Computing Descriptors for file "<< currentSong->GetSoundFile()
 		     <<" Please wait..."<<std::endl;
-		PopulatePool(myProject.GetAnnotatorSchema(), currentSong->GetSoundFile(), pool);
+		PopulatePool(currentSong->GetSoundFile(), pool);
 		//Dump Descriptors Pool
 		std::string poolFile;
-		if((*currentSong).HasPoolFile()) poolFile = (*currentSong).GetPoolFile();
-		else poolFile = (*currentSong).GetSoundFile()+".pool";
+		if (currentSong->HasPoolFile()) poolFile = currentSong->GetPoolFile();
+		else poolFile = currentSong->GetSoundFile()+".pool";
 		CLAM::XMLStorage::Dump(pool, "DescriptorsPool", poolFile);
 
 		//Now we load the Pool and validate it with the schema
-		CLAM::DescriptionDataPool loadedDescriptorPool(myProject.GetDescriptionScheme());
-		CLAM::XMLStorage::Restore(loadedDescriptorPool,poolFile);
+		CLAM::DescriptionDataPool toValidadDescription(myProject.GetDescriptionScheme());
+		CLAM::XMLStorage::Restore(toValidadDescription, poolFile);
 
-		if(myProject.GetAnnotatorSchema().GetHLDSchema().Validate(loadedDescriptorPool))
+		if (myProject.ValidateDataPool(toValidadDescription))
 			std::cout<<"Descriptor Pool Validated With Schema"<<std::endl;
 		else
 			std::cout<<"Descriptor Pool Did Not Validate With Schema"<<std::endl;
@@ -99,17 +96,11 @@ int main()
 
 }
 
-void BuildAndDumpSchema(const char * schemaLocation)
+void BuildAndDumpTestSchema(const char * schemaLocation)
 {
 	CLAM_Annotator::Schema testSchema;
-	CreateLLSchema(testSchema.GetLLDSchema());
-	CreateHLSchema(testSchema.GetHLDSchema());
 
-	CLAM::XMLStorage::Dump(testSchema, "Schema",schemaLocation);
-}
-
-void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema)
-{
+	CLAM_Annotator::LLDSchema& llschema = testSchema.GetLLDSchema();
 	const char * lowLevelDescriptorsNames[] =
 	{
 		"Mean",
@@ -133,82 +124,11 @@ void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema)
 		0
 	};
 	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
-		llschema.GetLLDNames().push_back(*name);
-}
+		llschema.AddFloat(*name);
 
-void AddRestrictedStringHLAttribute(
-		CLAM_Annotator::HLDSchema& hlschema,
-		const std::string & attribute,
-		const char ** availableValues)
-{
-	CLAM_Annotator::HLDSchemaElement testHLDesc;
-	testHLDesc.SetName(attribute);
-	testHLDesc.SetType("RestrictedString");
-	testHLDesc.AddRestrictionValues();
-	testHLDesc.UpdateData();
-	for (const char ** value = availableValues; *value; value++)
-		testHLDesc.GetRestrictionValues().push_back(*value);
-	hlschema.GetHLDs().push_back(testHLDesc);
-}
-void AddRangedIntHLAttribute(
-		CLAM_Annotator::HLDSchema& hlschema,
-		const std::string & attribute,
-		int min, int max)
-{
-	CLAM_Annotator::HLDSchemaElement testHLDesc;
-	testHLDesc.SetName(attribute);
-	testHLDesc.SetType("Int");
-	testHLDesc.AddiRange();
-	testHLDesc.UpdateData();
-	CLAM_Annotator::Range<int> range;
-	range.SetMin(min);
-	range.SetMax(max);
-	testHLDesc.SetiRange(range);
-	hlschema.GetHLDs().push_back(testHLDesc);
-}
-
-void AddRangedRealHLAttribute(
-		CLAM_Annotator::HLDSchema& hlschema,
-		const std::string & attribute,
-		double min, double max)
-{
-	CLAM_Annotator::HLDSchemaElement testHLDesc;
-	testHLDesc.SetName(attribute);
-	testHLDesc.SetType("Float");
-	testHLDesc.AddfRange();
-	testHLDesc.UpdateData();
-	CLAM_Annotator::Range<float> range;
-	range.SetMin(min);
-	range.SetMax(max);
-	testHLDesc.SetfRange(range);
-	hlschema.GetHLDs().push_back(testHLDesc);
-}
-void AddStringHLAttribute(
-		CLAM_Annotator::HLDSchema& hlschema,
-		const std::string & attribute)
-{
-	CLAM_Annotator::HLDSchemaElement testHLDesc;
-	testHLDesc.SetName(attribute);
-	testHLDesc.SetType("String");
-	hlschema.GetHLDs().push_back(testHLDesc);
-}
-
-void AddSegmentationHLAttribute(CLAM_Annotator::HLDSchema& hlschema,
-		const std::string & attribute, const std::string & childScope)
-{
-	CLAM_Annotator::HLDSchemaElement testHLDesc;
-	testHLDesc.AddChildScope();
-	testHLDesc.UpdateData();
-	testHLDesc.SetName(attribute);
-	testHLDesc.SetType("Segmentation");
-	testHLDesc.SetChildScope(childScope);
-	hlschema.GetHLDs().push_back(testHLDesc);
-}
-
-void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema)
-{
-	AddStringHLAttribute(hlschema, "Artist");
-	AddStringHLAttribute(hlschema, "Title");
+	CLAM_Annotator::HLDSchema& hlschema = testSchema.GetHLDSchema();
+	hlschema.AddString("Artist");
+	hlschema.AddString("Title");
 	const char * genreValues[] =
 	{
 		"Dance",
@@ -218,30 +138,32 @@ void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema)
 		"Folk",
 		0
 	};
-	AddRestrictedStringHLAttribute(hlschema, "Genre", genreValues);
-	AddRangedRealHLAttribute(hlschema, "Danceability", 0., 10.);
+	hlschema.AddRestrictedString("Genre", genreValues);
+	hlschema.AddRangedReal("Danceability", 0., 10.);
 	const char * keyValues[] =
 	{
 		"A", "A#", "B", "C", "C#",
 		"D", "D#", "E", "F", "F#",
 		"G", "G#", 0
 	};
-	AddRestrictedStringHLAttribute(hlschema, "Key", keyValues);
+	hlschema.AddRestrictedString("Key", keyValues);
 	const char * modeValues[] =
 	{
 		"Minor",
 		"Major",
 		0
 	};
-	AddRestrictedStringHLAttribute(hlschema, "Mode", modeValues);
-	AddRangedRealHLAttribute(hlschema, "DynamicComplexity", 0., 10.);
-	AddRangedIntHLAttribute(hlschema, "BPM", 0, 240);
-	AddSegmentationHLAttribute(hlschema, "Onsets", "Onset");
-	AddSegmentationHLAttribute(hlschema, "RandomSegments", "");
+	hlschema.AddRestrictedString("Mode", modeValues);
+	hlschema.AddRangedReal("DynamicComplexity", 0., 10.);
+	hlschema.AddRangedInt("BPM", 0, 240);
+	hlschema.AddSegmentation("Onsets", "Onset");
+	hlschema.AddSegmentation("RandomSegments", "");
+
+	CLAM::XMLStorage::Dump(testSchema, "Schema", schemaLocation);
 }
 
 
-void PopulatePool(const CLAM_Annotator::Schema& schema, const std::string & song, 
+void PopulatePool(const std::string & song, 
 		CLAM::DescriptionDataPool& pool)
 {
   

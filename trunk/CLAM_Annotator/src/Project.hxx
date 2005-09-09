@@ -42,6 +42,10 @@ public:
 	const SongScopeSchema & GetSongScopeSchema();
 	const std::list<std::string> & GetFrameScopeAttributeNames();
 	const std::list<std::string> & GetSongSegmentationNames();
+	bool ValidateDataPool(const CLAM::DescriptionDataPool & dataPool)
+	{
+		return GetAnnotatorSchema().GetHLDSchema().Validate(dataPool);
+	}
 private:
 	void CreatePoolScheme();
 	CLAM::DescriptionScheme mDescriptionScheme;

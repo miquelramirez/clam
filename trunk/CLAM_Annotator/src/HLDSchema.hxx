@@ -87,6 +87,74 @@ namespace CLAM_Annotator{
 			desc.SetType(GetTypeFromValue(value));
 			return desc;
 		}
+	public:
+		void AddRestrictedString(
+				const std::string & attribute,
+				const char ** availableValues)
+		{
+			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			testHLDesc.SetName(attribute);
+			testHLDesc.SetType("RestrictedString");
+			testHLDesc.AddRestrictionValues();
+			testHLDesc.UpdateData();
+			for (const char ** value = availableValues; *value; value++)
+				testHLDesc.GetRestrictionValues().push_back(*value);
+			GetHLDs().push_back(testHLDesc);
+		}
+		void AddRangedInt(
+				const std::string & attribute,
+				int min, int max)
+		{
+			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			testHLDesc.SetName(attribute);
+			testHLDesc.SetType("Int");
+			testHLDesc.AddiRange();
+			testHLDesc.UpdateData();
+			CLAM_Annotator::Range<int> range;
+			range.SetMin(min);
+			range.SetMax(max);
+			testHLDesc.SetiRange(range);
+			GetHLDs().push_back(testHLDesc);
+		}
+		void AddRangedReal(
+				const std::string & attribute,
+				double min, double max)
+		{
+			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			testHLDesc.SetName(attribute);
+			testHLDesc.SetType("Float");
+			testHLDesc.AddfRange();
+			testHLDesc.UpdateData();
+			CLAM_Annotator::Range<float> range;
+			range.SetMin(min);
+			range.SetMax(max);
+			testHLDesc.SetfRange(range);
+			GetHLDs().push_back(testHLDesc);
+		}
+		void AddString(
+				const std::string & attribute)
+		{
+			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			testHLDesc.SetName(attribute);
+			testHLDesc.SetType("String");
+			GetHLDs().push_back(testHLDesc);
+		}
+		void AddSegmentation(
+				const std::string & attribute,
+				const std::string & childScope)
+		{
+			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			testHLDesc.AddChildScope();
+			testHLDesc.UpdateData();
+			testHLDesc.SetName(attribute);
+			testHLDesc.SetType("Segmentation");
+			testHLDesc.SetChildScope(childScope);
+			GetHLDs().push_back(testHLDesc);
+		}
+
+
+
+
 	};
 
 
