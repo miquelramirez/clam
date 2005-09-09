@@ -320,16 +320,17 @@ allows editing floating point descriptors that has an occurrence for each frame.
         <action name="projectLoadSchemaAction"/>
         <action name="fileAdd_to_projectAction"/>
     </item>
-    <item text="Song" name="songMenu">
+    <item text="&amp;Song" name="Song">
         <action name="songSaveDescriptorsAction"/>
         <action name="songComputeDescriptorsAction"/>
     </item>
-    <item text="Playback" name="Playback">
+    <item text="&amp;Playback" name="Playback">
         <action name="audioAuralize_Segmentation_MarksAction"/>
         <action name="audioOriginal_Audio__LLDAction"/>
     </item>
     <item text="&amp;Help" name="help">
         <action name="helpAboutAction"/>
+        <separator/>
         <action name="helpWhats_thisAction"/>
     </item>
     <separator/>
@@ -390,7 +391,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
             <iconset>image1</iconset>
         </property>
         <property name="text">
-            <string>&amp;New project</string>
+            <string>New project</string>
         </property>
         <property name="menuText">
             <string>&amp;New project</string>
@@ -407,7 +408,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
             <iconset>image2</iconset>
         </property>
         <property name="text">
-            <string>&amp;Save project</string>
+            <string>Save project</string>
         </property>
         <property name="menuText">
             <string>&amp;Save project</string>
@@ -424,7 +425,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
             <iconset>image3</iconset>
         </property>
         <property name="text">
-            <string>S&amp;ave project as</string>
+            <string>Save project as</string>
         </property>
         <property name="menuText">
             <string>S&amp;ave project as</string>
@@ -441,7 +442,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
             <iconset>image4</iconset>
         </property>
         <property name="text">
-            <string>&amp;Open project</string>
+            <string>Open project</string>
         </property>
         <property name="menuText">
             <string>&amp;Open project</string>
@@ -520,7 +521,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
             <iconset>image6</iconset>
         </property>
         <property name="text">
-            <string>Set &amp;Schema</string>
+            <string>Set Schema</string>
         </property>
         <property name="menuText">
             <string>Set &amp;Schema</string>
@@ -590,7 +591,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
             <string>Compute Descriptors</string>
         </property>
         <property name="menuText">
-            <string>Compute Descriptors</string>
+            <string>&amp;Compute Descriptors</string>
         </property>
     </action>
     <action>
