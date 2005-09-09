@@ -88,20 +88,20 @@ private:
 	void refreshMarksView();
 	void initAudioWidget();
 	void AdaptInterfaceToCurrentSchema();
-	void AdaptDescriptorsTableToCurrentSchema();
+	void AdaptDescriptorsTableToCurrentSchema(QTable * table, const std::string & scope);
 	void updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row);
 	void AdaptSegmentationsToCurrentSchema();
 	void removeLLDTabs();
 	void drawAudio(const char * filename);
 	void drawLLDescriptors(int index);
-	void drawHLD(int songIndex, const std::string& descriptorName, 
-		const CLAM_Annotator::RestrictedString& value, 
+	void refreshDescriptorsTable(QTable * table, const std::string & scope, unsigned element, bool computed);
+	void drawHLD(QTable * table, int row, const CLAM_Annotator::RestrictedString& value, 
 		const std::list<std::string> & options, bool computed=true);
-	void drawHLD(int songIndex, const std::string& descriptorName,const CLAM::Text& value, 
+	void drawHLD(QTable * table, int row,const CLAM::Text& value, 
 		bool computed=true);
-	void drawHLD(int songIndex, const std::string& descriptorName, float value, 
+	void drawHLD(QTable * table, int row, float value, 
 		CLAM_Annotator::Range<float> renge, bool computed=true);
-	void drawHLD(int songIndex, const std::string& descriptorName, int value, 
+	void drawHLD(QTable * table, int row, int value, 
 		CLAM_Annotator::Range<int> range, bool computed=true);
 
 	int findHLDescriptorIndex(const std::string& name);
