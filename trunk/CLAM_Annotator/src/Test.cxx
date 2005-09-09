@@ -134,8 +134,8 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 		llschema.AddFloat(*name);
 
 	CLAM_Annotator::HLDSchema& hlschema = testSchema.GetHLDSchema();
-	hlschema.AddString("Artist");
-	hlschema.AddString("Title");
+	hlschema.AddString("Song","Artist");
+	hlschema.AddString("Song","Title");
 	const char * genreValues[] =
 	{
 		"Dance",
@@ -145,26 +145,26 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 		"Folk",
 		0
 	};
-	hlschema.AddRestrictedString("Genre", genreValues);
-	hlschema.AddRangedReal("Danceability", 0., 10.);
+	hlschema.AddRestrictedString("Song","Genre", genreValues);
+	hlschema.AddRangedReal("Song","Danceability", 0., 10.);
 	const char * keyValues[] =
 	{
 		"A", "A#", "B", "C", "C#",
 		"D", "D#", "E", "F", "F#",
 		"G", "G#", 0
 	};
-	hlschema.AddRestrictedString("Key", keyValues);
+	hlschema.AddRestrictedString("Song","Key", keyValues);
 	const char * modeValues[] =
 	{
 		"Minor",
 		"Major",
 		0
 	};
-	hlschema.AddRestrictedString("Mode", modeValues);
-	hlschema.AddRangedReal("DynamicComplexity", 0., 10.);
-	hlschema.AddRangedInt("BPM", 0, 240);
-	hlschema.AddSegmentation("Onsets", "Onset");
-	hlschema.AddSegmentation("RandomSegments", "");
+	hlschema.AddRestrictedString("Song","Mode", modeValues);
+	hlschema.AddRangedReal("Song","DynamicComplexity", 0., 10.);
+	hlschema.AddRangedInt("Song","BPM", 0, 240);
+	hlschema.AddSegmentation("Song","Onsets", "Onset");
+	hlschema.AddSegmentation("Song","RandomSegments", "");
 
 	CLAM::XMLStorage::Dump(testSchema, "Schema", schemaLocation);
 }
