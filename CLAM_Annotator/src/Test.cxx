@@ -35,11 +35,11 @@ void ComputeSegmentationMarks(CLAM::Segment& segment,CLAM::SegmentDescriptors& s
 void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray & marks);
 int GetnSamples(const std::string& fileName);
 
-int main()
+int main(int argc, char ** argv)
 {
 	const char * schemaLocation = "../Samples/Schema.sc";
 	const char * projectLocation = "../Samples/Project.pro";
-	const char* songFileNames[] =
+	const char * songFileNames[] =
 	{
 		"../../CLAM-TestData/trumpet.mp3",
 		"../../CLAM-TestData/Elvis.ogg",
@@ -49,17 +49,24 @@ int main()
 		"../Samples/SongsTest/03.mp3",
 		0
 	};
+	bool generateJustPools = (argc>1);
 
-	BuildAndDumpTestSchema(schemaLocation);
+	if (!generateJustPools)
+		BuildAndDumpTestSchema(schemaLocation);
 
 	//Create and store Project
 	CLAM_Annotator::Project myProject;
-	for (const char ** filename = songFileNames; *filename; filename++)
-		myProject.AppendSong(*filename);
+	if (generateJustPools)
+		for (unsigned i = 1; i<argc; i++)
+			myProject.AppendSong(argv[i]);
+	else
+		for (const char ** filename = songFileNames; *filename; filename++)
+			myProject.AppendSong(*filename);
 
 	myProject.LoadScheme(schemaLocation);
 
-	CLAM::XMLStorage::Dump(myProject,"Project",projectLocation);
+	if (!generateJustPools)
+		CLAM::XMLStorage::Dump(myProject,"Project",projectLocation);
 
 
 	//Now we create a Pool for every sound file we have
