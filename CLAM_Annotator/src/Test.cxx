@@ -165,6 +165,7 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 	hlschema.AddRangedInt("Song","BPM", 0, 240);
 	hlschema.AddSegmentation("Song","Onsets", "Onset");
 	hlschema.AddSegmentation("Song","RandomSegments", "");
+	hlschema.AddRangedReal("Onset","Force", 0., 10.);
 
 	CLAM::XMLStorage::Dump(testSchema, "Schema", schemaLocation);
 }
@@ -193,6 +194,15 @@ void PopulatePool(const std::string & song,
 	ComputeSegmentationMarks(segment, segmentD);
 	Segment2Marks(segment,segmentation);
 	
+	unsigned nOnsets = segmentation.Size();
+	if (nOnsets==0) nOnsets=1; // KLUDGE!!
+	pool.SetNumberOfContexts("Onset",nOnsets);
+	float * onsetForces = pool.GetWritePool<float>("Onset","Force");
+	for (unsigned i = 0; i<nOnsets; i++)
+	{
+		onsetForces[i] = float (rand())/float(RAND_MAX)*10;
+	}
+
 	CLAM::IndexArray* randomSegmentation = 
 		pool.GetWritePool<CLAM::IndexArray>("Song","RandomSegments");
 	GenerateRandomSegmentationMarks(randomSegmentation, GetnSamples(song), 1024);
@@ -205,6 +215,7 @@ void PopulatePool(const std::string & song,
 	pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song","Mode")[0] = "Minor";
 	pool.GetWritePool<float>("Song","DynamicComplexity")[0] = 8.1;
 	pool.GetWritePool<int>("Song","BPM")[0] = 100;
+
 }
 
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
