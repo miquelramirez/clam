@@ -284,7 +284,7 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 
 void Annotator::adaptDescriptorsTableToCurrentSchema(QTable * table, const std::string & scope)
 {
-	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
+	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(scope);
 	table->setNumRows(hlds.size());
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
 	for(int i = 0 ; it != hlds.end(); it++, i++)
@@ -654,14 +654,13 @@ void Annotator::refreshEnvelopes()
 
 	std::cout << "Loading LLD Data..." << std::endl;
 
-	std::vector<CLAM::VM::BPFEditor*>::iterator ed_it = mBPFEditors.begin();
 	std::list<std::string>::const_iterator it;
 	const std::list<std::string>& descriptorsNames = mProject.GetFrameScopeAttributeNames();
 	unsigned int i = 0;
 
-	for(it = descriptorsNames.begin();it != descriptorsNames.end(); ed_it++, it++, i++)
+	for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++, i++)
 	{
-		CLAM::VM::BPFEditor & bpfEditor = **ed_it;
+		CLAM::VM::BPFEditor & bpfEditor = *mBPFEditors[i];
 		CLAM::BPF transcribed;
 		refreshEnvelope(transcribed, *it);
 		bpfEditor.SetData( transcribed );
@@ -864,7 +863,7 @@ void Annotator::drawHLD(QTable* table, int row, int value, Range<int> range)
 
 void Annotator::refreshDescriptorsTable(QTable * table, const std::string & scope, unsigned element)
 {
-	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
+	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(scope);
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
 	for(it = hlds.begin() ; it != hlds.end(); it++)
 	{
@@ -912,7 +911,7 @@ int Annotator::descriptorIndexInTable(const std::string & scope, const std::stri
 {
 	//TODO: should find a more efficient search algorithm
 
-	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
+	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(scope);
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
 	for(int i = 0 ; it != hlds.end(); it++, i++)
 	{
