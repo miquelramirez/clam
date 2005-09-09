@@ -19,6 +19,10 @@ namespace CLAM_Annotator
 			AddAll();
 			UpdateData();
 		}
+		void AddFloat(const std::string & attribute)
+		{
+			GetLLDNames().push_back(attribute);
+		}
 	};
 }
 
