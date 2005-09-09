@@ -50,7 +50,7 @@ namespace CLAM_Annotator{
 	class HLDSchema:public CLAM::DynamicType
 	{
 		DYNAMIC_TYPE(HLDSchema,1);
-		DYN_CONTAINER_ATTRIBUTE(0,public, std::list<HLDSchemaElement>,HLDs,HLD);
+		DYN_CONTAINER_ATTRIBUTE(0,public, std::list<HLDSchemaElement>,HLDs,Attribute);
 		
 		void DefaultInit()
 		{
