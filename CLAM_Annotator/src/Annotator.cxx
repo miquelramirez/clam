@@ -229,6 +229,7 @@ void Annotator::initAudioWidget()
 	mpAudioPlot->Label("Audio");
 	mCurrentAudio.SetSize(20000);
 	mpAudioPlot->SetData(mCurrentAudio);
+	mpAudioPlot->SetEditTagDialogEnabled(false);
 	mpAudioPlot->SwitchDisplayColors(true);
 	mpAudioPlot->SetToggleColorOn(true);
 	mpAudioPlot->switchColors();
