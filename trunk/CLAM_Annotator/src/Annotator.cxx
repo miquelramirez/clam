@@ -291,7 +291,7 @@ void Annotator::AdaptDescriptorsTableToCurrentSchema()
 		mDescriptorsTable->setItem(i, 0,
 			new TableItem(mDescriptorsTable,
 				TableItem::Never,
-				QString((*it).GetName().c_str())));
+				QString(it->GetName().c_str())));
 	}
 }
 
@@ -370,36 +370,38 @@ void Annotator::changeCurrentFile()
 void Annotator::descriptorsTableChanged(int row, int column)
 {
 	mHLDChanged = true;
-	//We first take the HLDSchema element where we will find all necessary info
+	updateDescriptorTableData(mDescriptorsTable, "Song", 0, row, column);
+}
+
+void Annotator::updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row, int column)
+{
 	CLAM_Annotator::HLDSchemaElement hldSchemaElement;
 	getHLDSchemaElementFromIndex(row, hldSchemaElement);
 
 	const std::string & name = hldSchemaElement.GetName();
 	const std::string & type = hldSchemaElement.GetType();
-	QString qValue = mDescriptorsTable->text(row, column);
+	QString qValue = table->text(row, 1);
 	const std::string & value = qValue.ascii();
 
 	if (type == "String")
 	{
-		*(mpDescriptorPool->GetWritePool<CLAM::Text>("Song",name)) = value;
+		mpDescriptorPool->GetWritePool<CLAM::Text>(scope,name)[element] = value;
 	}
 	if (type == "RestrictedString")
 	{
-		CLAM_Annotator::RestrictedString* rString = mpDescriptorPool->
-		GetWritePool<CLAM_Annotator::RestrictedString>("Song",name);
-		rString->SetString(value);
+		mpDescriptorPool->GetWritePool<CLAM_Annotator::RestrictedString>(scope,name)[element].SetString(value);
 	}
 	if (type == "Float")
 	{
-		*(mpDescriptorPool->GetWritePool<float>("Song",name)) = qValue.toFloat();
+		mpDescriptorPool->GetWritePool<float>(scope,name)[element] = qValue.toFloat();
 	}
 	if (type == "Int")
 	{
-		*(mpDescriptorPool->GetWritePool<int>("Song",name)) = qValue.toInt();
+		mpDescriptorPool->GetWritePool<int>(scope,name)[element] = qValue.toInt();
 	}
 	changeCurrentFile();
-	mDescriptorsTable->adjustColumn(0);
-	mDescriptorsTable->adjustColumn(1);
+	table->adjustColumn(0);
+	table->adjustColumn(1);
 }
 
 void Annotator::descriptorsBPFChanged(int pointIndex,float newValue)
@@ -414,15 +416,15 @@ void Annotator::segmentationMarksChanged(int, unsigned)
 {
 	std::vector<unsigned int> marks;
 	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
-	CLAM::IndexArray* descriptorMarks = 
-		mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song",currentSegmentation);
+	CLAM::IndexArray & descriptorMarks = 
+		mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song",currentSegmentation)[0];
 	marks = mpAudioPlot->GetMarks();
 	int nMarks = marks.size();
-	descriptorMarks->Resize(nMarks);
-	descriptorMarks->SetSize(nMarks);
+	descriptorMarks.Resize(nMarks);
+	descriptorMarks.SetSize(nMarks);
 	for (int i=0; i<nMarks; i++)
 	{
-		(*descriptorMarks)[i] = marks[i];
+		descriptorMarks[i] = marks[i];
 	} 
 	mSegmentsChanged = true;
 	auralizeMarks();
@@ -456,7 +458,7 @@ void Annotator::closeEvent ( QCloseEvent * e )
 			"Do you want to save the changes to current descriptors?", 
 			QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes)
 		{
-			if (mLLDChanged) generateDescriptorsFromEnvelopes();
+			if (mLLDChanged) updateEnvelopesData();
 			saveDescriptors();
 		}
 	}
@@ -612,7 +614,7 @@ void Annotator::songsClicked( QListViewItem * item)
 	{
 		std::cout << "Saving Previous Song Descriptors..." << std::endl;
 		if(mLLDChanged) 
-			generateDescriptorsFromEnvelopes();
+			updateEnvelopesData();
 		saveDescriptors();
 	}
 
@@ -629,7 +631,7 @@ void Annotator::songsClicked( QListViewItem * item)
 		mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + ".pool";
 	loadDescriptorPool();
 	std::cout << "Filling Global Descriptors..." << std::endl;
-	fillGlobalDescriptors( mCurrentIndex );
+	fillGlobalDescriptors();
 	std::cout << "Drawing Audio..." << std::endl;
 	mAudioRefreshTimer->stop();
 	drawAudio(filename);
@@ -644,7 +646,7 @@ void Annotator::drawLLDescriptors(int index)
 {
 	if (!mpDescriptorPool) return;
 	std::cout << "Loading LLD Data..." << std::endl;
-	generateEnvelopesFromDescriptors();
+	refreshEnvelopes();
 	std::cout << "Adjusting BPF's..." << std::endl;
 
 	std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
@@ -696,19 +698,19 @@ void Annotator::refreshMarksView()
 {
 	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	if (!mpDescriptorPool) return;
-	const CLAM::IndexArray* descriptorsMarks = 
-		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation);
-	int nMarks = descriptorsMarks->Size();
+	const CLAM::IndexArray & descriptorsMarks = 
+		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation)[0];
+	int nMarks = descriptorsMarks.Size();
 	std::vector<unsigned> marks(nMarks);
 	for(int i=0;i<nMarks;i++)
 	{
-		marks[i] = (unsigned)(*descriptorsMarks)[i];
+		marks[i] = (unsigned)descriptorsMarks[i];
 	}
 	mpAudioPlot->SetMarks(marks);
 	auralizeMarks();
 }
 
-void Annotator::generateEnvelopesFromDescriptors()
+void Annotator::refreshEnvelopes()
 {
 	std::vector<CLAM::VM::BPFEditor*>::iterator ed_it = mBPFEditors.begin();
 	std::list<std::string>::const_iterator it;
@@ -717,14 +719,14 @@ void Annotator::generateEnvelopesFromDescriptors()
 	for(it = descriptorsNames.begin();it != descriptorsNames.end(); ed_it++, it++)
 	{
 		CLAM::BPF transcribed;
-		fillEnvelopeWithLLDValues(transcribed, *it);
+		refreshEnvelope(transcribed, *it);
 		(*ed_it)->SetData( transcribed );
 		(*ed_it)->SetAudioPtr(&mCurrentAudio);
 	}
 
 }
   
-void Annotator::fillEnvelopeWithLLDValues(CLAM::BPF & bpf, const std::string& descriptorName)
+void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& descriptorName)
 {
 	const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",descriptorName);
 
@@ -743,7 +745,7 @@ void Annotator::fillEnvelopeWithLLDValues(CLAM::BPF & bpf, const std::string& de
 	}
 }
 
-void Annotator::generateDescriptorsFromEnvelopes()
+void Annotator::updateEnvelopesData()
 {
 	mLLDChanged = false;
 	unsigned i=0, editors_size = mBPFEditors.size();
@@ -752,11 +754,11 @@ void Annotator::generateDescriptorsFromEnvelopes()
 
 	for(it = descriptorsNames.begin() ;i < editors_size; i++, it++)
 	{
-		generateDescriptorFromEnvelope(i, mpDescriptorPool->GetWritePool<float>("Frame",(*it)));
+		updateEnvelopeData(i, mpDescriptorPool->GetWritePool<float>("Frame",*it));
 	}
 }
 
-void Annotator::generateDescriptorFromEnvelope(int bpfIndex, float* descriptor)
+void Annotator::updateEnvelopeData(int bpfIndex, float* descriptor)
 {
 	int nPoints = mBPFEditors[bpfIndex]->GetData().Size();
 	for (int i=0; i<nPoints; i++)
@@ -867,7 +869,7 @@ void Annotator::drawHLD(int songIndex, const std::string& descriptorName, int va
 
 }
 
-void Annotator::drawDescriptorsValue( int index, bool computed = true)
+void Annotator::drawDescriptorsValue( bool computed )
 {
 	if (!mpDescriptorPool) return;
 	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
@@ -878,34 +880,37 @@ void Annotator::drawDescriptorsValue( int index, bool computed = true)
 		const std::string & name = it->GetName();
 		if (type == "String")
 		{
-			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-				GetReadPool<CLAM::Text>("Song",name),computed);
+			drawHLD(mCurrentIndex,name,
+				mpDescriptorPool->GetReadPool<CLAM::Text>("Song",name)[0],
+				computed);
 		}
 		if (type == "RestrictedString")
 		{
 			const std::list<std::string> & options = it->GetRestrictionValues();
-			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-				GetReadPool<CLAM_Annotator::RestrictedString>("Song",name),
+			drawHLD(mCurrentIndex,name,
+				mpDescriptorPool->GetReadPool<CLAM_Annotator::RestrictedString>("Song",name)[0],
 				options,computed);
 		}
 		if (type == "Float")
 		{
-			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-				GetReadPool<float>("Song",name),it->GetfRange(),computed);
+			drawHLD(mCurrentIndex,name,
+				mpDescriptorPool->GetReadPool<float>("Song",name)[0],
+				it->GetfRange(),computed);
 		}
 		if (type == "Int")
 		{
-			drawHLD(index,(*it).GetName(),*mpDescriptorPool->
-				GetReadPool<int>("Song",name),it->GetiRange(),computed);
+			drawHLD(mCurrentIndex,name,
+				mpDescriptorPool->GetReadPool<int>("Song",name)[0],
+				it->GetiRange(),computed);
 		}
 	}
 
 }
 
-void Annotator::fillGlobalDescriptors( int index)
+void Annotator::fillGlobalDescriptors()
 {
 	mDescriptorsTable->show();
-	drawDescriptorsValue(index);
+	drawDescriptorsValue();
 	mDescriptorsTable->adjustColumn(0);
 	mDescriptorsTable->adjustColumn(1);
 } 
@@ -977,7 +982,7 @@ int Annotator::getIndexFromFileName(const std::string& fileName)
 	std::vector<CLAM_Annotator::Song>::iterator it = fileNames.begin();
 	for (int i=0 ; it != fileNames.end(); it++, i++)
 	{
-		if ((*it).GetSoundFile() == fileName) return i;
+		if (it->GetSoundFile() == fileName) return i;
 	}
 	return -1;
 }

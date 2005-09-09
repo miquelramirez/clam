@@ -40,7 +40,7 @@ class Annotator : public AnnotatorBase
 public:
 	Annotator(const std::string & nameProject);
 	virtual ~Annotator();
-	void fillGlobalDescriptors( int index);
+	void fillGlobalDescriptors();
 	void songsClicked( QListViewItem * item);
 	void playPause();
 
@@ -80,7 +80,7 @@ private:
 	void currentFile( std::string &);
 	void changeCurrentFile();
 	void markAllSongsUnchanged();
-	void drawDescriptorsValue( int, bool );
+	void drawDescriptorsValue(bool computed=true);
 
 	//xamat
 
@@ -88,8 +88,8 @@ private:
 	void refreshMarksView();
 	void initAudioWidget();
 	void AdaptInterfaceToCurrentSchema();
-	void AdaptEnvelopesToCurrentSchema();
 	void AdaptDescriptorsTableToCurrentSchema();
+	void updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row, int column);
 	void AdaptSegmentationsToCurrentSchema();
 	void removeLLDTabs();
 	void drawAudio(const char * filename);
@@ -109,12 +109,11 @@ private:
 	void getHLDSchemaElementFromIndex(int index, CLAM_Annotator::HLDSchemaElement&);
 	int getIndexFromFileName(const std::string& fileName);
 
-	void initEnvelopes();
-
-	void generateEnvelopesFromDescriptors();
-	void fillEnvelopeWithLLDValues(CLAM::BPF & bpf, const std::string& descriptorName);
-	void generateDescriptorFromEnvelope(int bpfIndex, float* descriptors);
-	void generateDescriptorsFromEnvelopes();
+	void AdaptEnvelopesToCurrentSchema();
+	void refreshEnvelopes();
+	void refreshEnvelope(CLAM::BPF & bpf, const std::string& descriptorName);
+	void updateEnvelopesData();
+	void updateEnvelopeData(int bpfIndex, float* descriptors);
 
 	void loadDescriptorPool();
 
