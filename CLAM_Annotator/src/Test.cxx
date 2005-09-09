@@ -25,7 +25,7 @@
 void BuildAndDumpSchema(const char * schemaLocation);
 void CreateLLSchema(CLAM_Annotator::LLDSchema& llschema);
 void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema);
-void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song,
+void PopulatePool(const CLAM_Annotator::Schema& schema, const std::string& song,
 		CLAM::DescriptionDataPool& pool);
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
 void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples, int frameSize);
@@ -35,7 +35,7 @@ void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment,
 		    CLAM::SegmentDescriptors& segmentD);
 void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDataPool& pool);
 void ComputeSegmentationMarks(CLAM::Segment& segment,CLAM::SegmentDescriptors& segmentD);
-void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray* marks);
+void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray & marks);
 int GetnSamples(const std::string& fileName);
 
 int main()
@@ -76,9 +76,9 @@ int main()
 		currentSong != myProject.GetSongs().end();
 		currentSong++)
 	{
-		std::cout<<"Computing Descriptors for file "<<(*currentSong).GetSoundFile()
+		std::cout<<"Computing Descriptors for file "<< currentSong->GetSoundFile()
 		     <<" Please wait..."<<std::endl;
-		PopulatePool(myProject.GetAnnotatorSchema(), *currentSong, pool);
+		PopulatePool(myProject.GetAnnotatorSchema(), currentSong->GetSoundFile(), pool);
 		//Dump Descriptors Pool
 		std::string poolFile;
 		if((*currentSong).HasPoolFile()) poolFile = (*currentSong).GetPoolFile();
@@ -241,7 +241,7 @@ void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema)
 }
 
 
-void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::Song song, 
+void PopulatePool(const CLAM_Annotator::Schema& schema, const std::string & song, 
 		CLAM::DescriptionDataPool& pool)
 {
   
@@ -252,72 +252,30 @@ void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::So
 	CLAM::Audio audio;
 	CLAM::Segment segment;
 	CLAM::SegmentDescriptors segmentD;
-	CLAM::Text artist="unknown";
-	CLAM::Text title="unknown";
-	OpenSoundFile(song.GetSoundFile(),audio, artist, title);
+	CLAM::Text artist="Unknown Artist";
+	CLAM::Text title="Unknown Title";
+	OpenSoundFile(song, audio, artist, title);
 	ComputeSegment(audio,segment,segmentD);
 	SegmentD2Pool(segmentD,pool);
 
 	//Create segmentation marks
-	CLAM::IndexArray* segmentation = 
-		pool.GetWritePool<CLAM::IndexArray>("Song","Onsets");
+	CLAM::IndexArray & segmentation = 
+		pool.GetWritePool<CLAM::IndexArray>("Song","Onsets")[0];
 	ComputeSegmentationMarks(segment, segmentD);
 	Segment2Marks(segment,segmentation);
 	
 	CLAM::IndexArray* randomSegmentation = 
 		pool.GetWritePool<CLAM::IndexArray>("Song","RandomSegments");
-	GenerateRandomSegmentationMarks(randomSegmentation, GetnSamples(song.GetSoundFile()), 1024);
+	GenerateRandomSegmentationMarks(randomSegmentation, GetnSamples(song), 1024);
 
-	//Write HLD values
-	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = schema.GetHLDSchema().GetHLDs();
-	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2 = hlds.begin();
-	for(int i=0; it2 != hlds.end(); it2++,i++)
-	{
-		if((*it2).GetName()=="Artist")
-		{
-			CLAM::Text* value = pool.GetWritePool<CLAM::Text>("Song",(*it2).GetName());
-			*value = artist;
-		}
-		else if((*it2).GetName()=="Title")
-		{
-			CLAM::Text* value = pool.GetWritePool<CLAM::Text>("Song",(*it2).GetName());
-			*value = title;
-		}
-		else if((*it2).GetName()=="Genre")
-		{
-			CLAM_Annotator::RestrictedString* value = 
-			pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
-			*value = "Folk";
-		}
-		else if((*it2).GetName()=="Danceability")
-		{
-			float* value = pool.GetWritePool<float>("Song",(*it2).GetName());
-			*value = 7.2;
-		}
-		else if((*it2).GetName()=="Key")
-		{
-			CLAM_Annotator::RestrictedString* value = 
-			pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
-			*value = "C";
-		}
-		else if((*it2).GetName()=="Mode")
-		{
-			CLAM_Annotator::RestrictedString* value = 
-			pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song",(*it2).GetName());
-			*value = "Minor";
-		}
-		else if((*it2).GetName()=="DynamicComplexity")
-		{
-			float* value = pool.GetWritePool<float>("Song",(*it2).GetName());
-			*value = 8.1;
-		}
-		else if((*it2).GetName()=="BPM")
-		{
-			int* value = pool.GetWritePool<int>("Song",(*it2).GetName());
-			*value = 100;
-		}
-	}
-
+	pool.GetWritePool<CLAM::Text>("Song","Artist")[0] = artist;
+	pool.GetWritePool<CLAM::Text>("Song","Title")[0] = title;
+	pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song","Genre")[0] = "Folk";
+	pool.GetWritePool<float>("Song","Danceability")[0] = 7.2;
+	pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song","Key")[0] = "C";
+	pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song","Mode")[0] = "Minor";
+	pool.GetWritePool<float>("Song","DynamicComplexity")[0] = 8.1;
+	pool.GetWritePool<int>("Song","BPM")[0] = 100;
 }
 
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
@@ -584,7 +542,7 @@ void ComputeSegmentationMarks(CLAM::Segment& segment,CLAM::SegmentDescriptors& s
 	mySegmentator.Do(segment,segmentD);
 }
 
-void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray* marks)
+void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray & marks)
 {
 	CLAM::List<CLAM::Segment>& children = segment.GetChildren();
 	children.DoFirst();
@@ -596,7 +554,7 @@ void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray* marks)
 		int currentTime = children[i].GetEndTime();
 		if(currentTime>0&&currentTime<segmentDuration)
 		{
-			marks->AddElem(children[i].GetEndTime()/1000.*samplingRate);
+			marks.AddElem(children[i].GetEndTime()/1000.*samplingRate);
 		}
 	}
 
