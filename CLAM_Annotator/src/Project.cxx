@@ -17,7 +17,7 @@ void Project::CreatePoolScheme()
 	{
 		const std::string & type = it2->GetType();
 		const std::string & name = it2->GetName();
-		const std::string & scope = it2->GetName();
+		const std::string & scope = it2->GetScope();
 		if (type=="Float")
 		{
 			mDescriptionScheme.AddAttribute <float>(scope,name);

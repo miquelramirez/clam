@@ -95,6 +95,7 @@ namespace CLAM_Annotator{
 				const char ** availableValues)
 		{
 			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			testHLDesc.SetScope(scope);
 			testHLDesc.SetName(attribute);
 			testHLDesc.SetType("RestrictedString");
 			testHLDesc.AddRestrictionValues();
@@ -109,6 +110,7 @@ namespace CLAM_Annotator{
 				int min, int max)
 		{
 			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			testHLDesc.SetScope(scope);
 			testHLDesc.SetName(attribute);
 			testHLDesc.SetType("Int");
 			testHLDesc.AddiRange();
@@ -125,10 +127,11 @@ namespace CLAM_Annotator{
 				double min, double max)
 		{
 			CLAM_Annotator::HLDSchemaElement testHLDesc;
-			testHLDesc.SetName(attribute);
-			testHLDesc.SetType("Float");
 			testHLDesc.AddfRange();
 			testHLDesc.UpdateData();
+			testHLDesc.SetScope(scope);
+			testHLDesc.SetName(attribute);
+			testHLDesc.SetType("Float");
 			CLAM_Annotator::Range<float> range;
 			range.SetMin(min);
 			range.SetMax(max);
@@ -140,6 +143,7 @@ namespace CLAM_Annotator{
 				const std::string & attribute)
 		{
 			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			testHLDesc.SetScope(scope);
 			testHLDesc.SetName(attribute);
 			testHLDesc.SetType("String");
 			GetHLDs().push_back(testHLDesc);
@@ -152,6 +156,7 @@ namespace CLAM_Annotator{
 			CLAM_Annotator::HLDSchemaElement testHLDesc;
 			testHLDesc.AddChildScope();
 			testHLDesc.UpdateData();
+			testHLDesc.SetScope(scope);
 			testHLDesc.SetName(attribute);
 			testHLDesc.SetType("Segmentation");
 			testHLDesc.SetChildScope(childScope);
