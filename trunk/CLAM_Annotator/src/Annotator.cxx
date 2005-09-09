@@ -631,7 +631,7 @@ void Annotator::songsClicked( QListViewItem * item)
 		mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + ".pool";
 	loadDescriptorPool();
 	std::cout << "Filling Global Descriptors..." << std::endl;
-	fillGlobalDescriptors();
+	refreshGlobalDescriptorsTable();
 	std::cout << "Drawing Audio..." << std::endl;
 	mAudioRefreshTimer->stop();
 	drawAudio(filename);
@@ -818,21 +818,18 @@ bool Annotator::event(QEvent* e)
 }
 
 
-void Annotator::drawHLD(QTable* table, int row, const CLAM::Text & value, 
-			bool computed)
+void Annotator::drawHLD(QTable* table, int row, const CLAM::Text & value)
 {
 	QString qvalue = QString(value.c_str());
-	if(!computed) qvalue = "?";
 	table->setItem(row,1,
 		new TableItem(table,TableItem::WhenCurrent,qvalue));
 }
 
 void Annotator::drawHLD(QTable* table, int row, 
 			const CLAM_Annotator::RestrictedString& value, 
-			const std::list<std::string> & options, bool computed)
+			const std::list<std::string> & options)
 {
 	QString qvalue = value.GetString().c_str();
-	if(!computed) qvalue = "?";
 	QStringList qrestrictionStrings;
 	std::list<std::string>::const_iterator it;
 	for(it = options.begin();it != options.end(); it++)
@@ -847,30 +844,28 @@ void Annotator::drawHLD(QTable* table, int row,
 	table->setItem(row,1,item);
 }
 
-void Annotator::drawHLD(QTable* table, int row, float value, Range<float> range, bool computed)
+void Annotator::drawHLD(QTable* table, int row, float value, Range<float> range)
 {
 	std::ostringstream s;
 	s<<value;
 	QString qvalue = QString(s.str().c_str());
-	if(!computed) qvalue = "?";
 	table->setItem(row,1,
 		new RangeSelectionTableItem(table,
 			TableItem::WhenCurrent,qvalue,range));
 }
 
-void Annotator::drawHLD(QTable* table, int row, int value, Range<int> range, bool computed)
+void Annotator::drawHLD(QTable* table, int row, int value, Range<int> range)
 {
 	std::ostringstream s;
 	s<<value;
 	QString qvalue = QString(s.str().c_str());
-	if(!computed) qvalue = "?";
 	table->setItem(row,1,
 		new RangeSelectionTableItem(table,
 			TableItem::WhenCurrent,qvalue,range));
 
 }
 
-void Annotator::refreshDescriptorsTable(QTable * table, const std::string & scope, unsigned element, bool computed)
+void Annotator::refreshDescriptorsTable(QTable * table, const std::string & scope, unsigned element)
 {
 	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
@@ -882,44 +877,39 @@ void Annotator::refreshDescriptorsTable(QTable * table, const std::string & scop
 		if (type == "String")
 		{
 			drawHLD(table, row,
-				mpDescriptorPool->GetReadPool<CLAM::Text>(scope,name)[element],
-				computed);
+				mpDescriptorPool->GetReadPool<CLAM::Text>(scope,name)[element]
+				);
 		}
 		if (type == "RestrictedString")
 		{
 			const std::list<std::string> & options = it->GetRestrictionValues();
 			drawHLD(table, row,
 				mpDescriptorPool->GetReadPool<CLAM_Annotator::RestrictedString>(scope,name)[element],
-				options,computed);
+				options);
 		}
 		if (type == "Float")
 		{
 			drawHLD(table, row,
 				mpDescriptorPool->GetReadPool<float>(scope,name)[element],
-				it->GetfRange(),computed);
+				it->GetfRange());
 		}
 		if (type == "Int")
 		{
 			drawHLD(table, row,
 				mpDescriptorPool->GetReadPool<int>(scope,name)[element],
-				it->GetiRange(),computed);
+				it->GetiRange());
 		}
 	}
 	table->adjustColumn(0);
 	table->adjustColumn(1);
 }
 
-void Annotator::drawDescriptorsValue( bool computed )
+void Annotator::refreshGlobalDescriptorsTable()
 {
 	if (!mpDescriptorPool) return;
-	refreshDescriptorsTable(mDescriptorsTable, "Song", 0, computed);
-}
-
-void Annotator::fillGlobalDescriptors()
-{
+	refreshDescriptorsTable(mDescriptorsTable, "Song", 0);
 	mDescriptorsTable->show();
-	drawDescriptorsValue();
-} 
+}
 
 int Annotator::findHLDescriptorIndex(const std::string& name)
 {
