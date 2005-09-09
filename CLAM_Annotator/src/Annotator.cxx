@@ -205,7 +205,7 @@ void Annotator::initProject()
 			constructFileError(mProject.GetSchema(),e));
 		return;
 	}
-	AdaptInterfaceToCurrentSchema();
+	adaptInterfaceToCurrentSchema();
 	
 	markProjectChanged(false);
 	mLLDChanged = false;
@@ -213,11 +213,11 @@ void Annotator::initProject()
 	mSegmentsChanged = false;
 }
 
-void Annotator::AdaptInterfaceToCurrentSchema()
+void Annotator::adaptInterfaceToCurrentSchema()
 {
-	AdaptDescriptorsTableToCurrentSchema(mDescriptorsTable, "Song");
-	AdaptEnvelopesToCurrentSchema();
-	AdaptSegmentationsToCurrentSchema();
+	adaptDescriptorsTableToCurrentSchema(mDescriptorsTable, "Song");
+	adaptEnvelopesToCurrentSchema();
+	adaptSegmentationsToCurrentSchema();
 }
 
 void Annotator::initAudioWidget()
@@ -236,7 +236,7 @@ void Annotator::initAudioWidget()
 	mpAudioPlot->Hide();
 }
 
-void Annotator::AdaptSegmentationsToCurrentSchema()
+void Annotator::adaptSegmentationsToCurrentSchema()
 {
 	mSegmentationSelection->clear();
 	const std::list<std::string> & segmentationNames =
@@ -249,7 +249,7 @@ void Annotator::AdaptSegmentationsToCurrentSchema()
 	}
 }
 
-void Annotator::AdaptEnvelopesToCurrentSchema()
+void Annotator::adaptEnvelopesToCurrentSchema()
 {
 	removeLLDTabs();
 
@@ -281,7 +281,7 @@ void Annotator::AdaptEnvelopesToCurrentSchema()
 	connectBPFs();
 }
 
-void Annotator::AdaptDescriptorsTableToCurrentSchema(QTable * table, const std::string & scope)
+void Annotator::adaptDescriptorsTableToCurrentSchema(QTable * table, const std::string & scope)
 {
 	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
 	table->setNumRows(hlds.size());
@@ -410,9 +410,9 @@ void Annotator::descriptorsBPFChanged(int pointIndex,float newValue)
 	  is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
 	  in the class.*/
 	mLLDChanged = true;
-} 
+}
 
-void Annotator::segmentationMarksChanged(int, unsigned)
+void Annotator::updateSegmentations()
 {
 	std::vector<unsigned int> marks;
 	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
@@ -428,6 +428,11 @@ void Annotator::segmentationMarksChanged(int, unsigned)
 	} 
 	mSegmentsChanged = true;
 	auralizeMarks();
+}
+
+void Annotator::segmentationMarksChanged(int, unsigned)
+{
+	updateSegmentations();
 }
 
 void Annotator::updateSongListWidget()
@@ -621,7 +626,7 @@ void Annotator::songsClicked( QListViewItem * item)
 	if (item == 0) return;
 
 	const char * filename = item->text(0).ascii();
-	mCurrentIndex = getIndexFromFileName(filename);
+	mCurrentIndex = songIndexInTable(filename);
 	if (mCurrentIndex <0) return;
 	CLAM_Annotator::Song & currentSong = mProject.GetSongs()[mCurrentIndex];
 	mCurrentSoundFileName = currentSong.GetSoundFile();
@@ -636,32 +641,39 @@ void Annotator::songsClicked( QListViewItem * item)
 	mAudioRefreshTimer->stop();
 	drawAudio(filename);
 	std::cout << "Drawing LLD..." << std::endl;
-	drawLLDescriptors(mCurrentIndex);
+	refreshEnvelopes();
 	std::cout << "Done" << std::endl;
 	loaderLaunch();
 	mAudioRefreshTimer->start(4000, true);
 }
 
-void Annotator::drawLLDescriptors(int index)
+void Annotator::refreshEnvelopes()
 {
 	if (!mpDescriptorPool) return;
-	std::cout << "Loading LLD Data..." << std::endl;
-	refreshEnvelopes();
-	std::cout << "Adjusting BPF's..." << std::endl;
 
-	std::vector<CLAM::VM::BPFEditor*>::iterator editors_it = mBPFEditors.begin();
-	for(int i=0; editors_it != mBPFEditors.end(); editors_it++, i++)
+	std::cout << "Loading LLD Data..." << std::endl;
+
+	std::vector<CLAM::VM::BPFEditor*>::iterator ed_it = mBPFEditors.begin();
+	std::list<std::string>::const_iterator it;
+	const std::list<std::string>& descriptorsNames = mProject.GetFrameScopeAttributeNames();
+	unsigned int i = 0;
+
+	for(it = descriptorsNames.begin();it != descriptorsNames.end(); ed_it++, it++, i++)
 	{
-		CLAM::EScale scale;
-		std::pair<TData, TData> minmaxy = GetMinMaxY((*editors_it)->GetData());
+		CLAM::VM::BPFEditor & bpfEditor = **ed_it;
+		CLAM::BPF transcribed;
+		refreshEnvelope(transcribed, *it);
+		bpfEditor.SetData( transcribed );
+		bpfEditor.SetAudioPtr(&mCurrentAudio);
+		std::pair<TData, TData> minmaxy = GetMinMaxY(transcribed);
 		TData min_y = minmaxy.first;
 		TData max_y = minmaxy.second;
+		bpfEditor.SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
 		bool scale_log = (fabs(min_y) > 9999.99 || fabs(max_y) > 9999.99 || max_y-min_y < TData(5E-2));
-		scale = (scale_log) ? CLAM::EScale::eLog : CLAM::EScale::eLinear;
-		(*editors_it)->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
-		(*editors_it)->SetYRange(min_y,max_y,scale);
-		(*editors_it)->Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
-		(*editors_it)->Show();
+		CLAM::EScale scale = (scale_log) ? CLAM::EScale::eLog : CLAM::EScale::eLinear;
+		bpfEditor.SetYRange(min_y,max_y,scale);
+		bpfEditor.Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
+		bpfEditor.Show();
 	}
 }
 
@@ -689,12 +701,12 @@ void Annotator::drawAudio(const char * filename)
 	loaderCreate(mCurrentAudio, filename);
 	setMenuAudioItemsEnabled(true);
 
-	refreshMarksView();
+	refreshSegmentation();
 	mpAudioPlot->SetData(mCurrentAudio);
 	mpAudioPlot->Show();
 }
 
-void Annotator::refreshMarksView()
+void Annotator::refreshSegmentation()
 {
 	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	if (!mpDescriptorPool) return;
@@ -710,22 +722,6 @@ void Annotator::refreshMarksView()
 	auralizeMarks();
 }
 
-void Annotator::refreshEnvelopes()
-{
-	std::vector<CLAM::VM::BPFEditor*>::iterator ed_it = mBPFEditors.begin();
-	std::list<std::string>::const_iterator it;
-	const std::list<std::string>& descriptorsNames = mProject.GetFrameScopeAttributeNames();
-
-	for(it = descriptorsNames.begin();it != descriptorsNames.end(); ed_it++, it++)
-	{
-		CLAM::BPF transcribed;
-		refreshEnvelope(transcribed, *it);
-		(*ed_it)->SetData( transcribed );
-		(*ed_it)->SetAudioPtr(&mCurrentAudio);
-	}
-
-}
-  
 void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& descriptorName)
 {
 	const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",descriptorName);
@@ -873,7 +869,7 @@ void Annotator::refreshDescriptorsTable(QTable * table, const std::string & scop
 	{
 		const std::string & type = it->GetType();
 		const std::string & name = it->GetName();
-		unsigned row = findHLDescriptorIndex(name);
+		unsigned row = descriptorIndexInTable(scope, name);
 		if (type == "String")
 		{
 			drawHLD(table, row,
@@ -911,7 +907,7 @@ void Annotator::refreshGlobalDescriptorsTable()
 	mDescriptorsTable->show();
 }
 
-int Annotator::findHLDescriptorIndex(const std::string& name)
+int Annotator::descriptorIndexInTable(const std::string & scope, const std::string& name)
 {
 	//TODO: should find a more efficient search algorithm
 
@@ -922,30 +918,6 @@ int Annotator::findHLDescriptorIndex(const std::string& name)
 		if (it->GetName() == name) return i;
 	}
 	return -1;
-}
-
-std::string Annotator::getHLDescriptorNameFromIndex(int index)
-{
-	CLAM_Annotator::HLDSchemaElement hldSchemaElement;
-	getHLDSchemaElementFromIndex(index, hldSchemaElement);
-	return hldSchemaElement.GetName();
-}
-
-void Annotator::getHLDSchemaElementFromIndex(int index, CLAM_Annotator::HLDSchemaElement& element)
-{
-	/* TODO: This is not very efficient, wouldn't it be better to have HLDs as a vector instead of
-	a list? */
-	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetSongScopeSchema();
-	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
-	for(int i = 0 ; it != hlds.end(); it++, i++)
-	{
-		if (i==index) {
-			element = (*it);
-			return;
-		}
-	}
-	CLAM_ASSERT(false, "Index does not exist for HLDSchema");;
-
 }
 
 std::pair<double,double> Annotator::GetMinMaxY(const CLAM::BPF& bpf)
@@ -971,7 +943,7 @@ std::pair<double,double> Annotator::GetMinMaxY(const CLAM::BPF& bpf)
 }
 
 
-int Annotator::getIndexFromFileName(const std::string& fileName)
+int Annotator::songIndexInTable(const std::string& fileName)
 {
 	//TODO: have to optimize these tasks maybe by using a map or at least std::find
 	std::vector<CLAM_Annotator::Song> fileNames = mProject.GetSongs();

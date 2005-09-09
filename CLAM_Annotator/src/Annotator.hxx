@@ -84,38 +84,35 @@ private:
 	//xamat
 
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
-	void refreshMarksView();
 	void initAudioWidget();
-	void AdaptInterfaceToCurrentSchema();
-	void AdaptDescriptorsTableToCurrentSchema(QTable * table, const std::string & scope);
-	void updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row);
-	void AdaptSegmentationsToCurrentSchema();
-	void removeLLDTabs();
+	void adaptInterfaceToCurrentSchema();
 	void drawAudio(const char * filename);
-	void drawLLDescriptors(int index);
-	void refreshDescriptorsTable(QTable * table, const std::string & scope, unsigned element);
-	void drawHLD(QTable * table, int row, const CLAM_Annotator::RestrictedString& value, 
-		const std::list<std::string> & options);
-	void drawHLD(QTable * table, int row,const CLAM::Text& value, 
-		bool computed=true);
-	void drawHLD(QTable * table, int row, float value, 
-		CLAM_Annotator::Range<float> renge);
-	void drawHLD(QTable * table, int row, int value, 
-		CLAM_Annotator::Range<int> range);
+	void loadDescriptorPool();
+	void removeLLDTabs();
 
-	int findHLDescriptorIndex(const std::string& name);
-	std::string getHLDescriptorNameFromIndex(int index);
-	void getHLDSchemaElementFromIndex(int index, CLAM_Annotator::HLDSchemaElement&);
-	int getIndexFromFileName(const std::string& fileName);
-
-	void AdaptEnvelopesToCurrentSchema();
+	void adaptEnvelopesToCurrentSchema();
 	void refreshEnvelopes();
 	void refreshEnvelope(CLAM::BPF & bpf, const std::string& descriptorName);
 	void updateEnvelopesData();
 	void updateEnvelopeData(int bpfIndex, float* descriptors);
 
-	void loadDescriptorPool();
+	void adaptDescriptorsTableToCurrentSchema(QTable * table, const std::string & scope);
+	void refreshDescriptorsTable(QTable * table, const std::string & scope, unsigned element);
+	void updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row);
+	void drawHLD(QTable * table, int row, const CLAM_Annotator::RestrictedString& value, 
+		const std::list<std::string> & options);
+	void drawHLD(QTable * table, int row,const CLAM::Text& value);
+	void drawHLD(QTable * table, int row, float value, 
+		CLAM_Annotator::Range<float> renge);
+	void drawHLD(QTable * table, int row, int value, 
+		CLAM_Annotator::Range<int> range);
 
+	void adaptSegmentationsToCurrentSchema();
+	void refreshSegmentation();
+	void updateSegmentations();
+
+	int descriptorIndexInTable(const std::string & scope, const std::string& name);
+	int songIndexInTable(const std::string& fileName);
 	std::pair<double, double> GetMinMaxY(const CLAM::BPF& bpf);
 
 	void auralizeMarks();
