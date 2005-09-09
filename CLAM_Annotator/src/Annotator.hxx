@@ -89,7 +89,7 @@ private:
 	void initAudioWidget();
 	void AdaptInterfaceToCurrentSchema();
 	void AdaptDescriptorsTableToCurrentSchema();
-	void updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row, int column);
+	void updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row);
 	void AdaptSegmentationsToCurrentSchema();
 	void removeLLDTabs();
 	void drawAudio(const char * filename);

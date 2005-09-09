@@ -370,15 +370,16 @@ void Annotator::changeCurrentFile()
 void Annotator::descriptorsTableChanged(int row, int column)
 {
 	mHLDChanged = true;
-	updateDescriptorTableData(mDescriptorsTable, "Song", 0, row, column);
+	updateDescriptorTableData(mDescriptorsTable, "Song", 0, row);
+	changeCurrentFile();
 }
 
-void Annotator::updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row, int column)
+void Annotator::updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row)
 {
-	CLAM_Annotator::HLDSchemaElement hldSchemaElement;
-	getHLDSchemaElementFromIndex(row, hldSchemaElement);
+	std::string name = table->text(row,0).ascii();
+	const CLAM_Annotator::HLDSchemaElement & hldSchemaElement = 
+		mProject.GetAttributeScheme(scope,name);
 
-	const std::string & name = hldSchemaElement.GetName();
 	const std::string & type = hldSchemaElement.GetType();
 	QString qValue = table->text(row, 1);
 	const std::string & value = qValue.ascii();
@@ -399,7 +400,6 @@ void Annotator::updateDescriptorTableData(QTable * table, const std::string & sc
 	{
 		mpDescriptorPool->GetWritePool<int>(scope,name)[element] = qValue.toInt();
 	}
-	changeCurrentFile();
 	table->adjustColumn(0);
 	table->adjustColumn(1);
 }
