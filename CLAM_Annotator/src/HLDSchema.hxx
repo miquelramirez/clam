@@ -20,16 +20,17 @@ namespace CLAM_Annotator{
 	
 	class HLDSchemaElement:public CLAM::DynamicType
 	{
-		DYNAMIC_TYPE(HLDSchemaElement,6);
+		DYNAMIC_TYPE(HLDSchemaElement,7);
 		DYN_ATTRIBUTE(0, public, std::string, Name);
+		DYN_ATTRIBUTE(1, public, std::string, Scope);
 		//TODO: this should better be an enum
-		DYN_ATTRIBUTE(1, public, std::string, Type);
+		DYN_ATTRIBUTE(2, public, std::string, Type);
 		/*In case type is a RestrictedString, an optional list of enumeration values must be offered*/
-		DYN_CONTAINER_ATTRIBUTE(2, public, std::list<std::string>, RestrictionValues, Restriction);
+		DYN_CONTAINER_ATTRIBUTE(3, public, std::list<std::string>, RestrictionValues, Restriction);
 		//In case type is a number we need to add a range
-		DYN_ATTRIBUTE(3, public, Range<float>, fRange);
-		DYN_ATTRIBUTE(4, public, Range<int>, iRange);
-		DYN_ATTRIBUTE(5, public, std::string, ChildScope);
+		DYN_ATTRIBUTE(4, public, Range<float>, fRange);
+		DYN_ATTRIBUTE(5, public, Range<int>, iRange);
+		DYN_ATTRIBUTE(6, public, std::string, ChildScope);
 		
 		void DefaultInit();
 		
@@ -89,6 +90,7 @@ namespace CLAM_Annotator{
 		}
 	public:
 		void AddRestrictedString(
+				const std::string & scope,
 				const std::string & attribute,
 				const char ** availableValues)
 		{
@@ -102,6 +104,7 @@ namespace CLAM_Annotator{
 			GetHLDs().push_back(testHLDesc);
 		}
 		void AddRangedInt(
+				const std::string & scope,
 				const std::string & attribute,
 				int min, int max)
 		{
@@ -117,6 +120,7 @@ namespace CLAM_Annotator{
 			GetHLDs().push_back(testHLDesc);
 		}
 		void AddRangedReal(
+				const std::string & scope,
 				const std::string & attribute,
 				double min, double max)
 		{
@@ -132,6 +136,7 @@ namespace CLAM_Annotator{
 			GetHLDs().push_back(testHLDesc);
 		}
 		void AddString(
+				const std::string & scope,
 				const std::string & attribute)
 		{
 			CLAM_Annotator::HLDSchemaElement testHLDesc;
@@ -140,6 +145,7 @@ namespace CLAM_Annotator{
 			GetHLDs().push_back(testHLDesc);
 		}
 		void AddSegmentation(
+				const std::string & scope,
 				const std::string & attribute,
 				const std::string & childScope)
 		{
