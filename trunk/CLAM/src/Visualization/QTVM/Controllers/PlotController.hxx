@@ -62,6 +62,7 @@ namespace CLAM
 			void OnDoubleClick();
 			void SetSegmentationTag(const QString& tag);
 			QString GetTag() const;
+			unsigned GetMarkIndex() const;
 			std::vector<QString> GetTags();
 
 			void SetDialColor(Color c);

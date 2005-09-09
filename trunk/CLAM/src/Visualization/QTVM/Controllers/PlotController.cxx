@@ -622,6 +622,11 @@ namespace CLAM
 			return mTags[mCurrentIndex];
 		}
 
+		unsigned PlotController::GetMarkIndex() const
+		{
+			return mCurrentIndex;
+		}
+
 		std::vector<QString> PlotController::GetTags()
 		{
 			return mTags;
