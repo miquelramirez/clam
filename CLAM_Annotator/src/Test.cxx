@@ -194,11 +194,14 @@ void AddStringHLAttribute(
 }
 
 void AddSegmentationHLAttribute(CLAM_Annotator::HLDSchema& hlschema,
-		const std::string & attribute)
+		const std::string & attribute, const std::string & childScope)
 {
 	CLAM_Annotator::HLDSchemaElement testHLDesc;
+	testHLDesc.AddChildScope();
+	testHLDesc.UpdateData();
 	testHLDesc.SetName(attribute);
 	testHLDesc.SetType("Segmentation");
+	testHLDesc.SetChildScope(childScope);
 	hlschema.GetHLDs().push_back(testHLDesc);
 }
 
@@ -233,8 +236,8 @@ void CreateHLSchema(CLAM_Annotator::HLDSchema& hlschema)
 	AddRestrictedStringHLAttribute(hlschema, "Mode", modeValues);
 	AddRangedRealHLAttribute(hlschema, "DynamicComplexity", 0., 10.);
 	AddRangedIntHLAttribute(hlschema, "BPM", 0, 240);
-	AddSegmentationHLAttribute(hlschema, "Segments");
-	AddSegmentationHLAttribute(hlschema, "RandomSegments");
+	AddSegmentationHLAttribute(hlschema, "Onsets", "Onset");
+	AddSegmentationHLAttribute(hlschema, "RandomSegments", "");
 }
 
 
@@ -257,7 +260,7 @@ void PopulatePool(const CLAM_Annotator::Schema& schema, const CLAM_Annotator::So
 
 	//Create segmentation marks
 	CLAM::IndexArray* segmentation = 
-		pool.GetWritePool<CLAM::IndexArray>("Song","Segments");
+		pool.GetWritePool<CLAM::IndexArray>("Song","Onsets");
 	ComputeSegmentationMarks(segment, segmentD);
 	Segment2Marks(segment,segmentation);
 	

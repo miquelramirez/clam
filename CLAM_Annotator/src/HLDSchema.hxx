@@ -20,7 +20,7 @@ namespace CLAM_Annotator{
 	
 	class HLDSchemaElement:public CLAM::DynamicType
 	{
-		DYNAMIC_TYPE(HLDSchemaElement,5);
+		DYNAMIC_TYPE(HLDSchemaElement,6);
 		DYN_ATTRIBUTE(0, public, std::string, Name);
 		//TODO: this should better be an enum
 		DYN_ATTRIBUTE(1, public, std::string, Type);
@@ -29,6 +29,7 @@ namespace CLAM_Annotator{
 		//In case type is a number we need to add a range
 		DYN_ATTRIBUTE(3, public, Range<float>, fRange);
 		DYN_ATTRIBUTE(4, public, Range<int>, iRange);
+		DYN_ATTRIBUTE(5, public, std::string, ChildScope);
 		
 		void DefaultInit();
 		
