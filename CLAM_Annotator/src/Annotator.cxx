@@ -215,7 +215,7 @@ void Annotator::initProject()
 
 void Annotator::AdaptInterfaceToCurrentSchema()
 {
-	AdaptDescriptorsTableToCurrentSchema(mDescriptorsTable, "Song")
+	AdaptDescriptorsTableToCurrentSchema(mDescriptorsTable, "Song");
 	AdaptEnvelopesToCurrentSchema();
 	AdaptSegmentationsToCurrentSchema();
 }
