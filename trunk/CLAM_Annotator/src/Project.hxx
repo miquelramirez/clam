@@ -46,6 +46,21 @@ public:
 	{
 		return GetAnnotatorSchema().GetHLDSchema().Validate(dataPool);
 	}
+	const CLAM_Annotator::HLDSchemaElement & GetAttributeScheme(const std::string & scope, const std::string & name)
+	{
+		std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();
+		std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
+		for(it = hlds.begin(); it != hlds.end(); it++)
+		{
+//			if (it->GetScope() != scope) continue;
+			if (it->GetName() != name) continue;
+			return *it;
+		}
+
+		std::string message = "Accessing an attribute '";
+		message += scope + "':'" + name + "' not in the scheme.";
+		CLAM_ASSERT(false, message.c_str());
+	}
 private:
 	void CreatePoolScheme();
 	CLAM::DescriptionScheme mDescriptionScheme;
