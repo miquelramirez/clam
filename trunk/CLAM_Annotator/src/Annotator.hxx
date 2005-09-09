@@ -66,6 +66,7 @@ public slots:
 	void playMarks(bool);
 	void playOriginalAudioAndLLD(bool);
 	void refreshAudioData();
+	void changeCurrentSegment(unsigned current);
 protected:
 	void closeEvent( QCloseEvent * e);
 	bool event(QEvent* e);

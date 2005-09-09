@@ -311,11 +311,14 @@ void Annotator::removeLLDTabs()
 
 void Annotator::makeConnections()
 {
-	connect(helpAboutAction,SIGNAL(activated()),&mAbout,SLOT(show()));
-	connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) , this, 
-		SLOT(descriptorsTableChanged(int, int) ) );
-	connect(mpAudioPlot, SIGNAL(updatedMark(int, unsigned)),this,
-		SLOT(segmentationMarksChanged(int, unsigned)));
+	connect(helpAboutAction,SIGNAL(activated()),
+		&mAbout,SLOT(show()));
+	connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) ,
+		this, SLOT(descriptorsTableChanged(int, int) ) );
+	connect(mpAudioPlot, SIGNAL(updatedMark(int, unsigned)),
+		this, SLOT(segmentationMarksChanged(int, unsigned)));
+	connect(mpAudioPlot, SIGNAL(requestSegmentationTag(unsigned)),
+		this, SLOT(changeCurrentSegment(unsigned)));
 
 }
 
@@ -373,6 +376,11 @@ void Annotator::descriptorsTableChanged(int row, int column)
 	mHLDChanged = true;
 	updateDescriptorTableData(mDescriptorsTable, "Song", 0, row);
 	changeCurrentFile();
+}
+
+void Annotator::changeCurrentSegment(unsigned current)
+{
+	std::cout << "Segment changed to " << current << std::endl;
 }
 
 void Annotator::updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row)
