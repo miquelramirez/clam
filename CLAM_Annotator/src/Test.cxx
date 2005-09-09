@@ -246,114 +246,39 @@ void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDa
 	pool.SetNumberOfContexts("Frame",nFrames);
 
 	CLAM::Array<CLAM::FrameDescriptors>& frameD = segmentD.GetFramesD();
-	CLAM::TData* values;
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Mean");
-	for(int i=0; i<nFrames; i++)
+	struct GetterMap 
 	{
-		values[i]=frameD[i].GetSpectrumD().GetMean();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","GeometricMean");
-	for(int i=0; i<nFrames; i++)
+		const char * name;
+		CLAM::TData & (CLAM::SpectralDescriptors::*getter)() const;
+	} spectralDescriptors[] =
 	{
-		values[i]=frameD[i].GetSpectrumD().GetGeometricMean();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Energy");
-	for(int i=0; i<nFrames; i++)
+		{"Mean", &CLAM::SpectralDescriptors::GetMean},
+		{"GeometricMean",  &CLAM::SpectralDescriptors::GetGeometricMean},
+		{"Energy",  &CLAM::SpectralDescriptors::GetEnergy},
+		{"Centroid",  &CLAM::SpectralDescriptors::GetCentroid},
+		{"Moment2",  &CLAM::SpectralDescriptors::GetMoment2},
+		{"Moment3",  &CLAM::SpectralDescriptors::GetMoment3},
+		{"Moment4",  &CLAM::SpectralDescriptors::GetMoment4},
+		{"Moment5",  &CLAM::SpectralDescriptors::GetMoment5},
+		{"Moment6",  &CLAM::SpectralDescriptors::GetMoment6},
+		{"Flatness",  &CLAM::SpectralDescriptors::GetFlatness},
+		{"MagnitudeKurtosis",  &CLAM::SpectralDescriptors::GetMagnitudeKurtosis},
+		{"MaxMagFreq",  &CLAM::SpectralDescriptors::GetMaxMagFreq},
+		{"LowFreqEnergyRelation",  &CLAM::SpectralDescriptors::GetLowFreqEnergyRelation},
+		{"Spread",  &CLAM::SpectralDescriptors::GetSpread},
+		{"MagnitudeSkewness",  &CLAM::SpectralDescriptors::GetMagnitudeSkewness},
+		{"Rolloff",  &CLAM::SpectralDescriptors::GetRolloff},
+		{"Slope",  &CLAM::SpectralDescriptors::GetSlope},
+		{"HighFrequencyContent",  &CLAM::SpectralDescriptors::GetHighFrequencyContent},
+		{0,0}
+	};
+	for (GetterMap * map = spectralDescriptors; map->name; map++)
 	{
-		values[i]=frameD[i].GetSpectrumD().GetEnergy();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Centroid");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetCentroid();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Moment2");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetMoment2();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Moment3");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetMoment3();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Moment4");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetMoment4();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Moment5");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetMoment5();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Moment6");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetMoment6();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Flatness");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetFlatness();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","MagnitudeKurtosis");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetMagnitudeKurtosis();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","MaxMagFreq");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetMaxMagFreq();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","LowFreqEnergyRelation");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetLowFreqEnergyRelation();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Spread");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetSpread();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","MagnitudeSkewness");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetMagnitudeSkewness();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Rolloff");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetRolloff();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","Slope");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetSlope();
-	}
-
-	values = pool.GetWritePool<CLAM::TData>("Frame","HighFrequencyContent");
-	for(int i=0; i<nFrames; i++)
-	{
-		values[i]=frameD[i].GetSpectrumD().GetHighFrequencyContent();
+		CLAM::TData* values= pool.GetWritePool<CLAM::TData>("Frame",map->name);
+		for(int i=0; i<nFrames; i++)
+		{
+			values[i]=(frameD[i].GetSpectrumD().*(map->getter))();
+		}
 	}
 }
 
