@@ -9,6 +9,7 @@ namespace CLAM_Annotator{
 	void HLDSchemaElement::DefaultInit()
 	{
 		AddName();
+		AddScope();
 		AddType();
 		UpdateData();
 	}

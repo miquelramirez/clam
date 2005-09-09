@@ -17,30 +17,27 @@ void Project::CreatePoolScheme()
 	{
 		const std::string & type = it2->GetType();
 		const std::string & name = it2->GetName();
+		const std::string & scope = it2->GetName();
 		if (type=="Float")
 		{
-			mSongScopeSchema.push_back(*it2);
-			mDescriptionScheme.AddAttribute <float>("Song",name);
+			mDescriptionScheme.AddAttribute <float>(scope,name);
 		}
 		else if (type=="Int")
 		{
-			mSongScopeSchema.push_back(*it2);
-			mDescriptionScheme.AddAttribute <int>("Song",name);
+			mDescriptionScheme.AddAttribute <int>(scope,name);
 		}
 		else if (type=="RestrictedString")
 		{
-			mSongScopeSchema.push_back(*it2);
-			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>("Song",name);
+			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>(scope,name);
 		}
 		else if (type=="String")
 		{
-			mSongScopeSchema.push_back(*it2);
-			mDescriptionScheme.AddAttribute <CLAM::Text>("Song",name);
+			mDescriptionScheme.AddAttribute <CLAM::Text>(scope,name);
 		}
 		else if (type=="Segmentation")
 		{
 			mSongSegmentationNames.push_back(name);
-			mDescriptionScheme.AddAttribute<CLAM::IndexArray>("Song",name);
+			mDescriptionScheme.AddAttribute<CLAM::IndexArray>(scope,name);
 		}
 	}
 	//And now we go into LLD
@@ -65,10 +62,20 @@ bool Project::LoadScheme(const std::string & schemeFileName)
 	return true;
 }
 
-const Project::SongScopeSchema & Project::GetSongScopeSchema()
+Project::SongScopeSchema Project::GetScopeSchema(const std::string & scope)
 {
-	return mSongScopeSchema;
+	Project::SongScopeSchema scopeSchema;
+	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();
+	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
+	for(it = hlds.begin(); it != hlds.end(); it++)
+	{
+		if (it->GetScope()!=scope) continue;
+		if (it->GetType()=="Segmentation") continue;
+		scopeSchema.push_back(*it);
+	}
+	return scopeSchema;
 }
+
 const std::list<std::string> & Project::GetFrameScopeAttributeNames()
 {
 	return GetAnnotatorSchema().GetLLDSchema().GetLLDNames();
