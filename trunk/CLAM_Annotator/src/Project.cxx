@@ -10,6 +10,7 @@ namespace CLAM_Annotator
 
 void Project::CreatePoolScheme()
 {
+	mDescriptionScheme = CLAM::DescriptionScheme();
 	//First we start with HLD
 	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();
 	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
