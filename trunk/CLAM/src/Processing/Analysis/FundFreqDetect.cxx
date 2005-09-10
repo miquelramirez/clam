@@ -93,16 +93,6 @@ namespace CLAM
 		return mConfig;
 	}
 
-	/* Setting Prototypes for faster processing */
-	bool FundFreqDetect::SetPrototypes(const SpectralPeakArray& in)
-	{return false;}
-
-	bool FundFreqDetect::SetPrototypes()
-	{return false;}
-
-	bool FundFreqDetect::UnsetPrototypes()
-	{return false;}
-
 	/* The supervised Do() function */
 	bool FundFreqDetect::Do(void) 
 	{
@@ -480,37 +470,37 @@ namespace CLAM
 		return (mPMCont * ErrorPM/nPM + mMPCont * ErrorMP/nMP);
 	}
 
-/* Get the closest peak to a given frequency 
-   and returns the number of the closest peak 
-   there's another parameter, peak, that contains the last peak taken   */
-int FundFreqDetect::GetClosestPeak(double freq, int firstPeak, const IndexArray& peakIndexes, const DataArray & peakFrequencies) const
-{
-	const int size = peakIndexes.Size();
-	int bestpeak = firstPeak;
-	double distance = INFINITE_MAGNITUD;
-	for (int peak=firstPeak; peak < size; peak++)
+	/* Get the closest peak to a given frequency 
+	   and returns the number of the closest peak 
+	   there's another parameter, peak, that contains the last peak taken   */
+	int FundFreqDetect::GetClosestPeak(double freq, int firstPeak, const IndexArray& peakIndexes, const DataArray & peakFrequencies) const
 	{
-		const double nextdistance = fabs(freq - peakFrequencies[peakIndexes[peak]]);
-		if (nextdistance >= distance)
-			return peak-1;
-		bestpeak = peak; 
-		distance=nextdistance;
+		const int size = peakIndexes.Size();
+		int bestpeak = firstPeak;
+		double distance = INFINITE_MAGNITUD;
+		for (int peak=firstPeak; peak < size; peak++)
+		{
+			const double nextdistance = fabs(freq - peakFrequencies[peakIndexes[peak]]);
+			if (nextdistance >= distance)
+				return peak-1;
+			bestpeak = peak; 
+			distance=nextdistance;
+		}
+		return bestpeak;
 	}
-	return bestpeak;
-}
 
-/* Get Closest Harmonic */
-double FundFreqDetect::GetClosestHarmonic(double peak, double fundfreq) const
-{
-	if(peak<fundfreq)
-		return fundfreq;
-	return floor(peak/fundfreq+.5)*fundfreq;
-}
+	/* Get Closest Harmonic */
+	double FundFreqDetect::GetClosestHarmonic(double peak, double fundfreq) const
+	{
+		if(peak<fundfreq)
+			return fundfreq;
+		return floor(peak/fundfreq+.5)*fundfreq;
+	}
 
-bool FundFreqDetect::IsGoodCandidate(double freq) const
-{
-	return (freq >= mLowestFundFreq)  && (freq <= mHighestFundFreq);
-}
+	bool FundFreqDetect::IsGoodCandidate(double freq) const
+	{
+		return (freq >= mLowestFundFreq)  && (freq <= mHighestFundFreq);
+	}
 
 } // namespace CLAM
 
