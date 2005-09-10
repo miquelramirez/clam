@@ -73,14 +73,6 @@ namespace CLAM {
 
 		/** Do function */
 		bool Do(SpectralPeakArray& input,Fundamental& fund);
-
-		bool SetPrototypes(const SpectralPeakArray& inputs);
-		bool SetPrototypes();
-
-		bool UnsetPrototypes();
-
-		bool MayDisableExecution() const {return true;}
-
 	private:
 
 		double WeightCandidate(double freq, double maxMag,SpectralPeakArray&) const;
