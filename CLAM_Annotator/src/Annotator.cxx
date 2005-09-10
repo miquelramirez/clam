@@ -1,19 +1,12 @@
 #include "Annotator.hxx"
 #include "Project.hxx"
+
 #include <qaction.h>
-#include <qsplitter.h>
-#include <qtextbrowser.h>
-#include <qtoolbutton.h>
-#include <qmessagebox.h>
-#include <algorithm>
-#include <qpopupmenu.h>
-#include <qprogressdialog.h>
-#include <qapplication.h>
-#include <qeventloop.h>
-#include <qfiledialog.h>
 #include <qthread.h>
 #include <qprocess.h>
-
+#include <qmessagebox.h>
+#include <qtabwidget.h>
+#include <qfiledialog.h>
 
 #include <algorithm>
 #include <iostream>
@@ -22,18 +15,18 @@
 //xamat
 #include <time.h>
 
-#include "QtAudioPlot.hxx"
-#include <qtabwidget.h>
-#include "AudioFile.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
 #include "MultiChannelAudioFileReader.hxx"
+
+#include "AudioFile.hxx"
 #include "IndexArray.hxx"
 #include "Text.hxx"
-
-
 #include "XMLStorage.hxx"
 
 #include "BPFEditor.hxx"
+#include "QtAudioPlot.hxx"
+
+
 
 using CLAM::VM::QtAudioPlot;
 
