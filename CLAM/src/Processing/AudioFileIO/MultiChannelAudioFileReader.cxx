@@ -95,9 +95,9 @@ namespace CLAM
 		
 		for( OutputVec::iterator i = outputs.begin();
 		     i!= outputs.end(); i++ )
-		  {
-		    allOutputsSameSize = ( sizeTmp == (*i).GetSize() );
-		  }
+		{
+			allOutputsSameSize &= ( sizeTmp == i->GetSize() );
+		}
 
 
 		CLAM_ASSERT( allOutputsSameSize, "Outputs sizes differ!" );
@@ -129,8 +129,6 @@ namespace CLAM
 		mCurrentBeginTime += mDeltaTime;	
 		
 		return mNativeStream->WasSomethingRead();
-
-		
 	}
 
 	bool MultiChannelAudioFileReader::Do()
@@ -158,16 +156,16 @@ namespace CLAM
 		for ( OutputVector::iterator i = mOutputs.begin();
 		      i!= mOutputs.end();
 		      i++ )
-		  outRefs.push_back( &((*i)->GetAudio()) );
+			outRefs.push_back( &((*i)->GetAudio()) );
 		
 		
 		sizeTmp = outRefs[0]->GetSize();	
 		
 		for( OutRefsVector::iterator i = outRefs.begin();
 		     i!= outRefs.end(); i++ )
-		  {
-		    allOutputsSameSize = ( sizeTmp == (*i)->GetSize() );
-		  }
+		{
+			allOutputsSameSize = ( sizeTmp == (*i)->GetSize() );
+		}
 
 
 		CLAM_ASSERT( allOutputsSameSize, "Outputs sizes differ!" );
@@ -276,7 +274,7 @@ namespace CLAM
 					AddConfigErrorMessage("Invalid channel index in configuration!");
 					return false;
 				}
-				     
+
 
 			DestroyOldOutputs();
 
