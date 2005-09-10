@@ -130,6 +130,8 @@ void Annotator::computeSongDescriptors()
 		std::cout << extractor.readLineStdout() << std::endl;
 	while (extractor.canReadLineStderr())
 		std::cout << extractor.readLineStderr() << std::endl;
+
+	loadDescriptorPool();
 }
 
 void Annotator::loaderLaunch()
@@ -208,9 +210,13 @@ void Annotator::initProject()
 
 void Annotator::adaptInterfaceToCurrentSchema()
 {
+	std::cout << "Adapting Interface to Song level descriptors..." << std::endl;
 	mGlobalDescriptors.refreshSchema("Song");
+	std::cout << "Adapting Interface to Frame level descriptors..." << std::endl;
 	adaptEnvelopesToCurrentSchema();
+	std::cout << "Adapting Interface to Segmentations..." << std::endl;
 	adaptSegmentationsToCurrentSchema();
+	std::cout << "User interface adaptation ended." << std::endl;
 }
 
 void Annotator::initAudioWidget()
