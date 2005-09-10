@@ -1,6 +1,5 @@
 #include "Annotator.hxx"
 #include "Project.hxx"
-#include "RangeSelectionTableItem.hxx"
 #include <qaction.h>
 #include <qsplitter.h>
 #include <qtextbrowser.h>
@@ -165,10 +164,9 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mpAudioPlot(0)
 	, mAudioRefreshTimer(new QTimer(this))
 	, mAudioLoaderThread(0)
+	, mGlobalDescriptors(mDescriptorsTable, mProject)
+	, mSegmentDescriptors(mSegmentDescriptorsTable, mProject)
 {
-	mDescriptorsTable->setLeftMargin(0);
-	mSegmentDescriptorsTable->setLeftMargin(0);
-	mSegmentDescriptorsTable->hide();
 	initAudioWidget();
 	initInterface();
 	setMenuAudioItemsEnabled(false);
@@ -217,7 +215,7 @@ void Annotator::initProject()
 
 void Annotator::adaptInterfaceToCurrentSchema()
 {
-	adaptDescriptorsTableToCurrentSchema(mDescriptorsTable, "Song");
+	mGlobalDescriptors.refreshSchema("Song");
 	adaptEnvelopesToCurrentSchema();
 	adaptSegmentationsToCurrentSchema();
 }
@@ -239,6 +237,20 @@ void Annotator::initAudioWidget()
 	mpAudioPlot->Hide();
 }
 
+void Annotator::segmentDescriptorsTableChanged(int row, int column)
+{
+	mHLDChanged = true;
+	mSegmentDescriptors.updateData(row, mpDescriptorPool);
+	changeCurrentFile();
+}
+
+void Annotator::globalDescriptorsTableChanged(int row, int column)
+{
+	mHLDChanged = true;
+	mGlobalDescriptors.updateData(row, mpDescriptorPool);
+	changeCurrentFile();
+}
+
 void Annotator::adaptSegmentationsToCurrentSchema()
 {
 	mSegmentationSelection->clear();
@@ -250,6 +262,43 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 	{
 		mSegmentationSelection->insertItem(it->c_str());
 	}
+}
+
+void Annotator::refreshSegmentation()
+{
+	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
+	if (!mpDescriptorPool) return;
+	const CLAM::IndexArray & descriptorsMarks = 
+		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation)[0];
+	int nMarks = descriptorsMarks.Size();
+	std::vector<unsigned> marks(nMarks);
+	for(int i=0;i<nMarks;i++)
+	{
+		marks[i] = (unsigned)descriptorsMarks[i];
+	}
+	mpAudioPlot->SetMarks(marks);
+	auralizeMarks();
+
+	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
+	mSegmentDescriptors.refreshSchema(childScope);
+}
+
+void Annotator::updateSegmentations()
+{
+	std::vector<unsigned int> marks;
+	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
+	CLAM::IndexArray & descriptorMarks = 
+		mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song",currentSegmentation)[0];
+	marks = mpAudioPlot->GetMarks();
+	int nMarks = marks.size();
+	descriptorMarks.Resize(nMarks);
+	descriptorMarks.SetSize(nMarks);
+	for (int i=0; i<nMarks; i++)
+	{
+		descriptorMarks[i] = marks[i];
+	} 
+	mSegmentsChanged = true;
+	auralizeMarks();
 }
 
 void Annotator::adaptEnvelopesToCurrentSchema()
@@ -284,20 +333,6 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 	connectBPFs();
 }
 
-void Annotator::adaptDescriptorsTableToCurrentSchema(QTable * table, const std::string & scope)
-{
-	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(scope);
-	table->setNumRows(hlds.size());
-	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
-	for(int i = 0 ; it != hlds.end(); it++, i++)
-	{
-		table->setItem(i, 0,
-			new TableItem(table,
-				TableItem::Never,
-				QString(it->GetName().c_str())));
-	}
-}
-
 void Annotator::removeLLDTabs()
 {
 	const unsigned nTabs = mTabPages.size();
@@ -316,7 +351,9 @@ void Annotator::makeConnections()
 	connect(helpAboutAction,SIGNAL(activated()),
 		&mAbout,SLOT(show()));
 	connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) ,
-		this, SLOT(descriptorsTableChanged(int, int) ) );
+		this, SLOT(globalDescriptorsTableChanged(int, int) ) );
+	connect(mSegmentDescriptorsTable, SIGNAL(valueChanged( int, int) ) ,
+		this, SLOT(segmentDescriptorsTableChanged(int, int) ) );
 	connect(mpAudioPlot, SIGNAL(updatedMark(int, unsigned)),
 		this, SLOT(segmentationMarksChanged(int, unsigned)));
 	connect(mpAudioPlot, SIGNAL(requestSegmentationTag(unsigned)),
@@ -331,7 +368,7 @@ void Annotator::connectBPFs()
 	{
 		CLAM::VM::BPFEditor* bpfEditor = *it;
 		connect( bpfEditor, SIGNAL(yValueChanged(int, float)),
-			this, SLOT(descriptorsBPFChanged(int, float)));
+			this, SLOT(frameDescriptorsChanged(int, float)));
 
 		connect( bpfEditor, SIGNAL(selectedXPos(double)),
 			mpAudioPlot, SLOT(setSelectedXPos(double)));
@@ -373,79 +410,18 @@ void Annotator::changeCurrentFile()
 }
 
 
-void Annotator::descriptorsTableChanged(int row, int column)
-{
-	mHLDChanged = true;
-	updateDescriptorTableData(mDescriptorsTable, "Song", 0, row);
-	changeCurrentFile();
-}
-
 void Annotator::changeCurrentSegment(unsigned current)
 {
 	std::cout << "Segment changed to " << current << std::endl;
-	mSegmentDescriptorsTable->show();
+	mSegmentDescriptors.refreshData(current,mpDescriptorPool);
 }
 
-void Annotator::updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row)
-{
-	std::string name = table->text(row,0).ascii();
-	const CLAM_Annotator::HLDSchemaElement & hldSchemaElement = 
-		mProject.GetAttributeScheme(scope,name);
-
-	const std::string & type = hldSchemaElement.GetType();
-	QString qValue = table->text(row, 1);
-	const std::string & value = qValue.ascii();
-
-	if (type == "String")
-	{
-		mpDescriptorPool->GetWritePool<CLAM::Text>(scope,name)[element] = value;
-	}
-	if (type == "RestrictedString")
-	{
-		mpDescriptorPool->GetWritePool<CLAM_Annotator::RestrictedString>(scope,name)[element].SetString(value);
-	}
-	if (type == "Float")
-	{
-		mpDescriptorPool->GetWritePool<float>(scope,name)[element] = qValue.toFloat();
-	}
-	if (type == "Int")
-	{
-		mpDescriptorPool->GetWritePool<int>(scope,name)[element] = qValue.toInt();
-	}
-	table->adjustColumn(0);
-	table->adjustColumn(1);
-}
-
-void Annotator::descriptorsBPFChanged(int pointIndex,float newValue)
+void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
 {
 	/*TODO: right now, no matter how many points have been edited all descriptors are updated. This
 	  is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
 	  in the class.*/
 	mLLDChanged = true;
-}
-
-void Annotator::updateSegmentations()
-{
-	std::vector<unsigned int> marks;
-	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
-	CLAM::IndexArray & descriptorMarks = 
-		mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song",currentSegmentation)[0];
-	marks = mpAudioPlot->GetMarks();
-	int nMarks = marks.size();
-	descriptorMarks.Resize(nMarks);
-	descriptorMarks.SetSize(nMarks);
-	for (int i=0; i<nMarks; i++)
-	{
-		descriptorMarks[i] = marks[i];
-	} 
-	mSegmentsChanged = true;
-	auralizeMarks();
-	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
-	if (childScope != "")
-	{
-		adaptDescriptorsTableToCurrentSchema(mSegmentDescriptorsTable, childScope);
-		mSegmentDescriptorsTable->show();
-	}
 }
 
 void Annotator::segmentationMarksChanged(int, unsigned)
@@ -723,22 +699,6 @@ void Annotator::drawAudio(const char * filename)
 	mpAudioPlot->Show();
 }
 
-void Annotator::refreshSegmentation()
-{
-	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
-	if (!mpDescriptorPool) return;
-	const CLAM::IndexArray & descriptorsMarks = 
-		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation)[0];
-	int nMarks = descriptorsMarks.Size();
-	std::vector<unsigned> marks(nMarks);
-	for(int i=0;i<nMarks;i++)
-	{
-		marks[i] = (unsigned)descriptorsMarks[i];
-	}
-	mpAudioPlot->SetMarks(marks);
-	auralizeMarks();
-}
-
 void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& descriptorName)
 {
 	const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",descriptorName);
@@ -830,111 +790,11 @@ bool Annotator::event(QEvent* e)
 	return QWidget::event(e);
 }
 
-
-void Annotator::drawHLD(QTable* table, int row, const CLAM::Text & value)
-{
-	QString qvalue = QString(value.c_str());
-	table->setItem(row,1,
-		new TableItem(table,TableItem::WhenCurrent,qvalue));
-}
-
-void Annotator::drawHLD(QTable* table, int row, 
-			const CLAM_Annotator::RestrictedString& value, 
-			const std::list<std::string> & options)
-{
-	QString qvalue = value.GetString().c_str();
-	QStringList qrestrictionStrings;
-	std::list<std::string>::const_iterator it;
-	for(it = options.begin();it != options.end(); it++)
-	{
-		qrestrictionStrings << QString(it->c_str());
-	}
-
-	std::vector<QStringList> qrestrictionStringslist;
-	qrestrictionStringslist.push_back( qrestrictionStrings );
-	ComboTableItem * item = new ComboTableItem(table,qrestrictionStringslist,false);
-	item->setCurrentItem(qvalue);
-	table->setItem(row,1,item);
-}
-
-void Annotator::drawHLD(QTable* table, int row, float value, Range<float> range)
-{
-	std::ostringstream s;
-	s<<value;
-	QString qvalue = QString(s.str().c_str());
-	table->setItem(row,1,
-		new RangeSelectionTableItem(table,
-			TableItem::WhenCurrent,qvalue,range));
-}
-
-void Annotator::drawHLD(QTable* table, int row, int value, Range<int> range)
-{
-	std::ostringstream s;
-	s<<value;
-	QString qvalue = QString(s.str().c_str());
-	table->setItem(row,1,
-		new RangeSelectionTableItem(table,
-			TableItem::WhenCurrent,qvalue,range));
-
-}
-
-void Annotator::refreshDescriptorsTable(QTable * table, const std::string & scope, unsigned element)
-{
-	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(scope);
-	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
-	for(it = hlds.begin() ; it != hlds.end(); it++)
-	{
-		const std::string & type = it->GetType();
-		const std::string & name = it->GetName();
-		unsigned row = descriptorIndexInTable(scope, name);
-		if (type == "String")
-		{
-			drawHLD(table, row,
-				mpDescriptorPool->GetReadPool<CLAM::Text>(scope,name)[element]
-				);
-		}
-		if (type == "RestrictedString")
-		{
-			const std::list<std::string> & options = it->GetRestrictionValues();
-			drawHLD(table, row,
-				mpDescriptorPool->GetReadPool<CLAM_Annotator::RestrictedString>(scope,name)[element],
-				options);
-		}
-		if (type == "Float")
-		{
-			drawHLD(table, row,
-				mpDescriptorPool->GetReadPool<float>(scope,name)[element],
-				it->GetfRange());
-		}
-		if (type == "Int")
-		{
-			drawHLD(table, row,
-				mpDescriptorPool->GetReadPool<int>(scope,name)[element],
-				it->GetiRange());
-		}
-	}
-	table->adjustColumn(0);
-	table->adjustColumn(1);
-}
-
 void Annotator::refreshGlobalDescriptorsTable()
 {
 	if (!mpDescriptorPool) return;
-	refreshDescriptorsTable(mDescriptorsTable, "Song", 0);
+	mGlobalDescriptors.refreshData(0,mpDescriptorPool);
 	mDescriptorsTable->show();
-}
-
-int Annotator::descriptorIndexInTable(const std::string & scope, const std::string& name)
-{
-	//TODO: should find a more efficient search algorithm
-
-	CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(scope);
-	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
-	for(int i = 0 ; it != hlds.end(); it++, i++)
-	{
-		if (it->GetName() == name) return i;
-	}
-	return -1;
 }
 
 std::pair<double,double> Annotator::GetMinMaxY(const CLAM::BPF& bpf)
@@ -1046,5 +906,4 @@ void Annotator::hideBPFEditors()
 	for(unsigned i=0; i < mBPFEditors.size(); i++)
 		mBPFEditors[i]->Hide();
 }
-
 

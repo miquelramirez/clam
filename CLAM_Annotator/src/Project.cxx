@@ -62,7 +62,7 @@ bool Project::LoadScheme(const std::string & schemeFileName)
 	return true;
 }
 
-Project::SongScopeSchema Project::GetScopeSchema(const std::string & scope)
+Project::SongScopeSchema Project::GetScopeSchema(const std::string & scope) const
 {
 	Project::SongScopeSchema scopeSchema;
 	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();

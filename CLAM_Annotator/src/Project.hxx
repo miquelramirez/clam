@@ -43,14 +43,14 @@ public:
 	{
 		return GetScopeSchema("Song");
 	}
-	SongScopeSchema GetScopeSchema(const std::string & scope);
+	SongScopeSchema GetScopeSchema(const std::string & scope) const;
 	const std::list<std::string> & GetFrameScopeAttributeNames();
 	const std::list<std::string> & GetSongSegmentationNames();
 	bool ValidateDataPool(const CLAM::DescriptionDataPool & dataPool)
 	{
 		return GetAnnotatorSchema().GetHLDSchema().Validate(dataPool);
 	}
-	const CLAM_Annotator::HLDSchemaElement & GetAttributeScheme(const std::string & scope, const std::string & name)
+	const CLAM_Annotator::HLDSchemaElement & GetAttributeScheme(const std::string & scope, const std::string & name) const
 	{
 		std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();
 		std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
