@@ -84,7 +84,6 @@ private:
 	void adaptInterfaceToCurrentSchema();
 	void drawAudio(const char * filename);
 	void loadDescriptorPool();
-	void removeLLDTabs();
 
 	void adaptEnvelopesToCurrentSchema();
 	void refreshEnvelopes();
