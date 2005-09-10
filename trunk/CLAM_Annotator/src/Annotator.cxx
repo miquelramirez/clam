@@ -259,6 +259,7 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 		it != segmentationNames.end();
 		it++)
 	{
+		std::cout << "Adding: " << it->c_str() << std::endl;
 		mSegmentationSelection->insertItem(it->c_str());
 	}
 }
@@ -302,48 +303,35 @@ void Annotator::updateSegmentations()
 
 void Annotator::adaptEnvelopesToCurrentSchema()
 {
-	removeLLDTabs();
+	tabWidget2->hide();
+
+	tabWidget2->insertTab(new QWidget(tabWidget2, "Dummy"), tr("No Low Level Descriptors"), 0);
+	while (tabWidget2->count()>1)
+		delete tabWidget2->page(1);
 
 	const std::list<std::string>& names = mProject.GetFrameScopeAttributeNames();
 	const unsigned nTabs = names.size();
+
 	const int eFlags = CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer;
 	mTabPages.resize(nTabs);
 	mBPFEditors.resize(nTabs);
 	std::list<std::string>::const_iterator name = names.begin();
 	for (unsigned i = 0; i<nTabs; name++, i++)
 	{
-		if (i==0)
-		{
-			mTabPages[0] = tabWidget2->page(0);
-		}
-		else
-		{
-			mTabPages[i] = new QWidget( tabWidget2, "Dummy");
-			tabWidget2->insertTab( mTabPages[i], QString("") );
-		}
-
-		tabWidget2->changeTab( mTabPages[i], (*name).c_str() );
+		mTabPages[i] = new QWidget( tabWidget2, "Dummy");
+		tabWidget2->insertTab( mTabPages[i], name->c_str() );
 		QVBoxLayout* tabLayout = new QVBoxLayout( mTabPages[i]);
 		mBPFEditors[i] = new CLAM::VM::BPFEditor(eFlags, mTabPages[i]);
 		mBPFEditors[i]->SetActivePlayer(false);
 		mBPFEditors[i]->Hide();
 		tabLayout->addWidget(mBPFEditors[i]);
 	}
+	if (nTabs)
+		delete tabWidget2->page(0);
+
 	connectBPFs();
+	tabWidget2->show();
 }
-
-void Annotator::removeLLDTabs()
-{
-	const unsigned nTabs = mTabPages.size();
-	if (!nTabs) return;
-	for (unsigned i = mTabPages.size(); --i; ) // reverse, 0 not included
-	{
-		tabWidget2->removePage(tabWidget2->page(i));
-	}
-	tabWidget2->changeTab(tabWidget2->page(0), tr("No Low Level Descriptors") );
-	mTabPages.resize(0);
-}
-
 
 void Annotator::makeConnections()
 {
