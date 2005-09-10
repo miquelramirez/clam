@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>898</width>
+            <width>1006</width>
             <height>618</height>
         </rect>
     </property>
@@ -136,6 +136,12 @@
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>250</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
                             <property name="numRows">
                                 <number>0</number>
                             </property>
@@ -185,8 +191,8 @@ contains descriptors values for song level descriptors. Song level descriptors a
                                 </property>
                                 <property name="sizePolicy">
                                     <sizepolicy>
-                                        <hsizetype>7</hsizetype>
-                                        <vsizetype>7</vsizetype>
+                                        <hsizetype>3</hsizetype>
+                                        <vsizetype>3</vsizetype>
                                         <horstretch>0</horstretch>
                                         <verstretch>0</verstretch>
                                     </sizepolicy>
@@ -232,8 +238,8 @@ allows editing floating point descriptors that has an occurrence for each frame.
                                         </property>
                                         <property name="sizePolicy">
                                             <sizepolicy>
-                                                <hsizetype>7</hsizetype>
-                                                <vsizetype>7</vsizetype>
+                                                <hsizetype>3</hsizetype>
+                                                <vsizetype>3</vsizetype>
                                                 <horstretch>0</horstretch>
                                                 <verstretch>0</verstretch>
                                             </sizepolicy>
@@ -327,6 +333,12 @@ allows editing floating point descriptors that has an occurrence for each frame.
                                     <horstretch>6</horstretch>
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>250</width>
+                                    <height>0</height>
+                                </size>
                             </property>
                             <property name="numRows">
                                 <number>0</number>
@@ -740,12 +752,6 @@ to the proper cell.&lt;/p&gt;</string>
         <slot>fileSave()</slot>
     </connection>
     <connection>
-        <sender>AnnotatorBase</sender>
-        <signal>usesTextLabelChanged(bool)</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>AnnotatorBase_usesTextLabelChanged(bool)</slot>
-    </connection>
-    <connection>
         <sender>projectLoadSchemaAction</sender>
         <signal>activated()</signal>
         <receiver>AnnotatorBase</receiver>
@@ -819,14 +825,10 @@ to the proper cell.&lt;/p&gt;</string>
     <slot>fileOpen()</slot>
     <slot>fileSave()</slot>
     <slot>fileSaveAs()</slot>
-    <slot>filePrint()</slot>
     <slot>fileExit()</slot>
-    <slot>chooseColor()</slot>
-    <slot>changeViewMenu( QWidget * q )</slot>
     <slot>songsClicked( QListViewItem * item )</slot>
     <slot>addSongsToProject()</slot>
     <slot>deleteSongsFromProject()</slot>
-    <slot>AnnotatorBase_usesTextLabelChanged( bool )</slot>
     <slot>loadSchema()</slot>
     <slot>saveSongList()</slot>
     <slot>saveDescriptors()</slot>

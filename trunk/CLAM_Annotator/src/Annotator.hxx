@@ -2,6 +2,7 @@
 #define ANNOTATOR_HXX
 
 #include "AnnotatorBase.h"
+#include "DescriptorTableController.hxx"
 
 #include <string>
 #include <utility>
@@ -9,14 +10,8 @@
 //xamat
 
 #include "Audio.hxx"
-
-#include "Schema.hxx"
-#include "DescriptionScheme.hxx"
 #include "Pool.hxx"
-
-#include "SongFiles.hxx"
 #include "Project.hxx"
-
 #include "BPF.hxx"
 
 class QTimer;
@@ -47,21 +42,21 @@ public:
 	void initInterface();
 	void markProjectChanged(bool changed);
 public slots:
-	void descriptorsTableChanged( int, int);
-	void descriptorsBPFChanged(int, float);
+	void globalDescriptorsTableChanged( int, int);
+	void segmentDescriptorsTableChanged( int, int);
+	void frameDescriptorsChanged(int, float);
 	void segmentationMarksChanged(int, unsigned);
-	void fileNew();			
+
+	void fileNew();
 	void fileOpen();
-	void addSongsToProject();
+	void fileSave();
+	void fileSaveAs();
 
 	void loadSchema();
-
-	void saveDescriptors();
-
-	void computeSongDescriptors();
+	void addSongsToProject();
 	void deleteSongsFromProject();
-	void fileSaveAs();
-	void fileSave();
+	void saveDescriptors();
+	void computeSongDescriptors();
 
 	void playMarks(bool);
 	void playOriginalAudioAndLLD(bool);
@@ -97,22 +92,10 @@ private:
 	void updateEnvelopesData();
 	void updateEnvelopeData(int bpfIndex, float* descriptors);
 
-	void adaptDescriptorsTableToCurrentSchema(QTable * table, const std::string & scope);
-	void refreshDescriptorsTable(QTable * table, const std::string & scope, unsigned element);
-	void updateDescriptorTableData(QTable * table, const std::string & scope, unsigned element, int row);
-	void drawHLD(QTable * table, int row, const CLAM_Annotator::RestrictedString& value, 
-		const std::list<std::string> & options);
-	void drawHLD(QTable * table, int row,const CLAM::Text& value);
-	void drawHLD(QTable * table, int row, float value, 
-		CLAM_Annotator::Range<float> renge);
-	void drawHLD(QTable * table, int row, int value, 
-		CLAM_Annotator::Range<int> range);
-
 	void adaptSegmentationsToCurrentSchema();
 	void refreshSegmentation();
 	void updateSegmentations();
 
-	int descriptorIndexInTable(const std::string & scope, const std::string& name);
 	int songIndexInTable(const std::string& fileName);
 	std::pair<double, double> GetMinMaxY(const CLAM::BPF& bpf);
 
@@ -153,6 +136,8 @@ private:
 	CLAM::VM::QtAudioPlot* mpAudioPlot;
 	QTimer * mAudioRefreshTimer;
 	AudioLoadThread * mAudioLoaderThread;
+	CLAM_Annotator::DescriptorTableController mGlobalDescriptors;
+	CLAM_Annotator::DescriptorTableController mSegmentDescriptors;
 };
 
 #endif
