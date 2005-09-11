@@ -430,7 +430,7 @@ to the proper cell.&lt;/p&gt;</string>
             <string>E&amp;xit</string>
         </property>
         <property name="accel">
-            <string></string>
+            <string>Ctrl+Q</string>
         </property>
     </action>
     <action>
@@ -460,6 +460,9 @@ to the proper cell.&lt;/p&gt;</string>
         <property name="toolTip">
             <string>New project</string>
         </property>
+        <property name="accel">
+            <string>Ctrl+N</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -477,6 +480,9 @@ to the proper cell.&lt;/p&gt;</string>
         <property name="toolTip">
             <string>Save project</string>
         </property>
+        <property name="accel">
+            <string>Ctrl+S</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -493,6 +499,9 @@ to the proper cell.&lt;/p&gt;</string>
         </property>
         <property name="toolTip">
             <string>Save project as</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+Shift+S</string>
         </property>
     </action>
     <action>
@@ -514,6 +523,9 @@ to the proper cell.&lt;/p&gt;</string>
         <property name="statusTip">
             <string>Open project</string>
         </property>
+        <property name="accel">
+            <string>Ctrl+O</string>
+        </property>
     </action>
     <action>
         <property name="name">
@@ -528,22 +540,8 @@ to the proper cell.&lt;/p&gt;</string>
         <property name="menuText">
             <string>&amp;Add songs to project</string>
         </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>songPreviousAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="text">
-            <string>&amp;Previous</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Previous</string>
-        </property>
         <property name="accel">
-            <string>-</string>
+            <string>Ctrl+A</string>
         </property>
     </action>
     <action>
