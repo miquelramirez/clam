@@ -47,6 +47,9 @@ int main(int argc, char ** argv)
 		"../../CLAM-TestData/Elvis.wav",
 		"../Samples/SongsTest/02.mp3",
 		"../Samples/SongsTest/03.mp3",
+		"../Samples/SongsTest/Franz Ferdinand - Franz Ferdinand - 02 - Tell Her Tonight.ogg",
+		"../Samples/SongsTest/Coldplay - Parachutes - 01 - Don't Panic.mp3",
+		"../Samples/SongsTest/06 - Up In Arms.mp3",
 		0
 	};
 	bool generateJustPools = (argc>1);
@@ -163,11 +166,23 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 	hlschema.AddRestrictedString("Song","Mode", modeValues);
 	hlschema.AddRangedReal("Song","DynamicComplexity", 0., 10.);
 	hlschema.AddRangedInt("Song","BPM", 0, 240);
-	hlschema.AddSegmentation("Song","Onsets", "Onset");
 	hlschema.AddSegmentation("Song","RandomSegments", "");
-	hlschema.AddRangedReal("Onset","Force", 0., 10.);
+	hlschema.AddSegmentation("Song","Onsets", "Onset");
+	hlschema.AddRangedReal("Onset","Relevance", 0., 10.);
+	const char * onsetKindValues[] =
+	{
+		"PitchChange",
+		"EnergyChange",
+		0
+	};
+	hlschema.AddRestrictedString("Onset","DetectedChange", onsetKindValues);
+	hlschema.AddSegmentation("Song", "Notes", "Note");
+	hlschema.AddRestrictedString("Note", "Pitch", keyValues);
+	hlschema.AddRangedInt("Note", "Octave", 1, 12);
+	hlschema.AddString("Note", "Instrument");
 
 	CLAM::XMLStorage::Dump(testSchema, "Schema", schemaLocation);
+	CLAM::XMLStorage::Dump(testSchema, "SChema", std::cout);
 }
 
 
@@ -197,15 +212,38 @@ void PopulatePool(const std::string & song,
 	unsigned nOnsets = segmentation.Size();
 	if (nOnsets==0) nOnsets=1; // KLUDGE!!
 	pool.SetNumberOfContexts("Onset",nOnsets);
-	float * onsetForces = pool.GetWritePool<float>("Onset","Force");
+	float * onsetForces = pool.GetWritePool<float>("Onset","Relevance");
+	CLAM_Annotator::RestrictedString * onsetChange = pool.GetWritePool<CLAM_Annotator::RestrictedString>("Onset","DetectedChange");
 	for (unsigned i = 0; i<nOnsets; i++)
 	{
 		onsetForces[i] = float (rand())/float(RAND_MAX)*10;
+		onsetChange[i] = (float (rand())/float(RAND_MAX)*2)>1.0 ? "PitchChange" : "EnergyChange";
 	}
 
 	CLAM::IndexArray* randomSegmentation = 
 		pool.GetWritePool<CLAM::IndexArray>("Song","RandomSegments");
 	GenerateRandomSegmentationMarks(randomSegmentation, GetnSamples(song), 1024);
+
+	CLAM::IndexArray* noteSegmentation = 
+		pool.GetWritePool<CLAM::IndexArray>("Song","Notes");
+	GenerateRandomSegmentationMarks(noteSegmentation, GetnSamples(song), 1024);
+	unsigned nNotes = noteSegmentation->Size();
+	pool.SetNumberOfContexts("Note",nNotes);
+	CLAM_Annotator::RestrictedString * notePitch = pool.GetWritePool<CLAM_Annotator::RestrictedString>("Note","Pitch");
+	int * noteOctave = pool.GetWritePool<int>("Note","Octave");
+	const char * pitchValues[] =
+	{
+		"A", "A#", "B", "C", "C#",
+		"D", "D#", "E", "F", "F#",
+		"G", "G#", 0
+	};
+	for (unsigned i = 0; i<nNotes; i++)
+	{
+		noteOctave[i] = std::max(std::min(int(float (rand())/float(RAND_MAX)*11),10), 0)+1;
+		unsigned pitch = std::max(std::min(int(float (rand())/float(RAND_MAX)*12), 11), 0);
+		notePitch[i] = pitchValues[pitch];
+	}
+
 
 	pool.GetWritePool<CLAM::Text>("Song","Artist")[0] = artist;
 	pool.GetWritePool<CLAM::Text>("Song","Title")[0] = title;
