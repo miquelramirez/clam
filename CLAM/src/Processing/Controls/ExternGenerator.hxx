@@ -1,0 +1,45 @@
+#ifndef _EXTERN_GENERATOR_HXX_
+#define _EXTERN_GENERATOR_HXX_
+
+#include "Processing.hxx"
+#include "NullProcessingConfig.hxx"
+#include "AudioOutPort.hxx"
+
+namespace CLAM
+{
+	class ExternGenerator : public Processing
+	{
+	private:
+		AudioOutPort mOut;
+		NullProcessingConfig mConf;
+
+	public:
+		ExternGenerator();
+		ExternGenerator(const ProcessingConfig & conf);
+
+		void SetFrameAndHopSize(const int val)
+		{
+			mOut.SetSize(val);
+			mOut.SetHop(val);
+		}
+		
+		~ExternGenerator();
+
+		bool Do();
+		bool Do( CLAM::TData* buf, int nframes);
+		
+		const char* GetClassName() const { return "ExternGenerator";}
+
+		bool ConcreteConfigure(const ProcessingConfig &c)
+		{
+			return true;
+		}
+
+		const ProcessingConfig& GetConfig() const
+		{
+			return mConf;
+		}
+	};
+} //namespace CLAM
+
+#endif
