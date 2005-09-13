@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network id="CLAM OSCEnabledNetwork">
+<network id="CLAM">
 
-  <processing id="AudioAdder" type="AudioAdder"/>
+  <processing id="JACKReceiver_0" type="JACKReceiver">
+    <JACKName>JACK Input</JACKName>
+  </processing>
 
-  <processing id="SimpleOscillator" type="SimpleOscillator">
-    <Frequency>440</Frequency>
-    <Amplitude>0</Amplitude>
-    <Phase>0</Phase>
-    <SamplingRate>44100</SamplingRate>
+  <processing id="JACKSender_0" type="JACKSender">
+    <JACKName>JACK Output</JACKName>
   </processing>
 
   <port_connection>
-    <out>SimpleOscillator.Audio Output</out>
-    <in>AudioAdder.Second Audio Input</in>
+    <out>JACKReceiver_0.AudioOut</out>
+    <in>JACKSender_0.AudioIn</in>
   </port_connection>
 
 </network>
