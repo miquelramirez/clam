@@ -112,7 +112,7 @@ void Annotator::computeSongDescriptors()
 	if (!mProjectOverview->selectedItem()) return;
 	QString filename = mProjectOverview->selectedItem()->text(0);
 	QProcess extractor(this);
-	extractor.addArgument("../buildTest/Test");
+	extractor.addArgument("./runExtractor.sh");
 	extractor.addArgument(filename);
 	if (!extractor.start())
 	{
