@@ -34,9 +34,6 @@
 int jack_process (jack_nframes_t nframes, void *arg);
 void jack_shutdown (void *arg);
 
-//namespace CLAM
-//{
-
 typedef struct
 {
 	jack_port_t* jackOutPort;
@@ -91,11 +88,11 @@ public:
 		_jsamplerate=(int)jack_get_sample_rate (client);
 		_jbuffersize=(int)jack_get_buffer_size (client);
 
-		ManageInputPorts(_network);
-		ManageOutputPorts(_network);
+		CreateInputPorts(_network);
+		CreateOutputPorts(_network);
 	}
 	
-	void ManageInputPorts(const CLAM::Network& net)
+	void CreateInputPorts(const CLAM::Network& net)
 	{
 		JACKOutPortCouple pair;
 		
@@ -119,7 +116,7 @@ public:
 		}
 	}
 	
-	void ManageOutputPorts(const CLAM::Network& net)
+	void CreateOutputPorts(const CLAM::Network& net)
 	{
 		JACKInPortCouple pair;
 		
@@ -175,8 +172,7 @@ public:
 	{
 		DoInPorts(nframes);
 		
-		//for (int stepcount=0; stepcount < (int(nframes)/int(_cbuffersize)); stepcount++)
-			_network.DoProcessingsLoop();
+		for (int stepcount=0; stepcount < (int(nframes)/int(_cbuffersize)); stepcount++)
 			_network.DoProcessingsLoop();
 
 		DoOutPorts(nframes);
