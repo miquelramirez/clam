@@ -3,13 +3,14 @@
 #define _SongFiles_
 
 #include "DynamicType.hxx"
+#include "Filename.hxx"
 
 namespace CLAM_Annotator{
 
 	class Song:public CLAM::DynamicType
 	{
 		DYNAMIC_TYPE(Song,2);
-		DYN_ATTRIBUTE(0,public, std::string, SoundFile);
+		DYN_ATTRIBUTE(0,public, CLAM::Filename, SoundFile);
 		/**
 		 * Descriptor File Associated to the sound file. In most applications if this attribute
 		 * is missing the application is expected to add the .pool extension to the SoundFile name
