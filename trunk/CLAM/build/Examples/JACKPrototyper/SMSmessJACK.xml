@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="JACKReceiver0" type="JACKReceiver">
+  <processing id="JACKReceiver0" type="ExternGenerator">
   </processing>
 
-  <processing id="JACKSender0" type="JACKSender">
+  <processing id="JACKSender0" type="ExternSink">
   </processing>
 
-  <processing id="JACKSender1" type="JACKSender">
+  <processing id="JACKSender1" type="ExternSink">
   </processing>
 
   <processing id="OutControlSender_0" type="OutControlSender">
