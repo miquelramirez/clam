@@ -51,11 +51,6 @@ void PushFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 		mGenerators.remove( &removed );
 }
 
-void PushFlowControl::ForceGenerator( Processing* insideGenerator)
-{
-	mGenerators.push_back(insideGenerator);
-}
-
 void PushFlowControl::DoProcessings()
 {
 	std::list< Processing* > toDo(mGenerators);
