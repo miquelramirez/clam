@@ -37,19 +37,19 @@ namespace CLAM{
 	class OSCSenderConfig : public ProcessingConfig
 	{
 	public:
-	DYNAMIC_TYPE_USING_INTERFACE (OSCSenderConfig,3,ProcessingConfig);
-	DYN_ATTRIBUTE(0,public,std::string, HostName);
-	DYN_ATTRIBUTE(1,public,int, Port);
-	DYN_ATTRIBUTE(2,public,std::string, Path);
+		DYNAMIC_TYPE_USING_INTERFACE (OSCSenderConfig,3,ProcessingConfig);
+		DYN_ATTRIBUTE(0,public,std::string, HostName);
+		DYN_ATTRIBUTE(1,public,int, Port);
+		DYN_ATTRIBUTE(2,public,std::string, Path);
 	protected:
-	void DefaultInit()
-	{
-		AddAll();
-		UpdateData();
-		SetHostName("localhost");
-		SetPort(7000);
-		SetPath("/processing/control");
-	}
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetHostName("localhost");
+			SetPort(7000);
+			SetPath("/processing/control");
+		}
 	};
 
 	class OSCSender : public Processing
