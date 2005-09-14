@@ -59,6 +59,9 @@
 #include "OneOverF.hxx"
 #include "SquareWave.hxx"
 
+#include "ExternGenerator.hxx"
+#include "ExternSink.hxx"
+
 #if USE_OSCPACK
 #include "OSCSender.hxx"
 #endif
@@ -164,6 +167,13 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SquareWaveConfig> > 
 	regtSquareWaveCfg( "SquareWaveConfig" );
+	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::NullProcessingConfig> > 
+	regtNullProcessingCfg( "NullProcessingConfig" );
+	
+//static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ExternSinkConfig> > 
+//	regtExternSinkCfg( "ExternSinkConfig" );
+
 #if USE_OSCPACK
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::OSCSenderConfig> > 
 	regtOSCSenderCfg( "OSCSenderConfig" );

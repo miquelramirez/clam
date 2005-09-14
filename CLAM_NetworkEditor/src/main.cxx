@@ -83,7 +83,7 @@ int main( int argc, char **argv )
 	app.setMainWidget(&mw);
 	mw.show();
 	app.connect( &app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()) );
-	
+
 	return app.exec();
 }
 
