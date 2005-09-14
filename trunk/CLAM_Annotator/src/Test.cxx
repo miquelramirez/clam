@@ -135,9 +135,8 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
 		schema.AddFrameFloatAttribute(*name);
 
-	CLAM_Annotator::HLDSchema& hlschema = schema.GetHLDSchema();
-	hlschema.AddString("Song","Artist");
-	hlschema.AddString("Song","Title");
+	schema.AddString("Song","Artist");
+	schema.AddString("Song","Title");
 	const char * genreValues[] =
 	{
 		"Dance",
@@ -147,38 +146,38 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 		"Folk",
 		0
 	};
-	hlschema.AddRestrictedString("Song","Genre", genreValues);
-	hlschema.AddRangedReal("Song","Danceability", 0., 10.);
+	schema.AddRestrictedString("Song","Genre", genreValues);
+	schema.AddRangedReal("Song","Danceability", 0., 10.);
 	const char * keyValues[] =
 	{
 		"A", "A#", "B", "C", "C#",
 		"D", "D#", "E", "F", "F#",
 		"G", "G#", 0
 	};
-	hlschema.AddRestrictedString("Song","Key", keyValues);
+	schema.AddRestrictedString("Song","Key", keyValues);
 	const char * modeValues[] =
 	{
 		"Minor",
 		"Major",
 		0
 	};
-	hlschema.AddRestrictedString("Song","Mode", modeValues);
-	hlschema.AddRangedReal("Song","DynamicComplexity", 0., 10.);
-	hlschema.AddRangedInt("Song","BPM", 0, 240);
-	hlschema.AddSegmentation("Song","RandomSegments", "");
-	hlschema.AddSegmentation("Song","Onsets", "Onset");
-	hlschema.AddRangedReal("Onset","Relevance", 0., 10.);
+	schema.AddRestrictedString("Song","Mode", modeValues);
+	schema.AddRangedReal("Song","DynamicComplexity", 0., 10.);
+	schema.AddRangedInt("Song","BPM", 0, 240);
+	schema.AddSegmentation("Song","RandomSegments", "");
+	schema.AddSegmentation("Song","Onsets", "Onset");
+	schema.AddRangedReal("Onset","Relevance", 0., 10.);
 	const char * onsetKindValues[] =
 	{
 		"PitchChange",
 		"EnergyChange",
 		0
 	};
-	hlschema.AddRestrictedString("Onset","DetectedChange", onsetKindValues);
-	hlschema.AddSegmentation("Song", "Notes", "Note");
-	hlschema.AddRestrictedString("Note", "Pitch", keyValues);
-	hlschema.AddRangedInt("Note", "Octave", 1, 12);
-	hlschema.AddString("Note", "Instrument");
+	schema.AddRestrictedString("Onset","DetectedChange", onsetKindValues);
+	schema.AddSegmentation("Song", "Notes", "Note");
+	schema.AddRestrictedString("Note", "Pitch", keyValues);
+	schema.AddRangedInt("Note", "Octave", 1, 12);
+	schema.AddString("Note", "Instrument");
 
 	CLAM::XMLStorage::Dump(schema, "Schema", schemaLocation);
 	CLAM::XMLStorage::Dump(schema, "SChema", std::cout);
