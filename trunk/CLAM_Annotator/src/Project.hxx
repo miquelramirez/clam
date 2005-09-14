@@ -38,7 +38,7 @@ public:
 	{
 		return mSchema;
 	}
-	typedef std::list<CLAM_Annotator::HLDSchemaElement> SongScopeSchema;
+	typedef std::list<CLAM_Annotator::SchemaAttribute> SongScopeSchema;
 	SongScopeSchema GetSongScopeSchema()
 	{
 		return GetScopeSchema("Song");
@@ -50,10 +50,10 @@ public:
 	{
 		return GetAnnotatorSchema().Validate(dataPool);
 	}
-	const CLAM_Annotator::HLDSchemaElement & GetAttributeScheme(const std::string & scope, const std::string & name) const
+	const CLAM_Annotator::SchemaAttribute & GetAttributeScheme(const std::string & scope, const std::string & name) const
 	{
-		const std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetAllAttributes();
-		std::list<CLAM_Annotator::HLDSchemaElement>::const_iterator it;
+		const std::list<CLAM_Annotator::SchemaAttribute>& hlds = mSchema.GetAllAttributes();
+		std::list<CLAM_Annotator::SchemaAttribute>::const_iterator it;
 		for(it = hlds.begin(); it != hlds.end(); it++)
 		{
 			if (it->GetScope() != scope) continue;

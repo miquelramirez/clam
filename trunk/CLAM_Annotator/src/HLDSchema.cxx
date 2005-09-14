@@ -4,9 +4,9 @@
 
 namespace CLAM_Annotator{
 
-	/**************** HLDSchemaElement **************/
+	/**************** SchemaAttribute **************/
 
-	void HLDSchemaElement::DefaultInit()
+	void SchemaAttribute::DefaultInit()
 	{
 		AddName();
 		AddScope();
@@ -14,7 +14,7 @@ namespace CLAM_Annotator{
 		UpdateData();
 	}
 
-	bool HLDSchemaElement::Validate(const Descriptor<CLAM_Annotator::RestrictedString>& descriptor)const
+	bool SchemaAttribute::Validate(const Descriptor<CLAM_Annotator::RestrictedString>& descriptor)const
 	{
 		bool validated = true;
 		validated = (std::find(GetRestrictionValues().begin(),
@@ -26,7 +26,7 @@ namespace CLAM_Annotator{
 		
 	}
 	
-	bool HLDSchemaElement::Validate (const Descriptor<int>& descriptor)const
+	bool SchemaAttribute::Validate (const Descriptor<int>& descriptor)const
 	{
 		bool validated = true;
 		validated = (descriptor.GetValue()>=GetiRange().GetMin()&&
@@ -36,7 +36,7 @@ namespace CLAM_Annotator{
 		return validated;
 	}
 	
-	bool HLDSchemaElement::Validate (const Descriptor<float>& descriptor)const
+	bool SchemaAttribute::Validate (const Descriptor<float>& descriptor)const
 	{
 		bool validated = true;
 		validated = (descriptor.GetValue()>=GetfRange().GetMin()&&

@@ -10,7 +10,7 @@ namespace CLAM_Annotator{
 	class Schema : public CLAM::DynamicType
 	{
 		DYNAMIC_TYPE(Schema,2);
-		DYN_CONTAINER_ATTRIBUTE(0,public, std::list<HLDSchemaElement>, Attributes, Attribute);
+		DYN_CONTAINER_ATTRIBUTE(0,public, std::list<SchemaAttribute>, Attributes, Attribute);
 		DYN_CONTAINER_ATTRIBUTE(1, public, std::list<std::string>, LLDNames, Names);
 
 		void DefaultInit()
@@ -27,7 +27,7 @@ namespace CLAM_Annotator{
 				const std::string & attribute,
 				const char ** availableValues)
 		{
-			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			CLAM_Annotator::SchemaAttribute testHLDesc;
 			testHLDesc.SetScope(scope);
 			testHLDesc.SetName(attribute);
 			testHLDesc.SetType("RestrictedString");
@@ -42,7 +42,7 @@ namespace CLAM_Annotator{
 				const std::string & attribute,
 				int min, int max)
 		{
-			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			CLAM_Annotator::SchemaAttribute testHLDesc;
 			testHLDesc.SetScope(scope);
 			testHLDesc.SetName(attribute);
 			testHLDesc.SetType("Int");
@@ -59,7 +59,7 @@ namespace CLAM_Annotator{
 				const std::string & attribute,
 				double min, double max)
 		{
-			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			CLAM_Annotator::SchemaAttribute testHLDesc;
 			testHLDesc.AddfRange();
 			testHLDesc.UpdateData();
 			testHLDesc.SetScope(scope);
@@ -75,7 +75,7 @@ namespace CLAM_Annotator{
 				const std::string & scope,
 				const std::string & attribute)
 		{
-			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			CLAM_Annotator::SchemaAttribute testHLDesc;
 			testHLDesc.SetScope(scope);
 			testHLDesc.SetName(attribute);
 			testHLDesc.SetType("String");
@@ -86,7 +86,7 @@ namespace CLAM_Annotator{
 				const std::string & attribute,
 				const std::string & childScope)
 		{
-			CLAM_Annotator::HLDSchemaElement testHLDesc;
+			CLAM_Annotator::SchemaAttribute testHLDesc;
 			testHLDesc.AddChildScope();
 			testHLDesc.UpdateData();
 			testHLDesc.SetScope(scope);
@@ -96,12 +96,12 @@ namespace CLAM_Annotator{
 			AddAttribute(testHLDesc);
 		}
 		bool Validate(const CLAM::DescriptionDataPool & data);
-		const std::list<HLDSchemaElement> & GetAllAttributes() const
+		const std::list<SchemaAttribute> & GetAllAttributes() const
 	       	{
 			return GetAttributes();
 		}
 	private:
-		void AddAttribute(HLDSchemaElement & attribute)
+		void AddAttribute(SchemaAttribute & attribute)
 		{
 			GetAttributes().push_back(attribute);
 		}
@@ -125,7 +125,7 @@ namespace CLAM_Annotator{
 			return validated;
 		}
 
-		HLDSchemaElement FindElement(const std::string& descriptorName) const;
+		SchemaAttribute FindElement(const std::string& descriptorName) const;
 	};
 
 };

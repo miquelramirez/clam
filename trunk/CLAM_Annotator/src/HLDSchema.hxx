@@ -18,9 +18,9 @@ namespace CLAM_Annotator{
 	
 	//TODO: type should be an enum not a string
 	
-	class HLDSchemaElement:public CLAM::DynamicType
+	class SchemaAttribute:public CLAM::DynamicType
 	{
-		DYNAMIC_TYPE(HLDSchemaElement,7);
+		DYNAMIC_TYPE(SchemaAttribute,7);
 		DYN_ATTRIBUTE(0, public, std::string, Name);
 		DYN_ATTRIBUTE(1, public, std::string, Scope);
 		//TODO: this should better be an enum
