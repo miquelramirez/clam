@@ -16,6 +16,8 @@
 #include "NetSpecgramPlot.hxx"
 #include "NetFundTrackPlot.hxx"
 #include "NetSinTracksPlot.hxx"
+#include "Text.hxx"
+#include "List.hxx"
 
 #include "ExternGenerator.hxx"
 #include "ExternSink.hxx"
@@ -48,6 +50,8 @@ typedef struct
 
 typedef std::vector<JACKOutPortCouple> JACKOutPortList;
 typedef std::vector<JACKInPortCouple> JACKInPortList;
+
+namespace CLAM{
 
 class JACKNetworkPlayer
 {
