@@ -45,21 +45,6 @@ namespace CLAM_Annotator{
 		bool Validate (const Descriptor<float>& descriptor)const;
 		
 	};
-		
-	
-	class HLDSchema:public CLAM::DynamicType
-	{
-		DYNAMIC_TYPE(HLDSchema,1);
-		DYN_CONTAINER_ATTRIBUTE(0,public, std::list<HLDSchemaElement>,HLDs,Attribute);
-		
-		void DefaultInit()
-		{
-			AddAll();
-			UpdateData();
-		}
-	public:
-	};
-
 
 	std::string GetTypeFromValue(int i);
 	std::string GetTypeFromValue(float f);

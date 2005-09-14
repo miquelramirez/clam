@@ -10,7 +10,7 @@ namespace CLAM_Annotator{
 	class Schema : public CLAM::DynamicType
 	{
 		DYNAMIC_TYPE(Schema,2);
-		DYN_ATTRIBUTE(0, public, HLDSchema, HLDSchema);
+		DYN_CONTAINER_ATTRIBUTE(0,public, std::list<HLDSchemaElement>, Attributes, Attribute);
 		DYN_CONTAINER_ATTRIBUTE(1, public, std::list<std::string>, LLDNames, Names);
 
 		void DefaultInit()
@@ -98,12 +98,12 @@ namespace CLAM_Annotator{
 		bool Validate(const CLAM::DescriptionDataPool & data);
 		const std::list<HLDSchemaElement> & GetAllAttributes() const
 	       	{
-			return GetHLDSchema().GetHLDs();
+			return GetAttributes();
 		}
 	private:
 		void AddAttribute(HLDSchemaElement & attribute)
 		{
-			GetHLDSchema().GetHLDs().push_back(attribute);
+			GetAttributes().push_back(attribute);
 		}
 		template <class T>
 		Descriptor<T> MakeDescriptor(T value,const std::string& name)
