@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="JACKReceiver0" type="ExternGenerator">
-  </processing>
+  <processing id="JACK_Input" type="ExternGenerator"/>
 
-  <processing id="JACKSender0" type="ExternSink">
-  </processing>
+  <processing id="JACK_Out_Input" type="ExternSink"/>
 
-  <processing id="JACKSender1" type="ExternSink">
-  </processing>
+  <processing id="JACK_Out_Synth" type="ExternSink"/>
 
   <processing id="OutControlSender_0" type="OutControlSender">
     <Min>-11025</Min>
@@ -157,13 +154,13 @@
   </processing>
 
   <port_connection>
-    <out>JACKReceiver0.AudioOut</out>
+    <out>JACK_Input.AudioOut</out>
     <in>SMSAnalysisCore.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>JACKReceiver0.AudioOut</out>
-    <in>JACKSender1.AudioIn</in>
+    <out>JACK_Input.AudioOut</out>
+    <in>JACK_Out_Input.AudioIn</in>
   </port_connection>
 
   <port_connection>
@@ -193,7 +190,7 @@
 
   <port_connection>
     <out>SMSSynthesis.OutputAudio</out>
-    <in>JACKSender0.AudioIn</in>
+    <in>JACK_Out_Synth.AudioIn</in>
   </port_connection>
 
   <control_connection>
