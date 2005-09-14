@@ -96,6 +96,10 @@ namespace CLAM_Annotator{
 			AddAttribute(testHLDesc);
 		}
 		bool Validate(const CLAM::DescriptionDataPool & data);
+		const std::list<HLDSchemaElement> & GetAllAttributes() const
+	       	{
+			return GetHLDSchema().GetHLDs();
+		}
 	private:
 		void AddAttribute(HLDSchemaElement & attribute)
 		{
