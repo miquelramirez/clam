@@ -77,17 +77,6 @@ namespace CLAM_Annotator{
 
 		bool Validate(const CLAM::DescriptionDataPool& pool);
 		HLDSchemaElement FindElement(const std::string& descriptorName) const;
-		
-	private:
-		template <class T>
-		Descriptor<T> MakeDescriptor(T value,const std::string& name)
-		{
-			Descriptor<T> desc;
-			desc.SetValue(value);
-			desc.SetName(name);
-			desc.SetType(GetTypeFromValue(value));
-			return desc;
-		}
 	};
 
 
