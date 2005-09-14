@@ -5,8 +5,8 @@ namespace CLAM_Annotator
 
 	bool Schema::Validate(const CLAM::DescriptionDataPool& pool)
 	{
-		const std::list<CLAM_Annotator::HLDSchemaElement>& hlds = GetAllAttributes();
-		std::list<CLAM_Annotator::HLDSchemaElement>::const_iterator it2;
+		const std::list<CLAM_Annotator::SchemaAttribute>& hlds = GetAllAttributes();
+		std::list<CLAM_Annotator::SchemaAttribute>::const_iterator it2;
 		bool validated = true;
 		for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
 		{
@@ -35,10 +35,10 @@ namespace CLAM_Annotator
 		return validated;
 	}
 
-	HLDSchemaElement Schema::FindElement(const std::string& descriptorName) const
+	SchemaAttribute Schema::FindElement(const std::string& descriptorName) const
 	{
-		const std::list<HLDSchemaElement> & hlds = GetAllAttributes();
-		std::list<HLDSchemaElement>::const_iterator it;
+		const std::list<SchemaAttribute> & hlds = GetAllAttributes();
+		std::list<SchemaAttribute>::const_iterator it;
 		for(it = hlds.begin(); it != hlds.end(); it++)
 		{
 			if (it->GetName() == descriptorName)

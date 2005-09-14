@@ -28,7 +28,7 @@ namespace CLAM_Annotator
 		mTable->setNumRows(0);
 		CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(scope);
 		mTable->setNumRows(hlds.size());
-		std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
+		std::list<CLAM_Annotator::SchemaAttribute>::iterator it = hlds.begin();
 		for(int i = 0 ; it != hlds.end(); it++, i++)
 		{
 			TableItem * item = new TableItem(mTable, TableItem::Never, it->GetName().c_str());
@@ -41,7 +41,7 @@ namespace CLAM_Annotator
 		if (mScope=="") return;
 		mElement=element;
 		CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(mScope);
-		std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
+		std::list<CLAM_Annotator::SchemaAttribute>::iterator it;
 		for(it = hlds.begin() ; it != hlds.end(); it++)
 		{
 			const std::string & type = it->GetType();
@@ -84,7 +84,7 @@ namespace CLAM_Annotator
 	void DescriptorTableController::updateData(int row, CLAM::DescriptionDataPool * dataPool)
 	{
 		std::string name = mTable->text(row,0).ascii();
-		const CLAM_Annotator::HLDSchemaElement & hldSchemaElement = 
+		const CLAM_Annotator::SchemaAttribute & hldSchemaElement = 
 			mProject.GetAttributeScheme(mScope,name);
 
 		const std::string & type = hldSchemaElement.GetType();
@@ -114,7 +114,7 @@ namespace CLAM_Annotator
 		//TODO: should find a more efficient search algorithm
 
 		CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(mScope);
-		std::list<CLAM_Annotator::HLDSchemaElement>::iterator it = hlds.begin();
+		std::list<CLAM_Annotator::SchemaAttribute>::iterator it = hlds.begin();
 		for(int i = 0 ; it != hlds.end(); it++, i++)
 		{
 			if (it->GetName() == name) return i;
