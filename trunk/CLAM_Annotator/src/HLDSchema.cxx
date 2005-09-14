@@ -46,19 +46,6 @@ namespace CLAM_Annotator{
 		return validated;
 	}
 
-	/**************** HLDSchema **************/
-
-	HLDSchemaElement HLDSchema::FindElement(const std::string& descriptorName) const
-	{
-		std::list<HLDSchemaElement>::iterator it;
-		for(it = GetHLDs().begin(); it != GetHLDs().end(); it++)
-		{
-			if (it->GetName() == descriptorName)
-				return (*it);
-		}
-		CLAM_ASSERT(false, "Descriptor not found in Scheme");
-	}
-
 	/**************** Auxiliary functions	**************/
 
 	std::string GetTypeFromValue(int i)
