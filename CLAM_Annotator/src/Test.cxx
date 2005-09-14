@@ -110,7 +110,6 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 {
 	CLAM_Annotator::Schema testSchema;
 
-	CLAM_Annotator::LLDSchema& llschema = testSchema.GetLLDSchema();
 	const char * lowLevelDescriptorsNames[] =
 	{
 		"Mean",
@@ -134,7 +133,7 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 		0
 	};
 	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
-		llschema.AddFloat(*name);
+		testSchema.AddFrameFloatAttribute(*name);
 
 	CLAM_Annotator::HLDSchema& hlschema = testSchema.GetHLDSchema();
 	hlschema.AddString("Song","Artist");
