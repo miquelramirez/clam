@@ -64,6 +64,11 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 #if USE_OSCPACK
 	new ProcessingItem( controls, "OSCSender" );	
 #endif	
+
+	QListViewItem * externalizers = new QListViewItem( this, "Externalizers" );
+	new ProcessingItem( externalizers, "ExternGenerator" );
+	new ProcessingItem( externalizers, "ExternSink" );
+
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	new ProcessingItem( inputoutput, "AudioOut" );
 //	new ProcessingItem( inputoutput, "AudioIn" );
