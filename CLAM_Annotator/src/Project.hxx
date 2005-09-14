@@ -48,7 +48,7 @@ public:
 	const std::list<std::string> & GetSongSegmentationNames();
 	bool ValidateDataPool(const CLAM::DescriptionDataPool & dataPool)
 	{
-		return GetAnnotatorSchema().GetHLDSchema().Validate(dataPool);
+		return GetAnnotatorSchema().Validate(dataPool);
 	}
 	const CLAM_Annotator::HLDSchemaElement & GetAttributeScheme(const std::string & scope, const std::string & name) const
 	{
