@@ -1,11 +1,14 @@
-<network id="CLAM" >
-  <processing type="AudioOut" id="AudioOut" >
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="CLAM">
+
+  <processing id="AudioOut" type="AudioOut">
     <Device>default:default</Device>
     <ChannelID>0</ChannelID>
     <FrameSize>512</FrameSize>
     <SampleRate>44100</SampleRate>
   </processing>
-  <processing type="MonoAudioFileReader" id="MonoAudioFileReader" >
+
+  <processing id="MonoAudioFileReader" type="MonoAudioFileReader">
     <SourceFile>
       <URI>../../../../CLAM-TestData/longSounds/savior.wav</URI>
       <Header>
@@ -22,14 +25,16 @@
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
-  <processing type="OutControlSender" id="OutControlSender_0" >
+
+  <processing id="OutControlSender_0" type="OutControlSender">
     <Min>-11025</Min>
     <Default>0</Default>
     <Max>11025</Max>
     <Step>1</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
-  <processing type="SMSAnalysisCore" id="SMSAnalysisCore" >
+
+  <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -107,10 +112,14 @@
       <ZeroPadding>0</ZeroPadding>
     </SynthSineSpectrum>
   </processing>
-  <processing type="SMSFreqShift" id="SMSFreqShift" />
-  <processing type="SMSResidualGain" id="SMSResidualGain" />
-  <processing type="SMSSinusoidalGain" id="SMSSinusoidalGain" />
-  <processing type="SMSSynthesis" id="SMSSynthesis" >
+
+  <processing id="SMSFreqShift" type="SMSFreqShift"/>
+
+  <processing id="SMSResidualGain" type="SMSResidualGain"/>
+
+  <processing id="SMSSinusoidalGain" type="SMSSinusoidalGain"/>
+
+  <processing id="SMSSynthesis" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -162,36 +171,45 @@
     </OverlapAddGlobal>
     <prSamplingRate>0</prSamplingRate>
   </processing>
+
   <port_connection>
     <out>MonoAudioFileReader.Samples Read</out>
     <in>SMSAnalysisCore.Input Audio</in>
   </port_connection>
+
   <port_connection>
     <out>SMSAnalysisCore.Sinusoidal Peaks</out>
     <in>SMSSinusoidalGain.In SpectralPeaks</in>
   </port_connection>
+
   <port_connection>
     <out>SMSAnalysisCore.Residual Spectrum</out>
     <in>SMSResidualGain.In Spectrum</in>
   </port_connection>
+
   <port_connection>
     <out>SMSFreqShift.Out SpectralPeaks</out>
     <in>SMSSynthesis.InputSinPeaks</in>
   </port_connection>
+
   <port_connection>
     <out>SMSResidualGain.Out Spectrum</out>
     <in>SMSSynthesis.InputResSpectrum</in>
   </port_connection>
+
   <port_connection>
     <out>SMSSinusoidalGain.Out SpectralPeaks</out>
     <in>SMSFreqShift.In SpectralPeaks</in>
   </port_connection>
+
   <port_connection>
     <out>SMSSynthesis.OutputAudio</out>
     <in>AudioOut.Audio Input</in>
   </port_connection>
+
   <control_connection>
     <out>OutControlSender_0.out</out>
     <in>SMSFreqShift.Amount</in>
   </control_connection>
+
 </network>
