@@ -189,32 +189,6 @@ void Qt_NetworkPresentation::SaveWidgetsPositions(const std::string& baseFilenam
 	}
 	CLAM::XmlStorage::Dump(pos,"WidgetLocations",positionsFilename);
 	
-/*		OLD METHOD: simple ASCII
-	std::string positionsFilename = baseFilename + ".pos";
-	
-	std::ofstream os(positionsFilename.c_str());
-	CLAM_ASSERT(os.is_open(), "error opening positions file for writting");
-	
-	const std::string tab = "\t";
-	const std::string sep = " ";
-
-	int width = mMainWindow->size().width();
-	int height = mMainWindow->size().height();
-
-	os << width << sep << height << std::endl; // main window size
-	ProcessingPresentationIterator it;
-	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
-	{
-		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
-		int x = proc->pos().x();
-		int y = proc->pos().y();
-		width = proc->size().width();
-		height = proc->size().height();
-		os << proc->GetName() << tab << x << sep << y << tab;
-		os << width << sep << height << std::endl;
-	}
-*/
-
 }
 void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& baseFilename)
 {
@@ -227,7 +201,8 @@ void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& baseFilena
 		CLAM::XmlStorage::Restore(pos,positionsFilename);
 	}catch (std::exception e)
 	{
-		std::cerr <<"Warning: "<<e.what()<<std::endl;
+		std::cerr << "Warning: Could not restore network-positions file.\n"
+			<< e.what() << std::endl;
 		return;
 	}
 	
@@ -250,44 +225,6 @@ void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& baseFilena
 		proc->resize( it->GetWidth() , it->GetHeight() );
 		proc->ConfigurationUpdated(true);
 	}
-
-/*		OLD METHOD: simple ASCII
- 	std::string positionsFilename = baseFilename+".pos";
-	printf("opening file %s\n", positionsFilename.c_str());
-	std::ifstream is(positionsFilename.c_str());
-	if (!is.is_open())
-	{
-		std::cerr << "Warning: widget-positions file '" 
-			<< positionsFilename << "' not found\n";
-		return;
-	}
-	std::string procname;
-	int x,y, width, height;
-	is >> x;
-	is >> y;
-	resize(x,y);
-	mMainWindow->resize(x,y);
-	std::string caption("CLAM Network Editor -- ");
-	caption += baseFilename;
-	mMainWindow->setCaption( caption.c_str() );
-
-	while (is >> procname)
-	{
-		is >> x;
-		is >> y;
-		is >> width;
-		is >> height;
-		Qt_ProcessingPresentation * proc=FindProcessingPresentation( procname );
-		if (!proc)
-		{
-			std::cerr<<"Warning: found bad name in network-positions file: '"
-				<< procname <<"'\n";
-			continue;
-		}
-		proc->MoveAbsolute( QPoint(x,y) );
-		proc->resize(width, height);
-		proc->ConfigurationUpdated(true);
-	}*/
 }
 
 void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & name, CLAMVM::ProcessingController * controller )
