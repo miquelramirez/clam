@@ -219,10 +219,17 @@ void Qt_NetworkPresentation::SaveWidgetsPositions(const std::string& baseFilenam
 void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& baseFilename)
 {
 	std::string positionsFilename = baseFilename+".pos";
-	printf("opening file %s\n", positionsFilename.c_str());
+	std::cout<<"opening file "<<positionsFilename<<std::endl;
 
 	NetworkEditorPositions pos;
-	CLAM::XmlStorage::Restore(pos,positionsFilename);
+	try
+	{
+		CLAM::XmlStorage::Restore(pos,positionsFilename);
+	}catch (std::exception e)
+	{
+		std::cerr <<"Warning: "<<e.what()<<std::endl;
+		return;
+	}
 	
 	resize( pos.GetWindowWidth(),pos.GetWindowHeight() );
 	mMainWindow->resize( pos.GetWindowWidth() , pos.GetWindowHeight() );
