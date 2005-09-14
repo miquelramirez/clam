@@ -19,6 +19,10 @@ namespace CLAM_Annotator{
 			AddAll();
 			UpdateData();
 		}
+		void AddFrameFloatAttribute(const std::string & name)
+		{
+			GetLLDSchema().AddFloat(name);
+		}
 	};
 
 };
