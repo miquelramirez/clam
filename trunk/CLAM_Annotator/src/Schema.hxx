@@ -95,9 +95,16 @@ namespace CLAM_Annotator{
 			testHLDesc.SetChildScope(childScope);
 			GetHLDSchema().GetHLDs().push_back(testHLDesc);
 		}
-		bool Validate(const CLAM::DescriptionDataPool & data)
+		bool Validate(const CLAM::DescriptionDataPool & data);
+	private:
+		template <class T>
+		Descriptor<T> MakeDescriptor(T value,const std::string& name)
 		{
-			return GetHLDSchema().Validate(data);
+			Descriptor<T> desc;
+			desc.SetValue(value);
+			desc.SetName(name);
+			desc.SetType(GetTypeFromValue(value));
+			return desc;
 		}
 	};
 
