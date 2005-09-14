@@ -2,6 +2,8 @@
 #include "Factory.hxx"
 #include "Audio.hxx"
 
+#include <iostream>
+
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
@@ -14,11 +16,15 @@ namespace CLAM
 	ExternSink::ExternSink()
 		: mIn("AudioIn",this)
 	{
+		//After being dropped it is ready to run as it does not need any configuration at all
+		mExecState=Ready;
 	}
 
 	ExternSink::ExternSink(const ProcessingConfig & conf)
 		: mIn("AudioIn",this)
 	{
+		//After being dropped it is ready to run as it does not need any configuration at all
+		mExecState=Ready;
 	}
 
 	ExternSink::~ExternSink()
