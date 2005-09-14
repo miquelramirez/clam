@@ -20,6 +20,11 @@ namespace CLAM_Annotator{
 		}
 		void AddFrameFloatAttribute(const std::string & name)
 		{
+			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.SetScope("Frame");
+			schemaAttribute.SetName(name);
+			schemaAttribute.SetType("Float");
+			AddAttribute(schemaAttribute);
 			GetLLDNames().push_back(name);
 		}
 		void AddRestrictedString(
@@ -27,73 +32,73 @@ namespace CLAM_Annotator{
 				const std::string & attribute,
 				const char ** availableValues)
 		{
-			CLAM_Annotator::SchemaAttribute testHLDesc;
-			testHLDesc.SetScope(scope);
-			testHLDesc.SetName(attribute);
-			testHLDesc.SetType("RestrictedString");
-			testHLDesc.AddRestrictionValues();
-			testHLDesc.UpdateData();
+			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.SetScope(scope);
+			schemaAttribute.SetName(attribute);
+			schemaAttribute.SetType("RestrictedString");
+			schemaAttribute.AddRestrictionValues();
+			schemaAttribute.UpdateData();
 			for (const char ** value = availableValues; *value; value++)
-				testHLDesc.GetRestrictionValues().push_back(*value);
-			AddAttribute(testHLDesc);
+				schemaAttribute.GetRestrictionValues().push_back(*value);
+			AddAttribute(schemaAttribute);
 		}
 		void AddRangedInt(
 				const std::string & scope,
 				const std::string & attribute,
 				int min, int max)
 		{
-			CLAM_Annotator::SchemaAttribute testHLDesc;
-			testHLDesc.SetScope(scope);
-			testHLDesc.SetName(attribute);
-			testHLDesc.SetType("Int");
-			testHLDesc.AddiRange();
-			testHLDesc.UpdateData();
+			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.SetScope(scope);
+			schemaAttribute.SetName(attribute);
+			schemaAttribute.SetType("Int");
+			schemaAttribute.AddiRange();
+			schemaAttribute.UpdateData();
 			CLAM_Annotator::Range<int> range;
 			range.SetMin(min);
 			range.SetMax(max);
-			testHLDesc.SetiRange(range);
-			AddAttribute(testHLDesc);
+			schemaAttribute.SetiRange(range);
+			AddAttribute(schemaAttribute);
 		}
 		void AddRangedReal(
 				const std::string & scope,
 				const std::string & attribute,
 				double min, double max)
 		{
-			CLAM_Annotator::SchemaAttribute testHLDesc;
-			testHLDesc.AddfRange();
-			testHLDesc.UpdateData();
-			testHLDesc.SetScope(scope);
-			testHLDesc.SetName(attribute);
-			testHLDesc.SetType("Float");
+			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.AddfRange();
+			schemaAttribute.UpdateData();
+			schemaAttribute.SetScope(scope);
+			schemaAttribute.SetName(attribute);
+			schemaAttribute.SetType("Float");
 			CLAM_Annotator::Range<float> range;
 			range.SetMin(min);
 			range.SetMax(max);
-			testHLDesc.SetfRange(range);
-			AddAttribute(testHLDesc);
+			schemaAttribute.SetfRange(range);
+			AddAttribute(schemaAttribute);
 		}
 		void AddString(
 				const std::string & scope,
 				const std::string & attribute)
 		{
-			CLAM_Annotator::SchemaAttribute testHLDesc;
-			testHLDesc.SetScope(scope);
-			testHLDesc.SetName(attribute);
-			testHLDesc.SetType("String");
-			AddAttribute(testHLDesc);
+			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.SetScope(scope);
+			schemaAttribute.SetName(attribute);
+			schemaAttribute.SetType("String");
+			AddAttribute(schemaAttribute);
 		}
 		void AddSegmentation(
 				const std::string & scope,
 				const std::string & attribute,
 				const std::string & childScope)
 		{
-			CLAM_Annotator::SchemaAttribute testHLDesc;
-			testHLDesc.AddChildScope();
-			testHLDesc.UpdateData();
-			testHLDesc.SetScope(scope);
-			testHLDesc.SetName(attribute);
-			testHLDesc.SetType("Segmentation");
-			testHLDesc.SetChildScope(childScope);
-			AddAttribute(testHLDesc);
+			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.AddChildScope();
+			schemaAttribute.UpdateData();
+			schemaAttribute.SetScope(scope);
+			schemaAttribute.SetName(attribute);
+			schemaAttribute.SetType("Segmentation");
+			schemaAttribute.SetChildScope(childScope);
+			AddAttribute(schemaAttribute);
 		}
 		bool Validate(const CLAM::DescriptionDataPool & data);
 		const std::list<SchemaAttribute> & GetAllAttributes() const

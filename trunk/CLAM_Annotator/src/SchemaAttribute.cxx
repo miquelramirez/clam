@@ -28,22 +28,18 @@ namespace CLAM_Annotator{
 	
 	bool SchemaAttribute::Validate (const Descriptor<int>& descriptor)const
 	{
-		bool validated = true;
-		validated = (descriptor.GetValue()>=GetiRange().GetMin()&&
-			descriptor.GetValue()<=GetiRange().GetMax());
-		CLAM_DEBUG_ASSERT(validated,
-			std::string("Descriptor did not validate: " + descriptor.GetName()).c_str());
-		return validated;
+		if (!HasiRange()) return true;
+		if (descriptor.GetValue()<GetiRange().GetMin()) return false;
+		if (descriptor.GetValue()>GetiRange().GetMax()) return false;
+		return true;
 	}
 	
 	bool SchemaAttribute::Validate (const Descriptor<float>& descriptor)const
 	{
-		bool validated = true;
-		validated = (descriptor.GetValue()>=GetfRange().GetMin()&&
-			descriptor.GetValue()<=GetfRange().GetMax());
-		CLAM_DEBUG_ASSERT(validated,
-			std::string("Descriptor did not validate: " + descriptor.GetName()).c_str());
-		return validated;
+		if (!HasfRange()) return true;
+		if (descriptor.GetValue()<GetfRange().GetMin()) return false;
+		if (descriptor.GetValue()>GetfRange().GetMax()) return false;
+		return true;
 	}
 
 	/**************** Auxiliary functions	**************/

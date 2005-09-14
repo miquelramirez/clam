@@ -42,13 +42,6 @@ void Project::CreatePoolScheme()
 			mDescriptionScheme.AddAttribute<CLAM::IndexArray>(scope,name);
 		}
 	}
-	//And now we go into LLD
-	std::list<std::string>::iterator it;
-	std::list<std::string>& descriptorsNames = mSchema.GetLLDNames();
-	for(it = descriptorsNames.begin(); it != descriptorsNames.end(); it++)
-	{
-		mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
-	}
 }
 
 bool Project::LoadScheme(const std::string & schemeFileName)
