@@ -69,7 +69,6 @@ namespace CLAM_Annotator{
 			return validated;
 		}
 
-		bool Validate(const CLAM::DescriptionDataPool& pool);
 		HLDSchemaElement FindElement(const std::string& descriptorName) const;
 	};
 
