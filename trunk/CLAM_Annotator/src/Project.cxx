@@ -13,8 +13,8 @@ void Project::CreatePoolScheme()
 	mDescriptionScheme = CLAM::DescriptionScheme();
 	mSongSegmentationNames.clear();
 	//First we start with HLD
-	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();
-	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
+	const std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetAllAttributes();
+	std::list<CLAM_Annotator::HLDSchemaElement>::const_iterator it2;
 	for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
 	{
 		const std::string & type = it2->GetType();
@@ -67,8 +67,8 @@ bool Project::LoadScheme(const std::string & schemeFileName)
 Project::SongScopeSchema Project::GetScopeSchema(const std::string & scope) const
 {
 	Project::SongScopeSchema scopeSchema;
-	std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();
-	std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
+	const std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetAllAttributes();
+	std::list<CLAM_Annotator::HLDSchemaElement>::const_iterator it;
 	for(it = hlds.begin(); it != hlds.end(); it++)
 	{
 		if (it->GetScope()!=scope) continue;

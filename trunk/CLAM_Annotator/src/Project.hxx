@@ -52,8 +52,8 @@ public:
 	}
 	const CLAM_Annotator::HLDSchemaElement & GetAttributeScheme(const std::string & scope, const std::string & name) const
 	{
-		std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetHLDSchema().GetHLDs();
-		std::list<CLAM_Annotator::HLDSchemaElement>::iterator it;
+		const std::list<CLAM_Annotator::HLDSchemaElement>& hlds = mSchema.GetAllAttributes();
+		std::list<CLAM_Annotator::HLDSchemaElement>::const_iterator it;
 		for(it = hlds.begin(); it != hlds.end(); it++)
 		{
 			if (it->GetScope() != scope) continue;
