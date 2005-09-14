@@ -32,6 +32,10 @@
 
 #include "NetworkController.hxx"
 
+#include "Text.hxx"
+#include "DynamicType.hxx"
+#include "XMLStorage.hxx"
+
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qdragobject.h> 
@@ -45,6 +49,42 @@ namespace NetworkGUI
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
+
+/////////Classes related to widget-position storage on Network Editor by using XML
+class WidgetPosition : public CLAM::DynamicType
+{
+public:
+	DYNAMIC_TYPE( WidgetPosition, 5);
+	DYN_ATTRIBUTE( 0, public, CLAM::Text, Name);
+	DYN_ATTRIBUTE( 1, public, CLAM::TSize, X);
+	DYN_ATTRIBUTE( 2, public, CLAM::TSize, Y);
+	DYN_ATTRIBUTE( 3, public, CLAM::TSize, Width);
+	DYN_ATTRIBUTE( 4, public, CLAM::TSize, Height);
+protected:
+	void DefaultInit()
+	{
+		AddAll();
+		UpdateData();
+	}
+};
+
+class NetworkEditorPositions : public CLAM::DynamicType
+{
+public:
+	DYNAMIC_TYPE( NetworkEditorPositions, 3 );
+	DYN_ATTRIBUTE( 0, public, CLAM::TSize, WindowWidth );
+	DYN_ATTRIBUTE( 1, public, CLAM::TSize, WindowHeight );
+	DYN_CONTAINER_ATTRIBUTE( 2, public, std::list<WidgetPosition>, WidgetList, Widget);
+ 
+protected:
+	void DefaultInit()
+	{
+		AddAll();
+		UpdateData();
+	}
+};
+/////////
+
 
 Qt_NetworkPresentation::Qt_NetworkPresentation( MainWindow *parent, const char *name)
 	: QWidget( parent, name ),	  
@@ -129,6 +169,27 @@ Qt_ProcessingPresentation* Qt_NetworkPresentation::FindProcessingPresentation(co
 void Qt_NetworkPresentation::SaveWidgetsPositions(const std::string& baseFilename)
 {
 	std::string positionsFilename = baseFilename + ".pos";
+
+	NetworkEditorPositions pos;
+	pos.SetWindowWidth( mMainWindow->size().width() );
+	pos.SetWindowHeight( mMainWindow->size().height() );
+
+	WidgetPosition wpos;
+	ProcessingPresentationIterator it;
+	for ( it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
+	{
+		Qt_ProcessingPresentation * proc = (Qt_ProcessingPresentation*)(*it);
+		wpos.SetName( proc->GetName() );
+		wpos.SetX( proc->pos().x() );
+		wpos.SetY( proc->pos().y() );
+		wpos.SetWidth( proc->size().width() );
+		wpos.SetHeight( proc->size().height() );
+
+		pos.GetWidgetList().push_back(wpos);
+	}
+	CLAM::XmlStorage::Dump(pos,"WidgetLocations",positionsFilename);
+	
+	/*	std::string positionsFilename = baseFilename + ".pos";
 	
 	std::ofstream os(positionsFilename.c_str());
 	CLAM_ASSERT(os.is_open(), "error opening positions file for writting");
@@ -151,12 +212,38 @@ void Qt_NetworkPresentation::SaveWidgetsPositions(const std::string& baseFilenam
 		os << proc->GetName() << tab << x << sep << y << tab;
 		os << width << sep << height << std::endl;
 	}
+*/
 
-		
 }
 void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& baseFilename)
 {
 	std::string positionsFilename = baseFilename+".pos";
+	printf("opening file %s\n", positionsFilename.c_str());
+
+	NetworkEditorPositions pos;
+	CLAM::XmlStorage::Restore(pos,positionsFilename);
+	
+	resize( pos.GetWindowWidth(),pos.GetWindowHeight() );
+	mMainWindow->resize( pos.GetWindowWidth() , pos.GetWindowHeight() );
+	std::string caption("CLAM Network Editor -- ");
+	caption += baseFilename;
+	mMainWindow->setCaption( caption.c_str() );
+
+	for (std::list<WidgetPosition>::iterator it=pos.GetWidgetList().begin(); it!=pos.GetWidgetList().end(); it++)
+	{
+		Qt_ProcessingPresentation * proc=FindProcessingPresentation( it->GetName() );
+		if (!proc)
+		{
+			std::cerr<<"Warning: found bad name in network-positions file: '"
+				<< it->GetName() <<"'\n";
+			continue;
+		}
+		proc->MoveAbsolute( QPoint( it->GetX() , it->GetY() ) );
+		proc->resize( it->GetWidth() , it->GetHeight() );
+		proc->ConfigurationUpdated(true);
+	}
+
+/*	std::string positionsFilename = baseFilename+".pos";
 	printf("opening file %s\n", positionsFilename.c_str());
 	std::ifstream is(positionsFilename.c_str());
 	if (!is.is_open())
@@ -191,7 +278,7 @@ void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& baseFilena
 		proc->MoveAbsolute( QPoint(x,y) );
 		proc->resize(width, height);
 		proc->ConfigurationUpdated(true);
-	}
+	}*/
 }
 
 void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & name, CLAMVM::ProcessingController * controller )
