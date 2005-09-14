@@ -59,12 +59,6 @@ namespace CLAM_Annotator{
 		}
 	public:
 		template <class T>
-		bool ValidateDescriptor(T value,const std::string& name)
-		{
-			return ValidateDescriptor<T>(MakeDescriptor(value,name));
-		}
-
-		template <class T>
 		bool ValidateDescriptor(const Descriptor<T>& descriptor)
 		{
 			bool validated = true;

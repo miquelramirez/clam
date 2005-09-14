@@ -48,38 +48,6 @@ namespace CLAM_Annotator{
 
 	/**************** HLDSchema **************/
 
-	bool HLDSchema::Validate(const CLAM::DescriptionDataPool& pool)
-	{
-		std::list<CLAM_Annotator::HLDSchemaElement>& hlds = GetHLDs();
-		std::list<CLAM_Annotator::HLDSchemaElement>::iterator it2;
-		bool validated = true;
-		for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
-		{
-			// TODO: Chekc also when scope size is > 1
-			const std::string & type = it2->GetType();
-			const std::string & name = it2->GetName();
-			const std::string & scope = it2->GetScope();
-			if(type=="Int")
-				validated = validated && 
-					ValidateDescriptor(MakeDescriptor(
-						*pool.GetReadPool<int>(scope,name),name));
-			else if(type=="Float")
-				validated = validated && 
-					ValidateDescriptor(MakeDescriptor(
-						*pool.GetReadPool<float>(scope,name),name));
-			else if(type=="RestrictedString")
-				validated = validated && 
-					ValidateDescriptor(MakeDescriptor(
-						*pool.GetReadPool<RestrictedString>(scope,name),name));
-			else if(type=="String")
-				validated = validated &&
-					ValidateDescriptor(MakeDescriptor(
-						*pool.GetReadPool<CLAM::Text>(scope,name),name));
-			CLAM_ASSERT(validated,"NotValidated");
-		}
-		return validated;
-	}
-
 	HLDSchemaElement HLDSchema::FindElement(const std::string& descriptorName) const
 	{
 		std::list<HLDSchemaElement>::iterator it;
