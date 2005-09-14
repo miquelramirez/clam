@@ -114,6 +114,18 @@ namespace CLAM_Annotator{
 			desc.SetType(GetTypeFromValue(value));
 			return desc;
 		}
+		template <class T>
+		bool ValidateDescriptor(const Descriptor<T>& descriptor)
+		{
+			bool validated = true;
+			
+			validated = FindElement(descriptor.GetName()).Validate(descriptor);
+			CLAM_DEBUG_ASSERT(validated,
+				std::string("Descriptor did not validate: " + descriptor.GetName()).c_str());
+			return validated;
+		}
+
+		HLDSchemaElement FindElement(const std::string& descriptorName) const;
 	};
 
 };
