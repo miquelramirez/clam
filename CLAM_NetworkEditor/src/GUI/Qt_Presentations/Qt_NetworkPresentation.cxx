@@ -189,7 +189,8 @@ void Qt_NetworkPresentation::SaveWidgetsPositions(const std::string& baseFilenam
 	}
 	CLAM::XmlStorage::Dump(pos,"WidgetLocations",positionsFilename);
 	
-	/*	std::string positionsFilename = baseFilename + ".pos";
+/*		OLD METHOD: simple ASCII
+	std::string positionsFilename = baseFilename + ".pos";
 	
 	std::ofstream os(positionsFilename.c_str());
 	CLAM_ASSERT(os.is_open(), "error opening positions file for writting");
@@ -243,7 +244,8 @@ void Qt_NetworkPresentation::SetUpWidgetsPositions(const std::string& baseFilena
 		proc->ConfigurationUpdated(true);
 	}
 
-/*	std::string positionsFilename = baseFilename+".pos";
+/*		OLD METHOD: simple ASCII
+ 	std::string positionsFilename = baseFilename+".pos";
 	printf("opening file %s\n", positionsFilename.c_str());
 	std::ifstream is(positionsFilename.c_str());
 	if (!is.is_open())
