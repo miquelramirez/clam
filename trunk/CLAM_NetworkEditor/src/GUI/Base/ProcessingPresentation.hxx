@@ -80,6 +80,13 @@ protected:
 	void SetConfig( const CLAM::ProcessingConfig & );
 	void ConfigureProcessing( const CLAM::ProcessingConfig & );
 	virtual void SetObservedClassName( const std::string& ) = 0;
+	
+	std::string GetObservedClassName()
+	{
+		if ( mController == NULL ) return "None";
+		return mController->GetObservedClassName();
+	}
+	
 	virtual void SetInPort( const std::string & ) = 0;
 	virtual void SetOutPort( const std::string & ) = 0;
 	virtual void SetInControl( const std::string & ) = 0;
