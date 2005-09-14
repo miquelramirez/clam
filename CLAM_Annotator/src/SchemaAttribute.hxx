@@ -9,7 +9,6 @@
 #include "Pool.hxx"
 #include "Assert.hxx"
 
-#include "EType.hxx"
 #include "AnnotatorDescriptor.hxx"
 #include "RestrictedString.hxx"
 #include "Range.hxx"
