@@ -52,15 +52,13 @@
 #include "PhaseManagementConfig.hxx"
 #include "WindowGeneratorConfig.hxx"
 #include "CircularShiftConfig.hxx"
+#include "NullProcessingConfig.hxx"
 
 // local processings
 #include "FlagControl.hxx"
 #include "Random.hxx"
 #include "OneOverF.hxx"
 #include "SquareWave.hxx"
-
-#include "ExternGenerator.hxx"
-#include "ExternSink.hxx"
 
 #if USE_OSCPACK
 #include "OSCSender.hxx"
@@ -171,8 +169,6 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::NullProcessingConfig> > 
 	regtNullProcessingCfg( "NullProcessingConfig" );
 	
-//static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ExternSinkConfig> > 
-//	regtExternSinkCfg( "ExternSinkConfig" );
 
 #if USE_OSCPACK
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::OSCSenderConfig> > 
