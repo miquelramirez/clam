@@ -35,7 +35,7 @@ namespace CLAM_Annotator{
 			testHLDesc.UpdateData();
 			for (const char ** value = availableValues; *value; value++)
 				testHLDesc.GetRestrictionValues().push_back(*value);
-			GetHLDSchema().GetHLDs().push_back(testHLDesc);
+			AddAttribute(testHLDesc);
 		}
 		void AddRangedInt(
 				const std::string & scope,
@@ -52,7 +52,7 @@ namespace CLAM_Annotator{
 			range.SetMin(min);
 			range.SetMax(max);
 			testHLDesc.SetiRange(range);
-			GetHLDSchema().GetHLDs().push_back(testHLDesc);
+			AddAttribute(testHLDesc);
 		}
 		void AddRangedReal(
 				const std::string & scope,
@@ -69,7 +69,7 @@ namespace CLAM_Annotator{
 			range.SetMin(min);
 			range.SetMax(max);
 			testHLDesc.SetfRange(range);
-			GetHLDSchema().GetHLDs().push_back(testHLDesc);
+			AddAttribute(testHLDesc);
 		}
 		void AddString(
 				const std::string & scope,
@@ -79,7 +79,7 @@ namespace CLAM_Annotator{
 			testHLDesc.SetScope(scope);
 			testHLDesc.SetName(attribute);
 			testHLDesc.SetType("String");
-			GetHLDSchema().GetHLDs().push_back(testHLDesc);
+			AddAttribute(testHLDesc);
 		}
 		void AddSegmentation(
 				const std::string & scope,
@@ -93,10 +93,14 @@ namespace CLAM_Annotator{
 			testHLDesc.SetName(attribute);
 			testHLDesc.SetType("Segmentation");
 			testHLDesc.SetChildScope(childScope);
-			GetHLDSchema().GetHLDs().push_back(testHLDesc);
+			AddAttribute(testHLDesc);
 		}
 		bool Validate(const CLAM::DescriptionDataPool & data);
 	private:
+		void AddAttribute(HLDSchemaElement & attribute)
+		{
+			GetHLDSchema().GetHLDs().push_back(attribute);
+		}
 		template <class T>
 		Descriptor<T> MakeDescriptor(T value,const std::string& name)
 		{
