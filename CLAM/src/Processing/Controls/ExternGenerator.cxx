@@ -14,11 +14,15 @@ namespace CLAM
 	ExternGenerator::ExternGenerator()
 		: mOut("AudioOut",this)
 	{
+		//After being dropped it is ready to run as it does not need any configuration at all
+		mExecState=Ready;
 	}
 
 	ExternGenerator::ExternGenerator(const ProcessingConfig & conf)
 		: mOut("AudioOut",this)
 	{
+		//After being dropped it is ready to run as it does not need any configuration at all
+		mExecState=Ready;
 	}
 
 	ExternGenerator::~ExternGenerator()
