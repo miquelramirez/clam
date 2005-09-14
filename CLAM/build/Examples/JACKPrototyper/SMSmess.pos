@@ -1,7 +1,53 @@
-800 600
-OutControlSender_0	327 31	86 46
-SMSAnalysisCore	59 227	123 60
-SMSFreqShift	360 195	102 60
-SMSResidualGain	180 349	123 60
-SMSSinusoidalGain	178 138	130 60
-SMSSynthesis	433 405	106 60
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<WidgetLocations>
+
+  <WindowWidth>800</WindowWidth>
+
+  <WindowHeight>600</WindowHeight>
+
+  <WidgetList>
+    <Widget>
+      <Name>OutControlSender_0</Name>
+      <X>327</X>
+      <Y>31</Y>
+      <Width>86</Width>
+      <Height>46</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSAnalysisCore</Name>
+      <X>59</X>
+      <Y>227</Y>
+      <Width>123</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSFreqShift</Name>
+      <X>360</X>
+      <Y>195</Y>
+      <Width>102</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSResidualGain</Name>
+      <X>180</X>
+      <Y>349</Y>
+      <Width>123</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSSinusoidalGain</Name>
+      <X>178</X>
+      <Y>138</Y>
+      <Width>130</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSSynthesis</Name>
+      <X>433</X>
+      <Y>405</Y>
+      <Width>106</Width>
+      <Height>60</Height>
+    </Widget>
+  </WidgetList>
+
+</WidgetLocations>

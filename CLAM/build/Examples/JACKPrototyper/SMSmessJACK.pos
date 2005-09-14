@@ -1,10 +1,74 @@
-1111 604
-JACK_Input	17 98	117 60
-JACK_Out_Input	729 108	117 60
-JACK_Out_Synth	743 297	121 60
-OutControlSender_0	435 39	86 46
-SMSAnalysisCore	167 235	123 60
-SMSFreqShift	468 203	102 60
-SMSResidualGain	288 357	123 60
-SMSSinusoidalGain	286 146	130 60
-SMSSynthesis	541 413	106 60
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<WidgetLocations>
+
+  <WindowWidth>1111</WindowWidth>
+
+  <WindowHeight>604</WindowHeight>
+
+  <WidgetList>
+    <Widget>
+      <Name>JACK_Input</Name>
+      <X>17</X>
+      <Y>98</Y>
+      <Width>117</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>JACK_Out_Input</Name>
+      <X>729</X>
+      <Y>108</Y>
+      <Width>117</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>JACK_Out_Synth</Name>
+      <X>743</X>
+      <Y>297</Y>
+      <Width>121</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>OutControlSender_0</Name>
+      <X>435</X>
+      <Y>39</Y>
+      <Width>86</Width>
+      <Height>46</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSAnalysisCore</Name>
+      <X>167</X>
+      <Y>235</Y>
+      <Width>123</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSFreqShift</Name>
+      <X>468</X>
+      <Y>203</Y>
+      <Width>102</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSResidualGain</Name>
+      <X>288</X>
+      <Y>357</Y>
+      <Width>123</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSSinusoidalGain</Name>
+      <X>286</X>
+      <Y>146</Y>
+      <Width>130</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSSynthesis</Name>
+      <X>541</X>
+      <Y>413</Y>
+      <Width>106</Width>
+      <Height>60</Height>
+    </Widget>
+  </WidgetList>
+
+</WidgetLocations>
