@@ -108,7 +108,7 @@ int main(int argc, char ** argv)
 
 void BuildAndDumpTestSchema(const char * schemaLocation)
 {
-	CLAM_Annotator::Schema testSchema;
+	CLAM_Annotator::Schema schema;
 
 	const char * lowLevelDescriptorsNames[] =
 	{
@@ -133,9 +133,9 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 		0
 	};
 	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
-		testSchema.AddFrameFloatAttribute(*name);
+		schema.AddFrameFloatAttribute(*name);
 
-	CLAM_Annotator::HLDSchema& hlschema = testSchema.GetHLDSchema();
+	CLAM_Annotator::HLDSchema& hlschema = schema.GetHLDSchema();
 	hlschema.AddString("Song","Artist");
 	hlschema.AddString("Song","Title");
 	const char * genreValues[] =
@@ -180,8 +180,8 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 	hlschema.AddRangedInt("Note", "Octave", 1, 12);
 	hlschema.AddString("Note", "Instrument");
 
-	CLAM::XMLStorage::Dump(testSchema, "Schema", schemaLocation);
-	CLAM::XMLStorage::Dump(testSchema, "SChema", std::cout);
+	CLAM::XMLStorage::Dump(schema, "Schema", schemaLocation);
+	CLAM::XMLStorage::Dump(schema, "SChema", std::cout);
 }
 
 
