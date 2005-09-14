@@ -3,7 +3,6 @@
 
 #include "DynamicType.hxx"
 #include "HLDSchema.hxx"
-#include "LLDSchema.hxx"
 
 namespace CLAM_Annotator{
 
@@ -12,7 +11,7 @@ namespace CLAM_Annotator{
 	{
 		DYNAMIC_TYPE(Schema,2);
 		DYN_ATTRIBUTE(0, public, HLDSchema, HLDSchema);
-		DYN_ATTRIBUTE(1, public, LLDSchema, LLDSchema);
+		DYN_CONTAINER_ATTRIBUTE(1, public, std::list<std::string>, LLDNames, Names);
 
 		void DefaultInit()
 		{
@@ -21,7 +20,7 @@ namespace CLAM_Annotator{
 		}
 		void AddFrameFloatAttribute(const std::string & name)
 		{
-			GetLLDSchema().AddFloat(name);
+			GetLLDNames().push_back(name);
 		}
 	};
 

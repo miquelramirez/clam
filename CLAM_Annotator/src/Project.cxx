@@ -44,7 +44,7 @@ void Project::CreatePoolScheme()
 	}
 	//And now we go into LLD
 	std::list<std::string>::iterator it;
-	std::list<std::string>& descriptorsNames = mSchema.GetLLDSchema().GetLLDNames();
+	std::list<std::string>& descriptorsNames = mSchema.GetLLDNames();
 	for(it = descriptorsNames.begin(); it != descriptorsNames.end(); it++)
 	{
 		mDescriptionScheme.AddAttribute <CLAM::TData>("Frame", (*it));
@@ -80,7 +80,7 @@ Project::SongScopeSchema Project::GetScopeSchema(const std::string & scope) cons
 
 const std::list<std::string> & Project::GetFrameScopeAttributeNames()
 {
-	return GetAnnotatorSchema().GetLLDSchema().GetLLDNames();
+	return GetAnnotatorSchema().GetLLDNames();
 }
 
 const std::list<std::string> & Project::GetSongSegmentationNames()
