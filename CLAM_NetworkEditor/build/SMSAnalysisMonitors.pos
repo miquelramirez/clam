@@ -1,9 +1,67 @@
-800 600
-AudioOut_1	521 40	81 52
-AudioPortMonitor_8	253 86	207 126
-FundTrackPortMonitor_9	455 453	179 74
-MonoAudioFileReader_0	9 54	132 52
-PeaksPortMonitor_11	61 440	378 84
-SMSAnalysisCore_10	53 233	118 52
-SpecgramPortMonitor_6	455 272	177 102
-SpecgramPortMonitor_7	455 364	177 90
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<WidgetLocations>
+
+  <WindowWidth>800</WindowWidth>
+
+  <WindowHeight>600</WindowHeight>
+
+  <WidgetList>
+    <Widget>
+      <Name>AudioOut_1</Name>
+      <X>521</X>
+      <Y>40</Y>
+      <Width>92</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>AudioPortMonitor_8</Name>
+      <X>253</X>
+      <Y>86</Y>
+      <Width>207</Width>
+      <Height>126</Height>
+    </Widget>
+    <Widget>
+      <Name>FundTrackPortMonitor_9</Name>
+      <X>455</X>
+      <Y>453</Y>
+      <Width>179</Width>
+      <Height>74</Height>
+    </Widget>
+    <Widget>
+      <Name>MonoAudioFileReader_0</Name>
+      <X>9</X>
+      <Y>54</Y>
+      <Width>154</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>PeaksPortMonitor_11</Name>
+      <X>61</X>
+      <Y>440</Y>
+      <Width>378</Width>
+      <Height>84</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSAnalysisCore_10</Name>
+      <X>53</X>
+      <Y>233</Y>
+      <Width>141</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SpecgramPortMonitor_6</Name>
+      <X>455</X>
+      <Y>272</Y>
+      <Width>177</Width>
+      <Height>102</Height>
+    </Widget>
+    <Widget>
+      <Name>SpecgramPortMonitor_7</Name>
+      <X>455</X>
+      <Y>364</Y>
+      <Width>177</Width>
+      <Height>90</Height>
+    </Widget>
+  </WidgetList>
+
+</WidgetLocations>
