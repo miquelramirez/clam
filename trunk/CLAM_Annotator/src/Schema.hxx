@@ -2,7 +2,7 @@
 #define _Schema_hxx_
 
 #include "DynamicType.hxx"
-#include "HLDSchema.hxx"
+#include "SchemaAttribute.hxx"
 
 namespace CLAM_Annotator{
 
