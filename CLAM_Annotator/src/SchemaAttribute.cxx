@@ -1,4 +1,4 @@
-#include "HLDSchema.hxx"
+#include "SchemaAttribute.hxx"
 #include "Text.hxx"
 #include <algorithm>
 

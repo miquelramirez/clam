@@ -1,5 +1,5 @@
-#ifndef _HLDSchema_
-#define _HLDSchema_
+#ifndef _SchemaAttribute_
+#define _SchemaAttribute_
 
 #include "DynamicType.hxx"
 
