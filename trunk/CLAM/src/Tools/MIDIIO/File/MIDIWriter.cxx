@@ -44,16 +44,34 @@ namespace MIDI
 			for(;it != track->End(); it++)
 			{
 				const Event &ev = **it;
-				int type = ((ev[0]&0xF0)>>4)-8;
-				if(type==7) continue; // TODO: manage type 7
 				t1=(unsigned)ev.GetTicks();
-				WriteVarLen(t1-t0); // write delta time
-				int msglen = nbytesPerChnMsg[type];
-				for(int j=0; j < msglen; j++) 
+				int type = ((ev[0]&0xF0)>>4)-8;
+				if(type==7)
 				{
-					WriteCh((char)ev[j]);
+					if(ev[0]==0xFF && ev[1]==0x51)
+					{
+						// write tempo information
+						WriteVarLen(t1-t0);
+						WriteCh(0xFF);
+						WriteCh(0x51);
+						WriteCh(0x03);
+						MetaEvent* e = (MetaEvent*)*it;
+						for(int k=0; k < 3; k++)
+						{
+							WriteCh(e->mData[k]);
+						}
+					}
 				}
-				t0=(unsigned)ev.GetTicks();
+				else
+				{
+					WriteVarLen(t1-t0); // write delta time
+					int msglen = nbytesPerChnMsg[type];
+					for(int j=0; j < msglen; j++) 
+					{
+						WriteCh((char)ev[j]);
+					}
+				}
+				t0=t1;
 				
 			}
 			// write end of track
