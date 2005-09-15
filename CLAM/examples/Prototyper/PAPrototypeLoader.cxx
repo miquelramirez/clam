@@ -30,185 +30,188 @@
 
 #include "BasicFlowControl.hxx"
 
-////////JACK CODE
-#include <jack/jack.h>
+#include <portaudio.h>
 
-int jack_process (jack_nframes_t nframes, void *arg);
-void jack_shutdown (void *arg);
+int portaudio_process (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void *);
+void portaudio_shutdown (void *arg);
 
-typedef struct
-{
-	jack_port_t* jackOutPort;
-	CLAM::ExternGenerator* clamReceiver;
-} JACKOutPortCouple;
+typedef std::vector<CLAM::ExternGenerator*> PAOutPortList;
+typedef std::vector<CLAM::ExternSink*> PAInPortList;
 
-typedef struct
-{
-	jack_port_t* jackInPort;
-	CLAM::ExternSink* clamSender;
-} JACKInPortCouple;
-
-typedef std::vector<JACKOutPortCouple> JACKOutPortList;
-typedef std::vector<JACKInPortCouple> JACKInPortList;
-
-class JACKNetworkPlayer
+class PANetworkPlayer
 {
 	CLAM::Network _network;	
 
-	int _jsamplerate, _jbuffersize, _cbuffersize;
+	int _cbuffersize, _cframerate;
 
-	JACKOutPortList _receiverlist;
-	JACKInPortList _senderlist;
+	PAOutPortList _receiverlist;
+	PAInPortList _senderlist;
 	
-	//JACK CODE
-	jack_client_t *client;
+	//PA CODE : declare client (stream)
+	PaStream * pa_stream;
 
 public:
-	JACKNetworkPlayer(const std::string & networkFile)
+	PANetworkPlayer(const std::string & networkFile)
 	{
 		_cbuffersize=512;
+		_cframerate=44100;
 		
 		CLAM::PushFlowControl * fc = new CLAM::PushFlowControl(_cbuffersize);
 		_network.AddFlowControl( fc );
 
 		CLAM::XmlStorage::Restore(_network,networkFile);
 		
-		//JACK CODE
+		//PA CODE
 		//init client
-		if ((client = jack_client_new ("CLAM client")) == 0)
-		{
-			fprintf (stderr, "JACK ERROR: server not running?\n");
-			exit(1);
-		}
+		ControlIfPortAudioError( Pa_Initialize() );
 		
 		//registra callback
-		jack_set_process_callback (client, jack_process, this);
 		
 		//registra funcio shutdown
-		jack_on_shutdown (client, jack_shutdown, this);
 		
-		_jsamplerate=(int)jack_get_sample_rate (client);
-		_jbuffersize=(int)jack_get_buffer_size (client);
-
-		CreateInputPorts(_network);
-		CreateOutputPorts(_network);
+		CreatePorts(_network);
 	}
 	
-	void CreateInputPorts(const CLAM::Network& net)
+	void CreatePorts(const CLAM::Network& net)
 	{
-		JACKOutPortCouple pair;
+		bool receiverwarning, senderwarning;
+		receiverwarning=senderwarning=false;
 		
 		//Get them from the Network and add it to local list		
 		for (CLAM::Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 		{
 			if (std::string("ExternGenerator")==std::string(it->second->GetClassName()))
 			{
+				//Using PortAudio we only accept 2 channels max
+				if (_receiverlist.size()==2)
+				{
+					if (!receiverwarning)
+					{
+						std::cout <<"WARNING: more than two ExternGenerators detected, using the first ones"<<std::endl;
+						receiverwarning=true;
+					}
+					continue;
+				}
+				
 				//Get Processing address
-				pair.clamReceiver=(CLAM::ExternGenerator*)it->second;
-				pair.clamReceiver->SetFrameAndHopSize(_jbuffersize);
-
-				//Register port on the JACK server
-				pair.jackOutPort=jack_port_register (client,
-					it->first.c_str(),
-					JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
-
-				//Add the pair (jack port, clam jack receiver) to the list
-				_receiverlist.push_back(pair);
+				_receiverlist.push_back( (CLAM::ExternGenerator*)it->second );
 			}
-		}
-	}
-	
-	void CreateOutputPorts(const CLAM::Network& net)
-	{
-		JACKInPortCouple pair;
-		
-		//Get them from the Network and add it to local list		
-		for (CLAM::Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
-		{
-			if (std::string("ExternSink")==std::string(it->second->GetClassName()))
+			else if (std::string("ExternSink")==std::string(it->second->GetClassName()))
 			{
+				//Using PortAudio we only accept 2 channels max
+				if (_receiverlist.size()==2)
+				{
+					if (!senderwarning)
+					{
+						std::cout <<"WARNING: more than two ExternSinks detected, using the first ones"<<std::endl;
+						senderwarning=true;
+					}
+	
+					continue;
+				}
+
 				//Get Processing address
-				pair.clamSender=(CLAM::ExternSink*)it->second;
-				pair.clamSender->SetFrameAndHopSize(_jbuffersize);
-
-				//Register port on the JACK server
-				pair.jackInPort=jack_port_register (client,
-					it->first.c_str(),
-					JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
-
-				//Add the pair (jack port, clam jack receiver) to the list
-				_senderlist.push_back(pair);
+				_senderlist.push_back( (CLAM::ExternSink*)it->second );
 			}
 		}
 
-	}
+		//Create configuration for input&output and then register the stream
+		PaStreamParameters inputParameters, outputParameters, *inParams, *outParams;
 
-	void DoInPorts(const jack_nframes_t nframes)
-	{
-		for (JACKOutPortList::iterator it=_receiverlist.begin(); it!=_receiverlist.end(); it++)
-		{
-			//Retrieve JACK buffer location
-			jack_default_audio_sample_t *jackInBuffer = 
-				(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackOutPort, nframes);
-			//Tell the ExternGenerator to put JACK's buffer info into CLAM
-			(*it).clamReceiver->Do( (CLAM::TData*)jackInBuffer, nframes );
-	
-		}
+		inputParameters.device = Pa_GetDefaultInputDevice(); /* default output device */
+		inputParameters.channelCount = 2;       /* stereo output */
+		inputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples*/
+		inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowOutputLatency;
+		inputParameters.hostApiSpecificStreamInfo = NULL;
 
-	}
-	
-	void DoOutPorts(const jack_nframes_t nframes)
-	{
-		for (JACKInPortList::iterator it=_senderlist.begin(); it!=_senderlist.end(); it++)
-		{
-			//Retrieve JACK buffer location
-			jack_default_audio_sample_t *jackOutBuffer = 
-				(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackInPort, nframes);
-			//Tell the ExternGenerator to put CLAM's buffer info JACK
-			(*it).clamSender->Do( (CLAM::TData*)jackOutBuffer, nframes);	
-		}
+		outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
+		outputParameters.channelCount = 2;       /* stereo output */
+		outputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples */
+		outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
+		outputParameters.hostApiSpecificStreamInfo = NULL;
 
-	}
-
-	void Do(const jack_nframes_t nframes)
-	{
-		DoInPorts(nframes);
+		if (_receiverlist.size()==0) inParams=NULL;
+		if (_senderlist.size()==0) outParams=NULL;
 		
-		for (int stepcount=0; stepcount < (int(nframes)/int(_cbuffersize)); stepcount++)
-			_network.Do();
+		ControlIfPortAudioError(
+			Pa_OpenStream(
+				&pa_stream,
+				inParams,
+				outParams,
+				double(_cframerate),
+				_cbuffersize,			
+				paClipOff,      /* we won't output out of range samples so don't bother clipping them */
+				portaudio_process,
+				this )
+			);
 
-		DoOutPorts(nframes);
+	}
+
+	void DoInPorts(CLAM::TData** input, unsigned long nframes)
+	{
+		for (PAOutPortList::iterator it=_receiverlist.begin(); it!=_receiverlist.end(); it++)
+		{
+			//Retrieve PA buffer location
+			//Tell the ExternGenerator to put PA's buffer info into CLAM
+	
+		}
+
+	}
+	
+	void DoOutPorts(CLAM::TData** output, unsigned long nframes)
+	{
+		for (PAInPortList::iterator it=_senderlist.begin(); it!=_senderlist.end(); it++)
+		{
+			//Retrieve PA buffer location
+			//Tell the ExternGenerator to put CLAM's buffer info PA
+		}
+
+	}
+
+	void Do(const void *inputBuffers, void *outputBuffers,
+                            unsigned long framesPerBuffer)
+	{
+		DoInPorts( (CLAM::TData**) inputBuffers, framesPerBuffer);
+		
+		//for (int stepcount=0; stepcount < (int(nframes)/int(_cbuffersize)); stepcount++)
+		_network.Do();
+
+		DoOutPorts( (CLAM::TData**) outputBuffers, framesPerBuffer);
 	}
 	
 	void Start()
 	{
 		_network.Start();
 
-		//JACK CODE (the init order of network, ... should be decided)
-		if (jack_activate (client)) {
-			fprintf (stderr, "JACK ERROR: cannot activate client");
-			exit(1);
-		}
+		//PA CODE (the init order of network, ... should be decided) : activate
+		Pa_StartStream( pa_stream );
 	}
 	
 	void Stop()
 	{
-		//JACK CODE (the init order of network, ... should be decided)
-		if (jack_deactivate (client))
-		{
-			fprintf (stderr, "cannot activate client");
-			exit(1);
-		}
-
+		//PA CODE (the init order of network, ... should be decided) : deactivate
+		Pa_StopStream( pa_stream );
+		
 		_network.Stop();
 	}
+
+	inline void ControlIfPortAudioError(int result)
+	{
+		//If everything ok, return now
+		if( result == paNoError ) return;
+
+		//If there has been an error, inform and quit!
+		std::cerr <<"PortAudio Error #"<<result<<": "<< Pa_GetErrorText( result )<<std::endl;
+		exit(result);
+	}
 	
-	~JACKNetworkPlayer()
+	~PANetworkPlayer()
 	{
 		Stop();
-		
-		//JACK CODE
-		jack_client_close (client);
+
+		//Close stream and terminate
+		ControlIfPortAudioError( Pa_CloseStream( pa_stream ) );
+		Pa_Terminate();
 	}
 	
 	CLAM::Network & Network()
@@ -217,19 +220,19 @@ public:
 	}
 };
 
-//JACK CODE
-int jack_process (jack_nframes_t nframes, void *arg)
+//PA CODE
+int portaudio_process (const void *inputBuffers, void *outputBuffers,
+                            unsigned long framesPerBuffer,
+                            const PaStreamCallbackTimeInfo* timeInfo,
+                            PaStreamCallbackFlags statusFlags,
+                            void *userData)
 {
-	JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
-	player->Do(nframes);
+	PANetworkPlayer* player=(PANetworkPlayer*)userData;
+	player->Do(inputBuffers, outputBuffers, framesPerBuffer);
 
+	std::cout <<"CALLBACK\n";
+	
 	return 0;
-}
-
-void jack_shutdown (void *arg)
-{
-	JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
-	delete player;
 }
 
 static std::string getMonitorNumber()
@@ -246,7 +249,7 @@ class PrototypeLoader
 	char * _networkFile;
 	char * _interfaceFile;
 	QWidget * _mainWidget;
-	JACKNetworkPlayer _player;
+	PANetworkPlayer _player;
 	std::list<CLAM::VM::NetPlot * > _portMonitors;
 public:
 	PrototypeLoader(char * networkFile)
