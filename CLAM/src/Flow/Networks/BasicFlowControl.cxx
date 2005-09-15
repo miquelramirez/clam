@@ -33,7 +33,7 @@ BasicFlowControl::BasicFlowControl( int frameSize )
 {
 }
 
-void BasicFlowControl::DoProcessings()
+void BasicFlowControl::Do()
 {
 	Network::ProcessingsMap::iterator it;
 	for ( it=mNetwork->BeginProcessings(); it!=mNetwork->EndProcessings(); it++ )
@@ -42,12 +42,6 @@ void BasicFlowControl::DoProcessings()
 			it->second->Do();
 	}
 	
-}
-
-
-void BasicFlowControl::DoProcessingsLoop()
-{
-	DoProcessings();	
 }
 
 } // namespace CLAM

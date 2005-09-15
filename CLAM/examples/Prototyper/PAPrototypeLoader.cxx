@@ -51,8 +51,6 @@ typedef struct
 typedef std::vector<JACKOutPortCouple> JACKOutPortList;
 typedef std::vector<JACKInPortCouple> JACKInPortList;
 
-namespace CLAM{
-
 class JACKNetworkPlayer
 {
 	CLAM::Network _network;	
@@ -177,7 +175,7 @@ public:
 		DoInPorts(nframes);
 		
 		for (int stepcount=0; stepcount < (int(nframes)/int(_cbuffersize)); stepcount++)
-			_network.DoProcessingsLoop();
+			_network.Do();
 
 		DoOutPorts(nframes);
 	}
@@ -372,8 +370,6 @@ private:
 		}
 	}
 };
-
-
 
 int main( int argc, char *argv[] )
 {

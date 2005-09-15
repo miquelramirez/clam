@@ -36,8 +36,7 @@ public:
 	BasicFlowControl( int frameSize = 512 );
 	virtual ~BasicFlowControl(){}
 
-	void DoProcessings();
-	void DoProcessingsLoop();
+	void Do();
 };
 
 } // namespace CLAM

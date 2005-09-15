@@ -51,10 +51,9 @@ void PushFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 		mGenerators.remove( &removed );
 }
 
-void PushFlowControl::DoProcessings()
+void PushFlowControl::Do()
 {
 	std::list< Processing* > toDo(mGenerators);
-	std::list< Processing* > done;
 
 	while (!toDo.empty())
 	{
@@ -65,48 +64,20 @@ void PushFlowControl::DoProcessings()
 		if(next->CanConsumeAndProduce())
 		{
 			next->Do();
-			done.push_back(next);
-			//std::cerr << "\n+"<<next->GetClassName();
 		}
 		else
 		{
 		  //std::cerr << "\n-"<<next->GetClassName();
 		}
-		AddNewPossibleProcessingsToDo(next, toDo, done);
-	}
-}
-
-void PushFlowControl::DoProcessingsLoop()
-{
-	std::list< Processing* > toDo(mGenerators);
-	std::list< Processing* > done;
-
-	while (!toDo.empty())
-	{
-		// pop the next processing
-		Processing * next = *(toDo.begin()); // the first
-		toDo.pop_front();
-
-		if(next->CanConsumeAndProduce())
-		{
-			next->Do();
-			//std::cerr << "\n+"<<next->GetClassName();
-		}
-		else
-		{
-		  //std::cerr << "\n-"<<next->GetClassName();
-		}
-		AddNewPossibleProcessingsToDo(next, toDo, done);
+		AddNewPossibleProcessingsToDo(next, toDo);
 	}
 }
 
 void PushFlowControl::AddNewPossibleProcessingsToDo(
 	Processing * producer, 
-	std::list<Processing*> & toDo,
-	std::list<Processing*> & executed )
+	std::list<Processing*> & toDo )
 {
 	
-	// for each out port of the processing already executed
 	OutPortRegistry::Iterator itOutPort;
 	
 	for (itOutPort=producer->GetOutPorts().Begin(); 

@@ -40,13 +40,11 @@ public:
 	void ProcessingAddedToNetwork( Processing & added );
 	void ProcessingRemovedFromNetwork( Processing & removed );
 
-	void DoProcessings();
-	void DoProcessingsLoop();
+	void Do();
 
 private:
 	void AddNewPossibleProcessingsToDo( Processing * father, 
-					    std::list<Processing*> &,
-					    std::list<Processing*> & );
+					    std::list<Processing*> &);
 	std::list< Processing* > mGenerators;
 
 
