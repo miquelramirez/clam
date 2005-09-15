@@ -48,7 +48,7 @@ public:
 	{
 		while (!_stoped)
 		{
-			_network.DoProcessings();
+			_network.Do();
 		}
 	}
 	void Stop()

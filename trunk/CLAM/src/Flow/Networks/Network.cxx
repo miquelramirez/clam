@@ -451,16 +451,10 @@ namespace CLAM
 	
 	}
 	
-	void Network::DoProcessings()
+	void Network::Do()
 	{
 		AssertFlowControlNotNull();
-		mFlowControl->DoProcessings();
-	}
-
-	void Network::DoProcessingsLoop()
-	{
-		AssertFlowControlNotNull();
-		mFlowControl->DoProcessingsLoop();
+		mFlowControl->Do();
 	}
 
 	void Network::Clear()

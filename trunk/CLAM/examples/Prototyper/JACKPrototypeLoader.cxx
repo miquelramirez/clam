@@ -145,7 +145,7 @@ public:
 
 	}
 
-	void DoInPorts(const jack_nframes_t nframes)
+	void CopyJackBuffersToGenerators(const jack_nframes_t nframes)
 	{
 		for (JACKOutPortList::iterator it=_receiverlist.begin(); it!=_receiverlist.end(); it++)
 		{
@@ -159,7 +159,7 @@ public:
 
 	}
 	
-	void DoOutPorts(const jack_nframes_t nframes)
+	void CopySinksToJackBuffers(const jack_nframes_t nframes)
 	{
 		for (JACKInPortList::iterator it=_senderlist.begin(); it!=_senderlist.end(); it++)
 		{
@@ -174,12 +174,12 @@ public:
 
 	void Do(const jack_nframes_t nframes)
 	{
-		DoInPorts(nframes);
+		CopyJackBuffersToGenerators(nframes);
 		
 		for (int stepcount=0; stepcount < (int(nframes)/int(_cbuffersize)); stepcount++)
-			_network.DoProcessingsLoop();
+			_network.Do();
 
-		DoOutPorts(nframes);
+		CopySinksToJackBuffers(nframes);
 	}
 	
 	void Start()
