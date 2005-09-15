@@ -117,7 +117,7 @@ void NetworkController::ProcessingLoop()
 	while(mLoopCondition)
 	{
 		ExecuteEvents();
-		mObserved->DoProcessings();
+		mObserved->Do();
 	}
 
 	CLAM::MIDIManager::Current().Stop();	// this is a provisional hack
