@@ -65,10 +65,6 @@ public:
 		//init client
 		ControlIfPortAudioError( Pa_Initialize() );
 		
-		//registra callback
-		
-		//registra funcio shutdown
-		
 		CreatePorts(_network);
 	}
 	
@@ -80,36 +76,43 @@ public:
 		//Get them from the Network and add it to local list		
 		for (CLAM::Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 		{
-			if (std::string("ExternGenerator")==std::string(it->second->GetClassName()))
+			if ( std::string("ExternGenerator") == std::string(it->second->GetClassName()) )
 			{
+				//Make sure all frame sizes are the same
+				CLAM::ExternGenerator* gen=(CLAM::ExternGenerator*)it->second;
+				gen->SetFrameAndHopSize( _cbuffersize );
+					
 				//Using PortAudio we only accept 2 channels max
-				if (_receiverlist.size()==2)
+				if ( _receiverlist.size()==2 )
 				{
 					if (!receiverwarning)
 					{
-						std::cout <<"WARNING: more than two ExternGenerators detected, using the first ones"<<std::endl;
+						std::cout << "WARNING: more than two ExternGenerators detected, using the first ones" << std::endl;
 						receiverwarning=true;
 					}
 					continue;
 				}
-				
+					
 				//Get Processing address
 				_receiverlist.push_back( (CLAM::ExternGenerator*)it->second );
 			}
-			else if (std::string("ExternSink")==std::string(it->second->GetClassName()))
+			else if ( std::string("ExternSink") == std::string(it->second->GetClassName()) )
 			{
+				//Make sure all frame sizes are the same
+				CLAM::ExternSink* sink=(CLAM::ExternSink*)it->second;
+				sink->SetFrameAndHopSize(_cbuffersize);
+
 				//Using PortAudio we only accept 2 channels max
-				if (_receiverlist.size()==2)
+				if ( _receiverlist.size() == 2 )
 				{
-					if (!senderwarning)
+					if ( !senderwarning )
 					{
-						std::cout <<"WARNING: more than two ExternSinks detected, using the first ones"<<std::endl;
+						std::cout << "WARNING: more than two ExternSinks detected, using the first ones" << std::endl;
 						senderwarning=true;
 					}
 	
 					continue;
 				}
-
 				//Get Processing address
 				_senderlist.push_back( (CLAM::ExternSink*)it->second );
 			}
@@ -119,19 +122,22 @@ public:
 		PaStreamParameters inputParameters, outputParameters, *inParams, *outParams;
 
 		inputParameters.device = Pa_GetDefaultInputDevice(); /* default output device */
-		inputParameters.channelCount = 2;       /* stereo output */
+		inputParameters.channelCount = _receiverlist.size();       /* stereo output */
 		inputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples*/
 		inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowOutputLatency;
 		inputParameters.hostApiSpecificStreamInfo = NULL;
 
 		outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
-		outputParameters.channelCount = 2;       /* stereo output */
+		outputParameters.channelCount = _senderlist.size();       /* stereo output */
 		outputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples */
 		outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
 		outputParameters.hostApiSpecificStreamInfo = NULL;
 
-		if (_receiverlist.size()==0) inParams=NULL;
-		if (_senderlist.size()==0) outParams=NULL;
+		if ( _receiverlist.size() == 0 ) inParams=NULL;
+		else inParams=&inputParameters;
+		
+		if ( _senderlist.size() == 0 ) outParams=NULL;
+		else outParams=&outputParameters;
 		
 		ControlIfPortAudioError(
 			Pa_OpenStream(
@@ -149,23 +155,29 @@ public:
 
 	void DoInPorts(CLAM::TData** input, unsigned long nframes)
 	{
-		for (PAOutPortList::iterator it=_receiverlist.begin(); it!=_receiverlist.end(); it++)
+		int i=0;
+		
+		for ( PAOutPortList::iterator it=_receiverlist.begin(); it!=_receiverlist.end(); it++ )
 		{
 			//Retrieve PA buffer location
 			//Tell the ExternGenerator to put PA's buffer info into CLAM
-	
-		}
+			(*it)->Do( input[i], nframes );
+			i++;
 
+		}
 	}
 	
 	void DoOutPorts(CLAM::TData** output, unsigned long nframes)
 	{
+		int i=0;
+		
 		for (PAInPortList::iterator it=_senderlist.begin(); it!=_senderlist.end(); it++)
 		{
 			//Retrieve PA buffer location
 			//Tell the ExternGenerator to put CLAM's buffer info PA
+			(*it)->Do(output[i], nframes);
+			i++;
 		}
-
 	}
 
 	void Do(const void *inputBuffers, void *outputBuffers,
@@ -230,8 +242,6 @@ int portaudio_process (const void *inputBuffers, void *outputBuffers,
 	PANetworkPlayer* player=(PANetworkPlayer*)userData;
 	player->Do(inputBuffers, outputBuffers, framesPerBuffer);
 
-	std::cout <<"CALLBACK\n";
-	
 	return 0;
 }
 
@@ -265,6 +275,7 @@ public:
 	}
 	void connectWithNetwork()
 	{
+		std::cerr <<"Dins connectWithNetwork"<<std::endl;
 		CLAM::Network & network = _player.Network();
 		QWidget * prototype = _mainWidget;
 		connectWidgetsWithControls(network,prototype);
@@ -284,6 +295,7 @@ public:
 			("OutPort__.*", "CLAM::VM::NetSpecgramPlot");
 		connectWidgetsWithPorts<CLAM::VM::NetFundTrackPlot>
 			("OutPort__.*", "CLAM::VM::NetFundTrackPlot");
+		std::cerr <<"Fi connectWithNetwork"<<std::endl;
 		// TODO: Still not ported
 		//		connectWidgetsWithPorts<CLAM::VM::NetSinTracksPlot>
 		//						("OutPort__.*", "CLAM::VM::NetSinTracksPlot");

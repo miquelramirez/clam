@@ -169,7 +169,6 @@ public:
 			//Tell the ExternGenerator to put CLAM's buffer info JACK
 			(*it).clamSender->Do( (CLAM::TData*)jackOutBuffer, nframes);	
 		}
-
 	}
 
 	void Do(const jack_nframes_t nframes)
