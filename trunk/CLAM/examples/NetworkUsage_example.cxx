@@ -97,10 +97,10 @@ int main( int argc, char** argv )
 		network.ConnectPorts( "Audio Multiplier.Audio Output", "Audio Mono Out.Audio Input" );
 
 		network.Start();
-		// we begin a loop in which DoProcessings() method of network is called in order to execute the processings,
+		// we begin a loop in which Do() method of network is called in order to execute the processings,
 		// communicating between them the data, following the connections we have decided.
 		for(int i=0;i<100;i++)
-			network.DoProcessings();
+			network.Do();
 
 		network.Stop();
 
