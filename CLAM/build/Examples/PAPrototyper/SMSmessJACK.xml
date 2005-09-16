@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="JACK_Input" type="ExternGenerator"/>
-
-  <processing id="JACK_Out_Input" type="ExternSink"/>
-
-  <processing id="JACK_Out_Synth" type="ExternSink"/>
-
   <processing id="OutControlSender_0" type="OutControlSender">
     <Min>-11025</Min>
     <Default>0</Default>
@@ -14,6 +8,10 @@
     <Step>1</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
+
+  <processing id="PA_Input" type="ExternGenerator"/>
+
+  <processing id="PA_Out_Synth" type="ExternSink"/>
 
   <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
@@ -154,13 +152,8 @@
   </processing>
 
   <port_connection>
-    <out>JACK_Input.AudioOut</out>
+    <out>PA_Input.AudioOut</out>
     <in>SMSAnalysisCore.Input Audio</in>
-  </port_connection>
-
-  <port_connection>
-    <out>JACK_Input.AudioOut</out>
-    <in>JACK_Out_Input.AudioIn</in>
   </port_connection>
 
   <port_connection>
@@ -190,7 +183,7 @@
 
   <port_connection>
     <out>SMSSynthesis.OutputAudio</out>
-    <in>JACK_Out_Synth.AudioIn</in>
+    <in>PA_Out_Synth.AudioIn</in>
   </port_connection>
 
   <control_connection>
