@@ -40,7 +40,7 @@ void Audio::DefaultInit(void)
 
 void Audio::SetEndTime(TTime time)
 {
-	CLAM_WARNING(false, "Audio::SetEndTime is about to be depracated. Please use Audio::ResizeToEndTime instead");
+	CLAM_WARNING(false, "Audio::SetEndTime is about to be deprecated. Please use Audio::ResizeToEndTime instead");
 	ResizeToEndTime(time);
 }
 
@@ -66,7 +66,7 @@ void Audio::SetSize(int s)
 
 void Audio::SetDuration(TTime duration)
 {
-	CLAM_WARNING(false, "Audio::SetDuration is about to be depracated. Please use Audio::ResizeToDuration instead");
+	CLAM_WARNING(false, "Audio::SetDuration is about to be deprecated. Please use Audio::ResizeToDuration instead");
 	ResizeToDuration(GetIndexFromTime(duration));
 }
 

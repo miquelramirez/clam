@@ -79,7 +79,7 @@ namespace CLAM {
 		void SetSize(int s);
 
 		/** 
-		 *  @depracated use ResizeToEndTime instead
+		 *  @deprecated use ResizeToEndTime instead
 		 */
 		void SetEndTime(TTime time);
 
@@ -92,7 +92,7 @@ namespace CLAM {
 		void ResizeToEndTime(TTime time);
 
 		/** 
-		 *  @depracated use ResizeToDuration instead
+		 *  @deprecated use ResizeToDuration instead
 		 */
 		void SetDuration(TTime duration);
 		
