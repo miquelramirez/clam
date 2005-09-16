@@ -229,7 +229,7 @@ private:
 		
 		net.Start();
 		//TODO network should control the overall execution
-		for(int i=0; i<100; i++) net.DoProcessings();
+		for(int i=0; i<100; i++) net.Do();
 		net.Stop();
 
 		std::string  whyDifferents;

@@ -130,7 +130,7 @@ int main( int argc, char** argv )
 		network2->Start();
 
 		for(int i=0;i<300;i++)
-			network2->DoProcessings();
+			network2->Do();
 
 		network2->Stop();
 
