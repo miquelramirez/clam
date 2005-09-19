@@ -8,15 +8,8 @@
   <WidgetList>
     <Widget>
       <Name>JACK_Input</Name>
-      <X>3</X>
-      <Y>80</Y>
-      <Width>117</Width>
-      <Height>60</Height>
-    </Widget>
-    <Widget>
-      <Name>JACK_Out_Input</Name>
-      <X>675</X>
-      <Y>140</Y>
+      <X>9</X>
+      <Y>122</Y>
       <Width>117</Width>
       <Height>60</Height>
     </Widget>
@@ -67,6 +60,20 @@
       <X>493</X>
       <Y>339</Y>
       <Width>106</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>JACK_Input2</Name>
+      <X>114</X>
+      <Y>35</Y>
+      <Width>129</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>JACK_Out_Original</Name>
+      <X>748</X>
+      <Y>96</Y>
+      <Width>130</Width>
       <Height>60</Height>
     </Widget>
   </WidgetList>
