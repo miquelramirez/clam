@@ -198,38 +198,40 @@ public:
 
 	void AutoConnectPorts()
 	{
+		//If neither input or output connections specified, we don't want any warning about not being able to connect
+		if (_jackoutportlist==std::string("NULL") && _jackinportlist==std::string("NULL"))
+			return;
+		
 		//Automatically connect the ports to external jack ports
-		//( Now only one connection per input/output allowed, but it will grow)
+		std::cout << "Automatically connecting to JACK input and output ports" << std::endl;
 		
 		//CONNECT JACK OUTPUT PORTS TO CLAM EXTERNGENERATORS
 		const char ** portnames= jack_get_ports ( client , _jackoutportlist.c_str(), NULL, JackPortIsOutput);
 
 		if (portnames==NULL)
 		{
-			std::cout << "WARNING: couldn't locate any JACK output port <"
+			std::cout << " -WARNING: couldn't locate any JACK output port <"
 				<< _jackoutportlist << ">"<<std::endl;
 		}
 		else
 		{
-
 			int i=0;
-			//De moment agafem el primer que existeixi i avall, no cal iterar
-			//while (portnames[i]!=NULL)
-			//{
-				if ( i==0 && _receiverlist.size()>0 )
-				{
-					std::cout << "Connecting (" << portnames[i] <<
-						")->(" << (_receiverlist.front()).portName<<")" << std::endl;
+
+			//Double iterate ExternGenerators & found JACK out ports
+			for ( JACKOutPortList::iterator it= _receiverlist.begin(); it!=_receiverlist.end(); it++)
+			{
+				std::cout << "- Connecting " << portnames[i] << " -> " 
+					<< it->portName << std::endl;
 	
-					if ( jack_connect( client, portnames[i], 
-								(_receiverlist.front()).portName.c_str() ) !=0 )
-					{
-						std::cerr << "WARNING: couldn't connect" << std::endl;
-					}
+				if ( jack_connect( client, portnames[i], 
+							it->portName.c_str() ) !=0 )
+				{
+					std::cerr << " -WARNING: couldn't connect" << std::endl;
 				}
-				
-			//	i++;
-			//}
+			
+				i++;
+				if (portnames[i]==NULL) break;
+			}	
 		}		
 		free(portnames);
 
@@ -243,25 +245,23 @@ public:
 		}
 		else
 		{
-
 			int i=0;
-			//De moment agafem el primer que existeixi i avall, no cal iterar
-			//while (portnames[i]!=NULL)
-			//{
-				if ( i==0 && _senderlist.size()>0 )
-				{
-					std::cout << "Connecting (" << (_senderlist.front()).portName<<")" << 
-						")->(" << portnames[i] << ")" << std::endl;
+
+			//Double iterate found JACK in ports & ExterSinks
+			for (JACKInPortList::iterator it= _senderlist.begin(); it!=_senderlist.end(); it++)
+			{
+				std::cout << "- Connecting "<< it->portName
+					<< " -> " << portnames[i] << std::endl;
 	
-					if ( jack_connect( client, (_senderlist.front()).portName.c_str(),
-								portnames[i]) != 0)
-					{
-						std::cerr << "WARNING: couldn't connect" << std::endl;
-					}
+				if ( jack_connect( client, it->portName.c_str(),
+							portnames[i]) != 0)
+				{
+					std::cerr << "WARNING: couldn't connect" << std::endl;
 				}
-				
-			//	i++;
-			//}
+			
+				i++;
+				if (portnames[i]==NULL) break;
+			}
 		}			
 		free(portnames);
 
@@ -332,19 +332,19 @@ static std::string getMonitorNumber()
 
 class PrototypeLoader
 {
-	char * _networkFile;
+	std::string _networkFile;
 	char * _interfaceFile;
 	QWidget * _mainWidget;
 	JACKNetworkPlayer _player;
 	std::list<CLAM::VM::NetPlot * > _portMonitors;
 public:
-	PrototypeLoader(char * networkFile, std::list<std::string> portlist)
+	PrototypeLoader(const std::string& networkFile, const std::list<std::string> portlist)
 		: _networkFile(networkFile)
 		, _player(networkFile, portlist)
 	{
 		
 	}
-	QWidget * loadPrototype(char* uiFile)
+	QWidget * loadPrototype(const char* uiFile)
 	{
 		_mainWidget = (QWidget *) QWidgetFactory::create( uiFile );
 		return _mainWidget;
@@ -464,33 +464,58 @@ private:
 
 int main( int argc, char *argv[] )
 {
-	if (argc!=5)
+	if (argc<2 || argc>5)
 	{
 		std::cout << " Usage: " 
-			<< argv[0] << " <networkfile> <uifile> inputPort outputPort" << std::endl;
+			<< argv[0] << " <networkfile> [ <uifile> inputPort outputPort ]" << std::endl;
 		return -1;
 	}
 
-	char * networkFile = argv[1]; // "SpectralDelay.clam"
-	char * uiFile = argv[2]; // "SpectralDelay.ui" 
-
+	std::string networkFile, uiFile;
+	
+	
 	QApplication app( argc, argv );
 
 	std::list<std::string> portlist;
-	if (argc==4)
+
+	//Deal with Network&Interface files
+	if (argc==2)
+	{
+		networkFile=argv[1];
+		std::string filename = networkFile;
+		filename.erase( filename.size()-4, 4 );
+		filename+=std::string(".ui");
+		uiFile=filename;
+	}
+	else if (argc>2)
+	{
+		networkFile=argv[1];
+		uiFile=argv[2];
+	}
+
+	std::cout << "\n NetworkFile=<"<<networkFile<<"> i uifile=<"<<uiFile<<">\n";
+	
+	//Deal with input and output port patterns
+	if (argc==4) //Case 1: only input
 	{		
 		portlist.push_back( std::string(argv[3]) );
-	//	portlist.push_back( "
+		portlist.push_back( "NULL");
 	}
-	if (argc==5)
+	else if (argc==5) //Case 2: input & output
 	{
+		portlist.push_back( argv[3] );
 		portlist.push_back( std::string(argv[4]) );
 	}
+	else //Case 3: nothing specified
+	{
+		portlist.push_back( "NULL" );
+		portlist.push_back( "NULL" );
+	}
 
-	PrototypeLoader loader(networkFile, portlist);
+	PrototypeLoader loader( networkFile , portlist);
 
 
-	QWidget * prototype = loader.loadPrototype(uiFile);
+	QWidget * prototype = loader.loadPrototype( uiFile.c_str() );
 	if (!prototype) return -1;
 	loader.connectWithNetwork();
 
