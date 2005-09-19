@@ -4,8 +4,8 @@
  *
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
-#include "MIDIFileWriter.hxx"
 
+#include "MIDIFileWriter.hxx"
 
 MIDIFileWriter::MIDIFileWriter()
 {
@@ -48,7 +48,7 @@ void MIDIFileWriter::WriteVarLen(register unsigned long value)
 void MIDIFileWriter::WriteHeader()
 {
 	unsigned long id=MThd;
-                   
+
     Write32Bit(id);  		// MThd 
     Write32Bit(6);			// header length = 6
     Write16Bit(0);			// format = 0
@@ -61,8 +61,8 @@ void MIDIFileWriter::WriteTrack()
 	unsigned long trkhdr= MTrk,trklength=0;
 	long offset,endf;
 	
-	// remenber position
-	offset = ftell(fp); 
+	// remember position
+	offset = ftell(fp);
 
 	// write header
 	Write32Bit(trkhdr);
@@ -72,7 +72,16 @@ void MIDIFileWriter::WriteTrack()
 
 	char *msg = new char[3];
     int i;
-	
+
+	// write tempo 
+	WriteVarLen(0);
+	EPutc(0xFF);
+	EPutc(0x51);
+	EPutc(0x03);
+	EPutc(0x07);
+	EPutc(0xA1);
+	EPutc(0x20);
+
 	// program
 	EPutc(0);
 	msg[0]=(unsigned)0xc0;	// channel 1
@@ -114,7 +123,6 @@ void MIDIFileWriter::WriteTrack()
 		t = t2;
 		
 	}
-
 	// write end of track
 	EPutc(0);
 	EPutc((unsigned)0xFF);
@@ -153,7 +161,7 @@ void MIDIFileWriter::EPutc(char c)
 }
 
 unsigned long MIDIFileWriter::Sec2Ticks(float secs,int division,unsigned tempo)
-{    
+{
      return (long)(((secs * 1000.0) / 4.0 * division) / tempo);
 }
 
