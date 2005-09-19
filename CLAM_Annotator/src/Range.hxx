@@ -20,20 +20,18 @@ namespace CLAM_Annotator{
   public:
     void LoadFrom(CLAM::Storage& storage)
     {
-      CLAM::XMLAdapter<T> xmlMax(mMax, "Max", true);
-      storage.Load(xmlMax);
-
       CLAM::XMLAdapter<T> xmlMin(mMin, "Min", true);
       storage.Load(xmlMin);
+      CLAM::XMLAdapter<T> xmlMax(mMax, "Max", true);
+      storage.Load(xmlMax);
     }
 
     void StoreOn(CLAM::Storage& storage)const
     {
-      CLAM::XMLAdapter<T> xmlMax(mMax, "Max", true);
-      storage.Store(xmlMax);
-
       CLAM::XMLAdapter<T> xmlMin(mMin, "Min", true);
       storage.Store(xmlMin);
+      CLAM::XMLAdapter<T> xmlMax(mMax, "Max", true);
+      storage.Store(xmlMax);
     }
 
     const char* GetClassName() const {return "Range";}
