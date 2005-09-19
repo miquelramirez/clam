@@ -254,7 +254,7 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 {
 	mSegmentationSelection->clear();
 	const std::list<std::string> & segmentationNames =
-		mProject.GetSongSegmentationNames();
+		mProject.GetNamesByScopeAndType("Song", "Segmentation");
 	for (std::list<std::string>::const_iterator it =  segmentationNames.begin();
 		it != segmentationNames.end();
 		it++)
@@ -309,7 +309,7 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 	while (tabWidget2->count()>1)
 		delete tabWidget2->page(1);
 
-	const std::list<std::string>& names = mProject.GetFrameScopeAttributeNames();
+	const std::list<std::string>& names = mProject.GetNamesByScopeAndType("Frame", "Float");
 	const unsigned nTabs = names.size();
 
 	const int eFlags = CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer;
@@ -606,6 +606,8 @@ void Annotator::songsClicked( QListViewItem * item)
 
 	if (item == 0) return;
 
+	setCursor(Qt::busyCursor);
+
 	const char * filename = item->text(0).ascii();
 	mCurrentIndex = songIndexInTable(filename);
 	if (mCurrentIndex <0) return;
@@ -625,6 +627,7 @@ void Annotator::songsClicked( QListViewItem * item)
 	refreshEnvelopes();
 	std::cout << "Done" << std::endl;
 	loaderLaunch();
+	setCursor(Qt::arrowCursor);
 	mAudioRefreshTimer->start(4000, true);
 }
 
@@ -635,7 +638,7 @@ void Annotator::refreshEnvelopes()
 	std::cout << "Loading LLD Data..." << std::endl;
 
 	std::list<std::string>::const_iterator it;
-	const std::list<std::string>& descriptorsNames = mProject.GetFrameScopeAttributeNames();
+	const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType("Frame", "Float");
 	unsigned int i = 0;
 
 	for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++, i++)
@@ -710,7 +713,7 @@ void Annotator::updateEnvelopesData()
 	mLLDChanged = false;
 	unsigned i=0, editors_size = mBPFEditors.size();
 	std::list<std::string>::const_iterator it;
-	const std::list<std::string>& descriptorsNames = mProject.GetFrameScopeAttributeNames();
+	const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType("Frame", "Float");
 
 	for(it = descriptorsNames.begin() ;i < editors_size; i++, it++)
 	{
