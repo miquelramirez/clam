@@ -38,14 +38,9 @@ public:
 	{
 		return mSchema;
 	}
-	typedef std::list<CLAM_Annotator::SchemaAttribute> SongScopeSchema;
-	SongScopeSchema GetSongScopeSchema()
-	{
-		return GetScopeSchema("Song");
-	}
-	SongScopeSchema GetScopeSchema(const std::string & scope) const;
-	const std::list<std::string> & GetFrameScopeAttributeNames();
-	const std::list<std::string> & GetSongSegmentationNames();
+	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
+	ScopeSchema GetScopeSchema(const std::string & scope) const;
+	std::list<std::string> GetNamesByScopeAndType(const std::string & scope, const std::string & type);
 	bool ValidateDataPool(const CLAM::DescriptionDataPool & dataPool)
 	{
 		return GetAnnotatorSchema().Validate(dataPool);
@@ -69,7 +64,6 @@ private:
 	void CreatePoolScheme();
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM_Annotator::Schema mSchema;
-	std::list<std::string> mSongSegmentationNames;
 };
 
 }
