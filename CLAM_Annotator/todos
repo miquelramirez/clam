@@ -1,12 +1,129 @@
 
+Solving some weird behaviours:
+ * An attribute that is not computed makes it crash
+   * Add a 'non computed' visualization mode
+   * Allow adding such values
+ * A song with no pool file just keeps the old pool.
+   * Clean the interface
+   * Give some way of attaching values
+ * Inserting and deleting segments is not well supported by the data pool.
+ * Ask for a schema when creating a new pool.
+ * Which schema on opening the annotator? Maybe, no project.
+ * Changing the schema of an existing project is not a thing you should do, is it?
+ * Plots scroll vertically the wrong way. Inconsistent with the horitzontal one and not the normal one.
+
+Group type dependent operations in factories generated objects to extend supported types:
+ * Basic type support plugin
+   * Value validation
+   * Adding attributes to CLAM::Schema (CLAM code)
+ * Descriptors table plugins:
+   * Descriptors table cell creation (QT code)
+   * Descriptors table cell refreshing (QT code)
+   * Descriptors table cell filling (QT code)
+ * Frame visualization along time (OpenGL layer)
+ * Single Frame visualization (Widget)
+ * Binding descriptors to auralization (See bellow) (CLAM network?)
+ * Extraction (more complex, to be addressed further)
+
+Segmentation editor:
+ * Modes depending on the segmentation attribute definition:
+   * Unsized: Just a marker on time
+   * Continuous: With size but it depends just on the next segment position.
+        (Segmentation covers all the timeline, at least one segment)
+   * Discontinuous: The size handle is not linked to the previous
+   * Overlaping: 
+   * (FixedNumber?) That could be used to edit ADSR, not sure if it is useful
+ * Semitransparent with opaque borders
+ * Colors:
+   * Current segment must be highlithed in some way
+   * Multiselection should also highlight the selected not current in some way
+   * Depending on Enum values
+   * Depending on up to three float attributes
+   * We could map more than three with SOM (really useful for annotation?)
+   * How to set the colorizing attribute?
+   * Type dependent color policy?
+   * Colorizing attribute could be highligthed by displaying it on the
+     descriptors table on the resulting color.
+ * Height:
+   * Segment heights can be used to display and EDIT an scalar value for the segment.
+   * Unsized segments should have a handle to move it
+   * Sized segments can be edited by dragging the upper border
+   * How to setup the heighting attribute
+ * Background
+   * Switching among time line representations (not editable! just background)
+ * Tooltips
+   * How to build the segment tooltip from attributes???
+   * Let the tooltip be redundant on the already represented information
+     * When hovering on the height handle give the height value
+     * When hovering on the segment body give a colorizing values hint
+     * When hovering on time handles give position and size information
+     * For unsized segments a conflict exist between body and time handles
+   * How to handle overlaped segmentations
+ * Changing Enum attribute values
+   * with the contextual menu
+   * Current segment with single key hit (to be usable with keyboard navigation)
+ * Operations
+   * Inherited actions from time axis ploting.
+      * Vertical and horitzontal zooming and scrolling
+      * Zone selection (layer?) (reused for sized segment creation?)
+      * Place Transport (what you listen) (layer?)
+      * Place Cue (starting point for player) (layer?)
+      * Place Local View (What you see on frame level views (layer?)
+      * Linking/Unlinking Local View and Transport
+   * Select current
+   * Move existing
+   * Resize existing (Discontinuous, Overlaping)
+   * Insert segment
+   * Delete segment
+   * Change height
+   * Select colorizing attributes (maybe on the descriptors table)
+   * Select heighting attributes (maybe on the descriptors table)
+   * Enable auralization
+
+Auralization
+ * Different sources: Audio, N*LLD, Segment onsets, Segment values.
+ * Important: Use panning to separate sources to avoid cross-masking
+ * How to choose played auralizations? Suggestions:
+   * If the resulting options are few, we just could use an action for each convination
+   * If they are a lot, toggling options and just a single global play action
+   * Accelerators and toolbox buttons are a need
+   * Reuse multitrack idea (mute, solo)
+     * What is a track? Which one is the audio track?
+     * Constrains on how many?
+   * Enable or disable sources as menu/toolbar options
+     * Constrains on how many?
+   * Just play the selected view with the choosen attribute for the view
+ * Concrete use case for auralization sources:
+   * Onset annotation: Listening a click on the onset
+   * Percusion annotation: Labeling onsets with the percusion instrument,
+     auralization should synthesize that instrument instead the click.
+   * Sized segment anotation: Sustained sound during the duration of the segment
+   * Melody anotation: Like sized segment but synthesizing the note
+     (several attributes involved: pitch, octave, velocity)
+   * Chord annotation: Like sized segment but play the chord (several generators)
+ * Some ideas on implementation:
+   * Sample triggers for enums
+   * Controled for floats and ints
+   * MIDI based implementation:
+     * Editing onsets and offsets MIDI messages
+     * Parameters to be replaced by desc values
+     * Percusion supported by choosing the program
+   * Type dependent implementation
+     * Players for a given type
+     * Sample triggers for enums
+     * Contolled synthesizers for floats
+     * Custom players adding to the factory
+     * Usage: Add a player and then bind attributes to bindable controls
+   * CLAM Network based implementation
+     * Previous idea but more flexible
+     * Prototyper like bindings to controls
+
+
+
 * fix the hardcoded limit in "slider" control for HLD
-* add a waiting message when loading lld
+* add a waiting message when loading lld (done - cursor wait)
 * beta-test everything thoroughly
 * write documentation
-* generate "real" values for descriptors, options
-	* by hand
-	* parse what was in the txt descriptors
-	* include some extractors in Test
 * change /common folder to /widgets
 * add unit and functional tests
 * add labels to segments
@@ -14,8 +131,9 @@
 
 previous:
 
+* generate "real" values for descriptors, options (done)
 * Save results of the editing process (done)
-*Enhance the song loading process (done)
+* Enhance the song loading process (done)
 	* Convert textual format to XML using CLAM infrastructure (done).
 	* Remove initial dialog and add menu items (done)
 		* Load Project (First simply a bunch of songs)
@@ -29,3 +147,5 @@ previous:
 * Add menu items for loading scheme + descriptors (done)
 	* Remove the Analysis items (done)
 * Add segmentation marks to Pool (ask David) 
+
+
