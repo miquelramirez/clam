@@ -91,14 +91,17 @@ namespace CLAM_Annotator{
 		void AddSegmentation(
 				const std::string & scope,
 				const std::string & attribute,
+				SegmentationPolicy policy,
 				const std::string & childScope)
 		{
 			CLAM_Annotator::SchemaAttribute schemaAttribute;
 			schemaAttribute.AddChildScope();
+			schemaAttribute.AddSegmentationPolicy();
 			schemaAttribute.UpdateData();
 			schemaAttribute.SetScope(scope);
 			schemaAttribute.SetName(attribute);
 			schemaAttribute.SetType("Segmentation");
+			schemaAttribute.SetSegmentationPolicy(policy);
 			schemaAttribute.SetChildScope(childScope);
 			AddAttribute(schemaAttribute);
 		}
