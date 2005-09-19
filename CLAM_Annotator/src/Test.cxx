@@ -109,32 +109,7 @@ int main(int argc, char ** argv)
 void BuildAndDumpTestSchema(const char * schemaLocation)
 {
 	CLAM_Annotator::Schema schema;
-
-	const char * lowLevelDescriptorsNames[] =
-	{
-		"Mean",
-		"GeometricMean",
-		"Energy",
-		"Centroid",
-		"Moment2",
-		"Moment3",
-		"Moment4",
-		"Moment5",
-		"Moment6",
-		"Flatness",
-		"MagnitudeKurtosis",
-		"MaxMagFreq",
-		"LowFreqEnergyRelation",
-		"Spread",
-		"MagnitudeSkewness",
-		"Rolloff",
-		"Slope",
-		"HighFrequencyContent",
-		0
-	};
-	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
-		schema.AddFrameFloatAttribute(*name);
-
+	schema.SetUri("descriptionScheme:www.iua.upf.edu:clam:dummyTest");
 	schema.AddString("Song","Artist");
 	schema.AddString("Song","Title");
 	const char * genreValues[] =
@@ -179,8 +154,33 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 	schema.AddRangedInt("Note", "Octave", 1, 12);
 	schema.AddString("Note", "Instrument");
 
-	CLAM::XMLStorage::Dump(schema, "Schema", schemaLocation);
-	CLAM::XMLStorage::Dump(schema, "SChema", std::cout);
+	const char * lowLevelDescriptorsNames[] =
+	{
+		"Mean",
+		"GeometricMean",
+		"Energy",
+		"Centroid",
+		"Moment2",
+		"Moment3",
+		"Moment4",
+		"Moment5",
+		"Moment6",
+		"Flatness",
+		"MagnitudeKurtosis",
+		"MaxMagFreq",
+		"LowFreqEnergyRelation",
+		"Spread",
+		"MagnitudeSkewness",
+		"Rolloff",
+		"Slope",
+		"HighFrequencyContent",
+		0
+	};
+	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
+		schema.AddFrameFloatAttribute(*name);
+
+	CLAM::XMLStorage::Dump(schema, "DescriptionScheme", schemaLocation);
+	CLAM::XMLStorage::Dump(schema, "DescriptionScheme", std::cout);
 }
 
 
