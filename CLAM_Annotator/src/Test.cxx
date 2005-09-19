@@ -139,8 +139,8 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 	schema.AddRestrictedString("Song","Mode", modeValues);
 	schema.AddRangedReal("Song","DynamicComplexity", 0., 10.);
 	schema.AddRangedInt("Song","BPM", 0, 240);
-	schema.AddSegmentation("Song","RandomSegments", "");
-	schema.AddSegmentation("Song","Onsets", "Onset");
+	schema.AddSegmentation("Song","RandomSegments", CLAM_Annotator::SegmentationPolicy::eUnsized, "");
+	schema.AddSegmentation("Song","Onsets", CLAM_Annotator::SegmentationPolicy::eUnsized, "Onset");
 	schema.AddRangedReal("Onset","Relevance", 0., 10.);
 	const char * onsetKindValues[] =
 	{
@@ -149,7 +149,7 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 		0
 	};
 	schema.AddRestrictedString("Onset","DetectedChange", onsetKindValues);
-	schema.AddSegmentation("Song", "Notes", "Note");
+	schema.AddSegmentation("Song", "Notes", CLAM_Annotator::SegmentationPolicy::eUnsized, "Note");
 	schema.AddRestrictedString("Note", "Pitch", keyValues);
 	schema.AddRangedInt("Note", "Octave", 1, 12);
 	schema.AddString("Note", "Instrument");
