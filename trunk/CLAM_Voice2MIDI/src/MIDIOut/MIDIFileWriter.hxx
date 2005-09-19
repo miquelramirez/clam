@@ -1,10 +1,11 @@
 /*
  * MIDIFileWriter.hxx
  * Interface for MIDIFileWriter class
- * Used to write a MIDI file from the obtained MIDI melody. 
+ * Used to write a MIDI file from the obtained MIDI melody.
  *
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
+
 #ifndef _MIDIFILEWRITER_
 #define _MIDIFILEWRITER_
 
