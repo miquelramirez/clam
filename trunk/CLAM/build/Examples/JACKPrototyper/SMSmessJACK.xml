@@ -3,7 +3,9 @@
 
   <processing id="JACK_Input" type="ExternGenerator"/>
 
-  <processing id="JACK_Out_Input" type="ExternSink"/>
+  <processing id="JACK_Input2" type="ExternGenerator"/>
+
+  <processing id="JACK_Out_Original" type="ExternSink"/>
 
   <processing id="JACK_Out_Synth" type="ExternSink"/>
 
@@ -159,8 +161,8 @@
   </port_connection>
 
   <port_connection>
-    <out>JACK_Input.AudioOut</out>
-    <in>JACK_Out_Input.AudioIn</in>
+    <out>JACK_Input2.AudioOut</out>
+    <in>JACK_Out_Original.AudioIn</in>
   </port_connection>
 
   <port_connection>
