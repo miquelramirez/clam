@@ -10,14 +10,17 @@ namespace CLAM_Annotator{
 	class Schema : public CLAM::DynamicType
 	{
 		DYNAMIC_TYPE(Schema,2);
-		DYN_CONTAINER_ATTRIBUTE(0,public, std::list<SchemaAttribute>, Attributes, Attribute);
-		DYN_CONTAINER_ATTRIBUTE(1, public, std::list<std::string>, LLDNames, Names);
-
+		DYN_ATTRIBUTE(0,public, CLAM::Text, Uri);
+		DYN_CONTAINER_ATTRIBUTE(1,public, std::list<SchemaAttribute>, Attributes, Attribute);
+	private:
 		void DefaultInit()
 		{
 			AddAll();
 			UpdateData();
+			SetUri("descriptionScheme:www.iua.upf.edu:clam:none");
 		}
+
+	public:
 		void AddFrameFloatAttribute(const std::string & name)
 		{
 			CLAM_Annotator::SchemaAttribute schemaAttribute;
@@ -25,7 +28,6 @@ namespace CLAM_Annotator{
 			schemaAttribute.SetName(name);
 			schemaAttribute.SetType("Float");
 			AddAttribute(schemaAttribute);
-			GetLLDNames().push_back(name);
 		}
 		void AddRestrictedString(
 				const std::string & scope,
@@ -111,26 +113,17 @@ namespace CLAM_Annotator{
 			GetAttributes().push_back(attribute);
 		}
 		template <class T>
-		Descriptor<T> MakeDescriptor(T value,const std::string& name)
-		{
-			Descriptor<T> desc;
-			desc.SetValue(value);
-			desc.SetName(name);
-			desc.SetType(GetTypeFromValue(value));
-			return desc;
-		}
-		template <class T>
-		bool ValidateDescriptor(const Descriptor<T>& descriptor)
+		bool ValidateDescriptor(const std::string & scope, const std::string & name, const T * descriptor)
 		{
 			bool validated = true;
 			
-			validated = FindElement(descriptor.GetName()).Validate(descriptor);
+			validated = FindElement(scope, name).Validate(descriptor);
 			CLAM_DEBUG_ASSERT(validated,
-				std::string("Descriptor did not validate: " + descriptor.GetName()).c_str());
+				std::string("Descriptor did not validate: " + scope + ":" + name).c_str());
 			return validated;
 		}
 
-		SchemaAttribute FindElement(const std::string& descriptorName) const;
+		SchemaAttribute FindElement(const std::string & scope, const std::string& descriptorName) const;
 	};
 
 };
