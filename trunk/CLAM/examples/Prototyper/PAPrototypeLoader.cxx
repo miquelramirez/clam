@@ -46,7 +46,7 @@ class PANetworkPlayer
 	PAInPortList _senderlist;
 	
 	//PA CODE : declare client (stream)
-	PaStream * pa_stream;
+	PaStream * _pa_stream;
 
 public:
 	PANetworkPlayer(const std::string & networkFile)
@@ -128,7 +128,7 @@ public:
 		
 		ControlIfPortAudioError(
 			Pa_OpenStream(
-				&pa_stream,
+				&_pa_stream,
 				inParams,
 				outParams,
 				double(_cframerate),
@@ -183,13 +183,13 @@ public:
 		_network.Start();
 
 		//PA CODE (the init order of network, ... should be decided) : activate
-		Pa_StartStream( pa_stream );
+		Pa_StartStream( _pa_stream );
 	}
 	
 	void Stop()
 	{
 		//PA CODE (the init order of network, ... should be decided) : deactivate
-		Pa_StopStream( pa_stream );
+		Pa_StopStream( _pa_stream );
 		
 		_network.Stop();
 	}
@@ -209,7 +209,7 @@ public:
 		Stop();
 
 		//Close stream and terminate
-		ControlIfPortAudioError( Pa_CloseStream( pa_stream ) );
+		ControlIfPortAudioError( Pa_CloseStream( _pa_stream ) );
 		Pa_Terminate();
 	}
 	

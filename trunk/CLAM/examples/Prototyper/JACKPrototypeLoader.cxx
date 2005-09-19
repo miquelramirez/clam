@@ -64,8 +64,8 @@ class JACKNetworkPlayer
 	std::string _jackoutportlist, _jackinportlist;
 	
 	//JACK CODE
-	jack_client_t *client;
-	std::string clientname;
+	jack_client_t * _jclient;
+	std::string _jclientname;
 
 public:
 	JACKNetworkPlayer(const std::string & networkFile, std::list<std::string> portlist)
@@ -80,21 +80,21 @@ public:
 		//JACK CODE
 		//init client
 		
-		clientname="CLAM_client";		
-		if ((client = jack_client_new ( clientname.c_str() )) == 0)
+		_jclientname="CLAM_client";		
+		if ((_jclient = jack_client_new ( _jclientname.c_str() )) == 0)
 		{
 			fprintf (stderr, "JACK ERROR: server not running?\n");
 			exit(1);
 		}
 		
 		//registra callback
-		jack_set_process_callback (client, jack_process, this);
+		jack_set_process_callback (_jclient, jack_process, this);
 		
 		//registra funcio shutdown
-		jack_on_shutdown (client, jack_shutdown, this);
+		jack_on_shutdown (_jclient, jack_shutdown, this);
 		
-		_jsamplerate=(int)jack_get_sample_rate (client);
-		_jbuffersize=(int)jack_get_buffer_size (client);
+		_jsamplerate=(int)jack_get_sample_rate (_jclient);
+		_jbuffersize=(int)jack_get_buffer_size (_jclient);
 
 		_jackoutportlist=portlist.front();
 		portlist.pop_front();
@@ -114,14 +114,14 @@ public:
 			if (std::string("ExternGenerator")==std::string(it->second->GetClassName()))
 			{
 				//Store Processing name
-				pair.portName=clientname+std::string(":")+it->first;
+				pair.portName=_jclientname+std::string(":")+it->first;
 				
 				//Get Processing address
 				pair.clamReceiver=(CLAM::ExternGenerator*)it->second;
 				pair.clamReceiver->SetFrameAndHopSize(_jbuffersize);
 
 				//Register port on the JACK server
-				pair.jackOutPort=jack_port_register (client,
+				pair.jackOutPort=jack_port_register (_jclient,
 					it->first.c_str(),
 					JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
 
@@ -142,14 +142,14 @@ public:
 			if (std::string("ExternSink")==std::string(it->second->GetClassName()))
 			{
 				//Store Processing name
-				pair.portName=clientname+std::string(":")+it->first;
+				pair.portName=_jclientname+std::string(":")+it->first;
 
 				//Get Processing address
 				pair.clamSender=(CLAM::ExternSink*)it->second;
 				pair.clamSender->SetFrameAndHopSize(_jbuffersize);
 
 				//Register port on the JACK server
-				pair.jackInPort=jack_port_register (client,
+				pair.jackInPort=jack_port_register (_jclient,
 					it->first.c_str(),
 					JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 
@@ -206,7 +206,7 @@ public:
 		std::cout << "Automatically connecting to JACK input and output ports" << std::endl;
 		
 		//CONNECT JACK OUTPUT PORTS TO CLAM EXTERNGENERATORS
-		const char ** portnames= jack_get_ports ( client , _jackoutportlist.c_str(), NULL, JackPortIsOutput);
+		const char ** portnames= jack_get_ports ( _jclient , _jackoutportlist.c_str(), NULL, JackPortIsOutput);
 
 		if (portnames==NULL)
 		{
@@ -223,7 +223,7 @@ public:
 				std::cout << "- Connecting " << portnames[i] << " -> " 
 					<< it->portName << std::endl;
 	
-				if ( jack_connect( client, portnames[i], 
+				if ( jack_connect( _jclient, portnames[i], 
 							it->portName.c_str() ) !=0 )
 				{
 					std::cerr << " -WARNING: couldn't connect" << std::endl;
@@ -236,11 +236,11 @@ public:
 		free(portnames);
 
 		//CONNECT CLAM EXTERNSINKS TO JACK INPUT PORTS
-		portnames= jack_get_ports ( client , _jackinportlist.c_str(), NULL, JackPortIsInput);
+		portnames= jack_get_ports ( _jclient , _jackinportlist.c_str(), NULL, JackPortIsInput);
 
 		if (portnames==NULL)
 		{
-			std::cout << "WARNING: couldn't locate any JACK input port <"
+			std::cout << " -WARNING: couldn't locate any JACK input port <"
 				<< _jackinportlist << ">"<<std::endl;
 		}
 		else
@@ -253,10 +253,10 @@ public:
 				std::cout << "- Connecting "<< it->portName
 					<< " -> " << portnames[i] << std::endl;
 	
-				if ( jack_connect( client, it->portName.c_str(),
+				if ( jack_connect( _jclient, it->portName.c_str(),
 							portnames[i]) != 0)
 				{
-					std::cerr << "WARNING: couldn't connect" << std::endl;
+					std::cerr << " -WARNING: couldn't connect" << std::endl;
 				}
 			
 				i++;
@@ -272,7 +272,7 @@ public:
 		_network.Start();
 
 		//JACK CODE (the init order of network, ... should be decided)
-		if (jack_activate (client)) {
+		if (jack_activate (_jclient)) {
 			fprintf (stderr, "JACK ERROR: cannot activate client");
 			exit(1);
 		}
@@ -283,7 +283,7 @@ public:
 	void Stop()
 	{
 		//JACK CODE (the init order of network, ... should be decided)
-		if (jack_deactivate (client))
+		if (jack_deactivate (_jclient))
 		{
 			fprintf (stderr, "cannot activate client");
 			exit(1);
@@ -297,7 +297,7 @@ public:
 		Stop();
 		
 		//JACK CODE
-		jack_client_close (client);
+		jack_client_close (_jclient);
 	}
 	
 	CLAM::Network & Network()
@@ -464,7 +464,7 @@ private:
 
 int main( int argc, char *argv[] )
 {
-	if (argc<2 || argc>5)
+	if ( argc<2 || argc>5 )
 	{
 		std::cout << " Usage: " 
 			<< argv[0] << " <networkfile> [ <uifile> inputPort outputPort ]" << std::endl;
@@ -479,7 +479,7 @@ int main( int argc, char *argv[] )
 	std::list<std::string> portlist;
 
 	//Deal with Network&Interface files
-	if (argc==2)
+	if ( argc==2 )
 	{
 		networkFile=argv[1];
 		std::string filename = networkFile;
@@ -487,21 +487,19 @@ int main( int argc, char *argv[] )
 		filename+=std::string(".ui");
 		uiFile=filename;
 	}
-	else if (argc>2)
+	else if ( argc>2 )
 	{
 		networkFile=argv[1];
 		uiFile=argv[2];
 	}
 
-	std::cout << "\n NetworkFile=<"<<networkFile<<"> i uifile=<"<<uiFile<<">\n";
-	
 	//Deal with input and output port patterns
-	if (argc==4) //Case 1: only input
+	if ( argc==4 ) //Case 1: only input
 	{		
-		portlist.push_back( std::string(argv[3]) );
+		portlist.push_back( std::string( argv[3]) );
 		portlist.push_back( "NULL");
 	}
-	else if (argc==5) //Case 2: input & output
+	else if ( argc==5 ) //Case 2: input & output
 	{
 		portlist.push_back( argv[3] );
 		portlist.push_back( std::string(argv[4]) );
@@ -516,7 +514,7 @@ int main( int argc, char *argv[] )
 
 
 	QWidget * prototype = loader.loadPrototype( uiFile.c_str() );
-	if (!prototype) return -1;
+	if ( !prototype ) return -1;
 	loader.connectWithNetwork();
 
 	// Set up the dynamic dialog here
