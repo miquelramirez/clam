@@ -38,20 +38,20 @@ void jack_shutdown (void *arg);
 
 typedef struct
 {
+	std::string portName;
 	jack_port_t* jackOutPort;
 	CLAM::ExternGenerator* clamReceiver;
 } JACKOutPortCouple;
 
 typedef struct
 {
+	std::string portName;
 	jack_port_t* jackInPort;
 	CLAM::ExternSink* clamSender;
 } JACKInPortCouple;
 
 typedef std::vector<JACKOutPortCouple> JACKOutPortList;
 typedef std::vector<JACKInPortCouple> JACKInPortList;
-
-namespace CLAM{
 
 class JACKNetworkPlayer
 {
@@ -61,12 +61,14 @@ class JACKNetworkPlayer
 
 	JACKOutPortList _receiverlist;
 	JACKInPortList _senderlist;
+	std::string _jackoutportlist, _jackinportlist;
 	
 	//JACK CODE
 	jack_client_t *client;
+	std::string clientname;
 
 public:
-	JACKNetworkPlayer(const std::string & networkFile)
+	JACKNetworkPlayer(const std::string & networkFile, std::list<std::string> portlist)
 	{
 		_cbuffersize=512;
 		
@@ -77,7 +79,9 @@ public:
 		
 		//JACK CODE
 		//init client
-		if ((client = jack_client_new ("CLAM client")) == 0)
+		
+		clientname="CLAM_client";		
+		if ((client = jack_client_new ( clientname.c_str() )) == 0)
 		{
 			fprintf (stderr, "JACK ERROR: server not running?\n");
 			exit(1);
@@ -92,8 +96,12 @@ public:
 		_jsamplerate=(int)jack_get_sample_rate (client);
 		_jbuffersize=(int)jack_get_buffer_size (client);
 
-		CreateInputPorts(_network);
-		CreateOutputPorts(_network);
+		_jackoutportlist=portlist.front();
+		portlist.pop_front();
+		_jackinportlist=portlist.front();
+
+		CreateInputPorts( _network );
+		CreateOutputPorts( _network );
 	}
 	
 	void CreateInputPorts(const CLAM::Network& net)
@@ -105,6 +113,9 @@ public:
 		{
 			if (std::string("ExternGenerator")==std::string(it->second->GetClassName()))
 			{
+				//Store Processing name
+				pair.portName=clientname+std::string(":")+it->first;
+				
 				//Get Processing address
 				pair.clamReceiver=(CLAM::ExternGenerator*)it->second;
 				pair.clamReceiver->SetFrameAndHopSize(_jbuffersize);
@@ -118,6 +129,7 @@ public:
 				_receiverlist.push_back(pair);
 			}
 		}
+
 	}
 	
 	void CreateOutputPorts(const CLAM::Network& net)
@@ -129,6 +141,9 @@ public:
 		{
 			if (std::string("ExternSink")==std::string(it->second->GetClassName()))
 			{
+				//Store Processing name
+				pair.portName=clientname+std::string(":")+it->first;
+
 				//Get Processing address
 				pair.clamSender=(CLAM::ExternSink*)it->second;
 				pair.clamSender->SetFrameAndHopSize(_jbuffersize);
@@ -180,6 +195,77 @@ public:
 
 		CopySinksToJackBuffers(nframes);
 	}
+
+	void AutoConnectPorts()
+	{
+		//Automatically connect the ports to external jack ports
+		//( Now only one connection per input/output allowed, but it will grow)
+		
+		//CONNECT JACK OUTPUT PORTS TO CLAM EXTERNGENERATORS
+		const char ** portnames= jack_get_ports ( client , _jackoutportlist.c_str(), NULL, JackPortIsOutput);
+
+		if (portnames==NULL)
+		{
+			std::cout << "WARNING: couldn't locate any JACK output port <"
+				<< _jackoutportlist << ">"<<std::endl;
+		}
+		else
+		{
+
+			int i=0;
+			//De moment agafem el primer que existeixi i avall, no cal iterar
+			//while (portnames[i]!=NULL)
+			//{
+				if ( i==0 && _receiverlist.size()>0 )
+				{
+					std::cout << "Connecting (" << portnames[i] <<
+						")->(" << (_receiverlist.front()).portName<<")" << std::endl;
+	
+					if ( jack_connect( client, portnames[i], 
+								(_receiverlist.front()).portName.c_str() ) !=0 )
+					{
+						std::cerr << "WARNING: couldn't connect" << std::endl;
+					}
+				}
+				
+			//	i++;
+			//}
+		}		
+		free(portnames);
+
+		//CONNECT CLAM EXTERNSINKS TO JACK INPUT PORTS
+		portnames= jack_get_ports ( client , _jackinportlist.c_str(), NULL, JackPortIsInput);
+
+		if (portnames==NULL)
+		{
+			std::cout << "WARNING: couldn't locate any JACK input port <"
+				<< _jackinportlist << ">"<<std::endl;
+		}
+		else
+		{
+
+			int i=0;
+			//De moment agafem el primer que existeixi i avall, no cal iterar
+			//while (portnames[i]!=NULL)
+			//{
+				if ( i==0 && _senderlist.size()>0 )
+				{
+					std::cout << "Connecting (" << (_senderlist.front()).portName<<")" << 
+						")->(" << portnames[i] << ")" << std::endl;
+	
+					if ( jack_connect( client, (_senderlist.front()).portName.c_str(),
+								portnames[i]) != 0)
+					{
+						std::cerr << "WARNING: couldn't connect" << std::endl;
+					}
+				}
+				
+			//	i++;
+			//}
+		}			
+		free(portnames);
+
+}
 	
 	void Start()
 	{
@@ -190,6 +276,8 @@ public:
 			fprintf (stderr, "JACK ERROR: cannot activate client");
 			exit(1);
 		}
+
+		AutoConnectPorts();
 	}
 	
 	void Stop()
@@ -250,9 +338,9 @@ class PrototypeLoader
 	JACKNetworkPlayer _player;
 	std::list<CLAM::VM::NetPlot * > _portMonitors;
 public:
-	PrototypeLoader(char * networkFile)
+	PrototypeLoader(char * networkFile, std::list<std::string> portlist)
 		: _networkFile(networkFile)
-		, _player(networkFile)
+		, _player(networkFile, portlist)
 	{
 		
 	}
@@ -376,10 +464,10 @@ private:
 
 int main( int argc, char *argv[] )
 {
-	if (argc!=3)
+	if (argc!=5)
 	{
 		std::cout << " Usage: " 
-			<< argv[0] << " <networkfile> <uifile>" << std::endl;
+			<< argv[0] << " <networkfile> <uifile> inputPort outputPort" << std::endl;
 		return -1;
 	}
 
@@ -388,7 +476,18 @@ int main( int argc, char *argv[] )
 
 	QApplication app( argc, argv );
 
-	PrototypeLoader loader(networkFile);
+	std::list<std::string> portlist;
+	if (argc==4)
+	{		
+		portlist.push_back( std::string(argv[3]) );
+	//	portlist.push_back( "
+	}
+	if (argc==5)
+	{
+		portlist.push_back( std::string(argv[4]) );
+	}
+
+	PrototypeLoader loader(networkFile, portlist);
 
 
 	QWidget * prototype = loader.loadPrototype(uiFile);
