@@ -8,64 +8,64 @@
   <WidgetList>
     <Widget>
       <Name>JACK_Input</Name>
-      <X>17</X>
-      <Y>98</Y>
+      <X>3</X>
+      <Y>80</Y>
       <Width>117</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>JACK_Out_Input</Name>
-      <X>729</X>
-      <Y>108</Y>
+      <X>675</X>
+      <Y>140</Y>
       <Width>117</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>JACK_Out_Synth</Name>
-      <X>743</X>
-      <Y>297</Y>
+      <X>679</X>
+      <Y>305</Y>
       <Width>121</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>OutControlSender_0</Name>
-      <X>435</X>
-      <Y>39</Y>
+      <X>385</X>
+      <Y>19</Y>
       <Width>86</Width>
       <Height>46</Height>
     </Widget>
     <Widget>
       <Name>SMSAnalysisCore</Name>
-      <X>167</X>
-      <Y>235</Y>
+      <X>109</X>
+      <Y>273</Y>
       <Width>123</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>SMSFreqShift</Name>
-      <X>468</X>
-      <Y>203</Y>
+      <X>398</X>
+      <Y>199</Y>
       <Width>102</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>SMSResidualGain</Name>
-      <X>288</X>
-      <Y>357</Y>
+      <X>270</X>
+      <Y>427</Y>
       <Width>123</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>SMSSinusoidalGain</Name>
-      <X>286</X>
+      <X>242</X>
       <Y>146</Y>
       <Width>130</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>SMSSynthesis</Name>
-      <X>541</X>
-      <Y>413</Y>
+      <X>493</X>
+      <Y>339</Y>
       <Width>106</Width>
       <Height>60</Height>
     </Widget>
