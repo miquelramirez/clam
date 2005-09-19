@@ -1,8 +1,8 @@
 #ifndef _DescriptorTableController_hxx_
 #define _DescriptorTableController_hxx_
 
-#include "RangeSelectionTableItem.hxx"
 #include <string>
+#include "Range.hxx"
 
 class QTable;
 
