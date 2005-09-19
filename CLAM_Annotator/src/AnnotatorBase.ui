@@ -781,7 +781,7 @@ to the proper cell.&lt;/p&gt;</string>
     </connection>
     <connection>
         <sender>mProjectOverview</sender>
-        <signal>clicked(QListViewItem*)</signal>
+        <signal>selectionChanged(QListViewItem*)</signal>
         <receiver>AnnotatorBase</receiver>
         <slot>songsClicked(QListViewItem*)</slot>
     </connection>
