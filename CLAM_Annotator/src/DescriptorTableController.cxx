@@ -1,11 +1,36 @@
 #include "Project.hxx"
+#include "RangeSelectionTableItem.hxx"
 #include "DescriptorTableController.hxx"
 #include <qtable.h>
 #include "ComboTableItem.hxx"
 
 namespace CLAM_Annotator
 {
-
+	/*
+	class StringDescriptorTableController
+	{
+		StringDescriptorTableController(const std::string & scope, const std::string & name, const CLAM::DescriptionDataPool & dataPool)
+			: mScope(scope)
+			, mName(name)
+			, mPool(dataPool)
+		{
+		}
+		void refreshData(int row, int element)
+		{
+			const CLAM::Text & value = mPool.GetReadPool<CLAM::Text>(mScope,mName)[element];
+			QString qvalue = QString(value.c_str());
+			mTable->setItem(row,1, new TableItem(mTable, TableItem::WhenCurrent, qvalue));
+		}
+		void updateData()
+		{
+			mPool->GetWritePool<CLAM::Text>(mScope,mName)[mElement] = value;
+		}
+	private:
+		const std::string & mScope;
+	       	const std::string & mName;
+	       	const CLAM::DescriptionDataPool & mPool;
+	};
+	*/
 	DescriptorTableController::DescriptorTableController(QTable * table, const CLAM_Annotator::Project & project)
 		: mTable(table)
 		, mProject(project)
@@ -26,7 +51,7 @@ namespace CLAM_Annotator
 		mScope = scope;
 		mElement = -1;
 		mTable->setNumRows(0);
-		CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(scope);
+		CLAM_Annotator::Project::ScopeSchema hlds = mProject.GetScopeSchema(scope);
 		mTable->setNumRows(hlds.size());
 		std::list<CLAM_Annotator::SchemaAttribute>::iterator it = hlds.begin();
 		for(int i = 0 ; it != hlds.end(); it++, i++)
@@ -34,13 +59,14 @@ namespace CLAM_Annotator
 			TableItem * item = new TableItem(mTable, TableItem::Never, it->GetName().c_str());
 			mTable->setItem(i, 0, item);
 		}
+		mTable->adjustColumn(0);
 		if (hlds.size()) mTable->show();
 	}
 	void DescriptorTableController::refreshData(int element, const CLAM::DescriptionDataPool * dataPool)
 	{
 		if (mScope=="") return;
 		mElement=element;
-		CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(mScope);
+		CLAM_Annotator::Project::ScopeSchema hlds = mProject.GetScopeSchema(mScope);
 		std::list<CLAM_Annotator::SchemaAttribute>::iterator it;
 		for(it = hlds.begin() ; it != hlds.end(); it++)
 		{
@@ -78,7 +104,6 @@ namespace CLAM_Annotator
 					it->GetiRange());
 			}
 		}
-		mTable->adjustColumn(0);
 		mTable->adjustColumn(1);
 	}
 	void DescriptorTableController::updateData(int row, CLAM::DescriptionDataPool * dataPool)
@@ -113,7 +138,7 @@ namespace CLAM_Annotator
 	{
 		//TODO: should find a more efficient search algorithm
 
-		CLAM_Annotator::Project::SongScopeSchema hlds = mProject.GetScopeSchema(mScope);
+		CLAM_Annotator::Project::ScopeSchema hlds = mProject.GetScopeSchema(mScope);
 		std::list<CLAM_Annotator::SchemaAttribute>::iterator it = hlds.begin();
 		for(int i = 0 ; it != hlds.end(); it++, i++)
 		{
