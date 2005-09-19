@@ -16,8 +16,6 @@
 #include "NetSpecgramPlot.hxx"
 #include "NetFundTrackPlot.hxx"
 #include "NetSinTracksPlot.hxx"
-#include "Text.hxx"
-#include "List.hxx"
 
 #include "ExternGenerator.hxx"
 #include "ExternSink.hxx"
@@ -70,8 +68,6 @@ public:
 	
 	void CreatePorts(const CLAM::Network& net)
 	{
-		bool receiverwarning, senderwarning;
-		receiverwarning=senderwarning=false;
 		
 		//Get them from the Network and add it to local list		
 		for (CLAM::Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
@@ -83,13 +79,9 @@ public:
 				gen->SetFrameAndHopSize( _cbuffersize );
 					
 				//Using PortAudio we only accept 2 channels max
-				if ( _receiverlist.size()==2 )
+				if ( _receiverlist.size() == 2 )
 				{
-					if (!receiverwarning)
-					{
-						std::cout << "WARNING: more than two ExternGenerators detected, using the first ones" << std::endl;
-						receiverwarning=true;
-					}
+					std::cout << "WARNING: more than two ExternGenerators detected, using the first ones" << std::endl;
 					continue;
 				}
 					
@@ -103,14 +95,9 @@ public:
 				sink->SetFrameAndHopSize(_cbuffersize);
 
 				//Using PortAudio we only accept 2 channels max
-				if ( _receiverlist.size() == 2 )
+				if ( _senderlist.size() == 2 )
 				{
-					if ( !senderwarning )
-					{
-						std::cout << "WARNING: more than two ExternSinks detected, using the first ones" << std::endl;
-						senderwarning=true;
-					}
-	
+					std::cout << "WARNING: more than two ExternSinks detected, using the first ones" << std::endl;
 					continue;
 				}
 				//Get Processing address
