@@ -92,7 +92,8 @@ namespace CLAMVM
 		void CreateControlConnection( const std::string &, const std::string & );
 
 		void Clear();
-		void ChangeState( bool);
+		void StartThread();
+		void StopThread();
 		void ChangeOSCState( bool);
 		
 		/** When a connection is removed from GUI, this method is called. 
@@ -135,7 +136,7 @@ namespace CLAMVM
 
 		ProcessingsList mProcessingsToRemove;
 
-		CLAM::Network* mObserved;
+		CLAM::Network* mNetwork;
 		ProcessingControllersMap mProcessingControllers;
 
 		/** Creates a processing controller for a concrete Processing.	 */
@@ -237,7 +238,8 @@ namespace CLAMVM
 		bool Publish() { return false; }
 
 	public:
-		SigSlot::Slotv1< bool > SlotChangeState;
+		SigSlot::Slotv0 SlotStartThread;
+		SigSlot::Slotv0 SlotStopThread;
 		SigSlot::Slotv1< bool > SlotChangeOSCState;
 		
 		SigSlot::Slotv2< const std::string &, const std::string & > SlotRemovePortConnection;

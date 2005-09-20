@@ -239,7 +239,7 @@ void Qt_NetworkPresentation::CreateProcessingPresentation( const std::string & n
 	}
 	catch (CLAM::ErrFactory & err)
 	{
-		// No special presentation, just the standar one
+		// No special presentation, just the standard one
 		procPresent = new Qt_ProcessingPresentation;
 	}
 	procPresent->Initialize( name, this );

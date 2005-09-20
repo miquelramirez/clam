@@ -87,7 +87,8 @@ public:
 	void ChangeConnectionPresentationNames( const std::string &, const std::string & );
 protected:
 	virtual void SetName(const std::string& name) = 0; 
-	virtual void ChangeState( bool );
+	virtual void StartThread();
+	virtual void StopThread();
 	virtual void ChangeOSCState( bool );
 
 	void RemoveProcessing( ProcessingPresentation* );
@@ -114,9 +115,11 @@ protected:
 	std::string GetLastIdentifier( const std::string& );
 
 public: 
-	SigSlot::Slotv1< bool > SlotChangeState;
+	SigSlot::Slotv0 SlotStartThread;
+	SigSlot::Slotv0 SlotStopThread;
 	SigSlot::Slotv1< bool > SlotChangeOSCState;
-//	SigSlot::Signalv1< bool > SignalChangeState;
+//	SigSlot::Signalv1 SignalStartThread;
+//	SigSlot::Signalv1 SignalStopThread;
 //	SigSlot::Signalv1< const std::string & > SignalLoadNetworkFrom;
 //	SigSlot::Signalv1< const std::string & > SignalSaveNetworkTo;
 //	SigSlot::Signalv0 SignalClear;
