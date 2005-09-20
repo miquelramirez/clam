@@ -238,16 +238,14 @@ void Annotator::initAudioWidget()
 
 void Annotator::segmentDescriptorsTableChanged(int row, int column)
 {
-	mHLDChanged = true;
 	mSegmentDescriptors.updateData(row, mpDescriptorPool);
-	changeCurrentFile();
+	markCurrentSongChanged();
 }
 
 void Annotator::globalDescriptorsTableChanged(int row, int column)
 {
-	mHLDChanged = true;
 	mGlobalDescriptors.updateData(row, mpDescriptorPool);
-	changeCurrentFile();
+	markCurrentSongChanged();
 }
 
 void Annotator::adaptSegmentationsToCurrentSchema()
@@ -386,8 +384,9 @@ void Annotator::connectBPFs()
 	}
 }
 
-void Annotator::changeCurrentFile()
+void Annotator::markCurrentSongChanged()
 {
+	mHLDChanged = true;
 	QListViewItemIterator it( mProjectOverview );
 	for ( ; it.current() && !it.current()->isSelected() ; it++ );
 	if ( it.current() )
@@ -575,16 +574,6 @@ void  Annotator::loadSchema()
 
 void  Annotator::saveDescriptors()
 {
-	if (QMessageBox::question(this,QString("Save Descriptors"),
-		QString("Do you want to save current song's descriptors?"),
-		QString("OK"),QString("Cancel")) != 0) return;
-
-	QString qFileName;
-	qFileName = QFileDialog::getSaveFileName(QString(mCurrentDescriptorsPoolFileName.c_str()),
-			"*.pool");
-	if (qFileName == QString::null) return;
-
-	mCurrentDescriptorsPoolFileName = (std::string(qFileName.ascii()));
 	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mCurrentDescriptorsPoolFileName);
 	mLLDChanged = false;
 	mHLDChanged = false;
