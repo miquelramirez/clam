@@ -73,7 +73,7 @@ private:
 	void makeConnections();
 	void connectBPFs();
 	void currentFile( std::string &);
-	void changeCurrentFile();
+	void markCurrentSongChanged();
 	void markAllSongsUnchanged();
 	void refreshGlobalDescriptorsTable();
 
