@@ -30,7 +30,7 @@ class DescriptorTableController
 public:
 	DescriptorTableController(QTable * table, const CLAM_Annotator::Project & project);
 	void refreshSchema(const std::string & scope);
-	void refreshData(int element, const CLAM::DescriptionDataPool * dataPool);
+	void refreshData(int element, CLAM::DescriptionDataPool * dataPool);
 	void updateData(int row, CLAM::DescriptionDataPool * dataPool);
 private:
 	int descriptorIndexInTable(const std::string& name);
