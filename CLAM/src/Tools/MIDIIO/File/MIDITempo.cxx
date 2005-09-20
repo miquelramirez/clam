@@ -38,6 +38,7 @@ namespace MIDI
 		Track* mTrack;
 		Track::EventIterator mIterator;
 		int mUsPerQ; // microseconds per quarternote
+		bool mHasTempo;
 		
 		/* while iterating through the tempo events, we need to keep track of
 		** the time, by applying all the tempo changes and calculation the 
@@ -53,6 +54,7 @@ namespace MIDI
 		
 		void Init(Song* song = 0,Track* track = 0)
 		{
+			mHasTempo=false;
 			mSong = song;
 			mTrack = track;
 			if (mSong && mTrack==0)
@@ -69,6 +71,7 @@ namespace MIDI
 			}
 			if (mTrack)
 			{
+				mHasTempo=true;
 				mIterator = mTrack->Begin();
 			}
 			mUsPerQ = 500000;
@@ -78,6 +81,12 @@ namespace MIDI
 
 		Milliseconds TicksToTime(Ticks t)
 		{
+			if(!mHasTempo)
+			{
+				// return time based on tempo = 120 bpm because the track has not tempo events
+				return (Milliseconds)((double)t*480.0/(double)mSong->GetTicksPerQ());
+			}
+
 			int i = 0;
 
 			/* move the iterator to the next tempo event */
