@@ -574,6 +574,10 @@ void  Annotator::loadSchema()
 
 void  Annotator::saveDescriptors()
 {
+	if (QMessageBox::question(this,QString("Save Descriptors"),
+		QString("Do you want to save current song's descriptors?"),
+		QString("OK"),QString("Discard Them")) != 0) return;
+
 	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mCurrentDescriptorsPoolFileName);
 	mLLDChanged = false;
 	mHLDChanged = false;
