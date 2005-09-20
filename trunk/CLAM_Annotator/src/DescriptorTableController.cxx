@@ -3,34 +3,11 @@
 #include "DescriptorTableController.hxx"
 #include <qtable.h>
 #include "ComboTableItem.hxx"
+#include "DescriptorTablePlugin.hxx"
 
 namespace CLAM_Annotator
 {
-	/*
-	class StringDescriptorTableController
-	{
-		StringDescriptorTableController(const std::string & scope, const std::string & name, const CLAM::DescriptionDataPool & dataPool)
-			: mScope(scope)
-			, mName(name)
-			, mPool(dataPool)
-		{
-		}
-		void refreshData(int row, int element)
-		{
-			const CLAM::Text & value = mPool.GetReadPool<CLAM::Text>(mScope,mName)[element];
-			QString qvalue = QString(value.c_str());
-			mTable->setItem(row,1, new TableItem(mTable, TableItem::WhenCurrent, qvalue));
-		}
-		void updateData()
-		{
-			mPool->GetWritePool<CLAM::Text>(mScope,mName)[mElement] = value;
-		}
-	private:
-		const std::string & mScope;
-	       	const std::string & mName;
-	       	const CLAM::DescriptionDataPool & mPool;
-	};
-	*/
+
 	DescriptorTableController::DescriptorTableController(QTable * table, const CLAM_Annotator::Project & project)
 		: mTable(table)
 		, mProject(project)
@@ -53,7 +30,7 @@ namespace CLAM_Annotator
 		mTable->setNumRows(0);
 		CLAM_Annotator::Project::ScopeSchema hlds = mProject.GetScopeSchema(scope);
 		mTable->setNumRows(hlds.size());
-		std::list<CLAM_Annotator::SchemaAttribute>::iterator it = hlds.begin();
+		std::list<SchemaAttribute>::iterator it = hlds.begin();
 		for(int i = 0 ; it != hlds.end(); it++, i++)
 		{
 			TableItem * item = new TableItem(mTable, TableItem::Never, it->GetName().c_str());
@@ -62,76 +39,46 @@ namespace CLAM_Annotator
 		mTable->adjustColumn(0);
 		if (hlds.size()) mTable->show();
 	}
-	void DescriptorTableController::refreshData(int element, const CLAM::DescriptionDataPool * dataPool)
+	void DescriptorTableController::refreshData(int element, CLAM::DescriptionDataPool * dataPool)
 	{
 		if (mScope=="") return;
 		mElement=element;
 		CLAM_Annotator::Project::ScopeSchema hlds = mProject.GetScopeSchema(mScope);
-		std::list<CLAM_Annotator::SchemaAttribute>::iterator it;
-		for(it = hlds.begin() ; it != hlds.end(); it++)
+		std::list<SchemaAttribute>::iterator attribute;
+		for(attribute = hlds.begin() ; attribute != hlds.end(); attribute++)
 		{
-			const std::string & type = it->GetType();
-			const std::string & name = it->GetName();
+			const std::string & type = attribute->GetType();
+			const std::string & name = attribute->GetName();
 			unsigned row = descriptorIndexInTable(name);
 			if (mElement==-1)
 			{
 				mTable->clearCell(row,1);
 				continue;
 			}
-			else if (type == "String")
-			{
-				insertValue(row,
-					dataPool->GetReadPool<CLAM::Text>(mScope,name)[element]
-					);
-			}
-			else if (type == "RestrictedString")
-			{
-				const std::list<std::string> & options = it->GetRestrictionValues();
-				insertValue(row,
-					dataPool->GetReadPool<CLAM_Annotator::RestrictedString>(mScope,name)[element],
-					options);
-			}
-			else if (type == "Float")
-			{
-				insertValue(row,
-					dataPool->GetReadPool<float>(mScope,name)[element],
-					it->GetfRange());
-			}
-			else if (type == "Int")
-			{
-				insertValue(row,
-					dataPool->GetReadPool<int>(mScope,name)[element],
-					it->GetiRange());
-			}
+			DescriptorTablePlugin * itemController 
+				= createItemController(mTable, row, *attribute, *dataPool);
+
+			if (!itemController) continue;
+			itemController->refreshData(element);
+			delete itemController;
 		}
 		mTable->adjustColumn(1);
 	}
 	void DescriptorTableController::updateData(int row, CLAM::DescriptionDataPool * dataPool)
 	{
 		std::string name = mTable->text(row,0).ascii();
-		const CLAM_Annotator::SchemaAttribute & hldSchemaElement = 
+		const SchemaAttribute & attribute = 
 			mProject.GetAttributeScheme(mScope,name);
 
-		const std::string & type = hldSchemaElement.GetType();
+		const std::string & type = attribute.GetType();
 		QString qValue = mTable->text(row, 1);
 		const std::string & value = qValue.ascii();
 
-		if (type == "String")
-		{
-			dataPool->GetWritePool<CLAM::Text>(mScope,name)[mElement] = value;
-		}
-		if (type == "RestrictedString")
-		{
-			dataPool->GetWritePool<CLAM_Annotator::RestrictedString>(mScope,name)[mElement].SetString(value);
-		}
-		if (type == "Float")
-		{
-			dataPool->GetWritePool<float>(mScope,name)[mElement] = qValue.toFloat();
-		}
-		if (type == "Int")
-		{
-			dataPool->GetWritePool<int>(mScope,name)[mElement] = qValue.toInt();
-		}
+		DescriptorTablePlugin * itemController 
+			= createItemController(mTable, row, attribute, *dataPool);
+		if (!itemController) return;
+		itemController->updateData(mElement);
+		delete itemController;
 	}
 
 	int DescriptorTableController::descriptorIndexInTable(const std::string& name)
@@ -139,59 +86,12 @@ namespace CLAM_Annotator
 		//TODO: should find a more efficient search algorithm
 
 		CLAM_Annotator::Project::ScopeSchema hlds = mProject.GetScopeSchema(mScope);
-		std::list<CLAM_Annotator::SchemaAttribute>::iterator it = hlds.begin();
+		std::list<SchemaAttribute>::iterator it = hlds.begin();
 		for(int i = 0 ; it != hlds.end(); it++, i++)
 		{
 			if (it->GetName() == name) return i;
 		}
 		return -1;
-	}
-
-	void DescriptorTableController::insertValue(int row, const CLAM::Text & value)
-	{
-		QString qvalue = QString(value.c_str());
-		mTable->setItem(row,1,
-			new TableItem(mTable,TableItem::WhenCurrent,qvalue));
-	}
-
-	void DescriptorTableController::insertValue(int row, 
-		const CLAM_Annotator::RestrictedString& value, 
-		const std::list<std::string> & options)
-	{
-		QString qvalue = value.GetString().c_str();
-		QStringList qrestrictionStrings;
-		std::list<std::string>::const_iterator it;
-		for(it = options.begin();it != options.end(); it++)
-		{
-			qrestrictionStrings << QString(it->c_str());
-		}
-
-		std::vector<QStringList> qrestrictionStringslist;
-		qrestrictionStringslist.push_back( qrestrictionStrings );
-		ComboTableItem * item = new ComboTableItem(mTable,qrestrictionStringslist,false);
-		item->setCurrentItem(qvalue);
-		mTable->setItem(row,1,item);
-	}
-
-	void DescriptorTableController::insertValue(int row, float value, Range<float> range)
-	{
-		std::ostringstream s;
-		s<<value;
-		QString qvalue = QString(s.str().c_str());
-		mTable->setItem(row,1,
-			new RangeSelectionTableItem(mTable,
-				TableItem::WhenCurrent,qvalue,range));
-	}
-
-	void DescriptorTableController::insertValue(int row, int value, Range<int> range)
-	{
-		std::ostringstream s;
-		s<<value;
-		QString qvalue = QString(s.str().c_str());
-		mTable->setItem(row,1,
-			new RangeSelectionTableItem(mTable,
-				TableItem::WhenCurrent,qvalue,range));
-
 	}
 
 }
