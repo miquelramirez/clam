@@ -858,9 +858,27 @@ void Annotator::playMarks(bool playThem)
 	CLAM::Audio * audioToPlay = playThem ? &mCurrentMarkedAudio : &mCurrentAudio;
 	mpAudioPlot->SetData(*audioToPlay,false);
 	for(unsigned i=0; i < mBPFEditors.size(); i++)
-	{
 		mBPFEditors[i]->SetAudioPtr(audioToPlay);
-	}
+}
+
+void Annotator::playOriginalAudioAndLLD(bool both)
+{
+	for(unsigned i=0; i < mBPFEditors.size(); i++)
+		mBPFEditors[i]->playSimultaneously(both);
+}
+
+void Annotator::hideBPFEditors()
+{
+	for(unsigned i=0; i < mBPFEditors.size(); i++)
+		mBPFEditors[i]->Hide();
+}
+
+void Annotator::setMenuAudioItemsEnabled(bool enabled)
+{
+	audioAuralize_Segmentation_MarksAction->setOn(false); 
+	audioOriginal_Audio__LLDAction->setOn(false);
+	audioAuralize_Segmentation_MarksAction->setEnabled(enabled);
+	audioOriginal_Audio__LLDAction->setEnabled(enabled);
 }
 
 QString Annotator::constructFileError(const std::string& fileName,const CLAM::XmlStorageErr& e)
@@ -873,27 +891,5 @@ QString Annotator::constructFileError(const std::string& fileName,const CLAM::Xm
 	errorMessage += "</tt>'\n";
 	errorMessage += "is well formed and folllows the specifications";
 	return QString(errorMessage.c_str());
-}
-
-void Annotator::playOriginalAudioAndLLD(bool both)
-{
-	for(unsigned i=0; i < mBPFEditors.size(); i++)
-	{
-		mBPFEditors[i]->playSimultaneously(both);
-	}
-}
-
-void Annotator::setMenuAudioItemsEnabled(bool enabled)
-{
-	audioAuralize_Segmentation_MarksAction->setOn(false); 
-	audioOriginal_Audio__LLDAction->setOn(false);
-	audioAuralize_Segmentation_MarksAction->setEnabled(enabled);
-	audioOriginal_Audio__LLDAction->setEnabled(enabled);
-}
-
-void Annotator::hideBPFEditors()
-{
-	for(unsigned i=0; i < mBPFEditors.size(); i++)
-		mBPFEditors[i]->Hide();
 }
 
