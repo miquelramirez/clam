@@ -82,7 +82,7 @@ namespace CLAM
 			mPort=p;
 		}
 		
-		virtual const bool GetListeningOSC() const { return mListeningOSC; }
+		virtual const bool IsListeningOSC() const { return mListeningOSC; }
 
 	protected:
 		//Adds the specified message to the log queue
