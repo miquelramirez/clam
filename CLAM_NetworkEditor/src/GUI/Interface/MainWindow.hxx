@@ -54,8 +54,8 @@ private:
 public: //slots
 	SigSlot::Slotv1< const std::string & > SlotSendMessageToStatus;
 
- public slots:
- void LoadNetwork();
+public slots:
+ 	void LoadNetwork();
 	void SaveNetwork();
 	void NewNetwork(); 
 	void SaveAsNetwork();
@@ -67,7 +67,8 @@ public: //slots
 	void ShowAboutDlg();
 
 public: // CLAM signals
-	SigSlot::Signalv1 < bool > SignalChangeNetworkState;
+	SigSlot::Signalv0 SignalStartNetwork;
+	SigSlot::Signalv0 SignalStopNetwork;
 	SigSlot::Signalv1 < bool > SignalChangeOSCState;
 	SigSlot::Signalv0 SignalNewNetworkSignal;
 

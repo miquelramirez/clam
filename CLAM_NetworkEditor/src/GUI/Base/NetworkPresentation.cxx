@@ -37,7 +37,8 @@ NetworkPresentation::NetworkPresentation() : mNetworkController(0)
 	SlotRemoveControlConnection.Wrap( this, &NetworkPresentation::RemoveControlConnection);
 	SlotAddProcessing.Wrap( this, &NetworkPresentation::AddProcessing2Remove );
 	SlotRemoveProcessing.Wrap( this, &NetworkPresentation::RemoveProcessing );
-	SlotChangeState.Wrap( this, &NetworkPresentation::ChangeState );
+	SlotStartThread.Wrap( this, &NetworkPresentation::StartThread );
+	SlotStopThread.Wrap( this, &NetworkPresentation::StopThread );
 	SlotChangeOSCState.Wrap( this, &NetworkPresentation::ChangeOSCState );
 	SlotClear.Wrap(this, &NetworkPresentation::Clear );
 }
@@ -48,9 +49,15 @@ CLAMVM::NetworkController & NetworkPresentation::GetNetworkController()
 	return *mNetworkController;
 }
 
-void NetworkPresentation::ChangeState( bool newState )
+void NetworkPresentation::StartThread()
 {
-	GetNetworkController().ChangeState( newState );
+	GetNetworkController().StartThread();
+	
+}
+
+void NetworkPresentation::StopThread()
+{
+	GetNetworkController().StopThread();
 	
 }
 

@@ -55,7 +55,8 @@ namespace NetworkGUI
 		SignalNewNetworkSignal.Connect( mNetworkPresentation.SlotClear );
 		statusBar()->message( "Ready to edit" );
 
-		SignalChangeNetworkState.Connect( mNetworkPresentation.SlotChangeState );
+		SignalStartNetwork.Connect( mNetworkPresentation.SlotStartThread );
+		SignalStopNetwork.Connect( mNetworkPresentation.SlotStopThread );
 		SignalChangeOSCState.Connect( mNetworkPresentation.SlotChangeOSCState );
 
 
@@ -226,12 +227,12 @@ namespace NetworkGUI
 
 	void MainWindow::StartNetwork()
 	{
-		SignalChangeNetworkState.Emit(true);
+		SignalStartNetwork.Emit();
 	}
 
 	void MainWindow::StopNetwork()
 	{
-		SignalChangeNetworkState.Emit(false);
+		SignalStopNetwork.Emit();
 	}
 
 	void MainWindow::StartOSCListening()
