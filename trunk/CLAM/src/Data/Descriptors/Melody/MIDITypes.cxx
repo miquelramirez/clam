@@ -12,7 +12,7 @@ namespace CLAM
 
 	unsigned MIDIEvent::Ticks() const
 	{
-		return (unsigned)(((GetTime() * 1000.0) / 4.0 * 96.0) / 120.0);
+		return (unsigned)((GetTime() * 1000.0 * 96.0) / 480.0);
 	}
 
 	int MIDIEvent::Length() const
