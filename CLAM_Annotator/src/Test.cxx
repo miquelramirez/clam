@@ -47,9 +47,9 @@ int main(int argc, char ** argv)
 		"../../CLAM-TestData/Elvis.wav",
 		"../Samples/SongsTest/02.mp3",
 		"../Samples/SongsTest/03.mp3",
-		"../Samples/SongsTest/Franz Ferdinand - Franz Ferdinand - 02 - Tell Her Tonight.ogg",
-		"../Samples/SongsTest/Coldplay - Parachutes - 01 - Don't Panic.mp3",
-		"../Samples/SongsTest/06 - Up In Arms.mp3",
+//		"../Samples/SongsTest/Franz Ferdinand - Franz Ferdinand - 02 - Tell Her Tonight.ogg",
+//		"../Samples/SongsTest/Coldplay - Parachutes - 01 - Don't Panic.mp3",
+//		"../Samples/SongsTest/06 - Up In Arms.mp3",
 		0
 	};
 	bool generateJustPools = (argc>1);
