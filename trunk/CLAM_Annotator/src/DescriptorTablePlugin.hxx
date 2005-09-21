@@ -1,8 +1,11 @@
-#include "Project.hxx"
-#include "RangeSelectionTableItem.hxx"
-#include "DescriptorTableController.hxx"
-#include <qtable.h>
-#include "ComboTableItem.hxx"
+#ifndef _DescriptorTablePlugin_hxx_
+#define _DescriptorTablePlugin_hxx_
+
+#include <string>
+
+class QTable;
+namespace CLAM { class DescriptionDataPool; }
+namespace CLAM_Annotator { class SchemaAttribute; }
 
 namespace CLAM_Annotator
 {
@@ -30,3 +33,4 @@ namespace CLAM_Annotator
 
 }
 
+#endif//_DescriptorTablePlugin_hxx_
