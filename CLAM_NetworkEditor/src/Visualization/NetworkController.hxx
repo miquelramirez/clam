@@ -46,6 +46,8 @@
 #include "Network.hxx"
 #endif
 
+#include "BlockingNetworkPlayer.hxx"
+
 namespace CLAM
 {
 	class Network;
@@ -137,45 +139,52 @@ namespace CLAMVM
 		ProcessingsList mProcessingsToRemove;
 
 		CLAM::Network* mNetwork;
+		CLAM::BlockingNetworkPlayer *mPlayer;
 		ProcessingControllersMap mProcessingControllers;
 
+		CLAM::BlockingNetworkPlayer& GetNetworkPlayer()
+		{
+			CLAM_ASSERT ( mPlayer!=NULL, "NetworkController::GetNetworkPlayer() : object has no NetworkPlayer");
+			return *mPlayer;
+		}
+		
 		/** Creates a processing controller for a concrete Processing.	 */
 		ProcessingController* CreateProcessingController( const std::string & , CLAM::Processing *  );
 
+		
 		/** Creates a port connection adapter for a link between ports 
 		 * and adds it to mPortConnection.*/
 		void RegisterPortConnection( const std::string &, const std::string & );
 
+		
 		/** Creates a control connection adapter for a link between controls 
 		 * and adds it to mControlConnection */
 		void RegisterControlConnection( const std::string &, const std::string & );
-
 	
 
 		/** Creates the connection into the observed network, 
 		 * and if it's successful a signal is emitted to the GUI in order to
 		 * create a port connection presentation */
 		void ExecuteCreatePortConnection( const std::string & , const std::string & );
+
 		
 		/** Removes the connection connection is removed at network level, 
 		 * and if it's successful a signal is emitted to the GUI in order to
 		 * remove the proper port connection presentation. */
 		void ExecuteRemovePortConnection( const std::string & , const std::string & );
 
-	
 
 		/** Creates a connection in the observed network level, 
 		 * and if it's successful a signal is emitted to the GUI in order to
 		 * create a control connection presentation */
 		void ExecuteCreateControlConnection( const std::string & , const std::string & );
 
+		
 		/** Removes the connection of the observed network, 
 		 * and if it's successful a signal is emitted to the GUI in order to
 		 * remove the proper control connection presentation. */
 		void ExecuteRemoveControlConnection( const std::string & , const std::string & );
 	
-		
-			
 
 		/** All the connections of a concrete processing are removed, 
 		 * and after this step has been done, the processing is removed from network.
@@ -190,26 +199,29 @@ namespace CLAMVM
 		 * @see ChangeProcessingNameInsideConnections */
 		void ProcessingNameChanged( const std::string &, ProcessingController * );
 
+		
 		/** Using this function from ProcessingNameChanged the name of the controller 
 		 * is changed in the ProcessingControllersMap. It returns false if the name is 
 		 * duplicated, in order to not modify gui. @see ProcessingNameChanged */
 		bool ChangeKeyMap( const std::string & oldName , const std::string & newName );
 		
+		
 		/** This method disconnects all the ports of a concrete processing, 
 		 * removing in the process all the presentation of its connections. */
 		void RemoveAllPortConnections( const std::string &  );
 
+		
 		/** This method disconnects all the controls of a concrete processing, 
 		 * removing in the process all the presentation of its connections. */
 		void RemoveAllControlConnections( const std::string & );
 
+		
 		/** This method, called from ProcessingLoop, executes all the events related 
 		 * to creation/destruction of processings/connections in a thread-safe way. */		
 		void ExecuteEvents();
 
 		void RemoveAllConnections( CLAM::Processing * );
 		void RebuildProcessingPresentationAttachedTo( ProcessingController *, CLAM::Processing * );
-		
 		void ConfigureProcessing( CLAM::Processing * , const CLAM::ProcessingConfig & );
 	
 
@@ -221,7 +233,7 @@ namespace CLAMVM
 			return "NetworkController";
 		}
 		std::string GetName();
-
+		
 		ProcessingControllersMap::iterator BeginProcessingControllers()
 		{
 			return mProcessingControllers.begin();
