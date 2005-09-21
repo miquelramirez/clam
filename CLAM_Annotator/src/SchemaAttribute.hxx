@@ -13,6 +13,7 @@
 #include "AnnotatorDescriptor.hxx"
 #include "RestrictedString.hxx"
 #include "Range.hxx"
+#include "TypePlugin.hxx"
 
 namespace CLAM_Annotator{
 	
@@ -66,13 +67,32 @@ namespace CLAM_Annotator{
 		void DefaultInit();
 		
 	public:
-		bool Validate (const void * descriptors) const
+		template <class T>
+		class Holder
 		{
-			return true;
+		public:
+			Holder(T*v) : t(v) { }
+			~Holder()
+			{
+				if (t) delete t;
+			}
+			T* t;
+		};
+		bool Validate (const CLAM::DescriptionDataPool & pool) const
+		{
+			Holder<TypePlugin> h(TypePlugin::Create(*this));
+			// TODO: Chekc also when scope size is > 1
+			if (h.t)
+				return h.t->ValidateData(pool);
+
+			const std::string & type = GetType();
+			if (type=="Segmentation")
+				return true;
+
+			std::string error = "Validating an unrecognized type: ";
+			error += type;
+			CLAM_ASSERT(false, error.c_str());
 		}
-		bool Validate (const CLAM_Annotator::RestrictedString * descriptors) const;
-		bool Validate (const int * descriptors) const;
-		bool Validate (const float * descriptors) const;
 
 		void StoreOn(CLAM::Storage & storage) const
 		{
