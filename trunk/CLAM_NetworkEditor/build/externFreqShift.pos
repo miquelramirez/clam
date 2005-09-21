@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<WidgetLocations>
+
+  <WindowWidth>1047</WindowWidth>
+
+  <WindowHeight>789</WindowHeight>
+
+  <WidgetList>
+    <Widget>
+      <Name>ExternGenerator_0</Name>
+      <X>64</X>
+      <Y>108</Y>
+      <Width>129</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSAnalysisCore_0</Name>
+      <X>170</X>
+      <Y>300</Y>
+      <Width>135</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSFreqShift_0</Name>
+      <X>376</X>
+      <Y>174</Y>
+      <Width>114</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSSynthesis_0</Name>
+      <X>310</X>
+      <Y>538</Y>
+      <Width>118</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>OutControlSender_0</Name>
+      <X>615</X>
+      <Y>20</Y>
+      <Width>56</Width>
+      <Height>128</Height>
+    </Widget>
+    <Widget>
+      <Name>ExternSink_0</Name>
+      <X>574</X>
+      <Y>496</Y>
+      <Width>100</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>ExternGenerator_1</Name>
+      <X>74</X>
+      <Y>622</Y>
+      <Width>129</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>ExternSink_1</Name>
+      <X>629</X>
+      <Y>650</Y>
+      <Width>100</Width>
+      <Height>60</Height>
+    </Widget>
+  </WidgetList>
+
+</WidgetLocations>
