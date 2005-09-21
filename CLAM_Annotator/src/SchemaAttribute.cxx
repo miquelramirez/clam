@@ -4,7 +4,6 @@
 #include "DescriptionScheme.hxx"
 #include "Text.hxx"
 #include "IndexArray.hxx"
-#include "TypePlugin.hxx"
 
 namespace CLAM_Annotator{
 
@@ -14,33 +13,27 @@ namespace CLAM_Annotator{
 		AddScope();
 		AddType();
 		UpdateData();
+		mTypePlugin.t = 0;
 	}
 
 	void SchemaAttribute::AddTo(CLAM::DescriptionScheme & scheme) const
 	{
-		Holder<TypePlugin> h(TypePlugin::Create(*this));
-		if (h.t)
-		{
-			h.t->AddTo(scheme);
-			return;
-		}
+		UpdateTypePlugin();
 
-		std::string error = "Adding an unrecognized type: ";
-		error += GetType();
-		CLAM_ASSERT(false, error.c_str());
+		CLAM_ASSERT(mTypePlugin.t,
+			(std::string("Adding an unrecognized type: ")+GetType()).c_str());
+
+		mTypePlugin.t->AddTo(scheme);
 	}
 
 	bool SchemaAttribute::Validate(const CLAM::DescriptionDataPool & pool) const
 	{
-		Holder<TypePlugin> h(TypePlugin::Create(*this));
-
+		UpdateTypePlugin();
 		// TODO: Check also when scope size is > 1
-		if (h.t) return h.t->ValidateData(pool);
+		CLAM_ASSERT(mTypePlugin.t,
+			(std::string("Validating an unrecognized type: ")+GetType()).c_str());
 
-		std::string error = "Validating an unrecognized type: ";
-		error += GetType();
-		CLAM_ASSERT(false, error.c_str());
-		return false;
+		return mTypePlugin.t->ValidateData(pool);
 	}
 
 

@@ -12,9 +12,11 @@
 #include "AnnotatorDescriptor.hxx"
 #include "RestrictedString.hxx"
 #include "Range.hxx"
+#include "TypePlugin.hxx"
 
 namespace CLAM { class DescriptionScheme; }
 namespace CLAM { class DescriptionDataPool; }
+namespace CLAM_Annotator { class TypePlugin; }
 
 namespace CLAM_Annotator{
 	
@@ -66,13 +68,12 @@ namespace CLAM_Annotator{
 		DYN_ATTRIBUTE(7, public, SegmentationPolicy, SegmentationPolicy);
 		
 		void DefaultInit();
-		
 	public:
 		template <class T>
 		class Holder
 		{
 		public:
-			Holder(T*v) : t(v) { }
+			Holder() : t(0) { }
 			~Holder()
 			{
 				if (t) delete t;
@@ -116,9 +117,15 @@ namespace CLAM_Annotator{
 			LoadChildScope(storage);
 			LoadSegmentationPolicy(storage);
 			UpdateData();
+			UpdateTypePlugin();
 		}
-
-		
+		void UpdateTypePlugin() const
+		{
+			if (mTypePlugin.t) delete mTypePlugin.t;
+			mTypePlugin.t = TypePlugin::Create(*this);
+		}
+	private:
+		mutable Holder<TypePlugin> mTypePlugin;
 	};
 };
 
