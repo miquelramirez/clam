@@ -16,6 +16,7 @@ namespace CLAM_Annotator
 {
 	class Project;
 	class RestrictedString;
+	class DescriptorTablePlugin;
 }
 
 namespace CLAM_Annotator
@@ -27,8 +28,10 @@ class DescriptorTableController
 	const CLAM_Annotator::Project & mProject;
 	std::string mScope;
 	int mElement;
+	std::vector<DescriptorTablePlugin*> mPlugins;
 public:
 	DescriptorTableController(QTable * table, const CLAM_Annotator::Project & project);
+	~DescriptorTableController();
 	void refreshSchema(const std::string & scope);
 	void refreshData(int element, CLAM::DescriptionDataPool * dataPool);
 	void updateData(int row, CLAM::DescriptionDataPool * dataPool);
