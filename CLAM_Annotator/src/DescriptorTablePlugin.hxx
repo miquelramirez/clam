@@ -11,8 +11,9 @@ namespace CLAM_Annotator
 	public:
 		DescriptorTablePlugin(QTable * parent, unsigned row, const SchemaAttribute & scheme);
 		virtual ~DescriptorTablePlugin();
-		virtual void refreshData(int element, CLAM::DescriptionDataPool & dataPool) = 0;
-		virtual void updateData(int element, CLAM::DescriptionDataPool & dataPool) = 0;
+		void refreshData(int element, CLAM::DescriptionDataPool & dataPool);
+		virtual void refreshData(CLAM::DescriptionDataPool & dataPool) = 0;
+		virtual void updateData(CLAM::DescriptionDataPool & dataPool) = 0;
 		void clearData();
 	protected:
 		QTable * mTable;
