@@ -40,7 +40,7 @@ namespace CLAM_Annotator
 		mScope = scope;
 		mElement = -1;
 
-		CLAM_Annotator::Project::ScopeSchema attributes = mProject.GetScopeSchema(scope);
+		CLAM_Annotator::Project::ScopeSchema attributes = mProject.GetScopeSchema(mScope);
 		mTable->setNumRows(attributes.size());
 		std::list<SchemaAttribute>::iterator attribute = attributes.begin();
 		for(unsigned row = 0 ; attribute != attributes.end(); attribute++)
@@ -58,6 +58,7 @@ namespace CLAM_Annotator
 			mTable->setItem(row, 0, item);
 			row++;
 		}
+		mTable->setNumRows(mPlugins.size()); // Some attributes were filtered
 		mTable->adjustColumn(0);
 		if (attributes.size()) mTable->show();
 	}
@@ -68,10 +69,7 @@ namespace CLAM_Annotator
 		mTable->setColumnReadOnly(1,mElement==-1);
 		for (unsigned i = 0; i<mPlugins.size(); i++)
 		{
-			if (mElement==-1)
-				mPlugins[i]->clearData();
-			else
-				mPlugins[i]->refreshData(mElement, *dataPool);
+			mPlugins[i]->refreshData(mElement, *dataPool);
 		}
 		mTable->adjustColumn(1);
 	}

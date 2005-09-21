@@ -63,7 +63,6 @@ Project::ScopeSchema Project::GetScopeSchema(const std::string & scope) const
 	for(it = hlds.begin(); it != hlds.end(); it++)
 	{
 		if (it->GetScope()!=scope) continue;
-		if (it->GetType()=="Segmentation") continue;
 		scopeSchema.push_back(*it);
 	}
 	return scopeSchema;
