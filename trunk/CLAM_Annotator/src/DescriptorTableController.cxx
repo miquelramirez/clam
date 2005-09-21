@@ -47,8 +47,6 @@ namespace CLAM_Annotator
 				= createItemController(mTable, row, *attribute);
 			if (!itemController) continue; // No plugin available for that type
 			mPlugins.push_back(itemController);
-			TableItem * item = new TableItem(mTable, TableItem::Never, attribute->GetName().c_str());
-			mTable->setItem(row, 0, item);
 			row++;
 		}
 		mTable->setNumRows(mPlugins.size()); // Some attributes were filtered
