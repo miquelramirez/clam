@@ -65,6 +65,7 @@ namespace CLAM_Annotator
 	{
 		if (mScope=="") return;
 		mElement=element;
+		mTable->setColumnReadOnly(1,mElement==-1);
 		for (unsigned i = 0; i<mPlugins.size(); i++)
 		{
 			if (mElement==-1)
@@ -76,13 +77,10 @@ namespace CLAM_Annotator
 	}
 	void DescriptorTableController::updateData(int row, CLAM::DescriptionDataPool * dataPool)
 	{
-		std::string name = mTable->text(row,0).ascii();
-		const SchemaAttribute & attribute = 
-			mProject.GetAttributeScheme(mScope,name);
 		if (mElement==-1) return;
 
 		DescriptorTablePlugin * itemController = mPlugins[row];
-		itemController->updateData(mElement, *dataPool);
+		itemController->updateData(*dataPool);
 	}
 
 	int DescriptorTableController::descriptorIndexInTable(const std::string& name)
