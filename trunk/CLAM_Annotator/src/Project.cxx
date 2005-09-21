@@ -16,29 +16,7 @@ void Project::CreatePoolScheme()
 	std::list<CLAM_Annotator::SchemaAttribute>::const_iterator it2;
 	for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
 	{
-		const std::string & type = it2->GetType();
-		const std::string & name = it2->GetName();
-		const std::string & scope = it2->GetScope();
-		if (type=="Float")
-		{
-			mDescriptionScheme.AddAttribute <float>(scope,name);
-		}
-		else if (type=="Int")
-		{
-			mDescriptionScheme.AddAttribute <int>(scope,name);
-		}
-		else if (type=="RestrictedString")
-		{
-			mDescriptionScheme.AddAttribute <CLAM_Annotator::RestrictedString>(scope,name);
-		}
-		else if (type=="String")
-		{
-			mDescriptionScheme.AddAttribute <CLAM::Text>(scope,name);
-		}
-		else if (type=="Segmentation")
-		{
-			mDescriptionScheme.AddAttribute<CLAM::IndexArray>(scope,name);
-		}
+		it2->AddTo(mDescriptionScheme);
 	}
 }
 
