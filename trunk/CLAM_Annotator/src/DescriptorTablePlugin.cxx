@@ -2,54 +2,65 @@
 
 namespace CLAM_Annotator
 {
-	DescriptorTablePlugin::DescriptorTablePlugin(QTable * parent, unsigned row, const SchemaAttribute & scheme, CLAM::DescriptionDataPool & dataPool)
+	DescriptorTablePlugin::DescriptorTablePlugin(QTable * parent, unsigned row, const SchemaAttribute & scheme)
 		: mTable(parent)
 		, mRow(row)
 		, mScope(scheme.GetScope())
 		, mName(scheme.GetName())
-		, mPool(dataPool)
 		, mElement(-1)
 	{
+		std::cout << "Creating '" << mScope << ":" << mName << "' of type " << scheme.GetType() << std::endl;
+		TableItem * item = new TableItem(mTable, TableItem::Never, mName.c_str());
+		mTable->setItem(mRow, 0, item);
 	}
 	DescriptorTablePlugin::~DescriptorTablePlugin()
 	{
+	}
+	void DescriptorTablePlugin::clearData()
+	{
+		mTable->clearCell(mRow,1);
 	}
 
 
 	class DescriptorsTableItemControllerString : public DescriptorTablePlugin
 	{
 	public:
-		DescriptorsTableItemControllerString(QTable * parent, unsigned row, const SchemaAttribute & scheme, CLAM::DescriptionDataPool & dataPool)
-			: DescriptorTablePlugin(parent, row, scheme, dataPool)
+		DescriptorsTableItemControllerString(QTable * parent, unsigned row, const SchemaAttribute & scheme)
+			: DescriptorTablePlugin(parent, row, scheme)
 		{
 		}
-		void refreshData(int element)
+		void refreshData(int element, CLAM::DescriptionDataPool & dataPool)
 		{
-			const CLAM::Text & value = mPool.GetReadPool<CLAM::Text>(mScope,mName)[element];
+			mElement = element;
+			std::cout << "Refreshing '" << mScope << ":" << mName << "' pos " << mElement << std::endl;
+			const CLAM::Text & value = dataPool.GetReadPool<CLAM::Text>(mScope,mName)[mElement];
 			QString qvalue = QString(value.c_str());
 			mTable->setItem(mRow,1, new TableItem(mTable, TableItem::WhenCurrent, qvalue));
 		}
-		void updateData(int element)
+		void updateData(int element, CLAM::DescriptionDataPool & dataPool)
 		{
+			if (mElement==-1) return;
 			QString qValue = mTable->text(mRow, 1);
 			const std::string & value = qValue.ascii();
-			CLAM_ASSERT(mPool.GetNumberOfContexts(mScope)>element,"Fuera!!");
-			mPool.GetWritePool<CLAM::Text>(mScope,mName)[element] = value;
+			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
+			dataPool.GetWritePool<CLAM::Text>(mScope,mName)[mElement] = value;
 		}
 	};
 	
 	class DescriptorsTableItemControllerEnum : public DescriptorTablePlugin
 	{
 	public:
-		DescriptorsTableItemControllerEnum(QTable * parent, unsigned row, const SchemaAttribute & scheme, CLAM::DescriptionDataPool & dataPool)
-			: DescriptorTablePlugin(parent, row, scheme, dataPool)
+		DescriptorsTableItemControllerEnum(QTable * parent, unsigned row, const SchemaAttribute & scheme)
+			: DescriptorTablePlugin(parent, row, scheme)
 			, mOptions(scheme.GetRestrictionValues())
 		{
 		}
-		void refreshData(int element)
+		void refreshData(int element, CLAM::DescriptionDataPool & dataPool)
 		{
+			mElement = element;
+			std::cout << "Refreshing '" << mScope << ":" << mName << "' pos " << mElement << std::endl;
 			const CLAM_Annotator::RestrictedString& value =
-				mPool.GetReadPool<RestrictedString>(mScope,mName)[element];
+				dataPool.GetReadPool<RestrictedString>(mScope,mName)[mElement];
 			QString qvalue = value.GetString().c_str();
 			QStringList qrestrictionStrings;
 
@@ -63,66 +74,73 @@ namespace CLAM_Annotator
 			item->setCurrentItem(qvalue);
 			mTable->setItem(mRow,1,item);
 		}
-		void updateData(int element)
+		void updateData(int element, CLAM::DescriptionDataPool & dataPool)
 		{
+			if (mElement==-1) return;
 			QString qValue = mTable->text(mRow, 1);
 			const std::string & value = qValue.ascii();
-			mPool.GetWritePool<RestrictedString>(mScope,mName)[element].SetString(value);
+			dataPool.GetWritePool<RestrictedString>(mScope,mName)[mElement].SetString(value);
 		}
 	private:
-		const std::list<std::string> & mOptions;
+		const std::list<std::string> mOptions;
 	};
 
 	class DescriptorsTableItemControllerFloat : public DescriptorTablePlugin
 	{
 	public:
-		DescriptorsTableItemControllerFloat(QTable * parent, unsigned row, const SchemaAttribute & scheme, CLAM::DescriptionDataPool & dataPool)
-			: DescriptorTablePlugin(parent, row, scheme, dataPool)
+		DescriptorsTableItemControllerFloat(QTable * parent, unsigned row, const SchemaAttribute & scheme)
+			: DescriptorTablePlugin(parent, row, scheme)
 			, mRange(scheme.GetfRange())
 		{
 		}
-		void refreshData(int element)
+		void refreshData(int element, CLAM::DescriptionDataPool & dataPool)
 		{
-			float value = mPool.GetReadPool<float>(mScope,mName)[element];
+			mElement = element;
+			std::cout << "Refreshing '" << mScope << ":" << mName << "' pos " << mElement << std::endl;
+			float value = dataPool.GetReadPool<float>(mScope,mName)[mElement];
 			mTable->setItem(mRow,1,
 				new RangeSelectionTableItem(mTable,
 					TableItem::WhenCurrent,
 					QString::number(value),mRange));
 		}
-		void updateData(int element)
+		void updateData(int element, CLAM::DescriptionDataPool & dataPool)
 		{
+			if (mElement==-1) return;
 			QString qValue = mTable->text(mRow, 1);
-			CLAM_ASSERT(mPool.GetNumberOfContexts(mScope)>element,"Fuera!!");
-			mPool.GetWritePool<float>(mScope,mName)[element] = qValue.toFloat();
+			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
+			dataPool.GetWritePool<float>(mScope,mName)[mElement] = qValue.toFloat();
 		}
 	private:
-		const Range<float> & mRange;
+		const Range<float> mRange;
 	};
 
 	class DescriptorsTableItemControllerInt : public DescriptorTablePlugin
 	{
 	public:
-		DescriptorsTableItemControllerInt(QTable * parent, unsigned row, const SchemaAttribute & scheme, CLAM::DescriptionDataPool & dataPool)
-			: DescriptorTablePlugin(parent, row, scheme, dataPool)
+		DescriptorsTableItemControllerInt(QTable * parent, unsigned row, const SchemaAttribute & scheme)
+			: DescriptorTablePlugin(parent, row, scheme)
 			, mRange(scheme.GetiRange())
 		{
 		}
-		void refreshData(int element)
+		void refreshData(int element, CLAM::DescriptionDataPool & dataPool)
 		{
-			int value = mPool.GetReadPool<int>(mScope,mName)[element];
+			mElement = element;
+			std::cout << "Refreshing '" << mScope << ":" << mName << "' pos " << mElement << std::endl;
+			int value = dataPool.GetReadPool<int>(mScope,mName)[mElement];
 			mTable->setItem(mRow,1,
 				new RangeSelectionTableItem(mTable,
 					TableItem::WhenCurrent,
 					QString::number(value),mRange));
 		}
-		void updateData(int element)
+		void updateData(int element, CLAM::DescriptionDataPool & dataPool)
 		{
+			if (mElement==-1) return;
 			QString qValue = mTable->text(mRow, 1);
-			CLAM_ASSERT(mPool.GetNumberOfContexts(mScope)>element,"Fuera!!");
-			mPool.GetWritePool<int>(mScope,mName)[element] = qValue.toInt();
+			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
+			dataPool.GetWritePool<int>(mScope,mName)[mElement] = qValue.toInt();
 		}
 	private:
-		const Range<int> & mRange;
+		const Range<int> mRange;
 	};
 
 
@@ -130,21 +148,20 @@ namespace CLAM_Annotator
 	DescriptorTablePlugin * createItemController(
 			QTable * parent, 
 			unsigned row, 
-			const SchemaAttribute & scheme, 
-			CLAM::DescriptionDataPool & dataPool)
+			const SchemaAttribute & scheme)
 	{
 		const std::string & type = scheme.GetType();
 
 		if (type == "String")
-			return new DescriptorsTableItemControllerString(parent,row,scheme,dataPool);
+			return new DescriptorsTableItemControllerString(parent,row,scheme);
 		if (type == "RestrictedString")
-			return new DescriptorsTableItemControllerEnum(parent,row,scheme,dataPool);
+			return new DescriptorsTableItemControllerEnum(parent,row,scheme);
 		if (type == "Float")
-			return new DescriptorsTableItemControllerFloat(parent,row,scheme,dataPool);
+			return new DescriptorsTableItemControllerFloat(parent,row,scheme);
 		if (type == "Int")
-			return new DescriptorsTableItemControllerInt(parent,row,scheme,dataPool);
+			return new DescriptorsTableItemControllerInt(parent,row,scheme);
 		return 0;
 	}
-		
+
 }
 
