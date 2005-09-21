@@ -15,6 +15,8 @@
 #include "Range.hxx"
 #include "TypePlugin.hxx"
 
+namespace CLAM { class DescriptionScheme; }
+
 namespace CLAM_Annotator{
 	
 	class SegmentationPolicy : public CLAM::Enum
@@ -91,6 +93,7 @@ namespace CLAM_Annotator{
 			CLAM_ASSERT(false, error.c_str());
 			return false;
 		}
+		void AddTo(CLAM::DescriptionScheme & scheme) const;
 
 		void StoreOn(CLAM::Storage & storage) const
 		{
