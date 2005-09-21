@@ -115,18 +115,7 @@ namespace CLAM_Annotator{
 		{
 			GetAttributes().push_back(attribute);
 		}
-		template <class T>
-		bool ValidateDescriptor(const std::string & scope, const std::string & name, const T * descriptor)
-		{
-			bool validated = true;
-			
-			validated = FindElement(scope, name).Validate(descriptor);
-			CLAM_DEBUG_ASSERT(validated,
-				std::string("Descriptor did not validate: " + scope + ":" + name).c_str());
-			return validated;
-		}
 
-		SchemaAttribute FindElement(const std::string & scope, const std::string& descriptorName) const;
 	};
 
 };
