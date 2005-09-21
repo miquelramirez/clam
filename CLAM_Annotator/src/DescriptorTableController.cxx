@@ -1,9 +1,7 @@
-#include "Project.hxx"
-#include "RangeSelectionTableItem.hxx"
 #include "DescriptorTableController.hxx"
-#include <qtable.h>
-#include "ComboTableItem.hxx"
+#include "Project.hxx"
 #include "DescriptorTablePlugin.hxx"
+#include <qtable.h>
 
 namespace CLAM_Annotator
 {
