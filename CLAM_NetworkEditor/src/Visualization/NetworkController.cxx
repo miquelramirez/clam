@@ -46,8 +46,6 @@ NetworkController::NetworkController()
 	mLoopCondition=false;
 	mPresentation=0;
 		
-	mPlayer=new CLAM::BlockingNetworkPlayer();
-	
 	SlotCreatePortConnection.Wrap( this, &NetworkController::CreatePortConnection );
 	SlotRemovePortConnection.Wrap( this, &NetworkController::RemovePortConnection );
 	
@@ -113,9 +111,6 @@ void NetworkController::ProcessingLoop()
 		ExecuteEvents();
 		GetNetworkPlayer().GetNetwork().Do();
 	}
-
-	
-
 }
 
 void NetworkController::ProcessingNameChanged( const std::string & newName, ProcessingController * controller )
@@ -140,6 +135,8 @@ void NetworkController::ProcessingNameChanged( const std::string & newName, Proc
 	// change key map in network
 	GetNetworkPlayer().GetNetwork().ChangeKeyMap( oldName, newName );
 	mPresentation->ChangeConnectionPresentationNames( oldName, newName );
+
+	GetNetworkPlayer().NotifyModification();
 }
 
 bool NetworkController::ChangeKeyMap( const std::string & oldName, const std::string & newName )
@@ -290,16 +287,9 @@ void NetworkController::SaveNetworkTo( const std::string & xmlfile)
 void NetworkController::RemoveProcessing(const std::string & name )
 {
 	if (mLoopCondition)
-	{
-		std::cout<<"\nLOOP\n";
-		CLAM_ASSERT (false, "KSDFKLSDLFJ");
 		mProcessingsToRemove.push_back( name );
-	}
 	else
-	{
-		std::cout<<"\nNO LOOP\n";
 		ExecuteRemoveProcessing( name );
-	}
 }
 
 void NetworkController::RemoveAllPortConnections( const std::string & name )
@@ -388,6 +378,8 @@ void NetworkController::ExecuteRemoveProcessing( const std::string & name )
 	mProcessingControllers.erase( name );
 	GetNetworkPlayer().GetNetwork().RemoveProcessing( name );
 	delete proc;
+
+	GetNetworkPlayer().NotifyModification();
 }
 
 
@@ -460,6 +452,8 @@ void NetworkController::AddProcessing2Remove( const std::string & name, CLAM::Pr
 	}
 	GetNetworkPlayer().GetNetwork().AddProcessing(id, proc);
 	mPresentation->CreateProcessingPresentation( id, CreateProcessingController(id, proc));
+
+	GetNetworkPlayer().NotifyModification();
 }
 
 std::string NetworkController::AddProcessing( const std::string &key )
@@ -467,6 +461,9 @@ std::string NetworkController::AddProcessing( const std::string &key )
 	std::string name = GetNetworkPlayer().GetNetwork().AddProcessing( key );
 	CLAM::Processing& proc = GetNetworkPlayer().GetNetwork().GetProcessing( name );
 	mPresentation->CreateProcessingPresentation( name, CreateProcessingController(name, &proc));
+	
+	GetNetworkPlayer().NotifyModification();
+	
 	return name;
 }
 

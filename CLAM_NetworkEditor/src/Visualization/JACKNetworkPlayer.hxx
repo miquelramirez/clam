@@ -19,8 +19,8 @@
 namespace CLAM
 {
 
-int JackLoopCallback (jack_nframes_t nframes, void *arg);
-void JackShutdownCallback (void *arg);
+int JackLoopCallback (jack_nframes_t, void *);
+void JackShutdownCallback (void *);
 
 typedef struct
 {
@@ -61,7 +61,7 @@ public:
 		CLAM::PushFlowControl * fc = new CLAM::PushFlowControl(mClamBufferSize);
 		GetNetwork().AddFlowControl( fc );
 
-		CLAM::XmlStorage::Restore(GetNetwork().networkFile);
+		CLAM::XmlStorage::Restore(GetNetwork(), networkFile);
 	
 		mJackOutPortAutoConnectList=portlist.front();
 		portlist.pop_front();
@@ -123,8 +123,8 @@ public:
 
 	void RegisterPorts()
 	{
-		RegisterInputPorts( GetNetwork().);
-		RegisterOutputPorts( GetNetwork().);
+		RegisterInputPorts( GetNetwork() );
+		RegisterOutputPorts( GetNetwork() );
 		mModified=false;
 	}
 	
@@ -299,7 +299,7 @@ public:
 	
 	CLAM::Network & Network()
 	{
-		return mNetwork;
+		return *mNetwork;
 	}
 	
 	void AutoConnectPorts()
@@ -368,13 +368,13 @@ public:
 		free(portnames);
 	}
 
-	void SetNetwork (Network& net)
+	void SetNetwork (CLAM::Network& net)
 	{
 		mNetwork=&net;
 		NotifyModification();
 	}
 
-	Network& GetNetwork()
+	CLAM::Network& GetNetwork()
 	{
 		CLAM_ASSERT( (mNetwork!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
 		return *mNetwork;
@@ -388,17 +388,17 @@ public:
 };
 
 //JACK CODE
-int JackLoopCallback (jack_nframes_t nframes, void *arg)
+inline int JackLoopCallback (jack_nframes_t nframes, void *arg)
 {
-	JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
+	CLAM::JACKNetworkPlayer* player=(CLAM::JACKNetworkPlayer*)arg;
 	player->Do(nframes);
 
 	return 0;
 }
 
-void JackShutdownCallback (void *arg)
+inline void JackShutdownCallback (void *arg)
 {
-	JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
+	CLAM::JACKNetworkPlayer* player=(CLAM::JACKNetworkPlayer*)arg;
 	delete player;
 }
 
