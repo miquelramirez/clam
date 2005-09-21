@@ -7,15 +7,14 @@
 #include "Text.hxx"
 #include "Enum.hxx"
 
-#include "Pool.hxx"
 #include "Assert.hxx"
 
 #include "AnnotatorDescriptor.hxx"
 #include "RestrictedString.hxx"
 #include "Range.hxx"
-#include "TypePlugin.hxx"
 
 namespace CLAM { class DescriptionScheme; }
+namespace CLAM { class DescriptionDataPool; }
 
 namespace CLAM_Annotator{
 	
