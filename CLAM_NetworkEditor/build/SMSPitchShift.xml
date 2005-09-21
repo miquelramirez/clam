@@ -25,6 +25,7 @@
       <TextualDescriptors/>
     </SourceFile>
     <SelectedChannel>0</SelectedChannel>
+    <Loop>true</Loop>
   </processing>
 
   <processing id="OutControlSender_1" type="OutControlSender">
