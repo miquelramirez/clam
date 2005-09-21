@@ -26,11 +26,13 @@
 #endif
 
 #include "NetworkController.hxx"
+#include "BlockingNetworkPlayer.hxx"
+#include "JACKNetworkPlayer.hxx"
 #include "PushFlowControl.hxx"
 #include "BasicFlowControl.hxx"
 #include <string>
 
-#include "AudioManager.hxx"
+//#include "AudioManager.hxx"
 
 #include "MIDIManager.hxx"
 
@@ -57,7 +59,7 @@ int main( int argc, char **argv )
 	XInitThreads();
 #endif
 
-	CLAM::AudioManager audioManager( 44100, 1024 ); //was 44100, 512
+	//CLAM::AudioManager audioManager( 44100, 1024 ); //was 44100, 512
 
 	CLAM::MIDIManager midiManager;
 	
@@ -73,6 +75,9 @@ int main( int argc, char **argv )
 	ConfigureNetwork(net);
 
 	CLAMVM::NetworkController controller;
+	CLAM::JACKNetworkPlayer player;
+
+	controller.SetNetworkPlayer(player);
 	controller.BindTo(net);
 
 	QApplication app( argc, argv );
