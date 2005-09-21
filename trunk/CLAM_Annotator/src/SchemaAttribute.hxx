@@ -81,17 +81,15 @@ namespace CLAM_Annotator{
 		bool Validate (const CLAM::DescriptionDataPool & pool) const
 		{
 			Holder<TypePlugin> h(TypePlugin::Create(*this));
-			// TODO: Chekc also when scope size is > 1
-			if (h.t)
-				return h.t->ValidateData(pool);
+
+			// TODO: Check also when scope size is > 1
+			if (h.t) return h.t->ValidateData(pool);
 
 			const std::string & type = GetType();
-			if (type=="Segmentation")
-				return true;
-
 			std::string error = "Validating an unrecognized type: ";
 			error += type;
 			CLAM_ASSERT(false, error.c_str());
+			return false;
 		}
 
 		void StoreOn(CLAM::Storage & storage) const
