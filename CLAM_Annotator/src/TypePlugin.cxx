@@ -2,6 +2,7 @@
 #include "Pool.hxx"
 #include "SchemaAttribute.hxx"
 #include "RestrictedString.hxx"
+#include "IndexArray.hxx"
 
 
 namespace CLAM_Annotator
@@ -97,6 +98,24 @@ public:
 	}
 };
 
+class SegmentationTypePlugin : public TypePlugin
+{
+public:
+	SegmentationTypePlugin(const SchemaAttribute & scheme)
+		: TypePlugin(scheme)
+	{
+	}
+
+	bool ValidateData(const CLAM::DescriptionDataPool & dataPool)
+	{
+		const CLAM::IndexArray * values =
+			dataPool.GetReadPool<CLAM::IndexArray>(
+					mSchema.GetScope(),
+					mSchema.GetName());
+		return true;
+	}
+};
+
 TypePlugin * TypePlugin::Create(const SchemaAttribute & scheme)
 {
 	const std::string & type = scheme.GetType();
@@ -108,6 +127,8 @@ TypePlugin * TypePlugin::Create(const SchemaAttribute & scheme)
 		return new IntTypePlugin(scheme);
 	if (type=="String")
 		return new StringTypePlugin(scheme);
+	if (type=="Segmentation")
+		return new SegmentationTypePlugin(scheme);
 	return 0;
 }
 
