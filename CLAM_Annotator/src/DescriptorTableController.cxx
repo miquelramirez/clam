@@ -45,11 +45,6 @@ namespace CLAM_Annotator
 		std::list<SchemaAttribute>::iterator attribute = attributes.begin();
 		for(unsigned row = 0 ; attribute != attributes.end(); attribute++)
 		{
-			std::cout << "Adding Descriptors table attribute '" 
-				<< attribute->GetScope() << "::"
-				<< attribute->GetName() << "' type '"
-				<< attribute->GetType() << "'"
-				<< std::endl;
 			DescriptorTablePlugin * itemController 
 				= createItemController(mTable, row, *attribute);
 			if (!itemController) continue; // No plugin available for that type
