@@ -80,18 +80,8 @@ namespace CLAM_Annotator{
 			}
 			T* t;
 		};
-		bool Validate (const CLAM::DescriptionDataPool & pool) const
-		{
-			Holder<TypePlugin> h(TypePlugin::Create(*this));
 
-			// TODO: Check also when scope size is > 1
-			if (h.t) return h.t->ValidateData(pool);
-
-			std::string error = "Validating an unrecognized type: ";
-			error += GetType();
-			CLAM_ASSERT(false, error.c_str());
-			return false;
-		}
+		bool Validate(const CLAM::DescriptionDataPool & pool) const;
 		void AddTo(CLAM::DescriptionScheme & scheme) const;
 
 		void StoreOn(CLAM::Storage & storage) const

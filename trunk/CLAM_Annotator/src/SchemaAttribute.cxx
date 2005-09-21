@@ -6,7 +6,13 @@
 
 namespace CLAM_Annotator{
 
-	/**************** SchemaAttribute **************/
+	void SchemaAttribute::DefaultInit()
+	{
+		AddName();
+		AddScope();
+		AddType();
+		UpdateData();
+	}
 
 	void SchemaAttribute::AddTo(CLAM::DescriptionScheme & scheme) const
 	{
@@ -22,12 +28,17 @@ namespace CLAM_Annotator{
 		CLAM_ASSERT(false, error.c_str());
 	}
 
-	void SchemaAttribute::DefaultInit()
+	bool SchemaAttribute::Validate(const CLAM::DescriptionDataPool & pool) const
 	{
-		AddName();
-		AddScope();
-		AddType();
-		UpdateData();
+		Holder<TypePlugin> h(TypePlugin::Create(*this));
+
+		// TODO: Check also when scope size is > 1
+		if (h.t) return h.t->ValidateData(pool);
+
+		std::string error = "Validating an unrecognized type: ";
+		error += GetType();
+		CLAM_ASSERT(false, error.c_str());
+		return false;
 	}
 
 
