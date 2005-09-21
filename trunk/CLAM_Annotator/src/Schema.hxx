@@ -114,6 +114,7 @@ namespace CLAM_Annotator{
 		void AddAttribute(SchemaAttribute & attribute)
 		{
 			GetAttributes().push_back(attribute);
+			GetAttributes().back().UpdateTypePlugin();
 		}
 
 	};
