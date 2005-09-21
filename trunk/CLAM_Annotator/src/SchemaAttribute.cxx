@@ -10,29 +10,16 @@ namespace CLAM_Annotator{
 
 	void SchemaAttribute::AddTo(CLAM::DescriptionScheme & scheme) const
 	{
-		const std::string & type = GetType();
-		const std::string & name = GetName();
-		const std::string & scope = GetScope();
-		if (type=="Float")
+		Holder<TypePlugin> h(TypePlugin::Create(*this));
+		if (h.t)
 		{
-			scheme.AddAttribute <float>(scope,name);
+			h.t->AddTo(scheme);
+			return;
 		}
-		else if (type=="Int")
-		{
-			scheme.AddAttribute <int>(scope,name);
-		}
-		else if (type=="RestrictedString")
-		{
-			scheme.AddAttribute <CLAM_Annotator::RestrictedString>(scope,name);
-		}
-		else if (type=="String")
-		{
-			scheme.AddAttribute <CLAM::Text>(scope,name);
-		}
-		else if (type=="Segmentation")
-		{
-			scheme.AddAttribute<CLAM::IndexArray>(scope,name);
-		}
+
+		std::string error = "Adding an unrecognized type: ";
+		error += GetType();
+		CLAM_ASSERT(false, error.c_str());
 	}
 
 	void SchemaAttribute::DefaultInit()

@@ -14,7 +14,7 @@ namespace CLAM_Annotator
 	public:
 		TypePlugin(const SchemaAttribute & scheme);
 		virtual ~TypePlugin();
-//		virtual void AddTo(CLAM::DescriptionScheme & scheme) = 0;
+		virtual void AddTo(CLAM::DescriptionScheme & scheme) = 0;
 		virtual bool ValidateData(const CLAM::DescriptionDataPool & dataPool) = 0;
 		static TypePlugin * Create(const SchemaAttribute & scheme);
 	protected:

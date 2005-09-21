@@ -25,6 +25,11 @@ public:
 	{
 	}
 
+	void AddTo(CLAM::DescriptionScheme & scheme)
+	{
+		scheme.AddAttribute<float>(mSchema.GetScope(),mSchema.GetName());
+	}
+
 	bool ValidateData(const CLAM::DescriptionDataPool & dataPool)
 	{
 		const float * values =
@@ -44,6 +49,11 @@ public:
 	IntTypePlugin(const SchemaAttribute & scheme)
 		: TypePlugin(scheme)
 	{
+	}
+
+	void AddTo(CLAM::DescriptionScheme & scheme)
+	{
+		scheme.AddAttribute<int>(mSchema.GetScope(),mSchema.GetName());
 	}
 
 	bool ValidateData(const CLAM::DescriptionDataPool & dataPool)
@@ -67,6 +77,11 @@ public:
 	{
 	}
 
+	void AddTo(CLAM::DescriptionScheme & scheme)
+	{
+		scheme.AddAttribute<RestrictedString>(mSchema.GetScope(),mSchema.GetName());
+	}
+
 	bool ValidateData(const CLAM::DescriptionDataPool & dataPool)
 	{
 		const RestrictedString * values =
@@ -88,6 +103,11 @@ public:
 	{
 	}
 
+	void AddTo(CLAM::DescriptionScheme & scheme)
+	{
+		scheme.AddAttribute<CLAM::Text>(mSchema.GetScope(),mSchema.GetName());
+	}
+
 	bool ValidateData(const CLAM::DescriptionDataPool & dataPool)
 	{
 		const CLAM::Text * values =
@@ -104,6 +124,11 @@ public:
 	SegmentationTypePlugin(const SchemaAttribute & scheme)
 		: TypePlugin(scheme)
 	{
+	}
+
+	void AddTo(CLAM::DescriptionScheme & scheme)
+	{
+		scheme.AddAttribute<CLAM::IndexArray>(mSchema.GetScope(),mSchema.GetName());
 	}
 
 	bool ValidateData(const CLAM::DescriptionDataPool & dataPool)

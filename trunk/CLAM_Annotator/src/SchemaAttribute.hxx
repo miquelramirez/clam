@@ -87,9 +87,8 @@ namespace CLAM_Annotator{
 			// TODO: Check also when scope size is > 1
 			if (h.t) return h.t->ValidateData(pool);
 
-			const std::string & type = GetType();
 			std::string error = "Validating an unrecognized type: ";
-			error += type;
+			error += GetType();
 			CLAM_ASSERT(false, error.c_str());
 			return false;
 		}
