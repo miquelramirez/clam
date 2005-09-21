@@ -47,6 +47,7 @@
 #endif
 
 #include "BlockingNetworkPlayer.hxx"
+#include "JACKNetworkPlayer.hxx"
 
 namespace CLAM
 {
@@ -97,6 +98,7 @@ namespace CLAMVM
 		void StartThread();
 		void StopThread();
 		void ChangeOSCState( bool);
+		bool IsLooping() { return mLoopCondition; }
 		
 		/** When a connection is removed from GUI, this method is called. 
 		 * It leaves the event in a list to execute if the audio thread is running, 
@@ -115,6 +117,10 @@ namespace CLAMVM
 		
 		void LoadNetworkFrom( const std::string & );
 		void SaveNetworkTo( const std::string & );
+		void SetNetworkPlayer( CLAM::JACKNetworkPlayer& player)
+		{
+			mPlayer=&player;
+		}
 
 		
 	private:		
@@ -138,11 +144,10 @@ namespace CLAMVM
 
 		ProcessingsList mProcessingsToRemove;
 
-		CLAM::Network* mNetwork;
-		CLAM::BlockingNetworkPlayer *mPlayer;
+		CLAM::JACKNetworkPlayer *mPlayer;
 		ProcessingControllersMap mProcessingControllers;
-
-		CLAM::BlockingNetworkPlayer& GetNetworkPlayer()
+		
+		CLAM::JACKNetworkPlayer& GetNetworkPlayer()
 		{
 			CLAM_ASSERT ( mPlayer!=NULL, "NetworkController::GetNetworkPlayer() : object has no NetworkPlayer");
 			return *mPlayer;
