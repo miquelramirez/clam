@@ -39,6 +39,7 @@ namespace CLAM
 	
 	Network::~Network()
 	{
+		std::cerr <<" *\t\t\t~NETWORK"<<std::endl;
 		Clear();
 		if (mFlowControl) delete mFlowControl;
 	}
@@ -462,7 +463,10 @@ namespace CLAM
 		Stop();
 		
 		while( !mProcessings.empty() )
+		{
+			std::cerr << "REMOVING <"<<mProcessings.begin()->first<<">"<<std::endl;
 			RemoveProcessing( mProcessings.begin()->first );
+		}
 	}
 
 	Network::ProcessingsMap::iterator Network::BeginProcessings()

@@ -34,9 +34,6 @@ namespace CLAM
 	OSCEnabledNetwork::OSCEnabledNetwork(const int port)
 		: mListenerPort(NULL)
 	{
-		// The constructor call is not needed as it is automatically summoned
-		//Network::Network();
-		
 		//Rename the network, as it's OSC enabled!
 		SetName("Unnamed OSCEnabledNetwork");
 		
@@ -49,6 +46,9 @@ namespace CLAM
 	
 	void OSCEnabledNetwork::StartListeningOSC()
 	{
+		if (IsListeningOSC())
+			return;
+		
 		InitializeNetworking();
 		mListenerPort = new UdpPacketListenerPort( GetPort(), &mListener );
 		mListeningOSC=true;
@@ -56,8 +56,12 @@ namespace CLAM
 	
 	void OSCEnabledNetwork::StopListeningOSC()
 	{
+		if ( !IsListeningOSC() )
+			return;
+		
 		if (mListenerPort != NULL)
 			delete mListenerPort;
+
 		TerminateNetworking();
 		mListeningOSC=false;
 	}

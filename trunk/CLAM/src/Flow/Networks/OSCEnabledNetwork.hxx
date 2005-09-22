@@ -81,6 +81,11 @@ namespace CLAM
 		{
 			mPort=p;
 		}
+		virtual ~OSCEnabledNetwork()
+		{
+			std::cerr <<" *\t\t\t~OSCENABLEDNETWORK"<<std::endl;
+			StopListeningOSC();
+		}
 		
 		virtual const bool IsListeningOSC() const { return mListeningOSC; }
 
