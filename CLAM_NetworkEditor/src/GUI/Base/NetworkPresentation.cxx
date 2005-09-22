@@ -124,8 +124,12 @@ void NetworkPresentation::UpdatePresentations()
 
 void NetworkPresentation::RemoveProcessing( ProcessingPresentation * proc)
 {
-	mProcessingPresentationsToRemove.push_back(proc);
-	GetNetworkController().RemoveProcessing( proc->GetName() ); 
+	//WARNING: now it is forbidden to delete network components while being on execution mode (loop)
+	if ( !GetNetworkController().IsLooping() )
+	{
+		mProcessingPresentationsToRemove.push_back(proc);
+		GetNetworkController().RemoveProcessing( proc->GetName() ); 
+	}
 }
 
 void NetworkPresentation::RebuildProcessingPresentationAttachedTo( const std::string & name, CLAMVM::ProcessingController * controller )
@@ -154,6 +158,8 @@ NetworkPresentation::~NetworkPresentation()
 	ProcessingPresentationIterator it;
 	for(it=mProcessingPresentations.begin(); it!=mProcessingPresentations.end(); it++)
 		delete *it;
+
+	delete mNetworkController;
 }
 
 void NetworkPresentation::AttachToNetworkController(CLAMVM::NetworkController & controller)
