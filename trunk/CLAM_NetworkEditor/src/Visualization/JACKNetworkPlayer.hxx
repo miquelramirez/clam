@@ -237,6 +237,9 @@ public:
 
 	void Do(const jack_nframes_t nframes)
 	{
+		if (mStopped)
+			return;
+
 		CopyJackBuffersToGenerators(nframes);
 		
 		for (int stepcount=0; stepcount < (int(nframes)/int(mClamBufferSize)); stepcount++)
@@ -251,13 +254,15 @@ public:
 		if (!mStopped) 
 			return;
 		
+		mStopped=false;
+		
 		if (mModified)
 		{
 			UnRegisterPorts();
 			RegisterPorts();
 		}
 		
-		GetNetwork().ReconfigureAllProcessings();
+		//GetNetwork().ReconfigureAllProcessings();
 		GetNetwork().Start();
 
 		//JACK CODE (the init order of network, ... should be decided)
@@ -274,6 +279,8 @@ public:
 	{
 		if (mStopped)
 			return;
+		
+		mStopped=true;
 		
 		//JACK CODE (the init order of network, ... should be decided)
 		if ( jack_deactivate (mJackClient) )
@@ -378,12 +385,6 @@ public:
 	{
 		CLAM_ASSERT( (mNetwork!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
 		return *mNetwork;
-	}
-
-	void Clear()
-	{
-		GetNetwork().Clear();
-		NotifyModification();
 	}
 };
 
