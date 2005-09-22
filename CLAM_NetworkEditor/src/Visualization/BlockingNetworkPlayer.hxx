@@ -5,7 +5,6 @@
 #include <iostream>
 #include <string>
 #include "NetworkPlayer.hxx"
-#include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "XMLStorage.hxx"
 #include "Thread.hxx"
@@ -19,6 +18,7 @@ class BlockingNetworkPlayer : public NetworkPlayer
 private:
 	CLAM::AudioManager mAudioManager;
 	CLAM::Thread mThread;
+
 	
 public:
 	//Called by the prototyper
@@ -81,13 +81,13 @@ public:
 		GetNetwork().Stop();
 	}
 
-	virtual void Clear()
-	{
-		std::cerr << " *\t\tBLOCKINGNETWORKPLAYER::CLEAR"<<std::endl;
-		Stop();
-		GetNetwork().Clear();
-		NotifyModification();
-	}
+	//virtual void Clear()
+	//{
+	//	std::cerr << " *\t\tBLOCKINGNETWORKPLAYER::CLEAR"<<std::endl;
+	//	Stop();
+	//	GetNetwork().Clear();
+	//	NotifyModification();
+	//}
 
 };
 
