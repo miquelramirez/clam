@@ -4,16 +4,13 @@
 
 #include <iostream>
 #include <string>
-#include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "XMLStorage.hxx"
+#include "NetworkPlayer.hxx"
 
 #include "ExternGenerator.hxx"
 #include "ExternSink.hxx"
 
-#include "BasicFlowControl.hxx"
-
-////////JACK CODE
 #include <jack/jack.h>
 
 namespace CLAM
@@ -39,12 +36,12 @@ typedef struct
 typedef std::vector<JACKOutPortCouple> JACKOutPortList;
 typedef std::vector<JACKInPortCouple> JACKInPortList;
 
-class JACKNetworkPlayer
+class JACKNetworkPlayer : public NetworkPlayer
 {
 	CLAM::Network *mNetwork;	
 
 	int mJackSampleRate, mJackBufferSize, mClamBufferSize;
-	bool mModified, mAutoConnect, mStopped;
+	bool mAutoConnect;
 
 	JACKOutPortList mReceiverList;
 	JACKInPortList mSenderList;
@@ -116,16 +113,11 @@ public:
 	}
 
 	
-	void NotifyModification()
-	{
-		mModified=true;	
-	}
-
 	void RegisterPorts()
 	{
 		RegisterInputPorts( GetNetwork() );
 		RegisterOutputPorts( GetNetwork() );
-		mModified=false;
+		SetModified(false);
 	}
 	
 	void RegisterInputPorts(const CLAM::Network& net)
@@ -237,7 +229,7 @@ public:
 
 	void Do(const jack_nframes_t nframes)
 	{
-		if (mStopped)
+		if (IsStopped())
 			return;
 
 		CopyJackBuffersToGenerators(nframes);
@@ -249,14 +241,14 @@ public:
 	}
 
 	
-	void Start()
+	virtual void Start()
 	{
-		if (!mStopped) 
+		if (!IsStopped()) 
 			return;
 		
-		mStopped=false;
+		SetStopped(false);
 		
-		if (mModified)
+		if (IsModified())
 		{
 			UnRegisterPorts();
 			RegisterPorts();
@@ -275,12 +267,12 @@ public:
 			AutoConnectPorts();
 	}
 	
-	void Stop()
+	virtual void Stop()
 	{
-		if (mStopped)
+		if (IsStopped())
 			return;
 		
-		mStopped=true;
+		SetStopped(true);
 		
 		//JACK CODE (the init order of network, ... should be decided)
 		if ( jack_deactivate (mJackClient) )
@@ -292,7 +284,7 @@ public:
 		GetNetwork().Stop();
 	}
 	
-	~JACKNetworkPlayer()
+	virtual ~JACKNetworkPlayer()
 	{
 		Stop();
 		
@@ -302,11 +294,6 @@ public:
 			std::cerr << "JACK ERROR: cannot close client" << std::endl;
 			exit(1);
 		}
-	}
-	
-	CLAM::Network & Network()
-	{
-		return *mNetwork;
 	}
 	
 	void AutoConnectPorts()
@@ -375,17 +362,6 @@ public:
 		free(portnames);
 	}
 
-	void SetNetwork (CLAM::Network& net)
-	{
-		mNetwork=&net;
-		NotifyModification();
-	}
-
-	CLAM::Network& GetNetwork()
-	{
-		CLAM_ASSERT( (mNetwork!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
-		return *mNetwork;
-	}
 };
 
 //JACK CODE
