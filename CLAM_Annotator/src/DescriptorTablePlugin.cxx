@@ -3,6 +3,7 @@
 #include <qtable.h>
 #include "ComboTableItem.hxx"
 #include "RangeSelectionTableItem.hxx"
+#include "Pool.hxx"
 
 namespace CLAM_Annotator
 {
