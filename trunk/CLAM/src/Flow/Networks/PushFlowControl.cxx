@@ -62,12 +62,13 @@ void PushFlowControl::Do()
 		toDo.pop_front();
 
 		if(next->CanConsumeAndProduce())
-		{
+		{			
 			next->Do();
+			//std::cerr << "Consume "<<next->GetClassName() << std::endl;
 		}
 		else
 		{
-		  //std::cerr << "\n-"<<next->GetClassName();
+			//std::cerr << "Can't consume "<<next->GetClassName() << std::endl;
 		}
 		AddNewPossibleProcessingsToDo(next, toDo);
 	}
