@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include "NetworkPlayer.hxx"
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "XMLStorage.hxx"
@@ -13,89 +14,79 @@
 namespace CLAM
 {
 
-class BlockingNetworkPlayer
+class BlockingNetworkPlayer : public NetworkPlayer
 {
 private:
 	CLAM::AudioManager mAudioManager;
-	CLAM::Network *mNetwork;
 	CLAM::Thread mThread;
-	bool mStopped, mModified;
 	
 public:
 	//Called by the prototyper
 	BlockingNetworkPlayer(const std::string & networkFile)
-		: mAudioManager( 44100, 512 )
+		: NetworkPlayer()
+		, mAudioManager( 44100, 512 )
 		, mThread(/*realtime*/true)
-		, mStopped(true)
-
 	{
-		mNetwork->AddFlowControl( new CLAM::PushFlowControl( /*frameSize*/ 512 ));
-		CLAM::XmlStorage::Restore(*mNetwork,networkFile);
+		mAudioManager.Start();
+		GetNetwork().AddFlowControl( new CLAM::PushFlowControl( /*frameSize*/ 512 ));
+		CLAM::XmlStorage::Restore( GetNetwork() ,networkFile);
 		mThread.SetThreadCode( makeMemberFunctor0( *this, BlockingNetworkPlayer, Do ) );
 		mThread.SetupPriorityPolicy();
-		
 	}
 
 	//Called by NetworController
 	BlockingNetworkPlayer()
-		: mAudioManager( 44100, 512 )
+		: NetworkPlayer()
+		, mAudioManager( 44100, 512 )
 		, mThread(/*realtime*/true)
-		, mStopped(true)
 	{
-		mNetwork=NULL;
+		mAudioManager.Start();
 		mThread.SetThreadCode( makeMemberFunctor0( *this, BlockingNetworkPlayer, Do ) );
 		mThread.SetupPriorityPolicy();		
 	}
 	
-	void Start()
-	{
-		if (!mStopped)
+	virtual void Start()
+	{				
+		if ( !IsStopped() )
 			return;
 		
-		mStopped=false;
-		mNetwork->ReconfigureAllProcessings();		
-		mNetwork->Start();
+		SetStopped(false);
+		GetNetwork().ReconfigureAllProcessings();		
+		GetNetwork().Start();
 		mThread.Start();
 	}
+	
 	void Do()
 	{
-		while (!mStopped)
+		while ( !IsStopped() )
 		{
-			mNetwork->Do();
+			GetNetwork().Do();
 		}
 	}
-	void Stop()
-	{
-		if (mStopped)
-			return;
 
-		mStopped=true;
-		mThread.Stop();
-		mNetwork->Stop();
-	}
-	~BlockingNetworkPlayer()
+	virtual ~BlockingNetworkPlayer()
 	{
+		std::cerr << " *\t\t~BLOCKINGNETWORKPLAYER"<<std::endl;
 		Stop();
 	}
+	
+	virtual void Stop()
+	{
+		std::cerr << " *\t\tBLOCKINGNETWORKPLAYER::STOP"<<std::endl;
+		if ( IsStopped() )
+			return;
 
-	void SetNetwork (Network& net)
-	{
-		mNetwork=&net;
+		SetStopped(true);
+		mThread.Stop();
+		GetNetwork().Stop();
 	}
-	
-	Network& GetNetwork()
+
+	virtual void Clear()
 	{
-		CLAM_ASSERT( (mNetwork!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
-		return *mNetwork;
-	}
-	void Clear()
-	{
+		std::cerr << " *\t\tBLOCKINGNETWORKPLAYER::CLEAR"<<std::endl;
+		Stop();
 		GetNetwork().Clear();
-	}
-	
-	void NotifyModification()
-	{
-		mModified=true;	
+		NotifyModification();
 	}
 
 };
