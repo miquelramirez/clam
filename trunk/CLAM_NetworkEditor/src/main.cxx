@@ -27,7 +27,7 @@
 
 #include "NetworkController.hxx"
 #include "BlockingNetworkPlayer.hxx"
-#include "JACKNetworkPlayer.hxx"
+//#include "JACKNetworkPlayer.hxx"
 #include "PushFlowControl.hxx"
 #include "BasicFlowControl.hxx"
 #include <string>
@@ -48,9 +48,8 @@
 
 void ConfigureNetwork(CLAM::Network & net)
 {	
-	int frameSize = 1024; // was 512
+	int frameSize = 512;
 	net.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
-
 }
 
 int main( int argc, char **argv )
@@ -59,32 +58,32 @@ int main( int argc, char **argv )
 	XInitThreads();
 #endif
 
-	//CLAM::AudioManager audioManager( 44100, 1024 ); //was 44100, 512
-
 	CLAM::MIDIManager midiManager;
 	
 	srand(time(NULL)); // gui stuff
 
 #if USE_OSCPACK
-	CLAM::OSCEnabledNetwork net;
-	net.SetName("CLAM OSCEnabledNetwork");
+	CLAM::OSCEnabledNetwork* net=new CLAM::OSCEnabledNetwork();
+	net->SetName("CLAM OSCEnabledNetwork");
 #else
-	CLAM::Network net;
-	net.SetName("CLAM Network");
+	CLAM::Network* net=new CLAM::Network();
+	net->SetName("CLAM Network");
 #endif
-	ConfigureNetwork(net);
+	ConfigureNetwork(*net);
 
-	CLAMVM::NetworkController controller;
-	CLAM::JACKNetworkPlayer player;
+	CLAMVM::NetworkController* controller=new CLAMVM::NetworkController();
+	CLAM::BlockingNetworkPlayer *player=new CLAM::BlockingNetworkPlayer();
 
-	controller.SetNetworkPlayer(player);
-	controller.BindTo(net);
+	controller->SetNetworkPlayer(*player);
+	controller->BindTo(*net);
+//	if (argc==2)
+//		controller.LoadNetworkFrom(argv[1]);
 
 	QApplication app( argc, argv );
 	app.setFont(QFont("Verdana", 9));
 	NetworkGUI::MainWindow mw;
 	
-	mw.GetNetworkPresentation().AttachToNetworkController(controller);
+	mw.GetNetworkPresentation().AttachToNetworkController(*controller);
 	app.setMainWidget(&mw);
 	mw.show();
 	app.connect( &app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()) );
