@@ -27,20 +27,18 @@
 
 #include "NetworkController.hxx"
 #include "BlockingNetworkPlayer.hxx"
-//#include "JACKNetworkPlayer.hxx"
+#include "JACKNetworkPlayer.hxx"
 #include "PushFlowControl.hxx"
 #include "BasicFlowControl.hxx"
 #include <string>
-
-//#include "AudioManager.hxx"
-
-#include "MIDIManager.hxx"
 
 #include <qapplication.h>
 
 #include <cmath>
 #include <ctime>
 #include "MainWindow.hxx"
+
+#include "MIDIManager.hxx"
 
 #ifdef Q_WS_X11
 #include <X11/Xlib.h>
@@ -59,8 +57,8 @@ int main( int argc, char **argv )
 #endif
 
 	CLAM::MIDIManager midiManager;
-	
 	srand(time(NULL)); // gui stuff
+
 
 #if USE_OSCPACK
 	CLAM::OSCEnabledNetwork* net=new CLAM::OSCEnabledNetwork();
@@ -72,13 +70,72 @@ int main( int argc, char **argv )
 	ConfigureNetwork(*net);
 
 	CLAMVM::NetworkController* controller=new CLAMVM::NetworkController();
-	CLAM::BlockingNetworkPlayer *player=new CLAM::BlockingNetworkPlayer();
+	CLAM::NetworkPlayer *player=new CLAM::JACKNetworkPlayer();
 
 	controller->SetNetworkPlayer(*player);
 	controller->BindTo(*net);
-//	if (argc==2)
-//		controller.LoadNetworkFrom(argv[1]);
 
+	/*std::string opt;
+	
+	//TODO add a real parameter checking. Now it is rubbish.
+	switch(argc)
+	{
+		//No parameter
+		case 1:
+			player=new CLAM::BlockingNetworkPlayer();
+			break;
+			
+		//Network file specified
+		case 2:
+			opt=argv[1];
+			if (opt==std::string("--help"))
+			{
+				std::cout << "\nUsage: " << argv[0] << " [ <NetworkFile> ] [ -c jack | portaudio ]\n"<< std::endl;
+				return 0;
+			}
+			controller->LoadNetworkFrom(argv[1]);
+			break;
+			
+		//Connect-to specified
+		case 3:
+			opt=argv[2];
+			if ( opt==std::string("jack"))
+			{
+				//player=new CLAM::JACKNetworkPlayer();
+				std::cout << "\nJACK Option still not available" << std::endl;
+			}
+			else if ( opt==std::string("portaudio"))
+			{
+				//player=new CLAM::PANetworkPlayer();
+				std::cout << "\nPA Option still not available" << std::endl;
+				return 0;
+			}
+			break;
+			
+		//Network and connect-to specified
+		case 4:	
+			controller->LoadNetworkFrom(argv[1]);
+		
+			opt=argv[3];
+			if ( opt==std::string("jack"))
+			{
+				//player=new CLAM::JACKNetworkPlayer();
+				std::cout << "\nJACK Option still not available" << std::endl;
+			}
+			else if ( opt==std::string("portaudio"))
+			{
+				//player=new CLAM::PANetworkPlayer();
+				std::cout << "\nPA Option still not available" << std::endl;
+				return 0;
+			}
+			break;
+			
+		default:
+			std::cout << "\nUsage: " << argv[0] << " [ <NetworkFile> ] [ -c jack | portaudio ]\n"<< std::endl;
+			return 0;
+			break;
+	}*/
+	
 	QApplication app( argc, argv );
 	app.setFont(QFont("Verdana", 9));
 	NetworkGUI::MainWindow mw;
