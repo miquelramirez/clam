@@ -269,7 +269,9 @@ void NetworkController::LoadNetworkFrom( const std::string & xmlfile)
 	mPresentation->Clear();
 	CLAM::XMLStorage storage;
 	storage.Restore( GetNetworkPlayer().GetNetwork(), xmlfile );
-
+	//TODO: caution with this line!!
+	//GetNetworkPlayer().GetNetwork().AddFlowControl( new CLAM::PushFlowControl() );
+	
 	BindTo( GetNetworkPlayer().GetNetwork() );
 
 	mPresentation->SetUpWidgetsPositions( BaseName(xmlfile) );
@@ -437,7 +439,9 @@ void NetworkController::ExecuteRemoveControlConnection( const std::string & out 
 
 NetworkController::~NetworkController()
 {
+	std::cerr << " *~NETWORKCONTROLLER"<<std::endl;
 	Clear();
+	delete mPlayer;
 }
 
 void NetworkController::AddProcessing2Remove( const std::string & name, CLAM::Processing * proc )
@@ -542,6 +546,7 @@ bool NetworkController::Update()
 void NetworkController::Clear()
 {
 	StopThread();
+	std::cerr << " *NETWORKCONTROLLER::CLEAR"<<std::endl;
 	ProcessingControllersMap::iterator it;
 	for(it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++)
 		delete it->second;
