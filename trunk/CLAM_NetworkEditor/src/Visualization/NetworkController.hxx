@@ -46,8 +46,7 @@
 #include "Network.hxx"
 #endif
 
-#include "BlockingNetworkPlayer.hxx"
-//#include "JACKNetworkPlayer.hxx"
+#include "NetworkPlayer.hxx"
 
 namespace CLAM
 {
@@ -117,7 +116,7 @@ namespace CLAMVM
 		
 		void LoadNetworkFrom( const std::string & );
 		void SaveNetworkTo( const std::string & );
-		void SetNetworkPlayer( CLAM::BlockingNetworkPlayer& player)
+		void SetNetworkPlayer( CLAM::NetworkPlayer& player)
 		{
 			mPlayer=&player;
 		}
@@ -144,10 +143,10 @@ namespace CLAMVM
 
 		ProcessingsList mProcessingsToRemove;
 
-		CLAM::BlockingNetworkPlayer *mPlayer;
+		CLAM::NetworkPlayer *mPlayer;
 		ProcessingControllersMap mProcessingControllers;
 		
-		CLAM::BlockingNetworkPlayer& GetNetworkPlayer()
+		CLAM::NetworkPlayer& GetNetworkPlayer()
 		{
 			CLAM_ASSERT ( mPlayer!=NULL, "NetworkController::GetNetworkPlayer() : object has no NetworkPlayer");
 			return *mPlayer;
