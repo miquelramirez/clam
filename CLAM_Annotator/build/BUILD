@@ -1,4 +1,4 @@
-export CONFIG=debug
+export CONFIG=release
 make depend
 make
 
