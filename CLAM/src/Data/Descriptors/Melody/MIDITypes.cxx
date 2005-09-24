@@ -8,6 +8,8 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
+		SetTime(0.0);
+		SetLast(false);
 	}
 
 	unsigned MIDIEvent::Ticks() const
