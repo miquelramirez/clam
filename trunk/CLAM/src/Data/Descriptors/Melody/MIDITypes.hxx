@@ -14,15 +14,18 @@ namespace CLAM
 	class MIDIEvent : public ProcessingData
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (MIDIEvent, 3, ProcessingData);
+		DYNAMIC_TYPE_USING_INTERFACE (MIDIEvent, 4, ProcessingData);
 		/* Event name */
 		DYN_ATTRIBUTE (0, public, std::string, Name);
 		/* Time in seconds */
 		DYN_ATTRIBUTE (1, public, TTime, Time);   
+		/* flag to indicate that this is the last event */
+		DYN_ATTRIBUTE (2, public, bool, Last);
 		/* Event */
-		DYN_ATTRIBUTE (2, public, Array<TMIDIByte>, Event);
+		DYN_ATTRIBUTE (3, public, Array<TMIDIByte>, Event);
 		
 		unsigned Ticks() const;
+		unsigned TicksFromDuration() const;
 		int Length() const;
 
 		bool operator==(const MIDIEvent& ev) {return Ticks()==ev.Ticks();}
@@ -39,13 +42,15 @@ namespace CLAM
 	class MIDITrack : public ProcessingData
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (MIDITrack, 3, ProcessingData);
+		DYNAMIC_TYPE_USING_INTERFACE (MIDITrack, 4, ProcessingData);
+		/* Track name */
+		DYN_ATTRIBUTE (0, public, std::string, Name);
 		/* Channel number */
-		DYN_ATTRIBUTE (0, public, int, Channel);
+		DYN_ATTRIBUTE (1, public, int, Channel);
 		/* Event info list */
-		DYN_ATTRIBUTE (1, public, List<MIDIEvent>, EventInfo);   
+		DYN_ATTRIBUTE (2, public, List<MIDIEvent>, EventInfo);   
 		/* Track melody */
-		DYN_ATTRIBUTE (2, public, MIDIMelody, TrackMelody);
+		DYN_ATTRIBUTE (3, public, MIDIMelody, TrackMelody);
 
 	private:
 		void DefaultInit();
@@ -54,11 +59,13 @@ namespace CLAM
 	class MIDISong : public ProcessingData
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (MIDISong, 2, ProcessingData);
+		DYNAMIC_TYPE_USING_INTERFACE (MIDISong, 3, ProcessingData);
+		/* Song name */
+		DYN_ATTRIBUTE (0, public, std::string, Name);
 		/* Song tracks */
-		DYN_ATTRIBUTE (0, public, Array<MIDITrack>, Tracks);
+		DYN_ATTRIBUTE (1, public, Array<MIDITrack>, Tracks);
 		/* Number of tracks */
-		DYN_ATTRIBUTE (1, public, int, NumberOfTracks);   
+		DYN_ATTRIBUTE (2, public, int, NumberOfTracks);   
 		
 	private:
 		void DefaultInit();
