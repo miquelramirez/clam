@@ -64,9 +64,13 @@ namespace CLAM
 			QBoxLayout* layout;
 			QColor winBackground;
 
+			enum { PAUSE=0, STOP=1 };
+
 			virtual void WindowModeCM();
 			virtual void BlackBackgroundCM();
 			virtual void WhiteBackgroundCM();
+
+			void RemoveButton(int id);
 
 		private:
 			QFrame* container;

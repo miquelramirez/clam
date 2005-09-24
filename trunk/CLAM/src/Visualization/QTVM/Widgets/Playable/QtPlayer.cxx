@@ -48,7 +48,7 @@ namespace CLAM
 	    
 			container = new QFrame(this);
 			container->setFixedSize(75,30);
-	   
+
 			mPlay = new QPushButton(container);
 			mPlay->setFixedSize(25,20);
 			mPlay->setGeometry(0,5,25,20);
@@ -141,6 +141,23 @@ namespace CLAM
 			mPlay->setPixmap(iconPlay);
 			mPause->setPixmap(iconPause);
 			mStop->setPixmap(iconStop); 
+		}
+
+		void QtPlayer::RemoveButton(int id)
+		{
+			switch(id)
+			{
+				case PAUSE:
+					mPause->hide();
+					container->setFixedSize(50,30);
+					mStop->setGeometry(mPlay->width(),mPlay->y(),25,20);
+					break;
+				case STOP:
+					mStop->hide();
+					break;
+				default:
+					break;
+			}
 		}
 		
     }
