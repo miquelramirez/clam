@@ -82,13 +82,14 @@ namespace CLAM
 			mEventList.push_back(trk.GetEventInfo()[i]);
 		}
 		TData t;
+		int channel=0;
 		MIDIEvent ev;
 		ev.GetEvent().Resize(3);
 		ev.GetEvent().SetSize(3);
 		int nNotes = trk.GetTrackMelody().GetNumberOfNotes();
 		for(int i=0; i < nNotes; i++)
 		{
-			int channel = trk.GetChannels()[i];
+			if(i < trk.GetChannels().Size()) channel = trk.GetChannels()[i];
 			ev.GetEvent()[0] = (0x90 | channel);
 			t = trk.GetTrackMelody().GetNoteArray()[i].GetTime().GetBegin();
 			int key = trk.GetTrackMelody().GetNoteArray()[i].GetKey();
