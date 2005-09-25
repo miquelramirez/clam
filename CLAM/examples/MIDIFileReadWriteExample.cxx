@@ -48,9 +48,9 @@ int main(int argc, char** argv)
 	std::cout << "increasing all notes two tones..." << std::endl;
 	for(int i=0; i < song.GetNumberOfTracks(); i++)
 	{
-		if(song.GetTracks()[i].GetChannel()==9) continue;
 		for(int j=0; j < song.GetTracks()[i].GetTrackMelody().GetNumberOfNotes(); j++)
 		{
+			if(song.GetTracks()[i].GetChannels()[j]==9) continue;
 			int key = song.GetTracks()[i].GetTrackMelody().GetNoteArray()[j].GetKey();
 			song.GetTracks()[i].GetTrackMelody().GetNoteArray()[j].SetKey(key+4);
 		}
