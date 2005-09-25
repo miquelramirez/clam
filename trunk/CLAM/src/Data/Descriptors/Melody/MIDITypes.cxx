@@ -29,7 +29,6 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
-		SetChannel(-1);
 		GetTrackMelody().AddNumberOfNotes();
 		GetTrackMelody().UpdateData();
 		GetTrackMelody().SetNumberOfNotes(0);
