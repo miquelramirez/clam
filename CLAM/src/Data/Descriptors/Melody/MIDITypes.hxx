@@ -45,8 +45,8 @@ namespace CLAM
 		DYNAMIC_TYPE_USING_INTERFACE (MIDITrack, 4, ProcessingData);
 		/* Track name */
 		DYN_ATTRIBUTE (0, public, std::string, Name);
-		/* Channel number */
-		DYN_ATTRIBUTE (1, public, int, Channel);
+		/* MIDI channels for notes in the melody */
+		DYN_ATTRIBUTE (1, public, List<int>, Channels);
 		/* Event info list */
 		DYN_ATTRIBUTE (2, public, List<MIDIEvent>, EventInfo);   
 		/* Track melody */

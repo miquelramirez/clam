@@ -37,8 +37,8 @@ namespace CLAM
 		MIDI::Track* tempo_track = new MIDI::Track;
 		s.AddTrack(tempo_track);
 		MIDI::MetaEvent* m_ev = new MIDI::MetaEvent(MIDI::Message(0xFF,0x51,0x03),0,3);
-		tempo_track->Add(m_ev);
 		m_ev->mData[0]=0x07; m_ev->mData[1]=0xA1; m_ev->mData[2]=0x20;
+		tempo_track->Add(m_ev);
 		
 		int nTracks = in.GetNumberOfTracks();
 		for(int i=0; i < nTracks; i++)
@@ -51,8 +51,7 @@ namespace CLAM
 			{
 				const MIDIEvent &ev = *it;
 				// add event to current track
-				int len = ev.Length();
-				if(len == 2)
+				if(ev.Length()==2)
 				{
 					track->Add(new MIDI::Event(MIDI::Message(ev.GetEvent()[0], ev.GetEvent()[1]), ev.Ticks()));
 				}
@@ -83,14 +82,14 @@ namespace CLAM
 			mEventList.push_back(trk.GetEventInfo()[i]);
 		}
 		TData t;
-		int channel = trk.GetChannel();
 		MIDIEvent ev;
 		ev.GetEvent().Resize(3);
 		ev.GetEvent().SetSize(3);
-		ev.GetEvent()[0] = (0x90 | channel);
 		int nNotes = trk.GetTrackMelody().GetNumberOfNotes();
 		for(int i=0; i < nNotes; i++)
 		{
+			int channel = trk.GetChannels()[i];
+			ev.GetEvent()[0] = (0x90 | channel);
 			t = trk.GetTrackMelody().GetNoteArray()[i].GetTime().GetBegin();
 			int key = trk.GetTrackMelody().GetNoteArray()[i].GetKey();
 			int vel = trk.GetTrackMelody().GetNoteArray()[i].GetVelocity();

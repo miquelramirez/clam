@@ -49,15 +49,15 @@ namespace CLAM
 				const MIDI::Event &ev = **it;
 				int type = ((ev[0]&0xF0)>>4)-8;
 				if(type==7) continue;
-				if(midiTrack.GetChannel()==-1) midiTrack.SetChannel((int)ev[0]&0x0F);
 				if(((ev[0]&0xF0)==0x90) || ((ev[0]&0xF0)==0x80))
 				{
 					onset = ((ev[0]&0xF0)==0x90) ? (ev[2] > 0) : false; // velocity > 0 -> onset
 					if(onset)
 					{
+						midiTrack.GetChannels().AddElem((int)(ev[0]&0x0F));
 						MIDINote note;
 						note.GetTime().SetBegin(TData(t.TicksToTime(ev.GetTicks())/1000.0));
-						note.GetTime().SetEnd(TData(0.0));
+						note.GetTime().SetEnd(TData(-1.0));
 						note.SetKey((int)ev[1]);
 						note.SetVelocity((int)ev[2]);
 						midiTrack.GetTrackMelody().GetNoteArray().AddElem(note);
@@ -67,8 +67,8 @@ namespace CLAM
 					{
 						for(int n=0; n < midiTrack.GetTrackMelody().GetNumberOfNotes(); n++)
 						{
-							if((midiTrack.GetTrackMelody().GetNoteArray()[n].GetKey() == ev[1]) && 
-							   (midiTrack.GetTrackMelody().GetNoteArray()[n].GetTime().GetEnd()==0))
+							if((midiTrack.GetTrackMelody().GetNoteArray()[n].GetKey() == (int)(ev[1])) && 
+							   (midiTrack.GetTrackMelody().GetNoteArray()[n].GetTime().GetEnd()==TData(-1.0)))
 							{
 								midiTrack.GetTrackMelody().GetNoteArray()[n].GetTime().SetEnd(TData(t.TicksToTime(ev.GetTicks())/1000.0));
 								break;
