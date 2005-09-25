@@ -19,7 +19,7 @@ namespace CLAM
 
 	int MIDIEvent::Length() const
 	{
-		return GetEvent().Size();
+		return GetMessage().Size();
 	}
 
 

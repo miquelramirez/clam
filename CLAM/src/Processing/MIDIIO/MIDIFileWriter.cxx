@@ -53,11 +53,11 @@ namespace CLAM
 				// add event to current track
 				if(ev.Length()==2)
 				{
-					track->Add(new MIDI::Event(MIDI::Message(ev.GetEvent()[0], ev.GetEvent()[1]), ev.Ticks()));
+					track->Add(new MIDI::Event(MIDI::Message(ev.GetMessage()[0], ev.GetMessage()[1]), ev.Ticks()));
 				}
 				else
 				{
-					track->Add(new MIDI::Event(MIDI::Message(ev.GetEvent()[0],ev.GetEvent()[1],ev.GetEvent()[2]), ev.Ticks()));
+					track->Add(new MIDI::Event(MIDI::Message(ev.GetMessage()[0],ev.GetMessage()[1],ev.GetMessage()[2]), ev.Ticks()));
 				}
 			}
 		}
@@ -84,23 +84,23 @@ namespace CLAM
 		TData t;
 		int channel=0;
 		MIDIEvent ev;
-		ev.GetEvent().Resize(3);
-		ev.GetEvent().SetSize(3);
+		ev.GetMessage().Resize(3);
+		ev.GetMessage().SetSize(3);
 		int nNotes = trk.GetTrackMelody().GetNumberOfNotes();
 		for(int i=0; i < nNotes; i++)
 		{
 			if(i < trk.GetChannels().Size()) channel = trk.GetChannels()[i];
-			ev.GetEvent()[0] = (0x90 | channel);
+			ev.GetMessage()[0] = (0x90 | channel);
 			t = trk.GetTrackMelody().GetNoteArray()[i].GetTime().GetBegin();
 			int key = trk.GetTrackMelody().GetNoteArray()[i].GetKey();
 			int vel = trk.GetTrackMelody().GetNoteArray()[i].GetVelocity();
 			ev.SetTime(t);
-			ev.GetEvent()[1]=key;
-			ev.GetEvent()[2]=vel;
+			ev.GetMessage()[1]=key;
+			ev.GetMessage()[2]=vel;
 			mEventList.push_back(ev);
 			t = trk.GetTrackMelody().GetNoteArray()[i].GetTime().GetEnd();
 			ev.SetTime(t);
-			ev.GetEvent()[2]=0;
+			ev.GetMessage()[2]=0;
 			mEventList.push_back(ev);
 		}
 		mEventList.sort();

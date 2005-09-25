@@ -21,8 +21,8 @@ namespace CLAM
 		DYN_ATTRIBUTE (1, public, TTime, Time);   
 		/* flag to indicate that this is the last event */
 		DYN_ATTRIBUTE (2, public, bool, Last);
-		/* Event */
-		DYN_ATTRIBUTE (3, public, Array<TMIDIByte>, Event);
+		/* Message */
+		DYN_ATTRIBUTE (3, public, Array<TMIDIByte>, Message);
 		
 		unsigned Ticks() const;
 		unsigned TicksFromDuration() const;
