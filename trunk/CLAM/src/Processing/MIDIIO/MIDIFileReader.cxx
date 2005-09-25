@@ -84,7 +84,7 @@ namespace CLAM
 					int len = nbytesPerChnMsg[type];
 					for(int k=0; k < len; k++)
 					{
-						e.GetEvent().AddElem(ev[k]);
+						e.GetMessage().AddElem(ev[k]);
 					}
 					midiTrack.GetEventInfo().AddElem(e);
 				}			
