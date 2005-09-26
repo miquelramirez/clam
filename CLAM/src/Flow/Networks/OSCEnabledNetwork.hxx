@@ -83,7 +83,7 @@ namespace CLAM
 		}
 		virtual ~OSCEnabledNetwork()
 		{
-			std::cerr <<" *\t\t\t~OSCENABLEDNETWORK"<<std::endl;
+			//std::cerr <<" *\t\t\t~OSCENABLEDNETWORK"<<std::endl;
 			StopListeningOSC();
 		}
 		
