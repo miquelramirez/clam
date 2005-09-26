@@ -439,7 +439,7 @@ void NetworkController::ExecuteRemoveControlConnection( const std::string & out 
 
 NetworkController::~NetworkController()
 {
-	std::cerr << " *~NETWORKCONTROLLER"<<std::endl;
+	//std::cerr << " *~NETWORKCONTROLLER"<<std::endl;
 	Clear();
 	delete mPlayer;
 }
@@ -450,7 +450,7 @@ void NetworkController::AddProcessing2Remove( const std::string & name, CLAM::Pr
 
 	if ( GetNetworkPlayer().GetNetwork().HasProcessing( id ) )
 	{
-		std::cerr << "Processing Already exists!" << std::endl;
+		std::cerr << "WARNING: Processing Already exists!" << std::endl;
 		std::string prefix = proc->GetClassName();
 		id = GetNetworkPlayer().GetNetwork().GetUnusedName( prefix );
 	}
@@ -546,7 +546,7 @@ bool NetworkController::Update()
 void NetworkController::Clear()
 {
 	StopThread();
-	std::cerr << " *NETWORKCONTROLLER::CLEAR"<<std::endl;
+	//std::cerr << " *NETWORKCONTROLLER::CLEAR"<<std::endl;
 	ProcessingControllersMap::iterator it;
 	for(it=mProcessingControllers.begin(); it!=mProcessingControllers.end(); it++)
 		delete it->second;
