@@ -39,7 +39,7 @@ namespace CLAM
 	
 	Network::~Network()
 	{
-		std::cerr <<" *\t\t\t~NETWORK"<<std::endl;
+		//std::cerr <<" *\t\t\t~NETWORK"<<std::endl;
 		Clear();
 		if (mFlowControl) delete mFlowControl;
 	}
@@ -464,7 +464,7 @@ namespace CLAM
 		
 		while( !mProcessings.empty() )
 		{
-			std::cerr << "REMOVING <"<<mProcessings.begin()->first<<">"<<std::endl;
+			//std::cerr << "REMOVING <"<<mProcessings.begin()->first<<">"<<std::endl;
 			RemoveProcessing( mProcessings.begin()->first );
 		}
 	}
