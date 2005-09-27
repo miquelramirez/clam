@@ -265,12 +265,11 @@ std::string BaseName(const std::string& xmlfile)
 }
 void NetworkController::LoadNetworkFrom( const std::string & xmlfile)
 {
+	CLAM_ASSERT(mPresentation,  "NetworkController::LoadNetworkFrom: No Presentation attached.");
 	Clear();
 	mPresentation->Clear();
 	CLAM::XMLStorage storage;
 	storage.Restore( GetNetworkPlayer().GetNetwork(), xmlfile );
-	//TODO: caution with this line!!
-	//GetNetworkPlayer().GetNetwork().AddFlowControl( new CLAM::PushFlowControl() );
 	
 	BindTo( GetNetworkPlayer().GetNetwork() );
 
