@@ -7,31 +7,31 @@
 
   <WidgetList>
     <Widget>
-      <Name>ExternGenerator_0</Name>
-      <X>64</X>
-      <Y>108</Y>
+      <Name>Input0</Name>
+      <X>16</X>
+      <Y>114</Y>
       <Width>129</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
-      <Name>SMSAnalysisCore_0</Name>
-      <X>170</X>
-      <Y>300</Y>
-      <Width>135</Width>
+      <Name>Input1</Name>
+      <X>16</X>
+      <Y>423</Y>
+      <Width>129</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
-      <Name>SMSFreqShift_0</Name>
-      <X>376</X>
-      <Y>174</Y>
-      <Width>114</Width>
+      <Name>ShiftedOutput</Name>
+      <X>652</X>
+      <Y>372</Y>
+      <Width>101</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
-      <Name>SMSSynthesis_0</Name>
-      <X>310</X>
-      <Y>538</Y>
-      <Width>118</Width>
+      <Name>OriginalOutput</Name>
+      <X>645</X>
+      <Y>471</Y>
+      <Width>108</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
@@ -39,28 +39,35 @@
       <X>615</X>
       <Y>20</Y>
       <Width>56</Width>
-      <Height>128</Height>
+      <Height>76</Height>
     </Widget>
     <Widget>
-      <Name>ExternSink_0</Name>
-      <X>574</X>
-      <Y>496</Y>
-      <Width>100</Width>
+      <Name>SMSAnalysisCore_0</Name>
+      <X>170</X>
+      <Y>268</Y>
+      <Width>135</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
-      <Name>ExternGenerator_1</Name>
-      <X>74</X>
-      <Y>622</Y>
-      <Width>129</Width>
+      <Name>SMSFreqShift_0</Name>
+      <X>372</X>
+      <Y>158</Y>
+      <Width>114</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
-      <Name>ExternSink_1</Name>
-      <X>629</X>
-      <Y>650</Y>
-      <Width>100</Width>
+      <Name>SMSSynthesis_0</Name>
+      <X>425</X>
+      <Y>339</Y>
+      <Width>118</Width>
       <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>AudioBuffPortMonitor_0</Name>
+      <X>253</X>
+      <Y>535</Y>
+      <Width>291</Width>
+      <Height>136</Height>
     </Widget>
   </WidgetList>
 

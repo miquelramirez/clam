@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="ExternGenerator_0" type="ExternGenerator"/>
+  <processing id="AudioBuffPortMonitor_0" type="AudioBuffPortMonitor"/>
 
-  <processing id="ExternGenerator_1" type="ExternGenerator"/>
+  <processing id="Input0" type="ExternGenerator"/>
 
-  <processing id="ExternSink_0" type="ExternSink"/>
+  <processing id="Input1" type="ExternGenerator"/>
 
-  <processing id="ExternSink_1" type="ExternSink"/>
+  <processing id="OriginalOutput" type="ExternSink"/>
 
   <processing id="OutControlSender_0" type="OutControlSender">
     <Min>20</Min>
@@ -151,14 +151,21 @@
     <prSamplingRate>0</prSamplingRate>
   </processing>
 
+  <processing id="ShiftedOutput" type="ExternSink"/>
+
   <port_connection>
-    <out>ExternGenerator_0.AudioOut</out>
+    <out>Input0.AudioOut</out>
     <in>SMSAnalysisCore_0.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>ExternGenerator_1.AudioOut</out>
-    <in>ExternSink_1.AudioIn</in>
+    <out>Input1.AudioOut</out>
+    <in>OriginalOutput.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Input1.AudioOut</out>
+    <in>AudioBuffPortMonitor_0.Input</in>
   </port_connection>
 
   <port_connection>
@@ -178,7 +185,7 @@
 
   <port_connection>
     <out>SMSSynthesis_0.OutputAudio</out>
-    <in>ExternSink_0.AudioIn</in>
+    <in>ShiftedOutput.AudioIn</in>
   </port_connection>
 
   <control_connection>
