@@ -94,7 +94,14 @@ bool AudioOut::ConcreteStart(void)
 {
 	if (!mpDevice)
 		throw Err("AudioOut::ConcreteStart(): No Device found!");
-	mpDevice->Start();
+	try
+	{
+		mpDevice->Start();
+	}
+	catch (Err &e) {
+		std::cerr << " AudioOut::ConcreteStart(): could not start audio device: maybe another program is blocking it" << std::endl;
+		std::cerr << " Received error message: <"<<e.what() << std::endl;
+	}
 	return true;
 }
 
