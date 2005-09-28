@@ -597,16 +597,18 @@ EOF
 
 
 $sandbox{'oscpack'} = 'oscpack';
-$headers{'oscpack'} = 'oscpack/ip/NetworkingUtils.h';
+$headers{'oscpack'} = 'oscpack/ip/IpEndpointName.h';
+$headers{'oscpack'} = 'oscpack/ip/UdpSocket.h';
 $libs{'oscpack'} = 'oscpack';
 $alt_libs{'oscpack'} = '';
 $ext_libs{'oscpack'} = 'pthread';
 $source{'oscpack'} = <<EOF;
-#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/IpEndpointName.h>
+#include <oscpack/ip/UdpSocket.h>
 int main()
 {
-	InitializeNetworking();
-	TerminateNetworking();
+	UdpTransmitSocket socket( IpEndpointName("localhost", 9999) );
+	bool b=socket.IsBound();
 	return 0;
 }
 EOF
