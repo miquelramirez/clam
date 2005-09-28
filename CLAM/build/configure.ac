@@ -5426,7 +5426,7 @@ else
 	if test x$found_oscpack = xno
 	then
 		found=1
-		for file in oscpack/ip/NetworkingUtils.h
+		for file in oscpack/ip/UdpSocket.h
 		do
 			AC_MSG_CHECKING([$file for oscpack in sandbox])
 			if test -r $sandbox_location/oscpack/include/$file
@@ -5500,11 +5500,12 @@ then
 	[
 		AC_LANG_SOURCE(
 [[
-#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/IpEndpointName.h>
+#include <oscpack/ip/UdpSocket.h>
 int main()
 {
-	InitializeNetworking();
-	TerminateNetworking();
+	UdpTransmitSocket socket( IpEndpointName("localhost", 9999) );
+	bool b=socket.IsBound();
 	return 0;
 }
 
@@ -5522,11 +5523,12 @@ int main()
 			[
 				AC_LANG_SOURCE(
 [[
-#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/IpEndpointName.h>
+#include <oscpack/ip/UdpSocket.h>
 int main()
 {
-	InitializeNetworking();
-	TerminateNetworking();
+	UdpTransmitSocket socket( IpEndpointName("localhost", 9999) );
+	bool b=socket.IsBound();
 	return 0;
 }
 ;
@@ -5599,7 +5601,7 @@ then
   if test x$found_oscpack = xno
 	then
 	found=1
-	for file in oscpack/ip/NetworkingUtils.h
+	for file in oscpack/ip/UdpSocket.h
 	do
 		AC_CHECK_HEADER($file,[filefound=1],[filefound=0])
 		AC_MSG_CHECKING([$file for oscpack in standard locations])
@@ -5633,11 +5635,12 @@ then
 			[
 				AC_LANG_SOURCE(
 [[
-#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/IpEndpointName.h>
+#include <oscpack/ip/UdpSocket.h>
 int main()
 {
-	InitializeNetworking();
-	TerminateNetworking();
+	UdpTransmitSocket socket( IpEndpointName("localhost", 9999) );
+	bool b=socket.IsBound();
 	return 0;
 }
 
@@ -5655,11 +5658,12 @@ int main()
 					[
 						AC_LANG_SOURCE(
 [[
-#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/IpEndpointName.h>
+#include <oscpack/ip/UdpSocket.h>
 int main()
 {
-	InitializeNetworking();
-	TerminateNetworking();
+	UdpTransmitSocket socket( IpEndpointName("localhost", 9999) );
+	bool b=socket.IsBound();
 	return 0;
 }
 ;
@@ -5695,11 +5699,12 @@ int main()
 						[
 							AC_LANG_SOURCE(
 [[
-#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/IpEndpointName.h>
+#include <oscpack/ip/UdpSocket.h>
 int main()
 {
-	InitializeNetworking();
-	TerminateNetworking();
+	UdpTransmitSocket socket( IpEndpointName("localhost", 9999) );
+	bool b=socket.IsBound();
 	return 0;
 }
 ;
@@ -6939,11 +6944,12 @@ then
 	    [
 		AC_LANG_SOURCE(
 		    [[
-			    #include <oscpack/ip/NetworkingUtils.h>
+			    #include <oscpack/ip/IpEndpointName.h>
+#include <oscpack/ip/UdpSocket.h>
 int main()
 {
-	InitializeNetworking();
-	TerminateNetworking();
+	UdpTransmitSocket socket( IpEndpointName("localhost", 9999) );
+	bool b=socket.IsBound();
 	return 0;
 }
 
