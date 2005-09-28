@@ -19,7 +19,6 @@ namespace CLAM
 
 		virtual ~NetworkPlayer()
 		{
-			std::cerr << " *\t~NETWORKPLAYER"<<std::endl;
 			if (mNetwork)
 				delete mNetwork;
 		}
@@ -28,7 +27,6 @@ namespace CLAM
 		virtual void Stop()=0;
 		virtual void Clear()
 		{
-			std::cerr << " *\t\tBLOCKINGNETWORKPLAYER::CLEAR"<<std::endl;
 			Stop();
 			GetNetwork().Clear();
 			NotifyModification();
@@ -59,7 +57,6 @@ namespace CLAM
 			return mStopped;
 		}
 	protected:
-		// SetStopped -> Stop
 		void SetStopped(const bool val)
 		{
 			mStopped=val;
