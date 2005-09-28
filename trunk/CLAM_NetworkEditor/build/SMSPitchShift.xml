@@ -12,20 +12,20 @@
 
   <processing id="MonoAudioFileReader_1" type="MonoAudioFileReader">
     <SourceFile>
-      <URI>/home/vokimon/CajitasDeArena/CLAM_NetworkEditor/build/wavs/wooden.L.wav</URI>
+      <URI>/home/xoliver/CLAM-TestData/Elvis.wav</URI>
       <Header>
-        <SampleRate>44100</SampleRate>
-        <Samples>7082740</Samples>
+        <SampleRate>22050</SampleRate>
+        <Samples>133888</Samples>
         <Channels>1</Channels>
-        <Length>160606</Length>
+        <Length>6072.02</Length>
         <Format>WAV</Format>
-        <Encoding>float 32-bit</Encoding>
+        <Encoding>signed 16-bit</Encoding>
         <Endianess>Format Default</Endianess>
       </Header>
       <TextualDescriptors/>
     </SourceFile>
     <SelectedChannel>0</SelectedChannel>
-    <Loop>true</Loop>
+    <Loop>1</Loop>
   </processing>
 
   <processing id="OutControlSender_1" type="OutControlSender">
