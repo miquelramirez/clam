@@ -26,11 +26,13 @@
 #endif
 
 #include "NetworkController.hxx"
+
 #include "BlockingNetworkPlayer.hxx"
 #include "JACKNetworkPlayer.hxx"
+#include "PANetworkPlayer.hxx"
+
 #include "PushFlowControl.hxx"
 #include "BasicFlowControl.hxx"
-#include <string>
 
 #include <qapplication.h>
 
@@ -44,10 +46,94 @@
 #include <X11/Xlib.h>
 #endif
 
+#include <fstream>
+#include <iostream>
+#include <string>
+
+using std::string;
+
 void ConfigureNetwork(CLAM::Network & net)
 {	
 	int frameSize = 512;
 	net.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
+}
+
+void PrintUsageAndExit( const string& extramessage)
+{
+	std::cout << extramessage << std::endl;
+	std::cout << "  Usage: ./NetworkEditor [ <NetworkFile> -d alsa | jack | portaudio ]"<< std::endl;
+	exit(0);
+}
+
+CLAM::NetworkPlayer* CreateNetworkPlayerFromName(const string name)
+{
+	if ( name == string("alsa"))
+		return new CLAM::BlockingNetworkPlayer();
+	else if ( name == string("jack") )
+		return new CLAM::JACKNetworkPlayer();
+	else if ( name == string("portaudio") )
+		return new CLAM::PANetworkPlayer();
+	else PrintUsageAndExit("Incorrect driver!");
+
+	return NULL;
+}
+
+CLAM::NetworkPlayer* ProcessParameters(int argc, char **argv, string& xmlfile)
+{	
+	switch (argc)
+	{
+		//No parameter
+		case 1:
+			return CreateNetworkPlayerFromName("alsa");
+			break;
+			
+		//Network file specified
+		case 2:
+			if ( string(argv[1]) == string("--help") )
+				PrintUsageAndExit("NetworkEditor help");
+			
+			xmlfile=string(argv[1]);
+			
+			return CreateNetworkPlayerFromName("alsa");
+			break;
+			
+		//Connect-to specified
+		case 3:
+			if ( string(argv[1]) != string("-d") )
+				PrintUsageAndExit("ERROR: Unknown command");
+			
+			return CreateNetworkPlayerFromName( string(argv[2]) );
+			break;
+			
+		//Network and connect-to specified
+		case 4:	
+			xmlfile=string(argv[1]);
+	
+			if ( string(argv[2]) != string("-d") )
+				PrintUsageAndExit("ERROR: Unknown command");
+	
+			return CreateNetworkPlayerFromName( string(argv[3]) );
+			break;
+			
+		default:
+			PrintUsageAndExit("ERROR: incorrect number of arguments");
+			break;
+	}
+
+	return NULL;
+
+}
+bool FileExists( const string filename )
+{
+	//Check for existence of XML Network file
+	std::ifstream file( filename.c_str() );
+	if( !file )
+	{
+		std::cerr << "ERROR: opening file <" << filename << ">" << std::endl;
+		return false;
+	}
+	file.close();
+	return true;
 }
 
 int main( int argc, char **argv )
@@ -59,7 +145,6 @@ int main( int argc, char **argv )
 	CLAM::MIDIManager midiManager;
 	srand(time(NULL)); // gui stuff
 
-
 #if USE_OSCPACK
 	CLAM::OSCEnabledNetwork* net=new CLAM::OSCEnabledNetwork();
 	net->SetName("CLAM OSCEnabledNetwork");
@@ -70,80 +155,28 @@ int main( int argc, char **argv )
 	ConfigureNetwork(*net);
 
 	CLAMVM::NetworkController* controller=new CLAMVM::NetworkController();
-	CLAM::NetworkPlayer *player=new CLAM::JACKNetworkPlayer();
-
-	controller->SetNetworkPlayer(*player);
-	controller->BindTo(*net);
-
-	/*std::string opt;
+	CLAM::NetworkPlayer *player;
 	
-	//TODO add a real parameter checking. Now it is rubbish.
-	switch(argc)
-	{
-		//No parameter
-		case 1:
-			player=new CLAM::BlockingNetworkPlayer();
-			break;
-			
-		//Network file specified
-		case 2:
-			opt=argv[1];
-			if (opt==std::string("--help"))
-			{
-				std::cout << "\nUsage: " << argv[0] << " [ <NetworkFile> ] [ -c jack | portaudio ]\n"<< std::endl;
-				return 0;
-			}
-			controller->LoadNetworkFrom(argv[1]);
-			break;
-			
-		//Connect-to specified
-		case 3:
-			opt=argv[2];
-			if ( opt==std::string("jack"))
-			{
-				//player=new CLAM::JACKNetworkPlayer();
-				std::cout << "\nJACK Option still not available" << std::endl;
-			}
-			else if ( opt==std::string("portaudio"))
-			{
-				//player=new CLAM::PANetworkPlayer();
-				std::cout << "\nPA Option still not available" << std::endl;
-				return 0;
-			}
-			break;
-			
-		//Network and connect-to specified
-		case 4:	
-			controller->LoadNetworkFrom(argv[1]);
-		
-			opt=argv[3];
-			if ( opt==std::string("jack"))
-			{
-				//player=new CLAM::JACKNetworkPlayer();
-				std::cout << "\nJACK Option still not available" << std::endl;
-			}
-			else if ( opt==std::string("portaudio"))
-			{
-				//player=new CLAM::PANetworkPlayer();
-				std::cout << "\nPA Option still not available" << std::endl;
-				return 0;
-			}
-			break;
-			
-		default:
-			std::cout << "\nUsage: " << argv[0] << " [ <NetworkFile> ] [ -c jack | portaudio ]\n"<< std::endl;
-			return 0;
-			break;
-	}*/
+	string xmlfile;
 	
+	player=ProcessParameters( argc, argv, xmlfile );
+	
+	controller->SetNetworkPlayer( *player );
+	controller->BindTo( *net );
+
 	QApplication app( argc, argv );
-	app.setFont(QFont("Verdana", 9));
+	app.setFont( QFont("Verdana", 9) );
 	NetworkGUI::MainWindow mw;
 	
 	mw.GetNetworkPresentation().AttachToNetworkController(*controller);
-	app.setMainWidget(&mw);
+
+
+	if ( !xmlfile.empty() && FileExists( xmlfile) )
+		controller->LoadNetworkFrom( xmlfile );
+	
+	app.setMainWidget( &mw );
 	mw.show();
-	app.connect( &app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()) );
+	app.connect( &app, SIGNAL( lastWindowClosed() ), &app, SLOT( quit() ) );
 
 	return app.exec();
 }
