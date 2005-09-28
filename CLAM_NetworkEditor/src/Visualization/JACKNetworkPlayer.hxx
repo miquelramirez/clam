@@ -16,7 +16,7 @@
 namespace CLAM
 {
 
-int JackLoopCallback (jack_nframes_t, void *);
+int JackProcessingCallback (jack_nframes_t, void *);
 void JackShutdownCallback (void *);
 
 typedef struct
@@ -24,6 +24,7 @@ typedef struct
 	std::string portName;
 	jack_port_t* jackOutPort;
 	CLAM::ExternGenerator* clamReceiver;
+	const char** connectedTo;
 } JACKOutPortCouple;
 
 typedef struct
@@ -31,6 +32,7 @@ typedef struct
 	std::string portName;
 	jack_port_t* jackInPort;
 	CLAM::ExternSink* clamSender;
+	const char** connectedTo;
 } JACKInPortCouple;
 
 typedef std::vector<JACKOutPortCouple> JACKOutPortList;
@@ -38,8 +40,6 @@ typedef std::vector<JACKInPortCouple> JACKInPortList;
 
 class JACKNetworkPlayer : public NetworkPlayer
 {
-	CLAM::Network *mNetwork;	
-
 	int mJackSampleRate, mJackBufferSize, mClamBufferSize;
 	bool mAutoConnect;
 
@@ -87,8 +87,7 @@ public:
 
 		NotifyModification();
 	
-		//JACK CODE
-		//init client
+		//JACK CODE: init client
 		
 		mJackClientname="CLAM_client";		
 		if ((mJackClient = jack_client_new ( mJackClientname.c_str() )) == 0)
@@ -98,7 +97,7 @@ public:
 		}
 		
 		//Register callback method for processing
-		if ( jack_set_process_callback (mJackClient, JackLoopCallback, this) )
+		if ( jack_set_process_callback (mJackClient, JackProcessingCallback, this) )
 		{
 			std::cerr << "JACK ERROR: registering process callbacks"<< std::endl;
 			exit(1);
@@ -143,6 +142,8 @@ public:
 					it->first.c_str(),
 					JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
 
+				pair.connectedTo=NULL;
+				
 				//Add the pair (jack port, clam jack receiver) to the list
 				mReceiverList.push_back(pair);
 			}
@@ -171,6 +172,8 @@ public:
 				pair.jackInPort=jack_port_register (mJackClient,
 					it->first.c_str(),
 					JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+
+				pair.connectedTo=NULL;
 
 				//Add the pair (jack port, clam jack receiver) to the list
 				mSenderList.push_back(pair);
@@ -254,7 +257,6 @@ public:
 			RegisterPorts();
 		}
 		
-		//GetNetwork().ReconfigureAllProcessings();
 		GetNetwork().Start();
 
 		//JACK CODE (the init order of network, ... should be decided)
@@ -265,14 +267,18 @@ public:
 
 		if (mAutoConnect)
 			AutoConnectPorts();
+		else
+			RestoreConnections();
 	}
-	
+
 	virtual void Stop()
 	{
 		if (IsStopped())
 			return;
 		
 		SetStopped(true);
+	
+		StoreConnections();
 		
 		//JACK CODE (the init order of network, ... should be decided)
 		if ( jack_deactivate (mJackClient) )
@@ -283,6 +289,76 @@ public:
 
 		GetNetwork().Stop();
 	}
+
+
+	//Saves the connections made to our local in/out jack ports
+	void StoreConnections()
+	{
+		for (JACKOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+		{
+			const char** con = jack_port_get_connections ( it->jackOutPort );
+			it->connectedTo=con;
+			/*
+			if (con==NULL)
+				std::cout <<it->portName<<" not connected"<<std::endl;
+			else
+				for (int i=0; con[i]!=NULL; i++)
+					std::cout <<it->portName<<" connected to "<<con[i]<<std::endl;
+			*/
+		}
+		
+		for (JACKInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+		{
+			const char** con = jack_port_get_connections ( it->jackInPort );
+			it->connectedTo=con;
+			
+			/*
+			if (con==NULL)
+				std::cout <<it->portName<<" not connected"<<std::endl;
+			else
+				for (int i=0; con[i]!=NULL; i++)
+					std::cout <<it->portName<<" connected to "<<con[i]<<std::endl;
+			*/
+		}
+	}
+
+	//Loads the connections made to our local in/out jack ports
+	void RestoreConnections()
+	{
+		for (JACKOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+		{
+			if (it->connectedTo==NULL)
+				continue;
+
+			for (int i=0; it->connectedTo[i]!=NULL; i++)
+			{
+				//std::cout <<it->portName<<" connected to "<<con[i]<<std::endl;
+				if ( jack_connect ( mJackClient, it->connectedTo[i], it->portName.c_str() ) != 0)
+					std::cout << "JACK WARNING: could not reconnect ports ( " << 
+						it->portName << " , " << it->connectedTo[i] << " )" <<std::endl;
+			}
+			
+			free(it->connectedTo);
+		}
+		
+		for (JACKInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+		{
+			if (it->connectedTo==NULL)
+				continue;
+
+			for (int i=0; it->connectedTo[i]!=NULL; i++)
+			{
+				//std::cout <<it->portName<<" connected to "<<con[i]<<std::endl;
+				if ( jack_connect ( mJackClient, it->portName.c_str(), it->connectedTo[i] ) != 0)
+					std::cout << "JACK WARNING: could not reconnect ports ( " << 
+						it->connectedTo[i] << " , " << it->portName << " )" <<std::endl;
+			}
+			
+			free(it->connectedTo);
+		}
+
+	}
+
 	
 	virtual ~JACKNetworkPlayer()
 	{
@@ -365,7 +441,7 @@ public:
 };
 
 //JACK CODE
-inline int JackLoopCallback (jack_nframes_t nframes, void *arg)
+inline int JackProcessingCallback (jack_nframes_t nframes, void *arg)
 {
 	CLAM::JACKNetworkPlayer* player=(CLAM::JACKNetworkPlayer*)arg;
 	player->Do(nframes);

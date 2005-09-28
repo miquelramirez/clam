@@ -66,13 +66,11 @@ public:
 
 	virtual ~BlockingNetworkPlayer()
 	{
-		std::cerr << " *\t\t~BLOCKINGNETWORKPLAYER"<<std::endl;
 		Stop();
 	}
 	
 	virtual void Stop()
 	{
-		std::cerr << " *\t\tBLOCKINGNETWORKPLAYER::STOP"<<std::endl;
 		if ( IsStopped() )
 			return;
 
@@ -80,15 +78,6 @@ public:
 		mThread.Stop();
 		GetNetwork().Stop();
 	}
-
-	//virtual void Clear()
-	//{
-	//	std::cerr << " *\t\tBLOCKINGNETWORKPLAYER::CLEAR"<<std::endl;
-	//	Stop();
-	//	GetNetwork().Clear();
-	//	NotifyModification();
-	//}
-
 };
 
 } //namespace CLAM
