@@ -27,7 +27,7 @@
 #include "InControl.hxx"
 #include <oscpack/osc/OscOutboundPacketStream.h>
 #include <oscpack/ip/NetworkingUtils.h>
-#include <oscpack/ip/UdpTransmitPort.h>
+#include <oscpack/ip/UdpSocket.h>
 #include <string>
 
 #define IP_MTU_SIZE 1536
@@ -57,7 +57,7 @@ namespace CLAM{
 	private:
 		OSCSenderConfig mConf;
 		char mBuffer[IP_MTU_SIZE];
-		UdpTransmitPort *mTransmitPort;
+		UdpTransmitSocket *mTransmitSocket;
 		ExecState mState;
 		InControlTmpl<OSCSender> mInput;
 		
@@ -65,20 +65,19 @@ namespace CLAM{
 		OSCSender() 
 		: mInput("input",this,&OSCSender::InputControlCB)
 		{
-			mTransmitPort=NULL;
+			mTransmitSocket=NULL;
 		}
 		
 		OSCSender(const OSCSenderConfig & c)
 		: mInput("input",this,&OSCSender::InputControlCB)
 		{
-			mTransmitPort=NULL;
+			mTransmitSocket=NULL;
 			ConcreteConfigure(c);
 		}
 		
 		~OSCSender()
 		{
-			delete mTransmitPort;			
-			TerminateNetworking();
+			delete mTransmitSocket;			
 		}
 		
 		bool Do()
