@@ -32,7 +32,8 @@ using namespace osc;
 namespace CLAM
 {
 	OSCEnabledNetwork::OSCEnabledNetwork(const int port)
-		: mListenerPort(NULL)
+		: mThread (/*realtime*/false)
+		, mReceiveSocket(NULL)
 	{
 		//Rename the network, as it's OSC enabled!
 		SetName("Unnamed OSCEnabledNetwork");
@@ -40,18 +41,24 @@ namespace CLAM
 		mListener.AttachToNetwork(this);
 		SetPort(port);
 
-		mListeningOSC=false;
+		//Init receiver socket
+		mReceiveSocket = new UdpListeningReceiveSocket( GetPort(), &mListener );
 
+		//Init thread
+		mThread.SetThreadCode( makeMemberFunctor0( *mReceiveSocket, UdpListeningReceiveSocket, Run ) );
+		mThread.SetupPriorityPolicy();
+	
+		mListeningOSC=false;
 	}
 	
 	void OSCEnabledNetwork::StartListeningOSC()
 	{
-		if (IsListeningOSC())
+		if ( IsListeningOSC() )
 			return;
-		
-		InitializeNetworking();
-		mListenerPort = new UdpPacketListenerPort( GetPort(), &mListener );
+
 		mListeningOSC=true;
+		
+		mThread.Start();
 	}
 	
 	void OSCEnabledNetwork::StopListeningOSC()
@@ -59,11 +66,11 @@ namespace CLAM
 		if ( !IsListeningOSC() )
 			return;
 		
-		if (mListenerPort != NULL)
-			delete mListenerPort;
-
-		TerminateNetworking();
 		mListeningOSC=false;
+	
+		std::cout << "OSCEnabledNetwork::StopListeningOSC() : revisa ordre de parada del mReceiveSocket i del mThread" << std::endl;
+		mReceiveSocket->Break();
+		mThread.Stop();
 	}
 	
 	const string OSCEnabledNetwork::GetLogMessage(void)
@@ -86,18 +93,9 @@ namespace CLAM
 		mMessageLog.push(message);
 	}
 
-	void OSCEnabledNetwork::OscReceivePacketListener::ProcessBundle( const osc::ReceivedBundle& b )
-	{
-		for( ReceivedBundle::const_iterator i = b.ElementsBegin(); i != b.ElementsEnd(); ++i )
-		{
-			if( i->IsBundle() )
-				ProcessBundle( ReceivedBundle(*i) );
-			else
-				ProcessMessage( ReceivedMessage(*i) );
-		}
-	}
 
-	void OSCEnabledNetwork::OscReceivePacketListener::ProcessMessage( const osc::ReceivedMessage& m )
+	//Inner class OscReceivePacketListener methods
+	void OSCEnabledNetwork::OscReceivePacketListener::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 	{
 		ostringstream log;
 		string path;
@@ -145,15 +143,6 @@ namespace CLAM
 			
 		}
 	}
-
-	void OSCEnabledNetwork::OscReceivePacketListener::ProcessPacket( const char *data, unsigned long size )
-	{
-		osc::ReceivedPacket p( data, size );
-		if( p.IsBundle() )
-			ProcessBundle( ReceivedBundle(p) );
-		else
-			ProcessMessage( ReceivedMessage(p) );
-	} 
 
 	void OSCEnabledNetwork::OscReceivePacketListener::AttachToNetwork(OSCEnabledNetwork* net)
 	{
