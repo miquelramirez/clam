@@ -50,8 +50,13 @@ AudioOut::AudioOut(const AudioIOConfig &c)
 
 AudioOut::~AudioOut()
 { 
-	if (mpDevice) 
-		mpDevice->Unregister(*this); 
+	try {
+		if (mpDevice) 
+			mpDevice->Unregister(*this); 
+	}
+	catch (Err &e) {
+		std::cerr << "AudioOut::~AudioOut: unregistering processing: " << e.what() << std::endl; 
+	}
 }
 
 bool AudioOut::ConcreteConfigure(const ProcessingConfig& c)
