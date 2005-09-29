@@ -8,6 +8,12 @@
 #include "XMLStorage.hxx"
 #include "NetworkPlayer.hxx"
 
+#ifdef USE_OSC
+#include "OSCEnabledNetwork.hxx"
+#else
+#include "Network.hxx"
+#endif
+
 #include "ExternGenerator.hxx"
 #include "ExternSink.hxx"
 
@@ -55,8 +61,15 @@ public:
 	//Called by the prototyper
 	JACKNetworkPlayer(const std::string & networkFile, std::list<std::string> portlist)
 	{
-		CLAM::PushFlowControl * fc = new CLAM::PushFlowControl(mClamBufferSize);
-		GetNetwork().AddFlowControl( fc );
+		mClamBufferSize=512;
+
+	#ifdef USE_OSC
+		SetNetwork( *( new OSCEnabledNetwork() ) );
+	#else
+		SetNetwork( *( new Network() ) );
+	#endif
+
+		GetNetwork().AddFlowControl( new CLAM::PushFlowControl(mClamBufferSize) );
 
 		CLAM::XmlStorage::Restore(GetNetwork(), networkFile);
 	
@@ -83,8 +96,6 @@ public:
 
 	void InitClient()
 	{
-		mClamBufferSize=512;
-
 		NotifyModification();
 	
 		//JACK CODE: init client

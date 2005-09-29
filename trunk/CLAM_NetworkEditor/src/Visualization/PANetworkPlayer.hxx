@@ -35,14 +35,17 @@ public:
 	PANetworkPlayer(const std::string & networkFile)
 	{
 		InitClient();
-		
+
+	#ifdef USE_OSC
+		SetNetwork( *( new OSCEnabledNetwork() ) );
+	#else
+		SetNetwork( *( new Network() ) );
+	#endif
+
 		CLAM::PushFlowControl * fc = new CLAM::PushFlowControl(mClamBufferSize);
 		GetNetwork().AddFlowControl( fc );
 
 		CLAM::XmlStorage::Restore(GetNetwork(),networkFile);
-		
-		//PA CODE
-		OpenStream(GetNetwork());
 	}
 
 	PANetworkPlayer()
@@ -54,13 +57,13 @@ public:
 	{
 		mClamBufferSize=512;
 		mClamFrameRate=44100;
+		mPortAudioStream=NULL;
 
 		ControlIfPortAudioError( Pa_Initialize() );
 	}
 	
 	void OpenStream(const CLAM::Network& net)
 	{
-		
 		//Get them from the Network and add it to local list		
 		for (CLAM::Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 		{
@@ -146,7 +149,8 @@ public:
 		mReceiverList.clear();
 		mSenderList.clear();
 
-		ControlIfPortAudioError( Pa_CloseStream( mPortAudioStream ) );
+		if ( mPortAudioStream )
+			ControlIfPortAudioError( Pa_CloseStream( mPortAudioStream ) );
 	}
 
 	void DoInPorts(CLAM::TData** input, unsigned long nframes)
@@ -196,7 +200,7 @@ public:
 	
 		if ( IsModified() )
 		{
-			//CloseStream();
+			CloseStream();
 			OpenStream( GetNetwork() );
 		}
 		
@@ -213,6 +217,7 @@ public:
 		
 		SetStopped(true);
 		
+
 		//PA CODE (the init order of network, ... should be decided) : deactivate
 		Pa_StopStream( mPortAudioStream );
 		
@@ -228,7 +233,6 @@ public:
 
 		//If there has been an error, inform and quit!
 		std::cerr <<"PortAudio Error #"<<result<<": "<< Pa_GetErrorText( result )<<std::endl;
-		CLAM_ASSERT(false, "ASSERT!");
 		exit(result);
 	}
 	
