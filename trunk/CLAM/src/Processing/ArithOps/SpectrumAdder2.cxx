@@ -306,6 +306,7 @@ namespace CLAM {
 	bool SpectrumAdder2::SetPrototypes()
 	{
 		CLAM_ASSERT(false, "SetPrototypes not implemented ");
+		return false;
 	}
 
 	bool SpectrumAdder2::UnsetPrototypes()
