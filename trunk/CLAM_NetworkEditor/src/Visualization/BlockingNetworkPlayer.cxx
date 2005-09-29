@@ -13,6 +13,13 @@ BlockingNetworkPlayer::BlockingNetworkPlayer(const std::string & networkFile)
 	, mAudioManager( 44100, 512 )
 	, mThread(/*realtime*/true)
 {
+
+#ifdef USE_OSC
+	SetNetwork( *( new OSCEnabledNetwork() ) );
+#else
+	SetNetwork( *( new Network() ) );
+#endif
+
 	mAudioManager.Start();
 	GetNetwork().AddFlowControl( new PushFlowControl( /*frameSize*/ 512 ));
 	XmlStorage::Restore( GetNetwork() ,networkFile);
