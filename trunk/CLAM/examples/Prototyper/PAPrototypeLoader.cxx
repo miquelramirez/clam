@@ -22,215 +22,13 @@
 
 #include "PortMonitor.hxx"
 
-/////////////Temporary includes
-#include "AudioOutPort.hxx"
-#include "AudioInPort.hxx"
-
 #include "BasicFlowControl.hxx"
 
+#include "PANetworkPlayer.hxx"
 #include <portaudio.h>
 
-int portaudio_process (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void *);
-void portaudio_shutdown (void *arg);
-
-typedef std::vector<CLAM::ExternGenerator*> PAOutPortList;
-typedef std::vector<CLAM::ExternSink*> PAInPortList;
-
-class PANetworkPlayer
+namespace CLAM
 {
-	CLAM::Network _network;	
-
-	int _cbuffersize, _cframerate;
-
-	PAOutPortList _receiverlist;
-	PAInPortList _senderlist;
-	
-	//PA CODE : declare client (stream)
-	PaStream * _pa_stream;
-
-public:
-	PANetworkPlayer(const std::string & networkFile)
-	{
-		_cbuffersize=512;
-		_cframerate=44100;
-		
-		CLAM::PushFlowControl * fc = new CLAM::PushFlowControl(_cbuffersize);
-		_network.AddFlowControl( fc );
-
-		CLAM::XmlStorage::Restore(_network,networkFile);
-		
-		//PA CODE
-		//init client
-		ControlIfPortAudioError( Pa_Initialize() );
-		
-		CreatePorts(_network);
-	}
-	
-	void CreatePorts(const CLAM::Network& net)
-	{
-		
-		//Get them from the Network and add it to local list		
-		for (CLAM::Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
-		{
-			if ( std::string("ExternGenerator") == std::string(it->second->GetClassName()) )
-			{
-				//Make sure all frame sizes are the same
-				CLAM::ExternGenerator* gen=(CLAM::ExternGenerator*)it->second;
-				gen->SetFrameAndHopSize( _cbuffersize );
-					
-				//Using PortAudio we only accept 2 channels max
-				if ( _receiverlist.size() == 2 )
-				{
-					std::cout << "WARNING: more than two ExternGenerators detected, using the first ones" << std::endl;
-					continue;
-				}
-					
-				//Get Processing address
-				_receiverlist.push_back( (CLAM::ExternGenerator*)it->second );
-			}
-			else if ( std::string("ExternSink") == std::string(it->second->GetClassName()) )
-			{
-				//Make sure all frame sizes are the same
-				CLAM::ExternSink* sink=(CLAM::ExternSink*)it->second;
-				sink->SetFrameAndHopSize(_cbuffersize);
-
-				//Using PortAudio we only accept 2 channels max
-				if ( _senderlist.size() == 2 )
-				{
-					std::cout << "WARNING: more than two ExternSinks detected, using the first ones" << std::endl;
-					continue;
-				}
-				//Get Processing address
-				_senderlist.push_back( (CLAM::ExternSink*)it->second );
-			}
-		}
-
-		//Create configuration for input&output and then register the stream
-		PaStreamParameters inputParameters, outputParameters, *inParams, *outParams;
-
-		inputParameters.device = Pa_GetDefaultInputDevice(); /* default output device */
-		inputParameters.channelCount = _receiverlist.size();       /* stereo output */
-		inputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples*/
-		inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowOutputLatency;
-		inputParameters.hostApiSpecificStreamInfo = NULL;
-
-		outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
-		outputParameters.channelCount = _senderlist.size();       /* stereo output */
-		outputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples */
-		outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
-		outputParameters.hostApiSpecificStreamInfo = NULL;
-
-		if ( _receiverlist.size() == 0 ) inParams=NULL;
-		else inParams=&inputParameters;
-		
-		if ( _senderlist.size() == 0 ) outParams=NULL;
-		else outParams=&outputParameters;
-		
-		ControlIfPortAudioError(
-			Pa_OpenStream(
-				&_pa_stream,
-				inParams,
-				outParams,
-				double(_cframerate),
-				_cbuffersize,			
-				paClipOff,      /* we won't output out of range samples so don't bother clipping them */
-				portaudio_process,
-				this )
-			);
-
-	}
-
-	void DoInPorts(CLAM::TData** input, unsigned long nframes)
-	{
-		int i=0;
-		
-		for ( PAOutPortList::iterator it=_receiverlist.begin(); it!=_receiverlist.end(); it++ )
-		{
-			//Retrieve PA buffer location
-			//Tell the ExternGenerator to put PA's buffer info into CLAM
-			(*it)->Do( input[i], nframes );
-			i++;
-
-		}
-	}
-	
-	void DoOutPorts(CLAM::TData** output, unsigned long nframes)
-	{
-		int i=0;
-		
-		for (PAInPortList::iterator it=_senderlist.begin(); it!=_senderlist.end(); it++)
-		{
-			//Retrieve PA buffer location
-			//Tell the ExternGenerator to put CLAM's buffer info PA
-			(*it)->Do(output[i], nframes);
-			i++;
-		}
-	}
-
-	void Do(const void *inputBuffers, void *outputBuffers,
-                            unsigned long framesPerBuffer)
-	{
-		DoInPorts( (CLAM::TData**) inputBuffers, framesPerBuffer);
-		
-		//for (int stepcount=0; stepcount < (int(nframes)/int(_cbuffersize)); stepcount++)
-		_network.Do();
-
-		DoOutPorts( (CLAM::TData**) outputBuffers, framesPerBuffer);
-	}
-	
-	void Start()
-	{
-		_network.Start();
-
-		//PA CODE (the init order of network, ... should be decided) : activate
-		Pa_StartStream( _pa_stream );
-	}
-	
-	void Stop()
-	{
-		//PA CODE (the init order of network, ... should be decided) : deactivate
-		Pa_StopStream( _pa_stream );
-		
-		_network.Stop();
-	}
-
-	inline void ControlIfPortAudioError(int result)
-	{
-		//If everything ok, return now
-		if( result == paNoError ) return;
-
-		//If there has been an error, inform and quit!
-		std::cerr <<"PortAudio Error #"<<result<<": "<< Pa_GetErrorText( result )<<std::endl;
-		exit(result);
-	}
-	
-	~PANetworkPlayer()
-	{
-		Stop();
-
-		//Close stream and terminate
-		ControlIfPortAudioError( Pa_CloseStream( _pa_stream ) );
-		Pa_Terminate();
-	}
-	
-	CLAM::Network & Network()
-	{
-		return _network;
-	}
-};
-
-//PA CODE
-int portaudio_process (const void *inputBuffers, void *outputBuffers,
-                            unsigned long framesPerBuffer,
-                            const PaStreamCallbackTimeInfo* timeInfo,
-                            PaStreamCallbackFlags statusFlags,
-                            void *userData)
-{
-	PANetworkPlayer* player=(PANetworkPlayer*)userData;
-	player->Do(inputBuffers, outputBuffers, framesPerBuffer);
-
-	return 0;
-}
 
 static std::string getMonitorNumber()
 {
@@ -243,56 +41,58 @@ static std::string getMonitorNumber()
 
 class PrototypeLoader
 {
-	char * _networkFile;
-	char * _interfaceFile;
-	QWidget * _mainWidget;
-	PANetworkPlayer _player;
-	std::list<CLAM::VM::NetPlot * > _portMonitors;
+	char * mNetworkFile;
+	QWidget * mMainWidget;
+	PANetworkPlayer mPlayer;
+	std::list<VM::NetPlot * > mPortMonitors;
 public:
 	PrototypeLoader(char * networkFile)
-		: _networkFile(networkFile)
-		, _player(networkFile)
+		: mNetworkFile(networkFile)
+		, mPlayer(networkFile)
 	{
 		
 	}
 	QWidget * loadPrototype(char* uiFile)
 	{
-		_mainWidget = (QWidget *) QWidgetFactory::create( uiFile );
-		return _mainWidget;
+		mMainWidget = (QWidget *) QWidgetFactory::create( uiFile );
+		return mMainWidget;
 	}
 	void connectWithNetwork()
 	{
-		std::cerr <<"Dins connectWithNetwork"<<std::endl;
-		CLAM::Network & network = _player.Network();
-		QWidget * prototype = _mainWidget;
+		Network & network = mPlayer.GetNetwork();
+		QWidget * prototype = mMainWidget;
 		connectWidgetsWithControls(network,prototype);
 		connectWidgetsWithMappedControls(network,prototype);
 
-		connectWidgetsWithPorts<CLAM::VM::NetAudioPlot>
+		connectWidgetsWithPorts<VM::NetAudioPlot>
 			("OutPort__.*", "CLAM::VM::NetAudioPlot");
-		connectWidgetsWithPorts<CLAM::VM::NetSpectrumPlot>
+		connectWidgetsWithPorts<VM::NetSpectrumPlot>
 			("OutPort__.*", "CLAM::VM::NetSpectrumPlot");
-		connectWidgetsWithPorts<CLAM::VM::NetPeaksPlot>
+		connectWidgetsWithPorts<VM::NetPeaksPlot>
 			("OutPort__.*", "CLAM::VM::NetPeaksPlot");
-		connectWidgetsWithPorts<CLAM::VM::NetFundPlot>
+		connectWidgetsWithPorts<VM::NetFundPlot>
 			("OutPort__.*", "CLAM::VM::NetFundPlot");
-		connectWidgetsWithPorts<CLAM::VM::NetAudioBuffPlot>
+		connectWidgetsWithPorts<VM::NetAudioBuffPlot>
 			("OutPort__.*", "CLAM::VM::NetAudioBuffPlot");
-		connectWidgetsWithPorts<CLAM::VM::NetSpecgramPlot>
+		connectWidgetsWithPorts<VM::NetSpecgramPlot>
 			("OutPort__.*", "CLAM::VM::NetSpecgramPlot");
-		connectWidgetsWithPorts<CLAM::VM::NetFundTrackPlot>
+		connectWidgetsWithPorts<VM::NetFundTrackPlot>
 			("OutPort__.*", "CLAM::VM::NetFundTrackPlot");
-		std::cerr <<"Fi connectWithNetwork"<<std::endl;
 		// TODO: Still not ported
-		//		connectWidgetsWithPorts<CLAM::VM::NetSinTracksPlot>
+		//		connectWidgetsWithPorts<VM::NetSinTracksPlot>
 		//						("OutPort__.*", "CLAM::VM::NetSinTracksPlot");
 	}
 	
 public slots:
 	void Start()
 	{
-		_player.Start();
+		mPlayer.Start();
 	}
+	void Stop()
+	{
+		mPlayer.Stop();
+	}
+
 
 private:
 	void substitute(std::string & subject, const char * pattern, const char * substitution)
@@ -313,7 +113,7 @@ private:
 		return networkName;
 	}
 
-	void connectWidgetsWithControls(CLAM::Network & network, QWidget * prototype)
+	void connectWidgetsWithControls(Network & network, QWidget * prototype)
 	{
 		QObjectList * widgets = prototype->queryList(0,"InControl__.*");
 		for (QObjectListIt it(*widgets); it.current(); ++it)
@@ -323,7 +123,7 @@ private:
 
 			std::cout << "* Control: " << controlName << std::endl;
 
-			CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
+			InControl & receiver = network.GetInControlByCompleteName(controlName);
 			QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
 			notifier->linkControl(receiver);
 			notifier->connect(aWidget,SIGNAL(valueChanged(int)),
@@ -331,7 +131,7 @@ private:
 		}
 	}
 
-	void connectWidgetsWithMappedControls(CLAM::Network & network, QWidget * prototype)
+	void connectWidgetsWithMappedControls(Network & network, QWidget * prototype)
 	{
 		QObjectList * widgets = prototype->queryList(0,"InControlFloat__.*");
 		for (QObjectListIt it(*widgets); it.current(); ++it)
@@ -340,7 +140,7 @@ private:
 			std::string controlName=GetNetworkNameFromWidgetName(aWidget->name() + 16);
 			std::cout << "* Mapped Control (100:1): " << controlName << std::endl;
 
-			CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
+			InControl & receiver = network.GetInControlByCompleteName(controlName);
 			QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
 			notifier->linkControl(receiver);
 			notifier->connect(aWidget,SIGNAL(valueChanged(int)),
@@ -351,8 +151,8 @@ private:
 	template < typename PlotClass >
 	void connectWidgetsWithPorts(char* prefix, char* plotClassName)
 	{
-		CLAM::Network & network = _player.Network();
-		QWidget * prototype = _mainWidget;
+		Network & network = mPlayer.GetNetwork();
+		QWidget * prototype = mMainWidget;
 		QObjectList * widgets = prototype->queryList(plotClassName,prefix);
 		for (QObjectListIt it(*widgets); it.current(); ++it)
 		{
@@ -373,6 +173,8 @@ private:
 	}
 };
 
+} //end namespace CLAM
+
 #include <fstream>
 #include <iostream>
 
@@ -392,11 +194,6 @@ int main( int argc, char *argv[] )
 
 	std::ifstream file( argv[1] );
 
-	CLAM_ASSERT ( file , 
-			string( string("ERROR: opening Network XML file <")+string(argv[1])+string(">")
-				).c_str()
-			); 
-	
 	if( !file ) {
 		std::cerr << "ERROR: opening file <" << argv[1] << ">" << std::endl;
 		return -1;
@@ -404,11 +201,6 @@ int main( int argc, char *argv[] )
 	file.close();
 	file.open( argv[2] );
 	
-	CLAM_ASSERT ( file , 
-			string( string("ERROR: opening QT UI file <")+string(argv[2])+string(">")
-				).c_str()
-			); 
-
 	if( !file ) {
 		std::cerr << "Error opening file <" << argv[2] << ">" << std::endl;
 		return -1;
@@ -417,8 +209,7 @@ int main( int argc, char *argv[] )
 	
 	QApplication app( argc, argv );
 
-	PrototypeLoader loader(networkFile);
-
+	CLAM::PrototypeLoader loader(networkFile);
 
 	QWidget * prototype = loader.loadPrototype(uiFile);
 	if (!prototype) return -1;
@@ -432,6 +223,6 @@ int main( int argc, char *argv[] )
 
 	loader.Start();
 	int result = app.exec();
-
+	loader.Stop();
 	return result;
 }
