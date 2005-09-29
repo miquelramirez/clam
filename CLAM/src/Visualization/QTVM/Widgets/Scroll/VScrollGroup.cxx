@@ -46,21 +46,26 @@ namespace CLAM
 			QFont f("Sans",8);
 			f.setBold(true);
 
-			QPixmap iconZoomin((const char**)icon_zoomin);
-			QPixmap iconZoomout((const char**)icon_zoomout);
-
 			QVBoxLayout* layout = new QVBoxLayout(this);
 			mZOut = new QPushButton(this);
 			mZOut->setAutoRepeat(true);
 			mZOut->setFixedSize(20,20);
-			mZOut->setPixmap(iconZoomout);
+#ifdef macintosh
+			mZOut->setText("-");
+#else
+			mZOut->setPixmap(QPixmap((const char**)icon_zoomout));
+#endif
 			QToolTip::add(mZOut,"Zoom Out");
 			layout->addWidget(mZOut,0);
 
 			mZIn = new QPushButton(this);
 			mZIn->setAutoRepeat(true);
 			mZIn->setFixedSize(20,20);
-			mZIn->setPixmap(iconZoomin);
+#ifdef macintosh
+			mZIn->setText("+");
+#else
+			mZIn->setPixmap(QPixmap((const char**)icon_zoomin));
+#endif
 			QToolTip::add(mZIn,"Zoom In");
 			layout->addWidget(mZIn,0);
 
