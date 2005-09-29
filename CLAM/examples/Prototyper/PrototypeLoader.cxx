@@ -20,52 +20,10 @@
 
 #include "PortMonitor.hxx"
 
+#include "BlockingNetworkPlayer.hxx"
 
-class NetworkPlayer
+namespace CLAM
 {
-	CLAM::AudioManager _audioManager;
-	CLAM::Network _network;
-	CLAM::Thread _thread;
-	bool _stoped;
-public:
-	NetworkPlayer(const std::string & networkFile)
-		: _audioManager( 44100, 512 )
-		, _thread(/*realtime*/true)
-		, _stoped(true)
-
-	{
-		_network.AddFlowControl( new CLAM::PushFlowControl( /*frameSize*/ 512 ));
-		CLAM::XmlStorage::Restore(_network,networkFile);
-		_thread.SetThreadCode( makeMemberFunctor0( *this, NetworkPlayer, Do ) );
-	}
-	void Start()
-	{
-		_stoped=false;
-		_network.Start();
-		_thread.Start();
-	}
-	void Do()
-	{
-		while (!_stoped)
-		{
-			_network.Do();
-		}
-	}
-	void Stop()
-	{
-		_stoped=true;
-		_thread.Stop();
-		_network.Stop();
-	}
-	~NetworkPlayer()
-	{
-		Stop();
-	}
-	CLAM::Network & Network()
-	{
-		return _network;
-	}
-};
 
 static std::string getMonitorNumber()
 {
@@ -78,27 +36,26 @@ static std::string getMonitorNumber()
 
 class PrototypeLoader
 {
-	char * _networkFile;
-	char * _interfaceFile;
-	QWidget * _mainWidget;
-	NetworkPlayer _player;
-	std::list<CLAM::VM::NetPlot * > _portMonitors;
+	char * mNetworkFile;
+	QWidget * mMainWidget;
+	BlockingNetworkPlayer mPlayer;
+	std::list<CLAM::VM::NetPlot * > mPortMonitors;
 public:
 	PrototypeLoader(char * networkFile)
-		: _networkFile(networkFile)
-		, _player(networkFile)
+		: mNetworkFile(networkFile)
+		, mPlayer(networkFile)
 	{
 		
 	}
 	QWidget * loadPrototype(char* uiFile)
 	{
-		_mainWidget = (QWidget *) QWidgetFactory::create( uiFile );
-		return _mainWidget;
+		mMainWidget = (QWidget *) QWidgetFactory::create( uiFile );
+		return mMainWidget;
 	}
 	void connectWithNetwork()
 	{
-		CLAM::Network & network = _player.Network();
-		QWidget * prototype = _mainWidget;
+		CLAM::Network & network = mPlayer.GetNetwork();
+		QWidget * prototype = mMainWidget;
 		connectWidgetsWithControls(network,prototype);
 		connectWidgetsWithMappedControls(network,prototype);
 
@@ -123,8 +80,13 @@ public:
 public slots:
 	void Start()
 	{
-		_player.Start();
+		mPlayer.Start();
 	}
+	void Stop()
+	{
+		mPlayer.Stop();
+	}
+
 
 private:
 	void substitute(std::string & subject, const char * pattern, const char * substitution)
@@ -182,8 +144,8 @@ private:
 	template < typename PlotClass >
 	void connectWidgetsWithPorts(char* prefix, char* plotClassName)
 	{
-		CLAM::Network & network = _player.Network();
-		QWidget * prototype = _mainWidget;
+		CLAM::Network & network = mPlayer.GetNetwork();
+		QWidget * prototype = mMainWidget;
 		QObjectList * widgets = prototype->queryList(plotClassName,prefix);
 		for (QObjectListIt it(*widgets); it.current(); ++it)
 		{
@@ -204,9 +166,9 @@ private:
 	}
 
 
-};
+}; //end namespace CLAM
 
-
+}
 
 int main( int argc, char *argv[] )
 {
@@ -222,8 +184,7 @@ int main( int argc, char *argv[] )
 
 	QApplication app( argc, argv );
 
-	PrototypeLoader loader(networkFile);
-
+	CLAM::PrototypeLoader loader(networkFile);
 
 	QWidget * prototype = loader.loadPrototype(uiFile);
 	if (!prototype) return -1;
@@ -237,7 +198,8 @@ int main( int argc, char *argv[] )
 
 	loader.Start();
 	int result = app.exec();
-
+	loader.Stop();
+	
 	return result;
 }
 
