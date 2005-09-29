@@ -5,6 +5,7 @@
 
 namespace CLAM
 {
+	//Abstract NetworkPlayer that defines generic interface
 	class NetworkPlayer
 	{
 		Network *mNetwork;
@@ -25,6 +26,7 @@ namespace CLAM
 		
 		virtual void Start()=0;
 		virtual void Stop()=0;
+		
 		virtual void Clear()
 		{
 			Stop();
@@ -37,6 +39,7 @@ namespace CLAM
 			mNetwork=&net;
 			NotifyModification();
 		}
+		
 		Network& GetNetwork()
 		{
 			CLAM_ASSERT( (mNetwork!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
@@ -56,6 +59,7 @@ namespace CLAM
 		{
 			return mStopped;
 		}
+		
 	protected:
 		void SetStopped(const bool val)
 		{
