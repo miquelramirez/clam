@@ -41,8 +41,8 @@ namespace NetworkGUI
 
 MultiChannelAudioFileWriterConfigPresentation::MultiChannelAudioFileWriterConfigPresentation( QWidget * parent )
 	: Qt_ProcessingConfigPresentation( parent , "config"  ),
-	  mLocation(),
 	  mLayout(0),
+	  mLocation(),
 	  mSampleRate(0),
 	  mFormat(0),
 	  mChannels(0)
@@ -141,7 +141,7 @@ void MultiChannelAudioFileWriterConfigPresentation::CreateLocation()
 {	
 	QHBox * cell = new QHBox(mLayout);
 	cell->setSpacing(5);
-	QLabel * label = new QLabel("TargetFile", cell);
+	//Unused variable: QLabel * label = new QLabel("TargetFile", cell);
 	
 	mLocation = new QLineEdit(QString(mMultiConfig.GetTargetFile().GetLocation().c_str()), cell); 
 	mLocation->setMinimumWidth(300);
