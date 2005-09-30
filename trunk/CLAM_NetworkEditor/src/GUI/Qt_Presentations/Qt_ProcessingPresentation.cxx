@@ -338,6 +338,10 @@ QColor Qt_ProcessingPresentation::GetColorOfState()
 			c.setRgb( 180, 180, 210 );
 			QToolTip::add( this, "Processing running" );
 			break;
+		default:
+			c.setRgb( 90, 90, 90 );
+			QToolTip::add( this, "Unmanaged Processing State" );
+			break;
 
 	}
 	return c;
