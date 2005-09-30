@@ -63,8 +63,8 @@ public:
 	}
 
 protected:
-	std::string mOutName;
 	std::string mInName;
+	std::string mOutName;
 	
 public: //slots
 	SigSlot::Signalv1< ConnectionPresentation* > SignalRemoveConnection;
