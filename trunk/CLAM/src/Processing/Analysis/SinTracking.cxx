@@ -384,7 +384,7 @@ void SinTracking::HarmonicTracking(const SpectralPeakArray& in,SpectralPeakArray
 {
 	TData d;
 	TIndex pos;
-	DataArray& iFreqBuffer=in.GetFreqBuffer();
+	//DataArray& iFreqBuffer=in.GetFreqBuffer();
 	DataArray& oFreqBuffer=out.GetFreqBuffer();
 	DataArray& iMagBuffer=in.GetMagBuffer();
 	DataArray& oMagBuffer=out.GetMagBuffer();
