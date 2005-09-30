@@ -104,7 +104,7 @@ bool SMSAnalysisCore::ConfigureChildren()
 void SMSAnalysisCore::ConfigureData()
 {
 	// XR: TODO - Get Sampling Rate from input audio?
-	TData samplingRate=mConfig.GetSamplingRate();
+	//Unused variable: TData samplingRate=mConfig.GetSamplingRate();
 
 	Spectrum resSpec;
 	Spectrum sinSpec;
