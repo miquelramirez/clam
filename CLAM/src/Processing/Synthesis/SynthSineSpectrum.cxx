@@ -692,7 +692,7 @@ bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residual
 
 void SynthSineSpectrum::FillSynthSineSpectrum	(	const SpectralPeakArray& peakArray, double gain)
 {
-	TSize 		mainLobeBins = TData(8)*pow(2.0,(double)mConfig.GetZeroPadding()) ; // Number of bins in the mainlope of a transformed BHarris92 window 
+	TSize 		mainLobeBins = TSize ( TData(8)*pow(2.0,(double)mConfig.GetZeroPadding()) ) ; // Number of bins in the mainlope of a transformed BHarris92 window 
                            
 	TIndex 		b,i,k,l,Index,numPeaks = peakArray.GetnPeaks();
   					
@@ -707,7 +707,7 @@ void SynthSineSpectrum::FillSynthSineSpectrum	(	const SpectralPeakArray& peakArr
 
 	TData samplingRate=mConfig.GetSamplingRate();
 	TSize spectrumSize=mConfig.GetSpectrumSize();
-	TSize zeroPadding=TData(mConfig.GetZeroPadding());
+	TSize zeroPadding=TSize( TData(mConfig.GetZeroPadding()) );
 
 	TData binPosFactor=2*(spectrumSize-1)/samplingRate;
 	TData firstBinFactor= 3* pow((TData)2,(TData)zeroPadding);
@@ -730,7 +730,7 @@ void SynthSineSpectrum::FillSynthSineSpectrum	(	const SpectralPeakArray& peakArr
 		currBinPos = currFreq*binPosFactor;
     
 		double Loc = currBinPos;
-		TIndex firstBin = int( Loc ) - firstBinFactor ;
+		TIndex firstBin = TIndex( int( Loc ) - firstBinFactor );
 		double BinRemainder = Loc - floor (Loc);
 		fIndex = (1.0 - BinRemainder);
 		Index=(int)(0.5 + fIndex*MAINLOBE_TABLE_SIZE/(mainLobeBins));
