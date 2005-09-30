@@ -140,7 +140,7 @@ namespace CLAM {
 			
 			/* we keep adding points to bpf until magnitude is insignificant 
 			(note that we add points outside the spectral range) */
-			TData spectralRange=output.GetSpectralRange();
+			//Unused variable: TData spectralRange=output.GetSpectralRange();
 			TData lastFreq=freqBuffer[nPeaks-2];
 			TData freqGap=lastFreq-freqBuffer[nPeaks-3];
 			TData currentFreq=lastFreq+freqGap;
@@ -168,7 +168,7 @@ namespace CLAM {
 			
 			/* we keep adding points to bpf until magnitude is insignificant 
 			(note that we add points outside the spectral range) */
-			TData spectralRange=output.GetSpectralRange();
+			//Unused variable: TData spectralRange=output.GetSpectralRange();
 			TData lastFreq=freqBuffer[nPeaks-2];
 			TData freqGap=lastFreq-freqBuffer[nPeaks-3];
 			TData currentFreq=lastFreq+freqGap;
