@@ -264,7 +264,7 @@ namespace AudioCodecs
 	void OggVorbisAudioStream::DiskToMemoryTransfer()
 	{
 
-		TSize nBytes = 0;
+		//Unused variable: TSize nBytes = 0;
 		unsigned samplesRead = 0;
 
 		while ( mDecodeBuffer.size() < unsigned(mInterleavedData.Size()) )
@@ -376,7 +376,7 @@ namespace AudioCodecs
 		float** encBuffer = vorbis_analysis_buffer( &mDSPState, 
 							    mAnalysisWindowSize);
 		
-		int samplesWrote = 0;
+		//Unused variable: int samplesWrote = 0;
 
 		for ( int j = 0; j < mEncodedChannels; j++ )
 		{
