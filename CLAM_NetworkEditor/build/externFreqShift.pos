@@ -1,73 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <WidgetLocations>
 
-  <WindowWidth>1047</WindowWidth>
+  <WindowWidth>917</WindowWidth>
 
-  <WindowHeight>789</WindowHeight>
+  <WindowHeight>599</WindowHeight>
 
   <WidgetList>
     <Widget>
+      <Name>AudioBuffPortMonitor_0</Name>
+      <X>197</X>
+      <Y>347</Y>
+      <Width>291</Width>
+      <Height>136</Height>
+    </Widget>
+    <Widget>
       <Name>Input0</Name>
-      <X>16</X>
-      <Y>114</Y>
-      <Width>129</Width>
+      <X>-6</X>
+      <Y>28</Y>
+      <Width>117</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>Input1</Name>
-      <X>16</X>
-      <Y>423</Y>
-      <Width>129</Width>
-      <Height>60</Height>
-    </Widget>
-    <Widget>
-      <Name>ShiftedOutput</Name>
-      <X>652</X>
-      <Y>372</Y>
-      <Width>101</Width>
+      <X>-6</X>
+      <Y>280</Y>
+      <Width>127</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>OriginalOutput</Name>
-      <X>645</X>
-      <Y>471</Y>
+      <X>600</X>
+      <Y>272</Y>
       <Width>108</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>OutControlSender_0</Name>
-      <X>615</X>
-      <Y>20</Y>
+      <X>491</X>
+      <Y>6</Y>
       <Width>56</Width>
       <Height>76</Height>
     </Widget>
     <Widget>
       <Name>SMSAnalysisCore_0</Name>
-      <X>170</X>
-      <Y>268</Y>
+      <X>110</X>
+      <Y>162</Y>
       <Width>135</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>SMSFreqShift_0</Name>
-      <X>372</X>
-      <Y>158</Y>
+      <X>273</X>
+      <Y>75</Y>
       <Width>114</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>SMSSynthesis_0</Name>
-      <X>425</X>
-      <Y>339</Y>
+      <X>407</X>
+      <Y>161</Y>
       <Width>118</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
-      <Name>AudioBuffPortMonitor_0</Name>
-      <X>253</X>
-      <Y>535</Y>
-      <Width>291</Width>
-      <Height>136</Height>
+      <Name>ShiftedOutput</Name>
+      <X>612</X>
+      <Y>162</Y>
+      <Width>101</Width>
+      <Height>60</Height>
     </Widget>
   </WidgetList>
 
