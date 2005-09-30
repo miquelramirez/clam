@@ -159,7 +159,7 @@ namespace AudioCodecs
 			int channelCount = mChannels;
 			
 			const TData*  end = mInterleavedData.GetPtr() + mInterleavedData.Size();
-			TData** const samplesEnd = samples + nchannels;
+			//Unused variable TData** const samplesEnd = samples + nchannels;
 			const int* endChannels = channels + nchannels;
 			std::vector<bool>::iterator cIt = mChannelsConsumed.begin();
 			
@@ -232,7 +232,7 @@ namespace AudioCodecs
 
 		const TData* end = mInterleavedDataOut.GetPtr() + mInterleavedDataOut.Size();
 		const int* endChannels = channels + nchannels;
-		TData** const samplesEnd = samples + nchannels;
+		//Unused variable TData** const samplesEnd = samples + nchannels;
 		std::vector<bool>::iterator cIt = mChannelsProduced.begin();
 
 
