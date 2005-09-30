@@ -47,8 +47,8 @@ public: // signals
 	SigSlot::Signalv2< int , int >  SignalAcquirePos;
 	SigSlot::Signalv1< Qt_OutPortPresentation * > SignalAcquireOutPortClicked;
 // qt stuff
-	int   mId;
-	bool        mDown;
+	bool mDown;
+	int mId;
 };
 
 
