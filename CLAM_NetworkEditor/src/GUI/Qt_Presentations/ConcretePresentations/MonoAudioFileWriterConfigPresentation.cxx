@@ -35,8 +35,8 @@ namespace NetworkGUI
 
 MonoAudioFileWriterConfigPresentation::MonoAudioFileWriterConfigPresentation( QWidget * parent )
 	: Qt_ProcessingConfigPresentation( parent , "config"  ),
-	mLocation(),
 	mLayout(0),
+	mLocation(),
 	mSampleRate(0),
 	mFormat(0)
 {
@@ -103,7 +103,7 @@ void MonoAudioFileWriterConfigPresentation::CreateLocation()
 {	
 	QHBox * cell = new QHBox(mLayout);
 	cell->setSpacing(5);
-	QLabel * label = new QLabel("TargetFile", cell);
+	//Unused variable: QLabel * label = new QLabel("TargetFile", cell);
 	
 	mLocation = new QLineEdit(QString(mConfig.GetTargetFile().GetLocation().c_str()), cell); 
 	mLocation->setMinimumWidth(300);
