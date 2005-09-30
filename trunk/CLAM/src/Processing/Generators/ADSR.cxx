@@ -49,12 +49,12 @@ void ADSRConfig::DefaultInit(void)
 
 ADSR::ADSR()
 	: mOutput("Audio Output",this)
+	, mAmplitude( "Amplitude", this, &ADSR::UpdateAmp )
 	, mAmpValue(0)
 	, mLevel(0)
 	, mDLevel(0)
 	, mStatus(Done)
 	, mState( "State", this )
-	, mAmplitude( "Amplitude", this, &ADSR::UpdateAmp )
 {
 	ADSRConfig cfg;
 
