@@ -131,7 +131,7 @@ int SMSAnalysisConfig::GetResZeroPadding() const
 /** Sampling rate of the input audio*/
 void SMSAnalysisConfig::SetSamplingRate(TData sr)
 {
-	SetprSamplingRate(sr);
+	SetprSamplingRate( int(sr) );
 	GetSinSpectralAnalysis().SetSamplingRate(sr);
 	GetResSpectralAnalysis().SetSamplingRate(sr);
 	GetSynthSineSpectrum().SetSamplingRate(sr);
