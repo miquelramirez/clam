@@ -147,7 +147,7 @@ bool SMSAnalysis::Do(Segment& in)
 	//Audio center time is different from frame center time. This index corresponds to
 	//the audio that is being written into member stream buffer
 	TIndex audioCenterSample=(mAudioFrameIndex)*step;
-	TTime audioCenterTime=audioCenterSample/samplingRate;
+	//Unused variable: TTime audioCenterTime=audioCenterSample/samplingRate;
 	
 	/**TODO: miliseconds and seconds are inconsistently used in different places?*/
 	//If we have reached end of input audio we return false
