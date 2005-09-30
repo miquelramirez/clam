@@ -30,9 +30,9 @@ namespace CLAM
 {
 
 FlowControl::FlowControl(  int frameSize )
-	:mFrameSize(frameSize),
-	 mNetwork(0),
-	 mNetworkChanged(false)
+	: mNetworkChanged(false)
+	, mFrameSize(frameSize)
+	, mNetwork(0)
 {
 }      
 
