@@ -35,6 +35,10 @@ protected:
 				c.setRgb( 120, 120, 210 );
 				QToolTip::add( this, "Processing running" );
 				break;
+			default:
+				c.setRgb( 90, 90, 90 );
+				QToolTip::add( this, "Unmanaged Processing State" );
+				break;
 		}
 		return c;
 	}
@@ -95,6 +99,10 @@ protected:
 			case CLAM::Processing::Running:
 				c.setRgb( 120, 120, 210 );
 				QToolTip::add( this, "Processing running" );
+				break;
+			default:
+				c.setRgb( 90, 90, 90 );
+				QToolTip::add( this, "Unmanaged Processing State" );
 				break;
 		}
 		return c;
