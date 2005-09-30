@@ -68,14 +68,14 @@ void OutControlArray::Resize(int size, const std::string &name, Processing* pare
 
 void OutControlArray::Resize(int size, const std::list<std::string>& names, Processing* parent)
 {
-	int previousSize = mControls.size();
+	int previousSize = int ( mControls.size() );
 	if(size < previousSize) 
 	{
 		Shrink(size);
 		return;
 	}
-	CLAM_ASSERT(size-previousSize <= names.size(), "OutControlArray::Resize: error, not enough labels provided");
-	mControls.resize(size);
+	CLAM_ASSERT( size-previousSize <= int(names.size()), "OutControlArray::Resize: error, not enough labels provided");
+	mControls.resize( size );
 	std::list<std::string>::const_iterator name = names.begin();
 	for (int i = previousSize; i<size; i++, name++) {
 		mControls[i] = new OutControl(*name, parent);	
