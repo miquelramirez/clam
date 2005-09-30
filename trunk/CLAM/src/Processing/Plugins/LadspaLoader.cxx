@@ -112,17 +112,17 @@ bool LadspaLoader::Do()
 {	
 	UpdatePointers();
 	
-	for(int i=0;i<mInputControlValues.size();i++)
+	for(unsigned int i=0;i<mInputControlValues.size();i++)
 		mInputControlValues[i]=GetInControls().GetByNumber(i).GetLastValue();
 
 	mDescriptor->run(mInstance, mConfig.GetSize());
 
-	for(int i=0;i<mOutputControlValues.size();i++)
+	for(unsigned int i=0;i<mOutputControlValues.size();i++)
 		GetOutControls().GetByNumber(i).SendControl(mOutputControlValues[i]);
 
-	for(int i=0;i<mInputPorts.size();i++)
+	for(unsigned int i=0;i<mInputPorts.size();i++)
 		 mInputPorts[i]->Consume();
-	for(int i=0;i<mOutputPorts.size();i++)
+	for(unsigned int i=0;i<mOutputPorts.size();i++)
 		mOutputPorts[i]->Produce();
 	
 	return true;
