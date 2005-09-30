@@ -18,15 +18,15 @@ namespace CLAM
 	
 	void QtEnvelopeEditor::SetValue( const BPF& bpf )
 	{
-		if (mMaxYBounded) mEnvelope.set_maxY_value( mMaxY );
-		if (mMinYBounded) mEnvelope.set_minY_value( mMinY );
-		if (mMaxXBounded) mEnvelope.set_maxX_value( mMaxX );
-		if (mMinXBounded) mEnvelope.set_minX_value( mMinX );
+		if (mMaxYBounded) mEnvelope.set_maxY_value( int(mMaxY) );
+		if (mMinYBounded) mEnvelope.set_minY_value( int(mMinY) );
+		if (mMaxXBounded) mEnvelope.set_maxX_value( int(mMaxX) );
+		if (mMinXBounded) mEnvelope.set_minX_value( int(mMinX) );
 
 		for ( int i=0; i<bpf.Size(); i++ )
 		{
 			// TODO change this to floats for CLAM
-			mEnvelope.add_node_at_offset( bpf.GetXValue( i ), bpf.GetValueFromIndex( i ) );
+			mEnvelope.add_node_at_offset( int( bpf.GetXValue( i ) ), int( bpf.GetValueFromIndex( i ) ) );
 		}
 
 		mEmbededEditor->set_envelope( &mEnvelope );
