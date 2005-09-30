@@ -31,18 +31,18 @@ namespace CLAM {
 	/* Processing  object Method  implementations */
 
 	CircularShift::CircularShift()
-		: mAmount("Amount",this),
-		  mInput( "Input samples", this ),
-		  mOutput( "Shifted samples", this )
+		: mInput( "Input samples", this ),
+		  mOutput( "Shifted samples", this ),
+		  mAmount("Amount",this)
 		
 	{
 		Configure(CircularShiftConfig());
 	}
 
 	CircularShift::CircularShift(const CircularShiftConfig &c)
-		: mAmount("Amount",this),
-		  mInput( "Input samples", this ),
-		  mOutput( "Shifted samples", this )
+		: mInput( "Input samples", this ),
+		  mOutput( "Shifted samples", this ),
+		  mAmount("Amount",this)
 	{
 		Configure(c);
 	}
