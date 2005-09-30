@@ -459,7 +459,7 @@ void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::F
 {	
 	QHBox * cell = new QHBox(mLayout);
 	cell->setSpacing(5);
-	QLabel * label = new QLabel(QString(name), cell);
+	//Unused variable: QLabel * label = new QLabel(QString(name), cell);
 	QLineEdit * mInput = new QLineEdit(QString(value.c_str()), cell);
 	mInput->setMinimumWidth(300);
 
@@ -489,7 +489,7 @@ void ConfigPresentationTmpl<ConcreteConfig>::AddWidget(const char *name, CLAM::A
 {	
 	QHBox * cell = new QHBox(mLayout);
 	cell->setSpacing(5);
-	QLabel * label = new QLabel(QString(name), cell);
+	//Unused variable: QLabel * label = new QLabel(QString(name), cell);
 	QLineEdit * mInput = new QLineEdit(QString(value.GetLocation().c_str()), cell);
 	mInput->setMinimumWidth(300);
 
