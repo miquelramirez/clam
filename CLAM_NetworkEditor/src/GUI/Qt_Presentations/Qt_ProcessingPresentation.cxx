@@ -496,6 +496,9 @@ void Qt_ProcessingPresentation::ExecuteResize( const QPoint & difference )
 			newGeometry.setWidth( difference.x() + width() );
 			newGeometry.setHeight( difference.y() + height() );
 			break;
+		default:
+			//Do nothing... Just to prevent compiler warning
+			break;
 	}
 	setGeometry( newGeometry );
 	UpdateOutPortsPosition();
