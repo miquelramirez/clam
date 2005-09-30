@@ -83,7 +83,7 @@ namespace CLAM {
 		CLAM_ASSERT(input.GetScale()==spectralEnvelope.GetScale(),"You are trying to apply an envelope that has a different scale");
 				
 		TSize nPeaks=input.GetnPeaks();
-		DataArray& imagBuffer=input.GetMagBuffer();
+		//Unused variable: DataArray& imagBuffer=input.GetMagBuffer();
 		DataArray& iphaseBuffer=input.GetPhaseBuffer();
 		DataArray& ifreqBuffer=input.GetFreqBuffer();
 
