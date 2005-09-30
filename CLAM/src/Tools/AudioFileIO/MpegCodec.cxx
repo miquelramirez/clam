@@ -154,7 +154,7 @@ namespace AudioCodecs
 		bitstream.Init();
 
 		bool   foundSomeMpegFrame = false;
-		int    status = 0;
+		//Unused variable: int    status = 0;
 
 		while( !foundSomeMpegFrame 
 		       && !bitstream.EOS() && !bitstream.FatalError() )
@@ -254,7 +254,7 @@ namespace AudioCodecs
 		struct xing xingHeader;
 		bool   hasXingHeader = false;
 		bool   isVBR = false;
-		int    bitrate = 0;
+		unsigned int    bitrate = 0;
 		
 		/* There are three ways of calculating the length of an mp3:
 		   1) Constant bitrate: One frame can provide the information
@@ -346,7 +346,7 @@ namespace AudioCodecs
 		
 		// @TODO@: Find a way to estimate reasonably well the actual
 		// number of samples.
-		hdr.SetSamples(  (hdr.GetLength()/1000.)*hdr.GetSampleRate() );
+		hdr.SetSamples(  TSize((hdr.GetLength()/1000.)*hdr.GetSampleRate()) );
 		hdr.SetEndianess( EAudioFileEndianess::eDefault );
 
 		fclose( handle );
