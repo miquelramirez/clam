@@ -97,7 +97,7 @@ void LadspaLoaderConfigPresentation::CreateLocation()
 {	
 	QHBox * cell = new QHBox(mLayout);
 	cell->setSpacing(5);
-	QLabel * label = new QLabel("Shared Object to Load", cell);
+	//Unused variable: QLabel * label = new QLabel("Shared Object to Load", cell);
 	
 	mLocation = new QLineEdit(QString(mConfig.GetSharedObjectName().c_str()), cell); 
 	mLocation->setMinimumWidth(300);
