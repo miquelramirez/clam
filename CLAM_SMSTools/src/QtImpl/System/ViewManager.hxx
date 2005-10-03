@@ -50,6 +50,7 @@ namespace QtSMS
 
 		void SetAudio(eView id);
 		void SetAnalyzedData();
+		void SetTransformedData();
 		void SetSynthesizedData();
 		
 		void ShowConcreteView(eView group_id, eView view_id);
@@ -92,6 +93,7 @@ namespace QtSMS
 		bool                 mSentinel;
 		bool                 mHasTimeViewFocus;
 		bool                 mHasSpecViewFocus;
+		bool                 mHasTransformedSegment;
 
 		QFrame* hole;
 		QFrame* mTimeViewContainer;
