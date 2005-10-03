@@ -75,6 +75,7 @@ namespace QtSMS
 		void InitMenuViewItems(bool flag=true);
 		void ResetMenuViewAudioItems();
 		void SendAnalyzedDataToViewManager();
+		void SendTransformedDataToViewManager();
 		void SendSynthesizedDataToViewManager();
 		void LaunchMethodOnThread(CBL::Functor0 method);
 
