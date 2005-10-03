@@ -714,11 +714,6 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "first", firstProc );
 		net.AddProcessing( "second", secondProc );
 	
-		CLAM::OutPortBase * outPortOfFirstProc = 
-			new CLAM::OutPort<DummyProcessingData>( std::string("outPortOfFirstProc"), firstProc );
-		CLAM::InPortBase * inPortOfSecondProc = 
-			new CLAM::InPort<int>( std::string("inPortOfSecondProc"), secondProc );
-		
 		CPPUNIT_ASSERT_EQUAL( false, net.ConnectPorts(
 					      "first.outPortOfFirstProc","second.inPortOfSecondProc") );
 	}
@@ -735,11 +730,6 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "first", firstProc );
 		net.AddProcessing( "second", secondProc );
 	
-		CLAM::OutPortBase * outPortOfFirstProc = 
-			new CLAM::OutPort<DummyProcessingData>( std::string("outPortOfFirstProc"), firstProc );
-		CLAM::InPortBase * inPortOfSecondProc = 
-			new CLAM::InPort<DummyProcessingData>( std::string("inPortOfSecondProc"), secondProc );
-		
 		CPPUNIT_ASSERT_EQUAL( false, net.DisconnectPorts(
 					      "first.outPortOfFirstProc","second.inPortOfSecondProc") );
 	}
@@ -811,7 +801,6 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "first", firstProc );
 		net.AddProcessing( "second", secondProc );
 
-		const int dummyLength = 1;
 		CLAM::OutControl* outControlOfFirstProc =  
 			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
 
@@ -834,7 +823,6 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "first", firstProc );
 		net.AddProcessing( "second", secondProc );
 
-		const int dummyLength = 1;
 		CLAM::OutControl* outControlOfFirstProc =  
 			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
 
@@ -856,13 +844,6 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "first", firstProc );
 		net.AddProcessing( "second", secondProc );
 
-		const int dummyLength = 1;
-		CLAM::OutControl* outControlOfFirstProc =  
-			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
-
-		CLAM::InControl* inControlOfSecondProc = 
-			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
-		
 		CPPUNIT_ASSERT_EQUAL( false, net.DisconnectControls( "first.outControlOfFirstProc","second.inControlOfSecondProc"  ));
 
 	}
@@ -879,13 +860,6 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "first", firstProc );
 		net.AddProcessing( "second", secondProc );
 
-		const int dummyLength = 1;
-		CLAM::OutControl* outControlOfFirstProc =  
-			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
-
-		CLAM::InControl* inControlOfSecondProc = 
-			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
-		
 		net.ConnectControls("first.outControlOfFirstProc","second.inControlOfSecondProc");
 		CPPUNIT_ASSERT_EQUAL( true, net.DisconnectControls( "first.outControlOfFirstProc","second.inControlOfSecondProc" ));
 
