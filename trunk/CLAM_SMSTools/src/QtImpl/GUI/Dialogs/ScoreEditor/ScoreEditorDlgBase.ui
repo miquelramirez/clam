@@ -1,0 +1,428 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>ScoreEditorDlgBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>ScoreEditorDlgBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>960</width>
+            <height>549</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>SMS Tools 2 - SMS Transformation Score Editor</string>
+    </property>
+    <property name="modal">
+        <bool>true</bool>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout30</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>mScoreTitle</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <pointsize>12</pointsize>
+                        </font>
+                    </property>
+                    <property name="text">
+                        <string>Score</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignCenter</set>
+                    </property>
+                </widget>
+                <widget class="QFrame">
+                    <property name="name">
+                        <cstring>mScoreFrameContainer</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>Box</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="lineWidth">
+                        <number>1</number>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout25</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>mAvailableTransformationsLabel</cstring>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <pointsize>11</pointsize>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>Available SMS Transformations</string>
+                                    </property>
+                                    <property name="alignment">
+                                        <set>AlignCenter</set>
+                                    </property>
+                                </widget>
+                                <widget class="QListBox">
+                                    <property name="name">
+                                        <cstring>mAvailableTransformationList</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>200</width>
+                                            <height>0</height>
+                                        </size>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>mAddToScoreBtn</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>200</width>
+                                            <height>0</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string>Add &amp;transformation to score</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+T</string>
+                                    </property>
+                                    <property name="autoDefault">
+                                        <bool>true</bool>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout28</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>mScoreTransformationLabel</cstring>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <pointsize>11</pointsize>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>Transformations in the Score</string>
+                                    </property>
+                                    <property name="alignment">
+                                        <set>AlignCenter</set>
+                                    </property>
+                                </widget>
+                                <widget class="QListBox">
+                                    <property name="name">
+                                        <cstring>mScoreTransformationList</cstring>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>175</width>
+                                            <height>0</height>
+                                        </size>
+                                    </property>
+                                </widget>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout26</cstring>
+                                    </property>
+                                    <hbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <property name="spacing">
+                                            <number>0</number>
+                                        </property>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>mMoveUpBtn</cstring>
+                                            </property>
+                                            <property name="minimumSize">
+                                                <size>
+                                                    <width>65</width>
+                                                    <height>0</height>
+                                                </size>
+                                            </property>
+                                            <property name="text">
+                                                <string>Move &amp;up</string>
+                                            </property>
+                                            <property name="accel">
+                                                <string>Alt+U</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>mMoveDownBtn</cstring>
+                                            </property>
+                                            <property name="minimumSize">
+                                                <size>
+                                                    <width>70</width>
+                                                    <height>0</height>
+                                                </size>
+                                            </property>
+                                            <property name="text">
+                                                <string>Move &amp;down</string>
+                                            </property>
+                                            <property name="accel">
+                                                <string>Alt+D</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>mRemoveBtn</cstring>
+                                            </property>
+                                            <property name="minimumSize">
+                                                <size>
+                                                    <width>65</width>
+                                                    <height>0</height>
+                                                </size>
+                                            </property>
+                                            <property name="text">
+                                                <string>&amp;Remove</string>
+                                            </property>
+                                            <property name="accel">
+                                                <string>Alt+R</string>
+                                            </property>
+                                        </widget>
+                                    </hbox>
+                                </widget>
+                            </vbox>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer1</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>81</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>mOkBtn</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Ok</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>mCancelBtn</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Cancel</string>
+                            </property>
+                            <property name="default">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout12</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>mTransformationLabel</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <pointsize>12</pointsize>
+                        </font>
+                    </property>
+                    <property name="text">
+                        <string>Transformation</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignCenter</set>
+                    </property>
+                </widget>
+                <widget class="QFrame">
+                    <property name="name">
+                        <cstring>frame4</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>Box</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QTabWidget">
+                            <property name="name">
+                                <cstring>mTabWidget</cstring>
+                            </property>
+                            <widget class="QWidget">
+                                <property name="name">
+                                    <cstring>tab</cstring>
+                                </property>
+                                <attribute name="title">
+                                    <string>Description</string>
+                                </attribute>
+                            </widget>
+                            <widget class="QWidget">
+                                <property name="name">
+                                    <cstring>tab</cstring>
+                                </property>
+                                <attribute name="title">
+                                    <string>Parameters</string>
+                                </attribute>
+                            </widget>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </hbox>
+</widget>
+<connections>
+    <connection>
+        <sender>mOkBtn</sender>
+        <signal>clicked()</signal>
+        <receiver>ScoreEditorDlgBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>mCancelBtn</sender>
+        <signal>clicked()</signal>
+        <receiver>ScoreEditorDlgBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>mAddToScoreBtn</sender>
+        <signal>clicked()</signal>
+        <receiver>ScoreEditorDlgBase</receiver>
+        <slot>addHighlightedToScore()</slot>
+    </connection>
+    <connection>
+        <sender>mMoveUpBtn</sender>
+        <signal>clicked()</signal>
+        <receiver>ScoreEditorDlgBase</receiver>
+        <slot>moveHighlightedUp()</slot>
+    </connection>
+    <connection>
+        <sender>mMoveDownBtn</sender>
+        <signal>clicked()</signal>
+        <receiver>ScoreEditorDlgBase</receiver>
+        <slot>moveHighlightedDown()</slot>
+    </connection>
+    <connection>
+        <sender>mRemoveBtn</sender>
+        <signal>clicked()</signal>
+        <receiver>ScoreEditorDlgBase</receiver>
+        <slot>removeHighlightedFromScore()</slot>
+    </connection>
+    <connection>
+        <sender>mAvailableTransformationList</sender>
+        <signal>highlighted(const QString&amp;)</signal>
+        <receiver>ScoreEditorDlgBase</receiver>
+        <slot>onSelectAvailableTransformation(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>mScoreTransformationList</sender>
+        <signal>highlighted(int)</signal>
+        <receiver>ScoreEditorDlgBase</receiver>
+        <slot>onSelectTransformationInScore(int)</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>mAvailableTransformationList</tabstop>
+    <tabstop>mAddToScoreBtn</tabstop>
+    <tabstop>mScoreTransformationList</tabstop>
+    <tabstop>mMoveUpBtn</tabstop>
+    <tabstop>mMoveDownBtn</tabstop>
+    <tabstop>mRemoveBtn</tabstop>
+    <tabstop>mTabWidget</tabstop>
+    <tabstop>mOkBtn</tabstop>
+    <tabstop>mCancelBtn</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">ScoreEditorDlgBase.ui.h</include>
+</includes>
+<slots>
+    <slot>addHighlightedToScore()</slot>
+    <slot>moveHighlightedUp()</slot>
+    <slot>moveHighlightedDown()</slot>
+    <slot>removeHighlightedFromScore()</slot>
+    <slot>onSelectAvailableTransformation( const QString &amp; )</slot>
+    <slot>onSelectTransformationInScore( int )</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
