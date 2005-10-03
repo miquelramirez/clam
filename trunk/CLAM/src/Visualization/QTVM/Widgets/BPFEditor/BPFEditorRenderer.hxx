@@ -29,7 +29,7 @@ namespace CLAM
 			TIndex mRightIndex;
 			int    mSelectedIndex;
 
-			enum { POINT_SIZE=3 };
+			enum { LINE_WIDTH=2, POINT_SIZE=4 };
 	    
 			void DrawData();
 			void DrawHandlers();

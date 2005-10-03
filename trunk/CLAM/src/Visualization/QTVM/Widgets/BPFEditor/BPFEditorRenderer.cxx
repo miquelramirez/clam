@@ -42,6 +42,7 @@ namespace CLAM
 	
 		void BPFEditorRenderer::DrawData()
 		{
+			glLineWidth(LINE_WIDTH);
 			glColor3ub(GLubyte(mDataColor.r),GLubyte(mDataColor.g),GLubyte(mDataColor.b));
 			glBegin(GL_LINE_STRIP);
 			for(TIndex i=mLeftIndex; i < mRightIndex; i++)
