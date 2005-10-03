@@ -78,6 +78,16 @@ CLAM::NetworkPlayer* CreateNetworkPlayerFromName(const string name)
 	return NULL;
 }
 
+bool IsAskingForDriver(char* arg)
+{
+	return ( string(arg) == string("-d") || string(arg) == string("--driver") );
+}
+
+bool IsAskingForHelp(char* arg)
+{
+	return ( string(arg) == string("-h") || string(arg) == string("--help") );
+}
+
 CLAM::NetworkPlayer* ProcessParameters(int argc, char **argv, string& xmlfile)
 {	
 	switch (argc)
@@ -89,7 +99,7 @@ CLAM::NetworkPlayer* ProcessParameters(int argc, char **argv, string& xmlfile)
 			
 		//Network file specified
 		case 2:
-			if ( string(argv[1]) == string("--help") )
+			if ( IsAskingForHelp( argv[1] ) )
 				PrintUsageAndExit("NetworkEditor help");
 			
 			xmlfile=string(argv[1]);
@@ -99,7 +109,7 @@ CLAM::NetworkPlayer* ProcessParameters(int argc, char **argv, string& xmlfile)
 			
 		//Connect-to specified
 		case 3:
-			if ( string(argv[1]) != string("-d") && string(argv[1]) != string("--driver") )
+			if ( !IsAskingForDriver( argv[1] ) )	
 				PrintUsageAndExit("ERROR: Unknown command");
 			
 			return CreateNetworkPlayerFromName( string(argv[2]) );
@@ -109,7 +119,7 @@ CLAM::NetworkPlayer* ProcessParameters(int argc, char **argv, string& xmlfile)
 		case 4:	
 			xmlfile=string(argv[1]);
 	
-			if ( string(argv[2]) != string("-d") && string(argv[2]) != string("--driver") )
+			if ( !IsAskingForDriver( argv[2] ) )
 				PrintUsageAndExit("ERROR: Unknown command");
 	
 			return CreateNetworkPlayerFromName( string(argv[3]) );
