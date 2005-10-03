@@ -223,8 +223,8 @@ namespace CLAMTest
 			theBPF.Insert( 1.5, 1.0 );
 			theBPF.Insert( 3.0, 2.0 );
 
-			CLAM::TData interpYa = theBPF.GetValue( 0.8, CLAM::EInterpolation::eRound );
-			CLAM::TData interpYb = theBPF.GetValue( 2.72, CLAM::EInterpolation::eRound );
+			//CLAM::TData interpYa = theBPF.GetValue( 0.8, CLAM::EInterpolation::eRound );
+			//CLAM::TData interpYb = theBPF.GetValue( 2.72, CLAM::EInterpolation::eRound );
 
 			// :TODO: This is not working properly!!
 			//CPPUNIT_ASSERT( fabs( interpYa - 1.0 ) <= 1e-7 );

@@ -204,7 +204,7 @@ private:
 	{
 		CLAM::Array<int> array;
 
-		const int* oldPointer = array.GetPtr();
+		//Unused variable: const int* oldPointer = array.GetPtr();
 
 		array.Resize( 0 );
 
