@@ -27,6 +27,7 @@ namespace QtSMS
 		, mSentinel(false)
 		, mHasTimeViewFocus(false)
 		, mHasSpecViewFocus(false)
+		, mHasTransformedSegment(false)
 	{}
 
 	ViewManager::~ViewManager(){ mInstance=0; mPlotList.clear(); }
@@ -69,6 +70,20 @@ namespace QtSMS
 		mFrameNavigator->setRange(0,Engine::Instance()->GetOriginalSegment().GetnFrames()-1);
 		mFrameNavigator->setValue(0);
 		SetNavigatorEnabled(true);
+		mHasTransformedSegment=false;
+	}
+
+	void ViewManager::SetTransformedData()
+	{
+		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->SetAnalyzedSegment(
+			Engine::Instance()->GetTransformedSegment());
+
+		UpdateSpectrumView(0,false);
+
+		mFrameNavigator->setRange(0,Engine::Instance()->GetTransformedSegment().GetnFrames()-1);
+		mFrameNavigator->setValue(0);
+		SetNavigatorEnabled(true);
+		mHasTransformedSegment=true;
 	}
 
 	void ViewManager::SetSynthesizedData()
@@ -269,7 +284,7 @@ namespace QtSMS
 		mSentinel = true;
 		mLastFrame = frameNumber;
 		UpdateSpectrumView(mLastFrame);
-		CLAM::Segment segment = Engine::Instance()->GetOriginalSegment();
+		CLAM::Segment segment = (mHasTransformedSegment) ? Engine::Instance()->GetTransformedSegment() : Engine::Instance()->GetOriginalSegment();
 		float duration = float(segment.GetEndTime());
 		float n_frames = float(segment.GetnFrames());
 		float time = frameNumber*duration/n_frames;
@@ -314,7 +329,7 @@ namespace QtSMS
 
 	int ViewManager::GetFrameNumber()
 	{
-		CLAM::Segment segment = Engine::Instance()->GetOriginalSegment();
+		CLAM::Segment segment = (mHasTransformedSegment) ? Engine::Instance()->GetTransformedSegment() : Engine::Instance()->GetOriginalSegment();
 		float duration = float(segment.GetEndTime());
 		float n_frames = float(segment.GetnFrames());
 		int frame_number = int(mCurrentTime*n_frames/duration);
@@ -323,7 +338,7 @@ namespace QtSMS
 
 	void ViewManager::UpdateSpectrumView(int frameNumber, bool update)
 	{
-		CLAM::Frame frame = Engine::Instance()->GetOriginalSegment().GetFrame(frameNumber);
+		CLAM::Frame frame = (mHasTransformedSegment) ? Engine::Instance()->GetTransformedSegment().GetFrame(frameNumber) : Engine::Instance()->GetOriginalSegment().GetFrame(frameNumber);
 
 		((CLAM::VM::SMSFreqMultiDisplay*)mPlotList[SPECTRUM_GROUP_VIEW])->SetSpectrumAndPeaks(
 			frame.GetSinusoidalAnalSpectrum(),
