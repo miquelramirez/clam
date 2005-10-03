@@ -40,7 +40,7 @@ namespace QtSMS
 		mTransformationChainCfg.GetOnArray().SetSize(2);
 		mTransformationChainCfg.GetOnArray()[0] = mTransformationChainCfg.GetOnArray()[1] = true;
 
-		for(unsigned i = 1; i < mSMSConfiguratorList.size(); i++)
+		for(unsigned i=0; i < mSMSConfiguratorList.size(); i++)
 		{
 			CLAM::SMSTransformationChaineeConfig cfg;
 			cfg.SetConcreteClassName(mScoreTransformationList->text(i).ascii());
