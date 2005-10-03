@@ -68,7 +68,6 @@ namespace CLAM
 		
 		mListeningOSC=false;
 	
-		std::cout << "OSCEnabledNetwork::StopListeningOSC() : revisa ordre de parada del mReceiveSocket i del mThread" << std::endl;
 		mReceiveSocket->Break();
 		mThread.Stop();
 	}
