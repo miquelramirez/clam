@@ -68,7 +68,7 @@ namespace QtSMS
 			mSMSConfiguratorList.push_back(pCfg);
 			mSMSConfiguratorList[i-1]->GetParametersWidget()->reparent(mTabWidget->page(1),QPoint(0,0));
 			mTabPage1Layout->addWidget(mSMSConfiguratorList[i-1]->GetParametersWidget());
-			mSMSConfiguratorList[i]->GetParametersWidget()->hide();
+			mSMSConfiguratorList[i-1]->GetParametersWidget()->hide();
 			connect(mSMSConfiguratorList[i-1],SIGNAL(configurationChanged()),SLOT(scoreChanged()));
 		}
 		HideAll();
