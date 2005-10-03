@@ -6,6 +6,7 @@
 #include "Engine.hxx"
 #include "ViewManager.hxx"
 #include "SMSConfigDlg.hxx"
+#include "ScoreEditorDlg.hxx"
 #include "QtWaitMessage.hxx"
 #include "QtSMSTools.hxx"
 
@@ -120,14 +121,37 @@ namespace QtSMS
 
 	void QtSMSTools::loadTransformationScore()
 	{
-		// TODO
-		NotImplemented();
+		QString filename = QFileDialog::getSaveFileName("new_score.xml","*.xml",this);
+		if(!filename.isEmpty())
+		{
+			mEngine->LoadTransformationScore((filename));	
+			UpdateState();
+		}
 	}
 
 	void QtSMSTools::newTransformationScore()
 	{
-		// TODO
-		NotImplemented();
+		ScoreEditorDlg* scoreDlg = new ScoreEditorDlg();
+		if(scoreDlg->exec() == QDialog::Accepted)
+		{
+
+			if(scoreDlg->Apply())
+			{
+				QString filename = QFileDialog::getSaveFileName("new_score.xml","*.xml",this);
+				if(!filename.isEmpty())
+				{
+					mEngine->SetCurrentTransformationScore(scoreDlg->GetTransformationChain());
+					mEngine->StoreTransformationScore((filename));
+					UpdateState();
+				}
+			}
+			else
+			{
+				CLAM::VM::Message(QMessageBox::Information,"SMS Tools 2","The score has not been changed or it's empty.");
+			}
+
+		}
+		delete scoreDlg;
 	}
 
 	void QtSMSTools::analyze()
