@@ -42,10 +42,10 @@ namespace CLAM
 		SetPort(port);
 
 		//Init receiver socket
-		mReceiveSocket = new UdpListeningReceiveSocket( GetPort(), &mListener );
+		mReceiveSocket = new UdpClamReceiverSocket( GetPort(), &mListener );
 
 		//Init thread
-		mThread.SetThreadCode( makeMemberFunctor0( *mReceiveSocket, UdpListeningReceiveSocket, Run ) );
+		mThread.SetThreadCode( makeMemberFunctor0( *mReceiveSocket, UdpClamReceiverSocket, Run ) );
 		mThread.SetupPriorityPolicy();
 	
 		mListeningOSC=false;
@@ -68,7 +68,7 @@ namespace CLAM
 		
 		mListeningOSC=false;
 	
-		mReceiveSocket->Break();
+		mReceiveSocket->AsynchronousBreak();
 		mThread.Stop();
 	}
 	

@@ -31,6 +31,7 @@
 //OSC dependencies
 #include <oscpack/ip/NetworkingUtils.h>
 #include <oscpack/ip/UdpSocket.h>
+#include <oscpack/ip/TimerListener.h>
 #include <oscpack/osc/OscPacketListener.h>
 #include <oscpack/osc/OscReceivedElements.h>
 
@@ -43,7 +44,9 @@ namespace CLAM
 {
 	class OSCEnabledNetwork : public CLAM::Network
 	{
-		//Inner class of OSCEnabledNetwork
+		//Inner classes of OSCEnabledNetwork:
+		
+		//Listener that will process every incoming packet
 		class OscReceivePacketListener : public osc::OscPacketListener
 		{
 			//void ProcessBundle( const osc::ReceivedBundle& b );
@@ -55,11 +58,45 @@ namespace CLAM
 			//virtual void ProcessPacket( const char *data, unsigned long size );
 			void AttachToNetwork(OSCEnabledNetwork* net);
 		};
+
+		//Socket that will listen for incoming packets 
+		class UdpClamReceiverSocket : public UdpSocket
+		{
+			//Intra-inner class: small useless class made to have a timer attached to our socket
+
+			class ClamTimerListener : public TimerListener
+			{
+				virtual void TimerExpired() {}
+			};
+
+			SocketReceiveMultiplexer mMux;
+			PacketListener *mListener;
+			ClamTimerListener mTimer;
+		public:
+			UdpClamReceiverSocket( const IpEndpointName& localEndpoint, PacketListener *listener )
+		        : mListener( listener )
+			{
+				Bind( localEndpoint );
+				mMux.AttachSocketListener( this, mListener );
+				mMux.AttachPeriodicTimerListener( 10, &mTimer );
+			}
+
+			~UdpClamReceiverSocket()
+			{
+				mMux.DetachSocketListener( this, mListener );
+			}
+			// see SocketReceiveMultiplexer above for the behaviour of these methods...
+			void Run() { mMux.Run(); }
+			void RunUntilSigInt() { mMux.RunUntilSigInt(); }
+			void Break() { mMux.Break(); }
+			void AsynchronousBreak() { mMux.AsynchronousBreak(); }
+		};
+
 		
 	private:
 		CLAM::Thread mThread;
 		
-		UdpListeningReceiveSocket *mReceiveSocket;
+		UdpClamReceiverSocket *mReceiveSocket;
 		OscReceivePacketListener mListener;
 		
 		int mPort;
