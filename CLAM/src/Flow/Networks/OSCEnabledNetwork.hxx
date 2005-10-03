@@ -86,8 +86,8 @@ namespace CLAM
 		
 		virtual ~OSCEnabledNetwork()
 		{
-			//std::cerr <<" *\t\t\t~OSCENABLEDNETWORK"<<std::endl;
 			StopListeningOSC();
+			Stop();
 			if ( mReceiveSocket != NULL )
 				delete mReceiveSocket;
 		}
