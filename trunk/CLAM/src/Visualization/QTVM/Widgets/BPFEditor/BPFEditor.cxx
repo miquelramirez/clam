@@ -415,6 +415,8 @@ namespace CLAM
 
 			connect(mController,SIGNAL(rightButtonPressed()),this,SLOT(showPopupMenu()));
 
+			connect(mController,SIGNAL(pointsChanged()),this,SIGNAL(pointsChanged()));
+
 			if(mPlayer)
 			{
 				connect(mController,SIGNAL(xValueChanged(int, float)),((QtBPFPlayer*)mPlayer),SLOT(updateNoteDuration(int, float)));
@@ -454,6 +456,7 @@ namespace CLAM
 			mController->SetDataColor(VMColor::White(),VMColor::Cyan());
 			mController->SetRectColor(VMColor::White());
 			mController->SetDialColor(VMColor::Red());
+			mController->SetGridColor(VMColor::LightGray());
 
 			mXRuler->SetBackgroundColor(VMColor::Black());
 			mXRuler->SetForegroundColor(VMColor::White());
@@ -489,6 +492,7 @@ namespace CLAM
 			mController->SetDataColor(VMColor::Black(),VMColor::Blue());
 			mController->SetRectColor(VMColor::Black());
 			mController->SetDialColor(VMColor::Black());
+			mController->SetGridColor(VMColor::Brown());
 
 			mXRuler->SetBackgroundColor(VMColor::White());
 			mXRuler->SetForegroundColor(VMColor::Black());
@@ -765,6 +769,26 @@ namespace CLAM
 				mController->SetCurrentBPF(mChooseBPFDialog->selection().ascii());
 				if(mPlayer) ((QtBPFPlayer*)mPlayer)->SetCurrentBPF(mChooseBPFDialog->selection().ascii());
 			}
+		}
+
+		void BPFEditor::ActiveLocator(bool active)
+		{
+			mController->ActiveDial(active);
+		}
+
+		void BPFEditor::ShowGrid(bool show)
+		{
+			mController->ShowGrid(show);
+		}
+
+		void BPFEditor::SnapToGrid(bool snap)
+		{
+			mController->SnapToGrid(snap);
+		}
+
+		void BPFEditor::SetGridSteps(double xstep, double ystep)
+		{
+			mController->SetGridSteps(xstep,ystep);
 		}
 
 	}

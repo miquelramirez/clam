@@ -75,6 +75,14 @@ namespace CLAM
 			BPF& GetData(const std::string& key);
 			Melody& GetMelody(const std::string& key);
 			MIDIMelody& GetMIDIMelody(const std::string& key);
+
+			void ActiveLocator(bool active);
+			void ShowGrid(bool show);
+			void SnapToGrid(bool snap);
+			void SetGridSteps(double xstep, double ystep);
+
+			void WhiteOverBlack();
+			void BlackOverWhite();
 	    
 		signals:
 			void xValueChanged(int, float);
@@ -82,6 +90,7 @@ namespace CLAM
 			void selectedXPos(double);
 			void currentPlayingTime(float);
 			void stopPlaying(float);
+			void pointsChanged();
 
 		public slots:
 			void setHBounds(double, double);
@@ -146,9 +155,7 @@ namespace CLAM
 			void InitBPFEditor();
 
 			void SetScheme(int scheme);
-			void WhiteOverBlack();
-			void BlackOverWhite();
-
+			
 			void AdjustLeft(const double& min, const double& max, bool y_axis=true);
 			void CreateVScroll();
 			void CreateHScroll();
