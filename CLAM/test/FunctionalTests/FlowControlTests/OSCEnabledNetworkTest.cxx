@@ -46,6 +46,7 @@ public:
 		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
 		mNet->Start();
 		mNet->StartListeningOSC();
+		sleep(1);
 	}
 	
 	void tearDown(void)
