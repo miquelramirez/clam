@@ -30,8 +30,8 @@ namespace CLAM
 	}
 	
 	SegmentTransformation::SegmentTransformation()
-		: mAmountCtrl("Amount",this)
-		, mOnCtrl("On",this)
+		: mOnCtrl("On",this)
+		, mAmountCtrl("Amount",this)
 	{
 		mInput = 0;
 		mOutput = 0;
@@ -41,8 +41,8 @@ namespace CLAM
 	}
 
 	SegmentTransformation::SegmentTransformation(const SegmentTransformationConfig& c) 
-		: mAmountCtrl("Amount",this)
-		, mOnCtrl("On",this)
+		: mOnCtrl("On",this)
+		, mAmountCtrl("Amount",this)
 	{
 		mInput = 0;
 		mOutput = 0;
