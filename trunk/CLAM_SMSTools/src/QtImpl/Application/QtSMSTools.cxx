@@ -132,12 +132,10 @@ namespace QtSMS
 	void QtSMSTools::newTransformationScore()
 	{
 		ScoreEditorDlg* scoreDlg = new ScoreEditorDlg();
-/*
 		if(mEngine->GetState().GetHasTransformationScore())
 		{
 			scoreDlg->SetTransformationScore(mEngine->GetCurrentTransformationScore());
 		}
-*/
 		if(scoreDlg->exec() == QDialog::Accepted)
 		{
 			if(scoreDlg->Apply())
