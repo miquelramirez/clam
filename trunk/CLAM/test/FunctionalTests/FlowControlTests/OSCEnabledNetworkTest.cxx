@@ -8,8 +8,8 @@
 #include <string>
 
 #include <oscpack/osc/OscOutboundPacketStream.h>
-#include <oscpack/ip/NetworkingUtils.h>
-#include <oscpack/ip/UdpTransmitPort.h>
+#include <oscpack/ip/UdpSocket.h>
+#include <oscpack/ip/IpEndpointName.h>
 
 #define IP_MTU_SIZE 1536
 
@@ -32,17 +32,15 @@ class OSCEnabledNetworkTest : public CppUnit::TestFixture
 
 	char buffer[IP_MTU_SIZE];
 	osc::OutboundPacketStream *p;
-	UdpTransmitPort *transmitPort;
+	UdpTransmitSocket *transmitPort;
 	CLAM::OSCEnabledNetwork *mNet;
  
 public: 
 
 	void setUp()
 	{
-		InitializeNetworking();
-	
 		p= new osc::OutboundPacketStream(buffer, IP_MTU_SIZE );
-		transmitPort = new UdpTransmitPort( GetHostByName("localhost"), 7000 );
+		transmitPort = new UdpTransmitSocket( IpEndpointName("localhost", 7000 ) );
 		
 		mNet = new CLAM::OSCEnabledNetwork(7000);
 		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
@@ -57,7 +55,6 @@ public:
 		delete mNet;
 
 		delete transmitPort;
-		TerminateNetworking();
 		sleep(1);
 	}
 
