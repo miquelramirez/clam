@@ -139,6 +139,7 @@ namespace QtSMS
 		{
 			mScoreTransformationList->setSelected(mScoreTransformationList->currentItem(),true);
 		}
+		scoreChanged();
 	}
 
 	void ScoreEditorDlg::moveHighlightedUp()
@@ -187,6 +188,7 @@ namespace QtSMS
 		mSMSConfiguratorList[source]=mSMSConfiguratorList[dest];
 		mSMSConfiguratorList[dest]=cfg;
 		onSelectTransformationInScore(dest);
+		scoreChanged();
 	}
 
 	void ScoreEditorDlg::HideHelpWidgets()
