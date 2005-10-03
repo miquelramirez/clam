@@ -121,7 +121,7 @@ namespace QtSMS
 
 	void QtSMSTools::loadTransformationScore()
 	{
-		QString filename = QFileDialog::getSaveFileName("new_score.xml","*.xml",this);
+		QString filename = QFileDialog::getOpenFileName(QString::null,"*.xml *",this);
 		if(!filename.isEmpty())
 		{
 			mEngine->LoadTransformationScore((filename));	
@@ -132,9 +132,12 @@ namespace QtSMS
 	void QtSMSTools::newTransformationScore()
 	{
 		ScoreEditorDlg* scoreDlg = new ScoreEditorDlg();
+		if(mEngine->GetState().GetHasTransformationScore())
+		{
+			scoreDlg->SetTransformationScore(mEngine->GetCurrentTransformationScore());
+		}
 		if(scoreDlg->exec() == QDialog::Accepted)
 		{
-
 			if(scoreDlg->Apply())
 			{
 				QString filename = QFileDialog::getSaveFileName("new_score.xml","*.xml",this);
@@ -175,14 +178,20 @@ namespace QtSMS
 
 	void QtSMSTools::doTransformation()
 	{
-		// TODO
-		NotImplemented();
+		InitMenuViewItems(false);
+		Engine::DisplayManager()->HideDisplays();
+		Engine::DisplayManager()->Reset();
+		mEngine->Transform();
+		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendTransformedDataToViewManager));
 	}
 
 	void QtSMSTools::undoTransformation()
 	{
-		// TODO
-		NotImplemented();
+		mEngine->GetState().SetHasTransformation(false);
+		InitMenuViewItems(false);
+		Engine::DisplayManager()->HideDisplays();
+		Engine::DisplayManager()->Reset();
+		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendAnalyzedDataToViewManager));
 	}
    
 	void QtSMSTools::synthesize()
@@ -547,6 +556,14 @@ namespace QtSMS
 	{
 		CLAMGUI::QtWaitMessage* msg = new CLAMGUI::QtWaitMessage("Building Graphic Data....");
 		Engine::DisplayManager()->SetAnalyzedData();
+		delete msg;
+		UpdateState();
+	}
+
+	void QtSMSTools::SendTransformedDataToViewManager()
+	{
+		CLAMGUI::QtWaitMessage* msg = new CLAMGUI::QtWaitMessage("Building Graphic Data....");
+		Engine::DisplayManager()->SetTransformedData();
 		delete msg;
 		UpdateState();
 	}
