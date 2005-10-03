@@ -60,17 +60,20 @@ namespace QtSMS
 		mScoreChanged=false;
 		CLAM::SMSTransformationChainConfig::const_iterator it = cfg.ConfigList_begin_const();
 		it++;
-		for(unsigned i=1; i < cfg.ConfigList_size(); i++, it++)
+		for(unsigned i=1; i < cfg.ConfigList_size()-1; i++, it++)
 		{
 			mScoreTransformationList->insertItem(it->GetConcreteClassName().c_str());
 			QtSMS::SMSConfigurator* pCfg = QtSMS::SMSConfiguratorFactory::GetInstance().Create(it->GetConcreteClassName().c_str());
 			pCfg->SetConfig(it->GetConcreteConfig());
 			mSMSConfiguratorList.push_back(pCfg);
-			mSMSConfiguratorList[i]->GetParametersWidget()->reparent(mTabWidget->page(1),QPoint(0,0));
-			mTabPage1Layout->addWidget(mSMSConfiguratorList[i]->GetParametersWidget());
+			mSMSConfiguratorList[i-1]->GetParametersWidget()->reparent(mTabWidget->page(1),QPoint(0,0));
+			mTabPage1Layout->addWidget(mSMSConfiguratorList[i-1]->GetParametersWidget());
 			mSMSConfiguratorList[i]->GetParametersWidget()->hide();
-			connect(mSMSConfiguratorList[i],SIGNAL(configurationChanged()),SLOT(scoreChanged()));
+			connect(mSMSConfiguratorList[i-1],SIGNAL(configurationChanged()),SLOT(scoreChanged()));
 		}
+		HideAll();
+		mAvailableTransformationList->clearSelection();
+		mScoreTransformationList->clearSelection();
 	}
 
 	const CLAM::SMSTransformationChainConfig& ScoreEditorDlg::GetTransformationChain() const
