@@ -54,6 +54,7 @@ namespace CLAM
   bool CepstralTransform::Do()
   {
      CLAM_ASSERT(false, "Supervised Do() not implemented");
+     return false;
   }
   
   bool CepstralTransform::ConcreteStart()

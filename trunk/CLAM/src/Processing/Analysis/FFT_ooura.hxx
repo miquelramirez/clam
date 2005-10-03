@@ -42,8 +42,8 @@ namespace CLAM {
 	class FFT_ooura: public FFT_base
 	{
 	  /** Internal bit reversal, cos & sin tables */
-		TData *w;
 		int *ip;
+		TData *w;
 
 		bool FFTConfigure();
 
