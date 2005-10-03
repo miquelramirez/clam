@@ -145,6 +145,12 @@ namespace CLAM
 
 			void ActiveRendering(bool active);
 
+			void ActiveDial(bool active);
+			void ShowGrid(bool show);
+			void SnapToGrid(bool snap);
+			void SetGridSteps(double xstep, double ystep);
+			void SetGridColor(const Color& c);
+
 		signals:
 			void viewChanged(GLView);
 			void cursorChanged(QCursor);
@@ -168,6 +174,7 @@ namespace CLAM
 			void stopPlaying();
 			void currentPlayingTime(float);
 			void stopPlaying(float);
+			void pointsChanged();
 
 		public slots:
 			void vZoomIn();
@@ -224,8 +231,15 @@ namespace CLAM
 			std::string  mCurrentBPF;
 			bool         mIsModified;
 			bool         mActiveRendering;
+
+			bool         mActiveDial;
+			bool         mShowGrid;
+			bool         mSnapToGrid;
+			double       mXGridStep;
+			double       mYGridStep;
+			Color        mGridColor;
        
-			enum { Selection=0, Edition };
+			enum { Selection=0, Edition=1, LINE_WIDTH=1 };
 	    
 			void PushSettings();
 			void PopSettings();
@@ -281,6 +295,9 @@ namespace CLAM
 			void CheckForModifiedBPF();
 			void SetRenderersBounds();
 			void CheckReferencePoint();
+
+			void DrawGrid();
+			double round(double x) const;
 		};
     }
 }

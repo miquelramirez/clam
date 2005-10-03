@@ -40,10 +40,16 @@ namespace CLAM
 			, mCurrentBPF("default")
 			, mIsModified(false)
 			, mActiveRendering(true)
+			, mActiveDial(true)
+			, mShowGrid(false)
+			, mSnapToGrid(false)
+			, mXGridStep(1.0)
+			, mYGridStep(1.0)
 		{
 			InitTables();
 			SetRectColor(VMColor::White());
 			SetDialColor(VMColor::Red());
+			SetGridColor(VMColor::LightGray());
 		}
 
 		BPFEditorController::~BPFEditorController()
@@ -103,6 +109,7 @@ namespace CLAM
 			mXScale = scale;
 			if(min >= max) return;
 			mSpanX = max-min;
+			if(mSpanX <= 4.0) mMinSpanX = mSpanX*0.1;
 			mMinX = min;
 			mMaxX = max;
 			mSettingStack.clear();
@@ -123,6 +130,7 @@ namespace CLAM
 			mYScale = scale;
 			if(min >= max) return;
 			mSpanY = max-min;
+			if(mSpanY <= 4.0) mMinSpanY=mSpanY*0.1;
 			mMinY = min;
 			mMaxY = max;
 			mSettingStack.clear();
@@ -188,11 +196,13 @@ namespace CLAM
 				if(mXModified)
 				{
 					emit xValueChanged(mCurrentIndex, mBPFs[index].GetXValue(mCurrentIndex));
+					emit pointsChanged();
 					mXModified = false;
 				}
 				if(mYModified)
 				{
 					emit yValueChanged(mCurrentIndex, mBPFs[index].GetValueFromIndex(mCurrentIndex));
+					emit pointsChanged();
 					mYModified = false;
 				}
 
@@ -268,6 +278,7 @@ namespace CLAM
 					{
 						mBPFs[index].DeleteIndex(mCurrentIndex);
 						emit elementRemoved(int(mCurrentIndex));
+						emit pointsChanged();
 						mIsModified = true;
 						ChooseCurrentPointByJumping(-1);
 					}
@@ -287,6 +298,7 @@ namespace CLAM
 			UpdateBPF(x + stepX*stepXSize, y + stepY*stepYSize);
 			emit xValueChanged(mCurrentIndex, mBPFs[index].GetXValue(mCurrentIndex));
 			emit yValueChanged(mCurrentIndex, mBPFs[index].GetValueFromIndex(mCurrentIndex));
+			emit pointsChanged();
 			emit requestRefresh();
 			UpdateXYLabels(x,y);
 		}
@@ -403,7 +415,8 @@ namespace CLAM
 			SetRenderersBounds();
 			CheckReferencePoint();
 			Render();
-			mDial.Render();
+			if(mActiveDial) mDial.Render();
+			if(mShowGrid) DrawGrid();
 			if(mEFlags & CLAM::VM::AllowZoomByMouse)
 			{
 				DrawRect();
@@ -565,6 +578,15 @@ namespace CLAM
 			if (y<mMinY) y=mMinY;
 			if (y>mMaxY) y=mMaxY;
 
+			if(mShowGrid)
+			{
+				if(mSnapToGrid)
+				{
+					x=round((x-mMinX)/mXGridStep)*mXGridStep+mMinX;
+					y=round((y-mMinY)/mYGridStep)*mYGridStep+mMinY;
+				}
+			}
+
 			if(mEFlags & CLAM::VM::AllowVerticalEdition)
 			{
 				mBPFs[index].SetValue(mCurrentIndex,y);
@@ -585,10 +607,20 @@ namespace CLAM
 			if (y<mMinY) y=mMinY;
 			if (y>mMaxY) y=mMaxY;
 
+			if(mShowGrid)
+			{
+				if(mSnapToGrid)
+				{
+					x=round((x-mMinX)/mXGridStep)*mXGridStep+mMinX;
+					y=round((y-mMinY)/mYGridStep)*mYGridStep+mMinY;
+				}
+			}
+
 			unsigned i = GetBPFIndex(mCurrentBPF);
 			TIndex index = mBPFs[i].Insert(x,y);
 			mIsModified = true;
 			emit elementAdded(int(index),float(x), float(y));
+			emit pointsChanged();
 			ChooseCurrentPoint(index);
 		}
 
@@ -849,6 +881,7 @@ namespace CLAM
 		bool BPFEditorController::ReferenceIsVisible()
 		{
 			unsigned index = GetBPFIndex(mCurrentBPF);
+			if(!mBPFs[index].Size()) return false;
 		    double value = (mIsPlaying) ? double(mDial.GetPos()) : double(mBPFs[index].GetXValue(mCurrentIndex));
 		    return (value > mXRulerRange.mMin && value < mXRulerRange.mMax);
 		}
@@ -1052,6 +1085,72 @@ namespace CLAM
 		void BPFEditorController::ActiveRendering(bool active)
 		{
 			mActiveRendering = active;
+		}
+
+		void BPFEditorController::ActiveDial(bool active)
+		{
+			mActiveDial=active;
+		}
+
+		void BPFEditorController::ShowGrid(bool show)
+		{
+			mShowGrid=show;
+			emit requestRefresh();
+		}
+
+		void BPFEditorController::SnapToGrid(bool snap)
+		{
+			mSnapToGrid=snap;
+		}
+
+		void BPFEditorController::SetGridSteps(double xstep, double ystep)
+		{
+			mXGridStep=xstep;
+			mYGridStep=ystep;
+		}
+
+		void BPFEditorController::SetGridColor(const Color& c)
+		{
+			mGridColor=c;
+		}
+
+		void BPFEditorController::DrawGrid()
+		{
+			glColor3ub(GLubyte(mGridColor.r),GLubyte(mGridColor.g),GLubyte(mGridColor.b));
+			glLineWidth(LINE_WIDTH);
+			glBegin(GL_LINES);
+			// vertical lines
+			double pos=mMinX;
+			while(pos < mMaxX)
+			{
+				if(pos > mXRulerRange.mMax) break;
+				if(pos >= mXRulerRange.mMin)
+				{
+					glVertex2f((GLfloat)pos,(GLfloat)mYRulerRange.mMin);
+					glVertex2f((GLfloat)pos,(GLfloat)mYRulerRange.mMax);
+				}
+				pos+=mXGridStep;
+			}
+			// horizontal lines
+			pos=mMinY;
+			while(pos < mMaxY)
+			{
+				if(pos > mYRulerRange.mMax) break;
+				if(pos >= mYRulerRange.mMin)
+				{
+					glVertex2f((GLfloat)mXRulerRange.mMin,(GLfloat)pos);
+					glVertex2f((GLfloat)mXRulerRange.mMax,(GLfloat)pos);
+				}
+				pos+=mYGridStep;
+			}
+			glEnd();
+		}
+
+		double BPFEditorController::round(double x) const
+		{
+			double i=double(int(x));
+			double frac=x-i;
+			return (frac >= 0.5) ? i+1.0 : i;
 		}
 	   
 	}
