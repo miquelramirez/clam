@@ -11,6 +11,10 @@
 #include <oscpack/ip/UdpSocket.h>
 #include <oscpack/ip/IpEndpointName.h>
 
+//Used for the usleep function, WARNING: might not work on windows
+//If it doesn't, simply deleting the following line and changing 'usleep(1000)' -> 'sleep(1)' should do it
+#include <unistd.h>
+
 #define IP_MTU_SIZE 1536
 
 namespace CLAMTest {
@@ -46,7 +50,7 @@ public:
 		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
 		mNet->Start();
 		mNet->StartListeningOSC();
-		sleep(1);
+		usleep(1000);
 	}
 	
 	void tearDown(void)
@@ -56,7 +60,7 @@ public:
 		delete mNet;
 
 		delete transmitPort;
-		sleep(1);
+		usleep(1000);
 	}
 
 private:
@@ -87,7 +91,7 @@ private:
 	void testReceivedPacket_WhenNoSuchProcessing()
 	{
 		Send("processing1","input",1983);
-		sleep(1);
+		usleep(1000);
 		CPPUNIT_ASSERT_EQUAL ( std::string("[RECEIVED] processing1.input 1983 - No such processing"), mNet->GetLogMessage() );
 	}
 
@@ -102,7 +106,7 @@ private:
 		mNet->AddProcessing("processing1",new CLAM::PrintControl(conf));	
 
 		Send("processing1","wronginput",1983);
-		sleep(1);
+		usleep(1000);
 		
 		std::string expected("[RECEIVED] processing1.wronginput 1983 - No such control in processing");
 		CPPUNIT_ASSERT_EQUAL (expected, mNet->GetLogMessage() );
@@ -119,7 +123,7 @@ private:
 		mNet->AddProcessing("processing1",new CLAM::PrintControl(conf));	
 
 		Send("processing1","input",1983);
-		sleep(1);
+		usleep(1000);
 		
 		std::string expectedLog("[RECEIVED] processing1.input 1983 - Delivered");
 		CPPUNIT_ASSERT_EQUAL ( expectedLog, mNet->GetLogMessage() );
@@ -133,7 +137,7 @@ private:
 	{
 		//Creates special parameter-free osc packet
 		Send("processing1","input",0);
-		sleep(1);
+		usleep(1000);
 		std::string expected("[RECEIVED] ERROR Parsing:  0 : missing argument");
 		CPPUNIT_ASSERT_EQUAL ( expected, mNet->GetLogMessage() );
 
