@@ -45,6 +45,7 @@ namespace CLAM
 
 		void QtSMSPlayer::Flush()
 		{
+			stop();
 			mHasAudio = false;
 			mHasFundamental = false;
 		}
