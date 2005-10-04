@@ -94,7 +94,7 @@ protected:
 	
 
 	virtual void paintEvent( QPaintEvent * );
-	QColor GetColorOfState();
+	virtual QColor GetColorOfState();
 	void mousePressEvent( QMouseEvent * );
 	void mouseReleaseEvent( QMouseEvent * );
 	void mouseMoveEvent( QMouseEvent * );
