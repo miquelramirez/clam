@@ -59,6 +59,7 @@ namespace CLAM
 			mPlayer = new QtFundPlayer(this);
 			((QtFundPlayer*)mPlayer)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
 			((QtFundPlayer*)mPlayer)->SetSlotStopPlaying(mSlotStopPlayingReceived);
+			AddToPlayList();
 			mPlayer->setFixedSize(75,30);
 			panel->addWidget(mPlayer);
 
