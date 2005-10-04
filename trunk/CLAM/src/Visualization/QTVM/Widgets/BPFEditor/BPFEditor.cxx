@@ -325,6 +325,7 @@ namespace CLAM
 				mPlayer = new QtBPFPlayer(this);
 				((QtBPFPlayer*)mPlayer)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
 				((QtBPFPlayer*)mPlayer)->SetSlotStopPlaying(mSlotStopPlayingReceived);
+				AddToPlayList();
 				if(mHScroll)
 				{
 				    mXRuler->setFixedHeight(fm.height()+30);
