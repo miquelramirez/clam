@@ -59,6 +59,7 @@ namespace CLAM
 			mPlayer->setFixedSize(75,30);
 			((QtAudioPlayer*)mPlayer)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
 			((QtAudioPlayer*)mPlayer)->SetSlotStopPlaying(mSlotStopPlayingReceived);
+			AddToPlayList();
 			
 			mLabelsGroup = new TimeSegmentLabelsGroup(this);
 			mLabelsGroup->setMinimumSize(186,25);

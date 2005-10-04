@@ -908,7 +908,8 @@ namespace CLAM
 			mPlayer->setFixedSize(75,30);
 			((QtSMSPlayer*)mPlayer)->SetSlotPlayingTime(mSlotPlayingTimeReceived);
 			((QtSMSPlayer*)mPlayer)->SetSlotStopPlaying(mSlotStopPlayingReceived);
-			
+			AddToPlayList();
+
 			middleHole = new QFrame(this);
 			middleHole->setFixedSize(50,30);
 
