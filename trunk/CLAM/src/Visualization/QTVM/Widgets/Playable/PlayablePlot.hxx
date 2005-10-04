@@ -33,16 +33,17 @@ namespace CLAM
 		public:
 			PlayablePlot();
 			~PlayablePlot();
-				
+			
 			void Play();
 			void Pause();
 			void Stop();
-				
+	
 			bool IsPlaying();
 			
 		protected:
 			QtPlayer* mPlayer;
-
+			
+			void AddToPlayList();
 			void RemoveFromPlayList();
 
 		};

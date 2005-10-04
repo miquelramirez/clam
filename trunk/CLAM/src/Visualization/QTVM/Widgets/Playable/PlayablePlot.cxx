@@ -30,7 +30,6 @@ namespace CLAM
 		PlayablePlot::PlayablePlot() 
 			: mPlayer(0)
 		{
-			PlayableList::Add(this);
 		}
 
 		PlayablePlot::~PlayablePlot()
@@ -41,7 +40,12 @@ namespace CLAM
 				delete mPlayer;
 			}
 		}
-				
+		
+		void PlayablePlot::AddToPlayList()
+		{
+			PlayableList::Add(this);
+		}
+
 		void PlayablePlot::Play()
 		{
 			if(mPlayer) mPlayer->play();
