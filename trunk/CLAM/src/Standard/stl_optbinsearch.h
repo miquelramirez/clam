@@ -98,7 +98,7 @@ namespace std
 				 const value_type& val, RandomIterator last, GreatEqCmp cmpOp  )
 		{
 			unsigned guess = std::distance( begin, last );
-			int dist = std::distance( begin, end );
+			unsigned dist = std::distance( begin, end );
 			
 			if ( last < begin ||  last >= end )
 				return begin + detail::bisect( begin, end, val, 0, dist, cmpOp );
@@ -165,7 +165,7 @@ namespace std
 				 const value_type& val, RandomIterator last  )
 		{
 			unsigned guess = std::distance( begin, last );
-			int dist = std::distance( begin, end );
+			unsigned dist = std::distance( begin, end );
 			
 			if ( last < begin ||  last >= end )
 				return begin + detail::bisect( begin, end, val, 0, dist );
