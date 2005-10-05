@@ -68,11 +68,25 @@ void PrintUsageAndExit( const string& extramessage)
 CLAM::NetworkPlayer* CreateNetworkPlayerFromName(const string name)
 {
 	if ( name == string("alsa"))
+	{
+		std::cout << " Using ALSA input/output driver.\
+			\n  No externalizer will work." << std::endl;
 		return new CLAM::BlockingNetworkPlayer();
+	}
 	else if ( name == string("jack") )
+	{
+		std::cout << " Using JACK input/output driver.\
+			\n  Don't use any AudioOut." << std::endl;
 		return new CLAM::JACKNetworkPlayer();
+	}
 	else if ( name == string("portaudio") )
+	{
+
+		std::cout << " Using PortAudio input/output driver. \
+			\n  Don't use any AudioOut. You must have the same amount of ExternSinks as ExternGenerators, a number between 1 and 2" << std::endl;
+
 		return new CLAM::PANetworkPlayer();
+	}
 	else PrintUsageAndExit("Incorrect driver!");
 
 	return NULL;
