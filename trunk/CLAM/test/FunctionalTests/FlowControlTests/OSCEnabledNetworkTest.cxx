@@ -31,7 +31,7 @@ class OSCEnabledNetworkTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testReceivedPacket_WhenProcessingHasNoSuchControl );
 	CPPUNIT_TEST( testReceivedPacket_EverythingOK );
 	CPPUNIT_TEST( testReceivedPacket_MalformedPacket );
-
+	
 	CPPUNIT_TEST_SUITE_END();
 
 	char buffer[IP_MTU_SIZE];
@@ -50,7 +50,6 @@ public:
 		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
 		mNet->Start();
 		mNet->StartListeningOSC();
-		usleep(1000);
 	}
 	
 	void tearDown(void)
@@ -60,7 +59,6 @@ public:
 		delete mNet;
 
 		delete transmitPort;
-		usleep(1000);
 	}
 
 private:
@@ -91,7 +89,7 @@ private:
 	void testReceivedPacket_WhenNoSuchProcessing()
 	{
 		Send("processing1","input",1983);
-		usleep(1000);
+		usleep(100);
 		CPPUNIT_ASSERT_EQUAL ( std::string("[RECEIVED] processing1.input 1983 - No such processing"), mNet->GetLogMessage() );
 	}
 
@@ -106,7 +104,7 @@ private:
 		mNet->AddProcessing("processing1",new CLAM::PrintControl(conf));	
 
 		Send("processing1","wronginput",1983);
-		usleep(1000);
+		usleep(100);
 		
 		std::string expected("[RECEIVED] processing1.wronginput 1983 - No such control in processing");
 		CPPUNIT_ASSERT_EQUAL (expected, mNet->GetLogMessage() );
@@ -123,7 +121,7 @@ private:
 		mNet->AddProcessing("processing1",new CLAM::PrintControl(conf));	
 
 		Send("processing1","input",1983);
-		usleep(1000);
+		usleep(100);
 		
 		std::string expectedLog("[RECEIVED] processing1.input 1983 - Delivered");
 		CPPUNIT_ASSERT_EQUAL ( expectedLog, mNet->GetLogMessage() );
@@ -137,7 +135,7 @@ private:
 	{
 		//Creates special parameter-free osc packet
 		Send("processing1","input",0);
-		usleep(1000);
+		usleep(100);
 		std::string expected("[RECEIVED] ERROR Parsing:  0 : missing argument");
 		CPPUNIT_ASSERT_EQUAL ( expected, mNet->GetLogMessage() );
 
