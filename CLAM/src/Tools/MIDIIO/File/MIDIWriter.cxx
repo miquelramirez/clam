@@ -8,7 +8,7 @@ namespace MIDI
 		: mFile(0)
 		, mBytesWritten(0)
 	{
-		mFile = fopen(filename,"w");
+		mFile = fopen(filename,"wb");
 	}
 
 	Writer::~Writer()
@@ -137,7 +137,7 @@ namespace MIDI
 
 	void Writer::WriteCh(char c)
 	{
-		putc(c,mFile);
+		fputc(c,mFile);
 		mBytesWritten++;
 	}
 }
