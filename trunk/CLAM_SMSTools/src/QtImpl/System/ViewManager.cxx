@@ -80,10 +80,6 @@ namespace QtSMS
 			Engine::Instance()->GetTransformedSegment().RemoveAudio();
 			Engine::Instance()->GetTransformedSegment().UpdateData();
 		}
-		double dur = double(Engine::Instance()->GetOriginalSegment().GetAudio().GetSize());
-		dur /= double(Engine::Instance()->GetOriginalSegment().GetSamplingRate());
-		Engine::Instance()->GetTransformedSegment().SetBeginTime(0.0);
-		Engine::Instance()->GetTransformedSegment().SetEndTime(dur);
 		((CLAM::VM::SMSTimeMultiDisplay*)mPlotList[TIME_GROUP_VIEW])->SetAnalyzedSegment(
 			Engine::Instance()->GetTransformedSegment());
 
