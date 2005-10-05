@@ -23,6 +23,10 @@
 #include <string>
 #include <iostream>
 
+#ifndef WIN32
+#include <signal.h>
+#endif
+
 using namespace std;
 
 //Inner class of the Network the OSC Listener
@@ -42,10 +46,11 @@ namespace CLAM
 		SetPort(port);
 
 		//Init receiver socket
-		mReceiveSocket = new UdpClamReceiverSocket( GetPort(), &mListener );
+		mReceiveSocket = new UdpListeningReceiveSocket( GetPort(), &mListener );
+
 
 		//Init thread
-		mThread.SetThreadCode( makeMemberFunctor0( *mReceiveSocket, UdpClamReceiverSocket, Run ) );
+		mThread.SetThreadCode( makeMemberFunctor0( *mReceiveSocket, UdpListeningReceiveSocket, RunUntilSigInt ) );
 		mThread.SetupPriorityPolicy();
 	
 		mListeningOSC=false;
@@ -56,9 +61,8 @@ namespace CLAM
 		if ( IsListeningOSC() )
 			return;
 
-		mListeningOSC=true;
-		
 		mThread.Start();
+		mListeningOSC=true;
 	}
 	
 	void OSCEnabledNetwork::StopListeningOSC()
@@ -66,10 +70,15 @@ namespace CLAM
 		if ( !IsListeningOSC() )
 			return;
 		
-		mListeningOSC=false;
 	
 		mReceiveSocket->AsynchronousBreak();
+
+	#ifndef WIN32
+		pthread_kill( mThread.GetThread(), SIGINT ); 
+	#endif
+
 		mThread.Stop();
+		mListeningOSC=false;
 	}
 	
 	const string OSCEnabledNetwork::GetLogMessage(void)

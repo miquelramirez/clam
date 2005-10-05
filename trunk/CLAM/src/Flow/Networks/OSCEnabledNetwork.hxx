@@ -49,13 +49,11 @@ namespace CLAM
 		//Listener that will process every incoming packet
 		class OscReceivePacketListener : public osc::OscPacketListener
 		{
-			//void ProcessBundle( const osc::ReceivedBundle& b );
 			virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
 
 			OSCEnabledNetwork* mParentNetwork;
 			
 		public:
-			//virtual void ProcessPacket( const char *data, unsigned long size );
 			void AttachToNetwork(OSCEnabledNetwork* net);
 		};
 
@@ -63,7 +61,6 @@ namespace CLAM
 		class UdpClamReceiverSocket : public UdpSocket
 		{
 			//Intra-inner class: small useless class made to have a timer attached to our socket
-
 			class ClamTimerListener : public TimerListener
 			{
 				virtual void TimerExpired() {}
@@ -96,7 +93,7 @@ namespace CLAM
 	private:
 		CLAM::Thread mThread;
 		
-		UdpClamReceiverSocket *mReceiveSocket;
+		UdpListeningReceiveSocket *mReceiveSocket;
 		OscReceivePacketListener mListener;
 		
 		int mPort;
