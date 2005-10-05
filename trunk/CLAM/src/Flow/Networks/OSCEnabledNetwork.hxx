@@ -57,39 +57,6 @@ namespace CLAM
 			void AttachToNetwork(OSCEnabledNetwork* net);
 		};
 
-		//Socket that will listen for incoming packets 
-		class UdpClamReceiverSocket : public UdpSocket
-		{
-			//Intra-inner class: small useless class made to have a timer attached to our socket
-			class ClamTimerListener : public TimerListener
-			{
-				virtual void TimerExpired() {}
-			};
-
-			SocketReceiveMultiplexer mMux;
-			PacketListener *mListener;
-			ClamTimerListener mTimer;
-		public:
-			UdpClamReceiverSocket( const IpEndpointName& localEndpoint, PacketListener *listener )
-		        : mListener( listener )
-			{
-				Bind( localEndpoint );
-				mMux.AttachSocketListener( this, mListener );
-				mMux.AttachPeriodicTimerListener( 10, &mTimer );
-			}
-
-			~UdpClamReceiverSocket()
-			{
-				mMux.DetachSocketListener( this, mListener );
-			}
-			// see SocketReceiveMultiplexer above for the behaviour of these methods...
-			void Run() { mMux.Run(); }
-			void RunUntilSigInt() { mMux.RunUntilSigInt(); }
-			void Break() { mMux.Break(); }
-			void AsynchronousBreak() { mMux.AsynchronousBreak(); }
-		};
-
-		
 	private:
 		CLAM::Thread mThread;
 		
