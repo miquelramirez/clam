@@ -66,6 +66,10 @@ public:
 	{
 		return mRunning;
 	}
+	pthread_t GetThread()
+	{
+		return mThreadID;
+	}
 
 private:
 	bool               mRealtime;
