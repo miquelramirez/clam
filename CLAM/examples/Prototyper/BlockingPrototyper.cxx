@@ -1,27 +1,39 @@
-
-#include "Proto.hxx"
+#include "PrototypeLoader.hxx"
 #include "BlockingNetworkPlayer.hxx"
+
+#include "Utils.hxx"
+
+#include <string>
 
 int main( int argc, char *argv[] )
 {
-	if (argc!=3)
+	if (argc<2 || argc>3)
 	{
 		std::cout << " Usage: " 
-			<< argv[0] << " <networkfile> <uifile>" << std::endl;
+			<< argv[0] << " <networkfile> [ <uifile> ]" << std::endl;
 		return -1;
 	}
 
-	char * networkFile = argv[1]; // "SpectralDelay.clam"
-	char * uiFile = argv[2]; // "SpectralDelay.ui" 
-
+	std::string networkFile, uiFile;
+	
+	networkFile=argv[1];
+	
+	if (argc==2)
+		uiFile=GetUiFromXmlFile(networkFile);
+	else if (argc==3)
+		uiFile = argv[2]; 
+	
+	if ( !FileExists(networkFile) || !FileExists(uiFile) )
+		return -1;
+	
 	QApplication app( argc, argv );
 
 	CLAM::PrototypeLoader loader(networkFile);
 	loader.SetNetworkPlayer( *(new CLAM::BlockingNetworkPlayer(networkFile)) );
 	
-	QWidget * prototype = loader.loadPrototype(uiFile);
+	QWidget * prototype = loader.LoadPrototype(uiFile);
 	if (!prototype) return -1;
-	loader.connectWithNetwork();
+	loader.ConnectWithNetwork();
 
 	// Set up the dynamic dialog here
 	app.setMainWidget( prototype );
