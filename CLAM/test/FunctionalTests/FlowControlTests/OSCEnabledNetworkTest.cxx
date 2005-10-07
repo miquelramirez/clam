@@ -50,7 +50,7 @@ public:
 		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
 		mNet->Start();
 		mNet->StartListeningOSC();
-		usleep(100);
+		usleep(1000);
 	}
 	
 	void tearDown(void)
@@ -60,7 +60,7 @@ public:
 		delete mNet;
 
 		delete transmitPort;
-		usleep(100);
+		usleep(1000);
 	}
 
 private:
