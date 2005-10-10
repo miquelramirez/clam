@@ -38,11 +38,13 @@ namespace CLAM
 
 		void Dial::Render()
 		{
+			glLineWidth(2);
 			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
 			glBegin(GL_LINES);
 			glVertex2f(float(mPosition-LeftBound()),float(TopBound()));
 			glVertex2f(float(mPosition-LeftBound()),float(BottomBound()));
 			glEnd();
+			glLineWidth(1);
 		}
 
 		void Dial::Update(const double& value)
