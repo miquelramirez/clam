@@ -130,16 +130,16 @@ namespace QtSMS
 
 	void SMSConfigDlg::browseOutputAnalysisFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg)",this);
+		QString filename = QFileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
-		mMorphSoundFileLineEdit->setText(filename);
+		mOutputAnalysisLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::browseMorphSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav,* ogg)",this);
+		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg)",this);
 		if(filename.isEmpty()) return;
-		mOutputSoundLineEdit->setText(filename);
+		mMorphSoundFileLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::InitConfigDlg()
