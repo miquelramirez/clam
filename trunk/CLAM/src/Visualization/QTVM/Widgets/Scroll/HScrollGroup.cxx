@@ -64,7 +64,7 @@ namespace CLAM
 			mZIn = new QPushButton(this);
 			mZIn->setAutoRepeat(true);
 			mZIn->setFixedSize(20,20);
-#ifdef macintosh
+#if defined(Q_WS_MAC)
 			mZIn->setText("+");
 #else
 			mZIn->setPixmap(QPixmap((const char**)icon_zoomin));
@@ -75,7 +75,7 @@ namespace CLAM
 			mZOut = new QPushButton(this);
 			mZOut->setAutoRepeat(true);
 			mZOut->setFixedSize(20,20);
-#ifdef macintosh
+#if defined(Q_WS_MAC)
 			mZOut->setText("-");
 #else
 			mZOut->setPixmap(QPixmap((const char**)icon_zoomout));
