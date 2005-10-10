@@ -34,8 +34,14 @@ namespace QtSMS
 
 		CLAM::BPF& GetBPF() const;
 
+		void WhatsThis(const char* text);
+
 	signals:
 		void pointsChanged();
+		void xValueChanged(int, float);
+		void yValueChanged(int, float);
+		void elementAdded(int, float, float);
+		void elementRemoved(int);
 
 	private slots:
 		void showGrid();

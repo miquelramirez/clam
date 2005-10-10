@@ -1,6 +1,7 @@
 #include <qlayout.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
+#include <qwhatsthis.h>
 #include "BPFEditor.hxx"
 #include "Qt_SMS_BPF_Editor.hxx"
 
@@ -22,17 +23,20 @@ namespace QtSMS
 		bpf.Insert(0.0,yvalue);
 		bpf.Insert(1.0,yvalue);
 		mBPFEditor->SetData(bpf);
+		emit pointsChanged();
 	}
 
 	void Qt_SMS_BPF_Editor::InitPoints(const CLAM::BPF& originalBPF)
 	{
 		mBPFEditor->SetData(originalBPF);
+		emit pointsChanged();
 	}
 
 	void Qt_SMS_BPF_Editor::Clear()
 	{
 		CLAM::BPF bpf; // empty bpf
 		mBPFEditor->SetData(bpf);
+		emit pointsChanged();
 	}
 
 	void Qt_SMS_BPF_Editor::SetGridWidth(double xwidth, double ywidth)
@@ -53,6 +57,11 @@ namespace QtSMS
 	CLAM::BPF& Qt_SMS_BPF_Editor::GetBPF() const
 	{
 		return mBPFEditor->GetData();
+	}
+
+	void Qt_SMS_BPF_Editor::WhatsThis(const char* text)
+	{
+		QWhatsThis::add(mBPFEditor,text);
 	}
 
 	void Qt_SMS_BPF_Editor::showGrid()
@@ -132,6 +141,10 @@ namespace QtSMS
 		connect(mShowGrid,SIGNAL(clicked()),SLOT(showGrid()));
 		connect(mSnapToGrid,SIGNAL(clicked()),SLOT(snapToGrid()));
 		connect(mColorScheme,SIGNAL(activated(int)),SLOT(updateColorScheme(int)));
+		connect(mBPFEditor,SIGNAL(xValueChanged(int,float)),this,SIGNAL(xValueChanged(int,float)));
+		connect(mBPFEditor,SIGNAL(yValueChanged(int,float)),this,SIGNAL(yValueChanged(int,float)));
+		connect(mBPFEditor,SIGNAL(elementAdded(int,float,float)),this,SIGNAL(elementAdded(int,float,float)));
+		connect(mBPFEditor,SIGNAL(elementRemoved(int)),this,SIGNAL(elementRemoved(int)));
 	}
 }
 
