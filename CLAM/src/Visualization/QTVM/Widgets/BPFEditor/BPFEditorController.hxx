@@ -151,6 +151,10 @@ namespace CLAM
 			void SetGridSteps(double xstep, double ystep);
 			void SetGridColor(const Color& c);
 
+			void AllowInsertPoints(bool allow);
+			void AllowDeletePoints(bool allow);
+			void AllowModifyPoints(bool allow);
+
 		signals:
 			void viewChanged(GLView);
 			void cursorChanged(QCursor);
@@ -183,6 +187,11 @@ namespace CLAM
 			void hZoomOut();
 			void updateVScrollValue(int);
 			void updateHScrollValue(int);
+
+			void updateXValue(int, float);
+			void updateYValue(int, float);
+			void addElement(int, float, float);
+			void removeElement(int);
 
 		private:
 			IndexTable   mIndexTable;
@@ -238,6 +247,10 @@ namespace CLAM
 			double       mXGridStep;
 			double       mYGridStep;
 			Color        mGridColor;
+
+			bool         mAllowInsertPoints;
+			bool         mAllowDeletePoints;
+			bool         mAllowModifyPoints;
        
 			enum { Selection=0, Edition=1, LINE_WIDTH=1 };
 	    

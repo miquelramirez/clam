@@ -411,6 +411,8 @@ namespace CLAM
 			
 			connect(mController,SIGNAL(xValueChanged(int, float)),this,SIGNAL(xValueChanged(int, float)));
 			connect(mController,SIGNAL(yValueChanged(int, float)),this,SIGNAL(yValueChanged(int, float)));
+			connect(mController,SIGNAL(elementAdded(int,float,float)),this,SIGNAL(elementAdded(int,float,float)));
+			connect(mController,SIGNAL(elementRemoved(int)),this,SIGNAL(elementRemoved(int)));
 
 			connect(mController,SIGNAL(selectedXPos(double)),this,SIGNAL(selectedXPos(double)));
 
@@ -790,6 +792,41 @@ namespace CLAM
 		void BPFEditor::SetGridSteps(double xstep, double ystep)
 		{
 			mController->SetGridSteps(xstep,ystep);
+		}
+
+		void BPFEditor::updateXValue(int index, float new_value)
+		{
+			mController->updateXValue(index,new_value);
+		}
+
+		void BPFEditor::updateYValue(int index, float new_value)
+		{
+			mController->updateYValue(index,new_value);
+		}
+
+		void BPFEditor::addElement(int index, float xvalue, float yvalue)
+		{
+			mController->addElement(index,xvalue,yvalue);
+		}
+
+		void BPFEditor::removeElement(int index)
+		{
+			mController->removeElement(index);
+		}
+
+		void BPFEditor::AllowInsertPoints(bool allow)
+		{
+			mController->AllowInsertPoints(allow);
+		}
+
+		void BPFEditor::AllowDeletePoints(bool allow)
+		{
+			mController->AllowDeletePoints(allow);
+		}
+
+		void BPFEditor::AllowModifyPoints(bool allow)
+		{
+			mController->AllowModifyPoints(allow);
 		}
 
 	}
