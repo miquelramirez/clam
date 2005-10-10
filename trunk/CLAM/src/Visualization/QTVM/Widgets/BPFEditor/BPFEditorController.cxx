@@ -45,6 +45,9 @@ namespace CLAM
 			, mSnapToGrid(false)
 			, mXGridStep(1.0)
 			, mYGridStep(1.0)
+			, mAllowInsertPoints(true)
+			, mAllowDeletePoints(true)
+			, mAllowModifyPoints(true)
 		{
 			InitTables();
 			SetRectColor(VMColor::White());
@@ -276,11 +279,14 @@ namespace CLAM
 					}
 					if(mHit && mKeyDeletePressed)
 					{
-						mBPFs[index].DeleteIndex(mCurrentIndex);
-						emit elementRemoved(int(mCurrentIndex));
-						emit pointsChanged();
-						mIsModified = true;
-						ChooseCurrentPointByJumping(-1);
+						if(mAllowDeletePoints)
+						{
+							mBPFs[index].DeleteIndex(mCurrentIndex);
+							emit elementRemoved(int(mCurrentIndex));
+							emit pointsChanged();
+							mIsModified = true;
+							ChooseCurrentPointByJumping(-1);
+						}
 					}
 					break;
 				default:
@@ -290,6 +296,7 @@ namespace CLAM
 
 		void BPFEditorController::MoveCurrentPointDelta(int stepX, int stepY)
 		{
+			if(!mAllowModifyPoints) return;
 			unsigned index = GetBPFIndex(mCurrentBPF);
 			TData stepXSize = (mMaxX - mMinX) / 100;
 			TData stepYSize = (mMaxY - mMinY) / 100;
@@ -334,25 +341,37 @@ namespace CLAM
 				ChooseCurrentPoint(index);
 				if(mKeyDeletePressed)
 				{
-					mSelectPoint=false;
-					QCursor cCursor(Qt::CrossCursor);
-					emit cursorChanged(cCursor);
+					if(mAllowDeletePoints)
+					{
+						mSelectPoint=false;
+						QCursor cCursor(Qt::CrossCursor);
+						emit cursorChanged(cCursor);
+					}
 				}
 				else if((mEFlags & CLAM::VM::AllowVerticalEdition) && 
 						(mEFlags & CLAM::VM::AllowHorizontalEdition))
 				{
-					QCursor sacursor(Qt::SizeAllCursor);
-					emit cursorChanged(sacursor);
+					if(mAllowModifyPoints)
+					{
+						QCursor sacursor(Qt::SizeAllCursor);
+						emit cursorChanged(sacursor);
+					}
 				}
 				else if(mEFlags & CLAM::VM::AllowVerticalEdition)
 				{
-					QCursor vcursor(Qt::SizeVerCursor);
-					emit cursorChanged(vcursor);
+					if(mAllowModifyPoints)
+					{
+						QCursor vcursor(Qt::SizeVerCursor);
+						emit cursorChanged(vcursor);
+					}
 				}
 				else if(mEFlags & CLAM::VM::AllowHorizontalEdition)
 				{
-					QCursor hcursor(Qt::SizeHorCursor);
-					emit cursorChanged(hcursor);
+					if(mAllowModifyPoints)
+					{
+						QCursor hcursor(Qt::SizeHorCursor);
+						emit cursorChanged(hcursor);
+					}
 				}
 				mSelectPoint=true;
 				mHit=true;
@@ -561,6 +580,7 @@ namespace CLAM
 
 		void BPFEditorController::UpdateBPF(TData x, TData y)
 		{
+			if(!mAllowModifyPoints) return;
 			unsigned index = GetBPFIndex(mCurrentBPF);
 			// Bound movement
 			if (mCurrentIndex!=0)
@@ -602,6 +622,8 @@ namespace CLAM
 
 		void BPFEditorController::InsertBPFNode(TData x, TData y)
 		{
+			if(!mAllowInsertPoints) return;
+
 			if (x<mMinX) x=mMinX;
 			if (x>mMaxX) x=mMaxX;
 			if (y<mMinY) y=mMinY;
@@ -1151,6 +1173,45 @@ namespace CLAM
 			double i=double(int(x));
 			double frac=x-i;
 			return (frac >= 0.5) ? i+1.0 : i;
+		}
+
+		void BPFEditorController::updateXValue(int index, float new_value)
+		{
+			mBPFs[GetBPFIndex(mCurrentBPF)].SetXValue(index,new_value);
+			mIsModified=true;
+		}
+
+		void BPFEditorController::updateYValue(int index, float new_value)
+		{
+			mBPFs[GetBPFIndex(mCurrentBPF)].SetValue(index,new_value);
+			mIsModified=true;
+		}
+
+		void BPFEditorController::addElement(int index, float xvalue, float yvalue)
+		{
+			mBPFs[GetBPFIndex(mCurrentBPF)].Insert(xvalue,yvalue);
+			mIsModified=true;
+		}
+
+		void BPFEditorController::removeElement(int index)
+		{
+			mBPFs[GetBPFIndex(mCurrentBPF)].DeleteIndex(index);
+			mIsModified=true;
+		}
+
+		void BPFEditorController::AllowInsertPoints(bool allow)
+		{
+			mAllowInsertPoints=allow;
+		}
+
+		void BPFEditorController::AllowDeletePoints(bool allow)
+		{
+			mAllowDeletePoints=allow;
+		}
+
+		void BPFEditorController::AllowModifyPoints(bool allow)
+		{
+			mAllowModifyPoints=allow;
 		}
 	   
 	}

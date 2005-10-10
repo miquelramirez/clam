@@ -83,6 +83,10 @@ namespace CLAM
 
 			void WhiteOverBlack();
 			void BlackOverWhite();
+
+			void AllowInsertPoints(bool allow);
+			void AllowDeletePoints(bool allow);
+			void AllowModifyPoints(bool allow);
 	    
 		signals:
 			void xValueChanged(int, float);
@@ -91,6 +95,8 @@ namespace CLAM
 			void currentPlayingTime(float);
 			void stopPlaying(float);
 			void pointsChanged();
+			void elementAdded(int, float, float);
+			void elementRemoved(int);
 
 		public slots:
 			void setHBounds(double, double);
@@ -102,6 +108,11 @@ namespace CLAM
 			void playSimultaneously(bool);
 			void setCurrentPlayingTime(float);
 			void receivedStopPlaying(float);
+
+			void updateXValue(int, float);
+			void updateYValue(int, float);
+			void addElement(int, float, float);
+			void removeElement(int);
 
 		protected:
 			void keyPressEvent(QKeyEvent* e);
