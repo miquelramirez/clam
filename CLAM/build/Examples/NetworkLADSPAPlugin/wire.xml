@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="CLAM OSCEnabledNetwork">
+
+  <processing id="InputAudio" type="ExternGenerator"/>
+
+  <processing id="OutputAudio" type="ExternSink"/>
+
+  <port_connection>
+    <out>InputAudio.AudioOut</out>
+    <in>OutputAudio.AudioIn</in>
+  </port_connection>
+
+</network>
