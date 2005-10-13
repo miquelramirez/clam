@@ -1,3 +1,4 @@
+#include <string>
 #include <qfiledialog.h>
 #include <qaction.h>
 #include <qlabel.h>
@@ -9,6 +10,14 @@
 #include "ScoreEditorDlg.hxx"
 #include "QtWaitMessage.hxx"
 #include "QtSMSTools.hxx"
+#include "LicenseDlg.hxx"
+#include "AboutBox.hxx"
+
+#ifdef WIN32
+#include "CLAM_windows.h"
+#else
+#include <qprocess.h>
+#endif
 
 namespace QtSMS
 {
@@ -25,7 +34,10 @@ namespace QtSMS
 
 	void QtSMSTools::InitSMSTools()
 	{
+		mSlotAnalysisDataLoaded.Wrap(this,&QtSMSTools::OnAnalysisDataLoaded);
+
 		mEngine = Engine::Instance();
+		mEngine->ConnectSlotAnalysisDataLoaded(mSlotAnalysisDataLoaded);
 		setCentralWidget(Engine::DisplayManager()->GetView(this));
 		InitStatusBar();
 		InitialState();
@@ -41,11 +53,20 @@ namespace QtSMS
 		if(filename.isEmpty()) return;
 		if(mEngine->LoadConfiguration((filename)))
 		{
+			mShowOriginalAudio=true;
 			Engine::DisplayManager()->Flush(); // we have a new config
-			Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
-			InitMenuViewItems();
-			ShowIncomingAudio();
-			UpdateState();
+			if(!mEngine->GetGlobalConfig().GetInputAnalysisFile().empty())
+			{
+				mEngine->RetrieveAudio(true);
+				mEngine->LoadAnalysis(mEngine->GetGlobalConfig().GetInputAnalysisFile());
+			}
+			else
+			{
+				Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
+				InitMenuViewItems();
+				ShowIncomingAudio();
+				UpdateState();
+			}
 		}
 		else
 		{
@@ -55,7 +76,7 @@ namespace QtSMS
 
 	void QtSMSTools::newConfiguration()
 	{
-		SMSConfigDlg* configDlg = new SMSConfigDlg(mEngine->GetGlobalConfig());
+		SMSConfigDlg* configDlg = new SMSConfigDlg(mEngine->GetGlobalConfig(),this);
 		if( configDlg->exec() == QDialog::Accepted )
 		{
 			configDlg->Apply();
@@ -64,13 +85,22 @@ namespace QtSMS
 				QString filename = QFileDialog::getSaveFileName("new_config.xml","*.xml",this);
 				if(!filename.isEmpty())
 				{
+					mShowOriginalAudio=true;
 					mEngine->StoreConfiguration((filename));
 					mEngine->LoadConfiguration((filename));
 					Engine::DisplayManager()->Flush(); // we have a new config
-					Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
-					InitMenuViewItems();
-					ShowIncomingAudio();
-					UpdateState();
+					if(!mEngine->GetGlobalConfig().GetInputAnalysisFile().empty())
+					{
+						mEngine->RetrieveAudio(true);
+						mEngine->LoadAnalysis(mEngine->GetGlobalConfig().GetInputAnalysisFile());
+					}
+					else
+					{
+						Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
+						InitMenuViewItems();
+						ShowIncomingAudio();
+						UpdateState();
+					}
 				}
 			}
 		}
@@ -79,7 +109,6 @@ namespace QtSMS
 
 	void QtSMSTools::storeExtractedMelody()
 	{
-
 		QString filename = QFileDialog::getSaveFileName("extracted_melody_out.xml","*.xml",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreMelody((filename));
@@ -87,20 +116,29 @@ namespace QtSMS
 
 	void QtSMSTools::loadAnalysisData()
 	{
-		// TODO
-		NotImplemented();
+		QString filename = QFileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
+		if(filename.isEmpty()) return;
+		mShowOriginalAudio=false;
+		Engine::DisplayManager()->Flush();
+		InitMenuViewItems();
+		mEngine->RetrieveAudio(false);
+		mEngine->LoadAnalysis((filename));
 	}
 
 	void QtSMSTools::storeAnalysisData()
 	{
-		QString filename = QFileDialog::getSaveFileName("analysis_data_out.xml","(*.xml *.sdif)",this);
+		std::string fn = (mEngine->GetGlobalConfig().HasOutputAnalysisFile()) ? 
+			mEngine->GetGlobalConfig().GetOutputAnalysisFile() : "outputAnalysis.xml";
+		QString filename = QFileDialog::getSaveFileName(fn.c_str(),"(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreAnalysis((filename));
 	}
 
 	void QtSMSTools::saveSynthesizedAudio()
 	{
-		QString filename = QFileDialog::getSaveFileName("synthesized_audio_out.wav","Audio (*.wav *.ogg)",this);
+		std::string fn = (!mEngine->GetGlobalConfig().GetOutputSoundFile().empty()) ? 
+			mEngine->GetGlobalConfig().GetOutputSoundFile() : "outputSound.wav";
+		QString filename = QFileDialog::getSaveFileName(fn.c_str(),"Audio (*.wav *.ogg)",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreOutputSound((filename));
 	}
@@ -131,7 +169,7 @@ namespace QtSMS
 
 	void QtSMSTools::newTransformationScore()
 	{
-		ScoreEditorDlg* scoreDlg = new ScoreEditorDlg();
+		ScoreEditorDlg* scoreDlg = new ScoreEditorDlg(this);
 		if(mEngine->GetState().GetHasTransformationScore())
 		{
 			scoreDlg->SetTransformationScore(mEngine->GetCurrentTransformationScore());
@@ -159,6 +197,7 @@ namespace QtSMS
 
 	void QtSMSTools::analyze()
 	{
+		mShowOriginalAudio=false;
 		InitMenuViewItems(false);
 		Engine::DisplayManager()->HideDisplays();
 		Engine::DisplayManager()->Reset();
@@ -168,10 +207,6 @@ namespace QtSMS
 
 	void QtSMSTools::melodyExtraction()
 	{
-		NotImplemented();
-		return;
-
-		// there are something wrong
 		mEngine->ExtractMelody();
 		UpdateState();
 	}
@@ -373,20 +408,56 @@ namespace QtSMS
 
 	void QtSMSTools::showOnlineHelp()
 	{
-		// TODO
-		NotImplemented();
+	    const std::string url="http://www.iua.upf.es/mtg/clam/";
+#ifdef WIN32
+		if((unsigned int)(ShellExecute(NULL,"open",url.c_str(),NULL,NULL,SW_SHOW)) <= 32)
+		{
+			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to find a web browser.");
+		}
+#else
+		QProcess sysCall(this);
+		// try to open the url on a web browser between several common ones
+		std::string browser = "firefox";
+		sysCall.addArgument(browser.c_str());
+		sysCall.addArgument(url.c_str());
+		if(!sysCall.start())
+		{
+			sysCall.clearArguments();
+			browser = "mozilla";
+			sysCall.addArgument(browser.c_str());
+			sysCall.addArgument(url.c_str());
+			if(!sysCall.start())
+			{
+				sysCall.clearArguments();
+				browser = "netscape";
+				sysCall.addArgument(browser.c_str());
+				sysCall.addArgument(url.c_str());
+				if(!sysCall.start())
+				{
+					sysCall.clearArguments();
+					browser = "konqueror";
+					sysCall.addArgument(browser.c_str());
+					sysCall.addArgument(url.c_str());
+					if(!sysCall.start())
+					{
+						CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to find a web browser.");
+					}
+				}
+			}
+		}
+#endif
 	}
 
 	void QtSMSTools::showLicense()
 	{
-		// TODO
-		NotImplemented();
+		LicenseDlg* licenseDlg = new LicenseDlg(this);
+		licenseDlg->exec();
 	}
 
 	void QtSMSTools::showAboutBox()
 	{
-		// TODO
-		NotImplemented();
+		AboutBox* aboutBox = new AboutBox(this);
+		aboutBox->exec();
 	}
 
 	void QtSMSTools::setLeftSBLabelText(QString str)
@@ -510,7 +581,6 @@ namespace QtSMS
 	void QtSMSTools::ShowIncomingAudio()
 	{		
 		mMenuViewOriginalAudio->setOn(true);
-		displayOriginalAudio(true);
 	}
 
 	void QtSMSTools::InitStatusBar()
@@ -554,6 +624,14 @@ namespace QtSMS
 
 	void QtSMSTools::SendAnalyzedDataToViewManager()
 	{
+		if(mShowOriginalAudio)
+		{
+			Engine::DisplayManager()->HideDisplays();
+			Engine::DisplayManager()->Reset();
+			Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
+			InitMenuViewItems();
+			ShowIncomingAudio();
+		}
 		CLAMGUI::QtWaitMessage* msg = new CLAMGUI::QtWaitMessage("Building Graphic Data....");
 		Engine::DisplayManager()->SetAnalyzedData();
 		delete msg;
@@ -580,6 +658,14 @@ namespace QtSMS
 	{
 		mThread.SetThreadCode(method);
 		mThread.Start();
+	}
+
+	void QtSMSTools::OnAnalysisDataLoaded()
+	{
+		InitMenuViewItems(false);
+		Engine::DisplayManager()->HideDisplays();
+		Engine::DisplayManager()->Reset();
+		LaunchMethodOnThread(makeMemberFunctor0(*this,QtSMSTools,SendAnalyzedDataToViewManager));
 	}
 
 	void QtSMSTools::NotImplemented()
