@@ -11,7 +11,7 @@ namespace QtSMS
 	{
 		Q_OBJECT
 	public:
-		SMSConfigDlg(CLAM::SMSAnalysisSynthesisConfig& config);
+		SMSConfigDlg(CLAM::SMSAnalysisSynthesisConfig& config, QWidget* parent=0);
 		~SMSConfigDlg();
 
 		void Apply();

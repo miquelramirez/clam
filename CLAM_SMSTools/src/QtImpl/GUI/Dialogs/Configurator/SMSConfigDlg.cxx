@@ -7,8 +7,9 @@
 
 namespace QtSMS
 {
-	SMSConfigDlg::SMSConfigDlg(CLAM::SMSAnalysisSynthesisConfig& config) 
-		: mConfig(config)
+	SMSConfigDlg::SMSConfigDlg(CLAM::SMSAnalysisSynthesisConfig& config, QWidget* parent) 
+		: SMSConfigDlgBase(parent)
+		, mConfig(config)
 	{
 		InitConfigDlg();
 	}
@@ -22,25 +23,49 @@ namespace QtSMS
 		{
 			mConfig.SetName(mCfgNameLineEdit->text().ascii());
 		}
+		else
+		{
+			mConfig.SetName("");
+		}
 		if(!mInputSoundLineEdit->text().isEmpty())
 		{
 			mConfig.SetInputSoundFile(mInputSoundLineEdit->text().ascii());
+		}
+		else
+		{
+			mConfig.SetInputSoundFile("");
 		}
 		if(!mOutputSoundLineEdit->text().isEmpty())
 		{
 			mConfig.SetOutputSoundFile(mOutputSoundLineEdit->text().ascii());
 		}
+		else
+		{
+			mConfig.SetOutputSoundFile("");
+		}
 		if(!mInputAnalysisLineEdit->text().isEmpty())
 		{
 			mConfig.SetInputAnalysisFile(mInputAnalysisLineEdit->text().ascii());
+		}
+		else
+		{
+			mConfig.SetInputAnalysisFile("");
 		}
 		if(!mOutputAnalysisLineEdit->text().isEmpty())
 		{
 			mConfig.SetOutputAnalysisFile(mOutputAnalysisLineEdit->text().ascii());
 		}
+		else
+		{
+			mConfig.SetOutputAnalysisFile("");
+		}
 		if(!mMorphSoundFileLineEdit->text().isEmpty())
 		{
 			mConfig.SetMorphSoundFile(mMorphSoundFileLineEdit->text().ascii());
+		}
+		else
+		{
+			mConfig.SetMorphSoundFile("");
 		}
 
 		// analysis page
