@@ -7,6 +7,8 @@ interface_and_program: interface program
 interface: 	uic/SMSToolsBase.h uic/SMSToolsBase.cxx \
 			uic/SMSConfigDlgBase.h uic/SMSConfigDlgBase.cxx \
 			uic/ScoreEditorDlgBase.h uic/ScoreEditorDlgBase.cxx \
+			uic/LicenseDlgBase.h uic/LicenseDlgBase.cxx \
+			uic/AboutBoxBase.h uic/AboutBoxBase.cxx \
 
 include $(TOP)/build/Makefile.rules
 
