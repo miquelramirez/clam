@@ -22,26 +22,26 @@
     </property>
     <item text="&amp;File" name="mMenuFile">
         <action name="fileConfig"/>
-        <item text="Configuration" name="mFileConfig" accel="">
+        <item text="Configuration" name="popupMenu" accel="">
             <action name="mMenuFileNewCfg"/>
             <action name="mMenuFileLoadCfg"/>
         </item>
         <action name="fileSMSAnalysis"/>
-        <item text="SMS Analysis" name="mFilsSMSAnalysis" accel="">
+        <item text="SMS Analysis" name="popupMenu_4" accel="">
             <action name="mMenuFileLoadAnalysis"/>
             <action name="mMenuFileStoreAnalysis"/>
         </item>
         <action name="fileMelody"/>
-        <item text="Melody" name="mFileMelody" accel="">
+        <item text="Melody" name="popupMenu_7" accel="">
             <action name="mMenuFileSaveMelody"/>
         </item>
         <action name="fileSMSTransform"/>
-        <item text="SMS Transformation" name="mFileSMSTransformation" accel="">
+        <item text="SMS Transformation" name="popupMenu_9" accel="">
             <action name="mMenuFileNewScore"/>
             <action name="mMenuFileLoadScore"/>
         </item>
         <action name="fileSMSSynthesis"/>
-        <item text="SMS Synthesis" name="mFileSMSSynthesis" accel="">
+        <item text="SMS Synthesis" name="popupMenu_12" accel="">
             <action name="mMenuFileSaveSynSound"/>
             <action name="mMenuFileSaveSynSinusoidal"/>
             <action name="mMenuFileSaveSynResidual"/>
@@ -65,12 +65,12 @@
         <action name="mMenuViewFundFreq"/>
         <action name="mMenuViewSinTracks"/>
         <action name="viewSonogram"/>
-        <item text="Sonogram" name="mViewSonogram" accel="">
+        <item text="Sonogram" name="popupMenu_26" accel="">
             <action name="mMenuViewColorSonogram"/>
             <action name="mMenuViewBWSonogram"/>
         </item>
         <action name="viewFrameData"/>
-        <item text="Frame Data" name="mViewFrameData" accel="">
+        <item text="Frame Data" name="popupMenu_29" accel="">
             <action name="mMenuViewSpecPeaks"/>
             <action name="mMenuViewSinSpec"/>
             <action name="mMenuViewResSpec"/>
@@ -81,7 +81,7 @@
         <action name="mMenuViewSynResidual"/>
         <separator/>
         <action name="viewSchemeAction"/>
-        <item text="Scheme" name="mViewScheme" accel="">
+        <item text="Scheme" name="popupMenu_38" accel="">
             <action name="mBackgroundBlack"/>
             <action name="mBackgroundWhite"/>
         </item>
@@ -364,10 +364,10 @@
             <cstring>mMenuOnlineHelp</cstring>
         </property>
         <property name="text">
-            <string>Help...</string>
+            <string>CLAM home page</string>
         </property>
         <property name="menuText">
-            <string>Help...</string>
+            <string>CLAM home page</string>
         </property>
     </action>
     <action>
