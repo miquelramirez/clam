@@ -3,6 +3,7 @@
 
 #include "Thread.hxx"
 #include "SMSToolsBase.h"
+#include "Slotv0.hxx"
 
 class QLabel;
 
@@ -65,6 +66,9 @@ namespace QtSMS
 		CLAM::Thread  mThread;
 		QLabel*       mLeftSBLabel;
 		QLabel*       mRightSBLabel;
+		bool          mShowOriginalAudio;
+
+		SigSlot::Slotv0 mSlotAnalysisDataLoaded;
 
 		void InitSMSTools();
 		void InitialState();
@@ -78,6 +82,7 @@ namespace QtSMS
 		void SendTransformedDataToViewManager();
 		void SendSynthesizedDataToViewManager();
 		void LaunchMethodOnThread(CBL::Functor0 method);
+		void OnAnalysisDataLoaded();
 
 		void NotImplemented();
 	};
