@@ -165,7 +165,8 @@ bool OutPort<Token>::TryConnectToPublisher( InPortBase & in )
 template<class Token>
 void OutPort<Token>::ConnectToIn( InPortBase& in)
 {
-	bool successfullConnection = TryConnectToConcreteIn( in ) || TryConnectToPublisher( in );
+	bool successfullConnection;
+	successfullConnection = TryConnectToConcreteIn( in ) || TryConnectToPublisher( in );
 	CLAM_ASSERT( successfullConnection,
 		     "OutPort<Token>::connectToIn coudn't connect to inPort "
    		     "because was not templatized by the same Token type as outPort" );
@@ -185,7 +186,8 @@ void OutPort<Token>::ConnectToConcreteIn(InPort<Token>& in)
 template<class Token>
 void OutPort<Token>::DisconnectFromIn( InPortBase& in)
 {
-	bool successfullDisconnection = TryDisconnectFromConcreteIn( in ) || TryDisconnectFromPublisher( in );
+	bool successfullDisconnection;
+	successfullDisconnection = TryDisconnectFromConcreteIn( in ) || TryDisconnectFromPublisher( in );
 	CLAM_ASSERT( successfullDisconnection,
 		     "OutPort<Token>::DisconnectFromIn coudn't discconnect from inPort "
    		     "because was not templatized by the same Token type as outPort" );
