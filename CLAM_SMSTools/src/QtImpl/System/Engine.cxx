@@ -38,7 +38,9 @@ namespace QtSMS
 
 	bool Engine::LoadAnalysis(const std::string& filename)
 	{
-		return SMSBase::LoadAnalysis(filename);
+		mCurrentFileName = filename;
+		LaunchMethodOnThread(makeMemberFunctor0(*this,Engine,DoLoadAnalysis));
+		return true;
 	}
 
 	void Engine::StoreAnalysis(const std::string& filename)
@@ -55,13 +57,11 @@ namespace QtSMS
 
 	void Engine::LoadTransformationScore(const std::string& filename)
 	{
-		// TODO: thread?
 		SMSBase::LoadTransformationScore(filename);
 	}
 
 	void Engine::StoreTransformationScore(const std::string& filename)
 	{
-		// TODO: thread?
 		SMSBase::StoreTransformationScore(filename);
 	}
 
@@ -92,13 +92,7 @@ namespace QtSMS
 
 	void Engine::DoTransformations()
 	{
-		// TODO: thread
 		Transform();
-	}
-
-	void Engine::UndoTransformations()
-	{
-		// TODO
 	}
 
 	void Engine::Synthesize()
@@ -144,6 +138,11 @@ namespace QtSMS
 
 	bool  Engine::LoadInputSound()
 	{
+		if(!GetOriginalSegment().HasAudio())
+		{
+			GetOriginalSegment().AddAudio();
+			GetOriginalSegment().UpdateData();
+		}
 		GetState().SetHasAudioIn(LoadSound(mGlobalConfig.GetInputSoundFile(),GetOriginalSegment()));
 		if(!GetState().GetHasAudioIn())
 		{
@@ -249,6 +248,29 @@ namespace QtSMS
 		mThread.Start();
 	}
 
+	void Engine::DoLoadAnalysis()
+	{
+		bool ok = SMSBase::LoadAnalysis(mCurrentFileName);
+		if(ok)
+		{
+			if(mRetrieveAudio)
+			{
+				LoadInputSound();
+			}
+			else
+			{
+				GetState().SetHasAudioIn(false);
+				GetState().SetHasAudioOut(false);
+				GetState().SetHasMelody(false);
+			}
+			mAnalysisDataLoaded.Emit();
+		}
+		else
+		{
+			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to load analysis data.");
+		}
+	}
+
 	void Engine::DoStoreAnalysis()
 	{
 		SMSBase::StoreAnalysis(mCurrentFileName);
@@ -264,6 +286,16 @@ namespace QtSMS
 		mCurrentWaitMessage = CreateWaitMessage("Analyzing melody, please wait");
 		SMSBase::AnalyzeMelody();
 		DestroyWaitMessage();
+	}
+
+	void Engine::RetrieveAudio(bool r)
+	{
+		mRetrieveAudio=r;
+	}
+
+	void Engine::ConnectSlotAnalysisDataLoaded(SigSlot::Slotv0& slot)
+	{
+		mAnalysisDataLoaded.Connect(slot);
 	}
 }
 
