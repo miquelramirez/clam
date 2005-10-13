@@ -69,6 +69,7 @@
 #include "ControlPrinter.hxx"
 #include "ControlScaler.hxx"
 #include "ControlMapper.hxx"
+#include "ExternInControl.hxx"
 
 //MIDI
 #include "MIDIKeyboard.hxx"
@@ -182,7 +183,8 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
        regtControlPrinterConfig("ControlPrinterConfig");
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ControlScalerConfig> >
        regtControlScalerConfig("ControlScalerConfig");
-
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ExternInControlConfig> >
+       regtExternInControlConfig("ExternInControlConfig");
 // MIDI
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MIDIKeyboardConfig> >
