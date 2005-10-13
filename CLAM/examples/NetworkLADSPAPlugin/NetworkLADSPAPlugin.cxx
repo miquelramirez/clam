@@ -9,6 +9,7 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 	std::cerr << " fill_ladspa_descriptor: " << std::endl;
 	
 	mPluginInstance=new CLAM::NetworkLADSPAPlugin();
+	int numports=mPluginInstance->GetPortCount();
 
 	char ** pcPortNames;
 	LADSPA_PortDescriptor * piPortDescriptors;
@@ -25,30 +26,21 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 		g_psDescriptor->Name = dupstr("CLAM Network LADSPA Plugin");
 		g_psDescriptor->Maker = dupstr("CLAM-devel");
 		g_psDescriptor->Copyright = dupstr("GPL");
-		g_psDescriptor->PortCount = mPluginInstance->GetPortCount();
+		g_psDescriptor->PortCount = numports;
 
-
-		std::cerr << " portcount="<<mPluginInstance->GetPortCount()<<"" << std::endl;
-
+		std::cerr << " portcount="<<numports<<"" << std::endl;
 		
-		piPortDescriptors = new LADSPA_PortDescriptor[ mPluginInstance->GetPortCount() ];
+		piPortDescriptors = new LADSPA_PortDescriptor[ numports ];
 		g_psDescriptor->PortDescriptors = (const LADSPA_PortDescriptor *)piPortDescriptors;
 		
 		//piPortDescriptors[0] = ( LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO );
-		//piPortDescriptors[1] = ( LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO );
 		
-		pcPortNames = new char*[ mPluginInstance->GetPortCount() ];
+		pcPortNames = new char*[ numports ];
 		
 		g_psDescriptor->PortNames = (const char **)pcPortNames;
 
-		//pcPortNames[0] = dupstr("Input");
-		//pcPortNames[1] = dupstr("Output");
-	
-		psPortRangeHints = new LADSPA_PortRangeHint[ mPluginInstance->GetPortCount() ];
+		psPortRangeHints = new LADSPA_PortRangeHint[ numports ];
 		g_psDescriptor->PortRangeHints = (const LADSPA_PortRangeHint *)psPortRangeHints;
-	
-		//psPortRangeHints[0].HintDescriptor = 0;
-		//psPortRangeHints[1].HintDescriptor = 0;
 	
 		mPluginInstance->FillPortInfo( piPortDescriptors, pcPortNames, psPortRangeHints);
 		
@@ -113,6 +105,7 @@ LADSPA_Handle Instantiate(const LADSPA_Descriptor * Descriptor, unsigned long Sa
 {
 	std::cerr << " instantiate" << std::endl;
 
+	//TODO això no està bé, principalment perquè si només té 1 in 1 out en vols intanciar dos però no li deixa...
 	return g_oShutdownStartupHandler.mPluginInstance;
 }
 
@@ -121,14 +114,9 @@ void Run(LADSPA_Handle Instance, unsigned long SampleCount)
 {
 	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
 
-	LADSPA_Data * in=p->mInput;
-	LADSPA_Data * out=p->mOutput;
-	
-	for ( unsigned long i = 0; i < SampleCount; i++ )
-		out[i]=in[SampleCount-i-1];
+	p->Run( SampleCount );
 }
 
-/* Throw away a simple delay line. */
 void CleanUp(LADSPA_Handle Instance)
 {
 	std::cerr << " cleanup " << std::endl;
@@ -147,15 +135,7 @@ void Deactivate(LADSPA_Handle Instance)
 }
 
 /* Connect a port to a data location. */
-void ConnectPortTo(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data * DataLocation)
+void ConnectPortTo(LADSPA_Handle instance, unsigned long port, LADSPA_Data * dataLocation)
 {
-	switch (Port)
-	{
-		case 0:
-			((CLAM::NetworkLADSPAPlugin *)Instance)->mInput = DataLocation;
-			break;
-		case 1:
-			((CLAM::NetworkLADSPAPlugin *)Instance)->mOutput = DataLocation;
-			break;
-	}
+	((CLAM::NetworkLADSPAPlugin *)instance)->ConnectPortTo( port, dataLocation );
 }

@@ -11,14 +11,11 @@
 #include "XMLStorage.hxx"
 #include "ExternGenerator.hxx"
 #include "ExternSink.hxx"
-#include "Utils.hxx"
 
+#include <fstream>
 /*
  * COSES A FER:
  *  -Subdividir la construcció del descriptor
- *  -Crear/plagiar de JACKProt els mètodes per analitzar Externalizers i desar-ne la info
- *  -Aplicar aquella info a la construcció del descriptor
- *  -Problemes amb els strdups?!
  *  
  */
 
@@ -39,18 +36,6 @@ char *dupstr( char const *args )
 	}
 	return s;
 } 
-//Alternative version to strdup because it is not ANSI standard, so we save problems
-char *dupstrC(const char *s)
-{
-	char *p = (char*) malloc( strlen(s) + 1);
-	if ( p != NULL ) strcpy( p, s);
-	else
-	{
-		std::cerr << "ERROR: allocating in dupstr" << std::endl;
-		exit(-1);
-	}
-	return p;
-}
 
 const LADSPA_Descriptor * ladspa_descriptor(unsigned long);
 LADSPA_Handle Instantiate(const LADSPA_Descriptor *, unsigned long);
@@ -107,10 +92,32 @@ public:
 	{
 		mNet=new Network();
 		GetNetwork().AddFlowControl( new PushFlowControl(512) );
+		GetNetwork().SetName("Testing name");
 
 		std::cerr << " constructor" << std::endl;
 
-		XmlStorage::Restore( GetNetwork(), "wire.xml");
+		try{
+		XmlStorage::Restore( GetNetwork(), "SMSMessJACK.xml");
+		}catch ( XmlStorageErr err)
+		{
+
+			std::cerr << " error!: " << err.what() << std::endl;
+
+		}
+		
+		// ALTERNATIVE: initialize network manually
+		//mNet->AddProcessing("input1", "ExternGenerator" );
+		//mNet->AddProcessing("input2", "ExternGenerator" );
+		//mNet->AddProcessing("output1", "ExternSink" );
+		//mNet->AddProcessing("output2", "ExternSink" );
+		//mNet->AddProcessing("input1", new ExternGenerator() );
+		//mNet->AddProcessing("input2", new ExternGenerator() );
+		//mNet->AddProcessing("output1", new ExternSink() );
+		//mNet->AddProcessing("output2", new ExternSink() );
+		//mNet->ConnectPorts("input1.AudioOut","output1.AudioIn");
+		//mNet->ConnectPorts("input2.AudioOut","output2.AudioIn");
+	
+		std::cerr << "GET NAME="<< GetNetwork().GetName() << std::endl;
 		
 		std::cerr << " post-restore" << std::endl;
 
@@ -139,9 +146,6 @@ public:
 
 				//Add the info 
 				mReceiverList.push_back(info);
-
-				std::cerr << " externgenerator!" << std::endl;
-
 			}
 		}
 	}
@@ -166,8 +170,6 @@ public:
 
 				//Add the info 
 				mSenderList.push_back(info);
-				
-				std::cerr << " externsink!" << std::endl;
 			}
 		}
 	}
@@ -185,25 +187,65 @@ public:
 
 	void FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )
 	{
-
 		std::cerr << " FILLPORTINFO" << std::endl;
+		int currentport=0;
 
-		descriptors[0] = ( LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO );
-		descriptors[1] = ( LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO );
-		
-		names[0] = dupstr("Input");
-		names[1] = dupstr("Output");
-	
-		rangehints[0].HintDescriptor = 0;
-		rangehints[1].HintDescriptor = 0;
+		//Manage InPorts (ExternGenerators)
+		for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+		{
+			descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO);
+			names[currentport] = dupstr( it->portName.c_str() );
+			rangehints[currentport].HintDescriptor = 0;
+			currentport++;
+		}
 
+		//Manage OutPorts (ExternSinks)
+		for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+		{
+			descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO);
+			names[currentport] = dupstr( it->portName.c_str() );
+			rangehints[currentport].HintDescriptor = 0;
+			currentport++;
+		}
 	}
 	
-	unsigned int GetPortCount()
+	void Run( unsigned long nsamples )
+	{
+		CopyLadspaBuffersToGenerators(nsamples);
+
+		GetNetwork().Do();
+		
+		CopySinksToLadspaBuffers(nsamples);
+	}
+
+	void CopyLadspaBuffersToGenerators(const unsigned long nframes)
+	{
+		for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+		{
+			it->clamReceiver->Do( (TData*) it->dataBuffer, nframes );
+		}
+	}
+	
+	void CopySinksToLadspaBuffers(const unsigned long nframes)
+	{
+		for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+		{
+			it->clamSender->Do( (TData*) it->dataBuffer, nframes);	
+		}
+	}
+	
+	void ConnectPortTo(unsigned long port, LADSPA_Data * data)
+	{
+		if ( port <= mReceiverList.size()-1 )
+			mReceiverList.at( port ).dataBuffer=data;
+		else
+			mSenderList.at( port-mReceiverList.size() ).dataBuffer=data;
+	}
+	
+	int GetPortCount()
 	{
 		return ( mReceiverList.size()+mSenderList.size() );
 	}
-	LADSPA_Data * mInput, *mOutput;
 };
 
 } //namespace CLAM
