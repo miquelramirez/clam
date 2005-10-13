@@ -6,6 +6,8 @@
 #include "QtProgress.hxx"
 #include "QtWaitMessage.hxx"
 #include "SMSBase.hxx"
+#include "Signalv0.hxx"
+#include "Slotv0.hxx"
 
 namespace QtSMS
 {
@@ -30,10 +32,11 @@ namespace QtSMS
 		void Analyze();
 		void ExtractMelody();
 		void DoTransformations();
-		void UndoTransformations();
 		void Synthesize();
 
 		bool HasValidAudioInput();
+		void RetrieveAudio(bool r);
+		void ConnectSlotAnalysisDataLoaded(SigSlot::Slotv0& slot);
 
 	protected:
 		void Run(){ /* empty body */ }
@@ -53,6 +56,9 @@ namespace QtSMS
 
 		CLAM::Thread mThread;
 		std::string  mCurrentFileName;
+		bool         mRetrieveAudio;
+
+		SigSlot::Signalv0 mAnalysisDataLoaded;
 
 	    bool LoadInputSound();
 		bool LoadSound(const std::string& filename,CLAM::Segment& segment);
@@ -60,6 +66,7 @@ namespace QtSMS
 
 		void LaunchMethodOnThread(CBL::Functor0 method);
 
+		void DoLoadAnalysis();
 		void DoStoreAnalysis();
 		void DoStoreMelody();
 		void DoMelodyExtraction();
