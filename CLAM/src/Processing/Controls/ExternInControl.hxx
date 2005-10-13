@@ -66,15 +66,12 @@ namespace CLAM{
 		
 		~ExternInControl() {}
 	
-		void SendControlValue( const float value)
-		{
-			mOutput.SendControl( (TControlData)value);
-		}
-		
 		bool Do()
 		{
 			return true;
 		}
+		
+		bool Do( const float value );
 		
 		const char* GetClassName() const { return "ExternInControl";}
 		
