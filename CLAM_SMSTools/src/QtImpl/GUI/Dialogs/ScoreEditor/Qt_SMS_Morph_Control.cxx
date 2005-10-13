@@ -4,7 +4,6 @@
 #include <qpushbutton.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include "whatsthis.hxx"
 #include "Qt_SMS_BPF_Editor.hxx"
 #include "Qt_SMS_BPF_Editor_Sync.hxx"
 #include "Qt_SMS_Morph_Control.hxx"
@@ -459,7 +458,7 @@ namespace QtSMS
 		mEnvelopeSelector->insertItem("Residual spectral shape weight B",11);
 		QToolTip::add(mEnvelopeSelector,"Sound Hybridization Controls");
 
-		mWhatsThisButton->setPixmap(QPixmap((const char**)what_is_this));
+		mWhatsThisButton->setPixmap(QPixmap("rc/whatsthis.xpm"));
 		mWhatsThisButton->setFixedSize(25,25);
 		QToolTip::add(mWhatsThisButton,"What's this?");
 
