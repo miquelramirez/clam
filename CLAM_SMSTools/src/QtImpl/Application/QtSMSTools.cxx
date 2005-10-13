@@ -409,41 +409,46 @@ namespace QtSMS
 	void QtSMSTools::showOnlineHelp()
 	{
 	    const std::string url="http://www.iua.upf.es/mtg/clam/";
-#ifdef WIN32
-		if((unsigned int)(ShellExecute(NULL,"open",url.c_str(),NULL,NULL,SW_SHOW)) <= 32)
-		{
-			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to find a web browser.");
-		}
-#else
+#ifndef WIN32
 		QProcess sysCall(this);
+    #ifdef macintosh
+		sysCall.addArgument("open");
+		sysCall.addArgument(url.c_str());
+		if(!sysCall.start())
+		{
+			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to open a web browser.");
+		}
+    #else
 		// try to open the url on a web browser between several common ones
-		std::string browser = "firefox";
-		sysCall.addArgument(browser.c_str());
+		sysCall.addArgument("firefox");
 		sysCall.addArgument(url.c_str());
 		if(!sysCall.start())
 		{
 			sysCall.clearArguments();
-			browser = "mozilla";
-			sysCall.addArgument(browser.c_str());
+			sysCall.addArgument("mozilla");
 			sysCall.addArgument(url.c_str());
 			if(!sysCall.start())
 			{
 				sysCall.clearArguments();
-				browser = "netscape";
-				sysCall.addArgument(browser.c_str());
+				sysCall.addArgument("netscape");
 				sysCall.addArgument(url.c_str());
 				if(!sysCall.start())
 				{
 					sysCall.clearArguments();
-					browser = "konqueror";
-					sysCall.addArgument(browser.c_str());
+					sysCall.addArgument("konqueror");
 					sysCall.addArgument(url.c_str());
 					if(!sysCall.start())
 					{
-						CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to find a web browser.");
+						CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to open a web browser.");
 					}
 				}
 			}
+		}
+    #endif
+#else
+		if((unsigned int)(ShellExecute(NULL,"open",url.c_str(),NULL,NULL,SW_SHOW)) <= 32)
+		{
+			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to open a web browser.");
 		}
 #endif
 	}
