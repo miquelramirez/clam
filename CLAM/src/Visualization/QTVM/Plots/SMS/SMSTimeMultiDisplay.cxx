@@ -1055,12 +1055,12 @@ namespace CLAM
 		void SMSTimeMultiDisplay::RemovePlayListItem(int id)
 		{
 			if(id < MASTER || id > FUNDAMENTAL) return;
-			const QString& item = mPlayList[id];
+			QString item = mPlayList[id];
 			std::vector<std::string> tmpLst;
 			for(int i=0; i < mCBPlayList->count(); i++)
 			{
 				if(!mCBPlayList->text(i).compare(item)) continue;
-				tmpLst.push_back((mCBPlayList->text(i)));
+				tmpLst.push_back(mCBPlayList->text(i).ascii());
 			}
 			mCBPlayList->clear();
 			for(unsigned i=0; i < tmpLst.size(); i++)

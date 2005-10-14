@@ -174,11 +174,11 @@ namespace QtSMS
 		FillComboBoxes();
 
 		// file page
-		mInputSoundLineEdit->setText(mConfig.GetInputSoundFile());
-		mOutputSoundLineEdit->setText(mConfig.GetOutputSoundFile());
-		mInputAnalysisLineEdit->setText(mConfig.GetInputAnalysisFile());
-		mOutputAnalysisLineEdit->setText(mConfig.GetOutputAnalysisFile());
-		mMorphSoundFileLineEdit->setText(mConfig.GetMorphSoundFile());
+		mInputSoundLineEdit->setText(mConfig.GetInputSoundFile().c_str());
+		mOutputSoundLineEdit->setText(mConfig.GetOutputSoundFile().c_str());
+		mInputAnalysisLineEdit->setText(mConfig.GetInputAnalysisFile().c_str());
+		mOutputAnalysisLineEdit->setText(mConfig.GetOutputAnalysisFile().c_str());
+		mMorphSoundFileLineEdit->setText(mConfig.GetMorphSoundFile().c_str());
 
 		// analysis page
 		mAnalysisWindowSizeLineEdit->setText(QString::number(mConfig.GetAnalysisWindowSize()));
