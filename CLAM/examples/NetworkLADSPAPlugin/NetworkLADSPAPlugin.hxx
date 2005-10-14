@@ -11,6 +11,7 @@
 #include "XMLStorage.hxx"
 #include "ExternGenerator.hxx"
 #include "ExternSink.hxx"
+#include "ExternInControl.hxx"
 
 #include <fstream>
 /*
@@ -43,7 +44,7 @@ void Run(LADSPA_Handle, unsigned long);
 void CleanUp(LADSPA_Handle);
 void Activate(LADSPA_Handle);
 void Deactivate(LADSPA_Handle);
-void ConnectPortTo(LADSPA_Handle, unsigned long, LADSPA_Data *);
+void ConnectTo(LADSPA_Handle, unsigned long, LADSPA_Data *);
 
 namespace CLAM
 {
@@ -77,8 +78,17 @@ typedef struct
 	LADSPA_Data *dataBuffer;
 } LADSPAOutPortInfo;
 
+typedef struct
+{
+	std::string controlName;
+	ExternInControl *clamControlReceiver;
+	LADSPA_Data *dataBuffer;
+} LADSPAInControlInfo;
+
+		
 typedef std::vector<LADSPAInPortInfo> LADSPAInPortList;
 typedef std::vector<LADSPAOutPortInfo> LADSPAOutPortList;
+typedef std::vector<LADSPAInControlInfo> LADSPAInControlList;
 
 class NetworkLADSPAPlugin
 {
@@ -86,6 +96,7 @@ private:
 	Network* mNet;		
 	LADSPAInPortList mReceiverList;
 	LADSPAOutPortList mSenderList;
+	LADSPAInControlList mInControlList;
 	
 public:
 	NetworkLADSPAPlugin()
@@ -96,39 +107,52 @@ public:
 
 		std::cerr << " constructor" << std::endl;
 
-		try{
-		XmlStorage::Restore( GetNetwork(), "SMSMessJACK.xml");
-		}catch ( XmlStorageErr err)
+		char* xmlfile=getenv("CLAM_NETWORK_PLUGIN_PATH");
+		if (xmlfile==NULL)
 		{
-
-			std::cerr << " error!: " << err.what() << std::endl;
-
+			std::cerr << "CLAM::NetworkLADSPAPlugin WARNING: no network file specified. Plugin not loaded" << std::endl;
+			std::cerr << "                     --> Do 'export CLAM_NETWORK_PLUGIN_PATH=/..path../file.xml'" << std::endl;
+			return;
 		}
 		
-		// ALTERNATIVE: initialize network manually
-		//mNet->AddProcessing("input1", "ExternGenerator" );
-		//mNet->AddProcessing("input2", "ExternGenerator" );
-		//mNet->AddProcessing("output1", "ExternSink" );
-		//mNet->AddProcessing("output2", "ExternSink" );
-		//mNet->AddProcessing("input1", new ExternGenerator() );
-		//mNet->AddProcessing("input2", new ExternGenerator() );
-		//mNet->AddProcessing("output1", new ExternSink() );
-		//mNet->AddProcessing("output2", new ExternSink() );
-		//mNet->ConnectPorts("input1.AudioOut","output1.AudioIn");
-		//mNet->ConnectPorts("input2.AudioOut","output2.AudioIn");
-	
+		try
+		{
+			XmlStorage::Restore( GetNetwork(), xmlfile);	//"genwire.xml");	
+		}
+		catch ( XmlStorageErr err)
+		{
+			std::cerr << "CLAM::NetworkLADSPAPlugin WARNING: error opening file <" << xmlfile << "> . Plugin not loaded" <<std::endl;
+			return;
+		}
+		
 		std::cerr << "GET NAME="<< GetNetwork().GetName() << std::endl;
 		
 		std::cerr << " post-restore" << std::endl;
 
 		GetInputPorts();
 		GetOutputPorts();
-		//In a future: GetInputControls();
+		GetControls();
 	}
 
+	~NetworkLADSPAPlugin()
+	{
+		std::cerr << " destructor" << std::endl;
+		delete mNet;
+	}
+
+	void Activate()
+	{
+		GetNetwork().Start();
+	}
+	
+	void Deactivate()
+	{
+		GetNetwork().Stop();
+	}
+	
 	void GetInputPorts()
 	{
-		CLAM_ASSERT( mReceiverList.empty(), "NetworkLADSPAPlugin::RegisterInputPorts() : there are already registered input ports");
+		CLAM_ASSERT( mReceiverList.empty(), "NetworkLADSPAPlugin::GetInputPorts() : there are already registered input ports");
 	
 		LADSPAInPortInfo info;
 	
@@ -142,7 +166,7 @@ public:
 				
 				//Get Processing address
 				info.clamReceiver=(ExternGenerator*)it->second;
-				//NO!! info.clamReceiver->SetFrameAndHopSize(mJackBufferSize);
+				info.clamReceiver->SetFrameAndHopSize(1024); //TODO: cal obtenir el del host
 
 				//Add the info 
 				mReceiverList.push_back(info);
@@ -166,7 +190,7 @@ public:
 				
 				//Get Processing address
 				info.clamSender=(ExternSink*)it->second;
-				//NO!! info.clamSender->SetFrameAndHopSize(mJackBufferSize);
+				info.clamSender->SetFrameAndHopSize(1024);
 
 				//Add the info 
 				mSenderList.push_back(info);
@@ -174,11 +198,29 @@ public:
 		}
 	}
 	
-	~NetworkLADSPAPlugin()
+	void GetControls()
 	{
-		std::cerr << " destructor" << std::endl;
-		delete mNet;
+		CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::GetControls() : there are already registered controls");
+	
+		LADSPAInControlInfo info;
+	
+		//Get them from the Network and add it to local list		
+		for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
+		{
+			if (std::string("ExternInControl")==std::string(it->second->GetClassName()))
+			{
+				//Store Processing name
+				info.controlName=it->first;
+				
+				//Get Processing address
+				info.clamControlReceiver=(ExternInControl*)it->second;
+
+				//Add the info 
+				mInControlList.push_back(info);
+			}
+		}
 	}
+
 
 	Network& GetNetwork()
 	{
@@ -207,17 +249,47 @@ public:
 			rangehints[currentport].HintDescriptor = 0;
 			currentport++;
 		}
+
+
+		//Manage InControls (ExternInControls)
+		for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
+		{
+			descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL);
+			names[currentport] = dupstr( it->controlName.c_str() );
+
+			//Obté processingConfig, i defineix cada param
+			ExternInControlConfig& conf=const_cast<ExternInControlConfig&>(
+							dynamic_cast<const ExternInControlConfig&>(
+								it->clamControlReceiver->GetConfig() ));
+			
+			rangehints[currentport].LowerBound=(LADSPA_Data)conf.GetMinValue();
+			rangehints[currentport].UpperBound=(LADSPA_Data)conf.GetMaxValue();
+			rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE);
+			currentport++;
+				
+		}
 	}
 	
 	void Run( unsigned long nsamples )
 	{
+		ProcessControlValues();
+		
 		CopyLadspaBuffersToGenerators(nsamples);
 
+		GetNetwork().Do();
 		GetNetwork().Do();
 		
 		CopySinksToLadspaBuffers(nsamples);
 	}
 
+	void ProcessControlValues()
+	{
+		for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
+		{
+			it->clamControlReceiver->Do( (float) *(it->dataBuffer) );
+		}
+	}
+	
 	void CopyLadspaBuffersToGenerators(const unsigned long nframes)
 	{
 		for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
@@ -234,17 +306,25 @@ public:
 		}
 	}
 	
-	void ConnectPortTo(unsigned long port, LADSPA_Data * data)
+	void ConnectTo(unsigned long port, LADSPA_Data * data)
 	{
-		if ( port <= mReceiverList.size()-1 )
+		
+		if ( port <= mReceiverList.size()-1 ) //Input port
 			mReceiverList.at( port ).dataBuffer=data;
-		else
+		else if ( port <= mReceiverList.size() + mSenderList.size() -1) //Output port
 			mSenderList.at( port-mReceiverList.size() ).dataBuffer=data;
+		else //Input control
+			mInControlList.at( port-mReceiverList.size()-mSenderList.size() ).dataBuffer=data;
 	}
 	
 	int GetPortCount()
 	{
 		return ( mReceiverList.size()+mSenderList.size() );
+	}
+	
+	int GetControlCount()
+	{
+		return ( mInControlList.size() );
 	}
 };
 

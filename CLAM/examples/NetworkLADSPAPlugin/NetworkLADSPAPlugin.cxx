@@ -9,7 +9,7 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 	std::cerr << " fill_ladspa_descriptor: " << std::endl;
 	
 	mPluginInstance=new CLAM::NetworkLADSPAPlugin();
-	int numports=mPluginInstance->GetPortCount();
+	int numports=mPluginInstance->GetPortCount() + mPluginInstance->GetControlCount();
 
 	char ** pcPortNames;
 	LADSPA_PortDescriptor * piPortDescriptors;
@@ -33,8 +33,6 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 		piPortDescriptors = new LADSPA_PortDescriptor[ numports ];
 		g_psDescriptor->PortDescriptors = (const LADSPA_PortDescriptor *)piPortDescriptors;
 		
-		//piPortDescriptors[0] = ( LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO );
-		
 		pcPortNames = new char*[ numports ];
 		
 		g_psDescriptor->PortNames = (const char **)pcPortNames;
@@ -45,7 +43,7 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 		mPluginInstance->FillPortInfo( piPortDescriptors, pcPortNames, psPortRangeHints);
 		
 		g_psDescriptor->instantiate = Instantiate;
-		g_psDescriptor->connect_port = ConnectPortTo;
+		g_psDescriptor->connect_port = ConnectTo;
 		g_psDescriptor->activate = Activate;
 		g_psDescriptor->run = Run;
 		g_psDescriptor->deactivate = Deactivate;
@@ -125,17 +123,23 @@ void CleanUp(LADSPA_Handle Instance)
 void Activate(LADSPA_Handle Instance)
 {
 	std::cerr << " activate " << Instance << std::endl;
+	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
+	
+	p->Activate();
 	//Potser fer un START
 }
 
 void Deactivate(LADSPA_Handle Instance)
 {
 	std::cerr << " deactivate " << Instance << std::endl;
+	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
+	
+	p->Deactivate();
 	//Potser fer un STOP
 }
 
 /* Connect a port to a data location. */
-void ConnectPortTo(LADSPA_Handle instance, unsigned long port, LADSPA_Data * dataLocation)
+void ConnectTo(LADSPA_Handle instance, unsigned long port, LADSPA_Data * dataLocation)
 {
-	((CLAM::NetworkLADSPAPlugin *)instance)->ConnectPortTo( port, dataLocation );
+	((CLAM::NetworkLADSPAPlugin *)instance)->ConnectTo( port, dataLocation );
 }
