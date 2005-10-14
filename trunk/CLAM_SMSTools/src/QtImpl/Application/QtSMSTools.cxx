@@ -51,7 +51,7 @@ namespace QtSMS
 	{
 		QString filename = QFileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
-		if(mEngine->LoadConfiguration((filename)))
+		if(mEngine->LoadConfiguration(filename.ascii()))
 		{
 			mShowOriginalAudio=true;
 			Engine::DisplayManager()->Flush(); // we have a new config
@@ -86,8 +86,8 @@ namespace QtSMS
 				if(!filename.isEmpty())
 				{
 					mShowOriginalAudio=true;
-					mEngine->StoreConfiguration((filename));
-					mEngine->LoadConfiguration((filename));
+					mEngine->StoreConfiguration(filename.ascii());
+					mEngine->LoadConfiguration(filename.ascii());
 					Engine::DisplayManager()->Flush(); // we have a new config
 					if(!mEngine->GetGlobalConfig().GetInputAnalysisFile().empty())
 					{
@@ -111,7 +111,7 @@ namespace QtSMS
 	{
 		QString filename = QFileDialog::getSaveFileName("extracted_melody_out.xml","*.xml",this);
 		if(filename.isEmpty()) return;
-		mEngine->StoreMelody((filename));
+		mEngine->StoreMelody(filename.ascii());
 	}
 
 	void QtSMSTools::loadAnalysisData()
@@ -122,16 +122,16 @@ namespace QtSMS
 		Engine::DisplayManager()->Flush();
 		InitMenuViewItems();
 		mEngine->RetrieveAudio(false);
-		mEngine->LoadAnalysis((filename));
+		mEngine->LoadAnalysis(filename.ascii());
 	}
 
 	void QtSMSTools::storeAnalysisData()
 	{
-		std::string fn = (mEngine->GetGlobalConfig().HasOutputAnalysisFile()) ? 
+		std::string fn = (!mEngine->GetGlobalConfig().GetOutputAnalysisFile().empty()) ? 
 			mEngine->GetGlobalConfig().GetOutputAnalysisFile() : "outputAnalysis.xml";
 		QString filename = QFileDialog::getSaveFileName(fn.c_str(),"(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
-		mEngine->StoreAnalysis((filename));
+		mEngine->StoreAnalysis(filename.ascii());
 	}
 
 	void QtSMSTools::saveSynthesizedAudio()
@@ -140,21 +140,21 @@ namespace QtSMS
 			mEngine->GetGlobalConfig().GetOutputSoundFile() : "outputSound.wav";
 		QString filename = QFileDialog::getSaveFileName(fn.c_str(),"Audio (*.wav *.ogg)",this);
 		if(filename.isEmpty()) return;
-		mEngine->StoreOutputSound((filename));
+		mEngine->StoreOutputSound(filename.ascii());
 	}
 
 	void QtSMSTools::saveSynthesizedSinusoidal()
 	{
 		QString filename = QFileDialog::getSaveFileName("synthesized_sinusoidal_out.wav","Audio (*.wav *.ogg)",this);
 		if(filename.isEmpty()) return;
-		mEngine->StoreOutputSoundSinusoidal((filename));
+		mEngine->StoreOutputSoundSinusoidal(filename.ascii());
 	}
 
 	void QtSMSTools::saveSynthesizedResidua()
 	{
 		QString filename = QFileDialog::getSaveFileName("synthesized_residual_out.wav","Audio (*.wav *.ogg)",this);
 		if(filename.isEmpty()) return;
-		mEngine->StoreOutputSoundResidual((filename));
+		mEngine->StoreOutputSoundResidual(filename.ascii());
 	}
 
 	void QtSMSTools::loadTransformationScore()
@@ -162,7 +162,7 @@ namespace QtSMS
 		QString filename = QFileDialog::getOpenFileName(QString::null,"*.xml *",this);
 		if(!filename.isEmpty())
 		{
-			mEngine->LoadTransformationScore((filename));	
+			mEngine->LoadTransformationScore(filename.ascii());	
 			UpdateState();
 		}
 	}
@@ -182,7 +182,7 @@ namespace QtSMS
 				if(!filename.isEmpty())
 				{
 					mEngine->SetCurrentTransformationScore(scoreDlg->GetTransformationChain());
-					mEngine->StoreTransformationScore((filename));
+					mEngine->StoreTransformationScore(filename.ascii());
 					UpdateState();
 				}
 			}

@@ -101,7 +101,7 @@ namespace QtSMS
 		mAvailableTransformationList->clearSelection();
 		mTabWidget->showPage(mTabWidget->page(1));
 		mSMSConfiguratorList[index]->GetParametersWidget()->show();
-		mHelpWidgetTable[mScoreTransformationList->text(index)]->show();
+		mHelpWidgetTable[mScoreTransformationList->text(index).ascii()]->show();
 	}
 
 	void ScoreEditorDlg::addHighlightedToScore()
