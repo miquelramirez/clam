@@ -5,11 +5,9 @@ StartupShutdownHandler g_oShutdownStartupHandler;
 
 ////////////////////////////////////////////////////////////////////////////////////    HANDLER OBJECT
 void StartupShutdownHandler::CreateLADSPADescriptor()
-{
-	std::cerr << " fill_ladspa_descriptor: " << std::endl;
-	
-	mPluginInstance=new CLAM::NetworkLADSPAPlugin();
-	int numports=mPluginInstance->GetPortCount() + mPluginInstance->GetControlCount();
+{	
+	CLAM::NetworkLADSPAPlugin *plugin=new CLAM::NetworkLADSPAPlugin();
+	int numports=plugin->GetPortCount() + plugin->GetControlCount();
 
 	char ** pcPortNames;
 	LADSPA_PortDescriptor * piPortDescriptors;
@@ -28,8 +26,6 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 		g_psDescriptor->Copyright = dupstr("GPL");
 		g_psDescriptor->PortCount = numports;
 
-		std::cerr << " portcount="<<numports<<"" << std::endl;
-		
 		piPortDescriptors = new LADSPA_PortDescriptor[ numports ];
 		g_psDescriptor->PortDescriptors = (const LADSPA_PortDescriptor *)piPortDescriptors;
 		
@@ -40,7 +36,7 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 		psPortRangeHints = new LADSPA_PortRangeHint[ numports ];
 		g_psDescriptor->PortRangeHints = (const LADSPA_PortRangeHint *)psPortRangeHints;
 	
-		mPluginInstance->FillPortInfo( piPortDescriptors, pcPortNames, psPortRangeHints);
+		plugin->FillPortInfo( piPortDescriptors, pcPortNames, psPortRangeHints);
 		
 		g_psDescriptor->instantiate = Instantiate;
 		g_psDescriptor->connect_port = ConnectTo;
@@ -50,6 +46,7 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 		g_psDescriptor->cleanup = CleanUp;
 	}
 
+	delete plugin;
 }
 
 StartupShutdownHandler::StartupShutdownHandler()
@@ -61,10 +58,7 @@ StartupShutdownHandler::StartupShutdownHandler()
 
 StartupShutdownHandler::~StartupShutdownHandler()
 {
-	delete mPluginInstance;
-	
 	std::cerr << " destructor handler" << std::endl;
-	unsigned long lIndex;
 	if (g_psDescriptor)
 	{
 		delete g_psDescriptor->Label;
@@ -73,7 +67,7 @@ StartupShutdownHandler::~StartupShutdownHandler()
 		delete g_psDescriptor->Copyright;
 		delete g_psDescriptor->PortDescriptors;
 
-		for (lIndex = 0; lIndex < g_psDescriptor->PortCount; lIndex++)
+		for (unsigned long lIndex = 0; lIndex < g_psDescriptor->PortCount; lIndex++)
 			delete g_psDescriptor->PortNames[lIndex];
 
 		delete g_psDescriptor->PortNames;
@@ -104,7 +98,7 @@ LADSPA_Handle Instantiate(const LADSPA_Descriptor * Descriptor, unsigned long Sa
 	std::cerr << " instantiate" << std::endl;
 
 	//TODO això no està bé, principalment perquè si només té 1 in 1 out en vols intanciar dos però no li deixa...
-	return g_oShutdownStartupHandler.mPluginInstance;
+	return new CLAM::NetworkLADSPAPlugin();
 }
 
 // Run the plugin
@@ -117,16 +111,16 @@ void Run(LADSPA_Handle Instance, unsigned long SampleCount)
 
 void CleanUp(LADSPA_Handle Instance)
 {
-	std::cerr << " cleanup " << std::endl;
+	std::cerr << " cleanup " << Instance << std::endl;
 }
 
 void Activate(LADSPA_Handle Instance)
 {
 	std::cerr << " activate " << Instance << std::endl;
 	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
-	
+
+	//Start network
 	p->Activate();
-	//Potser fer un START
 }
 
 void Deactivate(LADSPA_Handle Instance)
@@ -134,8 +128,8 @@ void Deactivate(LADSPA_Handle Instance)
 	std::cerr << " deactivate " << Instance << std::endl;
 	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
 	
+	//Stop network
 	p->Deactivate();
-	//Potser fer un STOP
 }
 
 /* Connect a port to a data location. */
