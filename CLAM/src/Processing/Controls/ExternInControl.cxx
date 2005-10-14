@@ -31,15 +31,15 @@ namespace CLAM
 		static ProcessingFactory::Registrator<ExternInControl> regtExternInControl( "ExternInControl" );
 	}
 	
-	bool ExternInControl::Do( const float value );
+	bool ExternInControl::Do( const float value )
 	{	
 		mOutput.SendControl( (TControlData)value);
+		return true;
 	}
 
 	bool ExternInControl::ConcreteConfigure(const ProcessingConfig &c)
 	{
 		CopyAsConcreteConfig(mConf,c);
-
 		return true;
 	}
 }
