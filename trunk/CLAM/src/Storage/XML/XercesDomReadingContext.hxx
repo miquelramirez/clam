@@ -102,7 +102,8 @@ public:
 	 */
 	xercesc::DOMElement * fetchElement(const char * name)
 	{
-		bool hasContentLeft = contentLeft();
+		bool hasContentLeft;
+		hasContentLeft = contentLeft();
 		CLAM_ASSERT(!hasContentLeft, "Fetching element with content left");
 		CLAM_ASSERT(_currentChild!=_children->getLength(),
 			"Accessing beyond DOM nodes");
