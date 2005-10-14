@@ -1,139 +1,229 @@
 #include "NetworkLADSPAPlugin.hxx"
 
-LADSPA_Descriptor * g_psDescriptor=NULL;
-StartupShutdownHandler g_oShutdownStartupHandler;
+namespace CLAM
+{
 
-////////////////////////////////////////////////////////////////////////////////////    HANDLER OBJECT
-void StartupShutdownHandler::CreateLADSPADescriptor()
-{	
-	CLAM::NetworkLADSPAPlugin *plugin=new CLAM::NetworkLADSPAPlugin();
-	int numports=plugin->GetPortCount() + plugin->GetControlCount();
+NetworkLADSPAPlugin::NetworkLADSPAPlugin()
+{
+	mNet=new Network();
 
-	char ** pcPortNames;
-	LADSPA_PortDescriptor * piPortDescriptors;
-	LADSPA_PortRangeHint * psPortRangeHints;
+	mClamBufferSize=512;
+	mExternBufferSize=mClamBufferSize;
+	GetNetwork().AddFlowControl( new PushFlowControl( mClamBufferSize ) );
+	GetNetwork().SetName("Testing name");
 
-	g_psDescriptor = new LADSPA_Descriptor;
+	std::cerr << " constructor" << std::endl;
 
-	//TODO posa cada grupet en mètodes propis: "registra portdescriptors...", etc
-	if (g_psDescriptor)
+	char* xmlfile=getenv("CLAM_NETWORK_PLUGIN_PATH");
+	if (xmlfile==NULL)
 	{
-		g_psDescriptor->UniqueID = 8983;
-		g_psDescriptor->Label = dupstr("CLAMNetworkLADSPAPlugin");
-		g_psDescriptor->Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE; // LADSPA_PROPERTY_REALTIME;
-		g_psDescriptor->Name = dupstr("CLAM Network LADSPA Plugin");
-		g_psDescriptor->Maker = dupstr("CLAM-devel");
-		g_psDescriptor->Copyright = dupstr("GPL");
-		g_psDescriptor->PortCount = numports;
-
-		piPortDescriptors = new LADSPA_PortDescriptor[ numports ];
-		g_psDescriptor->PortDescriptors = (const LADSPA_PortDescriptor *)piPortDescriptors;
-		
-		pcPortNames = new char*[ numports ];
-		
-		g_psDescriptor->PortNames = (const char **)pcPortNames;
-
-		psPortRangeHints = new LADSPA_PortRangeHint[ numports ];
-		g_psDescriptor->PortRangeHints = (const LADSPA_PortRangeHint *)psPortRangeHints;
+		std::cerr << "CLAM::NetworkLADSPAPlugin WARNING: no network file specified. Plugin not loaded" << std::endl;
+		std::cerr << "                    --> Do \"export CLAM_NETWORK_PLUGIN_PATH=/..path../file.xml\"" << std::endl;
+		return;
+	}
 	
-		plugin->FillPortInfo( piPortDescriptors, pcPortNames, psPortRangeHints);
-		
-		g_psDescriptor->instantiate = Instantiate;
-		g_psDescriptor->connect_port = ConnectTo;
-		g_psDescriptor->activate = Activate;
-		g_psDescriptor->run = Run;
-		g_psDescriptor->deactivate = Deactivate;
-		g_psDescriptor->cleanup = CleanUp;
-	}
-
-	delete plugin;
-}
-
-StartupShutdownHandler::StartupShutdownHandler()
-{
-	std::cerr << " constructor handler" << std::endl;
-	if (!g_psDescriptor)
-		CreateLADSPADescriptor();
-}
-
-StartupShutdownHandler::~StartupShutdownHandler()
-{
-	std::cerr << " destructor handler" << std::endl;
-	if (g_psDescriptor)
+	try
 	{
-		delete g_psDescriptor->Label;
-		delete g_psDescriptor->Name;
-		delete g_psDescriptor->Maker;
-		delete g_psDescriptor->Copyright;
-		delete g_psDescriptor->PortDescriptors;
-
-		for (unsigned long lIndex = 0; lIndex < g_psDescriptor->PortCount; lIndex++)
-			delete g_psDescriptor->PortNames[lIndex];
-
-		delete g_psDescriptor->PortNames;
-		delete g_psDescriptor->PortRangeHints;
-		delete g_psDescriptor;
+		XmlStorage::Restore( GetNetwork(), xmlfile);	//"genwire.xml");	
 	}
-}
-
-////////////////////////////////////////////////////////////////////////////////////    HANDLER OBJECT
-
-// Return a descriptor of the requested plugin type.
-const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
-{
-	std::cerr << " ladspa_descriptor: " << index << std::endl;
-
-	if (index == 0)
+	catch ( XmlStorageErr err)
 	{
-		return g_psDescriptor;
+		std::cerr << "CLAM::NetworkLADSPAPlugin WARNING: error opening file <" << xmlfile << "> . Plugin not loaded" <<std::endl;
+		return;
 	}
-	else
-		return NULL;
-}
-
-
-// Construct a new plugin instance.
-LADSPA_Handle Instantiate(const LADSPA_Descriptor * Descriptor, unsigned long SampleRate)
-{
-	std::cerr << " instantiate" << std::endl;
-
-	//TODO això no està bé, principalment perquè si només té 1 in 1 out en vols intanciar dos però no li deixa...
-	return new CLAM::NetworkLADSPAPlugin();
-}
-
-// Run the plugin
-void Run(LADSPA_Handle Instance, unsigned long SampleCount)
-{
-	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
-
-	p->Run( SampleCount );
-}
-
-void CleanUp(LADSPA_Handle Instance)
-{
-	std::cerr << " cleanup " << Instance << std::endl;
-}
-
-void Activate(LADSPA_Handle Instance)
-{
-	std::cerr << " activate " << Instance << std::endl;
-	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
-
-	//Start network
-	p->Activate();
-}
-
-void Deactivate(LADSPA_Handle Instance)
-{
-	std::cerr << " deactivate " << Instance << std::endl;
-	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
 	
-	//Stop network
-	p->Deactivate();
+	ProcessInputPorts();
+	ProcessOutputPorts();
+	ProcessControls();
 }
 
-/* Connect a port to a data location. */
-void ConnectTo(LADSPA_Handle instance, unsigned long port, LADSPA_Data * dataLocation)
+NetworkLADSPAPlugin::~NetworkLADSPAPlugin()
 {
-	((CLAM::NetworkLADSPAPlugin *)instance)->ConnectTo( port, dataLocation );
+	delete mNet;
+
+	std::cerr << " DELETED" << std::endl;
+
 }
+
+void NetworkLADSPAPlugin::Activate()
+{
+	GetNetwork().Start();
+}
+
+void NetworkLADSPAPlugin::Deactivate()
+{
+	GetNetwork().Stop();
+}
+
+void NetworkLADSPAPlugin::ProcessInputPorts()
+{
+	CLAM_ASSERT( mReceiverList.empty(), "NetworkLADSPAPlugin::ProcessInputPorts() : there are already registered input ports");
+
+	LADSPAInPortInfo info;
+
+	//Get them from the Network and add it to local list		
+	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
+	{
+		if (std::string("ExternGenerator")==std::string(it->second->GetClassName()))
+		{
+			//Store Processing name
+			info.portName=it->first;
+			
+			//Get Processing address
+			info.clamReceiver=(ExternGenerator*)it->second;
+			info.clamReceiver->SetFrameAndHopSize( mExternBufferSize );
+
+			//Add the info 
+			mReceiverList.push_back(info);
+		}
+	}
+}
+
+void NetworkLADSPAPlugin::ProcessOutputPorts()
+{
+	CLAM_ASSERT( mSenderList.empty(), "NetworkLADSPAPlugin::ProcessInputPorts() : there are already registered output ports");
+
+	LADSPAOutPortInfo info;
+
+	//Get them from the Network and add it to local list		
+	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
+	{
+		if (std::string("ExternSink")==std::string(it->second->GetClassName()))
+		{
+			//Store Processing name
+			info.portName=it->first;
+			
+			//Get Processing address
+			info.clamSender=(ExternSink*)it->second;
+			info.clamSender->SetFrameAndHopSize( mExternBufferSize );
+
+			//Add the info 
+			mSenderList.push_back(info);
+		}
+	}
+}
+
+void NetworkLADSPAPlugin::ProcessControls()
+{
+	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::ProcessControls() : there are already registered controls");
+
+	LADSPAInControlInfo info;
+
+	//Get them from the Network and add it to local list		
+	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
+	{
+		if (std::string("ExternInControl")==std::string(it->second->GetClassName()))
+		{
+			//Store Processing name
+			info.controlName=it->first;
+			
+			//Get Processing address
+			info.clamControlReceiver=(ExternInControl*)it->second;
+
+			//Add the info 
+			mInControlList.push_back(info);
+		}
+	}
+}
+
+void NetworkLADSPAPlugin::UpdatePortFrameAndHopSize()
+{
+	//ExternGenerators
+	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+		it->clamReceiver->SetFrameAndHopSize( mExternBufferSize );
+
+	//ExternSinks
+	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+		it->clamSender->SetFrameAndHopSize( mExternBufferSize );
+}
+
+void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )
+{
+	int currentport=0;
+
+	//Manage InPorts (ExternGenerators)
+	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+	{
+		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO);
+		names[currentport] = dupstr( it->portName.c_str() );
+		rangehints[currentport].HintDescriptor = 0;
+		currentport++;
+	}
+
+	//Manage OutPorts (ExternSinks)
+	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+	{
+		descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO);
+		names[currentport] = dupstr( it->portName.c_str() );
+		rangehints[currentport].HintDescriptor = 0;
+		currentport++;
+	}
+
+	//Manage InControls (ExternInControls)
+	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
+	{
+		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL);
+		names[currentport] = dupstr( it->controlName.c_str() );
+
+		//Obté processingConfig, i defineix cada param
+		ExternInControlConfig& conf=const_cast<ExternInControlConfig&>(
+						dynamic_cast<const ExternInControlConfig&>(
+							it->clamControlReceiver->GetConfig() ));
+		
+		rangehints[currentport].LowerBound=(LADSPA_Data)conf.GetMinValue();
+		rangehints[currentport].UpperBound=(LADSPA_Data)conf.GetMaxValue();
+		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE);
+		currentport++;
+	}
+}
+
+void NetworkLADSPAPlugin::Run( unsigned long nsamples )
+{
+	//Check current buffer size of ports, to make sure everything fits!
+	// if it isn't so, upgrade Frame and Hop sizes (vital)
+	if (nsamples!=mExternBufferSize)
+	{
+		mExternBufferSize=nsamples;
+		UpdatePortFrameAndHopSize();
+	}		
+	
+	ProcessControlValues();
+	
+	CopyLadspaBuffersToGenerators(nsamples);
+
+	//Do() as much as it is needed
+	for (int stepcount=0; stepcount < (int(mExternBufferSize)/int(mClamBufferSize)); stepcount++)
+		GetNetwork().Do();
+
+	CopySinksToLadspaBuffers(nsamples);
+}
+
+void NetworkLADSPAPlugin::ProcessControlValues()
+{
+	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
+		it->clamControlReceiver->Do( (float) *(it->dataBuffer) );
+}
+
+void NetworkLADSPAPlugin::CopyLadspaBuffersToGenerators(const unsigned long nframes)
+{
+	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+		it->clamReceiver->Do( (TData*) it->dataBuffer, nframes );
+}
+
+void NetworkLADSPAPlugin::CopySinksToLadspaBuffers(const unsigned long nframes)
+{
+	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+		it->clamSender->Do( (TData*) it->dataBuffer, nframes);	
+}
+
+void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
+{
+	if ( port <= mReceiverList.size()-1 ) //Input port
+		mReceiverList.at( port ).dataBuffer=data;
+	else if ( port <= mReceiverList.size() + mSenderList.size() -1) //Output port
+		mSenderList.at( port-mReceiverList.size() ).dataBuffer=data;
+	else //Input control
+		mInControlList.at( port-mReceiverList.size()-mSenderList.size() ).dataBuffer=data;
+}
+
+} //end namespace CLAM
