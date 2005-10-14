@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM OSCEnabledNetwork">
 
-  <processing id="InputAudio" type="ExternGenerator"/>
+  <processing id="in1" type="ExternGenerator"/>
 
-  <processing id="OutputAudio" type="ExternSink"/>
+  <processing id="in2" type="ExternGenerator"/>
+
+  <processing id="out1" type="ExternSink"/>
+
+  <processing id="out2" type="ExternSink"/>
 
   <port_connection>
-    <out>InputAudio.AudioOut</out>
-    <in>OutputAudio.AudioIn</in>
+    <out>in1.AudioOut</out>
+    <in>out1.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>in2.AudioOut</out>
+    <in>out2.AudioIn</in>
   </port_connection>
 
 </network>
