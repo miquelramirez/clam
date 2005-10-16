@@ -13,7 +13,7 @@
 #include "LicenseDlg.hxx"
 #include "AboutBox.hxx"
 
-#ifdef Q_WS_WIN
+#ifdef WIN32
 #include "CLAM_windows.h"
 #else
 #include <qprocess.h>
@@ -409,18 +409,16 @@ namespace QtSMS
 	void QtSMSTools::showOnlineHelp()
 	{
 	    const std::string url="http://www.iua.upf.es/mtg/clam/";
-#if defined(Q_WS_MAC)
+#ifndef WIN32
 		QProcess sysCall(this);
+    #if defined(Q_WS_MAC)
 		sysCall.addArgument("open");
 		sysCall.addArgument(url.c_str());
 		if(!sysCall.start())
 		{
 			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to open a web browser.");
 		}
-#endif
-
-#if defined(Q_WS_X11)
-		QProcess sysCall(this);
+    #else
 		// try to open the url on a web browser between several common ones
 		sysCall.addArgument("firefox");
 		sysCall.addArgument(url.c_str());
@@ -446,9 +444,8 @@ namespace QtSMS
 				}
 			}
 		}
-#endif
-
-#if defined(Q_WS_WIN)
+    #endif
+#else
 		if((unsigned int)(ShellExecute(NULL,"open",url.c_str(),NULL,NULL,SW_SHOW)) <= 32)
 		{
 			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to open a web browser.");
