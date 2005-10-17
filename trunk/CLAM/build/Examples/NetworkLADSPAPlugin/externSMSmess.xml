@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="PitchShift" type="ExternInControl">
-    <MinValue>-1024</MinValue>
-    <MaxValue>1024</MaxValue>
-    <Step>1</Step>
-  </processing>
-
   <processing id="JACK_Input" type="ExternGenerator"/>
 
   <processing id="JACK_Input2" type="ExternGenerator"/>
@@ -14,6 +8,12 @@
   <processing id="JACK_Out_Original" type="ExternSink"/>
 
   <processing id="JACK_Out_Synth" type="ExternSink"/>
+
+  <processing id="PitchShift" type="ExternInControl">
+    <MinValue>-1024</MinValue>
+    <MaxValue>1024</MaxValue>
+    <Step>1</Step>
+  </processing>
 
   <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
@@ -153,6 +153,8 @@
     <prSamplingRate>0</prSamplingRate>
   </processing>
 
+  <processing id="SampleOutControl" type="ExternOutControl"/>
+
   <port_connection>
     <out>JACK_Input.AudioOut</out>
     <in>SMSAnalysisCore.Input Audio</in>
@@ -196,6 +198,11 @@
   <control_connection>
     <out>PitchShift.output</out>
     <in>SMSFreqShift.Amount</in>
+  </control_connection>
+
+  <control_connection>
+    <out>PitchShift.output</out>
+    <in>SampleOutControl.input</in>
   </control_connection>
 
 </network>
