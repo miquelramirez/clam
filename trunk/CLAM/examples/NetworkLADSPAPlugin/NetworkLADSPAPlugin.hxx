@@ -12,6 +12,7 @@
 #include "ExternGenerator.hxx"
 #include "ExternSink.hxx"
 #include "ExternInControl.hxx"
+#include "ExternOutControl.hxx"
 
 //C++ version 
 static char *dupstr( char const *args )
@@ -35,31 +36,19 @@ static char *dupstr( char const *args )
 namespace CLAM
 {
 
-typedef struct
+template<class T>
+class LADSPAInfo
 {
-	std::string portName;
-	ExternGenerator *clamReceiver;
+public:
+	std::string name;
+	T* processing;
 	LADSPA_Data *dataBuffer;
-} LADSPAInPortInfo;
+};
 
-typedef struct
-{
-	std::string portName;
-	ExternSink *clamSender;
-	LADSPA_Data *dataBuffer;
-} LADSPAOutPortInfo;
-
-typedef struct
-{
-	std::string controlName;
-	ExternInControl *clamControlReceiver;
-	LADSPA_Data *dataBuffer;
-} LADSPAInControlInfo;
-
-		
-typedef std::vector<LADSPAInPortInfo> LADSPAInPortList;
-typedef std::vector<LADSPAOutPortInfo> LADSPAOutPortList;
-typedef std::vector<LADSPAInControlInfo> LADSPAInControlList;
+typedef std::vector< LADSPAInfo<ExternGenerator> > LADSPAInPortList;
+typedef std::vector< LADSPAInfo<ExternSink> > LADSPAOutPortList;
+typedef std::vector< LADSPAInfo<ExternInControl> > LADSPAInControlList;
+typedef std::vector< LADSPAInfo<ExternOutControl> > LADSPAOutControlList;
 
 class NetworkLADSPAPlugin
 {
@@ -68,6 +57,7 @@ private:
 	LADSPAInPortList mReceiverList;
 	LADSPAOutPortList mSenderList;
 	LADSPAInControlList mInControlList;
+	LADSPAOutControlList mOutControlList;
 	unsigned long mClamBufferSize, mExternBufferSize;
 	
 public:
@@ -84,7 +74,7 @@ public:
 	
 	int GetControlCount()
 	{
-		return ( mInControlList.size() );
+		return ( mInControlList.size()+mOutControlList.size() );
 	}
 
 	Network& GetNetwork()
@@ -95,7 +85,8 @@ public:
 
 	void ProcessInputPorts();
 	void ProcessOutputPorts();
-	void ProcessControls();
+	void ProcessInputControls();
+	void ProcessOutputControls();
 
 	void UpdatePortFrameAndHopSize();
 	void FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints );
@@ -104,7 +95,8 @@ public:
 	void Run( unsigned long nsamples );
 	void CopyLadspaBuffersToGenerators(const unsigned long nframes);
 	void CopySinksToLadspaBuffers(const unsigned long nframes);
-	void ProcessControlValues();
+	void ProcessInControlValues();
+	void ProcessOutControlValues();
 };
 
 } //namespace CLAM
