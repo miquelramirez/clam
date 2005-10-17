@@ -23,11 +23,10 @@
 #define _EXTERN_IN_CONTROL_
 
 #include "Processing.hxx"
-#include "ProcessingConfig.hxx"
 #include "OutControl.hxx"
 
 namespace CLAM{
-
+	
 	class ExternInControlConfig : public ProcessingConfig
 	{
 	public:
@@ -41,8 +40,8 @@ namespace CLAM{
 			AddAll();
 			UpdateData();
 			SetMinValue(0.0);
-			SetMaxValue(1.0);
-			SetStep(0.1);
+			SetMaxValue(100.0);
+			SetStep(1.0);
 		}
 	};
 
