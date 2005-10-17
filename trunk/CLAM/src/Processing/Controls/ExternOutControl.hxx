@@ -55,8 +55,6 @@ namespace CLAM{
 		ExternOutControl() 
 		: mInput("input",this)
 		{
-			//After being dropped it is ready to run as it does not need any configuration at all
-			mExecState=Ready;
 		}
 		
 		ExternOutControl(const ExternOutControlConfig & c)
