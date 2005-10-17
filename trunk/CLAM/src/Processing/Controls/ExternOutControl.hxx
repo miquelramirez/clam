@@ -23,15 +23,32 @@
 #define _EXTERN_OUT_CONTROL_
 
 #include "Processing.hxx"
-#include "NullProcessingConfig.hxx"
 #include "InControl.hxx"
 
 namespace CLAM{
+	
+	class ExternOutControlConfig : public ProcessingConfig
+	{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (ExternOutControlConfig,3,ProcessingConfig);
+		DYN_ATTRIBUTE(0,public,TData, MinValue);
+		DYN_ATTRIBUTE(1,public,TData, MaxValue);
+		DYN_ATTRIBUTE(2,public,TData, Step);
+	protected:
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetMinValue(0.0);
+			SetMaxValue(100.0);
+			SetStep(1.0);
+		}
+	};
 
 	class ExternOutControl : public Processing
 	{
 	private:
-		NullProcessingConfig mConf;
+		ExternOutControlConfig mConf;
 		InControl mInput;
 		
 	public:
@@ -42,7 +59,7 @@ namespace CLAM{
 			mExecState=Ready;
 		}
 		
-		ExternOutControl(const NullProcessingConfig & c)
+		ExternOutControl(const ExternOutControlConfig & c)
 		: mInput("input",this)
 		{
 			ConcreteConfigure(c);
