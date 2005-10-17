@@ -67,6 +67,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 
 	QListViewItem * externalizers = new QListViewItem( this, "Externalizers" );
 	new ProcessingItem( externalizers, "ExternInControl" );
+	new ProcessingItem( externalizers, "ExternOutControl" );
 	new ProcessingItem( externalizers, "ExternGenerator" );
 	new ProcessingItem( externalizers, "ExternSink" );
 

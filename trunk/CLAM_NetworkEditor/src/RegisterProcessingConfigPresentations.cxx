@@ -70,6 +70,7 @@
 #include "ControlScaler.hxx"
 #include "ControlMapper.hxx"
 #include "ExternInControl.hxx"
+#include "ExternOutControl.hxx"
 
 //MIDI
 #include "MIDIKeyboard.hxx"
@@ -185,6 +186,8 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
        regtControlScalerConfig("ControlScalerConfig");
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ExternInControlConfig> >
        regtExternInControlConfig("ExternInControlConfig");
+// Please note that ExterOutControl uses an already-registered NullProcessingConfig
+
 // MIDI
 
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MIDIKeyboardConfig> >
