@@ -30,7 +30,7 @@ protected:
 				break;
 			case CLAM::Processing::Unconfigured:
 				c.setRgb( 210, 150, 150 );
-				QToolTip::add( this, QString( mProcessingStatus.c_str() ));
+				QToolTip::add( this, "Processing needs to be configured" );
 				break;	
 			case CLAM::Processing::Running:
 				c.setRgb( 120, 120, 210 );
@@ -62,7 +62,7 @@ protected:
 				break;
 			case CLAM::Processing::Unconfigured:
 				c.setRgb( 210, 150, 150 );
-				QToolTip::add( this, QString( mProcessingStatus.c_str() ));
+				QToolTip::add( this, QString( "Processing needs to be configured" ));
 				break;	
 			case CLAM::Processing::Running:
 				c.setRgb( 120, 120, 210 );
@@ -94,7 +94,7 @@ protected:
 				break;
 			case CLAM::Processing::Unconfigured:
 				c.setRgb( 210, 150, 150 );
-				QToolTip::add( this, QString( mProcessingStatus.c_str() ));
+				QToolTip::add( this, "Processing needs to be configured" );
 				break;	
 			case CLAM::Processing::Running:
 				c.setRgb( 120, 120, 210 );
@@ -112,6 +112,38 @@ public:
 	Qt_ExternInControlPresentation(){}
 };
 
+class Qt_ExternOutControlPresentation :  public Qt_ProcessingPresentation
+{
+protected:
+	virtual QColor GetColorOfState()
+	{
+		QColor c(0, 0, 0);
+		switch( mProcessingState )
+		{
+			case CLAM::Processing::Ready:
+				c.setRgb( 90, 210, 180 );
+				QToolTip::add( this, "Processing is ready to run" );
+				break;
+			case CLAM::Processing::Unconfigured:
+				c.setRgb( 210, 150, 150 );
+				QToolTip::add( this, "Processing needs to be configured" );
+				break;	
+			case CLAM::Processing::Running:
+				c.setRgb( 120, 120, 210 );
+				QToolTip::add( this, "Processing running" );
+				break;
+			default:
+				c.setRgb( 90, 90, 90 );
+				QToolTip::add( this, "Unmanaged Processing State" );
+				break;
+		}
+		return c;
+	}
+
+public:
+	Qt_ExternOutControlPresentation(){}
+};
+
 }
 #include "Factory.hxx"
 typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
@@ -125,4 +157,6 @@ static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ExternGener
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ExternInControlPresentation > 
 	regtExternInControl( "ExternInControl" );
 
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ExternOutControlPresentation > 
+	regtExternOutControl( "ExternOutControl" );
 #endif
