@@ -186,7 +186,8 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
        regtControlScalerConfig("ControlScalerConfig");
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ExternInControlConfig> >
        regtExternInControlConfig("ExternInControlConfig");
-// Please note that ExterOutControl uses an already-registered NullProcessingConfig
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ExternOutControlConfig> >
+       regtExternOutControlConfig("ExternOutControlConfig");
 
 // MIDI
 
