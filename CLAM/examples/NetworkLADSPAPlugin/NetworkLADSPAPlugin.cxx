@@ -34,7 +34,8 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin()
 	
 	ProcessInputPorts();
 	ProcessOutputPorts();
-	ProcessControls();
+	ProcessInputControls();
+	ProcessOutputControls();
 }
 
 NetworkLADSPAPlugin::~NetworkLADSPAPlugin()
@@ -59,7 +60,7 @@ void NetworkLADSPAPlugin::ProcessInputPorts()
 {
 	CLAM_ASSERT( mReceiverList.empty(), "NetworkLADSPAPlugin::ProcessInputPorts() : there are already registered input ports");
 
-	LADSPAInPortInfo info;
+	LADSPAInfo<ExternGenerator> info;
 
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
@@ -67,11 +68,11 @@ void NetworkLADSPAPlugin::ProcessInputPorts()
 		if (std::string("ExternGenerator")==std::string(it->second->GetClassName()))
 		{
 			//Store Processing name
-			info.portName=it->first;
+			info.name=it->first;
 			
 			//Get Processing address
-			info.clamReceiver=(ExternGenerator*)it->second;
-			info.clamReceiver->SetFrameAndHopSize( mExternBufferSize );
+			info.processing=(ExternGenerator*)it->second;
+			info.processing->SetFrameAndHopSize( mExternBufferSize );
 
 			//Add the info 
 			mReceiverList.push_back(info);
@@ -83,7 +84,7 @@ void NetworkLADSPAPlugin::ProcessOutputPorts()
 {
 	CLAM_ASSERT( mSenderList.empty(), "NetworkLADSPAPlugin::ProcessInputPorts() : there are already registered output ports");
 
-	LADSPAOutPortInfo info;
+	LADSPAInfo<ExternSink> info;
 
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
@@ -91,11 +92,11 @@ void NetworkLADSPAPlugin::ProcessOutputPorts()
 		if (std::string("ExternSink")==std::string(it->second->GetClassName()))
 		{
 			//Store Processing name
-			info.portName=it->first;
+			info.name=it->first;
 			
 			//Get Processing address
-			info.clamSender=(ExternSink*)it->second;
-			info.clamSender->SetFrameAndHopSize( mExternBufferSize );
+			info.processing=(ExternSink*)it->second;
+			info.processing->SetFrameAndHopSize( mExternBufferSize );
 
 			//Add the info 
 			mSenderList.push_back(info);
@@ -103,11 +104,11 @@ void NetworkLADSPAPlugin::ProcessOutputPorts()
 	}
 }
 
-void NetworkLADSPAPlugin::ProcessControls()
+void NetworkLADSPAPlugin::ProcessInputControls()
 {
-	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::ProcessControls() : there are already registered controls");
+	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::ProcessInputControls() : there are already registered controls");
 
-	LADSPAInControlInfo info;
+	LADSPAInfo<ExternInControl> info;
 
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
@@ -115,10 +116,10 @@ void NetworkLADSPAPlugin::ProcessControls()
 		if (std::string("ExternInControl")==std::string(it->second->GetClassName()))
 		{
 			//Store Processing name
-			info.controlName=it->first;
+			info.name=it->first;
 			
 			//Get Processing address
-			info.clamControlReceiver=(ExternInControl*)it->second;
+			info.processing=(ExternInControl*)it->second;
 
 			//Add the info 
 			mInControlList.push_back(info);
@@ -126,15 +127,39 @@ void NetworkLADSPAPlugin::ProcessControls()
 	}
 }
 
+void NetworkLADSPAPlugin::ProcessOutputControls()
+{
+	CLAM_ASSERT( mOutControlList.empty(), "NetworkLADSPAPlugin::ProcessOutputControls() : there are already registered controls");
+
+	LADSPAInfo<ExternOutControl> info;
+
+	//Get them from the Network and add it to local list		
+	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
+	{
+		if (std::string("ExternOutControl")==std::string(it->second->GetClassName()))
+		{
+			//Store Processing name
+			info.name=it->first;
+			
+			//Get Processing address
+			info.processing=(ExternOutControl*)it->second;
+
+			//Add the info 
+			mOutControlList.push_back(info);
+		}
+	}
+}
+
+
 void NetworkLADSPAPlugin::UpdatePortFrameAndHopSize()
 {
 	//ExternGenerators
 	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-		it->clamReceiver->SetFrameAndHopSize( mExternBufferSize );
+		it->processing->SetFrameAndHopSize( mExternBufferSize );
 
 	//ExternSinks
 	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-		it->clamSender->SetFrameAndHopSize( mExternBufferSize );
+		it->processing->SetFrameAndHopSize( mExternBufferSize );
 }
 
 void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )
@@ -145,7 +170,7 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
 	{
 		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO);
-		names[currentport] = dupstr( it->portName.c_str() );
+		names[currentport] = dupstr( it->name.c_str() );
 		rangehints[currentport].HintDescriptor = 0;
 		currentport++;
 	}
@@ -154,7 +179,7 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
 	{
 		descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO);
-		names[currentport] = dupstr( it->portName.c_str() );
+		names[currentport] = dupstr( it->name.c_str() );
 		rangehints[currentport].HintDescriptor = 0;
 		currentport++;
 	}
@@ -163,18 +188,31 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
 	{
 		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL);
-		names[currentport] = dupstr( it->controlName.c_str() );
+		names[currentport] = dupstr( it->name.c_str() );
 
 		//Obté processingConfig, i defineix cada param
 		ExternInControlConfig& conf=const_cast<ExternInControlConfig&>(
 						dynamic_cast<const ExternInControlConfig&>(
-							it->clamControlReceiver->GetConfig() ));
+							it->processing->GetConfig() ));
 		
 		rangehints[currentport].LowerBound=(LADSPA_Data)conf.GetMinValue();
 		rangehints[currentport].UpperBound=(LADSPA_Data)conf.GetMaxValue();
 		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE);
 		currentport++;
 	}
+	
+	//Manage OutControls (ExternOutControls)
+	// (Please note that not all the LADSPA hosts make use of these kind of ports)
+	for (LADSPAOutControlList::iterator it=mOutControlList.begin(); it!=mOutControlList.end(); it++)
+	{
+		descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_CONTROL);
+		names[currentport] = dupstr( it->name.c_str() );
+		rangehints[currentport].LowerBound=(LADSPA_Data)0;
+		rangehints[currentport].UpperBound=(LADSPA_Data)1000;
+		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE);
+		currentport++;
+	}
+
 }
 
 void NetworkLADSPAPlugin::Run( unsigned long nsamples )
@@ -187,7 +225,7 @@ void NetworkLADSPAPlugin::Run( unsigned long nsamples )
 		UpdatePortFrameAndHopSize();
 	}		
 	
-	ProcessControlValues();
+	ProcessInControlValues();
 	
 	CopyLadspaBuffersToGenerators(nsamples);
 
@@ -196,24 +234,32 @@ void NetworkLADSPAPlugin::Run( unsigned long nsamples )
 		GetNetwork().Do();
 
 	CopySinksToLadspaBuffers(nsamples);
+	ProcessOutControlValues();
 }
 
-void NetworkLADSPAPlugin::ProcessControlValues()
+void NetworkLADSPAPlugin::ProcessInControlValues()
 {
 	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
-		it->clamControlReceiver->Do( (float) *(it->dataBuffer) );
+		it->processing->Do( (float) *(it->dataBuffer) );
 }
+
+void NetworkLADSPAPlugin::ProcessOutControlValues()
+{
+	for (LADSPAOutControlList::iterator it=mOutControlList.begin(); it!=mOutControlList.end(); it++)
+		*(it->dataBuffer)=it->processing->GetControlValue();
+}
+
 
 void NetworkLADSPAPlugin::CopyLadspaBuffersToGenerators(const unsigned long nframes)
 {
 	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-		it->clamReceiver->Do( (TData*) it->dataBuffer, nframes );
+		it->processing->Do( (TData*) it->dataBuffer, nframes );
 }
 
 void NetworkLADSPAPlugin::CopySinksToLadspaBuffers(const unsigned long nframes)
 {
 	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-		it->clamSender->Do( (TData*) it->dataBuffer, nframes);	
+		it->processing->Do( (TData*) it->dataBuffer, nframes);	
 }
 
 void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
@@ -222,8 +268,10 @@ void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
 		mReceiverList.at( port ).dataBuffer=data;
 	else if ( port <= mReceiverList.size() + mSenderList.size() -1) //Output port
 		mSenderList.at( port-mReceiverList.size() ).dataBuffer=data;
-	else //Input control
+	else if ( port <= mReceiverList.size() + mSenderList.size() + mInControlList.size() -1) //Input control
 		mInControlList.at( port-mReceiverList.size()-mSenderList.size() ).dataBuffer=data;
+	else //Output control
+		mOutControlList.at( port-mReceiverList.size()-mSenderList.size()-mInControlList.size() ).dataBuffer=data;
 }
 
 } //end namespace CLAM
