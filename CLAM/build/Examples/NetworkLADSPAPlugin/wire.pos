@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<WidgetLocations>
+
+  <WindowWidth>800</WindowWidth>
+
+  <WindowHeight>600</WindowHeight>
+
+  <WidgetList>
+    <Widget>
+      <Name>in1</Name>
+      <X>40</X>
+      <Y>108</Y>
+      <Width>129</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>in2</Name>
+      <X>70</X>
+      <Y>217</Y>
+      <Width>129</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>out1</Name>
+      <X>345</X>
+      <Y>114</Y>
+      <Width>100</Width>
+      <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>out2</Name>
+      <X>358</X>
+      <Y>222</Y>
+      <Width>100</Width>
+      <Height>60</Height>
+    </Widget>
+  </WidgetList>
+
+</WidgetLocations>
