@@ -3,42 +3,29 @@
 
   <List>
     <Pair>
-      <Name>First1</Name>
+      <Name>Pitch</Name>
       <ControlConfig>
         <MinValue>0</MinValue>
-        <MaxValue>100</MaxValue>
+        <MaxValue>800</MaxValue>
         <Step>1</Step>
       </ControlConfig>
       <SenderConfig>
         <HostName>localhost1</HostName>
         <Port>7000</Port>
-        <Path>/processing1/control1</Path>
+        <Path>/SimpleOscillator_0/Pitch</Path>
       </SenderConfig>
     </Pair>
     <Pair>
-      <Name>Second</Name>
+      <Name>Amplitude</Name>
       <ControlConfig>
-        <MinValue>0</MinValue>
-        <MaxValue>200</MaxValue>
+        <MinValue>-1</MinValue>
+        <MaxValue>1</MaxValue>
         <Step>1</Step>
       </ControlConfig>
       <SenderConfig>
         <HostName>localhost</HostName>
         <Port>7000</Port>
-        <Path>/processing2/control2</Path>
-      </SenderConfig>
-    </Pair>
-    <Pair>
-      <Name>Third</Name>
-      <ControlConfig>
-        <MinValue>100</MinValue>
-        <MaxValue>200</MaxValue>
-        <Step>1</Step>
-      </ControlConfig>
-      <SenderConfig>
-        <HostName>localhost</HostName>
-        <Port>7000</Port>
-        <Path>/processing3/control3</Path>
+        <Path>/SimpleOscillator_0/Amplitude</Path>
       </SenderConfig>
     </Pair>
   </List>
