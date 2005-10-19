@@ -36,7 +36,7 @@ StartupShutdownHandler::~StartupShutdownHandler()
 void StartupShutdownHandler::CreateLADSPADescriptor()
 {	
 	CLAM::CLAMRemoteController *plugin=new CLAM::CLAMRemoteController();
-	int numports=plugin->GetControlCount();
+	int numports=plugin->GetControlCount()+plugin->GetPortCount();
 
 	char ** pcPortNames;
 	LADSPA_PortDescriptor * piPortDescriptors;
@@ -47,10 +47,10 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 	//TODO posa cada grupet en mètodes propis: "registra portdescriptors...", etc
 	if (g_psDescriptor)
 	{
-		g_psDescriptor->UniqueID = 8983;
+		g_psDescriptor->UniqueID = 8984;
 		g_psDescriptor->Label = dupstr("CLAMCLAMRemoteController");
 		g_psDescriptor->Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE; // LADSPA_PROPERTY_REALTIME;
-		g_psDescriptor->Name = dupstr("CLAM Network LADSPA Plugin");
+		g_psDescriptor->Name = dupstr("CLAM Remote Controller");
 		g_psDescriptor->Maker = dupstr("CLAM-devel");
 		g_psDescriptor->Copyright = dupstr("GPL");
 		g_psDescriptor->PortCount = numports;
@@ -69,9 +69,9 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 		
 		g_psDescriptor->instantiate = Instantiate;
 		g_psDescriptor->connect_port = ConnectTo;
-		g_psDescriptor->activate = Activate;
+		g_psDescriptor->activate = 0;
 		g_psDescriptor->run = Run;
-		g_psDescriptor->deactivate = Deactivate;
+		g_psDescriptor->deactivate = 0;
 		g_psDescriptor->cleanup = CleanUp;
 	}
 
@@ -116,24 +116,6 @@ void CleanUp(LADSPA_Handle Instance)
 	std::cerr << " cleanup " << Instance << std::endl;
 	//Cleanup method only called by some apps. Jack-rack doesn't, but Sweep does.
 	delete (CLAM::CLAMRemoteController*) Instance;
-}
-
-void Activate(LADSPA_Handle Instance)
-{
-	std::cerr << " activate " << Instance << std::endl;
-	CLAM::CLAMRemoteController *p = (CLAM::CLAMRemoteController*) Instance;
-
-	//Start network
-	p->Activate();
-}
-
-void Deactivate(LADSPA_Handle Instance)
-{
-	std::cerr << " deactivate " << Instance << std::endl;
-	CLAM::CLAMRemoteController *p = (CLAM::CLAMRemoteController*) Instance;
-	
-	//Stop network
-	p->Deactivate();
 }
 
 /* Connect a port to a data location. */

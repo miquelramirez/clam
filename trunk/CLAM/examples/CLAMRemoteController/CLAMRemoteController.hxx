@@ -42,7 +42,7 @@ class RemoteControlPair : public CLAM::DynamicType
 {
 public:
 	DYNAMIC_TYPE( RemoteControlPair, 3 );
-	DYN_ATTRIBUTE( 0, public, Text, Name ); 
+	DYN_ATTRIBUTE( 0, public, std::string, Name ); 
 	DYN_ATTRIBUTE( 1, public, ExternInControlConfig, ControlConfig );
 	DYN_ATTRIBUTE( 2, public, OSCSenderConfig, SenderConfig );
 
@@ -77,38 +77,32 @@ public:
 	LADSPA_Data *dataBuffer;
 };
 
-typedef std::vector< LADSPAInfo<ExternGenerator> > LADSPAInPortList;
-typedef std::vector< LADSPAInfo<ExternSink> > LADSPAOutPortList;
 typedef std::vector< LADSPAInfo<ExternInControl> > LADSPAInControlList;
-typedef std::vector< LADSPAInfo<ExternOutControl> > LADSPAOutControlList;
 
 class CLAMRemoteController
 {
 private:
 	Network* mNet;		
-	LADSPAInPortList mReceiverList;
-	LADSPAOutPortList mSenderList;
 	LADSPAInControlList mInControlList;
-	LADSPAOutControlList mOutControlList;
-	unsigned long mClamBufferSize, mExternBufferSize;
+	LADSPAInfo<void> mPortList[4];
+	std::vector<OSCSender*> mSenderList;
+	TData* mLastValues;
+		
 	RemoteControlList mRemoteControlList;
 	
 public:
 	CLAMRemoteController();
 	~CLAMRemoteController();
-	void CreateNetwork();
-	
-	void Activate();
-	void Deactivate();
+	void CreateStructure();
 	
 	int GetPortCount()
 	{
-		return ( mReceiverList.size()+mSenderList.size() );
+		return 4;
 	}
 	
 	int GetControlCount()
 	{
-		return ( mInControlList.size()+mOutControlList.size() );
+		return ( mInControlList.size() );
 	}
 
 	Network& GetNetwork()
@@ -117,23 +111,16 @@ public:
 	}
 
 
-	void ProcessInputPorts();
-	void ProcessOutputPorts();
-	void ProcessInputControls();
-	void ProcessOutputControls();
+	void ProcessPorts();
 
-	void UpdatePortFrameAndHopSize();
 	void FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints );
 	void ConnectTo(unsigned long port, LADSPA_Data * data);
 	
 	void Run( unsigned long nsamples );
-	void CopyLadspaBuffersToGenerators(const unsigned long nframes);
-	void CopySinksToLadspaBuffers(const unsigned long nframes);
 	void ProcessInControlValues();
-	void ProcessOutControlValues();
+	void CopyInPortsToOutputPorts( unsigned long nsamples );
 };
 
 } //namespace CLAM
-
 
 #endif

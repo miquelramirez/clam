@@ -1,37 +1,32 @@
 #include "CLAMRemoteController.hxx"
 
+unsigned int numports=4;
+
 namespace CLAM
 {
 
 CLAMRemoteController::CLAMRemoteController()
 {
-	CreateNetwork();
+	CreateStructure();
 	
-	ProcessInputPorts();
-	ProcessOutputPorts();
-	ProcessInputControls();
-	ProcessOutputControls();
+	ProcessPorts();
 }
 
 CLAMRemoteController::~CLAMRemoteController()
 {
-	delete mNet;
-
 	std::cerr << " DELETED" << std::endl;
+	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
+		delete it->processing;
+	for (std::vector<OSCSender*>::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+		delete *it;
+	std::cerr << " DELETED OK!" << std::endl;
 }
 
-void CLAMRemoteController::CreateNetwork()
+void CLAMRemoteController::CreateStructure()
 {
-	mNet=new Network();
-
-	mClamBufferSize=512;
-	mExternBufferSize=512;
-	GetNetwork().AddFlowControl( new PushFlowControl( mClamBufferSize ) );
-	GetNetwork().SetName("Testing name");
-
 	std::cerr << " constructor" << std::endl;
 
-	std::string xmlfile="remoteList.xml";
+	std::string xmlfile="/home/xoliver/CLAM/build/Examples/CLAMRemoteController/remoteList.xml";
 
 	try
 	{
@@ -44,172 +39,62 @@ void CLAMRemoteController::CreateNetwork()
 		return;
 	}
 
+	LADSPAInfo<ExternInControl> info;
+	mLastValues=new TData[mRemoteControlList.GetList().size()];
+	int i=0;
 	for ( std::list<RemoteControlPair>::iterator it=mRemoteControlList.GetList().begin(); it!=mRemoteControlList.GetList().end(); it++)
 	{
-		std::cerr << " LISTING!! : " << it->GetName() << std::endl;
 		//Create ExternInControl
-		mNet->AddProcessing( it->GetName() , new ExternInControl( it->GetControlConfig() ) );
+		info.name=it->GetName();
+		info.processing=new ExternInControl( it->GetControlConfig() );
+		mInControlList.push_back(info);
 
 		//Create OSCSender
-		std::string oscname=it->GetName();
-		oscname.append("_osc");
-		mNet->AddProcessing( oscname , new OSCSender( it->GetSenderConfig() ) );
-
-		//Link them
-		oscname.append(".input");
-		std::string controlname=it->GetName();
-		controlname.append(".output");
-		mNet->ConnectControls( controlname, oscname );
-	}
-
-	//GetNetwork().AddProcessing( "LeftIn", new ExternGenerator() );
-	//GetNetwork().AddProcessing( "RightIn", new ExternGenerator() );
-	//GetNetwork().AddProcessing( "LeftOut", new ExternSink() );
-	//GetNetwork().AddProcessing( "RightOut", new ExternSink() );
-	//GetNetwork().ConnectPorts( "LeftIn.AudioOut", "LeftOut.AudioIn");
-	//GetNetwork().ConnectPorts( "RightIn.AudioOut", "RightOut.AudioIn");
-
-}
-
-void CLAMRemoteController::Activate()
-{
-	GetNetwork().Start();
-}
-
-void CLAMRemoteController::Deactivate()
-{
-	GetNetwork().Stop();
-}
-
-void CLAMRemoteController::ProcessInputPorts()
-{
-	CLAM_ASSERT( mReceiverList.empty(), "CLAMRemoteController::ProcessInputPorts() : there are already registered input ports");
-
-	LADSPAInfo<ExternGenerator> info;
-
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
-	{
-		if (std::string("ExternGenerator")==std::string(it->second->GetClassName()))
-		{
-			std::cerr << " GENERATOR FOUND!" << std::endl;
-
-			//Store Processing name
-			info.name=it->first;
-			
-			//Get Processing address
-			info.processing=(ExternGenerator*)it->second;
-			info.processing->SetFrameAndHopSize( mExternBufferSize );
-
-			//Add the info 
-			mReceiverList.push_back(info);
-		}
+		mSenderList.push_back( new OSCSender( it->GetSenderConfig() ) );		
+		mLastValues[i++]=0.0;
 	}
 }
 
-void CLAMRemoteController::ProcessOutputPorts()
+void CLAMRemoteController::ProcessPorts()
 {
-	CLAM_ASSERT( mSenderList.empty(), "CLAMRemoteController::ProcessInputPorts() : there are already registered output ports");
+	//Create the two input channels
+	mPortList[0].name="LeftIn";
+	mPortList[0].processing=NULL;
+	mPortList[1].name="RightIn";
+	mPortList[1].processing=NULL;
 
-	LADSPAInfo<ExternSink> info;
-
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
-	{
-		if (std::string("ExternSink")==std::string(it->second->GetClassName()))
-		{
-			//Store Processing name
-			info.name=it->first;
-			
-			//Get Processing address
-			info.processing=(ExternSink*)it->second;
-			info.processing->SetFrameAndHopSize( mExternBufferSize );
-
-			//Add the info 
-			mSenderList.push_back(info);
-		}
-	}
-}
-
-void CLAMRemoteController::ProcessInputControls()
-{
-	CLAM_ASSERT( mInControlList.empty(), "CLAMRemoteController::ProcessInputControls() : there are already registered controls");
-
-	LADSPAInfo<ExternInControl> info;
-
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
-	{
-		if (std::string("ExternInControl")==std::string(it->second->GetClassName()))
-		{
-			//Store Processing name
-			info.name=it->first;
-			
-			//Get Processing address
-			info.processing=(ExternInControl*)it->second;
-
-			//Add the info 
-			mInControlList.push_back(info);
-		}
-	}
-}
-
-void CLAMRemoteController::ProcessOutputControls()
-{
-	CLAM_ASSERT( mOutControlList.empty(), "CLAMRemoteController::ProcessOutputControls() : there are already registered controls");
-
-	LADSPAInfo<ExternOutControl> info;
-
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
-	{
-		if (std::string("ExternOutControl")==std::string(it->second->GetClassName()))
-		{
-			//Store Processing name
-			info.name=it->first;
-			
-			//Get Processing address
-			info.processing=(ExternOutControl*)it->second;
-
-			//Add the info 
-			mOutControlList.push_back(info);
-		}
-	}
-}
-
-
-void CLAMRemoteController::UpdatePortFrameAndHopSize()
-{
-	//ExternGenerators
-	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-		it->processing->SetFrameAndHopSize( mExternBufferSize );
-
-	//ExternSinks
-	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-		it->processing->SetFrameAndHopSize( mExternBufferSize );
+	//Create the two output channels
+	mPortList[2].name="LeftOut";
+	mPortList[2].processing=NULL;
+	mPortList[3].name="RightOut";
+	mPortList[3].processing=NULL;
 }
 
 void CLAMRemoteController::FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints )
 {
 	int currentport=0;
 
-	//Manage InPorts (ExternGenerators)
-	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-	{
-		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO);
-		names[currentport] = dupstr( it->name.c_str() );
-		rangehints[currentport].HintDescriptor = 0;
-		currentport++;
-	}
+	//Manage InPorts
+	descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO);
+	names[currentport] = dupstr( mPortList[currentport].name.c_str() );
+	rangehints[currentport].HintDescriptor = 0;
+	currentport++;
 
-	//Manage OutPorts (ExternSinks)
-	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-	{
-		descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO);
-		names[currentport] = dupstr( it->name.c_str() );
-		rangehints[currentport].HintDescriptor = 0;
-		currentport++;
-	}
+	descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO);
+	names[currentport] = dupstr( mPortList[currentport].name.c_str() );
+	rangehints[currentport].HintDescriptor = 0;
+	currentport++;
+
+	//Manage OutPorts
+	descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO);
+	names[currentport] = dupstr( mPortList[currentport].name.c_str() );
+	rangehints[currentport].HintDescriptor = 0;
+	currentport++;
+
+	descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO);
+	names[currentport] = dupstr( mPortList[currentport].name.c_str() );
+	rangehints[currentport].HintDescriptor = 0;
+	currentport++;
 
 	//Manage InControls (ExternInControls)
 	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
@@ -227,78 +112,45 @@ void CLAMRemoteController::FillPortInfo( LADSPA_PortDescriptor* descriptors, cha
 		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE | LADSPA_HINT_DEFAULT_MIDDLE);
 		currentport++;
 	}
-	
-	//Manage OutControls (ExternOutControls)
-	// (Please note that not all the LADSPA hosts make use of these kind of ports)
-	for (LADSPAOutControlList::iterator it=mOutControlList.begin(); it!=mOutControlList.end(); it++)
-	{
-		descriptors[currentport] = (LADSPA_PORT_OUTPUT | LADSPA_PORT_CONTROL);
-		names[currentport] = dupstr( it->name.c_str() );
-		rangehints[currentport].LowerBound=(LADSPA_Data)0;
-		rangehints[currentport].UpperBound=(LADSPA_Data)1000;
-		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE);
-		currentport++;
-	}
-
 }
 
 void CLAMRemoteController::Run( unsigned long nsamples )
 {
-	//Check current buffer size of ports, to make sure everything fits!
-	// if it isn't so, upgrade Frame and Hop sizes (vital)
-	if (nsamples!=mExternBufferSize)
-	{
-		mExternBufferSize=nsamples;
-		UpdatePortFrameAndHopSize();
-	}		
-	
 	ProcessInControlValues();
 	
-	CopyLadspaBuffersToGenerators(nsamples);
+	CopyInPortsToOutputPorts(nsamples);
+}
 
-	//Do() as much as it is needed
-	for (int stepcount=0; stepcount < (int(mExternBufferSize)/int(mClamBufferSize)); stepcount++)
-		GetNetwork().Do();
-
-	CopySinksToLadspaBuffers(nsamples);
-	ProcessOutControlValues();
+void CLAMRemoteController::CopyInPortsToOutputPorts( unsigned long nsamples )
+{
+	for (unsigned long i=0; i<nsamples; i++)
+	{
+		//Simply copy input buffers to output ones
+		mPortList[2].dataBuffer[i]=mPortList[0].dataBuffer[i];
+		mPortList[3].dataBuffer[i]=mPortList[1].dataBuffer[i];
+	}
 }
 
 void CLAMRemoteController::ProcessInControlValues()
 {
+	int i=0;
 	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
-		it->processing->Do( (float) *(it->dataBuffer) );
-}
-
-void CLAMRemoteController::ProcessOutControlValues()
-{
-	for (LADSPAOutControlList::iterator it=mOutControlList.begin(); it!=mOutControlList.end(); it++)
-		*(it->dataBuffer)=it->processing->GetControlValue();
-}
-
-
-void CLAMRemoteController::CopyLadspaBuffersToGenerators(const unsigned long nframes)
-{
-	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-		it->processing->Do( (TData*) it->dataBuffer, nframes );
-}
-
-void CLAMRemoteController::CopySinksToLadspaBuffers(const unsigned long nframes)
-{
-	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-		it->processing->Do( (TData*) it->dataBuffer, nframes);	
+	{
+		if ( (TData) *(it->dataBuffer) != mLastValues[i] )
+		{
+			mSenderList.at(i)->GetInControl("input").DoControl( (TData) *(it->dataBuffer) );
+			mLastValues[i]= (TData) *(it->dataBuffer);
+		}
+		i++;
+	}
 }
 
 void CLAMRemoteController::ConnectTo(unsigned long port, LADSPA_Data * data)
 {
-	if ( port <= mReceiverList.size()-1 ) //Input port
-		mReceiverList.at( port ).dataBuffer=data;
-	else if ( port <= mReceiverList.size() + mSenderList.size() -1) //Output port
-		mSenderList.at( port-mReceiverList.size() ).dataBuffer=data;
-	else if ( port <= mReceiverList.size() + mSenderList.size() + mInControlList.size() -1) //Input control
-		mInControlList.at( port-mReceiverList.size()-mSenderList.size() ).dataBuffer=data;
-	else //Output control
-		mOutControlList.at( port-mReceiverList.size()-mSenderList.size()-mInControlList.size() ).dataBuffer=data;
+	if ( port<numports )
+		mPortList[port].dataBuffer=data;
+	else //Input controls
+		mInControlList.at( port-numports ).dataBuffer=data;
 }
 
 } //end namespace CLAM
