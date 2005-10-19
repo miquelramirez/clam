@@ -77,7 +77,8 @@ namespace CLAM{
 		
 		~OSCSender()
 		{
-			delete mTransmitSocket;			
+			if (mTransmitSocket!=NULL)
+				delete mTransmitSocket;			
 		}
 		
 		bool Do()
