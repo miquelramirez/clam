@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network id="CLAM OSCEnabledNetwork">
+<network id="CLAM">
+
+  <processing id="ExternInControl_0" type="ExternInControl">
+    <MinValue>0</MinValue>
+    <MaxValue>100</MaxValue>
+    <Step>1</Step>
+  </processing>
+
+  <processing id="ExternInControl_1" type="ExternInControl">
+    <MinValue>0</MinValue>
+    <MaxValue>100</MaxValue>
+    <Step>1</Step>
+  </processing>
+
+  <processing id="ExternInControl_2" type="ExternInControl">
+    <MinValue>0</MinValue>
+    <MaxValue>100</MaxValue>
+    <Step>1</Step>
+  </processing>
+
+  <processing id="ExternInControl_3" type="ExternInControl">
+    <MinValue>0</MinValue>
+    <MaxValue>100</MaxValue>
+    <Step>1</Step>
+  </processing>
+
+  <processing id="ExternInControl_4" type="ExternInControl">
+    <MinValue>0</MinValue>
+    <MaxValue>100</MaxValue>
+    <Step>1</Step>
+  </processing>
 
   <processing id="in1" type="ExternGenerator"/>
 
