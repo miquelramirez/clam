@@ -171,7 +171,7 @@ namespace CLAM {
 	}
 
 	
-	int FrameInterpolator::DoFrameFactorControl(TData value)
+	int FrameInterpolator::DoFrameFactorControl(TControlData value)
 	{
 		mMagInterpolationFactorCtl.DoControl(value);
 		mFreqInterpolationFactorCtl.DoControl(value);
@@ -180,43 +180,43 @@ namespace CLAM {
 		return 0;
 	}
 
-	int FrameInterpolator::DoMagFactorControl(TData value)
+	int FrameInterpolator::DoMagFactorControl(TControlData value)
 	{
 		mPO_PeaksInterpolator.mMagInterpolationFactorCtl.DoControl(value);
 		return 0;
 	}
 
-	int FrameInterpolator::DoFreqFactorControl(TData value)
+	int FrameInterpolator::DoFreqFactorControl(TControlData value)
 	{
 		mPO_PeaksInterpolator.mFreqInterpolationFactorCtl.DoControl(value);
 		return 0;
 	}
 
-	int FrameInterpolator::DoPitchFactorControl(TData value)
+	int FrameInterpolator::DoPitchFactorControl(TControlData value)
 	{
 		mPO_PeaksInterpolator.mPitchInterpolationFactorCtl.DoControl(value);
 		return 0;
 	}
 
-	int FrameInterpolator::DoResidualFactorControl(TData value)
+	int FrameInterpolator::DoResidualFactorControl(TControlData value)
 	{
 		mPO_SpectrumInterpolator.mInterpolationFactorCtl.DoControl(value);
 		return 0;
 	}
 
-	int FrameInterpolator::DoPitch1Control(TData value)
+	int FrameInterpolator::DoPitch1Control(TControlData value)
 	{
 		mPO_PeaksInterpolator.mPitch1Ctl.DoControl(value);
 		return 0;
 	}
 
-	int FrameInterpolator::DoPitch2Control(TData value)
+	int FrameInterpolator::DoPitch2Control(TControlData value)
 	{
 		mPO_PeaksInterpolator.mPitch2Ctl.DoControl(value);
 		return 0;
 	}
 
-	int FrameInterpolator::DoHarmonicControl(TData value)
+	int FrameInterpolator::DoHarmonicControl(TControlData value)
 	{
 		mPO_PeaksInterpolator.mIsHarmonicCtl.DoControl(value);
 		return 0;
