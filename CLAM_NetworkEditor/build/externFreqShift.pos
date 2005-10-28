@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <WidgetLocations>
 
-  <WindowWidth>917</WindowWidth>
+  <WindowWidth>873</WindowWidth>
 
   <WindowHeight>599</WindowHeight>
 
   <WidgetList>
     <Widget>
       <Name>AudioBuffPortMonitor_0</Name>
-      <X>197</X>
-      <Y>347</Y>
-      <Width>291</Width>
-      <Height>136</Height>
+      <X>151</X>
+      <Y>307</Y>
+      <Width>377</Width>
+      <Height>134</Height>
     </Widget>
     <Widget>
       <Name>Input0</Name>
@@ -24,13 +24,13 @@
       <Name>Input1</Name>
       <X>-6</X>
       <Y>280</Y>
-      <Width>127</Width>
-      <Height>60</Height>
+      <Width>117</Width>
+      <Height>62</Height>
     </Widget>
     <Widget>
       <Name>OriginalOutput</Name>
-      <X>600</X>
-      <Y>272</Y>
+      <X>517</X>
+      <Y>278</Y>
       <Width>108</Width>
       <Height>60</Height>
     </Widget>
@@ -43,29 +43,29 @@
     </Widget>
     <Widget>
       <Name>SMSAnalysisCore_0</Name>
-      <X>110</X>
-      <Y>162</Y>
+      <X>76</X>
+      <Y>154</Y>
       <Width>135</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>SMSFreqShift_0</Name>
-      <X>273</X>
-      <Y>75</Y>
+      <X>225</X>
+      <Y>73</Y>
       <Width>114</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>SMSSynthesis_0</Name>
-      <X>407</X>
-      <Y>161</Y>
+      <X>345</X>
+      <Y>171</Y>
       <Width>118</Width>
       <Height>60</Height>
     </Widget>
     <Widget>
       <Name>ShiftedOutput</Name>
-      <X>612</X>
-      <Y>162</Y>
+      <X>536</X>
+      <Y>164</Y>
       <Width>101</Width>
       <Height>60</Height>
     </Widget>
