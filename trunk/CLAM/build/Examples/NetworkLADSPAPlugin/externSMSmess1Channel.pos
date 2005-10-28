@@ -21,13 +21,6 @@
       <Height>60</Height>
     </Widget>
     <Widget>
-      <Name>PitchShift</Name>
-      <X>252</X>
-      <Y>328</Y>
-      <Width>111</Width>
-      <Height>60</Height>
-    </Widget>
-    <Widget>
       <Name>SMSAnalysisCore</Name>
       <X>356</X>
       <Y>212</Y>
@@ -36,8 +29,8 @@
     </Widget>
     <Widget>
       <Name>SMSFreqShift</Name>
-      <X>8</X>
-      <Y>279</Y>
+      <X>89</X>
+      <Y>414</Y>
       <Width>102</Width>
       <Height>60</Height>
     </Widget>
@@ -61,6 +54,13 @@
       <Y>61</Y>
       <Width>106</Width>
       <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>ExternInControl_0</Name>
+      <X>344</X>
+      <Y>379</Y>
+      <Width>96</Width>
+      <Height>52</Height>
     </Widget>
   </WidgetList>
 

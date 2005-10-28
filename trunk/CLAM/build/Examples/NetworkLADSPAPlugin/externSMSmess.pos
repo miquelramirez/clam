@@ -35,13 +35,6 @@
       <Height>60</Height>
     </Widget>
     <Widget>
-      <Name>PitchShift</Name>
-      <X>85</X>
-      <Y>99</Y>
-      <Width>111</Width>
-      <Height>60</Height>
-    </Widget>
-    <Widget>
       <Name>SMSAnalysisCore</Name>
       <X>134</X>
       <Y>371</Y>
@@ -82,6 +75,13 @@
       <Y>569</Y>
       <Width>132</Width>
       <Height>60</Height>
+    </Widget>
+    <Widget>
+      <Name>Amount</Name>
+      <X>165</X>
+      <Y>77</Y>
+      <Width>96</Width>
+      <Height>52</Height>
     </Widget>
   </WidgetList>
 
