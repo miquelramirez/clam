@@ -61,7 +61,7 @@ AC_MSG_RESULT($CXXVERSION)
 CXXVERSION_MAJOR=`echo $CXXVERSION | cut -d'.' -f1`
 CXXVERSION_MINOR=`echo $CXXVERSION | cut -d'.' -f2`
 AC_MSG_CHECKING([if default g++ compiler is acceptable])
-if test $CXXVERSION_MAJOR = 3
+if test $CXXVERSION_MAJOR = 3 || test $CXXVERSION_MAJOR = 4
 then
 	CXX=g++
 	AC_MSG_RESULT([yes: $CXX version is $CXXVERSION])
