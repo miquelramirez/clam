@@ -43,31 +43,31 @@ namespace CLAM {
 
 
 	SpectralPeakArrayInterpolator::SpectralPeakArrayInterpolator()
-		: mIn1("Input 1",this),
-		  mIn2("Input 2",this),
-		  mOut("Output",this),
-		  mpSpectralShape(0),
-		  mMagInterpolationFactorCtl("MagInterpolationFactor",this),
-		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this),
-		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this),
-		  mIsHarmonicCtl("IsHarmonic",this),
-		  mPitch1Ctl("Pitch1",this),
-		  mPitch2Ctl("Pitch2",this)
+		:	mMagInterpolationFactorCtl("MagInterpolationFactor",this),
+			mFreqInterpolationFactorCtl("FreqInterpolationFactor",this),
+			mPitchInterpolationFactorCtl("PitchInterpolationFactor",this),
+			mPitch1Ctl("Pitch1",this),
+			mPitch2Ctl("Pitch2",this),
+			mIsHarmonicCtl("IsHarmonic",this),
+			mIn1("Input 1",this),
+			mIn2("Input 2",this),
+			mOut("Output",this),
+			mpSpectralShape(0)
 	{
 		Configure(PeaksInterpConfig());
 	}
 
 	SpectralPeakArrayInterpolator::SpectralPeakArrayInterpolator(const PeaksInterpConfig &c)
-		: mIn1("Input 1",this),
-		  mIn2("Input 2",this),
-		  mOut("Output",this),
-		  mpSpectralShape(0),
-		  mMagInterpolationFactorCtl("MagInterpolationFactor",this),
-		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this),
-		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this),
-		  mIsHarmonicCtl("IsHarmonic",this),
-		  mPitch1Ctl("Pitch1",this),
-		  mPitch2Ctl("Pitch2",this)
+		: 	mMagInterpolationFactorCtl("MagInterpolationFactor",this),
+			mFreqInterpolationFactorCtl("FreqInterpolationFactor",this),
+			mPitchInterpolationFactorCtl("PitchInterpolationFactor",this),
+			mPitch1Ctl("Pitch1",this),
+			mPitch2Ctl("Pitch2",this),
+			mIsHarmonicCtl("IsHarmonic",this),
+			mIn1("Input 1",this),
+			mIn2("Input 2",this),
+			mOut("Output",this),
+			mpSpectralShape(0)
 	{
 		Configure(c);
 	}
@@ -152,7 +152,7 @@ namespace CLAM {
 		IndexArray& outIndex=out.GetIndexArray();
 		
 		
-		TData factor2=(TData)nPeaks2/nPeaks1;
+		//Unused var: TData factor2=(TData)nPeaks2/nPeaks1;
 		
 
 		//TODO: this computation is duplicated
@@ -287,14 +287,14 @@ namespace CLAM {
 			
 			if(!mIsHarmonicCtl.GetLastValue())
 			{
-				outFreq[i]=in1Freq[i]*(1-freqFactor)+in2Freq[i*factor2]*freqFactor;
+				outFreq[i]=in1Freq[i]*(1-freqFactor)+in2Freq[ int(i*factor2) ]*freqFactor;
 				CLAM_DEBUG_ASSERT(outFreq[i]>=lastFreq,"Error");
 				lastFreq=outFreq[i];
 
 				magFactor=spectralShape.GetMag(outFreq[i]);
 				if(magFactor>1) magFactor=1;
 				if(magFactor<0) magFactor=0;
-				outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[i*factor2]*magFactor;
+				outMag[i]=in1Mag[i]*(1-magFactor)+in2Mag[ int(i*factor2) ]*magFactor;
 				CLAM_DEBUG_ASSERT(outMag[i]<1,"Error");
 				CLAM_DEBUG_ASSERT(outMag[i]>-1,"Error");
 				CLAM_DEBUG_ASSERT(outFreq[i]<22000,"Error");

@@ -285,7 +285,7 @@ bool SDIFIn::LoadSDIFDataIntoSegment( CLAM::Segment& segment )
 
 bool SDIFIn::Do( CLAM::Segment& segment )
 {
-	bool thereIsMoreData = false;
+	//TODO uncomment: bool thereIsMoreData = false;
 	
 //TODO	while( ( thereIsMoreData = LoadSDIFDataIntoSegment( segment ) ) );
 	return LoadSDIFDataIntoSegment( segment );

@@ -46,36 +46,36 @@ namespace CLAM {
 
 
 	FrameInterpolator::FrameInterpolator()
-		: mIn1("Input 1",this),
-		  mIn2("Input 2",this),
-		  mOut("Output",this),
-		  mpSpectralShape(0),
+		: mFrameInterpolationFactorCtl("FrameInterpolationFactor",this,&FrameInterpolator::DoFrameFactorControl),
 		  mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl),
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
 		  mResidualInterpolationFactorCtl("ResidualInterpolationFactor",this,&FrameInterpolator::DoResidualFactorControl),
-		  mFrameInterpolationFactorCtl("FrameInterpolationFactor",this,&FrameInterpolator::DoFrameFactorControl),
-		  mIsHarmonicCtl("IsHarmonic",this,&FrameInterpolator::DoHarmonicControl),
 		  mPitch1Ctl("Pitch1",this,&FrameInterpolator::DoPitch1Control),
-		  mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control)
+		  mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control),
+		  mIsHarmonicCtl("IsHarmonic",this,&FrameInterpolator::DoHarmonicControl),
+		  mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
+		  mpSpectralShape(0)
 	{
 		AttachChildren();
 		Configure(FrameInterpConfig());
 	}
 
 	FrameInterpolator::FrameInterpolator(const FrameInterpConfig &c)
-		: mIn1("Input 1",this),
-		  mIn2("Input 2",this),
-		  mOut("Output",this),
-		  mpSpectralShape(0),
+		: mFrameInterpolationFactorCtl("FrameInterpolationFactor",this,&FrameInterpolator::DoFrameFactorControl),
 		  mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl),
 		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
 		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
 		  mResidualInterpolationFactorCtl("ResidualInterpolationFactor",this,&FrameInterpolator::DoResidualFactorControl),
-		  mFrameInterpolationFactorCtl("FrameInterpolationFactor",this,&FrameInterpolator::DoFrameFactorControl),
-		  mIsHarmonicCtl("IsHarmonic",this,&FrameInterpolator::DoHarmonicControl),
 		  mPitch1Ctl("Pitch1",this,&FrameInterpolator::DoPitch1Control),
-		  mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control)
+		  mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control),
+		  mIsHarmonicCtl("IsHarmonic",this,&FrameInterpolator::DoHarmonicControl),
+		  mIn1("Input 1",this),
+		  mIn2("Input 2",this),
+		  mOut("Output",this),
+		  mpSpectralShape(0)
 	{
 		AttachChildren();
 		Configure(c);

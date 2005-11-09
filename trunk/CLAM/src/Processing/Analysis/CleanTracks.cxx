@@ -182,8 +182,7 @@ namespace CLAM {
 			// Check that the best candidate for 'toBeAppended'
 			// is not the best one to another
 
-			const TSize candidateEnd =
-				candidateTrajectory.beginPos+candidateTrajectory.length;
+			// Unused variable: const TSize candidateEnd = candidateTrajectory.beginPos+candidateTrajectory.length;
 
 			TSize previousFollowerPosition = candidateTrajectory.continuedAtId;
 			// Candidate has already has been attached?
@@ -204,10 +203,10 @@ namespace CLAM {
 	{
 		for(int i=0;i<mTrajectoryArray.Size();i++)
 		{
-			const int id     = mTrajectoryArray[i].id;
-			      int contAt = mTrajectoryArray[i].continuedAtId;
-			const int begPos = mTrajectoryArray[i].beginPos;
-			const int lastfreq=int(mTrajectoryArray[i].finalFreq);
+			// Unused variable: const int id     = mTrajectoryArray[i].id;
+			int contAt = mTrajectoryArray[i].continuedAtId;
+			// Unused variable: const int begPos = mTrajectoryArray[i].beginPos;
+			// Unused variable: const int lastfreq=int(mTrajectoryArray[i].finalFreq);
 			while(mTrajectoryArray[i].continuedAtId!=-1)
 			{
 				contAt=mTrajectoryArray[i].continuedAtId;
@@ -298,7 +297,7 @@ namespace CLAM {
 			currentFreq+=freqSlope;
 			currentMag+=magSlope;
 			currentBinPos=2*currentFreq*mSpecSize/mSamplingRate;
-			currentBinWidth=currentBinPos-lastBinPos;
+			currentBinWidth=int(currentBinPos-lastBinPos);
 			lastBinPos=currentBinPos;
 			SpectralPeak tmpPeak;
 			tmpPeak.AddPhase();
