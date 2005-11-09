@@ -188,8 +188,8 @@ bool SDIFOut::Do(const Frame& frame)
 		DataArray& pkfreqBuffer=tmpPeakArray.GetFreqBuffer();
 		DataArray& pkmagBuffer=tmpPeakArray.GetMagBuffer();
 		DataArray& pkPhaseBuffer=tmpPeakArray.GetPhaseBuffer();
-		DataArray& pkBinPosBuffer=tmpPeakArray.GetBinPosBuffer();
-		DataArray& pkBinWidthBuffer=tmpPeakArray.GetBinWidthBuffer();
+		//Unused variable: DataArray& pkBinPosBuffer=tmpPeakArray.GetBinPosBuffer();
+		//Unused variable: DataArray& pkBinWidthBuffer=tmpPeakArray.GetBinWidthBuffer();
 		IndexArray& pkIndexArray=tmpPeakArray.GetIndexArray();
 
 		for (int r=0;r<nElems;r++)

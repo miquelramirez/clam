@@ -115,7 +115,7 @@ bool SMSTimeStretch::Do(const Frame& in, Frame& out)
 
 bool SMSTimeStretch::Do(const Segment& in, Segment& out)
 {
-	char test;
+	//Unused var: char test;
 	if(mCurrentInputFrame>-1)
 	{
 		while(mCurrentInputFrame<in.mCurrentFrameIndex&&!HaveFinished())
