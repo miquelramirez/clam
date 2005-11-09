@@ -37,7 +37,7 @@ static const float MIN_ZOOM=0.2;
 static const float ZOOM_ADJUST_MARGIN_MIN=0; //percent of screen
 static const float ZOOM_ADJUST_MARGIN_MAX=0; //percent of screen
 
-bool Envelope_Point_Editor::adjust_zoom_to_window() {
+bool QtEnvelopePointEditor::adjust_zoom_to_window() {
 
 	float cur_width=width();
 	float env_len=envelope->get_node_offset(envelope->get_node_count()-1);
@@ -71,7 +71,7 @@ bool Envelope_Point_Editor::adjust_zoom_to_window() {
 
 }
 
-void Envelope_Point_Editor::move_mouse_to_selected_node() {
+void QtEnvelopePointEditor::move_mouse_to_selected_node() {
 
 //	int cur_width=width();
 	int cur_height=height()-mFontHeightSpacing;
@@ -100,7 +100,7 @@ void Envelope_Point_Editor::move_mouse_to_selected_node() {
 }
 
 
-bool Envelope_Point_Editor::event ( QEvent * e ) {
+bool QtEnvelopePointEditor::event ( QEvent * e ) {
 
 	if (envelope==NULL) return true;
 
@@ -252,7 +252,7 @@ bool Envelope_Point_Editor::event ( QEvent * e ) {
 }
 
 
-void Envelope_Point_Editor::set_envelope(Envelope *p_envelope) {
+void QtEnvelopePointEditor::set_envelope(QtEnvelope *p_envelope) {
 
 	envelope=p_envelope;
 	adjust_zoom_to_window();
@@ -261,7 +261,7 @@ void Envelope_Point_Editor::set_envelope(Envelope *p_envelope) {
 }
 
 
-void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
+void QtEnvelopePointEditor::paint_envelope_points(QPainter &painter) {
 
 	int cur_height=height()-mFontHeightSpacing;
 	int cur_width=width();
@@ -368,7 +368,7 @@ void Envelope_Point_Editor::paint_envelope_points(QPainter &painter) {
 
 }
 
-void Envelope_Point_Editor::draw_envelope_pos(int p_x,QPainter &painter) {
+void QtEnvelopePointEditor::draw_envelope_pos(int p_x,QPainter &painter) {
 
 //	int cur_width=width();
 	int cur_height=height()-mFontHeightSpacing-1;
@@ -468,7 +468,7 @@ void Envelope_Point_Editor::draw_envelope_pos(int p_x,QPainter &painter) {
 
 }
 
-void Envelope_Point_Editor::paintEvent( QPaintEvent * p_event ) {
+void QtEnvelopePointEditor::paintEvent( QPaintEvent * p_event ) {
 
 
 	if (envelope==NULL) return;
@@ -506,7 +506,7 @@ void Envelope_Point_Editor::paintEvent( QPaintEvent * p_event ) {
 
 
 
-void Envelope_Point_Editor::update_position_list(const std::vector<int>& p_positions) {
+void QtEnvelopePointEditor::update_position_list(const std::vector<int>& p_positions) {
 
 	if ( (int)mPositionCache.size()!=width() ){
 
@@ -552,7 +552,7 @@ void Envelope_Point_Editor::update_position_list(const std::vector<int>& p_posit
 
 
 
-Envelope_Point_Editor::Envelope_Point_Editor(QWidget *p_parent) : QWidget(p_parent) {
+QtEnvelopePointEditor::QtEnvelopePointEditor(QWidget *p_parent) : QWidget(p_parent) {
 
   //xamat
 	setBackgroundMode (NoBackground);
@@ -578,7 +578,7 @@ Envelope_Point_Editor::Envelope_Point_Editor(QWidget *p_parent) : QWidget(p_pare
 	//envelope_lock=NULL;
 }
 
-Envelope_Point_Editor::~Envelope_Point_Editor()
+QtEnvelopePointEditor::~QtEnvelopePointEditor()
 {
 }
 

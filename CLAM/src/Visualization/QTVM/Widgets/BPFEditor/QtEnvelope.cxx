@@ -30,19 +30,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "envelope.hxx"
+#include "QtEnvelope.hxx"
 
 namespace CLAM 
 {
 
-	Envelope::Envelope() {
+	QtEnvelope::QtEnvelope() {
 
 		max_nodes=INFINITE_NODES;
 		min_nodes=2;
 		reset();
 	}
 
-	void Envelope::reset() {
+	void QtEnvelope::reset() {
 
 
 		on=false;
@@ -60,7 +60,7 @@ namespace CLAM
 		sustain_loop_end_node=0;
 	}
 
-	float Envelope::get_height_at_pos(float p_pos) {
+	float QtEnvelope::get_height_at_pos(float p_pos) {
 
 		if (node.size()<2) return 0;
 		if (p_pos>node[node.size()-1].offset)
@@ -92,7 +92,7 @@ namespace CLAM
 		return begin_y+((p_pos-begin_x)*(end_y-begin_y))/(xdif?xdif:1);
 	}
 
-	void Envelope::set_node_offset(int p_node, int p_x, int p_y) {
+	void QtEnvelope::set_node_offset(int p_node, int p_x, int p_y) {
 
 		if (p_node>=node.size()) return;
 
@@ -125,7 +125,7 @@ namespace CLAM
 		
 	}
 
-	int Envelope::add_node_at_offset( int p_x, int p_y) {
+	int QtEnvelope::add_node_at_offset( int p_x, int p_y) {
 
 
 		int i,new_node;
@@ -155,7 +155,7 @@ namespace CLAM
 
 	}
 
-	void Envelope::set_loop_begin(int pos) {
+	void QtEnvelope::set_loop_begin(int pos) {
 
 		if ((pos<0) || (pos>=node.size())) return;
 
@@ -166,7 +166,7 @@ namespace CLAM
 
 	}
 
-	void Envelope::set_loop_end(int pos) {
+	void QtEnvelope::set_loop_end(int pos) {
 
 		if ((pos<0) || (pos>=node.size())) return;
 
@@ -178,7 +178,7 @@ namespace CLAM
 	}
 
 
-	void Envelope::set_sustain_loop_begin(int pos) {
+	void QtEnvelope::set_sustain_loop_begin(int pos) {
 
 		if ((pos<0) || (pos>=node.size())) return;
 
@@ -189,7 +189,7 @@ namespace CLAM
 
 	}
 
-	void Envelope::set_sustain_loop_end(int pos) {
+	void QtEnvelope::set_sustain_loop_end(int pos) {
 
 		if ((pos<0) || (pos>=node.size())) return;
 
@@ -201,7 +201,7 @@ namespace CLAM
 	}
 
 
-	void Envelope::delete_node(int p_node) {
+	void QtEnvelope::delete_node(int p_node) {
 
 		if ((node.size()<=min_nodes) || (p_node<=0) || (p_node>=node.size())) return;
 
@@ -218,19 +218,19 @@ namespace CLAM
 
 	}
 
-	int Envelope::get_node_count() {
+	int QtEnvelope::get_node_count() {
 
 		return node.size();
 	}
 
-	int Envelope::get_node_height(int p_node) {
+	int QtEnvelope::get_node_height(int p_node) {
 
 		if ((p_node<0) || (p_node>=node.size())) return NO_POINT;
 
 		return node[p_node].value;
 
 	}
-	int Envelope::get_node_offset(int p_node) {
+	int QtEnvelope::get_node_offset(int p_node) {
 
 		if ((p_node<0) || (p_node>=node.size())) return NO_POINT;
 
@@ -238,63 +238,63 @@ namespace CLAM
 		
 	}
 
-	int Envelope::get_loop_begin() {
+	int QtEnvelope::get_loop_begin() {
 
 		return loop_begin_node;	
 	}
-	int Envelope::get_sustain_loop_begin() {
+	int QtEnvelope::get_sustain_loop_begin() {
 
 		return sustain_loop_begin_node;
 
 	}
 
-	int Envelope::get_loop_end() {
+	int QtEnvelope::get_loop_end() {
 
 		return loop_end_node;
 
 	}
-	int Envelope::get_sustain_loop_end() {
+	int QtEnvelope::get_sustain_loop_end() {
 
 		return sustain_loop_end_node;
 
 	}
 
-	bool Envelope::is_loop_enabled() {
+	bool QtEnvelope::is_loop_enabled() {
 
 
 		return loop_on;
 	}
-	bool Envelope::is_sustain_loop_enabled() {
+	bool QtEnvelope::is_sustain_loop_enabled() {
 
 		return sustain_loop_on;
 
 	}
 
-	bool Envelope::is_enabled() {
+	bool QtEnvelope::is_enabled() {
 
 		return on;
 	}
 
 
-	void Envelope::set_enabled (bool p_enabled) {
+	void QtEnvelope::set_enabled (bool p_enabled) {
 
 
 		on=p_enabled;
 	}
 
-	void Envelope::set_loop_enabled (bool p_enabled) {
+	void QtEnvelope::set_loop_enabled (bool p_enabled) {
 
 
 		loop_on=p_enabled;
 	}
 
-	void Envelope::set_sustain_loop_enabled (bool p_enabled) {
+	void QtEnvelope::set_sustain_loop_enabled (bool p_enabled) {
 
 
 		sustain_loop_on=p_enabled;
 	}
 
-	void Envelope::set_max_nodes(int p_max) {
+	void QtEnvelope::set_max_nodes(int p_max) {
 
 		if (p_max<-1)
 			return;
@@ -303,7 +303,7 @@ namespace CLAM
 
 	}
 
-	void Envelope::set_min_nodes(int p_min) {
+	void QtEnvelope::set_min_nodes(int p_min) {
 
 		min_nodes=p_min;
 
