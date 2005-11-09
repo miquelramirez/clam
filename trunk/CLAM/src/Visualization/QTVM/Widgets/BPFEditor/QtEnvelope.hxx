@@ -30,8 +30,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ENVELOPE_H
-#define ENVELOPE_H
+#ifndef QTENVELOPE_H
+#define QTENVELOPE_H
 
 /**envelope?
   *@author Juan Linietsky
@@ -52,7 +52,7 @@ and interface
 namespace CLAM
 {
 
-struct Envelope {
+struct QtEnvelope {
 
 	enum {
 
@@ -155,7 +155,7 @@ public:
 
 	void reset();
 
-	Envelope();
+	QtEnvelope();
 
 };
 

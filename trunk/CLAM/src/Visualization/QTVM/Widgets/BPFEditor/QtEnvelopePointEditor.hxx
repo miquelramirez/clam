@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ENVELOPE_POINT_EDITOR_H
-#define ENVELOPE_POINT_EDITOR_H
+#ifndef QTENVELOPE_POINT_EDITOR_H
+#define QTENVELOPE_POINT_EDITOR_H
 
 //#include "common/os/mutex_lock.h"
 #include <qwidget.h>
@@ -31,7 +31,7 @@
 namespace CLAM 
 {
 
-class Envelope_Point_Editor : public QWidget {
+class QtEnvelopePointEditor : public QWidget {
 
 Q_OBJECT
 
@@ -46,7 +46,7 @@ Q_OBJECT
 
 	void paintEvent( QPaintEvent * p_event );
 
-	Envelope *envelope;
+	QtEnvelope *envelope;
 
 	struct Grab {
 
@@ -85,15 +85,15 @@ public:
 
 	void update_position_list(const std::vector<int>& p_positions);
 
-	void set_envelope(Envelope *p_envelope);
+	void set_envelope(QtEnvelope *p_envelope);
 
-	Envelope* get_envelope()
+	QtEnvelope* get_envelope()
 	{
 		return envelope;
 	}
-	Envelope_Point_Editor(QWidget *p_parent);
+	QtEnvelopePointEditor(QWidget *p_parent);
 
-	~Envelope_Point_Editor();
+	~QtEnvelopePointEditor();
 
         void setTimeFactor(float timeFactor){mTimeFactor = timeFactor;}
 
