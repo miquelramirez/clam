@@ -3,6 +3,7 @@ from buildtools import *
 from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
+from buildtools.rulesets import *
 import os, sys
 
 Import('audioio_env version top install_dirs header_db')
@@ -14,8 +15,10 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 	
-	folders = ['src/Processing/AudioFileIO', 'src/Processing/AudioIO', 'src/Processing/MIDIIO', 'src/Tools/MIDIIO', 'src/Tools/MIDIIO/File', 'src/Tools/MIDIIO/TextFile', 'src/Tools/AudioIO', 'src/Tools/AudioFileIO', 'src/Processing/AudioIO*.*xx']
+	folders = ['src/Processing/AudioFileIO', 'src/Processing/AudioIO', 'src/Processing/MIDIIO', 'src/Tools/MIDIIO', 'src/Tools/MIDIIO/File', 'src/Tools/MIDIIO/TextFile', 'src/Tools/AudioIO', 'src/Tools/AudioFileIO', 'src/Processing/AudioIO*.*xx', 'src/Flow/Networks/BlockingNetworkPlayer*.*xx']
 
+	if sys.platform == 'win32':
+		folders.append('src/Processing/InitAudioIO*.*xx')
 	if audioio_env['with_portmidi'] :
 		folders.append( 'src/Tools/PortMIDI' )
 
@@ -25,19 +28,23 @@ def define_module_contents() :
 			folders.append( 'src/Tools/AudioIO/Linux')
 	elif sys.platform == 'win32':
 		if audioio_env['audio_backend'] == 'rtaudio' :
-			folders += ['src/Tools/AudioIO/RtAudio']
+			print('using rtaudio')
+			folders += ['src/Tools/AudioIO/RtAudio'] #, 'src/Defines/Windows/CLAM_windows.h']
 		elif audioio_env['audio_backend'] == 'directx' :
+			print('using directx')
 			folders += ['src/Tools/AudioIO/Windows/DirectXAudioDevice.cxx', 'src/Tools/AudioIO/Windows/DXFullDuplex.*xx']
 		elif audioio_env['audio_backend'] == 'portaudio' :
+			print('using portaudio')
 			folders += ['src/Tools/AudioIO/Windows/PAAudio*.*xx', 
 					'src/Tools/AudioIO/Windows/PACLAM*.*xx', 
 					'src/Tools/AudioIO/Windows/PortAudioUtils.*', 
 					'src/Tools/AudioIO/Windows/DoubleBuffer.*xx']
 	else :
 		if audioio_env['audio_backend'] == 'rtaudio' :
+			print('using rtaudio2')
 			folders += ['src/Tools/AudioIO/RtAudio']
 
-	blacklist = [ 'foo.cxx']
+	blacklist = [ 'foo.cxx','main.cxx']
 
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
 
@@ -69,7 +76,6 @@ if not audioio_env.GetOption('clean') :
 	pkg_data.create_pkg_descriptor( audioio_env, 'clam_audioio.pc' )
 	print "ok"
 
-lib_descriptor = audioio_env.File( 'clam_audioio.pc' )
 
 if not audioio_env.GetOption('clean') :
 	header_files, source_files = define_module_contents()
@@ -81,33 +87,20 @@ else :
 
 
 
-audioio_env.Append(CPPPATH=['include','../core/include','../processing/include'])
+audioio_env.Prepend(CPPPATH=['include','../core/include','../processing/include'])
 
 if not audioio_env.GetOption('clean') :
-	audioio_env.Append(CCFLAGS='-include CLAM/%s'%audioio_env['preinclude'])
+	handle_preinclude( audioio_env )
 
 audioio_env.Append(LIBS=['clam_core','clam_processing'])
-audioio_env.Append(LIBPATH=['../core','../processing'])
-
-soname = 'libclam_audioio.so.%s'%version.split('.')[0]
-linker_name = 'libclam_audioio.so'
-audioio_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
+audioio_env.Prepend(LIBPATH=['../core','../processing'])
+#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
 
 headers = [ File(header) for header in header_files ]
-lib = audioio_env.SharedLibrary( 'clam_audioio', source_files, SHLIBSUFFIX='.so.%s'%version  )
-
-soname_lib = audioio_env.SonameLink( soname, lib )
-linkername_lib = audioio_env.LinkerNameLink( linker_name, soname_lib)
-
-audioio_tgt = audioio_env.Alias( 'audioio', linkername_lib )
-
-install_headers = audioio_env.Install( install_dirs.inc+'/CLAM', headers )
-audioio_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
-install_lib = audioio_env.Install( install_dirs.lib, lib )
-audioio_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
-install_descriptor = audioio_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
-
-audioio_install_tgt = audioio_env.Alias( 'install_audioio', [install_headers, install_lib, install_descriptor]  )
+if sys.platform != 'win32' :
+	audioio_tgt, audioio_install_tgt = posix_lib_rules( 'audioio', version, headers, source_files, install_dirs, audioio_env )
+else :
+	audioio_tgt, audioio_install_tgt = win32_lib_rules( 'audioio', version, headers, source_files, install_dirs, audioio_env )
 
 Return( 'audioio_tgt', 'audioio_install_tgt' )

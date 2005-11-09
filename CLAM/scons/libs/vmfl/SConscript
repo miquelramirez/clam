@@ -3,6 +3,7 @@ from buildtools import *
 from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
+from buildtools.rulesets import *
 import os, sys
 Import('vmfl_env version top install_dirs header_db')
 
@@ -15,7 +16,7 @@ def define_module_contents() :
 
 	folders = ['src/Visualization/Base','src/Visualization/GL', 'src/Visualization/Plot', 'src/Visualization/Presentation/Base' ,'src/Visualization/Presentation/FLTK', 'src/Visualization/Util', 'src/Visualization/View', 'src/Visualization/Widget/FLTKWrapper.*xx', 'src/Visualization/Widget/FLTK' ]
 
-	blacklist = ['GLLogPowSpRenderer','GLLogSpRenderer','ProcessingController','Fl_Range','FDFilterController','TokenDelayController']
+	blacklist = ['GLLogPowSpRenderer','GLLogSpRenderer','ProcessingController','Fl_Range','FDFilterController','TokenDelayController','HugeArrayRenderer']
 
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
 	
@@ -48,7 +49,6 @@ if not vmfl_env.GetOption('clean') :
 	print "ok"
 
 
-lib_descriptor = vmfl_env.File( 'clam_vmfl.pc' )
 
 if not vmfl_env.GetOption('clean') :
 	header_files, source_files = define_module_contents()
@@ -61,31 +61,22 @@ else :
 
 headers = [ File(header) for header in header_files]
 
-vmfl_env.Append(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
+vmfl_env.Prepend(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
 
 if not vmfl_env.GetOption('clean') :
-	vmfl_env.Append(CCFLAGS='-include CLAM/%s'%vmfl_env['preinclude'])
+	handle_preinclude( vmfl_env )
 
-vmfl_env.Append(LIBS=['clam_core','clam_processing','clam_audioio'])
-vmfl_env.Append(LIBPATH=['../core','../processing','../audioio'])
+vmfl_env.Append(LIBS=['clam_core', 'clam_processing','clam_audioio'])
 
-soname = 'libclam_vmfl.so.%s'%version.split('.')[0]
-linker_name = 'libclam_vmfl.so'
-vmfl_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
+#if sys.platform == 'win32' : 
+#	vmfl_env.Append( LIBS=['clam_core_templates'] )
 
-lib = vmfl_env.SharedLibrary( 'clam_vmfl', source_files, SHLIBSUFFIX='.so.%s'%version  )
+vmfl_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
 
-soname_lib = vmfl_env.SonameLink( soname, lib )
-linkername_lib = vmfl_env.LinkerNameLink( linker_name, soname_lib)
+if sys.platform != 'win32' :
+	vmfl_target, vmfl_install_target = posix_lib_rules( 'vmfl', version, headers, source_files, install_dirs, vmfl_env )
+else :
+	vmfl_target, vmfl_install_target = win32_lib_rules( 'vmfl', version, headers, source_files, install_dirs, vmfl_env )
 
-vmfl_target = vmfl_env.Alias( 'vmfl', linkername_lib )
-
-install_headers = vmfl_env.Install( install_dirs.inc+'/CLAM', headers )
-vmfl_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
-install_lib = vmfl_env.Install( install_dirs.lib, lib )
-vmfl_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
-install_descriptor = vmfl_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
-
-vmfl_install_target = vmfl_env.Alias( 'install_vmfl', [install_headers, install_lib, install_descriptor] )
 
 Return( 'vmfl_target', 'vmfl_install_target' )

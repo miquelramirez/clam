@@ -3,6 +3,7 @@ from buildtools import *
 from buildtools.include_rename import update_includes
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
+from buildtools.rulesets import *
 import os, sys
 
 print """\
@@ -21,12 +22,15 @@ def define_module_contents() :
 
 	core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing/Audio.*', 'src/Data/Descriptors/Pool', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib']
 
-	if sys.platform == 'windows' :
+	if sys.platform == 'win32' :
 		core_folders.append('src/Defines/Windows')
 	else :
 		core_folders.append('src/Defines/Unix')	
 
-	blacklist = ['ScaleCnv', 'LadspaBridge']
+	blacklist = ['ScaleCnv', 'LadspaBridge', 'BlockingNetworkPlayer', 'JACKNetworkPlayer', 'PANetworkPlayer']
+
+	if sys.platform == 'win32' :
+		blacklist.append( 'Watchdog.+' )
 
 	if core_env['xmlbackend'] == 'xercesc' :
 		blacklist.append( 'LibXml.+')
@@ -38,10 +42,10 @@ def define_module_contents() :
 		blacklist.append( 'Xerces.+' )
 		blacklist.append( 'LibXml.+' )
 
-	if not core_env['with_ladspa_support'] :
+	if not core_env.has_key('with_ladspa_support') :
 		blacklist.append( 'Ladspa.+' )
 
-	if not core_env['with_osc_support'] :
+	if not core_env.has_key('with_osc_support') :
 		blacklist.append( 'OSC.+')
 
 	file_retriever = FileRetriever( top+'/..', core_folders, blacklist )
@@ -57,21 +61,16 @@ def define_module_contents() :
 
 	manifest = Manifest()
 	manifest.store( file_retriever.headers, file_retriever.sources )
-
-	header_files = file_retriever.headers
-	source_files = file_retriever.sources
-
 	print "ok"
 	return file_retriever.headers, file_retriever.sources
 
 
 if not core_env.GetOption('clean') :
 	print "Creating pkg-config descriptor...",
-	pkg_data = PackageData( 'clam_core', version, [] )
+	pkg_data = PackageData( 'clam_core', version )
 	pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
 	print "ok"
 
-lib_descriptor = core_env.File( 'clam_core.pc' )
 
 if not core_env.GetOption('clean') : 
 	header_files, source_files = define_module_contents()
@@ -82,28 +81,16 @@ else :
 	manifest.load( header_files, source_files )
 
 if not core_env.GetOption('clean') :
-	core_env.Append(CPPPATH='include')
-	core_env.Append(CCFLAGS='-include CLAM/%s'%core_env['preinclude'])
-
-soname = 'libclam_core.so.%s'%version.split('.')[0]
-linker_name = 'libclam_core.so'
-core_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
+	core_env.Prepend(CPPPATH='include')
+	handle_preinclude( core_env )
 
 headers = [ File(header) for header in header_files ]
 
-lib = core_env.SharedLibrary( 'clam_core', source_files, SHLIBSUFFIX='.so.%s'%version )
-
-soname_lib = core_env.SonameLink( soname, lib )
-linkername_lib = core_env.LinkerNameLink( linker_name, soname_lib)
-
-core_tgt = core_env.Alias( 'core', linkername_lib )
-
-install_headers = core_env.Install( install_dirs.inc+'/CLAM', headers )
-core_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
-install_lib = core_env.Install( install_dirs.lib, lib )
-core_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
-install_descriptor = core_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
-
-core_install_tgt = core_env.Alias( 'install_core', [install_headers, install_lib, install_descriptor] )
+if sys.platform != 'win32' :
+	core_tgt, core_install_tgt = posix_lib_rules( 'core', version, headers, source_files, install_dirs, core_env )
+else :
+	# TODO whats about templates
+	#templates = [ 'src/Point.cxx', 'src/Polar.cxx', 'src/Complex.cxx', 'src/BPF.cxx', 'src/Matrix.cxx', 'src/Order.cxx'] 
+	core_tgt, core_install_tgt = win32_lib_rules( 'core', version, headers, source_files, install_dirs, core_env )
 
 Return( 'core_tgt','core_install_tgt' )

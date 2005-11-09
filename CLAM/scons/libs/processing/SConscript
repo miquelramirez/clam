@@ -3,6 +3,7 @@ from buildtools import *
 from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
+from buildtools.rulesets import *
 import os, sys
 
 Import('processing_env version top install_dirs header_db')
@@ -15,22 +16,32 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Controls' ]
+	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Controls', 'src/Flow/Networks/JACKNetworkPlayer*.*xx', 
+	'src/Flow/Networks/PANetworkPlayer*.*xx' , 'src/Processing/Base/NullProcessingConfig.hxx' ]
+
+	if sys.platform == 'win32':
+		folders.append('src/Processing/InitProcessing*.*xx')
 
 	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+']
 
-	if not processing_env['with_osc_support'] :
+	if not processing_env.has_key('with_osc_support') :
 		blacklist.append('OSCSender')
 
-	if not processing_env['with_fftw'] :
+	if not processing_env.has_key('with_fftw') :
 		blacklist.append('.+rfftw.+')
-	if not processing_env['with_nr_fft'] :
+	if not processing_env.has_key('with_nr_fft') :
 		blacklist.append('.*numrecipes.+')
 		blacklist.append('.+numrec.+')
+	
+	if sys.platform == 'win32' :
+		blacklist.append('JACKNetworkPlayer.cxx')
+		if processing_env['audio_backend'] != 'portaudio' :
+			blacklist.append('PANetworkPlayer.cxx')
 
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
 
 	file_retriever.scan()
+
 
 	store_headers_in_db( header_db )
 	for filename in file_retriever.headers :
@@ -59,8 +70,6 @@ if not processing_env.GetOption('clean') :
 	pkg_data.create_pkg_descriptor( processing_env, 'clam_processing.pc' )
 	print "ok"
 
-lib_descriptor = processing_env.File( 'clam_processing.pc' )
-
 if not processing_env.GetOption('clean') :
 	header_files, source_files = define_module_contents()
 else :
@@ -70,30 +79,20 @@ else :
 	manifest.load( header_files, source_files )
 
 	
-processing_env.Append(CPPPATH=['include','../core/include'])
+processing_env.Prepend(CPPPATH=['include','../core/include'])
 if not processing_env.GetOption('clean') :
-	processing_env.Append(CCFLAGS='-include CLAM/%s'%processing_env['preinclude'])
+	handle_preinclude( processing_env )
 
 processing_env.Append(LIBS=['clam_core'])
-processing_env.Append(LIBPATH=['../core'])
+#if sys.platform == 'win32' :
+#	processing_env.Append(LIBS=['clam_core_templates'])
 
-soname = 'libclam_processing.so.%s'%version.split('.')[0]
-linker_name = 'libclam_processing.so'
-processing_env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
+processing_env.Prepend(LIBPATH=['../core'])
 
 headers = [ File(header) for header in header_files ]
-lib = processing_env.SharedLibrary( 'clam_processing', source_files,  SHLIBSUFFIX='.so.%s'%version  )
-soname_lib = processing_env.SonameLink( soname, lib )
-linkername_lib = processing_env.LinkerNameLink( linker_name, soname_lib)
-
-processing_tgt = processing_env.Alias( 'processing', linkername_lib )
-
-install_headers = processing_env.Install( install_dirs.inc+'/CLAM', headers )
-processing_env.AddPostAction( install_headers, "chmod 644 $TARGET" )
-install_lib = processing_env.Install( install_dirs.lib, lib )
-processing_env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
-install_descriptor = processing_env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
-
-processing_install_tgt = processing_env.Alias( 'install_processing', [install_headers,install_lib, install_descriptor] )
+if sys.platform != 'win32' :
+	processing_tgt, processing_install_tgt = posix_lib_rules( 'processing', version, headers, source_files, install_dirs, processing_env )
+else :
+	processing_tgt, processing_install_tgt = win32_lib_rules( 'processing', version, headers, source_files, install_dirs, processing_env )
 
 Return( 'processing_tgt', 'processing_install_tgt' )

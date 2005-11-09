@@ -1,6 +1,7 @@
 import sys
 import os
 import shelve
+import copy
 # tools for build configuration
 from buildtools import *
 from buildtools.custom_builders import * 
@@ -23,17 +24,29 @@ def setup_build_options( env ) :
 	opts = Options('clam.conf')
 	
 	# global options
-	opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr'))
-	opts.Add( BoolOption( 'release', 'Build CLAM using optimization and stripping debug symbols', 'yes'))
+	if sys.platform == 'linux2' :
+		opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr'))
+	else :
+		opts.Add( PathOption( 'prefix', 'Directory to install under', 'G:\\projects\CLAM-bin') )
+	opts.Add( PathOption( 'install_prefix', 'Directory to install under (for packagers)', '.'))
+	if sys.platform != 'linux2' :
+		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
+	if sys.platform == 'win32' :
+		opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no' ))
+	else :
+		opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'yes'))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
-	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ) )
+	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ))
+
 	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
 	
 	# clam_core options
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
-	opts.Add( BoolOption( 'with_ladspa_support', 'Ladspa plugin support', 'yes') )
-	opts.Add( BoolOption( 'with_osc_support', 'Enables/Disables OSC support', 'yes') )
+	if sys.platform != 'win32' :
+		opts.Add( BoolOption( 'with_ladspa_support', 'Ladspa plugin support', 'yes') )
+		opts.Add( BoolOption( 'with_osc_support', 'Enables/Disables OSC support', 'yes') )
+		opts.Add( BoolOption( 'with_jack_support', 'Enables/Disable JACK support', 'yes') )
 	
 	# clam_processing options
 	opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))
@@ -47,14 +60,19 @@ def setup_build_options( env ) :
 	if sys.platform == 'linux2' :
 		opts.Add( BoolOption( 'with_alsa', 'Enables PCM and MIDI device I/O through ALSA', 'yes' ) )
 	elif sys.platform == 'win32' :
-		opts.Add( BoolOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
+		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
 	else :
 		opts.Add( BoolOption( 'audio_backend', 'Selects audio PCM i/o library used CLAM backend', 'rtaudio', ('rtaudio',) ) )
 	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
 
 	# clam_vmqt options
-	opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/usr/include/qt3' ) )
-	opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/usr/lib' ) )
+	if sys.platform != 'win32' :
+		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/usr/include/qt3' ) )
+		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/usr/lib' ) )
+	else:
+		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', 'G:\projects\qt\include' ) )
+		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', 'G:\projects\qt\lib' ) )
+		
 	
 	opts.Update(env)
 	opts.Save('clam.conf', env) # Save, so user doesn't have to 
@@ -99,20 +117,57 @@ def create_custom_builders( env ) :
 # SConstruct file for CLAM
 # Main section
 
-version = '0.8'
+version = '0.8.0'
 Export('version')
 
 top = '../..'
 Export('top')
 
 clam_env = Environment( ENV=os.environ, tools=['default','qt'])
-clam_env.Replace( QT_LIB = 'qt-mt' )
+
+if sys.platform == 'win32' :
+	#splitted_path = clam_env['ENV']['QTDIR'].split('\\')
+	#version_str = splitted_path[2]
+	#qt_suffix = ''.join( version_str.split('.') )
+	#print('qt_suffix: ' + qt_suffix)
+	#clam_env.Replace( QT_LIB = 'qt-mt%s'%qt_suffix )
+	clam_env.Replace( QT_LIB = 'qt-mt322')
+
+else :
+	clam_env.Replace( QT_LIB = 'qt-mt' )
+
 Export('clam_env')
 
-header_db = shelve.open( 'header.db' )
+if not clam_env.GetOption("clean") :
+	header_db = shelve.open( 'header.db' )
+else :
+	header_db = None
 Export('header_db')
 
 setup_build_options( clam_env )
+
+
+# Sandbox setup
+if sys.platform != 'linux2' :
+	libbasenames = [ 'fltk', 'xercesc', 'fftw', 'dxsdk', 'id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','pthreads']
+	for basename in libbasenames :
+		if sys.platform == 'win32' : path_sep = '\\'
+		if sys.platform == 'darwin' : path_sep = '/'
+		include_path = "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'include')
+		print( 'include path: ' + include_path )
+		lib_path =  "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'lib')
+		print( 'lib path: ' + lib_path)
+		clam_env.Append( CPPPATH= include_path )
+		clam_env.Append( LIBPATH = lib_path )
+	if sys.platform == 'win32' :
+		environmentIncludes = os.environ['INCLUDE']
+		environmentIncludesList = environmentIncludes.split(';')
+		for include in environmentIncludesList :
+			print( 'adding include dir from windows config: ' + include )
+			clam_env.Append( CPPPATH = include)
+else:
+	clam_env.Append( CPPPATH= '/usr/local/include' )
+
 
 if not clam_env.GetOption('clean') :
 
@@ -135,7 +190,7 @@ if not clam_env.GetOption('clean') :
 		Exit(1)
 	clam_env = conf.Finish()
 
-print """\
+	print """\
 ############################################
 ### CLAM MODULES DEPENDENCIES CHECKING   ###
 ############################################"""
@@ -157,6 +212,8 @@ if not clam_env.GetOption('clean') :
 
 
 processing_env = clam_env.Copy()
+if sys.platform == 'win32' :
+	processing_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 Export('processing_env')
 processing_env.Replace( QT_LIB = '' )
 
@@ -168,6 +225,11 @@ if not clam_env.GetOption('clean') :
 
 
 audioio_env = clam_env.Copy()
+if sys.platform == 'win32' :
+	audioio_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
+	audioio_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
+	audioio_env.AppendUnique( LINKFLAGS=copy.copy(core_env['LINKFLAGS']) )
+			
 Export('audioio_env')
 audioio_env.Replace( QT_LIB = '' )
 
@@ -179,6 +241,10 @@ if not clam_env.GetOption('clean') :
 
 
 vmfl_env = clam_env.Copy()
+if sys.platform == 'win32' :
+	vmfl_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
+	vmfl_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
+	vmfl_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
 Export('vmfl_env')
 vmfl_env.Replace( QT_LIB = '' )
 
@@ -189,7 +255,11 @@ if not clam_env.GetOption('clean') :
 	vmfl_env = conf.Finish()
 
 vmqt_env = clam_env.Copy()
-vmqt_env.Replace( QT_DEBUG='1' )
+if sys.platform == 'win32' :
+	vmqt_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
+	vmqt_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
+	vmqt_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
+vmqt_env.Replace( QT_DEBUG='0' )
 Export('vmqt_env')
 
 if not clam_env.GetOption('clean') :
@@ -202,7 +272,8 @@ if not clam_env.GetOption('clean') :
 compose_install_dirnames(clam_env)
 
 if clam_env.GetOption('clean') :
-	os.remove('header.db')
+	if os.path.exists( 'header.db' ) :
+		os.remove('header.db')
 
 #building
 
@@ -213,15 +284,9 @@ vmfl_tgt, vmfl_install_tgt = SConscript('vmfl/SConscript')
 vmqt_tgt, vmqt_install_tgt = SConscript('vmqt/SConscript')
 
 # Module dependencies
-#Depends( processing_tgt, core_tgt )
-#Depends( audioio_tgt, [processing_tgt, core_tgt] )
-#Depends( vmfl_tgt, [core_tgt, processing_tgt, audioio_tgt] )
-#Depends( vmqt_tgt, [core_tgt, processing_tgt, audioio_tgt, vmfl_tgt] )
 
-all_alias = Alias( 'all', [core_tgt, processing_tgt, audioio_tgt, vmfl_tgt, vmqt_tgt ] )
+all_alias = Alias( 'all', [core_tgt, processing_tgt, audioio_tgt, vmfl_tgt, vmqt_tgt] )
 install_alias = Alias( 'install', [core_install_tgt, processing_install_tgt, audioio_install_tgt, vmfl_install_tgt, vmqt_install_tgt] )
-
-Depends( install_alias, all_alias )
 
 Default( all_alias )
 print """\

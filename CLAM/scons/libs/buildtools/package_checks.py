@@ -1,3 +1,4 @@
+import sys
 from thorough_check import *
 
 package_checks = dict()
@@ -17,7 +18,10 @@ int main( int argc, char** argv )
 }
 """
 
-package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c', xerces_test_code )
+if sys.platform == 'win32' :
+	package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c_2', xerces_test_code )
+else :
+	package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c', xerces_test_code )
 
 # libxml++ package-check
 xmlpp_test_code = """
@@ -63,7 +67,10 @@ int main(int argc, char *argv[])
 
 """
 
-package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', None, pthread_test_code )
+if sys.platform == 'win32' :
+	package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', 'pthreadVCE', pthread_test_code )
+else :
+	package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', None, pthread_test_code )
 
 double_fftw_wo_prefix_test_code = """\
 #include <fftw.h>
@@ -166,12 +173,45 @@ int main(int argc, char** argv )
 
 package_checks['check_rfftw_float_w_prefix'] = ThoroughPackageCheck( 'rfftw using floats with prefixed binaries/headers', 'c', None, float_rfftw_w_prefix_test_code )
 
+float_fftw_wo_prefix_test_code = """\
+#include <fftw.h>
+#include <stdio.h>
+
+int main(int argc, char** argv )
+{
+
+	fftw_create_plan(0,FFTW_FORWARD,0);
+	if (fftw_sizeof_fftw_real()!=sizeof(float))
+	{
+		fprintf(stderr, "expecting fftw to be using floats, and it is using doubles!\\n");
+		return -1;
+	}
+	return 0;
+
+}	
+"""
+
+package_checks['check_fftw_float_wo_prefix'] = ThoroughPackageCheck( 'fftw using floats with not prefixed binaries/headers', 'c', None, float_fftw_wo_prefix_test_code )
+
+float_rfftw_wo_prefix_test_code = """\
+#include <rfftw.h>
+
+int main(int argc, char** argv )
+{
+
+	rfftw_create_plan(0,FFTW_FORWARD,0);
+	return 0;
+}		
+"""
+
+package_checks['check_rfftw_float_wo_prefix'] = ThoroughPackageCheck( 'rfftw using floats with not prefixed binaries/headers','c', None, float_rfftw_wo_prefix_test_code )
+
 liboscpack_test_code = """\
-#include <oscpack/ip/NetworkingUtils.h>
+#include <oscpack/ip/IpEndpointName.h>
+#include <oscpack/ip/UdpSocket.h>
 int main()
 {
-	InitializeNetworking();
-	TerminateNetworking();
+	UdpTransmitSocket socket( IpEndpointName("localhost", 9999) );
 	return 0;
 }
 """
@@ -275,6 +315,7 @@ int main()
 package_checks['check_libasound'] = ThoroughPackageCheck( 'libasound', 'c', None, libasound_test_code )
 
 id3lib_test_code = """\
+#include <id3.h>
 #include <id3/tag.h>
 int main()
 {
@@ -284,6 +325,7 @@ int main()
 """
 
 package_checks['check_id3lib'] = ThoroughPackageCheck( 'id3lib', 'c++', None, id3lib_test_code )
+
 
 fltk_test_code = """\
 #include<FL/Fl_Gl_Window.H>
@@ -300,6 +342,9 @@ int main()
 package_checks['check_fltk'] = ThoroughPackageCheck( 'fltk', 'c++', None, fltk_test_code )
 
 opengl_test_code = """\
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 
 int main( int argc, char** argv )
@@ -315,6 +360,9 @@ int main( int argc, char** argv )
 package_checks['check_opengl'] = ThoroughPackageCheck( 'opengl', 'c', None, opengl_test_code )
 
 glu_test_code = """\
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <GL/glu.h>
 
 int main( int argc, char** argv )
@@ -330,7 +378,7 @@ int main( int argc, char** argv )
 package_checks['check_glu'] = ThoroughPackageCheck( 'glu', 'c', None, glu_test_code )
 
 libqt_test_code = r"""\
-#include <qt3/qapplication.h>
+#include <qapplication.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -344,3 +392,54 @@ int main()
 """
 
 package_checks['check_qt'] = ThoroughPackageCheck( 'qt', 'c++', None, libqt_test_code )
+
+directx_test_code = r"""\
+#include <windows.h>
+#include <dsound.h>
+
+int main()
+{
+	LPGUID mGUID = 0;
+	LPDIRECTSOUND mDS;
+	HRESULT hr = DirectSoundCreate( mGUID, &mDS, NULL );
+	
+	return 0;
+}
+
+"""
+
+package_checks['check_directx'] = ThoroughPackageCheck( 'directx', 'c++', None, directx_test_code )
+
+portmidi_test_code = """\
+#include <portmidi.h>
+#include <stdlib.h>
+
+int main()
+{
+	PmStream* mHandleIn = NULL;
+	PmError err = Pm_OpenInput( &mHandleIn, 0, NULL, 100, NULL, NULL, 0 );
+
+	return 0;
+}
+
+"""
+
+package_checks['check_portmidi'] = ThoroughPackageCheck( 'portmidi', 'c', None, portmidi_test_code )
+
+jack_test_code = """\
+#include <jack/jack.h>
+#include <stdlib.h>
+jack_client_t *client;
+int main()
+{
+	
+	client = jack_client_new ("foo");
+
+	if ( client != NULL )
+		jack_client_close (client);
+
+	return 0;
+}
+"""
+
+package_checks['check_jack'] = ThoroughPackageCheck( 'jack', 'c', 'jack', jack_test_code )
