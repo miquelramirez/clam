@@ -1,6 +1,6 @@
 import os, re
 
-hdrNormRE = re.compile( r'#include.*[<"](?P<hdr>.+)[>"]' )
+hdrNormRE = re.compile( r'.*#include.*[<"](?P<hdr>.+)[>"].*', re.IGNORECASE )
 
 def update_includes( header_db, source, target=None ) :
 

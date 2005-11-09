@@ -89,12 +89,18 @@ class Manifest :
 		src_out.close()
 
 	def load( self, hdrs, srcs ) :
-		hdr_in = open('header.manifest')
+		try:
+			hdr_in = open('header.manifest')
+		except IOError:
+			return
 		for line in hdr_in :
 			hdrs.append( line.strip() )
 		hdr_in.close()
 
-		src_in = open('source.manifest')
+		try:
+			src_in = open('source.manifest')
+		except IOError:
+			return 
 		for line in src_in :
 			srcs.append( line.strip() ) 
 		src_in.close()	
