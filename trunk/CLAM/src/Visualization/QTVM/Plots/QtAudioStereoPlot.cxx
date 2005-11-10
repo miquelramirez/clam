@@ -9,6 +9,8 @@
 #include "TimeSegmentLabelsGroup.hxx"
 #include "QtAudioPlayer.hxx"
 #include "QtAudioStereoPlot.hxx"
+#include "Audio.hxx"
+
 
 namespace CLAM
 {

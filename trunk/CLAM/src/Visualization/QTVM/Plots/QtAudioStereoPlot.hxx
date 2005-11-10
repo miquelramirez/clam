@@ -1,16 +1,17 @@
 #ifndef __QTAUDIOSTEREOPLOT__
 #define __QTAUDIOSTEREOPLOT__
 
-#include "Audio.hxx"
 #include "MediaTime.hxx"
 #include "PlayablePlot.hxx"
 #include "MultiDisplayPlot.hxx"
 #include "Slotv1.hxx"
 
+
 using SigSlot::Slotv1;
 
 namespace CLAM
 {
+	class Audio;
 	namespace VM
 	{
 		class TimeSegmentLabelsGroup;
