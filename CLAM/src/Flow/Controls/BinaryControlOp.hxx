@@ -79,9 +79,8 @@ namespace CLAM {
 		InControlTmpl< BinaryControlOp > mSecond;
 		
 		BinaryControlOp()
-			: 
-			  mOutValue(0),
-				mFirstParmLastValue( BinOp::IdentityElement ),
+			: mOutValue(0),
+			  mFirstParmLastValue( BinOp::IdentityElement ),
 			  mSecondParmLastValue(BinOp::IdentityElement),
 			  mOutput( "output", this ),
 			  mFirst( "first_parm", this, &BinaryControlOp::HandleFirst ),
@@ -91,12 +90,12 @@ namespace CLAM {
 		}
 
 		BinaryControlOp(const BinaryControlOpConfig& cfg)
-			: mFirstParmLastValue( BinOp::IdentityElement ),
+			: mOutValue(0),
+			  mFirstParmLastValue( BinOp::IdentityElement ),
 			  mSecondParmLastValue(BinOp::IdentityElement),
-			  mOutValue(0),
+  			  mOutput( "output", this ),
 			  mFirst( "first_parm", this, &BinaryControlOp::HandleFirst ),
-			  mSecond( "second_parm", this, &BinaryControlOp::HandleSecond ),
-  			  mOutput( "output", this )
+			  mSecond( "second_parm", this, &BinaryControlOp::HandleSecond )
 		{
 			Configure(cfg);
 		}
