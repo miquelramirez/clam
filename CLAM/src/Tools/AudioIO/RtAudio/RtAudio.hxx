@@ -88,7 +88,7 @@
   typedef pthread_mutex_t MUTEX;
 
 #elif defined(__WINDOWS_DS__)
-  #include "CLAM_Windows.h"
+  #include "CLAM_windows.h"
   #include <process.h>
 
   // The following struct is used to hold the extra variables
