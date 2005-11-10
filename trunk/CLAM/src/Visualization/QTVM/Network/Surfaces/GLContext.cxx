@@ -56,7 +56,7 @@ namespace CLAM
 				aglDescribePixelFormat(fmt, AGL_DEPTH_SIZE, &depth);
 				if(depth != 32)
 				{
-					qWarning("32-bit depth unavailable: using %d bits", depth);
+					qWarning("32-bit depth unavailable: using %d bits", int(depth));
 				}
 				return fmt;
 			}
