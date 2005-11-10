@@ -224,7 +224,7 @@ bool SMSMorph::UpdateControlValueFromBPF(TData pos)
 {
 	bool ret=true;
 
-	TData globalFactor;
+	TData globalFactor=0;
 	
 	//Warning, maybe controls that are not used should be initialize to something sensible (does not affect)
 	

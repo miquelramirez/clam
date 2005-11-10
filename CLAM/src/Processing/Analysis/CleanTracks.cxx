@@ -144,7 +144,7 @@ namespace CLAM {
 			// a %. We multiply this factor by the currently considered trajectory
 			// final frequency
 			TData bestFreqDif=mFreqDev * mTrajectoryArray[i].finalFreq ;
-			int bestCandidate;
+			int bestCandidate=0;
 
 			// Get the best 'candidate' to be followed by the track 'toBeAppended'
 			for(int k=firstCandidatable; k<i; k++)
