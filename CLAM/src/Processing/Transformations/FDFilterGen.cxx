@@ -63,14 +63,14 @@ namespace CLAM {
 
 	FDFilterGen::FDFilterGen( const FDFilterGenConfig& c) :
 		Output("Output",this),
-		SpectralRange(0),
-		mControlChanged( false ),
-		Type( EFDFilterType::eLowPass ),
 		Gain("Gain",this, &FDFilterGen::UpdateControlChangedFlag), 
 		HighCutOff( "High Cutoff Frecuency",this, &FDFilterGen::UpdateControlChangedFlag),
 		LowCutOff( "Low Cutoff Frecuency",this, &FDFilterGen::UpdateControlChangedFlag),
 		PassBandSlope("Pass Band Slope",this, &FDFilterGen::UpdateControlChangedFlag),
-		StopBandSlope( "Stop Band Slope",this, &FDFilterGen::UpdateControlChangedFlag)
+		StopBandSlope( "Stop Band Slope",this, &FDFilterGen::UpdateControlChangedFlag),
+		SpectralRange(0),
+		Type( EFDFilterType::eLowPass ),
+		mControlChanged( false )
 	{ 
 		Configure(c); // here all controls are initialized
 	};
