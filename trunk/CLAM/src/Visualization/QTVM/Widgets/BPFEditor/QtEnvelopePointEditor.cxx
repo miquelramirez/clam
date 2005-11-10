@@ -25,7 +25,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "envelope_point_editor.hxx"
+#include "QtEnvelopePointEditor.hxx"
 #include <qpainter.h>
 #include <qcursor.h>
 #include <math.h>
