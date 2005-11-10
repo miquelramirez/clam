@@ -252,6 +252,7 @@ namespace AudioCodecs
 
 		int frameCount = 0;
 		struct xing xingHeader;
+		xingHeader.frames=0;
 		bool   hasXingHeader = false;
 		bool   isVBR = false;
 		unsigned int    bitrate = 0;

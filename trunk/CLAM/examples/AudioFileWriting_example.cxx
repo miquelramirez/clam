@@ -155,7 +155,7 @@ int main( int argc, char** argv )
 	
 	for ( int i = 0; i < 25; i++ )
 	{
-		for ( int j = 0; j < inputs.size(); j++ )
+		for ( unsigned int j = 0; j < inputs.size(); j++ )
 			for ( int k = 0; k < inputs[j].GetSize(); k++ )
 			{
 				inputs[j].GetBuffer()[k] = 0.5 * cos( phi[j] );

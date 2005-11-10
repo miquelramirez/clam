@@ -154,9 +154,9 @@ namespace AudioCodecs
 	
 	void PCMAudioStream::MemoryToDiskTransfer()
 	{
-		sf_count_t samplesWritten = CLAM_sf_write( mFileHandle,
-							   mInterleavedDataOut.GetPtr(),
-							   mFramesToWrite );
+		// Unused variable: sf_count_t samplesWritten = CLAM_sf_write( mFileHandle,
+		//					   mInterleavedDataOut.GetPtr(),
+		//					   mFramesToWrite );
 
 		CLAM_DEBUG_ASSERT( samplesWritten == mFramesToWrite,
 			     "Could not write all samples to disk!" );
