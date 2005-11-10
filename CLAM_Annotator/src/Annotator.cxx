@@ -60,7 +60,7 @@ public:
 		file.OpenExisting(audioFileName);
 		int nChannels = file.GetHeader().GetChannels();
 		float samplingRate = file.GetHeader().GetSampleRate();
-		nSamples = file.GetHeader().GetLength()/1000.0*samplingRate;
+		nSamples = unsigned( file.GetHeader().GetLength()/1000.0*samplingRate );
 		audioFrameVector.resize(nChannels);
 		for (int i=0;i<nChannels;i++)
 			audioFrameVector[i].SetSize(readSize);
@@ -88,7 +88,7 @@ public:
 			mAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
 			beginSample+=readSize;
 			if (mAborted) break;
-			if (beginSample+readSize>nSamples) break;
+			if ( beginSample+readSize > nSamples ) break;
 		}
 //		mAudio.SetSize(beginSample);
 		reader.Stop();
@@ -832,7 +832,7 @@ void Annotator::auralizeMarks()
 		cfg.SetSourceFile( file );
 		CLAM::MultiChannelAudioFileReader reader(cfg);
 		reader.Start();
-		int beginSample=0;
+		// Unused variable: int beginSample=0;
 		reader.Do(mClick);
 		reader.Stop();
 	}
