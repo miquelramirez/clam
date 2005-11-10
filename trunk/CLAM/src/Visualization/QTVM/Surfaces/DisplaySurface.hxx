@@ -26,6 +26,10 @@
 #include <qcursor.h>
 #include "GLView.hxx"
 
+#ifdef WIN32
+	#undef GetClassName
+#endif
+
 class QTimer;
 
 namespace CLAM
