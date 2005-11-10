@@ -114,9 +114,9 @@ BigProcessing::BigProcessing(BigConfiguration& cfg) :
 
 bool BigProcessing::ConfigureChildren(int size)
 {
-	static const char *fft_name = "Input FFT";
-	static const char *ifft_name = "Output IFFT";
-	static const char *filter_name = "Filter product";
+	// Unused variable: static const char *fft_name = "Input FFT";
+	// Unused variable: static const char *ifft_name = "Output IFFT";
+	// Unused variable: static const char *filter_name = "Filter product";
 
 	FFTConfig cfg_fft;
 	SpecProductConfig cfg_prod;
