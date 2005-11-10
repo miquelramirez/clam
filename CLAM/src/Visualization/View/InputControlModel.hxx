@@ -37,9 +37,9 @@ namespace CLAMVM
 	{
 	protected:
 
-		virtual void DispatchControlValue( CLAM::TControlData value ) = 0;
 
 	public:
+		virtual void DispatchControlValue( CLAM::TControlData value ) = 0;
 
 		InputControlModel( );
 
