@@ -101,7 +101,7 @@ void SimpleSpeechAnalysisSystem::SetupDownsampler()
 {
 	CLAM::DownSamplingConfig cfg;
 	cfg.SetDownSamplingRate( 10000 );
-	mDownSampledFrameSize = 10000.0*0.02;
+	mDownSampledFrameSize = CLAM::TSize( 10000.0*0.02 );
 	mDownSampler.Configure( cfg );
 }
 
@@ -136,7 +136,7 @@ void SimpleSpeechAnalysisSystem::LoadInputSpeechFile()
 	fileLoader.Do( mInputSignal );  
 	fileLoader.Stop();
 
-	mFrameSize = mInputSignal.GetSampleRate()*0.02;       
+	mFrameSize = CLAM::TSize( mInputSignal.GetSampleRate()*0.02 );
 
 }
 
