@@ -43,7 +43,6 @@
 #include <qvalidator.h>
 #include <qcombobox.h>
 
-#include "envelope_point_editor.hxx"
 #include "QtEnvelopeEditor.hxx"
 
 namespace CLAM{
