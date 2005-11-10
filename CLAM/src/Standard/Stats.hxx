@@ -567,11 +567,11 @@ public:
 	void Reset()
 	{
 		//Note: we keep previously allocated data, we just reset computations
-		for (unsigned i=0;i<mMoments.Size();i++)
+		for (int i=0;i<mMoments.Size();i++)
 			if(mMoments[i]!=NULL) mMoments[i]->Reset();
-		for (unsigned i=0;i<mCentralMoments.Size();i++)
+		for (int i=0;i<mCentralMoments.Size();i++)
 			if(mCentralMoments[i]!=NULL) mCentralMoments[i]->Reset();
-		for (unsigned i=0;i<mCenterOfGravities.Size();i++)
+		for (int i=0;i<mCenterOfGravities.Size();i++)
 			if(mCenterOfGravities[i]!=NULL) mCenterOfGravities[i]->Reset();
 
 		mKurtosis.Reset();
