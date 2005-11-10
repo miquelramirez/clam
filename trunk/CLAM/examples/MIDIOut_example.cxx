@@ -38,7 +38,7 @@ void CrossPlatformSleep(int seconds)
 	#endif
 }
 
-main()
+int main()
 {
 	MIDIManager manager;
 	MIDIIOConfig outNoteCfg;
