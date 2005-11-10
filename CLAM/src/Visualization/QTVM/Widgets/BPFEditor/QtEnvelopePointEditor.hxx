@@ -20,7 +20,7 @@
 //#include "common/os/mutex_lock.h"
 #include <qwidget.h>
 #include <qpixmap.h>
-#include "envelope.hxx"
+#include "QtEnvelope.hxx"
 #include <vector>
 
 /**

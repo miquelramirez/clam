@@ -4,7 +4,7 @@ namespace CLAM
 {
 	QtEnvelopeEditor::QtEnvelopeEditor( QWidget* parent )
 	{
-		mEmbededEditor = new Envelope_Point_Editor( parent );
+		mEmbededEditor = new QtEnvelopePointEditor( parent );
 		mEmbededEditor->setMinimumSize( QSize( 350, 350) );
 		mMaxXBounded = false;
 		mMaxYBounded = false;
@@ -35,7 +35,7 @@ namespace CLAM
 	BPF QtEnvelopeEditor::GetValue()
 	{
 		BPF value;
-		Envelope* env = mEmbededEditor->get_envelope();
+		QtEnvelope* env = mEmbededEditor->get_envelope();
 		value.SetSize(0);
 		for ( int i=0; i< env->get_node_count(); i++ )
 		{

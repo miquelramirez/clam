@@ -4,8 +4,8 @@
 #include <qwidget.h>
 #include <vector>
 #include "BPF.hxx"
-#include "envelope_point_editor.hxx"
-#include "envelope.hxx"
+#include "QtEnvelopePointEditor.hxx"
+#include "QtEnvelope.hxx"
 
 // Provisional
 #include "AudioManager.hxx"
@@ -73,8 +73,8 @@ public:
 	~QtEnvelopeEditor();
 
 private:
-	Envelope_Point_Editor * mEmbededEditor;
-	Envelope mEnvelope;
+	QtEnvelopePointEditor * mEmbededEditor;
+	QtEnvelope mEnvelope;
 	bool mMaxXBounded;
 	bool mMaxYBounded;
 	bool mMinYBounded;
