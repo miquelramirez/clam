@@ -126,7 +126,7 @@ int main( int argc, char** argv )
 
 		std::cout << "At frame #" << frameCount << std::endl;
 
-		for ( int i = 0; i < outputs.size(); i++ )
+		for ( unsigned int i = 0; i < outputs.size(); i++ )
 		{
 			std::cout << "Channel #" << i << " ";
 
