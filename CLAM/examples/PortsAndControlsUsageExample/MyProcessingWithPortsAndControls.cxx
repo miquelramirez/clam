@@ -26,19 +26,19 @@ namespace CLAM
 
 MyProcessingWithPortsAndControls::MyProcessingWithPortsAndControls()
 	// we specify for each port its name, and the processing parent
-	: mInput( "Audio Input", this ), 
-	  mOutput( "Audio Output", this ),
+	: mModControl( "Modulation", this ),
+	  mInput( "Audio Input", this ), 
+	  mOutput( "Audio Output", this )
 	  // for the control, just the name and the processing
-	  mModControl( "Modulation", this )
 {
 	MyProcessingWithPortsAndControlsConfig cfg;
 	Configure( cfg );
 }
 	
 MyProcessingWithPortsAndControls::MyProcessingWithPortsAndControls( const MyProcessingWithPortsAndControlsConfig & cfg )
-	: mInput( "Audio Input", this ),
-	  mOutput( "Audio Output", this ),
-	  mModControl( "Modulation", this )
+	: mModControl( "Modulation", this ),
+	  mInput( "Audio Input", this ),
+	  mOutput( "Audio Output", this )
 {
 	Configure( cfg );
 }
