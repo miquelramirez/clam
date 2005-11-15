@@ -15,7 +15,7 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 	
-	folders = ['src/Processing/AudioFileIO', 'src/Processing/AudioIO', 'src/Processing/MIDIIO', 'src/Tools/MIDIIO', 'src/Tools/MIDIIO/File', 'src/Tools/MIDIIO/TextFile', 'src/Tools/AudioIO', 'src/Tools/AudioFileIO', 'src/Processing/AudioIO*.*xx', 'src/Flow/Networks/BlockingNetworkPlayer*.*xx']
+	folders = ['src/Processing/AudioFileIO', 'src/Processing/AudioIO', 'src/Processing/MIDIIO', 'src/Tools/MIDIIO', 'src/Tools/MIDIIO/File', 'src/Tools/MIDIIO/TextFile', 'src/Tools/AudioIO', 'src/Tools/AudioFileIO', 'src/Processing/AudioIO*.*xx', 'src/Flow/Networks/BlockingNetworkPlayer*.*xx', 'src/System/Application']
 
 	if sys.platform == 'win32':
 		folders.append('src/Processing/InitAudioIO*.*xx')
