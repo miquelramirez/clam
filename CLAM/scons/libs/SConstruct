@@ -62,7 +62,7 @@ def setup_build_options( env ) :
 	elif sys.platform == 'win32' :
 		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
 	else :
-		opts.Add( BoolOption( 'audio_backend', 'Selects audio PCM i/o library used CLAM backend', 'rtaudio', ('rtaudio',) ) )
+		opts.Add( BoolOption( 'audio_backend', 'Selects audio PCM i/o library used CLAM backend', 'yes') )
 	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
 
 	# clam_vmqt options
