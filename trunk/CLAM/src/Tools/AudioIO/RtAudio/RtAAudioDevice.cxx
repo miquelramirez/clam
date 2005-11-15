@@ -18,7 +18,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#include "RtAAudioDevice.hxx"
 
+/*
 #include "RtAudio.hxx"
 #include "AudioIO.hxx"
 #include "AudioIn.hxx"
@@ -26,25 +28,29 @@
 #include "AudioDeviceList.hxx"
 #include "AudioDevice.hxx"
 #include <cstdio>
+*/
 
 namespace CLAM {
-
+/*
 #ifdef __MACOSX_CORE__
 #define MACOSX_WORKAROUND
 #endif
+*/
 
-#ifdef __MACOSX_CORE__
+//#ifdef __MACOSX_CORE__
 /* a kludgy factor 2 (22050->44100) sample rate conversion
 ** because macosx drivers do not handle 22050 */ 
+	/*
 #define FACTOR2SRC_KLUDGE
 #endif
+*/
 
 //#define DEBUG_RDWR_POS
 
 
+/*
 	typedef signed short  MY_TYPE;
 	#define FORMAT RtAudio::RTAUDIO_SINT16
-
 	class RtAAudioDevice: public AudioDevice
 	{
 	private:
@@ -245,7 +251,7 @@ namespace CLAM {
 		void Read(Audio& audio,const int channelID);
 		void Write(const Audio& audio,const int channelID);
 	};
-
+	*/
 	RtAAudioDevice::RtAAudioDevice(const std::string& name,int _device): 
 		AudioDevice(name)
 	{
@@ -451,6 +457,7 @@ namespace CLAM {
 #endif
 	}
 
+	/*
 	class RtAAudioDeviceList : public AudioDeviceList
 	{
 	private:
@@ -467,6 +474,10 @@ namespace CLAM {
 	public:
 
 		virtual ~RtAAudioDeviceList();
+		static std::string foo()
+		{
+			return std::string("buabua");
+		}
 
 		inline std::string DefaultDevice()
 		{
@@ -476,7 +487,7 @@ namespace CLAM {
 		AudioDevice* Create( const std::string& name, const std::string& device );
 
 	};
-	
+	*/
 	RtAAudioDeviceList::RtAAudioDeviceList()
 		: AudioDeviceList( std::string("rtaudio") )
 	{
@@ -484,6 +495,11 @@ namespace CLAM {
 		EnumerateAvailableDevices();
 
 		AddMe();
+	}
+
+	void RtAAudioDeviceList::init()
+	{
+	//	std::cout << "rtaudio initialized" << std::endl;
 	}
 
 	RtAAudioDeviceList::~RtAAudioDeviceList()
