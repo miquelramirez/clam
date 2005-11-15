@@ -113,7 +113,7 @@ int main( int argc, char** argv )
 		}
 
 
-		CLAM::AudioManager theAudioManager( int(playbackSampleRate), frameSize );
+		CLAM::AudioManager theAudioManager( (int)playbackSampleRate, frameSize );
 
 		// Now we will create as many AudioOuts as input channels
 
