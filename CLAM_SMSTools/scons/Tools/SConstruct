@@ -1,0 +1,165 @@
+# SConstruct for SMS Tools
+#
+import sys, os, string, glob
+
+def parse_pkg_config( env ) :
+	prefix = env['clam_prefix']
+	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
+	descriptors = glob.glob( descriptor_path )
+	libpath = dict()
+	libs = dict()
+	cppflags = dict()
+	cpppath = dict()
+	ccflags = dict()
+	for desc_file in descriptors :
+		instream = open( desc_file )
+
+		for line in instream :
+			tokens = line.strip().split(' ')
+			if tokens[0] == 'Libs:' :
+				for token in tokens[1:] :
+					if "/LIBPATH:" in token :
+						libpath[token.replace("/LIBPATH:", "")] = True
+					else :
+						libs[token] = True
+			elif tokens[0] == 'Cflags:':
+				foo = line.strip().split(' /')
+				for token in foo[1:] :
+					token = '/' + token
+					# search for -X flags
+					if(token.find(' -')!=-1):
+						listOfRealTokens = token.split(' -')
+						#print('new token to parse: ' + token)
+						firstToken = listOfRealTokens[0]
+						if "/I" in firstToken:
+							cpppath[ firstToken.replace("/I","") ] = True
+						elif "/D" in firstToken :
+							cppflags[ firstToken ] = True
+						else :
+							ccflags[firstToken] = True
+						for realToken in listOfRealTokens[1:]:
+							#print('new token to parse: ' + realToken)
+							ccflags['-'+realToken] = True
+					else:
+						#print('new token to parse: ' + token)
+						if "/I" in token :
+							cpppath[ token.replace("/I","") ] = True
+						elif "/D" in token in token :
+							cppflags[ token ] = True
+						else :
+							ccflags[token] = True
+			else :
+				pass
+
+		instream.close()
+	print "Adding to evironment LIBPATH:"
+	for elem in libpath.keys() : print elem,
+	print
+	env.Append( LIBPATH = libpath.keys() )
+	print "Adding to environment LIBS:"
+	for elem in libs.keys() : print elem,
+	print
+	env.Append( LIBS = libs.keys() )
+	print "Adding to environment CPPFLAGS:"
+	for elem in cppflags.keys() : print elem,
+	print
+	env.Append( CPPFLAGS = cppflags.keys() )
+	print "Adding to environment CCFLAGS:"
+	for elem in ccflags.keys() : print elem,
+	print
+	env.Append( CCFLAGS = ccflags.keys() )
+	print "Adding to environment CPPPATH:"
+	for elem in cpppath.keys() : print elem,
+	print
+	env.Append( CPPPATH = cpppath.keys() )
+
+tools_env = Environment( tools=['default'], ENV=os.environ )
+
+opts = Options( 'SMSTools.conf' )
+
+if sys.platform != 'win32' :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+else :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
+if sys.platform != 'win32' :
+	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr') )
+else :
+	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', 'G:\projects\CLAM-bin\\bin') )
+opts.Add( BoolOption( 'release', 'Build SMS Tools enabling compiler optimizations', 'no' ) )
+opts.Update( tools_env )
+opts.Save( 'SMSTools.conf', tools_env )
+Help( opts.GenerateHelpText( tools_env ) )
+
+
+if sys.platform != 'win32' :
+	if tools_env['release'] :
+		tools_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+	else :
+		tools_env.Append( CCFLAGS=['-g', '-Wall'] )
+
+	tools_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmfl' )
+else :
+	if tools_env['release'] :
+		#tools_env.Append( CPPFLAGS= ['-DWIN32', '-D_USRDLL'] )
+		tools_env.Append( CPPFLAGS = ['-DWIN32'] )
+		tools_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
+		tools_env.Append( LINKFLAGS = ['/LTCG'] )
+	else :
+		#tools_env.Append( CPPFLAGS = ['-DWIN32', '-D_USRDLL', '-D_DEBUG'] )
+		tools_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
+		tools_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
+		tools_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
+
+source_dirs = ['../../src', '../../src/GUI', '../../src/GUI/ScoreEditor']
+
+tools_env.Append( CPPPATH=source_dirs )
+#tools_env.Append( CCFLAGS='-include CLAM/preinclude.hxx' )
+#tools_env.Append( CPPFLAGS='-DRESOURCES_BASE="\\"/usr/share/smstools\\""' )
+sourcefiles = []
+for dir in source_dirs :
+	sourcefiles += glob.glob(dir+'/*.cxx')
+sourcefiles.remove('../../src\SMSBatch.cxx')
+sourcefiles.remove('../../src\SMS.cxx')
+
+
+if sys.platform != 'win32' :
+	tools_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+
+	htmls = [ '../../resources/html/en/license.html' ]
+	install_html = tools_env.Install( tools_env['install_prefix']+"/share/smstools/html/en", htmls )
+	manpage = ['../../resources/man/man9/SMSTools.9']
+	install_manpage = tools_env.Install( tools_env['install_prefix']+"/share/man/man9", manpage )
+
+	tools_bin = tools_env.Program( 'SMSTools', sourcefiles, LINKFLAGS=['-rdynamic'] )
+	install_bin = tools_env.Install( tools_env['install_prefix']+'/bin', tools_bin )
+	tools_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+	install_alias = tools_env.Alias( 'install', [install_bin,install_html, install_manpage] )
+else :
+	parse_pkg_config( tools_env )
+	tools_env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
+	tools_env.Append( CCFLAGS = ['/EHsc'] )
+	tools_env.Append( LINKFLAGS = ['/subsystem:console','/machine:x86'] )
+	tools_bin = tools_env.Program( 'SMSTools', sourcefiles )
+
+	htmls = [ '../../resources/html/en/license.html' ]
+	install_html = tools_env.Install( tools_env['install_prefix']+"html/en", htmls )
+	manpage = ['../../resources/man/man9/SMSTools.9']
+	install_manpage = tools_env.Install( tools_env['install_prefix']+"man/man9", manpage )
+
+	install_bin = tools_env.Install( tools_env['install_prefix'], tools_bin )
+	install_alias = tools_env.Alias( 'install', [install_bin,install_html, install_manpage] )
+
+	variantVCProj = 'Debug'
+	if tools_env['release'] :
+		variantVCProj = 'Release' 
+
+	generate_vcproj = tools_env.MSVSProject( target = 'SMSTools' + tools_env['MSVSPROJECTSUFFIX'],
+				srcs = sourcefiles,
+				buildtarget = tools_bin,
+				variant = variantVCProj )
+
+	vc_alias = tools_env.Alias('visual_project', [generate_vcproj])
+
+Default(tools_bin)
+
+
