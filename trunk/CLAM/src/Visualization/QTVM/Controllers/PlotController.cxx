@@ -346,6 +346,9 @@ namespace CLAM
 		{
 			double bottom = mMaxSpanY/double(GetnyPixels())*double(value)+mMinY;
 			double top = bottom+mSpanY;
+			double tmp = bottom;
+			bottom = mMinY+(mMaxY-top);
+			top = mMaxY-(tmp-mMinY);
 			SetVBounds(bottom,top);
 		}
 
@@ -376,7 +379,7 @@ namespace CLAM
 
 		int PlotController::GetVScrollValue() const
 		{
-		    return int((mView.bottom-mMinY)*double(GetnyPixels())/mMaxSpanY);
+			return int((mMaxY-mView.top)*double(GetnyPixels())/mMaxSpanY);
 		}
 
 		bool PlotController::ReferenceIsVisible()
