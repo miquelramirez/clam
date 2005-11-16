@@ -1,6 +1,13 @@
 import sys
 
 def check_opengl( env, conf ) :
+	#Testing for OpenGL under Mac OS X is too complex (a platform-dependent context with additional
+	# dependencies must be managed) and any sane Mac OS X should have OpenGL properly installed
+	if sys.platform == 'darwin' :
+		env.Append( CPPFLAGS=['-DUSE_GL=1'] )
+		env.Append( LINKFLAGS=['-framework', 'OpenGL', '-framework', 'AGL'] )
+		return True
+	
 	if sys.platform != 'win32' :
 		result = conf.CheckCHeader('GL/gl.h')
 		if not result :
