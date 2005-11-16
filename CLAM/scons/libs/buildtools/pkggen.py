@@ -7,13 +7,10 @@ class PackageData :
 		self.version = version
 		self.depends = depends
 		self.extra = extra
-		if sys.platform == 'linux2' :
+		if sys.platform != 'win32' :  #both linux2 and darwin have pkg-config
 			self.create_pkg_descriptor = self.linux_create_pkg_descriptor
-		else :
-			if sys.platform == 'win32' :
-				self.create_pkg_descriptor = self.win32_create_pkg_descriptor
-			else :
-				raise RuntimeError, "Not implemented yet"
+		else :  #win32
+			self.create_pkg_descriptor = self.win32_create_pkg_descriptor
 
 	def win32_create_pkg_descriptor( self, env, out_file ) :
 		out = open(out_file, 'w' )

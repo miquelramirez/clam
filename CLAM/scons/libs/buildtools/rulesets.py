@@ -11,9 +11,15 @@ def handle_preinclude ( env ):
 def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 	lib_descriptor = env.File( 'clam_'+name+'.pc' )
 
-	soname = 'libclam_'+name+'.so.%s'%version.split('.')[0]
-	linker_name = 'libclam_'+name+'.so'
-	env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
+	if sys.platform == 'linux2' :
+		soname = 'libclam_'+name+'.so.%s'%version.split('.')[0]
+		linker_name = 'libclam_'+name+'.so'
+		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
+	else :
+		soname = 'libclam_'+name+'.%s.dylib'%version.split('.')[0]
+		linker_name = 'libclam_'+name+'.dylib'
+		env.Append(SHLINKFLAGS=['-Wl,-single_module,-install_name,%s'%soname ] )
+		
 
 	lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.so.%s'%version )
 

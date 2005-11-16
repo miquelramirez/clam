@@ -72,7 +72,10 @@ def setup_global_environment( clam_env, conf ) :
 
 	clam_env['preinclude'] = 'preinclude.hxx'
 
-	if not sys.platform == 'win32' :
+	#if not sys.platform == 'win32' :
+	if sys.platform == 'linux2' :
 		clam_env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
+	elif sys.platform == 'darwin' :
+		clam_env.Append(LIBPATH=['/usr/local/lib','/usr/lib'])
 
 	return True

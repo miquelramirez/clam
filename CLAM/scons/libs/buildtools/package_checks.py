@@ -136,7 +136,6 @@ int main(int argc, char** argv )
 }
 """
 
-
 package_checks['check_rfftw_double_w_prefix'] = ThoroughPackageCheck( 'rfftw using doubles with prefixed binaries/headers', 'c', None, double_rfftw_w_prefix_test_code )
 
 float_fftw_w_prefix_test_code = """\
@@ -325,7 +324,6 @@ int main()
 """
 
 package_checks['check_id3lib'] = ThoroughPackageCheck( 'id3lib', 'c++', None, id3lib_test_code )
-
 
 fltk_test_code = """\
 #include<FL/Fl_Gl_Window.H>

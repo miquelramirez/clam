@@ -13,7 +13,15 @@ def setup_vmfl_environment( vmfl_env, conf ) :
 			print "fltk-config tool was not found on your system. Please check your FLTK installation"
 			return False
 	
-		vmfl_env.ParseConfig('fltk-config --cflags --cxxflags --ldflags --libs --use-gl --use-images --use-glut --use-forms')
+		vmfl_env.ParseConfig('fltk-config --use-gl --use-images --use-glut --use-forms --cxxflags --ldflags' )
+	elif sys.platform == 'darwin' :
+		result = conf.check_fltk_config()
+		if not result :
+			print "fltk-config cagada"
+			return False
+		vmfl_env.Append( CPPPATH=['-I/usr/local/include/FL/images'] )
+		vmfl_env.Append( LINKFLAGS=['-framework', 'Carbon', '-framework', 'ApplicationServices'] )
+		vmfl_env.Append( LIBS=['fltk_images', 'fltk_png', 'z', 'fltk_jpeg', 'fltk_gl', 'fltk_forms', 'fltk'] )
 	elif sys.platform == 'win32' :
 		# Manual configuration
 		result = conf.CheckCXXHeader( 'FL/Fl.H' )

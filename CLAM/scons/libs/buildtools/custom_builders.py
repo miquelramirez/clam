@@ -1,11 +1,13 @@
 import os
+import sys
 
 def generate_so_name( target, source, env ) :
 	source_dir = os.path.dirname( str(source[0]) )
 	source_file = os.path.basename( str(source[0]) )
 	cwd = os.getcwd()
 	os.chdir( source_dir )
-	os.system( "ldconfig -n ." )
+	if sys.platform == 'linux2' :
+		os.system( "ldconfig -n ." )
 	os.chdir(cwd)
 
 def generate_so_name_message( target, source, env ) :
