@@ -25,7 +25,7 @@
 
 namespace CLAM {
 
-	template BPFTmpl<TTime,TData>;
+	template class BPFTmpl<TTime,TData>;
 
 	void EnvelopeConfig::DefaultInit()
 	{
