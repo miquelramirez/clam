@@ -136,8 +136,8 @@ namespace CLAM
 			Color c = mRenderer.GetColor();
 			glColor3ub(c.r,c.g,c.b);
 			glBegin(GL_LINES);
-			glVertex3f(0.0f,1.0f,-1.0f);
-			glVertex3f(float(GetSpanX()),1.0f,-1.0f);
+			glVertex3f(0.0f,0.0f,-1.0f);
+			glVertex3f(float(GetSpanX()),0.0f,-1.0f);
 			glEnd();
 		}
 
