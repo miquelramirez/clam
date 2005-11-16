@@ -47,8 +47,8 @@ bool ERB_SpaceGen::ConcreteConfigure(const ProcessingConfig& c)
 	CopyAsConcreteConfig( mConfig, c );
 
 	mNumFilter=mConfig.GetNumFilter();
-	mLowFreq=mConfig.GetLowFreq();
-	mHighFreq=mConfig.GetHighFreq();
+	mLowFreq=(TData)mConfig.GetLowFreq();
+	mHighFreq=(TData)mConfig.GetHighFreq();
 	
 	return true;
 }
