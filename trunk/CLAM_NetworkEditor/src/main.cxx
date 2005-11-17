@@ -28,8 +28,14 @@
 #include "NetworkController.hxx"
 
 #include "BlockingNetworkPlayer.hxx"
+
+#if USE_JACK
 #include "JACKNetworkPlayer.hxx"
+#endif
+
+#if USE_PORTAUDIO
 #include "PANetworkPlayer.hxx"
+#endif
 
 #include "PushFlowControl.hxx"
 #include "BasicFlowControl.hxx"
@@ -61,7 +67,14 @@ void ConfigureNetwork(CLAM::Network & net)
 void PrintUsageAndExit( const string& extramessage)
 {
 	std::cout << extramessage << std::endl;
-	std::cout << "  Usage: ./NetworkEditor [ <NetworkFile> --driver,-d alsa | jack | portaudio ]"<< std::endl;
+	std::cout << "  Usage: ./NetworkEditor [ <NetworkFile> --driver,-d alsa"
+#if USE_JACK
+		<< " | jack"
+#endif
+#if USE_PORTAUDIO
+		<< " | portaudio"
+#endif
+		<< " ]"<< std::endl;
 	exit(0);
 }
 
@@ -73,20 +86,23 @@ CLAM::NetworkPlayer* CreateNetworkPlayerFromName(const string name)
 			\n  No externalizer will work." << std::endl;
 		return new CLAM::BlockingNetworkPlayer();
 	}
+#if USE_JACK
 	else if ( name == string("jack") )
 	{
 		std::cout << " Using JACK input/output driver.\
 			\n  Don't use any AudioOut." << std::endl;
 		return new CLAM::JACKNetworkPlayer();
 	}
+#endif
+#if USE_PORTAUDIO
 	else if ( name == string("portaudio") )
 	{
-
 		std::cout << " Using PortAudio input/output driver. \
 			\n  Don't use any AudioOut. You must have the same amount of ExternSinks as ExternGenerators, a number between 1 and 2" << std::endl;
 
 		return new CLAM::PANetworkPlayer();
 	}
+#endif
 	else PrintUsageAndExit("Incorrect driver!");
 
 	return NULL;
