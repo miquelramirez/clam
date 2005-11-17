@@ -838,7 +838,8 @@ void Annotator::auralizeMarks()
 	}
 	const std::vector<unsigned int> & marks = mpAudioPlot->GetMarks();
 	int nMarks = marks.size();
-	mCurrentMarkedAudio = mCurrentAudio;
+	mCurrentMarkedAudio.SetSize(mCurrentAudio.GetSize());
+	mCurrentMarkedAudio.SetSampleRate(mCurrentAudio.GetSampleRate());
 	int size = mCurrentMarkedAudio.GetSize();
 	for (int i=0; i<nMarks; i++)
 	{
@@ -850,16 +851,33 @@ void Annotator::auralizeMarks()
 
 void Annotator::playMarks(bool playThem)
 {
-	CLAM::Audio * audioToPlay = playThem ? &mCurrentMarkedAudio : &mCurrentAudio;
-	mpAudioPlot->SetData(*audioToPlay,false);
+	if(audioOriginal_Audio__LLDAction->isOn() && playThem) audioOriginal_Audio__LLDAction->setOn(false);
+	if(playThem)
+	{
+		mpAudioPlot->SetData(mCurrentMarkedAudio,false);
+	}
+	else
+	{
+		CLAM::Audio* silence = new CLAM::Audio();
+		silence->SetSize(mCurrentAudio.GetSize());
+		silence->SetSampleRate(mCurrentAudio.GetSampleRate());
+		mpAudioPlot->SetData(*silence,false);
+	}
 	for(unsigned i=0; i < mBPFEditors.size(); i++)
-		mBPFEditors[i]->SetAudioPtr(audioToPlay);
+	{
+		mBPFEditors[i]->SetAudioPtr(&mCurrentMarkedAudio);
+		mBPFEditors[i]->playSimultaneously(playThem);
+	}
 }
 
 void Annotator::playOriginalAudioAndLLD(bool both)
 {
+	if(audioAuralize_Segmentation_MarksAction->isOn() && both) audioAuralize_Segmentation_MarksAction->setOn(false);
 	for(unsigned i=0; i < mBPFEditors.size(); i++)
+	{
+		mBPFEditors[i]->SetAudioPtr(&mCurrentAudio);
 		mBPFEditors[i]->playSimultaneously(both);
+	}
 }
 
 void Annotator::hideBPFEditors()
