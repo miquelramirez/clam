@@ -414,6 +414,11 @@ void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
 
 void Annotator::segmentationMarksChanged(int, unsigned)
 {
+	if(mpAudioPlot->IsPlaying()) mpAudioPlot->Stop();
+	for(unsigned i=0; i < mBPFEditors.size(); i++)
+	{
+		if(mBPFEditors[i]->IsPlaying()) mBPFEditors[i]->Stop();
+	}
 	updateSegmentations();
 }
 
@@ -838,6 +843,7 @@ void Annotator::auralizeMarks()
 	}
 	const std::vector<unsigned int> & marks = mpAudioPlot->GetMarks();
 	int nMarks = marks.size();
+	mCurrentMarkedAudio.SetSize(0);
 	mCurrentMarkedAudio.SetSize(mCurrentAudio.GetSize());
 	mCurrentMarkedAudio.SetSampleRate(mCurrentAudio.GetSampleRate());
 	int size = mCurrentMarkedAudio.GetSize();
