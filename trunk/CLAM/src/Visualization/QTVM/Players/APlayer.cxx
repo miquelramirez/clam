@@ -47,7 +47,7 @@ namespace CLAM
 
 			if(data.size()==1)
 			{
-				mLeftChannel = data[0];
+				if(!mLeftChannel) mLeftChannel = data[0];
 				mRightChannel = data[0];
 			}
 			else 

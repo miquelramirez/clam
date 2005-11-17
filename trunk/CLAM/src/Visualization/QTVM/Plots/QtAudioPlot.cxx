@@ -134,8 +134,20 @@ namespace CLAM
 		void QtAudioPlot::SetPData(const Audio& audio, bool setTime)
 		{
 			std::vector<const Audio*> data;
-			data.resize(1);
-			data[0]=&audio;
+			if(setTime)
+			{
+				Audio* silence = new Audio();
+				silence->SetSize(audio.GetSize());
+				silence->SetSampleRate(audio.GetSampleRate());
+				data.resize(2);
+				data[0]=&audio;
+				data[1]=silence;
+			}
+			else
+			{
+				data.resize(1);
+				data[0]=&audio;
+			}
 			((QtAudioPlayer*)mPlayer)->SetData(data, setTime);
 		}
 
