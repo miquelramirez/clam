@@ -24,12 +24,13 @@ def setup_build_options( env ) :
 	opts = Options('clam.conf')
 	
 	# global options
-	if sys.platform == 'linux2' :
+	if sys.platform != 'win32' :
 		opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr'))
 	else :
 		opts.Add( PathOption( 'prefix', 'Directory to install under', 'G:\\projects\CLAM-bin') )
+
 	opts.Add( PathOption( 'install_prefix', 'Directory to install under (for packagers)', '.'))
-	if sys.platform != 'linux2' :
+	if sys.platform == 'win32' : #!= 'linux2' :
 		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
 	if sys.platform == 'win32' :
 		opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no' ))
@@ -59,17 +60,20 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'with_id3', 'Enables support for accesing ID3 tags on mpeg audio streams', 'yes') )
 	if sys.platform == 'linux2' :
 		opts.Add( BoolOption( 'with_alsa', 'Enables PCM and MIDI device I/O through ALSA', 'yes' ) )
+	elif sys.platform == 'darwin' :
+		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','portaudio') ) )
 	elif sys.platform == 'win32' :
 		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
-	else :
-		opts.Add( BoolOption( 'audio_backend', 'Selects audio PCM i/o library used CLAM backend', 'yes') )
 	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
 
 	# clam_vmqt options
-	if sys.platform != 'win32' :
+	if sys.platform == 'linux2' :
 		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/usr/include/qt3' ) )
 		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/usr/lib' ) )
-	else:
+	elif sys.platform == 'darwin' :
+		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/Developer/qt/include' ) )
+		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/Developer/qt/lib' ) )
+	elif sys.platform == 'win32' :
 		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', 'G:\projects\qt\include' ) )
 		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', 'G:\projects\qt\lib' ) )
 		
@@ -148,11 +152,12 @@ setup_build_options( clam_env )
 
 
 # Sandbox setup
-if sys.platform != 'linux2' :
+if sys.platform == 'win32' : #!= 'linux2' :
 	libbasenames = [ 'fltk', 'xercesc', 'fftw', 'dxsdk', 'id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','pthreads']
 	for basename in libbasenames :
 		if sys.platform == 'win32' : path_sep = '\\'
 		if sys.platform == 'darwin' : path_sep = '/'
+
 		include_path = "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'include')
 		print( 'include path: ' + include_path )
 		lib_path =  "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'lib')
@@ -210,9 +215,8 @@ if not clam_env.GetOption('clean') :
 	if clam_env['xmlbackend'] != 'none' :
 		clam_env.Append( CPPFLAGS=['-DCLAM_USE_XML'] )
 
-
 processing_env = clam_env.Copy()
-if sys.platform == 'win32' :
+if sys.platform == 'win32' or sys.platform == 'darwin':  #Added 'darwin' because due to some strange reasons, the LIBS added in the previous setup_core_environment were not used anymore (but CPPFLAGS did). In Linux it works fine without having to manually copy them
 	processing_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 Export('processing_env')
 processing_env.Replace( QT_LIB = '' )
@@ -229,7 +233,7 @@ if sys.platform == 'win32' :
 	audioio_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 	audioio_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
 	audioio_env.AppendUnique( LINKFLAGS=copy.copy(core_env['LINKFLAGS']) )
-			
+
 Export('audioio_env')
 audioio_env.Replace( QT_LIB = '' )
 
