@@ -7,7 +7,7 @@
 #include <GL/glx.h>
 #endif
 #if defined(Q_WS_MAC)
-#include <agl.h>
+#include "/System/Library/Frameworks/AGL.framework/Headers/agl.h"
 #endif
 
 namespace CLAM
