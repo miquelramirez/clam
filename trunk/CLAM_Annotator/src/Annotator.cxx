@@ -156,6 +156,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mHLDChanged(false)
 	, mLLDChanged(false)
 	, mSegmentsChanged(false)
+	, mMustUpdateMarkedAudio(false)
 	, mBPFEditors(0)
 	, mpTabLayout(0)
 	, mpAudioPlot(0)
@@ -345,6 +346,8 @@ void Annotator::makeConnections()
 		this, SLOT(segmentationMarksChanged(int, unsigned)));
 	connect(mpAudioPlot, SIGNAL(requestSegmentationTag(unsigned)),
 		this, SLOT(changeCurrentSegment(unsigned)));
+	connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
+			this, SLOT(onStopPlaying(float)));
 
 }
 
@@ -414,10 +417,11 @@ void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
 
 void Annotator::segmentationMarksChanged(int, unsigned)
 {
-	if(mpAudioPlot->IsPlaying()) mpAudioPlot->Stop();
-	for(unsigned i=0; i < mBPFEditors.size(); i++)
+	if(mMustUpdateMarkedAudio) return;
+	if(isPlaying())
 	{
-		if(mBPFEditors[i]->IsPlaying()) mBPFEditors[i]->Stop();
+		mMustUpdateMarkedAudio = true;
+		return;
 	}
 	updateSegmentations();
 }
@@ -911,4 +915,27 @@ QString Annotator::constructFileError(const std::string& fileName,const CLAM::Xm
 	errorMessage += "is well formed and folllows the specifications";
 	return QString(errorMessage.c_str());
 }
+
+void Annotator::onStopPlaying(float time)
+{
+	if(!mMustUpdateMarkedAudio) return;
+	mMustUpdateMarkedAudio = false;
+	updateSegmentations();
+}
+
+bool Annotator::isPlaying()
+{
+	if(mpAudioPlot->IsPlaying()) return true;
+	bool playing = false;
+	for(unsigned i=0; i < mBPFEditors.size(); i++)
+	{
+		if(mBPFEditors[i]->IsPlaying())
+		{
+			playing = true;
+			break;
+		}
+	}
+	return playing;
+}
+
 
