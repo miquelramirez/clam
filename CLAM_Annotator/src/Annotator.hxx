@@ -66,6 +66,9 @@ protected:
 	void closeEvent( QCloseEvent * e);
 	bool event(QEvent* e);
 
+private slots:
+	void onStopPlaying(float);
+
 private:
 	void updateSongListWidget();
 	bool saveProject();
@@ -109,6 +112,7 @@ private:
 	bool loaderFinished(); ///< Clears the loader if it is finished returns if it was or there wasn't any.
 	void abortLoader(); ///< Clears the loader 
 
+	bool isPlaying();
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
@@ -128,6 +132,7 @@ private:
 	bool mHLDChanged;
 	bool mLLDChanged;
 	bool mSegmentsChanged;
+	bool mMustUpdateMarkedAudio;
 
 	std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
 	QVBoxLayout* mpTabLayout;
