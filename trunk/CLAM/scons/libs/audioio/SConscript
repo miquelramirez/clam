@@ -15,10 +15,14 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 	
-	folders = ['src/Processing/AudioFileIO', 'src/Processing/AudioIO', 'src/Processing/MIDIIO', 'src/Tools/MIDIIO', 'src/Tools/MIDIIO/File', 'src/Tools/MIDIIO/TextFile', 'src/Tools/AudioIO', 'src/Tools/AudioFileIO', 'src/Processing/AudioIO*.*xx', 'src/Flow/Networks/BlockingNetworkPlayer*.*xx', 'src/System/Application']
+	folders = ['src/Processing/AudioFileIO', 'src/Processing/AudioIO', 'src/Processing/MIDIIO', 'src/Tools/MIDIIO', 'src/Tools/MIDIIO/File', 'src/Tools/MIDIIO/TextFile', 'src/Tools/AudioIO', 'src/Tools/AudioFileIO', 'src/Processing/AudioIO*.*xx', 'src/Flow/Networks/BlockingNetworkPlayer*.*xx','src/System/Application']
 
-	if sys.platform == 'win32':
+	if sys.platform == 'win32' :
 		folders.append('src/Processing/InitAudioIO*.*xx')
+	else :
+		if audioio_env.has_key('with_jack_support'):
+			folders.append('src/Flow/Networks/JACKNetworkPlayer*.*hxx')
+
 	if audioio_env['with_portmidi'] :
 		folders.append( 'src/Tools/PortMIDI' )
 
@@ -43,8 +47,11 @@ def define_module_contents() :
 		if audioio_env['audio_backend'] == 'rtaudio' :
 			print('using rtaudio2')
 			folders += ['src/Tools/AudioIO/RtAudio']
+		elif audioio_env['audio_backend'] == 'portaudio' :
+			print('using portaudio')
+			folders += ['src/Flow/Networks/PANetworkPlayer*.*xx']
 
-	blacklist = [ 'foo.cxx','main.cxx']
+	blacklist = ['foo.cxx','main.cxx','GUIAudioApplication.*xx']
 
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
 

@@ -138,6 +138,45 @@ def test_directx_sdk( audioio_env, conf ) :
 		return False
 	return True
 
+def test_jack ( core_env, conf ) :
+	result = conf.CheckCHeader( 'jack/jack.h' )
+	if not result :
+		print "jack headers not found!"
+		print "Either install jack or disable jack support by issuing"
+		print "$scons with_jack_support=no"
+		return False
+	result = conf.CheckLib( library='jack', symbol='jack_cpu_load' )
+	if not result :
+		print "jack binaries not found!"
+		print "Either install jack or disable jack support by issuing"
+		print "$scons with_jack_support=no"
+		return False
+	result = conf.check_jack()
+	if not result :
+		print "jack compile/link/run test failed! check config.log for details..."
+		print "Either install jack or disable jack support by issuing"
+		print "$scons with_jack_support=no"
+		return False
+	core_env.Append(CPPFLAGS=['-DUSE_JACK=1'])
+	return True
+
+def test_portaudio( audioio_env, conf ) :
+	result = conf.CheckCHeader( 'portaudio.h' )
+	if not result :
+		print "Could not find portaudio header! Please check your portaudio installation"
+		return False
+	result = conf.CheckLib( library='portaudio', symbol='Pa_GetVersion' )
+	if not result :
+		print "Could not find portaudio binary! Please check your portaudio installation"
+		return False
+	result = conf.check_portaudio()
+	if not result :
+		print "portaudio compile/link/run tests failed! Please check config.log for details..."
+		return False
+	audioio_env.Append( CPPFLAGS=['-DUSE_PORTAUDIO=1'] )
+	audioio_env.Append( LIBS=['portaudio'] )
+	return True
+
 def test_portmidi( audioio_env, conf ) :
 	if sys.platform == 'linux2' :
 		print "Bypassing portmidi checks: using ALSA MIDI facilities"
@@ -177,6 +216,8 @@ def setup_audioio_environment( audioio_env, conf ) :
 	if sys.platform == 'linux2' and audioio_env['with_alsa'] :
 		result = test_alsa_sdk( audioio_env, conf )
 		if not result : return False
+	if audioio_env['with_jack_support'] and sys.platform != 'win32' :
+		if not test_jack (audioio_env, conf): return False
 	if not sys.platform == 'linux2' :
 		if sys.platform == 'win32' :
 			result = test_directx_sdk( audioio_env, conf )			
@@ -184,7 +225,9 @@ def setup_audioio_environment( audioio_env, conf ) :
 		if audioio_env['audio_backend'] == 'directx' :
 			audioio_env.Append( CPPFLAGS=['-DUSE_DIRECTX=1'] )		
 		if audioio_env['audio_backend'] == 'portaudio' :
-			raise RuntimeError, "Not implemented yet!"
+			#raise RuntimeError, "Not implemented yet!" --> Now implemented!
+			result = test_portaudio( audioio_env, conf )
+			if not result : return False
 		if audioio_env['audio_backend'] == 'rtaudio' :
 			if sys.platform == 'win32' :
 				audioio_env.Append( CPPFLAGS=['-D__WINDOWS_DS__'])

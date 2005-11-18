@@ -16,13 +16,12 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Controls', 'src/Flow/Networks/JACKNetworkPlayer*.*xx', 
-	'src/Flow/Networks/PANetworkPlayer*.*xx' , 'src/Processing/Base/NullProcessingConfig.hxx' ]
+	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Controls', 'src/Processing/Base/NullProcessingConfig.hxx' ]
 
 	if sys.platform == 'win32':
 		folders.append('src/Processing/InitProcessing*.*xx')
 
-	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+']
+	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+' ]
 
 	if not processing_env.has_key('with_osc_support') :
 		blacklist.append('OSCSender')
@@ -33,11 +32,6 @@ def define_module_contents() :
 		blacklist.append('.*numrecipes.+')
 		blacklist.append('.+numrec.+')
 	
-	if sys.platform == 'win32' :
-		blacklist.append('JACKNetworkPlayer.cxx')
-		if processing_env['audio_backend'] != 'portaudio' :
-			blacklist.append('PANetworkPlayer.cxx')
-
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
 
 	file_retriever.scan()
