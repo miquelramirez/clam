@@ -28,8 +28,8 @@ int _recursedir(
 		stradd(dir);
 		stradd("/");
 	}
-	stradd("*.*");
-	strend();
+	stadd("*.*");
+	str_end();
 	hFind = FindFirstFile(tmp, &fd);
 	if (hFind == INVALID_HANDLE_VALUE) return -1;
 	
@@ -44,7 +44,7 @@ int _recursedir(
 				stradd(dir);
 				stradd("/");
 				stradd(fd.cFileName);
-				strend();
+				str_end();
 				
 				if (d && d(tmp2,ptr)==1) {
 					FindClose(hFind);
@@ -69,7 +69,7 @@ int _recursedir(
 				stradd(dir);
 				stradd("/");
 				stradd(fd.cFileName);
-				strend();
+				str_end();
 				if (f(tmp2,ptr)) {
 					FindClose(hFind);
 					return 1;
@@ -125,7 +125,7 @@ int _recursedir(
 				stradd("/");
 			}
 			stradd(e->d_name);
-			strend();
+			str_end();
 			sd = opendir(tmp);
 			if (sd) {
 				int ret = 0;

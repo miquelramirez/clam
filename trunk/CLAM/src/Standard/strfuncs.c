@@ -34,7 +34,7 @@ char* stradd_range( const char* begin, const char* end )
 	return cur;
 }
 
-void strend(void)
+void str_end(void)
 {
 	*cur = 0;
 	cur = 0;
