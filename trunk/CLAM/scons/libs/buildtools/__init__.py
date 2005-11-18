@@ -1,4 +1,4 @@
-import os,string
+import os,string,sys
 
 def store_headers_in_db(  db ) :
 	for _,_,headerlist in os.walk( 'include/CLAM' ) :
@@ -10,9 +10,15 @@ def make_lib_names( source, target, env ) :
 	target_file = os.path.basename( str(target[0]) )
 	cwd = os.getcwd()
 	os.chdir( target_dir )
-	os.system( "ldconfig -n ." )
-	linkername = '.'.join(target_file.split('.')[0:2])
-	soname = '.'.join( target_file.split('.')[0:3])
+	if sys.platform == 'linux2' :
+		os.system( "ldconfig -n ." )
+		linkername = '.'.join(target_file.split('.')[0:2])
+		soname = '.'.join( target_file.split('.')[0:3])
+	else : #darwin
+		soname = target_file
+		pieces = soname.split('.')
+		linkername = pieces[0]+"."+pieces[-1]
+
 	os.system( "ln -sf %s %s"%(soname,linkername) )
 	os.system( "chmod 755 %s"%target_file )
 	os.system( "chmod 755 %s"%soname )
