@@ -862,17 +862,8 @@ void Annotator::auralizeMarks()
 void Annotator::playMarks(bool playThem)
 {
 	if(audioOriginal_Audio__LLDAction->isOn() && playThem) audioOriginal_Audio__LLDAction->setOn(false);
-	if(playThem)
-	{
-		mpAudioPlot->SetData(mCurrentMarkedAudio,false);
-	}
-	else
-	{
-		CLAM::Audio* silence = new CLAM::Audio();
-		silence->SetSize(mCurrentAudio.GetSize());
-		silence->SetSampleRate(mCurrentAudio.GetSampleRate());
-		mpAudioPlot->SetData(*silence,false);
-	}
+	CLAM::Audio* audio_to_play = (playThem) ? &mCurrentMarkedAudio : &mCurrentAudio;
+	mpAudioPlot->SetData(*audio_to_play,false);
 	for(unsigned i=0; i < mBPFEditors.size(); i++)
 	{
 		mBPFEditors[i]->SetAudioPtr(&mCurrentMarkedAudio);
