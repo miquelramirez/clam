@@ -14,7 +14,7 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	folders = ['src/Visualization/Base','src/Visualization/GL', 'src/Visualization/Plot', 'src/Visualization/Presentation/Base' ,'src/Visualization/Presentation/FLTK', 'src/Visualization/Util', 'src/Visualization/View', 'src/Visualization/Widget/FLTKWrapper.*xx', 'src/Visualization/Widget/FLTK' ]
+	folders = ['src/Visualization/Base','src/Visualization/GL', 'src/Visualization/Plot', 'src/Visualization/Presentation/Base', 'src/Visualization/Presentation/FLTK', 'src/Visualization/Util', 'src/Visualization/View', 'src/Visualization/Widget/FLTKWrapper.*xx', 'src/Visualization/Widget/FLTK', 'GUIAudioApplication.*xx']
 
 	blacklist = ['GLLogPowSpRenderer','GLLogSpRenderer','ProcessingController','Fl_Range','FDFilterController','TokenDelayController','HugeArrayRenderer']
 

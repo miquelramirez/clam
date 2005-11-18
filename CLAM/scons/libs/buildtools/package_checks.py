@@ -408,6 +408,20 @@ int main()
 
 package_checks['check_directx'] = ThoroughPackageCheck( 'directx', 'c++', None, directx_test_code )
 
+portaudio_test_code = """\
+#include <portaudio.h>
+
+int main()
+{
+	int version = Pa_GetVersion();
+
+	return 0;
+}
+
+"""
+
+package_checks['check_portaudio'] = ThoroughPackageCheck( 'portaudio', 'c', None, portaudio_test_code )
+
 portmidi_test_code = """\
 #include <portmidi.h>
 #include <stdlib.h>
@@ -440,4 +454,4 @@ int main()
 }
 """
 
-package_checks['check_jack'] = ThoroughPackageCheck( 'jack', 'c', 'jack', jack_test_code )
+package_checks['check_jack'] = ThoroughPackageCheck( 'jack', 'c', None, jack_test_code )

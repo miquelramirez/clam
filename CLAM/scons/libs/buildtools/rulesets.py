@@ -15,16 +15,15 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 		soname = 'libclam_'+name+'.so.%s'%version.split('.')[0]
 		linker_name = 'libclam_'+name+'.so'
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
-	else :
+		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.so.%s'%version )
+		soname_lib = env.SonameLink( soname, lib )   # lib***.X.dylib -> lib***.X.Y.dylib
+		linkername_lib = env.LinkerNameLink( linker_name, soname_lib)  # lib***.dylib -> lib***.X.dylib
+	else : #darwin
 		soname = 'libclam_'+name+'.%s.dylib'%version.split('.')[0]
 		linker_name = 'libclam_'+name+'.dylib'
 		env.Append(SHLINKFLAGS=['-Wl,-single_module,-install_name,%s'%soname ] )
-		
-
-	lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.so.%s'%version )
-
-	soname_lib = env.SonameLink( soname, lib )
-	linkername_lib = env.LinkerNameLink( linker_name, soname_lib)
+		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.%s.dylib'%version )
+		linkername_lib = env.LinkerNameLink( linker_name, lib)   # lib***.dylib -> lib***.X.Y.dylib
 
 	tgt = env.Alias( name, linkername_lib )
 
@@ -60,5 +59,3 @@ def win32_lib_rules( name, version, headers, source_files, install_dirs, env ) :
 	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
 	env.Alias('install-'+name, [install_headers,install_static,install_descriptor])
 	return tgt, install_static
-	
-	

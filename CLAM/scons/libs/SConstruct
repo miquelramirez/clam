@@ -216,7 +216,9 @@ if not clam_env.GetOption('clean') :
 		clam_env.Append( CPPFLAGS=['-DCLAM_USE_XML'] )
 
 processing_env = clam_env.Copy()
-if sys.platform == 'win32' or sys.platform == 'darwin':  #Added 'darwin' because due to some strange reasons, the LIBS added in the previous setup_core_environment were not used anymore (but CPPFLAGS did). In Linux it works fine without having to manually copy them
+if sys.platform == 'win32' or sys.platform == 'darwin' :
+	#Added 'darwin' because due to some strange reasons, the LIBS added in the previous setup_core_environment were not used anymore (but CPPFLAGS did).
+	# In Linux it works fine without having to manually copy them --> done before every module process in this file
 	processing_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 Export('processing_env')
 processing_env.Replace( QT_LIB = '' )
@@ -229,7 +231,7 @@ if not clam_env.GetOption('clean') :
 
 
 audioio_env = clam_env.Copy()
-if sys.platform == 'win32' :
+if sys.platform == 'win32' or sys.platform == 'darwin' :
 	audioio_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 	audioio_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
 	audioio_env.AppendUnique( LINKFLAGS=copy.copy(core_env['LINKFLAGS']) )
@@ -245,7 +247,7 @@ if not clam_env.GetOption('clean') :
 
 
 vmfl_env = clam_env.Copy()
-if sys.platform == 'win32' :
+if sys.platform == 'win32' or sys.platform == 'darwin' :
 	vmfl_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 	vmfl_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
 	vmfl_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
@@ -259,7 +261,7 @@ if not clam_env.GetOption('clean') :
 	vmfl_env = conf.Finish()
 
 vmqt_env = clam_env.Copy()
-if sys.platform == 'win32' :
+if sys.platform == 'win32' or sys.platform == 'darwin' :
 	vmqt_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 	vmqt_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
 	vmqt_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )

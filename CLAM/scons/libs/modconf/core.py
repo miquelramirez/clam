@@ -61,27 +61,6 @@ def test_ladspa ( core_env, conf ) :
 	core_env.Append( CPPFLAGS=['-DUSE_LADSPA=1'] )
 	return True
 
-def test_jack ( core_env, conf ) :
-	result = conf.CheckCHeader( 'jack/jack.h' )
-	if not result :
-		print "jack headers not found!"
-		print "Either install jack or disable jack support by issuing"
-		print "$scons with_jack_support=no"
-		return False
-	result = conf.CheckLib( library='jack', symbol='jack_cpu_load' )
-	if not result :
-		print "jack binaries not found!"
-		print "Either install jack or disable jack support by issuing"
-		print "$scons with_jack_support=no"
-		return False
-	result = conf.check_jack()
-	if not result :
-		print "jack compile/link/run test failed! check config.log for details..."
-		print "Either install jack or disable jack support by issuing"
-		print "$scons with_jack_support=no"
-		return False
-	core_env.Append(CPPFLAGS=['-DUSE_JACK=1'])
-	return True
 
 def test_oscpack ( core_env, conf ) :
 	result = conf.CheckCXXHeader( 'oscpack/ip/IpEndpointName.h' )
@@ -111,10 +90,9 @@ def setup_core_environment ( core_env, conf) :
 	if core_env.has_key('with_ladspa_support') and sys.platform == 'linux2':
 		if not test_ladspa ( core_env, conf): return False
 		
-	if core_env['with_jack_support'] and sys.platform != 'win32' :
-		if not test_jack (core_env, conf): return False
 	
 	if core_env.has_key('with_osc_support') and sys.platform != 'win32':
 		if not test_oscpack (core_env, conf): return False
+	
 
 	return True
