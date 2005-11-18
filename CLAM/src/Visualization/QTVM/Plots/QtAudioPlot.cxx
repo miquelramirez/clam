@@ -136,12 +136,14 @@ namespace CLAM
 			std::vector<const Audio*> data;
 			if(setTime)
 			{
+/*
 				Audio* silence = new Audio();
 				silence->SetSize(audio.GetSize());
 				silence->SetSampleRate(audio.GetSampleRate());
+*/
 				data.resize(2);
 				data[0]=&audio;
-				data[1]=silence;
+				data[1]=&audio;;
 			}
 			else
 			{
