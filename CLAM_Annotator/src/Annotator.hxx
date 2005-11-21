@@ -30,6 +30,13 @@ namespace CLAM {
 
 class Annotator : public AnnotatorBase
 {
+	/*  
+	 *	type to store bpf info from loaded LLDs.
+	 *  first:  yrange
+	 *  second: BPF
+	 */
+	typedef std::pair<std::pair<double,double>,CLAM::BPF> BPFInfo;
+
 	Q_OBJECT
 
 public:
@@ -142,6 +149,10 @@ private:
 	AudioLoadThread * mAudioLoaderThread;
 	CLAM_Annotator::DescriptorTableController mGlobalDescriptors;
 	CLAM_Annotator::DescriptorTableController mSegmentDescriptors;
+
+	std::vector<BPFInfo> mBPFs; // cached LLDs         
+	CLAM::VM::BPFEditor* mBPFEditor;
+	int                  mCurrentBPFIndex;
 };
 
 #endif
