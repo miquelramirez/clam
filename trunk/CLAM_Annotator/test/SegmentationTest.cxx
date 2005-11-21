@@ -22,6 +22,8 @@ public:
 		CAS_DE_TEST( testPickEndBound_withNonMatchingValue );
 		CAS_DE_TEST( testPickEndBound_withinTolerance );
 		CAS_DE_TEST( testPickEndBound_withSeveralPointsWithinTolerance );
+		CAS_DE_TEST( testPickEndBound_outsideTheRange );
+		CAS_DE_TEST( testPickSegmentBody );
 	}
 	void testBoundAsString_asConstructed()
 	{
@@ -105,6 +107,26 @@ public:
 
 		unsigned position= segmentation.pickEndBound(101,20);
 		ASSERT_IGUALS(1u, position);
+	}
+	void testPickEndBound_outsideTheRange()
+	{
+		Segmentation segmentation(200.0);
+		segmentation.insert(90);
+		segmentation.insert(100);
+		segmentation.insert(110);
+
+		unsigned position= segmentation.pickEndBound(221,20);
+		ASSERT_IGUALS(4u, position);
+	}
+	void testPickSegmentBody()
+	{
+		Segmentation segmentation(200.0);
+		segmentation.insert(90);
+		segmentation.insert(100);
+		segmentation.insert(110);
+
+		unsigned position= segmentation.pickSegmentBody(102);
+		ASSERT_IGUALS(2u, position);
 	}
 };
 
