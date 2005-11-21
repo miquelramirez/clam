@@ -157,13 +157,14 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mLLDChanged(false)
 	, mSegmentsChanged(false)
 	, mMustUpdateMarkedAudio(false)
-	, mBPFEditors(0)
 	, mpTabLayout(0)
 	, mpAudioPlot(0)
 	, mAudioRefreshTimer(new QTimer(this))
 	, mAudioLoaderThread(0)
 	, mGlobalDescriptors(mDescriptorsTable, mProject)
 	, mSegmentDescriptors(mSegmentDescriptorsTable, mProject)
+	, mBPFEditor(0)
+	, mCurrentBPFIndex(-1)
 {
 	initAudioWidget();
 	initInterface();
@@ -304,6 +305,15 @@ void Annotator::updateSegmentations()
 
 void Annotator::adaptEnvelopesToCurrentSchema()
 {
+	if(mBPFEditor)
+	{
+		delete mBPFEditor;
+		mBPFEditor=0;
+	}
+	mBPFEditor = new CLAM::VM::BPFEditor(CLAM::VM::AllowVerticalEdition|CLAM::VM::HasVerticalScroll|CLAM::VM::HasPlayer);
+	mBPFEditor->SetActivePlayer(false);
+	mBPFEditor->Hide();
+	
 	tabWidget2->hide();
 
 	tabWidget2->insertTab(new QWidget(tabWidget2, "Dummy"), tr("No Low Level Descriptors"), 0);
@@ -312,20 +322,13 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 
 	const std::list<std::string>& names = mProject.GetNamesByScopeAndType("Frame", "Float");
 	const unsigned nTabs = names.size();
-
-	const int eFlags = CLAM::VM::AllowVerticalEdition | CLAM::VM::HasVerticalScroll | CLAM::VM::HasPlayer;
 	mTabPages.resize(nTabs);
-	mBPFEditors.resize(nTabs);
 	std::list<std::string>::const_iterator name = names.begin();
 	for (unsigned i = 0; i<nTabs; name++, i++)
 	{
 		mTabPages[i] = new QWidget( tabWidget2, "Dummy");
 		tabWidget2->insertTab( mTabPages[i], name->c_str() );
 		QVBoxLayout* tabLayout = new QVBoxLayout( mTabPages[i]);
-		mBPFEditors[i] = new CLAM::VM::BPFEditor(eFlags, mTabPages[i]);
-		mBPFEditors[i]->SetActivePlayer(false);
-		mBPFEditors[i]->Hide();
-		tabLayout->addWidget(mBPFEditors[i]);
 	}
 	if (nTabs)
 		delete tabWidget2->page(0);
@@ -353,40 +356,35 @@ void Annotator::makeConnections()
 
 void Annotator::connectBPFs()
 {
-	std::vector<CLAM::VM::BPFEditor*>::iterator it;
-	for(it = mBPFEditors.begin(); it != mBPFEditors.end(); it++)
-	{
-		CLAM::VM::BPFEditor* bpfEditor = *it;
-		connect( bpfEditor, SIGNAL(yValueChanged(int, float)),
-			this, SLOT(frameDescriptorsChanged(int, float)));
+	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
+			 this, SLOT(frameDescriptorsChanged(int, float)));
 
-		connect( bpfEditor, SIGNAL(selectedXPos(double)),
-			mpAudioPlot, SLOT(setSelectedXPos(double)));
+	connect( mBPFEditor, SIGNAL(selectedXPos(double)),
+			 mpAudioPlot, SLOT(setSelectedXPos(double)));
 
-		connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
-			bpfEditor, SLOT(setHBounds(double,double)));
+	connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
+			mBPFEditor, SLOT(setHBounds(double,double)));
 
-		connect(mpAudioPlot, SIGNAL(selectedXPos(double)),
-			bpfEditor, SLOT(selectPointFromXCoord(double)));
+	connect(mpAudioPlot, SIGNAL(selectedXPos(double)),
+			mBPFEditor, SLOT(selectPointFromXCoord(double)));
 
-		connect(mpAudioPlot, SIGNAL(switchColorsRequested()),
-			bpfEditor, SLOT(switchColors()));
+	connect(mpAudioPlot, SIGNAL(switchColorsRequested()),
+			mBPFEditor, SLOT(switchColors()));
 
-		connect(mpAudioPlot, SIGNAL(regionTime(float,float)),
-			bpfEditor, SLOT(setRegionTime(float,float)));
+	connect(mpAudioPlot, SIGNAL(regionTime(float,float)),
+			mBPFEditor, SLOT(setRegionTime(float,float)));
 
-		connect(mpAudioPlot, SIGNAL(currentPlayingTime(float)),
-			bpfEditor, SLOT(setCurrentPlayingTime(float)));
+	connect(mpAudioPlot, SIGNAL(currentPlayingTime(float)),
+			mBPFEditor, SLOT(setCurrentPlayingTime(float)));
 
-		connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
-			bpfEditor, SLOT(receivedStopPlaying(float)));
+	connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
+			mBPFEditor, SLOT(receivedStopPlaying(float)));
 
-		connect(bpfEditor, SIGNAL(currentPlayingTime(float)),
+	connect(mBPFEditor, SIGNAL(currentPlayingTime(float)),
 			mpAudioPlot, SLOT(setCurrentPlayingTime(float)));
 
-		connect(bpfEditor, SIGNAL(stopPlaying(float)),
-			mpAudioPlot, SLOT(receivedStopPlaying(float)));
-	}
+	connect( mBPFEditor, SIGNAL(stopPlaying(float)),
+			 mpAudioPlot, SLOT(receivedStopPlaying(float)));
 }
 
 void Annotator::markCurrentSongChanged()
@@ -412,6 +410,8 @@ void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
 	/*TODO: right now, no matter how many points have been edited all descriptors are updated. This
 	  is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
 	  in the class.*/
+	int index = tabWidget2->currentPageIndex();
+	mBPFs[index].second.SetValue(pointIndex,TData(newValue));
 	mLLDChanged = true;
 }
 
@@ -442,11 +442,7 @@ void Annotator::updateSongListWidget()
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
 {
-	std::vector<CLAM::VM::BPFEditor*>::iterator it = mBPFEditors.begin();
-	for(; it != mBPFEditors.end(); it++)
-	{
-		(*it)->stopPendingTasks();
-	}
+	mBPFEditor->stopPendingTasks();
 
 	if(mLLDChanged||mHLDChanged||mSegmentsChanged)
 	{
@@ -643,24 +639,22 @@ void Annotator::refreshEnvelopes()
 
 	std::list<std::string>::const_iterator it;
 	const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType("Frame", "Float");
-	unsigned int i = 0;
 
-	for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++, i++)
+	mBPFs.clear();
+	mBPFEditor->SetAudioPtr(&mCurrentAudio);
+	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
+	mCurrentBPFIndex = -1;
+	tabWidget2->setCurrentPage(0);
+
+	for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++/*, i++*/)
 	{
-		CLAM::VM::BPFEditor & bpfEditor = *mBPFEditors[i];
 		CLAM::BPF transcribed;
 		refreshEnvelope(transcribed, *it);
-		bpfEditor.SetData( transcribed );
-		bpfEditor.SetAudioPtr(&mCurrentAudio);
 		std::pair<TData, TData> minmaxy = GetMinMaxY(transcribed);
-		TData min_y = minmaxy.first;
-		TData max_y = minmaxy.second;
-		bpfEditor.SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
-		bool scale_log = (fabs(min_y) > 9999.99 || fabs(max_y) > 9999.99 || max_y-min_y < TData(5E-2));
-		CLAM::EScale scale = (scale_log) ? CLAM::EScale::eLog : CLAM::EScale::eLinear;
-		bpfEditor.SetYRange(min_y,max_y,scale);
-		bpfEditor.Geometry(0,0,tabWidget2->page(i)->width(),tabWidget2->page(i)->height());
-		bpfEditor.Show();
+		BPFInfo bpf_info;
+		bpf_info.first=minmaxy;
+		bpf_info.second=transcribed;
+		mBPFs.push_back(bpf_info);
 	}
 }
 
@@ -715,7 +709,7 @@ void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& descriptorNa
 void Annotator::updateEnvelopesData()
 {
 	mLLDChanged = false;
-	unsigned i=0, editors_size = mBPFEditors.size();
+	unsigned i=0, editors_size = mBPFs.size();
 	std::list<std::string>::const_iterator it;
 	const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType("Frame", "Float");
 
@@ -727,10 +721,10 @@ void Annotator::updateEnvelopesData()
 
 void Annotator::updateEnvelopeData(int bpfIndex, float* descriptor)
 {
-	int nPoints = mBPFEditors[bpfIndex]->GetData().Size();
+	int nPoints = mBPFs[bpfIndex].second.Size();
 	for (int i=0; i<nPoints; i++)
 	{
-		descriptor[i] = mBPFEditors[bpfIndex]->GetData().GetValueFromIndex(i);
+		descriptor[i] = mBPFs[bpfIndex].second.GetValueFromIndex(i);
 	}
 }
 
@@ -864,27 +858,20 @@ void Annotator::playMarks(bool playThem)
 	if(audioOriginal_Audio__LLDAction->isOn() && playThem) audioOriginal_Audio__LLDAction->setOn(false);
 	CLAM::Audio* audio_to_play = (playThem) ? &mCurrentMarkedAudio : &mCurrentAudio;
 	mpAudioPlot->SetData(*audio_to_play,false);
-	for(unsigned i=0; i < mBPFEditors.size(); i++)
-	{
-		mBPFEditors[i]->SetAudioPtr(&mCurrentMarkedAudio);
-		mBPFEditors[i]->playSimultaneously(playThem);
-	}
+	mBPFEditor->SetAudioPtr(&mCurrentMarkedAudio);
+	mBPFEditor->playSimultaneously(playThem);
 }
 
 void Annotator::playOriginalAudioAndLLD(bool both)
 {
 	if(audioAuralize_Segmentation_MarksAction->isOn() && both) audioAuralize_Segmentation_MarksAction->setOn(false);
-	for(unsigned i=0; i < mBPFEditors.size(); i++)
-	{
-		mBPFEditors[i]->SetAudioPtr(&mCurrentAudio);
-		mBPFEditors[i]->playSimultaneously(both);
-	}
+	mBPFEditor->SetAudioPtr(&mCurrentAudio);
+	mBPFEditor->playSimultaneously(both);
 }
 
 void Annotator::hideBPFEditors()
 {
-	for(unsigned i=0; i < mBPFEditors.size(); i++)
-		mBPFEditors[i]->Hide();
+	mBPFEditor->Hide();
 }
 
 void Annotator::setMenuAudioItemsEnabled(bool enabled)
@@ -916,17 +903,36 @@ void Annotator::onStopPlaying(float time)
 
 bool Annotator::isPlaying()
 {
-	if(mpAudioPlot->IsPlaying()) return true;
-	bool playing = false;
-	for(unsigned i=0; i < mBPFEditors.size(); i++)
+	return (mpAudioPlot->IsPlaying() || mBPFEditor->IsPlaying());
+}
+
+void Annotator::onSelectPageLLD(QWidget* w)
+{
+	int index = tabWidget2->currentPageIndex();
+	if(!mBPFs.size() || index > (int)mBPFs.size()-1 || index == mCurrentBPFIndex) return;
+	mCurrentBPFIndex = index;
+	removeFromCurrentLayout();
+	double min_y = mBPFs[index].first.first;
+	double max_y = mBPFs[index].first.second;
+	mBPFEditor->reparent(w,QPoint(0,0));
+	mBPFEditor->SetData(mBPFs[index].second);
+	bool scale_log = (fabs(min_y) > 9999.99 || fabs(max_y) > 9999.99 || max_y-min_y < TData(5E-2));
+	CLAM::EScale scale = (scale_log) ? CLAM::EScale::eLog : CLAM::EScale::eLinear;
+	mBPFEditor->SetYRange(min_y,max_y,scale);
+	w->layout()->add(mBPFEditor);
+	mBPFEditor->Show();
+}
+
+void Annotator::removeFromCurrentLayout()
+{
+	for(unsigned i=0; i < mTabPages.size(); i++)
 	{
-		if(mBPFEditors[i]->IsPlaying())
+		if(!mTabPages[i]->layout()->isEmpty()) 
 		{
-			playing = true;
+			mTabPages[i]->layout()->remove(mBPFEditor);
 			break;
 		}
 	}
-	return playing;
 }
 
 

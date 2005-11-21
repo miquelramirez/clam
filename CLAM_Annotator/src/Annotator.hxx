@@ -75,6 +75,7 @@ protected:
 
 private slots:
 	void onStopPlaying(float);
+	void onSelectPageLLD(QWidget*);
 
 private:
 	void updateSongListWidget();
@@ -120,6 +121,7 @@ private:
 	void abortLoader(); ///< Clears the loader 
 
 	bool isPlaying();
+	void removeFromCurrentLayout();
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
@@ -141,7 +143,6 @@ private:
 	bool mSegmentsChanged;
 	bool mMustUpdateMarkedAudio;
 
-	std::vector<CLAM::VM::BPFEditor*> mBPFEditors;
 	QVBoxLayout* mpTabLayout;
 	std::vector<QWidget*> mTabPages;
 	CLAM::VM::QtAudioPlot* mpAudioPlot;
