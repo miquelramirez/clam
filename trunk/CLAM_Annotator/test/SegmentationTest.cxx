@@ -14,15 +14,16 @@ class SegmentationTest : public GrupDeTests<SegmentationTest>
 public:
 	GRUP_DE_TESTS( SegmentationTest )
 	{
-		CAS_DE_TEST( testBoundAsString_withDefaultConstructed );
+		CAS_DE_TEST( testBoundAsString_asConstructed );
 		CAS_DE_TEST( testBoundAsString_insertingAPoint );
 		CAS_DE_TEST( testBoundAsString_insertingAPointBeyondLimit );
 		CAS_DE_TEST( testBoundAsString_insertingAPointBehindLimit );
 		CAS_DE_TEST( testPickEndBound_withExactValue );
 		CAS_DE_TEST( testPickEndBound_withNonMatchingValue );
-//		CAS_DE_TEST( testPickEndBound_withinTolerance );
+		CAS_DE_TEST( testPickEndBound_withinTolerance );
+		CAS_DE_TEST( testPickEndBound_withSeveralPointsWithinTolerance );
 	}
-	void testBoundAsString_withDefaultConstructed()
+	void testBoundAsString_asConstructed()
 	{
 		Segmentation segmentation(200.0);
 
@@ -83,6 +84,26 @@ public:
 		segmentation.insert(150);
 
 		unsigned position= segmentation.pickEndBound(125,0.5);
+		ASSERT_IGUALS(4u, position);
+	}
+	void testPickEndBound_withinTolerance()
+	{
+		Segmentation segmentation(200.0);
+		segmentation.insert(50);
+		segmentation.insert(100);
+		segmentation.insert(150);
+
+		unsigned position= segmentation.pickEndBound(100.2,0.5);
+		ASSERT_IGUALS(1u, position);
+	}
+	void testPickEndBound_withSeveralPointsWithinTolerance()
+	{
+		Segmentation segmentation(200.0);
+		segmentation.insert(90);
+		segmentation.insert(100);
+		segmentation.insert(110);
+
+		unsigned position= segmentation.pickEndBound(101,20);
 		ASSERT_IGUALS(1u, position);
 	}
 };

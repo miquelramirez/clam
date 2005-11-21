@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <cmath>
 
 namespace CLAM_Annotator
 {
@@ -33,7 +34,7 @@ namespace CLAM_Annotator
 				std::lower_bound(_endBounds.begin(), _endBounds.end(), timePosition);
 			if (insertPoint == _endBounds.end()) throw InsertedOutOfBounds();
 			// 'position' must be computed before the insertion to not invalidate iterators.
-			int position = insertPoint - _endBounds.begin();
+			int position = insertPoint - _endBounds.begin() +1;
 			_endBounds.insert(insertPoint, timePosition);
 			return position;
 		}
@@ -45,10 +46,24 @@ namespace CLAM_Annotator
 		 */
 		unsigned pickEndBound(double timePosition, double tolerance) const
 		{
-			Bounds::const_iterator insertPoint = 
+			Bounds::const_iterator lowerBound = 
 				std::lower_bound(_endBounds.begin(), _endBounds.end(), timePosition-tolerance);
-			unsigned segment = insertPoint - _endBounds.begin();
-			return segment;
+			Bounds::const_iterator upperBound = 
+				std::upper_bound(lowerBound, _endBounds.end(), timePosition+tolerance);
+
+			if (lowerBound==upperBound) return _endBounds.size();
+
+			unsigned lowerSegment = lowerBound - _endBounds.begin();
+			unsigned upperSegment = upperBound - _endBounds.begin();
+			double lastDifference = std::fabs(timePosition-_endBounds[lowerSegment]);
+			for (unsigned i=lowerSegment; i<upperSegment; i++)
+			{
+				double newDifference = std::fabs(timePosition-_endBounds[i]);
+				if (newDifference>lastDifference) continue;
+				lastDifference = newDifference;
+				lowerSegment = i;
+			}
+			return lowerSegment;
 		}
 		std::string boundsAsString() const
 		{
