@@ -21,6 +21,7 @@ namespace CLAM_Annotator
 		Segmentation(double maxLength)
 			: _maxLength(maxLength)
 		{
+			_selection.push_back(false);
 			_endBounds.push_back(maxLength);
 
 		}
@@ -36,6 +37,7 @@ namespace CLAM_Annotator
 			// 'position' must be computed before the insertion to not invalidate iterators.
 			int position = insertPoint - _endBounds.begin() +1;
 			_endBounds.insert(insertPoint, timePosition);
+			_selection.insert(_selection.begin()+position, false);
 			return position;
 		}
 		/**
@@ -51,8 +53,9 @@ namespace CLAM_Annotator
 			Bounds::const_iterator upperBound = 
 				std::upper_bound(lowerBound, _endBounds.end(), timePosition+tolerance);
 
-			if (lowerBound==upperBound) return _endBounds.size();
-
+			if (lowerBound==upperBound) return _endBounds.size(); // None found
+	
+			// Pick the closest in range
 			unsigned lowerSegment = lowerBound - _endBounds.begin();
 			unsigned upperSegment = upperBound - _endBounds.begin();
 			double lastDifference = std::fabs(timePosition-_endBounds[lowerSegment]);
@@ -65,11 +68,42 @@ namespace CLAM_Annotator
 			}
 			return lowerSegment;
 		}
-		unsigned pickSegmentBody(double timePosition)
+		/**
+		 * Returns the index of the segment which body is on timePosition.
+		 */
+		unsigned pickSegmentBody(double timePosition) const
 		{
+			if (timePosition<0) return _endBounds.size();
 			Bounds::const_iterator lowerBound =
 				std::lower_bound(_endBounds.begin(), _endBounds.end(), timePosition);
 			return lowerBound - _endBounds.begin();
+		}
+		void dragEndBound(unsigned segment, double newTimePosition)
+		{
+			if (segment==_endBounds.size()) return;
+			if (newTimePosition>_endBounds[segment+1])
+				newTimePosition = _endBounds[segment+1];
+			double leftBound;
+			if (segment==0) leftBound = 0;
+			else leftBound = _endBounds[segment-1];
+			if (newTimePosition<leftBound)
+				newTimePosition = leftBound;
+			_endBounds[segment]=newTimePosition;
+		}
+		void removeEndBound(unsigned segment)
+		{
+			if (segment==_endBounds.size()-1) return;
+			_endBounds.erase(_endBounds.begin()+segment);
+			_selection.erase(_selection.begin()+segment);
+		}
+		void select(unsigned segment)
+		{
+			_selection[segment]=true;
+		}
+		void clearSelection()
+		{
+			for (unsigned i=0; i<_selection.size(); i++)
+				_selection[i]=false;
 		}
 		std::string boundsAsString() const
 		{
@@ -77,6 +111,7 @@ namespace CLAM_Annotator
 			double lastOffset = 0;
 			for (unsigned i=0; i<_endBounds.size(); i++)
 			{
+				if (_selection[i]) os << "+";
 				os << "(" << lastOffset << "," << _endBounds[i] << ") ";
 				lastOffset = _endBounds[i];
 			}
@@ -85,6 +120,7 @@ namespace CLAM_Annotator
 	private:
 		Bounds _endBounds;
 		double _maxLength;
+		std::vector<bool> _selection;
 	};
 
 }
