@@ -59,11 +59,17 @@ namespace CLAM_Annotator
 			for (unsigned i=lowerSegment; i<upperSegment; i++)
 			{
 				double newDifference = std::fabs(timePosition-_endBounds[i]);
-				if (newDifference>lastDifference) continue;
+				if (newDifference>lastDifference) break;
 				lastDifference = newDifference;
 				lowerSegment = i;
 			}
 			return lowerSegment;
+		}
+		unsigned pickSegmentBody(double timePosition)
+		{
+			Bounds::const_iterator lowerBound =
+				std::lower_bound(_endBounds.begin(), _endBounds.end(), timePosition);
+			return lowerBound - _endBounds.begin();
 		}
 		std::string boundsAsString() const
 		{
