@@ -4,8 +4,8 @@
 
 #include <qthread.h>
 #include <vector>
-#include <CLAM/Audio.hxx>
-#include <CLAM/AudioFile.hxx>
+#include "Audio.hxx"
+#include "AudioFile.hxx"
 
 class AudioLoadThread : public QThread
 {	

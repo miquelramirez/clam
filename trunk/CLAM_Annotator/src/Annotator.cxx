@@ -15,16 +15,16 @@
 //xamat
 #include <time.h>
 
-#include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
-#include <CLAM/MultiChannelAudioFileReader.hxx>
+#include "MultiChannelAudioFileReaderConfig.hxx"
+#include "MultiChannelAudioFileReader.hxx"
 
-#include <CLAM/AudioFile.hxx>
-#include <CLAM/IndexArray.hxx>
-#include <CLAM/Text.hxx>
-#include <CLAM/XMLStorage.hxx>
+#include "AudioFile.hxx"
+#include "IndexArray.hxx"
+#include "Text.hxx"
+#include "XMLStorage.hxx"
 
-#include <CLAM/BPFEditor.hxx>
-#include <CLAM/QtAudioPlot.hxx>
+#include "BPFEditor.hxx"
+#include "QtAudioPlot.hxx"
 
 #include "AudioLoadThread.hxx"
 
