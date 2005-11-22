@@ -19,10 +19,10 @@ namespace CLAM_Annotator
 		typedef std::vector<double> Bounds;
 	public:
 		Segmentation(double maxLength)
-			: _maxLength(maxLength)
 		{
-			_selection.push_back(false);
+			_beginBounds.push_back(0);
 			_endBounds.push_back(maxLength);
+			_selection.push_back(false);
 
 		}
 		/**
@@ -37,8 +37,24 @@ namespace CLAM_Annotator
 			// 'position' must be computed before the insertion to not invalidate iterators.
 			int position = insertPoint - _endBounds.begin() +1;
 			_endBounds.insert(insertPoint, timePosition);
+			_beginBounds.insert(_beginBounds.begin()+position, _endBounds[position-1]);
 			_selection.insert(_selection.begin()+position, false);
 			return position;
+		}
+		/**
+		 * Removes the specified segment.
+		 * The previous segment is expanded to cover the region.
+		 * When removing the first segment, the next segment is the one expanded to start at 0.
+		 * When just a single element, no efect at all.
+		 */
+		void remove(unsigned segment)
+		{
+			if (_endBounds.size()==1) return;
+			unsigned endBoundToRemove = segment? segment-1 : 0;
+			_endBounds.erase(_endBounds.begin()+endBoundToRemove);
+			_beginBounds.erase(_beginBounds.begin()+segment);
+			_selection.erase(_selection.begin()+segment);
+			if (segment==0) _beginBounds[0]=0;
 		}
 		/**
 		 * Returns the index of the segment which is nearest to the
@@ -81,24 +97,29 @@ namespace CLAM_Annotator
 		void dragEndBound(unsigned segment, double newTimePosition)
 		{
 			if (segment==_endBounds.size()) return;
-			if (newTimePosition>_endBounds[segment+1])
-				newTimePosition = _endBounds[segment+1];
-			double leftBound;
-			if (segment==0) leftBound = 0;
-			else leftBound = _endBounds[segment-1];
+			if (segment+1==_endBounds.size()) return;
+
+			double leftBound = _beginBounds[segment];
 			if (newTimePosition<leftBound)
 				newTimePosition = leftBound;
+			if (newTimePosition>_endBounds[segment+1])
+				newTimePosition = _endBounds[segment+1];
+
 			_endBounds[segment]=newTimePosition;
+			_beginBounds[segment+1]=newTimePosition;
 		}
-		void removeEndBound(unsigned segment)
+		void dragBeginBound(unsigned segment, double newTimePosition)
 		{
-			if (segment==_endBounds.size()-1) return;
-			_endBounds.erase(_endBounds.begin()+segment);
-			_selection.erase(_selection.begin()+segment);
+			if (segment==0) return;
+			dragEndBound(segment-1, newTimePosition);
 		}
 		void select(unsigned segment)
 		{
 			_selection[segment]=true;
+		}
+		void deselect(unsigned segment)
+		{
+			_selection[segment]=false;
 		}
 		void clearSelection()
 		{
@@ -108,18 +129,16 @@ namespace CLAM_Annotator
 		std::string boundsAsString() const
 		{
 			std::ostringstream os;
-			double lastOffset = 0;
 			for (unsigned i=0; i<_endBounds.size(); i++)
 			{
 				if (_selection[i]) os << "+";
-				os << "(" << lastOffset << "," << _endBounds[i] << ") ";
-				lastOffset = _endBounds[i];
+				os << "(" << _beginBounds[i] << "," << _endBounds[i] << ") ";
 			}
 			return os.str();
 		}
 	private:
 		Bounds _endBounds;
-		double _maxLength;
+		Bounds _beginBounds;
 		std::vector<bool> _selection;
 	};
 
