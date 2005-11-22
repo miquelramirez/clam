@@ -68,6 +68,6 @@ bin_main_object = annotator_env.Object('../src/main.cxx')
 bin_objects = [ annotator_env.Object(source) for source in sourcefiles ]
 
 annotator_env.Append(CPPPATH=source_dirs)
-annotator_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+annotator_env.Append(CCFLAGS='-include CLAM/preinclude.hxx -DQT_THREAD_SUPPORT')
 
 annotator_bin = annotator_env.Program( 'Annotator', bin_main_object + bin_objects, LINKFLAGS=['-rdynamic'] )
