@@ -19,11 +19,16 @@ public:
 		CAS_DE_TEST( testInsert_inTheMiddle );
 		CAS_DE_TEST( testInsert_beyondLimit );
 		CAS_DE_TEST( testInsert_behindLimit );
-		CAS_DE_TEST( testPickEndBound_withExactValue );
-		CAS_DE_TEST( testPickEndBound_withNonMatchingValue );
-		CAS_DE_TEST( testPickEndBound_withinTolerance );
-		CAS_DE_TEST( testPickEndBound_withSeveralPointsWithinTolerance );
-		CAS_DE_TEST( testPickEndBound_outsideTheRange );
+		CAS_DE_TEST( testPickOffset_withExactValue );
+		CAS_DE_TEST( testPickOffset_withNonMatchingValue );
+		CAS_DE_TEST( testPickOffset_withinTolerance );
+		CAS_DE_TEST( testPickOffset_withSeveralPointsWithinTolerance );
+		CAS_DE_TEST( testPickOffset_outsideTheRange );
+		CAS_DE_TEST( testPickOnset_withExactValue );
+		CAS_DE_TEST( testPickOnset_withNonMatchingValue );
+		CAS_DE_TEST( testPickOnset_withinTolerance );
+		CAS_DE_TEST( testPickOnset_withSeveralPointsWithinTolerance );
+		CAS_DE_TEST( testPickOnset_outsideTheRange );
 		CAS_DE_TEST( testPickSegmentBody );
 		CAS_DE_TEST( testPickSegmentBody_behindRange );
 		CAS_DE_TEST( testPickSegmentBody_afterRange );
@@ -34,18 +39,18 @@ public:
 		CAS_DE_TEST( testDeselection );
 		CAS_DE_TEST( testInsert_movesSelection );
 		CAS_DE_TEST( testClearSelection );
-		CAS_DE_TEST( testDragEndBound );
-		CAS_DE_TEST( testDragEndBound_beyondNextBound );
-		CAS_DE_TEST( testDragEndBound_beyondPreviousBound );
-		CAS_DE_TEST( testDragEndBound_ofLastBoundHasNoEffect );
-		CAS_DE_TEST( testDragEndBound_ofPreLastSegment );
-		CAS_DE_TEST( testDragEndBound_ofFirstBoundLimitIsZero );
-		CAS_DE_TEST( testDragBeginBound );
-		CAS_DE_TEST( testDragBeginBound_beyondNextBound );
-		CAS_DE_TEST( testDragBeginBound_beyondPreviousBound );
-		CAS_DE_TEST( testDragBeginBound_ofFirstBoundHasNoEffect );
-		CAS_DE_TEST( testDragBeginBound_ofLastSegment );
-		CAS_DE_TEST( testDragBeginBound_ofLastBoundLimitIsLength );
+		CAS_DE_TEST( testDragOffset );
+		CAS_DE_TEST( testDragOffset_beyondNextBound );
+		CAS_DE_TEST( testDragOffset_beyondPreviousBound );
+		CAS_DE_TEST( testDragOffset_ofLastBoundHasNoEffect );
+		CAS_DE_TEST( testDragOffset_ofPreLastSegment );
+		CAS_DE_TEST( testDragOffset_ofFirstBoundLimitIsZero );
+		CAS_DE_TEST( testDragOnset );
+		CAS_DE_TEST( testDragOnset_beyondNextBound );
+		CAS_DE_TEST( testDragOnset_beyondPreviousBound );
+		CAS_DE_TEST( testDragOnset_ofFirstBoundHasNoEffect );
+		CAS_DE_TEST( testDragOnset_ofLastSegment );
+		CAS_DE_TEST( testDragOnset_ofLastBoundLimitIsLength );
 		CAS_DE_TEST( testRemove );
 		CAS_DE_TEST( testRemove_movesSelection );
 		CAS_DE_TEST( testRemove_removesRemovedSelection );
@@ -106,54 +111,104 @@ public:
 
 		ASSERT_IGUALS("(0,200) ", segmentation.boundsAsString());
 	}
-	void testPickEndBound_withExactValue()
+	void testPickOffset_withExactValue()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(50);
 		segmentation.insert(100);
 		segmentation.insert(150);
 
-		unsigned position= segmentation.pickEndBound(100,0.5);
+		unsigned position= segmentation.pickOffset(100,0.5);
 		ASSERT_IGUALS(1u, position);
 	}
-	void testPickEndBound_withNonMatchingValue()
+	void testPickOffset_withNonMatchingValue()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(50);
 		segmentation.insert(100);
 		segmentation.insert(150);
 
-		unsigned position= segmentation.pickEndBound(125,0.5);
+		unsigned position= segmentation.pickOffset(125,0.5);
 		ASSERT_IGUALS(4u, position);
 	}
-	void testPickEndBound_withinTolerance()
+	void testPickOffset_withinTolerance()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(50);
 		segmentation.insert(100);
 		segmentation.insert(150);
 
-		unsigned position= segmentation.pickEndBound(100.2,0.5);
+		unsigned position= segmentation.pickOffset(100.2,0.5);
 		ASSERT_IGUALS(1u, position);
 	}
-	void testPickEndBound_withSeveralPointsWithinTolerance()
+	void testPickOffset_withSeveralPointsWithinTolerance()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		unsigned position= segmentation.pickEndBound(101,20);
+		unsigned position= segmentation.pickOffset(101,20);
 		ASSERT_IGUALS(1u, position);
 	}
-	void testPickEndBound_outsideTheRange()
+	void testPickOffset_outsideTheRange()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		unsigned position= segmentation.pickEndBound(221,20);
+		unsigned position= segmentation.pickOffset(221,20);
+		ASSERT_IGUALS(4u, position);
+	}
+	void testPickOnset_withExactValue()
+	{
+		Segmentation segmentation(200.0);
+		segmentation.insert(50);
+		segmentation.insert(100);
+		segmentation.insert(150);
+
+		unsigned position= segmentation.pickOnset(100,0.5);
+		ASSERT_IGUALS(2u, position);
+	}
+	void testPickOnset_withNonMatchingValue()
+	{
+		Segmentation segmentation(200.0);
+		segmentation.insert(50);
+		segmentation.insert(100);
+		segmentation.insert(150);
+
+		unsigned position= segmentation.pickOnset(125,0.5);
+		ASSERT_IGUALS(4u, position);
+	}
+	void testPickOnset_withinTolerance()
+	{
+		Segmentation segmentation(200.0);
+		segmentation.insert(50);
+		segmentation.insert(100);
+		segmentation.insert(150);
+
+		unsigned position= segmentation.pickOnset(100.2,0.5);
+		ASSERT_IGUALS(2u, position);
+	}
+	void testPickOnset_withSeveralPointsWithinTolerance()
+	{
+		Segmentation segmentation(200.0);
+		segmentation.insert(90);
+		segmentation.insert(100);
+		segmentation.insert(110);
+
+		unsigned position= segmentation.pickOnset(101,20);
+		ASSERT_IGUALS(2u, position);
+	}
+	void testPickOnset_outsideTheRange()
+	{
+		Segmentation segmentation(200.0);
+		segmentation.insert(90);
+		segmentation.insert(100);
+		segmentation.insert(110);
+
+		unsigned position= segmentation.pickOnset(221,20);
 		ASSERT_IGUALS(4u, position);
 	}
 	void testPickSegmentBody()
@@ -272,135 +327,135 @@ public:
 
 		ASSERT_IGUALS("(0,90) (90,100) (100,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragEndBound()
+	void testDragOffset()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragEndBound(1,105);
+		segmentation.dragOffset(1,105);
 
 		ASSERT_IGUALS("(0,90) (90,105) (105,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragEndBound_beyondNextBound()
+	void testDragOffset_beyondNextBound()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragEndBound(1,115);
+		segmentation.dragOffset(1,115);
 
 		ASSERT_IGUALS("(0,90) (90,110) (110,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragEndBound_beyondPreviousBound()
+	void testDragOffset_beyondPreviousBound()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragEndBound(1,85);
+		segmentation.dragOffset(1,85);
 
 		ASSERT_IGUALS("(0,90) (90,90) (90,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragEndBound_ofLastBoundHasNoEffect()
+	void testDragOffset_ofLastBoundHasNoEffect()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragEndBound(4,190);
+		segmentation.dragOffset(4,190);
 
 		ASSERT_IGUALS("(0,90) (90,100) (100,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragEndBound_ofPreLastSegment()
+	void testDragOffset_ofPreLastSegment()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragEndBound(3,114);
+		segmentation.dragOffset(3,114);
 
 		ASSERT_IGUALS("(0,90) (90,100) (100,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragEndBound_ofFirstBoundLimitIsZero()
+	void testDragOffset_ofFirstBoundLimitIsZero()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragEndBound(0,-12);
+		segmentation.dragOffset(0,-12);
 
 		ASSERT_IGUALS("(0,0) (0,100) (100,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragBeginBound()
+	void testDragOnset()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragBeginBound(2,105);
+		segmentation.dragOnset(2,105);
 
 		ASSERT_IGUALS("(0,90) (90,105) (105,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragBeginBound_beyondNextBound()
+	void testDragOnset_beyondNextBound()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragBeginBound(2,115);
+		segmentation.dragOnset(2,115);
 
 		ASSERT_IGUALS("(0,90) (90,110) (110,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragBeginBound_beyondPreviousBound()
+	void testDragOnset_beyondPreviousBound()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragBeginBound(2,85);
+		segmentation.dragOnset(2,85);
 
 		ASSERT_IGUALS("(0,90) (90,90) (90,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragBeginBound_ofFirstBoundHasNoEffect()
+	void testDragOnset_ofFirstBoundHasNoEffect()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragBeginBound(0,10);
+		segmentation.dragOnset(0,10);
 
 		ASSERT_IGUALS("(0,90) (90,100) (100,110) (110,200) ", segmentation.boundsAsString());
 	}
-	void testDragBeginBound_ofLastSegment()
+	void testDragOnset_ofLastSegment()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragBeginBound(3,114);
+		segmentation.dragOnset(3,114);
 
 		ASSERT_IGUALS("(0,90) (90,100) (100,114) (114,200) ", segmentation.boundsAsString());
 	}
-	void testDragBeginBound_ofLastBoundLimitIsLength()
+	void testDragOnset_ofLastBoundLimitIsLength()
 	{
 		Segmentation segmentation(200.0);
 		segmentation.insert(90);
 		segmentation.insert(100);
 		segmentation.insert(110);
 
-		segmentation.dragBeginBound(3,210);
+		segmentation.dragOnset(3,210);
 
 		ASSERT_IGUALS("(0,90) (90,100) (100,200) (200,200) ", segmentation.boundsAsString());
 	}
