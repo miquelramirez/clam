@@ -45,7 +45,7 @@ void SpectralAnalysisConfig::DefaultValues()
 
 	/** Default window size */
 	SetWindowSize(513);
-	SetWindowType(EWindowType::eHamming);
+	SetWindowType(EWindowType::eBlackmanHarris92);
 	
 	/** WindowSize/2*/
 	SetHopSize((GetWindowSize()-1)/2);
