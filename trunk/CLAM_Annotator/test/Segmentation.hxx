@@ -26,7 +26,7 @@ namespace CLAM_Annotator
 
 		}
 		/**
-		 * Inserts a new bound at timePosition.
+		 * Inserts a new border at timePosition.
 		 */
 		unsigned insert(double timePosition)
 		{
@@ -86,24 +86,28 @@ namespace CLAM_Annotator
 				std::lower_bound(_offsets.begin(), _offsets.end(), timePosition);
 			return lowerBound - _offsets.begin();
 		}
+		void dragOnset(unsigned segment, double newTimePosition)
+		{
+			// first onset cannot be moved on Contiguous mode
+			if (segment==0) return;
+			// The onset is attached to the previous offset
+			dragOffset(segment-1, newTimePosition);
+		}
 		void dragOffset(unsigned segment, double newTimePosition)
 		{
-			if (segment==_offsets.size()) return;
-			if (segment+1==_offsets.size()) return;
+			if (segment==_offsets.size()) return; // Invalid segment
+			if (segment==_offsets.size()-1) return; // Last offset, cannot be moved
 
-			double leftBound = _onsets[segment];
-			if (newTimePosition<leftBound)
-				newTimePosition = leftBound;
+			// Limit movement on the left to the onset
+			if (newTimePosition<_onsets[segment])
+				newTimePosition = _onsets[segment];
+			// Limit movement on the right to the next offset
 			if (newTimePosition>_offsets[segment+1])
 				newTimePosition = _offsets[segment+1];
 
+			// The offset and the next onset change together
 			_offsets[segment]=newTimePosition;
 			_onsets[segment+1]=newTimePosition;
-		}
-		void dragOnset(unsigned segment, double newTimePosition)
-		{
-			if (segment==0) return;
-			dragOffset(segment-1, newTimePosition);
 		}
 		void select(unsigned segment)
 		{
@@ -151,6 +155,7 @@ namespace CLAM_Annotator
 		 * given time position and within the tolerance.
 		 * If no end of segment within the tolerance range an invalid
 		 * index is returned (nPositions)
+		 * @pre positions is a sorted array
 		 */
 		unsigned pickPosition(const TimePositions & positions, double timePosition, double tolerance) const
 		{
@@ -177,13 +182,6 @@ namespace CLAM_Annotator
 	};
 
 }
-
-// Init single Segment
-// Split segment
-// Join partitions
-// Drag Point
-// Current
-
 
 
 
