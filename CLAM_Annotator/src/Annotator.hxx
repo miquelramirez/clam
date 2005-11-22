@@ -9,10 +9,10 @@
 
 //xamat
 
-#include <CLAM/Audio.hxx>
-#include <CLAM/Pool.hxx>
+#include "Audio.hxx"
+#include "Pool.hxx"
 #include "Project.hxx"
-#include <CLAM/BPF.hxx>
+#include "BPF.hxx"
 
 class QTimer;
 class AudioLoadThread;
