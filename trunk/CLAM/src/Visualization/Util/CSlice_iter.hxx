@@ -44,7 +44,7 @@ public:
 	CSlice_iter end()
 	{
 		CSlice_iter t = *this;
-		t.mCurrIdx = s.size();
+		t.mCurrIdx = mValarray.size();
 		return t;
 	}
 
