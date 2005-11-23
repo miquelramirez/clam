@@ -37,10 +37,11 @@ namespace CLAM
 				std::lower_bound(_offsets.begin(), _offsets.end(), timePosition);
 			if (insertPoint == _offsets.end()) throw InsertedOutOfBounds();
 			// 'position' must be computed before the insertion to not invalidate iterators.
-			int position = insertPoint - _offsets.begin() +1;
+			unsigned position = insertPoint - _offsets.begin() +1;
 			_offsets.insert(insertPoint, timePosition);
 			_onsets.insert(_onsets.begin()+position, _offsets[position-1]);
 			_selection.insert(_selection.begin()+position, false);
+			if (position<=_current) _current++;
 			return position;
 		}
 		/**
@@ -56,6 +57,7 @@ namespace CLAM
 			_offsets.erase(_offsets.begin()+offsetToRemove);
 			_onsets.erase(_onsets.begin()+segment);
 			_selection.erase(_selection.begin()+segment);
+			if (_current!=0 && segment<=_current) _current--;
 			if (segment==0) _onsets[0]=0;
 		}
 		/**
@@ -69,8 +71,8 @@ namespace CLAM
 			return pickPosition(_offsets, timePosition, tolerance);
 		}
 		/**
-		 * Returns the index of the segment whose onset is nearest to the
-		 * given time position, and within the tolerance.
+		 * Returns the index of the segment whose onset is nearest
+		 * to the given time position, and within the tolerance.
 		 * If no end of segment within the tolerance range an invalid
 		 * segment is returned (nSegments)
 		 */
@@ -88,6 +90,11 @@ namespace CLAM
 				std::lower_bound(_offsets.begin(), _offsets.end(), timePosition);
 			return lowerBound - _offsets.begin();
 		}
+		/**
+		 * Performs a dragging movement for the Onset of the given
+		 * segment in order to move it to the newTimePosition.
+		 * Constraints for the segmentation mode are applied.
+		 */
 		void dragOnset(unsigned segment, double newTimePosition)
 		{
 			// first onset cannot be moved on Contiguous mode
@@ -95,6 +102,11 @@ namespace CLAM
 			// The onset is attached to the previous offset
 			dragOffset(segment-1, newTimePosition);
 		}
+		/**
+		 * Performs a dragging movement for the Offset of the given
+		 * segment in order to move it to the newTimePosition.
+		 * Constraints for the segmentation mode are applied.
+		 */
 		void dragOffset(unsigned segment, double newTimePosition)
 		{
 			if (segment==_offsets.size()) return; // Invalid segment
@@ -111,6 +123,7 @@ namespace CLAM
 			_offsets[segment]=newTimePosition;
 			_onsets[segment+1]=newTimePosition;
 		}
+
 		void select(unsigned segment)
 		{
 			_selection[segment]=true;
@@ -125,6 +138,9 @@ namespace CLAM
 				_selection[i]=false;
 		}
 
+		/**
+		 * Testing method for the unit tests.
+		 */
 		std::string boundsAsString() const
 		{
 			std::ostringstream os;
@@ -136,22 +152,37 @@ namespace CLAM
 			return os.str();
 		}
 
+		/**
+		 * Returns a vector of time position of the segment onsets.
+		 */
 		const TimePositions & onsets() const
 		{
 			return _onsets;
 		}
+		/**
+		 * Returns a vector of time position of the segment offsets.
+		 */
 		const TimePositions & offsets() const
 		{
 			return _offsets;
 		}
+		/**
+		 * Returns a vector of time position of the segment selections.
+		 */
 		const std::vector<bool> & selections() const
 		{
 			return _selection;
 		}
+		/**
+		 * Returns the current segmentation.
+		 */
 		unsigned current() const
 		{
 			return _current;
 		}
+		/**
+		 * Changes teh current segmentation
+		 */
 		void current(unsigned index)
 		{
 			if (index>=_onsets.size()) return;
@@ -164,8 +195,8 @@ namespace CLAM
 		unsigned _current;
 	private:
 		/**
-		 * Returns the index of the position which is nearest to the
-		 * given time position and within the tolerance.
+		 * Returns the index of the time position which is nearest
+		 * to the given time position and within the tolerance.
 		 * If no end of segment within the tolerance range an invalid
 		 * index is returned (nPositions)
 		 * @pre positions is a sorted array
