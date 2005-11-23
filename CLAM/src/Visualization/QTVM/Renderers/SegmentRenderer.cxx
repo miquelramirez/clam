@@ -9,7 +9,7 @@ namespace CLAM
 		SegmentRenderer::SegmentRenderer()
 			: mSegmentation(100.0)
 		{
-			SetColor(VMColor::Blue());
+			SetColor(VMColor::Custom(100,180,10));
 		}
 
 		SegmentRenderer::~SegmentRenderer()
@@ -47,7 +47,7 @@ namespace CLAM
 		void SegmentRenderer::DrawSegment(double left, double right, double top, int type)
 		{
 			// TODO: check for highlighted: selected type
-			int lineWidth = (type == CURRENT) ? 2 : 1;
+			int lineWidth = (type == CURRENT) ? 3 : 2;
 			glLineWidth(lineWidth);
 			// draw border
 			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
@@ -59,7 +59,7 @@ namespace CLAM
 			Color c = VMColor::LightGray();
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			glEnable(GL_BLEND);
-			glColor4ub(GLubyte(c.r),GLubyte(c.g),GLubyte(c.b),185);
+			glColor4ub(GLubyte(c.r),GLubyte(c.g),GLubyte(c.b),175);
 			// draw cuad
 			glBegin(GL_QUADS);
 			Rect(left,right,top);
