@@ -325,6 +325,12 @@ namespace CLAM
 		{
 			mIsEditTagDialogEnabled = e;
 		}
+
+		void SingleDisplayPlot::SetSegmentation(Segmentation* s)
+		{
+			mController->SetSegmentation(s);
+		}
+
     }
 }
 
