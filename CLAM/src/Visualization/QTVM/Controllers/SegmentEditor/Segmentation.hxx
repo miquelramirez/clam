@@ -122,6 +122,7 @@ namespace CLAM
 			for (unsigned i=0; i<_selection.size(); i++)
 				_selection[i]=false;
 		}
+/*
 		std::string boundsAsString() const
 		{
 			std::ostringstream os;
@@ -132,7 +133,7 @@ namespace CLAM
 			}
 			return os.str();
 		}
-
+*/
 		const TimePositions & onsets() const
 		{
 			return _onsets;
