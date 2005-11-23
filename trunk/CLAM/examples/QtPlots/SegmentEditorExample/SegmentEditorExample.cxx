@@ -26,6 +26,7 @@ int main()
 	CLAM::VM::QtAudioPlot plot;
 	plot.Label("Audio");
 	plot.Geometry(100,100,700,350);
+	plot.SetMarksEnabled(false); // disable old segments
 	plot.SetData(audio);
 	plot.SetSegmentation(seg);
 	plot.SetForegroundColor(CLAM::VM::VMColor::Blue());
