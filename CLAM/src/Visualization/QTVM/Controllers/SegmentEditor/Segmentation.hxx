@@ -23,6 +23,7 @@ namespace CLAM
 			_onsets.push_back(0);
 			_offsets.push_back(maxLength);
 			_selection.push_back(false);
+			_current=0;
 
 		}
 		/**
@@ -57,8 +58,8 @@ namespace CLAM
 			if (segment==0) _onsets[0]=0;
 		}
 		/**
-		 * Returns the index of the segment offset which is nearest to the
-		 * given time position, and within the tolerance.
+		 * Returns the index of the segment whose offset is nearest 
+		 * to the given time position, and within the tolerance.
 		 * If no end of segment within the tolerance range an invalid
 		 * segment is returned (nSegments)
 		 */
@@ -67,7 +68,7 @@ namespace CLAM
 			return pickPosition(_offsets, timePosition, tolerance);
 		}
 		/**
-		 * Returns the index of the segment onset which is nearest to the
+		 * Returns the index of the segment whose onset is nearest to the
 		 * given time position, and within the tolerance.
 		 * If no end of segment within the tolerance range an invalid
 		 * segment is returned (nSegments)
@@ -122,7 +123,7 @@ namespace CLAM
 			for (unsigned i=0; i<_selection.size(); i++)
 				_selection[i]=false;
 		}
-/*
+
 		std::string boundsAsString() const
 		{
 			std::ostringstream os;
@@ -133,7 +134,7 @@ namespace CLAM
 			}
 			return os.str();
 		}
-*/
+
 		const TimePositions & onsets() const
 		{
 			return _onsets;
@@ -146,10 +147,20 @@ namespace CLAM
 		{
 			return _selection;
 		}
+		unsigned current() const
+		{
+			return _current;
+		}
+		void current(unsigned index)
+		{
+			if (index>=_onsets.size()) return;
+			_current = index;
+		}
 	private:
 		TimePositions _onsets;
 		TimePositions _offsets;
 		std::vector<bool> _selection;
+		unsigned _current;
 	private:
 		/**
 		 * Returns the index of the position which is nearest to the
