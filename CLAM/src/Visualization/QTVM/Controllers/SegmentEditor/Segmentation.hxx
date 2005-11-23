@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iterator>
 #include <cmath>
+#include <sstream>
 
 namespace CLAM
 {
