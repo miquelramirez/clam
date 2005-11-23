@@ -62,6 +62,11 @@ namespace CLAMTest
 		CPPUNIT_TEST( testInsert_keepsCurrentAtZero );
 		CPPUNIT_TEST( testCurrent_changesCurrent );
 		CPPUNIT_TEST( testCurrent_aboveNSegmentsHasNoEffect );
+		CPPUNIT_TEST( testInsert_beforeCurrentCorrectsIt );
+		CPPUNIT_TEST( testRemove_beforeCurrentCorrectsIt );
+		CPPUNIT_TEST( testRemove_afterCurrentKeepsIt );
+		CPPUNIT_TEST( testRemove_justTheCurrentChangesIt );
+		CPPUNIT_TEST( testRemove_justTheCurrentButItIsZeroKeepsAtZero );
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -570,8 +575,58 @@ namespace CLAMTest
 			segmentation.insert(100);
 			segmentation.insert(110);
 			segmentation.current(2);
-			segmentation.current(3);
+			segmentation.current(4);
 			CPPUNIT_ASSERT_EQUAL(2u, segmentation.current());
+		}
+		void testInsert_beforeCurrentCorrectsIt()
+		{
+			Segmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+			segmentation.current(2);
+			segmentation.insert(95);
+			CPPUNIT_ASSERT_EQUAL(3u, segmentation.current());
+		}
+		void testRemove_beforeCurrentCorrectsIt()
+		{
+			Segmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+			segmentation.current(2);
+			segmentation.remove(1);
+			CPPUNIT_ASSERT_EQUAL(1u, segmentation.current());
+		}
+		void testRemove_afterCurrentKeepsIt()
+		{
+			Segmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+			segmentation.current(2);
+			segmentation.remove(3);
+			CPPUNIT_ASSERT_EQUAL(2u, segmentation.current());
+		}
+		void testRemove_justTheCurrentChangesIt()
+		{
+			Segmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+			segmentation.current(2);
+			segmentation.remove(2);
+			CPPUNIT_ASSERT_EQUAL(1u, segmentation.current());
+		}
+		void testRemove_justTheCurrentButItIsZeroKeepsAtZero()
+		{
+			Segmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+			segmentation.current(0);
+			segmentation.remove(0);
+			CPPUNIT_ASSERT_EQUAL(0u, segmentation.current());
 		}
 	};
 
