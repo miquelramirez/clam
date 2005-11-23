@@ -383,7 +383,7 @@ void Annotator::updateSongListWidget()
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
 {
-	mBPFEditor->stopPendingTasks();
+	if(mBPFEditor) mBPFEditor->stopPendingTasks();
 
 	if(mLLDChanged||mHLDChanged||mSegmentsChanged)
 	{
