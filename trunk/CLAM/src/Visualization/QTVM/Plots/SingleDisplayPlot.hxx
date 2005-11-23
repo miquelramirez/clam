@@ -10,6 +10,8 @@ class QPushButton;
 
 namespace CLAM
 {
+	class Segmentation;
+
     namespace VM
     {
 		class PlotController;
@@ -53,6 +55,8 @@ namespace CLAM
 
 			void SetEditTagDialogEnabled(bool e);
 
+			void SetSegmentation(Segmentation* s);
+		   
 		signals:
 			void xRulerRange(double, double);
 			void yRulerRange(double, double);
