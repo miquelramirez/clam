@@ -38,7 +38,7 @@ namespace CLAM
 				}
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
 				{
-					DrawSegment(beginnings[i],endings[i],1.0,type);
+					DrawSegment(beginnings[i],endings[i],0.9,type);
 				}
 				type = NORMAL;
 			}
@@ -59,7 +59,7 @@ namespace CLAM
 			Color c = VMColor::LightGray();
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			glEnable(GL_BLEND);
-			glColor4ub(GLubyte(c.r),GLubyte(c.g),GLubyte(c.b),125);
+			glColor4ub(GLubyte(c.r),GLubyte(c.g),GLubyte(c.b),185);
 			// draw cuad
 			glBegin(GL_QUADS);
 			Rect(left,right,top);
