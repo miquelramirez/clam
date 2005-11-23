@@ -29,9 +29,12 @@
 #include "GLView.hxx"
 #include "VLineArrayRenderer.hxx"
 #include "Dial.hxx"
+#include "SegmentEditor.hxx"
 
 namespace CLAM
 {
+	class Segmentation;
+
     namespace VM
     {
 		class PlotController : public QObject
@@ -71,6 +74,8 @@ namespace CLAM
 			
 			void SetSegmentationMarksEnabled(bool e);
 			void ClearMarks();
+
+			void SetSegmentation(Segmentation* s);
 		    
 		signals:
 			void requestRefresh();
@@ -189,6 +194,8 @@ namespace CLAM
 			bool                  mIsRenderingEnabled;
 			
 			Dial mDial;
+
+			SegmentEditor mSegmentEditor;
 
 			void UpdateHBounds(bool zin);
 			void UpdateVBounds(bool zin);

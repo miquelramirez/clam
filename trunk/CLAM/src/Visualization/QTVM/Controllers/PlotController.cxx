@@ -71,6 +71,7 @@ namespace CLAM
 			mView.right = mRightBound-mLeftBound;
 			mMarksRenderer.SetHBounds(mLeftBound, mRightBound);
 			mDial.SetHBounds(mLeftBound, mRightBound);
+			mSegmentEditor.SetHBounds(mLeftBound,mRightBound);
 			mMustProcessMarks = true;
 			emit viewChanged(mView);
 		}
@@ -83,6 +84,7 @@ namespace CLAM
 			mView.top = mTopBound;
 			mMarksRenderer.SetVBounds(mBottomBound, mTopBound);
 			mDial.SetVBounds(mBottomBound, mTopBound);
+			mSegmentEditor.SetVBounds(mBottomBound,mTopBound);
 			mMustProcessMarks=true;
 			emit viewChanged(mView);
 		}
@@ -523,6 +525,7 @@ namespace CLAM
 				mMarksRenderer.Render();
 			}
 			mDial.Render();
+			mSegmentEditor.Draw();
 		}
 
 		void PlotController::SetMarks(std::vector<unsigned>& marks)
@@ -790,6 +793,12 @@ namespace CLAM
 			ProcessMarks();
 
 		}
+
+		void PlotController::SetSegmentation(Segmentation* s)
+		{
+			mSegmentEditor.SetSegmentation(s);
+		}
+
 	}
 }
 
