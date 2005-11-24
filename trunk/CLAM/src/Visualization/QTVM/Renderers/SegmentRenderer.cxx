@@ -57,10 +57,9 @@ namespace CLAM
 			glEnd();
 			glLineWidth(1);
 			// fill rec
-			Color c = VMColor::LightGray();
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			glEnable(GL_BLEND);
-			glColor4ub(GLubyte(c.r),GLubyte(c.g),GLubyte(c.b),175);
+			glColor4ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b),150);
 			// draw cuad
 			glBegin(GL_QUADS);
 			Rect(left,right,top);
