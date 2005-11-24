@@ -5,10 +5,13 @@
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include "AudioFileIO.hxx"
-#include "MonoAudioFileReader.hxx"
-#include "MonoAudioFileWriter.hxx"
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/MonoAudioFileWriter.hxx>
 
 using namespace CLAM;
+
+namespace V2M
+{
 
 AudioFileIO::AudioFileIO(){}
 AudioFileIO::~AudioFileIO(){}
@@ -58,6 +61,8 @@ int AudioFileIO::Save(const char* fileName,Audio& in)
 
     return 0;
 }
+
+} // namespace V2M
 
 // END
 

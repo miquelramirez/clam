@@ -10,7 +10,7 @@
 #define _MIDIFILEWRITER_
 
 #include <string>
-#include "MIDIMelody.hxx"
+#include <CLAM/MIDIMelody.hxx>
 
 #define MThd	0x4d546864
 #define MTrk	0x4d54726b
@@ -19,6 +19,9 @@
 #define TEMPO	   120
 
 using CLAM::MIDIMelody;
+
+namespace V2M
+{
 
 class MIDIFileWriter
 {
@@ -42,5 +45,7 @@ private:
 	void EPutc(char c);
 	unsigned long Sec2Ticks(float secs,int division,unsigned tempo);
 };
+
+} // namespace V2M
 
 #endif

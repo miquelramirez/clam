@@ -8,14 +8,14 @@
 #ifndef _MYANALYZER_
 #define _MYANALYZER_
 
-#include "ProcessingComposite.hxx"
-#include "FFT.hxx"
-#include "Frame.hxx"
-#include "WindowGeneratorConfig.hxx"
-#include "WindowGenerator.hxx"
-#include "AudioMultiplier.hxx"
-#include "CircularShiftConfig.hxx"
-#include "CircularShift.hxx"
+#include <CLAM/ProcessingComposite.hxx>
+#include <CLAM/FFT.hxx>
+#include <CLAM/Frame.hxx>
+#include <CLAM/WindowGeneratorConfig.hxx>
+#include <CLAM/WindowGenerator.hxx>
+#include <CLAM/AudioMultiplier.hxx>
+#include <CLAM/CircularShiftConfig.hxx>
+#include <CLAM/CircularShift.hxx>
 
 using CLAM::ProcessingComposite;
 using CLAM::ProcessingConfig;

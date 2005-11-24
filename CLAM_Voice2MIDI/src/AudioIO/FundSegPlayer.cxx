@@ -5,12 +5,15 @@
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include "FundSegPlayer.hxx"
-#include "AudioIO.hxx"
-#include "AudioManager.hxx"
-#include "AudioOut.hxx"
-#include "SimpleOscillator.hxx"
+#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/SimpleOscillator.hxx>
 
 using namespace CLAM;
+
+namespace V2M
+{
 
 FundSegPlayer::FundSegPlayer(const Melody& melody,
                                    TData sampleRate,
@@ -94,5 +97,7 @@ void FundSegPlayer::Stop()
 {
 	active = false;
 }
+
+} // namespace V2M
 
 // END

@@ -11,9 +11,9 @@
 #define _V2MDATAEDITDISPLAY_
 
 #include "V2MDataDisplay.hxx"
-#include "Point.hxx"
-#include "Signalv0.hxx"
-#include "Slotv0.hxx"
+#include <CLAM/Point.hxx>
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Slotv0.hxx>
 
 using CLAM::Array;
 using CLAM::Point;

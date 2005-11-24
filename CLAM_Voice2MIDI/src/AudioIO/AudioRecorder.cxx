@@ -5,11 +5,14 @@
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include "AudioRecorder.hxx"
-#include "AudioIO.hxx"
-#include "AudioManager.hxx"
-#include "AudioIn.hxx"
+#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/AudioIn.hxx>
 
 using namespace CLAM;
+
+namespace V2M
+{
 
 AudioRecorder::AudioRecorder(Slotv1<DataArray>& slot)
 {
@@ -77,5 +80,7 @@ const Audio& AudioRecorder::GetAudio()
 {
     return audio;
 }
+
+} // namespace V2M
 
 // END

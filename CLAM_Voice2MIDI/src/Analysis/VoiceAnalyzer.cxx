@@ -5,7 +5,7 @@
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include "VoiceAnalyzer.hxx"
-#include "SpectrumConfig.hxx"
+#include <CLAM/SpectrumConfig.hxx>
 
 using namespace CLAM;
 

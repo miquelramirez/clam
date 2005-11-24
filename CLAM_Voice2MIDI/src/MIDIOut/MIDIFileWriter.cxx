@@ -7,6 +7,9 @@
 
 #include "MIDIFileWriter.hxx"
 
+namespace V2M
+{
+
 MIDIFileWriter::MIDIFileWriter()
 {
 	fp = NULL;
@@ -164,5 +167,7 @@ unsigned long MIDIFileWriter::Sec2Ticks(float secs,int division,unsigned tempo)
 {
      return (long)(((secs * 1000.0) / 4.0 * division) / tempo);
 }
+
+} // namespace V2M
 
 // END

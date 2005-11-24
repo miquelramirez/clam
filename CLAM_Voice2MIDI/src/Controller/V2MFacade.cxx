@@ -5,7 +5,7 @@
  *	Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include <vector>
-#include "MIDIManager.hxx"
+#include <CLAM/MIDIManager.hxx>
 #include "V2MFacade.hxx"
 
 #ifdef WIN32
@@ -14,7 +14,9 @@
 using namespace CLAM;
 
 V2MFacade::V2MFacade(Slotv0& slot0,Slotv1<int>& slot1,Slotv1<DataArray>& slot2) 
-                     : mStopSlot(slot0),mDynamicReceptor(slot2)
+                     : mStopSlot(slot0),mDynamicReceptor(slot2), 
+		     audioPlayer(0), fundPlayer(0), fundSegPlayer(0), recorder(0),
+		     midiPlayer(0), _needUpdatedMelody(false) 
 {
 	mRequestUpdateProgressBar.Connect(slot1);
 	mFrame.AddAudioFrame();
@@ -23,12 +25,6 @@ V2MFacade::V2MFacade(Slotv0& slot0,Slotv1<int>& slot1,Slotv1<DataArray>& slot2)
 	mSegment.AddAudio();
 	mSegment.UpdateData();
 
-	audioPlayer = NULL;
-	fundPlayer = NULL;
-	fundSegPlayer = NULL;
-	recorder = NULL;
-	midiPlayer = NULL;
-	_needUpdatedMelody = false;
 	InitMIDI();
 	_midi_device = "default";
 	_midi_program = 0;
@@ -48,19 +44,19 @@ void V2MFacade::Play(pMode mode)
 	switch(mode)
 	{
 		case pmAudio:						
-	                    audioPlayer = new AudioPlayer(mSegment.GetAudio(),mStopSlot,mDynamicReceptor);
-						break;
+	                audioPlayer = new V2M::AudioPlayer(mSegment.GetAudio(),mStopSlot,mDynamicReceptor);
+			break;
 		case pmFundamental:	
-						fundPlayer = new FundPlayer(mSegment,mStopSlot,mDynamicReceptor);
-						break;
+			fundPlayer = new V2M::FundPlayer(mSegment,mStopSlot,mDynamicReceptor);
+			break;
 		case pmFundamentalSeg:
-						if(!NeedUpdatedMelody())
-							fundSegPlayer = new FundSegPlayer(GetMelody(),
-								                              mSegment.GetAudio().GetSampleRate(),
-															  mSegment.GetAudio().GetSize(),
-															  mStopSlot,mDynamicReceptor); 
-						else
-							fundSegPlayer = new FundSegPlayer(_melodyTmp,
+			if(!NeedUpdatedMelody())
+				fundSegPlayer = new V2M::FundSegPlayer(GetMelody(),
+									mSegment.GetAudio().GetSampleRate(),
+									mSegment.GetAudio().GetSize(),
+									mStopSlot,mDynamicReceptor); 
+			else
+							fundSegPlayer = new V2M::FundSegPlayer(_melodyTmp,
 								                              mSegment.GetAudio().GetSampleRate(),
 															  mSegment.GetAudio().GetSize(),
 															  mStopSlot,mDynamicReceptor); 
@@ -68,12 +64,12 @@ void V2MFacade::Play(pMode mode)
 
 		case pmMIDI:
 						if(!NeedUpdatedMelody())
-							midiPlayer = new MIDIMelodyPlayer(GetMIDIMelody(),
+							midiPlayer = new V2M::MIDIMelodyPlayer(GetMIDIMelody(),
 															  _midi_device,
 															  _midi_program,
 															  mStopSlot);
 						else
-							midiPlayer = new MIDIMelodyPlayer(_midiMelodyTmp,
+							midiPlayer = new V2M::MIDIMelodyPlayer(_midiMelodyTmp,
 															  _midi_device,
 															  _midi_program,
 															  mStopSlot);
@@ -123,7 +119,7 @@ void V2MFacade::Stop()
 
 void V2MFacade::Rec()
 {
-	recorder = new AudioRecorder(mDynamicReceptor); 
+	recorder = new V2M::AudioRecorder(mDynamicReceptor); 
 }
 
 void V2MFacade::AttachAudioFromRecorder()

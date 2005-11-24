@@ -13,10 +13,10 @@
 #define _VoiceAnalyzer_
 
 #include "MyAnalyzer.hxx"
-#include "SpectralPeakDetectConfig.hxx"
-#include "SpectralPeakDetect.hxx"
-#include "FundFreqDetect.hxx"
-#include "SegmentDescriptors.hxx"
+#include <CLAM/SpectralPeakDetectConfig.hxx>
+#include <CLAM/SpectralPeakDetect.hxx>
+#include <CLAM/FundFreqDetect.hxx>
+#include <CLAM/SegmentDescriptors.hxx>
 
 using CLAM::SpectralPeakDetectConfig;
 using CLAM::SpectralPeakDetect;

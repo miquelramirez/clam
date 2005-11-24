@@ -11,9 +11,9 @@
 #define _V2MDATADISPLAY_
 
 #include <qgl.h>
-#include "Array.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Array.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Slotv1.hxx>
 #include "SharedTypes.hxx"
 
 using CLAM::TData;
