@@ -58,7 +58,7 @@ namespace CLAM
 	 * @see DescriptionDataPool class, which instanciates a DescriptionScheme
 	 * 
 	 */
-	class DescriptionScheme
+	class DescriptionScheme : public Component
 	{
 	private:
 		typedef std::map<std::string, unsigned> ScopeMap;
@@ -136,6 +136,9 @@ namespace CLAM
 			const DescriptionScope & scope = GetScope(scopeIndex);
 			return scope.GetName();
 		}
+		void StoreOn(Storage & storage) const;
+		void LoadFrom(Storage & storage);
+		const char * GetClassName() const { return "DescriptionScheme"; }
 	};
 }
 
