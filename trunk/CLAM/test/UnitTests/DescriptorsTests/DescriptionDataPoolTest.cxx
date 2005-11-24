@@ -177,7 +177,7 @@ private:
 
 		try
 		{
-			unsigned * centers = data.GetWritePool<unsigned>("Frame","Center");
+			data.GetWritePool<unsigned>("Frame","Center");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -193,7 +193,7 @@ private:
 
 		try
 		{
-			unsigned * centers = data.GetWritePool<unsigned>("UnexistingScope","Center");
+			data.GetWritePool<unsigned>("UnexistingScope","Center");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -210,7 +210,7 @@ private:
 
 		try
 		{
-			const unsigned * centers = data.GetReadPool<unsigned>("Frame","Center");
+			data.GetReadPool<unsigned>("Frame","Center");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
