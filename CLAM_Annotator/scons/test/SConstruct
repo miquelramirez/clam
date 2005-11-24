@@ -1,0 +1,171 @@
+import sys, os, glob
+
+def parse_pkg_config( env ) :
+	prefix = env['clam_prefix']
+	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
+	descriptors = glob.glob( descriptor_path )
+	libpath = dict()
+	libs = dict()
+	cppflags = dict()
+	cpppath = dict()
+	ccflags = dict()
+	for desc_file in descriptors :
+		instream = open( desc_file )
+
+		for line in instream :
+			tokens = line.strip().split(' ')
+			if tokens[0] == 'Libs:' :
+				for token in tokens[1:] :
+					if "/LIBPATH:" in token :
+						libpath[token.replace("/LIBPATH:", "")] = True
+					else :
+						libs[token] = True
+			elif tokens[0] == 'Cflags:':
+				foo = line.strip().split(' /')
+				for token in foo[1:] :
+					token = '/' + token
+					# search for -X flags
+					if(token.find(' -')!=-1):
+						listOfRealTokens = token.split(' -')
+						#print('new token to parse: ' + token)
+						firstToken = listOfRealTokens[0]
+						if "/I" in firstToken:
+							cpppath[ firstToken.replace("/I","") ] = True
+						elif "/D" in firstToken :
+							cppflags[ firstToken ] = True
+						else :
+							ccflags[firstToken] = True
+						for realToken in listOfRealTokens[1:]:
+							#print('new token to parse: ' + realToken)
+							ccflags['-'+realToken] = True
+					else:
+						#print('new token to parse: ' + token)
+						if "/I" in token :
+							cpppath[ token.replace("/I","") ] = True
+						elif "/D" in token in token :
+							cppflags[ token ] = True
+						else :
+							#print('token: ' + token )
+							ccflags[token] = True
+			else :
+				pass
+
+		instream.close()
+	print "Adding to evironment LIBPATH:"
+	for elem in libpath.keys() : print elem,
+	print
+	env.Append( LIBPATH = libpath.keys() )
+	print "Adding to environment LIBS:"
+	for elem in libs.keys() : print elem,
+	print
+	env.Append( LIBS = libs.keys() )
+	print "Adding to environment CPPFLAGS:"
+	for elem in cppflags.keys() : print elem,
+	print
+	env.Append( CPPFLAGS = cppflags.keys() )
+	print "Adding to environment CCFLAGS:"
+	for elem in ccflags.keys() : print elem,
+	print
+	env.Append( CCFLAGS = ccflags.keys() )
+	print "Adding to environment CPPPATH:"
+	for elem in cpppath.keys() : print elem,
+	print
+	env.Append( CPPPATH = cpppath.keys() )
+
+annotator_env = Environment( tools=['default'], ENV=os.environ)
+
+opts = Options('TestAnnotator.conf')
+
+
+if sys.platform != 'win32' :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+else :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
+if sys.platform != 'win32' :
+	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr') )
+else :
+	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', 'G:\projects\CLAM-bin\\bin') )
+
+opts.Add( BoolOption( 'release', 'Build CLAM TestAnnotator enabling compiler optimizations', 'no') )
+opts.Update(annotator_env)
+opts.Save('TestAnnotator.conf', annotator_env)
+Help(opts.GenerateHelpText(annotator_env))
+
+annotator_env['project'] = 'TestAnnotator'
+
+if sys.platform != 'win32' :
+	if annotator_env['release'] :
+		annotator_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+	else :
+		annotator_env.Append( CCFLAGS=['-g', '-Wall'] )
+	annotator_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio' )
+else :
+	if annotator_env['release'] :
+		annotator_env.Append( CPPFLAGS = ['-DWIN32'] )
+		annotator_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
+		annotator_env.Append( LINKFLAGS = ['/LTCG'] )
+	else :
+		annotator_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
+		annotator_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
+		annotator_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
+
+
+#source_dirs = ['../src', '../src/AnnotatorBrowserGL', '../src/common', '../src/common/Clipboard' ]
+
+sourcefiles = []
+#for dir in source_dirs :
+#	sourcefiles += glob.glob(dir+'/*.cxx')
+#	sourcefiles += glob.glob(dir+'/*.ui')
+
+#sourcefiles.remove( '../src/main.cxx' )
+#sourcefiles.remove( '../src/Test.cxx' )
+sourcefiles.append('../../src/Test.cxx')
+sourcefiles.append('../../src/Project.cxx')
+sourcefiles.append('../../src/Schema.cxx')
+sourcefiles.append('../../src/SchemaAttribute.cxx')
+sourcefiles.append('../../src/TypePlugin.cxx')
+
+bin_objects = [ annotator_env.Object(source) for source in sourcefiles ]
+
+#annotator_env.Append(CPPPATH=source_dirs)
+
+if sys.platform != 'win32' :
+	annotator_env.Append(CCFLAGS='-include CLAM/preinclude.hxx  -DQT_THREAD_SUPPORT')
+	annotator_env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"/usr/share/annotator\\""')
+
+	annotator_bin = annotator_env.Program( 'TestAnnotator',bin_objects, LINKFLAGS=['-rdynamic'] )
+	install_bin = annotator_env.Install( annotator_env['install_prefix']+'/bin', annotator_bin )
+
+	manpage = ['../resources/man/man9/TestAnnotator.9']
+	install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
+
+	sounds = ['../resources/sounds/click.mp3']
+	install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
+
+	annotator_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+	install_alias = annotator_env.Alias( 'install', [install_bin,install_manpage, install_sounds] )
+else :
+	parse_pkg_config( annotator_env )
+
+	annotator_env.Append( CCFLAGS = '/FICLAM/preinclude.hxx  -DQT_THREAD_SUPPORT' )
+	annotator_env.Append( CCFLAGS = ['/EHsc'] )
+	annotator_env.Append( LINKFLAGS = ['/subsystem:console','/machine:x86'] )
+	
+	annotator_bin = annotator_env.Program( 'TestAnnotator',  bin_objects)
+	install_bin = annotator_env.Install( annotator_env['install_prefix'], annotator_bin)
+
+	install_alias = annotator_env.Alias( 'install', [install_bin] )
+
+	variantVCProj = 'Debug'
+	if annotator_env['release'] :
+		variantVCProj = 'Release' 
+
+	generate_vcproj = annotator_env.MSVSProject( target = 'TestAnnotator' + annotator_env['MSVSPROJECTSUFFIX'],
+				srcs = sourcefiles,
+				buildtarget = annotator_bin,
+				variant = variantVCProj )
+
+	vc_alias = annotator_env.Alias('visual_project', [generate_vcproj])
+
+
+Default(annotator_bin)
