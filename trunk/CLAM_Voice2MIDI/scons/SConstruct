@@ -1,30 +1,188 @@
 import sys, os, string, glob
 
+def parse_pkg_config( env ) :
+	prefix = env['clam_prefix']
+	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
+	descriptors = glob.glob( descriptor_path )
+	libpath = dict()
+	libs = dict()
+	cppflags = dict()
+	cpppath = dict()
+	ccflags = dict()
+	for desc_file in descriptors :
+		instream = open( desc_file )
+
+		for line in instream :
+			tokens = line.strip().split(' ')
+			if tokens[0] == 'Libs:' :
+				for token in tokens[1:] :
+					if "/LIBPATH:" in token :
+						libpath[token.replace("/LIBPATH:", "")] = True
+					else :
+						libs[token] = True
+			elif tokens[0] == 'Cflags:':
+				foo = line.strip().split(' /')
+				for token in foo[1:] :
+					token = '/' + token
+					# search for -X flags
+					if(token.find(' -')!=-1):
+						listOfRealTokens = token.split(' -')
+						#print('new token to parse: ' + token)
+						firstToken = listOfRealTokens[0]
+						if "/I" in firstToken:
+							cpppath[ firstToken.replace("/I","") ] = True
+						elif "/D" in firstToken :
+							cppflags[ firstToken ] = True
+						else :
+							ccflags[firstToken] = True
+						for realToken in listOfRealTokens[1:]:
+							#print('new token to parse: ' + realToken)
+							ccflags['-'+realToken] = True
+					else:
+						#print('new token to parse: ' + token)
+						if "/I" in token :
+							cpppath[ token.replace("/I","") ] = True
+						elif "/D" in token in token :
+							cppflags[ token ] = True
+						else :
+							ccflags[token] = True
+			else :
+				pass
+
+		instream.close()
+	print "Adding to evironment LIBPATH:"
+	for elem in libpath.keys() : print elem,
+	print
+	env.Append( LIBPATH = libpath.keys() )	
+	print "Adding to environment LIBS:"
+	for elem in libs.keys() : print elem,
+	print
+	env.Append( LIBS = libs.keys() )
+	print "Adding to environment CPPFLAGS:"
+	for elem in cppflags.keys() : print elem,
+	print
+	env.Append( CPPFLAGS = cppflags.keys() )
+	print "Adding to environment CCFLAGS:"
+	for elem in ccflags.keys() : print elem,
+	print
+	env.Append( CCFLAGS = ccflags.keys() )
+	print "Adding to environment CPPPATH:"
+	for elem in cpppath.keys() : print elem,
+	print
+	env.Append( CPPPATH = cpppath.keys() )
+
 v2m_env = Environment( tools=['default','qt'], ENV=os.environ )
 
-v2m_env.Replace(QT_LIB='qt-mt')
+if sys.platform == 'win32' :
+	v2m_env.Replace( QT_LIB = 'qt-mt322' )
+else :
+	v2m_env.Replace( QT_LIB = 'qt-mt' )
 
-opts = Options('NetworkEditor.conf')
-opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
-opts.Add( BoolOption( 'release', 'Build voice2midi enabling compiler optimizations', 'yes') )
+opts = Options('Voice2MIDI.conf')
+
+if sys.platform != 'win32' :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+else :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
+if sys.platform != 'win32' :
+	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr') )
+else :
+	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', 'G:\projects\CLAM-bin\\bin') )
+
+opts.Add( BoolOption( 'release', 'Build voice2midi enabling compiler optimizations', 'no') )
 opts.Update(v2m_env)
-opts.Save('NetworkEditor.conf', v2m_env)
+opts.Save('Voice2MIDI.conf', v2m_env)
 Help(opts.GenerateHelpText(v2m_env))
 
-if v2m_env['release'] :
-	v2m_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+if sys.platform != 'win32' :
+	if v2m_env['release'] :
+		v2m_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+	else :
+		v2m_env.Append( CCFLAGS=['-g', '-Wall'] )
+
+	v2m_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'  )
+
 else :
-	v2m_env.Append( CCFLAGS=['-g', '-Wall'] )
-
-
-v2m_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'  )
+	if v2m_env['release'] :
+		#v2m_env.Append( CPPFLAGS= ['-DWIN32', '-D_USRDLL'] )
+		v2m_env.Append( CPPFLAGS = ['-DWIN32'] )
+		v2m_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
+		v2m_env.Append( LINKFLAGS = ['/LTCG'] )
+	else :
+		#v2m_env.Append( CPPFLAGS = ['-DWIN32', '-D_USRDLL', '-D_DEBUG'] )
+		v2m_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
+		v2m_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
+		v2m_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
 source_dirs = ['../src', '../src/Analysis', '../src/AudioIO', '../src/Controller', '../src/GUI', '../src/GUI/MainWindow','../src/GUI/Widgets','../src/GUI/Widgets/Surfaces', '../src/MIDIOut', '../src/misc' ]
 
 v2m_env.Append(CPPPATH=source_dirs)
-v2m_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+
 sourcefiles = []
 for dir in source_dirs :
 	sourcefiles += glob.glob(dir+'/*.cxx')
 	sourcefiles += glob.glob(dir+'/*.ui')
-v2m_bin = v2m_env.Program( 'Voice2MIDI', sourcefiles, LINKFLAGS=['-rdynamic'] )
+
+if sys.platform != 'win32' :
+	v2m_env.Append(CPPFLAGS='-DMANUAL_BASE="\\"/usr/share/doc/voice2midi/manual\\""')
+else:
+	v2m_env.Append(CPPFLAGS='-DMANUAL_BASE="\\"' + v2m_env['install_prefix'] + 'doc/voice2midi/manual\\""')
+
+manual_html = []
+for file in glob.glob( '../resources/doc/*.htm' ) :
+	manual_html.append( File(file) )
+manual_pics = []
+for file in glob.glob( '../resources/doc/pics/*.png' ) :
+	manual_pics.append( File(file) )
+
+if sys.platform != 'win32' :
+	v2m_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+	v2m_bin = v2m_env.Program( 'Voice2MIDI', sourcefiles, LINKFLAGS=['-rdynamic'] )
+	install_bin = v2m_env.Install( v2m_env['install_prefix']+'/bin', v2m_bin)
+	v2m_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+
+	install_manual_html = v2m_env.Install( v2m_env['install_prefix']+'/share/doc/voice2midi/manual', manual_html )
+	install_manual_pics = v2m_env.Install( v2m_env['install_prefix']+'/share/doc/voice2midi/manual/pics', manual_pics )
+
+	manpage = File( '../resources/man/man9/Voice2MIDI.9' )
+	install_manpage = v2m_env.Install( v2m_env['install_prefix']+'/share/man/man9', manpage )
+
+	soundsamples = File( '../resources/soundsamples/birthday.wav' )
+	install_soundsamples = v2m_env.Install( v2m_env['install_prefix']+'/share/doc/voice2midi/samplesounds', soundsamples )
+
+	install_alias = v2m_env.Alias( 'install', [install_bin, install_manual_html, install_manual_pics, install_manpage, install_soundsamples] )
+else :
+	parse_pkg_config( v2m_env )
+	v2m_env.Append( LIBPATH = 'G:\projects\portmidi\lib' ) 	
+	v2m_env.Append( LIBS = 'portmidi' )
+	v2m_env.Append( LIBS = 'porttime' )
+	v2m_env.Append( LIBS = 'winmm' )
+	
+	v2m_env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
+	v2m_env.Append( CCFLAGS = ['/EHsc'] )
+	v2m_env.Append( LINKFLAGS = ['/subsystem:console','/machine:x86'] )
+	v2m_bin = v2m_env.Program( 'Voice2MIDI', sourcefiles )
+	install_bin = v2m_env.Install( v2m_env['install_prefix'], v2m_bin )
+
+	install_manual_html = v2m_env.Install( v2m_env['install_prefix']+'/share/doc/voice2midi/manual', manual_html )
+	install_manual_pics = v2m_env.Install( v2m_env['install_prefix']+'/share/doc/voice2midi/manual/pics', manual_pics )
+
+	manpage = File( '../resources/man/man9/Voice2MIDI.9' )
+	install_manpage = v2m_env.Install( v2m_env['install_prefix']+'/share/man/man9', manpage )
+
+	soundsamples = File( '../resources/soundsamples/birthday.wav' )
+	install_soundsamples = v2m_env.Install( v2m_env['install_prefix']+'/share/doc/voice2midi/samplesounds', soundsamples )
+	install_alias = v2m_env.Alias( 'install', [install_bin, install_manual_html, install_manual_pics, install_manpage, install_soundsamples] )
+
+	variantVCProj = 'Debug'
+	if v2m_env['release'] :
+		variantVCProj = 'Release' 
+
+	generate_vcproj = v2m_env.MSVSProject( target = 'Voice2MIDI' + v2m_env['MSVSPROJECTSUFFIX'],
+				srcs = sourcefiles,
+				buildtarget = v2m_bin,
+				variant = variantVCProj )
+
+	vc_alias = v2m_env.Alias('visual_project', [generate_vcproj])
+
+Default( v2m_bin )
