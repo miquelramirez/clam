@@ -17,9 +17,10 @@ namespace CLAM
 			, mTopBound(100.0)
 			, mScreenWidth(0)
 			, mScreenHeight(100)
+			, mCurrentIndex(0)
 			, mMustProcessData(false)
 			, mMousePressed(false)
-			, mHit(false)
+			, mIsHDragging(false)
 		{
 		}
 
@@ -75,42 +76,67 @@ namespace CLAM
 
 		void SegmentEditor::MousePos(double x, double y)
 		{
-			// TODO
-/*
-			unsigned size = mStrategy->onsets().size();
-			// check for begin
-			unsigned index = mStrategy->pickOnset(x,3.0);
-			if(index != size) 
-			{
-				printf("begin found at index %d\n",index);
-				emit cursorChanged(QCursor(Qt::SizeHorCursor));
-				return;
-			}
-			// check for end
-			index = mStrategy->pickOffset(x,3.0);
-			if(index != size) 
-			{
-				printf("end found at index %d\n",index);
-				emit cursorChanged(QCursor(Qt::SizeHorCursor));
-				return;
-			}
-			emit cursorChanged(QCursor(Qt::ArrowCursor));
-*/
+			if(!mStrategy) return;
 
-			std::pair<unsigned,unsigned> pickInfo = PickHBound(x);
-			switch(pickInfo.second)
+/********** uncomment this to test it *******************************
+
+			int type = NONE;
+			unsigned size = mStrategy->onsets().size();
+			double tolerance = double(TOLERANCE)*(mRightBound-mLeftBound)/double(mScreenWidth);
+			// check for onset
+			unsigned index = mStrategy->pickOnset(x,tolerance);
+			if(index != size) type = ONSET;
+			if(type == NONE) // check for offset
+				index = mStrategy->pickOffset(x,tolerance);
+			if(index != size) type = OFFSET;
+
+*********** end uncomment ***********************/
+
+			///////// coment this to test the above /////////////////
+			std::pair<unsigned,unsigned> pixel = PickHBound(x);
+			int index = pixel.first;
+			int type = pixel.second;
+			////////  end comment  //////////////////////////////////           
+			switch(type)
 			{
-				case BEGIN:
-					printf("begin found at index %d\n",pickInfo.first);
+				case ONSET:
+					mCurrentIndex = index;
+					mIsHDragging = true;
+					emit working(true);
 					emit cursorChanged(QCursor(Qt::SizeHorCursor));
 					break;
-				case END:
-					printf("end found at index %d\n",pickInfo.first);
+				case OFFSET:
+					mCurrentIndex = index;
+					mIsHDragging = true;
+					emit working(true);
 					emit cursorChanged(QCursor(Qt::SizeHorCursor));
+					break;
+				case BODY:
+					mIsHDragging = false;
+					emit working(false);
+					emit cursorChanged(QCursor(Qt::ArrowCursor));
+					// if key alt -> set current
 					break;
 				default:
+					mIsHDragging = false;
+					emit working(false);
 					emit cursorChanged(QCursor(Qt::ArrowCursor));
 					break;
+			}
+			
+			if(mIsHDragging && mMousePressed)
+			{
+				if(type == ONSET)
+				{
+					mStrategy->dragOnset(mCurrentIndex,x);
+				}	
+				else if(type == OFFSET)
+				{
+					mStrategy->dragOffset(mCurrentIndex,x);
+				}
+				mMustProcessData = true;
+				emit requestRefresh();
+					
 			}
 
 		}
@@ -119,12 +145,17 @@ namespace CLAM
 		{
 			mMousePressed = true;
 			// TODO
+			// if dragging or selecting return
+			// if key insert -> insert 
+			// if key delete -> delete
 		}
 
 		void SegmentEditor::MouseReleased(double xpos, double ypos)
 		{
 			mMousePressed = false;
-			// TODO
+			mIsHDragging = false;
+			emit working(false);
+			emit cursorChanged(QCursor(Qt::ArrowCursor));
 		}
 
 		void SegmentEditor::ProcessData()
@@ -135,27 +166,26 @@ namespace CLAM
 
 		std::pair<unsigned, unsigned> SegmentEditor::PickHBound(double x)
 		{
-			unsigned type = NONE;
-			if(!mStrategy) return std::make_pair(1000000,type);
 			unsigned selected_pixel=GetPixel(x);
-			Segmentation::TimePositions begin = mStrategy->onsets();
-			Segmentation::TimePositions end = mStrategy->offsets();
-			unsigned nSegments = begin.size();
-			unsigned index = nSegments;			
+			Segmentation::TimePositions onsets = mStrategy->onsets();
+			Segmentation::TimePositions offsets = mStrategy->offsets();
+			unsigned nSegments = onsets.size();
+			unsigned index = nSegments;	
+			unsigned type = NONE;
 			for(unsigned i=0; i < nSegments; i++)
 			{
-				unsigned owned_pixel=GetPixel(begin[i]);
+				unsigned owned_pixel=GetPixel(onsets[i]);
 				if(abs(int(selected_pixel-owned_pixel)) <= TOLERANCE)
 				{
 					index = i;
-					type = BEGIN;
+					type = ONSET;
 					break;
 				}
-				owned_pixel=GetPixel(end[i]);
+				owned_pixel=GetPixel(onsets[i]);
 				if(abs(int(selected_pixel-owned_pixel)) <= TOLERANCE)
 				{
 					index = i;
-					type = END;
+					type = OFFSET;
 					break;
 				}
 			}
@@ -171,7 +201,6 @@ namespace CLAM
 			double pixel = xcoord*w/(right-left);
 			return unsigned(pixel);
 		}
-
 	}
 }
 
