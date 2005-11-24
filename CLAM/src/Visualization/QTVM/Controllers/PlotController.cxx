@@ -56,8 +56,11 @@ namespace CLAM
 			, mHasSentTag(false)
 			, mSegmentationMarksEnabled(true)
 			, mIsRenderingEnabled(true)
+			, mSegmentEditorWorking(false)
 		{
 			connect(&mSegmentEditor,SIGNAL(cursorChanged(QCursor)),this,SIGNAL(cursorChanged(QCursor)));
+			connect(&mSegmentEditor,SIGNAL(requestRefresh()),this,SIGNAL(requestRefresh()));
+			connect(&mSegmentEditor,SIGNAL(working(bool)),SLOT(segmentEditorWorking(bool)));
 		}
 	
 		PlotController::~PlotController()
@@ -439,6 +442,7 @@ namespace CLAM
 						mHit=false;
 					}
 				}
+				mSegmentEditor.MousePos(x,y);
 			}
 
 			if(mHit && mIsLeftButtonPressed)
@@ -448,8 +452,6 @@ namespace CLAM
 					Update(mCurrentIndex,unsigned(x));
 				}
 			}
-
-			mSegmentEditor.MousePos(x,y);
 		}
 
 		const double& PlotController::GetMouseXPos() const
@@ -647,7 +649,7 @@ namespace CLAM
 
 		bool PlotController::CanDrawSelectedPos()
 		{
-			return (!mHit && !mKeyInsertPressed);
+			return (!mHit && !mKeyInsertPressed && !mSegmentEditorWorking);
 		}
 
 		bool PlotController::HasSentTag() const
@@ -806,6 +808,47 @@ namespace CLAM
 			mSegmentEditor.SetSegmentation(s);
 		}
 
+		void PlotController::MousePressEvent(QMouseEvent* e)
+		{			
+			if(e->button() != LeftButton) return;
+			SetLeftButtonPressed(true);;
+			std::pair<double,double> coords = GetXY(e);
+			SetSelPos(coords.first,true);
+            mSegmentEditor.MousePressed(coords.first,coords.second);	
+		}
+
+		void PlotController::MouseReleaseEvent(QMouseEvent* e)
+		{
+			if(e->button() != LeftButton) return;
+			SetLeftButtonPressed(false);
+			std::pair<double,double> coords = GetXY(e);
+			mSegmentEditor.MouseReleased(coords.first,coords.second);
+		}
+
+		void PlotController::MouseMoveEvent(QMouseEvent* e)
+		{
+			std::pair<double,double> coords = GetXY(e);
+			SetMousePos(coords.first,coords.second);
+		}
+
+		std::pair<double,double> PlotController::GetXY(QMouseEvent* e)
+		{
+			double left = mLeftBound;
+			double xcoord = double(e->x());
+			xcoord *= mView.right;
+			xcoord /= mDisplayWidth;
+			xcoord += left;			
+			double ycoord = double(-e->y()+mDisplayHeight);
+			ycoord *= (mView.top-mView.bottom);
+			ycoord /= double(mDisplayHeight);
+			ycoord += mView.bottom;
+			return std::make_pair(xcoord,ycoord);
+		}
+
+		void PlotController::segmentEditorWorking(bool w)
+		{
+			mSegmentEditorWorking = w;
+		}
 	}
 }
 

@@ -76,6 +76,10 @@ namespace CLAM
 			void ClearMarks();
 
 			void SetSegmentation(Segmentation* s);
+
+			void MousePressEvent(QMouseEvent* e);
+			void MouseReleaseEvent(QMouseEvent* e);
+			void MouseMoveEvent(QMouseEvent* e);
 		    
 		signals:
 			void requestRefresh();
@@ -156,6 +160,9 @@ namespace CLAM
 
 			bool IsRenderingEnabled() const;
 
+		private slots:
+			void segmentEditorWorking(bool);
+
 		private:
 			int    mDisplayWidth;
 			int    mDisplayHeight;
@@ -192,6 +199,7 @@ namespace CLAM
 			bool                  mHasSentTag;
 			bool                  mSegmentationMarksEnabled;
 			bool                  mIsRenderingEnabled;
+			bool                  mSegmentEditorWorking;
 			
 			Dial mDial;
 
@@ -215,6 +223,7 @@ namespace CLAM
 			void Update(int index, unsigned elem);
 			unsigned GetPixel(const double& x) const;
 			int Hit(const double& x);
+			std::pair<double,double> GetXY(QMouseEvent* e);
 
 		};
     }
