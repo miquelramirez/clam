@@ -92,38 +92,17 @@ namespace CLAM
 
 		void DisplaySurface::mousePressEvent(QMouseEvent * e) 
 		{
-			if(e->button() == LeftButton)
-			{
-				mController->SetLeftButtonPressed(true);
-				double left = mController->GetLeftBound();
-				double xcoord = double(e->x());
-				xcoord *= mView.right;
-				xcoord /= width();
-				xcoord += left;
-				mController->SetSelPos(xcoord,true);
-			}
+			mController->MousePressEvent(e);
 		}
 
 		void DisplaySurface::mouseReleaseEvent(QMouseEvent* e)
 		{
-			if(e->button() == LeftButton)
-			{
-				mController->SetLeftButtonPressed(false);
-			}
+			mController->MouseReleaseEvent(e);
 		}
 
 		void DisplaySurface::mouseMoveEvent(QMouseEvent* e)
 		{
-			double left = mController->GetLeftBound();
-			double xcoord = double(e->x());
-			xcoord *= mView.right;
-			xcoord /= double(width());
-			xcoord += left;
-			double ycoord = double(-e->y()+height());
-			ycoord *= (mView.top-mView.bottom);
-			ycoord /= double(height());
-			ycoord += mView.bottom;
-			mController->SetMousePos(xcoord,ycoord);
+			mController->MouseMoveEvent(e);
 		}
 
 		void DisplaySurface::focusInEvent(QFocusEvent* e)
