@@ -71,31 +71,31 @@ namespace CLAM
 			{
 				case 1:
 					// the region is visible but the points are not
-					glVertex2f(0.0f,float(TopBound()));
-					glVertex2f(float(RightBound()-LeftBound()),float(TopBound()));
-					glVertex2f(float(RightBound()-LeftBound()),float(BottomBound()));
-					glVertex2f(0.0f,float(BottomBound()));
+					glVertex3f(0.0f,float(TopBound()),0.5f);
+					glVertex3f(float(RightBound()-LeftBound()),float(TopBound()),0.5f);
+					glVertex3f(float(RightBound()-LeftBound()),float(BottomBound()),0.5f);
+					glVertex3f(0.0f,float(BottomBound()),0.5f);
 					break;
 				case 2:
 					// the first point is visible but the second is not
-					glVertex2f(float(mData[0]-LeftBound()),float(TopBound()));
-					glVertex2f(float(RightBound()-LeftBound()),float(TopBound()));
-					glVertex2f(float(RightBound()-LeftBound()),float(BottomBound()));
-					glVertex2f(float(mData[0]-LeftBound()),float(BottomBound()));
+					glVertex3f(float(mData[0]-LeftBound()),float(TopBound()),0.5f);
+					glVertex3f(float(RightBound()-LeftBound()),float(TopBound()),0.5f);
+					glVertex3f(float(RightBound()-LeftBound()),float(BottomBound()),0.5f);
+					glVertex3f(float(mData[0]-LeftBound()),float(BottomBound()),0.5f);
 					break;
 				case 3:
 					// the second point is visible but the first is not
-					glVertex2f(0.0f,float(TopBound()));
-					glVertex2f(float(mData[1]-LeftBound()),float(TopBound()));
-					glVertex2f(float(mData[1]-LeftBound()),float(BottomBound()));
-					glVertex2f(0.0f,float(BottomBound()));
+					glVertex3f(0.0f,float(TopBound()),0.5f);
+					glVertex3f(float(mData[1]-LeftBound()),float(TopBound()),0.5f);
+					glVertex3f(float(mData[1]-LeftBound()),float(BottomBound()),0.5f);
+					glVertex3f(0.0f,float(BottomBound()),0.5f);
 					break;
 				case 4:
 					// both points are visible
-					glVertex2f(float(mData[0]-LeftBound()),float(TopBound()));
-					glVertex2f(float(mData[1]-LeftBound()),float(TopBound()));
-					glVertex2f(float(mData[1]-LeftBound()),float(BottomBound()));
-					glVertex2f(float(mData[0]-LeftBound()),float(BottomBound()));
+					glVertex3f(float(mData[0]-LeftBound()),float(TopBound()),0.5f);
+					glVertex3f(float(mData[1]-LeftBound()),float(TopBound()),0.5f);
+					glVertex3f(float(mData[1]-LeftBound()),float(BottomBound()),0.5f);
+					glVertex3f(float(mData[0]-LeftBound()),float(BottomBound()),0.5f);
 					break;
 				default:
 					// neither the points nor the region are visible
