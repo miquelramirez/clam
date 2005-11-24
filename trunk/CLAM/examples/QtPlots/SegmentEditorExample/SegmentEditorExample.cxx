@@ -20,6 +20,7 @@ int main()
 	{
 		seg->insert(double(i)*step);
 	}
+	seg->current(2); // set current segment
 
 	CLAM::VM::QtAppWrapper::Init();
 
