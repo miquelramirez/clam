@@ -20,11 +20,12 @@ namespace CLAM
 		typedef std::vector<double> TimePositions;
 	public:
 		Segmentation(double maxLength)
+			: _current(0)
+			, _maxLength(maxLength)
 		{
 			_onsets.push_back(0);
 			_offsets.push_back(maxLength);
 			_selection.push_back(false);
-			_current=0;
 
 		}
 		/**
@@ -188,11 +189,16 @@ namespace CLAM
 			if (index>=_onsets.size()) return;
 			_current = index;
 		}
+		double maxLength() const
+		{
+			return _maxLength;
+		}
 	private:
 		TimePositions _onsets;
 		TimePositions _offsets;
 		std::vector<bool> _selection;
 		unsigned _current;
+		double _maxLength;
 	private:
 		/**
 		 * Returns the index of the time position which is nearest
