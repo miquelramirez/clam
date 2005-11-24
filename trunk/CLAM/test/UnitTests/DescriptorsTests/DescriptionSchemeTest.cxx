@@ -25,6 +25,7 @@
 #include "DescriptionScheme.hxx"
 #include "DataTypes.hxx"
 #include "Component.hxx"
+#include "XMLStorage.hxx"
 
 
 namespace CLAMTest
@@ -215,6 +216,7 @@ private:
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
+
 };
 
 
