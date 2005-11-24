@@ -10,9 +10,9 @@
 #define _V2MPIANOROLL_
 
 #include <qwidget.h>
-#include "Melody.hxx"
-#include "MIDIMelody.hxx"
-#include "Slotv0.hxx"
+#include <CLAM/Melody.hxx>
+#include <CLAM/MIDIMelody.hxx>
+#include <CLAM/Slotv0.hxx>
 #include "SharedTypes.hxx"
 #include "V2MPREditDisplay.hxx"
 

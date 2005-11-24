@@ -12,7 +12,7 @@
 
 #include <qwidget.h>
 #include "SharedTypes.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Slotv1.hxx>
 
 class QFrame;
 class QPushButton;

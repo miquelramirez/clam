@@ -9,9 +9,10 @@
 #ifndef _AUDIOFILEIO_
 #define _AUDIOFILEIO_
 
-#include "Audio.hxx"
+#include <CLAM/Audio.hxx>
 
-using CLAM::Audio;
+namespace V2M
+{
 
 class AudioFileIO
 {
@@ -24,16 +25,18 @@ public:
      * param1: file name
      * param2: audio object to hold the data
      */
-    int Load(const char* fileName,Audio& out);
+    int Load(const char* fileName,CLAM::Audio& out);
 
     /*
      * Save audio file method
      * param1: file name
      * param2: audio object with the data that will be saved
      */
-    int Save(const char* fileName,Audio& in);
+    int Save(const char* fileName,CLAM::Audio& in);
 
 };
+
+} // namespace V2M
 
 #endif
 

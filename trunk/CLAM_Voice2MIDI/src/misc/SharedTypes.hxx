@@ -7,7 +7,7 @@
 #ifndef _SHAREDTYPES_
 #define _SHAREDTYPES_
 
-#include "Array.hxx"
+#include <CLAM/Array.hxx>
 
 using CLAM::DataArray;
 using CLAM::TData;

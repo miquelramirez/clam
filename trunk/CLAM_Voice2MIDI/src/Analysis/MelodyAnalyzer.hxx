@@ -10,11 +10,11 @@
 #ifndef _MELODYANALYZER_
 #define _MELODYANALYZER_
 
-#include "Melody.hxx"
-#include "MIDIMelody.hxx"
-#include "Segment.hxx"
-#include "SegmentDescriptors.hxx"
-#include "Array.hxx"
+#include <CLAM/Melody.hxx>
+#include <CLAM/MIDIMelody.hxx>
+#include <CLAM/Segment.hxx>
+#include <CLAM/SegmentDescriptors.hxx>
+#include <CLAM/Array.hxx>
 
 using CLAM::Melody;
 using CLAM::Segment;

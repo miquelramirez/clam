@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="Voice2MIDI"
+	ProjectGUID="{40276BB5-249A-43B0-A031-B76E2844B23D}"
 	SccProjectName="empty"
 	SccLocalPath=".">
 	<Platforms>
@@ -723,6 +724,12 @@
 					Filter="">
 					<File
 						RelativePath=".\moc\V2MAnalysisDisplay_moc.cxx">
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								AdditionalIncludeDirectories="&quot;G:\projects\CLAM-bin\include&quot;"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\moc\V2MGUI_moc.cxx">

@@ -4,13 +4,18 @@
  *
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
+//#include <CLAM/FundPlayer.hxx>
+//#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/SimpleOscillator.hxx>
 #include "FundPlayer.hxx"
-#include "AudioIO.hxx"
-#include "AudioManager.hxx"
-#include "AudioOut.hxx"
-#include "SimpleOscillator.hxx"
 
 using namespace CLAM;
+
+namespace V2M
+{
+	
 
 FundPlayer::FundPlayer(const Segment& originalSegment,
 							 Slotv0& slot0,
@@ -85,5 +90,7 @@ void FundPlayer::Stop()
 {
 	active = false;
 }
+
+} // namespace V2M
 
 // END

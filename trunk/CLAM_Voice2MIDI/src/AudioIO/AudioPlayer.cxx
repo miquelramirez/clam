@@ -4,12 +4,17 @@
  *
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
  */
+//#include <CLAM/AudioPlayer.hxx>
 #include "AudioPlayer.hxx"
-#include "AudioIO.hxx"
-#include "AudioManager.hxx"
-#include "AudioOut.hxx"
+#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/Slotv0.hxx>
 
 using namespace CLAM;
+
+namespace V2M
+{
 
 AudioPlayer::AudioPlayer(const Audio& in,
 			 Slotv0& slot0,
@@ -91,6 +96,8 @@ void AudioPlayer::Stop()
 {
     active = false;
 }
+
+} // namespace V2M
 
 // END
 

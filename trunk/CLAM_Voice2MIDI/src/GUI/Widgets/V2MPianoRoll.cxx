@@ -12,7 +12,7 @@
 #include <qcursor.h>
 #include <qpopupmenu.h>
 #include <qtooltip.h>
-#include "List.hxx"
+#include <CLAM/List.hxx>
 #include "V2MPianoRoll.hxx"
 
 using CLAM::List;

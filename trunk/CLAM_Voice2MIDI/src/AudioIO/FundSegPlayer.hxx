@@ -11,12 +11,12 @@
 #define _FUNDSEGPLAYER_
 
 #include <pthread.h>
-#include "Array.hxx"
-#include "Melody.hxx"
-#include "Signalv0.hxx"
-#include "Slotv0.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Array.hxx>
+#include <CLAM/Melody.hxx>
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Slotv0.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Slotv1.hxx>
 
 using CLAM::TSize;
 using CLAM::TData;
@@ -26,6 +26,9 @@ using SigSlot::Signalv0;
 using SigSlot::Slotv0;
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;
+
+namespace V2M
+{
 
 class FundSegPlayer
 {
@@ -55,6 +58,8 @@ private:
     static void* sPlayFundSegThreadSafe(void* thisObject);
 
 };
+
+} // namespace V2M
 
 #endif
 

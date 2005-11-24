@@ -9,14 +9,17 @@
 #define _AUDIORECORDER_
 
 #include <pthread.h>
-#include "Audio.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Slotv1.hxx>
 
 using CLAM::Audio;
 using CLAM::DataArray;
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;
+
+namespace V2M
+{
 
 class AudioRecorder
 {
@@ -38,6 +41,8 @@ private:
     static void* sRecordingThreadSafe(void* thisObject);
 
 };
+
+} // namespace V2M
 
 #endif
 

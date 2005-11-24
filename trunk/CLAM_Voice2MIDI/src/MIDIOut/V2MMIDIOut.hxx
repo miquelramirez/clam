@@ -8,8 +8,8 @@
 #ifndef _V2MMIDIOut_
 #define _V2MMIDIOut_
 
-#include "MIDIMelodyPlayer.hxx"
-#include "MIDIFileWriter.hxx"
+#include <CLAM/MIDIMelodyPlayer.hxx>
+#include <CLAM/MIDIFileWriter.hxx>
 
 #endif
 
