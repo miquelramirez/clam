@@ -59,6 +59,11 @@ class DescriptionXmlTest : public CppUnit::TestFixture
 	CPPUNIT_TEST(testRestoreScopePool_withBadScopeName);
 	CPPUNIT_TEST(testDumpDescriptionDataPool_withAllKindsOfData);
 	CPPUNIT_TEST(testRestoreDescriptionDataPool_withAllKindsOfData);
+	CPPUNIT_TEST(testDumpSchema);
+	CPPUNIT_TEST(testDumpMagnitudeAttributeSchema);
+	CPPUNIT_TEST(testDumpStringAttributeSchema);
+	CPPUNIT_TEST(testDumpComponentAttributeSchema);
+	CPPUNIT_TEST(testRestoreSchema);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -516,6 +521,72 @@ private:
 				CPPUNIT_ASSERT_EQUAL((const unsigned)i, data[i]);
 		}
 
+	}
+	void testDumpMagnitudeAttributeSchema()
+	{
+		CLAM::Attribute<CLAM::TData> attribute("MyScope", "MyAttribute");
+
+		CLAM::XmlStorage::Dump(attribute, "Attribute", _targetStream, false);
+		assertXmlBodyEquals(
+			"<Attribute name=\"MyAttribute\" scope=\"MyScope\" type=\"Float\"/>"
+		);
+	}
+	void testDumpStringAttributeSchema()
+	{
+		CLAM::Attribute<std::string> attribute("MyScope", "MyAttribute");
+
+		CLAM::XmlStorage::Dump(attribute, "Attribute", _targetStream, false);
+		assertXmlBodyEquals(
+			"<Attribute name=\"MyAttribute\" scope=\"MyScope\" type=\"String\"/>"
+		);
+	}
+	void testDumpComponentAttributeSchema()
+	{
+		CLAM::Attribute<DummyComponent> attribute("MyScope", "MyAttribute");
+
+		CLAM::XmlStorage::Dump(attribute, "Attribute", _targetStream, false);
+		assertXmlBodyEquals(
+			"<Attribute name=\"MyAttribute\" scope=\"MyScope\" type=\"DummyComponent\"/>"
+		);
+	}
+	void testDumpSchema()
+	{
+		CLAM::DescriptionScheme scheme;
+		scheme.AddAttribute<CLAM::TData>("MyScope","MyAttribute");
+		scheme.AddAttribute<CLAM::TData>("YourScope","YourAttribute");
+		scheme.AddAttribute<std::string>("YourScope","YourStringAttribute");
+		scheme.AddAttribute<DummyComponent>("YourScope","DummyComponentAttribute");
+
+		CLAM::XmlStorage::Dump(scheme, "DescriptionScheme", _targetStream, false);
+		assertXmlBodyEquals(
+			"<DescriptionScheme>"
+			"<Attribute name=\"MyAttribute\" scope=\"MyScope\" type=\"Float\"/>"
+			"<Attribute name=\"YourAttribute\" scope=\"YourScope\" type=\"Float\"/>"
+			"<Attribute name=\"YourStringAttribute\" scope=\"YourScope\" type=\"String\"/>"
+			"<Attribute name=\"DummyComponentAttribute\" scope=\"YourScope\" type=\"DummyComponent\"/>"
+			"</DescriptionScheme>"
+		);
+	}
+	void testRestoreSchema()
+	{
+		std::istringstream input(
+			"<DescriptionScheme>"
+			"<Attribute name=\"MyAttribute\" scope=\"MyScope\" type=\"Float\"/>"
+			"<Attribute name=\"YourAttribute\" scope=\"YourScope\" type=\"Float\"/>"
+			"<Attribute name=\"YourStringAttribute\" scope=\"YourScope\" type=\"String\"/>"
+			"</DescriptionScheme>"
+		);
+		CLAM::DescriptionScheme scheme;
+		CLAM::XmlStorage::Restore(scheme, input);
+
+		CLAM::XmlStorage::Dump(scheme, "DescriptionScheme", _targetStream, false);
+		assertXmlBodyEquals(
+			"<DescriptionScheme>"
+			"<Attribute name=\"MyAttribute\" scope=\"MyScope\" type=\"Float\"/>"
+			"<Attribute name=\"YourAttribute\" scope=\"YourScope\" type=\"Float\"/>"
+			"<Attribute name=\"YourStringAttribute\" scope=\"YourScope\" type=\"String\"/>"
+			"</DescriptionScheme>"
+		);
 	}
 
 };
