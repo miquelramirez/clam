@@ -2,7 +2,7 @@
 #define __SMSTIMESTRETCHCONFIGURATOR__
 
 #include "SMSConfigurator.hxx"
-#include "SMSTimeStretchConfig.hxx"
+#include <CLAM/SMSTimeStretchConfig.hxx>
 
 namespace QtSMS
 {

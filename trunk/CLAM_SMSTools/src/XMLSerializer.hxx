@@ -24,7 +24,7 @@
 
 #include "Serializer.hxx"
 
-#include "XMLStorage.hxx"
+#include <CLAM/XMLStorage.hxx>
 
 namespace CLAM {
 

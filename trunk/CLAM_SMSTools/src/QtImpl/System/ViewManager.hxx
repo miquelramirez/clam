@@ -4,7 +4,7 @@
 #include <vector>
 #include <qobject.h>
 #include <qstring.h>
-#include "Segment.hxx"
+#include <CLAM/Segment.hxx>
 
 class QWidget;
 class QFrame;

@@ -1,5 +1,5 @@
 #include "SMSTransformPanel.hxx"
-#include "SegmentTransformationConfig.hxx"
+#include <CLAM/SegmentTransformationConfig.hxx>
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Group.H>
@@ -8,7 +8,7 @@
 #include <FL/Fl_Tabs.H>
 #include <FL/Fl_Box.H>
 #include <FL/fl_ask.H>
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include "SMS_Configurator.hxx"
 #include <iostream>
 

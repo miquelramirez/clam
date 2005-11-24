@@ -1,6 +1,6 @@
 #include "SMSGenderChangeConfigurator.hxx"
-#include "Factory.hxx"
-#include "Assert.hxx"
+#include <CLAM/Factory.hxx>
+#include <CLAM/Assert.hxx>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Help_View.H>
 #include "Fl_SMS_Gender_Selector.hxx"

@@ -2,7 +2,7 @@
 #define __SMSRESIDUALGAINCONFIGURATOR__
 
 #include "SMSConfigurator.hxx"
-#include "SegmentTransformationConfig.hxx"
+#include <CLAM/SegmentTransformationConfig.hxx>
 
 namespace QtSMS
 {

@@ -1,7 +1,7 @@
 #ifndef __WAITMESSAGEGUI__
 #define __WAITMESSAGEGUI__
 
-#include "Fl_WaitMessage.hxx"
+#include <CLAM/Fl_WaitMessage.hxx>
 #include "WaitMessage.hxx"
 #include <pthread.h>
 

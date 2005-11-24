@@ -19,10 +19,10 @@
  *
  */
 #include "Fl_SMS_SinTracks.hxx"
-#include "Fl_X_Axis.hxx"
-#include "Fl_Y_Axis.hxx"
-#include "Fl_ZoomSlider.hxx"
-#include "Fl_Gl_Single_Display.hxx"
+#include <CLAM/Fl_X_Axis.hxx>
+#include <CLAM/Fl_Y_Axis.hxx>
+#include <CLAM/Fl_ZoomSlider.hxx>
+#include <CLAM/Fl_Gl_Single_Display.hxx>
 #include <algorithm>
 
 namespace CLAMVM

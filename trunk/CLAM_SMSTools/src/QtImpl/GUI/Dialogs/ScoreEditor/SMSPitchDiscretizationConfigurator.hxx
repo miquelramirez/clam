@@ -2,7 +2,7 @@
 #define __SMSPITCHDISCRETIZATIONCONFIGURATOR__
 
 #include "SMSConfigurator.hxx"
-#include "SegmentTransformationConfig.hxx"
+#include <CLAM/SegmentTransformationConfig.hxx>
 
 class QLabel;
 

@@ -2,7 +2,7 @@
 #define __SMSMORPHCONFIGURATOR__
 
 #include "SMSConfigurator.hxx"
-#include "SMSMorphConfig.hxx"
+#include <CLAM/SMSMorphConfig.hxx>
 
 namespace QtSMS
 {

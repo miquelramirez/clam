@@ -5,10 +5,10 @@
 #include "NotGeneratedUserInterface.hxx"
 #include "WaitMessageGUI.hxx"
 #include "ProgressGUI.hxx"
-#include "Thread.hxx"
+#include <CLAM/Thread.hxx>
 #include "SMS_DataExplorer.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Slotv1.hxx>
 #include <string>
 
 

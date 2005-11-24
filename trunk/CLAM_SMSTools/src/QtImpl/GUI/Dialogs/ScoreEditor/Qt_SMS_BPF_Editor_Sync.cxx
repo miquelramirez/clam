@@ -2,7 +2,7 @@
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qwhatsthis.h>
-#include "BPFEditor.hxx"
+#include <CLAM/BPFEditor.hxx>
 #include "Qt_SMS_BPF_Editor_Sync.hxx"
 
 namespace QtSMS

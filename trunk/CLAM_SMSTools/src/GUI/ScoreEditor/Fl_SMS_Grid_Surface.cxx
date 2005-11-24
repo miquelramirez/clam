@@ -1,5 +1,5 @@
 #include "Fl_SMS_Grid_Surface.hxx"
-#include "CLAMGL.hxx"
+#include <CLAM/CLAMGL.hxx>
 
 namespace CLAMVM
 {

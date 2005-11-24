@@ -1,5 +1,5 @@
 #include "SMSSpectralShapeShiftConfigurator.hxx"
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Help_View.H>
 #include "Fl_SMS_BPF_Editor.hxx"

@@ -1,4 +1,4 @@
-#include "QtProgressDlg.hxx"
+#include <CLAM/QtProgressDlg.hxx>
 #include "QtProgress.hxx"
 
 namespace CLAMGUI

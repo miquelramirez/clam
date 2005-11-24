@@ -1,7 +1,7 @@
 #ifndef __SCOREEDITOR_HELPER__
 #define __SCOREEDITOR_HELPER__
 
-#include "BPF.hxx"
+#include <CLAM/BPF.hxx>
 
 namespace CLAMVM
 {

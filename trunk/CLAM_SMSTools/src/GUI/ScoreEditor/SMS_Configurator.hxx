@@ -2,9 +2,9 @@
 #define __SMSCONFIGURATOR__
 
 #include <FL/Fl_Widget.H>
-#include "Factory.hxx"
-#include "Signalv0.hxx"
-#include "Slotv0.hxx"
+#include <CLAM/Factory.hxx>
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Slotv0.hxx>
 
 namespace CLAM
 {

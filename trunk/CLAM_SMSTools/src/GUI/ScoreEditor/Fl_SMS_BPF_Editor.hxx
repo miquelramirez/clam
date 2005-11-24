@@ -2,9 +2,9 @@
 #define __FL_SMS_BPF_EDITOR__
 
 #include <FL/Fl_Group.H>
-#include "BPF.hxx"
-#include "Signalv0.hxx"
-#include "Slotv2.hxx"
+#include <CLAM/BPF.hxx>
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Slotv2.hxx>
 #include <string>
 
 class Fl_Envelope_Scroll;

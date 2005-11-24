@@ -1,8 +1,8 @@
 #include "Fl_SMS_Harmonizer.hxx"
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Light_Button.H>
-#include "Fl_X_Axis.hxx"
-#include "Fl_Y_Axis.hxx"
+#include <CLAM/Fl_X_Axis.hxx>
+#include <CLAM/Fl_Y_Axis.hxx>
 #include "Fl_SMS_Grid_Surface.hxx"
 
 namespace CLAMVM

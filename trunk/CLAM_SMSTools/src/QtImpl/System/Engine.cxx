@@ -1,7 +1,7 @@
-#include "XMLStorage.hxx"
-#include "MonoAudioFileReader.hxx"
-#include "MonoAudioFileWriter.hxx"
-#include "Message.hxx"
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/MonoAudioFileWriter.hxx>
+#include <CLAM/Message.hxx>
 #include "ViewManager.hxx"
 #include "Engine.hxx"
 

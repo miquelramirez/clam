@@ -2,7 +2,7 @@
 #define __FL_SMS_BPF_SYNC_EDITOR__
 
 #include "Fl_SMS_BPF_Editor.hxx"
-#include "Signalv1.hxx"
+#include <CLAM/Signalv1.hxx>
 
 class Fl_Check_Button;
 

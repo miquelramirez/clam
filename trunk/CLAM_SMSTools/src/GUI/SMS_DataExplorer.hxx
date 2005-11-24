@@ -1,16 +1,16 @@
 #ifndef __SMS_DATAEXPLORER__
 #define __SMS_DATAEXPLORER__
 
-#include "Slotv2.hxx"
-#include "Slotv1.hxx"
-#include "Slotv0.hxx"
-#include "Signalv1.hxx"
-#include "DataTypes.hxx"
-#include "LogMagSpectrumAdapter.hxx"
-#include "AudioAdapter.hxx"
-#include "SinTracksAdapter.hxx"
-#include "SpectralPeakArrayAdapter.hxx"
-#include "FundamentalAdapter.hxx"
+#include <CLAM/Slotv2.hxx>
+#include <CLAM/Slotv1.hxx>
+#include <CLAM/Slotv0.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/LogMagSpectrumAdapter.hxx>
+#include <CLAM/AudioAdapter.hxx>
+#include <CLAM/SinTracksAdapter.hxx>
+#include <CLAM/SpectralPeakArrayAdapter.hxx>
+#include <CLAM/FundamentalAdapter.hxx>
 
 #include <FL/Fl_Widget.H>
 

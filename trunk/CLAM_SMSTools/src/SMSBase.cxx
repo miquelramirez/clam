@@ -18,36 +18,36 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include "CLAM_Math.hxx"
+#include <CLAM/CLAM_Math.hxx>
 
 
 #include "SMSBase.hxx"
-#include "SegmentDescriptors.hxx"
-#include "BasicOps.hxx"
+#include <CLAM/SegmentDescriptors.hxx>
+#include <CLAM/BasicOps.hxx>
 
 
-#include "AudioFileIn.hxx"
-#include "AudioFileOut.hxx"
+#include <CLAM/AudioFileIn.hxx>
+#include <CLAM/AudioFileOut.hxx>
 #include <iostream>
 
-#include "Segment.hxx"
+#include <CLAM/Segment.hxx>
 #include "SMSAnalysisSynthesisConfig.hxx"
-#include "SMSAnalysis.hxx"
-#include "SMSSynthesis.hxx"
-#include "CleanTracks.hxx"
-#include "Segmentator.hxx"
-#include "Normalization.hxx"
-#include "HeapDbg.hxx"
+#include <CLAM/SMSAnalysis.hxx>
+#include <CLAM/SMSSynthesis.hxx>
+#include <CLAM/CleanTracks.hxx>
+#include <CLAM/Segmentator.hxx>
+#include <CLAM/Normalization.hxx>
+#include <CLAM/HeapDbg.hxx>
 
 #include <fstream>
-#include "XMLStorage.hxx"
+#include <CLAM/XMLStorage.hxx>
 
-#include "AudioIO.hxx"
-#include "AudioOut.hxx"
-#include "AudioManager.hxx"
-#include "SMSMorphConfig.hxx"
-#include "SMSMorph.hxx"
-#include "SMSTimeStretchConfig.hxx"
+#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/SMSMorphConfig.hxx>
+#include <CLAM/SMSMorph.hxx>
+#include <CLAM/SMSTimeStretchConfig.hxx>
 
 namespace CLAM
 {
