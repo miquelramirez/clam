@@ -115,7 +115,7 @@ private:
 		CLAM::ScopePool pool(spec,poolSize);
 		try
 		{
-			int * data = pool.GetWritePool<int>("MyAttribute");
+			pool.GetWritePool<int>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -135,7 +135,7 @@ private:
 		const CLAM::ScopePool & pool2 = pool;
 		try
 		{
-			const int * data = pool2.GetReadPool<int>("MyAttribute");
+			pool2.GetReadPool<int>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -174,7 +174,7 @@ private:
 
 		try
 		{
-			CLAM::TData * data = pool.GetWritePool<CLAM::TData>("MyAttribute");
+			pool.GetWritePool<CLAM::TData>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
@@ -194,7 +194,7 @@ private:
 
 		try
 		{
-			const CLAM::TData * data = constPool.GetReadPool<CLAM::TData>("MyAttribute");
+			constPool.GetReadPool<CLAM::TData>("MyAttribute");
 			CPPUNIT_FAIL("Should have thrown an exception");
 		}
 		catch (CLAM::ErrAssertionFailed & err)
