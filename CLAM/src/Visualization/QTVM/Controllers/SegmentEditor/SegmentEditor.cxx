@@ -135,12 +135,13 @@ namespace CLAM
 
 		std::pair<unsigned, unsigned> SegmentEditor::PickHBound(double x)
 		{
+			unsigned type = NONE;
+			if(!mStrategy) return std::make_pair(1000000,type);
 			unsigned selected_pixel=GetPixel(x);
 			Segmentation::TimePositions begin = mStrategy->onsets();
 			Segmentation::TimePositions end = mStrategy->offsets();
 			unsigned nSegments = begin.size();
-			unsigned index = nSegments;
-			unsigned type = NONE;
+			unsigned index = nSegments;			
 			for(unsigned i=0; i < nSegments; i++)
 			{
 				unsigned owned_pixel=GetPixel(begin[i]);
