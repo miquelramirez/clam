@@ -33,6 +33,8 @@ namespace CLAM
 			
 		signals:
 			void cursorChanged(QCursor);
+			void working(bool);
+			void requestRefresh();
 
 		private:
 			Segmentation*   mStrategy;
@@ -47,16 +49,16 @@ namespace CLAM
 			double          mTopBound;
 			int             mScreenWidth;
 			int             mScreenHeight;
+			int             mCurrentIndex;
 			bool            mMustProcessData;
 			bool            mMousePressed;
-			bool            mHit;
+			bool            mIsHDragging;
 
-			enum { BEGIN=0, END=1, NONE=2, TOLERANCE=1 };
+			enum { ONSET=0, OFFSET=1, NONE=2, TOLERANCE=3, BODY=10 /* Bo Derek, but I preffer Jenifer Lopez */ };
 
 			void ProcessData();
 			std::pair<unsigned, unsigned> PickHBound(double x); // firs=index second=type[BEGIN/END/NONE]
 			unsigned GetPixel(double x) const;
-			
 		};
 	}
 }
