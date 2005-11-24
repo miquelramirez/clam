@@ -56,7 +56,8 @@ namespace CLAM
 			, mHasSentTag(false)
 			, mSegmentationMarksEnabled(true)
 			, mIsRenderingEnabled(true)
-		{	
+		{
+			connect(&mSegmentEditor,SIGNAL(cursorChanged(QCursor)),this,SIGNAL(cursorChanged(QCursor)));
 		}
 	
 		PlotController::~PlotController()
@@ -127,6 +128,7 @@ namespace CLAM
 		{
 			mSamples = samples;
 			mSpanX = mSamples;
+			mSegmentEditor.SetXRange(0.0,mSamples);
 			InitHRatio();
 			emit hZoomRatio(mHZRatio);
 			int hsv=GetHScrollValue();
@@ -145,6 +147,7 @@ namespace CLAM
 			mMaxY = max;
 			mMaxSpanY = mMaxY-mMinY;
 			mSpanY = mMaxSpanY;
+			mSegmentEditor.SetYRange(mMinY,mMaxY);
 			InitVRatio();
 			emit vZoomRatio(mVZRatio);
 			int vsv=GetVScrollValue();
@@ -325,6 +328,8 @@ namespace CLAM
 		{
 			mDisplayWidth = w;
 			mDisplayHeight = h;
+			
+			mSegmentEditor.ScreenArea(mDisplayWidth,mDisplayHeight);
 
 			int hsv = GetHScrollValue();
 			emit hScrollMaxValue(GetnxPixels());
@@ -443,6 +448,8 @@ namespace CLAM
 					Update(mCurrentIndex,unsigned(x));
 				}
 			}
+
+			mSegmentEditor.MousePos(x,y);
 		}
 
 		const double& PlotController::GetMouseXPos() const
