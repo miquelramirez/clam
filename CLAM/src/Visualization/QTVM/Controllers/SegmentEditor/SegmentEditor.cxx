@@ -78,8 +78,6 @@ namespace CLAM
 		{
 			if(!mStrategy) return;
 
-///********** uncomment this to test it *******************************
-
 			int type = NONE;
 			unsigned size = mStrategy->onsets().size();
 			double tolerance = double(TOLERANCE)*(mRightBound-mLeftBound)/double(mScreenWidth);
@@ -92,14 +90,6 @@ namespace CLAM
 				if(index != size) type = OFFSET;
 			}
 
-//*********** end uncomment ***********************/
-/*
-			///////// coment this to test the above /////////////////
-			std::pair<unsigned,unsigned> pixel = PickHBound(x);
-			int index = pixel.first;
-			int type = pixel.second;
-			////////  end comment  //////////////////////////////////           
-			*/
 			switch(type)
 			{
 				case ONSET:
@@ -138,10 +128,8 @@ namespace CLAM
 					mStrategy->dragOffset(mCurrentIndex,x);
 				}
 				mMustProcessData = true;
-				emit requestRefresh();
-					
+				emit requestRefresh();	
 			}
-
 		}
 
 		void SegmentEditor::MousePressed(double xpos, double ypos)
@@ -165,44 +153,6 @@ namespace CLAM
 		{
 			mRenderer.SetData(*mStrategy);
 			mMustProcessData = false;
-		}
-
-		std::pair<unsigned, unsigned> SegmentEditor::PickHBound(double x)
-		{
-			unsigned selected_pixel=GetPixel(x);
-			Segmentation::TimePositions onsets = mStrategy->onsets();
-			Segmentation::TimePositions offsets = mStrategy->offsets();
-			unsigned nSegments = onsets.size();
-			unsigned index = nSegments;	
-			unsigned type = NONE;
-			for(unsigned i=0; i < nSegments; i++)
-			{
-				unsigned owned_pixel=GetPixel(onsets[i]);
-				if(abs(int(selected_pixel-owned_pixel)) <= TOLERANCE)
-				{
-					index = i;
-					type = ONSET;
-					break;
-				}
-				owned_pixel=GetPixel(onsets[i]);
-				if(abs(int(selected_pixel-owned_pixel)) <= TOLERANCE)
-				{
-					index = i;
-					type = OFFSET;
-					break;
-				}
-			}
-			return std::make_pair(index,type);
-		}
-
-		unsigned SegmentEditor::GetPixel(double x) const
-		{
-			double w = double(mScreenWidth);
-			double left = mLeftBound;
-			double right = mRightBound;
-			double xcoord = x-left;
-			double pixel = xcoord*w/(right-left);
-			return unsigned(pixel);
 		}
 	}
 }
