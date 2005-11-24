@@ -118,8 +118,8 @@ tools_env.Append( CPPPATH=source_dirs )
 sourcefiles = []
 for dir in source_dirs :
 	sourcefiles += glob.glob(dir+'/*.cxx')
-sourcefiles.remove('../../src\SMSBatch.cxx')
-sourcefiles.remove('../../src\SMS.cxx')
+sourcefiles.remove('../../src/SMSBatch.cxx')
+sourcefiles.remove('../../src/SMS.cxx')
 
 
 if sys.platform != 'win32' :
