@@ -4,7 +4,7 @@
 #define UserInterface_hxx
 #include <FL/Fl.H>
 #include <FL/Fl_Tile.H>
-#include "Fl_Smart_Tile.hxx"
+#include <CLAM/Fl_Smart_Tile.hxx>
 class Fl_Smart_Tile;
 #include "ForwardDeclarations.hxx"
 #include <FL/Fl_Double_Window.H>

@@ -1,7 +1,7 @@
 #ifndef __FL_SMS_GRID_SURFACE__
 #define __FL_SMS_GRID_SURFACE__
 
-#include "Fl_Gl_2DSurface.hxx"
+#include <CLAM/Fl_Gl_2DSurface.hxx>
 
 namespace CLAMVM
 {

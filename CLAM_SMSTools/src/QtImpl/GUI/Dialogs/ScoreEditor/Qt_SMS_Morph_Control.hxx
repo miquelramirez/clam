@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <qwidget.h>
-#include "BPF.hxx"
+#include <CLAM/BPF.hxx>
 
 class QCheckBox;
 class QComboBox;

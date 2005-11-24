@@ -1,5 +1,5 @@
 #include "QtWaitMessage.hxx"
-#include "QtWaitMessageDlg.hxx"
+#include <CLAM/QtWaitMessageDlg.hxx>
 
 namespace CLAMGUI
 {

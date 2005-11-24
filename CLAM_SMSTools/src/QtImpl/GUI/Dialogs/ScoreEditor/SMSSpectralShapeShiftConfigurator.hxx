@@ -2,7 +2,7 @@
 #define __SMSSPECTRALSHAPESHIFTCONFIGURATOR__
 
 #include "SMSConfigurator.hxx"
-#include "SegmentTransformationConfig.hxx"
+#include <CLAM/SegmentTransformationConfig.hxx>
 
 namespace QtSMS
 {

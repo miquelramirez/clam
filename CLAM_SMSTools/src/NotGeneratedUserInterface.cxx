@@ -26,8 +26,8 @@
 #include "SMSAppState.hxx"
 #include <FL/fl_file_chooser.H>
 #include <FL/Fl.H>
-#include "FLTKConfigurator.hxx"
-#include "AudioPlayer.hxx"
+#include <CLAM/FLTKConfigurator.hxx>
+#include <CLAM/AudioPlayer.hxx>
 #include <FL/fl_message.H>
 #include <FL/fl_ask.H>
 #include <FL/Fl_Help_Dialog.H>

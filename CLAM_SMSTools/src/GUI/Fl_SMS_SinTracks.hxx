@@ -22,9 +22,9 @@
 #define __FL_SMS_SINTRACKS__
 
 #include <FL/Fl_Group.H>
-#include "SinTracksPresentation.hxx"
-#include "SinTracksRenderingManager.hxx"
-#include "SineTracksDef.hxx"
+#include <CLAM/SinTracksPresentation.hxx>
+#include <CLAM/SinTracksRenderingManager.hxx>
+#include <CLAM/SineTracksDef.hxx>
 
 namespace CLAMVM
 {

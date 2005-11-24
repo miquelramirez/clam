@@ -3,7 +3,7 @@
 #include <qaction.h>
 #include <qlabel.h>
 #include <qstatusbar.h>
-#include "Message.hxx"
+#include <CLAM/Message.hxx>
 #include "Engine.hxx"
 #include "ViewManager.hxx"
 #include "SMSConfigDlg.hxx"

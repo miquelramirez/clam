@@ -1,7 +1,7 @@
 #ifndef __TIMEINDEX_H__
 #define __TIMEINDEX_H__
 
-#include "ProcessingData.hxx"
+#include <CLAM/ProcessingData.hxx>
 
 namespace CLAM
 {

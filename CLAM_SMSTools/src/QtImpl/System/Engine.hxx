@@ -2,12 +2,12 @@
 #define __ENGINE__
 
 #include <string>
-#include "Thread.hxx"
+#include <CLAM/Thread.hxx>
 #include "QtProgress.hxx"
 #include "QtWaitMessage.hxx"
 #include "SMSBase.hxx"
-#include "Signalv0.hxx"
-#include "Slotv0.hxx"
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Slotv0.hxx>
 
 namespace QtSMS
 {

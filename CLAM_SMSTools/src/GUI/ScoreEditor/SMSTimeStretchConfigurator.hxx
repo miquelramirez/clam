@@ -2,7 +2,7 @@
 #define __SMSTIMESTRETCHCONFIGURATOR__
 
 #include "SMS_Configurator.hxx"
-#include "SMSTimeStretchConfig.hxx"
+#include <CLAM/SMSTimeStretchConfig.hxx>
 
 class Fl_Widget;
 class Fl_Help_View;

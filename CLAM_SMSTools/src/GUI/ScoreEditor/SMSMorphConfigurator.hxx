@@ -3,9 +3,9 @@
 
 
 #include "SMS_Configurator.hxx"
-#include "SMSMorphConfig.hxx"
-#include "Signalv0.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/SMSMorphConfig.hxx>
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Slotv1.hxx>
 
 class Fl_Widget;
 class Fl_Help_View;

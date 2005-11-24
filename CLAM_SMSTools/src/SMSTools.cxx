@@ -20,11 +20,11 @@
  */
 
 #include "SMSTools.hxx"
-#include "AudioFileIn.hxx"
-#include "AudioFile.hxx"
-#include "MonoAudioFileReader.hxx"
-#include "MonoAudioFileWriter.hxx"
-#include "HeapDbg.hxx"
+#include <CLAM/AudioFileIn.hxx>
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/MonoAudioFileWriter.hxx>
+#include <CLAM/HeapDbg.hxx>
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -33,7 +33,7 @@
 #include <FL/Fl_Tooltip.H>
 #include <FL/fl_file_chooser.H>
 #include <FL/fl_ask.H>
-#include "Assert.hxx"
+#include <CLAM/Assert.hxx>
 #ifdef  GetClassName
 #undef GetClassName
 #endif

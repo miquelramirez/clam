@@ -21,7 +21,7 @@
 
 #include "SerializationController.hxx"
 
-#include "Segment.hxx"
+#include <CLAM/Segment.hxx>
 
 using namespace CLAM;
 

@@ -3,7 +3,7 @@
 
 
 #include "SMS_Configurator.hxx"
-#include "SegmentTransformationConfig.hxx"
+#include <CLAM/SegmentTransformationConfig.hxx>
 
 class Fl_Widget;
 class Fl_Help_View;

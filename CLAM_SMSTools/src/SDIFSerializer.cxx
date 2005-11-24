@@ -22,9 +22,9 @@
 #include <iostream>
 
 #include "SDIFSerializer.hxx"
-#include "SDIFIn.hxx"
-#include "SDIFOut.hxx"
-#include "Segment.hxx"
+#include <CLAM/SDIFIn.hxx>
+#include <CLAM/SDIFOut.hxx>
+#include <CLAM/Segment.hxx>
 
 
 using namespace CLAM;

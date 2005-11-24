@@ -1,5 +1,5 @@
 #include "Fl_SMS_BPF_Sync_Editor.hxx"
-#include "Fl_Envelope_Scroll.H"
+#include <CLAM/Fl_Envelope_Scroll.H>
 #include <FL/Fl_Check_Button.H>
 
 namespace CLAMVM

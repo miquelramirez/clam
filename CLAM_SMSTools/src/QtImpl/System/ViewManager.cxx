@@ -1,10 +1,10 @@
 #include <qlayout.h>
 #include <qsplitter.h>
 #include <qframe.h>
-#include "Message.hxx"
-#include "Navigator.hxx"
-#include "SMSTimeMultiDisplay.hxx"
-#include "SMSFreqMultiDisplay.hxx"
+#include <CLAM/Message.hxx>
+#include <CLAM/Navigator.hxx>
+#include <CLAM/SMSTimeMultiDisplay.hxx>
+#include <CLAM/SMSFreqMultiDisplay.hxx>
 #include "Engine.hxx"
 #include "ViewManager.hxx"
 

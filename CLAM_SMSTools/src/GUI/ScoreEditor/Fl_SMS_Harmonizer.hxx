@@ -2,7 +2,7 @@
 #define __FL_SMS_HARMONIZER__
 
 #include <FL/Fl_Group.H>
-#include "BoundingBoxes.hxx"
+#include <CLAM/BoundingBoxes.hxx>
 
 class Fl_Box;
 class Fl_Light_Button;

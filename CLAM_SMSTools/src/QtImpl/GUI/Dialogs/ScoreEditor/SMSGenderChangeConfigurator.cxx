@@ -1,4 +1,4 @@
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include "Qt_Help_View.hxx"
 #include "Qt_SMS_Gender_Selector.hxx"
 #include "SMSGenderChangeConfigurator.hxx"

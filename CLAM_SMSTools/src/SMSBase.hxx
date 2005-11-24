@@ -26,18 +26,18 @@
 
 #include "SerializationController.hxx"
 
-#include "SMSSynthesisConfig.hxx"
-#include "SMSAnalysisConfig.hxx"
+#include <CLAM/SMSSynthesisConfig.hxx>
+#include <CLAM/SMSAnalysisConfig.hxx>
 #include "SMSAnalysisSynthesisConfig.hxx"
-#include "Melody.hxx"
-#include "SMSTransformationChainConfig.hxx"
-#include "SMSTransformationChain.hxx"
-#include "SegmentDescriptors.hxx"
-#include "AudioOut.hxx"
+#include <CLAM/Melody.hxx>
+#include <CLAM/SMSTransformationChainConfig.hxx>
+#include <CLAM/SMSTransformationChain.hxx>
+#include <CLAM/SegmentDescriptors.hxx>
+#include <CLAM/AudioOut.hxx>
 #include "Progress.hxx"
 #include "WaitMessage.hxx"
-#include "SDIFIn.hxx"
-#include "SDIFOut.hxx"
+#include <CLAM/SDIFIn.hxx>
+#include <CLAM/SDIFOut.hxx>
 
 #include "SMSAppState.hxx"
 

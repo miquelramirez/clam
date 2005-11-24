@@ -1,9 +1,9 @@
 #ifndef __QTSMSTOOLS__
 #define __QTSMSTOOLS__
 
-#include "Thread.hxx"
+#include <CLAM/Thread.hxx>
 #include "SMSToolsBase.h"
-#include "Slotv0.hxx"
+#include <CLAM/Slotv0.hxx>
 
 class QLabel;
 

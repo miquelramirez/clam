@@ -23,7 +23,7 @@
 #include <iostream>
 #include "StdOutProgress.hxx"
 #include "StdOutWaitMessage.hxx"
-#include "TraverseDirectory.hxx"
+#include <CLAM/TraverseDirectory.hxx>
 
 #include <iostream>
 #include <algorithm>

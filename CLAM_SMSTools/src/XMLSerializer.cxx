@@ -22,8 +22,8 @@
 #include <iostream>
 #include "XMLSerializer.hxx"
 
-#include "Segment.hxx"
-#include "SpecTypeFlags.hxx"
+#include <CLAM/Segment.hxx>
+#include <CLAM/SpecTypeFlags.hxx>
 
 using namespace CLAM;
 

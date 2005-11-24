@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "SMSTransformationChainConfig.hxx"
+#include <CLAM/SMSTransformationChainConfig.hxx>
 #include "ScoreEditorDlgBase.h"
 
 class QBoxLayout;
