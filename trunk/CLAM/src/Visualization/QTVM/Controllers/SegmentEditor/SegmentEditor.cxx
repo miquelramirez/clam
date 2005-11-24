@@ -78,7 +78,7 @@ namespace CLAM
 		{
 			if(!mStrategy) return;
 
-/********** uncomment this to test it *******************************
+///********** uncomment this to test it *******************************
 
 			int type = NONE;
 			unsigned size = mStrategy->onsets().size();
@@ -87,16 +87,19 @@ namespace CLAM
 			unsigned index = mStrategy->pickOnset(x,tolerance);
 			if(index != size) type = ONSET;
 			if(type == NONE) // check for offset
+			{
 				index = mStrategy->pickOffset(x,tolerance);
-			if(index != size) type = OFFSET;
+				if(index != size) type = OFFSET;
+			}
 
-*********** end uncomment ***********************/
-
+//*********** end uncomment ***********************/
+/*
 			///////// coment this to test the above /////////////////
 			std::pair<unsigned,unsigned> pixel = PickHBound(x);
 			int index = pixel.first;
 			int type = pixel.second;
 			////////  end comment  //////////////////////////////////           
+			*/
 			switch(type)
 			{
 				case ONSET:
