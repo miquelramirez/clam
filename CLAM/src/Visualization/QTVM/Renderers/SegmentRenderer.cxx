@@ -9,7 +9,8 @@ namespace CLAM
 		SegmentRenderer::SegmentRenderer()
 			: mSegmentation(100.0)
 		{
-			SetColor(VMColor::Custom(100,180,10));
+			// Alt: 225,90,60 
+			SetColor(VMColor::Custom(100,200,20));
 		}
 
 		SegmentRenderer::~SegmentRenderer()
@@ -25,7 +26,7 @@ namespace CLAM
 		{
 			unsigned nElems = mSegmentation.onsets().size();
 			if(!nElems) return;
-			int current = 2; // harcoded - TODO: change this harcoded to get current from segmentation
+			int current = mSegmentation.current();
 			int type = NORMAL;
 			Segmentation::TimePositions beginnings = mSegmentation.onsets();
 			Segmentation::TimePositions endings = mSegmentation.offsets();
