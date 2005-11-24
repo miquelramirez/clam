@@ -57,8 +57,6 @@ namespace CLAM
 			enum { ONSET=0, OFFSET=1, NONE=2, TOLERANCE=3, BODY=10 /* Bo Derek, but I preffer Jenifer Lopez */ };
 
 			void ProcessData();
-			std::pair<unsigned, unsigned> PickHBound(double x); // firs=index second=type[BEGIN/END/NONE]
-			unsigned GetPixel(double x) const;
 		};
 	}
 }
