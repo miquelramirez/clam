@@ -25,6 +25,11 @@
 #include <iostream>
 #include <cstdlib>
 
+#ifdef WIN32
+	#include <CLAM/InitAudioIO.hxx>
+	#include <CLAM/InitProcessing.hxx>
+#endif
+
 using CLAM::Err;
 
 using CLAMGUI::SMSTools;
@@ -33,7 +38,11 @@ int main(void)
 {
 	try
 	{
-
+#ifdef WIN32
+		CLAM::ProcessingModule::init();
+		CLAM::AudioIOModule::init();
+#endif
+	
 		SMSTools example;
 		example.Run();
 	}
