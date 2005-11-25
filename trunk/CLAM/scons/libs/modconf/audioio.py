@@ -216,7 +216,7 @@ def setup_audioio_environment( audioio_env, conf ) :
 	if sys.platform == 'linux2' and audioio_env['with_alsa'] :
 		result = test_alsa_sdk( audioio_env, conf )
 		if not result : return False
-	if audioio_env['with_jack_support'] and sys.platform != 'win32' :
+	if sys.platform != 'win32' and audioio_env['with_jack_support'] :
 		if not test_jack (audioio_env, conf): return False
 	if not sys.platform == 'linux2' :
 		if sys.platform == 'win32' :
