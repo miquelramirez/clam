@@ -140,10 +140,25 @@ namespace CLAM
 				mStrategy->insert(x);
 				mMustProcessData = true;
 				emit requestRefresh();
+				return;
+			}
+			unsigned index;
+			if(mKeySpacePressed)
+			{
+				index = mStrategy->pickSegmentBody(x);
+				{
+					mEditionMode=DraggingBody;
+					mDraggedSegment=index;
+					// This two lines maybe only when Alt is pressed
+					mStrategy->current(index);
+					mMustProcessData = true;
+					emit requestRefresh();	
+					std::cout << "Current segment is " << index << std::endl;
+					return;
+				}
 			}
 			unsigned nSegments = mStrategy->onsets().size();
 			double tolerance = double(TOLERANCE)*(mRightBound-mLeftBound)/double(mScreenWidth);
-			unsigned index;
 			index = mStrategy->pickOnset(x,tolerance);
 			if (index!=nSegments)
 			{
@@ -159,22 +174,6 @@ namespace CLAM
 				mDraggedSegment=index;
 				std::cout << "Dragging offset " << index << std::endl;
 				return;
-			}
-			if(mKeySpacePressed)
-			{
-				printf("Key alt pressed\n");
-				index = mStrategy->pickSegmentBody(x);
-				{
-					mEditionMode=DraggingBody;
-					mDraggedSegment=index;
-					// This two lines maybe only when Alt is pressed
-					mStrategy->current(index);
-					mMustProcessData = true;
-					printf("update current\n");
-					emit requestRefresh();	
-					std::cout << "Current segment is " << index << std::endl;
-					return;
-				}
 			}
 		}
 
