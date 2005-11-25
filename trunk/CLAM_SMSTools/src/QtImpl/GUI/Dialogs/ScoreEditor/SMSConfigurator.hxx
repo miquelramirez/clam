@@ -17,8 +17,8 @@ namespace QtSMS
 	{
 		Q_OBJECT
 	public:
-		SMSConfigurator(){}
-		virtual ~SMSConfigurator(){}
+		SMSConfigurator();
+		virtual ~SMSConfigurator();
 
 		/** Returns the editor widget for the SMS transformation*/
 		virtual QWidget* GetParametersWidget() = 0;
