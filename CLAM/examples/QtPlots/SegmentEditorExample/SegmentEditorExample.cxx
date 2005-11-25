@@ -2,7 +2,7 @@
 #include "audio_file_utils.hxx"
 #include "QtAppWrapper.hxx"
 #include "QtAudioPlot.hxx"
-#include "Segmentation.hxx"
+#include "ContiguousSegmentation.hxx"
 
 int main()
 {
@@ -13,7 +13,7 @@ int main()
 	    exit(1);
 	}
 
-	CLAM::Segmentation* seg = new CLAM::Segmentation(audio.GetSize());
+	CLAM::ContiguousSegmentation* seg = new CLAM::ContiguousSegmentation(audio.GetSize());
 	double step = double(audio.GetSize())/4.0;
 	// make some divisions
 	for(int i=1; i <= 3; i++)
