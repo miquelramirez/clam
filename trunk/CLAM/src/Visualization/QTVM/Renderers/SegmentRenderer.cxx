@@ -8,10 +8,12 @@ namespace CLAM
 	{
 		SegmentRenderer::SegmentRenderer()
 			: mSegmentation(0)
+			, mColors(3)
 			, mMargin(0.1)
 		{
 			// Alt: 225,90,60 
-			SetColor(VMColor::Custom(100,200,20));
+//			SetColor(VMColor::Custom(100,200,20));
+			Colorize();
 		}
 
 		SegmentRenderer::~SegmentRenderer()
@@ -41,6 +43,10 @@ namespace CLAM
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
 				{
 					DrawSegment(beginnings[i],endings[i],1.0,-1.0,type);
+					if(nElems == 1) 
+						StippledRect(beginnings[i],endings[i],1.0,-1.0);
+					else
+						if(current == i-1) StippledRect(beginnings[i-1],endings[i-1],1.0,-1.0);
 				}
 				type = NORMAL;
 			}
@@ -48,27 +54,26 @@ namespace CLAM
 		
 		void SegmentRenderer::DrawSegment(double left, double right, double top, double bottom, int type)
 		{
-			// TODO: check for highlighted: selected type
+			int cindex = NORMAL; // TODO: check for selected segments
 			int lineWidth = (type == CURRENT) ? CLINEWIDTH : NLINEWIDTH;
 			glLineWidth(lineWidth);
-			// draw border
-			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
-			glBegin(GL_LINE_STRIP);
-			Rect(left,right,top,bottom);
-			glEnd();
-			glLineWidth(1);
 			// fill rec
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			glEnable(GL_BLEND);
-			glColor4ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b),150);
-			// draw cuad
+			glColor4ub(mColors[cindex].r,mColors[cindex].g,mColors[cindex].b,150);
 			glBegin(GL_QUADS);
-			Rect(left,right,top,bottom);
+			PlainRect(left,right,top,bottom);
 			glEnd();
 			glDisable(GL_BLEND);
+			// draw plain
+			glColor3ub(mColors[cindex].r,mColors[cindex].g,mColors[cindex].b);
+			glBegin(GL_LINE_STRIP);
+			PlainRect(left,right,top,bottom);
+			glEnd();
+			glLineWidth(1);
 		}
 
-		void SegmentRenderer::Rect(double left, double right, double top, double bottom)
+		void SegmentRenderer::PlainRect(double left, double right, double top, double bottom)
 		{
 			glVertex2f(float(left-LeftBound()),float(bottom+mMargin));
 			glVertex2f(float(left-LeftBound()),float(top-mMargin));
@@ -88,6 +93,27 @@ namespace CLAM
 		void SegmentRenderer::SetMargin(double margin)
 		{
 			mMargin = margin;
+		}
+
+		void SegmentRenderer::Colorize()
+		{
+			mColors[NORMAL] = Color(100,200,20);
+			mColors[SELECTED] = Color(100,200,20); // TODO: add white
+			mColors[STIPPLED] = Color(225,90,60);
+		}
+
+		void SegmentRenderer::StippledRect(double left, double right, double top, double bottom)
+		{
+			glLineWidth(CLINEWIDTH);
+			// draw stippled rect
+			glColor3ub(mColors[STIPPLED].r,mColors[STIPPLED].g,mColors[STIPPLED].b);
+			glEnable(GL_LINE_STIPPLE);
+			glLineStipple(FACTOR,PATTERN);
+			glBegin(GL_LINE_STRIP);
+			PlainRect(left,right,top,bottom);
+			glEnd();
+			glDisable(GL_LINE_STIPPLE);
+			glLineWidth(1);
 		}
 	}
 }
