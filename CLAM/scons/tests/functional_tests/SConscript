@@ -15,6 +15,9 @@ if not os.path.exists('include') :
 folders = ['UnitTests','UnitTests/CommonHelpers','FunctionalTests/CommonHelpers','FunctionalTests/FlowControlTests','FunctionalTests/ProcessingTests']
 blacklist = ['TestRunnerQt','TestMIDIIO','TestOnsetDetector','TestSpectralPeakDetect','TestSMSAnalysis','TestAudioFileIn']
 
+if sys.platform == 'win32' :
+	blacklist += ['OSC*']
+	
 file_retriever = FileRetriever( '../../../test', folders, blacklist )
 file_retriever.out_inc = 'include'
 
@@ -27,8 +30,13 @@ for filename in file_retriever.sources :
 	update_includes( header_db, filename )
 print "ok"
 
-tests_env.Append( CPPPATH=['include'] )
-tests_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+if sys.platform != 'win32'  :
+	tests_env.Append( CPPPATH=['include'] )
+	tests_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+else :
+	tests_env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
+	tests_env.Append( CCFLAGS = ['/EHsc'] )
+	tests_env.Append( LINKFLAGS = ['/subsystem:console','/machine:x86'] )	
 functional_tests = tests_env.Program( 'FunctionalTests', file_retriever.sources )
 
 test_alias = Alias( 'run_functional_tests', [functional_tests], functional_tests[0].abspath )
