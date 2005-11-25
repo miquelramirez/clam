@@ -22,7 +22,6 @@ namespace CLAM
 			, mKeyInsertPressed(false)
 			, mKeyDeletePressed(false)
 			, mKeyShiftPressed(false)
-			, mKeySpacePressed(false)
 			, mKeyCtrlPressed(false)
 			, mEditionMode(Idle)
 			, mDraggedSegment(0)
@@ -127,10 +126,6 @@ namespace CLAM
 			{
 				emit working(true);				
 			}
-			if(mKeySpacePressed)
-			{
-				emit working(true);
-			}
 		}
 
 		void SegmentEditor::MousePressed(double x, double y)
@@ -141,23 +136,11 @@ namespace CLAM
 				mStrategy->insert(x);
 				mMustProcessData = true;
 				emit requestRefresh();
+				emit segmentInserted(x);
+				std::cout << "Inserted segment with value  " << x << std::endl;
 				return;
 			}
 			unsigned index;
-			if(mKeySpacePressed)
-			{
-				index = mStrategy->pickSegmentBody(x);
-				{
-					mEditionMode=DraggingBody;
-					mDraggedSegment=index;
-					// This two lines maybe only when Alt is pressed
-					mStrategy->current(index);
-					mMustProcessData = true;
-					emit requestRefresh();	
-					std::cout << "Current segment is " << index << std::endl;
-					return;
-				}
-			}
 			unsigned nSegments = mStrategy->onsets().size();
 			double tolerance = double(TOLERANCE)*(mRightBound-mLeftBound)/double(mScreenWidth);
 			index = mStrategy->pickOnset(x,tolerance);
@@ -176,18 +159,44 @@ namespace CLAM
 				std::cout << "Dragging offset " << index << std::endl;
 				return;
 			}
+			index = mStrategy->pickSegmentBody(x);
+			{
+				mEditionMode=DraggingBody;
+				mDraggedSegment=index;
+				// This two lines maybe only when Alt is pressed
+				mStrategy->current(index);
+				mMustProcessData = true;
+				emit requestRefresh();	
+				emit currentSegmentChanged(index);
+				std::cout << "Current segment is " << index << std::endl;
+				return;
+			}
 		}
 
 		void SegmentEditor::MouseReleased(double x, double y)
 		{
+			int mode = mEditionMode;
 			mEditionMode=Idle;
 			mMousePressed = false;
 			emit working(false);
 			emit cursorChanged(QCursor(Qt::ArrowCursor));
+			if(mode == DraggingOnset) 
+			{
+				emit segmentOnsetChanged(mDraggedSegment,x);
+				std::cout << "Onset changed at index " << mDraggedSegment << ", new value " << x << std::endl;
+				return;
+			}
+			if(mode == DraggingOffset) 
+			{
+				emit segmentOffsetChanged(mDraggedSegment,x);
+				std::cout << "Offset changed at index " << mDraggedSegment << ", new value " << x << std::endl;
+				return;
+			}
 		}
 
 		void SegmentEditor::KeyPressEvent(QKeyEvent* e)
 		{
+			int index = 0;
 			switch(e->key())
 			{
 				case Qt::Key_Shift:
@@ -200,14 +209,15 @@ namespace CLAM
 						
 				case Qt::Key_Delete:
 					mKeyDeletePressed = true; 
-					mStrategy->remove(mStrategy->current());
+					if(mStrategy->onsets().size() <= 1) return;
+					index = mStrategy->current();
+					mStrategy->remove(index);
 					mMustProcessData = true;
 					emit requestRefresh();
-					break;
-
-				case Key_Space:
-					mKeySpacePressed = true;
-					emit working(true);
+					emit segmentDeleted(index);
+					emit currentSegmentChanged(mStrategy->current());
+				    std::cout << "Segment deleted  " << index << std::endl;
+					std::cout << "Current segment is " << mStrategy->current() << std::endl;
 					break;
 
 				default:
@@ -229,11 +239,6 @@ namespace CLAM
 						
 				case Qt::Key_Delete:
 					mKeyDeletePressed = false; 
-					break;
-
-				case Key_Space:
-					mKeySpacePressed = false;
-					emit working(false);
 					break;
 
 				default:

@@ -61,6 +61,18 @@ namespace CLAM
 			connect(&mSegmentEditor,SIGNAL(cursorChanged(QCursor)),this,SIGNAL(cursorChanged(QCursor)));
 			connect(&mSegmentEditor,SIGNAL(requestRefresh()),this,SIGNAL(requestRefresh()));
 			connect(&mSegmentEditor,SIGNAL(working(bool)),SLOT(segmentEditorWorking(bool)));
+
+			// propagated signals from SegmentEditor
+			connect(&mSegmentEditor,SIGNAL(segmentOnsetChanged(unsigned,double)),
+					this,SIGNAL(segmentOnsetChanged(unsigned,double)));
+			connect(&mSegmentEditor,SIGNAL(segmentOffsetChanged(unsigned,double)),
+					this,SIGNAL(segmentOffsetChanged(unsigned,double)));
+			connect(&mSegmentEditor,SIGNAL(segmentInserted(double)),
+					this,SIGNAL(segmentInserted(double)));
+			connect(&mSegmentEditor,SIGNAL(segmentDeleted(unsigned)),
+					this,SIGNAL(segmentDeleted(unsigned)));
+			connect(&mSegmentEditor,SIGNAL(currentSegmentChanged(unsigned)),
+					this,SIGNAL(currentSegmentChanged(unsigned)));
 		}
 	
 		PlotController::~PlotController()
