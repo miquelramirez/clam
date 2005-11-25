@@ -16,14 +16,17 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 		linker_name = 'libclam_'+name+'.so'
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.so.%s'%version )
-		soname_lib = env.SonameLink( soname, lib )   # lib***.X.dylib -> lib***.X.Y.dylib
-		linkername_lib = env.LinkerNameLink( linker_name, soname_lib)  # lib***.dylib -> lib***.X.dylib
+		soname_lib = env.SonameLink( soname, lib )			# lib***.X.dylib -> lib***.X.Y.dylib
+		linkername_lib = env.LinkerNameLink( linker_name, soname_lib)	# lib***.dylib -> lib***.X.dylib
 	else : #darwin
 		soname = 'libclam_'+name+'.%s.dylib'%version.split('.')[0]
 		linker_name = 'libclam_'+name+'.dylib'
-		env.Append(SHLINKFLAGS=['-Wl,-single_module,-install_name,%s'%soname ] )
+		env.Append( CCFLAGS=['-fno-common'] )
+		env.Append( SHLINKFLAGS=['-dynamic',
+				'-Wl,-install_name,%s'%(install_dirs.lib + '/' + 'libclam_' + name + '.%s.dylib'%(version))] )
 		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.%s.dylib'%version )
-		linkername_lib = env.LinkerNameLink( linker_name, lib)   # lib***.dylib -> lib***.X.Y.dylib
+		soname_lib = env.LinkerNameLink( soname, lib )			# lib***.X.dylib -> lib***.X.Y.dylib
+		linkername_lib = env.LinkerNameLink( linker_name, soname_lib)	# lib***.dylib -> lib***.X.Y.dylib
 
 	tgt = env.Alias( name, linkername_lib )
 
