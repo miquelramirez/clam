@@ -40,13 +40,13 @@ namespace CLAM
 				}
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
 				{
-					DrawSegment(beginnings[i],endings[i],0.9,type);
+					DrawSegment(beginnings[i],endings[i],1.0,-1.0,type);
 				}
 				type = NORMAL;
 			}
 		}
 		
-		void SegmentRenderer::DrawSegment(double left, double right, double top, int type)
+		void SegmentRenderer::DrawSegment(double left, double right, double top, double bottom, int type)
 		{
 			// TODO: check for highlighted: selected type
 			int lineWidth = (type == CURRENT) ? CLINEWIDTH : NLINEWIDTH;
@@ -54,7 +54,7 @@ namespace CLAM
 			// draw border
 			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
 			glBegin(GL_LINE_STRIP);
-			Rect(left,right,top);
+			Rect(left,right,top,bottom);
 			glEnd();
 			glLineWidth(1);
 			// fill rec
@@ -63,17 +63,18 @@ namespace CLAM
 			glColor4ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b),150);
 			// draw cuad
 			glBegin(GL_QUADS);
-			Rect(left,right,top);
+			Rect(left,right,top,bottom);
 			glEnd();
 			glDisable(GL_BLEND);
 		}
 
-		void SegmentRenderer::Rect(double left, double right, double top)
+		void SegmentRenderer::Rect(double left, double right, double top, double bottom)
 		{
-			glVertex2f(float(left-LeftBound()),float(BottomBound()));
-			glVertex2f(float(left-LeftBound()),float(top));
-			glVertex2f(float(right-LeftBound()),float(top));
-			glVertex2f(float(right-LeftBound()),float(BottomBound()));
+			glVertex2f(float(left-LeftBound()),float(bottom+mMargin));
+			glVertex2f(float(left-LeftBound()),float(top-mMargin));
+			glVertex2f(float(right-LeftBound()),float(top-mMargin));
+			glVertex2f(float(right-LeftBound()),float(bottom+mMargin));
+			glVertex2f(float(left-LeftBound()),float(bottom+mMargin));
 		}
 
 		bool SegmentRenderer::IsVisible(double left, double right, double lBound, double rBound)

@@ -60,7 +60,7 @@ namespace CLAM
 			bool            mKeyCtrlPressed;
 
 
-			enum { ONSET=0, OFFSET=1, NONE=2, TOLERANCE=3, BODY=10 /* Bo Derek, but I preffer Jenifer Lopez */ };
+			enum { ONSET=0, OFFSET=1, NONE=2, TOLERANCE=3, BODY=10, PIXMARGIN=5 };
 
 			enum EditionMode 
 			{
