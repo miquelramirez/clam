@@ -8,6 +8,7 @@ namespace CLAM
 	{
 		SegmentRenderer::SegmentRenderer()
 			: mSegmentation(0)
+			, mMargin(0.1)
 		{
 			// Alt: 225,90,60 
 			SetColor(VMColor::Custom(100,200,20));
@@ -26,7 +27,7 @@ namespace CLAM
 		{
 			unsigned nElems = mSegmentation->onsets().size();
 			if(!nElems) return;
-			int current = mSegmentation->current();
+			unsigned current = mSegmentation->current();
 			int type = NORMAL;
 			const Segmentation::TimePositions & beginnings = mSegmentation->onsets();
 			const Segmentation::TimePositions & endings = mSegmentation->offsets();
@@ -35,7 +36,7 @@ namespace CLAM
 				if(beginnings[i] > RightBound()) break;
 				if(i >= 0)
 				{
-					if(current == (int)i) type = CURRENT;
+					if(current == i && nElems > 1) type = CURRENT;
 				}
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
 				{
@@ -48,7 +49,7 @@ namespace CLAM
 		void SegmentRenderer::DrawSegment(double left, double right, double top, int type)
 		{
 			// TODO: check for highlighted: selected type
-			int lineWidth = (type == CURRENT) ? 3 : 2;
+			int lineWidth = (type == CURRENT) ? CLINEWIDTH : NLINEWIDTH;
 			glLineWidth(lineWidth);
 			// draw border
 			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
@@ -81,6 +82,11 @@ namespace CLAM
 			if(right >= lBound && right <= rBound) return true;
 			if(left <= lBound && right >= rBound) return true;
 			return false;
+		}
+
+		void SegmentRenderer::SetMargin(double margin)
+		{
+			mMargin = margin;
 		}
 	}
 }
