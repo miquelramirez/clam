@@ -562,20 +562,21 @@ namespace CLAM
 			switch(e->key())
 			{
 				case Qt::Key_Shift:
-					mKeyShiftPressed = true;;
+					mKeyShiftPressed = true;
 					break;
 
 				case Qt::Key_Insert:
-					mKeyInsertPressed = true;; 
+					mKeyInsertPressed = true; 
 					break;
 						
 				case Qt::Key_Delete:
-					mKeyDeletePressed = true;; 
+					mKeyDeletePressed = true; 
 					break;
 
 				default:
 					break;
 			}
+			mSegmentEditor.KeyPressEvent(e);
 		}
 
 		void PlotController::KeyReleaseEvent(QKeyEvent* e)
@@ -587,7 +588,7 @@ namespace CLAM
 					break;
 
 				case Qt::Key_Insert:
-					mKeyInsertPressed = false;; 
+					mKeyInsertPressed = false; 
 					break;
 						
 				case Qt::Key_Delete:
@@ -597,6 +598,7 @@ namespace CLAM
 				default:
 					break;
 			}
+			mSegmentEditor.KeyReleaseEvent(e);
 		}
 
 		void PlotController::insertMark(unsigned elem)
