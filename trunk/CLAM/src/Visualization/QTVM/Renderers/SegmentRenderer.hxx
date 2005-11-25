@@ -18,7 +18,7 @@ namespace CLAM
 			void Render();
 		
 		private:
-			Segmentation mSegmentation;
+			const Segmentation * mSegmentation;
 			
 			enum { NORMAL=0, CURRENT, SELECTED };
 
