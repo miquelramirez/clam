@@ -42,8 +42,6 @@ class ScopePoolTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetWritePool_withWrongType );
 	CPPUNIT_TEST( testGetReadPool_withWrongType );
 	CPPUNIT_TEST( testGetReadPool_withoutGetWritePoolFirst );
-	CPPUNIT_TEST( testConstruction_withoutSize );
-	CPPUNIT_TEST( testConstruction_withoutSizeGettingNoConst );
 	CPPUNIT_TEST( testConstruction_givesSizeZeroByDefault );
 	CPPUNIT_TEST( testSetSize_overAZeroSizePool );
 	CPPUNIT_TEST( testSetSize_overANonZeroSizePool );
@@ -141,45 +139,6 @@ private:
 		catch (CLAM::ErrAssertionFailed & err)
 		{
 			const std::string expected = "Type Missmatch using a pool";
-			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
-		}
-	}
-
-	void testConstruction_withoutSize()
-	{
-		CLAM::DescriptionScope spec("TestScope");
-		spec.Add<CLAM::TData>("MyAttribute");
-
-		CLAM::ScopePool pool(spec);
-		const CLAM::ScopePool & constPool = pool;
-
-		try
-		{
-			const CLAM::TData * data = constPool.GetReadPool<CLAM::TData>("MyAttribute");
-			CPPUNIT_FAIL("Should have thrown an exception");
-		}
-		catch (CLAM::ErrAssertionFailed & err)
-		{
-			const std::string expected = "Getting an attribute from a zero size pool";
-			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
-		}
-	}
-
-	void testConstruction_withoutSizeGettingNoConst()
-	{
-		CLAM::DescriptionScope spec("TestScope");
-		spec.Add<CLAM::TData>("MyAttribute");
-
-		CLAM::ScopePool pool(spec);
-
-		try
-		{
-			pool.GetWritePool<CLAM::TData>("MyAttribute");
-			CPPUNIT_FAIL("Should have thrown an exception");
-		}
-		catch (CLAM::ErrAssertionFailed & err)
-		{
-			const std::string expected = "Getting an attribute from a zero size pool";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
