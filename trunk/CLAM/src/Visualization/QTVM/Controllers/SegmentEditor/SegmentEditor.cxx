@@ -101,6 +101,7 @@ namespace CLAM
 					return;
 				default:
 					// Just continue below
+					emit working(false);
 					break;
 			}
 
@@ -206,6 +207,7 @@ namespace CLAM
 
 				case Key_Space:
 					mKeySpacePressed = true;
+					emit working(true);
 					break;
 
 				default:
@@ -231,6 +233,7 @@ namespace CLAM
 
 				case Key_Space:
 					mKeySpacePressed = false;
+					emit working(false);
 					break;
 
 				default:
