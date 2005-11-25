@@ -68,7 +68,7 @@ namespace CLAM
 			storage.Store(sizeAdapter);
 			for (unsigned attribute=0; attribute<_attributePools.size(); attribute++)
 			{
-				if (_size && !_attributePools[attribute].GetData()) continue;
+				if (!_attributePools[attribute].GetData()) continue;
 				XMLComponentAdapter adapter(_attributePools[attribute],"AttributePool",true);
 				storage.Store(adapter);
 			}
@@ -103,7 +103,7 @@ namespace CLAM
 			{
 				if (!it->GetData()) continue;
 				it->Deallocate();
-				if (newSize) it->Allocate(_size);
+				it->Allocate(_size);
 			}
 		}
 	public:
@@ -123,23 +123,27 @@ namespace CLAM
 		template <typename AttributeType>
 		const AttributeType * GetReadPool(const std::string & name) const
 		{
-			CLAM_ASSERT(_size,"Getting an attribute from a zero size pool");
 			unsigned attribPos = _spec.GetIndex(name);
 			_spec.CheckType(attribPos,(AttributeType*)0);
-			CLAM_ASSERT(_attributePools[attribPos].GetData(),
+			const void * data = _attributePools[attribPos].GetData();
+			CLAM_ASSERT(data,
 				(std::string()+"Getting data from a non instanciated attribute '"+_spec.GetName()+"':'"+name+"'").c_str());
-			return (const AttributeType*) _attributePools[attribPos].GetData();
+			return &(*(const std::vector<AttributeType>*) data )[0];
 		}
 
 		template <typename AttributeType>
 		AttributeType * GetWritePool(const std::string & name)
 		{
-			CLAM_ASSERT(_size,"Getting an attribute from a zero size pool");
 			unsigned attribPos = _spec.GetIndex(name);
 			_spec.CheckType(attribPos,(AttributeType*)0);
-			if (!_attributePools[attribPos].GetData())
+			void * data = _attributePools[attribPos].GetData();
+			if (!data)
+			{
 				_attributePools[attribPos].Allocate(_size);
-			return (AttributeType*) _attributePools[attribPos].GetData();
+				data = _attributePools[attribPos].GetData();
+			}
+
+			return &(*(std::vector<AttributeType>*) data )[0];
 		}
 	};
 

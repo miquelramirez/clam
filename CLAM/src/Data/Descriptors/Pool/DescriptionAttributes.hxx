@@ -30,6 +30,7 @@
 #include "XMLComponentAdapter.hxx"
 #include "Component.hxx"
 #include <typeinfo>
+#include <vector>
 
 namespace CLAM
 {
@@ -110,17 +111,18 @@ namespace CLAM
 		typedef AttributeType DataType;
 		virtual void * Allocate(unsigned size) const
 		{
-			return new DataType[size];
+			return new std::vector<DataType>(size);
 		}
 		virtual void Deallocate(void * data) const
 		{
-			delete [] (DataType*)data;
+			delete (std::vector<DataType>*)data;
 		}
 		virtual void XmlDumpData(Storage & storage, const void * data, unsigned size ) const
 		{
 			XMLAdapter<std::string> nameAdapter(GetName(),"name",false);
 			storage.Store(nameAdapter);
-			XmlDumpConcreteData(storage,(DataType*)data,size,(DataType*)0);
+			const std::vector<DataType> * vector = (const std::vector<DataType> *) data;
+			XmlDumpConcreteData(storage,&(*vector)[0],size,(DataType*)0);
 		}
 		virtual void XmlRestoreData(Storage & storage, void * data, unsigned size ) const
 		{
@@ -128,7 +130,8 @@ namespace CLAM
 			XMLAdapter<std::string> nameAdapter(name,"name",false);
 			storage.Load(nameAdapter);
 			CLAM_ASSERT(name==GetName(),"Loading a attribute pool for a different attribute");
-			XmlRestoreConcreteData(storage,(DataType*)data,size,(DataType*)0);
+			std::vector<DataType> * vector = (std::vector<DataType> *) data;
+			XmlRestoreConcreteData(storage,&(*vector)[0],size,(DataType*)0);
 		}
 		void XmlDumpSchemaType(Storage & storage) const
 		{
