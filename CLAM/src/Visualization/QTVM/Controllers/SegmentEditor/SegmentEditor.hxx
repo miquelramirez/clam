@@ -49,13 +49,21 @@ namespace CLAM
 			double          mTopBound;
 			int             mScreenWidth;
 			int             mScreenHeight;
-			int             mCurrentIndex;
 			bool            mMustProcessData;
 			bool            mMousePressed;
-			bool            mIsHDragging;
 
 			enum { ONSET=0, OFFSET=1, NONE=2, TOLERANCE=3, BODY=10 /* Bo Derek, but I preffer Jenifer Lopez */ };
 
+			enum EditionMode 
+			{
+				Idle,
+				DraggingOnset,
+				DraggingOffset,
+				DraggingBody,
+				DraggingHeight
+			};
+			EditionMode mEditionMode;
+			unsigned mDraggedSegment;
 			void ProcessData();
 		};
 	}

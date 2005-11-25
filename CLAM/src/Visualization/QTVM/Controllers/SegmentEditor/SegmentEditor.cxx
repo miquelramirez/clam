@@ -1,6 +1,6 @@
 #include "Segmentation.hxx"
 #include "SegmentEditor.hxx"
-
+#include <iostream>
 namespace CLAM
 {
 	namespace VM
@@ -17,10 +17,10 @@ namespace CLAM
 			, mTopBound(100.0)
 			, mScreenWidth(0)
 			, mScreenHeight(100)
-			, mCurrentIndex(0)
 			, mMustProcessData(false)
 			, mMousePressed(false)
-			, mIsHDragging(false)
+			, mEditionMode(Idle)
+			, mDraggedSegment(0)
 		{
 		}
 
@@ -78,63 +78,76 @@ namespace CLAM
 		{
 			if(!mStrategy) return;
 
-			int type = NONE;
-			unsigned size = mStrategy->onsets().size();
-			double tolerance = double(TOLERANCE)*(mRightBound-mLeftBound)/double(mScreenWidth);
-			// check for onset
-			unsigned index = mStrategy->pickOnset(x,tolerance);
-			if(index != size) type = ONSET;
-			if(type == NONE) // check for offset
+			switch (mEditionMode)
 			{
-				index = mStrategy->pickOffset(x,tolerance);
-				if(index != size) type = OFFSET;
+				case DraggingOnset:
+					mStrategy->dragOnset(mDraggedSegment,x);
+					mMustProcessData = true;
+					emit requestRefresh();	
+					return;
+				case DraggingOffset:
+					mStrategy->dragOffset(mDraggedSegment,x);
+					mMustProcessData = true;
+					emit requestRefresh();	
+					return;
+				case DraggingBody:
+					return;
+				default:
+					// Just continue below
+					break;
 			}
 
-			switch(type)
+			unsigned size = mStrategy->onsets().size();
+			double tolerance = double(TOLERANCE)*(mRightBound-mLeftBound)/double(mScreenWidth);
+
+			unsigned index;
+			index = mStrategy->pickOnset(x,tolerance);
+			if (index != size) 
 			{
-				case ONSET:
-					mCurrentIndex = index;
-					mIsHDragging = true;
-					emit working(true);
-					emit cursorChanged(QCursor(Qt::SizeHorCursor));
-					break;
-				case OFFSET:
-					mCurrentIndex = index;
-					mIsHDragging = true;
-					emit working(true);
-					emit cursorChanged(QCursor(Qt::SizeHorCursor));
-					break;
-				case BODY:
-					mIsHDragging = false;
-					emit working(false);
-					emit cursorChanged(QCursor(Qt::ArrowCursor));
-					// if key alt -> set current
-					break;
-				default:
-					mIsHDragging = false;
-					emit working(false);
-					emit cursorChanged(QCursor(Qt::ArrowCursor));
-					break;
+				emit working(true);
+				emit cursorChanged(QCursor(Qt::SizeHorCursor));
+				return;
 			}
-			
-			if(mIsHDragging && mMousePressed)
+			index = mStrategy->pickOffset(x,tolerance);
+			if (index != size) 
 			{
-				if(type == ONSET)
-				{
-					mStrategy->dragOnset(mCurrentIndex,x);
-				}	
-				else if(type == OFFSET)
-				{
-					mStrategy->dragOffset(mCurrentIndex,x);
-				}
-				mMustProcessData = true;
-				emit requestRefresh();	
+				emit working(true);
+				emit cursorChanged(QCursor(Qt::SizeHorCursor));
+				return;
 			}
 		}
 
 		void SegmentEditor::MousePressed(double xpos, double ypos)
 		{
-			mMousePressed = true;
+			unsigned nSegments = mStrategy->onsets().size();
+			double tolerance = double(TOLERANCE)*(mRightBound-mLeftBound)/double(mScreenWidth);
+			unsigned index;
+			index = mStrategy->pickOnset(xpos,tolerance);
+			if (index!=nSegments)
+			{
+				mEditionMode=DraggingOnset;
+				mDraggedSegment=index;
+				std::cout << "Dragging onset " << index << std::endl;
+				return;
+			}
+			index = mStrategy->pickOffset(xpos,tolerance);
+			if (index!=nSegments)
+			{
+				mEditionMode=DraggingOffset;
+				mDraggedSegment=index;
+				std::cout << "Dragging offset " << index << std::endl;
+				return;
+			}
+			index = mStrategy->pickSegmentBody(xpos);
+			{
+				mEditionMode=DraggingBody;
+				mDraggedSegment=index;
+				// This two lines maybe only when Alt is pressed
+				mStrategy->current(index);
+				emit requestRefresh();	
+				std::cout << "Current segment is " << index << std::endl;
+				return;
+			}
 			// TODO
 			// if dragging or selecting return
 			// if key insert -> insert 
@@ -143,8 +156,8 @@ namespace CLAM
 
 		void SegmentEditor::MouseReleased(double xpos, double ypos)
 		{
+			mEditionMode=Idle;
 			mMousePressed = false;
-			mIsHDragging = false;
 			emit working(false);
 			emit cursorChanged(QCursor(Qt::ArrowCursor));
 		}
