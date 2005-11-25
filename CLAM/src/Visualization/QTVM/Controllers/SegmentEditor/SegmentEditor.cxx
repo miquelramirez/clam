@@ -51,6 +51,7 @@ namespace CLAM
 			mBottomBound = bottom;
 			mTopBound = top;
 			mRenderer.SetVBounds(mBottomBound,mTopBound);
+			mRenderer.SetMargin(double(PIXMARGIN)*(mTopBound-mBottomBound)/double(mScreenHeight));
 		}
 
 		void SegmentEditor::Draw()
@@ -64,6 +65,7 @@ namespace CLAM
 		{
 			mScreenWidth = w;
 			mScreenHeight = h;
+			mRenderer.SetMargin(double(PIXMARGIN)*(mTopBound-mBottomBound)/double(mScreenHeight));
 		}
 
 		void SegmentEditor::SetXRange(double xmin, double xmax)
