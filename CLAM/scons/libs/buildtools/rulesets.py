@@ -60,5 +60,5 @@ def win32_lib_rules( name, version, headers, source_files, install_dirs, env ) :
 	install_static = env.Install( install_dirs.lib, static_lib )
 	install_descriptor = env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
-	env.Alias('install-'+name, [install_headers,install_static,install_descriptor])
+	env.Alias('install_'+name, [install_headers,install_static,install_descriptor])
 	return tgt, install_static
