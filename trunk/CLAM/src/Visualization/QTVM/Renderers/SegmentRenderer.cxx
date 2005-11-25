@@ -36,7 +36,7 @@ namespace CLAM
 				if(beginnings[i] > RightBound()) break;
 				if(i >= 0)
 				{
-					if(current == i && nElems > 1) type = CURRENT;
+					if(current == i) type = CURRENT;
 				}
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
 				{
