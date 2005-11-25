@@ -14,7 +14,7 @@
 #include "AboutBox.hxx"
 
 #ifdef WIN32
-#include "CLAM_windows.h"
+#include <CLAM/CLAM_windows.h>
 #else
 #include <qprocess.h>
 #endif
