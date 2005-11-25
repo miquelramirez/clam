@@ -21,7 +21,7 @@ def define_module_contents() :
 		folders.append('src/Processing/InitAudioIO*.*xx')
 	else :
 		if audioio_env.has_key('with_jack_support'):
-			folders.append('src/Flow/Networks/JACKNetworkPlayer*.*hxx')
+			folders.append('src/Flow/Networks/JACKNetworkPlayer*.*xx')
 
 	if audioio_env['with_portmidi'] :
 		folders.append( 'src/Tools/PortMIDI' )
@@ -47,6 +47,7 @@ def define_module_contents() :
 		if audioio_env['audio_backend'] == 'rtaudio' :
 			print('using rtaudio2')
 			folders += ['src/Tools/AudioIO/RtAudio']
+			audioio_env.Append( LINKFLAGS=['-framework','CoreAudio'] )
 		elif audioio_env['audio_backend'] == 'portaudio' :
 			print('using portaudio')
 			folders += ['src/Flow/Networks/PANetworkPlayer*.*xx']
