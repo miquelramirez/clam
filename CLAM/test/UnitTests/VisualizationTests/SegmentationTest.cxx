@@ -1,20 +1,20 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
-#include "Segmentation.hxx"
+#include "ContiguousSegmentation.hxx"
 #include <sstream>
 
-using CLAM::Segmentation;
+using CLAM::ContiguousSegmentation;
 
 namespace CLAMTest
 {
-	class SegmentationTest;
+	class ContiguousSegmentationTest;
 
-	CPPUNIT_TEST_SUITE_REGISTRATION( SegmentationTest );
+	CPPUNIT_TEST_SUITE_REGISTRATION( ContiguousSegmentationTest );
 
-	class SegmentationTest : public CppUnit::TestFixture
+	class ContiguousSegmentationTest : public CppUnit::TestFixture
 	{
-		CPPUNIT_TEST_SUITE( SegmentationTest );
+		CPPUNIT_TEST_SUITE( ContiguousSegmentationTest );
 		CPPUNIT_TEST( testConstructor );
 		CPPUNIT_TEST( testInsert_aPoint );
 		CPPUNIT_TEST( testInsert_inTheMiddle );
@@ -73,13 +73,13 @@ namespace CLAMTest
 
 		void testConstructor()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 
 			CPPUNIT_ASSERT_EQUAL(std::string("(0,200) "), segmentation.boundsAsString());
 		}
 		void testInsert_aPoint()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			unsigned pos = segmentation.insert(100);
 
 			CPPUNIT_ASSERT_EQUAL(1u, pos);
@@ -87,7 +87,7 @@ namespace CLAMTest
 		}
 		void testInsert_inTheMiddle()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(50);
 			segmentation.insert(150);
 			unsigned pos = segmentation.insert(100);
@@ -97,13 +97,13 @@ namespace CLAMTest
 		}
 		void testInsert_beyondLimit()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			try
 			{
 				segmentation.insert(400);
 				CPPUNIT_FAIL("Should have thrown an exception");
 			}
-			catch (Segmentation::InsertedOutOfBounds & e)
+			catch (ContiguousSegmentation::InsertedOutOfBounds & e)
 			{
 				CPPUNIT_ASSERT_EQUAL(std::string("Segmentation point inserted out of limits"), std::string(e.what()));
 			}
@@ -111,13 +111,13 @@ namespace CLAMTest
 		}
 		void testInsert_behindLimit()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			try
 			{
 				segmentation.insert(-0.1);
 				CPPUNIT_FAIL("Should have thrown an exception");
 			}
-			catch (Segmentation::InsertedOutOfBounds & e)
+			catch (ContiguousSegmentation::InsertedOutOfBounds & e)
 			{
 				CPPUNIT_ASSERT_EQUAL(std::string("Segmentation point inserted out of limits"), std::string(e.what()));
 			}
@@ -126,7 +126,7 @@ namespace CLAMTest
 		}
 		void testPickOffset_withExactValue()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(50);
 			segmentation.insert(100);
 			segmentation.insert(150);
@@ -136,7 +136,7 @@ namespace CLAMTest
 		}
 		void testPickOffset_withNonMatchingValue()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(50);
 			segmentation.insert(100);
 			segmentation.insert(150);
@@ -146,7 +146,7 @@ namespace CLAMTest
 		}
 		void testPickOffset_withinTolerance()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(50);
 			segmentation.insert(100);
 			segmentation.insert(150);
@@ -156,7 +156,7 @@ namespace CLAMTest
 		}
 		void testPickOffset_withSeveralPointsWithinTolerance()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -166,7 +166,7 @@ namespace CLAMTest
 		}
 		void testPickOffset_outsideTheRange()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -176,7 +176,7 @@ namespace CLAMTest
 		}
 		void testPickOnset_withExactValue()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(50);
 			segmentation.insert(100);
 			segmentation.insert(150);
@@ -186,7 +186,7 @@ namespace CLAMTest
 		}
 		void testPickOnset_withNonMatchingValue()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(50);
 			segmentation.insert(100);
 			segmentation.insert(150);
@@ -196,7 +196,7 @@ namespace CLAMTest
 		}
 		void testPickOnset_withinTolerance()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(50);
 			segmentation.insert(100);
 			segmentation.insert(150);
@@ -206,7 +206,7 @@ namespace CLAMTest
 		}
 		void testPickOnset_withSeveralPointsWithinTolerance()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -216,7 +216,7 @@ namespace CLAMTest
 		}
 		void testPickOnset_outsideTheRange()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -226,7 +226,7 @@ namespace CLAMTest
 		}
 		void testPickSegmentBody()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -236,7 +236,7 @@ namespace CLAMTest
 		}
 		void testPickSegmentBody_behindRange()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -246,7 +246,7 @@ namespace CLAMTest
 		}
 		void testPickSegmentBody_afterRange()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -257,7 +257,7 @@ namespace CLAMTest
 		void testPickSegmentBody_atABound()
 		{
 			// This behaviour is not specified just to know what happens
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -268,7 +268,7 @@ namespace CLAMTest
 		void testPickSegmentBody_atZeroBound()
 		{
 			// This behaviour is not specified just to know what happens
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -278,7 +278,7 @@ namespace CLAMTest
 		}
 		void testSelection()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -289,7 +289,7 @@ namespace CLAMTest
 		}
 		void testSelection_multiple()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -301,7 +301,7 @@ namespace CLAMTest
 		}
 		void testDeselection()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -314,7 +314,7 @@ namespace CLAMTest
 		}
 		void testInsert_movesSelection()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -328,7 +328,7 @@ namespace CLAMTest
 		}
 		void testClearSelection()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -342,7 +342,7 @@ namespace CLAMTest
 		}
 		void testDragOffset()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -353,7 +353,7 @@ namespace CLAMTest
 		}
 		void testDragOffset_beyondNextBound()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -364,7 +364,7 @@ namespace CLAMTest
 		}
 		void testDragOffset_beyondPreviousBound()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -375,7 +375,7 @@ namespace CLAMTest
 		}
 		void testDragOffset_ofLastBoundHasNoEffect()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -386,7 +386,7 @@ namespace CLAMTest
 		}
 		void testDragOffset_ofPreLastSegment()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -397,7 +397,7 @@ namespace CLAMTest
 		}
 		void testDragOffset_ofFirstBoundLimitIsZero()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -408,7 +408,7 @@ namespace CLAMTest
 		}
 		void testDragOnset()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -419,7 +419,7 @@ namespace CLAMTest
 		}
 		void testDragOnset_beyondNextBound()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -430,7 +430,7 @@ namespace CLAMTest
 		}
 		void testDragOnset_beyondPreviousBound()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -441,7 +441,7 @@ namespace CLAMTest
 		}
 		void testDragOnset_ofFirstBoundHasNoEffect()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -452,7 +452,7 @@ namespace CLAMTest
 		}
 		void testDragOnset_ofLastSegment()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -463,7 +463,7 @@ namespace CLAMTest
 		}
 		void testDragOnset_ofLastBoundLimitIsLength()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -474,7 +474,7 @@ namespace CLAMTest
 		}
 		void testRemove()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -487,7 +487,7 @@ namespace CLAMTest
 		}
 		void testRemove_movesSelection()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -501,7 +501,7 @@ namespace CLAMTest
 		}
 		void testRemove_removesRemovedSelection()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -514,7 +514,7 @@ namespace CLAMTest
 		}
 		void testRemove_firstSegment()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -528,7 +528,7 @@ namespace CLAMTest
 		}
 		void testRemove_lastSegmentExpandsPrevious()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -542,7 +542,7 @@ namespace CLAMTest
 		}
 		void testRemove_singleSegmentHasNoEffect()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 
 			segmentation.remove(0);
 
@@ -550,18 +550,18 @@ namespace CLAMTest
 		}
 		void testConstructor_putsCurrentAtZero()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			CPPUNIT_ASSERT_EQUAL(0u, segmentation.current());
 		}
 		void testInsert_keepsCurrentAtZero()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			CPPUNIT_ASSERT_EQUAL(0u, segmentation.current());
 		}
 		void testCurrent_changesCurrent()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -570,7 +570,7 @@ namespace CLAMTest
 		}
 		void testCurrent_aboveNSegmentsHasNoEffect()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -580,7 +580,7 @@ namespace CLAMTest
 		}
 		void testInsert_beforeCurrentCorrectsIt()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -590,7 +590,7 @@ namespace CLAMTest
 		}
 		void testRemove_beforeCurrentCorrectsIt()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -600,7 +600,7 @@ namespace CLAMTest
 		}
 		void testRemove_afterCurrentKeepsIt()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -610,7 +610,7 @@ namespace CLAMTest
 		}
 		void testRemove_justTheCurrentChangesIt()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
@@ -620,7 +620,7 @@ namespace CLAMTest
 		}
 		void testRemove_justTheCurrentButItIsZeroKeepsAtZero()
 		{
-			Segmentation segmentation(200.0);
+			ContiguousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
