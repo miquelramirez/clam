@@ -29,8 +29,14 @@ for filename in file_retriever.headers :
 for filename in file_retriever.sources :
 	update_includes( header_db, filename )
 
-tests_env.Append( CPPPATH=['include'] )
-tests_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+if sys.platform != 'win32'  :
+	tests_env.Append( CPPPATH=['include'] )
+	tests_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+else :
+	tests_env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
+	tests_env.Append( CCFLAGS = ['/EHsc'] )
+	tests_env.Append( LINKFLAGS = ['/subsystem:console','/machine:x86'] )	
+	
 unit_tests = tests_env.Program( 'UnitTests', file_retriever.sources )
 
 test_alias = Alias( 'run_unit_tests', [unit_tests], unit_tests[0].abspath )
