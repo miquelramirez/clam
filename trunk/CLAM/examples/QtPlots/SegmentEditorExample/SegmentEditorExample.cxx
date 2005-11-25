@@ -13,10 +13,12 @@ int main()
 	    exit(1);
 	}
 
-	CLAM::ContiguousSegmentation* seg = new CLAM::ContiguousSegmentation(audio.GetSize());
-	double step = double(audio.GetSize())/4.0;
+	CLAM::Segmentation* seg = new CLAM::ContiguousSegmentation(audio.GetSize());
+
+	unsigned nSegments = 15;
+	double step = double(audio.GetSize())/nSegments;
 	// make some divisions
-	for(int i=1; i <= 3; i++)
+	for(int i=1; i < nSegments; i++)
 	{
 		seg->insert(double(i)*step);
 	}
