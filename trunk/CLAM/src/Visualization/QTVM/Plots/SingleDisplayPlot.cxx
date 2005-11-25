@@ -86,6 +86,18 @@ namespace CLAM
 
 			// to adjust left margin
 			connect(mController,SIGNAL(initialYRulerRange(double,double)),this,SLOT(initialYRulerRange(double,double)));
+
+			// connect signals from SegmentEditor
+			connect(mController,SIGNAL(segmentOnsetChanged(unsigned,double)),
+					this,SIGNAL(segmentOnsetChanged(unsigned,double)));
+			connect(mController,SIGNAL(segmentOffsetChanged(unsigned,double)),
+					this,SIGNAL(segmentOffsetChanged(unsigned,double)));
+			connect(mController,SIGNAL(segmentInserted(double)),
+					this,SIGNAL(segmentInserted(double)));
+			connect(mController,SIGNAL(segmentDeleted(unsigned)),
+					this,SIGNAL(segmentDeleted(unsigned)));
+			connect(mController,SIGNAL(currentSegmentChanged(unsigned)),
+					this,SIGNAL(currentSegmentChanged(unsigned)));
 		}
 
 		void SingleDisplayPlot::Init()

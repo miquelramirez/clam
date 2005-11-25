@@ -39,6 +39,13 @@ namespace CLAM
 			void working(bool);
 			void requestRefresh();
 
+			// signals to tell outside what happend
+			void segmentOnsetChanged(unsigned,double);
+			void segmentOffsetChanged(unsigned,double);
+			void segmentInserted(double);
+			void segmentDeleted(unsigned);
+			void currentSegmentChanged(unsigned);
+
 		private:
 			Segmentation*   mStrategy;
 			SegmentRenderer mRenderer;
@@ -57,10 +64,9 @@ namespace CLAM
 			bool            mKeyInsertPressed;
 			bool            mKeyDeletePressed;
 			bool            mKeyShiftPressed;
-			bool            mKeySpacePressed;
 			bool            mKeyCtrlPressed;
 			
-			enum { ONSET=0, OFFSET=1, NONE=2, TOLERANCE=3, BODY=10, PIXMARGIN=5 };
+			enum { TOLERANCE=3, PIXMARGIN=5 };
 
 			enum EditionMode 
 			{

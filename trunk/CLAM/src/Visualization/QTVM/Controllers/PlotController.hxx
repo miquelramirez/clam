@@ -103,6 +103,13 @@ namespace CLAM
 			void requestSegmentationTag();
 			void mouseOverDisplay(bool);
 
+			// propagated signals from SegmentEditor
+			void segmentOnsetChanged(unsigned,double);
+			void segmentOffsetChanged(unsigned,double);
+			void segmentInserted(double);
+			void segmentDeleted(unsigned);
+			void currentSegmentChanged(unsigned);
+
 		public slots:
 			void hZoomIn();
 			void hZoomOut();	
