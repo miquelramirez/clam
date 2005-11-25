@@ -24,12 +24,15 @@ namespace CLAM
 			void Draw();
 
 			void MousePos(double x, double y);
-			void MousePressed(double xpos, double ypos);
-			void MouseReleased(double xpos, double ypos);
+			void MousePressed(double x, double y);
+			void MouseReleased(double x, double y);
 
 			void ScreenArea(int w, int h);
 			void SetXRange(double xmin, double xmax);
 			void SetYRange(double ymin, double ymax);
+
+			void KeyPressEvent(QKeyEvent* e);
+			void KeyReleaseEvent(QKeyEvent* e);
 			
 		signals:
 			void cursorChanged(QCursor);
@@ -51,6 +54,11 @@ namespace CLAM
 			int             mScreenHeight;
 			bool            mMustProcessData;
 			bool            mMousePressed;
+			bool            mKeyInsertPressed;
+			bool            mKeyDeletePressed;
+			bool            mKeyShiftPressed;
+			bool            mKeyCtrlPressed;
+
 
 			enum { ONSET=0, OFFSET=1, NONE=2, TOLERANCE=3, BODY=10 /* Bo Derek, but I preffer Jenifer Lopez */ };
 
