@@ -7,7 +7,7 @@ namespace CLAM
 	namespace VM
 	{
 		SegmentRenderer::SegmentRenderer()
-			: mSegmentation(100.0)
+			: mSegmentation(0)
 		{
 			// Alt: 225,90,60 
 			SetColor(VMColor::Custom(100,200,20));
@@ -19,17 +19,17 @@ namespace CLAM
 
 		void SegmentRenderer::SetData(const Segmentation& s)
 		{
-			mSegmentation = s;
+			mSegmentation = &s;
 		}
 
 		void SegmentRenderer::Render()
 		{
-			unsigned nElems = mSegmentation.onsets().size();
+			unsigned nElems = mSegmentation->onsets().size();
 			if(!nElems) return;
-			int current = mSegmentation.current();
+			int current = mSegmentation->current();
 			int type = NORMAL;
-			Segmentation::TimePositions beginnings = mSegmentation.onsets();
-			Segmentation::TimePositions endings = mSegmentation.offsets();
+			const Segmentation::TimePositions & beginnings = mSegmentation->onsets();
+			const Segmentation::TimePositions & endings = mSegmentation->offsets();
 			for(unsigned i=0;  i < nElems; i++)
 			{
 				if(beginnings[i] > RightBound()) break;
