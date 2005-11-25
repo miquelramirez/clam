@@ -19,6 +19,10 @@ namespace CLAM
 			, mScreenHeight(100)
 			, mMustProcessData(false)
 			, mMousePressed(false)
+			, mKeyInsertPressed(false)
+			, mKeyDeletePressed(false)
+			, mKeyShiftPressed(false)
+			, mKeyCtrlPressed(false)
 			, mEditionMode(Idle)
 			, mDraggedSegment(0)
 		{
@@ -94,6 +98,7 @@ namespace CLAM
 					return;
 				default:
 					// Just continue below
+//					emit cursorChanged(QCursor(Qt::ArrowCursor));
 					break;
 			}
 
@@ -115,14 +120,25 @@ namespace CLAM
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
 			}
+			if(mKeyInsertPressed)
+			{
+				emit working(true);				
+			}
 		}
 
-		void SegmentEditor::MousePressed(double xpos, double ypos)
+		void SegmentEditor::MousePressed(double x, double y)
 		{
+			if(!mStrategy) return;
+			if(mKeyInsertPressed)
+			{
+				mStrategy->insert(x);
+				mMustProcessData = true;
+				emit requestRefresh();
+			}
 			unsigned nSegments = mStrategy->onsets().size();
 			double tolerance = double(TOLERANCE)*(mRightBound-mLeftBound)/double(mScreenWidth);
 			unsigned index;
-			index = mStrategy->pickOnset(xpos,tolerance);
+			index = mStrategy->pickOnset(x,tolerance);
 			if (index!=nSegments)
 			{
 				mEditionMode=DraggingOnset;
@@ -130,7 +146,7 @@ namespace CLAM
 				std::cout << "Dragging onset " << index << std::endl;
 				return;
 			}
-			index = mStrategy->pickOffset(xpos,tolerance);
+			index = mStrategy->pickOffset(x,tolerance);
 			if (index!=nSegments)
 			{
 				mEditionMode=DraggingOffset;
@@ -138,7 +154,7 @@ namespace CLAM
 				std::cout << "Dragging offset " << index << std::endl;
 				return;
 			}
-			index = mStrategy->pickSegmentBody(xpos);
+			index = mStrategy->pickSegmentBody(x);
 			{
 				mEditionMode=DraggingBody;
 				mDraggedSegment=index;
@@ -148,18 +164,59 @@ namespace CLAM
 				std::cout << "Current segment is " << index << std::endl;
 				return;
 			}
-			// TODO
-			// if dragging or selecting return
-			// if key insert -> insert 
-			// if key delete -> delete
 		}
 
-		void SegmentEditor::MouseReleased(double xpos, double ypos)
+		void SegmentEditor::MouseReleased(double x, double y)
 		{
 			mEditionMode=Idle;
 			mMousePressed = false;
 			emit working(false);
 			emit cursorChanged(QCursor(Qt::ArrowCursor));
+		}
+
+		void SegmentEditor::KeyPressEvent(QKeyEvent* e)
+		{
+			switch(e->key())
+			{
+				case Qt::Key_Shift:
+					mKeyShiftPressed = true;
+					break;
+
+				case Qt::Key_Insert:
+					mKeyInsertPressed = true; 
+					break;
+						
+				case Qt::Key_Delete:
+					mKeyDeletePressed = true; 
+					mStrategy->remove(mStrategy->current());
+					mMustProcessData = true;
+					emit requestRefresh();
+					break;
+
+				default:
+					break;
+			}
+		}
+
+		void SegmentEditor::KeyReleaseEvent(QKeyEvent* e)
+		{
+			switch(e->key())
+			{
+				case Qt::Key_Shift:
+					mKeyShiftPressed = false;
+					break;
+
+				case Qt::Key_Insert:
+					mKeyInsertPressed = false; 
+					break;
+						
+				case Qt::Key_Delete:
+					mKeyDeletePressed = false; 
+					break;
+
+				default:
+					break;
+			}
 		}
 
 		void SegmentEditor::ProcessData()
