@@ -100,7 +100,6 @@ namespace CLAM
 					return;
 				default:
 					// Just continue below
-//					emit cursorChanged(QCursor(Qt::ArrowCursor));
 					break;
 			}
 
