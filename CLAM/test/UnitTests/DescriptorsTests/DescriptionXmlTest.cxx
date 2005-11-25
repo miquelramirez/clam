@@ -113,7 +113,7 @@ private:
 		CLAM::AttributePool pool;
 		pool.SetDefinition(attribute);
 		pool.Allocate(3);
-		int * data = (int*) pool.GetData();
+		std::vector<int> & data = * (std::vector<int>*) pool.GetData();
 		for (unsigned int i = 0; i<3; i++) data[i]= -i;
 
 		CLAM::XmlStorage::Dump(pool,"AttributePool",_targetStream,false);
@@ -132,7 +132,7 @@ private:
 		CLAM::AttributePool pool;
 		pool.SetDefinition(attribute);
 		pool.Allocate(3);
-		DummyComponent * data = (DummyComponent*) pool.GetData();
+		std::vector<DummyComponent> & data = * (std::vector<DummyComponent>*) pool.GetData();
 		data[0].SetValue("value0");
 		data[1].SetValue("value1");
 		data[2].SetValue("value2");
@@ -174,7 +174,7 @@ private:
 
 		CLAM::XmlStorage::Restore(pool, input);
 
-		const int * data = (int*) pool.GetData();
+		const std::vector<int> & data = * (const std::vector<int>*) pool.GetData();
 		for (unsigned int i = 0; i<3; i++)
 			CPPUNIT_ASSERT_EQUAL((const int)-i, data[i]);
 
@@ -196,7 +196,7 @@ private:
 
 		CLAM::XmlStorage::Restore(pool, input);
 
-		const DummyComponent * data = (DummyComponent*) pool.GetData();
+		const std::vector<DummyComponent> & data = * (std::vector<DummyComponent>*) pool.GetData();
 		const std::string value0("value0"), value1("value1"), value2("value2");
 		CPPUNIT_ASSERT_EQUAL(value0, data[0].GetValue());
 		CPPUNIT_ASSERT_EQUAL(value1, data[1].GetValue());
@@ -336,7 +336,7 @@ private:
 		CLAM::DescriptionScope scope("TestScope");
 		scope.Add<std::string>("MyAttribute");
 		CLAM::ScopePool pool(scope,0);
-
+		std::string * values = pool.GetWritePool<std::string>("MyAttribute");
 		CLAM::XmlStorage::Dump(pool,"ScopePool",_targetStream,false);
 		assertXmlBodyEquals(
 			"<ScopePool name=\"TestScope\" size=\"0\">"
