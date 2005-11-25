@@ -22,6 +22,7 @@ namespace CLAM
 			, mKeyInsertPressed(false)
 			, mKeyDeletePressed(false)
 			, mKeyShiftPressed(false)
+			, mKeySpacePressed(false)
 			, mKeyCtrlPressed(false)
 			, mEditionMode(Idle)
 			, mDraggedSegment(0)
@@ -125,6 +126,10 @@ namespace CLAM
 			{
 				emit working(true);				
 			}
+			if(mKeySpacePressed)
+			{
+				emit working(true);
+			}
 		}
 
 		void SegmentEditor::MousePressed(double x, double y)
@@ -155,15 +160,21 @@ namespace CLAM
 				std::cout << "Dragging offset " << index << std::endl;
 				return;
 			}
-			index = mStrategy->pickSegmentBody(x);
+			if(mKeySpacePressed)
 			{
-				mEditionMode=DraggingBody;
-				mDraggedSegment=index;
-				// This two lines maybe only when Alt is pressed
-				mStrategy->current(index);
-				emit requestRefresh();	
-				std::cout << "Current segment is " << index << std::endl;
-				return;
+				printf("Key alt pressed\n");
+				index = mStrategy->pickSegmentBody(x);
+				{
+					mEditionMode=DraggingBody;
+					mDraggedSegment=index;
+					// This two lines maybe only when Alt is pressed
+					mStrategy->current(index);
+					mMustProcessData = true;
+					printf("update current\n");
+					emit requestRefresh();	
+					std::cout << "Current segment is " << index << std::endl;
+					return;
+				}
 			}
 		}
 
@@ -194,6 +205,10 @@ namespace CLAM
 					emit requestRefresh();
 					break;
 
+				case Key_Space:
+					mKeySpacePressed = true;
+					break;
+
 				default:
 					break;
 			}
@@ -213,6 +228,10 @@ namespace CLAM
 						
 				case Qt::Key_Delete:
 					mKeyDeletePressed = false; 
+					break;
+
+				case Key_Space:
+					mKeySpacePressed = false;
 					break;
 
 				default:

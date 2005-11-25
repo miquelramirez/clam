@@ -57,9 +57,9 @@ namespace CLAM
 			bool            mKeyInsertPressed;
 			bool            mKeyDeletePressed;
 			bool            mKeyShiftPressed;
+			bool            mKeySpacePressed;
 			bool            mKeyCtrlPressed;
-
-
+			
 			enum { ONSET=0, OFFSET=1, NONE=2, TOLERANCE=3, BODY=10, PIXMARGIN=5 };
 
 			enum EditionMode 
