@@ -28,7 +28,7 @@ for filename in file_retriever.sources :
 print "ok"
 
 tests_env.Append( CPPPATH=['include'] )
-neted_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+tests_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
 functional_tests = tests_env.Program( 'FunctionalTests', file_retriever.sources )
 
 test_alias = Alias( 'run_functional_tests', [functional_tests], functional_tests[0].abspath )
