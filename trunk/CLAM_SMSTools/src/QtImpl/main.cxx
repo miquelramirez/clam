@@ -8,9 +8,17 @@
 #include <X11/Xlib.h>
 #endif
 
+#ifdef WIN32
+	#include <CLAM/InitAudioIO.hxx>
+	#include <CLAM/InitProcessing.hxx>
+#endif
 
 int main( int argc, char ** argv )
 {
+#ifdef WIN32
+	CLAM::ProcessingModule::init();
+	CLAM::AudioIOModule::init();
+#endif
 
 #ifdef Q_WS_X11
 	XInitThreads();
