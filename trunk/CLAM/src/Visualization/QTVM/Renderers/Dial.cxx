@@ -41,8 +41,8 @@ namespace CLAM
 			glLineWidth(2);
 			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
 			glBegin(GL_LINES);
-			glVertex2f(float(mPosition-LeftBound()),float(TopBound()));
-			glVertex2f(float(mPosition-LeftBound()),float(BottomBound()));
+			glVertex3f(float(mPosition-LeftBound()),float(TopBound()),0.5f);
+			glVertex3f(float(mPosition-LeftBound()),float(BottomBound()),0.5f);
 			glEnd();
 			glLineWidth(1);
 		}
