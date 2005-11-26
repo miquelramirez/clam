@@ -43,10 +43,11 @@ namespace CLAM
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
 				{
 					DrawSegment(beginnings[i],endings[i],1.0,-1.0,type);
-					if(nElems == 1) 
+					if(nElems == 1 || (current == i && i == nElems-1))
 						StippledRect(beginnings[i],endings[i],1.0,-1.0);
-					else
+					else 
 						if(current == i-1) StippledRect(beginnings[i-1],endings[i-1],1.0,-1.0);
+					
 				}
 				type = NORMAL;
 			}
