@@ -35,6 +35,7 @@ namespace CLAM
 			void KeyReleaseEvent(QKeyEvent* e);
 			
 		signals:
+			void toolTip(QString);
 			void cursorChanged(QCursor);
 			void working(bool);
 			void requestRefresh();
@@ -65,7 +66,7 @@ namespace CLAM
 			bool            mKeyDeletePressed;
 			bool            mKeyShiftPressed;
 			bool            mKeyCtrlPressed;
-			
+		   
 			enum { TOLERANCE=3, PIXMARGIN=5 };
 
 			enum EditionMode 
@@ -76,8 +77,10 @@ namespace CLAM
 				DraggingBody,
 				DraggingHeight
 			};
+
 			EditionMode mEditionMode;
-			unsigned mDraggedSegment;
+			unsigned    mDraggedSegment;
+		   
 			void ProcessData();
 		};
 	}
