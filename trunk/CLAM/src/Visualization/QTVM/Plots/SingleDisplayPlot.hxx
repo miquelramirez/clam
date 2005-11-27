@@ -47,10 +47,7 @@ namespace CLAM
 			void SetMarks(std::vector<unsigned>& marks);
 			std::vector<unsigned>& GetMarks();
 			void SetMarksColor(Color c);
-			void SetMarksEnabled(bool e);
 			std::vector<QString> GetSegmentationTags();
-
-
 
 			void SetToggleColorOn(bool b);
 			void SwitchDisplayColors(bool b);
