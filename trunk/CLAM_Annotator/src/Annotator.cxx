@@ -175,8 +175,8 @@ void Annotator::initAudioWidget()
 	mpAudioPlot->SetData(mCurrentAudio);
 	mpAudioPlot->SetEditTagDialogEnabled(false);
 	mpAudioPlot->SwitchDisplayColors(true);
-	mpAudioPlot->SetToggleColorOn(true);
-	mpAudioPlot->switchColors();
+//	mpAudioPlot->SetToggleColorOn(true);
+//	mpAudioPlot->switchColors();
 	mpAudioPlot->setFocus();
 	mpAudioPlot->Hide();
 }
@@ -252,6 +252,7 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 		mBPFEditor=0;
 	}
 	mBPFEditor = new CLAM::VM::BPFEditor(CLAM::VM::AllowVerticalEdition|CLAM::VM::HasVerticalScroll|CLAM::VM::HasPlayer);
+	mBPFEditor->switchColors();
 	mBPFEditor->SetActivePlayer(false);
 	mBPFEditor->Hide();
 	
