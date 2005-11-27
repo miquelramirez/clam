@@ -18,11 +18,10 @@ int main()
 	unsigned nSegments = 15;
 	double step = double(audio.GetSize())/nSegments;
 	// make some divisions
-	for(int i=1; i < nSegments; i++)
+	for(unsigned i=1; i < nSegments; i++)
 	{
 		seg->insert(double(i)*step);
 	}
-	seg->insert(step*2+1000);
 	seg->current(2); // set current segment
 
 	CLAM::VM::QtAppWrapper::Init();
@@ -30,9 +29,9 @@ int main()
 	CLAM::VM::QtAudioPlot plot;
 	plot.Label("Audio");
 	plot.Geometry(100,100,700,350);
-	plot.SetMarksEnabled(false); // disable old segments
 	plot.SetData(audio);
 	plot.SetSegmentation(seg);
+	plot.SetBackgroundColor(CLAM::VM::VMColor::White());
 	plot.SetForegroundColor(CLAM::VM::VMColor::Blue());
 	plot.Show();
 	
