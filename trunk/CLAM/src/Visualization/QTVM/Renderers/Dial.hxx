@@ -36,8 +36,8 @@ namespace CLAM
 			
 			void Render();
 
-			void Update(const double& value);
-			const double& GetPos() const;
+			void Update(double value);
+			double GetPos() const;
 		
 		private:
 		    double mPosition;

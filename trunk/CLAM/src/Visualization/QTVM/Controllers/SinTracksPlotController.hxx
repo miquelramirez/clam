@@ -41,12 +41,12 @@ namespace CLAM
 			~SinTracksPlotController();
 
 			void SetData(const Segment& segment);
-			void SetData(const Array< SpectralPeakArray >& peakMtx, const double& sr, const double& dur);
-			void DisplayDimensions(const int& w, const int& h);
+			void SetData(const Array< SpectralPeakArray >& peakMtx, double sr, double dur);
+			void DisplayDimensions(int w, int h);
 			void Draw();
 
-			void SetMousePos(const double& x, const double& y);
-			void SetSelPos(const double& value, bool render);
+			void SetMousePos(double x, double y);
+			void SetSelPos(double value, bool render);
 
 		signals:
 			void sendTimeFreq(double, double);
@@ -57,8 +57,8 @@ namespace CLAM
 			void setSelectedXPos(double);
 	
 		protected:
-			void SetHBounds(const double& left, const double& right);
-			void SetVBounds(const double& bottom,const double& top);
+			void SetHBounds(double left, double right);
+			void SetVBounds(double bottom, double top);
 
 			void FullView();
 

@@ -104,7 +104,7 @@ namespace CLAM
 			mPeaksRenderer.SetPeakColor(cline,cpoint);
 		}
 
-		void SpectrumPlotController::SetHBounds(const double& left, const double& right)
+		void SpectrumPlotController::SetHBounds(double left, double right)
 		{
 			PlotController::SetHBounds(left,right);
 			mMustProcessData = true;
@@ -116,7 +116,7 @@ namespace CLAM
 			emit xRulerRange(lBound,hBound);
 		}
 
-		void SpectrumPlotController::SetVBounds(const double& bottom, const double& top)
+		void SpectrumPlotController::SetVBounds(double bottom, double top)
 		{
 			PlotController::SetVBounds(bottom,top);
 			
@@ -127,7 +127,7 @@ namespace CLAM
 			emit yRulerRange(bBound,tBound);
 		}
 
-		void SpectrumPlotController::DisplayDimensions(const int& w, const int& h)
+		void SpectrumPlotController::DisplayDimensions(int w, int h)
 		{
 			PlotController::DisplayDimensions(w,h);
 		
@@ -238,7 +238,7 @@ namespace CLAM
 			mPeaksRenderer.SetData(mProcessedPeaks);
 		}
 
-		void SpectrumPlotController::SetSelPos(const double& value, bool render)
+		void SpectrumPlotController::SetSelPos(double value, bool render)
 		{
 			if(CanDrawSelectedPos())
 			{
@@ -251,7 +251,7 @@ namespace CLAM
 			}
 		}
 
-		void SpectrumPlotController::SetMousePos(const double& x, const double& y)
+		void SpectrumPlotController::SetMousePos(double x, double y)
 		{
 			if(x < 0 || x > GetnSamples()) return;
 			if(y < GetMinY() || y > GetMaxY()) return;
@@ -265,7 +265,7 @@ namespace CLAM
 			if(!HasSentTag())
 			{	
 				QString s = "mag="+QString::number(m,'f',0)+"dB freq="+QString::number(f,'f',0)+"Hz";
-				emit toolTip(s);
+				emit globalToolTip(s);
 			}
 		}
 

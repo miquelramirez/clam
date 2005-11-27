@@ -34,18 +34,18 @@ namespace CLAM
 			Renderer();
 			virtual ~Renderer();
 
-			void SetHBounds(const double& left, const double& right);
-			void SetVBounds(const double& bottom, const double& top);
+			void SetHBounds(double left, double right);
+			void SetVBounds(double bottom, double top);
 			void SetColor(const Color& c);
 			const Color& GetColor() const;
 
 			virtual void Render() = 0;
 
 		protected:
-			const double& LeftBound() const;
-			const double& RightBound() const;
-			const double& BottomBound() const;
-			const double& TopBound() const;
+			double LeftBound() const;
+			double RightBound() const;
+			double BottomBound() const;
+			double TopBound() const;
 
 		private:
 			double mLeftBound;

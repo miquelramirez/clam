@@ -47,12 +47,12 @@ namespace CLAM
 			glLineWidth(1);
 		}
 
-		void Dial::Update(const double& value)
+		void Dial::Update(double value)
 		{
 			mPosition = value;
 		}
 
-		const double& Dial::GetPos() const
+		double Dial::GetPos() const
 		{
 			return mPosition;
 		}

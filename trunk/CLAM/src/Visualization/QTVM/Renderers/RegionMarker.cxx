@@ -104,23 +104,23 @@ namespace CLAM
 			glEnd();
 		}
 
-		void RegionMarker::SetBegin(const double& value)
+		void RegionMarker::SetBegin(double value)
 		{
 			mData[0] = value;
 		}
 
-		void RegionMarker::SetEnd(const double& value)
+		void RegionMarker::SetEnd(double value)
 		{
 			mData[1] = value;
 		}
 
-		const double& RegionMarker::GetBegin() const
+		double RegionMarker::GetBegin() const
 		{
 			return mData[0];
 
 		}
 
-		const double& RegionMarker::GetEnd() const
+		double RegionMarker::GetEnd() const
 		{
 			return mData[1];
 		}

@@ -74,8 +74,8 @@ namespace CLAM
 		{
 			if(!mHasData || !IsRenderingEnabled()) return;
 			if(mMustProcessData) ProcessData();
-			mRenderer.Render();
 			DrawAxis();
+			mRenderer.Render();
 			PlayablePlotController::Draw();
 		}
 
@@ -92,7 +92,7 @@ namespace CLAM
 			emit initialYRulerRange(-1.0,1.0);
 		}
 
-		void AudioPlotController::SetHBounds(const double& left,const double& right)
+		void AudioPlotController::SetHBounds(double left, double right)
 		{
 			PlayablePlotController::SetHBounds(left,right);
 			mMustProcessData = true;
@@ -104,7 +104,7 @@ namespace CLAM
 			if(mHasData && IsRenderingEnabled()) emit requestRefresh();	
 		}
 
-		void AudioPlotController::SetVBounds(const double& bottom, const double& top)
+		void AudioPlotController::SetVBounds(double bottom, double top)
 		{
 			PlayablePlotController::SetVBounds(bottom,top);
 			
@@ -115,7 +115,7 @@ namespace CLAM
 			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
-		void AudioPlotController::DisplayDimensions(const int& w, const int& h)
+		void AudioPlotController::DisplayDimensions(int w, int h)
 		{
 			PlotController::DisplayDimensions(w,h);
 			mMustProcessData = true;
@@ -221,7 +221,7 @@ namespace CLAM
 			emit selectedRegion(time);
 		}
 
-		void AudioPlotController::SetMousePos(const double& x, const double& y)
+		void AudioPlotController::SetMousePos(double x, double y)
 		{
 			PlotController::SetMousePos(x,y);
 			if(!HasSentTag())
@@ -229,11 +229,11 @@ namespace CLAM
 				double t=GetMouseXPos()/GetSampleRate();
 				double amp=GetMouseYPos();
 				QString s = "t="+QString::number(t,'f',3)+"s amp="+QString::number(amp,'f',3);
-				emit toolTip(s);
+				emit globalToolTip(s);
 			}
 		}
 
-		void AudioPlotController::SetSelPos(const double& value, bool render)
+		void AudioPlotController::SetSelPos(double value, bool render)
 		{
 			if(CanDrawSelectedPos())
 			{

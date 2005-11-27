@@ -66,7 +66,7 @@ namespace CLAM
 			mRenderer.SetColor(c);
 		}
 
-		void FundPlotController::SetHBounds(const double& left,const double& right)
+		void FundPlotController::SetHBounds(double left, double right)
 		{
 			PlayablePlotController::SetHBounds(left,right);
 			mMustProcessData = true;
@@ -78,7 +78,7 @@ namespace CLAM
 			emit xRulerRange(lBound,hBound);	
 		}
 
-		void FundPlotController::SetVBounds(const double& bottom, const double& top)
+		void FundPlotController::SetVBounds(double bottom, double top)
 		{
 			PlayablePlotController::SetVBounds(bottom,top);
 			
@@ -89,7 +89,7 @@ namespace CLAM
 			emit yRulerRange(bBound,tBound);
 		}
 
-		void FundPlotController::DisplayDimensions(const int& w, const int& h)
+		void FundPlotController::DisplayDimensions(int w, int h)
 		{
 			PlotController::DisplayDimensions(w,h);
 		
@@ -165,7 +165,7 @@ namespace CLAM
 			emit selectedRegion(time);
 		}
 
-		void FundPlotController::SetMousePos(const double& x, const double& y)
+		void FundPlotController::SetMousePos(double x, double y)
 		{
 			PlotController::SetMousePos(x,y);
 			if(!HasSentTag())
@@ -174,7 +174,7 @@ namespace CLAM
 				TData freq=GetMouseYPos();
 				QString s = "t="+QString::number(t,'f',3)+"s freq="+QString::number(freq,'f',0)+"Hz";
 			
-				emit toolTip(s);
+				emit globalToolTip(s);
 			}
 		}
 
@@ -184,7 +184,7 @@ namespace CLAM
 			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
-		void FundPlotController::SetSelPos(const double& value, bool render)
+		void FundPlotController::SetSelPos(double value, bool render)
 		{
 			if(CanDrawSelectedPos())
 			{

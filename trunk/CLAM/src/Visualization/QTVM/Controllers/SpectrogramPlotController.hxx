@@ -18,14 +18,14 @@ namespace CLAM
 			SpectrogramPlotController();
 			~SpectrogramPlotController();
 
-			void SetData(const Array<Spectrum>& specMtx, const double& dur);
-			void DisplayDimensions(const int& w, const int& h);
+			void SetData(const Array<Spectrum>& specMtx, double dur);
+			void DisplayDimensions(int w, int h);
 			void Draw();
 
-			void SetMousePos(const double& x, const double& y);
+			void SetMousePos(double x, double y);
 
-			std::vector<Color> GetColorScale(const int& size);
-			std::vector<Color> GetGrayScale(const int& size);
+			std::vector<Color> GetColorScale(int size);
+			std::vector<Color> GetGrayScale(int size);
 
 			void SetRenderingMode(CLAM::VM::SonogramCM colorMap);
 
@@ -35,7 +35,7 @@ namespace CLAM
 
 			void LeaveMouse();
 
-			void SetSelPos(const double& value, bool render);
+			void SetSelPos(double value, bool render);
 
 		signals:
 			void sendLabels(QString, QString, QString);
@@ -46,8 +46,8 @@ namespace CLAM
 			void setSelectedXPos(double);
 
 		protected:
-			void SetHBounds(const double& left, const double& right);
-			void SetVBounds(const double& bottom,const double& top);
+			void SetHBounds(double left, double right);
+			void SetVBounds(double bottom, double top);
 
 			void FullView();
 
@@ -76,11 +76,10 @@ namespace CLAM
 
 			void ComputeIndexes();
 
-			QString TimeToStr(const TData& seconds);
+			QString TimeToStr(TData seconds);
 
 			void ComputeData();
-			TData MatrixBlockMean(const TIndex& firstRow, const TIndex& lastRow, 
-								  const TIndex& firstCol, const TIndex& lastCol);
+			TData MatrixBlockMean(TIndex firstRow, TIndex lastRow, TIndex firstCol, TIndex lastCol);
 			
 		};
     }

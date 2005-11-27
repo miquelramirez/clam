@@ -36,10 +36,10 @@ namespace CLAM
 
 			void Render();
 
-			void SetBegin(const double& value);
-			void SetEnd(const double& value);
-			const double& GetBegin() const;
-			const double& GetEnd() const;
+			void SetBegin(double value);
+			void SetEnd(double value);
+			double GetBegin() const;
+			double GetEnd() const;
 
 		private:
 			double mData[2];

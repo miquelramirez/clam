@@ -17,7 +17,7 @@ namespace CLAM
 			PlayablePlotController();
 			virtual ~PlayablePlotController();
 
-			virtual void SetSelPos(const double& value, bool render);
+			virtual void SetSelPos(double value, bool render);
 			virtual void Draw();
 			void SetRegionColor(Color c);
 			bool IsPlayable();
@@ -38,15 +38,15 @@ namespace CLAM
 			void stopPlaying(float);
 			
 		protected:
-			virtual void SetHBounds(const double& left,const double& right);
-			virtual void SetVBounds(const double& bottom,const double& top);
+			virtual void SetHBounds(double left, double right);
+			virtual void SetVBounds(double bottom, double top);
 
 			bool CanDrawSelectedPos();
 
-			void SetSampleRate(const double& sr);
-			void SetDuration(const double& dur);
-			const double& GetSampleRate() const;
-			const double& GetDuration() const;
+			void SetSampleRate(double sr);
+			void SetDuration(double dur);
+			double GetSampleRate() const;
+			double GetDuration() const;
 
 			virtual void FullView()=0;
 
@@ -56,10 +56,10 @@ namespace CLAM
 			double       mDuration;
 			bool         mIsPlaying;
 				
-			const double& GetBeginRegion() const;
-			const double& GetEndRegion() const;
-			void SetBeginRegion(const double& value);
-			void SetEndRegion(const double& value);
+			double GetBeginRegion() const;
+			double GetEndRegion() const;
+			void SetBeginRegion(double value);
+			void SetEndRegion(double value);
 
 			MediaTime GetRegionTime() const;
 	    

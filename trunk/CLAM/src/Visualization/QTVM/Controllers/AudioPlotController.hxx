@@ -41,11 +41,11 @@ namespace CLAM
 			void SetData(const Audio& audio);
 			void UpdateData(const Audio& audio);
 			void SetDataColor(Color c);
-			void DisplayDimensions(const int& w, const int& h);
+			void DisplayDimensions(int w, int h);
 			void Draw();
 
-			void SetSelPos(const double& value, bool render);
-			void SetMousePos(const double& x, const double& y);
+			void SetSelPos(double value, bool render);
+			void SetMousePos(double x, double y);
 
 		public slots:
 			void setHBounds(double, double);
@@ -53,8 +53,8 @@ namespace CLAM
 			void setSelectedXPos(double);
 
 		protected:
-			void SetHBounds(const double& left,const double& right);
-			void SetVBounds(const double& bottom,const double& top);
+			void SetHBounds(double left, double right);
+			void SetVBounds(double bottom, double top);
 
 			void FullView();
 				

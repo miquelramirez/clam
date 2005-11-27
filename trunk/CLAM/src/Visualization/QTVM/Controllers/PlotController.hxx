@@ -45,13 +45,13 @@ namespace CLAM
 			PlotController();
 			virtual ~PlotController();
 
-			virtual void SetSelPos(const double& value, bool render);
-			virtual void DisplayDimensions(const int& w, const int& h);
-			virtual void SetMousePos(const double& x, const double& y);
-			const double& GetLeftBound() const;
-			const double& GetRightBound() const;
-			const double& GetBottomBound() const;
-			const double& GetTopBound() const;
+			virtual void SetSelPos(double value, bool render);
+			virtual void DisplayDimensions(int w, int h);
+			virtual void SetMousePos(double x, double y);
+			double GetLeftBound() const;
+			double GetRightBound() const;
+			double GetBottomBound() const;
+			double GetTopBound() const;
 			virtual void SetLeftButtonPressed(bool pressed);
 			virtual void LeaveMouse();
 			virtual void EnterMouse();
@@ -68,7 +68,7 @@ namespace CLAM
 			unsigned GetMarkIndex() const;
 			std::vector<QString> GetTags();
 
-			void SetDialColor(Color c);
+			void SetDialColor(const Color& c);
 
 			virtual bool IsPlayable();
 			
@@ -80,6 +80,8 @@ namespace CLAM
 			void MousePressEvent(QMouseEvent* e);
 			void MouseReleaseEvent(QMouseEvent* e);
 			void MouseMoveEvent(QMouseEvent* e);
+
+			bool HasSegmentation() const;
 		    
 		signals:
 			void requestRefresh();
@@ -90,7 +92,6 @@ namespace CLAM
 			void vZoomRatio(double);
 			void vScrollValue(int);
 			void vScrollMaxValue(int);
-			void toolTip(QString);
 			void cursorChanged(QCursor);
 			void insertedMark(unsigned);
 			void removedMark(int, unsigned);
@@ -102,6 +103,8 @@ namespace CLAM
 			void selectedXPos(double);
 			void requestSegmentationTag();
 			void mouseOverDisplay(bool);
+			void localToolTip(QString);
+			void globalToolTip(QString);
 
 			// propagated signals from SegmentEditor
 			void segmentOnsetChanged(unsigned,double);
@@ -133,35 +136,35 @@ namespace CLAM
 		protected:
 			GLView mView;
 
-			virtual void SetHBounds(const double& left, const double& right);
-			virtual void SetVBounds(const double& bottom, const double& top);
-			const double& GetSelPos() const;
-			void SetnSamples(const double& samples);
-			const double& GetnSamples() const;
-			void SetYRange(const double& min, const double& max);
-			const double& GetMaxSpanY() const;
-			void SetMinSpanX(const double& min);
-			const double& GetMinSpanX() const;
-			const double& GetSpanY() const;
-			void SetMinSpanY(const double& min);
-			const double& GetMinSpanY() const;
-			const double& GetSpanX() const;
-			const double& GetMouseXPos() const;
-			const double& GetMouseYPos() const;
+			virtual void SetHBounds(double left, double right);
+			virtual void SetVBounds(double bottom, double top);
+			double GetSelPos() const;
+			void SetnSamples(double samples);
+			double GetnSamples() const;
+			void SetYRange(double min, double max);
+			double GetMaxSpanY() const;
+			void SetMinSpanX(double min);
+			double GetMinSpanX() const;
+			double GetSpanY() const;
+			void SetMinSpanY(double min);
+			double GetMinSpanY() const;
+			double GetSpanX() const;
+			double GetMouseXPos() const;
+			double GetMouseYPos() const;
 			bool IsLeftButtonPressed();
 			bool IsKeyShiftPressed();
 			bool IsAbleToEdit();
-			const int& GetDisplayWidth() const;
-			const int& GetDisplayHeight() const;
+			int GetDisplayWidth() const;
+			int GetDisplayHeight() const;
 
 			virtual bool CanDrawSelectedPos();
 			bool HasSentTag() const;
 
-			void UpdateDial(const double& value);
-			const double& GetDialPos() const;
+			void UpdateDial(double value);
+			double GetDialPos() const;
 
-			const double& GetMinY() const;
-			const double& GetMaxY() const;
+			double GetMinY() const;
+			double GetMaxY() const;
 
 			virtual void FullView()=0;
 
@@ -207,6 +210,7 @@ namespace CLAM
 			bool                  mSegmentationMarksEnabled;
 			bool                  mIsRenderingEnabled;
 			bool                  mSegmentEditorWorking;
+			bool                  mHasSegmentation;
 			
 			Dial mDial;
 
@@ -221,15 +225,15 @@ namespace CLAM
 			int GetnyPixels() const;
 			int GetVScrollValue() const;
 			bool ReferenceIsVisible();
-			const double& GetReference() const;
+			double GetReference() const;
 
 			void ProcessMarks();
 			bool HaveElem(unsigned elem);
 			void InsertElem(unsigned elem);
 			void RemoveElem(int index);
 			void Update(int index, unsigned elem);
-			unsigned GetPixel(const double& x) const;
-			int Hit(const double& x);
+			unsigned GetPixel(double x) const;
+			int Hit(double x);
 			std::pair<double,double> GetXY(QMouseEvent* e);
 
 		};

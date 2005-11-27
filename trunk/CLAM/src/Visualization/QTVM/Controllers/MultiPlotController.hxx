@@ -39,19 +39,19 @@ namespace CLAM
 			MultiPlotController();
 			~MultiPlotController();
 
-			void SetXRulerRange(const double& xmin, const double& xmax);
-			void SetYRulerRange(const double& ymin, const double& ymax);
+			void SetXRulerRange(double xmin, double xmax);
+			void SetYRulerRange(double ymin, double ymax);
 
 			void AddData(std::string key, const DataArray& array);
 			void RemoveData( std::string key );
 			void RemoveAllData();
 
 			void SetColor(std::string key, Color c);
-			void DisplayDimensions(const int& w, const int& h);
+			void DisplayDimensions(int w, int h);
 			void Draw();
 
-			void SetMousePos(const double& x, const double& y);
-			void SetSelPos(const double& value, bool render);
+			void SetMousePos(double x, double y);
+			void SetSelPos(double value, bool render);
 
 		signals:
 			void sendXYValues(double,double);
@@ -62,8 +62,8 @@ namespace CLAM
 			void setSelectedXPos(double);
 
 		protected:
-			void SetHBounds(const double& left, const double& right);
-			void SetVBounds(const double& bottom,const double& top);
+			void SetHBounds(double left, double right);
+			void SetVBounds(double bottom, double top);
 
 			void FullView();
 
