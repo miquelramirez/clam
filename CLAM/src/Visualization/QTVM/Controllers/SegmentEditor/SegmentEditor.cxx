@@ -1,3 +1,4 @@
+#include "CLAMGL.hxx"
 #include "Segmentation.hxx"
 #include "SegmentEditor.hxx"
 #include <iostream>
@@ -89,18 +90,22 @@ namespace CLAM
 				case DraggingOnset:
 					mStrategy->dragOnset(mDraggedSegment,x);
 					mMustProcessData = true;
+					emit toolTip(QString::number(x,'f',0));
 					emit requestRefresh();	
 					return;
 				case DraggingOffset:
 					mStrategy->dragOffset(mDraggedSegment,x);
 					mMustProcessData = true;
+					emit toolTip(QString::number(x,'f',0));
 					emit requestRefresh();	
 					return;
 				case DraggingBody:
+					emit toolTip("");
 					return;
 				default:
 					// Just continue below
 					emit working(false);
+					emit toolTip("");
 					break;
 			}
 
@@ -112,6 +117,7 @@ namespace CLAM
 			if (index != size) 
 			{
 				emit working(true);
+				emit toolTip(QString::number(x,'f',0));
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
 			}
@@ -119,6 +125,7 @@ namespace CLAM
 			if (index != size) 
 			{
 				emit working(true);
+				emit toolTip(QString::number(x,'f',0));
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
 			}
@@ -179,6 +186,7 @@ namespace CLAM
 			mEditionMode=Idle;
 			mMousePressed = false;
 			emit working(false);
+			emit toolTip("");
 			emit cursorChanged(QCursor(Qt::ArrowCursor));
 			if(mode == DraggingOnset) 
 			{
@@ -220,6 +228,10 @@ namespace CLAM
 					std::cout << "Current segment is " << mStrategy->current() << std::endl;
 					break;
 
+				case Key_Control:
+					mKeyCtrlPressed = true;
+					break;
+
 				default:
 					break;
 			}
@@ -239,6 +251,10 @@ namespace CLAM
 						
 				case Qt::Key_Delete:
 					mKeyDeletePressed = false; 
+					break;
+
+				case Qt::Key_Control:
+					mKeyCtrlPressed = false;
 					break;
 
 				default:
