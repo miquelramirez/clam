@@ -342,12 +342,6 @@ namespace CLAM
 		{
 			mController->SetSegmentation(s);
 		}
-
-		void SingleDisplayPlot::SetMarksEnabled(bool e)
-		{
-			mController->SetSegmentationMarksEnabled(e);
-		}
-
     }
 }
 
