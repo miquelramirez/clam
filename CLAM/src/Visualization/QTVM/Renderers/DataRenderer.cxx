@@ -103,7 +103,7 @@ namespace CLAM
 			glLoadIdentity();
 			glOrtho(0.0,right,BottomBound(),TopBound(),-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
-			glClear(GL_COLOR_BUFFER_BIT);
+
 			glBegin(GL_LINE_STRIP);
 			for(unsigned i = 0; i < mElems;i++)
 			{
@@ -111,6 +111,7 @@ namespace CLAM
 				glVertex3f(float(i),float(*mMinsPtr++),-1.0f);			
 			}
 			glEnd();
+
 			glMatrixMode(GL_PROJECTION);
 			glPopMatrix();
 			glMatrixMode(GL_MODELVIEW);

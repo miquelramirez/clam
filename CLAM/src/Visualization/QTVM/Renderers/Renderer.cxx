@@ -38,13 +38,13 @@ namespace CLAM
 		{
 		}
 
-		void Renderer::SetHBounds(const double& left, const double& right)
+		void Renderer::SetHBounds(double left, double right)
 		{
 			mLeftBound = left;
 			mRightBound = right;
 		}
 
-		void Renderer::SetVBounds(const double& bottom, const double& top)
+		void Renderer::SetVBounds(double bottom, double top)
 		{
 		    mTopBound = top;
 			mBottomBound = bottom;
@@ -60,22 +60,22 @@ namespace CLAM
 			return mColor;;
 		}
 
-		const double& Renderer::LeftBound() const
+		double Renderer::LeftBound() const
 		{
 			return mLeftBound;
 		}
 
-		const double& Renderer::RightBound() const
+		double Renderer::RightBound() const
 		{
 			return mRightBound;
 		}
 
-		const double& Renderer::BottomBound() const
+		double Renderer::BottomBound() const
 		{
 			return mBottomBound;
 		}
 
-		const double& Renderer::TopBound() const
+		double Renderer::TopBound() const
 		{
 			return mTopBound;
 		}

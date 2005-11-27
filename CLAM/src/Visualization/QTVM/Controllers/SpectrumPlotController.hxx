@@ -51,12 +51,12 @@ namespace CLAM
 			void SetDataColor(Color c);
 			void SetPeaksColor(Color cline,Color cpoint);
 
-			void DisplayDimensions(const int& w, const int& h);
+			void DisplayDimensions(int w, int h);
 
 			void Draw();
-			void SetMousePos(const double& x, const double& y);
+			void SetMousePos(double x,double y);
 
-			void SetSelPos(const double& value, bool render);
+			void SetSelPos(double value, bool render);
 
 		signals:
 			void sendMagFreq(double,double);
@@ -67,8 +67,8 @@ namespace CLAM
 			void setSelectedXPos(double);
 
 		protected:
-			void SetHBounds(const double& left,const double& right);				
-			void SetVBounds(const double& bottom,const double& top);
+			void SetHBounds(double left, double right);				
+			void SetVBounds(double bottom, double top);
 
 			void FullView();				
 		   

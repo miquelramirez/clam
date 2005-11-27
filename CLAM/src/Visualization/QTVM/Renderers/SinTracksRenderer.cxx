@@ -65,8 +65,7 @@ namespace CLAM
 			glLoadIdentity();
 			glOrtho(mLeft,mRight,BottomBound(),TopBound(),-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
-			glClear(GL_COLOR_BUFFER_BIT);
-
+		 
 			Color c;
 
 			SineTrackSpanEnds::iterator currStart, currEnd;
@@ -102,6 +101,7 @@ namespace CLAM
 				currStart++;
 				currEnd++;
 			}
+
 			glMatrixMode(GL_PROJECTION);
 			glPopMatrix();
 			glMatrixMode(GL_MODELVIEW);

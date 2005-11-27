@@ -25,7 +25,7 @@ namespace CLAM
 		{
 		}
 
-		void SpectrogramPlotController::SetData(const Array<Spectrum>& specMtx, const double& dur)
+		void SpectrogramPlotController::SetData(const Array<Spectrum>& specMtx, double dur)
 		{
 			mCacheData.Resize(0);
 			mCacheData.SetSize(0);
@@ -41,7 +41,7 @@ namespace CLAM
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
-		void SpectrogramPlotController::DisplayDimensions(const int& w, const int& h)
+		void SpectrogramPlotController::DisplayDimensions(int w, int h)
 		{
 			PlotController::DisplayDimensions(w,h);
 			mMustProcessData = true;
@@ -65,7 +65,7 @@ namespace CLAM
 			PlotController::Draw();
 		}
 
-		void SpectrogramPlotController::SetMousePos(const double& x, const double& y)
+		void SpectrogramPlotController::SetMousePos(double x, double y)
 		{
 			if(x < 0 || x > GetnSamples()) return;
 			if(y < 0 || y > GetMaxSpanY()) return;
@@ -81,12 +81,12 @@ namespace CLAM
 			if(!HasSentTag())
 			{
 				QString s = QString::number(dB,'f',0)+" dB at "+QString::number(hz,'f',0)+" Hz  t: "+TimeToStr(xcoord);
-				emit toolTip(s);
+				emit globalToolTip(s);
 			}
 
 		}
 
-		void SpectrogramPlotController::SetHBounds(const double& left,const double& right)
+		void SpectrogramPlotController::SetHBounds(double left, double right)
 		{
 			PlotController::SetHBounds(left,right);
 			mMustProcessData = true;
@@ -98,7 +98,7 @@ namespace CLAM
 			emit xRulerRange(lBound,hBound);
 		}
 
-		void SpectrogramPlotController::SetVBounds(const double& bottom, const double& top)
+		void SpectrogramPlotController::SetVBounds(double bottom, double top)
 		{
 			PlotController::SetVBounds(bottom,top);
 			mMustProcessData = true;
@@ -215,7 +215,7 @@ namespace CLAM
 			mRenderer.SetIndexes(leftIndex, rightIndex, bottomIndex, topIndex);	    
 		}
 
-		std::vector<Color> SpectrogramPlotController::GetColorScale(const int& size)
+		std::vector<Color> SpectrogramPlotController::GetColorScale(int size)
 		{
 			float step = -150.f/float(size);
 			std::vector<Color> scale(size);
@@ -229,7 +229,7 @@ namespace CLAM
 			return scale;
 		}
 
-		std::vector<Color> SpectrogramPlotController::GetGrayScale(const int& size)
+		std::vector<Color> SpectrogramPlotController::GetGrayScale(int size)
 		{
 			float step = -150.0f/float(size);
 			std::vector<Color> scale(size);
@@ -244,7 +244,7 @@ namespace CLAM
 			return scale;
 		}
 
-		QString SpectrogramPlotController::TimeToStr(const TData& seconds)
+		QString SpectrogramPlotController::TimeToStr(TData seconds)
 		{
 			QString s("");
 			int tmp = int(seconds*1000);
@@ -368,8 +368,7 @@ namespace CLAM
 	    
 		}
 
-		TData SpectrogramPlotController::MatrixBlockMean(const TIndex& firstRow, const TIndex& lastRow, 
-														 const TIndex& firstCol, const TIndex& lastCol)
+		TData SpectrogramPlotController::MatrixBlockMean(TIndex firstRow, TIndex lastRow, TIndex firstCol, TIndex lastCol)
 		{
 			TData sum = TData(0.0);
 			for(TIndex i=firstRow; i < lastRow; i++)
@@ -381,7 +380,7 @@ namespace CLAM
 			return sum/TData((lastRow-firstRow)*(lastCol-firstCol));
 		}
 
-		void SpectrogramPlotController::SetSelPos(const double& value, bool render)
+		void SpectrogramPlotController::SetSelPos(double value, bool render)
 		{
 			if(CanDrawSelectedPos())
 			{

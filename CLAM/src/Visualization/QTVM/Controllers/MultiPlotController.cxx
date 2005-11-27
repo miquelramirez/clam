@@ -43,7 +43,7 @@ namespace CLAM
 			RemoveAllData();
 		}
 
-		void MultiPlotController::SetXRulerRange(const double& xmin, const double& xmax)
+		void MultiPlotController::SetXRulerRange(double xmin, double xmax)
 		{
 			if(xmax <= xmin) return;
 			mXMin=xmin;
@@ -53,7 +53,7 @@ namespace CLAM
 			mHasXRange = true;
 		}
 
-		void MultiPlotController::SetYRulerRange(const double& ymin, const double& ymax)
+		void MultiPlotController::SetYRulerRange(double ymin, double ymax)
 		{
 			if(ymax <= ymin) return;
 			SetMinSpanY((ymax-ymin)*0.05);
@@ -113,7 +113,7 @@ namespace CLAM
 			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
-		void MultiPlotController::DisplayDimensions(const int& w, const int& h)
+		void MultiPlotController::DisplayDimensions(int w, int h)
 		{
 			PlotController::DisplayDimensions(w,h);
 		
@@ -143,7 +143,7 @@ namespace CLAM
 			PlotController::Draw();
 		}
 
-		void MultiPlotController::SetMousePos(const double& x, const double& y)
+		void MultiPlotController::SetMousePos(double x, double y)
 		{
 			if(x < 0 || x > GetnSamples()) return;
 			if(y < GetMinY() || y > GetMaxY()) return;
@@ -157,11 +157,11 @@ namespace CLAM
 			if(!HasSentTag())
 			{	
 				QString s = "x="+QString::number(xval,'f',2)+" y="+QString::number(yval,'f',2);
-				emit toolTip(s);
+				emit globalToolTip(s);
 			}
 		}
 
-		void MultiPlotController::SetHBounds(const double& left, const double& right)
+		void MultiPlotController::SetHBounds(double left, double right)
 		{
 			PlotController::SetHBounds(left,right);
 			mMustProcessData=true;
@@ -176,7 +176,7 @@ namespace CLAM
 			emit xRulerRange(lBound,hBound);
 		}
 
-		void MultiPlotController::SetVBounds(const double& bottom, const double& top)
+		void MultiPlotController::SetVBounds(double bottom, double top)
 		{
 			PlotController::SetVBounds(bottom,top);
 			
@@ -266,7 +266,7 @@ namespace CLAM
 			}
 		}
 
-		void MultiPlotController::SetSelPos(const double& value, bool render)
+		void MultiPlotController::SetSelPos(double value, bool render)
 		{
 			if(CanDrawSelectedPos())
 			{

@@ -64,8 +64,7 @@ namespace CLAM
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
-		void SinTracksPlotController::SetData(const Array< SpectralPeakArray >& peakMtx, 
-											  const double& sr, const double& dur)
+		void SinTracksPlotController::SetData(const Array< SpectralPeakArray >& peakMtx, double sr, double dur)
 		{
 			mCachedTracks.clear();
 			mHasData = false;
@@ -87,7 +86,7 @@ namespace CLAM
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
-		void SinTracksPlotController::DisplayDimensions(const int& w, const int& h)
+		void SinTracksPlotController::DisplayDimensions(int w, int h)
 		{
 			PlotController::DisplayDimensions(w,h);
 		
@@ -110,7 +109,7 @@ namespace CLAM
 			PlotController::Draw();
 		}
 
-		void SinTracksPlotController::SetHBounds(const double& left, const double& right)
+		void SinTracksPlotController::SetHBounds(double left, double right)
 		{
 			PlotController::SetHBounds(left,right);
 			mMustProcessData = true;
@@ -123,7 +122,7 @@ namespace CLAM
 			emit xRulerRange(lBound,hBound);
 		}
 
-		void SinTracksPlotController::SetVBounds(const double& bottom, const double& top)
+		void SinTracksPlotController::SetVBounds(double bottom, double top)
 		{
 			PlotController::SetVBounds(bottom,top);
 			mMustProcessData = true;
@@ -210,7 +209,7 @@ namespace CLAM
 			return value;
 		}
 
-		void SinTracksPlotController::SetMousePos(const double& x, const double& y)
+		void SinTracksPlotController::SetMousePos(double x, double y)
 		{
 			if(x < 0 || x > GetnSamples()) return;
 			if(y < 0 || y > GetMaxSpanY()) return;
@@ -222,11 +221,11 @@ namespace CLAM
 			if(!HasSentTag())
 			{
 				QString s ="t="+QString::number(t,'f',3)+"s freq="+QString::number(f,'f',0)+"Hz"; 
-				emit toolTip(s);
+				emit globalToolTip(s);
 			}
 		}
 
-		void SinTracksPlotController::SetSelPos(const double& value, bool render)
+		void SinTracksPlotController::SetSelPos(double value, bool render)
 		{
 			if(CanDrawSelectedPos())
 			{

@@ -15,7 +15,7 @@ namespace CLAM
 		{
 		}
 
-		void PlayablePlotController::SetSelPos(const double& value, bool render)
+		void PlayablePlotController::SetSelPos(double value, bool render)
 		{
 			if(CanDrawSelectedPos())
 			{
@@ -67,34 +67,34 @@ namespace CLAM
 			mRegionMarker.SetColor(c);
 		}
 		
-		void PlayablePlotController::SetHBounds(const double& left,const double& right)
+		void PlayablePlotController::SetHBounds(double left, double right)
 		{
 			PlotController::SetHBounds(left,right);
 			mRegionMarker.SetHBounds(GetLeftBound(),GetRightBound());
 		}
 
-		void PlayablePlotController::SetVBounds(const double& bottom, const double& top)
+		void PlayablePlotController::SetVBounds(double bottom, double top)
 		{
 			PlotController::SetVBounds(bottom,top);
 			mRegionMarker.SetVBounds(GetBottomBound(),GetTopBound());
 		}
 
-		void PlayablePlotController::SetBeginRegion(const double& value)
+		void PlayablePlotController::SetBeginRegion(double value)
 		{
 			mRegionMarker.SetBegin(value);
 		}
 
-		void PlayablePlotController::SetEndRegion(const double& value)
+		void PlayablePlotController::SetEndRegion(double value)
 		{
 			mRegionMarker.SetEnd(value);
 		}
 
-		const double& PlayablePlotController::GetBeginRegion() const
+		double PlayablePlotController::GetBeginRegion() const
 		{
 			return mRegionMarker.GetBegin();
 		}
 
-		const double& PlayablePlotController::GetEndRegion() const
+		double PlayablePlotController::GetEndRegion() const
 		{
 			return mRegionMarker.GetEnd();
 		}
@@ -148,22 +148,22 @@ namespace CLAM
 			return true;
 		}
 
-		void PlayablePlotController::SetSampleRate(const double& sr)
+		void PlayablePlotController::SetSampleRate(double sr)
 		{
 			mSampleRate = sr;
 		}
 
-		void PlayablePlotController::SetDuration(const double& dur)
+		void PlayablePlotController::SetDuration(double dur)
 		{
 			mDuration = dur;
 		}
 
-		const double& PlayablePlotController::GetSampleRate() const
+		double PlayablePlotController::GetSampleRate() const
 		{
 			return mSampleRate;
 		}
 
-		const double& PlayablePlotController::GetDuration() const
+		double PlayablePlotController::GetDuration() const
 		{
 			return mDuration;
 		}

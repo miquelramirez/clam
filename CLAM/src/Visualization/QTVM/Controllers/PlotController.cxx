@@ -57,12 +57,14 @@ namespace CLAM
 			, mSegmentationMarksEnabled(true)
 			, mIsRenderingEnabled(true)
 			, mSegmentEditorWorking(false)
+			, mHasSegmentation(false)
 		{
 			connect(&mSegmentEditor,SIGNAL(cursorChanged(QCursor)),this,SIGNAL(cursorChanged(QCursor)));
 			connect(&mSegmentEditor,SIGNAL(requestRefresh()),this,SIGNAL(requestRefresh()));
 			connect(&mSegmentEditor,SIGNAL(working(bool)),SLOT(segmentEditorWorking(bool)));
 
 			// propagated signals from SegmentEditor
+			connect(&mSegmentEditor,SIGNAL(toolTip(QString)),this,SIGNAL(localToolTip(QString)));
 			connect(&mSegmentEditor,SIGNAL(segmentOnsetChanged(unsigned,double)),
 					this,SIGNAL(segmentOnsetChanged(unsigned,double)));
 			connect(&mSegmentEditor,SIGNAL(segmentOffsetChanged(unsigned,double)),
@@ -79,7 +81,7 @@ namespace CLAM
 		{
 		}
 
-		void PlotController::SetHBounds(const double& left, const double& right)
+		void PlotController::SetHBounds(double left, double right)
 		{
 			mLeftBound = left;
 			mRightBound = right;
@@ -92,7 +94,7 @@ namespace CLAM
 			emit viewChanged(mView);
 		}
 
-		void PlotController::SetVBounds(const double& bottom, const double& top)
+		void PlotController::SetVBounds(double bottom, double top)
 		{
 			mBottomBound = bottom;
 			mTopBound = top;
@@ -105,27 +107,27 @@ namespace CLAM
 			emit viewChanged(mView);
 		}
 
-		const double& PlotController::GetLeftBound() const
+		double PlotController::GetLeftBound() const
 		{
 			return mLeftBound;
 		}
 
-	    const double& PlotController::GetRightBound() const
+	    double PlotController::GetRightBound() const
 		{
 			return mRightBound;
 		}
 
-		const double& PlotController::GetBottomBound() const
+		double PlotController::GetBottomBound() const
 		{
 			return mBottomBound;
 		}
 
-		const double& PlotController::GetTopBound() const
+		double PlotController::GetTopBound() const
 		{
 			return mTopBound;
 		}
 
-		void PlotController::SetSelPos(const double& value, bool render)
+		void PlotController::SetSelPos(double value, bool render)
 		{
 			mSelPos = value;
 			if(CanDrawSelectedPos() && render)
@@ -134,12 +136,12 @@ namespace CLAM
 			}
 		}
 
-		const double& PlotController::GetSelPos() const
+		double PlotController::GetSelPos() const
 		{
 			return mSelPos;
 		}
 
-		void PlotController::SetnSamples(const double& samples)
+		void PlotController::SetnSamples(double samples)
 		{
 			mSamples = samples;
 			mSpanX = mSamples;
@@ -151,12 +153,12 @@ namespace CLAM
 			emit hScrollValue(hsv);
 		}
 
-		const double& PlotController::GetnSamples() const
+		double PlotController::GetnSamples() const
 		{
 			return mSamples;
 		}
 
-		void PlotController::SetYRange(const double& min, const double& max)
+		void PlotController::SetYRange(double min, double max)
 		{
 			mMinY = min;
 			mMaxY = max;
@@ -170,7 +172,7 @@ namespace CLAM
 			emit vScrollValue(vsv);
 		}
 
-		const double& PlotController::GetMaxSpanY() const
+		double PlotController::GetMaxSpanY() const
 		{
 			return mMaxSpanY;
 		}
@@ -227,22 +229,22 @@ namespace CLAM
 			} 
 		}
 
-		void PlotController::SetMinSpanX(const double& min)
+		void PlotController::SetMinSpanX(double min)
 		{
 			mMinSpanX = min;
 		}
 
-		const double& PlotController::GetMinSpanX() const
+		double PlotController::GetMinSpanX() const
 		{
 			return mMinSpanX;
 		}	
 	  
-		void PlotController::SetMinSpanY(const double& min)
+		void PlotController::SetMinSpanY(double min)
 		{
 			mMinSpanY = min;
 		}
 
-		const double& PlotController::GetMinSpanY() const
+		double PlotController::GetMinSpanY() const
 		{
 			return mMinSpanY;
 		}
@@ -339,7 +341,7 @@ namespace CLAM
 			mVZRatio = r/2.0;
 		}
 
-		void PlotController::DisplayDimensions(const int& w, const int& h)
+		void PlotController::DisplayDimensions(int w, int h)
 		{
 			mDisplayWidth = w;
 			mDisplayHeight = h;
@@ -384,12 +386,12 @@ namespace CLAM
 			return int(mMaxSpanY*double(mDisplayHeight)/mSpanY);
 		}
 
-		const double& PlotController::GetSpanX() const
+		double PlotController::GetSpanX() const
 		{
 			return mSpanX; 
 		}
 
-		const double& PlotController::GetSpanY() const
+		double PlotController::GetSpanY() const
 		{
 			return mSpanY;
 		}
@@ -410,13 +412,13 @@ namespace CLAM
 			return (mSelPos >= mLeftBound && mSelPos <= mRightBound);
 		}
 
-		const double& PlotController::GetReference() const 
+		double PlotController::GetReference() const 
 		{
 			// TODO: revise when incorporate Dial rendering
 			return mSelPos;
 		}
 
-		void PlotController::SetMousePos(const double& x, const double& y)
+		void PlotController::SetMousePos(double x, double y)
 		{
 			mHasSentTag=false;
 			mMouseXPos=x;
@@ -441,7 +443,7 @@ namespace CLAM
 					if(!mTags[mCurrentIndex].isEmpty())
 					{
 						mHasSentTag=true;
-						emit toolTip(mTags[mCurrentIndex]);
+						emit globalToolTip(mTags[mCurrentIndex]);
 					}
 				}
 				else
@@ -466,12 +468,12 @@ namespace CLAM
 			}
 		}
 
-		const double& PlotController::GetMouseXPos() const
+		double PlotController::GetMouseXPos() const
 		{
 			return mMouseXPos;
 		}
 
-		const double& PlotController::GetMouseYPos() const
+		double PlotController::GetMouseYPos() const
 		{
 			return mMouseYPos;
 		}
@@ -528,12 +530,12 @@ namespace CLAM
 		    return false;
 		}
 
-		const int& PlotController::GetDisplayWidth() const
+		int PlotController::GetDisplayWidth() const
 		{
 			return mDisplayWidth;
 		}
 
-		const int& PlotController::GetDisplayHeight() const
+		int PlotController::GetDisplayHeight() const
 		{
 			return mDisplayHeight;
 		}
@@ -737,7 +739,7 @@ namespace CLAM
 			emit updatedMark(index,elem);
 		}
 
-		unsigned PlotController::GetPixel(const double& x) const
+		unsigned PlotController::GetPixel(double x) const
 		{
 			double w = double(GetDisplayWidth());
 			double left = GetLeftBound();
@@ -747,7 +749,7 @@ namespace CLAM
 			return unsigned(pixel);
 		}
 
-		int PlotController::Hit(const double& x)
+		int PlotController::Hit(double x)
 		{
 			unsigned i;
 			bool hit=false;
@@ -764,27 +766,27 @@ namespace CLAM
 			return (hit) ? int(i) : -1;
 		}
 
-		void PlotController::SetDialColor(Color c)
+		void PlotController::SetDialColor(const Color& c)
 		{
 			mDial.SetColor(c);
 		}
 
-		void PlotController::UpdateDial(const double& value)
+		void PlotController::UpdateDial(double value)
 		{
 			mDial.Update(value);
 		}
 
-		const double& PlotController::GetDialPos() const
+		double PlotController::GetDialPos() const
 		{
 			return mDial.GetPos();
 		}
 
-		const double& PlotController::GetMinY() const
+		double PlotController::GetMinY() const
 		{
 			return mMinY;
 		}
 
-		const double& PlotController::GetMaxY() const
+		double PlotController::GetMaxY() const
 		{
 			return mMaxY;
 		}
@@ -820,6 +822,8 @@ namespace CLAM
 		void PlotController::SetSegmentation(Segmentation* s)
 		{
 			mSegmentEditor.SetSegmentation(s);
+			mHasSegmentation = true;
+			mSegmentationMarksEnabled = false;
 		}
 
 		void PlotController::MousePressEvent(QMouseEvent* e)
@@ -862,6 +866,11 @@ namespace CLAM
 		void PlotController::segmentEditorWorking(bool w)
 		{
 			mSegmentEditorWorking = w;
+		}
+
+		bool PlotController::HasSegmentation() const
+		{
+			return mHasSegmentation;
 		}
 	}
 }
