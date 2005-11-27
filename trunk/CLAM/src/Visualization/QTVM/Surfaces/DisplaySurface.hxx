@@ -55,10 +55,13 @@ namespace CLAM
 	
 		private slots:
 			void updateView(GLView);
-			void updateToolTip(QString);
+			void updateGlobalToolTip(QString);
 			void changeCursor(QCursor);
 			void startTimer();
 			void stopTimer();
+
+			// tooltip from SegmentEditor
+			void updateLocalToolTip(QString);
 
 		protected:
 			void paintGL(); 
@@ -82,9 +85,17 @@ namespace CLAM
 			int             mHeight;
 			volatile bool   mDoResize;
 			QTimer*         mTimer;
+			QString         mToolTip;
+			QFont           mToolTipFont;
+			int             mMouseXPos;
+			int             mMouseYPos;
+			bool            mHasToolTip;
 
 			enum { TIMER_INTERVAL=10 };
-				
+
+			void RenderToolTip();
+			QRect ToolTipRect();
+
 		};
     }
 }

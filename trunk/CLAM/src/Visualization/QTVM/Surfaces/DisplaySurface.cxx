@@ -38,10 +38,19 @@ namespace CLAM
 			, mHeight(0)
 			, mDoResize(false)
 			, mTimer(0)
+			, mToolTip("")
+			, mMouseXPos(0)
+			, mMouseYPos(0)
+			, mHasToolTip(true)
 		{
 			setMouseTracking(true);
 			setAutoBufferSwap(false);
 			setFocusPolicy(StrongFocus);
+
+			mToolTipFont.setFamily("fixed");
+			mToolTipFont.setPointSize(8);
+			mToolTipFont.setBold(true);
+			mToolTipFont.setStyleHint(QFont::Courier,QFont::NoAntialias);
 		}
 
 		DisplaySurface::~DisplaySurface()
@@ -62,7 +71,8 @@ namespace CLAM
 			mController = controller;
 			connect(mController,SIGNAL(viewChanged(GLView)),this,SLOT(updateView(GLView)));
 			connect(mController,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
-			connect(mController,SIGNAL(toolTip(QString)),this,SLOT(updateToolTip(QString)));
+			connect(mController,SIGNAL(localToolTip(QString)),this,SLOT(updateLocalToolTip(QString)));
+			connect(mController,SIGNAL(globalToolTip(QString)),this,SLOT(updateGlobalToolTip(QString)));
 			connect(mController,SIGNAL(cursorChanged(QCursor)),this,SLOT(changeCursor(QCursor)));
 			if(mController->IsPlayable())
 			{
@@ -86,6 +96,7 @@ namespace CLAM
 			glClearColor(mRed, mGreen, mBlue, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT);
 			mController->Draw();
+			RenderToolTip(); 
 			swapBuffers();
 			if(mTimer) if(!mTimer->isActive()) mTimer->start(TIMER_INTERVAL,true);
 		}
@@ -102,6 +113,8 @@ namespace CLAM
 
 		void DisplaySurface::mouseMoveEvent(QMouseEvent* e)
 		{
+			mMouseXPos = e->x();
+			mMouseYPos = e->y();
 			mController->MouseMoveEvent(e);
 		}
 
@@ -130,8 +143,9 @@ namespace CLAM
 			if(mController) mController->DisplayDimensions(mWidth,mHeight);
 		}
 
-		void DisplaySurface::updateToolTip(QString s)
+		void DisplaySurface::updateGlobalToolTip(QString s)
 		{
+			if(mController->HasSegmentation()) return;
 			QToolTip::remove(this);
 			QToolTip::add(this,s);
 		}
@@ -181,6 +195,69 @@ namespace CLAM
 				mController->OnDoubleClick();
 			}
 		}
+
+		void DisplaySurface::updateLocalToolTip(QString str)
+		{
+			mToolTip = str;
+			if(str.isEmpty())
+			{
+				if(mHasToolTip) 
+				{
+					mHasToolTip = false;
+					update();
+				}
+				return;
+			}
+			if(!mHasToolTip) mHasToolTip = true;
+			update();
+		}
+
+		void DisplaySurface::RenderToolTip()
+		{
+			if(mToolTip.isEmpty()) return;
+
+			QRect rect = ToolTipRect();
+			QFontMetrics font_metrics(mToolTipFont);
+			int font_height = font_metrics.height();
+
+			glMatrixMode(GL_PROJECTION);
+			glPushMatrix();
+			glLoadIdentity();
+			glOrtho(0.0,mWidth,mHeight,0.0,-1.0,1.0);
+			glMatrixMode(GL_MODELVIEW);
+
+			glColor3ub(165,85,8);
+			glBegin(GL_QUADS);
+			glVertex2f(rect.left(),rect.top());
+			glVertex2f(rect.left()+rect.width(),rect.top());
+			glVertex2f(rect.left()+rect.width(),rect.bottom());
+			glVertex2f(rect.left(),rect.bottom());
+			glEnd();
+
+			glColor3ub(255,255,255);
+			renderText(rect.left()+5,rect.top()+font_height+2,mToolTip,mToolTipFont);
+
+			glMatrixMode(GL_PROJECTION);
+			glPopMatrix();
+			glMatrixMode(GL_MODELVIEW);
+		}
+
+		QRect DisplaySurface::ToolTipRect()
+		{
+			QFontMetrics font_metrics(mToolTipFont);
+			
+			int x = mMouseXPos+2;
+			int y = mMouseYPos+2;
+
+			int w = font_metrics.width(mToolTip)+10;
+			int h = font_metrics.height()+10;
+
+			if(x+w > mWidth) x -= w;
+			if(y+h > mHeight) y -= h;
+
+			return QRect(x,y,w,h);
+		}
+
     }
 }
 
