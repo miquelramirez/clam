@@ -37,11 +37,13 @@ namespace CLAM
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
 				{
 					DrawSegment(beginnings[i],endings[i],1.0,-1.0,isCurrent);
-					if (isCurrent)
-						StippledRect(beginnings[i],endings[i],1.0,-1.0);
 				}
 					
 			}
+			if (current>=nElems) return; // no current
+			if (IsVisible(beginnings[current],endings[current],LeftBound(),RightBound())) 
+				StippledRect(beginnings[current],endings[current],1.0,-1.0);
+
 		}
 		
 		void SegmentRenderer::DrawSegment(double left, double right, double top, double bottom, bool isCurrent)
