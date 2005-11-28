@@ -78,7 +78,9 @@ namespace CLAM
 			std::string name;
 			XMLAdapter<std::string> nameAdapter(name,"name",false);
 			storage.Load(nameAdapter);
-			CLAM_ASSERT(name==_spec.GetName(),"Loading an scope pool for a different attribute");
+			CLAM_ASSERT(name==_spec.GetName(),
+				("The schema expected a scope named '"+_spec.GetName()+
+				 "', but the XML contains the scope '"+ name+"' instead").c_str());
 
 			unsigned newSize;
 			XMLAdapter<unsigned> sizeAdapter(newSize,"size",false);
