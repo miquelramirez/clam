@@ -44,7 +44,7 @@ public:
 	Slice_iter end()
 	{
 		Slice_iter t = *this;
-		t.mCurrIdx = mValArray.size();
+		t.mCurrIdx = mValarray.size();
 		return t;
 	}
 
