@@ -109,6 +109,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mSegmentDescriptors(mSegmentDescriptorsTable, mProject)
 	, mBPFEditor(0)
 	, mCurrentBPFIndex(-1)
+	, mSegmentation(0)
 {
 	initAudioWidget();
 	initInterface();
@@ -212,8 +213,8 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 
 void Annotator::refreshSegmentation()
 {
-	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	if (!mpDescriptorPool) return;
+	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	const CLAM::IndexArray & descriptorsMarks = 
 		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation)[0];
 	int nMarks = descriptorsMarks.Size();
@@ -227,7 +228,9 @@ void Annotator::refreshSegmentation()
 		}
 		segmentation->insert(descriptorsMarks[i]);
 	}
-	mpAudioPlot->SetSegmentation(segmentation);
+	if (mSegmentation) delete mSegmentation;
+	mSegmentation = segmentation;
+	mpAudioPlot->SetSegmentation(mSegmentation);
 	auralizeMarks();
 
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
@@ -789,7 +792,7 @@ void Annotator::auralizeMarks()
 		reader.Do(mClick);
 		reader.Stop();
 	}
-	const std::vector<unsigned int> & marks = mpAudioPlot->GetMarks();
+	const std::vector<double> & marks = mSegmentation->onsets();
 	int nMarks = marks.size();
 	mCurrentMarkedAudio.SetSize(0);
 	mCurrentMarkedAudio.SetSize(mCurrentAudio.GetSize());
@@ -800,7 +803,6 @@ void Annotator::auralizeMarks()
 		if(marks[i]<size)
 			mCurrentMarkedAudio.SetAudioChunk((int)marks[i],mClick[0]);
 	} 
-
 }
 
 void Annotator::playMarks(bool playThem)
