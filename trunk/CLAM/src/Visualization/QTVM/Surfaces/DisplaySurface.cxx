@@ -226,15 +226,22 @@ namespace CLAM
 			glOrtho(0.0,mWidth,mHeight,0.0,-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 
-			glColor3ub(165,85,8);
+			glColor3ub(255,255,0);
 			glBegin(GL_QUADS);
 			glVertex2f(rect.left(),rect.top());
 			glVertex2f(rect.left()+rect.width(),rect.top());
 			glVertex2f(rect.left()+rect.width(),rect.bottom());
 			glVertex2f(rect.left(),rect.bottom());
 			glEnd();
-
-			glColor3ub(255,255,255);
+			glColor3ub(0,0,0);
+			glBegin(GL_LINE_STRIP);
+			glVertex2f(rect.left(),rect.top());
+			glVertex2f(rect.left()+rect.width(),rect.top());
+			glVertex2f(rect.left()+rect.width(),rect.bottom());
+			glVertex2f(rect.left(),rect.bottom());
+			glVertex2f(rect.left(),rect.top());
+			glEnd();
+   
 			renderText(rect.left()+5,rect.top()+font_height+2,mToolTip,mToolTipFont);
 
 			glMatrixMode(GL_PROJECTION);
