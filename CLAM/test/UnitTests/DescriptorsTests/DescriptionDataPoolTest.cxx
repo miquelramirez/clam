@@ -46,6 +46,8 @@ class DescriptionDataPoolTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetAttribute_fromAUnpopulatedScope );
 	CPPUNIT_TEST( testGetAttribute_fromUnexistingScope );
 	CPPUNIT_TEST( testGetAttribute_withNonInstantiatedAttribute );
+	CPPUNIT_TEST( testInsertElement );
+	CPPUNIT_TEST( testRemoveElement );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -220,10 +222,54 @@ private:
 		}
 	}
 
+	void testInsertElement()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+		data.SetNumberOfContexts("Frame",10);
+		{
+			unsigned * centers = data.GetWritePool<unsigned>("Frame","Center");
+			for (unsigned i=0; i<data.GetNumberOfContexts("Frame"); i++)
+				centers[i] = 10+i;
+		}
+
+		data.Insert("Frame",4);
+
+		std::ostringstream os;
+		const unsigned * centers = data.GetReadPool<unsigned>("Frame","Center");
+		for (unsigned i=0; i<data.GetNumberOfContexts("Frame"); i++)
+		{
+			os << centers[i] << " ";
+		}
+		std::string result = os.str();
+
+		CPPUNIT_ASSERT_EQUAL(std::string("10 11 12 13 0 14 15 16 17 18 19 "),result);
+	}
+	void testRemoveElement()
+	{
+		CLAM::DescriptionDataPool data(mScheme);
+		data.SetNumberOfContexts("Frame",10);
+		{
+			unsigned * centers = data.GetWritePool<unsigned>("Frame","Center");
+			for (unsigned i=0; i<data.GetNumberOfContexts("Frame"); i++)
+				centers[i] = 10+i;
+		}
+
+		data.Remove("Frame",4);
+
+		std::ostringstream os;
+		const unsigned * centers = data.GetReadPool<unsigned>("Frame","Center");
+		for (unsigned i=0; i<data.GetNumberOfContexts("Frame"); i++)
+		{
+			os << centers[i] << " ";
+		}
+		std::string result = os.str();
+
+		CPPUNIT_ASSERT_EQUAL(std::string("10 11 12 13 15 16 17 18 19 "),result);
+	}
 };
 
 
-
+	// TODO: Insert when not instanciated
 
 
 

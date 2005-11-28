@@ -45,6 +45,8 @@ class ScopePoolTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testConstruction_givesSizeZeroByDefault );
 	CPPUNIT_TEST( testSetSize_overAZeroSizePool );
 	CPPUNIT_TEST( testSetSize_overANonZeroSizePool );
+	CPPUNIT_TEST( testInsert );
+	CPPUNIT_TEST( testRemove );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -211,6 +213,49 @@ private:
 		CPPUNIT_ASSERT_EQUAL(data,data2);
 	}
 
+	void testInsert()
+	{
+		CLAM::DescriptionScope spec("TestScope");
+		spec.Add<CLAM::TData>("MyAttribute");
+
+		CLAM::ScopePool pool(spec,3);
+
+		CLAM::TData * data = pool.GetWritePool<CLAM::TData>("MyAttribute");
+		for (unsigned i = 0; i < pool.GetSize(); i++)
+			data[i] = 1000 + i*i;
+
+		pool.Insert(2);
+
+		unsigned expectedSize = 4;
+		CLAM::TData expected[]={1000,1001,0,1004};
+		CPPUNIT_ASSERT_EQUAL(expectedSize,pool.GetSize());
+		const CLAM::TData * result = pool.GetReadPool<CLAM::TData>("MyAttribute");
+		for (unsigned i=0; i<pool.GetSize(); i++)
+			CPPUNIT_ASSERT_EQUAL(expected[i],result[i]);
+	}
+	void testRemove()
+	{
+		CLAM::DescriptionScope spec("TestScope");
+		spec.Add<CLAM::TData>("MyAttribute");
+
+		CLAM::ScopePool pool(spec,3);
+
+		CLAM::TData * data = pool.GetWritePool<CLAM::TData>("MyAttribute");
+		for (unsigned i = 0; i < pool.GetSize(); i++)
+			data[i] = 1000 + i*i;
+
+		pool.Remove(1);
+
+		unsigned expectedSize = 2;
+		CLAM::TData expected[]={1000,1004};
+		CPPUNIT_ASSERT_EQUAL(expectedSize,pool.GetSize());
+		const CLAM::TData * result = pool.GetReadPool<CLAM::TData>("MyAttribute");
+		for (unsigned i=0; i<pool.GetSize(); i++)
+			CPPUNIT_ASSERT_EQUAL(expected[i],result[i]);
+	}
+
+	// TODO: Insert outside bounds
+	// TODO: Remove outside bounds
 
 };
 

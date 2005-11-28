@@ -103,6 +103,7 @@ namespace CLAM
 			{
 				it->Insert(pos);
 			}
+			_size++;
 		}
 		void Remove(unsigned pos)
 		{
@@ -112,6 +113,7 @@ namespace CLAM
 			{
 				it->Remove(pos);
 			}
+			_size--;
 		}
 	private:
 		void Reallocate(unsigned newSize)

@@ -90,7 +90,6 @@ private:
 		CPPUNIT_ASSERT_EQUAL((const void*)0, data);
 	}
 
-
 };
 
 
