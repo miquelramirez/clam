@@ -53,7 +53,7 @@ public slots:
 	void globalDescriptorsTableChanged( int, int);
 	void segmentDescriptorsTableChanged( int, int);
 	void frameDescriptorsChanged(int, float);
-	void segmentationMarksChanged(int, unsigned);
+	void segmentationMarksChanged(unsigned, double);
 
 	void fileNew();
 	void fileOpen();
