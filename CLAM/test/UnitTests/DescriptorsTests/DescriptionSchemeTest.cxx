@@ -100,7 +100,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "No scope registered with that name";
+			const std::string expected = "Attribute scope 'NonExistent' not found";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
@@ -157,7 +157,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "No scope registered with that name";
+			const std::string expected = "Attribute scope 'NonExistent' not found";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}

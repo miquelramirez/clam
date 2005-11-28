@@ -80,7 +80,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "No scope registered with that name";
+			const std::string expected = "Attribute scope 'NonExistingScope' not found";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
@@ -95,7 +95,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "No scope registered with that name";
+			const std::string expected = "Attribute scope 'UnexistingScope' not found";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
@@ -110,7 +110,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Instantianting an attribute inside an unpopulated scope";
+			const std::string expected = "Instantianting 'Frame:Center' but the scope is not yet populated";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
@@ -182,7 +182,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Accessing attribute data inside an unpopulated scope";
+			const std::string expected = "Writting data on 'Frame:Center' but the scope is not yet populated";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
@@ -198,7 +198,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "No scope registered with that name";
+			const std::string expected = "Attribute scope 'UnexistingScope' not found";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
