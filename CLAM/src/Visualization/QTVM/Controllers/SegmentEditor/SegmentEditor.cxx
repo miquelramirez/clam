@@ -31,7 +31,6 @@ namespace CLAM
 
 		SegmentEditor::~SegmentEditor()
 		{
-			if(mStrategy) delete mStrategy;
 		}
 
 		void SegmentEditor::SetSegmentation(Segmentation* s)
