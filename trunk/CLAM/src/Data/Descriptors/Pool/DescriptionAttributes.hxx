@@ -73,6 +73,10 @@ namespace CLAM
 		virtual void * Allocate(unsigned size) const = 0;
 		/** Destroys and deallocates the elements pointed by 'data' */
 		virtual void Deallocate(void * data) const = 0;
+		/** Inserts am element at position pos */
+		virtual void Insert(void * data, unsigned pos) const = 0;
+		/** Removes an element at position pos */
+		virtual void Remove(void * data, unsigned pos) const = 0;
 
 		/** Dumps the 'data' into the storage */
 		virtual void XmlDumpData(Storage & storage, const void * data, unsigned size ) const = 0;
@@ -90,8 +94,7 @@ namespace CLAM
 			std::ostringstream os;
 			os << "Attribute '" << _scopeName << ":" << _attributeName 
 				<< "' has been used as type '" << typeid(TypeToCheck).name()
-				<< "' but it really was of type '" << TypeInfo().name() << "'" 
-				<< std::endl;
+				<< "' but it really was of type '" << TypeInfo().name() << "'";
 			CLAM_ASSERT(typeid(TypeToCheck)==TypeInfo(),
 				os.str().c_str());
 		}
@@ -124,6 +127,16 @@ namespace CLAM
 		virtual void Deallocate(void * data) const
 		{
 			delete (std::vector<DataType>*)data;
+		}
+		virtual void Insert(void * data, unsigned pos) const
+		{
+			std::vector<DataType> * vector = (std::vector<DataType> *) data;
+			vector->insert(vector->begin()+pos, DataType());
+		}
+		virtual void Remove(void * data, unsigned pos) const
+		{
+			std::vector<DataType> * vector = (std::vector<DataType> *) data;
+			vector->erase(vector->begin()+pos);
 		}
 		virtual void XmlDumpData(Storage & storage, const void * data, unsigned size ) const
 		{

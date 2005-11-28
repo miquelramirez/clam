@@ -65,6 +65,14 @@ namespace CLAM
 			_attribute->Deallocate(_data);
 			_data = 0;
 		}
+		void Insert(unsigned pos)
+		{
+			_attribute->Insert(_data,pos);
+		}
+		void Remove(unsigned pos)
+		{
+			_attribute->Remove(_data,pos);
+		}
 	private:
 		void * _data;
 		const AbstractAttribute * _attribute;
