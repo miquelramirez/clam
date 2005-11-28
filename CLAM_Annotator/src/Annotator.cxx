@@ -28,6 +28,9 @@
 
 #include "AudioLoadThread.hxx"
 
+#include "ContiguousSegmentation.hxx"
+
+
 #ifndef RESOURCES_BASE
 #define RESOURCES_BASE "../resources"
 #endif
@@ -214,12 +217,17 @@ void Annotator::refreshSegmentation()
 	const CLAM::IndexArray & descriptorsMarks = 
 		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation)[0];
 	int nMarks = descriptorsMarks.Size();
-	std::vector<unsigned> marks(nMarks);
+	CLAM::ContiguousSegmentation * segmentation = new CLAM::ContiguousSegmentation(mCurrentAudio.GetSize());
 	for(int i=0;i<nMarks;i++)
 	{
-		marks[i] = (unsigned)descriptorsMarks[i];
+		if ( descriptorsMarks[i] >  mCurrentAudio.GetSize())
+		{
+			std::cout << "Out of bounds segment: " << descriptorsMarks[i] << " " << mCurrentAudio.GetSize() << std::endl;
+			continue;
+		}
+		segmentation->insert(descriptorsMarks[i]);
 	}
-	mpAudioPlot->SetMarks(marks);
+	mpAudioPlot->SetSegmentation(segmentation);
 	auralizeMarks();
 
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
