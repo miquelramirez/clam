@@ -11,8 +11,6 @@ namespace CLAM
 			, mColors(3)
 			, mMargin(0.1)
 		{
-			// Alt: 225,90,60 
-//			SetColor(VMColor::Custom(100,200,20));
 			Colorize();
 		}
 
@@ -35,11 +33,8 @@ namespace CLAM
 			const Segmentation::TimePositions & endings = mSegmentation->offsets();
 			for(unsigned i=0;  i < nElems; i++)
 			{
-				if(beginnings[i] > RightBound()) break;
-				if(i >= 0)
-				{
-					if(current == i) type = CURRENT;
-				}
+				if(i > 0) if(beginnings[i-1] > RightBound()) break;
+				if(current == i) type = CURRENT;
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
 				{
 					DrawSegment(beginnings[i],endings[i],1.0,-1.0,type);
@@ -48,6 +43,10 @@ namespace CLAM
 					else 
 						if(current == i-1) StippledRect(beginnings[i-1],endings[i-1],1.0,-1.0);
 					
+				}
+				else
+				{
+					if(current == i-1 && i < nElems-1) StippledRect(beginnings[i-1],endings[i-1],1.0,-1.0);
 				}
 				type = NORMAL;
 			}
