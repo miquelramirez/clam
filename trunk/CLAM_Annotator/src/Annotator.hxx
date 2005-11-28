@@ -25,6 +25,7 @@ namespace CLAM {
 		class QtAudioPlot;
 		class BPFEditor;
 	};
+	class Segmentation;
 	class XmlStorageErr;
 };
 
@@ -154,6 +155,7 @@ private:
 	std::vector<BPFInfo> mBPFs; // cached LLDs         
 	CLAM::VM::BPFEditor* mBPFEditor;
 	int                  mCurrentBPFIndex;
+	CLAM::Segmentation * mSegmentation;
 };
 
 #endif
