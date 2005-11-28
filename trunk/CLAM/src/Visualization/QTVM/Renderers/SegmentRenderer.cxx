@@ -60,7 +60,7 @@ namespace CLAM
 			// fill rec
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			glEnable(GL_BLEND);
-			glColor4ub(mColors[cindex].r,mColors[cindex].g,mColors[cindex].b,150);
+			glColor4ub(mColors[cindex].r,mColors[cindex].g,mColors[cindex].b,125);
 			glBegin(GL_QUADS);
 			PlainRect(left,right,top,bottom);
 			glEnd();
