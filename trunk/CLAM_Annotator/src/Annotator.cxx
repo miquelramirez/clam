@@ -120,6 +120,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 Annotator::~Annotator()
 {
 	abortLoader();
+	if (mSegmentation) delete mSegmentation;
 }
 
 void Annotator::initInterface()
@@ -239,11 +240,10 @@ void Annotator::refreshSegmentation()
 
 void Annotator::updateSegmentations()
 {
-	std::vector<unsigned int> marks;
 	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	CLAM::IndexArray & descriptorMarks = 
 		mpDescriptorPool->GetWritePool<CLAM::IndexArray>("Song",currentSegmentation)[0];
-	marks = mpAudioPlot->GetMarks();
+	const std::vector<double> & marks = mSegmentation->onsets();
 	int nMarks = marks.size();
 	descriptorMarks.Resize(nMarks);
 	descriptorMarks.SetSize(nMarks);
@@ -298,10 +298,12 @@ void Annotator::makeConnections()
 		this, SLOT(globalDescriptorsTableChanged(int, int) ) );
 	connect(mSegmentDescriptorsTable, SIGNAL(valueChanged( int, int) ) ,
 		this, SLOT(segmentDescriptorsTableChanged(int, int) ) );
-	connect(mpAudioPlot, SIGNAL(updatedMark(int, unsigned)),
-		this, SLOT(segmentationMarksChanged(int, unsigned)));
-	connect(mpAudioPlot, SIGNAL(requestSegmentationTag(unsigned)),
+	connect(mpAudioPlot, SIGNAL(segmentOnsetChanged(unsigned,double)),
+		this, SLOT(segmentationMarksChanged(unsigned, double)));
+	connect(mpAudioPlot, SIGNAL(currentSegmentChanged(unsigned)),
 		this, SLOT(changeCurrentSegment(unsigned)));
+//	connect(mpAudioPlot, SIGNAL(segmentDeleted(double)),
+//		this, SLOT(deleteSegment(unsigned)));
 	connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
 			this, SLOT(onStopPlaying(float)));
 
@@ -368,7 +370,7 @@ void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
 	mLLDChanged = true;
 }
 
-void Annotator::segmentationMarksChanged(int, unsigned)
+void Annotator::segmentationMarksChanged(unsigned, double)
 {
 	if(mMustUpdateMarkedAudio) return;
 	if(isPlaying())
