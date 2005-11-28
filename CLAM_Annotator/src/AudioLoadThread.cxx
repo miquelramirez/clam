@@ -18,7 +18,7 @@ AudioLoadThread::AudioLoadThread(CLAM::Audio & audio, const std::string audioFil
 	std::cout << "AudioLoader " << mNumber << " created..." << std::endl;
 	file.OpenExisting(audioFileName);
 	int nChannels = file.GetHeader().GetChannels();
-	float samplingRate = file.GetHeader().GetSampleRate();
+	CLAM::TData samplingRate = file.GetHeader().GetSampleRate();
 	nSamples = unsigned( file.GetHeader().GetLength()/1000.0*samplingRate );
 	audioFrameVector.resize(nChannels);
 	for (int i=0;i<nChannels;i++)
