@@ -28,28 +28,18 @@ namespace CLAM
 			unsigned nElems = mSegmentation->onsets().size();
 			if(!nElems) return;
 			unsigned current = mSegmentation->current();
-			int type = NORMAL;
 			const Segmentation::TimePositions & beginnings = mSegmentation->onsets();
 			const Segmentation::TimePositions & endings = mSegmentation->offsets();
 			for(unsigned i=0;  i < nElems; i++)
 			{
-				if(i > 0) if(beginnings[i-1] > RightBound()) break;
-				if(current == i) type = CURRENT;
+				if(beginnings[i] > RightBound()) break;
+				int type = (i==current)? CURRENT:NORMAL;
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
-				{
 					DrawSegment(beginnings[i],endings[i],1.0,-1.0,type);
-					if(nElems == 1 || (current == i && i == nElems-1))
-						StippledRect(beginnings[i],endings[i],1.0,-1.0);
-					else 
-						if(current == i-1) StippledRect(beginnings[i-1],endings[i-1],1.0,-1.0);
-					
-				}
-				else
-				{
-					if(current == i-1 && i < nElems-1) StippledRect(beginnings[i-1],endings[i-1],1.0,-1.0);
-				}
-				type = NORMAL;
 			}
+			if (current<nElems)
+				if (IsVisible(beginnings[current],endings[current],LeftBound(),RightBound()))
+					StippledRect(beginnings[current],endings[current],1.0,-1.0);
 		}
 		
 		void SegmentRenderer::DrawSegment(double left, double right, double top, double bottom, int type)
@@ -104,7 +94,7 @@ namespace CLAM
 
 		void SegmentRenderer::StippledRect(double left, double right, double top, double bottom)
 		{
-			glLineWidth(CLINEWIDTH);
+			glLineWidth(1);
 			// draw stippled rect
 			glColor3ub(mColors[STIPPLED].r,mColors[STIPPLED].g,mColors[STIPPLED].b);
 			glEnable(GL_LINE_STIPPLE);
