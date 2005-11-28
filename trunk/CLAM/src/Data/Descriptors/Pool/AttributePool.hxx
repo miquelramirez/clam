@@ -67,11 +67,15 @@ namespace CLAM
 		}
 		void Insert(unsigned pos)
 		{
-			_attribute->Insert(_data,pos);
+			_size++;
+			if (_data)
+				_attribute->Insert(_data,pos);
 		}
 		void Remove(unsigned pos)
 		{
-			_attribute->Remove(_data,pos);
+			_size--;
+			if (_data)
+				_attribute->Remove(_data,pos);
 		}
 	private:
 		void * _data;

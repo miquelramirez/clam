@@ -78,6 +78,19 @@ namespace CLAM
 			return _scopePools[scopeIndex]->GetSize();
 		}
 
+		void Insert(const std::string & scopeName, unsigned pos)
+		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			CLAM_ASSERT(_scopePools[scopeIndex], "booooo");
+			_scopePools[scopeIndex]->Insert(pos);
+		}
+		void Remove(const std::string & scopeName, unsigned pos)
+		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			CLAM_ASSERT(_scopePools[scopeIndex], "booooo");
+			_scopePools[scopeIndex]->Remove(pos);
+		}
+
 		/** @todo Should this method be deprecated?? */
 		void InstantiateAttribute(const std::string & scopeName, const std::string & attributeName)
 		{
