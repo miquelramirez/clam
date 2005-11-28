@@ -547,8 +547,8 @@ namespace CLAM
 				if(mMustProcessMarks) ProcessMarks();
 				mMarksRenderer.Render();
 			}
-			mDial.Render();
 			mSegmentEditor.Draw();
+			mDial.Render();
 		}
 
 		void PlotController::SetMarks(std::vector<unsigned>& marks)
