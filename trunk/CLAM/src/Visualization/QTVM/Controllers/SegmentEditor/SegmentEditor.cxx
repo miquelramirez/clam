@@ -84,28 +84,30 @@ namespace CLAM
 		void SegmentEditor::MousePos(double x, double y)
 		{
 			if(!mStrategy) return;
-
+			QString ttip("");
 			switch (mEditionMode)
 			{
 				case DraggingOnset:
 					mStrategy->dragOnset(mDraggedSegment,x);
 					mMustProcessData = true;
-					emit toolTip(QString::number(x,'f',0));
+					ttip = "X:"+QString::number(mStrategy->onsets()[mDraggedSegment],'f',0);
+					emit toolTip(ttip);
 					emit requestRefresh();	
 					return;
 				case DraggingOffset:
 					mStrategy->dragOffset(mDraggedSegment,x);
 					mMustProcessData = true;
-					emit toolTip(QString::number(x,'f',0));
+					ttip = "X:"+QString::number(mStrategy->onsets()[mDraggedSegment],'f',0);
+					emit toolTip(ttip);
 					emit requestRefresh();	
 					return;
 				case DraggingBody:
-					emit toolTip("");
+					emit toolTip(ttip);
 					return;
 				default:
 					// Just continue below
 					emit working(false);
-					emit toolTip("");
+					emit toolTip(ttip);
 					break;
 			}
 
@@ -117,7 +119,8 @@ namespace CLAM
 			if (index != size) 
 			{
 				emit working(true);
-				emit toolTip(QString::number(x,'f',0));
+				ttip = "X:"+QString::number(mStrategy->onsets()[index],'f',0);
+				emit toolTip(ttip);
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
 			}
@@ -125,7 +128,8 @@ namespace CLAM
 			if (index != size) 
 			{
 				emit working(true);
-				emit toolTip(QString::number(x,'f',0));
+				ttip = "X:"+QString::number(mStrategy->onsets()[index],'f',0);
+				emit toolTip(ttip);
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
 			}
