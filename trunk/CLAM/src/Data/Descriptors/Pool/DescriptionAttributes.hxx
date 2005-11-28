@@ -66,6 +66,8 @@ namespace CLAM
 		
 		/** Returns the attribute name */
 		const std::string & GetName() const { return _attributeName; }
+		/** Returns the attribute name */
+		const std::string & GetScope() const { return _scopeName; }
 		
 		/** Allocates and construct 'size' elements for the attribute */
 		virtual void * Allocate(unsigned size) const = 0;
@@ -84,8 +86,14 @@ namespace CLAM
 		template <typename TypeToCheck>
 		void CheckType() const
 		{
+			if (typeid(TypeToCheck)==TypeInfo()) return;
+			std::ostringstream os;
+			os << "Attribute '" << _scopeName << ":" << _attributeName 
+				<< "' has been used as type '" << typeid(TypeToCheck).name()
+				<< "' but it really was of type '" << TypeInfo().name() << "'" 
+				<< std::endl;
 			CLAM_ASSERT(typeid(TypeToCheck)==TypeInfo(),
-				"Type Missmatch using a pool");
+				os.str().c_str());
 		}
 	protected:
 		/** Returns the type_info for the attribute type */
@@ -129,7 +137,9 @@ namespace CLAM
 			std::string name;
 			XMLAdapter<std::string> nameAdapter(name,"name",false);
 			storage.Load(nameAdapter);
-			CLAM_ASSERT(name==GetName(),"Loading a attribute pool for a different attribute");
+			CLAM_ASSERT(name==GetName(), 
+				("The schema expected an attribute named '" + GetScope() + ":" + GetName() + 
+				 "' but the XML file contained '" + GetScope() + ":" + name + "'").c_str());
 			std::vector<DataType> * vector = (std::vector<DataType> *) data;
 			XmlRestoreConcreteData(storage,&(*vector)[0],size,(DataType*)0);
 		}

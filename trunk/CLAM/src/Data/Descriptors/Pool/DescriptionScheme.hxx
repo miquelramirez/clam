@@ -111,7 +111,7 @@ namespace CLAM
 		unsigned GetScopeIndex(const std::string & name) const
 		{
 			ScopeMap::const_iterator it = _scopeNameMap.find(name);
-			CLAM_ASSERT(it!=_scopeNameMap.end(), "No scope registered with that name");
+			CLAM_ASSERT(it!=_scopeNameMap.end(), ("Attribute scope '" + name + "' not found").c_str());
 			return it->second;
 		}
 

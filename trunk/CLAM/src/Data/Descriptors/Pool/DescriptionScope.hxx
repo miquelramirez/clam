@@ -79,7 +79,7 @@ namespace CLAM
 			unsigned attributeIndex = _nameMap.size();
 			bool inserted = 
 				_nameMap.insert(std::make_pair(name,attributeIndex)).second;
-			CLAM_ASSERT(inserted,"DescriptionScope::Add, Attribute already present");
+			CLAM_ASSERT(inserted,("Couldn't add an attribute '"+_scopeName+":"+name+"', already present").c_str());
 			_attributes.push_back(new Attribute<AttributeType>(_scopeName, name));
 		}
 

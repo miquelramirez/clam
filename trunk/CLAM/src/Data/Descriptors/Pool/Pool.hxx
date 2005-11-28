@@ -73,7 +73,8 @@ namespace CLAM
 		unsigned GetNumberOfContexts(const std::string & scopeName) const
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
-			CLAM_ASSERT(_scopePools[scopeIndex],"Getting the Scope size but it is not populated");
+			CLAM_ASSERT(_scopePools[scopeIndex],
+				("Getting the size of scope '"+scopeName+"' but it is not populated").c_str());
 			return _scopePools[scopeIndex]->GetSize();
 		}
 
@@ -83,7 +84,8 @@ namespace CLAM
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
 			const DescriptionScope & scope = _scheme.GetScope(scopeIndex);
 			scope.GetIndex(attributeName);
-			CLAM_ASSERT(_scopePools[scopeIndex], "Instantianting an attribute inside an unpopulated scope");
+			CLAM_ASSERT(_scopePools[scopeIndex],
+				("Instantianting '"+scopeName+":"+attributeName+"' but the scope is not yet populated").c_str());
 		}
 		/**
 		 * Returns a pointer to the C array of data
@@ -97,7 +99,8 @@ namespace CLAM
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
 
-			CLAM_ASSERT(_scopePools[scopeIndex],"Accessing attribute data inside an unpopulated scope");
+			CLAM_ASSERT(_scopePools[scopeIndex],
+				("Writting data on '"+scopeName+":"+attributeName+"' but the scope is not yet populated").c_str());
 
 			return _scopePools[scopeIndex]->template GetWritePool<AttributeType>(attributeName);
 		}
@@ -114,7 +117,8 @@ namespace CLAM
 		{
 			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
 
-			CLAM_ASSERT(_scopePools[scopeIndex],"Accessing attribute data inside an unpopulated scope");
+			CLAM_ASSERT(_scopePools[scopeIndex],
+				("Reading data from '"+scopeName+":"+attributeName+"' but the scope is not yet populated").c_str());
 
 			return _scopePools[scopeIndex]->template GetReadPool<AttributeType>(attributeName);
 		}
