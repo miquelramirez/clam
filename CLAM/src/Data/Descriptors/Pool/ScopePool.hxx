@@ -95,6 +95,24 @@ namespace CLAM
 				storage.Load(adapter);
 			}
 		}
+		void Insert(unsigned pos)
+		{
+			AttributesData::iterator it = _attributePools.begin();
+			AttributesData::iterator end = _attributePools.end();
+			for (unsigned i=0; it!=end; i++, it++)
+			{
+				it->Insert(pos);
+			}
+		}
+		void Remove(unsigned pos)
+		{
+			AttributesData::iterator it = _attributePools.begin();
+			AttributesData::iterator end = _attributePools.end();
+			for (unsigned i=0; it!=end; i++, it++)
+			{
+				it->Remove(pos);
+			}
+		}
 	private:
 		void Reallocate(unsigned newSize)
 		{
