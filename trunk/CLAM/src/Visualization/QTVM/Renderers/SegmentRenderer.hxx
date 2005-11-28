@@ -31,7 +31,7 @@ namespace CLAM
 			void PlainRect(double left, double right, double top, double bottom);
 			void StippledRect(double left, double right, double top, double bottom);
 			bool IsVisible(double left, double right, double lBound, double rBound);
-			void DrawSegment(double left, double right, double top, double bottom, int type=NORMAL);
+			void DrawSegment(double left, double right, double top, double bottom, bool isCurrent);
 		};
 	}
 }

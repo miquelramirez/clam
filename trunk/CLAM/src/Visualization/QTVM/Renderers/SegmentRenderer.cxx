@@ -33,19 +33,21 @@ namespace CLAM
 			for(unsigned i=0;  i < nElems; i++)
 			{
 				if(beginnings[i] > RightBound()) break;
-				int type = (i==current)? CURRENT:NORMAL;
+				bool isCurrent = (i==current);
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
-					DrawSegment(beginnings[i],endings[i],1.0,-1.0,type);
+				{
+					DrawSegment(beginnings[i],endings[i],1.0,-1.0,isCurrent);
+					if (isCurrent)
+						StippledRect(beginnings[i],endings[i],1.0,-1.0);
+				}
+					
 			}
-			if (current<nElems)
-				if (IsVisible(beginnings[current],endings[current],LeftBound(),RightBound()))
-					StippledRect(beginnings[current],endings[current],1.0,-1.0);
 		}
 		
-		void SegmentRenderer::DrawSegment(double left, double right, double top, double bottom, int type)
+		void SegmentRenderer::DrawSegment(double left, double right, double top, double bottom, bool isCurrent)
 		{
 			int cindex = NORMAL; // TODO: check for selected segments
-			int lineWidth = (type == CURRENT) ? CLINEWIDTH : NLINEWIDTH;
+			int lineWidth = isCurrent ? CLINEWIDTH : NLINEWIDTH;
 			glLineWidth(lineWidth);
 			// fill rec
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
