@@ -27,13 +27,13 @@ public:
 
 	void AddTo(CLAM::DescriptionScheme & scheme)
 	{
-		scheme.AddAttribute<float>(mSchema.GetScope(),mSchema.GetName());
+		scheme.AddAttribute<CLAM::TData>(mSchema.GetScope(),mSchema.GetName());
 	}
 
 	bool ValidateData(const CLAM::DescriptionDataPool & dataPool)
 	{
-		const float * values =
-			dataPool.GetReadPool<float>(
+		const CLAM::TData * values =
+			dataPool.GetReadPool<CLAM::TData>(
 					mSchema.GetScope(),
 					mSchema.GetName());
 		if (!mSchema.HasfRange()) return true;

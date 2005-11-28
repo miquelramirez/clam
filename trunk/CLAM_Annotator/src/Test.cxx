@@ -210,12 +210,12 @@ void PopulatePool(const std::string & song,
 	unsigned nOnsets = segmentation.Size();
 	if (nOnsets==0) nOnsets=1; // KLUDGE!!
 	pool.SetNumberOfContexts("Onset",nOnsets);
-	float * onsetForces = pool.GetWritePool<float>("Onset","Relevance");
+	CLAM::TData * onsetForces = pool.GetWritePool<CLAM::TData>("Onset","Relevance");
 	CLAM_Annotator::RestrictedString * onsetChange = pool.GetWritePool<CLAM_Annotator::RestrictedString>("Onset","DetectedChange");
 	for (unsigned i = 0; i<nOnsets; i++)
 	{
-		onsetForces[i] = float (rand())/float(RAND_MAX)*10;
-		onsetChange[i] = (float (rand())/float(RAND_MAX)*2)>1.0 ? "PitchChange" : "EnergyChange";
+		onsetForces[i] = CLAM::TData (rand())/CLAM::TData(RAND_MAX)*10;
+		onsetChange[i] = (CLAM::TData (rand())/CLAM::TData(RAND_MAX)*2)>1.0 ? "PitchChange" : "EnergyChange";
 	}
 
 	CLAM::IndexArray* randomSegmentation = 
@@ -237,8 +237,8 @@ void PopulatePool(const std::string & song,
 	};
 	for (unsigned i = 0; i<nNotes; i++)
 	{
-		noteOctave[i] = std::max(std::min(int(float (rand())/float(RAND_MAX)*11),10), 0)+1;
-		unsigned pitch = std::max(std::min(int(float (rand())/float(RAND_MAX)*12), 11), 0);
+		noteOctave[i] = std::max(std::min(int(CLAM::TData (rand())/CLAM::TData(RAND_MAX)*11),10), 0)+1;
+		unsigned pitch = std::max(std::min(int(CLAM::TData (rand())/CLAM::TData(RAND_MAX)*12), 11), 0);
 		notePitch[i] = pitchValues[pitch];
 	}
 
@@ -246,21 +246,21 @@ void PopulatePool(const std::string & song,
 	pool.GetWritePool<CLAM::Text>("Song","Artist")[0] = artist;
 	pool.GetWritePool<CLAM::Text>("Song","Title")[0] = title;
 	pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song","Genre")[0] = "Folk";
-	pool.GetWritePool<float>("Song","Danceability")[0] = 7.2;
+	pool.GetWritePool<CLAM::TData>("Song","Danceability")[0] = 7.2;
 	pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song","Key")[0] = "C";
 	pool.GetWritePool<CLAM_Annotator::RestrictedString>("Song","Mode")[0] = "Minor";
-	pool.GetWritePool<float>("Song","DynamicComplexity")[0] = 8.1;
+	pool.GetWritePool<CLAM::TData>("Song","DynamicComplexity")[0] = 8.1;
 	pool.GetWritePool<int>("Song","BPM")[0] = 100;
 
 }
 
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
 {
-	int randomInt=(float (rand())/float(RAND_MAX))*100;
+	int randomInt=(CLAM::TData (rand())/CLAM::TData(RAND_MAX))*100;
 	int randomIncr;
 	for (int i=0; i<size; i++)
 	{
-		randomIncr = (float (rand())/float(RAND_MAX))*20-10;
+		randomIncr = (CLAM::TData (rand())/CLAM::TData(RAND_MAX))*20-10;
 		randomInt += randomIncr;
 		if(randomInt>100) randomInt = 80;
 		if(randomInt<0) randomInt=20;
@@ -287,7 +287,7 @@ void GenerateRandomSegmentationMarks(CLAM::IndexArray* segmentation,int nSamples
 	while(index<nSamples)
 	{
 		  //random number between 10 and 30 frames
-		randomIncr = ((float (rand())/float(RAND_MAX))*200+100)*frameSize;
+		randomIncr = ((CLAM::TData (rand())/CLAM::TData(RAND_MAX))*200+100)*frameSize;
 		index += randomIncr;
 		(*segmentation).AddElem(index);
 	}

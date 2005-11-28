@@ -665,11 +665,11 @@ void Annotator::updateEnvelopesData()
 
 	for(it = descriptorsNames.begin() ;i < editors_size; i++, it++)
 	{
-		updateEnvelopeData(i, mpDescriptorPool->GetWritePool<float>("Frame",*it));
+		updateEnvelopeData(i, mpDescriptorPool->GetWritePool<CLAM::TData>("Frame",*it));
 	}
 }
 
-void Annotator::updateEnvelopeData(int bpfIndex, float* descriptor)
+void Annotator::updateEnvelopeData(int bpfIndex, CLAM::TData* descriptor)
 {
 	int nPoints = mBPFs[bpfIndex].second.Size();
 	for (int i=0; i<nPoints; i++)

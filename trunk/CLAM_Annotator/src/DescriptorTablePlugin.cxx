@@ -105,7 +105,7 @@ namespace CLAM_Annotator
 		}
 		void refreshData(CLAM::DescriptionDataPool & dataPool)
 		{
-			float value = dataPool.GetReadPool<float>(mScope,mName)[mElement];
+			CLAM::TData value = dataPool.GetReadPool<CLAM::TData>(mScope,mName)[mElement];
 			mTable->setItem(mRow,1,
 				new RangeSelectionTableItem(mTable,
 					TableItem::WhenCurrent,
@@ -116,10 +116,10 @@ namespace CLAM_Annotator
 			if (mElement==-1) return;
 			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
 			QString qValue = mTable->text(mRow, 1);
-			dataPool.GetWritePool<float>(mScope,mName)[mElement] = qValue.toFloat();
+			dataPool.GetWritePool<CLAM::TData>(mScope,mName)[mElement] = qValue.toFloat();
 		}
 	private:
-		const Range<float> mRange;
+		const Range<CLAM::TData> mRange;
 	};
 
 	class DescriptorsTableItemControllerInt : public DescriptorTablePlugin
