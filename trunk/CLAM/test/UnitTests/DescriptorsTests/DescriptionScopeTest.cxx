@@ -121,7 +121,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			std::string expected = "DescriptionScope::Add, Attribute already present";
+			std::string expected = "Couldn't add attribute 'TestScope:MyAttribute', already present in the scope";
 			CPPUNIT_ASSERT_EQUAL(
 				expected,
 				std::string(err.what()));
@@ -141,7 +141,6 @@ private:
 
 	void testCheckType_withOtherType()
 	{
-		std::string expected = "Type Missmatch using a pool";
 		CLAM::DescriptionScope spec("TestScope");
 		spec.Add<CLAM::TData>("MyAttribute");
 		try
@@ -151,6 +150,8 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
+			std::string expected = std::string("Attribute 'TestScope:MyAttribute' has been used as type '")
+				+ typeid(int).name() + "' but it really was of type '" + typeid(float).name() + "'";
 			CPPUNIT_ASSERT_EQUAL(
 				expected,
 				std::string(err.what()));

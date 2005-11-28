@@ -223,7 +223,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Loading a attribute pool for a different attribute";
+			const std::string expected = "The schema expected an attribute named ':MyAttribute' but the XML file contained ':DifferentName'";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 
@@ -316,7 +316,7 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Loading an scope pool for a different attribute";
+			const std::string expected = "The schema expected a scope named 'TestScope', but the XML contains the scope 'BadName' instead";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}

@@ -118,7 +118,8 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Type Missmatch using a pool";
+			const std::string expected = std::string("Attribute 'TestScope:MyAttribute' has been used as type '")
+					+ typeid(int).name() + "' but it really was of type '" + typeid(std::string).name() + "'";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
@@ -138,7 +139,8 @@ private:
 		}
 		catch (CLAM::ErrAssertionFailed & err)
 		{
-			const std::string expected = "Type Missmatch using a pool";
+			const std::string expected = std::string("Attribute 'TestScope:MyAttribute' has been used as type '")
+					+ typeid(int).name() + "' but it really was of type '" + typeid(std::string).name() + "'";
 			CPPUNIT_ASSERT_EQUAL(expected, std::string(err.what()));
 		}
 	}
