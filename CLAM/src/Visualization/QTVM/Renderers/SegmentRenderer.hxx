@@ -21,13 +21,14 @@ namespace CLAM
 			void Render();
 
 			void SetMargin(double margin);
-			void SetHighlighted(int index, BoundType type);
+			void SetVHighlighted(int index, BoundType type=LEFT);
 		
 		private:
 			const Segmentation * mSegmentation;
 			std::vector<Color>   mColors; 
 			double               mMargin;
 			int                  mHighlighted;
+			BoundType            mBoundType;
 			
 			enum { NORMAL=0, 
 				   CURRENT=1, 
@@ -44,7 +45,7 @@ namespace CLAM
 			void StippledRect(double left, double right, double top, double bottom);
 			bool IsVisible(double left, double right, double lBound, double rBound);
 			void DrawSegment(double left, double right, double top, double bottom, bool isCurrent);
-			void DrawHighlighted(double left, double right, double top, double bottom);
+			void DrawVHighlighted(double top,  double bottom);
 		};
 	}
 }

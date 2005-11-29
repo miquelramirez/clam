@@ -11,6 +11,7 @@ namespace CLAM
 			, mColors(5)
 			, mMargin(0.1)
 			, mHighlighted(-1)
+			, mBoundType(LEFT)
 		{
 			Colorize();
 		}
@@ -40,7 +41,7 @@ namespace CLAM
 					DrawSegment(beginnings[i],endings[i],1.0,-1.0,isCurrent);
 				}				
 			}
-
+			DrawVHighlighted(1.0,-1.0);
 			if (current>=nElems) return; // no current
 			if (IsVisible(beginnings[current],endings[current],LeftBound(),RightBound())) 
 				StippledRect(beginnings[current],endings[current],1.0,-1.0);
@@ -102,7 +103,7 @@ namespace CLAM
 
 		void SegmentRenderer::StippledRect(double left, double right, double top, double bottom)
 		{
-			glLineWidth(1);
+			glLineWidth(2);
 			// draw stippled rect
 			glColor3ub(mColors[STIPPLED].r,mColors[STIPPLED].g,mColors[STIPPLED].b);
 			glEnable(GL_LINE_STIPPLE);
@@ -114,14 +115,29 @@ namespace CLAM
 			glLineWidth(1);
 		}
 
-		void SegmentRenderer::SetHighlighted(int index, BoundType type)
+		void SegmentRenderer::SetVHighlighted(int index, BoundType type)
 		{
-			// TODO
+			mHighlighted = index;
+			mBoundType = type;
 		}
 
-		void SegmentRenderer::DrawHighlighted(double left, double right, double top, double bottom)
+		void SegmentRenderer::DrawVHighlighted(double top, double bottom)
 		{
-			// TODO
+			if(mHighlighted < 0 || mHighlighted >= (int)mSegmentation->onsets().size()) return;
+			float x = 
+				(mBoundType==LEFT) 
+				? mSegmentation->onsets()[mHighlighted] 
+				: mSegmentation->offsets()[mHighlighted];
+			bool isCurrent = (mHighlighted == (int)mSegmentation->current());
+			int lineWidth = isCurrent ? CLINEWIDTH : NLINEWIDTH;
+			glLineWidth(lineWidth);
+			// draw vertical highlighted 
+			glColor3ub(mColors[HIGHLIGHTED].r,mColors[HIGHLIGHTED].g,mColors[HIGHLIGHTED].b);
+			glBegin(GL_LINES);
+			glVertex2f(x,float(top-mMargin)); 
+			glVertex2f(x,float(bottom+mMargin));
+			glEnd();
+			glLineWidth(1);
 		}
 	}
 }
