@@ -143,11 +143,11 @@ namespace CLAM
 			if(!mStrategy) return;
 			if(mKeyInsertPressed)
 			{
-				mStrategy->insert(x);
+				unsigned index = mStrategy->insert(x);
 				mMustProcessData = true;
 				emit requestRefresh();
-				emit segmentInserted(x);
-				std::cout << "Inserted segment with value  " << x << std::endl;
+				emit segmentInserted(index);
+				std::cout << "Inserted segment at index  " << index << std::endl;
 				return;
 			}
 			unsigned index;

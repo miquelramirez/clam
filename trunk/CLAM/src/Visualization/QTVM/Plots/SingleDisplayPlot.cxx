@@ -92,8 +92,8 @@ namespace CLAM
 					this,SIGNAL(segmentOnsetChanged(unsigned,double)));
 			connect(mController,SIGNAL(segmentOffsetChanged(unsigned,double)),
 					this,SIGNAL(segmentOffsetChanged(unsigned,double)));
-			connect(mController,SIGNAL(segmentInserted(double)),
-					this,SIGNAL(segmentInserted(double)));
+			connect(mController,SIGNAL(segmentInserted(unsigned)),
+					this,SIGNAL(segmentInserted(unsigned)));
 			connect(mController,SIGNAL(segmentDeleted(unsigned)),
 					this,SIGNAL(segmentDeleted(unsigned)));
 			connect(mController,SIGNAL(currentSegmentChanged(unsigned)),
