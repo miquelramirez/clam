@@ -52,7 +52,7 @@ namespace CLAM
 			, mCurrentIndex(0)
 			, mKeyInsertPressed(false)
 			, mKeyDeletePressed(false)
-			, mKeyShiftPressed(false)
+			, mKeySpacePressed(false)
 			, mHasSentTag(false)
 			, mSegmentationMarksEnabled(true)
 			, mIsRenderingEnabled(true)
@@ -500,9 +500,9 @@ namespace CLAM
 		    return mIsLeftButtonPressed;
 		}
 
-		bool PlotController::IsKeyShiftPressed()
+		bool PlotController::IsKeySpacePressed()
 		{
-			return mKeyShiftPressed;
+			return mKeySpacePressed;
 		}
 
 		void PlotController::LeaveMouse()
@@ -576,8 +576,8 @@ namespace CLAM
 		{
 			switch(e->key())
 			{
-				case Qt::Key_Shift:
-					mKeyShiftPressed = true;
+				case Qt::Key_Space:
+					mKeySpacePressed = true;
 					break;
 
 				case Qt::Key_Insert:
@@ -598,8 +598,8 @@ namespace CLAM
 		{
 			switch(e->key())
 			{
-				case Qt::Key_Shift:
-					mKeyShiftPressed = false;
+				case Qt::Key_Space:
+					mKeySpacePressed = false;
 					break;
 
 				case Qt::Key_Insert:
