@@ -97,9 +97,8 @@ Annotator::Annotator(const std::string & nameProject = "")
 	: AnnotatorBase( 0, "annotator", WDestructiveClose)
 	, mCurrentIndex(0)
 	, mpDescriptorPool(0)
-	, mHLDChanged(false)
-	, mLLDChanged(false)
-	, mSegmentsChanged(false)
+	, mFrameDescriptorsNeedUpdate(false)
+	, mDescriptorsNeedSave(false)
 	, mMustUpdateMarkedAudio(false)
 	, mpTabLayout(0)
 	, mpAudioPlot(0)
@@ -132,7 +131,7 @@ void Annotator::initInterface()
 
 void Annotator::markProjectChanged(bool changed)
 {
-	mGlobalChanges = changed;
+	mProjectNeedsSave = changed;
 	fileSave_projectAction->setEnabled(changed);
 }
 
@@ -153,9 +152,7 @@ void Annotator::initProject()
 	adaptInterfaceToCurrentSchema();
 	
 	markProjectChanged(false);
-	mLLDChanged = false;
-	mHLDChanged = false;
-	mSegmentsChanged = false;
+	mDescriptorsNeedSave = false;
 }
 
 void Annotator::adaptInterfaceToCurrentSchema()
@@ -225,6 +222,7 @@ void Annotator::refreshSegmentation()
 		if ( descriptorsMarks[i] >  mCurrentAudio.GetSize())
 		{
 			std::cout << "Out of bounds segment: " << descriptorsMarks[i] << " " << mCurrentAudio.GetSize() << std::endl;
+			segmentation->insert(mCurrentAudio.GetSize());
 			continue;
 		}
 		segmentation->insert(descriptorsMarks[i]);
@@ -251,8 +249,7 @@ void Annotator::updateSegmentations()
 	{
 		descriptorMarks[i] = marks[i];
 	} 
-	mSegmentsChanged = true;
-	auralizeMarks();
+	mDescriptorsNeedSave = true;
 }
 
 void Annotator::adaptEnvelopesToCurrentSchema()
@@ -344,7 +341,7 @@ void Annotator::connectBPFs()
 
 void Annotator::markCurrentSongChanged()
 {
-	mHLDChanged = true;
+	mDescriptorsNeedSave = true;
 	QListViewItemIterator it( mProjectOverview );
 	for ( ; it.current() && !it.current()->isSelected() ; it++ );
 	if ( it.current() )
@@ -367,18 +364,16 @@ void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
 	  in the class.*/
 	int index = tabWidget2->currentPageIndex();
 	mBPFs[index].second.SetValue(pointIndex,TData(newValue));
-	mLLDChanged = true;
+	mFrameDescriptorsNeedUpdate = true;
 }
 
 void Annotator::segmentationMarksChanged(unsigned, double)
 {
-	if(mMustUpdateMarkedAudio) return;
-	if(isPlaying())
-	{
-		mMustUpdateMarkedAudio = true;
-		return;
-	}
 	updateSegmentations();
+	if(isPlaying())
+		mMustUpdateMarkedAudio = true;
+	else
+		auralizeMarks();
 }
 
 void Annotator::updateSongListWidget()
@@ -399,23 +394,15 @@ void Annotator::closeEvent ( QCloseEvent * e )
 {
 	if(mBPFEditor) mBPFEditor->stopPendingTasks();
 
-	if(mLLDChanged||mHLDChanged||mSegmentsChanged)
-	{
-		if(QMessageBox::question(this, "Descriptors Changed", 
-			"Do you want to save the changes to current descriptors?", 
-			QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes)
-		{
-			if (mLLDChanged) updateEnvelopesData();
-			saveDescriptors();
-		}
-	}
-	if ( mGlobalChanges )
+	saveDescriptors();
+
+	if ( mProjectNeedsSave )
 	{
 		if(QMessageBox::question(this, "Close project", 
 			"Do you want to save changes to the project?", 
 			QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes)
 		{
-			saveDescriptors();
+			fileSave();
 		}
 
 	}
@@ -536,28 +523,28 @@ void  Annotator::loadSchema()
 
 void  Annotator::saveDescriptors()
 {
+	if (mFrameDescriptorsNeedUpdate)
+	{
+		updateEnvelopesData();
+		mFrameDescriptorsNeedUpdate=false;
+		mDescriptorsNeedSave=true;
+	}
+	if (!mDescriptorsNeedSave) return;
+
 	if (QMessageBox::question(this,QString("Save Descriptors"),
 		QString("Do you want to save current song's descriptors?"),
-		QString("OK"),QString("Discard Them")) != 0) return;
+		QString("Save Changes"),QString("Discard Them")) != 0) return;
 
 	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mCurrentDescriptorsPoolFileName);
-	mLLDChanged = false;
-	mHLDChanged = false;
-	mSegmentsChanged = false;
+
+	mDescriptorsNeedSave = false;
 }
 
 
 void Annotator::songsClicked( QListViewItem * item)
 {
-	/* before doing anything with the new selected file we must update information for previously
-	selected song */
-	if(mLLDChanged||mHLDChanged||mSegmentsChanged) 
-	{
-		std::cout << "Saving Previous Song Descriptors..." << std::endl;
-		if(mLLDChanged) 
-			updateEnvelopesData();
-		saveDescriptors();
-	}
+	std::cout << "Saving Previous Song Descriptors..." << std::endl;
+	saveDescriptors();
 
 	if (item == 0) return;
 
@@ -663,7 +650,7 @@ void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& descriptorNa
 
 void Annotator::updateEnvelopesData()
 {
-	mLLDChanged = false;
+	mFrameDescriptorsNeedUpdate = false;
 	unsigned i=0, editors_size = mBPFs.size();
 	std::list<std::string>::const_iterator it;
 	const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType("Frame", "Float");
@@ -686,9 +673,8 @@ void Annotator::updateEnvelopeData(int bpfIndex, CLAM::TData* descriptor)
 
 void Annotator::loadDescriptorPool()
 {
-	mLLDChanged = false;
-	mHLDChanged = false;
-	mSegmentsChanged = false;
+	mFrameDescriptorsNeedUpdate = false;
+	mDescriptorsNeedSave = false;
 
 	CLAM::DescriptionDataPool * tempPool = new CLAM::DescriptionDataPool(mProject.GetDescriptionScheme());
 
@@ -852,7 +838,7 @@ void Annotator::onStopPlaying(float time)
 {
 	if(!mMustUpdateMarkedAudio) return;
 	mMustUpdateMarkedAudio = false;
-	updateSegmentations();
+	auralizeMarks();
 }
 
 bool Annotator::isPlaying()
@@ -863,7 +849,9 @@ bool Annotator::isPlaying()
 void Annotator::onSelectPageLLD(QWidget* w)
 {
 	int index = tabWidget2->currentPageIndex();
-	if(!mBPFs.size() || index > (int)mBPFs.size()-1 || index == mCurrentBPFIndex) return;
+	if (!mBPFs.size()) return; // No Bpf to choose
+	if (index > (int)mBPFs.size()-1) return; // Illegal bpf
+	if (index == mCurrentBPFIndex) return; // No change
 	mCurrentBPFIndex = index;
 	removeFromCurrentLayout();
 	double min_y = mBPFs[index].first.first;
