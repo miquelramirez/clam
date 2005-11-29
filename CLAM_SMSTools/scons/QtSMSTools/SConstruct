@@ -1,6 +1,7 @@
 # SConstruct for SMS Tools
 #
 import sys, os, string, glob
+import macbundle
 
 def parse_pkg_config( env ) :
 	prefix = env['clam_prefix']
@@ -81,8 +82,10 @@ else :
 
 opts = Options( 'QtSMSTools.conf' )
 
-if sys.platform != 'win32' :
+if sys.platform == 'linux2' :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+elif sys.platform == 'darwin':
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr/local') )
 else :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
 if sys.platform != 'win32' :
@@ -139,15 +142,21 @@ if sys.platform != 'win32' :
 	tools_env.Append(CCFLAGS= '-include CLAM/preinclude.hxx')
 	tools_env.Append(CCFLAGS= '-DQT_THREAD_SUPPORT')
 
-	htmls = [ '../../resources/html/en/license.html' ]
-	install_html = tools_env.Install( tools_env['install_prefix']+"/share/smstools/html/en", htmls )
-	manpage = ['../../resources/man/man9/QtSMSTools.9']
-	install_manpage = tools_env.Install( tools_env['install_prefix']+"/share/man/man9", manpage )
 
-	tools_bin = tools_env.Program( 'QtSMSTools', sourcefiles, LINKFLAGS=['-rdynamic'] )
-	install_bin = tools_env.Install( tools_env['install_prefix']+'/bin', tools_bin )
-	tools_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
-	install_alias = tools_env.Alias( 'install', [install_bin,install_html, install_manpage] )
+	if sys.platform == 'darwin' :
+		tools_bin = tools_env.Program( 'QtSMSTools', sourcefiles, LINKFLAGS=['-bind_at_load'] )
+		bld = Builder( action=Action(macbundle.create_mac_bundle, macbundle.create_mac_bundle_message) )
+		tools_env.Append( BUILDERS={'CreateBundle' : bld} )
+		tools_env.CreateBundle('notused','QtSMSTools')
+	else:
+		htmls = [ '../../resources/html/en/license.html' ]
+		install_html = tools_env.Install( tools_env['install_prefix']+"/share/smstools/html/en", htmls )
+		manpage = ['../../resources/man/man9/QtSMSTools.9']
+		install_manpage = tools_env.Install( tools_env['install_prefix']+"/share/man/man9", manpage )
+		tools_bin = tools_env.Program( 'QtSMSTools', sourcefiles, LINKFLAGS=['-rdynamic'] )
+		install_bin = tools_env.Install( tools_env['install_prefix']+'/bin', tools_bin )
+		tools_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+		install_alias = tools_env.Alias( 'install', [install_bin,install_html, install_manpage] )
 else :
 	parse_pkg_config( tools_env )
 	tools_env.Append( CCFLAGS = ['/FICLAM/preinclude.hxx', '/EHsc', '-DQT_THREAD_SUPPORT'] )
