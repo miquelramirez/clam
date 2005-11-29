@@ -88,6 +88,7 @@ namespace CLAM
 			{
 				case DraggingOnset:
 					mStrategy->dragOnset(mDraggedSegment,x);
+					mRenderer.SetVHighlighted(mDraggedSegment,LEFT);
 					mMustProcessData = true;
 					ttip = "samples:"+QString::number(mStrategy->onsets()[mDraggedSegment],'f',0);
 					emit toolTip(ttip);
@@ -95,16 +96,19 @@ namespace CLAM
 					return;
 				case DraggingOffset:
 					mStrategy->dragOffset(mDraggedSegment,x);
+					mRenderer.SetVHighlighted(mDraggedSegment,RIGHT);
 					mMustProcessData = true;
 					ttip = "samples:"+QString::number(mStrategy->offsets()[mDraggedSegment],'f',0);
 					emit toolTip(ttip);
 					emit requestRefresh();	
 					return;
 				case DraggingBody:
+					mRenderer.SetVHighlighted(-1);
 					emit toolTip(ttip);
 					return;
 				default:
 					// Just continue below
+					mRenderer.SetVHighlighted(-1);
 					emit working(false);
 					emit toolTip(ttip);
 					break;
@@ -118,6 +122,7 @@ namespace CLAM
 			if (index != size) 
 			{
 				emit working(true);
+				mRenderer.SetVHighlighted(index,LEFT);
 				ttip = "samples:"+QString::number(mStrategy->onsets()[index],'f',0);
 				emit toolTip(ttip);
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
@@ -127,6 +132,7 @@ namespace CLAM
 			if (index != size) 
 			{
 				emit working(true);
+				mRenderer.SetVHighlighted(index,RIGHT);
 				ttip = "samples:"+QString::number(mStrategy->offsets()[index],'f',0);
 				emit toolTip(ttip);
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
@@ -189,6 +195,7 @@ namespace CLAM
 			mEditionMode=Idle;
 			mMousePressed = false;
 			emit working(false);
+			mRenderer.SetVHighlighted(-1);
 			emit toolTip("");
 			emit cursorChanged(QCursor(Qt::ArrowCursor));
 			if(mode == DraggingOnset) 
@@ -275,6 +282,7 @@ namespace CLAM
 
 		void SegmentEditor::LeaveMouse()
 		{
+			mRenderer.SetVHighlighted(-1);
 			emit toolTip("");
 		}
 	}
