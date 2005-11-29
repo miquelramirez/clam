@@ -35,10 +35,10 @@ namespace CLAM
 			for(unsigned i=0;  i < nElems; i++)
 			{
 				if(beginnings[i] > RightBound()) break;
-				bool isCurrent = (i==current);
+//				bool isCurrent = (i==current);
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
 				{
-					DrawSegment(beginnings[i],endings[i],1.0,-1.0,isCurrent);
+					DrawSegment(beginnings[i],endings[i],1.0,-1.0,i==current,mSegmentation->selections()[i]);
 				}				
 			}
 			DrawVHighlighted(1.0,-1.0);
@@ -49,9 +49,10 @@ namespace CLAM
 
 		}
 		
-		void SegmentRenderer::DrawSegment(double left, double right, double top, double bottom, bool isCurrent)
+		void SegmentRenderer::DrawSegment(double left, double right, double top, double bottom,
+										  bool isCurrent, bool isSelected)
 		{
-			int cindex = NORMAL; // TODO: check for selected segments
+			int cindex = isSelected ? SELECTED : NORMAL;
 			int lineWidth = isCurrent ? CLINEWIDTH : NLINEWIDTH;
 			glLineWidth(lineWidth);
 			// fill rec
@@ -96,7 +97,7 @@ namespace CLAM
 		{
 			mColors[NORMAL] = Color(100,200,20);
 			mColors[CURRENT] = Color(100,200,20);
-			mColors[SELECTED] = Color(100,200,20); // TODO: add white
+			mColors[SELECTED] = Color(140,240,60); 
 			mColors[HIGHLIGHTED] = Color(255,255,0);
 			mColors[STIPPLED] = Color(225,90,60);
 		}
