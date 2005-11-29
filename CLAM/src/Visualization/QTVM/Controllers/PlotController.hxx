@@ -152,7 +152,7 @@ namespace CLAM
 			double GetMouseXPos() const;
 			double GetMouseYPos() const;
 			bool IsLeftButtonPressed();
-			bool IsKeySpacePressed();
+			bool IsKeyShiftPressed();
 			bool IsAbleToEdit();
 			int GetDisplayWidth() const;
 			int GetDisplayHeight() const;
@@ -205,7 +205,7 @@ namespace CLAM
 			int                   mCurrentIndex;
 			bool                  mKeyInsertPressed;
 			bool                  mKeyDeletePressed;
-			bool                  mKeySpacePressed;
+			bool                  mKeyShiftPressed;
 			bool                  mHasSentTag;
 			bool                  mSegmentationMarksEnabled;
 			bool                  mIsRenderingEnabled;
