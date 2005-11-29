@@ -1,4 +1,5 @@
 import sys, os, glob
+import macbundle
 
 # builder for embedding images into a cxx file
 #
@@ -23,7 +24,7 @@ bld = Builder( action = Action(embed_images, embed_images_message),
 annotator_env = Environment( tools=['default','qt'], 
 							ENV=os.environ)
 annotator_env.Append( BUILDERS = {'EmbedImages' : bld} )
-annotator_env.Replace( QT_UIC='/usr/bin/uic' )
+annotator_env.Replace( QT_UIC='/Developer/qt/bin/uic' )
 annotator_env.Replace(QT_LIB='qt-mt')
 
 opts = Options('Annotator.conf')
@@ -39,6 +40,8 @@ if annotator_env['release'] :
 	annotator_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
 else :
 	annotator_env.Append( CCFLAGS=['-g', '-Wall'] )
+
+annotator_env.Append( CCFLAGS=['-I/Users/xoliver/deps', '-fno-common', '-dynamic'] )
 
 
 annotator_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'  )
@@ -70,4 +73,10 @@ bin_objects = [ annotator_env.Object(source) for source in sourcefiles ]
 annotator_env.Append(CPPPATH=source_dirs)
 annotator_env.Append(CCFLAGS='-include CLAM/preinclude.hxx -DQT_THREAD_SUPPORT')
 
-annotator_bin = annotator_env.Program( 'Annotator', bin_main_object + bin_objects, LINKFLAGS=['-rdynamic'] )
+annotator_bin = annotator_env.Program( 'Annotator', bin_main_object + bin_objects, LINKFLAGS=['-dynamic','-bind_at_load'] )
+
+if sys.platform == 'darwin':
+	bld = Builder( action=Action(macbundle.create_mac_bundle, macbundle.create_mac_bundle_message) )
+	annotator_env.Append( BUILDERS={'CreateBundle' : bld} )
+	annotator_env.CreateBundle('notused','Annotator')
+
