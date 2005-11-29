@@ -69,8 +69,8 @@ namespace CLAM
 					this,SIGNAL(segmentOnsetChanged(unsigned,double)));
 			connect(&mSegmentEditor,SIGNAL(segmentOffsetChanged(unsigned,double)),
 					this,SIGNAL(segmentOffsetChanged(unsigned,double)));
-			connect(&mSegmentEditor,SIGNAL(segmentInserted(double)),
-					this,SIGNAL(segmentInserted(double)));
+			connect(&mSegmentEditor,SIGNAL(segmentInserted(unsigned)),
+					this,SIGNAL(segmentInserted(unsigned)));
 			connect(&mSegmentEditor,SIGNAL(segmentDeleted(unsigned)),
 					this,SIGNAL(segmentDeleted(unsigned)));
 			connect(&mSegmentEditor,SIGNAL(currentSegmentChanged(unsigned)),

@@ -45,7 +45,7 @@ namespace CLAM
 			// signals to tell outside what happend
 			void segmentOnsetChanged(unsigned,double);
 			void segmentOffsetChanged(unsigned,double);
-			void segmentInserted(double);
+			void segmentInserted(unsigned);
 			void segmentDeleted(unsigned);
 			void currentSegmentChanged(unsigned);
 
