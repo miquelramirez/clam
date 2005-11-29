@@ -25,7 +25,7 @@ namespace CLAM
 			std::vector<Color>   mColors; 
 			double               mMargin;
 			
-			enum { NORMAL=0, CURRENT=1, SELECTED=2, STIPPLED=3, NLINEWIDTH=2, CLINEWIDTH=4, FACTOR=4, PATTERN=0x5555 };
+			enum { NORMAL=0, CURRENT=1, SELECTED=2, STIPPLED=1, NLINEWIDTH=2, CLINEWIDTH=4, FACTOR=4, PATTERN=0x5555 };
 
 			void Colorize();
 			void PlainRect(double left, double right, double top, double bottom);
