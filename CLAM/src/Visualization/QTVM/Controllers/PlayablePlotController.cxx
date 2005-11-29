@@ -19,7 +19,7 @@ namespace CLAM
 		{
 			if(CanDrawSelectedPos())
 			{
-				if(IsKeyShiftPressed())
+				if(IsKeySpacePressed())
 				{
 					if(value > GetBeginRegion() && value < GetEndRegion())
 					{
