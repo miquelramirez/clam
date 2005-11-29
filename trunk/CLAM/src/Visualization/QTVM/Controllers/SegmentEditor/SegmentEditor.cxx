@@ -22,7 +22,6 @@ namespace CLAM
 			, mMousePressed(false)
 			, mKeyInsertPressed(false)
 			, mKeyDeletePressed(false)
-			, mKeyShiftPressed(false)
 			, mKeyCtrlPressed(false)
 			, mEditionMode(Idle)
 			, mDraggedSegment(0)
@@ -139,7 +138,7 @@ namespace CLAM
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
 			}
-			if(mKeyInsertPressed || mKeyShiftPressed || mKeyCtrlPressed)
+			if(mKeyInsertPressed || mKeyCtrlPressed)
 			{
 				emit working(true);	
 			}
@@ -180,13 +179,9 @@ namespace CLAM
 			{
 				mEditionMode=DraggingBody;
 				mDraggedSegment=index;
-				if(mKeyShiftPressed)
+				if(mKeyCtrlPressed)
 				{
-					mStrategy->select(index);
-				} 
-				else if(mKeyCtrlPressed)
-				{
-					mStrategy->deselect(index);
+					(mStrategy->selections()[index]) ? mStrategy->deselect(index) : mStrategy->select(index);
 				}
 				else
 				{
@@ -206,7 +201,7 @@ namespace CLAM
 			int mode = mEditionMode;
 			mEditionMode=Idle;
 			mMousePressed = false;
-			emit working(false);
+			if(!mKeyInsertPressed && !mKeyCtrlPressed) emit working(false);
 			mRenderer.SetVHighlighted(-1);
 			emit toolTip("");
 			emit cursorChanged(QCursor(Qt::ArrowCursor));
@@ -231,11 +226,8 @@ namespace CLAM
 			int index = 0;
 			switch(e->key())
 			{
-				case Qt::Key_Shift:
-					mKeyShiftPressed = true;
-					break;
-
 				case Qt::Key_Insert:
+					emit working(true);
 					mKeyInsertPressed = true; 
 					break;
 						
@@ -253,6 +245,7 @@ namespace CLAM
 					break;
 
 				case Key_Control:
+					emit working(true);
 					mKeyCtrlPressed = true;
 					break;
 
@@ -265,11 +258,8 @@ namespace CLAM
 		{
 			switch(e->key())
 			{
-				case Qt::Key_Shift:
-					mKeyShiftPressed = false;
-					break;
-
 				case Qt::Key_Insert:
+					emit working(false);
 					mKeyInsertPressed = false; 
 					break;
 						
@@ -278,6 +268,7 @@ namespace CLAM
 					break;
 
 				case Qt::Key_Control:
+					emit working(false);
 					mKeyCtrlPressed = false;
 					break;
 

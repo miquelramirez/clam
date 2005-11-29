@@ -66,7 +66,6 @@ namespace CLAM
 			bool            mMousePressed;
 			bool            mKeyInsertPressed;
 			bool            mKeyDeletePressed;
-			bool            mKeyShiftPressed;
 			bool            mKeyCtrlPressed;
 		   
 			enum { TOLERANCE=3, PIXMARGIN=5 };
