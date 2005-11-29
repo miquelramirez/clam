@@ -80,8 +80,6 @@ private slots:
 
 private:
 	void updateSongListWidget();
-	bool saveProject();
-
 	void makeConnections();
 	void connectBPFs();
 	void currentFile( std::string &);
@@ -138,10 +136,9 @@ private:
 
 	CLAM::DescriptionDataPool* mpDescriptorPool;
 
-	bool mGlobalChanges;
-	bool mHLDChanged;
-	bool mLLDChanged;
-	bool mSegmentsChanged;
+	bool mProjectNeedsSave;
+	bool mFrameDescriptorsNeedUpdate;
+	bool mDescriptorsNeedSave;
 	bool mMustUpdateMarkedAudio;
 
 	QVBoxLayout* mpTabLayout;
