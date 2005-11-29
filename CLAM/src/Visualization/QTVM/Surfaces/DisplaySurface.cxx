@@ -90,7 +90,7 @@ namespace CLAM
 			}
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			glOrtho(mView.left,mView.right,mView.bottom,mView.top,-1.0,1.0);
+			glOrtho(mView.left,mView.right,mView.bottom,mView.top,1.0,-1.0);
 			glMatrixMode(GL_MODELVIEW);
 			glShadeModel(GL_FLAT);
 			glClearColor(mRed, mGreen, mBlue, 1.0);
@@ -223,7 +223,7 @@ namespace CLAM
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
 			glLoadIdentity();
-			glOrtho(0.0,mWidth,mHeight,0.0,-1.0,1.0);
+			glOrtho(0.0,mWidth,mHeight,0.0,1.0,-1.0);
 			glMatrixMode(GL_MODELVIEW);
 
 			glColor3ub(255,255,0);
