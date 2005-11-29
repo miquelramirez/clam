@@ -8,8 +8,9 @@ namespace CLAM
 	{
 		SegmentRenderer::SegmentRenderer()
 			: mSegmentation(0)
-			, mColors(3)
+			, mColors(5)
 			, mMargin(0.1)
+			, mHighlighted(-1)
 		{
 			Colorize();
 		}
@@ -37,12 +38,13 @@ namespace CLAM
 				if(IsVisible(beginnings[i],endings[i],LeftBound(),RightBound())) 
 				{
 					DrawSegment(beginnings[i],endings[i],1.0,-1.0,isCurrent);
-				}
-					
+				}				
 			}
+
 			if (current>=nElems) return; // no current
 			if (IsVisible(beginnings[current],endings[current],LeftBound(),RightBound())) 
 				StippledRect(beginnings[current],endings[current],1.0,-1.0);
+
 
 		}
 		
@@ -92,13 +94,15 @@ namespace CLAM
 		void SegmentRenderer::Colorize()
 		{
 			mColors[NORMAL] = Color(100,200,20);
+			mColors[CURRENT] = Color(100,200,20);
 			mColors[SELECTED] = Color(100,200,20); // TODO: add white
+			mColors[HIGHLIGHTED] = Color(255,255,0);
 			mColors[STIPPLED] = Color(225,90,60);
 		}
 
 		void SegmentRenderer::StippledRect(double left, double right, double top, double bottom)
 		{
-			glLineWidth(STIPPLED);
+			glLineWidth(1);
 			// draw stippled rect
 			glColor3ub(mColors[STIPPLED].r,mColors[STIPPLED].g,mColors[STIPPLED].b);
 			glEnable(GL_LINE_STIPPLE);
@@ -108,6 +112,16 @@ namespace CLAM
 			glEnd();
 			glDisable(GL_LINE_STIPPLE);
 			glLineWidth(1);
+		}
+
+		void SegmentRenderer::SetHighlighted(int index, BoundType type)
+		{
+			// TODO
+		}
+
+		void SegmentRenderer::DrawHighlighted(double left, double right, double top, double bottom)
+		{
+			// TODO
 		}
 	}
 }
