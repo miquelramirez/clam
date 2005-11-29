@@ -96,7 +96,7 @@ namespace CLAM
 				case DraggingOffset:
 					mStrategy->dragOffset(mDraggedSegment,x);
 					mMustProcessData = true;
-					ttip = "samples:"+QString::number(mStrategy->onsets()[mDraggedSegment],'f',0);
+					ttip = "samples:"+QString::number(mStrategy->offsets()[mDraggedSegment],'f',0);
 					emit toolTip(ttip);
 					emit requestRefresh();	
 					return;
@@ -127,7 +127,7 @@ namespace CLAM
 			if (index != size) 
 			{
 				emit working(true);
-				ttip = "samples:"+QString::number(mStrategy->onsets()[index],'f',0);
+				ttip = "samples:"+QString::number(mStrategy->offsets()[index],'f',0);
 				emit toolTip(ttip);
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
@@ -193,14 +193,16 @@ namespace CLAM
 			emit cursorChanged(QCursor(Qt::ArrowCursor));
 			if(mode == DraggingOnset) 
 			{
-				emit segmentOnsetChanged(mDraggedSegment,x);
-				std::cout << "Onset changed at index " << mDraggedSegment << ", new value " << x << std::endl;
+				emit segmentOnsetChanged(mDraggedSegment,mStrategy->onsets()[mDraggedSegment]);
+				std::cout << "Onset changed at index " << mDraggedSegment << ", new value " 
+						  << mStrategy->onsets()[mDraggedSegment] << std::endl;
 				return;
 			}
 			if(mode == DraggingOffset) 
 			{
-				emit segmentOffsetChanged(mDraggedSegment,x);
-				std::cout << "Offset changed at index " << mDraggedSegment << ", new value " << x << std::endl;
+				emit segmentOffsetChanged(mDraggedSegment,mStrategy->offsets()[mDraggedSegment]);
+				std::cout << "Offset changed at index " << mDraggedSegment << ", new value " 
+						  << mStrategy->offsets()[mDraggedSegment] << std::endl;
 				return;
 			}
 		}
@@ -269,6 +271,11 @@ namespace CLAM
 		{
 			mRenderer.SetData(*mStrategy);
 			mMustProcessData = false;
+		}
+
+		void SegmentEditor::LeaveMouse()
+		{
+			emit toolTip("");
 		}
 	}
 }
