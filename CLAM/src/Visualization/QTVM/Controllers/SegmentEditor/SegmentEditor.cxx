@@ -103,6 +103,7 @@ namespace CLAM
 					emit requestRefresh();	
 					return;
 				case DraggingBody:
+					emit working(true);
 					mRenderer.SetVHighlighted(-1);
 					emit toolTip(ttip);
 					return;
@@ -138,9 +139,9 @@ namespace CLAM
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
 			}
-			if(mKeyInsertPressed)
+			if(mKeyInsertPressed || mKeyShiftPressed || mKeyCtrlPressed)
 			{
-				emit working(true);				
+				emit working(true);	
 			}
 		}
 
@@ -179,12 +180,23 @@ namespace CLAM
 			{
 				mEditionMode=DraggingBody;
 				mDraggedSegment=index;
-				// This two lines maybe only when Alt is pressed
-				mStrategy->current(index);
+				if(mKeyShiftPressed)
+				{
+					mStrategy->select(index);
+				} 
+				else if(mKeyCtrlPressed)
+				{
+					mStrategy->deselect(index);
+				}
+				else
+				{
+					mStrategy->current(index);
+					mStrategy->clearSelection();
+					emit currentSegmentChanged(index);
+					std::cout << "Current segment is " << index << std::endl;
+				}
 				mMustProcessData = true;
 				emit requestRefresh();	
-				emit currentSegmentChanged(index);
-				std::cout << "Current segment is " << index << std::endl;
 				return;
 			}
 		}
