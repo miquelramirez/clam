@@ -98,7 +98,7 @@ namespace CLAM
 
 		void SegmentRenderer::StippledRect(double left, double right, double top, double bottom)
 		{
-			glLineWidth(1);
+			glLineWidth(STIPPLED);
 			// draw stippled rect
 			glColor3ub(mColors[STIPPLED].r,mColors[STIPPLED].g,mColors[STIPPLED].b);
 			glEnable(GL_LINE_STIPPLE);
