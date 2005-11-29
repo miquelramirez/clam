@@ -1,4 +1,5 @@
 import sys, os, string, glob
+import macbundle
 
 neted_env = Environment( tools=['default','qt'], ENV=os.environ )
 
@@ -16,15 +17,27 @@ if neted_env['release'] :
 else :
 	neted_env.Append( CCFLAGS=['-g', '-Wall'] )
 
+if sys.platform == 'darwin':
+	neted_env.Append( LINKFLAGS=['-bind_at_load'] )
+	neted_env.Append( CCFLAGS=['-DNO_IMPLICIT_EXTERN_C'])
 
-neted_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt clam_vmfl'  )
+neted_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'  )
 
 source_dirs = ['../src','../src/GUI','../src/GUI/Base','../src/GUI/Interface','../src/GUI/Qt_Presentations','../src/GUI/Qt_Presentations/ConcretePresentations', '../src/Processings','../src/Visualization']
 
 neted_env.Append(CPPPATH=source_dirs)
 neted_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+
+neted_env.Append(CCFLAGS=['-I/usr/include'])
+
 sourcefiles = []
 for dir in source_dirs :
 	sourcefiles += glob.glob(dir+'/*.cxx')
 	sourcefiles += glob.glob(dir+'/*.ui')
-neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-rdynamic'] )
+
+neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles)
+
+if sys.platform == 'darwin':
+	bld = Builder( action=Action(macbundle.create_mac_bundle, macbundle.create_mac_bundle_message) )
+	neted_env.Append( BUILDERS={'CreateBundle' : bld} )
+	neted_env.CreateBundle('notused','NetworkEditor')
