@@ -512,6 +512,7 @@ namespace CLAM
 			QCursor cursor(ArrowCursor);
 			emit cursorChanged(cursor);
 			emit mouseOverDisplay(false);
+			mSegmentEditor.LeaveMouse();
 		}
 
 		void PlotController::EnterMouse()
