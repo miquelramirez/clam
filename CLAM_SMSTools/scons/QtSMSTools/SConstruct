@@ -89,9 +89,9 @@ elif sys.platform == 'darwin':
 else :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
 if sys.platform != 'win32' :
-	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr') )
+	opts.Add( PathOption( 'install_prefix', 'Prefix where SMSTools is going to be installed', '/usr') )
 else :
-	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', 'G:\projects\CLAM-bin\\bin') )
+	opts.Add( PathOption( 'install_prefix', 'Prefix where SMSTools is going to be installed', 'G:\projects\CLAM-bin\\bin') )
 opts.Add( BoolOption( 'release', 'Build SMS Tools enabling compiler optimizations', 'no' ) )
 opts.Update( tools_env )
 opts.Save( 'QtSMSTools.conf', tools_env )
@@ -142,12 +142,11 @@ if sys.platform != 'win32' :
 	tools_env.Append(CCFLAGS= '-include CLAM/preinclude.hxx')
 	tools_env.Append(CCFLAGS= '-DQT_THREAD_SUPPORT')
 
-
 	if sys.platform == 'darwin' :
 		tools_bin = tools_env.Program( 'QtSMSTools', sourcefiles, LINKFLAGS=['-bind_at_load'] )
 		bld = Builder( action=Action(macbundle.create_mac_bundle, macbundle.create_mac_bundle_message) )
 		tools_env.Append( BUILDERS={'CreateBundle' : bld} )
-		tools_env.CreateBundle('notused','QtSMSTools')
+		tools_env.CreateBundle('not-used','QtSMSTools')
 	else:
 		htmls = [ '../../resources/html/en/license.html' ]
 		install_html = tools_env.Install( tools_env['install_prefix']+"/share/smstools/html/en", htmls )
@@ -182,6 +181,6 @@ else :
 
 	vc_alias = tools_env.Alias('visual_project', [generate_vcproj])
 
-Default(tools_bin)
-
+#Commented because it prevents Mac OS X application folder creation
+#Default(tools_bin)
 
