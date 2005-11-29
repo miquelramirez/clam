@@ -9,7 +9,7 @@ def create_mac_bundle(target,source, env) :
 
 	#Create subdirectories
 	env.Install( str(source[0]) + '.app/Contents/MacOS/', source[0])
-	env.Install( str(source[0]) + '.app/Contents/Resources/', '../resources/' + icon)
+	env.Install( str(source[0]) + '.app/Contents/Resources/', 'resources/' + icon)
 	
 	#Create plist file
 	plist = open ( 'Info.plist', 'w' )
