@@ -33,6 +33,8 @@ namespace CLAM
 
 			void KeyPressEvent(QKeyEvent* e);
 			void KeyReleaseEvent(QKeyEvent* e);
+
+			void LeaveMouse();
 			
 		signals:
 			void toolTip(QString);
