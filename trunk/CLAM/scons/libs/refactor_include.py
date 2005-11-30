@@ -41,13 +41,16 @@ it will be converted to :
 
 The script accepts the following parameters:
     -h, --help              Shows this help
+    -l, --list		List all headers in the database	
     -i, --input   <path>    File or folder to convert
+    -a, --add  <header>  Adds a new header to the header_db.db
+    -d, --delete  <header>  Adds a new header to the header_db.db
     """
 
 def main() :
 
     try:
-        opts, args = getopt.getopt( sys.argv[1:], "hi:r", ["help","input=","recurse"] )
+        opts, args = getopt.getopt( sys.argv[1:], "hi:a:d:rl", ["help","input=","add=", "delete=", "recurse", "list"] )
     except getopt.GetoptError :
         usage()
         sys.exit(2)
@@ -61,6 +64,29 @@ def main() :
             sys.exit(1)
         if option in ( "-i", "--input" ) :
             inputFname = argument
+        if option in ( "-l", "--list" ) : 
+	    existingHeaders = shelve.open("header.db", "r")
+	    print existingHeaders.keys()
+	    return
+            
+	if option in ("-a", "--add") :
+	    existingHeaders = shelve.open("header.db", writeback=True)
+	    if existingHeaders.has_key(argument) :
+		print argument, "already exists in the database "
+		return
+	    existingHeaders[argument] = True
+	    existingHeaders.close()
+	    print argument, "successfully added"
+	    return
+	if option in ("-d", "--delete") :
+	    existingHeaders = shelve.open("header.db", writeback=True)
+	    if not existingHeaders.has_key(argument) :
+		print argument, "doesn't exist in the database "
+		return
+	    del existingHeaders[argument]
+	    existingHeaders.close()
+	    print argument, "successfully deleted"
+	    return
         if option in ( "-r", "--recurse" ) :
             mustRecurse = True
 
