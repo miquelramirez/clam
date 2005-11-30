@@ -16,7 +16,7 @@ def define_module_contents() :
 	if not os.path.exists('CLAM') :
 		os.makedirs('CLAM')
 
-	folders = ['src/Visualization/QTVM/Controllers','src/Visualization/QTVM/Controllers/SegmentEditor','src/Visualization/QTVM/DirectPlots','src/Visualization/QTVM/Network/Controllers','src/Visualization/QTVM/Network/Plots','src/Visualization/QTVM/Network/Processings','src/Visualization/QTVM/Network/Renderers','src/Visualization/QTVM/Network/Surfaces','src/Visualization/QTVM/Network/Utils','src/Visualization/QTVM/Players','src/Visualization/QTVM/Plots','src/Visualization/QTVM/Plots/SMS','src/Visualization/QTVM/Renderers','src/Visualization/QTVM/Surfaces','src/Visualization/QTVM/SysPlot','src/Visualization/QTVM/Utils','src/Visualization/QTVM/Widgets','src/Visualization/QTVM/Widgets/BPFEditor','src/Visualization/QTVM/Widgets/Label','src/Visualization/QTVM/Widgets/Misc','src/Visualization/QTVM/Widgets/Playable','src/Visualization/QTVM/Widgets/Rulers','src/Visualization/QTVM/Widgets/Scroll'] 
+	folders = ['src/Visualization/QTVM/Controllers','src/Visualization/QTVM/Controllers/SegmentEditor','src/Visualization/QTVM/DirectPlots','src/Visualization/QTVM/Network/Controllers','src/Visualization/QTVM/Network/Plots','src/Visualization/QTVM/Network/Processings','src/Visualization/QTVM/Network/Renderers','src/Visualization/QTVM/Network/Surfaces','src/Visualization/QTVM/Network/Utils','src/Visualization/QTVM/Players','src/Visualization/QTVM/Plots','src/Visualization/QTVM/Plots/SMS','src/Visualization/QTVM/Renderers','src/Visualization/QTVM/Surfaces','src/Visualization/QTVM/SysPlot','src/Visualization/QTVM/Utils','src/Visualization/QTVM/Widgets','src/Visualization/QTVM/Widgets/BPFEditor','src/Visualization/QTVM/Widgets/Label','src/Visualization/QTVM/Widgets/Misc','src/Visualization/QTVM/Widgets/Playable','src/Visualization/QTVM/Widgets/Rulers','src/Visualization/QTVM/Widgets/Scroll', 'src/Visualization/View/FDFilterController.*xx'] 
 
 	blacklist = []
 
@@ -27,7 +27,7 @@ def define_module_contents() :
 
 	file_retriever.scan()
 
-	store_headers_in_db( header_db )
+	store_headers_in_db( header_db, 'CLAM' )
 	for filename in file_retriever.headers :
 		update_includes( header_db, filename )
 	for filename in file_retriever.sources :
