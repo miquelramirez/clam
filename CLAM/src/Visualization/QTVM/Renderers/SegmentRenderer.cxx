@@ -99,18 +99,22 @@ namespace CLAM
 			mColors[CURRENT] = Color(100,200,20);
 			mColors[SELECTED] = Color(140,240,60); 
 			mColors[HIGHLIGHTED] = Color(255,255,0);
-			mColors[STIPPLED] = Color(225,90,60);
+			mColors[STIPPLED] = Color(255,90,60);
 		}
 
 		void SegmentRenderer::StippledRect(double left, double right, double top, double bottom)
 		{
+			// TODO: Paddings computations works for me but that's a kludge!
+			float vPadding = mMargin * 0.8;
+			float hPadding = 4 * (RightBound()-LeftBound()) / 1000;
+
 			glLineWidth(2);
 			// draw stippled rect
 			glColor3ub(mColors[STIPPLED].r,mColors[STIPPLED].g,mColors[STIPPLED].b);
 			glEnable(GL_LINE_STIPPLE);
 			glLineStipple(FACTOR,PATTERN);
 			glBegin(GL_LINE_STRIP);
-			PlainRect(left,right,top,bottom);
+			PlainRect(left-hPadding,right+hPadding,top+vPadding,bottom-vPadding);
 			glEnd();
 			glDisable(GL_LINE_STIPPLE);
 			glLineWidth(1);
