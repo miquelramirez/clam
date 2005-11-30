@@ -2,7 +2,6 @@ from modconf.glchecks import *
 import sys
 
 def setup_vmfl_environment( vmfl_env, conf ) :
-
 	if not check_opengl( vmfl_env, conf ) :
 		return False
 
@@ -17,11 +16,12 @@ def setup_vmfl_environment( vmfl_env, conf ) :
 	elif sys.platform == 'darwin' :
 		result = conf.check_fltk_config()
 		if not result :
-			print "fltk-config cagada"
+			print "fltk-config tool was not found on your system. Please check your FLTK installation"
 			return False
+		#These libraries, frameworks and path must be added manually because the method 'Parseconfig' from scons doesn't work properly under OSX
 		vmfl_env.Append( CPPPATH=['-I/usr/local/include/FL/images'] )
 		vmfl_env.Append( LINKFLAGS=['-framework', 'Carbon', '-framework', 'ApplicationServices'] )
-		vmfl_env.Append( LIBS=['fltk_images', 'fltk_png', 'z', 'fltk_jpeg', 'fltk_gl', 'fltk_forms', 'fltk'] )
+		vmfl_env.Append( LIBS=['fltk_images', 'png', 'z', 'fltk_gl', 'fltk_forms', 'fltk'] )  
 	elif sys.platform == 'win32' :
 		# Manual configuration
 		result = conf.CheckCXXHeader( 'FL/Fl.H' )
