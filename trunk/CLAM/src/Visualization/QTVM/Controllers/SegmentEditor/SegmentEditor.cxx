@@ -223,34 +223,37 @@ namespace CLAM
 
 		void SegmentEditor::KeyPressEvent(QKeyEvent* e)
 		{
-			int index = 0;
 			switch(e->key())
 			{
 				case Qt::Key_Insert:
+				{
 					emit working(true);
 					mKeyInsertPressed = true; 
-					break;
+				}
+				break;
 						
 				case Qt::Key_Delete:
+				{
 					mKeyDeletePressed = true; 
-					if(mStrategy->onsets().size() <= 1) return;
-					index = mStrategy->current();
+					unsigned nSegments = mStrategy->onsets().size();
+					unsigned index = mStrategy->current();
 					mStrategy->remove(index);
+					if (mStrategy->onsets().size() == nSegments) return; // Remove was ignored
 					mMustProcessData = true;
 					emit requestRefresh();
 					emit segmentDeleted(index);
 					emit currentSegmentChanged(mStrategy->current());
-				    std::cout << "Segment deleted  " << index << std::endl;
+					std::cout << "Segment deleted  " << index << std::endl;
 					std::cout << "Current segment is " << mStrategy->current() << std::endl;
-					break;
+				}
+				break;
 
-				case Key_Control:
+				case Qt::Key_Control:
+				{
 					emit working(true);
 					mKeyCtrlPressed = true;
-					break;
-
-				default:
-					break;
+				}
+				break;
 			}
 		}
 
