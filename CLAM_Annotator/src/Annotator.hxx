@@ -54,6 +54,8 @@ public slots:
 	void segmentDescriptorsTableChanged( int, int);
 	void frameDescriptorsChanged(int, float);
 	void segmentationMarksChanged(unsigned, double);
+	void removeSegment(unsigned);
+	void insertSegment(unsigned);
 
 	void fileNew();
 	void fileOpen();

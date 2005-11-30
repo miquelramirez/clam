@@ -252,6 +252,28 @@ void Annotator::updateSegmentations()
 	mDescriptorsNeedSave = true;
 }
 
+void Annotator::removeSegment(unsigned index)
+{
+	std::cout << "Removing segment at " << index << std::endl;
+	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
+	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
+	if (childScope=="") return; // No child scope to shrink
+	CLAM_ASSERT(index<mpDescriptorPool->GetNumberOfContexts(childScope),
+		"Invalid segment to be removed");
+	mpDescriptorPool->Remove(childScope, index);
+}
+
+void Annotator::insertSegment(unsigned index)
+{
+	std::cout << "Inserting segment at " << index << std::endl;
+	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
+	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
+	if (childScope=="") return; // No child scope to grow up
+	CLAM_ASSERT(index<mpDescriptorPool->GetNumberOfContexts(childScope),
+		"Invalid position to insert a segment");
+	mpDescriptorPool->Insert(childScope, index);
+}
+
 void Annotator::adaptEnvelopesToCurrentSchema()
 {
 	if(mBPFEditor)
@@ -299,8 +321,10 @@ void Annotator::makeConnections()
 		this, SLOT(segmentationMarksChanged(unsigned, double)));
 	connect(mpAudioPlot, SIGNAL(currentSegmentChanged(unsigned)),
 		this, SLOT(changeCurrentSegment(unsigned)));
-//	connect(mpAudioPlot, SIGNAL(segmentDeleted(double)),
-//		this, SLOT(deleteSegment(unsigned)));
+	connect(mpAudioPlot, SIGNAL(segmentDeleted(unsigned)),
+		this, SLOT(removeSegment(unsigned)));
+	connect(mpAudioPlot, SIGNAL(segmentInserted(unsigned)),
+		this, SLOT(insertSegment(unsigned)));
 	connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
 			this, SLOT(onStopPlaying(float)));
 
@@ -353,8 +377,10 @@ void Annotator::markCurrentSongChanged()
 
 void Annotator::changeCurrentSegment(unsigned current)
 {
-	std::cout << "Segment changed to " << current << std::endl;
-	mSegmentDescriptors.refreshData(current,mpDescriptorPool);
+	std::cout << "Segment changed to " << mSegmentation->current() << std::endl;
+	// TODO: Some widgets may have half edited information. Need update.
+	// TODO: Some times is not worth to update the information (deleted segment)
+	mSegmentDescriptors.refreshData(mSegmentation->current(),mpDescriptorPool);
 }
 
 void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
@@ -763,6 +789,7 @@ int Annotator::songIndexInTable(const std::string& fileName)
 
 void Annotator::auralizeMarks()
 {
+	if (!mSegmentation) return;
 	if(mClick.size()==0)
 	{
 		CLAM::AudioFile file;
