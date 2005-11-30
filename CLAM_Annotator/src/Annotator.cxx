@@ -493,7 +493,6 @@ void Annotator::fileOpen()
 			constructFileError(mProjectFileName,e));
 		return;
 	}
-	initInterface();
 	initProject();
 }
 
@@ -501,7 +500,6 @@ void Annotator::fileNew()
 {
 	mProjectFileName = "";
 	mProject = CLAM_Annotator::Project();
-	initInterface();
 	initProject();
 	markProjectChanged(true);
 }
@@ -543,7 +541,6 @@ void  Annotator::loadSchema()
 		return;
 	}
 
-	initInterface();
 	initProject();
 }
 
