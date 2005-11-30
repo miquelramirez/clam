@@ -72,7 +72,7 @@ namespace CLAMVM
 	bool ProcessingController::BindTo( Processing& procObj )
 	{
 
-		CLAM::InControlsRegistry::Iterator i = procObj.GetInControls().Begin();
+		CLAM::InControlRegistry::Iterator i = procObj.GetInControls().Begin();
 
 		while ( i!=procObj.GetInControls().End() )
 		{
