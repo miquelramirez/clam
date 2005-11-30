@@ -15,8 +15,8 @@ from modconf import *
 from modconf.core import * 
 from modconf.processing import *
 from modconf.audioio import *
-from modconf.vmfl import *
 from modconf.vmqt import *
+from modconf.vmfl import *
 
 # helper functions
 def setup_build_options( env ) :
@@ -24,14 +24,16 @@ def setup_build_options( env ) :
 	opts = Options('clam.conf')
 	
 	# global options
-	if sys.platform != 'win32' :
+	if sys.platform == 'linux2' :
 		opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr'))
+	elif sys.platform == 'darwin' :
+		opts.Add( PathOption( 'prefix', 'Directory to install under (warning: do not set /usr)', '/usr/local'))
 	else :
-		opts.Add( PathOption( 'prefix', 'Directory to install under', 'G:\\projects\CLAM-bin') )
+		opts.Add( PathOption( 'prefix', 'Directory to install under', 'C:\\projects\CLAM-bin') )
 
 	opts.Add( PathOption( 'install_prefix', 'Directory to install under (for packagers)', '.'))
 	if sys.platform == 'win32' : #!= 'linux2' :
-		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
+		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'C:\\projects' ) )
 	if sys.platform == 'win32' :
 		opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no' ))
 	else :
@@ -245,19 +247,20 @@ if not clam_env.GetOption('clean') :
 		Exit(1)
 	audioio_env = conf.Finish()
 
-
 vmfl_env = clam_env.Copy()
 if sys.platform == 'win32' or sys.platform == 'darwin' :
 	vmfl_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 	vmfl_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
 	vmfl_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
+
 Export('vmfl_env')
 vmfl_env.Replace( QT_LIB = '' )
 
-if not clam_env.GetOption('clean') :
-	conf = Configure( vmfl_env, custom_check_routines )
-	if not setup_vmfl_environment( vmfl_env, conf ) :
-		Exit(1)
+if sys.platform != 'darwin':  # FLTK configuration bypass under Mac OSX
+	if not clam_env.GetOption('clean') :
+		conf = Configure( vmfl_env, custom_check_routines )
+		if not setup_vmfl_environment( vmfl_env, conf ) :
+			Exit(1)
 	vmfl_env = conf.Finish()
 
 vmqt_env = clam_env.Copy()
@@ -290,9 +293,12 @@ vmfl_tgt, vmfl_install_tgt = SConscript('vmfl/SConscript')
 vmqt_tgt, vmqt_install_tgt = SConscript('vmqt/SConscript')
 
 # Module dependencies
-
-all_alias = Alias( 'all', [core_tgt, processing_tgt, audioio_tgt, vmfl_tgt, vmqt_tgt] )
-install_alias = Alias( 'install', [core_install_tgt, processing_install_tgt, audioio_install_tgt, vmfl_install_tgt, vmqt_install_tgt] )
+if sys.platform != 'darwin':
+	all_alias = Alias( 'all', [core_tgt, processing_tgt, audioio_tgt, vmfl_tgt, vmqt_tgt] )
+	install_alias = Alias( 'install', [core_install_tgt, processing_install_tgt, audioio_install_tgt, vmfl_install_tgt, vmqt_install_tgt] )
+else:
+	all_alias = Alias( 'all', [core_tgt, processing_tgt, audioio_tgt, vmqt_tgt] )
+	install_alias = Alias( 'install', [core_install_tgt, processing_install_tgt, audioio_install_tgt, vmqt_install_tgt] )
 
 Default( all_alias )
 print """\
