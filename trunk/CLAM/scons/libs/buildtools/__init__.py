@@ -1,7 +1,9 @@
 import os,string,sys
 
-def store_headers_in_db(  db ) :
-	for _,_,headerlist in os.walk( 'include/CLAM' ) :
+def store_headers_in_db(  db, path=None ) :
+	if path == None:
+		path = 'include/CLAM'
+	for _,_,headerlist in os.walk( path ) :
 		for header in headerlist :
 			db[header] = True
 
