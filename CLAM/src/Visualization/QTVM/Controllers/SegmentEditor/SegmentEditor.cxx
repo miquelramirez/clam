@@ -2,6 +2,11 @@
 #include "Segmentation.hxx"
 #include "SegmentEditor.hxx"
 #include <iostream>
+
+/*
+#define __SEGMENT_EDITOR__DEBUG__
+ */
+
 namespace CLAM
 {
 	namespace VM
@@ -153,7 +158,9 @@ namespace CLAM
 				mMustProcessData = true;
 				emit requestRefresh();
 				emit segmentInserted(index);
+#ifdef __SEGMENT_EDITOR__DEBUG__
 				std::cout << "Inserted segment at index  " << index << std::endl;
+#endif
 				return;
 			}
 			unsigned index;
@@ -164,7 +171,9 @@ namespace CLAM
 			{
 				mEditionMode=DraggingOnset;
 				mDraggedSegment=index;
+#ifdef __SEGMENT_EDITOR__DEBUG__
 				std::cout << "Dragging onset " << index << std::endl;
+#endif
 				return;
 			}
 			index = mStrategy->pickOffset(x,tolerance);
@@ -172,7 +181,9 @@ namespace CLAM
 			{
 				mEditionMode=DraggingOffset;
 				mDraggedSegment=index;
+#ifdef __SEGMENT_EDITOR__DEBUG__
 				std::cout << "Dragging offset " << index << std::endl;
+#endif
 				return;
 			}
 			index = mStrategy->pickSegmentBody(x);
@@ -188,7 +199,9 @@ namespace CLAM
 					mStrategy->current(index);
 					mStrategy->clearSelection();
 					emit currentSegmentChanged(index);
+#ifdef __SEGMENT_EDITOR__DEBUG__
 					std::cout << "Current segment is " << index << std::endl;
+#endif
 				}
 				mMustProcessData = true;
 				emit requestRefresh();	
@@ -208,15 +221,19 @@ namespace CLAM
 			if(mode == DraggingOnset) 
 			{
 				emit segmentOnsetChanged(mDraggedSegment,mStrategy->onsets()[mDraggedSegment]);
+#ifdef __SEGMENT_EDITOR__DEBUG__
 				std::cout << "Onset changed at index " << mDraggedSegment << ", new value " 
 						  << mStrategy->onsets()[mDraggedSegment] << std::endl;
+#endif
 				return;
 			}
 			if(mode == DraggingOffset) 
 			{
 				emit segmentOffsetChanged(mDraggedSegment,mStrategy->offsets()[mDraggedSegment]);
+#ifdef __SEGMENT_EDITOR__DEBUG__
 				std::cout << "Offset changed at index " << mDraggedSegment << ", new value " 
 						  << mStrategy->offsets()[mDraggedSegment] << std::endl;
+#endif
 				return;
 			}
 		}
@@ -243,8 +260,10 @@ namespace CLAM
 					emit requestRefresh();
 					emit segmentDeleted(index);
 					emit currentSegmentChanged(mStrategy->current());
+#ifdef __SEGMENT_EDITOR__DEBUG__
 					std::cout << "Segment deleted  " << index << std::endl;
 					std::cout << "Current segment is " << mStrategy->current() << std::endl;
+#endif
 				}
 				break;
 
