@@ -201,7 +201,7 @@ namespace CLAM
 			int mode = mEditionMode;
 			mEditionMode=Idle;
 			mMousePressed = false;
-			if(!mKeyInsertPressed && !mKeyCtrlPressed) emit working(false);
+			if(!mKeyCtrlPressed) emit working(false);
 			mRenderer.SetVHighlighted(-1);
 			emit toolTip("");
 			emit cursorChanged(QCursor(Qt::ArrowCursor));
