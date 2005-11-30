@@ -332,7 +332,7 @@ fltk_test_code = """\
 int main()
 {
 	Fl_Gl_Window w(0,0);
-	Fl_PNG_Image png("");
+	//Fl_PNG_Image png("");
 	return 0;
 }
 """
