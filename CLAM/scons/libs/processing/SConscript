@@ -16,12 +16,12 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Controls', 'src/Processing/Base/NullProcessingConfig.hxx' ]
+	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Controls', 'src/Processing/Base/NullProcessingConfig.hxx', 'src/Visualization/Base', 'src/Visualization/View', 'src/Visualization/Util' ]
 
 	if sys.platform == 'win32':
 		folders.append('src/Processing/InitProcessing*.*xx')
 
-	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+' ]
+	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+' , 'FileChooser', 'MessageBox', 'FLTKConfigurator', 'WidgetTKWrapper', 'FDFilterController']
 
 	if not processing_env.has_key('with_osc_support') :
 		blacklist.append('OSCSender')
