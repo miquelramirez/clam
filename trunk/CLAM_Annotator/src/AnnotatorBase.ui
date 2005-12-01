@@ -262,10 +262,10 @@ allows editing floating point descriptors that has an occurrence for each frame.
                                         <property name="whatsThis" stdset="0">
                                             <string>&lt;p&gt;The &lt;b&gt;segmentation editor&lt;/b&gt; allows you to change song level segmentations.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Dragging Onset: Moves it&lt;/li&gt;
-&lt;li&gt;Double Click: Edits the label&lt;/li&gt;
+&lt;li&gt;Click Body: Change current segment&lt;/li&gt;
+&lt;li&gt;Dragging Limit: Moves it&lt;/li&gt;
 &lt;li&gt;Insert + Click: Inserts an onset&lt;/li&gt;
-&lt;li&gt;Delete + Click: Delete the clicked onset&lt;/li&gt;
+&lt;li&gt;Delete: Deletes the current onset&lt;/li&gt;
 &lt;/ul&gt;</string>
                                         </property>
                                     </widget>
@@ -440,7 +440,7 @@ to the proper cell.&lt;/p&gt;</string>
             <cstring>helpAboutAction</cstring>
         </property>
         <property name="text">
-            <string>&amp;About</string>
+            <string>About</string>
         </property>
         <property name="menuText">
             <string>&amp;About</string>
@@ -582,10 +582,10 @@ to the proper cell.&lt;/p&gt;</string>
             <iconset>image7</iconset>
         </property>
         <property name="text">
-            <string>Set Schema</string>
+            <string>Browse Schema</string>
         </property>
         <property name="menuText">
-            <string>Set &amp;Schema</string>
+            <string>Browse &amp;Schema</string>
         </property>
     </action>
     <action>
@@ -607,10 +607,10 @@ to the proper cell.&lt;/p&gt;</string>
             <bool>false</bool>
         </property>
         <property name="text">
-            <string>SaveDescriptors</string>
+            <string>Save Descriptors</string>
         </property>
         <property name="menuText">
-            <string>SaveDescriptors</string>
+            <string>&amp;Save Descriptors</string>
         </property>
     </action>
     <action>
@@ -621,10 +621,10 @@ to the proper cell.&lt;/p&gt;</string>
             <bool>true</bool>
         </property>
         <property name="text">
-            <string>Auralize Segmentation Marks</string>
+            <string>Auralize Segments Onsets</string>
         </property>
         <property name="menuText">
-            <string>Auralize Segmentation Marks</string>
+            <string>Auralize Segments &amp;Onsets</string>
         </property>
     </action>
     <action>
@@ -635,10 +635,10 @@ to the proper cell.&lt;/p&gt;</string>
             <bool>true</bool>
         </property>
         <property name="text">
-            <string>Original Audio + LLD</string>
+            <string>Auralize Frame Level Descriptors</string>
         </property>
         <property name="menuText">
-            <string>Original Audio + LLD</string>
+            <string>Auralize &amp;Frame Level Descriptors</string>
         </property>
     </action>
     <action>
@@ -666,7 +666,7 @@ to the proper cell.&lt;/p&gt;</string>
             <string>What's this?</string>
         </property>
         <property name="menuText">
-            <string>What's this?</string>
+            <string>&amp;What's this?</string>
         </property>
         <property name="accel">
             <string>Shift+F1</string>
