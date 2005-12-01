@@ -57,7 +57,7 @@ namespace CLAMTest
 		CPPUNIT_TEST( testRemove_removesRemovedSelection );
 		CPPUNIT_TEST( testRemove_firstSegment );
 		CPPUNIT_TEST( testRemove_lastSegmentExpandsPrevious );
-		CPPUNIT_TEST( testRemove_singleSegmentHasNoEffect );
+		CPPUNIT_TEST( testRemove_singleSegmentHasEffect );
 		CPPUNIT_TEST( testConstructor_putsCurrentAtZero );
 		CPPUNIT_TEST( testInsert_keepsCurrentAtZero );
 		CPPUNIT_TEST( testCurrent_changesCurrent );
@@ -484,7 +484,7 @@ namespace CLAMTest
 
 			segmentation.remove(2);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,110) (110,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (110,200) "), segmentation.boundsAsString());
 		}
 		void testRemove_movesSelection()
 		{
@@ -498,7 +498,7 @@ namespace CLAMTest
 
 			segmentation.remove(2);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) +(90,110) +(110,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) +(90,100) +(110,200) "), segmentation.boundsAsString());
 		}
 		void testRemove_removesRemovedSelection()
 		{
@@ -511,7 +511,7 @@ namespace CLAMTest
 
 			segmentation.remove(2);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,110) (110,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (110,200) "), segmentation.boundsAsString());
 		}
 		void testRemove_firstSegment()
 		{
@@ -525,7 +525,7 @@ namespace CLAMTest
 
 			segmentation.remove(0);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("+(0,100) (100,110) +(110,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("+(90,100) (100,110) +(110,200) "), segmentation.boundsAsString());
 		}
 		void testRemove_lastSegmentExpandsPrevious()
 		{
@@ -539,15 +539,15 @@ namespace CLAMTest
 
 			segmentation.remove(3);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) +(90,100) (100,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) +(90,100) (100,110) "), segmentation.boundsAsString());
 		}
-		void testRemove_singleSegmentHasNoEffect()
+		void testRemove_singleSegmentHasEffect()
 		{
 			DiscontinuousSegmentation segmentation(200.0);
 
 			segmentation.remove(0);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string(""), segmentation.boundsAsString());
 		}
 		void testConstructor_putsCurrentAtZero()
 		{
