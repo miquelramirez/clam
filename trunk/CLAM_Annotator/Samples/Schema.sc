@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <DescriptionScheme>
+
   <Uri>descriptionScheme:www.iua.upf.edu:clam:dummyTest</Uri>
+
   <Attributes>
     <Attribute name="Artist" scope="Song" type="String"/>
     <Attribute name="Title" scope="Song" type="String"/>
@@ -14,7 +16,7 @@
       </fRange>
     </Attribute>
     <Attribute name="Key" scope="Song" type="RestrictedString">
-      <RestrictionValues>A A# B C C# D D# E F F# G G#</RestrictionValues>
+      <RestrictionValues>C C# D D# E F F# G G# A A# B</RestrictionValues>
     </Attribute>
     <Attribute name="Mode" scope="Song" type="RestrictedString">
       <RestrictionValues>Minor Major</RestrictionValues>
@@ -53,7 +55,7 @@
       <SegmentationPolicy>Unsized</SegmentationPolicy>
     </Attribute>
     <Attribute name="Pitch" scope="Note" type="RestrictedString">
-      <RestrictionValues>A A# B C C# D D# E F F# G G#</RestrictionValues>
+      <RestrictionValues>C C# D D# E F F# G G# A A# B</RestrictionValues>
     </Attribute>
     <Attribute name="Octave" scope="Note" type="Int">
       <iRange>
@@ -62,6 +64,26 @@
       </iRange>
     </Attribute>
     <Attribute name="Instrument" scope="Note" type="String"/>
+    <Attribute name="Chords" scope="Song" type="Segmentation">
+      <ChildScope>Chord</ChildScope>
+      <SegmentationPolicy>Continuous</SegmentationPolicy>
+    </Attribute>
+    <Attribute name="Root" scope="Chord" type="RestrictedString">
+      <RestrictionValues>C C# D D# E F F# G G# A A# B</RestrictionValues>
+    </Attribute>
+    <Attribute name="Mode" scope="Chord" type="RestrictedString">
+      <RestrictionValues>Major Minor Diminished Augmented</RestrictionValues>
+    </Attribute>
+    <Attribute name="Structure" scope="Song" type="Segmentation">
+      <ChildScope>StructuralPart</ChildScope>
+      <SegmentationPolicy>Continuous</SegmentationPolicy>
+    </Attribute>
+    <Attribute name="Description" scope="StructuralPart" type="RestrictedString">
+      <RestrictionValues>Versus Chorus Solo Accapella</RestrictionValues>
+    </Attribute>
+    <Attribute name="SimilarityGroup" scope="StructuralPart" type="RestrictedString">
+      <RestrictionValues>A B C D E F G H I</RestrictionValues>
+    </Attribute>
     <Attribute name="Mean" scope="Frame" type="Float"/>
     <Attribute name="GeometricMean" scope="Frame" type="Float"/>
     <Attribute name="Energy" scope="Frame" type="Float"/>
@@ -81,4 +103,5 @@
     <Attribute name="Slope" scope="Frame" type="Float"/>
     <Attribute name="HighFrequencyContent" scope="Frame" type="Float"/>
   </Attributes>
+
 </DescriptionScheme>
