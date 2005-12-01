@@ -96,20 +96,18 @@ namespace CLAM
 			// first onset cannot be moved on Contiguous mode
 			if (segment==0) return;
 			// The onset is attached to the previous offset
-			segment-=1;
-			if (segment==_offsets.size()) return; // Invalid segment
-			if (segment==_offsets.size()-1) return; // Last offset, cannot be moved
+			if (segment>=_offsets.size()) return; // Invalid segment
 
 			// Limit movement on the left to the onset
-			if (newTimePosition<_onsets[segment])
-				newTimePosition = _onsets[segment];
+			if (newTimePosition<_onsets[segment-1])
+				newTimePosition = _onsets[segment-1];
 			// Limit movement on the right to the next offset
-			if (newTimePosition>_offsets[segment+1])
-				newTimePosition = _offsets[segment+1];
+			if (newTimePosition>_offsets[segment])
+				newTimePosition = _offsets[segment];
 
 			// The offset and the next onset change together
-			_offsets[segment]=newTimePosition;
-			_onsets[segment+1]=newTimePosition;
+			_offsets[segment-1]=newTimePosition;
+			_onsets[segment]=newTimePosition;
 		}
 		/**
 		 * Performs a dragging movement for the Offset of the given

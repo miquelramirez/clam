@@ -23,6 +23,16 @@ namespace CLAM
 			_selection.push_back(false);
 
 		}
+		template <typename Iterator>
+		ContiguousSegmentation(double maxLength, Iterator begin, Iterator end)
+			: Segmentation(maxLength)
+		{
+			_onsets.push_back(0);
+			_offsets.push_back(maxLength);
+			_selection.push_back(false);
+			for (Iterator it=begin; it!=end; it++)
+				insert(*it);
+		}
 		/**
 		 * Inserts a new border at timePosition.
 		 */
