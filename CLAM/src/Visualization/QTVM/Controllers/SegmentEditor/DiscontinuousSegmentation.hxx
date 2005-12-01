@@ -93,20 +93,19 @@ namespace CLAM
 		 */
 		void dragOnset(unsigned segment, double newTimePosition)
 		{
-			// first onset cannot be moved on Contiguous mode
-			if (segment==0) return;
 			// The onset is attached to the previous offset
-			if (segment>=_offsets.size()) return; // Invalid segment
+			if (segment>=_onsets.size()) return; // Invalid segment
 
-			// Limit movement on the left to the onset
-			if (newTimePosition<_onsets[segment-1])
-				newTimePosition = _onsets[segment-1];
-			// Limit movement on the right to the next offset
-			if (newTimePosition>_offsets[segment])
-				newTimePosition = _offsets[segment];
+			// Limit to the left to the previous onset or 0
+			double leftBound = segment ? _offsets[segment-1] : 0;
+			if (newTimePosition<leftBound)
+				newTimePosition=leftBound;
+			// Limit to the right to the own offset
+			double rigthBound = _offsets[segment];
+			if (newTimePosition>rigthBound)
+				newTimePosition=rigthBound;
 
 			// The offset and the next onset change together
-			_offsets[segment-1]=newTimePosition;
 			_onsets[segment]=newTimePosition;
 		}
 		/**
@@ -116,19 +115,19 @@ namespace CLAM
 		 */
 		void dragOffset(unsigned segment, double newTimePosition)
 		{
-			if (segment==_offsets.size()) return; // Invalid segment
-			if (segment==_offsets.size()-1) return; // Last offset, cannot be moved
+			if (segment>=_offsets.size()) return; // Invalid segment
 
-			// Limit movement on the left to the onset
-			if (newTimePosition<_onsets[segment])
-				newTimePosition = _onsets[segment];
-			// Limit movement on the right to the next offset
-			if (newTimePosition>_offsets[segment+1])
-				newTimePosition = _offsets[segment+1];
+			// Limit to the right to the next offset or max
+			double rigthBound = segment+1==_offsets.size()? _maxLength : _onsets[segment+1];
+			if (newTimePosition>rigthBound)
+				newTimePosition=rigthBound;
+			// Limit to the left to the own onset
+			double leftBound = _onsets[segment];
+			if (newTimePosition<leftBound)
+				newTimePosition=leftBound;
 
 			// The offset and the next onset change together
 			_offsets[segment]=newTimePosition;
-			_onsets[segment+1]=newTimePosition;
 		}
 
 	private:
