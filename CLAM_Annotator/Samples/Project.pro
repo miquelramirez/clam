@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Project>
+
   <Schema>../Samples/Schema.sc</Schema>
+
   <Songs>
     <Song>
       <SoundFile>../../CLAM-TestData/trumpet.mp3</SoundFile>
@@ -21,4 +23,5 @@
       <SoundFile>../Samples/SongsTest/03.mp3</SoundFile>
     </Song>
   </Songs>
+
 </Project>
