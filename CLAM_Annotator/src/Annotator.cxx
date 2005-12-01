@@ -808,7 +808,7 @@ void Annotator::auralizeMarks()
 	if(mClick.size()==0)
 	{
 		CLAM::AudioFile file;
-		file.OpenExisting(RESOURCES_BASE"/sounds/click.mp3");
+		file.OpenExisting(RESOURCES_BASE"/sounds/click.wav");
 		int nChannels = file.GetHeader().GetChannels();
 		mClick.resize(nChannels);
 		for (int i=0; i<nChannels; i++)
