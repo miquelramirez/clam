@@ -166,7 +166,7 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 	schema.AddRangedReal("Onset","Relevance", 0., 10.);
 	schema.AddRestrictedString("Onset","DetectedChange", onsetKindValues);
 
-	schema.AddSegmentation("Song", "Notes", CLAM_Annotator::SegmentationPolicy::eUnsized, "Note");
+	schema.AddSegmentation("Song", "Notes", CLAM_Annotator::SegmentationPolicy::eOverlapping, "Note");
 	schema.AddRestrictedString("Note", "Pitch", pitchValues);
 	schema.AddRangedInt("Note", "Octave", 1, 12);
 	schema.AddString("Note", "Instrument");
@@ -183,7 +183,7 @@ void BuildAndDumpTestSchema(const char * schemaLocation)
 		0
 	};
 	const char * partGroupIds[] = {"A","B","C","D","E","F","G","H","I",0};
-	schema.AddSegmentation("Song", "Structure", CLAM_Annotator::SegmentationPolicy::eContinuous, "StructuralPart");
+	schema.AddSegmentation("Song", "Structure", CLAM_Annotator::SegmentationPolicy::eDiscontinuous, "StructuralPart");
 	schema.AddRestrictedString("StructuralPart", "Description", partDescriptionValues);
 	schema.AddRestrictedString("StructuralPart", "SimilarityGroup", partGroupIds);
 

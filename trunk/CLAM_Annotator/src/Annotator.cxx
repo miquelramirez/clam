@@ -227,7 +227,7 @@ void Annotator::refreshSegmentation()
 		case CLAM_Annotator::SegmentationPolicy::eContinuous:
 		{
 			theSegmentation = 
-				segmentation = new CLAM::ContiguousSegmentation(
+				new CLAM::ContiguousSegmentation(
 					mCurrentAudio.GetSize(),
 					&descriptorsMarks[0],
 					&descriptorsMarks[0]+nMarks);
@@ -237,7 +237,7 @@ void Annotator::refreshSegmentation()
 		case CLAM_Annotator::SegmentationPolicy::eDiscontinuous:
 		{
 			CLAM::DiscontinuousSegmentation * segmentation = 
-				segmentation = new CLAM::DiscontinuousSegmentation(mCurrentAudio.GetSize());
+				new CLAM::DiscontinuousSegmentation(mCurrentAudio.GetSize());
 			for (unsigned i=0; i<nMarks; i++)
 			{
 				segmentation->insert(descriptorsMarks[i]);
