@@ -250,8 +250,7 @@ void PopulatePool(const std::string & song,
 	ComputeSegmentationMarks(segment, segmentD);
 	Segment2Marks(segment,segmentation);
 	
-	unsigned nOnsets = segmentation.Size();
-	if (nOnsets==0) nOnsets=1; // KLUDGE!!
+	unsigned nOnsets = segmentation.Size()+1;
 	pool.SetNumberOfContexts("Onset",nOnsets);
 	CLAM::TData * onsetForces = pool.GetWritePool<CLAM::TData>("Onset","Relevance");
 	CLAM_Annotator::RestrictedString * onsetChange = pool.GetWritePool<CLAM_Annotator::RestrictedString>("Onset","DetectedChange");
