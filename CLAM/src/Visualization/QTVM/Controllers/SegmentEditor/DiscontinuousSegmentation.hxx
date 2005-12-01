@@ -48,13 +48,10 @@ namespace CLAM
 		 */
 		void remove(unsigned segment)
 		{
-			if (_offsets.size()==1) return;
-			unsigned offsetToRemove = segment? segment-1 : 0;
-			_offsets.erase(_offsets.begin()+offsetToRemove);
+			_offsets.erase(_offsets.begin()+segment);
 			_onsets.erase(_onsets.begin()+segment);
 			_selection.erase(_selection.begin()+segment);
 			if (_current!=0 && segment<=_current) _current--;
-			if (segment==0) _onsets[0]=0;
 		}
 		/**
 		 * Returns the index of the segment whose offset is nearest 
