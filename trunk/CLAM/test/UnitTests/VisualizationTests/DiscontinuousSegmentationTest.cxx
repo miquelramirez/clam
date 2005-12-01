@@ -40,18 +40,18 @@ namespace CLAMTest
 		CPPUNIT_TEST( testDeselection );
 		CPPUNIT_TEST( testInsert_movesSelection );
 		CPPUNIT_TEST( testClearSelection );
-		CPPUNIT_TEST( testDragOffset );
-		CPPUNIT_TEST( testDragOffset_beyondNextBound );
-		CPPUNIT_TEST( testDragOffset_beyondPreviousBound );
-		CPPUNIT_TEST( testDragOffset_ofLastBoundHasNoEffect );
-		CPPUNIT_TEST( testDragOffset_ofPreLastSegment );
-		CPPUNIT_TEST( testDragOffset_ofFirstBoundLimitIsZero );
+		CPPUNIT_TEST( testDragOnset_ofFirstBoundHasEffect );
+		CPPUNIT_TEST( testDragOffset_ofLastBoundHasEffect );
 		CPPUNIT_TEST( testDragOnset );
-		CPPUNIT_TEST( testDragOnset_beyondNextBound );
-		CPPUNIT_TEST( testDragOnset_beyondPreviousBound );
-		CPPUNIT_TEST( testDragOnset_ofFirstBoundHasNoEffect );
-		CPPUNIT_TEST( testDragOnset_ofLastSegment );
-		CPPUNIT_TEST( testDragOnset_ofLastBoundLimitIsLength );
+		CPPUNIT_TEST( testDragOffset );
+		CPPUNIT_TEST( testDragOnset_thatDoesNotExist );
+		CPPUNIT_TEST( testDragOffset_thatDoesNotExist );
+		CPPUNIT_TEST( testDragOnset_toLeftLimitedByPreviousOffset );
+		CPPUNIT_TEST( testDragOnset_toLeftLimitedByZeroWhenFirstOne );
+		CPPUNIT_TEST( testDragOnset_toRightLimitedByOwnOffset );
+		CPPUNIT_TEST( testDragOffset_toRightLimitedByNextOnset );
+		CPPUNIT_TEST( testDragOffset_toRightLimitedByMaxWhenLastOne );
+		CPPUNIT_TEST( testDragOffset_toLeftLimitedByOwnOnset );
 		CPPUNIT_TEST( testRemove );
 		CPPUNIT_TEST( testRemove_movesSelection );
 		CPPUNIT_TEST( testRemove_removesRemovedSelection );
@@ -340,6 +340,28 @@ namespace CLAMTest
 
 			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
 		}
+		void testDragOffset_ofLastBoundHasEffect()
+		{
+			DiscontinuousSegmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+
+			segmentation.dragOffset(3,190);
+
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,190) "), segmentation.boundsAsString());
+		}
+		void testDragOnset_ofFirstBoundHasEffect()
+		{
+			DiscontinuousSegmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+
+			segmentation.dragOnset(0,10);
+
+			CPPUNIT_ASSERT_EQUAL(std::string("(10,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
+		}
 		void testDragOffset()
 		{
 			DiscontinuousSegmentation segmentation(200.0);
@@ -347,64 +369,9 @@ namespace CLAMTest
 			segmentation.insert(100);
 			segmentation.insert(110);
 
-			segmentation.dragOffset(1,105);
+			segmentation.dragOffset(1,95);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,105) (105,110) (110,200) "), segmentation.boundsAsString());
-		}
-		void testDragOffset_beyondNextBound()
-		{
-			DiscontinuousSegmentation segmentation(200.0);
-			segmentation.insert(90);
-			segmentation.insert(100);
-			segmentation.insert(110);
-
-			segmentation.dragOffset(1,115);
-
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,110) (110,110) (110,200) "), segmentation.boundsAsString());
-		}
-		void testDragOffset_beyondPreviousBound()
-		{
-			DiscontinuousSegmentation segmentation(200.0);
-			segmentation.insert(90);
-			segmentation.insert(100);
-			segmentation.insert(110);
-
-			segmentation.dragOffset(1,85);
-
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,90) (90,110) (110,200) "), segmentation.boundsAsString());
-		}
-		void testDragOffset_ofLastBoundHasNoEffect()
-		{
-			DiscontinuousSegmentation segmentation(200.0);
-			segmentation.insert(90);
-			segmentation.insert(100);
-			segmentation.insert(110);
-
-			segmentation.dragOffset(4,190);
-
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
-		}
-		void testDragOffset_ofPreLastSegment()
-		{
-			DiscontinuousSegmentation segmentation(200.0);
-			segmentation.insert(90);
-			segmentation.insert(100);
-			segmentation.insert(110);
-
-			segmentation.dragOffset(3,114);
-
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
-		}
-		void testDragOffset_ofFirstBoundLimitIsZero()
-		{
-			DiscontinuousSegmentation segmentation(200.0);
-			segmentation.insert(90);
-			segmentation.insert(100);
-			segmentation.insert(110);
-
-			segmentation.dragOffset(0,-12);
-
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,0) (0,100) (100,110) (110,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,95) (100,110) (110,200) "), segmentation.boundsAsString());
 		}
 		void testDragOnset()
 		{
@@ -415,9 +382,53 @@ namespace CLAMTest
 
 			segmentation.dragOnset(2,105);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,105) (105,110) (110,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (105,110) (110,200) "), segmentation.boundsAsString());
 		}
-		void testDragOnset_beyondNextBound()
+		void testDragOnset_thatDoesNotExist()
+		{
+			DiscontinuousSegmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+
+			segmentation.dragOnset(4,150);
+
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
+		}
+		void testDragOffset_thatDoesNotExist()
+		{
+			DiscontinuousSegmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+
+			segmentation.dragOffset(4,150);
+
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
+		}
+		void testDragOnset_toLeftLimitedByPreviousOffset()
+		{
+			DiscontinuousSegmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+
+			segmentation.dragOnset(2,95);
+
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
+		}
+		void testDragOnset_toLeftLimitedByZeroWhenFirstOne()
+		{
+			DiscontinuousSegmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+
+			segmentation.dragOnset(0,-10);
+
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
+		}
+		void testDragOnset_toRightLimitedByOwnOffset()
 		{
 			DiscontinuousSegmentation segmentation(200.0);
 			segmentation.insert(90);
@@ -426,51 +437,41 @@ namespace CLAMTest
 
 			segmentation.dragOnset(2,115);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,110) (110,110) (110,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (110,110) (110,200) "), segmentation.boundsAsString());
 		}
-		void testDragOnset_beyondPreviousBound()
+		void testDragOffset_toRightLimitedByNextOnset()
 		{
 			DiscontinuousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
 
-			segmentation.dragOnset(2,85);
-
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,90) (90,110) (110,200) "), segmentation.boundsAsString());
-		}
-		void testDragOnset_ofFirstBoundHasNoEffect()
-		{
-			DiscontinuousSegmentation segmentation(200.0);
-			segmentation.insert(90);
-			segmentation.insert(100);
-			segmentation.insert(110);
-
-			segmentation.dragOnset(0,10);
+			segmentation.dragOffset(2,115);
 
 			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
 		}
-		void testDragOnset_ofLastSegment()
+		void testDragOffset_toRightLimitedByMaxWhenLastOne()
 		{
 			DiscontinuousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
 
-			segmentation.dragOnset(3,114);
+			segmentation.dragOffset(3,115);
+			segmentation.dragOffset(3,205);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,114) (114,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
 		}
-		void testDragOnset_ofLastBoundLimitIsLength()
+		void testDragOffset_toLeftLimitedByOwnOnset()
 		{
 			DiscontinuousSegmentation segmentation(200.0);
 			segmentation.insert(90);
 			segmentation.insert(100);
 			segmentation.insert(110);
 
-			segmentation.dragOnset(3,210);
+			segmentation.dragOffset(2,95);
 
-			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,200) (200,200) "), segmentation.boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,100) (110,200) "), segmentation.boundsAsString());
 		}
 		void testRemove()
 		{
