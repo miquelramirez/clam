@@ -29,6 +29,7 @@
 #include "AudioLoadThread.hxx"
 
 #include "ContiguousSegmentation.hxx"
+#include "DiscontinuousSegmentation.hxx"
 
 
 #ifndef RESOURCES_BASE
@@ -174,7 +175,7 @@ void Annotator::initAudioWidget()
 	mpTabLayout->addWidget(mpAudioPlot);
 	mpAudioPlot->Label("Audio");
 	mCurrentAudio.SetSize(20000);
-	mpAudioPlot->SetData(mCurrentAudio);
+//	mpAudioPlot->SetData(mCurrentAudio);
 	mpAudioPlot->SetEditTagDialogEnabled(false);
 	mpAudioPlot->SwitchDisplayColors(true);
 //	mpAudioPlot->SetToggleColorOn(true);
@@ -216,19 +217,36 @@ void Annotator::refreshSegmentation()
 	const CLAM::IndexArray & descriptorsMarks = 
 		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation)[0];
 	int nMarks = descriptorsMarks.Size();
-	CLAM::ContiguousSegmentation * segmentation = new CLAM::ContiguousSegmentation(mCurrentAudio.GetSize());
-	for(int i=0;i<nMarks;i++)
+	CLAM_Annotator::SegmentationPolicy policy = 
+		mProject.GetAttributeScheme("Song",currentSegmentation).GetSegmentationPolicy();
+	CLAM::Segmentation * theSegmentation=0;
+	switch (policy)
 	{
-		if ( descriptorsMarks[i] >  mCurrentAudio.GetSize())
+		case CLAM_Annotator::SegmentationPolicy::eUnsized:
+			// Not yet implemented, using Continuous by now
+		case CLAM_Annotator::SegmentationPolicy::eContinuous:
 		{
-			std::cout << "Out of bounds segment: " << descriptorsMarks[i] << " " << mCurrentAudio.GetSize() << std::endl;
-			segmentation->insert(mCurrentAudio.GetSize());
-			continue;
-		}
-		segmentation->insert(descriptorsMarks[i]);
+			theSegmentation = 
+				segmentation = new CLAM::ContiguousSegmentation(
+					mCurrentAudio.GetSize(),
+					&descriptorsMarks[0],
+					&descriptorsMarks[0]+nMarks);
+		} break;
+		case CLAM_Annotator::SegmentationPolicy::eOverlapping:
+			// Not yet implemented, using Discontinuous by now
+		case CLAM_Annotator::SegmentationPolicy::eDiscontinuous:
+		{
+			CLAM::DiscontinuousSegmentation * segmentation = 
+				segmentation = new CLAM::DiscontinuousSegmentation(mCurrentAudio.GetSize());
+			for (unsigned i=0; i<nMarks; i++)
+			{
+				segmentation->insert(descriptorsMarks[i]);
+			}
+			theSegmentation = segmentation;
+		} break;
 	}
 	if (mSegmentation) delete mSegmentation;
-	mSegmentation = segmentation;
+	mSegmentation = theSegmentation;
 	mpAudioPlot->SetSegmentation(mSegmentation);
 	auralizeMarks();
 
