@@ -261,7 +261,7 @@ if sys.platform != 'darwin':  # FLTK configuration bypass under Mac OSX
 		conf = Configure( vmfl_env, custom_check_routines )
 		if not setup_vmfl_environment( vmfl_env, conf ) :
 			Exit(1)
-	vmfl_env = conf.Finish()
+		vmfl_env = conf.Finish()
 
 vmqt_env = clam_env.Copy()
 if sys.platform == 'win32' or sys.platform == 'darwin' :
