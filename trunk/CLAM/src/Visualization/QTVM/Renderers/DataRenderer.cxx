@@ -37,10 +37,10 @@ namespace CLAM
 		{
 		}
 	
-		void DataRenderer::SetDataPtr(const TData* data,unsigned nElems,int mode)
+		void DataRenderer::SetData(const DataArray& data, int mode)
 		{
-			mData = data;
-			mElems = nElems;
+			mData = &data;
+			mElems = mData->Size();
 			mMode = mode;
 		}
 	
@@ -76,7 +76,7 @@ namespace CLAM
 			glBegin(GL_LINE_STRIP);
 			for(unsigned i = 0;i < mElems;i++)
 			{
-				glVertex3f(x,float(mData[i]),-1.0f);
+				glVertex3f(x,float(*(mData->GetPtr()+i)),-1.0f);
 				x += float(mStep);
 			}
 			glEnd();
@@ -90,8 +90,8 @@ namespace CLAM
 			glBegin( GL_LINE_STRIP );
 			for(unsigned i = 0; i < mElems; i++)
 			{
-				glVertex3f(x - halfHop,float(mData[i]),-1.0f);
-				glVertex3f(x + halfHop,float(mData[i]),-1.0f);
+				glVertex3f(x - halfHop,float(*(mData->GetPtr()+i)),-1.0f);
+				glVertex3f(x + halfHop,float(*(mData->GetPtr()+i)),-1.0f);
 				x += float(mStep);
 			}
 			glEnd();
@@ -99,9 +99,6 @@ namespace CLAM
 
 		void DataRenderer::RenderingHugeMode()
 		{
-			CLAM_ASSERT((mMaxsPtr != NULL && mElems > 0), "DataRenderer::RenderingHugeMode(): Invalid pointer!" );
-			CLAM_ASSERT((mMinsPtr != NULL && mElems > 0), "DataRenderer::RenderingHugeMode(): Invalid pointer!" );
-
 			double right = double(mElems);
 
 			glMatrixMode(GL_PROJECTION);
@@ -113,8 +110,8 @@ namespace CLAM
 			glBegin(GL_LINE_STRIP);
 			for(unsigned i = 0; i < mElems;i++)
 			{
-				glVertex3f(float(i),float(*mMaxsPtr++),-1.0f);
-				glVertex3f(float(i),float(*mMinsPtr++),-1.0f);			
+				glVertex3f(float(i),float(*(mMaxs->GetPtr()+i)),-1.0f);
+				glVertex3f(float(i),float(*(mMins->GetPtr()+i)),-1.0f);			
 			}
 			glEnd();
 
@@ -123,11 +120,11 @@ namespace CLAM
 			glMatrixMode(GL_MODELVIEW);
 		}
 
-		void DataRenderer::SetArrays(const TData* maxsArray,const TData* minsArray,TSize nElems)
+		void DataRenderer::SetArrays(const DataArray& maxsArray,const DataArray& minsArray)
 		{
-			mMaxsPtr = maxsArray;
-			mMinsPtr = minsArray;
-			mElems = nElems;
+			mMaxs = &maxsArray;
+			mMins = &minsArray;
+			mElems = mMaxs->Size();
 			mMode = HugeMode;
 		}
 
