@@ -6,7 +6,8 @@ namespace CLAM
     namespace VM
     {
 		BPFEditorRenderer::BPFEditorRenderer()
-			: mLeftIndex(0)
+			: mData(0)
+			, mLeftIndex(0)
 			, mRightIndex(0)
 			, mSelectedIndex(-1)
 		{
@@ -19,7 +20,7 @@ namespace CLAM
 
 		void BPFEditorRenderer::SetData(const BPF& bpf)
 		{
-			mData = bpf;
+			mData = &bpf;
 		}
 
 		void BPFEditorRenderer::SetDataColor(const Color& lines_color, const Color& handlers_color)
@@ -30,8 +31,15 @@ namespace CLAM
 
 		void BPFEditorRenderer::Render()
 		{
+			if(!mData) return;
+			if(!mReadPixels)
+			{
+				DrawPixels();
+				return;
+			}
 			DrawData();
 			DrawHandlers();
+			ReadPixels();
 		}
 
 		void BPFEditorRenderer::SetBounds(const TIndex& left, const TIndex& right)
@@ -47,14 +55,14 @@ namespace CLAM
 			glBegin(GL_LINE_STRIP);
 			for(TIndex i=mLeftIndex; i < mRightIndex; i++)
 			{
-				glVertex2f(GLfloat(mData.GetXValue(i)),GLfloat(mData.GetValueFromIndex(i)));
+				glVertex2f(GLfloat(mData->GetXValue(i)),GLfloat(mData->GetValueFromIndex(i)));
 			}
 			glEnd();
 		}
 
 		void BPFEditorRenderer::DrawHandlers()
 		{
-			if(mSelectedIndex >=0 && mSelectedIndex < mData.Size())
+			if(mSelectedIndex >=0 && mSelectedIndex < mData->Size())
 			{
 				glPointSize(POINT_SIZE+1);
 				Color c;
@@ -68,7 +76,7 @@ namespace CLAM
 				}
 				glColor3ub(GLubyte(c.r),GLubyte(c.g),GLubyte(c.b));
 				glBegin(GL_POINTS);
-				glVertex2f(GLfloat(mData.GetXValue(mSelectedIndex)),GLfloat(mData.GetValueFromIndex(mSelectedIndex)));
+				glVertex2f(GLfloat(mData->GetXValue(mSelectedIndex)),GLfloat(mData->GetValueFromIndex(mSelectedIndex)));
 				glEnd();
 			}
 
@@ -79,7 +87,7 @@ namespace CLAM
 			{
 				if(i != mSelectedIndex)
 				{
-					glVertex2f(GLfloat(mData.GetXValue(i)),GLfloat(mData.GetValueFromIndex(i)));
+					glVertex2f(GLfloat(mData->GetXValue(i)),GLfloat(mData->GetValueFromIndex(i)));
 				}
 		
 			}

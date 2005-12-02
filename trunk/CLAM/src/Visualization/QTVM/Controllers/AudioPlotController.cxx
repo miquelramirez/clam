@@ -53,6 +53,7 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
+			mRenderer.SaveScreen(true);
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
@@ -62,6 +63,7 @@ namespace CLAM
 			mAudio = audio;
 			mMustProcessData = true;
 			mHasData = true;
+			mRenderer.SaveScreen(true);
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
@@ -74,8 +76,8 @@ namespace CLAM
 		{
 			if(!mHasData || !IsRenderingEnabled()) return;
 			if(mMustProcessData) ProcessData();
-			DrawAxis();
 			mRenderer.Render();
+			DrawAxis();
 			PlayablePlotController::Draw();
 		}
 
@@ -96,7 +98,7 @@ namespace CLAM
 		{
 			PlayablePlotController::SetHBounds(left,right);
 			mMustProcessData = true;
-			
+			mRenderer.SaveScreen(true);
 			double lBound = GetLeftBound()/GetSampleRate();
 			double hBound = GetRightBound()/GetSampleRate();
 	    
@@ -107,7 +109,7 @@ namespace CLAM
 		void AudioPlotController::SetVBounds(double bottom, double top)
 		{
 			PlayablePlotController::SetVBounds(bottom,top);
-			
+			mRenderer.SaveScreen(true);
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 			
@@ -118,8 +120,7 @@ namespace CLAM
 		void AudioPlotController::DisplayDimensions(int w, int h)
 		{
 			PlotController::DisplayDimensions(w,h);
-			mMustProcessData = true;
-			
+	
 			double lBound = GetLeftBound()/GetSampleRate();
 			double hBound = GetRightBound()/GetSampleRate();
 			

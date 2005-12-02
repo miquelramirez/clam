@@ -2,13 +2,13 @@
 #define __BPFEDITORRENDERER__
 
 #include "BPF.hxx"
-#include "VMColor.hxx"
+#include "Renderer.hxx"
 
 namespace CLAM
 {
     namespace VM
     {
-		class BPFEditorRenderer
+		class BPFEditorRenderer : public Renderer
 		{
 		public:
 			BPFEditorRenderer();
@@ -22,12 +22,12 @@ namespace CLAM
 			void SetSelectedIndex(const int& index);
 	    
 		private:
-			BPF    mData;
-			Color  mDataColor;
-			Color  mHandlersColor;
-			TIndex mLeftIndex; 
-			TIndex mRightIndex;
-			int    mSelectedIndex;
+			const BPF* mData;
+			Color      mDataColor;
+			Color      mHandlersColor;
+			TIndex     mLeftIndex; 
+			TIndex     mRightIndex;
+			int        mSelectedIndex;
 
 			enum { LINE_WIDTH=2, POINT_SIZE=4 };
 	    
