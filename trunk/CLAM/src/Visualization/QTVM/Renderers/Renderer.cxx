@@ -114,12 +114,12 @@ namespace CLAM
 			if((mBits = calloc(bitsize, 1)) == NULL) return;  
 			
 			glFinish();
-
 			glPixelStorei(GL_PACK_ALIGNMENT, 4);   
 			glPixelStorei(GL_PACK_ROW_LENGTH, 0);
 			glPixelStorei(GL_PACK_SKIP_ROWS, 0);
 			glPixelStorei(GL_PACK_SKIP_PIXELS, 0);			
 			glReadPixels(0, 0, mWidth, mHeight, GL_RGB, GL_UNSIGNED_BYTE, mBits);
+			glFinish();
 			if(mCounter > 0) 
 			{
 				mReadPixels=false;
@@ -135,19 +135,11 @@ namespace CLAM
 			GLint viewport[4];
 			glGetIntegerv(GL_VIEWPORT, viewport);
 			int xsize = viewport[2];
-			int ysize = mHeight * xsize / mWidth;
-			if (ysize > viewport[3])
-			{
-				ysize = viewport[3];
-				xsize = mWidth * ysize / mHeight;
-			}
-
+			int ysize = viewport[3];
 			float xscale  = (float)xsize / (float)mWidth;
 			float yscale  = (float)ysize / (float)mHeight;
 
-			int xoffset = (int)((viewport[2] - xsize) * 0.5);
-			int yoffset = (int)((viewport[3] - ysize) * 0.5);
-
+			glFinish();
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
 			glLoadIdentity();
@@ -156,13 +148,12 @@ namespace CLAM
 			
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 			glPixelZoom(xscale, yscale);
-			glRasterPos2i(xoffset, yoffset);
+			glRasterPos2i(0, 0);
 			glDrawPixels(mWidth, mHeight, GL_RGB, GL_UNSIGNED_BYTE, mBits);
 			
 			glMatrixMode(GL_PROJECTION);
 			glPopMatrix();
 			glMatrixMode(GL_MODELVIEW);
-
 			glFinish();
 		}
 	}
