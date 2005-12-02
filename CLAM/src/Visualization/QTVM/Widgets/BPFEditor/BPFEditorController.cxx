@@ -378,6 +378,8 @@ namespace CLAM
 				}
 				mSelectPoint=true;
 				mHit=true;
+				mRenderers[0].SaveScreen(true);
+				emit requestRefresh();
 			}
 			else
 			{
@@ -619,6 +621,8 @@ namespace CLAM
 				mXModified = true;
 			}
 			mIsModified = true;
+			mRenderers[0].SaveScreen(true);
+			emit requestRefresh();
 		}
 
 		void BPFEditorController::InsertBPFNode(TData x, TData y)
