@@ -65,6 +65,8 @@ namespace CLAM
 		void FundPlotController::SetDataColor(Color c)
 		{
 			mRenderer.SetColor(c);
+			mRenderer.SaveScreen(true);
+			emit requestRefresh();
 		}
 
 		void FundPlotController::SetHBounds(double left, double right)
