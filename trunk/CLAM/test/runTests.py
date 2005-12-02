@@ -84,10 +84,10 @@ sandboxes = [ # Module, Sandbox name, Tag, Update level
 	( 'CLAM_Rappid', 'clean-CLAM_Rappid', '', updateLevelForExamples ),
 	( 'CLAM_SDIFDisplay', 'clean-CLAM_SDIFDisplay', '', updateLevelForExamples ),
 	( 'CLAM_SpectralDelay', 'clean-CLAM_SpectralDelay', '', updateLevelForExamples ),
-	( 'CLAM_SMSTools', 'clean-CLAM_SMSTools', '', updateLevelForExamples ),
+	( 'CLAM_SMSTools', 'clean-CLAM_SMSTools', 'srcdeps-build-system-branch', updateLevelForExamples ),
 	( 'CLAM_Annotator', 'clean-CLAM_Annotator', '', updateLevelForExamples ),
 	( 'CLAM_Salto', 'clean-CLAM_Salto', '', updateLevelForExamples ),
-	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', '', updateLevelForExamples ),
+	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', 'srcdeps-build-system-branch', updateLevelForExamples ),
 	( 'CLAM-TestData', 'CLAM-TestData', '', updateLevelForTestData )
 ]
 def baseDirOf(keyname) :
