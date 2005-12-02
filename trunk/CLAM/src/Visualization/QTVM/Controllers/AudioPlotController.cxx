@@ -149,7 +149,6 @@ namespace CLAM
 			{
 				mRenderer.SetArrays(mMaxs.GetPtr(), mMins.GetPtr(), mMaxs.Size());
 				mRenderer.SetVBounds(mView.bottom,mView.top);
-				mMustProcessData = false;
 				return;
 			}
 
@@ -157,7 +156,7 @@ namespace CLAM
 			double threshold = GetMinSpanX()*2.0;
 			int mode = (range < threshold) ? DetailMode : NormalMode;
 			mRenderer.SetDataPtr(mProcessedData.GetPtr(),mProcessedData.Size(),mode);	
-			mMustProcessData = false;
+//			mMustProcessData=false;
 		}
 
 		void AudioPlotController::DetermineVisibleSamples()
