@@ -37,16 +37,16 @@ namespace CLAM
 			DataRenderer();
 			~DataRenderer();
 
-			void SetDataPtr(const TData* data,unsigned nElems,int mode);
-			void SetArrays(const TData* maxsArray,const TData* minsArray,TSize nElems);
+			void SetData(const DataArray& data, int mode);
+			void SetArrays(const DataArray& maxsArray,const DataArray& minsArray);
 			void SetStep(const TData& step);
 			const TData& GetStep() const;
 			void Render();
 
 		private:
-			const TData* mData;
-			const TData* mMaxsPtr;
-			const TData* mMinsPtr;
+			const DataArray* mData;
+			const DataArray* mMaxs;
+			const DataArray* mMins;
 			unsigned     mElems;
 			int          mMode;
 			TData        mStep;

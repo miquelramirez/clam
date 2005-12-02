@@ -44,10 +44,10 @@ namespace CLAM
 		void AudioPlotController::SetData(const Audio& audio)
 		{
 			mHasData = false;
-			mAudio = audio;
-			SetSampleRate( double(mAudio.GetSampleRate()) );
+			mAudio = &audio;
+			SetSampleRate( double(mAudio->GetSampleRate()) );
 			FullView();
-			SetnSamples(double(mAudio.GetBuffer().Size()));
+			SetnSamples(double(mAudio->GetSize()));
 			InitialRegionTime();
 			SetDuration( double(GetnSamples())/GetSampleRate() );
 			mMustProcessData = true;
@@ -60,7 +60,7 @@ namespace CLAM
 		void AudioPlotController::UpdateData(const Audio& audio)
 		{
 			mHasData = false;
-			mAudio = audio;
+			mAudio = &audio;
 			mMustProcessData = true;
 			mHasData = true;
 			mRenderer.SaveScreen(true);
@@ -75,7 +75,11 @@ namespace CLAM
 		void AudioPlotController::Draw()
 		{
 			if(!mHasData || !IsRenderingEnabled()) return;
-			if(mMustProcessData) ProcessData();
+			if(mMustProcessData) 
+			{
+				ProcessData();
+				mMustProcessData = false;
+			}
 			mRenderer.Render();
 			DrawAxis();
 			PlayablePlotController::Draw();
@@ -84,7 +88,7 @@ namespace CLAM
 		void AudioPlotController::FullView()
 		{
 			mView.left = 0.0;
-			mView.right = double(mAudio.GetBuffer().Size());
+			mView.right = double(mAudio->GetSize());
 			mView.bottom = -1.0;
 			mView.top = 1.0;
 			SetYRange(mView.bottom, mView.top);
@@ -109,6 +113,7 @@ namespace CLAM
 		void AudioPlotController::SetVBounds(double bottom, double top)
 		{
 			PlayablePlotController::SetVBounds(bottom,top);
+			mMustProcessData = true;
 			mRenderer.SaveScreen(true);
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
@@ -120,7 +125,7 @@ namespace CLAM
 		void AudioPlotController::DisplayDimensions(int w, int h)
 		{
 			PlotController::DisplayDimensions(w,h);
-	
+			mMustProcessData = true;
 			double lBound = GetLeftBound()/GetSampleRate();
 			double hBound = GetRightBound()/GetSampleRate();
 			
@@ -147,7 +152,7 @@ namespace CLAM
 			DetermineVisibleSamples();
 			if(mHugeArrayCondition)
 			{
-				mRenderer.SetArrays(mMaxs.GetPtr(), mMins.GetPtr(), mMaxs.Size());
+				mRenderer.SetArrays(mMaxs, mMins);
 				mRenderer.SetVBounds(mView.bottom,mView.top);
 				return;
 			}
@@ -155,8 +160,7 @@ namespace CLAM
 			double range = GetRightBound()-GetLeftBound();
 			double threshold = GetMinSpanX()*2.0;
 			int mode = (range < threshold) ? DetailMode : NormalMode;
-			mRenderer.SetDataPtr(mProcessedData.GetPtr(),mProcessedData.Size(),mode);	
-//			mMustProcessData=false;
+			mRenderer.SetData(mProcessedData,mode);	
 		}
 
 		void AudioPlotController::DetermineVisibleSamples()
@@ -177,7 +181,9 @@ namespace CLAM
 				mProcessedData.Resize(len+1);
 			mProcessedData.SetSize(len+1);
 
-			std::copy(mAudio.GetBuffer().GetPtr()+offset,mAudio.GetBuffer().GetPtr()+offset+len+1,mProcessedData.GetPtr());
+			std::copy(mAudio->GetBuffer().GetPtr()+offset,
+					  mAudio->GetBuffer().GetPtr()+offset+len+1,
+					  mProcessedData.GetPtr());
 		}
 
 		void AudioPlotController::BuildMaxMinArrays(TSize offset,TSize len)
@@ -201,16 +207,20 @@ namespace CLAM
 
 			for(int i = 0; i < firstPassIterations; i++)
 			{
-				mMaxs[i] = *std::max_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+endSearch);
-				mMins[i] = *std::min_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+endSearch);
+				mMaxs[i] = *std::max_element(mAudio->GetBuffer().GetPtr()+startSearch, 
+											 mAudio->GetBuffer().GetPtr()+endSearch);
+				mMins[i] = *std::min_element(mAudio->GetBuffer().GetPtr()+startSearch, 
+											 mAudio->GetBuffer().GetPtr()+endSearch);
 							
 				startSearch = endSearch;
 				endSearch += searchIntervalLen;	
 			}
 			if(searchRemIntervalLen)
 			{
-				mMaxs[maxs-1] = *std::max_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+startSearch+searchRemIntervalLen);
-				mMins[maxs-1] = *std::min_element(mAudio.GetBuffer().GetPtr()+startSearch, mAudio.GetBuffer().GetPtr()+startSearch+searchRemIntervalLen);
+				mMaxs[maxs-1] = *std::max_element(mAudio->GetBuffer().GetPtr()+startSearch, 
+												  mAudio->GetBuffer().GetPtr()+startSearch+searchRemIntervalLen);
+				mMins[maxs-1] = *std::min_element(mAudio->GetBuffer().GetPtr()+startSearch, 
+												  mAudio->GetBuffer().GetPtr()+startSearch+searchRemIntervalLen);
 			}
 		}
 

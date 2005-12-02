@@ -60,7 +60,7 @@ namespace CLAM
 				
 		private:
 			DataRenderer mRenderer;
-			Audio        mAudio;
+			const Audio* mAudio;
 			DataArray    mMaxs;
 			DataArray    mMins;
 			DataArray    mProcessedData;
