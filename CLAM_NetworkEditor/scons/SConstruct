@@ -1,27 +1,125 @@
 import sys, os, string, glob
 import macbundle
 
-neted_env = Environment( tools=['default','qt'], ENV=os.environ )
+def parse_pkg_config( env ) :
+	prefix = env['clam_prefix']
+	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
+	descriptors = glob.glob( descriptor_path )
+	libpath = dict()
+	libs = dict()
+	cppflags = dict()
+	cpppath = dict()
+	ccflags = dict()
+	for desc_file in descriptors :
+		instream = open( desc_file )
 
-neted_env.Replace(QT_LIB='qt-mt')
+		for line in instream :
+			tokens = line.strip().split(' ')
+			if tokens[0] == 'Libs:' :
+				for token in tokens[1:] :
+					if "/LIBPATH:" in token :
+						libpath[token.replace("/LIBPATH:", "")] = True
+					else :
+						libs[token] = True
+			elif tokens[0] == 'Cflags:':
+				foo = line.strip().split(' /')
+				for token in foo[1:] :
+					token = '/' + token
+					# search for -X flags
+					if(token.find(' -')!=-1):
+						listOfRealTokens = token.split(' -')
+						#print('new token to parse: ' + token)
+						firstToken = listOfRealTokens[0]
+						if "/I" in firstToken:
+							cpppath[ firstToken.replace("/I","") ] = True
+						elif "/D" in firstToken :
+							cppflags[ firstToken ] = True
+						else :
+							ccflags[firstToken] = True
+						for realToken in listOfRealTokens[1:]:
+							#print('new token to parse: ' + realToken)
+							ccflags['-'+realToken] = True
+					else:
+						#print('new token to parse: ' + token)
+						if "/I" in token :
+							cpppath[ token.replace("/I","") ] = True
+						elif "/D" in token in token :
+							cppflags[ token ] = True
+						else :
+							ccflags[token] = True
+			else :
+				pass
+
+		instream.close()
+	print "Adding to evironment LIBPATH:"
+	for elem in libpath.keys() : print elem,
+	print
+	env.Append( LIBPATH = libpath.keys() )
+	print "Adding to environment LIBS:"
+	for elem in libs.keys() : print elem,
+	print
+	env.Append( LIBS = libs.keys() )
+	print "Adding to environment CPPFLAGS:"
+	for elem in cppflags.keys() : print elem,
+	print
+	env.Append( CPPFLAGS = cppflags.keys() )
+	print "Adding to environment CCFLAGS:"
+	for elem in ccflags.keys() : print elem,
+	print
+	env.Append( CCFLAGS = ccflags.keys() )
+	print "Adding to environment CPPPATH:"
+	for elem in cpppath.keys() : print elem,
+	print
+	env.Append( CPPPATH = cpppath.keys() )
+
+
+neted_env = Environment( tools=['default','qt'], ENV=os.environ )
+if sys.platform == 'win32' :
+	neted_env.Replace( QT_LIB = 'qt-mt322' )
+#	splitted_path = neted_env['ENV']['QTDIR'].split('\\')
+#	version_str = splitted_path[2]
+#	qt_suffix = ''.join( version_str.split('.') )
+#	neted_env.Replace( QT_LIB = 'qt-mt%s'%qt_suffix )
+else :
+	neted_env.Replace( QT_LIB = 'qt-mt' )
 
 opts = Options('NetworkEditor.conf')
-opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
-opts.Add( BoolOption( 'release', 'Build network editor enabling compiler optimizations', 'yes') )
+
+if sys.platform != 'win32' :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+else :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
+if sys.platform != 'win32' :
+	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr') )
+else :
+	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', 'G:\projects\CLAM-bin\\bin') )
+
+opts.Add( BoolOption( 'release', 'Build network editor enabling compiler optimizations', 'no') )
+
 opts.Update(neted_env)
 opts.Save('NetworkEditor.conf', neted_env)
+
 Help(opts.GenerateHelpText(neted_env))
 
-if neted_env['release'] :
-	neted_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+if sys.platform != 'win32' :
+	if neted_env['release'] :
+		neted_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+	else :
+		neted_env.Append( CCFLAGS=['-g', '-Wall'] )
+
+	neted_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'  )
 else :
+	if neted_env['release'] :
+		neted_env.Append( CPPFLAGS = ['-DWIN32'] )
+		neted_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
+		neted_env.Append( LINKFLAGS = ['/LTCG'] )
+	else :
+		neted_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
+		neted_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
+		neted_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 	neted_env.Append( CCFLAGS=['-g', '-Wall'] )
 
-if sys.platform == 'darwin':
-	neted_env.Append( LINKFLAGS=['-bind_at_load'] )
-	neted_env.Append( CCFLAGS=['-DNO_IMPLICIT_EXTERN_C'])
 
-neted_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'  )
 
 source_dirs = ['../src','../src/GUI','../src/GUI/Base','../src/GUI/Interface','../src/GUI/Qt_Presentations','../src/GUI/Qt_Presentations/ConcretePresentations', '../src/Processings','../src/Visualization']
 
@@ -32,12 +130,68 @@ neted_env.Append(CCFLAGS=['-I/usr/include'])
 
 sourcefiles = []
 for dir in source_dirs :
-	sourcefiles += glob.glob(dir+'/*.cxx')
+	if sys.platform == 'win32' :
+		sourcefiles += [filename for filename in glob.glob(dir+'/*.cxx') if not 'Ladspa' in filename ]
+	else :
+		sourcefiles += glob.glob(dir+'/*.cxx')
 	sourcefiles += glob.glob(dir+'/*.ui')
 
-neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles)
+examples = []
 
-if sys.platform == 'darwin':
+for root, _, filenames in os.walk('../resources/examples' ) :
+	if 'CVS' in root :
+		continue
+	for filename in filenames :
+		examples.append( '../resources/examples/'+filename )
+
+graphics = []
+
+for root, _, filenames in os.walk('../resources/graphics' ) :
+	if 'CVS' in root:
+		continue
+	for filename in filenames :
+		graphics.append( '../resources/graphics/' + filename )
+
+manpages = [ 'NetworkEditor.9' ]
+manpages = [ '../resources/man/man9/'+item for item in manpages ]
+
+if sys.platform != 'win32' :
+	neted_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+	if sys.platform == 'darwin':
+		neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-bind_at_load','-dynamic'] )
+	else:
+		neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-rdynamic'] )
+	install_bin = neted_env.Install( neted_env['install_prefix']+'/bin', neted_bin )
+	neted_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+	install_examples = neted_env.Install( neted_env['install_prefix']+'/share/doc/networkeditor/examples', examples )
+	install_graphics = neted_env.Install( neted_env['install_prefix']+'/share/networkeditor/graphics', graphics )
+	install_manpages = neted_env.Install( neted_env['install_prefix']+'/share/man/man9', manpages )
+	install_alias = neted_env.Alias( 'install', [install_bin, install_examples, install_graphics, install_manpages] )
+else :
+	parse_pkg_config( neted_env )
+	neted_env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
+	neted_env.Append( CCFLAGS = ['/EHsc'] )
+	neted_env.Append( LINKFLAGS = ['/machine:x86'] )
+	neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles )
+	install_bin = neted_env.Install( neted_env['install_prefix'], neted_bin )
+	install_examples = neted_env.Install( neted_env['install_prefix']+'/examples', examples )
+	install_graphics = neted_env.Install( neted_env['install_prefix']+'/graphics', graphics )
+	install_alias = neted_env.Alias( 'install', [install_bin, install_examples, install_graphics] )
+
+	variantVCProj = 'Debug'
+	if neted_env['release'] :
+		variantVCProj = 'Release' 
+
+	generate_vcproj = neted_env.MSVSProject( target = 'NetworkEditor' + neted_env['MSVSPROJECTSUFFIX'],
+				srcs = sourcefiles,
+				buildtarget = neted_bin,
+				variant = variantVCProj )
+
+	vc_alias =neted_env.Alias('visual_project', [generate_vcproj])
+
+if sys.platform == 'darwin': #Bundle creation on Mac
 	bld = Builder( action=Action(macbundle.create_mac_bundle, macbundle.create_mac_bundle_message) )
 	neted_env.Append( BUILDERS={'CreateBundle' : bld} )
 	neted_env.CreateBundle('notused','NetworkEditor')
+	
+Default(neted_bin)
