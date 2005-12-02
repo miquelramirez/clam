@@ -117,16 +117,10 @@ else :
 		neted_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
 		neted_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
 		neted_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
-	neted_env.Append( CCFLAGS=['-g', '-Wall'] )
-
-
 
 source_dirs = ['../src','../src/GUI','../src/GUI/Base','../src/GUI/Interface','../src/GUI/Qt_Presentations','../src/GUI/Qt_Presentations/ConcretePresentations', '../src/Processings','../src/Visualization']
 
 neted_env.Append(CPPPATH=source_dirs)
-neted_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
-
-neted_env.Append(CCFLAGS=['-I/usr/include'])
 
 sourcefiles = []
 for dir in source_dirs :
@@ -158,6 +152,7 @@ manpages = [ '../resources/man/man9/'+item for item in manpages ]
 if sys.platform != 'win32' :
 	neted_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
 	if sys.platform == 'darwin':
+		neted_env.Append(CCFLAGS=['-I/usr/include'])
 		neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-bind_at_load','-dynamic'] )
 	else:
 		neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-rdynamic'] )
