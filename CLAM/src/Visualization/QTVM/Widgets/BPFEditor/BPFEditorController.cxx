@@ -62,6 +62,7 @@ namespace CLAM
 		void BPFEditorController::AddData(const std::string& key, const BPF& bpf)
 		{
 			AddBPF(key,bpf);
+			mRenderers[0].SaveScreen(true);
 			emit requestRefresh();
 		}
 
@@ -122,6 +123,7 @@ namespace CLAM
 			mView.right = max;
 			mDial.Update(mXRulerRange.mMin);
 			mDial.SetHBounds(TData(0.0),TData(0.0));
+			mRenderers[0].SaveScreen(true);
 			emit viewChanged(mView);
 			emit xRulerRange(mXRulerRange.mMin, mXRulerRange.mMax);
 			emit requestRefresh();
@@ -142,6 +144,7 @@ namespace CLAM
 			mView.bottom = min;
 			mView.top = max;
 			mDial.SetVBounds(mYRulerRange.mMin,mYRulerRange.mMax);
+			mRenderers[0].SaveScreen(true);
 			emit viewChanged(mView);
 			emit yRulerRange(mYRulerRange.mMin, mYRulerRange.mMax);
 			emit requestRefresh();
@@ -396,8 +399,6 @@ namespace CLAM
 					UpdateBPF(x,y);
 				}
 			}
-			
-			emit requestRefresh();
 			UpdateXYLabels(x,y);
 		}
 
@@ -653,6 +654,7 @@ namespace CLAM
 			mView.right = right;
 			mXRulerRange.mMin = mView.left;
 			mXRulerRange.mMax = mView.right;
+			mRenderers[0].SaveScreen(true);
 			emit viewChanged(mView);
 			emit xRulerRange(mXRulerRange.mMin, mXRulerRange.mMax);
 			emit requestRefresh();
@@ -665,6 +667,7 @@ namespace CLAM
 			mView.top = top;
 			mYRulerRange.mMin = mView.bottom;
 			mYRulerRange.mMax = mView.top;
+			mRenderers[0].SaveScreen(true);
 			emit viewChanged(mView);
 			emit yRulerRange(mYRulerRange.mMin, mYRulerRange.mMax);
 			emit requestRefresh();
