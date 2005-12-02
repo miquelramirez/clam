@@ -40,15 +40,15 @@ namespace CLAM
 		void FundPlotController::SetData(const Segment& segment)
 		{
 			mHasData = false;
-			mSegment = segment;
-			SetSampleRate( double(mSegment.GetSamplingRate()) );
+			mSegment = &segment;
+			SetSampleRate( double(mSegment->GetSamplingRate()) );
 			if(segment.HasAudio())
 			{
-				SetDuration( double(segment.GetAudio().GetSize())/double(segment.GetAudio().GetSampleRate()) );
+				SetDuration( double(segment->GetAudio().GetSize())/double(segment.GetAudio().GetSampleRate()) );
 			}
 			else
 			{
-				SetDuration(  double(mSegment.GetEndTime())- double(mSegment.GetBeginTime()) );
+				SetDuration(  double(mSegment->GetEndTime())- double(mSegment->GetBeginTime()) );
 			}
 			CacheData();
 			FullView();
@@ -58,6 +58,7 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
+			mRenderer.SaveScreen(true);
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
@@ -70,7 +71,7 @@ namespace CLAM
 		{
 			PlayablePlotController::SetHBounds(left,right);
 			mMustProcessData = true;
-			
+			mRenderer.SaveScreen(true);
 			double lBound = GetLeftBound()/GetSampleRate();
 			double hBound = GetRightBound()/GetSampleRate();
 			
@@ -81,7 +82,8 @@ namespace CLAM
 		void FundPlotController::SetVBounds(double bottom, double top)
 		{
 			PlayablePlotController::SetVBounds(bottom,top);
-			
+			mMustProcessData = true;
+			mRenderer.SaveScreen(true);
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 	    
@@ -91,6 +93,7 @@ namespace CLAM
 
 		void FundPlotController::DisplayDimensions(int w, int h)
 		{
+		        mMustProcessData = true;
 			PlotController::DisplayDimensions(w,h);
 		
 			double lBound = GetLeftBound()/GetSampleRate();
@@ -114,7 +117,7 @@ namespace CLAM
 
 		void FundPlotController::ProcessData()
 		{
-			int nFrames = mSegment.GetnFrames();
+			int nFrames = mSegment->GetnFrames();
 			TSize offset = TSize(GetLeftBound()*nFrames/GetnSamples());
 			TSize len = TSize(GetRightBound()*nFrames/GetnSamples())-offset+1;
 			
@@ -123,13 +126,13 @@ namespace CLAM
 			mProcessedData.SetSize(len+1);
 
 			std::copy(mCacheData.GetPtr()+offset,mCacheData.GetPtr()+offset+len+1,mProcessedData.GetPtr());
-			mRenderer.SetDataPtr(mProcessedData.GetPtr(),mProcessedData.Size(),NormalMode);	
+			mRenderer.SetData(mProcessedData,NormalMode);	
 			mMustProcessData = false;
 		}
 
 		void FundPlotController::SetRenderingStep()
 		{
-			int nFrames = mSegment.GetnFrames();
+			int nFrames = mSegment->GetnFrames();
 			mRenderer.SetStep(TData(GetDuration()*GetSampleRate())/TData(nFrames));
 			SetMinSpanX(double(mRenderer.GetStep())*5.0);
 		}
@@ -148,12 +151,12 @@ namespace CLAM
 
 		void FundPlotController::CacheData()
 		{
-			int nFrames = mSegment.GetnFrames();
+			int nFrames = mSegment->GetnFrames();
 			mCacheData.Resize(nFrames);
 			mCacheData.SetSize(nFrames);
 			for(int i = 0; i < nFrames; i++)
 			{
-				mCacheData[i] = mSegment.GetFrame(i).GetFundamental().GetFreq(0);
+				mCacheData[i] = mSegment->GetFrame(i).GetFundamental().GetFreq(0);
 			}
 		}
 
