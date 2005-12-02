@@ -144,11 +144,13 @@ namespace CLAM
 
 		void AudioPlotController::ProcessData()
 		{
+			printf("processing data...\n");
 			DetermineVisibleSamples();
 			if(mHugeArrayCondition)
 			{
 				mRenderer.SetArrays(mMaxs.GetPtr(), mMins.GetPtr(), mMaxs.Size());
 				mRenderer.SetVBounds(mView.bottom,mView.top);
+				mMustProcessData = false;
 				return;
 			}
 
