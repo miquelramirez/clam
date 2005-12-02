@@ -101,11 +101,15 @@ namespace CLAM
 		void SpectrumPlotController::SetDataColor(Color c)
 		{
 			mRenderer.SetColor(c);
+			mRenderer.SaveScreen(true);
+			emit requestRefresh();
 		}
 
 		void SpectrumPlotController::SetPeaksColor(Color cline,Color cpoint)
 		{
 			mPeaksRenderer.SetPeakColor(cline,cpoint);
+			mRenderer.SaveScreen(true);
+			emit requestRefresh();
 		}
 
 		void SpectrumPlotController::SetHBounds(double left, double right)
