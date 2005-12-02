@@ -144,7 +144,6 @@ namespace CLAM
 
 		void AudioPlotController::ProcessData()
 		{
-			printf("processing data...\n");
 			DetermineVisibleSamples();
 			if(mHugeArrayCondition)
 			{
