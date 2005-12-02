@@ -124,8 +124,8 @@ namespace CLAM
 
 		void AudioPlotController::DisplayDimensions(int w, int h)
 		{
-			PlotController::DisplayDimensions(w,h);
 			mMustProcessData = true;
+			PlotController::DisplayDimensions(w,h);
 			double lBound = GetLeftBound()/GetSampleRate();
 			double hBound = GetRightBound()/GetSampleRate();
 			
