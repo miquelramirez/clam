@@ -81,7 +81,7 @@ namespace CLAM
 			bool         mMustProcessData;
 			bool         mHasData;
 
-			SpectralPeakArray         mPeaks;
+			const SpectralPeakArray*  mPeaks;
 			std::vector<FreqMagPoint> mProcessedPeaks;
 			std::vector<FreqMagPoint> mCachedPeaks;        
 			SpectralPeaksRenderer     mPeaksRenderer;

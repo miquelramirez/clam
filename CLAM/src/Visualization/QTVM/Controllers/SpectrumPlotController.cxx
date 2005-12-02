@@ -54,6 +54,7 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
+			mRenderer.SaveScreen(true);
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
@@ -62,7 +63,7 @@ namespace CLAM
 			mHasData = false;
 			mHasPeaks = true;
 			mSpec = spec;
-			mPeaks = peaks;
+			mPeaks = &peaks;
 			mSpectralRange = double(mSpec.GetSpectralRange());
 			SetnSamples(double(mSpec.GetMagBuffer().Size()));
 			CacheData();
@@ -70,6 +71,7 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
+			mRenderer.SaveScreen(true);
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
@@ -80,6 +82,7 @@ namespace CLAM
 			CacheData();
 			mMustProcessData = true;
 			mHasData = true;
+			mRenderer.SaveScreen(true);
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
@@ -87,10 +90,11 @@ namespace CLAM
 		{
 			mHasData = false;
 			mSpec = spec;
-			mPeaks = peaks;
+			mPeaks = &peaks;
 			CacheData();
 			mMustProcessData = true;
 			mHasData = true;
+			mRenderer.SaveScreen(true);
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
@@ -108,7 +112,7 @@ namespace CLAM
 		{
 			PlotController::SetHBounds(left,right);
 			mMustProcessData = true;
-			
+			mRenderer.SaveScreen(true);
 			double lBound = GetLeftBound()*mSpectralRange/GetnSamples();
 			double hBound = GetRightBound()*mSpectralRange/GetnSamples();
 		 
@@ -119,7 +123,8 @@ namespace CLAM
 		void SpectrumPlotController::SetVBounds(double bottom, double top)
 		{
 			PlotController::SetVBounds(bottom,top);
-			
+			mMustProcessData = true;
+			mRenderer.SaveScreen(true);
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 		       
@@ -129,6 +134,7 @@ namespace CLAM
 
 		void SpectrumPlotController::DisplayDimensions(int w, int h)
 		{
+			mMustProcessData = true;
 			PlotController::DisplayDimensions(w,h);
 		
 			double lBound = GetLeftBound()*mSpectralRange/GetnSamples();
@@ -200,7 +206,7 @@ namespace CLAM
 			double range = GetRightBound()-GetLeftBound();
 			double threshold = GetMinSpanX()*2.0;
 			int mode = (range < threshold) ? DetailMode : NormalMode;
-			mRenderer.SetDataPtr(mProcessedData.GetPtr(),mProcessedData.Size(),mode);
+			mRenderer.SetData(mProcessedData,mode);
 			if(mHasPeaks) ProcessPeaksData();
 			mMustProcessData = false;
 		}
@@ -209,17 +215,17 @@ namespace CLAM
 		{
 			TData magnitude;
 			TData span = TData(GetnSamples());
-			TSize nPeaks = mPeaks.GetMagBuffer().Size();
-			bool linear = (mPeaks.GetScale() == EScale::eLinear);
+			TSize nPeaks = mPeaks->GetMagBuffer().Size();
+			bool linear = (mPeaks->GetScale() == EScale::eLinear);
 
 			mCachedPeaks.resize(nPeaks);
 
 			for(int i = 0;i < nPeaks; i++)
 			{
-				magnitude = mPeaks.GetMagBuffer()[i];
+				magnitude = mPeaks->GetMagBuffer()[i];
 				if(linear) magnitude = 20.0*log10(magnitude);
 				mCachedPeaks[i].mag = magnitude;
-				mCachedPeaks[i].freq = mPeaks.GetFreqBuffer()[i]*span/TData(mSpectralRange);
+				mCachedPeaks[i].freq = mPeaks->GetFreqBuffer()[i]*span/TData(mSpectralRange);
 			}
 		}
 
