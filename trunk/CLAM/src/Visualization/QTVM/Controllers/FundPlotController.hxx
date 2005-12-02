@@ -58,12 +58,12 @@ namespace CLAM
 			void FullView();
 
 		private:
-			Segment      mSegment;
-			DataRenderer mRenderer;
-			DataArray    mCacheData;
-			DataArray    mProcessedData;
-			bool         mMustProcessData;
-			bool         mHasData;
+			const Segment* mSegment;
+			DataRenderer   mRenderer;
+			DataArray      mCacheData;
+			DataArray      mProcessedData;
+			bool           mMustProcessData;
+			bool           mHasData;
 			
 			void CacheData();
 			void ProcessData();
