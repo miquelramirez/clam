@@ -32,16 +32,12 @@ def setup_global_environment( clam_env, conf ) :
 			clam_env.Append( CCFLAGS='-g -Wall'.split(' ') )
 	else :
 		if clam_env['release'] :
-			#clam_env.Append( CPPFLAGS= ['-DWIN32', '-D_USRDLL'] )
 			clam_env.Append( CPPFLAGS = ['-DWIN32'] )
-			clam_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
-			clam_env.Append( LINKFLAGS = ['/LTCG'] )
+			clam_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /Og /G7 /GL /W3 /Zm1000' )	
 		else :
-			#clam_env.Append( CPPFLAGS = ['-DWIN32', '-D_USRDLL', '-D_DEBUG'] )
 			clam_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
 			clam_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
 			clam_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
-			#clam_env.Append( ARFLAGS = ['/foo'] )
 
 	for includePath in clam_env['CPPPATH'] :
 		print('include before pthread checking: ' + includePath )
