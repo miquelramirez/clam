@@ -41,11 +41,17 @@ namespace CLAM
 
 			virtual void Render() = 0;
 
+			void SaveScreen(bool save);
+
 		protected:
 			double LeftBound() const;
 			double RightBound() const;
 			double BottomBound() const;
 			double TopBound() const;
+
+			bool mReadPixels;
+			void ReadPixels();
+			void DrawPixels();
 
 		private:
 			double mLeftBound;
@@ -53,6 +59,10 @@ namespace CLAM
 			double mTopBound;
 			double mBottomBound;
 			Color  mColor;
+			void*  mBits;
+			int    mWidth;
+			int    mHeight;
+			int    mCounter;
 
 		};
 	}

@@ -46,7 +46,13 @@ namespace CLAM
 	
 		void DataRenderer::Render()
 		{
+			if(mElems < 4) return;
 			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
+			if(!mReadPixels)
+			{
+				DrawPixels();
+				return;
+			}
 			switch (mMode)
 			{
 				case NormalMode:
@@ -61,7 +67,7 @@ namespace CLAM
 				default:
 					break;
 			}
-			
+			ReadPixels();
 		}
 
 		void DataRenderer::RenderingNormalMode()
@@ -101,7 +107,7 @@ namespace CLAM
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
 			glLoadIdentity();
-			glOrtho(0.0,right,BottomBound(),TopBound(),1.0,-1.0);
+			glOrtho(0.0,right,BottomBound(),TopBound(),-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 
 			glBegin(GL_LINE_STRIP);

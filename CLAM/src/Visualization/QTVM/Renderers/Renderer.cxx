@@ -18,7 +18,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
+#include <iostream>
+#include <stdlib.h>
+#include "CLAMGL.hxx"
 #include "Renderer.hxx"
 
 namespace CLAM
@@ -26,16 +28,22 @@ namespace CLAM
 	namespace VM
 	{
 		Renderer::Renderer()
-			: mLeftBound(0.0)
+			: mReadPixels(false)
+			, mLeftBound(0.0)
 			, mRightBound(1.0)
 			, mTopBound(1.0)
 			, mBottomBound(0.0)
 			, mColor(VMColor::Green())
+			, mBits(NULL)
+			, mWidth(1)
+			, mHeight(0)
+			, mCounter(0)
 		{
 		}
 
 		Renderer::~Renderer()
 		{
+			if(mBits!=NULL) free(mBits);
 		}
 
 		void Renderer::SetHBounds(double left, double right)
@@ -80,6 +88,83 @@ namespace CLAM
 			return mTopBound;
 		}
 
+		void Renderer::SaveScreen(bool save)
+		{
+			mCounter = 0;
+			mReadPixels = save;
+		}
+
+		void Renderer::ReadPixels()
+		{
+			if(mBits!=NULL) 
+			{
+				free(mBits);
+				mBits=NULL;
+			}
+ 
+			GLint viewport[4];
+			glGetIntegerv(GL_VIEWPORT, viewport);
+			mWidth = viewport[2];
+			mHeight = viewport[3];
+
+			int width = mWidth * 3;
+			width   = (width + 3) & ~3;	   
+
+		    int bitsize = width * mHeight;	
+			if((mBits = calloc(bitsize, 1)) == NULL) return;  
+			
+			glFinish();
+
+			glPixelStorei(GL_PACK_ALIGNMENT, 4);   
+			glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+			glPixelStorei(GL_PACK_SKIP_ROWS, 0);
+			glPixelStorei(GL_PACK_SKIP_PIXELS, 0);			
+			glReadPixels(0, 0, mWidth, mHeight, GL_RGB, GL_UNSIGNED_BYTE, mBits);
+			if(mCounter > 0) 
+			{
+				mReadPixels=false;
+				mCounter = 0;
+			}
+			mCounter++;
+		}
+
+		void Renderer::DrawPixels()
+		{
+			if(mBits==NULL) return;
+			
+			GLint viewport[4];
+			glGetIntegerv(GL_VIEWPORT, viewport);
+			int xsize = viewport[2];
+			int ysize = mHeight * xsize / mWidth;
+			if (ysize > viewport[3])
+			{
+				ysize = viewport[3];
+				xsize = mWidth * ysize / mHeight;
+			}
+
+			float xscale  = (float)xsize / (float)mWidth;
+			float yscale  = (float)ysize / (float)mHeight;
+
+			int xoffset = (int)((viewport[2] - xsize) * 0.5);
+			int yoffset = (int)((viewport[3] - ysize) * 0.5);
+
+			glMatrixMode(GL_PROJECTION);
+			glPushMatrix();
+			glLoadIdentity();
+			glOrtho(0.0,double(viewport[2]),0.0,double(viewport[3]),-1.0,1.0);
+			glMatrixMode(GL_MODELVIEW);
+			
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+			glPixelZoom(xscale, yscale);
+			glRasterPos2i(xoffset, yoffset);
+			glDrawPixels(mWidth, mHeight, GL_RGB, GL_UNSIGNED_BYTE, mBits);
+			
+			glMatrixMode(GL_PROJECTION);
+			glPopMatrix();
+			glMatrixMode(GL_MODELVIEW);
+
+			glFinish();
+		}
 	}
 }
 
