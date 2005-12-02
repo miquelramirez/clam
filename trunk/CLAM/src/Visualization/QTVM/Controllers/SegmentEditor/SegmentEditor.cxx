@@ -41,6 +41,7 @@ namespace CLAM
 		{
 			mStrategy = s;
 			mMustProcessData = true;
+			emit requestRefresh();
 		}
 
 		void SegmentEditor::SetHBounds(double left, double right)
