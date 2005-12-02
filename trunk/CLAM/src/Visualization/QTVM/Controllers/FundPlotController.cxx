@@ -44,7 +44,7 @@ namespace CLAM
 			SetSampleRate( double(mSegment->GetSamplingRate()) );
 			if(segment.HasAudio())
 			{
-				SetDuration( double(segment->GetAudio().GetSize())/double(segment.GetAudio().GetSampleRate()) );
+				SetDuration( double(mSegment->GetAudio().GetSize())/double(mSegment->GetAudio().GetSampleRate()) );
 			}
 			else
 			{
@@ -93,7 +93,7 @@ namespace CLAM
 
 		void FundPlotController::DisplayDimensions(int w, int h)
 		{
-		        mMustProcessData = true;
+			mMustProcessData = true;
 			PlotController::DisplayDimensions(w,h);
 		
 			double lBound = GetLeftBound()/GetSampleRate();
