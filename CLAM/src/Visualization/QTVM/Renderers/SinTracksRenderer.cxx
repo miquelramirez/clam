@@ -63,7 +63,7 @@ namespace CLAM
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
 			glLoadIdentity();
-			glOrtho(mLeft,mRight,BottomBound(),TopBound(),1.0,-1.0);
+			glOrtho(mLeft,mRight,BottomBound(),TopBound(),-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 		 
 			Color c;
