@@ -193,5 +193,3 @@ if sys.platform == 'darwin': #Bundle creation on Mac
 	bld = Builder( action=Action(macbundle.create_mac_bundle, macbundle.create_mac_bundle_message) )
 	neted_env.Append( BUILDERS={'CreateBundle' : bld} )
 	neted_env.CreateBundle('notused','NetworkEditor')
-	
-Default(neted_bin)
