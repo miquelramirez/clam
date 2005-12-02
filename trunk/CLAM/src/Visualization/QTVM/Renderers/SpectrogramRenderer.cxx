@@ -65,7 +65,7 @@ namespace CLAM
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
 			glLoadIdentity();
-			glOrtho(LeftBound(),RightBound(),BottomBound(),TopBound(),1.0,-1.0);
+			glOrtho(LeftBound(),RightBound(),BottomBound(),TopBound(),-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 			
 			for(TIndex i = mBottomIndex; i < mTopIndex; i++)
