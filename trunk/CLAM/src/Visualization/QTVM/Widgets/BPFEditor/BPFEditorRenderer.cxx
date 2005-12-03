@@ -10,6 +10,7 @@ namespace CLAM
 			, mLeftIndex(0)
 			, mRightIndex(0)
 			, mSelectedIndex(-1)
+			, mIsCurrentPainter(false)
 		{
 			SetDataColor(VMColor::White(),VMColor::White());
 		}
@@ -32,15 +33,20 @@ namespace CLAM
 		void BPFEditorRenderer::Render()
 		{
 			if(!mData) return;
+			if(!mData->Size()) return;
 			if(!mReadPixels)
 			{
 				DrawPixels();
 				return;
 			}
+//		  
 			DrawData();
 			DrawHandlers();
-			ReadPixels();
+
+			if(mIsCurrentPainter) ReadPixels();
+			
 		}
+					
 
 		void BPFEditorRenderer::SetBounds(const TIndex& left, const TIndex& right)
 		{
@@ -97,6 +103,11 @@ namespace CLAM
 		void BPFEditorRenderer::SetSelectedIndex(const int& index)
 		{
 			mSelectedIndex = index;
+		}
+
+		void BPFEditorRenderer::CurrentPainter(bool cur)
+		{
+			mIsCurrentPainter = cur;
 		}
     }
 }

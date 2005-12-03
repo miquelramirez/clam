@@ -54,7 +54,7 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
@@ -71,7 +71,7 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
@@ -82,7 +82,7 @@ namespace CLAM
 			CacheData();
 			mMustProcessData = true;
 			mHasData = true;
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
@@ -94,21 +94,21 @@ namespace CLAM
 			CacheData();
 			mMustProcessData = true;
 			mHasData = true;
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SpectrumPlotController::SetDataColor(Color c)
 		{
 			mRenderer.SetColor(c);
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			emit requestRefresh();
 		}
 
 		void SpectrumPlotController::SetPeaksColor(Color cline,Color cpoint)
 		{
 			mPeaksRenderer.SetPeakColor(cline,cpoint);
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			emit requestRefresh();
 		}
 
@@ -116,7 +116,7 @@ namespace CLAM
 		{
 			PlotController::SetHBounds(left,right);
 			mMustProcessData = true;
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			double lBound = GetLeftBound()*mSpectralRange/GetnSamples();
 			double hBound = GetRightBound()*mSpectralRange/GetnSamples();
 		 
@@ -128,7 +128,7 @@ namespace CLAM
 		{
 			PlotController::SetVBounds(bottom,top);
 			mMustProcessData = true;
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 		       

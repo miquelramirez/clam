@@ -58,14 +58,14 @@ namespace CLAM
 			mMustProcessData = true;
 			SetSelPos(0.0,true);
 			mHasData = true;
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void FundPlotController::SetDataColor(Color c)
 		{
 			mRenderer.SetColor(c);
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			emit requestRefresh();
 		}
 
@@ -73,7 +73,7 @@ namespace CLAM
 		{
 			PlayablePlotController::SetHBounds(left,right);
 			mMustProcessData = true;
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			double lBound = GetLeftBound()/GetSampleRate();
 			double hBound = GetRightBound()/GetSampleRate();
 			
@@ -85,7 +85,7 @@ namespace CLAM
 		{
 			PlayablePlotController::SetVBounds(bottom,top);
 			mMustProcessData = true;
-			mRenderer.SaveScreen(true);
+			mRenderer.SaveScreen();
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 	    

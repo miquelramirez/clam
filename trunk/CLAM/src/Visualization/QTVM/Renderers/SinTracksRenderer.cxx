@@ -60,6 +60,11 @@ namespace CLAM
 		{
 			CLAM_ASSERT( mPalette!=NULL, "SinTracksRenderer::Render(): No palette was given!" );
 
+			if(!mReadPixels)
+			{
+				DrawPixels();
+				return;
+			}
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
 			glLoadIdentity();
@@ -106,6 +111,8 @@ namespace CLAM
 			glPopMatrix();
 			glMatrixMode(GL_MODELVIEW);
 			glShadeModel( GL_FLAT );
+
+			ReadPixels();
 		}
 	}
 }

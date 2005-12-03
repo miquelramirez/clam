@@ -38,11 +38,13 @@ namespace CLAM
 			FullView();
 			mMustProcessData = true;
 			mHasData = true;
+			mRenderer.SaveScreen();
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SpectrogramPlotController::DisplayDimensions(int w, int h)
 		{
+			mMustProcessData = true;
 			PlotController::DisplayDimensions(w,h);
 			mMustProcessData = true;
 		
@@ -90,7 +92,7 @@ namespace CLAM
 		{
 			PlotController::SetHBounds(left,right);
 			mMustProcessData = true;
-			
+			mRenderer.SaveScreen();
 			double lBound = GetLeftBound()/mSampleRate;
 			double hBound = GetRightBound()/mSampleRate;
 			
@@ -102,7 +104,7 @@ namespace CLAM
 		{
 			PlotController::SetVBounds(bottom,top);
 			mMustProcessData = true;
-			
+			mRenderer.SaveScreen();
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 		       
@@ -259,6 +261,7 @@ namespace CLAM
 		void SpectrogramPlotController::SetRenderingMode(CLAM::VM::SonogramCM colorMap)
 		{
 			mRenderer.SetRenderingMode(colorMap);
+			mRenderer.SaveScreen();
 			if(mHasData && IsRenderingEnabled()) emit requestRefresh();
 		}
 
