@@ -28,17 +28,17 @@ namespace CLAM
 	namespace VM
 	{
 		Renderer::Renderer()
-			: mReadPixels(false)
+			: mReadPixels(true)
 			, mLeftBound(0.0)
 			, mRightBound(1.0)
 			, mTopBound(1.0)
 			, mBottomBound(0.0)
 			, mColor(VMColor::Green())
-			, mBits(NULL)
 			, mWidth(1)
 			, mHeight(0)
 			, mCounter(0)
 		{
+			mBits=NULL;
 		}
 
 		Renderer::~Renderer()
@@ -88,10 +88,10 @@ namespace CLAM
 			return mTopBound;
 		}
 
-		void Renderer::SaveScreen(bool save)
+		void Renderer::SaveScreen()
 		{
 			mCounter = 0;
-			mReadPixels = save;
+			mReadPixels = true;
 		}
 
 		void Renderer::ReadPixels()

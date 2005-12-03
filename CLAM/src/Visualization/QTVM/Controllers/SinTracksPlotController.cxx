@@ -60,6 +60,7 @@ namespace CLAM
 			Colorize();
 			mHasData = true;
 			mMustProcessData = true;
+			mRenderer.SaveScreen();
 			SetSelPos(0.0,true);
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
@@ -82,12 +83,14 @@ namespace CLAM
 			Colorize();
 			mHasData = true;
 			mMustProcessData = true;
+			mRenderer.SaveScreen();
 			SetSelPos(0.0,true);
 			if(IsRenderingEnabled()) emit requestRefresh();
 		}
 
 		void SinTracksPlotController::DisplayDimensions(int w, int h)
 		{
+			mMustProcessData = true;
 			PlotController::DisplayDimensions(w,h);
 		
 			double lBound = GetLeftBound()/mSampleRate;
@@ -113,7 +116,7 @@ namespace CLAM
 		{
 			PlotController::SetHBounds(left,right);
 			mMustProcessData = true;
-			
+			mRenderer.SaveScreen();
 			double lBound = GetLeftBound()/mSampleRate;
 			double hBound = GetRightBound()/mSampleRate;
 			
@@ -126,7 +129,7 @@ namespace CLAM
 		{
 			PlotController::SetVBounds(bottom,top);
 			mMustProcessData = true;
-			
+			mRenderer.SaveScreen();
 			double bBound = GetBottomBound();
 			double tBound = GetTopBound();
 		       

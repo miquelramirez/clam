@@ -20,7 +20,9 @@ namespace CLAM
 			void Render();
 			void SetBounds(const TIndex& left, const TIndex& right);
 			void SetSelectedIndex(const int& index);
-	    
+
+			void CurrentPainter(bool cur);
+
 		private:
 			const BPF* mData;
 			Color      mDataColor;
@@ -28,6 +30,7 @@ namespace CLAM
 			TIndex     mLeftIndex; 
 			TIndex     mRightIndex;
 			int        mSelectedIndex;
+			bool       mIsCurrentPainter;
 
 			enum { LINE_WIDTH=2, POINT_SIZE=4 };
 	    

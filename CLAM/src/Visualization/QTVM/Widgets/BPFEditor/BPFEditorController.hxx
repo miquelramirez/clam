@@ -311,6 +311,9 @@ namespace CLAM
 
 			void DrawGrid();
 			double round(double x) const;
+
+			void SetMasterRenderer();
+			void ActiveMasterRenderer();
 		};
     }
 }

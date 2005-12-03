@@ -42,6 +42,14 @@ namespace CLAM
 
 		void SpectrogramRenderer::Render()
 		{
+			if(!mColorData.size() && !mBWData.size()) return;
+
+			if(!mReadPixels)
+			{
+				DrawPixels();
+				return;
+			}
+
 			switch(mColorMap)
 			{
 				case CLAM::VM::ColorSonogram:
@@ -53,6 +61,8 @@ namespace CLAM
 				default:
 					break;
 			}
+		   
+			ReadPixels();
 		}
 
 		void SpectrogramRenderer::SetRenderingMode(CLAM::VM::SonogramCM colorMap)

@@ -41,7 +41,7 @@ namespace CLAM
 
 			virtual void Render() = 0;
 
-			void SaveScreen(bool save);
+			void SaveScreen();
 
 		protected:
 			double LeftBound() const;

@@ -62,7 +62,7 @@ namespace CLAM
 		void BPFEditorController::AddData(const std::string& key, const BPF& bpf)
 		{
 			AddBPF(key,bpf);
-			mRenderers[0].SaveScreen(true);
+			ActiveMasterRenderer();
 			emit requestRefresh();
 		}
 
@@ -96,6 +96,8 @@ namespace CLAM
 		void BPFEditorController::SetDataColor(const Color& lines_color, const Color& handlers_color)
 		{
 			mRenderers[0].SetDataColor(lines_color, handlers_color);
+			ActiveMasterRenderer();
+			emit requestRefresh();
 		}
 
 		void BPFEditorController::SetRectColor(const Color& c)
@@ -123,7 +125,7 @@ namespace CLAM
 			mView.right = max;
 			mDial.Update(mXRulerRange.mMin);
 			mDial.SetHBounds(TData(0.0),TData(0.0));
-			mRenderers[0].SaveScreen(true);
+			ActiveMasterRenderer();
 			emit viewChanged(mView);
 			emit xRulerRange(mXRulerRange.mMin, mXRulerRange.mMax);
 			emit requestRefresh();
@@ -144,7 +146,7 @@ namespace CLAM
 			mView.bottom = min;
 			mView.top = max;
 			mDial.SetVBounds(mYRulerRange.mMin,mYRulerRange.mMax);
-			mRenderers[0].SaveScreen(true);
+			ActiveMasterRenderer();
 			emit viewChanged(mView);
 			emit yRulerRange(mYRulerRange.mMin, mYRulerRange.mMax);
 			emit requestRefresh();
@@ -278,6 +280,7 @@ namespace CLAM
 					if(!mLeftButtonPressed) break;
 					if(!mHit && mKeyInsertPressed)
 					{
+						ActiveMasterRenderer();
 						InsertBPFNode(mCurrentPoint.GetX(),mCurrentPoint.GetY());
 					}
 					if(mHit && mKeyDeletePressed)
@@ -285,6 +288,7 @@ namespace CLAM
 						if(mAllowDeletePoints)
 						{
 							mBPFs[index].DeleteIndex(mCurrentIndex);
+							ActiveMasterRenderer();
 							emit elementRemoved(int(mCurrentIndex));
 							emit pointsChanged();
 							mIsModified = true;
@@ -378,7 +382,7 @@ namespace CLAM
 				}
 				mSelectPoint=true;
 				mHit=true;
-				mRenderers[0].SaveScreen(true);
+				ActiveMasterRenderer();
 				emit requestRefresh();
 			}
 			else
@@ -621,7 +625,7 @@ namespace CLAM
 				mXModified = true;
 			}
 			mIsModified = true;
-			mRenderers[0].SaveScreen(true);
+			ActiveMasterRenderer();
 			emit requestRefresh();
 		}
 
@@ -658,7 +662,7 @@ namespace CLAM
 			mView.right = right;
 			mXRulerRange.mMin = mView.left;
 			mXRulerRange.mMax = mView.right;
-			mRenderers[0].SaveScreen(true);
+			ActiveMasterRenderer();
 			emit viewChanged(mView);
 			emit xRulerRange(mXRulerRange.mMin, mXRulerRange.mMax);
 			emit requestRefresh();
@@ -671,7 +675,7 @@ namespace CLAM
 			mView.top = top;
 			mYRulerRange.mMin = mView.bottom;
 			mYRulerRange.mMax = mView.top;
-			mRenderers[0].SaveScreen(true);
+			ActiveMasterRenderer();
 			emit viewChanged(mView);
 			emit yRulerRange(mYRulerRange.mMin, mYRulerRange.mMax);
 			emit requestRefresh();
@@ -684,6 +688,7 @@ namespace CLAM
 			if(mBPFs[bpf_index].Size()==1)
 			{
 				mRenderers[bpf_index].SetSelectedIndex(0);
+				ActiveMasterRenderer();
 				emit requestRefresh();
 				return;
 			}
@@ -701,6 +706,7 @@ namespace CLAM
 					if((xcoord-x0)>(x1-xcoord)) index++;
 					mCurrentIndex=index;
 				}
+				ActiveMasterRenderer();
 				emit requestRefresh();
 			}
 		}
@@ -1116,6 +1122,7 @@ namespace CLAM
 		void BPFEditorController::ActiveRendering(bool active)
 		{
 			mActiveRendering = active;
+			SetMasterRenderer();
 		}
 
 		void BPFEditorController::ActiveDial(bool active)
@@ -1188,24 +1195,28 @@ namespace CLAM
 		{
 			mBPFs[GetBPFIndex(mCurrentBPF)].SetXValue(index,new_value);
 			mIsModified=true;
+			ActiveMasterRenderer();
 		}
 
 		void BPFEditorController::updateYValue(int index, float new_value)
 		{
 			mBPFs[GetBPFIndex(mCurrentBPF)].SetValue(index,new_value);
 			mIsModified=true;
+			ActiveMasterRenderer();
 		}
 
 		void BPFEditorController::addElement(int index, float xvalue, float yvalue)
 		{
 			mBPFs[GetBPFIndex(mCurrentBPF)].Insert(xvalue,yvalue);
 			mIsModified=true;
+			ActiveMasterRenderer();
 		}
 
 		void BPFEditorController::removeElement(int index)
 		{
 			mBPFs[GetBPFIndex(mCurrentBPF)].DeleteIndex(index);
 			mIsModified=true;
+			ActiveMasterRenderer();
 		}
 
 		void BPFEditorController::AllowInsertPoints(bool allow)
@@ -1221,6 +1232,20 @@ namespace CLAM
 		void BPFEditorController::AllowModifyPoints(bool allow)
 		{
 			mAllowModifyPoints=allow;
+		}
+
+		void BPFEditorController::SetMasterRenderer()
+		{
+			unsigned size = mRenderers.size();
+			for(unsigned i=0; i< size; i++)
+			{
+				(i < size-1) ? mRenderers[i].CurrentPainter(false) : mRenderers[i].CurrentPainter(true);
+			}
+		}
+
+		void BPFEditorController::ActiveMasterRenderer()
+		{
+			mRenderers[mRenderers.size()-1].SaveScreen();
 		}
 	   
 	}
