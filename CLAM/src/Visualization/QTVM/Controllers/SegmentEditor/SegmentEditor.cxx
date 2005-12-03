@@ -212,6 +212,7 @@ namespace CLAM
 
 		void SegmentEditor::MouseReleased(double x, double y)
 		{
+			if(!mStrategy) return;
 			int mode = mEditionMode;
 			mEditionMode=Idle;
 			mMousePressed = false;
@@ -241,6 +242,7 @@ namespace CLAM
 
 		void SegmentEditor::KeyPressEvent(QKeyEvent* e)
 		{
+			if(!mStrategy) return;
 			switch(e->key())
 			{
 				case Qt::Key_Insert:
@@ -279,6 +281,7 @@ namespace CLAM
 
 		void SegmentEditor::KeyReleaseEvent(QKeyEvent* e)
 		{
+			if(!mStrategy) return;
 			switch(e->key())
 			{
 				case Qt::Key_Insert:
