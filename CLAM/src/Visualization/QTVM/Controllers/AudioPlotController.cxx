@@ -70,6 +70,8 @@ namespace CLAM
 		void AudioPlotController::SetDataColor(Color c)
 		{
 			mRenderer.SetColor(c);
+			mRenderer.SaveScreen(true);
+			emit requestRefresh();
 		}
 
 		void AudioPlotController::Draw()
