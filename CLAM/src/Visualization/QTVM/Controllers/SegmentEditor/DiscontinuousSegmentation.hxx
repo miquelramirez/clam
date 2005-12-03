@@ -18,27 +18,42 @@ namespace CLAM
 		DiscontinuousSegmentation(double maxLength)
 			: Segmentation(maxLength)
 		{
-			_onsets.push_back(0);
-			_offsets.push_back(maxLength);
-			_selection.push_back(false);
-
 		}
 		/**
 		 * Inserts a new border at timePosition.
 		 */
 		unsigned insert(double timePosition)
 		{
-			if (timePosition<=0.0) throw InsertedOutOfBounds();
-			TimePositions::iterator insertPoint = 
+			if (timePosition<0.0) throw InsertedOutOfBounds();
+			if (timePosition>_maxLength) throw InsertedOutOfBounds();
+			TimePositions::iterator nextOffset = 
 				std::lower_bound(_offsets.begin(), _offsets.end(), timePosition);
-			if (insertPoint == _offsets.end()) throw InsertedOutOfBounds();
-			// 'position' must be computed before the insertion to not invalidate iterators.
-			unsigned position = insertPoint - _offsets.begin() +1;
-			_offsets.insert(insertPoint, timePosition);
-			_onsets.insert(_onsets.begin()+position, _offsets[position-1]);
-			_selection.insert(_selection.begin()+position, false);
-			if (position<=_current) _current++;
-			return position;
+			if (nextOffset == _offsets.end()) // Beyond any existing segment
+			{
+				_onsets.push_back(timePosition);
+				_offsets.push_back(_maxLength);
+				_selection.push_back(false);
+				return _onsets.size()-1;
+			}
+			// 'nextOffsetPosition' must be computed before the insertion to not invalidate iterators.
+			unsigned nextOffsetPosition = nextOffset - _offsets.begin();
+			if (_onsets[nextOffsetPosition]<=timePosition) // Just in the middle of a segment
+			{
+				_offsets.insert(nextOffset, timePosition);
+				_onsets.insert(_onsets.begin()+nextOffsetPosition+1, timePosition);
+				_selection.insert(_selection.begin()+nextOffsetPosition+1, false);
+				if (nextOffsetPosition<_current) _current++;
+				return nextOffsetPosition+1;
+			}
+			else // In a gap before a segment
+			{
+				_offsets.insert(nextOffset, _onsets[nextOffsetPosition]);
+				_onsets.insert(_onsets.begin()+nextOffsetPosition, timePosition);
+				_selection.insert(_selection.begin()+nextOffsetPosition, false);
+				if (_current>=nextOffsetPosition) _current++;
+				return nextOffsetPosition;
+			}
+			
 		}
 		/**
 		 * Removes the specified segment.
