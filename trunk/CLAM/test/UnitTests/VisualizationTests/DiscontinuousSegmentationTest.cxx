@@ -70,6 +70,7 @@ namespace CLAMTest
 		CPPUNIT_TEST( testInsert_onTheMiddleOfAFrame );
 		CPPUNIT_TEST( testInsert_onGapAtTheBegining );
 		CPPUNIT_TEST( testInsert_onGapAtTheBeginingMovesCurrentWhenAfter );
+		CPPUNIT_TEST( testInsert_onGapInBetweenSegments );
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -705,6 +706,18 @@ namespace CLAMTest
 			segmentation.current(0);
 			unsigned pos = segmentation.insert(0);
 			CPPUNIT_ASSERT_EQUAL(1u, segmentation.current());
+		}
+		void testInsert_onGapInBetweenSegments()
+		{
+			DiscontinuousSegmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(150);
+			segmentation.remove(1);
+			segmentation.current(0);
+			unsigned pos = segmentation.insert(120);
+			CPPUNIT_ASSERT_EQUAL(1u, pos);
+			CPPUNIT_ASSERT_EQUAL(std::string("(90,100) (120,150) (150,200) "), segmentation.boundsAsString());
 		}
 	};
 
