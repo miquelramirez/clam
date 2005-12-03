@@ -35,6 +35,7 @@ namespace CLAMTest
 		CPPUNIT_TEST( testPickSegmentBody_afterRange );
 		CPPUNIT_TEST( testPickSegmentBody_atABound );
 		CPPUNIT_TEST( testPickSegmentBody_atZeroBound );
+		CPPUNIT_TEST( testPickSegmentBody_atGap );
 		CPPUNIT_TEST( testSelection );
 		CPPUNIT_TEST( testSelection_multiple );
 		CPPUNIT_TEST( testDeselection );
@@ -292,6 +293,17 @@ namespace CLAMTest
 
 			unsigned position= segmentation.pickSegmentBody(0);
 			CPPUNIT_ASSERT_EQUAL(0u, position);
+		}
+		void testPickSegmentBody_atGap()
+		{
+			DiscontinuousSegmentation segmentation(200.0);
+			segmentation.insert(90);
+			segmentation.insert(100);
+			segmentation.insert(110);
+			segmentation.remove(1);
+
+			unsigned position= segmentation.pickSegmentBody(105);
+			CPPUNIT_ASSERT_EQUAL(2u, position);
 		}
 		void testSelection()
 		{
