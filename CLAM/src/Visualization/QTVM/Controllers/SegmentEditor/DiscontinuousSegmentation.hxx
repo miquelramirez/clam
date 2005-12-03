@@ -96,7 +96,10 @@ namespace CLAM
 			if (timePosition<0) return _offsets.size();
 			TimePositions::const_iterator lowerBound =
 				std::lower_bound(_offsets.begin(), _offsets.end(), timePosition);
-			return lowerBound - _offsets.begin();
+			unsigned index = lowerBound-_offsets.begin();
+			if (index==_offsets.size()) return index;
+			if (_onsets[index]>timePosition) return _offsets.size();
+			return index;
 		}
 		/**
 		 * Performs a dragging movement for the Onset of the given
