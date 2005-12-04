@@ -11,7 +11,7 @@ namespace CLAM
 			, mColors(5)
 			, mMargin(0.1)
 			, mHighlighted(-1)
-			, mBoundType(LEFT)
+			, mBoundType(LEFT_BOUND)
 		{
 			Colorize();
 		}
@@ -130,9 +130,9 @@ namespace CLAM
 		{
 			if(mHighlighted < 0 || mHighlighted >= (int)mSegmentation->onsets().size()) return;
 			float x = 
-				(mBoundType==LEFT) 
-				? mSegmentation->onsets()[mHighlighted] 
-				: mSegmentation->offsets()[mHighlighted];
+				(mBoundType==LEFT_BOUND) 
+				? float(mSegmentation->onsets()[mHighlighted]-LeftBound()) 
+				: float(mSegmentation->offsets()[mHighlighted]-LeftBound());
 			bool isCurrent = (mHighlighted == (int)mSegmentation->current());
 			int lineWidth = isCurrent ? CLINEWIDTH : NLINEWIDTH;
 			glLineWidth(lineWidth);
