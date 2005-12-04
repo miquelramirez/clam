@@ -19,13 +19,14 @@ namespace CLAM
 		{
 		}
 
-		void BuffDataRenderer::SetDataPtr(const TData* data)
+		void BuffDataRenderer::SetData(const DataArray& data)
 		{
 			mData = data;
 		}
 
 		void BuffDataRenderer::Render()
 		{
+			if(!mData.Size()) return;
 			TIndex i,j=mBegin;
 			glColor3ub(GLubyte(GetColor().r),GLubyte(GetColor().g),GLubyte(GetColor().b));
 			glBegin(GL_LINE_STRIP);
@@ -49,11 +50,6 @@ namespace CLAM
 			mLeftIndex2 = left2;
 			mRightIndex2 = right2;
 			mBegin = begin;
-		}
-
-		void BuffDataRenderer::Init()
-		{
-			mLeftIndex1 = mRightIndex1 = mLeftIndex2 = mRightIndex2 = mBegin = 0;
 		}
 	}
 }
