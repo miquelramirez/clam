@@ -19,6 +19,8 @@ namespace CLAM
 							const TIndex& begin);
 			void Render();
 
+			void Init();
+
 		private:
 			const TData* mData;
 			TIndex mLeftIndex1, mRightIndex1, mLeftIndex2, mRightIndex2;

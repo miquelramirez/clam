@@ -31,11 +31,11 @@ namespace CLAM
 			glBegin(GL_LINE_STRIP);
 			for(i=mLeftIndex1; i < mRightIndex1; i++)
 			{
-				glVertex2f((GLfloat)j++,(GLfloat)mData[i]);
+				glVertex3f(float(j++),float(mData[i]),-1.0f);
 			}
 			for(i=mLeftIndex2; i < mRightIndex2; i++)
 			{
-				glVertex2f((GLfloat)j++,(GLfloat)mData[i]);
+				glVertex3f(float(j++),float(mData[i]),-1.0f);
 			}
 			glEnd();
 		}
@@ -49,6 +49,11 @@ namespace CLAM
 			mLeftIndex2 = left2;
 			mRightIndex2 = right2;
 			mBegin = begin;
+		}
+
+		void BuffDataRenderer::Init()
+		{
+			mLeftIndex1 = mRightIndex1 = mLeftIndex2 = mRightIndex2 = mBegin = 0;
 		}
 	}
 }
