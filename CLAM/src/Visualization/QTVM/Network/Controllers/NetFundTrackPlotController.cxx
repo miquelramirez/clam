@@ -74,6 +74,7 @@ namespace CLAM
 		{
 			mHasData=true;
 			mIndex=0;
+			mRenderer.Init();
 			mCachedData.Init();
 			SetvRange(TData(0.0),TData(2050.0));
 			SetnSamples(100); 
@@ -116,10 +117,10 @@ namespace CLAM
 				mTooltip = "frequency="+(mTooltip.setNum(y,'f',0))+"Hz";  
 			}
 			if(mRenderingIsDone)
-	     {
-			 mRenderingIsDone=false;
-			 emit toolTip(mTooltip);
-	     }
+			{
+				mRenderingIsDone=false;
+				emit toolTip(mTooltip);
+			}
 		}
 
     }

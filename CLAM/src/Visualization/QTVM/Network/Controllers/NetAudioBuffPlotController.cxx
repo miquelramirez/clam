@@ -91,6 +91,7 @@ namespace CLAM
 			mIndex=0;
 			mFrameSize = frameSize;
 			SetnSamples(mFrameSize*100);
+			mRenderer.Init();
 			mCachedData.Init();
 			SetFirst(false);
 			FullView();
