@@ -13,11 +13,75 @@ namespace CLAM
 			public:
 			const char * what() const throw () { return "Segmentation point inserted out of limits";}
 		};
+		class OffsetMissing : public std::exception
+		{
+			public:
+			const char * what() const throw () { return "Odd number of segmentation points, every segment beggining must be followed by its ending";}
+		};
+		class MissplacedOnset : public std::exception
+		{
+			std::string _message;
+			public:
+			MissplacedOnset(unsigned missplacedOnset,
+					double previousOffsetPosition,
+					double intendedOnsetPosition)
+			{
+				std::ostringstream os;
+				os << "Segment " << missplacedOnset
+					<< " starts at " << intendedOnsetPosition
+					<< " overlapping previous segment which ends at " << previousOffsetPosition;
+				_message = os.str();
+			}
+			virtual ~MissplacedOnset() throw () {}
+			const char * what() const throw () { return _message.c_str(); }
+		};
+		class MissplacedOffset : public std::exception
+		{
+			std::string _message;
+			public:
+			MissplacedOffset(unsigned missplacedOffset,
+					double onsetPosition,
+					double offsetPosition)
+			{
+				std::ostringstream os;
+				os << "Segment " << missplacedOffset
+					<< " starts at " << onsetPosition
+					<< " but ends before that, at " << offsetPosition;
+				_message = os.str();
+			}
+			virtual ~MissplacedOffset() throw () {}
+			const char * what() const throw () { return _message.c_str(); }
+		};
 		typedef std::vector<double> TimePositions;
 	public:
 		DiscontinuousSegmentation(double maxLength)
 			: Segmentation(maxLength)
 		{
+		}
+		/**
+		 * It will create a discontinuous segmentation where the onsets and offsets
+		 * are specified on the ordered list of bounds [begin,end)
+		 * @pre The onsets is a sorted container of bounds in between 0 and maxLength
+		 */
+		template <typename Iterator>
+		DiscontinuousSegmentation(double maxLength, Iterator begin, Iterator end)
+			: Segmentation(maxLength)
+		{
+			double previousOffset=0.0;
+			unsigned i=0;
+			for (Iterator it=begin; it!=end; i++)
+			{
+				double onset = *it++;
+				if (onset<previousOffset) throw MissplacedOnset(i,previousOffset,onset);
+				if (it==end) throw OffsetMissing();
+				double offset = *it++;
+				if (offset<onset) throw MissplacedOffset(i, onset, offset);
+				if (offset>maxLength) throw InsertedOutOfBounds();
+				_onsets.push_back(onset);
+				_offsets.push_back(offset);
+				_selection.push_back(false);
+				previousOffset=offset;
+			}
 		}
 		/**
 		 * Inserts a new border at timePosition.
