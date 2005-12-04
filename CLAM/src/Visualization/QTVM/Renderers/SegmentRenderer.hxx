@@ -9,7 +9,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		enum BoundType { LEFT=0, RIGHT, BOTTOM, TOP  };
+		enum BoundType { LEFT_BOUND=0, RIGHT_BOUND=1, BOTTOM_BOUND=2, TOP_BOUND=3 };
 
 		class SegmentRenderer : public Renderer
 		{
@@ -21,7 +21,7 @@ namespace CLAM
 			void Render();
 
 			void SetMargin(double margin);
-			void SetVHighlighted(int index, BoundType type=LEFT);
+			void SetVHighlighted(int index, BoundType type=LEFT_BOUND);
 		
 		private:
 			const Segmentation * mSegmentation;
