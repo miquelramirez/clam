@@ -41,7 +41,7 @@ namespace CLAM
 			{
 				SetCanGetData(false);
 				mRenderer.SetIndexes(TIndex(mIndex),TIndex(mCachedData.Size()),0,TIndex(mIndex),0);
-				mRenderer.SetDataPtr(mCachedData.GetPtr());
+				mRenderer.SetData(mCachedData);
 				SetCanGetData(true);
 			}
 			mRenderer.Render();
@@ -74,7 +74,6 @@ namespace CLAM
 		{
 			mHasData=true;
 			mIndex=0;
-			mRenderer.Init();
 			mCachedData.Init();
 			SetvRange(TData(0.0),TData(2050.0));
 			SetnSamples(100); 
