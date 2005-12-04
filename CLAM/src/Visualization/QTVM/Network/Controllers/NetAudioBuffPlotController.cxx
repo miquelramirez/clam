@@ -124,15 +124,6 @@ namespace CLAM
 
 		void NetAudioBuffPlotController::ComputeIndexes()
 		{
-			if(mCachedData.Size() < GetnSamples())
-			{
-				mLeftIndex1=0;
-				mRightIndex1=TIndex(mCachedData.Size());
-				mLeftIndex2=0;
-				mRightIndex2=0;
-				return;
-			}
-
 			unsigned width=unsigned(mView.right-mView.left);
 			if(width < 512) width=512;
 			if(width==unsigned(GetnSamples()))
