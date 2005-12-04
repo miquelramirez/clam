@@ -236,13 +236,11 @@ void Annotator::refreshSegmentation()
 			// Not yet implemented, using Discontinuous by now
 		case CLAM_Annotator::SegmentationPolicy::eDiscontinuous:
 		{
-			CLAM::DiscontinuousSegmentation * segmentation = 
-				new CLAM::DiscontinuousSegmentation(mCurrentAudio.GetSize());
-			for (unsigned i=0; i<nMarks; i++)
-			{
-				segmentation->insert(descriptorsMarks[i]);
-			}
-			theSegmentation = segmentation;
+			theSegmentation = 
+				new CLAM::DiscontinuousSegmentation(
+					mCurrentAudio.GetSize(),
+					&descriptorsMarks[0],
+					&descriptorsMarks[0]+nMarks);
 		} break;
 	}
 	if (mSegmentation) delete mSegmentation;
