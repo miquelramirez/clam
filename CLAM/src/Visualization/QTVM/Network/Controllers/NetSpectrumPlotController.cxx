@@ -52,7 +52,7 @@ namespace CLAM
 				if(CanSendData())
 				{
 					SetCanGetData(false);
-					mRenderer.SetDataPtr(mSpec.GetMagBuffer().GetPtr(), mSpec.GetMagBuffer().Size(), NormalMode);
+					mRenderer.SetDataPtr(mSpec.GetMagBuffer().GetPtr(), mSpec.GetMagBuffer().Size());
 					SetCanGetData(true);
 				}
 				mRenderer.Render();
@@ -72,7 +72,7 @@ namespace CLAM
 				TSize specSize = mSpec.GetMagBuffer().Size();
 				if(First() && specSize) Init(specSize);
 				AdaptSpectralData();
-				mRenderer.SetDataPtr(mSpec.GetMagBuffer().GetPtr(), mSpec.GetMagBuffer().Size(), NormalMode);
+				mRenderer.SetDataPtr(mSpec.GetMagBuffer().GetPtr(), mSpec.GetMagBuffer().Size());
 				mRenderer.Render();
 				NetPlotController::Draw();
 				mMonitor->UnfreezeData();

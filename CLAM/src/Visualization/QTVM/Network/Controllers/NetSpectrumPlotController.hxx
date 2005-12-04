@@ -2,7 +2,7 @@
 #define __NETSPECTRUMPLOTCONTROLLER__
 
 #include "Spectrum.hxx"
-#include "DataRenderer.hxx"
+#include "NetDataRenderer.hxx"
 #include "NetPlotController.hxx"
 #include "PortMonitor.hxx"
 
@@ -28,13 +28,13 @@ namespace CLAM
 			void FullView();
 
 		private:
-			Spectrum     mSpec;
-			DataRenderer mRenderer;
-			MonitorType* mMonitor;
-			TData        mSpectralRange;
-			bool         mHasData;    
-			bool         mRenderingIsDone;
-			QString      mTooltip;
+			Spectrum        mSpec;
+			NetDataRenderer mRenderer;
+			MonitorType*    mMonitor;
+			TData           mSpectralRange;
+			bool            mHasData;    
+			bool            mRenderingIsDone;
+			QString         mTooltip;
 		    
 			void AdaptSpectralData();
 			void Init(const TSize& size);
