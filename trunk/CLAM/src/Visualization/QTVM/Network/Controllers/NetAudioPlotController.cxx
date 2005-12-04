@@ -49,7 +49,7 @@ namespace CLAM
 			    if(CanSendData())
 			    {
 					SetCanGetData(false);
-					mRenderer.SetDataPtr(mCacheData.GetBuffer().GetPtr(),mCacheData.GetBuffer().Size(),NormalMode);
+					mRenderer.SetDataPtr(mCacheData.GetBuffer().GetPtr(),mCacheData.GetBuffer().Size());
 					SetCanGetData(true);
 			    }
 			    mRenderer.Render();
@@ -68,7 +68,7 @@ namespace CLAM
 
 			    TSize audioSize = audio.GetBuffer().Size();
 			    if(First() && audioSize) Init(audioSize);
-			    mRenderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize,NormalMode);
+			    mRenderer.SetDataPtr(audio.GetBuffer().GetPtr(),audioSize);
 
 			    mRenderer.Render();
 			    NetPlotController::Draw();

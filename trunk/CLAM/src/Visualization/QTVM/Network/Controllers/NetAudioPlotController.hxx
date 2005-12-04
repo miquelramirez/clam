@@ -2,7 +2,7 @@
 #define __NETAUDIOPLOTCONTROLLER__
 
 #include "Audio.hxx"
-#include "DataRenderer.hxx"
+#include "NetDataRenderer.hxx"
 #include "NetPlotController.hxx"
 #include "PortMonitor.hxx"
 
@@ -27,12 +27,12 @@ namespace CLAM
 			void FullView();
 
 		private:
-			Audio        mCacheData;
-			DataRenderer mRenderer;
-			MonitorType* mMonitor;
-			bool         mHasData;
-			bool         mRenderingIsDone;
-			QString      mTooltip;
+			Audio           mCacheData;
+			NetDataRenderer mRenderer;
+			MonitorType*    mMonitor;
+			bool            mHasData;
+			bool            mRenderingIsDone;
+			QString         mTooltip;
 
 			void Init(const TSize& frameSize);
 		};
