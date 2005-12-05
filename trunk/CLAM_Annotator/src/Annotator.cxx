@@ -7,6 +7,7 @@
 #include <qmessagebox.h>
 #include <qtabwidget.h>
 #include <qfiledialog.h>
+#include <qsettings.h>
 
 #include <algorithm>
 #include <iostream>
@@ -115,10 +116,30 @@ Annotator::Annotator(const std::string & nameProject = "")
 	initInterface();
 	setMenuAudioItemsEnabled(false);
 	connect (mAudioRefreshTimer, SIGNAL(timeout()), this, SLOT(refreshAudioData()) );
+	QSettings settings;
+	settings.setPath( "clam.iua.upf.es", "MusicAnnotator", QSettings::User);
+	mProjectFileName = settings.readEntry( "/MusicAnnotator/LastSession/ProjectFile", ""  ).ascii();
+	if (mProjectFileName=="") return;
+	try
+	{
+		CLAM::XMLStorage::Restore(mProject,mProjectFileName);
+	}
+	catch (CLAM::XmlStorageErr e)
+	{
+		QMessageBox::warning(this,"Error Loading Project File", 
+			constructFileError(mProjectFileName,e));
+		return;
+	}
+	initProject();
 }
 
 Annotator::~Annotator()
 {
+	{
+		QSettings settings;
+		settings.setPath( "clam.iua.upf.es", "MusicAnnotator", QSettings::User);
+		settings.writeEntry( "/MusicAnnotator/LastSession/ProjectFile", mProjectFileName.c_str()  );
+	}
 	abortLoader();
 	if (mSegmentation) delete mSegmentation;
 }
@@ -473,16 +494,17 @@ void Annotator::deleteSongsFromProject()
 	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin();
 			it!= toBeDeleted.end(); it++ )
 		delete *it;
+	markProjectChanged(true);
 }
 
 void Annotator::addSongsToProject()
 {
 	QStringList files = QFileDialog::getOpenFileNames(
 		"Songs (*.wav *.mp3 *.ogg)",
-		"/home",
+		QDir::homeDirPath(),
 		this,
-		"open files dialog",
-		"Select one or more files to open" );
+		"Add files to the project",
+		"Select one or more files to add" );
 	QStringList list = files;
 	QStringList::Iterator it = list.begin();
 	for (; it != list.end(); it++ )
@@ -516,6 +538,7 @@ void Annotator::fileNew()
 {
 	mProjectFileName = "";
 	mProject = CLAM_Annotator::Project();
+	loadSchema();
 	initProject();
 	markProjectChanged(true);
 }
