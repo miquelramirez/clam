@@ -410,6 +410,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::DisplayBackgroundBlack()
 		{
+			if(mControllers.size() >= SINTRACKS) ((SinTracksPlotController*)mControllers[SINTRACKS])->SaveScreen();
 			SetForegroundColor(VMColor::Green());
 			SetDialColor(VMColor::Red());
 			SetMarksColor(VMColor::Orange());
@@ -418,6 +419,7 @@ namespace CLAM
 
 		void SMSTimeMultiDisplay::DisplayBackgroundWhite()
 		{
+			if(mControllers.size() >= SINTRACKS) ((SinTracksPlotController*)mControllers[SINTRACKS])->SaveScreen();
 			SetForegroundColor(VMColor::Blue());
 			SetDialColor(VMColor::Black());
 			SetMarksColor(VMColor::Red());

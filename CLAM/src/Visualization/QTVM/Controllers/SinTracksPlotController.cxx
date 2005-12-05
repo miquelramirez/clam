@@ -258,6 +258,11 @@ namespace CLAM
 		{
 			SetVBounds(ymin,ymax);
 		}
+
+		void SinTracksPlotController::SaveScreen()
+		{
+			mRenderer.SaveScreen();
+		}
     }
 }
 
