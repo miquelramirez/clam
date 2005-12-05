@@ -29,7 +29,7 @@ namespace CLAM_Annotator{
 			schemaAttribute.SetType("Float");
 			AddAttribute(schemaAttribute);
 		}
-		void AddRestrictedString(
+		void AddEnumerated(
 				const std::string & scope,
 				const std::string & attribute,
 				const char ** availableValues)
@@ -37,11 +37,11 @@ namespace CLAM_Annotator{
 			CLAM_Annotator::SchemaAttribute schemaAttribute;
 			schemaAttribute.SetScope(scope);
 			schemaAttribute.SetName(attribute);
-			schemaAttribute.SetType("RestrictedString");
-			schemaAttribute.AddRestrictionValues();
+			schemaAttribute.SetType("Enumerated");
+			schemaAttribute.AddEnumerationValues();
 			schemaAttribute.UpdateData();
 			for (const char ** value = availableValues; *value; value++)
-				schemaAttribute.GetRestrictionValues().push_back(*value);
+				schemaAttribute.GetEnumerationValues().push_back(*value);
 			AddAttribute(schemaAttribute);
 		}
 		void AddRangedInt(

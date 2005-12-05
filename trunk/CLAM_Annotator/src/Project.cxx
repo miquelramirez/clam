@@ -1,6 +1,6 @@
 #include "Project.hxx"
 #include "Text.hxx"
-#include "RestrictedString.hxx"
+#include "Enumerated.hxx"
 #include "IndexArray.hxx"
 #include "XMLStorage.hxx"
 
