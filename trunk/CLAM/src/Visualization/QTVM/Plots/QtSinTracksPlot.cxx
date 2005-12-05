@@ -84,6 +84,7 @@ namespace CLAM
 
 		void QtSinTracksPlot::DisplayBackgroundBlack()
 		{
+			((SinTracksPlotController*)mController)->SaveScreen();
 			SetDialColor(VMColor::Red());
 			SetMarksColor(VMColor::Orange());
 			SetBackgroundColor(VMColor::Black());
@@ -91,6 +92,7 @@ namespace CLAM
 
 		void QtSinTracksPlot::DisplayBackgroundWhite()
 		{
+			((SinTracksPlotController*)mController)->SaveScreen();
 			SetDialColor(VMColor::Black());
 			SetMarksColor(VMColor::Red());
 			SetBackgroundColor(VMColor::White());

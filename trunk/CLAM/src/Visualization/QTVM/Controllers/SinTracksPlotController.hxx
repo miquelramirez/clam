@@ -48,6 +48,8 @@ namespace CLAM
 			void SetMousePos(double x, double y);
 			void SetSelPos(double value, bool render);
 
+			void SaveScreen();
+
 		signals:
 			void sendTimeFreq(double, double);
 
