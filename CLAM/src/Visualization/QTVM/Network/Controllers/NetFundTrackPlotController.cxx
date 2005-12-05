@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "NetFundTrackPlotController.hxx"
 
 namespace CLAM
@@ -6,7 +7,6 @@ namespace CLAM
     {
 		NetFundTrackPlotController::NetFundTrackPlotController()
 			: mMonitor(0) 
-			, mIndex(0)
 			, mHasData(false)
 			, mRenderingIsDone(false)
 			, mTooltip("")
@@ -40,8 +40,7 @@ namespace CLAM
 			if(CanSendData())
 			{
 				SetCanGetData(false);
-				mRenderer.SetIndexes(TIndex(mIndex),TIndex(mCachedData.Size()),0,TIndex(mIndex),0);
-				mRenderer.SetData(mCachedData);
+				mRenderer.SetDataPtr(mCachedData.GetPtr(),mCachedData.Size());
 				SetCanGetData(true);
 			}
 			mRenderer.Render();
@@ -65,15 +64,14 @@ namespace CLAM
 			}
 			else
 			{
-				mCachedData[mIndex++] = data;
-				if(mIndex == GetnSamples()) mIndex = 0;
+				std::copy(mCachedData.GetPtr(),mCachedData.GetPtr()+mCachedData.Size()-1,mCachedData.GetPtr()+1);
+				mCachedData[0] = data;
 			}
 		}
 
 		void NetFundTrackPlotController::Init()
 		{
 			mHasData=true;
-			mIndex=0;
 			mCachedData.Init();
 			SetvRange(TData(0.0),TData(2050.0));
 			SetnSamples(100); 

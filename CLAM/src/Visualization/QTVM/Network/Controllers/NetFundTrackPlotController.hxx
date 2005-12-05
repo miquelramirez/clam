@@ -2,7 +2,7 @@
 #define __NETFUNDTRACKPLOTCONTROLLER__
 
 #include "Fundamental.hxx"
-#include "BuffDataRenderer.hxx"
+#include "NetDataRenderer.hxx"
 #include "NetPlotController.hxx"
 #include "PortMonitor.hxx"
 
@@ -28,14 +28,13 @@ namespace CLAM
 			void FullView();
 
 		private:
-			MonitorType*     mMonitor;
-			DataArray        mCachedData;
-			BuffDataRenderer mRenderer;
-			int              mIndex;	    
-			bool             mHasData;
-			bool             mRenderingIsDone;
-			QString          mTooltip;
-			SigSlot::Slotv0  mSlotNewData;
+			MonitorType*    mMonitor;
+			DataArray       mCachedData;
+			NetDataRenderer mRenderer;
+			bool            mHasData;
+			bool            mRenderingIsDone;
+			QString         mTooltip;
+			SigSlot::Slotv0 mSlotNewData;
 	    
 			void AddData(const TData& data);
 			void Init();

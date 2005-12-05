@@ -2,7 +2,7 @@
 #define __NETAUDIOBUFFPLOTCONTROLLER__
 
 #include "Audio.hxx"
-#include "BuffDataRenderer.hxx"
+#include "NetDataRenderer.hxx"
 #include "NetPlotController.hxx"
 #include "PortMonitor.hxx"
 
@@ -30,13 +30,8 @@ namespace CLAM
 		private:
 			MonitorType*     mMonitor;
 			DataArray        mCachedData;
-			BuffDataRenderer mRenderer;
-			int              mIndex;
+			NetDataRenderer  mRenderer;
 			TSize            mFrameSize;
-			TIndex           mLeftIndex1;
-			TIndex           mRightIndex1;
-			TIndex           mLeftIndex2;
-			TIndex           mRightIndex2;
 			bool             mHasData;
 			QString          mTooltip;
 			bool             mRenderingIsDone;
@@ -46,7 +41,6 @@ namespace CLAM
 	  
 			void Init(const TSize& frameSize);
 			void OnNewData();
-			void ComputeIndexes();
 		};
     }
 }

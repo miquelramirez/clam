@@ -7,12 +7,7 @@ namespace CLAM
     {
 		NetAudioBuffPlotController::NetAudioBuffPlotController()
 			: mMonitor(0)
-			, mIndex(0)
 			, mFrameSize(0)
-			, mLeftIndex1(0)
-			, mRightIndex1(0)
-			, mLeftIndex2(0)
-			, mRightIndex2(0)
 			, mHasData(false)
 			, mTooltip("")
 			, mRenderingIsDone(false)
@@ -56,9 +51,7 @@ namespace CLAM
 			if(CanSendData())
 			{
 				SetCanGetData(false);
-				ComputeIndexes();
-				mRenderer.SetIndexes(mLeftIndex1,mRightIndex1,mLeftIndex2,mRightIndex2,TIndex(mView.left));
-				mRenderer.SetData(mCachedData);
+				mRenderer.SetDataPtr(mCachedData.GetPtr(),mCachedData.Size());
 				SetCanGetData(true);
 			}
 			mRenderer.Render();
@@ -68,30 +61,19 @@ namespace CLAM
 
 		void NetAudioBuffPlotController::AddData(const DataArray& data)
 		{
-			if(mCachedData.Size() < GetnSamples())
-			{
-				TSize currentSize = mCachedData.Size();
-				mCachedData.Resize(currentSize+mFrameSize);
-				mCachedData.SetSize(currentSize+mFrameSize);
-				std::copy(data.GetPtr(),data.GetPtr()+mFrameSize,mCachedData.GetPtr()+mIndex);
-				mIndex += mFrameSize;
-				if(mIndex == GetnSamples()) mIndex = 0;
-			}
-			else
-			{
-				std::copy(data.GetPtr(),data.GetPtr()+mFrameSize,mCachedData.GetPtr()+mIndex);
-				mIndex += mFrameSize;
-				if(mIndex == GetnSamples()) mIndex = 0;
-			}
+			std::copy(mCachedData.GetPtr(),mCachedData.GetPtr()+(mCachedData.Size()-mFrameSize),
+					  mCachedData.GetPtr()+mFrameSize);
+			std::copy(data.GetPtr(),data.GetPtr()+mFrameSize,mCachedData.GetPtr());
 		}
 
 		void NetAudioBuffPlotController::Init(const TSize& frameSize)
 		{
 			mHasData=true;
-			mIndex=0;
 			mFrameSize = frameSize;
 			SetnSamples(mFrameSize*100);
 			mCachedData.Init();
+			mCachedData.Resize(GetnSamples());
+			mCachedData.SetSize(GetnSamples());
 			SetFirst(false);
 			FullView();
 		}
@@ -120,41 +102,6 @@ namespace CLAM
 				}
 				SetCanSendData(true);
 			}  
-		}
-
-		void NetAudioBuffPlotController::ComputeIndexes()
-		{
-			unsigned width=unsigned(mView.right-mView.left);
-			if(width < 512) width=512;
-			if(width==unsigned(GetnSamples()))
-			{
-				mLeftIndex1=TIndex(mIndex);
-				mRightIndex1=TIndex(mCachedData.Size());
-				mLeftIndex2=0;
-				mRightIndex2=TIndex(mIndex);
-				return;
-			}
-
-			unsigned left1=unsigned(mIndex)+unsigned(mView.left);
-			unsigned left2=0;
-			if(left1 > (unsigned)mCachedData.Size())
-			{
-				left2=left1-unsigned(mCachedData.Size());
-				left1=unsigned(mCachedData.Size());
-			}
-			unsigned rest=0;
-			unsigned right1=left1+width+4;
-			if(right1 > (unsigned)mCachedData.Size())
-			{
-				rest=right1-unsigned(mCachedData.Size());
-				right1=unsigned(mCachedData.Size());
-			}
-	   
-			mLeftIndex1=TIndex(left1);
-			mRightIndex1=TIndex(right1);
-			mLeftIndex2=TIndex(left2);
-			mRightIndex2=mLeftIndex2+TIndex(rest);
-			if(mRightIndex2 > mLeftIndex1) mRightIndex2=mLeftIndex1;
 		}
 
 		void NetAudioBuffPlotController::UpdatePoint(const TData& x, const TData& y)
