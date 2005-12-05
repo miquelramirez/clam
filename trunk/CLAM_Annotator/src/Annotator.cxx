@@ -118,6 +118,12 @@ Annotator::Annotator(const std::string & nameProject = "")
 	connect (mAudioRefreshTimer, SIGNAL(timeout()), this, SLOT(refreshAudioData()) );
 	QSettings settings;
 	settings.setPath( "clam.iua.upf.es", "MusicAnnotator", QSettings::User);
+	int posX = settings.readNumEntry("/MusicAnnotator/LastSession/PosX", size().width());
+	int posY = settings.readNumEntry("/MusicAnnotator/LastSession/PosY", size().height());
+	int sizeX = settings.readNumEntry("/MusicAnnotator/LastSession/SizeX", pos().x());
+	int sizeY = settings.readNumEntry("/MusicAnnotator/LastSession/SizeY", pos().y());
+	resize(QSize(sizeX,sizeY));
+	move(QPoint(posX,posY));
 	mProjectFileName = settings.readEntry( "/MusicAnnotator/LastSession/ProjectFile", ""  ).ascii();
 	if (mProjectFileName=="") return;
 	try
@@ -137,8 +143,12 @@ Annotator::~Annotator()
 {
 	{
 		QSettings settings;
-		settings.setPath( "clam.iua.upf.es", "MusicAnnotator", QSettings::User);
-		settings.writeEntry( "/MusicAnnotator/LastSession/ProjectFile", mProjectFileName.c_str()  );
+		settings.setPath("clam.iua.upf.es", "MusicAnnotator", QSettings::User);
+		settings.writeEntry("/MusicAnnotator/LastSession/ProjectFile", mProjectFileName.c_str()  );
+	        settings.writeEntry("/MusicAnnotator/LastSession/PositionX", pos().x());
+	        settings.writeEntry("/MusicAnnotator/LastSession/PositionY", pos().y());
+	        settings.writeEntry("/MusicAnnotator/LastSession/SizeX", size().width());
+	        settings.writeEntry("/MusicAnnotator/LastSession/SizeY", size().height());
 	}
 	abortLoader();
 	if (mSegmentation) delete mSegmentation;
