@@ -64,13 +64,13 @@ namespace CLAM_Annotator
 	public:
 		DescriptorsTableItemControllerEnum(QTable * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
-			, mOptions(scheme.GetRestrictionValues())
+			, mOptions(scheme.GetEnumerationValues())
 		{
 		}
 		void refreshData(CLAM::DescriptionDataPool & dataPool)
 		{
-			const CLAM_Annotator::RestrictedString& value =
-				dataPool.GetReadPool<RestrictedString>(mScope,mName)[mElement];
+			const CLAM_Annotator::Enumerated& value =
+				dataPool.GetReadPool<Enumerated>(mScope,mName)[mElement];
 			QString qvalue = value.GetString().c_str();
 			QStringList qrestrictionStrings;
 
@@ -89,7 +89,7 @@ namespace CLAM_Annotator
 			if (mElement==-1) return;
 			QString qValue = mTable->text(mRow, 1);
 			const std::string & value = qValue.ascii();
-			dataPool.GetWritePool<RestrictedString>(mScope,mName)[mElement].SetString(value);
+			dataPool.GetWritePool<Enumerated>(mScope,mName)[mElement].SetString(value);
 		}
 	private:
 		const std::list<std::string> mOptions;
@@ -160,7 +160,7 @@ namespace CLAM_Annotator
 
 		if (type == "String")
 			return new DescriptorsTableItemControllerString(parent,row,scheme);
-		if (type == "RestrictedString")
+		if (type == "Enumerated")
 			return new DescriptorsTableItemControllerEnum(parent,row,scheme);
 		if (type == "Float")
 			return new DescriptorsTableItemControllerFloat(parent,row,scheme);

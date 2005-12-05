@@ -1,7 +1,7 @@
 #include "TypePlugin.hxx"
 #include "Pool.hxx"
 #include "SchemaAttribute.hxx"
-#include "RestrictedString.hxx"
+#include "Enumerated.hxx"
 #include "IndexArray.hxx"
 
 
@@ -36,9 +36,12 @@ public:
 			dataPool.GetReadPool<CLAM::TData>(
 					mSchema.GetScope(),
 					mSchema.GetName());
-		if (!mSchema.HasfRange()) return true;
-		if (values[0]<mSchema.GetfRange().GetMin()) return false;
-		if (values[0]>mSchema.GetfRange().GetMax()) return false;
+		for (unsigned i=0; i<dataPool.GetNumberOfContexts(mSchema.GetScope());i++)
+		{
+			if (!mSchema.HasfRange()) continue;
+			if (values[i]<mSchema.GetfRange().GetMin()) return false;
+			if (values[i]>mSchema.GetfRange().GetMax()) return false;
+		}
 		return true;
 	}
 };
@@ -63,8 +66,11 @@ public:
 					mSchema.GetScope(),
 					mSchema.GetName());
 		if (!mSchema.HasiRange()) return true;
-		if (values[0]<mSchema.GetiRange().GetMin()) return false;
-		if (values[0]>mSchema.GetiRange().GetMax()) return false;
+		for (unsigned i=0; i<dataPool.GetNumberOfContexts(mSchema.GetScope());i++)
+		{
+			if (values[0]<mSchema.GetiRange().GetMin()) return false;
+			if (values[0]>mSchema.GetiRange().GetMax()) return false;
+		}
 		return true;
 	}
 };
@@ -79,19 +85,23 @@ public:
 
 	void AddTo(CLAM::DescriptionScheme & scheme)
 	{
-		scheme.AddAttribute<RestrictedString>(mSchema.GetScope(),mSchema.GetName());
+		scheme.AddAttribute<Enumerated>(mSchema.GetScope(),mSchema.GetName());
 	}
 
 	bool ValidateData(const CLAM::DescriptionDataPool & dataPool)
 	{
-		const RestrictedString * values =
-			dataPool.GetReadPool<RestrictedString>(
+		const Enumerated * values =
+			dataPool.GetReadPool<Enumerated>(
 					mSchema.GetScope(),
 					mSchema.GetName());
-		const std::list<std::string> & availableValues = mSchema.GetRestrictionValues();
-		return std::find(availableValues.begin(),
-			availableValues.end(),values[0].GetString())!=
-			availableValues.end();
+		const std::list<std::string> & availableValues = mSchema.GetEnumerationValues();
+		for (unsigned i=0; i<dataPool.GetNumberOfContexts(mSchema.GetScope());i++)
+		{
+			const std::string & value = values[i].GetString(); 
+			if (std::find(availableValues.begin(),availableValues.end(),value)==availableValues.end())
+				return false;
+		}
+		return true;
 	}
 };
 
@@ -114,6 +124,8 @@ public:
 			dataPool.GetReadPool<CLAM::Text>(
 					mSchema.GetScope(),
 					mSchema.GetName());
+		for (unsigned i=0; i<dataPool.GetNumberOfContexts(mSchema.GetScope());i++)
+			values[i];
 		return true;
 	}
 };
@@ -137,6 +149,8 @@ public:
 			dataPool.GetReadPool<CLAM::IndexArray>(
 					mSchema.GetScope(),
 					mSchema.GetName());
+		for (unsigned i=0; i<dataPool.GetNumberOfContexts(mSchema.GetScope());i++)
+			values[i];
 		return true;
 	}
 };
@@ -144,7 +158,7 @@ public:
 TypePlugin * TypePlugin::Create(const SchemaAttribute & scheme)
 {
 	const std::string & type = scheme.GetType();
-	if (type=="RestrictedString")
+	if (type=="Enumerated")
 		return new EnumTypePlugin(scheme);
 	if (type=="Float")
 		return new FloatTypePlugin(scheme);
