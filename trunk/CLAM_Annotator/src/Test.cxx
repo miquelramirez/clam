@@ -351,8 +351,9 @@ unsigned GenerateRandomSegmentationMarks(CLAM::IndexArray & segmentation,int nSa
 		//random number between 10 and 30 frames
 		int randomIncr = randomNumber(minDuration,maxDuration);
 		index += randomIncr;
-		if (index<nSamples)
-			segmentation.AddElem(index);
+		if (index>=nSamples) break;
+		segmentation.AddElem(index);
+		nSegments++;
 	}
 	return nSegments;
 
