@@ -167,7 +167,7 @@ namespace CLAM {
   ////////////////////////////////////
   // Original Ooura FFT functions, modified to accept TData instead of double
 
-void FFT_ooura::rdft(int n, int isgn, TData *a, int *ip, TData *w) const
+void FFT_ooura::rdft(int n, int isgn, TData *a, int *ip, TData *w)
 {
     int nw, nc;
     TData xi;
@@ -208,7 +208,7 @@ void FFT_ooura::rdft(int n, int isgn, TData *a, int *ip, TData *w) const
 
   // workspace setup functions...
 
-void FFT_ooura::makewt(int nw, int *ip, TData *w) const
+void FFT_ooura::makewt(int nw, int *ip, TData *w)
 {
     int j, nwh;
     TData delta, x, y;
@@ -237,7 +237,7 @@ void FFT_ooura::makewt(int nw, int *ip, TData *w) const
 }
 
 
-void FFT_ooura::makect(int nc, int *ip, TData *c) const
+void FFT_ooura::makect(int nc, int *ip, TData *c)
 {
     int j, nch;
     TData delta;
@@ -255,7 +255,7 @@ void FFT_ooura::makect(int nc, int *ip, TData *c) const
     }
 }
 
-void FFT_ooura::bitrv2(int n, int *ip, TData *a) const
+void FFT_ooura::bitrv2(int n, int *ip, TData *a)
 {
     int j, j1, k, k1, l, m, m2;
     TData xr, xi, yr, yi;
@@ -354,7 +354,7 @@ void FFT_ooura::bitrv2(int n, int *ip, TData *a) const
     }
 }
 
-void FFT_ooura::cftfsub(int n, TData *a, TData *w) const
+void FFT_ooura::cftfsub(int n, TData *a, TData *w)
 {
     int j, j1, j2, j3, l;
     TData x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
@@ -403,7 +403,7 @@ void FFT_ooura::cftfsub(int n, TData *a, TData *w) const
     }
 }
 
-void FFT_ooura::cftbsub(int n, TData *a, TData *w) const
+void FFT_ooura::cftbsub(int n, TData *a, TData *w) 
 {
     int j, j1, j2, j3, l;
     TData x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
@@ -452,7 +452,7 @@ void FFT_ooura::cftbsub(int n, TData *a, TData *w) const
     }
 }
 
-void FFT_ooura::cft1st(int n, TData *a, TData *w) const
+void FFT_ooura::cft1st(int n, TData *a, TData *w)
 {
     int j, k1, k2;
     TData wk1r, wk1i, wk2r, wk2i, wk3r, wk3i;
@@ -557,7 +557,7 @@ void FFT_ooura::cft1st(int n, TData *a, TData *w) const
 }
 
 
-void FFT_ooura::cftmdl(int n, int l, TData *a, TData *w) const
+void FFT_ooura::cftmdl(int n, int l, TData *a, TData *w)
 {
     int j, j1, j2, j3, k, k1, k2, m, m2;
     TData wk1r, wk1i, wk2r, wk2i, wk3r, wk3i;
@@ -684,7 +684,7 @@ void FFT_ooura::cftmdl(int n, int l, TData *a, TData *w) const
 }
 
 
-void FFT_ooura::rftfsub(int n, TData *a, int nc, TData *c) const
+void FFT_ooura::rftfsub(int n, TData *a, int nc, TData *c)
 {
     int j, k, kk, ks, m;
     TData wkr, wki, xr, xi, yr, yi;
@@ -709,7 +709,7 @@ void FFT_ooura::rftfsub(int n, TData *a, int nc, TData *c) const
 }
 
 
-void FFT_ooura::rftbsub(int n, TData *a, int nc, TData *c) const
+void FFT_ooura::rftbsub(int n, TData *a, int nc, TData *c)
 {
     int j, k, kk, ks, m;
     TData wkr, wki, xr, xi, yr, yi;

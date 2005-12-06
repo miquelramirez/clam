@@ -20,34 +20,48 @@
  */
 
 
-#ifndef _FFT_ooura_
-#define _FFT_ooura_
+#ifndef _IFFT_ooura_
+#define _IFFT_ooura_
 
-#include "FFT.hxx"
+#include "IFFT.hxx"
 #include "DataTypes.hxx"
 #include "SpecTypeFlags.hxx"
 
 namespace CLAM {
 
-	struct FFTConfig;
+	struct IFFTConfig;
 	class Spectrum;
 	class Audio;
 	class ProcessingConfig;
-	class IFFT_ooura;
 
-	/** Implementation of the FFT using the algorithm from Takuya OOURA
+	/** Implementation of the IFFT using the algorithm from Takuya OOURA
 	 * in C.
 	 * @see <a HREF="http://momonga.t.u-tokyo.ac.jp/~ooura/fft.html">
-	 *      Ooura's FFT Homepage</a>
+	 *      Ooura's IFFT Homepage</a>
 	 */
-	class FFT_ooura: public FFT_base
+	class IFFT_ooura: public IFFT_base
 	{
-	  
 	  /** Internal bit reversal, cos & sin tables */
 		int *ip;
 		TData *w;
+		
+		/** Internal output buffer */
+		TData* ifftbuffer;
+		/** Auxiliary flags structure, used to add the complex attribute. */
+		SpecTypeFlags mComplexflags;
 
-		bool FFTConfigure();
+		/* IFFT possible execution states.
+		*/
+		typedef enum {
+			sComplex, // We just need to read the complex array.
+			sOther // The complex array is not present.
+		} IFFTState;
+
+		/** Execution state of the IFFT object. It includes I/O
+	    prototypes state */
+		IFFTState mState;
+	
+		bool IFFTConfigure();
 
 		/** Configuration change method
 		 */
@@ -61,38 +75,34 @@ namespace CLAM {
 
 		// Output conversions
 
-		void ToComplex(Spectrum &out);
+		void ComplexToIFFTOoura(const Spectrum &in) const;
+		void OtherToIFFTOoura(const Spectrum &in) const;
+
+		inline void CheckTypes(const Spectrum& in, const Audio &out) const;
 
 	public:
-		// FFTOOURA original functions, modified to accept
-		// TData instead of double
-		static void rdft(int n, int isgn, TData *a, int *ip, TData *w);
-		static void makewt(int nw, int *ip, TData *w);
-		static void makect(int nc, int *ip, TData *c);
-		static void bitrv2(int n, int *ip, TData *a);
-		static void cftfsub(int n, TData *a, TData *w);
-		static void cftbsub(int n, TData *a, TData *w);
-		static void rftfsub(int n, TData *a, int nc, TData *c);
-		static void rftbsub(int n, TData *a, int nc, TData *c);
-		static void cft1st(int n, TData *a, TData *w);
-		static void cftmdl(int n, int l, TData *a, TData *w);
 
-	
+		IFFT_ooura();
 
-		FFT_ooura();
+		IFFT_ooura(const IFFTConfig &c) throw(ErrDynamicType);
 
-		FFT_ooura(const FFTConfig &c) throw(ErrDynamicType);
+		~IFFT_ooura();
 
-		~FFT_ooura();
-
-		const char * GetClassName() const {return "FFT_ooura";}
+		const char * GetClassName() const {return "IFFT_ooura";}
 
 		// Execution methods
 
 		bool Do();
 
-		bool Do(const Audio& in, Spectrum &out);
+		bool Do(const Spectrum& in, Audio &out) const;
 
+		// Port interfaces.
+
+		bool SetPrototypes(const Spectrum& in,const Audio &out);
+
+		bool SetPrototypes();
+
+		bool UnsetPrototypes();
 		
 		bool MayDisableExecution() const {return true;}
 
@@ -100,4 +110,4 @@ namespace CLAM {
 
 };//namespace CLAM
 
-#endif // _FFT_numrec_
+#endif // _IFFT_numrec_

@@ -22,6 +22,9 @@
 #ifndef _SpectralSynthesis_
 #define _SpectralSynthesis_
 
+//uncomment this if you want to use Ooura fft instead of fftw 
+//#define CLAM_OOURA
+
 #include "ProcessingComposite.hxx"
 
 #include "Array.hxx"
@@ -30,7 +33,14 @@
 #include "DynamicType.hxx"
 #include "Err.hxx"
 #include "IFFT.hxx"
-#include "IFFT_rfftw.hxx"
+
+
+#ifdef CLAM_OOURA
+	#include "IFFT_ooura.hxx"
+#else
+	#include "IFFT_rfftw.hxx"
+#endif
+
 #include "Frame.hxx"
 #include "Segment.hxx"
 #include "InControl.hxx"
@@ -82,7 +92,11 @@ private:
 		//internal Processing Objects
 		WindowGenerator			mPO_AnalWindowGen;
 		WindowGenerator			mPO_SynthWindowGen;
-		IFFT_rfftw              mPO_IFFT;
+#ifdef CLAM_OOURA
+		IFFT_ooura				mPO_IFFT;
+#else
+		IFFT_rfftw				mPO_IFFT;
+#endif
 		AudioMultiplier            mPO_AudioProduct;
 		CircularShift			mPO_CircularShift;
 			
