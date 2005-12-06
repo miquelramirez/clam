@@ -116,15 +116,8 @@ Annotator::Annotator(const std::string & nameProject = "")
 	initInterface();
 	setMenuAudioItemsEnabled(false);
 	connect (mAudioRefreshTimer, SIGNAL(timeout()), this, SLOT(refreshAudioData()) );
-	QSettings settings;
-	settings.setPath( "clam.iua.upf.es", "MusicAnnotator", QSettings::User);
-	int posX = settings.readNumEntry("/MusicAnnotator/LastSession/PosX", pos().x());
-	int posY = settings.readNumEntry("/MusicAnnotator/LastSession/PosY", pos().y());
-	int sizeX = settings.readNumEntry("/MusicAnnotator/LastSession/SizeX", size().width());
-	int sizeY = settings.readNumEntry("/MusicAnnotator/LastSession/SizeY", size().height());
-	resize(QSize(sizeX,sizeY));
-	move(QPoint(posX,posY));
-	mProjectFileName = settings.readEntry( "/MusicAnnotator/LastSession/ProjectFile", ""  ).ascii();
+	loadSettings();
+	if (nameProject!="") mProjectFileName = nameProject;
 	if (mProjectFileName=="") return;
 	try
 	{
@@ -139,17 +132,34 @@ Annotator::Annotator(const std::string & nameProject = "")
 	initProject();
 }
 
+void Annotator::loadSettings()
+{
+	QSettings settings;
+	settings.setPath( "clam.iua.upf.es", "MusicAnnotator", QSettings::User);
+	int posX = settings.readNumEntry("MusicAnnotator/LastSession/PosX", pos().x());
+	int posY = settings.readNumEntry("MusicAnnotator/LastSession/PosY", pos().y());
+	int sizeX = settings.readNumEntry("MusicAnnotator/LastSession/SizeX", size().width());
+	int sizeY = settings.readNumEntry("MusicAnnotator/LastSession/SizeY", size().height());
+	resize(QSize(sizeX,sizeY));
+	move(QPoint(posX,posY));
+	if (mProjectFileName=="")
+		mProjectFileName = settings.readEntry( "MusicAnnotator/LastSession/ProjectFile", mProjectFileName  ).ascii();
+}
+
+void Annotator::saveSettings()
+{
+	QSettings settings;
+	settings.setPath("clam.iua.upf.es", "MusicAnnotator", QSettings::User);
+	settings.writeEntry("MusicAnnotator/LastSession/ProjectFile", mProjectFileName.c_str()  );
+	settings.writeEntry("MusicAnnotator/LastSession/PositionX", pos().x());
+	settings.writeEntry("MusicAnnotator/LastSession/PositionY", pos().y());
+	settings.writeEntry("MusicAnnotator/LastSession/SizeX", size().width());
+	settings.writeEntry("MusicAnnotator/LastSession/SizeY", size().height());
+}
+
 Annotator::~Annotator()
 {
-	{
-		QSettings settings;
-		settings.setPath("clam.iua.upf.es", "MusicAnnotator", QSettings::User);
-		settings.writeEntry("/MusicAnnotator/LastSession/ProjectFile", mProjectFileName.c_str()  );
-	        settings.writeEntry("/MusicAnnotator/LastSession/PositionX", pos().x());
-	        settings.writeEntry("/MusicAnnotator/LastSession/PositionY", pos().y());
-	        settings.writeEntry("/MusicAnnotator/LastSession/SizeX", size().width());
-	        settings.writeEntry("/MusicAnnotator/LastSession/SizeY", size().height());
-	}
+	saveSettings();
 	abortLoader();
 	if (mSegmentation) delete mSegmentation;
 }

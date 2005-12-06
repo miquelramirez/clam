@@ -11,7 +11,7 @@ int main( int argc, char ** argv )
 	splash.setCursor( QCursor(Qt::WaitCursor) );
 	splash.show();
 	splash.message("Loading data ... ");
-	Annotator * w = new Annotator("DefaultProject");
+	Annotator * w = new Annotator(argc>1?argv[1]:"");
 	app.setMainWidget(w);
 	w->show();
 	splash.finish(w);

@@ -49,6 +49,8 @@ public:
 	void initProject();
 	void initInterface();
 	void markProjectChanged(bool changed);
+	void loadSettings();
+	void saveSettings();
 public slots:
 	void globalDescriptorsTableChanged( int, int);
 	void segmentDescriptorsTableChanged( int, int);
