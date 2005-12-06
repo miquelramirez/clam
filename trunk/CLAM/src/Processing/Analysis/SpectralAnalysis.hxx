@@ -22,6 +22,7 @@
 #ifndef __SpectralAnalysis__
 #define __SpectralAnalysis__
 
+#define CLAM_OOURA
 
 #include "WindowGenerator.hxx"
 #include "CircularShift.hxx"
@@ -29,7 +30,13 @@
 #include "Audio.hxx"
 #include "AudioMultiplier.hxx"
 #include "ProcessingComposite.hxx"
-#include "FFT.hxx"
+
+#ifdef CLAM_OOURA
+	#include "FFT_ooura.hxx"
+#else
+	#include "FFT_rfftw.hxx"
+#endif
+
 #include "Spectrum.hxx"
 #include "AudioInPort.hxx"
 #include "OutPort.hxx"
@@ -102,8 +109,11 @@ private:
 /** Child FFT Processing 
  *  @see FFT
  */
-	FFT		mPO_FFT;
-
+#ifdef CLAM_OOURA
+	FFT_ooura		mPO_FFT;
+#else
+	FFT_rfftw		mPO_FFT;
+#endif
 /** Internal Circular Buffer Processing for overlap 
  *  @see AudioCircularBuffer  */
 //	AudioCircularBuffer mCircularBuffer;
