@@ -118,10 +118,10 @@ Annotator::Annotator(const std::string & nameProject = "")
 	connect (mAudioRefreshTimer, SIGNAL(timeout()), this, SLOT(refreshAudioData()) );
 	QSettings settings;
 	settings.setPath( "clam.iua.upf.es", "MusicAnnotator", QSettings::User);
-	int posX = settings.readNumEntry("/MusicAnnotator/LastSession/PosX", size().width());
-	int posY = settings.readNumEntry("/MusicAnnotator/LastSession/PosY", size().height());
-	int sizeX = settings.readNumEntry("/MusicAnnotator/LastSession/SizeX", pos().x());
-	int sizeY = settings.readNumEntry("/MusicAnnotator/LastSession/SizeY", pos().y());
+	int posX = settings.readNumEntry("/MusicAnnotator/LastSession/PosX", pos().x());
+	int posY = settings.readNumEntry("/MusicAnnotator/LastSession/PosY", pos().y());
+	int sizeX = settings.readNumEntry("/MusicAnnotator/LastSession/SizeX", size().width());
+	int sizeY = settings.readNumEntry("/MusicAnnotator/LastSession/SizeY", size().height());
 	resize(QSize(sizeX,sizeY));
 	move(QPoint(posX,posY));
 	mProjectFileName = settings.readEntry( "/MusicAnnotator/LastSession/ProjectFile", ""  ).ascii();
