@@ -114,9 +114,6 @@ void SMSSynthesisConfig::SetHopSize(TSize h)
 
 	//CLAM_ASSERT(GetSynthWindowSize()>=2*h, "SMSSynthesisConfig::SetHopSize: Hop Size is too large compared to window size");
 	GetSpectralSynth().SetHopSize(h);
-	GetOverlapAddSin().SetHopSize(h);
-	GetOverlapAddRes().SetHopSize(h);
-	GetOverlapAddGlobal().SetHopSize(h);
 }
 
 void SMSSynthesisConfig::SetFrameSize(TSize f)

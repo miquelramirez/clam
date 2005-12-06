@@ -27,7 +27,6 @@ namespace CLAM
 void OverlapAddConfig::DefaultInit()
 {
 	/* the dynamic type takes care if we add an existing attr .. */
-	AddHopSize();
 	AddFrameSize();
 
 	/* all attributes are added */
@@ -38,8 +37,7 @@ void OverlapAddConfig::DefaultInit()
 void OverlapAddConfig::DefaultValues()
 {
 	/* set default values */
-	SetHopSize(512); // was 256
-	SetFrameSize(1024); // was 256
+	SetFrameSize(512); // was 256
 }
 
 } // namespace CLAM

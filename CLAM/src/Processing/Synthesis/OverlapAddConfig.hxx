@@ -32,9 +32,8 @@ namespace CLAM
 	class OverlapAddConfig: public CLAM::ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (OverlapAddConfig, 2, ProcessingConfig);
-		DYN_ATTRIBUTE (0, public, TSize, HopSize);
-		DYN_ATTRIBUTE (1, public, TSize, FrameSize);
+		DYNAMIC_TYPE_USING_INTERFACE (OverlapAddConfig, 1, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, TSize, FrameSize);
 	protected:
 		void DefaultInit();
 		void DefaultValues();
