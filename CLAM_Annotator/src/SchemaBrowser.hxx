@@ -44,11 +44,13 @@ protected:
 
 protected slots:
     virtual void languageChange();
+    virtual void updateCurrentAttribute();
 
 private:
     QPixmap scopeIcon;
     QPixmap attributeIcon;
 
+    CLAM_Annotator::Schema * mSchema;
 };
 
 #endif // SchemaBrowser_hxx
