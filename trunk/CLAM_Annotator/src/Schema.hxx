@@ -110,13 +110,27 @@ namespace CLAM_Annotator{
 	       	{
 			return GetAttributes();
 		}
+		const SchemaAttribute & GetAttribute(const std::string & scope, const std::string name) const
+		{
+			const std::list<SchemaAttribute> & attributes = GetAllAttributes();
+			for (std::list<SchemaAttribute>::const_iterator it = attributes.begin();
+					it!=attributes.end();
+					it++)
+			{
+				if (it->GetScope()!=scope) continue;
+				if (it->GetName()!=name) continue;
+				return *it;
+			}
+			std::string message = "Accessing an attribute '";
+			message += scope + "':'" + name + "' not in the scheme.";
+			CLAM_ASSERT(false, message.c_str());
+		}
 	private:
 		void AddAttribute(SchemaAttribute & attribute)
 		{
 			GetAttributes().push_back(attribute);
 			GetAttributes().back().UpdateTypePlugin();
 		}
-
 	};
 
 };

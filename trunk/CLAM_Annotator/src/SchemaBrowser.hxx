@@ -16,6 +16,7 @@ class QFrame;
 class QSpinBox;
 class QLabel;
 class QTextBrowser;
+class QLineEdit;
 namespace CLAM_Annotator { class Schema; }
 
 class SchemaBrowser : public QWidget
@@ -34,8 +35,10 @@ private:
     QFrame* attributeProperties;
     QSpinBox* minSpin;
     QSpinBox* maxSpin;
+    QLineEdit* childEdit;
     QLabel* minLabel;
     QLabel* maxLabel;
+    QLabel* childLabel;
     QTextBrowser* attributeDocumentation;
 
 protected:
