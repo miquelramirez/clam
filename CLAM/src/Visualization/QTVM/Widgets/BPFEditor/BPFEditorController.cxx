@@ -935,7 +935,7 @@ namespace CLAM
 			if(nPoints<=1) return 0;
 
 			if(searchValue <= mBPFs[bpf_index].GetXValue(0)) return 0;
-			if(searchValue >= mBPFs[bpf_index].GetXValue(nPoints-1)) return nPoints;
+			if(searchValue >= mBPFs[bpf_index].GetXValue(nPoints-1)) return nPoints-1;
 
 			TIndex index = -1;
 			TIndex left_index = 0;
@@ -968,7 +968,7 @@ namespace CLAM
 
 			if (left) return index;
 			
-			if(index>=nPoints-2) return nPoints;
+			if(index>=nPoints-2) return nPoints-1;
 			return index+3;
 		}
 
