@@ -23,7 +23,7 @@
 #define __SpectralAnalysis__
 
 //Uncomment this line if you want to use Ooura fft instead of fftw
-#define CLAM_OOURA
+//#define CLAM_OOURA
 
 #include "WindowGenerator.hxx"
 #include "CircularShift.hxx"
