@@ -22,7 +22,7 @@
 
 #include <time.h>
 
-void BuildAndDumpTestSchema(const char * schemaLocation);
+void BuildAndDumpTestSchema(const std::string & schemaLocation);
 void PopulatePool(const std::string& song, CLAM::DescriptionDataPool& pool);
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
 unsigned GenerateRandomSegmentationMarks(CLAM::IndexArray & segmentation,int nSamples, int minDuration, int maxDuration);
@@ -39,25 +39,23 @@ int GetnSamples(const std::string& fileName);
 
 int main(int argc, char ** argv)
 {
-	const char * schemaLocation = "../Samples/Schema.sc";
-	const char * projectLocation = "../Samples/Project.pro";
+	std::string projectDir = "../Samples/";
+	std::string schemaLocation = "Schema.sc";
+	std::string projectLocation = projectDir+"Project.pro";
 	const char * songFileNames[] =
 	{
 		"../../CLAM-TestData/trumpet.mp3",
 		"../../CLAM-TestData/Elvis.ogg",
 		"../../CLAM-TestData/trumpet.wav",
 		"../../CLAM-TestData/Elvis.wav",
-		"../Samples/SongsTest/02.mp3",
-		"../Samples/SongsTest/03.mp3",
-//		"../Samples/SongsTest/Franz Ferdinand - Franz Ferdinand - 02 - Tell Her Tonight.ogg",
-//		"../Samples/SongsTest/Coldplay - Parachutes - 01 - Don't Panic.mp3",
-//		"../Samples/SongsTest/06 - Up In Arms.mp3",
+		"SongsTest/LisaRein-SomethingBetter.mp3",
+		"SongsTest/LisaRein-spunkyfunk.mp3",
 		0
 	};
 	bool generateJustPools = (argc>1);
 
 	if (!generateJustPools)
-		BuildAndDumpTestSchema(schemaLocation);
+		BuildAndDumpTestSchema(projectDir+schemaLocation);
 
 	//Create and store Project
 	CLAM_Annotator::Project myProject;
@@ -68,7 +66,7 @@ int main(int argc, char ** argv)
 		for (const char ** filename = songFileNames; *filename; filename++)
 			myProject.AppendSong(*filename);
 
-	myProject.LoadScheme(schemaLocation);
+	myProject.LoadScheme(schemaLocation, projectDir);
 
 	if (!generateJustPools)
 		CLAM::XMLStorage::Dump(myProject,"Project",projectLocation);
@@ -85,13 +83,14 @@ int main(int argc, char ** argv)
 		currentSong != myProject.GetSongs().end();
 		currentSong++)
 	{
-		std::cout<<"Computing Descriptors for file "<< currentSong->GetSoundFile()
-		     <<" Please wait..."<<std::endl;
-		PopulatePool(currentSong->GetSoundFile(), pool);
+		std::string songFile = currentSong->GetSoundFile();
+		if (!generateJustPools) songFile = projectDir + songFile;
+		std::cout<<"Computing Descriptors for file "<< songFile <<" Please wait..."<<std::endl;
+		PopulatePool(songFile, pool);
 		//Dump Descriptors Pool
 		std::string poolFile;
 		if (currentSong->HasPoolFile()) poolFile = currentSong->GetPoolFile();
-		else poolFile = currentSong->GetSoundFile()+".pool";
+		else poolFile = songFile+".pool";
 		CLAM::XMLStorage::Dump(pool, "DescriptorsPool", poolFile);
 
 		//Now we load the Pool and validate it with the schema
@@ -128,7 +127,7 @@ const char * chordModeValues[] =
 	0
 };
 
-void BuildAndDumpTestSchema(const char * schemaLocation)
+void BuildAndDumpTestSchema(const std::string & schemaLocation)
 {
 	CLAM_Annotator::Schema schema;
 	schema.SetUri("descriptionScheme:www.iua.upf.edu:clam:dummyTest-0.90");

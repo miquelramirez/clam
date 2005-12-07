@@ -92,8 +92,7 @@ private:
 	void markAllSongsUnchanged();
 	void refreshGlobalDescriptorsTable();
 
-	//xamat
-
+	std::string projectToAbsolutePath(const std::string & file);
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
 	void initAudioWidget();
 	void adaptInterfaceToCurrentSchema();

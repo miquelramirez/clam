@@ -33,7 +33,7 @@ public:
 	{
 		return mDescriptionScheme;
 	}
-	bool LoadScheme(const std::string & schemeFileName);
+	bool LoadScheme(const std::string & schemeFileName, const std::string & basePath="");
 	CLAM_Annotator::Schema & GetAnnotatorSchema()
 	{
 		return mSchema;
