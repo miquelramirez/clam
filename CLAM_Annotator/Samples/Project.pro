@@ -17,10 +17,10 @@
       <SoundFile>../../CLAM-TestData/Elvis.wav</SoundFile>
     </Song>
     <Song>
-      <SoundFile>../Samples/SongsTest/02.mp3</SoundFile>
+      <SoundFile>SongsTest/LisaRein-SomethingBetter.mp3</SoundFile>
     </Song>
     <Song>
-      <SoundFile>../Samples/SongsTest/03.mp3</SoundFile>
+      <SoundFile>SongsTest/LisaRein-spunkyfunk.mp3</SoundFile>
     </Song>
   </Songs>
 
