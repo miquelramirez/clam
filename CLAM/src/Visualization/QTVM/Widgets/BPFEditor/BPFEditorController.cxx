@@ -687,28 +687,25 @@ namespace CLAM
 			if(!mBPFs[bpf_index].Size() || mIsPlaying) return;
 			if(mBPFs[bpf_index].Size()==1)
 			{
-				mRenderers[bpf_index].SetSelectedIndex(0);
+				mCurrentIndex = 0;
 				ActiveMasterRenderer();
 				emit requestRefresh();
 				return;
 			}
 			TIndex index = GetBound(bpf_index,TData(xcoord));
-			if(index != -1)
+			if(index == mBPFs[bpf_index].Size()-1)
 			{
-				if(index == mBPFs[bpf_index].Size()-1)
-				{
-					mRenderers[bpf_index].SetSelectedIndex(index);
-				}
-				else
-				{
-					double x0 = mBPFs[bpf_index].GetXValue(index);
-					double x1 = mBPFs[bpf_index].GetXValue(index+1);
-					if((xcoord-x0)>(x1-xcoord)) index++;
-					mCurrentIndex=index;
-				}
-				ActiveMasterRenderer();
-				emit requestRefresh();
+				mCurrentIndex = index;
 			}
+			else
+			{
+				double x0 = mBPFs[bpf_index].GetXValue(index);
+				double x1 = mBPFs[bpf_index].GetXValue(index+1);
+				if((xcoord-x0)>(x1-xcoord)) index++;
+				mCurrentIndex=index;
+			}
+			ActiveMasterRenderer();
+			emit requestRefresh();
 		}
 	
 		void BPFEditorController::vZoomIn()
@@ -937,7 +934,7 @@ namespace CLAM
 			if(searchValue <= mBPFs[bpf_index].GetXValue(0)) return 0;
 			if(searchValue >= mBPFs[bpf_index].GetXValue(nPoints-1)) return nPoints-1;
 
-			TIndex index = -1;
+			TIndex index = 0;
 			TIndex left_index = 0;
 			TIndex right_index = nPoints-1;
 			while(left_index <= right_index)
@@ -969,7 +966,7 @@ namespace CLAM
 			if (left) return index;
 			
 			if(index>=nPoints-2) return nPoints-1;
-			return index+3;
+			return index+2;
 		}
 
 		void BPFEditorController::UpdateTimePos(const TData& time)
