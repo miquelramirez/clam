@@ -135,6 +135,7 @@ static const unsigned char attributeIcon_data[] = {
  */
 SchemaBrowser::SchemaBrowser( QWidget* parent, const char* name, WFlags fl )
     : QWidget( parent, name, fl )
+    , mSchema(0)
 {
     scopeIcon.loadFromData( scopeIcon_data, sizeof( scopeIcon_data ), "PNG" );
     attributeIcon.loadFromData( attributeIcon_data, sizeof( attributeIcon_data ), "PNG" );
@@ -183,6 +184,8 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, const char* name, WFlags fl )
     languageChange();
     resize( QSize(740, 346).expandedTo(minimumSizeHint()) );
     clearWState( WState_Polished );
+    connect(attributeList, SIGNAL(currentChanged(QListViewItem *)),
+            this, SLOT(updateCurrentAttribute()));
 }
 
 /*
@@ -246,6 +249,7 @@ typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
 
 void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 {
+	mSchema = &schema;
 	attributeList->clear();
 	SchemaAttributes & attributes = schema.GetAttributes();
 	for (SchemaAttributes::iterator it = attributes.begin();
@@ -256,5 +260,30 @@ void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 	}
 }
 
+void SchemaBrowser::updateCurrentAttribute()
+{
+	QListViewItem * current = attributeList->currentItem();
+	QListViewItem * parent = current->parent();
+	if (!parent) // Scope
+	{
+		QString documentation = "<h1>Scope '" + current->text(0) + "'</h1>";
+		attributeDocumentation->setText(documentation);
+	}
+	else // Attribute
+	{
+		QString documentation = "<h1>Attribute '" + parent->text(0) + "::" + current->text(0) + "'</h1>";
+		attributeDocumentation->setText(documentation);
+		SchemaAttributes & attributes = mSchema->GetAttributes();
+		for (SchemaAttributes::iterator it = attributes.begin();
+				it!=attributes.end();
+				it++)
+		{
+			if (it->GetScope()!=parent->text(0)) continue;
+			if (it->GetName()!=current->text(0)) continue;
+			// TODO: Change the widgets to the attribute properties
+			break;
+		}
+	}
+}
 
 
