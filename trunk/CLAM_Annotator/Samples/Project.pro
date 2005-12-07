@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Project>
 
-  <Schema>../Samples/Schema.sc</Schema>
+  <Schema>Schema.sc</Schema>
 
   <Songs>
     <Song>
