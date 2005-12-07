@@ -20,10 +20,10 @@ void Project::CreatePoolScheme()
 	}
 }
 
-bool Project::LoadScheme(const std::string & schemeFileName)
+bool Project::LoadScheme(const std::string & schemeFileName, const std::string & basePath)
 {
 	CLAM_Annotator::Schema tempSchema;
-	CLAM::XMLStorage::Restore(tempSchema,schemeFileName); // May throw an exception
+	CLAM::XMLStorage::Restore(tempSchema,basePath+schemeFileName); // May throw an exception
 
 	// Successfull file, just change it
 	SetSchema(std::string(schemeFileName)); // temp created to support self assigns

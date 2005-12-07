@@ -186,7 +186,7 @@ void Annotator::initProject()
 
 	try
 	{
-		mProject.LoadScheme(mProject.GetSchema());
+		mProject.LoadScheme(mProject.GetSchema(), projectToAbsolutePath("")+"/");
 	}
 	catch (CLAM::XmlStorageErr & e)
 	{
@@ -468,12 +468,14 @@ void Annotator::updateSongListWidget()
 	mProjectOverview->clear();
 	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongs();
 	unsigned i = 0;
+	QListViewItem *lastItem = 0;
 	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++, i++)
 	{
-		ListViewItem * item = new ListViewItem(
-			i, mProjectOverview, 
+		QListViewItem * item = new QListViewItem(
+			mProjectOverview, lastItem,
 			QString( it->GetSoundFile().c_str() ),
 			tr("Yes"), tr("No") );
+		lastItem = item;
 	}
 }
 
@@ -621,11 +623,17 @@ void  Annotator::saveDescriptors()
 		QString("Do you want to save current song's descriptors?"),
 		QString("Save Changes"),QString("Discard Them")) != 0) return;
 
-	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mCurrentDescriptorsPoolFileName);
+	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",projectToAbsolutePath(mCurrentDescriptorsPoolFileName));
 
 	mDescriptorsNeedSave = false;
 }
 
+std::string Annotator::projectToAbsolutePath(const std::string & file)
+{
+	std::string result = QDir::cleanDirPath((mProjectFileName+"/../"+file).c_str()).ascii();
+	std::cout << "Converting project relative '" << file << "' into '" << result << std::endl;
+	return result;
+}
 
 void Annotator::songsClicked( QListViewItem * item)
 {
@@ -650,7 +658,7 @@ void Annotator::songsClicked( QListViewItem * item)
 	refreshGlobalDescriptorsTable();
 	std::cout << "Drawing Audio..." << std::endl;
 	mAudioRefreshTimer->stop();
-	drawAudio(filename);
+	drawAudio(projectToAbsolutePath(filename).c_str());
 	std::cout << "Drawing LLD..." << std::endl;
 	refreshEnvelopes();
 	std::cout << "Done" << std::endl;
@@ -768,12 +776,12 @@ void Annotator::loadDescriptorPool()
 	CLAM_ASSERT(mCurrentDescriptorsPoolFileName!="", "Empty file name");
 	try
 	{
-		CLAM::XMLStorage::Restore(*tempPool,mCurrentDescriptorsPoolFileName);
+		CLAM::XMLStorage::Restore(*tempPool,projectToAbsolutePath(mCurrentDescriptorsPoolFileName));
 	}
 	catch (CLAM::XmlStorageErr e)
 	{
 		QMessageBox::warning(this,"Error Loading Descriptors Pool File", 
-			constructFileError(mCurrentDescriptorsPoolFileName,e));
+			constructFileError(projectToAbsolutePath(mCurrentDescriptorsPoolFileName),e));
 		delete tempPool;
 		return;
 	}
