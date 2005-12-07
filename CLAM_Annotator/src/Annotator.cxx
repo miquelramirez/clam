@@ -31,6 +31,7 @@
 
 #include "ContiguousSegmentation.hxx"
 #include "DiscontinuousSegmentation.hxx"
+#include "SchemaBrowser.hxx"
 
 
 #ifndef RESOURCES_BASE
@@ -168,6 +169,8 @@ void Annotator::initInterface()
 {
 	if (mpAudioPlot) mpAudioPlot->Hide();
 	mProjectOverview->setSorting(-1); // Unordered
+	mSchemaBrowser = new SchemaBrowser;
+	tabWidget9->addTab(mSchemaBrowser, "Schema Browser");
 	makeConnections();
 }
 
@@ -206,6 +209,7 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	std::cout << "Adapting Interface to Segmentations..." << std::endl;
 	adaptSegmentationsToCurrentSchema();
 	std::cout << "User interface adaptation ended." << std::endl;
+	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
 }
 
 void Annotator::initAudioWidget()

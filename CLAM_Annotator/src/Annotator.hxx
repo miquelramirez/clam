@@ -16,6 +16,7 @@
 
 class QTimer;
 class AudioLoadThread;
+class SchemaBrowser;
 using CLAM::TIndex;
 using CLAM::TData;
 
@@ -149,6 +150,7 @@ private:
 	std::vector<QWidget*> mTabPages;
 	CLAM::VM::QtAudioPlot* mpAudioPlot;
 	QTimer * mAudioRefreshTimer;
+	SchemaBrowser * mSchemaBrowser;
 	AudioLoadThread * mAudioLoaderThread;
 	CLAM_Annotator::DescriptorTableController mGlobalDescriptors;
 	CLAM_Annotator::DescriptorTableController mSegmentDescriptors;
