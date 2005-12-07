@@ -262,4 +262,11 @@ else :
 	
 	vc_alias2 = annotator_env.Alias('visual_project_extractor', [generate_vcproj_extractor])
 
+if sys.platform == 'darwin': #Disk image (DMG) creation on Mac
+	annotator_dmg = annotator_env.Install( 'DMG', 'README.txt' )  # instead of version.txt it could be the GPL
+	annotator_env.AddPostAction( annotator_dmg, Copy( 'DMG/Annotator.app', 'Annotator.app' ) )
+	annotator_env.AddPostAction( annotator_dmg, 'sudo hdiutil create -srcfolder DMG -volname CLAM_Annotator -uid 0 CLAM_Annotator-0.9.0-pre1.dmg')
+	annotator_env.AddPostAction( annotator_dmg, 'rm -rf DMG')
+	dmg_alias = annotator_env.Alias( 'dmg' , [annotator_bin, annotator_dmg] )
+
 Default(annotator_bin)
