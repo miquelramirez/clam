@@ -170,7 +170,7 @@ void Annotator::initInterface()
 	if (mpAudioPlot) mpAudioPlot->Hide();
 	mProjectOverview->setSorting(-1); // Unordered
 	mSchemaBrowser = new SchemaBrowser;
-	tabWidget9->addTab(mSchemaBrowser, "Schema Browser");
+	tabWidget9->addTab(mSchemaBrowser, "Description Schema");
 	makeConnections();
 }
 
