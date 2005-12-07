@@ -72,6 +72,7 @@ def parse_pkg_config( env ) :
 	print
 	env.Append( CPPPATH = cpppath.keys() )
 
+
 # builder for embedding images into a cxx file
 #
 
@@ -96,8 +97,10 @@ annotator_env = Environment( tools=['default','qt'],
 							ENV=os.environ)
 annotator_env.Append( BUILDERS = {'EmbedImages' : bld} )
 
-if sys.platform != 'win32' :
+if sys.platform == 'linux2' :
 	annotator_env.Replace( QT_UIC='/usr/bin/uic' )
+elif sys.platform == 'darwin' :
+	annotator_env.Replace( QT_UIC='/Developer/qt/bin/uic' )
 else:
 	annotator_env.Replace( QT_UIC='G:\projects\qt/bin\uic' )
 
@@ -109,10 +112,13 @@ else :
 opts = Options('Annotator.conf')
 
 
-if sys.platform != 'win32' :
+if sys.platform == 'linux2' :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+elif sys.platform == 'darwin' :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr/local') )
 else :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
+
 if sys.platform != 'win32' :
 	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr') )
 else :
@@ -179,21 +185,38 @@ if sys.platform != 'win32' :
 	bin_test_object = annotator_env.Object('../src/Test.cxx')
 	
 	annotator_env.Append(CCFLAGS='-include CLAM/preinclude.hxx  -DQT_THREAD_SUPPORT')
-	annotator_env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"/usr/share/annotator\\""')
 
-	annotator_bin = annotator_env.Program( 'Annotator', bin_objects + bin_main_object, LINKFLAGS=['-rdynamic'] )
-	sample_extractor_bin = annotator_env.Program( 'SampleExtractor', bin_test_object + bin_objects, LINKFLAGS=['-rdynamic'] )
+	if sys.platform == 'linux2':
+		annotator_env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"/usr/share/annotator\\""')
+		annotator_bin = annotator_env.Program( 'Annotator', bin_objects + bin_main_object, LINKFLAGS=['-rdynamic'] )
+		sample_extractor_bin = annotator_env.Program( 'SampleExtractor', bin_test_object + bin_objects, LINKFLAGS=['-rdynamic'] )
+		install_bin = annotator_env.Install( annotator_env['install_prefix']+'/bin', [annotator_bin, sample_extractor_bin] )
+
+		manpage = ['../resources/man/man9/Annotator.9']
+		install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
+
+		sounds = ['../resources/sounds/click.mp3']
+		install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
+
+		annotator_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+		install_alias = annotator_env.Alias( 'install', [install_bin,install_manpage, install_sounds] )
+
+	else:  #MAC
+		annotator_env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
+		#Binaries: annotator + sample extractor
+		annotator_bin_pre = annotator_env.Program( 'Annotator', bin_objects + bin_main_object, LINKFLAGS=['-dynamic','-bind_at_load'] )
+		sample_extractor_bin = annotator_env.Program( 'SampleExtractor', bin_test_object + bin_objects, LINKFLAGS=['-dynamic','-bind_at_load'] )
+
+		#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
+		bundle_bin = annotator_env.Install( 'Annotator.app/Contents/MacOS', [annotator_bin_pre, sample_extractor_bin, 'runExtractor.sh'] )
+		bundle_data = annotator_env.Install( 'Annotator.app/Contents', 'resources/Info.plist')
+		bundle_icon = annotator_env.Install( 'Annotator.app/Contents/Resources', 'resources/CLAM.icns')
+		bundle_sounds = annotator_env.Install( 'Annotator.app/Contents/Resources/sounds', '../resources/sounds/click.mp3' )
+		
+		annotator_bin = [ bundle_bin + bundle_sounds + bundle_data + bundle_icon ]
+		
 	sample_app = annotator_env.Alias('SampleExtractor', sample_extractor_bin)
-	install_bin = annotator_env.Install( annotator_env['install_prefix']+'/bin', [annotator_bin, sample_extractor_bin] )
-
-	manpage = ['../resources/man/man9/Annotator.9']
-	install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
-
-	sounds = ['../resources/sounds/click.mp3']
-	install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
-
-	annotator_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
-	install_alias = annotator_env.Alias( 'install', [install_bin,install_manpage, install_sounds] )
+	
 else :
 	bin_main_object = annotator_env.Object('../src\main.cxx')
 	bin_test_object = annotator_env.Object('../src\Test.cxx')
