@@ -15,6 +15,9 @@
 #include <qwhatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
+#include <qlineedit.h>
+
+#include <qurloperator.h>
 
 // Generated from /usr/share/icons/noia_kde_100/16x16/apps/xkill.png
 static const unsigned char scopeIcon_data[] = { 
@@ -162,24 +165,27 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, const char* name, WFlags fl )
     attributeProperties->setFrameShadow( QFrame::Raised );
     attributePropertiesLayout = new QGridLayout( attributeProperties, 1, 1, 11, 6, "attributePropertiesLayout"); 
 
-    minSpin = new QSpinBox( attributeProperties, "minSpin" );
-
-    attributePropertiesLayout->addWidget( minSpin, 0, 1 );
-
-    maxSpin = new QSpinBox( attributeProperties, "maxSpin" );
-
-    attributePropertiesLayout->addWidget( maxSpin, 1, 1 );
-
     minLabel = new QLabel( attributeProperties, "minLabel" );
-
     attributePropertiesLayout->addWidget( minLabel, 0, 0 );
 
-    maxLabel = new QLabel( attributeProperties, "maxLabel" );
+    minSpin = new QSpinBox( attributeProperties, "minSpin" );
+    attributePropertiesLayout->addWidget( minSpin, 0, 1 );
 
+    maxLabel = new QLabel( attributeProperties, "maxLabel" );
     attributePropertiesLayout->addWidget( maxLabel, 1, 0 );
+
+    maxSpin = new QSpinBox( attributeProperties, "maxSpin" );
+    attributePropertiesLayout->addWidget( maxSpin, 1, 1 );
+
+    childLabel = new QLabel( attributeProperties, "childLabel");
+    attributePropertiesLayout->addWidget( childLabel, 2, 0 );
+
+    childEdit = new QLineEdit( attributeProperties, "childEdit");
+    attributePropertiesLayout->addWidget( childEdit, 2, 1 );
 
     attributeDocumentation = new QTextBrowser( splitter2, "attributeDocumentation" );
     attributeDocumentation->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)1, (QSizePolicy::SizeType)4, 0, 0, attributeDocumentation->sizePolicy().hasHeightForWidth() ) );
+
     schemaBrowserLayout->addWidget( splitter1 );
     languageChange();
     resize( QSize(740, 346).expandedTo(minimumSizeHint()) );
@@ -236,11 +242,10 @@ void SchemaBrowser::languageChange()
 
     minLabel->setText( tr( "Minimum" ) );
     maxLabel->setText( tr( "Maximum" ) );
+    childLabel->setText( tr( "Child Scope" ) );
 
     QString documentation = tr(
-		    "<h1>Onset::Relevance</h1>"
-		    "<p>The onset relevance is a [0,10] normalized value which states the "
-		    "probability of that onset of being a real one.</p>"
+		    "<b>No item selected</b>"
 		    );
     attributeDocumentation->setText(documentation);
 }
@@ -249,6 +254,7 @@ typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
 
 void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 {
+	attributeProperties->hide();
 	mSchema = &schema;
 	attributeList->clear();
 	SchemaAttributes & attributes = schema.GetAttributes();
@@ -271,18 +277,53 @@ void SchemaBrowser::updateCurrentAttribute()
 	}
 	else // Attribute
 	{
+		const CLAM_Annotator::SchemaAttribute & attributeSchema = mSchema->GetAttribute(parent->text(0),current->text(0));
+		QString url = "http://mtg100.upf.es/simac/DescriptionSchemeWeb";
+		QUrlOperator op( url );
+		op.get( "index.html");
+
 		QString documentation = "<h1>Attribute '" + parent->text(0) + "::" + current->text(0) + "'</h1>";
-		attributeDocumentation->setText(documentation);
-		SchemaAttributes & attributes = mSchema->GetAttributes();
-		for (SchemaAttributes::iterator it = attributes.begin();
-				it!=attributes.end();
-				it++)
+		documentation += "<ul>";
+		documentation+="<li><b>Type:</b> ";
+		documentation+=QString(attributeSchema.GetType().c_str()) + "</li>";
+		if (attributeSchema.HasEnumerationValues())
 		{
-			if (it->GetScope()!=parent->text(0)) continue;
-			if (it->GetName()!=current->text(0)) continue;
-			// TODO: Change the widgets to the attribute properties
-			break;
+			documentation+="<li><b>Available Values:</b> ";
+			std::list<std::string> & values = attributeSchema.GetEnumerationValues();
+			const char * separator = "";
+			for (std::list<std::string>::iterator it =values.begin(); it!= values.end(); it++)
+			{
+				documentation+=separator;
+				documentation+="<tt>";
+				documentation+=it->c_str();
+				documentation+="</tt>";
+				separator =", ";
+			}
+			documentation+=".</ul></li>";
 		}
+		if (attributeSchema.HasfRange())
+		{
+			documentation+="<li><b>Minimum value:</b> " + QString::number(attributeSchema.GetfRange().GetMin()) + "</li>";
+			documentation+="<li><b>Maximum value:</b> " + QString::number(attributeSchema.GetfRange().GetMax()) + "</li>";
+		}
+		if (attributeSchema.HasiRange())
+		{
+			documentation+="<li><b>Minimum value:</b> " + QString::number(attributeSchema.GetiRange().GetMin()) + "</li>";
+			documentation+="<li><b>Maximum value:</b> " + QString::number(attributeSchema.GetiRange().GetMax()) + "</li>";
+		}
+		if (attributeSchema.HasChildScope())
+		{
+			QString childScope = attributeSchema.GetChildScope().c_str();
+			if (childScope=="") childScope = tr("No child scope");
+			documentation+="<li><b>Child Scope:</b> " + childScope + "</li>";
+		}
+		if (attributeSchema.HasSegmentationPolicy())
+		{
+			documentation+="<li><b>Segmentation Policy:</b> " + QString(attributeSchema.GetSegmentationPolicy().GetString().c_str()) + "</li>";
+		}
+		documentation += "</ul>";
+		documentation += "<p>Get further information on <a href='" + url + "'>" +url+"</a>.</p>";
+		attributeDocumentation->setText(documentation);
 	}
 }
 

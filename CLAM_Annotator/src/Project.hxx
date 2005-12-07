@@ -47,18 +47,7 @@ public:
 	}
 	const CLAM_Annotator::SchemaAttribute & GetAttributeScheme(const std::string & scope, const std::string & name) const
 	{
-		const std::list<CLAM_Annotator::SchemaAttribute>& hlds = mSchema.GetAllAttributes();
-		std::list<CLAM_Annotator::SchemaAttribute>::const_iterator it;
-		for(it = hlds.begin(); it != hlds.end(); it++)
-		{
-			if (it->GetScope() != scope) continue;
-			if (it->GetName() != name) continue;
-			return *it;
-		}
-
-		std::string message = "Accessing an attribute '";
-		message += scope + "':'" + name + "' not in the scheme.";
-		CLAM_ASSERT(false, message.c_str());
+		return mSchema.GetAttribute(scope, name);
 	}
 private:
 	void CreatePoolScheme();
