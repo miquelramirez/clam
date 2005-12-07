@@ -184,3 +184,9 @@ else :
 #Commented because it prevents Mac OS X application folder creation
 #Default(tools_bin)
 
+if sys.platform == 'darwin': #Disk image (DMG) creation on Mac
+	tools_dmg = tools_env.Install( 'DMG', 'README.txt' )  # instead of version.txt it could be the GPL
+	tools_env.AddPostAction( tools_dmg, Copy( 'DMG/QtSMSTools.app', 'QtSMSTools.app' ) )
+	tools_env.AddPostAction( tools_dmg, 'sudo hdiutil create -srcfolder DMG -volname CLAM_QtSMSTools -uid 0 CLAM_QtSMSTools-0.9.0-pre1.dmg')
+	tools_env.AddPostAction( tools_dmg, 'rm -rf DMG')
+	dmg_alias = tools_env.Alias( 'dmg' , [tools_bin, tools_dmg] )
