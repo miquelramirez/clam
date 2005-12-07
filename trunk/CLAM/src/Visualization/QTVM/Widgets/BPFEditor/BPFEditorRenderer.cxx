@@ -59,7 +59,7 @@ namespace CLAM
 			glLineWidth(LINE_WIDTH);
 			glColor3ub(GLubyte(mDataColor.r),GLubyte(mDataColor.g),GLubyte(mDataColor.b));
 			glBegin(GL_LINE_STRIP);
-			for(TIndex i=mLeftIndex; i < mRightIndex; i++)
+			for(TIndex i=mLeftIndex; i <= mRightIndex; i++)
 			{
 				glVertex2f(GLfloat(mData->GetXValue(i)),GLfloat(mData->GetValueFromIndex(i)));
 			}
@@ -68,36 +68,31 @@ namespace CLAM
 
 		void BPFEditorRenderer::DrawHandlers()
 		{
-			if(mSelectedIndex >=0 && mSelectedIndex < mData->Size())
-			{
-				glPointSize(POINT_SIZE+1);
-				Color c;
-				if(mHandlersColor==VMColor::Cyan())
-				{
-					c = VMColor::Orange();
-				}
-				else
-				{
-					c = VMColor::Red();
-				}
-				glColor3ub(GLubyte(c.r),GLubyte(c.g),GLubyte(c.b));
-				glBegin(GL_POINTS);
-				glVertex2f(GLfloat(mData->GetXValue(mSelectedIndex)),GLfloat(mData->GetValueFromIndex(mSelectedIndex)));
-				glEnd();
-			}
-
 			glPointSize(POINT_SIZE);
 			glColor3ub(GLubyte(mHandlersColor.r),GLubyte(mHandlersColor.g),GLubyte(mHandlersColor.b));
 			glBegin(GL_POINTS);
-			for(TIndex i=mLeftIndex; i < mRightIndex; i++)
+			for(TIndex i=mLeftIndex; i <= mRightIndex; i++)
 			{
-				if(i != mSelectedIndex)
-				{
-					glVertex2f(GLfloat(mData->GetXValue(i)),GLfloat(mData->GetValueFromIndex(i)));
-				}
-		
+				glVertex2f(GLfloat(mData->GetXValue(i)),GLfloat(mData->GetValueFromIndex(i)));
 			}
 			glEnd();
+
+			if(mSelectedIndex < 0 || mSelectedIndex >= mData->Size()) return;
+			glPointSize(POINT_SIZE+1);
+			Color c;
+			if(mHandlersColor==VMColor::Cyan())
+			{
+				c = VMColor::Orange();
+			}
+			else
+			{
+				c = VMColor::Red();
+			}
+			glColor3ub(GLubyte(c.r),GLubyte(c.g),GLubyte(c.b));
+			glBegin(GL_POINTS);
+			glVertex2f(GLfloat(mData->GetXValue(mSelectedIndex)),GLfloat(mData->GetValueFromIndex(mSelectedIndex)));
+			glEnd();
+			
 		}
 
 		void BPFEditorRenderer::SetSelectedIndex(const int& index)
