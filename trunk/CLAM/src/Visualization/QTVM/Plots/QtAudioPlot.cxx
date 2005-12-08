@@ -52,7 +52,7 @@ namespace CLAM
 		{
 			QBoxLayout* panel = new QHBoxLayout;
 			
-			QFrame* lefthole = new QFrame(this);
+			lefthole = new QFrame(this);
 			lefthole->setFixedSize(YRulerWidth(),30);
 			
 			mPlayer = new QtAudioPlayer(this);
@@ -64,7 +64,7 @@ namespace CLAM
 			mLabelsGroup = new TimeSegmentLabelsGroup(this);
 			mLabelsGroup->setMinimumSize(186,25);
 			
-			QFrame* righthole = new QFrame(this);
+			righthole = new QFrame(this);
 			righthole->setFixedSize(20,30);
 			
 			panel->addWidget(lefthole);
@@ -173,7 +173,7 @@ namespace CLAM
 
 		void QtAudioPlot::hideEvent(QHideEvent* e)
 		{
-			((QtAudioPlayer*)mPlayer)->stop();
+			if(mPlayer) if(mPlayer->isVisible()) ((QtAudioPlayer*)mPlayer)->stop();
 			SingleDisplayPlot::hideEvent(e);
 		}
 
@@ -201,6 +201,22 @@ namespace CLAM
 		void QtAudioPlot::receivedStopPlaying(float t)
 		{
 			((AudioPlotController*)mController)->stopPlaying(t);
+		}
+
+		void QtAudioPlot::ShowPlayer()
+		{
+			lefthole->show();
+			mPlayer->show();
+			mLabelsGroup->show();
+			righthole->show();
+		}
+
+		void QtAudioPlot::HidePlayer()
+		{
+			lefthole->hide();
+			mPlayer->hide();
+			mLabelsGroup->hide();
+			righthole->hide();
 		}
 
     }	
