@@ -30,6 +30,8 @@
 
 using SigSlot::Slotv1;
 
+class QFrame;
+
 namespace CLAM
 {
     namespace VM
@@ -54,6 +56,9 @@ namespace CLAM
 
 			void SetForegroundColor(Color c);
 			void SetRegionColor(Color c);
+
+			void ShowPlayer();
+			void HidePlayer();
 
 		signals:
 			void regionTime(MediaTime);
@@ -82,6 +87,8 @@ namespace CLAM
 			MediaTime               mPlayBounds;
 			Slotv1<TData>           mSlotPlayingTimeReceived;
 			Slotv1<TData>           mSlotStopPlayingReceived;
+
+			QFrame *lefthole, *righthole;
 
 			void InitAudioPlot();
 
