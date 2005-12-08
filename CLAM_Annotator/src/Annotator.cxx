@@ -226,6 +226,7 @@ void Annotator::initAudioWidget()
 //	mpAudioPlot->SetToggleColorOn(true);
 //	mpAudioPlot->switchColors();
 	mpAudioPlot->setFocus();
+	mpAudioPlot->HidePlayer();
 	mpAudioPlot->Hide();
 }
 
@@ -342,7 +343,7 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 		delete mBPFEditor;
 		mBPFEditor=0;
 	}
-	mBPFEditor = new CLAM::VM::BPFEditor(CLAM::VM::AllowVerticalEdition|CLAM::VM::HasVerticalScroll|CLAM::VM::HasPlayer);
+	mBPFEditor = new CLAM::VM::BPFEditor(CLAM::VM::AllowVerticalEdition|CLAM::VM::HasVerticalScroll);
 	mBPFEditor->switchColors();
 	mBPFEditor->SetActivePlayer(false);
 	mBPFEditor->Hide();
@@ -404,10 +405,10 @@ void Annotator::connectBPFs()
 
 	connect(mpAudioPlot, SIGNAL(selectedXPos(double)),
 			mBPFEditor, SLOT(selectPointFromXCoord(double)));
-
+/*
 	connect(mpAudioPlot, SIGNAL(switchColorsRequested()),
 			mBPFEditor, SLOT(switchColors()));
-
+*/
 	connect(mpAudioPlot, SIGNAL(regionTime(float,float)),
 			mBPFEditor, SLOT(setRegionTime(float,float)));
 
@@ -416,12 +417,13 @@ void Annotator::connectBPFs()
 
 	connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
 			mBPFEditor, SLOT(receivedStopPlaying(float)));
-
+/*
 	connect(mBPFEditor, SIGNAL(currentPlayingTime(float)),
 			mpAudioPlot, SLOT(setCurrentPlayingTime(float)));
 
 	connect( mBPFEditor, SIGNAL(stopPlaying(float)),
 			 mpAudioPlot, SLOT(receivedStopPlaying(float)));
+*/
 }
 
 void Annotator::markCurrentSongChanged()
@@ -638,6 +640,7 @@ std::string Annotator::projectToAbsolutePath(const std::string & file)
 
 void Annotator::songsClicked( QListViewItem * item)
 {
+	stopPlaying();
 	std::cout << "Saving Previous Song Descriptors..." << std::endl;
 	saveDescriptors();
 
@@ -892,18 +895,20 @@ void Annotator::auralizeMarks()
 
 void Annotator::playMarks(bool playThem)
 {
-	if(audioOriginal_Audio__LLDAction->isOn() && playThem) audioOriginal_Audio__LLDAction->setOn(false);
+//	if(audioOriginal_Audio__LLDAction->isOn() && playThem) audioOriginal_Audio__LLDAction->setOn(false);
 	CLAM::Audio* audio_to_play = (playThem) ? &mCurrentMarkedAudio : &mCurrentAudio;
 	mpAudioPlot->SetData(*audio_to_play,false);
-	mBPFEditor->SetAudioPtr(&mCurrentMarkedAudio);
-	mBPFEditor->playSimultaneously(playThem);
+//	mBPFEditor->SetAudioPtr(&mCurrentMarkedAudio);
+//	mBPFEditor->playSimultaneously(playThem);
 }
 
 void Annotator::playOriginalAudioAndLLD(bool both)
 {
+/*
 	if(audioAuralize_Segmentation_MarksAction->isOn() && both) audioAuralize_Segmentation_MarksAction->setOn(false);
 	mBPFEditor->SetAudioPtr(&mCurrentAudio);
 	mBPFEditor->playSimultaneously(both);
+*/
 }
 
 void Annotator::hideBPFEditors()
@@ -973,5 +978,25 @@ void Annotator::removeFromCurrentLayout()
 		}
 	}
 }
+
+void Annotator::startPlaying()
+{
+	if(!mpAudioPlot) return;
+	mpAudioPlot->Play();
+}
+
+void Annotator::pausePlaying()
+{
+	if(!mpAudioPlot) return;
+	mpAudioPlot->Pause();
+}
+
+void Annotator::stopPlaying()
+{
+	if(!mpAudioPlot) return;
+	mpAudioPlot->Stop();
+}
+
+
 
 

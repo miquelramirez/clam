@@ -83,6 +83,10 @@ private slots:
 	void onStopPlaying(float);
 	void onSelectPageLLD(QWidget*);
 
+	void startPlaying();
+	void pausePlaying();
+	void stopPlaying();
+
 private:
 	void updateSongListWidget();
 	void makeConnections();
