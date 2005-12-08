@@ -117,8 +117,8 @@ Annotator::Annotator(const std::string & nameProject = "")
 	initInterface();
 	setMenuAudioItemsEnabled(false);
 	connect (mAudioRefreshTimer, SIGNAL(timeout()), this, SLOT(refreshAudioData()) );
+	if (nameProject=="") mProjectFileName = nameProject;
 	loadSettings();
-	if (nameProject!="") mProjectFileName = nameProject;
 	if (mProjectFileName=="") return;
 	try
 	{
@@ -574,7 +574,7 @@ void Annotator::fileSaveAs()
 	QString qFileName = QFileDialog::getSaveFileName(QString::null,"*.pro");
 	if(qFileName == QString::null) return;
 
-	mProjectFileName = std::string(qFileName.ascii());
+	mProjectFileName = qFileName.ascii();
 	fileSave();
 }
 
@@ -630,8 +630,9 @@ void  Annotator::saveDescriptors()
 
 std::string Annotator::projectToAbsolutePath(const std::string & file)
 {
-	std::string result = QDir::cleanDirPath((mProjectFileName+"/../"+file).c_str()).ascii();
-	std::cout << "Converting project relative '" << file << "' into '" << result << std::endl;
+	if (!QDir(file.c_str()).isRelative()) return file;
+	std::string projectPath = QDir::cleanDirPath((mProjectFileName+"/../").c_str()).ascii();
+	std::string result = projectPath + "/" + file;
 	return result;
 }
 
@@ -774,14 +775,15 @@ void Annotator::loadDescriptorPool()
 
 	//Load Descriptors Pool
 	CLAM_ASSERT(mCurrentDescriptorsPoolFileName!="", "Empty file name");
+	std::string poolFile = projectToAbsolutePath(mCurrentDescriptorsPoolFileName);
 	try
 	{
-		CLAM::XMLStorage::Restore(*tempPool,projectToAbsolutePath(mCurrentDescriptorsPoolFileName));
+		CLAM::XMLStorage::Restore(*tempPool,poolFile);
 	}
 	catch (CLAM::XmlStorageErr e)
 	{
 		QMessageBox::warning(this,"Error Loading Descriptors Pool File", 
-			constructFileError(projectToAbsolutePath(mCurrentDescriptorsPoolFileName),e));
+			constructFileError(poolFile,e));
 		delete tempPool;
 		return;
 	}
@@ -923,7 +925,7 @@ QString Annotator::constructFileError(const std::string& fileName,const CLAM::Xm
 	errorMessage += e.what();
 	errorMessage += "</b></p>";
 	errorMessage += "Check that your file '<tt>";
-	errorMessage += mProjectFileName;
+	errorMessage += fileName;
 	errorMessage += "</tt>'\n";
 	errorMessage += "is well formed and folllows the specifications";
 	return QString(errorMessage.c_str());
