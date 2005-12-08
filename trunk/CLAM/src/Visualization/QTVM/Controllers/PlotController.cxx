@@ -502,6 +502,7 @@ namespace CLAM
 
 		bool PlotController::IsKeyShiftPressed()
 		{
+			if(mHasSegmentation) return false;
 			return mKeyShiftPressed;
 		}
 
