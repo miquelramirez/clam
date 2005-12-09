@@ -921,7 +921,7 @@ void Annotator::setMenuAudioItemsEnabled(bool enabled)
 	audioAuralize_Segmentation_MarksAction->setOn(false); 
 	audioOriginal_Audio__LLDAction->setOn(false);
 	audioAuralize_Segmentation_MarksAction->setEnabled(enabled);
-	audioOriginal_Audio__LLDAction->setEnabled(enabled);
+	audioOriginal_Audio__LLDAction->setEnabled(false);
 }
 
 QString Annotator::constructFileError(const std::string& fileName,const CLAM::XmlStorageErr& e)
