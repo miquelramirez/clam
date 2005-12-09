@@ -31,7 +31,6 @@
 #include "OnsetDetectorConfig.hxx"
 #include <list>
 #include <map>
-
 namespace CLAM
 {
 

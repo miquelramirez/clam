@@ -77,6 +77,8 @@ namespace CLAM
 			melCoeffs.Resize( numBands );
 			melCoeffs.SetSize( numBands );
 		}
+		for( int i = 0; i < numBands; i++)
+			melCoeffs[i] = 0;
 		
 		TData  mag         = 0;
 		TData  weightedMag = 0;
