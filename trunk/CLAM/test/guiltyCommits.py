@@ -115,14 +115,28 @@ def printGuiltyCommits(  ) :
 
 
 
-
-if __name__ == '__main__':
+def main() :
 	from sys import argv
 	usage = """
-Usage example: ./guiltyCommits 2005-03-31
+Usage example: 
+./guiltyCommits 2005-03-31
 CLAM is default module, or use:
-./guiltyCommits 2005-03-31 CLAM_NetworkEditor"""
+./guiltyCommits 2005-03-31 CLAM_NetworkEditor
+
+or
+./guiltyCommits --update-tests-ok-tag
+
+"""
 	assert len(argv)==2 or len(argv)==3, usage
+	if len(argv)==2 and argv[1]=="--update-tests-ok-tag" :
+		modules = "CLAM CLAM_NetworkEditor CLAM_SMSTools"
+		print "updating tests-ok tags in modules:", modules
+		for m in modules.split() :
+			print "updating module: ", m
+			placeTestsOkCandidateTags(m)
+			placeTestsOkTags(m)
+		return
+
 	date = argv[1]
 	if len(argv)==3 : 
 		module = argv[2]
@@ -130,3 +144,6 @@ CLAM is default module, or use:
 		module = "CLAM"
 	print "querying commits from date %s on module %s " % (date, module)
 	printGuiltyCommitsFromDate( date, module )
+
+if __name__ == '__main__':
+	main()
