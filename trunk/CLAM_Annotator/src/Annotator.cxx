@@ -632,10 +632,11 @@ void  Annotator::saveDescriptors()
 
 std::string Annotator::projectToAbsolutePath(const std::string & file)
 {
-	if (!QDir(file.c_str()).isRelative()) return file;
-	std::string projectPath = QDir::cleanDirPath((mProjectFileName+"/../").c_str()).ascii();
-	std::string result = projectPath + "/" + file;
-	return result;
+	QString projectPath = QDir::cleanDirPath((mProjectFileName+"/../").c_str());
+	QDir qdir = QString(file.c_str());
+	if (qdir.isRelative())
+		return QDir::cleanDirPath( QDir(projectPath).filePath(file) ).ascii();
+	return file;
 }
 
 void Annotator::songsClicked( QListViewItem * item)
