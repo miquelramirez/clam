@@ -1,0 +1,184 @@
+#include "AudioIO.hxx"
+#include "AudioManager.hxx"
+#include "AudioOut.hxx"
+#include "SimpleOscillator.hxx" 
+#include "BPFPlayer.hxx"
+
+namespace CLAM
+{
+	namespace VM
+	{
+		BPFPlayer::BPFPlayer()
+			: mAudioPtr(0)
+		{
+			HaveData(true);
+			SetDuration(TData(0.0));
+			mThread.SetThreadCode(makeMemberFunctor0((*this), BPFPlayer, thread_code));
+		}
+
+		BPFPlayer::~BPFPlayer()
+		{
+		}
+
+		void BPFPlayer::SetData(const BPF& bpf)
+		{
+			mBPFData = bpf;
+		}
+
+		void BPFPlayer::SetAudioPtr(const Audio* audio)
+		{
+			mAudioPtr = audio;
+		}
+
+		void BPFPlayer::SetDuration(TData duration)
+		{
+			mTime.SetBegin(TData(0.0));
+			mTime.SetEnd(duration);
+		}
+
+		void BPFPlayer::Update(TIndex index, TData yvalue)
+		{
+			if(index < 0 || index >= mBPFData.Size()) return;
+			mBPFData.SetValue(index,yvalue);
+		}
+
+		void BPFPlayer::thread_code()
+		{
+			if(!mBPFData.Size()) return;
+
+			TSize frameSize = 512;     
+			TData sampleRate = TData(44100.0);
+			if(mAudioPtr) sampleRate = mAudioPtr->GetSampleRate();
+			AudioManager manager((int)sampleRate,(int)frameSize);  
+
+			AudioOut channelL;   
+			AudioIOConfig audioOutCfgL;     
+			audioOutCfgL.SetChannelID(0);    
+			channelL.Configure(audioOutCfgL); 
+
+			AudioOut channelR;   
+			AudioIOConfig audioOutCfgR;     
+			audioOutCfgR.SetChannelID(1);    
+			channelR.Configure(audioOutCfgR); 
+			
+			
+			AudioManager::Current().Start();                            
+			channelL.Start();  
+			channelR.Start();
+
+			SimpleOscillatorConfig oscCfg;
+			oscCfg.SetSamplingRate(sampleRate);
+			oscCfg.SetAmplitude(TData(0.6));
+			SimpleOscillator osc(oscCfg);
+			
+			InControl& freqControl = osc.GetInControls().Get("Pitch");
+    
+			Audio samplesL;             
+			Audio samplesR;
+			samplesL.SetSize(frameSize);
+			samplesR.SetSize(frameSize);
+
+			TIndex firstIndex = GetFirstIndex();
+			TIndex k = firstIndex;
+
+			TIndex start = int(mTime.GetBegin()*sampleRate);
+			int nSamples = int(mTime.GetEnd()*sampleRate);
+	    
+			TIndex leftIndex = start;        
+			TIndex rightIndex = leftIndex+frameSize;
+
+			osc.Start();
+
+			for(TIndex i=start; i < nSamples; i+=frameSize)
+			{
+				if(IsPaused())
+				{
+					mTime.SetBegin(TData(i)/sampleRate);
+					SetPlaying(false);
+				}
+
+				if(!IsPlaying()) break;
+
+				if(k < mBPFData.Size()-1) if(TData(i/sampleRate) >= mBPFData.GetXValue(k+1)) k++;
+
+				freqControl.DoControl(mBPFData.GetValueFromIndex(k));
+				osc.Do(samplesL);
+
+				if(mAudioPtr) 
+				{
+					if(rightIndex < mAudioPtr->GetSize())
+					{
+						mAudioPtr->GetAudioChunk(leftIndex,rightIndex,samplesR);
+					}
+				}
+				if(mAudioPtr)
+				{
+					channelL.Do(samplesL);
+					channelR.Do(samplesR);
+				}
+				else
+				{
+					channelL.Do(samplesL);
+					channelR.Do(samplesL);
+				}
+
+				mSigPlayingTime.Emit(TData(leftIndex)/sampleRate);
+
+				leftIndex += frameSize;
+				rightIndex += frameSize;
+			}
+
+			osc.Stop();
+			channelL.Stop(); 
+			channelR.Stop();
+
+			if(!IsPaused()) mTime.SetBegin(GetBeginTime());
+			TData stopTime = 
+				(IsStopped()) ? TData(leftIndex)/sampleRate : 
+				(IsPaused()) ? mTime.GetBegin() : mTime.GetEnd();
+
+			mSigStop.Emit(stopTime);
+		}
+
+		TIndex BPFPlayer::GetFirstIndex()
+		{
+			int nPoints = mBPFData.Size();
+			if(nPoints <= 1) return 0;
+
+			TData searchValue = mTime.GetBegin();
+			if(searchValue <= mBPFData.GetXValue(0)) return 0;
+			if(searchValue >= mBPFData.GetXValue(nPoints-1)) return nPoints-1;
+
+			TIndex index = 0;
+			TIndex left_index = 0;
+			TIndex right_index = nPoints-1;
+			while(left_index <= right_index)
+			{
+				const TIndex currentIndex = (left_index+right_index)/2;
+				if(currentIndex >= nPoints-1)
+				{
+					index = currentIndex;
+					break;
+				}
+				if(searchValue >= mBPFData.GetXValue(currentIndex) && 
+				   searchValue <= mBPFData.GetXValue(currentIndex+1))
+				{
+					index = currentIndex;
+					break;
+				}
+				if(searchValue < mBPFData.GetXValue(currentIndex))
+				{
+					right_index = currentIndex-1;
+				}
+				else if(searchValue > mBPFData.GetXValue(currentIndex))
+				{
+					left_index = currentIndex+1;
+				}
+			}
+			return index;
+		}
+	}
+}
+
+// END
+
