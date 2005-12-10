@@ -272,7 +272,7 @@ void SchemaBrowser::updateCurrentAttribute()
 	QListViewItem * parent = current->parent();
 	if (!parent) // Scope
 	{
-		QString documentation = "<h1>Scope '" + current->text(0) + "'</h1>";
+		QString documentation = "<h2>Scope '" + current->text(0) + "'</h2>";
 		attributeDocumentation->setText(documentation);
 	}
 	else // Attribute
@@ -282,7 +282,7 @@ void SchemaBrowser::updateCurrentAttribute()
 		QUrlOperator op( url );
 		op.get( "index.html");
 
-		QString documentation = "<h1>Attribute '" + parent->text(0) + "::" + current->text(0) + "'</h1>";
+		QString documentation = "<h2>Attribute '" + parent->text(0) + "::" + current->text(0) + "'</h2>";
 		documentation += "<ul>";
 		documentation+="<li><b>Type:</b> ";
 		documentation+=QString(attributeSchema.GetType().c_str()) + "</li>";
