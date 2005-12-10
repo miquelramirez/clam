@@ -25,6 +25,7 @@ namespace CLAM {
 	{
 		class QtAudioPlot;
 		class BPFEditor;
+		class QtSingleBPFPlayerExt;
 	};
 	class Segmentation;
 	class XmlStorageErr;
@@ -162,6 +163,8 @@ private:
 	CLAM::VM::BPFEditor* mBPFEditor;
 	int                  mCurrentBPFIndex;
 	CLAM::Segmentation * mSegmentation;
+
+	CLAM::VM::QtSingleBPFPlayerExt* mBPFPlayer;
 };
 
 #endif
