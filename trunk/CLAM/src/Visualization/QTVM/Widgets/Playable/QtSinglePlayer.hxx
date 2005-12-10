@@ -13,7 +13,7 @@ namespace CLAM
 		{	
 		public:
 			QtSinglePlayer(QWidget* parent=0);
-			~QtSinglePlayer();
+			virtual ~QtSinglePlayer();
 
 			void SetPlaySegment(const MediaTime& time);
 			bool IsPlaying();
@@ -23,9 +23,9 @@ namespace CLAM
 			void SetSlotStopPlaying(Slotv1<TData>& slot);
 				
         public slots:
-			void play();
-			void pause();
-			void stop();
+			virtual void play();
+			virtual void pause();
+			virtual void stop();
 
 		protected:
 			Player* mPlayer;
