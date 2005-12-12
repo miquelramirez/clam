@@ -48,7 +48,7 @@ namespace CLAM
 			Q_OBJECT
 
 		public:
-			QtAudioPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0 );
+			QtAudioPlot(QWidget* parent=0, const char * name = 0, WFlags f = 0, bool hasPlayer=true );
 			~QtAudioPlot();
 
 			void SetData(const Audio& audio, bool to_controller=true);
@@ -89,6 +89,8 @@ namespace CLAM
 			Slotv1<TData>           mSlotStopPlayingReceived;
 
 			QFrame *lefthole, *righthole;
+
+			bool mHasPlayer;
 
 			void InitAudioPlot();
 
