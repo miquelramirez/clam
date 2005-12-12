@@ -113,7 +113,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mBPFEditor(0)
 	, mCurrentBPFIndex(-1)
 	, mSegmentation(0)
-	, mBPFPlayer(0)
+	, mPlayer(0)
 {
 	initAudioWidget();
 	initInterface();
@@ -217,7 +217,7 @@ void Annotator::adaptInterfaceToCurrentSchema()
 void Annotator::initAudioWidget()
 {
 	if(mpAudioPlot) delete mpAudioPlot;
-	mpAudioPlot = new QtAudioPlot(mAudioPlotContainer);
+	mpAudioPlot = new QtAudioPlot(mAudioPlotContainer,0,0,false);
 	mpTabLayout = new QVBoxLayout(mAudioPlotContainer);
 	mpTabLayout->addWidget(mpAudioPlot);
 	mpAudioPlot->Label("Audio");
@@ -228,7 +228,6 @@ void Annotator::initAudioWidget()
 //	mpAudioPlot->SetToggleColorOn(true);
 //	mpAudioPlot->switchColors();
 	mpAudioPlot->setFocus();
-	mpAudioPlot->HidePlayer();
 	mpAudioPlot->Hide();
 }
 
@@ -349,13 +348,13 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 	mBPFEditor->switchColors();
 	mBPFEditor->Hide();
 
-	if(mBPFPlayer)
+	if(mPlayer)
 	{
-		delete mBPFPlayer;
-		mBPFPlayer=0;
+		delete mPlayer;
+		mPlayer=0;
 	}
-	mBPFPlayer = new CLAM::VM::QtSingleBPFPlayerExt(this);
-	mBPFPlayer->hide();
+	mPlayer = new CLAM::VM::QtSingleBPFPlayerExt(this);
+	mPlayer->hide();
 	
 	tabWidget2->hide();
 
@@ -407,7 +406,7 @@ void Annotator::connectBPFs()
 			 this, SLOT(frameDescriptorsChanged(int, float)));
 
 	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
-			 mBPFPlayer, SLOT(updateYValue(int, float)));
+			 mPlayer, SLOT(updateYValue(int, float)));
 
 	connect( mBPFEditor, SIGNAL(selectedXPos(double)),
 			 mpAudioPlot, SLOT(setSelectedXPos(double)));
@@ -422,18 +421,18 @@ void Annotator::connectBPFs()
 			mBPFEditor, SLOT(switchColors()));
 */
 	connect(mpAudioPlot, SIGNAL(regionTime(float,float)),
-			mBPFPlayer, SLOT(setRegionTime(float,float)));
+			mPlayer, SLOT(setRegionTime(float,float)));
 
-	connect(mpAudioPlot, SIGNAL(currentPlayingTime(float)),
+	connect(mPlayer, SIGNAL(playingTime(float)),
 			mBPFEditor, SLOT(setCurrentPlayingTime(float)));
 
-	connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
+	connect(mPlayer, SIGNAL(stopPlaying(float)),
 			mBPFEditor, SLOT(receivedStopPlaying(float)));
 
-	connect(mBPFPlayer, SIGNAL(playingTime(float)),
+	connect(mPlayer, SIGNAL(playingTime(float)),
 			mpAudioPlot, SLOT(setCurrentPlayingTime(float)));
 
-	connect( mBPFPlayer, SIGNAL(stopPlaying(float)),
+	connect( mPlayer, SIGNAL(stopPlaying(float)),
 			 mpAudioPlot, SLOT(receivedStopPlaying(float)));
 
 }
@@ -694,8 +693,9 @@ void Annotator::refreshEnvelopes()
 	mBPFs.clear();
 	mBPFEditor->SetAudioPtr(&mCurrentAudio);
 	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
-	mBPFPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
-	mBPFPlayer->SetSampleRate(mCurrentAudio.GetSampleRate());
+	mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::BOTH_CHANNELS);
+	mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
+	mPlayer->SetSampleRate(mCurrentAudio.GetSampleRate());
 	mCurrentBPFIndex = -1;
 	tabWidget2->setCurrentPage(0);
 
@@ -709,7 +709,7 @@ void Annotator::refreshEnvelopes()
 		bpf_info.second=transcribed;
 		mBPFs.push_back(bpf_info);
 	}
-	if(mBPFs.size()) mBPFPlayer->SetData(mBPFs[0].second);
+	if(mBPFs.size()) mPlayer->SetData(mBPFs[0].second);
 }
 
 void Annotator::refreshAudioData()
@@ -909,21 +909,56 @@ void Annotator::auralizeMarks()
 
 void Annotator::playMarks(bool playThem)
 {
-	CLAM::Audio* audio_to_play = (playThem) ? &mCurrentMarkedAudio : &mCurrentAudio;
-	mpAudioPlot->SetData(*audio_to_play,false);
-	(playThem) ? mBPFPlayer->SetAudioPtr(&mCurrentMarkedAudio) : mBPFPlayer->SetAudioPtr(0);
-}
-
-void Annotator::playOriginalAudioAndLLD(bool both)
-{
-	if(both)
+	if(playThem) 
 	{
-		if(isPlaying()) startPlaying();
+		if(audioOriginal_Audio__LLDAction->isOn())
+		{
+			mPlayer->SetAudioPtr(0,CLAM::VM::LEFT_CHANNEL);
+		}
+		else
+		{
+			mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::LEFT_CHANNEL);
+		}
+		mPlayer->SetAudioPtr(&mCurrentMarkedAudio,CLAM::VM::RIGHT_CHANNEL);
 	}
 	else
 	{
-		if(mBPFPlayer->IsPlaying()) mBPFPlayer->Stop();
+		if(audioOriginal_Audio__LLDAction->isOn())
+		{
+			mPlayer->SetAudioPtr(0,CLAM::VM::BOTH_CHANNELS);
+		}
+		else
+		{
+			mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::BOTH_CHANNELS);
+		}
 	}
+}
+
+void Annotator::playOriginalAudioAndLLD(bool llds)
+{
+	if(llds) 
+	{
+		if(!audioAuralize_Segmentation_MarksAction->isOn())
+		{
+			mPlayer->SetAudioPtr(0,CLAM::VM::BOTH_CHANNELS);
+		}
+		else
+		{
+			mPlayer->SetAudioPtr(0,CLAM::VM::LEFT_CHANNEL);
+		}
+	}
+	else
+	{
+		if(!audioAuralize_Segmentation_MarksAction->isOn())
+		{
+			mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::BOTH_CHANNELS);
+		}
+		else
+		{
+			mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::LEFT_CHANNEL);
+		}
+	}
+   
 }
 
 void Annotator::hideBPFEditors()
@@ -961,7 +996,7 @@ void Annotator::onStopPlaying(float time)
 
 bool Annotator::isPlaying()
 {
-	return (mpAudioPlot->IsPlaying() || mBPFPlayer->IsPlaying());
+	return (mPlayer->IsPlaying());
 }
 
 void Annotator::onSelectPageLLD(QWidget* w)
@@ -981,7 +1016,7 @@ void Annotator::onSelectPageLLD(QWidget* w)
 	mBPFEditor->SetYRange(min_y,max_y,scale);
 	w->layout()->add(mBPFEditor);
 	mBPFEditor->Show();
-	mBPFPlayer->SetData(mBPFs[index].second);
+	mPlayer->SetData(mBPFs[index].second);
 }
 
 void Annotator::removeFromCurrentLayout()
@@ -998,28 +1033,20 @@ void Annotator::removeFromCurrentLayout()
 
 void Annotator::startPlaying()
 {
-	if(audioOriginal_Audio__LLDAction->isOn())
-	{
-		if(!mBPFPlayer) return;
-		mBPFPlayer->Play();
-		return;
-	}
-	if(!mpAudioPlot) return;
-	mpAudioPlot->Play();
+	if(!mPlayer) return;
+	mPlayer->Play();
 }
 
 void Annotator::pausePlaying()
 {
-	if(mBPFPlayer) mBPFPlayer->Pause();
-	if(!mpAudioPlot) return;
-	mpAudioPlot->Pause();
+	if(!mPlayer) return;
+	mPlayer->Pause();
 }
 
 void Annotator::stopPlaying()
 {
-	if(mBPFPlayer) mBPFPlayer->Stop();
-	if(!mpAudioPlot) return;
-	mpAudioPlot->Stop();
+	if(!mPlayer) return;
+	mPlayer->Stop();
 }
 
 

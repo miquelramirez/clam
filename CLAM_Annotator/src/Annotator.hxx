@@ -164,7 +164,7 @@ private:
 	int                  mCurrentBPFIndex;
 	CLAM::Segmentation * mSegmentation;
 
-	CLAM::VM::QtSingleBPFPlayerExt* mBPFPlayer;
+	CLAM::VM::QtSingleBPFPlayerExt* mPlayer;
 };
 
 #endif
