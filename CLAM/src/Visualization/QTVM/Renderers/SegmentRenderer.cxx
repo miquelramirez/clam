@@ -104,9 +104,16 @@ namespace CLAM
 
 		void SegmentRenderer::StippledRect(double left, double right, double top, double bottom)
 		{
+/*
 			// TODO: Paddings computations works for me but that's a kludge!
 			float vPadding = mMargin * 0.8;
 			float hPadding = 4 * (RightBound()-LeftBound()) / 1000;
+*/
+			// IMR: new paddings (v=2 pixels, h=3 pixels)
+			GLint viewport[4];
+			glGetIntegerv(GL_VIEWPORT, viewport);
+			float vPadding = mMargin-(2.0*(TopBound()-BottomBound())/float(viewport[3]));
+			float hPadding = 3.0*(RightBound()-LeftBound())/float(viewport[2]);
 
 			glLineWidth(2);
 			// draw stippled rect
