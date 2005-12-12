@@ -29,11 +29,11 @@ def setup_build_options( env ) :
 	elif sys.platform == 'darwin' :
 		opts.Add( PathOption( 'prefix', 'Directory to install under (warning: do not set /usr)', '/usr/local'))
 	else :
-		opts.Add( PathOption( 'prefix', 'Directory to install under', 'C:\\projects\CLAM-bin') )
+		opts.Add( PathOption( 'prefix', 'Directory to install under', 'G:\\projects\CLAM-bin') )
 
 	opts.Add( PathOption( 'install_prefix', 'Directory to install under (for packagers)', '.'))
 	if sys.platform == 'win32' : #!= 'linux2' :
-		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'C:\\projects' ) )
+		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
 	if sys.platform == 'win32' :
 		opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no' ))
 	else :
