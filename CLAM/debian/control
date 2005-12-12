@@ -1,7 +1,7 @@
 Source: libclam
 Priority: optional
 Maintainer: mramirez <clam@iua.upf.es>
-Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++-3.3 (>= 1:3.3.5), libc6-dev (>= 2.3.2), libstdc++5-3.3-dev (>= 1:3.3.5), make (>= 3.80), autoconf (>= 2.59), ladspa-sdk (>= 1.1), liboscpack1-dev (>= 1.0), libxerces26, libxerces26-dev, sfftw-dev, libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, xlibs-dev (>> 4.1.0), libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), xlibmesa-gl-dev | libgl1-dev, xlibmesa-glu-dev | libglu1-dev, zlib1g-dev (>= 1:1.2.1), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3), doxygen (>= 1.4.0)
+Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++, make (>= 3.80), autoconf (>= 2.59), ladspa-sdk (>= 1.1), libxerces26-dev, sfftw-dev, libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, xlibs-dev (>> 4.1.0), libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), xlibmesa-gl-dev | libgl1-dev | libgl1-mesa-dev, xlibmesa-glu-dev | libglu1-dev | libglu1-mesa-dev, zlib1g-dev (>= 1:1.2.1), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3), doxygen (>= 1.4.0)
 Standards-Version: 3.6.1
 
 Package: libclam-doc
