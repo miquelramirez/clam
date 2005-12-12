@@ -9,7 +9,8 @@ namespace CLAM
 	namespace VM
 	{
 		BPFPlayer::BPFPlayer()
-			: mAudioPtr(0)
+			: mAudioPtrL(0)
+			, mAudioPtrR(0)
 			, mSampleRate(TData(44100.0))
 		{
 			HaveData(true);
@@ -26,9 +27,25 @@ namespace CLAM
 			mBPFData = bpf;
 		}
 
-		void BPFPlayer::SetAudioPtr(const Audio* audio)
+		void BPFPlayer::SetAudioPtr(const Audio* audio, int chn)
 		{
-			mAudioPtr = audio;
+			switch(chn)
+			{
+				case CLAM::VM::LEFT_CHANNEL:
+					mAudioPtrL=audio;
+					break;
+				case CLAM::VM::RIGHT_CHANNEL:
+					mAudioPtrR=audio;
+					break;
+				case CLAM::VM::BOTH_CHANNELS:
+					mAudioPtrL=audio;
+					mAudioPtrR=audio;
+					break;
+				default:
+					mAudioPtrL=0;
+					mAudioPtrR=0;
+					break;
+			}
 		}
 
 		void BPFPlayer::SetDuration(TData duration)
@@ -50,7 +67,7 @@ namespace CLAM
 
 		void BPFPlayer::thread_code()
 		{
-			if(!mBPFData.Size()) return;
+			if(!mBPFData.Size() && !mAudioPtrL && !mAudioPtrR) return;
 
 			TSize frameSize = 512;     
 			AudioManager manager((int)mSampleRate,(int)frameSize);  
@@ -106,16 +123,26 @@ namespace CLAM
 				if(k < mBPFData.Size()-1) if(TData(i/mSampleRate) >= mBPFData.GetXValue(k+1)) k++;
 
 				freqControl.DoControl(mBPFData.GetValueFromIndex(k));
-				osc.Do(samplesL);
-
-				if(mAudioPtr) 
+				
+				if(mAudioPtrL) 
 				{
-					if(rightIndex < mAudioPtr->GetSize())
+					if(rightIndex < mAudioPtrL->GetSize())
 					{
-						mAudioPtr->GetAudioChunk(leftIndex,rightIndex,samplesR);
+						mAudioPtrL->GetAudioChunk(leftIndex,rightIndex,samplesL);
 					}
 				}
-				if(mAudioPtr)
+				else
+				{
+					osc.Do(samplesL);
+				}
+				if(mAudioPtrR) 
+				{
+					if(rightIndex < mAudioPtrR->GetSize())
+					{
+						mAudioPtrR->GetAudioChunk(leftIndex,rightIndex,samplesR);
+					}
+				}
+				if(mAudioPtrL || mAudioPtrR)
 				{
 					channelL.Do(samplesL);
 					channelR.Do(samplesR);

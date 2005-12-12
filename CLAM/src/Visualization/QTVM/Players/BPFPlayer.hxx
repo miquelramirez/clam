@@ -10,6 +10,8 @@ namespace CLAM
 
 	namespace VM
 	{
+		enum { LEFT_CHANNEL=0, RIGHT_CHANNEL=1, BOTH_CHANNELS=2 };
+
 		class BPFPlayer : public Player
 		{
 		public:
@@ -17,7 +19,7 @@ namespace CLAM
 			~BPFPlayer();
 
 			void SetData(const BPF& bpf);
-			void SetAudioPtr(const Audio* audio);
+			void SetAudioPtr(const Audio* audio, int chn);
 			void SetDuration(TData duration);
 			void SetSampleRate(TData sr);
 			void Update(TIndex index, TData yvalue);
@@ -27,7 +29,8 @@ namespace CLAM
 
 		private:
 			BPF          mBPFData;
-			const Audio* mAudioPtr;
+			const Audio* mAudioPtrL;
+			const Audio* mAudioPtrR;
 			TData        mSampleRate;
 
 			TIndex GetFirstIndex();
