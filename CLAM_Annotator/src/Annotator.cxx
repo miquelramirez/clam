@@ -495,8 +495,6 @@ void Annotator::updateSongListWidget()
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
 {
-	if(mBPFEditor) mBPFEditor->stopPendingTasks();
-
 	saveDescriptors();
 
 	if ( mProjectNeedsSave )
@@ -697,6 +695,7 @@ void Annotator::refreshEnvelopes()
 	mBPFEditor->SetAudioPtr(&mCurrentAudio);
 	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
 	mBPFPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
+	mBPFPlayer->SetSampleRate(mCurrentAudio.GetSampleRate());
 	mCurrentBPFIndex = -1;
 	tabWidget2->setCurrentPage(0);
 
