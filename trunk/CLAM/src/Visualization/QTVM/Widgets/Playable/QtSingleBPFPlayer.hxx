@@ -19,7 +19,7 @@ namespace CLAM
 			~QtSingleBPFPlayer();
 
 			void SetData(const BPF& bpf);
-			void SetAudioPtr(const Audio* audio);
+			void SetAudioPtr(const Audio* audio, int chn);
 			void SetDuration(TData duration);
 			void SetSampleRate(TData sr);
 			void Update(TIndex index, TData value);

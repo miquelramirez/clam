@@ -23,9 +23,9 @@ namespace CLAM
 			((QtSingleBPFPlayer*)mPlayer)->SetData(bpf);
 		}
 
-		void QtSingleBPFPlayerExt::SetAudioPtr(const Audio* audio)
+		void QtSingleBPFPlayerExt::SetAudioPtr(const Audio* audio, int chn)
 		{
-			((QtSingleBPFPlayer*)mPlayer)->SetAudioPtr(audio);
+			((QtSingleBPFPlayer*)mPlayer)->SetAudioPtr(audio,chn);
 		}
 
 		void QtSingleBPFPlayerExt::SetDuration(TData duration)
