@@ -33,6 +33,11 @@ namespace CLAM
 			((QtSingleBPFPlayer*)mPlayer)->SetDuration(duration);
 		}
 
+		void QtSingleBPFPlayerExt::SetSampleRate(TData sr)
+		{
+			((QtSingleBPFPlayer*)mPlayer)->SetSampleRate(sr);
+		}
+
 		void QtSingleBPFPlayerExt::setRegionTime(float begin, float end)
 		{
 			MediaTime time;

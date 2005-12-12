@@ -19,7 +19,7 @@ namespace CLAM
 			void SetData(const BPF& bpf);
 			void SetAudioPtr(const Audio* audio);
 			void SetDuration(TData duration);
-
+			void SetSampleRate(TData sr);
 			void Update(TIndex index, TData yvalue);
 
 		protected:
@@ -28,6 +28,7 @@ namespace CLAM
 		private:
 			BPF          mBPFData;
 			const Audio* mAudioPtr;
+			TData        mSampleRate;
 
 			TIndex GetFirstIndex();
 		};

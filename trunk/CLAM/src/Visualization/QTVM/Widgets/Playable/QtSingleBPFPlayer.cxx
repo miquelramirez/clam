@@ -51,6 +51,11 @@ namespace CLAM
 			((BPFPlayer*)mPlayer)->SetDuration(duration);
 		}
 
+		void QtSingleBPFPlayer::SetSampleRate(TData sr)
+		{
+			((BPFPlayer*)mPlayer)->SetSampleRate(sr);
+		}
+
 		void QtSingleBPFPlayer::Update(TIndex index, TData value)
 		{
 			if(mMustDoMapping) value = (value-mYMin)*(max_ref-min_ref)/(mYMax-mYMin)+min_ref;
