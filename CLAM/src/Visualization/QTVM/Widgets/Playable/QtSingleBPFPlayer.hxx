@@ -21,6 +21,7 @@ namespace CLAM
 			void SetData(const BPF& bpf);
 			void SetAudioPtr(const Audio* audio);
 			void SetDuration(TData duration);
+			void SetSampleRate(TData sr);
 			void Update(TIndex index, TData value);
 
 		public slots:

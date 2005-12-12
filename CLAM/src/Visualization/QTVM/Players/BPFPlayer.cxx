@@ -10,6 +10,7 @@ namespace CLAM
 	{
 		BPFPlayer::BPFPlayer()
 			: mAudioPtr(0)
+			, mSampleRate(TData(44100.0))
 		{
 			HaveData(true);
 			SetDuration(TData(0.0));
@@ -36,6 +37,11 @@ namespace CLAM
 			mTime.SetEnd(duration);
 		}
 
+		void BPFPlayer::SetSampleRate(TData sr)
+		{
+			mSampleRate = sr;
+		}
+
 		void BPFPlayer::Update(TIndex index, TData yvalue)
 		{
 			if(index < 0 || index >= mBPFData.Size()) return;
@@ -47,9 +53,7 @@ namespace CLAM
 			if(!mBPFData.Size()) return;
 
 			TSize frameSize = 512;     
-			TData sampleRate = TData(44100.0);
-			if(mAudioPtr) sampleRate = mAudioPtr->GetSampleRate();
-			AudioManager manager((int)sampleRate,(int)frameSize);  
+			AudioManager manager((int)mSampleRate,(int)frameSize);  
 
 			AudioOut channelL;   
 			AudioIOConfig audioOutCfgL;     
@@ -67,7 +71,7 @@ namespace CLAM
 			channelR.Start();
 
 			SimpleOscillatorConfig oscCfg;
-			oscCfg.SetSamplingRate(sampleRate);
+			oscCfg.SetSamplingRate(mSampleRate);
 			oscCfg.SetAmplitude(TData(0.6));
 			SimpleOscillator osc(oscCfg);
 			
@@ -81,8 +85,8 @@ namespace CLAM
 			TIndex firstIndex = GetFirstIndex();
 			TIndex k = firstIndex;
 
-			TIndex start = int(mTime.GetBegin()*sampleRate);
-			int nSamples = int(mTime.GetEnd()*sampleRate);
+			TIndex start = int(mTime.GetBegin()*mSampleRate);
+			int nSamples = int(mTime.GetEnd()*mSampleRate);
 	    
 			TIndex leftIndex = start;        
 			TIndex rightIndex = leftIndex+frameSize;
@@ -93,13 +97,13 @@ namespace CLAM
 			{
 				if(IsPaused())
 				{
-					mTime.SetBegin(TData(i)/sampleRate);
+					mTime.SetBegin(TData(i)/mSampleRate);
 					SetPlaying(false);
 				}
 
 				if(!IsPlaying()) break;
 
-				if(k < mBPFData.Size()-1) if(TData(i/sampleRate) >= mBPFData.GetXValue(k+1)) k++;
+				if(k < mBPFData.Size()-1) if(TData(i/mSampleRate) >= mBPFData.GetXValue(k+1)) k++;
 
 				freqControl.DoControl(mBPFData.GetValueFromIndex(k));
 				osc.Do(samplesL);
@@ -122,7 +126,7 @@ namespace CLAM
 					channelR.Do(samplesL);
 				}
 
-				mSigPlayingTime.Emit(TData(leftIndex)/sampleRate);
+				mSigPlayingTime.Emit(TData(leftIndex)/mSampleRate);
 
 				leftIndex += frameSize;
 				rightIndex += frameSize;
@@ -134,7 +138,7 @@ namespace CLAM
 
 			if(!IsPaused()) mTime.SetBegin(GetBeginTime());
 			TData stopTime = 
-				(IsStopped()) ? TData(leftIndex)/sampleRate : 
+				(IsStopped()) ? TData(leftIndex)/mSampleRate : 
 				(IsPaused()) ? mTime.GetBegin() : mTime.GetEnd();
 
 			mSigStop.Emit(stopTime);
