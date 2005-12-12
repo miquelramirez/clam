@@ -31,8 +31,9 @@ namespace CLAM
 {
     namespace VM
     {
-		QtAudioPlot::QtAudioPlot(QWidget* parent, const char * name, WFlags f) 
+		QtAudioPlot::QtAudioPlot(QWidget* parent, const char * name, WFlags f, bool hasPlayer) 
 			: SingleDisplayPlot(parent,name,f)
+			, mHasPlayer(hasPlayer)
 		{
 			mSlotPlayingTimeReceived.Wrap(this,&QtAudioPlot::PlayingTime);
 			mSlotStopPlayingReceived.Wrap(this,&QtAudioPlot::StopPlaying);
@@ -50,6 +51,8 @@ namespace CLAM
 
 		void QtAudioPlot::InitAudioPlot()
 		{
+			if(!mHasPlayer) return;
+
 			QBoxLayout* panel = new QHBoxLayout;
 			
 			lefthole = new QFrame(this);
@@ -110,10 +113,12 @@ namespace CLAM
 				time.GetEnd()==mPlayBounds.GetEnd()) return;
 	
 			mPlayBounds=time;
-			mPlayer->stop();
-			mPlayer->SetPlaySegment(time);
-			mLabelsGroup->UpdateLabels(time);
-
+			if(mHasPlayer)
+			{
+				mPlayer->stop();
+				mPlayer->SetPlaySegment(time);
+				mLabelsGroup->UpdateLabels(time);
+			}
 			emit regionTime(time);
 			emit regionTime(float(time.GetBegin()), float(time.GetEnd()));
 		}
@@ -126,21 +131,22 @@ namespace CLAM
 		void QtAudioPlot::Connect()
 		{
 			// Connections
-			connect(((AudioPlotController*)mController),SIGNAL(selectedRegion(MediaTime)),this,SLOT(updateRegion(MediaTime)));
-			connect(((AudioPlotController*)mController),SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
-			connect(((AudioPlotController*)mController),SIGNAL(stopPlayingTime(float)),this,SIGNAL(stopPlayingTime(float)));
+			connect(((AudioPlotController*)mController),SIGNAL(selectedRegion(MediaTime)),
+					this,SLOT(updateRegion(MediaTime)));
+
+			connect(((AudioPlotController*)mController),SIGNAL(currentPlayingTime(float)),
+					this,SIGNAL(currentPlayingTime(float)));
+
+			connect(((AudioPlotController*)mController),SIGNAL(stopPlayingTime(float)),
+					this,SIGNAL(stopPlayingTime(float)));
 		}
 
 		void QtAudioPlot::SetPData(const Audio& audio, bool setTime)
 		{
+			if(!mHasPlayer) return;
 			std::vector<const Audio*> data;
 			if(setTime)
 			{
-/*
-				Audio* silence = new Audio();
-				silence->SetSize(audio.GetSize());
-				silence->SetSampleRate(audio.GetSampleRate());
-*/
 				data.resize(2);
 				data[0]=&audio;
 				data[1]=&audio;;
@@ -179,7 +185,7 @@ namespace CLAM
 
 		void QtAudioPlot::closeEvent(QCloseEvent *e)
 		{
-			RemoveFromPlayList();
+			if(mHasPlayer) RemoveFromPlayList();
 			e->accept();
 		}
 	
@@ -205,6 +211,7 @@ namespace CLAM
 
 		void QtAudioPlot::ShowPlayer()
 		{
+			if(!mHasPlayer) return;
 			lefthole->show();
 			mPlayer->show();
 			mLabelsGroup->show();
@@ -213,6 +220,7 @@ namespace CLAM
 
 		void QtAudioPlot::HidePlayer()
 		{
+			if(!mHasPlayer) return;
 			lefthole->hide();
 			mPlayer->hide();
 			mLabelsGroup->hide();
