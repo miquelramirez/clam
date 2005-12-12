@@ -41,9 +41,9 @@ namespace CLAM
 			AdaptIncomingData();
 		}
 
-		void QtSingleBPFPlayer::SetAudioPtr(const Audio* audio)
+		void QtSingleBPFPlayer::SetAudioPtr(const Audio* audio, int chn)
 		{
-			((BPFPlayer*)mPlayer)->SetAudioPtr(audio);
+			((BPFPlayer*)mPlayer)->SetAudioPtr(audio,chn);
 		}
 
 		void QtSingleBPFPlayer::SetDuration(TData duration)
