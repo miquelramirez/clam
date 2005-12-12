@@ -11,15 +11,16 @@ def handle_preinclude ( env ):
 def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 	lib_descriptor = env.File( 'clam_'+name+'.pc' )
 
+	versionnumbers = version.split('.')
 	if sys.platform == 'linux2' :
-		soname = 'libclam_'+name+'.so.%s'%version.split('.')[0]
+		soname = 'libclam_'+name+'.so.%s.%s' % (versionnumbers[0], versionnumbers[1])
 		linker_name = 'libclam_'+name+'.so'
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.so.%s'%version )
-		soname_lib = env.SonameLink( soname, lib )			# lib***.X.dylib -> lib***.X.Y.dylib
-		linkername_lib = env.LinkerNameLink( linker_name, soname_lib)	# lib***.dylib -> lib***.X.dylib
+		soname_lib = env.SonameLink( soname, lib )			# lib***.X.so -> lib***.X.Y.dylib
+		linkername_lib = env.LinkerNameLink( linker_name, soname_lib)	# lib***.so -> lib***.X.so
 	else : #darwin
-		soname = 'libclam_'+name+'.%s.dylib'%version.split('.')[0]
+		soname = 'libclam_'+name+'.%s.%s.dylib' % (versionnumbers[0], versionnumbers[1])
 		linker_name = 'libclam_'+name+'.dylib'
 		env.Append( CCFLAGS=['-fno-common'] )
 		env.Append( SHLINKFLAGS=['-dynamic',
@@ -27,7 +28,7 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.%s.dylib'%version )
 		soname_lib = env.LinkerNameLink( soname, lib )			# lib***.X.dylib -> lib***.X.Y.dylib
 		linkername_lib = env.LinkerNameLink( linker_name, soname_lib)	# lib***.dylib -> lib***.X.Y.dylib
-
+/
 	tgt = env.Alias( name, linkername_lib )
 
 	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
