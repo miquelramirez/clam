@@ -1,7 +1,7 @@
 #include "Qt_PeaksPortMonitorPresentation.hxx"
-#include "PortMonitor.hxx"
-#include "NetPeaksPlot.hxx"
-#include "Factory.hxx"
+#include <CLAM/PortMonitor.hxx>
+#include <CLAM/NetPeaksPlot.hxx>
+#include <CLAM/Factory.hxx>
 
 namespace NetworkGUI
 {

@@ -22,7 +22,7 @@
 #ifndef __MonoAudioFileWriterConfigPresentation_hxx__
 #define __MonoAudioFileWriterConfigPresentation_hxx__
 
-#include "MonoAudioFileWriterConfig.hxx"
+#include <CLAM/MonoAudioFileWriterConfig.hxx>
 #include "Qt_ProcessingConfigPresentation.hxx"
 
 class QLineEdit;

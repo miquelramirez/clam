@@ -3,8 +3,8 @@
 #define __Qt_OutControlSenderPresentation_hxx__
 
 #include "Qt_ProcessingPresentation.hxx"
-#include "DataTypes.hxx"
-#include "OutControlSender.hxx"
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/OutControlSender.hxx>
 
 class QWidget;
 

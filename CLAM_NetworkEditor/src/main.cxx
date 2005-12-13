@@ -20,25 +20,25 @@
  */
 
 #if USE_OSCPACK
-#include "OSCEnabledNetwork.hxx"
+#include <CLAM/OSCEnabledNetwork.hxx>
 #else
-#include "Network.hxx"
+#include <CLAM/Network.hxx>
 #endif
 
 #include "NetworkController.hxx"
 
-#include "BlockingNetworkPlayer.hxx"
+#include <CLAM/BlockingNetworkPlayer.hxx>
 
 #if USE_JACK
-#include "JACKNetworkPlayer.hxx"
+#include <CLAM/JACKNetworkPlayer.hxx>
 #endif
 
 #if USE_PORTAUDIO
 #include "PANetworkPlayer.hxx"
 #endif
 
-#include "PushFlowControl.hxx"
-#include "BasicFlowControl.hxx"
+#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/BasicFlowControl.hxx>
 
 #include <qapplication.h>
 
@@ -46,7 +46,7 @@
 #include <ctime>
 #include "MainWindow.hxx"
 
-#include "MIDIManager.hxx"
+#include <CLAM/MIDIManager.hxx>
 
 #ifdef Q_WS_X11
 #include <X11/Xlib.h>

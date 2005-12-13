@@ -26,8 +26,8 @@
 #include <qwidget.h>
 #include <qregion.h>
 #include "ConnectionPointPresentation.hxx"
-#include "Signalv2.hxx"
-#include "Signalv1.hxx"
+#include <CLAM/Signalv2.hxx>
+#include <CLAM/Signalv1.hxx>
 
 namespace NetworkGUI
 {

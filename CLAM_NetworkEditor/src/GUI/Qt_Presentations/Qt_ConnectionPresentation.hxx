@@ -26,8 +26,8 @@
 #include <qwidget.h>
 #include <qpointarray.h>
 #include "ConnectionPresentation.hxx"
-#include "Slotv2.hxx"
-#include "Signalv1.hxx"
+#include <CLAM/Slotv2.hxx>
+#include <CLAM/Signalv1.hxx>
 
 namespace NetworkGUI
 {

@@ -19,17 +19,17 @@
  *
  */
 
-#include "MIDIManager.hxx"
+#include <CLAM/MIDIManager.hxx>
 
 #include "NetworkController.hxx"
-#include "Network.hxx"
-#include "InPort.hxx"
-#include "Processing.hxx"
-#include "OutPort.hxx"
-#include "InControl.hxx"
-#include "Processing.hxx"
-#include "OutControl.hxx"
-#include "XMLStorage.hxx"
+#include <CLAM/Network.hxx>
+#include <CLAM/InPort.hxx>
+#include <CLAM/Processing.hxx>
+#include <CLAM/OutPort.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/Processing.hxx>
+#include <CLAM/OutControl.hxx>
+#include <CLAM/XMLStorage.hxx>
 #include "NetworkPresentation.hxx"
 
 namespace CLAMVM

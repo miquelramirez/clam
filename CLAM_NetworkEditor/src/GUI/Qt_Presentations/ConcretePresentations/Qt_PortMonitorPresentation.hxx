@@ -3,10 +3,10 @@
 #define __Qt_PortMonitorPresentation_hxx__
 
 #include "Qt_ProcessingPresentation.hxx"
-#include "DataTypes.hxx"
-//#include "OutControlSender.hxx"
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/OutControlSender.hxx>
 
-#include "NetPeaksPlot.hxx"
+#include <CLAM/NetPeaksPlot.hxx>
 
 class QWidget;
 namespace CLAMVM {

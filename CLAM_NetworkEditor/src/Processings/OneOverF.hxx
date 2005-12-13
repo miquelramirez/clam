@@ -2,12 +2,12 @@
 #ifndef _OneOverF_hxx_
 #define _OneOverF_hxx_
 
-#include "DataTypes.hxx"
-#include "OutControl.hxx"
-#include "InControl.hxx"
-#include "Processing.hxx"
-#include "ProcessingConfig.hxx"
-#include "Mapping.hxx"
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/OutControl.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/Processing.hxx>
+#include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/Mapping.hxx>
 #include <string>
 
 #define MAXDICES 7

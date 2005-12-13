@@ -21,7 +21,7 @@
 
 #include "Qt_NetworkPresentation.hxx"
 #include "ProcessingController.hxx"
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include "Qt_ProcessingPresentation.hxx"
 #include "Qt_PortConnectionPresentation.hxx"
 #include "Qt_ControlConnectionPresentation.hxx"
@@ -32,9 +32,9 @@
 
 #include "NetworkController.hxx"
 
-#include "Text.hxx"
-#include "DynamicType.hxx"
-#include "XMLStorage.hxx"
+#include <CLAM/Text.hxx>
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/XMLStorage.hxx>
 
 #include <qpainter.h>
 #include <qpixmap.h>

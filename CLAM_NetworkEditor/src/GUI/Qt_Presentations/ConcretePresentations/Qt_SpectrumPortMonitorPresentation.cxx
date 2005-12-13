@@ -1,7 +1,7 @@
 #include "Qt_SpectrumPortMonitorPresentation.hxx"
-#include "PortMonitor.hxx"
-#include "NetSpectrumPlot.hxx"
-#include "Factory.hxx"
+#include <CLAM/PortMonitor.hxx>
+#include <CLAM/NetSpectrumPlot.hxx>
+#include <CLAM/Factory.hxx>
 
 namespace NetworkGUI
 {

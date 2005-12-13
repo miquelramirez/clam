@@ -22,13 +22,13 @@
 #ifndef _SquareWave_
 #define _SquareWave_
 
-#include "Processing.hxx"
-#include "ProcessingData.hxx"
-#include "OSDefines.hxx"
-#include "Audio.hxx"
-#include "AudioOutPort.hxx"
-#include "InControl.hxx"
-#include "Enum.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/ProcessingData.hxx>
+#include <CLAM/OSDefines.hxx>
+#include <CLAM/Audio.hxx>
+#include <CLAM/AudioOutPort.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/Enum.hxx>
 #include <string>
 
 #define SGN(x) ((x<0)?(-1):(1))

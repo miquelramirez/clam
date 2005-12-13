@@ -20,7 +20,7 @@
  */
 
 #include "LadspaLoaderConfigPresentation.hxx"
-#include "ProcessingConfig.hxx"
+#include <CLAM/ProcessingConfig.hxx>
 #include <qhbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>

@@ -26,11 +26,11 @@
 #include <list>
 #include <string>
 
-#include "Presentation.hxx"
+#include <CLAM/Presentation.hxx>
 #include "ProcessingConfigPresentation.hxx"
 #include "ProcessingController.hxx"
-#include "Slotv1.hxx"
-#include "Signalv1.hxx"
+#include <CLAM/Slotv1.hxx>
+#include <CLAM/Signalv1.hxx>
 
 namespace CLAM
 {

@@ -23,7 +23,7 @@
 #ifndef __ConnectionPointPresentation_hxx__ 
 #define __ConnectionPointPresentation_hxx__ 
 
-#include "Presentation.hxx"
+#include <CLAM/Presentation.hxx>
 #include <string>
 
 namespace NetworkGUI

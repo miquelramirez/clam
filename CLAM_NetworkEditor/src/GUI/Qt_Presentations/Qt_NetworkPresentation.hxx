@@ -25,9 +25,9 @@
 #include <string>
 #include <qwidget.h>
 #include "NetworkPresentation.hxx"
-#include "Signalv1.hxx"
-#include "Signalv0.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Slotv1.hxx>
 
 namespace CLAM
 {

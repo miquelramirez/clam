@@ -22,9 +22,9 @@
 #ifndef __CONNECTIONPRESENTATION_HXX__
 #define __CONNECTIONPRESENTATION_HXX__
 
-#include "Presentation.hxx"
-#include "Slotv1.hxx"
-#include "Signalv1.hxx"
+#include <CLAM/Presentation.hxx>
+#include <CLAM/Slotv1.hxx>
+#include <CLAM/Signalv1.hxx>
 #include <string>
 
 namespace CLAM

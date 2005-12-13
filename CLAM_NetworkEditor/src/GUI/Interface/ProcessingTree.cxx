@@ -22,7 +22,7 @@
 #include "ProcessingTree.hxx"
 #include "ProcessingItem.hxx"
 #include "MainWindow.hxx"
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include <string>
 #include <sstream>
 #include <qheader.h>

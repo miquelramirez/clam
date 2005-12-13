@@ -3,8 +3,8 @@
 
 #include <qlayout.h>
 
-#include "NetPeaksPlot.hxx"
-#include "PortMonitor.hxx"
+#include <CLAM/NetPeaksPlot.hxx>
+#include <CLAM/PortMonitor.hxx>
 
 namespace NetworkGUI
 {
