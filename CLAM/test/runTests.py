@@ -29,7 +29,7 @@ configureOptions = ''
 executionTime = 15
 
 #configurations = ['debug', 'release'] 
-configurations = ['release'] 
+configurations = ['debug'] 
 
 # Mail report settings
 publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
@@ -80,14 +80,14 @@ if quickTestForScriptDebuging :
 sandboxes = [ # Module, Sandbox name, Tag, Update level
 	( 'CLAM', SANDBOX_NAME, MODULE_TAG, updateLevelForCLAM),
 	( 'CLAM_DescriptorsGUI', 'clean-CLAM_DescriptorsGUI', '', updateLevelForExamples ),
-	( 'CLAM_NetworkEditor', 'clean-CLAM_NetworkEditor', '', updateLevelForExamples ),
+	( 'CLAM_NetworkEditor', 'clean-CLAM_NetworkEditor', 'srcdeps-build-system-branch', updateLevelForExamples ),
+	( 'CLAM_SMSTools', 'clean-CLAM_SMSTools', 'srcdeps-build-system-branch', updateLevelForExamples ),
+	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', 'srcdeps-build-system-branch', updateLevelForExamples ),
+	( 'CLAM_Annotator', 'clean-CLAM_Annotator', '', updateLevelForExamples ),
 	( 'CLAM_Rappid', 'clean-CLAM_Rappid', '', updateLevelForExamples ),
 	( 'CLAM_SDIFDisplay', 'clean-CLAM_SDIFDisplay', '', updateLevelForExamples ),
 	( 'CLAM_SpectralDelay', 'clean-CLAM_SpectralDelay', '', updateLevelForExamples ),
-	( 'CLAM_SMSTools', 'clean-CLAM_SMSTools', 'srcdeps-build-system-branch', updateLevelForExamples ),
-	( 'CLAM_Annotator', 'clean-CLAM_Annotator', '', updateLevelForExamples ),
 	( 'CLAM_Salto', 'clean-CLAM_Salto', '', updateLevelForExamples ),
-	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', 'srcdeps-build-system-branch', updateLevelForExamples ),
 	( 'CLAM-TestData', 'CLAM-TestData', '', updateLevelForTestData )
 ]
 def baseDirOf(keyname) :
