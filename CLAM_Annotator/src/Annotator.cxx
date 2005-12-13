@@ -811,27 +811,6 @@ void Annotator::loadDescriptorPool()
 
 }
 
-bool Annotator::event(QEvent* e)
-{
-	if(!mpAudioPlot) return QWidget::event(e);
-
-	QKeyEvent* keyEvent=(QKeyEvent*)(e);
-	if(!keyEvent) return QWidget::event(e);
-	if(mpAudioPlot->hasFocus()) return QWidget::event(e);
-
-	switch(keyEvent->key())
-	{
-		case Qt::Key_Shift:
-		case Qt::Key_Insert:
-		case Qt::Key_Delete:
-			mpAudioPlot->setFocus();
-			break;
-		default:
-			break;
-	}
-	return QWidget::event(e);
-}
-
 void Annotator::refreshGlobalDescriptorsTable()
 {
 	if (!mpDescriptorPool) return;

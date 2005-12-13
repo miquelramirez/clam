@@ -78,7 +78,6 @@ public slots:
 	void changeCurrentSegment(unsigned current);
 protected:
 	void closeEvent( QCloseEvent * e);
-	bool event(QEvent* e);
 
 private slots:
 	void onStopPlaying(float);
