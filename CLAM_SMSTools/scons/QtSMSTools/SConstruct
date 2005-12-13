@@ -1,13 +1,6 @@
 # SConstruct for SMS Tools
 #
 import sys, os, string, glob
-import macbundle
-
-def create_setup( target, source, env ) :
-	os.system( "makensis clam_qtsmstools.nsi" )
-
-def create_setup_message( target, source, env ) :
-	return "generating QtSMSTools Installer"
 
 def parse_pkg_config( env ) :
 	prefix = env['clam_prefix']
@@ -149,10 +142,11 @@ if sys.platform != 'win32' :
 	tools_env.Append(CCFLAGS= '-DQT_THREAD_SUPPORT')
 
 	if sys.platform == 'darwin' :
-		tools_bin = tools_env.Program( 'QtSMSTools', sourcefiles, LINKFLAGS=['-bind_at_load'] )
-		bld = Builder( action=Action(macbundle.create_mac_bundle, macbundle.create_mac_bundle_message) )
-		tools_env.Append( BUILDERS={'CreateBundle' : bld} )
-		tools_env.CreateBundle('not-used','QtSMSTools')
+		tools_bin_pre = tools_env.Program( 'QtSMSTools', sourcefiles, LINKFLAGS=['-bind_at_load','-dynamic'] )
+		bundle_bin = tools_env.Install( 'QtSMSTools.app/Contents/MacOS', tools_bin_pre )
+		bundle_data = tools_env.Install('QtSMSTools.app/Contents', 'resources/Info.plist')
+		bundle_icon = tools_env.Install('QtSMSTools.app/Contents/Resources', 'resources/CLAM.icns')
+		tools_bin = [ tools_bin_pre, bundle_bin, bundle_data, bundle_icon ]
 	else:
 		htmls = [ '../../resources/html/en/license.html' ]
 		install_html = tools_env.Install( tools_env['install_prefix']+"/share/smstools/html/en", htmls )
@@ -192,8 +186,6 @@ else :
 
 	vc_alias = tools_env.Alias('visual_project', [generate_vcproj])
 
-#Commented because it prevents Mac OS X application folder creation
-#Default(tools_bin)
 
 if sys.platform == 'darwin': #Disk image (DMG) creation on Mac
 	tools_dmg = tools_env.Install( 'DMG', 'README.txt' )  # instead of version.txt it could be the GPL
