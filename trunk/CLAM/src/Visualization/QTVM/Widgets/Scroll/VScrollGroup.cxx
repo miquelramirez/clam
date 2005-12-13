@@ -34,6 +34,7 @@ namespace CLAM
 		VScrollGroup::VScrollGroup(QWidget* parent) 
 			: QWidget(parent)
 		{
+			setFocusPolicy(QWidget::NoFocus);
 			Init();
 		}
 		
