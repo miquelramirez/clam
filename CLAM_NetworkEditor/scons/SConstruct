@@ -1,6 +1,12 @@
 import sys, os, string, glob
 import macbundle
 
+def create_setup( target, source, env ) :
+	os.system( "makensis clam_networkeditor.nsi" )
+
+def create_setup_message( target, source, env ) :
+	return "generating NetworkEditor Installer"
+
 def parse_pkg_config( env ) :
 	prefix = env['clam_prefix']
 	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
@@ -182,9 +188,16 @@ else :
 				buildtarget = neted_bin,
 				variant = variantVCProj )
 
+	setup_bld = Builder( action=Action(create_setup, create_setup_message ))
+	neted_env.Append( BUILDERS={'CreateSetup' : setup_bld} )
+	setup = neted_env.CreateSetup('notused', neted_bin )
+	neted_env.Alias('CreateSetup', [setup])
+	
 	vc_alias =neted_env.Alias('visual_project', [generate_vcproj])
 
 if sys.platform == 'darwin': #Bundle creation on Mac
 	bld = Builder( action=Action(macbundle.create_mac_bundle, macbundle.create_mac_bundle_message) )
 	neted_env.Append( BUILDERS={'CreateBundle' : bld} )
 	neted_env.CreateBundle('notused','NetworkEditor')
+
+Default(neted_bin)
