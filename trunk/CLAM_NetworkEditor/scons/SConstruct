@@ -1,5 +1,4 @@
 import sys, os, string, glob
-import macbundle
 
 def create_setup( target, source, env ) :
 	os.system( "makensis clam_networkeditor.nsi" )
@@ -157,17 +156,25 @@ manpages = [ '../resources/man/man9/'+item for item in manpages ]
 
 if sys.platform != 'win32' :
 	neted_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+	neted_env.Append(CCFLAGS=['-I/usr/include'])
+
 	if sys.platform == 'darwin':
-		neted_env.Append(CCFLAGS=['-I/usr/include'])
-		neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-bind_at_load','-dynamic'] )
+		neted_bin_pre = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-bind_at_load','-dynamic'] )
+		#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
+		bundle_bin = neted_env.Install( 'NetworkEditor.app/Contents/MacOS', neted_bin_pre )
+		bundle_data = neted_env.Install( 'NetworkEditor.app/Contents', 'resources/Info.plist')
+		bundle_icon = neted_env.Install( 'NetworkEditor.app/Contents/Resources', 'resources/CLAM.icns')
+		neted_bin = [ neted_bin_pre + bundle_bin + bundle_data + bundle_icon ]
+
 	else:
 		neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-rdynamic'] )
-	install_bin = neted_env.Install( neted_env['install_prefix']+'/bin', neted_bin )
-	neted_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
-	install_examples = neted_env.Install( neted_env['install_prefix']+'/share/doc/networkeditor/examples', examples )
-	install_graphics = neted_env.Install( neted_env['install_prefix']+'/share/networkeditor/graphics', graphics )
-	install_manpages = neted_env.Install( neted_env['install_prefix']+'/share/man/man9', manpages )
-	install_alias = neted_env.Alias( 'install', [install_bin, install_examples, install_graphics, install_manpages] )
+
+		install_bin = neted_env.Install( neted_env['install_prefix']+'/bin', neted_bin )
+		neted_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+		install_examples = neted_env.Install( neted_env['install_prefix']+'/share/doc/networkeditor/examples', examples )
+		install_graphics = neted_env.Install( neted_env['install_prefix']+'/share/networkeditor/graphics', graphics )
+		install_manpages = neted_env.Install( neted_env['install_prefix']+'/share/man/man9', manpages )
+		install_alias = neted_env.Alias( 'install', [install_bin, install_examples, install_graphics, install_manpages] )
 else :
 	parse_pkg_config( neted_env )
 	neted_env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
@@ -195,9 +202,11 @@ else :
 	
 	vc_alias =neted_env.Alias('visual_project', [generate_vcproj])
 
-if sys.platform == 'darwin': #Bundle creation on Mac
-	bld = Builder( action=Action(macbundle.create_mac_bundle, macbundle.create_mac_bundle_message) )
-	neted_env.Append( BUILDERS={'CreateBundle' : bld} )
-	neted_env.CreateBundle('notused','NetworkEditor')
+if sys.platform == 'darwin': #Disk image (DMG) creation on Mac
+	neted_dmg = neted_env.Install( 'DMG', 'README.txt' )  # instead of version.txt it could be the GPL
+	neted_env.AddPostAction( neted_dmg, Copy( 'DMG/NetworkEditor.app', 'NetworkEditor.app' ) )
+	neted_env.AddPostAction( neted_dmg, 'sudo hdiutil create -srcfolder DMG -volname CLAM_NetworkEditor -uid 0 CLAM_NetworkEditor-0.9.0-pre1.dmg')
+	neted_env.AddPostAction( neted_dmg, 'rm -rf DMG')
+	dmg_alias = neted_env.Alias( 'dmg' , [neted_bin, neted_dmg] )
 
 Default(neted_bin)
