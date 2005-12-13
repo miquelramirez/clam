@@ -19,13 +19,13 @@
  *
  */
 
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include "ProcessingConfigPresentation.hxx"
 #include "ConfigPresentationTmpl.hxx"
 
 //SMSTransformations
-#include "FrameTransformationConfig.hxx"
-#include "SMSSineFilter.hxx"
+#include <CLAM/FrameTransformationConfig.hxx>
+#include <CLAM/SMSSineFilter.hxx>
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 

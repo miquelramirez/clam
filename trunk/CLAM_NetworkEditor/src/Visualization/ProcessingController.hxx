@@ -22,14 +22,14 @@
 #ifndef __ProcessingController_hxx__
 #define __ProcessingController_hxx__
 
-#include "ModelController.hxx"
-#include "Slotv1.hxx"
-#include "Slotv2.hxx"
-#include "Signalv3.hxx"
-#include "Signalv2.hxx"
-#include "Signalv1.hxx"
-#include "Processing.hxx"
-#include "InControl.hxx"
+#include <CLAM/ModelController.hxx>
+#include <CLAM/Slotv1.hxx>
+#include <CLAM/Slotv2.hxx>
+#include <CLAM/Signalv3.hxx>
+#include <CLAM/Signalv2.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Processing.hxx>
+#include <CLAM/InControl.hxx>
 
 #include <string>
 #include <list>

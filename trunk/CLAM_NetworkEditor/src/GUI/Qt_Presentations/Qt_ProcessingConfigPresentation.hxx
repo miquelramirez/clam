@@ -24,7 +24,7 @@
 
 #include <qdialog.h>
 #include <qvbox.h>
-#include "Signalv1.hxx"
+#include <CLAM/Signalv1.hxx>
 #include "ProcessingConfigPresentation.hxx"
 
 class QGroupBox;

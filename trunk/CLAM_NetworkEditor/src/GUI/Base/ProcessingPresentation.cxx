@@ -20,9 +20,9 @@
  */
 
 #include "ProcessingPresentation.hxx"
-#include "ProcessingConfig.hxx"
+#include <CLAM/ProcessingConfig.hxx>
 #include "ConnectionPointPresentation.hxx"
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 
 namespace NetworkGUI
 {

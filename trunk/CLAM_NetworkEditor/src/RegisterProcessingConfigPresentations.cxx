@@ -19,7 +19,7 @@
  *
  */
 
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include "ProcessingConfigPresentation.hxx"
 #include "ConfigPresentationTmpl.hxx"
 
@@ -29,53 +29,53 @@
 #ifndef WIN32
 #include "LadspaLoaderConfigPresentation.hxx"
 #endif
-#include "AudioFileConfig.hxx"
-#include "AutoPanner.hxx"
-#include "AudioIO.hxx"
-#include "AudioMultiplier.hxx"
-#include "AudioAdder.hxx"
-#include "AudioMixer.hxx"
-#include "BinaryAudioOp.hxx"
-#include "SimpleOscillator.hxx"
-#include "Oscillator.hxx"
-#include "ADSR.hxx"
-#include "FFTConfig.hxx"
-#include "IFFTConfig.hxx"
-#include "MonoAudioFileReaderConfig.hxx"
-#include "MultiChannelAudioFileReaderConfig.hxx"
-#include "SMSAnalysisConfig.hxx"
-#include "SMSSynthesisConfig.hxx"
-#include "SpectralPeakDetectConfig.hxx"
-#include "FundFreqDetectConfig.hxx"
-#include "SinTrackingConfig.hxx"
-#include "SynthSineSpectrumConfig.hxx"
-#include "PhaseManagementConfig.hxx"
-#include "WindowGeneratorConfig.hxx"
-#include "CircularShiftConfig.hxx"
-#include "NullProcessingConfig.hxx"
+#include <CLAM/AudioFileConfig.hxx>
+#include <CLAM/AutoPanner.hxx>
+#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioMultiplier.hxx>
+#include <CLAM/AudioAdder.hxx>
+#include <CLAM/AudioMixer.hxx>
+#include <CLAM/BinaryAudioOp.hxx>
+#include <CLAM/SimpleOscillator.hxx>
+#include <CLAM/Oscillator.hxx>
+#include <CLAM/ADSR.hxx>
+#include <CLAM/FFTConfig.hxx>
+#include <CLAM/IFFTConfig.hxx>
+#include <CLAM/MonoAudioFileReaderConfig.hxx>
+#include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
+#include <CLAM/SMSAnalysisConfig.hxx>
+#include <CLAM/SMSSynthesisConfig.hxx>
+#include <CLAM/SpectralPeakDetectConfig.hxx>
+#include <CLAM/FundFreqDetectConfig.hxx>
+#include <CLAM/SinTrackingConfig.hxx>
+#include <CLAM/SynthSineSpectrumConfig.hxx>
+#include <CLAM/PhaseManagementConfig.hxx>
+#include <CLAM/WindowGeneratorConfig.hxx>
+#include <CLAM/CircularShiftConfig.hxx>
+#include <CLAM/NullProcessingConfig.hxx>
 
 // local processings
-#include "FlagControl.hxx"
+#include <CLAM/FlagControl.hxx>
 #include "Random.hxx"
 #include "OneOverF.hxx"
 #include "SquareWave.hxx"
 
 #if USE_OSCPACK
-#include "OSCSender.hxx"
+#include <CLAM/OSCSender.hxx>
 #endif
 
 // Controls
-#include "Fundamental2Control.hxx"
-#include "ControlPrinter.hxx"
-#include "ControlScaler.hxx"
-#include "ControlMapper.hxx"
-#include "ExternInControl.hxx"
-#include "ExternOutControl.hxx"
+#include <CLAM/Fundamental2Control.hxx>
+#include <CLAM/ControlPrinter.hxx>
+#include <CLAM/ControlScaler.hxx>
+#include <CLAM/ControlMapper.hxx>
+#include <CLAM/ExternInControl.hxx>
+#include <CLAM/ExternOutControl.hxx>
 
 //MIDI
-#include "MIDIKeyboard.hxx"
-#include "MIDIIOConfig.hxx"
-#include "MIDIDispatcher.hxx"
+#include <CLAM/MIDIKeyboard.hxx>
+#include <CLAM/MIDIIOConfig.hxx>
+#include <CLAM/MIDIDispatcher.hxx>
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;
 

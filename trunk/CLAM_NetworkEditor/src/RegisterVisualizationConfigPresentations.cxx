@@ -19,23 +19,23 @@
  *
  */
 
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include "ProcessingConfigPresentation.hxx"
 #include "ConfigPresentationTmpl.hxx"
 
 // Graphical Controllers
-#include "OutControlSender.hxx"
+#include <CLAM/OutControlSender.hxx>
 
 // Graphical Monitoring
-#include "PortMonitor.hxx"
-#include "AudioPlotProcessing.hxx"
-#include "SpectrumPlotProcessing.hxx"
-#include "PeaksPlotProcessing.hxx"
-#include "FundPlotProcessing.hxx"
-#include "SinTracksPlotProcessing.hxx"
-#include "FundTrackPlotProcessing.hxx"
-#include "SpecgramPlotProcessing.hxx"
-#include "AudioBuffPlotProcessing.hxx"
+#include <CLAM/PortMonitor.hxx>
+#include <CLAM/AudioPlotProcessing.hxx>
+#include <CLAM/SpectrumPlotProcessing.hxx>
+#include <CLAM/PeaksPlotProcessing.hxx>
+#include <CLAM/FundPlotProcessing.hxx>
+#include <CLAM/SinTracksPlotProcessing.hxx>
+#include <CLAM/FundTrackPlotProcessing.hxx>
+#include <CLAM/SpecgramPlotProcessing.hxx>
+#include <CLAM/AudioBuffPlotProcessing.hxx>
 
 
 typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfigPresentationFactory;

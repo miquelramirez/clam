@@ -27,7 +27,7 @@
 #include <qsizepolicy.h>
 #include <qpushbutton.h>
 
-#include "ProcessingConfig.hxx"
+#include <CLAM/ProcessingConfig.hxx>
 
 namespace NetworkGUI
 {

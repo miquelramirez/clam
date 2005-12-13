@@ -1,7 +1,7 @@
 #include "Qt_AudioPortMonitorPresentation.hxx"
-#include "PortMonitor.hxx"
-#include "NetAudioPlot.hxx"
-#include "Factory.hxx"
+#include <CLAM/PortMonitor.hxx>
+#include <CLAM/NetAudioPlot.hxx>
+#include <CLAM/Factory.hxx>
 
 namespace NetworkGUI
 {

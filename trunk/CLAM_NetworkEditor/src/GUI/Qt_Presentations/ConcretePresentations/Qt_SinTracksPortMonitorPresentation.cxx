@@ -1,7 +1,7 @@
 #include "Qt_SinTracksPortMonitorPresentation.hxx"
-#include "PortMonitor.hxx"
-#include "NetSinTracksPlot.hxx"
-#include "Factory.hxx"
+#include <CLAM/PortMonitor.hxx>
+#include <CLAM/NetSinTracksPlot.hxx>
+#include <CLAM/Factory.hxx>
 
 namespace NetworkGUI
 {

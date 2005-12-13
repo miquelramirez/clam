@@ -22,7 +22,7 @@
 #ifndef __MultiChannelAudioFileWriterConfigPresentation_hxx__
 #define __MultiChannelAudioFileWriterConfigPresentation_hxx__
 
-#include "MultiChannelAudioFileWriterConfig.hxx"
+#include <CLAM/MultiChannelAudioFileWriterConfig.hxx>
 #include "MonoAudioFileWriterConfigPresentation.hxx"
 
 class QSpinBox;

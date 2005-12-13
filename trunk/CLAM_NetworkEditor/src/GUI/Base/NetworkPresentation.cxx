@@ -26,7 +26,7 @@
 #include "ProcessingPresentation.hxx"
 #include "ConnectionPresentation.hxx"
 #include "ConnectionPointPresentation.hxx"
-#include "Processing.hxx"
+#include <CLAM/Processing.hxx>
 
 namespace NetworkGUI
 {

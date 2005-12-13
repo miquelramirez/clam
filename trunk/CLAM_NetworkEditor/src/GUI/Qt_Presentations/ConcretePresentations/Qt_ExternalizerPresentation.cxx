@@ -145,7 +145,7 @@ public:
 };
 
 }
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
 
 static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ExternSinkPresentation > 

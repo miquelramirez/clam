@@ -23,7 +23,7 @@
 #define __LadspaLoaderConfigPresentation_hxx__
 
 #include "Qt_ProcessingConfigPresentation.hxx"
-#include "LadspaLoader.hxx"
+#include <CLAM/LadspaLoader.hxx>
 
 class QLineEdit;
 class QComboBox;

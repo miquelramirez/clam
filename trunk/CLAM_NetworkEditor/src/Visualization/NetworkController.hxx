@@ -22,31 +22,31 @@
 #ifndef _NETWORKCONTROLLER_HXX_
 #define _NETWORKCONTROLLER_HXX_
 
-#include "ModelController.hxx"
+#include <CLAM/ModelController.hxx>
 #include "ProcessingController.hxx"
 
-#include "Signalv0.hxx"
-#include "Signalv1.hxx"
-#include "Signalv2.hxx"
-#include "Slotv0.hxx"
-#include "Slotv1.hxx"
-#include "Slotv2.hxx"
-#include "Slotv3.hxx"
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Signalv2.hxx>
+#include <CLAM/Slotv0.hxx>
+#include <CLAM/Slotv1.hxx>
+#include <CLAM/Slotv2.hxx>
+#include <CLAM/Slotv3.hxx>
 
 
 #include <list>
 #include <string>
 #include <map>
 
-#include "Thread.hxx"
+#include <CLAM/Thread.hxx>
 
 #if USE_OSCPACK
-#include "OSCEnabledNetwork.hxx"
+#include <CLAM/OSCEnabledNetwork.hxx>
 #else
-#include "Network.hxx"
+#include <CLAM/Network.hxx>
 #endif
 
-#include "NetworkPlayer.hxx"
+#include <CLAM/NetworkPlayer.hxx>
 
 namespace CLAM
 {

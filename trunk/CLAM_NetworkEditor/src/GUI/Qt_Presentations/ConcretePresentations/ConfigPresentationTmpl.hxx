@@ -25,19 +25,19 @@
 #include "Qt_ProcessingConfigPresentation.hxx"
 #include <qwidget.h>
 
-#include "AudioManager.hxx"
+#include <CLAM/AudioManager.hxx>
 
 #include <map>
 #include <string>
-#include "ConfigurationVisitor.hxx"
-#include "Assert.hxx"
-#include "Enum.hxx"
-#include "DataTypes.hxx"
-#include "DynamicType.hxx"
-#include "Filename.hxx"
-#include "AudioFile.hxx"
-#include "BPF.hxx"
-#include "QtEnvelopeEditor.hxx"
+#include <CLAM/ConfigurationVisitor.hxx>
+#include <CLAM/Assert.hxx>
+#include <CLAM/Enum.hxx>
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/Filename.hxx>
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/BPF.hxx>
+#include <CLAM/QtEnvelopeEditor.hxx>
 
 #include <limits>
 #include <qdialog.h>

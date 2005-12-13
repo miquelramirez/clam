@@ -1,8 +1,8 @@
 
 #include "Random.hxx"
-#include "OSDefines.hxx"
-#include "CLAM_Math.hxx"
-#include "Factory.hxx"
+#include <CLAM/OSDefines.hxx>
+#include <CLAM/CLAM_Math.hxx>
+#include <CLAM/Factory.hxx>
 #include <ctime>
 #include <cstdlib>
 

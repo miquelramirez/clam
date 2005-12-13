@@ -24,9 +24,9 @@
 
 #include <qmainwindow.h> 
 #include <string>
-#include "Slotv1.hxx"
-#include "Signalv1.hxx"
-#include "Signalv0.hxx"
+#include <CLAM/Slotv1.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Signalv0.hxx>
 #include "Qt_NetworkPresentation.hxx"
 
 class QDockWindow;

@@ -20,10 +20,10 @@
  */
 
 #include "ProcessingController.hxx"
-#include "InPort.hxx"
-#include "OutPort.hxx"
-#include "InControl.hxx"
-#include "OutControl.hxx"
+#include <CLAM/InPort.hxx>
+#include <CLAM/OutPort.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/OutControl.hxx>
 
 #include <iostream> // TODO: remove
 

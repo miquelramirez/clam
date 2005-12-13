@@ -20,8 +20,8 @@
  */
 
 #include "MultiChannelAudioFileWriterConfigPresentation.hxx"
-#include "ProcessingConfig.hxx"
-#include "AudioFileHeader.hxx"
+#include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/AudioFileHeader.hxx>
 
 #include <limits>
 

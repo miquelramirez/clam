@@ -1,7 +1,7 @@
 #include "Qt_FundTrackPortMonitorPresentation.hxx"
-#include "PortMonitor.hxx"
-#include "NetFundTrackPlot.hxx"
-#include "Factory.hxx"
+#include <CLAM/PortMonitor.hxx>
+#include <CLAM/NetFundTrackPlot.hxx>
+#include <CLAM/Factory.hxx>
 
 namespace NetworkGUI
 {

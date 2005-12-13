@@ -24,8 +24,8 @@
 
 #include <qlistview.h>
 #include <string>
-#include "Signalv2.hxx"
-#include "Slotv0.hxx"
+#include <CLAM/Signalv2.hxx>
+#include <CLAM/Slotv0.hxx>
 #include "Qt_NetworkPresentation.hxx"
 
 namespace CLAM

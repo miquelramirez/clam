@@ -22,13 +22,13 @@
 #ifndef __NETWORKPRESENTATION_HXX__
 #define __NETWORKPRESENTATION_HXX__
 
-#include "Presentation.hxx"
-#include "Slotv1.hxx"
-#include "Slotv0.hxx"
-#include "Slotv2.hxx"
-#include "Signalv0.hxx"
-#include "Signalv1.hxx"
-#include "Signalv2.hxx"
+#include <CLAM/Presentation.hxx>
+#include <CLAM/Slotv1.hxx>
+#include <CLAM/Slotv0.hxx>
+#include <CLAM/Slotv2.hxx>
+#include <CLAM/Signalv0.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Signalv2.hxx>
 
 #include <string>
 #include <list>

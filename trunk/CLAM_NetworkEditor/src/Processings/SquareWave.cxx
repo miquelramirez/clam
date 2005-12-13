@@ -20,7 +20,7 @@
  */
 
 #include "SquareWave.hxx"
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;

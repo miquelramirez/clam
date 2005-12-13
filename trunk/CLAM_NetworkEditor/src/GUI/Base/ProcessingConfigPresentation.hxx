@@ -22,9 +22,9 @@
 #ifndef __ProcessingConfigPresentation_hxx__
 #define __ProcessingConfigPresentation_hxx__
 
-#include "Presentation.hxx"
-#include "Signalv1.hxx"
-#include "ProcessingConfig.hxx"
+#include <CLAM/Presentation.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/ProcessingConfig.hxx>
 
 namespace NetworkGUI
 {

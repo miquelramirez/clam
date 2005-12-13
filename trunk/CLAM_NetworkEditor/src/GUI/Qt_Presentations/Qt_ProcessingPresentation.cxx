@@ -24,11 +24,11 @@
 #include "Qt_OutPortPresentation.hxx"
 #include "Qt_ProcessingConfigPresentation.hxx"
 #include "ProcessingController.hxx"
-#include "Processing.hxx"
+#include <CLAM/Processing.hxx>
 
 #include "Qt_InControlPresentation.hxx"
 #include "Qt_OutControlPresentation.hxx"
-#include "CLAM_Math.hxx"
+#include <CLAM/CLAM_Math.hxx>
 #include <qtooltip.h> 
 #include <qpainter.h>
 #include <qlineedit.h>
