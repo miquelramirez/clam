@@ -28,7 +28,6 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.%s.dylib'%version )
 		soname_lib = env.LinkerNameLink( soname, lib )			# lib***.X.dylib -> lib***.X.Y.dylib
 		linkername_lib = env.LinkerNameLink( linker_name, soname_lib)	# lib***.dylib -> lib***.X.Y.dylib
-/
 	tgt = env.Alias( name, linkername_lib )
 
 	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
