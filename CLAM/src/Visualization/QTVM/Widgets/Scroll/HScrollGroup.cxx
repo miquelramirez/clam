@@ -34,6 +34,7 @@ namespace CLAM
 		HScrollGroup::HScrollGroup(QWidget* parent) 
 			: QWidget(parent)
 		{
+			setFocusPolicy(QWidget::NoFocus);
 			Init();
 		}
 		

@@ -24,6 +24,7 @@ namespace CLAM
 			mLabelHeight = font_metrics.height();
 
 			updateRange(0.0,1.0);
+			setFocusPolicy(QWidget::NoFocus);
 		}
 
 		Ruler::~Ruler()
