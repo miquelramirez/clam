@@ -1,5 +1,11 @@
 import sys, os, string, glob
 
+def create_setup( target, source, env ) :
+	os.system( "makensis clam_voice2midi.nsi" )
+
+def create_setup_message( target, source, env ) :
+	return "generating Voice2MIDI Installer"
+
 def parse_pkg_config( env ) :
 	prefix = env['clam_prefix']
 	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
@@ -183,6 +189,10 @@ else :
 				buildtarget = v2m_bin,
 				variant = variantVCProj )
 
-	vc_alias = v2m_env.Alias('visual_project', [generate_vcproj])
+	setup_bld = Builder( action=Action(create_setup, create_setup_message ))
+	v2m_env.Append( BUILDERS={'CreateSetup' : setup_bld} )
+	setup = v2m_env.CreateSetup('notused', v2m_bin)
+	v2m_env.Alias('CreateSetup', [setup])
 
-Default( v2m_bin )
+Default(v2m_bin)
+

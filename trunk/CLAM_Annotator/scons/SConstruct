@@ -1,5 +1,11 @@
 import sys, os, glob
 
+def create_setup( target, source, env ) :
+	os.system( "makensis clam_annotator.nsi" )
+
+def create_setup_message( target, source, env ) :
+	return "generating Annotator Installer"
+
 def parse_pkg_config( env ) :
 	prefix = env['clam_prefix']
 	descriptor_path = prefix + "\\lib_release\\pkgconfig\\*.pc"
@@ -239,6 +245,11 @@ else :
 
 	install_alias = annotator_env.Alias( 'install', [install_bin,install_sounds, install_manpage] )
 
+	setup_bld = Builder( action=Action(create_setup, create_setup_message ))
+	annotator_env.Append( BUILDERS={'CreateSetup' : setup_bld} )
+	setup = annotator_env.CreateSetup('notused', annotator_bin)
+	annotator_env.Alias('CreateSetup', [setup])
+
 	variantVCProj = 'Debug'
 	if annotator_env['release'] :
 		variantVCProj = 'Release' 
@@ -256,10 +267,10 @@ else :
 	sourcefilesExtractor += '..\src\Test.cxx'
 
 	generate_vcproj_extractor = annotator_env.MSVSProject( target = 'SampleExtractor' + annotator_env['MSVSPROJECTSUFFIX'],
-				srcs = sourcefiles,
+				srcs = sourcefilesExtractor,
 				buildtarget = sample_extractor_bin,
 				variant = variantVCProj )
-	
+
 	vc_alias2 = annotator_env.Alias('visual_project_extractor', [generate_vcproj_extractor])
 
 if sys.platform == 'darwin': #Disk image (DMG) creation on Mac
