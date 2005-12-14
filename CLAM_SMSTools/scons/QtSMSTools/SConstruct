@@ -8,6 +8,16 @@ def create_setup( target, source, env ) :
 def create_setup_message( target, source, env ) :
 	return "generating QtSMSTools Installer"
 
+def create_dmg( target, source, env) :
+	os.system( "mkdir DMG" )
+	os.system( "cp README.txt DMG" )
+	os.system( "cp -r QtSMSTools.app DMG" )
+	os.system( "sudo hdiutil create -srcfolder DMG -volname CLAM_NetworkEditor -uid 0 CLAM_QtSMSTools-0.9.0-pre1.dmg" )
+	os.system( "rm -rf DMG" )
+
+def create_dmg_message( target, source, env):
+	return "Creating DMG package"
+
 def parse_pkg_config( env ) :
 	prefix = env['clam_prefix']
 	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
@@ -155,6 +165,13 @@ if sys.platform != 'win32' :
 		bundle_data = tools_env.Install('QtSMSTools.app/Contents', 'resources/Info.plist')
 		bundle_icon = tools_env.Install('QtSMSTools.app/Contents/Resources', 'resources/CLAM.icns')
 		tools_bin = [ tools_bin_pre, bundle_bin, bundle_data, bundle_icon ]
+
+		#DMG creation process
+		dmg_bld = Builder( action=Action(create_dmg, create_dmg_message ))
+		tools_env.Append( BUILDERS={'CreateDMG' : dmg_bld} )
+		dmg = tools_env.CreateDMG('notused', tools_bin )
+		tools_env.Alias('dmg', [tools_bin, dmg])
+
 	else:
 		htmls = [ '../../resources/html/en/license.html' ]
 		install_html = tools_env.Install( tools_env['install_prefix']+"/share/smstools/html/en", htmls )
@@ -193,13 +210,5 @@ else :
 	tools_env.Alias('CreateSetup', [setup])
 
 	vc_alias = tools_env.Alias('visual_project', [generate_vcproj])
-
-
-if sys.platform == 'darwin': #Disk image (DMG) creation on Mac
-	tools_dmg = tools_env.Install( 'DMG', 'README.txt' )  # instead of version.txt it could be the GPL
-	tools_env.AddPostAction( tools_dmg, Copy( 'DMG/QtSMSTools.app', 'QtSMSTools.app' ) )
-	tools_env.AddPostAction( tools_dmg, 'sudo hdiutil create -srcfolder DMG -volname CLAM_QtSMSTools -uid 0 CLAM_QtSMSTools-0.9.0-pre1.dmg')
-	tools_env.AddPostAction( tools_dmg, 'rm -rf DMG')
-	dmg_alias = tools_env.Alias( 'dmg' , [tools_bin, tools_dmg] )
 
 Default(tools_bin)

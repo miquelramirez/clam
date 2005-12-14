@@ -6,6 +6,16 @@ def create_setup( target, source, env ) :
 def create_setup_message( target, source, env ) :
 	return "generating Annotator Installer"
 
+def create_dmg( target, source, env) :
+	os.system( "mkdir DMG" )
+	os.system( "cp README.txt DMG" )
+	os.system( "cp -r Annotator.app DMG" )
+	os.system( "sudo hdiutil create -srcfolder DMG -volname CLAM_NetworkEditor -uid 0 CLAM_Annotator-0.9.0-pre1.dmg" )
+	os.system( "rm -rf DMG" )
+
+def create_dmg_message( target, source, env):
+	return "Creating DMG package"
+
 def parse_pkg_config( env ) :
 	prefix = env['clam_prefix']
 	descriptor_path = prefix + "\\lib_release\\pkgconfig\\*.pc"
@@ -222,6 +232,14 @@ if sys.platform != 'win32' :
 		bundle_sounds = annotator_env.Install( 'Annotator.app/Contents/Resources/sounds', '../resources/sounds/click.mp3' )
 		
 		annotator_bin = [ bundle_bin + bundle_sounds + bundle_data + bundle_icon ]
+
+		#DMG creation process
+		dmg_bld = Builder( action=Action(create_dmg, create_dmg_message ))
+		annotator_env.Append( BUILDERS={'CreateDMG' : dmg_bld} )
+		dmg = annotator_env.CreateDMG('notused', annotator_bin )
+		annotator_env.Alias('dmg', [annotator_bin, dmg])
+
+										
 		
 	sample_app = annotator_env.Alias('SampleExtractor', sample_extractor_bin)
 	
@@ -274,12 +292,5 @@ else :
 				variant = variantVCProj )
 
 	vc_alias2 = annotator_env.Alias('visual_project_extractor', [generate_vcproj_extractor])
-
-if sys.platform == 'darwin': #Disk image (DMG) creation on Mac
-	annotator_dmg = annotator_env.Install( 'DMG', 'README.txt' )  # instead of version.txt it could be the GPL
-	annotator_env.AddPostAction( annotator_dmg, Copy( 'DMG/Annotator.app', 'Annotator.app' ) )
-	annotator_env.AddPostAction( annotator_dmg, 'sudo hdiutil create -srcfolder DMG -volname CLAM_Annotator -uid 0 CLAM_Annotator-0.9.0-pre1.dmg')
-	annotator_env.AddPostAction( annotator_dmg, 'rm -rf DMG')
-	dmg_alias = annotator_env.Alias( 'dmg' , [annotator_bin, annotator_dmg] )
 
 Default(annotator_bin)
