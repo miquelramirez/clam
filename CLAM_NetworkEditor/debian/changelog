@@ -1,3 +1,9 @@
+networkeditor (0.90.0-pre1-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- clam-devel <clam@iua.upf.es>  Wed, 14 Dec 2005 17:15:12 +0200
+
 networkeditor (0.8.0-1) unstable; urgency=low
 
   * Initial Release.
