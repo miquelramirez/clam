@@ -2,13 +2,23 @@
 makeSnapshot=./makeSnapshot.sh 
 
 #####  CVS-module			CVS-tag         Filename    			tar 	zip limit-in-k  needs-clam-version
-# Release 0.9.0-pre1
-$makeSnapshot CLAM_NetworkEditor 	HEAD		NetworkEditor-0.9.0-pre1	1	0 300 CLAM-0.9.0-pre1
-$makeSnapshot CLAM_Annotator		HEAD		Annotator-0.9.0-pre1		1	0 300 CLAM-0.9.0-pre1
-$makeSnapshot CLAM_Voice2MIDI		HEAD		Voice2MIDI-0.9.0-pre1		1	0 300 CLAM-0.9.0-pre1
-$makeSnapshot CLAM_SMSTools		HEAD		SMSTools2-0.9.0-pre1		1	0 300 CLAM-0.9.0-pre1
+
+# CVS snapshots
+$makeSnapshot CLAM_NetworkEditor 	HEAD		CLAM-NetworkEditor-cvs		1	0 300 CLAM-cvs
+$makeSnapshot CLAM_Annotator		HEAD		CLAM-Annotator-cvs		1	0 300 CLAM-cvs
+$makeSnapshot CLAM_Voice2MIDI		HEAD		CLAM-Voice2MIDI-cvs		1	0 300 CLAM-cvs
+$makeSnapshot CLAM_SMSTools		HEAD		CLAM-SMSTools-cvs		1	0 300 CLAM-cvs
+$makeSnapshot CLAM			HEAD		CLAM-cvs			1	0 300 CLAM-cvs
+
+# Release 0.9.0-pre2
+$makeSnapshot CLAM_NetworkEditor 	HEAD		CLAM-NetworkEditor-0.90-pre2	1	0 300 CLAM-0.90-pre2
+$makeSnapshot CLAM_Annotator		HEAD		CLAM-Annotator-0.2-pre2		1	0 300 CLAM-0.90-pre2
+$makeSnapshot CLAM_Voice2MIDI		HEAD		CLAM-Voice2MIDI-0.3-pre2	1	0 300 CLAM-0.90-pre2
+$makeSnapshot CLAM_SMSTools		HEAD		CLAM-SMSTools-0.4-pre2		1	0 300 CLAM-0.90-pre2
+$makeSnapshot CLAM			HEAD		CLAM-0.90-pre2			1	0 300 CLAM-0.90-pre2
 #$makeSnapshot CLAM-TestData		HEAD		CLAM-TestData			1	1 
-$makeSnapshot CLAM			HEAD		CLAM-0.9.0-pre1			1	1 300 CLAM-0.9.0-pre1
+
+exit
 
 # Release 0.8.0
 $makeSnapshot CLAM_NetworkEditor 	tests-passed-on-linux-rel				NetworkEditor-0.2	1 1 300 CLAM-0.8.0
