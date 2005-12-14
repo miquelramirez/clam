@@ -90,10 +90,13 @@ else :
 
 opts = Options('NetworkEditor.conf')
 
-if sys.platform != 'win32' :
+if sys.platform == 'linux2' :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+elif sys.platform == 'darwin' :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr/local') )
 else :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
+
 if sys.platform != 'win32' :
 	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr') )
 else :
