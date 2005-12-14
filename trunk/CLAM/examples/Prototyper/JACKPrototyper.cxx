@@ -1,3 +1,8 @@
+
+#ifndef USE_JACK
+#error ERROR: trying to compile a JACK based example without having it enabled in CLAM
+#endif
+
 #include "JACKNetworkPlayer.hxx"
 #include "PrototypeLoader.hxx"
 

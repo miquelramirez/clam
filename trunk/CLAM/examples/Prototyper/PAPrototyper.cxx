@@ -1,3 +1,8 @@
+
+#ifndef USE_PORTAUDIO
+#error ERROR: trying to compile a PortAudio based example without having it enabled in CLAM
+#endif
+
 #include "PANetworkPlayer.hxx"
 #include "PrototypeLoader.hxx"
 
