@@ -29,12 +29,16 @@
 
 #include <CLAM/BlockingNetworkPlayer.hxx>
 
-#if USE_JACK
-#include <CLAM/JACKNetworkPlayer.hxx>
-#endif
-
-#if USE_PORTAUDIO
-#include "PANetworkPlayer.hxx"
+#ifndef WIN32
+	#if USE_JACK
+		#include <CLAM/JACKNetworkPlayer.hxx>
+	#endif
+	#if USE_PORTAUDIO
+		#include <CLAM/PANetworkPlayer.hxx>
+	#endif
+#else
+	#include <CLAM/InitAudioIO.hxx>
+	#include <CLAM/InitProcessing.hxx>
 #endif
 
 #include <CLAM/PushFlowControl.hxx>
@@ -55,6 +59,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+
+
 
 using std::string;
 
@@ -80,6 +86,10 @@ void PrintUsageAndExit( const string& extramessage)
 
 CLAM::NetworkPlayer* CreateNetworkPlayerFromName(const string name)
 {
+#ifdef WIN32
+	return new CLAM::BlockingNetworkPlayer();
+#else
+		
 	if ( name == string("alsa"))
 	{
 		std::cout << " Using ALSA input/output driver.\
@@ -104,6 +114,7 @@ CLAM::NetworkPlayer* CreateNetworkPlayerFromName(const string name)
 	}
 #endif
 	else PrintUsageAndExit("Incorrect driver!");
+#endif
 
 	return NULL;
 }
@@ -181,6 +192,12 @@ int main( int argc, char **argv )
 #ifdef Q_WS_X11
 	XInitThreads();
 #endif
+
+#ifdef WIN32
+	CLAM::ProcessingModule::init();
+	CLAM::AudioIOModule::init();
+#endif
+
 
 	CLAM::MIDIManager midiManager;
 	srand(time(NULL)); // gui stuff
