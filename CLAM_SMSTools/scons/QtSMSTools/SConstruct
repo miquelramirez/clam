@@ -109,7 +109,9 @@ if sys.platform != 'win32' :
 	else :
 		tools_env.Append( CCFLAGS=['-g', '-Wall'] )
 
-	tools_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt' )
+	export_pkg_config = 'export PKG_CONFIG_PATH='+tools_env['clam_prefix']+'/lib/pkgconfig'
+	execute_pkg_config = 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'
+	tools_env.ParseConfig( export_pkg_config + ' && ' + execute_pkg_config  )
 else :
 	if tools_env['release'] :
 		#tools_env.Append( CPPFLAGS= ['-DWIN32', '-D_USRDLL'] )
