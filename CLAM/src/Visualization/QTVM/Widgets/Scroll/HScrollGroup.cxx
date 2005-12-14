@@ -65,22 +65,16 @@ namespace CLAM
 			mZIn = new QPushButton(this);
 			mZIn->setAutoRepeat(true);
 			mZIn->setFixedSize(20,20);
-#if defined(Q_WS_MAC)
-			mZIn->setText("+");
-#else
+			mZIn->setFocusPolicy(QWidget::NoFocus);
 			mZIn->setPixmap(QPixmap((const char**)icon_zoomin));
-#endif
 			QToolTip::add(mZIn,"Zoom In");
 			layout->addWidget(mZIn,0);
 
 			mZOut = new QPushButton(this);
 			mZOut->setAutoRepeat(true);
 			mZOut->setFixedSize(20,20);
-#if defined(Q_WS_MAC)
-			mZOut->setText("-");
-#else
+			mZOut->setFocusPolicy(QWidget::NoFocus);
 			mZOut->setPixmap(QPixmap((const char**)icon_zoomout));
-#endif
 			QToolTip::add(mZOut,"Zoom Out");
 			layout->addWidget(mZOut,0);
 

@@ -28,6 +28,7 @@ namespace CLAM
 		ScrollBar::ScrollBar(Orientation orientation, QWidget * parent)
 			: QScrollBar(orientation,parent)
 		{
+			setFocusPolicy(QWidget::NoFocus);
 		}
 
 		ScrollBar::~ScrollBar()
