@@ -2,6 +2,12 @@
 #
 import sys, os, string, glob
 
+def create_setup( target, source, env ) :
+	os.system( "makensis clam_qtsmstools.nsi" )
+
+def create_setup_message( target, source, env ) :
+	return "generating QtSMSTools Installer"
+
 def parse_pkg_config( env ) :
 	prefix = env['clam_prefix']
 	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
