@@ -24,6 +24,10 @@ namespace CLAM
 			void SetController(BPFEditorController* controller);
 			void SetBackgroundColor(const float& r, const float& g, const float& b);
 
+		signals:
+			void focusIn();
+			void focusOut();
+	
 		private slots:
 			void updateView(GLView);
 			void changeCursor(QCursor);
@@ -39,6 +43,8 @@ namespace CLAM
 			void resizeEvent(QResizeEvent *e);
 			void enterEvent(QEvent *e); 
 			void leaveEvent(QEvent *e); 
+			void focusInEvent(QFocusEvent* e);
+			void focusOutEvent(QFocusEvent* e);
 
 		private:
 			GLView               mView;

@@ -87,6 +87,8 @@ namespace CLAM
 			void AllowInsertPoints(bool allow);
 			void AllowDeletePoints(bool allow);
 			void AllowModifyPoints(bool allow);
+
+			void UseFocusColors();
 	    
 		signals:
 			void xValueChanged(int, float);
@@ -128,6 +130,9 @@ namespace CLAM
 			void activePlayer();
 			void showChooseBPFDlg();
 
+			void focusInColor();
+			void focusOutColor();
+
 		private:
 			int                      mEFlags;
 			bool                     mActivePlayer;
@@ -156,6 +161,7 @@ namespace CLAM
 			MIDIMelody mMIDIMelody;
 
 			bool mWhiteOverBlackScheme;
+			bool mUseFocusColors;
 
 			QPopupMenu*      mPopupMenu;
 			ListItemChooser* mChooseBPFDialog;

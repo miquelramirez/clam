@@ -55,6 +55,8 @@ namespace CLAM
 			void SetEditTagDialogEnabled(bool e);
 
 			void SetSegmentation(Segmentation* s);
+
+			void UseFocusColors();
 		   
 		signals:
 			void xRulerRange(double, double);
@@ -86,6 +88,9 @@ namespace CLAM
 			void setMaxVScroll(int);
 			void showEditTagDialog();
 
+			void focusInColor();
+			void focusOutColor();
+
 		protected:
 			PlotController* mController;
 			
@@ -116,12 +121,17 @@ namespace CLAM
 			
 			// holes
 			QFrame* topLeftHole;
+			QFrame* topRightHole;
 			QFrame* bottomLeftHole;
+			QFrame* bottomRightHole;
 
+			QColor sysColor;
+			
 			// edit tag dialog
 			EditTagDialog* editTagDlg;
 
 			bool            mIsEditTagDialogEnabled;
+			bool            mUseFocusColors;
 
 			void Init();
 		};
