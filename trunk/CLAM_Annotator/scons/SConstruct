@@ -142,7 +142,9 @@ if sys.platform != 'win32' :
 		annotator_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
 	else :
 		annotator_env.Append( CCFLAGS=['-g', '-Wall'] )
-	annotator_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt' )
+	export_pkg_config = 'export PKG_CONFIG_PATH='+annotator_env['clam_prefix']+'/lib/pkgconfig'
+	execute_pkg_config = 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'
+	annotator_env.ParseConfig( export_pkg_config + ' && ' + execute_pkg_config  )
 else :
 	if annotator_env['release'] :
 		annotator_env.Append( CPPFLAGS = ['-DWIN32'] )

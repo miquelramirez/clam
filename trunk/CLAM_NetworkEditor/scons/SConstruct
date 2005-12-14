@@ -111,8 +111,9 @@ if sys.platform != 'win32' :
 		neted_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
 	else :
 		neted_env.Append( CCFLAGS=['-g', '-Wall'] )
-
-	neted_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'  )
+	export_pkg_config = 'export PKG_CONFIG_PATH='+neted_env['clam_prefix']+'/lib/pkgconfig'
+	execute_pkg_config = 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'
+	neted_env.ParseConfig( export_pkg_config + ' && ' + execute_pkg_config  )
 else :
 	if neted_env['release'] :
 		neted_env.Append( CPPFLAGS = ['-DWIN32'] )
