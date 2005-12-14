@@ -34,9 +34,10 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
+	cd scons/QtSMSTools && scons
 	cd scons/Tools && scons
-	cd scons/Console && scons
-	cd scons/Batch && scons
+#	cd scons/Console && scons
+#	cd scons/Batch && scons
 	#docbook-to-man debian/smstools.sgml > smstools.1
 
 	touch build-stamp
@@ -47,12 +48,14 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
+	rm -rf $(CURDIR)/scons/QtSMSTools/*.conf
 	rm -rf $(CURDIR)/scons/Tools/*.conf
-	rm -rf $(CURDIR)/scons/Console/*.conf
-	rm -rf $(CURDIR)/scons/Batch/*.conf
+#	rm -rf $(CURDIR)/scons/Console/*.conf
+#	rm -rf $(CURDIR)/scons/Batch/*.conf
+	cd scons/QtSMSTools && scons -c
 	cd scons/Tools && scons -c
-	cd scons/Console && scons -c
-	cd scons/Batch && scons -c
+#	cd scons/Console && scons -c
+#	cd scons/Batch && scons -c
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
@@ -61,9 +64,10 @@ clean:
 	find $(CURDIR) -type f -name .*.swp | xargs rm -rf
 	find $(CURDIR) -type f -name .sconsign | xargs rm -rf
 	find $(CURDIR) -type f -name *.db | xargs rm -rf
+	rm -rf $(CURDIR)/scons/QtSMSTools/*.conf
 	rm -rf $(CURDIR)/scons/Tools/*.conf
-	rm -rf $(CURDIR)/scons/Batch/*.conf
-	rm -rf $(CURDIR)/scons/Console/*.conf
+#	rm -rf $(CURDIR)/scons/Batch/*.conf
+#	rm -rf $(CURDIR)/scons/Console/*.conf
 	dh_clean 
 
 install: build
@@ -74,9 +78,10 @@ install: build
 
 	# Add here commands to install the package into debian/smstools.
 	mkdir -p $(CURDIR)/debian/smstools/usr
+	cd scons/QtSMSTools && scons install_prefix=$(CURDIR)/debian/smstools/usr install
 	cd scons/Tools && scons install_prefix=$(CURDIR)/debian/smstools/usr install
-	cd scons/Batch && scons install_prefix=$(CURDIR)/debian/smstools/usr install 
-	cd scons/Console && scons install_prefix=$(CURDIR)/debian/smstools/usr	install
+#	cd scons/Batch && scons install_prefix=$(CURDIR)/debian/smstools/usr install 
+#	cd scons/Console && scons install_prefix=$(CURDIR)/debian/smstools/usr	install
 	find . -type f -name .sconsign | xargs rm -rf
 
 # Build architecture-independent files here.
