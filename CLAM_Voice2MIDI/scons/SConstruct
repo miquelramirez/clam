@@ -91,9 +91,9 @@ if sys.platform != 'win32' :
 else :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
 if sys.platform != 'win32' :
-	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr') )
+	opts.Add( PathOption( 'install_prefix', 'Prefix where Voice2MIDI is going to be installed', '/usr') )
 else :
-	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', 'G:\projects\CLAM-bin\\bin') )
+	opts.Add( PathOption( 'install_prefix', 'Prefix where Voice2MIDI is going to be installed', 'G:\projects\CLAM-bin\\bin') )
 
 opts.Add( BoolOption( 'release', 'Build voice2midi enabling compiler optimizations', 'no') )
 opts.Update(v2m_env)
@@ -105,8 +105,9 @@ if sys.platform != 'win32' :
 		v2m_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
 	else :
 		v2m_env.Append( CCFLAGS=['-g', '-Wall'] )
-
-	v2m_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'  )
+	export_pkg_config = 'export PKG_CONFIG_PATH='+v2m_env['clam_prefix']+'/lib/pkgconfig'
+	execute_pkg_config = 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'
+	v2m_env.ParseConfig( export_pkg_config + ' && ' + execute_pkg_config  )
 
 else :
 	if v2m_env['release'] :
