@@ -13,11 +13,13 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 
 	versionnumbers = version.split('.')
 	if sys.platform == 'linux2' :
-		soname = 'libclam_'+name+'.so.%s.%s' % (versionnumbers[0], versionnumbers[1])
+		soname = 'libclam_'+name+'.so.%s' % (versionnumbers[0])
+		#soname = 'libclam_'+name+'.so.%s.%s' % (versionnumbers[0], versionnumbers[1])
 		linker_name = 'libclam_'+name+'.so'
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.so.%s'%version )
 		soname_lib = env.SonameLink( soname, lib )			# lib***.X.so -> lib***.X.Y.dylib
+		print('soname: ' + soname)
 		linkername_lib = env.LinkerNameLink( linker_name, soname_lib)	# lib***.so -> lib***.X.so
 	else : #darwin
 		soname = 'libclam_'+name+'.%s.%s.dylib' % (versionnumbers[0], versionnumbers[1])
