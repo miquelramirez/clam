@@ -6,6 +6,8 @@
 */
 #include <vector>
 #include <CLAM/MIDIManager.hxx>
+#include <CLAM/MIDISettings.hxx>
+#include <CLAM/ShowMessage.hxx>
 #include "V2MFacade.hxx"
 
 #ifdef WIN32
@@ -313,11 +315,38 @@ void V2MFacade::SetMIDIMelodyTmp(const MIDIMelody& midiMelodyTmp)
 }
 void V2MFacade::GetMIDIDevices()
 {
+	CLAM::VM::MIDISettings settings;
+	std::vector<std::string> midiDevices = settings.GetMIDIDevices();
+	if(midiDevices.size())
+	{
+    		int i = 0;
+		int num_devices = 0;
+
+		std::vector<std::string>::iterator v_it = midiDevices.begin();
+		for(;v_it != midiDevices.end();v_it++,i++) 
+		{
+#ifdef WIN32			
+        		const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
+			if(info->output)
+			{
+				midi_dev[num_devices++]=(*v_it);
+				_midi_device_list.push_back(info->name);
+			}		
+#else
+			midi_dev[num_devices++]=(*v_it);
+			_midi_device_list.push_back((*v_it));
+#endif
+		}
+	}
+
+	/*	
+	std::cout << "BEGIN GET MIDI DEVICES" << std::endl;
 	MIDIManager manager;	
-    int i = 0;
-	int num_devices = 0;
+	std::cout << "midi manager created" << std::endl;
 	MIDIDeviceList* _devList = manager.FindList("default");
+	std::cout << "midi device list found: " << _devList << std::endl;
 	std::vector<std::string> lst = _devList->AvailableDevices();
+	std::cout << "getting available devices" << std::endl;
 	std::vector<std::string>::iterator v_it = lst.begin();
 	for(;v_it != lst.end();v_it++,i++) 
 	{
@@ -333,6 +362,8 @@ void V2MFacade::GetMIDIDevices()
 		_midi_device_list.push_back((*v_it));
 #endif
 	}
+	*/
+	std::cout << "END GET MIDI DEVICES" << std::endl;
 }
 const std::list<std::string> V2MFacade::GetMIDIDeviceNames()
 {
