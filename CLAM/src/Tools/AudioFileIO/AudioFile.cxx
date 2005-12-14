@@ -80,12 +80,15 @@ namespace CLAM
 				SetKind( EAudioFileKind::ePCM );
 				mActiveCodec = & AudioCodecs::PCMCodec::Instantiate();
 			}
+// TODO ov_open crashes when opening from MSWindows			
+#ifndef WIN32
 			else if ( AudioCodecs::OggVorbisCodec::Instantiate().IsReadable( mLocation ) )
 			{
 				SetKind( EAudioFileKind::eOggVorbis );
 				mActiveCodec = & AudioCodecs::OggVorbisCodec::Instantiate();		
 				
 			}
+#endif		
 			else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( mLocation ) )
 			{
 				SetKind( EAudioFileKind::eMpeg );
