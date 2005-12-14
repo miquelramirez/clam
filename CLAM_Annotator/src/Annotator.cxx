@@ -227,7 +227,8 @@ void Annotator::initAudioWidget()
 //	mpAudioPlot->SwitchDisplayColors(true);
 //	mpAudioPlot->SetToggleColorOn(true);
 //	mpAudioPlot->switchColors();
-	mpAudioPlot->setFocus();
+//	mpAudioPlot->setFocus();
+	mpAudioPlot->UseFocusColors();
 	mpAudioPlot->Hide();
 }
 
@@ -345,7 +346,8 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 		mBPFEditor=0;
 	}
 	mBPFEditor = new CLAM::VM::BPFEditor(CLAM::VM::AllowVerticalEdition|CLAM::VM::HasVerticalScroll);
-	mBPFEditor->switchColors();
+//	mBPFEditor->switchColors();
+	mBPFEditor->UseFocusColors();
 	mBPFEditor->Hide();
 
 	if(mPlayer)

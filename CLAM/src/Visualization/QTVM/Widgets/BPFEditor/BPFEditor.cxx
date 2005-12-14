@@ -23,14 +23,15 @@ namespace CLAM
 			, mYRuler(0)
 			, mController(0)
 			, mDisplaySurface(0)
-			, mColorScheme(EBlackOverWhite)
+			, mColorScheme(EWhiteOverBlack)
 			, mVScroll(0)
 			, mHScroll(0)
 			, topLeftHole(0)
 			, topRightHole(0)
 			, bottomRightHole(0)
 			, playerHole(0)
-			, mWhiteOverBlackScheme(true)
+			, mWhiteOverBlackScheme(false)
+			, mUseFocusColors(false)
 			, mPopupMenu(0)
 			, mChooseBPFDialog(0)
 		{
@@ -415,24 +416,30 @@ namespace CLAM
 			connect(mController,SIGNAL(elementRemoved(int)),this,SIGNAL(elementRemoved(int)));
 
 			connect(mController,SIGNAL(selectedXPos(double)),this,SIGNAL(selectedXPos(double)));
-
 			connect(mController,SIGNAL(rightButtonPressed()),this,SLOT(showPopupMenu()));
-
 			connect(mController,SIGNAL(pointsChanged()),this,SIGNAL(pointsChanged()));
+
+			connect(mDisplaySurface,SIGNAL(focusIn()),SLOT(focusInColor()));
+			connect(mDisplaySurface,SIGNAL(focusOut()),SLOT(focusOutColor()));
 
 			if(mPlayer)
 			{
-				connect(mController,SIGNAL(xValueChanged(int, float)),((QtBPFPlayer*)mPlayer),SLOT(updateNoteDuration(int, float)));
-				connect(mController,SIGNAL(yValueChanged(int, float)),((QtBPFPlayer*)mPlayer),SLOT(updateNotePitch(int, float)));
-				connect(mController,SIGNAL(elementAdded(int, float, float)),((QtBPFPlayer*)mPlayer),SLOT(addNote(int, float, float)));
+				connect(mController,SIGNAL(xValueChanged(int, float)),
+						((QtBPFPlayer*)mPlayer),SLOT(updateNoteDuration(int, float)));
+
+				connect(mController,SIGNAL(yValueChanged(int, float)),
+						((QtBPFPlayer*)mPlayer),SLOT(updateNotePitch(int, float)));
+
+				connect(mController,SIGNAL(elementAdded(int, float, float)),
+						((QtBPFPlayer*)mPlayer),SLOT(addNote(int, float, float)));
+
 				connect(mController,SIGNAL(elementRemoved(int)),((QtBPFPlayer*)mPlayer),SLOT(removeNote(int)));
 				connect(mController,SIGNAL(currentPlayingTime(float)),this,SIGNAL(currentPlayingTime(float)));
 				connect(mController,SIGNAL(stopPlaying(float)),this,SIGNAL(stopPlaying(float)));
 			}
 			
 			// set color scheme
-			WhiteOverBlack();
-									  
+			BlackOverWhite();						  
 		}
 
 		void BPFEditor::SetScheme(int scheme)
@@ -452,6 +459,7 @@ namespace CLAM
 
 		void BPFEditor::WhiteOverBlack()
 		{
+			if(mUseFocusColors) return;
 			if(mColorScheme==EWhiteOverBlack) return;
 
 			setPaletteBackgroundColor(Qt::black);
@@ -488,7 +496,7 @@ namespace CLAM
 
 		void BPFEditor::BlackOverWhite()
 		{
-			if(mColorScheme==EBlackOverWhite) return;
+			if(!mUseFocusColors && mColorScheme==EBlackOverWhite) return;
 			
 			setPaletteBackgroundColor(Qt::white);
 
@@ -829,6 +837,45 @@ namespace CLAM
 			mController->AllowModifyPoints(allow);
 		}
 
+		void BPFEditor::UseFocusColors()
+		{
+			mUseFocusColors = true;
+		}
+
+		void BPFEditor::focusInColor()
+		{
+			if(!mUseFocusColors) return;
+			Color c(250,225,240);
+
+			mXRuler->SetBackgroundColor(c);
+			mXRuler->SetForegroundColor(VMColor::Black());
+			mYRuler->SetBackgroundColor(c);
+			mYRuler->SetForegroundColor(VMColor::Black());
+		
+			QColor fc(QColor(c.r,c.g,c.b));
+
+			setPaletteBackgroundColor(fc);
+			
+			labelsContainer->setPaletteBackgroundColor(fc);
+
+			fixed_x_label->setPaletteBackgroundColor(fc);
+			fixed_x_label->setPaletteForegroundColor(Qt::black);
+			fixed_y_label->setPaletteBackgroundColor(fc);
+			fixed_y_label->setPaletteForegroundColor(Qt::black);
+
+			mXLabelInfo->setPaletteBackgroundColor(fc);
+			mXLabelInfo->setPaletteForegroundColor(Qt::black);
+			mYLabelInfo->setPaletteBackgroundColor(fc);
+			mYLabelInfo->setPaletteForegroundColor(Qt::black);
+			
+			if(bottomRightHole) bottomRightHole->setPaletteBackgroundColor(fc);
+		}
+
+		void BPFEditor::focusOutColor()
+		{
+			if(!mUseFocusColors) return;
+			BlackOverWhite();
+		}
 	}
 }
 

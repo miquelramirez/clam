@@ -19,6 +19,7 @@ namespace CLAM
 			, mController(0)
 			, editTagDlg(0)
 			, mIsEditTagDialogEnabled(true)
+			, mUseFocusColors(false)
 		{
 			Init();
 		}
@@ -125,7 +126,7 @@ namespace CLAM
 
 			mXRuler->setFixedHeight(topLeftHole->height());
 	    
-			QFrame* topRightHole = new QFrame(this);
+			topRightHole = new QFrame(this);
 			topRightHole->setFixedSize(20,40);
 
 			// middle area (y ruler, display area, vertical scroll and zoom group)
@@ -143,7 +144,7 @@ namespace CLAM
 			
 			mHScrollBar = new HScrollGroup(this);
 			
-			QFrame* bottomRightHole = new QFrame(this);
+			bottomRightHole = new QFrame(this);
 			bottomRightHole->setFixedSize(20,20);
 
 			// layout
@@ -162,6 +163,8 @@ namespace CLAM
 			mMainLayout->setMargin(2);
 			mMainLayout->addLayout(innerLayout);
 
+			sysColor = mXRuler->paletteBackgroundColor();
+
 			// toggle button to change display colors automatically
 			connect(mToggleColor,SIGNAL(clicked()),this,SLOT(switchColors()));
 
@@ -169,6 +172,8 @@ namespace CLAM
 			connect(mXRuler,SIGNAL(valueChanged(double,double)),this,SIGNAL(xRulerRange(double,double)));
 			connect(mYRuler,SIGNAL(valueChanged(double,double)),this,SIGNAL(yRulerRange(double,double)));
 
+			connect(mDisplaySurface,SIGNAL(focusIn()),SLOT(focusInColor()));
+			connect(mDisplaySurface,SIGNAL(focusOut()),SLOT(focusOutColor()));
 		}
 
 		void SingleDisplayPlot::setMaxHScroll(int value)
@@ -341,6 +346,46 @@ namespace CLAM
 		void SingleDisplayPlot::SetSegmentation(Segmentation* s)
 		{
 			mController->SetSegmentation(s);
+		}
+
+		void SingleDisplayPlot::UseFocusColors()
+		{
+			mUseFocusColors = true;
+		}
+
+		void SingleDisplayPlot::focusInColor()
+		{
+			if(!mUseFocusColors) return;
+			Color c(250,225,240);
+
+			mXRuler->SetBackgroundColor(c);
+			mXRuler->SetForegroundColor(VMColor::Black());
+			mYRuler->SetBackgroundColor(c);
+			mYRuler->SetForegroundColor(VMColor::Black());
+		
+			QColor fc(QColor(c.r,c.g,c.b));
+
+			setPaletteBackgroundColor(fc);
+			bottomLeftHole->setPaletteBackgroundColor(fc);
+			bottomRightHole->setPaletteBackgroundColor(fc);
+		}
+
+		void SingleDisplayPlot::focusOutColor()
+		{
+			if(!mUseFocusColors) return;
+
+			Color c(sysColor.red(),sysColor.green(),sysColor.blue());
+
+			mXRuler->SetBackgroundColor(c);
+			mXRuler->SetForegroundColor(VMColor::Black());
+			mYRuler->SetBackgroundColor(c);
+			mYRuler->SetForegroundColor(VMColor::Black());
+		
+			QColor fc(QColor(c.r,c.g,c.b));
+
+			setPaletteBackgroundColor(fc);
+			bottomLeftHole->setPaletteBackgroundColor(fc);
+			bottomRightHole->setPaletteBackgroundColor(fc);
 		}
     }
 }

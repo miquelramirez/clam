@@ -210,6 +210,19 @@ namespace CLAM
 		    mController->MouseOverDisplay(false);
 		    QWidget::leaveEvent(e);
 		}
+
+		void BPFEditorDisplaySurface::focusInEvent(QFocusEvent* e)
+		{
+			QWidget::focusInEvent(e);
+			emit focusIn();
+		}
+
+		void BPFEditorDisplaySurface::focusOutEvent(QFocusEvent* e)
+		{
+			QWidget::focusOutEvent(e);
+			emit focusOut();
+		}
+
 	}
 }
 
