@@ -10,6 +10,7 @@ from buildtools.tool_checks import *
 from buildtools.package_checks import *
 from buildtools.generic_checks import *
 from buildtools.installdirs import * 
+from buildtools.dmg_creation import *
 # module check sequences
 from modconf import *
 from modconf.core import * 
@@ -299,6 +300,12 @@ if sys.platform != 'darwin':
 else:
 	all_alias = Alias( 'all', [core_tgt, processing_tgt, audioio_tgt, vmqt_tgt] )
 	install_alias = Alias( 'install', [core_install_tgt, processing_install_tgt, audioio_install_tgt, vmqt_install_tgt] )
+
+	#DMG creation process
+	dmg_bld = Builder( action=Action( create_dmg, create_dmg_message ))
+	clam_env.Append( BUILDERS={'CreateDMG' : dmg_bld} )
+	dmg = clam_env.CreateDMG( version, None )
+	clam_env.Alias('dmg', [ all_alias, dmg])
 
 Default( all_alias )
 print """\
