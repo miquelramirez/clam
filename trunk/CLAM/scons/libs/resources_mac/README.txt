@@ -1,10 +1,6 @@
 Installation guide
 
--After mounting this DMG open a terminal (in Applications/Utilities)
--Go to the newly mounted volume ( $cd /Volumes/CLAM-libs )
--Run the installation script ( $sudo ./install.sh )
-
-Ready!
+-Double click the 'Install.command' script in this mounted image. Enter the administrator password when required. After the process has finished, you have CLAM library installed!
 
 You have successfully installed (let's hope so) CLAM's core, processing, audioio and vmqt library modules!
 
