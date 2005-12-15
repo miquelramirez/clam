@@ -1,5 +1,7 @@
 import sys, os, string, glob
 
+version='0.9.0-pre2'
+
 def create_setup( target, source, env ) :
 	os.system( "makensis clam_networkeditor.nsi" )
 
@@ -10,7 +12,7 @@ def create_dmg( target, source, env) :
 	os.system( "mkdir DMG" )
 	os.system( "cp README.txt DMG" )
 	os.system( "cp -r NetworkEditor.app DMG" )
-	os.system( "sudo hdiutil create -srcfolder DMG -volname CLAM_NetworkEditor -uid 0 CLAM_NetworkEditor-0.9.0-pre1.dmg" )
+	os.system( "sudo hdiutil create -srcfolder DMG -volname CLAM_NetworkEditor -uid 0 CLAM_NetworkEditor-%s.dmg"%version )
 	os.system( "rm -rf DMG" )
 
 def create_dmg_message( target, source, env):
