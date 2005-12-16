@@ -11,7 +11,7 @@ $makeSnapshot CLAM_SMSTools		HEAD		CLAM-SMSTools-cvs		1	0 300 CLAM-cvs
 $makeSnapshot CLAM			HEAD		CLAM-cvs			1	0 300 CLAM-cvs
 
 # Release 0.9.0-pre2
-$makeSnapshot CLAM_NetworkEditor 	HEAD		CLAM-NetworkEditor-0.90-pre2	1	0 300 CLAM-0.90-pre2
+$makeSnapshot CLAM_NetworkEditor 	HEAD		CLAM-NetworkEditor-0.3-pre2	1	0 300 CLAM-0.90-pre2
 $makeSnapshot CLAM_Annotator		HEAD		CLAM-Annotator-0.2-pre2		1	0 300 CLAM-0.90-pre2
 $makeSnapshot CLAM_Voice2MIDI		HEAD		CLAM-Voice2MIDI-0.3-pre2	1	0 300 CLAM-0.90-pre2
 $makeSnapshot CLAM_SMSTools		HEAD		CLAM-SMSTools-0.4-pre2		1	0 300 CLAM-0.90-pre2
