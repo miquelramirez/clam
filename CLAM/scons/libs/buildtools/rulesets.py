@@ -58,7 +58,7 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 
 	dev_linkername =  env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
 	env.Alias( 'install_'+name+'_dev', [install_headers,dev_linkername, install_descriptor, install_static] )
-	
+
 	return tgt, install_tgt
 
 def win32_lib_rules( name, version, headers, source_files, install_dirs, env ) :

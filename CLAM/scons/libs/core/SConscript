@@ -42,10 +42,10 @@ def define_module_contents() :
 		blacklist.append( 'Xerces.+' )
 		blacklist.append( 'LibXml.+' )
 
-	if not core_env.has_key('with_ladspa_support') :
+	if not core_env.has_key('with_ladspa_support') or core_env['with_ladspa_support'] == False :
 		blacklist.append( 'Ladspa.+' )
 
-	if not core_env.has_key('with_osc_support') :
+	if not core_env.has_key('with_osc_support') or core_env['with_osc_support'] == False :
 		blacklist.append( 'OSC.+')
 
 	file_retriever = FileRetriever( top+'/..', core_folders, blacklist )
@@ -82,7 +82,6 @@ else :
 
 if not core_env.GetOption('clean') :
 	core_env.Prepend(CPPPATH='include')
-	handle_preinclude( core_env )
 
 headers = [ File(header) for header in header_files ]
 

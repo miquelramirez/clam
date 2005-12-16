@@ -63,9 +63,6 @@ headers = [ File(header) for header in header_files]
 
 vmfl_env.Prepend(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
 
-if not vmfl_env.GetOption('clean') :
-	handle_preinclude( vmfl_env )
-
 vmfl_env.Append(LIBS=['clam_core', 'clam_processing','clam_audioio'])
 
 #if sys.platform == 'win32' : 

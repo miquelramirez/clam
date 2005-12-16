@@ -20,7 +20,7 @@ def define_module_contents() :
 	if sys.platform == 'win32' :
 		folders.append('src/Processing/InitAudioIO*.*xx')
 	else :
-		if audioio_env.has_key('with_jack_support'):
+		if audioio_env.has_key('with_jack_support') and audioio_env['with_jack_support'] == True:
 			folders.append('src/Flow/Networks/JACKNetworkPlayer*.*xx')
 
 	if audioio_env['with_portmidi'] :
@@ -96,9 +96,6 @@ else :
 
 
 audioio_env.Prepend(CPPPATH=['include','../core/include','../processing/include'])
-
-if not audioio_env.GetOption('clean') :
-	handle_preinclude( audioio_env )
 
 audioio_env.Append(LIBS=['clam_core','clam_processing'])
 audioio_env.Prepend(LIBPATH=['../core','../processing'])
