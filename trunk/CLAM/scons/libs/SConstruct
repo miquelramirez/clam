@@ -302,7 +302,8 @@ def config_file_missing():
 # SConstruct file for CLAM
 # Main section
 
-version = '0.90-pre3'
+version = '0.90.0'
+package_version = '0.90.0-pre3'
 Export('version')
 
 top = '../..'
@@ -385,7 +386,7 @@ else:
 	#DMG creation process
 	dmg_bld = Builder( action=Action( create_dmg, create_dmg_message ))
 	clam_env.Append( BUILDERS={'CreateDMG' : dmg_bld} )
-	dmg = clam_env.CreateDMG( version, None )
+	dmg = clam_env.CreateDMG( package_version, None )
 	clam_env.Alias('dmg', [ all_alias, dmg])
 
 Default( all_alias )
