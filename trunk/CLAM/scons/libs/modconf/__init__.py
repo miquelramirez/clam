@@ -3,10 +3,6 @@ import sys
 def setup_global_environment( clam_env, conf ) :	
 	# clam env
 	# check for pkg-config, compiler support, bash features, et.
-	print """\
-############################################
-### GLOBAL CLAM DEPENDENCIES CHECKING    ###
-############################################"""
 	if sys.platform == 'linux2' :
 		if not conf.check_pkg_config( conf ) :
 			print 'WARNING: pkg-config is not installed'
@@ -66,7 +62,6 @@ def setup_global_environment( clam_env, conf ) :
 	if sys.platform == 'win32' :
 		clam_env.Append( CPPFLAGS=['-DWIN32'] )
 
-	clam_env['preinclude'] = 'preinclude.hxx'
 
 	#if not sys.platform == 'win32' :
 	if sys.platform == 'linux2' :
