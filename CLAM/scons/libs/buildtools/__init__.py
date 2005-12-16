@@ -17,8 +17,9 @@ def make_lib_names( source, target, env ) :
 	
 	if sys.platform == 'linux2' :
 		os.system( "ldconfig -n ." )
-		linkername = '.'.join(target_file.split('.')[0:2])
-		soname = '.'.join( target_file.split('.')[0:3])
+		linkername = '.'.join(pieces[0:2])
+		soname = '.'.join( pieces[0:3])
+		biglinkername = '.'.join( pieces[0:4] )
 	else : #darwin
 		soname = target_file					# libAAA.X.Y.dylib
 		linkername = pieces[0]+"."+pieces[1]+"."+pieces[-1]	# libAAA.X.dylib
