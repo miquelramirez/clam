@@ -124,7 +124,7 @@ def create_custom_builders( env ) :
 # SConstruct file for CLAM
 # Main section
 
-version = '0.8.0'
+version = '0.90-pre3'
 Export('version')
 
 top = '../..'
@@ -150,6 +150,8 @@ if not clam_env.GetOption("clean") :
 else :
 	header_db = None
 Export('header_db')
+
+clam_env['preinclude']='preinclude.hxx'
 
 setup_build_options( clam_env )
 
