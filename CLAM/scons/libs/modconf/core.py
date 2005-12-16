@@ -87,11 +87,11 @@ def test_oscpack ( core_env, conf ) :
 def setup_core_environment ( core_env, conf) :
 	if not test_xml_backend( core_env, conf): return False
 
-	if core_env.has_key('with_ladspa_support') and sys.platform == 'linux2':
+	if core_env.has_key('with_ladspa_support')  and core_env['with_ladspa_support'] == True and sys.platform == 'linux2':
 		if not test_ladspa ( core_env, conf): return False
 		
 	
-	if core_env.has_key('with_osc_support') and sys.platform != 'win32':
+	if core_env.has_key('with_osc_support') and core_env['with_osc_support'] == True and sys.platform != 'win32':
 		if not test_oscpack (core_env, conf): return False
 	
 
