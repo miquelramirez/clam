@@ -75,7 +75,7 @@ Section "Principal" SEC01
   CreateShortCut "$SMPROGRAMS\CLAM\Annotator\Annotator.lnk" "$INSTDIR\bin\Annotator.exe"
   CreateShortCut "$DESKTOP\Annotator.lnk" "$INSTDIR\bin\Annotator.exe"
   SetOutPath "$INSTDIR\resources\sounds\"
-  File "..\resources\sounds\click.mp3"
+  File "..\resources\sounds\click2.wav"
   SetOutPath "$INSTDIR\Samples\"
   File "..\Samples\Schema.sc"
   File "..\Samples\Project.pro"
@@ -126,7 +126,7 @@ Section Uninstall
   Delete "$INSTDIR\Samples\SongsTest\03.mp3.pool"
   Delete "$INSTDIR\Samples\Project_win.pro"
   Delete "$INSTDIR\Samples\Schema.sc"
-  Delete "$INSTDIR\resources\sounds\click.mp3"
+  Delete "$INSTDIR\resources\sounds\click2.wav"
   Delete "$INSTDIR\bin\Annotator.exe"
 
   Delete "$SMPROGRAMS\CLAM\Annotator\Uninstall.lnk"
