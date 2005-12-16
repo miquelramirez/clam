@@ -1,3 +1,62 @@
+2005-12-16 CLAM_0_90_0
+'The scons revolution? Multiplaform again? ... TO DECIDE'
+  * Building and packaging
+     ** New build system based on scons
+     ** Binary libraries
+     ** Standard library installation
+     ** CLAM applications just link against the libraries
+     ** CLAM and all provided applications are working multiplatform 
+        (Linux/MacOSX/Windows)
+     ** Easy to use installers for MacOSX, Windows and Linux (Debian)
+     ** Ported to g++ 4.0
+  * Rappid prototyping infrastructure
+     ** New external-generators/sinks and external-control-senders/receiver 
+        classes. 
+        *** They glue specific architecture (jack, portaudio, ladspa, vst) 
+            ports with a clam network.
+  * New hierarchy of network-players classes, with these (final) classes:
+    ** JACKNetworkPlayer, 
+    ** PortAudioNetworkPlayer,
+    ** BlockingNetworkPlayer,
+  * LADSPA Plugins (Linux): A generic plugin that embeds a network. 
+    It just needs the path to a valid network xml file.
+  * VST Plugins (Mac/Windows): A generic plugin that embeds a network. 
+    It just needs the path to a valid network xml file.
+  * MIDI files
+    ** New classes to read/write standard MIDI files
+  * Qt Visualization Module
+    ** Support for multidisplay plots.
+    ** BPFEditor: multiple BPF allowed
+    ** Faster rendering of plots using buffered pixmaps
+  * QtSMSTools2: New! A total rewrite of SMSTools2 GUI using the Qt toolkit.
+    ** Multidisplay implementation sharing common axis   
+       *** Spectrogram (Color,Black&White)
+       *** Improved player: audio and fundamental frequency
+       *** More suitable dialogs to configure projects
+  * NetworkEditor
+    ** New callback audio-driving mode. This allow different modes 
+      (specified as command line options)
+       *** Jack client mode (not in Windows)
+       *** PortAudio mode
+       *** Blocking mode
+  * Annotator
+    ** New segment editor:
+       *** Different annotation restrictions depending on the schema. 
+           Right now:
+           **** Continuous segmentation (no gap)
+           **** Discontinous segmentation (gaps but not overlaps)
+       *** Consistent dragging
+       *** Tooltips are faster to appear
+       *** Tooltips say just the position of the hovered element instead 
+           the cursor position.
+       *** Hovering highlights the limit
+   ** Optimizations on the song switching and on the display
+   ** Inserting and removing segments now has its reflexion on the pool
+   ** Playing the wav and the auralization on different channels.
+   ** Description schema browser
+   ** Now, viable projects can be built from the interface
+
+
 
 2005-07-21 CLAM_0_8_0
 'Prototyper with streaming SMS transformations'
