@@ -119,7 +119,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	initInterface();
 	setMenuAudioItemsEnabled(false);
 	connect (mAudioRefreshTimer, SIGNAL(timeout()), this, SLOT(refreshAudioData()) );
-	if (nameProject=="") mProjectFileName = nameProject;
+	if (nameProject!="") mProjectFileName = nameProject;
 	loadSettings();
 	if (mProjectFileName=="") return;
 	try
