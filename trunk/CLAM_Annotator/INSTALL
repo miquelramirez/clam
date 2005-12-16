@@ -1,0 +1,203 @@
+
+This document explains how to compile and install the CLAM libraries 
+and applications from the source tarballs.
+
+ 1. Install CLAM dependencies
+
+ This step is different for each architecture (Linux, Windows, MacOSX)
+ Please, refere to the specific instructions below.
+ 
+   
+ 2. Compile CLAM libraries from the tarball
+
+ Download the CLAM tarball (stable release or cvs snapshot) from the 
+ web: [http://clam.iua.upf.es/download.html] 
+ and extract it : "tar xvzf CLAM-X.Y.Z.tar.gz"
+ Change directory to CLAM/scons/libs/
+
+ The simplest way to build and install the libraries is issuing :
+
+	$ scons configure
+	$ scons
+	$ sudo scons install
+
+ This will compile all the libraries with default options, and install
+ them to the default dirs (/usr/lib/ and /usr/include/ )
+
+ To obtain all the available options and its current values, issue:
+
+	$ scons --help
+
+ Example:
+
+	$ scons configure release=no prefix=~/mylibs/
+	$ scons
+	$ scons install
+
+ This will compile the libraries in debug mode and install them in
+ ~/mylibs/lib/ and ~/mylibs/include/
+ Notice that if you are using a non-standard prefix, you might need to
+ make the LD_LIBRARY_PATH to point to the lib directory.
+ 
+ Another example:
+
+	$ scons configure with_osc_support=no
+
+ IMPORTANT: scons saves the last used options in the .conf file. 
+ These options will be used by default in further "scons" commands.
+
+ MacOsx specific: default prefix is set to /usr/local. 
+ Our tests using /usr didn't succeed.
+   
+
+ 3. Compile the CLAM application.
+
+ Applications comes in separate tarballs. You'll need to download it 
+ from the CLAM web. Then go into its scons/ directory and
+ do the same steps as above.
+ 
+ If you with to use CLAM libs installed in a non-standard dir. You 
+ will need to specify the clam_prefix :
+
+	$ scons clam_prefix=~/mylibs/ install
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+1.1 Install CLAM dependencies on Linux
+
+ As a hint, in an Ubuntu Breezy (Debian based) distribution these 
+ are the needed packages:
+   libxerces26-dev, fftw-dev, sfftw-dev, libfltk1.1-dev, libqt-mt-dev, 
+   libqwt-dev, libasound2-dev, libvorbis-dev, libsndfile-dev, 
+   libmad0-dev, libid3-3.8.3-dev
+
+ Redhad packages list: TODO. 
+ We'd appreciate any help on this list. Please mail to clam@iua.upf.es
+
+ Non-packaged libraries : oscpack. 
+   There is no official Debian package for oscpack, so if you want to 
+   use it you'll need to install it from sources. 
+   [ http://www.audiomulch.com/~rossb/code/oscpack/ ]
+
+ Some of the previous libraries are optional, and there exist 
+ command-line options for disabling them at configure time.
+
+
+
+1.2 Install CLAM dependencies on Mac OSX
+
+ 
+
+  Required tools:
+  ---------------
+
+ * Apple's Mac OS X Developer Tools. 
+ * Pkgconfig : install it from Fink or from source code taken from 
+   [http://pkgconfig.freedesktop.org/wiki/ here].
+ * scons : take the source code from [http://www.scons.org/ here]. 
+   After decompressing it go to its directory and issue 
+   "scons setup.py install". Then add the following line to your 
+   ~/.bashrc and ./profile files:
+	export PATH=$PATH:/System/Library/Frameworks/Python.framework/Versions/2.3/bin
+
+  Installing the 3rd party libraries with the dmg package
+  ------------------------------------------------------  
+  This is the easy way. Download and install this file
+  external-libraries-for-CLAM-X.Y.X.dmg
+
+  Exceptions: Qt is not provided with this package. You'll need
+  to get it from their web. See instructions below:
+
+  Installing the 3rd party libraries from source
+  ----------------------------------------------
+  Alternatively, you can install the libraries form source.
+
+  Where not specified, download latest version. The installation 
+  process of these 3rd party libraries is the typical in Unix systems. 
+  Special configuration phases are sometimes needed, in that case it 
+  will be specified:
+ 
+	$ tar xvzf library-X.Y.Z.tar.gz
+	$ cd library-X.Y.Z
+	$ ./configure --prefix=/usr/local
+	$ make
+	$ sudo make install
+
+  * cppunit [http://cppunit.sourceforge.net/]
+    default compilation procedure. Install it for unit testing issues 
+    only.
+  * id3 [http://id3lib.sourceforge.net/]
+    default compilation procedure.
+  * jack [http://jackit.sourceforge.net/]
+    default compilation procedure.
+  * fftw [http://www.fftw.org/]
+    Download version 2.XX. Default compilation procedure.
+
+	$ ./configure --prefix=/usr/local --enable-shared --enable-float --enable-type-prefix
+
+  * sndfile [http://www.mega-nerd.com/libsndfile sndfile] 
+    default compilation procedure.
+  * mad [http://www.underbit.com/products/mad/]
+    default compilation procedure.
+  * ogg-vorbis [http://www.vorbis.com/]
+    Download libogg and libvorbis. Default compilation procedure.
+  * oscpack [http://www.audiomulch.com/~rossb/code/oscpack/ ] 
+    Warning: the mac dynamic library creation makefile is not still 
+    included in the main release. Deactivate oscpack or get the binary 
+    dependencies.
+  * portaudio [http://www.portaudio.com/]
+    Get devel version (V19) from the CVS snapshot. 
+    Default compilation procedure.
+  * Qt/Mac [http://naranja.umh.es/~atg/software-qt3.html]
+    Get the normal installation packet compiled for MacOSX 10.3.X or 
+    10.4.X according to your system. Decompress and install. 
+    Add these lines to your ~/.bashrc and ~/.profile files:
+
+	export QTDIR=/Developer/qt
+	export PATH=$PATH:/Developer/qt/bin
+   
+    Finally, open a console and execute the following command 
+
+	$ sudo cp /Developer/qt/lib/libqt-mt.3.3.5.dylib /usr/local/lib/
+
+    (this is for workaround for a bug already communicated to the 
+    binary package manager that hasn't been solved yet)
+
+  * xerces-c [http://xml.apache.org/xerces-c/]
+    it has special needs, as detailed here:
+
+	$ export XERCESCROOT=$PWD
+	$ cd $XERCESCROOT/src/xercesc
+	$ autoconf
+	$ ./runConfigure -pmacosx -rpthread -P/usr/local
+
+
+
+1.3 Install CLAM dependencies on Windows
+ 
+  Required Tools
+  --------------
+
+ * cl.exe command line compiler from Microsoft 
+   (it comes with Microsoft Visual C++ 7.1).
+ * python and scons installed on the system.
+ * make sure that any needed tool have its directory added to the 
+   PATH variable (in order to execute cl and scons)
+ * if you want to create installer you'll need nsis scripting language. 
+   You can download it from [http://nsis.sourceforge.net/Main_Page] 
+ 
+  3rd party libraries
+  -------------------
+  
+  You can download the needed external libraries to build CLAM library 
+  on the official CLAM webpage [http://www.iua.upf.es/mtg/clam/]. 
+  Please make sure that they are installed on a common base directory. 
+  i.e:
+  	devel\CLAM\
+	devel\xercesc\ 
+	devel\fftw\
+	devel\...
+
