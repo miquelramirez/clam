@@ -23,12 +23,12 @@ def define_module_contents() :
 
 	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+' , 'FileChooser', 'MessageBox', 'FLTKConfigurator', 'WidgetTKWrapper', 'FDFilterController']
 
-	if not processing_env.has_key('with_osc_support') :
+	if not processing_env.has_key('with_osc_support') or processing_env['with_osc_support'] == False :
 		blacklist.append('OSCSender')
 
-	if not processing_env.has_key('with_fftw') :
+	if not processing_env.has_key('with_fftw') or processing_env['with_fftw'] == False :
 		blacklist.append('.+rfftw.+')
-	if not processing_env.has_key('with_nr_fft') :
+	if not processing_env.has_key('with_nr_fft') or processing_env['with_nr_fft'] == False :
 		blacklist.append('.*numrecipes.+')
 		blacklist.append('.+numrec.+')
 	
@@ -74,12 +74,8 @@ else :
 
 	
 processing_env.Prepend(CPPPATH=['include','../core/include'])
-if not processing_env.GetOption('clean') :
-	handle_preinclude( processing_env )
 
 processing_env.Append(LIBS=['clam_core'])
-#if sys.platform == 'win32' :
-#	processing_env.Append(LIBS=['clam_core_templates'])
 
 processing_env.Prepend(LIBPATH=['../core'])
 

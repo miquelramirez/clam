@@ -64,9 +64,6 @@ headers = [ File(header) for header in header_files ]
 
 vmqt_env.Prepend(CPPPATH=['.','../core/include','../processing/include','../audioio/include'])
 
-if not vmqt_env.GetOption('clean') :
-	handle_preinclude( vmqt_env )
-
 vmqt_env.Append(LIBS=['clam_core', 'clam_processing','clam_audioio'])
 
 #if sys.platform == 'win32' : 
