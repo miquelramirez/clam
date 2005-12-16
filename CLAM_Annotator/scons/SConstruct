@@ -215,7 +215,7 @@ if sys.platform != 'win32' :
 		manpage = ['../resources/man/man9/Annotator.9']
 		install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
 
-		sounds = ['../resources/sounds/click.mp3']
+		sounds = ['../resources/sounds/click.wav']
 		install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
 
 		annotator_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
@@ -231,7 +231,7 @@ if sys.platform != 'win32' :
 		bundle_bin = annotator_env.Install( 'Annotator.app/Contents/MacOS', [annotator_bin_pre, sample_extractor_bin, 'runExtractor.sh'] )
 		bundle_data = annotator_env.Install( 'Annotator.app/Contents', 'resources/Info.plist')
 		bundle_icon = annotator_env.Install( 'Annotator.app/Contents/Resources', 'resources/CLAM.icns')
-		bundle_sounds = annotator_env.Install( 'Annotator.app/Contents/Resources/sounds', '../resources/sounds/click.mp3' )
+		bundle_sounds = annotator_env.Install( 'Annotator.app/Contents/Resources/sounds', '../resources/sounds/click.wav' )
 		
 		annotator_bin = [ bundle_bin + bundle_sounds + bundle_data + bundle_icon ]
 
@@ -262,7 +262,7 @@ else :
 	manpage = ['../resources/man/man9/Annotator.9']
 	install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
 	
-	sounds = ['../resources/sounds/click.mp3']
+	sounds = ['../resources/sounds/click.wav']
 	install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
 
 	install_alias = annotator_env.Alias( 'install', [install_bin,install_sounds, install_manpage] )
