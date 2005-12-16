@@ -288,6 +288,17 @@ def create_custom_builders( env ) :
 	bld = Builder( action=Action(generate_linker_name, generate_linker_name_message) )
 	env.Append( BUILDERS={'LinkerNameLink' : bld} )
 
+def config_file_missing():
+	dirs = ". core audioio processing vmqt vmfl"
+	files = [ dir+"/flags.conf" for dir in dirs.split()]
+	func_and = lambda x,y : x and y
+	result = not reduce( func_and, map(os.path.exists, files) ) 
+
+	if result == False:
+		print "\n WARNING: at least one module configuration file is missing. Running automatically as a 'scons configure'\n"
+
+	return result
+
 # SConstruct file for CLAM
 # Main section
 
@@ -327,7 +338,7 @@ audioio_env = clam_env.Copy()
 vmfl_env = clam_env.Copy()
 vmqt_env = clam_env.Copy()
 
-if 'configure' in COMMAND_LINE_TARGETS:
+if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() :
     configureBB(clam_env)
     print "Finished. Invoke 'scons' now."
     Exit(0)
