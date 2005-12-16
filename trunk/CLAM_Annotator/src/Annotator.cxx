@@ -188,7 +188,7 @@ void Annotator::initProject()
 
 	try
 	{
-		mProject.LoadScheme(mProject.GetSchema(), projectToAbsolutePath("")+"/");
+		mProject.LoadScheme(projectToAbsolutePath(mProject.GetSchema()));
 	}
 	catch (CLAM::XmlStorageErr & e)
 	{
