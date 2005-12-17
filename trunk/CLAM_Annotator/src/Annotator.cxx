@@ -862,6 +862,8 @@ void Annotator::auralizeMarks()
 	{
 		CLAM::AudioFile file;
 		file.OpenExisting(RESOURCES_BASE"/sounds/click.wav");
+		CLAM_ASSERT(file.IsReadable(), "The application requires the file '"
+				RESOURCES_BASE"/sounds/click.wav' which couldn't be open.");
 		int nChannels = file.GetHeader().GetChannels();
 		mClick.resize(nChannels);
 		for (int i=0; i<nChannels; i++)
