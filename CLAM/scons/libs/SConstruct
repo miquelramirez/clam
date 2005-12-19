@@ -49,12 +49,8 @@ def configure_clam(clam_env) :
 ############################################
 ### CLAM GLOBAL DEPENDENCIES CHECKING    ###
 ############################################"""
-	if sys.platform == 'win32' :
-		clam_env.Replace( QT_LIB = 'qt-mt322')
-	else :
-		clam_env.Replace( QT_LIB = 'qt-mt' )
-
 	# Sandbox setup
+	clam_env.Replace( QT_LIB = '' )
 	if sys.platform == 'win32' : #!= 'linux2' :
 		libbasenames = [ 'fltk', 'xercesc', 'fftw', 'dxsdk', 'id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','pthreads']
 		for basename in libbasenames :
@@ -81,96 +77,97 @@ def configure_clam(clam_env) :
 		Exit(1)
 	clam_env = conf.Finish()
 
-def configure_core(core_env) :
+def configure_core(clam_env) :
 	print """\
 #########################################
 ### CLAM CORE DEPENDENCIES CHECKING   ###
 #########################################"""
+	core_env = clam_env.Copy()
 	conf = Configure( core_env, custom_tests = custom_check_routines )
-	core_env.Replace( QT_LIB = '' )
 	if not setup_core_environment( core_env, conf ) :
 		Exit(1)
 	core_env = conf.Finish()
 	clam_env['xmlbackend'] = core_env['xmlbackend']
 	if clam_env['xmlbackend'] != 'none' :
 		clam_env.Append( CPPFLAGS=['-DCLAM_USE_XML'] )
+	print('core libs 1: ')
+	print(core_env['LIBS'])
+	return core_env
 
-def configure_processing(processing_env) :
+def configure_processing(core_env) :
 	print """\
 ###############################################
 ### CLAM PROCESSING DEPENDENCIES CHECKING   ###
 ###############################################"""
-	if sys.platform == 'win32' or sys.platform == 'darwin' :
+	#if sys.platform == 'win32' or sys.platform == 'darwin' :
 		#Added 'darwin' because due to some strange reasons, the LIBS added in the previous setup_core_environment were not used anymore (but CPPFLAGS did).
 		# In Linux it works fine without having to manually copy them --> done before every module process in this file
-		processing_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
+	processing_env = core_env.Copy()
+	#if sys.platform == 'win32' or sys.platform == 'darwin' :
+	#	processing_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 	conf = Configure( processing_env, custom_check_routines )	
-	processing_env.Replace( QT_LIB = '' )
 	if not setup_processing_environment( processing_env, conf ) :
 		Exit(1)
 	processing_env = conf.Finish()
+	return processing_env
 
-def configure_audioio(audioio_env) :
+def configure_audioio(processing_env) :
 	print """\
 ############################################
 ### CLAM AUDIOIO DEPENDENCIES CHECKING   ###
 ############################################"""
-	if sys.platform == 'win32' or sys.platform == 'darwin' :
-		audioio_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
-		audioio_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
-		audioio_env.AppendUnique( LINKFLAGS=copy.copy(core_env['LINKFLAGS']) )
+	audioio_env = processing_env.Copy()
+	#if sys.platform == 'win32' or sys.platform == 'darwin' :
+	#	audioio_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
+	#	audioio_env.AppendUnique( LINKFLAGS=copy.copy(core_env['LINKFLAGS']) )
 
 	conf = Configure( audioio_env, custom_check_routines )
-	audioio_env.Replace( QT_LIB = '' )
 	if not setup_audioio_environment( audioio_env, conf ) :
 		Exit(1)
 	audioio_env = conf.Finish()
+	return audioio_env
 
-def configure_vmfl(vmfl_env) :	
+def configure_vmfl(audioio_env) :	
 	print """\
 #########################################
 ### CLAM VMFL DEPENDENCIES CHECKING   ###
 #########################################"""
+	vmfl_env = audioio_env.Copy()
 	if sys.platform != 'darwin':  # FLTK configuration bypass under Mac OSX
-		if sys.platform == 'win32' or sys.platform == 'darwin' :
-			vmfl_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
-			vmfl_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
-			vmfl_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
+	#	if sys.platform == 'win32' or sys.platform == 'darwin' :
+	#		vmfl_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
 		conf = Configure( vmfl_env, custom_check_routines )
-		vmfl_env.Replace( QT_LIB = '' )
 		if not setup_vmfl_environment( vmfl_env, conf ) :
 			Exit(1)
 		vmfl_env = conf.Finish()
+	return vmfl_env
 
-def configure_vmqt(vmqt_env) :	
+def configure_vmqt(audioio_env) :	
 	print """\
 #########################################
 ### CLAM VMQT DEPENDENCIES CHECKING   ###
 #########################################"""
-	if sys.platform == 'win32' or sys.platform == 'darwin' :
-		vmqt_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
-		vmqt_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
-		vmqt_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
+	vmqt_env = audioio_env.Copy()
+	if sys.platform == 'win32' :
+		vmqt_env.Replace( QT_LIB = 'qt-mt322')
+	else :
+		vmqt_env.Replace( QT_LIB = 'qt-mt' )
+	#if sys.platform == 'win32' or sys.platform == 'darwin' :
+	#	vmqt_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
 	vmqt_env.Replace( QT_DEBUG='0' )
 	conf = Configure( vmqt_env, custom_check_routines )
 	if not setup_vmqt_environment( vmqt_env, conf ) :
 		Exit(1)
 	vmqt_env = conf.Finish()
+	return vmqt_env
 
-def configureBB( clam_env ) :
+def configureModules( clam_env ) :
 	configure_clam(clam_env)
-
-	core_env = clam_env.Copy()
-	processing_env = clam_env.Copy()
-	audioio_env = clam_env.Copy()
-	vmfl_env = clam_env.Copy()
-	vmqt_env = clam_env.Copy()
-
-	configure_core(core_env)
-	configure_processing(processing_env)
-	configure_audioio(audioio_env)
-	configure_vmfl(vmfl_env)
-	configure_vmqt(vmqt_env)
+	core_env = configure_core(clam_env)
+	processing_env = configure_processing(core_env)
+	audioio_env = configure_audioio(processing_env)
+	vmfl_env = configure_vmfl(audioio_env)
+	vmqt_env = configure_vmqt(audioio_env)
 
 	save_config_file_from_env(clam_env, '.')
 	save_config_file_from_env(core_env, 'core')
@@ -179,12 +176,6 @@ def configureBB( clam_env ) :
 	save_config_file_from_env(vmfl_env, 'vmfl')
 	save_config_file_from_env(vmqt_env, 'vmqt')
 	#return core_env, processing_env, audioio_env, vmfl_env, vmqt_env
-
-#def configure_foo( target, source, env ):
-#	configure_core(core_env)
-
-#def configure_message_foo( target, source, env ):
-#	return "configuring CLAM"
 
 # helper functions
 def setup_build_options( env ) :
@@ -333,16 +324,16 @@ custom_check_routines = gather_custom_checks()
 #registering custom_builders
 create_custom_builders(clam_env)
 
+if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() :
+    configureModules(clam_env)
+    print "Finished. Invoke 'scons' now."
+    Exit(0)
+
 core_env = clam_env.Copy()
 processing_env = clam_env.Copy()
 audioio_env = clam_env.Copy()
 vmfl_env = clam_env.Copy()
 vmqt_env = clam_env.Copy()
-
-if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() :
-    configureBB(clam_env)
-    print "Finished. Invoke 'scons' now."
-    Exit(0)
 
 #building
 if not clam_env.GetOption('clean') :
