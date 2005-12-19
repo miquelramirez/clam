@@ -27,6 +27,7 @@ def load_config_file_to_env( env, dir ):
 	opts.Add( 'CPPFLAGS', 'CPP FLAGS', env['CPPFLAGS'])
 	opts.Add( 'LIBPATH', 'LIB PATH', env['LIBPATH'])
 	opts.Add( 'LIBS', 'libs to link', env['LIBS'])
+	opts.Add( 'LINKFLAGS', 'LINKFLAGS', env['LINKFLAGS']) # This one added because on Mac OS X we need additional 'framework OpenGL && AGL'
 	opts.Add( 'pkg_config_available', 'PKG Config Available', 'False')
 	opts.Add( 'QT_LIB', 'QT lib name', 'qt-mt')
 	opts.Update(env)
@@ -40,6 +41,7 @@ def save_config_file_from_env( env, dir ):
 	opts.Add( 'CPPFLAGS', 'CPP FLAGS', '')
 	opts.Add( 'LIBPATH', 'LIB PATH', '')
 	opts.Add( 'LIBS', 'libs to link', env['LIBS'])
+	opts.Add( 'LINKFLAGS', 'LINKFLAGS', '') # This one added because on Mac OS X we need additional 'framework OpenGL && AGL'
 	opts.Add( 'pkg_config_available', 'PKG Config Available', 'False')
 	opts.Add( 'QT_LIB', 'QT lib name', '')
 	opts.Save(dir+'/flags.conf', env)
@@ -90,8 +92,6 @@ def configure_core(clam_env) :
 	clam_env['xmlbackend'] = core_env['xmlbackend']
 	if clam_env['xmlbackend'] != 'none' :
 		clam_env.Append( CPPFLAGS=['-DCLAM_USE_XML'] )
-	print('core libs 1: ')
-	print(core_env['LIBS'])
 	return core_env
 
 def configure_processing(core_env) :
