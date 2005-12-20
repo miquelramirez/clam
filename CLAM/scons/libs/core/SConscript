@@ -48,6 +48,7 @@ def define_module_contents() :
 	if not core_env.has_key('with_osc_support') or core_env['with_osc_support'] == False :
 		blacklist.append( 'OSC.+')
 
+	
 	file_retriever = FileRetriever( top+'/..', core_folders, blacklist )
 
 	file_retriever.scan()
@@ -61,7 +62,6 @@ def define_module_contents() :
 
 	manifest = Manifest()
 	manifest.store( file_retriever.headers, file_retriever.sources )
-	print "ok"
 	return file_retriever.headers, file_retriever.sources
 
 
@@ -69,8 +69,6 @@ if not core_env.GetOption('clean') :
 	print "Creating pkg-config descriptor...",
 	pkg_data = PackageData( 'clam_core', version )
 	pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
-	print "ok"
-
 
 if not core_env.GetOption('clean') : 
 	header_files, source_files = define_module_contents()
