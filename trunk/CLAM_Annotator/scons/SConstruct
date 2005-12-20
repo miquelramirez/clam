@@ -1,6 +1,6 @@
 import sys, os, glob
 
-version='0.9.0-pre2'
+version='0.21-pre3'
 
 def create_setup( target, source, env ) :
 	os.system( "makensis clam_annotator.nsi" )
@@ -200,12 +200,15 @@ bin_objects = [ annotator_env.Object(source) for source in sourcefiles ]
 
 annotator_env.Append(CPPPATH=source_dirs)
 
+sounds = ['../resources/sounds/click.wav']
+
 if sys.platform != 'win32' :
 	bin_main_object = annotator_env.Object('../src/main.cxx')
 	bin_test_object = annotator_env.Object('../src/Test.cxx')
 	
 	annotator_env.Append(CCFLAGS='-include CLAM/preinclude.hxx  -DQT_THREAD_SUPPORT')
 
+	
 	if sys.platform == 'linux2':
 		annotator_env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"/usr/share/annotator\\""')
 		annotator_bin = annotator_env.Program( 'Annotator', bin_objects + bin_main_object, LINKFLAGS=['-rdynamic'] )
@@ -215,7 +218,6 @@ if sys.platform != 'win32' :
 		manpage = ['../resources/man/man9/Annotator.9']
 		install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
 
-		sounds = ['../resources/sounds/click.wav']
 		install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
 
 		annotator_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
@@ -231,7 +233,7 @@ if sys.platform != 'win32' :
 		bundle_bin = annotator_env.Install( 'Annotator.app/Contents/MacOS', [annotator_bin_pre, sample_extractor_bin, 'runExtractor.sh'] )
 		bundle_data = annotator_env.Install( 'Annotator.app/Contents', 'resources/Info.plist')
 		bundle_icon = annotator_env.Install( 'Annotator.app/Contents/Resources', 'resources/CLAM.icns')
-		bundle_sounds = annotator_env.Install( 'Annotator.app/Contents/Resources/sounds', '../resources/sounds/click.wav' )
+		bundle_sounds = annotator_env.Install( 'Annotator.app/Contents/Resources/sounds', sounds )
 		
 		annotator_bin = [ bundle_bin + bundle_sounds + bundle_data + bundle_icon ]
 
@@ -262,7 +264,6 @@ else :
 	manpage = ['../resources/man/man9/Annotator.9']
 	install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
 	
-	sounds = ['../resources/sounds/click.wav']
 	install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
 
 	install_alias = annotator_env.Alias( 'install', [install_bin,install_sounds, install_manpage] )
