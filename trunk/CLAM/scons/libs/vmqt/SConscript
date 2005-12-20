@@ -36,9 +36,7 @@ def define_module_contents() :
 	manifest = Manifest()
 	manifest.store( file_retriever.headers, file_retriever.sources )
 
-	print "ok"
 	return file_retriever.headers, file_retriever.sources
-
 
 if not vmqt_env.GetOption('clean') :
 	print """\
@@ -48,8 +46,6 @@ if not vmqt_env.GetOption('clean') :
 	print "Creating pkg-config descriptor...",
 	pkg_data = PackageData( 'clam_vmqt', version, [] )
 	pkg_data.create_pkg_descriptor( vmqt_env, 'clam_vmqt.pc' )
-	print "ok"
-
 
 if not vmqt_env.GetOption('clean') :
 	header_files, source_files = define_module_contents()

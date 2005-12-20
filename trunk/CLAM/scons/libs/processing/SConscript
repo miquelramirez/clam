@@ -46,8 +46,6 @@ def define_module_contents() :
 	manifest = Manifest()
 	manifest.store( file_retriever.headers, file_retriever.sources )
 
-	print "ok"
-
 	return file_retriever.headers, file_retriever.sources 
 
 
@@ -62,7 +60,6 @@ if not processing_env.GetOption('clean') :
 	print "Creating pkg-config descriptor...",
 	pkg_data = PackageData( 'clam_processing', version, [] )
 	pkg_data.create_pkg_descriptor( processing_env, 'clam_processing.pc' )
-	print "ok"
 
 if not processing_env.GetOption('clean') :
 	header_files, source_files = define_module_contents()

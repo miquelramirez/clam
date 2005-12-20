@@ -31,8 +31,6 @@ def define_module_contents() :
 	manifest = Manifest()
 	manifest.store( file_retriever.headers, file_retriever.sources )
 
-	print "ok"
-
 	return file_retriever.headers, file_retriever.sources
 
 # Module task and depedencies definition
@@ -46,9 +44,6 @@ if not vmfl_env.GetOption('clean') :
 	print "Creating pkg-config descriptor...",
 	pkg_data = PackageData( 'clam_vmfl', version, [] )
 	pkg_data.create_pkg_descriptor( vmfl_env, 'clam_vmfl.pc' )
-	print "ok"
-
-
 
 if not vmfl_env.GetOption('clean') :
 	header_files, source_files = define_module_contents()
