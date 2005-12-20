@@ -44,10 +44,6 @@ int main(int argc, char ** argv)
 	std::string projectLocation = projectDir+"Project.pro";
 	const char * songFileNames[] =
 	{
-		"../../CLAM-TestData/trumpet.mp3",
-		"../../CLAM-TestData/Elvis.ogg",
-		"../../CLAM-TestData/trumpet.wav",
-		"../../CLAM-TestData/Elvis.wav",
 		"SongsTest/LisaRein-SomethingBetter.mp3",
 		"SongsTest/LisaRein-spunkyfunk.mp3",
 		0
