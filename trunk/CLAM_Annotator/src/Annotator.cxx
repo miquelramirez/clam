@@ -58,20 +58,32 @@ void Annotator::loaderCreate(CLAM::Audio & audio, const char * filename)
 
 void Annotator::computeSongDescriptors()
 {
+	if (!mProjectOverview->selectedItem()) return;
+	QString filename = mProjectOverview->selectedItem()->text(0);
+	filename  = projectToAbsolutePath(filename).c_str();
+	if (!fopen(filename.utf8(), "r"))
+	{
+		QMessageBox::critical(this, tr("Extracting descriptors"),
+				tr("Unable to open selected file '%1'.").arg(filename));
+		return;
+	}
 	if (!mProject.HasExtractor() || mProject.GetExtractor()=="")
 	{
-		QMessageBox::critical(this, "Extracting descriptors",
-				"No extractor defined for the project. Define it first, please");
+		QMessageBox::critical(this, tr("Extracting descriptors"),
+				tr("Unable to extract descriptors from song:\n"
+					"No extractor defined for the project. Define it first, please."));
 		return;
 	}
 	std::cout << "Launching Extractor..." << std::endl;
-	if (!mProjectOverview->selectedItem()) return;
-	QString filename = mProjectOverview->selectedItem()->text(0);
 	QProcess extractor(this);
-	extractor.addArgument("./runExtractor.sh");
+	extractor.addArgument(mProject.GetExtractor());
 	extractor.addArgument(filename);
 	if (!extractor.start())
 	{
+		QMessageBox::critical(this, tr("Extracting descriptors"),
+				tr("Unable to launch the extractor.\n"
+					"Check that the extractor is well configured and you have permissions to run it."
+					));
 		std::cout << "Launch failed..." << std::endl;
 		return;
 	}
@@ -807,7 +819,7 @@ void Annotator::loadDescriptorPool()
 	}
 	catch (CLAM::XmlStorageErr e)
 	{
-		QMessageBox::warning(this,"Error Loading Descriptors Pool File", 
+		QMessageBox::warning(this,tr("Error Loading Descriptors Pool File"), 
 			constructFileError(poolFile,e));
 		delete tempPool;
 		return;
@@ -965,14 +977,12 @@ void Annotator::setMenuAudioItemsEnabled(bool enabled)
 
 QString Annotator::constructFileError(const std::string& fileName,const CLAM::XmlStorageErr& e)
 {
-	std::string errorMessage = "<p><b>XML Error: ";
-	errorMessage += e.what();
-	errorMessage += "</b></p>";
-	errorMessage += "Check that your file '<tt>";
-	errorMessage += fileName;
-	errorMessage += "</tt>'\n";
-	errorMessage += "is well formed and folllows the specifications";
-	return QString(errorMessage.c_str());
+	return tr(
+		"<p><b>XML loading Error: %1</b>/p>"
+		"<p>Check that your file '<tt>%2</tt>'\n"
+		"is well formed and folllows the specifications"
+		"</p>"
+		).arg(e.what()).arg(fileName);
 }
 
 void Annotator::onStopPlaying(float time)
