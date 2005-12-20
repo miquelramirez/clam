@@ -58,6 +58,12 @@ void Annotator::loaderCreate(CLAM::Audio & audio, const char * filename)
 
 void Annotator::computeSongDescriptors()
 {
+	if (!mProject.HasExtractor() || mProject.GetExtractor()=="")
+	{
+		QMessageBox::critical(this, "Extracting descriptors",
+				"No extractor defined for the project. Define it first, please");
+		return;
+	}
 	std::cout << "Launching Extractor..." << std::endl;
 	if (!mProjectOverview->selectedItem()) return;
 	QString filename = mProjectOverview->selectedItem()->text(0);
