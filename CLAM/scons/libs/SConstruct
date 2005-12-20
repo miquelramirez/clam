@@ -29,7 +29,7 @@ def load_config_file_to_env( env, dir ):
 	opts.Add( 'LIBS', 'libs to link', env['LIBS'])
 	opts.Add( 'LINKFLAGS', 'LINKFLAGS', env['LINKFLAGS']) # This one added because on Mac OS X we need additional 'framework OpenGL && AGL'
 	opts.Add( 'pkg_config_available', 'PKG Config Available', 'False')
-	opts.Add( 'QT_LIB', 'QT lib name', 'qt-mt')
+	opts.Add( 'QT_LIB', 'QT lib name', '')
 	opts.Update(env)
 
 def save_config_file_from_env( env, dir ):
@@ -85,6 +85,7 @@ def configure_core(clam_env) :
 ### CLAM CORE DEPENDENCIES CHECKING   ###
 #########################################"""
 	core_env = clam_env.Copy()
+	core_env.Replace( QT_LIB = '')
 	conf = Configure( core_env, custom_tests = custom_check_routines )
 	if not setup_core_environment( core_env, conf ) :
 		Exit(1)
@@ -103,6 +104,7 @@ def configure_processing(core_env) :
 		#Added 'darwin' because due to some strange reasons, the LIBS added in the previous setup_core_environment were not used anymore (but CPPFLAGS did).
 		# In Linux it works fine without having to manually copy them --> done before every module process in this file
 	processing_env = core_env.Copy()
+	processing_env.Replace( QT_LIB = '')
 	#if sys.platform == 'win32' or sys.platform == 'darwin' :
 	#	processing_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 	conf = Configure( processing_env, custom_check_routines )	
@@ -117,6 +119,7 @@ def configure_audioio(processing_env) :
 ### CLAM AUDIOIO DEPENDENCIES CHECKING   ###
 ############################################"""
 	audioio_env = processing_env.Copy()
+	audioio_env.Replace( QT_LIB = '')
 	#if sys.platform == 'win32' or sys.platform == 'darwin' :
 	#	audioio_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
 	#	audioio_env.AppendUnique( LINKFLAGS=copy.copy(core_env['LINKFLAGS']) )
@@ -133,6 +136,7 @@ def configure_vmfl(audioio_env) :
 ### CLAM VMFL DEPENDENCIES CHECKING   ###
 #########################################"""
 	vmfl_env = audioio_env.Copy()
+	vmfl_env.Replace( QT_LIB = '')
 	if sys.platform != 'darwin':  # FLTK configuration bypass under Mac OSX
 	#	if sys.platform == 'win32' or sys.platform == 'darwin' :
 	#		vmfl_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
@@ -323,6 +327,11 @@ custom_check_routines = gather_custom_checks()
 
 #registering custom_builders
 create_custom_builders(clam_env)
+
+if sys.platform == 'win32' :
+	clam_env.Replace( QT_LIB = 'qt-mt322')
+else :
+	clam_env.Replace( QT_LIB = 'qt-mt' )
 
 if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() :
     configureModules(clam_env)
