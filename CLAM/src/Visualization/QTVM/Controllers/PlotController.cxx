@@ -874,6 +874,16 @@ namespace CLAM
 		{
 			return mHasSegmentation;
 		}
+
+		void PlotController::PlayingPos(double pos)
+		{
+			mSegmentEditor.CheckCurrent(pos);
+		}
+
+		void PlotController::ChangeSegmentOnPlay(bool chg)
+		{
+			mSegmentEditor.AllowChangeCurrent(chg);
+		}
 	}
 }
 
