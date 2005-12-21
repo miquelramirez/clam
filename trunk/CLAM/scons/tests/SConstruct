@@ -81,8 +81,10 @@ Export( 'tests_env' )
 
 opts = Options('unit_tests.conf')
 
-if sys.platform != 'win32' :
+if sys.platform == 'linux2' :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
+elif sys.platform == 'darwin' :
+	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr/local') )
 else :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
 if sys.platform != 'win32' :
@@ -92,7 +94,7 @@ else :
 if sys.platform == 'win32' :
 	opts.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', 'G:\projects\cppunit' ))
 
-opts.Add( BoolOption( 'release', 'Build CLAM TestAnnotator enabling compiler optimizations', 'no') )
+opts.Add( BoolOption( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )
 opts.Update(tests_env)
 opts.Save('CLAMTests.conf', tests_env)
 Help(opts.GenerateHelpText(tests_env))
