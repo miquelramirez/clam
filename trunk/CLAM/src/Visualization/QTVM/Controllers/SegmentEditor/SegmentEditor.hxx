@@ -35,6 +35,9 @@ namespace CLAM
 			void KeyReleaseEvent(QKeyEvent* e);
 
 			void LeaveMouse();
+
+			void CheckCurrent(double xpos);
+			void AllowChangeCurrent(bool allow);
 			
 		signals:
 			void toolTip(QString);
@@ -67,6 +70,8 @@ namespace CLAM
 			bool            mKeyInsertPressed;
 			bool            mKeyDeletePressed;
 			bool            mKeyCtrlPressed;
+			bool            mAllowChangeCurrent;
+			unsigned        mCurrentSegment;
 		   
 			enum { TOLERANCE=3, PIXMARGIN=5 };
 

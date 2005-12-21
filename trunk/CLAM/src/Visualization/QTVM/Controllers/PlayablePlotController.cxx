@@ -126,6 +126,7 @@ namespace CLAM
 				emit startPlaying();
 			}
 			UpdateDial(time*mSampleRate);
+			PlotController::PlayingPos(time*mSampleRate);
 			emit currentPlayingTime(time);
 		}
 

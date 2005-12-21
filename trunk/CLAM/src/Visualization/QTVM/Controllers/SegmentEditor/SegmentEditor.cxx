@@ -28,6 +28,8 @@ namespace CLAM
 			, mKeyInsertPressed(false)
 			, mKeyDeletePressed(false)
 			, mKeyCtrlPressed(false)
+			, mAllowChangeCurrent(false)
+			, mCurrentSegment(0)
 			, mEditionMode(Idle)
 			, mDraggedSegment(0)
 		{
@@ -40,6 +42,8 @@ namespace CLAM
 		void SegmentEditor::SetSegmentation(Segmentation* s)
 		{
 			mStrategy = s;
+			if(!mStrategy) return;
+			mCurrentSegment = mStrategy->current();
 			mMustProcessData = true;
 			emit requestRefresh();
 		}
@@ -198,6 +202,7 @@ namespace CLAM
 					mStrategy->current(index);
 					mStrategy->clearSelection();
 					emit currentSegmentChanged(index);
+					mCurrentSegment = mStrategy->current();
 #ifdef __SEGMENT_EDITOR__DEBUG__
 					std::cout << "Current segment is " << index << std::endl;
 #endif
@@ -261,6 +266,7 @@ namespace CLAM
 					emit requestRefresh();
 					emit segmentDeleted(index);
 					emit currentSegmentChanged(mStrategy->current());
+					mCurrentSegment = mStrategy->current();
 #ifdef __SEGMENT_EDITOR__DEBUG__
 					std::cout << "Segment deleted  " << index << std::endl;
 					std::cout << "Current segment is " << mStrategy->current() << std::endl;
@@ -311,6 +317,23 @@ namespace CLAM
 		{
 			mRenderer.SetVHighlighted(-1);
 			emit toolTip("");
+		}
+
+		void SegmentEditor::CheckCurrent(double xpos)
+		{
+			if(!mStrategy) return;
+			if(!mAllowChangeCurrent) return;
+			unsigned index = mStrategy->pickSegmentBody(xpos);
+			if(index == mCurrentSegment || index == mStrategy->offsets().size()) return;
+			mStrategy->current(index);
+			mStrategy->clearSelection();
+			emit currentSegmentChanged(index);
+			mCurrentSegment = mStrategy->current();
+		}
+
+		void SegmentEditor::AllowChangeCurrent(bool allow)
+		{
+			mAllowChangeCurrent = allow;
 		}
 	}
 }

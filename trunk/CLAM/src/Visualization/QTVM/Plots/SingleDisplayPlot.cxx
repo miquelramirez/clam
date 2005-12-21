@@ -387,6 +387,11 @@ namespace CLAM
 			bottomLeftHole->setPaletteBackgroundColor(fc);
 			bottomRightHole->setPaletteBackgroundColor(fc);
 		}
+
+		void SingleDisplayPlot::ChangeSegmentOnPlay(bool chg)
+		{
+			mController->ChangeSegmentOnPlay(chg);
+		}
     }
 }
 

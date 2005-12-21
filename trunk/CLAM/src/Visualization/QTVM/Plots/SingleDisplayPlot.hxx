@@ -57,6 +57,8 @@ namespace CLAM
 			void SetSegmentation(Segmentation* s);
 
 			void UseFocusColors();
+
+			void ChangeSegmentOnPlay(bool chg);
 		   
 		signals:
 			void xRulerRange(double, double);

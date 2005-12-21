@@ -82,6 +82,8 @@ namespace CLAM
 			void MouseMoveEvent(QMouseEvent* e);
 
 			bool HasSegmentation() const;
+
+			void ChangeSegmentOnPlay(bool chg);
 		    
 		signals:
 			void requestRefresh();
@@ -169,6 +171,8 @@ namespace CLAM
 			virtual void FullView()=0;
 
 			bool IsRenderingEnabled() const;
+
+			void PlayingPos(double pos);
 
 		private slots:
 			void segmentEditorWorking(bool);
