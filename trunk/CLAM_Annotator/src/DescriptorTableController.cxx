@@ -60,7 +60,6 @@ namespace CLAM_Annotator
 		mTable->setColumnReadOnly(1,mElement==-1);
 		for (unsigned i = 0; i<mPlugins.size(); i++)
 			mPlugins[i]->refreshData(mElement, *dataPool);
-		mTable->adjustColumn(1);
 	}
 	void DescriptorTableController::updateData(int row, CLAM::DescriptionDataPool * dataPool)
 	{
