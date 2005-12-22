@@ -76,6 +76,7 @@ public slots:
 	void playOriginalAudioAndLLD(bool);
 	void refreshAudioData();
 	void changeCurrentSegment(unsigned current);
+	void linkCurrentSegmentToPlayback(bool enabled);
 protected:
 	void closeEvent( QCloseEvent * e);
 

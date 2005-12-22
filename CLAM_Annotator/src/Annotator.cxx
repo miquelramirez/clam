@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <iostream>
 #include <utility>
+#include <fstream>
 
 //xamat
 #include <time.h>
@@ -61,30 +62,36 @@ void Annotator::computeSongDescriptors()
 	if (!mProjectOverview->selectedItem()) return;
 	QString filename = mProjectOverview->selectedItem()->text(0);
 	filename  = projectToAbsolutePath(filename).c_str();
-	if (!fopen(filename.utf8(), "r"))
+	if (!std::ifstream(filename.utf8()))
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("Unable to open selected file '%1'.").arg(filename));
+				tr("<p><b>Unable to open selected file '%1'</b></p>.").arg(filename));
 		return;
 	}
 	if (!mProject.HasExtractor() || mProject.GetExtractor()=="")
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("Unable to extract descriptors from song:\n"
-					"No extractor defined for the project. Define it first, please."));
+				tr("<p><b>Error: No extractor defined for the project.</b></p>"
+					"<p>Unable to extract descriptors from song. "
+					"Define the extractor first, please.</p>"));
 		return;
 	}
+	return;
 	std::cout << "Launching Extractor..." << std::endl;
 	QProcess extractor(this);
+	QDir projectPath(mProjectFileName);
+	projectPath.cdUp();
+	extractor.setWorkingDirectory(projectPath);
 	extractor.addArgument(mProject.GetExtractor());
 	extractor.addArgument(filename);
 	if (!extractor.start())
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("Unable to launch the extractor.\n"
-					"Check that the extractor is well configured and you have permissions to run it."
-					));
-		std::cout << "Launch failed..." << std::endl;
+				tr("<p><b>Error: Unable to launch the extractor.</b></p>"
+					"<p>Check that the extractor is well configured and you have permissions to run it.</p>"
+					"<p>The configured command was:</p><tt>%1</tt>")
+				.arg(mProject.GetExtractor())
+				);
 		return;
 	}
 	while (extractor.isRunning())
@@ -98,7 +105,12 @@ void Annotator::computeSongDescriptors()
 		std::cout << extractor.readLineStdout() << std::endl;
 	while (extractor.canReadLineStderr())
 		std::cout << extractor.readLineStderr() << std::endl;
-
+	if (!extractor.normalExit())
+	{
+		QMessageBox::critical(this, tr("Extracting descriptors"),
+				tr("<p><b>Error: The extractor was terminated with an error.</b></p>"));
+		return;
+	}
 	loadDescriptorPool();
 }
 
@@ -417,7 +429,25 @@ void Annotator::makeConnections()
 		this, SLOT(insertSegment(unsigned)));
 	connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
 			this, SLOT(onStopPlaying(float)));
+}
 
+void Annotator::linkCurrentSegmentToPlayback(bool enabled)
+{
+	if (enabled)
+	{
+		int answer = QMessageBox::warning(this, 
+				tr("Linking Current Segment to Playback"),
+				tr("<p>This feature is still experimental and it may hang the application.</p>"
+					"<p>Are you sure you want to activate it?</p>"),
+				QMessageBox::Yes | QMessageBox::Default,
+				QMessageBox::Cancel | QMessageBox::Escape);
+		if (answer==QMessageBox::Cancel)
+		{
+			playbackLinkCurrentSegmentToPlaybackAction->setOn(false);
+			return;
+		}
+	}
+	mpAudioPlot->ChangeSegmentOnPlay(enabled);
 }
 
 void Annotator::connectBPFs()

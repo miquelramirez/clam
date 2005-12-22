@@ -30,7 +30,7 @@ namespace CLAM_Annotator
 	{
 		mElement = element;
 		std::cout << "Refreshing '" << mScope << ":" << mName << "' pos " << mElement << std::endl;
-		if (mElement==-1)
+		if (mElement<0 || mElement>=dataPool.GetNumberOfContexts(mScope))
 			clearData();
 		else
 			refreshData(dataPool);
