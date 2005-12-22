@@ -395,6 +395,7 @@ to the proper cell.&lt;/p&gt;</string>
         <separator/>
         <action name="audioAuralize_Segmentation_MarksAction"/>
         <action name="audioOriginal_Audio__LLDAction"/>
+        <action name="playbackLinkCurrentSegmentToPlaybackAction"/>
     </item>
     <item text="&amp;Help" name="help">
         <action name="helpAboutAction"/>
@@ -738,6 +739,20 @@ to the proper cell.&lt;/p&gt;</string>
             <string>Ctrl+D</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>playbackLinkCurrentSegmentToPlaybackAction</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="text">
+            <string>Link current segment to playback</string>
+        </property>
+        <property name="menuText">
+            <string>&amp;Link current segment to playback</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -901,6 +916,12 @@ to the proper cell.&lt;/p&gt;</string>
         <receiver>AnnotatorBase</receiver>
         <slot>stopPlaying()</slot>
     </connection>
+    <connection>
+        <sender>playbackLinkCurrentSegmentToPlaybackAction</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>AnnotatorBase</receiver>
+        <slot>linkCurrentSegmentToPlayback(bool)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in declaration">ListViewItem.hxx</include>
@@ -930,6 +951,7 @@ to the proper cell.&lt;/p&gt;</string>
     <slot>fileExit()</slot>
     <slot>songsClicked( QListViewItem * item )</slot>
     <slot>addSongsToProject()</slot>
+    <slot>linkCurrentSegmentToPlayback(bool)</slot>
     <slot>deleteSongsFromProject()</slot>
     <slot>loadSchema()</slot>
     <slot>saveSongList()</slot>
