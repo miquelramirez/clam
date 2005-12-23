@@ -72,10 +72,10 @@ public slots:
 	void saveDescriptors();
 	void computeSongDescriptors();
 
-	void playMarks(bool);
-	void playOriginalAudioAndLLD(bool);
 	void refreshAudioData();
 	void changeCurrentSegment(unsigned current);
+	void enableSegmentOnsetAuralization(bool);
+	void enableLLDAuralization(bool);
 	void linkCurrentSegmentToPlayback(bool enabled);
 protected:
 	void closeEvent( QCloseEvent * e);

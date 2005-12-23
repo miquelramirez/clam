@@ -393,8 +393,8 @@ to the proper cell.&lt;/p&gt;</string>
         <action name="mPause"/>
         <action name="mStop"/>
         <separator/>
-        <action name="audioAuralize_Segmentation_MarksAction"/>
-        <action name="audioOriginal_Audio__LLDAction"/>
+        <action name="playbackAuralizeSegmentOnsetsAction"/>
+        <action name="playbackAuralizeFrameLevelDescriptorsAction"/>
         <action name="playbackLinkCurrentSegmentToPlaybackAction"/>
     </item>
     <item text="&amp;Help" name="help">
@@ -631,7 +631,7 @@ to the proper cell.&lt;/p&gt;</string>
     </action>
     <action>
         <property name="name">
-            <cstring>audioAuralize_Segmentation_MarksAction</cstring>
+            <cstring>playbackAuralizeSegmentOnsetsAction</cstring>
         </property>
         <property name="toggleAction">
             <bool>true</bool>
@@ -645,7 +645,7 @@ to the proper cell.&lt;/p&gt;</string>
     </action>
     <action>
         <property name="name">
-            <cstring>audioOriginal_Audio__LLDAction</cstring>
+            <cstring>playbackAuralizeFrameLevelDescriptorsAction</cstring>
         </property>
         <property name="toggleAction">
             <bool>true</bool>
@@ -857,13 +857,13 @@ to the proper cell.&lt;/p&gt;</string>
         <slot>saveDescriptors()</slot>
     </connection>
     <connection>
-        <sender>audioAuralize_Segmentation_MarksAction</sender>
+        <sender>playbackAuralizeSegmentOnsetsAction</sender>
         <signal>toggled(bool)</signal>
         <receiver>AnnotatorBase</receiver>
-        <slot>playMarks(bool)</slot>
+        <slot>enableSegmentOnsetAuralization(bool)</slot>
     </connection>
     <connection>
-        <sender>audioOriginal_Audio__LLDAction</sender>
+        <sender>playbackAuralizeFrameLevelDescriptorsAction</sender>
         <signal>toggled(bool)</signal>
         <receiver>AnnotatorBase</receiver>
         <slot>playOriginalAudioAndLLD(bool)</slot>
@@ -956,8 +956,8 @@ to the proper cell.&lt;/p&gt;</string>
     <slot>loadSchema()</slot>
     <slot>saveSongList()</slot>
     <slot>saveDescriptors()</slot>
-    <slot>playMarks( bool )</slot>
-    <slot>playOriginalAudioAndLLD( bool )</slot>
+    <slot>enableSegmentOnsetAuralization( bool )</slot>
+    <slot>enableLLDAuralization( bool )</slot>
     <slot>computeSongDescriptors()</slot>
     <slot>refreshSegmentation()</slot>
     <slot>onSelectPageLLD( QWidget * )</slot>
