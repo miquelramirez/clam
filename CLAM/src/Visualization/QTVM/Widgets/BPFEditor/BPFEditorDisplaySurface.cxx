@@ -180,23 +180,21 @@ namespace CLAM
 
 	    void BPFEditorDisplaySurface::startTimer()
 		{
-		    if(!mTimer) 
+		    if(mTimer) 
 			{
-				mTimer = new QTimer(this);
-				connect(mTimer,SIGNAL(timeout()),this,SLOT(update()));
-				update();
+				mTimer->stop();
+				delete mTimer;
+				mTimer = 0;
 			}
+			mTimer = new QTimer(this);
+			connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
+			mTimer->start(1,true);
 		}
 
 		void BPFEditorDisplaySurface::stopTimer()
 		{
-		    if(mTimer)
-		    {
-				mTimer->stop();
-				delete mTimer;
-				mTimer = 0;
-				update();
-		    }
+			mTimer->stop();
+			mTimer->start(1,true);
 		}
 
 		void BPFEditorDisplaySurface::enterEvent(QEvent *e)

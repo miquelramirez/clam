@@ -169,23 +169,21 @@ namespace CLAM
 
 		void DisplaySurface::startTimer()
 		{
-			if(!mTimer) 
-			{
-				mTimer = new QTimer(this);
-				connect(mTimer,SIGNAL(timeout()),this,SLOT(update()));
-				update();
-			}
-		}
-
-		void DisplaySurface::stopTimer()
-		{
-			if(mTimer)
+			if(mTimer) 
 			{
 				mTimer->stop();
 				delete mTimer;
 				mTimer = 0;
-				update();
 			}
+			mTimer = new QTimer(this);
+			connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
+			mTimer->start(1,true);
+		}
+
+		void DisplaySurface::stopTimer()
+		{
+			mTimer->stop();
+			mTimer->start(1,true);
 		}
 
 		void DisplaySurface::mouseDoubleClickEvent(QMouseEvent* e)
