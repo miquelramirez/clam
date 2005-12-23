@@ -74,8 +74,7 @@ public slots:
 
 	void refreshAudioData();
 	void changeCurrentSegment(unsigned current);
-	void enableSegmentOnsetAuralization(bool);
-	void enableLLDAuralization(bool);
+	void updateAuralizationOptions();
 	void linkCurrentSegmentToPlayback(bool enabled);
 protected:
 	void closeEvent( QCloseEvent * e);

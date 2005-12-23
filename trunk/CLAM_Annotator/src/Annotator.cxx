@@ -938,58 +938,15 @@ void Annotator::auralizeMarks()
 	} 
 }
 
-void Annotator::enableSegmentOnsetAuralization(bool playThem)
+void Annotator::updateAuralizationOptions()
 {
-	if(playThem) 
-	{
-		if(playbackAuralizeFrameLevelDescriptorsAction->isOn())
-		{
-			mPlayer->SetAudioPtr(0,CLAM::VM::LEFT_CHANNEL);
-		}
-		else
-		{
-			mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::LEFT_CHANNEL);
-		}
+	bool playOnsets = playbackAuralizeSegmentOnsetsAction->isOn();
+	bool playLLDs = playbackAuralizeFrameLevelDescriptorsAction->isOn();
+	mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::BOTH_CHANNELS);
+	if (playLLDs)
+		mPlayer->SetAudioPtr(0,CLAM::VM::LEFT_CHANNEL);
+	if (playOnsets)
 		mPlayer->SetAudioPtr(&mCurrentMarkedAudio,CLAM::VM::RIGHT_CHANNEL);
-	}
-	else
-	{
-		if(playbackAuralizeFrameLevelDescriptorsAction->isOn())
-		{
-			mPlayer->SetAudioPtr(0,CLAM::VM::BOTH_CHANNELS);
-		}
-		else
-		{
-			mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::BOTH_CHANNELS);
-		}
-	}
-}
-
-void Annotator::enableLLDAuralization(bool activated)
-{
-	if (activated) 
-	{
-		if(!playbackAuralizeSegmentOnsetsAction->isOn())
-		{
-			mPlayer->SetAudioPtr(0,CLAM::VM::BOTH_CHANNELS);
-		}
-		else
-		{
-			mPlayer->SetAudioPtr(0,CLAM::VM::LEFT_CHANNEL);
-		}
-	}
-	else
-	{
-		if(!playbackAuralizeSegmentOnsetsAction->isOn())
-		{
-			mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::BOTH_CHANNELS);
-		}
-		else
-		{
-			mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::LEFT_CHANNEL);
-		}
-	}
-   
 }
 
 void Annotator::hideBPFEditors()
