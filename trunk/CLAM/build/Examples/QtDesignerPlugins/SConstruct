@@ -1,0 +1,51 @@
+import sys,os,glob
+
+if sys.platform != 'darwin':
+	print "ERROR: at this moment this example only compiles in OSX"
+	sys.exit(1)
+
+print """
+#############################################################
+WARNING: to compile this example properly first you must make
+sure that the source files of this project have new-style headers!!!!"
+ -This folders are to be converted in CLAM/examples:
+	QtDesignerPlugins
+
+NOTE: this doesn't work fine, I can't see why
+#############################################################"""
+
+plugins_env = Environment( tools=['default','qt']) 
+plugins_env.Replace( QT_UIC='/Developer/qt/bin/uic' )
+plugins_env.Replace(QT_LIB='qt-mt')
+
+opts = Options('QtDesignerPlugins.conf')
+
+opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr/local') )
+opts.Add( BoolOption( 'release', 'Build CLAM Qt Designer Plugins enabling compiler optimizations', 'yes') )
+opts.Update(plugins_env)
+opts.Save('QtDesignerPlugins.conf', plugins_env)
+Help(opts.GenerateHelpText(plugins_env))
+
+if plugins_env['release'] :
+	plugins_env.Append( CPPFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+else :
+	plugins_env.Append( CPPFLAGS=['-g', '-Wall'] )
+
+export_pkg_config = 'export PKG_CONFIG_PATH='+plugins_env['clam_prefix']+'/lib/pkgconfig'
+execute_pkg_config = 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt' 
+plugins_env.ParseConfig( export_pkg_config + ' && ' + execute_pkg_config  )
+
+sourcefiles=['../../../examples/QtDesignerPlugins/CLAMWidgetsPlugin.cxx']
+
+bin_objects = [ plugins_env.Object(source) for source in sourcefiles ]
+
+plugins_env.Append(CPPPATH='.')
+
+plugins_env.Append(CPPFLAGS=['-include', 'CLAM/preinclude.hxx','-fno-common'])
+
+plugins_env.Append(LINKFLAGS=['-dynamic','-dynamiclib'])
+plugins_env.Append(LIBS=['qui'])
+
+plugins_bin = plugins_env.Program( 'libCLAMWidgets.dylib', bin_objects )
+
+Default(plugins_bin)
