@@ -866,7 +866,7 @@ to the proper cell.&lt;/p&gt;</string>
         <sender>playbackAuralizeFrameLevelDescriptorsAction</sender>
         <signal>toggled(bool)</signal>
         <receiver>AnnotatorBase</receiver>
-        <slot>playOriginalAudioAndLLD(bool)</slot>
+        <slot>enableLLDAuralization(bool)</slot>
     </connection>
     <connection>
         <sender>songComputeDescriptorsAction</sender>
