@@ -938,11 +938,11 @@ void Annotator::auralizeMarks()
 	} 
 }
 
-void Annotator::playMarks(bool playThem)
+void Annotator::enableSegmentOnsetAuralization(bool playThem)
 {
 	if(playThem) 
 	{
-		if(audioOriginal_Audio__LLDAction->isOn())
+		if(playbackAuralizeFrameLevelDescriptorsAction->isOn())
 		{
 			mPlayer->SetAudioPtr(0,CLAM::VM::LEFT_CHANNEL);
 		}
@@ -954,7 +954,7 @@ void Annotator::playMarks(bool playThem)
 	}
 	else
 	{
-		if(audioOriginal_Audio__LLDAction->isOn())
+		if(playbackAuralizeFrameLevelDescriptorsAction->isOn())
 		{
 			mPlayer->SetAudioPtr(0,CLAM::VM::BOTH_CHANNELS);
 		}
@@ -965,11 +965,11 @@ void Annotator::playMarks(bool playThem)
 	}
 }
 
-void Annotator::playOriginalAudioAndLLD(bool llds)
+void Annotator::enableLLDAuralization(bool activated)
 {
-	if(llds) 
+	if (activated) 
 	{
-		if(!audioAuralize_Segmentation_MarksAction->isOn())
+		if(!playbackAuralizeSegmentOnsetsAction->isOn())
 		{
 			mPlayer->SetAudioPtr(0,CLAM::VM::BOTH_CHANNELS);
 		}
@@ -980,7 +980,7 @@ void Annotator::playOriginalAudioAndLLD(bool llds)
 	}
 	else
 	{
-		if(!audioAuralize_Segmentation_MarksAction->isOn())
+		if(!playbackAuralizeSegmentOnsetsAction->isOn())
 		{
 			mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::BOTH_CHANNELS);
 		}
@@ -999,10 +999,10 @@ void Annotator::hideBPFEditors()
 
 void Annotator::setMenuAudioItemsEnabled(bool enabled)
 {
-	audioAuralize_Segmentation_MarksAction->setOn(false); 
-	audioOriginal_Audio__LLDAction->setOn(false);
-	audioAuralize_Segmentation_MarksAction->setEnabled(enabled);
-	audioOriginal_Audio__LLDAction->setEnabled(enabled);
+	playbackAuralizeSegmentOnsetsAction->setOn(false); 
+	playbackAuralizeFrameLevelDescriptorsAction->setOn(false);
+	playbackAuralizeSegmentOnsetsAction->setEnabled(enabled);
+	playbackAuralizeFrameLevelDescriptorsAction->setEnabled(enabled);
 }
 
 QString Annotator::constructFileError(const std::string& fileName,const CLAM::XmlStorageErr& e)
