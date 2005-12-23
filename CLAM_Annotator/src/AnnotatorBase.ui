@@ -860,13 +860,13 @@ to the proper cell.&lt;/p&gt;</string>
         <sender>playbackAuralizeSegmentOnsetsAction</sender>
         <signal>toggled(bool)</signal>
         <receiver>AnnotatorBase</receiver>
-        <slot>enableSegmentOnsetAuralization(bool)</slot>
+        <slot>updateAuralizationOptions()</slot>
     </connection>
     <connection>
         <sender>playbackAuralizeFrameLevelDescriptorsAction</sender>
         <signal>toggled(bool)</signal>
         <receiver>AnnotatorBase</receiver>
-        <slot>enableLLDAuralization(bool)</slot>
+        <slot>updateAuralizationOptions()</slot>
     </connection>
     <connection>
         <sender>songComputeDescriptorsAction</sender>
@@ -956,8 +956,7 @@ to the proper cell.&lt;/p&gt;</string>
     <slot>loadSchema()</slot>
     <slot>saveSongList()</slot>
     <slot>saveDescriptors()</slot>
-    <slot>enableSegmentOnsetAuralization( bool )</slot>
-    <slot>enableLLDAuralization( bool )</slot>
+    <slot>updateAuralizationOptions()</slot>
     <slot>computeSongDescriptors()</slot>
     <slot>refreshSegmentation()</slot>
     <slot>onSelectPageLLD( QWidget * )</slot>
