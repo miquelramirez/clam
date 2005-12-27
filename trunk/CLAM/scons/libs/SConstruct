@@ -27,7 +27,7 @@ def load_config_file_to_env( env, dir ):
 	opts.Add( 'CPPFLAGS', 'CPP FLAGS', env['CPPFLAGS'])
 	opts.Add( 'LIBPATH', 'LIB PATH', env['LIBPATH'])
 	opts.Add( 'LIBS', 'libs to link', env['LIBS'])
-	opts.Add( 'LINKFLAGS', 'LINKFLAGS', env['LINKFLAGS']) # This one added because on Mac OS X we need additional 'framework OpenGL && AGL'
+	opts.Add( 'LINKFLAGS', 'LINKFLAGS', env['LINKFLAGS']) # This one added because on Mac OS X we need additional '-framework OpenGL && AGL'
 	opts.Add( 'pkg_config_available', 'PKG Config Available', 'False')
 	opts.Add( 'QT_LIB', 'QT lib name', '')
 	opts.Update(env)
@@ -41,7 +41,7 @@ def save_config_file_from_env( env, dir ):
 	opts.Add( 'CPPFLAGS', 'CPP FLAGS', '')
 	opts.Add( 'LIBPATH', 'LIB PATH', '')
 	opts.Add( 'LIBS', 'libs to link', env['LIBS'])
-	opts.Add( 'LINKFLAGS', 'LINKFLAGS', '') # This one added because on Mac OS X we need additional 'framework OpenGL && AGL'
+	opts.Add( 'LINKFLAGS', 'LINKFLAGS', '') # This one added because on Mac OS X we need additional '-framework OpenGL && AGL'
 	opts.Add( 'pkg_config_available', 'PKG Config Available', 'False')
 	opts.Add( 'QT_LIB', 'QT lib name', '')
 	opts.Save(dir+'/flags.conf', env)
