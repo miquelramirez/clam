@@ -12,7 +12,7 @@ def create_dmg( target, source, env) :
 	os.system( "mkdir DMG" )
 	os.system( "cp README.txt DMG" )
 	os.system( "cp -r Annotator.app DMG" )
-	os.system( "sudo hdiutil create -srcfolder DMG -volname CLAM_NetworkEditor -uid 0 CLAM_Annotator-%s.dmg"%version )
+	os.system( "sudo hdiutil create -srcfolder DMG -volname CLAM_Annotator -uid 0 CLAM_Annotator-%s.dmg"%version )
 	os.system( "rm -rf DMG" )
 
 def create_dmg_message( target, source, env):
