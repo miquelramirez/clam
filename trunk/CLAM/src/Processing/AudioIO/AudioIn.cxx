@@ -29,7 +29,7 @@ namespace CLAM
 {
 	namespace detail
 	{
-		static ProcessingFactory::Registrator<AudioIn> regtAudioOut( "AudioIn" );
+		static ProcessingFactory::Registrator<AudioIn> regtAudioIn( "AudioIn" );
 	}
 
 
