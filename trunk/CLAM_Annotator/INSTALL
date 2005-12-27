@@ -1,6 +1,5 @@
-
-This document explains how to compile and install the CLAM libraries 
-and applications from the source tarballs.
+This file explains how to compile and install the CLAM libraries and 
+applications from the source tarballs.
 
  1. Install CLAM dependencies
 
@@ -17,22 +16,22 @@ and applications from the source tarballs.
 
  The simplest way to build and install the libraries is issuing :
 
-	$ scons configure
-	$ scons
-	$ sudo scons install
+        $ scons configure
+        $ scons
+        $ sudo scons install
 
  This will compile all the libraries with default options, and install
- them to the default dirs (/usr/lib/ and /usr/include/ )
+ them to the default dirs ( /usr/lib/ and /usr/include/ )
 
  To obtain all the available options and its current values, issue:
 
-	$ scons --help
+        $ scons --help
 
  Example:
 
-	$ scons configure release=no prefix=~/mylibs/
-	$ scons
-	$ scons install
+        $ scons configure release=no prefix=~/mylibs/
+        $ scons
+        $ scons install
 
  This will compile the libraries in debug mode and install them in
  ~/mylibs/lib/ and ~/mylibs/include/
@@ -41,13 +40,14 @@ and applications from the source tarballs.
  
  Another example:
 
-	$ scons configure with_osc_support=no
+        $ scons configure with_osc_support=no
 
  IMPORTANT: scons saves the last used options in the .conf file. 
  These options will be used by default in further "scons" commands.
 
- MacOsx specific: default prefix is set to /usr/local. 
- Our tests using /usr didn't succeed.
+ MacOSX specific: default prefix is set to /usr/local. Our tests using
+ /usr didn't succeed. Another important issue is that in OSX there is
+ no LD_LIBRARY_PATH, as the equivalent variable is called DYLD_LIBRARY_PATH.
    
 
  3. Compile the CLAM application.
@@ -59,7 +59,7 @@ and applications from the source tarballs.
  If you with to use CLAM libs installed in a non-standard dir. You 
  will need to specify the clam_prefix :
 
-	$ scons clam_prefix=~/mylibs/ install
+        $ scons clam_prefix=~/mylibs/ install
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -89,8 +89,6 @@ and applications from the source tarballs.
 
 1.2 Install CLAM dependencies on Mac OSX
 
- 
-
   Required tools:
   ---------------
 
@@ -101,12 +99,28 @@ and applications from the source tarballs.
    After decompressing it go to its directory and issue 
    "scons setup.py install". Then add the following line to your 
    ~/.bashrc and ./profile files:
-	export PATH=$PATH:/System/Library/Frameworks/Python.framework/Versions/2.3/bin
+        export PATH=$PATH:/System/Library/Frameworks/Python.framework/Versions/2.3/bin
+ * Qt/Mac : download the binary package from [http://naranja.umh.es/~atg/software-qt3.html].
+   Get the 10.4.X version since development must be done with gcc v4.
+   Decompress and install. 
+   Add these lines to your ~/.bashrc and ~/.profile files:
+
+   export QTDIR=/Developer/qt
+   export PATH=$PATH:/Developer/qt/bin
+   
+   Finally, open a console and execute the following commands 
+
+   $ sudo cp /Developer/qt/lib/libqt-mt.3.3.5.dylib /usr/local/lib/
+   $ sudo cp /Developer/qt/lib/libqui.1.0.0.dylib /usr/local/lib/
+
+   (this is for workaround for a bug already communicated to the 
+   binary package manager that hasn't been solved yet)
 
   Installing the 3rd party libraries with the dmg package
-  ------------------------------------------------------  
+  -------------------------------------------------------
   This is the easy way. Download and install this file
-  external-libraries-for-CLAM-X.Y.X.dmg
+  external-libraries-for-CLAM-X.Y.Z.dmg . Chapter 2.2 covers this
+  simple process.
 
   Exceptions: Qt is not provided with this package. You'll need
   to get it from their web. See instructions below:
@@ -120,11 +134,11 @@ and applications from the source tarballs.
   Special configuration phases are sometimes needed, in that case it 
   will be specified:
  
-	$ tar xvzf library-X.Y.Z.tar.gz
-	$ cd library-X.Y.Z
-	$ ./configure --prefix=/usr/local
-	$ make
-	$ sudo make install
+        $ tar xvzf library-X.Y.Z.tar.gz
+        $ cd library-X.Y.Z
+        $ ./configure --prefix=/usr/local
+        $ make
+        $ sudo make install
 
   * cppunit [http://cppunit.sourceforge.net/]
     default compilation procedure. Install it for unit testing issues 
@@ -136,7 +150,7 @@ and applications from the source tarballs.
   * fftw [http://www.fftw.org/]
     Download version 2.XX. Default compilation procedure.
 
-	$ ./configure --prefix=/usr/local --enable-shared --enable-float --enable-type-prefix
+        $ ./configure --prefix=/usr/local --enable-shared --enable-float --enable-type-prefix
 
   * sndfile [http://www.mega-nerd.com/libsndfile sndfile] 
     default compilation procedure.
@@ -151,28 +165,13 @@ and applications from the source tarballs.
   * portaudio [http://www.portaudio.com/]
     Get devel version (V19) from the CVS snapshot. 
     Default compilation procedure.
-  * Qt/Mac [http://naranja.umh.es/~atg/software-qt3.html]
-    Get the normal installation packet compiled for MacOSX 10.3.X or 
-    10.4.X according to your system. Decompress and install. 
-    Add these lines to your ~/.bashrc and ~/.profile files:
-
-	export QTDIR=/Developer/qt
-	export PATH=$PATH:/Developer/qt/bin
-   
-    Finally, open a console and execute the following command 
-
-	$ sudo cp /Developer/qt/lib/libqt-mt.3.3.5.dylib /usr/local/lib/
-
-    (this is for workaround for a bug already communicated to the 
-    binary package manager that hasn't been solved yet)
-
   * xerces-c [http://xml.apache.org/xerces-c/]
     it has special needs, as detailed here:
 
-	$ export XERCESCROOT=$PWD
-	$ cd $XERCESCROOT/src/xercesc
-	$ autoconf
-	$ ./runConfigure -pmacosx -rpthread -P/usr/local
+        $ export XERCESCROOT=$PWD
+        $ cd $XERCESCROOT/src/xercesc
+        $ autoconf
+        $ ./runConfigure -pmacosx -rpthread -P/usr/local
 
 
 
@@ -196,8 +195,8 @@ and applications from the source tarballs.
   on the official CLAM webpage [http://www.iua.upf.es/mtg/clam/]. 
   Please make sure that they are installed on a common base directory. 
   i.e:
-  	devel\CLAM\
-	devel\xercesc\ 
-	devel\fftw\
-	devel\...
+        devel\CLAM\
+        devel\xercesc\ 
+        devel\fftw\
+        devel\...
 
