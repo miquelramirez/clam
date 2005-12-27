@@ -2,7 +2,7 @@
 #
 import sys, os, string, glob
 
-version='0.4-pre3'
+version='0.31-pre3'
 
 def create_setup( target, source, env ) :
 	os.system( "makensis clam_qtsmstools.nsi" )
@@ -14,7 +14,7 @@ def create_dmg( target, source, env) :
 	os.system( "mkdir DMG" )
 	os.system( "cp README.txt DMG" )
 	os.system( "cp -r QtSMSTools.app DMG" )
-	os.system( "sudo hdiutil create -srcfolder DMG -volname CLAM_NetworkEditor -uid 0 CLAM_QtSMSTools-%s.dmg"%version )
+	os.system( "sudo hdiutil create -srcfolder DMG -volname CLAM_QtSMSTools -uid 0 CLAM_QtSMSTools-%s.dmg"%version )
 	os.system( "rm -rf DMG" )
 
 def create_dmg_message( target, source, env):
