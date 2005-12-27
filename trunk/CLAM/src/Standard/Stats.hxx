@@ -438,7 +438,7 @@ public:
 	/**
 	 * Get the root means square (RMS), compute it if necessary.
 	 * \f[
-	 * 	\sqrt { \sum{{x_i}^2 }
+	 * 	\sqrt { \sum{{x_i}^2 } }
 	 * \f]
 	 * @todo Is it a mean??
 	 * */
