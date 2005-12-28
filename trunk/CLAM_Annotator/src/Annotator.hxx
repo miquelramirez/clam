@@ -6,6 +6,8 @@
 
 #include <string>
 #include <utility>
+#include <deque>
+#include <qstatusbar.h>
 
 //xamat
 
@@ -30,6 +32,34 @@ namespace CLAM {
 	class Segmentation;
 	class XmlStorageErr;
 };
+class StatusBarDumper 
+{
+		QStatusBar * mStatusBar;
+		std::ostringstream * os;
+	public:
+		StatusBarDumper(QStatusBar * statusBar)
+			: mStatusBar(statusBar)
+		{
+			os = new std::ostringstream;
+		}
+		template <typename ObjectType>
+		StatusBarDumper & operator << (const ObjectType & object)
+		{
+			(*os) << object;
+			std::cout << object;
+			return *this;
+		}
+		StatusBarDumper & operator << (const StatusBarDumper & statusDumper)
+		{
+			(*os) << std::flush;
+			std::cout << std::endl;
+			mStatusBar->message(QString(os->str().c_str()), 2000);
+			delete os;
+			os = new std::ostringstream;
+			return *this;
+		}
+};
+
 
 class Annotator : public AnnotatorBase
 {
@@ -95,6 +125,7 @@ private:
 	void markCurrentSongChanged();
 	void markAllSongsUnchanged();
 	void refreshGlobalDescriptorsTable();
+	void appendRecentOpenedProject(const std::string & projectFilename);
 
 	std::string projectToAbsolutePath(const std::string & file);
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
@@ -164,6 +195,8 @@ private:
 	CLAM::Segmentation * mSegmentation;
 
 	CLAM::VM::QtSingleBPFPlayerExt* mPlayer;
+	std::deque<std::string> mRecentOpenedProjects;
+	StatusBarDumper mStatusBar;
 };
 
 #endif
