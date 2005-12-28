@@ -35,6 +35,7 @@
 #include "SchemaBrowser.hxx"
 
 #include "QtSingleBPFPlayerExt.hxx"
+#include <qstatusbar.h>
 
 #ifndef RESOURCES_BASE
 #define RESOURCES_BASE "../resources"
@@ -76,8 +77,7 @@ void Annotator::computeSongDescriptors()
 					"Define the extractor first, please.</p>"));
 		return;
 	}
-	return;
-	std::cout << "Launching Extractor..." << std::endl;
+	mStatusBar << "Launching Extractor..." << mStatusBar;
 	QProcess extractor(this);
 	QDir projectPath(mProjectFileName);
 	projectPath.cdUp();
@@ -97,14 +97,14 @@ void Annotator::computeSongDescriptors()
 	while (extractor.isRunning())
 	{
 		while (extractor.canReadLineStdout())
-			std::cout << extractor.readLineStdout() << std::endl;
+			mStatusBar << extractor.readLineStdout() << mStatusBar;
 		while (extractor.canReadLineStderr())
-			std::cout << extractor.readLineStderr() << std::endl;
+			mStatusBar << extractor.readLineStderr() << mStatusBar;
 	}
 	while (extractor.canReadLineStdout())
-		std::cout << extractor.readLineStdout() << std::endl;
+		mStatusBar << extractor.readLineStdout() << mStatusBar;
 	while (extractor.canReadLineStderr())
-		std::cout << extractor.readLineStderr() << std::endl;
+		mStatusBar << extractor.readLineStderr() << mStatusBar;
 	if (!extractor.normalExit())
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
@@ -144,6 +144,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mCurrentBPFIndex(-1)
 	, mSegmentation(0)
 	, mPlayer(0)
+	, mStatusBar(statusBar())
 {
 	initAudioWidget();
 	initInterface();
@@ -177,6 +178,12 @@ void Annotator::loadSettings()
 	move(QPoint(posX,posY));
 	if (mProjectFileName=="")
 		mProjectFileName = settings.readEntry( "MusicAnnotator/LastSession/ProjectFile", mProjectFileName  ).ascii();
+
+	mRecentOpenedProjects.clear();
+	QStringList recents;
+	recents = settings.readListEntry("MusicAnnotator/LastSession/RecentOpenedProjects");
+	for(QStringList::Iterator it = recents.begin(); it!=recents.end(); it++ )
+		appendRecentOpenedProject((*it).ascii());
 }
 
 void Annotator::saveSettings()
@@ -188,6 +195,21 @@ void Annotator::saveSettings()
 	settings.writeEntry("MusicAnnotator/LastSession/PositionY", pos().y());
 	settings.writeEntry("MusicAnnotator/LastSession/SizeX", size().width());
 	settings.writeEntry("MusicAnnotator/LastSession/SizeY", size().height());
+
+	QStringList recents;
+	for (unsigned i=0; i<mRecentOpenedProjects.size(); i++)
+		recents <<  mRecentOpenedProjects[i];
+	settings.writeEntry("MusicAnnotator/LastSession/RecentOpenedProjects", recents);
+}
+
+void Annotator::appendRecentOpenedProject(const std::string & projectFilename)
+{
+	std::deque<std::string>::iterator found = 
+		std::find(mRecentOpenedProjects.begin(), mRecentOpenedProjects.end(), projectFilename);
+	if (found != mRecentOpenedProjects.end()) mRecentOpenedProjects.erase(found);
+	mRecentOpenedProjects.push_front(projectFilename);
+	while (mRecentOpenedProjects.size()>4)
+		mRecentOpenedProjects.pop_back();
 }
 
 Annotator::~Annotator()
@@ -230,17 +252,18 @@ void Annotator::initProject()
 	
 	markProjectChanged(false);
 	mDescriptorsNeedSave = false;
+	appendRecentOpenedProject(mProjectFileName);
 }
 
 void Annotator::adaptInterfaceToCurrentSchema()
 {
-	std::cout << "Adapting Interface to Song level descriptors..." << std::endl;
+	mStatusBar << "Adapting Interface to Song level descriptors..." << mStatusBar;
 	mGlobalDescriptors.refreshSchema("Song");
-	std::cout << "Adapting Interface to Frame level descriptors..." << std::endl;
+	mStatusBar << "Adapting Interface to Frame level descriptors..." << mStatusBar;
 	adaptEnvelopesToCurrentSchema();
-	std::cout << "Adapting Interface to Segmentations..." << std::endl;
+	mStatusBar << "Adapting Interface to Segmentations..." << mStatusBar;
 	adaptSegmentationsToCurrentSchema();
-	std::cout << "User interface adaptation ended." << std::endl;
+	mStatusBar << "User interface adaptation ended." << mStatusBar;
 	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
 }
 
@@ -283,7 +306,7 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 		it != segmentationNames.end();
 		it++)
 	{
-		std::cout << "Adding: " << it->c_str() << std::endl;
+		mStatusBar << "Adding: " << it->c_str() << mStatusBar;
 		mSegmentationSelection->insertItem(it->c_str());
 	}
 }
@@ -348,7 +371,7 @@ void Annotator::updateSegmentations()
 
 void Annotator::removeSegment(unsigned index)
 {
-	std::cout << "Removing segment at " << index << std::endl;
+	mStatusBar << "Removing segment at " << index << mStatusBar;
 	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
 	if (childScope=="") return; // No child scope to shrink
@@ -359,7 +382,7 @@ void Annotator::removeSegment(unsigned index)
 
 void Annotator::insertSegment(unsigned index)
 {
-	std::cout << "Inserting segment at " << index << std::endl;
+	mStatusBar << "Inserting segment at " << index << mStatusBar;
 	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
 	if (childScope=="") return; // No child scope to grow up
@@ -501,7 +524,7 @@ void Annotator::markCurrentSongChanged()
 
 void Annotator::changeCurrentSegment(unsigned current)
 {
-	std::cout << "Segment changed to " << mSegmentation->current() << std::endl;
+	mStatusBar << "Segment changed to " << mSegmentation->current() << mStatusBar;
 	// TODO: Some widgets may have half edited information. Need update.
 	// TODO: Some times is not worth to update the information (deleted segment)
 	mSegmentDescriptors.refreshData(mSegmentation->current(),mpDescriptorPool);
@@ -701,7 +724,7 @@ std::string Annotator::projectToAbsolutePath(const std::string & file)
 void Annotator::songsClicked( QListViewItem * item)
 {
 	stopPlaying();
-	std::cout << "Saving Previous Song Descriptors..." << std::endl;
+	mStatusBar << "Saving Previous Song Descriptors..." << mStatusBar;
 	saveDescriptors();
 
 	if (item == 0) return;
@@ -718,14 +741,14 @@ void Annotator::songsClicked( QListViewItem * item)
 	else 
 		mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + ".pool";
 	loadDescriptorPool();
-	std::cout << "Filling Global Descriptors..." << std::endl;
+	mStatusBar << "Filling Global Descriptors..." << mStatusBar;
 	refreshGlobalDescriptorsTable();
-	std::cout << "Drawing Audio..." << std::endl;
+	mStatusBar << "Drawing Audio..." << mStatusBar;
 	mAudioRefreshTimer->stop();
 	drawAudio(projectToAbsolutePath(filename).c_str());
-	std::cout << "Drawing LLD..." << std::endl;
+	mStatusBar << "Drawing LLD..." << mStatusBar;
 	refreshEnvelopes();
-	std::cout << "Done" << std::endl;
+	mStatusBar << "Done" << mStatusBar;
 	loaderLaunch();
 	setCursor(Qt::arrowCursor);
 	mAudioRefreshTimer->start(4000, true);
@@ -735,7 +758,7 @@ void Annotator::refreshEnvelopes()
 {
 	if (!mpDescriptorPool) return;
 
-	std::cout << "Loading LLD Data..." << std::endl;
+	mStatusBar << "Loading LLD Data..." << mStatusBar;
 
 	std::list<std::string>::const_iterator it;
 	const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType("Frame", "Float");
@@ -764,11 +787,11 @@ void Annotator::refreshEnvelopes()
 
 void Annotator::refreshAudioData()
 {
-	std::cout << "Refresing audio..." << std::endl;
+	mStatusBar << "Refresing audio..." << mStatusBar;
 	bool finished= loaderFinished();
 	if (finished)
 	{
-		std::cout << "Last refresh, updating marks..." << std::endl;
+		mStatusBar << "Last refresh, updating segment auralization..." << mStatusBar;
 		mAudioRefreshTimer->stop();
 		auralizeMarks();
 	}
@@ -846,6 +869,16 @@ void Annotator::loadDescriptorPool()
 	try
 	{
 		CLAM::XMLStorage::Restore(*tempPool,poolFile);
+		std::ostringstream os;
+		os <<"Read data did not validate with schema."<<std::endl;
+		if (!mProject.ValidateDataPool(*tempPool, os))
+		{
+			std::cerr << os.str() << std::endl;
+			QMessageBox::warning(this, tr("Error Loading Descriptors Pool File"),
+					os.str().c_str());
+			delete tempPool;
+			return;
+		}
 	}
 	catch (CLAM::XmlStorageErr e)
 	{
@@ -858,7 +891,6 @@ void Annotator::loadDescriptorPool()
 	//Create Descriptors Pool
 	if (mpDescriptorPool) delete mpDescriptorPool;
 	mpDescriptorPool = tempPool;
-
 }
 
 void Annotator::refreshGlobalDescriptorsTable()
@@ -1034,7 +1066,5 @@ void Annotator::stopPlaying()
 	if(!mPlayer) return;
 	mPlayer->Stop();
 }
-
-
 
 
