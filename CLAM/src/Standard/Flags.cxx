@@ -19,7 +19,7 @@
  *
  */
 
-#include <Flags.hxx>
+#include "Flags.hxx"
 
 #include <bitset>
 #include <string>
