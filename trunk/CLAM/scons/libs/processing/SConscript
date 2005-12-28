@@ -21,7 +21,7 @@ def define_module_contents() :
 	if sys.platform == 'win32':
 		folders.append('src/Processing/InitProcessing*.*xx')
 
-	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+' , 'FileChooser', 'MessageBox', 'FLTKConfigurator', 'WidgetTKWrapper', 'FDFilterController']
+	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+' , 'FileChooser', 'MessageBox', 'FLTKConfigurator', 'WidgetTKWrapper', 'FDFilterController', 'SupportedToolkits']
 
 	if not processing_env.has_key('with_osc_support') or processing_env['with_osc_support'] == False :
 		blacklist.append('OSCSender')
