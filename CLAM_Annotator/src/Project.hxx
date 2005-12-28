@@ -43,14 +43,15 @@ public:
 	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 	ScopeSchema GetScopeSchema(const std::string & scope) const;
 	std::list<std::string> GetNamesByScopeAndType(const std::string & scope, const std::string & type);
-	bool ValidateDataPool(const CLAM::DescriptionDataPool & dataPool)
+	bool ValidateDataPool(const CLAM::DescriptionDataPool & dataPool, std::ostream & err)
 	{
-		return GetAnnotatorSchema().Validate(dataPool);
+		return GetAnnotatorSchema().Validate(dataPool,err);
 	}
 	const CLAM_Annotator::SchemaAttribute & GetAttributeScheme(const std::string & scope, const std::string & name) const
 	{
 		return mSchema.GetAttribute(scope, name);
 	}
+
 private:
 	void CreatePoolScheme();
 	CLAM::DescriptionScheme mDescriptionScheme;

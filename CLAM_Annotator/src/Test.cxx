@@ -94,10 +94,14 @@ int main(int argc, char ** argv)
 		CLAM::DescriptionDataPool toValidadDescription(myProject.GetDescriptionScheme());
 		CLAM::XMLStorage::Restore(toValidadDescription, poolFile);
 
-		if (myProject.ValidateDataPool(toValidadDescription))
-			std::cout<<"Descriptor Pool Validated With Schema"<<std::endl;
-		else
-			std::cout<<"Descriptor Pool Did Not Validate With Schema"<<std::endl;
+		std::cout << "Validating data..." << std::endl;
+
+		std::ostringstream os;
+		if (!myProject.ValidateDataPool(toValidadDescription, os))
+		{
+			std::cerr<<"Descriptor Pool Did Not Validate With Schema!"<<std::endl;
+			std::cerr<< os.str() << std::endl;
+		}
 	}
 
 	return 0;
@@ -180,7 +184,7 @@ void BuildAndDumpTestSchema(const std::string & schemaLocation)
 		"Accapella",
 		0
 	};
-	const char * partGroupIds[] = {"A","B","C","D","E","F","G","H","I",0};
+	const char * partGroupIds[] = {"A","B","C","D","E","F","G","H","I","J",0};
 	schema.AddSegmentation("Song", "Structure", CLAM_Annotator::SegmentationPolicy::eDiscontinuous, "StructuralPart");
 	schema.AddEnumerated("StructuralPart", "Description", partDescriptionValues);
 	schema.AddEnumerated("StructuralPart", "SimilarityGroup", partGroupIds);
@@ -207,6 +211,7 @@ void BuildAndDumpTestSchema(const std::string & schemaLocation)
 		"HighFrequencyContent",
 		0
 	};
+	schema.AddFrameDivision("Song", "Frames", "Frame");
 	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
 		schema.AddFrameFloatAttribute(*name);
 

@@ -81,7 +81,7 @@ namespace CLAM_Annotator{
 			T* t;
 		};
 
-		bool Validate(const CLAM::DescriptionDataPool & pool) const;
+		bool Validate(const CLAM::DescriptionDataPool & pool, std::ostream & err) const;
 		void AddTo(CLAM::DescriptionScheme & scheme) const;
 
 		void StoreOn(CLAM::Storage & storage) const
