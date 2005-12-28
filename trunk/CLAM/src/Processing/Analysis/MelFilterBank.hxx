@@ -22,8 +22,8 @@
 #ifndef __MELFILTERBANK__
 #define __MELFILTERBANK__
 
-#include <Processing.hxx>
-#include <Spectrum.hxx>
+#include "Processing.hxx"
+#include "Spectrum.hxx"
 #include "MelSpectrum.hxx"
 #include "Array.hxx"
 
