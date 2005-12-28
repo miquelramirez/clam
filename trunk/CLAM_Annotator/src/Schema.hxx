@@ -105,7 +105,21 @@ namespace CLAM_Annotator{
 			schemaAttribute.SetChildScope(childScope);
 			AddAttribute(schemaAttribute);
 		}
-		bool Validate(const CLAM::DescriptionDataPool & data);
+		void AddFrameDivision(
+				const std::string & scope,
+				const std::string & attribute,
+				const std::string & childScope)
+		{
+			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.AddChildScope();
+			schemaAttribute.UpdateData();
+			schemaAttribute.SetScope(scope);
+			schemaAttribute.SetName(attribute);
+			schemaAttribute.SetType("FrameDivision");
+			schemaAttribute.SetChildScope(childScope);
+			AddAttribute(schemaAttribute);
+		}
+		bool Validate(const CLAM::DescriptionDataPool & data, std::ostream & err);
 		const std::list<SchemaAttribute> & GetAllAttributes() const
 	       	{
 			return GetAttributes();

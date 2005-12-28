@@ -2,6 +2,7 @@
 #define _TypePlugin_hxx_
 
 #include <string>
+#include <iosfwd>
 
 namespace CLAM { class DescriptionDataPool; }
 namespace CLAM { class DescriptionScheme; }
@@ -15,7 +16,7 @@ namespace CLAM_Annotator
 		TypePlugin(const SchemaAttribute & scheme);
 		virtual ~TypePlugin();
 		virtual void AddTo(CLAM::DescriptionScheme & scheme) = 0;
-		virtual bool ValidateData(const CLAM::DescriptionDataPool & dataPool) = 0;
+		virtual bool ValidateData(const CLAM::DescriptionDataPool & dataPool, std::ostream & err) = 0;
 		static TypePlugin * Create(const SchemaAttribute & scheme);
 	protected:
 		const SchemaAttribute & mSchema;

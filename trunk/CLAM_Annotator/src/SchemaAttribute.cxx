@@ -26,14 +26,24 @@ namespace CLAM_Annotator{
 		mTypePlugin.t->AddTo(scheme);
 	}
 
-	bool SchemaAttribute::Validate(const CLAM::DescriptionDataPool & pool) const
+	bool SchemaAttribute::Validate(const CLAM::DescriptionDataPool & pool, std::ostream & err) const
 	{
 		UpdateTypePlugin();
 		// TODO: Check also when scope size is > 1
-		CLAM_ASSERT(mTypePlugin.t,
-			(std::string("Validating an unrecognized type: ")+GetType()).c_str());
-
-		return mTypePlugin.t->ValidateData(pool);
+		if (!mTypePlugin.t)
+		{
+			err 
+				<< "Attribute '" << GetScope() << ":" << GetName() 
+				<< "' has type '" << GetType() << "' "
+				<< "which is not supported by this program."
+				<< std::endl;
+			return false;
+		}
+		std::ostringstream subErr;
+		if (mTypePlugin.t->ValidateData(pool,subErr)) return true;
+		err << "Error validating attribute '" << GetScope() << ":" << GetName() << "':" << std::endl;
+		err << subErr.str();
+		return false;
 	}
 
 
