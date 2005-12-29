@@ -17,6 +17,7 @@
 #include "BPF.hxx"
 
 class QTimer;
+class QTabBar;
 class AudioLoadThread;
 class SchemaBrowser;
 using CLAM::TIndex;
@@ -75,11 +76,10 @@ class Annotator : public AnnotatorBase
 public:
 	Annotator(const std::string & nameProject);
 	virtual ~Annotator();
-	void songsClicked( QListViewItem * item);
+	void currentSongChanged();
 	void playPause();
 
 	void initProject();
-	void initInterface();
 	void markProjectChanged(bool changed);
 	void loadSettings();
 	void saveSettings();
@@ -104,6 +104,7 @@ public slots:
 
 	void refreshAudioData();
 	void changeCurrentSegment(unsigned current);
+	void changeFrameLevelDescriptor(int current);
 	void updateAuralizationOptions();
 	void linkCurrentSegmentToPlayback(bool enabled);
 protected:
@@ -111,7 +112,6 @@ protected:
 
 private slots:
 	void onStopPlaying(float);
-	void onSelectPageLLD(QWidget*);
 
 	void startPlaying();
 	void pausePlaying();
@@ -130,7 +130,7 @@ private:
 	std::string projectToAbsolutePath(const std::string & file);
 	std::string absoluteToProjectPath(const std::string & file);
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
-	void initAudioWidget();
+	void initInterface();
 	void adaptInterfaceToCurrentSchema();
 	void drawAudio(const char * filename);
 	void loadDescriptorPool();
@@ -150,8 +150,7 @@ private:
 
 	void auralizeMarks();
 	void setMenuAudioItemsEnabled(bool);
-	void hideBPFEditors();
-	
+
 	// Functions to control de audio loader
 	void loaderCreate(CLAM::Audio & audio, const char * filename);
 		///< Creates a loader for the audio after clearing any existing one.
@@ -160,7 +159,7 @@ private:
 	void abortLoader(); ///< Clears the loader 
 
 	bool isPlaying();
-	void removeFromCurrentLayout();
+	void resetTabOrder();
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
@@ -181,8 +180,6 @@ private:
 	bool mDescriptorsNeedSave;
 	bool mMustUpdateMarkedAudio;
 
-	QVBoxLayout* mpTabLayout;
-	std::vector<QWidget*> mTabPages;
 	CLAM::VM::QtAudioPlot* mpAudioPlot;
 	QTimer * mAudioRefreshTimer;
 	SchemaBrowser * mSchemaBrowser;
@@ -198,6 +195,7 @@ private:
 	CLAM::VM::QtSingleBPFPlayerExt* mPlayer;
 	std::deque<std::string> mRecentOpenedProjects;
 	StatusBarDumper mStatusBar;
+	QTabBar * mFrameLevelTabBar;
 };
 
 #endif
