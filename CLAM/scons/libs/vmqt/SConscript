@@ -4,11 +4,12 @@ from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 from buildtools.rulesets import *
+
+from buildtools.custom_builders import *
 import os, sys
 Import('vmqt_env version top install_dirs header_db')
 
 def define_module_contents() :
-	print "Gathering necessary source files...",
 	#if not os.path.exists('src') :
 	#	os.mkdir('src')
 	#if not os.path.exists('include' ) :
@@ -25,41 +26,32 @@ def define_module_contents() :
 	file_retriever.out_src = 'CLAM'
 	file_retriever.out_inc = 'CLAM'
 
-	file_retriever.scan()
+	file_retriever.scan_without_copy()
 
-	store_headers_in_db( header_db, 'CLAM' )
-	for filename in file_retriever.headers :
-		update_includes( header_db, filename )
-	for filename in file_retriever.sources :
-		update_includes( header_db, filename )
+	builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
+	vmqt_env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
+
+	realHeaders = []
+	for orig,target in file_retriever.origTargetHeaders :
+		vmqt_env.CopyFileAndUpdateIncludes(target, orig)
+		realHeaders.append(target)
+
+	realSources = []
+	for orig,target in file_retriever.origTargetSources:
+		vmqt_env.CopyFileAndUpdateIncludes(target,orig)
+		realSources.append(target)
 
 	manifest = Manifest()
-	manifest.store( file_retriever.headers, file_retriever.sources )
-
-	return file_retriever.headers, file_retriever.sources
+	manifest.store( realHeaders, realSources )
+	return realHeaders, realSources
 
 if not vmqt_env.GetOption('clean') :
-	print """\
-####################################################################
-### BOOTSTRAPPING CLAM QT-BASED VISUALIZATION MODULE LIBRARY   ###
-####################################################################"""
-	print "Creating pkg-config descriptor...",
 	pkg_data = PackageData( 'clam_vmqt', version, [] )
 	pkg_data.create_pkg_descriptor( vmqt_env, 'clam_vmqt.pc' )
 
-if not vmqt_env.GetOption('clean') :
-	header_files, source_files = define_module_contents()
-else :
-	manifest = Manifest()
-	header_files = []
-	source_files = []
-	manifest.load( header_files, source_files )
-
-
-headers = [ File(header) for header in header_files ]
+realHeaders, realSources = define_module_contents()
 
 vmqt_env.Prepend(CPPPATH=['.','../core/include','../processing/include','../audioio/include'])
-
 vmqt_env.Append(LIBS=['clam_core', 'clam_processing','clam_audioio'])
 
 #if sys.platform == 'win32' : 
@@ -68,9 +60,9 @@ vmqt_env.Append(LIBS=['clam_core', 'clam_processing','clam_audioio'])
 vmqt_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
 
 if sys.platform != 'win32' :
-	vmqt_tgt, vmqt_install_tgt = posix_lib_rules( 'vmqt', version, headers, source_files, install_dirs, vmqt_env )
+	vmqt_tgt, vmqt_install_tgt = posix_lib_rules( 'vmqt', version, realHeaders, realSources, install_dirs, vmqt_env )
 else :
-	vmqt_tgt, vmqt_install_tgt = win32_lib_rules( 'vmqt', version, headers, source_files, install_dirs, vmqt_env )
+	vmqt_tgt, vmqt_install_tgt = win32_lib_rules( 'vmqt', version, realHeaders, realSources, install_dirs, vmqt_env )
 
 Return( 'vmqt_tgt', 'vmqt_install_tgt' )
 
