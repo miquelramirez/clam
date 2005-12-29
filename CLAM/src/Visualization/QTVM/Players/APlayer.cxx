@@ -82,7 +82,7 @@ namespace CLAM
 			audioOutCfgR.SetChannelID(1);
 			channelL.Configure(audioOutCfgL); 
 			channelR.Configure(audioOutCfgR);
-			AudioManager::Current().Start();                            
+			manager.Start();                            
 			channelL.Start();              
 			channelR.Start();
     
