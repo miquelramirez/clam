@@ -51,7 +51,7 @@ namespace CLAM
 			mToolTipFont.setFamily("fixed");
 			mToolTipFont.setPointSize(8);
 			mToolTipFont.setBold(true);
-			mToolTipFont.setStyleHint(QFont::Courier,QFont::NoAntialias);
+			mToolTipFont.setStyleHint(QFont::Courier);
 
 			mTimer = new QTimer(this);
 			connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
