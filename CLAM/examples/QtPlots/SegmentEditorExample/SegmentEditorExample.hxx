@@ -7,9 +7,13 @@
 #include <qdialog.h>
 #include <qlayout.h>
 #include <qhbox.h>
+#include <qmessagebox.h>
 
 class SegmentEditorExample : public QDialog
 {
+	CLAM::VM::QtAudioPlot * mPlot;
+	CLAM::Audio & mAudio;
+	CLAM::Segmentation * mSegmentation;
 	Q_OBJECT
 public:
 	SegmentEditorExample(CLAM::Audio & audio)
@@ -24,7 +28,7 @@ public:
 		mPlot->SetSegmentation(0);
 		mPlot->SetBackgroundColor(CLAM::VM::VMColor::White());
 		mPlot->SetForegroundColor(CLAM::VM::VMColor::Blue());
-		mPlot->Show();
+//		mPlot->Show();
 		QHBox * buttons = new QHBox(this);
 		QPushButton * buttonNull = new QPushButton("No segmentation",buttons);
 		QPushButton * buttonUnsized = new QPushButton("Unsized",buttons);
@@ -37,14 +41,13 @@ public:
 		connect(buttonNull, SIGNAL(clicked()), this, SLOT(changeNone()));
 		connect(buttonContinuous, SIGNAL(clicked()), this, SLOT(changeContinuous()));
 		connect(buttonDisontinuous, SIGNAL(clicked()), this, SLOT(changeDiscontinuous()));
+		connect(buttonOverlapping, SIGNAL(clicked()), this, SLOT(changeOverlapped()));
+		connect(buttonUnsized, SIGNAL(clicked()), this, SLOT(changeUnsized()));
 	}
 	~SegmentEditorExample()
 	{
 		setSegmentation(0);
 	}
-	CLAM::VM::QtAudioPlot * mPlot;
-	CLAM::Audio & mAudio;
-	CLAM::Segmentation * mSegmentation;
 	void setSegmentation(CLAM::Segmentation * segmentation)
 	{
 		if (mSegmentation) delete mSegmentation;
@@ -69,21 +72,27 @@ public slots:
 		seg->current(2);
 		setSegmentation(seg);
 	}
+	void changeUnsized()
+	{
+		QMessageBox::information(this,"TODO","Not yet implemented");
+	}
 	void changeDiscontinuous()
 	{
-		CLAM::Segmentation* seg = new CLAM::DiscontinuousSegmentation(mAudio.GetSize());
+		std::vector<double> limits;
 		unsigned nSegments = 15;
 		double step = double(mAudio.GetSize())/nSegments;
-		// make some divisions
 		for(unsigned i=1; i < nSegments; i++)
 		{
-			seg->insert(double(i)*step);
+			limits.push_back(double(i)*step);
 		}
+		CLAM::Segmentation* seg = new CLAM::DiscontinuousSegmentation(
+				mAudio.GetSize(), limits.begin(), limits.end());
 		seg->current(2);
 		setSegmentation(seg);
 	}
 	void changeOverlapped()
 	{
+		QMessageBox::information(this,"TODO","Not yet implemented");
 	}
 };
 
