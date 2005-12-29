@@ -90,6 +90,7 @@ namespace CLAM
 			int             mMouseXPos;
 			int             mMouseYPos;
 			bool            mHasToolTip;
+			bool            mIsPlaying;
 
 			enum { TIMER_INTERVAL=10 };
 
