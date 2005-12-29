@@ -252,7 +252,6 @@ void Annotator::initInterface()
 
 	resetTabOrder();
 	makeConnections();
-	connectBPFs();
 }
 
 void Annotator::resetTabOrder()
@@ -441,9 +440,37 @@ void Annotator::makeConnections()
 	connect(mpAudioPlot, SIGNAL(segmentInserted(unsigned)),
 		this, SLOT(insertSegment(unsigned)));
 	connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
-			this, SLOT(onStopPlaying(float)));
+		this, SLOT(onStopPlaying(float)));
 	connect(mFrameLevelTabBar, SIGNAL(selected(int)),
-			this, SLOT(changeFrameLevelDescriptor(int)));
+		this, SLOT(changeFrameLevelDescriptor(int)));
+
+	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
+		 this, SLOT(frameDescriptorsChanged(int, float)));
+	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
+		 mPlayer, SLOT(updateYValue(int, float)));
+	connect( mBPFEditor, SIGNAL(selectedXPos(double)),
+		 mpAudioPlot, SLOT(setSelectedXPos(double)));
+
+	connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
+		mBPFEditor, SLOT(setHBounds(double,double)));
+	connect(mpAudioPlot, SIGNAL(selectedXPos(double)),
+		mBPFEditor, SLOT(selectPointFromXCoord(double)));
+	connect(mpAudioPlot, SIGNAL(regionTime(float,float)),
+		mPlayer, SLOT(setRegionTime(float,float)));
+/*
+	connect(mpAudioPlot, SIGNAL(switchColorsRequested()),
+		mBPFEditor, SLOT(switchColors()));
+*/
+
+	connect(mPlayer, SIGNAL(playingTime(float)),
+		mBPFEditor, SLOT(setCurrentPlayingTime(float)));
+	connect(mPlayer, SIGNAL(stopPlaying(float)),
+		mBPFEditor, SLOT(receivedStopPlaying(float)));
+	connect(mPlayer, SIGNAL(playingTime(float)),
+		mpAudioPlot, SLOT(setCurrentPlayingTime(float)));
+	connect( mPlayer, SIGNAL(stopPlaying(float)),
+		 mpAudioPlot, SLOT(receivedStopPlaying(float)));
+
 }
 
 void Annotator::linkCurrentSegmentToPlayback(bool enabled)
@@ -463,43 +490,6 @@ void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 		}
 	}
 	mpAudioPlot->ChangeSegmentOnPlay(enabled);
-}
-
-void Annotator::connectBPFs()
-{
-	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
-			 this, SLOT(frameDescriptorsChanged(int, float)));
-
-	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
-			 mPlayer, SLOT(updateYValue(int, float)));
-
-	connect( mBPFEditor, SIGNAL(selectedXPos(double)),
-			 mpAudioPlot, SLOT(setSelectedXPos(double)));
-
-	connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
-			mBPFEditor, SLOT(setHBounds(double,double)));
-
-	connect(mpAudioPlot, SIGNAL(selectedXPos(double)),
-			mBPFEditor, SLOT(selectPointFromXCoord(double)));
-/*
-	connect(mpAudioPlot, SIGNAL(switchColorsRequested()),
-			mBPFEditor, SLOT(switchColors()));
-*/
-	connect(mpAudioPlot, SIGNAL(regionTime(float,float)),
-			mPlayer, SLOT(setRegionTime(float,float)));
-
-	connect(mPlayer, SIGNAL(playingTime(float)),
-			mBPFEditor, SLOT(setCurrentPlayingTime(float)));
-
-	connect(mPlayer, SIGNAL(stopPlaying(float)),
-			mBPFEditor, SLOT(receivedStopPlaying(float)));
-
-	connect(mPlayer, SIGNAL(playingTime(float)),
-			mpAudioPlot, SLOT(setCurrentPlayingTime(float)));
-
-	connect( mPlayer, SIGNAL(stopPlaying(float)),
-			 mpAudioPlot, SLOT(receivedStopPlaying(float)));
-
 }
 
 void Annotator::markCurrentSongChanged()
