@@ -23,7 +23,6 @@ namespace CLAM_Annotator{
 			UpdateData();
 		}
 	};
-
 };
 
 #endif

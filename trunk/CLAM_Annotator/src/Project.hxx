@@ -25,22 +25,22 @@ class Project : public CLAM::DynamicType
 		UpdateData();
 	}
 public:
+	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 	void AppendSong(const std::string & songFileName)
 	{
 		std::vector<Song> & songs = GetSongs();
 		songs.push_back(Song());
 		songs.back().SetSoundFile(songFileName);
 	}
+	bool LoadScheme(const std::string & schemeFileName, const std::string & basePath="");
 	CLAM::DescriptionScheme & GetDescriptionScheme()
 	{
 		return mDescriptionScheme;
 	}
-	bool LoadScheme(const std::string & schemeFileName, const std::string & basePath="");
 	CLAM_Annotator::Schema & GetAnnotatorSchema()
 	{
 		return mSchema;
 	}
-	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 	ScopeSchema GetScopeSchema(const std::string & scope) const;
 	std::list<std::string> GetNamesByScopeAndType(const std::string & scope, const std::string & type);
 	bool ValidateDataPool(const CLAM::DescriptionDataPool & dataPool, std::ostream & err)
@@ -52,10 +52,19 @@ public:
 		return mSchema.GetAttribute(scope, name);
 	}
 
+	void SetBasePath(const std::string & basePath)
+	{
+		mBasePath = basePath;
+	}
+	const std::string & GetBasePath() const
+	{
+		return mBasePath;
+	}
 private:
 	void CreatePoolScheme();
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM_Annotator::Schema mSchema;
+	std::string mBasePath;
 };
 
 }

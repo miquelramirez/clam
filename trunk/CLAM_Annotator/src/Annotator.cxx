@@ -263,8 +263,9 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	adaptEnvelopesToCurrentSchema();
 	mStatusBar << "Adapting Interface to Segmentations..." << mStatusBar;
 	adaptSegmentationsToCurrentSchema();
-	mStatusBar << "User interface adaptation ended." << mStatusBar;
+	mStatusBar << "Updating schema browser..." << mStatusBar;
 	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
+	mStatusBar << "User interface adapted to the new schema." << mStatusBar;
 }
 
 void Annotator::initAudioWidget()
@@ -277,9 +278,6 @@ void Annotator::initAudioWidget()
 	mCurrentAudio.SetSize(20000);
 //	mpAudioPlot->SetData(mCurrentAudio);
 	mpAudioPlot->SetEditTagDialogEnabled(false);
-//	mpAudioPlot->SwitchDisplayColors(true);
-//	mpAudioPlot->SetToggleColorOn(true);
-//	mpAudioPlot->switchColors();
 //	mpAudioPlot->setFocus();
 	mpAudioPlot->UseFocusColors();
 	mpAudioPlot->Hide();
@@ -306,7 +304,7 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 		it != segmentationNames.end();
 		it++)
 	{
-		mStatusBar << "Adding: " << it->c_str() << mStatusBar;
+		mStatusBar << "Adding Segmentation: " << it->c_str() << mStatusBar;
 		mSegmentationSelection->insertItem(it->c_str());
 	}
 }
@@ -399,7 +397,6 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 		mBPFEditor=0;
 	}
 	mBPFEditor = new CLAM::VM::BPFEditor(CLAM::VM::AllowVerticalEdition|CLAM::VM::HasVerticalScroll);
-//	mBPFEditor->switchColors();
 	mBPFEditor->UseFocusColors();
 	mBPFEditor->Hide();
 
@@ -553,13 +550,12 @@ void Annotator::updateSongListWidget()
 {
 	mProjectOverview->clear();
 	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongs();
-	unsigned i = 0;
 	QListViewItem *lastItem = 0;
-	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++, i++)
+	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
 	{
 		QListViewItem * item = new QListViewItem(
 			mProjectOverview, lastItem,
-			QString( it->GetSoundFile().c_str() ),
+			it->GetSoundFile().c_str(),
 			tr("Yes"), tr("No") );
 		lastItem = item;
 	}
@@ -577,7 +573,6 @@ void Annotator::closeEvent ( QCloseEvent * e )
 		{
 			fileSave();
 		}
-
 	}
 	e->accept();
 }
@@ -611,15 +606,14 @@ void Annotator::addSongsToProject()
 {
 	QStringList files = QFileDialog::getOpenFileNames(
 		"Songs (*.wav *.mp3 *.ogg)",
-		QDir::homeDirPath(),
+		projectToAbsolutePath("."),
 		this,
 		"Add files to the project",
 		"Select one or more files to add" );
-	QStringList list = files;
-	QStringList::Iterator it = list.begin();
-	for (; it != list.end(); it++ )
+	QStringList::Iterator it = files.begin();
+	for (; it != files.end(); it++ )
 	{
-		mProject.AppendSong((*it).ascii());
+		mProject.AppendSong(absoluteToProjectPath((*it).ascii()));
 	}
 	updateSongListWidget();
 	markProjectChanged(true);
@@ -676,20 +670,16 @@ void Annotator::fileSave()
 
 void  Annotator::loadSchema()
 {
-	QString qFileName = QFileDialog::getOpenFileName(QString::null,"*.sc");
+	QString qFileName = QFileDialog::getOpenFileName(
+			projectToAbsolutePath("."),
+			"Description Schemes (*.sc)",
+			this,
+			"SchemaChooser",
+			"Choose an Schema");
 	if(qFileName == QString::null) return;
 
-	try
-	{
-		mProject.LoadScheme(qFileName.ascii());
-	}
-	catch (CLAM::XmlStorageErr & e)
-	{
-		QMessageBox::warning(this,"Error Loading Schema File",
-			constructFileError(qFileName.ascii(),e));
-		return;
-	}
-
+	std::string schemaFile = absoluteToProjectPath(qFileName.ascii());
+	mProject.SetSchema(schemaFile);
 	initProject();
 }
 
@@ -715,9 +705,20 @@ void  Annotator::saveDescriptors()
 std::string Annotator::projectToAbsolutePath(const std::string & file)
 {
 	QString projectPath = QDir::cleanDirPath((mProjectFileName+"/../").c_str());
+	mProject.SetBasePath(projectPath.ascii());
 	QDir qdir = QString(file.c_str());
 	if (qdir.isRelative())
 		return QDir::cleanDirPath( QDir(projectPath).filePath(file) ).ascii();
+	return file;
+}
+
+std::string Annotator::absoluteToProjectPath(const std::string & file)
+{
+	QDir qdir = QString(file.c_str());
+	if (qdir.isRelative()) return file;
+	const std::string & basePath = mProject.GetBasePath();
+	if (file.substr(0,basePath.length()+1)==(basePath+"/"))
+		return file.substr(mProject.GetBasePath().length()+1);
 	return file;
 }
 
