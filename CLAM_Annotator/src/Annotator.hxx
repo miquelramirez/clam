@@ -120,7 +120,6 @@ private slots:
 private:
 	void updateSongListWidget();
 	void makeConnections();
-	void connectBPFs();
 	void currentFile( std::string &);
 	void markCurrentSongChanged();
 	void markAllSongsUnchanged();
