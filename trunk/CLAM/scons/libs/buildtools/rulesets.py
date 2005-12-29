@@ -10,6 +10,9 @@ def handle_preinclude ( env ):
 	return
 
 def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
+
+	#for file in source_files :
+	#	print "file to compile: " + str(file)
 	lib_descriptor = env.File( 'clam_'+name+'.pc' )
 
 	# We expect a version like " X.Y-possibleextrachars "

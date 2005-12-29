@@ -4,12 +4,14 @@ from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 from buildtools.rulesets import *
+
+from buildtools.custom_builders import *
+
 import os, sys
 
 Import('audioio_env version top install_dirs header_db')
 
 def define_module_contents() :
-	print "Gathering necessary source files...",
 	if not os.path.exists('src') :
 		os.mkdir('src')
 	if not os.path.exists('include' ) :
@@ -56,52 +58,42 @@ def define_module_contents() :
 
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
 
-	file_retriever.scan()
+	file_retriever.scan_without_copy()
 
-	store_headers_in_db( header_db )
-	for filename in file_retriever.headers :
-		update_includes( header_db, filename )
-	for filename in file_retriever.sources :
-		update_includes( header_db, filename )
+	builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
+	audioio_env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
+
+	realHeaders = []
+	for orig,target in file_retriever.origTargetHeaders :
+		audioio_env.CopyFileAndUpdateIncludes(target, orig)
+		realHeaders.append(target)
+
+	realSources = []
+	for orig,target in file_retriever.origTargetSources:
+		audioio_env.CopyFileAndUpdateIncludes(target,orig)
+		realSources.append(target)
 
 	manifest = Manifest()
-	manifest.store( file_retriever.headers, file_retriever.sources )
-
-	return file_retriever.headers, file_retriever.sources 
+	manifest.store( realHeaders, realSources )
+	return realHeaders, realSources
 
 # Module dependencies and tasks
 
 if not audioio_env.GetOption('clean') :
-	print """\
-##############################################
-### BOOTSTRAPPING CLAM AUDIO I/O LIBRARY   ###
-##############################################"""
 
-	print "Creating pkg-config descriptor...",
 	pkg_data = PackageData( 'clam_audioio', version, [] )
 	pkg_data.create_pkg_descriptor( audioio_env, 'clam_audioio.pc' )
 
-if not audioio_env.GetOption('clean') :
-	header_files, source_files = define_module_contents()
-else :
-	manifest = Manifest()
-	header_files = []
-	source_files = []
-	manifest.load( header_files, source_files )
-
-
-
+realHeaders, realSources = define_module_contents()
 audioio_env.Prepend(CPPPATH=['include','../core/include','../processing/include'])
 
 audioio_env.Append(LIBS=['clam_core','clam_processing'])
 audioio_env.Prepend(LIBPATH=['../core','../processing'])
 #audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
-
-headers = [ File(header) for header in header_files ]
 if sys.platform != 'win32' :
-	audioio_tgt, audioio_install_tgt = posix_lib_rules( 'audioio', version, headers, source_files, install_dirs, audioio_env )
+	audioio_tgt, audioio_install_tgt = posix_lib_rules( 'audioio', version, realHeaders, realSources, install_dirs, audioio_env )
 else :
-	audioio_tgt, audioio_install_tgt = win32_lib_rules( 'audioio', version, headers, source_files, install_dirs, audioio_env )
+	audioio_tgt, audioio_install_tgt = win32_lib_rules( 'audioio', version, realHeaders, realSources, install_dirs, audioio_env )
 
 Return( 'audioio_tgt', 'audioio_install_tgt' )
