@@ -38,7 +38,7 @@
         </property>
         <widget class="QTabWidget">
             <property name="name">
-                <cstring>tabWidget9</cstring>
+                <cstring>mMainTabWidget</cstring>
             </property>
             <widget class="QWidget">
                 <property name="name">
@@ -188,9 +188,9 @@ contains descriptors values for song level descriptors. Song level descriptors a
                             <property name="orientation">
                                 <enum>Vertical</enum>
                             </property>
-                            <widget class="QTabWidget">
+                            <widget class="QWidget">
                                 <property name="name">
-                                    <cstring>tabWidget2</cstring>
+                                    <cstring>mFrameLevelContainer</cstring>
                                 </property>
                                 <property name="sizePolicy">
                                     <sizepolicy>
@@ -215,14 +215,6 @@ allows editing floating point descriptors that has an occurrence for each frame.
 &lt;li&gt;TODO: Put the keybindings&lt;/li&gt;
 &lt;/ul&gt;</string>
                                 </property>
-                                <widget class="QWidget">
-                                    <property name="name">
-                                        <cstring>tab</cstring>
-                                    </property>
-                                    <attribute name="title">
-                                        <string>No Frame Level Descriptors</string>
-                                    </attribute>
-                                </widget>
                             </widget>
                             <widget class="QLayoutWidget">
                                 <property name="name">
@@ -876,9 +868,9 @@ to the proper cell.&lt;/p&gt;</string>
     </connection>
     <connection>
         <sender>mProjectOverview</sender>
-        <signal>selectionChanged(QListViewItem*)</signal>
+        <signal>selectionChanged()</signal>
         <receiver>AnnotatorBase</receiver>
-        <slot>songsClicked(QListViewItem*)</slot>
+        <slot>currentSongChanged()</slot>
     </connection>
     <connection>
         <sender>mSegmentationSelection</sender>
@@ -891,12 +883,6 @@ to the proper cell.&lt;/p&gt;</string>
         <signal>activated()</signal>
         <receiver>AnnotatorBase</receiver>
         <slot>whatsThis()</slot>
-    </connection>
-    <connection>
-        <sender>tabWidget2</sender>
-        <signal>currentChanged(QWidget*)</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>onSelectPageLLD(QWidget*)</slot>
     </connection>
     <connection>
         <sender>mPlay</sender>
@@ -949,7 +935,7 @@ to the proper cell.&lt;/p&gt;</string>
     <slot>fileSave()</slot>
     <slot>fileSaveAs()</slot>
     <slot>fileExit()</slot>
-    <slot>songsClicked( QListViewItem * item )</slot>
+    <slot>currentSongChanged()</slot>
     <slot>addSongsToProject()</slot>
     <slot>linkCurrentSegmentToPlayback(bool)</slot>
     <slot>deleteSongsFromProject()</slot>
@@ -959,7 +945,6 @@ to the proper cell.&lt;/p&gt;</string>
     <slot>updateAuralizationOptions()</slot>
     <slot>computeSongDescriptors()</slot>
     <slot>refreshSegmentation()</slot>
-    <slot>onSelectPageLLD( QWidget * )</slot>
     <slot>startPlaying()</slot>
     <slot>pausePlaying()</slot>
     <slot>stopPlaying()</slot>
