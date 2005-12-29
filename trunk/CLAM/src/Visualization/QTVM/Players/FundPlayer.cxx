@@ -63,7 +63,7 @@ namespace CLAM
 			audioOutCfg.SetChannelID(0);    
 			channel.Configure(audioOutCfg); 
 			
-			AudioManager::Current().Start();                            
+			manager.Start();                            
 			channel.Start();  
 
 			SimpleOscillatorConfig oscCfg;
