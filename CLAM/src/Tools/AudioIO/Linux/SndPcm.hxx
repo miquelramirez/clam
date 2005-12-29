@@ -24,7 +24,7 @@
 #define ALSA_PCM_OLD_SW_PARAMS_API
 
 #include <alsa/asoundlib.h>
-#include <Err.hxx>
+#include "Err.hxx"
 
 class SndPcmError : public CLAM::Err
 {
