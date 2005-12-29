@@ -56,6 +56,7 @@ namespace CLAM
 			int                  mHeight;
 			volatile bool        mDoResize;
 			QTimer*              mTimer;
+			bool                 mIsPlaying;
 
 			enum { TIMER_INTERVAL=10 };
 		};

@@ -14,11 +14,15 @@ namespace CLAM
 			, mHeight(0)
 			, mDoResize(false)
 			, mTimer(0)
+			, mIsPlaying(false)
 		{
 			setMouseTracking(true);
 			setFocusPolicy(StrongFocus);
 			setAutoBufferSwap(false);
 			SetBackgroundColor(0.0f,0.0f,0.0f);
+
+			mTimer = new QTimer(this);
+			connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
 		}
 
 		BPFEditorDisplaySurface::~BPFEditorDisplaySurface()
@@ -73,7 +77,7 @@ namespace CLAM
 			glClear(GL_COLOR_BUFFER_BIT);
 			mController->Draw();
 			swapBuffers();
-			if(mTimer) if(!mTimer->isActive()) mTimer->start(TIMER_INTERVAL,true);
+			if(mIsPlaying && !mTimer->isActive()) mTimer->start(TIMER_INTERVAL,true);
 		}
 
 		void BPFEditorDisplaySurface::mousePressEvent(QMouseEvent* e)
@@ -180,14 +184,7 @@ namespace CLAM
 
 	    void BPFEditorDisplaySurface::startTimer()
 		{
-		    if(mTimer) 
-			{
-				mTimer->stop();
-				delete mTimer;
-				mTimer = 0;
-			}
-			mTimer = new QTimer(this);
-			connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
+		    mIsPlaying = true;
 			mTimer->start(1,true);
 		}
 
@@ -195,6 +192,7 @@ namespace CLAM
 		{
 			mTimer->stop();
 			mTimer->start(1,true);
+			mIsPlaying = false;
 		}
 
 		void BPFEditorDisplaySurface::enterEvent(QEvent *e)

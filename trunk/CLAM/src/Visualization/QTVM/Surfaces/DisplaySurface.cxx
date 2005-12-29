@@ -42,6 +42,7 @@ namespace CLAM
 			, mMouseXPos(0)
 			, mMouseYPos(0)
 			, mHasToolTip(true)
+			, mIsPlaying(false)
 		{
 			setMouseTracking(true);
 			setAutoBufferSwap(false);
@@ -51,6 +52,9 @@ namespace CLAM
 			mToolTipFont.setPointSize(8);
 			mToolTipFont.setBold(true);
 			mToolTipFont.setStyleHint(QFont::Courier,QFont::NoAntialias);
+
+			mTimer = new QTimer(this);
+			connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
 		}
 
 		DisplaySurface::~DisplaySurface()
@@ -98,7 +102,7 @@ namespace CLAM
 			mController->Draw();
 			RenderToolTip(); 
 			swapBuffers();
-			if(mTimer) if(!mTimer->isActive()) mTimer->start(TIMER_INTERVAL,true);
+			if(mIsPlaying && !mTimer->isActive()) mTimer->start(TIMER_INTERVAL,true);
 		}
 
 		void DisplaySurface::mousePressEvent(QMouseEvent * e) 
@@ -169,20 +173,14 @@ namespace CLAM
 
 		void DisplaySurface::startTimer()
 		{
-			if(mTimer) 
-			{
-				mTimer->stop();
-				delete mTimer;
-				mTimer = 0;
-			}
-			mTimer = new QTimer(this);
-			connect(mTimer,SIGNAL(timeout()),this,SLOT(updateGL()));
+			mIsPlaying = true;
 			mTimer->start(1,true);
 		}
 
 		void DisplaySurface::stopTimer()
 		{
 			mTimer->stop();
+			mIsPlaying = false;
 			mTimer->start(1,true);
 		}
 
