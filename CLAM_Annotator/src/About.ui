@@ -62,8 +62,8 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>&lt;b&gt;CLAM Annotator v 0.1&lt;/b&gt;&lt;br/&gt;
-&lt;p&gt;Based on CLAM v0.9.0&lt;/p&gt;</string>
+                        <string>&lt;b&gt;CLAM Annotator v 0.2&lt;/b&gt;&lt;br/&gt;
+&lt;p&gt;Based on CLAM v0.90&lt;/p&gt;</string>
                     </property>
                 </widget>
             </hbox>
