@@ -17,7 +17,7 @@ namespace CLAM
 			mFont.setFamily("fixed");
 			mFont.setPointSize(10);
 			mFont.setBold(true);
-			mFont.setStyleHint(QFont::Courier,QFont::NoAntialias);
+			mFont.setStyleHint(QFont::Courier);
 
 			QFontMetrics font_metrics(mFont);
 			mMaxLabelWidth = font_metrics.width("9.99");
