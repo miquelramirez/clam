@@ -84,7 +84,7 @@ for more information</string>
                 </font>
             </property>
             <property name="text">
-                <string>SMS Tools 2 v.0.2</string>
+                <string>CLAM SMSTools 0.4 (with CLAM 0.90.0)</string>
             </property>
             <property name="alignment">
                 <set>AlignCenter</set>
