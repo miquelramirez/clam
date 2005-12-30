@@ -4,7 +4,11 @@ from buildtools.include_rename import update_includes_without_db
 import shelve
 
 def generate_copy_files( target, source, env ) :
-	command = "%s %s %s"%('cp -ar', source[0], target[0])
+	if sys.platform == 'win32' :
+		copyCmd = 'copy'
+	else :
+		copyCmd = 'cp'
+	command = "%s %s %s"%(copyCmd, source[0], target[0])
 	os.system( command )
 	update_includes_without_db(str(target[0]))
 	return None
