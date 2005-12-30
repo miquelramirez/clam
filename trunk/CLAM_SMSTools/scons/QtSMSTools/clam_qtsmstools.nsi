@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "CLAM-QtSMSTools"
-!define PRODUCT_VERSION "0.90-pre2"
+!define PRODUCT_VERSION "0.4"
 !define PRODUCT_PUBLISHER "CLAM devel"
 !define PRODUCT_WEB_SITE "http://www.iua.upf.es/mtg/clam"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\QtSMSTools.exe"

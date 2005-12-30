@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "CLAM-Annotator"
-!define PRODUCT_VERSION "0.90-pre2"
+!define PRODUCT_VERSION "0.2"
 !define PRODUCT_PUBLISHER "CLAM devel"
 !define PRODUCT_WEB_SITE "http://www.iua.upf.es/mtg/clam"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Annotator.exe"
@@ -120,10 +120,11 @@ FunctionEnd
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\Samples\SongsTest\02.mp3"
-  Delete "$INSTDIR\Samples\SongsTest\02.mp3.pool"
-  Delete "$INSTDIR\Samples\SongsTest\03.mp3"
-  Delete "$INSTDIR\Samples\SongsTest\03.mp3.pool"
+  Delete "$INSTDIR\Samples\SongsTest\LisaRein-SomethingBetter.mp3"
+  Delete "$INSTDIR\Samples\SongsTest\LisaRein-SomethingBetter.mp3.pool"
+  Delete "$INSTDIR\Samples\SongsTest\LisaRein-spunkyfunk.mp3"
+  Delete "$INSTDIR\Samples\SongsTest\LisaRein-spunkyfunk.mp3.pool"
+  Delete "$INSTDIR\Samples\SongsTest\urls.txt"
   Delete "$INSTDIR\Samples\Project_win.pro"
   Delete "$INSTDIR\Samples\Schema.sc"
   Delete "$INSTDIR\resources\sounds\click.wav"

@@ -20,7 +20,7 @@ def create_dmg_message( target, source, env):
 
 def parse_pkg_config( env ) :
 	prefix = env['clam_prefix']
-	descriptor_path = prefix + "\\lib_release\\pkgconfig\\*.pc"
+	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
 	descriptors = glob.glob( descriptor_path )
 	libpath = dict()
 	libs = dict()
