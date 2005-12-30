@@ -2,14 +2,13 @@
 # -*- coding: iso-8859-15 -*-
 
 #TODO: 
-# - filter out ling srcdeps output in compilation errors
 # - tests able to be marked as not-mandatory, so if failed just gives warning
 #----------------------------------------------------------------------
 # begin configuration
 
 
 	
-enableSendMail = True 
+enableSendMail = True
 enablePlaceCvsTags = True
 
 quickTestForScriptDebuging = False  # Danger! flag to be enabled for debuging puroposes only
@@ -18,7 +17,7 @@ quickTestForScriptDebuging = False  # Danger! flag to be enabled for debuging pu
 # when the sandbox is not present always clean checkout
 updateLevelForCLAM = 2
 updateLevelForExamples = 2
-updateLevelForTestData = 1 
+updateLevelForTestData = 0 
 
 # When false keeps already compiled objects
 doCleanMake = True
@@ -65,6 +64,8 @@ spvTestsPath = BUILDPATH + 'Tests/SupervisedTests/'
 nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
 simpleExamplesPath = BUILDPATH + 'Examples/Simple/'
 
+clam_prefix = '/home/parumi/clam-sandboxes/locallibs-from-nightlytests'
+
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
 
@@ -79,10 +80,11 @@ if quickTestForScriptDebuging :
 	
 sandboxes = [ # Module, Sandbox name, Tag, Update level
 	( 'CLAM', SANDBOX_NAME, MODULE_TAG, updateLevelForCLAM),
-	( 'CLAM_DescriptorsGUI', 'clean-CLAM_DescriptorsGUI', '', updateLevelForExamples ),
-	( 'CLAM_NetworkEditor', 'clean-CLAM_NetworkEditor', 'srcdeps-build-system-branch', updateLevelForExamples ),
-	( 'CLAM_SMSTools', 'clean-CLAM_SMSTools', 'srcdeps-build-system-branch', updateLevelForExamples ),
-	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', 'srcdeps-build-system-branch', updateLevelForExamples ),
+#	( 'CLAM_DescriptorsGUI', 'clean-CLAM_DescriptorsGUI', '', updateLevelForExamples ),
+#	( 'CLAM_NetworkEditor', 'clean-CLAM_NetworkEditor', 'srcdeps-build-system-branch', updateLevelForExamples ),
+	( 'CLAM_NetworkEditor', 'clean-CLAM_NetworkEditor', '', updateLevelForExamples ),
+	( 'CLAM_SMSTools', 'clean-CLAM_SMSTools', '', updateLevelForExamples ),
+	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', '', updateLevelForExamples ),
 	( 'CLAM_Annotator', 'clean-CLAM_Annotator', '', updateLevelForExamples ),
 	( 'CLAM_Rappid', 'clean-CLAM_Rappid', '', updateLevelForExamples ),
 	( 'CLAM_SDIFDisplay', 'clean-CLAM_SDIFDisplay', '', updateLevelForExamples ),
@@ -99,8 +101,8 @@ def baseDirOf(keyname) :
 
 automaticTests = [
 	( 'UnitTests', unitTestsPath ),
-	( 'FunctionalTests', functionalTestsPath ),
-	( 'SMSToolsTests', baseDirOf('SMSTools')+'/build/FunctionalTests/' )
+	( 'FunctionalTests', functionalTestsPath  ),
+	( 'SMSToolsTests', baseDirOf('SMSTools')+'/build/FunctionalTests/'  )
 ]
 
 externalApplications = [
@@ -108,78 +110,78 @@ externalApplications = [
 #	( 'SpectralDelay-Offline', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/Offline/'),
 #	( 'SpectralDelay-MultiBandProxyTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/MultiBandProxyTest/'),
 #	( 'SpectralDelay-DelayPoolTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/DelayPoolTest/'),
-	( 'NetworkEditor', baseDirOf('NetworkEditor')+'/build/' ),
-	( 'Voice2MIDI', baseDirOf('CLAM_Voice2MIDI')+'/build/' ),
-	( 'SMSTools', baseDirOf('SMSTools')+'/build/Tools/' ),
+	( 'NetworkEditor', baseDirOf('NetworkEditor')+'/scons/' ),
+	( 'Voice2MIDI', baseDirOf('CLAM_Voice2MIDI')+'/scons/' ),
+	( 'SMSTools', baseDirOf('SMSTools')+'/scons/QtSMSTools/' ),
 	( 'Annotator', baseDirOf('Annotator')+'/build/' ),
-	( 'SMSBatch', baseDirOf('SMSTools')+'/build/Batch/' ),
-	( 'SMSConsole', baseDirOf('SMSTools')+'/build/Console/' ),
-	( 'SDIFDisplay', baseDirOf('SDIFDisplay')+'/build/' )
+	( 'SMSBatch', baseDirOf('SMSTools')+'/build/Batch/'  ),
+	( 'SMSConsole', baseDirOf('SMSTools')+'/build/Console/'  ),
+	( 'SDIFDisplay', baseDirOf('SDIFDisplay')+'/build/'  )
 #	( 'Rappid', baseDirOf('Rappid')+'/build/' ),
 #	( 'DescriptorsGUI', baseDirOf('DescriptorsGUI')+'/build/' ),
 #	( 'Salto', baseDirOf('Salto')+'/build/' ),
 ]
 
 supervisedTests = [
-	('SpectralPeaksPresentationTest', spvTestsPath+'SpectralPeaksPresentation/' ), 
-	('SpectrumPresentationTest', spvTestsPath+'SpectrumPresentation/' ),
-	('AudioPresentationTest', spvTestsPath+'AudioPresentation/' ),
-	('FundFreqPresentationTest', spvTestsPath+'FundFreqPresentation/' ),
+	('SpectralPeaksPresentationTest', spvTestsPath+'SpectralPeaksPresentation/'  ), 
+	('SpectrumPresentationTest', spvTestsPath+'SpectrumPresentation/'  ),
+	('AudioPresentationTest', spvTestsPath+'AudioPresentation/'  ),
+	('FundFreqPresentationTest', spvTestsPath+'FundFreqPresentation/'  ),
 #	('AudioIOTest', spvTestsPath+'AudioIO/' ), TODO: fix. now needs root access and consumes all cpu
-	('MIDIIOTest', spvTestsPath+'MIDIIO/' ),
-	('Fl_EnvelopeTest', spvTestsPath+'Fl_Envelope/' ),
-	('Test_Multiplot', spvTestsPath+'Plotsv2/Test_Multiplot/' ),
-	('Test_SinglePlot', spvTestsPath+'Plotsv2/Test_SinglePlot/' ),
-	('Test_SpecificPlots', spvTestsPath+'Plotsv2/Test_SpecificPlots/' )
+	('MIDIIOTest', spvTestsPath+'MIDIIO/'  ),
+	('Fl_EnvelopeTest', spvTestsPath+'Fl_Envelope/'  ),
+	('Test_Multiplot', spvTestsPath+'Plotsv2/Test_Multiplot/'  ),
+	('Test_SinglePlot', spvTestsPath+'Plotsv2/Test_SinglePlot/'  ),
+	('Test_SpecificPlots', spvTestsPath+'Plotsv2/Test_SpecificPlots/'  )
 ]
 
 
 notPortedTests = [
-	( 'ArrayTest', nonPortedTestsPath+'Array/'),
-        ( 'Array2Test', nonPortedTestsPath+'Array2/'),
-        ( 'AssertTest', nonPortedTestsPath+'Assert/'),
-        ( 'BPFTest', nonPortedTestsPath+'BPF/'),
+	( 'ArrayTest', nonPortedTestsPath+'Array/' ),
+        ( 'Array2Test', nonPortedTestsPath+'Array2/' ),
+        ( 'AssertTest', nonPortedTestsPath+'Assert/' ),
+        ( 'BPFTest', nonPortedTestsPath+'BPF/' ),
 #        ( 'EnvelopeExtractorTest', nonPortedTestsPath+'EnvelopeExtractor/'),
-        ( 'ErrorTest', nonPortedTestsPath+'Error/'),
+        ( 'ErrorTest', nonPortedTestsPath+'Error/' ),
 #        ( 'FDFilterGenTest', nonPortedTestsPath+'FDFilterGen/'),
-        ( 'ListTest', nonPortedTestsPath+'List/'),
+        ( 'ListTest', nonPortedTestsPath+'List/' ),
 #        ( 'SegmentTest', nonPortedTestsPath+'Segment/'),
-        ( 'Signalv1Test', nonPortedTestsPath+'Signalv1/'),
-        ( 'SpectrumTest', nonPortedTestsPath+'Spectrum/'),
-        ( 'SpectrumAdderTest', nonPortedTestsPath+'SpectrumAdder/'),
-        ( 'SpectrumAdder2Test', nonPortedTestsPath+'SpectrumAdder2/'),
-        ( 'SpectrumProductTest', nonPortedTestsPath+'SpectrumProduct/'),
+        ( 'Signalv1Test', nonPortedTestsPath+'Signalv1/' ),
+        ( 'SpectrumTest', nonPortedTestsPath+'Spectrum/' ),
+        ( 'SpectrumAdderTest', nonPortedTestsPath+'SpectrumAdder/' ),
+        ( 'SpectrumAdder2Test', nonPortedTestsPath+'SpectrumAdder2/' ),
+        ( 'SpectrumProductTest', nonPortedTestsPath+'SpectrumProduct/' ),
 #        ( 'TabFunctTest', nonPortedTestsPath+'TabFunct/'),
-        ( 'ThreadingTest', nonPortedTestsPath+'Threading/'),
-        ( 'WaveGeneratorTest', nonPortedTestsPath+'WaveGenerator/'),
-        ( 'WindowingTest', nonPortedTestsPath+'Windowing/')
+        ( 'ThreadingTest', nonPortedTestsPath+'Threading/' ),
+        ( 'WaveGeneratorTest', nonPortedTestsPath+'WaveGenerator/' ),
+        ( 'WindowingTest', nonPortedTestsPath+'Windowing/' )
 ]
 
 simpleExamples = [
-        ( 'AudioApplicationExample', simpleExamplesPath+'AudioApplication/'),
-        ( 'AudioFileReading', simpleExamplesPath+'AudioFileReading/'),
-        ( 'AudioFileWriting', simpleExamplesPath+'AudioFileWriting/'),
-        ( 'ConfiguratorExample', simpleExamplesPath+'Configurator/'),
-	( 'ControlArraysExample', simpleExamplesPath+'ControlArrays/'),
-        ( 'ControlsExample', simpleExamplesPath+'Controls/'),
-        ( 'DescriptorsComputationExample', simpleExamplesPath+'DescriptorsComputation/'),
-        ( 'FDFilterExample', simpleExamplesPath+'FDFilter/'),
-        ( 'FFTExample', simpleExamplesPath+'FFT/'),
-        ( 'FileInfo', simpleExamplesPath+'FileInfo/'),
-        ( 'FilePlayback', simpleExamplesPath+'FilePlayback/'),
-        ( 'LPCExample', simpleExamplesPath+'LPC/'),
-        ( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/'),
-        ( 'midi2xml', simpleExamplesPath+'MIDI2XML/'),
-        ( 'MIDIIO', simpleExamplesPath+'MIDIIO/'),
-        ( 'MIDIOut', simpleExamplesPath+'MIDIOut/'),
-        ( 'MultiPlot', simpleExamplesPath+'MultiPlot/'),
-        ( 'NetworkPersistence', simpleExamplesPath+'NetworkPersistence/'),
-        ( 'NetworkUsage', simpleExamplesPath+'NetworkUsage/'),
-        ( 'POCompositeExample', simpleExamplesPath+'POComposite/'),
-        ( 'PersistenceThroughDTs', simpleExamplesPath+'PersistenceThroughDTs/'),
-        ( 'PortsAndControlsUsage', simpleExamplesPath+'PortsAndControlUsage/'),
-        ( 'ProcessingLifeCycle', simpleExamplesPath+'ProcessingLifeCycle/'),
-	( 'DPAudio', simpleExamplesPath+'QtPlots/DirectPlotsExamples/DPAudioExample/'),
+        ( 'AudioApplicationExample', simpleExamplesPath+'AudioApplication/' ),
+        ( 'AudioFileReading', simpleExamplesPath+'AudioFileReading/' ),
+        ( 'AudioFileWriting', simpleExamplesPath+'AudioFileWriting/' ),
+        ( 'ConfiguratorExample', simpleExamplesPath+'Configurator/' ),
+	( 'ControlArraysExample', simpleExamplesPath+'ControlArrays/' ),
+        ( 'ControlsExample', simpleExamplesPath+'Controls/' ),
+        ( 'DescriptorsComputationExample', simpleExamplesPath+'DescriptorsComputation/' ),
+        ( 'FDFilterExample', simpleExamplesPath+'FDFilter/' ),
+        ( 'FFTExample', simpleExamplesPath+'FFT/' ),
+        ( 'FileInfo', simpleExamplesPath+'FileInfo/' ),
+        ( 'FilePlayback', simpleExamplesPath+'FilePlayback/' ),
+        ( 'LPCExample', simpleExamplesPath+'LPC/' ),
+        ( 'MIDISynthesizer', simpleExamplesPath+'../MIDISynthesizer/' ),
+        ( 'midi2xml', simpleExamplesPath+'MIDI2XML/' ),
+        ( 'MIDIIO', simpleExamplesPath+'MIDIIO/' ),
+        ( 'MIDIOut', simpleExamplesPath+'MIDIOut/' ),
+        ( 'MultiPlot', simpleExamplesPath+'MultiPlot/' ),
+        ( 'NetworkPersistence', simpleExamplesPath+'NetworkPersistence/' ),
+        ( 'NetworkUsage', simpleExamplesPath+'NetworkUsage/' ),
+        ( 'POCompositeExample', simpleExamplesPath+'POComposite/' ),
+        ( 'PersistenceThroughDTs', simpleExamplesPath+'PersistenceThroughDTs/' ),
+        ( 'PortsAndControlsUsage', simpleExamplesPath+'PortsAndControlUsage/' ),
+        ( 'ProcessingLifeCycle', simpleExamplesPath+'ProcessingLifeCycle/' ),
+	( 'DPAudio', simpleExamplesPath+'QtPlots/DirectPlotsExamples/DPAudioExample/' ),
 	( 'DPFundamental', simpleExamplesPath+'QtPlots/DirectPlotsExamples/DPFundamentalExample/'),
 	( 'DPSpectrumAndPeaks', simpleExamplesPath+'QtPlots/DirectPlotsExamples/DPSpectrumAndPeaksExample/'),
 	( 'DPAudioStereo', simpleExamplesPath+'QtPlots/DirectPlotsExamples/DPAudioStereoExample/'),
@@ -207,7 +209,8 @@ testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
 
 if quickTestForScriptDebuging :
-	testsToRun = [( 'UnitTests', unitTestsPath )]
+	testsToRun = [( 'UnitTests', unitTestsPath, '' )]
+	testsToRun = [( 'SMSTools', baseDirOf('SMSTools')+'/scons/QtSMSTools/' )]
 #	testsToRun = automaticTests
 		
 sender = '"automatic tests script" <parumi@iua.upf.es>'
@@ -352,7 +355,7 @@ def formatSummary(name, configuration, result) :
 		points +='.'
 	return nameConfig + points + result+'\n'
 
-def compileAndRun(name, path) :
+def compileAndRun(name, path, useScons) :
 	global foundCompilationErrors, foundExecutionErrors, foundTestsFailures, configurations
 	if name == '' :
 		return 'found invalid test (see message above)', '', TestResult()
@@ -365,10 +368,14 @@ def compileAndRun(name, path) :
 	
 	details = ''
 	for configuration in configurations :
-		# compilation phase
-		if doCleanMake or len(configurations)>1:
-			getStatusOutput('make clean')
-		makecmd = 'make depend 2> /dev/null && make CONFIG=%s' % (configuration)
+		if useScons: 	
+			makecmd = 'scons clam_prefix=%s install_prefix=.' % clam_prefix
+		else :
+			# compilation phase
+			if doCleanMake or len(configurations)>1:
+				getStatusOutput('make clean')
+			makecmd = 'make depend 2> /dev/null && make CONFIG=%s' % (configuration)
+
 		ok, output = getStatusOutput( makecmd )
 		foundCompilationErrors = foundCompilationErrors or not ok
 		if not ok :
@@ -408,7 +415,7 @@ def compileAndRun(name, path) :
 				print "found functional tests failures. path:", path
 			
 		else :
-			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime)
+			ok, output = runInBackgroundForAWhile(path, execcmd, executionTime, useScons)
 			#TODO have into account that when segfault returns(?) 139
 			runMessages, d = parseExecutionErrors( output )
 			foundExecutionErrors =  foundExecutionErrors or not ok or runMessages.find('OK')==-1
@@ -446,11 +453,12 @@ Detailed status of CLAM and externals apps.
 from guiltyCommits import placeTestsOkCandidateTags, placeTestsOkTags, chaseTheGuiltyCommits
 
 import time, string, signal
-def runInBackgroundForAWhile(path, command, sleeptime=10) :
+def runInBackgroundForAWhile(path, command, sleeptime=10, useScons='') :
 	os.chdir(path)
 	time.sleep( sleeptime )
 	withoutSlash = command[command.find('/')+1 : ]
-
+	if useScons :
+		withoutSlash += ' LD_LIBRARY_PATH=%s/lib' % clam_prefix
 	status, dummy = commands.getstatusoutput('killall '+ withoutSlash)
 	
 	# print 'kill status ', status, dummy
@@ -507,6 +515,11 @@ def updateSandboxes() :
 			print 'The sandbox %s already exists, keeping it'%(sandbox)
 
 def deployClamBuildSystem() :
+	os.chdir(BUILDPATH+'../scons/libs/')
+	executeMandatory('scons configure')
+	executeMandatory('scons install prefix=%s' % clam_prefix)
+
+def deployClamOldBuildSystem() :
 	# BuildSrcDeps
 	os.chdir(BUILDPATH+'srcdeps/')
 	print "Compiling srcdeps. ",
@@ -558,6 +571,7 @@ def runTests() :
 
 	updateSandboxes()
 	totalSummary.append(checkPaths())
+	deployClamOldBuildSystem()
 	deployClamBuildSystem()
 
 	# LinkSaltoDataFolder
@@ -565,9 +579,11 @@ def runTests() :
 #	executeMandatory('ln -s ' + SALTO_DATA_FOLDER)
 
 	# compile and run/tests entries
-	for name, path in testsToRun :
+	for name, path  in testsToRun :
+		useScons = 'scons' in path
+
 		print '\n\nname\t\t %s \npath \t\t%s \n' % (name, path)
-		aSummary, aDetail, aTestResult  = compileAndRun(name, path)
+		aSummary, aDetail, aTestResult  = compileAndRun(name, path, useScons)
 		totalSummary.append(aSummary)
 		totalDetails.append(aDetail)
 		resultSet.add( aTestResult )
@@ -616,7 +632,7 @@ def runTests() :
 #
 if __name__ == '__main__':
 	try :
-		runTests()
+			runTests()
 	except KeyboardInterrupt :
 		print 'interrupted by the user'
 	except:
