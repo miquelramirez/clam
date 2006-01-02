@@ -14,7 +14,7 @@ def generate_copy_files( target, source, env ) :
 	return None
 
 def generate_copy_files_message( target, source, env ) :
-	return "======== copying files and updating includes ============  %s -> %s" % (source[0], target[0])
+	return "== Copying and updating includes : %s" % target[0]
 	
 
 def generate_so_name( target, source, env ) :
