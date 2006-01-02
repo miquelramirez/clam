@@ -86,6 +86,11 @@ public:
 	{
 		_registry.AddCreator(name, creator);
 	}
+	
+	void AddCreatorWarningRepetitions(const RegistryKey name, CreatorMethod creator)
+	{
+		_registry.AddCreatorWarningRepetitions(name, creator);
+	}
 
 
 	void AddCreatorSafe(const RegistryKey name, CreatorMethod creator) throw (ErrFactory)
@@ -141,8 +146,25 @@ public: // Inner classes. Public for better testing
 
 		void AddCreator( RegistryKey creatorId, CreatorMethod creator ) 
 		{
-			if( !CommonAddCreator( creatorId, creator ) ) 
-				CLAM_ASSERT( false, "creatorId was already a key in the registry" );
+			bool res = CommonAddCreator(creatorId, creator);
+			if (!res)
+			{
+				std::string errmsg("Adding creator method in the factory: CreatorId '");
+				errmsg += creatorId + "' was already registered.\nRegistered keys are:\n";
+				errmsg += GetRegisteredNames();
+				CLAM_ASSERT(res, errmsg.c_str());
+			}
+		}
+		void AddCreatorWarningRepetitions( RegistryKey creatorId, CreatorMethod creator ) 
+		{
+			bool res = CommonAddCreator(creatorId, creator);
+			if (!res)
+			{
+				std::string errmsg("WARNING. While adding a creator method in the factory, id '");
+				errmsg += creatorId + "' was already registered.";
+//				errmsg += "\n Registered keys: " + GetRegisteredNames();
+				CLAM_WARNING(false, errmsg.c_str() );
+			}
 		}
 
 		void AddCreatorSafe( RegistryKey creatorId, CreatorMethod creator ) throw (ErrFactory) 
@@ -175,7 +197,7 @@ public: // Inner classes. Public for better testing
 			GetRegisteredNames(names);
 			for(Names::iterator it=names.begin(); it!=names.end(); it++)
 			{
-				result += (*it)+"\t";
+				result += (*it)+", ";
 			}
 			return result;
 			
@@ -208,21 +230,21 @@ public: // Inner classes. Public for better testing
 
 	public:
 		Registrator( RegistryKey key, TheFactoryType& fact ) {
-			fact.AddCreator( key, Create );
+			fact.AddCreatorWarningRepetitions( key, Create );
 		}
 
 		Registrator( TheFactoryType& fact ) {
 			ConcreteProductType dummy;
-			fact.AddCreator( dummy.GetClassName(), Create );
+			fact.AddCreatorWarningRepetitions( dummy.GetClassName(), Create );
 		}
 
 		Registrator( RegistryKey key ) {
-			TheFactoryType::GetInstance().AddCreator( key, Create );
+			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( key, Create );
 		}
 
 		Registrator( ) {
 			ConcreteProductType dummy;
-			TheFactoryType::GetInstance().AddCreator( dummy.GetClassName(), Create );
+			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( dummy.GetClassName(), Create );
 		}
 
 		static AbstractProduct* Create() {
