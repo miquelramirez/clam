@@ -56,9 +56,17 @@ def define_module_contents() :
 	for orig,target in file_retriever.origTargetHeaders :
 		core_env.CopyFileAndUpdateIncludes(target, orig)
 		realHeaders.append(target)
-	# preinclude is added not by #include but by compiler options
-	#core_env.CopyFileAndUpdateIncludes('include/CLAM/preinclude.hxx', '../../../src/Defines/preinclude.hxx')
-	#realHeaders.append('include/CLAM/preinclude.hxx')
+
+	print "*** Provisinal copy of preinclude TODO: get rid of preinclude.h *******" #TODO
+	if sys.platform == 'win32' :
+		copyCmd = 'copy'
+	else :
+		copyCmd = 'cp'
+	command = "%s %s %s"%(copyCmd,'../../../src/Defines/preinclude.hxx', 'include/CLAM/preinclude.hxx' )
+	os.system( command )
+	realHeaders.append('include/CLAM/preinclude.hxx')
+ 	# end TODO remove
+
 
 	realSources = []
 	for orig,target in file_retriever.origTargetSources:
