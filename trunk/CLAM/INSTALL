@@ -52,11 +52,11 @@ applications from the source tarballs.
 
  3. Compile the CLAM application.
 
- Applications comes in separate tarballs. You'll need to download it 
- from the CLAM web. Then go into its scons/ directory and
+ Applications comes in separate tarballs. You'll need to download them
+ from the CLAM web. Then go into their scons/ directory and
  do the same steps as above.
  
- If you with to use CLAM libs installed in a non-standard dir. You 
+ If you wish to use CLAM libs installed in a non-standard dir, you 
  will need to specify the clam_prefix :
 
         $ scons clam_prefix=~/mylibs/ install
