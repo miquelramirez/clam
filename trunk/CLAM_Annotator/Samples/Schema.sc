@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <DescriptionScheme>
-
   <Uri>descriptionScheme:www.iua.upf.edu:clam:dummyTest-0.90</Uri>
-
   <Attributes>
     <Attribute name="Artist" scope="Song" type="String"/>
     <Attribute name="Title" scope="Song" type="String"/>
@@ -103,5 +101,4 @@
     <Attribute name="Slope" scope="Frame" type="Float"/>
     <Attribute name="HighFrequencyContent" scope="Frame" type="Float"/>
   </Attributes>
-
 </DescriptionScheme>
