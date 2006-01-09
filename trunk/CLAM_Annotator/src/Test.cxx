@@ -63,7 +63,7 @@ int main(int argc, char ** argv)
 			myProject.AppendSong(*filename);
 
 	myProject.LoadScheme(schemaLocation, projectDir);
-	myProject.SetExtractor("./runExtractor.sh");
+	myProject.SetExtractor("ClamExtractorExample");
 
 	if (!generateJustPools)
 		CLAM::XMLStorage::Dump(myProject,"Project",projectLocation);
