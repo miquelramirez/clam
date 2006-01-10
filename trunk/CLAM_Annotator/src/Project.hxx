@@ -2,10 +2,10 @@
 #define _Project_hxx_
 
 #include "Schema.hxx"
-#include "DynamicType.hxx"
+#include <CLAM/DynamicType.hxx>
 #include "SongFiles.hxx"
-#include "Filename.hxx"
-#include "DescriptionScheme.hxx"
+#include <CLAM/Filename.hxx>
+#include <CLAM/DescriptionScheme.hxx>
 #include <vector>
 
 namespace CLAM_Annotator

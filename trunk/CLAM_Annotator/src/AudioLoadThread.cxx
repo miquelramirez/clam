@@ -1,7 +1,7 @@
 
 #include "AudioLoadThread.hxx"
-#include "MultiChannelAudioFileReaderConfig.hxx"
-#include "MultiChannelAudioFileReader.hxx"
+#include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
+#include <CLAM/MultiChannelAudioFileReader.hxx>
 
 unsigned AudioLoadThread::number()
 {

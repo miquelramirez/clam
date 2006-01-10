@@ -1,9 +1,9 @@
 #include "SchemaAttribute.hxx"
 #include <algorithm>
-#include "Pool.hxx"
-#include "DescriptionScheme.hxx"
-#include "Text.hxx"
-#include "IndexArray.hxx"
+#include <CLAM/Pool.hxx>
+#include <CLAM/DescriptionScheme.hxx>
+#include <CLAM/Text.hxx>
+#include <CLAM/IndexArray.hxx>
 
 namespace CLAM_Annotator{
 

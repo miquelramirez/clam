@@ -2,8 +2,8 @@
 #ifndef _Range_
 #define _Range_
 
-#include "Component.hxx"
-#include "XMLAdapter.hxx"
+#include <CLAM/Component.hxx>
+#include <CLAM/XMLAdapter.hxx>
 
 namespace CLAM_Annotator{
 

@@ -4,6 +4,7 @@
 #include "TableItem.hxx"
 #include <qguardedptr.h>
 #include "Range.hxx"
+#include <CLAM/DataTypes.hxx>
 
 using CLAM_Annotator::Range;
 
@@ -13,7 +14,7 @@ class SliderWithValue;
 class RangeSelectionTableItem : public TableItem
 {
 public:
-    RangeSelectionTableItem( QTable * table, EditType et,const QString & value, Range<float> fRange );
+    RangeSelectionTableItem( QTable * table, EditType et,const QString & value, Range<CLAM::TData> fRange );
     RangeSelectionTableItem( QTable * table, EditType et,const QString & value, Range<int> iRange );
     QWidget * createEditor() const;
     void setContentFromEditor( QWidget * );
@@ -23,7 +24,7 @@ public:
 private:
     QGuardedPtr<SliderWithValue> mSlider;
     QGuardedPtr<QProgressBar> mProgressBar;
-    Range<float> mFloatRange;
+    Range<CLAM::TData> mFloatRange;
     Range<int> mIntegerRange;
     bool mHasFloatRange, mHasIntegerRange;
 

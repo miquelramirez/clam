@@ -7,7 +7,7 @@
 RangeSelectionTableItem::RangeSelectionTableItem( QTable * table, 
 						  EditType et, 
 						  const QString & value, 
-						  Range<float> fRange) 
+						  Range<CLAM::TData> fRange) 
     : TableItem( table, et, value),
       mHasFloatRange(true),
       mHasIntegerRange(false)

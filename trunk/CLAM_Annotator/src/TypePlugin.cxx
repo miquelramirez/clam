@@ -1,9 +1,10 @@
-#include "TypePlugin.hxx"
-#include "Pool.hxx"
-#include "SchemaAttribute.hxx"
-#include "Enumerated.hxx"
-#include "IndexArray.hxx"
 
+#include "TypePlugin.hxx"
+#include <CLAM/Pool.hxx>
+#include "SchemaAttribute.hxx"
+#include <CLAM/IndexArray.hxx>
+#include <algorithm>
+#include "Enumerated.hxx"
 
 namespace CLAM_Annotator
 {

@@ -1,24 +1,24 @@
 #include "Schema.hxx"
-#include "DescriptionScheme.hxx"
-#include "Pool.hxx"
+#include <CLAM/DescriptionScheme.hxx>
+#include <CLAM/Pool.hxx>
 #include "SongFiles.hxx"
 #include "Project.hxx"
 
-#include "XMLStorage.hxx"
-#include "AudioFile.hxx"
-#include "IndexArray.hxx"
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/IndexArray.hxx>
 
 //For Descriptor Computation
-#include "Segment.hxx"
-#include "SegmentDescriptors.hxx"
-#include "DescriptorComputation.hxx"
-#include "AudioFile.hxx"
-#include "MultiChannelAudioFileReader.hxx"
-#include "MultiChannelAudioFileReaderConfig.hxx"
-#include "FFT.hxx"
-#include "Spectrum.hxx"
-#include "SpectrumConfig.hxx"
-#include "Segmentator.hxx"
+#include <CLAM/Segment.hxx>
+#include <CLAM/SegmentDescriptors.hxx>
+#include <CLAM/DescriptorComputation.hxx>
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/MultiChannelAudioFileReader.hxx>
+#include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
+#include <CLAM/FFT.hxx>
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/SpectrumConfig.hxx>
+#include <CLAM/Segmentator.hxx>
 
 #include <time.h>
 

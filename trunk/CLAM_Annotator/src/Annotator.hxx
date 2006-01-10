@@ -11,10 +11,10 @@
 
 //xamat
 
-#include "Audio.hxx"
-#include "Pool.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/Pool.hxx>
 #include "Project.hxx"
-#include "BPF.hxx"
+#include <CLAM/BPF.hxx>
 
 class QTimer;
 class QTabBar;
@@ -138,7 +138,7 @@ private:
 	void refreshEnvelopes();
 	void refreshEnvelope(CLAM::BPF & bpf, const std::string& descriptorName);
 	void updateEnvelopesData();
-	void updateEnvelopeData(int bpfIndex, float* descriptors);
+	void updateEnvelopeData(int bpfIndex, CLAM::TData * descriptors);
 
 	void adaptSegmentationsToCurrentSchema();
 	void refreshSegmentation();

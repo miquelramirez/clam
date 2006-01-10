@@ -2,9 +2,9 @@
 #ifndef Enumerated_hxx
 #define Enumerated_hxx
 
-#include "DynamicType.hxx"
-#include "XMLAdapter.hxx"
-#include "TypeInfo.hxx"
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/XMLAdapter.hxx>
+#include <CLAM/TypeInfo.hxx>
 #include <string>
 
 namespace CLAM_Annotator

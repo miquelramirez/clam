@@ -2,8 +2,8 @@
 #ifndef _SongFiles_
 #define _SongFiles_
 
-#include "DynamicType.hxx"
-#include "Filename.hxx"
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/Filename.hxx>
 
 namespace CLAM_Annotator{
 

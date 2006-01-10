@@ -1,9 +1,9 @@
-#include "Project.hxx"
-#include "Text.hxx"
-#include "Enumerated.hxx"
-#include "IndexArray.hxx"
-#include "XMLStorage.hxx"
 
+#include "Project.hxx"
+#include <CLAM/Text.hxx>
+#include <CLAM/IndexArray.hxx>
+#include <CLAM/XMLStorage.hxx>
+#include "Enumerated.hxx"
 
 namespace CLAM_Annotator
 {

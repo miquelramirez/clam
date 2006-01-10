@@ -5,6 +5,8 @@
 #include <qpixmap.h>
 #include <qwidget.h>
 
+#include <string>
+
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
