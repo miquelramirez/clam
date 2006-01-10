@@ -1,13 +1,13 @@
 #ifndef _SchemaAttribute_
 #define _SchemaAttribute_
 
-#include "DynamicType.hxx"
+#include <CLAM/DynamicType.hxx>
 
 #include <list>
-#include "Text.hxx"
-#include "Enum.hxx"
+#include <CLAM/Text.hxx>
+#include <CLAM/Enum.hxx>
 
-#include "Assert.hxx"
+#include <CLAM/Assert.hxx>
 
 #include "AnnotatorDescriptor.hxx"
 #include "Enumerated.hxx"
@@ -59,7 +59,7 @@ namespace CLAM_Annotator{
 		/// To be added when type is Enumerated, contains the available values
 		DYN_CONTAINER_ATTRIBUTE(3, public, std::list<std::string>, EnumerationValues, Value);
 		/// To be \b optionaly added when type is Float, contains the boundary values
-		DYN_ATTRIBUTE(4, public, Range<float>, fRange);
+		DYN_ATTRIBUTE(4, public, Range<CLAM::TData>, fRange);
 		/// To be added when type is Int, contains the boundary values
 		DYN_ATTRIBUTE(5, public, Range<int>, iRange);
 		/// To be added when type is Segmentation, contains the Scope containing attributes for segments.

@@ -216,18 +216,18 @@ QListViewItem * lastSibling(QListViewItem * item)
 
 void SchemaBrowser::addAttribute(const std::string & scope, const std::string & name, const std::string & type)
 {
-    QListViewItem * scopeItem = attributeList->findItem(scope,0);
+    QListViewItem * scopeItem = attributeList->findItem(scope.c_str(),0);
     if (!scopeItem)
     {
 	    scopeItem = new QListViewItem( attributeList, lastSibling(attributeList->firstChild()) );
 	    scopeItem->setOpen( TRUE );
-	    scopeItem->setText( 0, scope );
+	    scopeItem->setText( 0, scope.c_str() );
 	    scopeItem->setPixmap( 0, scopeIcon );
     }
     QListViewItem * item = new QListViewItem( scopeItem, lastSibling(scopeItem->firstChild()) );
     item->setText( 0, name.c_str() );
     item->setPixmap( 0, attributeIcon );
-    item->setText( 1, type );
+    item->setText( 1, type.c_str() );
 }
 /*
  *  Sets the strings of the subwidgets using the current
@@ -277,7 +277,7 @@ void SchemaBrowser::updateCurrentAttribute()
 	}
 	else // Attribute
 	{
-		const CLAM_Annotator::SchemaAttribute & attributeSchema = mSchema->GetAttribute(parent->text(0),current->text(0));
+		const CLAM_Annotator::SchemaAttribute & attributeSchema = mSchema->GetAttribute(std::string(parent->text(0).ascii()),std::string(current->text(0).ascii()));
 		QString url = "http://mtg100.upf.es/simac/DescriptionSchemeWeb";
 		QUrlOperator op( url );
 		op.get( "index.html");

@@ -19,24 +19,23 @@
 //xamat
 #include <time.h>
 
-#include "MultiChannelAudioFileReaderConfig.hxx"
-#include "MultiChannelAudioFileReader.hxx"
+#include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
+#include <CLAM/MultiChannelAudioFileReader.hxx>
 
-#include "AudioFile.hxx"
-#include "IndexArray.hxx"
-#include "Text.hxx"
-#include "XMLStorage.hxx"
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/IndexArray.hxx>
+#include <CLAM/Text.hxx>
+#include <CLAM/XMLStorage.hxx>
 
-#include "BPFEditor.hxx"
-#include "QtAudioPlot.hxx"
+#include <CLAM/BPFEditor.hxx>
+#include <CLAM/QtAudioPlot.hxx>
 
 #include "AudioLoadThread.hxx"
 
-#include "ContiguousSegmentation.hxx"
-#include "DiscontinuousSegmentation.hxx"
+#include <CLAM/ContiguousSegmentation.hxx>
+#include <CLAM/DiscontinuousSegmentation.hxx>
 #include "SchemaBrowser.hxx"
-
-#include "QtSingleBPFPlayerExt.hxx"
+#include <CLAM/QtSingleBPFPlayerExt.hxx>
 #include <qstatusbar.h>
 
 #ifndef RESOURCES_BASE
@@ -77,7 +76,7 @@ void Annotator::computeSongDescriptors()
 {
 	if (!mProjectOverview->selectedItem()) return;
 	QString filename = mProjectOverview->selectedItem()->text(0);
-	filename  = projectToAbsolutePath(filename).c_str();
+	filename  = projectToAbsolutePath(filename.ascii()).c_str();
 	if (!std::ifstream(filename.utf8()))
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
@@ -94,10 +93,10 @@ void Annotator::computeSongDescriptors()
 	}
 	mStatusBar << "Launching Extractor..." << mStatusBar;
 	QProcess extractor(this);
-	QDir projectPath(mProjectFileName);
+	QDir projectPath(mProjectFileName.c_str());
 	projectPath.cdUp();
 	extractor.setWorkingDirectory(projectPath);
-	extractor.addArgument(mProject.GetExtractor());
+	extractor.addArgument(mProject.GetExtractor().c_str());
 	extractor.addArgument(filename);
 	if (!extractor.start())
 	{
@@ -105,7 +104,7 @@ void Annotator::computeSongDescriptors()
 				tr("<p><b>Error: Unable to launch the extractor.</b></p>"
 					"<p>Check that the extractor is well configured and you have permissions to run it.</p>"
 					"<p>The configured command was:</p><tt>%1</tt>")
-				.arg(mProject.GetExtractor())
+				.arg(mProject.GetExtractor().c_str())
 				);
 		return;
 	}
@@ -197,7 +196,7 @@ void Annotator::saveSettings()
 
 	QStringList recents;
 	for (unsigned i=0; i<mRecentOpenedProjects.size(); i++)
-		recents <<  mRecentOpenedProjects[i];
+		recents <<  mRecentOpenedProjects[i].c_str();
 	settings.writeEntry("MusicAnnotator/LastSession/RecentOpenedProjects", recents);
 }
 
@@ -591,7 +590,7 @@ void Annotator::addSongsToProject()
 {
 	QStringList files = QFileDialog::getOpenFileNames(
 		"Songs (*.wav *.mp3 *.ogg)",
-		projectToAbsolutePath("."),
+		projectToAbsolutePath(".").c_str(),
 		this,
 		"Add files to the project",
 		"Select one or more files to add" );
@@ -657,7 +656,7 @@ void Annotator::fileSave()
 void  Annotator::loadSchema()
 {
 	QString qFileName = QFileDialog::getOpenFileName(
-			projectToAbsolutePath("."),
+			projectToAbsolutePath(".").c_str(),
 			"Description Schemes (*.sc)",
 			this,
 			"SchemaChooser",
@@ -694,7 +693,7 @@ std::string Annotator::projectToAbsolutePath(const std::string & file)
 	mProject.SetBasePath(projectPath.ascii());
 	QDir qdir = QString(file.c_str());
 	if (qdir.isRelative())
-		return QDir::cleanDirPath( QDir(projectPath).filePath(file) ).ascii();
+		return QDir::cleanDirPath( QDir(projectPath).filePath(file.c_str()) ).ascii();
 	return file;
 }
 
@@ -717,7 +716,7 @@ void Annotator::currentSongChanged()
 
 	if (item == 0) return;
 
-	setCursor(Qt::busyCursor);
+	setCursor(Qt::waitCursor);
 
 	const char * filename = item->text(0).ascii();
 	mCurrentIndex = songIndexInTable(filename);
@@ -986,7 +985,7 @@ QString Annotator::constructFileError(const std::string& fileName,const CLAM::Xm
 		"<p>Check that your file '<tt>%2</tt>'\n"
 		"is well formed and folllows the specifications"
 		"</p>"
-		).arg(e.what()).arg(fileName);
+		).arg(e.what()).arg(fileName.c_str());
 }
 
 void Annotator::onStopPlaying(float time)

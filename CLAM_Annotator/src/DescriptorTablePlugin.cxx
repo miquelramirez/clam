@@ -3,7 +3,7 @@
 #include <qtable.h>
 #include "ComboTableItem.hxx"
 #include "RangeSelectionTableItem.hxx"
-#include "Pool.hxx"
+#include <CLAM/Pool.hxx>
 
 namespace CLAM_Annotator
 {
@@ -97,6 +97,7 @@ namespace CLAM_Annotator
 
 	class DescriptorsTableItemControllerFloat : public DescriptorTablePlugin
 	{
+		const Range<CLAM::TData> mRange;
 	public:
 		DescriptorsTableItemControllerFloat(QTable * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
@@ -109,7 +110,8 @@ namespace CLAM_Annotator
 			mTable->setItem(mRow,1,
 				new RangeSelectionTableItem(mTable,
 					TableItem::WhenCurrent,
-					QString::number(value),mRange));
+					QString::number(value),
+					mRange));
 		}
 		void updateData(CLAM::DescriptionDataPool & dataPool)
 		{
@@ -118,12 +120,11 @@ namespace CLAM_Annotator
 			QString qValue = mTable->text(mRow, 1);
 			dataPool.GetWritePool<CLAM::TData>(mScope,mName)[mElement] = qValue.toFloat();
 		}
-	private:
-		const Range<CLAM::TData> mRange;
 	};
 
 	class DescriptorsTableItemControllerInt : public DescriptorTablePlugin
 	{
+		const Range<int> mRange;
 	public:
 		DescriptorsTableItemControllerInt(QTable * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
@@ -145,8 +146,6 @@ namespace CLAM_Annotator
 			QString qValue = mTable->text(mRow, 1);
 			dataPool.GetWritePool<int>(mScope,mName)[mElement] = qValue.toInt();
 		}
-	private:
-		const Range<int> mRange;
 	};
 
 

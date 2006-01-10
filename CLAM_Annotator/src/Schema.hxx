@@ -1,7 +1,7 @@
 #ifndef _Schema_hxx_
 #define _Schema_hxx_
 
-#include "DynamicType.hxx"
+#include <CLAM/DynamicType.hxx>
 #include "SchemaAttribute.hxx"
 
 namespace CLAM_Annotator{
@@ -72,7 +72,7 @@ namespace CLAM_Annotator{
 			schemaAttribute.SetScope(scope);
 			schemaAttribute.SetName(attribute);
 			schemaAttribute.SetType("Float");
-			CLAM_Annotator::Range<float> range;
+			CLAM_Annotator::Range<CLAM::TData> range;
 			range.SetMin(min);
 			range.SetMax(max);
 			schemaAttribute.SetfRange(range);
