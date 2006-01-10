@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <DescriptionScheme>
+
   <Uri>descriptionScheme:www.iua.upf.edu:clam:dummyTest-0.90</Uri>
+
   <Attributes>
     <Attribute name="Artist" scope="Song" type="String"/>
     <Attribute name="Title" scope="Song" type="String"/>
@@ -80,7 +82,10 @@
       <EnumerationValues>Versus Chorus Solo Accapella</EnumerationValues>
     </Attribute>
     <Attribute name="SimilarityGroup" scope="StructuralPart" type="Enumerated">
-      <EnumerationValues>A B C D E F G H I</EnumerationValues>
+      <EnumerationValues>A B C D E F G H I J</EnumerationValues>
+    </Attribute>
+    <Attribute name="Frames" scope="Song" type="FrameDivision">
+      <ChildScope>Frame</ChildScope>
     </Attribute>
     <Attribute name="Mean" scope="Frame" type="Float"/>
     <Attribute name="GeometricMean" scope="Frame" type="Float"/>
@@ -101,4 +106,5 @@
     <Attribute name="Slope" scope="Frame" type="Float"/>
     <Attribute name="HighFrequencyContent" scope="Frame" type="Float"/>
   </Attributes>
+
 </DescriptionScheme>
