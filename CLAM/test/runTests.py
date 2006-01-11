@@ -8,16 +8,20 @@
 
 
 	
-enableSendMail = True
+enableSendMail = False
 enablePlaceCvsTags = True
 
 quickTestForScriptDebuging = False  # Danger! flag to be enabled for debuging puroposes only
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
+Keep = 0
+Update = 1
+CleanCheckout = 2
+
 # when the sandbox is not present always clean checkout
-updateLevelForCLAM = 2
-updateLevelForExamples = 2
-updateLevelForTestData = 0 
+updateLevelForCLAM = CleanCheckout
+updateLevelForExamples = CleanCheckout
+updateLevelForTestData = Keep
 
 # When false keeps already compiled objects
 doCleanMake = True
@@ -72,9 +76,9 @@ clam_prefix = '/home/parumi/clam-sandboxes/locallibs-from-nightlytests'
 if quickTestForScriptDebuging : 
 	enableSendMail = False
 	enablePlaceCvsTags = False
-	updateLevelForCLAM = 0
-	updateLevelForExamples = 0
-	updateLevelForTestData = 0 
+	updateLevelForCLAM = Keep
+	updateLevelForExamples = Keep
+	updateLevelForTestData = Keep
 	doCleanMake = False
 	doAutoconf = False
 	
@@ -90,6 +94,7 @@ sandboxes = [ # Module, Sandbox name, Tag, Update level
 	( 'CLAM_SDIFDisplay', 'clean-CLAM_SDIFDisplay', '', updateLevelForExamples ),
 	( 'CLAM_SpectralDelay', 'clean-CLAM_SpectralDelay', '', updateLevelForExamples ),
 	( 'CLAM_Salto', 'clean-CLAM_Salto', '', updateLevelForExamples ),
+	( 'CLAM-draft', 'CLAM-draft', '', Update ),
 	( 'CLAM-TestData', 'CLAM-TestData', '', updateLevelForTestData )
 ]
 def baseDirOf(keyname) :
