@@ -20,6 +20,8 @@ from modconf.audioio import *
 from modconf.vmqt import *
 from modconf.vmfl import *
 
+
+
 def load_config_file_to_env( env, dir ):
 	opts = Options(dir+'/flags.conf')
 	opts.Add( 'CPPPATH', 'CPP PATH', env['CPPPATH'])
@@ -235,8 +237,16 @@ def setup_build_options( env ) :
 	# TODO check if this hardcoded path can be removed also in Windows and Mac
 	if sys.platform == 'linux2' :
 		pass
-#		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/usr/include/qt3' ) )
-#		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/usr/lib' ) )
+
+		if os.environ.has_key("QTDIR") and os.environ["QTDIR"] : 
+			print "Using existing QTDIR"
+		else :
+			qt_includes = '/usr/include/qt3'
+			qt_libs = '/usr/lib'
+			print "QTDIR not found, so assuming these are the paths for qt: qt_includes=%s qt_libs=%s" \
+				% (qt_includes, qt_libs)
+			opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', qt_includes ) )
+			opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', qt_libs ) )
 	elif sys.platform == 'darwin' :
 		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', '/Developer/qt/include' ) )
 		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', '/Developer/qt/lib' ) )
@@ -309,7 +319,6 @@ top = '../..'
 Export('top')
 
 clam_env = Environment( ENV=os.environ, tools=['default','qt'])
-
 
 if not clam_env.GetOption("clean") :
 	header_db = shelve.open( 'header.db' )
