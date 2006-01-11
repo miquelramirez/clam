@@ -1,0 +1,47 @@
+
+= CLAM Annotator ver 2.0 =
+
+== Overview ==
+
+CLAM Annotator is a tool that can be used to visualize, check and modify
+music information extracted from audio: low level features, note
+segmentation, chords, structure... The tool is intended to be useful for
+the music information retrieval research whenever you need to:
+
+ * Supervise and correct the results of automated audio feature
+ extraction algorithms.
+
+ * Generate manually edited annotations of audio as training examples or
+ ground truth for those algorithms.
+
+The CLAM Annotator is not tied to a fixed description scheme (the set of 
+attributes). You can define the working attribute set by providing an XML 
+description schema definition. A sample description scheme and an extractor
+program are provided with the Annotator but you could implement your own
+one with different algorithms and attributes. Also tools are provided to 
+select and join attributes from the output of several description sources.
+
+Other key features are:
+ * Attribute types (to be expanded):
+   * Free text
+   * Enumeration
+   * Bounded float
+   * Bounded integer
+   * Frame Division
+   * Segmentations (Sizeless, Gapless, Overlapless or Free)
+ * Several time segmentations can be defined at once
+ * Each segment can have its own attributes
+ * Auralization for the segmentations (click on the beggining)
+ * Auralization for the low-level descriptor (magnitude to freq)
+
+== Installation ==
+
+The INSTALL file contains instructions about compiling and installing.
+
+== License ==
+
+The COPYING file contains the license terms to use, modify and 
+redistribute this software.
+
+
+
