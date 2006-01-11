@@ -22,10 +22,9 @@ namespace CLAM
 		    void showPeaksOnly();
 			void showSpectrumOnly();
 			void showSpectrumAndPeaks();
-			virtual void backgroundWhite();
-			virtual void backgroundBlack();
+			void backgroundWhite();
+			void backgroundBlack();
 			
-
 		private:
 			CLAM::DataArray wp_spectrum_data;
 

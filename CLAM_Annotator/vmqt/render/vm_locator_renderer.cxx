@@ -216,12 +216,6 @@ namespace CLAM
 			}
 		}
 
-		void Locator::leave_event()
-		{
-			emit toolTip("");
-			emit working(rd_key,false);
-		}
-
 		int Locator::draw_region_mode()
 		{
 			// 0 -> neither the points nor the region are visible
