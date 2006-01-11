@@ -27,8 +27,7 @@ namespace CLAM
 			void mouse_move_event(double x, double y);
 			void key_press_event(int key);
 			void key_release_event(int key);
-			void leave_event();
-
+			
 		private:
 			bool            rd_region_enabled;
 			double          rd_locator_pos;
