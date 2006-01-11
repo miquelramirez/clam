@@ -22,13 +22,14 @@ one with different algorithms and attributes. Also tools are provided to
 select and join attributes from the output of several description sources.
 
 Other key features are:
- * Attribute types (to be expanded):
+ * Attribute types:
    * Free text
    * Enumeration
    * Bounded float
    * Bounded integer
    * Frame Division
    * Segmentations (Sizeless, Gapless, Overlapless or Free)
+   * ... more to come
  * Several time segmentations can be defined at once
  * Each segment can have its own attributes
  * Auralization for the segmentations (click on the beggining)
