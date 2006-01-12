@@ -167,7 +167,7 @@ else :
 		annotator_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
 
-source_dirs = ['../src', '../src/AnnotatorBrowserGL', '../src/common', '../src/common/Clipboard' ]
+source_dirs = ['../src', '../src/common']
 
 sourcefiles = []
 
