@@ -1,0 +1,30 @@
+Some indications in order to compile the examples in this folder
+----------------------------------------------------------------
+
+These examples use qt4, so you have to do some changes in your
+CLAM build system to compile them.
+
+1. CLAM/build/system-posix.cfg:
+   1.1 Change the path for qt includes to point to your qt4 includes.
+   1.2 Change the path for qt libs to point to your qt4 libs.
+   1.3 Change the libraries to link against. Remind that qt4 doesn't use
+	   qt-mt library, but several ones.
+
+2. CLAM/build/Makefile.rules:
+   2.1 Change moc command to /path_to_qt4_root_dir/bin/moc in order to compile
+	   moc files.
+   2.2 Change uic command to /path_to_qt4_root_dir/bin/uic in order to compile 
+	   ui files. At the moment there are not ui files to compile in these
+	   examples but is best to chage it anyway.
+
+Once you have made the above changes, you can enter to an example folder and
+put the path to your CLAM-qt4 copy in clam-location.cfg.
+Then just type: make CONFIG=release to build the example.
+
+* Hint about selecting zoom refs and regions:
+- You can select a point as a x zoom ref by: Key_R + LeftButton
+- If you wish to select a region, you can do it by: Key_Shift+Key_R+LeftButton
+- Once you have a selected region, you can adjust it using the mouse.
+
+
+	   
