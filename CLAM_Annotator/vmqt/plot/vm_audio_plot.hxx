@@ -14,7 +14,7 @@ namespace CLAM
 			AudioPlot(QWidget* parent=0);
 			virtual ~AudioPlot();
 
-			void set_data(const CLAM::Audio& audio, bool update=false);
+			virtual void set_data(const CLAM::Audio& audio, bool update=false);
 
 		public slots:
 			virtual void backgroundWhite();
