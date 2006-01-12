@@ -17,9 +17,9 @@ CLAM build system to compile them.
 	   ui files. At the moment there are not ui files to compile in these
 	   examples but is best to chage it anyway.
 
-Once you have made the above changes, you can enter to an example folder and
+Once you have made the above changes, you can enter to the common folder and
 put the path to your CLAM-qt4 copy in clam-location.cfg.
-Then just type: make CONFIG=release to build the example.
+Then enter to some example folder and just type: make CONFIG=release to build the example.
 
 * Hint about selecting zoom refs and regions:
 - You can select a point as a x zoom ref by: Key_R + LeftButton

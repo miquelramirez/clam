@@ -1,3 +1,3 @@
 TOP = ..
-include $(TOP)/audio_plot_example/Makefile.rules
+include $(TOP)/common/Makefile.rules
 
