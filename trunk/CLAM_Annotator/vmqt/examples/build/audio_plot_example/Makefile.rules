@@ -1,3 +1,0 @@
-include $(TOP)/audio_plot_example/clam-location.cfg
-
-include $(CLAM_PATH)/build/Makefile.rules
