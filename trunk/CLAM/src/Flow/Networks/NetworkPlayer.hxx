@@ -5,7 +5,14 @@
 
 namespace CLAM
 {
-	//Abstract NetworkPlayer that defines generic interface
+	/**
+	 * A NetworkPlayer is an object that controls the playback of a 
+	 * Network providing a high level transport like interface.
+	 * This class is an abstract class.
+	 * Subclasses contextualizes the network inside a given execution
+	 * context dealing with threading, callback calling and device mapping
+	 * on concrete architectures such as Alsa, PortAudio, Jack, VST, Ladspa...
+	 */
 	class NetworkPlayer
 	{
 		Network *mNetwork;
