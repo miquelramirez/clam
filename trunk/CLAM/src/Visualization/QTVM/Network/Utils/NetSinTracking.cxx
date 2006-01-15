@@ -1,3 +1,4 @@
+#include "CLAM_Math.hxx"
 #include "NetSinTracking.hxx"
 
 namespace CLAM
@@ -65,18 +66,31 @@ namespace CLAM
 
 		void NetSinTracking::AddNodes(const SpectralPeakArray& peaks)
 		{
+			bool linear = (peaks.GetScale() == CLAM::EScale::eLinear);
 			for(int i=0; i < peaks.GetMagBuffer().Size();i++)
 			{
 				SinTrackNode node;
 				node.freq=peaks.GetFreqBuffer()[i];
 				node.timeIndex=mTime;
-				int colorIndex = mPalette.Get( ClampToRange(peaks.GetMagBuffer()[i]) );
+				TData mag = peaks.GetMagBuffer()[i];
+				if(linear) mag = TData(20.0*log10(mag));
+				int colorIndex = mPalette.Get( ClampToRange(mag) );
 				mPalette.GetRGBFromIndex( colorIndex, node.color.r, node.color.g, node.color.b);
 				TIndex trackId = peaks.GetIndexArray()[i];
 				if(HasTrackId(trackId))
 				{
 					unsigned index=GetIndex(trackId);
-					mTracks[index].push_back(node);
+					if(mTracks[index][mTracks[index].size()-1].timeIndex == node.timeIndex-1)
+					{
+						mTracks[index].push_back(node);
+					}
+					else
+					{
+						std::vector<SinTrackNode> newTrack;
+						newTrack.push_back(node);
+						mTracks.push_back(newTrack);
+						AddToTable(trackId,mTracks.size()-1);
+					}
 				}
 				else
 				{
