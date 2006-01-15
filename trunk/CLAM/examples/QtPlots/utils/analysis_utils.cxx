@@ -25,6 +25,7 @@ namespace qtvm_examples_utils
 		cfg.SetResZeroPadding(0);
 		cfg.SetSamplingRate(out.GetSamplingRate());
 		cfg.GetPeakDetect().SetMagThreshold(-120.0);
+		cfg.GetSinTracking().SetIsHarmonic(true);
 
 		SMSAnalysis analyzer;
 		analyzer.Configure(cfg);
