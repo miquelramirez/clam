@@ -374,7 +374,7 @@ def compileAndRun(name, path, useScons) :
 	details = ''
 	for configuration in configurations :
 		if useScons: 	
-			makecmd = 'scons clam_prefix=%s install_prefix=.' % clam_prefix
+			makecmd = 'scons clam_prefix=%s' % clam_prefix
 		else :
 			# compilation phase
 			if doCleanMake or len(configurations)>1:
@@ -437,11 +437,14 @@ mailTemplate = '''
 (This message has been automatically generated)
 Stability status: 
 
-%s
+NEW! Using g++ 4.0 with Ubuntu 05.10 (Breezy)
 
 %s
 
-Detailed status of CLAM and externals apps.
+%s
+
+
+Status of CLAM and externals apps.
 
 	SUMMARY
 	-------
@@ -452,7 +455,6 @@ Detailed status of CLAM and externals apps.
 	---------------------------------------
 %s
 
------------------------------------------------------------
 // Powered by Python //
 '''
 from guiltyCommits import placeTestsOkCandidateTags, placeTestsOkTags, chaseTheGuiltyCommits
@@ -460,11 +462,13 @@ from guiltyCommits import placeTestsOkCandidateTags, placeTestsOkTags, chaseTheG
 import time, string, signal
 def runInBackgroundForAWhile(path, command, sleeptime=10, useScons='') :
 	os.chdir(path)
+	if useScons :
+		command = 'export LD_LIBRARY_PATH=%s/lib && %s' % (clam_prefix, command)
+	commands.getstatusoutput(command)
 	time.sleep( sleeptime )
 	withoutSlash = command[command.find('/')+1 : ]
-	if useScons :
-		withoutSlash += ' LD_LIBRARY_PATH=%s/lib' % clam_prefix
 	status, dummy = commands.getstatusoutput('killall '+ withoutSlash)
+	# TODO fix this
 	
 	# print 'kill status ', status, dummy
 	if os.access('/tmp/removeme.out', os.F_OK) :
