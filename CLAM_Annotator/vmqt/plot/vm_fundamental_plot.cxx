@@ -18,7 +18,7 @@ namespace CLAM
 
 		void FundamentalPlot::set_data(const CLAM::Segment& segment, bool update)
 		{
-			wp_fund_data = get_fund_data(segment);
+			build_fund_data(segment);
 			if(!update)
 			{
 				set_xrange(0.0,double(segment.GetEndTime())-double(segment.GetBeginTime()));
@@ -52,7 +52,7 @@ namespace CLAM
 
 		std::pair<int,int> FundamentalPlot::get_zoom_steps(CLAM::TSize size, CLAM::TData yrange)
 		{
-			double n = 15.0;
+			double n = 5.0;
 			int xratio = 0;
 			while(n < size)
 			{
@@ -85,17 +85,15 @@ namespace CLAM
 			SegmentationPlot::set_zoom_steps(hsteps,vsteps);
 		}
 
-		CLAM::DataArray FundamentalPlot::get_fund_data(const CLAM::Segment& segment)
+		void FundamentalPlot::build_fund_data(const CLAM::Segment& segment)
 		{
-			CLAM::DataArray data;
 			int n_frames = segment.GetnFrames();
-			data.Resize(n_frames);
-			data.SetSize(n_frames);
+			wp_fund_data.Resize(n_frames);
+			wp_fund_data.SetSize(n_frames);
 			for(int i = 0; i < n_frames; i++)
 			{
-				data[i] = segment.GetFrame(i).GetFundamental().GetFreq(0);
+				wp_fund_data[i] = segment.GetFrame(i).GetFundamental().GetFreq(0);
 			}
-			return data;
 		}
 	}
 }

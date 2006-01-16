@@ -16,7 +16,7 @@ namespace CLAM
 		class Plot2D;
 		class ScrollGroup;
 
-		class SegmentationPlot : public WPlot
+		class SegmentationPlot : public CLAM::VM::WPlot
 		{
 			Q_OBJECT
 		public:
