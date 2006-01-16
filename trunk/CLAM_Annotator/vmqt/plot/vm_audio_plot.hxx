@@ -8,7 +8,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class AudioPlot : public SegmentationPlot
+		class AudioPlot : public CLAM::VM::SegmentationPlot
 		{
 		public:
 			AudioPlot(QWidget* parent=0);

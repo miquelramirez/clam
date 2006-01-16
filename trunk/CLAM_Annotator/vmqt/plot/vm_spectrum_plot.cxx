@@ -70,7 +70,7 @@ namespace CLAM
 		{
 			SegmentationPlot::backgroundWhite();
 			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data_color(CLAM::VM::Color(0,0,255));
-			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks_color(CLAM::VM::Color(255,0,0),CLAM::VM::Color(0,255,255));
+			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks_color(CLAM::VM::Color(255,0,0),CLAM::VM::Color(8,180,70));
 		}
 
 		void SpectrumPlot::backgroundBlack()
@@ -78,7 +78,7 @@ namespace CLAM
 			SegmentationPlot::backgroundBlack();
 
 			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data_color(CLAM::VM::Color(0,255,0));
-			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks_color(CLAM::VM::Color(255,0,0),CLAM::VM::Color(255,255,0));
+			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks_color(CLAM::VM::Color(255,0,0),CLAM::VM::Color(0,255,255));
 
 		}
 

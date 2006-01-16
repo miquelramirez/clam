@@ -9,7 +9,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class SpectrumPlot : public SegmentationPlot
+		class SpectrumPlot : public CLAM::VM::SegmentationPlot
 		{
 		public:
 			SpectrumPlot(QWidget* parent=0);

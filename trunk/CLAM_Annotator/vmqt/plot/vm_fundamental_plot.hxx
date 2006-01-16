@@ -8,7 +8,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class FundamentalPlot : public SegmentationPlot
+		class FundamentalPlot : public CLAM::VM::SegmentationPlot
 		{
 		public:
 			FundamentalPlot(QWidget* parent=0);
@@ -30,7 +30,7 @@ namespace CLAM
 			void set_yrange(double ymin, double ymax);
 			void set_zoom_steps(int hsteps, int vsteps);
 
-			CLAM::DataArray get_fund_data(const CLAM::Segment& segment);
+			void build_fund_data(const CLAM::Segment& segment);
 		};
 	}
 }
