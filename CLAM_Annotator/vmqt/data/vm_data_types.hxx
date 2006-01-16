@@ -123,6 +123,21 @@ namespace CLAM
 			bool operator==(const Peak& peak) const;
 			const Peak& operator=(const Peak& peak);
 		};
+
+		struct SinTrackNode
+		{
+			double          freq;
+			unsigned        timeIndex;
+			CLAM::VM::Color color;
+
+			SinTrackNode();
+			SinTrackNode(double f, unsigned t, const CLAM::VM::Color& c);
+			SinTrackNode(const SinTrackNode& node);
+			~SinTrackNode();
+
+			SinTrackNode& operator=(const SinTrackNode& node);
+
+		};
 	}
 }
 
