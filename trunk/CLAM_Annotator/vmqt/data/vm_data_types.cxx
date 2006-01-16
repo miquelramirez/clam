@@ -213,6 +213,39 @@ namespace CLAM
 			mag = peak.mag;
 			return *this;
 		}
+
+///////// SinTrackNode /////////////////////////////
+		SinTrackNode::SinTrackNode()
+			: freq(0.0)
+			, timeIndex(0)
+		{
+		}
+
+		SinTrackNode::SinTrackNode(double f, unsigned t, const CLAM::VM::Color& c)
+			: freq(f)
+			, timeIndex(t)
+			, color(c)
+		{
+		}
+
+		SinTrackNode::SinTrackNode(const SinTrackNode& node)
+			: freq(node.freq)
+			, timeIndex(node.timeIndex)
+			, color(node.color)
+		{
+		}
+
+		SinTrackNode::~SinTrackNode()
+		{
+		}
+
+		SinTrackNode& SinTrackNode::operator=(const SinTrackNode& node)
+		{
+			freq = node.freq;
+			timeIndex = node.timeIndex;
+			color = node.color;
+			return *this;
+		}
 	}
 }
 
