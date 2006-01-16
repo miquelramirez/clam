@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	unsigned nSegments = 15;
 	double step = xmax/double(nSegments);
 	// make some divisions
-	for(unsigned i=1; i < nSegments; i++)
+	for(unsigned i=0; i < nSegments; i++)
 	{
 		seg->insert(double(i)*step);
 	}
