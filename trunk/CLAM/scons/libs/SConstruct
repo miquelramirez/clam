@@ -312,7 +312,7 @@ def config_file_missing():
 # Main section
 
 version = '0.90.0'
-package_version = '0.90.0-pre3'
+package_version = '0.90.0'
 Export('version')
 
 top = '../..'
