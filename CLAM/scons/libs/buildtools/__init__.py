@@ -26,7 +26,8 @@ def make_lib_names( source, target, env ) :
 		biglinkername = pieces[0]+"."+pieces[-1]		# libAAA.dylib
 
 	os.system( "ln -sf %s %s"%(soname,linkername) )
-	os.system( "ln -sf %s %s"%(linkername,biglinkername) )
+	os.system( "ln -sf %s %s"%(biglinkername,soname) )
+	os.system( "ln -sf %s %s"%(target_file,biglinkername) )
 	os.system( "chmod 755 %s"%target_file )
 	os.system( "chmod 755 %s"%soname )
 	os.system( "chmod 755 %s"%linkername )
