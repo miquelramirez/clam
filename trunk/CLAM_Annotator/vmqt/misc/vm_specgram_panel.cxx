@@ -35,7 +35,7 @@ namespace CLAM
 			sp_frequency->setText(freq);
 			sp_decibels->setText(db);
 			sp_slice->setText(slice);
-			sp_time->setText("t; "+time+"s");
+			(time=="--") ? sp_time->setText("  t: "+time) : sp_time->setText("  t: "+time+" s.");
 		}
 
 		void SpecgramPanel::init_specgram_panel()
@@ -143,7 +143,7 @@ namespace CLAM
 			rfInnerBottomLayout->addWidget(rightTag);
 			rfInnerBottomLayout->addStretch();
 
-			sp_time->setText("t: --");
+			sp_time->setText("  t: --");
 			sp_total_slices->setText("Slices: --");
 			sp_spectral_range->setText("Spectral Range (Hz): --");
 
