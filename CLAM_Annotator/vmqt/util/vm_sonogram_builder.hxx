@@ -27,7 +27,7 @@ namespace CLAM
 		private:
 			CLAM::VM::Palette sb_palette;
 
-			enum { MaxSpectrums=257, MaxSpectrumSize=257};
+			enum { MaxSpectrums=256, MaxSpectrumSize=256};
 			
 			float matrix_block_mean(const CLAM::Array<CLAM::Spectrum>& specMtx, 
 									unsigned firstRow, unsigned lastRow, 
