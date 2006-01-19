@@ -80,6 +80,15 @@ namespace CLAM
 			backgroundWhite();
 
 			connect(wp_panel,SIGNAL(colorScaleWidthChanged(int)),this,SLOT(updateColorScale(int)));
+			connect(static_cast<CLAM::VM::SpectrogramRenderer*>(wp_plot->get_renderer("spectrogram")),
+					SIGNAL(fixedLabels(QString,QString)),
+					wp_panel,
+					SLOT(setFixedLabels(QString,QString)));
+			connect(static_cast<CLAM::VM::SpectrogramRenderer*>(wp_plot->get_renderer("spectrogram")),
+					SIGNAL(labels(QString,QString,QString,QString)),
+					wp_panel,
+					SLOT(updateLabels(QString,QString,QString,QString)));
+			
 		}
 		   
 		void SpectrogramPlot::set_xrange(double xmin, double xmax)
