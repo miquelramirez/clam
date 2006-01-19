@@ -17,6 +17,10 @@ namespace CLAM
 			~SpectrogramRenderer();
 
 			void set_data(const CLAM::Array<CLAM::Spectrum>& specMtx);
+
+		signals:
+			void fixedLabels(QString, QString);
+			void labels(QString, QString, QString, QString);
 			
 		public slots:
 			void colorSonogram();
@@ -26,6 +30,8 @@ namespace CLAM
 			void render();
 			void set_hbounds(double left, double right);
 			void set_vbounds(double bottom, double top);
+			void mouse_move_event(double x, double y);
+			void leave_event();
 
 		private:
 			int rd_glColorList;	
