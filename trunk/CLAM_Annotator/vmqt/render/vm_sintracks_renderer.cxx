@@ -28,6 +28,7 @@ namespace CLAM
 
 		void SinTracksRenderer::render()
 		{
+			if(!rd_enabled) return;
 			if(!rd_peakMtx_size || !rd_tracks.size()) return;
 
 			glMatrixMode(GL_PROJECTION);
