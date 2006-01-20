@@ -23,12 +23,12 @@ def generate_so_name( target, source, env ) :
 	cwd = os.getcwd()
 	os.chdir( source_dir )
 	if sys.platform == 'linux2' :
-		os.system( "ldconfig -n ." )
+		os.system( "/sbin/ldconfig -n ." )
 	os.chdir(cwd)
 	return None
 
 def generate_so_name_message( target, source, env ) :
-	return "generating %s with ldconfig -n"%target[0]
+	return "generating %s with /sbin/ldconfig -n"%target[0]
 
 def generate_linker_name( target, source, env ) :
 	source_dir = os.path.dirname( str(source[0]) )
