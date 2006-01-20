@@ -37,12 +37,17 @@ applications from the source tarballs.
  ~/mylibs/lib/ and ~/mylibs/include/
  Notice that if you are using a non-standard prefix, you might need to
  make the LD_LIBRARY_PATH to point to the lib directory.
+
+ | IMPORTANT WHEN INSTALLING IN LOCAL: At this moment it is incompatible |
+ | installing in a local dir when it's already instaled in system-wide   |
+ | prefixes (/usr/lib and /usr/include). So make sure that CLAM is not   |
+ | installed there.                                                      |
  
  Another example:
 
         $ scons configure with_osc_support=no
 
- IMPORTANT: scons saves the last used options in the .conf file. 
+ Note that scons saves the last used options in the .conf file. 
  These options will be used by default in further "scons" commands.
 
  MacOSX specific: default prefix is set to /usr/local. Our tests using
@@ -53,13 +58,18 @@ applications from the source tarballs.
  3. Compile the CLAM application.
 
  Applications comes in separate tarballs. You'll need to download them
- from the CLAM web. Then go into their scons/ directory and
- do the same steps as above.
- 
+ from the CLAM web. Then go into their scons/ directory and issue
+
+	$ scons
+
  If you wish to use CLAM libs installed in a non-standard dir, you 
  will need to specify the clam_prefix :
 
         $ scons clam_prefix=~/mylibs/ install
+ 
+ For further building options do :
+
+	$ scons --help
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
