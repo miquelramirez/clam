@@ -16,7 +16,7 @@ def make_lib_names( source, target, env ) :
 	pieces=target_file.split('.')
 	
 	if sys.platform == 'linux2' :
-		os.system( "ldconfig -n ." )
+		os.system( "/sbin/ldconfig -n ." )
 		linkername = '.'.join(pieces[0:2])
 		soname = '.'.join( pieces[0:3])
 		biglinkername = '.'.join( pieces[0:4] )
