@@ -3,6 +3,7 @@
 #include <CLAM/Pool.hxx>
 #include "SongFiles.hxx"
 #include "Project.hxx"
+#include "FrameDivision.hxx"
 
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/AudioFile.hxx>
@@ -215,6 +216,30 @@ void BuildAndDumpTestSchema(const std::string & schemaLocation)
 	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
 		schema.AddFrameFloatAttribute(*name);
 
+	struct 
+	{
+		const char * scope;
+		const char * name;
+		const char * documentation;
+	} docs[] =
+	{
+		{"Song", "Danceability",
+			"<p>The <em>Danceability</em> is a 0 to 10 score that depends on how much defined is the rhythm</p>\n"
+			"<p>Data for this data is not the one in Simac but randomly generated.</p>\n"
+		},
+		{"Frame", "Mean",
+			"<p>The spectral power mean value.\n"
+			"The unit of this measure can be dB or none, depending on the scale set for the measured Spectrum object.</p>\n"
+			"<p>\\f[ Mean(X) = \\frac{\\sum x_i }{Size(X)} \\f]</p>\n"
+			"<p>Being X the spectrum magnitude array.</p>\n"
+		},
+		{0,0,0}
+	};
+	for (unsigned i=0; docs[i].name; i++)
+	{
+		schema.AttributeDocumentation(docs[i].scope, docs[i].name, docs[i].documentation);
+	}
+
 	CLAM::XMLStorage::Dump(schema, "DescriptionScheme", schemaLocation);
 	CLAM::XMLStorage::Dump(schema, "DescriptionScheme", std::cout);
 }
@@ -235,6 +260,14 @@ void PopulatePool(const std::string & song,
 	CLAM::Text title="Unknown Title";
 	OpenSoundFile(song, audio, artist, title);
 	ComputeSegment(audio,segment,segmentD);
+
+	CLAM::TData sampleRate = audio.GetSampleRate();
+	CLAM::TData firstCenter = segment.GetFrame(0).GetCenterTime()/1000;
+	CLAM::TData secondCenter = segment.GetFrame(1).GetCenterTime()/1000;
+	CLAM_Annotator::FrameDivision & frames = pool.GetWritePool<CLAM_Annotator::FrameDivision>("Song","Frames")[0];
+	frames.SetFirstCenter(firstCenter*sampleRate);
+	frames.SetInterCenterGap((secondCenter-firstCenter)*sampleRate);
+
 	SegmentD2Pool(segmentD,pool);
 
 	// Write Song level descriptors
@@ -405,6 +438,7 @@ void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDa
 	pool.SetNumberOfContexts("Frame",nFrames);
 
 	CLAM::Array<CLAM::FrameDescriptors>& frameD = segmentD.GetFramesD();
+
 	struct GetterMap 
 	{
 		const char * name;
@@ -464,6 +498,7 @@ void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment,
 		
 	CLAM::DescriptorComputation processing;
 	processing.Do(segmentDescriptors);
+
 }
 
 void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text & artist, CLAM::Text & title)

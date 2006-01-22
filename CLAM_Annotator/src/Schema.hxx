@@ -21,6 +21,16 @@ namespace CLAM_Annotator{
 		}
 
 	public:
+		void AttributeDocumentation(
+				const std::string & scope,
+				const std::string & attribute,
+				const std::string & documentationHtml)
+		{
+			SchemaAttribute & attributeSchema = GetAttribute(scope, attribute);
+			attributeSchema.AddDocumentation();
+			attributeSchema.UpdateData();
+			attributeSchema.SetDocumentation(documentationHtml);
+		}
 		void AddFrameFloatAttribute(const std::string & name)
 		{
 			CLAM_Annotator::SchemaAttribute schemaAttribute;
@@ -121,12 +131,27 @@ namespace CLAM_Annotator{
 		}
 		bool Validate(const CLAM::DescriptionDataPool & data, std::ostream & err);
 		const std::list<SchemaAttribute> & GetAllAttributes() const
-	       	{
+		{
 			return GetAttributes();
+		}
+		SchemaAttribute & GetAttribute(const std::string & scope, const std::string name)
+		{
+			std::list<SchemaAttribute> & attributes = GetAttributes();
+			for (std::list<SchemaAttribute>::iterator it = attributes.begin();
+					it!=attributes.end();
+					it++)
+			{
+				if (it->GetScope()!=scope) continue;
+				if (it->GetName()!=name) continue;
+				return *it;
+			}
+			std::string message = "Accessing an attribute '";
+			message += scope + "':'" + name + "' not in the scheme.";
+			CLAM_ASSERT(false, message.c_str());
 		}
 		const SchemaAttribute & GetAttribute(const std::string & scope, const std::string name) const
 		{
-			const std::list<SchemaAttribute> & attributes = GetAllAttributes();
+			const std::list<SchemaAttribute> & attributes = GetAttributes();
 			for (std::list<SchemaAttribute>::const_iterator it = attributes.begin();
 					it!=attributes.end();
 					it++)

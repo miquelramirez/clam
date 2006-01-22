@@ -5,6 +5,7 @@
 #include <CLAM/IndexArray.hxx>
 #include <algorithm>
 #include "Enumerated.hxx"
+#include "FrameDivision.hxx"
 
 namespace CLAM_Annotator
 {
@@ -277,13 +278,13 @@ public:
 
 	void AddTo(CLAM::DescriptionScheme & scheme)
 	{
-		scheme.AddAttribute<CLAM::IndexArray>(mSchema.GetScope(),mSchema.GetName());
+		scheme.AddAttribute<CLAM_Annotator::FrameDivision>(mSchema.GetScope(),mSchema.GetName());
 	}
 
 	bool ValidateData(const CLAM::DescriptionDataPool & dataPool, std::ostream & err)
 	{
-		const CLAM::IndexArray * values =
-			dataPool.GetReadPool<CLAM::IndexArray>(
+		const CLAM_Annotator::FrameDivision * values =
+			dataPool.GetReadPool<CLAM_Annotator::FrameDivision>(
 					mSchema.GetScope(),
 					mSchema.GetName());
 		return true;
