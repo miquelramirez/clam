@@ -1,5 +1,6 @@
 #include "Annotator.hxx"
 #include "Project.hxx"
+#include "FrameDivision.hxx"
 
 #include <qaction.h>
 #include <qthread.h>
@@ -748,9 +749,7 @@ void Annotator::refreshEnvelopes()
 
 	mStatusBar << "Loading LLD Data..." << mStatusBar;
 
-	std::list<std::string>::const_iterator it;
-	const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType("Frame", "Float");
-
+	// TODO: Not all the things should be done here
 	mBPFs.clear();
 	mBPFEditor->SetAudioPtr(&mCurrentAudio);
 	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
@@ -758,19 +757,32 @@ void Annotator::refreshEnvelopes()
 	mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
 	mPlayer->SetSampleRate(mCurrentAudio.GetSampleRate());
 	mCurrentBPFIndex = -1;
-	mFrameLevelTabBar->setCurrentTab(mFrameLevelTabBar->tabAt(0));
 
-	for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++/*, i++*/)
+	mFrameLevelTabBar->setCurrentTab(mFrameLevelTabBar->tabAt(0));
+	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
+
+	std::list<std::string>::const_iterator divisionName;
+	for(divisionName = divisionNames.begin();divisionName != divisionNames.end(); divisionName++)
 	{
-		CLAM::BPF transcribed;
-		refreshEnvelope(transcribed, *it);
-		std::pair<TData, TData> minmaxy = GetMinMaxY(transcribed);
-		BPFInfo bpf_info;
-		bpf_info.first=minmaxy;
-		bpf_info.second=transcribed;
-		mBPFs.push_back(bpf_info);
+		const CLAM_Annotator::FrameDivision & division = mpDescriptorPool->GetReadPool<CLAM_Annotator::FrameDivision>("Song",*divisionName)[0];
+		
+		const std::string & frameDivisionChildScope = mProject.GetAttributeScheme("Song", *divisionName).GetChildScope();
+		const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType(frameDivisionChildScope, "Float");
+		std::list<std::string>::const_iterator it;
+		for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++/*, i++*/)
+		{
+			CLAM::BPF transcribed;
+			refreshEnvelope(transcribed, frameDivisionChildScope, *it, division);
+			std::pair<TData, TData> minmaxy = GetMinMaxY(transcribed);
+			BPFInfo bpf_info;
+			bpf_info.first=minmaxy;
+			bpf_info.second=transcribed;
+			mBPFs.push_back(bpf_info);
+		}
+		if(mBPFs.size()) mPlayer->SetData(mBPFs[0].second);
 	}
-	if(mBPFs.size()) mPlayer->SetData(mBPFs[0].second);
+
+
 }
 
 void Annotator::refreshAudioData()
@@ -803,27 +815,30 @@ void Annotator::drawAudio(const char * filename)
 	mBPFEditor->Show();
 }
 
-void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& descriptorName)
+void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & division)
 {
-	const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>("Frame",descriptorName);
+	CLAM::TData firstCenter = division.GetFirstCenter();
+	CLAM::TData interCenterGap = division.GetInterCenterGap();
+	const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>(scope,descriptorName);
 
 	int audioSize=mCurrentAudio.GetSize();
 	TData sr = mCurrentAudio.GetSampleRate();
 
-	int nFrames = mpDescriptorPool->GetNumberOfContexts("Frame");
+	int nFrames = mpDescriptorPool->GetNumberOfContexts(scope);
 	int frameSize = audioSize/nFrames;
 
 	bpf.Resize(nFrames);
 	bpf.SetSize(nFrames);
-	for(int i=0, x=0; i<nFrames ; x+=frameSize, i++)
+	for(int i=0; i<nFrames ;i++)
 	{
-		bpf.SetXValue(i,TData(x)/sr);
+		bpf.SetXValue(i,(firstCenter+i*interCenterGap)/sr);
 		bpf.SetValue(i,TData(values[i]));
 	}
 }
 
 void Annotator::updateEnvelopesData()
 {
+	// TODO: Any child scope of any FrameDivision in Song not just Frame, which may not even exist
 	mFrameDescriptorsNeedUpdate = false;
 	unsigned i=0, editors_size = mBPFs.size();
 	std::list<std::string>::const_iterator it;
