@@ -45,8 +45,7 @@ namespace CLAM
 			void vScrollMaxValue(int);
 			void xRulerRange(double,double);
 			void yRulerRange(double,double);
-			void selectedXPos(double);
-	   
+		   
 		public slots:
 			void hZoomIn();
 			void hZoomOut();	
