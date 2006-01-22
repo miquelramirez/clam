@@ -33,6 +33,9 @@ namespace CLAM {
 	class Segmentation;
 	class XmlStorageErr;
 };
+namespace CLAM_Annotator {
+	class FrameDivision;
+}
 class StatusBarDumper 
 {
 		QStatusBar * mStatusBar;
@@ -136,7 +139,7 @@ private:
 
 	void adaptEnvelopesToCurrentSchema();
 	void refreshEnvelopes();
-	void refreshEnvelope(CLAM::BPF & bpf, const std::string& descriptorName);
+	void refreshEnvelope(CLAM::BPF & bpf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & frameDivision);
 	void updateEnvelopesData();
 	void updateEnvelopeData(int bpfIndex, CLAM::TData * descriptors);
 

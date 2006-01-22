@@ -18,6 +18,10 @@ class FrameDivision : public CLAM::DynamicType
 		UpdateData();
 	}
 public:
+	CLAM::TData GetCenter(unsigned element)
+	{
+		return GetFirstCenter() + element* GetInterCenterGap();
+	}
 };
 
 }
