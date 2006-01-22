@@ -3,7 +3,6 @@
 #include <CLAM/Text.hxx>
 #include <CLAM/IndexArray.hxx>
 #include <CLAM/XMLStorage.hxx>
-#include "Enumerated.hxx"
 
 namespace CLAM_Annotator
 {

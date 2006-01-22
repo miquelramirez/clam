@@ -322,6 +322,12 @@ void SchemaBrowser::updateCurrentAttribute()
 			documentation+="<li><b>Segmentation Policy:</b> " + QString(attributeSchema.GetSegmentationPolicy().GetString().c_str()) + "</li>";
 		}
 		documentation += "</ul>";
+		documentation += "<div class='descriptorDocumentation'>";
+		if (attributeSchema.HasDocumentation())
+			documentation += attributeSchema.GetDocumentation();
+		else
+			documentation += "<p>The schema has no embeded documentation for the attribute.</p>";
+		documentation += "</div>";
 		documentation += "<p>Get further information on <a href='" + url + "'>" +url+"</a>.</p>";
 		attributeDocumentation->setText(documentation);
 	}
