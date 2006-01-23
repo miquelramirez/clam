@@ -324,7 +324,7 @@ void SchemaBrowser::updateCurrentAttribute()
 		documentation += "</ul>";
 		documentation += "<div class='descriptorDocumentation'>";
 		if (attributeSchema.HasDocumentation())
-			documentation += attributeSchema.GetDocumentation();
+			documentation += attributeSchema.GetDocumentation().c_str();
 		else
 			documentation += "<p>The schema has no embeded documentation for the attribute.</p>";
 		documentation += "</div>";
