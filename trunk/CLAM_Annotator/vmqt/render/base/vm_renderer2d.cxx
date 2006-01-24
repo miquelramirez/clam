@@ -1,3 +1,4 @@
+#include "CLAMGL.hxx"
 #include "vm_renderer2d.hxx"
 
 namespace CLAM
@@ -102,6 +103,13 @@ namespace CLAM
 		void Renderer2D::catch_events(bool ce)
 		{
 			rd_catch_events = ce;
+		}
+
+		int Renderer2D::get_glList()
+		{
+			int gl_list = 1;
+			while(glIsList(gl_list)) gl_list++;
+			return gl_list;
 		}
 	}
 }

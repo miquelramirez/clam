@@ -49,6 +49,8 @@ namespace CLAM
 			void set_key(const QString& key);
 			void catch_events(bool ce);
 
+			int get_glList();
+
 			bool    rd_catch_events;
 			QString rd_key;
 
