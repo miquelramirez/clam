@@ -29,8 +29,6 @@ namespace CLAM
 			CLAM::VM::GLView rd_local_view;
 
 			std::vector< std::vector<CLAM::VM::SinTrackNode> > rd_tracks;
-
-			int get_glList();
 		};
 	}
 }
