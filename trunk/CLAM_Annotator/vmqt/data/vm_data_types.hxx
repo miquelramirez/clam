@@ -88,6 +88,14 @@ namespace CLAM
 			eVertical
 		};
 
+		enum EBPFEditorFlags
+		{
+			eAllowInsertions = 0x01,
+			eAllowDeletions  = 0x02,
+			eAllowHorEdition = 0x04,
+			eAllowVerEdition = 0x08
+		};
+
 		struct Keyboard
 		{
 			bool key_ctrl;
