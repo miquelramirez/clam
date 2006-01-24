@@ -200,6 +200,7 @@ namespace CLAM
 				return;
 			}
 			index = rd_segmentation->pickSegmentBody(x);
+			if(index!=nSegments)
 			{
 				rd_edition_mode=DraggingBody;
 				rd_dragged_segment=index;
