@@ -76,13 +76,6 @@ namespace CLAM
 			rd_local_view.bottom = rd_view.bottom;
 			rd_local_view.top = rd_view.top-1.0;
 		}
-
-		int SinTracksRenderer::get_glList()
-		{
-			int gl_list = 1;
-			while(glIsList(gl_list)) gl_list++;
-			return gl_list;
-		}
 	}
 }
 

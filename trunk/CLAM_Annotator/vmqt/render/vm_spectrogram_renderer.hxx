@@ -48,8 +48,6 @@ namespace CLAM
 
 			void draw_color_data();
 			void draw_blackwhite_data();
-
-			int get_glList();
 		};
 	}
 }
