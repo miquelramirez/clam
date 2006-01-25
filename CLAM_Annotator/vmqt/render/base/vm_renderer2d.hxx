@@ -10,6 +10,7 @@ namespace CLAM
 {
 	namespace VM
 	{
+		class CLAM::VM::Grid;
 
 		class Renderer2D : public CLAM::VM::Renderer
 		{
@@ -21,6 +22,7 @@ namespace CLAM
 			virtual ~Renderer2D();
 
 			void set_enabled(bool enabled);
+			void set_grid(CLAM::VM::Grid* grid);
 
 		signals:
 			void requestRefresh();
@@ -59,6 +61,7 @@ namespace CLAM
 			CLAM::VM::Range      rd_xrange;
 			CLAM::VM::Range      rd_yrange;
 			CLAM::VM::Keyboard   rd_keyboard;
+			CLAM::VM::Grid*      rd_grid;
 		};
 	}
 }
