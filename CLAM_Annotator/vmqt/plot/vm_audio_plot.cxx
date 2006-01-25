@@ -1,4 +1,5 @@
 #include "vm_plot2d.hxx"
+#include "vm_grid.hxx"
 #include "vm_data_array_renderer.hxx"
 #include "vm_audio_plot.hxx"
 
@@ -25,26 +26,32 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = get_zoom_steps(audio.GetBuffer().Size());
 				set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
+			static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->set_grid_steps(audio.GetDuration()/1000.0,1.0);
 			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("audio"))->set_data(audio.GetBuffer());
 		}
 
 		void AudioPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
+			static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->set_grid_color(CLAM::VM::Color(0,0,255));
 			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("audio"))->set_data_color(CLAM::VM::Color(0,0,255));
 		}
 
 		void AudioPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
+			static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->set_grid_color(CLAM::VM::Color(0,255,0));
 			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("audio"))->set_data_color(CLAM::VM::Color(0,255,0));
 		}
 
 		void AudioPlot::init_audio_plot()
 		{
+			wp_plot->add_renderer("grid", new CLAM::VM::Grid());
 			wp_plot->add_renderer("audio", new CLAM::VM::DataArrayRenderer());
 			wp_plot->send_to_back("audio");
+			wp_plot->send_to_back("grid");
 			wp_plot->bring_to_front("locator");
+			static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->show_grid(true);
 			backgroundWhite();
 		}
 
