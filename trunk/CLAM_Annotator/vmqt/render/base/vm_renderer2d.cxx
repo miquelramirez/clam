@@ -9,6 +9,7 @@ namespace CLAM
 		Renderer2D::Renderer2D()
 			: rd_catch_events(true)
 			, rd_viewport(-1,-1,1,1)
+			, rd_grid(0)
 		{
 		}
 
@@ -20,6 +21,11 @@ namespace CLAM
 		{
 			Renderer::set_enabled(enabled);
 			emit requestRefresh();
+		}
+
+		void Renderer2D::set_grid(CLAM::VM::Grid* grid)
+		{
+			rd_grid = grid;
 		}
 
 		void Renderer2D::set_xrange(double xmin, double xmax)
