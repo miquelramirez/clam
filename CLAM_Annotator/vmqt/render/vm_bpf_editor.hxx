@@ -64,7 +64,15 @@ namespace CLAM
 			long get_bound(double search_value);
 			std::pair<long, long> get_bounds();
 
+			double round(double x);
 			QString get_tooltip(double x, double y);
+
+			void choose_current_point(long index);
+			void move_current_point_dx(double dx);
+			void move_current_point_dy(double dy);
+
+			double get_xstep();
+			double get_ystep();
 		};
 	}
 }
