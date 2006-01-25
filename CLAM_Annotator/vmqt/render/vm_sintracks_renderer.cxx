@@ -41,6 +41,7 @@ namespace CLAM
 			{
 				rd_glList = get_glList();
 				glNewList(rd_glList,GL_COMPILE_AND_EXECUTE);
+				glLineWidth(1);
 				for(unsigned i=0; i < rd_tracks.size(); i++)
 				{
 					glBegin(GL_LINE_STRIP);

@@ -48,6 +48,7 @@ namespace CLAM
 			glLoadIdentity();
 			glOrtho(rd_local_view.left,rd_local_view.right,rd_local_view.bottom,rd_local_view.top,-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
+			glLineWidth(1);
 			glColor3ub(rd_data_color.r,rd_data_color.g,rd_data_color.b);
 			glBegin(GL_LINE_STRIP);
 			(rd_huge_mode) ? draw_huge_mode() : draw_normal_mode();
