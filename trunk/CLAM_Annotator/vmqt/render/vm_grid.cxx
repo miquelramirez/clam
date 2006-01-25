@@ -72,9 +72,9 @@ namespace CLAM
 			glBegin(GL_LINES);
 			// vertical lines
 			double pos = rd_xrange.min;
-			while(pos <= rd_view.right)
+			while(pos < rd_view.right)
 			{
-				if(pos >= rd_view.left)
+				if(pos > rd_view.left)
 				{
 					glVertex2d(pos,rd_view.bottom);
 					glVertex2d(pos,rd_view.top);
@@ -83,9 +83,9 @@ namespace CLAM
 			}
 			// horizontal lines
 			pos = rd_yrange.min;
-			while(pos <= rd_view.top)
+			while(pos < rd_view.top)
 			{
-				if(pos >= rd_view.bottom)
+				if(pos > rd_view.bottom)
 				{
 					glVertex2d(rd_view.left,pos);
 					glVertex2f(rd_view.right,pos);

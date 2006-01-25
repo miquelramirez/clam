@@ -7,7 +7,7 @@ namespace CLAM
 	{
 		Locator::Locator()
 			: rd_region_enabled(false)
-			, rd_locator_pos(0.0)
+			, rd_locator_pos(-1.0e10)
 			, rd_region(0.0,0.0)
 			, rd_locator_color(0,0,0)
 			, rd_region_color(185,185,185)
@@ -135,6 +135,7 @@ namespace CLAM
 					bool flag = rd_region.min == rd_locator_pos;
 					rd_region.min = x;
 					if(rd_region.min >= rd_region.max) rd_region.min = rd_region.max;
+					if(rd_region.min < rd_xrange.min) rd_region.min = rd_xrange.min;
 					if(flag)
 						rd_locator_pos = rd_region.min;
 					else
@@ -149,6 +150,7 @@ namespace CLAM
 					bool flag = rd_region.max == rd_locator_pos;
 					rd_region.max = x;
 					if(rd_region.max <= rd_region.min) rd_region.max = rd_region.min;
+					if(rd_region.max > rd_xrange.max) rd_region.max = rd_xrange.max;
 					if(flag)
 						rd_locator_pos = rd_region.max;
 					else
