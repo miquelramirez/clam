@@ -1,5 +1,6 @@
 #include "CLAMGL.hxx"
 #include "CLAM_Math.hxx"
+#include "vm_grid.hxx"
 #include "vm_bpf_editor.hxx"
 
 namespace CLAM
@@ -102,7 +103,7 @@ namespace CLAM
 			{
 				if(!(rd_flags & CLAM::VM::eAllowInsertions)) return;
 				long index = add(x,y);
-				emit requestRefresh();
+				choose_current_point(index);
 				emit elementAdded(index,x,y);
 				return;
 			}
@@ -110,7 +111,7 @@ namespace CLAM
 			if(index != -1)
 			{
 				rd_edition_mode = DraggingPoint;
-				rd_current_index = index;
+				choose_current_point(index);
 			}
 		}
 
@@ -161,7 +162,7 @@ namespace CLAM
 			if(index != -1) 
 			{
 				emit working(rd_key,true);
-				rd_current_index = index;
+				choose_current_point(index);
 				emit toolTip(get_tooltip(double(rd_bpf->GetXValue(rd_current_index)),
 											 double(rd_bpf->GetValueFromIndex(rd_current_index))));
 				if(rd_flags & CLAM::VM::eAllowHorEdition && rd_flags & CLAM::VM::eAllowVerEdition)
@@ -180,8 +181,6 @@ namespace CLAM
 				{
 					emit cursorChanged(QCursor(Qt::ArrowCursor));
 				}
-				rd_rebuild_glList = true;
-				emit requestRefresh();
 				return;
 			}
 		   
@@ -199,29 +198,51 @@ namespace CLAM
 			switch(key)
 			{
 				case Qt::Key_Insert:
-				{
 					emit working(rd_key,true);
 					rd_keyboard.key_insert = true; 
-				}
-				break;
-						
+					break;
 				case Qt::Key_Delete:
-				{
 					rd_keyboard.key_delete = true; 
 					if(!(rd_flags & CLAM::VM::eAllowDeletions)) return;
 					remove();
 					if(rd_bpf->Size() > 1)
 					{
-						if(rd_current_index > 0)  rd_current_index--;
+						if(rd_current_index > 0)  choose_current_point(rd_current_index-1);
 					}
 					else
 					{
-						rd_current_index = 0;
+						choose_current_point(0);
 					}
-					emit requestRefresh();
-				}
-				break;
-				
+					break;
+				case Qt::Key_Control:
+					rd_keyboard.key_ctrl = true;
+					break;
+				case Qt::Key_Up:
+					rd_keyboard.key_up = true;
+					move_current_point_dy(get_ystep());
+					break;
+				case Qt::Key_Down:
+					rd_keyboard.key_down = true;
+					move_current_point_dy(-get_ystep());
+					break;
+				case Qt::Key_Left:
+					rd_keyboard.key_left = true;
+					move_current_point_dx(-get_xstep());
+					break;
+				case Qt::Key_Right:
+					rd_keyboard.key_right = true;
+					move_current_point_dx(get_xstep());
+					break;
+				case Qt::Key_PageUp:
+					rd_keyboard.key_prior = true;
+					if(rd_current_index <= 0) return;
+					choose_current_point(rd_current_index-1);
+					break;
+				case Qt::Key_PageDown:
+					rd_keyboard.key_next = true;
+					if(rd_current_index >= rd_bpf->Size()-1) return;
+					choose_current_point(rd_current_index+1);
+					break;
 				default:
 					break;
 			}
@@ -234,18 +255,33 @@ namespace CLAM
 			switch(key)
 			{
 				case Qt::Key_Insert:
-				{
 					emit working(rd_key,false);
 					rd_keyboard.key_insert = false; 
-				}
-				break;
-						
+					break;
 				case Qt::Key_Delete:
-				{
 					rd_keyboard.key_delete = false; 
-				}
-				break;
-				
+					break;
+				case Qt::Key_Control:
+					rd_keyboard.key_ctrl = false;
+					break;
+				case Qt::Key_Up:
+					rd_keyboard.key_up = false;
+					break;
+				case Qt::Key_Down:
+					rd_keyboard.key_down = false;
+					break;
+				case Qt::Key_Left:
+					rd_keyboard.key_left = false;
+					break;
+				case Qt::Key_Right:
+					rd_keyboard.key_right = false;
+					break;
+				case Qt::Key_PageUp:
+					rd_keyboard.key_prior = false;
+					break;
+				case Qt::Key_PageDown:
+					rd_keyboard.key_next = false;
+					break;
 				default:
 					break;
 			}
@@ -253,6 +289,7 @@ namespace CLAM
 
 		void BPFEditor::leave_event()
 		{
+			emit toolTip("");
 		}
 
 		void BPFEditor::remove()
@@ -267,6 +304,17 @@ namespace CLAM
 		long BPFEditor::add(double x, double y)
 		{
 			rd_rebuild_glList = true;
+			if(rd_grid)
+			{
+				if(rd_grid->show_grid())
+				{
+					if(rd_grid->snap_to_grid())
+					{
+						x = round((x-rd_xrange.min)/rd_grid->xstep())*rd_grid->xstep()+rd_xrange.min;
+						y = round((y-rd_yrange.min)/rd_grid->ystep())*rd_grid->ystep()+rd_yrange.min;
+					}
+				}
+			}
 			return rd_bpf->Insert(x,y);
 		}
 
@@ -290,6 +338,18 @@ namespace CLAM
 			if(y < rd_yrange.min) y = rd_yrange.min;
 			if(y > rd_yrange.max) y = rd_yrange.max;
 
+			if(rd_grid)
+			{
+				if(rd_grid->show_grid())
+				{
+					if(rd_grid->snap_to_grid())
+					{
+						x = round((x-rd_xrange.min)/rd_grid->xstep())*rd_grid->xstep()+rd_xrange.min;
+						y = round((y-rd_yrange.min)/rd_grid->ystep())*rd_grid->ystep()+rd_yrange.min;
+					}
+				}
+			}
+
 			if(rd_flags & CLAM::VM::eAllowHorEdition)
 			{
 				rd_bpf->SetXValue(rd_current_index,x);
@@ -297,8 +357,7 @@ namespace CLAM
 			if(rd_flags & CLAM::VM::eAllowVerEdition)
 			{
 				rd_bpf->SetValue(rd_current_index,y);
-			}
-				
+			}				
 		}
 
 		long BPFEditor::pickPoint(double x, double y)
@@ -389,9 +448,126 @@ namespace CLAM
 			return std::make_pair(left,right);
 		}
 
+		double BPFEditor::round(double x) 
+		{
+			double i=double(int(x));
+			double frac=x-i;
+			return (frac >= 0.5) ? i+1.0 : i;
+		}
+
 		QString BPFEditor::get_tooltip(double x, double y)
 		{
 			return "P("+QString::number(x,'f',2)+","+QString::number(y,'f',2)+")";
+		}
+
+		void BPFEditor::choose_current_point(long index)
+		{
+			if(!rd_bpf) return;
+			if(!rd_enabled || !rd_bpf->Size()) return;
+			rd_rebuild_glList = true;
+			rd_current_index = index;
+			emit requestRefresh();
+		}
+
+		void BPFEditor::move_current_point_dx(double dx)
+		{
+			if(!rd_bpf) return;
+			if(!rd_enabled || !rd_bpf->Size()) return;
+			if(!(rd_flags & CLAM::VM::eAllowHorEdition)) return;
+			rd_rebuild_glList = true;
+			double threshold = double(TOLERANCE)*(rd_view.right-rd_view.left)/double(rd_viewport.w);
+			double x = rd_bpf->GetXValue(rd_current_index)+dx;
+			if(rd_current_index != 0)
+			{
+				double prior_x = rd_bpf->GetXValue(rd_current_index-1);
+				if(x < prior_x+threshold) x = prior_x+threshold;
+			}
+			if(rd_current_index != rd_bpf->Size()-1)
+			{
+				double next_x = rd_bpf->GetXValue(rd_current_index+1);
+				if(x > next_x-threshold) x = next_x-threshold;
+			}
+			if(x < rd_xrange.min) x = rd_xrange.min;
+			if(x > rd_xrange.max) x = rd_xrange.max;			
+			if(rd_grid)
+			{
+				if(rd_grid->show_grid())
+				{
+					if(rd_grid->snap_to_grid())
+					{
+						x = round((x-rd_xrange.min)/rd_grid->xstep())*rd_grid->xstep()+rd_xrange.min;
+					}
+				}
+			}
+			rd_bpf->SetXValue(rd_current_index,x);
+			emit requestRefresh();
+			emit xValueChanged(rd_current_index,rd_bpf->GetXValue(rd_current_index));
+		}
+
+		void BPFEditor::move_current_point_dy(double dy)
+		{
+			if(!rd_bpf) return;
+			if(!rd_enabled || !rd_bpf->Size()) return;
+			rd_rebuild_glList = true;
+			if(!(rd_flags & CLAM::VM::eAllowVerEdition)) return;
+			double y = rd_bpf->GetValueFromIndex(rd_current_index)+dy;
+			if(y < rd_yrange.min) y = rd_yrange.min;
+			if(y > rd_yrange.max) y = rd_yrange.max;
+			if(rd_grid)
+			{
+				if(rd_grid->show_grid())
+				{
+					if(rd_grid->snap_to_grid())
+					{
+						y = round((y-rd_yrange.min)/rd_grid->ystep())*rd_grid->ystep()+rd_yrange.min;
+					}
+				}
+			}
+			rd_bpf->SetValue(rd_current_index,y);
+			emit requestRefresh();
+			emit yValueChanged(rd_current_index,rd_bpf->GetValueFromIndex(rd_current_index));
+		}
+
+		double BPFEditor::get_xstep()
+		{
+			double dx;
+			if(!rd_grid)
+			{
+				(rd_keyboard.key_ctrl) ? dx = rd_xrange.span()*0.01 : dx = rd_xrange.span()*0.05;
+			}
+			else
+			{
+				if(rd_grid->snap_to_grid())
+				{
+					dx = rd_grid->xstep();
+				}
+				else
+				{
+					(rd_keyboard.key_ctrl) ? dx = rd_grid->xstep()/4.0 : dx = rd_grid->xstep();
+				}
+			}
+			return dx;
+		}
+		
+		double BPFEditor::get_ystep()
+		{
+			double dy;
+			if(!rd_grid)
+			{
+				(rd_keyboard.key_ctrl) ? dy = rd_yrange.span()*0.01 : dy = rd_yrange.span()*0.05;
+			}
+			else
+			{
+				if(rd_grid->snap_to_grid())
+				{
+					dy = rd_grid->ystep();
+				}
+				else
+				{
+					(rd_keyboard.key_ctrl) ? dy = rd_grid->ystep()/4.0 : dy = rd_grid->ystep();
+				}
+			}
+			return dy;
 		}
 	}
 }
