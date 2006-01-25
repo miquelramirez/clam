@@ -176,7 +176,7 @@ namespace CLAM
 
 		void Keyboard::init()
 		{
-			key_ctrl=key_delete=key_down=key_h=key_insert=key_left=key_minus=key_plus=key_r=key_right=key_shift=key_up=key_v=false;
+			key_ctrl=key_delete=key_down=key_h=key_insert=key_left=key_minus=key_next=key_plus=key_prior=key_r=key_right=key_shift=key_up=key_v=false;
 		}
 
 /////////// Peak ////////////////////////////

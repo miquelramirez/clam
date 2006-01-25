@@ -105,7 +105,9 @@ namespace CLAM
 			bool key_insert;
 			bool key_left;
 			bool key_minus;
+			bool key_next;
 			bool key_plus;
+			bool key_prior;
 			bool key_r;
 			bool key_right;
 			bool key_shift;
