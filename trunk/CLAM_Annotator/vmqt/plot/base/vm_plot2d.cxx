@@ -360,6 +360,7 @@ namespace CLAM
 			glVertex2d(rect.left()+rect.width(),rect.bottom());
 			glVertex2d(rect.left(),rect.bottom());
 			glEnd();
+			glLineWidth(1);
 			glColor3ub(0,0,0);
 			glBegin(GL_LINE_STRIP);
 			glVertex2d(rect.left(),rect.top());

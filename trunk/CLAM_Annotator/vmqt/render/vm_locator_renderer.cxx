@@ -280,6 +280,7 @@ namespace CLAM
 		void Locator::draw_locator()
 		{
 			if(rd_locator_pos < rd_view.left || rd_locator_pos > rd_view.right) return;
+			glLineWidth(1);
 			glColor3ub(rd_locator_color.r,rd_locator_color.g,rd_locator_color.b);
 			glBegin(GL_LINES);
 			glVertex2d(rd_locator_pos,rd_view.top);
