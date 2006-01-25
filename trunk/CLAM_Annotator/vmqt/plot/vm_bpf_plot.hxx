@@ -18,10 +18,14 @@ namespace CLAM
 			virtual void set_data(CLAM::BPF* bpf);
 
 			void set_flags(int f);
+			void set_grid_steps(double xstep, double ystep);
 		   
 		public slots:
 			virtual void backgroundWhite();
 			virtual void backgroundBlack();
+			
+			void show_grid(bool);
+			void snap_to_grid(bool);
 
 		private:
 			void init_bpf_plot();
