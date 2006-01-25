@@ -533,17 +533,31 @@ namespace CLAM
 			double dx;
 			if(!rd_grid)
 			{
-				(rd_keyboard.key_ctrl) ? dx = rd_xrange.span()*0.01 : dx = rd_xrange.span()*0.05;
+				(rd_keyboard.key_ctrl) 
+					? dx = (rd_view.right-rd_view.left)/double(rd_viewport.w)
+					: dx = 5.0*(rd_view.right-rd_view.left)/double(rd_viewport.w);
+				
 			}
 			else
 			{
-				if(rd_grid->snap_to_grid())
+				if(rd_grid->show_grid())
 				{
-					dx = rd_grid->xstep();
+					if(rd_grid->snap_to_grid())
+					{
+						dx = rd_grid->xstep();
+					}
+					else
+					{
+						(rd_keyboard.key_ctrl) 
+							? dx = (rd_view.right-rd_view.left)/double(rd_viewport.w)
+							: dx = 5.0*(rd_view.right-rd_view.left)/double(rd_viewport.w);
+					}
 				}
 				else
 				{
-					(rd_keyboard.key_ctrl) ? dx = rd_grid->xstep()/4.0 : dx = rd_grid->xstep();
+					(rd_keyboard.key_ctrl) 
+						? dx = (rd_view.right-rd_view.left)/double(rd_viewport.w)
+						: dx = 5.0*(rd_view.right-rd_view.left)/double(rd_viewport.w);
 				}
 			}
 			return dx;
@@ -554,17 +568,31 @@ namespace CLAM
 			double dy;
 			if(!rd_grid)
 			{
-				(rd_keyboard.key_ctrl) ? dy = rd_yrange.span()*0.01 : dy = rd_yrange.span()*0.05;
+				(rd_keyboard.key_ctrl)
+					? dy = (rd_view.top-rd_view.bottom)/double(rd_viewport.h)
+					: dy = 5.0*(rd_view.top-rd_view.bottom)/double(rd_viewport.h);
+
 			}
 			else
 			{
-				if(rd_grid->snap_to_grid())
+				if(rd_grid->show_grid())
 				{
-					dy = rd_grid->ystep();
+					if(rd_grid->snap_to_grid())
+					{
+						dy = rd_grid->ystep();
+					}
+					else
+					{
+						(rd_keyboard.key_ctrl)
+							? dy = (rd_view.top-rd_view.bottom)/double(rd_viewport.h)
+							: dy = 5.0*(rd_view.top-rd_view.bottom)/double(rd_viewport.h);
+					}
 				}
 				else
 				{
-					(rd_keyboard.key_ctrl) ? dy = rd_grid->ystep()/4.0 : dy = rd_grid->ystep();
+					(rd_keyboard.key_ctrl)
+						? dy = (rd_view.top-rd_view.bottom)/double(rd_viewport.h)
+						: dy = 5.0*(rd_view.top-rd_view.bottom)/double(rd_viewport.h);
 				}
 			}
 			return dy;
