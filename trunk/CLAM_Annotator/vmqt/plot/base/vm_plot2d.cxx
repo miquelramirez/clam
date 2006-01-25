@@ -554,7 +554,13 @@ namespace CLAM
 			unsigned i=0;
 			for(; i < cp_draw_order.size(); i++) if(cp_draw_order[i]==key) break;
 			if(i==cp_draw_order.size()) return;
-			cp_draw_order[i] = cp_draw_order[cp_draw_order.size()-1];
+			std::vector<QString> tmp;
+			for(unsigned k=0; k < cp_draw_order.size(); k++)
+			{
+				if(k==i) continue;
+				tmp.push_back(cp_draw_order[k]);
+			}
+			for(i=0; i < tmp.size(); i++) cp_draw_order[i]=tmp[i];
 			cp_draw_order[cp_draw_order.size()-1] = key;
 
 		}
@@ -566,7 +572,13 @@ namespace CLAM
 			unsigned i=0;
 			for(; i < cp_draw_order.size(); i++) if(cp_draw_order[i]==key) break;
 			if(i==cp_draw_order.size()) return;
-			cp_draw_order[i] = cp_draw_order[0];
+			std::vector<QString> tmp;
+			for(unsigned k=0; k < cp_draw_order.size(); k++)
+			{
+				if(k==i) continue;
+				tmp.push_back(cp_draw_order[k]);
+			}
+			for(i=1; i < cp_draw_order.size(); i++) cp_draw_order[i]=tmp[i-1];
 			cp_draw_order[0] = key;
 		}
 
