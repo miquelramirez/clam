@@ -29,6 +29,24 @@ namespace CLAM
 			rd_region_color = c;
 		}
 
+		void Locator::updateRegion(double begin, double end, bool isEnd)
+		{
+			if(begin==end)
+			{
+				rd_locator_pos = begin;
+				rd_region.min = rd_region.max = rd_locator_pos;
+				emit hZoomRef(rd_locator_pos);
+			}
+			else
+			{
+				rd_region.min = begin;
+				rd_region.max = end;
+				(isEnd) ? rd_locator_pos = end : rd_locator_pos = begin;
+				emit hZoomRef(rd_region.min+rd_region.span()/2.0);
+			}
+			emit requestRefresh();
+		}
+
 		void Locator::render()
 		{
 			if(!rd_enabled) return;
@@ -69,6 +87,7 @@ namespace CLAM
 						rd_locator_pos = rd_region.max;
 					}
 				}
+				emit regionChanged(rd_region.min,rd_region.max,rd_locator_pos > rd_region.min);
 				emit hZoomRef(rd_region.min+rd_region.span()/2.0);
 				emit requestRefresh();
 				return;
@@ -77,6 +96,7 @@ namespace CLAM
 			{
 				rd_locator_pos = x;
 				rd_region.min = rd_region.max = rd_locator_pos;
+				emit regionChanged(rd_region.min,rd_region.max,false);
 				emit hZoomRef(rd_locator_pos);
 				emit requestRefresh();
 				return;
@@ -142,6 +162,7 @@ namespace CLAM
 						if(rd_locator_pos <= rd_region.min) rd_locator_pos = rd_region.min;
 					ttip = "x:"+QString::number(rd_region.min,'f',2);
 					emit toolTip(ttip);
+					emit regionChanged(rd_region.min,rd_region.max,rd_locator_pos > rd_region.min);
 					emit requestRefresh();	
 					return;
 				}
@@ -157,6 +178,7 @@ namespace CLAM
 						if(rd_locator_pos >= rd_region.max) rd_locator_pos = rd_region.max;
 					ttip = "x:"+QString::number(rd_region.max,'f',2);
 					emit toolTip(ttip);
+					emit regionChanged(rd_region.min,rd_region.max,rd_locator_pos > rd_region.min);
 					emit requestRefresh();	
 					return;
 				}
