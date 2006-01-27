@@ -87,6 +87,7 @@ namespace CLAM
 			double cp_hzoom_ref;
 			double cp_current_xspan;
 			double cp_current_yspan;
+			bool   cp_do_resize;
 
 			CLAM::VM::Range cp_xrange;
 			CLAM::VM::Range cp_yrange;

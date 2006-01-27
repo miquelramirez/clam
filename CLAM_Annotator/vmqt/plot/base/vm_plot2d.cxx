@@ -198,18 +198,22 @@ namespace CLAM
 		}
 
 		void Plot2D::paintGL()
-		{	
+		{
+			if(cp_do_resize)
+			{
+				glViewport(0,0,cp_viewport.w,cp_viewport.h);
+				cp_do_resize = false;
+			}
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glOrtho(cp_view.left,cp_view.right,cp_view.bottom,cp_view.top,-1.0,1.0);
+			glMatrixMode(GL_MODELVIEW);
 			glShadeModel(GL_FLAT);
 			glClearColor(double(cp_bg_color.r)/255.0, 
 						 double(cp_bg_color.g)/255.0, 
 						 double(cp_bg_color.b)/255.0, 
 						 double(cp_bg_color.a)/255.0);
 			glClear(GL_COLOR_BUFFER_BIT);
-
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glOrtho(cp_view.left,cp_view.right,cp_view.bottom,cp_view.top,-1.0,1.0);
-			glMatrixMode(GL_MODELVIEW);
 			draw();
 			render_tooltip(); 
 			swapBuffers();
@@ -219,7 +223,7 @@ namespace CLAM
 		{
 			cp_viewport.w = e->size().width();
 			cp_viewport.h = e->size().height();
-			glViewport(0,0,cp_viewport.w,cp_viewport.h);
+			cp_do_resize = true;
 			Renderers::iterator it = cp_renderers.begin();
 			for(; it != cp_renderers.end(); it++) it->second->set_viewport(cp_viewport);
 			int sv = get_hscroll_value();
@@ -421,7 +425,8 @@ namespace CLAM
 					double ref = get_reference();
 					if(ref-cp_xrange.min >= cp_current_xspan/2.0)
 					{
-						left = ref-cp_current_xspan/2.0;
+						left = (ref+cp_current_xspan/2.0 < cp_xrange.span()) 
+							? ref-cp_current_xspan/2.0 : ref-(cp_current_xspan-(cp_xrange.span()-ref));
 					}
 					right = left+cp_current_xspan;
 				}
