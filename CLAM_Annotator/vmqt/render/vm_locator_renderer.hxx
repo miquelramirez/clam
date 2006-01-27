@@ -19,6 +19,10 @@ namespace CLAM
 
 		signals:
 			void selectedRegion(double,double);
+			void regionChanged(double, double, bool);
+			
+		public slots:
+			void updateRegion(double, double, bool);
 
 		protected:
 			void render();
