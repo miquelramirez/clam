@@ -86,7 +86,7 @@ namespace CLAM
 			rd_local_view.left = 0.0;
 		   
 			unsigned offset = (rd_view.left > 0) ? unsigned(rd_view.left) : 0;
-			unsigned length = unsigned(rd_view.right-rd_view.left)+1;
+			unsigned length = unsigned(rd_view.right-rd_view.left);
 
 			if(rd_huge_mode_enabled)
 			{
