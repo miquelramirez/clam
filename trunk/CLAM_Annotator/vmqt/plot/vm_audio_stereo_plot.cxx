@@ -42,57 +42,46 @@ namespace CLAM
 			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[SLAVE]->get_renderer("chn1"))->set_data(chn1.GetBuffer());
 		}
 
-		void AudioStereoPlot::init_audio_stereo_plot()
+		void AudioStereoPlot::backgroundWhite()
 		{
-			// common inits			
-			init_multidisplay_plot(MASTER);
+			setPalette(Qt::white);
+			wp_xruler->set_bg_color(CLAM::VM::Color(255,255,255));
+			wp_xruler->set_fg_color(CLAM::VM::Color(0,0,0));
+			wp_yruler0->set_bg_color(CLAM::VM::Color(255,255,255));
+			wp_yruler0->set_fg_color(CLAM::VM::Color(0,0,0));
+			wp_yruler1->set_bg_color(CLAM::VM::Color(255,255,255));
+			wp_yruler1->set_fg_color(CLAM::VM::Color(0,0,0));
+			wp_hscroll->setPalette(Qt::white);
+			wp_vscroll->setPalette(Qt::white);
+			wp_display[MASTER]->set_bg_color(CLAM::VM::Color(255,255,255));
+			wp_display[SLAVE]->set_bg_color(CLAM::VM::Color(255,255,255));
+			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[MASTER]->get_renderer("chn0"))->set_data_color(CLAM::VM::Color(0,0,255));
+			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[SLAVE]->get_renderer("chn1"))->set_data_color(CLAM::VM::Color(0,0,255));
+			static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0"))->set_locator_color(CLAM::VM::Color(250,160,30));
+			static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->set_locator_color(CLAM::VM::Color(250,160,30));
+		}
 
-			// own inits
-			wp_yruler0 = new CLAM::VM::Ruler(this,CLAM::VM::eLeft);
-			wp_yruler1 = new CLAM::VM::Ruler(this,CLAM::VM::eLeft);
-			wp_vscroll = new CLAM::VM::ScrollGroup(CLAM::VM::eVertical,this);
-			QFontMetrics fm(wp_yruler0->get_font());
-			int yruler_width = fm.width("-0.0e+00")+12;
-			wp_yruler0->setFixedWidth(yruler_width);
-			wp_yruler1->setFixedWidth(yruler_width);
-
-			wp_vscroll->setFixedWidth(20);
-
-			// layout
-			wp_layout = new QGridLayout(this);
-			wp_layout->setMargin(0);
-			wp_layout->setSpacing(1);
-			
-			wp_layout->addWidget(wp_xruler,0,1);
-			wp_layout->addWidget(wp_yruler0,1,0);
-			wp_layout->addWidget(wp_yruler1,2,0);
-			wp_layout->addWidget(wp_display[MASTER],1,1);
-			wp_layout->addWidget(wp_display[SLAVE],2,1);
-			wp_layout->addWidget(wp_vscroll,1,2,2,1);
-			wp_layout->addWidget(wp_hscroll,3,1);
-			
-			// connect yrulers and vertical scroll group
-			connect(wp_display[MASTER],SIGNAL(yRulerRange(double,double)),
-					wp_yruler0,SLOT(updateRange(double,double)));
-			connect(wp_display[MASTER],SIGNAL(yRulerRange(double,double)),
-					wp_yruler1,SLOT(updateRange(double,double)));
-			
-			connect(wp_vscroll,SIGNAL(zoomIn()),wp_display[MASTER],SLOT(vZoomIn()));
-			connect(wp_vscroll,SIGNAL(zoomOut()),wp_display[MASTER],SLOT(vZoomOut()));
-			connect(wp_vscroll,SIGNAL(scrollValueChanged(int)),wp_display[MASTER],SLOT(updateVScrollValue(int)));
-
-			connect(wp_display[MASTER],SIGNAL(vZoomRatio(QString)),wp_vscroll,SLOT(updateZoomRatio(QString)));
-			connect(wp_display[MASTER],SIGNAL(vScrollValue(int)),wp_vscroll,SLOT(updateScrollValue(int)));
-			connect(wp_display[MASTER],SIGNAL(vScrollMaxValue(int)),this,SLOT(setMaxVScroll(int)));
-			
-			// synchronize vertical scrolling
-			connect(wp_display[MASTER],SIGNAL(yRulerRange(double,double)),
-					wp_display[SLAVE],SLOT(setVBounds(double,double)));
+		void AudioStereoPlot::backgroundBlack()
+		{
+			setPalette(Qt::black);
+			wp_xruler->set_bg_color(CLAM::VM::Color(0,0,0));
+			wp_xruler->set_fg_color(CLAM::VM::Color(255,255,255));
+			wp_yruler0->set_bg_color(CLAM::VM::Color(0,0,0));
+			wp_yruler0->set_fg_color(CLAM::VM::Color(255,255,255));
+			wp_yruler1->set_bg_color(CLAM::VM::Color(0,0,0));
+			wp_yruler1->set_fg_color(CLAM::VM::Color(255,255,255));
+			wp_hscroll->setPalette(Qt::darkGreen);
+			wp_vscroll->setPalette(Qt::darkGreen);
+			wp_display[MASTER]->set_bg_color(CLAM::VM::Color(0,0,0));
+			wp_display[SLAVE]->set_bg_color(CLAM::VM::Color(0,0,0));
+			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[MASTER]->get_renderer("chn0"))->set_data_color(CLAM::VM::Color(0,255,0));
+			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[SLAVE]->get_renderer("chn1"))->set_data_color(CLAM::VM::Color(0,255,0));
+			static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0"))->set_locator_color(CLAM::VM::Color(255,0,0));
+			static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->set_locator_color(CLAM::VM::Color(255,0,0));
 		}
 
 		void AudioStereoPlot::setMaxVScroll(int value)
 		{
-
 			int max = value-wp_display[MASTER]->height();
 			if(max < 0) max=0;
 			if(wp_vscroll->get_max_scroll_value() == max) return;
@@ -130,6 +119,56 @@ namespace CLAM
 					SIGNAL(regionChanged(double,double,bool)),
 					static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0")),
 					SLOT(updateRegion(double,double,bool)));
+		}
+	
+		void AudioStereoPlot::init_audio_stereo_plot()
+		{
+			// common inits			
+			init_multidisplay_plot(MASTER);
+
+			// own inits
+			wp_yruler0 = new CLAM::VM::Ruler(this,CLAM::VM::eLeft);
+			wp_yruler1 = new CLAM::VM::Ruler(this,CLAM::VM::eLeft);
+			wp_vscroll = new CLAM::VM::ScrollGroup(CLAM::VM::eVertical,this);
+			QFontMetrics fm(wp_yruler0->get_font());
+			int yruler_width = fm.width("-0.0e+00")+12;
+			wp_yruler0->setFixedWidth(yruler_width);
+			wp_yruler1->setFixedWidth(yruler_width);
+
+			wp_vscroll->setFixedWidth(20);
+
+			// layout
+			wp_layout = new QGridLayout(this);
+			wp_layout->setMargin(0);
+			wp_layout->setSpacing(1);
+			
+			wp_layout->addWidget(wp_xruler,0,1);
+			wp_layout->addWidget(wp_yruler0,1,0);
+			wp_layout->addWidget(wp_yruler1,2,0);
+			wp_layout->addWidget(wp_display[MASTER],1,1);
+			wp_layout->addWidget(wp_display[SLAVE],2,1);
+			wp_layout->addWidget(wp_vscroll,1,2,2,1);
+			wp_layout->addWidget(wp_hscroll,3,1);
+
+			// connect yrulers and vertical scroll group
+			connect(wp_display[MASTER],SIGNAL(yRulerRange(double,double)),
+					wp_yruler0,SLOT(updateRange(double,double)));
+			connect(wp_display[MASTER],SIGNAL(yRulerRange(double,double)),
+					wp_yruler1,SLOT(updateRange(double,double)));
+			
+			connect(wp_vscroll,SIGNAL(zoomIn()),wp_display[MASTER],SLOT(vZoomIn()));
+			connect(wp_vscroll,SIGNAL(zoomOut()),wp_display[MASTER],SLOT(vZoomOut()));
+			connect(wp_vscroll,SIGNAL(scrollValueChanged(int)),wp_display[MASTER],SLOT(updateVScrollValue(int)));
+
+			connect(wp_display[MASTER],SIGNAL(vZoomRatio(QString)),wp_vscroll,SLOT(updateZoomRatio(QString)));
+			connect(wp_display[MASTER],SIGNAL(vScrollValue(int)),wp_vscroll,SLOT(updateScrollValue(int)));
+			connect(wp_display[MASTER],SIGNAL(vScrollMaxValue(int)),this,SLOT(setMaxVScroll(int)));
+			
+			// synchronize vertical scrolling
+			connect(wp_display[MASTER],SIGNAL(yRulerRange(double,double)),
+					wp_display[SLAVE],SLOT(setVBounds(double,double)));
+
+			backgroundWhite();
 		}
 
 		std::pair<int,int> AudioStereoPlot::get_zoom_steps(CLAM::TSize size)

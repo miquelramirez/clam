@@ -18,10 +18,14 @@ namespace CLAM
 
 			virtual void set_data(const CLAM::Audio& chn0, const CLAM::Audio& chn1, bool update=false);
 
+		public slots:
+			virtual void backgroundWhite();
+			virtual void backgroundBlack();
+
 		protected:
 			QGridLayout* wp_layout;
 			
-			virtual void init_audio_stereo_plot();
+			enum { MASTER=0, SLAVE=1 };
 
 		private slots:
 			void setMaxVScroll(int);
@@ -31,10 +35,8 @@ namespace CLAM
 			CLAM::VM::Ruler*       wp_yruler1;
 			CLAM::VM::ScrollGroup* wp_vscroll;
 
-			enum { MASTER=0, SLAVE=1 };
-
 			void create_display();
-
+			void init_audio_stereo_plot();
 			std::pair<int,int> get_zoom_steps(CLAM::TSize size);
 		};
 	}
