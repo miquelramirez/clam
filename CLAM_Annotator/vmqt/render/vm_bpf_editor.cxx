@@ -213,6 +213,7 @@ namespace CLAM
 					{
 						choose_current_point(0);
 					}
+					emit requestRefresh();
 					break;
 				case Qt::Key_Control:
 					rd_keyboard.key_ctrl = true;
