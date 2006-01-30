@@ -54,7 +54,7 @@ namespace CLAM
 			wp_hscroll->setPalette(Qt::white);
 			wp_vscroll->setPalette(Qt::white);
 			wp_plot->set_bg_color(CLAM::VM::Color(255,255,255));
-			static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator"))->set_locator_color(CLAM::VM::Color(0,0,0));
+			static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator"))->set_locator_color(CLAM::VM::Color(250,160,30));
 		}
 
 		void SegmentationPlot::backgroundBlack()

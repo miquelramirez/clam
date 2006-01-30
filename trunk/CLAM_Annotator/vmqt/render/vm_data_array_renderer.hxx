@@ -27,8 +27,7 @@ namespace CLAM
 			void set_viewport(const CLAM::VM::GLViewport& v);
 			
 		private:
-			const CLAM::DataArray* rd_cached_data;
-
+			CLAM::DataArray rd_cached_data;
 		    CLAM::DataArray rd_processed_data;
 			CLAM::DataArray rd_min_array;
 			CLAM::DataArray rd_max_array;

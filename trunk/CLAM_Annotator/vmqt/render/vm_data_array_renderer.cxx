@@ -8,8 +8,7 @@ namespace CLAM
 	{
 
 		DataArrayRenderer::DataArrayRenderer()
-			: rd_cached_data(0) 
-			, rd_huge_mode(false)
+			: rd_huge_mode(false)
 			, rd_huge_mode_enabled(true)
 			, rd_must_process_data(false)
 			, rd_data_color(0,0,255)
@@ -22,7 +21,7 @@ namespace CLAM
 	
 		void DataArrayRenderer::set_data(const CLAM::DataArray& data)
 		{
-			rd_cached_data = &data;
+			rd_cached_data = data;
 			rd_must_process_data = true;
 			emit requestUpdate();
 		}
@@ -40,8 +39,7 @@ namespace CLAM
 
 		void DataArrayRenderer::render()
 		{
-			if(!rd_cached_data) return;
-			if(!rd_enabled || !rd_cached_data->Size()) return;
+			if(!rd_enabled || !rd_cached_data.Size()) return;
 			if(rd_must_process_data) {process_data(); rd_must_process_data=false;}
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
@@ -60,11 +58,10 @@ namespace CLAM
 
 		void DataArrayRenderer::set_hbounds(double left, double right)
 		{
-			if(!rd_cached_data) return;
-			if(!rd_cached_data->Size()) return;
+			if(!rd_cached_data.Size()) return;
 		  
-			rd_view.left = (left-rd_xrange.min)*double(rd_cached_data->Size())/rd_xrange.span();
-			rd_view.right = (right-rd_xrange.min)*double(rd_cached_data->Size())/rd_xrange.span();
+			rd_view.left = (left-rd_xrange.min)*double(rd_cached_data.Size())/rd_xrange.span();
+			rd_view.right = (right-rd_xrange.min)*double(rd_cached_data.Size())/rd_xrange.span();
 			rd_must_process_data = true;
 		}
 
@@ -109,18 +106,18 @@ namespace CLAM
 			
 					for(unsigned i=0; i < first_pass_iterations; i++)
 					{
-						rd_max_array[i] = *std::max_element(rd_cached_data->GetPtr()+start_search, 
-														rd_cached_data->GetPtr()+end_search);
-						rd_min_array[i] = *std::min_element(rd_cached_data->GetPtr()+start_search, 
-														rd_cached_data->GetPtr()+end_search);
+						rd_max_array[i] = *std::max_element(rd_cached_data.GetPtr()+start_search, 
+														rd_cached_data.GetPtr()+end_search);
+						rd_min_array[i] = *std::min_element(rd_cached_data.GetPtr()+start_search, 
+														rd_cached_data.GetPtr()+end_search);
 						start_search = end_search;
 						end_search += search_interval_len;	
 					}
 					if(!search_rem_interval_len) return;
-					rd_max_array[max_size-1] = *std::max_element(rd_cached_data->GetPtr()+start_search, 
-															 rd_cached_data->GetPtr()+start_search+search_rem_interval_len);
-					rd_min_array[max_size-1] = *std::min_element(rd_cached_data->GetPtr()+start_search, 
-															 rd_cached_data->GetPtr()+start_search+search_rem_interval_len);
+					rd_max_array[max_size-1] = *std::max_element(rd_cached_data.GetPtr()+start_search, 
+																 rd_cached_data.GetPtr()+start_search+search_rem_interval_len);
+					rd_min_array[max_size-1] = *std::min_element(rd_cached_data.GetPtr()+start_search, 
+																 rd_cached_data.GetPtr()+start_search+search_rem_interval_len);
 					rd_local_view.right = double(rd_max_array.Size())-1;
 					return;
 				}
@@ -130,8 +127,8 @@ namespace CLAM
 
 			rd_processed_data.Resize(length+1);
 			rd_processed_data.SetSize(length+1);
-			std::copy(rd_cached_data->GetPtr()+offset, 
-					  rd_cached_data->GetPtr()+offset+length+1, 
+			std::copy(rd_cached_data.GetPtr()+offset, 
+					  rd_cached_data.GetPtr()+offset+length+1, 
 					  rd_processed_data.GetPtr());
 			rd_local_view.right = double(rd_processed_data.Size())-1;
 		}

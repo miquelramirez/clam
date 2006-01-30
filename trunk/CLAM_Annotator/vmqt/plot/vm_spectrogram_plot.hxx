@@ -31,7 +31,6 @@ namespace CLAM
 		private:
 			int                         wp_sonogram_colormap;
 			int                         wp_color_scale_width;
-			CLAM::Array<CLAM::Spectrum> wp_spec_matrix;
 			CLAM::VM::SpecgramPanel*    wp_panel;
 		   
 			enum { COLOR_SONOGRAM=0, BW_SONOGRAM=1 };
@@ -42,9 +41,8 @@ namespace CLAM
 			void set_yrange(double ymin, double ymax);
 			void set_zoom_steps(int hsteps, int vsteps);
 
-			void build_spec_matrix(const CLAM::Segment& in);
 			std::pair<int,int> get_zoom_steps(CLAM::TSize size, CLAM::TData yrange);
-
+			CLAM::Array<CLAM::Spectrum> get_spec_matrix(const CLAM::Segment& in);
 		};
 	}
 }
