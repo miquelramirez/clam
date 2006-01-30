@@ -96,6 +96,12 @@ namespace CLAM
 			eAllowVerEdition = 0x08
 		};
 
+		enum EPlayingFlags
+		{
+			eAudio         = 0x01,
+			eUseOscillator = 0x02
+		};
+
 		struct Keyboard
 		{
 			bool key_ctrl;
