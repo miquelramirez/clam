@@ -57,7 +57,7 @@ namespace CLAM
 
 			SimpleOscillatorConfig oscCfg;
 			oscCfg.SetSamplingRate(pl_sampling_rate);
-			oscCfg.SetAmplitude(TData(0.6));
+			oscCfg.SetAmplitude(0.6);
 			SimpleOscillator osc(oscCfg);
 			
 			InControl& freqControl = osc.GetInControls().Get("Pitch");
