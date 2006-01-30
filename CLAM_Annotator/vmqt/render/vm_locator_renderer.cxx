@@ -6,8 +6,8 @@ namespace CLAM
 	namespace VM
 	{
 		Locator::Locator()
-			: rd_region_enabled(false)
-			, rd_locator_pos(-1.0e10)
+			: rd_updating_locator(false)
+			, rd_locator_pos(-1E6)
 			, rd_region(0.0,0.0)
 			, rd_locator_color(0,0,0)
 			, rd_region_color(185,185,185)
@@ -27,6 +27,40 @@ namespace CLAM
 		void Locator::set_region_color(const CLAM::VM::Color& c)
 		{
 			rd_region_color = c;
+		}
+
+		void Locator::updateLocator(double value)
+		{
+			if(!rd_updating_locator) rd_updating_locator = true;
+			rd_locator_pos = value;
+			emit requestRefresh();
+		}
+
+		void Locator::updateLocator(double value, bool flag)
+		{
+			rd_updating_locator = false;
+			rd_locator_pos = (flag) ? value : rd_region.min;
+			double zoom_ref;
+			if(rd_region.min < rd_region.max)
+			{
+				if(flag)
+				{
+					rd_region.min = rd_locator_pos;
+					emit selectedRegion(rd_region.min,rd_region.max);
+				}
+				zoom_ref = rd_region.min+rd_region.span()/2.0;
+			}
+			else
+			{
+				if(flag) 
+				{
+					rd_region.min = rd_region.max = rd_locator_pos;
+					emit selectedRegion(rd_locator_pos,rd_xrange.max);
+				}
+				zoom_ref = rd_locator_pos;
+			}
+			emit hZoomRef(zoom_ref);
+			emit requestRefresh();
 		}
 
 		void Locator::updateRegion(double begin, double end, bool isEnd)
@@ -54,9 +88,16 @@ namespace CLAM
 			draw_locator();
 		}
 
+		void Locator::set_xrange(double xmin, double xmax)
+		{
+			Renderer2D::set_xrange(xmin,xmax);
+			rd_locator_pos = rd_xrange.min;
+		}
+
 		void Locator::mouse_press_event(double x, double y)
 		{
 			if(!rd_enabled || !rd_catch_events) return;
+			if(rd_updating_locator) return;
 			if(x == rd_region.min && x == rd_region.max) return;		
 			if(rd_keyboard.key_shift && rd_keyboard.key_r)
 			{
@@ -101,8 +142,15 @@ namespace CLAM
 				emit requestRefresh();
 				return;
 			}
-			if(rd_region.min == rd_region.max) return;
 			double tolerance = double(TOLERANCE)*(rd_view.right-rd_view.left)/double(rd_viewport.w);
+			if(rd_region.min == rd_region.max) 
+			{
+				if(pick_begin_region(x,tolerance))
+				{
+					rd_edition_mode = DraggingLocator;
+				}
+				return;
+			}
 			if(pick_begin_region(x,tolerance)) 
 			{
 				rd_edition_mode = DraggingBeginRegion;
@@ -118,6 +166,7 @@ namespace CLAM
 		void Locator::mouse_release_event(double x, double y)
 		{
 			if(!rd_enabled || !rd_catch_events) return;
+			if(rd_updating_locator) return;
 			rd_edition_mode = Idle;
 			emit working(rd_key,false);
 			emit cursorChanged(QCursor(Qt::ArrowCursor));
@@ -131,6 +180,7 @@ namespace CLAM
 		void Locator::mouse_move_event(double x, double y)
 		{
 			if(!rd_enabled || !rd_catch_events) return;
+			if(rd_updating_locator) return;
 			QString ttip("");
 			if(rd_keyboard.key_r) 
 			{
@@ -140,18 +190,12 @@ namespace CLAM
 				emit cursorChanged(QCursor(Qt::ArrowCursor));
 				return;
 			}
-			if(rd_region.min == rd_region.max) 
-			{
-				rd_edition_mode = Idle;
-				emit working(rd_key,false);
-				emit toolTip(ttip);
-				emit cursorChanged(QCursor(Qt::ArrowCursor));
-				return;
-			}
 			switch (rd_edition_mode)
 			{
 				case DraggingBeginRegion:
 				{
+					if(x < rd_xrange.min) x = rd_xrange.min;
+					if(x > rd_xrange.max) x = rd_xrange.max;
 					bool flag = rd_region.min == rd_locator_pos;
 					rd_region.min = x;
 					if(rd_region.min >= rd_region.max) rd_region.min = rd_region.max;
@@ -168,6 +212,8 @@ namespace CLAM
 				}
 				case DraggingEndRegion:
 				{
+					if(x < rd_xrange.min) x = rd_xrange.min;
+					if(x > rd_xrange.max) x = rd_xrange.max;
 					bool flag = rd_region.max == rd_locator_pos;
 					rd_region.max = x;
 					if(rd_region.max <= rd_region.min) rd_region.max = rd_region.min;
@@ -182,6 +228,16 @@ namespace CLAM
 					emit requestRefresh();	
 					return;
 				}
+				case DraggingLocator:
+				{
+					if(x < rd_xrange.min) x = rd_xrange.min;
+					if(x > rd_xrange.max) x = rd_xrange.max;
+					rd_region.min = rd_region.max = rd_locator_pos = x;
+					ttip = "x:"+QString::number(rd_locator_pos,'f',2);
+					emit toolTip(ttip);
+					emit regionChanged(rd_locator_pos,rd_locator_pos,false);
+					return;
+				}
 				default:
 					emit working(rd_key,false);
 					emit toolTip(ttip);
@@ -189,6 +245,24 @@ namespace CLAM
 					break;
 			}
 			double tolerance = double(TOLERANCE)*(rd_view.right-rd_view.left)/double(rd_viewport.w);
+			if(rd_region.min == rd_region.max) 
+			{
+				if(pick_begin_region(x,tolerance))
+				{
+					emit working(rd_key,true);
+					ttip = "x:"+QString::number(rd_locator_pos,'f',2);
+					emit toolTip(ttip);
+					emit cursorChanged(QCursor(Qt::SizeHorCursor));
+				}
+				else
+				{
+					rd_edition_mode = Idle;
+					emit working(rd_key,false);
+					emit toolTip(ttip);
+					emit cursorChanged(QCursor(Qt::ArrowCursor));
+				}
+				return;
+			}
 			if(pick_begin_region(x,tolerance)) 
 			{
 				emit working(rd_key,true);
@@ -210,6 +284,7 @@ namespace CLAM
 		void Locator::key_press_event(int key)
 		{
 			if(!rd_enabled || !rd_catch_events) return;
+			if(rd_updating_locator) return;
 			switch(key)
 			{
 				case Qt::Key_Shift:
@@ -227,6 +302,7 @@ namespace CLAM
 		void Locator::key_release_event(int key)
 		{
 			if(!rd_enabled || !rd_catch_events) return;
+			if(rd_updating_locator) return;
 			switch(key)
 			{
 				case Qt::Key_Shift:
@@ -238,6 +314,11 @@ namespace CLAM
 				default:
 					break;
 			}
+		}
+
+		void Locator::leave_event()
+		{
+			emit toolTip("");
 		}
 
 		int Locator::draw_region_mode()
@@ -304,7 +385,7 @@ namespace CLAM
 		void Locator::draw_locator()
 		{
 			if(rd_locator_pos < rd_view.left || rd_locator_pos > rd_view.right) return;
-			glLineWidth(1);
+			glLineWidth(2);
 			glColor3ub(rd_locator_color.r,rd_locator_color.g,rd_locator_color.b);
 			glBegin(GL_LINES);
 			glVertex2d(rd_locator_pos,rd_view.top);

@@ -22,18 +22,22 @@ namespace CLAM
 			void regionChanged(double, double, bool);
 			
 		public slots:
+		    void updateLocator(double);
+			void updateLocator(double, bool);
 			void updateRegion(double, double, bool);
 
 		protected:
 			void render();
+			void set_xrange(double xmin, double xmax);
 			void mouse_press_event(double x, double y);
 			void mouse_release_event(double x, double y);
 			void mouse_move_event(double x, double y);
 			void key_press_event(int key);
 			void key_release_event(int key);
+			void leave_event();
 			
 		private:
-			bool            rd_region_enabled;
+			bool            rd_updating_locator;
 			double          rd_locator_pos;
 			CLAM::VM::Range rd_region;
 			CLAM::VM::Color rd_locator_color;
@@ -43,6 +47,7 @@ namespace CLAM
 			enum EditionMode 
 			{
 				Idle,
+				DraggingLocator,
 				DraggingBeginRegion,
 				DraggingEndRegion
 			};
