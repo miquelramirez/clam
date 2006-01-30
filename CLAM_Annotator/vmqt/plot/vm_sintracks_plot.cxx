@@ -19,15 +19,14 @@ namespace CLAM
 
 		void SinTracksPlot::set_data(const CLAM::Segment& segment, bool update)
 		{
-			build_peak_matrix(segment);
 			if(!update)
 			{
 				set_xrange(0.0,double(segment.GetEndTime())-double(segment.GetBeginTime()));
 				set_yrange(0.0,double(segment.GetSamplingRate())/2.0);
-				std::pair<int, int> zoom_steps = get_zoom_steps(wp_peak_matrix.Size(),segment.GetSamplingRate()/2.0);
+				std::pair<int, int> zoom_steps = get_zoom_steps(segment.GetnFrames(),segment.GetSamplingRate()/2.0);
 				set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<CLAM::VM::SinTracksRenderer*>(wp_plot->get_renderer("sintracks"))->set_data(wp_peak_matrix);
+			static_cast<CLAM::VM::SinTracksRenderer*>(wp_plot->get_renderer("sintracks"))->set_data(get_peak_matrix(segment));
 		}
 
 		void SinTracksPlot::init_sintracks_plot()
@@ -53,17 +52,6 @@ namespace CLAM
 			SegmentationPlot::set_zoom_steps(hsteps,vsteps);
 		}
 
-		void SinTracksPlot::build_peak_matrix(const CLAM::Segment& in)
-		{
-			int n_frames = in.GetnFrames();
-			wp_peak_matrix.Resize(n_frames);
-			wp_peak_matrix.SetSize(n_frames);
-			for(int i = 0; i < n_frames; i++)
-			{
-				wp_peak_matrix[i] = in.GetFrame(i).GetSpectralPeakArray();
-			}
-		}
-
 		std::pair<int,int> SinTracksPlot::get_zoom_steps(CLAM::TSize size, CLAM::TData yrange)
 		{
 			double n = 5.0;
@@ -82,6 +70,19 @@ namespace CLAM
 				yratio++;
 			}
 			return std::make_pair(--xratio,--yratio);
+		}
+
+		CLAM::Array<CLAM::SpectralPeakArray> SinTracksPlot::get_peak_matrix(const CLAM::Segment& in)
+		{
+			CLAM::Array<CLAM::SpectralPeakArray> peak_mtx;
+			int n_frames = in.GetnFrames();
+			peak_mtx.Resize(n_frames);
+			peak_mtx.SetSize(n_frames);
+			for(int i = 0; i < n_frames; i++)
+			{
+				peak_mtx[i] = in.GetFrame(i).GetSpectralPeakArray();
+			}
+			return peak_mtx;
 		}
 	}
 }

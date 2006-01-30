@@ -21,30 +21,30 @@ namespace CLAM
 
 		void SpectrumPlot::set_data(const CLAM::Spectrum& spec, bool update)
 		{
-			wp_spectrum_data = get_spectrum_data(spec);
+			CLAM::DataArray spec_data = get_spectrum_data(spec);
 			if(!update)
 			{
 				set_xrange(0.0,spec.GetSpectralRange());
 				set_yrange(-150.0,0.0);
-				std::pair<int, int> zoom_steps = get_zoom_steps(wp_spectrum_data.Size());
+				std::pair<int, int> zoom_steps = get_zoom_steps(spec_data.Size());
 				set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
 			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_huge_mode_enabled(false);
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data(wp_spectrum_data);
+			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data(spec_data);
 		}
 
 		void SpectrumPlot::set_data(const CLAM::Spectrum& spec, const CLAM::SpectralPeakArray& peaks, bool update)
 		{
-			wp_spectrum_data = get_spectrum_data(spec);
+			CLAM::DataArray spec_data = get_spectrum_data(spec);
 			if(!update)
 			{
 				set_xrange(0.0,spec.GetSpectralRange());
 				set_yrange(-150.0,0.0);
-				std::pair<int, int> zoom_steps = get_zoom_steps(wp_spectrum_data.Size());
+				std::pair<int, int> zoom_steps = get_zoom_steps(spec_data.Size());
 				set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
 			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_huge_mode_enabled(false);
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data(wp_spectrum_data);
+			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data(spec_data);
 			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks(get_peaks_data(peaks));
 		}
 

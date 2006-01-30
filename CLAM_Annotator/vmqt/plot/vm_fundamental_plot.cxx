@@ -18,16 +18,15 @@ namespace CLAM
 
 		void FundamentalPlot::set_data(const CLAM::Segment& segment, bool update)
 		{
-			build_fund_data(segment);
 			if(!update)
 			{
 				set_xrange(0.0,double(segment.GetEndTime())-double(segment.GetBeginTime()));
 				set_yrange(0.0,double(segment.GetSamplingRate())/2.0);
-				std::pair<int, int> zoom_steps = get_zoom_steps(wp_fund_data.Size(),segment.GetSamplingRate()/2.0);
+				std::pair<int, int> zoom_steps = get_zoom_steps(segment.GetnFrames(),segment.GetSamplingRate()/2.0);
 				set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
 			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("fundamental"))->set_huge_mode_enabled(false);
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("fundamental"))->set_data(wp_fund_data);
+			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("fundamental"))->set_data(get_fund_data(segment));
 		}
 
 		void FundamentalPlot::backgroundWhite()
@@ -85,15 +84,17 @@ namespace CLAM
 			SegmentationPlot::set_zoom_steps(hsteps,vsteps);
 		}
 
-		void FundamentalPlot::build_fund_data(const CLAM::Segment& segment)
+		CLAM::DataArray FundamentalPlot::get_fund_data(const CLAM::Segment& segment)
 		{
+			CLAM::DataArray fund_data;
 			int n_frames = segment.GetnFrames();
-			wp_fund_data.Resize(n_frames);
-			wp_fund_data.SetSize(n_frames);
+			fund_data.Resize(n_frames);
+			fund_data.SetSize(n_frames);
 			for(int i = 0; i < n_frames; i++)
 			{
-				wp_fund_data[i] = segment.GetFrame(i).GetFundamental().GetFreq(0);
+				fund_data[i] = segment.GetFrame(i).GetFundamental().GetFreq(0);
 			}
+			return fund_data;
 		}
 	}
 }

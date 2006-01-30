@@ -23,15 +23,14 @@ namespace CLAM
 
 		void SpectrogramPlot::set_data(const CLAM::Segment& segment, bool update)
 		{
-			build_spec_matrix(segment);
 			if(!update)
 			{
 				set_xrange(0.0,double(segment.GetEndTime())-double(segment.GetBeginTime()));
 				set_yrange(0.0,double(segment.GetSamplingRate())/2.0);
-				std::pair<int, int> zoom_steps = get_zoom_steps(wp_spec_matrix.Size(),segment.GetSamplingRate()/2.0);
+				std::pair<int, int> zoom_steps = get_zoom_steps(segment.GetnFrames(),segment.GetSamplingRate()/2.0);
 				set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<CLAM::VM::SpectrogramRenderer*>(wp_plot->get_renderer("spectrogram"))->set_data(wp_spec_matrix);
+			static_cast<CLAM::VM::SpectrogramRenderer*>(wp_plot->get_renderer("spectrogram"))->set_data(get_spec_matrix(segment));
 		}
 
 		void SpectrogramPlot::colorSpecgram()
@@ -106,16 +105,6 @@ namespace CLAM
 			SegmentationPlot::set_zoom_steps(hsteps,vsteps);
 		}
 
-		void SpectrogramPlot::build_spec_matrix(const CLAM::Segment& in)
-		{
-			wp_spec_matrix.Resize(in.GetnFrames());
-			wp_spec_matrix.SetSize(in.GetnFrames());
-			for(CLAM::TIndex i=0; i < in.GetnFrames(); i++)
-			{
-				wp_spec_matrix[i] = in.GetFrame(i).GetSinusoidalAnalSpectrum();
-			}
-		}
-
 		std::pair<int,int> SpectrogramPlot::get_zoom_steps(CLAM::TSize size, CLAM::TData yrange)
 		{
 			double n = 5.0;
@@ -134,6 +123,18 @@ namespace CLAM
 				yratio++;
 			}
 			return std::make_pair(--xratio,--yratio);
+		}
+
+		CLAM::Array<CLAM::Spectrum> SpectrogramPlot::get_spec_matrix(const CLAM::Segment& in)
+		{
+			CLAM::Array<CLAM::Spectrum> spec_mtx;
+			spec_mtx.Resize(in.GetnFrames());
+			spec_mtx.SetSize(in.GetnFrames());
+			for(CLAM::TIndex i=0; i < in.GetnFrames(); i++)
+			{
+				spec_mtx[i] = in.GetFrame(i).GetSinusoidalAnalSpectrum();
+			}
+			return spec_mtx;
 		}
 	}
 }

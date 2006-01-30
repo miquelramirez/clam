@@ -26,8 +26,6 @@ namespace CLAM
 			void backgroundBlack();
 			
 		private:
-			CLAM::DataArray wp_spectrum_data;
-
 			void init_spectrum_plot();
 		   
 			void set_xrange(double xmin, double xmax);

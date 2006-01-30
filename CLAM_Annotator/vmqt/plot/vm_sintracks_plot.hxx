@@ -16,18 +16,15 @@ namespace CLAM
 
 			void set_data(const CLAM::Segment& segment, bool update=false);
 
-		private:
-			CLAM::Array<CLAM::SpectralPeakArray> wp_peak_matrix;
-
+		private: 
 			void init_sintracks_plot();
 		   
 			void set_xrange(double xmin, double xmax);
 			void set_yrange(double ymin, double ymax);
 			void set_zoom_steps(int hsteps, int vsteps);
 
-			void build_peak_matrix(const CLAM::Segment& in);
 			std::pair<int,int> get_zoom_steps(CLAM::TSize size, CLAM::TData yrange);
-			
+			CLAM::Array<CLAM::SpectralPeakArray> get_peak_matrix(const CLAM::Segment& in);
 		};
 	}
 }
