@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "CLAM-Annotator"
-!define PRODUCT_VERSION "0.2-pre3"
+!define PRODUCT_VERSION "0.2"
 !define PRODUCT_PUBLISHER "CLAM devel"
 !define PRODUCT_WEB_SITE "http://www.iua.upf.es/mtg/clam"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Annotator.exe"
@@ -98,9 +98,11 @@ SectionEnd
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\Annotator.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\ClamExtractorExample.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\Annotator.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\CLAMExtractorExample.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
@@ -131,6 +133,7 @@ Section Uninstall
   Delete "$INSTDIR\Samples\Schema.sc"
   Delete "$INSTDIR\resources\sounds\click.wav"
   Delete "$INSTDIR\bin\Annotator.exe"
+  Delete "$INSTDIR\bin\ClamExtractorExample.exe.exe"
 
   Delete "$SMPROGRAMS\CLAM\Annotator\Uninstall.lnk"
   Delete "$SMPROGRAMS\CLAM\Annotator\Website.lnk"
