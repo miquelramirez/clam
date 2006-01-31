@@ -3,6 +3,8 @@
 #include "analysis_utils.hxx"
 #include "vm_playable_fundamental_plot.hxx"
 
+#include "vm_playable_audio_plot.hxx"
+
 int main(int argc, char** argv)
 {
 	CLAM::Audio audio;
@@ -22,9 +24,12 @@ int main(int argc, char** argv)
 	plot.set_data(segment);
 	plot.show();
 
-// uncomment the following line to see the example on background black mode
-//	plot.backgroundBlack();
-	
+	CLAM::VM::PlayableAudioPlot aplot;
+	aplot.set_title("Audio");
+	aplot.set_geometry(100,200,600,300);
+	aplot.set_data(audio);
+	aplot.show();
+
 	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));
 	return app.exec();
 }
