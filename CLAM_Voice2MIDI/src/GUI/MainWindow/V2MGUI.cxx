@@ -882,7 +882,7 @@ void V2MGUI::Message(QMessageBox::Icon icon,const std::string& title,const std::
 
 void V2MGUI::AboutBox()
 {
-	std::string m("Voice2MIDI v0.1\n\n");
+	std::string m("Voice2MIDI 0.3\n\n");
 	m += "Voice2MIDI converter.\n";
 	m += "PFC - UPF June - 2004\n";
 	m += "ETIS\n\n";
