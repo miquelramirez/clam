@@ -73,21 +73,27 @@ namespace CLAM
 									QPixmap((const char**)icon_stop_white));
 		}
 
-		void PlayableBPFPlot::setColorSchema(int index)
+		void PlayableBPFPlot::readOnly()
+		{
+			BPFPlot::readOnly();
+			wp_snap_grid->hide();
+		}
+
+		void PlayableBPFPlot::set_color_schema(int index)
 		{
 			(index == 0) ? backgroundWhite() : backgroundBlack();
 		}
 		
-		void PlayableBPFPlot::showGrid(int state)
+		void PlayableBPFPlot::show_grid(int state)
 		{
 			switch(state)
 			{
 				case Qt::Checked:
-					static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->show_grid(true);
+					showGrid(true);
 					wp_snap_grid->setEnabled(true);
 					break;
 				case Qt::Unchecked:
-					static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->show_grid(false);
+					showGrid(false);
 					snapToGrid(Qt::Unchecked);
 					wp_snap_grid->setCheckState(Qt::Unchecked);
 					wp_snap_grid->setEnabled(false);
@@ -97,15 +103,15 @@ namespace CLAM
 			}
 		}
 
-		void PlayableBPFPlot::snapToGrid(int state)
+		void PlayableBPFPlot::snap_to_grid(int state)
 		{
 			switch(state)
 			{
 				case Qt::Checked:
-					static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->snap_to_grid(true);
+					snapToGrid(true);
 					break;
 				case Qt::Unchecked:
-					static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->snap_to_grid(false);
+					snapToGrid(false);
 					break;
 				default:
 					break;
@@ -173,9 +179,9 @@ namespace CLAM
 					static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double)));
 			connect(wp_bpf_player,SIGNAL(stopTime(double,bool)),
 					static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double,bool)));
-			connect(wp_combo_box,SIGNAL(activated(int)),this,SLOT(setColorSchema(int)));
-			connect(wp_show_grid,SIGNAL(stateChanged(int)),this,SLOT(showGrid(int)));
-			connect(wp_snap_grid,SIGNAL(stateChanged(int)),this,SLOT(snapToGrid(int)));
+			connect(wp_combo_box,SIGNAL(activated(int)),this,SLOT(set_color_schema(int)));
+			connect(wp_show_grid,SIGNAL(stateChanged(int)),this,SLOT(show_grid(int)));
+			connect(wp_snap_grid,SIGNAL(stateChanged(int)),this,SLOT(snap_to_grid(int)));
 
 			backgroundWhite();
 		}

@@ -28,11 +28,12 @@ namespace CLAM
 		public slots:
 			void backgroundWhite();
 			void backgroundBlack();
+			void readOnly();
 
 		private slots:
-			void setColorSchema(int);
-			void showGrid(int);
-			void snapToGrid(int);
+			void set_color_schema(int);
+			void show_grid(int);
+			void snap_to_grid(int);
 
 		private:
 			QComboBox* wp_combo_box;
