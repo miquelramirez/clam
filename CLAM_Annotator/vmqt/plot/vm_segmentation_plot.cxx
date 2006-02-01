@@ -70,6 +70,16 @@ namespace CLAM
 			static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator"))->set_locator_color(CLAM::VM::Color(255,0,0));
 		}
 
+		void SegmentationPlot::updateLocator(double value)
+		{
+			static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator"))->updateLocator(value);
+		}
+
+		void SegmentationPlot::updateLocator(double value, bool flag)
+		{
+			static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator"))->updateLocator(value,flag);
+		}
+
 		void SegmentationPlot::setMaxVScroll(int value)
 		{
 			int max = value-wp_plot->height();

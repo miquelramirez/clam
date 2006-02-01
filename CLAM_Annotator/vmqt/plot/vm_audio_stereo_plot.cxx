@@ -80,6 +80,18 @@ namespace CLAM
 			static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->set_locator_color(CLAM::VM::Color(255,0,0));
 		}
 
+		void AudioStereoPlot::updateLocator(double value)
+		{
+			static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0"))->updateLocator(value);
+			static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->updateLocator(value);
+		}
+
+		void AudioStereoPlot::updateLocator(double value,bool flag)
+		{
+			static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0"))->updateLocator(value,flag);
+			static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->updateLocator(value,flag);
+		}
+
 		void AudioStereoPlot::setMaxVScroll(int value)
 		{
 			int max = value-wp_display[MASTER]->height();
@@ -119,6 +131,10 @@ namespace CLAM
 					SIGNAL(regionChanged(double,double,bool)),
 					static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0")),
 					SLOT(updateRegion(double,double,bool)));
+			connect(static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0")),
+					SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
+			connect(static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
+					SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
 		}
 	
 		void AudioStereoPlot::init_audio_stereo_plot()
