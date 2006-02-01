@@ -1,15 +1,5 @@
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFrame>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QPixmap>
 #include "vm_plot2d.hxx"
-#include "vm_grid.hxx"
-#include "vm_locator_renderer.hxx"
-#include "vm_wplayer.hxx"
-#include "vm_bpf_player.hxx"
-#include "vm_icon_data.hxx"
+#include "vm_bpf_editor.hxx"
 #include "vm_playable_bpf_plot.hxx"
 
 namespace CLAM
@@ -17,173 +7,94 @@ namespace CLAM
 	namespace VM
 	{
 		PlayableBPFPlot::PlayableBPFPlot(QWidget* parent)
-			: BPFPlot(parent)
+			: PlayableMultiBPFPlot(parent)
 		{
 			init_playable_bpf_plot();
 		}
-			
+
 		PlayableBPFPlot::~PlayableBPFPlot()
 		{
 		}
 
 		void PlayableBPFPlot::set_data(CLAM::BPF* bpf)
 		{
-			BPFPlot::set_data(bpf);
-			wp_bpf_player->set_data(*bpf);
+			add_bpf("bpf_editor",bpf);
 		}
 
-		void PlayableBPFPlot::set_xrange(double xmin, double xmax, CLAM::VM::EScale scale)
+		void PlayableBPFPlot::set_flags(int f)
 		{
-			BPFPlot::set_xrange(xmin,xmax,scale);
-			wp_bpf_player->set_duration(xmax);
-		}
-
-		void PlayableBPFPlot::set_yrange(double ymin, double ymax, CLAM::VM::EScale scale)
-		{
-			BPFPlot::set_yrange(ymin,ymax,scale);
-			wp_bpf_player->set_pitch_bounds(ymin,ymax);
+			set_flags("bpf_editor",f);
 		}
 
 		void PlayableBPFPlot::backgroundWhite()
 		{
-			BPFPlot::backgroundWhite();
-			wp_show_grid->setPalette(Qt::white);
-			wp_snap_grid->setPalette(Qt::white);
-			wp_combo_box->setPalette(Qt::white);
-			wp_wplayer->setPalette(Qt::white);
-			wp_wplayer->set_pixmaps(QPixmap((const char**)icon_play_black),
-									QPixmap((const char**)icon_pause_black),
-									QPixmap((const char**)icon_stop_black));
+			PlayableMultiBPFPlot::backgroundWhite();
+			set_colors("bpf_editor",CLAM::VM::Color(0,0,0),CLAM::VM::Color(0,0,255));
 		}
 
 		void PlayableBPFPlot::backgroundBlack()
 		{
-			BPFPlot::backgroundBlack();
-			QPalette cb_palette;
-			cb_palette.setBrush(QPalette::Window,Qt::white);
-			cb_palette.setBrush(QPalette::WindowText,Qt::white);
-			cb_palette.setBrush(QPalette::Button,Qt::white);
-			cb_palette.setBrush(QPalette::ButtonText,Qt::white);
-			wp_show_grid->setPalette(cb_palette);
-			wp_snap_grid->setPalette(cb_palette);
-			wp_combo_box->setPalette(Qt::darkGreen);
-			wp_wplayer->setPalette(Qt::darkGreen);
-			wp_wplayer->set_pixmaps(QPixmap((const char**)icon_play_white),
-									QPixmap((const char**)icon_pause_white),
-									QPixmap((const char**)icon_stop_white));
+			PlayableMultiBPFPlot::backgroundBlack();
+			set_colors("bpf_editor",CLAM::VM::Color(255,255,255),CLAM::VM::Color(255,0,0));
 		}
 
-		void PlayableBPFPlot::readOnly()
+		void PlayableBPFPlot::xvalue_changed(QString key, unsigned index, double value)
 		{
-			BPFPlot::readOnly();
-			wp_snap_grid->hide();
+			emit xValueChanged(index,value);
 		}
 
-		void PlayableBPFPlot::set_color_schema(int index)
+		void PlayableBPFPlot::yvalue_changed(QString key, unsigned index, double value)
 		{
-			(index == 0) ? backgroundWhite() : backgroundBlack();
-		}
-		
-		void PlayableBPFPlot::show_grid(int state)
-		{
-			switch(state)
-			{
-				case Qt::Checked:
-					showGrid(true);
-					wp_snap_grid->setEnabled(true);
-					break;
-				case Qt::Unchecked:
-					showGrid(false);
-					snapToGrid(Qt::Unchecked);
-					wp_snap_grid->setCheckState(Qt::Unchecked);
-					wp_snap_grid->setEnabled(false);
-					break;
-				default:
-					break;
-			}
+			emit yValueChanged(index,value);
 		}
 
-		void PlayableBPFPlot::snap_to_grid(int state)
+		void PlayableBPFPlot::element_added(QString key, unsigned index, double xvalue, double yvalue)
 		{
-			switch(state)
-			{
-				case Qt::Checked:
-					snapToGrid(true);
-					break;
-				case Qt::Unchecked:
-					snapToGrid(false);
-					break;
-				default:
-					break;
-			}
+			emit elementAdded(index,xvalue,yvalue);
+		}
+
+		void PlayableBPFPlot::element_removed(QString key, unsigned index)
+		{
+			emit elementRemoved(index);
+		}
+
+		void PlayableBPFPlot::setCurrentBPF(QString key)
+		{
+			PlayableMultiBPFPlot::setCurrentBPF(key);
+		}
+
+		void PlayableBPFPlot::add_bpf(const QString& key, CLAM::BPF* bpf)
+		{
+			PlayableMultiBPFPlot::add_bpf(key,bpf);
+		}
+
+		void PlayableBPFPlot::set_colors(const QString& key, 
+										 const CLAM::VM::Color& cline, 
+										 const CLAM::VM::Color& chandler)
+		{
+			PlayableMultiBPFPlot::set_colors(key,cline,chandler);
+		}
+
+		void PlayableBPFPlot::set_flags(const QString& key, int flags)
+		{
+			PlayableMultiBPFPlot::set_flags(key,flags);
 		}
 
 		void PlayableBPFPlot::init_playable_bpf_plot()
 		{
-			wp_bpf_player = new CLAM::VM::BPFPlayer;
-			wp_wplayer = new CLAM::VM::WPlayer(this);
-			wp_wplayer->set_player(wp_bpf_player);
-
-			wp_combo_box = new QComboBox(this);
-			wp_combo_box->addItem("Background White");
-			wp_combo_box->addItem("Background Black");
-			wp_combo_box->setToolTip("Choose Color Schema");
-
-			wp_show_grid = new QCheckBox("show grid",this);
-			wp_snap_grid = new QCheckBox("snap to grid",this);
-			wp_show_grid->setCheckState(Qt::Unchecked);
-			wp_snap_grid->setCheckState(Qt::Unchecked);
-			wp_snap_grid->setEnabled(false);
-			
-			QFontMetrics fm(wp_show_grid->font());
-			int cheight = fm.height();
-			wp_show_grid->setFixedHeight(cheight);
-			wp_snap_grid->setFixedHeight(cheight);
-
-			QVBoxLayout* grid_settings_panel = new QVBoxLayout;
-			grid_settings_panel->setMargin(0);
-			grid_settings_panel->setSpacing(0);
-			grid_settings_panel->addWidget(wp_show_grid);
-			grid_settings_panel->addWidget(wp_snap_grid);
-
-			QFrame* panel_hole = new QFrame(this);
-			panel_hole->setFixedSize(10,20);
-
-			QHBoxLayout* play_panel = new QHBoxLayout;
-			play_panel->setMargin(0);
-			play_panel->setSpacing(0);
-
-			play_panel->addWidget(wp_wplayer);
-			play_panel->addStretch(1);
-			play_panel->addLayout(grid_settings_panel);
-			play_panel->addWidget(panel_hole);
-			play_panel->addWidget(wp_combo_box);
-
-			QFrame* top_hole = new QFrame(this);
-			QFrame* bottom_hole = new QFrame(this);
-			top_hole->setFixedHeight(5);
-			bottom_hole->setFixedHeight(5);
-
-			QVBoxLayout* layout = new QVBoxLayout;
-			layout->setMargin(0);
-			layout->setSpacing(0);
-			layout->addWidget(top_hole);
-			layout->addLayout(play_panel);
-			layout->addWidget(bottom_hole);
-
-			wp_layout->addLayout(layout,3,1);
-			
-			connect(static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),
-					SIGNAL(selectedRegion(double,double)),wp_bpf_player,SLOT(timeBounds(double,double)));
-			connect(wp_bpf_player,SIGNAL(playingTime(double)),
-					static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double)));
-			connect(wp_bpf_player,SIGNAL(stopTime(double,bool)),
-					static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double,bool)));
-			connect(wp_combo_box,SIGNAL(activated(int)),this,SLOT(set_color_schema(int)));
-			connect(wp_show_grid,SIGNAL(stateChanged(int)),this,SLOT(show_grid(int)));
-			connect(wp_snap_grid,SIGNAL(stateChanged(int)),this,SLOT(snap_to_grid(int)));
-
-			backgroundWhite();
+			add_bpf("bpf_editor",0);
+			setCurrentBPF("bpf_editor");
+			connect(static_cast<CLAM::VM::BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
+					SIGNAL(xValueChanged(QString,unsigned,double)),
+					this,SLOT(xvalue_changed(QString,unsigned,double)));
+			connect(static_cast<CLAM::VM::BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
+					SIGNAL(yValueChanged(QString,unsigned,double)),
+					this,SLOT(yvalue_changed(QString,unsigned,double)));
+			connect(static_cast<CLAM::VM::BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
+					SIGNAL(elementAdded(QString,unsigned,double,double)),
+					this,SLOT(element_added(QString,unsigned,double,double)));
+			connect(static_cast<CLAM::VM::BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
+					SIGNAL(elementRemoved(QString,unsigned)),this,SLOT(element_removed(QString,unsigned)));
 		}
 	}
 }
