@@ -12,10 +12,9 @@ namespace CLAM
 			Q_OBJECT
 		public:
 			BPFPlot(QWidget* parent=0);
-			virtual ~BPFPlot();
+			~BPFPlot();
 
-			virtual void set_data(CLAM::BPF* bpf);
-
+			void set_data(CLAM::BPF* bpf);
 			void set_flags(int f);
 		
 		signals:
@@ -25,8 +24,8 @@ namespace CLAM
 			void elementRemoved(unsigned);
 
 		public slots:
-			virtual void backgroundWhite();
-			virtual void backgroundBlack();
+			void backgroundWhite();
+			void backgroundBlack();
 
 		private slots:
 			void xvalue_changed(QString, unsigned, double);

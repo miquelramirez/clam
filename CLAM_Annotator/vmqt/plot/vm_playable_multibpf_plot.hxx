@@ -30,9 +30,10 @@ namespace CLAM
 			void backgroundBlack();
 			void readOnly();
 
-		private slots:
-		    void setCurrentBPF(QString);
+		protected slots:
+			virtual void setCurrentBPF(QString);
 
+		private slots:		    
 			void set_color_schema(int);
 			void show_grid(int);
 			void snap_to_grid(int);
