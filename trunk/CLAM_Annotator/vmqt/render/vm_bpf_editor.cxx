@@ -12,6 +12,7 @@ namespace CLAM
 			, rd_flags(0xff)
 			, rd_current_index(0)
 			, rd_rebuild_glList(false)
+			, rd_bpf(0)
 			, rd_edition_mode(Idle)
 
 		{
@@ -41,6 +42,16 @@ namespace CLAM
 		void BPFEditor::set_flags(int flags)
 		{
 			rd_flags = flags;
+		}
+
+		int BPFEditor::get_flags() const
+		{
+			return rd_flags;
+		}
+
+		const CLAM::BPF& BPFEditor::get_data() const
+		{
+			return *rd_bpf;
 		}
 
 		void BPFEditor::render()
@@ -97,6 +108,7 @@ namespace CLAM
 
 		void BPFEditor::mouse_press_event(double x, double y)
 		{
+			if(!rd_flags) return;
 			if(!rd_enabled) return;
 			if(!rd_bpf || !rd_catch_events) return;
 			if(rd_keyboard.key_insert)
@@ -104,7 +116,7 @@ namespace CLAM
 				if(!(rd_flags & CLAM::VM::eAllowInsertions)) return;
 				long index = add(x,y);
 				choose_current_point(index);
-				emit elementAdded(index,x,y);
+				emit elementAdded(rd_key,index,x,y);
 				return;
 			}
 			long index = pickPoint(x,y);
@@ -117,6 +129,7 @@ namespace CLAM
 
 		void BPFEditor::mouse_release_event(double x, double y)
 		{
+			if(!rd_flags) return;
 			if(!rd_enabled) return;
 			if(!rd_bpf || !rd_catch_events) return;
 			int mode = rd_edition_mode;
@@ -127,17 +140,18 @@ namespace CLAM
 			{
 				if(rd_flags & CLAM::VM::eAllowHorEdition)
 				{
-					emit xValueChanged(rd_current_index,rd_bpf->GetXValue(rd_current_index));
+					emit xValueChanged(rd_key,rd_current_index,rd_bpf->GetXValue(rd_current_index));
 				}
 				if(rd_flags & CLAM::VM::eAllowVerEdition)
 				{
-					emit yValueChanged(rd_current_index,rd_bpf->GetValueFromIndex(rd_current_index));
+					emit yValueChanged(rd_key,rd_current_index,rd_bpf->GetValueFromIndex(rd_current_index));
 				}
 			}
 		}
 
 		void BPFEditor::mouse_move_event(double x, double y)
 		{
+			if(!rd_flags) return;
 			if(!rd_enabled) return;
 			if(!rd_bpf || !rd_catch_events) return;
 			if(!rd_bpf->Size()) return;
@@ -164,7 +178,7 @@ namespace CLAM
 				emit working(rd_key,true);
 				choose_current_point(index);
 				emit toolTip(get_tooltip(double(rd_bpf->GetXValue(rd_current_index)),
-											 double(rd_bpf->GetValueFromIndex(rd_current_index))));
+										 double(rd_bpf->GetValueFromIndex(rd_current_index))));
 				if(rd_flags & CLAM::VM::eAllowHorEdition && rd_flags & CLAM::VM::eAllowVerEdition)
 				{
 					emit cursorChanged(QCursor(Qt::SizeAllCursor));
@@ -183,7 +197,7 @@ namespace CLAM
 				}
 				return;
 			}
-		   
+			
 			if(rd_keyboard.key_insert)
 			{
 				emit working(rd_key,true);	
@@ -193,6 +207,7 @@ namespace CLAM
 
 		void BPFEditor::key_press_event(int key)
 		{
+			if(!rd_flags) return;
 			if(!rd_enabled) return;
 			if(!rd_bpf || !rd_catch_events) return;
 			switch(key)
@@ -251,6 +266,7 @@ namespace CLAM
 
 		void BPFEditor::key_release_event(int key)
 		{
+			if(!rd_flags) return;
 			if(!rd_enabled) return;
 			if(!rd_bpf || !rd_catch_events) return;
 			switch(key)
@@ -299,7 +315,7 @@ namespace CLAM
 			if(rd_current_index < 0 || rd_current_index >= rd_bpf->Size()) return;
 			rd_rebuild_glList = true;
 			rd_bpf->DeleteIndex(rd_current_index);
-			emit elementRemoved(rd_current_index);
+			emit elementRemoved(rd_key,rd_current_index);
 		}
 
 		long BPFEditor::add(double x, double y)
@@ -502,7 +518,7 @@ namespace CLAM
 			}
 			rd_bpf->SetXValue(rd_current_index,x);
 			emit requestRefresh();
-			emit xValueChanged(rd_current_index,rd_bpf->GetXValue(rd_current_index));
+			emit xValueChanged(rd_key,rd_current_index,rd_bpf->GetXValue(rd_current_index));
 		}
 
 		void BPFEditor::move_current_point_dy(double dy)
@@ -526,7 +542,7 @@ namespace CLAM
 			}
 			rd_bpf->SetValue(rd_current_index,y);
 			emit requestRefresh();
-			emit yValueChanged(rd_current_index,rd_bpf->GetValueFromIndex(rd_current_index));
+			emit yValueChanged(rd_key,rd_current_index,rd_bpf->GetValueFromIndex(rd_current_index));
 		}
 
 		double BPFEditor::get_xstep()
