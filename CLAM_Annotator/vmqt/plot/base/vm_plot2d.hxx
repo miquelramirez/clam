@@ -3,7 +3,6 @@
 
 #include <map>
 #include <vector>
-#include <QString>
 #include <QCursor>
 #include "vm_plot.hxx"
 

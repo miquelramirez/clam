@@ -13,9 +13,9 @@ namespace CLAM
 		{
 		}
 
-		void WPlot::set_title(const std::string& title)
+		void WPlot::set_title(const QString& title)
 		{
-			setWindowTitle(title.c_str());
+			setWindowTitle(title);
 		}
 			
 		void WPlot::set_geometry(int x, int y, int w, int h)

@@ -71,7 +71,6 @@ namespace CLAM
 			if(peak_index != -1)
 			{
 				emit working(rd_key,true);
-				emit cursorChanged(QCursor(Qt::CrossCursor));
 				QString ttip = "freq="+QString::number(rd_cached_peaks[peak_index].freq,'f',0)+"Hz "+"mag="+QString::number(rd_cached_peaks[peak_index].mag,'f',0)+"dB";
 				emit toolTip(ttip);
 				return;
