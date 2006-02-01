@@ -1,14 +1,13 @@
 #ifndef __VMQT_BPF_PLOT_H__
 #define __VMQT_BPF_PLOT_H__
 
-#include "BPF.hxx"
-#include "vm_segmentation_plot.hxx"
+#include "vm_multibpf_plot.hxx"
 
 namespace CLAM
 {
 	namespace VM
 	{
-		class BPFPlot : public CLAM::VM::SegmentationPlot
+		class BPFPlot : public CLAM::VM::MultiBPFPlot
 		{
 			Q_OBJECT
 		public:
@@ -18,16 +17,29 @@ namespace CLAM
 			virtual void set_data(CLAM::BPF* bpf);
 
 			void set_flags(int f);
-			void set_grid_steps(double xstep, double ystep);
-		   
+		
+		signals:
+			void xValueChanged(unsigned, double);
+			void yValueChanged(unsigned, double);
+			void elementAdded(unsigned, double, double);
+			void elementRemoved(unsigned);
+
 		public slots:
 			virtual void backgroundWhite();
 			virtual void backgroundBlack();
-			
-			void show_grid(bool);
-			void snap_to_grid(bool);
+
+		private slots:
+			void xvalue_changed(QString, unsigned, double);
+			void yvalue_changed(QString, unsigned, double);
+			void element_added(QString, unsigned, double, double);
+			void element_removed(QString, unsigned);
+			void setCurrentBPF(QString);
 
 		private:
+			void add_bpf(const QString& key, CLAM::BPF* bpf);
+			void set_colors(const QString& key, const CLAM::VM::Color& cline, const CLAM::VM::Color& chandler);
+			void set_flags(const QString& key, int flags);
+
 			void init_bpf_plot();
 		};
 	}
