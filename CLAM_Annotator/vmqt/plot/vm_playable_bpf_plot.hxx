@@ -1,19 +1,13 @@
 #ifndef __VMQT_PLAYABLE_BPF_PLOT_H__
 #define __VMQT_PLAYABLE_BPF_PLOT_H__
 
-#include "vm_bpf_plot.hxx"
-
-class QComboBox;
-class QCheckBox;
+#include "vm_playable_multibpf_plot.hxx"
 
 namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM::VM::WPlayer;
-		class CLAM::VM::BPFPlayer;
-
-		class PlayableBPFPlot : public CLAM::VM::BPFPlot
+		class PlayableBPFPlot : public CLAM::VM::PlayableMultiBPFPlot
 		{
 			Q_OBJECT
 		public:
@@ -21,27 +15,29 @@ namespace CLAM
 			~PlayableBPFPlot();
 
 			void set_data(CLAM::BPF* bpf);
+			void set_flags(int f);
 
-			void set_xrange(double xmin, double xmax, CLAM::VM::EScale scale=CLAM::VM::eLinearScale);
-			void set_yrange(double ymin, double ymax, CLAM::VM::EScale scale=CLAM::VM::eLinearScale);
+		signals:
+			void xValueChanged(unsigned, double);
+			void yValueChanged(unsigned, double);
+			void elementAdded(unsigned, double, double);
+			void elementRemoved(unsigned);
 
 		public slots:
 			void backgroundWhite();
 			void backgroundBlack();
-			void readOnly();
 
 		private slots:
-			void set_color_schema(int);
-			void show_grid(int);
-			void snap_to_grid(int);
+			void xvalue_changed(QString, unsigned, double);
+			void yvalue_changed(QString, unsigned, double);
+			void element_added(QString, unsigned, double, double);
+			void element_removed(QString, unsigned);
+			void setCurrentBPF(QString);
 
 		private:
-			QComboBox* wp_combo_box;
-			QCheckBox* wp_show_grid;
-			QCheckBox* wp_snap_grid;
-
-			CLAM::VM::WPlayer*     wp_wplayer;
-			CLAM::VM::BPFPlayer* wp_bpf_player;
+			void add_bpf(const QString& key, CLAM::BPF* bpf);
+			void set_colors(const QString& key, const CLAM::VM::Color& cline, const CLAM::VM::Color& chandler);
+			void set_flags(const QString& key, int flags);
 
 			void init_playable_bpf_plot();
 		};
