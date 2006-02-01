@@ -28,8 +28,8 @@ int main(int argc, char** argv)
 	plot.show();
 
 // comment the following lines for hide the grid, deactivate snap to grid feature or change grid steps
-	plot.show_grid(true);
-	plot.snap_to_grid(true);
+	plot.showGrid(true);
+	plot.snapToGrid(true);
 	plot.set_grid_steps(0.5,span/20.0);
 
 // uncomment the following line to see the example on background black mode
