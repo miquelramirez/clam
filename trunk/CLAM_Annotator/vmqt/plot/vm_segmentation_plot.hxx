@@ -40,6 +40,9 @@ namespace CLAM
 		public slots:
 			virtual void backgroundWhite();
 			virtual void backgroundBlack();
+
+			void updateLocator(double);
+			void updateLocator(double, bool);
 			
 		private slots:
 			void setMaxVScroll(int);

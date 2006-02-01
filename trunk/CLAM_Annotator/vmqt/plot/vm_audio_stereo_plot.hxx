@@ -12,15 +12,22 @@ namespace CLAM
 	{
 		class AudioStereoPlot : public CLAM::VM::MultiDisplayPlot
 		{
+			Q_OBJECT
 		public:
 			AudioStereoPlot(QWidget* parent=0);
 			virtual ~AudioStereoPlot();
 
 			virtual void set_data(const CLAM::Audio& chn0, const CLAM::Audio& chn1, bool update=false);
 
+		signals:
+			void selectedRegion(double,double);
+
 		public slots:
 			virtual void backgroundWhite();
 			virtual void backgroundBlack();
+
+			void updateLocator(double);
+			void updateLocator(double,bool);
 
 		protected:
 			QGridLayout* wp_layout;
