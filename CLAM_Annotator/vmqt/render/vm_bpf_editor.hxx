@@ -18,12 +18,14 @@ namespace CLAM
 			void set_data(CLAM::BPF* bpf);
 			void set_colors(const CLAM::VM::Color& cline, const CLAM::VM::Color& chandler);
 			void set_flags(int flags);
+			int get_flags() const;
+			const CLAM::BPF& get_data() const;
 
 		signals:
-			void xValueChanged(unsigned, double);
-			void yValueChanged(unsigned, double);
-			void elementAdded(unsigned, double, double);
-			void elementRemoved(unsigned);
+			void xValueChanged(QString, unsigned, double);
+			void yValueChanged(QString, unsigned, double);
+			void elementAdded(QString, unsigned, double, double);
+			void elementRemoved(QString, unsigned);
 			
 		protected:
 			void render();
