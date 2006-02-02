@@ -15,16 +15,26 @@ def make_lib_names( source, target, env ) :
 
 	pieces=target_file.split('.')
 	
-	if sys.platform == 'linux2' :
+	if sys.platform == 'linux2':
 		os.system( "/sbin/ldconfig -n ." )
 		linkername = '.'.join(pieces[0:2])
 		soname = '.'.join( pieces[0:3])
 		biglinkername = '.'.join( pieces[0:4] )
 	else : #darwin
-		soname = target_file					# libAAA.X.Y.dylib
-		linkername = pieces[0]+"."+pieces[1]+"."+pieces[-1]	# libAAA.X.dylib
-		biglinkername = pieces[0]+"."+pieces[-1]		# libAAA.dylib
+		linkername = '.'.join(pieces[0:1]) + '.dylib'
+		soname = '.'.join( pieces[0:2]) + '.dylib'
+		biglinkername = '.'.join( pieces[0:3] ) + '.dylib'
 
+	if False: #TODO remove this debugging aid
+		print 'soname', soname
+		print 'linkername', linkername
+		print 'biglinkername', biglinkername
+		print 'target_file', target_file
+
+		print soname, '<-', linkername
+		print biglinkername, '<-', soname
+		print target_file, '<-', biglinkername
+	
 	os.system( "ln -sf %s %s"%(soname,linkername) )
 	os.system( "ln -sf %s %s"%(biglinkername,soname) )
 	os.system( "ln -sf %s %s"%(target_file,biglinkername) )
