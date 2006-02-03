@@ -16,18 +16,18 @@ namespace CLAM
 		class Plot2D;
 		class ScrollGroup;
 
-		class SegmentationPlot : public CLAM::VM::WPlot
+		class SegmentationPlot : public WPlot
 		{
 			Q_OBJECT
 		public:
 			SegmentationPlot(QWidget* parent=0);
 			virtual ~SegmentationPlot();
 			
-			virtual void set_xrange(double xmin, double xmax, CLAM::VM::EScale scale=CLAM::VM::eLinearScale);
-			virtual void set_yrange(double ymin, double ymax, CLAM::VM::EScale scale=CLAM::VM::eLinearScale);			
+			virtual void set_xrange(double xmin, double xmax, ERulerScale scale=CLAM::VM::eLinearScale);
+			virtual void set_yrange(double ymin, double ymax, ERulerScale scale=CLAM::VM::eLinearScale);			
 			virtual void set_zoom_steps(int hsteps, int vsteps);
 
-			void set_segmentation(CLAM::Segmentation* s);
+			void set_segmentation(Segmentation* s);
 			
 		signals:
 			void selectedRegion(double, double);
@@ -49,14 +49,14 @@ namespace CLAM
 			void setMaxHScroll(int);
 
 		protected:
-			QGridLayout*      wp_layout;    
-			CLAM::VM::Plot2D* wp_plot;
+			QGridLayout* wp_layout;    
+			Plot2D*      wp_plot;
 
 		private:
-			CLAM::VM::Ruler*       wp_xruler;
-			CLAM::VM::Ruler*       wp_yruler;
-			CLAM::VM::ScrollGroup* wp_hscroll;
-			CLAM::VM::ScrollGroup* wp_vscroll;
+			Ruler*       wp_xruler;
+			Ruler*       wp_yruler;
+			ScrollGroup* wp_hscroll;
+			ScrollGroup* wp_vscroll;
 
 			void init_segmentation_plot();
 			void adjust_yruler_width(double min, double max);

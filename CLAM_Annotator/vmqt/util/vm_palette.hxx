@@ -19,7 +19,7 @@ namespace CLAM
 		 */
 		class Palette
 		{
-			typedef std::map<int,CLAM::VM::Color> Colormap;
+			typedef std::map<int,Color> Colormap;
 			
 			static const int NCOLORMAPPING;
 			static const int FIRST_INDEX;
@@ -35,7 +35,7 @@ namespace CLAM
 			float value(void) { return wp_value; }
 			void get_rgb_from_index( int idx, unsigned short& r, unsigned short& g, unsigned short& b )
 				{
-					CLAM::VM::Color c = wp_color_map[idx];
+					Color c = wp_color_map[idx];
 					r = c.r;
 					g = c.g;
 					b = c.b;

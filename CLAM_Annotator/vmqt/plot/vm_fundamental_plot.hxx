@@ -8,13 +8,13 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class FundamentalPlot : public CLAM::VM::SegmentationPlot
+		class FundamentalPlot : public SegmentationPlot
 		{
 		public:
 			FundamentalPlot(QWidget* parent=0);
 			virtual ~FundamentalPlot();
 
-			virtual void set_data(const CLAM::Segment& segment, bool update=false);
+			virtual void set_data(const Segment& segment, bool update=false);
 
 		public slots:
 			virtual void backgroundWhite();
@@ -22,13 +22,13 @@ namespace CLAM
 
 		private:
 			void init_fundamental_plot();
-			std::pair<int,int> get_zoom_steps(CLAM::TSize size, CLAM::TData yrange);
+			std::pair<int,int> get_zoom_steps(TSize size, TData yrange);
 
-			void set_xrange(double xmin, double xmax);
-			void set_yrange(double ymin, double ymax);
+			void set_xrange(double xmin, double xmax, ERulerScale scale=CLAM::VM::eLinearScale);
+			void set_yrange(double ymin, double ymax, ERulerScale scale=CLAM::VM::eLinearScale);
 			void set_zoom_steps(int hsteps, int vsteps);
 
-			CLAM::DataArray get_fund_data(const CLAM::Segment& segment);
+			DataArray get_fund_data(const Segment& segment);
 		};
 	}
 }

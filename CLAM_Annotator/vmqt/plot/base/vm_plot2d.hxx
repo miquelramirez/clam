@@ -11,11 +11,11 @@ namespace CLAM
 	namespace VM
 	{
 
-		class CLAM::VM::Renderer2D;
+		class Renderer2D;
 
-		class Plot2D : public CLAM::VM::Plot
+		class Plot2D : public Plot
 		{
-			typedef std::map<QString, CLAM::VM::Renderer2D*> Renderers;
+			typedef std::map<QString, Renderer2D*> Renderers;
 			
 			Q_OBJECT
 		public:
@@ -27,10 +27,10 @@ namespace CLAM
 	
 			void set_zoom_steps(int xsteps, int ysteps);
   
-			bool add_renderer(const QString& key, CLAM::VM::Renderer2D* renderer);
+			bool add_renderer(const QString& key, Renderer2D* renderer);
 			bool set_renderer_enabled(const QString& key, bool enabled);
 	
-			CLAM::VM::Renderer2D* get_renderer(const QString& key);
+			Renderer2D* get_renderer(const QString& key);
 
 			void bring_to_front(const QString& key);
 			void send_to_back(const QString& key);
@@ -88,11 +88,11 @@ namespace CLAM
 			double cp_current_yspan;
 			bool   cp_do_resize;
 
-			CLAM::VM::Range cp_xrange;
-			CLAM::VM::Range cp_yrange;
+			Range cp_xrange;
+			Range cp_yrange;
 
-			CLAM::VM::GLView     cp_view;
-			CLAM::VM::GLViewport cp_viewport;
+			GLView     cp_view;
+			GLViewport cp_viewport;
 
 			std::pair<int,int>   cp_mouse_pos;
 			std::vector<QString> cp_draw_order;

@@ -7,12 +7,12 @@ namespace CLAM
 	{
 		PlayList::PlayerList PlayList::pl_list;
 
-		void PlayList::add(CLAM::VM::Player* player)
+		void PlayList::add(Player* player)
 		{
 			pl_list.push_back(player);
 		}
 		
-		void PlayList::remove(CLAM::VM::Player* player)
+		void PlayList::remove(Player* player)
 		{
 			PlayerList::iterator it = pl_list.begin();
 			for(;it != pl_list.end(); it++)

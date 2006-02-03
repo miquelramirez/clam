@@ -15,13 +15,13 @@ namespace CLAM
 		{
 		}
 
-		void PeaksRenderer::set_peaks(const CLAM::Array<CLAM::VM::Peak>& peaks)
+		void PeaksRenderer::set_peaks(const Array<Peak>& peaks)
 		{
 			rd_cached_peaks = peaks;
 			requestRefresh();
 		}
 
-		void PeaksRenderer::set_peaks_color(const CLAM::VM::Color& cpoint, const CLAM::VM::Color& cline)
+		void PeaksRenderer::set_peaks_color(const Color& cpoint, const Color& cline)
 		{
 			rd_cpoint = cpoint;
 			rd_cline = cline;

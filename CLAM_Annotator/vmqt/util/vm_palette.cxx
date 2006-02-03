@@ -58,12 +58,12 @@ namespace CLAM
 			colors_index[4] = 50;
 			colors_index[5] = 64;
 			
-			wp_color_map[FIRST_INDEX+colors_index[0]] = CLAM::VM::Color(0,0,0);
-			wp_color_map[FIRST_INDEX+colors_index[1]] = CLAM::VM::Color(15,17,16);
-			wp_color_map[FIRST_INDEX+colors_index[2]] = CLAM::VM::Color(80,100,153);
-			wp_color_map[FIRST_INDEX+colors_index[3]] = CLAM::VM::Color(90,180,100);
-			wp_color_map[FIRST_INDEX+colors_index[4]] = CLAM::VM::Color(224,224,44);
-			wp_color_map[FIRST_INDEX+colors_index[5]] = CLAM::VM::Color(255,155,80);
+			wp_color_map[FIRST_INDEX+colors_index[0]] = Color(0,0,0);
+			wp_color_map[FIRST_INDEX+colors_index[1]] = Color(15,17,16);
+			wp_color_map[FIRST_INDEX+colors_index[2]] = Color(80,100,153);
+			wp_color_map[FIRST_INDEX+colors_index[3]] = Color(90,180,100);
+			wp_color_map[FIRST_INDEX+colors_index[4]] = Color(224,224,44);
+			wp_color_map[FIRST_INDEX+colors_index[5]] = Color(255,155,80);
 
 			int n = 0;
 			int nDif = 0;
@@ -76,7 +76,7 @@ namespace CLAM
 					unsigned short R1,G1,B1;
 					unsigned short R2,G2,B2;
 
-					CLAM::VM::Color c;
+					Color c;
 
 					c = wp_color_map[FIRST_INDEX + k];
 					R1 = c.r;
@@ -93,7 +93,7 @@ namespace CLAM
 					G = G1 + int((G2 - G1)*factor);
 					B = B1 + int((B2 - B1)*factor);
 							
-					wp_color_map[FIRST_INDEX+k+i] = CLAM::VM::Color(R,G,B);
+					wp_color_map[FIRST_INDEX+k+i] = Color(R,G,B);
 				}
 			}
 		}

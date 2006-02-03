@@ -11,7 +11,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM::VM::ColorScale;
+		class ColorScale;
 
 		class SpecgramPanel : public QWidget
 		{
@@ -20,7 +20,7 @@ namespace CLAM
 			SpecgramPanel(QWidget* parent=0);
 			~SpecgramPanel();
 
-			void set_color_scale(const std::vector<CLAM::VM::Color>& scale);
+			void set_color_scale(const std::vector<Color>& scale);
 			
 		signals:
 			void colorScaleWidthChanged(int);
@@ -37,7 +37,7 @@ namespace CLAM
 			QLabel* sp_total_slices;
 			QLabel* sp_time;
 
-			CLAM::VM::ColorScale* sp_color_scale;
+			ColorScale* sp_color_scale;
 
 			void init_specgram_panel();
 

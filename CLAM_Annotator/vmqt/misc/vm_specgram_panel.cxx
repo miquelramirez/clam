@@ -19,7 +19,7 @@ namespace CLAM
 		{
 		}
 
-		void SpecgramPanel::set_color_scale(const std::vector<CLAM::VM::Color>& scale)
+		void SpecgramPanel::set_color_scale(const std::vector<Color>& scale)
 		{
 			sp_color_scale->set_scale(scale);
 		}
@@ -137,7 +137,7 @@ namespace CLAM
 			leftTag->setText("0 dB");
 			QLabel* rightTag = new QLabel(rightGroup);
 			rightTag->setText("-150 dB");
-			sp_color_scale = new CLAM::VM::ColorScale(rightGroup);
+			sp_color_scale = new ColorScale(rightGroup);
 			rfInnerBottomLayout->addWidget(leftTag);
 			rfInnerBottomLayout->addWidget(sp_color_scale,1);
 			rfInnerBottomLayout->addWidget(rightTag);

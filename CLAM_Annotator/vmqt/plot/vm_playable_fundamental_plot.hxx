@@ -9,17 +9,17 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM::VM::WPlayer;
-		class CLAM::VM::FundFreqPlayer;
+		class WPlayer;
+		class FundFreqPlayer;
 
-		class PlayableFundamentalPlot : public CLAM::VM::FundamentalPlot
+		class PlayableFundamentalPlot : public FundamentalPlot
 		{
 			Q_OBJECT
 		public:
 			PlayableFundamentalPlot(QWidget* parent=0);
 			~PlayableFundamentalPlot();
 
-			void set_data(const CLAM::Segment& segment, bool update=false);
+			void set_data(const Segment& segment, bool update=false);
 
 		public slots:
 			void backgroundWhite();
@@ -33,8 +33,8 @@ namespace CLAM
 			QComboBox* wp_schema_combo_box;
 			QComboBox* wp_play_mode_combo_box;
 
-			CLAM::VM::WPlayer*        wp_wplayer;
-			CLAM::VM::FundFreqPlayer* wp_fund_player;
+			WPlayer*        wp_wplayer;
+			FundFreqPlayer* wp_fund_player;
 
 			void init_playable_fundamental_plot();
 		};

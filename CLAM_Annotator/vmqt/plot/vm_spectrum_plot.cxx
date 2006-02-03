@@ -19,9 +19,9 @@ namespace CLAM
 		{
 		}
 
-		void SpectrumPlot::set_data(const CLAM::Spectrum& spec, bool update)
+		void SpectrumPlot::set_data(const Spectrum& spec, bool update)
 		{
-			CLAM::DataArray spec_data = get_spectrum_data(spec);
+			DataArray spec_data = get_spectrum_data(spec);
 			if(!update)
 			{
 				set_xrange(0.0,spec.GetSpectralRange());
@@ -29,13 +29,13 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = get_zoom_steps(spec_data.Size());
 				set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_huge_mode_enabled(false);
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data(spec_data);
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_huge_mode_enabled(false);
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data(spec_data);
 		}
 
-		void SpectrumPlot::set_data(const CLAM::Spectrum& spec, const CLAM::SpectralPeakArray& peaks, bool update)
+		void SpectrumPlot::set_data(const Spectrum& spec, const SpectralPeakArray& peaks, bool update)
 		{
-			CLAM::DataArray spec_data = get_spectrum_data(spec);
+			DataArray spec_data = get_spectrum_data(spec);
 			if(!update)
 			{
 				set_xrange(0.0,spec.GetSpectralRange());
@@ -43,63 +43,63 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = get_zoom_steps(spec_data.Size());
 				set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_huge_mode_enabled(false);
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data(spec_data);
-			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks(get_peaks_data(peaks));
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_huge_mode_enabled(false);
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data(spec_data);
+			static_cast<PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks(get_peaks_data(peaks));
 		}
 
 		void SpectrumPlot::showPeaksOnly()
 		{
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_enabled(false);
-			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_enabled(true);
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_enabled(false);
+			static_cast<PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_enabled(true);
 		}
 
 		void SpectrumPlot::showSpectrumOnly()
 		{
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_enabled(true);
-			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_enabled(false);
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_enabled(true);
+			static_cast<PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_enabled(false);
 		}
 
 		void SpectrumPlot::showSpectrumAndPeaks()
 		{
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_enabled(true);
-			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_enabled(true);
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_enabled(true);
+			static_cast<PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_enabled(true);
 		}
 
 		void SpectrumPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data_color(CLAM::VM::Color(0,0,255));
-			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks_color(CLAM::VM::Color(255,0,0),CLAM::VM::Color(8,180,70));
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data_color(Color(0,0,255));
+			static_cast<PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks_color(Color(255,0,0),Color(8,180,70));
 		}
 
 		void SpectrumPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
 
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data_color(CLAM::VM::Color(0,255,0));
-			static_cast<CLAM::VM::PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks_color(CLAM::VM::Color(255,0,0),CLAM::VM::Color(0,255,255));
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("spectrum"))->set_data_color(Color(0,255,0));
+			static_cast<PeaksRenderer*>(wp_plot->get_renderer("peaks"))->set_peaks_color(Color(255,0,0),Color(0,255,255));
 
 		}
 
 		void SpectrumPlot::init_spectrum_plot()
 		{
-			wp_plot->add_renderer("spectrum", new CLAM::VM::DataArrayRenderer());
-			wp_plot->add_renderer("peaks", new CLAM::VM::PeaksRenderer());
+			wp_plot->add_renderer("spectrum", new DataArrayRenderer());
+			wp_plot->add_renderer("peaks", new PeaksRenderer());
 			wp_plot->send_to_back("peaks");
 			wp_plot->send_to_back("spectrum");
 			wp_plot->bring_to_front("locator");
 			backgroundWhite();
 		}
 		   
-		void SpectrumPlot::set_xrange(double xmin, double xmax)
+		void SpectrumPlot::set_xrange(double xmin, double xmax, ERulerScale scale)
 		{
-			SegmentationPlot::set_xrange(xmin,xmax);
+			SegmentationPlot::set_xrange(xmin,xmax,scale);
 		}
 
-		void SpectrumPlot::set_yrange(double ymin, double ymax)
+		void SpectrumPlot::set_yrange(double ymin, double ymax, ERulerScale scale)
 		{
-			SegmentationPlot::set_yrange(ymin,ymax);
+			SegmentationPlot::set_yrange(ymin,ymax, scale);
 		}
 
 		void SpectrumPlot::set_zoom_steps(int hsteps, int vsteps)
@@ -107,10 +107,10 @@ namespace CLAM
 			SegmentationPlot::set_zoom_steps(hsteps,vsteps);
 		}
 
-		CLAM::DataArray SpectrumPlot::get_spectrum_data(const CLAM::Spectrum& in)
+		DataArray SpectrumPlot::get_spectrum_data(const Spectrum& in)
 		{
-			CLAM::Spectrum spec = in;
-			CLAM::SpecTypeFlags old_flags;
+			Spectrum spec = in;
+			SpecTypeFlags old_flags;
 			spec.GetType(old_flags);
 
 			if(!old_flags.bMagPhase)
@@ -123,11 +123,11 @@ namespace CLAM
 			return spec.GetMagBuffer();
 		}
 
-		CLAM::Array<CLAM::VM::Peak> SpectrumPlot::get_peaks_data(const CLAM::SpectralPeakArray& in)
+		Array<Peak> SpectrumPlot::get_peaks_data(const SpectralPeakArray& in)
 		{
 			TSize nPeaks = in.GetMagBuffer().Size();
 			bool linear = (in.GetScale() == CLAM::EScale::eLinear);
-			CLAM::Array<CLAM::VM::Peak> peaks_data;
+			Array<Peak> peaks_data;
 			peaks_data.Resize(nPeaks);
 			peaks_data.SetSize(nPeaks);
 
@@ -141,7 +141,7 @@ namespace CLAM
 			return peaks_data;
 		}
 
-		std::pair<int,int> SpectrumPlot::get_zoom_steps(CLAM::TSize size)
+		std::pair<int,int> SpectrumPlot::get_zoom_steps(TSize size)
 		{
 			double n = 50.0;
 			int xratio = 0;

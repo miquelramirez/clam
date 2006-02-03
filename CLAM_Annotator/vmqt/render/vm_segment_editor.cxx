@@ -33,7 +33,7 @@ namespace CLAM
 		{
 		}
 
-		void SegmentEditor::set_segmentation(CLAM::Segmentation* s)
+		void SegmentEditor::set_segmentation(Segmentation* s)
 		{
 			rd_segmentation = s;
 			if(!rd_segmentation) return;
@@ -328,7 +328,7 @@ namespace CLAM
 			emit working(rd_key,false);
 		}
 
-		void SegmentEditor::set_viewport(const CLAM::VM::GLViewport& v)
+		void SegmentEditor::set_viewport(const GLViewport& v)
 		{
 			Renderer2D::set_viewport(v);
 			rd_vmargin = double(PIXMARGIN)*(rd_view.top-rd_view.bottom)/double(rd_viewport.h);
@@ -336,11 +336,11 @@ namespace CLAM
 
 		void SegmentEditor::colorize()
 		{
-			rd_colors[NORMAL] = CLAM::VM::Color(100,200,20);
-			rd_colors[CURRENT] = CLAM::VM::Color(100,200,20);
-			rd_colors[SELECTED] = CLAM::VM::Color(140,240,60); 
-			rd_colors[HIGHLIGHTED] = CLAM::VM::Color(255,255,0);
-			rd_colors[STIPPLED] = CLAM::VM::Color(255,90,60);
+			rd_colors[NORMAL] = Color(100,200,20);
+			rd_colors[CURRENT] = Color(100,200,20);
+			rd_colors[SELECTED] = Color(140,240,60); 
+			rd_colors[HIGHLIGHTED] = Color(255,255,0);
+			rd_colors[STIPPLED] = Color(255,90,60);
 		}
 
 		void SegmentEditor::plain_rect(double left, double right, double bottom, double top)

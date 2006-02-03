@@ -29,9 +29,9 @@ namespace CLAM
 			CLAM_ASSERT(wp_master_id >=0 && wp_master_id < (int)wp_display.size(), 
 						"MultiDisplayPlot::init_multidisplay_plot: invalid masterId.");
 
-			wp_xruler = new CLAM::VM::Ruler(this,CLAM::VM::eTop);
+			wp_xruler = new Ruler(this,CLAM::VM::eTop);
 			wp_xruler->setFixedHeight(40);
-			wp_hscroll = new CLAM::VM::ScrollGroup(CLAM::VM::eHorizontal,this);
+			wp_hscroll = new ScrollGroup(CLAM::VM::eHorizontal,this);
 			wp_hscroll->setFixedHeight(20);
 
 			// connect xruler and horizontal scroll group

@@ -8,18 +8,18 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class BPFEditor : public CLAM::VM::Renderer2D
+		class BPFEditor : public Renderer2D
 		{
 			Q_OBJECT
 		public:
 			BPFEditor();
 			~BPFEditor();
 
-			void set_data(CLAM::BPF* bpf);
-			void set_colors(const CLAM::VM::Color& cline, const CLAM::VM::Color& chandler);
+			void set_data(BPF* bpf);
+			void set_colors(const Color& cline, const Color& chandler);
 			void set_flags(int flags);
 			int get_flags() const;
-			const CLAM::BPF& get_data() const;
+			const BPF& get_data() const;
 
 		signals:
 			void xValueChanged(QString, unsigned, double);
@@ -43,10 +43,10 @@ namespace CLAM
 			long       rd_current_index;
 			bool       rd_rebuild_glList;
 
-			CLAM::BPF* rd_bpf;
+			BPF* rd_bpf;
 			
-			CLAM::VM::Color rd_line_color;
-			CLAM::VM::Color rd_handler_color;
+			Color rd_line_color;
+			Color rd_handler_color;
 
 			enum { LINE_WIDTH=2, POINT_SIZE=5, TOLERANCE=3 };
 

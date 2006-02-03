@@ -10,13 +10,13 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class SinTracksRenderer : public CLAM::VM::Renderer2D
+		class SinTracksRenderer : public Renderer2D
 		{
 		public:
 			SinTracksRenderer();
 			~SinTracksRenderer();
 
-			void set_data(const CLAM::Array<CLAM::SpectralPeakArray>& peakMtx);
+			void set_data(const Array<SpectralPeakArray>& peakMtx);
 
 		protected:
 			void render();
@@ -24,11 +24,11 @@ namespace CLAM
 			void set_vbounds(double bottom, double top);
 
 		private:
-			int              rd_glList;
-			CLAM::TSize      rd_peakMtx_size;
-			CLAM::VM::GLView rd_local_view;
+			int    rd_glList;
+			TSize  rd_peakMtx_size;
+			GLView rd_local_view;
 
-			std::vector< std::vector<CLAM::VM::SinTrackNode> > rd_tracks;
+			std::vector< std::vector<SinTrackNode> > rd_tracks;
 		};
 	}
 }

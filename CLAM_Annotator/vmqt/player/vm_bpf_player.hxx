@@ -6,25 +6,25 @@
 
 namespace CLAM
 {
-	class CLAM::Audio;
+	class Audio;
 
 	namespace VM
 	{
-		class BPFPlayer : public CLAM::VM::Player
+		class BPFPlayer : public Player
 		{
 			Q_OBJECT
 		public:
 			BPFPlayer(QObject* parent=0);
 			~BPFPlayer();
 
-			void set_data(const CLAM::BPF& bpf);
-			void set_audio_ptr(const CLAM::Audio* audio);
+			void set_data(const BPF& bpf);
+			void set_audio_ptr(const Audio* audio);
 			void set_pitch_bounds(double min, double max);
 
 		private:
-			const CLAM::BPF*   pl_bpf;
-			const CLAM::Audio* pl_audio;
-			CLAM::VM::Range    pl_pitch_bounds;
+			const BPF*   pl_bpf;
+			const Audio* pl_audio;
+			Range        pl_pitch_bounds;
 
 			void run();
 

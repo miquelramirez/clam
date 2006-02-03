@@ -9,14 +9,14 @@ namespace CLAM
 	namespace VM
 	{
 
-		class DataArrayRenderer : public CLAM::VM::Renderer2D
+		class DataArrayRenderer : public Renderer2D
 		{
 		public:
 			DataArrayRenderer();
 			~DataArrayRenderer();
 	
-			void set_data(const CLAM::DataArray& data);
-			void set_data_color(const CLAM::VM::Color& c);
+			void set_data(const DataArray& data);
+			void set_data_color(const Color& c);
 
 			void set_huge_mode_enabled(bool en);
 
@@ -24,20 +24,20 @@ namespace CLAM
 			void render();
 			void set_hbounds(double left, double right);
 			void set_vbounds(double bottom, double top);
-			void set_viewport(const CLAM::VM::GLViewport& v);
+			void set_viewport(const GLViewport& v);
 			
 		private:
-			CLAM::DataArray rd_cached_data;
-		    CLAM::DataArray rd_processed_data;
-			CLAM::DataArray rd_min_array;
-			CLAM::DataArray rd_max_array;
+			DataArray rd_cached_data;
+			DataArray rd_processed_data;
+			DataArray rd_min_array;
+			DataArray rd_max_array;
 
 			bool rd_huge_mode;
 			bool rd_huge_mode_enabled;
 			bool rd_must_process_data;
 
-			CLAM::VM::Color      rd_data_color;
-			CLAM::VM::GLView     rd_local_view;
+			Color  rd_data_color;
+			GLView rd_local_view;
 			
 			void process_data();
 			void draw_huge_mode();

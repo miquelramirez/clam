@@ -16,7 +16,7 @@ namespace CLAM
 		{
 		}
 
-		void ColorScale::set_scale(const std::vector<CLAM::VM::Color>& scale)
+		void ColorScale::set_scale(const std::vector<Color>& scale)
 		{
 			cs_scale = scale;
 			update();

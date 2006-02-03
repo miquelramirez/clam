@@ -10,16 +10,16 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM::VM::SpecgramPanel;
+		class SpecgramPanel;
 
-		class SpectrogramPlot : public CLAM::VM::SegmentationPlot
+		class SpectrogramPlot : public SegmentationPlot
 		{
 			Q_OBJECT
 		public:
 			SpectrogramPlot(QWidget* parent=0);
 			~SpectrogramPlot();
 
-			void set_data(const CLAM::Segment& segment, bool update=false);
+			void set_data(const Segment& segment, bool update=false);
 
 		public slots:
 			void colorSpecgram();
@@ -29,20 +29,20 @@ namespace CLAM
 			void updateColorScale(int);
 
 		private:
-			int                         wp_sonogram_colormap;
-			int                         wp_color_scale_width;
-			CLAM::VM::SpecgramPanel*    wp_panel;
+			int            wp_sonogram_colormap;
+			int            wp_color_scale_width;
+			SpecgramPanel* wp_panel;
 		   
 			enum { COLOR_SONOGRAM=0, BW_SONOGRAM=1 };
 
 			void init_spectrogram_plot();
 		   
-			void set_xrange(double xmin, double xmax);
-			void set_yrange(double ymin, double ymax);
+			void set_xrange(double xmin, double xmax, ERulerScale scale=CLAM::VM::eLinearScale);
+			void set_yrange(double ymin, double ymax, ERulerScale scale=CLAM::VM::eLinearScale);
 			void set_zoom_steps(int hsteps, int vsteps);
 
-			std::pair<int,int> get_zoom_steps(CLAM::TSize size, CLAM::TData yrange);
-			CLAM::Array<CLAM::Spectrum> get_spec_matrix(const CLAM::Segment& in);
+			std::pair<int,int> get_zoom_steps(TSize size, TData yrange);
+			Array<Spectrum> get_spec_matrix(const Segment& in);
 		};
 	}
 }

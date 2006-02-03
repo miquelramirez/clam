@@ -66,7 +66,7 @@ namespace CLAM
 			p.resetMatrix();
 		}
 
-		ScrollGroup::ScrollGroup(CLAM::VM::EOrientation ori, QWidget* parent)
+		ScrollGroup::ScrollGroup(EOrientation ori, QWidget* parent)
 			: QWidget(parent)
 			  , sg_hlabel(0)
 			  , sg_vlabel(0)
@@ -173,7 +173,7 @@ namespace CLAM
 			QFont f("Fixed",10);
 			f.setBold(true);
 
-			sg_vlabel = new CLAM::VM::VerticalLabel(this);
+			sg_vlabel = new VerticalLabel(this);
    
 			sg_scroll_bar = new QScrollBar(Qt::Vertical,this);
 			sg_scroll_bar->setFixedWidth(sg_scroll_bar->sizeHint().width());

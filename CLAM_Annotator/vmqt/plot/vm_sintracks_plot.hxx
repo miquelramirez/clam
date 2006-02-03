@@ -8,23 +8,23 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class SinTracksPlot : public CLAM::VM::SegmentationPlot
+		class SinTracksPlot : public SegmentationPlot
 		{
 		public:
 			SinTracksPlot(QWidget* parent=0);
 			~SinTracksPlot();
 
-			void set_data(const CLAM::Segment& segment, bool update=false);
+			void set_data(const Segment& segment, bool update=false);
 
 		private: 
 			void init_sintracks_plot();
 		   
-			void set_xrange(double xmin, double xmax);
-			void set_yrange(double ymin, double ymax);
+			void set_xrange(double xmin, double xmax, ERulerScale scale=CLAM::VM::eLinearScale);
+			void set_yrange(double ymin, double ymax, ERulerScale scale=CLAM::VM::eLinearScale);
 			void set_zoom_steps(int hsteps, int vsteps);
 
-			std::pair<int,int> get_zoom_steps(CLAM::TSize size, CLAM::TData yrange);
-			CLAM::Array<CLAM::SpectralPeakArray> get_peak_matrix(const CLAM::Segment& in);
+			std::pair<int,int> get_zoom_steps(TSize size, TData yrange);
+			Array<SpectralPeakArray> get_peak_matrix(const Segment& in);
 		};
 	}
 }

@@ -24,12 +24,12 @@ namespace CLAM
 		{
 		}
 
-		void BPFPlayer::set_data(const CLAM::BPF& bpf)
+		void BPFPlayer::set_data(const BPF& bpf)
 		{
 			pl_bpf = &bpf;
 		}
 
-		void BPFPlayer::set_audio_ptr(const CLAM::Audio* audio)
+		void BPFPlayer::set_audio_ptr(const Audio* audio)
 		{
 			pl_audio = audio;
 		}
@@ -76,7 +76,7 @@ namespace CLAM
 			samples0.SetSize(frameSize);
 			samples1.SetSize(frameSize);
 
-			CLAM::Audio silence;
+			Audio silence;
 			silence.SetSize(frameSize);
 
 		    unsigned firstIndex = first_index();

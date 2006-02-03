@@ -19,14 +19,14 @@ namespace CLAM
 		{
 		}
 	
-		void DataArrayRenderer::set_data(const CLAM::DataArray& data)
+		void DataArrayRenderer::set_data(const DataArray& data)
 		{
 			rd_cached_data = data;
 			rd_must_process_data = true;
 			emit requestUpdate();
 		}
 
-		void DataArrayRenderer::set_data_color(const CLAM::VM::Color& c)
+		void DataArrayRenderer::set_data_color(const Color& c)
 		{
 			rd_data_color = c;
 			emit requestRefresh();
@@ -72,7 +72,7 @@ namespace CLAM
 			rd_local_view.top = rd_view.top;
 		}
 
-		void DataArrayRenderer::set_viewport(const CLAM::VM::GLViewport& v)
+		void DataArrayRenderer::set_viewport(const GLViewport& v)
 		{
 			Renderer2D::set_viewport(v);
 			rd_must_process_data = true;

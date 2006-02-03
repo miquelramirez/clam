@@ -16,12 +16,12 @@ namespace CLAM
 		{
 		}
 
-		void SonogramBuilder::make_sonogram(const CLAM::Array<CLAM::Spectrum>& data_in,
+		void SonogramBuilder::make_sonogram(const Array<Spectrum>& data_in,
 											std::vector<std::vector<float> >& data_out,
-											std::vector<std::vector<CLAM::VM::Color> >& color_sonogram_out,
-											std::vector<std::vector<CLAM::VM::Color> >& blackwhite_sonogram_out)
+											std::vector<std::vector<Color> >& color_sonogram_out,
+											std::vector<std::vector<Color> >& blackwhite_sonogram_out)
 		{
-			CLAM::Array<CLAM::Spectrum> data = data_in;
+			Array<Spectrum> data = data_in;
 			
 			// adap spectral data
 			SpecTypeFlags spFlags;
@@ -30,7 +30,7 @@ namespace CLAM
 			if(!spFlags.bMagPhase)
 			{
 				SpecTypeFlags newFlags;
-				for(CLAM::TIndex i=0; i < data.Size(); i++) data[i].SetTypeSynchronize(newFlags);
+				for(TIndex i=0; i < data.Size(); i++) data[i].SetTypeSynchronize(newFlags);
 			}
 			for(TIndex i=0; i < data.Size(); i++) data[i].ToDB();
 
@@ -67,12 +67,12 @@ namespace CLAM
 			int total_spectrums = data.Size();
 			int original_spectrum_size = data[0].GetMagBuffer().Size();
 
-			CLAM::TIndex row_step = int(dx);
-			CLAM::TIndex col_step = int(dy);
-			CLAM::TIndex i_step = row_step;
-			CLAM::TIndex j_step = col_step;
+			TIndex row_step = int(dx);
+			TIndex col_step = int(dy);
+			TIndex i_step = row_step;
+			TIndex j_step = col_step;
 			int n, m;
-			CLAM::TIndex i,j;
+			TIndex i,j;
 			for(i=0, n=0; i < total_spectrums; i+=i_step, n++)
 			{
 				for(j=0, m=0; j < original_spectrum_size; j+=j_step, m++)
@@ -125,14 +125,14 @@ namespace CLAM
 			color_sonogram_out.resize(dataSize);
 			blackwhite_sonogram_out.resize(dataSize);
 			
-			std::vector<CLAM::VM::Color> color_vector(specSize);
-			std::vector<CLAM::VM::Color> blackwhite_vector(specSize);
+			std::vector<Color> color_vector(specSize);
+			std::vector<Color> blackwhite_vector(specSize);
 
 			for(i=0; i < TIndex(dataSize); i++)
 			{
 				for(j = 0; j < TIndex(specSize); j++)
 				{
-					CLAM::VM::Color c;
+					Color c;
 					float value = clamp_to_range(data_out[i][j]);
 					// cplor
 					int colorIndex = sb_palette.get(value);
@@ -148,13 +148,13 @@ namespace CLAM
 			}
 		}
 
-		std::vector<CLAM::VM::Color> SonogramBuilder::get_color_scale(int w)
+		std::vector<Color> SonogramBuilder::get_color_scale(int w)
 		{
-			std::vector<CLAM::VM::Color> scale(w);
+			std::vector<Color> scale(w);
 			float step = -150.f/float(w);
 			for(unsigned i=0; i < scale.size(); i++)
 			{
-				CLAM::VM::Color c;
+				Color c;
 				TIndex colorIndex = sb_palette.get( clamp_to_range(float(i)*step));
 				sb_palette.get_rgb_from_index( colorIndex, c.r, c.g, c.b);
 				scale[i]=c;
@@ -162,13 +162,13 @@ namespace CLAM
 			return scale;
 		}
 
-		std::vector<CLAM::VM::Color> SonogramBuilder::get_gray_scale(int w)
+		std::vector<Color> SonogramBuilder::get_gray_scale(int w)
 		{
-			std::vector<CLAM::VM::Color> scale(w);
+			std::vector<Color> scale(w);
 			float step = -150.0f/float(w);
 			for(unsigned i=0; i < scale.size(); i++)
 			{
-				CLAM::VM::Color c;
+				Color c;
 				float value = clamp_to_range(float(i)*step);
 				value = fabs(value-1.0f);
 				c.r = c.g = c.b = int(255.0*value);
@@ -177,7 +177,7 @@ namespace CLAM
 			return scale;
 		}
 
-		float SonogramBuilder::matrix_block_mean(const CLAM::Array<CLAM::Spectrum>& specMtx, 
+		float SonogramBuilder::matrix_block_mean(const Array<Spectrum>& specMtx, 
 												 unsigned firstRow, unsigned lastRow, 
 												 unsigned  firstCol, unsigned  lastCol)
 		{

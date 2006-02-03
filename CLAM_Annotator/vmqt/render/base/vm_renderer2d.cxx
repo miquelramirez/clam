@@ -23,7 +23,7 @@ namespace CLAM
 			emit requestRefresh();
 		}
 
-		void Renderer2D::set_grid(CLAM::VM::Grid* grid)
+		void Renderer2D::set_grid(Grid* grid)
 		{
 			rd_grid = grid;
 		}

@@ -20,7 +20,7 @@ namespace CLAM
 		{
 		}
 
-		void FundFreqPlayer::set_data(const CLAM::Segment& segment)
+		void FundFreqPlayer::set_data(const Segment& segment)
 		{
 			pl_segment = &segment;
 		}
@@ -36,11 +36,11 @@ namespace CLAM
 			unsigned nSamples = unsigned((pl_segment->GetEndTime()-pl_segment->GetBeginTime())*pl_sampling_rate);
 			int frameSize = 512;                    
 
-			CLAM::AudioManager manager((int)pl_sampling_rate,frameSize);  
-			CLAM::AudioOut channel0;   
-			CLAM::AudioOut channel1;
-			CLAM::AudioIOConfig audioOutCfg0;     
-			CLAM::AudioIOConfig audioOutCfg1; 
+			AudioManager manager((int)pl_sampling_rate,frameSize);  
+			AudioOut channel0;   
+			AudioOut channel1;
+			AudioIOConfig audioOutCfg0;     
+			AudioIOConfig audioOutCfg1; 
 			audioOutCfg0.SetChannelID(0);    
 			audioOutCfg1.SetChannelID(1);
 			channel0.Configure(audioOutCfg0); 
@@ -50,8 +50,8 @@ namespace CLAM
 			channel0.Start();              
 			channel1.Start();
     
-			CLAM::Audio samples0;  
-			CLAM::Audio samples1;
+			Audio samples0;  
+			Audio samples1;
 			samples0.SetSize(frameSize);
 			samples1.SetSize(frameSize);
 

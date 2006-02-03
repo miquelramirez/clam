@@ -16,7 +16,7 @@ namespace CLAM
 		{
 		}
 
-		void PlayableBPFPlot::set_data(CLAM::BPF* bpf)
+		void PlayableBPFPlot::set_data(BPF* bpf)
 		{
 			add_bpf("bpf_editor",bpf);
 		}
@@ -29,13 +29,13 @@ namespace CLAM
 		void PlayableBPFPlot::backgroundWhite()
 		{
 			PlayableMultiBPFPlot::backgroundWhite();
-			set_colors("bpf_editor",CLAM::VM::Color(0,0,0),CLAM::VM::Color(0,0,255));
+			set_colors("bpf_editor",Color(0,0,0),Color(0,0,255));
 		}
 
 		void PlayableBPFPlot::backgroundBlack()
 		{
 			PlayableMultiBPFPlot::backgroundBlack();
-			set_colors("bpf_editor",CLAM::VM::Color(255,255,255),CLAM::VM::Color(255,0,0));
+			set_colors("bpf_editor",Color(255,255,255),Color(255,0,0));
 		}
 
 		void PlayableBPFPlot::xvalue_changed(QString key, unsigned index, double value)
@@ -63,14 +63,12 @@ namespace CLAM
 			PlayableMultiBPFPlot::setCurrentBPF(key);
 		}
 
-		void PlayableBPFPlot::add_bpf(const QString& key, CLAM::BPF* bpf)
+		void PlayableBPFPlot::add_bpf(const QString& key, BPF* bpf)
 		{
 			PlayableMultiBPFPlot::add_bpf(key,bpf);
 		}
 
-		void PlayableBPFPlot::set_colors(const QString& key, 
-										 const CLAM::VM::Color& cline, 
-										 const CLAM::VM::Color& chandler)
+		void PlayableBPFPlot::set_colors(const QString& key, const Color& cline, const Color& chandler)
 		{
 			PlayableMultiBPFPlot::set_colors(key,cline,chandler);
 		}
@@ -84,16 +82,16 @@ namespace CLAM
 		{
 			add_bpf("bpf_editor",0);
 			setCurrentBPF("bpf_editor");
-			connect(static_cast<CLAM::VM::BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
+			connect(static_cast<BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
 					SIGNAL(xValueChanged(QString,unsigned,double)),
 					this,SLOT(xvalue_changed(QString,unsigned,double)));
-			connect(static_cast<CLAM::VM::BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
+			connect(static_cast<BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
 					SIGNAL(yValueChanged(QString,unsigned,double)),
 					this,SLOT(yvalue_changed(QString,unsigned,double)));
-			connect(static_cast<CLAM::VM::BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
+			connect(static_cast<BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
 					SIGNAL(elementAdded(QString,unsigned,double,double)),
 					this,SLOT(element_added(QString,unsigned,double,double)));
-			connect(static_cast<CLAM::VM::BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
+			connect(static_cast<BPFEditor*>(wp_plot->get_renderer("bpf_editor")),
 					SIGNAL(elementRemoved(QString,unsigned)),this,SLOT(element_removed(QString,unsigned)));
 		}
 	}

@@ -68,7 +68,7 @@ namespace CLAM
 			double span();
 		};
 
-		enum EScale
+		enum ERulerScale
 		{
 			eLinearScale,
 			eLogScale

@@ -17,13 +17,13 @@ namespace CLAM
 		{
 		}
 
-		void SpectrogramRenderer::set_data(const CLAM::Array<CLAM::Spectrum>& specMtx)
+		void SpectrogramRenderer::set_data(const Array<Spectrum>& specMtx)
 		{
 			if(!specMtx.Size()) return;
 			rd_computed_data.clear();
 			rd_color_data.clear();
 			rd_blackwhite_data.clear();
-			CLAM::VM::SonogramBuilder sbuilder;
+			SonogramBuilder sbuilder;
 			sbuilder.make_sonogram(specMtx,rd_computed_data,rd_color_data,rd_blackwhite_data);
 			emit requestUpdate();
 			emit fixedLabels(QString::number(specMtx[0].GetSpectralRange(),'f',0),

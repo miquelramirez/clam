@@ -7,14 +7,14 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class BPFPlot : public CLAM::VM::MultiBPFPlot
+		class BPFPlot : public MultiBPFPlot
 		{
 			Q_OBJECT
 		public:
 			BPFPlot(QWidget* parent=0);
 			~BPFPlot();
 
-			void set_data(CLAM::BPF* bpf);
+			void set_data(BPF* bpf);
 			void set_flags(int f);
 		
 		signals:
@@ -35,8 +35,8 @@ namespace CLAM
 			void setCurrentBPF(QString);
 
 		private:
-			void add_bpf(const QString& key, CLAM::BPF* bpf);
-			void set_colors(const QString& key, const CLAM::VM::Color& cline, const CLAM::VM::Color& chandler);
+			void add_bpf(const QString& key, BPF* bpf);
+			void set_colors(const QString& key, const Color& cline, const Color& chandler);
 			void set_flags(const QString& key, int flags);
 
 			void init_bpf_plot();

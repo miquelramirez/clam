@@ -7,15 +7,15 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class Locator : public CLAM::VM::Renderer2D
+		class Locator : public Renderer2D
 		{
 			Q_OBJECT
 		public:
 			Locator();
 			~Locator();
 
-			void set_locator_color(const CLAM::VM::Color& c);
-			void set_region_color(const CLAM::VM::Color& c);
+			void set_locator_color(const Color& c);
+			void set_region_color(const Color& c);
 
 		signals:
 			void selectedRegion(double,double);
@@ -37,11 +37,11 @@ namespace CLAM
 			void leave_event();
 			
 		private:
-			bool            rd_updating_locator;
-			double          rd_locator_pos;
-			CLAM::VM::Range rd_region;
-			CLAM::VM::Color rd_locator_color;
-			CLAM::VM::Color rd_region_color;
+			bool   rd_updating_locator;
+			double rd_locator_pos;
+			Range  rd_region;
+			Color  rd_locator_color;
+			Color  rd_region_color;
 
 			enum { TOLERANCE=3 };
 			enum EditionMode 

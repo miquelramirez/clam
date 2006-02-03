@@ -17,7 +17,7 @@ namespace CLAM
 			glDeleteLists(rd_glList, rd_glList);
 		}
 
-		void SinTracksRenderer::set_data(const CLAM::Array<CLAM::SpectralPeakArray>& peakMtx)
+		void SinTracksRenderer::set_data(const Array<SpectralPeakArray>& peakMtx)
 		{
 			rd_tracks.clear();
 			rd_peakMtx_size = peakMtx.Size();

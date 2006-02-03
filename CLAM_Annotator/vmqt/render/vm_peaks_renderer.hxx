@@ -14,18 +14,18 @@ namespace CLAM
 			PeaksRenderer();
 			~PeaksRenderer();
 
-			void set_peaks(const CLAM::Array<CLAM::VM::Peak>& peaks);
-			void set_peaks_color(const CLAM::VM::Color& cpoint, const CLAM::VM::Color& cline);
+			void set_peaks(const Array<Peak>& peaks);
+			void set_peaks_color(const Color& cpoint, const Color& cline);
 
 		protected:
 			void render();
 			void mouse_move_event(double x, double y);
 
 		private:
-			CLAM::Array<CLAM::VM::Peak> rd_cached_peaks;
+			Array<Peak> rd_cached_peaks;
 
-			CLAM::VM::Color rd_cpoint;
-			CLAM::VM::Color rd_cline;
+			Color rd_cpoint;
+			Color rd_cline;
 
 			enum { LINE_WIDTH=1, POINT_SIZE=3, TOLERANCE=3 };
 

@@ -23,7 +23,7 @@ namespace CLAM
 		{
 		}
 
-		void AudioStereoPlot::set_data(const CLAM::Audio& chn0, const CLAM::Audio& chn1, bool update)
+		void AudioStereoPlot::set_data(const Audio& chn0, const Audio& chn1, bool update)
 		{
 			CLAM_ASSERT(chn0.GetSize() == chn1.GetSize(), "Size of channels 0 and 1 must be the same!");
 			
@@ -36,60 +36,64 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = get_zoom_steps(chn0.GetBuffer().Size());
 				wp_display[MASTER]->set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<CLAM::VM::Grid*>(wp_display[MASTER]->get_renderer("grid0"))->set_grid_steps(chn0.GetDuration()/1000.0,1.0);
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[MASTER]->get_renderer("chn0"))->set_data(chn0.GetBuffer());
-			static_cast<CLAM::VM::Grid*>(wp_display[SLAVE]->get_renderer("grid1"))->set_grid_steps(chn0.GetDuration()/1000.0,1.0);
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[SLAVE]->get_renderer("chn1"))->set_data(chn1.GetBuffer());
+			static_cast<Grid*>(wp_display[MASTER]->get_renderer("grid0"))->set_grid_steps(chn0.GetDuration()/1000.0,1.0);
+			static_cast<DataArrayRenderer*>(wp_display[MASTER]->get_renderer("chn0"))->set_data(chn0.GetBuffer());
+			static_cast<Grid*>(wp_display[SLAVE]->get_renderer("grid1"))->set_grid_steps(chn0.GetDuration()/1000.0,1.0);
+			static_cast<DataArrayRenderer*>(wp_display[SLAVE]->get_renderer("chn1"))->set_data(chn1.GetBuffer());
 		}
 
 		void AudioStereoPlot::backgroundWhite()
 		{
 			setPalette(Qt::white);
-			wp_xruler->set_bg_color(CLAM::VM::Color(255,255,255));
-			wp_xruler->set_fg_color(CLAM::VM::Color(0,0,0));
-			wp_yruler0->set_bg_color(CLAM::VM::Color(255,255,255));
-			wp_yruler0->set_fg_color(CLAM::VM::Color(0,0,0));
-			wp_yruler1->set_bg_color(CLAM::VM::Color(255,255,255));
-			wp_yruler1->set_fg_color(CLAM::VM::Color(0,0,0));
+			wp_xruler->set_bg_color(Color(255,255,255));
+			wp_xruler->set_fg_color(Color(0,0,0));
+			wp_yruler0->set_bg_color(Color(255,255,255));
+			wp_yruler0->set_fg_color(Color(0,0,0));
+			wp_yruler1->set_bg_color(Color(255,255,255));
+			wp_yruler1->set_fg_color(Color(0,0,0));
 			wp_hscroll->setPalette(Qt::white);
 			wp_vscroll->setPalette(Qt::white);
-			wp_display[MASTER]->set_bg_color(CLAM::VM::Color(255,255,255));
-			wp_display[SLAVE]->set_bg_color(CLAM::VM::Color(255,255,255));
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[MASTER]->get_renderer("chn0"))->set_data_color(CLAM::VM::Color(0,0,255));
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[SLAVE]->get_renderer("chn1"))->set_data_color(CLAM::VM::Color(0,0,255));
-			static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0"))->set_locator_color(CLAM::VM::Color(250,160,30));
-			static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->set_locator_color(CLAM::VM::Color(250,160,30));
+			wp_display[MASTER]->set_bg_color(Color(255,255,255));
+			wp_display[SLAVE]->set_bg_color(Color(255,255,255));
+			static_cast<Grid*>(wp_display[MASTER]->get_renderer("grid0"))->set_grid_color(Color(0,0,255));
+			static_cast<Grid*>(wp_display[SLAVE]->get_renderer("grid1"))->set_grid_color(Color(0,0,255));
+			static_cast<DataArrayRenderer*>(wp_display[MASTER]->get_renderer("chn0"))->set_data_color(Color(0,0,255));
+			static_cast<DataArrayRenderer*>(wp_display[SLAVE]->get_renderer("chn1"))->set_data_color(Color(0,0,255));
+			static_cast<Locator*>(wp_display[MASTER]->get_renderer("locator0"))->set_locator_color(Color(250,160,30));
+			static_cast<Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->set_locator_color(Color(250,160,30));
 		}
 
 		void AudioStereoPlot::backgroundBlack()
 		{
 			setPalette(Qt::black);
-			wp_xruler->set_bg_color(CLAM::VM::Color(0,0,0));
-			wp_xruler->set_fg_color(CLAM::VM::Color(255,255,255));
-			wp_yruler0->set_bg_color(CLAM::VM::Color(0,0,0));
-			wp_yruler0->set_fg_color(CLAM::VM::Color(255,255,255));
-			wp_yruler1->set_bg_color(CLAM::VM::Color(0,0,0));
-			wp_yruler1->set_fg_color(CLAM::VM::Color(255,255,255));
+			wp_xruler->set_bg_color(Color(0,0,0));
+			wp_xruler->set_fg_color(Color(255,255,255));
+			wp_yruler0->set_bg_color(Color(0,0,0));
+			wp_yruler0->set_fg_color(Color(255,255,255));
+			wp_yruler1->set_bg_color(Color(0,0,0));
+			wp_yruler1->set_fg_color(Color(255,255,255));
 			wp_hscroll->setPalette(Qt::darkGreen);
 			wp_vscroll->setPalette(Qt::darkGreen);
-			wp_display[MASTER]->set_bg_color(CLAM::VM::Color(0,0,0));
-			wp_display[SLAVE]->set_bg_color(CLAM::VM::Color(0,0,0));
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[MASTER]->get_renderer("chn0"))->set_data_color(CLAM::VM::Color(0,255,0));
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_display[SLAVE]->get_renderer("chn1"))->set_data_color(CLAM::VM::Color(0,255,0));
-			static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0"))->set_locator_color(CLAM::VM::Color(255,0,0));
-			static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->set_locator_color(CLAM::VM::Color(255,0,0));
+			wp_display[MASTER]->set_bg_color(Color(0,0,0));
+			wp_display[SLAVE]->set_bg_color(Color(0,0,0));
+			static_cast<Grid*>(wp_display[MASTER]->get_renderer("grid0"))->set_grid_color(Color(0,255,0));
+			static_cast<Grid*>(wp_display[SLAVE]->get_renderer("grid1"))->set_grid_color(Color(0,255,0));
+			static_cast<DataArrayRenderer*>(wp_display[MASTER]->get_renderer("chn0"))->set_data_color(Color(0,255,0));
+			static_cast<DataArrayRenderer*>(wp_display[SLAVE]->get_renderer("chn1"))->set_data_color(Color(0,255,0));
+			static_cast<Locator*>(wp_display[MASTER]->get_renderer("locator0"))->set_locator_color(Color(255,0,0));
+			static_cast<Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->set_locator_color(Color(255,0,0));
 		}
 
 		void AudioStereoPlot::updateLocator(double value)
 		{
-			static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0"))->updateLocator(value);
-			static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->updateLocator(value);
+			static_cast<Locator*>(wp_display[MASTER]->get_renderer("locator0"))->updateLocator(value);
+			static_cast<Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->updateLocator(value);
 		}
 
 		void AudioStereoPlot::updateLocator(double value,bool flag)
 		{
-			static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0"))->updateLocator(value,flag);
-			static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->updateLocator(value,flag);
+			static_cast<Locator*>(wp_display[MASTER]->get_renderer("locator0"))->updateLocator(value,flag);
+			static_cast<Locator*>(wp_display[SLAVE]->get_renderer("locator1"))->updateLocator(value,flag);
 		}
 
 		void AudioStereoPlot::setMaxVScroll(int value)
@@ -106,34 +110,34 @@ namespace CLAM
 			wp_display.resize(2);
 			for(unsigned i=0; i < wp_display.size(); i++) 
 			{
-				wp_display[i] = new CLAM::VM::Plot2D(this);
+				wp_display[i] = new Plot2D(this);
 			}
-			wp_display[MASTER]->add_renderer("grid0", new CLAM::VM::Grid());
-			wp_display[MASTER]->add_renderer("locator0", new CLAM::VM::Locator());
-			wp_display[MASTER]->add_renderer("chn0", new CLAM::VM::DataArrayRenderer());
-			wp_display[SLAVE]->add_renderer("grid1", new CLAM::VM::Grid());
-			wp_display[SLAVE]->add_renderer("locator1", new CLAM::VM::Locator());
-			wp_display[SLAVE]->add_renderer("chn1", new CLAM::VM::DataArrayRenderer());
+			wp_display[MASTER]->add_renderer("grid0", new Grid());
+			wp_display[MASTER]->add_renderer("locator0", new Locator());
+			wp_display[MASTER]->add_renderer("chn0", new DataArrayRenderer());
+			wp_display[SLAVE]->add_renderer("grid1", new Grid());
+			wp_display[SLAVE]->add_renderer("locator1", new Locator());
+			wp_display[SLAVE]->add_renderer("chn1", new DataArrayRenderer());
 
 			wp_display[MASTER]->send_to_back("chn0");
 			wp_display[MASTER]->send_to_back("grid0");
 			wp_display[SLAVE]->send_to_back("chn1");
 			wp_display[SLAVE]->send_to_back("grid1");
 
-			static_cast<CLAM::VM::Grid*>(wp_display[MASTER]->get_renderer("grid0"))->show_grid(true);
-			static_cast<CLAM::VM::Grid*>(wp_display[SLAVE]->get_renderer("grid1"))->show_grid(true);
+			static_cast<Grid*>(wp_display[MASTER]->get_renderer("grid0"))->show_grid(true);
+			static_cast<Grid*>(wp_display[SLAVE]->get_renderer("grid1"))->show_grid(true);
 
-			connect(static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0")),
+			connect(static_cast<Locator*>(wp_display[MASTER]->get_renderer("locator0")),
 					SIGNAL(regionChanged(double,double,bool)),
-					static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
+					static_cast<Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
 					SLOT(updateRegion(double,double,bool)));
-			connect(static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
+			connect(static_cast<Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
 					SIGNAL(regionChanged(double,double,bool)),
-					static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0")),
+					static_cast<Locator*>(wp_display[MASTER]->get_renderer("locator0")),
 					SLOT(updateRegion(double,double,bool)));
-			connect(static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0")),
+			connect(static_cast<Locator*>(wp_display[MASTER]->get_renderer("locator0")),
 					SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
-			connect(static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
+			connect(static_cast<Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
 					SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
 		}
 	
@@ -143,9 +147,9 @@ namespace CLAM
 			init_multidisplay_plot(MASTER);
 
 			// own inits
-			wp_yruler0 = new CLAM::VM::Ruler(this,CLAM::VM::eLeft);
-			wp_yruler1 = new CLAM::VM::Ruler(this,CLAM::VM::eLeft);
-			wp_vscroll = new CLAM::VM::ScrollGroup(CLAM::VM::eVertical,this);
+			wp_yruler0 = new Ruler(this,CLAM::VM::eLeft);
+			wp_yruler1 = new Ruler(this,CLAM::VM::eLeft);
+			wp_vscroll = new ScrollGroup(CLAM::VM::eVertical,this);
 			QFontMetrics fm(wp_yruler0->get_font());
 			int yruler_width = fm.width("-0.0e+00")+12;
 			wp_yruler0->setFixedWidth(yruler_width);
@@ -187,7 +191,7 @@ namespace CLAM
 			backgroundWhite();
 		}
 
-		std::pair<int,int> AudioStereoPlot::get_zoom_steps(CLAM::TSize size)
+		std::pair<int,int> AudioStereoPlot::get_zoom_steps(TSize size)
 		{
 			double n = 100.0;
 			int xratio = 0;

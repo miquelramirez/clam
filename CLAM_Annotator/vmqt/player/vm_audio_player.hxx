@@ -6,18 +6,18 @@
 
 namespace CLAM
 {
-	class CLAM::Audio;
+	class Audio;
 
 	namespace VM
 	{
-		class AudioPlayer : public CLAM::VM::Player
+		class AudioPlayer : public Player
 		{
 			Q_OBJECT
 		public:
 			AudioPlayer(QObject* parent=0);
 			~AudioPlayer();
 
-			void set_data(std::vector<const CLAM::Audio*> data);
+			void set_data(std::vector<const Audio*> data);
 
 		public slots:
 			void muteChannel0(bool muted);
@@ -27,8 +27,8 @@ namespace CLAM
 			bool pl_chn0_muted;
 			bool pl_chn1_muted;
 
-			const CLAM::Audio* pl_chn0;
-			const CLAM::Audio* pl_chn1;
+			const Audio* pl_chn0;
+			const Audio* pl_chn1;
 
 			void run();
 		};

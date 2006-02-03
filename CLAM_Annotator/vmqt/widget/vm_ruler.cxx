@@ -6,7 +6,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		Ruler::Ruler(QWidget* parent, CLAM::VM::ERulerPos pos, CLAM::VM::EScale scale)
+		Ruler::Ruler(QWidget* parent, ERulerPos pos, ERulerScale scale)
 			: QWidget(parent) 
 			  , rw_position(pos)
 			  , rw_scale(scale)
@@ -28,22 +28,22 @@ namespace CLAM
 		{
 		}
 
-		void Ruler::set_scale(CLAM::VM::EScale scale)
+		void Ruler::set_scale(ERulerScale scale)
 		{
 			rw_scale = scale;
 		}
 
-		CLAM::VM::EScale Ruler::get_scale() const
+		ERulerScale Ruler::get_scale() const
 		{
 			return rw_scale;
 		}
 
-		void Ruler::set_bg_color(const CLAM::VM::Color& c)
+		void Ruler::set_bg_color(const Color& c)
 		{
 			setPalette(QPalette(QColor(int(c.r),int(c.g),int(c.b))));
 		}
 
-		void Ruler::set_fg_color(const CLAM::VM::Color& c)
+		void Ruler::set_fg_color(const Color& c)
 		{
 			rw_fg_color = c;
 		}
