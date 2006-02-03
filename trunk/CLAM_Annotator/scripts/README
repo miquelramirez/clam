@@ -1,0 +1,31 @@
+WHAT ARE THEY?
+
+Those scripts are intended to manipulate Annotator pools and schemas.
+
+
+PoolAggregator.py 
+	Joins, selects and renames Pools acording to an aggregator script
+
+SchemaAggregator.py
+	Joins, selects and renames Schemas acording to an aggregator script
+
+Lab2Pools.py
+	Generates a pool with the segmentation contained in a wavesurfer label file.
+
+Pools2Lab.py
+	Generates a Wavesurfer label file from attributes in a pool
+
+
+REQUIREMENTS:
+
+To run those scripts you'll need to install python 2.3 and the following modules
+  python-xml
+
+If you want to run the tests, you should also install
+  python-unit (to run the tests)
+
+
+
+
+
+
