@@ -14,12 +14,12 @@ namespace CLAM
 		{
 		}
 
-		const std::vector< std::vector<CLAM::VM::SinTrackNode> >&
-		SinTracksBuilder::get_tracks(const CLAM::Array<CLAM::SpectralPeakArray>& peakMtx)
+		const std::vector< std::vector<SinTrackNode> >& 
+		SinTracksBuilder::get_tracks(const Array<SpectralPeakArray>& peakMtx)
 		{
 			tb_table.clear();
 			tb_tracks.clear();
-			for(CLAM::TIndex i=0; i < peakMtx.Size(); i++)
+			for(TIndex i=0; i < peakMtx.Size(); i++)
 			{
 				add_nodes(peakMtx[i],(unsigned)i);
 			}
@@ -41,13 +41,13 @@ namespace CLAM
 			return tb_table[trackId];
 		}
 
-		void SinTracksBuilder::add_nodes(const CLAM::SpectralPeakArray& peaks, unsigned timeIndex)
+		void SinTracksBuilder::add_nodes(const SpectralPeakArray& peaks, unsigned timeIndex)
 		{
 			bool linear = (peaks.GetScale() == CLAM::EScale::eLinear);
-			for(CLAM::TIndex i=0; i < peaks.GetMagBuffer().Size(); i++)
+			for(TIndex i=0; i < peaks.GetMagBuffer().Size(); i++)
 			{
 				if(peaks.GetIndex(i) < 0) continue;
-				CLAM::VM::SinTrackNode node;
+				SinTrackNode node;
 				node.freq = double(peaks.GetFreqBuffer()[i]);
 				node.timeIndex = timeIndex;
 				float mag = float(peaks.GetMagBuffer()[i]);
@@ -64,7 +64,7 @@ namespace CLAM
 					}
 					else
 					{
-						std::vector<CLAM::VM::SinTrackNode> newTrack;
+						std::vector<SinTrackNode> newTrack;
 						newTrack.push_back(node);
 						tb_tracks.push_back(newTrack);
 						add_to_table(trackId,tb_tracks.size()-1);
@@ -72,7 +72,7 @@ namespace CLAM
 				}
 				else
 				{
-					std::vector<CLAM::VM::SinTrackNode> newTrack;
+					std::vector<SinTrackNode> newTrack;
 					newTrack.push_back(node);
 					tb_tracks.push_back(newTrack);
 					add_to_table(trackId,tb_tracks.size()-1);

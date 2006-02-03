@@ -17,7 +17,7 @@ namespace CLAM
 		}
 
 
-		void SinTracksPlot::set_data(const CLAM::Segment& segment, bool update)
+		void SinTracksPlot::set_data(const Segment& segment, bool update)
 		{
 			if(!update)
 			{
@@ -26,25 +26,25 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = get_zoom_steps(segment.GetnFrames(),segment.GetSamplingRate()/2.0);
 				set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<CLAM::VM::SinTracksRenderer*>(wp_plot->get_renderer("sintracks"))->set_data(get_peak_matrix(segment));
+			static_cast<SinTracksRenderer*>(wp_plot->get_renderer("sintracks"))->set_data(get_peak_matrix(segment));
 		}
 
 		void SinTracksPlot::init_sintracks_plot()
 		{
-			wp_plot->add_renderer("sintracks", new CLAM::VM::SinTracksRenderer());
+			wp_plot->add_renderer("sintracks", new SinTracksRenderer());
 			wp_plot->send_to_back("sintracks");
 			wp_plot->bring_to_front("locator");
 			backgroundWhite();
 		}
 		   
-		void SinTracksPlot::set_xrange(double xmin, double xmax)
+		void SinTracksPlot::set_xrange(double xmin, double xmax, ERulerScale scale)
 		{
-			SegmentationPlot::set_xrange(xmin,xmax);
+			SegmentationPlot::set_xrange(xmin,xmax,scale);
 		}
 
-		void SinTracksPlot::set_yrange(double ymin, double ymax)
+		void SinTracksPlot::set_yrange(double ymin, double ymax, ERulerScale scale)
 		{
-			SegmentationPlot::set_yrange(ymin,ymax);
+			SegmentationPlot::set_yrange(ymin,ymax,scale);
 		}
 
 		void SinTracksPlot::set_zoom_steps(int hsteps, int vsteps)
@@ -52,7 +52,7 @@ namespace CLAM
 			SegmentationPlot::set_zoom_steps(hsteps,vsteps);
 		}
 
-		std::pair<int,int> SinTracksPlot::get_zoom_steps(CLAM::TSize size, CLAM::TData yrange)
+		std::pair<int,int> SinTracksPlot::get_zoom_steps(TSize size, TData yrange)
 		{
 			double n = 5.0;
 			int xratio = 0;
@@ -72,9 +72,9 @@ namespace CLAM
 			return std::make_pair(--xratio,--yratio);
 		}
 
-		CLAM::Array<CLAM::SpectralPeakArray> SinTracksPlot::get_peak_matrix(const CLAM::Segment& in)
+		Array<SpectralPeakArray> SinTracksPlot::get_peak_matrix(const Segment& in)
 		{
-			CLAM::Array<CLAM::SpectralPeakArray> peak_mtx;
+			Array<SpectralPeakArray> peak_mtx;
 			int n_frames = in.GetnFrames();
 			peak_mtx.Resize(n_frames);
 			peak_mtx.SetSize(n_frames);

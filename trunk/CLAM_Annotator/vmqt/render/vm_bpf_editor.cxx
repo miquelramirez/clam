@@ -22,7 +22,7 @@ namespace CLAM
 		{
 		}
 
-		void BPFEditor::set_data(CLAM::BPF* bpf)
+		void BPFEditor::set_data(BPF* bpf)
 		{
 			rd_bpf = bpf;
 			rd_current_index = 0;
@@ -31,7 +31,7 @@ namespace CLAM
 			emit requestUpdate();
 		}
 
-		void BPFEditor::set_colors(const CLAM::VM::Color& cline, const CLAM::VM::Color& chandler)
+		void BPFEditor::set_colors(const Color& cline, const Color& chandler)
 		{
 			rd_line_color = cline;
 			rd_handler_color = chandler;
@@ -85,7 +85,7 @@ namespace CLAM
 				glEnd();
 				if(rd_current_index < 0 || rd_current_index >= rd_bpf->Size()) return;
 				glPointSize(POINT_SIZE+1);
-				CLAM::VM::Color c(250,160,30);
+				Color c(250,160,30);
 				glColor3ub(c.r,c.g,c.b);
 				glBegin(GL_POINTS);
 				glVertex2d(GLdouble(rd_bpf->GetXValue(rd_current_index)),

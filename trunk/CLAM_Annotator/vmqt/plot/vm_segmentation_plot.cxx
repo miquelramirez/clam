@@ -21,22 +21,22 @@ namespace CLAM
 		{
 		}
 
-		void SegmentationPlot::set_xrange(double xmin, double xmax, CLAM::VM::EScale scale)
+		void SegmentationPlot::set_xrange(double xmin, double xmax, ERulerScale scale)
 		{
 			wp_plot->set_xrange(xmin,xmax);
 			wp_xruler->set_scale(scale);
 		}
 
-		void SegmentationPlot::set_yrange(double ymin, double ymax, CLAM::VM::EScale scale)
+		void SegmentationPlot::set_yrange(double ymin, double ymax, ERulerScale scale)
 		{
 			wp_plot->set_yrange(ymin,ymax);
 			wp_yruler->set_scale(scale);
 			adjust_yruler_width(ymin,ymax);
 		}
 
-		void SegmentationPlot::set_segmentation(CLAM::Segmentation* s)
+		void SegmentationPlot::set_segmentation(Segmentation* s)
 		{
-			static_cast<CLAM::VM::SegmentEditor*>(wp_plot->get_renderer("segmentation"))->set_segmentation(s);
+			static_cast<SegmentEditor*>(wp_plot->get_renderer("segmentation"))->set_segmentation(s);
 		}
 
 		void SegmentationPlot::set_zoom_steps(int hsteps, int vsteps)
@@ -47,37 +47,37 @@ namespace CLAM
 		void SegmentationPlot::backgroundWhite()
 		{
 			setPalette(Qt::white);
-			wp_xruler->set_bg_color(CLAM::VM::Color(255,255,255));
-			wp_xruler->set_fg_color(CLAM::VM::Color(0,0,0));
-			wp_yruler->set_bg_color(CLAM::VM::Color(255,255,255));
-			wp_yruler->set_fg_color(CLAM::VM::Color(0,0,0));
+			wp_xruler->set_bg_color(Color(255,255,255));
+			wp_xruler->set_fg_color(Color(0,0,0));
+			wp_yruler->set_bg_color(Color(255,255,255));
+			wp_yruler->set_fg_color(Color(0,0,0));
 			wp_hscroll->setPalette(Qt::white);
 			wp_vscroll->setPalette(Qt::white);
-			wp_plot->set_bg_color(CLAM::VM::Color(255,255,255));
-			static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator"))->set_locator_color(CLAM::VM::Color(250,160,30));
+			wp_plot->set_bg_color(Color(255,255,255));
+			static_cast<Locator*>(wp_plot->get_renderer("locator"))->set_locator_color(Color(250,160,30));
 		}
 
 		void SegmentationPlot::backgroundBlack()
 		{
 			setPalette(Qt::black);
-			wp_xruler->set_bg_color(CLAM::VM::Color(0,0,0));
-			wp_xruler->set_fg_color(CLAM::VM::Color(255,255,255));
-			wp_yruler->set_bg_color(CLAM::VM::Color(0,0,0));
-			wp_yruler->set_fg_color(CLAM::VM::Color(255,255,255));
+			wp_xruler->set_bg_color(Color(0,0,0));
+			wp_xruler->set_fg_color(Color(255,255,255));
+			wp_yruler->set_bg_color(Color(0,0,0));
+			wp_yruler->set_fg_color(Color(255,255,255));
 			wp_hscroll->setPalette(Qt::darkGreen);
 			wp_vscroll->setPalette(Qt::darkGreen);
-			wp_plot->set_bg_color(CLAM::VM::Color(0,0,0));
-			static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator"))->set_locator_color(CLAM::VM::Color(255,0,0));
+			wp_plot->set_bg_color(Color(0,0,0));
+			static_cast<Locator*>(wp_plot->get_renderer("locator"))->set_locator_color(Color(255,0,0));
 		}
 
 		void SegmentationPlot::updateLocator(double value)
 		{
-			static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator"))->updateLocator(value);
+			static_cast<Locator*>(wp_plot->get_renderer("locator"))->updateLocator(value);
 		}
 
 		void SegmentationPlot::updateLocator(double value, bool flag)
 		{
-			static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator"))->updateLocator(value,flag);
+			static_cast<Locator*>(wp_plot->get_renderer("locator"))->updateLocator(value,flag);
 		}
 
 		void SegmentationPlot::setMaxVScroll(int value)
@@ -98,8 +98,8 @@ namespace CLAM
 
 		void SegmentationPlot::init_segmentation_plot()
 		{
-			wp_xruler = new CLAM::VM::Ruler(this,CLAM::VM::eTop);
-			wp_yruler = new CLAM::VM::Ruler(this,CLAM::VM::eLeft);
+			wp_xruler = new Ruler(this,CLAM::VM::eTop);
+			wp_yruler = new Ruler(this,CLAM::VM::eLeft);
 
 			QFontMetrics fm(wp_yruler->get_font());
 			int yruler_width = fm.width("-0.0e+00")+12;
@@ -107,12 +107,12 @@ namespace CLAM
 			wp_xruler->setFixedHeight(40);
 			wp_yruler->setFixedWidth(yruler_width);
 
-			wp_hscroll = new CLAM::VM::ScrollGroup(CLAM::VM::eHorizontal,this);
-			wp_vscroll = new CLAM::VM::ScrollGroup(CLAM::VM::eVertical,this);
+			wp_hscroll = new ScrollGroup(CLAM::VM::eHorizontal,this);
+			wp_vscroll = new ScrollGroup(CLAM::VM::eVertical,this);
 
-			wp_plot = new CLAM::VM::Plot2D(this);
-			wp_plot->add_renderer("locator", new CLAM::VM::Locator());
-			wp_plot->add_renderer("segmentation", new CLAM::VM::SegmentEditor());
+			wp_plot = new Plot2D(this);
+			wp_plot->add_renderer("locator", new Locator());
+			wp_plot->add_renderer("segmentation", new SegmentEditor());
 			wp_plot->bring_to_front("locator");
 
 			wp_layout = new QGridLayout(this);
@@ -145,9 +145,9 @@ namespace CLAM
 			connect(wp_plot,SIGNAL(hScrollValue(int)),wp_hscroll,SLOT(updateScrollValue(int)));
 			connect(wp_plot,SIGNAL(hScrollMaxValue(int)),this,SLOT(setMaxHScroll(int)));
 
-			CLAM::VM::Locator* locator=static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator"));
+			Locator* locator=static_cast<Locator*>(wp_plot->get_renderer("locator"));
 			connect(locator,SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
-			CLAM::VM::SegmentEditor* editor=static_cast<CLAM::VM::SegmentEditor*>(wp_plot->get_renderer("segmentation"));
+			SegmentEditor* editor=static_cast<SegmentEditor*>(wp_plot->get_renderer("segmentation"));
 			connect(editor,SIGNAL(segmentOnsetChanged(unsigned,double)),
 					this,SIGNAL(segmentOnsetChanged(unsigned,double)));
 			connect(editor,SIGNAL(segmentOffsetChanged(unsigned,double)),

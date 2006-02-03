@@ -6,18 +6,18 @@
 
 namespace CLAM
 {
-	class CLAM::Segmentation;
+	class Segmentation;
 	
 	namespace VM
 	{
-		class SegmentEditor : public CLAM::VM::Renderer2D
+		class SegmentEditor : public Renderer2D
 		{
 			Q_OBJECT
 		public:
 			SegmentEditor();
 			~SegmentEditor();
 
-			void set_segmentation(CLAM::Segmentation* s);
+			void set_segmentation(Segmentation* s);
 			
 		signals:
 			void segmentOnsetChanged(unsigned,double);
@@ -40,10 +40,10 @@ namespace CLAM
 			void key_press_event(int key);
 			void key_release_event(int key);
 			void leave_event();
-			void set_viewport(const CLAM::VM::GLViewport& v);
+			void set_viewport(const GLViewport& v);
 
 		private:
-			CLAM::Segmentation* rd_segmentation;;
+			Segmentation* rd_segmentation;;
 			
 			bool     rd_mouse_pressed;
 			bool     rd_allow_change_current;
@@ -75,7 +75,7 @@ namespace CLAM
 
 			enum BoundType { LEFT_BOUND=0, RIGHT_BOUND=1, BOTTOM_BOUND=2, TOP_BOUND=3 };
 
-			std::vector<CLAM::VM::Color> rd_colors; 
+			std::vector<Color> rd_colors; 
 
 			int       rd_highlighted;
 			double    rd_vmargin;

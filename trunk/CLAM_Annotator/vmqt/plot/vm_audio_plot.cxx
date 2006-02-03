@@ -17,7 +17,7 @@ namespace CLAM
 		{
 		}
 
-		void AudioPlot::set_data(const CLAM::Audio& audio, bool update)
+		void AudioPlot::set_data(const Audio& audio, bool update)
 		{
 			if(!update)
 			{
@@ -26,36 +26,36 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = get_zoom_steps(audio.GetBuffer().Size());
 				set_zoom_steps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->set_grid_steps(audio.GetDuration()/1000.0,1.0);
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("audio"))->set_data(audio.GetBuffer());
+			static_cast<Grid*>(wp_plot->get_renderer("grid"))->set_grid_steps(audio.GetDuration()/1000.0,1.0);
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("audio"))->set_data(audio.GetBuffer());
 		}
 
 		void AudioPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->set_grid_color(CLAM::VM::Color(0,0,255));
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("audio"))->set_data_color(CLAM::VM::Color(0,0,255));
+			static_cast<Grid*>(wp_plot->get_renderer("grid"))->set_grid_color(Color(0,0,255));
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("audio"))->set_data_color(Color(0,0,255));
 		}
 
 		void AudioPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
-			static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->set_grid_color(CLAM::VM::Color(0,255,0));
-			static_cast<CLAM::VM::DataArrayRenderer*>(wp_plot->get_renderer("audio"))->set_data_color(CLAM::VM::Color(0,255,0));
+			static_cast<Grid*>(wp_plot->get_renderer("grid"))->set_grid_color(Color(0,255,0));
+			static_cast<DataArrayRenderer*>(wp_plot->get_renderer("audio"))->set_data_color(Color(0,255,0));
 		}
 
 		void AudioPlot::init_audio_plot()
 		{
-			wp_plot->add_renderer("grid", new CLAM::VM::Grid());
-			wp_plot->add_renderer("audio", new CLAM::VM::DataArrayRenderer());
+			wp_plot->add_renderer("grid", new Grid());
+			wp_plot->add_renderer("audio", new DataArrayRenderer());
 			wp_plot->send_to_back("audio");
 			wp_plot->send_to_back("grid");
 			wp_plot->bring_to_front("locator");
-			static_cast<CLAM::VM::Grid*>(wp_plot->get_renderer("grid"))->show_grid(true);
+			static_cast<Grid*>(wp_plot->get_renderer("grid"))->show_grid(true);
 			backgroundWhite();
 		}
 
-		std::pair<int,int> AudioPlot::get_zoom_steps(CLAM::TSize size)
+		std::pair<int,int> AudioPlot::get_zoom_steps(TSize size)
 		{
 			double n = 100.0;
 			int xratio = 0;
@@ -75,14 +75,14 @@ namespace CLAM
 			return std::make_pair(--xratio,--yratio);
 		}
 
-		void AudioPlot::set_xrange(double xmin, double xmax)
+		void AudioPlot::set_xrange(double xmin, double xmax, ERulerScale scale)
 		{
-			SegmentationPlot::set_xrange(xmin,xmax);
+			SegmentationPlot::set_xrange(xmin,xmax,scale);
 		}
 
-		void AudioPlot::set_yrange(double ymin, double ymax)
+		void AudioPlot::set_yrange(double ymin, double ymax, ERulerScale scale)
 		{
-			SegmentationPlot::set_yrange(ymin,ymax);
+			SegmentationPlot::set_yrange(ymin,ymax,scale);
 		}
 
 		void AudioPlot::set_zoom_steps(int hsteps, int vsteps)

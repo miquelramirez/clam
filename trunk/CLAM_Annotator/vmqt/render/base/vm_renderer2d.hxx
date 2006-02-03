@@ -10,9 +10,9 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM::VM::Grid;
+		class Grid;
 
-		class Renderer2D : public CLAM::VM::Renderer
+		class Renderer2D : public Renderer
 		{
 			friend class Plot2D;
 
@@ -22,7 +22,7 @@ namespace CLAM
 			virtual ~Renderer2D();
 
 			void set_enabled(bool enabled);
-			void set_grid(CLAM::VM::Grid* grid);
+			void set_grid(Grid* grid);
 
 		signals:
 			void requestRefresh();
@@ -46,7 +46,7 @@ namespace CLAM
 			virtual void key_release_event(int key);
 			virtual void enter_event();
 			virtual void leave_event();
-			virtual void set_viewport(const CLAM::VM::GLViewport& v);
+			virtual void set_viewport(const GLViewport& v);
 			
 			void set_key(const QString& key);
 			void catch_events(bool ce);
@@ -56,12 +56,12 @@ namespace CLAM
 			bool    rd_catch_events;
 			QString rd_key;
 
-			CLAM::VM::GLView     rd_view;
-			CLAM::VM::GLViewport rd_viewport;
-			CLAM::VM::Range      rd_xrange;
-			CLAM::VM::Range      rd_yrange;
-			CLAM::VM::Keyboard   rd_keyboard;
-			CLAM::VM::Grid*      rd_grid;
+			GLView     rd_view;
+			GLViewport rd_viewport;
+			Range      rd_xrange;
+			Range      rd_yrange;
+			Keyboard   rd_keyboard;
+			Grid*      rd_grid;
 		};
 	}
 }

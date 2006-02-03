@@ -16,20 +16,20 @@ namespace CLAM
 			SonogramBuilder();
 			~SonogramBuilder();
 
-			void make_sonogram(const CLAM::Array<CLAM::Spectrum>& data_in,
+			void make_sonogram(const Array<Spectrum>& data_in,
 							   std::vector<std::vector<float> >& data_out,
-							   std::vector<std::vector<CLAM::VM::Color> >& color_sonogram_out,
-							   std::vector<std::vector<CLAM::VM::Color> >& blackwhite_sonogram_out);
+							   std::vector<std::vector<Color> >& color_sonogram_out,
+							   std::vector<std::vector<Color> >& blackwhite_sonogram_out);
 
-			std::vector<CLAM::VM::Color> get_color_scale(int w);
-			std::vector<CLAM::VM::Color> get_gray_scale(int w);
+			std::vector<Color> get_color_scale(int w);
+			std::vector<Color> get_gray_scale(int w);
 
 		private:
-			CLAM::VM::Palette sb_palette;
+			Palette sb_palette;
 
 			enum { MaxSpectrums=256, MaxSpectrumSize=256};
 			
-			float matrix_block_mean(const CLAM::Array<CLAM::Spectrum>& specMtx, 
+			float matrix_block_mean(const Array<Spectrum>& specMtx, 
 									unsigned firstRow, unsigned lastRow, 
 									unsigned  firstCol, unsigned  lastCol);
 

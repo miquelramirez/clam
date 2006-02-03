@@ -24,7 +24,7 @@ namespace CLAM
 		{
 		}
 
-		void PlayableAudioPlot::set_data(const CLAM::Audio& audio, bool update)
+		void PlayableAudioPlot::set_data(const Audio& audio, bool update)
 		{
 			AudioPlot::set_data(audio,update);
 			if(!update)
@@ -63,8 +63,8 @@ namespace CLAM
 
 		void PlayableAudioPlot::init_playable_audio_plot()
 		{
-			wp_audio_player = new CLAM::VM::AudioPlayer;
-			wp_wplayer = new CLAM::VM::WPlayer(this);
+			wp_audio_player = new AudioPlayer;
+			wp_wplayer = new WPlayer(this);
 			wp_wplayer->set_player(wp_audio_player);
 
 			wp_combo_box = new QComboBox(this);
@@ -94,12 +94,12 @@ namespace CLAM
 
 			wp_layout->addLayout(layout,3,1);
 			
-			connect(static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),
+			connect(static_cast<Locator*>(wp_plot->get_renderer("locator")),
 					SIGNAL(selectedRegion(double,double)),wp_audio_player,SLOT(timeBounds(double,double)));
 			connect(wp_audio_player,SIGNAL(playingTime(double)),
-					static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double)));
+					static_cast<Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double)));
 			connect(wp_audio_player,SIGNAL(stopTime(double,bool)),
-					static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double,bool)));
+					static_cast<Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double,bool)));
 			connect(wp_combo_box,SIGNAL(activated(int)),this,SLOT(setColorSchema(int)));
 
 			backgroundWhite();

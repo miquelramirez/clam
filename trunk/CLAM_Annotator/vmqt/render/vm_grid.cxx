@@ -36,7 +36,7 @@ namespace CLAM
 			emit requestRefresh();
 		}
 
-		void Grid::set_grid_color(const CLAM::VM::Color& color)
+		void Grid::set_grid_color(const Color& color)
 		{
 			rd_grid_color = color;
 			emit requestRefresh();

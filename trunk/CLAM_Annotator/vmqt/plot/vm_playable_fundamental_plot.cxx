@@ -24,7 +24,7 @@ namespace CLAM
 		{
 		}
 
-		void PlayableFundamentalPlot::set_data(const CLAM::Segment& segment, bool update)
+		void PlayableFundamentalPlot::set_data(const Segment& segment, bool update)
 		{
 			FundamentalPlot::set_data(segment,update);
 			if(!update)
@@ -84,8 +84,8 @@ namespace CLAM
 
 		void PlayableFundamentalPlot::init_playable_fundamental_plot()
 		{
-			wp_fund_player = new CLAM::VM::FundFreqPlayer;
-			wp_wplayer = new CLAM::VM::WPlayer(this);
+			wp_fund_player = new FundFreqPlayer;
+			wp_wplayer = new WPlayer(this);
 			wp_wplayer->set_player(wp_fund_player);
 
 			wp_play_mode_combo_box = new QComboBox(this);
@@ -128,12 +128,12 @@ namespace CLAM
 
 			wp_layout->addLayout(layout,3,1);
 			
-			connect(static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),
+			connect(static_cast<Locator*>(wp_plot->get_renderer("locator")),
 					SIGNAL(selectedRegion(double,double)),wp_fund_player,SLOT(timeBounds(double,double)));
 			connect(wp_fund_player,SIGNAL(playingTime(double)),
-					static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double)));
+					static_cast<Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double)));
 			connect(wp_fund_player,SIGNAL(stopTime(double,bool)),
-					static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double,bool)));
+					static_cast<Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double,bool)));
 			connect(wp_schema_combo_box,SIGNAL(activated(int)),this,SLOT(setColorSchema(int)));
 			connect(wp_play_mode_combo_box,SIGNAL(activated(int)),this,SLOT(setPlayingFlags(int)));
 

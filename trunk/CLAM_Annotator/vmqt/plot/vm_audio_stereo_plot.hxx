@@ -10,14 +10,14 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class AudioStereoPlot : public CLAM::VM::MultiDisplayPlot
+		class AudioStereoPlot : public MultiDisplayPlot
 		{
 			Q_OBJECT
 		public:
 			AudioStereoPlot(QWidget* parent=0);
 			virtual ~AudioStereoPlot();
 
-			virtual void set_data(const CLAM::Audio& chn0, const CLAM::Audio& chn1, bool update=false);
+			virtual void set_data(const Audio& chn0, const Audio& chn1, bool update=false);
 
 		signals:
 			void selectedRegion(double,double);
@@ -38,13 +38,13 @@ namespace CLAM
 			void setMaxVScroll(int);
 
 		private:
-			CLAM::VM::Ruler*       wp_yruler0;
-			CLAM::VM::Ruler*       wp_yruler1;
-			CLAM::VM::ScrollGroup* wp_vscroll;
+			Ruler*       wp_yruler0;
+			Ruler*       wp_yruler1;
+			ScrollGroup* wp_vscroll;
 
 			void create_display();
 			void init_audio_stereo_plot();
-			std::pair<int,int> get_zoom_steps(CLAM::TSize size);
+			std::pair<int,int> get_zoom_steps(TSize size);
 		};
 	}
 }

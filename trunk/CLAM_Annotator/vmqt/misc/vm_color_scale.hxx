@@ -16,7 +16,7 @@ namespace CLAM
 			ColorScale(QWidget* parent=0);
 			~ColorScale();
 
-			void set_scale(const std::vector<CLAM::VM::Color>& scale);
+			void set_scale(const std::vector<Color>& scale);
 
 		signals:
 			void widthChanged(int);
@@ -26,7 +26,7 @@ namespace CLAM
 			void resizeEvent(QResizeEvent* e);
 
 		private:
-			std::vector<CLAM::VM::Color> cs_scale;
+			std::vector<Color> cs_scale;
 
 			void init_color_scale();
 

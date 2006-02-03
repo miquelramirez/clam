@@ -9,15 +9,15 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class MultiBPFPlot : public CLAM::VM::SegmentationPlot
+		class MultiBPFPlot : public SegmentationPlot
 		{
 			Q_OBJECT
 		public:
 			MultiBPFPlot(QWidget* parent=0);
 			virtual ~MultiBPFPlot();
 
-			virtual void add_bpf(const QString& key, CLAM::BPF* bpf);
-			virtual void set_colors(const QString& key, const CLAM::VM::Color& cline, const CLAM::VM::Color& chandler);
+			virtual void add_bpf(const QString& key, BPF* bpf);
+			virtual void set_colors(const QString& key, const Color& cline, const Color& chandler);
 			virtual void set_flags(const QString& key, int flags);
 			
 			void set_grid_steps(double xstep, double ystep);

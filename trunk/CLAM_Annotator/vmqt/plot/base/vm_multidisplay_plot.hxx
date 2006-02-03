@@ -12,7 +12,7 @@ namespace CLAM
 		class Plot2D;
 		class ScrollGroup;
 
-		class MultiDisplayPlot : public CLAM::VM::WPlot
+		class MultiDisplayPlot : public WPlot
 		{
 			Q_OBJECT
 		public:
@@ -20,10 +20,10 @@ namespace CLAM
 			virtual ~MultiDisplayPlot();
 
 		protected:
-			CLAM::VM::Ruler*       wp_xruler;
-			CLAM::VM::ScrollGroup* wp_hscroll;
+			Ruler*       wp_xruler;
+			ScrollGroup* wp_hscroll;
 
-			std::vector<CLAM::VM::Plot2D*> wp_display;
+			std::vector<Plot2D*> wp_display;
 
 			virtual void create_display()=0;
 

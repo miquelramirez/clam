@@ -86,11 +86,11 @@ namespace CLAM
 			set_yrange(cp_yrange.max,cp_yrange.min);
 		}
 
-		bool Plot2D::add_renderer(const QString& key, CLAM::VM::Renderer2D* renderer)
+		bool Plot2D::add_renderer(const QString& key, Renderer2D* renderer)
 		{
 			if(exist_renderer(key)) return false;
 			cp_renderers[key] = renderer;
-			CLAM::VM::Renderer2D* rd = get_renderer(key);
+			Renderer2D* rd = get_renderer(key);
 			if(!rd) return false;
 			connect(rd,SIGNAL(requestUpdate()),this,SLOT(updateRenderers()));
 			connect(rd,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
@@ -112,7 +112,7 @@ namespace CLAM
 			return true;
 		}
 	
-		CLAM::VM::Renderer2D* Plot2D::get_renderer(const QString& key)
+		Renderer2D* Plot2D::get_renderer(const QString& key)
 		{
 			if(!exist_renderer(key)) return 0;
 			return cp_renderers[key];

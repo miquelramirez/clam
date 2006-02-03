@@ -7,7 +7,6 @@ namespace CLAM
 {
 	namespace VM
 	{
-
 		class Renderer : public QObject
 		{
 		public:

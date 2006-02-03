@@ -15,10 +15,10 @@ namespace CLAM
 			Plot(QWidget* parent=0);
 			virtual ~Plot();
 
-			void set_bg_color(const CLAM::VM::Color& c);
+			void set_bg_color(const Color& c);
 
 		protected:
-			CLAM::VM::Color cp_bg_color;
+			Color cp_bg_color;
 
 			virtual void draw()=0;
 		};

@@ -27,7 +27,7 @@ namespace CLAM
 		{
 		}
 
-		void PlayableMultiBPFPlot::add_bpf(const QString& key, CLAM::BPF* bpf)
+		void PlayableMultiBPFPlot::add_bpf(const QString& key, BPF* bpf)
 		{
 			MultiBPFPlot::add_bpf(key,bpf);
 			if(wp_current_bpf_combo_box->findText(key) == -1)
@@ -38,13 +38,13 @@ namespace CLAM
 			setCurrentBPF(wp_current_bpf_combo_box->currentText());
 		}
 
-		void PlayableMultiBPFPlot::set_xrange(double xmin, double xmax, CLAM::VM::EScale scale)
+		void PlayableMultiBPFPlot::set_xrange(double xmin, double xmax, ERulerScale scale)
 		{
 			MultiBPFPlot::set_xrange(xmin,xmax,scale);
 			wp_bpf_player->set_duration(xmax);
 		}
 
-		void PlayableMultiBPFPlot::set_yrange(double ymin, double ymax, CLAM::VM::EScale scale)
+		void PlayableMultiBPFPlot::set_yrange(double ymin, double ymax, ERulerScale scale)
 		{
 			MultiBPFPlot::set_yrange(ymin,ymax,scale);
 			wp_bpf_player->set_pitch_bounds(ymin,ymax);
@@ -90,7 +90,7 @@ namespace CLAM
 		void PlayableMultiBPFPlot::setCurrentBPF(QString key)
 		{
 			MultiBPFPlot::setCurrentBPF(key);
-			wp_bpf_player->set_data(static_cast<CLAM::VM::BPFEditor*>(wp_plot->get_renderer(key))->get_data());
+			wp_bpf_player->set_data(static_cast<BPFEditor*>(wp_plot->get_renderer(key))->get_data());
 		}
 
 		void PlayableMultiBPFPlot::set_color_schema(int index)
@@ -134,12 +134,12 @@ namespace CLAM
 
 		void PlayableMultiBPFPlot::init_playable_multibpf_plot()
 		{
-			wp_bpf_player = new CLAM::VM::BPFPlayer;
-			wp_wplayer = new CLAM::VM::WPlayer(this);
+			wp_bpf_player = new BPFPlayer;
+			wp_wplayer = new WPlayer(this);
 			wp_wplayer->set_player(wp_bpf_player);
 
 			wp_current_bpf_combo_box = new QComboBox(this);
-			wp_current_bpf_combo_box->setToolTip("Choose BPF To Play");
+			wp_current_bpf_combo_box->setToolTip("Choose Current BPF");
 			wp_current_bpf_combo_box->hide();
 
 			wp_schema_combo_box = new QComboBox(this);
@@ -195,12 +195,12 @@ namespace CLAM
 
 			wp_layout->addLayout(layout,3,1);
 			
-			connect(static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),
+			connect(static_cast<Locator*>(wp_plot->get_renderer("locator")),
 					SIGNAL(selectedRegion(double,double)),wp_bpf_player,SLOT(timeBounds(double,double)));
 			connect(wp_bpf_player,SIGNAL(playingTime(double)),
-					static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double)));
+					static_cast<Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double)));
 			connect(wp_bpf_player,SIGNAL(stopTime(double,bool)),
-					static_cast<CLAM::VM::Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double,bool)));
+					static_cast<Locator*>(wp_plot->get_renderer("locator")),SLOT(updateLocator(double,bool)));
 			connect(wp_schema_combo_box,SIGNAL(activated(int)),this,SLOT(set_color_schema(int)));
 			connect(wp_current_bpf_combo_box,SIGNAL(currentIndexChanged(QString)),this,SLOT(setCurrentBPF(QString)));
 			connect(wp_show_grid,SIGNAL(stateChanged(int)),this,SLOT(show_grid(int)));

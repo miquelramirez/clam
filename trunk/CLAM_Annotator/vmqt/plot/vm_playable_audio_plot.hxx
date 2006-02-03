@@ -9,17 +9,17 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM::VM::WPlayer;
-		class CLAM::VM::AudioPlayer;
+		class WPlayer;
+		class AudioPlayer;
 
-		class PlayableAudioPlot : public CLAM::VM::AudioPlot
+		class PlayableAudioPlot : public AudioPlot
 		{
 			Q_OBJECT
 		public:
 			PlayableAudioPlot(QWidget* parent=0);
 			~PlayableAudioPlot();
 
-			void set_data(const CLAM::Audio& audio, bool update=false);
+			void set_data(const Audio& audio, bool update=false);
 
 		public slots:
 			void backgroundWhite();
@@ -31,8 +31,8 @@ namespace CLAM
 		private:
 			QComboBox* wp_combo_box;
 
-			CLAM::VM::WPlayer*     wp_wplayer;
-			CLAM::VM::AudioPlayer* wp_audio_player;
+			WPlayer*     wp_wplayer;
+			AudioPlayer* wp_audio_player;
 
 			void init_playable_audio_plot();
 		};

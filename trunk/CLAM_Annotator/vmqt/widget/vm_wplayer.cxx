@@ -19,7 +19,7 @@ namespace CLAM
 			if(wp_player) delete wp_player;
 		}
 
-		void WPlayer::set_player(CLAM::VM::Player* player)
+		void WPlayer::set_player(Player* player)
 		{
 			wp_player = player;
 		}

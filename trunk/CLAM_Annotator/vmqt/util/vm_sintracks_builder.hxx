@@ -17,19 +17,18 @@ namespace CLAM
 			SinTracksBuilder();
 			~SinTracksBuilder();
 
-			const std::vector< std::vector<CLAM::VM::SinTrackNode> >&
-			get_tracks(const CLAM::Array<CLAM::SpectralPeakArray>& peakMtx);
+			const std::vector< std::vector<SinTrackNode> >& get_tracks(const Array<SpectralPeakArray>& peakMtx);
 
 		private:
-			std::map<unsigned,unsigned>                        tb_table;
-			std::vector< std::vector<CLAM::VM::SinTrackNode> > tb_tracks;
-			CLAM::VM::Palette                                  tb_palette;
+			std::map<unsigned,unsigned>              tb_table;
+			std::vector< std::vector<SinTrackNode> > tb_tracks;
+			Palette                                  tb_palette;
 
 			void add_to_table(unsigned trackId, unsigned index);
 			bool has_track_id(unsigned trackId);
 			unsigned get_index(unsigned trackId);
 
-			void add_nodes(const CLAM::SpectralPeakArray& peaks, unsigned timeIndex);
+			void add_nodes(const SpectralPeakArray& peaks, unsigned timeIndex);
 
 			float clamp_to_range(float value);
 		};

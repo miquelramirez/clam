@@ -19,12 +19,12 @@ namespace CLAM
 		{
 		}
 
-		void Locator::set_locator_color(const CLAM::VM::Color& c)
+		void Locator::set_locator_color(const Color& c)
 		{
 			rd_locator_color = c;
 		}
 
-		void Locator::set_region_color(const CLAM::VM::Color& c)
+		void Locator::set_region_color(const Color& c)
 		{
 			rd_region_color = c;
 		}

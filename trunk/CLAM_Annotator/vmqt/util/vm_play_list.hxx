@@ -7,15 +7,15 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM::VM::Player;
+		class Player;
 		
 		class PlayList
 		{
-			typedef std::list<CLAM::VM::Player*> PlayerList;
+			typedef std::list<Player*> PlayerList;
 				
 		public:
-			static void add(CLAM::VM::Player* player);
-			static void remove(CLAM::VM::Player* player);
+			static void add(Player* player);
+			static void remove(Player* player);
 			static void stop();
 
 		private:

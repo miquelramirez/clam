@@ -5,21 +5,21 @@
 
 namespace CLAM
 {
-	class CLAM::Segment;
+	class Segment;
 
 	namespace VM
 	{
-		class FundFreqPlayer : public CLAM::VM::Player
+		class FundFreqPlayer : public Player
 		{
 			Q_OBJECT
 		public:
 			FundFreqPlayer(QObject* parent=0);
 			~FundFreqPlayer();
 
-			void set_data(const CLAM::Segment& segment);
+			void set_data(const Segment& segment);
 
 		private:
-			const CLAM::Segment* pl_segment;
+			const Segment* pl_segment;
 
 			void run();
 		};

@@ -7,7 +7,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class Grid : public CLAM::VM::Renderer2D
+		class Grid : public Renderer2D
 		{
 		public:
 			Grid();
@@ -16,7 +16,7 @@ namespace CLAM
 			void show_grid(bool show);
 			void snap_to_grid(bool snap);
 			void set_grid_steps(double xstep, double ystep);
-		    void set_grid_color(const CLAM::VM::Color& color);
+		    void set_grid_color(const Color& color);
 
 			bool show_grid() const;
 			bool snap_to_grid() const;
@@ -33,7 +33,7 @@ namespace CLAM
 			double rd_grid_xstep;
 			double rd_grid_ystep;
 			
-			CLAM::VM::Color rd_grid_color;
+			Color rd_grid_color;
 		};
 	}
 }

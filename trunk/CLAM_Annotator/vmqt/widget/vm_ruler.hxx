@@ -12,14 +12,14 @@ namespace CLAM
 		{
 			Q_OBJECT
 		public:
-			Ruler(QWidget* parent, CLAM::VM::ERulerPos pos, CLAM::VM::EScale scale=CLAM::VM::eLinearScale);
+			Ruler(QWidget* parent, ERulerPos pos, ERulerScale scale=CLAM::VM::eLinearScale);
 			~Ruler();
 
-			void set_scale(CLAM::VM::EScale scale);
-			CLAM::VM::EScale get_scale() const;
+			void set_scale(ERulerScale scale);
+			ERulerScale get_scale() const;
 	    
-			void set_bg_color(const CLAM::VM::Color& c);
-			void set_fg_color(const CLAM::VM::Color& c);
+			void set_bg_color(const Color& c);
+			void set_fg_color(const Color& c);
 	
 			const QFont& get_font() const;
 
@@ -38,10 +38,10 @@ namespace CLAM
 			int   rw_label_height;
 			QFont rw_font;
 	
-			CLAM::VM::ERulerPos rw_position;
-			CLAM::VM::EScale    rw_scale;
-			CLAM::VM::Range     rw_range;
-			CLAM::VM::Color     rw_fg_color;
+			ERulerPos   rw_position;
+			ERulerScale rw_scale;
+			Range       rw_range;
+			Color       rw_fg_color;
 			
 			enum { MINTICKS=3, MAXTICKS=17 };
 

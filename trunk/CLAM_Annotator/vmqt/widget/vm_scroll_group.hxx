@@ -13,13 +13,13 @@ namespace CLAM
 	namespace VM
 	{
 
-		class CLAM::VM::VerticalLabel;
+		class VerticalLabel;
 
 		class ScrollGroup :  public QWidget
 		{
 			Q_OBJECT
 		public:
-			ScrollGroup(CLAM::VM::EOrientation ori, QWidget* parent=0);
+			ScrollGroup(EOrientation ori, QWidget* parent=0);
 			~ScrollGroup();
 
 			void set_pixmaps(const QPixmap& zin, const QPixmap& zout);
@@ -37,12 +37,12 @@ namespace CLAM
 			void updateZoomRatio(QString);
 
 		private:
-			QScrollBar*   sg_scroll_bar;
-			QLabel*       sg_hlabel;
-			QPushButton*  sg_zin_button;
-			QPushButton*  sg_zout_button;
+			QScrollBar*    sg_scroll_bar;
+			QLabel*        sg_hlabel;
+			QPushButton*   sg_zin_button;
+			QPushButton*   sg_zout_button;
 
-			CLAM::VM::VerticalLabel* sg_vlabel;
+			VerticalLabel* sg_vlabel;
 
 			void build_buttons();
 			void build_horizontal();

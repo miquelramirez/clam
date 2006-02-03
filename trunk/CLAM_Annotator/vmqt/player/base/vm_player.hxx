@@ -33,12 +33,12 @@ namespace CLAM
 			void timeBounds(double, double);
 
 		protected:
-			int             pl_playing_flags;
-			volatile bool   pl_is_playing;
-			volatile bool   pl_is_paused;
-			double          pl_sampling_rate;
-			double          pl_begin_time;
-			CLAM::VM::Range pl_time_bounds;
+			int           pl_playing_flags;
+			volatile bool pl_is_playing;
+			volatile bool pl_is_paused;
+			double        pl_sampling_rate;
+			double        pl_begin_time;
+			Range         pl_time_bounds;
 
 			virtual void run()=0; // thread code here
 		};

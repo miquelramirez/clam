@@ -9,14 +9,14 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class SpectrogramRenderer : public CLAM::VM::Renderer2D
+		class SpectrogramRenderer : public Renderer2D
 		{
 			Q_OBJECT
 		public:
 			SpectrogramRenderer();
 			~SpectrogramRenderer();
 
-			void set_data(const CLAM::Array<CLAM::Spectrum>& specMtx);
+			void set_data(const Array<Spectrum>& specMtx);
 
 		signals:
 			void fixedLabels(QString, QString);
@@ -38,11 +38,11 @@ namespace CLAM
 			int rd_glBlackWhiteList;
 			int rd_colormap;
 
-			std::vector<std::vector<float> >           rd_computed_data;
-			std::vector<std::vector<CLAM::VM::Color> > rd_color_data;
-			std::vector<std::vector<CLAM::VM::Color> > rd_blackwhite_data;
+			std::vector<std::vector<float> > rd_computed_data;
+			std::vector<std::vector<Color> > rd_color_data;
+			std::vector<std::vector<Color> > rd_blackwhite_data;
 
-			CLAM::VM::GLView      rd_local_view;
+			GLView rd_local_view;
 
 			enum { COLOR_SONOGRAM=0, BW_SONOGRAM=1 };
 

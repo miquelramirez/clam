@@ -10,20 +10,20 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM::VM::WPlayer;
-		class CLAM::VM::BPFPlayer;
+		class WPlayer;
+		class BPFPlayer;
 
-		class PlayableMultiBPFPlot : public CLAM::VM::MultiBPFPlot
+		class PlayableMultiBPFPlot : public MultiBPFPlot
 		{
 			Q_OBJECT
 		public:
 			PlayableMultiBPFPlot(QWidget* parent=0);
 			virtual ~PlayableMultiBPFPlot();
 
-			void add_bpf(const QString& key, CLAM::BPF* bpf);
+			void add_bpf(const QString& key, BPF* bpf);
 
-			void set_xrange(double xmin, double xmax, CLAM::VM::EScale scale=CLAM::VM::eLinearScale);
-			void set_yrange(double ymin, double ymax, CLAM::VM::EScale scale=CLAM::VM::eLinearScale);
+			void set_xrange(double xmin, double xmax, ERulerScale scale=CLAM::VM::eLinearScale);
+			void set_yrange(double ymin, double ymax, ERulerScale scale=CLAM::VM::eLinearScale);
 
 		public slots:
 			void backgroundWhite();
@@ -44,8 +44,8 @@ namespace CLAM
 			QComboBox* wp_schema_combo_box;
 			QComboBox* wp_current_bpf_combo_box;
 
-			CLAM::VM::WPlayer*     wp_wplayer;
-			CLAM::VM::BPFPlayer* wp_bpf_player;
+			WPlayer*   wp_wplayer;
+			BPFPlayer* wp_bpf_player;
 
 			void init_playable_multibpf_plot();
 		};

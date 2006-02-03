@@ -16,7 +16,7 @@ namespace CLAM
 		{
 		}
 
-		void Plot::set_bg_color(const CLAM::VM::Color& c)
+		void Plot::set_bg_color(const Color& c)
 		{
 			cp_bg_color = c;
 			updateGL();
