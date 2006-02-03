@@ -25,7 +25,7 @@ namespace CLAM
 		{
 		}
 
-		void PlayableAudioStereoPlot::set_data(const CLAM::Audio& chn0, const CLAM::Audio& chn1, bool update)
+		void PlayableAudioStereoPlot::set_data(const Audio& chn0, const Audio& chn1, bool update)
 		{
 			AudioStereoPlot::set_data(chn0,chn1,update);
 			if(!update)
@@ -104,8 +104,8 @@ namespace CLAM
 
 		void PlayableAudioStereoPlot::init_playable_audio_stereo_plot()
 		{
-			wp_audio_player = new CLAM::VM::AudioPlayer;
-			wp_wplayer = new CLAM::VM::WPlayer(this);
+			wp_audio_player = new AudioPlayer;
+			wp_wplayer = new WPlayer(this);
 			wp_wplayer->set_player(wp_audio_player);
 
 			wp_combo_box = new QComboBox(this);
@@ -156,21 +156,21 @@ namespace CLAM
 
 			wp_layout->addLayout(layout,4,1);
 			
-			connect(static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0")),
+			connect(static_cast<Locator*>(wp_display[MASTER]->get_renderer("locator0")),
 					SIGNAL(selectedRegion(double,double)),wp_audio_player,SLOT(timeBounds(double,double)));
-			connect(static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
+			connect(static_cast<Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
 					SIGNAL(selectedRegion(double,double)),wp_audio_player,SLOT(timeBounds(double,double)));
 			connect(wp_audio_player,SIGNAL(playingTime(double)),
-					static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0")),
+					static_cast<Locator*>(wp_display[MASTER]->get_renderer("locator0")),
 					SLOT(updateLocator(double)));
 			connect(wp_audio_player,SIGNAL(playingTime(double)),
-					static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
+					static_cast<Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
 					SLOT(updateLocator(double)));
 			connect(wp_audio_player,SIGNAL(stopTime(double,bool)),
-					static_cast<CLAM::VM::Locator*>(wp_display[MASTER]->get_renderer("locator0")),
+					static_cast<Locator*>(wp_display[MASTER]->get_renderer("locator0")),
 					SLOT(updateLocator(double,bool)));
 			connect(wp_audio_player,SIGNAL(stopTime(double,bool)),
-					static_cast<CLAM::VM::Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
+					static_cast<Locator*>(wp_display[SLAVE]->get_renderer("locator1")),
 					SLOT(updateLocator(double,bool)));
 			connect(wp_combo_box,SIGNAL(activated(int)),this,SLOT(setColorSchema(int)));
 			connect(wp_mute_chn0,SIGNAL(stateChanged(int)),this,SLOT(muteChannel0(int)));

@@ -10,8 +10,8 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class CLAM::VM::WPlayer;
-		class CLAM::VM::AudioPlayer;
+		class WPlayer;
+		class AudioPlayer;
 
 		class PlayableAudioStereoPlot : public CLAM::VM::AudioStereoPlot
 		{
@@ -20,7 +20,7 @@ namespace CLAM
 			PlayableAudioStereoPlot(QWidget* parent=0);
 			~PlayableAudioStereoPlot();
 
-			void set_data(const CLAM::Audio& chn0, const CLAM::Audio& chn1, bool update=false);
+			void set_data(const Audio& chn0, const Audio& chn1, bool update=false);
 
 		public slots:
 			void backgroundWhite();
@@ -36,8 +36,8 @@ namespace CLAM
 			QCheckBox* wp_mute_chn0;
 			QCheckBox* wp_mute_chn1;
 
-			CLAM::VM::WPlayer*     wp_wplayer;
-			CLAM::VM::AudioPlayer* wp_audio_player;
+			WPlayer*     wp_wplayer;
+			AudioPlayer* wp_audio_player;
 
 			void init_playable_audio_stereo_plot();
 		};
