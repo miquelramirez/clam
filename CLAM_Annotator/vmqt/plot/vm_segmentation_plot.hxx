@@ -51,10 +51,10 @@ namespace CLAM
 		protected:
 			QGridLayout* wp_layout;    
 			Plot2D*      wp_plot;
-
-		private:
 			Ruler*       wp_xruler;
 			Ruler*       wp_yruler;
+
+		private:
 			ScrollGroup* wp_hscroll;
 			ScrollGroup* wp_vscroll;
 

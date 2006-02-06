@@ -1,3 +1,4 @@
+#include "vm_ruler.hxx"
 #include "vm_plot2d.hxx"
 #include "vm_grid.hxx"
 #include "vm_bpf_editor.hxx"
@@ -33,6 +34,7 @@ namespace CLAM
 				wp_plot->bring_to_front("locator");
 				wp_plot->get_renderer(key)->set_grid(static_cast<Grid*>(wp_plot->get_renderer("grid")));
 				static_cast<BPFEditor*>(wp_plot->get_renderer(key))->set_data(bpf);
+				if(wp_is_read_only) static_cast<BPFEditor*>(wp_plot->get_renderer(key))->set_flags(0);
 				wp_bpf_keys[key]=static_cast<BPFEditor*>(wp_plot->get_renderer(key))->get_flags();
 				setCurrentBPF(key);
 				connect(static_cast<BPFEditor*>(wp_plot->get_renderer(key)),
@@ -66,6 +68,8 @@ namespace CLAM
 		void MultiBPFPlot::set_grid_steps(double xstep, double ystep)
 		{
 			static_cast<Grid*>(wp_plot->get_renderer("grid"))->set_grid_steps(xstep,ystep);
+			wp_xruler->set_step(xstep);
+			wp_yruler->set_step(ystep);
 		}
 
 		void MultiBPFPlot::backgroundWhite()

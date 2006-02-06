@@ -1,3 +1,4 @@
+#include "vm_ruler.hxx"
 #include "vm_plot2d.hxx"
 #include "vm_data_array_renderer.hxx"
 #include "vm_fundamental_plot.hxx"
@@ -46,6 +47,9 @@ namespace CLAM
 			wp_plot->add_renderer("fundamental", new DataArrayRenderer());
 			wp_plot->send_to_back("fundamental");
 			wp_plot->bring_to_front("locator");
+			wp_xruler->set_step(0.025);
+			wp_yruler->set_step(5.0);
+			wp_yruler->show_integers();
 			backgroundWhite();
 		}
 
@@ -56,7 +60,7 @@ namespace CLAM
 			while(n < size)
 			{
 				n *= 2.0;
-				xratio++;;
+				xratio++;
 			}
 			
 			n = 40.0;
