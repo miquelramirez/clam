@@ -52,7 +52,7 @@ namespace CLAM
 			wp_plot->send_to_back("audio");
 			wp_plot->send_to_back("grid");
 			wp_plot->bring_to_front("locator");
-			wp_xruler->set_step(0.025);
+			wp_xruler->set_step(0.01);
 			wp_yruler->set_step(0.05);
 			static_cast<Grid*>(wp_plot->get_renderer("grid"))->show_grid(true);
 			backgroundWhite();

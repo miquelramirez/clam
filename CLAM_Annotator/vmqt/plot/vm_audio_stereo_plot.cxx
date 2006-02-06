@@ -170,7 +170,7 @@ namespace CLAM
 			wp_layout->addWidget(wp_vscroll,1,2,2,1);
 			wp_layout->addWidget(wp_hscroll,3,1);
 
-			wp_xruler->set_step(0.025);
+			wp_xruler->set_step(0.01);
 			wp_yruler0->set_step(0.05);
 			wp_yruler1->set_step(0.05);
 		   

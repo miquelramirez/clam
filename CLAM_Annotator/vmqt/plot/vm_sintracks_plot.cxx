@@ -35,7 +35,7 @@ namespace CLAM
 			wp_plot->add_renderer("sintracks", new SinTracksRenderer());
 			wp_plot->send_to_back("sintracks");
 			wp_plot->bring_to_front("locator");
-			wp_xruler->set_step(0.025);
+			wp_xruler->set_step(0.01);
 			wp_yruler->set_step(5.0);
 			wp_yruler->show_integers();
 			backgroundWhite();
