@@ -151,11 +151,10 @@ namespace CLAM
 
 		void BPFEditor::mouse_move_event(double x, double y)
 		{
-			if(!rd_flags) return;
-			if(!rd_enabled) return;
 			if(!rd_bpf || !rd_catch_events) return;
 			if(!rd_bpf->Size()) return;
-		   
+			if(!rd_enabled) return;
+	   
 			switch (rd_edition_mode)
 			{
 				case DraggingPoint:
