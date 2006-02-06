@@ -1,4 +1,5 @@
 #include <QGridLayout>
+#include "vm_ruler.hxx"
 #include "vm_plot2d.hxx"
 #include "vm_sonogram_builder.hxx"
 #include "vm_specgram_panel.hxx"
@@ -72,6 +73,11 @@ namespace CLAM
 			wp_plot->send_to_back("spectrogram");
 			wp_plot->bring_to_front("locator");
 
+			wp_xruler->set_step(0.025);
+			wp_yruler->set_step(5.0);
+			wp_yruler->show_integers();
+
+			backgroundWhite();
 			wp_panel = new SpecgramPanel(this);
 			wp_layout->addWidget(wp_panel,3,0,1,3);
 
@@ -112,7 +118,7 @@ namespace CLAM
 			while(n < size)
 			{
 				n *= 2.0;
-				xratio++;;
+				xratio++;
 			}
 			
 			n = 40.0;

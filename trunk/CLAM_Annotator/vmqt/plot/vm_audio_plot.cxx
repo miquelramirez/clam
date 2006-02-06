@@ -1,3 +1,4 @@
+#include "vm_ruler.hxx"
 #include "vm_plot2d.hxx"
 #include "vm_grid.hxx"
 #include "vm_data_array_renderer.hxx"
@@ -51,6 +52,8 @@ namespace CLAM
 			wp_plot->send_to_back("audio");
 			wp_plot->send_to_back("grid");
 			wp_plot->bring_to_front("locator");
+			wp_xruler->set_step(0.025);
+			wp_yruler->set_step(0.05);
 			static_cast<Grid*>(wp_plot->get_renderer("grid"))->show_grid(true);
 			backgroundWhite();
 		}
@@ -62,7 +65,7 @@ namespace CLAM
 			while(n < size)
 			{
 				n *= 2.0;
-				xratio++;;
+				xratio++;
 			}
 			
 			n = 0.2;

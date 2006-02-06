@@ -24,12 +24,14 @@ namespace CLAM
 		void SegmentationPlot::set_xrange(double xmin, double xmax, ERulerScale scale)
 		{
 			wp_plot->set_xrange(xmin,xmax);
+			wp_xruler->set_range(xmin,xmax);
 			wp_xruler->set_scale(scale);
 		}
 
 		void SegmentationPlot::set_yrange(double ymin, double ymax, ERulerScale scale)
 		{
 			wp_plot->set_yrange(ymin,ymax);
+			wp_yruler->set_range(ymin,ymax);
 			wp_yruler->set_scale(scale);
 			adjust_yruler_width(ymin,ymax);
 		}

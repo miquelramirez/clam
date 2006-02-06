@@ -1,5 +1,6 @@
 #include "CLAM_Math.hxx"
 #include "SpecTypeFlags.hxx"
+#include "vm_ruler.hxx"
 #include "vm_plot2d.hxx"
 #include "vm_peaks_renderer.hxx"
 #include "vm_data_array_renderer.hxx"
@@ -89,6 +90,10 @@ namespace CLAM
 			wp_plot->send_to_back("peaks");
 			wp_plot->send_to_back("spectrum");
 			wp_plot->bring_to_front("locator");
+			wp_xruler->set_step(5.0);
+			wp_yruler->set_step(1.0);
+			wp_xruler->show_integers();
+			wp_yruler->show_integers();
 			backgroundWhite();
 		}
 		   
@@ -148,7 +153,7 @@ namespace CLAM
 			while(n < size)
 			{
 				n *= 2.0;
-				xratio++;;
+				xratio++;
 			}
 			
 			n = 5.0;

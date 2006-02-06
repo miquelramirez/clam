@@ -170,6 +170,10 @@ namespace CLAM
 			wp_layout->addWidget(wp_vscroll,1,2,2,1);
 			wp_layout->addWidget(wp_hscroll,3,1);
 
+			wp_xruler->set_step(0.025);
+			wp_yruler0->set_step(0.05);
+			wp_yruler1->set_step(0.05);
+		   
 			// connect yrulers and vertical scroll group
 			connect(wp_display[MASTER],SIGNAL(yRulerRange(double,double)),
 					wp_yruler0,SLOT(updateRange(double,double)));
@@ -198,7 +202,7 @@ namespace CLAM
 			while(n < size)
 			{
 				n *= 2.0;
-				xratio++;;
+				xratio++;
 			}
 			
 			n = 0.2;
