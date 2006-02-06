@@ -122,7 +122,8 @@ namespace CLAM
 
 				if(k < mBPFData.Size()-1) if(TData(i/mSampleRate) >= mBPFData.GetXValue(k+1)) k++;
 
-				freqControl.DoControl(mBPFData.GetValueFromIndex(k));
+				if (k<mBPFData.Size())
+					freqControl.DoControl(mBPFData.GetValueFromIndex(k));
 				
 				if(mAudioPtrL) 
 				{
