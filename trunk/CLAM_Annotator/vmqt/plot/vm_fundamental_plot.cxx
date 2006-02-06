@@ -47,7 +47,7 @@ namespace CLAM
 			wp_plot->add_renderer("fundamental", new DataArrayRenderer());
 			wp_plot->send_to_back("fundamental");
 			wp_plot->bring_to_front("locator");
-			wp_xruler->set_step(0.025);
+			wp_xruler->set_step(0.01);
 			wp_yruler->set_step(5.0);
 			wp_yruler->show_integers();
 			backgroundWhite();
