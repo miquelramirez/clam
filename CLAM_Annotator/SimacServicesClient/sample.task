@@ -1,0 +1,6 @@
+id=1442
+descriptors=Song::Artist,Song::Title,Frame::Mean,Song::Frames
+contentlocator=http://localhost/SimacServices/ContentLocator
+metadataprovider=http://localhost/SimacServices/MetadataProvider
+#descriptors=Song::Singer,Song::Name
+#Comment

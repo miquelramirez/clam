@@ -1,0 +1,169 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>GUI</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>GUI</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>470</width>
+            <height>660</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>470</width>
+            <height>660</height>
+        </size>
+    </property>
+    <property name="maximumSize">
+        <size>
+            <width>470</width>
+            <height>660</height>
+        </size>
+    </property>
+    <property name="caption">
+        <string>Annotator task handler</string>
+    </property>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>goButton</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>600</y>
+                <width>200</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>GO!</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>uploadButton</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>240</x>
+                <y>600</y>
+                <width>200</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Upload!</string>
+        </property>
+    </widget>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>layout4</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>13</y>
+                <width>450</width>
+                <height>580</height>
+            </rect>
+        </property>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout3</cstring>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>projectLabel</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Project Name</string>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit">
+                        <property name="name">
+                            <cstring>projectEdit</cstring>
+                        </property>
+                        <property name="text">
+                            <string></string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>taskLabel</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Task file</string>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout2</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLineEdit">
+                                <property name="name">
+                                    <cstring>taskEdit</cstring>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>taskButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Select file</string>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QTextEdit">
+                <property name="name">
+                    <cstring>logEdit</cstring>
+                </property>
+                <property name="text">
+                    <string>Press Go! when ready</string>
+                </property>
+                <property name="wordWrap">
+                    <enum>WidgetWidth</enum>
+                </property>
+            </widget>
+        </vbox>
+    </widget>
+</widget>
+<tabstops>
+    <tabstop>projectEdit</tabstop>
+    <tabstop>taskEdit</tabstop>
+    <tabstop>taskButton</tabstop>
+    <tabstop>goButton</tabstop>
+    <tabstop>uploadButton</tabstop>
+    <tabstop>logEdit</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
