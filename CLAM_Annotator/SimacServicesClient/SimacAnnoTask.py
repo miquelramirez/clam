@@ -2,46 +2,63 @@
 
 from qt import *
 from GUI import GUI
+from Tasker import *
 import sys
 
 form=None
 app=None
+outputfunction=None
+client=None
 
 def selectFile():
 	s = QFileDialog.getOpenFileName(
 		"",
-		"Simac Task file (*.tsk)\nAll Files (*)",
+		"Simac Task file (*.task)\nAll Files (*)",
 		None,
 		"open file dialog"
 		"Choose a file" )
 	global form
 	form.taskEdit.setText(s)
-	print s
 
 def startProcess():
-	global form
+	global form,client
 	if form.taskEdit.text()=="" or form.projectEdit.text()=="":
 		QMessageBox.warning( None, "Data missing",
 			"You must specify the task file and the project name\n",
 			"I see")
 	else:
-		log("go")
-		form.goButton.setEnabled(False)
-		form.uploadButton.setEnabled(True)
+		printLog("go")
+		try:
+			client.setParameters( str(form.taskEdit.text()), str(form.projectEdit.text()) )
+			client.processTask()	
+			form.hide()
+			#os.system("Annotator %s.pro" % client.projectname)
+			form.show()
+	
+		except ClientError, x:
+			QMessageBox.warning( None, "%s" % str(x).split('\n')[0],
+				"%s\n" % str(x).split('\n')[1],
+				"I see")
+		else:
+			form.goButton.setEnabled(False)
+			form.uploadButton.setEnabled(True)
+			form.taskEdit.setEnabled(False)
+			form.projectEdit.setEnabled(False)
+			form.taskButton.setEnabled(False)
 
 def uploadChanges():
 	global form
-	log("uploaded")
+	printLog("Uploaded")
 	
 	form.goButton.setEnabled(True)
 	form.uploadButton.setEnabled(False)
 
-def log( message ):
-	global form
-	form.logEdit.append(message)
+def printLog( message ):
+	outputfunction(message)
 
 def quit():
-	print "quit"
+	pass
+	#print "quit"
 
 def createConnections():
 	global form, app
@@ -51,12 +68,13 @@ def createConnections():
 	app.connect( app, SIGNAL( "lastWindowClosed()" ), quit )
 
 def initWidgets():
-	global form
+	global form, outputfunction
 	form.uploadButton.setEnabled( False )
 	form.logEdit.setReadOnly( True )
+	outputfunction=form.logEdit.append
 
 def main( args ):
-	global form,app
+	global form,app,client
 
 	app=QApplication( args )
 	form=GUI()
@@ -67,6 +85,8 @@ def main( args ):
 	if len(args) == 2:
 		form.taskEdit.setText( args[1] )
 	createConnections()
+
+	client=Client( form.logEdit.append )
 
 	app.exec_loop()
 
