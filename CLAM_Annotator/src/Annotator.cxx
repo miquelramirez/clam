@@ -332,6 +332,7 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 void Annotator::refreshSegmentation()
 {
 	if (!mpDescriptorPool) return;
+	if (mSegmentationSelection->currentText()==QString::null) return; // No segmentation
 	std::string currentSegmentation = mSegmentationSelection->currentText().ascii();
 	const CLAM::IndexArray & descriptorsMarks = 
 		mpDescriptorPool->GetReadPool<CLAM::IndexArray>("Song",currentSegmentation)[0];
@@ -779,7 +780,7 @@ void Annotator::refreshEnvelopes()
 			bpf_info.second=transcribed;
 			mBPFs.push_back(bpf_info);
 		}
-		if(mBPFs.size()) mPlayer->SetData(mBPFs[0].second);
+		mPlayer->SetData(mBPFs[0].second);
 	}
 
 
@@ -996,8 +997,8 @@ void Annotator::setMenuAudioItemsEnabled(bool enabled)
 QString Annotator::constructFileError(const std::string& fileName,const CLAM::XmlStorageErr& e)
 {
 	return tr(
-		"<p><b>XML loading Error: %1</b>/p>"
-		"<p>Check that your file '<tt>%2</tt>'\n"
+		"<p><b>XML loading Error: <pre>%1</pre></b></p>"
+		"<p>Check that your file '%2'\n"
 		"is well formed and folllows the specifications"
 		"</p>"
 		).arg(e.what()).arg(fileName.c_str());
