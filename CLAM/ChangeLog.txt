@@ -1,5 +1,5 @@
-2005-12-16 CLAM_0_90_0
-'The scons revolution? Multiplaform again? ... TO DECIDE'
+2006-02-07 CLAM_0_90_0
+'New scons buildsystem and multiplaform again'
   * Building and packaging
      ** New build system based on scons
      ** Binary libraries
