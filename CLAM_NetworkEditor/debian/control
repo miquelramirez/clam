@@ -7,7 +7,9 @@ Standards-Version: 3.6.1
 
 Package: clam-networkeditor
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+#Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: libclamcore (>= 0.90.0), libclamprocessing (>= 0.90.0), libclamaudioio (>= 0.90.0), libclamvmqt (>= 0.90.0)
+
 Description: CLAM prototyping tool
  The networkeditor is a graphic application meant for designing
  audio and music digital signal processing systems. Networkeditor
