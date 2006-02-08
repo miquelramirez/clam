@@ -1,15 +1,16 @@
-Source: smstools
+Source: clam-smstools
 Section: x11
 Priority: optional
-Maintainer: clam-devel <clam@iua.upf.es>
-Build-Depends: debhelper (>= 4.0.0), g++, make (>= 3.80), libclamcore-dev (>= 0.8.0), libclamprocessing-dev (>= 0.8.0), libclamaudioio-dev (>= 0.8.0), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, xlibs-dev (>> 4.1.0), libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), xlibmesa-gl-dev | libgl1-dev | libgl1-mesa-dev, zlib1g-dev (>= 1:1.2.1) 
+Maintainer: parumi <parumi@iua.upf.es>
+Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++, make (>= 3.80), libclamcore-dev (>= 0.90.0), libclamprocessing-dev (>= 0.90.0), libclamaudioio-dev (>= 0.90.0), libclamvmqt-dev (>= 0.90.0), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
 
 Standards-Version: 3.6.1
-Package: smstools
+Package: clam-smstools
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: CLAM-based sms analysis/synthesis applications
- smstools bundles together three different applications that
+#Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: libclamcore (>= 0.90.0), libclamprocessing (>= 0.90.0), libclamaudioio (>= 0.90.0), libclamvmqt (>= 0.90.0)
+Description: CLAM-based SMS analysis/synthesis application
+ SmsTools bundles together three different applications that
  implement the SMS Analysis/Transformation/Synthesis pipeline.
  They are:
   * SMSTools - A graphical application that uses FLTK
