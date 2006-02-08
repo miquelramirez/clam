@@ -1,6 +1,14 @@
-id=1442
-descriptors=Song::Artist,Song::Title,Frame::Mean,Song::Frames
-contentlocator=http://localhost/SimacServices/ContentLocator
-metadataprovider=http://localhost/SimacServices/MetadataProvider
-#descriptors=Song::Singer,Song::Name
-#Comment
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<Task>
+	<ContentLocator>http://localhost/SimacServices/ContentLocator</ContentLocator>
+	<MetadataProvider>http://localhost/SimacServices/MetadataProvider</MetadataProvider>
+	<IDList>
+		<ID>1442</ID>
+	</IDList>
+	<Descriptors>
+		<Descriptor>Song::Artist</Descriptor>
+		<Descriptor>Song::Title</Descriptor>
+		<Descriptor>Frame::Mean</Descriptor>
+		<Descriptor>Song::Frames</Descriptor>
+	</Descriptors>
+</Task>
