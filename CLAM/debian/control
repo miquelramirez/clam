@@ -1,19 +1,19 @@
 Source: libclam
 Priority: optional
 Maintainer: mramirez <clam@iua.upf.es>
-Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++, make (>= 3.80), autoconf (>= 2.59), ladspa-sdk (>= 1.1), libxerces26-dev, sfftw-dev, libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, xlibs-dev (>> 4.1.0), libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), xlibmesa-gl-dev | libgl1-dev | libgl1-mesa-dev, xlibmesa-glu-dev | libglu1-dev | libglu1-mesa-dev, zlib1g-dev (>= 1:1.2.1), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3), doxygen (>= 1.4.0)
+Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++, make (>= 3.80), autoconf (>= 2.59), ladspa-sdk (>= 1.1), libxerces26-dev, sfftw-dev, libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, xlibs-dev (>> 4.1.0), libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1),  libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3), doxygen (>= 1.4.0)
 Standards-Version: 3.6.1
 
 Package: libclam-doc
 Architecture: all
-Depends: libclamcore1-dev (= ${Source-Version}), libclamprocessing1-dev (= ${Source-Version}), libclamaudioio1-dev (= ${Source-Version}), libclamvmqt1-dev (= ${Source-Version}), libclamvmfl1-dev (= ${Source-Version})
+Depends: libclamcore-dev (= ${Source-Version}), libclamprocessing-dev (= ${Source-Version}), libclamaudioio-dev (= ${Source-Version}), libclamvmqt-dev (= ${Source-Version}), libclamvmfl-dev (= ${Source-Version})
 Description: clam framework documentation package
  CLAM framework documentation and example programs
 
-Package: libclamcore1-dev
+Package: libclamcore-dev
 Section: libdev
 Architecture: any
-Depends: libclamcore1 (= ${Source-Version}), ladspa-sdk (>= 1.1), pkg-config (>= 0.15), libxerces26-dev
+Depends: libclamcore (= ${Source-Version}), ladspa-sdk (>= 1.1), pkg-config (>= 0.15), libxerces26-dev
 Description: clam framework core components (development files)
   This package contains the set of fundamental classes
   in the CLAM framework. This includes:
@@ -25,19 +25,19 @@ Description: clam framework core components (development files)
    * Framework 'standard' data structures such as the
      Array class
 
-Package: libclamprocessing1-dev
+Package: libclamprocessing-dev
 Section: libdev
 Architecture: any
-Depends: libclamprocessing1(= ${Source-Version}), libclamcore1-dev (= ${Source-Version}), pkg-config (>= 0.15), sfftw-dev
+Depends: libclamprocessing(= ${Source-Version}), libclamcore-dev (= ${Source-Version}), pkg-config (>= 0.15), sfftw-dev
 Description: clam framework processing algorithms repository
  This package offers a substantial number of audio and music
  digital signal processing algorithms encapsulated as CLAM
  Processing objects.
 
-Package: libclamaudioio1-dev
+Package: libclamaudioio-dev
 Section: libdev
 Architecture: any
-Depends: libclamaudioio1 (= ${Source-Version}), libclamcore1-dev (= ${Source-Version}), libclamprocessing1-dev (= ${Source-Version}), pkg-config (>= 0.15), libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8)
+Depends: libclamaudioio (= ${Source-Version}), libclamcore-dev (= ${Source-Version}), libclamprocessing-dev (= ${Source-Version}), pkg-config (>= 0.15), libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8)
 Description: clam framework audio and MIDI i/o components
  This package contains all the CLAM framework components 
  that allow to:
@@ -47,32 +47,32 @@ Description: clam framework audio and MIDI i/o components
    * Read or write messages from MIDI devices
    * Read or write messages from MIDI files
 
-Package: libclamvmfl1-dev
+Package: libclamvmfl-dev
 Architecture: any
-Depends: libclamvmfl1 (= ${Source-Version}), libclamcore1-dev (= ${Source-Version}), libclamprocessing1-dev (= ${Source-Version}), libclamaudioio1-dev (= ${Source-Version}), pkg-config (>= 0.15), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, xlibs-dev (>> 4.1.0), libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), xlibmesa-gl-dev | libgl1-dev, xlibmesa-glu-dev | libglu1-dev, zlib1g-dev (>= 1:1.2.1)
+Depends: libclamvmfl (= ${Source-Version}), libclamcore-dev (= ${Source-Version}), libclamprocessing-dev (= ${Source-Version}), libclamaudioio-dev (= ${Source-Version}), pkg-config (>= 0.15), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, xlibs-dev (>> 4.1.0), libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev
 Description: clam framework data visualization components (FLTK)
  This package contains a set of CLAM components meant for 
  data visualization. These rely on the Fast Light Toolkit
  library.
 
-Package: libclamvmqt1-dev
+Package: libclamvmqt-dev
 Architecture: any
-Depends: libclamvmqt1 (= ${Source-Version}), libclamcore1-dev (= ${Source-Version}), libclamprocessing1-dev (= ${Source-Version}), libclamaudioio1-dev (= ${Source-Version}), pkg-config (>= 0.15), xlibmesa-gl-dev | libgl1-dev, xlibmesa-glu-dev | libglu1-dev, zlib1g-dev (>= 1:1.2.1), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
+Depends: libclamvmqt (= ${Source-Version}), libclamcore-dev (= ${Source-Version}), libclamprocessing-dev (= ${Source-Version}), libclamaudioio-dev (= ${Source-Version}), pkg-config (>= 0.15), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
 Description: clam framework data visualization components (Qt)
  This package contains CLAM framework data visualization components.
  These components rely on the Qt framework.
 
 
-Package: libclam1-dev
+Package: libclam-dev
 Section: libdev
 Architecture: any
-Depends: libclamcore1-dev, libclamprocessing1-dev, libclamaudioio1-dev, libclamvmfl1-dev, libclamvmqt1-dev
+Depends: libclamcore-dev, libclamprocessing-dev, libclamaudioio-dev, libclamvmfl-dev, libclamvmqt-dev
 Description: development package for the CLAM framework
  The CLAM framework is a C++ framework meant for helping
  to build applications that analyze, synthesize or transform
  digital signals - either music or audio.
 
-Package: libclamcore1
+Package: libclamcore
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -87,7 +87,7 @@ Description: clam framework core components
    * Framework 'standard' data structures such as the
      Array class
 
-Package: libclamprocessing1
+Package: libclamprocessing
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -96,7 +96,7 @@ Description: clam framework processing algorithms repository
  digital signal processing algorithms encapsulated as CLAM
  Processing objects.
 
-Package: libclamaudioio1
+Package: libclamaudioio
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -109,7 +109,7 @@ Description: clam framework audio and MIDI i/o components
    * Read or write messages from MIDI devices
    * Read or write messages from MIDI files
 
-Package: libclamvmfl1
+Package: libclamvmfl
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -118,7 +118,7 @@ Description: clam framework data visualization components (FLTK)
  data visualization. These rely on the Fast Light Toolkit
  library.
 
-Package: libclamvmqt1
+Package: libclamvmqt
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -126,10 +126,10 @@ Description: clam framework data visualization components (Qt)
  This package contains CLAM framework data visualization components.
  These components rely on the Qt framework.
 
-Package: libclam1
+Package: libclam
 Section: libs
 Architecture: any
-Depends: libclamcore1, libclamprocessing1, libclamvmfl1, libclamaudioio1, libclamvmqt1
+Depends: libclamcore, libclamprocessing, libclamvmfl, libclamaudioio, libclamvmqt
 Description: runtime package for the CLAM framework
  The CLAM framework is a C++ framework meant for helping
  to build applications that analyze, synthesize or transform
