@@ -1,16 +1,16 @@
-Source: networkeditor
+Source: clam-networkeditor
 Section: x11
 Priority: optional
-Maintainer: mramirez <clam@iua.upf.es>
+Maintainer: parumi <clam@iua.upf.es>
 Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++, make (>= 3.80), libclamcore-dev (>= 0.90.0), libclamprocessing-dev (>= 0.90.0), libclamaudioio-dev (>= 0.90.0), libclamvmqt-dev (>= 0.90.0), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
 Standards-Version: 3.6.1
 
-Package: networkeditor
+Package: clam-networkeditor
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: CLAM prototyping tool
  The networkeditor is a graphic application meant for designing
- audio and music digital signal processing systems. networkeditor
+ audio and music digital signal processing systems. Networkeditor
  features a GUI following the metaphor of specifying DSP components
  as 'boxes' and connecting them to define the DSP system data flow.
 
