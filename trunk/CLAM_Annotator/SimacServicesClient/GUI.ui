@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>470</width>
-            <height>660</height>
+            <height>670</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -23,7 +23,7 @@
     <property name="minimumSize">
         <size>
             <width>470</width>
-            <height>660</height>
+            <height>670</height>
         </size>
     </property>
     <property name="maximumSize">
@@ -32,41 +32,13 @@
             <height>660</height>
         </size>
     </property>
-    <property name="caption">
-        <string>Annotator task handler</string>
+    <property name="font">
+        <font>
+        </font>
     </property>
-    <widget class="QPushButton">
-        <property name="name">
-            <cstring>goButton</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>20</x>
-                <y>600</y>
-                <width>200</width>
-                <height>30</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>GO!</string>
-        </property>
-    </widget>
-    <widget class="QPushButton">
-        <property name="name">
-            <cstring>uploadButton</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>240</x>
-                <y>600</y>
-                <width>200</width>
-                <height>30</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Upload!</string>
-        </property>
-    </widget>
+    <property name="caption">
+        <string>Annotator Task Handler</string>
+    </property>
     <widget class="QLayoutWidget">
         <property name="name">
             <cstring>layout4</cstring>
@@ -147,16 +119,103 @@
                 <property name="name">
                     <cstring>logEdit</cstring>
                 </property>
+                <property name="font">
+                    <font>
+                        <family>FreeMono</family>
+                        <pointsize>9</pointsize>
+                    </font>
+                </property>
+                <property name="hScrollBarMode">
+                    <enum>Auto</enum>
+                </property>
+                <property name="textFormat">
+                    <enum>PlainText</enum>
+                </property>
                 <property name="text">
                     <string>Press Go! when ready</string>
                 </property>
                 <property name="wordWrap">
                     <enum>WidgetWidth</enum>
                 </property>
+                <property name="wrapPolicy">
+                    <enum>Anywhere</enum>
+                </property>
             </widget>
         </vbox>
     </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>exitButton</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>330</x>
+                <y>620</y>
+                <width>120</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Exit</string>
+        </property>
+    </widget>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>groupBox1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>600</y>
+                <width>270</width>
+                <height>60</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Task processing</string>
+        </property>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>uploadButton</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>140</x>
+                    <y>20</y>
+                    <width>120</width>
+                    <height>30</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Upload!</string>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>goButton</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>20</y>
+                    <width>120</width>
+                    <height>30</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>GO!</string>
+            </property>
+        </widget>
+    </widget>
 </widget>
+<connections>
+    <connection>
+        <sender>exitButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GUI</receiver>
+        <slot>close()</slot>
+    </connection>
+</connections>
 <tabstops>
     <tabstop>projectEdit</tabstop>
     <tabstop>taskEdit</tabstop>
