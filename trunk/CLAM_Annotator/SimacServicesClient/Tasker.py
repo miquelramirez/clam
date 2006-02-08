@@ -43,19 +43,20 @@ class Client:
 		try:
 			self.task = open( location, 'r').read()
 		except IOError:
-			raise "Task file error\nReading file <%s>. Maybe it does not exist."%location
+			print location
+			raise ClientError("Task file error\nReading file '%s'. Maybe it does not exist." % location )
 
 	def processTask(self):
 		lines = self.task.splitlines()
 		if not self.correctParameters( lines ):
-			raise "Task file error\nMalformed file, some field is wrong or missing!"
+			raise ClientError("Task file error\nMalformed file, some field is wrong or missing!")
 	
 		ids, descriptors, contentlocatoruri, metadataprovideruri = self.extractParameters(lines)
 		self.contentlocator = ServiceStub.ContentLocator(contentlocatoruri)
 		self.metadataprovider = ServiceStub.MetadataProvider(metadataprovideruri)
 	
 		projectsonglisting = ""
-		self.printfunction("\nRetrieving data")
+		self.printfunction("\n   == Retrieving data ==")
 	
 		for id in ids:
 			#Grab audio file
@@ -65,14 +66,14 @@ class Client:
 				raise ClientError("Access error\nError accessing content locator server.")
 
 			if locations == "NotFound":
-				raise "Service error\nFile with id=%s not found on the server." % id
+				raise ClientError("Service error\nFile with id=%s not found on the server." % id)
 			elif locations == "ServerError":
-				raise "Service error\nThe server is not working properly, a ServerError was received."
+				raise ClientError("Service error\nThe server is not working properly, a ServerError was received.")
 			
 			url = self.downloadSong( locations)
 	
 			if url == None:
-				raise "Download error\nCould not download the song from the given source urls."
+				raise ClientError("Download error\nCould not download the song from the given source urls.")
 
 			#File name
 			audiofilename = urllib.unquote( urlparse.urlparse(url)[2].split('/')[-1] )
@@ -94,17 +95,9 @@ class Client:
 		self.createFile( self.projectname, '.sc', schema )
 	
 		#Print log
-		self.printfunction("\n\tTASK PROCESSING FINISHED")
-		self.printfunction("-Downloaded audio files")
-		self.printfunction("-Created files %s and %s\n" % ( self.projectname+".sc", self.projectname+".pro" ))
-
-	def uploadChanges(self):
-		self.printfunction("LOOKING FOR MODIFIED FILES:")
-		for song in self.songlisting.keys():
-			if self.songlisting[song] != os.path.getmtime(song):
-				self.printfunction(" > File '%s' modified"  % song)
-			else:
-				self.printfunction(" > File '%s' NOT modified"  % song)
+		self.printfunction("\n  == Task processing finished ==")
+		self.printfunction(" - Downloaded audio files")
+		self.printfunction(" - Created files %s and %s\n" % ( self.projectname+".sc", self.projectname+".pro" ))
 
 	def correctParameters(self, lines):
 		return ( lines[0].split('=')[0] == 'id' ) and ( lines[1].split('=')[0] == 'descriptors' )\
@@ -114,16 +107,16 @@ class Client:
 		#EP: quan es fagi servir el ContentProvider, el nom d'arxiu sera un problemet, diria -> caldria mirar header pel nom d'arxiu?
 		for url in locations.splitlines():
 			try:
-				self.printfunction("Trying "+url)
+				self.printfunction(" > Trying '%s'" % url)
 				stream = urllib.urlopen(url)
 				file = open( "temp", 'w')
 				file.write( stream.read() )
 				file.close()
 				ok = True
-				self.printfunction("..OK")
+				self.printfunction("   OK")
 				return url
 			except:
-				self.printfunction("..ERROR")
+				self.printfunction("   ERROR")
 				continue
 				
 		return None
@@ -134,6 +127,15 @@ class Client:
 		contentlocator = lines[2].split('=')[1]
 		metadataprovider = lines[3].split('=')[1]
 		return ids, descriptors, contentlocator, metadataprovider
+
+	def uploadChanges(self):
+		self.printfunction("\n  == Looking for modified files ==")
+		for song in self.songlisting.keys():
+			if self.songlisting[song] != os.path.getmtime(song):
+				self.printfunction(" - File '%s' modified"  % song)
+			else:
+				self.printfunction(" - File '%s' NOT modified"  % song)
+
 
 	def createFile(self, name, extension, content):
 		file = open( name+extension, 'w' )
@@ -155,4 +157,3 @@ if __name__ == "__main__" :
 	#client.runAnnotator()
 	os.system("touch I\ Lost\ You.mp3")
 	client.uploadChanges()
-
