@@ -27,13 +27,16 @@ def startProcess():
 			"You must specify the task file and the project name\n",
 			"I see")
 	else:
-		printLog("go")
 		try:
 			client.setParameters( str(form.taskEdit.text()), str(form.projectEdit.text()) )
 			client.processTask()	
+			printLog(u"\n  == CLAM-Annotator ==\n")
+			printLog(u" - Launched\n")
 			form.hide()
-			#os.system("Annotator %s.pro" % client.projectname)
+			#client.runAnnotator()
 			form.show()
+			printLog(u" - Finalized\n")
+			client.uploadChanges()
 	
 		except ClientError, x:
 			QMessageBox.warning( None, "%s" % str(x).split('\n')[0],
@@ -45,26 +48,30 @@ def startProcess():
 			form.taskEdit.setEnabled(False)
 			form.projectEdit.setEnabled(False)
 			form.taskButton.setEnabled(False)
+			form.uploadButton.setFocus()
 
 def uploadChanges():
 	global form
-	printLog("Uploaded")
+	printLog("Uploaded (fake)\n")
 	
-	form.goButton.setEnabled(True)
 	form.uploadButton.setEnabled(False)
+	form.exitButton.setFocus()
 
 def printLog( message ):
+	global outputfunction
 	outputfunction(message)
 
 def quit():
-	pass
-	#print "quit"
+	global app
+	print "quit"
+	app.quit()
 
 def createConnections():
 	global form, app
 	app.connect( form.taskButton, SIGNAL( "clicked()" ), selectFile )
 	app.connect( form.goButton, SIGNAL( "clicked()" ), startProcess )
 	app.connect( form.uploadButton, SIGNAL( "clicked()" ), uploadChanges )
+	app.connect( form.exitButton, SIGNAL( "clicked()" ), quit )
 	app.connect( app, SIGNAL( "lastWindowClosed()" ), quit )
 
 def initWidgets():
