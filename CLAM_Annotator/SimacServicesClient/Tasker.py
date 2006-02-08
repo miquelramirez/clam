@@ -3,6 +3,8 @@ import os, sys
 import urlparse, urllib
 from os import path
 
+from xml.dom.ext.reader.Sax2 import FromXmlStream
+
 #TODO El projecte incloura la descripcio d'aquest (el que ha generat la tasca)
 #  --> al final ho tindra el mateix source de metadata, no problem
 #TODO CANVIS QUE CAL FER:
@@ -39,24 +41,18 @@ class Client:
 		self.projectname = projectname
 
 	def retrieveTask(self, location):
-		#TODO in the future it should be an XML file (cool yeah)
 		try:
-			self.task = open( location, 'r').read()
-		except IOError:
-			print location
-			raise ClientError("Task file error\nReading file '%s'. Maybe it does not exist." % location )
+			self.task = FromXmlStream(location)
+		except:
+			raise ClientError("Task file error\nReading file '%s'. It doesn't exist or it is a malformed XML file." % location)
 
 	def processTask(self):
-		lines = self.task.splitlines()
-		if not self.correctParameters( lines ):
-			raise ClientError("Task file error\nMalformed file, some field is wrong or missing!")
-	
-		ids, descriptors, contentlocatoruri, metadataprovideruri = self.extractParameters(lines)
+		ids, descriptors, contentlocatoruri, metadataprovideruri = self.extractParameters()
 		self.contentlocator = ServiceStub.ContentLocator(contentlocatoruri)
 		self.metadataprovider = ServiceStub.MetadataProvider(metadataprovideruri)
 	
 		projectsonglisting = ""
-		self.printfunction("\n   == Retrieving data ==")
+		self.printfunction(u"\n  == Retrieving data ==\n")
 	
 		for id in ids:
 			#Grab audio file
@@ -95,46 +91,54 @@ class Client:
 		self.createFile( self.projectname, '.sc', schema )
 	
 		#Print log
-		self.printfunction("\n  == Task processing finished ==")
-		self.printfunction(" - Downloaded audio files")
-		self.printfunction(" - Created files %s and %s\n" % ( self.projectname+".sc", self.projectname+".pro" ))
-
-	def correctParameters(self, lines):
-		return ( lines[0].split('=')[0] == 'id' ) and ( lines[1].split('=')[0] == 'descriptors' )\
-			and ( lines[2].split('=')[0] == 'contentlocator' ) and ( lines[3].split('=')[0] == 'metadataprovider' )
+		self.printfunction(u"\n  == Task processing finished ==\n")
+		self.printfunction(u" - Downloaded audio files\n")
+		self.printfunction(u" - Created files %s and %s\n" % ( self.projectname+".sc", self.projectname+".pro" ))
 
 	def downloadSong( self, locations):
 		#EP: quan es fagi servir el ContentProvider, el nom d'arxiu sera un problemet, diria -> caldria mirar header pel nom d'arxiu?
 		for url in locations.splitlines():
 			try:
-				self.printfunction(" > Trying '%s'" % url)
+				self.printfunction(u" - Trying '%s'" % url)
 				stream = urllib.urlopen(url)
 				file = open( "temp", 'w')
 				file.write( stream.read() )
 				file.close()
 				ok = True
-				self.printfunction("   OK")
+				self.printfunction(u"     (OK)\n")
 				return url
 			except:
-				self.printfunction("   ERROR")
+				self.printfunction("     (ERROR)\n")
 				continue
 				
 		return None
 	
-	def extractParameters(self, lines):
-		ids = lines[0].split('=')[1].split(',')
-		descriptors = lines[1].split('=')[1].split(',')
-		contentlocator = lines[2].split('=')[1]
-		metadataprovider = lines[3].split('=')[1]
+	def extractParameters(self):
+		dataerror = ClientError("Task file error\nMalformed file, some field is wrong or missing!")
+		ids = []
+		descriptors = []
+
+		for id in self.task.getElementsByTagName("ID"):
+			id.normalize()
+			ids.append(id.firstChild.data)
+		
+		for desc in self.task.getElementsByTagName("Descriptor"):
+			desc.normalize()
+			descriptors.append(desc.firstChild.data)
+
+		contentlocator = self.task.getElementsByTagName("ContentLocator")[0].firstChild.data
+		metadataprovider = self.task.getElementsByTagName("MetadataProvider")[0].firstChild.data
+
 		return ids, descriptors, contentlocator, metadataprovider
 
 	def uploadChanges(self):
-		self.printfunction("\n  == Looking for modified files ==")
+		self.printfunction(u"\n  == Looking for modified files ==\n")
 		for song in self.songlisting.keys():
-			if self.songlisting[song] != os.path.getmtime(song):
-				self.printfunction(" - File '%s' modified"  % song)
+			songpool=song+".pool"
+			if self.songlisting[song] != os.path.getmtime(songpool):
+				self.printfunction(u" - File '%s' modified\n"  % songpool)
 			else:
-				self.printfunction(" - File '%s' NOT modified"  % song)
+				self.printfunction(u" - File '%s' NOT modified\n"  % songpool)
 
 
 	def createFile(self, name, extension, content):
@@ -143,8 +147,8 @@ class Client:
 		file.close()
 
 	def runAnnotator(self):
-		result = os.system("Annotator %s.pro"%self.projectname)
-		self.printfunction("RESULT = %d"%result)
+		result = os.system( "Annotator %s.pro" % self.projectname )
+		self.printfunction( "RESULT = %d" % result )
 
 
 if __name__ == "__main__" :
@@ -152,7 +156,8 @@ if __name__ == "__main__" :
 		self.printfunction("CLIENT - Usage: ./Client <TASKFILE> <PROJECTNAME>")
 		sys.exit(0)
 
-	client=Client( sys.argv[1], sys.argv[2] )
+	client=Client()
+	client.setParameters( sys.argv[1], sys.argv[2] )
 	client.processTask()
 	#client.runAnnotator()
 	os.system("touch I\ Lost\ You.mp3")
