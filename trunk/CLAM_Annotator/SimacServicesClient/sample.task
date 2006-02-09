@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Task>
-	<ContentLocator>http://localhost/SimacServices/ContentLocator</ContentLocator>
-	<MetadataProvider>http://localhost/SimacServices/MetadataProvider</MetadataProvider>
-	<IDList>
-		<ID>1442</ID>
-	</IDList>
-	<Descriptors>
-		<Descriptor>Song::Artist</Descriptor>
-		<Descriptor>Song::Title</Descriptor>
-		<Descriptor>Frame::Mean</Descriptor>
-		<Descriptor>Song::Frames</Descriptor>
-	</Descriptors>
+  <ContentLocator>http://localhost/SimacServices/ContentLocator</ContentLocator>
+  <MetadataProvider>http://localhost/SimacServices/MetadataProvider</MetadataProvider>
+  <IDList>
+    <ID>1442</ID>
+  </IDList>
+  <Descriptors>
+    <Descriptor>Song::Artist</Descriptor>
+    <Descriptor>Song::Title</Descriptor>
+    <Descriptor>Frame::Mean</Descriptor>
+    <Descriptor>Song::Frames</Descriptor>
+  </Descriptors>
 </Task>
