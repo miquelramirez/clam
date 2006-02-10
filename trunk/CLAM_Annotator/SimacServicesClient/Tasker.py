@@ -1,6 +1,7 @@
 import ServiceStub
 import os, sys
 import urlparse, urllib
+from threading import Thread
 
 from xml.dom.ext.reader.Sax2 import FromXmlStream
 
@@ -19,6 +20,13 @@ clamAnnotatorProjectSongSkeleton = """    <Song>
       <SoundFile>%s</SoundFile>
     </Song>
 """
+
+class ProcessThread(Thread):
+	def __init__(self):
+		Thread.__init__(self)
+
+	def run(self):
+		pass
 
 class TaskerError(Exception):
 	def __init__(self, message):
@@ -81,7 +89,7 @@ class Tasker:
 			os.rename( self.path+'temp', self.path+audiofilename )
 
 			#Store modification file for each pool to keep track of the ones upgraded
-			self.songlisting[audiofilename] = os.path.getmtime(audiofilename)
+			self.songlisting[audiofilename] = [ os.path.getmtime(audiofilename), False ]
 
 			try:
 				pool = self.metadataprovider.QueryDescriptors( id, descriptors )
@@ -101,6 +109,8 @@ class Tasker:
 		
 		self.printfunction(u" - Created files %s and %s\n" % ( self.projectname+".pro", self.projectname+".sc" ))
 		self.printfunction(u" - Downloaded %d audio file(s) and generated the corresponding pools\n" % len(self.songlisting) )
+
+	#TODO thread en algun lloc de per aqui
 
 	def downloadSong(self, locations):
 		#EP: quan es fagi servir el ContentProvider, el nom d'arxiu sera un problemet, diria -> caldria mirar header pel nom d'arxiu?
@@ -147,14 +157,22 @@ class Tasker:
 
 		return ids, descriptors, contentlocator.strip(), metadataprovider.strip()
 
-	def uploadChanges(self):
+	def getModified(self):
+		modified = []
 		self.printfunction(u"\n  == Looking for modified files ==\n")
 		for song in self.songlisting.keys():
 			songpool=song+".pool"
-			if self.songlisting[song] != os.path.getmtime(songpool):
+			if self.songlisting[song][0] != os.path.getmtime(songpool):
 				self.printfunction(u" - File '%s' modified\n"  % songpool)
+				self.songlisting[song][1] = True
+				modified.append(song)
 			else:
 				self.printfunction(u" - File '%s' NOT modified\n"  % songpool)
+		return modified
+
+	def uploadChanges(self):
+		self.printfunction(u"\n  == Uploading ==\n")
+		self.printfunction(u" - Fake!!\n")
 
 	def createFile(self, name, extension, content):
 		try:
@@ -165,8 +183,11 @@ class Tasker:
 			raise TaskerError("File write error\nError writing the files, maybe the directory does not exist!")
 
 	def runAnnotator(self):
+		self.printfunction(u"\n  == CLAM-Annotator ==\n")
+		self.printfunction(u" - Launching...\n")
 		result = os.system( "Annotator %s.pro" % self.projectname )
 		self.printfunction( "RESULT = %d" % result )
+		self.printfunction(u" - Finalized\n")
 
 
 if __name__ == "__main__" :
@@ -179,4 +200,5 @@ if __name__ == "__main__" :
 	tasker.processTask()
 	#tasker.runAnnotator()
 	os.system("touch I\ Lost\ You.mp3.pool")
+	print tasker.getModified()
 	tasker.uploadChanges()
