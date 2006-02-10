@@ -40,6 +40,7 @@ class Tasker:
 		self.songlisting = {}
 		self.printfunction = printfunction
 		self.path = os.getcwd() + os.sep
+		self.modifydescriptors = []
 
 	def setParameters(self, taskfile, projectname, path=os.getcwd() ):
 		self.retrieveTask( taskfile)
@@ -143,6 +144,8 @@ class Tasker:
 		
 		for desc in self.task.getElementsByTagName("Descriptor"):
 			desc.normalize()
+			if desc.hasAttribute('modify') and desc.getAttribute('modify'):
+				self.modifydescriptors.append(desc.firstChild.data)
 			descriptors.append(desc.firstChild.data)
 
 		contentlocator = self.task.getElementsByTagName("ContentLocator")
@@ -185,20 +188,33 @@ class Tasker:
 	def runAnnotator(self):
 		self.printfunction(u"\n  == CLAM-Annotator ==\n")
 		self.printfunction(u" - Launching...\n")
-		result = os.system( "Annotator %s.pro" % self.projectname )
+		if sys.platform != 'win32':
+			result = os.system( "Annotator %s.pro &> /dev/null" % self.projectname )
+		else:
+			raise TaskError("Run Annotator error\nWindows execution of the Annotator is still not managed.")
 		self.printfunction( "RESULT = %d" % result )
 		self.printfunction(u" - Finalized\n")
 
 
 if __name__ == "__main__" :
 	if len(sys.argv) != 3:
-		self.printfunction("CLIENT - Usage: ./Tasker <TASKFILE> <PROJECTNAME>")
+		print("CLIENT - Usage: ./Tasker <TASKFILE> <PROJECTNAME>")
 		sys.exit(0)
-
-	tasker=Tasker()
-	tasker.setParameters( sys.argv[1], sys.argv[2] )
-	tasker.processTask()
-	#tasker.runAnnotator()
-	os.system("touch I\ Lost\ You.mp3.pool")
-	print tasker.getModified()
-	tasker.uploadChanges()
+	try:
+		tasker=Tasker()
+		tasker.setParameters( sys.argv[1], sys.argv[2] )
+		tasker.processTask()
+		#tasker.runAnnotator()
+		#os.system("touch I\ Lost\ You.mp3.pool")
+		modified = tasker.getModified()
+		if len(modified)==0:
+			print "\n - No descriptor pool modified. Exitting without uploading anything.\n"
+		else:
+			print "\n - The following descriptor pools will be uploaded:\n  -" + ('\n  - ').join(modified)
+			answer = raw_input("\n > Do you want to do it? (y/n)  ") 
+			if answer.strip() == 'y':
+				tasker.uploadChanges()
+			else:
+				print "\n - No descriptor uploaded\n"
+	except TaskerError, err:
+		print err
