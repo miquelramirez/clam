@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'GUI.ui'
+# Form implementation generated from reading ui file 'GUIhorizontal.ui'
 #
-# Created: Tue Feb 7 18:09:56 2006
+# Created: Fri Feb 10 12:43:12 2006
 #      by: The PyQt User Interface Compiler (pyuic) 3.14.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -11,46 +11,48 @@
 from qt import *
 
 
-class GUI(QDialog):
-    def __init__(self,parent = None,name = None,modal = 0,fl = 0):
-        QDialog.__init__(self,parent,name,modal,fl)
+class GUI(QMainWindow):
+    def __init__(self,parent = None,name = None,fl = 0):
+        QMainWindow.__init__(self,parent,name,fl)
+        self.statusBar()
 
         if not name:
             self.setName("GUI")
 
         self.setSizePolicy(QSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed,0,0,self.sizePolicy().hasHeightForWidth()))
-        self.setMinimumSize(QSize(470,670))
-        self.setMaximumSize(QSize(470,660))
+        self.setMinimumSize(QSize(640,430))
+        self.setMaximumSize(QSize(640,430))
         f = QFont(self.font())
         self.setFont(f)
 
+        self.setCentralWidget(QWidget(self,"qt_central_widget"))
 
-        LayoutWidget = QWidget(self,"layout4")
-        LayoutWidget.setGeometry(QRect(10,13,450,580))
-        layout4 = QVBoxLayout(LayoutWidget,11,6,"layout4")
+        self.projectLabel = QLabel(self.centralWidget(),"projectLabel")
+        self.projectLabel.setGeometry(QRect(20,10,120,30))
 
-        layout3 = QVBoxLayout(None,0,6,"layout3")
+        self.projectEdit = QLineEdit(self.centralWidget(),"projectEdit")
+        self.projectEdit.setGeometry(QRect(180,10,340,30))
 
-        self.projectLabel = QLabel(LayoutWidget,"projectLabel")
-        layout3.addWidget(self.projectLabel)
+        self.taskLabel = QLabel(self.centralWidget(),"taskLabel")
+        self.taskLabel.setGeometry(QRect(20,50,70,30))
 
-        self.projectEdit = QLineEdit(LayoutWidget,"projectEdit")
-        layout3.addWidget(self.projectEdit)
+        self.taskEdit = QLineEdit(self.centralWidget(),"taskEdit")
+        self.taskEdit.setGeometry(QRect(180,50,340,30))
 
-        self.taskLabel = QLabel(LayoutWidget,"taskLabel")
-        layout3.addWidget(self.taskLabel)
+        self.taskButton = QPushButton(self.centralWidget(),"taskButton")
+        self.taskButton.setGeometry(QRect(527,51,90,31))
 
-        layout2 = QHBoxLayout(None,0,6,"layout2")
+        self.pathButton = QPushButton(self.centralWidget(),"pathButton")
+        self.pathButton.setGeometry(QRect(527,91,90,31))
 
-        self.taskEdit = QLineEdit(LayoutWidget,"taskEdit")
-        layout2.addWidget(self.taskEdit)
+        self.pathEdit = QLineEdit(self.centralWidget(),"pathEdit")
+        self.pathEdit.setGeometry(QRect(180,90,340,30))
 
-        self.taskButton = QPushButton(LayoutWidget,"taskButton")
-        layout2.addWidget(self.taskButton)
-        layout3.addLayout(layout2)
-        layout4.addLayout(layout3)
+        self.pathLabel = QLabel(self.centralWidget(),"pathLabel")
+        self.pathLabel.setGeometry(QRect(20,90,134,30))
 
-        self.logEdit = QTextEdit(LayoutWidget,"logEdit")
+        self.logEdit = QTextEdit(self.centralWidget(),"logEdit")
+        self.logEdit.setGeometry(QRect(10,130,620,220))
         logEdit_font = QFont(self.logEdit.font())
         logEdit_font.setFamily("FreeMono")
         logEdit_font.setPointSize(9)
@@ -59,32 +61,30 @@ class GUI(QDialog):
         self.logEdit.setTextFormat(QTextEdit.PlainText)
         self.logEdit.setWordWrap(QTextEdit.WidgetWidth)
         self.logEdit.setWrapPolicy(QTextEdit.Anywhere)
-        layout4.addWidget(self.logEdit)
 
-        self.exitButton = QPushButton(self,"exitButton")
-        self.exitButton.setGeometry(QRect(330,620,120,30))
+        self.exitButton = QPushButton(self.centralWidget(),"exitButton")
+        self.exitButton.setGeometry(QRect(500,380,120,30))
 
-        self.groupBox1 = QGroupBox(self,"groupBox1")
-        self.groupBox1.setGeometry(QRect(10,600,270,60))
-
-        self.uploadButton = QPushButton(self.groupBox1,"uploadButton")
-        self.uploadButton.setGeometry(QRect(140,20,120,30))
+        self.groupBox1 = QGroupBox(self.centralWidget(),"groupBox1")
+        self.groupBox1.setGeometry(QRect(20,360,270,60))
 
         self.goButton = QPushButton(self.groupBox1,"goButton")
         self.goButton.setGeometry(QRect(10,20,120,30))
 
         self.languageChange()
 
-        self.resize(QSize(470,670).expandedTo(self.minimumSizeHint()))
+        self.resize(QSize(640,430).expandedTo(self.minimumSizeHint()))
         self.clearWState(Qt.WState_Polished)
 
         self.connect(self.exitButton,SIGNAL("clicked()"),self.close)
 
         self.setTabOrder(self.projectEdit,self.taskEdit)
         self.setTabOrder(self.taskEdit,self.taskButton)
-        self.setTabOrder(self.taskButton,self.goButton)
-        self.setTabOrder(self.goButton,self.uploadButton)
-        self.setTabOrder(self.uploadButton,self.logEdit)
+        self.setTabOrder(self.taskButton,self.pathEdit)
+        self.setTabOrder(self.pathEdit,self.pathButton)
+        self.setTabOrder(self.pathButton,self.goButton)
+        self.setTabOrder(self.goButton,self.exitButton)
+        self.setTabOrder(self.exitButton,self.logEdit)
 
 
     def languageChange(self):
@@ -93,11 +93,13 @@ class GUI(QDialog):
         self.projectEdit.setText(QString.null)
         self.taskLabel.setText(self.__tr("Task file"))
         self.taskEdit.setText(QString.null)
-        self.taskButton.setText(self.__tr("Select file"))
+        self.taskButton.setText(self.__tr("Choose..."))
+        self.pathButton.setText(self.__tr("Choose..."))
+        self.pathEdit.setText(QString.null)
+        self.pathLabel.setText(self.__tr("Path to save files"))
         self.logEdit.setText(self.__tr("Press Go! when ready"))
         self.exitButton.setText(self.__tr("Exit"))
         self.groupBox1.setTitle(self.__tr("Task processing"))
-        self.uploadButton.setText(self.__tr("Upload!"))
         self.goButton.setText(self.__tr("GO!"))
 
 
