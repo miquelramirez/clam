@@ -4,12 +4,12 @@ from qt import *
 from GUI import GUI
 from Tasker import Tasker, TaskerError
 import sys, os
+from threading import Thread
 
 form=None
 app=None
 outputfunction=None
 tasker=None
-
 def selectFile():
 	s = QFileDialog.getOpenFileName(
 		"",
@@ -31,6 +31,8 @@ def selectDirectory():
 	if len(s) > 0:
 		form.pathEdit.setText(s)
 
+#EP EP EP PREGUNTA AL DAVID, on seria interessant posar el thread?
+
 def startProcess():
 	global form,tasker
 	if form.taskEdit.text()=="" or form.projectEdit.text()=="" \
@@ -41,14 +43,23 @@ def startProcess():
 	else:
 		try:
 			tasker.setParameters( str(form.taskEdit.text()), str(form.projectEdit.text()), str(form.pathEdit.text()) )
-			tasker.processTask()	
-			printLog(u"\n  == CLAM-Annotator ==\n")
-			printLog(u" - Launching...\n")
+			tasker.processTask()
 			form.hide()
-			#tasker.runAnnotator()
+			tasker.runAnnotator()
 			form.show()
-			printLog(u" - Finalized\n")
-			tasker.uploadChanges()
+			modified=tasker.getModified()
+			if len(modified)>0:
+				choice=QMessageBox.information( form, "Modified descriptor files",
+					u"The following descriptor pools will be uploaded:\n  -" + ('\n  - ').join(modified),
+					"No way", "Go ahead" )
+				print choice # 0,1 o ESC=-1
+				if choice==1:
+					tasker.uploadChanges()
+			else:
+				QMessageBox.information( form, "Modified descriptor files",
+					u"No descriptor pool was modified. Nothing will be uploaded.",
+					"OK" )
+				
 		except TaskerError, x:
 			title=str(x).split('\n')[0]
 			message=str(x).split('\n')[1:]
@@ -57,23 +68,12 @@ def startProcess():
 				"I see" )
 		else:
 			form.goButton.setEnabled(False)
-			form.uploadButton.setEnabled(True)
 			form.taskEdit.setEnabled(False)
 			form.taskButton.setEnabled(False)
 			form.projectEdit.setEnabled(False)
 			form.pathEdit.setEnabled(False)
 			form.pathButton.setEnabled(False)
-			form.uploadButton.setFocus()
-
-def uploadChanges():
-	global form
-	
-	form.uploadButton.setEnabled(False)
-
-	#your code here
-
-	printLog(u"Uploaded (fake)\n")
-	form.exitButton.setFocus()
+			form.exitButton.setFocus()
 
 def printLog( message ):
 	global outputfunction
@@ -89,13 +89,11 @@ def createConnections():
 	app.connect( form.taskButton, SIGNAL( "clicked()" ), selectFile )
 	app.connect( form.pathButton, SIGNAL( "clicked()" ), selectDirectory )
 	app.connect( form.goButton, SIGNAL( "clicked()" ), startProcess )
-	app.connect( form.uploadButton, SIGNAL( "clicked()" ), uploadChanges )
 	app.connect( form.exitButton, SIGNAL( "clicked()" ), quit )
 	app.connect( app, SIGNAL( "lastWindowClosed()" ), quit )
 
 def initWidgets():
 	global form, outputfunction
-	form.uploadButton.setEnabled( False )
 	form.logEdit.setReadOnly( True )
 	outputfunction=form.logEdit.append
 	form.pathEdit.setText( os.getcwd() )
