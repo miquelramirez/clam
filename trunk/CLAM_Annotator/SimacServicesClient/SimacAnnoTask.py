@@ -34,7 +34,7 @@ def selectDirectory():
 #EP EP EP PREGUNTA AL DAVID, on seria interessant posar el thread?
 
 def startProcess():
-	global form,tasker
+	global form,tasker,outputfunction
 	if form.taskEdit.text()=="" or form.projectEdit.text()=="" \
 		or form.pathEdit.text()=="":
 		QMessageBox.warning( None, "Data missing",
@@ -44,16 +44,17 @@ def startProcess():
 		try:
 			tasker.setParameters( str(form.taskEdit.text()), str(form.projectEdit.text()), str(form.pathEdit.text()) )
 			tasker.processTask()
+			qrect=form.geometry()
 			form.hide()
 			tasker.runAnnotator()
 			form.show()
+			form.setGeometry(qrect)
 			modified=tasker.getModified()
 			if len(modified)>0:
 				choice=QMessageBox.information( form, "Modified descriptor files",
-					u"The following descriptor pools will be uploaded:\n  -" + ('\n  - ').join(modified),
+					u"The following descriptor pool files will be uploaded:\n  -" + ('\n  - ').join(modified),
 					"No way", "Go ahead" )
-				print choice # 0,1 o ESC=-1
-				if choice==1:
+				if choice==1:	# 0,1 o ESC=-1
 					tasker.uploadChanges()
 			else:
 				QMessageBox.information( form, "Modified descriptor files",
@@ -66,6 +67,7 @@ def startProcess():
 			QMessageBox.warning( None, "%s" % title,
 				"%s\n" % ('\n').join(message),
 				"I see" )
+			outputfunction(u"\n  *** Error found. Correct it and then restart the process ***\n")
 		else:
 			form.goButton.setEnabled(False)
 			form.taskEdit.setEnabled(False)
@@ -74,10 +76,6 @@ def startProcess():
 			form.pathEdit.setEnabled(False)
 			form.pathButton.setEnabled(False)
 			form.exitButton.setFocus()
-
-def printLog( message ):
-	global outputfunction
-	outputfunction(message)
 
 def quit():
 	global app
