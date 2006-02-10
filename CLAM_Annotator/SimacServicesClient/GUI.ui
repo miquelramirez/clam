@@ -1,6 +1,6 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>GUI</class>
-<widget class="QDialog">
+<widget class="QMainWindow">
     <property name="name">
         <cstring>GUI</cstring>
     </property>
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>470</width>
-            <height>670</height>
+            <width>600</width>
+            <height>420</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -22,14 +22,14 @@
     </property>
     <property name="minimumSize">
         <size>
-            <width>470</width>
-            <height>670</height>
+            <width>600</width>
+            <height>420</height>
         </size>
     </property>
     <property name="maximumSize">
         <size>
-            <width>470</width>
-            <height>660</height>
+            <width>600</width>
+            <height>420</height>
         </size>
     </property>
     <property name="font">
@@ -37,39 +37,61 @@
         </font>
     </property>
     <property name="caption">
-        <string>Annotator Task Handler</string>
+        <string>CLAM Annotator Simac Task Handler</string>
     </property>
-    <widget class="QGroupBox">
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <property name="dockWindowsMovable">
+        <bool>false</bool>
+    </property>
+    <widget class="QLineEdit">
         <property name="name">
-            <cstring>groupBox1</cstring>
+            <cstring>pathEdit</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>20</x>
-                <y>600</y>
-                <width>270</width>
-                <height>60</height>
+                <x>170</x>
+                <y>90</y>
+                <width>310</width>
+                <height>30</height>
             </rect>
         </property>
-        <property name="title">
-            <string>Task processing</string>
+        <property name="text">
+            <string></string>
         </property>
-        <widget class="QPushButton">
-            <property name="name">
-                <cstring>goButton</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>20</y>
-                    <width>120</width>
-                    <height>30</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>GO!</string>
-            </property>
-        </widget>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>taskEdit</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>170</x>
+                <y>50</y>
+                <width>310</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>projectEdit</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>170</x>
+                <y>10</y>
+                <width>310</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
     </widget>
     <widget class="QPushButton">
         <property name="name">
@@ -77,8 +99,8 @@
         </property>
         <property name="geometry">
             <rect>
-                <x>330</x>
-                <y>620</y>
+                <x>440</x>
+                <y>360</y>
                 <width>120</width>
                 <height>30</height>
             </rect>
@@ -93,10 +115,10 @@
         </property>
         <property name="geometry">
             <rect>
-                <x>11</x>
-                <y>202</y>
-                <width>448</width>
-                <height>390</height>
+                <x>15</x>
+                <y>130</y>
+                <width>570</width>
+                <height>220</height>
             </rect>
         </property>
         <property name="font">
@@ -121,119 +143,110 @@
             <enum>Anywhere</enum>
         </property>
     </widget>
-    <widget class="QLayoutWidget">
+    <widget class="QPushButton">
         <property name="name">
-            <cstring>layout5</cstring>
+            <cstring>taskButton</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>11</x>
-                <y>14</y>
-                <width>450</width>
-                <height>183</height>
+                <x>487</x>
+                <y>51</y>
+                <width>90</width>
+                <height>31</height>
             </rect>
         </property>
-        <vbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <widget class="QLayoutWidget">
-                <property name="name">
-                    <cstring>layout3</cstring>
-                </property>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>projectLabel</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Project Name</string>
-                        </property>
-                    </widget>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>projectEdit</cstring>
-                        </property>
-                        <property name="text">
-                            <string></string>
-                        </property>
-                    </widget>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>taskLabel</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Task file</string>
-                        </property>
-                    </widget>
-                    <widget class="QLayoutWidget">
-                        <property name="name">
-                            <cstring>layout2</cstring>
-                        </property>
-                        <hbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLineEdit">
-                                <property name="name">
-                                    <cstring>taskEdit</cstring>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                            </widget>
-                            <widget class="QPushButton">
-                                <property name="name">
-                                    <cstring>taskButton</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>Select file</string>
-                                </property>
-                            </widget>
-                        </hbox>
-                    </widget>
-                </vbox>
-            </widget>
-            <widget class="QLabel">
-                <property name="name">
-                    <cstring>taskLabel_2</cstring>
-                </property>
-                <property name="text">
-                    <string>Destination directory</string>
-                </property>
-            </widget>
-            <widget class="QLayoutWidget">
-                <property name="name">
-                    <cstring>layout2_2</cstring>
-                </property>
-                <hbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QLineEdit">
-                        <property name="name">
-                            <cstring>pathEdit</cstring>
-                        </property>
-                        <property name="text">
-                            <string></string>
-                        </property>
-                    </widget>
-                    <widget class="QPushButton">
-                        <property name="name">
-                            <cstring>pathButton</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Select dir</string>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-        </vbox>
+        <property name="text">
+            <string>Choose...</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pathButton</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>487</x>
+                <y>91</y>
+                <width>90</width>
+                <height>31</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Choose...</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>projectLabel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>10</y>
+                <width>120</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Project Name</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>taskLabel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>50</y>
+                <width>70</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Task file</string>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>pathLabel</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>90</y>
+                <width>134</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Path to save files</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>goButton</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>360</y>
+                <width>120</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Go</string>
+        </property>
     </widget>
 </widget>
+<toolbars>
+</toolbars>
+<images>
+    <image name="image0">
+        <data format="PNG" length="1820">89504e470d0a1a0a0000000d494844520000002d0000002d08060000003a1ae29a000006e3494441545885ad59598fdbbc0e25b5d9598001a645fbffff5b0bf4a9cd209838b62cf13ec44743299bf3e10a10bc4492a9c3438a64484428c628292511111ac7514484f05e44e87c3e5757bcc79ccfcf4fe9ba4e88488c314244e29c13222aef98b99a334d53f90eee8fc763f52ee75c9e758700222292739646203c0b1686e0e8cc5c0446b7d60a1189f7be7aefbd1763cc2dc16418061111d1a0dd13da18638888e8f3f39398999d734c4b9be799960d90738e8888baae6322226bad30b330338de348cc4cd65a32c6504a89fabea718238510c85a4b444431462222626631c688f7be7c03df0b2150ce59524a42f79ade514a495a24753f9d4eb2d96c0a6a401494d088eae7b6e3776616e71cb4285aebf33cdf9583c67114cd5d0c8e31ca300c126394711c0b475b2a3073b91a63ca06f6fbbd10918410c439272184f28cb9b8c758080bde43ae2ba16fbd4c29815b62ad2d88f67d5f7d0cef5bb499598ec7a3e49c659aa66aac73ae421af370edba4e4ea7d35d948bd029a56a7710f870385c090564d1a181beefc53957c62915cbe974baa24808a18cf5de4b08a1acbddfef457b97bbde03aa80151f0e07d96eb745e51a098d0e78a9d1ecbaaee2271a36a9b5d2da03e8f714e91863d9598cf1ae813dea707d98fbf9f95984cd394bce59c671949cf32a634517116a8dd22c4646707d39e7bb9ee65663be7848630c8de3482925eaba8eb6db6d7165314662660a21103353ce99628ce4bd7fba7e0841628c947306cde8eaf481aa35259e21aca9817b208c430a6e0dd7b51a04dae8e7f359cc388ee2bd6766e66118649e67eafb9e72ce2fa19e522222a2beef29a544f33c1754d1a66922ef3de59c29a554b4fba82d1a926118846839dc20bd88d066b3298670eb78bed7430895ff5dd0917ffffe5d19231a5ce10b6817675139702d04ad34c4d605861064bfdfcbaf5fbfe4dbb76f95fb832bd506ba56e825e0923f7ffe5441c86a8b6ebbb5b69a6b8ca904da6c361aa9e2bf97f8e269879d2d1e89ccb278c56104386b3807cf13632cf77289feca986118100811d117ffd7ac8ff15dd7d1dbdb1b4dd324c618c3cc2cd6da226cceb9fac8a336cf7389dee67926222aae0e0d6bf57d4f22422184f29d356d61c217b0c33014ee51c3e3d6b8d6747d8c137d0543eaa4436cb1daf521e62122f9f9f3a71016d59cfcafdcbe2574fb51f86d1533afe6b5f266974521bc1ef4ca31fe0c69447729a52a2e79b61eb40d63fcfefdfb45681d6b00e5ff22f03da435cdb6dbad9ccfe7925ead41589fb605698489fac7b507cb33a1f1fcfefe5ec6801eaf72bad0cc7b5f0e081d9c2307fc7f08ada9b7dbede47038147ffd6cbd16e5dd6e77c9a6ff0ba2afd0a3a51b62893548dfccec75f6706b52ab853601d0c2e85a0704c2fc108268adaea5469b3030f3851ed88db5564208d2f77d252406c3a07430a5df61735dd7c93ccfe2bd17e75cb519a28bbd1c8fc7d5760307a1d6f95259bbf82dea94ddd2c513dc522333cb72dc5673b17e08414444cee7f36a7ae8748fdaddead4bf0c52f4c0f5164a5a48a85f03114290b7b7b7ea3bcfba2eb71590c6712c3b6a23b5b61eb7dbedae84dc6eb75759cb8f1f3faa5a494b119d1dad115ccfdded768200a6fab145a75d7c3995e47c3e8baec7a1fdfefdbb20ad81d86c36557a866ad5a38ef138c63f3e3e2e25b1799e0b8a2d2d5adae88de9605ec7c9225238ed9cabaa50adda5f41da7b7fc14254d6a20b2ff888ae30e1a3a86b20f841402ff255fd1c86a132225d615a0a97ab85864c28459048a94957ea6c6b77b8b659752b2cd65a73dadd327068fad6b90180791806f1de9331a66412de7b4a2955990cb26764da28fdc618c91843f33c53d775a8c292b5969c73254b79d450264e29950402998f738e628ca5e44c445ff490a592d3f256171be15b81b0364018e43ccf324dd3ea98fcd6e1d3c61b4bc1a6204dd33495e223b8add5a4a9a1f9ab63626c04ed55436b0b3e9a32ce391986a1fa2bc3a07aaf3e4ccc5cf23d94bb903fe21d54a5a9324d5319b786164497fc119468e7c41809c523662ea891a84a290caa55918e6755d1bbb41863313ced6d5e492470b80165c4df30ea8a1ee3380aead34a0d723c1e2bf561b1966f37b28a2b8e3eea3af2437f7f7f97bf7fff166fa4ffac9aa6a9aefee31e65b29cb3586baf1003f2ed464208954f5f8b741bfe6a846fc977b770ad0d539f48afa209c1adb5559db0455baf0984efc9f4b4c423221c6364a22fdf69ad2d0594672de75c0c771c4772ce915c4aca650cfeba3b1e8fc51f3f5adbddfda569ba309e5222ef7da92c3d6bdaf3c0dbc02b9ccf679c11651c36957316630cb7ebad415aa669122004c450da7ad650db43590c9bf0ded3e9742211e1e5cf55e64b69949c73bc9cb45702975d3dea3006542c3f3e3eaa675a6964e0f36eb713ac8103431b1cde3dfa77eb7f9c6b70726d5742b80000000049454e44ae426082</data>
+    </image>
+</images>
 <connections>
     <connection>
         <sender>exitButton</sender>
