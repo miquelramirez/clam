@@ -56,22 +56,6 @@
         </property>
         <widget class="QPushButton">
             <property name="name">
-                <cstring>uploadButton</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>140</x>
-                    <y>20</y>
-                    <width>120</width>
-                    <height>30</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Upload!</string>
-            </property>
-        </widget>
-        <widget class="QPushButton">
-            <property name="name">
                 <cstring>goButton</cstring>
             </property>
             <property name="geometry">
@@ -262,8 +246,10 @@
     <tabstop>projectEdit</tabstop>
     <tabstop>taskEdit</tabstop>
     <tabstop>taskButton</tabstop>
+    <tabstop>pathEdit</tabstop>
+    <tabstop>pathButton</tabstop>
     <tabstop>goButton</tabstop>
-    <tabstop>uploadButton</tabstop>
+    <tabstop>exitButton</tabstop>
     <tabstop>logEdit</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
