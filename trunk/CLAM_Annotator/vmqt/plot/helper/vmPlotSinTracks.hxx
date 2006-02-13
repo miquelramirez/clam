@@ -3,7 +3,7 @@
 
 #include <string>
 #include "vmQAppWrapper.hxx"
-#include "vmSintracksPlot.hxx"
+#include "vmSinTracksPlot.hxx"
 
 namespace CLAM
 {
