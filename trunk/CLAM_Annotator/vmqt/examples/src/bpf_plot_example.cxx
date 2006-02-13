@@ -1,7 +1,7 @@
 #include <QApplication>
 #include "Melody.hxx"
 #include "XMLStorage.hxx"
-#include "vm_bpf_plot.hxx"
+#include "vmBPFPlot.hxx"
 
 void extract_data(const CLAM::Melody& in, CLAM::BPF& out, double& min, double& max);
 
@@ -19,18 +19,18 @@ int main(int argc, char** argv)
 	QApplication app( argc, argv );
 
 	CLAM::VM::BPFPlot plot;
-	plot.set_title("BPF");
-	plot.set_geometry(100,50,600,300);
-	plot.set_xrange(0.0,duration);
-	plot.set_yrange(min-span*0.1,max+span*0.1);
-	plot.set_zoom_steps(10,6);
-	plot.set_data(&bpf);
+	plot.SetTitle("BPF");
+	plot.SetGeometry(100,50,600,300);
+	plot.SetXRange(0.0,duration);
+	plot.SetYRange(min-span*0.1,max+span*0.1);
+	plot.SetZoomSteps(10,6);
+	plot.SetData(&bpf);
 	plot.show();
 
 // comment the following lines for hide the grid, deactivate snap to grid feature or change grid steps
 	plot.showGrid(true);
 	plot.snapToGrid(true);
-	plot.set_grid_steps(0.5,span/20.0);
+	plot.SetGridSteps(0.5,span/20.0);
 
 // uncomment the following line to see the example on background black mode
 //	plot.backgroundBlack();

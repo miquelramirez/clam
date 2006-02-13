@@ -8,7 +8,7 @@ using CLAM::Segment;
 
 namespace qtvm_examples_utils
 {
-    void analyze(const Audio& in, Segment& out); 
+    void analyze(const Audio& in, Segment& out, bool harmonic=true); 
 }
 
 #endif

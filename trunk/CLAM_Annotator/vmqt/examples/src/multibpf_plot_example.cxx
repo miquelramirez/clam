@@ -1,7 +1,7 @@
 #include <QApplication>
 #include "Melody.hxx"
 #include "XMLStorage.hxx"
-#include "vm_multibpf_plot.hxx"
+#include "vmMultiBPFPlot.hxx"
 
 void extract_data(const CLAM::Melody& in, CLAM::BPF& out, double& min, double& max);
 
@@ -25,23 +25,23 @@ int main(int argc, char** argv)
 	QApplication app( argc, argv );
 
 	CLAM::VM::MultiBPFPlot plot;
-	plot.set_title("MultiBPF");
-	plot.set_geometry(100,50,600,300);
-	plot.set_xrange(0.0,duration);
-	plot.set_yrange(min-span*0.1,max+span*0.1);
-	plot.set_zoom_steps(10,6);
-	plot.add_bpf("third_phase",&bpf0);
-	plot.add_bpf("happy_birthday",&bpf1);
-	plot.add_bpf("star_wars",&bpf2);
-	plot.set_colors("third_phase",CLAM::VM::Color(255,0,0),CLAM::VM::Color(0,255,255));
-	plot.set_colors("happy_birthday",CLAM::VM::Color(0,255,255),CLAM::VM::Color(255,0,0));
-	plot.set_colors("happy_birthday",CLAM::VM::Color(0,255,0),CLAM::VM::Color(0,0,255));
+	plot.SetTitle("MultiBPF");
+	plot.SetGeometry(100,50,600,300);
+	plot.SetXRange(0.0,duration);
+	plot.SetYRange(min-span*0.1,max+span*0.1);
+	plot.SetZoomSteps(10,6);
+	plot.AddBPF("third_phase",&bpf0);
+	plot.AddBPF("happy_birthday",&bpf1);
+	plot.AddBPF("star_wars",&bpf2);
+	plot.SetColors("third_phase",CLAM::VM::Color(255,0,0),CLAM::VM::Color(0,255,255));
+	plot.SetColors("happy_birthday",CLAM::VM::Color(0,255,255),CLAM::VM::Color(255,0,0));
+	plot.SetColors("happy_birthday",CLAM::VM::Color(0,255,0),CLAM::VM::Color(0,0,255));
 	plot.show();
 
 // comment the following lines for hide the grid, deactivate snap to grid feature or change grid steps
 	plot.showGrid(true);
 	plot.snapToGrid(true);
-	plot.set_grid_steps(0.5,span/20.0);
+	plot.SetGridSteps(0.5,span/20.0);
 
 // uncomment one of the following lines to set the current bpf, current: wtar_wars (last entry)
 //	plot.setCurrentBPF("third_phase");

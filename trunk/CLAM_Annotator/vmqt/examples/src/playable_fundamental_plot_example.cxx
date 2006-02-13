@@ -1,7 +1,7 @@
 #include <QApplication>
 #include "audio_file_utils.hxx"
 #include "analysis_utils.hxx"
-#include "vm_playable_fundamental_plot.hxx"
+#include "vmPlayableFundamentalPlot.hxx"
 
 int main(int argc, char** argv)
 {
@@ -17,9 +17,9 @@ int main(int argc, char** argv)
 	QApplication app( argc, argv );
 
 	CLAM::VM::PlayableFundamentalPlot plot;
-	plot.set_title("Fundamental");
-	plot.set_geometry(100,100,600,300);
-	plot.set_data(segment);
+	plot.SetTitle("Fundamental");
+	plot.SetGeometry(100,100,600,300);
+	plot.SetData(segment);
 	plot.show();
 
 	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));

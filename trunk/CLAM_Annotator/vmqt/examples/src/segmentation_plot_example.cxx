@@ -1,12 +1,10 @@
 #include <QApplication>
-#include "vm_segmentation_plot.hxx"
-#include "vm_discontinuous_segmentation.hxx"
+#include "vmSegmentationPlot.hxx"
+#include "vmDiscontinuousSegmentation.hxx"
 
 
 int main(int argc, char** argv)
 {
-	QApplication app( argc, argv );
-
 	double xmax = 22050.0;
 	CLAM::Segmentation* seg = new CLAM::DiscontinuousSegmentation(xmax);
 	unsigned nSegments = 15;
@@ -17,14 +15,16 @@ int main(int argc, char** argv)
 		seg->insert(double(i)*step);
 	}
 	seg->current(2);
-	
+
+	QApplication app( argc, argv );
+
 	CLAM::VM::SegmentationPlot plot;
-	plot.set_title("Discontinuous Segmentation");
-	plot.set_geometry(100,50,600,300);
-	plot.set_xrange(0.0,xmax);
-	plot.set_yrange(-150.0,0.0);
-	plot.set_zoom_steps(10,6);
-	plot.set_segmentation(seg);
+	plot.SetTitle("Discontinuous Segmentation");
+	plot.SetGeometry(100,50,600,300);
+	plot.SetXRange(0.0,xmax);
+	plot.SetYRange(-150.0,0.0);
+	plot.SetZoomSteps(10,6);
+	plot.SetSegmentation(seg);
 	plot.show();
 
 // uncomment the following line to see the example on background black mode

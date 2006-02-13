@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <QApplication>
 #include <QFileDialog>
-#include "vm_audio_plot.hxx"
-#include "vm_contiguous_segmentation.hxx"
+#include "vmAudioPlot.hxx"
+#include "vmContiguousSegmentation.hxx"
 #include "audio_file_utils.hxx"
 
 int main(int argc, char** argv)
@@ -30,10 +30,10 @@ int main(int argc, char** argv)
 	seg->current(2);
 	
 	CLAM::VM::AudioPlot plot;
-	plot.set_title("Contiguous Segmentation");
-	plot.set_geometry(100,50,600,300);
-	plot.set_data(audio);
-	plot.set_segmentation(seg);
+	plot.SetTitle("Contiguous Segmentation");
+	plot.SetGeometry(100,50,600,300);
+	plot.SetData(audio);
+	plot.SetSegmentation(seg);
 	plot.show();
 
 // uncomment the following line to see the example on background black mode
