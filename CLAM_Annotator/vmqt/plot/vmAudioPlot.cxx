@@ -1,0 +1,98 @@
+#include "vmRuler.hxx"
+#include "vmPlot2D.hxx"
+#include "vmGrid.hxx"
+#include "vmDataArrayRenderer.hxx"
+#include "vmAudioPlot.hxx"
+
+namespace CLAM
+{
+	namespace VM
+	{
+		AudioPlot::AudioPlot(QWidget* parent)
+			: SegmentationPlot(parent)
+		{
+			InitAudioPlot();
+		}
+
+		AudioPlot::~AudioPlot()
+		{
+		}
+
+		void AudioPlot::SetData(const Audio& audio, bool update)
+		{
+			if(!update)
+			{
+				SetXRange(0.0,audio.GetDuration()/1000.0);
+				SetYRange(-1.0,1.0);
+				std::pair<int, int> zoom_steps = GetZoomSteps(audio.GetBuffer().Size());
+				SetZoomSteps(zoom_steps.first,zoom_steps.second);
+			}
+			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridSteps(audio.GetDuration()/1000.0,1.0);
+			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("audio"))->SetData(audio.GetBuffer());
+		}
+
+		void AudioPlot::backgroundWhite()
+		{
+			SegmentationPlot::backgroundWhite();
+			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridColor(Color(0,0,255));
+			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("audio"))->SetDataColor(Color(0,0,255));
+		}
+
+		void AudioPlot::backgroundBlack()
+		{
+			SegmentationPlot::backgroundBlack();
+			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridColor(Color(0,255,0));
+			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("audio"))->SetDataColor(Color(0,255,0));
+		}
+
+		void AudioPlot::InitAudioPlot()
+		{
+			mPlot->AddRenderer("grid", new Grid());
+			mPlot->AddRenderer("audio", new DataArrayRenderer());
+			mPlot->SendToBack("audio");
+			mPlot->SendToBack("grid");
+			mPlot->BringToFront("locator");
+			mXRuler->SetStep(0.01);
+			mYRuler->SetStep(0.05);
+			static_cast<Grid*>(mPlot->GetRenderer("grid"))->ShowGrid(true);
+			backgroundWhite();
+		}
+
+		std::pair<int,int> AudioPlot::GetZoomSteps(TSize size)
+		{
+			double n = 100.0;
+			int xratio = 0;
+			while(n < size)
+			{
+				n *= 2.0;
+				xratio++;
+			}
+			
+			n = 0.2;
+			int yratio = 0;
+			while(n < 2.0)
+			{
+				n *= 2.0;
+				yratio++;
+			}
+			return std::make_pair(--xratio,--yratio);
+		}
+
+		void AudioPlot::SetXRange(double xmin, double xmax, ERulerScale scale)
+		{
+			SegmentationPlot::SetXRange(xmin,xmax,scale);
+		}
+
+		void AudioPlot::SetYRange(double ymin, double ymax, ERulerScale scale)
+		{
+			SegmentationPlot::SetYRange(ymin,ymax,scale);
+		}
+
+		void AudioPlot::SetZoomSteps(int hsteps, int vsteps)
+		{
+			SegmentationPlot::SetZoomSteps(hsteps,vsteps);
+		}
+	}
+}
+
+// END

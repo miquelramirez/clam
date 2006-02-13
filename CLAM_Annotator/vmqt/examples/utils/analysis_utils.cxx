@@ -5,7 +5,7 @@ using namespace CLAM;
 
 namespace qtvm_examples_utils
 {
-    void analyze(const Audio& in, Segment& out)
+    void analyze(const Audio& in, Segment& out, bool harmonic)
     {
 		out.AddAudio();
 		out.UpdateData();
@@ -25,7 +25,7 @@ namespace qtvm_examples_utils
 		cfg.SetResZeroPadding(0);
 		cfg.SetSamplingRate(out.GetSamplingRate());
 		cfg.GetPeakDetect().SetMagThreshold(-120.0);
-		cfg.GetSinTracking().SetIsHarmonic(true);
+		if(harmonic) cfg.GetSinTracking().SetIsHarmonic(true);
 
 		SMSAnalysis analyzer;
 		analyzer.Configure(cfg);

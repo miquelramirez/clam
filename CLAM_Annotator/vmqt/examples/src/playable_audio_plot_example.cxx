@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <QApplication>
 #include <QFileDialog>
-#include "vm_playable_audio_plot.hxx"
+#include "vmPlayableAudioPlot.hxx"
 #include "audio_file_utils.hxx"
 
 int main(int argc, char** argv)
@@ -19,9 +19,9 @@ int main(int argc, char** argv)
 	printf("done\n");
    
 	CLAM::VM::PlayableAudioPlot plot;
-	plot.set_title("Audio");
-	plot.set_geometry(100,50,600,300);
-	plot.set_data(audio);
+	plot.SetTitle("Audio");
+	plot.SetGeometry(100,50,600,300);
+	plot.SetData(audio);
 	plot.show();
 
 	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));

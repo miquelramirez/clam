@@ -1,7 +1,7 @@
 #include <QApplication>
 #include "wave_utils.hxx"
 #include "analysis_utils.hxx"
-#include "vm_spectrogram_plot.hxx"
+#include "vmSpectrogramPlot.hxx"
 
 int main(int argc, char** argv)
 {
@@ -24,9 +24,9 @@ int main(int argc, char** argv)
     printf("\ndone!\n");
 	
 	CLAM::VM::SpectrogramPlot plot;
-	plot.set_title("Spectrogram");
-	plot.set_geometry(100,50,600,300);
-	plot.set_data(segment);
+	plot.SetTitle("Spectrogram");
+	plot.SetGeometry(100,50,600,300);
+	plot.SetData(segment);
 	plot.show();
 
 // uncomment the following line to see the example with sonogram on black&white 
@@ -37,6 +37,7 @@ int main(int argc, char** argv)
 
 	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));
 	return app.exec();
+
 }
 
 // END

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <QApplication>
 #include <QFileDialog>
-#include "vm_audio_stereo_plot.hxx"
+#include "vmAudioStereoPlot.hxx"
 #include "audio_file_utils.hxx"
 
 int main(int argc, char** argv)
@@ -19,9 +19,9 @@ int main(int argc, char** argv)
 	printf("done\n");
 	
 	CLAM::VM::AudioStereoPlot plot;
-	plot.set_title("Audio Stereo");
-	plot.set_geometry(100,50,600,350);
-	plot.set_data(channels[0],channels[1]);
+	plot.SetTitle("Audio Stereo");
+	plot.SetGeometry(100,50,600,350);
+	plot.SetData(channels[0],channels[1]);
 	plot.show();
 
 // uncomment the following line to see the example on background black mode

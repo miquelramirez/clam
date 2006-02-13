@@ -1,7 +1,7 @@
 #include <QApplication>
 #include "wave_utils.hxx"
 #include "analysis_utils.hxx"
-#include "vm_spectrum_plot.hxx"
+#include "vmSpectrumPlot.hxx"
 
 int main(int argc, char** argv)
 {
@@ -20,15 +20,15 @@ int main(int argc, char** argv)
     qtvm_examples_utils::sine(frequency, amplitude, duration, sampleRate, wave);
 
     printf("Analysing");
-    qtvm_examples_utils::analyze(wave,segment);
+    qtvm_examples_utils::analyze(wave,segment,false);
     printf("\ndone!\n");
 	
     int index = segment.GetnFrames()/2;
    
 	CLAM::VM::SpectrumPlot plot;
-	plot.set_title("Spectrum");
-	plot.set_geometry(100,50,600,300);
-	plot.set_data(segment.GetFrame(index).GetSinusoidalAnalSpectrum(),segment.GetFrame(index).GetSpectralPeakArray());
+	plot.SetTitle("Spectrum");
+	plot.SetGeometry(100,50,600,300);
+	plot.SetData(segment.GetFrame(index).GetSinusoidalAnalSpectrum(),segment.GetFrame(index).GetSpectralPeakArray());
 	plot.show();
 
 // uncomment the following line to see the example on background black mode
@@ -36,6 +36,7 @@ int main(int argc, char** argv)
 
 	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));
 	return app.exec();
+
 }
 
 // END
