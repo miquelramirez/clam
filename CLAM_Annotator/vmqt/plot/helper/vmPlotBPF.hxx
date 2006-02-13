@@ -26,7 +26,7 @@ namespace CLAM
 			plot.SetXRange(xmin,xmax,xscale);
 			plot.SetYRange(ymin,ymax,yscale);
 			plot.SetZoomSteps(xzoom_steps,yzoom_steps);
-			plot.SetGrid_steps(xstep,ystep);
+			plot.SetGridSteps(xstep,ystep);
 			plot.SetData(bpf);
 			plot.readOnly(); 
 			plot.show();
