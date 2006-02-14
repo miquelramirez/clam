@@ -46,15 +46,15 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem( gen, "Oscillator");
 	new ProcessingItem( gen, "ADSR");
 	new ProcessingItem( gen, "SquareWave" );	
-	new ProcessingItem( gen, "WaveGenerator" );	
+//	new ProcessingItem( gen, "WaveGenerator" );	TODO register
 
 	QListViewItem * aritops = new QListViewItem( this,"Arithmetic operations" );
 	new ProcessingItem( aritops, "AudioMultiplier" );
 	new ProcessingItem( aritops, "AudioAdder" );
 	new ProcessingItem( aritops, "AudioMixer" );
-	new ProcessingItem( aritops, "SpectralPeakArrayAdder" );
-	new ProcessingItem( aritops, "SpectrumAdder" );
-	new ProcessingItem( aritops, "SpectrumAdder2" );
+//	new ProcessingItem( aritops, "SpectralPeakArrayAdder" ); TODO register
+//	new ProcessingItem( aritops, "SpectrumAdder" ); TODO register
+//	new ProcessingItem( aritops, "SpectrumAdder2" ); TODO register
 	
 	QListViewItem * controls = new QListViewItem( this, "Controls" );
 	new ProcessingItem( controls, "AutoPanner" );	
@@ -114,7 +114,7 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem( utils, "Fundamental2Control" );	
 	new ProcessingItem( utils, "ControlPrinter" );	
 	new ProcessingItem( utils, "ControlScaler" );	
-	new ProcessingItem( utils, "ControlMapper" );	
+//	new ProcessingItem( utils, "ControlMapper" );	TODO register
 
 	QListViewItem* winplots = new QListViewItem(this,"Plots in new windows");
 	new ProcessingItem(winplots, "AudioPlotProcessing");
@@ -135,11 +135,6 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem(canvasplots,"SpecgramPortMonitor");
 	new ProcessingItem(canvasplots,"FundTrackPortMonitor");
 	new ProcessingItem(canvasplots,"SinTracksPortMonitor");
-	
-	QListViewItem* icaRelated = new QListViewItem(this,"ICA");
-	new ProcessingItem(icaRelated,"ICA");
-	new ProcessingItem(icaRelated,"CrossMixer");
-	new ProcessingItem(icaRelated,"AmariError");
 	
 	show();
 	header()->hide();
