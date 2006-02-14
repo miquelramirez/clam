@@ -8,7 +8,7 @@
 
 
 	
-enableSendMail = False
+enableSendMail = True
 enablePlaceCvsTags = True
 
 quickTestForScriptDebuging = False  # Danger! flag to be enabled for debuging puroposes only
@@ -21,6 +21,7 @@ CleanCheckout = 2
 # when the sandbox is not present always clean checkout
 updateLevelForCLAM = CleanCheckout
 updateLevelForExamples = CleanCheckout
+updateLevelForExamples = Keep
 updateLevelForTestData = Keep
 
 # When false keeps already compiled objects
@@ -29,13 +30,14 @@ doCleanMake = True
 doAutoconf = True
 configureOptions = ''
 # Non-automatic-test are run the following seconds and then killed
-executionTime = 15
+executionTime = 5
 
 #configurations = ['debug', 'release'] 
 configurations = ['debug'] 
 
 # Mail report settings
-publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
+#publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
+publicAddress = 'parumi@iua.upf.es' # To use only when some test fails
 privateAddress = 'parumi@iua.upf.es' # To know the test has been runned
 subject = 'nightly tests report'
 maxLinesPerMail = 200
@@ -90,24 +92,26 @@ sandboxes = [ # Module, Sandbox name, Tag, Update level
 	( 'CLAM_SMSTools', 'clean-CLAM_SMSTools', '', updateLevelForExamples ),
 	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', '', updateLevelForExamples ),
 	( 'CLAM_Annotator', 'clean-CLAM_Annotator', '', updateLevelForExamples ),
-	( 'CLAM_Rappid', 'clean-CLAM_Rappid', '', updateLevelForExamples ),
+#	( 'CLAM_Rappid', 'clean-CLAM_Rappid', '', updateLevelForExamples ),
 	( 'CLAM_SDIFDisplay', 'clean-CLAM_SDIFDisplay', '', updateLevelForExamples ),
-	( 'CLAM_SpectralDelay', 'clean-CLAM_SpectralDelay', '', updateLevelForExamples ),
-	( 'CLAM_Salto', 'clean-CLAM_Salto', '', updateLevelForExamples ),
-	( 'CLAM-draft', 'CLAM-draft', '', Update ),
+#	( 'CLAM_SpectralDelay', 'clean-CLAM_SpectralDelay', '', updateLevelForExamples ),
+#	( 'CLAM_Salto', 'clean-CLAM_Salto', '', updateLevelForExamples ),
+	( 'CLAM-draft', 'CLAM-draft', '', updateLevelForExamples ),
 	( 'CLAM-TestData', 'CLAM-TestData', '', updateLevelForTestData )
 ]
 def baseDirOf(keyname) :
 	for modulename, sandboxname, _, _  in sandboxes :
 		if modulename.find(keyname) >= 0 : 
 			return CLAM_SANDBOXES+ sandboxname
-	assert False, "in baseDirOf() wrong module keyname"
+	assert False, "in baseDirOf() wrong module keyname: %s, sandbox: %s" % \
+		(keyname, sandboxname)
+
 
 
 automaticTests = [
 	( 'UnitTests', unitTestsPath ),
 	( 'FunctionalTests', functionalTestsPath  ),
-	( 'SMSToolsTests', baseDirOf('SMSTools')+'/build/FunctionalTests/'  )
+#TODO	( 'SMSToolsTests', baseDirOf('SMSTools')+'/build/FunctionalTests/'  )
 ]
 
 externalApplications = [
@@ -118,9 +122,9 @@ externalApplications = [
 	( 'NetworkEditor', baseDirOf('NetworkEditor')+'/scons/' ),
 	( 'Voice2MIDI', baseDirOf('CLAM_Voice2MIDI')+'/scons/' ),
 	( 'SMSTools', baseDirOf('SMSTools')+'/scons/QtSMSTools/' ),
-	( 'Annotator', baseDirOf('Annotator')+'/build/' ),
-	( 'SMSBatch', baseDirOf('SMSTools')+'/build/Batch/'  ),
-	( 'SMSConsole', baseDirOf('SMSTools')+'/build/Console/'  ),
+	( 'Annotator', baseDirOf('Annotator')+'/scons/' ),
+#	( 'SMSBatch', baseDirOf('SMSTools')+'/build/Batch/'  ),
+#	( 'SMSConsole', baseDirOf('SMSTools')+'/build/Console/'  ),
 	( 'SDIFDisplay', baseDirOf('SDIFDisplay')+'/build/'  )
 #	( 'Rappid', baseDirOf('Rappid')+'/build/' ),
 #	( 'DescriptorsGUI', baseDirOf('DescriptorsGUI')+'/build/' ),
@@ -213,9 +217,10 @@ testsToRun[-1:-1] = simpleExamples
 testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
 
-if quickTestForScriptDebuging :
-	testsToRun = [( 'UnitTests', unitTestsPath, '' )]
-	testsToRun = [( 'SMSTools', baseDirOf('SMSTools')+'/scons/QtSMSTools/' )]
+if quickTestForScriptDebuging  : 
+	testsToRun = [ ( 'NetworkEditor', baseDirOf('NetworkEditor')+'/scons/' ), ( 'Voice2MIDI', baseDirOf('CLAM_Voice2MIDI')+'/scons/' ), 	( 'SMSTools', baseDirOf('SMSTools')+'/scons/QtSMSTools/' ), ( 'Annotator', baseDirOf('Annotator')+'/scons/' ) ]
+#	testsToRun = [( 'UnitTests', unitTestsPath, '' )]
+#	testsToRun = [( 'SMSTools', baseDirOf('SMSTools')+'/scons/QtSMSTools/' )]
 #	testsToRun = automaticTests
 		
 sender = '"automatic tests script" <parumi@iua.upf.es>'
@@ -257,6 +262,12 @@ def checkPaths() :
 		if not os.access(path, os.F_OK) :
 			dirsExpected += '\t- %s\n'%path
 			testsToRun[i] = ('','')
+		elif 'scons' in path :
+			print '>>> will use scons in this path:\n', path
+			setfile = path+'SConstruct'
+			if not os.access(setfile, os.F_OK) :
+				setfilesExpected +='\t- %s\n'%setfile
+				testsToRun[i] = ('','')
 		else :
 			setfile = path+'settings.cfg'
 			if not os.access(setfile, os.F_OK) :
@@ -374,7 +385,7 @@ def compileAndRun(name, path, useScons) :
 	details = ''
 	for configuration in configurations :
 		if useScons: 	
-			makecmd = 'scons clam_prefix=%s' % clam_prefix
+			makecmd = 'scons release=yes clam_prefix=%s' % clam_prefix
 		else :
 			# compilation phase
 			if doCleanMake or len(configurations)>1:
@@ -399,6 +410,9 @@ def compileAndRun(name, path, useScons) :
 			details += detailsFormat % (name, output)
 			continue 
 			
+		# TODO fix this kludge:
+		if 'SMSTools' in name : name = 'QtSMSTools'
+
 		# execution phase
 		execcmd = './'+name
 		assert os.access(execcmd, os.X_OK), 'file should exist: ' + execcmd
@@ -462,14 +476,17 @@ from guiltyCommits import placeTestsOkCandidateTags, placeTestsOkTags, chaseTheG
 import time, string, signal
 def runInBackgroundForAWhile(path, command, sleeptime=10, useScons='') :
 	os.chdir(path)
+	nametokill = command[command.find('/')+1:]
 	if useScons :
 		command = 'export LD_LIBRARY_PATH=%s/lib && %s' % (clam_prefix, command)
-	commands.getstatusoutput(command)
+	else :
+		command = nametokill
+	#commands.getstatusoutput('%s &' % command)
+	os.system('%s &' % command)
 	time.sleep( sleeptime )
-	withoutSlash = command[command.find('/')+1 : ]
-	status, dummy = commands.getstatusoutput('killall '+ withoutSlash)
-	# TODO fix this
-	
+	status, dummy = commands.getstatusoutput('killall '+ nametokill)
+
+	# TODO get output	
 	# print 'kill status ', status, dummy
 	if os.access('/tmp/removeme.out', os.F_OK) :
 		result = string.join( file('/tmp/removeme.out').readlines() )
@@ -506,13 +523,13 @@ def updateSandboxes() :
 	global sandboxes
 	for module, sandbox, tag, level in sandboxes :
 		if not os.access(sandbox, os.F_OK) :
-			print 'Cannot update sandbox %s (dont exist), doing checkout'%(sandbox)
+			print 'Cannot update sandbox %s (doesnt exist), doing checkout'%(sandbox)
 			checkoutSandbox(module, sandbox, tag)
-		elif level == 2 :
+		elif level == CleanCheckout :
 			print 'The sandbox %s already exists, deleting it'%(sandbox)
 			getStatusOutput('rm -rf '+sandbox )
 			checkoutSandbox(module, sandbox, tag)
-		elif level == 1 :
+		elif level == Update :
 			print 'The sandbox %s already exists, updating it'%(sandbox)
 			os.chdir(sandbox)
 			ok, output = getStatusOutput( 'cvs update -dP' )
@@ -520,19 +537,23 @@ def updateSandboxes() :
 				print 'CVS CONFLICT !!', output
 				# TODO: Inform about them
 			os.chdir(CLAM_SANDBOXES)
-		elif level == 0 :
+		elif level == Keep :
 			print 'The sandbox %s already exists, keeping it'%(sandbox)
 
 def deployClamBuildSystem() :
+	executeMandatory('rm -rf %s/*' % clam_prefix)
 	os.chdir(BUILDPATH+'../scons/libs/')
-	executeMandatory('scons configure')
-	executeMandatory('scons install prefix=%s' % clam_prefix)
+	executeMandatory('scons configure prefix=%s release=yes' % clam_prefix)
+	executeMandatory('scons install')
 
-def deployClamOldBuildSystem() :
-	# BuildSrcDeps
+def buildSrcdeps() :
+	if quickTestForScriptDebuging :
+		return
 	os.chdir(BUILDPATH+'srcdeps/')
 	print "Compiling srcdeps. ",
 	executeMandatory('make clean && make')
+def deployClamOldBuildSystem() :
+	buildSrcdeps()
 
 	# Remove not public dirs
 	if False : # disabled because some tests are in not-public
@@ -563,7 +584,7 @@ def runTests() :
 	resultSet = TestResultSet()
 	subj = [subject]
 	if 'CVSROOT' not in os.environ :
-		print 'warning: CVSROOT not found in environ'
+		print 'warning: CVSROOT not found in environ using: ', CVSROOT
 		os.environ['CVSROOT'] = CVSROOT
 
 	os.environ['CVS_RSH'] = getStatusOutput('which ssh')[1]
@@ -577,6 +598,7 @@ def runTests() :
 		placeTestsOkCandidateTags("CLAM")
 		placeTestsOkCandidateTags("CLAM_NetworkEditor")
 		placeTestsOkCandidateTags("CLAM_SMSTools")
+		placeTestsOkCandidateTags("CLAM_Annotator")
 
 	updateSandboxes()
 	totalSummary.append(checkPaths())
@@ -610,10 +632,12 @@ def runTests() :
 			guiltyReport = chaseTheGuiltyCommits("CLAM")
 			guiltyReport += chaseTheGuiltyCommits("CLAM_NetworkEditor")
 			guiltyReport += chaseTheGuiltyCommits("CLAM_SMSTools")
+			guiltyReport += chaseTheGuiltyCommits("CLAM_Annotator")
 		else :
 			placeTestsOkTags("CLAM")
 			placeTestsOkTags("CLAM_NetworkEditor")
 			placeTestsOkTags("CLAM_SMSTools")
+			placeTestsOkTags("CLAM_Annotator")
 			guiltyReport = ''
 
 	if len(totalDetails) > maxLinesPerMail :
