@@ -3,7 +3,14 @@ import os, sys
 import urlparse, urllib
 from threading import Thread
 
+import xml.dom.ext
 from xml.dom.ext.reader.Sax2 import FromXmlStream
+from xml.sax import saxutils
+from Pool import Pool
+
+import HttpFormPost
+
+import gzip
 
 #TODO CANVIS QUE CAL FER:
 #	separar be en metodes tot aixo (bastant fet)
@@ -90,7 +97,7 @@ class Tasker:
 			os.rename( self.path+'temp', self.path+audiofilename )
 
 			#Store modification file for each pool to keep track of the ones upgraded
-			self.songlisting[audiofilename] = [ os.path.getmtime(audiofilename), False ]
+			self.songlisting[audiofilename] = [ os.path.getmtime( self.path+audiofilename ), False, id ]
 
 			try:
 				pool = self.metadataprovider.QueryDescriptors( id, descriptors )
@@ -133,6 +140,7 @@ class Tasker:
 				continue
 				
 		return None
+
 	
 	def extractParameters(self):
 		ids = []
@@ -145,7 +153,8 @@ class Tasker:
 		for desc in self.task.getElementsByTagName("Descriptor"):
 			desc.normalize()
 			if desc.hasAttribute('modify') and desc.getAttribute('modify'):
-				self.modifydescriptors.append(desc.firstChild.data)
+				scopename=desc.firstChild.data.split('::')
+				self.modifydescriptors.append( (scopename[0],scopename[1]) )
 			descriptors.append(desc.firstChild.data)
 
 		contentlocator = self.task.getElementsByTagName("ContentLocator")
@@ -160,11 +169,12 @@ class Tasker:
 
 		return ids, descriptors, contentlocator.strip(), metadataprovider.strip()
 
+
 	def getModified(self):
 		modified = []
 		self.printfunction(u"\n  == Looking for modified files ==\n")
 		for song in self.songlisting.keys():
-			songpool=song+".pool"
+			songpool=self.path+song+".pool"
 			if self.songlisting[song][0] != os.path.getmtime(songpool):
 				self.printfunction(u" - File '%s' modified\n"  % songpool)
 				self.songlisting[song][1] = True
@@ -173,9 +183,49 @@ class Tasker:
 				self.printfunction(u" - File '%s' NOT modified\n"  % songpool)
 		return modified
 
+
 	def uploadChanges(self):
+		uploadfile='uploadfile.xml.gz'
 		self.printfunction(u"\n  == Uploading ==\n")
-		self.printfunction(u" - Fake!!\n")
+
+		self.printfunction(u" - Generating file to upload\n")
+		uf = gzip.GzipFile( uploadfile, 'w')
+
+		uf.write("<?xml version='1.0' encoding='UTF-8'?>\n")
+		uf.write("<UploadPools>\n")
+		for song in self.songlisting.keys():
+			#if modified
+			if self.songlisting[song][1]:  
+				uf.write("  <Song id='%s'>\n" % self.songlisting[song][2] )
+				pool=self.path+song+".pool"
+				p=Pool(pool)
+				for (scope,name) in self.modifydescriptors:
+					uf.write("    <Attribute scope='%s' name='%s'>" % (scope,name) )
+					attr=p.SelectAttributes(scope,name)
+					uf.write(saxutils.escape(attr[0].firstChild.data))
+					uf.write("</Attribute>\n" )
+				uf.write("  </Song>\n")
+		uf.write("</UploadPools>\n")
+		uf.close()
+
+		self.printfunction(u" - Uploading the modified descriptor file to the server\n")
+		try:
+			result = HttpFormPost.post_multipart(
+				"localhost" , "/SimacServices/kk.py/Upload" , 'simac-annotator-tasker',
+				[],
+				[ ( 'data' , 'upload.xml' , open( uploadfile, 'rb').read() ) ]
+			)
+		except:
+			self.printfunction(u"\n - ERROR uploading\n" )
+		else:
+			if result != "OK":
+				self.printfunction(u"\n - ERROR in the server when processing the file: %s\n" % result )
+			else:
+				self.printfunction(u" - File successfully uploaded: %s\n"%result)
+
+		#Clean!
+		os.remove('uploadfile.xml.gz')
+
 
 	def createFile(self, name, extension, content):
 		try:
@@ -185,15 +235,17 @@ class Tasker:
 		except:
 			raise TaskerError("File write error\nError writing the files, maybe the directory does not exist!")
 
+
 	def runAnnotator(self):
 		self.printfunction(u"\n  == CLAM-Annotator ==\n")
 		self.printfunction(u" - Launching...\n")
 		if sys.platform != 'win32':
-			result = os.system( "Annotator %s.pro &> /dev/null" % self.projectname )
+			result = os.system( "Annotator %s.pro &> /dev/null" % (self.path+self.projectname) )
 		else:
 			raise TaskError("Run Annotator error\nWindows execution of the Annotator is still not managed.")
 		self.printfunction( "RESULT = %d" % result )
 		self.printfunction(u" - Finalized\n")
+
 
 
 if __name__ == "__main__" :
@@ -202,10 +254,12 @@ if __name__ == "__main__" :
 		sys.exit(0)
 	try:
 		tasker=Tasker()
-		tasker.setParameters( sys.argv[1], sys.argv[2] )
+		tasker.setParameters( sys.argv[1], sys.argv[2], '/home/xoliver/temp' )
 		tasker.processTask()
-		#tasker.runAnnotator()
-		#os.system("touch I\ Lost\ You.mp3.pool")
+		tasker.runAnnotator()
+		import time
+		time.sleep(1)
+		os.system("touch /home/xoliver/temp/I\ Lost\ You.mp3.pool")
 		modified = tasker.getModified()
 		if len(modified)==0:
 			print "\n - No descriptor pool modified. Exitting without uploading anything.\n"
