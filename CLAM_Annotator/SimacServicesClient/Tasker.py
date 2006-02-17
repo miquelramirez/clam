@@ -1,22 +1,20 @@
-import ServiceStub
 import os, sys
-import urlparse, urllib
+import pdb
+import gzip
+import urlparse, urllib, urllib2
 from threading import Thread
 
 import xml.dom.ext
 from xml.dom.ext.reader.Sax2 import FromXmlStream
 from xml.sax import saxutils
+
 from Pool import Pool
-
+import ServiceStub
 import HttpFormPost
-
-import gzip
-
-#TODO CANVIS QUE CAL FER:
-#	separar be en metodes tot aixo (bastant fet)
 
 clamAnnotatorProjectSkeleton = """<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Project>
+  <!-- <Description>%s</Description> -->
   <Schema>%s.sc</Schema>
   <Extractor>ClamExtractorExample</Extractor>
   <Songs>
@@ -88,7 +86,7 @@ class Tasker:
 			url = self.downloadSong( locations)
 	
 			if url == None:
-				self.printfunction(u"\n  WARNING: it was impossible to download the file with id=%s from the given source urls.\n" % id)
+				self.printfunction(u"\n  WARNING: it was impossible to download the file with id=%s from the given source urls.\n\n" % id)
 				continue
 
 			#File name
@@ -109,7 +107,7 @@ class Tasker:
 		if projectsonglisting == "":
 			raise TaskerError("Access error\nNo file from the task could be downloaded. Check the task file for correct ids.")
 
-		self.createFile(self.projectname, '.pro', clamAnnotatorProjectSkeleton % ( self.projectname, projectsonglisting ) )
+		self.createFile(self.projectname, '.pro', clamAnnotatorProjectSkeleton % ( self.description, self.projectname, projectsonglisting ) )
 	
 	
 		#Print log
@@ -118,7 +116,6 @@ class Tasker:
 		self.printfunction(u" - Created files %s and %s\n" % ( self.projectname+".pro", self.projectname+".sc" ))
 		self.printfunction(u" - Downloaded %d audio file(s) and generated the corresponding pools\n" % len(self.songlisting) )
 
-	#TODO thread en algun lloc de per aqui
 
 	def downloadSong(self, locations):
 		#EP: quan es fagi servir el ContentProvider, el nom d'arxiu sera un problemet, diria -> caldria mirar header pel nom d'arxiu?
@@ -127,8 +124,20 @@ class Tasker:
 
 		for url in locations.splitlines():
 			try:
+				"""if urlparse.urlparse (url)[1] in ServiceStub.NoProxiesFor:
+					proxy_support = urllib2.ProxyHandler( {} )
+					opener = urllib2.build_opener(proxy_support)
+					urllib2.install_opener(opener)
+				else:
+					proxy_support = urllib2.ProxyHandler( ServiceStub.Proxies )
+					opener = urllib2.build_opener(proxy_support)
+					urllib2.install_opener(opener)"""
+
 				self.printfunction(u" - Trying '%s'" % url)
-				stream = urllib.urlopen(url)
+				if urlparse.urlparse(url)[1] in ServiceStub.NoProxiesFor :
+					stream = urllib2.urlopen(url)
+				else:
+					stream = urllib.urlopen(url,None,ServiceStub.Proxies)
 				file = open( self.path+"temp", 'w')
 				file.write( stream.read() )
 				file.close()
@@ -146,13 +155,17 @@ class Tasker:
 		ids = []
 		descriptors = []
 
+		de=self.task.getElementsByTagName("Description")[0]
+		de.normalize()
+		self.description=saxutils.escape(de.firstChild.data)
+
 		for id in self.task.getElementsByTagName("ID"):
 			id.normalize()
 			ids.append(id.firstChild.data)
 		
 		for desc in self.task.getElementsByTagName("Descriptor"):
 			desc.normalize()
-			if desc.hasAttribute('modify') and desc.getAttribute('modify'):
+			if desc.hasAttribute('modify') and desc.getAttribute('modify')=='yes':
 				scopename=desc.firstChild.data.split('::')
 				self.modifydescriptors.append( (scopename[0],scopename[1]) )
 			descriptors.append(desc.firstChild.data)
@@ -183,7 +196,6 @@ class Tasker:
 				self.printfunction(u" - File '%s' NOT modified\n"  % songpool)
 		return modified
 
-
 	def uploadChanges(self):
 		uploadfile='uploadfile.xml.gz'
 		self.printfunction(u"\n  == Uploading ==\n")
@@ -196,32 +208,27 @@ class Tasker:
 		for song in self.songlisting.keys():
 			#if modified
 			if self.songlisting[song][1]:  
-				uf.write("  <Song id='%s'>\n" % self.songlisting[song][2] )
-				pool=self.path+song+".pool"
-				p=Pool(pool)
+				uf.write("<Song id='%s'>" % self.songlisting[song][2] )
+				poolfile=self.path+song+".pool"
+				pool=Pool(poolfile)
+				temppool=Pool()
+
+				#Extract desired attributes
 				for (scope,name) in self.modifydescriptors:
-					uf.write("    <Attribute scope='%s' name='%s'>" % (scope,name) )
-					attr=p.SelectAttributes(scope,name)
-					uf.write(saxutils.escape(attr[0].firstChild.data))
-					uf.write("</Attribute>\n" )
-				uf.write("  </Song>\n")
+					temppool.InsertAttribute(pool,scope,name,scope,name)
+				xml.dom.ext.PrettyPrint(temppool.doc.documentElement, uf)
+				uf.write("</Song>\n")
+
 		uf.write("</UploadPools>\n")
 		uf.close()
 
 		self.printfunction(u" - Uploading the modified descriptor file to the server\n")
-		try:
-			result = HttpFormPost.post_multipart(
-				"localhost" , "/SimacServices/kk.py/Upload" , 'simac-annotator-tasker',
-				[],
-				[ ( 'data' , 'upload.xml' , open( uploadfile, 'rb').read() ) ]
-			)
-		except:
-			self.printfunction(u"\n - ERROR uploading\n" )
+		
+		result=self.metadataprovider.UploadPackedDescriptors(uploadfile)
+		if result != "OK":
+			self.printfunction(u"\n - ERROR in the server when processing the file: %s\n" % result )
 		else:
-			if result != "OK":
-				self.printfunction(u"\n - ERROR in the server when processing the file: %s\n" % result )
-			else:
-				self.printfunction(u" - File successfully uploaded: %s\n"%result)
+			self.printfunction(u" - File successfully uploaded: received %s\n"%result)
 
 		#Clean!
 		os.remove('uploadfile.xml.gz')
