@@ -6,6 +6,7 @@ from cStringIO import StringIO
 
 taskfile=StringIO("""<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Task>
+  <Description>This is a really nice task</Description>
   <ContentLocator>http://localhost/SimacServices/ContentLocator</ContentLocator>
   <MetadataProvider>http://localhost/SimacServices/MetadataProvider</MetadataProvider>
   <IDList>
@@ -40,12 +41,13 @@ class TaskerTest ( unittest.TestCase ) :
 
 	def testExtractParameters_correctFile(self):
 		self.tasker.setParameters( taskfile, "Project" )
-		ids, descs, cl, mp = self.tasker.extractParameters() 
+		ids, descs, cl, mp, description = self.tasker.extractParameters() 
 
 		self.assertEquals( ids, ['69'] )
 		self.assertEquals( descs, ['Song::Artist','Song::Title'] )
 		self.assertEquals( cl,'http://localhost/SimacServices/ContentLocator' )
 		self.assertEquals( mp,'http://localhost/SimacServices/MetadataProvider' )
+		self.assertEquals( description,'This is a really nice task' )
 
 	def testExtractParameters_wrongFile(self):
 		self.tasker.setParameters( wrongtaskfile, "Project" )
