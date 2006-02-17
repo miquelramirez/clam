@@ -7,7 +7,9 @@ Files can be managed correctly.
 Found there:
    "Http client to POST using multipart/form-data"
    http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/146306
+ -(Added wrapper to work with a dictionary)
 """
+
 
 def encode_multipart_formdata(fields, files):
 	"""
@@ -35,8 +37,10 @@ def encode_multipart_formdata(fields, files):
 	content_type = 'multipart/form-data; boundary=%s' % BOUNDARY
 	return content_type, body
 
+
 def get_content_type(filename):
 	return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+
 
 def post_multipart(host, selector, useragent, fields, files):
 	"""
@@ -53,7 +57,26 @@ def post_multipart(host, selector, useragent, fields, files):
 		}
 	h.request('POST', selector, body, headers)
 	res = h.getresponse()
-	return res.read()	 
+	return res.read()
+
+
+def encode_multipart_formdata_dictionary( params):
+	fields=[]
+	files=[]
+
+	for key in params.keys():
+		t=str( type( params[key] ) )
+
+		if t=="<type 'list'>":
+			for item in params[key]:
+				fields.append( (key,item) )
+		elif t=="<type 'file'>":
+			files.append( (key,'dummyname.file',params[key].read() ) )
+		else:
+			fields.append( (key,params[key]) )
+
+	return encode_multipart_formdata(fields, files)
+
 
 if __name__ == "__main__":
 	print post_multipart("localhost","/SimacServices/kk.py/Upload", 'simac-annotator-tasker', [], [('data','upload.xml', open('uploadfile.xml.gz','rb').read() )])
