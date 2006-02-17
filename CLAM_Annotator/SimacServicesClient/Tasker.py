@@ -59,7 +59,7 @@ class Tasker:
 			raise TaskerError("Task file error\nReading file '%s'. It doesn't exist or it is a malformed XML file." % location)
 
 	def processTask(self):
-		ids, descriptors, contentlocatoruri, metadataprovideruri = self.extractParameters()
+		ids, descriptors, contentlocatoruri, metadataprovideruri, self.description = self.extractParameters()
 
 		self.contentlocator = ServiceStub.ContentLocator(contentlocatoruri)
 		self.metadataprovider = ServiceStub.MetadataProvider(metadataprovideruri)
@@ -155,9 +155,6 @@ class Tasker:
 		ids = []
 		descriptors = []
 
-		de=self.task.getElementsByTagName("Description")[0]
-		de.normalize()
-		self.description=saxutils.escape(de.firstChild.data)
 
 		for id in self.task.getElementsByTagName("ID"):
 			id.normalize()
@@ -172,15 +169,19 @@ class Tasker:
 
 		contentlocator = self.task.getElementsByTagName("ContentLocator")
 		metadataprovider = self.task.getElementsByTagName("MetadataProvider")
+		de=self.task.getElementsByTagName("Description")
 
 		if ( len(ids)<1 ) or ( len(descriptors)<1 ) \
-			or len(contentlocator)!=1 or len(metadataprovider)!=1 :
+			or len(contentlocator)!=1 or len(metadataprovider)!=1 \
+			or len(de)!=1 :
 			raise TaskerError("Task file error\nMalformed file, some field is wrong or missing!")
 		else:
 			metadataprovider = metadataprovider[0].firstChild.data
 			contentlocator = contentlocator[0].firstChild.data
+			de[0].normalize()
+			description=saxutils.escape(de[0].firstChild.data)
 
-		return ids, descriptors, contentlocator.strip(), metadataprovider.strip()
+		return ids, descriptors, contentlocator.strip(), metadataprovider.strip(), description
 
 
 	def getModified(self):
@@ -261,12 +262,9 @@ if __name__ == "__main__" :
 		sys.exit(0)
 	try:
 		tasker=Tasker()
-		tasker.setParameters( sys.argv[1], sys.argv[2], '/home/xoliver/temp' )
+		tasker.setParameters( sys.argv[1], sys.argv[2], os.getcwd() )
 		tasker.processTask()
 		tasker.runAnnotator()
-		import time
-		time.sleep(1)
-		os.system("touch /home/xoliver/temp/I\ Lost\ You.mp3.pool")
 		modified = tasker.getModified()
 		if len(modified)==0:
 			print "\n - No descriptor pool modified. Exitting without uploading anything.\n"
