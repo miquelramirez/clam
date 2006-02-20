@@ -2,9 +2,7 @@
 #define _DescriptorTableController_hxx_
 
 #include <string>
-#include <list>
 #include <vector>
-#include "Range.hxx"
 
 class QTable;
 
@@ -39,12 +37,6 @@ public:
 	void updateData(int row, CLAM::DescriptionDataPool * dataPool);
 private:
 	int descriptorIndexInTable(const std::string& name);
-	void insertValue(int row, const CLAM::Text & value);
-	void insertValue(int row, 
-		const CLAM_Annotator::Enumerated& value, 
-		const std::list<std::string> & options);
-	void insertValue(int row, float value, Range<float> range);
-	void insertValue(int row, int value, Range<int> range);
 };
 } // namespace CLAM_Annotator
 
