@@ -72,4 +72,5 @@ class TaskerTest ( unittest.TestCase ) :
 		self.assertEquals( result, None)
 
 if __name__ == "__main__" :
-	unittest.main()
+	suite = unittest.makeSuite(TaskerTest)
+	unittest.TextTestRunner(verbosity=2).run(suite)
