@@ -49,12 +49,14 @@ class StatusBarDumper
 		template <typename ObjectType>
 		StatusBarDumper & operator << (const ObjectType & object)
 		{
+			return *this;
 			(*os) << object;
 			std::cout << object;
 			return *this;
 		}
 		StatusBarDumper & operator << (const StatusBarDumper & statusDumper)
 		{
+			return *this;
 			(*os) << std::flush;
 			std::cout << std::endl;
 			mStatusBar->message(QString(os->str().c_str()), 2000);
@@ -194,6 +196,7 @@ private:
 	int                  mCurrentBPFIndex;
 	CLAM::Segmentation * mSegmentation;
 
+    QTextBrowser* mProjectDocumentation;
 	CLAM::VM::QtSingleBPFPlayerExt* mPlayer;
 	std::deque<std::string> mRecentOpenedProjects;
 	StatusBarDumper mStatusBar;

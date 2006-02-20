@@ -11,6 +11,7 @@
 #include <qsettings.h>
 #include <qsplitter.h>
 #include <qtabbar.h>
+#include <qtextbrowser.h>
 
 #include <algorithm>
 #include <iostream>
@@ -222,6 +223,10 @@ void Annotator::initInterface()
 {
 	mProjectOverview->setSorting(-1); // Unordered
 
+	mProjectDocumentation = new QTextBrowser( mMainTabWidget, "projectDocumentation");
+	mMainTabWidget->insertTab(mProjectDocumentation, "Project Documentation",0);
+	mMainTabWidget->setCurrentPage(0);
+
 	QVBoxLayout * frameLevelContainerLayout = new QVBoxLayout(mFrameLevelContainer);
 	mFrameLevelTabBar = new QTabBar(mFrameLevelContainer);
 	frameLevelContainerLayout->add(mFrameLevelTabBar);
@@ -272,6 +277,13 @@ void Annotator::markProjectChanged(bool changed)
 void Annotator::initProject()
 {
 	updateSongListWidget();
+
+	QString projectDescription = "<h1>Project Documentation</h1>\n";
+	if (mProject.HasDescription())
+		projectDescription += mProject.GetDescription().c_str();
+	else
+		projectDescription += "<p>No project documentation available</p>";
+	mProjectDocumentation->setText(projectDescription);
 
 	try
 	{
