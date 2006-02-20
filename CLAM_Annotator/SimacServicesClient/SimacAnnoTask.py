@@ -6,10 +6,9 @@ from Tasker import Tasker, TaskerError
 import sys, os
 from threading import Thread
 
-form=None
-app=None
-outputfunction=None
-tasker=None
+#TODO threading
+
+
 def selectFile():
 	s = QFileDialog.getOpenFileName(
 		"",
@@ -17,7 +16,6 @@ def selectFile():
 		None,
 		"open file dialog"
 		"Choose a file" )
-	global form
 	if len(s) > 0:
 		form.taskEdit.setText(s)
 
@@ -27,14 +25,10 @@ def selectDirectory():
 		None,
 		None,
 		"Choose a directory" )
-	global form
 	if len(s) > 0:
 		form.pathEdit.setText(s)
 
-#EP EP EP PREGUNTA AL DAVID, on seria interessant posar el thread?
-
 def startProcess():
-	global form,tasker,outputfunction
 	if form.taskEdit.text()=="" or form.projectEdit.text()=="" \
 		or form.pathEdit.text()=="":
 		QMessageBox.warning( None, "Data missing",
@@ -78,12 +72,10 @@ def startProcess():
 			form.exitButton.setFocus()
 
 def quit():
-	global app
-	print "quit"
+	#print "quit"
 	app.quit()
 
 def createConnections():
-	global form, app
 	app.connect( form.taskButton, SIGNAL( "clicked()" ), selectFile )
 	app.connect( form.pathButton, SIGNAL( "clicked()" ), selectDirectory )
 	app.connect( form.goButton, SIGNAL( "clicked()" ), startProcess )
@@ -91,13 +83,13 @@ def createConnections():
 	app.connect( app, SIGNAL( "lastWindowClosed()" ), quit )
 
 def initWidgets():
-	global form, outputfunction
+	global outputfunction
 	form.logEdit.setReadOnly( True )
 	outputfunction=form.logEdit.append
 	form.pathEdit.setText( os.getcwd() )
 
 def main( args ):
-	global form,app,tasker
+	global app, form, tasker
 
 	app=QApplication( args )
 	form=GUI()
@@ -105,8 +97,10 @@ def main( args ):
 	app.setMainWidget( form )
 
 	initWidgets()
-	if len(args) == 2:
+	if len(args) > 1:
 		form.taskEdit.setText( args[1] )
+	if len(args) > 2:
+		form.projectEdit.setText( args[2] )
 	createConnections()
 
 	tasker=Tasker( form.logEdit.append )
