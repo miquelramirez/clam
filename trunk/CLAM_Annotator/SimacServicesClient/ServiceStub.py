@@ -15,9 +15,9 @@ class ServiceStub :
 
 	def remoteCall(self, serviceName, **fields):
 		if urlparse.urlparse (self.serviceUrl)[1] in NoProxiesFor:
-			proxy_support = urllib2.ProxyHandler({})
+			proxy_support = urllib2.ProxyHandler( {} )
 		else:
-			proxy_support = urllib2.ProxyHandler(Proxies )
+			proxy_support = urllib2.ProxyHandler( Proxies )
 
 		opener = urllib2.build_opener( proxy_support )
 		urllib2.install_opener(opener)
