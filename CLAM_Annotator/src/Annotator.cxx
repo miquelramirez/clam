@@ -919,8 +919,8 @@ void Annotator::refreshGlobalDescriptorsTable()
 
 std::pair<double,double> Annotator::GetMinMaxY(const CLAM::BPF& bpf)
 {
-	double min_value=1E9;
-	double max_value=-1E9;
+	double min_value=0;
+	double max_value=0;
 	for(TIndex i=0; i < bpf.Size(); i++)
 	{
 		double current = double(bpf.GetValueFromIndex(i));
