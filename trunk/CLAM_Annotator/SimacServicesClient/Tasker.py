@@ -92,7 +92,7 @@ class Tasker:
 			#File name
 			audiofilename = urllib.unquote( urlparse.urlparse(url)[2].split('/')[-1] )
 			projectsonglisting += clamAnnotatorProjectSongSkeleton % audiofilename
-			os.rename( self.path+'temp', self.path+audiofilename )
+			os.rename( self.path+'.tempAnnotationSong', self.path+audiofilename )
 
 			#Store modification file for each pool to keep track of the ones upgraded
 			self.songlisting[audiofilename] = [ os.path.getmtime( self.path+audiofilename ), False, id ]
@@ -138,7 +138,7 @@ class Tasker:
 					stream = urllib2.urlopen(url)
 				else:
 					stream = urllib.urlopen(url,None,ServiceStub.Proxies)
-				file = open( self.path+"temp", 'w')
+				file = open( self.path+".tempAnnotationSong", 'w')
 				file.write( stream.read() )
 				file.close()
 				ok = True
