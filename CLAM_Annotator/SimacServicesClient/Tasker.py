@@ -14,7 +14,7 @@ import HttpFormPost
 
 clamAnnotatorProjectSkeleton = """<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Project>
-  <!-- <Description>%s</Description> -->
+  <Description>%s</Description>
   <Schema>%s.sc</Schema>
   <Extractor>ClamExtractorExample</Extractor>
   <Songs>
