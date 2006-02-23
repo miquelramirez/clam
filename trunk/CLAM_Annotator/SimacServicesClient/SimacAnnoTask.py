@@ -8,7 +8,6 @@ from threading import Thread
 
 #TODO threading
 
-
 def selectFile():
 	s = QFileDialog.getOpenFileName(
 		"",
@@ -33,7 +32,7 @@ def startProcess():
 		or form.pathEdit.text()=="":
 		QMessageBox.warning( None, "Data missing",
 			"You must specify the task file, the project name and the destination directory\n",
-			"I see")
+			"OK")
 	else:
 		try:
 			tasker.setParameters( str(form.taskEdit.text()), str(form.projectEdit.text()), str(form.pathEdit.text()) )
@@ -47,7 +46,7 @@ def startProcess():
 			if len(modified)>0:
 				choice=QMessageBox.information( form, "Modified descriptor files",
 					u"The following descriptor pool files will be uploaded:\n  -" + ('\n  - ').join(modified),
-					"No way", "Go ahead" )
+					"Cancel", "Proceed" )
 				if choice==1:	# 0,1 o ESC=-1
 					tasker.uploadChanges()
 			else:
@@ -60,7 +59,7 @@ def startProcess():
 			message=str(x).split('\n')[1:]
 			QMessageBox.warning( None, "%s" % title,
 				"%s\n" % ('\n').join(message),
-				"I see" )
+				"OK" )
 			outputfunction(u"\n  *** Error found. Correct it and then restart the process ***\n")
 		else:
 			form.goButton.setEnabled(False)
