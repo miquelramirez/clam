@@ -99,6 +99,7 @@ def main( args ):
 	initWidgets()
 	if len(args) > 1:
 		form.taskEdit.setText( args[1] )
+		form.projectEdit.setText( os.path.split(args[1])[1].split('.task')[0] )
 	if len(args) > 2:
 		form.projectEdit.setText( args[2] )
 	createConnections()
