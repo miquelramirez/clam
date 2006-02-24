@@ -1,5 +1,5 @@
 
-#ifndef USE_JACK
+#if 0 // should be #ifndef USE_JACK
 #error ERROR: trying to compile a JACK based example without having it enabled in CLAM
 #endif
 
