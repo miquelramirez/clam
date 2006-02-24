@@ -252,9 +252,9 @@ namespace CLAM
 		RemoveTooWeakOnsetsFromCandidatesList( candidates );
 
 		double maxWeight = 0.0;
-
-		for ( LI i = candidates.begin(); i != candidates.end(); i++ )
-		{
+         LI i = candidates.begin();
+		 while( i != candidates.end() )
+		 {
 			if ( i->GetWeight() <= mGlobalThreshold )
 			{
 				i = candidates.erase( i );
@@ -263,6 +263,7 @@ namespace CLAM
 
 			if ( i->GetWeight() >= maxWeight )
 				maxWeight = i->GetWeight();
+			++i;
 
 		}
 
