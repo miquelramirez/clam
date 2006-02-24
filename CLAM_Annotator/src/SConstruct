@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 import os
 import glob
 import SCons.Util
@@ -13,6 +12,9 @@ def scanFiles(pattern, paths) :
 
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+CLAMSandbox ='/home/vokimon/CajitasDeArena'
+CLAMInstallDir = CLAMSandbox + '/CLAM-Install'
 
 
 env = Environment(tools=['default','qt'])
@@ -77,9 +79,9 @@ sourcePaths = [
 	'common',
 ]
 
-#extraPaths = recursiveDirs("/home/vokimon/CajitasDeArena/CLAM-draft/vmqt")
+#extraPaths = recursiveDirs(CLAMSandbox+"CLAM-draft/vmqt")
 extraPaths = [
-	'/home/vokimon/CajitasDeArena/CLAM-Install/include',
+	CLAMInstallDir+'/include',
 ]
 includePaths = sourcePaths + extraPaths
 
@@ -97,7 +99,10 @@ sources.remove('./Test.cxx')
 env['QT_LIB'] = '' # KLUDGE
 
 env.Append(CPPPATH=includePaths)
-env.ParseConfig('PKG_CONFIG_PATH=/home/vokimon/CajitasDeArena/CLAM-Install/lib/pkgconfig pkg-config %s --libs --cflags'%' '.join(pkgconfigLibraries))
+env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
+	(
+		CLAMInstallDir,
+		' '.join(pkgconfigLibraries)))
 env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
 
 programs = [
