@@ -2,7 +2,7 @@
 #include <qlabel.h>
 #include "SliderWithFloatValue.hxx"
 
-SliderWithFloatValue::SliderWithFloatValue(QWidget * parent, const char * name, WFlags f)
+SliderWithFloatValue::SliderWithFloatValue(QWidget * parent, const char * name, Qt::WFlags f)
     : SliderWithValue(parent, name, f)
 {
     connect( mSlider, SIGNAL( valueChanged(int) ), this, SLOT( setLabelValue(int) ) );

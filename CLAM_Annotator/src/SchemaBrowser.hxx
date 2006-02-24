@@ -4,20 +4,26 @@
 #include <qvariant.h>
 #include <qpixmap.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
+#include <Q3GridLayout>
+#include <Q3Frame>
 
 #include <string>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QSpacerItem;
 class QSplitter;
-class QListView;
-class QListViewItem;
-class QFrame;
+class Q3ListView;
+class Q3ListViewItem;
+class Q3Frame;
 class QSpinBox;
 class QLabel;
-class QTextBrowser;
+class Q3TextBrowser;
 class QLineEdit;
 namespace CLAM_Annotator { class Schema; }
 
@@ -26,26 +32,26 @@ class SchemaBrowser : public QWidget
     Q_OBJECT
 
 public:
-    SchemaBrowser( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    SchemaBrowser( QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0 );
     ~SchemaBrowser();
     void setSchema(CLAM_Annotator::Schema & schema);
     void addAttribute(const std::string & scope, const std::string & name, const std::string & type);
 private:
     QSplitter* splitter1;
-    QListView* attributeList;
+    Q3ListView* attributeList;
     QSplitter* splitter2;
-    QFrame* attributeProperties;
+    Q3Frame* attributeProperties;
     QSpinBox* minSpin;
     QSpinBox* maxSpin;
     QLineEdit* childEdit;
     QLabel* minLabel;
     QLabel* maxLabel;
     QLabel* childLabel;
-    QTextBrowser* attributeDocumentation;
+    Q3TextBrowser* attributeDocumentation;
 
 protected:
-    QHBoxLayout* schemaBrowserLayout;
-    QGridLayout* attributePropertiesLayout;
+    Q3HBoxLayout* schemaBrowserLayout;
+    Q3GridLayout* attributePropertiesLayout;
 
 protected slots:
     virtual void languageChange();

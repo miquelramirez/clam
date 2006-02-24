@@ -3,7 +3,7 @@
 
 #include <string>
 
-class QTable;
+class Q3Table;
 namespace CLAM { class DescriptionDataPool; }
 namespace CLAM_Annotator { class SchemaAttribute; }
 
@@ -12,14 +12,14 @@ namespace CLAM_Annotator
 	class DescriptorTablePlugin
 	{
 	public:
-		DescriptorTablePlugin(QTable * parent, unsigned row, const SchemaAttribute & scheme);
+		DescriptorTablePlugin(Q3Table * parent, unsigned row, const SchemaAttribute & scheme);
 		virtual ~DescriptorTablePlugin();
 		void refreshData(int element, CLAM::DescriptionDataPool & dataPool);
 		virtual void refreshData(CLAM::DescriptionDataPool & dataPool) = 0;
 		virtual void updateData(CLAM::DescriptionDataPool & dataPool) = 0;
 		void clearData();
 	protected:
-		QTable * mTable;
+		Q3Table * mTable;
 		const unsigned mRow;
 		const std::string mScope;
 		const std::string mName;
@@ -27,7 +27,7 @@ namespace CLAM_Annotator
 	};
 
 	DescriptorTablePlugin * createItemController(
-			QTable * parent, 
+			Q3Table * parent, 
 			unsigned row, 
 			const SchemaAttribute & scheme);
 

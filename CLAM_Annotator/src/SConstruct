@@ -1,0 +1,109 @@
+#!/usr/bin/python
+
+import os
+import glob
+import SCons.Util
+from SCons.Util import CLVar
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(path+"/"+pattern)
+	return files
+
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+
+env = Environment(tools=['default','qt'])
+env['CXXFILESUFFIX'] = '.cxx'
+env['QT_MOC'] = 'moc-qt4'
+env['QT4_MOC'] = 'moc-qt4'
+env['QT4_UIC'] = 'uic-qt4'
+env.Replace(QT_UIC='echo ***** Using old UIC!!!!!!')
+
+qrcbuilder = Builder(
+	action ='rcc $SOURCE -o $TARGET',
+	src_suffix = '.qrc',
+	suffix = '.cxx',
+	prefix = 'qrc_',
+	single_source = True
+	)
+env.Append( BUILDERS = { 'Qrc': qrcbuilder } )
+
+env['QT_UIC4COM'] = [
+	CLVar('$QT4_UIC $QT_UICDECLFLAGS -o ${TARGETS[0]} $SOURCE'),
+	CLVar('$QT4_MOC $QT_MOCFROMHFLAGS -o ${TARGETS[1]} ${TARGETS[0]}')]
+
+def uic4Emitter(target, source, env):
+	adjustixes = SCons.Util.adjustixes
+	bs = os.path.splitext(str(source[0].name))[0]
+	bs = os.path.join(str(target[0].get_dir()),bs)
+	# first target (header) is automatically added by builder
+	# second target is moc file
+	if len(target) < 2:
+		target.append(adjustixes(bs,
+								 env.subst('$QT_MOCHPREFIX'),
+								 env.subst('$QT_MOCHSUFFIX')))
+	return target, source
+
+uic4builder = Builder(
+    action='$QT_UIC4COM',
+	emitter=uic4Emitter,
+	src_suffix='$QT_UISUFFIX',
+	suffix='$QT_UICDECLSUFFIX',
+	prefix='$QT_UICDECLPREFIX',
+	single_source = True
+	)
+env.Append( BUILDERS = { 'Uic4': uic4builder } )
+
+pkgconfigLibraries = [
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	'QtGui',
+#	'QtSql',
+#	'QtNetwork',
+#	'QtTest',
+#	'QtXml',
+	'QtCore',
+	'QtOpenGL',
+#	'QtSvg',
+	'Qt3Support',
+]
+
+sourcePaths = [
+	'.',
+	'common',
+]
+
+#extraPaths = recursiveDirs("/home/vokimon/CajitasDeArena/CLAM-draft/vmqt")
+extraPaths = [
+	'/home/vokimon/CajitasDeArena/CLAM-Install/include',
+]
+includePaths = sourcePaths + extraPaths
+
+qrcfiles = scanFiles("*.qrc", sourcePaths)
+uifiles = scanFiles("*.qt4.ui", sourcePaths)
+uiheaders = env.Uic4(source=uifiles)
+sources = scanFiles('*.cxx', sourcePaths)
+sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
+sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
+sources += env.Qrc(source=qrcfiles)
+sources = dict.fromkeys(sources).keys()
+sources.remove('./main.cxx')
+sources.remove('./Test.cxx')
+
+env['QT_LIB'] = '' # KLUDGE
+
+env.Append(CPPPATH=includePaths)
+env.ParseConfig('PKG_CONFIG_PATH=/home/vokimon/CajitasDeArena/CLAM-Install/lib/pkgconfig pkg-config %s --libs --cflags'%' '.join(pkgconfigLibraries))
+env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
+
+programs = [
+	env.Program(target='Annotator-qt4', source = sources+['main.cxx']),
+#	env.Program(target='ClamExtractorExample', source = sources+['Test.cxx']),
+	]
+
+env.Default(programs)
+

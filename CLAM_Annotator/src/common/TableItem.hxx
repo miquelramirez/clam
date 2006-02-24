@@ -1,17 +1,19 @@
 #ifndef TABLE_ITEM_H
 #define TABLE_ITEM_H
 
-#include <qtable.h>
+#include <q3table.h>
 #include <qpainter.h>
 #include <qcolor.h>
 #include <qrect.h>
+//Added by qt3to4:
+#include <QPixmap>
 
-class TableItem : public QTableItem
+class TableItem : public Q3TableItem
 {
 public:
-    TableItem (QTable * table, EditType et ):QTableItem(table,et){}
-    TableItem (QTable * table, EditType et, const QString & text ):QTableItem(table,et,text){}
-    TableItem (QTable * table, EditType et, const QString & text, const QPixmap & p ):QTableItem(table,et,text,p){}
+    TableItem (Q3Table * table, EditType et ):Q3TableItem(table,et){}
+    TableItem (Q3Table * table, EditType et, const QString & text ):Q3TableItem(table,et,text){}
+    TableItem (Q3Table * table, EditType et, const QString & text, const QPixmap & p ):Q3TableItem(table,et,text,p){}
     virtual void paint( QPainter * p, const QColorGroup & cg, const QRect & cr, bool selected );
 };
 

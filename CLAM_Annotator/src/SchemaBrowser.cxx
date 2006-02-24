@@ -4,20 +4,23 @@
 
 #include <qvariant.h>
 #include <qsplitter.h>
-#include <qheader.h>
-#include <qlistview.h>
-#include <qframe.h>
+#include <q3header.h>
+#include <q3listview.h>
+#include <q3frame.h>
 #include <qspinbox.h>
 #include <qlabel.h>
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
 #include <qlineedit.h>
 
-#include <qurloperator.h>
+#include <q3urloperator.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3GridLayout>
 
 // Generated from /usr/share/icons/noia_kde_100/16x16/apps/xkill.png
 static const unsigned char scopeIcon_data[] = { 
@@ -136,7 +139,7 @@ static const unsigned char attributeIcon_data[] = {
  *  Constructs a SchemaBrowser as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-SchemaBrowser::SchemaBrowser( QWidget* parent, const char* name, WFlags fl )
+SchemaBrowser::SchemaBrowser( QWidget* parent, const char* name, Qt::WFlags fl )
     : QWidget( parent, name, fl )
     , mSchema(0)
 {
@@ -144,26 +147,26 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, const char* name, WFlags fl )
     attributeIcon.loadFromData( attributeIcon_data, sizeof( attributeIcon_data ), "PNG" );
     if ( !name )
 	setName( "schemaBrowser" );
-    schemaBrowserLayout = new QHBoxLayout( this, 11, 6, "schemaBrowserLayout"); 
+    schemaBrowserLayout = new Q3HBoxLayout( this, 11, 6, "schemaBrowserLayout"); 
 
     splitter1 = new QSplitter( this, "splitter1" );
-    splitter1->setOrientation( QSplitter::Horizontal );
+    splitter1->setOrientation( Qt::Horizontal );
 
-    attributeList = new QListView( splitter1, "attributeList" );
+    attributeList = new Q3ListView( splitter1, "attributeList" );
     attributeList->addColumn( tr( "Attribute" ) );
     attributeList->addColumn( tr( "Type" ) );
     attributeList->setAllColumnsShowFocus( TRUE );
     attributeList->setRootIsDecorated( TRUE );
-    attributeList->setResizeMode( QListView::LastColumn );
+    attributeList->setResizeMode( Q3ListView::LastColumn );
     attributeList->setSortColumn( -1 );
 
     splitter2 = new QSplitter( splitter1, "splitter2" );
-    splitter2->setOrientation( QSplitter::Vertical );
+    splitter2->setOrientation( Qt::Vertical );
 
-    attributeProperties = new QFrame( splitter2, "attributeProperties" );
-    attributeProperties->setFrameShape( QFrame::StyledPanel );
-    attributeProperties->setFrameShadow( QFrame::Raised );
-    attributePropertiesLayout = new QGridLayout( attributeProperties, 1, 1, 11, 6, "attributePropertiesLayout"); 
+    attributeProperties = new Q3Frame( splitter2, "attributeProperties" );
+    attributeProperties->setFrameShape( Q3Frame::StyledPanel );
+    attributeProperties->setFrameShadow( Q3Frame::Raised );
+    attributePropertiesLayout = new Q3GridLayout( attributeProperties, 1, 1, 11, 6, "attributePropertiesLayout"); 
 
     minLabel = new QLabel( attributeProperties, "minLabel" );
     attributePropertiesLayout->addWidget( minLabel, 0, 0 );
@@ -183,14 +186,14 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, const char* name, WFlags fl )
     childEdit = new QLineEdit( attributeProperties, "childEdit");
     attributePropertiesLayout->addWidget( childEdit, 2, 1 );
 
-    attributeDocumentation = new QTextBrowser( splitter2, "attributeDocumentation" );
+    attributeDocumentation = new Q3TextBrowser( splitter2, "attributeDocumentation" );
     attributeDocumentation->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)1, (QSizePolicy::SizeType)4, 0, 0, attributeDocumentation->sizePolicy().hasHeightForWidth() ) );
 
     schemaBrowserLayout->addWidget( splitter1 );
     languageChange();
     resize( QSize(740, 346).expandedTo(minimumSizeHint()) );
-    clearWState( WState_Polished );
-    connect(attributeList, SIGNAL(currentChanged(QListViewItem *)),
+//    clearWState( WState_Polished ); // TODO: Commented out while  qt4 porting
+    connect(attributeList, SIGNAL(currentChanged(Q3ListViewItem *)),
             this, SLOT(updateCurrentAttribute()));
 }
 
@@ -202,10 +205,10 @@ SchemaBrowser::~SchemaBrowser()
     // no need to delete child widgets, Qt does it all for us
 }
 
-QListViewItem * lastSibling(QListViewItem * item)
+Q3ListViewItem * lastSibling(Q3ListViewItem * item)
 {
 	if (!item) return item;
-	QListViewItem *  next = item->nextSibling();
+	Q3ListViewItem *  next = item->nextSibling();
 	while (next)
 	{
 		item=next;
@@ -216,15 +219,15 @@ QListViewItem * lastSibling(QListViewItem * item)
 
 void SchemaBrowser::addAttribute(const std::string & scope, const std::string & name, const std::string & type)
 {
-    QListViewItem * scopeItem = attributeList->findItem(scope.c_str(),0);
+    Q3ListViewItem * scopeItem = attributeList->findItem(scope.c_str(),0);
     if (!scopeItem)
     {
-	    scopeItem = new QListViewItem( attributeList, lastSibling(attributeList->firstChild()) );
+	    scopeItem = new Q3ListViewItem( attributeList, lastSibling(attributeList->firstChild()) );
 	    scopeItem->setOpen( TRUE );
 	    scopeItem->setText( 0, scope.c_str() );
 	    scopeItem->setPixmap( 0, scopeIcon );
     }
-    QListViewItem * item = new QListViewItem( scopeItem, lastSibling(scopeItem->firstChild()) );
+    Q3ListViewItem * item = new Q3ListViewItem( scopeItem, lastSibling(scopeItem->firstChild()) );
     item->setText( 0, name.c_str() );
     item->setPixmap( 0, attributeIcon );
     item->setText( 1, type.c_str() );
@@ -268,8 +271,8 @@ void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 
 void SchemaBrowser::updateCurrentAttribute()
 {
-	QListViewItem * current = attributeList->currentItem();
-	QListViewItem * parent = current->parent();
+	Q3ListViewItem * current = attributeList->currentItem();
+	Q3ListViewItem * parent = current->parent();
 	if (!parent) // Scope
 	{
 		QString documentation = "<h2>Scope '" + current->text(0) + "'</h2>";
@@ -279,7 +282,7 @@ void SchemaBrowser::updateCurrentAttribute()
 	{
 		const CLAM_Annotator::SchemaAttribute & attributeSchema = mSchema->GetAttribute(std::string(parent->text(0).ascii()),std::string(current->text(0).ascii()));
 		QString url = "http://mtg100.upf.es/simac/DescriptionSchemeWeb";
-		QUrlOperator op( url );
+		Q3UrlOperator op( url );
 		op.get( "index.html");
 
 		QString documentation = "<h2>Attribute '" + parent->text(0) + "::" + current->text(0) + "'</h2>";

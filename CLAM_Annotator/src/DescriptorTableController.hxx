@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-class QTable;
+class Q3Table;
 
 namespace CLAM
 {
@@ -24,13 +24,13 @@ namespace CLAM_Annotator
 
 class DescriptorTableController
 {
-	QTable * mTable;
+	Q3Table * mTable;
 	const CLAM_Annotator::Project & mProject;
 	std::string mScope;
 	int mElement;
 	std::vector<DescriptorTablePlugin*> mPlugins;
 public:
-	DescriptorTableController(QTable * table, const CLAM_Annotator::Project & project);
+	DescriptorTableController(Q3Table * table, const CLAM_Annotator::Project & project);
 	~DescriptorTableController();
 	void refreshSchema(const std::string & scope);
 	void refreshData(int element, CLAM::DescriptionDataPool * dataPool);

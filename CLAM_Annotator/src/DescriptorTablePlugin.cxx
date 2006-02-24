@@ -1,13 +1,13 @@
 #include "DescriptorTablePlugin.hxx"
 #include "SchemaAttribute.hxx"
-#include <qtable.h>
+#include <q3table.h>
 #include "ComboTableItem.hxx"
 #include "RangeSelectionTableItem.hxx"
 #include <CLAM/Pool.hxx>
 
 namespace CLAM_Annotator
 {
-	DescriptorTablePlugin::DescriptorTablePlugin(QTable * parent, unsigned row, const SchemaAttribute & scheme)
+	DescriptorTablePlugin::DescriptorTablePlugin(Q3Table * parent, unsigned row, const SchemaAttribute & scheme)
 		: mTable(parent)
 		, mRow(row)
 		, mScope(scheme.GetScope())
@@ -39,7 +39,7 @@ namespace CLAM_Annotator
 	class DescriptorsTableItemControllerString : public DescriptorTablePlugin
 	{
 	public:
-		DescriptorsTableItemControllerString(QTable * parent, unsigned row, const SchemaAttribute & scheme)
+		DescriptorsTableItemControllerString(Q3Table * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
 		{
 		}
@@ -62,7 +62,7 @@ namespace CLAM_Annotator
 	class DescriptorsTableItemControllerEnum : public DescriptorTablePlugin
 	{
 	public:
-		DescriptorsTableItemControllerEnum(QTable * parent, unsigned row, const SchemaAttribute & scheme)
+		DescriptorsTableItemControllerEnum(Q3Table * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
 			, mOptions(scheme.GetEnumerationValues())
 		{
@@ -99,7 +99,7 @@ namespace CLAM_Annotator
 	{
 		const Range<CLAM::TData> mRange;
 	public:
-		DescriptorsTableItemControllerFloat(QTable * parent, unsigned row, const SchemaAttribute & scheme)
+		DescriptorsTableItemControllerFloat(Q3Table * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
 			, mRange(scheme.GetfRange())
 		{
@@ -126,7 +126,7 @@ namespace CLAM_Annotator
 	{
 		const Range<int> mRange;
 	public:
-		DescriptorsTableItemControllerInt(QTable * parent, unsigned row, const SchemaAttribute & scheme)
+		DescriptorsTableItemControllerInt(Q3Table * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
 			, mRange(scheme.GetiRange())
 		{
@@ -151,7 +151,7 @@ namespace CLAM_Annotator
 
 
 	DescriptorTablePlugin * createItemController(
-			QTable * parent, 
+			Q3Table * parent, 
 			unsigned row, 
 			const SchemaAttribute & scheme)
 	{

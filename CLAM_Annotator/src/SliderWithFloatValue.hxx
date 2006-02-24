@@ -7,7 +7,7 @@ class SliderWithFloatValue : public SliderWithValue
 {
     Q_OBJECT
 public:
-    SliderWithFloatValue(QWidget * parent = 0, const char * = 0, WFlags f = 0);
+    SliderWithFloatValue(QWidget * parent = 0, const char * = 0, Qt::WFlags f = 0);
 
     int intValue();
 
