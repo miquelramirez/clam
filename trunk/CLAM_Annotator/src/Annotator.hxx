@@ -1,13 +1,17 @@
 #ifndef ANNOTATOR_HXX
 #define ANNOTATOR_HXX
 
-#include "AnnotatorBase.h"
+#include <QColorGroup>
+#include <Qt>
+#include "AnnotatorBase.qt4.h"
 #include "DescriptorTableController.hxx"
 
 #include <string>
 #include <utility>
 #include <deque>
 #include <qstatusbar.h>
+//Added by qt3to4:
+#include <QCloseEvent>
 
 //xamat
 
@@ -18,6 +22,7 @@
 
 class QTimer;
 class QTabBar;
+class Q3TextBrowser;
 class AudioLoadThread;
 class SchemaBrowser;
 using CLAM::TIndex;
@@ -50,8 +55,8 @@ class StatusBarDumper
 		StatusBarDumper & operator << (const ObjectType & object)
 		{
 			return *this;
-			(*os) << object;
-			std::cout << object;
+//			(*os) << object;
+//			std::cout << object;
 			return *this;
 		}
 		StatusBarDumper & operator << (const StatusBarDumper & statusDumper)
@@ -67,7 +72,7 @@ class StatusBarDumper
 };
 
 
-class Annotator : public AnnotatorBase
+class Annotator : public Q3MainWindow, public Ui::AnnotatorBase 
 {
 	/*  
 	 *	type to store bpf info from loaded LLDs.
@@ -81,7 +86,6 @@ class Annotator : public AnnotatorBase
 public:
 	Annotator(const std::string & nameProject);
 	virtual ~Annotator();
-	void currentSongChanged();
 	void playPause();
 
 	void initProject();
@@ -89,12 +93,14 @@ public:
 	void loadSettings();
 	void saveSettings();
 public slots:
+	void currentSongChanged();
 	void globalDescriptorsTableChanged( int, int);
 	void segmentDescriptorsTableChanged( int, int);
 	void frameDescriptorsChanged(int, float);
 	void segmentationMarksChanged(unsigned, double);
 	void removeSegment(unsigned);
 	void insertSegment(unsigned);
+	void refreshSegmentation();
 
 	void fileNew();
 	void fileOpen();
@@ -146,7 +152,6 @@ private:
 	void updateEnvelopeData(int bpfIndex, CLAM::TData * descriptors);
 
 	void adaptSegmentationsToCurrentSchema();
-	void refreshSegmentation();
 	void updateSegmentations();
 
 	int songIndexInTable(const std::string& fileName);
@@ -188,19 +193,20 @@ private:
 	QTimer * mAudioRefreshTimer;
 	SchemaBrowser * mSchemaBrowser;
 	AudioLoadThread * mAudioLoaderThread;
-	CLAM_Annotator::DescriptorTableController mGlobalDescriptors;
-	CLAM_Annotator::DescriptorTableController mSegmentDescriptors;
+	CLAM_Annotator::DescriptorTableController * mGlobalDescriptors;
+	CLAM_Annotator::DescriptorTableController * mSegmentDescriptors;
 
 	std::vector<BPFInfo> mBPFs; // cached LLDs         
 	CLAM::VM::BPFEditor* mBPFEditor;
 	int                  mCurrentBPFIndex;
 	CLAM::Segmentation * mSegmentation;
 
-    QTextBrowser* mProjectDocumentation;
+    Q3TextBrowser* mProjectDocumentation;
 	CLAM::VM::QtSingleBPFPlayerExt* mPlayer;
 	std::deque<std::string> mRecentOpenedProjects;
 	StatusBarDumper mStatusBar;
 	QTabBar * mFrameLevelTabBar;
+	QDialog * mAbout;
 };
 
 #endif

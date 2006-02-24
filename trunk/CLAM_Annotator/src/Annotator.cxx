@@ -1,22 +1,28 @@
+#define QTPORT
+
 #include "Annotator.hxx"
 #include "Project.hxx"
 #include "FrameDivision.hxx"
 
 #include <qaction.h>
 #include <qthread.h>
-#include <qprocess.h>
+#include <q3process.h>
 #include <qmessagebox.h>
 #include <qtabwidget.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qsettings.h>
 #include <qsplitter.h>
 #include <qtabbar.h>
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
+//Added by qt3to4:
+#include <QCloseEvent>
+#include <Q3VBoxLayout>
 
 #include <algorithm>
 #include <iostream>
 #include <utility>
 #include <fstream>
+#include <QTimer>
 
 //xamat
 #include <time.h>
@@ -29,8 +35,10 @@
 #include <CLAM/Text.hxx>
 #include <CLAM/XMLStorage.hxx>
 
+#ifndef QTPORT
 #include <CLAM/BPFEditor.hxx>
 #include <CLAM/QtAudioPlot.hxx>
+#endif // QTPORT
 
 #include "AudioLoadThread.hxx"
 
@@ -38,7 +46,8 @@
 #include <CLAM/DiscontinuousSegmentation.hxx>
 #include "SchemaBrowser.hxx"
 #include <CLAM/QtSingleBPFPlayerExt.hxx>
-#include <qstatusbar.h>
+#include <QStatusBar>
+#include "About.qt4.h"
 
 #ifndef RESOURCES_BASE
 #define RESOURCES_BASE "../resources"
@@ -69,7 +78,7 @@ void Annotator::loaderLaunch()
 bool Annotator::loaderFinished()
 {
 	if (!mAudioLoaderThread) return true;
-	if (!mAudioLoaderThread->finished()) return false;
+	if (!mAudioLoaderThread->isFinished()) return false;
 	abortLoader();
 	return true;
 }
@@ -94,7 +103,7 @@ void Annotator::computeSongDescriptors()
 		return;
 	}
 	mStatusBar << "Launching Extractor..." << mStatusBar;
-	QProcess extractor(this);
+	Q3Process extractor(this);
 	QDir projectPath(mProjectFileName.c_str());
 	projectPath.cdUp();
 	extractor.setWorkingDirectory(projectPath);
@@ -131,7 +140,8 @@ void Annotator::computeSongDescriptors()
 }
 
 Annotator::Annotator(const std::string & nameProject = "")
-	: AnnotatorBase( 0, "annotator", WDestructiveClose)
+	: AnnotatorBase( )
+	, Q3MainWindow( 0, "annotator", Qt::WDestructiveClose)
 	, mCurrentIndex(0)
 	, mpDescriptorPool(0)
 	, mFrameDescriptorsNeedUpdate(false)
@@ -140,17 +150,24 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mpAudioPlot(0)
 	, mAudioRefreshTimer(new QTimer(this))
 	, mAudioLoaderThread(0)
-	, mGlobalDescriptors(mDescriptorsTable, mProject)
-	, mSegmentDescriptors(mSegmentDescriptorsTable, mProject)
+	, mGlobalDescriptors(0)
+	, mSegmentDescriptors(0)
 	, mBPFEditor(0)
 	, mCurrentBPFIndex(-1)
 	, mSegmentation(0)
 	, mPlayer(0)
 	, mStatusBar(statusBar())
 {
-	loadSettings();
+	setupUi(this);
+	mGlobalDescriptors = new CLAM_Annotator::DescriptorTableController(mDescriptorsTable, mProject);
+	mSegmentDescriptors = new CLAM_Annotator::DescriptorTableController(mSegmentDescriptorsTable, mProject);
+	mAbout = new QDialog(this);
+	Ui::About aboutUi;
+	aboutUi.setupUi(mAbout);
+	statusBar();
 	initInterface();
 	setMenuAudioItemsEnabled(false);
+	loadSettings();
 	connect (mAudioRefreshTimer, SIGNAL(timeout()), this, SLOT(refreshAudioData()) );
 	if (nameProject!="") mProjectFileName = nameProject;
 	if (mProjectFileName=="") return;
@@ -170,7 +187,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 void Annotator::loadSettings()
 {
 	QSettings settings;
-	settings.setPath( "clam.iua.upf.es", "MusicAnnotator", QSettings::User);
+	settings.setPath( "clam.iua.upf.es", "MusicAnnotator", QSettings::UserScope);
 	int posX = settings.readNumEntry("MusicAnnotator/LastSession/PosX", pos().x());
 	int posY = settings.readNumEntry("MusicAnnotator/LastSession/PosY", pos().y());
 	int sizeX = settings.readNumEntry("MusicAnnotator/LastSession/SizeX", size().width());
@@ -189,7 +206,7 @@ void Annotator::loadSettings()
 void Annotator::saveSettings()
 {
 	QSettings settings;
-	settings.setPath("clam.iua.upf.es", "MusicAnnotator", QSettings::User);
+	settings.setPath("clam.iua.upf.es", "MusicAnnotator", QSettings::UserScope);
 	settings.writeEntry("MusicAnnotator/LastSession/ProjectFile", mProjectFileName.c_str()  );
 	settings.writeEntry("MusicAnnotator/LastSession/PositionX", pos().x());
 	settings.writeEntry("MusicAnnotator/LastSession/PositionY", pos().y());
@@ -223,14 +240,14 @@ void Annotator::initInterface()
 {
 	mProjectOverview->setSorting(-1); // Unordered
 
-	mProjectDocumentation = new QTextBrowser( mMainTabWidget, "projectDocumentation");
+	mProjectDocumentation = new Q3TextBrowser( mMainTabWidget, "projectDocumentation");
 	mMainTabWidget->insertTab(mProjectDocumentation, "Project Documentation",0);
 	mMainTabWidget->setCurrentPage(0);
 
-	QVBoxLayout * frameLevelContainerLayout = new QVBoxLayout(mFrameLevelContainer);
+	Q3VBoxLayout * frameLevelContainerLayout = new Q3VBoxLayout(mFrameLevelContainer);
 	mFrameLevelTabBar = new QTabBar(mFrameLevelContainer);
 	frameLevelContainerLayout->add(mFrameLevelTabBar);
-
+#ifndef QTPORT
 	mBPFEditor = new CLAM::VM::BPFEditor(CLAM::VM::AllowVerticalEdition|CLAM::VM::HasVerticalScroll,
 			mFrameLevelContainer);
 	frameLevelContainerLayout->add(mBPFEditor);
@@ -238,7 +255,7 @@ void Annotator::initInterface()
 //	mBPFEditor->Hide();
 
 	mpAudioPlot = new QtAudioPlot(mAudioPlotContainer,0,0,false);
-	QVBoxLayout * audioPlotContainerLayout = new QVBoxLayout(mAudioPlotContainer);
+	Q3VBoxLayout * audioPlotContainerLayout = new Q3VBoxLayout(mAudioPlotContainer);
 	audioPlotContainerLayout->addWidget(mpAudioPlot);
 	mpAudioPlot->Label("Audio");
 	mCurrentAudio.SetSize(20000);
@@ -247,13 +264,15 @@ void Annotator::initInterface()
 //	mpAudioPlot->setFocus();
 	mpAudioPlot->UseFocusColors();
 //	mpAudioPlot->Hide();
-
+#endif//QTPORT
 
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, "Description Schema");
 
+#ifndef QTPORT
 	mPlayer = new CLAM::VM::QtSingleBPFPlayerExt(this);
 	mPlayer->hide();
+#endif//QTPORT
 
 	resetTabOrder();
 	makeConnections();
@@ -261,11 +280,12 @@ void Annotator::initInterface()
 
 void Annotator::resetTabOrder()
 {
+#ifndef QTPORT
 	setTabOrder(mFrameLevelTabBar, mBPFEditor);
 	setTabOrder(mBPFEditor,mpAudioPlot);
 	setTabOrder(mpAudioPlot,mSegmentationSelection);
 	setTabOrder(mSegmentationSelection,mSegmentDescriptorsTable);
-
+#endif//QTPORT
 }
 
 void Annotator::markProjectChanged(bool changed)
@@ -305,7 +325,7 @@ void Annotator::initProject()
 void Annotator::adaptInterfaceToCurrentSchema()
 {
 	mStatusBar << "Adapting Interface to Song level descriptors..." << mStatusBar;
-	mGlobalDescriptors.refreshSchema("Song");
+	mGlobalDescriptors->refreshSchema("Song");
 	mStatusBar << "Adapting Interface to Frame level descriptors..." << mStatusBar;
 	adaptEnvelopesToCurrentSchema();
 	mStatusBar << "Adapting Interface to Segmentations..." << mStatusBar;
@@ -317,13 +337,13 @@ void Annotator::adaptInterfaceToCurrentSchema()
 
 void Annotator::segmentDescriptorsTableChanged(int row, int column)
 {
-	mSegmentDescriptors.updateData(row, mpDescriptorPool);
+	mSegmentDescriptors->updateData(row, mpDescriptorPool);
 	markCurrentSongChanged();
 }
 
 void Annotator::globalDescriptorsTableChanged(int row, int column)
 {
-	mGlobalDescriptors.updateData(row, mpDescriptorPool);
+	mGlobalDescriptors->updateData(row, mpDescriptorPool);
 	markCurrentSongChanged();
 }
 
@@ -377,11 +397,13 @@ void Annotator::refreshSegmentation()
 	}
 	if (mSegmentation) delete mSegmentation;
 	mSegmentation = theSegmentation;
+#ifndef QTPORT
 	mpAudioPlot->SetSegmentation(mSegmentation);
+#endif// QTPORT
 	auralizeMarks();
 
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
-	mSegmentDescriptors.refreshSchema(childScope);
+	mSegmentDescriptors->refreshSchema(childScope);
 }
 
 void Annotator::updateSegmentations()
@@ -425,25 +447,48 @@ void Annotator::insertSegment(unsigned index)
 void Annotator::adaptEnvelopesToCurrentSchema()
 {
 	while (mFrameLevelTabBar->count())
-		mFrameLevelTabBar->removeTab(mFrameLevelTabBar->tabAt(0));
+		mFrameLevelTabBar->removeTab(0);
 
 	const std::list<std::string>& names = mProject.GetNamesByScopeAndType("Frame", "Float");
 	const unsigned nTabs = names.size();
 	std::list<std::string>::const_iterator name = names.begin();
 	for (unsigned i = 0; i<nTabs; name++, i++)
 	{
-		mFrameLevelTabBar->addTab(new QTab(name->c_str()));
+		mFrameLevelTabBar->addTab(name->c_str());
 	}
 }
 
 void Annotator::makeConnections()
 {
-	connect(helpAboutAction,SIGNAL(activated()),
-		&mAbout,SLOT(show()));
+	// Action Signals
+	connect(fileExitAction, SIGNAL(activated()), this, SLOT(close()));
+	connect(fileNew_projectAction, SIGNAL(activated()), this, SLOT(fileNew()));
+	connect(fileOpen_projectAction, SIGNAL(activated()), this, SLOT(fileOpen()));
+	connect(fileAdd_to_projectAction, SIGNAL(activated()), this, SLOT(addSongsToProject()));
+	connect(editDelete_from_projectAction, SIGNAL(activated()), this, SLOT(deleteSongsFromProject()));
+	connect(fileSave_project_asAction, SIGNAL(activated()), this, SLOT(fileSaveAs()));
+	connect(fileSave_projectAction, SIGNAL(activated()), this, SLOT(fileSave()));
+	connect(projectLoadSchemaAction, SIGNAL(activated()), this, SLOT(loadSchema()));
+	connect(songSaveDescriptorsAction, SIGNAL(activated()), this, SLOT(saveDescriptors()));
+	connect(playbackAuralizeSegmentOnsetsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
+	connect(playbackAuralizeFrameLevelDescriptorsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
+	connect(songComputeDescriptorsAction, SIGNAL(activated()), this, SLOT(computeSongDescriptors()));
+	connect(helpWhats_thisAction, SIGNAL(activated()), this, SLOT(whatsThis()));
+	connect(mPlay, SIGNAL(activated()), this, SLOT(startPlaying()));
+	connect(mPause, SIGNAL(activated()), this, SLOT(pausePlaying()));
+	connect(mStop, SIGNAL(activated()), this, SLOT(stopPlaying()));
+	connect(playbackLinkCurrentSegmentToPlaybackAction, SIGNAL(toggled(bool)), this, SLOT(linkCurrentSegmentToPlayback(bool)));
+	connect(helpAboutAction,SIGNAL(activated()), mAbout,SLOT(show()));
+
+	connect(mProjectOverview, SIGNAL(selectionChanged()), this, SLOT(currentSongChanged()));
+	connect(mSegmentationSelection, SIGNAL(activated(const QString&)), this, SLOT(refreshSegmentation()));
+
 	connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ) ,
 		this, SLOT(globalDescriptorsTableChanged(int, int) ) );
 	connect(mSegmentDescriptorsTable, SIGNAL(valueChanged( int, int) ) ,
 		this, SLOT(segmentDescriptorsTableChanged(int, int) ) );
+
+#ifndef QTPORT
 	connect(mpAudioPlot, SIGNAL(segmentOnsetChanged(unsigned,double)),
 		this, SLOT(segmentationMarksChanged(unsigned, double)));
 	connect(mpAudioPlot, SIGNAL(currentSegmentChanged(unsigned)),
@@ -454,9 +499,10 @@ void Annotator::makeConnections()
 		this, SLOT(insertSegment(unsigned)));
 	connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
 		this, SLOT(onStopPlaying(float)));
+#endif // QTPORT
 	connect(mFrameLevelTabBar, SIGNAL(selected(int)),
 		this, SLOT(changeFrameLevelDescriptor(int)));
-
+#ifndef QTPORT
 	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
 		 this, SLOT(frameDescriptorsChanged(int, float)));
 	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
@@ -483,7 +529,7 @@ void Annotator::makeConnections()
 		mpAudioPlot, SLOT(setCurrentPlayingTime(float)));
 	connect( mPlayer, SIGNAL(stopPlaying(float)),
 		 mpAudioPlot, SLOT(receivedStopPlaying(float)));
-
+#endif // QTPORT
 }
 
 void Annotator::linkCurrentSegmentToPlayback(bool enabled)
@@ -502,13 +548,15 @@ void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 			return;
 		}
 	}
+#ifndef QTPORT
 	mpAudioPlot->ChangeSegmentOnPlay(enabled);
+#endif // QTPORT
 }
 
 void Annotator::markCurrentSongChanged()
 {
 	mDescriptorsNeedSave = true;
-	QListViewItemIterator it( mProjectOverview );
+	Q3ListViewItemIterator it( mProjectOverview );
 	for ( ; it.current() && !it.current()->isSelected() ; it++ );
 	if ( it.current() )
 	{
@@ -522,7 +570,7 @@ void Annotator::changeCurrentSegment(unsigned current)
 	mStatusBar << "Segment changed to " << mSegmentation->current() << mStatusBar;
 	// TODO: Some widgets may have half edited information. Need update.
 	// TODO: Some times is not worth to update the information (deleted segment)
-	mSegmentDescriptors.refreshData(mSegmentation->current(),mpDescriptorPool);
+	mSegmentDescriptors->refreshData(mSegmentation->current(),mpDescriptorPool);
 }
 
 void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
@@ -530,7 +578,7 @@ void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
 	/*TODO: right now, no matter how many points have been edited all descriptors are updated. This
 	  is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
 	  in the class.*/
-	int index = mFrameLevelTabBar->indexOf(mFrameLevelTabBar->currentTab());
+	int index = mFrameLevelTabBar->currentIndex();
 	mBPFs[index].second.SetValue(pointIndex,TData(newValue));
 	mFrameDescriptorsNeedUpdate = true;
 }
@@ -548,10 +596,10 @@ void Annotator::updateSongListWidget()
 {
 	mProjectOverview->clear();
 	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongs();
-	QListViewItem *lastItem = 0;
+	Q3ListViewItem *lastItem = 0;
 	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
 	{
-		QListViewItem * item = new QListViewItem(
+		Q3ListViewItem * item = new Q3ListViewItem(
 			mProjectOverview, lastItem,
 			it->GetSoundFile().c_str(),
 			tr("Yes"), tr("No") );
@@ -577,7 +625,7 @@ void Annotator::closeEvent ( QCloseEvent * e )
 
 void Annotator::markAllSongsUnchanged()
 {
-	QListViewItemIterator it (mProjectOverview);
+	Q3ListViewItemIterator it (mProjectOverview);
 	for ( ; it.current() ; ++it )
 	{
 		it.current()->setText(2, "No");
@@ -586,15 +634,15 @@ void Annotator::markAllSongsUnchanged()
 
 void Annotator::deleteSongsFromProject()
 {
-	std::vector< QListViewItem * > toBeDeleted;
+	std::vector< Q3ListViewItem * > toBeDeleted;
 
-	for ( QListViewItemIterator it(mProjectOverview);
+	for ( Q3ListViewItemIterator it(mProjectOverview);
 			it.current(); it++ )
 		if ( it.current()->isSelected() )
 			toBeDeleted.push_back(*it);
 
 	
-	for ( std::vector< QListViewItem* >::iterator it = toBeDeleted.begin();
+	for ( std::vector< Q3ListViewItem* >::iterator it = toBeDeleted.begin();
 			it!= toBeDeleted.end(); it++ )
 		delete *it;
 	markProjectChanged(true);
@@ -602,7 +650,7 @@ void Annotator::deleteSongsFromProject()
 
 void Annotator::addSongsToProject()
 {
-	QStringList files = QFileDialog::getOpenFileNames(
+	QStringList files = Q3FileDialog::getOpenFileNames(
 		"Songs (*.wav *.mp3 *.ogg)",
 		projectToAbsolutePath(".").c_str(),
 		this,
@@ -619,7 +667,7 @@ void Annotator::addSongsToProject()
 
 void Annotator::fileOpen()
 {
-	QString qFileName = QFileDialog::getOpenFileName(QString::null,"*.pro");
+	QString qFileName = Q3FileDialog::getOpenFileName(QString::null,"*.pro");
 	if(qFileName == QString::null) return;
 
 	mProjectFileName = std::string(qFileName.ascii());
@@ -647,7 +695,7 @@ void Annotator::fileNew()
 
 void Annotator::fileSaveAs()
 {
-	QString qFileName = QFileDialog::getSaveFileName(QString::null,"*.pro");
+	QString qFileName = Q3FileDialog::getSaveFileName(QString::null,"*.pro");
 	if(qFileName == QString::null) return;
 
 	mProjectFileName = qFileName.ascii();
@@ -669,7 +717,7 @@ void Annotator::fileSave()
 
 void  Annotator::loadSchema()
 {
-	QString qFileName = QFileDialog::getOpenFileName(
+	QString qFileName = Q3FileDialog::getOpenFileName(
 			projectToAbsolutePath(".").c_str(),
 			"Description Schemes (*.sc)",
 			this,
@@ -726,7 +774,7 @@ void Annotator::currentSongChanged()
 	stopPlaying();
 	mStatusBar << "Saving Previous Song Descriptors..." << mStatusBar;
 	saveDescriptors();
-	QListViewItem * item = mProjectOverview->currentItem();
+	Q3ListViewItem * item = mProjectOverview->currentItem();
 
 	if (item == 0) return;
 
@@ -764,14 +812,16 @@ void Annotator::refreshEnvelopes()
 
 	// TODO: Not all the things should be done here
 	mBPFs.clear();
+#ifndef QTPORT
 	mBPFEditor->SetAudioPtr(&mCurrentAudio);
 	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
 	mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::BOTH_CHANNELS);
 	mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
 	mPlayer->SetSampleRate(mCurrentAudio.GetSampleRate());
+#endif // QTPORT
 	mCurrentBPFIndex = -1;
 
-	mFrameLevelTabBar->setCurrentTab(mFrameLevelTabBar->tabAt(0));
+	mFrameLevelTabBar->setCurrentTab(0);
 	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
 
 	std::list<std::string>::const_iterator divisionName;
@@ -792,10 +842,10 @@ void Annotator::refreshEnvelopes()
 			bpf_info.second=transcribed;
 			mBPFs.push_back(bpf_info);
 		}
+#ifndef QTPORT
 		mPlayer->SetData(mBPFs[0].second);
+#endif // QTPORT
 	}
-
-
 }
 
 void Annotator::refreshAudioData()
@@ -808,7 +858,9 @@ void Annotator::refreshAudioData()
 		mAudioRefreshTimer->stop();
 		auralizeMarks();
 	}
+#ifndef QTPORT
 	mpAudioPlot->UpdateData(mCurrentAudio);
+#endif // QTPORT
 
 	if (!finished)
 		mAudioRefreshTimer->start(2000, true);
@@ -816,16 +868,20 @@ void Annotator::refreshAudioData()
 
 void Annotator::drawAudio(const char * filename)
 {
+#ifndef QTPORT
 	mpAudioPlot->Hide();
 	mBPFEditor->Hide();
+#endif// QTPORT
 	setMenuAudioItemsEnabled(false);
 	loaderCreate(mCurrentAudio, filename);
 	setMenuAudioItemsEnabled(true);
 
 	refreshSegmentation();
+#ifndef QTPORT
 	mpAudioPlot->SetData(mCurrentAudio);
 	mpAudioPlot->Show();
 	mBPFEditor->Show();
+#endif// QTPORT
 }
 
 void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & division)
@@ -912,8 +968,9 @@ void Annotator::loadDescriptorPool()
 
 void Annotator::refreshGlobalDescriptorsTable()
 {
+	std::cout << "Refressing song data..." << std::endl;
 	if (!mpDescriptorPool) return;
-	mGlobalDescriptors.refreshData(0,mpDescriptorPool);
+	mGlobalDescriptors->refreshData(0,mpDescriptorPool);
 	mDescriptorsTable->show();
 }
 
@@ -991,11 +1048,13 @@ void Annotator::updateAuralizationOptions()
 {
 	bool playOnsets = playbackAuralizeSegmentOnsetsAction->isOn();
 	bool playLLDs = playbackAuralizeFrameLevelDescriptorsAction->isOn();
+#ifndef QTPORT
 	mPlayer->SetAudioPtr(&mCurrentAudio,CLAM::VM::BOTH_CHANNELS);
 	if (playLLDs)
 		mPlayer->SetAudioPtr(0,CLAM::VM::LEFT_CHANNEL);
 	if (playOnsets)
 		mPlayer->SetAudioPtr(&mCurrentMarkedAudio,CLAM::VM::RIGHT_CHANNEL);
+#endif//QTPORT
 }
 
 void Annotator::setMenuAudioItemsEnabled(bool enabled)
@@ -1026,11 +1085,16 @@ void Annotator::onStopPlaying(float time)
 
 bool Annotator::isPlaying()
 {
+#ifndef QTPORT
 	return (mPlayer->IsPlaying());
+#else
+	return false;
+#endif// QTPORT
 }
 
 void Annotator::changeFrameLevelDescriptor(int current)
 {
+#ifndef QTPORT
 	unsigned index = mFrameLevelTabBar->indexOf(current);
 	if (index >= (int)mBPFs.size()) return; // No valid descriptor
 	if (index == mCurrentBPFIndex) return; // No change
@@ -1044,24 +1108,39 @@ void Annotator::changeFrameLevelDescriptor(int current)
 	mBPFEditor->SetYRange(min_y,max_y,scale);
 	mBPFEditor->Show();
 	mPlayer->SetData(mBPFs[index].second);
+#endif// QTPORT
 }
 
 void Annotator::startPlaying()
 {
+#ifndef QTPORT
 	if(!mPlayer) return;
 	mPlayer->Play();
+#endif// QTPORT
 }
 
 void Annotator::pausePlaying()
 {
+#ifndef QTPORT
 	if(!mPlayer) return;
 	mPlayer->Pause();
+#endif// QTPORT
 }
 
 void Annotator::stopPlaying()
 {
+#ifndef QTPORT
 	if(!mPlayer) return;
 	mPlayer->Stop();
+#endif// QTPORT
+}
+
+// KLUDGE!!!!
+namespace CLAM 
+{
+	Segmentation::~Segmentation()
+	{
+	}
 }
 
 

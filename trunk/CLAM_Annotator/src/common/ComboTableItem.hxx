@@ -2,7 +2,7 @@
 #ifndef COMBO_TABLE_ITEM_H
 #define COMBO_TABLE_ITEM_H
 
-#include <qcombobox.h>
+#include <q3combobox.h>
 #include <qstringlist.h>
 
 #include "TableItem.hxx"
@@ -12,7 +12,7 @@
 class ComboTableItem : public TableItem
 {
 public:
-    ComboTableItem( QTable *table, std::vector<QStringList> &list, bool editable = FALSE );
+    ComboTableItem( Q3Table *table, std::vector<QStringList> &list, bool editable = FALSE );
     ~ComboTableItem();
     virtual QWidget *createEditor() const;
     virtual void setContentFromEditor( QWidget *w );
@@ -24,7 +24,7 @@ public:
     QString currentText() const;
     int count() const;
 #if !defined(Q_NO_USING_KEYWORD)
-    using QTableItem::text;
+    using Q3TableItem::text;
 #endif
     QString text( int i ) const;
     virtual void setEditable( bool b );

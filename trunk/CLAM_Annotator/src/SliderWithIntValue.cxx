@@ -2,7 +2,7 @@
 #include <qlabel.h>
 #include "SliderWithIntValue.hxx"
 
-SliderWithIntValue::SliderWithIntValue(QWidget * parent, const char * name , WFlags f)
+SliderWithIntValue::SliderWithIntValue(QWidget * parent, const char * name , Qt::WFlags f)
     : SliderWithValue( parent, name, f)
 {
     connect( mSlider, SIGNAL( valueChanged(int) ), mValue, SLOT( setNum(int) ) );

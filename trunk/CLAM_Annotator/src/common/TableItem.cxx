@@ -6,8 +6,8 @@ void TableItem::paint(QPainter * p, const QColorGroup & cg, const QRect & cr, bo
     if (row()%2==0)
     {
 	const QColorGroup *newCG=new QColorGroup(cg.foreground(),cg.button(),cg.light(),cg.dark(),cg.mid(),cg.text(),cg.brightText(),QColor(245,245,245),cg.background());
-	QTableItem::paint(p,*newCG,cr,selected);
+	Q3TableItem::paint(p,*newCG,cr,selected);
     }
     
-    else QTableItem::paint(p,cg,cr,selected);
+    else Q3TableItem::paint(p,cg,cr,selected);
 }

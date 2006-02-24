@@ -1,12 +1,12 @@
 #include "DescriptorTableController.hxx"
 #include "Project.hxx"
 #include "DescriptorTablePlugin.hxx"
-#include <qtable.h>
+#include <q3table.h>
 
 namespace CLAM_Annotator
 {
 
-	DescriptorTableController::DescriptorTableController(QTable * table, const CLAM_Annotator::Project & project)
+	DescriptorTableController::DescriptorTableController(Q3Table * table, const CLAM_Annotator::Project & project)
 		: mTable(table)
 		, mProject(project)
 		, mScope("")
@@ -18,7 +18,7 @@ namespace CLAM_Annotator
 		mTable->horizontalHeader()->setLabel( 1, mTable->tr( "Value" ) );
 		mTable->setNumRows( 0 );
 		mTable->setNumCols( 2 );
-		mTable->setSelectionMode( QTable::NoSelection );
+		mTable->setSelectionMode( Q3Table::NoSelection );
 		mTable->setColumnStretchable(1, true);
 	}
 	DescriptorTableController::~DescriptorTableController()

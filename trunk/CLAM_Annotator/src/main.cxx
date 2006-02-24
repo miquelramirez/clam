@@ -19,7 +19,7 @@ int main( int argc, char ** argv )
 #endif
 	
 	QApplication app( argc, argv );
-	QSplashScreen splash( QPixmap::fromMimeSource("simac.png") );
+	QSplashScreen splash( QPixmap(":/logos/clam-logo-bangs.png") );
 	splash.setCursor( QCursor(Qt::WaitCursor) );
 	splash.show();
 	splash.message("Loading data ... ");

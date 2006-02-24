@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/icons" >
+        <file>images/contexthelp.png</file>
+        <file>images/exit.png</file>
+        <file>images/filenew.png</file>
+        <file>images/fileopen.png</file>
+        <file>images/filesave.png</file>
+        <file>images/filesaveas.png</file>
+        <file>images/gear.png</file>
+        <file>images/player_pause.png</file>
+        <file>images/player_play.png</file>
+        <file>images/player_stop.png</file>
+        <file>images/vcs_add.png</file>
+        <file>images/vcs_remove.png</file>
+        <file>images/view_tree.png</file>
+    </qresource>
+    <qresource prefix="/logos" >
+        <file>images/annotator-icon1.png</file>
+        <file>images/annotator-icon1.svg</file>
+        <file>images/clam-logo-bangs-scaled.png</file>
+        <file>images/clam-logo-bangs.png</file>
+        <file>images/clam_red.png</file>
+        <file>images/clam_red_scaled.png</file>
+    </qresource>
+</RCC>
