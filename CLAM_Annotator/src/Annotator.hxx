@@ -3,7 +3,7 @@
 
 #include <QColorGroup>
 #include <Qt>
-#include "AnnotatorBase.qt4.h"
+#include "ui_AnnotatorBase.qt4.hxx"
 #include "DescriptorTableController.hxx"
 
 #include <string>
