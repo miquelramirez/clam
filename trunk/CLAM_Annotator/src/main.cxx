@@ -19,6 +19,9 @@ int main( int argc, char ** argv )
 #endif
 	
 	QApplication app( argc, argv );
+	QCoreApplication::setOrganizationName("CLAM");
+	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
+	QCoreApplication::setApplicationName("Music Annotator");
 	QSplashScreen splash( QPixmap(":/logos/clam-logo-bangs.png") );
 	splash.setCursor( QCursor(Qt::WaitCursor) );
 	splash.show();

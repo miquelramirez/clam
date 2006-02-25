@@ -22,36 +22,27 @@ env['CXXFILESUFFIX'] = '.cxx'
 env['QT_MOC'] = 'moc-qt4'
 env['QT4_MOC'] = 'moc-qt4'
 env['QT4_UIC'] = 'uic-qt4'
+env['QT_MOCHPREFIX'] = 'generated/moc_'
+env['QT_UISUFFIX'] = '.ui'
+env['QT_UICDECLPREFIX'] = 'generated/ui_'
+env['QT_UICDECLSUFFIX'] = '.hxx'
+
 env.Replace(QT_UIC='echo ***** Using old UIC!!!!!!')
 
 qrcbuilder = Builder(
 	action ='rcc $SOURCE -o $TARGET',
 	src_suffix = '.qrc',
 	suffix = '.cxx',
-	prefix = 'qrc_',
+	prefix = 'generated/qrc_',
 	single_source = True
 	)
 env.Append( BUILDERS = { 'Qrc': qrcbuilder } )
 
 env['QT_UIC4COM'] = [
 	CLVar('$QT4_UIC $QT_UICDECLFLAGS -o ${TARGETS[0]} $SOURCE'),
-	CLVar('$QT4_MOC $QT_MOCFROMHFLAGS -o ${TARGETS[1]} ${TARGETS[0]}')]
-
-def uic4Emitter(target, source, env):
-	adjustixes = SCons.Util.adjustixes
-	bs = os.path.splitext(str(source[0].name))[0]
-	bs = os.path.join(str(target[0].get_dir()),bs)
-	# first target (header) is automatically added by builder
-	# second target is moc file
-	if len(target) < 2:
-		target.append(adjustixes(bs,
-								 env.subst('$QT_MOCHPREFIX'),
-								 env.subst('$QT_MOCHSUFFIX')))
-	return target, source
-
+	]
 uic4builder = Builder(
     action='$QT_UIC4COM',
-	emitter=uic4Emitter,
 	src_suffix='$QT_UISUFFIX',
 	suffix='$QT_UICDECLSUFFIX',
 	prefix='$QT_UICDECLPREFIX',
@@ -77,6 +68,7 @@ pkgconfigLibraries = [
 sourcePaths = [
 	'.',
 	'common',
+	'generated',
 ]
 
 #extraPaths = recursiveDirs(CLAMSandbox+"CLAM-draft/vmqt")
@@ -104,6 +96,7 @@ env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'
 		CLAMInstallDir,
 		' '.join(pkgconfigLibraries)))
 env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
+#env.Append(CPPFLAGS=['-DQT3_SUPPORT_WARNINGS'])
 
 programs = [
 	env.Program(target='Annotator-qt4', source = sources+['main.cxx']),
