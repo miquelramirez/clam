@@ -22,7 +22,7 @@
 
 class QTimer;
 class QTabBar;
-class Q3TextBrowser;
+class QTextBrowser;
 class AudioLoadThread;
 class SchemaBrowser;
 using CLAM::TIndex;
@@ -31,9 +31,9 @@ using CLAM::TData;
 namespace CLAM {
 	namespace VM 
 	{
-		class QtAudioPlot;
-		class BPFEditor;
-		class QtSingleBPFPlayerExt;
+		class AudioPlot;
+		class BPFPlot;
+		class BPFPlayer;
 	};
 	class Segmentation;
 	class XmlStorageErr;
@@ -72,7 +72,7 @@ class StatusBarDumper
 };
 
 
-class Annotator : public Q3MainWindow, public Ui::AnnotatorBase 
+class Annotator : public QMainWindow, public Ui::AnnotatorBase 
 {
 	/*  
 	 *	type to store bpf info from loaded LLDs.
@@ -189,7 +189,7 @@ private:
 	bool mDescriptorsNeedSave;
 	bool mMustUpdateMarkedAudio;
 
-	CLAM::VM::QtAudioPlot* mpAudioPlot;
+	CLAM::VM::AudioPlot* mpAudioPlot;
 	QTimer * mAudioRefreshTimer;
 	SchemaBrowser * mSchemaBrowser;
 	AudioLoadThread * mAudioLoaderThread;
@@ -197,12 +197,12 @@ private:
 	CLAM_Annotator::DescriptorTableController * mSegmentDescriptors;
 
 	std::vector<BPFInfo> mBPFs; // cached LLDs         
-	CLAM::VM::BPFEditor* mBPFEditor;
+	CLAM::VM::BPFPlot *  mBPFEditor;
 	int                  mCurrentBPFIndex;
 	CLAM::Segmentation * mSegmentation;
 
-    Q3TextBrowser* mProjectDocumentation;
-	CLAM::VM::QtSingleBPFPlayerExt* mPlayer;
+    QTextBrowser* mProjectDocumentation;
+	CLAM::VM::BPFPlayer* mPlayer;
 	std::deque<std::string> mRecentOpenedProjects;
 	StatusBarDumper mStatusBar;
 	QTabBar * mFrameLevelTabBar;

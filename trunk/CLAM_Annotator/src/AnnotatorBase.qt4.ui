@@ -3,7 +3,7 @@
  <comment></comment>
  <exportmacro></exportmacro>
  <class>AnnotatorBase</class>
- <widget class="Q3MainWindow" name="AnnotatorBase" >
+ <widget class="QMainWindow" name="AnnotatorBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -32,18 +32,7 @@
   <property name="windowIcon" >
    <iconset resource="images.qrc" >:/logos/images/annotator-icon1.png</iconset>
   </property>
-  <property name="usesBigPixmaps" >
-   <bool>true</bool>
-  </property>
   <widget class="QWidget" name="widget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>66</y>
-     <width>1006</width>
-     <height>552</height>
-    </rect>
-   </property>
    <layout class="QVBoxLayout" >
     <property name="margin" >
      <number>11</number>
@@ -302,7 +291,7 @@ to the proper cell.&lt;/p></string>
             <number>2</number>
            </property>
            <property name="selectionMode" >
-            <enum>Q3Table::NoSelection</enum>
+            <enum>Q3Table::SingleRow</enum>
            </property>
           </widget>
          </widget>
@@ -313,40 +302,31 @@ to the proper cell.&lt;/p></string>
     </item>
    </layout>
   </widget>
-  <widget class="Q3ToolBar" name="mIntraSongToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>263</width>
-     <height>38</height>
-    </rect>
+  <widget class="QToolBar" name="mIntraSongToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
    </property>
-   <property name="label" >
-    <string>Intrasong toolbar</string>
-   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
    <addaction name="fileNew_projectAction" />
    <addaction name="fileOpen_projectAction" />
    <addaction name="fileSave_projectAction" />
    <addaction name="separator" />
    <addaction name="projectLoadSchemaAction" />
    <addaction name="fileAdd_to_projectAction" />
+   <addaction name="editDelete_from_projectAction" />
    <addaction name="songComputeDescriptorsAction" />
    <addaction name="separator" />
    <addaction name="helpWhats_thisAction" />
   </widget>
-  <widget class="Q3ToolBar" name="TransportToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>263</x>
-     <y>0</y>
-     <width>121</width>
-     <height>38</height>
-    </rect>
+  <widget class="QToolBar" name="TransportToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
    </property>
-   <property name="label" >
-    <string>Transport Toolbar</string>
-   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
    <addaction name="mPlay" />
    <addaction name="mPause" />
    <addaction name="mStop" />
@@ -357,9 +337,24 @@ to the proper cell.&lt;/p></string>
      <x>0</x>
      <y>0</y>
      <width>1006</width>
-     <height>28</height>
+     <height>31</height>
     </rect>
    </property>
+   <widget class="QMenu" name="help" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="helpAboutAction" />
+    <addaction name="separator" />
+    <addaction name="helpWhats_thisAction" />
+   </widget>
+   <widget class="QMenu" name="Song" >
+    <property name="title" >
+     <string>&amp;Song</string>
+    </property>
+    <addaction name="songSaveDescriptorsAction" />
+    <addaction name="songComputeDescriptorsAction" />
+   </widget>
    <widget class="QMenu" name="Playback" >
     <property name="title" >
      <string>&amp;Playback</string>
@@ -372,20 +367,6 @@ to the proper cell.&lt;/p></string>
     <addaction name="playbackAuralizeFrameLevelDescriptorsAction" />
     <addaction name="playbackLinkCurrentSegmentToPlaybackAction" />
    </widget>
-   <widget class="QMenu" name="Song" >
-    <property name="title" >
-     <string>&amp;Song</string>
-    </property>
-    <addaction name="songSaveDescriptorsAction" />
-    <addaction name="songComputeDescriptorsAction" />
-   </widget>
-   <widget class="QMenu" name="Project" >
-    <property name="title" >
-     <string>&amp;Project</string>
-    </property>
-    <addaction name="projectLoadSchemaAction" />
-    <addaction name="fileAdd_to_projectAction" />
-   </widget>
    <widget class="QMenu" name="mFileMenu" >
     <property name="title" >
      <string>&amp;File</string>
@@ -397,13 +378,12 @@ to the proper cell.&lt;/p></string>
     <addaction name="separator" />
     <addaction name="fileExitAction" />
    </widget>
-   <widget class="QMenu" name="help" >
+   <widget class="QMenu" name="Project" >
     <property name="title" >
-     <string>&amp;Help</string>
+     <string>&amp;Project</string>
     </property>
-    <addaction name="helpAboutAction" />
-    <addaction name="separator" />
-    <addaction name="helpWhats_thisAction" />
+    <addaction name="projectLoadSchemaAction" />
+    <addaction name="fileAdd_to_projectAction" />
    </widget>
    <addaction name="mFileMenu" />
    <addaction name="Project" />
@@ -526,10 +506,16 @@ to the proper cell.&lt;/p></string>
     <iconset resource="images.qrc" >:/icons/images/vcs_remove.png</iconset>
    </property>
    <property name="text" >
-    <string>Delete (from project)</string>
+    <string>Remove song from project</string>
    </property>
    <property name="iconText" >
-    <string>Delete (from project)</string>
+    <string>Remove song from project</string>
+   </property>
+   <property name="statusTip" >
+    <string>Remove song from project</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
    </property>
   </action>
   <action name="projectSaveDescriptorsAction" >
@@ -675,10 +661,10 @@ to the proper cell.&lt;/p></string>
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3ToolBar</class>
+   <class>Q3Frame</class>
    <extends></extends>
-   <header>q3listview.h</header>
-   <container>0</container>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
@@ -693,20 +679,6 @@ to the proper cell.&lt;/p></string>
    <extends></extends>
    <header>q3table.h</header>
    <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3MainWindow</class>
-   <extends></extends>
-   <header>q3mainwindow.h</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends></extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
