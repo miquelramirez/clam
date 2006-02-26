@@ -70,10 +70,19 @@ sourcePaths = [
 	'common',
 	'generated',
 ]
-
-#extraPaths = recursiveDirs(CLAMSandbox+"CLAM-draft/vmqt")
-extraPaths = [
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/plot")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/render")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/data")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/util")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/player")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/misc")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/widget")
+extraPaths = []
+extraPaths += [
 	CLAMInstallDir+'/include',
+]
+extraPaths += [
+	CLAMInstallDir+'/include/CLAM',
 ]
 includePaths = sourcePaths + extraPaths
 
