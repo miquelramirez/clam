@@ -327,9 +327,9 @@ to the proper cell.&lt;/p></string>
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="mPlay" />
-   <addaction name="mPause" />
-   <addaction name="mStop" />
+   <addaction name="mPlayAction" />
+   <addaction name="mPauseAction" />
+   <addaction name="mStopAction" />
   </widget>
   <widget class="QMenuBar" name="MenuBar" >
    <property name="geometry" >
@@ -359,9 +359,9 @@ to the proper cell.&lt;/p></string>
     <property name="title" >
      <string>&amp;Playback</string>
     </property>
-    <addaction name="mPlay" />
-    <addaction name="mPause" />
-    <addaction name="mStop" />
+    <addaction name="mPlayAction" />
+    <addaction name="mPauseAction" />
+    <addaction name="mStopAction" />
     <addaction name="separator" />
     <addaction name="playbackAuralizeSegmentOnsetsAction" />
     <addaction name="playbackAuralizeFrameLevelDescriptorsAction" />
@@ -603,7 +603,7 @@ to the proper cell.&lt;/p></string>
     <string>Shift+F1</string>
    </property>
   </action>
-  <action name="mPlay" >
+  <action name="mPlayAction" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/player_play.png</iconset>
    </property>
@@ -617,7 +617,7 @@ to the proper cell.&lt;/p></string>
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="mPause" >
+  <action name="mPauseAction" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/player_pause.png</iconset>
    </property>
@@ -631,7 +631,7 @@ to the proper cell.&lt;/p></string>
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="mStop" >
+  <action name="mStopAction" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/player_stop.png</iconset>
    </property>
