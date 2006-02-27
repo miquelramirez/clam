@@ -55,3 +55,19 @@ class MetadataProvider(ServiceStub) :
 
 	def UploadPackedDescriptors(self, file) :
 		return self.remoteCall( "UploadPackedDescriptors", packedpoolfile=open(file, 'rb') )
+
+	def AvailableDescriptors(self) :
+		return self.remoteCall("AvailableDescriptors")
+
+if __name__ == "__main__" :
+	webservice = ServiceStub("https://localhost/SimacServices/ContentLocator")
+	print webservice.remoteCall("LocateId", id="4871335", par1=1, par2="yaves")
+
+	contentLocator = ContentLocator("https://localhost/SimacServices/ContentLocator")
+	print contentLocator.LocateId(24), "should be 'NotFound'"
+	print contentLocator.LocateId(4871335), "should be 'http://www.threegutrecords.com/mp3/Is This It.mp3\n'"
+	print contentLocator.IdentifyUrl("http://www.threegutrecords.com/mp3/Is This It.mp3") , "should be '4871335'"
+	print contentLocator.AddUrl("http://www.threegutrecords.com/mp3/Is This It.mp3"), "should be '4871335'"
+	
+	metadataProvider = MetadataProvider("https://localhost/SimacServices/MetadataProvider")
+	print metadataProvider.QueryIdByUrl("http://www.threegutrecords.com/mp3/Is This It.mp3"), "should be '4871335'"
