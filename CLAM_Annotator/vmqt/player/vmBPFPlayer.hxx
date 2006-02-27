@@ -23,7 +23,8 @@ namespace CLAM
 
 		private:
 			const BPF*   mBPF;
-			const Audio* mAudio;
+			const Audio* mAudio0;
+			const Audio* mAudio1;
 			Range        mPitchBounds;
 
 			void run();
