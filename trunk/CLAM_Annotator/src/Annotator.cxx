@@ -182,6 +182,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 		return;
 	}
 	initProject();
+	updateAuralizationOptions();
 }
 
 void Annotator::loadSettings()
@@ -244,7 +245,7 @@ void Annotator::initInterface()
 	Q3VBoxLayout * frameLevelContainerLayout = new Q3VBoxLayout(mFrameLevelContainer);
 	mFrameLevelTabBar = new QTabBar(mFrameLevelContainer);
 	frameLevelContainerLayout->add(mFrameLevelTabBar);
-	mBPFEditor = new BPFPlot(//CLAM::VM::AllowVerticalEdition|CLAM::VM::HasVerticalScroll,
+	mBPFEditor = new BPFPlot(//CLAM::VM::AllowVerticalEdition|CLAM::VM::HasVerticalScroll, // QTPORT
 			mFrameLevelContainer);
 	frameLevelContainerLayout->add(mBPFEditor);
 #ifndef QTPORT
@@ -468,9 +469,9 @@ void Annotator::makeConnections()
 	connect(playbackAuralizeFrameLevelDescriptorsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
 	connect(songComputeDescriptorsAction, SIGNAL(activated()), this, SLOT(computeSongDescriptors()));
 	connect(helpWhats_thisAction, SIGNAL(activated()), this, SLOT(whatsThis()));
-	connect(mPlay, SIGNAL(activated()), this, SLOT(startPlaying()));
-	connect(mPause, SIGNAL(activated()), this, SLOT(pausePlaying()));
-	connect(mStop, SIGNAL(activated()), this, SLOT(stopPlaying()));
+	connect(mPlayAction, SIGNAL(activated()), this, SLOT(startPlaying()));
+	connect(mPauseAction, SIGNAL(activated()), this, SLOT(pausePlaying()));
+	connect(mStopAction, SIGNAL(activated()), this, SLOT(stopPlaying()));
 	connect(playbackLinkCurrentSegmentToPlaybackAction, SIGNAL(toggled(bool)), this, SLOT(linkCurrentSegmentToPlayback(bool)));
 	connect(helpAboutAction,SIGNAL(activated()), mAbout,SLOT(show()));
 
@@ -517,12 +518,12 @@ void Annotator::makeConnections()
 	connect(mpAudioPlot, SIGNAL(regionTime(float,float)),
 		mPlayer, SLOT(setRegionTime(float,float)));
 	connect(mPlayer, SIGNAL(playingTime(float)),
-		mBPFEditor, SLOT(setCurrentPlayingTime(float)));
-	connect(mPlayer, SIGNAL(stopPlaying(float)),
+		mBPFEditor, SLOT(updateLocator(float)));
+	connect(mPlayer, SIGNAL(stopTime(float)),
 		mBPFEditor, SLOT(receivedStopPlaying(float)));
 	connect(mPlayer, SIGNAL(playingTime(float)),
-		mpAudioPlot, SLOT(setCurrentPlayingTime(float)));
-	connect( mPlayer, SIGNAL(stopPlaying(float)),
+		mpAudioPlot, SLOT(updateLocator(float)));
+	connect( mPlayer, SIGNAL(stopTime(float)),
 		 mpAudioPlot, SLOT(receivedStopPlaying(float)));
 
 }
@@ -1041,11 +1042,11 @@ void Annotator::updateAuralizationOptions()
 	unsigned int LEFT_CHANNEL = 1;
 	unsigned int RIGHT_CHANNEL = 2;
 	mPlayer->SetAudioPtr(&mCurrentAudio);
-	if (playLLDs)
-		mPlayer->SetAudioPtr(0, LEFT_CHANNEL);
+//	if (playLLDs)
+//		mPlayer->SetAudioPtr(0, LEFT_CHANNEL);
 	if (playOnsets)
 		mPlayer->SetAudioPtr(&mCurrentMarkedAudio, RIGHT_CHANNEL);
-
+	mPlayer->SetPlayingFlags( CLAM::VM::eAudio | (playLLDs?CLAM::VM::eUseOscillator:0));
 }
 
 void Annotator::setMenuAudioItemsEnabled(bool enabled)
@@ -1084,17 +1085,17 @@ void Annotator::changeFrameLevelDescriptor(int current)
 {
 	unsigned index = mFrameLevelTabBar->currentIndex();
 	if (index >= (int)mBPFs.size()) return; // No valid descriptor
-	if (index == mCurrentBPFIndex) return; // No change
+//	if (index == mCurrentBPFIndex) return; // No change
 	mCurrentBPFIndex = index;
 	double min_y = mBPFs[index].first.first;
 	double max_y = mBPFs[index].first.second;
 	mBPFEditor->SetData(&mBPFs[index].second);
 	bool scale_log = (fabs(min_y) > 9999.99 || fabs(max_y) > 9999.99 || max_y-min_y < TData(5E-2));
 	mBPFEditor->SetYRange(min_y,max_y, scale_log ? CLAM::VM::eLogScale : CLAM::VM::eLinearScale);
-	mBPFEditor->show();
 
 	mPlayer->SetData(mBPFs[index].second);
-
+	mPlayer->SetPitchBounds(min_y, max_y);
+	mBPFEditor->show();
 }
 
 void Annotator::startPlaying()
@@ -1119,14 +1120,6 @@ void Annotator::stopPlaying()
 	if(!mPlayer) return;
 	mPlayer->stop();
 
-}
-
-// KLUDGE!!!!
-namespace CLAM 
-{
-	Segmentation::~Segmentation()
-	{
-	}
 }
 
 
