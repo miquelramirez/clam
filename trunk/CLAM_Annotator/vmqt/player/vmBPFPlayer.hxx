@@ -18,7 +18,7 @@ namespace CLAM
 			~BPFPlayer();
 
 			void SetData(const BPF& bpf);
-			void SetAudioPtr(const Audio* audio);
+			void SetAudioPtr(const Audio* audio, unsigned channelMask=1|2); // TODO: Make this be enums
 			void SetPitchBounds(double min, double max);
 
 		private:

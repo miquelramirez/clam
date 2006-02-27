@@ -29,7 +29,7 @@ namespace CLAM
 			mBPF = &bpf;
 		}
 
-		void BPFPlayer::SetAudioPtr(const Audio* audio)
+		void BPFPlayer::SetAudioPtr(const Audio* audio, unsigned channelMask)
 		{
 			mAudio = audio;
 		}
@@ -105,36 +105,25 @@ namespace CLAM
 				}
 				if(k < (unsigned)mBPF->Size()) freqControl.DoControl(GetPitch(k));
 				osc.Do(samples1);
-				if(leftIndex/mSamplingRate >= mBPF->GetXValue(k))
-				{
-					if((mPlayingFlags & CLAM::VM::eAudio) && (mPlayingFlags & CLAM::VM::eUseOscillator))
-					{
-						channel0.Do(samples0);
-						channel1.Do(samples1);
-					}
-					else if(mPlayingFlags & CLAM::VM::eAudio)
-					{
-						channel0.Do(samples0);
-						channel1.Do(samples0);
-					}
-					else
-					{
-						if(mPlayingFlags & CLAM::VM::eAudio)
-						{
-							channel0.Do(samples0);
-							channel1.Do(samples0);
-						}
-						else
-						{
-							channel0.Do(samples1);
-							channel1.Do(samples1);
-						}
-					}
-				}
-				else
+				if(leftIndex/mSamplingRate < mBPF->GetXValue(k))
 				{
 					channel0.Do(silence);
 					channel1.Do(silence);
+				}
+				else if((mPlayingFlags & CLAM::VM::eAudio) && (mPlayingFlags & CLAM::VM::eUseOscillator))
+				{
+					channel0.Do(samples0);
+					channel1.Do(samples1);
+				}
+				else if(mPlayingFlags & CLAM::VM::eAudio)
+				{
+					channel0.Do(samples0);
+					channel1.Do(samples0);
+				}
+				else
+				{
+					channel0.Do(samples1);
+					channel1.Do(samples1);
 				}
 				emit playingTime(double(leftIndex)/mSamplingRate);
 				leftIndex += frameSize;
