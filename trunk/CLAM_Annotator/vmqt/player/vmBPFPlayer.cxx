@@ -14,7 +14,8 @@ namespace CLAM
 		BPFPlayer::BPFPlayer(QObject* parent)
 			: Player(parent)
 			, mBPF(0)
-			, mAudio(0)
+			, mAudio0(0)
+			, mAudio1(0)
 			, mPitchBounds(min_ref,max_ref)
 		{
 			SetPlayingFlags(CLAM::VM::eUseOscillator);
@@ -31,7 +32,10 @@ namespace CLAM
 
 		void BPFPlayer::SetAudioPtr(const Audio* audio, unsigned channelMask)
 		{
-			mAudio = audio;
+			if (channelMask&1)
+				mAudio0 = audio;
+			if (channelMask&2)
+				mAudio1 = audio;
 		}
 
 		void BPFPlayer::SetPitchBounds(double min, double max)
@@ -45,8 +49,8 @@ namespace CLAM
 		{
 			if(!mBPF) return;
 			if(!mBPF->Size()) return;
-			if(!mAudio) SetPlayingFlags(CLAM::VM::eUseOscillator);
-			if(mAudio) mSamplingRate = mAudio->GetSampleRate();
+			if(!mAudio0) SetPlayingFlags(CLAM::VM::eUseOscillator);
+			if(mAudio0) mSamplingRate = mAudio0->GetSampleRate();
 
 			unsigned frameSize = 512;     
 			AudioManager manager((int)mSamplingRate,(int)frameSize);  
@@ -72,10 +76,12 @@ namespace CLAM
 			
 			InControl& freqControl = osc.GetInControls().Get("Pitch");
     
-			Audio samples0;             
-			Audio samples1;
-			samples0.SetSize(frameSize);
-			samples1.SetSize(frameSize);
+			Audio samplesAudio0;
+			Audio samplesAudio1;
+			Audio samplesBpf;
+			samplesAudio0.SetSize(frameSize);
+			samplesAudio1.SetSize(frameSize);
+			samplesBpf.SetSize(frameSize);
 
 			Audio silence;
 			silence.SetSize(frameSize);
@@ -96,34 +102,33 @@ namespace CLAM
 				if(!mBPF->Size()) mIsPlaying = false;
 				if(!mIsPlaying) break;
 				if(k < (unsigned)mBPF->Size()-1) if(double(i)/mSamplingRate >= double(mBPF->GetXValue(k+1))) k++;
-				if(mAudio)
-				{
-					if(rightIndex < unsigned(mAudio->GetSize()))
-					{
-						mAudio->GetAudioChunk(int(leftIndex),int(rightIndex),samples0);
-					}
-				}
+
+				if(mAudio0 && rightIndex < unsigned(mAudio0->GetSize()))
+					mAudio0->GetAudioChunk(int(leftIndex),int(rightIndex),samplesAudio0);
+				if(mAudio1 && rightIndex < unsigned(mAudio1->GetSize()))
+					mAudio1->GetAudioChunk(int(leftIndex),int(rightIndex),samplesAudio1);
+
 				if(k < (unsigned)mBPF->Size()) freqControl.DoControl(GetPitch(k));
-				osc.Do(samples1);
-				if(leftIndex/mSamplingRate < mBPF->GetXValue(k))
+				osc.Do(samplesBpf);
+				if (leftIndex/mSamplingRate < mBPF->GetXValue(k))
 				{
 					channel0.Do(silence);
 					channel1.Do(silence);
 				}
-				else if((mPlayingFlags & CLAM::VM::eAudio) && (mPlayingFlags & CLAM::VM::eUseOscillator))
+				else if ((mPlayingFlags & CLAM::VM::eAudio) && (mPlayingFlags & CLAM::VM::eUseOscillator))
 				{
-					channel0.Do(samples0);
-					channel1.Do(samples1);
+					channel0.Do(samplesAudio0);
+					channel1.Do(samplesBpf);
 				}
-				else if(mPlayingFlags & CLAM::VM::eAudio)
+				else if (mPlayingFlags & CLAM::VM::eAudio && !(mPlayingFlags & CLAM::VM::eUseOscillator))
 				{
-					channel0.Do(samples0);
-					channel1.Do(samples0);
+					channel0.Do(samplesAudio0);
+					channel1.Do(samplesAudio1);
 				}
 				else
 				{
-					channel0.Do(samples1);
-					channel1.Do(samples1);
+					channel0.Do(samplesBpf);
+					channel1.Do(samplesBpf);
 				}
 				emit playingTime(double(leftIndex)/mSamplingRate);
 				leftIndex += frameSize;
@@ -178,7 +183,7 @@ namespace CLAM
 		double BPFPlayer::GetPitch(unsigned index)
 		{
 			double value = mBPF->GetValueFromIndex(index);
-			if(value >= min_ref && value <= max_ref) return value;
+//			if(value >= min_ref && value <= max_ref) return value;
 			if(value < mPitchBounds.min) value = mPitchBounds.min;
 			else if(value > mPitchBounds.max) value = mPitchBounds.max;
 			return (value-mPitchBounds.min)*(max_ref-min_ref)/mPitchBounds.Span()+min_ref;
