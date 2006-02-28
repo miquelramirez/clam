@@ -8,16 +8,16 @@ void extract_data(const CLAM::Melody& in, CLAM::BPF& out, double& min, double& m
 int main(int argc, char** argv)
 {
 	CLAM::Melody melody;
-    CLAM::XMLStorage::Restore(melody,"../../data/melody.xml");
+    CLAM::XMLStorage::Restore(melody,"data/melody.xml");
     double duration = double(melody.GetNoteArray()[melody.GetNumberOfNotes()-1].GetTime().GetEnd());
 	double min = 1E9;
     double max = -1E9;
 
     CLAM::BPF bpf0,bpf1,bpf2;
 	extract_data(melody,bpf0,min,max);
-	CLAM::XMLStorage::Restore(melody,"../../data/birthday.xml");
+	CLAM::XMLStorage::Restore(melody,"data/birthday.xml");
 	extract_data(melody,bpf1,min,max);
-	CLAM::XMLStorage::Restore(melody,"../../data/star_wars.xml");
+	CLAM::XMLStorage::Restore(melody,"data/star_wars.xml");
     extract_data(melody,bpf2,min,max);
 
     double span = max-min;

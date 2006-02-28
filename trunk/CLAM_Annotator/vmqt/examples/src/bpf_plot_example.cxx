@@ -8,7 +8,7 @@ void extract_data(const CLAM::Melody& in, CLAM::BPF& out, double& min, double& m
 int main(int argc, char** argv)
 {
 	CLAM::Melody melody;
-    CLAM::XMLStorage::Restore(melody,"../../data/melody.xml");
+	CLAM::XMLStorage::Restore(melody,"data/melody.xml");
     double duration = double(melody.GetNoteArray()[melody.GetNumberOfNotes()-1].GetTime().GetEnd());
 	double min = 1E9;
     double max = -1E9;

@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 	CLAM::Segment segment;
 
 	printf("loading audio...\n");
-	qtvm_examples_utils::load_audio("../../data/birthday.wav",audio);
+	qtvm_examples_utils::load_audio("data/birthday.wav",audio);
 	printf("analysing");
 	qtvm_examples_utils::analyze(audio,segment);
 	printf("\ndone!\n");
