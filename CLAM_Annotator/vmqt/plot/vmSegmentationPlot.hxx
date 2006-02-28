@@ -53,6 +53,8 @@ namespace CLAM
 			Plot2D*      mPlot;
 			Ruler*       mXRuler;
 			Ruler*       mYRuler;
+			Locator*       mLocator;
+			SegmentEditor* mSegmentation;
 
 		private:
 			ScrollGroup* mHScroll;
