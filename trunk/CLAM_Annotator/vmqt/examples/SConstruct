@@ -1,0 +1,133 @@
+#!/usr/bin/python
+import os
+import glob
+import SCons.Util
+from SCons.Util import CLVar
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(path+"/"+pattern)
+	return files
+
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+CLAMSandbox ='/home/vokimon/CajitasDeArena'
+CLAMInstallDir = CLAMSandbox + '/CLAM-Install'
+
+
+env = Environment(tools=['default','qt'])
+env['CXXFILESUFFIX'] = '.cxx'
+env['QT_MOC'] = 'moc-qt4'
+env['QT4_MOC'] = 'moc-qt4'
+env['QT4_UIC'] = 'uic-qt4'
+env['QT_MOCHPREFIX'] = 'generated/moc_'
+env['QT_UISUFFIX'] = '.ui'
+env['QT_UICDECLPREFIX'] = 'generated/ui_'
+env['QT_UICDECLSUFFIX'] = '.hxx'
+
+env.Replace(QT_UIC='echo ***** Using old UIC!!!!!!')
+
+qrcbuilder = Builder(
+	action ='rcc $SOURCE -o $TARGET',
+	src_suffix = '.qrc',
+	suffix = '.cxx',
+	prefix = 'generated/qrc_',
+	single_source = True
+	)
+env.Append( BUILDERS = { 'Qrc': qrcbuilder } )
+
+env['QT_UIC4COM'] = [
+	CLVar('$QT4_UIC $QT_UICDECLFLAGS -o ${TARGETS[0]} $SOURCE'),
+	]
+uic4builder = Builder(
+    action='$QT_UIC4COM',
+	src_suffix='$QT_UISUFFIX',
+	suffix='$QT_UICDECLSUFFIX',
+	prefix='$QT_UICDECLPREFIX',
+	single_source = True
+	)
+env.Append( BUILDERS = { 'Uic4': uic4builder } )
+
+pkgconfigLibraries = [
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	'QtGui',
+#	'QtSql',
+#	'QtNetwork',
+#	'QtTest',
+#	'QtXml',
+	'QtCore',
+	'QtOpenGL',
+#	'QtSvg',
+	'Qt3Support',
+]
+
+sourcePaths = [
+	'.',
+	'common',
+	'generated',
+]
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/plot")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/render")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/data")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/util")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/player")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/misc")
+sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/widget")
+sourcePaths += recursiveDirs("utils")
+sourcePaths += recursiveDirs("data")
+extraPaths = []
+extraPaths += [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM',
+]
+includePaths = sourcePaths + extraPaths
+
+qrcfiles = scanFiles("*.qrc", sourcePaths)
+uifiles = scanFiles("*.qt4.ui", sourcePaths)
+if len(uifiles): uiheaders = env.Uic4(source=uifiles)
+sources = scanFiles('*.cxx', sourcePaths)
+sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
+sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
+if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
+sources = dict.fromkeys(sources).keys()
+
+env['QT_LIB'] = '' # KLUDGE
+
+env.Append(CPPPATH=includePaths)
+env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
+	(
+		CLAMInstallDir,
+		' '.join(pkgconfigLibraries)))
+env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
+env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
+#env.Append(CPPFLAGS=['-DQT3_SUPPORT_WARNINGS'])
+mainSources = [
+	"src/audio_plot_example.cxx",
+	"src/fundamental_plot_example.cxx",
+	"src/segmentation_plot_example.cxx",
+	"src/sintracks_plot_example.cxx",
+	"src/spectrum_plot_example.cxx",
+	"src/spectrogram_plot_example.cxx",
+	"src/audio_stereo_plot_example.cxx",
+	"src/bpf_plot_example.cxx",
+	"src/multibpf_plot_example.cxx",
+	"src/playable_audio_plot_example.cxx",
+	"src/playable_audio_stereo_plot_example.cxx",
+	"src/playable_bpf_plot_example.cxx",
+	"src/playable_fundamental_plot_example.cxx",
+	"src/playable_multibpf_plot_example.cxx",
+]
+
+programs = []
+for main in mainSources :
+	print main
+	executable = os.path.splitext(os.path.basename(main))[0]
+	print executable
+	programs += [ env.Program(target=executable, source = sources+[main]) ]
+
+env.Default(programs)
+
