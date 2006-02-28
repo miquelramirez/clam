@@ -27,6 +27,7 @@ env['QT_MOCHPREFIX'] = 'generated/moc_'
 env['QT_UISUFFIX'] = '.ui'
 env['QT_UICDECLPREFIX'] = 'generated/ui_'
 env['QT_UICDECLSUFFIX'] = '.hxx'
+env['QT_LIB'] = '' # KLUDGE to avoid linking qt3 library
 
 env.Replace(QT_UIC='echo ***** Using old UIC!!!!!!')
 
@@ -82,7 +83,7 @@ sourcePaths += recursiveDirs("utils")
 extraPaths = []
 extraPaths += [
 	CLAMInstallDir+'/include',
-	CLAMInstallDir+'/include/CLAM',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 ]
 includePaths = sourcePaths + extraPaths
 
@@ -94,8 +95,6 @@ sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
 if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
 sources = dict.fromkeys(sources).keys()
-
-env['QT_LIB'] = '' # KLUDGE
 
 env.Append(CPPPATH=includePaths)
 env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
