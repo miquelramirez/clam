@@ -56,7 +56,7 @@ namespace CLAM
 			mHScroll->setPalette(Qt::white);
 			mVScroll->setPalette(Qt::white);
 			mPlot->SetBackgroundColor(Color(255,255,255));
-			static_cast<Locator*>(mPlot->GetRenderer("locator"))->SetLocatorColor(Color(250,160,30));
+			mLocator->SetLocatorColor(Color(250,160,30));
 		}
 
 		void SegmentationPlot::backgroundBlack()
@@ -69,17 +69,17 @@ namespace CLAM
 			mHScroll->setPalette(Qt::darkGreen);
 			mVScroll->setPalette(Qt::darkGreen);
 			mPlot->SetBackgroundColor(Color(0,0,0));
-			static_cast<Locator*>(mPlot->GetRenderer("locator"))->SetLocatorColor(Color(255,0,0));
+			mLocator->SetLocatorColor(Color(255,0,0));
 		}
 
 		void SegmentationPlot::updateLocator(double value)
 		{
-			static_cast<Locator*>(mPlot->GetRenderer("locator"))->updateLocator(value);
+			mLocator->updateLocator(value);
 		}
 
 		void SegmentationPlot::updateLocator(double value, bool flag)
 		{
-			static_cast<Locator*>(mPlot->GetRenderer("locator"))->updateLocator(value,flag);
+			mLocator->updateLocator(value,flag);
 		}
 
 		void SegmentationPlot::setMaxVScroll(int value)
@@ -113,8 +113,10 @@ namespace CLAM
 			mVScroll = new ScrollGroup(CLAM::VM::eVertical,this);
 
 			mPlot = new Plot2D(this);
-			mPlot->AddRenderer("locator", new Locator());
-			mPlot->AddRenderer("segmentation", new SegmentEditor());
+			mLocator =  new Locator();
+			mPlot->AddRenderer("locator", mLocator);
+			mSegmentation = new SegmentEditor();
+			mPlot->AddRenderer("segmentation", mSegmentation);
 			mPlot->BringToFront("locator");
 
 			mLayout = new QGridLayout(this);
@@ -147,16 +149,15 @@ namespace CLAM
 			connect(mPlot,SIGNAL(hScrollValue(int)),mHScroll,SLOT(updateScrollValue(int)));
 			connect(mPlot,SIGNAL(hScrollMaxValue(int)),this,SLOT(setMaxHScroll(int)));
 
-			Locator* locator=static_cast<Locator*>(mPlot->GetRenderer("locator"));
-			connect(locator,SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
-			SegmentEditor* editor=static_cast<SegmentEditor*>(mPlot->GetRenderer("segmentation"));
-			connect(editor,SIGNAL(segmentOnsetChanged(unsigned,double)),
+			connect(mLocator,SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
+
+			connect(mSegmentation,SIGNAL(segmentOnsetChanged(unsigned,double)),
 					this,SIGNAL(segmentOnsetChanged(unsigned,double)));
-			connect(editor,SIGNAL(segmentOffsetChanged(unsigned,double)),
+			connect(mSegmentation,SIGNAL(segmentOffsetChanged(unsigned,double)),
 					this,SIGNAL(segmentOffsetChanged(unsigned,double)));
-			connect(editor,SIGNAL(segmentInserted(unsigned)),this,SIGNAL(segmentInserted(unsigned)));
-			connect(editor,SIGNAL(segmentDeleted(unsigned)),this,SIGNAL(segmentDeleted(unsigned)));
-			connect(editor,SIGNAL(currentSegmentChanged(unsigned)),this,SIGNAL(currentSegmentChanged(unsigned)));
+			connect(mSegmentation,SIGNAL(segmentInserted(unsigned)),this,SIGNAL(segmentInserted(unsigned)));
+			connect(mSegmentation,SIGNAL(segmentDeleted(unsigned)),this,SIGNAL(segmentDeleted(unsigned)));
+			connect(mSegmentation,SIGNAL(currentSegmentChanged(unsigned)),this,SIGNAL(currentSegmentChanged(unsigned)));
 		}
 
 		void SegmentationPlot::AdjustYRulerWidth(double min, double max)
