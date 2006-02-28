@@ -124,9 +124,7 @@ mainSources = [
 
 programs = []
 for main in mainSources :
-	print main
 	executable = os.path.splitext(os.path.basename(main))[0]
-	print executable
 	programs += [ env.Program(target=executable, source = sources+[main]) ]
 
 env.Default(programs)
