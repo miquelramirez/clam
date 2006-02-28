@@ -4,6 +4,10 @@ import glob
 import SCons.Util
 from SCons.Util import CLVar
 
+CLAMSandbox ='/home/vokimon/CajitasDeArena'
+CLAMInstallDir = CLAMSandbox + '/CLAM-Install'
+
+
 def scanFiles(pattern, paths) :
 	files = []
 	for path in paths :
@@ -12,9 +16,6 @@ def scanFiles(pattern, paths) :
 
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
-
-CLAMSandbox ='/home/vokimon/CajitasDeArena'
-CLAMInstallDir = CLAMSandbox + '/CLAM-Install'
 
 
 env = Environment(tools=['default','qt'])
@@ -78,7 +79,6 @@ sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/player")
 sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/misc")
 sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/widget")
 sourcePaths += recursiveDirs("utils")
-sourcePaths += recursiveDirs("data")
 extraPaths = []
 extraPaths += [
 	CLAMInstallDir+'/include',
