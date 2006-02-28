@@ -214,6 +214,10 @@ namespace CLAM
 						 double(mBgColor.b)/255.0, 
 						 double(mBgColor.a)/255.0);
 			glClear(GL_COLOR_BUFFER_BIT);
+			glEnable(GL_BLEND);
+			glEnable (GL_LINE_SMOOTH);
+			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 			Draw();
 			RenderToolTip(); 
 			swapBuffers();
