@@ -86,11 +86,12 @@ if quickTestForScriptDebuging :
 sandboxes = [ # Module, Sandbox name, Tag, Update level
 	( 'CLAM', SANDBOX_NAME, MODULE_TAG, updateLevelForCLAM),
 #	( 'CLAM_DescriptorsGUI', 'clean-CLAM_DescriptorsGUI', '', updateLevelForExamples ),
-#	( 'CLAM_NetworkEditor', 'clean-CLAM_NetworkEditor', 'srcdeps-build-system-branch', updateLevelForExamples ),
 	( 'CLAM_NetworkEditor', 'clean-CLAM_NetworkEditor', '', updateLevelForExamples ),
 	( 'CLAM_SMSTools', 'clean-CLAM_SMSTools', '', updateLevelForExamples ),
+	( 'CLAM_SMSTools', 'clean-srcdeps-CLAM_SMSTools', 'srcdeps-build-system-branch', updateLevelForExamples ),
 	( 'CLAM_Voice2MIDI', 'clean-CLAM_Voice2MIDI', '', updateLevelForExamples ),
-	( 'CLAM_Annotator', 'clean-CLAM_Annotator', '', updateLevelForExamples ),
+#TODO 	( 'CLAM_Annotator', 'clean-CLAM_Annotator', '', updateLevelForExamples ),
+	( 'CLAM_Annotator', 'clean-qt3-CLAM_Annotator', 'v0_2-maintenance-branch', updateLevelForExamples ),
 #	( 'CLAM_Rappid', 'clean-CLAM_Rappid', '', updateLevelForExamples ),
 	( 'CLAM_SDIFDisplay', 'clean-CLAM_SDIFDisplay', '', updateLevelForExamples ),
 #	( 'CLAM_SpectralDelay', 'clean-CLAM_SpectralDelay', '', updateLevelForExamples ),
@@ -107,30 +108,36 @@ def baseDirOf(keyname) :
 
 
 
+oldsmstoolspath = CLAM_SANDBOXES + 'clean-srcdeps-CLAM_SMSTools'
+
 automaticTests = [
 	( 'UnitTests', unitTestsPath ),
 	( 'FunctionalTests', functionalTestsPath  ),
-#TODO	( 'SMSToolsTests', baseDirOf('SMSTools')+'/build/FunctionalTests/'  )
+	( 'SMSToolsTests', oldsmstoolspath +'/build/FunctionalTests/'  )
 ]
 
 sconsApplications = [
+	( 'NetworkEditor', baseDirOf('NetworkEditor')+'/scons/' ),
+	( 'Voice2MIDI', baseDirOf('CLAM_Voice2MIDI')+'/scons/' ),
+	( 'QtSMSTools', baseDirOf('SMSTools')+'/scons/QtSMSTools/' ),
+	( 'Annotator', baseDirOf('Annotator')+'/scons/' )
+]
+
 #	( 'SpectralDelay', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/'),
 #	( 'SpectralDelay-Offline', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/Offline/'),
 #	( 'SpectralDelay-MultiBandProxyTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/MultiBandProxyTest/'),
 #	( 'SpectralDelay-DelayPoolTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/DelayPoolTest/'),
-	( 'NetworkEditor', baseDirOf('NetworkEditor')+'/scons/' ),
-	( 'Voice2MIDI', baseDirOf('CLAM_Voice2MIDI')+'/scons/' ),
-	( 'SMSTools', baseDirOf('SMSTools')+'/scons/QtSMSTools/' ),
-	( 'Annotator', baseDirOf('Annotator')+'/scons/' ),
-#	( 'SMSBatch', baseDirOf('SMSTools')+'/build/Batch/'  ),
-#	( 'SMSConsole', baseDirOf('SMSTools')+'/build/Console/'  ),
 #	( 'Rappid', baseDirOf('Rappid')+'/build/' ),
 #	( 'DescriptorsGUI', baseDirOf('DescriptorsGUI')+'/build/' ),
 #	( 'Salto', baseDirOf('Salto')+'/build/' ),
-]
 
-supervisedTests = [
+srcdepsApplications = [
+	( 'SMSTools', oldsmstoolspath+'/build/Tools/' ),
 	( 'SDIFDisplay', baseDirOf('SDIFDisplay')+'/build/'  ),
+	( 'SMSBatch', oldsmstoolspath+'/build/Batch/'  ),
+	( 'SMSConsole', oldsmstoolspath+'/build/Console/'  ),
+]
+supervisedTests = [
 	('SpectralPeaksPresentationTest', spvTestsPath+'SpectralPeaksPresentation/'  ), 
 	('SpectrumPresentationTest', spvTestsPath+'SpectrumPresentation/'  ),
 	('AudioPresentationTest', spvTestsPath+'AudioPresentation/'  ),
@@ -212,6 +219,7 @@ testsToRun = []
 #    this makes debugging easier
 testsToRun[-1:-1] = automaticTests 
 testsToRun[-1:-1] = sconsApplications 
+testsToRun[-1:-1] = srcdepsApplications
 testsToRun[-1:-1] = simpleExamples
 testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
@@ -410,9 +418,6 @@ def compileAndRun(name, path, useScons) :
 			details += detailsFormat % (name, output)
 			continue 
 			
-		# TODO fix this kludge:
-		if 'SMSTools' in name : name = 'QtSMSTools'
-
 		# execution phase
 		execcmd = './'+name
 		assert os.access(execcmd, os.X_OK), 'file should exist: ' + execcmd
