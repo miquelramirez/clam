@@ -89,7 +89,7 @@ void Annotator::computeSongDescriptors()
 	if (!mProjectOverview->selectedItem()) return;
 	QString filename = mProjectOverview->selectedItem()->text(0);
 	filename  = projectToAbsolutePath(filename.toStdString()).c_str();
-	if (!std::ifstream(filename.utf8()))
+	if (!std::ifstream(filename.toUtf8()))
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
 				tr("<p><b>Unable to open selected file '%1'</b></p>.").arg(filename));
@@ -357,7 +357,7 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 		it++)
 	{
 		mStatusBar << "Adding Segmentation: " << it->c_str() << mStatusBar;
-		mSegmentationSelection->insertItem(it->c_str());
+		mSegmentationSelection->addItem(it->c_str());
 	}
 }
 
@@ -840,7 +840,7 @@ void Annotator::refreshEnvelopes()
 
 	mCurrentBPFIndex = -1;
 
-	mFrameLevelTabBar->setCurrentTab(-1);
+	mFrameLevelTabBar->setCurrentIndex(-1);
 	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
 
 	std::list<std::string>::const_iterator divisionName;
