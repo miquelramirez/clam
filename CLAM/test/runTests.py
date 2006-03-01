@@ -670,8 +670,15 @@ def runTests() :
 #  If called from command-line, parse arguments and take actions
 #
 if __name__ == '__main__':
+	
+	constantly = (len(sys.argv)==1 or sys.argv[1] == "--constantly")
+	n = 1
 	try :
+		runTests()
+		while constantly :
 			runTests()
+			print "\n*\n*\n*\nITERATION %d\n*\n*\n*\n" % n
+	
 	except KeyboardInterrupt :
 		print 'interrupted by the user'
 	except:
