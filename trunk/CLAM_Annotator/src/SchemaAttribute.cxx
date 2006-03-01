@@ -2,8 +2,6 @@
 #include <algorithm>
 #include <CLAM/Pool.hxx>
 #include <CLAM/DescriptionScheme.hxx>
-#include <CLAM/Text.hxx>
-#include <CLAM/IndexArray.hxx>
 
 namespace CLAM_Annotator{
 

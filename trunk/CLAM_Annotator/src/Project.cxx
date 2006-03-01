@@ -1,7 +1,6 @@
 
 #include "Project.hxx"
 #include <CLAM/Text.hxx>
-#include <CLAM/IndexArray.hxx>
 #include <CLAM/XMLStorage.hxx>
 
 namespace CLAM_Annotator
