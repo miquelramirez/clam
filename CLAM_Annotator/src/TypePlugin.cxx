@@ -2,7 +2,7 @@
 #include "TypePlugin.hxx"
 #include <CLAM/Pool.hxx>
 #include "SchemaAttribute.hxx"
-#include <CLAM/IndexArray.hxx>
+#include <CLAM/Array.hxx>
 #include <algorithm>
 #include "Enumerated.hxx"
 #include "FrameDivision.hxx"
@@ -186,13 +186,13 @@ public:
 
 	void AddTo(CLAM::DescriptionScheme & scheme)
 	{
-		scheme.AddAttribute<CLAM::IndexArray>(mSchema.GetScope(),mSchema.GetName());
+		scheme.AddAttribute<CLAM::DataArray>(mSchema.GetScope(),mSchema.GetName());
 	}
 
 	bool ValidateData(const CLAM::DescriptionDataPool & dataPool, std::ostream & err)
 	{
-		const CLAM::IndexArray * values =
-			dataPool.GetReadPool<CLAM::IndexArray>(
+		const CLAM::DataArray * values =
+			dataPool.GetReadPool<CLAM::DataArray>(
 					mSchema.GetScope(),
 					mSchema.GetName());
 		bool ok = true;
@@ -216,7 +216,7 @@ public:
 		return ok;
 	}
 private:
-	bool CheckEvenPositions(const CLAM::IndexArray& positions, unsigned i, std::ostream & err)
+	bool CheckEvenPositions(const CLAM::DataArray& positions, unsigned i, std::ostream & err)
 	{
 		if (!(positions.Size() & 1)) return true;
 
@@ -225,7 +225,7 @@ private:
 			"but segmentation " << i << " has an odd number of positions." << std::endl;
 		return false;
 	}
-	bool CheckOrderForOnsets(const CLAM::IndexArray& positions, unsigned i, std::ostream & err)
+	bool CheckOrderForOnsets(const CLAM::DataArray& positions, unsigned i, std::ostream & err)
 	{
 		bool ok=true;
 		for (unsigned j=1; j<positions.Size(); j++)
@@ -238,7 +238,7 @@ private:
 		}
 		return ok;
 	}
-	bool CheckOrderForOnsetsAndOffsets(const CLAM::IndexArray& positions, unsigned i, bool mayOverlap, std::ostream & err)
+	bool CheckOrderForOnsetsAndOffsets(const CLAM::DataArray& positions, unsigned i, bool mayOverlap, std::ostream & err)
 	{
 		bool ok=true;
 		for (unsigned j=1; j<positions.Size(); j+=1)
