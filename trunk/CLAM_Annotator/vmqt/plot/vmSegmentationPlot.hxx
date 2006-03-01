@@ -15,6 +15,8 @@ namespace CLAM
 		class Ruler;
 		class Plot2D;
 		class ScrollGroup;
+		class SegmentEditor;
+		class Locator;
 
 		class SegmentationPlot : public WPlot
 		{

@@ -27,34 +27,36 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = GetZoomSteps(audio.GetBuffer().Size());
 				SetZoomSteps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridSteps(audio.GetDuration()/1000.0,1.0);
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("audio"))->SetData(audio.GetBuffer());
+			mGridRenderer->SetGridSteps(audio.GetDuration()/1000.0,1.0);
+			mAudioRenderer->SetData(audio.GetBuffer());
 		}
 
 		void AudioPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridColor(Color(0,0,255));
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("audio"))->SetDataColor(Color(0,0,255));
+			mGridRenderer->SetGridColor(Color(0,0,255));
+			mAudioRenderer->SetDataColor(Color(0,0,255));
 		}
 
 		void AudioPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridColor(Color(0,255,0));
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("audio"))->SetDataColor(Color(0,255,0));
+			mGridRenderer->SetGridColor(Color(0,255,0));
+			mAudioRenderer->SetDataColor(Color(0,255,0));
 		}
 
 		void AudioPlot::InitAudioPlot()
 		{
-			mPlot->AddRenderer("grid", new Grid());
-			mPlot->AddRenderer("audio", new DataArrayRenderer());
+			mGridRenderer = new Grid();
+			mAudioRenderer = new DataArrayRenderer();
+			mPlot->AddRenderer("grid", mGridRenderer);
+			mPlot->AddRenderer("audio", mAudioRenderer);
 			mPlot->SendToBack("audio");
 			mPlot->SendToBack("grid");
 			mPlot->BringToFront("locator");
 			mXRuler->SetStep(0.01);
 			mYRuler->SetStep(0.05);
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->ShowGrid(true);
+			mGridRenderer->ShowGrid(true);
 			backgroundWhite();
 		}
 
