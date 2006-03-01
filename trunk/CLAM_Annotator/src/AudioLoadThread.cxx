@@ -17,13 +17,15 @@ AudioLoadThread::AudioLoadThread(CLAM::Audio & audio, const std::string audioFil
 {
 	std::cout << "AudioLoader " << mNumber << " created..." << std::endl;
 	file.OpenExisting(audioFileName);
-	int nChannels = file.GetHeader().GetChannels();
+	mAudio.SetSize(0);
+	if (!file.IsReadable()) return; // Exits with audio size = 0;
+
 	CLAM::TData samplingRate = file.GetHeader().GetSampleRate();
 	nSamples = unsigned( file.GetHeader().GetLength()/1000.0*samplingRate );
+	int nChannels = file.GetHeader().GetChannels();
 	audioFrameVector.resize(nChannels);
 	for (int i=0;i<nChannels;i++)
 		audioFrameVector[i].SetSize(readSize);
-	mAudio.SetSize(0);
 	mAudio.SetSize(nSamples);
 	mAudio.SetSampleRate(samplingRate);
 }

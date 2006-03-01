@@ -161,7 +161,7 @@ private:
 	void setMenuAudioItemsEnabled(bool);
 
 	// Functions to control de audio loader
-	void loaderCreate(CLAM::Audio & audio, const char * filename);
+	bool loaderCreate(CLAM::Audio & audio, const std::string & filename);
 		///< Creates a loader for the audio after clearing any existing one.
 	void loaderLaunch(); ///< Starts the execution of the created loader
 	bool loaderFinished(); ///< Clears the loader if it is finished returns if it was or there wasn't any.
