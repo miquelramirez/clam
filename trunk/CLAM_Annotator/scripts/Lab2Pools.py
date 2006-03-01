@@ -15,7 +15,7 @@ def Lab2Plot(labfile, output, segmentationAttribute, filter, childScope, labelAt
 			print >> sys.stderr, "Found a line with %s tokens, 3 expected"%len(segment)
 			continue
 		segment[2]=segment[2].rstrip().lstrip()
-		if not labelFilter.match(segment[2]): continue
+		if labelFilter.match(segment[2]): continue
 		tokens.append(segment)
 
 	sampleRate=44100
@@ -84,6 +84,8 @@ if __name__ == "__main__":
 
 	if labFileList == '-' : 
 		labFileList = sys.stdin
+	else :
+		labFileList = file(labFileList)
 
 	labelValues = [];
 	for labfilename in labFileList :
