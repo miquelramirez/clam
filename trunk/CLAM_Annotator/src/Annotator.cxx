@@ -802,7 +802,6 @@ void Annotator::currentSongChanged()
 	mpAudioPlot->hide();
 	mBPFEditor->hide();
 	setMenuAudioItemsEnabled(false);
-	QMessageBox::critical(this, tr("Error opening audio file"), filename.c_str());
 	const std::string absolutePath = projectToAbsolutePath(filename).c_str();
 	if (!loaderCreate(mCurrentAudio, absolutePath))
 	{
