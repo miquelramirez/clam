@@ -69,7 +69,7 @@ spvTestsPath = BUILDPATH + 'Tests/SupervisedTests/'
 nonPortedTestsPath = BUILDPATH + 'Tests/NonPortedTests/'
 simpleExamplesPath = BUILDPATH + 'Examples/Simple/'
 
-clam_prefix = '/home/parumi/clam-sandboxes/locallibs-from-nightlytests'
+clam_prefix = '/home/parumi/clam-sandboxes/tlocal'
 
 # update level: 0-Keep, 1-Update, 2-CleanCheckout
 # when the sandbox is not present always clean checkout
@@ -456,7 +456,7 @@ mailTemplate = '''
 (This message has been automatically generated)
 Stability status: 
 
-NEW! Using g++ 4.0 with Ubuntu 05.10 (Breezy)
+Sent from the "tests machine" (Ubuntu breezy, Linux version 2.6.12-10-686 )
 
 %s
 
