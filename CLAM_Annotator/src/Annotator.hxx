@@ -9,9 +9,8 @@
 #include <string>
 #include <utility>
 #include <deque>
-#include <qstatusbar.h>
-//Added by qt3to4:
-#include <QCloseEvent>
+#include <QtGui/QStatusBar>
+#include <QtGui/QCloseEvent>
 
 //xamat
 
@@ -64,7 +63,7 @@ class StatusBarDumper
 			return *this;
 			(*os) << std::flush;
 			std::cout << std::endl;
-			mStatusBar->message(QString(os->str().c_str()), 2000);
+			mStatusBar->showMessage(QString(os->str().c_str()), 2000);
 			delete os;
 			os = new std::ostringstream;
 			return *this;

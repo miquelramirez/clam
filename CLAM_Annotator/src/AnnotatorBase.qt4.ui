@@ -184,7 +184,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
               <number>6</number>
              </property>
              <item>
-              <widget class="Q3Frame" name="mAudioPlotContainer" >
+              <widget class="QFrame" name="mAudioPlotContainer" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>3</hsizetype>
@@ -660,13 +660,6 @@ to the proper cell.&lt;/p></string>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends></extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
   <customwidget>
    <class>Q3ListView</class>
    <extends></extends>

@@ -4,18 +4,18 @@
 #include "Project.hxx"
 #include "FrameDivision.hxx"
 
-#include <qaction.h>
-#include <qthread.h>
+#include <QtGui/QAction>
+#include <QtCore/QThread>
 #include <q3process.h>
 #include <qmessagebox.h>
 #include <qtabwidget.h>
 #include <q3filedialog.h>
-#include <qsettings.h>
-#include <qsplitter.h>
-#include <qtabbar.h>
-#include <q3textbrowser.h>
+#include <QtCore/QSettings>
+#include <QtGui/QSplitter>
+#include <QtGui/QTabBar>
+#include <QtGui/QTextBrowser>
 //Added by qt3to4:
-#include <QCloseEvent>
+#include <QtGui/QCloseEvent>
 #include <QtGui/QVBoxLayout>
 
 #include <algorithm>
@@ -142,7 +142,7 @@ void Annotator::computeSongDescriptors()
 
 Annotator::Annotator(const std::string & nameProject = "")
 	: AnnotatorBase( )
-	, QMainWindow( 0, "annotator", Qt::WDestructiveClose)
+	, QMainWindow( 0, Qt::WDestructiveClose)
 	, mCurrentIndex(0)
 	, mpDescriptorPool(0)
 	, mFrameDescriptorsNeedUpdate(false)
@@ -169,6 +169,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	initInterface();
 	setMenuAudioItemsEnabled(false);
 	loadSettings();
+	mAudioRefreshTimer->setSingleShot(true);
 	connect (mAudioRefreshTimer, SIGNAL(timeout()), this, SLOT(refreshAudioData()) );
 	if (nameProject!="") mProjectFileName = nameProject;
 	if (mProjectFileName=="") return;
@@ -243,7 +244,7 @@ void Annotator::initInterface()
 	mMainTabWidget->insertTab(0, mProjectDocumentation, "Project Documentation");
 	mMainTabWidget->setCurrentIndex(0);
 
-	Q3VBoxLayout * frameLevelContainerLayout = new Q3VBoxLayout(mFrameLevelContainer);
+	QVBoxLayout * frameLevelContainerLayout = new QVBoxLayout(mFrameLevelContainer);
 	mFrameLevelTabBar = new QTabBar(mFrameLevelContainer);
 	frameLevelContainerLayout->addWidget(mFrameLevelTabBar);
 	mBPFEditor = new BPFPlot(
@@ -820,7 +821,7 @@ void Annotator::currentSongChanged()
 	mStatusBar << "Done" << mStatusBar;
 	loaderLaunch();
 	setCursor(Qt::arrowCursor);
-	mAudioRefreshTimer->start(4000, true);
+	mAudioRefreshTimer->start(4000);
 }
 
 void Annotator::refreshEnvelopes()
@@ -879,7 +880,7 @@ void Annotator::refreshAudioData()
 	mpAudioPlot->SetData(mCurrentAudio,true);
 
 	if (!finished)
-		mAudioRefreshTimer->start(2000, true);
+		mAudioRefreshTimer->start(2000);
 }
 
 void Annotator::drawAudio(const char * filename)
