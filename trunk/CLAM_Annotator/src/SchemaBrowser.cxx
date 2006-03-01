@@ -9,13 +9,19 @@
 #include <q3frame.h>
 #include <qspinbox.h>
 #include <qlabel.h>
-#include <q3textbrowser.h>
+#include <qtextbrowser.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <q3whatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
 #include <qlineedit.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
+#include <Q3GridLayout>
+#include <Q3Frame>
 
 #include <q3urloperator.h>
 //Added by qt3to4:
@@ -186,7 +192,7 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, const char* name, Qt::WFlags fl )
     childEdit = new QLineEdit( attributeProperties, "childEdit");
     attributePropertiesLayout->addWidget( childEdit, 2, 1 );
 
-    attributeDocumentation = new Q3TextBrowser( splitter2, "attributeDocumentation" );
+    attributeDocumentation = new QTextBrowser( splitter2, "attributeDocumentation" );
     attributeDocumentation->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)1, (QSizePolicy::SizeType)4, 0, 0, attributeDocumentation->sizePolicy().hasHeightForWidth() ) );
 
     schemaBrowserLayout->addWidget( splitter1 );
