@@ -7,7 +7,7 @@
 
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/AudioFile.hxx>
-#include <CLAM/IndexArray.hxx>
+#include <CLAM/Array.hxx>
 
 //For Descriptor Computation
 #include <CLAM/Segment.hxx>
@@ -26,17 +26,17 @@
 void BuildAndDumpTestSchema(const std::string & schemaLocation);
 void PopulatePool(const std::string& song, CLAM::DescriptionDataPool& pool);
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size);
-unsigned GenerateRandomSegmentationMarks(CLAM::IndexArray & segmentation,int nSamples, int minDuration, int maxDuration);
-unsigned GenerateNonOverlappingSegments(CLAM::IndexArray & segmentation, int nSamples, int maxGap, int maxDuration);
-unsigned GenerateOverlappingSegments(CLAM::IndexArray & segmentation, int nSamples, int maxGap, int maxDuration);
+unsigned GenerateRandomSegmentationMarks(CLAM::DataArray & segmentation, CLAM::TData songDurationSeconds, CLAM::TData minSegmentDuration, CLAM::TData maxSegmentDuration);
+unsigned GenerateNonOverlappingSegments(CLAM::DataArray & segmentation, CLAM::TData songDurationInSeconds, CLAM::TData maxGap, CLAM::TData maxSegmentDuration);
+unsigned GenerateOverlappingSegments(CLAM::DataArray & segmentation, CLAM::TData songDurationInSeconds, CLAM::TData maxGap, CLAM::TData maxSegmentDuration);
 void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text & artist, CLAM::Text & title);
 void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s);
 void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment, 
 		    CLAM::SegmentDescriptors& segmentD);
 void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDataPool& pool);
 void ComputeSegmentationMarks(CLAM::Segment& segment,CLAM::SegmentDescriptors& segmentD);
-void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray & marks);
-int GetnSamples(const std::string& fileName);
+void Segment2Marks(const CLAM::Segment& segment, CLAM::DataArray & marks);
+CLAM::TData GetDurationInSeconds(const std::string& fileName);
 
 int main(int argc, char ** argv)
 {
@@ -281,8 +281,8 @@ void PopulatePool(const std::string & song,
 	pool.GetWritePool<int>("Song","BPM")[0] = 100;
 
 	// Onset Segmentation
-	CLAM::IndexArray & segmentation = 
-		pool.GetWritePool<CLAM::IndexArray>("Song","Onsets")[0];
+	CLAM::DataArray & segmentation = 
+		pool.GetWritePool<CLAM::DataArray>("Song","Onsets")[0];
 	ComputeSegmentationMarks(segment, segmentD);
 	Segment2Marks(segment,segmentation);
 	
@@ -297,14 +297,14 @@ void PopulatePool(const std::string & song,
 	}
 
 	// Random Segmentation
-	CLAM::IndexArray* randomSegmentation = 
-		pool.GetWritePool<CLAM::IndexArray>("Song","RandomSegments");
-	GenerateRandomSegmentationMarks(randomSegmentation[0], GetnSamples(song), 10000,40000);
+	CLAM::DataArray* randomSegmentation = 
+		pool.GetWritePool<CLAM::DataArray>("Song","RandomSegments");
+	GenerateRandomSegmentationMarks(randomSegmentation[0], GetDurationInSeconds(song), .3, 4.);
 
 	// Note Segmentation
-	CLAM::IndexArray* noteSegmentation = 
-		pool.GetWritePool<CLAM::IndexArray>("Song","Notes");
-	unsigned nNotes = GenerateOverlappingSegments(noteSegmentation[0], GetnSamples(song), 100000, 800000);
+	CLAM::DataArray* noteSegmentation = 
+		pool.GetWritePool<CLAM::DataArray>("Song","Notes");
+	unsigned nNotes = GenerateOverlappingSegments(noteSegmentation[0], GetDurationInSeconds(song), 8., 8.);
 	pool.SetNumberOfContexts("Note",nNotes);
 	CLAM_Annotator::Enumerated * notePitch = pool.GetWritePool<CLAM_Annotator::Enumerated>("Note","Pitch");
 	int * noteOctave = pool.GetWritePool<int>("Note","Octave");
@@ -314,9 +314,9 @@ void PopulatePool(const std::string & song,
 		notePitch[i] = pitchValues[int(randomNumber(0,11.99))];
 	}
 	// Chord Segmentation
-	CLAM::IndexArray* chordSegmentation = 
-		pool.GetWritePool<CLAM::IndexArray>("Song","Chords");
-	unsigned nChords = GenerateRandomSegmentationMarks(chordSegmentation[0], GetnSamples(song), 1000, 500000 )+1;
+	CLAM::DataArray* chordSegmentation = 
+		pool.GetWritePool<CLAM::DataArray>("Song","Chords");
+	unsigned nChords = GenerateRandomSegmentationMarks(chordSegmentation[0], GetDurationInSeconds(song), .5, 8. )+1;
 	pool.SetNumberOfContexts("Chord",nChords);
 	CLAM_Annotator::Enumerated * chordRoot = pool.GetWritePool<CLAM_Annotator::Enumerated>("Chord","Root");
 	CLAM_Annotator::Enumerated * chordMode = pool.GetWritePool<CLAM_Annotator::Enumerated>("Chord","Mode");
@@ -326,9 +326,9 @@ void PopulatePool(const std::string & song,
 		chordMode[i] = chordModeValues[int(randomNumber(0,3.999))];
 	}
 	// Structural Segmentation
-	CLAM::IndexArray* structuralSegmentation = 
-		pool.GetWritePool<CLAM::IndexArray>("Song","Structure");
-	unsigned nParts = GenerateNonOverlappingSegments(structuralSegmentation[0], GetnSamples(song), 0, 1000000);
+	CLAM::DataArray* structuralSegmentation = 
+		pool.GetWritePool<CLAM::DataArray>("Song","Structure");
+	unsigned nParts = GenerateNonOverlappingSegments(structuralSegmentation[0], GetDurationInSeconds(song), 4., 30.);
 	pool.SetNumberOfContexts("StructuralPart",nParts);
 	CLAM_Annotator::Enumerated * partDescription =
 		pool.GetWritePool<CLAM_Annotator::Enumerated>("StructuralPart","Description");
@@ -367,43 +367,41 @@ void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
 	}
 }
 
-int GetnSamples(const std::string& fileName)
+CLAM::TData GetDurationInSeconds(const std::string& fileName)
 {
 	CLAM::AudioFile file;
 	file.OpenExisting(fileName);
-	CLAM::TData duration = file.GetHeader().GetLength();
-	CLAM::TData sampleRate = file.GetHeader().GetSampleRate();
-	return (int)(duration*sampleRate/1000.);
+	return file.GetHeader().GetLength()/1000;
 }
 
-unsigned GenerateRandomSegmentationMarks(CLAM::IndexArray & segmentation,int nSamples, int minDuration, int maxDuration)
+unsigned GenerateRandomSegmentationMarks(CLAM::DataArray & segmentation,
+		CLAM::TData songDurationInSeconds, CLAM::TData minSegmentDuration, CLAM::TData maxSegmentDuration)
 {
 	unsigned nSegments = 0; 
-	int index = 0;
-	while(index<nSamples)
+	CLAM::TData positionInSeconds = 0;
+	while(positionInSeconds<songDurationInSeconds)
 	{
-		//random number between 10 and 30 frames
-		int randomIncr = randomNumber(minDuration,maxDuration);
-		index += randomIncr;
-		if (index>=nSamples) break;
-		segmentation.AddElem(index);
+		CLAM::TData randomIncr = randomNumber(minSegmentDuration,maxSegmentDuration);
+		positionInSeconds += randomIncr;
+		if (positionInSeconds>=songDurationInSeconds) break;
+		segmentation.AddElem(positionInSeconds);
 		nSegments++;
 	}
 	return nSegments;
 
 }
 
-unsigned GenerateNonOverlappingSegments(CLAM::IndexArray & segmentation,int nSamples,
-				     int maxGap, int maxSize)
+unsigned GenerateNonOverlappingSegments(CLAM::DataArray & segmentation,
+		CLAM::TData songDurationInSeconds, CLAM::TData maxGap, CLAM::TData maxSegmentDuration)
 {
 	unsigned nSegments = 0; 
 	unsigned lastOffset = 0;
-	while(lastOffset<nSamples)
+	while(lastOffset<songDurationInSeconds)
 	{
 		//random number between 10 and 30 frames
-		int randomOnset = randomNumber(lastOffset,lastOffset+maxGap);
-		int randomOffset = randomNumber(randomOnset,randomOnset+maxSize);
-		if (randomOffset>nSamples) break;
+		CLAM::TData randomOnset = randomNumber(lastOffset,lastOffset+maxGap);
+		CLAM::TData randomOffset = randomNumber(randomOnset,randomOnset+maxSegmentDuration);
+		if (randomOffset>songDurationInSeconds) break;
 		segmentation.AddElem(randomOnset);
 		segmentation.AddElem(randomOffset);
 		lastOffset = randomOffset;
@@ -412,18 +410,18 @@ unsigned GenerateNonOverlappingSegments(CLAM::IndexArray & segmentation,int nSam
 	return nSegments;
 }
 
-unsigned GenerateOverlappingSegments(CLAM::IndexArray & segmentation,int nSamples,
-				     int maxGap, int maxSize)
+unsigned GenerateOverlappingSegments(CLAM::DataArray & segmentation,
+		CLAM::TData songDurationInSeconds, CLAM::TData maxGap, CLAM::TData maxSize)
 {
-	return GenerateNonOverlappingSegments(segmentation, nSamples, maxGap, maxSize);
+	return GenerateNonOverlappingSegments(segmentation, songDurationInSeconds, maxGap, maxSize);
 	unsigned nSegments = 0; 
-	unsigned lastOnset = 0;
-	while(lastOnset<nSamples)
+	CLAM::TData lastOnset = 0;
+	while(lastOnset<songDurationInSeconds)
 	{
 		//random number between 10 and 30 frames
-		int randomOnset = randomNumber(lastOnset,lastOnset+maxGap);
-		int randomOffset = randomNumber(randomOnset,randomOnset+maxSize);
-		if (randomOffset>nSamples) break;
+		CLAM::TData randomOnset = randomNumber(lastOnset,lastOnset+maxGap);
+		CLAM::TData randomOffset = randomNumber(randomOnset,randomOnset+maxSize);
+		if (randomOffset>songDurationInSeconds) break;
 		segmentation.AddElem(randomOnset);
 		segmentation.AddElem(randomOffset);
 		lastOnset = randomOnset;
@@ -583,7 +581,7 @@ void ComputeSegmentationMarks(CLAM::Segment& segment,CLAM::SegmentDescriptors& s
 	mySegmentator.Do(segment,segmentD);
 }
 
-void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray & marks)
+void Segment2Marks(const CLAM::Segment& segment, CLAM::DataArray & marks)
 {
 	CLAM::List<CLAM::Segment>& children = segment.GetChildren();
 	children.DoFirst();
@@ -595,7 +593,7 @@ void Segment2Marks(const CLAM::Segment& segment, CLAM::IndexArray & marks)
 		int currentTime = children[i].GetEndTime();
 		if(currentTime>0&&currentTime<segmentDuration)
 		{
-			marks.AddElem(children[i].GetEndTime()/1000.*samplingRate);
+			marks.AddElem(children[i].GetEndTime()/1000.); // insert seconds
 		}
 	}
 
