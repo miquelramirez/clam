@@ -8,6 +8,9 @@ namespace CLAM
 {
 	namespace VM
 	{
+		class Grid;
+		class DataArrayRenderer;
+
 		class AudioPlot : public SegmentationPlot
 		{
 		public:
@@ -27,6 +30,9 @@ namespace CLAM
 			void SetXRange(double xmin, double xmax, ERulerScale scale=CLAM::VM::eLinearScale);
 			void SetYRange(double ymin, double ymax, ERulerScale scale=CLAM::VM::eLinearScale);
 			void SetZoomSteps(int hsteps, int vsteps);
+		private:
+			Grid * mGridRenderer;
+			DataArrayRenderer * mAudioRenderer;
 		};
 	}
 }
