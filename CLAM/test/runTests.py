@@ -21,7 +21,6 @@ CleanCheckout = 2
 # when the sandbox is not present always clean checkout
 updateLevelForCLAM = CleanCheckout
 updateLevelForExamples = CleanCheckout
-updateLevelForExamples = Keep
 updateLevelForTestData = Keep
 
 # When false keeps already compiled objects
@@ -114,7 +113,7 @@ automaticTests = [
 #TODO	( 'SMSToolsTests', baseDirOf('SMSTools')+'/build/FunctionalTests/'  )
 ]
 
-externalApplications = [
+sconsApplications = [
 #	( 'SpectralDelay', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/'),
 #	( 'SpectralDelay-Offline', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/Offline/'),
 #	( 'SpectralDelay-MultiBandProxyTest', CLAM_SANDBOXES+'CLAM_SpectralDelay/build/MultiBandProxyTest/'),
@@ -125,13 +124,13 @@ externalApplications = [
 	( 'Annotator', baseDirOf('Annotator')+'/scons/' ),
 #	( 'SMSBatch', baseDirOf('SMSTools')+'/build/Batch/'  ),
 #	( 'SMSConsole', baseDirOf('SMSTools')+'/build/Console/'  ),
-	( 'SDIFDisplay', baseDirOf('SDIFDisplay')+'/build/'  )
 #	( 'Rappid', baseDirOf('Rappid')+'/build/' ),
 #	( 'DescriptorsGUI', baseDirOf('DescriptorsGUI')+'/build/' ),
 #	( 'Salto', baseDirOf('Salto')+'/build/' ),
 ]
 
 supervisedTests = [
+	( 'SDIFDisplay', baseDirOf('SDIFDisplay')+'/build/'  ),
 	('SpectralPeaksPresentationTest', spvTestsPath+'SpectralPeaksPresentation/'  ), 
 	('SpectrumPresentationTest', spvTestsPath+'SpectrumPresentation/'  ),
 	('AudioPresentationTest', spvTestsPath+'AudioPresentation/'  ),
@@ -212,10 +211,11 @@ testsToRun = []
 # insert sub-lists to the main list: 
 #    this makes debugging easier
 testsToRun[-1:-1] = automaticTests 
-testsToRun[-1:-1] = externalApplications 
+testsToRun[-1:-1] = sconsApplications 
 testsToRun[-1:-1] = simpleExamples
 testsToRun[-1:-1] = supervisedTests
 testsToRun[-1:-1] = notPortedTests
+
 
 if quickTestForScriptDebuging  : 
 	testsToRun = [ ( 'NetworkEditor', baseDirOf('NetworkEditor')+'/scons/' ), ( 'Voice2MIDI', baseDirOf('CLAM_Voice2MIDI')+'/scons/' ), 	( 'SMSTools', baseDirOf('SMSTools')+'/scons/QtSMSTools/' ), ( 'Annotator', baseDirOf('Annotator')+'/scons/' ) ]
@@ -545,6 +545,7 @@ def deployClamBuildSystem() :
 	os.chdir(BUILDPATH+'../scons/libs/')
 	executeMandatory('scons configure prefix=%s release=yes' % clam_prefix)
 	executeMandatory('scons install')
+	executeMandatory('scons install') #TODO SUPER UGLY HACK. bug with scons and libclamqt
 
 def buildSrcdeps() :
 	if quickTestForScriptDebuging :
