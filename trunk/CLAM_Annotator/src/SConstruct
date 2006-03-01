@@ -4,6 +4,10 @@ import glob
 import SCons.Util
 from SCons.Util import CLVar
 
+CLAMSandbox ='/home/vokimon/CajitasDeArena'
+CLAMInstallDir = CLAMSandbox + '/CLAM-Install'
+
+
 def scanFiles(pattern, paths) :
 	files = []
 	for path in paths :
@@ -12,9 +16,6 @@ def scanFiles(pattern, paths) :
 
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
-
-CLAMSandbox ='/home/vokimon/CajitasDeArena'
-CLAMInstallDir = CLAMSandbox + '/CLAM-Install'
 
 
 env = Environment(tools=['default','qt'])
@@ -26,6 +27,7 @@ env['QT_MOCHPREFIX'] = 'generated/moc_'
 env['QT_UISUFFIX'] = '.ui'
 env['QT_UICDECLPREFIX'] = 'generated/ui_'
 env['QT_UICDECLSUFFIX'] = '.hxx'
+env['QT_LIB'] = '' # KLUDGE to avoid linking qt3 library
 
 env.Replace(QT_UIC='echo ***** Using old UIC!!!!!!')
 
@@ -80,24 +82,20 @@ sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/widget")
 extraPaths = []
 extraPaths += [
 	CLAMInstallDir+'/include',
-]
-extraPaths += [
-	CLAMInstallDir+'/include/CLAM',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 ]
 includePaths = sourcePaths + extraPaths
 
 qrcfiles = scanFiles("*.qrc", sourcePaths)
 uifiles = scanFiles("*.qt4.ui", sourcePaths)
-uiheaders = env.Uic4(source=uifiles)
+if len(uifiles): uiheaders = env.Uic4(source=uifiles)
 sources = scanFiles('*.cxx', sourcePaths)
 sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
-sources += env.Qrc(source=qrcfiles)
+if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
 sources = dict.fromkeys(sources).keys()
 sources.remove('./main.cxx')
 sources.remove('./Test.cxx')
-
-env['QT_LIB'] = '' # KLUDGE
 
 env.Append(CPPPATH=includePaths)
 env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
@@ -105,12 +103,16 @@ env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'
 		CLAMInstallDir,
 		' '.join(pkgconfigLibraries)))
 env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
-#env.Append(CPPFLAGS=['-DQT3_SUPPORT_WARNINGS'])
+env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
+env.Append(CPPFLAGS=['-DQT3_SUPPORT_WARNINGS'])
+mainSources = {
+	'Annotator-qt4' : './main.cxx',
+	'ClamExtractorExample' : './Test.cxx',
+}
 
-programs = [
-	env.Program(target='Annotator-qt4', source = sources+['main.cxx']),
-#	env.Program(target='ClamExtractorExample', source = sources+['Test.cxx']),
-	]
+programs = []
+for main in mainSources.items() :
+	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
 
 env.Default(programs)
 
