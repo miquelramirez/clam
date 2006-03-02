@@ -27,12 +27,12 @@ void SliderWithIntValue::setValue(int value)
 
 void SliderWithIntValue::setMaxValue(int value)
 {
-    mSlider->setMaxValue(value);
+    mSlider->setMaximum(value);
 }
 
 void SliderWithIntValue::setMinValue(int value)
 {
-    mSlider->setMinValue(value);
+    mSlider->setMinimum(value);
 }
 
 // END
