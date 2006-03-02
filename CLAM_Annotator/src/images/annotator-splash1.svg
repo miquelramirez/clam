@@ -13,7 +13,7 @@
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.43"
-   sodipodi:docbase="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images"
+   sodipodi:docbase="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images"
    sodipodi:docname="annotator-splash1.svg"
    version="1.0"
    inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
@@ -28,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35355339"
-     inkscape:cx="666.42857"
-     inkscape:cy="398.78169"
+     inkscape:zoom="0.5"
+     inkscape:cx="879.70718"
+     inkscape:cy="419.47026"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:window-width="1072"
@@ -51,17 +51,30 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     style="display:inline">
     <rect
-       style="opacity:1;color:#000000;fill:#f1f5c9;fill-opacity:1;fill-rule:evenodd;stroke:#afafaf;stroke-width:6.595;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       style="opacity:1;color:#000000;fill:#afafaf;fill-opacity:1;fill-rule:evenodd;stroke:#afafaf;stroke-width:6.845;stroke-linecap:square;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       id="rect1345"
+       width="787.91895"
+       height="796.00018"
+       x="107.07616"
+       y="109.04548"
+       rx="0"
+       ry="0"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
+       inkscape:export-xdpi="34.267483"
+       inkscape:export-ydpi="34.267483" />
+    <rect
+       style="opacity:1;color:#000000;fill:#f1f5c9;fill-opacity:1;fill-rule:evenodd;stroke:#afafaf;stroke-width:6.59499979;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
        id="rect2283"
        width="787.91895"
        height="796.00018"
        x="107.07616"
        y="109.04548"
-       rx="28.571428"
-       ry="34.235168"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       rx="8.772438"
+       ry="11.607752"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
     <rect
@@ -73,7 +86,7 @@
        y="201.97951"
        rx="28.571428"
        ry="34.235168"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
     <rect
@@ -83,7 +96,7 @@
        height="288.53104"
        x="204.14343"
        y="349.81277"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
     <rect
@@ -93,7 +106,7 @@
        height="474.45682"
        x="633.99164"
        y="246.27783"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
     <rect
@@ -103,7 +116,7 @@
        height="474.45682"
        x="735.49585"
        y="246.27783"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
     <rect
@@ -113,7 +126,7 @@
        height="472.57513"
        x="212.82118"
        y="246.22882"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
     <rect
@@ -123,7 +136,7 @@
        height="472.29474"
        x="357.34085"
        y="246.30269"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
     <rect
@@ -133,13 +146,13 @@
        height="474.45682"
        x="523.51184"
        y="246.27783"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
     <g
        id="g2188"
        transform="matrix(1.178065,0,0,1.210302,201.7635,184.7941)"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483">
       <path
@@ -155,7 +168,7 @@
        id="g2192"
        transform="matrix(1.178065,0,0,1.210302,210.8028,185.7133)"
        style="stroke:#d6d100;stroke-opacity:1"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483">
       <path
@@ -171,7 +184,7 @@
        xml:space="preserve"
        id="flowRoot1380"
        transform="translate(-23.57375,686.9037)"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483"><flowRegion
          id="flowRegion1382"><rect
@@ -224,7 +237,7 @@
     <g
        transform="matrix(-0.105757,0.454696,-0.454696,-0.105757,1019.394,-135.0396)"
        id="g2343"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483">
       <path
@@ -258,7 +271,7 @@
     <g
        transform="matrix(0.135351,0.439098,-0.439098,0.135351,514.1177,-219.6786)"
        id="g2351"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483">
       <path
@@ -292,7 +305,7 @@
     <g
        transform="matrix(-0.109754,0.439198,-0.439198,-0.109754,477.6624,-123.1367)"
        id="g2359"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483">
       <path
@@ -328,7 +341,7 @@
        d="M 242.68039,240.30858 C 242.68039,240.30858 226.73873,220.90258 213.98541,226.00942 C 201.23209,231.11626 196.44959,231.11626 189.27584,243.37268 C 181.85141,256.05739 177.3196,277.07783 177.3196,277.07783"
        id="path2369"
        sodipodi:nodetypes="cssc"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
     <path
@@ -336,7 +349,7 @@
        d="M 407.25292,244.90736 C 407.25292,244.90736 421.83337,225.50136 433.49773,230.6082 C 445.16208,235.71504 449.53622,235.71504 456.09743,247.97146 C 462.88791,260.65617 467.03276,281.67661 467.03276,281.67661"
        id="path2371"
        sodipodi:nodetypes="cssc"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
     <path
@@ -344,7 +357,7 @@
        d="M 665.82435,240.62165 C 665.82435,240.62165 680.4048,221.21565 692.06916,226.32249 C 703.73351,231.42933 708.10765,231.42933 714.66886,243.68575 C 721.45934,256.37046 725.60419,277.3909 725.60419,277.3909"
        id="path2373"
        sodipodi:nodetypes="cssc"
-       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/annotator-splash2.png"
+       inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4-src/images/annotator-splash1.png"
        inkscape:export-xdpi="34.267483"
        inkscape:export-ydpi="34.267483" />
   </g>
