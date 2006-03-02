@@ -7,15 +7,15 @@ class SliderWithIntValue : public SliderWithValue
 {
     Q_OBJECT
 public:
-    SliderWithIntValue(QWidget * parent = 0, const char * = 0, Qt::WFlags f = 0);
+    SliderWithIntValue(QWidget * parent = 0, Qt::WFlags f = 0);
 
     float floatValue();
     
     int intValue();
     void setValue(int);
 
-    void setMaxValue(int);
-    void setMinValue(int);
+    void setMaximum(int);
+    void setMinimum(int);
 
 };
 

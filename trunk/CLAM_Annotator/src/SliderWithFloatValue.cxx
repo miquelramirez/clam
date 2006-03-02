@@ -2,8 +2,8 @@
 #include <qlabel.h>
 #include "SliderWithFloatValue.hxx"
 
-SliderWithFloatValue::SliderWithFloatValue(QWidget * parent, const char * name, Qt::WFlags f)
-    : SliderWithValue(parent, name, f)
+SliderWithFloatValue::SliderWithFloatValue(QWidget * parent, Qt::WFlags f)
+    : SliderWithValue(parent, f)
 {
     connect( mSlider, SIGNAL( valueChanged(int) ), this, SLOT( setLabelValue(int) ) );
 }
@@ -25,14 +25,14 @@ void SliderWithFloatValue::setValue(int value)
     mValue->setText( QString::number(double(value)*0.1,'f',1) );
 }
 
-void SliderWithFloatValue::setMaxValue(int value)
+void SliderWithFloatValue::setMaximum(int value)
 {
-    mSlider->setMaxValue(value);
+    mSlider->setMaximum(value);
 }
 
-void SliderWithFloatValue::setMinValue(int value)
+void SliderWithFloatValue::setMinimum(int value)
 {
-    mSlider->setMinValue(value);
+    mSlider->setMinimum(value);
 }
 
 void SliderWithFloatValue::setLabelValue(int value)
