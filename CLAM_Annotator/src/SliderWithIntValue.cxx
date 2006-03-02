@@ -2,8 +2,8 @@
 #include <qlabel.h>
 #include "SliderWithIntValue.hxx"
 
-SliderWithIntValue::SliderWithIntValue(QWidget * parent, const char * name , Qt::WFlags f)
-    : SliderWithValue( parent, name, f)
+SliderWithIntValue::SliderWithIntValue(QWidget * parent, Qt::WFlags f)
+    : SliderWithValue( parent, f)
 {
     connect( mSlider, SIGNAL( valueChanged(int) ), mValue, SLOT( setNum(int) ) );
 }
@@ -25,12 +25,12 @@ void SliderWithIntValue::setValue(int value)
     mValue->setText(QString::number( value ) );
 }
 
-void SliderWithIntValue::setMaxValue(int value)
+void SliderWithIntValue::setMaximum(int value)
 {
     mSlider->setMaximum(value);
 }
 
-void SliderWithIntValue::setMinValue(int value)
+void SliderWithIntValue::setMinimum(int value)
 {
     mSlider->setMinimum(value);
 }

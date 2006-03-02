@@ -1,18 +1,16 @@
 #include "SliderWithValue.hxx"
 #include <qslider.h>
-#include <qlabel.h>
-#include <qlayout.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QHBoxLayout>
 
-SliderWithValue::SliderWithValue( QWidget * parent, const char * name, Qt::WFlags f) : QWidget( parent, name, f)
+SliderWithValue::SliderWithValue( QWidget * parent, Qt::WFlags f) : QWidget( parent, f )
 {
-	Q3HBoxLayout * layout = new Q3HBoxLayout(this);
-	mSlider = new QSlider(this, "slider");
+	QHBoxLayout * layout = new QHBoxLayout(this);
+	mSlider = new QSlider(this);
 	mSlider->setPageStep(1);
 	mSlider->setOrientation( Qt::Horizontal );
 	layout->addWidget( mSlider );
-	mValue = new QLabel(this, "value");
+	mValue = new QLabel(this);
 	layout->addWidget( mValue );
 }
 

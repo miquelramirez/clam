@@ -39,17 +39,17 @@ QWidget * RangeSelectionTableItem::createEditor() const
 {
 	if(mHasIntegerRange)
 	{
-		SliderWithIntValue * slider = new SliderWithIntValue( table()->viewport(), "slider");
-		slider->setMinValue(mIntegerRange.GetMin());
-		slider->setMaxValue(mIntegerRange.GetMax());
+		SliderWithIntValue * slider = new SliderWithIntValue( table()->viewport());
+		slider->setMinimum(mIntegerRange.GetMin());
+		slider->setMaximum(mIntegerRange.GetMax());
 		slider->setValue( text().toInt() );
 		return slider;
 	}
 	else if(mHasFloatRange)
 	{
-		SliderWithFloatValue * slider = new SliderWithFloatValue( table()->viewport(), "slider");
-		slider->setMinValue(int(mFloatRange.GetMin())*10);
-		slider->setMaxValue(int(mFloatRange.GetMax())*10);
+		SliderWithFloatValue * slider = new SliderWithFloatValue( table()->viewport());
+		slider->setMinimum(int(mFloatRange.GetMin())*10);
+		slider->setMaximum(int(mFloatRange.GetMax())*10);
 		slider->setValue( int(text().toFloat()*10.0f) );
 		return slider; 
 	}

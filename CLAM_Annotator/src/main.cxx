@@ -28,6 +28,7 @@ int main( int argc, char ** argv )
 	splash.showMessage("Loading data ... ");
 	Annotator * w = new Annotator(argc>1?argv[1]:"");
 	w->show();
+	qApp->processEvents();
 	sleep(2);
 	splash.finish(w);
 	return app.exec();
