@@ -16,7 +16,7 @@ namespace CLAM
 			virtual ~Player();
 
 			void SetDuration(double dur);
-			void SetSamblingRate(double sr);
+			void SetSamplingRate(double sr);
 			void SetPlayingFlags(int flags);
 
 			bool IsPlaying() const;

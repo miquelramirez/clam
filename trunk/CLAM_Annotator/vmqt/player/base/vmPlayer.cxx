@@ -35,7 +35,7 @@ namespace CLAM
 			mBeginTime = 0.0;
 		}
 
-		void Player::SetSamblingRate(double sr)
+		void Player::SetSamplingRate(double sr)
 		{
 			mSamplingRate = sr;
 		}
