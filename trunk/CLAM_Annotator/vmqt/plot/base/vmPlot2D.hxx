@@ -55,6 +55,10 @@ namespace CLAM
 			void setHBounds(double, double);
 			void setVBounds(double, double);
 
+		protected slots:
+			// This slot is calle whenever an updateGl is needed.
+			void needUpdate();
+
 		protected:
 			void paintGL(); 
 			void resizeEvent(QResizeEvent* e);
@@ -87,6 +91,8 @@ namespace CLAM
 			double mCurrentXSpan;
 			double mCurrentYSpan;
 			bool   mDoResize;
+
+			unsigned mUpdatePending;
 
 			Range mXRange;
 			Range mYRange;

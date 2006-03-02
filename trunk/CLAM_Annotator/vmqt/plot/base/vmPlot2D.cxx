@@ -1,6 +1,8 @@
 #include <QResizeEvent>
 #include "vmRenderer2D.hxx"
 #include "vmPlot2D.hxx"
+#include <QtCore/QTimer>
+#include <iostream>
 
 namespace CLAM
 {
@@ -19,6 +21,7 @@ namespace CLAM
 			, mCurrentYSpan(1.0)
 			, mXRange(-1.0,1.0)
 			, mYRange(-1.0,1.0)
+			, mUpdatePending(0)
 			, mViewport(0,0,10,10)
 		{
 			setMouseTracking(true);
@@ -93,7 +96,7 @@ namespace CLAM
 			Renderer2D* rd = GetRenderer(key);
 			if(!rd) return false;
 			connect(rd,SIGNAL(requestUpdate()),this,SLOT(updateRenderers()));
-			connect(rd,SIGNAL(requestRefresh()),this,SLOT(updateGL()));
+			connect(rd,SIGNAL(requestRefresh()),this,SLOT(needUpdate()));
 			connect(rd,SIGNAL(hZoomRef(double)),this,SLOT(updateHZoomRef(double)));
 			connect(rd,SIGNAL(toolTip(QString)),this,SLOT(setToolTip(QString)));
 			connect(rd,SIGNAL(cursorChanged(QCursor)),this,SLOT(changeCursor(QCursor)));
@@ -221,6 +224,8 @@ namespace CLAM
 			Draw();
 			RenderToolTip(); 
 			swapBuffers();
+			std::cout << "Saved refresh : " << mUpdatePending << std::endl;
+			mUpdatePending=0;
 		}
 		
 		void Plot2D::resizeEvent(QResizeEvent* e)
@@ -301,7 +306,7 @@ namespace CLAM
 		{
 			SetRenderersHBounds(mView.left,mView.right);
 			SetRenderersVBounds(mView.bottom,mView.top);
-			updateGL();
+			needUpdate();
 		}
 
 		void Plot2D::updateHZoomRef(double ref)
@@ -315,10 +320,16 @@ namespace CLAM
 			setCursor(cursor);
 		}
 
+		void Plot2D::needUpdate()
+		{
+			if (mUpdatePending++) return;
+			QTimer::singleShot(10, this, SLOT(updateGL()));
+		}
+
 		void Plot2D::setToolTip(QString str)
 		{
 			mToolTip = str;
-			updateGL();
+			needUpdate();
 		}
 
 		void Plot2D::rendererWorking(QString key,bool working)
@@ -405,7 +416,7 @@ namespace CLAM
 			mView.right = right;
 			SetRenderersHBounds(mView.left,mView.right);
 			emit xRulerRange(mView.left, mView.right);
-			updateGL();
+			needUpdate();
 		}
 
 		void Plot2D::SetVBounds(double bottom, double top)
@@ -415,7 +426,7 @@ namespace CLAM
 			mView.top = top;
 			SetRenderersVBounds(mView.bottom,mView.top);
 			emit yRulerRange(mView.bottom, mView.top);
-			updateGL();
+			needUpdate();
 		}
 
 		void Plot2D::UpdateHBounds(bool zin)
