@@ -38,7 +38,7 @@ namespace CLAM
 
 		void SegmentationPlot::SetSegmentation(Segmentation* s)
 		{
-			static_cast<SegmentEditor*>(mPlot->GetRenderer("segmentation"))->SetSegmentation(s);
+			mSegmentation->SetSegmentation(s);
 		}
 
 		void SegmentationPlot::SetZoomSteps(int hsteps, int vsteps)
