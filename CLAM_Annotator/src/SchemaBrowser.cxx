@@ -191,7 +191,7 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
     attributePropertiesLayout->addWidget( childEdit, 2, 1 );
 
     attributeDocumentation = new QTextBrowser( splitter2 );
-    attributeDocumentation->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)1, (QSizePolicy::SizeType)4, 0, 0, attributeDocumentation->sizePolicy().hasHeightForWidth() ) );
+    attributeDocumentation->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Maximum);
 
     schemaBrowserLayout->addWidget( splitter1 );
     languageChange();
