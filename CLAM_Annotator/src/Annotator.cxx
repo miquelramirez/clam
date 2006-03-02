@@ -14,7 +14,6 @@
 #include <QtGui/QSplitter>
 #include <QtGui/QTabBar>
 #include <QtGui/QTextBrowser>
-//Added by qt3to4:
 #include <QtGui/QCloseEvent>
 #include <QtGui/QVBoxLayout>
 
@@ -246,27 +245,25 @@ void Annotator::initInterface()
 
 	QVBoxLayout * frameLevelContainerLayout = new QVBoxLayout(mFrameLevelContainer);
 	mFrameLevelTabBar = new QTabBar(mFrameLevelContainer);
+	frameLevelContainerLayout->setMargin(2);
 	frameLevelContainerLayout->addWidget(mFrameLevelTabBar);
 	mBPFEditor = new BPFPlot(
 			mFrameLevelContainer);
 	mBPFEditor->SetFlags(CLAM::VM::eAllowVerEdition);//|CLAM::VM::eHasVerticalScroll); // QTPORT: What about this flag
+	mBPFEditor->setAutoFillBackground(true);
 	frameLevelContainerLayout->addWidget(mBPFEditor);
 	mBPFEditor->SetZoomSteps(5,5);
-#ifndef QTPORT
-	mBPFEditor->UseFocusColors();
-#endif//QTPORT
 	mBPFEditor->hide();
 
 	mpAudioPlot = new AudioPlot(mAudioPlotContainer); // ,0,0,false);
 	QVBoxLayout * audioPlotContainerLayout = new QVBoxLayout(mAudioPlotContainer);
+	mpAudioPlot->setAutoFillBackground(true);
+	audioPlotContainerLayout->setMargin(2);
 	audioPlotContainerLayout->addWidget(mpAudioPlot);
 #ifndef QTPORT
 	mpAudioPlot->Label("Audio");
 	mCurrentAudio.SetSize(20000);
 //	mpAudioPlot->SetData(mCurrentAudio);
-	mpAudioPlot->SetEditTagDialogEnabled(false);
-//	mpAudioPlot->setFocus();
-	mpAudioPlot->UseFocusColors();
 #endif//QTPORT
 	mpAudioPlot->hide();
 
@@ -511,29 +508,36 @@ void Annotator::makeConnections()
 		this, SLOT(insertSegment(unsigned)));
 
 	// Cross position update
-	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
-		 mPlayer, SLOT(updateYValue(int, float)));
+/*
+	connect( mBPFEditor, SIGNAL(yValueChanged(int, double)),
+		 mPlayer, SLOT(updateYValue(int, double)));
 	connect( mBPFEditor, SIGNAL(selectedXPos(double)),
 		 mpAudioPlot, SLOT(setSelectedXPos(double)));
 	connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
 		mBPFEditor, SLOT(setHBounds(double,double)));
 	connect(mpAudioPlot, SIGNAL(selectedXPos(double)),
 		mBPFEditor, SLOT(selectPointFromXCoord(double)));
-
+*/
 	// Playhead update
-	connect(mpAudioPlot, SIGNAL(stopPlayingTime(float)),
-		this, SLOT(onStopPlaying(float)));
-	connect(mpAudioPlot, SIGNAL(regionTime(float,float)),
-		mPlayer, SLOT(setRegionTime(float,float)));
-	connect(mPlayer, SIGNAL(playingTime(float)),
-		mBPFEditor, SLOT(updateLocator(float)));
-	connect(mPlayer, SIGNAL(stopTime(float)),
-		mBPFEditor, SLOT(receivedStopPlaying(float)));
-	connect(mPlayer, SIGNAL(playingTime(float)),
-		mpAudioPlot, SLOT(updateLocator(float)));
-	connect( mPlayer, SIGNAL(stopTime(float)),
-		 mpAudioPlot, SLOT(receivedStopPlaying(float)));
+	connect(mPlayer, SIGNAL(playingTime(double)),
+		mpAudioPlot, SLOT(updateLocator(double)), Qt::DirectConnection);
+	connect(mPlayer, SIGNAL(playingTime(double)),
+		mBPFEditor, SLOT(updateLocator(double)), Qt::DirectConnection);
+	connect(mPlayer, SIGNAL(stopTime(double,bool)),
+		mBPFEditor, SLOT(updateLocator(double,bool)));
+	connect( mPlayer, SIGNAL(stopTime(double,bool)),
+		 mpAudioPlot, SLOT(updateLocator(double,bool)));
+	connect(mpAudioPlot, SIGNAL(selectedRegion(double,double)),
+		mPlayer, SLOT(timeBounds(double,double)));
+	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
+		mPlayer, SLOT(timeBounds(double,double)));
 
+	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
+		mpAudioPlot, SLOT(updateLocator(double,double)));
+/*
+	connect(mpAudioPlot, SIGNAL(stopPlayingTime(double)),
+		this, SLOT(onStopPlaying(double)));
+*/
 }
 
 void Annotator::linkCurrentSegmentToPlayback(bool enabled)
@@ -837,7 +841,6 @@ void Annotator::refreshEnvelopes()
 
 	mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
 	mPlayer->SetAudioPtr(&mCurrentAudio);
-//	mPlayer->SetSampleRate(mCurrentAudio.GetSampleRate()); // Commented out during the QTPORT
 
 	mCurrentBPFIndex = -1;
 
@@ -1145,5 +1148,6 @@ void Annotator::stopPlaying()
 	mPlayer->stop();
 
 }
+
 
 
