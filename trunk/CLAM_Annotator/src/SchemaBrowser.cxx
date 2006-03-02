@@ -6,27 +6,22 @@
 #include <qsplitter.h>
 #include <q3header.h>
 #include <q3listview.h>
-#include <q3frame.h>
 #include <qspinbox.h>
 #include <qlabel.h>
 #include <qtextbrowser.h>
 #include <qlayout.h>
-#include <qtooltip.h>
-#include <q3whatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
-#include <qlineedit.h>
-//Added by qt3to4:
-#include <Q3VBoxLayout>
-#include <Q3HBoxLayout>
-#include <QLabel>
-#include <Q3GridLayout>
-#include <Q3Frame>
+//#include <QtGui/QToolTip>
+#include <Qt3Support/q3whatsthis.h>
+#include <QtGui/qimage.h>
+#include <QtGui/qpixmap.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QGridLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QFrame>
 
 #include <q3urloperator.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3GridLayout>
 
 // Generated from /usr/share/icons/noia_kde_100/16x16/apps/xkill.png
 static const unsigned char scopeIcon_data[] = { 
@@ -145,17 +140,18 @@ static const unsigned char attributeIcon_data[] = {
  *  Constructs a SchemaBrowser as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-SchemaBrowser::SchemaBrowser( QWidget* parent, const char* name, Qt::WFlags fl )
-    : QWidget( parent, name, fl )
+SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
+    : QWidget( parent, fl )
     , mSchema(0)
 {
     scopeIcon.loadFromData( scopeIcon_data, sizeof( scopeIcon_data ), "PNG" );
     attributeIcon.loadFromData( attributeIcon_data, sizeof( attributeIcon_data ), "PNG" );
-    if ( !name )
-	setName( "schemaBrowser" );
-    schemaBrowserLayout = new Q3HBoxLayout( this, 11, 6, "schemaBrowserLayout"); 
+	setObjectName( "schemaBrowser" );
+    schemaBrowserLayout = new QHBoxLayout( this ); 
+    schemaBrowserLayout->setMargin(11);
+	schemaBrowserLayout->setSpacing(6);
 
-    splitter1 = new QSplitter( this, "splitter1" );
+    splitter1 = new QSplitter( this );
     splitter1->setOrientation( Qt::Horizontal );
 
     attributeList = new Q3ListView( splitter1, "attributeList" );
@@ -166,33 +162,35 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, const char* name, Qt::WFlags fl )
     attributeList->setResizeMode( Q3ListView::LastColumn );
     attributeList->setSortColumn( -1 );
 
-    splitter2 = new QSplitter( splitter1, "splitter2" );
+    splitter2 = new QSplitter( splitter1 );
     splitter2->setOrientation( Qt::Vertical );
 
-    attributeProperties = new Q3Frame( splitter2, "attributeProperties" );
-    attributeProperties->setFrameShape( Q3Frame::StyledPanel );
-    attributeProperties->setFrameShadow( Q3Frame::Raised );
-    attributePropertiesLayout = new Q3GridLayout( attributeProperties, 1, 1, 11, 6, "attributePropertiesLayout"); 
+    attributeProperties = new QFrame( splitter2 );
+    attributeProperties->setFrameShape( QFrame::StyledPanel );
+    attributeProperties->setFrameShadow( QFrame::Raised );
+    attributePropertiesLayout = new QGridLayout( attributeProperties ); 
+	attributePropertiesLayout->setMargin(11);
+	attributePropertiesLayout->setSpacing(6);
 
-    minLabel = new QLabel( attributeProperties, "minLabel" );
+    minLabel = new QLabel( attributeProperties );
     attributePropertiesLayout->addWidget( minLabel, 0, 0 );
 
-    minSpin = new QSpinBox( attributeProperties, "minSpin" );
+    minSpin = new QSpinBox( attributeProperties );
     attributePropertiesLayout->addWidget( minSpin, 0, 1 );
 
-    maxLabel = new QLabel( attributeProperties, "maxLabel" );
+    maxLabel = new QLabel( attributeProperties );
     attributePropertiesLayout->addWidget( maxLabel, 1, 0 );
 
-    maxSpin = new QSpinBox( attributeProperties, "maxSpin" );
+    maxSpin = new QSpinBox( attributeProperties );
     attributePropertiesLayout->addWidget( maxSpin, 1, 1 );
 
-    childLabel = new QLabel( attributeProperties, "childLabel");
+    childLabel = new QLabel( attributeProperties );
     attributePropertiesLayout->addWidget( childLabel, 2, 0 );
 
-    childEdit = new QLineEdit( attributeProperties, "childEdit");
+    childEdit = new QLineEdit( attributeProperties );
     attributePropertiesLayout->addWidget( childEdit, 2, 1 );
 
-    attributeDocumentation = new QTextBrowser( splitter2, "attributeDocumentation" );
+    attributeDocumentation = new QTextBrowser( splitter2 );
     attributeDocumentation->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)1, (QSizePolicy::SizeType)4, 0, 0, attributeDocumentation->sizePolicy().hasHeightForWidth() ) );
 
     schemaBrowserLayout->addWidget( splitter1 );
@@ -244,7 +242,7 @@ void SchemaBrowser::addAttribute(const std::string & scope, const std::string & 
  */
 void SchemaBrowser::languageChange()
 {
-    setCaption( tr( "Schema Browser" ) );
+    setWindowTitle( tr( "Schema Browser" ) );
     attributeList->header()->setLabel( 0, tr( "Attribute" ) );
     attributeList->header()->setLabel( 1, tr( "Type" ) );
     attributeList->clear();
@@ -256,7 +254,7 @@ void SchemaBrowser::languageChange()
     QString documentation = tr(
 		    "<b>No item selected</b>"
 		    );
-    attributeDocumentation->setText(documentation);
+    attributeDocumentation->setHtml(documentation);
 }
 
 typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
@@ -282,11 +280,11 @@ void SchemaBrowser::updateCurrentAttribute()
 	if (!parent) // Scope
 	{
 		QString documentation = "<h2>Scope '" + current->text(0) + "'</h2>";
-		attributeDocumentation->setText(documentation);
+		attributeDocumentation->setHtml(documentation);
 	}
 	else // Attribute
 	{
-		const CLAM_Annotator::SchemaAttribute & attributeSchema = mSchema->GetAttribute(std::string(parent->text(0).ascii()),std::string(current->text(0).ascii()));
+		const CLAM_Annotator::SchemaAttribute & attributeSchema = mSchema->GetAttribute(parent->text(0).toStdString(),current->text(0).toStdString());
 		QString url = "http://mtg100.upf.es/simac/DescriptionSchemeWeb";
 		Q3UrlOperator op( url );
 		op.get( "index.html");
@@ -338,7 +336,7 @@ void SchemaBrowser::updateCurrentAttribute()
 			documentation += "<p>The schema has no embeded documentation for the attribute.</p>";
 		documentation += "</div>";
 		documentation += "<p>Get further information on <a href='" + url + "'>" +url+"</a>.</p>";
-		attributeDocumentation->setText(documentation);
+		attributeDocumentation->setHtml(documentation);
 	}
 }
 

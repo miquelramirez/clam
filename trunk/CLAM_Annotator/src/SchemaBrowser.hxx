@@ -7,14 +7,13 @@
 
 #include <string>
 
-class Q3VBoxLayout;
-class Q3HBoxLayout;
-class Q3GridLayout;
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QSpacerItem;
 class QSplitter;
 class Q3ListView;
-class Q3ListViewItem;
-class Q3Frame;
+class QFrame;
 class QSpinBox;
 class QLabel;
 class QTextBrowser;
@@ -26,7 +25,7 @@ class SchemaBrowser : public QWidget
     Q_OBJECT
 
 public:
-    SchemaBrowser( QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0 );
+    SchemaBrowser( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~SchemaBrowser();
     void setSchema(CLAM_Annotator::Schema & schema);
     void addAttribute(const std::string & scope, const std::string & name, const std::string & type);
@@ -34,7 +33,7 @@ private:
     QSplitter* splitter1;
     Q3ListView* attributeList;
     QSplitter* splitter2;
-    Q3Frame* attributeProperties;
+    QFrame* attributeProperties;
     QSpinBox* minSpin;
     QSpinBox* maxSpin;
     QLineEdit* childEdit;
@@ -44,8 +43,8 @@ private:
     QTextBrowser* attributeDocumentation;
 
 protected:
-    Q3HBoxLayout* schemaBrowserLayout;
-    Q3GridLayout* attributePropertiesLayout;
+    QHBoxLayout* schemaBrowserLayout;
+    QGridLayout* attributePropertiesLayout;
 
 protected slots:
     virtual void languageChange();

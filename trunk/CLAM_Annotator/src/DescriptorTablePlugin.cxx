@@ -54,7 +54,7 @@ namespace CLAM_Annotator
 			if (mElement==-1) return;
 			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
 			QString qValue = mTable->text(mRow, 1);
-			const std::string & value = qValue.ascii();
+			const std::string & value = qValue.toStdString();
 			dataPool.GetWritePool<CLAM::Text>(mScope,mName)[mElement] = value;
 		}
 	};
@@ -88,7 +88,7 @@ namespace CLAM_Annotator
 		{
 			if (mElement==-1) return;
 			QString qValue = mTable->text(mRow, 1);
-			const std::string & value = qValue.ascii();
+			const std::string & value = qValue.toStdString();
 			dataPool.GetWritePool<Enumerated>(mScope,mName)[mElement].SetString(value);
 		}
 	private:
