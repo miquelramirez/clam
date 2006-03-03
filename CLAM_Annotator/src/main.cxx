@@ -22,14 +22,7 @@ int main( int argc, char ** argv )
 	QCoreApplication::setOrganizationName("CLAM");
 	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
 	QCoreApplication::setApplicationName("Music Annotator");
-	QSplashScreen splash( QPixmap(":/logos/images/annotator-splash1.png") );
-	splash.setCursor( QCursor(Qt::WaitCursor) );
-	splash.show();
-	splash.showMessage("Loading data ... ");
 	Annotator * w = new Annotator(argc>1?argv[1]:"");
 	w->show();
-	qApp->processEvents();
-	sleep(2);
-	splash.finish(w);
 	return app.exec();
 }
