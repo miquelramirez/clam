@@ -2,9 +2,7 @@
 #include "vmSegmentation.hxx"
 #include "vmSegmentEditor.hxx"
 
-/*
-#define __SEGMENT_EDITOR__DEBUG__
- */
+//#define __SEGMENT_EDITOR__DEBUG__
 
 #ifdef __SEGMENT_EDITOR__DEBUG__
 #include <iostream>
@@ -47,9 +45,9 @@ namespace CLAM
 			unsigned index = mSegmentation->pickSegmentBody(xpos);
 			if(index == mCurrentSegment || index == mSegmentation->offsets().size()) return;
 			mSegmentation->current(index);
-			mSegmentation->clearSelection();
-			emit currentSegmentChanged(index);
 			mCurrentSegment = mSegmentation->current();
+			emit currentSegmentChanged();
+			emit requestRefresh();	
 		}
 
 		void SegmentEditor::allowChangeCurrent(bool allow)
@@ -213,8 +211,8 @@ namespace CLAM
 				{
 					mSegmentation->current(index);
 					mSegmentation->clearSelection();
-					emit currentSegmentChanged(index);
 					mCurrentSegment = mSegmentation->current();
+					emit currentSegmentChanged();
 #ifdef __SEGMENT_EDITOR__DEBUG__
 					std::cout << "Current segment is " << index << std::endl;
 #endif
@@ -276,7 +274,7 @@ namespace CLAM
 					if(mSegmentation->onsets().size() == nSegments) return; // Remove was ignored
 					emit requestRefresh();
 					emit segmentDeleted(index);
-					emit currentSegmentChanged(mSegmentation->current());
+					emit currentSegmentChanged();
 					mCurrentSegment = mSegmentation->current();
 #ifdef __SEGMENT_EDITOR__DEBUG__
 					std::cout << "Segment deleted  " << index << std::endl;

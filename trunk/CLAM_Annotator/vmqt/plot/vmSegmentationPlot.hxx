@@ -37,7 +37,7 @@ namespace CLAM
 			void segmentOffsetChanged(unsigned, double);
 			void segmentInserted(unsigned);
 			void segmentDeleted(unsigned);
-			void currentSegmentChanged(unsigned);
+			void currentSegmentChanged();
 
 		public slots:
 			virtual void backgroundWhite();
@@ -45,6 +45,7 @@ namespace CLAM
 
 			void updateLocator(double);
 			void updateLocator(double, bool);
+			void setCurrentSegmentFollowsPlay(bool active);
 			
 		private slots:
 			void setMaxVScroll(int);
@@ -57,6 +58,7 @@ namespace CLAM
 			Ruler*       mYRuler;
 			Locator*       mLocator;
 			SegmentEditor* mSegmentation;
+			bool mCurrentSegmentFollowsPlay;
 
 		private:
 			ScrollGroup* mHScroll;
