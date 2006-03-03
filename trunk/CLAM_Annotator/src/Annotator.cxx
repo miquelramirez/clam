@@ -9,19 +9,21 @@
 #include <q3process.h>
 #include <qmessagebox.h>
 #include <qtabwidget.h>
-#include <q3filedialog.h>
+#include <QtGui/QFileDialog>
 #include <QtCore/QSettings>
 #include <QtGui/QSplitter>
 #include <QtGui/QTabBar>
 #include <QtGui/QTextBrowser>
 #include <QtGui/QCloseEvent>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QDockWidget>
 
 #include <algorithm>
 #include <iostream>
 #include <utility>
 #include <fstream>
 #include <QTimer>
+#include "TaskRunner.hxx"
 
 //xamat
 #include <time.h>
@@ -103,13 +105,14 @@ void Annotator::computeSongDescriptors()
 		return;
 	}
 	mStatusBar << "Launching Extractor..." << mStatusBar;
-	Q3Process extractor(this);
+	TaskRunner * runner = new TaskRunner();
+	addDockWidget( Qt::BottomDockWidgetArea, runner);
 	QDir projectPath(mProjectFileName.c_str());
 	projectPath.cdUp();
-	extractor.setWorkingDirectory(projectPath);
-	extractor.addArgument(mProject.GetExtractor().c_str());
-	extractor.addArgument(filename);
-	if (!extractor.start())
+	bool ok = runner->run(QString(mProject.GetExtractor().c_str()),
+			QStringList() << filename,
+			projectPath.absolutePath());
+	if (!ok)
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
 				tr("<p><b>Error: Unable to launch the extractor.</b></p>"
@@ -119,17 +122,11 @@ void Annotator::computeSongDescriptors()
 				);
 		return;
 	}
+	return;
+	/*
 	while (extractor.isRunning())
 	{
-		while (extractor.canReadLineStdout())
-			mStatusBar << extractor.readLineStdout() << mStatusBar;
-		while (extractor.canReadLineStderr())
-			mStatusBar << extractor.readLineStderr() << mStatusBar;
 	}
-	while (extractor.canReadLineStdout())
-		mStatusBar << extractor.readLineStdout() << mStatusBar;
-	while (extractor.canReadLineStderr())
-		mStatusBar << extractor.readLineStderr() << mStatusBar;
 	if (!extractor.normalExit())
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
@@ -137,6 +134,7 @@ void Annotator::computeSongDescriptors()
 		return;
 	}
 	loadDescriptorPool();
+	*/
 }
 
 Annotator::Annotator(const std::string & nameProject = "")
@@ -658,12 +656,10 @@ void Annotator::deleteSongsFromProject()
 
 void Annotator::addSongsToProject()
 {
-	QStringList files = Q3FileDialog::getOpenFileNames(
-		"Songs (*.wav *.mp3 *.ogg)",
-		projectToAbsolutePath(".").c_str(),
-		this,
+	QStringList files = QFileDialog::getOpenFileNames(this,
 		"Add files to the project",
-		"Select one or more files to add" );
+		projectToAbsolutePath(".").c_str(),
+		"Songs (*.wav *.mp3 *.ogg)");
 	QStringList::Iterator it = files.begin();
 	for (; it != files.end(); it++ )
 	{
@@ -675,7 +671,7 @@ void Annotator::addSongsToProject()
 
 void Annotator::fileOpen()
 {
-	QString qFileName = Q3FileDialog::getOpenFileName(QString::null,"*.pro");
+	QString qFileName = QFileDialog::getOpenFileName(this, "Choose a project to work with", QString::null, "*.pro");
 	if(qFileName == QString::null) return;
 
 	mProjectFileName = std::string(qFileName.toAscii());
@@ -703,7 +699,7 @@ void Annotator::fileNew()
 
 void Annotator::fileSaveAs()
 {
-	QString qFileName = Q3FileDialog::getSaveFileName(QString::null,"*.pro");
+	QString qFileName = QFileDialog::getSaveFileName(this, "Saving the project", QString::null,"*.pro");
 	if(qFileName == QString::null) return;
 
 	mProjectFileName = qFileName.toStdString();
@@ -725,12 +721,11 @@ void Annotator::fileSave()
 
 void  Annotator::loadSchema()
 {
-	QString qFileName = Q3FileDialog::getOpenFileName(
-			projectToAbsolutePath(".").c_str(),
-			"Description Schemes (*.sc)",
+	QString qFileName = QFileDialog::getOpenFileName(
 			this,
-			"SchemaChooser",
-			"Choose an Schema");
+			"Choose an Schema",
+			projectToAbsolutePath(".").c_str(),
+			"Description Schemes (*.sc)");
 	if(qFileName == QString::null) return;
 
 	std::string schemaFile = absoluteToProjectPath(qFileName.toStdString());
