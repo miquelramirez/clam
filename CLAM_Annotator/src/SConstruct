@@ -87,6 +87,10 @@ extraPaths = []
 extraPaths += [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+	'/usr/include/qt4/QtCore'. # quick KLUDGE for ubuntu
+	'/usr/include/qt4/QtGui'. # quick KLUDGE for ubuntu
+	'/usr/include/qt4/QtOpenGl'. # quick KLUDGE for ubuntu
+	'/usr/include/qt4/Qt3Support'. # quick KLUDGE for ubuntu
 ]
 includePaths = sourcePaths + extraPaths
 
