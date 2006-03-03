@@ -5,7 +5,7 @@
 #include <qvariant.h>
 #include <qsplitter.h>
 #include <q3header.h>
-#include <q3listview.h>
+#include <QtGui/QTreeWidget>
 #include <qspinbox.h>
 #include <qlabel.h>
 #include <qtextbrowser.h>
@@ -20,6 +20,7 @@
 #include <QtGui/QGridLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QFrame>
+#include <QtGui/QHeaderView>
 
 #include <q3urloperator.h>
 
@@ -154,13 +155,18 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
     splitter1 = new QSplitter( this );
     splitter1->setOrientation( Qt::Horizontal );
 
-    attributeList = new Q3ListView( splitter1, "attributeList" );
-    attributeList->addColumn( tr( "Attribute" ) );
-    attributeList->addColumn( tr( "Type" ) );
-    attributeList->setAllColumnsShowFocus( TRUE );
-    attributeList->setRootIsDecorated( TRUE );
-    attributeList->setResizeMode( Q3ListView::LastColumn );
-    attributeList->setSortColumn( -1 );
+    attributeList = new QTreeWidget( splitter1 );
+    attributeList->setHeaderLabels( QStringList()
+			<< tr( "Attribute" )
+			<< tr( "Type" )
+			);
+    attributeList->setRootIsDecorated( true );
+    attributeList->setSortingEnabled( false );
+	attributeList->setAlternatingRowColors(true);
+//    attributeList->setAllColumnsShowFocus( TRUE ); // QTPORT
+//    attributeList->setResizeMode( QTreeWidget::LastColumn ); // QTPORT
+	attributeList->resizeColumnToContents(0);
+	attributeList->resizeColumnToContents(1);
 
     splitter2 = new QSplitter( splitter1 );
     splitter2->setOrientation( Qt::Vertical );
@@ -197,7 +203,7 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
     languageChange();
     resize( QSize(740, 346).expandedTo(minimumSizeHint()) );
 //    clearWState( WState_Polished ); // TODO: Commented out while  qt4 porting
-    connect(attributeList, SIGNAL(currentChanged(Q3ListViewItem *)),
+    connect(attributeList, SIGNAL(itemSelectionChanged()),
             this, SLOT(updateCurrentAttribute()));
 }
 
@@ -209,31 +215,23 @@ SchemaBrowser::~SchemaBrowser()
     // no need to delete child widgets, Qt does it all for us
 }
 
-Q3ListViewItem * lastSibling(Q3ListViewItem * item)
-{
-	if (!item) return item;
-	Q3ListViewItem *  next = item->nextSibling();
-	while (next)
-	{
-		item=next;
-		next = item->nextSibling();
-	}
-	return item;
-}
-
 void SchemaBrowser::addAttribute(const std::string & scope, const std::string & name, const std::string & type)
 {
-    Q3ListViewItem * scopeItem = attributeList->findItem(scope.c_str(),0);
-    if (!scopeItem)
+    QList<QTreeWidgetItem *> scopeItems = attributeList->findItems(scope.c_str(),Qt::MatchExactly);
+    QTreeWidgetItem * scopeItem = 0;
+    if (scopeItems.size()==0)
     {
-	    scopeItem = new Q3ListViewItem( attributeList, lastSibling(attributeList->firstChild()) );
-	    scopeItem->setOpen( TRUE );
+	    scopeItem = new QTreeWidgetItem( attributeList); //, lastSibling(attributeList->firstChild()) ); //QTPORT
 	    scopeItem->setText( 0, scope.c_str() );
-	    scopeItem->setPixmap( 0, scopeIcon );
+	    scopeItem->setIcon( 0, scopeIcon );
+	    attributeList->expandItem(scopeItem);
     }
-    Q3ListViewItem * item = new Q3ListViewItem( scopeItem, lastSibling(scopeItem->firstChild()) );
+	else
+		scopeItem = scopeItems[0];
+
+    QTreeWidgetItem * item = new QTreeWidgetItem( scopeItem); // ,lastSibling(scopeItem->firstChild()) ); //QTPORT
     item->setText( 0, name.c_str() );
-    item->setPixmap( 0, attributeIcon );
+    item->setIcon( 0, attributeIcon );
     item->setText( 1, type.c_str() );
 }
 /*
@@ -243,8 +241,8 @@ void SchemaBrowser::addAttribute(const std::string & scope, const std::string & 
 void SchemaBrowser::languageChange()
 {
     setWindowTitle( tr( "Schema Browser" ) );
-    attributeList->header()->setLabel( 0, tr( "Attribute" ) );
-    attributeList->header()->setLabel( 1, tr( "Type" ) );
+    attributeList->headerItem()->setText( 0, tr( "Attribute" ) );
+    attributeList->headerItem()->setText( 1, tr( "Type" ) );
     attributeList->clear();
 
     minLabel->setText( tr( "Minimum" ) );
@@ -271,12 +269,16 @@ void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 	{
 		addAttribute(it->GetScope(), it->GetName(), it->GetType());
 	}
+	attributeList->show();
+	attributeList->resizeColumnToContents(0);
+	attributeList->resizeColumnToContents(1);
+	attributeList->show();
 }
 
 void SchemaBrowser::updateCurrentAttribute()
 {
-	Q3ListViewItem * current = attributeList->currentItem();
-	Q3ListViewItem * parent = current->parent();
+	QTreeWidgetItem * current = attributeList->currentItem();
+	QTreeWidgetItem * parent = current->parent();
 	if (!parent) // Scope
 	{
 		QString documentation = "<h2>Scope '" + current->text(0) + "'</h2>";
