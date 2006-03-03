@@ -105,6 +105,7 @@ public slots:
 	void fileOpen();
 	void fileSave();
 	void fileSaveAs();
+	void fileOpenRecent();
 
 	void loadSchema();
 	void addSongsToProject();
@@ -168,6 +169,7 @@ private:
 
 	bool isPlaying();
 	void resetTabOrder();
+	void updateRecentFilesMenu();
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
@@ -206,6 +208,9 @@ private:
 	StatusBarDumper mStatusBar;
 	QTabBar * mFrameLevelTabBar;
 	QDialog * mAbout;
+	std::vector<QAction *> mRecentFilesActions;
+	QAction * mRecentFilesMenuSeparator;
+	enum {MaxRecentFiles=4};
 };
 
 #endif

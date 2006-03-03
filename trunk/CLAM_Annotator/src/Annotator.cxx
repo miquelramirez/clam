@@ -16,6 +16,7 @@
 #include <QtGui/QCloseEvent>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QDockWidget>
+#include <QtGui/QSplashScreen>
 
 #include <algorithm>
 #include <iostream>
@@ -159,6 +160,12 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mPlayer(0)
 	, mStatusBar(statusBar())
 {
+
+	QSplashScreen * splash = new QSplashScreen( QPixmap(":/logos/images/annotator-splash1.png") );
+	splash->setCursor( QCursor(Qt::WaitCursor) );
+	splash->show();
+	splash->showMessage("Loading data ... ");
+
 	setupUi(this);
 	mGlobalDescriptors = new CLAM_Annotator::DescriptorTableController(mDescriptorsTable, mProject);
 	mSegmentDescriptors = new CLAM_Annotator::DescriptorTableController(mSegmentDescriptorsTable, mProject);
@@ -185,6 +192,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	}
 	initProject();
 	updateAuralizationOptions();
+	QTimer::singleShot(1000, splash, SLOT(close()));
 }
 
 void Annotator::loadSettings()
@@ -225,8 +233,24 @@ void Annotator::appendRecentOpenedProject(const std::string & projectFilename)
 		std::find(mRecentOpenedProjects.begin(), mRecentOpenedProjects.end(), projectFilename);
 	if (found != mRecentOpenedProjects.end()) mRecentOpenedProjects.erase(found);
 	mRecentOpenedProjects.push_front(projectFilename);
-	while (mRecentOpenedProjects.size()>4)
+
+	while (mRecentOpenedProjects.size()>MaxRecentFiles)
 		mRecentOpenedProjects.pop_back();
+	updateRecentFilesMenu();
+
+}
+
+void Annotator::updateRecentFilesMenu()
+{
+	mRecentFilesMenuSeparator->setVisible(mRecentOpenedProjects.size() > 0);
+	for (int i = 0; i < mRecentOpenedProjects.size(); ++i) {
+		QString text = tr("&%1 %2").arg(i + 1).arg(mRecentOpenedProjects[i].c_str());
+		mRecentFilesActions[i]->setText(text);
+		mRecentFilesActions[i]->setData(mRecentOpenedProjects[i].c_str());
+		mRecentFilesActions[i]->setVisible(true);
+	}
+	for (int i = mRecentOpenedProjects.size(); i < MaxRecentFiles; ++i)
+		mRecentFilesActions[i]->setVisible(false);
 }
 
 Annotator::~Annotator()
@@ -477,6 +501,14 @@ void Annotator::makeConnections()
 	connect(playbackLinkCurrentSegmentToPlaybackAction, SIGNAL(toggled(bool)), this, SLOT(linkCurrentSegmentToPlayback(bool)));
 	connect(helpAboutAction,SIGNAL(activated()), mAbout,SLOT(show()));
 
+	mRecentFilesMenuSeparator = mFileMenu->addSeparator();
+	for (int i = 0; i < MaxRecentFiles; ++i) {
+		mRecentFilesActions.push_back(new QAction(this));
+		mRecentFilesActions[i]->setVisible(false);
+		connect(mRecentFilesActions[i], SIGNAL(triggered()), this, SLOT(fileOpenRecent()));
+		mFileMenu->addAction(mRecentFilesActions[i]);
+	}
+
 	// Changing the current song
 	connect(mProjectOverview, SIGNAL(selectionChanged()),
 			this, SLOT(currentSongChanged()));
@@ -508,17 +540,22 @@ void Annotator::makeConnections()
 	connect(mpAudioPlot, SIGNAL(segmentInserted(unsigned)),
 		this, SLOT(insertSegment(unsigned)));
 
-	// Cross position update
+	// BPF editing
 /*
-	connect( mBPFEditor, SIGNAL(yValueChanged(int, double)),
+	connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
 		 mPlayer, SLOT(updateYValue(int, double)));
+*/
+
+	// Interplot viewport syncronization
+/*
+	connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
+		mBPFEditor, SLOT(setHBounds(double,double)));
 	connect( mBPFEditor, SIGNAL(selectedXPos(double)),
 		 mpAudioPlot, SLOT(setSelectedXPos(double)));
 	connect(mpAudioPlot, SIGNAL(selectedXPos(double)),
 		mBPFEditor, SLOT(selectPointFromXCoord(double)));
-	connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
-		mBPFEditor, SLOT(setHBounds(double,double)));
 */
+	// Interplot locator syncronization
 	connect(mpAudioPlot, SIGNAL(selectedRegion(double,double)), // Was xRulerRange
 		mBPFEditor, SLOT(updateLocator(double)));
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)), // Was xRulerRange
@@ -543,6 +580,24 @@ void Annotator::makeConnections()
 	connect(mpAudioPlot, SIGNAL(stopPlayingTime(double)),
 		this, SLOT(onStopPlaying(double)));
 */
+}
+void Annotator::fileOpenRecent()
+{
+	// This hack is from the qt example, don't ask me...
+	QAction *action = qobject_cast<QAction *>(sender());
+	if (!action) return;
+	mProjectFileName = std::string(action->data().toString().toAscii());
+	try
+	{
+		CLAM::XMLStorage::Restore(mProject,mProjectFileName);
+	}
+	catch (CLAM::XmlStorageErr e)
+	{
+		QMessageBox::warning(this,"Error Loading Project File", 
+			constructFileError(mProjectFileName,e));
+		return;
+	}
+	initProject();
 }
 
 void Annotator::linkCurrentSegmentToPlayback(bool enabled)
