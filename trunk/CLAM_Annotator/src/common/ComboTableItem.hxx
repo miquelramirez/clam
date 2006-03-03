@@ -2,7 +2,6 @@
 #ifndef COMBO_TABLE_ITEM_H
 #define COMBO_TABLE_ITEM_H
 
-#include <q3combobox.h>
 #include <qstringlist.h>
 
 #include "TableItem.hxx"
