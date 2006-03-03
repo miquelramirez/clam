@@ -12,7 +12,7 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class QSplitter;
-class Q3ListView;
+class QTreeWidget;
 class QFrame;
 class QSpinBox;
 class QLabel;
@@ -31,7 +31,7 @@ public:
     void addAttribute(const std::string & scope, const std::string & name, const std::string & type);
 private:
     QSplitter* splitter1;
-    Q3ListView* attributeList;
+    QTreeWidget* attributeList;
     QSplitter* splitter2;
     QFrame* attributeProperties;
     QSpinBox* minSpin;
