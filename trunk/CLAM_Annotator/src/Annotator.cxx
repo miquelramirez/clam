@@ -6,7 +6,6 @@
 
 #include <QtGui/QAction>
 #include <QtCore/QThread>
-#include <q3process.h>
 #include <qmessagebox.h>
 #include <qtabwidget.h>
 #include <QtGui/QFileDialog>
@@ -107,6 +106,9 @@ void Annotator::computeSongDescriptors()
 	mStatusBar << "Launching Extractor..." << mStatusBar;
 	TaskRunner * runner = new TaskRunner();
 	addDockWidget( Qt::BottomDockWidgetArea, runner);
+	// Wait the window to be redrawn after the reconfiguration
+	// before loading the cpu with the extractor
+	qApp->processEvents();
 	QDir projectPath(mProjectFileName.c_str());
 	projectPath.cdUp();
 	bool ok = runner->run(QString(mProject.GetExtractor().c_str()),
@@ -120,6 +122,7 @@ void Annotator::computeSongDescriptors()
 					"<p>The configured command was:</p><tt>%1</tt>")
 				.arg(mProject.GetExtractor().c_str())
 				);
+		delete runner;
 		return;
 	}
 	return;
