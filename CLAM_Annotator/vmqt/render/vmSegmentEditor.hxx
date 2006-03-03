@@ -24,7 +24,7 @@ namespace CLAM
 			void segmentOffsetChanged(unsigned,double);
 			void segmentInserted(unsigned);
 			void segmentDeleted(unsigned);
-			void currentSegmentChanged(unsigned);
+			void currentSegmentChanged();
 
 		public slots:
 			void checkCurrent(double);

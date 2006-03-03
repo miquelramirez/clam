@@ -1,4 +1,4 @@
-#include <QGridLayout>
+#include <QtGui/QGridLayout>
 #include "vmRuler.hxx"
 #include "vmPlot2D.hxx"
 #include "vmScrollGroup.hxx"
@@ -13,6 +13,7 @@ namespace CLAM
 	{
 		SegmentationPlot::SegmentationPlot(QWidget* parent)
 			: WPlot(parent)
+			, mCurrentSegmentFollowsPlay(true)
 		{
 			InitSegmentationPlot();
 		}
@@ -72,14 +73,22 @@ namespace CLAM
 			mLocator->SetLocatorColor(Color(255,0,0));
 		}
 
+		void SegmentationPlot::setCurrentSegmentFollowsPlay(bool active)
+		{
+			mCurrentSegmentFollowsPlay=active;
+			mSegmentation->allowChangeCurrent(active);
+		}
+
 		void SegmentationPlot::updateLocator(double value)
 		{
 			mLocator->updateLocator(value);
+			mSegmentation->checkCurrent(value);
 		}
 
 		void SegmentationPlot::updateLocator(double value, bool flag)
 		{
 			mLocator->updateLocator(value,flag);
+			mSegmentation->checkCurrent(value);
 		}
 
 		void SegmentationPlot::setMaxVScroll(int value)
@@ -157,7 +166,7 @@ namespace CLAM
 					this,SIGNAL(segmentOffsetChanged(unsigned,double)));
 			connect(mSegmentation,SIGNAL(segmentInserted(unsigned)),this,SIGNAL(segmentInserted(unsigned)));
 			connect(mSegmentation,SIGNAL(segmentDeleted(unsigned)),this,SIGNAL(segmentDeleted(unsigned)));
-			connect(mSegmentation,SIGNAL(currentSegmentChanged(unsigned)),this,SIGNAL(currentSegmentChanged(unsigned)));
+			connect(mSegmentation,SIGNAL(currentSegmentChanged()),this,SIGNAL(currentSegmentChanged()));
 		}
 
 		void SegmentationPlot::AdjustYRulerWidth(double min, double max)

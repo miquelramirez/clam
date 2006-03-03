@@ -2,7 +2,6 @@
 #include "vmRenderer2D.hxx"
 #include "vmPlot2D.hxx"
 #include <QtCore/QTimer>
-#include <iostream>
 
 namespace CLAM
 {
@@ -224,7 +223,7 @@ namespace CLAM
 			Draw();
 			RenderToolTip(); 
 			swapBuffers();
-			std::cout << "Saved refresh : " << mUpdatePending << std::endl;
+//			std::cout << "Saved refresh : " << mUpdatePending << std::endl;
 			mUpdatePending=0;
 		}
 		
