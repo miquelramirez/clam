@@ -51,7 +51,7 @@ namespace CLAM_Annotator
 		}
 		mTable->setNumRows(mPlugins.size()); // Some attributes were filtered
 		mTable->adjustColumn(0);
-		if (attributes.size()) mTable->show();
+		mTable->show();
 	}
 	void DescriptorTableController::refreshData(int element, CLAM::DescriptionDataPool * dataPool)
 	{
