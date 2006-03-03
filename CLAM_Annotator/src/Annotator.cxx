@@ -514,11 +514,15 @@ void Annotator::makeConnections()
 		 mPlayer, SLOT(updateYValue(int, double)));
 	connect( mBPFEditor, SIGNAL(selectedXPos(double)),
 		 mpAudioPlot, SLOT(setSelectedXPos(double)));
-	connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
-		mBPFEditor, SLOT(setHBounds(double,double)));
 	connect(mpAudioPlot, SIGNAL(selectedXPos(double)),
 		mBPFEditor, SLOT(selectPointFromXCoord(double)));
+	connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
+		mBPFEditor, SLOT(setHBounds(double,double)));
 */
+	connect(mpAudioPlot, SIGNAL(selectedRegion(double,double)), // Was xRulerRange
+		mBPFEditor, SLOT(updateLocator(double)));
+	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)), // Was xRulerRange
+		mpAudioPlot, SLOT(updateLocator(double)));
 	// Playhead update
 	connect(mPlayer, SIGNAL(playingTime(double)),
 		mpAudioPlot, SLOT(updateLocator(double)), Qt::DirectConnection);
