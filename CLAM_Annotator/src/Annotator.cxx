@@ -133,8 +133,8 @@ void Annotator::computeSongDescriptors()
 				tr("<p><b>Error: The extractor was terminated with an error.</b></p>"));
 		return;
 	}
-	loadDescriptorPool();
 	*/
+	loadDescriptorPool(); // TODO: This should be done thru an slot from the runner
 }
 
 Annotator::Annotator(const std::string & nameProject = "")
