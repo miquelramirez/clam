@@ -53,14 +53,12 @@ class StatusBarDumper
 		template <typename ObjectType>
 		StatusBarDumper & operator << (const ObjectType & object)
 		{
-			return *this;
-//			(*os) << object;
-//			std::cout << object;
+			(*os) << object;
+			std::cout << object;
 			return *this;
 		}
 		StatusBarDumper & operator << (const StatusBarDumper & statusDumper)
 		{
-			return *this;
 			(*os) << std::flush;
 			std::cout << std::endl;
 			mStatusBar->showMessage(QString(os->str().c_str()), 2000);
@@ -114,7 +112,7 @@ public slots:
 	void computeSongDescriptors();
 
 	void refreshAudioData();
-	void changeCurrentSegment(unsigned current);
+	void changeCurrentSegment();
 	void changeFrameLevelDescriptor(int current);
 	void updateAuralizationOptions();
 	void linkCurrentSegmentToPlayback(bool enabled);

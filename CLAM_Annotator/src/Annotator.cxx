@@ -493,12 +493,12 @@ void Annotator::makeConnections()
 	connect(songSaveDescriptorsAction, SIGNAL(activated()), this, SLOT(saveDescriptors()));
 	connect(playbackAuralizeSegmentOnsetsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
 	connect(playbackAuralizeFrameLevelDescriptorsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
+	connect(playbackLinkCurrentSegmentToPlaybackAction, SIGNAL(toggled(bool)), this, SLOT(linkCurrentSegmentToPlayback(bool)));
 	connect(songComputeDescriptorsAction, SIGNAL(activated()), this, SLOT(computeSongDescriptors()));
 	connect(helpWhats_thisAction, SIGNAL(activated()), this, SLOT(whatsThis()));
 	connect(mPlayAction, SIGNAL(activated()), this, SLOT(startPlaying()));
 	connect(mPauseAction, SIGNAL(activated()), this, SLOT(pausePlaying()));
 	connect(mStopAction, SIGNAL(activated()), this, SLOT(stopPlaying()));
-	connect(playbackLinkCurrentSegmentToPlaybackAction, SIGNAL(toggled(bool)), this, SLOT(linkCurrentSegmentToPlayback(bool)));
 	connect(helpAboutAction,SIGNAL(activated()), mAbout,SLOT(show()));
 
 	mRecentFilesMenuSeparator = mFileMenu->addSeparator();
@@ -533,8 +533,8 @@ void Annotator::makeConnections()
 		this, SLOT(segmentationMarksChanged(unsigned, double)));
 	connect(mpAudioPlot, SIGNAL(segmentOffsetChanged(unsigned,double)),
 		this, SLOT(segmentationMarksChanged(unsigned, double)));
-	connect(mpAudioPlot, SIGNAL(currentSegmentChanged(unsigned)),
-		this, SLOT(changeCurrentSegment(unsigned)));
+	connect(mpAudioPlot, SIGNAL(currentSegmentChanged()),
+		this, SLOT(changeCurrentSegment()));
 	connect(mpAudioPlot, SIGNAL(segmentDeleted(unsigned)),
 		this, SLOT(removeSegment(unsigned)));
 	connect(mpAudioPlot, SIGNAL(segmentInserted(unsigned)),
@@ -616,9 +616,7 @@ void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 			return;
 		}
 	}
-#ifndef QTPORT
-	mpAudioPlot->ChangeSegmentOnPlay(enabled);
-#endif// QTPORT
+	mpAudioPlot->setCurrentSegmentFollowsPlay(enabled);
 }
 
 void Annotator::markCurrentSongChanged()
@@ -633,7 +631,7 @@ void Annotator::markCurrentSongChanged()
 }
 
 
-void Annotator::changeCurrentSegment(unsigned current)
+void Annotator::changeCurrentSegment()
 {
 	mStatusBar << "Segment changed to " << mSegmentation->current() << mStatusBar;
 	// TODO: Some widgets may have half edited information. Need update.
