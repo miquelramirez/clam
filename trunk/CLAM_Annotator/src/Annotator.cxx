@@ -278,7 +278,6 @@ void Annotator::initInterface()
 	mBPFEditor->setAutoFillBackground(true);
 	frameLevelContainerLayout->addWidget(mBPFEditor);
 	mBPFEditor->SetZoomSteps(5,5);
-	mBPFEditor->hide();
 
 	mpAudioPlot = new AudioPlot(mAudioPlotContainer); // ,0,0,false);
 	QVBoxLayout * audioPlotContainerLayout = new QVBoxLayout(mAudioPlotContainer);
@@ -290,7 +289,6 @@ void Annotator::initInterface()
 	mCurrentAudio.SetSize(20000);
 //	mpAudioPlot->SetData(mCurrentAudio);
 #endif//QTPORT
-	mpAudioPlot->hide();
 
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, "Description Schema");
