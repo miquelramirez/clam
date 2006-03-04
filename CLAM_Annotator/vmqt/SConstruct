@@ -1,0 +1,139 @@
+#!/usr/bin/python
+import os
+import glob
+import SCons.Util
+from SCons.Util import CLVar
+
+CLAMSandbox ='/home/vokimon/CajitasDeArena'
+CLAMInstallDir = CLAMSandbox + '/CLAM-Install'
+
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(path+"/"+pattern)
+	return files
+
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+
+env = Environment(tools=['default','qt'])
+env['CXXFILESUFFIX'] = '.cxx'
+env['QT_MOC'] = 'moc-qt4'
+env['QT4_MOC'] = 'moc-qt4'
+env['QT4_UIC'] = 'uic-qt4'
+env['QT_MOCHPREFIX'] = 'generated/moc_'
+env['QT_UISUFFIX'] = '.ui'
+env['QT_UICDECLPREFIX'] = 'generated/ui_'
+env['QT_UICDECLSUFFIX'] = '.hxx'
+env['QT_LIB'] = '' # KLUDGE to avoid linking qt3 library
+
+env.Replace(QT_UIC='echo ***** Using old UIC!!!!!!')
+
+qrcbuilder = Builder(
+	action ='rcc $SOURCE -o $TARGET',
+	src_suffix = '.qrc',
+	suffix = '.cxx',
+	prefix = 'generated/qrc_',
+	single_source = True
+	)
+env.Append( BUILDERS = { 'Qrc': qrcbuilder } )
+
+env['QT_UIC4COM'] = [
+	CLVar('$QT4_UIC $QT_UICDECLFLAGS -o ${TARGETS[0]} $SOURCE'),
+	]
+uic4builder = Builder(
+    action='$QT_UIC4COM',
+	src_suffix='$QT_UISUFFIX',
+	suffix='$QT_UICDECLSUFFIX',
+	prefix='$QT_UICDECLPREFIX',
+	single_source = True
+	)
+env.Append( BUILDERS = { 'Uic4': uic4builder } )
+
+pkgconfigLibraries = [
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	'QtGui',
+#	'QtSql',
+#	'QtNetwork',
+#	'QtTest',
+#	'QtXml',
+	'QtCore',
+	'QtOpenGL',
+#	'QtSvg',
+	'Qt3Support',
+]
+
+libSourcePaths = []
+libSourcePaths += recursiveDirs("plot")
+libSourcePaths += recursiveDirs("render")
+libSourcePaths += recursiveDirs("data")
+libSourcePaths += recursiveDirs("util")
+libSourcePaths += recursiveDirs("player")
+libSourcePaths += recursiveDirs("misc")
+libSourcePaths += recursiveDirs("widget")
+extraPaths = []
+extraPaths += recursiveDirs("examples/utils")
+extraPaths += [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+]
+includePaths = libSourcePaths + extraPaths
+
+qrcfiles = scanFiles("*.qrc", libSourcePaths)
+uifiles = scanFiles("*.qt4.ui", libSourcePaths)
+if len(uifiles): uiheaders = env.Uic4(source=uifiles)
+sources = scanFiles('*.cxx', libSourcePaths)
+sources += filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
+sources += filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
+if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
+sources = dict.fromkeys(sources).keys()
+
+printableSources = [os.path.basename(source) for source in sources ]
+printableSources.sort()
+print printableSources
+
+env.Append(CPPPATH=includePaths)
+env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
+	(
+		CLAMInstallDir,
+		' '.join(pkgconfigLibraries)))
+env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
+env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
+#env.Append(CPPFLAGS=['-DQT3_SUPPORT_WARNINGS'])
+examplesMainSources = [
+	"examples/src/audio_plot_example.cxx",
+	"examples/src/fundamental_plot_example.cxx",
+	"examples/src/segmentation_plot_example.cxx",
+	"examples/src/sintracks_plot_example.cxx",
+	"examples/src/spectrum_plot_example.cxx",
+	"examples/src/spectrogram_plot_example.cxx",
+	"examples/src/audio_stereo_plot_example.cxx",
+	"examples/src/bpf_plot_example.cxx",
+	"examples/src/multibpf_plot_example.cxx",
+	"examples/src/playable_audio_plot_example.cxx",
+	"examples/src/playable_audio_stereo_plot_example.cxx",
+	"examples/src/playable_bpf_plot_example.cxx",
+	"examples/src/playable_fundamental_plot_example.cxx",
+	"examples/src/playable_multibpf_plot_example.cxx",
+]
+
+exampleSources = scanFiles('*.cxx', ['examples/utils'])
+
+staticLibrary = env.StaticLibrary(target='clam_vmqt4', source=sources)
+env.Append(LIBPATH='.')
+env.Append(LIBS='clam_vmqt4')
+examples = []
+for main in examplesMainSources :
+	executable = 'examples/'+os.path.splitext(os.path.basename(main))[0]
+	examples += [ env.Program(target=executable, source = exampleSources + [main] ) ]
+
+env.Alias('examples',examples)
+
+env.Default(staticLibrary)
+
+
+
