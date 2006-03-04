@@ -159,7 +159,7 @@ contains descriptors values for song level descriptors. Song level descriptors a
               <number>6</number>
              </property>
              <item>
-              <widget class="QSplitter" name="" >
+              <widget class="QSplitter" name="splitter" >
                <property name="orientation" >
                 <enum>Qt::Vertical</enum>
                </property>
@@ -188,7 +188,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
 &lt;/ul></string>
                 </property>
                </widget>
-               <widget class="QSplitter" name="" >
+               <widget class="QSplitter" name="splitter" >
                 <property name="orientation" >
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -223,7 +223,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
                   <enum>QFrame::Plain</enum>
                  </property>
                 </widget>
-                <widget class="QWidget" name="" >
+                <widget class="QWidget" name="widget" >
                  <layout class="QVBoxLayout" >
                   <property name="margin" >
                    <number>0</number>
@@ -330,13 +330,6 @@ to the proper cell.&lt;/p></string>
     <addaction name="separator" />
     <addaction name="helpWhats_thisAction" />
    </widget>
-   <widget class="QMenu" name="Song" >
-    <property name="title" >
-     <string>&amp;Song</string>
-    </property>
-    <addaction name="songSaveDescriptorsAction" />
-    <addaction name="songComputeDescriptorsAction" />
-   </widget>
    <widget class="QMenu" name="Playback" >
     <property name="title" >
      <string>&amp;Playback</string>
@@ -360,12 +353,20 @@ to the proper cell.&lt;/p></string>
     <addaction name="separator" />
     <addaction name="fileExitAction" />
    </widget>
+   <widget class="QMenu" name="Song" >
+    <property name="title" >
+     <string>&amp;Song</string>
+    </property>
+    <addaction name="songSaveDescriptorsAction" />
+    <addaction name="songComputeDescriptorsAction" />
+   </widget>
    <widget class="QMenu" name="Project" >
     <property name="title" >
      <string>&amp;Project</string>
     </property>
     <addaction name="projectLoadSchemaAction" />
     <addaction name="fileAdd_to_projectAction" />
+    <addaction name="editDelete_from_projectAction" />
    </widget>
    <addaction name="mFileMenu" />
    <addaction name="Project" />
