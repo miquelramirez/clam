@@ -13,6 +13,8 @@
         <file>images/vcs_add.png</file>
         <file>images/vcs_remove.png</file>
         <file>images/view_tree.png</file>
+        <file>images/xkill.png</file>
+        <file>images/label.png</file>
     </qresource>
     <qresource prefix="/logos" >
         <file>images/annotator-splash1.png</file>
