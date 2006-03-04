@@ -33,6 +33,19 @@ public:
 		songs.push_back(Song());
 		songs.back().SetSoundFile(songFileName);
 	}
+	void RemoveSong(const std::string & songFileName)
+	{
+		std::cout << "Removing '"<<  songFileName << "'" << std::endl;
+		std::vector<Song> & songs = GetSongs();
+		for (std::vector<Song>::iterator it= songs.begin();
+				it!= songs.end(); it++)
+		{
+			if (it->GetSoundFile() != songFileName) continue;
+			std::cout << "Found to remove '"<<  it->GetSoundFile() << "'" << std::endl;
+			songs.erase(it);
+			return;
+		}
+	}
 	bool LoadScheme(const std::string & schemeFileName, const std::string & basePath="");
 	CLAM::DescriptionScheme & GetDescriptionScheme()
 	{
