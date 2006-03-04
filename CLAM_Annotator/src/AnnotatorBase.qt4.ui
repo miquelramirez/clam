@@ -58,7 +58,7 @@
           <property name="orientation" >
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="Q3ListView" name="mProjectOverview" >
+          <widget class="QTreeWidget" name="mProjectOverview" >
            <property name="sizePolicy" >
             <sizepolicy>
              <hsizetype>3</hsizetype>
@@ -75,10 +75,10 @@
 &lt;em>Changed&lt;/em> column tells whether the song description has save pending changes.&lt;/p></string>
            </property>
            <property name="selectionMode" >
-            <enum>Q3ListView::Single</enum>
+            <enum>QAbstractItemView::SingleSelection</enum>
            </property>
            <property name="rootIsDecorated" >
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <column>
             <property name="text" >
@@ -646,13 +646,6 @@ to the proper cell.&lt;/p></string>
    <class>Q3Table</class>
    <extends></extends>
    <header>q3table.h</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends></extends>
-   <header>q3listview.h</header>
    <container>0</container>
    <pixmap></pixmap>
   </customwidget>

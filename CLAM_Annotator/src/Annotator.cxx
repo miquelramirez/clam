@@ -87,8 +87,8 @@ bool Annotator::loaderFinished()
 
 void Annotator::computeSongDescriptors()
 {
-	if (!mProjectOverview->selectedItem()) return;
-	QString filename = mProjectOverview->selectedItem()->text(0);
+	if (!mProjectOverview->currentItem()) return;
+	QString filename = mProjectOverview->currentItem()->text(0);
 	filename  = projectToAbsolutePath(filename.toStdString()).c_str();
 	if (!std::ifstream(filename.toUtf8()))
 	{
@@ -262,7 +262,7 @@ Annotator::~Annotator()
 
 void Annotator::initInterface()
 {
-	mProjectOverview->setSorting(-1); // Unordered
+	mProjectOverview->setSortingEnabled(false); // Unordered
 
 	mProjectDocumentation = new QTextBrowser( mMainTabWidget);
 	mMainTabWidget->insertTab(0, mProjectDocumentation, "Project Documentation");
@@ -508,7 +508,7 @@ void Annotator::makeConnections()
 	}
 
 	// Changing the current song
-	connect(mProjectOverview, SIGNAL(selectionChanged()),
+	connect(mProjectOverview, SIGNAL(itemSelectionChanged()),
 			this, SLOT(currentSongChanged()));
 	// Changing the current frame level descriptor
 	connect(mFrameLevelTabBar, SIGNAL(selected(int)),
@@ -620,12 +620,8 @@ void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 void Annotator::markCurrentSongChanged()
 {
 	mDescriptorsNeedSave = true;
-	Q3ListViewItemIterator it( mProjectOverview );
-	for ( ; it.current() && !it.current()->isSelected() ; it++ );
-	if ( it.current() )
-	{
-		it.current()->setText(2, "Yes");	
-	}
+	if (!mProjectOverview->currentItem()) return;
+	mProjectOverview->currentItem()->setText(2, "Yes");	
 }
 
 
@@ -660,15 +656,17 @@ void Annotator::updateSongListWidget()
 {
 	mProjectOverview->clear();
 	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongs();
-	Q3ListViewItem *lastItem = 0;
 	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
 	{
-		Q3ListViewItem * item = new Q3ListViewItem(
-			mProjectOverview, lastItem,
-			it->GetSoundFile().c_str(),
-			tr("Yes"), tr("No") );
-		lastItem = item;
+		QTreeWidgetItem * item = new QTreeWidgetItem(
+			mProjectOverview,
+			QStringList()
+				<< it->GetSoundFile().c_str()
+				<< tr("Yes")
+				<< tr("No") );
 	}
+	mProjectOverview->show();
+	mProjectOverview->resizeColumnToContents(0);
 }
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
@@ -689,24 +687,17 @@ void Annotator::closeEvent ( QCloseEvent * e )
 
 void Annotator::markAllSongsUnchanged()
 {
-	Q3ListViewItemIterator it (mProjectOverview);
-	for ( ; it.current() ; ++it )
+	QTreeWidgetItemIterator it (mProjectOverview);
+	for ( ; *it ; ++it )
 	{
-		it.current()->setText(2, "No");
+		(*it)->setText(2, "No");
 	}
 }
 
 void Annotator::deleteSongsFromProject()
 {
-	std::vector< Q3ListViewItem * > toBeDeleted;
-
-	for ( Q3ListViewItemIterator it(mProjectOverview);
-			it.current(); it++ )
-		if ( it.current()->isSelected() )
-			toBeDeleted.push_back(*it);
-
-	
-	for ( std::vector< Q3ListViewItem* >::iterator it = toBeDeleted.begin();
+	QList< QTreeWidgetItem * > toBeDeleted = mProjectOverview->selectedItems();
+	for ( QList< QTreeWidgetItem* >::iterator it = toBeDeleted.begin();
 			it!= toBeDeleted.end(); it++ )
 		delete *it;
 	markProjectChanged(true);
@@ -835,7 +826,7 @@ void Annotator::currentSongChanged()
 	stopPlaying();
 	mStatusBar << "Saving Previous Song Descriptors..." << mStatusBar;
 	saveDescriptors();
-	Q3ListViewItem * item = mProjectOverview->currentItem();
+	QTreeWidgetItem * item = mProjectOverview->currentItem();
 
 	if (item == 0) return;
 
