@@ -76,14 +76,14 @@ sourcePaths = [
 	'common',
 	'generated',
 ]
-sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/plot")
-sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/render")
-sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/data")
-sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/util")
-sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/player")
-sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/misc")
-sourcePaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/widget")
 extraPaths = []
+extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/plot")
+extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/render")
+extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/data")
+extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/util")
+extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/player")
+extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/misc")
+extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/widget")
 extraPaths += [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
@@ -106,6 +106,8 @@ sources.remove('./main.cxx')
 sources.remove('./Test.cxx')
 
 env.Append(CPPPATH=includePaths)
+env.Append(LIBPATH=CLAMSandbox+"/CLAM-draft/vmqt")
+env.Append(LIBS="clam_vmqt4")
 env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 	(
 		CLAMInstallDir,
