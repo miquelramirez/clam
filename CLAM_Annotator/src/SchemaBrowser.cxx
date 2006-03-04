@@ -2,22 +2,16 @@
 
 #include "Schema.hxx"
 
-#include <QtCore/QVariant>
 #include <QtGui/QSplitter>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QSpinBox>
 #include <QtGui/QLabel>
 #include <QtGui/QTextBrowser>
-#include <QtGui/QLayout>
-#include <QtGui/QImage>
-#include <QtGui/QPixmap>
 #include <QtGui/QLineEdit>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QGridLayout>
-#include <QtGui/QLabel>
 #include <QtGui/QFrame>
-#include <QtGui/QHeaderView>
 
 SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
     : QWidget( parent, fl )
