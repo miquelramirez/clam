@@ -699,8 +699,9 @@ void Annotator::deleteSongsFromProject()
 	QList< QTreeWidgetItem * > toBeDeleted = mProjectOverview->selectedItems();
 	for ( QList< QTreeWidgetItem* >::iterator it = toBeDeleted.begin();
 			it!= toBeDeleted.end(); it++ )
-		delete *it;
+		mProject.RemoveSong((*it)->text(0).toStdString());
 	markProjectChanged(true);
+	updateSongListWidget();
 }
 
 void Annotator::addSongsToProject()
