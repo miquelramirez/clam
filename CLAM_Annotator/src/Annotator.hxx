@@ -125,6 +125,7 @@ private slots:
 	void startPlaying();
 	void pausePlaying();
 	void stopPlaying();
+	void on_helpWhats_thisAction_triggered();
 
 private:
 	void updateSongListWidget();

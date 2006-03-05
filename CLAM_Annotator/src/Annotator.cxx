@@ -17,6 +17,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QDockWidget>
 #include <QtGui/QSplashScreen>
+#include <QtGui/QWhatsThis>
 
 #include <algorithm>
 #include <iostream>
@@ -1194,5 +1195,9 @@ void Annotator::stopPlaying()
 
 }
 
+void Annotator::on_helpWhats_thisAction_triggered()
+{
+	QWhatsThis::enterWhatsThisMode();
+}
 
 
