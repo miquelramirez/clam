@@ -4,7 +4,7 @@ import glob
 import SCons.Util
 from SCons.Util import CLVar
 
-options = Options('Annotator.conf', ARGUMENTS)
+options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(PathOption('clam_vmqt4_path', 'The path to the vmqt module', '')) # to be removed
 
@@ -18,7 +18,7 @@ def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
 env = Environment(tools=['default','qt'], options=options)
-options.Save('Annotator.conf', env)
+options.Save('options.cache', env)
 
 CLAMInstallDir = env['clam_prefix']
 CLAMVmQtPath = env['clam_vmqt4_path']
