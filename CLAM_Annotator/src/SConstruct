@@ -4,10 +4,9 @@ import glob
 import SCons.Util
 from SCons.Util import CLVar
 
-CLAMSandbox ='/home/parumi/clam-sandboxes'
-CLAMInstallDir = CLAMSandbox + '/local'
-
-
+options = Options('Annotator.conf', ARGUMENTS)
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('clam_vmqt4_path', 'The path to the vmqt module', '')) # to be removed
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -18,8 +17,12 @@ def scanFiles(pattern, paths) :
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
+env = Environment(tools=['default','qt'], options=options)
+options.Save('Annotator.conf', env)
 
-env = Environment(tools=['default','qt'])
+CLAMInstallDir = env['clam_prefix']
+CLAMVmQtPath = env['clam_vmqt4_path']
+
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT_MOC'] = 'moc-qt4'
 env['QT4_MOC'] = 'moc-qt4'
@@ -78,21 +81,21 @@ sourcePaths = [
 	'generated',
 ]
 extraPaths = []
-extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/plot")
-extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/render")
-extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/data")
-extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/util")
-extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/player")
-extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/misc")
-extraPaths += recursiveDirs(CLAMSandbox+"/CLAM-draft/vmqt/widget")
+extraPaths += recursiveDirs(CLAMVmQtPath+"/plot")
+extraPaths += recursiveDirs(CLAMVmQtPath+"/render")
+extraPaths += recursiveDirs(CLAMVmQtPath+"/data")
+extraPaths += recursiveDirs(CLAMVmQtPath+"/util")
+extraPaths += recursiveDirs(CLAMVmQtPath+"/player")
+extraPaths += recursiveDirs(CLAMVmQtPath+"/misc")
+extraPaths += recursiveDirs(CLAMVmQtPath+"/widget")
 extraPaths += [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+	'/usr/include/qt4/', # quick KLUDGE for ubuntu
 	'/usr/include/qt4/QtCore', # quick KLUDGE for ubuntu
 	'/usr/include/qt4/QtGui', # quick KLUDGE for ubuntu
-	'/usr/include/qt4/QtOpenGL', # quick KLUDGE for ubuntu
+	'/usr/include/qt4/QtOpenGl', # quick KLUDGE for ubuntu
 	'/usr/include/qt4/Qt3Support', # quick KLUDGE for ubuntu
-#	'/usr/include/qt4/', # quick KLUDGE for ubuntu
 ]
 includePaths = sourcePaths + extraPaths
 
@@ -108,7 +111,7 @@ sources.remove('./main.cxx')
 sources.remove('./Test.cxx')
 
 env.Append(CPPPATH=includePaths)
-env.Append(LIBPATH=CLAMSandbox+"/CLAM-draft/vmqt")
+env.Append(LIBPATH=CLAMVmQtPath)
 env.Append(LIBS="clam_vmqt4")
 env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 	(
