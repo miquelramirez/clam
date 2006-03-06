@@ -8,14 +8,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>992</width>
+    <width>979</width>
     <height>553</height>
    </rect>
   </property>
   <property name="sizePolicy" >
    <sizepolicy>
-    <hsizetype>5</hsizetype>
-    <vsizetype>5</vsizetype>
+    <hsizetype>3</hsizetype>
+    <vsizetype>3</vsizetype>
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -111,6 +111,9 @@
              <height>0</height>
             </size>
            </property>
+           <property name="focusPolicy" >
+            <enum>Qt::WheelFocus</enum>
+           </property>
            <property name="whatsThis" >
             <string>&lt;p>The &lt;b>song level descriptors table&lt;/b>
 contains descriptors values for song level descriptors. Song level descriptors are those that has a single occurrence for each song. As constrast, 'note level descriptors' would have an occurrence for each note.&lt;/p>
@@ -150,7 +153,7 @@ contains descriptors values for song level descriptors. Song level descriptors a
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <widget class="QWidget" name="mFrameLevelContainer" >
+           <widget class="QFrame" name="mFrameLevelContainer" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>3</hsizetype>
@@ -165,6 +168,9 @@ contains descriptors values for song level descriptors. Song level descriptors a
               <height>200</height>
              </size>
             </property>
+            <property name="focusPolicy" >
+             <enum>Qt::WheelFocus</enum>
+            </property>
             <property name="whatsThis" >
              <string>&lt;p>The &lt;b>frame level descriptors editor&lt;/b>
 allows editing floating point descriptors that has an occurrence for each frame.&lt;/p>
@@ -174,12 +180,31 @@ allows editing floating point descriptors that has an occurrence for each frame.
 &lt;li>TODO: Put the keybindings&lt;/li>
 &lt;/ul></string>
             </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Raised</enum>
+            </property>
            </widget>
-           <widget class="QListWidget" name="listWidget_2" />
+           <widget class="QListWidget" name="mFrameLevelAttributeList" >
+            <property name="minimumSize" >
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="alternatingRowColors" >
+             <bool>true</bool>
+            </property>
+            <property name="resizeMode" >
+             <enum>QListView::Adjust</enum>
+            </property>
+           </widget>
           </widget>
           <widget class="QSplitter" name="splitter" >
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
+           <property name="midLineWidth" >
+            <number>4</number>
            </property>
            <widget class="QFrame" name="mAudioPlotContainer" >
             <property name="sizePolicy" >
@@ -196,6 +221,9 @@ allows editing floating point descriptors that has an occurrence for each frame.
               <height>200</height>
              </size>
             </property>
+            <property name="focusPolicy" >
+             <enum>Qt::WheelFocus</enum>
+            </property>
             <property name="whatsThis" >
              <string>&lt;p>The &lt;b>segmentation editor&lt;/b> allows you to change song level segmentations.&lt;/p>
 &lt;ul>
@@ -206,10 +234,10 @@ allows editing floating point descriptors that has an occurrence for each frame.
 &lt;/ul></string>
             </property>
             <property name="frameShape" >
-             <enum>QFrame::NoFrame</enum>
+             <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow" >
-             <enum>QFrame::Plain</enum>
+             <enum>QFrame::Raised</enum>
             </property>
            </widget>
            <widget class="QWidget" name="widget" >
@@ -221,21 +249,15 @@ allows editing floating point descriptors that has an occurrence for each frame.
               <number>6</number>
              </property>
              <item>
-              <widget class="QComboBox" name="mSegmentationSelection" >
-               <property name="whatsThis" >
-                <string>This combo box allows you to change the segmentation that is currently displayed on the segmentation view.</string>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="Q3Table" name="mSegmentDescriptorsTable" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>5</hsizetype>
-                 <vsizetype>5</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+               <property name="minimumSize" >
+                <size>
+                 <width>200</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="focusPolicy" >
+                <enum>Qt::WheelFocus</enum>
                </property>
                <property name="whatsThis" >
                 <string>&lt;p>The &lt;b>segmentation level descriptors table&lt;/b>
@@ -254,6 +276,16 @@ to the proper cell.&lt;/p></string>
                </property>
                <property name="selectionMode" >
                 <enum>Q3Table::SingleRow</enum>
+               </property>
+               <property name="focusStyle" >
+                <enum>Q3Table::FollowStyle</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="mSegmentationSelection" >
+               <property name="whatsThis" >
+                <string>This combo box allows you to change the segmentation that is currently displayed on the segmentation view.</string>
                </property>
               </widget>
              </item>
@@ -302,7 +334,7 @@ to the proper cell.&lt;/p></string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>992</width>
+     <width>979</width>
      <height>31</height>
     </rect>
    </property>
@@ -313,6 +345,30 @@ to the proper cell.&lt;/p></string>
     <addaction name="helpAboutAction" />
     <addaction name="separator" />
     <addaction name="helpWhats_thisAction" />
+   </widget>
+   <widget class="QMenu" name="mFileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="fileNew_projectAction" />
+    <addaction name="fileOpen_projectAction" />
+    <addaction name="fileSave_projectAction" />
+    <addaction name="fileSave_project_asAction" />
+    <addaction name="separator" />
+    <addaction name="fileExitAction" />
+   </widget>
+   <widget class="QMenu" name="Project" >
+    <property name="title" >
+     <string>&amp;Project</string>
+    </property>
+    <addaction name="projectLoadSchemaAction" />
+    <addaction name="fileAdd_to_projectAction" />
+    <addaction name="editDelete_from_projectAction" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>View</string>
+    </property>
    </widget>
    <widget class="QMenu" name="Playback" >
     <property name="title" >
@@ -326,17 +382,6 @@ to the proper cell.&lt;/p></string>
     <addaction name="playbackAuralizeFrameLevelDescriptorsAction" />
     <addaction name="playbackLinkCurrentSegmentToPlaybackAction" />
    </widget>
-   <widget class="QMenu" name="mFileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="fileNew_projectAction" />
-    <addaction name="fileOpen_projectAction" />
-    <addaction name="fileSave_projectAction" />
-    <addaction name="fileSave_project_asAction" />
-    <addaction name="separator" />
-    <addaction name="fileExitAction" />
-   </widget>
    <widget class="QMenu" name="Song" >
     <property name="title" >
      <string>&amp;Song</string>
@@ -344,18 +389,11 @@ to the proper cell.&lt;/p></string>
     <addaction name="songSaveDescriptorsAction" />
     <addaction name="songComputeDescriptorsAction" />
    </widget>
-   <widget class="QMenu" name="Project" >
-    <property name="title" >
-     <string>&amp;Project</string>
-    </property>
-    <addaction name="projectLoadSchemaAction" />
-    <addaction name="fileAdd_to_projectAction" />
-    <addaction name="editDelete_from_projectAction" />
-   </widget>
    <addaction name="mFileMenu" />
    <addaction name="Project" />
    <addaction name="Song" />
    <addaction name="Playback" />
+   <addaction name="menuView" />
    <addaction name="help" />
   </widget>
   <action name="fileExitAction" >
@@ -635,6 +673,16 @@ to the proper cell.&lt;/p></string>
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mMainTabWidget</tabstop>
+  <tabstop>mProjectOverview</tabstop>
+  <tabstop>mDescriptorsTable</tabstop>
+  <tabstop>mFrameLevelContainer</tabstop>
+  <tabstop>mFrameLevelAttributeList</tabstop>
+  <tabstop>mAudioPlotContainer</tabstop>
+  <tabstop>mSegmentDescriptorsTable</tabstop>
+  <tabstop>mSegmentationSelection</tabstop>
+ </tabstops>
  <resources>
   <include location="images.qrc" />
  </resources>
