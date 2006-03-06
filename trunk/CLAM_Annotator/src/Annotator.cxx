@@ -279,6 +279,7 @@ void Annotator::initInterface()
 	mBPFEditor->setAutoFillBackground(true);
 	frameLevelContainerLayout->addWidget(mBPFEditor);
 	mBPFEditor->SetZoomSteps(5,5);
+	mFrameLevelTabBar->hide();
 
 	mpAudioPlot = new AudioPlot(mAudioPlotContainer); // ,0,0,false);
 	QVBoxLayout * audioPlotContainerLayout = new QVBoxLayout(mAudioPlotContainer);
@@ -468,6 +469,7 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 {
 	while (mFrameLevelTabBar->count())
 		mFrameLevelTabBar->removeTab(0);
+	mFrameLevelAttributeList->clear();
 
 	const std::list<std::string>& names = mProject.GetNamesByScopeAndType("Frame", "Float");
 	const unsigned nTabs = names.size();
@@ -475,6 +477,7 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 	for (unsigned i = 0; i<nTabs; name++, i++)
 	{
 		mFrameLevelTabBar->addTab(name->c_str());
+		mFrameLevelAttributeList->addItem(name->c_str());
 	}
 }
 
@@ -513,6 +516,8 @@ void Annotator::makeConnections()
 			this, SLOT(currentSongChanged()));
 	// Changing the current frame level descriptor
 	connect(mFrameLevelTabBar, SIGNAL(selected(int)),
+			this, SLOT(changeFrameLevelDescriptor(int)));
+	connect(mFrameLevelAttributeList, SIGNAL(currentRowChanged(int)),
 			this, SLOT(changeFrameLevelDescriptor(int)));
 	// Changing the current segmentation descriptor
 	connect(mSegmentationSelection, SIGNAL(activated(const QString&)),
@@ -890,7 +895,7 @@ void Annotator::refreshEnvelopes()
 
 	mCurrentBPFIndex = -1;
 
-	mFrameLevelTabBar->setCurrentIndex(-1);
+	mFrameLevelTabBar->setCurrentIndex(0);
 	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
 
 	std::list<std::string>::const_iterator divisionName;
@@ -1156,7 +1161,8 @@ bool Annotator::isPlaying()
 
 void Annotator::changeFrameLevelDescriptor(int current)
 {
-	unsigned index = mFrameLevelTabBar->currentIndex();
+//	unsigned index = mFrameLevelTabBar->currentIndex();
+	unsigned index = mFrameLevelAttributeList->currentRow();
 	if (index >= (int)mBPFs.size()) return; // No valid descriptor
 //	if (index == mCurrentBPFIndex) return; // No change
 	mCurrentBPFIndex = index;
