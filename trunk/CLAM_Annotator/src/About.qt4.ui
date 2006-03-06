@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>523</width>
-    <height>432</height>
+    <height>441</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -20,7 +20,7 @@
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>11</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
@@ -34,7 +34,7 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="QLabel" name="pixmapLabel1" >
+      <widget class="QLabel" name="label_2" >
        <property name="sizePolicy" >
         <sizepolicy>
          <hsizetype>4</hsizetype>
@@ -43,8 +43,11 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="text" >
+        <string/>
+       </property>
        <property name="pixmap" >
-        <pixmap resource="images.qrc" >:/logos/images/clam_red_scaled.png</pixmap>
+        <pixmap>images/annotator-icon1.png</pixmap>
        </property>
       </widget>
      </item>
@@ -59,8 +62,22 @@
         </sizepolicy>
        </property>
        <property name="text" >
-        <string>&lt;b>CLAM Annotator v 0.2&lt;/b>&lt;br/>
-&lt;p>Based on CLAM v0.90&lt;/p></string>
+        <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">CLAM Annotator v 0.3&lt;/span>&lt;br />&lt;/p>&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Based on CLAM v0.90&lt;/p>&lt;/body>&lt;/html></string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="pixmapLabel1" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>4</hsizetype>
+         <vsizetype>4</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="pixmap" >
+        <pixmap resource="images.qrc" >:/logos/images/clam_red_scaled.png</pixmap>
        </property>
       </widget>
      </item>
@@ -161,9 +178,9 @@
       <attribute name="title" >
        <string>Acknoledgements</string>
       </attribute>
-      <layout class="QVBoxLayout" >
+      <layout class="QHBoxLayout" >
        <property name="margin" >
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="spacing" >
         <number>6</number>
@@ -192,6 +209,19 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string/>
+         </property>
+         <property name="pixmap" >
+          <pixmap resource="images.qrc" >:/logos/images/simac-logo.png</pixmap>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="TabPage" >
@@ -206,18 +236,11 @@
         <number>6</number>
        </property>
        <item>
-        <widget class="QTextBrowser" name="textBrowser">
-			<property name="html">
-				<string>&lt;p&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;
-&lt;p&gt;This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.&lt;/p&gt;
-&lt;p&gt; You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br/&gt;
-Free Software Foundation, Inc.,&lt;br/&gt;
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-&lt;/p&gt;</string>
-		</property>
-		</widget>
-
+        <widget class="QTextBrowser" name="textBrowser" >
+         <property name="html" >
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p>&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p>&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br />Free Software Foundation, Inc.,&lt;br />59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p>&lt;/body>&lt;/html></string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
