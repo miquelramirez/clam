@@ -25,5 +25,6 @@
         <file>images/clam-logo-bangs.png</file>
         <file>images/clam_red.png</file>
         <file>images/clam_red_scaled.png</file>
+		<file>images/simac-logo.png</file>
     </qresource>
 </RCC>
