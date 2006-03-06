@@ -24,7 +24,7 @@ namespace CLAM
 			, _maxLength(maxLength)
 		{
 		}
-		virtual ~Segmentation(); // TODO: This should not be on the header
+		virtual ~Segmentation();
 		/**
 		 * Inserts a new border at timePosition.
 		 */
