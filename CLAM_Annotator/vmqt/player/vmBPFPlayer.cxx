@@ -51,10 +51,13 @@ namespace CLAM
 			if(!mBPF->Size()) return;
 			if(!mAudio0) SetPlayingFlags(CLAM::VM::eUseOscillator);
 			if(mAudio0) mSamplingRate = mAudio0->GetSampleRate();
+			else mSamplingRate=44100;
 
-			unsigned frameSize = 512;     
-			AudioManager manager((int)mSamplingRate,(int)frameSize);  
+			unsigned frameSize = 1024;     
+			AudioManager manager(mSamplingRate,(int)frameSize);  
 
+			manager.Start();
+			
 			AudioOut channel0;   
 			AudioIOConfig audioOutCfg0;     
 			audioOutCfg0.SetChannelID(0);    
@@ -65,8 +68,7 @@ namespace CLAM
 			audioOutCfg1.SetChannelID(1);    
 			channel1.Configure(audioOutCfg1); 
 			
-			manager.Start();                            
-			channel0.Start();  
+			channel0.Start();
 			channel1.Start();
 
 			SimpleOscillatorConfig oscCfg;

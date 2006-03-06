@@ -33,9 +33,9 @@ namespace CLAM
 
 			mSamplingRate = mSegment->GetSamplingRate(); 
 			unsigned nSamples = unsigned((mSegment->GetEndTime()-mSegment->GetBeginTime())*mSamplingRate);
-			int frameSize = 512;                    
+			int frameSize = 1024;                    
 
-			AudioManager manager((int)mSamplingRate,frameSize);  
+			AudioManager manager(mSamplingRate,frameSize);  
 			AudioOut channel0;   
 			AudioOut channel1;
 			AudioIOConfig audioOutCfg0;     
