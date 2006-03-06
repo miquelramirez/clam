@@ -56,9 +56,9 @@ namespace CLAM
 			if(mTimeBounds.max > mChn0->GetDuration()/1000.0) mTimeBounds.max = mChn0->GetDuration()/1000.0;
 			
 			mSamplingRate = mChn0->GetSampleRate(); 
-			int frameSize = 512;                    
+			int frameSize = 1024;                    
 
-			AudioManager manager((int)mSamplingRate,frameSize);  
+			AudioManager manager(mSamplingRate,frameSize);  
 			AudioOut channel0;   
 			AudioOut channel1;
 			AudioIOConfig audioOutCfg0;     
