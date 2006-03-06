@@ -4,9 +4,8 @@ import glob
 import SCons.Util
 from SCons.Util import CLVar
 
-CLAMSandbox ='/home/parumi/clam-sandboxes'
-CLAMInstallDir = CLAMSandbox + '/local'
-
+options = Options('options.cache', ARGUMENTS)
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -18,7 +17,10 @@ def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
 
-env = Environment(tools=['default','qt'])
+env = Environment(tools=['default','qt'], options=options)
+options.Save('options.cache', env)
+CLAMInstallDir = env['clam_prefix']
+
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT_MOC'] = 'moc-qt4'
 env['QT4_MOC'] = 'moc-qt4'
