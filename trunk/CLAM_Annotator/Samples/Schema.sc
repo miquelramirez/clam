@@ -10,6 +10,9 @@
       <EnumerationValues>Dance Classic Jazz Rhythm&amp;Blues Folk</EnumerationValues>
     </Attribute>
     <Attribute name="Danceability" scope="Song" type="Float">
+      <Documentation>&lt;p&gt;The &lt;em&gt;Danceability&lt;/em&gt; is a 0 to 10 score that depends on how much defined is the rhythm&lt;/p&gt;
+&lt;p&gt;Data for this data is not the one in Simac but randomly generated.&lt;/p&gt;
+</Documentation>
       <fRange>
         <Min>0</Min>
         <Max>10</Max>
@@ -87,7 +90,13 @@
     <Attribute name="Frames" scope="Song" type="FrameDivision">
       <ChildScope>Frame</ChildScope>
     </Attribute>
-    <Attribute name="Mean" scope="Frame" type="Float"/>
+    <Attribute name="Mean" scope="Frame" type="Float">
+      <Documentation>&lt;p&gt;The spectral power mean value.
+The unit of this measure can be dB or none, depending on the scale set for the measured Spectrum object.&lt;/p&gt;
+&lt;p&gt;\f[ Mean(X) = \frac{\sum x_i }{Size(X)} \f]&lt;/p&gt;
+&lt;p&gt;Being X the spectrum magnitude array.&lt;/p&gt;
+</Documentation>
+    </Attribute>
     <Attribute name="GeometricMean" scope="Frame" type="Float"/>
     <Attribute name="Energy" scope="Frame" type="Float"/>
     <Attribute name="Centroid" scope="Frame" type="Float"/>

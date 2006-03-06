@@ -4,8 +4,8 @@ import glob
 import SCons.Util
 from SCons.Util import CLVar
 
-CLAMSandbox ='/home/vokimon/CajitasDeArena'
-CLAMInstallDir = CLAMSandbox + '/CLAM-Install'
+CLAMSandbox ='/home/parumi/clam-sandboxes'
+CLAMInstallDir = CLAMSandbox + '/local'
 
 
 def scanFiles(pattern, paths) :
@@ -79,7 +79,11 @@ extraPaths = []
 extraPaths += recursiveDirs("examples/utils")
 extraPaths += [
 	CLAMInstallDir+'/include',
-	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes	
+	'/usr/include/qt4/QtCore', # quick KLUDGE for ubuntu
+	'/usr/include/qt4/QtGui', # quick KLUDGE for ubuntu
+	'/usr/include/qt4/QtOpenGL', # quick KLUDGE for ubuntu
+	'/usr/include/qt4/Qt3Support', # quick KLUDGE for ubuntu
 ]
 includePaths = libSourcePaths + extraPaths
 

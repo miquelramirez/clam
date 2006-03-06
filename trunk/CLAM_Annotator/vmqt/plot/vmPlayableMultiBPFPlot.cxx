@@ -67,8 +67,8 @@ namespace CLAM
 		{
 			MultiBPFPlot::backgroundBlack();
 			QPalette cb_palette;
-			cb_palette.setBrush(QPalette::Window,Qt::white);
-			cb_palette.setBrush(QPalette::WindowText,Qt::white);
+			cb_palette.setBrush(QPalette::Background,Qt::white);  //QTPORT QPalette::Window
+			cb_palette.setBrush(QPalette::Foreground,Qt::white); //QTPORT QPalette::WindowText
 			cb_palette.setBrush(QPalette::Button,Qt::white);
 			cb_palette.setBrush(QPalette::ButtonText,Qt::white);
 			mShowGrid->setPalette(cb_palette);
