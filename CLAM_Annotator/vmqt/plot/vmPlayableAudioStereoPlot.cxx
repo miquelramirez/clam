@@ -54,8 +54,8 @@ namespace CLAM
 		{
 			AudioStereoPlot::backgroundBlack();
 			QPalette mute_palette;
-			mute_palette.setBrush(QPalette::Window,Qt::white);
-			mute_palette.setBrush(QPalette::WindowText,Qt::white);
+			mute_palette.setBrush(QPalette::Background,Qt::white); // QTPORT  should be QPalette::Window
+			mute_palette.setBrush(QPalette::Foreground,Qt::white); // QTPORT  should be QPalette::WindowText
 			mute_palette.setBrush(QPalette::Button,Qt::white);
 			mute_palette.setBrush(QPalette::ButtonText,Qt::white);
 			mMuteChn0->setPalette(mute_palette);

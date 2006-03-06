@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Project>
 
+  <Description></Description>
+
   <Schema>Schema.sc</Schema>
 
   <Extractor>ClamExtractorExample</Extractor>

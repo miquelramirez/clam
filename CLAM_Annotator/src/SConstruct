@@ -4,8 +4,9 @@ import glob
 import SCons.Util
 from SCons.Util import CLVar
 
-CLAMSandbox ='/home/vokimon/CajitasDeArena'
-CLAMInstallDir = CLAMSandbox + '/CLAM-Install'
+CLAMSandbox ='/home/parumi/clam-sandboxes'
+CLAMInstallDir = CLAMSandbox + '/local'
+
 
 
 def scanFiles(pattern, paths) :
@@ -89,8 +90,9 @@ extraPaths += [
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 	'/usr/include/qt4/QtCore', # quick KLUDGE for ubuntu
 	'/usr/include/qt4/QtGui', # quick KLUDGE for ubuntu
-	'/usr/include/qt4/QtOpenGl', # quick KLUDGE for ubuntu
+	'/usr/include/qt4/QtOpenGL', # quick KLUDGE for ubuntu
 	'/usr/include/qt4/Qt3Support', # quick KLUDGE for ubuntu
+#	'/usr/include/qt4/', # quick KLUDGE for ubuntu
 ]
 includePaths = sourcePaths + extraPaths
 
@@ -111,7 +113,7 @@ env.Append(LIBS="clam_vmqt4")
 env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 	(
 		CLAMInstallDir,
-		' '.join(pkgconfigLibraries)))
+		' '.join(pkgconfigLibraries)) )
 env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 env.Append(CPPFLAGS=['-DQT3_SUPPORT_WARNINGS'])
