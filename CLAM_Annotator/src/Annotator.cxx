@@ -276,14 +276,18 @@ void Annotator::initInterface()
 	mBPFEditor = new BPFPlot(
 			mFrameLevelContainer);
 	mBPFEditor->SetFlags(CLAM::VM::eAllowVerEdition);//|CLAM::VM::eHasVerticalScroll); // QTPORT: What about this flag
-//	mBPFEditor->setAutoFillBackground(true);
+#if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
+	mBPFEditor->setAutoFillBackground(true);
+#endif
 	frameLevelContainerLayout->addWidget(mBPFEditor);
 	mBPFEditor->SetZoomSteps(5,5);
 	mFrameLevelTabBar->hide();
 
 	mpAudioPlot = new AudioPlot(mAudioPlotContainer); // ,0,0,false);
 	QVBoxLayout * audioPlotContainerLayout = new QVBoxLayout(mAudioPlotContainer);
-//	mpAudioPlot->setAutoFillBackground(true);
+#if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
+	mpAudioPlot->setAutoFillBackground(true);
+#endif
 	audioPlotContainerLayout->setMargin(2);
 	audioPlotContainerLayout->addWidget(mpAudioPlot);
 #ifndef QTPORT
@@ -664,17 +668,19 @@ void Annotator::updateSongListWidget()
 	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongs();
 	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
 	{
-/*		QTreeWidgetItem * item = new QTreeWidgetItem(
+#if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
+		QTreeWidgetItem * item = new QTreeWidgetItem(
 			mProjectOverview,
 			QStringList()
 				<< it->GetSoundFile().c_str()
 				<< tr("Yes")
 				<< tr("No") );
- */ //QTPORT
+#else
 		QTreeWidgetItem * item = new QTreeWidgetItem(mProjectOverview);
 		item->setText(0, it->GetSoundFile().c_str());
 		item->setText(1, tr("Yes") );
 		item->setText(2, tr("No") );
+#endif
 	}
 	mProjectOverview->show();
 	mProjectOverview->resizeColumnToContents(0);
@@ -698,12 +704,14 @@ void Annotator::closeEvent ( QCloseEvent * e )
 
 void Annotator::markAllSongsUnchanged()
 {
-/*	QTreeWidgetItemIterator it (mProjectOverview);
+#if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
+	QTreeWidgetItemIterator it (mProjectOverview);
 	for ( ; *it ; ++it )
-	{
 		(*it)->setText(2, "No");
-	}
-*/ //QTPORT
+#else
+	for (unsigned int i = 0; i< mProjectOverview->topLevelItemCount(); i++)
+		mProjectOverview->topLevelItem(i)->setText(2,"No");
+#endif //QTPORT
 //TODO
 }
 
