@@ -1,13 +1,13 @@
 #include "DescriptorTablePlugin.hxx"
 #include "SchemaAttribute.hxx"
-#include <q3table.h>
+#include <QtGui/QTableWidget>
 #include "ComboTableItem.hxx"
 #include "RangeSelectionTableItem.hxx"
 #include <CLAM/Pool.hxx>
 
 namespace CLAM_Annotator
 {
-	DescriptorTablePlugin::DescriptorTablePlugin(Q3Table * parent, unsigned row, const SchemaAttribute & scheme)
+	DescriptorTablePlugin::DescriptorTablePlugin(QTableWidget * parent, unsigned row, const SchemaAttribute & scheme)
 		: mTable(parent)
 		, mRow(row)
 		, mScope(scheme.GetScope())
@@ -15,8 +15,7 @@ namespace CLAM_Annotator
 		, mElement(-1)
 	{
 		std::cout << "Creating '" << mScope << ":" << mName << "' of type " << scheme.GetType() << std::endl;
-		TableItem * item = new TableItem(mTable, TableItem::Never, mName.c_str());
-		mTable->setItem(mRow, 0, item);
+		mTable->setItem(mRow, 0, new QTableWidgetItem(mName.c_str()));
 		clearData();
 	}
 	DescriptorTablePlugin::~DescriptorTablePlugin()
@@ -24,7 +23,7 @@ namespace CLAM_Annotator
 	}
 	void DescriptorTablePlugin::clearData()
 	{
-		mTable->clearCell(mRow,1);
+//		mTable->clearCell(mRow,1); //QTPORT
 	}
 	void DescriptorTablePlugin::refreshData(int element, CLAM::DescriptionDataPool & dataPool)
 	{
@@ -39,7 +38,7 @@ namespace CLAM_Annotator
 	class DescriptorsTableItemControllerString : public DescriptorTablePlugin
 	{
 	public:
-		DescriptorsTableItemControllerString(Q3Table * parent, unsigned row, const SchemaAttribute & scheme)
+		DescriptorsTableItemControllerString(QTableWidget * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
 		{
 		}
@@ -47,13 +46,13 @@ namespace CLAM_Annotator
 		{
 			const CLAM::Text & value = dataPool.GetReadPool<CLAM::Text>(mScope,mName)[mElement];
 			QString qvalue = QString(value.c_str());
-			mTable->setItem(mRow,1, new TableItem(mTable, TableItem::WhenCurrent, qvalue));
+			mTable->setItem(mRow,1, new QTableWidgetItem(qvalue));
 		}
 		void updateData(CLAM::DescriptionDataPool & dataPool)
 		{
 			if (mElement==-1) return;
 			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
-			QString qValue = mTable->text(mRow, 1);
+			QString qValue = mTable->item(mRow, 1)->text();
 			const std::string & value = qValue.toStdString();
 			dataPool.GetWritePool<CLAM::Text>(mScope,mName)[mElement] = value;
 		}
@@ -62,7 +61,7 @@ namespace CLAM_Annotator
 	class DescriptorsTableItemControllerEnum : public DescriptorTablePlugin
 	{
 	public:
-		DescriptorsTableItemControllerEnum(Q3Table * parent, unsigned row, const SchemaAttribute & scheme)
+		DescriptorsTableItemControllerEnum(QTableWidget * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
 			, mOptions(scheme.GetEnumerationValues())
 		{
@@ -80,14 +79,15 @@ namespace CLAM_Annotator
 
 			std::vector<QStringList> qrestrictionStringslist;
 			qrestrictionStringslist.push_back( qrestrictionStrings );
-			ComboTableItem * item = new ComboTableItem(mTable,qrestrictionStringslist,false);
-			item->setCurrentItem(qvalue);
-			mTable->setItem(mRow,1,item);
+			mTable->setItem(mRow,1, new QTableWidgetItem(qvalue));
+//			ComboTableItem * item = new ComboTableItem(mTable,qrestrictionStringslist,false);
+//			item->setCurrentItem(qvalue);
+//			mTable->setItem(mRow,1,item);
 		}
 		void updateData(CLAM::DescriptionDataPool & dataPool)
 		{
 			if (mElement==-1) return;
-			QString qValue = mTable->text(mRow, 1);
+			QString qValue = mTable->item(mRow, 1)->text();
 			const std::string & value = qValue.toStdString();
 			dataPool.GetWritePool<Enumerated>(mScope,mName)[mElement].SetString(value);
 		}
@@ -99,7 +99,7 @@ namespace CLAM_Annotator
 	{
 		const Range<CLAM::TData> mRange;
 	public:
-		DescriptorsTableItemControllerFloat(Q3Table * parent, unsigned row, const SchemaAttribute & scheme)
+		DescriptorsTableItemControllerFloat(QTableWidget * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
 			, mRange(scheme.GetfRange())
 		{
@@ -107,17 +107,18 @@ namespace CLAM_Annotator
 		void refreshData(CLAM::DescriptionDataPool & dataPool)
 		{
 			CLAM::TData value = dataPool.GetReadPool<CLAM::TData>(mScope,mName)[mElement];
-			mTable->setItem(mRow,1,
-				new RangeSelectionTableItem(mTable,
-					TableItem::WhenCurrent,
-					QString::number(value),
-					mRange));
+			mTable->setItem(mRow,1, new QTableWidgetItem(QString::number(value)));
+//			mTable->setItem(mRow,1,
+//				new RangeSelectionTableItem(mTable,
+//					TableItem::WhenCurrent,
+//					QString::number(value),
+//					mRange));
 		}
 		void updateData(CLAM::DescriptionDataPool & dataPool)
 		{
 			if (mElement==-1) return;
 			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
-			QString qValue = mTable->text(mRow, 1);
+			QString qValue = mTable->item(mRow, 1)->text();
 			dataPool.GetWritePool<CLAM::TData>(mScope,mName)[mElement] = qValue.toFloat();
 		}
 	};
@@ -126,7 +127,7 @@ namespace CLAM_Annotator
 	{
 		const Range<int> mRange;
 	public:
-		DescriptorsTableItemControllerInt(Q3Table * parent, unsigned row, const SchemaAttribute & scheme)
+		DescriptorsTableItemControllerInt(QTableWidget * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
 			, mRange(scheme.GetiRange())
 		{
@@ -134,16 +135,17 @@ namespace CLAM_Annotator
 		void refreshData(CLAM::DescriptionDataPool & dataPool)
 		{
 			int value = dataPool.GetReadPool<int>(mScope,mName)[mElement];
-			mTable->setItem(mRow,1,
-				new RangeSelectionTableItem(mTable,
-					TableItem::WhenCurrent,
-					QString::number(value),mRange));
+			mTable->setItem(mRow,1, new QTableWidgetItem(QString::number(value)));
+//			mTable->setItem(mRow,1,
+//				new RangeSelectionTableItem(mTable,
+//					TableItem::WhenCurrent,
+//					QString::number(value),mRange));
 		}
 		void updateData(CLAM::DescriptionDataPool & dataPool)
 		{
 			if (mElement==-1) return;
 			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
-			QString qValue = mTable->text(mRow, 1);
+			QString qValue = mTable->item(mRow, 1)->text();
 			dataPool.GetWritePool<int>(mScope,mName)[mElement] = qValue.toInt();
 		}
 	};
@@ -151,7 +153,7 @@ namespace CLAM_Annotator
 
 
 	DescriptorTablePlugin * createItemController(
-			Q3Table * parent, 
+			QTableWidget * parent, 
 			unsigned row, 
 			const SchemaAttribute & scheme)
 	{

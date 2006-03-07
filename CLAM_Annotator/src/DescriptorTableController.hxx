@@ -3,8 +3,9 @@
 
 #include <string>
 #include <vector>
+#include <QtGui/QItemDelegate>
 
-class Q3Table;
+class QTableWidget;
 
 namespace CLAM
 {
@@ -22,15 +23,17 @@ namespace CLAM_Annotator
 namespace CLAM_Annotator
 {
 
-class DescriptorTableController
+class DescriptorTableController : public QItemDelegate
 {
-	Q3Table * mTable;
+	Q_OBJECT
+private:
+	QTableWidget * mTable;
 	const CLAM_Annotator::Project & mProject;
 	std::string mScope;
 	int mElement;
 	std::vector<DescriptorTablePlugin*> mPlugins;
 public:
-	DescriptorTableController(Q3Table * table, const CLAM_Annotator::Project & project);
+	DescriptorTableController(QTableWidget * table, const CLAM_Annotator::Project & project);
 	~DescriptorTableController();
 	void refreshSchema(const std::string & scope);
 	void refreshData(int element, CLAM::DescriptionDataPool * dataPool);
