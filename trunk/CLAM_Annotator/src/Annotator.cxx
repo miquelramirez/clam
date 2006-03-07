@@ -265,7 +265,7 @@ void Annotator::initInterface()
 {
 	mProjectOverview->setSortingEnabled(false); // Unordered
 
-	mProjectDocumentation = new QTextBrowser( mMainTabWidget);
+	mProjectDocumentation = new QTextBrowser;
 	mMainTabWidget->insertTab(0, mProjectDocumentation, "Project Documentation");
 	mMainTabWidget->setCurrentIndex(0);
 
