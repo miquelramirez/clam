@@ -144,7 +144,7 @@ void Annotator::computeSongDescriptors()
 
 Annotator::Annotator(const std::string & nameProject = "")
 	: AnnotatorBase( )
-	, QMainWindow( 0, Qt::WDestructiveClose)
+	, QMainWindow( 0 )
 	, mCurrentIndex(0)
 	, mpDescriptorPool(0)
 	, mFrameDescriptorsNeedUpdate(false)
@@ -852,7 +852,7 @@ void Annotator::currentSongChanged()
 
 	if (item == 0) return;
 
-	setCursor(Qt::waitCursor);
+	setCursor(Qt::WaitCursor);
 
 	const std::string & filename = item->text(0).toStdString();
 	mCurrentIndex = songIndexInTable(filename);
@@ -876,6 +876,7 @@ void Annotator::currentSongChanged()
 	const std::string absolutePath = projectToAbsolutePath(filename).c_str();
 	if (!loaderCreate(mCurrentAudio, absolutePath))
 	{
+		setCursor(Qt::ArrowCursor);
 		QMessageBox::critical(this, tr("Error opening audio file"), absolutePath.c_str());
 		return;
 	}
@@ -890,7 +891,7 @@ void Annotator::currentSongChanged()
 	refreshEnvelopes();
 	mStatusBar << "Done" << mStatusBar;
 	loaderLaunch();
-	setCursor(Qt::arrowCursor);
+	setCursor(Qt::ArrowCursor);
 	mAudioRefreshTimer->start(4000);
 }
 
