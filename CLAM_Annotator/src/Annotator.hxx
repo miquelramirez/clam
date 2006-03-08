@@ -1,27 +1,26 @@
 #ifndef ANNOTATOR_HXX
 #define ANNOTATOR_HXX
 
-#include <QColorGroup>
-#include <Qt>
-#include "ui_AnnotatorBase.qt4.hxx"
+#include "ui_AnnotatorBase.hxx"
 #include "DescriptorTableController.hxx"
 
 #include <string>
 #include <utility>
 #include <deque>
+#include <QtCore/Qt>
 #include <QtGui/QStatusBar>
-#include <QtGui/QCloseEvent>
 
 //xamat
 
 #include <CLAM/Audio.hxx>
 #include <CLAM/Pool.hxx>
-#include "Project.hxx"
 #include <CLAM/BPF.hxx>
+#include "Project.hxx"
 
 class QTimer;
 class QTabBar;
 class QTextBrowser;
+class QCloseEvent;
 class AudioLoadThread;
 class SchemaBrowser;
 using CLAM::TIndex;
