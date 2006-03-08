@@ -2,7 +2,6 @@
 #include "SchemaAttribute.hxx"
 #include <QtGui/QTableWidget>
 #include <QtGui/QComboBox>
-#include "RangeSelectionTableItem.hxx"
 #include <CLAM/Pool.hxx>
 
 namespace CLAM_Annotator
