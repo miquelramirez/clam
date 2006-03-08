@@ -49,6 +49,7 @@ namespace CLAM_Annotator
 		{
 			DescriptorTablePlugin * itemController 
 				= createItemController(mTable, row, *attribute);
+			mTable->setVerticalHeaderItem (row,  new QTableWidgetItem("") );
 			if (!itemController) continue; // No plugin available for that type
 			mPlugins.push_back(itemController);
 			row++;
