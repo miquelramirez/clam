@@ -12,6 +12,7 @@ namespace CLAM_Annotator
 		, mProject(project)
 		, mScope("")
 		, mElement(-1)
+		, mData(0)
 	{
 		mTable->setColumnCount( 2 );
 		mTable->setHorizontalHeaderLabels(QStringList() 
@@ -56,11 +57,13 @@ namespace CLAM_Annotator
 		}
 		mTable->setRowCount(mPlugins.size()); // Some attributes were filtered
 		mTable->resizeColumnToContents(0);
+		mTable->resizeRowsToContents();
 		mTable->show();
 	}
 	void DescriptorTableController::refreshData(int element, CLAM::DescriptionDataPool * dataPool)
 	{
 		if (mScope=="") return;
+		mData = dataPool;
 		mElement=element;
 //		mTable->setColumnReadOnly(1,mElement==-1); // QTPORT
 		for (unsigned i = 0; i<mPlugins.size(); i++)
