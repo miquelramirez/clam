@@ -20,6 +20,8 @@ namespace CLAM_Annotator
 		virtual void refreshData(CLAM::DescriptionDataPool & dataPool) = 0;
 		virtual void updateData(CLAM::DescriptionDataPool & dataPool) = 0;
 		virtual QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option);
+		virtual void fillEditor(QWidget * editor, CLAM::DescriptionDataPool & dataPool);
+		virtual void takeEditorContent(QWidget * editor, CLAM::DescriptionDataPool & dataPool);
 		void clearData();
 	protected:
 		QTableWidget * mTable;
