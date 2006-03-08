@@ -2,6 +2,7 @@
 #include "Project.hxx"
 #include "DescriptorTablePlugin.hxx"
 #include <QtGui/QTableWidget>
+#include <QtGui/QHeaderView>
 
 namespace CLAM_Annotator
 {
@@ -12,15 +13,17 @@ namespace CLAM_Annotator
 		, mScope("")
 		, mElement(-1)
 	{
-//		mTable->setLeftMargin(0); //QTPORT
 		mTable->setColumnCount( 2 );
 		mTable->setHorizontalHeaderLabels(QStringList() 
 				<< tr("Descriptor" )
 				<< tr("Value")
-				);
+			);
 		mTable->setRowCount( 0 );
 		mTable->setSelectionMode( QAbstractItemView::NoSelection );
-//		mTable->setColumnStretchable(1, true); // QTPORT
+		mTable->setAlternatingRowColors(true);
+		mTable->horizontalHeader()->setStretchLastSection(true);
+		mTable->setTabKeyNavigation(false);
+		mTable->setItemDelegate(this);
 	}
 	DescriptorTableController::~DescriptorTableController()
 	{
@@ -51,7 +54,7 @@ namespace CLAM_Annotator
 			row++;
 		}
 		mTable->setRowCount(mPlugins.size()); // Some attributes were filtered
-//		mTable->adjustColumn(0); //QTPORT
+		mTable->resizeColumnToContents(0);
 		mTable->show();
 	}
 	void DescriptorTableController::refreshData(int element, CLAM::DescriptionDataPool * dataPool)
@@ -83,5 +86,24 @@ namespace CLAM_Annotator
 		return -1;
 	}
 
+	QWidget * DescriptorTableController::createEditor(
+			QWidget * parent, const QStyleOptionViewItem & option,
+			const QModelIndex & index) const
+	{
+		if (index.column()==0) return 0; // Attribute names are read only
+		if (mElement==-1) return 0; // When no element, just avoid edition
+		QWidget * editor = mPlugins[index.row()]->createEditor(parent, option);
+		if (editor) return editor;
+		return QItemDelegate::createEditor(parent, option, index);
+	}
+	void DescriptorTableController::setEditorData(QWidget *editor, const QModelIndex &index) const
+	{
+		if (index.column()==0) return; // Attribute names are read only
+//		mPlugins[index.row()]->setEditorData();
+	}
+	void DescriptorTableController::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+	{
+		if (index.column()==0) return; // Attribute names are read only
+	}
 }
 

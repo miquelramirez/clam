@@ -38,6 +38,11 @@ public:
 	void refreshSchema(const std::string & scope);
 	void refreshData(int element, CLAM::DescriptionDataPool * dataPool);
 	void updateData(int row, CLAM::DescriptionDataPool * dataPool);
+
+	// Delegate interface
+	virtual QWidget * createEditor (QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index) const;
+	virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
+	virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 private:
 	int descriptorIndexInTable(const std::string& name);
 };

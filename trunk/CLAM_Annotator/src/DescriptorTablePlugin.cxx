@@ -1,7 +1,7 @@
 #include "DescriptorTablePlugin.hxx"
 #include "SchemaAttribute.hxx"
 #include <QtGui/QTableWidget>
-#include "ComboTableItem.hxx"
+#include <QtGui/QComboBox>
 #include "RangeSelectionTableItem.hxx"
 #include <CLAM/Pool.hxx>
 
@@ -33,6 +33,10 @@ namespace CLAM_Annotator
 			clearData();
 		else
 			refreshData(dataPool);
+	}
+	QWidget * DescriptorTablePlugin::createEditor(QWidget * parent, const QStyleOptionViewItem & option)
+	{
+		return 0;
 	}
 
 	class DescriptorsTableItemControllerString : public DescriptorTablePlugin
@@ -80,9 +84,14 @@ namespace CLAM_Annotator
 			std::vector<QStringList> qrestrictionStringslist;
 			qrestrictionStringslist.push_back( qrestrictionStrings );
 			mTable->setItem(mRow,1, new QTableWidgetItem(qvalue));
-//			ComboTableItem * item = new ComboTableItem(mTable,qrestrictionStringslist,false);
-//			item->setCurrentItem(qvalue);
-//			mTable->setItem(mRow,1,item);
+		}
+		virtual QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option)
+		{
+			QComboBox * editor = new QComboBox(parent);
+			std::list<std::string>::const_iterator it;
+			for(it = mOptions.begin();it != mOptions.end(); it++)
+				editor->addItem(QString(it->c_str()));
+			return editor;
 		}
 		void updateData(CLAM::DescriptionDataPool & dataPool)
 		{

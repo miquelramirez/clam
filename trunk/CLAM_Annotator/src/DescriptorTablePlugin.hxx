@@ -4,6 +4,8 @@
 #include <string>
 
 class QTableWidget;
+class QWidget;
+class QStyleOptionViewItem;
 namespace CLAM { class DescriptionDataPool; }
 namespace CLAM_Annotator { class SchemaAttribute; }
 
@@ -17,6 +19,7 @@ namespace CLAM_Annotator
 		void refreshData(int element, CLAM::DescriptionDataPool & dataPool);
 		virtual void refreshData(CLAM::DescriptionDataPool & dataPool) = 0;
 		virtual void updateData(CLAM::DescriptionDataPool & dataPool) = 0;
+		virtual QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option);
 		void clearData();
 	protected:
 		QTableWidget * mTable;
