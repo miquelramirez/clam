@@ -32,6 +32,7 @@ private:
 	std::string mScope;
 	int mElement;
 	std::vector<DescriptorTablePlugin*> mPlugins;
+	CLAM::DescriptionDataPool * mData;
 public:
 	DescriptorTableController(QTableWidget * table, const CLAM_Annotator::Project & project);
 	~DescriptorTableController();
