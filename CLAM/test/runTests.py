@@ -691,10 +691,11 @@ if __name__ == '__main__':
 	constantly = (len(sys.argv)==2 and sys.argv[1] == "--constantly")
 	n = 1
 	try :
+		pprint('BOLD', "\n*\n*\n*\n*\tITERATION %d\n*\n*\n*\n" % n)
 		runTests()
 		while constantly :
 			runTests()
-			print "\n*\n*\n*\nITERATION %d\n*\n*\n*\n" % n
+			pprint('BOLD', "\n*\n*\n*\nITERATION %d\n*\n*\n*\n" % n)
 	
 	except KeyboardInterrupt :
 		print 'interrupted by the user'
