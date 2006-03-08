@@ -99,7 +99,7 @@ extraPaths += [
 includePaths = sourcePaths + extraPaths
 
 qrcfiles = scanFiles("*.qrc", sourcePaths)
-uifiles = scanFiles("*.qt4.ui", sourcePaths)
+uifiles = scanFiles("*.ui", sourcePaths)
 if len(uifiles): uiheaders = env.Uic4(source=uifiles)
 sources = scanFiles('*.cxx', sourcePaths)
 sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )

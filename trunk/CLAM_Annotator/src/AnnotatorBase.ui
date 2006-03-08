@@ -1,956 +1,681 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>AnnotatorBase</class>
-<widget class="QMainWindow">
-    <property name="name">
-        <cstring>AnnotatorBase</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>AnnotatorBase</class>
+ <widget class="QMainWindow" name="AnnotatorBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>979</width>
+    <height>553</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>3</hsizetype>
+    <vsizetype>3</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize" >
+   <size>
+    <width>32767</width>
+    <height>32767</height>
+   </size>
+  </property>
+  <property name="windowTitle" >
+   <string>Music Annotator</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="images.qrc" >:/logos/images/annotator-icon1.png</iconset>
+  </property>
+  <widget class="QWidget" name="widget" >
+   <layout class="QVBoxLayout" >
+    <property name="margin" >
+     <number>9</number>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>1006</width>
-            <height>618</height>
-        </rect>
+    <property name="spacing" >
+     <number>6</number>
     </property>
-    <property name="sizePolicy">
-        <sizepolicy>
-            <hsizetype>5</hsizetype>
-            <vsizetype>5</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-    </property>
-    <property name="maximumSize">
-        <size>
-            <width>32767</width>
-            <height>32767</height>
-        </size>
-    </property>
-    <property name="caption">
-        <string>Music Annotator</string>
-    </property>
-    <property name="icon">
-        <pixmap>image0</pixmap>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
+    <item>
+     <widget class="QTabWidget" name="mMainTabWidget" >
+      <widget class="QWidget" name="tab" >
+       <attribute name="title" >
+        <string>Song Descriptors</string>
+       </attribute>
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>9</number>
         </property>
-        <widget class="QTabWidget">
-            <property name="name">
-                <cstring>mMainTabWidget</cstring>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QSplitter" name="splitter14" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <widget class="QTreeWidget" name="mProjectOverview" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>3</hsizetype>
+             <vsizetype>1</vsizetype>
+             <horstretch>5</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="whatsThis" >
+            <string>&lt;p>The &lt;b>project song list&lt;/b> is a list with the working songs for the project. Add songs to work with them just by selecting &lt;tt>Project/Add Song to Project&lt;/tt>.&lt;/p>
+&lt;p>
+&lt;em>Computed&lt;/em> column tells whether the song has a computed description.&lt;/p>
+&lt;p>
+&lt;em>Changed&lt;/em> column tells whether the song description has save pending changes.&lt;/p></string>
+           </property>
+           <property name="alternatingRowColors" >
+            <bool>true</bool>
+           </property>
+           <property name="selectionMode" >
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <property name="rootIsDecorated" >
+            <bool>false</bool>
+           </property>
+           <column>
+            <property name="text" >
+             <string>File</string>
             </property>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Song Descriptors</string>
-                </attribute>
-                <hbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QSplitter">
-                        <property name="name">
-                            <cstring>splitter14</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <widget class="QListView">
-                            <column>
-                                <property name="text">
-                                    <string>File</string>
-                                </property>
-                                <property name="clickable">
-                                    <bool>false</bool>
-                                </property>
-                                <property name="resizable">
-                                    <bool>true</bool>
-                                </property>
-                            </column>
-                            <column>
-                                <property name="text">
-                                    <string>Computed</string>
-                                </property>
-                                <property name="clickable">
-                                    <bool>true</bool>
-                                </property>
-                                <property name="resizable">
-                                    <bool>true</bool>
-                                </property>
-                            </column>
-                            <column>
-                                <property name="text">
-                                    <string>Changed</string>
-                                </property>
-                                <property name="clickable">
-                                    <bool>true</bool>
-                                </property>
-                                <property name="resizable">
-                                    <bool>true</bool>
-                                </property>
-                            </column>
-                            <property name="name">
-                                <cstring>mProjectOverview</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>5</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="selectionMode">
-                                <enum>Single</enum>
-                            </property>
-                            <property name="rootIsDecorated">
-                                <bool>true</bool>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>&lt;p&gt;The &lt;b&gt;project song list&lt;/b&gt; is a list with the working songs for the project. Add songs to work with them just by selecting &lt;tt&gt;Project/Add Song to Project&lt;/tt&gt;.&lt;/p&gt;
-&lt;p&gt;
-&lt;em&gt;Computed&lt;/em&gt; column tells whether the song has a computed description.&lt;/p&gt;
-&lt;p&gt;
-&lt;em&gt;Changed&lt;/em&gt; column tells whether the song description has save pending changes.&lt;/p&gt;</string>
-                            </property>
-                        </widget>
-                        <widget class="QTable">
-                            <column>
-                                <property name="text">
-                                    <string>Descriptor</string>
-                                </property>
-                            </column>
-                            <column>
-                                <property name="text">
-                                    <string>Value</string>
-                                </property>
-                            </column>
-                            <property name="name">
-                                <cstring>mDescriptorsTable</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>1</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>250</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="numRows">
-                                <number>0</number>
-                            </property>
-                            <property name="numCols">
-                                <number>2</number>
-                            </property>
-                            <property name="selectionMode">
-                                <enum>NoSelection</enum>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>&lt;p&gt;The &lt;b&gt;song level descriptors table&lt;/b&gt;
-contains descriptors values for song level descriptors. Song level descriptors are those that has a single occurrence for each song. As constrast, 'note level descriptors' would have an occurrence for each note.&lt;/p&gt;
-&lt;p&gt;You can edit the values by clicking to the suited cell.&lt;/p&gt;</string>
-                            </property>
-                        </widget>
-                    </widget>
-                </hbox>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Intrasong Descriptors</string>
-                </attribute>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QSplitter">
-                        <property name="name">
-                            <cstring>splitter3</cstring>
-                        </property>
-                        <property name="orientation">
-                            <enum>Horizontal</enum>
-                        </property>
-                        <widget class="QSplitter">
-                            <property name="name">
-                                <cstring>splitter40</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <widget class="QWidget">
-                                <property name="name">
-                                    <cstring>mFrameLevelContainer</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>3</hsizetype>
-                                        <vsizetype>3</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="minimumSize">
-                                    <size>
-                                        <width>700</width>
-                                        <height>200</height>
-                                    </size>
-                                </property>
-                                <property name="whatsThis" stdset="0">
-                                    <string>&lt;p&gt;The &lt;b&gt;frame level descriptors editor&lt;/b&gt;
-allows editing floating point descriptors that has an occurrence for each frame.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Dragging Points: Moving them.&lt;/li&gt;
-&lt;li&gt;Cursor: Moves the selected point&lt;/li&gt;
-&lt;li&gt;TODO: Put the keybindings&lt;/li&gt;
-&lt;/ul&gt;</string>
-                                </property>
-                            </widget>
-                            <widget class="QLayoutWidget">
-                                <property name="name">
-                                    <cstring>layout11</cstring>
-                                </property>
-                                <vbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <property name="margin">
-                                        <number>0</number>
-                                    </property>
-                                    <widget class="QFrame">
-                                        <property name="name">
-                                            <cstring>mAudioPlotContainer</cstring>
-                                        </property>
-                                        <property name="sizePolicy">
-                                            <sizepolicy>
-                                                <hsizetype>3</hsizetype>
-                                                <vsizetype>3</vsizetype>
-                                                <horstretch>0</horstretch>
-                                                <verstretch>0</verstretch>
-                                            </sizepolicy>
-                                        </property>
-                                        <property name="minimumSize">
-                                            <size>
-                                                <width>700</width>
-                                                <height>200</height>
-                                            </size>
-                                        </property>
-                                        <property name="frameShape">
-                                            <enum>StyledPanel</enum>
-                                        </property>
-                                        <property name="frameShadow">
-                                            <enum>Raised</enum>
-                                        </property>
-                                        <property name="whatsThis" stdset="0">
-                                            <string>&lt;p&gt;The &lt;b&gt;segmentation editor&lt;/b&gt; allows you to change song level segmentations.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Click Body: Change current segment&lt;/li&gt;
-&lt;li&gt;Dragging Limit: Moves it&lt;/li&gt;
-&lt;li&gt;Insert + Click: Inserts an onset&lt;/li&gt;
-&lt;li&gt;Delete: Deletes the current onset&lt;/li&gt;
-&lt;/ul&gt;</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLayoutWidget">
-                                        <property name="name">
-                                            <cstring>layout9</cstring>
-                                        </property>
-                                        <hbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <widget class="QComboBox">
-                                                <property name="name">
-                                                    <cstring>mSegmentationSelection</cstring>
-                                                </property>
-                                                <property name="sizePolicy">
-                                                    <sizepolicy>
-                                                        <hsizetype>3</hsizetype>
-                                                        <vsizetype>0</vsizetype>
-                                                        <horstretch>0</horstretch>
-                                                        <verstretch>0</verstretch>
-                                                    </sizepolicy>
-                                                </property>
-                                                <property name="whatsThis" stdset="0">
-                                                    <string>This combo box allows you to change the segmentation that is currently displayed on the segmentation view.</string>
-                                                </property>
-                                            </widget>
-                                            <spacer>
-                                                <property name="name">
-                                                    <cstring>spacer2</cstring>
-                                                </property>
-                                                <property name="orientation">
-                                                    <enum>Horizontal</enum>
-                                                </property>
-                                                <property name="sizeType">
-                                                    <enum>Expanding</enum>
-                                                </property>
-                                                <property name="sizeHint">
-                                                    <size>
-                                                        <width>537</width>
-                                                        <height>20</height>
-                                                    </size>
-                                                </property>
-                                            </spacer>
-                                        </hbox>
-                                    </widget>
-                                </vbox>
-                            </widget>
-                        </widget>
-                        <widget class="QTable">
-                            <column>
-                                <property name="text">
-                                    <string>Descriptor</string>
-                                </property>
-                            </column>
-                            <column>
-                                <property name="text">
-                                    <string>Value</string>
-                                </property>
-                            </column>
-                            <property name="name">
-                                <cstring>mSegmentDescriptorsTable</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>6</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>250</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="numRows">
-                                <number>0</number>
-                            </property>
-                            <property name="numCols">
-                                <number>2</number>
-                            </property>
-                            <property name="selectionMode">
-                                <enum>NoSelection</enum>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>&lt;p&gt;The &lt;b&gt;segmentation level descriptors table&lt;/b&gt;
+           </column>
+           <column>
+            <property name="text" >
+             <string>Computed</string>
+            </property>
+           </column>
+           <column>
+            <property name="text" >
+             <string>Changed</string>
+            </property>
+           </column>
+          </widget>
+          <widget class="QTableWidget" name="mDescriptorsTable" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>4</hsizetype>
+             <vsizetype>1</vsizetype>
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize" >
+            <size>
+             <width>250</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="focusPolicy" >
+            <enum>Qt::WheelFocus</enum>
+           </property>
+           <property name="whatsThis" >
+            <string>&lt;p>The &lt;b>song level descriptors table&lt;/b>
+contains descriptors values for song level descriptors. Song level descriptors are those that has a single occurrence for each song. As constrast, 'note level descriptors' would have an occurrence for each note.&lt;/p>
+&lt;p>You can edit the values by clicking to the suited cell.&lt;/p></string>
+           </property>
+           <property name="selectionMode" >
+            <enum>QAbstractItemView::NoSelection</enum>
+           </property>
+           <property name="rowCount" >
+            <number>0</number>
+           </property>
+           <property name="columnCount" >
+            <number>0</number>
+           </property>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab" >
+       <attribute name="title" >
+        <string>Intrasong Descriptors</string>
+       </attribute>
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>9</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QSplitter" name="splitter" >
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <widget class="QSplitter" name="splitter_2" >
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <widget class="QFrame" name="mFrameLevelContainer" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>3</hsizetype>
+              <vsizetype>3</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>700</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="focusPolicy" >
+             <enum>Qt::WheelFocus</enum>
+            </property>
+            <property name="whatsThis" >
+             <string>&lt;p>The &lt;b>frame level descriptors editor&lt;/b>
+allows editing floating point descriptors that has an occurrence for each frame.&lt;/p>
+&lt;ul>
+&lt;li>Dragging Points: Moving them.&lt;/li>
+&lt;li>Cursor: Moves the selected point&lt;/li>
+&lt;li>TODO: Put the keybindings&lt;/li>
+&lt;/ul></string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Raised</enum>
+            </property>
+           </widget>
+           <widget class="QListWidget" name="mFrameLevelAttributeList" >
+            <property name="minimumSize" >
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="alternatingRowColors" >
+             <bool>true</bool>
+            </property>
+            <property name="resizeMode" >
+             <enum>QListView::Adjust</enum>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QSplitter" name="splitter" >
+           <property name="midLineWidth" >
+            <number>4</number>
+           </property>
+           <widget class="QFrame" name="mAudioPlotContainer" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>3</hsizetype>
+              <vsizetype>3</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>700</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="focusPolicy" >
+             <enum>Qt::WheelFocus</enum>
+            </property>
+            <property name="whatsThis" >
+             <string>&lt;p>The &lt;b>segmentation editor&lt;/b> allows you to change song level segmentations.&lt;/p>
+&lt;ul>
+&lt;li>Click Body: Change current segment&lt;/li>
+&lt;li>Dragging Limit: Moves it&lt;/li>
+&lt;li>Insert + Click: Inserts an onset&lt;/li>
+&lt;li>Delete: Deletes the current onset&lt;/li>
+&lt;/ul></string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Raised</enum>
+            </property>
+           </widget>
+           <widget class="QWidget" name="widget" >
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>0</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item>
+              <widget class="QTableWidget" name="mSegmentDescriptorsTable" >
+               <property name="minimumSize" >
+                <size>
+                 <width>200</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="focusPolicy" >
+                <enum>Qt::WheelFocus</enum>
+               </property>
+               <property name="whatsThis" >
+                <string>&lt;p>The &lt;b>segmentation level descriptors table&lt;/b>
 allows you to edit values for descriptors 
 that are attached to child scope of the 
 currently selected segmentation.
-&lt;/p&gt;
-&lt;p&gt;You can edit the values by clicking 
-to the proper cell.&lt;/p&gt;</string>
-                            </property>
-                        </widget>
-                    </widget>
-                </vbox>
-            </widget>
-        </widget>
-    </vbox>
-</widget>
-<menubar>
-    <property name="name">
-        <cstring>MenuBar</cstring>
+&lt;/p>
+&lt;p>You can edit the values by clicking 
+to the proper cell.&lt;/p></string>
+               </property>
+               <property name="selectionMode" >
+                <enum>QAbstractItemView::NoSelection</enum>
+               </property>
+               <property name="rowCount" >
+                <number>0</number>
+               </property>
+               <property name="columnCount" >
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="mSegmentationSelection" >
+               <property name="whatsThis" >
+                <string>This combo box allows you to change the segmentation that is currently displayed on the segmentation view.</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QToolBar" name="mIntraSongToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="fileNew_projectAction" />
+   <addaction name="fileOpen_projectAction" />
+   <addaction name="fileSave_projectAction" />
+   <addaction name="separator" />
+   <addaction name="projectLoadSchemaAction" />
+   <addaction name="fileAdd_to_projectAction" />
+   <addaction name="editDelete_from_projectAction" />
+   <addaction name="songComputeDescriptorsAction" />
+   <addaction name="separator" />
+   <addaction name="helpWhats_thisAction" />
+  </widget>
+  <widget class="QToolBar" name="TransportToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="mPlayAction" />
+   <addaction name="mPauseAction" />
+   <addaction name="mStopAction" />
+  </widget>
+  <widget class="QMenuBar" name="MenuBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>979</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="help" >
+    <property name="title" >
+     <string>&amp;Help</string>
     </property>
-    <item text="&amp;File" name="mFileMenu">
-        <action name="fileNew_projectAction"/>
-        <action name="fileOpen_projectAction"/>
-        <action name="fileSave_projectAction"/>
-        <action name="fileSave_project_asAction"/>
-        <separator/>
-        <action name="fileExitAction"/>
-    </item>
-    <item text="&amp;Project" name="Project">
-        <action name="projectLoadSchemaAction"/>
-        <action name="fileAdd_to_projectAction"/>
-    </item>
-    <item text="&amp;Song" name="Song">
-        <action name="songSaveDescriptorsAction"/>
-        <action name="songComputeDescriptorsAction"/>
-    </item>
-    <item text="&amp;Playback" name="Playback">
-        <action name="mPlay"/>
-        <action name="mPause"/>
-        <action name="mStop"/>
-        <separator/>
-        <action name="playbackAuralizeSegmentOnsetsAction"/>
-        <action name="playbackAuralizeFrameLevelDescriptorsAction"/>
-        <action name="playbackLinkCurrentSegmentToPlaybackAction"/>
-    </item>
-    <item text="&amp;Help" name="help">
-        <action name="helpAboutAction"/>
-        <separator/>
-        <action name="helpWhats_thisAction"/>
-    </item>
-</menubar>
-<toolbars>
-    <toolbar dock="2">
-        <property name="name">
-            <cstring>mIntraSongToolbar</cstring>
-        </property>
-        <property name="label">
-            <string>Intrasong toolbar</string>
-        </property>
-        <action name="fileNew_projectAction"/>
-        <action name="fileOpen_projectAction"/>
-        <action name="fileSave_projectAction"/>
-        <separator/>
-        <action name="projectLoadSchemaAction"/>
-        <action name="fileAdd_to_projectAction"/>
-        <action name="songComputeDescriptorsAction"/>
-        <separator/>
-        <action name="helpWhats_thisAction"/>
-    </toolbar>
-    <toolbar dock="2">
-        <property name="name">
-            <cstring>TransportToolbar</cstring>
-        </property>
-        <property name="label">
-            <string>Transport Toolbar</string>
-        </property>
-        <action name="mPlay"/>
-        <action name="mPause"/>
-        <action name="mStop"/>
-    </toolbar>
-</toolbars>
-<actions>
-    <action>
-        <property name="name">
-            <cstring>fileExitAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image1</iconset>
-        </property>
-        <property name="text">
-            <string>Exit</string>
-        </property>
-        <property name="menuText">
-            <string>E&amp;xit</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+Q</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>helpAboutAction</cstring>
-        </property>
-        <property name="text">
-            <string>About</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;About</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>fileNew_projectAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image2</iconset>
-        </property>
-        <property name="text">
-            <string>New project</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;New project</string>
-        </property>
-        <property name="toolTip">
-            <string>New project</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+N</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>fileSave_projectAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image3</iconset>
-        </property>
-        <property name="text">
-            <string>Save project</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Save project</string>
-        </property>
-        <property name="toolTip">
-            <string>Save project</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+S</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>fileSave_project_asAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image4</iconset>
-        </property>
-        <property name="text">
-            <string>Save project as</string>
-        </property>
-        <property name="menuText">
-            <string>S&amp;ave project as</string>
-        </property>
-        <property name="toolTip">
-            <string>Save project as</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+Shift+S</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>fileOpen_projectAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image5</iconset>
-        </property>
-        <property name="text">
-            <string>Open project</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Open project</string>
-        </property>
-        <property name="toolTip">
-            <string>Open project</string>
-        </property>
-        <property name="statusTip">
-            <string>Open project</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+O</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>fileAdd_to_projectAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image6</iconset>
-        </property>
-        <property name="text">
-            <string>Add songs to project</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Add songs to project</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+A</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>editDelete_from_projectAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>true</bool>
-        </property>
-        <property name="iconSet">
-            <iconset></iconset>
-        </property>
-        <property name="text">
-            <string>Delete (from project)</string>
-        </property>
-        <property name="menuText">
-            <string>Delete (from project)</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>projectSaveDescriptorsAction</cstring>
-        </property>
-        <property name="text">
-            <string>Descriptors</string>
-        </property>
-        <property name="menuText">
-            <string>Descriptors</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>projectLoadSchemaAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image7</iconset>
-        </property>
-        <property name="text">
-            <string>Browse Schema</string>
-        </property>
-        <property name="menuText">
-            <string>Browse &amp;Schema</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>projectLoadDescriptorsAction</cstring>
-        </property>
-        <property name="text">
-            <string>Descriptors</string>
-        </property>
-        <property name="menuText">
-            <string>Descriptors</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>songSaveDescriptorsAction</cstring>
-        </property>
-        <property name="enabled">
-            <bool>false</bool>
-        </property>
-        <property name="text">
-            <string>Save Descriptors</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Save Descriptors</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>playbackAuralizeSegmentOnsetsAction</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="text">
-            <string>Auralize Segments Onsets</string>
-        </property>
-        <property name="menuText">
-            <string>Auralize Segments &amp;Onsets</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>playbackAuralizeFrameLevelDescriptorsAction</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="text">
-            <string>Auralize Frame Level Descriptors</string>
-        </property>
-        <property name="menuText">
-            <string>Auralize &amp;Frame Level Descriptors</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>songComputeDescriptorsAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image8</iconset>
-        </property>
-        <property name="text">
-            <string>Compute Descriptors</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Compute Descriptors</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>helpWhats_thisAction</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image9</iconset>
-        </property>
-        <property name="text">
-            <string>What's this?</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;What's this?</string>
-        </property>
-        <property name="accel">
-            <string>Shift+F1</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>mPlay</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image10</iconset>
-        </property>
-        <property name="text">
-            <string>Play</string>
-        </property>
-        <property name="menuText">
-            <string>Play</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+P</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>mPause</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image11</iconset>
-        </property>
-        <property name="text">
-            <string>Pause</string>
-        </property>
-        <property name="menuText">
-            <string>Pause</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+W</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>mStop</cstring>
-        </property>
-        <property name="iconSet">
-            <iconset>image12</iconset>
-        </property>
-        <property name="text">
-            <string>Stop</string>
-        </property>
-        <property name="menuText">
-            <string>Stop</string>
-        </property>
-        <property name="accel">
-            <string>Ctrl+D</string>
-        </property>
-    </action>
-    <action>
-        <property name="name">
-            <cstring>playbackLinkCurrentSegmentToPlaybackAction</cstring>
-        </property>
-        <property name="toggleAction">
-            <bool>true</bool>
-        </property>
-        <property name="text">
-            <string>Link current segment to playback</string>
-        </property>
-        <property name="menuText">
-            <string>&amp;Link current segment to playback</string>
-        </property>
-    </action>
-</actions>
-<images>
-    <image name="image0">
-        <data format="PNG" length="1954">89504e470d0a1a0a0000000d494844520000020e0000004c080600000005b43f770000076949444154388deddddb76e4280c4051aad7fcff2f7b1e26b586d080251020e0ec7ae9245536363759907408bb78c2b3ba080000600bcf13c2f3103c0000b0d69fd505000000fb207000000062fe0307962736f1b39c0400389affc0e1584cb40080fdec15387cc2e7880cc409d7108bafe7b46b0300fcb257e0000000962270588d277400c046081c000080188103000010237098ed094ff884cfea620c73ca06d610584602800cdf81c3e9932c1c7b9ef079081e0020e13b70807f04771be16f8700e847e0000000c4081c801b1cb9e44206055861bfc0e1a4cd77219c773d2788ebe3c4fae17a0074d82f70000000cb103800d80f59066019020700002046e03013bfba88156877000c113800d8db891b5801c7081c608f811c008e45e000dc86c00e68c4df0e0981c00100009dcb036f0207b43b71d35dee9a7842f7e5c476076cc46fe0c0e000009b23b57f22bf810300605fa765e94ebb9e0e040e0080b14e9b742f5fbe247000000062040ec0c9d82b04a0a6217342e000607f97a78e81669f276837b0123800006c91e9da4363b04de00000188b8cd051081c3c18d1a9e2e3d161916220778abf7be0d20d1914c57840e030cbcc86179febfb6f2609c037faa80cf769390287d3b5062bcfcfeb04a75c07c63ba9dd9f88072117081c4e306299e3f3f37aa2d78ebc0d345eca21b1535981d93c8d2b2d3ab2e07b060e5e2bacb74c2d9f974e8cadf7ec13bd3cdef39d780b626a762aab9534605e71eef86bc0a93fd73750abebef1d68adf63ff4eea5907e5ef3be55e232f64e06374da29e3782792e1be6b9a93f3ab467c6c1ca88a7aad10d3afd6d89d689b165f9215ebad00417333ab8664965c5d24b6f1033a2cc0cbe323b2fd5ad302ab8236874e31f93a37c3bd529959a5ecf5b83edfdb9f4fde9449cbe473a11a4bf75117ffe4d6f1d8fe8fcb934efeab6a8ed13b97a2bd5efa86b9394599b695a5d0fbd6e5cb2015ef4671c3c0cd22ddeca1d3f5d6b590c34b3973cac272549e033d25bf03543ed5ae39fc56bebdf574c53e6b8cd6a3f973b777a5c49fdaddc2ba0252ddfc86bd9750cd5daa13d40e4cf9414b7776ff7a0a5c16bd3fa5fb9a7e796e3d4ca54fbf908b70dbad232d582b5d6e58c91f7a2b4d4521b133c4f16712064b13768f412a5d7fbe801f7a79fa2afbe671c7215e26930b02e47ba16fd3698d4061cc9e725ac8eb3e2d8b9f394da4fadf36b06865a7dc4ff4e8fd7327948caf5d646346af7ae67bf4b6f3934cb6416efe995de2f8b63598e8bb963791a773df2b277e802ff050ed2276ec900b3a2222cce274dc1ce327a3ddb9b96cc4ccb845c5abe68a95bc984d11b98d5aef1addc167b562cdb616ea923bd06e97288453962adcb5a33fae84de3402cd72e4aefebb93f04646aff671c7a6f5efcf974fdd65b9abaf509cbeafcd2738cce6478a0cd24a44fb9abac1ecce3f34b27c2d1e52895e5edb31e076ec9f291451b58dd8ebc922e23f5dc3f2ff77ec3ac477ea9e2895eb5c94b3be06f7673fe326380f3d090572b3d8596bef66476d9ac96c2569ddb92c700e4eb84f1afa6e5fae287cbf4fb9ae5e298651bd05c536fd6b2a55c2bdad3cf39cb7b1ca415567b4fae019cdc7976e16dc08fad2a9be62939d78647b46d8b3e389ab47c2b83bd154b8cda9f95a4f7adb43727fd7af4524f2eb0975c5f2d8b303233fd262e579ad57c5b0e5c9139cb9d4f1be8689640e33a7bc2f33b70b0b870e99aa9853828795b1a91369ed379bac6b8c3c5d2ecc22c9eeecde94a1347daa7dffab5c5795b8e31e39c92cfc429fd9e737961dddfd3fb233122d0edc9c8d44896737a8efb7d7f324ef7fd1d875a41b529a65a6a5a738cd25e04f82259939fb12cb463db98bdc7c5cb44a4c96ea483de8809c9e21892072d8974b21bd5b6254fd79663b715edfe14edf248ee3c9a60a154beda324efc596dbd4baebd1240adf993d3a58bd346859ae35b75a496080f7a1eefed2779e137e940dc3228b70ee423f41cdf72fcc82d6394de378ab40c298ffd6754bfae3dd06abeaf3d67698e35e84b3efeaf8a9993b065a409c027e9d35acb7177113f31e6d6efa5ac9689e272cdb0eae12eddf7907ebf85451d58dd8f4ff8e403879d3ac757a992c80cec8b7a3b9764a9ca7bfdb7966f66c62aced868cf99db2438239b63718eb7cd7f33b3521619aa9663e4f629483e2360f39f5c5999d53801ec6997b1e13b607b2baf748ccdadb17bbd96dcf735ef979ecb4aad0ca53d0c9a724ca8a7bf0387dee8488b40011a23da0aed0fa3781edf4ac14d6e7f18d673540fba8cc38c823bba3900e08ed546ef5829b3c078cc3dc8906f8e9cb9db14f8a27ddc63643689765496fe1a27c639e4b7b27cfc56c52c9b571606a04ddc435bd7dedb464ff9e25dffab8386d9cbe35ecccae00f78403f3b70d8b95101e8b3722264ec81d6a87633e09867070e21103c7846dde06423dbb797a774faf0957cfd3ae62ee82c00804badcb3830f9e234a4a8913ab93d90b9b8d6f94b15291a2800dc8b39a0db7d8103000068b6367020f203ce429fde03f5840e641ce01f831c00b841e000005a04b3b818810300e00e047c26081c000080188103000010237000000062040e0000408cc0010000881138000000310207000020f62f637bfeca881e87290000000049454e44ae426082</data>
-    </image>
-    <image name="image1">
-        <data format="PNG" length="1760">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af4000006a7494441542891cd975f681cd715c67f366358811e56a0c22e38b00b1ba81619aaa102cd1081bca4d048146a993e68570d96540ab1da4258e5c1786d70ac149a68fb926c4ac189dda24d21952ce3461258686c301a05248da0c82b814d4660e1dd07110d44a0012f9c3cccfed5ae1d3f04dafb72b87367eeb9df77be73ee19f87f1bd3217f9f44fc73d321bf48c42f3fa29d9388bfefa5ce6742fe9b1209c8576f74886457443e488a18dfc8c6071745ee7d2372eda2c8bd47b2716d5464e191c8955191850dd9b8322a727743e4525ce4f686ac5c8a8bdc5e11792f2ef2e58a2c8f9c15e9f94466427e9148e066adcf1335c86f26142e986ff5a3bf9b25b798227a788075e8a02a3eaca2dbdce2a2f212ab94df0375cb26fb709384c2ad134f9c11809325e47d09c5e739ffe30df86880a8bb80b1be8aeaef879d6dd4808db1bb8d1a1884dd6dd4d379cc3d1bf5f420146cd4501c73df468dc4c129a0768c611e7a16c7413d3386d51926f1ee0d668b5c9048a0afc28044fc73f3edc15f0f7c91c3fc68007d3f8f01c4141f066ec9424ca1e1b909e84a0b2647250bbae2c3c445a7bc0ea6e23db700f53f26d97de7cef0ae73ae1c7b2fe67fbf2c92ee92e5df7489a4a7458634918c26cb239a486646644413b9bb22b2302d2222f2ad67c45a1679262257e2225f2ecbca7bfd22b797452e0d8adc5d918d2b83220b2b22d7e222f736647948138904a49601b146e2a80a18ebab4d915ba10ed4ab9ffd701a3db6e05f69cc43b78a9c127205cf161cb28b26c3bbce899300b34550b509ac4397584f1280d81b3e0c056ffe66e2d59c03bcaec2d52cfad027580ae85a121450b571cf7977128a4724145f350b24e217ebb771545c8c9dcd3ae4f9370709c627ea9d3c87dcc7e344f776bd18774e43afed39af1d9fa7b076ed2af272f6ece5c92e6d3632d080fc677abdf3c7c09c89998c110df4c34f35f4a11b983bc3b0e5c05fc7eb0f303a89fa8bcb9ef3de1213dde318452a0c9c0438af80b53a0580f135c400633d0d7f9aaa6eb66dc1c70398f753e84a0bf9965df87d0aba83e88110e66a06f60b587f1eab3bc3516bc143be9a01c05ccd1003b245b77a008f81712c6a34f0ce6c3d9ab5bc976aa5f5e0b91ab4ed41f4de2496026ad7187c9eaa2cb574c5a0d557d180ae8d43d16dc2c0c3342a3e0fb9e2e388edaa83a760aea7bd3c5fff14141f07abf335a74b62ae79df5bab19d8b3c1ce55978732586b993a269a305042dee3158f96ee58e57beb6fe72bc8752d89894b9b365073804c83da698d56970b66657f557ba106d20018eb5efed60ed5752bc8cdb5343ac71850a8202b23b51fd4e8e78c8eb596016502eb5535707c94919791d6335093e725b5877b6ab2671bd4de09724ac663a21903e6aa1743733d034a0b1ce4ab1bb4fa2bc8cd12d283b51a06b4f18618e7b76a0a5787976551ca4cbb8d0ce8dd49c045ef496272046dc1ea06ddb10af2b2dadbba6b1858cf54f3bcc444f0ad9a74bc9f45ed4d81e243d59218cf5fc000f82a6ab7bfa889e1afc62ac8cb6a3fda34aaeb3f9fa8d7407bb83e7e4f6d726b6950c6b156d3cd35a07727b14a0c00844fd59755fdc3d9badaded259cd121e4e5635707612465375dfe2ba44b524391a3550b90bcc73fde8ad3e4ca750bdcf3b3578bb7e33eb6aa25adbdfc9622f4e122ed8debcb50d2e4ed5bd6fff739270718c1c19a28a0febc936eae636d92d9be15dc7ebc866427eaf87bbd6e43e6f36ee4d8b58cf44fe322a626c8864af377fefee0d91ff3e93479f5d16c97d2bf28feb220b1bf2d52f3b1afb01f35c0cbdd58f795868ec64de3f56965f61e497b2049fc62ac87340544962edfc0e756d93ec4ebefe36d4bb9375312eab5dd792f07e02ec23f8ee15bdff7b8a60a0e4bc5401a35a124e6550cf8c33df4c0386d645ac338cb9efbcb893517cd8a7c384df4ec1d101b4b455ecc1a6419bdf22b75420aa241b90db64086b1318d763c41edb64f79c3a06eec41e9f07c5877e36d9bc932957b8d7fab13e1c83f5bc77ff6f39e43e9da08d0e58722a6a3f8e3cdc3b018b2962070eb38e4b42f1dda965a02f5be47ea2b70bab338ceaba58c57ae4c799f0ec041653a84a0b39859722cf2da6883e30987f9a6760df215be4ecf0aef3e024c08927ce8384e2bb35fb7013d5d7ef55acde644d0fe7a2768d61b92eea99529fdf91c07252a8af8f41214ff4b538d6de04d1e0203cb189fea41f6be70f844fe9703d467469a1e4dc65b6c8ade15de7418581f29088ff66b6c88544bb1f231c24d6de86513cf23aa462a9532abacde7cfbdf97cd165005fc9c27c1106dc2366f71dce1721eb391f79a1802512e89b09f9e7241228ffcbfd58766e26f4033fa7ff8bf13da20440a28545b1620000000049454e44ae426082</data>
-    </image>
-    <image name="image2">
-        <data format="PNG" length="676">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af40000026b494441542891c596b18a1a5118853f03c24e600b0b031616b6812dc2a6ca2bf82829f30849bbe5a6db2748abe5964a0868a1ec062cc6a0306e149cb082b3acc54971efdd38131d1d9d4d7e188ed7e2cee1fcdffdef2009f7b47a326535d37a247f7daf7d9fe41f7bd7f2d168307566e6d2543f8e33d053b6ba37723372ae24050a0e3790a19e12981b6d750349921f481a697c908156d604ac090589ff034981ee321bc8f87a49d2dcb6a1d58bbbf0a79282dd491cc7804bc0b641cbc4da9734d2cf34032f58af33b25511a2082841f77b087770f5a50dbfac02575fdbaf18a2ad7bacbbc9cc802bdb06d923a9ae49a7d136a97cbc6c0838df94c0d10c244f43e7d6fcb8fe669868b4032d2fb5a781431370bdb7f3e029c9ae91b4048e630088568007c3710455c3c2bb33e8f6437803ed7ec809f5ed1be818061273e0c6b7eb8191ce60770239dc05267f7fb4b426ac0ee6d6c4f21918489e7f47bf9b45ee6eb089e4ca401401450843a004931028c36406546038312c0cc711d4e0761ca5321033d0eeef78fb0a3c0f88a05402165029012154cac00c6a150f2650ab1a7d5df578a0b97d4fedc980ebf9d21eb9b9533b84dc7781533fb06c04ca9181c784baf3ef26619209abf93150b4e7dedd011e840be0740b136518cec89101c02b1267e114585826c20d4c94c98701577fb1701f577727ac3391c640bc05c72460359940a50c172909649f034906220c0396858963c13230c99581d586043cfe24e01898c513c8670efc6f06bc6d09ac33b02581fc18489b030b36ce81e767608f04d2182848b10f567dfadce403752e6872429d07f259bf7c5f782ba9b3cb008542e17c470e07d75e06fe75fd06908b49748b6300520000000049454e44ae426082</data>
-    </image>
-    <image name="image3">
-        <data format="PNG" length="1655">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af40000063e494441542891cd5751685be7193d197a90210f1ea4a0401e1470401279b0850bb1d8432d5a289207c5660f93e84324f6d0883d14b583e076306c3f78961801dd8730dd1537be1978920799ae33d2e9066c4b31dea4828be4120fa9b4431e69b18c1bac9ff2c3d9c3fd6d7ce3c4c37bf13e1007dd1fe93bdff9ceff7dd2059238cff8d1b966ff7f20e07af141f1cf554e0c8660ac5a88bbc230a485b80c431726928822238a809c80900652328eacd001242184861452c8080d9029089901640a7b228b6e770f7bdf7551ff5cbf708201c9a35769a94292e4333ae3a90d8da7fcdf6285e43e39fa469ac7f391c4058709bf01775c5d5cbefc6334b77710b8761900d0e74fc173a90f7d6e37dc2ea0fe70fa6c3a7f0a64a405f15d18daef26b0b3533c52c2e10163152a398e920380db0d1837331819f2c3fcd5199303d0a4850f5e0f03c280db95769c3908c425d0fea68bc035a0fe45fb18813e185f19c878e230b6cd3313e8c930a6574dc4f7e21032eb3c3cde8fbc5eb67bb6e96ce1d0d8140f36c8dc7c99ec9cdd02735a891d8b4cbc37478fa7e2f0818300ef928da77686ca46ebe80b76ef9025ab4192ac6d9e9d416786bc753bcfc4cd397a2e8dbf9a404e2ba9e467aff2b4b8753bcfc622197b778a1e4fd941c0e181948ca2beb583d02060ad360100edf60e00a0b9ad70cbc6fa212aafd43fb7b1aad07ad2047600fdbe052192c8ae6a102275ba07e6660b36e51592074af67db2b04cf219b9f0a04676c88545922d326f54c8a7644e27b949cedd2df160839c9c29b0f580bcf5619e0d834cfc32c78a4e46de99a4e7925301c71cc8fc160cbfd546d07715e65a1dd1e1208aeb754c0c0761ac55111f0e415faf22391c82b66a21853032d2c20708635a9810cfa310cf75f4641242aa892834002908310df1ed1eaa6b5be876cd0b2f5560ea370b24c9d2a306b97bacf2a50af935995795e7e6cb64f358c5b3057696c9f4c70b6c2c9189f773ac1964ec3dbbf2f19b732c6b071c7d33cdfefe5314e8fe1adcfa691ba181ab28aed531f17610d67a13e1e100ccf526a2c301fbf9f520f4550b491986264ca4d48e48c909cc480390f1a35d91913afefdaf1d0821d0fbb68b27fff80abdef5fa1c0e4ed3c4955f9cb6edbbec2c35df1b5c2c35d71383f3648fe4056566c0f457e36c5d2ec2e477e9238a1808340fa43b2bcd2203b64fe7031a9d8dd3d2049763abb24c956cb66d86ada58abdb73a3566d903f906565e0f2728d91773a1c194b73e84682ee8b915308bc9f270f54cf5bc7b32b3c54e5f0ac49955cbdafaaca55722a0f8d8ea55918eb706830c6fe8b250701c71ce8c924ccf526e283b6cb01c07a6cdf6bf361137001e65fea800b28fea90eb801e37e15c12f00fd0f16b00568bfb710da0a40fbc404b681e25a15420233621a02387d0e247e9123f7c9bc41b27eacd72feb31558f0f483eb2552aa9395158b2555a30ca648b1c7933cd91371af4fbc64f5700b287e25a1d49014c3f2e02af01f5bfb7816b40f5491b8101c07adc047c80f9b08e902f00f3af75c00714ff5645f4fb208ccf2c4c7401fd3313f1e761184f2c08d9c39ec8a2f7df1488bd3b473e23a7b205eeaed076f93e595673a1f480aac29aaad05667412f939b64feaead4eee4e89ac9273b305b249fa6f2498bfd1a0d71ba1dbed54c049e0e707cc2f5638394ba6d5506aa9edd8d8542edf6838ae58f9518d7c46961ed8c3aab058260d7261be4cce93f9bb25fa6f24e81d8ed1eb8d10aed157b740f4b2480e86208481d4501cd806aeba2ea3781f08b8afc2f8b48aa03b00fd1320743100ed9e85f0c52032f74c84fb43c8dc2b22d21fc6f43f8b88bc16c6475f1a48be1e0524d0275310b277e217914381c8d824737a89ad8fed4572dc6865ab66b761f9d06815d5860a699079bd4cea645e2b911a99bb5320b3367a0763f45c1fa7c7337a42010781d1b727c9bada628bea2690aca8e142cbf6446959c9be64fba460946d2fcc5379a1a4bc50205748cff5717a7d15f65f1aa5fb05028e5d101e6d33fc56155b5fb621a44071761ac6aa8938a230a489b88c4297452431014d1848218eccd1ecd79146123342831b2908a9212553c8ca0cf43f2e03520002d87b0e90d597ef0292c80f36e8f5c6e8bd52a1df9760ce57a3df17a3df57a37720c6dc808dfe810abdde18730abdde6378c5febce7ca38bd572a84cbaefc45f94f28701e71eeff0dcf9dc07f003b26b499ed7be8ca0000000049454e44ae426082</data>
-    </image>
-    <image name="image4">
-        <data format="PNG" length="1942">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af40000075d494441542891dd975f685be719c67f362e1c6f2b38d00c095c902181c8b82079ba684c07b5c9a0b37a914aeca216bb98c52e1a3146e76c50ec5e6cb607c11223cc1a984a19615207a9e44122bb906279c49662925a2d49a5143748a51d72498a1c92601d9a03cf2e8e3ce79fbd5d940df6c2c7738ea423bdcff33deffb7e4212dfca2a51d3fc98942f483fe9fa9b8ef1f27ff2dcb7f3e3a77959d70c4992ee562549d5b913d231fef0df4920c9b26448d5ae561236686e4c3ac6f1fd9eed00601365578b041f0c90264fc81a22692d10b6fcc4cd2c118244cd2c112b48cc4a635a213093840993ed8870f2f7c06d137a4c586e038f032e0cc1571f91878f87d8275497d468657c4b8f4479a375b1a17d625d6a20c990f248db86947649d7bc2afce2a872c7eada4f81f6ec6a110e40a5b6090777136b3b1cc63f3a41ef8f26e8ffd5d69e049acb3f8003c055135e346015300fb0f9d74d06ba037c3458c4e90c696f05aa92ea2d32955d5e0e5f55813766559e97c6a6334f277f69d4665e47fac6215dea92aa2e69ce2da5339a99931a172547f7c89e2ab4a757f2e084d28d4d703f9c5a9ca823c2bbb52c0e47f0c9cc1f34e1878bb005381df021e03360b913be6e92fce4321160e2fdf87e0e005d93546ded6669979cf7d58626e33969434a9d7f1afd86f485439243bae292e492cebba54a4a7ad3aded92343e9d513929391c813d152031979324154ad547be7ef2744eba2b158a8fbebe13db798724b7b4e1b6b1e896aa83d29c576a4863d3299d784b1af9d9e4fe09e8ca436e2f3e7dab9f888d94a484d4f04a3a2a95bcd2dd8c746e589a774bb7a4eabc34faeb840aa71bea7a6eef04daa32b597a0f43fe72057c50abd98eafd4366dfcac85376c2c5daf812306f79270a00b3e02bc06fcfd0c3461e1ea51f800a656e2608689adc630f6f5c02549d7247d23e52e95a5bb52eea2bdc599c575a92ea5e6257d2125ce15a48dbab47154524eaa0cdb581c966e15547ecbabea3969f4cd59ad9f9546de98d1d2f1bababaf651606a250d2fc0c26a05bfa797ec5a09bf07d2ab25829e7ed26b45421e48aee4093f18a0f669080ef7c0e619701b70fd4fd0e780b538bd5f396de65684d86a142c8899b1fdaba071512a9424dd95321725dd9252e71f625e9512e982b42165ceced88cef8e4a5a972a2336e64f488b299d7863d266fef31915e6b615f8e9a472af54d5d535fc8802e0ed84c47725d136fe764253bf0b937dbf44d0d74ffe6685215f2f0b6b15fcbe5e16d64af8fbfa49af16097926c0e1864ee033130e03570de8eb24fbcb1203dd79625612ac3037fe31055684adcd096e7cfc3977ee6c7600df69adf616ff26f5f996fb77983f2d7666452520a92e7d3126a92c554ed86fc687a586542896a56d497929176b68f0f8b8522f95657c6f58e075da2be1dcbdf63adb639793e0a3c5b0ffa14e67c3d6ed261c80e64a04dc476df73f3f06b533e076c2d5387c0ec54f2a0c787ac9af96c003b1e5694cd364fafef46355f068676c8f78c2e4d72a847c0324d7fe250c3c03dc8603073be14be87c71189a9df0ec187c19879e71b86e803144b12fc080af175661a8af9ff4853c612b8269363188605a4d20f298fbecfbf6e86a9c214f2fc99522e107d0bcd7040bf21f54a003162ed8d85c9b87ce087c1983e70df82c092f9ca4f85e8c81fb61a27fccd2bc0a53efa4095943c44cbb0ab6cc18b6691e9f09adfb72b255f71bd24cab2defcc86f2ce742c496a54774f3af5591b17c7a4c5ba5249bb9724e672d2151bbd2f95e57e7154b347966418834ff3c0f7c1fb6c7b6c358adf07d1e5054cd3cfe6e616f440e96a8dde43505ca9c073d0fc240bcf02f76ae08cd0bcbe00176e10af9508dd87e80759b6eefb892e67095b7e4c2b0616449fe803f16f803b52e99654bac77a7c5b99c575358ad2f8297bee2fe5cbb6f317edea584a266cc63b0a5ccb4967973413cb683b2f4d4e67b47d519afc6d4a8df3d2ece98c667deb72fb46e472e564740c0a125de07de6f14e48e0f549a92a8d9f4aa93e2d5537ea2df96d5c2f55a5ba94393566abbf382bbd3daad4d925e9ac9448e6a43969369e91e2d24c2ca39998e4f28cc8ed1991a37b508631b8772b8e7822245720e20d1133d3f41c76927d0f7a0d27e9778bf41b3d64ff1227f84284ec6fc2386f0f33d531ccf0c121266ea6091cf433f1799ac0c120276f26093a826065e9ec18a309c018587bb461a06df8d5712dbc3645e46612081379bd46ef911e8a6badba5e2b3154eb27bb3640b07b8064f720611e3a2d5bbba765a3230464396904e9792704c09daf3731bf86e6837cdb5333c8bd52d7cc5c4ee5797b8a49d2fa95d65e5f92b42d2d9db3dd9d3967574beaec9254d975fd6c3c27955a58b4b7c1d55790e348405dcf0d8a8ebdb7a0ede84b631afe71941b9fdabd3bf05a91a0cf4f7a6581107e925696b015246eedfc3f48739210512b49843031d356ceb4e244ac08312b0a9c24f9e701c0c034ef609a5d682f0524e1f58ccae52ac8e10828d1b72ef79111b98faccb7d6844b347d6e53a3422f7a1825c8746347ba820976b442ed743d86da3a33b2057b78d4687cddce8c8ecc95e126df678fcdf45fbbfffc8ff7902ff04fb15d8eb0705d4330000000049454e44ae426082</data>
-    </image>
-    <image name="image5">
-        <data format="PNG" length="1732">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af40000068b494441542891c5976f68d3f91dc75f95944bd0ded231590bcaec70a0591f685761edeee05a7670d7fa6034dc40fbe87af3810b3e387af7e0e839d655079dcb40b0630cbb43300c76a60397f6402f395193165db29d9028ea12a92c29b5b49976f9fdcefedc7b0fbebf44abd51decc4cf9337f9e5fbcbf7fd797ffea64e122fd2d6bdd0db01be4a05860ec75a16133a37341c3b0c78f9320e7e55044646e3c395a3523a53d44858eaf9d1600fb01ea87bae042ae7b57364547fd7aca4bb329693f213ba0e6c02ea9f0b819170dc7f24ace123634973e97d038bf31549d2b1f1b4f6bead23c0d7794628ea24e1fb71ea9cb7bd739d3d5d952b0174830378c0761278edee5fda9fd6c5819523e1f86ba18eee8f1265bed5fb2660013e6009687c881ffe8ce5c46799ddd317bf77d93df5a4b792e839ac9a155dcc1b47945e94461625ff5b4935bda19f8f8cc6c674422ace9a0315f75ce5ee6a052a1549156960ffc934d0ccd34221899e61f372d6fdb16a2c938b066345a952948646935a65aeecaabee79ed7fcc32395f3d2f6ddc74fb2adb8c3e8f95852560954df4d3f7ef9ac91e5f889f49a973f4d8162d1c5d98a060e48b41f1b7303e45983407695275512b12b92ae48e98cd6b6ffa5801bcf53a7b38a1fd514f06d4c7fa89961e3044cdef820730fda1a20f2e71cfded012cbff9fc84ad98a85a16f87c60dd035f232cddb168dce8e3bddfe60811608c1c5e4f80a98b936f7abfaf5fd84ea488a77f05270a4ef07324d175d030ade5c0aca4dc53bcfe120af8774b5d13d2c051299d9206c206fb86b38a9fd152dfb016fd6f68851dc7ff50abcfd20a045c05d80ce337736b26ed5a0ae02a402304065274ee82c15618df07091b8eed878403dbdf0e10b96d7de1f5335b5e9e5cc772e19a51e0832773207949dabe4f8a9d917a86b38a4d493d07a5d869a9eb83ac4e4d485def4b5d7f923ade4deb5444dab2478a4f49f1bc949d95fa4e48f19cd4372e2573d2de88b4655c625bac48bb04fcc025f048ddbb09e87dcb945c3c63744d5e3707e23983b18cc153970c9e3cef7e9f977e5a94f69e3004fac60dee8d483b0f48b4c61ed0aa0aadc793c02e24d1f1feea1c189c903a261e89f55dadb66a95e40d1ecf4895fbd2d019295f940622c6e3be71299e91ba0e4a4daf496c8b55d8a202ada76cb6167f05b4d66a32770f020d2607a267e1d01ed34f4b1634373cecb239cb9c8bde80e01638f40994eec0d4050b7bd947ffd9256cbb919f9c2bc0720bc18f52d8e54eece5c97fe1f4de81a8074ff02516ba2f03957500b69323d00058a6e4e64a29fa5f6d04a0d9079992b91ccb24ead805e8f6c37b1f43cf26985b8081eff8282d40796b234b0b60dd69a170036cbb139b14d0fb0026c586e07a9cc84dca9fcdd60840c064bf0ffa7f5fa2a7a3b396ec8515686b86f1690b7c307619ac1d10be0821207cc102070e5f580207ac9912e57b706b2e035eb0bd19f074823309f402511f76ffe7c017805d2bc3b606236fcad34c5f87fbd082967a8816e09d0e1f87ce426807d833106a875f3b10dae5c376805d8d2cd9502e3563dbe0f5b7812783d7d3e6b6bc5e60123cc10d9483534005b86f0838905a32f2963f4dd1ffaac9097c10bd0dc11618fb1bd00e873eb508b54378066ce7a10285bf94982b81ed2dc106c0c9016de0640c016712bcbdeb7122cb2c4c5c05fe5d236093a1b31182bf81e4bb9de026247720b819260b10da09cdd720d4ea636c0606db4d531fecf0b154860f5f69a66923347535d3549fa3c91bc0ef81266f1b7e6f02afbfb71e4ff4659cfe1470dfe8cb0324b17dbf149f97fc7b1ed6f713e63e5e5c5c3dedf279d327b2393379d219539bc95456aa48f1445a5a9462a7d3f2be22b1697014f82e46276a0416e725ff9ec7e6fd5348d4a65e6d7b71fb48757e5c32903c6f48e88ca42b12db4e0aefb1dd400bf0d22a021dc3790d9d78f6fdd21a737fd6b0c95f376cb2575c252ee5a5fb52329195ee4a7d07e262abfe017402dfa4ba274a62cbbeb4fca38f78f434ab4ebf6a67accefd5917afbb4a54f7879479279ec8aae987129b867e07ec04be56adbe7500b70a6df8afa5cce6f62cab07eb9e050d50babd041b2177b5009b21359d812698fc2441e01b10f978120a30fec728dd3702ccdd8ac0f2d50cb0ec2621e06ec575afa3a6d761fb4286c18e36c2d3c02e603a43a8bd8db1bf9a12b46752847674129e016f3bd8171384dabb09cf98765c9e8b024170a2e009821301faab38cfcdba209007e64df15709d4d5bd0c6c7e549ae760ff01ee02ff74518f12a8c76cf6cffe17f3ff99306b8c85eb7d8dc08bb4ff0283519efd724589910000000049454e44ae426082</data>
-    </image>
-    <image name="image6">
-        <data format="PNG" length="2188">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af400000853494441542891a5577f6c13e7197e08865daa743ab4a19975e99c89328c282288a471462725ed962de9048d415d1d4515de58154715adc8fe6006a928442c33f9c39dddc99acde4ea2c541a7b53965c37541bcd10274af1d1a53d07a5cc5406992a422ecb90778b3c9efd71e7c4e6478bd64fb21ebd9feffddef77bde5f77abf1054b0da86bb5f5da56a94ffa9eb65e7b56ea939ed7d66bcf4baf48ddb5dfaedd177c39f89cf635ed87529ff47d6dbdb645ea931ed3d66b5f91faa4c29be36ffef78bce5f75f78673bfb306263c0da0d3bad1faec06f386ad3d3fee599bf82881f65ded503e50b0a3690794f715ecd8be03a9e9145a5b5a91b89040fbd676442f4461df6e47e85c68e9b35b9fa97397e7de03f02e4af8dba93f9cbaf379375de3dcef3cc814af4c262649929c25b9488e9e192533643010241532e837301024674929249119520a4be4acb19f32306fe8a798751e70bea606d435f718771e70d6bb8fbaff4e92d9f92cb9a02b17878b1c3c36c8c1a1410e1e1b6471b848cfb087f4923ebf8f0c90c150900c93524422b3e4686c94cc93e363e364ded8f71b4e2f90834383b3ae3ed7e395375fed3eecfe9024e3893899a26eec6cf11ef40c7bc824e9f3fa5618c8dcc7b83c4e16c8f8d938b948f22cc905432f4f7a463c99f11f8daf058055cefdce274343a159e55305897713d04a1afa4dfdf097fc80094009ba0c3f04930098800161007ef8d12ff423628aa0c7d483e89a28ecbbec98b83881ae5d5d485cd473663947a61368dfde8e93bf3f8981de0174fda2eb07f2b8fc1ed480da24452492a467d873df9b57319032e8578cd8cf1b31ce19b4976f5e249924b9444ea62675f92c4945673abe27de0d00abb50d5abd20083f170401f6bd76bc157f0bb7b5db98ca4da1dfd40f6fce0b9880a9fc140eae3d08ef752f5e35bd8ad0a721bc54f31222f9085eb0bd80a812c5eee6dd98b838818ed60ea49414ea5beaa17ca0a0f9a9664cfc65029bb66e42662983643c89583e363a77792e0335a4b64861895cd0e34492cc90cce9315b6620712f03c150f0be0c3041b248c6e53899376e4e83991c49999c1c9edc0b0070f5b96c8c90e999b4fed412ab309fcb57294b61890c57647f58222306969d585c392fada457aaa25c6539b27b5ff73ebd0aca0c50aff92a278a24b32b8732a96fabb3ea0a5395724a3f232ec775368d9b2f33abe8307a669493230603cefdce9df4ae785c2c16abb0bc3f99d29bd36472524fac32a626d938dc48eb909536af8d36bf8d6d8136b605da7426940a260c7dcfb0878e171ddd65069addbf74ebdee558cd44190dcfcb87dc2d8bc74492a43423914ba427e1a179cc4c57c0597df3d8a8de294341a6bd69bb9e03075c2d0c909e110fb948aa199dce7c3e5f65e4813893a679c8cc744e97c767f5580b87053a861dbad188d1ac960c0c938e5e871e0235acdaa4b0fe67d9d3c9844e2f67f4388fc72ab27b69251c9cd1e5320365e3bea48fc21981ddc7baf5e7f2240b46b550cf1135a0ee03801affb47f558fa907ca470ad0085cbd7a15ad6dad503e5080cdc091d3473075690ac77f7b1cb804f87fe747eb87ad089d0a011f03d13f450100d14b51743dd98593e74ee2eac6abd0a634c00444df890275c08d5b3760df6787724941fbce768c4c8f2ccf82262964544196d5384fbd1264ae4cb5f98ade1fd1ebbfcc8027e961a1506067b89318039d5e230732d539234524aa01b5bb3c099b0bc70afa20a251a7155819eb2a34f6d55995e290c8c1e420dd8b6eba6417ad012b710c740c3b581eed95c6e9279d079c760058a586d4a7ce69e7a6fb9fecc7c4cd09743ddf85cc5c065bac5b8039005640b9a460ae348781f303109a00ed7d004d000cd4ded790e9cbe0f885e3e8d9da83674e3f03ad4983705e80f0b4004c01b00198d2802601da9406b368fee927fd9fbcbd1a8fe1f1d7bff3facf128f26d0b1b903a17742e8287460e2fa0436d93621359542735333764777e3daabd7b0edce0ef83bfd58b7b80e913d11dccadfc2b69f6c837c41c6ededb7e1fdab1737efdc041680925082b6a0417b4483f6a906ed9112b48286524d09dadbda6c29574a221bceb6963be1729dcb7afc83fea03e05873cb424cc1ccfe9591ecc044992ee1937b34b593a934ec617e36c8c3552c808440844062b18aec079500c89147609bf59ce01862b626af481b21c97f519601e31eb2596f1b1c822dd8a9b2ebae8483ad85deca665cc4244a0ffb21578a602733a5ab3560a2d182e57c137078f0edee112f577c00a2796b377264d9fe2a36f5e377e68f61055aaec4c76d25ab0521813883c8818741cabc0850a94756c93db28b40827965fcb1cbd8e37dc47dd64e1c14c5802165a0a168ab2487141bcd7880ca200e2ec5d2883e2a2484bd2c2c6a546b6cdb4d15574112df8d5b203629db826be277ee2d02b878a4c199d6fa9baf717f2053a020ec61371760e77562142208a209220960c5c042d872d0c86836c7cad916d311b6d876dff114784147af10e2ce8b9fbbb609575b3755bc3c686972df596e7d689ebeac5af8bd0340d47c42388d455bcfbb5d811bd18857da71dd1e928f6fe7b2f60ad2e4d9c07dafed886ce6f75624018b83e7065202eff598ecd5d995300140c9bc5fb7d22ac02f00d69a7f46cf79eee5fa7bde909579f2b933f932fb80fbbefe46379ba0fbb59182b2cbf2b0a1181669a699e352fa38f3e5a7a2d8a6da7ad17c077017cf541c6be68ad3594ebc43ab1ae61738359ac131fad156a6b054110b4925652de50c20da506e009001f03c213026a3fac857c427e13a7e10670eb21ecfc7f4b9051638d5999669ace9c932a553a734ee699275e841f80f879fa355fd6016d0a30b79821df90d150df80d88d187cf53ec8d7e42f7bf4c32d41468d2d626381057a321ebd53ceeb9df2611878981cf8fc751480091db88c4df8d75dc62ee31fb8820900ff7c90faff0083d17e9e9cdc81200000000049454e44ae426082</data>
-    </image>
-    <image name="image7">
-        <data format="PNG" length="1221">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af40000048c494441542891c5974168544718c77fbb6ce1bd836d1f6dc07728740f1eb2504842026e7a32e0c95bbd99f610edc92df4102f0a3d6816a1d0dcdc9b150ae6525a0fa17ab146306956acae459b2d8d250b0a6f4302d95465df60867e3dccbcddf7764db20ba57e97dfcee3ed7cf3ffcf7cf3665222c29b8c1440be24c34ad73c4765d34a57811c4a55701841e90ae81142bd8cabc709f532308e520bc004e805d013287d1d67e7184aff081c472943f41ce849949ec3d19328fded36bf7dfe10f8079054fe9e4cf12b578a4761b60ca7870da72d1906b5088531985d04c66c7b084a77211c02ee566128875a0246412d9a412b0d68a03568db56a52ff9fd8bcb804ae54b818c7fe673f02f28d8a46a08d49249f2cd926d2f9a3f6fbf340c6d67db964a41a841bd04a54185f6b96edbed006a7d1932e3703f9505d6d3d3f964f2c210b0048551f8e6ae2165e380d2309db7bd456d4b46adbac3b1641a9c8c6d6740010ee3665ae07dc049e54b81dc3aedb794b304a7468d72e2ca634ad1d088b555dc11eb900adbea1d4c7200d66b90c9c2fdd4c7c09fe42b22bf3c15136b06b7560d7faa1afe50b1bc6778f58e8834452e2f88c873914b37446443e4d2bc48f3a9c8ccf722cd359199ef44b6562dab86c11d1186ae0a300ebc47be144867cc9c9fe97ad677bc4ab2d9340c822d61545a034817c6fcbe6bb7a7780bd8b10cc1750d7ddf8bd600009952b9ce64c7200a1476edb77ed1c3c7a18ec2c7a1f6729bec3a7025342f44492d439b3c62fd59033293c0a7e6fdfc72b77b7b4ec1c2c1f66f6bebca94f37afb9b1d7c6e105f036955aef7e56cbd6cd7f38b0ab8c09333e422e5710742c02ac785f00570006ab5ba75c0447a3afffa35d0b8d9a078a1487833a478a1d86afb79c7747e60049e9c81439f983fc4e77cc7246dcdfd0b700f1866b37e620d303cdb5d055be7b7769d81b5b3d6eed569113921cd6b8322534e97edd1aa6f5adbb7b6cc83b5d5205905ce6baaa04469d729c87e08d5932edc2ec1c96bb89b35aa71077651ee792e34207ba8d381afd7ba54f6b50ff4a83ce24a752de9c0f4587657b5fb460f731e29f73c17362137984d38909e2dd7bafadd6b1fe84a1ed2aaf7f86a6f34c2363d686c863000d5c7b5641590ef7660af35c06d1f2e7ab0e4c3451f7ef6a89e74f755ee0d58073eea70402d763bb057d4cb0ace35e0481dced5e1f02572ecaf3c62e561ad731fe8630dec60f6812836e7606002d85fb937e0421d4686930e6466cb354e1d4d0ea24081e28562a21d4dcba98cc23f1225ff031edf008c62cf73dbdc0cf106daacd71bf8be1773c07e0b866ff4516aaf4464fe5d918dab2212883c3a21120cb6bf05d1feb5d1c120c9c47960f0ab95beea7c650a9129a78bad7adf483208cca882a7860f2ac97d80cbf33d2a8f0d22faaab5d8a372b127afa403677771609f1daef93cb9c3eda7bce5c0bd0e0706e7f750d231f2e8cc28f6cc28f6ccb862298f6cdb9e21c5f241473bee40867295dc628ed0de80d0d1a5a27d0372984085e626a4d4751c8ea1f475d0e626e4e8e3283d074c9a12cbf4405b0529e06de003e09dde3784ff24fe069ea5303bba6bf97fc60e10a6e40ddf8ed36f343bf02f9f8b1d8edcc540b00000000049454e44ae426082</data>
-    </image>
-    <image name="image8">
-        <data format="PNG" length="1839">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af4000006f6494441542891ad967f6c53d715c73f06afbb4654ba5661f39ba8e4a795b54e8b16b3a0351bd91c69684b46369a8949f334a90d13a86154a0b0fe132a82463b216658c7b2a9ac08f547600254ba40c3168d0491106794d499280e0b5d1c41647b4093270fd94f28d5d91fef199c642465e3fbcfd17bef9e73bef7fbceb9e7c22c88768a1e189748b443369fbb2e2dd176292f7e3b3d22babe4d82b3f9cf0511997d41c3b8b4d4778a844524dc2712bd2a57c39b5e37006adbf27bebdb446a0f8cffa9f60d59f3c0080ce4eeee32da21078323225c15c125717a4472f56d72e6f4b04ce8a4485044aadb448e9d95c6ff9b40434e9e8d768a348ccb68b423ff6cf4ba2474cc495e24c18848404402e7efbe0fe6442a778d74038ffccf040672521eed728327454ee6456a3b45949b1411615844df16d19d223a2fa2fa9cf72a29523922521d93e4b13e8954c6a4a5faacecfd34043cc58768a7b4242ad83e7413580a5c996af5ef26303ef2032994d7c426895265a032d841839409fa0930df9ac0aaf3c3a90974d67f34fe0bcf0f672330aff8d054c19727f601b7808b6ef221504b21f822fc6ab11fa5405599e04dd254590693c03203f511bc0d18a720f1829f211b528d7e6ccddaf011f9f56c2adc2110eb2f68000e024b5c1221d0af64f02b684da5501ab89244e9325aafb8cf43499482977b52680b2adf9c40878038604366ffb6bf015f9893c0c60adfe0f2c7405501a3c032a007b62d35504b40559b69dbee3bb43154b6dfb639a4aacc613434af2a030d7a9589ed85a6157ebe76145425d80ab6addd590158f722e08976e48354f80edafd8588aaf03174011275c0fba08210fa7d0abce69e44b3e71070db0df609303fb8baf171a366dd0baa66791df10c541a10cfe0ab32280c1688aff461eecd5018339e193de879777a72118173d72552dd21c26d11faa65ad52e123e221780af009fbbc7261e0ac74eaf3f392eb9da4e9193e34ef79c1b17097789e81191e0cb22bf3d2212da242d3308d4b7e737874744e812213fd5aab448e8e797fe017ce95e121651f9dae9aadadb92ab3d9f977a11a9efcb4b345712af5324b84544af6cfeea5405d2d2127a5584e2e269f6f52e91c0cac66fcd4500a0f6ac7cfb9c88d40f8b9c1391863e9140493cfdaa48b055da81878a04e6c57a0b4e3bedc5a9dcb78020d00b94c3b6540173556b73d16936747cc3f39758aad0a696422c035402fd4e1c8e0359b0fbfb1ea6a42be66dacf08de2c5a9fa5b80011c052a1c12568d0f5b1379fb1dd9fc695468327ddbb8014d067011941b479ba0b3a4adeead3b80f97708c4e285515343f05a01ad410de12872ca616ef743aa0e0e64267655ef929fcd45e0eb1ecf288bf97b6b06d432b05c253991c1bec11fecb1f8c7388dee10685ae11b64925f9acb7cfbc38a33c7ea8085ae22fd8e12d60548d4f86111fb4e9e97e63965b841aac9806c1cac7237ce3306186c0fc4e47b386d0c706716cc073e0f501d1bf94d6aa1f983510578a7c65540980246a5ef43060b2fbd53bf60466f03348a74dbef13e90840b6a7c4ff16a8c1142a63be947dd7b3b374167c02a481745395f9450056e0fc8af05d6b4f423cece383384f353ced3b1eed106b2027c71bce4acba5dbd2d2785e0e8e88a4b23d443a1641b67b9abf026a4c6cfbbd4771cf150f25a86e9572cb3b9148283fd8ae0293f7b65a81f282510d5c00bb1c323d60d9d3d62f043e031440f5a75017cdad56afe7b088a4e79512609235ebaafd4e2754b9ce2b5cedebdc352beebeb76cc886207102124b60e81458a112bf4937ce62e03b0e21f598896d6d4d03792819462ebeb9f372012240d6dd4116588b53b73f01c6dc957137c15c368113af17f49fc13e7e6087fd616c1867ae4c25604fb2c55ce443f503d5ce2e024f40c09d6e5c769530700e19e6b6ea61d0eb92e86b60a70eecb07b7f7ac2dd4e1ea6d5004078c7a5f52c2c7b2d152e605cf4c1587200cafe8dce44325b0cac31601170789ae32aeedea00238272a8e0aba1fec1bef1db2ffba7a8f9bfc639876232a22b1fdc9fd64d914b27d70b96bffd0ee27370cedf66c282c349e379a49071430386da75e37f935d75a408dfbbdcaa97e35f9dd2c70bd98bc88190a94e0119ca990c1695182cfc96afba9cc89ec26c3b9394d3a0b7516f0a60013eb47254a2850472750ddfe61ab77f906ac44d225415181fb426893448267a75ed1d5b848e0b94ba257e6d707d648bb2ef9ae8e88e8359263513802842899014502337ec15cb0e3197814476e13d4ee14dc28db63f52e18b0c7328decfb20a77a40bd9842bd49dababc7103371316304cc9115cc46cbf600682cf4b391524ec51a00eec6e505ece649b3c5b5d4ad703bba4deeee1152cfe68f57a4ee0b4db3f71ab7eba02f745c0c502fd74fafbe8aec795fab191ed5d7e989b896b6e9222344eb3ce28ba0741e00e11c0077c16f817ff45deb9202278eebb121f30fe0331e6c364e64c66a80000000049454e44ae426082</data>
-    </image>
-    <image name="image9">
-        <data format="PNG" length="1018">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af4000003c1494441542891c59741681b4714863fb9db7a161490a089b5780312d8e08606925282157a59075d76a343237209d4c5313e342e8510b787f4d89242b33d368718dbb4d0f4245f54e5e2da6a2e7208010752ec43035eb08be412d0820d3b8db7b887556557916439b5ea7779cb30cc9bf7cdff66df846e5fbc4d810206c691f89079d1442090c823f15d060612c951f9ff4460f964fe0de933088c0217b4303dd2f7a84875c395cc0b98923e0fcdcdcc8b4327b09ccc9f903e772f0df0607490e1e2757a6fa451e6afabca9797e9cd8f30ac457880ceddfbc7b2275a11d8a9ee287480cc63d2e7fb777452d752602561b504090d2a158846a15481880f1fcfac32fd3831070c5ff232e58604b2b92c06c64e9b99774b9f5be383a4aea6c03a03cbab417008820368515081a9b10457ce9042e7d6ac92edae5fafab40018089dc0402b153a08040d0cc4b877351c188380e437d90ffd5e3542208ca362c3c65d78ec382039fbf0f31d71b01ced5afd76560d4e6b74342c4193bab833900f79e8035a0d6827ffb3344801f0abb7b10c0bd2548bcab028c35d4403e9767af65d299a69a286ad975f36d7a13278118445d187f0fec5fc0dd04292bd81f44e1f56053d657e001ee162c39fc6e7a96fe9206eaad1509112706f056184a4f21a2c0f88fa029800ff6d56a70607c123c3df836fb806d626d116845a2a865fdf37dbc8612e09555ccd287ec47c0b16af03b1e2bcf55a40f42012961f1197f999ea5ec4ba0150974ca952d48c6c095bb7e4807946af069d0c26a2d735501e2c036e5a655d0cceaabc37dc6822ba1e004010b4e90e17d27985f5c81f273585c0755045e28b0fa0480859655d00e0974264b2e18f16061a33f9893d4c1fe29b87c20181780d91f1c4f59003e930726504f028747ee1633d38f212260a9044280f43d262ec3a9d370d680c5358884a15882e575e0b7d20cf0e89508ec25f1c5a62d819b2b30b7e2041946c290ec57595e0be64907ae9c0e08447c70d69843d16e9a587f1ea80a9a59269d6156cdf6005fc7c2de87e7e32ab1373da211157c8fca968a532e517434dc4ae53b887e6662fdd1e85e510e42602f093b6d6f7caa4e749723eaf4ec12a3a25fbd201d7a84ae22d7d9605b9bc7670a25fad0f4ad17ad3aa27d0954ef83467fc7d0a17444adcc4edb4864c8c00835f087d211fd8b8095b6b891bac6d027563d81b6fb85572660a52d0c8cd03773774276daae8d77ba27dcc9e7f25869abfe4c5f22731867de90c03f99d7ed3064a5778fe1a8bae29d6c2edb512decd715775c0bedbc0b3aaa8576de051dd542bb2fa39a168e82404d0b4daae57f21d031ff378272ecfdabbd48560000000049454e44ae426082</data>
-    </image>
-    <image name="image10">
-        <data format="PNG" length="1622">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af40000061d494441542891c597dd6b5ce711c67fdabc4ae6b4329c43e454a7d82502c78d02026d4ca09b14b782d6a52e26d8bdcb556cd50449b45725578192fe032e812a498db71f44bd28c4a52df826548606ec0bbbdad446de80eb4a21222bdb8273d2ac7d1eacd7eb5e9cb3d26ab5f24729746e1e9e9d79f7ccccfb3133f07f96be47312e4f2e0c03e3c018680c0c505f8197804b789dad307b4da8553d59bdf73f71a03cb970d45cf0aa7cb6df1cc883b90001e60cf904f3208461089d3378afec4f5571accdbc3dd3faaf1c284f2e948113c0b700b0189c610301f1404665770a803238b31423016a8012c8ddcbf0e94f2bccfe4648d593d52d8e6ceb40e5c70b47e5a99a0b900bb13062e28506e53d21234301816d5db3b89a31ffb198ab436dc950b39e67c4eb8f1577ea47f2fa77f564d53fd081f2e4c251a08a0b60609889171a1cfc46c8501814e9e78138f751c2cc59a3b1b2023e039f5eaa307b40e86667261eeb15b96f51358bd8fdd541def8bee7c0f31166fdf83b408987c2dd430195af7b74db71f5c65d0cf795a5d6dee7865dfd4fa3e5515f9bafdddbe2407972a1ec5b9cc105ec7c6a909fbd0cf15380efa779277b64dc510a786637a44dc7d5d5bb807b66595f3b3f5cbafae9e8be515f9baf51ea4ac0afcd0103c34c8d8319e00312b531031f70fa62b28977eb3b79e0025e1937469e0e016136f426109933b72903e5c9bf1f05f79a7f3c66a29232b2cbf080e4f1f80273fef24b3bf8fd5c8378d07aeabb3925889ff47cf8af087f67355e6e3d97ee6c5da855f655eeac67c0b05701e2a18891a70d7990f2439516d8e600d38763ce7fac9efa5e3c1e308e8ca598337076c49c85407fa9d8fb61a1fd58ccf87083cc1b898404894456609bb765fa5044ed9fe916fd16de84fa720a1872116063e79b0747c82f0c80c60d43161187099272e3fc31a178543af8864c1f8ef9e55f1286c2adf64bab298dc4985b0e308a97d3406a6016bd24542bb6c0c68488c37ca9046911412fec96e943112babe916bbe40b985b8ed65d02c05104c3b3860585031a3317115a06caf7ec7ed84ba60fc7ebfa462ae6af1a8bcd307f9c3af2d6ceb9b9704f27454068a2a1bca06488c00c7981ebc26d64fa50c4c45b098b69bc693380cddc45488d3eda8710d467ce900c3223cd84322b3cddc04ce24a23dcd60180533f898a2ac93ad2c90b7772aed2460694902a663115b810bc586c1a1491d75783cd7bb98dbcf8f32252bf0d02f8ace046fb165c32ec9b894044854b41f1b10080d8f2c5c1833e7e9f02056cf40d8e6b785ac5cf5c12f9e96dbb9475fd79377fa4c8dd865daa3c3c69e51a8eb5fc0c789d350c941014c60fc29e91d31b3bd799cf9b15f3d9bc904a00450f770e35c04354dc995e98741d825e91c703f907dbd85e1f3850b3017079c44e7f6258e600845a06ef09bd98351386060c2cc81b09033ceb3c1c84f64998782b6364b0d0bbc2de6db6ef5c5f5f4e7227957e6066b7f0648f01d4e66b1c28fbcb2ba5fddf915677c5833bb1c79bec700e4a6287f305e6fc07fb02a67f956cabefc5d3db62e5b306deeb72a534fb0bb574dde1d28d6ae86c0d9fbe6e18f5a5452203b394d8f2f73beee06ffc2ed9c4bbf55bb883c5e546b1f78d7780d49ca5426bebfdc0858b17ee1dd9678da5d6dec4b7ec7b9fae3619d91540c933f084c323dc13f94d7e24eec5dfaedca4795be0d313a3a53ffcd5e11a6a29ad9eacdeedee887cc5cdbe8b4f5f4770e66252ec2f448161053e2c2713731f25a44d615e272abc7fda9c5d174acc9987ae9ef0c2fc0546cba37787a9ff63a9b5f773dfb2efd697537c2b60f0494fe01cb4a0df717f04ced5533ebcf2455e3b7c7a6294df9e2e22bf615836f3eecc3dd8a62d9f3a3e55c2f1a5f3fae1b7cd86de147adecc181e0c28ef82200a8b1ab1b9e4346ea6d457607139030ff2ba6cbef14ed99da9e1b82eaf1be6ec76e7a4b4ed6072ecf8b192612614d598380676046763ed8f9a1371985ff0a4d9ee13d69db98cd20f2aeefd3f0ba586ad0a258669e6e4e631edbea3d9d4f1a93e1c4e5e5f3667e1f9e6c191bc93e15973e11e79f575bcf5d7a4f49af96c7ec44e7f62ce6ee1f91c472aaf5be6cccfbc3db365587da8e174eaf85449a8bfc8486058206486f50b958a81b465d89a900c2b0aba4968add74cd896ff002a64d81a51770ba60000000049454e44ae426082</data>
-    </image>
-    <image name="image11">
-        <data format="PNG" length="1595">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af400000602494441542891c5974f6c5c5715c67f9e5ed3f3c091e6a96ef1a00475a434c4084b9e569518fe042c4110912a44d8b16ae2666157ec505708d405eb2090dc56560610f506a9ae60e14d8523811423a5788a8d3b48c11a57b11827b1f45edb49dea7fa66c2e2bd99f1ccd8695290b89b4fe79d77effdceb9e79e732efc9fc7d0c3fc5c9ad9280253c02468120cd050866bc01a5e97cb2c6c0ab52af3957bff1302a5998d73e682e7e59353e6401ecc05083067c8479807210c43e88ac1eb257fa982636fee95b9d62722509ad9280117816f00600570868d04144612cac7620094c0d2560109500314414a2fc1c73f2eb3f01b2155e62b03440e2550fed1c639792ae602e4f2583e64fad906a5e379c6c702021b9c53df4d58fda758ae4175cb50b3967ac4ebcdb2bbf482bc3ea8cc57fcc71228cd6c9c032ab800468a4c3fdbe0cc97f38ce583ccfd7c2c2ebf133177d968ecec804fc0c76b65164e0bdddaef89470eb2dcb7a898851cfbdc283ff9aee7f4d32166c3f88f801c0f84c7c602ca5ff0e88ee3dacdbb18eeb35bad135f2cbada1f264a13beba5abd3740a034b351f22d9670018f3f31cacfbe078527003f4cf3a3e4a1f1482ee0a96310371dd776ef02eea96d7d7ea598bb767de299095f5dad92eb73c0afcd01234566a7c00cf00191da983cb41cb8801f4e19e34fe6016136f632109a33d71303a599bf9d03ab6005a6bf2eca27f3e0004f0757fe25f00267e045f94bf98e7ee51f71e73bce281fb79ef9f55df1f33781661dbc7e5ae2d2af0cfbc0b50918f6bc80c258c8f89311f2d964b2c0025e7c2eec71d795f5a4a37ff1fb8541ddbef98511e3ece40e4b7f3504670dfb1d9e24979d7d51e8145660aad820f146242141249164d83ff6ebfb47cffc26d4b663c0900b019b5c699e1927bd30009a320c5948211f2129fd394d26d0c1c14dbafaa08f9cb1b51bd3888ce5ed0023cb9c065203b3f0ab42d58c804d0a51c8a74ba1765aedc5c14dbafafe114b441fc2f276d8a108a471911a77d2b0a0ed81497321794b40106776f5e3e0265d7dff58bd66696570dd184a6b471bf3c7f19d233004e44d34941694041198a12caae50f3868b2637083f4aabb418fe5fb0f0b1722358680e12c0f68c89c211924469c0825e9a2e67ab1c7caeb50bf9567713d1cd0752ded93333aa9ac5cd7038a8855a01e0b5c1ebca837bbf7bab61b30fd5cef26f5ddf090f0dce7f67e04f049261bed185833ec6b91408419a520735f1a78850376e99ca91fd41d54a0806edfe0d8c4d36a27a23591dedb36a5a46fc17e197a2dbbaf075cf77bac74a6b4b389632f8d01afcb868122daf7e2303cd0030791eb8b81a0e381b459319fac0a290790f5705750033c849949fdf8301e081c1446526ccf0f1ca8d900581fb7c5f70c4b5c6a895a06af0b7d2569468c8d1858903612469ad32d60fa97c9be021350cc77e5e9b9ecff4c1e1b199c5fdb8e52d28adf32b3db78924700aaab554e97fcfa4eeed4b7a4dda385d1c7b14f3539e21ce4c411e733fce4727c47ecfcbb81f75a2fe7167ea1966e385cdce907ccd91e3e7ec9306a5b754203b39882a5f9bbf0dfc80eeadb8decec1baf02b1398b85f63a1dd1d5b7afde3bfb8c35b65a2722dfb2ef5cdf6d327e34809c67e4518747b847d39bfc50b2177f7ef716cd3b021f5f9cc8fdfe4f0ed7504b7165be72b7bf23f265b7f01a3e7e09c1d2db51a7a1088334af87813db04c2296df89889bc2bc2e967963d19cdd108acc9987be9ef0eaea55264a13778bd4febed53af1be6fd9b76bdb31be1530fa9827700e5a30ecb83f02576a317f79f7c3b486f8f8e204bf5dcc2cbf695832f7dadc3d38a42d9fbd309bc3f1e915fde09b66632f0b3d6d661447034a472108f3596de82931346ec5d476a0be9d7643f25a37df78b5e496aa386ec8eba639bbb3ffa574e8c3e4fc85f339c34c28ac327d1eec2cce26db9b9a13857c7ac1a3665afff7915947f15b65f7c61f8562c3768522c33437dffb4cbbefd36cf6c2ec100e27afcf98b3fc4af3cc78dac970d25cfeb8bc86f6e5fa4d29de349fac8edbe27be6ec369ef771c4f2ba6dcefcdc2b73038fd5077a9cce5e98cd090d671e090c0b84ccb061a15cf6206d19b62724c3b2826e12da3be84dd81eff014bac7c6a9eb474890000000049454e44ae426082</data>
-    </image>
-    <image name="image12">
-        <data format="PNG" length="1503">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af4000005a6494441542891c5975d685c6919c77f997de33e47a77006b36b465ad9816e6dc440669705c78f6a402bf646ac775e6d1b7b918877b257a2ec85d71584d95d4247c5cd8db05d54c8cd620a0a8dd035b326a423d4902c3b78d23670ceee4e7bfe6cde4ebd386792cef4633b51f0b9f9f30ce79df7ff3ceff309ff671919e6e3eaec7a059806a64053608046725c0556f1ba54636143a8db986fdcfd9f10a8ceae9f3117bc289f9e3007f2602e408039433ec63c08611842970d5eaffa0b0d1cbbf557eadd0311a8ceae5781f3c0d701b03238c38a01e5624aed4802805258dc2a23018a403164f4527cf2931a0bbf115263be711f918712a8fd78fd8c3c0d730172211696987921a27a3464623c20b0fbcf6ceea4acfc532cb5a0b965a8d3ca3ce2f566cd5df8a1bc3e68cc37fcc712a8ceae9f011ab8008a15665e8838f5a590f130c8ddcfc7e2d23b31f54b46b4bd0d3e059facd658382974f35e4f3cf120cb7d97865989239f1de3a7dff19c7cae84d928fe23a0c063e191f180dae73dbaedb876e30e86fbcc56f7d8172aaef587c9eaa46fae34efde47a03abb5ef55d1671014f3d3dc6cfbf0be5a7013f4ae7a374683c540878f608241dc7b59d3b807bb6adcf2d570ad7de9b7c7ed237579a14061cf06b7340b1c2dc3498013e20560fd3a1f5c005fc60da9878260484d9f8cb40c99cb9be18a8cefefd0c58032b33f335513b1e82033c2cff4be005ce86c2da1743f08083cd1df18b3781ce2678fdacca855f19f681eb1130ec4501e5f11213cfc4c86797f7e447df2b3f285e1f2a17fe146769491698e5a2717a6a9bc5bf1982d386fd0e4f5ac8dfbe2274022b335d8948bd114b4810f7fe654891df3f9f76a0d54e0043ae04d8d472e7d40459c20068da306425ca618ca4ece3ac98901595e1c49cd16a2744b1b1d40e30f2ca6920459895be22d4cc09d89410e530bf4abdb24a4ee2601e883f84a576a9df0447cfb8e386053d0f4c992b115a0a8224b7bb870791ab5198f78abc38e524ccf5303c8adf7b024340682252d650524460867a513da43477823ecbfb1ed39590a2116034af031a31674806a991a4426976a91de072fa2c1dd0733a99aec2be071493a8cc6622702178b1d9b927af87943db70f22804f73dde8c5c0aa615f8d05a294530a72f70507f7c0408302f6e706c7069e6eaf10ad8a2c6f7b94d2035dbb2f7d96bbfddf1341e6f1ed0d1cbb590c785d320c14d3cb8b411c56066320d8f34036ac984f57845400c867b8cb28020fa5fcc9077118091c948b19f6ce070ed48900d626ece2bb86a50e40a86bf0bad097d34ecc78d1c0826c9030c0c34c3dd7f306857bb43e5eec3f8f05b4da71f62c4ade32b35b78d227009a2b4d4e56fdda76e1c437a59dc3e5b1a7b04f7438e41c14c421e7733cb89edc16dbff8ef05e6bb5c2c22fd5d575874bf6e60173b68b4f5e328cd6d6262503b384b265f5bbfcdfe80e36db51fef6d1ab4062ce12a1ddbd89e8cadb57ee9e7edea2adeeb1d877eddbefed7498381c40c1537cd2e111eec92c9387d2bdf8cbd59b746e0b7c727eb2f0fb3f3b5ca4ae92c67ce3cee044e46b6ee1357cf21282c5b7e3bd81a2141896e3e3eaa462e99d98a423cceb7c8d372e9ab3eb42b139f33030135e59b9c26475f24e85d63fb6bac7def75dfb56ab9de0bb01639ff604ce4117461d8f46e0722be1af573fcc7a894fce4ff2db8bb9e5370c4bebafd5efc243c6f2b97373051c9f5cd6f7bf6136feb2d0736646652ca07a18825298f788fe7921ba99d0da86cd760a1ee4b5663e7ab5ea169b38aecbeb8639bb7defa6f4d0c5e4ecb9b305c34ca8d464e62cd8699c4df52e3527ca6196e0710712f5915943c95b35f7c61f8512c3768462c3549fef5fd31eb99acd9d9b1bc1e1e4f52973162e774e4d64930cc7cd8547e535724faddf90920df3e9ca845d7cd79cddc2f33e8e445eb7cc99afbf52bf6f597dace574eedc5c416834f74860582064868d0a15f285b46bd8ae900ccb1bba4968f7413b614ffe03d1cd440c834fea0a0000000049454e44ae426082</data>
-    </image>
-</images>
-<connections>
-    <connection>
-        <sender>fileExitAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>fileExit()</slot>
-    </connection>
-    <connection>
-        <sender>fileExitAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>close()</slot>
-    </connection>
-    <connection>
-        <sender>fileNew_projectAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>fileNew()</slot>
-    </connection>
-    <connection>
-        <sender>fileOpen_projectAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>fileOpen()</slot>
-    </connection>
-    <connection>
-        <sender>fileAdd_to_projectAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>addSongsToProject()</slot>
-    </connection>
-    <connection>
-        <sender>editDelete_from_projectAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>deleteSongsFromProject()</slot>
-    </connection>
-    <connection>
-        <sender>fileSave_project_asAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>fileSaveAs()</slot>
-    </connection>
-    <connection>
-        <sender>fileSave_projectAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>fileSave()</slot>
-    </connection>
-    <connection>
-        <sender>projectLoadSchemaAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>loadSchema()</slot>
-    </connection>
-    <connection>
-        <sender>songSaveDescriptorsAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>saveDescriptors()</slot>
-    </connection>
-    <connection>
-        <sender>playbackAuralizeSegmentOnsetsAction</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>updateAuralizationOptions()</slot>
-    </connection>
-    <connection>
-        <sender>playbackAuralizeFrameLevelDescriptorsAction</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>updateAuralizationOptions()</slot>
-    </connection>
-    <connection>
-        <sender>songComputeDescriptorsAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>computeSongDescriptors()</slot>
-    </connection>
-    <connection>
-        <sender>mProjectOverview</sender>
-        <signal>selectionChanged()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>currentSongChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mSegmentationSelection</sender>
-        <signal>activated(const QString&amp;)</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>refreshSegmentation()</slot>
-    </connection>
-    <connection>
-        <sender>helpWhats_thisAction</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>whatsThis()</slot>
-    </connection>
-    <connection>
-        <sender>mPlay</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>startPlaying()</slot>
-    </connection>
-    <connection>
-        <sender>mPause</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>pausePlaying()</slot>
-    </connection>
-    <connection>
-        <sender>mStop</sender>
-        <signal>activated()</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>stopPlaying()</slot>
-    </connection>
-    <connection>
-        <sender>playbackLinkCurrentSegmentToPlaybackAction</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>AnnotatorBase</receiver>
-        <slot>linkCurrentSegmentToPlayback(bool)</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in declaration">ListViewItem.hxx</include>
-    <include location="local" impldecl="in declaration">qlistview.h</include>
-    <include location="local" impldecl="in declaration">TableItem.hxx</include>
-    <include location="local" impldecl="in declaration">qstringlist.h</include>
-    <include location="local" impldecl="in declaration">ComboTableItem.hxx</include>
-    <include location="local" impldecl="in declaration">qtimer.h</include>
-    <include location="local" impldecl="in declaration">vector</include>
-    <include location="local" impldecl="in declaration">qgroupbox.h</include>
-    <include location="local" impldecl="in declaration">qlayout.h</include>
-    <include location="local" impldecl="in declaration">qpoint.h</include>
-    <include location="local" impldecl="in declaration">qcolordialog.h</include>
-    <include location="local" impldecl="in declaration">iostream</include>
-    <include location="local" impldecl="in declaration">About.h</include>
-</includes>
-<variables>
-    <variable>About mAbout;</variable>
-    <variable>bool play;</variable>
-    <variable>bool mSongDescriptorsViewed;</variable>
-</variables>
-<slots>
-    <slot>fileNew()</slot>
-    <slot>fileOpen()</slot>
-    <slot>fileSave()</slot>
-    <slot>fileSaveAs()</slot>
-    <slot>fileExit()</slot>
-    <slot>currentSongChanged()</slot>
-    <slot>addSongsToProject()</slot>
-    <slot>linkCurrentSegmentToPlayback(bool)</slot>
-    <slot>deleteSongsFromProject()</slot>
-    <slot>loadSchema()</slot>
-    <slot>saveSongList()</slot>
-    <slot>saveDescriptors()</slot>
-    <slot>updateAuralizationOptions()</slot>
-    <slot>computeSongDescriptors()</slot>
-    <slot>refreshSegmentation()</slot>
-    <slot>startPlaying()</slot>
-    <slot>pausePlaying()</slot>
-    <slot>stopPlaying()</slot>
-</slots>
-<functions>
-    <function access="private">init()</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+    <addaction name="helpAboutAction" />
+    <addaction name="separator" />
+    <addaction name="helpWhats_thisAction" />
+   </widget>
+   <widget class="QMenu" name="mFileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="fileNew_projectAction" />
+    <addaction name="fileOpen_projectAction" />
+    <addaction name="fileSave_projectAction" />
+    <addaction name="fileSave_project_asAction" />
+    <addaction name="separator" />
+    <addaction name="fileExitAction" />
+   </widget>
+   <widget class="QMenu" name="Project" >
+    <property name="title" >
+     <string>&amp;Project</string>
+    </property>
+    <addaction name="projectLoadSchemaAction" />
+    <addaction name="fileAdd_to_projectAction" />
+    <addaction name="editDelete_from_projectAction" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>View</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="Playback" >
+    <property name="title" >
+     <string>&amp;Playback</string>
+    </property>
+    <addaction name="mPlayAction" />
+    <addaction name="mPauseAction" />
+    <addaction name="mStopAction" />
+    <addaction name="separator" />
+    <addaction name="playbackAuralizeSegmentOnsetsAction" />
+    <addaction name="playbackAuralizeFrameLevelDescriptorsAction" />
+    <addaction name="playbackLinkCurrentSegmentToPlaybackAction" />
+   </widget>
+   <widget class="QMenu" name="Song" >
+    <property name="title" >
+     <string>&amp;Song</string>
+    </property>
+    <addaction name="songSaveDescriptorsAction" />
+    <addaction name="songComputeDescriptorsAction" />
+   </widget>
+   <addaction name="mFileMenu" />
+   <addaction name="Project" />
+   <addaction name="Song" />
+   <addaction name="Playback" />
+   <addaction name="menuView" />
+   <addaction name="help" />
+  </widget>
+  <action name="fileExitAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/exit.png</iconset>
+   </property>
+   <property name="text" >
+    <string>E&amp;xit</string>
+   </property>
+   <property name="iconText" >
+    <string>Exit</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="helpAboutAction" >
+   <property name="text" >
+    <string>&amp;About</string>
+   </property>
+   <property name="iconText" >
+    <string>About</string>
+   </property>
+  </action>
+  <action name="fileNew_projectAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/filenew.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;New project</string>
+   </property>
+   <property name="iconText" >
+    <string>New project</string>
+   </property>
+   <property name="toolTip" >
+    <string>New project</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="fileSave_projectAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/filesave.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Save project</string>
+   </property>
+   <property name="iconText" >
+    <string>Save project</string>
+   </property>
+   <property name="toolTip" >
+    <string>Save project</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="fileSave_project_asAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/filesaveas.png</iconset>
+   </property>
+   <property name="text" >
+    <string>S&amp;ave project as</string>
+   </property>
+   <property name="iconText" >
+    <string>Save project as</string>
+   </property>
+   <property name="toolTip" >
+    <string>Save project as</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="fileOpen_projectAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Open project</string>
+   </property>
+   <property name="iconText" >
+    <string>Open project</string>
+   </property>
+   <property name="toolTip" >
+    <string>Open project</string>
+   </property>
+   <property name="statusTip" >
+    <string>Open project</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="fileAdd_to_projectAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/vcs_add.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Add songs to project</string>
+   </property>
+   <property name="iconText" >
+    <string>Add songs to project</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="editDelete_from_projectAction" >
+   <property name="enabled" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/vcs_remove.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Remove song from project</string>
+   </property>
+   <property name="iconText" >
+    <string>Remove song from project</string>
+   </property>
+   <property name="statusTip" >
+    <string>Remove song from project</string>
+   </property>
+   <property name="shortcut" >
+    <string/>
+   </property>
+  </action>
+  <action name="projectSaveDescriptorsAction" >
+   <property name="text" >
+    <string>Descriptors</string>
+   </property>
+   <property name="iconText" >
+    <string>Descriptors</string>
+   </property>
+  </action>
+  <action name="projectLoadSchemaAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/view_tree.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Browse &amp;Schema</string>
+   </property>
+   <property name="iconText" >
+    <string>Browse Schema</string>
+   </property>
+  </action>
+  <action name="projectLoadDescriptorsAction" >
+   <property name="text" >
+    <string>Descriptors</string>
+   </property>
+   <property name="iconText" >
+    <string>Descriptors</string>
+   </property>
+  </action>
+  <action name="songSaveDescriptorsAction" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Save Descriptors</string>
+   </property>
+   <property name="iconText" >
+    <string>Save Descriptors</string>
+   </property>
+  </action>
+  <action name="playbackAuralizeSegmentOnsetsAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Auralize Segments &amp;Onsets</string>
+   </property>
+   <property name="iconText" >
+    <string>Auralize Segments Onsets</string>
+   </property>
+  </action>
+  <action name="playbackAuralizeFrameLevelDescriptorsAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Auralize &amp;Frame Level Descriptors</string>
+   </property>
+   <property name="iconText" >
+    <string>Auralize Frame Level Descriptors</string>
+   </property>
+  </action>
+  <action name="songComputeDescriptorsAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/gear.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Compute Descriptors</string>
+   </property>
+   <property name="iconText" >
+    <string>Compute Descriptors</string>
+   </property>
+  </action>
+  <action name="helpWhats_thisAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/contexthelp.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;What's this?</string>
+   </property>
+   <property name="iconText" >
+    <string>What's this?</string>
+   </property>
+   <property name="shortcut" >
+    <string>Shift+F1</string>
+   </property>
+  </action>
+  <action name="mPlayAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/player_play.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Play</string>
+   </property>
+   <property name="iconText" >
+    <string>Play</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="mPauseAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/player_pause.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Pause</string>
+   </property>
+   <property name="iconText" >
+    <string>Pause</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="mStopAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/player_stop.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Stop</string>
+   </property>
+   <property name="iconText" >
+    <string>Stop</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="playbackLinkCurrentSegmentToPlaybackAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Link current segment to playback</string>
+   </property>
+   <property name="iconText" >
+    <string>Link current segment to playback</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>mMainTabWidget</tabstop>
+  <tabstop>mProjectOverview</tabstop>
+  <tabstop>mDescriptorsTable</tabstop>
+  <tabstop>mFrameLevelContainer</tabstop>
+  <tabstop>mFrameLevelAttributeList</tabstop>
+  <tabstop>mAudioPlotContainer</tabstop>
+  <tabstop>mSegmentDescriptorsTable</tabstop>
+  <tabstop>mSegmentationSelection</tabstop>
+ </tabstops>
+ <resources>
+  <include location="images.qrc" />
+ </resources>
+ <connections/>
+</ui>

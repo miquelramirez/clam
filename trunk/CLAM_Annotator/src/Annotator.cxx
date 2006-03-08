@@ -4,18 +4,14 @@
 #include "Project.hxx"
 #include "FrameDivision.hxx"
 
-#include <QtGui/QAction>
-#include <QtCore/QThread>
-#include <qmessagebox.h>
-#include <qtabwidget.h>
-#include <QtGui/QFileDialog>
 #include <QtCore/QSettings>
-#include <QtGui/QSplitter>
+#include <QtGui/QAction>
+#include <QtGui/QMessageBox>
 #include <QtGui/QTabBar>
+#include <QtGui/QFileDialog>
 #include <QtGui/QTextBrowser>
 #include <QtGui/QCloseEvent>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QDockWidget>
 #include <QtGui/QSplashScreen>
 #include <QtGui/QWhatsThis>
 
@@ -46,8 +42,7 @@
 #include <CLAM/DiscontinuousSegmentation.hxx>
 #include "SchemaBrowser.hxx"
 #include <vmBPFPlayer.hxx>
-#include <QStatusBar>
-#include "ui_About.qt4.hxx"
+#include "ui_About.hxx"
 #define VERSION "2.1"
 
 #ifndef RESOURCES_BASE

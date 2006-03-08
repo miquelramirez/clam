@@ -1,248 +1,257 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>About</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>About</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>526</width>
-            <height>432</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>About</string>
-    </property>
-    <property name="modal">
-        <bool>true</bool>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout4</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>pixmapLabel1</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>4</hsizetype>
-                            <vsizetype>4</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image0</pixmap>
-                    </property>
-                    <property name="scaledContents">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>1</hsizetype>
-                            <vsizetype>4</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>&lt;b&gt;CLAM Annotator v 0.2&lt;/b&gt;&lt;br/&gt;
-&lt;p&gt;Based on CLAM v0.90&lt;/p&gt;</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QTabWidget">
-            <property name="name">
-                <cstring>tabWidget26</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>1</hsizetype>
-                    <vsizetype>1</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>TabPage</cstring>
-                </property>
-                <attribute name="title">
-                    <string>About</string>
-                </attribute>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>textLabel1_2_2</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>7</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>&lt;p&gt;The CLAM Annotator is a tool that allows:
-&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Supervise and correct the results 
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>About</class>
+ <widget class="QDialog" name="About" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>523</width>
+    <height>441</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>About</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label_2" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>4</hsizetype>
+         <vsizetype>4</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="pixmap" >
+        <pixmap>images/annotator-icon1.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="textLabel1" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>1</hsizetype>
+         <vsizetype>4</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">CLAM Annotator v 0.3&lt;/span>&lt;br />&lt;/p>&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Based on CLAM v0.90&lt;/p>&lt;/body>&lt;/html></string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="pixmapLabel1" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>4</hsizetype>
+         <vsizetype>4</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="pixmap" >
+        <pixmap resource="images.qrc" >:/logos/images/clam_red_scaled.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="tabWidget26" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>1</hsizetype>
+       <vsizetype>1</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <widget class="QWidget" name="TabPage" >
+      <attribute name="title" >
+       <string>About</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="textLabel1_2_2" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>7</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>&lt;p>The CLAM Annotator is a tool that allows:
+&lt;/p>
+&lt;ul>
+&lt;li>Supervise and correct the results 
 	of automated audio feature extraction
-	algorithms.&lt;/li&gt;
-&lt;li&gt;Generate manually edited annotations of audio
+	algorithms.&lt;/li>
+&lt;li>Generate manually edited annotations of audio
 	as training examples 
-	or ground truth for those algorithms.&lt;/li&gt;
-&lt;/ul&gt;</string>
-                        </property>
-                        <property name="alignment">
-                            <set>WordBreak|AlignTop</set>
-                        </property>
-                    </widget>
-                </vbox>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Authors</string>
-                </attribute>
-                <hbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>textLabel1_2</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>7</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>&lt;p&gt;Authors:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Xavier Amatriain &amp;lt;xavier@create.ucsb.edu&amp;gt;&lt;/li&gt;
-&lt;li&gt;David Garcia &amp;lt;dgarcia@iua.upf.edu&amp;gt; &lt;/li&gt;
-&lt;li&gt;Ismael Mosquera &amp;lt;imosquera@iua.upf.edu&amp;gt;&lt;/li&gt;
-&lt;li&gt;Jordi Massaguer &amp;lt;jmassaguer@iua.upf.edu&amp;gt;&lt;/li&gt;
-&lt;li&gt;The CLAM Team &amp;lt;clam@iua.upf.edu&amp;gt;&lt;/li&gt;
-&lt;/ul&gt;</string>
-                        </property>
-                        <property name="alignment">
-                            <set>WordBreak|AlignTop</set>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Acknoledgements</string>
-                </attribute>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QLabel">
-                        <property name="name">
-                            <cstring>textLabel1_2_3</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>7</hsizetype>
-                                <vsizetype>7</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>&lt;p&gt;This software is partially founded by:
-&lt;ul&gt;
-&lt;li&gt;SIMAC IST-507142 project&lt;/li&gt;
-&lt;!-- &lt;li&gt;Generalitat de Catalunya 
-	(Catalonia Autonomous Government)&lt;/li&gt;--&gt;
-&lt;/ul&gt;
-&lt;/p&gt;</string>
-                        </property>
-                        <property name="alignment">
-                            <set>WordBreak|AlignTop</set>
-                        </property>
-                    </widget>
-                </vbox>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>TabPage</cstring>
-                </property>
-                <attribute name="title">
-                    <string>License</string>
-                </attribute>
-                <vbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QTextBrowser">
-                        <property name="name">
-                            <cstring>textBrowser3</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>1</hsizetype>
-                                <vsizetype>7</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>&lt;p&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;
-&lt;p&gt;This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.&lt;/p&gt;
-&lt;p&gt; You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br/&gt;
-Free Software Foundation, Inc.,&lt;br/&gt;
-59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-&lt;/p&gt;</string>
-                        </property>
-                    </widget>
-                </vbox>
-            </widget>
+	or ground truth for those algorithms.&lt;/li>
+&lt;/ul></string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignTop</set>
+         </property>
+         <property name="wordWrap" >
+          <bool>true</bool>
+         </property>
         </widget>
-    </vbox>
-</widget>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="33282">789ced9cd96e2349b2a6effb290ac7ef1a033fdc170ce6420b256aa54491da0673e15becd44a4aa20ee6ddc73cecb7a8ccaaacea6af439500e664064511f636198ffb6b947b0fefdefbfdc5e9cfdf2f77fffdbebdaac73f78bcbcccb2f7ff79bd56afb3fffd7fff88fbffd5bbb3dfa6538fa65dc1afed2f9b7fff6b77f2b1e7f71bfa8f6a8dbeab56b5e817bcc89018f7a267226ecfaf5f1fe96b9d7ead7db8b2a72a725c7170f0dd7db9337f088b78741c3f5767f2dcce72f12e141cdc919d8f1fe6128ccfba777c2837a7b8ee3e9faf87a6f1a667b0e8587ddfafc7be01e6ff797c2fcfd7e2d3cb435cfc0b83effda309f5fce37e2fd93aef0a8febef009c6f506ecdf6f81bd305f5fd0e03e73cee71b775bdd716dff0b18e39b570df3f86f85f97a431b8cf1f473611eaf5ccee778fffca961bebe7b6619dffc4a98b7272d615c7f078cf1cddf85f9fc19ece98d30fe6d615cef4418e3df07cbf56c84797c3dfbdfb8194f25ccd7e35f84477c3ed827e3eb2f1aaeb7a772be3eef1f9cf0b857efdf038fa1f7a9306f0fb8debee7eb4b7784c7aee68c79d0c6f53c0af3f129be6f80ef2b762377dbdd1eeb9f6bb0c4d35298f5c93ec18efd23bd6e98f5da0843efa386f97c77ccbd16f6b7c238ff3d18f19ee2fb44cf20c7e3fcc99499f4e1f89d330fc63c1e79ed2fdde8dff5f5fa2b30ceef2bb0e48316b35c5ff62a8cf8be00e3f8301246be4985717dc386d9de4730c633f7c2bcbdc8c00efeb2c72cf62527e03eec7d6f98afa7071e3357e7917bed4eaf3daabfaf0d1e31572db0ebb4eaf15830cbf8a48f60f8435e80a167b66596780d0df378a51a8c7c97ef83c59f7684e11f2b61de3f34ccfe9e2cc1c82fc965c37c7da930ae47be0ff11ca6cc12af8505633cfd188cf10bb2dda31ee4cc145f6cdfb2618ed77761c4f33318f156f1f89966fcf78579fc2b0d861e158fbfe9b63a757c560b708f39c9c0d0276d8325fe8e99458f228031bef93358fc2d61ee231e93c386599f0db8cf9cbe0ae3fb86608c5f86eb69c66f2e8c7852c2c887b8be411bdb7330c62f97ed88efaace2ffd4ea7d7aac7b39809b779fceec123e6f00a763cfed915b38c6ffa04c6f8566b61ce1fe14198c7bbda8247bcbdc2f7771db8dd707dbee284b987fa9a0d9865fc926bf0183c077bd42fc32ce393f5c1526f70bec118dc6db81edfaace9f7dd369b5eaf12876c0327ec7c23c5ede81317eb9014bbef0ccdd168f67b110e6ede9b8e1dafe12c7cb7816b7608c9f3f1746bef90063fcaa09730ffd4a5582a57e5d8311ffa91746bf83eb91f14c71fe411bfe9a83259f627c643cd31ef3b0cde3a9ea781f74643cab3d700fe3db69b81e9fb0008f98d399308f6fb90bc6f89617cc4dfc1f0ba3bf9e807bc817be611e8f3b611ecff2002cfe6884d13f6d987be8bfcb7b30fcb55260d4ffec4498c7a702f7a57e9e0b239e311e32fe49c5dcc4fb4bc39c8ff07da247f10c467e491ac6f12330f24bf621ccf925b5cc43e4ef7c00ee339b3afe074d7ce82d187a96aae15a3fdb0343cfea4398e3c14ec08eb7977d61e875cb4cf1c3fe528231fe39be4fe2c1ed831de289c7cb885e45178c7e66c5fa1ad1a31a81fbe0001e23dfc39e26bfec375c8f5fb60b463f5bb0bfc478e0f8e834ccf5e55118f5762d8c7ef40d2cfdec73c3f5febaaed7c3ae8cbffa95ebf1d4afe011f4ea37ccdb4bb08cff5298c75f7d30775bbcdd2b618cff69c33cfe6330c6dbec80a1777a2eccfe5d9d31f7900faba1308fb79d83910fcb4b66d12bc7f17dcffb5717cc03d4dfb014e6ef2bf6c0c8f729ce3740fd4d9e84d14f1d308b7e39c66b28f3955b61d4df0918e70f72fc18fadd8345cf75c39c2febf81bda46bf0d187a8517618e876cdd306f3f05434ff520ccfbeb8a59f44c47c288af8130f497fd713d495b18f9f75818f5c908b33e3a07cbf55d09c37fde1a66bde4fbe01f7a05463f52ed0ae3fa703d3de4f3f4028cf35b0d96fa08fb482ecebfd83e68b3bfac1c18f9b7c2f50c51ff0a278cfc88eb1b62be9a6760e89b5f08633e09fd4688f7f00196f9ed0118f3595dfbefa8896f73d7703d1ee65398f57353b0c4f795306fb72f60f843f9dc70bdbf7b60167f50be61ee5f3ec0325fba1746bcef81713e3d66eee1f8f45098f573b047eaa5be61ee633e5a650d733f5f08a39fb60d73fd2e9925deaba78659ef0518fada3e73a3ef3e187a2538df08f52f730d73fc637fd12b3b06e3788fede336f7e3aace6723dbe46bd7308fd71a2cf97ad6306f9f08239e7b0df3f66bb0e4f37361ec7fd130e7874b66d1db7e36ccfab68479fc4d0686feb6238c7ed70a63fde34c98c7dbdc80319f7329730ff5a41446bfa5f17dfd3e7fbfc6f5f4c7cc4ab68fe13f47608f7e0cdf47fa72fe5f82311f7018df21faa37c0b467f14de9847a8c79902cbfad49130d69702786c783daa0b167ff81436f5fe098e1fe3fcc9b9306fcf77c0387fde13b67c3d59c3be1edf5aff71aff1a70518fea3ce8411dfa70d737e2ec1523f86c2f09ff786f9fc05b3d413fd298cfd71fe2ef2936e0bc35fb430e7e3e20d8ceb517bc2c8f7570db33f2660d48370d9306f07f7647e80e3fbf0b7700286bfe81de6411bfda115e6fae00ec0d21f6e84e15f17cc4d7fb70bc6fa63b564967c92ef09b3de690ac6fc3df9007bf6a70cdf2ffe91617cc53f920761deeef784e12f3d30ce1f0e85f9fc1edf37c6f7f96dc37c7df87e83ef2f587fd7f8572acc7a9b4dc3bcfd5618fd430216ff3a6c98fd692eccfb9b7d66f12ff3d030d7c33761e4974b30fc2f3f11c6fcd083257fbe80f17d496898f3cd5218fd28fb936bead99b30e6ef1a8cfea4c4f5f7309fd743b09c0fe335c0fa867b05cbfa107828fd8a1246fdbb01c31feda330e7b312e33bc4f9ab4f61f6c76a0c46ff92411ff24fce676bb0ac2f3d83d1bfae60ef58d6d7efc1f0ff642c0c7fe47ce2c89fd8df761ae6fd1760f8b3aef3a369f2971d37ccf56e26cc7ae80fb0f8d7a061f6c79530ef6f17cce24f6a23ccfab92bb0d43f278cfc9434cceb073db0ac5fba86393f9d0ab3fed98b30f4df01c33ffc31b3f897730dd7e70bb05fd67b5c01c6f7955e18eb1d2366a99f0ae34bf98dfdf39959fc49a760f19f0361f44318af719bf52df7c0e86f57018c7e29bd1246be3a04c33fd25d66f18f6c26ccdbfd7bc375fdcb8660f84b807f18837c69c1818f0f75be364d7ed26f60f8872985a1efa4611e4fd6e7d7fcd313c6febb0d73fee882c57f2a61e48f9130e62fa760f88f796e98fde75518f9632accc7fb5218ebf72958eaa316e6e3538e0f27fe640ec1e24f27c2e8efd8bf9cd4cb1cfb37f3275c9fe4abd282313f5eb13fba11ea65d912463eea8031dfd6f8fe118e2f303ed24f856b66a977650646becaee84797beec0929f66c2ae5fdb0ffd0cfaf70afe61900f931518fe95f485e19fb87ef1b7ec86d9769875dd8fd95ff3d19b30f2d1ba61d66326cc7aa94366f12fdd15863f74c0c847c608a3fedd0bb35eea190cffb217c27c3e631be6f9f65418fe968171bdee4818d7ab85b15ed463967ca6fa60595fcd1baef7371558e6f7ef0df37ac33ef300eb75fa8159fcaf82fd23d43b7bc02cf5aa1c08b3de760846bf664dc37cbfe05418f9a905f69c8ff488d9a03fab0e85797f87f122ffe1e3a7c27c7c0ebd4d607f2c5e99c57fb2023c004f1aae8f4f608fc5f934dbeb9b7eca37cc7a7785a17710467d38616ef2db6bc37c7c298cfee652187a2ec072ff281746fd9a0bb39eea0e2cf5ab2b0c7fb96f98b7bf8371fdc55818d77fd430fb1fc79f17ff33c70df3f91e85f1fc0bec937c98cd85713e0596e7034e84f9f85283717f566d9947585f2c5760f45305ec97fe3c7b03a33f2f5f1be6fcc6f1ea0de693c59330eb5faec1325fdd0ab37f55160c7fd4180f139855a7613e1efad90e8edf01c31f1327ccdbf3cb86d93f6fc001fefa2a0c7fe778f00ee737b59e3478e2afa930f46d318b3f9a9130fce5a961eecf6e8471fc1a2cfdfaa930fce3a3615e8fda15c67cf25118f93480c55f5fc0b8def288b959ffb86d98e7c35b61ac87e3fb253faa51c3ec7f5a18fe7ad230af7fadc0c89f69258cf3cbf9e09f1958fab7720e46bf565d324b3f562560f45f551f8c7a982d9945fff20d8cedeebee17abb6f09f3fe5681e12ff94898b7a7d0d3c1df32df70bdbd3803e37caeceefaec97f654f18eb99e7cc4dff6684594fbbdf30fbdb85301fefb60d73fd7260f853f6d0301fbf14863fdc8191dfcc9130ce7f23cc7a990e18ebdde64418fe017b9afeee4518f3814f619c6f0a96fb6747c2d8be0023dfd9b6306f775618f3515caff8974d1a66ff647ff2f23c85c5f78bffe5b87eaa7fb57ed50a6c586ffd08867f64b7c29ef3d335b3c3f16a260c7f3912e6fd4bd8d3f8931c3ff0a18eff3518fe14608f833f067cbfc7f94ced0fbec94776af61d663200c7daf1b66ff7907c35fec8e30e2f95818fd4f070cff712fc2f0ef6ec3dc1fc9f9453f391ffca7680b63fb33b3e42f9337ccfb378cfd3d58eedfde36ccf63d0ac3bf5a60797e67288cedf70db3bf64c2f0b737b0f8db5dc31c0f2b61debf0c0df3fd405c9ff8a39983717fd1e1fac698ffaa0bb0cc475266c9870a7ac97ca1c2f96c07eb1bb7c29c0f57b047eaa99b80e1eff98330fb6376060eccab8499fc9bf3df4498fd3183bde2cf1afee870fee45818e7833de2dfa99c0fdf573a668fef736b617c1f8ef70370a7e1faf8702c9c0c6abdeaf5041f245ecc59c35c7ff785b1de3f6d98fde55418fe7205967ef35918f5742c8cfdd760c44b316f98f54f84d1cf1d83513f5cbf61ee07e5fae18fe19c59e2433d82a59e7784113fcd76cca7b7c2b81f760396e78336c238feb461ceb74fc2f0f74fb0d48b4a18cf779f36ccfbef0863bdeaa3613e7e218cfb2d87cc72ff2eab1ae67ebf643698bf57ecdfa1e9072f85919f4f98257f877761f6270bbd1dfc2d1186bf1607c2a1f6377fc42cfe9a7685797bbe040f9815c6cb233e6c7dbd61d0f4979fc2c83fbb60a9f77d61f8d7bb30f4320df3f8f4c0d20fac84e16f7bc2c84f723ee98f55c39ccf1a46bf7ac32cf95b1d80f17cae6983e5f7037d613c4f86eb117f09670d737e5e0ae3f9a64498fdc35e334bbecdd7c2c8e747c2bcbfc6f1cdfc206d98e7bb186fe9ff542e0cff1936ccfe206cb0bd02c3dff28570a8f7af5e983dfccdbf81e11f29c6c7e37cf6b9e17affd408f3f9ec2173107fc3f101e72b6aff0d4dfeb397c2e8179f8491bf8660f8972f84f17c8cec8ffc518ec1b2bed26a98f53b17c6fe1330fc490d84e14fac6768facb3330fcdb16c2b87ff10116ff6a35ccfebc14e6fd6d2e0cffb907c3df42268cfbff8fc2d8ff9659fccd7d0af37673d0303fdf55324bfed0183fd1bf4a8559cfe2103c60ce717ed29bf53d6898fd675798eb9f877e1efe16b03d7478bb0e60f887c378049c2fdc80e5f87a7b3268facb27b0cc378a86793c6e85f17c73228c783c068b7fac84b17d0b96fa27df2ffd6310c6feb386d99f16cc4dffb82b0cfd4f84a117aeb7f12fdf309f6f5f18fbc3dee6f7130dc3bf1f84b1ff042cfde34018d77f268ce7039f1baefdc775999b7c1684b1fe7dcd2cfe63a18ff44b554f98b7af309e8dff4c85e11ff760e89fb684797bba6838a9fd15df1fc47fcf85d18fc1de80feacf00dd7c757b02fc1f18916863f8fc038ded5fd5492889ee911187a592b8ce7b503187a152361dc7f57c278de356d98c7bf0d96fa73278ced25b3f4236e238cfbf95361ac07bf82e5f9a231b3fcfe41f3f824a247710fc6f86bd847e35b8f9fbb00637cf45dc3f5763f011b66edc0d04fb1ff2609cea7311e098ed7068ce32fd7e044f8ff9dd7ffb7f79f7969a58db6da691ffffa6a5bfe2bedd541273ad599ce75a14b5de9957ed08f5f6dcd7f85bda4e4937ed62ffa55aff546bfe977fd41ef6bbdd59f7a47ef6af7d536fd67daabf7f43ee9b9d6137da00fc9da29d9195f53b239bebfea237dfcf37af73f632fc5ea893e258bcec8d273b26da62ff4a59e93d5577a41bcac3fdbea6b7da36ff5dd57dbf6afd9abef758b6c9d91ae537a6feb8eeeea5ead699f2cbed003527803b5e36ba8473f9fce7fd55e8acb31697848b1ba555a296594554e791554527bf592ac1e502c0ff4954ac9eea8f5b5ca54ae8aafb6f19fb5571b55aa4a6fd44a2fd4837a544f64d1563dab17f51ae397ac5eab8d7a5396fe7e27bbafc8ea09bde2b60fb5559f5f6de53f632f59bb4319ea43edea99da53fb6a52eb7aa00ec9faa93a52c7ea4491be3412876aa32fd5a93a9358a611a0b856e76af6d576fe557bc9da0b5daa4bb265aeaed48234deaaa5ba26f5b6c437ea5639dd5777ea5eb5a2bef43ad473d27d4e7a9f926fd7f95bb555e7ab2dfd2bf65246be256bbbaa475a5d91b62bb2baaf0614bb43355263b2706668484853a7a7c6186b1c59c9b9ba8e67e3d5c404bd350965af9f2077fdb9bd26551f2633b94a95378529e9ba2bb35253f3601ef5817932cfe685f2f5560dcdab599b0d594dd16cdeccbbf9305bf28537f32939dbec98ddafb7f8cfecd5f766cfec9bd859f4cd015dffdc1c466da3b5ea8d2c989aa35887cdb139894c569faa8139a3fdafa2e554bbaec8ab57e6dccccc05ed77f9f55efdc7f6922f53bd3573734557ba304b736d6eccadb9a311b8a78e636b5ae683fc7963daba4b51da371dd325cb3e633d363ddd357d33304333a2719a98b1ba8d5e6eb5553fabbdd650feed5babafacb39e2cecdb60367a66134bd5c866e683b67b9b534c3b75650b5bc62a652b756f57f6c19c534ca79ca769fb94febe8a79db3edaa79fd15efb6cf6ec8b7db5340f200b2906ed9ba5f8b5efe69dfefb618e2867514c5376dad2a86c4ddce353ddd81d734e96cdc9d20bcad1c6967637ea6cf7e8dfbe5ed8893db0873fa1bdd433da237baccf49bb13d2f8d47a959a1bcad1d63cab057dfe60cfc822675a962ca4fcddb73333638ded851ad84b7346b5fa4d4f28db4deb788e357969e7f6eaeb7aae1fdb4b33f8955dd8a5a1bc6aaf6b8d6fcc98fe7b1bab8dbd8b39d9deab49d4db52dd25dbdb6618b5b69d5ae333b3a1787fa23efb8a72f486e27762ce6d97ce37b13ddbb783afcad43fb6d70ef5da8eec4a9dc6d8b563b2625f4d9da65a347724a9de3a4bd9ca3967630e1eda7b338c73a4f80c07796d9dab55e212ca5767a684c6569dc59e9b8e4d5df633d9eb7257d81757dafd681dd597adaba8f6f6ddca8edd8329f4c43cb847b233d6e40de531b28b35764fa4f9543db867f7621f6217421af759637d4095694c3599bcc2bdba2fb1f6c7f69a54bf926dc7aa45366ec81bf7292fa5eecd51a672b18f98db91234f779f949363fc920d5163f714e3d9edb85dbba74463ca5394a94ac7556945b97dae976edf4dbe661de487fa1ee88d3b744f6eea8edcb1b97627e6ca3cc5d8750fee549f9b8c72977567ee98aaef0dfdbda2dc7643daaeea5c7d6c46d453f5dd39d5e321e97d8ef9709c3d6c62e6a273f5dccc5d7c854fffde5eeddd256939276f76e4c7316305b2f4cad0cc80b2d32ee9bab06bfafbaeee990e285e67ee84e2963e236b57b1ea28ef9676c75dc7fe5ab7dd0dd5a4a119b85b7be99ee83dfac69dbbff39f4752d3db5d75433c77aeada94b13aae439a545457b7ae4b3d32694cd927ce95acebb9be7ea34f0664e5267e66f728ae1fcc84ac1ad268507f5d5bf8648c1bb9b1d79e82de5befbcff9a3afc037d33b3ef834fd4994fa9ce2e0c34d6139ff99c72f049d4d81ed5719cf88246656577628f4dfdd780e2734abdf6c05dc7aec46eddad19fad2577ee51ffca37ff2cff4efc5bffab5dff8377de7dffdc79ff9b5567eeb3ffdceef2bb6dff57b7edf4fbe3fda4ffc813ff4d3bf6aaf3fd2853fa6181c44ef8db939c6adedd00c61ee4fcc36c6316b4cbafa3a7617fe94aad1d47eb8177e375d7b49a370e4cf48d70b7fee67fec25ffab9bff20b7a2dfdb5bff1b7fecedffb167ddef69d3f5ae7226bbb343abdfad9aba11ffdbac51efa71d04105f3ede7aa880fe1d437a293bf666fa0dc1cb290474b0d5510350c45d45419b220e6ea873a579f504e9e520d1eaa944667461dc9ccaddc2d65a799a33855ab50c6f79087ca3f845578088f66199ea8e7a2380e4fe139bc84d7b0f61f61e367e12dbcfff8eac2877fa1abdf86cfb0093b615737b30dff1ef6c23e7d3e0907bf762fe190f6ff0c533ae75138fe4bf69e8453771a736dade1b95a9a95790a67d4179d8673bd0833ca3dc4b64bcadfd987ba360fc20575240b33d0e7e1b27e8ffb918f8439e9f71aaea29575c67a927f7a12166119ae49fb4bf2ec56b8f981b5b7e1cef7c27d68853669d9095deafbc4b25ee8874118d2e7a330e64f139d28da7f9898e0129b3897ff237bf55de2dd9b5dd115bf25c1ed92861fa4d9c29105e4dd7dbd4d12ea3c221fa88724ad758d573fa5f9d230bebb8fd837d7799b727192257992454b7d1272f71472798fb93d299232acfc655225ab1f69913c50acaf92c7e42979f6ebf099bc24afd8b2269f51c926794bdec9be0f8ed7b0eb67c4ed645bfbc4c18fbad6dfd8bbab5f93cf7afca76651cf87eec205e55d45711bfbe57eb21399f2d615cdf2bbea2dd662aab7348722dde2fb1dbd97d137c8dadd648f3c6bfeadb6c93ebf533edf2693e420ea9b1cfe485fad922969d8f69be428394e4e92d3e42c39e79c9eccc21e1d77915cd2f1b3649e5cc5184e1614e79761942ceb4faf931ff8cc6fec3dd1ebe4d627d40bceeb79ee26b9a3aa63e3daa41ba837dbb156d5711bf5f609759694db622ea6d88e3939c638694f358c6681c93d69d232cbdf6a1bdf638e4fda4927e9d275f792fe0fd41dc4f84c86c92839f693641c3e539dd2142dc6706a5347baf6c201e9be97faa4af8d3669f017492b4dd2d4dfa45918a5b99ffc99bd7444419d55497ac48ea0ab4ecd33f5505b3bd267f159737d959686e6746945f9779b92d7c7cc455aadd530ea597b37bd9b8d3b325deacfc6e943faf87b6deb779a2fa74f4987a2f787fad2b5c4ca7593bea4afe93adda46ffe868ae4638cd57093be539cb6d38f749b7ec6bfc275d4dd8fd39de48d3edd4df7eaedfb31ded3497af06bfeff8dbd87e9343d8ad94af2707a5cd7deabf484e6c2a4697a5af75b4fa47fec97af9ca578dd929fdf916664437cd707e6c6cd439e9e05959ec738fe5edbda9b67e92cbd482fff287ea337a794edc234a858b793773f234d07e955ba88719a2ed3ebf096dea4b7fe22bd4befed206d85897f4adb6927eda6bd18d7e1cdd1cc96a262e3f755c1167f6b6fdad7553af079ccb7b1578a6b1ab122513f35a56c358cb938569c64a7ce48d44391bd51df2ef9f129c7643a8c73a474e41ea3be749d19ebfb9db683b8fe958e339da93f8adf3a1667619819baee21694bffa54a334c9e534a19e193b68d326707d45dbc9017a8cc67813efbf4775992a559467f5dc6b84e5e7d3b7c6679f6037bb352bf66957ba2b8bcca5619c570388b31ab626e4958539ae3c4bcbc517373ef6ef5242ded0ef558dbec31f6c77a9a9135d107b2e790672fbe9fbdfe3e37d7dbd7d9267bcbde7f1cbfaac83e7c2fdb669fd98edf64bbc935fd7bcc284765fbd9243bf04fd961b2cca6fa2e3b222bf7699fa3ec384c93bdec243ba5a3cfa82e7f66e7be9351664b757218f7fd9dbd177a9dc52a42de467ad631ac27148b4731ffd6f3e02ee9edc379acbb643b65307565b7b117cbe6f1384a278751671a9976ec996374da9ddfc6afb2b6975d650babe2d552265d66cbeff5cda82e53efd4263b8f7d2bbbc96ee9df1d75652fd97dd6cadae94e182473eacb4cd6c9ba547d46592febc7da4bd99ceaae7659977ababb70cd9f66836cf8037d47a4cf386a10f5acb34f5b9fc7d9608c598aceb599d834e6689adf3a132d2acd835ac4384ec9af6316529af275b4288be7c975f29eabefe337dea3c84d6e73a78a64ed57e133f7d9fbf79532ebe7214ff234cf281fbba83745b4cd73dfcb8bbca438bd48dbc973721573356529979c85a3ac9bbabcca57f943dc3f7fa47d9fd24efe4cef2fe94716b803ffd6defc55bfe66b8e439aed8d2957b795a53a4cbd94c46ccc64e13cd6e77c833cde8ef1483a1fc739917a488feaf85f46cedfc89a779a1935da9a919aa7b3fc23dfe69f7ea40dd7d570f0ed3dc47cc7f7a9bede51fc7dd723a5cfa4f9b0aeb9affe2edf0db731c7e67b14ab37f97e8cded0ca27f9411c3bf28bbebfa14a7c49ef777999fcae1ed191877a934f39be2807afecc2149293f369bc523730e7317e43bcc3d2a7f9ec438c63d26c1275a6babd618e15ca501d37fdfcc83fe5c7f9096b6b2f556a7bf9697e969f733ce5315fbd939617c922bf0c87c9793ea778ece557f97ef2912f7ee3e597d41f0ffc3379681da775667b4d69de90dec59826ab0fd3fa987c99ec518e1ef8473af775e84a25feae1eddd8459d676b3da963f4e9919ea643db55f364a7ee95076a42fdf563ec7f63a68a9e9fdfd02c902a9129d097b588a93ee7b73ceff573aa28fdf43abfcbeff356dece3b7937b15937efc598cdfbf980aeec94b4a1574a1d24f5547b79925ca42a59e9efee46b83c1f52ac2af2992a99e7238e798ae176fa40b30745de3ca663eac80837593f781a9d3ddaf73a5b8a9ffc6aaf2a0aadf60a45bded36eaa9e7f57d858569456bf269dd73b5632f95dc2153cda2ceb1229147cff24dd49066894bbb8a35d83db8506bba5398648fe62c17fe917ade77aa91cef7d2656129fe2836fd94e632f7d92169b7a6ca721706f94b7251b8ac57f8dff6bfd9a408fea64842eb5bedb3907e66876150a4e93d7b73fde95991f1bee12869cef09dbe2b9ad19fd57dd234ea6b3fe33a15df57a0f88deb15edd82353258a996a3fc6b13a7547ee25ae75d1bc77c03d56113b8a3d1abe0be9ad92dda2f48ba2caab62553c148fd437bc500d39e5f98efa2c9e9251364896c96172988f8be7e2258bff7bbfd1f7d6c657f15aac93ebbccc6e7ed53ed1d951b149e6c5261f7d1befd984e2f6ba58534fa67e6fafbe2bdee27a32e5d16b35fd555ffb5ec43b2821cef2c877873177732f156bac390fa7d6463d8b8ffa58cacdc536e66aaa4aa99ad2a895c5a7398b2bed7a59ec14bbf97eb197aa623f73c544a2ca5396a1babacc86d9922c3a280eff7005c084243b0aefd22fe153475dc8a438d0f6fbbdf3058dc4f4db7dbfb1d7e9ca7ec4988c2b6f1cbf142c313feff3fc27fe4d56f763adad7ba98ae744c5d137ef9cb3df6badf7cc18f7fcf9d52f8e8b93e2b4784dae8ab3e2fc5b2da296e126f6c6fcf79fbd121dedfefeb37a7ea4fff1bedfd86bf5a7398cb1c7f11b6b2be5e7f37a2d83351d8759ecbda2e7d2fbc64ce33b8d42fd1e6788d46b25516bdd4f4fa3d6bc264999ae5bdf4374c5acb8282e753dc7f99a3b0cdfe95b66aba8aff1317eb9fec6199fe9d25f2ac6aa4f8bb9d45a9afbded863eac5a2276f595775cdf11a57dbc3855d1757acb3bed27d7bafa7c5a25816d75f7997ffb7fa4a7f4bf978ad17642f59e7e6f53c68a7b8710f34ff8df7123c595152d7e9eb3875ea261e47167e46fff01cdf13dce39fc63bddee433d99bbe2b6b82bbe64ddf947faaa0fe85baf53600e7c6b3be13c5cb8377b4c7599e6b7b10e17adb866413d565d63d599adeab8df27cb2666f8eb1a46bcb7afcfcc933b2adae4079da2fbd5cf707ca7ef6998d5f11b2bcf8139a37a1bef21c4358e55d1538bf879d1a7f85ca87ed450bd714eb6bbe4a96d9ed7d6f7015b768ffbe57ace14ef1fded1fba61864ba18ea2f7da2e1db7e52e7ae57cceb78dbda51b48ed7219378cfbe5f8c64be6b36b653708e9e16e3daaa384212ab07f57375967ae8539ae74ef4b6d4f18e59a94a53daf28b9f16feb6bf2a3daf4b50ce9d9675bda5de7018e7b6d227534d3eb5dbe293c6a3e0b94e99986ed432de0d2f6e44538a8503b296c6472fe3f301d45fbea5b3322db3af55f737fdd5911aba0ecf63a38e7a12ebb1de9479d3176f3876e3530e6511e394aa51af8ef9a8f194e6bfa57de01c1d7babb88e11e7c9a65ecf28cbb2fa518dfc2a7bcb959e960f758f74563edae358712837d3cc80ecadfbe2b84297f2accea9e39893cb2735a5fdea350cb270533f5b47598bb2d42656a5625baf4b4fcae7f2a57cfddadcfc3b7bd7fa95e331aea8aa05cf85cc381da9455d9d3af5daf2d01dc7182e13d6957cdd52f7dc957b07fc5c9de6fbbefdb8af5ddb1ea9bb29dfbedadaefeda54ea02cdfa356761d4a53c438cd1ea396e547ac3ee5b6d67e5a7ec677372d77a27614c7853a55e4076e6b1fa4a7a2fd9ec80712ae52e52ec5eedecff0cb866fed0d37e5be7b60cd38ee62e5a963741a63d176780d832c9fb0aefadc4aad2df15b8629f519a794a3e7f1f9e7f8dc55bc53541e144bfdf4d5b1fb5b7bc9a30ff5ccac6a8fa6dc5c7bedd41ec799839d917dae3c8a714a7dd40beaf415cd9fd6b27611ab8e4dd5a91de3f70c07b1b3a43a749c6937f9fd5aff4f60ef897e2d4ff9fe9d3bb33b311f9767b1ceaa97baeebec4b92e693a2dcff99e5f398b4f0b9265a35feffdd5bd17759374dc011d7f515e9673fbfcd596fec85e6dcb2bfb52e7daf8fc9c8deb1746533ddd5847117bab6cb9887320d23a75d3e2937b2a1b7baa3979f279f464eac56e28632de95fb47659748bbbf2faabedfcb1bda4f00d45dd07f74ee56dfd3c55df74633c97775c47550bf7f7e26f530e247ed593a36a142ecc9dde707f159f3acb4d795fb6caf6575bf9c7f66625e5e84e3d9f9db82368da3583b2a7a6f109df780f30c665bdd658ff4645c72705f79b676fe8bdae448ba253f6c9da4139fc6a1bffcc5ecad1238ae131f752713e1be749b137a67ed8c6f9ac8939f88ae39532d43a5c705e5669ec32683e35364fd467ec54ba5295f999b4fd91bd97ebcaea59e5ea1c7daedbf59ae381ded4dde1b9b2b15bf40565a3586faf1b4d3734a3a87f67169f04a679eeacf255a8922afd6afbfeb1bd5a551955a513be1750e56c79b4d4ee85f884d9b88edf6efc5bcd1d75936a62b66644dbf7a9b37c2a3a5551955555ad7e969cfce7f692c20f14c3d3fa3ed08aea2b7720638adfb86a13bd77a156bea8ebed5ae1b78351d7f82f5b578fd553f55cbdfc1cf5f6afd81b6eaa57d2b1c375982ce67bb607714d8a74bc54b7f52fc9a8b33063db35549f49dbb5b9d65befaa75b5a9dedcc5cfd04bfd557ba92a5d6b9af756ef4d0fb5717c5f77123d98f2f34c199a0b93e6a26b7c76bdfaa8b6d5a7ea7cbf36fc73bdfee879fe6aa7da258da3070fe36c80bac407dcdfab7f2768e23cd0c6d51bfe7d51b557ed5793eaa0daf9f97e13fa57ec258b0f8b3759b3e0df9e50d65a55d318cfe4e1d7d4891cd4bf2b236daba3eab83aa94ecbf6cf6ceb9fdbab8d1e55f1978f6f1cbf547336e4dbf835377e81b1adf3f17935ab2eaa4b7ff4d5d6fc2bf6468bab79152da499bf3cbf5cff822af0ef7ba9ceee50cc2e281f2f8be1cff97bee7fc6def8aaaeab9bea362a1ad71b6dbc1f348dfd537557dd57adaa4d5d454775eca0ea7eb525ff39f692c5bdaa5f0d8a8fa24333a24e78f1ae5c6657d5b01a55e395b65755efabee05fdd7d81bff5f1bd54bb9b7525558996ab4b22bb7f2abb04a56a9763f6b9dfd57ec8d3da62a4a570c5719e979bdcae3ff4fe5e7fa5dfe7faebdfc927bacfff778ef0fecfddffffd6fff07f8a9a144</data>
-    </image>
-</images>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Authors</string>
+      </attribute>
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="textLabel1_2" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>7</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>&lt;p>Authors:&lt;/p>
+&lt;ul>
+&lt;li>Xavier Amatriain &amp;lt;xavier@create.ucsb.edu&amp;gt;&lt;/li>
+&lt;li>David Garcia &amp;lt;dgarcia@iua.upf.edu&amp;gt; &lt;/li>
+&lt;li>Ismael Mosquera &amp;lt;imosquera@iua.upf.edu&amp;gt;&lt;/li>
+&lt;li>Jordi Massaguer &amp;lt;jmassaguer@iua.upf.edu&amp;gt;&lt;/li>
+&lt;li>The CLAM Team &amp;lt;clam@iua.upf.edu&amp;gt;&lt;/li>
+&lt;/ul></string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignTop</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Acknoledgements</string>
+      </attribute>
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="textLabel1_2_3" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>7</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>&lt;p>This software is partially founded by:
+&lt;ul>
+&lt;li>SIMAC IST-507142 project&lt;/li>
+&lt;!-- &lt;li>Generalitat de Catalunya 
+	(Catalonia Autonomous Government)&lt;/li>-->
+&lt;/ul>
+&lt;/p></string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignTop</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string/>
+         </property>
+         <property name="pixmap" >
+          <pixmap resource="images.qrc" >:/logos/images/simac-logo.png</pixmap>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="TabPage" >
+      <attribute name="title" >
+       <string>License</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QTextBrowser" name="textBrowser" >
+         <property name="html" >
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p>&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p>&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br />Free Software Foundation, Inc.,&lt;br />59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p>&lt;/body>&lt;/html></string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <resources>
+  <include location="images.qrc" />
+ </resources>
+ <connections/>
+</ui>
