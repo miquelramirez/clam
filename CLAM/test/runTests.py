@@ -36,7 +36,7 @@ configurations = ['debug']
 
 # Mail report settings
 #publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
-publicAddress = 'parumi@iua.upf.es' # To use only when some test fails
+publicAddress = 'clam-devel@iua.upf.es' # To use only when some test fails
 privateAddress = 'parumi@iua.upf.es' # To know the test has been runned
 subject = 'nightly tests report'
 maxLinesPerMail = 200
@@ -351,14 +351,31 @@ def isFunctionalTest(path):
 	return path.find('FunctionalTests/')>=0  
 
 #----------------------------------------------------------------
+colors= {
+'BOLD'  :"\033[1m",
+'RED'   :"\033[91m",
+'GREEN' :"\033[92m",
+'YELLOW':"\033[93m", # unreadable on white backgrounds
+#'YELLOW':"\033[1m", #"\033[93m" # unreadable on white backgrounds
+'CYAN'  :"\033[96m",
+'NORMAL':"\033[0m",
+}
+
+def pprint( col, str, label=''):
+        try: mycol=colors[col]
+        except: mycol=''
+        print "%s%s%s %s" % (mycol, str, colors['NORMAL'], label)
+
+
 def getStatusOutput(cmd) :	
 	"returns wheather cmd exits correctly and the output"
-	print 'executing ',cmd
+	pprint('CYAN', 'executing: ', cmd)
 	stat, output = commands.getstatusoutput(cmd)		
 	if stat != 0 : 
+		pprint('RED', '\t\t\t[failure]')
 		print output
 	else :
-		print ' OK'
+		pprint('GREEN', '\t\t\t[ok]')
 	return (stat == 0), output
 
 def executeMandatory(cmd) :
@@ -671,7 +688,7 @@ def runTests() :
 #
 if __name__ == '__main__':
 	
-	constantly = (len(sys.argv)==1 or sys.argv[1] == "--constantly")
+	constantly = (len(sys.argv)==2 and sys.argv[1] == "--constantly")
 	n = 1
 	try :
 		runTests()
