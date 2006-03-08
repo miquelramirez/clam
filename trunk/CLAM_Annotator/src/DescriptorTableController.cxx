@@ -24,6 +24,7 @@ namespace CLAM_Annotator
 		mTable->setAlternatingRowColors(true);
 		mTable->horizontalHeader()->setStretchLastSection(true);
 		mTable->setTabKeyNavigation(false);
+		mTable->setEditTriggers(QAbstractItemView::AllEditTriggers );
 		mTable->setItemDelegate(this);
 	}
 	DescriptorTableController::~DescriptorTableController()
@@ -97,13 +98,17 @@ namespace CLAM_Annotator
 		if (index.column()==0) return 0; // Attribute names are read only
 		if (mElement==-1) return 0; // When no element, just avoid edition
 		QWidget * editor = mPlugins[index.row()]->createEditor(parent, option);
-		if (editor) return editor;
+		if (editor)
+		{
+			editor->installEventFilter(const_cast<DescriptorTableController*>(this));
+			return editor;
+		}
 		return QItemDelegate::createEditor(parent, option, index);
 	}
 	void DescriptorTableController::setEditorData(QWidget *editor, const QModelIndex &index) const
 	{
 		if (index.column()==0) return; // Attribute names are read only
-//		mPlugins[index.row()]->setEditorData();
+		mPlugins[index.row()]->fillEditor(editor, *mData);
 	}
 	void DescriptorTableController::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 	{

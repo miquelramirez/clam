@@ -1,7 +1,10 @@
 #include "DescriptorTablePlugin.hxx"
 #include "SchemaAttribute.hxx"
 #include <QtGui/QTableWidget>
+#include <QtGui/QLineEdit>
 #include <QtGui/QComboBox>
+#include <QtGui/QSpinBox>
+#include <QtGui/QDoubleSpinBox>
 #include <CLAM/Pool.hxx>
 
 namespace CLAM_Annotator
@@ -22,7 +25,8 @@ namespace CLAM_Annotator
 	}
 	void DescriptorTablePlugin::clearData()
 	{
-//		mTable->clearCell(mRow,1); //QTPORT
+		if (mTable->item(mRow,1))
+			mTable->item(mRow,1)->setText("");
 	}
 	void DescriptorTablePlugin::refreshData(int element, CLAM::DescriptionDataPool & dataPool)
 	{
@@ -36,6 +40,13 @@ namespace CLAM_Annotator
 	QWidget * DescriptorTablePlugin::createEditor(QWidget * parent, const QStyleOptionViewItem & option)
 	{
 		return 0;
+	}
+	void DescriptorTablePlugin::takeEditorContent(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
+	{
+	}
+
+	void DescriptorTablePlugin::fillEditor(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
+	{
 	}
 
 	class DescriptorsTableItemControllerString : public DescriptorTablePlugin
@@ -58,6 +69,13 @@ namespace CLAM_Annotator
 			QString qValue = mTable->item(mRow, 1)->text();
 			const std::string & value = qValue.toStdString();
 			dataPool.GetWritePool<CLAM::Text>(mScope,mName)[mElement] = value;
+		}
+		void fillEditor(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
+		{
+			QLineEdit * lineEdit = static_cast<QLineEdit*>(editor);
+			const CLAM::Text& value =
+				dataPool.GetReadPool<CLAM::Text>(mScope,mName)[mElement];
+			lineEdit->setText(value.c_str());
 		}
 	};
 	
@@ -84,6 +102,14 @@ namespace CLAM_Annotator
 			qrestrictionStringslist.push_back( qrestrictionStrings );
 			mTable->setItem(mRow,1, new QTableWidgetItem(qvalue));
 		}
+		void updateData(CLAM::DescriptionDataPool & dataPool)
+		{
+			if (mElement==-1) return;
+			QString qValue = mTable->item(mRow, 1)->text();
+			const std::string & value = qValue.toStdString();
+			dataPool.GetWritePool<Enumerated>(mScope,mName)[mElement].SetString(value);
+		}
+
 		virtual QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option)
 		{
 			QComboBox * editor = new QComboBox(parent);
@@ -92,12 +118,17 @@ namespace CLAM_Annotator
 				editor->addItem(QString(it->c_str()));
 			return editor;
 		}
-		void updateData(CLAM::DescriptionDataPool & dataPool)
+
+		void takeEditorContent(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
 		{
-			if (mElement==-1) return;
-			QString qValue = mTable->item(mRow, 1)->text();
-			const std::string & value = qValue.toStdString();
-			dataPool.GetWritePool<Enumerated>(mScope,mName)[mElement].SetString(value);
+		}
+
+		void fillEditor(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
+		{
+			QComboBox * combo = static_cast<QComboBox*>(editor);
+			const CLAM_Annotator::Enumerated& value =
+				dataPool.GetReadPool<Enumerated>(mScope,mName)[mElement];
+			combo->setCurrentIndex(combo->findText(value.GetString().c_str()));
 		}
 	private:
 		const std::list<std::string> mOptions;
@@ -116,11 +147,6 @@ namespace CLAM_Annotator
 		{
 			CLAM::TData value = dataPool.GetReadPool<CLAM::TData>(mScope,mName)[mElement];
 			mTable->setItem(mRow,1, new QTableWidgetItem(QString::number(value)));
-//			mTable->setItem(mRow,1,
-//				new RangeSelectionTableItem(mTable,
-//					TableItem::WhenCurrent,
-//					QString::number(value),
-//					mRange));
 		}
 		void updateData(CLAM::DescriptionDataPool & dataPool)
 		{
@@ -128,6 +154,21 @@ namespace CLAM_Annotator
 			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
 			QString qValue = mTable->item(mRow, 1)->text();
 			dataPool.GetWritePool<CLAM::TData>(mScope,mName)[mElement] = qValue.toFloat();
+		}
+		virtual QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option)
+		{
+			QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
+			editor->setMinimum(mRange.GetMin());
+			editor->setMaximum(mRange.GetMax());
+			editor->setSingleStep((editor->maximum()-editor->minimum())/100);
+			return editor;
+		}
+		void fillEditor(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
+		{
+			QDoubleSpinBox * spin = static_cast<QDoubleSpinBox*>(editor);
+			const CLAM::TData& value =
+				dataPool.GetReadPool<CLAM::TData>(mScope,mName)[mElement];
+			spin->setValue(value);
 		}
 	};
 
@@ -144,10 +185,6 @@ namespace CLAM_Annotator
 		{
 			int value = dataPool.GetReadPool<int>(mScope,mName)[mElement];
 			mTable->setItem(mRow,1, new QTableWidgetItem(QString::number(value)));
-//			mTable->setItem(mRow,1,
-//				new RangeSelectionTableItem(mTable,
-//					TableItem::WhenCurrent,
-//					QString::number(value),mRange));
 		}
 		void updateData(CLAM::DescriptionDataPool & dataPool)
 		{
@@ -155,6 +192,20 @@ namespace CLAM_Annotator
 			CLAM_ASSERT(dataPool.GetNumberOfContexts(mScope)>mElement,"Fuera!!");
 			QString qValue = mTable->item(mRow, 1)->text();
 			dataPool.GetWritePool<int>(mScope,mName)[mElement] = qValue.toInt();
+		}
+		virtual QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option)
+		{
+			QSpinBox *editor = new QSpinBox(parent);
+			editor->setMinimum(mRange.GetMin());
+			editor->setMaximum(mRange.GetMax());
+			return editor;
+		}
+		void fillEditor(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
+		{
+			QSpinBox * spin = static_cast<QSpinBox*>(editor);
+			const int & value =
+				dataPool.GetReadPool<int>(mScope,mName)[mElement];
+			spin->setValue(value);
 		}
 	};
 
