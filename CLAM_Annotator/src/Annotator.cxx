@@ -459,7 +459,7 @@ void Annotator::insertSegment(unsigned index)
 	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
 	if (childScope=="") return; // No child scope to grow up
-	CLAM_ASSERT(index<mpDescriptorPool->GetNumberOfContexts(childScope),
+	CLAM_ASSERT(index<=mpDescriptorPool->GetNumberOfContexts(childScope),
 		"Invalid position to insert a segment");
 	mpDescriptorPool->Insert(childScope, index);
 }
