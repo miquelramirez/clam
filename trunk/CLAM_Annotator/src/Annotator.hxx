@@ -85,13 +85,12 @@ public:
 	void playPause();
 
 	void initProject();
-	void markProjectChanged(bool changed);
 	void loadSettings();
 	void saveSettings();
 public slots:
 	void currentSongChanged();
-	void globalDescriptorsTableChanged( int, int);
-	void segmentDescriptorsTableChanged( int, int);
+	void globalDescriptorsTableChanged(int row);
+	void segmentDescriptorsTableChanged(int row);
 	void frameDescriptorsChanged(int, float);
 	void segmentationMarksChanged(unsigned, double);
 	void removeSegment(unsigned);
@@ -127,11 +126,12 @@ private slots:
 	void on_helpWhats_thisAction_triggered();
 
 private:
+	void updateApplicationTitle();
 	void updateSongListWidget();
 	void makeConnections();
 	void currentFile( std::string &);
-	void markCurrentSongChanged();
-	void markAllSongsUnchanged();
+	void markProjectChanged(bool changed);
+	void markCurrentSongChanged(bool changed=true);
 	void refreshGlobalDescriptorsTable();
 	void appendRecentOpenedProject(const std::string & projectFilename);
 
