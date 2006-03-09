@@ -114,6 +114,12 @@ namespace CLAM_Annotator
 	{
 		if (index.column()==0) return; // Attribute names are read only
 		mPlugins[index.row()]->takeEditorContent(editor, *mData);
+		// KLUDGE!! Why in hell this function is const!!
+		const_cast<DescriptorTableController*>(this)->emitContentEdited(index.row());
+	}
+	void DescriptorTableController::emitContentEdited(int row)
+	{
+		emit contentEdited(row);
 	}
 }
 

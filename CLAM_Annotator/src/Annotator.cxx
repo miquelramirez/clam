@@ -314,6 +314,12 @@ void Annotator::markProjectChanged(bool changed)
 {
 	mProjectNeedsSave = changed;
 	fileSave_projectAction->setEnabled(changed);
+	updateApplicationTitle();
+}
+
+void Annotator::updateApplicationTitle()
+{
+//	setWindowTitle("Hola");
 }
 
 void Annotator::initProject()
@@ -357,16 +363,14 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	mStatusBar << "User interface adapted to the new schema." << mStatusBar;
 }
 
-void Annotator::segmentDescriptorsTableChanged(int row, int column)
+void Annotator::segmentDescriptorsTableChanged(int row)
 {
-	mSegmentDescriptors->updateData(row, mpDescriptorPool);
-	markCurrentSongChanged();
+	markCurrentSongChanged(true);
 }
 
-void Annotator::globalDescriptorsTableChanged(int row, int column)
+void Annotator::globalDescriptorsTableChanged(int row)
 {
-	mGlobalDescriptors->updateData(row, mpDescriptorPool);
-	markCurrentSongChanged();
+	markCurrentSongChanged(true);
 }
 
 void Annotator::adaptSegmentationsToCurrentSchema()
@@ -522,11 +526,11 @@ void Annotator::makeConnections()
 	connect(mSegmentationSelection, SIGNAL(activated(const QString&)),
 			this, SLOT(refreshSegmentation()));
 	// Apply global descriptors changes
-	connect(mDescriptorsTable, SIGNAL(valueChanged( int, int) ),
-			this, SLOT(globalDescriptorsTableChanged(int, int) ) );
+	connect(mGlobalDescriptors, SIGNAL(contentEdited(int) ),
+			this, SLOT(globalDescriptorsTableChanged(int) ) );
 	// Apply segment descriptors changes
-	connect(mSegmentDescriptorsTable, SIGNAL(valueChanged( int, int) ),
-			this, SLOT(segmentDescriptorsTableChanged(int, int) ) );
+	connect(mSegmentDescriptors, SIGNAL(contentEdited(int) ),
+			this, SLOT(segmentDescriptorsTableChanged(int) ) );
 	// Apply frame descriptor changes
 	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
 		 this, SLOT(frameDescriptorsChanged(int, float)));
@@ -622,11 +626,9 @@ void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 	mpAudioPlot->setCurrentSegmentFollowsPlay(enabled);
 }
 
-void Annotator::markCurrentSongChanged()
+void Annotator::markCurrentSongChanged(bool changed)
 {
-	mDescriptorsNeedSave = true;
-	if (!mProjectOverview->currentItem()) return;
-	mProjectOverview->currentItem()->setText(2, "Yes");	
+	mDescriptorsNeedSave = changed;
 }
 
 
@@ -667,14 +669,10 @@ void Annotator::updateSongListWidget()
 		QTreeWidgetItem * item = new QTreeWidgetItem(
 			mProjectOverview,
 			QStringList()
-				<< it->GetSoundFile().c_str()
-				<< tr("Yes")
-				<< tr("No") );
+				<< it->GetSoundFile().c_str());
 #else
 		QTreeWidgetItem * item = new QTreeWidgetItem(mProjectOverview);
 		item->setText(0, it->GetSoundFile().c_str());
-		item->setText(1, tr("Yes") );
-		item->setText(2, tr("No") );
 #endif
 	}
 	mProjectOverview->show();
@@ -695,19 +693,6 @@ void Annotator::closeEvent ( QCloseEvent * e )
 		}
 	}
 	e->accept();
-}
-
-void Annotator::markAllSongsUnchanged()
-{
-#if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
-	QTreeWidgetItemIterator it (mProjectOverview);
-	for ( ; *it ; ++it )
-		(*it)->setText(2, "No");
-#else
-	for (unsigned int i = 0; i< mProjectOverview->topLevelItemCount(); i++)
-		mProjectOverview->topLevelItem(i)->setText(2,"No");
-#endif //QTPORT
-//TODO
 }
 
 void Annotator::deleteSongsFromProject()
@@ -780,7 +765,6 @@ void Annotator::fileSave()
 		return;
 	}
 	CLAM::XMLStorage::Dump(mProject,"Project",mProjectFileName);
-	markAllSongsUnchanged();
 	markProjectChanged(false);
 	appendRecentOpenedProject(mProjectFileName);
 }
@@ -814,8 +798,7 @@ void  Annotator::saveDescriptors()
 		QString("Save Changes"),QString("Discard Them")) != 0) return;
 
 	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",projectToAbsolutePath(mCurrentDescriptorsPoolFileName));
-
-	mDescriptorsNeedSave = false;
+	markCurrentSongChanged(false);
 }
 
 std::string Annotator::projectToAbsolutePath(const std::string & file)
