@@ -124,7 +124,6 @@ namespace CLAM_Annotator
 				editor->addItem(QString(it->c_str()));
 			return editor;
 		}
-
 		void fillEditor(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
 		{
 			QComboBox * combo = static_cast<QComboBox*>(editor);
@@ -132,7 +131,6 @@ namespace CLAM_Annotator
 				dataPool.GetReadPool<Enumerated>(mScope,mName)[mElement];
 			combo->setCurrentIndex(combo->findText(value.GetString().c_str()));
 		}
-
 		void takeEditorContent(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
 		{
 			QComboBox * combo = static_cast<QComboBox*>(editor);
