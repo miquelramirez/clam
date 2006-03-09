@@ -138,7 +138,7 @@ void Annotator::computeSongDescriptors()
 }
 
 Annotator::Annotator(const std::string & nameProject = "")
-	: AnnotatorBase( )
+	: Ui::Annotator( )
 	, QMainWindow( 0 )
 	, mCurrentIndex(0)
 	, mpDescriptorPool(0)

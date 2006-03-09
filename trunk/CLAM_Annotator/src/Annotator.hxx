@@ -1,7 +1,7 @@
 #ifndef ANNOTATOR_HXX
 #define ANNOTATOR_HXX
 
-#include "ui_AnnotatorBase.hxx"
+#include "ui_Annotator.hxx"
 #include "DescriptorTableController.hxx"
 
 #include <string>
@@ -68,7 +68,7 @@ class StatusBarDumper
 };
 
 
-class Annotator : public QMainWindow, public Ui::AnnotatorBase 
+class Annotator : public QMainWindow, public Ui::Annotator
 {
 	/*  
 	 *	type to store bpf info from loaded LLDs.
