@@ -113,6 +113,7 @@ namespace CLAM_Annotator
 	void DescriptorTableController::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 	{
 		if (index.column()==0) return; // Attribute names are read only
+		mPlugins[index.row()]->takeEditorContent(editor, *mData);
 	}
 }
 
