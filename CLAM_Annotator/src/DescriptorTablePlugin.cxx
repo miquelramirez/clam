@@ -77,6 +77,12 @@ namespace CLAM_Annotator
 				dataPool.GetReadPool<CLAM::Text>(mScope,mName)[mElement];
 			lineEdit->setText(value.c_str());
 		}
+		void takeEditorContent(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
+		{
+			QLineEdit * lineEdit = static_cast<QLineEdit*>(editor);
+			dataPool.GetWritePool<CLAM::Text>(mScope,mName)[mElement] = lineEdit->text().toStdString();
+			refreshData(dataPool);
+		}
 	};
 	
 	class DescriptorsTableItemControllerEnum : public DescriptorTablePlugin
@@ -119,10 +125,6 @@ namespace CLAM_Annotator
 			return editor;
 		}
 
-		void takeEditorContent(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
-		{
-		}
-
 		void fillEditor(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
 		{
 			QComboBox * combo = static_cast<QComboBox*>(editor);
@@ -130,6 +132,14 @@ namespace CLAM_Annotator
 				dataPool.GetReadPool<Enumerated>(mScope,mName)[mElement];
 			combo->setCurrentIndex(combo->findText(value.GetString().c_str()));
 		}
+
+		void takeEditorContent(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
+		{
+			QComboBox * combo = static_cast<QComboBox*>(editor);
+			dataPool.GetWritePool<Enumerated>(mScope,mName)[mElement] = combo->currentText().toStdString();
+			refreshData(dataPool);
+		}
+
 	private:
 		const std::list<std::string> mOptions;
 	};
@@ -161,6 +171,7 @@ namespace CLAM_Annotator
 			editor->setMinimum(mRange.GetMin());
 			editor->setMaximum(mRange.GetMax());
 			editor->setSingleStep((editor->maximum()-editor->minimum())/100);
+			editor->setDecimals(6);
 			return editor;
 		}
 		void fillEditor(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
@@ -170,6 +181,13 @@ namespace CLAM_Annotator
 				dataPool.GetReadPool<CLAM::TData>(mScope,mName)[mElement];
 			spin->setValue(value);
 		}
+		void takeEditorContent(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
+		{
+			QDoubleSpinBox * spin = static_cast<QDoubleSpinBox*>(editor);
+			dataPool.GetWritePool<CLAM::TData>(mScope,mName)[mElement] = spin->value();
+			refreshData(dataPool);
+		}
+
 	};
 
 	class DescriptorsTableItemControllerInt : public DescriptorTablePlugin
@@ -206,6 +224,12 @@ namespace CLAM_Annotator
 			const int & value =
 				dataPool.GetReadPool<int>(mScope,mName)[mElement];
 			spin->setValue(value);
+		}
+		void takeEditorContent(QWidget * editor, CLAM::DescriptionDataPool & dataPool)
+		{
+			QSpinBox * spin = static_cast<QSpinBox*>(editor);
+			dataPool.GetWritePool<int>(mScope,mName)[mElement] = spin->value();
+			refreshData(dataPool);
 		}
 	};
 
