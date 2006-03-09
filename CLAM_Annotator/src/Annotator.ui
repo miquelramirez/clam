@@ -2,8 +2,8 @@
  <author></author>
  <comment></comment>
  <exportmacro></exportmacro>
- <class>AnnotatorBase</class>
- <widget class="QMainWindow" name="AnnotatorBase" >
+ <class>Annotator</class>
+ <widget class="QMainWindow" name="Annotator" >
   <property name="geometry" >
    <rect>
     <x>0</x>
