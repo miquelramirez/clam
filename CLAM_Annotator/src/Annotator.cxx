@@ -271,9 +271,7 @@ void Annotator::initInterface()
 	mMainTabWidget->setCurrentIndex(0);
 
 	QVBoxLayout * frameLevelContainerLayout = new QVBoxLayout(mFrameLevelContainer);
-	mFrameLevelTabBar = new QTabBar(mFrameLevelContainer);
 	frameLevelContainerLayout->setMargin(2);
-	frameLevelContainerLayout->addWidget(mFrameLevelTabBar);
 	mBPFEditor = new BPFPlot(
 			mFrameLevelContainer);
 	mBPFEditor->SetFlags(CLAM::VM::eAllowVerEdition);//|CLAM::VM::eHasVerticalScroll); // QTPORT: What about this flag
@@ -282,7 +280,6 @@ void Annotator::initInterface()
 #endif
 	frameLevelContainerLayout->addWidget(mBPFEditor);
 	mBPFEditor->SetZoomSteps(5,5);
-	mFrameLevelTabBar->hide();
 
 	mpAudioPlot = new AudioPlot(mAudioPlotContainer); // ,0,0,false);
 	QVBoxLayout * audioPlotContainerLayout = new QVBoxLayout(mAudioPlotContainer);
@@ -309,7 +306,6 @@ void Annotator::initInterface()
 void Annotator::resetTabOrder()
 {
 #ifndef QTPORT
-	setTabOrder(mFrameLevelTabBar, mBPFEditor);
 	setTabOrder(mBPFEditor,mpAudioPlot);
 	setTabOrder(mpAudioPlot,mSegmentationSelection);
 	setTabOrder(mSegmentationSelection,mSegmentDescriptorsTable);
@@ -486,8 +482,6 @@ void Annotator::insertSegment(unsigned index)
 
 void Annotator::adaptEnvelopesToCurrentSchema()
 {
-	while (mFrameLevelTabBar->count())
-		mFrameLevelTabBar->removeTab(0);
 	mFrameLevelAttributeList->clear();
 
 	const std::list<std::string>& names = mProject.GetNamesByScopeAndType("Frame", "Float");
@@ -495,7 +489,6 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 	std::list<std::string>::const_iterator name = names.begin();
 	for (unsigned i = 0; i<nTabs; name++, i++)
 	{
-		mFrameLevelTabBar->addTab(name->c_str());
 		mFrameLevelAttributeList->addItem(name->c_str());
 	}
 }
@@ -534,8 +527,6 @@ void Annotator::makeConnections()
 	connect(mProjectOverview, SIGNAL(itemSelectionChanged()),
 			this, SLOT(currentSongChanged()));
 	// Changing the current frame level descriptor
-	connect(mFrameLevelTabBar, SIGNAL(selected(int)),
-			this, SLOT(changeFrameLevelDescriptor(int)));
 	connect(mFrameLevelAttributeList, SIGNAL(currentRowChanged(int)),
 			this, SLOT(changeFrameLevelDescriptor(int)));
 	// Changing the current segmentation descriptor
@@ -642,7 +633,7 @@ void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
 	/*TODO: right now, no matter how many points have been edited all descriptors are updated. This
 	  is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
 	  in the class.*/
-	int index = mFrameLevelTabBar->currentIndex();
+	unsigned index = mFrameLevelAttributeList->currentRow();
 	mBPFs[index].second.SetValue(pointIndex,TData(newValue));
 	mFrameDescriptorsNeedUpdate = true;
 }
@@ -886,7 +877,6 @@ void Annotator::refreshEnvelopes()
 
 	mCurrentBPFIndex = -1;
 
-	mFrameLevelTabBar->setCurrentIndex(0);
 	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
 
 	std::list<std::string>::const_iterator divisionName;
@@ -1152,7 +1142,6 @@ bool Annotator::isPlaying()
 
 void Annotator::changeFrameLevelDescriptor(int current)
 {
-//	unsigned index = mFrameLevelTabBar->currentIndex();
 	unsigned index = mFrameLevelAttributeList->currentRow();
 	if (index >= (int)mBPFs.size()) return; // No valid descriptor
 //	if (index == mCurrentBPFIndex) return; // No change
