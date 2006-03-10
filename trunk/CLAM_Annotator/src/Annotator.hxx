@@ -204,7 +204,6 @@ private:
 	CLAM::VM::BPFPlayer* mPlayer;
 	std::deque<std::string> mRecentOpenedProjects;
 	StatusBarDumper mStatusBar;
-	QTabBar * mFrameLevelTabBar;
 	QDialog * mAbout;
 	std::vector<QAction *> mRecentFilesActions;
 	QAction * mRecentFilesMenuSeparator;
