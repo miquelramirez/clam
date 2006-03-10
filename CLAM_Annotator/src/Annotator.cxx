@@ -773,7 +773,7 @@ void  Annotator::loadSchema()
 {
 	QString qFileName = QFileDialog::getOpenFileName(
 			this,
-			"Choose an Schema",
+			"Choose a Schema",
 			projectToAbsolutePath(".").c_str(),
 			"Description Schemes (*.sc)");
 	if(qFileName == QString::null) return;
