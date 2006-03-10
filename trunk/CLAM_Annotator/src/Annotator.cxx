@@ -917,7 +917,7 @@ void Annotator::refreshEnvelopes()
 
 void Annotator::refreshAudioData()
 {
-	mStatusBar << "Refresing audio..." << mStatusBar;
+	mStatusBar << "Refreshing audio..." << mStatusBar;
 	bool finished= loaderFinished();
 	if (finished)
 	{
