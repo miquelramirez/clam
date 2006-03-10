@@ -15,14 +15,17 @@ def Lab2Plot(labfile, output, segmentationAttribute, filter, childScope, labelAt
 			print >> sys.stderr, "Found a line with %s tokens, 3 expected"%len(segment)
 			continue
 		segment[2]=segment[2].rstrip().lstrip()
-		if labelFilter.match(segment[2]): continue
+		if not labelFilter.match(segment[2]): continue
 		tokens.append(segment)
 
 	sampleRate=44100
 
 	print >> output, '\t\t<AttributePool name="%s" size="%s">'%(segmentationAttribute, len(tokens)*2) ,
 	for segment in tokens :
-		print >> output, int(round(float(segment[0])*sampleRate)), int(round(float(segment[1])*sampleRate)),
+		#In samples
+		#print >> output, int(round(float(segment[0])*sampleRate)), int(round(float(segment[1])*sampleRate)),
+		#In seconds
+		print >> output, segment[0], segment[1],
 	print >> output, '</AttributePool>'
 	print >> output, '\t</ScopePool>'
 
