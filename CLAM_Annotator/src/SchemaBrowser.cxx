@@ -91,7 +91,7 @@ void SchemaBrowser::addAttribute(const std::string & scope, const std::string & 
     QTreeWidgetItem * scopeItem = 0;
     if (scopeItems.size()==0)
     {
-	    scopeItem = new QTreeWidgetItem( attributeList); //, lastSibling(attributeList->firstChild()) ); //QTPORT
+	    scopeItem = new QTreeWidgetItem( attributeList);
 	    scopeItem->setText( 0, scope.c_str() );
 	    scopeItem->setIcon( 0, scopeIcon );
 	    attributeList->expandItem(scopeItem);
@@ -99,7 +99,7 @@ void SchemaBrowser::addAttribute(const std::string & scope, const std::string & 
 	else
 		scopeItem = scopeItems[0];
 
-    QTreeWidgetItem * item = new QTreeWidgetItem( scopeItem); // ,lastSibling(scopeItem->firstChild()) ); //QTPORT
+    QTreeWidgetItem * item = new QTreeWidgetItem( scopeItem);
     item->setText( 0, name.c_str() );
     item->setIcon( 0, attributeIcon );
     item->setText( 1, type.c_str() );
