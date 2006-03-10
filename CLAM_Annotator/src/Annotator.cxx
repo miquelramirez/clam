@@ -14,6 +14,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QSplashScreen>
 #include <QtGui/QWhatsThis>
+#include <QtGui/QFocusFrame>
 
 #include <algorithm>
 #include <iostream>
@@ -251,9 +252,14 @@ void Annotator::updateRecentFilesMenu()
 
 Annotator::~Annotator()
 {
+	std::cout << "Annotator destructor" << std::endl;
+	std::cout << "Saving Settings" << std::endl;
 	saveSettings();
+	std::cout << "Aborting Loader" << std::endl;
 	abortLoader();
+	std::cout << "Deleting segmentation" << std::endl;
 	if (mSegmentation) delete mSegmentation;
+	std::cout << "Default destructors" << std::endl;
 }
 
 void Annotator::initInterface()
@@ -285,12 +291,12 @@ void Annotator::initInterface()
 #endif
 	audioPlotContainerLayout->setMargin(2);
 	audioPlotContainerLayout->addWidget(mpAudioPlot);
-#ifndef QTPORT
-	mpAudioPlot->Label("Audio");
-	mCurrentAudio.SetSize(20000);
-//	mpAudioPlot->SetData(mCurrentAudio);
-#endif//QTPORT
-
+/*
+	mpAudioPlot->setFrameShape(QFrame::StyledPanel);
+	mpAudioPlot->setFrameShadow(QFrame::Raised);
+	mBPFEditor->setFrameShape(QFrame::StyledPanel);
+	mBPFEditor->setFrameShadow(QFrame::Raised);
+*/
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, "Description Schema");
 
@@ -316,10 +322,20 @@ void Annotator::markProjectChanged(bool changed)
 	fileSave_projectAction->setEnabled(changed);
 	updateApplicationTitle();
 }
+void Annotator::markCurrentSongChanged(bool changed)
+{
+	mDescriptorsNeedSave = changed;
+	updateApplicationTitle();
+}
 
 void Annotator::updateApplicationTitle()
 {
-//	setWindowTitle("Hola");
+	QString title(tr("Music Annotator"));
+	if (mProjectNeedsSave)
+		title+=tr(" [modified project]");
+	if (mDescriptorsNeedSave)
+		title+=tr(" [modified song]");
+	setWindowTitle(title);
 }
 
 void Annotator::initProject()
@@ -345,8 +361,8 @@ void Annotator::initProject()
 	}
 	adaptInterfaceToCurrentSchema();
 	
+	markCurrentSongChanged(false);
 	markProjectChanged(false);
-	mDescriptorsNeedSave = false;
 	appendRecentOpenedProject(mProjectFileName);
 }
 
@@ -443,7 +459,7 @@ void Annotator::updateSegmentations()
 	{
 		descriptorMarks[i] = marks[i];
 	} 
-	mDescriptorsNeedSave = true;
+	markCurrentSongChanged(true);
 }
 
 void Annotator::removeSegment(unsigned index)
@@ -609,26 +625,7 @@ void Annotator::fileOpenRecent()
 
 void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 {
-	if (enabled)
-	{
-		int answer = QMessageBox::warning(this, 
-				tr("Linking Current Segment to Playback"),
-				tr("<p>This feature is still experimental and it may hang the application.</p>"
-					"<p>Are you sure you want to activate it?</p>"),
-				QMessageBox::Yes | QMessageBox::Default,
-				QMessageBox::Cancel | QMessageBox::Escape);
-		if (answer==QMessageBox::Cancel)
-		{
-			playbackLinkCurrentSegmentToPlaybackAction->setChecked(false);
-			return;
-		}
-	}
 	mpAudioPlot->setCurrentSegmentFollowsPlay(enabled);
-}
-
-void Annotator::markCurrentSongChanged(bool changed)
-{
-	mDescriptorsNeedSave = changed;
 }
 
 
@@ -789,7 +786,7 @@ void  Annotator::saveDescriptors()
 	{
 		updateEnvelopesData();
 		mFrameDescriptorsNeedUpdate=false;
-		mDescriptorsNeedSave=true;
+		markCurrentSongChanged(true);
 	}
 	if (!mDescriptorsNeedSave) return;
 
@@ -884,8 +881,8 @@ void Annotator::refreshEnvelopes()
 //	mBPFEditor->SetAudioPtr(&mCurrentAudio);
 	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
 
-	mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
 	mPlayer->SetAudioPtr(&mCurrentAudio);
+	mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
 
 	mCurrentBPFIndex = -1;
 
@@ -993,7 +990,7 @@ void Annotator::updateEnvelopeData(int bpfIndex, CLAM::TData* descriptor)
 void Annotator::loadDescriptorPool()
 {
 	mFrameDescriptorsNeedUpdate = false;
-	mDescriptorsNeedSave = false;
+	markCurrentSongChanged(false);
 
 	CLAM::DescriptionDataPool * tempPool = new CLAM::DescriptionDataPool(mProject.GetDescriptionScheme());
 
@@ -1173,7 +1170,6 @@ void Annotator::changeFrameLevelDescriptor(int current)
 
 void Annotator::startPlaying()
 {
-
 	if(!mPlayer) return;
 	mPlayer->play();
 
@@ -1181,18 +1177,14 @@ void Annotator::startPlaying()
 
 void Annotator::pausePlaying()
 {
-
 	if(!mPlayer) return;
 	mPlayer->pause();
-
 }
 
 void Annotator::stopPlaying()
 {
-
 	if(!mPlayer) return;
 	mPlayer->stop();
-
 }
 
 void Annotator::on_helpWhats_thisAction_triggered()
