@@ -88,16 +88,6 @@
              <string>File</string>
             </property>
            </column>
-           <column>
-            <property name="text" >
-             <string>Computed</string>
-            </property>
-           </column>
-           <column>
-            <property name="text" >
-             <string>Changed</string>
-            </property>
-           </column>
           </widget>
           <widget class="QTableWidget" name="mDescriptorsTable" >
            <property name="sizePolicy" >
