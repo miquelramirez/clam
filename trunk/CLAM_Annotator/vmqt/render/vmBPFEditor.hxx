@@ -48,7 +48,7 @@ namespace CLAM
 			Color mLineColor;
 			Color mHandlerColor;
 
-			enum { LINE_WIDTH=2, POINT_SIZE=5, TOLERANCE=5 };
+			enum { LINE_WIDTH=2, POINT_SIZE=2, TOLERANCE=5 };
 
 			enum EditionMode
 			{
