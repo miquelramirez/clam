@@ -515,6 +515,7 @@ void Annotator::makeConnections()
 	connect(mPauseAction, SIGNAL(activated()), this, SLOT(pausePlaying()));
 	connect(mStopAction, SIGNAL(activated()), this, SLOT(stopPlaying()));
 	connect(helpAboutAction,SIGNAL(activated()), mAbout,SLOT(show()));
+	connect(helpAboutQtAction, SIGNAL(activated()), qApp, SLOT(aboutQt()));
 
 	mRecentFilesMenuSeparator = mFileMenu->addSeparator();
 	for (int i = 0; i < MaxRecentFiles; ++i) {
