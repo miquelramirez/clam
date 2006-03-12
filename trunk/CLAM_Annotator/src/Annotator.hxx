@@ -124,6 +124,7 @@ private slots:
 	void pausePlaying();
 	void stopPlaying();
 	void on_helpWhats_thisAction_triggered();
+	void syncronizeSplits();
 
 private:
 	void updateApplicationTitle();

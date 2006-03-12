@@ -42,7 +42,7 @@
     </property>
     <item>
      <widget class="QTabWidget" name="mMainTabWidget" >
-      <widget class="QWidget" name="tab" >
+      <widget class="QWidget" name="mSongLevelTab" >
        <attribute name="title" >
         <string>Song Descriptors</string>
        </attribute>
@@ -54,7 +54,7 @@
          <number>6</number>
         </property>
         <item>
-         <widget class="QSplitter" name="splitter14" >
+         <widget class="QSplitter" name="mSongLevelSplit" >
           <property name="orientation" >
            <enum>Qt::Horizontal</enum>
           </property>
@@ -126,7 +126,7 @@ contains descriptors values for song level descriptors. Song level descriptors a
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab" >
+      <widget class="QWidget" name="mIntrasongLevelTab" >
        <attribute name="title" >
         <string>Intrasong Descriptors</string>
        </attribute>
@@ -138,11 +138,11 @@ contains descriptors values for song level descriptors. Song level descriptors a
          <number>6</number>
         </property>
         <item>
-         <widget class="QSplitter" name="splitter" >
+         <widget class="QSplitter" name="mVSplit" >
           <property name="orientation" >
            <enum>Qt::Vertical</enum>
           </property>
-          <widget class="QSplitter" name="splitter_2" >
+          <widget class="QSplitter" name="mFrameEditorSplit" >
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
@@ -195,7 +195,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
             </property>
            </widget>
           </widget>
-          <widget class="QSplitter" name="splitter" >
+          <widget class="QSplitter" name="mSegmentEditorSplit" >
            <property name="midLineWidth" >
             <number>4</number>
            </property>
