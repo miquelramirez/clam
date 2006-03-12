@@ -1,30 +1,38 @@
 <RCC>
     <qresource prefix="/icons" >
+        <file>images/1downarrow.png</file>
+        <file>images/1leftarrow.png</file>
+        <file>images/1rightarrow.png</file>
+        <file>images/1uparrow.png</file>
+        <file>images/auralizeFrameLevel.png</file>
+        <file>images/auralizeOnsets.png</file>
         <file>images/contexthelp.png</file>
+        <file>images/edit.png</file>
         <file>images/exit.png</file>
         <file>images/filenew.png</file>
         <file>images/fileopen.png</file>
         <file>images/filesave.png</file>
         <file>images/filesaveas.png</file>
         <file>images/gear.png</file>
+        <file>images/label.png</file>
         <file>images/player_pause.png</file>
         <file>images/player_play.png</file>
         <file>images/player_stop.png</file>
+        <file>images/segmentFollows.png</file>
         <file>images/vcs_add.png</file>
         <file>images/vcs_remove.png</file>
         <file>images/view_tree.png</file>
         <file>images/xkill.png</file>
-        <file>images/label.png</file>
     </qresource>
     <qresource prefix="/logos" >
-        <file>images/annotator-splash1.png</file>
-        <file>images/annotator-splash1.svg</file>
         <file>images/annotator-icon1.png</file>
         <file>images/annotator-icon1.svg</file>
+        <file>images/annotator-splash1.png</file>
+        <file>images/annotator-splash1.svg</file>
         <file>images/clam-logo-bangs-scaled.png</file>
         <file>images/clam-logo-bangs.png</file>
         <file>images/clam_red.png</file>
         <file>images/clam_red_scaled.png</file>
-		<file>images/simac-logo.png</file>
+        <file>images/simac-logo.png</file>
     </qresource>
 </RCC>

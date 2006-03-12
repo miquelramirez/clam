@@ -107,7 +107,7 @@ sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
 if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
 sources = dict.fromkeys(sources).keys()
 sources.remove('./main.cxx')
-sources.remove('./Test.cxx')
+sources.remove('./ClamExtractorExample.cxx')
 
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=CLAMVmQtPath)
@@ -121,7 +121,7 @@ env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 #env.Append(CPPFLAGS=['-DQT3_SUPPORT_WARNINGS'])
 mainSources = {
 	'Annotator-qt4' : './main.cxx',
-	'ClamExtractorExample' : './Test.cxx',
+	'ClamExtractorExample' : './ClamExtractorExample.cxx',
 }
 
 programs = []
