@@ -318,6 +318,9 @@ to the proper cell.&lt;/p></string>
    <addaction name="mPlayAction" />
    <addaction name="mPauseAction" />
    <addaction name="mStopAction" />
+   <addaction name="mLinkCurrentSegmentToPlaybackAction" />
+   <addaction name="mAuralizeSegmentOnsetsAction" />
+   <addaction name="mAuralizeFrameLevelDescriptorsAction" />
   </widget>
   <widget class="QMenuBar" name="MenuBar" >
    <property name="geometry" >
@@ -339,32 +342,7 @@ to the proper cell.&lt;/p></string>
     <addaction name="separator" />
     <addaction name="fileExitAction" />
    </widget>
-   <widget class="QMenu" name="Project" >
-    <property name="title" >
-     <string>&amp;Project</string>
-    </property>
-    <addaction name="projectLoadSchemaAction" />
-    <addaction name="fileAdd_to_projectAction" />
-    <addaction name="editDelete_from_projectAction" />
-   </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="title" >
-     <string>View</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="Playback" >
-    <property name="title" >
-     <string>&amp;Playback</string>
-    </property>
-    <addaction name="mPlayAction" />
-    <addaction name="mPauseAction" />
-    <addaction name="mStopAction" />
-    <addaction name="separator" />
-    <addaction name="playbackAuralizeSegmentOnsetsAction" />
-    <addaction name="playbackAuralizeFrameLevelDescriptorsAction" />
-    <addaction name="playbackLinkCurrentSegmentToPlaybackAction" />
-   </widget>
-   <widget class="QMenu" name="Song" >
+   <widget class="QMenu" name="mSongMenu" >
     <property name="title" >
      <string>&amp;Song</string>
     </property>
@@ -380,10 +358,35 @@ to the proper cell.&lt;/p></string>
     <addaction name="helpAboutAction" />
     <addaction name="helpAboutQtAction" />
    </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>View</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="mProjectMenu" >
+    <property name="title" >
+     <string>&amp;Project</string>
+    </property>
+    <addaction name="projectLoadSchemaAction" />
+    <addaction name="fileAdd_to_projectAction" />
+    <addaction name="editDelete_from_projectAction" />
+   </widget>
+   <widget class="QMenu" name="mPlaybackMenu" >
+    <property name="title" >
+     <string>&amp;Playback</string>
+    </property>
+    <addaction name="mPlayAction" />
+    <addaction name="mPauseAction" />
+    <addaction name="mStopAction" />
+    <addaction name="separator" />
+    <addaction name="mLinkCurrentSegmentToPlaybackAction" />
+    <addaction name="mAuralizeSegmentOnsetsAction" />
+    <addaction name="mAuralizeFrameLevelDescriptorsAction" />
+   </widget>
    <addaction name="mFileMenu" />
-   <addaction name="Project" />
-   <addaction name="Song" />
-   <addaction name="Playback" />
+   <addaction name="mProjectMenu" />
+   <addaction name="mSongMenu" />
+   <addaction name="mPlaybackMenu" />
    <addaction name="menuView" />
    <addaction name="help" />
   </widget>
@@ -552,9 +555,12 @@ to the proper cell.&lt;/p></string>
     <string>Save Descriptors</string>
    </property>
   </action>
-  <action name="playbackAuralizeSegmentOnsetsAction" >
+  <action name="mAuralizeSegmentOnsetsAction" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/auralizeOnsets.png</iconset>
    </property>
    <property name="text" >
     <string>Auralize Segments &amp;Onsets</string>
@@ -563,9 +569,12 @@ to the proper cell.&lt;/p></string>
     <string>Auralize Segments Onsets</string>
    </property>
   </action>
-  <action name="playbackAuralizeFrameLevelDescriptorsAction" >
+  <action name="mAuralizeFrameLevelDescriptorsAction" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/auralizeFrameLevel.png</iconset>
    </property>
    <property name="text" >
     <string>Auralize &amp;Frame Level Descriptors</string>
@@ -641,9 +650,12 @@ to the proper cell.&lt;/p></string>
     <string>Ctrl+D</string>
    </property>
   </action>
-  <action name="playbackLinkCurrentSegmentToPlaybackAction" >
+  <action name="mLinkCurrentSegmentToPlaybackAction" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/segmentFollows.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Link current segment to playback</string>

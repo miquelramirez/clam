@@ -505,11 +505,11 @@ void Annotator::makeConnections()
 	connect(fileSave_project_asAction, SIGNAL(activated()), this, SLOT(fileSaveAs()));
 	connect(fileSave_projectAction, SIGNAL(activated()), this, SLOT(fileSave()));
 	connect(projectLoadSchemaAction, SIGNAL(activated()), this, SLOT(loadSchema()));
-	connect(songSaveDescriptorsAction, SIGNAL(activated()), this, SLOT(saveDescriptors()));
-	connect(playbackAuralizeSegmentOnsetsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
-	connect(playbackAuralizeFrameLevelDescriptorsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
-	connect(playbackLinkCurrentSegmentToPlaybackAction, SIGNAL(toggled(bool)), this, SLOT(linkCurrentSegmentToPlayback(bool)));
 	connect(songComputeDescriptorsAction, SIGNAL(activated()), this, SLOT(computeSongDescriptors()));
+	connect(songSaveDescriptorsAction, SIGNAL(activated()), this, SLOT(saveDescriptors()));
+	connect(mAuralizeSegmentOnsetsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
+	connect(mAuralizeFrameLevelDescriptorsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
+	connect(mLinkCurrentSegmentToPlaybackAction, SIGNAL(toggled(bool)), this, SLOT(linkCurrentSegmentToPlayback(bool)));
 	connect(helpWhats_thisAction, SIGNAL(activated()), this, SLOT(whatsThis()));
 	connect(mPlayAction, SIGNAL(activated()), this, SLOT(startPlaying()));
 	connect(mPauseAction, SIGNAL(activated()), this, SLOT(pausePlaying()));
@@ -1109,8 +1109,8 @@ void Annotator::auralizeMarks()
 
 void Annotator::updateAuralizationOptions()
 {
-	bool playOnsets = playbackAuralizeSegmentOnsetsAction->isChecked();
-	bool playLLDs = playbackAuralizeFrameLevelDescriptorsAction->isChecked();
+	bool playOnsets = mAuralizeSegmentOnsetsAction->isChecked();
+	bool playLLDs = mAuralizeFrameLevelDescriptorsAction->isChecked();
 
 	unsigned int LEFT_CHANNEL = 1;
 	unsigned int RIGHT_CHANNEL = 2;
@@ -1124,10 +1124,10 @@ void Annotator::updateAuralizationOptions()
 
 void Annotator::setMenuAudioItemsEnabled(bool enabled)
 {
-	playbackAuralizeSegmentOnsetsAction->setChecked(false); 
-	playbackAuralizeFrameLevelDescriptorsAction->setChecked(false);
-	playbackAuralizeSegmentOnsetsAction->setEnabled(enabled);
-	playbackAuralizeFrameLevelDescriptorsAction->setEnabled(enabled);
+	mAuralizeSegmentOnsetsAction->setChecked(false); 
+	mAuralizeFrameLevelDescriptorsAction->setChecked(false);
+	mAuralizeSegmentOnsetsAction->setEnabled(enabled);
+	mAuralizeFrameLevelDescriptorsAction->setEnabled(enabled);
 }
 
 QString Annotator::constructFileError(const std::string& fileName,const CLAM::XmlStorageErr& e)
