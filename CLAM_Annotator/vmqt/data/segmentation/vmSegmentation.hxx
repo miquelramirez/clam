@@ -135,12 +135,21 @@ namespace CLAM
 		{
 			return _maxLength;
 		}
+		void xUnits(const std::string & units)
+		{
+			_xUnits=units;
+		}
+		const std::string & xUnits() const
+		{
+			return _xUnits;
+		}
 	protected:
 		TimePositions _onsets;
 		TimePositions _offsets;
 		std::vector<bool> _selection;
 		unsigned _current;
 		double _maxLength;
+		std::string _xUnits;
 	};
 
 }
