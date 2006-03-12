@@ -146,7 +146,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mFrameDescriptorsNeedUpdate(false)
 	, mDescriptorsNeedSave(false)
 	, mMustUpdateMarkedAudio(false)
-	, mpAudioPlot(0)
+	, mSegmentEditor(0)
 	, mAudioRefreshTimer(new QTimer(this))
 	, mAudioLoaderThread(0)
 	, mGlobalDescriptors(0)
@@ -281,16 +281,16 @@ void Annotator::initInterface()
 	frameLevelContainerLayout->addWidget(mBPFEditor);
 	mBPFEditor->SetZoomSteps(5,5);
 
-	mpAudioPlot = new AudioPlot(mAudioPlotContainer); // ,0,0,false);
+	mSegmentEditor = new AudioPlot(mAudioPlotContainer); // ,0,0,false);
 	QVBoxLayout * audioPlotContainerLayout = new QVBoxLayout(mAudioPlotContainer);
 #if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
-	mpAudioPlot->setAutoFillBackground(true);
+	mSegmentEditor->setAutoFillBackground(true);
 #endif
 	audioPlotContainerLayout->setMargin(2);
-	audioPlotContainerLayout->addWidget(mpAudioPlot);
+	audioPlotContainerLayout->addWidget(mSegmentEditor);
 /*
-	mpAudioPlot->setFrameShape(QFrame::StyledPanel);
-	mpAudioPlot->setFrameShadow(QFrame::Raised);
+	mSegmentEditor->setFrameShape(QFrame::StyledPanel);
+	mSegmentEditor->setFrameShadow(QFrame::Raised);
 	mBPFEditor->setFrameShape(QFrame::StyledPanel);
 	mBPFEditor->setFrameShadow(QFrame::Raised);
 */
@@ -306,8 +306,8 @@ void Annotator::initInterface()
 void Annotator::resetTabOrder()
 {
 #ifndef QTPORT
-	setTabOrder(mBPFEditor,mpAudioPlot);
-	setTabOrder(mpAudioPlot,mSegmentationSelection);
+	setTabOrder(mBPFEditor,mSegmentEditor);
+	setTabOrder(mSegmentEditor,mSegmentationSelection);
 	setTabOrder(mSegmentationSelection,mSegmentDescriptorsTable);
 #endif//QTPORT
 }
@@ -436,7 +436,7 @@ void Annotator::refreshSegmentation()
 	if (mSegmentation) delete mSegmentation;
 	mSegmentation = theSegmentation;
 	mSegmentation->xUnits("s");
-	mpAudioPlot->SetSegmentation(mSegmentation);
+	mSegmentEditor->SetSegmentation(mSegmentation);
 	auralizeMarks();
 
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
@@ -545,15 +545,15 @@ void Annotator::makeConnections()
 		 this, SLOT(frameDescriptorsChanged(int, float)));
 
 	// Segment editing
-	connect(mpAudioPlot, SIGNAL(segmentOnsetChanged(unsigned,double)),
+	connect(mSegmentEditor, SIGNAL(segmentOnsetChanged(unsigned,double)),
 		this, SLOT(segmentationMarksChanged(unsigned, double)));
-	connect(mpAudioPlot, SIGNAL(segmentOffsetChanged(unsigned,double)),
+	connect(mSegmentEditor, SIGNAL(segmentOffsetChanged(unsigned,double)),
 		this, SLOT(segmentationMarksChanged(unsigned, double)));
-	connect(mpAudioPlot, SIGNAL(currentSegmentChanged()),
+	connect(mSegmentEditor, SIGNAL(currentSegmentChanged()),
 		this, SLOT(changeCurrentSegment()));
-	connect(mpAudioPlot, SIGNAL(segmentDeleted(unsigned)),
+	connect(mSegmentEditor, SIGNAL(segmentDeleted(unsigned)),
 		this, SLOT(removeSegment(unsigned)));
-	connect(mpAudioPlot, SIGNAL(segmentInserted(unsigned)),
+	connect(mSegmentEditor, SIGNAL(segmentInserted(unsigned)),
 		this, SLOT(insertSegment(unsigned)));
 
 	// BPF editing
@@ -564,36 +564,36 @@ void Annotator::makeConnections()
 
 	// Interplot viewport syncronization
 /*
-	connect(mpAudioPlot, SIGNAL(xRulerRange(double,double)),
+	connect(mSegmentEditor, SIGNAL(xRulerRange(double,double)),
 		mBPFEditor, SLOT(setHBounds(double,double)));
 	connect( mBPFEditor, SIGNAL(selectedXPos(double)),
-		 mpAudioPlot, SLOT(setSelectedXPos(double)));
-	connect(mpAudioPlot, SIGNAL(selectedXPos(double)),
+		 mSegmentEditor, SLOT(setSelectedXPos(double)));
+	connect(mSegmentEditor, SIGNAL(selectedXPos(double)),
 		mBPFEditor, SLOT(selectPointFromXCoord(double)));
 */
 	// Interplot locator syncronization
-	connect(mpAudioPlot, SIGNAL(selectedRegion(double,double)), // Was xRulerRange
+	connect(mSegmentEditor, SIGNAL(selectedRegion(double,double)), // Was xRulerRange
 		mBPFEditor, SLOT(updateLocator(double)));
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)), // Was xRulerRange
-		mpAudioPlot, SLOT(updateLocator(double)));
+		mSegmentEditor, SLOT(updateLocator(double)));
 	// Playhead update
 	connect(mPlayer, SIGNAL(playingTime(double)),
-		mpAudioPlot, SLOT(updateLocator(double)), Qt::DirectConnection);
+		mSegmentEditor, SLOT(updateLocator(double)), Qt::DirectConnection);
 	connect(mPlayer, SIGNAL(playingTime(double)),
 		mBPFEditor, SLOT(updateLocator(double)), Qt::DirectConnection);
 	connect(mPlayer, SIGNAL(stopTime(double,bool)),
 		mBPFEditor, SLOT(updateLocator(double,bool)));
 	connect( mPlayer, SIGNAL(stopTime(double,bool)),
-		 mpAudioPlot, SLOT(updateLocator(double,bool)));
-	connect(mpAudioPlot, SIGNAL(selectedRegion(double,double)),
+		 mSegmentEditor, SLOT(updateLocator(double,bool)));
+	connect(mSegmentEditor, SIGNAL(selectedRegion(double,double)),
 		mPlayer, SLOT(timeBounds(double,double)));
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
 		mPlayer, SLOT(timeBounds(double,double)));
 
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
-		mpAudioPlot, SLOT(updateLocator(double,double)));
+		mSegmentEditor, SLOT(updateLocator(double,double)));
 /*
-	connect(mpAudioPlot, SIGNAL(stopPlayingTime(double)),
+	connect(mSegmentEditor, SIGNAL(stopPlayingTime(double)),
 		this, SLOT(onStopPlaying(double)));
 */
 	connect(mFrameEditorSplit, SIGNAL(splitterMoved(int,int)),
@@ -630,7 +630,7 @@ void Annotator::syncronizeSplits()
 
 void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 {
-	mpAudioPlot->setCurrentSegmentFollowsPlay(enabled);
+	mSegmentEditor->setCurrentSegmentFollowsPlay(enabled);
 }
 
 
@@ -850,7 +850,7 @@ void Annotator::currentSongChanged()
 	mStatusBar << "Drawing Audio..." << mStatusBar;
 	mAudioRefreshTimer->stop();
 	
-	mpAudioPlot->hide();
+	mSegmentEditor->hide();
 	mBPFEditor->hide();
 	setMenuAudioItemsEnabled(false);
 	const std::string absolutePath = projectToAbsolutePath(filename).c_str();
@@ -863,8 +863,8 @@ void Annotator::currentSongChanged()
 	setMenuAudioItemsEnabled(true);
 
 	refreshSegmentation();
-	mpAudioPlot->SetData(mCurrentAudio);
-	mpAudioPlot->show();
+	mSegmentEditor->SetData(mCurrentAudio);
+	mSegmentEditor->show();
 	mBPFEditor->show();
 	drawAudio(projectToAbsolutePath(filename).c_str());
 	mStatusBar << "Drawing LLD..." << mStatusBar;
@@ -926,7 +926,7 @@ void Annotator::refreshAudioData()
 		mAudioRefreshTimer->stop();
 		auralizeMarks();
 	}
-	mpAudioPlot->SetData(mCurrentAudio,true);
+	mSegmentEditor->SetData(mCurrentAudio,true);
 
 	if (!finished)
 		mAudioRefreshTimer->start(2000);
@@ -934,15 +934,15 @@ void Annotator::refreshAudioData()
 
 void Annotator::drawAudio(const char * filename)
 {
-	mpAudioPlot->hide();
+	mSegmentEditor->hide();
 	mBPFEditor->hide();
 	setMenuAudioItemsEnabled(false);
 	loaderCreate(mCurrentAudio, filename);
 	setMenuAudioItemsEnabled(true);
 
 	refreshSegmentation();
-	mpAudioPlot->SetData(mCurrentAudio);
-	mpAudioPlot->show();
+	mSegmentEditor->SetData(mCurrentAudio);
+	mSegmentEditor->show();
 	mBPFEditor->show();
 }
 

@@ -189,7 +189,7 @@ private:
 	bool mDescriptorsNeedSave;
 	bool mMustUpdateMarkedAudio;
 
-	CLAM::VM::AudioPlot* mpAudioPlot;
+	CLAM::VM::AudioPlot* mSegmentEditor;
 	QTimer * mAudioRefreshTimer;
 	SchemaBrowser * mSchemaBrowser;
 	AudioLoadThread * mAudioLoaderThread;
