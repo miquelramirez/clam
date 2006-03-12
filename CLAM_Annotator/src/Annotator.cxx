@@ -596,6 +596,10 @@ void Annotator::makeConnections()
 	connect(mpAudioPlot, SIGNAL(stopPlayingTime(double)),
 		this, SLOT(onStopPlaying(double)));
 */
+	connect(mFrameEditorSplit, SIGNAL(splitterMoved(int,int)),
+			this, SLOT(syncronizeSplits()));
+	connect(mSegmentEditorSplit, SIGNAL(splitterMoved(int,int)),
+			this, SLOT(syncronizeSplits()));
 }
 void Annotator::fileOpenRecent()
 {
@@ -614,6 +618,14 @@ void Annotator::fileOpenRecent()
 		return;
 	}
 	initProject();
+}
+
+void Annotator::syncronizeSplits()
+{
+	if (sender()==mSegmentEditorSplit)
+		mFrameEditorSplit->setSizes(mSegmentEditorSplit->sizes());
+	if (sender()==mFrameEditorSplit)
+		mSegmentEditorSplit->setSizes(mFrameEditorSplit->sizes());
 }
 
 void Annotator::linkCurrentSegmentToPlayback(bool enabled)
