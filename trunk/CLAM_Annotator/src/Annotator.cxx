@@ -842,7 +842,7 @@ void Annotator::currentSongChanged()
 	if (currentSong.HasPoolFile())
 		mCurrentDescriptorsPoolFileName = currentSong.GetPoolFile();
 	else 
-		mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + ".pool";
+		mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + mProject.PoolSuffix();
 	mStatusBar << "Loading descriptors..." << mStatusBar;
 	loadDescriptorPool();
 	mStatusBar << "Filling Global Descriptors..." << mStatusBar;
