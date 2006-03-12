@@ -58,7 +58,7 @@
           <property name="orientation" >
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QTreeWidget" name="mProjectOverview" >
+          <widget class="QTreeWidget" name="mSongListView" >
            <property name="sizePolicy" >
             <sizepolicy>
              <hsizetype>3</hsizetype>
@@ -674,7 +674,7 @@ to the proper cell.&lt;/p></string>
  <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>mMainTabWidget</tabstop>
-  <tabstop>mProjectOverview</tabstop>
+  <tabstop>mSongListView</tabstop>
   <tabstop>mDescriptorsTable</tabstop>
   <tabstop>mFrameLevelContainer</tabstop>
   <tabstop>mFrameLevelAttributeList</tabstop>
