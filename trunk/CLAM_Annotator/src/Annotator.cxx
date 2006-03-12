@@ -84,8 +84,8 @@ bool Annotator::loaderFinished()
 
 void Annotator::computeSongDescriptors()
 {
-	if (!mProjectOverview->currentItem()) return;
-	QString filename = mProjectOverview->currentItem()->text(0);
+	if (!mSongListView->currentItem()) return;
+	QString filename = mSongListView->currentItem()->text(0);
 	filename  = projectToAbsolutePath(filename.toStdString()).c_str();
 	if (!std::ifstream(filename.toUtf8()))
 	{
@@ -264,7 +264,7 @@ Annotator::~Annotator()
 
 void Annotator::initInterface()
 {
-	mProjectOverview->setSortingEnabled(false); // Unordered
+	mSongListView->setSortingEnabled(false); // Unordered
 
 	mProjectDocumentation = new QTextBrowser;
 	mMainTabWidget->insertTab(0, mProjectDocumentation, "Project Documentation");
@@ -526,7 +526,7 @@ void Annotator::makeConnections()
 	}
 
 	// Changing the current song
-	connect(mProjectOverview, SIGNAL(itemSelectionChanged()),
+	connect(mSongListView, SIGNAL(itemSelectionChanged()),
 			this, SLOT(currentSongChanged()));
 	// Changing the current frame level descriptor
 	connect(mFrameLevelAttributeList, SIGNAL(currentRowChanged(int)),
@@ -663,22 +663,22 @@ void Annotator::segmentationMarksChanged(unsigned, double)
 
 void Annotator::updateSongListWidget()
 {
-	mProjectOverview->clear();
+	mSongListView->clear();
 	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongs();
 	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
 	{
 #if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
 		QTreeWidgetItem * item = new QTreeWidgetItem(
-			mProjectOverview,
+			mSongListView,
 			QStringList()
 				<< it->GetSoundFile().c_str());
 #else
-		QTreeWidgetItem * item = new QTreeWidgetItem(mProjectOverview);
+		QTreeWidgetItem * item = new QTreeWidgetItem(mSongListView);
 		item->setText(0, it->GetSoundFile().c_str());
 #endif
 	}
-	mProjectOverview->show();
-	mProjectOverview->resizeColumnToContents(0);
+	mSongListView->show();
+	mSongListView->resizeColumnToContents(0);
 }
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
@@ -699,7 +699,7 @@ void Annotator::closeEvent ( QCloseEvent * e )
 
 void Annotator::deleteSongsFromProject()
 {
-	QList< QTreeWidgetItem * > toBeDeleted = mProjectOverview->selectedItems();
+	QList< QTreeWidgetItem * > toBeDeleted = mSongListView->selectedItems();
 	for ( QList< QTreeWidgetItem* >::iterator it = toBeDeleted.begin();
 			it!= toBeDeleted.end(); it++ )
 		mProject.RemoveSong((*it)->text(0).toStdString());
@@ -828,7 +828,7 @@ void Annotator::currentSongChanged()
 	stopPlaying();
 	mStatusBar << "Saving Previous Song Descriptors..." << mStatusBar;
 	saveDescriptors();
-	QTreeWidgetItem * item = mProjectOverview->currentItem();
+	QTreeWidgetItem * item = mSongListView->currentItem();
 
 	if (item == 0) return;
 
