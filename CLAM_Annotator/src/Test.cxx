@@ -88,7 +88,7 @@ int main(int argc, char ** argv)
 		//Dump Descriptors Pool
 		std::string poolFile;
 		if (currentSong->HasPoolFile()) poolFile = currentSong->GetPoolFile();
-		else poolFile = songFile+".pool";
+		else poolFile = songFile + myProject.PoolSuffix();
 		CLAM::XMLStorage::Dump(pool, "DescriptorsPool", poolFile);
 
 		//Now we load the Pool and validate it with the schema

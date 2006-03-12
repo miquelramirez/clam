@@ -14,11 +14,12 @@ class Schema;
 
 class Project : public CLAM::DynamicType
 {
-	DYNAMIC_TYPE(Project,4);
+	DYNAMIC_TYPE(Project,5);
 	DYN_ATTRIBUTE(0, public, CLAM::Text, Description);
 	DYN_ATTRIBUTE(1, public, CLAM::Filename, Schema);
 	DYN_ATTRIBUTE(2, public, CLAM::Filename, Extractor);
-	DYN_CONTAINER_ATTRIBUTE(3,public, std::vector<Song>, Songs, Song);
+	DYN_ATTRIBUTE(3, public, std::string, PoolSuffix);
+	DYN_CONTAINER_ATTRIBUTE(4,public, std::vector<Song>, Songs, Song);
 
 	void DefaultInit()
 	{
@@ -26,6 +27,13 @@ class Project : public CLAM::DynamicType
 		UpdateData();
 	}
 public:
+	const std::string & PoolSuffix()
+	{
+		static std::string defaultSuffix = ".pool";
+		if (!HasPoolSuffix()) return defaultSuffix;
+		if (GetPoolSuffix()=="") return defaultSuffix;
+		return GetPoolSuffix();
+	}
 	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 	void AppendSong(const std::string & songFileName)
 	{
