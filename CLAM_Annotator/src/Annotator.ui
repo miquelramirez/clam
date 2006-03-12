@@ -151,7 +151,7 @@ contains descriptors values for song level descriptors. Song level descriptors a
              <sizepolicy>
               <hsizetype>3</hsizetype>
               <vsizetype>3</vsizetype>
-              <horstretch>0</horstretch>
+              <horstretch>2</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
@@ -204,7 +204,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
              <sizepolicy>
               <hsizetype>3</hsizetype>
               <vsizetype>3</vsizetype>
-              <horstretch>0</horstretch>
+              <horstretch>2</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
