@@ -39,8 +39,8 @@
 
 #include "AudioLoadThread.hxx"
 
-#include <CLAM/ContiguousSegmentation.hxx>
-#include <CLAM/DiscontinuousSegmentation.hxx>
+#include "vmContiguousSegmentation.hxx"
+#include "vmDiscontinuousSegmentation.hxx"
 #include "SchemaBrowser.hxx"
 #include <vmBPFPlayer.hxx>
 #include "ui_About.hxx"
@@ -435,6 +435,7 @@ void Annotator::refreshSegmentation()
 	}
 	if (mSegmentation) delete mSegmentation;
 	mSegmentation = theSegmentation;
+	mSegmentation->xUnits("s");
 	mpAudioPlot->SetSegmentation(mSegmentation);
 	auralizeMarks();
 
