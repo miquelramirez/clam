@@ -325,17 +325,9 @@ to the proper cell.&lt;/p></string>
      <x>0</x>
      <y>0</y>
      <width>979</width>
-     <height>28</height>
+     <height>31</height>
     </rect>
    </property>
-   <widget class="QMenu" name="help" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="helpAboutAction" />
-    <addaction name="separator" />
-    <addaction name="helpWhats_thisAction" />
-   </widget>
    <widget class="QMenu" name="mFileMenu" >
     <property name="title" >
      <string>&amp;File</string>
@@ -378,6 +370,15 @@ to the proper cell.&lt;/p></string>
     </property>
     <addaction name="songSaveDescriptorsAction" />
     <addaction name="songComputeDescriptorsAction" />
+   </widget>
+   <widget class="QMenu" name="help" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="helpWhats_thisAction" />
+    <addaction name="separator" />
+    <addaction name="helpAboutAction" />
+    <addaction name="helpAboutQtAction" />
    </widget>
    <addaction name="mFileMenu" />
    <addaction name="Project" />
@@ -649,6 +650,11 @@ to the proper cell.&lt;/p></string>
    </property>
    <property name="iconText" >
     <string>Link current segment to playback</string>
+   </property>
+  </action>
+  <action name="helpAboutQtAction" >
+   <property name="text" >
+    <string>About &amp;Qt</string>
    </property>
   </action>
  </widget>
