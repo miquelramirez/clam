@@ -99,17 +99,26 @@ namespace CLAM
 			if(!mEnabled) return;
 			if(!mSegmentation || !mCatchEvents) return;
 			QString ttip("");
+			QString units = mSegmentation->xUnits().c_str();
 			switch (mEditionMode)
 			{
 				case DraggingOnset:
 					mSegmentation->dragOnset(mDraggedSegment,x);
-					ttip = "x:"+QString::number(mSegmentation->onsets()[mDraggedSegment],'f',2);
+					ttip = QString("Begin (%1): %2%3")
+						.arg(mDraggedSegment)
+						.arg(mSegmentation->onsets()[mDraggedSegment],0,'g')
+						.arg(units)
+						;
 					emit toolTip(ttip);
 					emit requestRefresh();	
 					return;
 				case DraggingOffset:
 					mSegmentation->dragOffset(mDraggedSegment,x);
-					ttip = "x:"+QString::number(mSegmentation->offsets()[mDraggedSegment],'f',2);
+					ttip = QString("End (%1): %2%3")
+						.arg(mDraggedSegment)
+						.arg(mSegmentation->offsets()[mDraggedSegment],0,'g')
+						.arg(units)
+						;
 					emit toolTip(ttip);
 					emit requestRefresh();	
 					return;
@@ -137,7 +146,11 @@ namespace CLAM
 				emit working(mKey,true);
 				mHighlighted = index;
 				mBoundType = LEFT_BOUND;
-				ttip = "x:"+QString::number(mSegmentation->onsets()[index],'f',2);
+				ttip = QString("Begin (%1): %2%3")
+						.arg(index)
+						.arg(mSegmentation->onsets()[index],0,'g')
+						.arg(units)
+						;
 				emit toolTip(ttip);
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
@@ -148,7 +161,11 @@ namespace CLAM
 				emit working(mKey,true);
 				mHighlighted = index;
 				mBoundType = RIGHT_BOUND;
-				ttip = "x:"+QString::number(mSegmentation->offsets()[index],'f',2);
+				ttip = QString("End (%1): %2%3")
+						.arg(index)
+						.arg(mSegmentation->offsets()[index],0,'g')
+						.arg(units)
+						;
 				emit toolTip(ttip);
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
