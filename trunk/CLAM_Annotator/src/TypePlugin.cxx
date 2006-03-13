@@ -195,76 +195,144 @@ public:
 			dataPool.GetReadPool<CLAM::DataArray>(
 					mSchema.GetScope(),
 					mSchema.GetName());
-		bool ok = true;
-		for (unsigned i=0; i<dataPool.GetNumberOfContexts(mSchema.GetScope());i++)
-		{
-			const SegmentationPolicy & policy = mSchema.GetSegmentationPolicy();
 
-			bool offsetsStored =
-				policy==SegmentationPolicy::eDiscontinuous ||
-				policy==SegmentationPolicy::eOverlapping;
-			
-			if (offsetsStored)
-			{
-				bool mayOverlap = SegmentationPolicy::eOverlapping;
-				ok = ok && CheckEvenPositions(values[i], i, err);
-				ok = ok && CheckOrderForOnsetsAndOffsets(values[i], i, mayOverlap, err);
-			}
-			else
-				ok = ok && CheckOrderForOnsets(values[i], i, err);
-		}
-		return ok;
+		unsigned nChilds = -1;
+		if (mSchema.HasChildScope() && mSchema.GetChildScope()!="")
+			nChilds = dataPool.GetNumberOfContexts(mSchema.GetChildScope());
+
+		const SegmentationPolicy & policy = mSchema.GetSegmentationPolicy();
+
+		if (policy==SegmentationPolicy::eUnsized)
+			return ValidateUnsized(values[0], err, nChilds);
+		if (policy==SegmentationPolicy::eContinuous)
+			return ValidateContinuous(values[0], err, nChilds);
+		if (policy==SegmentationPolicy::eDiscontinuous)
+			return ValidateDiscontinuous(values[0], err, nChilds);
+		if (policy==SegmentationPolicy::eOverlapping)
+			return ValidateOverlapping(values[0], err, nChilds);
+		err << "Unsuported Segmentation policy" << std::endl;
+		return false;	
 	}
 private:
-	bool CheckEvenPositions(const CLAM::DataArray& positions, unsigned i, std::ostream & err)
-	{
-		if (!(positions.Size() & 1)) return true;
-
-		err << "The " << mSchema.GetSegmentationPolicy().GetString() 
-			<< " segmentation policy requires both onsets and offset positions, "
-			"but segmentation " << i << " has an odd number of positions." << std::endl;
-		return false;
-	}
-	bool CheckOrderForOnsets(const CLAM::DataArray& positions, unsigned i, std::ostream & err)
+	bool ValidateUnsized(const CLAM::DataArray & values, std::ostream & err, unsigned nChilds)
 	{
 		bool ok=true;
-		for (unsigned j=1; j<positions.Size(); j++)
+		if (nChilds!=unsigned(-1) && nChilds!=values.Size())
 		{
-			if (positions[j]>=positions[j-1]) continue;
-			err << "On segmentation " << i << ", segment " 
-				<< j << " is positioned at " << positions[j] << 
-				", that's before previous segment that is at position " << positions[j-1] << "." << std::endl;
-			ok = false;
+			err << "The number of marks (" << values.Size()
+				<< ") and the number of children " << nChilds << " doesn't match"
+				<< std::endl;
+			ok=false;
+		}
+		for (unsigned i=1; i<values.Size(); i++)
+		{
+			if (values[i]>=values[i-1]) continue;
+			err << "Mark " << i << " at " << values[i]
+				<< " is placed before previous mark at " << values[i-1]
+				<< std::endl;
+			ok=false;
 		}
 		return ok;
 	}
-	bool CheckOrderForOnsetsAndOffsets(const CLAM::DataArray& positions, unsigned i, bool mayOverlap, std::ostream & err)
+	bool ValidateContinuous(const CLAM::DataArray & values, std::ostream & err, unsigned nChilds)
 	{
 		bool ok=true;
-		for (unsigned j=1; j<positions.Size(); j+=1)
+		// TODO: Continuous segmentation should be nChilds-1?
+		if (nChilds!=unsigned(-1) && nChilds!=values.Size()+1)
 		{
-			if (positions[j]>=positions[j-1]) continue; // They are ordered, no problem
-
-			if (j&1) // j is an offset
+			err << "The number of segments (" << values.Size()+1
+				<< ") and the number of children " << nChilds << " doesn't match"
+				<< std::endl;
+			ok=false;
+		}
+		if (values[0]!=0)
+		{
+			err << "The first segment of a continuous segmentation was not at zero" << std::endl;
+			ok=false;
+		}
+		for (unsigned i=1; i<values.Size(); i++)
+		{
+			if (values[i]>=values[i-1]) continue;
+			err << "Segment " << i << " starts at " << values[i]
+				<< " which happens before previous start at " << values[i-1]
+				<< std::endl;
+			ok=false;
+		}
+		return ok;
+	}
+	bool ValidateDiscontinuous(const CLAM::DataArray & values, std::ostream & err, unsigned nChilds)
+	{
+		bool ok=true;
+		if (values.Size() & 1)
+		{
+			err << "Even number of segmentation points" << std::endl;
+			ok=false;
+		}
+		if (nChilds!=unsigned(-1) && nChilds*2!=values.Size())
+		{
+			err << "The number of segments (" << (values.Size()>>1)
+				<< ") and the number of children " << nChilds << " doesn't match"
+				<< std::endl;
+			ok=false;
+		}
+		for (unsigned i = 0; i<values.Size(); i++)
+		{
+			if (values[i]>=values[i-1]) continue;
+			ok=false;
+			if (i & 1) // Offset
 			{
-				err << "On segmentation " << i << ", segment " 
-					<< j/2 << " has inverted beggining and endingss." << std::endl;
-				return false;
+				err << "The end of the segment " << (i>>1)
+					<< " is placed at " << values[i]
+					<< ", before its begining at " << values[i-1]
+					<< std::endl;
 			}
-			if (positions[j]<positions[j-2])
+			else // Onset
 			{
-				err << "On segmentation " << i << ", segment " 
-					<< (j>>1) << " is out of order." << std::endl;
-				return false;
-			}
-			if (!mayOverlap) 
-			{
-				err << "On segmentation " << i << ", segment " 
-					<< (j/2-1) << " begins before previous segment ends." << std::endl;
-				return false;
+				err << "The segment " << (i>>1)
+					<< " is overlapping the previous segment " << values[i]
+					<< ", before its begining at " << values[i-1]
+					<< std::endl;
 			}
 		}
-		return true;
+		return ok;
+	}
+	bool ValidateOverlapping(const CLAM::DataArray & values, std::ostream & err, unsigned nChilds)
+	{
+		bool ok=true;
+		if (values.Size() & 1)
+		{
+			err << "Even number of segmentation points" << std::endl;
+			ok=false;
+		}
+		if (nChilds!=unsigned(-1) && nChilds*2!=values.Size())
+		{
+			err << "The number of segments (" << (values.Size()>>1)
+				<< ") and the number of children " << nChilds << " doesn't match"
+				<< std::endl;
+			ok=false;
+		}
+		for (unsigned i = 0; i<values.Size(); i++)
+		{
+			if (values[i]>=values[i-1]) continue;
+			if (i & 1) // Offset
+			{
+				err << "The end of the segment " << (i>>1)
+					<< " is placed at " << values[i]
+					<< ", before its begining at " << values[i-1]
+					<< std::endl;
+			}
+			else // Onset
+			{
+				if (i<2) continue;
+				if (values[i]>=values[i-2]) continue;
+				err << "The segment " << (i>>1)
+					<< " is overlapping the previous segment " << values[i]
+					<< ", before its begining at " << values[i-1]
+					<< std::endl;
+			}
+			ok=false;
+		}
+		return ok;
 	}
 };
 
