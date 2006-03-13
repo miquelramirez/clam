@@ -5,8 +5,10 @@ import SCons.Util
 from SCons.Util import CLVar
 
 options = Options('options.cache', ARGUMENTS)
+options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', '/usr/local'))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(PathOption('clam_vmqt4_path', 'The path to the vmqt module', '')) # to be removed
+options.Add(BoolOption( 'release', 'Build CLAM Annotator enabling compiler optimizations', 'yes') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -32,8 +34,6 @@ env['QT_UISUFFIX'] = '.ui'
 env['QT_UICDECLPREFIX'] = 'generated/ui_'
 env['QT_UICDECLSUFFIX'] = '.hxx'
 env['QT_LIB'] = '' # KLUDGE to avoid linking qt3 library
-
-env.Replace(QT_UIC='echo ***** Using old UIC!!!!!!')
 
 # TODO: An emmiter is needed in order make the qrc depend on the actual
 # files for the resources. If so, single_source is no more convenient
@@ -94,7 +94,6 @@ extraPaths += [
 	'/usr/include/qt4/QtCore', # quick KLUDGE for ubuntu
 	'/usr/include/qt4/QtGui', # quick KLUDGE for ubuntu
 	'/usr/include/qt4/QtOpenGl', # quick KLUDGE for ubuntu
-#	'/usr/include/qt4/Qt3Support', # quick KLUDGE for ubuntu
 ]
 includePaths = sourcePaths + extraPaths
 
@@ -111,22 +110,42 @@ sources.remove('./ClamExtractorExample.cxx')
 
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=CLAMVmQtPath)
+env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
 env.Append(LIBS="clam_vmqt4")
 env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 	(
 		CLAMInstallDir,
 		' '.join(pkgconfigLibraries)) )
-#env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
-#env.Append(CPPFLAGS=['-DQT3_SUPPORT_WARNINGS'])
+
+if env['release'] :
+	env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+else :
+	env.Append( CCFLAGS=['-g', '-Wall'] )
+#env.Append( LINKFLAGS=['-rdynamic'] )
+
 mainSources = {
 	'Annotator-qt4' : './main.cxx',
 	'ClamExtractorExample' : './ClamExtractorExample.cxx',
 }
 
+manpage = ['../resources/man/man9/Annotator.9']
+
 programs = []
 for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
 
+manpage = ['../resources/man/man9/Annotator.9']
+sounds = ['../resources/sounds/click.wav']
+#env.AddPostAction( install_bin, 'chmod 755 $TARGET' ) # TODO: Look for a generic action
+installation = {
+	'/bin' : programs,
+	'/share/man/man9' : manpage,
+	'/share/annotator/sounds': sounds,
+}
+installTargets = [
+	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
+
+env.Alias( 'install', installTargets )
 env.Default(programs)
 
