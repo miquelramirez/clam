@@ -33,6 +33,9 @@ namespace CLAM
 			for (Iterator it=begin; it!=end; it++)
 				insert(*it);
 		}
+		~ContiguousSegmentation()
+		{
+		}
 		/**
 		 * Inserts a new border at timePosition.
 		 */
