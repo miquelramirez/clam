@@ -286,7 +286,7 @@ void PopulatePool(const std::string & song,
 	ComputeSegmentationMarks(segment, segmentD);
 	Segment2Marks(segment,segmentation);
 	
-	unsigned nOnsets = segmentation.Size()+1;
+	unsigned nOnsets = segmentation.Size();
 	pool.SetNumberOfContexts("Onset",nOnsets);
 	CLAM::TData * onsetForces = pool.GetWritePool<CLAM::TData>("Onset","Relevance");
 	CLAM_Annotator::Enumerated * onsetChange = pool.GetWritePool<CLAM_Annotator::Enumerated>("Onset","DetectedChange");
@@ -317,6 +317,7 @@ void PopulatePool(const std::string & song,
 	CLAM::DataArray* chordSegmentation = 
 		pool.GetWritePool<CLAM::DataArray>("Song","Chords");
 	unsigned nChords = GenerateRandomSegmentationMarks(chordSegmentation[0], GetDurationInSeconds(song), .5, 8. )+1;
+	chordSegmentation[0][0]=0;
 	pool.SetNumberOfContexts("Chord",nChords);
 	CLAM_Annotator::Enumerated * chordRoot = pool.GetWritePool<CLAM_Annotator::Enumerated>("Chord","Root");
 	CLAM_Annotator::Enumerated * chordMode = pool.GetWritePool<CLAM_Annotator::Enumerated>("Chord","Mode");
@@ -395,10 +396,9 @@ unsigned GenerateNonOverlappingSegments(CLAM::DataArray & segmentation,
 		CLAM::TData songDurationInSeconds, CLAM::TData maxGap, CLAM::TData maxSegmentDuration)
 {
 	unsigned nSegments = 0; 
-	unsigned lastOffset = 0;
+	CLAM::TData lastOffset = 0;
 	while(lastOffset<songDurationInSeconds)
 	{
-		//random number between 10 and 30 frames
 		CLAM::TData randomOnset = randomNumber(lastOffset,lastOffset+maxGap);
 		CLAM::TData randomOffset = randomNumber(randomOnset,randomOnset+maxSegmentDuration);
 		if (randomOffset>songDurationInSeconds) break;
@@ -418,7 +418,6 @@ unsigned GenerateOverlappingSegments(CLAM::DataArray & segmentation,
 	CLAM::TData lastOnset = 0;
 	while(lastOnset<songDurationInSeconds)
 	{
-		//random number between 10 and 30 frames
 		CLAM::TData randomOnset = randomNumber(lastOnset,lastOnset+maxGap);
 		CLAM::TData randomOffset = randomNumber(randomOnset,randomOnset+maxSize);
 		if (randomOffset>songDurationInSeconds) break;
