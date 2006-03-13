@@ -275,7 +275,7 @@ private:
 				<< std::endl;
 			ok=false;
 		}
-		for (unsigned i = 0; i<values.Size(); i++)
+		for (unsigned i = 1; i<values.Size(); i++)
 		{
 			if (values[i]>=values[i-1]) continue;
 			ok=false;
@@ -311,7 +311,7 @@ private:
 				<< std::endl;
 			ok=false;
 		}
-		for (unsigned i = 0; i<values.Size(); i++)
+		for (unsigned i = 1; i<values.Size(); i++)
 		{
 			if (values[i]>=values[i-1]) continue;
 			if (i & 1) // Offset
