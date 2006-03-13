@@ -141,7 +141,6 @@ private:
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
 	void initInterface();
 	void adaptInterfaceToCurrentSchema();
-	void drawAudio(const char * filename);
 	void loadDescriptorPool();
 
 	void adaptEnvelopesToCurrentSchema();

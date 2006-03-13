@@ -250,6 +250,8 @@ void Annotator::updateRecentFilesMenu()
 		mRecentFilesActions[i]->setVisible(false);
 }
 
+static CLAM::Audio dummyAudio;
+
 Annotator::~Annotator()
 {
 	std::cout << "Annotator destructor" << std::endl;
@@ -294,6 +296,10 @@ void Annotator::initInterface()
 	mBPFEditor->setFrameShape(QFrame::StyledPanel);
 	mBPFEditor->setFrameShadow(QFrame::Raised);
 */
+	mBPFEditor->SetXRange(0.0,2.0);
+	mCurrentAudio.SetSize(2.0);
+	mSegmentEditor->SetData(mCurrentAudio);
+
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, "Description Schema");
 
@@ -866,7 +872,6 @@ void Annotator::currentSongChanged()
 	mSegmentEditor->SetData(mCurrentAudio);
 	mSegmentEditor->show();
 	mBPFEditor->show();
-	drawAudio(projectToAbsolutePath(filename).c_str());
 	mStatusBar << "Drawing LLD..." << mStatusBar;
 	refreshEnvelopes();
 	mStatusBar << "Done" << mStatusBar;
@@ -930,20 +935,6 @@ void Annotator::refreshAudioData()
 
 	if (!finished)
 		mAudioRefreshTimer->start(2000);
-}
-
-void Annotator::drawAudio(const char * filename)
-{
-	mSegmentEditor->hide();
-	mBPFEditor->hide();
-	setMenuAudioItemsEnabled(false);
-	loaderCreate(mCurrentAudio, filename);
-	setMenuAudioItemsEnabled(true);
-
-	refreshSegmentation();
-	mSegmentEditor->SetData(mCurrentAudio);
-	mSegmentEditor->show();
-	mBPFEditor->show();
 }
 
 void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & division)
@@ -1089,7 +1080,6 @@ void Annotator::auralizeMarks()
 		cfg.SetSourceFile( file );
 		CLAM::MultiChannelAudioFileReader reader(cfg);
 		reader.Start();
-		// Unused variable: int beginSample=0;
 		reader.Do(mClick);
 		reader.Stop();
 	}
@@ -1115,8 +1105,6 @@ void Annotator::updateAuralizationOptions()
 	unsigned int LEFT_CHANNEL = 1;
 	unsigned int RIGHT_CHANNEL = 2;
 	mPlayer->SetAudioPtr(&mCurrentAudio);
-//	if (playLLDs)
-//		mPlayer->SetAudioPtr(0, LEFT_CHANNEL);
 	if (playOnsets)
 		mPlayer->SetAudioPtr(&mCurrentMarkedAudio, RIGHT_CHANNEL);
 	mPlayer->SetPlayingFlags( CLAM::VM::eAudio | (playLLDs?CLAM::VM::eUseOscillator:0));
@@ -1124,8 +1112,9 @@ void Annotator::updateAuralizationOptions()
 
 void Annotator::setMenuAudioItemsEnabled(bool enabled)
 {
-	mAuralizeSegmentOnsetsAction->setChecked(false); 
-	mAuralizeFrameLevelDescriptorsAction->setChecked(false);
+	mPlayAction->setEnabled(enabled);
+	mPauseAction->setEnabled(enabled);
+	mStopAction->setEnabled(enabled);
 	mAuralizeSegmentOnsetsAction->setEnabled(enabled);
 	mAuralizeFrameLevelDescriptorsAction->setEnabled(enabled);
 }
