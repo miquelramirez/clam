@@ -73,7 +73,7 @@ SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
     languageChange();
     resize( QSize(740, 346).expandedTo(minimumSizeHint()) );
 //    clearWState( WState_Polished ); // TODO: Commented out while  qt4 porting
-    connect(attributeList, SIGNAL(itemSelectionChanged()),
+    connect(attributeList, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
             this, SLOT(updateCurrentAttribute()));
 }
 

@@ -506,10 +506,10 @@ void Annotator::makeConnections()
 	connect(fileExitAction, SIGNAL(activated()), this, SLOT(close()));
 	connect(fileNew_projectAction, SIGNAL(activated()), this, SLOT(fileNew()));
 	connect(fileOpen_projectAction, SIGNAL(activated()), this, SLOT(fileOpen()));
-	connect(fileAdd_to_projectAction, SIGNAL(activated()), this, SLOT(addSongsToProject()));
-	connect(editDelete_from_projectAction, SIGNAL(activated()), this, SLOT(deleteSongsFromProject()));
 	connect(fileSave_project_asAction, SIGNAL(activated()), this, SLOT(fileSaveAs()));
 	connect(fileSave_projectAction, SIGNAL(activated()), this, SLOT(fileSave()));
+	connect(fileAdd_to_projectAction, SIGNAL(activated()), this, SLOT(addSongsToProject()));
+	connect(editDelete_from_projectAction, SIGNAL(activated()), this, SLOT(deleteSongsFromProject()));
 	connect(projectLoadSchemaAction, SIGNAL(activated()), this, SLOT(loadSchema()));
 	connect(songComputeDescriptorsAction, SIGNAL(activated()), this, SLOT(computeSongDescriptors()));
 	connect(songSaveDescriptorsAction, SIGNAL(activated()), this, SLOT(saveDescriptors()));
@@ -532,8 +532,8 @@ void Annotator::makeConnections()
 	}
 
 	// Changing the current song
-	connect(mSongListView, SIGNAL(itemSelectionChanged()),
-			this, SLOT(currentSongChanged()));
+	connect(mSongListView, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+			this, SLOT(currentSongChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 	// Changing the current frame level descriptor
 	connect(mFrameLevelAttributeList, SIGNAL(currentRowChanged(int)),
 			this, SLOT(changeFrameLevelDescriptor(int)));
@@ -547,8 +547,8 @@ void Annotator::makeConnections()
 	connect(mSegmentDescriptors, SIGNAL(contentEdited(int) ),
 			this, SLOT(segmentDescriptorsTableChanged(int) ) );
 	// Apply frame descriptor changes
-	connect( mBPFEditor, SIGNAL(yValueChanged(int, float)),
-		 this, SLOT(frameDescriptorsChanged(int, float)));
+	connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
+		 this, SLOT(frameDescriptorsChanged(unsigned, double)));
 
 	// Segment editing
 	connect(mSegmentEditor, SIGNAL(segmentOnsetChanged(unsigned,double)),
@@ -648,12 +648,14 @@ void Annotator::changeCurrentSegment()
 	mSegmentDescriptors->refreshData(mSegmentation->current(),mpDescriptorPool);
 }
 
-void Annotator::frameDescriptorsChanged(int pointIndex,float newValue)
+void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
 {
 	/*TODO: right now, no matter how many points have been edited all descriptors are updated. This
 	  is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
 	  in the class.*/
 	unsigned index = mFrameLevelAttributeList->currentRow();
+	mStatusBar << "Frame " << pointIndex 
+		<< " changed value from " << mBPFs[index].second.GetValue(pointIndex) << " to " << newValue << mStatusBar;
 	mBPFs[index].second.SetValue(pointIndex,TData(newValue));
 	mFrameDescriptorsNeedUpdate = true;
 }
@@ -829,18 +831,16 @@ std::string Annotator::absoluteToProjectPath(const std::string & file)
 	return file;
 }
 
-void Annotator::currentSongChanged()
+void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *previous)
 {
 	stopPlaying();
 	mStatusBar << "Saving Previous Song Descriptors..." << mStatusBar;
-	saveDescriptors();
-	QTreeWidgetItem * item = mSongListView->currentItem();
-
-	if (item == 0) return;
+	if (previous) saveDescriptors();
+	if (!current) return;
 
 	setCursor(Qt::WaitCursor);
 
-	const std::string & filename = item->text(0).toStdString();
+	const std::string & filename = current->text(0).toStdString();
 	mCurrentIndex = songIndexInTable(filename);
 	if (mCurrentIndex <0) return;
 	CLAM_Annotator::Song & currentSong = mProject.GetSongs()[mCurrentIndex];

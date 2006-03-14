@@ -358,11 +358,6 @@ to the proper cell.&lt;/p></string>
     <addaction name="helpAboutAction" />
     <addaction name="helpAboutQtAction" />
    </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="title" >
-     <string>View</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="mProjectMenu" >
     <property name="title" >
      <string>&amp;Project</string>
@@ -370,6 +365,11 @@ to the proper cell.&lt;/p></string>
     <addaction name="projectLoadSchemaAction" />
     <addaction name="fileAdd_to_projectAction" />
     <addaction name="editDelete_from_projectAction" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>View</string>
+    </property>
    </widget>
    <widget class="QMenu" name="mPlaybackMenu" >
     <property name="title" >
@@ -563,10 +563,10 @@ to the proper cell.&lt;/p></string>
     <iconset resource="images.qrc" >:/icons/images/auralizeOnsets.png</iconset>
    </property>
    <property name="text" >
-    <string>Auralize Segments &amp;Onsets</string>
+    <string>Auralize segments &amp;onsets</string>
    </property>
    <property name="iconText" >
-    <string>Auralize Segments Onsets</string>
+    <string>Auralize segments onsets</string>
    </property>
   </action>
   <action name="mAuralizeFrameLevelDescriptorsAction" >
@@ -577,10 +577,10 @@ to the proper cell.&lt;/p></string>
     <iconset resource="images.qrc" >:/icons/images/auralizeFrameLevel.png</iconset>
    </property>
    <property name="text" >
-    <string>Auralize &amp;Frame Level Descriptors</string>
+    <string>Auralize &amp;frame level descriptors</string>
    </property>
    <property name="iconText" >
-    <string>Auralize Frame Level Descriptors</string>
+    <string>Auralize frame level descriptors</string>
    </property>
   </action>
   <action name="songComputeDescriptorsAction" >

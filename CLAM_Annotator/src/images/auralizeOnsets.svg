@@ -52,7 +52,8 @@
        y1="19.674709"
        x2="51.657314"
        y2="50.273148"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(4,0)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient2240"
@@ -61,7 +62,8 @@
        y1="21.860312"
        x2="47.671803"
        y2="33.688278"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(4,0)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -70,8 +72,8 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35355339"
-     inkscape:cx="32"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="60.284271"
      inkscape:cy="32"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -97,15 +99,15 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <rect
-       style="opacity:1;color:#000000;fill:url(#linearGradient2238);fill-opacity:1.0;fill-rule:nonzero;stroke:url(#linearGradient2246);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       style="opacity:1;color:#000000;fill:url(#linearGradient2238);fill-opacity:1;fill-rule:nonzero;stroke:url(#linearGradient2246);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
        id="rect2224"
        width="29"
        height="45"
-       x="24"
+       x="28"
        y="10.545455" />
     <g
        id="g2228"
-       transform="matrix(1.486003,0,0,1.272484,-51.92356,-3.740793)">
+       transform="matrix(1.575814,0,0,1.347695,-54.88004,-5.229987)">
       <path
          transform="matrix(0.966667,0,0,1,16.05671,-14.14551)"
          d="M 30.181818 54 A 3.4545455 3.8181818 0 1 1  23.272727,54 A 3.4545455 3.8181818 0 1 1  30.181818 54 z"
