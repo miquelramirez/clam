@@ -3,6 +3,7 @@
 from Tasker import Tasker, TaskerError 
 import unittest
 from cStringIO import StringIO
+import os
 
 taskfile=StringIO("""<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Task>
@@ -62,6 +63,7 @@ class TaskerTest ( unittest.TestCase ) :
 		self.tasker.createFile('erase', '.me', 'this is a content')
 		file = open('erase.me')
 		self.assertEquals( file.read(), 'this is a content')
+		os.remove('erase.me')
 
 	def testDownloadSong_noLocationsSpecified(self):
 		result=self.tasker.downloadSong("")
