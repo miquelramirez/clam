@@ -88,10 +88,10 @@ public:
 	void loadSettings();
 	void saveSettings();
 public slots:
-	void currentSongChanged();
+	void currentSongChanged(QTreeWidgetItem*current, QTreeWidgetItem*previous);
 	void globalDescriptorsTableChanged(int row);
 	void segmentDescriptorsTableChanged(int row);
-	void frameDescriptorsChanged(int, float);
+	void frameDescriptorsChanged(unsigned, double);
 	void segmentationMarksChanged(unsigned, double);
 	void removeSegment(unsigned);
 	void insertSegment(unsigned);
