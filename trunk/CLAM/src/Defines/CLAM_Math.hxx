@@ -26,19 +26,309 @@
 #include "DataTypes.hxx"
 #include "FastRounding.hxx"
 
-/*
-#ifndef linux
 
-#ifndef MIN
-#define MIN(a,b) ((a<=b)?(a):(b))
+//The following constants are defined also in OSDefines but only for windows and using the #define preprocessor
+//directive. It is much better to use const float declarations
+const float PI_	=	3.1415926535897932384626433832795028841972;		/* pi */
+const float ONE_OVER_PI	=	(0.3183098861837906661338147750939f);
+const float TWOPI		=	(6.2831853071795864769252867665590057683943f);		/* 2*pi */
+const float ONE_OVER_TWOPI =	(0.15915494309189535682609381638f);
+const float PI_2	=		(1.5707963267948966192313216916397514420986f);		/* pi/2 */
+const float TWO_OVER_PI	=	(0.636619772367581332267629550188f);
+const float LN2		=		(0.6931471805599453094172321214581765680755f);		/* ln(2) */
+const long LONG_OFFSET	=	4096L;
+const float FLOAT_OFFSET =	4096.0;
+const float HUGE_ = 1.0e8;
+const float ROOT2	=		(1.4142135623730950488016887242096980785697f);		/* sqrt(2) */
+const float ONE_OVER_LN2 =	(1.44269504088896333066907387547f);
+
+/** Efficient versions of common functions*/
+inline float CLAM_sin(register float x)
+{
+#ifndef CLAM_OPTIMIZE
+	return (float) sin((double)x);
+#else
+	x *= ONE_OVER_PI;
+	register float accumulator, xPower, xSquared;
+	register long evenIntPart = ((long)(0.5f*x + 1024.5) - 1024)<<1;
+	x -= (float)evenIntPart;
+	xSquared = x*x;
+	accumulator = 3.14159265358979f*x;
+	xPower = xSquared*x;
+	accumulator += -5.16731953364340f*xPower;
+	xPower *= xSquared;
+	accumulator += 2.54620566822659f*xPower;
+	xPower *= xSquared;
+	accumulator += -0.586027023087261f*xPower;
+	xPower *= xSquared;
+	accumulator += 0.06554823491427f*xPower;
+	return accumulator;
 #endif
+}
 
-#ifndef MAX
-#define MAX(a,b) ((a>=b)?(a):(b))
+inline float CLAM_cos(register float x)
+	{
+#ifndef CLAM_OPTIMIZE
+	return (float) cos((double)x);
+#else
+	x *= ONE_OVER_PI;
+	register float accumulator, xPower, xSquared;
+	
+	register long evenIntPart = ((long)(0.5f*x + 1024.5f) - 1024)<<1;
+	x -= (float)evenIntPart;
+	
+	xSquared = x*x;
+	accumulator = 1.57079632679490f*x;						/* series for sin(PI/2*x) */
+	xPower = xSquared*x;
+	accumulator += -0.64596406188166f*xPower;
+	xPower *= xSquared;
+	accumulator += 0.07969158490912f*xPower;
+	xPower *= xSquared;
+	accumulator += -0.00467687997706f*xPower;
+	xPower *= xSquared;
+	accumulator += 0.00015303015470f*xPower;
+	return 1.0f - 2.0f*accumulator*accumulator;				/* cos(w) = 1 - 2*(sin(w/2))^2 */
 #endif
+	}
 
-#endif //linux
-*/
+inline float CLAM_atan(register float x)
+	{
+#ifndef CLAM_OPTIMIZE
+	return (float) atan((double)x);
+#else
+	register float accumulator, xPower, xSquared, offset;
+	
+	offset = 0.0f;
+	
+	if (x < -1.0f)
+		{
+		offset = -PI_2;
+		x = -1.0f/x;
+		}
+	 else if (x > 1.0f)
+		{
+		offset = PI_2;
+		x = -1.0f/x;
+		}
+	xSquared = x*x;
+	accumulator = 1.0f;
+	xPower = xSquared;
+	accumulator += 0.33288950512027f*xPower;
+	xPower *= xSquared;
+	accumulator += -0.08467922817644f*xPower;
+	xPower *= xSquared;
+	accumulator += 0.03252232640125f*xPower;
+	xPower *= xSquared;
+	accumulator += -0.00749305860992f*xPower;
+	
+	return offset + x/accumulator;
+#endif
+}
+
+inline float CLAM_atan2(float Imag, float Real)
+	{
+#ifndef CLAM_OPTIMIZE
+	return (float) atan2((double)Imag, (double)Real);
+#else
+	register float accumulator, xPower, xSquared, offset, x;
+		
+	if (Imag > 0.0f)
+		{
+		if (Imag <= -Real)
+			{
+			offset = PI_;
+			x = Imag/Real;
+			}
+		 else if (Imag > Real)
+			{
+			offset = PI_2;
+			x = -Real/Imag;
+			}
+		 else
+			{
+			offset = 0.0f;
+			x = Imag/Real;
+			}
+		}
+	 else
+		{
+		if (Imag >= Real)
+			{
+			offset = -PI_;
+			x = Imag/Real;
+			}
+		 else if (Imag < -Real)
+			{
+			offset = -PI_2;
+			x = -Real/Imag;
+			}
+		 else
+			{
+			offset = 0.0f;
+			x = Imag/Real;
+			}
+		}
+	
+	xSquared = x*x;
+	accumulator = 1.0f;
+	xPower = xSquared;
+	accumulator += 0.33288950512027f*xPower;
+	xPower *= xSquared;
+	accumulator += -0.08467922817644f*xPower;
+	xPower *= xSquared;
+	accumulator += 0.03252232640125f*xPower;
+	xPower *= xSquared;
+	accumulator += -0.00749305860992f*xPower;
+	        
+	return offset + x/accumulator;
+#endif
+}
+
+inline float	CLAM_exp2(register float x)
+{
+#ifndef CLAM_OPTIMIZE
+	return (float) exp(LN2*(double)x);
+#else
+	if (x >= -127.0f)
+		{
+		register float accumulator, xPower;
+		register union {float f; long i;} xBits;
+			
+		xBits.i = (long)(x + FLOAT_OFFSET) - LONG_OFFSET;		/* integer part */
+		x -= (float)(xBits.i);									/* fractional part */
+		
+		accumulator = 1.0f + 0.69303212081966f*x;
+		xPower = x*x;
+		accumulator += 0.24137976293709f*xPower;
+		xPower *= x;
+		accumulator += 0.05203236900844f*xPower;
+		xPower *= x;
+		accumulator += 0.01355574723481f*xPower;
+		
+		xBits.i += 127;											/* bias integer part */
+		xBits.i <<= 23;											/* move biased int part into exponent bits */
+		
+		return accumulator * xBits.f;
+		}
+	 else
+		{
+		return 0.0f;
+		}
+#endif
+}
+
+inline float	CLAM_log2(register float x)
+{
+#ifndef CLAM_OPTIMIZE
+	return (float) (ONE_OVER_LN2*log((double)x));
+#else
+	if (x > 5.877471754e-39f)
+		{
+		register float accumulator, xPower;
+		register long intPart;
+		
+		register union {float f; long i;} xBits;
+		
+		xBits.f = x;
+		
+		intPart = ((xBits.i)>>23);					/* get biased exponent */
+		intPart -= 127;								/* unbias it */
+		
+		x = (float)(xBits.i & 0x007FFFFF);			/* mask off exponent leaving 0x800000*(mantissa - 1) */
+		x *= 1.192092895507812e-07f;					/* divide by 0x800000 */
+		
+		accumulator = 1.44254494359510f*x;
+		xPower = x*x;
+		accumulator += -0.71814525675041f*xPower;
+		xPower *= x;
+		accumulator += 0.45754919692582f*xPower;
+		xPower *= x;
+		accumulator += -0.27790534462866f*xPower;
+		xPower *= x;
+		accumulator += 0.12179791068782f*xPower;
+		xPower *= x;
+		accumulator += -0.02584144982967f*xPower;
+		
+		return accumulator + (float)intPart;
+		}
+	 else
+		{
+		return -HUGE_;
+		}
+#endif
+}
+
+inline float CLAM_pow(float x, float y)
+{
+#ifndef CLAM_OPTIMIZE
+	return (float) pow((double)x, (double)y);
+#else
+	return CLAM_exp2(y*CLAM_log2(x));
+#endif
+}
+
+inline float CLAM_sqrt(register float x)
+	{
+#ifndef CLAM_OPTIMIZE
+	return (float) sqrt((double)x);
+#else
+	if (x > 5.877471754e-39f)
+		{
+		register float accumulator, xPower;
+		register long intPart;
+		register union {float f; long i;} xBits;
+		
+		xBits.f = x;
+		
+		intPart = ((xBits.i)>>23);					/* get biased exponent */
+		intPart -= 127;								/* unbias it */
+		
+		x = (float)(xBits.i & 0x007FFFFF);			/* mask off exponent leaving 0x800000*(mantissa - 1) */
+		x *= 1.192092895507812e-07f;					/* divide by 0x800000 */
+		
+		accumulator =  1.0f + 0.49959804148061f*x;
+		xPower = x*x;
+		accumulator += -0.12047308243453f*xPower;
+		xPower *= x;
+		accumulator += 0.04585425015501f*xPower;
+		xPower *= x;
+		accumulator += -0.01076564682800f*xPower;
+		
+		if (intPart & 0x00000001)
+			{
+			accumulator *= ROOT2;					/* an odd input exponent means an extra sqrt(2) in the output */
+			}
+		
+		xBits.i = intPart >> 1;						/* divide exponent by 2, lose LSB */
+		xBits.i += 127;								/* rebias exponent */
+		xBits.i <<= 23;								/* move biased exponent into exponent bits */
+		
+		return accumulator * xBits.f;
+		}
+	 else
+		{
+		return 0.0f;
+		}
+#endif
+	}
+
+inline float CLAM_log(register float x)
+{
+#ifndef CLAM_OPTIMIZE
+	return (float) log((double)x);
+#else
+	return LN2*CLAM_log2(x);
+#endif
+}
+
+inline float CLAM_exp(register float x)
+{
+#ifndef CLAM_OPTIMIZE
+	return (float) exp((double)x);
+#else
+	return CLAM_exp2(ONE_OVER_LN2*x);
+#endif
+}
 
 #if defined _MSC_VER && _MSC_VER < 1310 // MSVC++ 6
 #undef min
