@@ -842,11 +842,11 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	int songIndex = songIndexInTable(filename);
 	if (songIndex <0) return;
 	CLAM_Annotator::Song & currentSong = mProject.GetSongs()[songIndex];
-	mCurrentSoundFileName = currentSong.GetSoundFile();
+	const std::string & currentSoundFileName = currentSong.GetSoundFile();
 	if (currentSong.HasPoolFile())
 		mCurrentDescriptorsPoolFileName = currentSong.GetPoolFile();
 	else 
-		mCurrentDescriptorsPoolFileName = mCurrentSoundFileName + mProject.PoolSuffix();
+		mCurrentDescriptorsPoolFileName = currentSoundFileName + mProject.PoolSuffix();
 	mStatusBar << "Loading descriptors..." << mStatusBar;
 	loadDescriptorPool();
 	mStatusBar << "Filling Global Descriptors..." << mStatusBar;
