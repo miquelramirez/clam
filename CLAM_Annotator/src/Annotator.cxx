@@ -141,7 +141,6 @@ void Annotator::computeSongDescriptors()
 Annotator::Annotator(const std::string & nameProject = "")
 	: Ui::Annotator( )
 	, QMainWindow( 0 )
-	, mCurrentIndex(0)
 	, mpDescriptorPool(0)
 	, mFrameDescriptorsNeedUpdate(false)
 	, mDescriptorsNeedSave(false)
@@ -840,9 +839,9 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	setCursor(Qt::WaitCursor);
 
 	const std::string & filename = current->text(0).toStdString();
-	mCurrentIndex = songIndexInTable(filename);
-	if (mCurrentIndex <0) return;
-	CLAM_Annotator::Song & currentSong = mProject.GetSongs()[mCurrentIndex];
+	int songIndex = songIndexInTable(filename);
+	if (songIndex <0) return;
+	CLAM_Annotator::Song & currentSong = mProject.GetSongs()[songIndex];
 	mCurrentSoundFileName = currentSong.GetSoundFile();
 	if (currentSong.HasPoolFile())
 		mCurrentDescriptorsPoolFileName = currentSong.GetPoolFile();
@@ -1082,15 +1081,15 @@ void Annotator::auralizeMarks()
 	}
 	const std::vector<double> & marks = mSegmentation->onsets();
 	int nMarks = marks.size();
-	mCurrentMarkedAudio.SetSize(0);
-	mCurrentMarkedAudio.SetSize(mCurrentAudio.GetSize());
-	mCurrentMarkedAudio.SetSampleRate(mCurrentAudio.GetSampleRate());
-	int size = mCurrentMarkedAudio.GetSize();
+	mOnsetAuralizationAudio.SetSize(0);
+	mOnsetAuralizationAudio.SetSize(mCurrentAudio.GetSize());
+	mOnsetAuralizationAudio.SetSampleRate(mCurrentAudio.GetSampleRate());
+	int size = mOnsetAuralizationAudio.GetSize();
 	for (int i=0; i<nMarks; i++)
 	{
 		int samplePosition = marks[i]*mCurrentAudio.GetSampleRate();
 		if(samplePosition<size)
-			mCurrentMarkedAudio.SetAudioChunk(samplePosition,mClick[0]);
+			mOnsetAuralizationAudio.SetAudioChunk(samplePosition,mClick[0]);
 	} 
 }
 
@@ -1103,7 +1102,7 @@ void Annotator::updateAuralizationOptions()
 	unsigned int RIGHT_CHANNEL = 2;
 	mPlayer->SetAudioPtr(&mCurrentAudio);
 	if (playOnsets)
-		mPlayer->SetAudioPtr(&mCurrentMarkedAudio, RIGHT_CHANNEL);
+		mPlayer->SetAudioPtr(&mOnsetAuralizationAudio, RIGHT_CHANNEL);
 	mPlayer->SetPlayingFlags( CLAM::VM::eAudio | (playLLDs?CLAM::VM::eUseOscillator:0));
 }
 
