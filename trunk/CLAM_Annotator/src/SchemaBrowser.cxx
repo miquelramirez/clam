@@ -15,9 +15,9 @@
 
 SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
     : QWidget( parent, fl )
-    , mSchema(0)
 	, scopeIcon(":/icons/images/xkill.png")
 	, attributeIcon(":/icons/images/label.png")
+    , mSchema(0)
 {
 	setObjectName( "schemaBrowser" );
     schemaBrowserLayout = new QHBoxLayout( this ); 
