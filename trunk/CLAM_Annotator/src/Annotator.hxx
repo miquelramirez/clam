@@ -171,13 +171,12 @@ private:
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
-	CLAM::Audio mCurrentMarkedAudio; ///< Current audio with segmentation marks inserted
+	CLAM::Audio mOnsetAuralizationAudio; ///< Current audio with segmentation marks inserted
 	std::vector<CLAM::Audio> mClick; ///< A vector of audios to produce click
 
 	CLAM_Annotator::Project mProject;
 	std::string mProjectFileName; 
 
-	int mCurrentIndex;
 	std::string mCurrentSoundFileName;
 	std::string mCurrentDescriptorsPoolFileName;
 
