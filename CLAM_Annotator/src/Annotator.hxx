@@ -177,7 +177,6 @@ private:
 	CLAM_Annotator::Project mProject;
 	std::string mProjectFileName; 
 
-	std::string mCurrentSoundFileName;
 	std::string mCurrentDescriptorsPoolFileName;
 
 	CLAM::DescriptionDataPool* mpDescriptorPool;
@@ -194,7 +193,8 @@ private:
 	CLAM_Annotator::DescriptorTableController * mGlobalDescriptors;
 	CLAM_Annotator::DescriptorTableController * mSegmentDescriptors;
 
-	std::vector<BPFInfo> mBPFs; // cached LLDs         
+	std::vector<BPFInfo> mBPFs; // cached LLDs
+
 	CLAM::VM::BPFPlot *  mBPFEditor;
 	CLAM::Segmentation * mSegmentation;
 
