@@ -152,7 +152,6 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mGlobalDescriptors(0)
 	, mSegmentDescriptors(0)
 	, mBPFEditor(0)
-	, mCurrentBPFIndex(-1)
 	, mSegmentation(0)
 	, mPlayer(0)
 	, mStatusBar(statusBar())
@@ -894,8 +893,6 @@ void Annotator::refreshEnvelopes()
 	mPlayer->SetAudioPtr(&mCurrentAudio);
 	mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
 
-	mCurrentBPFIndex = -1;
-
 	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
 
 	std::list<std::string>::const_iterator divisionName;
@@ -1147,8 +1144,6 @@ void Annotator::changeFrameLevelDescriptor(int current)
 {
 	unsigned index = mFrameLevelAttributeList->currentRow();
 	if (index >= (int)mBPFs.size()) return; // No valid descriptor
-//	if (index == mCurrentBPFIndex) return; // No change
-	mCurrentBPFIndex = index;
 	double min_y = mBPFs[index].first.first;
 	double max_y = mBPFs[index].first.second;
 	mBPFEditor->SetData(&mBPFs[index].second);

@@ -197,7 +197,6 @@ private:
 
 	std::vector<BPFInfo> mBPFs; // cached LLDs         
 	CLAM::VM::BPFPlot *  mBPFEditor;
-	int                  mCurrentBPFIndex;
 	CLAM::Segmentation * mSegmentation;
 
     QTextBrowser* mProjectDocumentation;
