@@ -76,7 +76,12 @@ namespace CLAMTest
 		if ( pathToTestData ) return std::string(pathToTestData)+postfix;
 		return std::string("../../../../CLAM-TestData/")+postfix;
 	}
-
+	bool isNaN(double x)
+	{
+		bool b1 = (x < 0.0);
+		bool b2 = (x >= 0.0);
+		return !(b1 || b2);
+	}
 } //namespace CLAMTest
 
 
@@ -167,6 +172,15 @@ namespace TestAssert {
 	CPPUNIT_ASSERT_EQUAL( \
 		typeid(expected), \
 		typeid(actual) )
+
+#define CLAMTEST_ASSERT_DOUBLES_EQUAL( expected, actual, epsilon) \
+	do { \
+		CPPUNIT_ASSERT_MESSAGE(CLAMTest::isNaN(expected) && !CLAMTest::isNaN(actual), \
+				"Expected 'not a number' but a number found"); \
+		CPPUNIT_ASSERT_MESSAGE(CLAMTest::isNaN(actual) && !CLAMTest::isNaN(expected), \
+				"Expected a number but NaN found"); \
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, actual, epsilon) \
+	} while (false)
 
 
 	// traits for avoiding warning messages with size_t
