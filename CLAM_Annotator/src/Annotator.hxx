@@ -127,6 +127,7 @@ private slots:
 	void syncronizeSplits();
 
 private:
+	void loadProject(const std::string & projectFileName);
 	void updateApplicationTitle();
 	void updateSongListWidget();
 	void makeConnections();
@@ -173,14 +174,10 @@ private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
 	CLAM::Audio mOnsetAuralizationAudio; ///< Current audio with segmentation marks inserted
 	std::vector<CLAM::Audio> mClick; ///< A vector of audios to produce click
-
 	CLAM_Annotator::Project mProject;
 	std::string mProjectFileName; 
-
 	std::string mCurrentDescriptorsPoolFileName;
-
 	CLAM::DescriptionDataPool* mpDescriptorPool;
-
 	bool mProjectNeedsSave;
 	bool mFrameDescriptorsNeedUpdate;
 	bool mDescriptorsNeedSave;
