@@ -41,6 +41,7 @@
 
 #include "vmContiguousSegmentation.hxx"
 #include "vmDiscontinuousSegmentation.hxx"
+#include "vmUnsizedSegmentation.hxx"
 #include "SchemaBrowser.hxx"
 #include <vmBPFPlayer.hxx>
 #include "ui_About.hxx"
@@ -139,8 +140,8 @@ void Annotator::computeSongDescriptors()
 }
 
 Annotator::Annotator(const std::string & nameProject = "")
-	: Ui::Annotator( )
-	, QMainWindow( 0 )
+	: QMainWindow( 0 )
+	, Ui::Annotator( )
 	, mpDescriptorPool(0)
 	, mFrameDescriptorsNeedUpdate(false)
 	, mDescriptorsNeedSave(false)
@@ -173,19 +174,10 @@ Annotator::Annotator(const std::string & nameProject = "")
 	loadSettings();
 	mAudioRefreshTimer->setSingleShot(true);
 	connect (mAudioRefreshTimer, SIGNAL(timeout()), this, SLOT(refreshAudioData()) );
-	if (nameProject!="") mProjectFileName = nameProject;
-	if (mProjectFileName=="") return;
-	try
-	{
-		CLAM::XMLStorage::Restore(mProject,mProjectFileName);
-	}
-	catch (CLAM::XmlStorageErr e)
-	{
-		QMessageBox::warning(this,"Error Loading Project File", 
-			constructFileError(mProjectFileName,e));
-		return;
-	}
-	initProject();
+	if (nameProject!="") // Project on command line
+		loadProject(nameProject);
+	else if (mProjectFileName!="") // Last openend project on settings
+		loadProject(mProjectFileName);
 	updateAuralizationOptions();
 	QTimer::singleShot(1000, splash, SLOT(close()));
 }
@@ -417,7 +409,13 @@ void Annotator::refreshSegmentation()
 	switch (policy)
 	{
 		case CLAM_Annotator::SegmentationPolicy::eUnsized:
-			// Not yet implemented, using Continuous by now
+		{
+			theSegmentation = 
+				new CLAM::UnsizedSegmentation(
+					mCurrentAudio.GetSize(),
+					&descriptorsMarks[0],
+					&descriptorsMarks[0]+nMarks);
+		} break;
 		case CLAM_Annotator::SegmentationPolicy::eContinuous:
 		{
 			theSegmentation = 
@@ -508,7 +506,7 @@ void Annotator::makeConnections()
 	connect(fileSave_projectAction, SIGNAL(activated()), this, SLOT(fileSave()));
 	connect(fileAdd_to_projectAction, SIGNAL(activated()), this, SLOT(addSongsToProject()));
 	connect(editDelete_from_projectAction, SIGNAL(activated()), this, SLOT(deleteSongsFromProject()));
-	connect(projectLoadSchemaAction, SIGNAL(activated()), this, SLOT(loadSchema()));
+//	connect(projectLoadSchemaAction, SIGNAL(activated()), this, SLOT(loadSchema()));
 	connect(songComputeDescriptorsAction, SIGNAL(activated()), this, SLOT(computeSongDescriptors()));
 	connect(songSaveDescriptorsAction, SIGNAL(activated()), this, SLOT(saveDescriptors()));
 	connect(mAuralizeSegmentOnsetsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
@@ -610,17 +608,24 @@ void Annotator::fileOpenRecent()
 	// This hack is from the qt example, don't ask me...
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (!action) return;
-	mProjectFileName = std::string(action->data().toString().toAscii());
+	loadProject( action->data().toString().toStdString() );
+}
+
+void Annotator::loadProject(const std::string & projectName)
+{
+	CLAM_Annotator::Project temporaryProject;
 	try
 	{
-		CLAM::XMLStorage::Restore(mProject,mProjectFileName);
+		CLAM::XMLStorage::Restore(temporaryProject,projectName);
 	}
 	catch (CLAM::XmlStorageErr e)
 	{
-		QMessageBox::warning(this,"Error Loading Project File", 
-			constructFileError(mProjectFileName,e));
+		QMessageBox::warning(this,"Error Loading Project File",
+		constructFileError(projectName,e));
 		return;
 	}
+	mProjectFileName = projectName;
+	mProject = temporaryProject;
 	initProject();
 }
 
@@ -732,19 +737,7 @@ void Annotator::fileOpen()
 {
 	QString qFileName = QFileDialog::getOpenFileName(this, "Choose a project to work with", QString::null, "*.pro");
 	if(qFileName == QString::null) return;
-
-	mProjectFileName = std::string(qFileName.toAscii());
-	try
-	{
-		CLAM::XMLStorage::Restore(mProject,mProjectFileName);
-	}
-	catch (CLAM::XmlStorageErr e)
-	{
-		QMessageBox::warning(this,"Error Loading Project File", 
-			constructFileError(mProjectFileName,e));
-		return;
-	}
-	initProject();
+	loadProject(qFileName.toStdString());
 }
 
 void Annotator::fileNew()
