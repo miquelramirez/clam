@@ -130,6 +130,8 @@ inline float CLAM_atan2(float Imag, float Real)
 #ifndef CLAM_OPTIMIZE
 	return (float) atan2((double)Imag, (double)Real);
 #else
+	if(Real==0 && Imag>=0) return 0.f;
+	if(Real==0 && Imag<0) return PI_;
 	register float accumulator, xPower, xSquared, offset, x;
 		
 	if (Imag > 0.0f)
