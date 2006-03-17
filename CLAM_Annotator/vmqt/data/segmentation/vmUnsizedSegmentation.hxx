@@ -1,11 +1,11 @@
-#ifndef __VMQT_CONTIGUOUS_SEGMENTATION_H__
-#define __VMQT_CONTIGUOUS_SEGMENTATION_H__
+#ifndef vmUnsizedSegmentation_hxx
+#define vmUnsizedSegmentation_hxx
 
 #include "vmSegmentation.hxx"
 
 namespace CLAM
 {
-	class ContiguousSegmentation : public Segmentation
+	class UnsizedSegmentation : public Segmentation
 	{
 	public:
 		class InsertedOutOfBounds : public std::exception
@@ -15,25 +15,19 @@ namespace CLAM
 		};
 		typedef std::vector<double> TimePositions;
 	public:
-		ContiguousSegmentation(double maxLength)
+		UnsizedSegmentation(double maxLength)
 			: Segmentation(maxLength)
 		{
-			_onsets.push_back(0);
-			_offsets.push_back(maxLength);
-			_selection.push_back(false);
 
 		}
 		template <typename Iterator>
-		ContiguousSegmentation(double maxLength, Iterator begin, Iterator end)
+		UnsizedSegmentation(double maxLength, Iterator begin, Iterator end)
 			: Segmentation(maxLength)
 		{
-			_onsets.push_back(0);
-			_offsets.push_back(maxLength);
-			_selection.push_back(false);
 			for (Iterator it=begin; it!=end; it++)
 				insert(*it);
 		}
-		~ContiguousSegmentation()
+		~UnsizedSegmentation()
 		{
 		}
 		/**
@@ -41,14 +35,20 @@ namespace CLAM
 		 */
 		unsigned insert(double timePosition)
 		{
-			if (timePosition<=0.0) throw InsertedOutOfBounds();
+			if (timePosition<0.0) throw InsertedOutOfBounds();
+			if (timePosition>=maxLength()) throw InsertedOutOfBounds();
 			TimePositions::iterator insertPoint = 
 				std::lower_bound(_offsets.begin(), _offsets.end(), timePosition);
-			if (insertPoint == _offsets.end()) throw InsertedOutOfBounds();
-			// 'position' must be computed before the insertion to not invalidate iterators.
-			unsigned position = insertPoint - _offsets.begin() +1;
+			if (insertPoint==_offsets.end())
+			{
+				_offsets.push_back(timePosition);
+				_onsets.push_back(timePosition);
+				_selection.push_back(false);
+				return _offsets.size()-1;
+			}
+			unsigned position = insertPoint - _offsets.begin();
 			_offsets.insert(insertPoint, timePosition);
-			_onsets.insert(_onsets.begin()+position, _offsets[position-1]);
+			_onsets.insert(_onsets.begin()+position, timePosition);
 			_selection.insert(_selection.begin()+position, false);
 			if (position<=_current) _current++;
 			return position;
@@ -61,13 +61,10 @@ namespace CLAM
 		 */
 		void remove(unsigned segment)
 		{
-			if (_offsets.size()==1) return;
-			unsigned offsetToRemove = segment? segment-1 : 0;
-			_offsets.erase(_offsets.begin()+offsetToRemove);
+			_offsets.erase(_offsets.begin()+segment);
 			_onsets.erase(_onsets.begin()+segment);
 			_selection.erase(_selection.begin()+segment);
 			if (_current!=0 && segment<=_current) _current--;
-			if (segment==0) _onsets[0]=0;
 		}
 		/**
 		 * Returns the index of the segment whose offset is nearest 
@@ -106,10 +103,8 @@ namespace CLAM
 		 */
 		void dragOnset(unsigned segment, double newTimePosition)
 		{
-			// first onset cannot be moved on Contiguous mode
-			if (segment==0) return;
-			// The onset is attached to the previous offset
-			dragOffset(segment-1, newTimePosition);
+			// The onset is attached to the offset
+			dragOffset(segment, newTimePosition);
 		}
 		/**
 		 * Performs a dragging movement for the Offset of the given
@@ -119,18 +114,21 @@ namespace CLAM
 		void dragOffset(unsigned segment, double newTimePosition)
 		{
 			if (segment==_offsets.size()) return; // Invalid segment
-			if (segment==_offsets.size()-1) return; // Last offset, cannot be moved
 
 			// Limit movement on the left to the onset
-			if (newTimePosition<_onsets[segment])
-				newTimePosition = _onsets[segment];
+			double leftLimit = segment!=0 ?
+				_onsets[segment-1] : 0.0;
+			double rightLimit = segment+1<_offsets.size()? 
+					_onsets[segment+1] : maxLength();
+			if (newTimePosition<leftLimit)
+				newTimePosition = leftLimit;
 			// Limit movement on the right to the next offset
-			if (newTimePosition>_offsets[segment+1])
-				newTimePosition = _offsets[segment+1];
+			if (newTimePosition>rightLimit)
+				newTimePosition = rightLimit;
 
-			// The offset and the next onset change together
+			// The offset and the onset change together
 			_offsets[segment]=newTimePosition;
-			_onsets[segment+1]=newTimePosition;
+			_onsets[segment]=newTimePosition;
 		}
 
 	private:
@@ -169,4 +167,4 @@ namespace CLAM
 
 
 
-#endif // VM_CONTIGUOUS_SEGMENTATION.HXX
+#endif//vmUnsizedSegmentation_hxx
