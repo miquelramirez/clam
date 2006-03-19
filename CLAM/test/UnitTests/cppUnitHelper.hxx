@@ -76,7 +76,7 @@ namespace CLAMTest
 		if ( pathToTestData ) return std::string(pathToTestData)+postfix;
 		return std::string("../../../../CLAM-TestData/")+postfix;
 	}
-	bool isNaN(double x)
+	inline bool isNaN(double x)
 	{
 		bool b1 = (x < 0.0);
 		bool b2 = (x >= 0.0);
