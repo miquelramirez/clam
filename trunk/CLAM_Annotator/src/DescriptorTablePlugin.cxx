@@ -144,11 +144,13 @@ namespace CLAM_Annotator
 
 	class DescriptorsTableItemControllerFloat : public DescriptorTablePlugin
 	{
-		const Range<CLAM::TData> mRange;
+		CLAM::TData mMin;
+		CLAM::TData mMax;
 	public:
 		DescriptorsTableItemControllerFloat(QTableWidget * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
-			, mRange(scheme.GetfRange())
+			, mMin(scheme.GetMinValue())
+			, mMax(scheme.GetMaxValue())
 		{
 		}
 		void refreshData(CLAM::DescriptionDataPool & dataPool)
@@ -166,8 +168,9 @@ namespace CLAM_Annotator
 		virtual QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option)
 		{
 			QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
-			editor->setMinimum(mRange.GetMin());
-			editor->setMaximum(mRange.GetMax());
+			std::cout << mMin << " " << mMax << std::endl;
+			editor->setMinimum(mMin);
+			editor->setMaximum(mMax);
 			editor->setSingleStep((editor->maximum()-editor->minimum())/100);
 			editor->setDecimals(6);
 			return editor;
@@ -190,11 +193,13 @@ namespace CLAM_Annotator
 
 	class DescriptorsTableItemControllerInt : public DescriptorTablePlugin
 	{
-		const Range<int> mRange;
+		CLAM::TData mMin;
+		CLAM::TData mMax;
 	public:
 		DescriptorsTableItemControllerInt(QTableWidget * parent, unsigned row, const SchemaAttribute & scheme)
 			: DescriptorTablePlugin(parent, row, scheme)
-			, mRange(scheme.GetiRange())
+			, mMin(scheme.GetMinValue())
+			, mMax(scheme.GetMaxValue())
 		{
 		}
 		void refreshData(CLAM::DescriptionDataPool & dataPool)
@@ -212,8 +217,8 @@ namespace CLAM_Annotator
 		virtual QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option)
 		{
 			QSpinBox *editor = new QSpinBox(parent);
-			editor->setMinimum(mRange.GetMin());
-			editor->setMaximum(mRange.GetMax());
+			editor->setMinimum(int(mMin+0.5)); // To round
+			editor->setMaximum(int(mMax+0.5));
 			return editor;
 		}
 		void fillEditor(QWidget * editor, CLAM::DescriptionDataPool & dataPool)

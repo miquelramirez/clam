@@ -177,15 +177,17 @@ void SchemaBrowser::updateCurrentAttribute()
 			}
 			documentation+=".</ul></li>";
 		}
-		if (attributeSchema.HasfRange())
+		if (attributeSchema.HasUnits())
 		{
-			documentation+="<li><b>Minimum value:</b> " + QString::number(attributeSchema.GetfRange().GetMin()) + "</li>";
-			documentation+="<li><b>Maximum value:</b> " + QString::number(attributeSchema.GetfRange().GetMax()) + "</li>";
+			documentation+="<li><b>Units:</b> " + QString(attributeSchema.GetUnits().c_str()) + "</li>";
 		}
-		if (attributeSchema.HasiRange())
+		if (attributeSchema.HasMinValue())
 		{
-			documentation+="<li><b>Minimum value:</b> " + QString::number(attributeSchema.GetiRange().GetMin()) + "</li>";
-			documentation+="<li><b>Maximum value:</b> " + QString::number(attributeSchema.GetiRange().GetMax()) + "</li>";
+			documentation+="<li><b>Minimum value:</b> " + QString::number(attributeSchema.GetMinValue()) + "</li>";
+		}
+		if (attributeSchema.HasMaxValue())
+		{
+			documentation+="<li><b>Maximum value:</b> " + QString::number(attributeSchema.GetMaxValue()) + "</li>";
 		}
 		if (attributeSchema.HasChildScope())
 		{

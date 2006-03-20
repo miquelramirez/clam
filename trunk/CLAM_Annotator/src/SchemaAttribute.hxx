@@ -52,7 +52,7 @@ namespace CLAM_Annotator{
 	
 	class SchemaAttribute:public CLAM::DynamicType
 	{
-		DYNAMIC_TYPE(SchemaAttribute,9);
+		DYNAMIC_TYPE(SchemaAttribute,12);
 		DYN_ATTRIBUTE(0, public, std::string, Name); ///< The attribute name, unique within the scope.
 		DYN_ATTRIBUTE(1, public, std::string, Scope); ///< The scope name at which the attribute sticks.
 		DYN_ATTRIBUTE(2, public, std::string, Type); ///< The type name. Should be at the Type factory.
@@ -68,6 +68,9 @@ namespace CLAM_Annotator{
 		DYN_ATTRIBUTE(7, public, std::string, ChildScope);
 		/// To be added when type is Segmentation, specifies segments restrictions
 		DYN_ATTRIBUTE(8, public, SegmentationPolicy, SegmentationPolicy);
+		DYN_ATTRIBUTE(9, public, CLAM::TData, MaxValue);
+		DYN_ATTRIBUTE(10, public, CLAM::TData, MinValue);
+		DYN_ATTRIBUTE(11, public, std::string, Units);
 		
 		void DefaultInit();
 	public:
@@ -97,6 +100,9 @@ namespace CLAM_Annotator{
 			storage.Store(adapter3);
 			StoreDocumentation(storage);
 			StoreEnumerationValues(storage);
+			StoreMaxValue(storage);
+			StoreMinValue(storage);
+			StoreUnits(storage);
 			StorefRange(storage);
 			StoreiRange(storage);
 			StoreChildScope(storage);
@@ -116,6 +122,9 @@ namespace CLAM_Annotator{
 			if (!storage.Load(adapter3)) RemoveType();
 			LoadDocumentation(storage);
 			LoadEnumerationValues(storage);
+			LoadMaxValue(storage);
+			LoadMinValue(storage);
+			LoadUnits(storage);
 			LoadfRange(storage);
 			LoadiRange(storage);
 			LoadChildScope(storage);

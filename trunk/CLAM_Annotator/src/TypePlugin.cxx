@@ -38,26 +38,25 @@ public:
 			dataPool.GetReadPool<CLAM::TData>(
 					mSchema.GetScope(),
 					mSchema.GetName());
-		if (!mSchema.HasfRange()) return true;
 		for (unsigned i=0; i<dataPool.GetNumberOfContexts(mSchema.GetScope());i++)
 		{
-			if (values[i]<mSchema.GetfRange().GetMin()) 
+			if (mSchema.HasMinValue() && values[i]<mSchema.GetMinValue()) 
 			{
 				err 
 					<< "Position " << i 
 					<< " is has value " << values[i]
 					<< " which is under minimum specified value " 
-					<< mSchema.GetfRange().GetMin() 
+					<< mSchema.GetMinValue() 
 					<< std::endl;
 				return false;
 			}
-			if (values[i]>mSchema.GetfRange().GetMax())
+			if (mSchema.HasMaxValue() && values[i]>mSchema.GetMaxValue())
 			{
 				err 
 					<< "Position " << i 
 					<< " is has value " << values[i]
 					<< " which is over maximum specified value " 
-					<< mSchema.GetfRange().GetMax() 
+					<< mSchema.GetMaxValue() 
 					<< std::endl;
 				return false;
 			}
@@ -85,26 +84,25 @@ public:
 			dataPool.GetReadPool<int>(
 					mSchema.GetScope(),
 					mSchema.GetName());
-		if (!mSchema.HasfRange()) return true;
 		for (unsigned i=0; i<dataPool.GetNumberOfContexts(mSchema.GetScope());i++)
 		{
-			if (values[i]<mSchema.GetiRange().GetMin()) 
+			if (mSchema.HasMinValue() && values[i]<mSchema.GetMinValue())
 			{
 				err 
 					<< "Position " << i 
 					<< " is has value " << values[i]
 					<< " which is under minimum specified value " 
-					<< mSchema.GetiRange().GetMin() 
+					<< mSchema.GetMinValue() 
 					<< std::endl;
 				return false;
 			}
-			if (values[i]>mSchema.GetiRange().GetMax())
+			if (mSchema.HasMaxValue() && values[i]>mSchema.GetMaxValue())
 			{
 				err 
 					<< "Position " << i 
 					<< " is has value " << values[i]
 					<< " which is over maximum specified value " 
-					<< mSchema.GetiRange().GetMax() 
+					<< mSchema.GetMaxValue() 
 					<< std::endl;
 				return false;
 			}
@@ -333,6 +331,17 @@ private:
 			ok=false;
 		}
 		return ok;
+	}
+	bool ValidateBounds(const CLAM::DataArray & values, std::ostream & err, CLAM::TData duration)
+	{
+		bool ok = true;
+		for (unsigned i = 1; i<values.Size(); i++)
+		{
+			if (values[i]>=0 && values[i]<=duration)
+			{
+				err << "Segmentation point at " << values[i] << " is out of bounds" << std::endl; 
+			}
+		}
 	}
 };
 
