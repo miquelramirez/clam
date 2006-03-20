@@ -18,22 +18,24 @@
         <file>images/player_pause.png</file>
         <file>images/player_play.png</file>
         <file>images/player_stop.png</file>
+        <file>images/reload.png</file>
         <file>images/segmentFollows.png</file>
         <file>images/vcs_add.png</file>
         <file>images/vcs_remove.png</file>
         <file>images/view_tree.png</file>
         <file>images/xkill.png</file>
-        <file>images/reload.png</file>
     </qresource>
     <qresource prefix="/logos" >
         <file>images/annotator-icon1.png</file>
         <file>images/annotator-icon1.svg</file>
+        <file>images/annotator-logo.png</file>
         <file>images/annotator-splash1.png</file>
         <file>images/annotator-splash1.svg</file>
         <file>images/clam-logo-bangs-scaled.png</file>
         <file>images/clam-logo-bangs.png</file>
         <file>images/clam_red.png</file>
         <file>images/clam_red_scaled.png</file>
+        <file>images/clamlogo.jpg</file>
         <file>images/simac-logo.png</file>
     </qresource>
 </RCC>
