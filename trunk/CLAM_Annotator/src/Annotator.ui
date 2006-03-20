@@ -316,9 +316,9 @@ to the proper cell.&lt;/p></string>
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="mPlayAction" />
-   <addaction name="mPauseAction" />
-   <addaction name="mStopAction" />
+   <addaction name="playAction" />
+   <addaction name="pauseAction" />
+   <addaction name="stopAction" />
    <addaction name="mLinkCurrentSegmentToPlaybackAction" />
    <addaction name="mAuralizeSegmentOnsetsAction" />
    <addaction name="mAuralizeFrameLevelDescriptorsAction" />
@@ -351,11 +351,6 @@ to the proper cell.&lt;/p></string>
     <addaction name="fileAdd_to_projectAction" />
     <addaction name="editDelete_from_projectAction" />
    </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="title" >
-     <string>View</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="mSongMenu" >
     <property name="title" >
      <string>&amp;Song</string>
@@ -368,9 +363,9 @@ to the proper cell.&lt;/p></string>
     <property name="title" >
      <string>&amp;Playback</string>
     </property>
-    <addaction name="mPlayAction" />
-    <addaction name="mPauseAction" />
-    <addaction name="mStopAction" />
+    <addaction name="playAction" />
+    <addaction name="pauseAction" />
+    <addaction name="stopAction" />
     <addaction name="separator" />
     <addaction name="mLinkCurrentSegmentToPlaybackAction" />
     <addaction name="mAuralizeSegmentOnsetsAction" />
@@ -384,6 +379,11 @@ to the proper cell.&lt;/p></string>
     <addaction name="separator" />
     <addaction name="helpAboutAction" />
     <addaction name="helpAboutQtAction" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>View</string>
+    </property>
    </widget>
    <addaction name="mFileMenu" />
    <addaction name="mProjectMenu" />
@@ -612,7 +612,7 @@ to the proper cell.&lt;/p></string>
     <string>Shift+F1</string>
    </property>
   </action>
-  <action name="mPlayAction" >
+  <action name="playAction" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/player_play.png</iconset>
    </property>
@@ -626,7 +626,7 @@ to the proper cell.&lt;/p></string>
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="mPauseAction" >
+  <action name="pauseAction" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/player_pause.png</iconset>
    </property>
@@ -640,7 +640,7 @@ to the proper cell.&lt;/p></string>
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="mStopAction" >
+  <action name="stopAction" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/player_stop.png</iconset>
    </property>
