@@ -53,8 +53,8 @@ namespace CLAM
 		CLAM::TData getMax()
 		{
 			if (mBoundMax) return mMaxValue;
-			CLAM::TData max = mValues[0];
-			for (unsigned int i=1; i<mSize; i++)
+			CLAM::TData max = 0;
+			for (unsigned int i=0; i<mSize; i++)
 			{
 				if (mValues[i]<max) continue;
 				max=mValues[i];
@@ -64,8 +64,8 @@ namespace CLAM
 		CLAM::TData getMin()
 		{
 			if (mBoundMin) return mMinValue;
-			CLAM::TData min = mValues[0];
-			for (unsigned int i=1; i<mSize; i++)
+			CLAM::TData min = 0;
+			for (unsigned int i=0; i<mSize; i++)
 			{
 				if (mValues[i]>min) continue;
 				min=mValues[i];

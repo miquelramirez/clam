@@ -636,8 +636,8 @@ void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
 	  in the class.*/
 	unsigned index = mFrameLevelAttributeList->currentRow();
 	mStatusBar << "Frame " << pointIndex 
-		<< " changed value from " << mBPFs[index].second.GetValue(pointIndex) << " to " << newValue << mStatusBar;
-	mBPFs[index].second.SetValue(pointIndex,TData(newValue));
+		<< " changed value from " << mEPFs[index].GetBPF().GetValue(pointIndex) << " to " << newValue << mStatusBar;
+	mEPFs[index].GetBPF().SetValue(pointIndex,TData(newValue));
 	mFrameDescriptorsNeedUpdate = true;
 }
 
@@ -855,7 +855,6 @@ void Annotator::refreshEnvelopes()
 	mStatusBar << "Loading LLD Data..." << mStatusBar;
 
 	// TODO: Not all the things should be done here
-	mBPFs.clear();
 	mEPFs.clear();
 	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
 
@@ -874,15 +873,8 @@ void Annotator::refreshEnvelopes()
 		std::list<std::string>::const_iterator it;
 		for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++)
 		{
-			CLAM::BPF transcribed;
-			CLAM::EquidistantPointsFunction function;
-			refreshEnvelope(transcribed, function, frameDivisionChildScope, *it, division);
-			std::pair<TData, TData> minmaxy = GetMinMaxY(transcribed);
-			BPFInfo bpf_info;
-			bpf_info.first=minmaxy;
-			bpf_info.second=transcribed;
-			mBPFs.push_back(bpf_info);
-			mEPFs.push_back(function);
+			mEPFs.push_back(CLAM::EquidistantPointsFunction());
+			refreshEnvelope(mEPFs.back(), frameDivisionChildScope, *it, division);
 		}
 	}
 	changeFrameLevelDescriptor(mFrameLevelAttributeList->currentRow());
@@ -904,38 +896,25 @@ void Annotator::refreshAudioData()
 		mAudioRefreshTimer->start(2000);
 }
 
-void Annotator::refreshEnvelope(CLAM::BPF & bpf, CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & division)
+void Annotator::refreshEnvelope(CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & division)
 {
 	CLAM::TData firstCenter = division.GetFirstCenter();
 	CLAM::TData interCenterGap = division.GetInterCenterGap();
 	const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>(scope,descriptorName);
-
-	int audioSize=mCurrentAudio.GetSize();
 	TData sr = mCurrentAudio.GetSampleRate();
-
 	int nFrames = mpDescriptorPool->GetNumberOfContexts(scope);
-
 	epf.setDivision(firstCenter/sr, interCenterGap/sr, "s");
 	epf.setValues(values, nFrames, "");
-
-	bpf.Resize(nFrames);
-	bpf.SetSize(nFrames);
-	for(int i=0; i<nFrames ;i++)
-	{
-		bpf.SetXValue(i,(firstCenter+i*interCenterGap)/sr);
-		bpf.SetValue(i,TData(values[i]));
-	}
 }
 
 void Annotator::updateEnvelopesData()
 {
 	// TODO: Any child scope of any FrameDivision in Song not just Frame, which may not even exist
 	mFrameDescriptorsNeedUpdate = false;
-	unsigned i=0, editors_size = mBPFs.size();
-	std::list<std::string>::const_iterator it;
+	unsigned nEPFEditors = mEPFs.size();
 	const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType("Frame", "Float");
-
-	for(it = descriptorsNames.begin() ;i < editors_size; i++, it++)
+	std::list<std::string>::const_iterator it=descriptorsNames.begin();
+	for(unsigned int i = 0; i < nEPFEditors; i++, it++)
 	{
 		updateEnvelopeData(i, mpDescriptorPool->GetWritePool<CLAM::TData>("Frame",*it));
 	}
@@ -943,10 +922,10 @@ void Annotator::updateEnvelopesData()
 
 void Annotator::updateEnvelopeData(int bpfIndex, CLAM::TData* descriptor)
 {
-	int nPoints = mBPFs[bpfIndex].second.Size();
+	int nPoints = mEPFs[bpfIndex].GetBPF().Size();
 	for (int i=0; i<nPoints; i++)
 	{
-		descriptor[i] = mBPFs[bpfIndex].second.GetValueFromIndex(i);
+		descriptor[i] = mEPFs[bpfIndex].GetBPF().GetValueFromIndex(i);
 	}
 }
 
@@ -995,29 +974,6 @@ void Annotator::refreshGlobalDescriptorsTable()
 	mGlobalDescriptors->refreshData(0,mpDescriptorPool);
 	mDescriptorsTable->show();
 }
-
-std::pair<double,double> Annotator::GetMinMaxY(const CLAM::BPF& bpf)
-{
-	double min_value=0;
-	double max_value=0;
-	for(TIndex i=0; i < bpf.Size(); i++)
-	{
-		double current = double(bpf.GetValueFromIndex(i));
-		if(current > max_value)
-		{
-			max_value = current;
-		}
-		else if(current < min_value)
-		{
-			min_value = current;
-		}
-	}
-	double span = max_value-min_value;
-	min_value -= span*0.1;
-	max_value += span*0.1;
-	return std::make_pair(min_value, max_value);
-}
-
 
 void Annotator::auralizeMarks()
 {
@@ -1096,15 +1052,19 @@ void Annotator::onStopPlaying(float time)
 void Annotator::changeFrameLevelDescriptor(int current)
 {
 	unsigned index = mFrameLevelAttributeList->currentRow();
-	if (index >= (int)mBPFs.size()) return; // No valid descriptor
-	double min_y = mBPFs[index].first.first;
-	double max_y = mBPFs[index].first.second;
-	mBPFEditor->SetData(&mBPFs[index].second);
-	bool scale_log = (fabs(min_y) > 9999.99 || fabs(max_y) > 9999.99 || max_y-min_y < TData(5E-2));
-	mBPFEditor->SetYRange(min_y,max_y, scale_log ? CLAM::VM::eLogScale : CLAM::VM::eLinearScale);
+	if (index >= (int)mEPFs.size()) return; // No valid descriptor
+	double minValue = mEPFs[index].getMin();
+	double maxValue = mEPFs[index].getMax();
+	// TODO: Move this margin to the widget
+	double span = maxValue-minValue;
+	minValue -= span*0.1;
+	maxValue += span*0.1;
+	mBPFEditor->SetData(&mEPFs[index].GetBPF());
+	bool scale_log = (fabs(minValue) > 9999.99 || fabs(maxValue) > 9999.99 || maxValue-minValue < TData(5E-2));
+	mBPFEditor->SetYRange(minValue,maxValue, scale_log ? CLAM::VM::eLogScale : CLAM::VM::eLinearScale);
 
-	mPlayer->SetData(mBPFs[index].second);
-	mPlayer->SetPitchBounds(min_y, max_y);
+	mPlayer->SetData(mEPFs[index].GetBPF());
+	mPlayer->SetPitchBounds(minValue, maxValue);
 	mBPFEditor->show();
 }
 
