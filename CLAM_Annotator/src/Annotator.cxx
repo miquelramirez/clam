@@ -663,7 +663,7 @@ void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
 void Annotator::segmentationMarksChanged(unsigned, double)
 {
 	updateSegmentations();
-	if(mPlayer->isPlaying())
+	if(mPlayer->IsPlaying())
 		mMustUpdateMarkedAudio = true;
 	else
 		auralizeMarks();
