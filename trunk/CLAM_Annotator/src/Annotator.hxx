@@ -166,7 +166,6 @@ private:
 	bool loaderFinished(); ///< Clears the loader if it is finished returns if it was or there wasn't any.
 	void abortLoader(); ///< Clears the loader 
 
-	bool isPlaying();
 	void resetTabOrder();
 	void updateRecentFilesMenu();
 
