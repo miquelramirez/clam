@@ -1,13 +1,13 @@
 #ifndef __VMQT_WPLOT_H__
 #define __VMQT_WPLOT_H__
 
-#include <QWidget>
+#include <QFrame>
 
 namespace CLAM
 {
 	namespace VM
 	{
-		class WPlot : public QWidget
+		class WPlot : public QFrame
 		{
 		public:
 			WPlot(QWidget* parent=0);
