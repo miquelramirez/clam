@@ -146,12 +146,10 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mFrameDescriptorsNeedUpdate(false)
 	, mDescriptorsNeedSave(false)
 	, mMustUpdateMarkedAudio(false)
-	, mSegmentEditor(0)
 	, mAudioRefreshTimer(new QTimer(this))
 	, mAudioLoaderThread(0)
 	, mGlobalDescriptors(0)
 	, mSegmentDescriptors(0)
-	, mBPFEditor(0)
 	, mSegmentation(0)
 	, mPlayer(0)
 	, mStatusBar(statusBar())
@@ -262,32 +260,17 @@ void Annotator::initInterface()
 	mMainTabWidget->insertTab(0, mProjectDocumentation, "Project Documentation");
 	mMainTabWidget->setCurrentIndex(0);
 
-	QVBoxLayout * frameLevelContainerLayout = new QVBoxLayout(mFrameLevelContainer);
-	frameLevelContainerLayout->setMargin(2);
-	mBPFEditor = mFrameLevelContainer; //new BPFPlot(mFrameLevelContainer);
 	mBPFEditor->SetFlags(CLAM::VM::eAllowVerEdition);//|CLAM::VM::eHasVerticalScroll); // QTPORT: What about this flag
-#if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
-	mBPFEditor->setAutoFillBackground(true);
-#endif
-	frameLevelContainerLayout->addWidget(mBPFEditor);
 	mBPFEditor->SetZoomSteps(5,5);
-
-	mSegmentEditor = mAudioPlotContainer; //new AudioPlot(mAudioPlotContainer); // ,0,0,false);
-	QVBoxLayout * audioPlotContainerLayout = new QVBoxLayout(mAudioPlotContainer);
-#if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
-	mSegmentEditor->setAutoFillBackground(true);
-#endif
-	audioPlotContainerLayout->setMargin(2);
-	audioPlotContainerLayout->addWidget(mSegmentEditor);
-
-	mSegmentEditor->setFrameShape(QFrame::StyledPanel);
-	mSegmentEditor->setFrameShadow(QFrame::Raised);
-	mBPFEditor->setFrameShape(QFrame::StyledPanel);
-	mBPFEditor->setFrameShadow(QFrame::Raised);
-
 	mBPFEditor->SetXRange(0.0,2.0);
+
 	mCurrentAudio.SetSize(2.0);
 	mSegmentEditor->SetData(mCurrentAudio);
+
+#if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
+	mBPFEditor->setAutoFillBackground(true);
+	mSegmentEditor->setAutoFillBackground(true);
+#endif
 
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, "Description Schema");
@@ -498,22 +481,21 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 void Annotator::makeConnections()
 {
 	// Action Signals
-	connect(fileExitAction, SIGNAL(activated()), this, SLOT(close()));
-	connect(fileNew_projectAction, SIGNAL(activated()), this, SLOT(fileNew()));
-	connect(fileOpen_projectAction, SIGNAL(activated()), this, SLOT(fileOpen()));
-	connect(fileSave_project_asAction, SIGNAL(activated()), this, SLOT(fileSaveAs()));
-	connect(fileSave_projectAction, SIGNAL(activated()), this, SLOT(fileSave()));
-	connect(fileAdd_to_projectAction, SIGNAL(activated()), this, SLOT(addSongsToProject()));
-	connect(editDelete_from_projectAction, SIGNAL(activated()), this, SLOT(deleteSongsFromProject()));
-//	connect(projectLoadSchemaAction, SIGNAL(activated()), this, SLOT(loadSchema()));
-	connect(songComputeDescriptorsAction, SIGNAL(activated()), this, SLOT(computeSongDescriptors()));
-	connect(songSaveDescriptorsAction, SIGNAL(activated()), this, SLOT(saveDescriptors()));
+	connect(fileExitAction, SIGNAL(triggered()), this, SLOT(close()));
+	connect(fileNew_projectAction, SIGNAL(triggered()), this, SLOT(fileNew()));
+	connect(fileOpen_projectAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
+	connect(fileSave_project_asAction, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
+	connect(fileSave_projectAction, SIGNAL(triggered()), this, SLOT(fileSave()));
+	connect(addSongAction, SIGNAL(triggered()), this, SLOT(addSongsToProject()));
+	connect(removeSongAction, SIGNAL(triggered()), this, SLOT(deleteSongsFromProject()));
+	connect(songComputeDescriptorsAction, SIGNAL(triggered()), this, SLOT(computeSongDescriptors()));
+	connect(songSaveDescriptorsAction, SIGNAL(triggered()), this, SLOT(saveDescriptors()));
 	connect(mAuralizeSegmentOnsetsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
 	connect(mAuralizeFrameLevelDescriptorsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
 	connect(mLinkCurrentSegmentToPlaybackAction, SIGNAL(toggled(bool)), this, SLOT(linkCurrentSegmentToPlayback(bool)));
-	connect(helpAboutAction,SIGNAL(activated()), mAbout,SLOT(show()));
-	connect(helpAboutQtAction, SIGNAL(activated()), qApp, SLOT(aboutQt()));
-	connect(helpWhatsThisAction, SIGNAL(activated()), this, SLOT(whatsThis()));
+	connect(helpAboutAction,SIGNAL(triggered()), mAbout,SLOT(show()));
+	connect(helpAboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+	connect(helpWhatsThisAction, SIGNAL(triggered()), this, SLOT(whatsThis()));
 
 	mRecentFilesMenuSeparator = mFileMenu->addSeparator();
 	for (int i = 0; i < MaxRecentFiles; ++i) {
@@ -874,7 +856,7 @@ void Annotator::refreshEnvelopes()
 
 	// TODO: Not all the things should be done here
 	mBPFs.clear();
-//	mBPFEditor->SetAudioPtr(&mCurrentAudio);
+	mEPFs.clear();
 	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
 
 	mPlayer->SetAudioPtr(&mCurrentAudio);
@@ -890,19 +872,20 @@ void Annotator::refreshEnvelopes()
 		const std::string & frameDivisionChildScope = mProject.GetAttributeScheme("Song", *divisionName).GetChildScope();
 		const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType(frameDivisionChildScope, "Float");
 		std::list<std::string>::const_iterator it;
-		for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++/*, i++*/)
+		for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++)
 		{
 			CLAM::BPF transcribed;
-			refreshEnvelope(transcribed, frameDivisionChildScope, *it, division);
+			CLAM::EquidistantPointsFunction function;
+			refreshEnvelope(transcribed, function, frameDivisionChildScope, *it, division);
 			std::pair<TData, TData> minmaxy = GetMinMaxY(transcribed);
 			BPFInfo bpf_info;
 			bpf_info.first=minmaxy;
 			bpf_info.second=transcribed;
 			mBPFs.push_back(bpf_info);
+			mEPFs.push_back(function);
 		}
-		mPlayer->SetData(mBPFs[0].second);
-
 	}
+	changeFrameLevelDescriptor(mFrameLevelAttributeList->currentRow());
 }
 
 void Annotator::refreshAudioData()
@@ -921,7 +904,7 @@ void Annotator::refreshAudioData()
 		mAudioRefreshTimer->start(2000);
 }
 
-void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & division)
+void Annotator::refreshEnvelope(CLAM::BPF & bpf, CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & division)
 {
 	CLAM::TData firstCenter = division.GetFirstCenter();
 	CLAM::TData interCenterGap = division.GetInterCenterGap();
@@ -931,7 +914,9 @@ void Annotator::refreshEnvelope(CLAM::BPF & bpf, const std::string& scope, const
 	TData sr = mCurrentAudio.GetSampleRate();
 
 	int nFrames = mpDescriptorPool->GetNumberOfContexts(scope);
-	int frameSize = audioSize/nFrames;
+
+	epf.setDivision(firstCenter/sr, interCenterGap/sr, "s");
+	epf.setValues(values, nFrames, "");
 
 	bpf.Resize(nFrames);
 	bpf.SetSize(nFrames);
@@ -1127,6 +1112,7 @@ void Annotator::on_helpWhatsThisAction_triggered()
 {
 	QWhatsThis::enterWhatsThisMode();
 }
+
 void Annotator::on_reloadDescriptorsAction_triggered()
 {
 	mStatusBar << "Reloading.." << mStatusBar;
@@ -1151,5 +1137,11 @@ void Annotator::on_stopAction_triggered()
 	if(!mPlayer) return;
 	mPlayer->stop();
 }
+
+void Annotator::on_browseSchemaAction_triggered()
+{
+	mMainTabWidget->setCurrentWidget(mSchemaBrowser);
+}
+
 
 

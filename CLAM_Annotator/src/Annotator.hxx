@@ -16,6 +16,7 @@
 #include <CLAM/Pool.hxx>
 #include <CLAM/BPF.hxx>
 #include "Project.hxx"
+#include "EquidistantPointsFunction.hxx"
 
 class QTimer;
 class QTabBar;
@@ -125,6 +126,7 @@ private slots:
 	void on_playAction_triggered();
 	void on_stopAction_triggered();
 	void on_pauseAction_triggered();
+	void on_browseSchemaAction_triggered();
 	void syncronizeSplits();
 
 private:
@@ -147,7 +149,7 @@ private:
 
 	void adaptEnvelopesToCurrentSchema();
 	void refreshEnvelopes();
-	void refreshEnvelope(CLAM::BPF & bpf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & frameDivision);
+	void refreshEnvelope(CLAM::BPF & bpf, CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & frameDivision);
 	void updateEnvelopesData();
 	void updateEnvelopeData(int bpfIndex, CLAM::TData * descriptors);
 
@@ -182,7 +184,6 @@ private:
 	bool mDescriptorsNeedSave;
 	bool mMustUpdateMarkedAudio;
 
-	CLAM::VM::AudioPlot* mSegmentEditor;
 	QTimer * mAudioRefreshTimer;
 	SchemaBrowser * mSchemaBrowser;
 	AudioLoadThread * mAudioLoaderThread;
@@ -190,8 +191,7 @@ private:
 	CLAM_Annotator::DescriptorTableController * mSegmentDescriptors;
 
 	std::vector<BPFInfo> mBPFs; // cached LLDs
-
-	CLAM::VM::BPFPlot *  mBPFEditor;
+	std::vector<CLAM::EquidistantPointsFunction> mEPFs; // Cached LLD's
 	CLAM::Segmentation * mSegmentation;
 
     QTextBrowser* mProjectDocumentation;

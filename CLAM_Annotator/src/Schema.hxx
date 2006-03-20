@@ -60,15 +60,15 @@ namespace CLAM_Annotator{
 				int min, int max)
 		{
 			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.AddMinValue();;
+			schemaAttribute.AddMaxValue();
+			schemaAttribute.UpdateData();
 			schemaAttribute.SetScope(scope);
 			schemaAttribute.SetName(attribute);
 			schemaAttribute.SetType("Int");
-			schemaAttribute.AddiRange();
-			schemaAttribute.UpdateData();
-			CLAM_Annotator::Range<int> range;
-			range.SetMin(min);
-			range.SetMax(max);
-			schemaAttribute.SetiRange(range);
+
+			schemaAttribute.SetMinValue(min);
+			schemaAttribute.SetMaxValue(max);
 			AddAttribute(schemaAttribute);
 		}
 		void AddRangedReal(
@@ -77,15 +77,15 @@ namespace CLAM_Annotator{
 				double min, double max)
 		{
 			CLAM_Annotator::SchemaAttribute schemaAttribute;
-			schemaAttribute.AddfRange();
+			schemaAttribute.AddMinValue();;
+			schemaAttribute.AddMaxValue();
 			schemaAttribute.UpdateData();
 			schemaAttribute.SetScope(scope);
 			schemaAttribute.SetName(attribute);
 			schemaAttribute.SetType("Float");
-			CLAM_Annotator::Range<CLAM::TData> range;
-			range.SetMin(min);
-			range.SetMax(max);
-			schemaAttribute.SetfRange(range);
+
+			schemaAttribute.SetMinValue(min);
+			schemaAttribute.SetMaxValue(max);
 			AddAttribute(schemaAttribute);
 		}
 		void AddString(
