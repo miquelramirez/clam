@@ -71,13 +71,6 @@ class StatusBarDumper
 
 class Annotator : public QMainWindow, public Ui::Annotator
 {
-	/*  
-	 *	type to store bpf info from loaded LLDs.
-	 *  first:  yrange
-	 *  second: BPF
-	 */
-	typedef std::pair<std::pair<double,double>,CLAM::BPF> BPFInfo;
-
 	Q_OBJECT
 
 public:
@@ -149,14 +142,12 @@ private:
 
 	void adaptEnvelopesToCurrentSchema();
 	void refreshEnvelopes();
-	void refreshEnvelope(CLAM::BPF & bpf, CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & frameDivision);
+	void refreshEnvelope(CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & frameDivision);
 	void updateEnvelopesData();
 	void updateEnvelopeData(int bpfIndex, CLAM::TData * descriptors);
 
 	void adaptSegmentationsToCurrentSchema();
 	void updateSegmentations();
-
-	std::pair<double, double> GetMinMaxY(const CLAM::BPF& bpf);
 
 	void auralizeMarks();
 	void setMenuAudioItemsEnabled(bool);
@@ -190,7 +181,6 @@ private:
 	CLAM_Annotator::DescriptorTableController * mGlobalDescriptors;
 	CLAM_Annotator::DescriptorTableController * mSegmentDescriptors;
 
-	std::vector<BPFInfo> mBPFs; // cached LLDs
 	std::vector<CLAM::EquidistantPointsFunction> mEPFs; // Cached LLD's
 	CLAM::Segmentation * mSegmentation;
 
