@@ -512,12 +512,12 @@ void Annotator::makeConnections()
 	connect(mAuralizeSegmentOnsetsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
 	connect(mAuralizeFrameLevelDescriptorsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
 	connect(mLinkCurrentSegmentToPlaybackAction, SIGNAL(toggled(bool)), this, SLOT(linkCurrentSegmentToPlayback(bool)));
-	connect(helpWhats_thisAction, SIGNAL(activated()), this, SLOT(whatsThis()));
 	connect(mPlayAction, SIGNAL(activated()), this, SLOT(startPlaying()));
 	connect(mPauseAction, SIGNAL(activated()), this, SLOT(pausePlaying()));
 	connect(mStopAction, SIGNAL(activated()), this, SLOT(stopPlaying()));
 	connect(helpAboutAction,SIGNAL(activated()), mAbout,SLOT(show()));
 	connect(helpAboutQtAction, SIGNAL(activated()), qApp, SLOT(aboutQt()));
+	connect(helpWhatsThisAction, SIGNAL(activated()), this, SLOT(whatsThis()));
 
 	mRecentFilesMenuSeparator = mFileMenu->addSeparator();
 	for (int i = 0; i < MaxRecentFiles; ++i) {
@@ -710,6 +710,11 @@ void Annotator::closeEvent ( QCloseEvent * e )
 
 void Annotator::deleteSongsFromProject()
 {
+	if (QMessageBox::question(this, "Removing songs from project",
+				"Are you sure you want to remove selected songs from the project?\n"
+				"(Audio files and extracted descriptors files won't be removed from the disk)",
+				QMessageBox::Yes, QMessageBox::No ) == QMessageBox::No)
+		return;
 	QList< QTreeWidgetItem * > toBeDeleted = mSongListView->selectedItems();
 	for ( QList< QTreeWidgetItem* >::iterator it = toBeDeleted.begin();
 			it!= toBeDeleted.end(); it++ )
@@ -831,16 +836,10 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 
 	setCursor(Qt::WaitCursor);
 
-	const std::string & filename = current->text(0).toStdString();
-	int songIndex = songIndexInTable(filename);
-	if (songIndex <0) return;
-	CLAM_Annotator::Song & currentSong = mProject.GetSongs()[songIndex];
-	const std::string & currentSoundFileName = currentSong.GetSoundFile();
-	if (currentSong.HasPoolFile())
-		mCurrentDescriptorsPoolFileName = currentSong.GetPoolFile();
-	else 
-		mCurrentDescriptorsPoolFileName = currentSoundFileName + mProject.PoolSuffix();
 	mStatusBar << "Loading descriptors..." << mStatusBar;
+	const std::string & songFilename = current->text(0).toStdString();
+	mCurrentDescriptorsPoolFileName = mProject.GetDescriptorsFileName(songFilename);
+	if (mCurrentDescriptorsPoolFileName=="") return; // TODO: fill with default data
 	loadDescriptorPool();
 	mStatusBar << "Filling Global Descriptors..." << mStatusBar;
 	refreshGlobalDescriptorsTable();
@@ -850,7 +849,7 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	mSegmentEditor->hide();
 	mBPFEditor->hide();
 	setMenuAudioItemsEnabled(false);
-	const std::string absolutePath = projectToAbsolutePath(filename).c_str();
+	const std::string absolutePath = projectToAbsolutePath(songFilename).c_str();
 	if (!loaderCreate(mCurrentAudio, absolutePath))
 	{
 		setCursor(Qt::ArrowCursor);
@@ -1039,18 +1038,6 @@ std::pair<double,double> Annotator::GetMinMaxY(const CLAM::BPF& bpf)
 }
 
 
-int Annotator::songIndexInTable(const std::string& fileName)
-{
-	//TODO: have to optimize these tasks maybe by using a map or at least std::find
-	std::vector<CLAM_Annotator::Song> fileNames = mProject.GetSongs();
-	std::vector<CLAM_Annotator::Song>::iterator it = fileNames.begin();
-	for (int i=0 ; it != fileNames.end(); it++, i++)
-	{
-		if (it->GetSoundFile() == fileName) return i;
-	}
-	return -1;
-}
-
 void Annotator::auralizeMarks()
 {
 	if (!mSegmentation) return;
@@ -1166,9 +1153,15 @@ void Annotator::stopPlaying()
 	mPlayer->stop();
 }
 
-void Annotator::on_helpWhats_thisAction_triggered()
+void Annotator::on_helpWhatsThisAction_triggered()
 {
 	QWhatsThis::enterWhatsThisMode();
+}
+
+void Annotator::on_reloadDescriptorsAction_triggered()
+{
+	mStatusBar << "Reloading.." << mStatusBar;
+	currentSongChanged(mSongListView->currentItem(), mSongListView->currentItem());
 }
 
 

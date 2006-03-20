@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>979</width>
-    <height>553</height>
+    <height>611</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -304,9 +304,10 @@ to the proper cell.&lt;/p></string>
    <addaction name="projectLoadSchemaAction" />
    <addaction name="fileAdd_to_projectAction" />
    <addaction name="editDelete_from_projectAction" />
+   <addaction name="reloadDescriptorsAction" />
    <addaction name="songComputeDescriptorsAction" />
    <addaction name="separator" />
-   <addaction name="helpWhats_thisAction" />
+   <addaction name="helpWhatsThisAction" />
   </widget>
   <widget class="QToolBar" name="TransportToolbar" >
    <property name="orientation" >
@@ -342,22 +343,6 @@ to the proper cell.&lt;/p></string>
     <addaction name="separator" />
     <addaction name="fileExitAction" />
    </widget>
-   <widget class="QMenu" name="mSongMenu" >
-    <property name="title" >
-     <string>&amp;Song</string>
-    </property>
-    <addaction name="songSaveDescriptorsAction" />
-    <addaction name="songComputeDescriptorsAction" />
-   </widget>
-   <widget class="QMenu" name="help" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="helpWhats_thisAction" />
-    <addaction name="separator" />
-    <addaction name="helpAboutAction" />
-    <addaction name="helpAboutQtAction" />
-   </widget>
    <widget class="QMenu" name="mProjectMenu" >
     <property name="title" >
      <string>&amp;Project</string>
@@ -371,6 +356,14 @@ to the proper cell.&lt;/p></string>
      <string>View</string>
     </property>
    </widget>
+   <widget class="QMenu" name="mSongMenu" >
+    <property name="title" >
+     <string>&amp;Song</string>
+    </property>
+    <addaction name="songSaveDescriptorsAction" />
+    <addaction name="reloadDescriptorsAction" />
+    <addaction name="songComputeDescriptorsAction" />
+   </widget>
    <widget class="QMenu" name="mPlaybackMenu" >
     <property name="title" >
      <string>&amp;Playback</string>
@@ -382,6 +375,15 @@ to the proper cell.&lt;/p></string>
     <addaction name="mLinkCurrentSegmentToPlaybackAction" />
     <addaction name="mAuralizeSegmentOnsetsAction" />
     <addaction name="mAuralizeFrameLevelDescriptorsAction" />
+   </widget>
+   <widget class="QMenu" name="help" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="helpWhatsThisAction" />
+    <addaction name="separator" />
+    <addaction name="helpAboutAction" />
+    <addaction name="helpAboutQtAction" />
    </widget>
    <addaction name="mFileMenu" />
    <addaction name="mProjectMenu" />
@@ -400,6 +402,9 @@ to the proper cell.&lt;/p></string>
    <property name="iconText" >
     <string>Exit</string>
    </property>
+   <property name="statusTip" >
+    <string>Quits the application</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+Q</string>
    </property>
@@ -410,6 +415,9 @@ to the proper cell.&lt;/p></string>
    </property>
    <property name="iconText" >
     <string>About</string>
+   </property>
+   <property name="statusTip" >
+    <string>Information about the application</string>
    </property>
   </action>
   <action name="fileNew_projectAction" >
@@ -424,6 +432,9 @@ to the proper cell.&lt;/p></string>
    </property>
    <property name="toolTip" >
     <string>New project</string>
+   </property>
+   <property name="statusTip" >
+    <string>Creates a new project</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+N</string>
@@ -442,6 +453,9 @@ to the proper cell.&lt;/p></string>
    <property name="toolTip" >
     <string>Save project</string>
    </property>
+   <property name="statusTip" >
+    <string>Save project</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+S</string>
    </property>
@@ -457,6 +471,9 @@ to the proper cell.&lt;/p></string>
     <string>Save project as</string>
    </property>
    <property name="toolTip" >
+    <string>Save project as</string>
+   </property>
+   <property name="statusTip" >
     <string>Save project as</string>
    </property>
    <property name="shortcut" >
@@ -493,6 +510,9 @@ to the proper cell.&lt;/p></string>
    <property name="iconText" >
     <string>Add songs to project</string>
    </property>
+   <property name="statusTip" >
+    <string>Add songs to project</string>
+   </property>
    <property name="shortcut" >
     <string>Ctrl+A</string>
    </property>
@@ -517,14 +537,6 @@ to the proper cell.&lt;/p></string>
     <string/>
    </property>
   </action>
-  <action name="projectSaveDescriptorsAction" >
-   <property name="text" >
-    <string>Descriptors</string>
-   </property>
-   <property name="iconText" >
-    <string>Descriptors</string>
-   </property>
-  </action>
   <action name="projectLoadSchemaAction" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/view_tree.png</iconset>
@@ -534,14 +546,6 @@ to the proper cell.&lt;/p></string>
    </property>
    <property name="iconText" >
     <string>Browse Schema</string>
-   </property>
-  </action>
-  <action name="projectLoadDescriptorsAction" >
-   <property name="text" >
-    <string>Descriptors</string>
-   </property>
-   <property name="iconText" >
-    <string>Descriptors</string>
    </property>
   </action>
   <action name="songSaveDescriptorsAction" >
@@ -588,13 +592,13 @@ to the proper cell.&lt;/p></string>
     <iconset resource="images.qrc" >:/icons/images/gear.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Compute Descriptors</string>
+    <string>&amp;Compute descriptors</string>
    </property>
    <property name="iconText" >
-    <string>Compute Descriptors</string>
+    <string>Compute descriptors</string>
    </property>
   </action>
-  <action name="helpWhats_thisAction" >
+  <action name="helpWhatsThisAction" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/contexthelp.png</iconset>
    </property>
@@ -667,6 +671,20 @@ to the proper cell.&lt;/p></string>
   <action name="helpAboutQtAction" >
    <property name="text" >
     <string>About &amp;Qt</string>
+   </property>
+   <property name="statusTip" >
+    <string>Information about Qt</string>
+   </property>
+  </action>
+  <action name="reloadDescriptorsAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/reload.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Reload descriptors</string>
+   </property>
+   <property name="statusTip" >
+    <string>Reload descriptors file</string>
    </property>
   </action>
  </widget>

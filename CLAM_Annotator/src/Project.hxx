@@ -27,6 +27,8 @@ class Project : public CLAM::DynamicType
 		UpdateData();
 	}
 public:
+	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
+public:
 	const std::string & PoolSuffix()
 	{
 		static std::string defaultSuffix = ".pool";
@@ -34,7 +36,21 @@ public:
 		if (GetPoolSuffix()=="") return defaultSuffix;
 		return GetPoolSuffix();
 	}
-	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
+	std::string GetDescriptorsFileName(const std::string & songName)
+	{
+		std::vector<CLAM_Annotator::Song> fileNames = GetSongs();
+		std::vector<CLAM_Annotator::Song>::iterator it = fileNames.begin();
+		for (int i=0 ; it != fileNames.end(); it++, i++)
+		{
+			CLAM_Annotator::Song & song = *it;
+			if (song.GetSoundFile() != songName) continue;
+			if (song.HasPoolFile())
+				return song.GetPoolFile();
+			else
+				return song.GetSoundFile() + PoolSuffix();
+		}
+		return ""; // BadName
+	}
 	void AppendSong(const std::string & songFileName)
 	{
 		std::vector<Song> & songs = GetSongs();
