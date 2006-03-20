@@ -5,7 +5,7 @@ namespace CLAM
 	namespace VM
 	{
 		WPlot::WPlot(QWidget* parent)
-			: QWidget(parent)
+			: QFrame(parent)
 		{
 		}
 
