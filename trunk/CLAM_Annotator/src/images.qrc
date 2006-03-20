@@ -23,6 +23,7 @@
         <file>images/vcs_remove.png</file>
         <file>images/view_tree.png</file>
         <file>images/xkill.png</file>
+        <file>images/reload.png</file>
     </qresource>
     <qresource prefix="/logos" >
         <file>images/annotator-icon1.png</file>

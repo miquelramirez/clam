@@ -123,7 +123,8 @@ private slots:
 	void startPlaying();
 	void pausePlaying();
 	void stopPlaying();
-	void on_helpWhats_thisAction_triggered();
+	void on_helpWhatsThisAction_triggered();
+	void on_reloadDescriptorsAction_triggered();
 	void syncronizeSplits();
 
 private:
@@ -153,7 +154,6 @@ private:
 	void adaptSegmentationsToCurrentSchema();
 	void updateSegmentations();
 
-	int songIndexInTable(const std::string& fileName);
 	std::pair<double, double> GetMinMaxY(const CLAM::BPF& bpf);
 
 	void auralizeMarks();
