@@ -33,6 +33,7 @@
 #include <CLAM/Array.hxx>
 #include <CLAM/Text.hxx>
 #include <CLAM/XMLStorage.hxx>
+#include <CLAM/CLAM_Math.hxx>
 
 #include <vmBPFPlot.hxx>
 #include <vmAudioPlot.hxx>
@@ -228,13 +229,13 @@ void Annotator::appendRecentOpenedProject(const std::string & projectFilename)
 void Annotator::updateRecentFilesMenu()
 {
 	mRecentFilesMenuSeparator->setVisible(mRecentOpenedProjects.size() > 0);
-	for (int i = 0; i < mRecentOpenedProjects.size(); ++i) {
+	for (unsigned i = 0; i < mRecentOpenedProjects.size(); ++i) {
 		QString text = tr("&%1 %2").arg(i + 1).arg(mRecentOpenedProjects[i].c_str());
 		mRecentFilesActions[i]->setText(text);
 		mRecentFilesActions[i]->setData(mRecentOpenedProjects[i].c_str());
 		mRecentFilesActions[i]->setVisible(true);
 	}
-	for (int i = mRecentOpenedProjects.size(); i < MaxRecentFiles; ++i)
+	for (unsigned i = mRecentOpenedProjects.size(); i < MaxRecentFiles; ++i)
 		mRecentFilesActions[i]->setVisible(false);
 }
 
@@ -688,9 +689,9 @@ void Annotator::closeEvent ( QCloseEvent * e )
 
 void Annotator::deleteSongsFromProject()
 {
-	if (QMessageBox::question(this, "Removing songs from project",
-				"Are you sure you want to remove selected songs from the project?\n"
-				"(Audio files and extracted descriptors files won't be removed from the disk)",
+	if (QMessageBox::question(this, tr( "Removing songs from project"),
+				tr("Are you sure you want to remove selected songs from the project?\n"
+				"(Audio files and extracted descriptors files won't be removed from the disk)"),
 				QMessageBox::Yes, QMessageBox::No ) == QMessageBox::No)
 		return;
 	QList< QTreeWidgetItem * > toBeDeleted = mSongListView->selectedItems();
@@ -718,7 +719,7 @@ void Annotator::addSongsToProject()
 
 void Annotator::fileOpen()
 {
-	QString qFileName = QFileDialog::getOpenFileName(this, "Choose a project to work with", QString::null, "*.pro");
+	QString qFileName = QFileDialog::getOpenFileName(this, tr("Choose a project to work with"), QString::null, "*.pro");
 	if(qFileName == QString::null) return;
 	loadProject(qFileName.toStdString());
 }
@@ -734,7 +735,7 @@ void Annotator::fileNew()
 
 void Annotator::fileSaveAs()
 {
-	QString qFileName = QFileDialog::getSaveFileName(this, "Saving the project", QString::null,"*.pro");
+	QString qFileName = QFileDialog::getSaveFileName(this, tr("Saving the project"), QString::null,"*.pro");
 	if(qFileName == QString::null) return;
 
 	mProjectFileName = qFileName.toStdString();
@@ -757,9 +758,9 @@ void  Annotator::loadSchema()
 {
 	QString qFileName = QFileDialog::getOpenFileName(
 			this,
-			"Choose a Schema",
+			tr("Choose a Schema"),
 			projectToAbsolutePath(".").c_str(),
-			"Description Schemes (*.sc)");
+			tr("Description Schemes (*.sc)"));
 	if(qFileName == QString::null) return;
 
 	std::string schemaFile = absoluteToProjectPath(qFileName.toStdString());
@@ -1004,7 +1005,7 @@ void Annotator::auralizeMarks()
 	int size = mOnsetAuralizationAudio.GetSize();
 	for (int i=0; i<nMarks; i++)
 	{
-		int samplePosition = marks[i]*mCurrentAudio.GetSampleRate();
+		int samplePosition = Round(marks[i]*mCurrentAudio.GetSampleRate());
 		if(samplePosition<size)
 			mOnsetAuralizationAudio.SetAudioChunk(samplePosition,mClick[0]);
 	} 
@@ -1052,7 +1053,7 @@ void Annotator::onStopPlaying(float time)
 void Annotator::changeFrameLevelDescriptor(int current)
 {
 	unsigned index = mFrameLevelAttributeList->currentRow();
-	if (index >= (int)mEPFs.size()) return; // No valid descriptor
+	if (index >= mEPFs.size()) return; // No valid descriptor
 	double minValue = mEPFs[index].getMin();
 	double maxValue = mEPFs[index].getMax();
 	// TODO: Move this margin to the widget
