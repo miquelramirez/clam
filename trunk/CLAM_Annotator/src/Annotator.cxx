@@ -264,8 +264,7 @@ void Annotator::initInterface()
 
 	QVBoxLayout * frameLevelContainerLayout = new QVBoxLayout(mFrameLevelContainer);
 	frameLevelContainerLayout->setMargin(2);
-	mBPFEditor = new BPFPlot(
-			mFrameLevelContainer);
+	mBPFEditor = mFrameLevelContainer; //new BPFPlot(mFrameLevelContainer);
 	mBPFEditor->SetFlags(CLAM::VM::eAllowVerEdition);//|CLAM::VM::eHasVerticalScroll); // QTPORT: What about this flag
 #if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
 	mBPFEditor->setAutoFillBackground(true);
@@ -273,19 +272,19 @@ void Annotator::initInterface()
 	frameLevelContainerLayout->addWidget(mBPFEditor);
 	mBPFEditor->SetZoomSteps(5,5);
 
-	mSegmentEditor = new AudioPlot(mAudioPlotContainer); // ,0,0,false);
+	mSegmentEditor = mAudioPlotContainer; //new AudioPlot(mAudioPlotContainer); // ,0,0,false);
 	QVBoxLayout * audioPlotContainerLayout = new QVBoxLayout(mAudioPlotContainer);
 #if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
 	mSegmentEditor->setAutoFillBackground(true);
 #endif
 	audioPlotContainerLayout->setMargin(2);
 	audioPlotContainerLayout->addWidget(mSegmentEditor);
-/*
+
 	mSegmentEditor->setFrameShape(QFrame::StyledPanel);
 	mSegmentEditor->setFrameShadow(QFrame::Raised);
 	mBPFEditor->setFrameShape(QFrame::StyledPanel);
 	mBPFEditor->setFrameShadow(QFrame::Raised);
-*/
+
 	mBPFEditor->SetXRange(0.0,2.0);
 	mCurrentAudio.SetSize(2.0);
 	mSegmentEditor->SetData(mCurrentAudio);

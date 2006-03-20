@@ -146,7 +146,7 @@ contains descriptors values for song level descriptors. Song level descriptors a
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <widget class="QFrame" name="mFrameLevelContainer" >
+           <widget class="CLAM::VM::BPFPlot" name="mFrameLevelContainer" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>3</hsizetype>
@@ -165,13 +165,7 @@ contains descriptors values for song level descriptors. Song level descriptors a
              <enum>Qt::WheelFocus</enum>
             </property>
             <property name="whatsThis" >
-             <string>&lt;p>The &lt;b>frame level descriptors editor&lt;/b>
-allows editing floating point descriptors that has an occurrence for each frame.&lt;/p>
-&lt;ul>
-&lt;li>Dragging Points: Moving them.&lt;/li>
-&lt;li>Cursor: Moves the selected point&lt;/li>
-&lt;li>TODO: Put the keybindings&lt;/li>
-&lt;/ul></string>
+             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">The &lt;span style=" font-weight:600;">frame level descriptors editor&lt;/span> allows editing floating point descriptors that has an occurrence for each frame.&lt;/p>&lt;ul style="-qt-list-indent: 1;">&lt;li style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Dragging Points: Moving them.&lt;li style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Page up/down: Set focus prev/next point&lt;li style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Hover point: Set focus to point&lt;/ul>&lt;ul style="-qt-list-indent: 1;">&lt;li style=" margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Arrows: Change focus point values&lt;/ul>&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
             </property>
             <property name="frameShape" >
              <enum>QFrame::StyledPanel</enum>
@@ -199,7 +193,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
            <property name="midLineWidth" >
             <number>4</number>
            </property>
-           <widget class="QFrame" name="mAudioPlotContainer" >
+           <widget class="CLAM::VM::AudioPlot" name="mAudioPlotContainer" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>3</hsizetype>
@@ -218,13 +212,7 @@ allows editing floating point descriptors that has an occurrence for each frame.
              <enum>Qt::WheelFocus</enum>
             </property>
             <property name="whatsThis" >
-             <string>&lt;p>The &lt;b>segmentation editor&lt;/b> allows you to change song level segmentations.&lt;/p>
-&lt;ul>
-&lt;li>Click Body: Change current segment&lt;/li>
-&lt;li>Dragging Limit: Moves it&lt;/li>
-&lt;li>Insert + Click: Inserts an onset&lt;/li>
-&lt;li>Delete: Deletes the current onset&lt;/li>
-&lt;/ul></string>
+             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">The &lt;span style=" font-weight:600;">segmentation editor&lt;/span> allows you to change song level segmentations.&lt;/p>&lt;ul style="-qt-list-indent: 1;">&lt;li style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Click Body: Set as current segment&lt;li style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Dragging Limit: Moves it&lt;li style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Insert + Click: Inserts a segment&lt;li style=" margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Delete: Deletes the current segment&lt;/ul>&lt;/body>&lt;/html></string>
             </property>
             <property name="frameShape" >
              <enum>QFrame::StyledPanel</enum>
@@ -690,6 +678,22 @@ to the proper cell.&lt;/p></string>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>CLAM::VM::BPFPlot</class>
+   <extends>QFrame</extends>
+   <header>vmBPFPlot.hxx</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::AudioPlot</class>
+   <extends>QFrame</extends>
+   <header>vmAudioPlot.hxx</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mMainTabWidget</tabstop>
   <tabstop>mSongListView</tabstop>
