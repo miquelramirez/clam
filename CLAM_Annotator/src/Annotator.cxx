@@ -512,9 +512,6 @@ void Annotator::makeConnections()
 	connect(mAuralizeSegmentOnsetsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
 	connect(mAuralizeFrameLevelDescriptorsAction, SIGNAL(toggled(bool)), this, SLOT(updateAuralizationOptions()));
 	connect(mLinkCurrentSegmentToPlaybackAction, SIGNAL(toggled(bool)), this, SLOT(linkCurrentSegmentToPlayback(bool)));
-	connect(mPlayAction, SIGNAL(activated()), this, SLOT(startPlaying()));
-	connect(mPauseAction, SIGNAL(activated()), this, SLOT(pausePlaying()));
-	connect(mStopAction, SIGNAL(activated()), this, SLOT(stopPlaying()));
 	connect(helpAboutAction,SIGNAL(activated()), mAbout,SLOT(show()));
 	connect(helpAboutQtAction, SIGNAL(activated()), qApp, SLOT(aboutQt()));
 	connect(helpWhatsThisAction, SIGNAL(activated()), this, SLOT(whatsThis()));
@@ -829,7 +826,7 @@ std::string Annotator::absoluteToProjectPath(const std::string & file)
 
 void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *previous)
 {
-	stopPlaying();
+	if (mPlayer) mPlayer->stop();
 	mStatusBar << "Saving Previous Song Descriptors..." << mStatusBar;
 	if (previous) saveDescriptors();
 	if (!current) return;
@@ -1088,9 +1085,9 @@ void Annotator::updateAuralizationOptions()
 
 void Annotator::setMenuAudioItemsEnabled(bool enabled)
 {
-	mPlayAction->setEnabled(enabled);
-	mPauseAction->setEnabled(enabled);
-	mStopAction->setEnabled(enabled);
+	playAction->setEnabled(enabled);
+	pauseAction->setEnabled(enabled);
+	stopAction->setEnabled(enabled);
 	mAuralizeSegmentOnsetsAction->setEnabled(enabled);
 	mAuralizeFrameLevelDescriptorsAction->setEnabled(enabled);
 }
@@ -1107,7 +1104,6 @@ QString Annotator::constructFileError(const std::string& fileName,const CLAM::Xm
 
 void Annotator::onStopPlaying(float time)
 {
-	stopPlaying();
 	if(!mMustUpdateMarkedAudio) return;
 	mMustUpdateMarkedAudio = false;
 	auralizeMarks();
@@ -1134,34 +1130,33 @@ void Annotator::changeFrameLevelDescriptor(int current)
 	mBPFEditor->show();
 }
 
-void Annotator::startPlaying()
-{
-	if(!mPlayer) return;
-	mPlayer->play();
-
-}
-
-void Annotator::pausePlaying()
-{
-	if(!mPlayer) return;
-	mPlayer->pause();
-}
-
-void Annotator::stopPlaying()
-{
-	if(!mPlayer) return;
-	mPlayer->stop();
-}
-
 void Annotator::on_helpWhatsThisAction_triggered()
 {
 	QWhatsThis::enterWhatsThisMode();
 }
-
 void Annotator::on_reloadDescriptorsAction_triggered()
 {
 	mStatusBar << "Reloading.." << mStatusBar;
 	currentSongChanged(mSongListView->currentItem(), mSongListView->currentItem());
+}
+
+void Annotator::on_playAction_triggered()
+{
+	mStatusBar << "Playing" << mStatusBar;
+	if(!mPlayer) return;
+	mPlayer->play();
+}
+void Annotator::on_pauseAction_triggered()
+{
+	mStatusBar << "Pause" << mStatusBar;
+	if(!mPlayer) return;
+	mPlayer->pause();
+}
+void Annotator::on_stopAction_triggered()
+{
+	mStatusBar << "Stop" << mStatusBar;
+	if(!mPlayer) return;
+	mPlayer->stop();
 }
 
 

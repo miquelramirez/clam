@@ -120,11 +120,11 @@ protected:
 private slots:
 	void onStopPlaying(float);
 
-	void startPlaying();
-	void pausePlaying();
-	void stopPlaying();
 	void on_helpWhatsThisAction_triggered();
 	void on_reloadDescriptorsAction_triggered();
+	void on_playAction_triggered();
+	void on_stopAction_triggered();
+	void on_pauseAction_triggered();
 	void syncronizeSplits();
 
 private:
