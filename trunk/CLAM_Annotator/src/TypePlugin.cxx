@@ -337,10 +337,9 @@ private:
 		bool ok = true;
 		for (unsigned i = 1; i<values.Size(); i++)
 		{
-			if (values[i]>=0 && values[i]<=duration)
-			{
-				err << "Segmentation point at " << values[i] << " is out of bounds" << std::endl; 
-			}
+			if (values[i]>=0 && values[i]<=duration) continue;
+			err << "Segmentation point at " << values[i] << " is out of bounds" << std::endl;
+			ok=false;
 		}
 	}
 };
