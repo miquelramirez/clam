@@ -92,9 +92,11 @@ namespace CLAM
 		unsigned pickSegmentBody(double timePosition) const
 		{
 			if (timePosition<0) return _offsets.size();
-			TimePositions::const_iterator lowerBound =
+			TimePositions::const_iterator upperBound =
 				std::lower_bound(_offsets.begin(), _offsets.end(), timePosition);
-			return lowerBound - _offsets.begin();
+			if (upperBound == _offsets.begin()) return 0;
+			if (timePosition - *(upperBound-1) > *upperBound - timePosition) return upperBound - _offsets.begin();
+			return upperBound - _offsets.begin()-1;
 		}
 		/**
 		 * Performs a dragging movement for the Onset of the given
