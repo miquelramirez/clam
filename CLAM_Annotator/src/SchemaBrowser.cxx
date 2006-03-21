@@ -159,7 +159,8 @@ void SchemaBrowser::updateCurrentAttribute()
 		const CLAM_Annotator::SchemaAttribute & attributeSchema = mSchema->GetAttribute(parent->text(0).toStdString(),current->text(0).toStdString());
 		QString url = "http://mtg100.upf.es/simac/DescriptionSchemeWeb";
 		QString documentation = "<h2>Attribute '" + parent->text(0) + "::" + current->text(0) + "'</h2>";
-		documentation += "<ul>";
+		documentation+="<ul>";
+		documentation+="<li><b>Documentation url:</b> <a href='" + url + "'>" +url+"</a>.</li>";
 		documentation+="<li><b>Type:</b> ";
 		documentation+=QString(attributeSchema.GetType().c_str()) + "</li>";
 		if (attributeSchema.HasEnumerationValues())
@@ -175,7 +176,7 @@ void SchemaBrowser::updateCurrentAttribute()
 				documentation+="</tt>";
 				separator =", ";
 			}
-			documentation+=".</ul></li>";
+			documentation+=".</li>";
 		}
 		if (attributeSchema.HasUnits())
 		{
@@ -200,13 +201,13 @@ void SchemaBrowser::updateCurrentAttribute()
 			documentation+="<li><b>Segmentation Policy:</b> " + QString(attributeSchema.GetSegmentationPolicy().GetString().c_str()) + "</li>";
 		}
 		documentation += "</ul>";
+		documentation += "<h2>Description</h2>";
 		documentation += "<div class='descriptorDocumentation'>";
 		if (attributeSchema.HasDocumentation())
 			documentation += attributeSchema.GetDocumentation().c_str();
 		else
-			documentation += "<p>The schema has no embeded documentation for the attribute.</p>";
+			documentation += "<p><em>(The schema has no embeded documentation for the attribute)</em></p>";
 		documentation += "</div>";
-		documentation += "<p>Get further information on <a href='" + url + "'>" +url+"</a>.</p>";
 		attributeDocumentation->setHtml(documentation);
 	}
 }
