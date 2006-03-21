@@ -112,7 +112,7 @@ protected:
 	void closeEvent( QCloseEvent * e);
 
 private slots:
-	void onStopPlaying(float);
+	void updatePendingAuralizationsChanges();
 
 	void on_helpWhatsThisAction_triggered();
 	void on_reloadDescriptorsAction_triggered();

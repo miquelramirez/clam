@@ -21,7 +21,6 @@
 #include <utility>
 #include <fstream>
 #include <QTimer>
-#include "TaskRunner.hxx"
 
 //xamat
 #include <time.h>
@@ -34,17 +33,17 @@
 #include <CLAM/Text.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/CLAM_Math.hxx>
+#include <CLAM/ContiguousSegmentation.hxx>
+#include <CLAM/DiscontinuousSegmentation.hxx>
+#include <CLAM/UnsizedSegmentation.hxx>
 
 #include <vmBPFPlot.hxx>
 #include <vmAudioPlot.hxx>
+#include <vmBPFPlayer.hxx>
 
 #include "AudioLoadThread.hxx"
-
-#include "vmContiguousSegmentation.hxx"
-#include "vmDiscontinuousSegmentation.hxx"
-#include "vmUnsizedSegmentation.hxx"
 #include "SchemaBrowser.hxx"
-#include <vmBPFPlayer.hxx>
+#include "TaskRunner.hxx"
 #include "ui_About.hxx"
 #define VERSION "2.1"
 
@@ -573,10 +572,11 @@ void Annotator::makeConnections()
 
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
 		mSegmentEditor, SLOT(updateLocator(double,double)));
-/*
-	connect(mSegmentEditor, SIGNAL(stopPlayingTime(double)),
-		this, SLOT(onStopPlaying(double)));
-*/
+
+	// Update auralizations whenever player stop and they have been modified
+	connect(mPlayer, SIGNAL(stopTime(double)),
+		this, SLOT(updatePendingAuralizationsChanges()));
+
 	connect(mFrameEditorSplit, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
 	connect(mSegmentEditorSplit, SIGNAL(splitterMoved(int,int)),
@@ -649,6 +649,14 @@ void Annotator::segmentationMarksChanged(unsigned, double)
 		mMustUpdateMarkedAudio = true;
 	else
 		auralizeMarks();
+}
+
+void Annotator::updatePendingAuralizationsChanges()
+{
+	std::cout << "StopPlaying -> updating auralizations" << std::endl;
+	if(!mMustUpdateMarkedAudio) return;
+	mMustUpdateMarkedAudio = false;
+	auralizeMarks();
 }
 
 void Annotator::updateSongListWidget()
@@ -1043,12 +1051,6 @@ QString Annotator::constructFileError(const std::string& fileName,const CLAM::Xm
 		).arg(e.what()).arg(fileName.c_str());
 }
 
-void Annotator::onStopPlaying(float time)
-{
-	if(!mMustUpdateMarkedAudio) return;
-	mMustUpdateMarkedAudio = false;
-	auralizeMarks();
-}
 
 void Annotator::changeFrameLevelDescriptor(int current)
 {
@@ -1061,8 +1063,11 @@ void Annotator::changeFrameLevelDescriptor(int current)
 	minValue -= span*0.1;
 	maxValue += span*0.1;
 	mBPFEditor->SetData(&mEPFs[index].GetBPF());
-	bool scale_log = (fabs(minValue) > 9999.99 || fabs(maxValue) > 9999.99 || maxValue-minValue < TData(5E-2));
-	mBPFEditor->SetYRange(minValue,maxValue, scale_log ? CLAM::VM::eLogScale : CLAM::VM::eLinearScale);
+	CLAM::VM::ERulerScale scale = CLAM::VM::eLinearScale;
+	if (fabs(minValue) > 9999.99) scale=CLAM::VM::eLogScale;
+	if (fabs(maxValue) > 9999.99) scale=CLAM::VM::eLogScale;
+	if (maxValue-minValue < TData(5E-2)) scale=CLAM::VM::eLogScale;
+	mBPFEditor->SetYRange(minValue, maxValue, scale);
 
 	mPlayer->SetData(mEPFs[index].GetBPF());
 	mPlayer->SetPitchBounds(minValue, maxValue);
@@ -1076,25 +1081,21 @@ void Annotator::on_helpWhatsThisAction_triggered()
 
 void Annotator::on_reloadDescriptorsAction_triggered()
 {
-	mStatusBar << "Reloading.." << mStatusBar;
 	currentSongChanged(mSongListView->currentItem(), mSongListView->currentItem());
 }
 
 void Annotator::on_playAction_triggered()
 {
-	mStatusBar << "Playing" << mStatusBar;
 	if(!mPlayer) return;
 	mPlayer->play();
 }
 void Annotator::on_pauseAction_triggered()
 {
-	mStatusBar << "Pause" << mStatusBar;
 	if(!mPlayer) return;
 	mPlayer->pause();
 }
 void Annotator::on_stopAction_triggered()
 {
-	mStatusBar << "Stop" << mStatusBar;
 	if(!mPlayer) return;
 	mPlayer->stop();
 }
