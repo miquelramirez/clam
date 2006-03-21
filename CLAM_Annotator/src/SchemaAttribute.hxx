@@ -9,7 +9,6 @@
 
 #include <CLAM/Assert.hxx>
 
-#include "AnnotatorDescriptor.hxx"
 #include "Enumerated.hxx"
 #include "TypePlugin.hxx"
 
