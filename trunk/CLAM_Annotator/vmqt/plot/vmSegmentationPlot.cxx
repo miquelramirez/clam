@@ -2,7 +2,7 @@
 #include "vmRuler.hxx"
 #include "vmPlot2D.hxx"
 #include "vmScrollGroup.hxx"
-#include "vmSegmentation.hxx"
+#include <CLAM/Segmentation.hxx>
 #include "vmSegmentEditor.hxx"
 #include "vmLocatorRenderer.hxx"
 #include "vmSegmentationPlot.hxx"
