@@ -1,6 +1,6 @@
 #include <QApplication>
+#include <CLAM/DiscontinuousSegmentation.hxx>
 #include "vmSegmentationPlot.hxx"
-#include "vmDiscontinuousSegmentation.hxx"
 
 
 int main(int argc, char** argv)
