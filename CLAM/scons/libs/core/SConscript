@@ -16,7 +16,7 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing/Audio.*', 'src/Data/Descriptors/Pool', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib']
+	core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing/Audio.*', 'src/Data/Descriptors/Pool', 'src/Data/Editable', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib']
 
 	if sys.platform == 'win32' :
 		core_folders.append('src/Defines/Windows')
