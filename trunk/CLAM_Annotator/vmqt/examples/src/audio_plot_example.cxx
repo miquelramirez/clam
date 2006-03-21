@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <QFileDialog>
 #include "vmAudioPlot.hxx"
-#include "vmContiguousSegmentation.hxx"
+#include <CLAM/ContiguousSegmentation.hxx>
 #include "audio_file_utils.hxx"
 
 int main(int argc, char** argv)
