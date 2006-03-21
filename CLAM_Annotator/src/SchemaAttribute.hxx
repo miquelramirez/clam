@@ -11,7 +11,6 @@
 
 #include "AnnotatorDescriptor.hxx"
 #include "Enumerated.hxx"
-#include "Range.hxx"
 #include "TypePlugin.hxx"
 
 namespace CLAM { class DescriptionScheme; }
@@ -59,8 +58,8 @@ namespace CLAM_Annotator{
 		DYN_ATTRIBUTE(3, public, CLAM::Text, Documentation); ///< Documentation for the attribute
 		/// To be added when type is Enumerated, contains the available values
 		DYN_CONTAINER_ATTRIBUTE(4, public, std::list<std::string>, EnumerationValues, Value);
-		DYN_ATTRIBUTE(5, public, CLAM::TData, MaxValue);
 		DYN_ATTRIBUTE(6, public, CLAM::TData, MinValue);
+		DYN_ATTRIBUTE(5, public, CLAM::TData, MaxValue);
 		DYN_ATTRIBUTE(7, public, std::string, Units);
 		/// To be added when type is Segmentation, contains the Scope containing attributes for segments.
 		/// Empty string means no scope.
@@ -97,8 +96,8 @@ namespace CLAM_Annotator{
 			storage.Store(adapter3);
 			StoreDocumentation(storage);
 			StoreEnumerationValues(storage);
-			StoreMaxValue(storage);
 			StoreMinValue(storage);
+			StoreMaxValue(storage);
 			StoreUnits(storage);
 			StoreChildScope(storage);
 			StoreSegmentationPolicy(storage);
@@ -117,8 +116,8 @@ namespace CLAM_Annotator{
 			if (!storage.Load(adapter3)) RemoveType();
 			LoadDocumentation(storage);
 			LoadEnumerationValues(storage);
-			LoadMaxValue(storage);
 			LoadMinValue(storage);
+			LoadMaxValue(storage);
 			LoadUnits(storage);
 			LoadChildScope(storage);
 			LoadSegmentationPolicy(storage);
