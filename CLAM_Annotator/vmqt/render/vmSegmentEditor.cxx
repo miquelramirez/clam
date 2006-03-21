@@ -1,5 +1,5 @@
 #include "CLAMGL.hxx"
-#include "vmSegmentation.hxx"
+#include <CLAM/Segmentation.hxx>
 #include "vmSegmentEditor.hxx"
 
 //#define __SEGMENT_EDITOR__DEBUG__
