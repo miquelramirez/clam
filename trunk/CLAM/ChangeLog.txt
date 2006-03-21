@@ -1,3 +1,8 @@
+  * Segmentation classes moved to clam-core
+  * New segmentation class UnsizedSegmentation
+  * New data abstraction EquidistantPointsFunction
+   (An array with units, optional limits and x axis information)
+
 2006-02-07 CLAM_0_90_0
 'New scons buildsystem and multiplaform again'
   * Building and packaging
