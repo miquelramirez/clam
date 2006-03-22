@@ -329,17 +329,6 @@ to the proper cell.&lt;/p></string>
     <addaction name="helpAboutAction" />
     <addaction name="helpAboutQtAction" />
    </widget>
-   <widget class="QMenu" name="mFileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="fileNew_projectAction" />
-    <addaction name="fileOpen_projectAction" />
-    <addaction name="fileSave_projectAction" />
-    <addaction name="fileSave_project_asAction" />
-    <addaction name="separator" />
-    <addaction name="fileExitAction" />
-   </widget>
    <widget class="QMenu" name="menuView" >
     <property name="title" >
      <string>View</string>
@@ -368,13 +357,25 @@ to the proper cell.&lt;/p></string>
     <addaction name="reloadDescriptorsAction" />
     <addaction name="songComputeDescriptorsAction" />
    </widget>
+   <widget class="QMenu" name="mFileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="fileNew_projectAction" />
+    <addaction name="fileOpen_projectAction" />
+    <addaction name="fileSave_projectAction" />
+    <addaction name="fileSave_project_asAction" />
+    <addaction name="separator" />
+    <addaction name="fileExitAction" />
+   </widget>
    <widget class="QMenu" name="mProjectMenu" >
     <property name="title" >
      <string>&amp;Project</string>
     </property>
-    <addaction name="browseSchemaAction" />
     <addaction name="addSongAction" />
     <addaction name="removeSongAction" />
+    <addaction name="editProjectPropertiesAction" />
+    <addaction name="browseSchemaAction" />
    </widget>
    <addaction name="mFileMenu" />
    <addaction name="mProjectMenu" />
@@ -705,21 +706,26 @@ to the proper cell.&lt;/p></string>
     <string>Add &amp;instant view</string>
    </property>
   </action>
+  <action name="editProjectPropertiesAction" >
+   <property name="text" >
+    <string>Edit project properties</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>CLAM::VM::BPFPlot</class>
+   <class>CLAM::VM::AudioPlot</class>
    <extends>QFrame</extends>
-   <header>vmBPFPlot.hxx</header>
+   <header>vmAudioPlot.hxx</header>
    <container>0</container>
    <pixmap></pixmap>
   </customwidget>
   <customwidget>
-   <class>CLAM::VM::AudioPlot</class>
+   <class>CLAM::VM::BPFPlot</class>
    <extends>QFrame</extends>
-   <header>vmAudioPlot.hxx</header>
+   <header>vmBPFPlot.hxx</header>
    <container>0</container>
    <pixmap></pixmap>
   </customwidget>

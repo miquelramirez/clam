@@ -45,6 +45,7 @@
 #include "SchemaBrowser.hxx"
 #include "TaskRunner.hxx"
 #include "ui_About.hxx"
+#include "ProjectEditor.hxx"
 #define VERSION "2.1"
 
 #ifndef RESOURCES_BASE
@@ -734,9 +735,13 @@ void Annotator::fileOpen()
 
 void Annotator::fileNew()
 {
-	mProjectFileName = "";
-	mProject = CLAM_Annotator::Project();
-	loadSchema();
+	ProjectEditor projectDialog;
+	CLAM_Annotator::Project newProject=mProject;
+	projectDialog.setProject(newProject);
+	projectDialog.exec();
+//	mProjectFileName = "";
+	mProject = newProject;
+//	loadSchema();
 	initProject();
 	markProjectChanged(true);
 }
