@@ -2,6 +2,8 @@
 #define ProjectEditor_hxx
 
 #include "ui_ProjectEditor.hxx"
+#include "Project.hxx"
+
 namespace CLAM_Annotator { class Project; }
 
 class ProjectEditor : public QDialog
@@ -14,14 +16,21 @@ class ProjectEditor : public QDialog
 			ui.setupUi(this);
 		}
 		virtual ~ProjectEditor();
-		void setProject(CLAM_Annotator::Project & project);
+		const CLAM_Annotator::Project & editedProject()
+		{
+			return mProject;
+		}
+		void setProject(const CLAM_Annotator::Project & project);
 	private slots:
 		void on_projectInfo_textChanged();
 		void on_schemaBrowseButton_clicked();
+		void on_suffix_editTextChanged();
 		void on_extractorBrowseButton_clicked();
 	private:
+		void updateFields();
+	private:
 		Ui::ProjectEditor ui;
-		CLAM_Annotator::Project * mProject;
+		CLAM_Annotator::Project mProject;
 };
 
 #endif//ProjectEditor_hxx

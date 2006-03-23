@@ -29,7 +29,7 @@ class Project : public CLAM::DynamicType
 public:
 	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 public:
-	const std::string & PoolSuffix()
+	const std::string & PoolSuffix() const
 	{
 		static std::string defaultSuffix = ".pool";
 		if (!HasPoolSuffix()) return defaultSuffix;

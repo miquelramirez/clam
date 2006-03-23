@@ -7,46 +7,56 @@ ProjectEditor::~ProjectEditor()
 {
 }
 
-void ProjectEditor::setProject(CLAM_Annotator::Project & project)
+void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 {
-	mProject = & project;
-	ui.schema->setText(project.GetSchema().c_str());
-	ui.suffix->setEditText(project.PoolSuffix().c_str());
-	if (project.HasExtractor())
-		ui.extractor->setText(project.GetExtractor().c_str());
-	ui.projectInfo->setPlainText(project.GetDescription().c_str());
-	ui.htmlPreview->setHtml(project.GetDescription().c_str());
+	mProject = project;
+	updateFields();
+}
+void ProjectEditor::updateFields()
+{
+	ui.schema->setText(mProject.GetSchema().c_str());
+	ui.suffix->setEditText(mProject.PoolSuffix().c_str());
+	if (mProject.HasExtractor())
+		ui.extractor->setText(mProject.GetExtractor().c_str());
+	ui.projectInfo->setPlainText(mProject.GetDescription().c_str());
+	ui.htmlPreview->setHtml(mProject.GetDescription().c_str());
 }
 
 void ProjectEditor::on_projectInfo_textChanged()
 {
 	ui.htmlPreview->setHtml(ui.projectInfo->toPlainText());
-	mProject->SetDescription(ui.projectInfo->toPlainText().toStdString());
+	mProject.SetDescription(ui.projectInfo->toPlainText().toStdString());
+}
+
+void ProjectEditor::on_suffix_editTextChanged()
+{
+	mProject.SetPoolSuffix(ui.suffix->currentText().toStdString());
+	updateFields();
 }
 
 void ProjectEditor::on_schemaBrowseButton_clicked()
 {
 	QString file = QFileDialog::getOpenFileName(this, 
 			"Open a Description Scheme",
-			mProject->GetSchema().c_str(),
+			mProject.GetSchema().c_str(),
 			"Description Schemes (*.sc)"
 			);
 	if (file.isNull()) return;
 	// TODO: Check that the schema loads well
-	mProject->SetSchema(file.toStdString());
-	setProject(*mProject);
+	mProject.SetSchema(file.toStdString());
+	updateFields();
 }
 
 void ProjectEditor::on_extractorBrowseButton_clicked()
 {
 	QString file = QFileDialog::getOpenFileName(this, 
 			"Select an extractor executable",
-			mProject->GetSchema().c_str(),
-			"Description Schemes (*.sc)"
+			mProject.GetExtractor().c_str(),
+			"Executable file (*)"
 			);
 	if (file.isNull()) return;
-	mProject->SetExtractor(file.toStdString());
-	setProject(*mProject);
+	mProject.SetExtractor(file.toStdString());
+	updateFields();
 }
 
 

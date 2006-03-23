@@ -119,6 +119,8 @@ private slots:
 	void on_playAction_triggered();
 	void on_stopAction_triggered();
 	void on_pauseAction_triggered();
+	void on_newProjectAction_triggered();
+	void on_editProjectPropertiesAction_triggered();
 	void on_browseSchemaAction_triggered();
 	void syncronizeSplits();
 

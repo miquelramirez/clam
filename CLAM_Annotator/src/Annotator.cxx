@@ -315,6 +315,7 @@ void Annotator::updateApplicationTitle()
 
 void Annotator::initProject()
 {
+	currentSongChanged(0, mSongListView->currentItem());
 	updateSongListWidget();
 
 	QString projectDescription = "<h1>Project Documentation</h1>\n";
@@ -483,7 +484,7 @@ void Annotator::makeConnections()
 {
 	// Action Signals
 	connect(fileExitAction, SIGNAL(triggered()), this, SLOT(close()));
-	connect(fileNew_projectAction, SIGNAL(triggered()), this, SLOT(fileNew()));
+//	connect(newProjectAction, SIGNAL(triggered()), this, SLOT(fileNew()));
 	connect(fileOpen_projectAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
 	connect(fileSave_project_asAction, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
 	connect(fileSave_projectAction, SIGNAL(triggered()), this, SLOT(fileSave()));
@@ -735,12 +736,43 @@ void Annotator::fileOpen()
 
 void Annotator::fileNew()
 {
+	QString newProjectName = QFileDialog::getSaveFileName(this,
+			tr("Choose a filename for the new project"),
+			0, tr("Annotator project files (*.pro)")
+			);
+	if (newProjectName.isNull()) return;
 	ProjectEditor projectDialog;
 	CLAM_Annotator::Project newProject=mProject;
 	projectDialog.setProject(newProject);
 	projectDialog.exec();
 //	mProjectFileName = "";
 	mProject = newProject;
+//	loadSchema();
+	initProject();
+	markProjectChanged(true);
+}
+
+void Annotator::on_newProjectAction_triggered()
+{
+	QString newProjectName = QFileDialog::getSaveFileName(this,
+			tr("Choose a filename for the new project"),
+			0, tr("Annotator project files (*.pro)")
+			);
+	if (newProjectName.isNull()) return;
+	ProjectEditor projectDialog;
+	if (projectDialog.exec()== QDialog::Rejected) return;
+	mProject = projectDialog.editedProject();
+//	loadSchema();
+	initProject();
+	markProjectChanged(true);
+}
+
+void Annotator::on_editProjectPropertiesAction_triggered()
+{
+	ProjectEditor projectDialog;
+	projectDialog.setProject(mProject);
+	if (projectDialog.exec() == QDialog::Rejected) return;
+	mProject = projectDialog.editedProject();
 //	loadSchema();
 	initProject();
 	markProjectChanged(true);
