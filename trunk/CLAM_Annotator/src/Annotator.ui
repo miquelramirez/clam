@@ -285,10 +285,11 @@ to the proper cell.&lt;/p></string>
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="fileNew_projectAction" />
+   <addaction name="newProjectAction" />
    <addaction name="fileOpen_projectAction" />
    <addaction name="fileSave_projectAction" />
    <addaction name="separator" />
+   <addaction name="editProjectPropertiesAction" />
    <addaction name="browseSchemaAction" />
    <addaction name="addSongAction" />
    <addaction name="removeSongAction" />
@@ -361,7 +362,7 @@ to the proper cell.&lt;/p></string>
     <property name="title" >
      <string>&amp;File</string>
     </property>
-    <addaction name="fileNew_projectAction" />
+    <addaction name="newProjectAction" />
     <addaction name="fileOpen_projectAction" />
     <addaction name="fileSave_projectAction" />
     <addaction name="fileSave_project_asAction" />
@@ -412,9 +413,9 @@ to the proper cell.&lt;/p></string>
     <string>Information about the application</string>
    </property>
   </action>
-  <action name="fileNew_projectAction" >
+  <action name="newProjectAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/filenew.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/window_new.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;New project</string>
@@ -474,7 +475,7 @@ to the proper cell.&lt;/p></string>
   </action>
   <action name="fileOpen_projectAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/project_open.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open project</string>
@@ -707,6 +708,9 @@ to the proper cell.&lt;/p></string>
    </property>
   </action>
   <action name="editProjectPropertiesAction" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/edit.png</iconset>
+   </property>
    <property name="text" >
     <string>Edit project properties</string>
    </property>

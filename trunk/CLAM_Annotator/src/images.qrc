@@ -18,11 +18,13 @@
         <file>images/player_pause.png</file>
         <file>images/player_play.png</file>
         <file>images/player_stop.png</file>
+        <file>images/project_open.png</file>
         <file>images/reload.png</file>
         <file>images/segmentFollows.png</file>
         <file>images/vcs_add.png</file>
         <file>images/vcs_remove.png</file>
         <file>images/view_tree.png</file>
+        <file>images/window_new.png</file>
         <file>images/xkill.png</file>
     </qresource>
     <qresource prefix="/logos" >
