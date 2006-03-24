@@ -96,36 +96,16 @@ public:
 		QString projectPath = QDir::cleanPath((path+"/../").c_str());
 		mBasePath = projectPath.toStdString();
 	}
-	const std::string & File()
+	const std::string & File() const 
 	{
 		return mFile;
 	}
-	const std::string & BaseDir()
+	const std::string & BaseDir() const 
 	{
 		return mBasePath;
 	}
-	std::string ProjectRelativeToAbsolutePath(const std::string & file)
-	{
-/*
-		QDir projectPath(mBasePath.c_str());
-		return projectPath.relativeFilePath(file.c_str()).toStdString();
-*/
-		QDir qdir = QString(file.c_str());
-		if (qdir.isRelative())
-			return QDir::cleanPath( QDir(mBasePath.c_str()).filePath(file.c_str()) ).toStdString();
-		return file;
-	}
-	std::string AbsoluteToProjectRelativePath(const std::string & file)
-	{
-		QDir projectPath(mBasePath.c_str());
-		return projectPath.relativeFilePath(file.c_str()).toStdString();
-
-		QDir qdir = QString(file.c_str());
-		if (qdir.isRelative()) return file;
-		if (file.substr(0,mBasePath.length()+1)==(mBasePath+"/"))
-			return file.substr(mBasePath.length()+1);
-		return file;
-	}
+	std::string RelativeToAbsolute(const std::string & file) const;
+	std::string AbsoluteToRelative(const std::string & file) const;
 private:
 	void CreatePoolScheme();
 private:

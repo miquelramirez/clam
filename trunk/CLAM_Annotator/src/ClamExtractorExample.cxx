@@ -503,6 +503,7 @@ void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text &
 	const CLAM::TSize readSize = 1024;
 	CLAM::AudioFile file;
 	file.OpenExisting(filename);
+	CLAM_ASSERT(file.IsReadable(), ("Error opening '" + filename +"'").c_str());
 	const CLAM::AudioTextDescriptors & textDescriptors = file.GetTextDescriptors();
 	if (textDescriptors.HasArtist()) artist = textDescriptors.GetArtist();
 	if (textDescriptors.HasTitle()) title = textDescriptors.GetTitle();

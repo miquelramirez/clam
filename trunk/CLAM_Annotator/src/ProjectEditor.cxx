@@ -10,8 +10,23 @@ ProjectEditor::~ProjectEditor()
 void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 {
 	mProject = project;
+	mProject.SetProjectPath(project.File());
 	updateFields();
 }
+
+void ProjectEditor::setProjectPath(const std::string & file)
+{
+	mProject.SetProjectPath(file);
+	updateProject();
+}
+
+void ProjectEditor::updateProject()
+{
+	mProject.SetDescription(ui.projectInfo->toPlainText().toStdString());
+//	mProject.SetExtractor(ui.extractor->text().toStdString());
+//	mProject.SetSchema(mProject.AbsoluteToRelative(file.toStdString()));
+}
+
 void ProjectEditor::updateFields()
 {
 	ui.schema->setText(mProject.GetSchema().c_str());
@@ -31,19 +46,18 @@ void ProjectEditor::on_projectInfo_textChanged()
 void ProjectEditor::on_suffix_editTextChanged()
 {
 	mProject.SetPoolSuffix(ui.suffix->currentText().toStdString());
-	updateFields();
 }
 
 void ProjectEditor::on_schemaBrowseButton_clicked()
 {
 	QString file = QFileDialog::getOpenFileName(this, 
 			"Open a Description Scheme",
-			mProject.GetSchema().c_str(),
+			mProject.RelativeToAbsolute(mProject.GetSchema()).c_str(),
 			"Description Schemes (*.sc)"
 			);
 	if (file.isNull()) return;
 	// TODO: Check that the schema loads well
-	mProject.SetSchema(file.toStdString());
+	mProject.SetSchema(mProject.AbsoluteToRelative(file.toStdString()));
 	updateFields();
 }
 

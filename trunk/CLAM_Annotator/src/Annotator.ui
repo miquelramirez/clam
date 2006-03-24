@@ -358,17 +358,6 @@ to the proper cell.&lt;/p></string>
     <addaction name="reloadDescriptorsAction" />
     <addaction name="songComputeDescriptorsAction" />
    </widget>
-   <widget class="QMenu" name="mFileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="newProjectAction" />
-    <addaction name="fileOpen_projectAction" />
-    <addaction name="fileSave_projectAction" />
-    <addaction name="fileSave_project_asAction" />
-    <addaction name="separator" />
-    <addaction name="fileExitAction" />
-   </widget>
    <widget class="QMenu" name="mProjectMenu" >
     <property name="title" >
      <string>&amp;Project</string>
@@ -377,6 +366,16 @@ to the proper cell.&lt;/p></string>
     <addaction name="removeSongAction" />
     <addaction name="editProjectPropertiesAction" />
     <addaction name="browseSchemaAction" />
+   </widget>
+   <widget class="QMenu" name="mFileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="newProjectAction" />
+    <addaction name="fileOpen_projectAction" />
+    <addaction name="fileSave_projectAction" />
+    <addaction name="separator" />
+    <addaction name="fileExitAction" />
    </widget>
    <addaction name="mFileMenu" />
    <addaction name="mProjectMenu" />
@@ -451,26 +450,6 @@ to the proper cell.&lt;/p></string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="fileSave_project_asAction" >
-   <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/filesaveas.png</iconset>
-   </property>
-   <property name="text" >
-    <string>S&amp;ave project as</string>
-   </property>
-   <property name="iconText" >
-    <string>Save project as</string>
-   </property>
-   <property name="toolTip" >
-    <string>Save project as</string>
-   </property>
-   <property name="statusTip" >
-    <string>Save project as</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="fileOpen_projectAction" >
