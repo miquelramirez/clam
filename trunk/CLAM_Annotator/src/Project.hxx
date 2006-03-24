@@ -7,7 +7,6 @@
 #include <CLAM/Filename.hxx>
 #include <CLAM/DescriptionScheme.hxx>
 #include <vector>
-#include <QtCore/QDir>
 
 namespace CLAM_Annotator
 {
@@ -90,20 +89,9 @@ public:
 	{
 		return mSchema.GetAttribute(scope, name);
 	}
-	void SetProjectPath(const std::string & path)
-	{
-		mFile = path;
-		QString projectPath = QDir::cleanPath((path+"/../").c_str());
-		mBasePath = projectPath.toStdString();
-	}
-	const std::string & File() const 
-	{
-		return mFile;
-	}
-	const std::string & BaseDir() const 
-	{
-		return mBasePath;
-	}
+	void SetProjectPath(const std::string & path);
+	const std::string & File() const { return mFile; }
+	const std::string & BaseDir() const { return mBasePath; }
 	std::string RelativeToAbsolute(const std::string & file) const;
 	std::string AbsoluteToRelative(const std::string & file) const;
 private:

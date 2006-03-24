@@ -91,7 +91,6 @@ public slots:
 	void insertSegment(unsigned);
 	void refreshSegmentation();
 
-	void fileNew();
 	void fileOpen();
 	void fileSave();
 	void fileOpenRecent();
