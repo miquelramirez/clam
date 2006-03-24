@@ -7,6 +7,7 @@
 #include <CLAM/Filename.hxx>
 #include <CLAM/DescriptionScheme.hxx>
 #include <vector>
+#include <QtCore/QDir>
 
 namespace CLAM_Annotator
 {
@@ -89,19 +90,48 @@ public:
 	{
 		return mSchema.GetAttribute(scope, name);
 	}
-
-	void SetBasePath(const std::string & basePath)
+	void SetProjectPath(const std::string & path)
 	{
-		mBasePath = basePath;
+		mFile = path;
+		QString projectPath = QDir::cleanPath((path+"/../").c_str());
+		mBasePath = projectPath.toStdString();
 	}
-	const std::string & GetBasePath() const
+	const std::string & File()
+	{
+		return mFile;
+	}
+	const std::string & BaseDir()
 	{
 		return mBasePath;
 	}
+	std::string ProjectRelativeToAbsolutePath(const std::string & file)
+	{
+/*
+		QDir projectPath(mBasePath.c_str());
+		return projectPath.relativeFilePath(file.c_str()).toStdString();
+*/
+		QDir qdir = QString(file.c_str());
+		if (qdir.isRelative())
+			return QDir::cleanPath( QDir(mBasePath.c_str()).filePath(file.c_str()) ).toStdString();
+		return file;
+	}
+	std::string AbsoluteToProjectRelativePath(const std::string & file)
+	{
+		QDir projectPath(mBasePath.c_str());
+		return projectPath.relativeFilePath(file.c_str()).toStdString();
+
+		QDir qdir = QString(file.c_str());
+		if (qdir.isRelative()) return file;
+		if (file.substr(0,mBasePath.length()+1)==(mBasePath+"/"))
+			return file.substr(mBasePath.length()+1);
+		return file;
+	}
 private:
 	void CreatePoolScheme();
+private:
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM_Annotator::Schema mSchema;
+	std::string mFile;
 	std::string mBasePath;
 };
 
