@@ -1,51 +1,43 @@
 #define QTPORT
 
 #include "Annotator.hxx"
-#include "Project.hxx"
 #include "FrameDivision.hxx"
+#include "AudioLoadThread.hxx"
+#include "SchemaBrowser.hxx"
+#include "TaskRunner.hxx"
+#include "ui_About.hxx"
+#include "ProjectEditor.hxx"
 
 #include <QtCore/QSettings>
+#include <QtCore/QTimer>
 #include <QtGui/QAction>
 #include <QtGui/QMessageBox>
-#include <QtGui/QTabBar>
 #include <QtGui/QFileDialog>
 #include <QtGui/QTextBrowser>
 #include <QtGui/QCloseEvent>
-#include <QtGui/QVBoxLayout>
 #include <QtGui/QSplashScreen>
 #include <QtGui/QWhatsThis>
-#include <QtGui/QFocusFrame>
 
 #include <algorithm>
 #include <iostream>
-#include <utility>
 #include <fstream>
-#include <QTimer>
 
-//xamat
-#include <time.h>
-
-#include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
-#include <CLAM/MultiChannelAudioFileReader.hxx>
-
-#include <CLAM/AudioFile.hxx>
 #include <CLAM/Array.hxx>
-#include <CLAM/Text.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/CLAM_Math.hxx>
 #include <CLAM/ContiguousSegmentation.hxx>
 #include <CLAM/DiscontinuousSegmentation.hxx>
 #include <CLAM/UnsizedSegmentation.hxx>
 
+// TODO: Segment auralization related, to be moved
+#include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
+#include <CLAM/MultiChannelAudioFileReader.hxx>
+#include <CLAM/AudioFile.hxx>
+
 #include <vmBPFPlot.hxx>
 #include <vmAudioPlot.hxx>
 #include <vmBPFPlayer.hxx>
 
-#include "AudioLoadThread.hxx"
-#include "SchemaBrowser.hxx"
-#include "TaskRunner.hxx"
-#include "ui_About.hxx"
-#include "ProjectEditor.hxx"
 #define VERSION "2.1"
 
 #ifndef RESOURCES_BASE
@@ -204,7 +196,7 @@ void Annotator::loadSettings()
 void Annotator::saveSettings()
 {
 	QSettings settings;
-	settings.setValue(VERSION "/LastSession/ProjectFile", mProjectFileName.c_str()  );
+	settings.setValue(VERSION "/LastSession/ProjectFile", mProject.File().c_str()  );
 	settings.setValue(VERSION "/LastSession/PositionX", pos().x());
 	settings.setValue(VERSION "/LastSession/PositionY", pos().y());
 	settings.setValue(VERSION "/LastSession/SizeX", size().width());
@@ -340,7 +332,7 @@ void Annotator::initProject()
 	
 	markCurrentSongChanged(false);
 	markProjectChanged(false);
-	appendRecentOpenedProject(mProjectFileName);
+	appendRecentOpenedProject(mProject.File());
 }
 
 void Annotator::adaptInterfaceToCurrentSchema()
@@ -485,7 +477,6 @@ void Annotator::makeConnections()
 {
 	// Action Signals
 	connect(fileExitAction, SIGNAL(triggered()), this, SLOT(close()));
-//	connect(newProjectAction, SIGNAL(triggered()), this, SLOT(fileNew()));
 	connect(fileOpen_projectAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
 	connect(fileSave_projectAction, SIGNAL(triggered()), this, SLOT(fileSave()));
 	connect(addSongAction, SIGNAL(triggered()), this, SLOT(addSongsToProject()));
@@ -605,9 +596,8 @@ void Annotator::loadProject(const std::string & projectName)
 		constructFileError(projectName,e));
 		return;
 	}
-	mProjectFileName = projectName;
 	mProject = temporaryProject;
-	mProject.SetProjectPath(mProjectFileName);
+	mProject.SetProjectPath(projectName);
 	initProject();
 }
 
@@ -686,14 +676,22 @@ void Annotator::closeEvent ( QCloseEvent * e )
 {
 	saveDescriptors();
 
-	if ( mProjectNeedsSave )
+	if (! mProjectNeedsSave )
 	{
-		if(QMessageBox::question(this, "Close project", 
-			"Do you want to save changes to the project?", 
-			QMessageBox::Yes, QMessageBox::No ) == QMessageBox::Yes)
-		{
-			fileSave();
-		}
+		e->accept();
+		return;
+	}
+	int result = QMessageBox::question(this, "Close project", 
+		"Do you want to save changes to the project?", 
+		QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel );
+	if (result == QMessageBox::Cancel)
+	{
+		e->ignore();
+		return;
+	}
+	if (result == QMessageBox::Yes)
+	{
+		fileSave();
 	}
 	e->accept();
 }
@@ -711,6 +709,7 @@ void Annotator::deleteSongsFromProject()
 		mProject.RemoveSong((*it)->text(0).toStdString());
 	markProjectChanged(true);
 	updateSongListWidget();
+	// TODO: Clear song dependent widgets
 }
 
 void Annotator::addSongsToProject()
@@ -735,23 +734,6 @@ void Annotator::fileOpen()
 	loadProject(qFileName.toStdString());
 }
 
-void Annotator::fileNew()
-{
-	QString newProjectName = QFileDialog::getSaveFileName(this,
-			tr("Choose a filename for the new project"),
-			0, tr("Annotator project files (*.pro)")
-			);
-	if (newProjectName.isNull()) return;
-	ProjectEditor projectDialog;
-	CLAM_Annotator::Project newProject=mProject;
-	projectDialog.setProject(newProject);
-	projectDialog.exec();
-//	mProjectFileName = "";
-	mProject = newProject;
-	initProject();
-	markProjectChanged(true);
-}
-
 void Annotator::on_newProjectAction_triggered()
 {
 	QString newProjectName = QFileDialog::getSaveFileName(this,
@@ -763,6 +745,7 @@ void Annotator::on_newProjectAction_triggered()
 	projectDialog.setProjectPath(newProjectName.toStdString());
 	if (projectDialog.exec()== QDialog::Rejected) return;
 	mProject = projectDialog.editedProject();
+	mProject.SetProjectPath(newProjectName.toStdString());
 	initProject();
 	markProjectChanged(true);
 }
@@ -780,12 +763,7 @@ void Annotator::on_editProjectPropertiesAction_triggered()
 
 void Annotator::fileSave()
 {
-	if(mProject.File()=="")
-	{
-		QString qFileName = QFileDialog::getSaveFileName(this, tr("Saving the project"), QString::null,"*.pro");
-		if(qFileName == QString::null) return;
-		mProjectFileName = qFileName.toStdString();
-	}
+	CLAM_ASSERT(mProject.File()!="", "Saving using empty file name");
 	CLAM::XMLStorage::Dump(mProject,"Project",mProject.File());
 	markProjectChanged(false);
 	appendRecentOpenedProject(mProject.File());

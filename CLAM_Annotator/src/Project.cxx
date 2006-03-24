@@ -2,9 +2,17 @@
 #include "Project.hxx"
 #include <CLAM/Text.hxx>
 #include <CLAM/XMLStorage.hxx>
+#include <QtCore/QDir>
 
 namespace CLAM_Annotator
 {
+
+void Project::SetProjectPath(const std::string & path)
+{
+	mFile = path;
+	QString projectPath = QDir::cleanPath((path+"/../").c_str());
+	mBasePath = projectPath.toStdString();
+}
 
 std::string Project::RelativeToAbsolute(const std::string & file) const
 {
