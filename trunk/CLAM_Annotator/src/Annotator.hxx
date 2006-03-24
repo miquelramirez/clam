@@ -97,7 +97,6 @@ public slots:
 	void fileSaveAs();
 	void fileOpenRecent();
 
-	void loadSchema();
 	void addSongsToProject();
 	void deleteSongsFromProject();
 	void saveDescriptors();

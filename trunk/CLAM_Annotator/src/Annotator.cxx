@@ -177,6 +177,10 @@ Annotator::Annotator(const std::string & nameProject = "")
 		loadProject(nameProject);
 	else if (mProjectFileName!="") // Last openend project on settings
 		loadProject(mProjectFileName);
+	/* // TODO: Do something when no project is open
+	else
+		on_newProjectAction_triggered();
+	*/
 	updateAuralizationOptions();
 	QTimer::singleShot(1000, splash, SLOT(close()));
 }
@@ -238,8 +242,6 @@ void Annotator::updateRecentFilesMenu()
 	for (unsigned i = mRecentOpenedProjects.size(); i < MaxRecentFiles; ++i)
 		mRecentFilesActions[i]->setVisible(false);
 }
-
-static CLAM::Audio dummyAudio;
 
 Annotator::~Annotator()
 {
@@ -318,11 +320,11 @@ void Annotator::initProject()
 	currentSongChanged(0, mSongListView->currentItem());
 	updateSongListWidget();
 
-	QString projectDescription = "<h1>Project Documentation</h1>\n";
-	if (mProject.HasDescription())
+	QString projectDescription;
+	if (mProject.HasDescription() && mProject.GetDescription()!="")
 		projectDescription += mProject.GetDescription().c_str();
 	else
-		projectDescription += "<p>No project documentation available</p>";
+		projectDescription += "<p><em>(No project documentation available)</em></p>";
 	mProjectDocumentation->setHtml(projectDescription);
 
 	try
@@ -607,6 +609,7 @@ void Annotator::loadProject(const std::string & projectName)
 	}
 	mProjectFileName = projectName;
 	mProject = temporaryProject;
+	mProject.SetProjectPath(mProjectFileName);
 	initProject();
 }
 
@@ -747,7 +750,6 @@ void Annotator::fileNew()
 	projectDialog.exec();
 //	mProjectFileName = "";
 	mProject = newProject;
-//	loadSchema();
 	initProject();
 	markProjectChanged(true);
 }
@@ -762,7 +764,6 @@ void Annotator::on_newProjectAction_triggered()
 	ProjectEditor projectDialog;
 	if (projectDialog.exec()== QDialog::Rejected) return;
 	mProject = projectDialog.editedProject();
-//	loadSchema();
 	initProject();
 	markProjectChanged(true);
 }
@@ -773,7 +774,6 @@ void Annotator::on_editProjectPropertiesAction_triggered()
 	projectDialog.setProject(mProject);
 	if (projectDialog.exec() == QDialog::Rejected) return;
 	mProject = projectDialog.editedProject();
-//	loadSchema();
 	initProject();
 	markProjectChanged(true);
 }
@@ -799,20 +799,6 @@ void Annotator::fileSave()
 	appendRecentOpenedProject(mProjectFileName);
 }
 
-void  Annotator::loadSchema()
-{
-	QString qFileName = QFileDialog::getOpenFileName(
-			this,
-			tr("Choose a Schema"),
-			projectToAbsolutePath(".").c_str(),
-			tr("Description Schemes (*.sc)"));
-	if(qFileName == QString::null) return;
-
-	std::string schemaFile = absoluteToProjectPath(qFileName.toStdString());
-	mProject.SetSchema(schemaFile);
-	initProject();
-}
-
 void  Annotator::saveDescriptors()
 {
 	if (mFrameDescriptorsNeedUpdate)
@@ -833,22 +819,14 @@ void  Annotator::saveDescriptors()
 
 std::string Annotator::projectToAbsolutePath(const std::string & file)
 {
-	QString projectPath = QDir::cleanPath((mProjectFileName+"/../").c_str());
-	mProject.SetBasePath(projectPath.toStdString());
-	QDir qdir = QString(file.c_str());
-	if (qdir.isRelative())
-		return QDir::cleanPath( QDir(projectPath).filePath(file.c_str()) ).toStdString();
-	return file;
+	std::cout << mProjectFileName << " to absolute " << file << " " << mProject.ProjectRelativeToAbsolutePath(file) << std::endl;
+	return mProject.ProjectRelativeToAbsolutePath(file);
 }
 
 std::string Annotator::absoluteToProjectPath(const std::string & file)
 {
-	QDir qdir = QString(file.c_str());
-	if (qdir.isRelative()) return file;
-	const std::string & basePath = mProject.GetBasePath();
-	if (file.substr(0,basePath.length()+1)==(basePath+"/"))
-		return file.substr(mProject.GetBasePath().length()+1);
-	return file;
+	std::cout << mProjectFileName << " to relative " << file << " " << mProject.AbsoluteToProjectRelativePath(file) << std::endl;
+	return mProject.AbsoluteToProjectRelativePath(file);
 }
 
 void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *previous)
