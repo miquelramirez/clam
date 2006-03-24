@@ -87,12 +87,13 @@ bool Annotator::loaderFinished()
 void Annotator::computeSongDescriptors()
 {
 	if (!mSongListView->currentItem()) return;
-	QString filename = mSongListView->currentItem()->text(0);
-	filename  = projectToAbsolutePath(filename.toStdString()).c_str();
-	if (!std::ifstream(filename.toUtf8()))
+	std::string filename = mSongListView->currentItem()->text(0).toStdString();
+	filename  = mProject.RelativeToAbsolute(filename);
+	QString qfilename = QString::fromStdString(filename);
+	if (!std::ifstream(filename.c_str()))
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("<p><b>Unable to open selected file '%1'</b></p>.").arg(filename));
+				tr("<p><b>Unable to open selected file '%1'</b></p>.").arg(qfilename));
 		return;
 	}
 	if (!mProject.HasExtractor() || mProject.GetExtractor()=="")
@@ -109,11 +110,9 @@ void Annotator::computeSongDescriptors()
 	// Wait the window to be redrawn after the reconfiguration
 	// before loading the cpu with the extractor
 	qApp->processEvents();
-	QDir projectPath(mProjectFileName.c_str());
-	projectPath.cdUp();
 	bool ok = runner->run(QString(mProject.GetExtractor().c_str()),
-			QStringList() << filename,
-			projectPath.absolutePath());
+			QStringList() << qfilename,
+			mProject.BaseDir().c_str());
 	if (!ok)
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
@@ -329,7 +328,7 @@ void Annotator::initProject()
 
 	try
 	{
-		mProject.LoadScheme(projectToAbsolutePath(mProject.GetSchema()));
+		mProject.LoadScheme(mProject.RelativeToAbsolute(mProject.GetSchema()));
 	}
 	catch (CLAM::XmlStorageErr & e)
 	{
@@ -488,7 +487,6 @@ void Annotator::makeConnections()
 	connect(fileExitAction, SIGNAL(triggered()), this, SLOT(close()));
 //	connect(newProjectAction, SIGNAL(triggered()), this, SLOT(fileNew()));
 	connect(fileOpen_projectAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
-	connect(fileSave_project_asAction, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
 	connect(fileSave_projectAction, SIGNAL(triggered()), this, SLOT(fileSave()));
 	connect(addSongAction, SIGNAL(triggered()), this, SLOT(addSongsToProject()));
 	connect(removeSongAction, SIGNAL(triggered()), this, SLOT(deleteSongsFromProject()));
@@ -719,12 +717,12 @@ void Annotator::addSongsToProject()
 {
 	QStringList files = QFileDialog::getOpenFileNames(this,
 		"Add files to the project",
-		projectToAbsolutePath(".").c_str(),
+		QString(mProject.BaseDir().c_str()),
 		"Songs (*.wav *.mp3 *.ogg)");
 	QStringList::Iterator it = files.begin();
 	for (; it != files.end(); it++ )
 	{
-		mProject.AppendSong(absoluteToProjectPath(it->toStdString()));
+		mProject.AppendSong(mProject.AbsoluteToRelative(it->toStdString()));
 	}
 	updateSongListWidget();
 	markProjectChanged(true);
@@ -761,7 +759,8 @@ void Annotator::on_newProjectAction_triggered()
 			0, tr("Annotator project files (*.pro)")
 			);
 	if (newProjectName.isNull()) return;
-	ProjectEditor projectDialog;
+	ProjectEditor projectDialog(this);
+	projectDialog.setProjectPath(newProjectName.toStdString());
 	if (projectDialog.exec()== QDialog::Rejected) return;
 	mProject = projectDialog.editedProject();
 	initProject();
@@ -770,7 +769,7 @@ void Annotator::on_newProjectAction_triggered()
 
 void Annotator::on_editProjectPropertiesAction_triggered()
 {
-	ProjectEditor projectDialog;
+	ProjectEditor projectDialog(this);
 	projectDialog.setProject(mProject);
 	if (projectDialog.exec() == QDialog::Rejected) return;
 	mProject = projectDialog.editedProject();
@@ -778,25 +777,18 @@ void Annotator::on_editProjectPropertiesAction_triggered()
 	markProjectChanged(true);
 }
 
-void Annotator::fileSaveAs()
-{
-	QString qFileName = QFileDialog::getSaveFileName(this, tr("Saving the project"), QString::null,"*.pro");
-	if(qFileName == QString::null) return;
-
-	mProjectFileName = qFileName.toStdString();
-	fileSave();
-}
 
 void Annotator::fileSave()
 {
-	if(mProjectFileName=="")
+	if(mProject.File()=="")
 	{
-		fileSaveAs();
-		return;
+		QString qFileName = QFileDialog::getSaveFileName(this, tr("Saving the project"), QString::null,"*.pro");
+		if(qFileName == QString::null) return;
+		mProjectFileName = qFileName.toStdString();
 	}
-	CLAM::XMLStorage::Dump(mProject,"Project",mProjectFileName);
+	CLAM::XMLStorage::Dump(mProject,"Project",mProject.File());
 	markProjectChanged(false);
-	appendRecentOpenedProject(mProjectFileName);
+	appendRecentOpenedProject(mProject.File());
 }
 
 void  Annotator::saveDescriptors()
@@ -813,20 +805,8 @@ void  Annotator::saveDescriptors()
 		QString("Do you want to save current song's descriptors?"),
 		QString("Save Changes"),QString("Discard Them")) != 0) return;
 
-	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",projectToAbsolutePath(mCurrentDescriptorsPoolFileName));
+	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mProject.RelativeToAbsolute(mCurrentDescriptorsPoolFileName));
 	markCurrentSongChanged(false);
-}
-
-std::string Annotator::projectToAbsolutePath(const std::string & file)
-{
-	std::cout << mProjectFileName << " to absolute " << file << " " << mProject.ProjectRelativeToAbsolutePath(file) << std::endl;
-	return mProject.ProjectRelativeToAbsolutePath(file);
-}
-
-std::string Annotator::absoluteToProjectPath(const std::string & file)
-{
-	std::cout << mProjectFileName << " to relative " << file << " " << mProject.AbsoluteToProjectRelativePath(file) << std::endl;
-	return mProject.AbsoluteToProjectRelativePath(file);
 }
 
 void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *previous)
@@ -851,7 +831,7 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	mSegmentEditor->hide();
 	mBPFEditor->hide();
 	setMenuAudioItemsEnabled(false);
-	const std::string absolutePath = projectToAbsolutePath(songFilename).c_str();
+	const std::string absolutePath = mProject.RelativeToAbsolute(songFilename);
 	if (!loaderCreate(mCurrentAudio, absolutePath))
 	{
 		setCursor(Qt::ArrowCursor);
@@ -963,7 +943,7 @@ void Annotator::loadDescriptorPool()
 
 	//Load Descriptors Pool
 	CLAM_ASSERT(mCurrentDescriptorsPoolFileName!="", "Empty file name");
-	std::string poolFile = projectToAbsolutePath(mCurrentDescriptorsPoolFileName);
+	std::string poolFile = mProject.RelativeToAbsolute(mCurrentDescriptorsPoolFileName);
 	try
 	{
 		CLAM::XMLStorage::Restore(*tempPool,poolFile);

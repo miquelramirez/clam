@@ -14,6 +14,7 @@ class ProjectEditor : public QDialog
 			: QDialog(parent)
 		{
 			ui.setupUi(this);
+			ProjectEditor::on_projectInfo_textChanged();
 		}
 		virtual ~ProjectEditor();
 		const CLAM_Annotator::Project & editedProject()
@@ -21,6 +22,7 @@ class ProjectEditor : public QDialog
 			return mProject;
 		}
 		void setProject(const CLAM_Annotator::Project & project);
+		void setProjectPath(const std::string & file);
 	private slots:
 		void on_projectInfo_textChanged();
 		void on_schemaBrowseButton_clicked();
@@ -28,6 +30,7 @@ class ProjectEditor : public QDialog
 		void on_extractorBrowseButton_clicked();
 	private:
 		void updateFields();
+		void updateProject();
 	private:
 		Ui::ProjectEditor ui;
 		CLAM_Annotator::Project mProject;

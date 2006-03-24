@@ -6,6 +6,29 @@
 namespace CLAM_Annotator
 {
 
+std::string Project::RelativeToAbsolute(const std::string & file) const
+{
+/*
+	QDir projectPath(mBasePath.c_str());
+	return projectPath.relativeFilePath(file.c_str()).toStdString();
+*/
+	QDir qdir = QString(file.c_str());
+	if (qdir.isRelative())
+		return QDir::cleanPath( QDir(mBasePath.c_str()).filePath(file.c_str()) ).toStdString();
+	return file;
+}
+std::string Project::AbsoluteToRelative(const std::string & file) const
+{
+	QDir projectPath(mBasePath.c_str());
+	return projectPath.relativeFilePath(file.c_str()).toStdString();
+
+	QDir qdir = QString(file.c_str());
+	if (qdir.isRelative()) return file;
+	if (file.substr(0,mBasePath.length()+1)==(mBasePath+"/"))
+		return file.substr(mBasePath.length()+1);
+	return file;
+}
+
 void Project::CreatePoolScheme()
 {
 	mDescriptionScheme = CLAM::DescriptionScheme(); // reset

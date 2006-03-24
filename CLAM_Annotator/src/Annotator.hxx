@@ -94,7 +94,6 @@ public slots:
 	void fileNew();
 	void fileOpen();
 	void fileSave();
-	void fileSaveAs();
 	void fileOpenRecent();
 
 	void addSongsToProject();
@@ -134,8 +133,6 @@ private:
 	void refreshGlobalDescriptorsTable();
 	void appendRecentOpenedProject(const std::string & projectFilename);
 
-	std::string projectToAbsolutePath(const std::string & file);
-	std::string absoluteToProjectPath(const std::string & file);
 	QString constructFileError(const std::string& fileName, const CLAM::XmlStorageErr& e);
 	void initInterface();
 	void adaptInterfaceToCurrentSchema();
