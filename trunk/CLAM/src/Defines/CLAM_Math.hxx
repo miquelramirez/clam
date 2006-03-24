@@ -36,11 +36,14 @@ const float ONE_OVER_TWOPI =	(0.15915494309189535682609381638f);
 const float PI_2	=		(1.5707963267948966192313216916397514420986f);		/* pi/2 */
 const float TWO_OVER_PI	=	(0.636619772367581332267629550188f);
 const float LN2		=		(0.6931471805599453094172321214581765680755f);		/* ln(2) */
+const float ONE_OVER_LN2 =	(1.44269504088896333066907387547f);
+const float LN10	=		(2.3025850929940456840179914546843642076011f);		/* ln(10) */
+const float ONE_OVER_LN10 =	(0.43429448190325177635683940025f);
+const float LN2_OVER_LN10 = LN2*ONE_OVER_LN10;
 const long LONG_OFFSET	=	4096L;
 const float FLOAT_OFFSET =	4096.0;
 const float HUGE_ = 1.0e8;
 const float ROOT2	=		(1.4142135623730950488016887242096980785697f);		/* sqrt(2) */
-const float ONE_OVER_LN2 =	(1.44269504088896333066907387547f);
 
 /** Efficient versions of common functions*/
 inline float CLAM_sin(register float x)
@@ -130,8 +133,7 @@ inline float CLAM_atan2(float Imag, float Real)
 #ifndef CLAM_OPTIMIZE
 	return (float) atan2((double)Imag, (double)Real);
 #else
-	if(Real==0 && Imag>=0) return 0.f;
-	if(Real==0 && Imag<0) return PI_;
+	if(Real==0 && Imag==0) return 0.f;
 	register float accumulator, xPower, xSquared, offset, x;
 		
 	if (Imag > 0.0f)
@@ -323,6 +325,15 @@ inline float CLAM_log(register float x)
 #endif
 }
 
+inline float CLAM_log10(register float x)
+{
+#ifndef CLAM_OPTIMIZE
+	return (float) log10((double)x);
+#else
+	return LN2_OVER_LN10*CLAM_log2(x);
+#endif
+}
+
 inline float CLAM_exp(register float x)
 {
 #ifndef CLAM_OPTIMIZE
@@ -381,7 +392,7 @@ inline float log2lin( float x )
 
 //	static double magic = 1.0 / (20.0 * log10(exp(1.0)))=0.1151292546497;
 
-	return exp( x * 0.1151292546497f );
+	return CLAM_exp( x * 0.1151292546497f );
 
 }
 
@@ -430,12 +441,12 @@ template <class T> inline T Abs(T value)
 
 inline double DB(double linData, int scaling=20) 
 { 
-	return (scaling*log10(linData)); 
+	return (scaling*CLAM_log10(linData)); 
 }
 
 inline double Lin(double logData, int scaling=20 ) 
 { 
-	return (pow(double(10),(logData/scaling)) ); 
+	return (CLAM_pow(double(10),(logData/scaling)) ); 
 }
 
 /** Definition of CLAM_min and CLAM_max. Note1: we are not returning a const reference 
