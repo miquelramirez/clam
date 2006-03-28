@@ -64,9 +64,6 @@
        <property name="text" >
         <string>MyExtractor.exe</string>
        </property>
-       <property name="readOnly" >
-        <bool>true</bool>
-       </property>
       </widget>
      </item>
      <item>
