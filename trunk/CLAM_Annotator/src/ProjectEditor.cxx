@@ -18,6 +18,7 @@ void ProjectEditor::setProjectPath(const std::string & file)
 {
 	mProject.SetProjectPath(file);
 	updateProject();
+	updateFields();
 }
 
 void ProjectEditor::updateProject()
@@ -29,6 +30,7 @@ void ProjectEditor::updateProject()
 
 void ProjectEditor::updateFields()
 {
+	ui.projectFile->setText(mProject.File().c_str());
 	ui.schema->setText(mProject.GetSchema().c_str());
 	ui.suffix->setEditText(mProject.PoolSuffix().c_str());
 	if (mProject.HasExtractor())
