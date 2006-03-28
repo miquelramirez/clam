@@ -37,3 +37,4 @@ class ProjectEditor : public QDialog
 };
 
 #endif//ProjectEditor_hxx
+

@@ -3,38 +3,39 @@
 #include <CLAM/Text.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <QtCore/QDir>
+#include <QtCore/QFileInfo>
 
 namespace CLAM_Annotator
 {
 
+void Project::DumpSchema()
+{
+	CLAM::XMLStorage::Dump(GetAnnotatorSchema(), "DescriptionScheme", RelativeToAbsolute(GetSchema()));
+}
+void Project::DumpSchema(std::ostream & os)
+{
+	CLAM::XMLStorage::Dump(GetAnnotatorSchema(), "DescriptionScheme", os);
+}
 void Project::SetProjectPath(const std::string & path)
 {
 	mFile = path;
-	QString projectPath = QDir::cleanPath((path+"/../").c_str());
-	mBasePath = projectPath.toStdString();
+	mBasePath = QFileInfo(path.c_str()).path().toStdString();
+	std::cout << "Project file: " << mFile << " at Base " << mBasePath << std::endl;
 }
 
-std::string Project::RelativeToAbsolute(const std::string & file) const
+std::string Project::RelativeToAbsolute(const std::string & projectRelative) const
 {
-/*
+	QString file = projectRelative.c_str();
 	QDir projectPath(mBasePath.c_str());
-	return projectPath.relativeFilePath(file.c_str()).toStdString();
-*/
-	QDir qdir = QString(file.c_str());
-	if (qdir.isRelative())
-		return QDir::cleanPath( QDir(mBasePath.c_str()).filePath(file.c_str()) ).toStdString();
-	return file;
+	QString absolute = projectPath.absoluteFilePath(file);
+	return QDir::current().relativeFilePath(absolute).toStdString();
 }
-std::string Project::AbsoluteToRelative(const std::string & file) const
+std::string Project::AbsoluteToRelative(const std::string & currentRelative) const
 {
+	QString file = currentRelative.c_str();
 	QDir projectPath(mBasePath.c_str());
-	return projectPath.relativeFilePath(file.c_str()).toStdString();
-
-	QDir qdir = QString(file.c_str());
-	if (qdir.isRelative()) return file;
-	if (file.substr(0,mBasePath.length()+1)==(mBasePath+"/"))
-		return file.substr(mBasePath.length()+1);
-	return file;
+	QString absolute = QDir::current().absoluteFilePath(file);
+	return projectPath.relativeFilePath(absolute).toStdString();
 }
 
 void Project::CreatePoolScheme()
@@ -49,15 +50,11 @@ void Project::CreatePoolScheme()
 	}
 }
 
-bool Project::LoadScheme(const std::string & schemeFileName, const std::string & basePath)
+bool Project::LoadScheme()
 {
 	CLAM_Annotator::Schema tempSchema;
-	CLAM::XMLStorage::Restore(tempSchema,basePath+schemeFileName); // May throw an exception
-
-	// Successfull file, just change it
-	SetSchema(std::string(schemeFileName)); // temp created to support self assigns
+	CLAM::XMLStorage::Restore(tempSchema,RelativeToAbsolute(GetSchema())); // May throw an exception
 	GetAnnotatorSchema() = tempSchema;
-	GetDescriptionScheme() = CLAM::DescriptionScheme();
 	CreatePoolScheme();
 	return true;
 }

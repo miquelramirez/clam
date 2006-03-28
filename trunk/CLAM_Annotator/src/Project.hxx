@@ -29,6 +29,10 @@ class Project : public CLAM::DynamicType
 public:
 	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 public:
+	bool LoadScheme();
+	void DumpSchema();
+	void DumpSchema(std::ostream & os);
+
 	const std::string & PoolSuffix() const
 	{
 		static std::string defaultSuffix = ".pool";
@@ -70,7 +74,6 @@ public:
 			return;
 		}
 	}
-	bool LoadScheme(const std::string & schemeFileName, const std::string & basePath="");
 	CLAM::DescriptionScheme & GetDescriptionScheme()
 	{
 		return mDescriptionScheme;
@@ -94,7 +97,6 @@ public:
 	const std::string & BaseDir() const { return mBasePath; }
 	std::string RelativeToAbsolute(const std::string & file) const;
 	std::string AbsoluteToRelative(const std::string & file) const;
-private:
 	void CreatePoolScheme();
 private:
 	CLAM::DescriptionScheme mDescriptionScheme;
