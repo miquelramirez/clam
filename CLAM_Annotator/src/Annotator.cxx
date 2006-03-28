@@ -102,9 +102,10 @@ void Annotator::computeSongDescriptors()
 	// Wait the window to be redrawn after the reconfiguration
 	// before loading the cpu with the extractor
 	qApp->processEvents();
-	bool ok = runner->run(QString(mProject.GetExtractor().c_str()),
-			QStringList() << qfilename,
-			mProject.BaseDir().c_str());
+	bool ok = runner->run(mProject.GetExtractor().c_str(),
+		QStringList() << qfilename,
+		QDir::current().path());
+//			mProject.BaseDir().c_str());
 	if (!ok)
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
@@ -320,7 +321,7 @@ void Annotator::initProject()
 
 	try
 	{
-		mProject.LoadScheme(mProject.RelativeToAbsolute(mProject.GetSchema()));
+		mProject.LoadScheme();
 	}
 	catch (CLAM::XmlStorageErr & e)
 	{
@@ -431,6 +432,7 @@ void Annotator::updateSegmentations()
 	int nMarks = marks.size();
 	descriptorMarks.Resize(nMarks);
 	descriptorMarks.SetSize(nMarks);
+	// TODO: This should be specific for each kind of segmentation!!!
 	for (int i=0; i<nMarks; i++)
 	{
 		descriptorMarks[i] = marks[i];
