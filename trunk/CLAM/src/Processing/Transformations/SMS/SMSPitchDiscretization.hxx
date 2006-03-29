@@ -44,8 +44,7 @@ namespace CLAM{
 		OutPort<Spectrum> mOutSpectrum;
 
 		SMSPitchShift mPitchShift;
-		FrameTransformationConfig mConfig;
-
+		
 	public:
 
 		SMSPitchDiscretization()
@@ -57,12 +56,8 @@ namespace CLAM{
 		mOutFund("Out Fundamental", this),
 		mOutSpectrum("Out Spectrum", this)
 		{
-			Configure( SegmentTransformationConfig() );
+			Configure( FrameTransformationConfig() );
 		}
-
-		const ProcessingConfig& GetConfig() const { return mConfig; }
-
-		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
  		~SMSPitchDiscretization() {}
 

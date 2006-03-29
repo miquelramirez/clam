@@ -49,10 +49,6 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-//		InControl mShiftAmount;
-
-		FrameTransformationConfig mConfig;
-
 	public:
 
 		SMSSpectralShapeShift() 
@@ -66,24 +62,17 @@ namespace CLAM{
 
  		~SMSSpectralShapeShift() {}
 
-		const ProcessingConfig& GetConfig() const { return mConfig; }
-
-		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
-
 		bool Do(const Frame& in, Frame& out)
 		{
 			return Do(in.GetSpectralPeakArray(), 
-				out.GetSpectralPeakArray(),
-				true /* preserve output */);
+				out.GetSpectralPeakArray());
 		}
 	
-		bool Do(const SpectralPeakArray& inpeaks,SpectralPeakArray& out, 
-				bool preserveOutput);
+		bool Do(const SpectralPeakArray& inpeaks,SpectralPeakArray& out);
 
 		bool Do()
 		{
-			bool result = Do(mIn.GetData(), mOut.GetData(), 
-					false /* don't preserve output*/ );
+			bool result = Do(mIn.GetData(), mOut.GetData());
 			mIn.Consume();
 			mOut.Produce();
 			return result;	

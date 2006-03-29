@@ -42,10 +42,6 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-//		InControl mGainAmount;
-
-		FrameTransformationConfig mConfig;
-
 	public:
 
 		SMSSinusoidalGain() 
@@ -55,10 +51,6 @@ namespace CLAM{
 		{
 			Configure( SegmentTransformationConfig() );
 		}
-
-		const ProcessingConfig& GetConfig() const { return mConfig; }
-
-		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
  		~SMSSinusoidalGain() {}
 

@@ -47,9 +47,6 @@ namespace CLAM{
 		InPort<Spectrum> mInSpectrum;
 		OutPort<Spectrum> mOutSpectrum;
 
-		InControl mGenderFactor;
-
-		FrameTransformationConfig mConfig;
 	public:
 
 		SMSGenderChange()
@@ -59,13 +56,8 @@ namespace CLAM{
 		mInFund("In Fundamental", this),
 		mOutFund("Out Fundamental", this),
 		mInSpectrum("In Spectrum", this),
-		mOutSpectrum("Out Spectrum", this),
-		mGenderFactor("Gender Factor", this)
+		mOutSpectrum("Out Spectrum", this)
 		{}
-
-		const ProcessingConfig& GetConfig() const { return mConfig; }
-
-		virtual bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
  		~SMSGenderChange() {}
 

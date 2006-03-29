@@ -28,7 +28,7 @@ namespace CLAM
 
 bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 {
-	BPF voices=mConfig.GetBPFAmount();
+	BPF voices=mConfig.GetBPF();
 	TSize nVoices=voices.Size();
 	Frame tmpInFrame(in),tmpOutFrame(in);
 	tmpOutFrame.AddResidualSpec();
@@ -75,9 +75,10 @@ void SMSHarmonizer::Gain(Frame& inputFrame, TData gain)
 	{
 		peakMag[i]=std::min(peakMag[i]+gain,TData(0));
 	}
+	DataArray& resMag = residual.GetMagBuffer();
 	for(int i=0;i<specSize;i++)
 	{
-		residual.SetMag(i,residual.GetMag(i)*linGain);
+		resMag[i] = resMag[i]*linGain;
 	}
 }
 

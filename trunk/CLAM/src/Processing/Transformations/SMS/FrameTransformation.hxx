@@ -4,6 +4,8 @@
 #include "Processing.hxx"
 #include "InControl.hxx"
 
+#include "FrameTransformationConfig.hxx"
+
 namespace CLAM
 {
 	class Frame;
@@ -13,7 +15,15 @@ namespace CLAM
 		public:
 			FrameTransformation():mAmount("Amount", this){}
 			virtual bool Do(const Frame& in,Frame& out) = 0; 
+			
+			const ProcessingConfig& GetConfig() const { return mConfig; }
+
+			virtual bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
+
 		protected:
+		
+			FrameTransformationConfig mConfig;
+			
 			InControl mAmount;
 	};
 

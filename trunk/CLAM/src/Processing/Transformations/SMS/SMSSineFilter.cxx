@@ -40,12 +40,7 @@ bool SMSSineFilter::Do(const SpectralPeakArray& in, SpectralPeakArray& out) // T
 	
 	for( int i=0; i<nPeaks; i++ )
 	{
-//		std::cerr << "-----------------------\n";
-//		std::cerr << "iMagArray[" << i << "] = " << iMagArray[i] << std::endl;
-//		std::cerr << "filterValue[" << i << "] = " << filter.GetValue(i) << std::endl;
-		oMagArray[i] = iMagArray[i] + filter.GetValue(i);	
-//		std::cerr << "oMagArray[" << i << "] = " << oMagArray[i] << std::endl;
-//		std::cerr << "-----------------------\n";
+		oMagArray[i] = iMagArray[i] + filter.GetValueFromIndex(i);	
 	}
 
 	return true;

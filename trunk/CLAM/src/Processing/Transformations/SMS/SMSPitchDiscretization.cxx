@@ -70,9 +70,7 @@ bool SMSPitchDiscretization::Do( 	const SpectralPeakArray& inPeaks,
 		                inSpectrum, 
 		                outPeaks, 
 		                outFund, 
-		                outSpectrum,
-				true /*preserve outs*/
-				);
+		                outSpectrum);
 		
 		Fundamental tmpFund;
 		tmpFund.AddElem(discPitch);
