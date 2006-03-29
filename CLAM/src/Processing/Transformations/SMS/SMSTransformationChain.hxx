@@ -231,6 +231,19 @@ namespace CLAM {
 			}
 			return result;
 		}
+		
+		/** Returns first transformation in chain belonging to a given class
+		 * 	or NULL if not found
+		 * */
+		SegmentTransformation* GetTransformation(const std::string& name)
+		{
+			for(iterator obj=composite_begin(); obj!=composite_end(); obj++)
+			{
+				if(name == (*obj)->GetClassName()) return dynamic_cast<SegmentTransformation*>((*obj));;
+			}
+			return NULL;
+		}
+		
 
 	private:
 
@@ -364,17 +377,6 @@ namespace CLAM {
 
 		}
 
-		/** Returns first transformation in chain belonging to a given class
-		 * 	or NULL if not found
-		 * */
-		SegmentTransformation* GetTransformation(const std::string& name)
-		{
-			for(iterator obj=composite_begin(); obj!=composite_end(); obj++)
-			{
-				if(name == (*obj)->GetClassName()) return dynamic_cast<SegmentTransformation*>((*obj));;
-			}
-			return NULL;
-		}
 
 	};
 

@@ -102,13 +102,20 @@ namespace CLAM {
 			TData pitch=mFreq.GetLastValue();
 			TData period = pitch /	samplingRate * sizeSpectrum * 2.0; 
 			int i;
+			DataArray& inputMag = input.GetMagBuffer();
+			DataArray& inputPhase = input.GetPhaseBuffer();
+			DataArray& outputMag = output.GetMagBuffer();
+			DataArray& outputPhase = output.GetPhaseBuffer();
+			
+			TData twoPiOverPeriod = TWO_PI/period;
+			TData oneOverTwo = 1/2.0;
 			for(i=0; i<sizeSpectrum; i++)
 			{
-				TData combReal = (1 +cos(i/period * TWO_PI)) / 2.0;
-				TData combImag = (1 -sin(i/period * TWO_PI)) / 2.0;
+				TData combReal = (1 +cos(i*twoPiOverPeriod)) * oneOverTwo;
+				TData combImag = (1 -sin(i*twoPiOverPeriod)) * oneOverTwo;
 				
-				TData mag=input.GetMag(i);
-				TData phase=input.GetPhase(i);
+				TData mag=inputMag[i];
+				TData phase=inputPhase[i];
 				TData real=mag*cos(phase);
 				TData imag=mag*sin(phase);
 
@@ -120,8 +127,8 @@ namespace CLAM {
 
 				
 				
-				output.SetMag(i,newMag);
-				output.SetPhase(i,newPhase);
+				outputMag[i] = newMag;
+				outputPhase[i] = newPhase;
 			}
 
 			if(wasDB) output.ToDB();

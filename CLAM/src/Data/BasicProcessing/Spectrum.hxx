@@ -175,6 +175,7 @@ private:
 	 * in charge of adding and removing buffers */
 	void PRSetType(const SpecTypeFlags& tmpFlags,int size,int bpfsize);
 
+public:
 	/** Returns index from a given frequency */
 	TIndex IndexFromFreq(TData freq) const;
 

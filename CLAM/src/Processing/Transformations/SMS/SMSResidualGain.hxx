@@ -43,10 +43,6 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
-//		InControl mGainAmount;
-
-		FrameTransformationConfig mConfig;
-
 	public:
 
 		SMSResidualGain() 
@@ -58,10 +54,6 @@ namespace CLAM{
 		}
 
  		~SMSResidualGain() {}
-
-		const ProcessingConfig& GetConfig() const { return mConfig; }
-
-		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
 
 		bool Do(const Frame& in, Frame& out)
 		{

@@ -26,10 +26,9 @@ namespace CLAM
 {
 	
 bool SMSSpectralShapeShift::Do(const SpectralPeakArray& 
-			inPeaks,SpectralPeakArray& outPeaks,
-			bool preserveOutput)
+			inPeaks,SpectralPeakArray& outPeaks)
 {
-	if (!preserveOutput)
+	if (!mConfig.GetPreserveOuts())
 	{
 		outPeaks = inPeaks; //TODO big cludge for streaming
 	}

@@ -39,10 +39,6 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-		InControl mShiftAmount;
-
-		FrameTransformationConfig mConfig;
-
 	public:
 		const char* GetClassName() const
 		{
@@ -52,30 +48,24 @@ namespace CLAM{
 		SMSFreqShift() 
 			: 
 			mIn("In SpectralPeaks", this), 
-			mOut("Out SpectralPeaks", this), 
-			mShiftAmount("Shift Amount", this)
+			mOut("Out SpectralPeaks", this) 
 		{
-			Configure( SegmentTransformationConfig() );
+			Configure( FrameTransformationConfig() );
 		}
 
  		~SMSFreqShift() {}	
 		
-		const ProcessingConfig& GetConfig() const { return mConfig; }
-
-		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
-
 		bool Do(const Frame& in, Frame& out)
 		{
 			return Do(in.GetSpectralPeakArray(), 
-				  out.GetSpectralPeakArray(), 
-				  true  /* preserve outs*/);
+				  out.GetSpectralPeakArray());
 		}
 
-		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out, bool preserveOuts);
+		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
 
 		bool Do()
 		{
-			bool result = Do(mIn.GetData(), mOut.GetData(), false /* initialize output */ ); 
+			bool result = Do(mIn.GetData(), mOut.GetData()); 
 			mIn.Consume();
 			mOut.Produce();
 			return result;

@@ -25,7 +25,7 @@
 
 #include "SMSPitchShift.hxx"
 #include "SpectrumAdder2.hxx"
-#include "SegmentTransformation.hxx"
+#include "FrameTransformation.hxx"
 
 
 // TODO: this transformation needs to be ported to inherit from FrameTransformation instead of SegmentTransformation
@@ -34,33 +34,45 @@
 namespace CLAM{
 
 
-	class SMSHarmonizer: public SegmentTransformation
+	class SMSHarmonizer: public FrameTransformation
 	{
 		
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
 		 */
 		const char *GetClassName() const {return "SMSHarmonizer";}
-
+		
+		InControl mIndexCtl;//says what the amount sent as control is modifying
+		InControlTmpl<SMSHarmonizer> mUpdateBPFCtl;//"boolean" control used to say that we want to update BPF
+		InControl mTransCtl;
+		
+		int UpdateBPF(TControlData value)
+		{
+			CLAM::BPF& bpf= mConfig.GetBPF();
+			//this should never happen, it should be initialized at configuration time
+			if(bpf.Size()==0)
+			{
+				InitBPF();
+			}
+			
+			bpf.SetValue((int)mIndexCtl.GetLastValue(), mTransCtl.GetLastValue());
+			return 0;
+		}
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
-		SMSHarmonizer()
+		SMSHarmonizer():
+			mIndexCtl("Index", this),
+			mTransCtl("Transposition",this),
+			mUpdateBPFCtl("UpdateBPF", this, &SMSHarmonizer::UpdateBPF, true)
 		{
+			Configure(FrameTransformationConfig());
 		}
-		/** Constructor with an object of SegmentTransformationConfig class by parameter
-		 *  @param c SegmentTransformationConfig object created by the user
-		*/
-		SMSHarmonizer(const SegmentTransformationConfig &c):SegmentTransformation(c)
+		
+		bool ConcreteConfigure(const ProcessingConfig& c)
 		{
-		}
-
-		virtual bool ConcreteConfigure(const ProcessingConfig& c)
-		{
-			SegmentTransformation::ConcreteConfigure(c);
-			//BPF will be used in a non temporal sense
-			mUseTemporalBPF=false;
-			//configure member PitchShift by default
-			mPitchShift.Configure(SegmentTransformationConfig());
+			CopyAsConcreteConfig( mConfig, c );
+			InitBPF();
+			mPitchShift.Configure(FrameTransformationConfig());
 			return true;
 		}
 
@@ -80,6 +92,29 @@ namespace CLAM{
 		SpectrumAdder2 mSpectrumAdder;
 		void AddFrame(const Frame& in1, const Frame& in2, Frame& out);
 		void Gain(Frame& inputFrame, TData gain);
+		
+		void InitBPF()
+		{
+			if (!mConfig.HasBPF())
+			{
+				mConfig.AddBPF();
+				mConfig.UpdateData();
+			}
+			if(mConfig.GetBPF().Size()==0)//else we asume that the user has initialized it before
+			{
+				BPF& bpf=mConfig.GetBPF();
+				bpf.Resize(10);
+				bpf.SetSize(10);
+				int i;
+				//we add ten voices with gain going from -30 to +30 but no transposition (note that X controls gain and Y transposition)
+				for (i=0; i< 10; i++)
+				{
+					bpf.SetValue(i,1);
+					bpf.SetXValue(i,(i-5)*6);
+				}
+			}
+		}
+		
 	
 	};		
 };//namespace CLAM

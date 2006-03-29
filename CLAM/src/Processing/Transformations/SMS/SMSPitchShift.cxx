@@ -34,10 +34,9 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 		const Spectrum& inRes, 
 		SpectralPeakArray& outPeaks,
 		Fundamental& outFund,
-		Spectrum& outRes,
-		bool preserveOuts)
+		Spectrum& outRes)
 {
-	if (!preserveOuts) //TODO big cludge for streaming
+	if (!mConfig.GetPreserveOuts()) //TODO big cludge for streaming
 	{
 		outPeaks = inPeaks; 
 		outFund = inFund;
@@ -107,9 +106,7 @@ bool SMSPitchShift::Do(const Frame& in, Frame& out)
 			in.GetResidualSpec(), 
 			out.GetSpectralPeakArray(),
 			out.GetFundamental(), 
-			out.GetResidualSpec(),
-			true /*preserve outs*/
-			);
+			out.GetResidualSpec());
 
 }
 

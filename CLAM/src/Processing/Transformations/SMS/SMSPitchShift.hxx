@@ -56,9 +56,6 @@ namespace CLAM{
 		OutPort<Spectrum> mOutSpectrum;
 
 		InControl mIsHarmonic;
-//		InControl mShiftAmount;
-
-		FrameTransformationConfig mConfig;
 
 	public:
 		SMSPitchShift()
@@ -76,17 +73,12 @@ namespace CLAM{
 
  		~SMSPitchShift() {}
 
-		const ProcessingConfig& GetConfig() const { return mConfig; }
-
-	    bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
-
 		bool Do(const SpectralPeakArray& inPeaks,
 		        const Fundamental& inFund,
 			const Spectrum& inRes,
 			SpectralPeakArray& outPeaks,
 			Fundamental& outFund,
-			Spectrum& outRes,
-			bool preserveOuts);
+			Spectrum& outRes);
 
 		bool Do(const Frame& in, Frame& out);
 
@@ -97,8 +89,7 @@ namespace CLAM{
 					mInSpectrum.GetData(), 
 					mOutPeaks.GetData(), 
 					mOutFundamental.GetData(), 
-					mOutSpectrum.GetData(),
-					false /*initialize outs*/
+					mOutSpectrum.GetData()
 					);
 
 			mInPeaks.Consume();

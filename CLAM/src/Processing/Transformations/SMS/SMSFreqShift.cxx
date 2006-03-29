@@ -26,10 +26,10 @@ namespace CLAM
 {
 
 
-bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out, bool preserveOuts)
+bool SMSFreqShift::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 {
 
-	if ( !preserveOuts )
+	if ( !mConfig.GetPreserveOuts() )
 	{
 		out = in; //TODO big cludge for streaming
 	}

@@ -43,8 +43,6 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-		FrameTransformationConfig mConfig;
-
 	public:
 
 		SMSOddEvenHarmonicRatio() 
@@ -58,10 +56,6 @@ namespace CLAM{
 
  		~SMSOddEvenHarmonicRatio() {}
 	
-		const ProcessingConfig& GetConfig() const { return mConfig; }
-
-		bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
-
 		bool Do(const Frame& in, Frame& out)
 		{
 			return Do(in.GetSpectralPeakArray(), out.GetSpectralPeakArray());

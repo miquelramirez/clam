@@ -36,7 +36,7 @@
 namespace CLAM
 {
 
-	class SMSSineFilterConfig : public ProcessingConfig
+/*	class SMSSineFilterConfig : public ProcessingConfig
 	{
 
 	   public:
@@ -44,7 +44,7 @@ namespace CLAM
 			/** Single Value Parameter */
 //			DYN_ATTRIBUTE (0, public, TData, Amount);
 			/** BPF (envelope-like) Parameter */
-			DYN_ATTRIBUTE (0, public, BPF, BPF);
+/*			DYN_ATTRIBUTE (0, public, BPF, BPF);
 
 
 		private:
@@ -64,7 +64,7 @@ namespace CLAM
 			}
 
 	};
-
+*/
 	class SMSSineFilter: public FrameTransformation
 	{
 		
@@ -76,24 +76,50 @@ namespace CLAM
 		InPort<SpectralPeakArray> mInPeaks;
 		OutPort<SpectralPeakArray> mOutPeaks;
 
-		SMSSineFilterConfig mConfig;
-
+		InControl mIndexCtl;//says what the amount sent as control is modifying
+		InControlTmpl<SMSSineFilter> mUpdateBPFCtl;//"boolean" control used to say that we want to update BPF
+		InControl mGainCtl;
+		
+		int UpdateBPF(TControlData value)
+		{
+			CLAM::BPF& bpf= mConfig.GetBPF();
+			//this should never happen, it should be initialized at configuration time
+			if(bpf.Size()==0)
+			{
+				InitBPF();
+			}
+			
+			bpf.SetValue((int)mIndexCtl.GetLastValue(), mGainCtl.GetLastValue());
+			return 0;
+		}
+		
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSSineFilter()
 			:
 			mInPeaks("In SpectralPeaks", this),
-			mOutPeaks("Out SpectralPeaks", this)
+			mOutPeaks("Out SpectralPeaks", this),
+			mIndexCtl("Index", this),
+			mGainCtl("Gain",this),
+			mUpdateBPFCtl("UpdateBPF", this, &SMSSineFilter::UpdateBPF, true)
+
 		{
+			
+			//setting default configuration
+			mConfig.AddBPF();
+			mConfig.UpdateData();
 			Configure( mConfig );
 		}
 		/** Constructor with an object of SegmentTransformationConfig class by parameter
 		 *  @param c SegmentTransformationConfig object created by the user
 		*/
-		SMSSineFilter(const SMSSineFilterConfig& cfg )
+		SMSSineFilter(const FrameTransformationConfig& cfg )
 			:
 			mInPeaks("In SpectralPeaks", this),
-			mOutPeaks("Out SpectralPeaks", this)
+			mOutPeaks("Out SpectralPeaks", this),
+			mIndexCtl("Index", this),
+			mGainCtl("Gain",this),
+			mUpdateBPFCtl("UpdateBPF", this, &SMSSineFilter::UpdateBPF, true)
 		{
 			Configure( cfg );
 		}
@@ -101,6 +127,7 @@ namespace CLAM
 		virtual bool ConcreteConfigure(const ProcessingConfig& cfg) 
 		{
 			CopyAsConcreteConfig( mConfig, cfg );
+			InitBPF();
 			return true; 
 		}
 
@@ -124,6 +151,26 @@ namespace CLAM
 			mInPeaks.Consume();
 			mOutPeaks.Produce();
 			return result;
+		}
+		
+		void InitBPF()
+		{
+			if (!mConfig.HasBPF())
+			{
+				mConfig.AddBPF();
+				mConfig.UpdateData();
+			}
+			if(mConfig.GetBPF().Size()==0)//else we asume that the user has initialized it before
+			{
+				BPF& bpf=mConfig.GetBPF();
+				bpf.Resize(500);
+				bpf.SetSize(500);
+				int i;
+				for (i=0; i< 500; i++)
+				{
+					bpf.SetValue(i,0);
+				}
+			}
 		}
 	
 	};		
