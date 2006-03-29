@@ -107,7 +107,7 @@ class Tasker:
 		if projectsonglisting == "":
 			raise TaskerError("Access error\nNo file from the task could be downloaded. Check the task file for correct ids.")
 
-		self.createFile(self.projectname, '.pro', clamAnnotatorProjectSkeleton % ( self.description, self.projectname, projectsonglisting ) )
+		self.createFile(self.projectname, '.pro', clamAnnotatorProjectSkeleton % ( saxutils.escape(self.description), self.projectname, projectsonglisting ) )
 	
 	
 		#Print log
@@ -138,10 +138,14 @@ class Tasker:
 					stream = urllib2.urlopen(url)
 				else:
 					stream = urllib.urlopen(url,None,ServiceStub.Proxies)
+
+				if stream.info().type not in [ "audio/mpeg", "application/ogg", "audio/x-wav" ]:
+					self.printfunction(u"     (ERROR)\n")
+					continue
+				
 				file = open( self.path+".tempAnnotationSong", 'w')
 				file.write( stream.read() )
 				file.close()
-				ok = True
 				self.printfunction(u"     (OK)\n")
 				return url
 			except:
@@ -154,7 +158,6 @@ class Tasker:
 	def extractParameters(self):
 		ids = []
 		descriptors = []
-
 
 		for id in self.task.getElementsByTagName("ID"):
 			id.normalize()
@@ -241,14 +244,14 @@ class Tasker:
 			file.write( content )
 			file.close()
 		except:
-			raise TaskerError("File write error\nError writing the files, maybe the directory does not exist!")
+			raise TaskerError("File write error\nError writing file '%s', maybe the directory does not exist!" % (name+extension))
 
 
 	def runAnnotator(self):
 		self.printfunction(u"\n  == CLAM-Annotator ==\n")
 		self.printfunction(u" - Launching...\n")
 		if sys.platform != 'win32':
-			result = os.system( "Annotator %s.pro &> /dev/null" % (self.path+self.projectname) )
+			result = os.system( "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/lib Annotator %s.pro &> /dev/null" % (self.path+self.projectname) )
 		else:
 			raise TaskError("Run Annotator error\nWindows execution of the Annotator is still not managed.")
 		self.printfunction( "RESULT = %d" % result )
