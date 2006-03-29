@@ -21,7 +21,7 @@ def recursiveDirs(root) :
 
 env = Environment(tools=['default','qt'], options=options)
 options.Save('options.cache', env)
-Help(options.GenerateHelpText(env)
+Help(options.GenerateHelpText(env))
 
 CLAMInstallDir = env['clam_prefix']
 CLAMVmQtPath = env['clam_vmqt4_path']
@@ -130,18 +130,22 @@ mainSources = {
 	'ClamExtractorExample' : './ClamExtractorExample.cxx',
 }
 
-manpage = ['../resources/man/man9/Annotator.9']
-
 programs = []
 for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
 
-manpage = ['../resources/man/man9/Annotator.9']
-sounds = ['../resources/sounds/click.wav']
+sounds = [
+	'../resources/sounds/click.wav'
+	]
+manpages = [
+	'../resources/man/man1/Annotator.1',
+	'../resources/man/man1/ClamExtractorExample.1',
+	]
+
 #env.AddPostAction( install_bin, 'chmod 755 $TARGET' ) # TODO: Look for a generic action
 installation = {
 	'/bin' : programs,
-	'/share/man/man9' : manpage,
+	'/share/man/man1' : manpages,
 	'/share/annotator/sounds': sounds,
 }
 installTargets = [
