@@ -13,10 +13,8 @@
       <Documentation>&lt;p&gt;The &lt;em&gt;Danceability&lt;/em&gt; is a 0 to 10 score that depends on how much defined is the rhythm&lt;/p&gt;
 &lt;p&gt;Data for this data is not the one in Simac but randomly generated.&lt;/p&gt;
 </Documentation>
-      <fRange>
-        <Min>0</Min>
-        <Max>10</Max>
-      </fRange>
+      <MinValue>0</MinValue>
+      <MaxValue>10</MaxValue>
     </Attribute>
     <Attribute name="Key" scope="Song" type="Enumerated">
       <EnumerationValues>C C# D D# E F F# G G# A A# B</EnumerationValues>
@@ -25,16 +23,12 @@
       <EnumerationValues>Minor Major</EnumerationValues>
     </Attribute>
     <Attribute name="DynamicComplexity" scope="Song" type="Float">
-      <fRange>
-        <Min>0</Min>
-        <Max>10</Max>
-      </fRange>
+      <MinValue>0</MinValue>
+      <MaxValue>10</MaxValue>
     </Attribute>
     <Attribute name="BPM" scope="Song" type="Int">
-      <iRange>
-        <Min>0</Min>
-        <Max>240</Max>
-      </iRange>
+      <MinValue>0</MinValue>
+      <MaxValue>240</MaxValue>
     </Attribute>
     <Attribute name="RandomSegments" scope="Song" type="Segmentation">
       <ChildScope></ChildScope>
@@ -45,10 +39,8 @@
       <SegmentationPolicy>Unsized</SegmentationPolicy>
     </Attribute>
     <Attribute name="Relevance" scope="Onset" type="Float">
-      <fRange>
-        <Min>0</Min>
-        <Max>10</Max>
-      </fRange>
+      <MinValue>0</MinValue>
+      <MaxValue>10</MaxValue>
     </Attribute>
     <Attribute name="DetectedChange" scope="Onset" type="Enumerated">
       <EnumerationValues>PitchChange EnergyChange</EnumerationValues>
@@ -61,10 +53,8 @@
       <EnumerationValues>C C# D D# E F F# G G# A A# B</EnumerationValues>
     </Attribute>
     <Attribute name="Octave" scope="Note" type="Int">
-      <iRange>
-        <Min>1</Min>
-        <Max>12</Max>
-      </iRange>
+      <MinValue>1</MinValue>
+      <MaxValue>12</MaxValue>
     </Attribute>
     <Attribute name="Instrument" scope="Note" type="String"/>
     <Attribute name="Chords" scope="Song" type="Segmentation">
