@@ -5,10 +5,10 @@ import SCons.Util
 from SCons.Util import CLVar
 
 options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', '/usr/local'))
+options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(PathOption('clam_vmqt4_path', 'The path to the vmqt module', '')) # to be removed
-options.Add(BoolOption( 'release', 'Build CLAM Annotator enabling compiler optimizations', 'yes') )
+options.Add(BoolOption( 'release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -21,6 +21,7 @@ def recursiveDirs(root) :
 
 env = Environment(tools=['default','qt'], options=options)
 options.Save('options.cache', env)
+Help(options.GenerateHelpText(env)
 
 CLAMInstallDir = env['clam_prefix']
 CLAMVmQtPath = env['clam_vmqt4_path']
@@ -63,14 +64,14 @@ pkgconfigLibraries = [
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
+	'QtCore',
 	'QtGui',
+	'QtOpenGL',
 #	'QtSvg',
 #	'QtSql',
 #	'QtNetwork',
 #	'QtTest',
 #	'QtXml',
-	'QtCore',
-	'QtOpenGL',
 #	'QtSvg',
 #	'Qt3Support',
 ]
@@ -122,10 +123,10 @@ if env['release'] :
 	env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
 else :
 	env.Append( CCFLAGS=['-g', '-Wall'] )
-#env.Append( LINKFLAGS=['-rdynamic'] )
+#env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
 
 mainSources = {
-	'Annotator-qt4' : './main.cxx',
+	'Annotator' : './main.cxx',
 	'ClamExtractorExample' : './ClamExtractorExample.cxx',
 }
 
