@@ -10,8 +10,15 @@ Architecture: any
 #Depends: ${shlibs:Depends}, ${misc:Depends}
 Depends: libclamcore (>= 0.90.0), libclamprocessing (>= 0.90.0), libclamaudioio (>= 0.90.0), libclamvmqt (>= 0.90.0)
 Description: CLAM audio annotation tool
- The clam annotator is a graphic application that can be used to manually edit any 
- previously computed audio descriptors. 
- The application offers a convenient GUI that allows to edit low-level frame descriptors, 
- global descriptors of any kind and segmentation marks.
- It is designed in such a way that the interface adapts itself to a user-defined schema.
+ The CLAM Annotator is a tool to visualize, check and modify music
+ information extracted from audio: low level features, note
+ segmentation, chords, structure... The tool is intended to be useful for
+ the music information retrieval research whenever you need to:
+  * Supervise and correct the results of automated audio feature
+  extraction algorithms.
+  * Generate manually edited annotations of audio as training examples or
+  ground truth for those algorithms.
+ 
+ The application adapts to user defined description schemes, auralizes
+ annotations and provides import and export support for wavesurfer formats.
+ It also has support for collaborative and distributed annotation campaigns.
