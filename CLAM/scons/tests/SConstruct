@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys, os, glob
 
 def parse_pkg_config( env ) :
@@ -72,14 +73,13 @@ def parse_pkg_config( env ) :
 	print
 	env.Append( CPPPATH = cpppath.keys() )
 
-sys.path+=['../libs']
+sys.path.append('../libs')
 from buildtools import *
 # CLAM unit tests build
 
 tests_env = Environment( ENV=os.environ )
-Export( 'tests_env' )
 
-opts = Options('unit_tests.conf')
+opts = Options('CLAMTests.conf')
 
 if sys.platform == 'linux2' :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
@@ -111,7 +111,7 @@ if sys.platform != 'win32' :
 		tests_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
 	else :
 		tests_env.Append( CCFLAGS=['-g', '-Wall'] )
-	tests_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio' )
+	tests_env.ParseConfig( 'PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config --cflags --libs clam_core clam_processing clam_audioio'%(tests_env['clam_prefix']))
 else :
 	tests_env.Append( CPPPATH=[tests_env['cppunit_prefix']+'/include'] )
 	tests_env.Append( LIBPATH=[tests_env['cppunit_prefix']+'/lib'] )
@@ -125,11 +125,10 @@ else :
 		tests_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
 		tests_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
+#TODO: KLUDGE to allow old style and new style CLAM headers
+tests_env.Append(CPPPATH=tests_env['clam_prefix']+'/include/CLAM')
 
-# read flags from pkg-config clam library descriptors
-
-tests_env.ParseConfig( 'pkg-config --cflags --libs clam_core clam_processing clam_audioio')
-
+Export( 'tests_env' )
 SConscript('unit_tests/SConscript')
 SConscript('functional_tests/SConscript')
 
