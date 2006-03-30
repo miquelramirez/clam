@@ -33,6 +33,6 @@ typedef CLAM::Factory<NetworkGUI::ProcessingConfigPresentation> ProcessingConfig
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::FrameTransformationConfig> >
        regtSMSTransformationConfig("FrameTransformationConfig");
 
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSSineFilterConfig> >
-       regtSMSSineFilterConfig("SMSSineFilterConfig");
+//static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSSineFilterConfig> >
+//       regtSMSSineFilterConfig("SMSSineFilterConfig");
 
