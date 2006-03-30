@@ -1,8 +1,9 @@
+#!/usr/bin/python
 Import('tests_env')
 import sys, os
-sys.path +=['../../libs']
-from buildtools.include_rename import update_includes
-from buildtools.file_retriever import FileRetriever
+sys.path +=['../../libs/buildtools']
+from include_rename import update_includes
+from file_retriever import FileRetriever
 import shelve
 
 header_db = shelve.open( '../../libs/header.db' )
