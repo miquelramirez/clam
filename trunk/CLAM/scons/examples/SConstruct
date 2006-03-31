@@ -1,0 +1,170 @@
+#!/usr/bin/python
+import os
+import glob
+import SCons.Util
+from SCons.Util import CLVar
+
+options = Options('options.cache', ARGUMENTS)
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(path+"/"+pattern)
+	return files
+
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+def unique(list) :
+	return dict.fromkeys(list).keys()
+
+env = Environment(tools=['default','qt'], options=options)
+options.Save('options.cache', env)
+CLAMInstallDir = env['clam_prefix']
+
+env['CXXFILESUFFIX'] = '.cxx'
+env['QT_MOCHPREFIX'] = 'generated/moc_'
+env['QT_UISUFFIX'] = '.ui'
+env['QT_UICDECLPREFIX'] = 'generated/ui_'
+env['QT_UICDECLSUFFIX'] = '.hxx'
+env['QT_LIB'] = '' # KLUDGE to avoid linking qt3 library
+
+qrcbuilder = Builder(
+	action ='rcc $SOURCE -o $TARGET',
+	src_suffix = '.qrc',
+	suffix = '.cxx',
+	prefix = 'generated/qrc_',
+	single_source = True
+	)
+env.Append( BUILDERS = { 'Qrc': qrcbuilder } )
+
+env['QT_UIC4COM'] = [
+	CLVar('$QT4_UIC $QT_UICDECLFLAGS -o ${TARGETS[0]} $SOURCE'),
+	]
+uic4builder = Builder(
+    action='$QT_UIC4COM',
+	src_suffix='$QT_UISUFFIX',
+	suffix='$QT_UICDECLSUFFIX',
+	prefix='$QT_UICDECLPREFIX',
+	single_source = True
+	)
+env.Append( BUILDERS = { 'Uic4': uic4builder } )
+
+pkgconfigLibraries = [
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	'clam_vmfl',
+	'clam_vmqt',
+]
+
+sourcePaths = []
+#sourcePaths += recursiveDirs("..")
+extraPaths = []
+extraPaths += recursiveDirs("examples/utils")
+extraPaths += [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes	
+]
+includePaths = sourcePaths + extraPaths
+
+sources = scanFiles('*.cxx', sourcePaths)
+sources = unique(sources)
+
+env.Append(CPPPATH=includePaths)
+env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
+	(
+		CLAMInstallDir,
+		' '.join(pkgconfigLibraries)))
+env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
+examplesMainSources = [
+	"../../examples/NetworkPersistence_example.cxx",
+	"../../examples/NetworkUsage_example.cxx",
+	"../../examples/AudioApplicationExample.cxx",
+	"../../examples/AudioFileReading_example.cxx",
+	"../../examples/AudioFileWriting_example.cxx",
+#	"../../examples/AudioIOExample.cxx", # TODO: Not Compiling
+#	"../../examples/CLAMRemoteController/CLAMRemoteController.cxx",
+#	"../../examples/CLAMRemoteController/LADSPAHandler.cxx",
+#	"../../examples/CLT/LadspaAudioMultiplier.cxx",
+#	"../../examples/CLT/LadspaSimpleOscillator.cxx",
+#	"../../examples/Configurators_example.cxx",
+#	"../../examples/ControlArrayExamples/MyProcessingWithControlArray.cxx",
+#	"../../examples/ControlArrayExamples/MyProcessingWithSimpleControls.cxx",
+#	"../../examples/ControlArrayExamples/main.cxx",
+	"../../examples/DescriptorComputation_example.cxx",
+	"../../examples/FDFilterExample.cxx",
+	"../../examples/FFT_example.cxx",
+	"../../examples/FileInfo_example.cxx",
+	"../../examples/FilePlayback_example.cxx",
+	"../../examples/FundamentalDetect.cxx",
+	"../../examples/LPCAnalysis_example.cxx",
+	"../../examples/Midi2XmlExample.cxx",
+	"../../examples/MIDIFileReadWriteExample.cxx",
+	"../../examples/MIDIIOExample.cxx",
+	"../../examples/MIDIOut_example.cxx",
+	"../../examples/MIDI_Synthesizer_example/MIDI_Synthesizer_example.cxx",
+#	"../../examples/NetworkLADSPAPlugin/LADSPAHandler.cxx",
+#	"../../examples/NetworkLADSPAPlugin/NetworkLADSPAPlugin.cxx",
+	"../../examples/NetworkPersistence_example.cxx",
+	"../../examples/NetworkUsage_example.cxx",
+	"../../examples/PersistenceThroughDTs_example.cxx",
+#	"../../examples/MultiPlot_example.cxx",
+#	"../../examples/PlotExamplesHelper.cxx",
+#	"../../examples/SinglePlot_example.cxx",
+	"../../examples/POCompositeExample.cxx",
+#	"../../examples/PortsAndControlsUsageExample/MyProcessingWithPortsAndControls.cxx",
+#	"../../examples/PortsAndControlsUsageExample/PortsAndControlsUsage_example.cxx",
+	"../../examples/PortsExamples/SimplePortsUsage_example.cxx",
+	"../../examples/ProcessingLifeCycle_example.cxx",
+	"../../examples/ProcessingObject_controls_example.cxx",
+#	"../../examples/Prototyper/PrototypeLoader.cxx",
+#	"../../examples/Prototyper/JACKPrototyper.cxx",
+#	"../../examples/Prototyper/PAPrototyper.cxx",
+#	"../../examples/Prototyper/BlockingPrototyper.cxx",
+#	"../../examples/Prototyper/QtSlot2Control.cxx",
+#	"../../examples/QtDesignerPlugins/CLAMWidgetsPlugin.cxx",
+#	"../../examples/QtPlots/BPFEditorExample/BPFEditorExample.cxx",
+#	"../../examples/QtPlots/DirectPlotsExamples/DPAudioExample.cxx",
+#	"../../examples/QtPlots/DirectPlotsExamples/DPAudioStereoExample.cxx",
+#	"../../examples/QtPlots/DirectPlotsExamples/DPFundamentalExample.cxx",
+#	"../../examples/QtPlots/DirectPlotsExamples/DPMultiPlotExample.cxx",
+#	"../../examples/QtPlots/DirectPlotsExamples/DPSpectrumAndPeaksExample.cxx",
+#	"../../examples/QtPlots/DirectPlotsExamples/MultiBPFViewerExample.cxx",
+#	"../../examples/QtPlots/ListPlotExample/ListPlotExample.cxx",
+#	"../../examples/QtPlots/QtPlotsExamples/QtAudioPlotExample.cxx",
+#	"../../examples/QtPlots/QtPlotsExamples/QtSinTracksPlotExample.cxx",
+#	"../../examples/QtPlots/QtPlotsExamples/QtSpectrogramExample.cxx",
+#	"../../examples/QtPlots/QtPlotsExamples/QtSpectrumPlotExample.cxx",
+#	"../../examples/QtPlots/SegmentEditorExample/SegmentEditorExample.cxx",
+#	"../../examples/QtPlots/utils/analysis_utils.cxx",
+#	"../../examples/QtPlots/utils/audio_file_utils.cxx",
+#	"../../examples/QtPlots/utils/wave_utils.cxx",
+	"../../examples/SDIF_And_Segment_example.cxx",
+	"../../examples/Spectrum_example.cxx",
+	"../../examples/StereoToMonoFile.cxx",
+#	"../../examples/StreamBufferExample.cxx", # TODO: Deprecated?
+#	"../../examples/ThreadedProcessing_example.cxx",
+	"../../examples/Tutorial/UserTutorial1.cxx",
+	"../../examples/Tutorial/UserTutorial2.cxx",
+	"../../examples/Tutorial/UserTutorial3.cxx",
+	"../../examples/Tutorial/UserTutorial4.cxx",
+	"../../examples/Tutorial/UserTutorial5.cxx",
+#	"../../examples/Tutorial/UserTutorial6.cxx",
+]
+
+multipleFilesExamples = [
+	"../../examples/TickExtractor/",
+]
+examples = []
+for main in examplesMainSources :
+	executable = os.path.splitext(os.path.basename(main))[0]
+	examples += [ env.Program(target=executable, source = sources + [main] ) ]
+
+env.Alias('examples',examples)
+
+env.Default(examples)
+
+
+
