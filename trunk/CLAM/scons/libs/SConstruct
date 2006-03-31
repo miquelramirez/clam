@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import os
 import shelve
@@ -311,8 +312,8 @@ def config_file_missing():
 # SConstruct file for CLAM
 # Main section
 
-version = '0.90.0'
-package_version = '0.90.0'
+version = '0.91.0'
+package_version = '0.91.0'
 Export('version')
 
 top = '../..'
