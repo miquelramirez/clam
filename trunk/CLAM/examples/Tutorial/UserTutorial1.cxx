@@ -36,10 +36,8 @@ int main(void)
 	CLAM::FFTConfig my_fft_config;
 
 	// This sets some configuration parameters.
-	my_fft_config.SetName("A_Nice_FFT");
 	my_fft_config.SetAudioSize(1024);
 
 	// And this finally creates the FFT object.
 	CLAM::FFT my_fft(my_fft_config);
-	std::cout << my_fft.GetName() << std::endl;
 }

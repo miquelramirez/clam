@@ -26,6 +26,7 @@
  *   * How to synchronize different dynamic attributes in a data object.
  */
 #include <Spectrum.hxx>
+#include <SpectrumConfig.hxx>
 #include <Array.hxx>
 #include <Complex.hxx>
 
