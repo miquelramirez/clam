@@ -243,11 +243,6 @@ private:
 				<< std::endl;
 			ok=false;
 		}
-		if (values[0]!=0)
-		{
-			err << "The first segment of a continuous segmentation was not at zero" << std::endl;
-			ok=false;
-		}
 		for (unsigned i=1; i<values.Size(); i++)
 		{
 			if (values[i]>=values[i-1]) continue;
