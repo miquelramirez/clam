@@ -384,7 +384,7 @@ void PopulatePool(const std::string & song,
 	// Note Segmentation
 	CLAM::DataArray* noteSegmentation = 
 		pool.GetWritePool<CLAM::DataArray>("Song","Notes");
-	unsigned nNotes = GenerateOverlappingSegments(noteSegmentation[0], GetDurationInSeconds(song), 8., 8.);
+	unsigned nNotes = GenerateOverlappingSegments(noteSegmentation[0], GetDurationInSeconds(song), .5, .8);
 	pool.SetNumberOfContexts("Note",nNotes);
 	CLAM_Annotator::Enumerated * notePitch = pool.GetWritePool<CLAM_Annotator::Enumerated>("Note","Pitch");
 	int * noteOctave = pool.GetWritePool<int>("Note","Octave");
@@ -396,8 +396,7 @@ void PopulatePool(const std::string & song,
 	// Chord Segmentation
 	CLAM::DataArray* chordSegmentation = 
 		pool.GetWritePool<CLAM::DataArray>("Song","Chords");
-	unsigned nChords = GenerateRandomSegmentationMarks(chordSegmentation[0], GetDurationInSeconds(song), .5, 8. )+1;
-	chordSegmentation[0][0]=0;
+	unsigned nChords = GenerateRandomSegmentationMarks(chordSegmentation[0], GetDurationInSeconds(song)-4, .5, 8. )+1;
 	pool.SetNumberOfContexts("Chord",nChords);
 	CLAM_Annotator::Enumerated * chordRoot = pool.GetWritePool<CLAM_Annotator::Enumerated>("Chord","Root");
 	CLAM_Annotator::Enumerated * chordMode = pool.GetWritePool<CLAM_Annotator::Enumerated>("Chord","Mode");

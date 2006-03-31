@@ -384,21 +384,25 @@ void Annotator::refreshSegmentation()
 	CLAM_Annotator::SegmentationPolicy policy = 
 		mProject.GetAttributeScheme("Song",currentSegmentation).GetSegmentationPolicy();
 	CLAM::Segmentation * theSegmentation=0;
+	CLAM::TData audioDuration = mCurrentAudio.GetSize() / mCurrentAudio.GetSampleRate();
 	switch (policy)
 	{
 		case CLAM_Annotator::SegmentationPolicy::eUnsized:
 		{
 			theSegmentation = 
 				new CLAM::UnsizedSegmentation(
-					mCurrentAudio.GetSize(),
+					audioDuration,
 					&descriptorsMarks[0],
 					&descriptorsMarks[0]+nMarks);
 		} break;
 		case CLAM_Annotator::SegmentationPolicy::eContinuous:
 		{
+			for (unsigned i=0; i<nMarks; i++)
+				std::cout << descriptorsMarks[i] << std::endl;
+			std::cout << audioDuration << std::endl;
 			theSegmentation = 
 				new CLAM::ContiguousSegmentation(
-					mCurrentAudio.GetSize(),
+					audioDuration,
 					&descriptorsMarks[0],
 					&descriptorsMarks[0]+nMarks);
 		} break;
@@ -408,7 +412,7 @@ void Annotator::refreshSegmentation()
 		{
 			theSegmentation = 
 				new CLAM::DiscontinuousSegmentation(
-					mCurrentAudio.GetSize(),
+					audioDuration,
 					&descriptorsMarks[0],
 					&descriptorsMarks[0]+nMarks);
 		} break;
