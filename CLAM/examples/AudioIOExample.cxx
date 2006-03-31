@@ -27,8 +27,6 @@
 #include "ProcessingComposite.hxx"
 #include "OSDefines.hxx"
 #include <iostream>
-using std::cout;
-using std::endl;
 
 
 using namespace CLAM;
@@ -36,20 +34,18 @@ using namespace CLAM;
 class TremoloConfig: public ProcessingConfig {
 public:
 
-		DYNAMIC_TYPE_USING_INTERFACE(TremoloConfig,5,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE(TremoloConfig,4,ProcessingConfig);
 
-		DYN_ATTRIBUTE(0,public, std::string , Name);
-		DYN_ATTRIBUTE(1,public, TData , Frequency);
-		DYN_ATTRIBUTE(2,public, TData , MaxAtenuation);
-		DYN_ATTRIBUTE(3,public, TData , StartPhase);
-		DYN_ATTRIBUTE(4,public, TData , SamplingRate);
+		DYN_ATTRIBUTE(0,public, TData , Frequency);
+		DYN_ATTRIBUTE(1,public, TData , MaxAtenuation);
+		DYN_ATTRIBUTE(2,public, TData , StartPhase);
+		DYN_ATTRIBUTE(3,public, TData , SamplingRate);
 private:
 	void DefaultInit();
 };
 
 void TremoloConfig::DefaultInit()
 {
-	AddName();
 	AddFrequency();
 	AddMaxAtenuation();
 	AddStartPhase();
@@ -123,15 +119,14 @@ bool Tremolo::Do(const Audio &in_audio, Audio &out_audio)
 class AudioIOExampleConfig : public ProcessingConfig {
 public:
 
-		DYNAMIC_TYPE_USING_INTERFACE (AudioIOExampleConfig, 7, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (AudioIOExampleConfig, 6, ProcessingConfig);
 
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, TData, FirstTremoloFreq );
-		DYN_ATTRIBUTE (2, public, TData, FirstTremoloStartingPhase );
-		DYN_ATTRIBUTE (3, public, TData, FirstTremoloMaxAtenuation );
-		DYN_ATTRIBUTE (4, public, TData, SecondTremoloFreq );
-		DYN_ATTRIBUTE (5, public, TData, SecondTremoloStartingPhase );
-		DYN_ATTRIBUTE (6, public, TData, SecondTremoloMaxAtenuation );
+		DYN_ATTRIBUTE (0, public, TData, FirstTremoloFreq );
+		DYN_ATTRIBUTE (1, public, TData, FirstTremoloStartingPhase );
+		DYN_ATTRIBUTE (2, public, TData, FirstTremoloMaxAtenuation );
+		DYN_ATTRIBUTE (3, public, TData, SecondTremoloFreq );
+		DYN_ATTRIBUTE (4, public, TData, SecondTremoloStartingPhase );
+		DYN_ATTRIBUTE (5, public, TData, SecondTremoloMaxAtenuation );
 
 private:
 	void DefaultInit();
@@ -216,19 +211,15 @@ bool AudioIOExample::ConfigureChildren()
 {
 	AudioIOConfig cfg;
 
-	cfg.SetName("input");
 	cfg.SetChannelID(0);
 	mInput.Configure(cfg);
 
- 	cfg.SetName("input2");
  	cfg.SetChannelID(1);
  	mInput2.Configure(cfg);
 
-	cfg.SetName("output");
 	cfg.SetChannelID(0);
 	mOutput.Configure(cfg);
 
- 	cfg.SetName("output2");
  	cfg.SetChannelID(1);
  	mOutput2.Configure(cfg);
 
@@ -237,11 +228,9 @@ bool AudioIOExample::ConfigureChildren()
 	tcfg.SetStartPhase( mConfig.GetFirstTremoloStartingPhase());
 	tcfg.SetMaxAtenuation(mConfig.GetFirstTremoloMaxAtenuation());
 	tcfg.SetSamplingRate(AudioManager::Current().SampleRate());
-	tcfg.SetName("First_Tremolo");
 
 	mTremoloApplier.Configure(tcfg);
 
-	tcfg.SetName("Second_Tremolo");
 	tcfg.SetFrequency(mConfig.GetSecondTremoloFreq());
 	tcfg.SetMaxAtenuation( mConfig.GetSecondTremoloMaxAtenuation());
 	tcfg.SetStartPhase(mConfig.GetSecondTremoloStartingPhase());
@@ -274,7 +263,7 @@ bool AudioIOExample::ConcreteConfigure(const ProcessingConfig& c) throw(std::bad
 		ConfigureChildren();
 	}
 	catch (Err &e) {
-		mStatus+=e.what();
+//		mStatus+=e.what(); // TODO: Port to the new way
 		return false;
 	}
 	ConfigureData();
@@ -308,13 +297,11 @@ int main()
 {
 	try {
 		AudioManager manager(44100, 512);
-		manager.SetInternalBuffersNumber( 8 );
 		manager.Start();
 
 		// AudioIOExample configuration. This could be a good example on a
 		// fairly complex configuration usage.
 		AudioIOExampleConfig cfg;
-		cfg.SetName("Audio_IO_Example");
 		cfg.SetFirstTremoloFreq( TData(1.0) );
 		cfg.SetFirstTremoloStartingPhase( TData(PI) );
 		cfg.SetFirstTremoloMaxAtenuation( TData(0.6) );
@@ -326,9 +313,9 @@ int main()
 
 		app.Start();
 
-		cout << "Close the console ( or kill the job ) for terminating the application" << endl;
-		cout << "If you move around the console window you may experience artifacts" << endl;
-		cout << "Note for Windoze users: if the console window is minimized sound will stop" << endl;
+		std::cout << "Close the console ( or kill the job ) for terminating the application" << std::endl;
+		std::cout << "If you move around the console window you may experience artifacts" << std::endl;
+		std::cout << "Note for Windoze users: if the console window is minimized sound will stop" << std::endl;
 
 		app.Do();
 
