@@ -84,12 +84,12 @@ examplesMainSources = [
 	"../../examples/AudioApplicationExample.cxx",
 	"../../examples/AudioFileReading_example.cxx",
 	"../../examples/AudioFileWriting_example.cxx",
-#	"../../examples/AudioIOExample.cxx", # TODO: Not Compiling
+	"../../examples/AudioIOExample.cxx", # TODO: Not Compiling
 #	"../../examples/CLAMRemoteController/CLAMRemoteController.cxx",
 #	"../../examples/CLAMRemoteController/LADSPAHandler.cxx",
 #	"../../examples/CLT/LadspaAudioMultiplier.cxx",
 #	"../../examples/CLT/LadspaSimpleOscillator.cxx",
-#	"../../examples/Configurators_example.cxx",
+	"../../examples/Configurators_example.cxx",
 #	"../../examples/ControlArrayExamples/MyProcessingWithControlArray.cxx",
 #	"../../examples/ControlArrayExamples/MyProcessingWithSimpleControls.cxx",
 #	"../../examples/ControlArrayExamples/main.cxx",
@@ -119,12 +119,6 @@ examplesMainSources = [
 	"../../examples/PortsExamples/SimplePortsUsage_example.cxx",
 	"../../examples/ProcessingLifeCycle_example.cxx",
 	"../../examples/ProcessingObject_controls_example.cxx",
-#	"../../examples/Prototyper/PrototypeLoader.cxx",
-#	"../../examples/Prototyper/JACKPrototyper.cxx",
-#	"../../examples/Prototyper/PAPrototyper.cxx",
-#	"../../examples/Prototyper/BlockingPrototyper.cxx",
-#	"../../examples/Prototyper/QtSlot2Control.cxx",
-#	"../../examples/QtDesignerPlugins/CLAMWidgetsPlugin.cxx",
 #	"../../examples/QtPlots/BPFEditorExample/BPFEditorExample.cxx",
 #	"../../examples/QtPlots/DirectPlotsExamples/DPAudioExample.cxx",
 #	"../../examples/QtPlots/DirectPlotsExamples/DPAudioStereoExample.cxx",
@@ -151,8 +145,15 @@ examplesMainSources = [
 	"../../examples/Tutorial/UserTutorial3.cxx",
 	"../../examples/Tutorial/UserTutorial4.cxx",
 	"../../examples/Tutorial/UserTutorial5.cxx",
-#	"../../examples/Tutorial/UserTutorial6.cxx",
+	"../../examples/Tutorial/UserTutorial6.cxx",
 ]
+# Files to be integred on the Network editor
+#	"../../examples/QtDesignerPlugins/CLAMWidgetsPlugin.cxx",
+#	"../../examples/Prototyper/PrototypeLoader.cxx",
+#	"../../examples/Prototyper/JACKPrototyper.cxx",
+#	"../../examples/Prototyper/PAPrototyper.cxx",
+#	"../../examples/Prototyper/BlockingPrototyper.cxx",
+#	"../../examples/Prototyper/QtSlot2Control.cxx",
 
 multipleFilesExamples = [
 	"../../examples/TickExtractor/",
