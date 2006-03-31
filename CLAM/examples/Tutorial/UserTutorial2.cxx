@@ -26,6 +26,7 @@
  */
 
 #include <Spectrum.hxx>
+#include <SpectrumConfig.hxx>
 #include <iostream>
 
 int main()

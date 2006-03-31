@@ -22,9 +22,11 @@
 /** @file UserTutorial5.cxx CLAM tutorial, example 5.
  *  Ilustrates how to use a simple processing object.
  */
-#include"FFT.hxx"
-#include<iostream>
-#include<cmath>
+#include <CLAM/FFT.hxx>
+#include <CLAM/FFTConfig.hxx>
+#include <CLAM/SpectrumConfig.hxx>
+#include <iostream>
+#include <cmath>
 
 int main()
 {
@@ -49,14 +51,13 @@ int main()
 
 	// Processing object configuration
 	CLAM::FFTConfig fconfig;
-	fconfig.SetName("My_fft");
 	fconfig.SetAudioSize(Size);
 
 	// Processing object creation
 	CLAM::FFT myfft(fconfig);
 
 	// Processing object execution
-	std::cout << "Running object " << myfft.GetName() << std::endl;
+	std::cout << "Running object " << std::endl;
 
 	// This puts the object in execution mode.
 	myfft.Start();
