@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # SConstruct file for CLAMcore
 from buildtools import *
 from buildtools.include_rename import update_includes
