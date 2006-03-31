@@ -65,11 +65,7 @@ namespace CLAM{
 			mLayout = 0;
 		}
 
-		virtual ~QTConfigurator() {
-			if (mSetter) delete mSetter;
-			if (mGetter) delete mGetter;
-		}
-
+		virtual ~QTConfigurator();
 		template <class Config>
 		void SetConfig(Config & config) {
 			CLAM_ASSERT(!mSetter, "Configurator: Configuration assigned twice");
