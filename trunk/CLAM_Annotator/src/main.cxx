@@ -1,9 +1,8 @@
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qsplashscreen.h>
+#include <QtGui/QApplication>
+#include <QtCore/QTranslator>
+#include <QtCore/QLocale>
 
 #include "Annotator.hxx"
-
 
 #ifdef WIN32
 #include <CLAM/InitAudioIO.hxx>
@@ -19,6 +18,12 @@ int main( int argc, char ** argv )
 #endif
 	
 	QApplication app( argc, argv );
+
+	QString locale = QLocale::system().name();
+	QTranslator translator;
+	translator.load("Annotator_"+ locale);
+	app.installTranslator(&translator);
+
 	QCoreApplication::setOrganizationName("CLAM");
 	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
 	QCoreApplication::setApplicationName("Music Annotator");

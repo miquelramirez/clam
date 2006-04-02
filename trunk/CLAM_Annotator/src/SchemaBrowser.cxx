@@ -8,7 +8,6 @@
 #include <QtGui/QLabel>
 #include <QtGui/QTextBrowser>
 #include <QtGui/QLineEdit>
-#include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QGridLayout>
 #include <QtGui/QFrame>
@@ -117,12 +116,9 @@ void SchemaBrowser::languageChange()
 
     minLabel->setText( tr( "Minimum" ) );
     maxLabel->setText( tr( "Maximum" ) );
-    childLabel->setText( tr( "Child Scope" ) );
+    childLabel->setText( tr( "Child scope" ) );
 
-    QString documentation = tr(
-		    "<b>No item selected</b>"
-		    );
-    attributeDocumentation->setHtml(documentation);
+	updateCurrentAttribute();
 }
 
 typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
@@ -148,68 +144,71 @@ void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 void SchemaBrowser::updateCurrentAttribute()
 {
 	QTreeWidgetItem * current = attributeList->currentItem();
+	if (!current) 
+	{
+		attributeDocumentation->setHtml(tr("<p><em>(No attribute or scope selected)</em></p>"));
+		return;
+	}
 	QTreeWidgetItem * parent = current->parent();
 	if (!parent) // Scope
 	{
-		QString documentation = "<h2>Scope '" + current->text(0) + "'</h2>";
+		QString documentation = tr("<h2>Scope '%1'</h2>").arg(current->text(0));
 		attributeDocumentation->setHtml(documentation);
+		return;
 	}
-	else // Attribute
+	// Attribute
+	const CLAM_Annotator::SchemaAttribute & attributeSchema = mSchema->GetAttribute(parent->text(0).toStdString(),current->text(0).toStdString());
+	QString url = "http://mtg100.upf.es/simac/DescriptionSchemeWeb";
+	QString documentation = tr("<h2>Attribute '%1::%2'</h2>").arg(parent->text(0)).arg(current->text(0));
+	documentation+="<ul>";
+	documentation+=tr("<li><b>Documentation url:</b> <a href='%1'>%2</a>.</li>").arg(url).arg(url);
+	documentation+=tr("<li><b>Type:</b> %1</li>").arg(attributeSchema.GetType().c_str());
+	if (attributeSchema.HasEnumerationValues())
 	{
-		const CLAM_Annotator::SchemaAttribute & attributeSchema = mSchema->GetAttribute(parent->text(0).toStdString(),current->text(0).toStdString());
-		QString url = "http://mtg100.upf.es/simac/DescriptionSchemeWeb";
-		QString documentation = "<h2>Attribute '" + parent->text(0) + "::" + current->text(0) + "'</h2>";
-		documentation+="<ul>";
-		documentation+="<li><b>Documentation url:</b> <a href='" + url + "'>" +url+"</a>.</li>";
-		documentation+="<li><b>Type:</b> ";
-		documentation+=QString(attributeSchema.GetType().c_str()) + "</li>";
-		if (attributeSchema.HasEnumerationValues())
+		documentation+=tr("<li><b>Available values:</b> ");
+		std::list<std::string> & values = attributeSchema.GetEnumerationValues();
+		const char * separator = "";
+		for (std::list<std::string>::iterator it =values.begin(); it!= values.end(); it++)
 		{
-			documentation+="<li><b>Available Values:</b> ";
-			std::list<std::string> & values = attributeSchema.GetEnumerationValues();
-			const char * separator = "";
-			for (std::list<std::string>::iterator it =values.begin(); it!= values.end(); it++)
-			{
-				documentation+=separator;
-				documentation+="<tt>";
-				documentation+=it->c_str();
-				documentation+="</tt>";
-				separator =", ";
-			}
-			documentation+=".</li>";
+			documentation+=separator;
+			documentation+="<tt>";
+			documentation+=it->c_str();
+			documentation+="</tt>";
+			separator =", ";
 		}
-		if (attributeSchema.HasUnits())
-		{
-			documentation+="<li><b>Units:</b> " + QString(attributeSchema.GetUnits().c_str()) + "</li>";
-		}
-		if (attributeSchema.HasMinValue())
-		{
-			documentation+="<li><b>Minimum value:</b> " + QString::number(attributeSchema.GetMinValue()) + "</li>";
-		}
-		if (attributeSchema.HasMaxValue())
-		{
-			documentation+="<li><b>Maximum value:</b> " + QString::number(attributeSchema.GetMaxValue()) + "</li>";
-		}
-		if (attributeSchema.HasChildScope())
-		{
-			QString childScope = attributeSchema.GetChildScope().c_str();
-			if (childScope=="") childScope = tr("No child scope");
-			documentation+="<li><b>Child Scope:</b> " + childScope + "</li>";
-		}
-		if (attributeSchema.HasSegmentationPolicy())
-		{
-			documentation+="<li><b>Segmentation Policy:</b> " + QString(attributeSchema.GetSegmentationPolicy().GetString().c_str()) + "</li>";
-		}
-		documentation += "</ul>";
-		documentation += "<h2>Description</h2>";
-		documentation += "<div class='descriptorDocumentation'>";
-		if (attributeSchema.HasDocumentation())
-			documentation += attributeSchema.GetDocumentation().c_str();
-		else
-			documentation += "<p><em>(The schema has no embeded documentation for the attribute)</em></p>";
-		documentation += "</div>";
-		attributeDocumentation->setHtml(documentation);
+		documentation+=".</li>";
 	}
+	if (attributeSchema.HasUnits())
+	{
+		documentation+=tr("<li><b>Units:</b> %1</li>").arg(attributeSchema.GetUnits().c_str());
+	}
+	if (attributeSchema.HasMinValue())
+	{
+		documentation+=tr("<li><b>Minimum value:</b> %1</li>").arg(attributeSchema.GetMinValue());
+	}
+	if (attributeSchema.HasMaxValue())
+	{
+		documentation+=tr("<li><b>Maximum value:</b> %1</li>").arg(attributeSchema.GetMaxValue());
+	}
+	if (attributeSchema.HasChildScope())
+	{
+		QString childScope = attributeSchema.GetChildScope().c_str();
+		if (childScope=="") childScope = tr("No child scope");
+		documentation+=tr("<li><b>Child scope:</b> %1</li>").arg(childScope);
+	}
+	if (attributeSchema.HasSegmentationPolicy())
+	{
+		documentation+=tr("<li><b>Segmentation policy:</b> %1</li>").arg(attributeSchema.GetSegmentationPolicy().GetString().c_str());
+	}
+	documentation += "</ul>";
+	documentation += tr("<h2>Description</h2>");
+	documentation += "<div class='descriptorDocumentation'>";
+	if (attributeSchema.HasDocumentation())
+		documentation += attributeSchema.GetDocumentation().c_str();
+	else
+		documentation += tr("<p><em>(The schema has no embeded documentation for the attribute)</em></p>");
+	documentation += "</div>";
+	attributeDocumentation->setHtml(documentation);
 }
 
 
