@@ -196,6 +196,7 @@ applications from the source tarballs.
  * python and scons installed on the system.
  * make sure that any needed tool have its directory added to the 
    PATH variable (in order to execute cl and scons)
+   In particular you'll need all the 3rd party library DLLs in the PATH.
  * if you want to create installer you'll need nsis scripting language. 
    You can download it from [http://nsis.sourceforge.net/Main_Page] 
  
