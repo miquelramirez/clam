@@ -91,7 +91,7 @@ void Annotator::computeSongDescriptors()
 	if (!mProject.HasExtractor() || mProject.GetExtractor()=="")
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("<p><b>Error: No extractor defined for the project.</b></p>"
+				tr("<p><b>Error: No extractor defined for the project.</b></p>\n"
 					"<p>Unable to extract descriptors from song. "
 					"Define the extractor first, please.</p>"));
 		return;
@@ -109,9 +109,9 @@ void Annotator::computeSongDescriptors()
 	if (!ok)
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("<p><b>Error: Unable to launch the extractor.</b></p>"
-					"<p>Check that the extractor is well configured and you have permissions to run it.</p>"
-					"<p>The configured command was:</p><tt>%1</tt>")
+				tr("<p><b>Error: Unable to launch the extractor.</b></p>\n"
+					"<p>Check that the extractor is well configured and you have permissions to run it.</p>\n"
+					"<p>The configured command was:</p>\n<tt>%1</tt>")
 				.arg(mProject.GetExtractor().c_str())
 				);
 		delete runner;
@@ -151,7 +151,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	QSplashScreen * splash = new QSplashScreen( QPixmap(":/logos/images/annotator-splash1.png") );
 	splash->setCursor( QCursor(Qt::WaitCursor) );
 	splash->show();
-	splash->showMessage("Loading data ... ");
+	splash->showMessage(tr("Loading data ... "));
 
 	setupUi(this);
 	mGlobalDescriptors = new CLAM_Annotator::DescriptorTableController(mDescriptorsTable, mProject);
@@ -252,7 +252,7 @@ void Annotator::initInterface()
 	mSongListView->setSortingEnabled(false); // Unordered
 
 	mProjectDocumentation = new QTextBrowser;
-	mMainTabWidget->insertTab(0, mProjectDocumentation, "Project Documentation");
+	mMainTabWidget->insertTab(0, mProjectDocumentation, tr("Project Documentation"));
 	mMainTabWidget->setCurrentIndex(0);
 
 	mBPFEditor->SetFlags(CLAM::VM::eAllowVerEdition);//|CLAM::VM::eHasVerticalScroll); // QTPORT: What about this flag
@@ -268,7 +268,7 @@ void Annotator::initInterface()
 #endif
 
 	mSchemaBrowser = new SchemaBrowser;
-	mMainTabWidget->addTab(mSchemaBrowser, "Description Schema");
+	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
 
 	mPlayer = new CLAM::VM::BPFPlayer(this);
 
@@ -316,7 +316,7 @@ void Annotator::initProject()
 	if (mProject.HasDescription() && mProject.GetDescription()!="")
 		projectDescription += mProject.GetDescription().c_str();
 	else
-		projectDescription += "<p><em>(No project documentation available)</em></p>";
+		projectDescription += tr("<p><em>(No project documentation available)</em></p>");
 	mProjectDocumentation->setHtml(projectDescription);
 
 	try
@@ -325,7 +325,7 @@ void Annotator::initProject()
 	}
 	catch (CLAM::XmlStorageErr & e)
 	{
-		QMessageBox::warning(this,"Error Loading Schema File",
+		QMessageBox::warning(this,tr("Error Loading Schema File"),
 			constructFileError(mProject.GetSchema(),e));
 		return;
 	}
@@ -338,15 +338,15 @@ void Annotator::initProject()
 
 void Annotator::adaptInterfaceToCurrentSchema()
 {
-	mStatusBar << "Adapting Interface to Song level descriptors..." << mStatusBar;
+	mStatusBar << tr("Adapting Interface to Song level descriptors...") << mStatusBar;
 	mGlobalDescriptors->refreshSchema("Song");
-	mStatusBar << "Adapting Interface to Frame level descriptors..." << mStatusBar;
+	mStatusBar << tr("Adapting Interface to Frame level descriptors...") << mStatusBar;
 	adaptEnvelopesToCurrentSchema();
-	mStatusBar << "Adapting Interface to Segmentations..." << mStatusBar;
+	mStatusBar << tr("Adapting Interface to Segmentations...") << mStatusBar;
 	adaptSegmentationsToCurrentSchema();
-	mStatusBar << "Updating schema browser..." << mStatusBar;
+	mStatusBar << tr("Updating schema browser...") << mStatusBar;
 	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
-	mStatusBar << "User interface adapted to the new schema." << mStatusBar;
+	mStatusBar << tr("User interface adapted to the new schema.") << mStatusBar;
 }
 
 void Annotator::segmentDescriptorsTableChanged(int row)
@@ -368,7 +368,7 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 		it != segmentationNames.end();
 		it++)
 	{
-		mStatusBar << "Adding Segmentation: " << it->c_str() << mStatusBar;
+		mStatusBar << tr("Adding Segmentation: '%1'").arg(it->c_str()) << mStatusBar;
 		mSegmentationSelection->addItem(it->c_str());
 	}
 }
@@ -446,7 +446,7 @@ void Annotator::updateSegmentations()
 
 void Annotator::removeSegment(unsigned index)
 {
-	mStatusBar << "Removing segment at " << index << mStatusBar;
+	mStatusBar << tr("Removing segment at ") << index << mStatusBar;
 	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
 	if (childScope=="") return; // No child scope to shrink
@@ -457,7 +457,7 @@ void Annotator::removeSegment(unsigned index)
 
 void Annotator::insertSegment(unsigned index)
 {
-	mStatusBar << "Inserting segment at " << index << mStatusBar;
+	mStatusBar << tr("Inserting segment at ") << index << mStatusBar;
 	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
 	if (childScope=="") return; // No child scope to grow up
@@ -598,7 +598,7 @@ void Annotator::loadProject(const std::string & projectName)
 	}
 	catch (CLAM::XmlStorageErr e)
 	{
-		QMessageBox::warning(this,"Error Loading Project File",
+		QMessageBox::warning(this,tr("Error Loading Project File"),
 		constructFileError(projectName,e));
 		return;
 	}
@@ -635,8 +635,11 @@ void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
 	  is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
 	  in the class.*/
 	unsigned index = mFrameLevelAttributeList->currentRow();
-	mStatusBar << "Frame " << pointIndex 
-		<< " changed value from " << mEPFs[index].GetBPF().GetValue(pointIndex) << " to " << newValue << mStatusBar;
+	mStatusBar << tr("Frame %1 changed value from %2 to %3")
+		.arg(pointIndex)
+		.arg(mEPFs[index].GetBPF().GetValue(pointIndex))
+		.arg(newValue)
+		<< mStatusBar;
 	mEPFs[index].GetBPF().SetValue(pointIndex,TData(newValue));
 	mFrameDescriptorsNeedUpdate = true;
 }
@@ -652,7 +655,7 @@ void Annotator::segmentationMarksChanged(unsigned, double)
 
 void Annotator::updatePendingAuralizationsChanges()
 {
-	std::cout << "StopPlaying -> updating auralizations" << std::endl;
+	mStatusBar << tr("Updating auralizations after playback") << mStatusBar;
 	if(!mMustUpdateMarkedAudio) return;
 	mMustUpdateMarkedAudio = false;
 	auralizeMarks();
@@ -687,8 +690,8 @@ void Annotator::closeEvent ( QCloseEvent * e )
 		e->accept();
 		return;
 	}
-	int result = QMessageBox::question(this, "Close project", 
-		"Do you want to save changes to the project?", 
+	int result = QMessageBox::question(this, tr("Close project"), 
+		tr("Do you want to save changes to the project?"), 
 		QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel );
 	if (result == QMessageBox::Cancel)
 	{
@@ -721,9 +724,9 @@ void Annotator::deleteSongsFromProject()
 void Annotator::addSongsToProject()
 {
 	QStringList files = QFileDialog::getOpenFileNames(this,
-		"Add files to the project",
+		tr("Add files to the project"),
 		QString(mProject.BaseDir().c_str()),
-		"Songs (*.wav *.mp3 *.ogg)");
+		tr("Songs (*.wav *.mp3 *.ogg)"));
 	QStringList::Iterator it = files.begin();
 	for (; it != files.end(); it++ )
 	{
@@ -786,8 +789,8 @@ void  Annotator::saveDescriptors()
 	if (!mDescriptorsNeedSave) return;
 
 	if (QMessageBox::question(this,QString("Save Descriptors"),
-		QString("Do you want to save current song's descriptors?"),
-		QString("Save Changes"),QString("Discard Them")) != 0) return;
+		tr("Do you want to save current song's descriptors?"),
+		tr("Save Changes"),tr("Discard Them")) != 0) return;
 
 	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mProject.RelativeToAbsolute(mCurrentDescriptorsPoolFileName));
 	markCurrentSongChanged(false);
@@ -796,20 +799,20 @@ void  Annotator::saveDescriptors()
 void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *previous)
 {
 	if (mPlayer) mPlayer->stop();
-	mStatusBar << "Saving Previous Song Descriptors..." << mStatusBar;
+	mStatusBar << tr("Saving Previous Song Descriptors...") << mStatusBar;
 	if (previous) saveDescriptors();
 	if (!current) return;
 
 	setCursor(Qt::WaitCursor);
 
-	mStatusBar << "Loading descriptors..." << mStatusBar;
+	mStatusBar << tr("Loading descriptors...") << mStatusBar;
 	const std::string & songFilename = current->text(0).toStdString();
 	mCurrentDescriptorsPoolFileName = mProject.GetDescriptorsFileName(songFilename);
 	if (mCurrentDescriptorsPoolFileName=="") return; // TODO: fill with default data
 	loadDescriptorPool();
-	mStatusBar << "Filling Global Descriptors..." << mStatusBar;
+	mStatusBar << tr("Filling Global Descriptors...") << mStatusBar;
 	refreshGlobalDescriptorsTable();
-	mStatusBar << "Drawing Audio..." << mStatusBar;
+	mStatusBar << tr("Drawing Audio...") << mStatusBar;
 	mAudioRefreshTimer->stop();
 	
 	mSegmentEditor->hide();
@@ -828,9 +831,9 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	mSegmentEditor->SetData(mCurrentAudio);
 	mSegmentEditor->show();
 	mBPFEditor->show();
-	mStatusBar << "Drawing LLD..." << mStatusBar;
+	mStatusBar << tr("Drawing LLD...") << mStatusBar;
 	refreshEnvelopes();
-	mStatusBar << "Done" << mStatusBar;
+	mStatusBar << tr("Done") << mStatusBar;
 	loaderLaunch();
 	setCursor(Qt::ArrowCursor);
 	mAudioRefreshTimer->start(4000);
@@ -840,7 +843,7 @@ void Annotator::refreshEnvelopes()
 {
 	if (!mpDescriptorPool) return;
 
-	mStatusBar << "Loading LLD Data..." << mStatusBar;
+	mStatusBar << tr("Loading LLD Data...") << mStatusBar;
 
 	// TODO: Not all the things should be done here
 	mEPFs.clear();
@@ -870,11 +873,11 @@ void Annotator::refreshEnvelopes()
 
 void Annotator::refreshAudioData()
 {
-	mStatusBar << "Refreshing audio..." << mStatusBar;
+	mStatusBar << tr("Refreshing audio...") << mStatusBar;
 	bool finished= loaderFinished();
 	if (finished)
 	{
-		mStatusBar << "Last refresh, updating segment auralization..." << mStatusBar;
+		mStatusBar << tr("Updating segment auralization, after last audio refresh...") << mStatusBar;
 		mAudioRefreshTimer->stop();
 		auralizeMarks();
 	}
@@ -932,7 +935,7 @@ void Annotator::loadDescriptorPool()
 	{
 		CLAM::XMLStorage::Restore(*tempPool,poolFile);
 		std::ostringstream os;
-		os <<"Read data did not validate with schema."<<std::endl;
+		os << tr("Descriptors file could not be validated with the schema.").toStdString() <<std::endl;
 		if (!mProject.ValidateDataPool(*tempPool, os))
 		{
 			std::cerr << os.str() << std::endl;
@@ -957,7 +960,7 @@ void Annotator::loadDescriptorPool()
 
 void Annotator::refreshGlobalDescriptorsTable()
 {
-	std::cout << "Refressing song data..." << std::endl;
+	mStatusBar << "Refressing song data..." << mStatusBar;
 	if (!mpDescriptorPool) return;
 	mGlobalDescriptors->refreshData(0,mpDescriptorPool);
 	mDescriptorsTable->show();
@@ -1023,11 +1026,12 @@ void Annotator::setMenuAudioItemsEnabled(bool enabled)
 QString Annotator::constructFileError(const std::string& fileName,const CLAM::XmlStorageErr& e)
 {
 	return tr(
-		"<p><b>XML loading Error: <pre>%1</pre></b></p>"
-		"<p>Check that your file '%2'\n"
-		"is well formed and folllows the specifications"
-		"</p>"
-		).arg(e.what()).arg(fileName.c_str());
+		"<p><b>Error, reading '%1:\n"
+		"<b>Details:</p>"
+		"<pre>%2</pre></b></p>"
+		)
+		.arg(fileName.c_str())
+		.arg(e.what());
 }
 
 

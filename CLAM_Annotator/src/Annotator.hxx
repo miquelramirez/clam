@@ -50,6 +50,12 @@ class StatusBarDumper
 		{
 			os = new std::ostringstream;
 		}
+		StatusBarDumper & operator << (const QString & object)
+		{
+			(*os) << object.toStdString();
+			std::cout << object.toStdString();
+			return *this;
+		}
 		template <typename ObjectType>
 		StatusBarDumper & operator << (const ObjectType & object)
 		{
