@@ -9,9 +9,21 @@ ProjectEditor::~ProjectEditor()
 
 void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 {
-	mProject = project;
 	mProject.SetProjectPath(project.File());
+	mProject.SetDescription(project.GetDescription());
+	mProject.SetSchema(project.GetSchema());
+	mProject.SetExtractor(project.GetExtractor());
+	mProject.SetPoolSuffix(project.PoolSuffix());
 	updateFields();
+}
+
+void ProjectEditor::applyChanges(CLAM_Annotator::Project & project)
+{
+	project.SetProjectPath(mProject.File());
+	project.SetDescription(mProject.GetDescription());
+	project.SetSchema(mProject.GetSchema());
+	project.SetExtractor(mProject.GetExtractor());
+	project.SetPoolSuffix(mProject.PoolSuffix());
 }
 
 void ProjectEditor::setProjectPath(const std::string & file)

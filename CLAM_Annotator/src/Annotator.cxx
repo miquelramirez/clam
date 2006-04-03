@@ -779,8 +779,8 @@ void Annotator::on_newProjectAction_triggered()
 	ProjectEditor projectDialog(this);
 	projectDialog.setProjectPath(newProjectName.toStdString());
 	if (projectDialog.exec()== QDialog::Rejected) return;
-	mProject = projectDialog.editedProject();
-	mProject.SetProjectPath(newProjectName.toStdString());
+	projectDialog.applyChanges(mProject);
+	mProject.GetSongs().clear();
 	initProject();
 	markProjectChanged(true);
 }
@@ -790,7 +790,7 @@ void Annotator::on_editProjectPropertiesAction_triggered()
 	ProjectEditor projectDialog(this);
 	projectDialog.setProject(mProject);
 	if (projectDialog.exec() == QDialog::Rejected) return;
-	mProject = projectDialog.editedProject();
+	projectDialog.applyChanges(mProject);
 	initProject();
 	markProjectChanged(true);
 }

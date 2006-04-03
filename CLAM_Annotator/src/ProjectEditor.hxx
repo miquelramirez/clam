@@ -22,6 +22,7 @@ class ProjectEditor : public QDialog
 			return mProject;
 		}
 		void setProject(const CLAM_Annotator::Project & project);
+		void applyChanges(CLAM_Annotator::Project & project);
 		void setProjectPath(const std::string & file);
 	private slots:
 		void on_projectInfo_textChanged();
