@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # SConstruct file for CLAMcore
 from buildtools import *
 from buildtools.include_rename import update_includes
@@ -17,7 +16,7 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing/Audio.*', 'src/Data/Descriptors/Pool', 'src/Data/Editable', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib']
+	core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing/Audio.*', 'src/Data/Descriptors/Pool', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib']
 
 	if sys.platform == 'win32' :
 		core_folders.append('src/Defines/Windows')
@@ -60,11 +59,12 @@ def define_module_contents() :
 
 	print "*** Provisinal copy of preinclude TODO: get rid of preinclude.h *******" #TODO
 	if sys.platform == 'win32' :
-		copyCmd = 'copy'
+		copyCmd = 'copy ..\\..\\..\\src\\Defines\\preinclude.hxx include\\CLAM\\preinclude.hxx'
 	else :
-		copyCmd = 'cp'
-	command = "%s %s %s"%(copyCmd,'../../../src/Defines/preinclude.hxx', 'include/CLAM/preinclude.hxx' )
-	os.system( command )
+      		copyCmd = 'cp ../../../src/Defines/preinclude.hxx include/CLAM/preinclude.hxx'
+		
+	print copyCmd
+	os.system( copyCmd )
 	realHeaders.append('include/CLAM/preinclude.hxx')
  	# end TODO remove
 
