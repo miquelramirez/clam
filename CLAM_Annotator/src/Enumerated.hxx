@@ -21,7 +21,7 @@ namespace CLAM_Annotator
 			AddAll();
 			UpdateData();
 		}
-		public:
+	public:
 		void operator = (const std::string& value)
 		{
 			SetString(value);
