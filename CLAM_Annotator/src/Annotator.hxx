@@ -104,6 +104,7 @@ public slots:
 	void addSongsToProject();
 	void deleteSongsFromProject();
 	void saveDescriptors();
+	void askToSaveDescriptorsIfNeeded();
 	void computeSongDescriptors();
 
 	void refreshAudioData();
@@ -174,7 +175,6 @@ private:
 	std::string mCurrentDescriptorsPoolFileName;
 	CLAM::DescriptionDataPool* mpDescriptorPool;
 	bool mProjectNeedsSave;
-	bool mFrameDescriptorsNeedUpdate;
 	bool mDescriptorsNeedSave;
 	bool mMustUpdateMarkedAudio;
 
