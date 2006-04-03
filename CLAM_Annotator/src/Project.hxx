@@ -40,6 +40,10 @@ public:
 		if (GetPoolSuffix()=="") return defaultSuffix;
 		return GetPoolSuffix();
 	}
+	void InitInstance(const std::string & scope, unsigned instance, CLAM::DescriptionDataPool & data)
+	{
+		mSchema.InitInstance(scope, instance, data );
+	}
 	std::string GetDescriptorsFileName(const std::string & songName)
 	{
 		std::vector<CLAM_Annotator::Song> fileNames = GetSongs();

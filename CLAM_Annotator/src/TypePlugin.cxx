@@ -63,6 +63,12 @@ public:
 		}
 		return true;
 	}
+	void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool)
+	{
+		pool.GetWritePool<CLAM::TData>(
+				mSchema.GetScope(),
+				mSchema.GetName())[instance]=0.0;
+	}
 };
 
 class IntTypePlugin : public TypePlugin
@@ -109,6 +115,12 @@ public:
 		}
 		return true;
 	}
+	void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool)
+	{
+		pool.GetWritePool<int>(
+				mSchema.GetScope(),
+				mSchema.GetName())[instance]=0;
+	}
 };
 
 class EnumTypePlugin : public TypePlugin
@@ -148,6 +160,13 @@ public:
 		err << std::endl;
 		return false;
 	}
+	void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool)
+	{
+		const std::string & firstValue = mSchema.GetEnumerationValues().front();
+		pool.GetWritePool<Enumerated>(
+				mSchema.GetScope(),
+				mSchema.GetName())[instance]=firstValue;
+	}
 };
 
 class StringTypePlugin : public TypePlugin
@@ -171,6 +190,12 @@ public:
 					mSchema.GetName());
 		values[0];
 		return true;
+	}
+	void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool)
+	{
+		pool.GetWritePool<CLAM::Text>(
+				mSchema.GetScope(),
+				mSchema.GetName())[instance]="";
 	}
 };
 
@@ -210,6 +235,12 @@ public:
 			return ValidateOverlapping(values[0], err, nChilds);
 		err << "Unsuported Segmentation policy" << std::endl;
 		return false;	
+	}
+	void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool)
+	{
+		pool.GetWritePool<CLAM::DataArray>(
+				mSchema.GetScope(),
+				mSchema.GetName())[instance].Init();
 	}
 private:
 	bool ValidateUnsized(const CLAM::DataArray & values, std::ostream & err, unsigned nChilds)
@@ -359,6 +390,13 @@ public:
 					mSchema.GetScope(),
 					mSchema.GetName());
 		return true;
+	}
+	void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool)
+	{
+		CLAM_Annotator::FrameDivision & division = 
+			pool.GetWritePool<CLAM_Annotator::FrameDivision>(
+				mSchema.GetScope(),
+				mSchema.GetName())[instance];
 	}
 };
 

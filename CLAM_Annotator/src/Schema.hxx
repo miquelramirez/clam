@@ -130,6 +130,7 @@ namespace CLAM_Annotator{
 			AddAttribute(schemaAttribute);
 		}
 		bool Validate(const CLAM::DescriptionDataPool & data, std::ostream & err);
+		void InitInstance(const std::string & scope, unsigned instance, CLAM::DescriptionDataPool & data);
 		const std::list<SchemaAttribute> & GetAllAttributes() const
 		{
 			return GetAttributes();
