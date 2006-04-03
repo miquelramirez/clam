@@ -128,6 +128,10 @@ namespace CLAM_Annotator{
 			if (mTypePlugin.t) delete mTypePlugin.t;
 			mTypePlugin.t = TypePlugin::Create(*this);
 		}
+		void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool)
+		{
+			mTypePlugin.t->InitInstance(instance, pool);
+		}
 	private:
 		mutable Holder<TypePlugin> mTypePlugin;
 	};

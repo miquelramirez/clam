@@ -159,7 +159,6 @@ Annotator::Annotator(const std::string & nameProject = "")
 	mAbout = new QDialog(this);
 	Ui::About aboutUi;
 	aboutUi.setupUi(mAbout);
-	statusBar();
 	initInterface();
 	setMenuAudioItemsEnabled(false);
 	loadSettings();
@@ -237,14 +236,9 @@ void Annotator::updateRecentFilesMenu()
 
 Annotator::~Annotator()
 {
-	std::cout << "Annotator destructor" << std::endl;
-	std::cout << "Saving Settings" << std::endl;
 	saveSettings();
-	std::cout << "Aborting Loader" << std::endl;
 	abortLoader();
-	std::cout << "Deleting segmentation" << std::endl;
 	if (mSegmentation) delete mSegmentation;
-	std::cout << "Default destructors" << std::endl;
 }
 
 void Annotator::initInterface()
@@ -380,7 +374,7 @@ void Annotator::refreshSegmentation()
 	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
 	const CLAM::DataArray & descriptorsMarks = 
 		mpDescriptorPool->GetReadPool<CLAM::DataArray>("Song",currentSegmentation)[0];
-	int nMarks = descriptorsMarks.Size();
+	unsigned nMarks = descriptorsMarks.Size();
 	CLAM_Annotator::SegmentationPolicy policy = 
 		mProject.GetAttributeScheme("Song",currentSegmentation).GetSegmentationPolicy();
 	CLAM::Segmentation * theSegmentation=0;
@@ -432,15 +426,40 @@ void Annotator::updateSegmentations()
 	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
 	CLAM::DataArray & descriptorMarks = 
 		mpDescriptorPool->GetWritePool<CLAM::DataArray>("Song",currentSegmentation)[0];
-	const std::vector<double> & marks = mSegmentation->onsets();
-	int nMarks = marks.size();
-	descriptorMarks.Resize(nMarks);
-	descriptorMarks.SetSize(nMarks);
-	// TODO: This should be specific for each kind of segmentation!!!
-	for (int i=0; i<nMarks; i++)
+	CLAM_Annotator::SegmentationPolicy policy = 
+		mProject.GetAttributeScheme("Song",currentSegmentation).GetSegmentationPolicy();
+	const std::vector<double> & onsets = mSegmentation->onsets();
+	const std::vector<double> & offsets = mSegmentation->offsets();
+	unsigned nSegments = onsets.size();
+	switch (policy)
 	{
-		descriptorMarks[i] = marks[i];
-	} 
+		case CLAM_Annotator::SegmentationPolicy::eUnsized:
+		{
+			descriptorMarks.Resize(nSegments);
+			descriptorMarks.SetSize(nSegments);
+			for (unsigned i=0; i<nSegments; i++)
+				descriptorMarks[i] = onsets[i];
+		} break;
+		case CLAM_Annotator::SegmentationPolicy::eContinuous:
+		{
+			descriptorMarks.Resize(nSegments-1);
+			descriptorMarks.SetSize(nSegments-1);
+			for (unsigned i=1; i<nSegments; i++)
+				descriptorMarks[i] = onsets[i];
+		} break;
+		case CLAM_Annotator::SegmentationPolicy::eOverlapping:
+			// Not yet implemented, using Discontinuous by now
+		case CLAM_Annotator::SegmentationPolicy::eDiscontinuous:
+		{
+			descriptorMarks.Resize(nSegments*2);
+			descriptorMarks.SetSize(nSegments*2);
+			for (unsigned i=0; i<nSegments; i++)
+			{
+				descriptorMarks[i*2] = onsets[i];
+				descriptorMarks[i*2+1] = offsets[i];
+			}
+		} break;
+	}
 	markCurrentSongChanged(true);
 }
 
@@ -453,6 +472,7 @@ void Annotator::removeSegment(unsigned index)
 	CLAM_ASSERT(index<mpDescriptorPool->GetNumberOfContexts(childScope),
 		"Invalid segment to be removed");
 	mpDescriptorPool->Remove(childScope, index);
+	updateSegmentations();
 }
 
 void Annotator::insertSegment(unsigned index)
@@ -464,6 +484,8 @@ void Annotator::insertSegment(unsigned index)
 	CLAM_ASSERT(index<=mpDescriptorPool->GetNumberOfContexts(childScope),
 		"Invalid position to insert a segment");
 	mpDescriptorPool->Insert(childScope, index);
+	mProject.InitInstance(childScope, index, *mpDescriptorPool);
+	updateSegmentations();
 }
 
 void Annotator::adaptEnvelopesToCurrentSchema()
@@ -497,7 +519,7 @@ void Annotator::makeConnections()
 	connect(helpWhatsThisAction, SIGNAL(triggered()), this, SLOT(whatsThis()));
 
 	mRecentFilesMenuSeparator = mFileMenu->addSeparator();
-	for (int i = 0; i < MaxRecentFiles; ++i) {
+	for (unsigned i = 0; i < MaxRecentFiles; ++i) {
 		mRecentFilesActions.push_back(new QAction(this));
 		mRecentFilesActions[i]->setVisible(false);
 		connect(mRecentFilesActions[i], SIGNAL(triggered()), this, SLOT(fileOpenRecent()));
@@ -647,7 +669,7 @@ void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
 void Annotator::segmentationMarksChanged(unsigned, double)
 {
 	updateSegmentations();
-	if(mPlayer->IsPlaying())
+	if(mPlayer->IsPlaying() && false)
 		mMustUpdateMarkedAudio = true;
 	else
 		auralizeMarks();
