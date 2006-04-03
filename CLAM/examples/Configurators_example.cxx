@@ -192,7 +192,7 @@ int main(int argc, char** argv)
 
 	// Use the configurators
 	DisplayQTConfigurator(config,argc,argv);
-	//DisplayFLTKConfigurator(config);
+	DisplayFLTKConfigurator(config);
 
 	// Display and store the results
 	CLAM::XmlStorage::Dump(config,"DummyConfig", xmlfilename);
