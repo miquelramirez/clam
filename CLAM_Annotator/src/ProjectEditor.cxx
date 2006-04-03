@@ -87,4 +87,9 @@ void ProjectEditor::on_extractorBrowseButton_clicked()
 	updateFields();
 }
 
+void ProjectEditor::on_extractor_textChanged()
+{
+	mProject.SetExtractor(ui.extractor->text().toStdString());
+}
+
 
