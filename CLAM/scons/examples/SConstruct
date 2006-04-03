@@ -78,21 +78,14 @@ env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'
 		CLAMInstallDir,
 		' '.join(pkgconfigLibraries)))
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
-examplesMainSources = [
+singleSourceExamples = [
 	"../../examples/NetworkPersistence_example.cxx",
 	"../../examples/NetworkUsage_example.cxx",
 	"../../examples/AudioApplicationExample.cxx",
 	"../../examples/AudioFileReading_example.cxx",
 	"../../examples/AudioFileWriting_example.cxx",
-	"../../examples/AudioIOExample.cxx", # TODO: Not Compiling
-#	"../../examples/CLAMRemoteController/CLAMRemoteController.cxx",
-#	"../../examples/CLAMRemoteController/LADSPAHandler.cxx",
-#	"../../examples/CLT/LadspaAudioMultiplier.cxx",
-#	"../../examples/CLT/LadspaSimpleOscillator.cxx",
+	"../../examples/AudioIOExample.cxx",
 	"../../examples/Configurators_example.cxx",
-#	"../../examples/ControlArrayExamples/MyProcessingWithControlArray.cxx",
-#	"../../examples/ControlArrayExamples/MyProcessingWithSimpleControls.cxx",
-#	"../../examples/ControlArrayExamples/main.cxx",
 	"../../examples/DescriptorComputation_example.cxx",
 	"../../examples/FDFilterExample.cxx",
 	"../../examples/FFT_example.cxx",
@@ -105,8 +98,6 @@ examplesMainSources = [
 	"../../examples/MIDIIOExample.cxx",
 	"../../examples/MIDIOut_example.cxx",
 	"../../examples/MIDI_Synthesizer_example/MIDI_Synthesizer_example.cxx",
-#	"../../examples/NetworkLADSPAPlugin/LADSPAHandler.cxx",
-#	"../../examples/NetworkLADSPAPlugin/NetworkLADSPAPlugin.cxx",
 	"../../examples/NetworkPersistence_example.cxx",
 	"../../examples/NetworkUsage_example.cxx",
 	"../../examples/PersistenceThroughDTs_example.cxx",
@@ -114,32 +105,14 @@ examplesMainSources = [
 #	"../../examples/PlotExamplesHelper.cxx",
 #	"../../examples/SinglePlot_example.cxx",
 	"../../examples/POCompositeExample.cxx",
-#	"../../examples/PortsAndControlsUsageExample/MyProcessingWithPortsAndControls.cxx",
-#	"../../examples/PortsAndControlsUsageExample/PortsAndControlsUsage_example.cxx",
 	"../../examples/PortsExamples/SimplePortsUsage_example.cxx",
 	"../../examples/ProcessingLifeCycle_example.cxx",
 	"../../examples/ProcessingObject_controls_example.cxx",
-#	"../../examples/QtPlots/BPFEditorExample/BPFEditorExample.cxx",
-#	"../../examples/QtPlots/DirectPlotsExamples/DPAudioExample.cxx",
-#	"../../examples/QtPlots/DirectPlotsExamples/DPAudioStereoExample.cxx",
-#	"../../examples/QtPlots/DirectPlotsExamples/DPFundamentalExample.cxx",
-#	"../../examples/QtPlots/DirectPlotsExamples/DPMultiPlotExample.cxx",
-#	"../../examples/QtPlots/DirectPlotsExamples/DPSpectrumAndPeaksExample.cxx",
-#	"../../examples/QtPlots/DirectPlotsExamples/MultiBPFViewerExample.cxx",
-#	"../../examples/QtPlots/ListPlotExample/ListPlotExample.cxx",
-#	"../../examples/QtPlots/QtPlotsExamples/QtAudioPlotExample.cxx",
-#	"../../examples/QtPlots/QtPlotsExamples/QtSinTracksPlotExample.cxx",
-#	"../../examples/QtPlots/QtPlotsExamples/QtSpectrogramExample.cxx",
-#	"../../examples/QtPlots/QtPlotsExamples/QtSpectrumPlotExample.cxx",
-#	"../../examples/QtPlots/SegmentEditorExample/SegmentEditorExample.cxx",
-#	"../../examples/QtPlots/utils/analysis_utils.cxx",
-#	"../../examples/QtPlots/utils/audio_file_utils.cxx",
-#	"../../examples/QtPlots/utils/wave_utils.cxx",
 	"../../examples/SDIF_And_Segment_example.cxx",
 	"../../examples/Spectrum_example.cxx",
 	"../../examples/StereoToMonoFile.cxx",
 #	"../../examples/StreamBufferExample.cxx", # TODO: Deprecated?
-#	"../../examples/ThreadedProcessing_example.cxx",
+#	"../../examples/ThreadedProcessing_example.cxx", # TODO: Depends on Resample
 	"../../examples/Tutorial/UserTutorial1.cxx",
 	"../../examples/Tutorial/UserTutorial2.cxx",
 	"../../examples/Tutorial/UserTutorial3.cxx",
@@ -147,21 +120,73 @@ examplesMainSources = [
 	"../../examples/Tutorial/UserTutorial5.cxx",
 	"../../examples/Tutorial/UserTutorial6.cxx",
 ]
-# Files to be integred on the Network editor
+# TODO: Weird ones (libraries, client server...)
+#	"../../examples/CLT/LadspaAudioMultiplier.cxx",
+#	"../../examples/CLT/LadspaSimpleOscillator.cxx",
+# TODO: Files to be integred on the Network editor
+#	"../../examples/CLAMRemoteController/CLAMRemoteController.cxx",
+#	"../../examples/CLAMRemoteController/LADSPAHandler.cxx",
+#	"../../examples/NetworkLADSPAPlugin/LADSPAHandler.cxx",
+#	"../../examples/NetworkLADSPAPlugin/NetworkLADSPAPlugin.cxx",
 #	"../../examples/QtDesignerPlugins/CLAMWidgetsPlugin.cxx",
-#	"../../examples/Prototyper/PrototypeLoader.cxx",
-#	"../../examples/Prototyper/JACKPrototyper.cxx",
-#	"../../examples/Prototyper/PAPrototyper.cxx",
-#	"../../examples/Prototyper/BlockingPrototyper.cxx",
-#	"../../examples/Prototyper/QtSlot2Control.cxx",
-
-multipleFilesExamples = [
-	"../../examples/TickExtractor/",
+qtPlotUtils = [
+	"../../examples/QtPlots/utils/analysis_utils.cxx",
+	"../../examples/QtPlots/utils/audio_file_utils.cxx",
+	"../../examples/QtPlots/utils/wave_utils.cxx",
 ]
+qtPlotMains = [
+	"../../examples/QtPlots/BPFEditorExample/BPFEditorExample.cxx",
+	"../../examples/QtPlots/DirectPlotsExamples/DPAudioExample.cxx",
+	"../../examples/QtPlots/DirectPlotsExamples/DPAudioStereoExample.cxx",
+	"../../examples/QtPlots/DirectPlotsExamples/DPFundamentalExample.cxx",
+	"../../examples/QtPlots/DirectPlotsExamples/DPMultiPlotExample.cxx",
+	"../../examples/QtPlots/DirectPlotsExamples/DPSpectrumAndPeaksExample.cxx",
+	"../../examples/QtPlots/DirectPlotsExamples/MultiBPFViewerExample.cxx",
+	"../../examples/QtPlots/ListPlotExample/ListPlotExample.cxx",
+	"../../examples/QtPlots/QtPlotsExamples/QtAudioPlotExample.cxx",
+	"../../examples/QtPlots/QtPlotsExamples/QtSinTracksPlotExample.cxx",
+	"../../examples/QtPlots/QtPlotsExamples/QtSpectrogramExample.cxx",
+	"../../examples/QtPlots/QtPlotsExamples/QtSpectrumPlotExample.cxx",
+	"../../examples/QtPlots/SegmentEditorExample/SegmentEditorExample.cxx",
+]
+
+directoryBasedExamples = [
+#	"../../examples/TickExtractor", # TODO: Files left to be compilable
+	"../../examples/PortsAndControlsUsageExample",
+	"../../examples/ControlArrayExamples",
+]
+
+prototypers = [
+	"../../examples/Prototyper/JACKPrototyper.cxx",
+#	"../../examples/Prototyper/PAPrototyper.cxx",
+	"../../examples/Prototyper/BlockingPrototyper.cxx",
+]
+prototyperHelpers = [
+	"../../examples/Prototyper/PrototypeLoader.cxx",
+	"../../examples/Prototyper/QtSlot2Control.cxx",
+]
+
 examples = []
-for main in examplesMainSources :
+
+for main in singleSourceExamples :
 	executable = os.path.splitext(os.path.basename(main))[0]
 	examples += [ env.Program(target=executable, source = sources + [main] ) ]
+	
+env.AppendUnique(CPPPATH=["../../examples/QtPlots/utils"])
+for main in qtPlotMains :
+	executable = os.path.splitext(os.path.basename(main))[0]
+	examples += [ env.Program(target=executable, source = sources + [main] + qtPlotUtils) ]
+
+for folder in directoryBasedExamples :
+	exampleSources = glob.glob(folder+"/*.cxx")
+	executable = os.path.basename(folder)
+	examples += [ env.Program(target=executable, source = sources + exampleSources ) ]
+
+env.AppendUnique(LIBS=["qui"])
+for main in prototypers :
+	executable = os.path.splitext(os.path.basename(main))[0]
+	examples += [ env.Program(target=executable, source = sources + [main] + prototyperHelpers) ]
+
 
 env.Alias('examples',examples)
 
