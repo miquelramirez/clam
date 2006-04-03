@@ -103,7 +103,7 @@ void Annotator::computeSongDescriptors()
 	// before loading the cpu with the extractor
 	qApp->processEvents();
 	bool ok = runner->run(mProject.GetExtractor().c_str(),
-		QStringList() << qfilename,
+		QStringList() << qfilename << "-f" << mProject.GetPoolSuffix().c_str(),
 		QDir::current().path());
 //			mProject.BaseDir().c_str());
 	if (!ok)
@@ -136,7 +136,6 @@ Annotator::Annotator(const std::string & nameProject = "")
 	: QMainWindow( 0 )
 	, Ui::Annotator( )
 	, mpDescriptorPool(0)
-	, mFrameDescriptorsNeedUpdate(false)
 	, mDescriptorsNeedSave(false)
 	, mMustUpdateMarkedAudio(false)
 	, mAudioRefreshTimer(new QTimer(this))
@@ -288,6 +287,7 @@ void Annotator::markProjectChanged(bool changed)
 void Annotator::markCurrentSongChanged(bool changed)
 {
 	mDescriptorsNeedSave = changed;
+	songSaveDescriptorsAction->setEnabled(changed);
 	updateApplicationTitle();
 }
 
@@ -468,10 +468,12 @@ void Annotator::removeSegment(unsigned index)
 	mStatusBar << tr("Removing segment at ") << index << mStatusBar;
 	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
-	if (childScope=="") return; // No child scope to shrink
-	CLAM_ASSERT(index<mpDescriptorPool->GetNumberOfContexts(childScope),
-		"Invalid segment to be removed");
-	mpDescriptorPool->Remove(childScope, index);
+	if (childScope!="")
+	{
+		CLAM_ASSERT(index<mpDescriptorPool->GetNumberOfContexts(childScope),
+			"Invalid segment to be removed");
+		mpDescriptorPool->Remove(childScope, index);
+	}
 	updateSegmentations();
 }
 
@@ -480,11 +482,13 @@ void Annotator::insertSegment(unsigned index)
 	mStatusBar << tr("Inserting segment at ") << index << mStatusBar;
 	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
 	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
-	if (childScope=="") return; // No child scope to grow up
-	CLAM_ASSERT(index<=mpDescriptorPool->GetNumberOfContexts(childScope),
-		"Invalid position to insert a segment");
-	mpDescriptorPool->Insert(childScope, index);
-	mProject.InitInstance(childScope, index, *mpDescriptorPool);
+	if (childScope!="")
+	{
+		CLAM_ASSERT(index<=mpDescriptorPool->GetNumberOfContexts(childScope),
+			"Invalid position to insert a segment");
+		mpDescriptorPool->Insert(childScope, index);
+		mProject.InitInstance(childScope, index, *mpDescriptorPool);
+	}
 	updateSegmentations();
 }
 
@@ -663,7 +667,7 @@ void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
 		.arg(newValue)
 		<< mStatusBar;
 	mEPFs[index].GetBPF().SetValue(pointIndex,TData(newValue));
-	mFrameDescriptorsNeedUpdate = true;
+	updateEnvelopesData();
 }
 
 void Annotator::segmentationMarksChanged(unsigned, double)
@@ -705,7 +709,7 @@ void Annotator::updateSongListWidget()
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
 {
-	saveDescriptors();
+	askToSaveDescriptorsIfNeeded();
 
 	if (! mProjectNeedsSave )
 	{
@@ -802,27 +806,25 @@ void Annotator::fileSave()
 
 void  Annotator::saveDescriptors()
 {
-	if (mFrameDescriptorsNeedUpdate)
-	{
-		updateEnvelopesData();
-		mFrameDescriptorsNeedUpdate=false;
-		markCurrentSongChanged(true);
-	}
-	if (!mDescriptorsNeedSave) return;
-
-	if (QMessageBox::question(this,QString("Save Descriptors"),
-		tr("Do you want to save current song's descriptors?"),
-		tr("Save Changes"),tr("Discard Them")) != 0) return;
-
 	CLAM::XMLStorage::Dump(*mpDescriptorPool,"Pool",mProject.RelativeToAbsolute(mCurrentDescriptorsPoolFileName));
 	markCurrentSongChanged(false);
+}
+
+void  Annotator::askToSaveDescriptorsIfNeeded()
+{
+	if (!mDescriptorsNeedSave) return;
+	if (QMessageBox::question(this,QString("Save Descriptors"),
+		tr("Current song descriptors have been changed.\n"
+			"Do you want to save them?"),
+		tr("Save Changes"),tr("Discard Them")) != 0) return;
+	saveDescriptors();
 }
 
 void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *previous)
 {
 	if (mPlayer) mPlayer->stop();
 	mStatusBar << tr("Saving Previous Song Descriptors...") << mStatusBar;
-	if (previous) saveDescriptors();
+	if (previous) askToSaveDescriptorsIfNeeded();
 	if (!current) return;
 
 	setCursor(Qt::WaitCursor);
@@ -923,7 +925,6 @@ void Annotator::refreshEnvelope(CLAM::EquidistantPointsFunction & epf, const std
 void Annotator::updateEnvelopesData()
 {
 	// TODO: Any child scope of any FrameDivision in Song not just Frame, which may not even exist
-	mFrameDescriptorsNeedUpdate = false;
 	unsigned nEPFEditors = mEPFs.size();
 	const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType("Frame", "Float");
 	std::list<std::string>::const_iterator it=descriptorsNames.begin();
@@ -931,6 +932,7 @@ void Annotator::updateEnvelopesData()
 	{
 		updateEnvelopeData(i, mpDescriptorPool->GetWritePool<CLAM::TData>("Frame",*it));
 	}
+	markCurrentSongChanged(true);
 }
 
 void Annotator::updateEnvelopeData(int bpfIndex, CLAM::TData* descriptor)
@@ -945,7 +947,6 @@ void Annotator::updateEnvelopeData(int bpfIndex, CLAM::TData* descriptor)
 
 void Annotator::loadDescriptorPool()
 {
-	mFrameDescriptorsNeedUpdate = false;
 	markCurrentSongChanged(false);
 
 	CLAM::DescriptionDataPool * tempPool = new CLAM::DescriptionDataPool(mProject.GetDescriptionScheme());
