@@ -23,7 +23,10 @@ public:
 	virtual ~TaskRunner();
 	bool run(QString command, QStringList & arguments, QString workingDir)
 	{
-		mOutputDisplay->setHtml("<div style='color: blue;'>Executing "+ command +"</div>");
+		QString startMessage = tr("<div style='color: blue;'>Executing '<tt>%1 %2</tt>'</div>")
+			.arg(command)
+			.arg(arguments.join(" "));
+		mOutputDisplay->setHtml(startMessage);
 		mProcess = new QProcess(this);
 		mProcess->setWorkingDirectory(workingDir);
 		connect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(dumpError()));
@@ -35,7 +38,7 @@ public:
 private slots:
 	void finished()
 	{
-		mOutputDisplay->append("<div style='color: blue;'>Done.</div>");
+		mOutputDisplay->append(tr("<div style='color: blue;'>Done.</div>"));
 		QTimer::singleShot(5000, this, SLOT(close()));
 	}
 	void dumpError()
