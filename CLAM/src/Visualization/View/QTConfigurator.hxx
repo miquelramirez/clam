@@ -79,7 +79,6 @@ namespace CLAM{
 			mLayout->setMargin(5);
 			//mLayout->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding));
 			setMinimumWidth(400);
-			setPaletteBackgroundColor(QColor(0xFF,0x00,0x00));
 			GetInfo();
 
 			QFrame * frame = new QFrame(this);
