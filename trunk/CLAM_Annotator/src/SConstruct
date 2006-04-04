@@ -2,13 +2,14 @@
 import os
 import glob
 import SCons.Util
-from SCons.Util import CLVar
 
+version='0.3'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(PathOption('clam_vmqt4_path', 'The path to the vmqt module', '')) # to be removed
 options.Add(BoolOption( 'release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
+
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -19,46 +20,20 @@ def scanFiles(pattern, paths) :
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
-env = Environment(tools=['default','qt'], options=options)
+
+env = Environment(tools=['default','qt4','dmg','nsis'], toolpath=['sconstools'], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
+
+env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
 CLAMVmQtPath = env['clam_vmqt4_path']
 
 env['CXXFILESUFFIX'] = '.cxx'
-env['QT_MOC'] = 'moc-qt4'
-env['QT4_MOC'] = 'moc-qt4'
-env['QT4_UIC'] = 'uic-qt4'
-env['QT_MOCHPREFIX'] = 'generated/moc_'
-env['QT_UISUFFIX'] = '.ui'
-env['QT_UICDECLPREFIX'] = 'generated/ui_'
-env['QT_UICDECLSUFFIX'] = '.hxx'
-env['QT_LIB'] = '' # KLUDGE to avoid linking qt3 library
-
-# TODO: An emmiter is needed in order make the qrc depend on the actual
-# files for the resources. If so, single_source is no more convenient
-# and the Qrc must be called separatelly for each qrc file.
-qrcbuilder = Builder(
-	action ='rcc $SOURCE -o $TARGET',
-	src_suffix = '.qrc',
-	suffix = '.cxx',
-	prefix = 'generated/qrc_',
-	single_source = True
-	)
-env.Append( BUILDERS = { 'Qrc': qrcbuilder } )
-
-env['QT_UIC4COM'] = [
-	CLVar('$QT4_UIC $QT_UICDECLFLAGS -o ${TARGETS[0]} $SOURCE'),
-	]
-uic4builder = Builder(
-    action='$QT_UIC4COM',
-	src_suffix='$QT_UISUFFIX',
-	suffix='$QT_UICDECLSUFFIX',
-	prefix='$QT_UICDECLPREFIX',
-	single_source = True
-	)
-env.Append( BUILDERS = { 'Uic4': uic4builder } )
+env['QT4_UICDECLSUFFIX'] = '.hxx'
+env['QT4_MOCHPREFIX'] = 'generated/moc_'
+env['QT4_UICDECLPREFIX'] = 'generated/ui_'
 
 pkgconfigLibraries = [
 	'clam_core',
@@ -120,7 +95,7 @@ env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 
 if env['release'] :
-	env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+	env.Append( CCFLAGS=['-g', '-O3','-fomit-frame-pointer','-Wall'] )
 else :
 	env.Append( CCFLAGS=['-g', '-Wall'] )
 #env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
@@ -142,15 +117,28 @@ manpages = [
 	'../resources/man/man1/ClamExtractorExample.1',
 	]
 
+# Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
+tsfiles = scanFiles("i18n/*.ts", sourcePaths)
+env.Precious(tsfiles)
+translatableSources = scanFiles('*.cxx', sourcePaths);
+translatableSources+= scanFiles('*.hxx', sourcePaths);
+translatableSources+= scanFiles('*.ui', sourcePaths);
+translatableSources = filter( (lambda a : a.rfind( "generated/")==-1 ),  translatableSources )
+translations = []
+if len(tsfiles) : 
+	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
+	translations = env.Qm(source = tsNodes)
+
 #env.AddPostAction( install_bin, 'chmod 755 $TARGET' ) # TODO: Look for a generic action
 installation = {
 	'/bin' : programs,
 	'/share/man/man1' : manpages,
 	'/share/annotator/sounds': sounds,
+	'/share/annotator/i18n/': translations
 }
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
 env.Alias( 'install', installTargets )
-env.Default(programs)
+env.Default(programs, translations)
 
