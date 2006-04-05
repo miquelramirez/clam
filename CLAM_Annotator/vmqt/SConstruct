@@ -4,6 +4,8 @@ import glob
 import SCons.Util
 from SCons.Util import CLVar
 
+qt4ToolPath="../../CLAM/scons/sconstools"
+
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 
@@ -16,43 +18,19 @@ def scanFiles(pattern, paths) :
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
+def unique(list) :
+	return dict.fromkeys(list).keys()
 
-env = Environment(tools=['default','qt'], options=options)
+env = Environment(tools=['default','qt4'], toolpath=[qt4ToolPath], options=options)
 options.Save('options.cache', env)
 CLAMInstallDir = env['clam_prefix']
 
+env.SConsignFile() # Single signature file
+
 env['CXXFILESUFFIX'] = '.cxx'
-env['QT_MOC'] = 'moc-qt4'
-env['QT4_MOC'] = 'moc-qt4'
-env['QT4_UIC'] = 'uic-qt4'
-env['QT_MOCHPREFIX'] = 'generated/moc_'
-env['QT_UISUFFIX'] = '.ui'
-env['QT_UICDECLPREFIX'] = 'generated/ui_'
-env['QT_UICDECLSUFFIX'] = '.hxx'
-env['QT_LIB'] = '' # KLUDGE to avoid linking qt3 library
-
-env.Replace(QT_UIC='echo ***** Using old UIC!!!!!!')
-
-qrcbuilder = Builder(
-	action ='rcc $SOURCE -o $TARGET',
-	src_suffix = '.qrc',
-	suffix = '.cxx',
-	prefix = 'generated/qrc_',
-	single_source = True
-	)
-env.Append( BUILDERS = { 'Qrc': qrcbuilder } )
-
-env['QT_UIC4COM'] = [
-	CLVar('$QT4_UIC $QT_UICDECLFLAGS -o ${TARGETS[0]} $SOURCE'),
-	]
-uic4builder = Builder(
-    action='$QT_UIC4COM',
-	src_suffix='$QT_UISUFFIX',
-	suffix='$QT_UICDECLSUFFIX',
-	prefix='$QT_UICDECLPREFIX',
-	single_source = True
-	)
-env.Append( BUILDERS = { 'Uic4': uic4builder } )
+env['QT4_MOCHPREFIX'] = 'generated/moc_'
+env['QT4_UICDECLPREFIX'] = 'generated/ui_'
+env['QT4_UICDECLSUFFIX'] = '.hxx'
 
 pkgconfigLibraries = [
 	'clam_core',
@@ -82,10 +60,6 @@ extraPaths += recursiveDirs("examples/utils")
 extraPaths += [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes	
-	'/usr/include/qt4/QtCore', # quick KLUDGE for ubuntu
-	'/usr/include/qt4/QtGui', # quick KLUDGE for ubuntu
-	'/usr/include/qt4/QtOpenGL', # quick KLUDGE for ubuntu
-	'/usr/include/qt4/Qt3Support', # quick KLUDGE for ubuntu
 ]
 includePaths = libSourcePaths + extraPaths
 
@@ -96,7 +70,7 @@ sources = scanFiles('*.cxx', libSourcePaths)
 sources += filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources += filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
 if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
-sources = dict.fromkeys(sources).keys()
+sources = unique(sources)
 
 printableSources = [os.path.basename(source) for source in sources ]
 printableSources.sort()
@@ -107,7 +81,7 @@ env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'
 	(
 		CLAMInstallDir,
 		' '.join(pkgconfigLibraries)))
-env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
+#env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 #env.Append(CPPFLAGS=['-DQT3_SUPPORT_WARNINGS'])
 examplesMainSources = [
