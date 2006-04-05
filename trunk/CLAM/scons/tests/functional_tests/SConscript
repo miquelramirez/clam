@@ -1,5 +1,5 @@
 #!/usr/bin/python
-Import('tests_env')
+Import('env')
 import sys, os
 sys.path +=['../../libs/buildtools']
 from include_rename import update_includes
@@ -32,13 +32,13 @@ for filename in file_retriever.sources :
 print "ok"
 
 if sys.platform != 'win32'  :
-	tests_env.Append( CPPPATH=['include'] )
-	tests_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+	env.Append( CPPPATH=['include'] )
+	env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
 else :
-	tests_env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
-	tests_env.Append( CCFLAGS = ['/EHsc'] )
-	tests_env.Append( LINKFLAGS = ['/subsystem:console','/machine:x86'] )	
-functional_tests = tests_env.Program( 'FunctionalTests', file_retriever.sources )
+	env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
+	env.Append( CCFLAGS = ['/EHsc'] )
+	env.Append( LINKFLAGS = ['/subsystem:console','/machine:x86'] )	
+functional_tests = env.Program( 'FunctionalTests', file_retriever.sources )
 
 test_alias = Alias( 'run_functional_tests', [functional_tests], functional_tests[0].abspath )
 

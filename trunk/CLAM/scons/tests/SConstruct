@@ -77,7 +77,7 @@ sys.path.append('../libs')
 from buildtools import *
 # CLAM unit tests build
 
-tests_env = Environment( ENV=os.environ )
+env = Environment( ENV=os.environ )
 
 opts = Options('CLAMTests.conf')
 
@@ -95,40 +95,44 @@ if sys.platform == 'win32' :
 	opts.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', 'G:\projects\cppunit' ))
 
 opts.Add( BoolOption( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )
-opts.Update(tests_env)
-opts.Save('CLAMTests.conf', tests_env)
-Help(opts.GenerateHelpText(tests_env))
+opts.Update(env)
+opts.Save('CLAMTests.conf', env)
+Help(opts.GenerateHelpText(env))
 
-tests_env['project'] = 'CLAMTests'
+env['project'] = 'CLAMTests'
+
+libraries = [
+	'clam_core',
+	'clam_processing',
+	'clam_audioio',
+	'cppunit',
+]
 
 if sys.platform != 'win32' :
-	tests_env.Append( LIBS=['cppunit','dl'] )
-else :
-	tests_env.Append( LIBS=['cppunit_vc7'] )
-
-if sys.platform != 'win32' :
-	if tests_env['release'] :
-		tests_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+	if env['release'] :
+		env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
 	else :
-		tests_env.Append( CCFLAGS=['-g', '-Wall'] )
-	tests_env.ParseConfig( 'PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config --cflags --libs clam_core clam_processing clam_audioio'%(tests_env['clam_prefix']))
+		env.Append( CCFLAGS=['-g', '-Wall'] )
+	env.ParseConfig( 'PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config --cflags --libs %s'
+		%( env['clam_prefix'], ' '.join(libraries)))
 else :
-	tests_env.Append( CPPPATH=[tests_env['cppunit_prefix']+'/include'] )
-	tests_env.Append( LIBPATH=[tests_env['cppunit_prefix']+'/lib'] )
-	parse_pkg_config( tests_env )
-	if tests_env['release'] :
-		tests_env.Append( CPPFLAGS = ['-DWIN32'] )
-		tests_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
-		tests_env.Append( LINKFLAGS = ['/LTCG'] )
+	env.Append( LIBS=['cppunit_vc7'] )
+	env.Append( CPPPATH=[env['cppunit_prefix']+'/include'] )
+	env.Append( LIBPATH=[env['cppunit_prefix']+'/lib'] )
+	parse_pkg_config( env )
+	if env['release'] :
+		env.Append( CPPFLAGS = ['-DWIN32'] )
+		env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
+		env.Append( LINKFLAGS = ['/LTCG'] )
 	else :
-		tests_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
-		tests_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
-		tests_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
+		env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
+		env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
+		env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
 #TODO: KLUDGE to allow old style and new style CLAM headers
-tests_env.Append(CPPPATH=tests_env['clam_prefix']+'/include/CLAM')
+env.Append(CPPPATH=env['clam_prefix']+'/include/CLAM')
 
-Export( 'tests_env' )
+Export( 'env' )
 SConscript('unit_tests/SConscript')
 SConscript('functional_tests/SConscript')
 
