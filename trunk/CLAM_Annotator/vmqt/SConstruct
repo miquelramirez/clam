@@ -72,10 +72,6 @@ sources += filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
 if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
 sources = unique(sources)
 
-printableSources = [os.path.basename(source) for source in sources ]
-printableSources.sort()
-print printableSources
-
 env.Append(CPPPATH=includePaths)
 env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 	(
