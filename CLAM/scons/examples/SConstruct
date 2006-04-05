@@ -4,6 +4,8 @@ import glob
 import SCons.Util
 from SCons.Util import CLVar
 
+qt4ToolPath="../sconstools"
+
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 
@@ -19,37 +21,17 @@ def recursiveDirs(root) :
 def unique(list) :
 	return dict.fromkeys(list).keys()
 
-env = Environment(tools=['default','qt'], options=options)
+env = Environment(tools=['default','qt'], toolpath=[qt4ToolPath], options=options)
 options.Save('options.cache', env)
 CLAMInstallDir = env['clam_prefix']
 
+env.SConsignFile() # Single signature file
+
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT_MOCHPREFIX'] = 'generated/moc_'
-env['QT_UISUFFIX'] = '.ui'
 env['QT_UICDECLPREFIX'] = 'generated/ui_'
 env['QT_UICDECLSUFFIX'] = '.hxx'
-env['QT_LIB'] = '' # KLUDGE to avoid linking qt3 library
-
-qrcbuilder = Builder(
-	action ='rcc $SOURCE -o $TARGET',
-	src_suffix = '.qrc',
-	suffix = '.cxx',
-	prefix = 'generated/qrc_',
-	single_source = True
-	)
-env.Append( BUILDERS = { 'Qrc': qrcbuilder } )
-
-env['QT_UIC4COM'] = [
-	CLVar('$QT4_UIC $QT_UICDECLFLAGS -o ${TARGETS[0]} $SOURCE'),
-	]
-uic4builder = Builder(
-    action='$QT_UIC4COM',
-	src_suffix='$QT_UISUFFIX',
-	suffix='$QT_UICDECLSUFFIX',
-	prefix='$QT_UICDECLPREFIX',
-	single_source = True
-	)
-env.Append( BUILDERS = { 'Uic4': uic4builder } )
+env['QT_LIB'] = 'qt-mt'
 
 pkgconfigLibraries = [
 	'clam_core',
