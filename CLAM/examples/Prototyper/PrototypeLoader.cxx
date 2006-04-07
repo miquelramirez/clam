@@ -27,7 +27,7 @@ void PrototypeLoader::SetNetworkPlayer( NetworkPlayer& player)
 
 QWidget * PrototypeLoader::LoadPrototype(std::string uiFile)
 {
-	mMainWidget = (QWidget *) QWidgetFactory::create( uiFile );
+	mMainWidget = (QWidget *) QWidgetFactory::create( uiFile.c_str() );
 	return mMainWidget;
 }
 
