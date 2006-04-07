@@ -8,7 +8,7 @@ options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(PathOption('clam_vmqt4_path', 'The path to the vmqt module', '')) # to be removed
-options.Add(BoolOption( 'release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
+options.Add(BoolOption('release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
 
 
 def scanFiles(pattern, paths) :
@@ -66,10 +66,7 @@ extraPaths += recursiveDirs(CLAMVmQtPath+"/widget")
 extraPaths += [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
-	'/usr/include/qt4/', # quick KLUDGE for ubuntu
-	'/usr/include/qt4/QtCore', # quick KLUDGE for ubuntu
-	'/usr/include/qt4/QtGui', # quick KLUDGE for ubuntu
-	'/usr/include/qt4/QtOpenGl', # quick KLUDGE for ubuntu
+#	'/usr/include/qt4/', # quick KLUDGE for ubuntu
 ]
 includePaths = sourcePaths + extraPaths
 
@@ -95,7 +92,7 @@ env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 
 if env['release'] :
-	env.Append( CCFLAGS=['-g', '-O3','-fomit-frame-pointer','-Wall'] )
+	env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
 else :
 	env.Append( CCFLAGS=['-g', '-Wall'] )
 #env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
@@ -119,7 +116,7 @@ manpages = [
 
 # Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
 tsfiles = scanFiles("i18n/*.ts", sourcePaths)
-env.Precious(tsfiles)
+env.Precious(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
 translatableSources = scanFiles('*.cxx', sourcePaths);
 translatableSources+= scanFiles('*.hxx', sourcePaths);
 translatableSources+= scanFiles('*.ui', sourcePaths);
@@ -129,7 +126,6 @@ if len(tsfiles) :
 	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
 	translations = env.Qm(source = tsNodes)
 
-#env.AddPostAction( install_bin, 'chmod 755 $TARGET' ) # TODO: Look for a generic action
 installation = {
 	'/bin' : programs,
 	'/share/man/man1' : manpages,

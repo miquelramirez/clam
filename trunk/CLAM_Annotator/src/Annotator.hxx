@@ -98,7 +98,6 @@ public slots:
 	void refreshSegmentation();
 
 	void fileOpen();
-	void fileSave();
 	void fileOpenRecent();
 
 	void addSongsToProject();
@@ -117,6 +116,7 @@ protected:
 
 private slots:
 	void updatePendingAuralizationsChanges();
+	void saveProject();
 
 	void on_helpWhatsThisAction_triggered();
 	void on_reloadDescriptorsAction_triggered();
