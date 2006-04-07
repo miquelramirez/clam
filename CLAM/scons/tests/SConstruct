@@ -131,6 +131,7 @@ else :
 
 #TODO: KLUDGE to allow old style and new style CLAM headers
 env.Append(CPPPATH=env['clam_prefix']+'/include/CLAM')
+env.Append(CPPPATH='include')
 
 Export( 'env' )
 SConscript('unit_tests/SConscript')
