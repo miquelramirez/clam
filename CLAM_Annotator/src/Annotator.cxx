@@ -510,7 +510,7 @@ void Annotator::makeConnections()
 	// Action Signals
 	connect(fileExitAction, SIGNAL(triggered()), this, SLOT(close()));
 	connect(fileOpen_projectAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
-	connect(fileSave_projectAction, SIGNAL(triggered()), this, SLOT(fileSave()));
+	connect(fileSave_projectAction, SIGNAL(triggered()), this, SLOT(saveProject()));
 	connect(addSongAction, SIGNAL(triggered()), this, SLOT(addSongsToProject()));
 	connect(removeSongAction, SIGNAL(triggered()), this, SLOT(deleteSongsFromProject()));
 	connect(songComputeDescriptorsAction, SIGNAL(triggered()), this, SLOT(computeSongDescriptors()));
@@ -726,7 +726,7 @@ void Annotator::closeEvent ( QCloseEvent * e )
 	}
 	if (result == QMessageBox::Yes)
 	{
-		fileSave();
+		saveProject();
 	}
 	e->accept();
 }
@@ -796,7 +796,7 @@ void Annotator::on_editProjectPropertiesAction_triggered()
 }
 
 
-void Annotator::fileSave()
+void Annotator::saveProject()
 {
 	CLAM_ASSERT(mProject.File()!="", "Saving using empty file name");
 	CLAM::XMLStorage::Dump(mProject,"Project",mProject.File());
