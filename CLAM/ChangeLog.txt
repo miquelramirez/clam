@@ -5,6 +5,7 @@
  * Examples, and tests (Unit/Functional) now compiles with scons
  * Windows, Linux and OSX being continuously tested with testfarm.     
 
+
 2006-02-07 CLAM_0_90_0
 'New scons buildsystem and multiplaform again'
   * Building and packaging
