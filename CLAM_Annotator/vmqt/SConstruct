@@ -1,6 +1,5 @@
 #!/usr/bin/python
-import os
-import glob
+import os, sys, glob
 
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
@@ -29,8 +28,8 @@ CLAMInstallDir = env['clam_prefix']
 env.SConsignFile() # Single signature file
 
 env['CXXFILESUFFIX'] = '.cxx'
-env['QT4_MOCHPREFIX'] = 'generated/moc_'
-env['QT4_UICDECLPREFIX'] = 'generated/ui_'
+env['QT4_MOCHPREFIX'] = os.path.join(['generated','moc_'])
+env['QT4_UICDECLPREFIX'] = os.path.join(['generated','ui_'])
 env['QT4_UICDECLSUFFIX'] = '.hxx'
 
 clamModules= [
@@ -48,7 +47,7 @@ pkgconfigLibraries = [
 	'QtCore',
 	'QtOpenGL',
 #	'QtSvg',
-	'Qt3Support',
+#	'Qt3Support',
 ]
 
 libSourcePaths = []
@@ -77,10 +76,14 @@ if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
 sources = unique(sources)
 
 env.Append(CPPPATH=includePaths)
-env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
+if sys.platform == "linux2" :
+	env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 	(
 		CLAMInstallDir,
 		' '.join(pkgconfigLibraries)))
+if sys.platform == "win32" :
+	env.AppendUnique(LIBS=[lib+'4' for lib in pkgconfigLibraries])
+	env.AppendUnique(LIBPATH=['$QTDIR/lib'])
 
 env.UseClamModules(clamModules, CLAMInstallDir)
 
