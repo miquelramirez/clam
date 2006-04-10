@@ -1,103 +1,26 @@
 #!/usr/bin/python
-import sys, os, glob
-
-def parse_pkg_config( env ) :
-	prefix = env['clam_prefix']
-	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
-	descriptors = glob.glob( descriptor_path )
-	libpath = dict()
-	libs = dict()
-	cppflags = dict()
-	cpppath = dict()
-	ccflags = dict()
-	for desc_file in descriptors :
-		instream = open( desc_file )
-
-		for line in instream :
-			tokens = line.strip().split(' ')
-			if tokens[0] == 'Libs:' :
-				for token in tokens[1:] :
-					if "/LIBPATH:" in token :
-						libpath[token.replace("/LIBPATH:", "")] = True
-					else :
-						libs[token] = True
-			elif tokens[0] == 'Cflags:':
-				foo = line.strip().split(' /')
-				for token in foo[1:] :
-					token = '/' + token
-					# search for -X flags
-					if(token.find(' -')!=-1):
-						listOfRealTokens = token.split(' -')
-						#print('new token to parse: ' + token)
-						firstToken = listOfRealTokens[0]
-						if "/I" in firstToken:
-							cpppath[ firstToken.replace("/I","") ] = True
-						elif "/D" in firstToken :
-							cppflags[ firstToken ] = True
-						else :
-							ccflags[firstToken] = True
-						for realToken in listOfRealTokens[1:]:
-							#print('new token to parse: ' + realToken)
-							ccflags['-'+realToken] = True
-					else:
-						#print('new token to parse: ' + token)
-						if "/I" in token :
-							cpppath[ token.replace("/I","") ] = True
-						elif "/D" in token in token :
-							cppflags[ token ] = True
-						else :
-							#print('token: ' + token )
-							ccflags[token] = True
-			else :
-				pass
-
-		instream.close()
-	print "Adding to evironment LIBPATH:"
-	for elem in libpath.keys() : print elem,
-	print
-	env.Append( LIBPATH = libpath.keys() )
-	print "Adding to environment LIBS:"
-	for elem in libs.keys() : print elem,
-	print
-	env.Append( LIBS = libs.keys() )
-	print "Adding to environment CPPFLAGS:"
-	for elem in cppflags.keys() : print elem,
-	print
-	env.Append( CPPFLAGS = cppflags.keys() )
-	print "Adding to environment CCFLAGS:"
-	for elem in ccflags.keys() : print elem,
-	print
-	env.Append( CCFLAGS = ccflags.keys() )
-	print "Adding to environment CPPPATH:"
-	for elem in cpppath.keys() : print elem,
-	print
-	env.Append( CPPPATH = cpppath.keys() )
+import sys, os
 
 sys.path.append('../libs')
 from buildtools import *
 # CLAM unit tests build
 
-env = Environment( ENV=os.environ )
+clamToolPath="../sconstools"
 
-opts = Options('CLAMTests.conf')
+options = Options('options.cache')
 
-if sys.platform == 'linux2' :
-	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
-elif sys.platform == 'darwin' :
-	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr/local') )
-else :
-	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
-if sys.platform != 'win32' :
-	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr') )
-else :
-	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', 'G:\projects\CLAM-bin\\bin') )
+options.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr/local') )
+options.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr/local') )
 if sys.platform == 'win32' :
-	opts.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', 'G:\projects\cppunit' ))
+	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '' ))
+options.Add( BoolOption( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )
+options.Add( PathOption( 'test_data_path', 'Path to the TestDataPrefix', '/usr/local') )
 
-opts.Add( BoolOption( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )
-opts.Update(env)
-opts.Save('CLAMTests.conf', env)
-Help(opts.GenerateHelpText(env))
+env = Environment( ENV=os.environ, tools=['default', 'clam'], toolpath=[clamToolPath], options=options)
+
+options.Update(env)
+options.Save('options.cache', env)
+Help(options.GenerateHelpText(env))
 
 env['project'] = 'CLAMTests'
 
@@ -105,16 +28,18 @@ libraries = [
 	'clam_core',
 	'clam_processing',
 	'clam_audioio',
-	'cppunit',
 ]
 
+env.SConsignFile() # Single signature file
+
+env.EnableClamModules(libs=libraries, path=env['clam_prefix'])
 if sys.platform != 'win32' :
+	env.ParseConfig( 'pkg-config --cflags --libs cppunit')
+
 	if env['release'] :
 		env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
 	else :
 		env.Append( CCFLAGS=['-g', '-Wall'] )
-	env.ParseConfig( 'PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config --cflags --libs %s'
-		%( env['clam_prefix'], ' '.join(libraries)))
 else :
 	env.Append( LIBS=['cppunit_vc7'] )
 	env.Append( CPPPATH=[env['cppunit_prefix']+'/include'] )
