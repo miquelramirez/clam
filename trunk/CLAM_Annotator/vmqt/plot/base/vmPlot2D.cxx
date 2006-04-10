@@ -1,4 +1,4 @@
-#include <QResizeEvent>
+#include <QtGui/QResizeEvent>
 #include "vmRenderer2D.hxx"
 #include "vmPlot2D.hxx"
 #include <QtCore/QTimer>

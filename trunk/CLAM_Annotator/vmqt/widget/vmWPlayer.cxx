@@ -1,5 +1,5 @@
-#include <QHBoxLayout>
-#include <QPushButton>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QPushButton>
 #include "vmPlayer.hxx"
 #include "vmWPlayer.hxx"
 

@@ -1,7 +1,7 @@
-#include <QLabel>
-#include <QFrame>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QFrame>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
 #include "vmColorScale.hxx"
 #include "vmSpecgramPanel.hxx"
 

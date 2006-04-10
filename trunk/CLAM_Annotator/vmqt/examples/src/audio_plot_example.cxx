@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <QApplication>
-#include <QFileDialog>
+#include <QtGui/QApplication>
+#include <QtGui/QFileDialog>
 #include "vmAudioPlot.hxx"
 #include <CLAM/ContiguousSegmentation.hxx>
 #include "audio_file_utils.hxx"

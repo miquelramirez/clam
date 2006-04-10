@@ -1,4 +1,4 @@
-#include <QGridLayout>
+#include <QtGui/QGridLayout>
 #include "vmRuler.hxx"
 #include "vmPlot2D.hxx"
 #include "vmSonogramBuilder.hxx"

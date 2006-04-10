@@ -1,5 +1,5 @@
-#include <QPainter>
-#include <QResizeEvent>
+#include <QtGui/QPainter>
+#include <QtGui/QResizeEvent>
 #include "vmColorScale.hxx"
 
 namespace CLAM

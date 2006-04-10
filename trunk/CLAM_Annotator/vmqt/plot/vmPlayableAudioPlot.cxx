@@ -1,8 +1,8 @@
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFrame>
-#include <QComboBox>
-#include <QPixmap>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QFrame>
+#include <QtGui/QComboBox>
+#include <QtGui/QPixmap>
 #include "vmPlot2D.hxx"
 #include "vmLocatorRenderer.hxx"
 #include "vmWPlayer.hxx"

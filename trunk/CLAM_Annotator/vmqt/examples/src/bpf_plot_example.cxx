@@ -1,4 +1,4 @@
-#include <QApplication>
+#include <QtGui/QApplication>
 #include "Melody.hxx"
 #include "XMLStorage.hxx"
 #include "vmBPFPlot.hxx"

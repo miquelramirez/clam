@@ -1,11 +1,11 @@
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QFrame>
-#include <QString>
-#include <QPainter>
-#include <QScrollBar>
-#include <QLabel>
-#include <QPushButton>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QFrame>
+#include <QtCore/QString>
+#include <QtGui/QPainter>
+#include <QtGui/QScrollBar>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 #include "vmScrollGroup.hxx"
 
 namespace CLAM
