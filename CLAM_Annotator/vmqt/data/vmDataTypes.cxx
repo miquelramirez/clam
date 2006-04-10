@@ -54,8 +54,8 @@ namespace CLAM
 			, right(1.0)
 			, bottom(-1.0)
 			, top(1.0)
-			, near(-1.0)
-			, far(1.0)
+			, mNear(-1.0)
+			, mFar(1.0)
 		{
 		}
 
@@ -64,8 +64,8 @@ namespace CLAM
 			, right(rightv)
 			, bottom(bottomv)
 			, top(topv)
-			, near(nearv)
-			, far(farv)
+			, mNear(nearv)
+			, mFar(farv)
 		{
 		}
 
@@ -74,8 +74,8 @@ namespace CLAM
 			, right(v.right)
 			, bottom(v.bottom)
 			, top(v.top)
-			, near(v.near)
-			, far(v.far)
+			, mNear(v.mNear)
+			, mFar(v.mFar)
 		{
 		}
 
@@ -85,7 +85,7 @@ namespace CLAM
 
 		bool GLView::operator==(const GLView& v)
 		{
-			return (left==v.left && right==v.right && bottom==v.bottom && top==v.top && near==v.near && far==v.far);
+			return (left==v.left && right==v.right && bottom==v.bottom && top==v.top && mNear==v.mNear && mFar==v.mFar);
 		}
 
 ////////// GLViewport ///////////////

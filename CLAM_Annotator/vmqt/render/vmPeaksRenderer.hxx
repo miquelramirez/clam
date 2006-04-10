@@ -1,6 +1,5 @@
 #ifndef __VMQT_PEAKS_RENDERER_H__
 #define __VMQT_PEAKS_RENDERER_H__
-
 #include "Array.hxx"
 #include "vmRenderer2D.hxx"
 
