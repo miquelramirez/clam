@@ -1,13 +1,10 @@
 #!/usr/bin/python
 import os
 import glob
-import SCons.Util
-from SCons.Util import CLVar
-
-qt4ToolPath="../../CLAM/scons/sconstools"
 
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('clam_sconstools', 'The location to the scons tools provided by CLAM', ''))
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -21,8 +18,12 @@ def recursiveDirs(root) :
 def unique(list) :
 	return dict.fromkeys(list).keys()
 
-env = Environment(tools=['default','qt4'], toolpath=[qt4ToolPath], options=options)
+env = Environment(tools=['default'], options=options)
+options.Update(env)
 options.Save('options.cache', env)
+
+env.Tool('qt4', toolpath=[env['clam_sconstools']])
+env.Tool('clam', toolpath=[env['clam_sconstools']])
 CLAMInstallDir = env['clam_prefix']
 
 env.SConsignFile() # Single signature file
@@ -32,10 +33,13 @@ env['QT4_MOCHPREFIX'] = 'generated/moc_'
 env['QT4_UICDECLPREFIX'] = 'generated/ui_'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
 
-pkgconfigLibraries = [
+clamModules= [
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
+]
+
+pkgconfigLibraries = [
 	'QtGui',
 #	'QtSql',
 #	'QtNetwork',
@@ -77,9 +81,11 @@ env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'
 	(
 		CLAMInstallDir,
 		' '.join(pkgconfigLibraries)))
-#env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
+
+env.UseClamModules(clamModules, CLAMInstallDir)
+
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
-#env.Append(CPPFLAGS=['-DQT3_SUPPORT_WARNINGS'])
+
 examplesMainSources = [
 	"examples/src/audio_plot_example.cxx",
 	"examples/src/fundamental_plot_example.cxx",
