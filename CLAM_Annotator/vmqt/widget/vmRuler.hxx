@@ -2,7 +2,7 @@
 #define __VMQT_RULER_H__
 
 #include <vector>
-#include <QGLWidget>
+#include <QtOpenGL/QGLWidget>
 #include "vmDataTypes.hxx"
 
 namespace CLAM
