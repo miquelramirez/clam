@@ -1,5 +1,4 @@
 import sys
-import SCons
 
 def enable_modules( self, libs, path) :
 	if sys.platform == 'linux2': 
@@ -68,6 +67,7 @@ def enable_modules( self, libs, path) :
 
 def generate(env) :
 	import new
+	import SCons
 	method = new.instancemethod(enable_modules,env,SCons.Environment)
 	env.EnableClamModules=method
 
