@@ -1,9 +1,9 @@
 #ifndef SchemaBrowser_hxx
 #define SchemaBrowser_hxx
 
-#include <qvariant.h>
-#include <qpixmap.h>
-#include <qwidget.h>
+#include <QtCore/QVariant>
+#include <QtGui/QPixmap>
+#include <QtGui/QWidget>
 
 #include <string>
 

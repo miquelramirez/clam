@@ -2,7 +2,7 @@
 #ifndef __AudioLoadThread_hxx__
 #define __AudioLoadThread_hxx__
 
-#include <qthread.h>
+#include <QtCore/QThread>
 #include <vector>
 #include <CLAM/Audio.hxx>
 #include <CLAM/AudioFile.hxx>
