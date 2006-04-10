@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import os
 import glob
-import SCons.Util
+import sys
 
 version='0.3'
 options = Options('options.cache', ARGUMENTS)
@@ -85,8 +85,8 @@ sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
 if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
 sources = dict.fromkeys(sources).keys()
-sources.remove('./main.cxx')
-sources.remove('./ClamExtractorExample.cxx')
+sources.remove(os.path.join('.','main.cxx'))
+sources.remove(os.path.join('.','ClamExtractorExample.cxx'))
 
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=CLAMVmQtPath)
@@ -94,11 +94,12 @@ env.Append(LIBS="clam_vmqt4")
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 
-if env['release'] :
-	env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
-else :
-	env.Append( CCFLAGS=['-g', '-Wall'] )
-#env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
+if sys.platform=='linux2' :
+	if env['release'] :
+		env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
+	else :
+		env.Append( CCFLAGS=['-g', '-Wall'] )
+	#env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
 
 mainSources = {
 	'Annotator' : './main.cxx',
