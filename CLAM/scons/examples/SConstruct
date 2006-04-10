@@ -5,17 +5,17 @@ import sys
 import SCons.Util
 from SCons.Util import CLVar
 
-def parse_pkg_config( env ) :
+def parse_pkg_config( env, libs) :
 	if sys.platform != 'win32': return
 	prefix = env['clam_prefix']
-	descriptor_path = prefix + "\\lib\\pkgconfig\\*.pc"
-	descriptors = glob.glob( descriptor_path )
+	descriptor_path = prefix + "\\lib\\pkgconfig\\"
 	libpath = dict()
 	libs = dict()
 	cppflags = dict()
 	cpppath = dict()
 	ccflags = dict()
-	for desc_file in descriptors :
+	for lib in libs :
+		desc_file = descriptor_path + lib + ".pc"
 		instream = open( desc_file )
 
 		for line in instream :
@@ -121,7 +121,7 @@ env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'
 	(
 		CLAMInstallDir,
 		' '.join(pkgconfigLibraries)))
-parse_pkg_config(env)
+parse_pkg_config(env, pkgconfigLibraries)
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 
 singleSourceExamples = [
