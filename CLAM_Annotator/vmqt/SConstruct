@@ -76,16 +76,8 @@ if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
 sources = unique(sources)
 
 env.Append(CPPPATH=includePaths)
-if sys.platform == "linux2" :
-	env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
-	(
-		CLAMInstallDir,
-		' '.join(pkgconfigLibraries)))
-if sys.platform == "win32" :
-	env.AppendUnique(LIBS=[lib+'4' for lib in pkgconfigLibraries])
-	env.AppendUnique(LIBS=['opengl32'])
-	env.AppendUnique(LIBPATH=['$QTDIR/lib'])
 
+env.EnableQt4Modules(pkgconfigLibraries)
 env.UseClamModules(clamModules, CLAMInstallDir)
 
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
