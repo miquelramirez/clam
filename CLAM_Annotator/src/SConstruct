@@ -8,6 +8,7 @@ options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(PathOption('clam_vmqt4_path', 'The path to the vmqt module', '')) # to be removed
+options.Add(PathOption('clam_sconstools', 'The path to the scons tools provided by clam', ''))
 options.Add(BoolOption('release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
 
 
@@ -21,11 +22,14 @@ def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
 
-env = Environment(tools=['default','qt4','dmg','nsis'], toolpath=['sconstools'], options=options)
+env = Environment(tools=['default'], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
+
+env.Tool('qt4', toolpath=[env['clam_sconstools']])
+env.Tool('clam', toolpath=[env['clam_sconstools']])
 
 CLAMInstallDir = env['clam_prefix']
 CLAMVmQtPath = env['clam_vmqt4_path']
@@ -35,10 +39,13 @@ env['QT4_UICDECLSUFFIX'] = '.hxx'
 env['QT4_MOCHPREFIX'] = 'generated/moc_'
 env['QT4_UICDECLPREFIX'] = 'generated/ui_'
 
-pkgconfigLibraries = [
+env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
+	] , CLAMInstallDir)
+
+env.EnableQt4Modules([
 	'QtCore',
 	'QtGui',
 	'QtOpenGL',
@@ -49,7 +56,7 @@ pkgconfigLibraries = [
 #	'QtXml',
 #	'QtSvg',
 #	'Qt3Support',
-]
+	])
 
 sourcePaths = [
 	'.',
@@ -83,12 +90,8 @@ sources.remove('./ClamExtractorExample.cxx')
 
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=CLAMVmQtPath)
-env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
 env.Append(LIBS="clam_vmqt4")
-env.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
-	(
-		CLAMInstallDir,
-		' '.join(pkgconfigLibraries)) )
+env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 
 if env['release'] :
