@@ -14,7 +14,7 @@ def parse_pkg_config( self, libs, path) :
 
 	descriptor_path = path + "\\lib\\pkgconfig\\"
 	libpath = dict()
-	libs = dict()
+	ldlibs = dict()
 	cppflags = dict()
 	cpppath = dict()
 	ccflags = dict()
@@ -29,7 +29,7 @@ def parse_pkg_config( self, libs, path) :
 					if "/LIBPATH:" in token :
 						libpath[token.replace("/LIBPATH:", "")] = True
 					else :
-						libs[token] = True
+						ldlibs[token] = True
 			elif tokens[0] == 'Cflags:':
 				foo = line.strip().split(' /')
 				for token in foo[1:] :
@@ -61,11 +61,11 @@ def parse_pkg_config( self, libs, path) :
 				pass
 
 		instream.close()
-	self.Append( LIBPATH = libpath.keys() )
-	self.Append( LIBS = libs.keys() )
-	self.Append( CPPFLAGS = cppflags.keys() )
-	self.Append( CCFLAGS = ccflags.keys() )
-	self.Append( CPPPATH = cpppath.keys() )
+	self.AppendUnique( LIBPATH = libpath.keys() )
+	self.AppendUnique( LIBS = ldlibs.keys() )
+	self.AppendUnique( CPPFLAGS = cppflags.keys() )
+	self.AppendUnique( CCFLAGS = ccflags.keys() )
+	self.AppendUnique( CPPPATH = cpppath.keys() )
 
 def generate(env) :
 #	setattr(env,"UseClamModules", parse_pkg_config)
