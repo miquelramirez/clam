@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <QtOpenGL/QGLWidget>
+#undef GetClassName
 #include "vmDataTypes.hxx"
 
 namespace CLAM

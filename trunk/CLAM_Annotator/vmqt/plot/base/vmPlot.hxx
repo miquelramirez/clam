@@ -2,6 +2,7 @@
 #define __VMQT_PLOT_H__
 
 #include <QtOpenGL/QGLWidget>
+#undef GetClassName
 #include "vmDataTypes.hxx"
 
 namespace CLAM
