@@ -175,11 +175,15 @@ def generate(env):
 	def locateQt4Command(env, command, qtdir) :
 		fullpath = env.Detect([command+'-qt4', command])
 		if not (fullpath is None) : return fullpath
-		fullpath = os.path.join(qtdir,'bin',command +'-qt4')
-		if os.access(fullpath, os.X_OK): return fullpath
-		fullpath = os.path.join(qtdir,'bin',command)
-		if os.access(fullpath, os.X_OK): return fullpath
-		raise "Qt4 command '" + command + "' not found"
+		fullpath1 = os.path.join(qtdir,'bin',command +'-qt4')
+		if os.access(fullpath1, os.X_OK) or \
+			os.access(fullpath1+".exe", os.X_OK):
+			return fullpath1
+		fullpath2 = os.path.join(qtdir,'bin',command)
+		if os.access(fullpath2, os.X_OK) or \
+			os.access(fullpath2+".exe", os.X_OK):
+			return fullpath2
+		raise "Qt4 command '" + command + "' not found. Tried: " + fullpath1 + " and "+ fullpath2
 		
 
 	CLVar = SCons.Util.CLVar
