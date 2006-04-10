@@ -1,4 +1,4 @@
-#include <QGridLayout>
+#include <QtGui/QGridLayout>
 #include "Assert.hxx"
 #include "vmRuler.hxx"
 #include "vmScrollGroup.hxx"

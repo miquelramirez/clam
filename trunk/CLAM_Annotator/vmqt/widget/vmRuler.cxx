@@ -1,4 +1,4 @@
-#include <QResizeEvent>
+#include <QtGui/QResizeEvent>
 #include "vmRuler.hxx"
 
 namespace CLAM
