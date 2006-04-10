@@ -155,7 +155,7 @@ def _detect(env):
 	QTDIR = os.environ.get('QTDIR',None)
 	if QTDIR!=None : return QTDIR
 
-	moc = env.WhereIs('mc-qt4')
+	moc = env.WhereIs('moc-qt4') or env.WhereIs('moc')
 	if moc:
 		SCons.Warnings.warn(
 			QtdirNotFound,
@@ -172,6 +172,16 @@ def generate(env):
 
 	print "Loading qt4 tool..."
 
+	def locateQt4Command(env, command, qtdir) :
+		fullpath = env.Detect([command+'-qt4', command])
+		if not (fullpath is None) : return fullpath
+		fullpath = os.path.join(qtdir,'bin',command +'-qt4')
+		if os.access(fullpath, os.X_OK): return fullpath
+		fullpath = os.path.join(qtdir,'bin',command)
+		if os.access(fullpath, os.X_OK): return fullpath
+		raise "Qt4 command '" + command + "' not found"
+		
+
 	CLVar = SCons.Util.CLVar
 	Action = SCons.Action.Action
 	Builder = SCons.Builder.Builder
@@ -179,12 +189,11 @@ def generate(env):
 
 	# the basics
 	env['QTDIR']  = _detect(env)
-	env['QT4_MOC'] = env.Detect(['moc-qt4', 'moc']) or os.path.join('$QTDIR','bin','moc-qt4')
-	env['QT4_UIC'] = env.Detect(['uic-qt4', 'uic']) or os.path.join('$QTDIR','bin','uic-qt4')
-	env['QT4_RCC'] = env.Detect(['rcc']) or os.path.join('$QTDIR','bin','rcc')
-	env['QT4_LUPDATE'] = env.Detect(['lupdate-qt4', 'lupdate']) or os.path.join('$QTDIR','bin','lupdate-qt4')
-	env['QT4_LRELEASE'] = env.Detect(['lrelease-qt4', 'lrelease']) or os.path.join('$QTDIR','bin','lrelease-qt4')
-	env['QT4_LIB'] = 'QtCore' # may be set to qt-mt
+	env['QT4_MOC'] = locateQt4Command(env,'moc', env['QTDIR'])
+	env['QT4_UIC'] = locateQt4Command(env,'uic', env['QTDIR'])
+	env['QT4_RCC'] = locateQt4Command(env,'rcc', env['QTDIR'])
+	env['QT4_LUPDATE'] = locateQt4Command(env,'lupdate', env['QTDIR'])
+	env['QT4_LRELEASE'] = locateQt4Command(env,'lrelease', env['QTDIR'])
 
 	# Should the qt tool try to figure out, which sources are to be moc'ed ?
 	env['QT4_AUTOSCAN'] = 1
