@@ -83,6 +83,7 @@ if sys.platform == "linux2" :
 		' '.join(pkgconfigLibraries)))
 if sys.platform == "win32" :
 	env.AppendUnique(LIBS=[lib+'4' for lib in pkgconfigLibraries])
+	env.AppendUnique(LIBS=['opengl32'])
 	env.AppendUnique(LIBPATH=['$QTDIR/lib'])
 
 env.UseClamModules(clamModules, CLAMInstallDir)
