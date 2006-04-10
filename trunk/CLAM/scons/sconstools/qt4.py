@@ -302,6 +302,23 @@ def generate(env):
 					 LIBPATH=[os.path.join('$QTDIR', 'lib')],
 					 LIBS=['$QT4_LIB'])
 	
+	import new
+	method = new.instancemethod(enable_modules, env, SCons.Environment)
+	env.EnableQt4Modules=method
+
+def enable_modules(self, modules) :
+	import sys
+	if sys.platform == "linux2" :
+		self.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
+		(
+			self['QTDIR'],
+			' '.join(modules)))
+		return
+	if sys.platform == "win32" :
+		self.AppendUnique(LIBS=[lib+'4' for lib in modules])
+		self.AppendUnique(LIBS=['opengl32'])
+		self.AppendUnique(LIBPATH=['$QTDIR/lib'])
+
 
 def exists(env):
 	return _detect(env)
