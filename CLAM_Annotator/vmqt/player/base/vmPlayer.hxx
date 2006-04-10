@@ -1,7 +1,7 @@
 #ifndef __VMQT_PLAYER_H__
 #define __VMQT_PLAYER_H__
 
-#include <QThread>
+#include <QtCore/QThread>
 #include "vmDataTypes.hxx"
 
 namespace CLAM

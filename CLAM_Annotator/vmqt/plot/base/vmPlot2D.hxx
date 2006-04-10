@@ -3,7 +3,7 @@
 
 #include <map>
 #include <vector>
-#include <QCursor>
+#include <QtGui/QCursor>
 #include "vmPlot.hxx"
 
 namespace CLAM

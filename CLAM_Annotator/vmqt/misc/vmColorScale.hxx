@@ -2,7 +2,7 @@
 #define __VMQT_COLORSCALE_H__
 
 #include <vector>
-#include <QWidget>
+#include <QtGui/QWidget>
 #include "vmDataTypes.hxx"
 
 namespace CLAM

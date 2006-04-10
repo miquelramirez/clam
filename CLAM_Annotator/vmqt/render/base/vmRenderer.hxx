@@ -1,7 +1,7 @@
 #ifndef __VMQT_RENDERER_H__
 #define __VMQT_RENDERER_H__
 
-#include <QObject>
+#include <QtCore/QObject>
 
 namespace CLAM
 {

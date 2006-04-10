@@ -1,7 +1,7 @@
 #ifndef __VMQT_WPLAYER_H__
 #define __VMQT_WPLAYER_H__
 
-#include <QWidget>
+#include <QtGui/QWidget>
 #include "vmDataTypes.hxx"
 
 class QPushButton;

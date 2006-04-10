@@ -1,8 +1,8 @@
 #ifndef __VMQT_RENDERER2D_H__
 #define __VMQT_RENDERER2D_H__
 
-#include <QString>
-#include <QCursor>
+#include <QtCore/QString>
+#include <QtGui/QCursor>
 #include "vmRenderer.hxx"
 #include "vmDataTypes.hxx"
 

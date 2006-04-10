@@ -1,7 +1,7 @@
 #ifndef __VMQT_SCROLL_GROUP_H__
 #define __VMQT_SCROLL_GROUP_H__
 
-#include <QtGui\QWidget>
+#include <QtGui/QWidget>
 #include "vmDataTypes.hxx"
 
 class QLabel;

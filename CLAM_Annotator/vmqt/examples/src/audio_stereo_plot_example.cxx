@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <QApplication>
-#include <QFileDialog>
+#include <QtGui/QApplication>
+#include <QtGui/QFileDialog>
 #include "vmAudioStereoPlot.hxx"
 #include "audio_file_utils.hxx"
 

@@ -1,4 +1,4 @@
-#include <QApplication>
+#include <QtGui/QApplication>
 #include "audio_file_utils.hxx"
 #include "analysis_utils.hxx"
 #include "vmFundamentalPlot.hxx"

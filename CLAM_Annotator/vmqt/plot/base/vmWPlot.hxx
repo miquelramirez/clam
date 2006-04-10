@@ -1,7 +1,7 @@
 #ifndef __VMQT_WPLOT_H__
 #define __VMQT_WPLOT_H__
 
-#include <QFrame>
+#include <QtGui/QFrame>
 
 namespace CLAM
 {
