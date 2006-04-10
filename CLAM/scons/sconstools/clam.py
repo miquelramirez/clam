@@ -1,8 +1,7 @@
 import sys
 import SCons
 
-def parse_pkg_config( self, libs, path) :
-	print "Running parse_pkg_config!!!!"
+def enable_modules( self, libs, path) :
 	if sys.platform == 'linux2': 
 		self.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 			(
@@ -68,10 +67,9 @@ def parse_pkg_config( self, libs, path) :
 	self.AppendUnique( CPPPATH = cpppath.keys() )
 
 def generate(env) :
-#	setattr(env,"UseClamModules", parse_pkg_config)
 	import new
-	method = new.instancemethod(parse_pkg_config,env,SCons.Environment)
-	env.UseClamModules=method
+	method = new.instancemethod(enable_modules,env,SCons.Environment)
+	env.EnableClamModules=method
 
 def exists(env):
 	return True
