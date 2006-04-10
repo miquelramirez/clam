@@ -32,13 +32,7 @@ env['QT4_MOCHPREFIX'] = os.path.join(['generated','moc_'])
 env['QT4_UICDECLPREFIX'] = os.path.join(['generated','ui_'])
 env['QT4_UICDECLSUFFIX'] = '.hxx'
 
-clamModules= [
-	'clam_core',
-	'clam_audioio',
-	'clam_processing',
-]
-
-pkgconfigLibraries = [
+env.EnableQt4Modules([
 	'QtGui',
 #	'QtSql',
 #	'QtNetwork',
@@ -48,7 +42,13 @@ pkgconfigLibraries = [
 	'QtOpenGL',
 #	'QtSvg',
 #	'Qt3Support',
-]
+	])
+
+env.EnableClamModules([
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	], CLAMInstallDir)
 
 libSourcePaths = []
 libSourcePaths += recursiveDirs("plot")
@@ -76,9 +76,6 @@ if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
 sources = unique(sources)
 
 env.Append(CPPPATH=includePaths)
-
-env.EnableQt4Modules(pkgconfigLibraries)
-env.UseClamModules(clamModules, CLAMInstallDir)
 
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 
