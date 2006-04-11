@@ -30,6 +30,7 @@ env.SConsignFile() # Single signature file
 
 env.Tool('qt4', toolpath=[env['clam_sconstools']])
 env.Tool('clam', toolpath=[env['clam_sconstools']])
+env.Tool('nsis', toolpath=[env['clam_sconstools']])
 
 CLAMInstallDir = env['clam_prefix']
 CLAMVmQtPath = env['clam_vmqt4_path']
@@ -139,6 +140,9 @@ installation = {
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
-env.Alias( 'install', installTargets )
+win_packages = [env.Nsis( source='../scons/clam_annotator.nsi')]
+
+env.Alias('package', win_packages)
+env.Alias('install', installTargets )
 env.Default(programs, translations)
 

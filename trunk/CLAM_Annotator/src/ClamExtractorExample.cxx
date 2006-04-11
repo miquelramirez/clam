@@ -42,7 +42,7 @@ CLAM::TData GetDurationInSeconds(const std::string& fileName);
 
 const char * usage =
 	"Example of music descriptor extractor based on CLAM.\n"
-	"Usage: ClamExtractorExample [-s] [-f <suffix>] <wavefile1> <wavefile2> ...\n"
+	"Usage: ClamExtractorExample [-s out.sc] [-f <suffix>] <wavefile1> <wavefile2> ...\n"
 	"\nOptions:\n"
 	" -h            shows this help\n"
 	" -s            dump the schema to the standard output\n"
