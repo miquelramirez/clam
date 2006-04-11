@@ -28,6 +28,7 @@
 #include <CLAM/ContiguousSegmentation.hxx>
 #include <CLAM/DiscontinuousSegmentation.hxx>
 #include <CLAM/UnsizedSegmentation.hxx>
+#include <CLAM/Oscillator.hxx>
 
 // TODO: Segment auralization related, to be moved
 #include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
@@ -171,8 +172,23 @@ Annotator::Annotator(const std::string & nameProject = "")
 	else
 		on_newProjectAction_triggered();
 	*/
+	initClick();
 	updateAuralizationOptions();
 	QTimer::singleShot(1000, splash, SLOT(close()));
+}
+
+void Annotator::initClick()
+{
+	mClick.SetSize(1000);
+
+	CLAM::OscillatorConfig cfg;
+	cfg.SetFrequency(1000);
+	cfg.SetAmplitude(1);
+	cfg.SetSamplingRate(mCurrentAudio.GetSampleRate());
+	CLAM::Oscillator osc(cfg);
+	osc.Start();
+	osc.Do(mClick);
+	osc.Stop();
 }
 
 void Annotator::loadSettings()
@@ -992,24 +1008,6 @@ void Annotator::refreshGlobalDescriptorsTable()
 void Annotator::auralizeMarks()
 {
 	if (!mSegmentation) return;
-	if(mClick.size()==0)
-	{
-		CLAM::AudioFile file;
-		file.OpenExisting(RESOURCES_BASE"/sounds/click.wav");
-		CLAM_ASSERT(file.IsReadable(), "The application requires the file '"
-				RESOURCES_BASE"/sounds/click.wav' which couldn't be open.");
-		int nChannels = file.GetHeader().GetChannels();
-		mClick.resize(nChannels);
-		for (int i=0; i<nChannels; i++)
-			mClick[i].SetSize(5000);
-
-		CLAM::MultiChannelAudioFileReaderConfig cfg;
-		cfg.SetSourceFile( file );
-		CLAM::MultiChannelAudioFileReader reader(cfg);
-		reader.Start();
-		reader.Do(mClick);
-		reader.Stop();
-	}
 	const std::vector<double> & marks = mSegmentation->onsets();
 	int nMarks = marks.size();
 	mOnsetAuralizationAudio.SetSize(0);
@@ -1020,7 +1018,7 @@ void Annotator::auralizeMarks()
 	{
 		int samplePosition = Round(marks[i]*mCurrentAudio.GetSampleRate());
 		if(samplePosition<size)
-			mOnsetAuralizationAudio.SetAudioChunk(samplePosition,mClick[0]);
+			mOnsetAuralizationAudio.SetAudioChunk(samplePosition,mClick);
 	} 
 }
 
