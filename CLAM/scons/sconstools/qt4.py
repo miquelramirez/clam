@@ -316,7 +316,8 @@ def enable_modules(self, modules) :
 		return
 	if sys.platform == "win32" :
 		self.AppendUnique(LIBS=[lib+'4' for lib in modules])
-		self.AppendUnique(LIBS=['opengl32'])
+		if 'QtOpenGL' in modules:
+			self.AppendUnique(LIBS=['opengl32'])
 		self.AppendUnique(LIBPATH=['$QTDIR/lib'])
 
 
