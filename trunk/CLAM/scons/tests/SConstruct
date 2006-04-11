@@ -44,7 +44,6 @@ else :
 	env.Append( LIBS=['cppunit_vc7'] )
 	env.Append( CPPPATH=[env['cppunit_prefix']+'/include'] )
 	env.Append( LIBPATH=[env['cppunit_prefix']+'/lib'] )
-	parse_pkg_config( env )
 	if env['release'] :
 		env.Append( CPPFLAGS = ['-DWIN32'] )
 		env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
