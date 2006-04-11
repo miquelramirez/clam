@@ -201,6 +201,7 @@ bin_objects = [ annotator_env.Object(source) for source in sourcefiles ]
 annotator_env.Append(CPPPATH=source_dirs)
 
 sounds = ['../resources/sounds/click.wav']
+manpage = ['../resources/man/man1/Annotator.1']
 
 if sys.platform != 'win32' :
 	bin_main_object = annotator_env.Object('../src/main.cxx')
@@ -215,8 +216,7 @@ if sys.platform != 'win32' :
 		sample_extractor_bin = annotator_env.Program( 'ClamExtractorExample', bin_test_object + bin_objects, LINKFLAGS=['-rdynamic'] )
 		install_bin = annotator_env.Install( annotator_env['install_prefix']+'/bin', [annotator_bin, sample_extractor_bin] )
 
-		manpage = ['../resources/man/man9/Annotator.9']
-		install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
+		install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man1', manpage )
 
 		install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
 
@@ -261,8 +261,7 @@ else :
 	sample_app = annotator_env.Alias('ClamExtractorExample', sample_extractor_bin)
 	install_bin = annotator_env.Install( annotator_env['install_prefix'], [annotator_bin, sample_extractor_bin] )
 
-	manpage = ['../resources/man/man9/Annotator.9']
-	install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
+	install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man1', manpage )
 	
 	install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
 
