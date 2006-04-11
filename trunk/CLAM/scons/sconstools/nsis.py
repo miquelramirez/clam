@@ -1,15 +1,25 @@
-def create_setup( target, source, env ) :
-	os.system( "makensis clam_annotator.nsi" )
-
-def create_setup_message( target, source, env ) :
-	return "generating Annotator Installer"
+import re
+nsisFiles_re = re.compile(r'File "([^<]*)"', re.M)
 
 def generate(env) :
 	"""Add Builders and construction variables for qt to an Environment."""
 	print "Lodading nsis tool..."
-	env.Append( BUILDERS={'Nsis' : 
-			env.Builder( action=env.Action(create_setup, create_setup_message ))
-		} )
+
+	def scanNsisContent(node, env, path, arg):
+		contents = node.get_contents()
+		includes = nsisFiles_re.findall(contents)
+		return includes
+	nsisscanner = env.Scanner(name = 'nsisfile',
+		function = scanNsisContent,
+		argument = None,
+		skeys = ['.nsi'])
+	nsisbuilder = env.Builder(
+		action = env.Action('makensis $SOURCE', "Creating the NSIS installer for windows"),
+		source_scanner = nsisscanner,
+		src_suffix = '.nsi',
+		single_source = True
+		)
+	env.Append( BUILDERS={'Nsis' : nsisbuilder} )
 
 def exists(env) :
 	return True
