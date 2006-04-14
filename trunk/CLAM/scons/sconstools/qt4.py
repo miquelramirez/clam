@@ -306,9 +306,33 @@ def generate(env):
 	method = new.instancemethod(enable_modules, env, SCons.Environment)
 	env.EnableQt4Modules=method
 
-def enable_modules(self, modules) :
+def enable_modules(self, modules, debug=False) :
 	import sys
+
+	validModules = [
+		'QtCore',
+		'QtGui',
+		'QtOpenGL',
+		'Qt3Support',
+		# The next modules have not been tested yet so, please
+		# maybe they require additional work on non Linux platforms
+		'QtSql',
+		'QtNetwork',
+		'QtSvg',
+		'QtTest',
+		'QtXml',
+		'QtUiTools',
+		]
+	invalidModules=[]
+	for module in modules:
+		if module not in validModules :
+			invalidModules.append(module)
+	if invalidModules :
+		raise "Modules "+str(invalidModules)+" are not Qt4 modules. "+
+			"Valid Qt4 modules are "+ str(validModules)
+	
 	if sys.platform == "linux2" :
+		if debug : modules = [module+"_debug" for module in modules]
 		self.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 		(
 			self['QTDIR'],
