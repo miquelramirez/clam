@@ -207,15 +207,19 @@ def generate(env):
 	env['QT4_UICDECLFLAGS'] = CLVar('')
 	env['QT4_MOCFROMHFLAGS'] = CLVar('')
 	env['QT4_MOCFROMCXXFLAGS'] = CLVar('-i')
+	env['QT4_QRCFLAGS'] = ''
 
 	# suffixes/prefixes for the headers / sources to generate
-	env['QT4_UICDECLPREFIX'] = ''
-	env['QT4_UICDECLSUFFIX'] = '.h'
 	env['QT4_MOCHPREFIX'] = 'moc_'
 	env['QT4_MOCHSUFFIX'] = '$CXXFILESUFFIX'
-	env['QT4_MOCCXXPREFIX'] = ''
+	env['QT4_MOCCXXPREFIX'] = 'moc_'
 	env['QT4_MOCCXXSUFFIX'] = '.moc'
 	env['QT4_UISUFFIX'] = '.ui'
+	env['QT4_UICDECLPREFIX'] = 'ui_'
+	env['QT4_UICDECLSUFFIX'] = '.h'
+	env['QT4_QRCSUFFIX'] = '.qrc',
+	env['QT4_QRCCXXSUFFIX'] = '$CXXFILESUFFIX'
+	env['QT4_QRCCXXPREFIX'] = 'qrc_'
 
 	env['QT4_LIB'] = '' # KLUDGE to avoid linking qt3 library
 
@@ -245,11 +249,11 @@ def generate(env):
 		argument = None,
 		skeys = ['.qrc'])
 	qrcbuilder = Builder(
-		action ='$QT4_RCC $SOURCE -o $TARGET',
+		action ='$QT4_RCC $QT4_QRCFLAGS $SOURCE -o $TARGET',
 		source_scanner = qrcscanner,
-		src_suffix = '.qrc',
-		suffix = '.cxx',
-		prefix = 'generated/qrc_',
+		src_suffix = '$QT4_QRCSUFFIX',
+		suffix = '$QT4_QRCCXXSUFFIX',
+		prefix = '$QT4_QRCCXXPREFIX',
 		single_source = True
 		)
 	env.Append( BUILDERS = { 'Qrc': qrcbuilder } )
@@ -323,16 +327,26 @@ def enable_modules(self, modules, debug=False) :
 		'QtXml',
 		'QtUiTools',
 		]
+	pclessModules = [
+		'QtUiTools',
+		'QtUiTools_debug',
+	]
 	invalidModules=[]
 	for module in modules:
 		if module not in validModules :
 			invalidModules.append(module)
 	if invalidModules :
-		raise "Modules "+str(invalidModules)+" are not Qt4 modules. "+
-			"Valid Qt4 modules are "+ str(validModules)
-	
+		raise "Modules %s are not Qt4 modules. Valid Qt4 modules are: %s"% \
+			(str(invalidModules),str(validModules))
+
 	if sys.platform == "linux2" :
 		if debug : modules = [module+"_debug" for module in modules]
+		for module in modules :
+			if module in pclessModules :
+			#	self.AppendUnique(LIBS=[module])
+				self.AppendUnique(LIBPATH=[os.path.join(self["QTDIR"],"lib",module)])
+				self.AppendUnique(CPPPATH=[os.path.join(self["QTDIR"],"include","qt4",module)])
+				modules.remove(module)
 		self.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 		(
 			self['QTDIR'],
