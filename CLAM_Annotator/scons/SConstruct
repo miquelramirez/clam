@@ -2,6 +2,26 @@ import sys, os, glob
 
 version='0.2'
 
+if sys.platform == 'win32':
+	platformUicPath = 'G:\projects\qt/bin\uic'
+	platformQtLib = 'qt-mt322'
+	platformDefaultClamPrefix = 'G:\projects\CLAM-bin'
+	platformDefaultInstallPrefix = 'G:\projects\CLAM-bin\\bin'
+	platformMainSource = '../src\main.cxx'
+	platformExampleMainSource = '../src\Test.cxx'
+else:
+	platformMainSource = '../src/main.cxx'
+	platformExampleMainSource = '../src/Test.cxx'
+	platformQtLib = 'qt-mt'
+	platformDefaultClamPrefix = '/usr'
+	if sys.platform == 'linux2' :
+		platformUicPath = '/usr/bin/uic'
+		platformDefaultInstallPrefix = '/usr'
+	elif sys.platform == 'darwin' :
+		platformUicPath = '/Developer/qt/bin/uic'
+		platformDefaultInstallPrefix = '/usr/local'
+
+
 def create_setup( target, source, env ) :
 	os.system( "makensis clam_annotator.nsi" )
 
@@ -115,33 +135,13 @@ annotator_env = Environment( tools=['default','qt'],
 							ENV=os.environ)
 annotator_env.Append( BUILDERS = {'EmbedImages' : bld} )
 
-if sys.platform == 'linux2' :
-	annotator_env.Replace( QT_UIC='/usr/bin/uic' )
-elif sys.platform == 'darwin' :
-	annotator_env.Replace( QT_UIC='/Developer/qt/bin/uic' )
-else:
-	annotator_env.Replace( QT_UIC='G:\projects\qt/bin\uic' )
-
-if sys.platform != 'win32' :
-	annotator_env.Replace(QT_LIB='qt-mt')
-else :
-	annotator_env.Replace(QT_LIB='qt-mt322')
+annotator_env.Replace( QT_UIC=platformUicPath )
+annotator_env.Replace(QT_LIB=platformQtLib)
 
 opts = Options('Annotator.conf')
 
-
-if sys.platform == 'linux2' :
-	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr') )
-elif sys.platform == 'darwin' :
-	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr/local') )
-else :
-	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
-
-if sys.platform != 'win32' :
-	opts.Add( PathOption( 'install_prefix', 'Prefix where Annotator is going to be installed', '/usr') )
-else :
-	opts.Add( PathOption( 'install_prefix', 'Prefix where Annotator is going to be installed', 'G:\projects\CLAM-bin\\bin') )
-
+opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', platformDefaultClamPrefix ) )
+opts.Add( PathOption( 'install_prefix', 'Prefix where Annotator is going to be installed', platformDefaultInstallPrefix) )
 opts.Add( BoolOption( 'release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
 opts.Update(annotator_env)
 opts.Save('Annotator.conf', annotator_env)
@@ -175,13 +175,8 @@ for dir in source_dirs :
 	sourcefiles += glob.glob(dir+'/*.cxx')
 	sourcefiles += glob.glob(dir+'/*.ui')
 
-if sys.platform != 'win32' :
-	sourcefiles.remove( '../src/main.cxx' )
-	sourcefiles.remove( '../src/Test.cxx' )
-else :
-	sourcefiles.remove( '../src\main.cxx' )
-	sourcefiles.remove( '../src\Test.cxx' )
-
+sourcefiles.remove( platformMainSource )
+sourcefiles.remove( platformExampleMainSource )
 
 image_dirs = ['../images']
 image_files = []
@@ -201,22 +196,29 @@ bin_objects = [ annotator_env.Object(source) for source in sourcefiles ]
 annotator_env.Append(CPPPATH=source_dirs)
 
 sounds = ['../resources/sounds/click.wav']
+<<<<<<< SConstruct
+manpage = ['../resources/man/man9/Annotator.9']
+bin_main_object = annotator_env.Object(platformMainSource)
+bin_test_object = annotator_env.Object(platformExampleMainSource)
+=======
 manpage = ['../resources/man/man1/Annotator.1']
+>>>>>>> 1.23
 
 if sys.platform != 'win32' :
-	bin_main_object = annotator_env.Object('../src/main.cxx')
-	bin_test_object = annotator_env.Object('../src/Test.cxx')
 	
 	annotator_env.Append(CCFLAGS='-include CLAM/preinclude.hxx  -DQT_THREAD_SUPPORT')
 
-	
 	if sys.platform == 'linux2':
 		annotator_env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + annotator_env['install_prefix'] + '/share/annotator\\""')
 		annotator_bin = annotator_env.Program( 'Annotator', bin_objects + bin_main_object, LINKFLAGS=['-rdynamic'] )
 		sample_extractor_bin = annotator_env.Program( 'ClamExtractorExample', bin_test_object + bin_objects, LINKFLAGS=['-rdynamic'] )
 		install_bin = annotator_env.Install( annotator_env['install_prefix']+'/bin', [annotator_bin, sample_extractor_bin] )
 
+<<<<<<< SConstruct
+		install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man9', manpage )
+=======
 		install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man1', manpage )
+>>>>>>> 1.23
 
 		install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
 
@@ -248,24 +250,19 @@ if sys.platform != 'win32' :
 	sample_app = annotator_env.Alias('ClamExtractorExample', sample_extractor_bin)
 	
 else :
-	bin_main_object = annotator_env.Object('../src\main.cxx')
-	bin_test_object = annotator_env.Object('../src\Test.cxx')
 	parse_pkg_config( annotator_env )
-	
+
 	annotator_env.Append( CCFLAGS = '/FICLAM/preinclude.hxx  -DQT_THREAD_SUPPORT' )
 	annotator_env.Append( CCFLAGS = ['/EHsc'] )
 	annotator_env.Append( LINKFLAGS = ['/machine:x86'] )
-	
+
 	annotator_bin = annotator_env.Program( 'Annotator',   bin_objects + bin_main_object)
 	sample_extractor_bin = annotator_env.Program( 'ClamExtractorExample',  bin_test_object + bin_objects)
 	sample_app = annotator_env.Alias('ClamExtractorExample', sample_extractor_bin)
 	install_bin = annotator_env.Install( annotator_env['install_prefix'], [annotator_bin, sample_extractor_bin] )
-
 	install_manpage = annotator_env.Install( annotator_env['install_prefix']+'/share/man/man1', manpage )
-	
 	install_sounds = annotator_env.Install( annotator_env['install_prefix']+'/share/annotator/sounds', sounds )
-
-	install_alias = annotator_env.Alias( 'install', [install_bin,install_sounds, install_manpage] )
+	install_alias = annotator_env.Alias( 'install', [install_bin, install_sounds, install_manpage] )
 
 	setup_bld = Builder( action=Action(create_setup, create_setup_message ))
 	annotator_env.Append( BUILDERS={'CreateSetup' : setup_bld} )
@@ -277,7 +274,7 @@ else :
 		variantVCProj = 'Release' 
 
 	sourcefilesAnnotator = sourcefiles
-	sourcefilesAnnotator += '..\src\main.cxx'
+	sourcefilesAnnotator += platformMainSource
 
 	generate_vcproj = annotator_env.MSVSProject( target = 'Annotator' + annotator_env['MSVSPROJECTSUFFIX'],
 				srcs = sourcefilesAnnotator,
@@ -286,7 +283,7 @@ else :
 	vc_alias = annotator_env.Alias('visual_project', [generate_vcproj])
 	
 	sourcefilesExtractor = sourcefiles
-	sourcefilesExtractor += '..\src\Test.cxx'
+	sourcefilesExtractor += platformExampleMainSource
 
 	generate_vcproj_extractor = annotator_env.MSVSProject( target = 'ClamExtractorExample' + annotator_env['MSVSPROJECTSUFFIX'],
 				srcs = sourcefilesExtractor,
