@@ -2,9 +2,9 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "CLAM-Annotator"
-!define PRODUCT_VERSION "0.91"
+!define PRODUCT_VERSION "0.3"
 !define PRODUCT_PUBLISHER "CLAM devel"
-!define PRODUCT_WEB_SITE "http://www.iua.upf.es/mtg/clam"
+!define PRODUCT_WEB_SITE "http://clam.iua.upf.edu"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Annotator.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -29,7 +29,7 @@
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!insertmacro MUI_PAGE_LICENSE "license.txt"
+!insertmacro MUI_PAGE_LICENSE "../COPYING"
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Instfiles page
