@@ -135,7 +135,7 @@ installation = {
 	'/bin' : programs,
 	'/share/man/man1' : manpages,
 	'/share/annotator/sounds': sounds,
-	'/share/annotator/i18n/': translations
+	'/share/annotator/i18n': translations
 }
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
