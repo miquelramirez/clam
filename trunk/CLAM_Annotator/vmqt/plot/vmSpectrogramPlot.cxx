@@ -31,7 +31,7 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = GetZoomSteps(segment.GetnFrames(),segment.GetSamplingRate()/2.0);
 				SetZoomSteps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<SpectrogramRenderer*>(mPlot->GetRenderer("spectrogram"))->SetData(GetSpecMatrix(segment));
+			mSpectrogramRenderer->SetData(GetSpecMatrix(segment));
 		}
 
 		void SpectrogramPlot::colorSpecgram()
@@ -39,7 +39,7 @@ namespace CLAM
 			SonogramBuilder b;
 			mPanel->SetColorScale(b.GetColorScale(mColorScaleWidth));
 			mSonogramColormap = COLOR_SONOGRAM;
-			static_cast<SpectrogramRenderer*>(mPlot->GetRenderer("spectrogram"))->colorSonogram();
+			mSpectrogramRenderer->colorSonogram();
 		}
 
 		void SpectrogramPlot::blackWhiteSpecgram()
@@ -47,7 +47,7 @@ namespace CLAM
 			SonogramBuilder b;
 			mPanel->SetColorScale(b.GetGrayScale(mColorScaleWidth));
 			mSonogramColormap = BW_SONOGRAM;
-			static_cast<SpectrogramRenderer*>(mPlot->GetRenderer("spectrogram"))->blackWhiteSonogram();
+			mSpectrogramRenderer->blackWhiteSonogram();
 		}
 
 		void SpectrogramPlot::updateColorScale(int width)
@@ -69,7 +69,8 @@ namespace CLAM
 
 		void SpectrogramPlot::InitSpectrogramPlot()
 		{
-			mPlot->AddRenderer("spectrogram", new SpectrogramRenderer());
+			mSpectrogramRenderer = new SpectrogramRenderer;
+			mPlot->AddRenderer("spectrogram", mSpectrogramRenderer);
 			mPlot->SendToBack("spectrogram");
 			mPlot->BringToFront("locator");
 
@@ -84,10 +85,10 @@ namespace CLAM
 			backgroundWhite();
 
 			connect(mPanel,SIGNAL(colorScaleWidthChanged(int)),this,SLOT(updateColorScale(int)));
-			connect(static_cast<SpectrogramRenderer*>(mPlot->GetRenderer("spectrogram")),
+			connect(mSpectrogramRenderer,
 					SIGNAL(fixedLabels(QString,QString)),
 					mPanel,SLOT(setFixedLabels(QString,QString)));
-			connect(static_cast<SpectrogramRenderer*>(mPlot->GetRenderer("spectrogram")),
+			connect(mSpectrogramRenderer,
 					SIGNAL(labels(QString,QString,QString,QString)),
 					mPanel,SLOT(updateLabels(QString,QString,QString,QString)));
 		}

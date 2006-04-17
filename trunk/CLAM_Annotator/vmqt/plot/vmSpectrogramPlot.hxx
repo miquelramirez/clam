@@ -11,6 +11,7 @@ namespace CLAM
 	namespace VM
 	{
 		class SpecgramPanel;
+		class SpectrogramRenderer;
 
 		class SpectrogramPlot : public SegmentationPlot
 		{
@@ -32,6 +33,7 @@ namespace CLAM
 			int            mSonogramColormap;
 			int            mColorScaleWidth;
 			SpecgramPanel* mPanel;
+			SpectrogramRenderer * mSpectrogramRenderer;
 		   
 			enum { COLOR_SONOGRAM=0, BW_SONOGRAM=1 };
 
