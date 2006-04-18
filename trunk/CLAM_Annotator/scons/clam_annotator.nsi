@@ -70,7 +70,7 @@ FunctionEnd
 Section "Principal" SEC01
   SetOutPath "$INSTDIR\bin"
   SetOverwrite ifnewer
-  File "Annotator.exe"
+  File "..\Annotator.exe"
   CreateDirectory "$SMPROGRAMS\CLAM\Annotator"
   CreateShortCut "$SMPROGRAMS\CLAM\Annotator\Annotator.lnk" "$INSTDIR\bin\Annotator.exe"
   CreateShortCut "$DESKTOP\Annotator.lnk" "$INSTDIR\bin\Annotator.exe"
@@ -79,7 +79,7 @@ Section "Principal" SEC01
   SetOutPath "$INSTDIR\Samples\"
   File "..\Samples\Schema.sc"
   File "..\Samples\Project.pro"
-  File "ClamExtractorExample.exe"
+  File "..\ClamExtractorExample.exe"
   SetOutPath "$INSTDIR\Samples\SongsTest"
   File "..\Samples\SongsTest\LisaRein-SomethingBetter.mp3"
   File "..\Samples\SongsTest\LisaRein-SomethingBetter.mp3.pool"
