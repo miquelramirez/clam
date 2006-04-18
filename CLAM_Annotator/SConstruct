@@ -115,9 +115,6 @@ programs = []
 for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
 
-sounds = [
-	'resources/sounds/click.wav'
-	]
 manpages = [
 	'resources/man/man1/Annotator.1',
 	'resources/man/man1/ClamExtractorExample.1',
@@ -138,7 +135,6 @@ if len(tsfiles) :
 installation = {
 	'/bin' : programs,
 	'/share/man/man1' : manpages,
-	'/share/annotator/sounds': sounds,
 	'/share/annotator/i18n': translations
 }
 installTargets = [
@@ -158,7 +154,6 @@ if sys.platform=='macosx' : # not really tested!!!
 		env.Install( 'Annotator.app/Contents/MacOS', programs ),
 		env.Install( 'Annotator.app/Contents', 'resources/Info.plist'),
 		env.Install( 'Annotator.app/Contents/Resources', 'resources/CLAM.icns'),
-		env.Install( 'Annotator.app/Contents/Resources/sounds', sounds ),
 		]
 	mac_packages = env.Dmg('notused', installTargets )
 	env.Alias('package', mac_packages)
