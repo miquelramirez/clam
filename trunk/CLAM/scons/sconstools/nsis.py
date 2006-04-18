@@ -1,5 +1,5 @@
 import re
-nsisFiles_re = re.compile(r'File "([^<]*)"', re.M)
+nsisFiles_re = re.compile(r'\<File "([^"]*)"', re.M)
 
 def generate(env) :
 	"""Add Builders and construction variables for qt to an Environment."""
@@ -14,7 +14,7 @@ def generate(env) :
 		argument = None,
 		skeys = ['.nsi'])
 	nsisbuilder = env.Builder(
-		action = env.Action('makensis $SOURCE', "Creating the NSIS installer for windows"),
+		action = 'makensis $SOURCE',
 		source_scanner = nsisscanner,
 		src_suffix = '.nsi',
 		single_source = True
