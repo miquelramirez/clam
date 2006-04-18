@@ -1,30 +1,28 @@
 This file explains how to compile and install the CLAM applications 
 from the source tarballs.
 
- 1. Install CLAM dependencies
-
- Please refere to the INSTALL file in the CLAM (library) tarball.
+ 1. Compile CLAM libraries and their dependencies
  
-   
- 2. Compile CLAM libraries from the tarball
- 
- Please refere to the INSTALL file in the CLAM (library) tarball.
+ Please refer to the INSTALL file in the CLAM (library) tarball.
 
+ 2. (Provisional step) Compile the CLAM-vmqt module
 
- 3. Compile the CLAM application.
- Change dir to the scons/ directory and issue
+	From the CLAM-vmqt module root type
+    $ scons clam_prefix=/usr/local clam_sconstools=/CLAM-sources/scons/sconstools
 
-	$ scons
+ 3. Compile the CLAM Music Annotator.
 
- If you wish to use CLAM libs installed in a non-standard dir, you 
- will need to specify the clam_prefix :
+    From the CLAM-Annotator source root type:
+	$ scons clam_prefix=/usr/local clam_sconstools=/CLAM-sources/scons/sconstools install_prefix=/usr/local clam_vmqt4_path=/path/to/vmqt/lib
 
-        $ scons clam_prefix=~/mylibs/ install
- 
  For further building options do :
 
 	$ scons --help
 
  Notice that if you are using a non-standard clam_prefix, you might 
  need to make the LD_LIBRARY_PATH to point to the CLAM lib directory.
+
+ On windows platform you could also build a package by typing on a shell:
+    $ scons package
+
 
