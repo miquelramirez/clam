@@ -149,6 +149,26 @@ if sys.platform=='win32' :
 	win_packages = [env.Nsis( source='scons\\clam_annotator.nsi')]
 	env.Alias('package', win_packages)
 
+if sys.platform=='macosx' : # not really tested!!!
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
+	#Binaries: annotator + sample extractor
+	annotator_bin_pre = env.Program( 'Annotator', bin_objects + bin_main_object, LINKFLAGS=['-dynamic','-bind_at_load'] )
+	sample_extractor_bin = env.Program( 'ClamExtractorExample', bin_test_object + bin_objects, LINKFLAGS=['-dynamic','-bind_at_load'] )
+
+	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
+	bundle_bin = env.Install( 'Annotator.app/Contents/MacOS', [annotator_bin_pre, sample_extractor_bin, 'runExtractor.sh'] )
+	bundle_data = env.Install( 'Annotator.app/Contents', 'resources/Info.plist')
+	bundle_icon = env.Install( 'Annotator.app/Contents/Resources', 'resources/CLAM.icns')
+	bundle_sounds = env.Install( 'Annotator.app/Contents/Resources/sounds', sounds )
+
+	annotator_bin = [bundle_bin+bundle_sounds+bundle_data+bundle_icon]
+
+	#DMG creation process
+	dmg_bld = Builder( action=Action(create_dmg, create_dmg_message ))
+	env.Append( BUILDERS={'CreateDMG' : dmg_bld} )
+	dmg = env.CreateDMG('notused', annotator_bin )
+	env.Alias('dmg', [annotator_bin, dmg])
+
 env.Alias('install', installTargets )
 
 env.Default(programs, translations)
