@@ -59,9 +59,14 @@ env.EnableQt4Modules([
 #	'Qt3Support',
 	])
 
+mainSources = {
+	'Annotator' : os.path.join('src','main.cxx'),
+	'ClamExtractorExample' : os.path.join('src','ClamExtractorExample.cxx'),
+}
+
 sourcePaths = [
 	'src',
-	'src/generated',
+	os.path.join('src','generated'),
 ]
 extraPaths = []
 extraPaths += recursiveDirs(CLAMVmQtPath+"/plot")
@@ -78,16 +83,20 @@ extraPaths += [
 ]
 includePaths = sourcePaths + extraPaths
 
-qrcfiles = scanFiles("*.qrc", sourcePaths)
-uifiles = scanFiles("*.ui", sourcePaths)
-if len(uifiles): uiheaders = env.Uic4(source=uifiles)
 sources = scanFiles('*.cxx', sourcePaths)
 sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
-if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
 sources = dict.fromkeys(sources).keys()
-sources.remove(os.path.join('.','main.cxx'))
-sources.remove(os.path.join('.','ClamExtractorExample.cxx'))
+print sources, mainSources
+for mainSource in mainSources.values() :
+	sources.remove(mainSource)
+
+qrcfiles = scanFiles("*.qrc", sourcePaths)
+if qrcfiles : sources += env.Qrc(source=qrcfiles)
+
+uifiles = scanFiles("*.ui", sourcePaths)
+if uifiles: uiheaders = env.Uic4(source=uifiles)
+
 
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=CLAMVmQtPath)
@@ -102,21 +111,17 @@ if sys.platform=='linux2' :
 		env.Append( CCFLAGS=['-g', '-Wall'] )
 	#env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
 
-mainSources = {
-	'Annotator' : './main.cxx',
-	'ClamExtractorExample' : './ClamExtractorExample.cxx',
-}
 
 programs = []
 for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
 
 sounds = [
-	'../resources/sounds/click.wav'
+	'resources/sounds/click.wav'
 	]
 manpages = [
-	'../resources/man/man1/Annotator.1',
-	'../resources/man/man1/ClamExtractorExample.1',
+	'resources/man/man1/Annotator.1',
+	'resources/man/man1/ClamExtractorExample.1',
 	]
 
 # Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
@@ -140,9 +145,11 @@ installation = {
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
-win_packages = [env.Nsis( source='clam_annotator.nsi')]
+if sys.platform=='win32' : 
+	win_packages = [env.Nsis( source='scons\\clam_annotator.nsi')]
+	env.Alias('package', win_packages)
 
-env.Alias('package', win_packages)
 env.Alias('install', installTargets )
+
 env.Default(programs, translations)
 
