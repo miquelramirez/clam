@@ -1,9 +1,12 @@
 import re
-nsisFiles_re = re.compile(r'\<File "([^"]*)"', re.M)
+import SCons.Util
+nsisFiles_re = re.compile(r'^\s*File "([^"]*)"', re.M)
 
 def generate(env) :
 	"""Add Builders and construction variables for qt to an Environment."""
 	print "Lodading nsis tool..."
+
+	Builder = SCons.Builder.Builder
 
 	def scanNsisContent(node, env, path, arg):
 		contents = node.get_contents()
@@ -13,10 +16,10 @@ def generate(env) :
 		function = scanNsisContent,
 		argument = None,
 		skeys = ['.nsi'])
-	nsisbuilder = env.Builder(
+	nsisbuilder = Builder(
 		action = 'makensis $SOURCE',
 		source_scanner = nsisscanner,
-		src_suffix = '.nsi',
+#		src_suffix = '.nsi',
 		single_source = True
 		)
 	env.Append( BUILDERS={'Nsis' : nsisbuilder} )
