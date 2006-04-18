@@ -18,7 +18,7 @@ Description: CLAM audio annotation tool
   extraction algorithms.
   * Generate manually edited annotations of audio as training examples or
   ground truth for those algorithms.
- 
+ .
  The application adapts to user defined description schemes, auralizes
  annotations and provides import and export support for wavesurfer formats.
  It also has support for collaborative and distributed annotation campaigns.
