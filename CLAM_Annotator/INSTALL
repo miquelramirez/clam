@@ -15,6 +15,10 @@ from the source tarballs.
     From the CLAM-Annotator source root type:
 	$ scons clam_prefix=/usr/local clam_sconstools=/CLAM-sources/scons/sconstools install_prefix=/usr/local clam_vmqt4_path=/path/to/vmqt/lib
 
+ 4. Install the CLAM-Annotator
+
+    $ scons install
+
  For further building options do :
 
 	$ scons --help
