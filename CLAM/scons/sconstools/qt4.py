@@ -339,9 +339,11 @@ def enable_modules(self, modules, debug=False) :
 		raise "Modules %s are not Qt4 modules. Valid Qt4 modules are: %s"% \
 			(str(invalidModules),str(validModules))
 
+	# TODO: Check whether we should add QT_CORE_LIB, QT_XML_LIB, QT_NETWORK_LIB...
+	if 'QtGui' in modules:
+		self.AppendUnique(CPPFLAGS='-DQT_GUI_LIB')
+
 	if sys.platform == "linux2" :
-		# TODO: Check whether we should add QT_CORE_LIB, QT_XML_LIB, QT_NETWORK_LIB...
-		if "QtGui" in modules: self.AppendUnique(CPPFLAGS=["-DQT_GUI_LIB"])
 		if debug : modules = [module+"_debug" for module in modules]
 		for module in modules :
 			if module in pclessModules :
@@ -355,9 +357,13 @@ def enable_modules(self, modules, debug=False) :
 			' '.join(modules)))
 		return
 	if sys.platform == "win32" :
-		self.AppendUnique(LIBS=[lib+'4' for lib in modules])
+		if debug : debugSuffix = 'd'
+		else : debugSuffix = ''
+		self.AppendUnique(LIBS=[lib+'4'+debugSuffix for lib in modules])
 		if 'QtOpenGL' in modules:
 			self.AppendUnique(LIBS=['opengl32'])
+		self.AppendUnique(CPPPATH=[ '$QTDIR/include/'+module
+			for module in modules])
 		self.AppendUnique(LIBPATH=['$QTDIR/lib'])
 
 
