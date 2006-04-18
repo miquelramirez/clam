@@ -74,8 +74,6 @@ Section "Principal" SEC01
   CreateDirectory "$SMPROGRAMS\CLAM\Annotator"
   CreateShortCut "$SMPROGRAMS\CLAM\Annotator\Annotator.lnk" "$INSTDIR\bin\Annotator.exe"
   CreateShortCut "$DESKTOP\Annotator.lnk" "$INSTDIR\bin\Annotator.exe"
-  SetOutPath "$INSTDIR\resources\sounds\"
-  File "..\resources\sounds\click.wav"
   SetOutPath "$INSTDIR\Samples\"
   File "..\Samples\Schema.sc"
   File "..\Samples\Project.pro"
@@ -131,7 +129,6 @@ Section Uninstall
   Delete "$INSTDIR\Samples\Project.pro"
   Delete "$INSTDIR\Samples\ClamExtractorExample.exe"
   Delete "$INSTDIR\Samples\Schema.sc"
-  Delete "$INSTDIR\resources\sounds\click.wav"
   Delete "$INSTDIR\bin\Annotator.exe"
   Delete "$INSTDIR\bin\ClamExtractorExample.exe.exe"
 
@@ -143,7 +140,6 @@ Section Uninstall
   RMDir "$SMPROGRAMS\CLAM\Annotator"
   RMDir "$INSTDIR\Samples\SongsTest"
   RMDir "$INSTDIR\Samples\"
-  RMDir "$INSTDIR\resources\sounds\"
   RMDir "$INSTDIR\resources\"
   RMDir "$INSTDIR\bin"
 
