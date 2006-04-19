@@ -118,19 +118,22 @@ qtPlotUtils = [
 	"../../examples/QtPlots/utils/wave_utils.cxx",
 ]
 qtPlotMains = [
-#	"../../examples/QtPlots/BPFEditorExample/BPFEditorExample.cxx", #TODO: Windows needs PortMidi
 	"../../examples/QtPlots/DirectPlotsExamples/DPAudioExample.cxx",
 	"../../examples/QtPlots/DirectPlotsExamples/DPAudioStereoExample.cxx",
 	"../../examples/QtPlots/DirectPlotsExamples/DPFundamentalExample.cxx",
 	"../../examples/QtPlots/DirectPlotsExamples/DPMultiPlotExample.cxx",
 	"../../examples/QtPlots/DirectPlotsExamples/DPSpectrumAndPeaksExample.cxx",
-#	"../../examples/QtPlots/DirectPlotsExamples/MultiBPFViewerExample.cxx", #TODO: Windows needs PortMidi
-#	"../../examples/QtPlots/ListPlotExample/ListPlotExample.cxx", #TODO: Windows needs PortMidi
 	"../../examples/QtPlots/QtPlotsExamples/QtAudioPlotExample.cxx",
 	"../../examples/QtPlots/QtPlotsExamples/QtSinTracksPlotExample.cxx",
 	"../../examples/QtPlots/QtPlotsExamples/QtSpectrogramExample.cxx",
 	"../../examples/QtPlots/QtPlotsExamples/QtSpectrumPlotExample.cxx",
 	"../../examples/QtPlots/SegmentEditorExample/SegmentEditorExample.cxx",
+]
+if sys.platform != 'win32':
+	qtPlotMains += [
+	"../../examples/QtPlots/BPFEditorExample/BPFEditorExample.cxx", #TODO: Windows needs PortMidi
+	"../../examples/QtPlots/DirectPlotsExamples/MultiBPFViewerExample.cxx", #TODO: Windows needs PortMidi
+	"../../examples/QtPlots/ListPlotExample/ListPlotExample.cxx", #TODO: Windows needs PortMidi
 ]
 
 directoryBasedExamples = [
