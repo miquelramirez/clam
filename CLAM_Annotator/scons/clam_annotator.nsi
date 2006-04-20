@@ -130,7 +130,7 @@ Section Uninstall
   Delete "$INSTDIR\Samples\ClamExtractorExample.exe"
   Delete "$INSTDIR\Samples\Schema.sc"
   Delete "$INSTDIR\bin\Annotator.exe"
-  Delete "$INSTDIR\bin\ClamExtractorExample.exe.exe"
+  Delete "$INSTDIR\bin\ClamExtractorExample.exe"
 
   Delete "$SMPROGRAMS\CLAM\Annotator\Uninstall.lnk"
   Delete "$SMPROGRAMS\CLAM\Annotator\Website.lnk"
