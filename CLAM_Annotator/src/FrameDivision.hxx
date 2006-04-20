@@ -18,9 +18,14 @@ class FrameDivision : public CLAM::DynamicType
 		UpdateData();
 	}
 public:
-	CLAM::TData GetCenter(unsigned element)
+	CLAM::TData GetCenter(unsigned element) const
 	{
 		return GetFirstCenter() + element* GetInterCenterGap();
+	}
+	unsigned GetItem(CLAM::TData position) const
+	{
+		if (position < GetFirstCenter()) return 0;
+		return (position-GetFirstCenter())/GetInterCenterGap();
 	}
 };
 
