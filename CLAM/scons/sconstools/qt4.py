@@ -341,7 +341,7 @@ def enable_modules(self, modules, debug=False) :
 
 	# TODO: Check whether we should add QT_CORE_LIB, QT_XML_LIB, QT_NETWORK_LIB...
 	if 'QtGui' in modules:
-		self.AppendUnique(CPPFLAGS='-DQT_GUI_LIB')
+		self.AppendUnique(CPPFLAGS=['-DQT_GUI_LIB'])
 
 	if sys.platform == "linux2" :
 		if debug : modules = [module+"_debug" for module in modules]
