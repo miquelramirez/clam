@@ -38,6 +38,7 @@
 #include <vmBPFPlot.hxx>
 #include <vmAudioPlot.hxx>
 #include <vmBPFPlayer.hxx>
+#include "InstantViews/PcpTorus.hxx"
 
 #define VERSION "2.1"
 
@@ -104,7 +105,7 @@ void Annotator::computeSongDescriptors()
 	// before loading the cpu with the extractor
 	qApp->processEvents();
 	bool ok = runner->run(mProject.GetExtractor().c_str(),
-		QStringList() << qfilename << "-f" << mProject.GetPoolSuffix().c_str(),
+		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str(),
 		QDir::current().path());
 //			mProject.BaseDir().c_str());
 	if (!ok)
@@ -275,6 +276,9 @@ void Annotator::initInterface()
 	mBPFEditor->setAutoFillBackground(true);
 	mSegmentEditor->setAutoFillBackground(true);
 #endif
+
+	mPcpTorus = new CLAM::VM::PcpTorus(mVSplit);
+	mPcpTorus->hide();
 
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
@@ -599,6 +603,8 @@ void Annotator::makeConnections()
 		mSegmentEditor, SLOT(updateLocator(double)));
 	// Playhead update
 	connect(mPlayer, SIGNAL(playingTime(double)),
+		mPcpTorus, SLOT(setCurrentTime(double)), Qt::DirectConnection);
+	connect(mPlayer, SIGNAL(playingTime(double)),
 		mSegmentEditor, SLOT(updateLocator(double)), Qt::DirectConnection);
 	connect(mPlayer, SIGNAL(playingTime(double)),
 		mBPFEditor, SLOT(updateLocator(double)), Qt::DirectConnection);
@@ -873,6 +879,28 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	mBPFEditor->show();
 	mStatusBar << tr("Drawing LLD...") << mStatusBar;
 	refreshEnvelopes();
+	
+	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
+	std::list<std::string>::const_iterator divisionName;
+	mPcpTorus->hide();
+	for(divisionName = divisionNames.begin(); divisionName != divisionNames.end(); divisionName++)
+	{
+		const CLAM_Annotator::FrameDivision & division = mpDescriptorPool->GetReadPool<CLAM_Annotator::FrameDivision>("Song",*divisionName)[0];
+		
+		const std::string & frameDivisionChildScope = mProject.GetAttributeScheme("Song", *divisionName).GetChildScope();
+		const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType(frameDivisionChildScope, "FloatArray");
+		std::list<std::string>::const_iterator it;
+		for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++)
+		{
+			const std::list<std::string> & binLabels=mProject.GetAttributeScheme(frameDivisionChildScope,*it).GetBinLabels();
+			const CLAM::DataArray * arrays = mpDescriptorPool->GetReadPool<CLAM::DataArray>(frameDivisionChildScope,*it);
+			CLAM_ASSERT(arrays, "No pcp's found");
+			unsigned nFrames = mpDescriptorPool->GetNumberOfContexts(frameDivisionChildScope);
+			mPcpTorus->initData(division, arrays, nFrames, binLabels);
+			mPcpTorus->show();
+		}
+	}
+	
 	mStatusBar << tr("Done") << mStatusBar;
 	loaderLaunch();
 	setCursor(Qt::ArrowCursor);

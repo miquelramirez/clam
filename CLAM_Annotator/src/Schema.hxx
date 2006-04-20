@@ -54,6 +54,21 @@ namespace CLAM_Annotator{
 				schemaAttribute.GetEnumerationValues().push_back(*value);
 			AddAttribute(schemaAttribute);
 		}
+		void AddFloatArray(
+				const std::string & scope,
+				const std::string & attribute,
+				const char ** keys)
+		{
+			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.SetScope(scope);
+			schemaAttribute.SetName(attribute);
+			schemaAttribute.SetType("FloatArray");
+			schemaAttribute.AddBinLabels();
+			schemaAttribute.UpdateData();
+			for (const char ** value = keys; *value; value++)
+				schemaAttribute.GetBinLabels().push_back(*value);
+			AddAttribute(schemaAttribute);
+		}
 		void AddRangedInt(
 				const std::string & scope,
 				const std::string & attribute,
