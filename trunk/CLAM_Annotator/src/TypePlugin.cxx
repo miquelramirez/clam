@@ -400,6 +400,39 @@ public:
 	}
 };
 
+class FloatArrayTypePlugin : public TypePlugin
+{
+public:
+	FloatArrayTypePlugin(const SchemaAttribute & scheme)
+		: TypePlugin(scheme)
+	{
+	}
+
+	void AddTo(CLAM::DescriptionScheme & scheme)
+	{
+		scheme.AddAttribute<CLAM::Array<float> >(mSchema.GetScope(),mSchema.GetName());
+	}
+
+	bool ValidateData(const CLAM::DescriptionDataPool & dataPool, std::ostream & err)
+	{
+		const CLAM::Array<float>  * values =
+			dataPool.GetReadPool<CLAM::Array<float> >(
+					mSchema.GetScope(),
+					mSchema.GetName());
+		return true;
+	}
+	void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool)
+	{
+		CLAM::Array<float>  & array = 
+			pool.GetWritePool<CLAM::Array<float> >(
+				mSchema.GetScope(),
+				mSchema.GetName())[instance];
+		array.Resize(mSchema.GetBinLabels().size());
+		array.SetSize(mSchema.GetBinLabels().size());
+		// TODO: Init also the values
+	}
+};
+
 
 TypePlugin * TypePlugin::Create(const SchemaAttribute & scheme)
 {
@@ -416,6 +449,8 @@ TypePlugin * TypePlugin::Create(const SchemaAttribute & scheme)
 		return new SegmentationTypePlugin(scheme);
 	if (type=="FrameDivision")
 		return new FrameDivisionTypePlugin(scheme);
+	if (type=="FloatArray")
+		return new FloatArrayTypePlugin(scheme);
 	return 0;
 }
 
