@@ -9,6 +9,8 @@ ProjectEditor::~ProjectEditor()
 
 void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 {
+	mProject.AddAll();
+	mProject.UpdateData();
 	mProject.SetProjectPath(project.File());
 	mProject.SetDescription(project.GetDescription());
 	mProject.SetSchema(project.GetSchema());
@@ -19,6 +21,8 @@ void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 
 void ProjectEditor::applyChanges(CLAM_Annotator::Project & project)
 {
+	project.AddAll();
+	project.UpdateData();
 	project.SetProjectPath(mProject.File());
 	project.SetDescription(mProject.GetDescription());
 	project.SetSchema(mProject.GetSchema());
