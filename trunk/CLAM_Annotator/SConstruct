@@ -67,6 +67,8 @@ mainSources = {
 sourcePaths = [
 	'src',
 	os.path.join('src','generated'),
+	os.path.join('src','InstantViews'),
+	os.path.join('src','InstantViews','generated'),
 ]
 extraPaths = []
 extraPaths += recursiveDirs(CLAMVmQtPath+"/plot")
