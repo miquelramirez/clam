@@ -17,7 +17,7 @@ def recursiveDirs(root) :
 def unique(list) :
 	return dict.fromkeys(list).keys()
 
-env = Environment(tools=['default'], options=options)
+env = Environment( ENV=os.environ, tools=['default'], options=options)
 options.Update(env)
 options.Save('options.cache', env)
 
