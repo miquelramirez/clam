@@ -72,7 +72,9 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 	const double cos30 = .8660254;
 	const double posx = x*2*cos30+y*cos30;
 	const double posy = y*(1+sin30);
-	unsigned pitch = (x*7+y*4+_nBins*400)%_nBins;
+//	unsigned pitch = (x*7+y*4+_nBins*400)%_nBins; // For pitches
+	bool isMinor = y&1;
+	unsigned pitch =  ((x*7)%(_nBins/2) + 11*(y/2) + (isMinor?4:0)  + _nBins*400)%(_nBins/2) + (isMinor?_nBins/2:0);
 	double pitchLevel = _pcp[pitch];
 	double hexsize=pitchLevel;
 	if (hexsize>1) hexsize = 1;

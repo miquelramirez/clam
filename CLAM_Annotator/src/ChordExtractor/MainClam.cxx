@@ -80,8 +80,14 @@ const char * schemaContent =
 "    <Attribute name='HartePcp' scope='Frame' type='FloatArray'>\n"
 "      <BinLabels>G G# A Bb B C C# D Eb E F F#</BinLabels>\n"
 "    </Attribute>\n"
+"    <Attribute name='HarteChordCorrelation' scope='Frame' type='FloatArray'>\n"
+"      <BinLabels>"
+"G G#/Ab A A#/Bb B C C#/Db D D#/Eb E F F#/Gb "
+"g g#/ab a a#/bb b c c#/db d d#/eb e f f#/gb "
+		"</BinLabels>\n"
+"    </Attribute>\n"
 "    <Attribute name='Root' scope='ExtractedChord' type='Enumerated'>\n"
-"      <EnumerationValues>G G# A Bb B C C# D Eb E F F#</EnumerationValues>\n"
+"      <EnumerationValues>G G# A A# B C C# D D# E F F#</EnumerationValues>\n"
 "    </Attribute>\n"
 "    <Attribute name='Mode' scope='ExtractedChord' type='Enumerated'>\n"
 "      <EnumerationValues>\n"
@@ -112,6 +118,7 @@ class ChordExtractorDescriptionDumper
 	CLAM::TData * _energies;
 	std::string _lastChord;
 	CLAM::DataArray * _pcps;
+	CLAM::DataArray * _chordChorrelation;
 	CLAM::DataArray * _chordSegmentation;
 	CLAM::DataArray * _debugFrameSegmentation;
 	unsigned _hop;
@@ -124,7 +131,8 @@ public:
 		, _currentFrame(0)
 		, _lastChord("None")
 		, _hop(hop)
-		, _firstFrameOffset((framesize-hop)/2)
+//		, _firstFrameOffset((framesize-hop)/2)
+		, _firstFrameOffset(0)
 		, _samplingRate(samplingRate)
 	{
 		_schema.AddAttribute<CLAM::DataArray>("Song", "Chords_Harte");
@@ -140,6 +148,7 @@ public:
 		_schema.AddAttribute<Simac::Enumerated>("ExtractedChord", "Root");
 		_schema.AddAttribute<Simac::Enumerated>("ExtractedChord", "Mode");
 		_schema.AddAttribute<CLAM::DataArray>("Frame", "HartePcp");
+		_schema.AddAttribute<CLAM::DataArray>("Frame", "HarteChordCorrelation");
 		_pool = new CLAM::DescriptionDataPool(_schema);
 		_pool->SetNumberOfContexts("Song", 1);
 		_pool->SetNumberOfContexts("Frame", frames);
@@ -157,6 +166,7 @@ public:
 		_chordSegmentation = _pool->GetWritePool<CLAM::DataArray>("Song","Chords_Harte");
 		_debugFrameSegmentation = _pool->GetWritePool<CLAM::DataArray>("Song","DebugFrameSegments");
 		_pcps = _pool->GetWritePool<CLAM::DataArray>("Frame","HartePcp");
+		_chordChorrelation = _pool->GetWritePool<CLAM::DataArray>("Frame","HarteChordCorrelation");
 		_energies = _pool->GetWritePool<CLAM::TData>("Frame","Energy");
 	}
 	~ChordExtractorDescriptionDumper()
@@ -183,6 +193,13 @@ public:
 		_pcps[_currentFrame].SetSize(pcp.size());
 		for (unsigned i =0; i<pcp.size(); i++)
 			_pcps[_currentFrame][i]=pcp[i];
+
+
+		unsigned correlationSize = 24;
+		_chordChorrelation[_currentFrame].Resize(correlationSize);
+		_chordChorrelation[_currentFrame].SetSize(correlationSize);
+		for (unsigned i =0; i<correlationSize; i++)
+			_chordChorrelation[_currentFrame][i]=correlation[i+1];
 
 		_tunningPositions[_currentFrame] = extractor.tunning();
 		_tunningStrength[_currentFrame] = extractor.tunningStrength();
@@ -345,6 +362,7 @@ int main(int argc, char* argv[])			// access command line arguments
 	Simac::ChordExtractor chordExtractor(samplingRate/factor,minf,bpo);
 	unsigned framesize = chordExtractor.frameSize();
 	unsigned hop = chordExtractor.hop();
+//	unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
 	unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
 	ChordExtractorSerializer serializer(waveFile, nFrames, hop, framesize, chordExtractor);
 	ChordExtractorDescriptionDumper dumper(waveFile, suffix, nFrames, hop, framesize, samplingRate, chordExtractor);
