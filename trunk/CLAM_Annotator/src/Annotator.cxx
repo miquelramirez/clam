@@ -389,14 +389,16 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 
 void Annotator::refreshSegmentation()
 {
-	if (!mpDescriptorPool) return;
 	if (mSegmentationSelection->currentText()==QString::null) return; // No segmentation
 	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
-	const CLAM::DataArray & descriptorsMarks = 
-		mpDescriptorPool->GetReadPool<CLAM::DataArray>("Song",currentSegmentation)[0];
-	unsigned nMarks = descriptorsMarks.Size();
 	CLAM_Annotator::SegmentationPolicy policy = 
 		mProject.GetAttributeScheme("Song",currentSegmentation).GetSegmentationPolicy();
+
+	CLAM::DataArray nullSegmentation; // A null segmentation to be passed when no data available
+	const CLAM::DataArray & descriptorsMarks = mpDescriptorPool?
+		mpDescriptorPool->GetReadPool<CLAM::DataArray>("Song",currentSegmentation)[0]
+		: nullSegmentation;
+	unsigned nMarks = descriptorsMarks.Size();
 	CLAM::Segmentation * theSegmentation=0;
 	CLAM::TData audioDuration = mCurrentAudio.GetSize() / mCurrentAudio.GetSampleRate();
 	switch (policy)
