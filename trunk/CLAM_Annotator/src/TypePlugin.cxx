@@ -427,8 +427,11 @@ public:
 			pool.GetWritePool<CLAM::Array<float> >(
 				mSchema.GetScope(),
 				mSchema.GetName())[instance];
-		array.Resize(mSchema.GetBinLabels().size());
-		array.SetSize(mSchema.GetBinLabels().size());
+		unsigned nBins = mSchema.GetBinLabels().size();
+		array.SetSize(nBins);
+		array.Resize(nBins);
+		for (unsigned i = 0; i < nBins; i++)
+			array[i]=0;
 		// TODO: Init also the values
 	}
 };
