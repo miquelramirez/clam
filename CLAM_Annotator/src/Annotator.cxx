@@ -38,7 +38,7 @@
 #include <vmBPFPlot.hxx>
 #include <vmAudioPlot.hxx>
 #include <vmBPFPlayer.hxx>
-#include "InstantViews/PcpTorus.hxx"
+#include "PcpTorus.hxx"
 
 #define VERSION "2.1"
 
@@ -877,9 +877,19 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	mSegmentEditor->SetData(mCurrentAudio);
 	mSegmentEditor->show();
 	mBPFEditor->show();
-	mStatusBar << tr("Drawing LLD...") << mStatusBar;
 	refreshEnvelopes();
-	
+	refreshInstantViews();
+	mStatusBar << tr("Done") << mStatusBar;
+	loaderLaunch();
+	setCursor(Qt::ArrowCursor);
+	mAudioRefreshTimer->start(4000);
+}
+void Annotator::refreshInstantViews()
+{
+	if (!mpDescriptorPool) return;
+
+	mStatusBar << tr("Loading Instant Views Data...") << mStatusBar;
+
 	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
 	std::list<std::string>::const_iterator divisionName;
 	mPcpTorus->hide();
@@ -896,15 +906,10 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 			const CLAM::DataArray * arrays = mpDescriptorPool->GetReadPool<CLAM::DataArray>(frameDivisionChildScope,*it);
 			CLAM_ASSERT(arrays, "No pcp's found");
 			unsigned nFrames = mpDescriptorPool->GetNumberOfContexts(frameDivisionChildScope);
-			mPcpTorus->initData(division, arrays, nFrames, binLabels);
+			mPcpTorus->initData(division, arrays, nFrames, binLabels, mCurrentAudio.GetSampleRate());
 			mPcpTorus->show();
 		}
 	}
-	
-	mStatusBar << tr("Done") << mStatusBar;
-	loaderLaunch();
-	setCursor(Qt::ArrowCursor);
-	mAudioRefreshTimer->start(4000);
 }
 
 void Annotator::refreshEnvelopes()

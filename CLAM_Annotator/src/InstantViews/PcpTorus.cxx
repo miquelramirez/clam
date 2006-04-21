@@ -20,6 +20,7 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 	_currentFrame = 0;
 	initData(1);
 	_frameDivision=0;
+	_samplingRate=44100;
 }
 
 void CLAM::VM::PcpTorus::initializeGL()
@@ -105,8 +106,8 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 void CLAM::VM::PcpTorus::setCurrentTime(double timeMiliseconds)
 {
 	if (!_frameDivision) return;
-	unsigned newFrame = _frameDivision->GetItem(timeMiliseconds*44100);
-	if (_currentFrame>=_nPcps) _currentFrame=0;
+	unsigned newFrame = _frameDivision->GetItem(timeMiliseconds*_samplingRate);
+	if (newFrame>=_nPcps) newFrame=0;
 	if (newFrame == _currentFrame) return;
 	_currentFrame = newFrame;
 	_pcp = _pcps + _nBins * _currentFrame;
@@ -118,11 +119,12 @@ const std::string & CLAM::VM::PcpTorus::getLabel(unsigned pitch)
 	return _binLabels[pitch];
 }
 
-void CLAM::VM::PcpTorus::initData(const CLAM_Annotator::FrameDivision & frameDivision, const CLAM::DataArray * arrays, unsigned nFrames, const std::list<std::string> & binLabels)
+void CLAM::VM::PcpTorus::initData(const CLAM_Annotator::FrameDivision & frameDivision, const CLAM::DataArray * arrays, unsigned nFrames, const std::list<std::string> & binLabels, CLAM::TData samplingRate)
 {
 	_binLabels.assign(binLabels.begin(), binLabels.end());
 	_nBins = binLabels.size();
 	_frameDivision = & frameDivision;
+	_samplingRate = samplingRate;
 	if (_pcps) delete _pcps;
 	_nPcps = nFrames;
 	_pcps = new double[_nPcps*_nBins];
