@@ -122,8 +122,13 @@ manpages = [
 	'resources/man/man1/ClamExtractorExample.1',
 	]
 
+chordSources = scanFiles("*.cxx", ["src/ChordExtractor"])
+chordSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  chordSources )
+programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
+
+
 # Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
-tsfiles = scanFiles("i18n/*.ts", sourcePaths)
+tsfiles = scanFiles("src/i18n/*.ts", sourcePaths)
 env.Precious(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
 translatableSources = scanFiles('*.cxx', sourcePaths);
 translatableSources+= scanFiles('*.hxx', sourcePaths);
