@@ -39,6 +39,9 @@
       <EnumerationValues>Major Minor Major7 Minor7 Dominant7 MajorMinor7 Diminished Augmented</EnumerationValues>
     </Attribute>
 	-->
+    <Attribute name='HartePcp' scope='Frame' type='FloatArray'>
+      <BinLabels>A A# B B# C C# D D# E F F# G G#</BinLabels>
+    </Attribute>
     <Attribute name='Root' scope='ExtractedChord' type='Enumerated'>
       <EnumerationValues>A A# B B# C C# D D# E F F# G G#</EnumerationValues>
     </Attribute>

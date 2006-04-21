@@ -31,7 +31,7 @@ namespace VM
 		private:
 			const std::string & getLabel(unsigned pitch);
 		public:
-			void initData(const CLAM_Annotator::FrameDivision & frameDivision, const CLAM::DataArray * arrays, unsigned nFrames, const std::list<std::string> & binLabels);
+			void initData(const CLAM_Annotator::FrameDivision & frameDivision, const CLAM::DataArray * arrays, unsigned nFrames, const std::list<std::string> & binLabels, CLAM::TData samplingRate);
 			void initData(unsigned nFrames);
 		private:
 			unsigned _nPcps;
@@ -44,6 +44,7 @@ namespace VM
 			const CLAM_Annotator::FrameDivision * _frameDivision;
 			std::vector<std::string> _binLabels;
 			unsigned _nBins;
+			CLAM::TData _samplingRate;
 	};
 
 

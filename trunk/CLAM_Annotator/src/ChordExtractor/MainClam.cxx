@@ -19,6 +19,7 @@ Adapted from MATLAB code by C. Harte at Queen Mary
 #include "Array.hxx"
 #include "Enumerated.hxx"
 #include "FrameDivision.hxx"
+#include <CLAM/Assert.hxx>
 
 const char * usage =
 	"Chord extraction v1.0.\n"
@@ -76,7 +77,7 @@ const char * schemaContent =
 "      <EnumerationValues>Major Minor Major7 Minor7 Dominant7 MajorMinor7 Diminished Augmented</EnumerationValues>\n"
 "    </Attribute>\n"
 "	-->\n"
-"    <Attribute name='HartePcp' scope='Frame'type='FloatArray'>\n"
+"    <Attribute name='HartePcp' scope='Frame' type='FloatArray'>\n"
 "      <BinLabels>A A# B B# C C# D D# E F F# G G#</BinLabels>\n"
 "    </Attribute>\n"
 "    <Attribute name='Root' scope='ExtractedChord' type='Enumerated'>\n"
@@ -176,6 +177,7 @@ public:
 		const std::vector<double> & correlation = extractor.chordCorrelation(); //pointer to chromagram data
 		std::string estimation = extractor.chordEstimation();
 
+		CLAM_ASSERT(pcp.size()==12, "Unexpected pcp size" );
 		_pcps[_currentFrame].Resize(pcp.size());
 		_pcps[_currentFrame].SetSize(pcp.size());
 		for (unsigned i =0; i<pcp.size(); i++)

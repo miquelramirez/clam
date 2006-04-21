@@ -145,6 +145,7 @@ private:
 	void adaptInterfaceToCurrentSchema();
 	void loadDescriptorPool();
 
+	void refreshInstantViews();
 	void adaptEnvelopesToCurrentSchema();
 	void refreshEnvelopes();
 	void refreshEnvelope(CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & frameDivision);
