@@ -78,10 +78,10 @@ const char * schemaContent =
 "    </Attribute>\n"
 "	-->\n"
 "    <Attribute name='HartePcp' scope='Frame' type='FloatArray'>\n"
-"      <BinLabels>A A# B B# C C# D D# E F F# G G#</BinLabels>\n"
+"      <BinLabels>G G# A Bb B C C# D Eb E F F#</BinLabels>\n"
 "    </Attribute>\n"
 "    <Attribute name='Root' scope='ExtractedChord' type='Enumerated'>\n"
-"      <EnumerationValues>A A# B B# C C# D D# E F F# G G#</EnumerationValues>\n"
+"      <EnumerationValues>G G# A Bb B C C# D Eb E F F#</EnumerationValues>\n"
 "    </Attribute>\n"
 "    <Attribute name='Mode' scope='ExtractedChord' type='Enumerated'>\n"
 "      <EnumerationValues>\n"
@@ -145,7 +145,8 @@ public:
 		_pool->SetNumberOfContexts("Frame", frames);
 		_pool->SetNumberOfContexts("ExtractedChord", 0);
 		Simac::FrameDivision & frameDivision = _pool->GetWritePool<Simac::FrameDivision>("Song","Frames")[0];
-		frameDivision.SetFirstCenter(framesize/2);
+		frameDivision.SetFirstCenter(0);
+	//	frameDivision.SetFirstCenter(framesize/2);
 		frameDivision.SetInterCenterGap(hop);
 		_tunningPositions = _pool->GetWritePool<CLAM::TData>("Frame","TunningPosition");
 		_tunningStrength = _pool->GetWritePool<CLAM::TData>("Frame","TunningStrength");
