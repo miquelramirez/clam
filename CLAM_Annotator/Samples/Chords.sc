@@ -40,10 +40,10 @@
     </Attribute>
 	-->
     <Attribute name='HartePcp' scope='Frame' type='FloatArray'>
-      <BinLabels>A A# B B# C C# D D# E F F# G G#</BinLabels>
+      <BinLabels>A A# B C C# D D# E F F# G G#</BinLabels>
     </Attribute>
     <Attribute name='Root' scope='ExtractedChord' type='Enumerated'>
-      <EnumerationValues>A A# B B# C C# D D# E F F# G G#</EnumerationValues>
+      <EnumerationValues>A A# B C C# D D# E F F# G G#</EnumerationValues>
     </Attribute>
     <Attribute name='Mode' scope='ExtractedChord' type='Enumerated'>
       <EnumerationValues>
