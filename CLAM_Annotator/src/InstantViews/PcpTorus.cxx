@@ -21,6 +21,7 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 	initData(1);
 	_frameDivision=0;
 	_samplingRate=44100;
+	_normalizationEnabled = false;
 }
 
 void CLAM::VM::PcpTorus::initializeGL()
@@ -60,15 +61,9 @@ void CLAM::VM::PcpTorus::paintGL()
 }
 void CLAM::VM::PcpTorus::Draw()
 {
-	unsigned i=0;
 	for (int x = -10; x<10; x++)
-	{
-		for (int y = -10; y<10; y++)
-		{
+		for (int y = 0-x; y<10-x; y++)
 			DrawTile(x,y);
-			i++;
-		}
-	}
 }
 
 void CLAM::VM::PcpTorus::DrawTile(int x, int y)
@@ -125,15 +120,27 @@ void CLAM::VM::PcpTorus::initData(const CLAM_Annotator::FrameDivision & frameDiv
 	_nBins = binLabels.size();
 	_frameDivision = & frameDivision;
 	_samplingRate = samplingRate;
-	if (_pcps) delete _pcps;
+	if (_pcps) delete[] _pcps;
 	_nPcps = nFrames;
 	_pcps = new double[_nPcps*_nBins];
+	_pcp=_pcps;
+	double maxValue = 0;
+	double minValue = 0;
 	for (unsigned frame =0; frame < _nPcps; frame++)
 		for (unsigned i=0; i<_nBins; i++)
 		{
-			_pcps[(frame)*_nBins+i] = arrays[frame][i]*_nBins;
+			double value = arrays[frame][i]*_nBins;
+			if (value>10)
+				std::cout << "Weird bin at frame " << frame << " bin " << i << "/" << _nBins << " value " << value << std::endl;
+			if (value>maxValue) maxValue = value;
+			if (value<minValue) minValue = value;
+			_pcps[frame*_nBins+i] = value;
 		}
-	_pcp=_pcps;
+	if (!_normalizationEnabled) return;
+	if (maxValue-minValue<1e-8) maxValue=1;
+	for (unsigned frame =0; frame < _nPcps; frame++)
+		for (unsigned i=0; i<_nBins; i++)
+			_pcps[(frame)*_nBins+i] = (_pcps[(frame)*_nBins+i] - minValue) /(maxValue-minValue);
 }
 
 void CLAM::VM::PcpTorus::initData(unsigned nFrames)
