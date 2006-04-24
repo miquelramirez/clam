@@ -30,6 +30,7 @@ env.SConsignFile() # Single signature file
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
 env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
+env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 env['QT4_UICDECLSUFFIX'] = '.hxx'
 
 env.EnableQt4Modules([
