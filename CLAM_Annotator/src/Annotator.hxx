@@ -114,8 +114,10 @@ public slots:
 	void linkCurrentSegmentToPlayback(bool enabled);
 protected:
 	void closeEvent( QCloseEvent * e);
-
 private slots:
+	void setCurrentTime(double timeMilliseconds, double endTimeMiliseconds);
+	void setCurrentPlayingTime(double timeMilliseconds);
+	void setCurrentStopTime(double timeMilliseconds, bool paused);
 	void updatePendingAuralizationsChanges();
 	void saveProject();
 
