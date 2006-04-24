@@ -360,6 +360,14 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	adaptSegmentationsToCurrentSchema();
 	mStatusBar << tr("Updating schema browser...") << mStatusBar;
 	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
+	std::vector<CLAM_Annotator::InstantView> & instantViews = mProject.GetViews();
+	for (unsigned i=0; i<mInstantViews.size(); i++)
+		delete mInstantViews[i];
+	mInstantViews.clear();
+	for (unsigned i=0; i<instantViews.size(); i++)
+	{
+		mInstantViews[i] = new CLAM::VM::PcpTorus(mVSplit);
+	}
 	mStatusBar << tr("User interface adapted to the new schema.") << mStatusBar;
 }
 
