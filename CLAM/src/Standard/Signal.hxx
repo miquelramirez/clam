@@ -50,6 +50,7 @@ namespace SigSlot
 	class Signal
 	{
 	public:
+		typedef std::stack< unsigned >      tConnectionIdStack;
 		typedef unsigned  tConnectionId;
   
 		/** \brief Destructor
@@ -70,11 +71,8 @@ namespace SigSlot
 		void FreeConnectionId( tConnectionId );
 		tConnectionId AssignConnection();
   
-		// Types
-		typedef std::stack< unsigned >      tConnectionIdStack;
 	protected:
   
-		static tConnectionIdStack  smFreeIdStack;
 		static tConnectionId       smLastConnectionId;
 	};
 
