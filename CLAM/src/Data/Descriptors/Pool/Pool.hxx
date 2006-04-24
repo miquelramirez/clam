@@ -135,6 +135,12 @@ namespace CLAM
 
 			return _scopePools[scopeIndex]->template GetReadPool<AttributeType>(attributeName);
 		}
+		bool IsInstantiated(const std::string & scopeName, const std::string & attributeName) const
+		{
+			unsigned scopeIndex = _scheme.GetScopeIndex(scopeName);
+			if (!_scopePools[scopeIndex]) return false;
+			return _scopePools[scopeIndex]->IsInstantiated(attributeName);
+		}
 	// Component Interface
 
 		const char * GetClassName() const { return "DescriptionDataPool"; }
