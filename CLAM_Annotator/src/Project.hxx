@@ -4,6 +4,7 @@
 #include "Schema.hxx"
 #include <CLAM/DynamicType.hxx>
 #include "SongFiles.hxx"
+#include "InstantView.hxx"
 #include <CLAM/Filename.hxx>
 #include <CLAM/DescriptionScheme.hxx>
 #include <vector>
@@ -14,12 +15,13 @@ class Schema;
 
 class Project : public CLAM::DynamicType
 {
-	DYNAMIC_TYPE(Project,5);
+	DYNAMIC_TYPE(Project,6);
 	DYN_ATTRIBUTE(0, public, CLAM::Text, Description);
 	DYN_ATTRIBUTE(1, public, CLAM::Filename, Schema);
 	DYN_ATTRIBUTE(2, public, CLAM::Filename, Extractor);
 	DYN_ATTRIBUTE(3, public, std::string, PoolSuffix);
 	DYN_CONTAINER_ATTRIBUTE(4,public, std::vector<Song>, Songs, Song);
+	DYN_CONTAINER_ATTRIBUTE(5,public, std::vector<InstantView>, Views, View);
 
 	void DefaultInit()
 	{

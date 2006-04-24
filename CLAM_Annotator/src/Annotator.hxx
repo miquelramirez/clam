@@ -195,6 +195,7 @@ private:
     QTextBrowser* mProjectDocumentation;
 	CLAM::VM::BPFPlayer* mPlayer;
 	CLAM::VM::PcpTorus * mPcpTorus;
+	std::vector<CLAM::VM::PcpTorus *> mInstantViews;
 	std::deque<std::string> mRecentOpenedProjects;
 	StatusBarDumper mStatusBar;
 	QDialog * mAbout;
