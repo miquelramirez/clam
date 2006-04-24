@@ -204,7 +204,7 @@ namespace CLAM
 						mLocatorPos = mRegion.min;
 					else
 						if(mLocatorPos <= mRegion.min) mLocatorPos = mRegion.min;
-					ttip = "x:"+QString::number(mRegion.min,'f',2);
+					ttip = "Cue:"+QString::number(mRegion.min,'f',2);
 					emit toolTip(ttip);
 					emit regionChanged(mRegion.min,mRegion.max,mLocatorPos > mRegion.min);
 					emit requestRefresh();	
@@ -222,7 +222,7 @@ namespace CLAM
 						mLocatorPos = mRegion.max;
 					else
 						if(mLocatorPos >= mRegion.max) mLocatorPos = mRegion.max;
-					ttip = "x:"+QString::number(mRegion.max,'f',2);
+					ttip = "Cue:"+QString::number(mRegion.max,'f',2);
 					emit toolTip(ttip);
 					emit regionChanged(mRegion.min,mRegion.max,mLocatorPos > mRegion.min);
 					emit requestRefresh();	
@@ -233,7 +233,7 @@ namespace CLAM
 					if(x < mXRange.min) x = mXRange.min;
 					if(x > mXRange.max) x = mXRange.max;
 					mRegion.min = mRegion.max = mLocatorPos = x;
-					ttip = "x:"+QString::number(mLocatorPos,'f',2);
+					ttip = "Cue:"+QString::number(mLocatorPos,'f',2);
 					emit toolTip(ttip);
 					emit regionChanged(mLocatorPos,mLocatorPos,false);
 					return;
@@ -250,7 +250,7 @@ namespace CLAM
 				if(PickBeginRegion(x,tolerance))
 				{
 					emit working(mKey,true);
-					ttip = "x:"+QString::number(mLocatorPos,'f',2);
+					ttip = "Cue:"+QString::number(mLocatorPos,'f',2);
 					emit toolTip(ttip);
 					emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				}
@@ -266,7 +266,7 @@ namespace CLAM
 			if(PickBeginRegion(x,tolerance)) 
 			{
 				emit working(mKey,true);
-				ttip = "x:"+QString::number(mRegion.min,'f',2);
+				ttip = "Cue:"+QString::number(mRegion.min,'f',2);
 				emit toolTip(ttip);
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
@@ -274,7 +274,7 @@ namespace CLAM
 			if(PickEndRegion(x,tolerance)) 
 			{
 				emit working(mKey,true);
-				ttip = "x:"+QString::number(mRegion.max,'f',2);
+				ttip = "Cue:"+QString::number(mRegion.max,'f',2);
 				emit toolTip(ttip);
 				emit cursorChanged(QCursor(Qt::SizeHorCursor));
 				return;
