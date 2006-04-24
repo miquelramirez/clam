@@ -428,8 +428,8 @@ public:
 				mSchema.GetScope(),
 				mSchema.GetName())[instance];
 		unsigned nBins = mSchema.GetBinLabels().size();
-		array.SetSize(nBins);
 		array.Resize(nBins);
+		array.SetSize(nBins);
 		for (unsigned i = 0; i < nBins; i++)
 			array[i]=0;
 		// TODO: Init also the values
