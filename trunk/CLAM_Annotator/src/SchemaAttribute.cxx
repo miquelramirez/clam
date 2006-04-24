@@ -38,6 +38,7 @@ namespace CLAM_Annotator{
 			return false;
 		}
 		std::ostringstream subErr;
+		if (!pool.IsInstantiated(GetScope(), GetName())) return true;
 		if (mTypePlugin.t->ValidateData(pool,subErr)) return true;
 		err << "Error validating attribute '" << GetScope() << ":" << GetName() << "':" << std::endl;
 		err << subErr.str();

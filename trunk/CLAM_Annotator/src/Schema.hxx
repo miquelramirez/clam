@@ -144,8 +144,9 @@ namespace CLAM_Annotator{
 			schemaAttribute.SetChildScope(childScope);
 			AddAttribute(schemaAttribute);
 		}
-		bool Validate(const CLAM::DescriptionDataPool & data, std::ostream & err);
-		void InitInstance(const std::string & scope, unsigned instance, CLAM::DescriptionDataPool & data);
+		bool Validate(const CLAM::DescriptionDataPool & data, std::ostream & err) const;
+		void InitInstance(const std::string & scope, unsigned instance, CLAM::DescriptionDataPool & data) const;
+		void InitMissingAttributes(CLAM::DescriptionDataPool & data) const;
 		const std::list<SchemaAttribute> & GetAllAttributes() const
 		{
 			return GetAttributes();

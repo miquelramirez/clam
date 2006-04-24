@@ -44,6 +44,10 @@ public:
 	{
 		mSchema.InitInstance(scope, instance, data );
 	}
+	void InitializeMissingAttributes(CLAM::DescriptionDataPool & pool)
+	{
+		mSchema.InitMissingAttributes(pool);
+	}
 	std::string GetDescriptorsFileName(const std::string & songName)
 	{
 		std::vector<CLAM_Annotator::Song> fileNames = GetSongs();

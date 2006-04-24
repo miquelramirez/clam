@@ -583,12 +583,6 @@ void Annotator::makeConnections()
 	connect(mSegmentEditor, SIGNAL(segmentInserted(unsigned)),
 		this, SLOT(insertSegment(unsigned)));
 
-	// BPF editing
-/*
-	connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
-		 mPlayer, SLOT(updateYValue(int, double)));
-*/
-
 	// Interplot viewport syncronization
 /*
 	connect(mSegmentEditor, SIGNAL(xRulerRange(double,double)),
@@ -598,39 +592,54 @@ void Annotator::makeConnections()
 	connect(mSegmentEditor, SIGNAL(selectedXPos(double)),
 		mBPFEditor, SLOT(selectPointFromXCoord(double)));
 */
-	// Interplot locator syncronization
-	connect(mSegmentEditor, SIGNAL(selectedRegion(double,double)), // Was xRulerRange
-		mBPFEditor, SLOT(updateLocator(double)));
-	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)), // Was xRulerRange
-		mSegmentEditor, SLOT(updateLocator(double)));
 	// Playhead update
-	connect(mPlayer, SIGNAL(playingTime(double)),
-		mPcpTorus, SLOT(setCurrentTime(double)), Qt::DirectConnection);
-	connect(mPlayer, SIGNAL(playingTime(double)),
-		mSegmentEditor, SLOT(updateLocator(double)), Qt::DirectConnection);
-	connect(mPlayer, SIGNAL(playingTime(double)),
-		mBPFEditor, SLOT(updateLocator(double)), Qt::DirectConnection);
-	connect(mPlayer, SIGNAL(stopTime(double,bool)),
-		mBPFEditor, SLOT(updateLocator(double,bool)));
+	connect( mPlayer, SIGNAL(playingTime(double)),
+		 this, SLOT(setCurrentPlayingTime(double)), Qt::DirectConnection);
 	connect( mPlayer, SIGNAL(stopTime(double,bool)),
-		 mSegmentEditor, SLOT(updateLocator(double,bool)));
-	connect(mSegmentEditor, SIGNAL(selectedRegion(double,double)),
-		mPlayer, SLOT(timeBounds(double,double)));
-	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
-		mPlayer, SLOT(timeBounds(double,double)));
+		 this, SLOT(setCurrentStopTime(double,bool)), Qt::DirectConnection);
 
+	// Current position update
+	connect(mSegmentEditor, SIGNAL(selectedRegion(double,double)),
+		this, SLOT(setCurrentTime(double,double)));
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
-		mSegmentEditor, SLOT(updateLocator(double,double)));
+		this, SLOT(setCurrentTime(double,double)));
 
 	// Update auralizations whenever player stop and they have been modified
 	connect(mPlayer, SIGNAL(stopTime(double)),
 		this, SLOT(updatePendingAuralizationsChanges()));
 
+	// Making the splitters look like a table
 	connect(mFrameEditorSplit, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
 	connect(mSegmentEditorSplit, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
 }
+void Annotator::setCurrentPlayingTime(double timeMilliseconds)
+{
+	mPcpTorus->setCurrentTime(timeMilliseconds);
+	mSegmentEditor->updateLocator(timeMilliseconds);
+	mBPFEditor->updateLocator(timeMilliseconds);
+}
+
+void Annotator::setCurrentStopTime(double timeMilliseconds, bool paused)
+{
+	mPcpTorus->setCurrentTime(timeMilliseconds);
+	mSegmentEditor->updateLocator(timeMilliseconds, paused);
+	mBPFEditor->updateLocator(timeMilliseconds, paused);
+}
+
+void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMiliseconds)
+{
+	static bool updating = false;
+	if (updating) return;
+	updating=true;
+	mPlayer->timeBounds(timeMilliseconds,endTimeMiliseconds);
+	mPcpTorus->setCurrentTime(timeMilliseconds);
+	mSegmentEditor->updateLocator(timeMilliseconds, true);
+	mBPFEditor->updateLocator(timeMilliseconds, true);
+	updating=false;
+}
+
 void Annotator::fileOpenRecent()
 {
 	// This hack is from the qt example, don't ask me...
@@ -1024,12 +1033,14 @@ void Annotator::loadDescriptorPool()
 		QMessageBox::warning(this,tr("Error Loading Descriptors Pool File"), 
 			constructFileError(poolFile,e));
 		delete tempPool;
+		// TODO: Get an Empty pool
 		return;
 	}
 
 	//Create Descriptors Pool
 	if (mpDescriptorPool) delete mpDescriptorPool;
 	mpDescriptorPool = tempPool;
+	mProject.InitializeMissingAttributes(*mpDescriptorPool);
 }
 
 void Annotator::refreshGlobalDescriptorsTable()
