@@ -42,6 +42,12 @@ namespace CLAM
 	 * @see SemanticalAnalysis module, for more information on that.
 	 * @ingroup SemanticalAnalysis
 	 */
+	class SchemaError : public Err
+	{
+		public:
+		SchemaError(const std::string & msg) : Err(msg.c_str()) {}
+	};
+
 	class DescriptionScope
 	{
 	public:
@@ -87,12 +93,24 @@ namespace CLAM
 		 * Returns the attribute index that can be used for fast access to the 
 		 * attribute in a spec or even . 
 		 * @warning The index is not a confident reference after serialization.
+		 * @pre the name should exists
 		 */
 		unsigned GetIndex(const std::string & name) const
 		{
 			NamesMap::const_iterator it = _nameMap.find(name);
 			CLAM_ASSERT(it!=_nameMap.end(),
 				(std::string()+"Accessing an unexisting attribute '"+_scopeName+"':'"+name+"'").c_str());
+			return it->second;
+		}
+		/**
+		 * The same as GetIndex but it throws a catchable exception whenever
+		 * the name is not available
+		 */
+		unsigned GetIndexSafe(const std::string & name) const
+		{
+			NamesMap::const_iterator it = _nameMap.find(name);
+			if (it==_nameMap.end())
+				throw SchemaError("Accessing an unexisting attribute '"+_scopeName+"':'"+name+"'");
 			return it->second;
 		}
 

@@ -25,6 +25,11 @@
 #include "AttributePool.hxx"
 #include "DescriptionScope.hxx"
 
+// TODO TO-TEST:
+// Reading an non existent attribute
+// Not reading an existent attribute
+// Unordered attributes
+// Twice present attributes
 
 namespace CLAM
 {
@@ -35,6 +40,28 @@ namespace CLAM
 	 */
 	class ScopePool : public Component
 	{
+		friend class AttributePoolStorageProxy;
+		class AttributePoolStorageProxy : public Component
+		{
+				ScopePool & pool;
+			public:
+				AttributePoolStorageProxy(ScopePool & scopePool)
+					: pool(scopePool)
+				{
+				}
+				const char* GetClassName() const { return "AttributeProxy"; }
+				void StoreOn(CLAM::Storage&) const {}
+				void LoadFrom(Storage & storage)
+				{
+					std::string name;
+					XMLAdapter<std::string> nameAdapter(name,"name",false);
+					storage.Load(nameAdapter);
+					unsigned attributeIndex = pool._spec.GetIndexSafe(name);
+					pool._attributePools[attributeIndex].Allocate(pool._size);
+					XMLComponentAdapter adapter(pool._attributePools[attributeIndex]);
+					storage.Load(adapter);
+				}
+		};
 	public:
 		typedef std::vector<AttributePool> AttributesData;
 	private:
@@ -81,19 +108,15 @@ namespace CLAM
 			CLAM_ASSERT(name==_spec.GetName(),
 				("The schema expected a scope named '"+_spec.GetName()+
 				 "', but the XML contains the scope '"+ name+"' instead").c_str());
-
 			unsigned newSize;
 			XMLAdapter<unsigned> sizeAdapter(newSize,"size",false);
 			storage.Load(sizeAdapter);
 			Reallocate(newSize);
 			for (unsigned attribute=0; attribute<_attributePools.size(); attribute++)
-			{
 				_attributePools[attribute].Deallocate();
-				_attributePools[attribute].Allocate(_size);
-//				if (_size && !_attributePools[attribute].GetData()) continue;
-				XMLComponentAdapter adapter(_attributePools[attribute],"AttributePool",true);
-				storage.Load(adapter);
-			}
+			AttributePoolStorageProxy proxy(*this);
+			XMLComponentAdapter adapter(proxy,"AttributePool",true);
+			while (storage.Load(adapter)) {} // do nothing
 		}
 		void Insert(unsigned pos)
 		{
@@ -142,6 +165,12 @@ namespace CLAM
 			Reallocate(newSize);
 		}
 
+		bool IsInstantiated(const std::string & attributeName) const
+		{
+			unsigned attribPos = _spec.GetIndex(attributeName);
+			const void * data = _attributePools[attribPos].GetData();
+			return data!=0;
+		}
 		template <typename AttributeType>
 		const AttributeType * GetReadPool(const std::string & name) const
 		{
