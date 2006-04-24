@@ -23,8 +23,8 @@
 
 namespace SigSlot
 {
+		static Signal::tConnectionIdStack   smFreeIdStack;
 		Signal::tConnectionId        Signal::smLastConnectionId = 0;
-		Signal::tConnectionIdStack   Signal::smFreeIdStack;
 
 		Signal::~Signal()
 		{
