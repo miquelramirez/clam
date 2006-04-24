@@ -45,7 +45,7 @@ namespace VM
 			std::vector<std::string> _binLabels;
 			unsigned _nBins;
 			CLAM::TData _samplingRate;
-			bool _normalizationEnabled;
+			double _maxValue;
 	};
 
 

@@ -21,7 +21,6 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 	initData(1);
 	_frameDivision=0;
 	_samplingRate=44100;
-	_normalizationEnabled = false;
 }
 
 void CLAM::VM::PcpTorus::initializeGL()
@@ -61,6 +60,11 @@ void CLAM::VM::PcpTorus::paintGL()
 }
 void CLAM::VM::PcpTorus::Draw()
 {
+	_maxValue*=0.95;
+	if (_maxValue<1e-10) _maxValue=1;
+	for (unsigned i = 0; i < _nBins; i++)
+		if (_pcp[i]>=_maxValue) _maxValue=_pcp[i];
+
 	for (int x = -10; x<10; x++)
 		for (int y = 0-x; y<10-x; y++)
 			DrawTile(x,y);
@@ -75,7 +79,7 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 //	unsigned pitch = (x*7+y*4+_nBins*400)%_nBins; // For pitches
 	bool isMinor = y&1;
 	unsigned pitch =  ((x*7)%(_nBins/2) + 11*(y/2) + (isMinor?4:0)  + _nBins*400)%(_nBins/2) + (isMinor?_nBins/2:0);
-	double pitchLevel = _pcp[pitch];
+	double pitchLevel = _pcp[pitch]/_maxValue;
 	double hexsize=pitchLevel;
 	if (hexsize>1) hexsize = 1;
 	glPushMatrix();
@@ -138,11 +142,6 @@ void CLAM::VM::PcpTorus::initData(const CLAM_Annotator::FrameDivision & frameDiv
 			if (value<minValue) minValue = value;
 			_pcps[frame*_nBins+i] = value;
 		}
-	if (!_normalizationEnabled) return;
-	if (maxValue-minValue<1e-8) maxValue=1;
-	for (unsigned frame =0; frame < _nPcps; frame++)
-		for (unsigned i=0; i<_nBins; i++)
-			_pcps[(frame)*_nBins+i] = (_pcps[(frame)*_nBins+i] - minValue) /(maxValue-minValue);
 }
 
 void CLAM::VM::PcpTorus::initData(unsigned nFrames)
