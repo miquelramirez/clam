@@ -132,7 +132,7 @@ namespace CLAM_Annotator{
 			if (mTypePlugin.t) delete mTypePlugin.t;
 			mTypePlugin.t = TypePlugin::Create(*this);
 		}
-		void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool)
+		void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool) const
 		{
 			mTypePlugin.t->InitInstance(instance, pool);
 		}
