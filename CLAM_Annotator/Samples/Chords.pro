@@ -46,6 +46,11 @@ TODO: Explain what the descriptors mean and how this should be reviewed.
 		<AttributeScope>Frame</AttributeScope>
 		<AttributeName>HarteChordCorrelation</AttributeName>
 	</View>
+  	<View>
+		<Type>KeySpace</Type>
+		<AttributeScope>Frame</AttributeScope>
+		<AttributeName>HarteChordCorrelation</AttributeName>
+	</View>
   </Views>
 
 </Project>
