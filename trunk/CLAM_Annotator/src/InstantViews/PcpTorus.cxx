@@ -9,15 +9,15 @@ CLAM::VM::PcpTorus::~PcpTorus()
 {
 }
 CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
-	QGLWidget(parent)
+	InstantView(parent)
 {
 	_font.setFamily("sans-serif");
 	_font.setPointSize(11);
 //	_gradient = bindTexture(QPixmap(":/gradients/gradient.png"), GL_TEXTURE_2D);
 	_updatePending=0;
 	_currentFrame=0;
-	_pcps = 0;
-	_pcp = 0;
+	_data = 0;
+	_frameData = 0;
 	_currentFrame = 0;
 	_nBins=0;
 	_frameDivision=0;
@@ -26,7 +26,7 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 
 void CLAM::VM::PcpTorus::initializeGL()
 {
-	glShadeModel(GL_FLAT);
+	glShadeModel(GL_SMOOTH);
 	glClearColor(0,0,0,0); // rgba
 	glEnable(GL_BLEND);
 	glEnable (GL_LINE_SMOOTH);
@@ -62,11 +62,11 @@ void CLAM::VM::PcpTorus::paintGL()
 void CLAM::VM::PcpTorus::Draw()
 {
 	if (!_nBins) return;
-	if (!_pcp) return;
+	if (!_frameData) return;
 	_maxValue*=0.95;
 	if (_maxValue<1e-10) _maxValue=1;
 	for (unsigned i = 0; i < _nBins; i++)
-		if (_pcp[i]>=_maxValue) _maxValue=_pcp[i];
+		if (_frameData[i]>=_maxValue) _maxValue=_frameData[i];
 
 	for (int x = -10; x<10; x++)
 		for (int y = 0-x; y<10-x; y++)
@@ -87,11 +87,12 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 		bool isMinor = y&1;
 		bin =  ((x*7)%(_nBins/2) + 11*(y/2) + (isMinor?4:0)  + _nBins*1000)%(_nBins/2) + (isMinor?_nBins/2:0);
 	}
-	double pitchLevel = _pcp[bin]/_maxValue;
+	double pitchLevel = _frameData[bin]/_maxValue;
 	double hexsize=pitchLevel;
 	if (hexsize>1) hexsize = 1;
 	glPushMatrix();
 	glTranslatef(posx,posy,0);
+	glPushMatrix();
 	glScalef(hexsize, hexsize, 1.);
 	glColor4f(pitchLevel,pitchLevel/3,pitchLevel/3,1);
 //	glEnable(GL_TEXTURE_2D);
@@ -105,6 +106,29 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 	glVertex2f(cos30,-sin30);
 	glVertex2f(cos30,sin30);
 	glEnd();
+	glLineWidth(3.);
+	glColor4f(pitchLevel,pitchLevel/4,pitchLevel/4,1);
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(0,1,.1);
+	glVertex3f(-cos30,sin30,.1);
+	glVertex3f(-cos30,-sin30,.1);
+	glVertex3f(0,-1,.1);
+	glVertex3f(cos30,-sin30,.1);
+	glVertex3f(cos30,sin30,.1);
+	glEnd();
+	glPopMatrix();
+	glBegin(GL_TRIANGLE_FAN);
+	glColor4f(pitchLevel,pitchLevel,pitchLevel/4,1);
+	glVertex3f(0,0,0);
+	glColor4f(0,0,0,0);
+	glVertex3f(0,1,.1);
+	glVertex3f(-cos30,sin30,.1);
+	glVertex3f(-cos30,-sin30,.1);
+	glVertex3f(0,-1,.1);
+	glVertex3f(cos30,-sin30,.1);
+	glVertex3f(cos30,sin30,.1);
+	glVertex3f(0,1,.1);
+	glEnd();
 	glPopMatrix();
 	glColor4f(1,1,.5,1);
 	renderText(posx, posy, -1, getLabel(bin).c_str(), _font);
@@ -116,10 +140,10 @@ void CLAM::VM::PcpTorus::setCurrentTime(double timeMiliseconds)
 {
 	if (!_frameDivision) return;
 	unsigned newFrame = _frameDivision->GetItem(timeMiliseconds*_samplingRate);
-	if (newFrame>=_nPcps) newFrame=0;
+	if (newFrame>=_nFrames) newFrame=_nFrames-1;
 	if (newFrame == _currentFrame) return;
 	_currentFrame = newFrame;
-	_pcp = _pcps + _nBins * _currentFrame;
+	_frameData = _data + _nBins * _currentFrame;
 	if (!_updatePending++) update();
 }
 
@@ -152,40 +176,40 @@ void CLAM::VM::PcpTorus::initData(const CLAM_Annotator::FrameDivision & frameDiv
 {
 	_frameDivision = & frameDivision;
 	_samplingRate = samplingRate;
-	if (_pcps) delete[] _pcps;
-	_nPcps = nFrames;
-	_pcps = new double[_nPcps*_nBins];
-	_pcp=_pcps;
-	for (unsigned frame =0; frame < _nPcps; frame++)
+	if (_data) delete[] _data;
+	_nFrames = nFrames;
+	_data = new double[_nFrames*_nBins];
+	_frameData=_data;
+	for (unsigned frame =0; frame < _nFrames; frame++)
 		for (unsigned i=0; i<_nBins; i++)
 		{
 			double value = arrays[frame][i]*_nBins;
-			_pcps[frame*_nBins+i] = value;
+			_data[frame*_nBins+i] = value;
 		}
 }
 
 void CLAM::VM::PcpTorus::initData(unsigned nFrames)
 {
-	if (_pcps) delete _pcps;
-	_nPcps = nFrames;
-	_pcps = new double[_nPcps*_nBins];
+	if (_data) delete _data;
+	_nFrames = nFrames;
+	_data = new double[_nFrames*_nBins];
 	for (unsigned i=0; i<_nBins; i++)
-		_pcps[i]=0;
+		_data[i]=0;
 
-	for (unsigned frame =0; frame < _nPcps-1; frame++)
+	for (unsigned frame =0; frame < _nFrames-1; frame++)
 		for (unsigned i=0; i<_nBins; i++)
 		{
 			double newValue;
 			while (true)
 			{
-				newValue = _pcps[frame*_nBins+i] + (rand()*2.0/double(RAND_MAX) - 1)/5.0 ;
+				newValue = _data[frame*_nBins+i] + (rand()*2.0/double(RAND_MAX) - 1)/5.0 ;
 				if (newValue<0) continue;
 				if (newValue>=1) continue;
 				break;
 			}
-			_pcps[(frame+1)*_nBins+i] = newValue;;
+			_data[(frame+1)*_nBins+i] = newValue;;
 		}
-	_pcp=_pcps;
+	_frameData=_data;
 }
 
 

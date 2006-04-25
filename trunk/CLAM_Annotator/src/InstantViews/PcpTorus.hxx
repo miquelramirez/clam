@@ -13,22 +13,32 @@ namespace CLAM
 namespace VM
 {
 
-	class PcpTorus : public QGLWidget
+	class InstantView : public QGLWidget
+	{
+		Q_OBJECT
+		public:
+			InstantView(QWidget *parent) : QGLWidget(parent) { }
+			virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)=0;
+		public slots:
+			virtual void setCurrentTime(double timeMiliseconds)=0;
+	};
+
+	class PcpTorus : public InstantView
 	{
 		Q_OBJECT
 
 		public:
 			PcpTorus(QWidget * parent);
 			~PcpTorus();
-			void initializeGL();
-			void resizeGL(int width, int height);
-			void paintGL();
+			virtual void initializeGL();
+			virtual void resizeGL(int width, int height);
+			virtual void paintGL();
 		private:
 			void Draw();
 			void DrawTile(int x, int y);
 
 		public slots:
-			void setCurrentTime(double timeMiliseconds);
+			virtual void setCurrentTime(double timeMiliseconds);
 		private:
 			const std::string & getLabel(unsigned pitch);
 		public:
@@ -36,16 +46,17 @@ namespace VM
 			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
 			void initData(const CLAM_Annotator::FrameDivision & frameDivision, const CLAM::DataArray * arrays, unsigned nFrames, const std::list<std::string> & binLabels, CLAM::TData samplingRate);
 			void initData(unsigned nFrames);
+		protected:
+			double *_frameData;
+			int _updatePending;
+			std::vector<std::string> _binLabels;
 		private:
-			unsigned _nPcps;
+			unsigned _nFrames;
 			unsigned _currentFrame;
-			double *_pcp;
-			double *_pcps;
+			double *_data;
 			QFont _font;
 			GLuint _gradient;
-			int _updatePending;
 			const CLAM_Annotator::FrameDivision * _frameDivision;
-			std::vector<std::string> _binLabels;
 			unsigned _nBins;
 			CLAM::TData _samplingRate;
 			double _maxValue;

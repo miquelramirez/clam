@@ -39,6 +39,7 @@
 #include <vmAudioPlot.hxx>
 #include <vmBPFPlayer.hxx>
 #include "PcpTorus.hxx"
+#include "KeySpace.hxx"
 
 #define VERSION "2.1"
 
@@ -377,6 +378,12 @@ void Annotator::adaptInstantViewsToSchema()
 			CLAM::VM::PcpTorus * torus = new CLAM::VM::PcpTorus(mVSplit);
 			torus->setSource(mProject, instantViews[i].GetAttributeScope(), instantViews[i].GetAttributeName());
 			mInstantViews.push_back(torus);
+		}
+		if (instantViews[i].GetType() == "KeySpace")
+		{
+			CLAM::VM::KeySpace * space = new CLAM::VM::KeySpace(mVSplit);
+			space->setSource(mProject, instantViews[i].GetAttributeScope(), instantViews[i].GetAttributeName());
+			mInstantViews.push_back(space);
 		}
 	}
 }
