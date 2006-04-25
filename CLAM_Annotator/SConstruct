@@ -39,6 +39,7 @@ env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
 env['QT4_MOCHPREFIX'] = 'generated/moc_'
 env['QT4_UICDECLPREFIX'] = 'generated/ui_'
+env['QT4_QRCCXXPREFIX'] = 'generated/qrc_'
 
 env.EnableClamModules([
 	'clam_core',
