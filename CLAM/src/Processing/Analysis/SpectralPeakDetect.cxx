@@ -170,7 +170,7 @@ namespace CLAM {
 				// update last BinWidth 
 				if ((nSpectralPeaks > 0) && (outBinWidthBuffer[nSpectralPeaks-1] == 0)) { 			
 			
-					TSize lastSpectralPeakBin = (TSize) (outFreqBuffer[nSpectralPeaks-1]*2* nBins/samplingRate);
+					TSize lastSpectralPeakBin = (TSize) (outFreqBuffer[nSpectralPeaks-1]*2* (nBins-1)/samplingRate);
 					TSize tempVal = binWidth - (TSize)((SpectralPeakPosition-lastSpectralPeakBin)/2.0);
 					outBinWidthBuffer[nSpectralPeaks-1]=TData(tempVal);
 					binWidth = (TSize) ((SpectralPeakPosition-lastSpectralPeakBin)/2.0);
@@ -181,7 +181,7 @@ namespace CLAM {
 			
 					// update last SpectralPeak BinPosition, it will be located in the middle of the constant area 
 					interpolatedBin = (double) outBinPosBuffer[nSpectralPeaks-1] + (double) (i+1-outBinPosBuffer[nSpectralPeaks-1])/2; // center BinPos 
-					spectralPeakFreq = interpolatedBin * samplingRate / 2 / nBins;
+					spectralPeakFreq = interpolatedBin * samplingRate / 2 / (nBins-1);
 			
 					outFreqBuffer[nSpectralPeaks-1]=spectralPeakFreq;
 					outMagBuffer[nSpectralPeaks-1]=input.GetMag(spectralPeakFreq);
@@ -218,7 +218,7 @@ namespace CLAM {
 					interpolatedBin = SpectralPeakPosition+diffFromMax;
 			
 					// store SpectralPeak data 
-					spectralPeakFreq  = interpolatedBin * samplingRate / 2 / nBins;	// interpolate Frequency 
+					spectralPeakFreq  = interpolatedBin * samplingRate / 2 / (nBins-1); // interpolate Frequency 
 					spectralPeakMag	  = middleMag-TData(.25)*(leftMag-rightMag)*diffFromMax;
 
 					TData leftPhase,rightPhase;
