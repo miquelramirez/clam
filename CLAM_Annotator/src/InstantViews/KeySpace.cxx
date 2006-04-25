@@ -12,10 +12,10 @@ TKeyNode * getKeyNodes()
 {
 	static TKeyNode keyNodes[] = 
 	{
-		{0,0}, {0,1}, {0,2}, {0,3}, {0,4}, {0,5},
-		{1,0}, {1,1}, {1,2}, {1,3}, {1,4}, {1,5},
-		{2,0}, {2,1}, {2,2}, {2,3}, {2,4}, {2,5},
-		{3,0}, {3,1}, {3,2}, {3,3}, {3,4}, {3,5}
+		{.10,.10}, {.10,.25}, {.10,.40}, {.10,.55}, {.10,.70}, {.10,.85},
+		{.35,.10}, {.35,.25}, {.35,.40}, {.35,.55}, {.35,.70}, {.35,.85},
+		{.60,.10}, {.60,.25}, {.60,.40}, {.60,.55}, {.60,.70}, {.60,.85},
+		{.85,.10}, {.85,.25}, {.85,.40}, {.85,.55}, {.85,.70}, {.85,.85}
 	};
 	return keyNodes;
 }
@@ -23,21 +23,16 @@ unsigned nKeyNodes=24;
 char ** getKeyNames()
 {
 	static char *names[]= {
-		"A",
+		"A", "A#/Bb", "B", "C",
+		"C#/Db", "D", "D#/Eb", "E",
+		"F", "F#/Gb", "G", "G#/Ab",
+		"a", "a#/bb", "b", "c",
+		"c#/db", "d", "d#/eb", "e",
+		"f", "f#/gb", "g", "g#/ab"
 	};
 	return names;
 }
 
-
-inline void Line(float width, float x1, float y1, float x2, float y2)
-{
-	glLineWidth(width);
-
-	glBegin(GL_LINES);
-		glVertex2f(x1,y1);
-		glVertex2f(x2,y2);
-	glEnd();
-}
 
 inline void Rectangle(float x, float y, float w, float h)
 {
@@ -51,15 +46,15 @@ inline void Rectangle(float x, float y, float w, float h)
 
 
 
-KeySpace::KeySpace() 
-	: KeySpaceViewPort()
+CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
+	: PcpTorus(parent)
 {
+	x = y = w = h = 0;
 	x_res = 1;
 	y_res = 1;
 
 	centroidx_ = 0;
 	centroidy_ = 0; 
-	memset(pKeySpaceValue_,0,sizeof(float)*24);
 
 	ColorsIndex[0] = 0; 
 	ColorsIndex[1] = 30;
@@ -113,15 +108,16 @@ KeySpace::KeySpace()
 	}
 }
 
-void KeySpace::update()
+void CLAM::VM::KeySpace::paintGL()
 {
-}
-
-void KeySpace::display()
-{
-	y_res *= 2;
-	KeySpaceViewPort::display();
-	y_res /= 2;
+	glClear(GL_COLOR_BUFFER_BIT);
+		glViewport(x,y,w,h);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0,x_res,y_res,0,-2,2);
+//		glOrtho(0,1,0,2,0,1); // From PcpTorus
+		glMatrixMode(GL_MODELVIEW);
+	if (!_frameData) return;
 
 	int nX = w / 4; // 4 pixels
 	int nY = h / 4; // 4 pixels
@@ -151,7 +147,7 @@ void KeySpace::display()
 				if (g < 1E-5)
 					g = 1E-5;
 				double weight = 1. / g;
-				num += pKeySpaceValue_[m] * weight;
+				num += _frameData[m] * weight;
 				den += weight;
 			}
 			if (den != 0.)
@@ -169,18 +165,18 @@ void KeySpace::display()
 			glColor3d(R,G,B);*/
 			int cidx = floorf(ColorIndex);
 			glColor3d(pRColor[cidx],pGColor[cidx],pBColor[cidx]);
-			Rectangle(x1,y_res+y1,x2-x1,y2-y1);
+			Rectangle(x1,y1,x2-x1,y2-y1);
 		}
+		_updatePending=0;
 	}
 
 	// draw strings
-	char **pKeyNames = getKeyNames();
 	for(i=0; i<nKeyNodes; i++)
 	{
 		float x1 = pKeyNodes[i].x * x_res;
 		float y1 = pKeyNodes[i].y * y_res;
 
-		float value = pKeySpaceValue_[i]; 
+		float value = _frameData[i]; 
 		float ColorIndex = value;
 		if (ColorIndex > 1.0)
 			ColorIndex = 1.0;	
@@ -192,10 +188,10 @@ void KeySpace::display()
 		if (br < 0.4)        
 			invbr = 1.; 
 		glColor3d(invbr,invbr,invbr);
-		int l = strlen(pKeyNames[i]);
+		int l = _binLabels[i].size();
 		if (y1 < 4.*y_res/nY)
 			y1 = 4.*y_res/nY;
-		renderText(x1, y_res+y1, -1, pKeyNames[i]);
+		renderText(x1, y1, -1, _binLabels[i].c_str());
 	}
 }
 

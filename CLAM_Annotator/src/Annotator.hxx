@@ -33,7 +33,7 @@ namespace CLAM {
 		class AudioPlot;
 		class BPFPlot;
 		class BPFPlayer;
-		class PcpTorus;
+		class InstantView;
 	};
 	class Segmentation;
 	class XmlStorageErr;
@@ -195,8 +195,7 @@ private:
 
     QTextBrowser* mProjectDocumentation;
 	CLAM::VM::BPFPlayer* mPlayer;
-	CLAM::VM::PcpTorus * mPcpTorus;
-	std::vector<CLAM::VM::PcpTorus *> mInstantViews;
+	std::vector<CLAM::VM::InstantView *> mInstantViews;
 	std::deque<std::string> mRecentOpenedProjects;
 	StatusBarDumper mStatusBar;
 	QDialog * mAbout;
