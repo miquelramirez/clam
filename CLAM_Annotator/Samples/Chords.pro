@@ -31,6 +31,21 @@ TODO: Explain what the descriptors mean and how this should be reviewed.
     <Song>
       <SoundFile>../../Simac/qmul/Chromagram/data/ChordProgression4s.wav</SoundFile>
     </Song>
+    <Song>
+      <SoundFile>SongsTest/craig_lyons-improvise.mp3</SoundFile>
+    </Song>
   </Songs>
+  <Views>
+  	<View>
+		<Type>PcpTorus</Type>
+		<AttributeScope>Frame</AttributeScope>
+		<AttributeName>HartePcp</AttributeName>
+	</View>
+  	<View>
+		<Type>PcpTorus</Type>
+		<AttributeScope>Frame</AttributeScope>
+		<AttributeName>HarteChordCorrelation</AttributeName>
+	</View>
+  </Views>
 
 </Project>
