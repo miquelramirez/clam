@@ -370,8 +370,8 @@ int main(int argc, char* argv[])			// access command line arguments
 	Simac::ChordExtractor chordExtractor(samplingRate/factor,minf,bpo);
 	unsigned framesize = chordExtractor.frameSize();
 	unsigned hop = chordExtractor.hop();
-//	unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
-	unsigned long nFrames = (nsamples-framesize)/hop;	// no. of time windows
+	unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
+//	unsigned long nFrames = (nsamples-framesize)/hop;	// no. of time windows
 	ChordExtractorSerializer serializer(waveFile, nFrames, hop, framesize, chordExtractor);
 	ChordExtractorDescriptionDumper dumper(waveFile, suffix, nFrames, hop, framesize, samplingRate, chordExtractor);
 
