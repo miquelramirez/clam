@@ -120,7 +120,7 @@ class ChordExtractorDescriptionDumper
 	CLAM::DataArray * _pcps;
 	CLAM::DataArray * _chordChorrelation;
 	CLAM::DataArray * _chordSegmentation;
-	CLAM::DataArray * _debugFrameSegmentation;
+//	CLAM::DataArray * _debugFrameSegmentation;
 	unsigned _hop;
 	unsigned _firstFrameOffset;
 	CLAM::TData _samplingRate;
@@ -164,19 +164,27 @@ public:
 		_firstChordIndex = _pool->GetWritePool<CLAM::TData>("Frame","FirstChordIndex"); // TODO: Kludge!!
 		_secondChordIndex = _pool->GetWritePool<CLAM::TData>("Frame","SecondChordIndex"); // TODO: Kludge!!
 		_chordSegmentation = _pool->GetWritePool<CLAM::DataArray>("Song","Chords_Harte");
-		_debugFrameSegmentation = _pool->GetWritePool<CLAM::DataArray>("Song","DebugFrameSegments");
+//		_debugFrameSegmentation = _pool->GetWritePool<CLAM::DataArray>("Song","DebugFrameSegments");
 		_pcps = _pool->GetWritePool<CLAM::DataArray>("Frame","HartePcp");
 		_chordChorrelation = _pool->GetWritePool<CLAM::DataArray>("Frame","HarteChordCorrelation");
 		_energies = _pool->GetWritePool<CLAM::TData>("Frame","Energy");
 	}
 	~ChordExtractorDescriptionDumper()
 	{
+		for (unsigned frame=_currentFrame; frame<_pool->GetNumberOfContexts("Frame"); frame++)
+		{
+			_pcps[frame].Resize(12);
+			_pcps[frame].SetSize(12);
+			_chordChorrelation[frame].Resize(24);
+			_chordChorrelation[frame].SetSize(24);
+		}
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
-		_debugFrameSegmentation[0].AddElem(currentTime);
+//		_debugFrameSegmentation[0].AddElem(currentTime);
 		if (_lastChord != "None")
 			_chordSegmentation[0].AddElem(currentTime);
 		CLAM::XMLStorage::Dump(*_pool, "Description", std::cout);
 		CLAM::XMLStorage::Dump(*_pool, "Description", outputPool);
+		std::cout << "Frames " << _currentFrame << " of " <<  _pool->GetNumberOfContexts("Frame") << std::endl;
 		delete _pool;
 	}
 
@@ -216,7 +224,7 @@ public:
 				extractor.chordRepresentation(extractor.firstCandidate());
 
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
-		_debugFrameSegmentation[0].AddElem(currentTime);
+//		_debugFrameSegmentation[0].AddElem(currentTime);
 		if (currentChord!=_lastChord)
 		{
 			if (_lastChord != "None")
@@ -363,7 +371,7 @@ int main(int argc, char* argv[])			// access command line arguments
 	unsigned framesize = chordExtractor.frameSize();
 	unsigned hop = chordExtractor.hop();
 //	unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
-	unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
+	unsigned long nFrames = (nsamples-framesize)/hop;	// no. of time windows
 	ChordExtractorSerializer serializer(waveFile, nFrames, hop, framesize, chordExtractor);
 	ChordExtractorDescriptionDumper dumper(waveFile, suffix, nFrames, hop, framesize, samplingRate, chordExtractor);
 
@@ -386,7 +394,6 @@ int main(int argc, char* argv[])			// access command line arguments
 		inport.Consume();
 		serializer.doIt();
 		dumper.doIt();
-
 	}
 	clock_t end = clock();
 	reader.Stop();

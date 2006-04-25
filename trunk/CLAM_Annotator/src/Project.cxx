@@ -72,6 +72,19 @@ Project::ScopeSchema Project::GetScopeSchema(const std::string & scope) const
 	return scopeSchema;
 }
 
+const CLAM_Annotator::SchemaAttribute & Project::GetParentAttribute(const std::string & scope) const
+{
+	const std::list<CLAM_Annotator::SchemaAttribute>& attribs = mSchema.GetAllAttributes();
+	std::list<CLAM_Annotator::SchemaAttribute>::const_iterator it;
+	for(it = attribs.begin(); it != attribs.end(); it++)
+	{
+		if (!it->HasChildScope()) continue;
+		if (it->GetChildScope()!=scope) continue;
+		return *it;
+	}
+	throw "No parent";
+}
+
 std::list<std::string> Project::GetNamesByScopeAndType(const std::string & scope, const std::string & type)
 {
 	const std::list<CLAM_Annotator::SchemaAttribute>& hlds = mSchema.GetAllAttributes();

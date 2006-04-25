@@ -98,6 +98,7 @@ public:
 	{
 		return GetAnnotatorSchema().Validate(dataPool,err);
 	}
+	const CLAM_Annotator::SchemaAttribute & GetParentAttribute(const std::string & scope) const;
 	const CLAM_Annotator::SchemaAttribute & GetAttributeScheme(const std::string & scope, const std::string & name) const
 	{
 		return mSchema.GetAttribute(scope, name);

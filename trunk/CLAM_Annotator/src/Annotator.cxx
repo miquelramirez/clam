@@ -269,16 +269,13 @@ void Annotator::initInterface()
 	mBPFEditor->SetZoomSteps(5,5);
 	mBPFEditor->SetXRange(0.0,2.0);
 
-	mCurrentAudio.SetSize(2.0);
+	mCurrentAudio.SetDuration(2.0);
 	mSegmentEditor->SetData(mCurrentAudio);
 
 #if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
 	mBPFEditor->setAutoFillBackground(true);
 	mSegmentEditor->setAutoFillBackground(true);
 #endif
-
-	mPcpTorus = new CLAM::VM::PcpTorus(mVSplit);
-	mPcpTorus->hide();
 
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
@@ -360,15 +357,28 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	adaptSegmentationsToCurrentSchema();
 	mStatusBar << tr("Updating schema browser...") << mStatusBar;
 	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
-	std::vector<CLAM_Annotator::InstantView> & instantViews = mProject.GetViews();
+	mStatusBar << tr("Creating instant views...") << mStatusBar;
+	adaptInstantViewsToSchema();
+	mStatusBar << tr("User interface adapted to the new schema.") << mStatusBar;
+}
+void Annotator::adaptInstantViewsToSchema()
+{
+	if (!mProject.HasViews()) return;
+
 	for (unsigned i=0; i<mInstantViews.size(); i++)
 		delete mInstantViews[i];
 	mInstantViews.clear();
+
+	std::vector<CLAM_Annotator::InstantView> & instantViews = mProject.GetViews();
 	for (unsigned i=0; i<instantViews.size(); i++)
 	{
-		mInstantViews[i] = new CLAM::VM::PcpTorus(mVSplit);
+		if (instantViews[i].GetType() == "PcpTorus")
+		{
+			CLAM::VM::PcpTorus * torus = new CLAM::VM::PcpTorus(mVSplit);
+			torus->setSource(mProject, instantViews[i].GetAttributeScope(), instantViews[i].GetAttributeName());
+			mInstantViews.push_back(torus);
+		}
 	}
-	mStatusBar << tr("User interface adapted to the new schema.") << mStatusBar;
 }
 
 void Annotator::segmentDescriptorsTableChanged(int row)
@@ -624,14 +634,16 @@ void Annotator::makeConnections()
 }
 void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 {
-	mPcpTorus->setCurrentTime(timeMilliseconds);
+	for (unsigned i=0; i<mInstantViews.size(); i++)
+		mInstantViews[i]->setCurrentTime(timeMilliseconds);
 	mSegmentEditor->updateLocator(timeMilliseconds);
 	mBPFEditor->updateLocator(timeMilliseconds);
 }
 
 void Annotator::setCurrentStopTime(double timeMilliseconds, bool paused)
 {
-	mPcpTorus->setCurrentTime(timeMilliseconds);
+	for (unsigned i=0; i<mInstantViews.size(); i++)
+		mInstantViews[i]->setCurrentTime(timeMilliseconds);
 	mSegmentEditor->updateLocator(timeMilliseconds, paused);
 	mBPFEditor->updateLocator(timeMilliseconds, paused);
 }
@@ -642,7 +654,8 @@ void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMilisecond
 	if (updating) return;
 	updating=true;
 	mPlayer->timeBounds(timeMilliseconds,endTimeMiliseconds);
-	mPcpTorus->setCurrentTime(timeMilliseconds);
+	for (unsigned i=0; i<mInstantViews.size(); i++)
+		mInstantViews[i]->setCurrentTime(timeMilliseconds);
 	mSegmentEditor->updateLocator(timeMilliseconds, true);
 	mBPFEditor->updateLocator(timeMilliseconds, true);
 	updating=false;
@@ -908,26 +921,10 @@ void Annotator::refreshInstantViews()
 	if (!mpDescriptorPool) return;
 
 	mStatusBar << tr("Loading Instant Views Data...") << mStatusBar;
-
-	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
-	std::list<std::string>::const_iterator divisionName;
-	mPcpTorus->hide();
-	for(divisionName = divisionNames.begin(); divisionName != divisionNames.end(); divisionName++)
+	for (unsigned i=0; i<mInstantViews.size(); i++)
 	{
-		const CLAM_Annotator::FrameDivision & division = mpDescriptorPool->GetReadPool<CLAM_Annotator::FrameDivision>("Song",*divisionName)[0];
-		
-		const std::string & frameDivisionChildScope = mProject.GetAttributeScheme("Song", *divisionName).GetChildScope();
-		const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType(frameDivisionChildScope, "FloatArray");
-		std::list<std::string>::const_iterator it;
-		for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++)
-		{
-			const std::list<std::string> & binLabels=mProject.GetAttributeScheme(frameDivisionChildScope,*it).GetBinLabels();
-			const CLAM::DataArray * arrays = mpDescriptorPool->GetReadPool<CLAM::DataArray>(frameDivisionChildScope,*it);
-			CLAM_ASSERT(arrays, "No pcp's found");
-			unsigned nFrames = mpDescriptorPool->GetNumberOfContexts(frameDivisionChildScope);
-			mPcpTorus->initData(division, arrays, nFrames, binLabels, mCurrentAudio.GetSampleRate());
-			mPcpTorus->show();
-		}
+		if (!mInstantViews[i]) continue;
+		mInstantViews[i]->updateData(*mpDescriptorPool, mCurrentAudio.GetSampleRate());
 	}
 }
 

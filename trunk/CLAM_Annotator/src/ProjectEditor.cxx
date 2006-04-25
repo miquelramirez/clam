@@ -16,6 +16,8 @@ void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 	mProject.SetSchema(project.GetSchema());
 	mProject.SetExtractor(project.GetExtractor());
 	mProject.SetPoolSuffix(project.PoolSuffix());
+	if (project.HasViews())
+		mProject.SetViews(project.GetViews());
 	updateFields();
 }
 
