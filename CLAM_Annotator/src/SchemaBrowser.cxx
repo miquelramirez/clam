@@ -178,6 +178,21 @@ void SchemaBrowser::updateCurrentAttribute()
 		}
 		documentation+=".</li>";
 	}
+	if (attributeSchema.HasBinLabels())
+	{
+		documentation+=tr("<li><b>Array bins labels:</b> ");
+		std::list<std::string> & values = attributeSchema.GetBinLabels();
+		const char * separator = "";
+		for (std::list<std::string>::iterator it =values.begin(); it!= values.end(); it++)
+		{
+			documentation+=separator;
+			documentation+="<tt>";
+			documentation+=it->c_str();
+			documentation+="</tt>";
+			separator =", ";
+		}
+		documentation+=".</li>";
+	}
 	if (attributeSchema.HasUnits())
 	{
 		documentation+=tr("<li><b>Units:</b> %1</li>").arg(attributeSchema.GetUnits().c_str());
