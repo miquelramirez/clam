@@ -146,6 +146,7 @@ private:
 	void initInterface();
 	void adaptInterfaceToCurrentSchema();
 	void loadDescriptorPool();
+	void adaptInstantViewsToSchema();
 
 	void refreshInstantViews();
 	void adaptEnvelopesToCurrentSchema();

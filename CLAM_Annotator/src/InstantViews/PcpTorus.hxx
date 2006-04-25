@@ -4,6 +4,7 @@
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
 #include <CLAM/Array.hxx>
+#include "Project.hxx"
 
 namespace CLAM_Annotator { class FrameDivision; }
 
@@ -31,6 +32,8 @@ namespace VM
 		private:
 			const std::string & getLabel(unsigned pitch);
 		public:
+			void setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
+			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
 			void initData(const CLAM_Annotator::FrameDivision & frameDivision, const CLAM::DataArray * arrays, unsigned nFrames, const std::list<std::string> & binLabels, CLAM::TData samplingRate);
 			void initData(unsigned nFrames);
 		private:
@@ -46,6 +49,9 @@ namespace VM
 			unsigned _nBins;
 			CLAM::TData _samplingRate;
 			double _maxValue;
+			const CLAM_Annotator::Project * _project;
+			std::string _scope;
+			std::string _name;
 	};
 
 
