@@ -23,14 +23,20 @@
 #include "Mapping.hxx"
 
 namespace CLAM {
+	Mapping::MappingFactories& Mapping::FactoryInstance()
+	{
+		static MappingFactories sFactories;
+		return sFactories;
+	}
+	Mapping::~Mapping() {}
 
 	Mapping* Mapping::Create(const std::string& name)
 	{
-		for (unsigned int i=0;i<sFactories.size();i++)
+		for (unsigned int i=0;i<FactoryInstance().size();i++)
 		{
-			if (sFactories[i]->mName == name)
+			if (FactoryInstance()[i]->mName == name)
 			{
-				return sFactories[i]->Create();
+				return FactoryInstance()[i]->Create();
 			}
 		}
 		return 0;
@@ -38,10 +44,9 @@ namespace CLAM {
 
 	void MappingFactory::AddMe(void)
 	{
-		Mapping::sFactories.push_back(this);
+		Mapping::FactoryInstance().push_back(this);
 	}
 
-	std::vector<MappingFactory*> Mapping::sFactories;
 
 	LinearMappingFactory LinearMappingFactory::sSingleton;
 	NoteToFreqMappingFactory NoteToFreqMappingFactory::sSingleton;
