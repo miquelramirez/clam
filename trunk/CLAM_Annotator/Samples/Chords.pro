@@ -14,25 +14,16 @@ TODO: Explain what the descriptors mean and how this should be reviewed.
 
   <Schema>Chords.sc</Schema>
 
-  <Extractor>./ChordExtractor</Extractor>
+  <Extractor>ChordExtractor</Extractor>
 
   <PoolSuffix>.chords</PoolSuffix>
 
   <Songs>
     <Song>
-      <SoundFile>SongsTest/Defunkid - By the Face (live) - The pain.mp3</SoundFile>
-    </Song>
-    <Song>
       <SoundFile>SongsTest/LisaRein-SomethingBetter.mp3</SoundFile>
     </Song>
     <Song>
       <SoundFile>SongsTest/LisaRein-spunkyfunk.mp3</SoundFile>
-    </Song>
-    <Song>
-      <SoundFile>../../Simac/qmul/Chromagram/data/ChordProgression4s.wav</SoundFile>
-    </Song>
-    <Song>
-      <SoundFile>SongsTest/craig_lyons-improvise.mp3</SoundFile>
     </Song>
   </Songs>
   <Views>
