@@ -35,12 +35,15 @@ namespace CLAM {
 	class Mapping
 	{
 	friend class MappingFactory;
+	typedef std::vector<MappingFactory*> MappingFactories;
+	
 	private:
-		static std::vector<MappingFactory*> sFactories;
+		static MappingFactories& FactoryInstance();
 	public:
 		virtual TData Map(const TData in) = 0;
 		static Mapping* Create(const std::string& name);
 		virtual void Set(DataArray& arguments) { }
+		virtual ~Mapping();
 	};
 
 	class MappingFactory
