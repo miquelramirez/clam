@@ -22,9 +22,6 @@ Consider that such descriptors are computed every 2048 samples so their precissi
 
   <Songs>
     <Song>
-      <SoundFile>SongsTest/ChordProgressionAfter2000ms.wav</SoundFile>
-    </Song>
-    <Song>
       <SoundFile>SongsTest/LisaRein-SomethingBetter.mp3</SoundFile>
     </Song>
     <Song>
