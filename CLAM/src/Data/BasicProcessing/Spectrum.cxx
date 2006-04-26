@@ -187,71 +187,71 @@ void Spectrum::SetType(const SpecTypeFlags& tmpFlags)
 set as constants elsewhere */
 void Spectrum::ToDB()
 {
-	if(GetScale()==EScale::eLinear)
+	if(GetScale()!=EScale::eLinear)
+		return;
+	
+	int i;
+	SpecTypeFlags flags;
+	TData specSize;
+	if (HasMagBuffer())
 	{
-		int i;
-		SpecTypeFlags flags;
-		TData specSize;
-		if (HasMagBuffer())
+		DataArray &mag = GetMagBuffer();
+		specSize=TData(GetSize());
+		for (i=0; i<specSize; i++)
 		{
-			DataArray &mag = GetMagBuffer();
-			specSize=TData(GetSize());
-			for (i=0; i<specSize; i++)
-			{
-				if(mag[i]==0) mag[i]=-200;
-				else mag[i]= 20*log10(mag[i]); 
-			}
+			if(mag[i]==0) mag[i]=-200;
+			else mag[i]= 20*log10(mag[i]); 
 		}
-		if (HasPolarArray()) // WARNING: computational expensive operation
-		{
-			Array<Polar> &polar = GetPolarArray();
-			specSize=TData(GetSize());
-			for (i=0; i<specSize; i++)
-			{
-				TData magLin = polar[i].Mag();
-				TData magLog;
-				if(magLin==0) magLog=-200;
-				else magLog = 20*log10(magLin);
-				polar[i].SetMag(magLog);
-			}
-			flags.bPolar = true;
-			flags.bMagPhase = false;
-		}
-		if (HasComplexArray())  // WARNING: computational expensive operation
-		{
-			Array<Complex> &complex = GetComplexArray();
-			specSize=TData(GetSize());
-			for (i=0; i<specSize; i++)
-			{
-				TData re = complex[i].Real();
-				TData im = complex[i].Imag();
-				TData magLin = sqrt(re*re + im*im);
-				TData magLog;
-				if(magLin==0) magLog=-200;
-				else magLog = 20*log10(magLin);
-				complex[i].SetReal(magLog * re / magLin);
-				complex[i].SetImag(magLog * im / magLin);
-			}
-			flags.bComplex = true;
-			flags.bMagPhase = false;
-		}
-		if (HasMagBPF())  // WARNING: computational expensive operation
-		{
-			BPF &magBPF= GetMagBPF();
-			const int bpfSize=GetBPFSize();
-			for (i=0; i<bpfSize; i++)
-			{
-				TData magLin=magBPF.GetValueFromIndex(i);
-				TData magLog;
-				if(magLin==0) magLog=-200;
-				else magLog = 20*log10(magLin);
-				magBPF.SetValue(i,magLog);
-			}
-			flags.bMagPhaseBPF = true;
-			flags.bMagPhase = false;
-		}
-		SetScale(EScale(EScale::eLog));
 	}
+	if (HasPolarArray()) // WARNING: computational expensive operation
+	{
+		Array<Polar> &polar = GetPolarArray();
+		specSize=TData(GetSize());
+		for (i=0; i<specSize; i++)
+		{
+			TData magLin = polar[i].Mag();
+			TData magLog;
+			if(magLin==0) magLog=-200;
+			else magLog = 20*log10(magLin);
+			polar[i].SetMag(magLog);
+		}
+		flags.bPolar = true;
+		flags.bMagPhase = false;
+	}
+	if (HasComplexArray())  // WARNING: computational expensive operation
+	{
+		Array<Complex> &complex = GetComplexArray();
+		specSize=TData(GetSize());
+		for (i=0; i<specSize; i++)
+		{
+			TData re = complex[i].Real();
+			TData im = complex[i].Imag();
+			TData magLin = sqrt(re*re + im*im);
+			TData magLog;
+			if(magLin==0) magLog=-200;
+			else magLog = 20*log10(magLin);
+			complex[i].SetReal(magLog * re / magLin);
+			complex[i].SetImag(magLog * im / magLin);
+		}
+		flags.bComplex = true;
+		flags.bMagPhase = false;
+	}
+	if (HasMagBPF())  // WARNING: computational expensive operation
+	{
+		BPF &magBPF= GetMagBPF();
+		const int bpfSize=GetBPFSize();
+		for (i=0; i<bpfSize; i++)
+		{
+			TData magLin=magBPF.GetValueFromIndex(i);
+			TData magLog;
+			if(magLin==0) magLog=-200;
+			else magLog = 20*log10(magLin);
+			magBPF.SetValue(i,magLog);
+		}
+		flags.bMagPhaseBPF = true;
+		flags.bMagPhase = false;
+	}
+	SetScale(EScale(EScale::eLog));
 }
 
 
