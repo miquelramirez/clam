@@ -22,6 +22,7 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 	_nBins=0;
 	_frameDivision=0;
 	_samplingRate=44100;
+	_maxValue=1;
 }
 
 void CLAM::VM::PcpTorus::initializeGL()
