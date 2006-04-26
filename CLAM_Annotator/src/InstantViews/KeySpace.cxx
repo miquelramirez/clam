@@ -12,27 +12,14 @@ TKeyNode * getKeyNodes()
 {
 	static TKeyNode keyNodes[] = 
 	{
-		{.10,.10}, {.10,.25}, {.10,.40}, {.10,.55}, {.10,.70}, {.10,.85},
-		{.35,.10}, {.35,.25}, {.35,.40}, {.35,.55}, {.35,.70}, {.35,.85},
-		{.60,.10}, {.60,.25}, {.60,.40}, {.60,.55}, {.60,.70}, {.60,.85},
-		{.85,.10}, {.85,.25}, {.85,.40}, {.85,.55}, {.85,.70}, {.85,.85}
+		{.50,.65}, {.91,.40}, {.33,.15}, {.74,.91}, {.16,.65}, {.60,.40},
+		{.01,.15}, {.42,.91}, {.83,.65}, {.25,.40}, {.67,.15}, {.08,.91},
+		{.66,.73}, {.08,.50}, {.50,.22}, {.91,.01}, {.33,.73}, {.74,.50},
+		{.15,.22}, {.58,.01}, {.01,.73}, {.42,.50}, {.83,.22}, {.25,.01}
 	};
 	return keyNodes;
 }
 unsigned nKeyNodes=24;
-char ** getKeyNames()
-{
-	static char *names[]= {
-		"A", "A#/Bb", "B", "C",
-		"C#/Db", "D", "D#/Eb", "E",
-		"F", "F#/Gb", "G", "G#/Ab",
-		"a", "a#/bb", "b", "c",
-		"c#/db", "d", "d#/eb", "e",
-		"f", "f#/gb", "g", "g#/ab"
-	};
-	return names;
-}
-
 
 inline void Rectangle(float x, float y, float w, float h)
 {
@@ -106,6 +93,7 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 		pGColor[k] /= 255.;
 		pBColor[k] /= 255.;
 	}
+	_maxValue = 1;
 }
 
 void CLAM::VM::KeySpace::paintGL()
@@ -124,6 +112,14 @@ void CLAM::VM::KeySpace::paintGL()
 	nX = 150;
 	nY = 100;
 
+	_maxValue*=.5;
+	for (unsigned i=0; i<_nBins; i++)
+	{
+		if (_maxValue<_frameData[i]) _maxValue=_frameData[i];
+	}
+	if (_maxValue<1e-10) _maxValue=1e-10;
+
+	
 	TKeyNode *pKeyNodes = getKeyNodes();
 
 	int i,k,m;
@@ -147,7 +143,7 @@ void CLAM::VM::KeySpace::paintGL()
 				if (g < 1E-5)
 					g = 1E-5;
 				double weight = 1. / g;
-				num += _frameData[m] * weight;
+				num += _frameData[m] * weight /_maxValue;
 				den += weight;
 			}
 			if (den != 0.)
@@ -167,7 +163,6 @@ void CLAM::VM::KeySpace::paintGL()
 			glColor3d(pRColor[cidx],pGColor[cidx],pBColor[cidx]);
 			Rectangle(x1,y1,x2-x1,y2-y1);
 		}
-		_updatePending=0;
 	}
 
 	// draw strings
@@ -176,7 +171,7 @@ void CLAM::VM::KeySpace::paintGL()
 		float x1 = pKeyNodes[i].x * x_res;
 		float y1 = pKeyNodes[i].y * y_res;
 
-		float value = _frameData[i]; 
+		float value = _frameData[i]/_maxValue; 
 		float ColorIndex = value;
 		if (ColorIndex > 1.0)
 			ColorIndex = 1.0;	
@@ -193,5 +188,7 @@ void CLAM::VM::KeySpace::paintGL()
 			y1 = 4.*y_res/nY;
 		renderText(x1, y1, -1, _binLabels[i].c_str());
 	}
+	swapBuffers();
+	_updatePending=0;
 }
 
