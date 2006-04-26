@@ -50,6 +50,8 @@ namespace VM
 			double *_frameData;
 			int _updatePending;
 			std::vector<std::string> _binLabels;
+			double _maxValue;
+			unsigned _nBins;
 		private:
 			unsigned _nFrames;
 			unsigned _currentFrame;
@@ -57,9 +59,7 @@ namespace VM
 			QFont _font;
 			GLuint _gradient;
 			const CLAM_Annotator::FrameDivision * _frameDivision;
-			unsigned _nBins;
 			CLAM::TData _samplingRate;
-			double _maxValue;
 			const CLAM_Annotator::Project * _project;
 			std::string _scope;
 			std::string _name;
