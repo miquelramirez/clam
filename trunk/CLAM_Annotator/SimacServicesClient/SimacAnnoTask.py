@@ -33,42 +33,42 @@ def startProcess():
 		QMessageBox.warning( None, "Data missing",
 			"You must specify the task file, the project name and the destination directory\n",
 			"OK")
-	else:
-		try:
-			tasker.setParameters( str(form.taskEdit.text()), str(form.projectEdit.text()), str(form.pathEdit.text()) )
-			tasker.processTask()
-			qrect=form.geometry()
-			form.hide()
-			tasker.runAnnotator()
-			form.show()
-			form.setGeometry(qrect)
-			modified=tasker.getModified()
-			if len(modified)>0:
-				choice=QMessageBox.information( form, "Modified descriptor files",
-					u"The following descriptor pool files will be uploaded:\n  -" + ('\n  - ').join(modified),
-					"Cancel", "Proceed" )
-				if choice==1:	# 0,1 o ESC=-1
-					tasker.uploadChanges()
-			else:
-				QMessageBox.information( form, "Modified descriptor files",
-					u"No descriptor pool was modified. Nothing will be uploaded.",
-					"OK" )
-				
-		except TaskerError, x:
-			title=str(x).split('\n')[0]
-			message=str(x).split('\n')[1:]
-			QMessageBox.warning( None, "%s" % title,
-				"%s\n" % ('\n').join(message),
-				"OK" )
-			outputfunction(u"\n  *** Error found. Correct it and then restart the process ***\n")
+		return
+	try:
+		tasker.setParameters( str(form.taskEdit.text()), str(form.projectEdit.text()), str(form.pathEdit.text()) )
+		tasker.processTask()
+		qrect=form.geometry()
+		form.hide()
+		tasker.runAnnotator()
+		form.show()
+		form.setGeometry(qrect)
+		modified=tasker.getModified()
+		if len(modified)>0:
+			choice=QMessageBox.information( form, "Modified descriptor files",
+				u"The following descriptor pool files will be uploaded:\n  -" + ('\n  - ').join(modified),
+				"Cancel", "Proceed" )
+			if choice==1:	# 0,1 o ESC=-1
+				tasker.uploadChanges()
 		else:
-			form.goButton.setEnabled(False)
-			form.taskEdit.setEnabled(False)
-			form.taskButton.setEnabled(False)
-			form.projectEdit.setEnabled(False)
-			form.pathEdit.setEnabled(False)
-			form.pathButton.setEnabled(False)
-			form.exitButton.setFocus()
+			QMessageBox.information( form, "Modified descriptor files",
+				u"No descriptor pool was modified. Nothing will be uploaded.",
+				"OK" )
+			
+	except TaskerError, x:
+		title=str(x).split('\n')[0]
+		message=str(x).split('\n')[1:]
+		QMessageBox.warning( None, "%s" % title,
+			"%s\n" % ('\n').join(message),
+			"OK" )
+		outputfunction(u"\n  *** Error found. Correct it and then restart the process ***\n")
+	else:
+		form.goButton.setEnabled(False)
+		form.taskEdit.setEnabled(False)
+		form.taskButton.setEnabled(False)
+		form.projectEdit.setEnabled(False)
+		form.pathEdit.setEnabled(False)
+		form.pathButton.setEnabled(False)
+		form.exitButton.setFocus()
 
 def quit():
 	#print "quit"
