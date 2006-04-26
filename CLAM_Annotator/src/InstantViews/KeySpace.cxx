@@ -20,14 +20,19 @@ TKeyNode * getKeyNodes()
 	return keyNodes;
 }
 unsigned nKeyNodes=24;
+// The number of 'pixels'
+unsigned nX = 150;
+unsigned nY = 100;
+std::vector<float> weights;
+
 
 inline void Rectangle(float x, float y, float w, float h)
 {
 	glBegin(GL_QUADS);
-		glVertex2f( x,   y );
-		glVertex2f( x+w, y );
-		glVertex2f( x+w, y+h );
 		glVertex2f( x,   y+h );
+		glVertex2f( x+w, y+h );
+		glVertex2f( x+w, y );
+		glVertex2f( x,   y );
 	glEnd();
 }
 
@@ -96,22 +101,59 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 	_maxValue = 1;
 }
 
+void CLAM::VM::KeySpace::initializeGL()
+{
+	glShadeModel(GL_FLAT);
+	glClearColor(0,0,0,0); // rgba
+	glEnable(GL_CULL_FACE);
+}
+void CLAM::VM::KeySpace::resizeGL(int width, int height)
+{
+	x = 0;
+	y = 0;
+	w = width;
+	h = height;
+	glViewport(x,y,w,h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,x_res,y_res,0,-2,2);
+	glMatrixMode(GL_MODELVIEW);
+}
 void CLAM::VM::KeySpace::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-		glViewport(x,y,w,h);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(0,x_res,y_res,0,-2,2);
-//		glOrtho(0,1,0,2,0,1); // From PcpTorus
-		glMatrixMode(GL_MODELVIEW);
-	if (!_frameData) return;
+	if (_frameData) DrawTiles();
+	DrawLabels();
 
-	int nX = w / 4; // 4 pixels
-	int nY = h / 4; // 4 pixels
-	nX = 150;
-	nY = 100;
+	swapBuffers();
+	_updatePending=0;
+}
 
+void CLAM::VM::KeySpace::DrawTiles()
+{
+	TKeyNode *pKeyNodes = getKeyNodes();
+	if (weights.size()!=nX*nY*_nBins)
+	{
+		for(unsigned i=0; i<nX; i++)
+		{
+			weights.resize(nX*nY*nKeyNodes);
+			float x1 = i / float(nX) * x_res;
+			for(unsigned k=0; k<nY; k++)
+			{
+				float y1 = k / float(nY) * y_res;
+				for(unsigned m=0; m<nKeyNodes; m++)
+				{
+					double d1 = wdist(x1,pKeyNodes[m].x);
+					double d2 = wdist(y1,pKeyNodes[m].y);
+					double dist = d1*d1+d2*d2;											   
+					double g = dist*dist;
+					if (g < 1E-5)
+						g = 1E-5;
+					weights[m+nKeyNodes*(k+nY*i)] = 1. / g;
+				}
+			}
+		}
+	}
 	_maxValue*=.5;
 	for (unsigned i=0; i<_nBins; i++)
 	{
@@ -119,76 +161,51 @@ void CLAM::VM::KeySpace::paintGL()
 	}
 	if (_maxValue<1e-10) _maxValue=1e-10;
 
-	
-	TKeyNode *pKeyNodes = getKeyNodes();
-
-	int i,k,m;
-	for(i=0; i<nX; i++)
+	float xStep = x_res/nX;
+	float yStep = y_res/nY;
+	for(unsigned i=0; i<nX; i++)
 	{
-		float x1 = i / float(nX) * x_res;
-		float x2 = (i+1) / float(nX) * x_res;
-		for(k=0; k<nY; k++)
+		float x1 = i*xStep;
+		for(unsigned k=0; k<nY; k++)
 		{
-			float y1 = k / float(nY) * y_res;
-			float y2 = (k+1) / float(nY) * y_res;
-			double value = 0.;
+			float y1 = k*yStep;
 			double num = 0.;
 			double den = 0.;
-			for(m=0; m<nKeyNodes; m++)
+			for(unsigned m=0; m<nKeyNodes; m++)
 			{
-				double d1 = wdist(x1,pKeyNodes[m].x);
-				double d2 = wdist(y1,pKeyNodes[m].y);
-				double dist = d1*d1+d2*d2;											   
-				double g = dist*dist;
-				if (g < 1E-5)
-					g = 1E-5;
-				double weight = 1. / g;
-				num += _frameData[m] * weight /_maxValue;
-				den += weight;
+				unsigned weightIndex = m+nKeyNodes*(k+nY*i);
+				num += _frameData[m] * weights[weightIndex] /_maxValue;
+				den += weights[weightIndex];
 			}
-			if (den != 0.)
-				value = num / den;
+			double value = (den != 0.) ? num / den : 0;
 
 			float ColorIndex = value;
 			if (ColorIndex > 1.0)
 				ColorIndex = 1.0;	
 			ColorIndex *= ColorIndex;
-			ColorIndex = ColorIndex * 200.f;
-			/*COLORREF color = pColor[(int)ColorIndex];
-			float R = GetRValue(color)/255.f;
-			float G = GetGValue(color)/255.f;
-			float B = GetBValue(color)/255.f;
-			glColor3d(R,G,B);*/
+			ColorIndex *= 200.f;
 			int cidx = floorf(ColorIndex);
 			glColor3d(pRColor[cidx],pGColor[cidx],pBColor[cidx]);
-			Rectangle(x1,y1,x2-x1,y2-y1);
+			Rectangle(x1,y1,xStep,yStep);
 		}
 	}
+}
 
-	// draw strings
-	for(i=0; i<nKeyNodes; i++)
+void CLAM::VM::KeySpace::DrawLabels()
+{
+	TKeyNode *pKeyNodes = getKeyNodes();
+	for(unsigned i=0; i<nKeyNodes; i++)
 	{
 		float x1 = pKeyNodes[i].x * x_res;
 		float y1 = pKeyNodes[i].y * y_res;
 
-		float value = _frameData[i]/_maxValue; 
-		float ColorIndex = value;
-		if (ColorIndex > 1.0)
-			ColorIndex = 1.0;	
-		ColorIndex *= ColorIndex;
-		ColorIndex = ColorIndex * 200.f;
-		int cidx = floorf(ColorIndex);
-		float br = (pRColor[cidx]+pGColor[cidx]+pBColor[cidx]) / 3.;
-		float invbr = 0;
-		if (br < 0.4)        
-			invbr = 1.; 
-		glColor3d(invbr,invbr,invbr);
-		int l = _binLabels[i].size();
 		if (y1 < 4.*y_res/nY)
 			y1 = 4.*y_res/nY;
+
+		float value = _frameData ? _frameData[i]/_maxValue : 0; 
+		if (value>.6) glColor3d(0,0,0);
+		else          glColor3d(1,1,1);
+
 		renderText(x1, y1, -1, _binLabels[i].c_str());
 	}
-	swapBuffers();
-	_updatePending=0;
 }
-
