@@ -410,21 +410,21 @@ public:
 
 	void AddTo(CLAM::DescriptionScheme & scheme)
 	{
-		scheme.AddAttribute<CLAM::Array<float> >(mSchema.GetScope(),mSchema.GetName());
+		scheme.AddAttribute<CLAM::DataArray >(mSchema.GetScope(),mSchema.GetName());
 	}
 
 	bool ValidateData(const CLAM::DescriptionDataPool & dataPool, std::ostream & err)
 	{
-		const CLAM::Array<float>  * values =
-			dataPool.GetReadPool<CLAM::Array<float> >(
+		const CLAM::DataArray  * values =
+			dataPool.GetReadPool<CLAM::DataArray >(
 					mSchema.GetScope(),
 					mSchema.GetName());
 		return true;
 	}
 	void InitInstance(unsigned instance, CLAM::DescriptionDataPool & pool)
 	{
-		CLAM::Array<float>  & array = 
-			pool.GetWritePool<CLAM::Array<float> >(
+		CLAM::DataArray  & array = 
+			pool.GetWritePool<CLAM::DataArray >(
 				mSchema.GetScope(),
 				mSchema.GetName())[instance];
 		unsigned nBins = mSchema.GetBinLabels().size();
