@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "CLAM-Annotator"
-!define PRODUCT_VERSION "0.3"
+!define PRODUCT_VERSION "${VERSION}"
 !define PRODUCT_PUBLISHER "CLAM devel"
 !define PRODUCT_WEB_SITE "http://clam.iua.upf.edu"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Annotator.exe"
@@ -73,16 +73,24 @@ Section "Principal" SEC01
   File "..\Annotator.exe"
   CreateDirectory "$SMPROGRAMS\CLAM\Annotator"
   CreateShortCut "$SMPROGRAMS\CLAM\Annotator\Annotator.lnk" "$INSTDIR\bin\Annotator.exe"
+  File "..\ClamExtractorExample.exe"
+  File "..\ChordExtractor.exe"
+  File '${QTDIR}\lib\QtCore4.dll'
+  File '${QTDIR}\lib\QtGui4.dll'
+  File '${QTDIR}\lib\QtOpenGL4.dll'
   CreateShortCut "$DESKTOP\Annotator.lnk" "$INSTDIR\bin\Annotator.exe"
   SetOutPath "$INSTDIR\Samples\"
   File "..\Samples\Schema.sc"
   File "..\Samples\Project.pro"
-  File "..\ClamExtractorExample.exe"
+  File "..\Samples\Chords.sc"
+  File "..\Samples\Chords.pro"
   SetOutPath "$INSTDIR\Samples\SongsTest"
   File "..\Samples\SongsTest\LisaRein-SomethingBetter.mp3"
   File "..\Samples\SongsTest\LisaRein-SomethingBetter.mp3.pool"
+  File "..\Samples\SongsTest\LisaRein-SomethingBetter.mp3.chords"
   File "..\Samples\SongsTest\LisaRein-spunkyfunk.mp3"
   File "..\Samples\SongsTest\LisaRein-spunkyfunk.mp3.pool"
+  File "..\Samples\SongsTest\LisaRein-spunkyfunk.mp3.chords"
   File "..\Samples\SongsTest\urls.txt"
 SectionEnd
 
@@ -127,9 +135,14 @@ Section Uninstall
   Delete "$INSTDIR\Samples\SongsTest\LisaRein-spunkyfunk.mp3.pool"
   Delete "$INSTDIR\Samples\SongsTest\urls.txt"
   Delete "$INSTDIR\Samples\Project.pro"
-  Delete "$INSTDIR\Samples\ClamExtractorExample.exe"
   Delete "$INSTDIR\Samples\Schema.sc"
+  Delete "$INSTDIR\Samples\Chords.pro"
+  Delete "$INSTDIR\Samples\Chords.sc"
+  Delete "$INSTDIR\bin\QtCore4.dll"
+  Delete "$INSTDIR\bin\QtGui4.dll"
+  Delete "$INSTDIR\bin\QtOpenGL4.dll"
   Delete "$INSTDIR\bin\Annotator.exe"
+  Delete "$INSTDIR\bin\ChordExtractor.exe"
   Delete "$INSTDIR\bin\ClamExtractorExample.exe"
 
   Delete "$SMPROGRAMS\CLAM\Annotator\Uninstall.lnk"

@@ -105,6 +105,8 @@ env.Append(LIBPATH=CLAMVmQtPath)
 env.Append(LIBS="clam_vmqt4")
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
+if sys.platform=='win32' :
+	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 
 if sys.platform=='linux2' :
 	if env['release'] :
@@ -125,6 +127,7 @@ manpages = [
 
 chordSources = scanFiles("*.cxx", ["src/ChordExtractor"])
 chordSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  chordSources )
+chordSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  chordSources )
 programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
 
 
@@ -145,10 +148,14 @@ installation = {
 	'/share/man/man1' : manpages,
 	'/share/annotator/i18n': translations
 }
+
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
 if sys.platform=='win32' : 
+	installTargets += [env.Install(env['install_prefix']+"/bin", os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")) for dll in 'Core', 'Gui', 'OpenGL']
+	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
+	env.Append(NSIS_OPTIONS=['/DVERSION=0.3b2'])
 	win_packages = [env.Nsis( source='scons\\clam_annotator.nsi')]
 	env.Alias('package', win_packages)
 
