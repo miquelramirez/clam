@@ -161,7 +161,7 @@ void SchemaBrowser::updateCurrentAttribute()
 	QString url = "http://mtg100.upf.es/simac/DescriptionSchemeWeb";
 	QString documentation = tr("<h2>Attribute '%1::%2'</h2>").arg(parent->text(0)).arg(current->text(0));
 	documentation+="<ul>";
-	documentation+=tr("<li><b>Documentation url:</b> <a href='%1'>%2</a>.</li>").arg(url).arg(url);
+//	documentation+=tr("<li><b>Documentation url:</b> <a href='%1'>%2</a>.</li>").arg(url).arg(url);
 	documentation+=tr("<li><b>Type:</b> %1</li>").arg(attributeSchema.GetType().c_str());
 	if (attributeSchema.HasEnumerationValues())
 	{
