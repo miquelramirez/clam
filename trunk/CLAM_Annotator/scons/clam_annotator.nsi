@@ -138,14 +138,16 @@ Section Uninstall
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\Samples\SongsTest\LisaRein-SomethingBetter.mp3"
   Delete "$INSTDIR\Samples\SongsTest\LisaRein-SomethingBetter.mp3.pool"
+  Delete "$INSTDIR\Samples\SongsTest\LisaRein-SomethingBetter.mp3.chords"
   Delete "$INSTDIR\Samples\SongsTest\LisaRein-spunkyfunk.mp3"
   Delete "$INSTDIR\Samples\SongsTest\LisaRein-spunkyfunk.mp3.pool"
+  Delete "$INSTDIR\Samples\SongsTest\LisaRein-spunkyfunk.mp3.chords"
   Delete "$INSTDIR\Samples\SongsTest\Debaser-WoodenHouse.mp3"
   Delete "$INSTDIR\Samples\SongsTest\Debaser-WoodenHouse.mp3.pool"
+  Delete "$INSTDIR\Samples\SongsTest\Debaser-WoodenHouse.mp3.chords"
   Delete "$INSTDIR\Samples\SongsTest\Debaser-CoffeeSmell.mp3"
   Delete "$INSTDIR\Samples\SongsTest\Debaser-CoffeeSmell.mp3.pool"
-
-
+  Delete "$INSTDIR\Samples\SongsTest\Debaser-CoffeeSmell.mp3.chords"
   Delete "$INSTDIR\Samples\SongsTest\urls.txt"
   Delete "$INSTDIR\Samples\Project.pro"
   Delete "$INSTDIR\Samples\Schema.sc"
