@@ -182,7 +182,7 @@ public:
 //		_debugFrameSegmentation[0].AddElem(currentTime);
 		if (_lastChord != "None")
 			_chordSegmentation[0].AddElem(currentTime);
-		CLAM::XMLStorage::Dump(*_pool, "Description", std::cout);
+//		CLAM::XMLStorage::Dump(*_pool, "Description", std::cout);
 		CLAM::XMLStorage::Dump(*_pool, "Description", outputPool);
 		std::cout << "Frames " << _currentFrame << " of " <<  _pool->GetNumberOfContexts("Frame") << std::endl;
 		delete _pool;
@@ -372,7 +372,7 @@ int main(int argc, char* argv[])			// access command line arguments
 	unsigned hop = chordExtractor.hop();
 	unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
 //	unsigned long nFrames = (nsamples-framesize)/hop;	// no. of time windows
-	ChordExtractorSerializer serializer(waveFile, nFrames, hop, framesize, chordExtractor);
+//	ChordExtractorSerializer serializer(waveFile, nFrames, hop, framesize, chordExtractor);
 	ChordExtractorDescriptionDumper dumper(waveFile, suffix, nFrames, hop, framesize, samplingRate, chordExtractor);
 
 	std::cout << "Frame size: " << framesize << std::endl;
@@ -384,21 +384,24 @@ int main(int argc, char* argv[])			// access command line arguments
 	inport.SetHop( hop );
 
 	reader.Start();
-	clock_t start = clock();
+//	clock_t start = clock();
+	std::vector<float> floatBuffer(framesize);
 	while (reader.Do())
 	{
 		if (!inport.CanConsume()) continue; // Not enough audio, try again
 		std::cout << "." << std::flush;
-		CLAM::TData * segpointer = &(inport.GetAudio().GetBuffer()[0]);
-		chordExtractor.doIt(segpointer);
+		double * segpointer = &(inport.GetAudio().GetBuffer()[0]);
+		for (unsigned i = 0; i < framesize; i++)
+			floatBuffer[i] = segpointer[i];
+		chordExtractor.doIt(&floatBuffer[0]);
 		inport.Consume();
-		serializer.doIt();
+//		serializer.doIt();
 		dumper.doIt();
 	}
-	clock_t end = clock();
+//	clock_t end = clock();
 	reader.Stop();
 
-	std::cout << "\nProcessing time: " << (end-start)/CLOCKS_PER_SEC << " seconds\n";
+//	std::cout << "\nProcessing time: " << (end-start)/CLOCKS_PER_SEC << " seconds\n";
 
 	return 0;
 }
