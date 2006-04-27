@@ -91,7 +91,14 @@ Section "Principal" SEC01
   File "..\Samples\SongsTest\LisaRein-spunkyfunk.mp3"
   File "..\Samples\SongsTest\LisaRein-spunkyfunk.mp3.pool"
   File "..\Samples\SongsTest\LisaRein-spunkyfunk.mp3.chords"
+  File "..\Samples\SongsTest\Debaser-WoodenHouse.mp3"
+  File "..\Samples\SongsTest\Debaser-WoodenHouse.mp3.pool"
+  File "..\Samples\SongsTest\Debaser-WoodenHouse.mp3.chords"
+  File "..\Samples\SongsTest\Debaser-CoffeeSmell.mp3"
+  File "..\Samples\SongsTest\Debaser-CoffeeSmell.mp3.pool"
+  File "..\Samples\SongsTest\Debaser-CoffeeSmell.mp3.chords"
   File "..\Samples\SongsTest\urls.txt"
+
 SectionEnd
 
 Section -AdditionalIcons
@@ -133,6 +140,12 @@ Section Uninstall
   Delete "$INSTDIR\Samples\SongsTest\LisaRein-SomethingBetter.mp3.pool"
   Delete "$INSTDIR\Samples\SongsTest\LisaRein-spunkyfunk.mp3"
   Delete "$INSTDIR\Samples\SongsTest\LisaRein-spunkyfunk.mp3.pool"
+  Delete "$INSTDIR\Samples\SongsTest\Debaser-WoodenHouse.mp3"
+  Delete "$INSTDIR\Samples\SongsTest\Debaser-WoodenHouse.mp3.pool"
+  Delete "$INSTDIR\Samples\SongsTest\Debaser-CoffeeSmell.mp3"
+  Delete "$INSTDIR\Samples\SongsTest\Debaser-CoffeeSmell.mp3.pool"
+
+
   Delete "$INSTDIR\Samples\SongsTest\urls.txt"
   Delete "$INSTDIR\Samples\Project.pro"
   Delete "$INSTDIR\Samples\Schema.sc"
