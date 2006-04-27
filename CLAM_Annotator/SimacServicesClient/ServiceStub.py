@@ -3,7 +3,7 @@ import urlparse
 import HttpFormPost
 
 Proxies = { 'http' : 'http://proxy.upf.edu:8080', 'ftp' : 'http://proxy.upf.edu:8080' }
-NoProxiesFor = ["localhost", "127.0.0.1", "10.55.0.40"]
+NoProxiesFor = ["localhost", "127.0.0.1", "10.55.0.40", "http://simacservices.iua.upf.edu"]
 useragent = 'simac-annotator-tasker'
 
 
