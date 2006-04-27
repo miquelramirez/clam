@@ -19,6 +19,7 @@ namespace VM
 		public:
 			InstantView(QWidget *parent) : QGLWidget(parent) { }
 			virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)=0;
+			virtual void clearData()=0;
 		public slots:
 			virtual void setCurrentTime(double timeMiliseconds)=0;
 	};
@@ -44,6 +45,7 @@ namespace VM
 		public:
 			void setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
 			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
+			void clearData();
 			void initData(const CLAM_Annotator::FrameDivision & frameDivision, const CLAM::DataArray * arrays, unsigned nFrames, const std::list<std::string> & binLabels, CLAM::TData samplingRate);
 			void initData(unsigned nFrames);
 		protected:
@@ -57,7 +59,6 @@ namespace VM
 			unsigned _currentFrame;
 			double *_data;
 			QFont _font;
-			GLuint _gradient;
 			const CLAM_Annotator::FrameDivision * _frameDivision;
 			CLAM::TData _samplingRate;
 			const CLAM_Annotator::Project * _project;
