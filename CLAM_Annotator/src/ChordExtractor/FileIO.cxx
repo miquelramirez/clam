@@ -54,7 +54,9 @@ void fileio::opchrfile(char* filename) {
 		std::cout << "Cannot open file " << filename << " for output.\n";
 		exit(1);
 	}
-	dest.open((std::string(filename)+".txt").c_str());
+	std::string outputFilename = filename;
+	outputFilename+=".txt";
+	dest.open(outputFilename.c_str());
 }
 
 
