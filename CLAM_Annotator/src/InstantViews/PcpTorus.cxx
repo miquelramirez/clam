@@ -139,10 +139,7 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 		glEnd();
 		*/
 	glPopMatrix();
-	if (pitchLevel > .5)
-		glColor4f(0,0,.5,1);
-	else 
-		glColor4f(1,1,.5,1);
+	glColor4f(1,1,.5,1);
 	renderText(posx, posy, .6, getLabel(bin).c_str(), _font);
 }
 
