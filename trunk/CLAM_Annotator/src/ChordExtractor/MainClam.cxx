@@ -390,7 +390,7 @@ int main(int argc, char* argv[])			// access command line arguments
 	{
 		if (!inport.CanConsume()) continue; // Not enough audio, try again
 		std::cout << "." << std::flush;
-		double * segpointer = &(inport.GetAudio().GetBuffer()[0]);
+		CLAM::TData * segpointer = &(inport.GetAudio().GetBuffer()[0]);
 		for (unsigned i = 0; i < framesize; i++)
 			floatBuffer[i] = segpointer[i];
 		chordExtractor.doIt(&floatBuffer[0]);
