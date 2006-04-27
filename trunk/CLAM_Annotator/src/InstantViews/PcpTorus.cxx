@@ -36,7 +36,7 @@ void CLAM::VM::PcpTorus::clearData()
 
 void CLAM::VM::PcpTorus::initializeGL()
 {
-	glShadeModel(GL_SMOOTH);
+	glShadeModel(GL_FLAT);
 	glClearColor(0,0,0,0); // rgba
 	glEnable(GL_BLEND);
 	glEnable (GL_LINE_SMOOTH);
@@ -123,6 +123,8 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 				glVertex3f(cos30,sin30,.1);
 			glEnd();
 		glPopMatrix();
+		/*
+		// This one requires glShademodel(GL_SMOOTH)
 		glBegin(GL_TRIANGLE_FAN);
 			glColor4f(pitchLevel,pitchLevel,pitchLevel/4,1);
 			glVertex3f(0,0,0);
@@ -135,6 +137,7 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 			glVertex3f(cos30,sin30,.1);
 			glVertex3f(0,1,.1);
 		glEnd();
+		*/
 	glPopMatrix();
 	if (pitchLevel > .5)
 		glColor4f(0,0,.5,1);
