@@ -7,7 +7,6 @@
 #include "CircularPeakTunner.hxx"
 #include "ConstantQFolder.hxx"
 #include "ConstantQTransform.hxx"
-#include "cppUnitHelper.hxx"
 #include "Err.hxx"
 #include "FourierTransform.hxx"
 #include "InstantTunningEstimator.hxx"

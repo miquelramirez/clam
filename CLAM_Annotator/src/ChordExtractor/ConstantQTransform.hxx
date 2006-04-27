@@ -2,6 +2,7 @@
 #define ConstantQTransform_hxx
 
 #include <vector>
+#include <cmath>
 
 namespace Simac
 {
@@ -68,7 +69,7 @@ public:
 	int getfftlength() const {return mSpectrumSize;}
 private:
 	double Hamming(int len, int n) {
-		double out = 0.54 - 0.46*cos(2*M_PI*n/len);
+		double out = 0.54 - 0.46*std::cos(2*M_PI*n/len);
 		return(out);
 	}
 };

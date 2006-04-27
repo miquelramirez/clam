@@ -1,7 +1,7 @@
 #include <iostream>
-#include <cmath>
 #include "ConstantQTransform.hxx"
 #include "FourierTransform.hxx"
+#include <cmath>
 
 namespace Simac
 {
@@ -9,7 +9,7 @@ namespace Simac
 // nextpow2 returns the smallest integer n such that 2^n >= x.
 static double nextpow2(double x)
 {
-	return ceil(log(x)/log(2.0));
+	return ceil(std::log(x)/std::log(2.0));
 }
 //----------------------------------------------------------------------------
 static double squaredModule(const double & xx, const double & yy)
@@ -25,11 +25,11 @@ ConstantQTransform::ConstantQTransform(unsigned iFS, double ifmin, double ifmax,
 	fmin = ifmin;		// min freq
 	fmax = ifmax;		// max freq
 
-	Q = 1/(pow(2,(1/(double)_binsPerOctave))-1);	// Work out Q value for filter bank
-	K = (int) ceil(_binsPerOctave * log(fmax/fmin)/log(2.0));	// No. of constant Q bins
+	Q = 1/(std::pow(2.,(1/(double)_binsPerOctave))-1);	// Work out Q value for filter bank
+	K = (int) ceil(_binsPerOctave * std::log(fmax/fmin)/std::log(2.0));	// No. of constant Q bins
 
 	// work out length of fft required for this constant Q filter bank
-	mSpectrumSize = (int) pow(2, nextpow2(ceil(Q*FS/fmin)));
+	mSpectrumSize = (int) std::pow(2., nextpow2(ceil(Q*FS/fmin)));
 
 	// allocate memory for cqdata
 	cqdata.resize(2*K);
@@ -62,7 +62,7 @@ void ConstantQTransform::sparsekernel(double thresh)
 	FourierTransform fft(mSpectrumSize, 1, 1);
 	for (unsigned k=K; k--; ) {
 		// Computing a hamming window
-		const unsigned hammingLength = (int) ceil(Q * FS / (fmin * pow(2,((double)(k))/(double)_binsPerOctave)));
+		const unsigned hammingLength = (int) ceil(Q * FS / (fmin * std::pow(2.,((double)(k))/(double)_binsPerOctave)));
 		for (unsigned i=0; i<hammingLength; i++) {
 			const double angle = 2*M_PI*Q*i/hammingLength;
 			const double real = cos(angle);
