@@ -470,6 +470,7 @@ void Annotator::refreshSegmentation()
 
 void Annotator::updateSegmentations()
 {
+	if (!mpDescriptorPool) return;
 	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
 	CLAM::DataArray & descriptorMarks = 
 		mpDescriptorPool->GetWritePool<CLAM::DataArray>("Song",currentSegmentation)[0];
@@ -884,6 +885,7 @@ void  Annotator::askToSaveDescriptorsIfNeeded()
 void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *previous)
 {
 	if (mPlayer) mPlayer->stop();
+	setCurrentTime(0,0);
 	mStatusBar << tr("Saving Previous Song Descriptors...") << mStatusBar;
 	if (previous) askToSaveDescriptorsIfNeeded();
 	if (!current) return;
@@ -912,8 +914,8 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	}
 	setMenuAudioItemsEnabled(true);
 
-	refreshSegmentation();
 	mSegmentEditor->SetData(mCurrentAudio);
+	refreshSegmentation();
 	mSegmentEditor->show();
 	mBPFEditor->show();
 	refreshEnvelopes();
@@ -925,20 +927,18 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 }
 void Annotator::refreshInstantViews()
 {
-	if (!mpDescriptorPool) return;
-
 	mStatusBar << tr("Loading Instant Views Data...") << mStatusBar;
 	for (unsigned i=0; i<mInstantViews.size(); i++)
 	{
-		if (!mInstantViews[i]) continue;
-		mInstantViews[i]->updateData(*mpDescriptorPool, mCurrentAudio.GetSampleRate());
+		if (mpDescriptorPool)
+			mInstantViews[i]->updateData(*mpDescriptorPool, mCurrentAudio.GetSampleRate());
+		else
+			mInstantViews[i]->clearData();
 	}
 }
 
 void Annotator::refreshEnvelopes()
 {
-	if (!mpDescriptorPool) return;
-
 	mStatusBar << tr("Loading LLD Data...") << mStatusBar;
 
 	// TODO: Not all the things should be done here
@@ -947,6 +947,8 @@ void Annotator::refreshEnvelopes()
 
 	mPlayer->SetAudioPtr(&mCurrentAudio);
 	mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
+
+	if (!mpDescriptorPool) return;
 
 	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
 
@@ -1021,6 +1023,9 @@ void Annotator::loadDescriptorPool()
 {
 	markCurrentSongChanged(false);
 
+	if (mpDescriptorPool) delete mpDescriptorPool;
+	mpDescriptorPool = 0;
+
 	CLAM::DescriptionDataPool * tempPool = new CLAM::DescriptionDataPool(mProject.GetDescriptionScheme());
 
 	//Load Descriptors Pool
@@ -1045,12 +1050,10 @@ void Annotator::loadDescriptorPool()
 		QMessageBox::warning(this,tr("Error Loading Descriptors Pool File"), 
 			constructFileError(poolFile,e));
 		delete tempPool;
-		// TODO: Get an Empty pool
 		return;
 	}
 
 	//Create Descriptors Pool
-	if (mpDescriptorPool) delete mpDescriptorPool;
 	mpDescriptorPool = tempPool;
 	mProject.InitializeMissingAttributes(*mpDescriptorPool);
 }

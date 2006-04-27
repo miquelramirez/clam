@@ -13,7 +13,6 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 {
 	_font.setFamily("sans-serif");
 	_font.setPointSize(11);
-//	_gradient = bindTexture(QPixmap(":/gradients/gradient.png"), GL_TEXTURE_2D);
 	_updatePending=0;
 	_currentFrame=0;
 	_data = 0;
@@ -22,6 +21,16 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 	_nBins=0;
 	_frameDivision=0;
 	_samplingRate=44100;
+	_maxValue=1;
+}
+
+void CLAM::VM::PcpTorus::clearData()
+{
+	_data = 0;
+	_frameData = 0;
+	_currentFrame = 0;
+	_nBins=0;
+	_frameDivision=0;
 	_maxValue=1;
 }
 
@@ -38,7 +47,6 @@ void CLAM::VM::PcpTorus::initializeGL()
 void CLAM::VM::PcpTorus::resizeGL(int width, int height)
 {
 	int side = qMin(width, height);
-//	glViewport((width - side) / 2, (height - side) / 2, side, side); // This is to have a square
 	glViewport(0 , 0, width, height); // This is to have a square
 	double left = 0;
 	double bottom = 0;
@@ -92,59 +100,58 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 	double hexsize=pitchLevel;
 	if (hexsize>1) hexsize = 1;
 	glPushMatrix();
-	glTranslatef(posx,posy,0);
-	glPushMatrix();
-	glScalef(hexsize, hexsize, 1.);
-	glColor4f(pitchLevel,pitchLevel/3,pitchLevel/3,1);
-//	glEnable(GL_TEXTURE_2D);
-//	glBindTexture(GL_TEXTURE_2D, _gradient);
-//	glTexCoord2d(pitchLevel, pitchLevel);
-	glBegin(GL_POLYGON);
-	glVertex2f(0,1);
-	glVertex2f(-cos30,sin30);
-	glVertex2f(-cos30,-sin30);
-	glVertex2f(0,-1);
-	glVertex2f(cos30,-sin30);
-	glVertex2f(cos30,sin30);
-	glEnd();
-	glLineWidth(3.);
-	glColor4f(pitchLevel,pitchLevel/4,pitchLevel/4,1);
-	glBegin(GL_LINE_LOOP);
-	glVertex3f(0,1,.1);
-	glVertex3f(-cos30,sin30,.1);
-	glVertex3f(-cos30,-sin30,.1);
-	glVertex3f(0,-1,.1);
-	glVertex3f(cos30,-sin30,.1);
-	glVertex3f(cos30,sin30,.1);
-	glEnd();
+		glTranslatef(posx,posy,0);
+		glPushMatrix();
+			glScalef(hexsize, hexsize, 1.);
+			glColor4f(pitchLevel,pitchLevel/3,pitchLevel/3,1);
+			glBegin(GL_POLYGON);
+				glVertex2f(0,1);
+				glVertex2f(-cos30,sin30);
+				glVertex2f(-cos30,-sin30);
+				glVertex2f(0,-1);
+				glVertex2f(cos30,-sin30);
+				glVertex2f(cos30,sin30);
+			glEnd();
+			glLineWidth(3.);
+			glColor4f(pitchLevel,pitchLevel/4,pitchLevel/4,1);
+			glBegin(GL_LINE_LOOP);
+				glVertex3f(0,1,.1);
+				glVertex3f(-cos30,sin30,.1);
+				glVertex3f(-cos30,-sin30,.1);
+				glVertex3f(0,-1,.1);
+				glVertex3f(cos30,-sin30,.1);
+				glVertex3f(cos30,sin30,.1);
+			glEnd();
+		glPopMatrix();
+		glBegin(GL_TRIANGLE_FAN);
+			glColor4f(pitchLevel,pitchLevel,pitchLevel/4,1);
+			glVertex3f(0,0,0);
+			glColor4f(0,0,0,0);
+			glVertex3f(0,1,.1);
+			glVertex3f(-cos30,sin30,.1);
+			glVertex3f(-cos30,-sin30,.1);
+			glVertex3f(0,-1,.1);
+			glVertex3f(cos30,-sin30,.1);
+			glVertex3f(cos30,sin30,.1);
+			glVertex3f(0,1,.1);
+		glEnd();
 	glPopMatrix();
-	glBegin(GL_TRIANGLE_FAN);
-	glColor4f(pitchLevel,pitchLevel,pitchLevel/4,1);
-	glVertex3f(0,0,0);
-	glColor4f(0,0,0,0);
-	glVertex3f(0,1,.1);
-	glVertex3f(-cos30,sin30,.1);
-	glVertex3f(-cos30,-sin30,.1);
-	glVertex3f(0,-1,.1);
-	glVertex3f(cos30,-sin30,.1);
-	glVertex3f(cos30,sin30,.1);
-	glVertex3f(0,1,.1);
-	glEnd();
-	glPopMatrix();
-	glColor4f(1,1,.5,1);
-	renderText(posx, posy, -1, getLabel(bin).c_str(), _font);
+	if (pitchLevel > .5)
+		glColor4f(0,0,.5,1);
+	else 
+		glColor4f(1,1,.5,1);
+	renderText(posx, posy, .6, getLabel(bin).c_str(), _font);
 }
 
 
 
 void CLAM::VM::PcpTorus::setCurrentTime(double timeMiliseconds)
 {
-	if (!_frameDivision) return;
-	unsigned newFrame = _frameDivision->GetItem(timeMiliseconds*_samplingRate);
+	unsigned newFrame = _data? _frameDivision->GetItem(timeMiliseconds*_samplingRate): 0;
 	if (newFrame>=_nFrames) newFrame=_nFrames-1;
+	_frameData = _data? _data + _nBins * newFrame: 0;
 	if (newFrame == _currentFrame) return;
 	_currentFrame = newFrame;
-	_frameData = _data + _nBins * _currentFrame;
 	if (!_updatePending++) update();
 }
 
@@ -187,30 +194,6 @@ void CLAM::VM::PcpTorus::initData(const CLAM_Annotator::FrameDivision & frameDiv
 			double value = arrays[frame][i]*_nBins;
 			_data[frame*_nBins+i] = value;
 		}
-}
-
-void CLAM::VM::PcpTorus::initData(unsigned nFrames)
-{
-	if (_data) delete _data;
-	_nFrames = nFrames;
-	_data = new double[_nFrames*_nBins];
-	for (unsigned i=0; i<_nBins; i++)
-		_data[i]=0;
-
-	for (unsigned frame =0; frame < _nFrames-1; frame++)
-		for (unsigned i=0; i<_nBins; i++)
-		{
-			double newValue;
-			while (true)
-			{
-				newValue = _data[frame*_nBins+i] + (rand()*2.0/double(RAND_MAX) - 1)/5.0 ;
-				if (newValue<0) continue;
-				if (newValue>=1) continue;
-				break;
-			}
-			_data[(frame+1)*_nBins+i] = newValue;;
-		}
-	_frameData=_data;
 }
 
 

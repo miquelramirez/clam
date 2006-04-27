@@ -132,11 +132,12 @@ void CLAM::VM::KeySpace::paintGL()
 void CLAM::VM::KeySpace::DrawTiles()
 {
 	TKeyNode *pKeyNodes = getKeyNodes();
-	if (weights.size()!=nX*nY*_nBins)
+	if (weights.size()!=nX*nY*nKeyNodes)
 	{
+		std::cout << "Precomputing KeySpace weights" << std::endl;
+		weights.resize(nX*nY*nKeyNodes);
 		for(unsigned i=0; i<nX; i++)
 		{
-			weights.resize(nX*nY*nKeyNodes);
 			float x1 = i / float(nX) * x_res;
 			for(unsigned k=0; k<nY; k++)
 			{
@@ -161,6 +162,7 @@ void CLAM::VM::KeySpace::DrawTiles()
 	}
 	if (_maxValue<1e-10) _maxValue=1e-10;
 
+	if (_nBins!=nKeyNodes) return;
 	float xStep = x_res/nX;
 	float yStep = y_res/nY;
 	for(unsigned i=0; i<nX; i++)
