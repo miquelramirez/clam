@@ -107,7 +107,7 @@ class Tasker:
 		if projectsonglisting == "":
 			raise TaskerError("Access error\nNo file from the task could be downloaded. Check the task file for correct ids.")
 
-		self.createFile(self.projectname, '.pro', clamAnnotatorProjectSkeleton % ( saxutils.escape(self.description), self.projectname, projectsonglisting ) )
+		self.createFile(self.projectname, '.pro', clamAnnotatorProjectSkeleton % ( self.description, self.projectname, projectsonglisting ) )
 	
 	
 		#Print log
