@@ -83,19 +83,17 @@ class Tasker:
 				self.printfunction(u"\n  WARNING: File with id=%s not found on the server. Id will be ignored.\n" % id)
 				continue
 			
-			url = self.downloadSong( locations)
+			audiofilename = self.downloadSong( locations)
 	
-			if url == None:
+			if audiofilename == None:
 				self.printfunction(u"\n  WARNING: it was impossible to download the file with id=%s from the given source urls.\n\n" % id)
 				continue
 
-			#File name
-			audiofilename = urllib.unquote( urlparse.urlparse(url)[2].split('/')[-1] )
+			#Project
 			projectsonglisting += clamAnnotatorProjectSongSkeleton % audiofilename
-			os.rename( self.path+'.tempAnnotationSong', self.path+audiofilename )
 
 			#Store modification file for each pool to keep track of the ones upgraded
-			self.songlisting[audiofilename] = [ os.path.getmtime( self.path+audiofilename ), False, id ]
+			#elf.songlisting[audiofilename] = [ os.path.getmtime( self.path+audiofilename ), False, id ]
 
 			try:
 				pool = self.metadataprovider.QueryDescriptors( id, descriptors )
@@ -103,6 +101,8 @@ class Tasker:
 				raise TaskerError("Access error\nError accessing metadata provider server.")
 			
 			self.createFile( audiofilename, '.pool', pool )
+			#Store modification file for each pool to keep track of the ones upgraded
+			self.songlisting[audiofilename] = [ os.path.getmtime( self.path+audiofilename+".pool" ), False, id ]
 
 		if projectsonglisting == "":
 			raise TaskerError("Access error\nNo file from the task could be downloaded. Check the task file for correct ids.")
@@ -142,12 +142,17 @@ class Tasker:
 				if stream.info().type not in [ "audio/mpeg", "application/ogg", "audio/x-wav" ]:
 					self.printfunction(u"     (ERROR)\n")
 					continue
+			
+				audiofilename = urllib.unquote( urlparse.urlparse(url)[2].split('/')[-1] )
+				if os.path.exists( self.path+audiofilename ):
+					self.printfunction(u"     Already Downloaded (OK)\n")
+					return audiofilename
 				
-				file = open( self.path+".tempAnnotationSong", 'w')
+				file = open( self.path+audiofilename, 'w')
 				file.write( stream.read() )
 				file.close()
 				self.printfunction(u"     (OK)\n")
-				return url
+				return audiofilename
 			except:
 				self.printfunction(u"     (ERROR)\n")
 				continue
