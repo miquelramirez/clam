@@ -46,7 +46,7 @@ public:
 		, _circularPeakPicking(binsPerOctave, /*scaling factor*/ 12.0/binsPerOctave)
 		, _instantTunningEstimator(/*Inertia*/ 1.0, /*bins per semitone*/  1)
 		, _circularPeakTunner(/*reference tunning*/ 0.0)
-		, _filter(0.0)
+		, _filter(0.7)
 		, _tunningEnabled(true)
 		, _peakWindowingEnabled(true)
 		, _hopRatio(8.0) // On the original Chromagram cpp code was 32
