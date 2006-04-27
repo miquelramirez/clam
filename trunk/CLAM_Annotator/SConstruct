@@ -155,7 +155,7 @@ installTargets = [
 if sys.platform=='win32' : 
 	installTargets += [env.Install(env['install_prefix']+"/bin", os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")) for dll in 'Core', 'Gui', 'OpenGL']
 	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
-	env.Append(NSIS_OPTIONS=['/DVERSION=0.3b2'])
+	env.Append(NSIS_OPTIONS=['/DVERSION=0.3b4'])
 	win_packages = [env.Nsis( source='scons\\clam_annotator.nsi')]
 	env.Alias('package', win_packages)
 
