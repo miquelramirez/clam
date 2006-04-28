@@ -39,7 +39,11 @@ void Segment2Marks(const CLAM::Segment& segment, CLAM::DataArray & marks);
 CLAM::TData GetDurationInSeconds(const std::string& fileName);
 
 
-
+const char * copyright =
+	"CLAM Extractor Example v0.3.\n"
+	"Copyright 2006 Universitat Pompeu Fabra\n"
+	"\n"
+	;
 const char * usage =
 	"Example of music descriptor extractor based on CLAM.\n"
 	"Usage: ClamExtractorExample [-s out.sc] [-f <suffix>] <wavefile1> <wavefile2> ...\n"
@@ -78,6 +82,7 @@ const char * projectDescription =
    
 int main(int argc, char ** argv)
 {
+	std::cout << copyright << std::endl;
 	CLAM_Annotator::Project myProject;
 	std::string relativeSchemaLocation = "Schema.sc";
 	const char * songFileNames[] =

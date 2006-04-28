@@ -5,7 +5,7 @@ Universitat Pompeu Fabra
 Katy Noland
 Queen Mary, University of London
 
-Adapted from MATLAB code by C. Harte at Queen Mary
+Adapted from MATLAB code by Chris Harte at Queen Mary
 */
 #include <iostream>
 #include <fstream>
@@ -21,11 +21,15 @@ Adapted from MATLAB code by C. Harte at Queen Mary
 #include "FrameDivision.hxx"
 #include <CLAM/Assert.hxx>
 
-const char * usage =
+const char * copyright =
 	"Chord extraction v1.0.\n"
 	"Copyright 2006 Queen Mary University of London\n"
 	"Copyright 2006 Universitat Pompeu Fabra\n"
+	"Original algorithm by Chris Harte.\n"
+	"Ported to C++ by David Garcia Garzon and Katy Noland.\n"
 	"\n"
+	;
+const char * usage =
 	"Usage: ChordExtractor [-s out.sc] [-f <suffix>] <wavefile1> <wavefile2> ...\n"
 	"\nOptions:\n"
 	" -h            shows this help\n"
@@ -305,6 +309,7 @@ public:
 
 int main(int argc, char* argv[])			// access command line arguments
 {
+	std::cout << copyright << std::endl;
 	std::list<std::string> songs;
 	std::string suffix = ".pool";
 	std::string schemaLocation = "";
