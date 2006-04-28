@@ -29,6 +29,7 @@
         <file>images/xkill.png</file>
     </qresource>
     <qresource prefix="/logos" >
+        <file>images/GeneLogo.png</file>
         <file>images/annotator-icon1.png</file>
         <file>images/annotator-icon1.svg</file>
         <file>images/annotator-logo.png</file>
@@ -39,5 +40,6 @@
         <file>images/clamlogo.jpg</file>
         <file>images/clamlogo.png</file>
         <file>images/simac-logo.png</file>
+        <file>images/upf-mtg-logo.png</file>
     </qresource>
 </RCC>
