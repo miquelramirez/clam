@@ -99,6 +99,12 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 		pBColor[k] /= 255.;
 	}
 	_maxValue = 1;
+	setWhatsThis(tr(
+				"<p>The <b>Key Space view</b> represents the probability of each key/chord to be the one played.</p>\n"
+				"<p>Mayor chords/keys are displayed with uppercase letters and minor chords/keys are displayed with lowercase letters.\n"
+				"Tonally close key/chords are displayed closer so normally you have a color stain covering several chords\n"
+				"with the most probable chord as a central color spot.</p>\n"
+				));
 }
 
 void CLAM::VM::KeySpace::initializeGL()

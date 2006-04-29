@@ -72,13 +72,13 @@ const char * schemaContent =
 "      <EnumerationValues>A A# B B# C C# D D# E F F# G G#</EnumerationValues>\n"
 "    </Attribute>\n"
 "    <Attribute name='PrimaryMode' scope='Frame' type='Enumerated'\n"
-"      <EnumerationValues>Major Minor Major7 Minor7 Dominant7 MajorMinor7 Diminished Augmented</EnumerationValues>\n"
+"      <EnumerationValues>Major Minor Major7 Minor7 Dominant7 MajorMinor7 Diminished Augmented Fifth</EnumerationValues>\n"
 "    </Attribute>\n"
 "    <Attribute name='SecondaryRoot' scope='Frame' type='Enumerated'>\n"
 "      <EnumerationValues>A A# B B# C C# D D# E F F# G G#</EnumerationValues>\n"
 "    </Attribute>\n"
 "    <Attribute name='SecondaryMode'scope='Frame' type='Enumerated'>\n"
-"      <EnumerationValues>Major Minor Major7 Minor7 Dominant7 MajorMinor7 Diminished Augmented</EnumerationValues>\n"
+"      <EnumerationValues>Major Minor Major7 Minor7 Dominant7 MajorMinor7 Diminished Augmented Fifth</EnumerationValues>\n"
 "    </Attribute>\n"
 "	-->\n"
 "    <Attribute name='HartePcp' scope='Frame' type='FloatArray'>\n"
@@ -97,7 +97,7 @@ const char * schemaContent =
 "      <EnumerationValues>\n"
 "         Major Minor Major7 Minor7 Dominant7 MinorMajor7\n"
 "		 Suspended2 Suspended4 Major6 Minor6 6/9\n"
-"		 Diminished Diminished7 Augmented\n"
+"		 Diminished Diminished7 Augmented Fifth\n"
 "      </EnumerationValues>\n"
 "    </Attribute>\n"
 "  </Attributes>\n"
@@ -350,61 +350,67 @@ int main(int argc, char* argv[])			// access command line arguments
 		std::ofstream schemaFile(schemaLocation.c_str());
 		schemaFile << schemaContent;
 	}
-	const std::string & waveFile = songs.front();
-	CLAM::AudioFile file;
-	file.OpenExisting( waveFile );
 
-	if ( !file.IsReadable() )
+	for (std::list<std::string>::iterator it = songs.begin();
+			it!= songs.end();
+			it++)
 	{
-		std::cerr << "Error: file " << file.GetLocation() << " cannot be opened ";
-		std::cerr << "or is encoded in an unrecognized format" << std::endl;
-		return -1;
+		const std::string & waveFile = *it;
+		CLAM::AudioFile file;
+		file.OpenExisting( waveFile );
+
+		if ( !file.IsReadable() )
+		{
+			std::cerr << "Error: file " << file.GetLocation() << " cannot be opened ";
+			std::cerr << "or is encoded in an unrecognized format" << std::endl;
+			return -1;
+		}
+		CLAM::MonoAudioFileReaderConfig cfg;
+		cfg.SetSourceFile( file );
+		CLAM::TData samplingRate = file.GetHeader().GetSampleRate();
+		unsigned long nsamples = file.GetHeader().GetLength()*samplingRate/1000.0;
+		CLAM::MonoAudioFileReader reader(cfg);
+
+		CLAM::XMLStorage::Dump(file, "Header", std::cout);
+		
+		int factor=1;							// downsampling factor
+		float minf = 98;						// (MIDI note G1)
+		unsigned bpo = 36;			// bins per octave
+
+		Simac::ChordExtractor chordExtractor(samplingRate/factor,minf,bpo);
+		unsigned framesize = chordExtractor.frameSize();
+		unsigned hop = chordExtractor.hop();
+		unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
+	//	unsigned long nFrames = (nsamples-framesize)/hop;	// no. of time windows
+	//	ChordExtractorSerializer serializer(waveFile, nFrames, hop, framesize, chordExtractor);
+		ChordExtractorDescriptionDumper dumper(waveFile, suffix, nFrames, hop, framesize, samplingRate, chordExtractor);
+
+		std::cout << "Frame size: " << framesize << std::endl;
+		std::cout << "Hop size: " << hop << std::endl;
+
+		CLAM::AudioInPort inport;
+		reader.GetOutPorts().GetByNumber(0).ConnectToIn(inport);
+		inport.SetSize( framesize );
+		inport.SetHop( hop );
+
+		reader.Start();
+	//	clock_t start = clock();
+		std::vector<float> floatBuffer(framesize);
+		while (reader.Do())
+		{
+			if (!inport.CanConsume()) continue; // Not enough audio, try again
+			std::cout << "." << std::flush;
+			CLAM::TData * segpointer = &(inport.GetAudio().GetBuffer()[0]);
+			for (unsigned i = 0; i < framesize; i++)
+				floatBuffer[i] = segpointer[i];
+			chordExtractor.doIt(&floatBuffer[0]);
+			inport.Consume();
+	//		serializer.doIt();
+			dumper.doIt();
+		}
+	//	clock_t end = clock();
+		reader.Stop();
 	}
-	CLAM::MonoAudioFileReaderConfig cfg;
-	cfg.SetSourceFile( file );
-	CLAM::TData samplingRate = file.GetHeader().GetSampleRate();
-	unsigned long nsamples = file.GetHeader().GetLength()*samplingRate/1000.0;
-	CLAM::MonoAudioFileReader reader(cfg);
-
-	CLAM::XMLStorage::Dump(file, "Header", std::cout);
-	
-	int factor=1;							// downsampling factor
-	float minf = 98;						// (MIDI note G1)
-	unsigned bpo = 36;			// bins per octave
-
-	Simac::ChordExtractor chordExtractor(samplingRate/factor,minf,bpo);
-	unsigned framesize = chordExtractor.frameSize();
-	unsigned hop = chordExtractor.hop();
-	unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
-//	unsigned long nFrames = (nsamples-framesize)/hop;	// no. of time windows
-//	ChordExtractorSerializer serializer(waveFile, nFrames, hop, framesize, chordExtractor);
-	ChordExtractorDescriptionDumper dumper(waveFile, suffix, nFrames, hop, framesize, samplingRate, chordExtractor);
-
-	std::cout << "Frame size: " << framesize << std::endl;
-	std::cout << "Hop size: " << hop << std::endl;
-
-	CLAM::AudioInPort inport;
-	reader.GetOutPorts().GetByNumber(0).ConnectToIn(inport);
-	inport.SetSize( framesize );
-	inport.SetHop( hop );
-
-	reader.Start();
-//	clock_t start = clock();
-	std::vector<float> floatBuffer(framesize);
-	while (reader.Do())
-	{
-		if (!inport.CanConsume()) continue; // Not enough audio, try again
-		std::cout << "." << std::flush;
-		CLAM::TData * segpointer = &(inport.GetAudio().GetBuffer()[0]);
-		for (unsigned i = 0; i < framesize; i++)
-			floatBuffer[i] = segpointer[i];
-		chordExtractor.doIt(&floatBuffer[0]);
-		inport.Consume();
-//		serializer.doIt();
-		dumper.doIt();
-	}
-//	clock_t end = clock();
-	reader.Stop();
 
 //	std::cout << "\nProcessing time: " << (end-start)/CLOCKS_PER_SEC << " seconds\n";
 
