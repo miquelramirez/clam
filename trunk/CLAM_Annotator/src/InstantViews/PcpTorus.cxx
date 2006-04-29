@@ -22,6 +22,29 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 	_frameDivision=0;
 	_samplingRate=44100;
 	_maxValue=1;
+	setWhatsThis(tr(
+				"<p>The <b>Pitch Torus view</b> represents the intensity of each note played.</p>\n"
+				"<p>Notes are displayed so that harmonic notes are painted closer.\n"
+				"Thus, when the played notes are a chord, a mode dependant shape is displayed.\n"
+				"Typical shapes are:</p>\n"
+				"<ul>\n"
+				"<li>Major: Pointing up triangle. The root is the lefter note. (C-E-G)</li>\n"
+				"<li>Minor: Pointing down triangle. The root is the lefter note. (C-Eb-G)</li>\n"
+				"<li>Fifth: Horitzontal pair. The root is the lefter note. (C-G)</li>\n"
+				"<li>Augmented: Forward slash. (C-E-G#)</li>\n"
+				"<li>Diminished: Backward slash. (C-Eb-A-F#)</li>\n"
+				"<li>Major7: Forward Paralelogram. The root is the lefter note. (C-E-G-B)</li>\n"
+				"<li>Minor7: Backward Paralelogram. The root is the lefter note. (C-Eb-G-Bb</li>\n"
+				"<li>Dominant7: Pointing up triangle with a tail down. The root is the lefter note. (C-E-G-Bb)</li>\n"
+				"<li>MajorMinor7: Pointing down triangle with a tail up. The root is the lefter note. (C-Eb-G-B)</li>\n"
+				"<li>Diminished7: Triplet down and one up. The root is the lefter note. (C-Eb-F#-Bb)</li>\n"
+				"<li>Minor6: Down triangle plus a head up. The root is the second lefter note. (C-G-A-Eb)</li>\n"
+				"<li>Major6: Up triangle plust a head up. The root is the lefter note. (C-G-A-E)</li>\n"
+				"<li>Suspended4: Three horizontal. The root is the lefter note. (C-F-G)</li>\n"
+				"<li>Suspended2: Three horizontal. The root is the lefter note. (C-D-G)</li>\n"
+				"<li>6/9: Five horizontal. The root is the lefter note.</li>\n"
+				"</ul>\n"
+				));
 }
 
 void CLAM::VM::PcpTorus::clearData()
