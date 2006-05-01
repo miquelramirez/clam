@@ -16,7 +16,6 @@ namespace CLAM_Annotator
 		, mName(scheme.GetName())
 		, mElement(-1)
 	{
-		std::cout << "Creating '" << mScope << ":" << mName << "' of type " << scheme.GetType() << std::endl;
 		mTable->setItem(mRow, 0, new QTableWidgetItem(mName.c_str()));
 		clearData();
 	}
@@ -31,7 +30,6 @@ namespace CLAM_Annotator
 	void DescriptorTablePlugin::refreshData(int element, CLAM::DescriptionDataPool & dataPool)
 	{
 		mElement = element;
-		std::cout << "Refreshing '" << mScope << ":" << mName << "' pos " << mElement << std::endl;
 		if (mElement<0 || mElement>=dataPool.GetNumberOfContexts(mScope))
 			clearData();
 		else
@@ -168,7 +166,6 @@ namespace CLAM_Annotator
 		virtual QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option)
 		{
 			QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
-			std::cout << mMin << " " << mMax << std::endl;
 			editor->setMinimum(mMin);
 			editor->setMaximum(mMax);
 			editor->setSingleStep((editor->maximum()-editor->minimum())/100);
