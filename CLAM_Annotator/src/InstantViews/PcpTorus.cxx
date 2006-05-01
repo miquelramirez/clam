@@ -52,7 +52,6 @@ void CLAM::VM::PcpTorus::clearData()
 	_data = 0;
 	_frameData = 0;
 	_currentFrame = 0;
-	_nBins=0;
 	_frameDivision=0;
 	_maxValue=1;
 }
@@ -94,11 +93,11 @@ void CLAM::VM::PcpTorus::paintGL()
 void CLAM::VM::PcpTorus::Draw()
 {
 	if (!_nBins) return;
-	if (!_frameData) return;
 	_maxValue*=0.95;
 	if (_maxValue<1e-10) _maxValue=1;
-	for (unsigned i = 0; i < _nBins; i++)
-		if (_frameData[i]>=_maxValue) _maxValue=_frameData[i];
+	if (_frameData)
+		for (unsigned i = 0; i < _nBins; i++)
+			if (_frameData[i]>=_maxValue) _maxValue=_frameData[i];
 
 	for (int x = -10; x<10; x++)
 		for (int y = 0-x; y<10-x; y++)
@@ -119,7 +118,7 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 		bool isMinor = y&1;
 		bin =  ((x*7)%(_nBins/2) + 11*(y/2) + (isMinor?4:0)  + _nBins*1000)%(_nBins/2) + (isMinor?_nBins/2:0);
 	}
-	double pitchLevel = _frameData[bin]/_maxValue;
+	double pitchLevel = _frameData? _frameData[bin]/_maxValue: 0;
 	double hexsize=pitchLevel;
 	if (hexsize>1) hexsize = 1;
 	glPushMatrix();
