@@ -7,6 +7,7 @@
 #include <QtCore/QTimer>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QDockWidget>
+#include <QtGui/QTextCursor>
 #include <iostream>
 
 class TaskRunner : public QDockWidget
@@ -23,10 +24,10 @@ public:
 	virtual ~TaskRunner();
 	bool run(QString command, QStringList & arguments, QString workingDir)
 	{
-		QString startMessage = tr("<div style='color: blue;'>Executing '<tt>%1 %2</tt>'</div>")
+		mOutput = tr("<div style='color: blue;'>Executing '<tt>%1 %2</tt>'</div>")
 			.arg(command)
 			.arg(arguments.join(" "));
-		mOutputDisplay->setHtml(startMessage);
+		updateText();
 		mProcess = new QProcess(this);
 		mProcess->setWorkingDirectory(workingDir);
 		connect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(dumpError()));
@@ -38,21 +39,39 @@ public:
 private slots:
 	void finished()
 	{
-		mOutputDisplay->append(tr("<div style='color: blue;'>Done.</div>"));
+		mOutput += tr("<div style='color: blue;'>Done.</div>");
+		updateText();
 		QTimer::singleShot(5000, this, SLOT(close()));
 	}
 	void dumpError()
 	{
-		mOutputDisplay->append("<pre style='color: red;'>"+  mProcess->readAllStandardError() +"</pre>");
+		dump(mProcess->readAllStandardError(), true);
 	}
 	void dumpOutput()
 	{
-		mOutputDisplay->append("<pre style='color: green;'>"+  mProcess->readAllStandardOutput() +"</pre>");
+		dump(mProcess->readAllStandardOutput(), false);
+	}
+private:
+	void dump(QString output, bool error)
+	{
+		output.replace("&","&amp;");
+		output.replace("<","&lt;");
+		output.replace("\n","<br/>");
+		mOutput += QString("<tt style='color: ") + (error?"red":"green") + ";'>"+  output +"</tt>";
+		updateText();
+	}
+	void updateText()
+	{
+		mOutputDisplay->setHtml(mOutput);
+		QTextCursor cursor = mOutputDisplay->textCursor();
+		cursor.movePosition(QTextCursor::End);
+		mOutputDisplay->setTextCursor(cursor);
+		mOutputDisplay->ensureCursorVisible();
 	}
 private:
 	QTextEdit * mOutputDisplay;
 	QProcess * mProcess;
-	
+	QString mOutput;
 };
 
 
