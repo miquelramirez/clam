@@ -67,13 +67,16 @@ extraPaths += [
 ]
 includePaths = libSourcePaths + extraPaths
 
-qrcfiles = scanFiles("*.qrc", libSourcePaths)
-uifiles = scanFiles("*.qt4.ui", libSourcePaths)
-if len(uifiles): uiheaders = env.Uic4(source=uifiles)
 sources = scanFiles('*.cxx', libSourcePaths)
 sources += filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources += filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
-if len(qrcfiles) : sources += env.Qrc(source=qrcfiles)
+
+uifiles = scanFiles("*.qt4.ui", libSourcePaths)
+if uifiles : uiheaders = env.Uic4(source=uifiles)
+
+qrcfiles = scanFiles("*.qrc", libSourcePaths)
+if qrcfiles : sources += env.Qrc(source=qrcfiles)
+
 sources = unique(sources)
 
 env.Append(CPPPATH=includePaths)
