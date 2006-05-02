@@ -96,7 +96,7 @@ const char * schemaContent =
 "    <Attribute name='Mode' scope='ExtractedChord' type='Enumerated'>\n"
 "      <EnumerationValues>\n"
 "         Major Minor Major7 Minor7 Dominant7 MinorMajor7\n"
-"		 Suspended2 Suspended4 Major6 Minor6 6/9\n"
+//"		 Suspended2 Suspended4 Major6 Minor6 6/9\n"
 "		 Diminished Diminished7 Augmented Fifth\n"
 "      </EnumerationValues>\n"
 "    </Attribute>\n"
