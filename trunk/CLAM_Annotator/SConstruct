@@ -132,7 +132,7 @@ programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
 
 
 # Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
-tsfiles = scanFiles("src/i18n/*.ts", sourcePaths)
+tsfiles = scanFiles("*.ts", ["src/i18n/"])
 env.Precious(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
 translatableSources = scanFiles('*.cxx', sourcePaths);
 translatableSources+= scanFiles('*.hxx', sourcePaths);
@@ -140,8 +140,8 @@ translatableSources+= scanFiles('*.ui', sourcePaths);
 translatableSources = filter( (lambda a : a.rfind( "generated/")==-1 ),  translatableSources )
 translations = []
 if len(tsfiles) : 
-	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
-	translations = env.Qm(source = tsNodes)
+#	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
+	translations = env.Qm(source = tsfiles)
 
 installation = {
 	'/bin' : programs,
