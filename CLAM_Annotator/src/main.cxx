@@ -9,6 +9,14 @@
 #include <CLAM/InitProcessing.hxx>
 #endif
 
+#ifndef I18N_PATH
+#ifdef WIN32
+#define I18N_PATH "../"
+#else
+#define I18N_PATH "/home/vokimon/CajitasDeArena/CLAM-Install/"
+#endif
+#endif
+
 int main( int argc, char ** argv )
 {
 
@@ -26,7 +34,7 @@ int main( int argc, char ** argv )
 	app.installTranslator(&qtTranslator);
 
 	QTranslator translator;
-	translator.load("share/annotator/i18n/Annotator_"+ locale);
+	translator.load(I18N_PATH "share/annotator/i18n/Annotator_"+ locale);
 	app.installTranslator(&translator);
 
 	QCoreApplication::setOrganizationName("CLAM");
