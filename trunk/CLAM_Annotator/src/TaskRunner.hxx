@@ -24,7 +24,7 @@ public:
 	virtual ~TaskRunner();
 	bool run(QString command, QStringList & arguments, QString workingDir)
 	{
-		mOutput = tr("<div style='color: blue;'>Executing '<tt>%1 %2</tt>'</div>")
+		mOutput = ("<div style='color: blue;'>" + tr("Executing '<tt>%1 %2</tt>'") + "</div><br/>")
 			.arg(command)
 			.arg(arguments.join(" "));
 		updateText();
