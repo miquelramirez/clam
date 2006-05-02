@@ -62,7 +62,7 @@
         </sizepolicy>
        </property>
        <property name="text" >
-        <string>&lt;p>&lt;b>CLAM Annotator v 0.3&lt;/b>&lt;/p>
+        <string>&lt;p>&lt;b>Music Annotator v 0.3.1&lt;/b>&lt;/p>
 		&lt;p>Based on CLAM v0.90&lt;/p></string>
        </property>
       </widget>
@@ -205,6 +205,8 @@
 &lt;/ul>
 &lt;p>Contributors:&lt;/p>
 &lt;ul>
+&lt;li>Christopher Harte &amp;lt;harte@elec.qmul.ac.uk&amp;gt; ("Tonnetz" view)&lt;/li>
+&lt;li>Emilia Gómez &amp;lt;egomez@iua.upf.edu&amp;gt; ("Key Space" view)&lt;/li>
 &lt;li>Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; ("Key Space" view)&lt;/li>
 &lt;/ul>
 </string>
