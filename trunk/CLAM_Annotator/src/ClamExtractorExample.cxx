@@ -312,7 +312,7 @@ void BuildSchema(CLAM_Annotator::Project & project)
 	{
 		{"Song", "Danceability",
 			"<p>The <em>Danceability</em> is a 0 to 10 score that depends on how much defined is the rhythm</p>\n"
-			"<p>Data for this data is not the one in Simac but randomly generated.</p>\n"
+			"<p><b>Data for this data is not the one in Simac but randomly generated.</b></p>\n"
 		},
 		{"Frame", "Mean",
 			"<p>The spectral power mean value.\n"
