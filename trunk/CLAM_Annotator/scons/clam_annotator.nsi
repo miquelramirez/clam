@@ -58,7 +58,7 @@ Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
    ReadEnvStr $0 CLAM_PATH
    StrCmp $0 "" 0 +6
-   MessageBox MB_ICONEXCLAMATION|MB_YESNO "CLAM external dependencies have not been installed. Do you want to continue?" IDYES +2
+   MessageBox MB_ICONEXCLAMATION|MB_YESNO "CLAM external dependencies have not been found. If you already installed them you will need to reboot after this installation. If you haven't installed them you are recommended to abort the installation. Do you want to continue?" IDYES +2
    Abort
    MessageBox MB_ICONEXCLAMATION|MB_OK "The application won't work until you install the external libraries package located at ${PRODUCT_WEB_SITE}"
    StrCpy $INSTDIR "$PROGRAMFILES\CLAM\Annotator"
@@ -98,6 +98,9 @@ Section "Principal" SEC01
   File "..\Samples\SongsTest\Debaser-CoffeeSmell.mp3.pool"
   File "..\Samples\SongsTest\Debaser-CoffeeSmell.mp3.chords"
   File "..\Samples\SongsTest\urls.txt"
+  SetOutPath "$INSTDIR\share\annotator\i18n"
+  File "..\src\i18n\Annotator_ca.qm"
+  File "..\src\i18n\Annotator_es.qm"
 
 SectionEnd
 
@@ -160,6 +163,8 @@ Section Uninstall
   Delete "$INSTDIR\bin\ChordExtractor.exe"
   Delete "$INSTDIR\bin\ClamExtractorExample.exe"
 
+  Delete "$INSTDIR\share\annotator\i18n\Annotator_ca.qm"
+  Delete "$INSTDIR\share\annotator\i18n\Annotator_es.qm"
   Delete "$SMPROGRAMS\CLAM\Annotator\Uninstall.lnk"
   Delete "$SMPROGRAMS\CLAM\Annotator\Website.lnk"
   Delete "$DESKTOP\Annotator.lnk"
