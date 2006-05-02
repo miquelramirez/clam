@@ -339,29 +339,9 @@ to the proper cell.&lt;/p></string>
      <x>0</x>
      <y>0</y>
      <width>979</width>
-     <height>28</height>
+     <height>31</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuView" >
-    <property name="title" >
-     <string>View</string>
-    </property>
-    <addaction name="actionAddSegmentationView" />
-    <addaction name="actionAddFrameEvolutionView" />
-    <addaction name="actionAddInstantView" />
-   </widget>
-   <widget class="QMenu" name="mPlaybackMenu" >
-    <property name="title" >
-     <string>&amp;Playback</string>
-    </property>
-    <addaction name="playAction" />
-    <addaction name="pauseAction" />
-    <addaction name="stopAction" />
-    <addaction name="separator" />
-    <addaction name="mLinkCurrentSegmentToPlaybackAction" />
-    <addaction name="mAuralizeSegmentOnsetsAction" />
-    <addaction name="mAuralizeFrameLevelDescriptorsAction" />
-   </widget>
    <widget class="QMenu" name="mSongMenu" >
     <property name="title" >
      <string>&amp;Song</string>
@@ -397,6 +377,31 @@ to the proper cell.&lt;/p></string>
     <addaction name="separator" />
     <addaction name="helpAboutQtAction" />
     <addaction name="helpAboutAction" />
+   </widget>
+   <widget class="QMenu" name="mPlaybackMenu" >
+    <property name="title" >
+     <string>&amp;Playback</string>
+    </property>
+    <addaction name="playAction" />
+    <addaction name="pauseAction" />
+    <addaction name="stopAction" />
+    <addaction name="separator" />
+    <addaction name="mLinkCurrentSegmentToPlaybackAction" />
+    <addaction name="mAuralizeSegmentOnsetsAction" />
+    <addaction name="mAuralizeFrameLevelDescriptorsAction" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>View</string>
+    </property>
+    <widget class="QMenu" name="menuAddInstantView" >
+     <property name="title" >
+      <string>Add &amp;instant view</string>
+     </property>
+    </widget>
+    <addaction name="actionAddSegmentationView" />
+    <addaction name="actionAddFrameEvolutionView" />
+    <addaction name="menuAddInstantView" />
    </widget>
    <addaction name="mFileMenu" />
    <addaction name="mProjectMenu" />
@@ -702,20 +707,17 @@ to the proper cell.&lt;/p></string>
     <string>Add &amp;frame evolution view</string>
    </property>
   </action>
-  <action name="actionAddInstantView" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
-   <property name="text" >
-    <string>Add &amp;instant view</string>
-   </property>
-  </action>
   <action name="editProjectPropertiesAction" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/edit.png</iconset>
    </property>
    <property name="text" >
     <string>Edit project properties</string>
+   </property>
+  </action>
+  <action name="actionPrueba" >
+   <property name="text" >
+    <string>Prueba</string>
    </property>
   </action>
  </widget>

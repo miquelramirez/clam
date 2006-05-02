@@ -62,7 +62,8 @@
         </sizepolicy>
        </property>
        <property name="text" >
-        <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">CLAM Annotator v 0.3&lt;/span>&lt;br />&lt;/p>&lt;p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Based on CLAM v0.90&lt;/p>&lt;/body>&lt;/html></string>
+        <string>&lt;p>&lt;b>CLAM Annotator v 0.3&lt;/b>&lt;/p>
+		&lt;p>Based on CLAM v0.90&lt;/p></string>
        </property>
       </widget>
      </item>

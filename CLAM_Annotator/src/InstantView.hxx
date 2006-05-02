@@ -9,12 +9,9 @@
 
 #include <CLAM/Assert.hxx>
 
-#include "Enumerated.hxx"
-#include "TypePlugin.hxx"
-
 namespace CLAM_Annotator{
 	
-	class InstantView:public CLAM::DynamicType
+	class InstantView :public CLAM::DynamicType
 	{
 		DYNAMIC_TYPE(InstantView,3);
 		DYN_ATTRIBUTE(0, public, std::string, Type); ///< The type name. Should be at the Type factory.

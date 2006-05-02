@@ -40,6 +40,7 @@
 #include <vmBPFPlayer.hxx>
 #include "PcpTorus.hxx"
 #include "KeySpace.hxx"
+#include "InstantViewPlugin.hxx"
 
 #define VERSION "2.1"
 
@@ -94,9 +95,7 @@ void Annotator::computeSongDescriptors()
 	if (!mProject.HasExtractor() || mProject.GetExtractor()=="")
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("<p><b>Error: No extractor defined for the project.</b></p>\n"
-					"<p>Unable to extract descriptors from song. "
-					"Define the extractor first, please.</p>"));
+				tr("<p><b>Error: No extractor was defined for the project.</b></p>\n"));
 		return;
 	}
 	mStatusBar << "Launching Extractor..." << mStatusBar;
@@ -108,12 +107,11 @@ void Annotator::computeSongDescriptors()
 	bool ok = runner->run(mProject.GetExtractor().c_str(),
 		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str(),
 		QDir::current().path());
-//			mProject.BaseDir().c_str());
 	if (!ok)
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
 				tr("<p><b>Error: Unable to launch the extractor.</b></p>\n"
-					"<p>Check that the extractor is well configured and you have permissions to run it.</p>\n"
+					"<p>Check that the project extractor is well configured and you have permissions to run it.</p>\n"
 					"<p>The configured command was:</p>\n<tt>%1</tt>")
 				.arg(mProject.GetExtractor().c_str())
 				);
@@ -242,7 +240,7 @@ void Annotator::updateRecentFilesMenu()
 {
 	mRecentFilesMenuSeparator->setVisible(mRecentOpenedProjects.size() > 0);
 	for (unsigned i = 0; i < mRecentOpenedProjects.size(); ++i) {
-		QString text = tr("&%1 %2").arg(i + 1).arg(mRecentOpenedProjects[i].c_str());
+		QString text = QString("&%1 %2").arg(i + 1).arg(mRecentOpenedProjects[i].c_str());
 		mRecentFilesActions[i]->setText(text);
 		mRecentFilesActions[i]->setData(mRecentOpenedProjects[i].c_str());
 		mRecentFilesActions[i]->setVisible(true);
@@ -315,7 +313,7 @@ void Annotator::updateApplicationTitle()
 	if (mProjectNeedsSave)
 		title+=tr(" [modified project]");
 	if (mDescriptorsNeedSave)
-		title+=tr(" [modified song]");
+		title+=tr(" [modified descriptors]");
 	setWindowTitle(title);
 }
 
@@ -338,11 +336,11 @@ void Annotator::initProject()
 	catch (CLAM::XmlStorageErr & e)
 	{
 		QMessageBox::warning(this,tr("Error Loading Schema File"),
-			constructFileError(mProject.GetSchema(),e));
+				constructFileError(mProject.GetSchema(),e));
 		return;
 	}
 	adaptInterfaceToCurrentSchema();
-	
+
 	markCurrentSongChanged(false);
 	markProjectChanged(false);
 	appendRecentOpenedProject(mProject.File());
@@ -364,27 +362,18 @@ void Annotator::adaptInterfaceToCurrentSchema()
 }
 void Annotator::adaptInstantViewsToSchema()
 {
-	if (!mProject.HasViews()) return;
-
 	for (unsigned i=0; i<mInstantViews.size(); i++)
 		delete mInstantViews[i];
 	mInstantViews.clear();
 
+	if (!mProject.HasViews()) return;
+
 	std::vector<CLAM_Annotator::InstantView> & instantViews = mProject.GetViews();
 	for (unsigned i=0; i<instantViews.size(); i++)
 	{
-		if (instantViews[i].GetType() == "PcpTorus")
-		{
-			CLAM::VM::PcpTorus * torus = new CLAM::VM::PcpTorus(mVSplit);
-			torus->setSource(mProject, instantViews[i].GetAttributeScope(), instantViews[i].GetAttributeName());
-			mInstantViews.push_back(torus);
-		}
-		if (instantViews[i].GetType() == "KeySpace")
-		{
-			CLAM::VM::KeySpace * space = new CLAM::VM::KeySpace(mVSplit);
-			space->setSource(mProject, instantViews[i].GetAttributeScope(), instantViews[i].GetAttributeName());
-			mInstantViews.push_back(space);
-		}
+		InstantViewPlugin * plugin = InstantViewPlugin::getPlugin(instantViews[i].GetType());
+		CLAM::VM::PcpTorus * view = plugin->createView(mVSplit, mProject, instantViews[i]);
+		mInstantViews.push_back(view);
 	}
 }
 
@@ -404,10 +393,10 @@ void Annotator::adaptSegmentationsToCurrentSchema()
 	const std::list<std::string> & segmentationNames =
 		mProject.GetNamesByScopeAndType("Song", "Segmentation");
 	for (std::list<std::string>::const_iterator it =  segmentationNames.begin();
-		it != segmentationNames.end();
-		it++)
+			it != segmentationNames.end();
+			it++)
 	{
-		mStatusBar << tr("Adding Segmentation: '%1'").arg(it->c_str()) << mStatusBar;
+		mStatusBar << tr("Adding segmentation: '%1'").arg(it->c_str()) << mStatusBar;
 		mSegmentationSelection->addItem(it->c_str());
 	}
 }
@@ -432,9 +421,9 @@ void Annotator::refreshSegmentation()
 		{
 			theSegmentation = 
 				new CLAM::UnsizedSegmentation(
-					audioDuration,
-					&descriptorsMarks[0],
-					&descriptorsMarks[0]+nMarks);
+						audioDuration,
+						&descriptorsMarks[0],
+						&descriptorsMarks[0]+nMarks);
 		} break;
 		case CLAM_Annotator::SegmentationPolicy::eContinuous:
 		{
@@ -443,9 +432,9 @@ void Annotator::refreshSegmentation()
 			std::cout << audioDuration << std::endl;
 			theSegmentation = 
 				new CLAM::ContiguousSegmentation(
-					audioDuration,
-					&descriptorsMarks[0],
-					&descriptorsMarks[0]+nMarks);
+						audioDuration,
+						&descriptorsMarks[0],
+						&descriptorsMarks[0]+nMarks);
 		} break;
 		case CLAM_Annotator::SegmentationPolicy::eOverlapping:
 			// Not yet implemented, using Discontinuous by now
@@ -453,9 +442,9 @@ void Annotator::refreshSegmentation()
 		{
 			theSegmentation = 
 				new CLAM::DiscontinuousSegmentation(
-					audioDuration,
-					&descriptorsMarks[0],
-					&descriptorsMarks[0]+nMarks);
+						audioDuration,
+						&descriptorsMarks[0],
+						&descriptorsMarks[0]+nMarks);
 		} break;
 	}
 	if (mSegmentation) delete mSegmentation;
@@ -519,7 +508,7 @@ void Annotator::removeSegment(unsigned index)
 	if (childScope!="")
 	{
 		CLAM_ASSERT(index<mpDescriptorPool->GetNumberOfContexts(childScope),
-			"Invalid segment to be removed");
+				"Invalid segment to be removed");
 		mpDescriptorPool->Remove(childScope, index);
 	}
 	updateSegmentations();
@@ -533,7 +522,7 @@ void Annotator::insertSegment(unsigned index)
 	if (childScope!="")
 	{
 		CLAM_ASSERT(index<=mpDescriptorPool->GetNumberOfContexts(childScope),
-			"Invalid position to insert a segment");
+				"Invalid position to insert a segment");
 		mpDescriptorPool->Insert(childScope, index);
 		mProject.InitInstance(childScope, index, *mpDescriptorPool);
 	}
@@ -577,6 +566,16 @@ void Annotator::makeConnections()
 		connect(mRecentFilesActions[i], SIGNAL(triggered()), this, SLOT(fileOpenRecent()));
 		mFileMenu->addAction(mRecentFilesActions[i]);
 	}
+	std::list<std::string> pluginIds = InstantViewPlugin::availablePlugins();
+	for (std::list<std::string>::iterator pluginId = pluginIds.begin();
+			pluginId != pluginIds.end(); pluginId++)
+	{
+		QAction * viewAction = new QAction(this);
+		viewAction->setText(InstantViewPlugin::getPlugin(*pluginId)->name());
+		viewAction->setData(pluginId->c_str());
+		connect(viewAction, SIGNAL(triggered()), this, SLOT(addInstantView()));
+		menuAddInstantView->addAction(viewAction);
+	}
 
 	// Changing the current song
 	connect(mSongListView, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
@@ -595,44 +594,44 @@ void Annotator::makeConnections()
 			this, SLOT(segmentDescriptorsTableChanged(int) ) );
 	// Apply frame descriptor changes
 	connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
-		 this, SLOT(frameDescriptorsChanged(unsigned, double)));
+			this, SLOT(frameDescriptorsChanged(unsigned, double)));
 
 	// Segment editing
 	connect(mSegmentEditor, SIGNAL(segmentOnsetChanged(unsigned,double)),
-		this, SLOT(segmentationMarksChanged(unsigned, double)));
+			this, SLOT(segmentationMarksChanged(unsigned, double)));
 	connect(mSegmentEditor, SIGNAL(segmentOffsetChanged(unsigned,double)),
-		this, SLOT(segmentationMarksChanged(unsigned, double)));
+			this, SLOT(segmentationMarksChanged(unsigned, double)));
 	connect(mSegmentEditor, SIGNAL(currentSegmentChanged()),
-		this, SLOT(changeCurrentSegment()));
+			this, SLOT(changeCurrentSegment()));
 	connect(mSegmentEditor, SIGNAL(segmentDeleted(unsigned)),
-		this, SLOT(removeSegment(unsigned)));
+			this, SLOT(removeSegment(unsigned)));
 	connect(mSegmentEditor, SIGNAL(segmentInserted(unsigned)),
-		this, SLOT(insertSegment(unsigned)));
+			this, SLOT(insertSegment(unsigned)));
 
 	// Interplot viewport syncronization
-/*
-	connect(mSegmentEditor, SIGNAL(xRulerRange(double,double)),
-		mBPFEditor, SLOT(setHBounds(double,double)));
-	connect( mBPFEditor, SIGNAL(selectedXPos(double)),
-		 mSegmentEditor, SLOT(setSelectedXPos(double)));
-	connect(mSegmentEditor, SIGNAL(selectedXPos(double)),
-		mBPFEditor, SLOT(selectPointFromXCoord(double)));
-*/
+	/*
+	   connect(mSegmentEditor, SIGNAL(xRulerRange(double,double)),
+	   mBPFEditor, SLOT(setHBounds(double,double)));
+	   connect( mBPFEditor, SIGNAL(selectedXPos(double)),
+	   mSegmentEditor, SLOT(setSelectedXPos(double)));
+	   connect(mSegmentEditor, SIGNAL(selectedXPos(double)),
+	   mBPFEditor, SLOT(selectPointFromXCoord(double)));
+	   */
 	// Playhead update
 	connect( mPlayer, SIGNAL(playingTime(double)),
-		 this, SLOT(setCurrentPlayingTime(double)), Qt::DirectConnection);
+			this, SLOT(setCurrentPlayingTime(double)), Qt::DirectConnection);
 	connect( mPlayer, SIGNAL(stopTime(double,bool)),
-		 this, SLOT(setCurrentStopTime(double,bool)), Qt::DirectConnection);
+			this, SLOT(setCurrentStopTime(double,bool)), Qt::DirectConnection);
 
 	// Current position update
 	connect(mSegmentEditor, SIGNAL(selectedRegion(double,double)),
-		this, SLOT(setCurrentTime(double,double)));
+			this, SLOT(setCurrentTime(double,double)));
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
-		this, SLOT(setCurrentTime(double,double)));
+			this, SLOT(setCurrentTime(double,double)));
 
 	// Update auralizations whenever player stop and they have been modified
 	connect(mPlayer, SIGNAL(stopTime(double)),
-		this, SLOT(updatePendingAuralizationsChanges()));
+			this, SLOT(updatePendingAuralizationsChanges()));
 
 	// Making the splitters look like a table
 	connect(mFrameEditorSplit, SIGNAL(splitterMoved(int,int)),
@@ -642,10 +641,10 @@ void Annotator::makeConnections()
 }
 void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 {
-	for (unsigned i=0; i<mInstantViews.size(); i++)
-		mInstantViews[i]->setCurrentTime(timeMilliseconds);
 	mSegmentEditor->updateLocator(timeMilliseconds);
 	mBPFEditor->updateLocator(timeMilliseconds);
+	for (unsigned i=0; i<mInstantViews.size(); i++)
+		mInstantViews[i]->setCurrentTime(timeMilliseconds);
 }
 
 void Annotator::setCurrentStopTime(double timeMilliseconds, bool paused)
@@ -669,6 +668,26 @@ void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMilisecond
 	updating=false;
 }
 
+void Annotator::addInstantView()
+{
+	// This hack is from the qt example, don't ask me...
+	QAction *action = qobject_cast<QAction *>(sender());
+	if (!action) return;
+	std::string viewType = action->data().toString().toStdString();
+	InstantViewPlugin * plugin = InstantViewPlugin::getPlugin(viewType);
+	CLAM_Annotator::InstantView config;
+	config.SetType(viewType);
+	if (!plugin->configureDialog(mProject, config)) return;
+	CLAM::VM::PcpTorus * view = plugin->createView(mVSplit, mProject, config);
+	mInstantViews.push_back(view);
+	mProject.GetViews().push_back(config);
+	markProjectChanged(true);
+	if (mpDescriptorPool)
+		view->updateData(*mpDescriptorPool, mCurrentAudio.GetSampleRate());
+	else
+		view->clearData();
+	// TODO: Set current time
+}
 void Annotator::fileOpenRecent()
 {
 	// This hack is from the qt example, don't ask me...
@@ -686,8 +705,8 @@ void Annotator::loadProject(const std::string & projectName)
 	}
 	catch (CLAM::XmlStorageErr e)
 	{
-		QMessageBox::warning(this,tr("Error Loading Project File"),
-		constructFileError(projectName,e));
+		QMessageBox::warning(this,tr("Error loading project file"),
+			constructFileError(projectName,e));
 		return;
 	}
 	mProject = temporaryProject;
@@ -771,6 +790,7 @@ void Annotator::updateSongListWidget()
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
 {
+	if (mPlayer) mPlayer->stop();
 	askToSaveDescriptorsIfNeeded();
 
 	if (! mProjectNeedsSave )
@@ -826,7 +846,9 @@ void Annotator::addSongsToProject()
 
 void Annotator::fileOpen()
 {
-	QString qFileName = QFileDialog::getOpenFileName(this, tr("Choose a project to work with"), QString::null, "*.pro");
+	QString qFileName = QFileDialog::getOpenFileName(this, 
+			tr("Choose a project to work with"), QString::null, 
+			tr("Annotator project file (*.pro)"));
 	if(qFileName == QString::null) return;
 	loadProject(qFileName.toStdString());
 }
@@ -835,7 +857,7 @@ void Annotator::on_newProjectAction_triggered()
 {
 	QString newProjectName = QFileDialog::getSaveFileName(this,
 			tr("Choose a filename for the new project"),
-			0, tr("Annotator project files (*.pro)")
+			0, tr("Annotator project file (*.pro)")
 			);
 	if (newProjectName.isNull()) return;
 	ProjectEditor projectDialog(this);
@@ -886,7 +908,7 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 {
 	if (mPlayer) mPlayer->stop();
 	setCurrentTime(0,0);
-	mStatusBar << tr("Saving Previous Song Descriptors...") << mStatusBar;
+	mStatusBar << tr("Saving previous song descriptors...") << mStatusBar;
 	if (previous) askToSaveDescriptorsIfNeeded();
 	if (!current) return;
 
@@ -897,9 +919,9 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	mCurrentDescriptorsPoolFileName = mProject.GetDescriptorsFileName(songFilename);
 	if (mCurrentDescriptorsPoolFileName=="") return; // TODO: fill with default data
 	loadDescriptorPool();
-	mStatusBar << tr("Filling Global Descriptors...") << mStatusBar;
+	mStatusBar << tr("Filling global descriptors...") << mStatusBar;
 	refreshGlobalDescriptorsTable();
-	mStatusBar << tr("Drawing Audio...") << mStatusBar;
+	mStatusBar << tr("Drawing audio...") << mStatusBar;
 	mAudioRefreshTimer->stop();
 	
 	mSegmentEditor->hide();
@@ -927,7 +949,7 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 }
 void Annotator::refreshInstantViews()
 {
-	mStatusBar << tr("Loading Instant Views Data...") << mStatusBar;
+	mStatusBar << tr("Loading instant views data...") << mStatusBar;
 	for (unsigned i=0; i<mInstantViews.size(); i++)
 	{
 		if (mpDescriptorPool)
@@ -935,11 +957,13 @@ void Annotator::refreshInstantViews()
 		else
 			mInstantViews[i]->clearData();
 	}
+	for (unsigned i=0; i<mInstantViews.size(); i++)
+		mInstantViews[i]->update();
 }
 
 void Annotator::refreshEnvelopes()
 {
-	mStatusBar << tr("Loading LLD Data...") << mStatusBar;
+	mStatusBar << tr("Loading frame level data...") << mStatusBar;
 
 	// TODO: Not all the things should be done here
 	mEPFs.clear();
@@ -1039,7 +1063,7 @@ void Annotator::loadDescriptorPool()
 		if (!mProject.ValidateDataPool(*tempPool, os))
 		{
 			std::cerr << os.str() << std::endl;
-			QMessageBox::warning(this, tr("Error Loading Descriptors Pool File"),
+			QMessageBox::warning(this, tr("Error loading descriptors"),
 					os.str().c_str());
 			delete tempPool;
 			return;
@@ -1047,7 +1071,7 @@ void Annotator::loadDescriptorPool()
 	}
 	catch (CLAM::XmlStorageErr e)
 	{
-		QMessageBox::warning(this,tr("Error Loading Descriptors Pool File"), 
+		QMessageBox::warning(this,tr("Error loading descriptors"), 
 			constructFileError(poolFile,e));
 		delete tempPool;
 		return;
@@ -1060,7 +1084,7 @@ void Annotator::loadDescriptorPool()
 
 void Annotator::refreshGlobalDescriptorsTable()
 {
-	mStatusBar << "Refressing song data..." << mStatusBar;
+	mStatusBar << tr("Refressing song data...") << mStatusBar;
 	if (!mpDescriptorPool) return;
 	mGlobalDescriptors->refreshData(0,mpDescriptorPool);
 	mDescriptorsTable->show();
