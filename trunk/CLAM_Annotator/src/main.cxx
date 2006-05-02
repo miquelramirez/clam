@@ -20,8 +20,13 @@ int main( int argc, char ** argv )
 	QApplication app( argc, argv );
 
 	QString locale = QLocale::system().name();
+
+	QTranslator qtTranslator;
+	qtTranslator.load("qt_"+ locale);
+	app.installTranslator(&qtTranslator);
+
 	QTranslator translator;
-	translator.load("Annotator_"+ locale);
+	translator.load("share/annotator/i18n/Annotator_"+ locale);
 	app.installTranslator(&translator);
 
 	QCoreApplication::setOrganizationName("CLAM");

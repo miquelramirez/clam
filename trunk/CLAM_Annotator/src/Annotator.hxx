@@ -100,6 +100,7 @@ public slots:
 
 	void fileOpen();
 	void fileOpenRecent();
+	void addInstantView();
 
 	void addSongsToProject();
 	void deleteSongsFromProject();
