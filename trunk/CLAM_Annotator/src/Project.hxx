@@ -8,6 +8,7 @@
 #include <CLAM/Filename.hxx>
 #include <CLAM/DescriptionScheme.hxx>
 #include <vector>
+#include <QtGui/QInputDialog>
 
 namespace CLAM_Annotator
 {
@@ -93,7 +94,7 @@ public:
 		return mSchema;
 	}
 	ScopeSchema GetScopeSchema(const std::string & scope) const;
-	std::list<std::string> GetNamesByScopeAndType(const std::string & scope, const std::string & type);
+	std::list<std::string> GetNamesByScopeAndType(const std::string & scope, const std::string & type) const;
 	bool ValidateDataPool(const CLAM::DescriptionDataPool & dataPool, std::ostream & err)
 	{
 		return GetAnnotatorSchema().Validate(dataPool,err);

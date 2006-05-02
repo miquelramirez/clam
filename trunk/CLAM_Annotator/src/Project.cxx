@@ -85,7 +85,7 @@ const CLAM_Annotator::SchemaAttribute & Project::GetParentAttribute(const std::s
 	throw "No parent";
 }
 
-std::list<std::string> Project::GetNamesByScopeAndType(const std::string & scope, const std::string & type)
+std::list<std::string> Project::GetNamesByScopeAndType(const std::string & scope, const std::string & type) const
 {
 	const std::list<CLAM_Annotator::SchemaAttribute>& hlds = mSchema.GetAllAttributes();
 	std::list<CLAM_Annotator::SchemaAttribute>::const_iterator it;
