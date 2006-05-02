@@ -23,8 +23,8 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 	_samplingRate=44100;
 	_maxValue=1;
 	setWhatsThis(tr(
-				"<p>The <b>Pitch Torus view</b> represents the intensity of each note played.</p>\n"
-				"<p>Notes are displayed so that harmonic notes are painted closer.\n"
+				"<p>The <b>Tonnetz view</b> represents the intensity of each note played.</p>\n"
+				"<p>Notes are displayed in a toroidal surface so that harmonic notes are painted closer.\n"
 				"Thus, when the played notes are a chord, a mode dependant shape is displayed.\n"
 				"Typical shapes are:</p>\n"
 				"<ul>\n"

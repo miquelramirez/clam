@@ -39,7 +39,7 @@ InstantViewPlugin * InstantViewPlugin::getPlugin(const std::string & type)
 class PcpTorusPlugin : public InstantViewPlugin
 {
 	virtual const char * id() const { return "PcpTorus"; }
-	virtual QString name() const { return QObject::tr("Pitch Torus"); }
+	virtual QString name() const { return QObject::tr("Tonnezt"); }
 	CLAM::VM::PcpTorus * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
 		CLAM::VM::PcpTorus * view =  new CLAM::VM::PcpTorus(parent);
