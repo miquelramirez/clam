@@ -56,14 +56,7 @@ ShowUnInstDetails show
 
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
-   ReadEnvStr $0 CLAM_PATH
-   StrCmp $0 "" 0 +6
-   MessageBox MB_ICONEXCLAMATION|MB_YESNO "CLAM external dependencies have not been found. If you already installed them you will need to reboot after this installation. If you haven't installed them you are recommended to abort the installation. Do you want to continue?" IDYES +2
-   Abort
-   MessageBox MB_ICONEXCLAMATION|MB_OK "The application won't work until you install the external libraries package located at ${PRODUCT_WEB_SITE}"
    StrCpy $INSTDIR "$PROGRAMFILES\CLAM\Annotator"
-   Goto +2
-   StrCpy $INSTDIR "$0\Annotator"
    
 FunctionEnd
 
@@ -78,6 +71,16 @@ Section "Principal" SEC01
   File '${QTDIR}\lib\QtCore4.dll'
   File '${QTDIR}\lib\QtGui4.dll'
   File '${QTDIR}\lib\QtOpenGL4.dll'
+  File '${EXTERNALDLLDIR}\libsndfile.dll'
+  File '${EXTERNALDLLDIR}\ogg.dll'
+  File '${EXTERNALDLLDIR}\pthreadVCE.dll'
+  File '${EXTERNALDLLDIR}\qt-mt322.dll'
+  File '${EXTERNALDLLDIR}\vorbis.dll'
+  File '${EXTERNALDLLDIR}\vorbisenc.dll'
+  File '${EXTERNALDLLDIR}\vorbisfile.dll'
+  File '${EXTERNALDLLDIR}\xerces-c_2_3_0.dll'
+  File '${VCRUNTIMEDIR}\msvcp71.dll'
+  File '${VCRUNTIMEDIR}\msvcr71.dll'
   CreateShortCut "$DESKTOP\Annotator.lnk" "$INSTDIR\bin\Annotator.exe"
   SetOutPath "$INSTDIR\Samples\"
   File "..\Samples\Schema.sc"
@@ -159,6 +162,16 @@ Section Uninstall
   Delete "$INSTDIR\bin\QtCore4.dll"
   Delete "$INSTDIR\bin\QtGui4.dll"
   Delete "$INSTDIR\bin\QtOpenGL4.dll"
+  Delete "$INSTDIR\bin\libsndfile.dll"
+  Delete "$INSTDIR\bin\ogg.dll"
+  Delete "$INSTDIR\bin\pthreadVCE.dll"
+  Delete "$INSTDIR\bin\qt-mt322.dll"
+  Delete "$INSTDIR\bin\vorbis.dll"
+  Delete "$INSTDIR\bin\vorbisenc.dll"
+  Delete "$INSTDIR\bin\vorbisfile.dll"
+  Delete "$INSTDIR\bin\xerces-c_2_3_0.dll"
+  Delete "$INSTDIR\bin\msvcp71.dll"
+  Delete "$INSTDIR\bin\msvcr71.dll"
   Delete "$INSTDIR\bin\Annotator.exe"
   Delete "$INSTDIR\bin\ChordExtractor.exe"
   Delete "$INSTDIR\bin\ClamExtractorExample.exe"
@@ -171,10 +184,13 @@ Section Uninstall
   Delete "$SMPROGRAMS\CLAM\Annotator\Annotator.lnk"
 
   RMDir "$SMPROGRAMS\CLAM\Annotator"
+  RMDir "$SMPROGRAMS\CLAM"
   RMDir "$INSTDIR\Samples\SongsTest"
-  RMDir "$INSTDIR\Samples\"
-  RMDir "$INSTDIR\resources\"
+  RMDir "$INSTDIR\Samples"
   RMDir "$INSTDIR\bin"
+  RMDir "$INSTDIR\share\annotator\i18n"
+  RMDir "$INSTDIR\share\annotator"
+  RMDir "$INSTDIR\share"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"

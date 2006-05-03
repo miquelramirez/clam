@@ -3,7 +3,7 @@ import os
 import glob
 import sys
 
-version='0.3'
+version='0.3.1b2'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
@@ -99,6 +99,8 @@ if qrcfiles : sources += env.Qrc(source=qrcfiles)
 uifiles = scanFiles("*.ui", sourcePaths)
 if uifiles: uiheaders = env.Uic4(source=uifiles)
 
+if sys.platform=="win32" :
+	sources += env.RES(source=["scons/Annotator.rc"])
 
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=CLAMVmQtPath)
@@ -153,9 +155,21 @@ installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
 if sys.platform=='win32' : 
-	installTargets += [env.Install(env['install_prefix']+"/bin", os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")) for dll in 'Core', 'Gui', 'OpenGL']
-	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
+	installTargets += [
+		env.Install(
+			env['install_prefix']+"/bin", 
+			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
+			) for dll in 'Core', 'Gui', 'OpenGL']
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % version ])
+	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
+	externalsDllDir = os.path.join(os.environ['CLAM_PATH'],"externals")
+	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
+	# Get the visual studio runtimes path
+	for vcRuntimeDir in os.environ['PATH'].split(";") :
+		vcRuntimeDir = os.path.normpath(vcRuntimeDir)
+		if os.access(os.path.join(vcRuntimeDir,"msvcr71.dll"),os.R_OK) :
+			break
+	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
 	win_packages = [env.Nsis( source='scons\\clam_annotator.nsi')]
 	env.Alias('package', win_packages)
 
