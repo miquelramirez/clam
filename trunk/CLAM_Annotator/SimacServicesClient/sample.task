@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <Task>
   <Description>The objective &amp; of this task is to test some issues</Description>
-  <ContentLocator>http://localhost/SimacServices/ContentLocator</ContentLocator>
-  <MetadataProvider>http://localhost/SimacServices/MetadataProvider</MetadataProvider>
+  <ContentLocator>http://simacservices.iua.upf.edu/ContentLocator</ContentLocator>
+  <MetadataProvider>http://simacservices.iua.upf.edu/MetadataProvider</MetadataProvider>
   <IDList>
-    <ID>1442</ID>
-    <ID>34</ID>
+    <ID>77769</ID>
   </IDList>
   <Descriptors>
-    <Descriptor modify='yes'>Song::Artist</Descriptor>
-    <Descriptor modify='no'>Song::Title</Descriptor>
-    <Descriptor modify='yes'>Frame::Mean</Descriptor>
-    <Descriptor>Song::Frames</Descriptor>
+    <Descriptor modify='yes'>Song::AnnotatedMode</Descriptor>
   </Descriptors>
 </Task>
