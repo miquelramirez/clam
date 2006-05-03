@@ -67,7 +67,11 @@ class Tasker:
 		projectsonglisting = ""
 		self.printfunction(u"\n  == Retrieving data ==\n")
 		
-		schema = self.metadataprovider.QuerySchema( descriptors )
+		try:
+			schema = self.metadataprovider.QuerySchema( descriptors )
+		except:
+			raise TaskerError("Access error\nError accessing metadata provider server.")
+
 		self.createFile( self.projectname, '.sc', schema )
 	
 		for id in ids:
