@@ -3,7 +3,7 @@ import os
 import glob
 import sys
 
-version='0.3.1b2'
+version='0.3.1b3'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
@@ -138,7 +138,6 @@ programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
 
 env.Uic4(source="SimacServicesClient/GUI.ui")
 bocaClientSources = [
-#	"SimacServicesClient/BocaClientGui.cxx",
 	"SimacServicesClient/BocaClientMain.cxx",
 	env.Moc4("SimacServicesClient/BocaClientGui.hxx"),
 	"SimacServicesClient/BocaTaskRunner.cxx",
