@@ -34,23 +34,16 @@ class TaskerError( Exception ):
 class Tasker:
 	def __init__( self, printfunction=sys.stdout.write ):
 		self.printfunction = printfunction
-		self.config = shelve.open( 'config.dict', writeback=True)
 
-	def __del__( self ):
-		self.config.close()
-
-	def processTask( self, taskfile, projectname, path=os.getcwd() ):
+	def processTask( self, taskfile, projectname, path ):
 		path += os.sep
-		self.config['taskfile'] = taskfile
-		self.config['projectname'] = projectname
-		self.config['path'] = path 
-		self.config['songlisting'] = {}
-		self.config['modifydescriptors'] = []
+
+		############################ EP EP EP
+		songlisting = shelve.open( path+os.sep+projectname+".info.dict", writeback=True)
 
 		task = self._retrieveTask( taskfile )
 
-		ids, descriptors, contentlocatoruri, metadataprovideruri, description = self._extractParameters( task )
-		self.config['metadataprovideruri']=metadataprovideruri
+		ids, descriptors, modifydescriptors, contentlocatoruri, metadataprovideruri, description = self._extractParameters( task )
 
 		contentlocator = ServiceStub.ContentLocator( contentlocatoruri )
 		metadataprovider = ServiceStub.MetadataProvider( metadataprovideruri )
@@ -94,7 +87,7 @@ class Tasker:
 			
 			self._createFile( path, audiofilename, '.pool', pool )
 			#Store modification file for each pool to keep track of the ones upgraded
-			self.config['songlisting'][audiofilename] = id
+			songlisting[audiofilename] = id
 
 		if projectsonglisting == "":
 			raise TaskerError( "Access error\nNo file from the task could be downloaded. Check the task file for correct ids." )
@@ -104,35 +97,33 @@ class Tasker:
 		#Print log
 		self.printfunction( u"\n  == Task processing finished ==\n" )
 		self.printfunction( u" - Created files %s and %s\n" % ( projectname+".pro", projectname+".sc" ) )
-		self.printfunction( u" - Downloaded %d audio file(s) and generated the corresponding pools\n" % len( self.config['songlisting'] ) )
+		self.printfunction( u" - Downloaded %d audio file(s) and generated the corresponding pools\n" % len( songlisting ) )
 
 		os.utime( taskfile, None )
+		songlisting.close()
 
 
-	def runAnnotator( self ):
-		try:
-			path = self.config['path']
-			projectname = self.config['projectname']
-		except KeyError:
-			raise TaskerError( "Workflow error\nCould not restore configuration, make sure you follow the usage process." )
-
+	def runAnnotator( self, taskfile, projectname, path ):
+		if not os.path.exists( path + os.sep + projectname + ".pro" ):
+			raise TaskerError( "Workflow error\nThe corresponding Annotator project is not created, make sure you follow the usage process." )
+			
 		self.printfunction( u"\n  == CLAM-Annotator ==\n" )
 		self.printfunction( u" - Launching...\n" )
 		if sys.platform != 'win32':
-			result = os.system( "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/lib Annotator %s.pro &> /dev/null" % ( path+projectname ) )
+			result = os.system( "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/lib Annotator %s.pro &> /dev/null" % ( path+os.sep+projectname ) )
 		else:
 			raise TaskError( "Run Annotator error\nWindows execution of the Annotator is still not managed." )
 		self.printfunction( "RESULT = %d" % result )
 		self.printfunction( u" - Finalized\n" )
 
 
-	def uploadChanges( self, modifiedlist ):
+	def uploadChanges( self, taskfile, projectname, path, modifiedlist ):
 			
+		task = self._retrieveTask( taskfile )
+		ids, descriptors, modifydescriptors, contentlocatoruri, metadataprovideruri, description = self._extractParameters( task )
+		metadataprovider = ServiceStub.MetadataProvider( metadataprovideruri )
 		try:
-			path = self.config['path']
-			metadataprovider = ServiceStub.MetadataProvider( self.config['metadataprovideruri'] )
-			songlisting = self.config['songlisting']
-			modifydescriptors = self.config['modifydescriptors']
+			songlisting=shelve.open( path+os.sep+projectname+'.info.dict',writeback=True)
 		except KeyError:
 			raise TaskerError( "Workflow error\nCould not restore configuration, make sure you follow the usage process." )
 
@@ -152,7 +143,7 @@ class Tasker:
 					count += 1
 					self.printfunction( u"\n - Packing descriptors of: %s\n" % song )
 					uf.write( "<Song id='%s'>" % songlisting[song] )
-					poolfile=path+song+".pool"
+					poolfile=path+os.sep+song+".pool"
 					pool=Pool( poolfile )
 					temppool=Pool()
 
@@ -168,6 +159,7 @@ class Tasker:
 			if count==0:
 				self.printfunction( u" - No valid song descriptor has been found. Not doing any upload\n" )
 				return
+
 			self.printfunction( u" - Uploading the modified descriptor file to the server\n" )
 			
 			result=metadataprovider.UploadPackedDescriptors( uploadfile )
@@ -178,18 +170,15 @@ class Tasker:
 
 			#Clean!
 			os.remove( 'uploadfile.xml.gz' )
-
-			return 0
+			songlisting.close()
 		except:
-			return -1
+			songlisting.close()
 
 
-	def clean( self ):
+	def clean( self, taskfile, projectname, path ):
 		try:
-			taskfile = self.config['taskfile']
-			projectname = self.config['projectname']
-			path = self.config['path']
-			songlisting = self.config['songlisting']
+			#TODO tema songlisting
+			songlisting = self.songlisting
 		except KeyError:
 			raise TaskerError( "Workflow error\nCould not restore configuration, make sure you follow the usage process." )
 
@@ -201,8 +190,6 @@ class Tasker:
 		for song in songlisting.keys():
 			tryremove( path+os.sep+song )
 			tryremove( path+os.sep+song+".pool" )
-		self.config.close()
-		tryremove( "config.dict" )
 
 
 	def _retrieveTask( self, location ):
@@ -249,16 +236,18 @@ class Tasker:
 	def _extractParameters( self, task ):
 		ids = []
 		descriptors = []
+		modifydescriptors = []
 
 		for id in task.getElementsByTagName( "ID" ):
 			id.normalize()
 			ids.append( id.firstChild.data )
-		
+
+	
 		for desc in task.getElementsByTagName( "Descriptor" ):
 			desc.normalize()
 			if desc.hasAttribute( 'modify' ) and desc.getAttribute( 'modify' )=='yes':
 				scopename=desc.firstChild.data.split( '::' )
-				self.config['modifydescriptors'].append( ( scopename[0],scopename[1] ) )
+				modifydescriptors.append( ( scopename[0],scopename[1] ) )
 			descriptors.append( desc.firstChild.data )
 
 		contentlocatoruri = task.getElementsByTagName( "ContentLocator" )
@@ -275,7 +264,7 @@ class Tasker:
 			de[0].normalize()
 			description=saxutils.escape( de[0].firstChild.data )
 
-		return ids, descriptors, contentlocatoruri.strip(), metadataprovideruri.strip(), description
+		return ids, descriptors, modifydescriptors, contentlocatoruri.strip(), metadataprovideruri.strip(), description
 
 
 	def _createFile( self, path, name, extension, content ):

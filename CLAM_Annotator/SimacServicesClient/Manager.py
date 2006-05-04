@@ -19,12 +19,12 @@ def usage():
 	  NOTE: it will not perform an automatic clean
    
   -To do every step individually (in this order):
-    python Manager.py processtask <taskfile> <projectname> <path>
-    python Manager.py runannotator
-    python Manager.py upload <audiofiles>
+    python Manager.py download <taskfile> <projectname> <path>
+    python Manager.py runannotator <taskfile> <projectname> <path>
+    python Manager.py upload <taskfile> <projectname> <path> <audiofiles>
 
   -To clean all the task-related files:
-    python Manager.py clean
+    python Manager.py clean <taskfile> <projectname> <path>
 """ )
 	sys.exit( 0 )
 
@@ -42,9 +42,8 @@ def TaskerDo( argv ):
 			path = os.getcwd() + os.sep
 
 		tasker=Tasker()
-		tasker.setParameters( taskfile, projectname, path )
-		tasker.processTask()
-		tasker.runAnnotator()
+		tasker.processTask( taskfile, projectname, path )
+		tasker.runAnnotator( taskfile, projectname, path )
 		
 		tasktime = os.path.getmtime( taskfile )
 		modifiedlist = []
@@ -59,7 +58,7 @@ def TaskerDo( argv ):
 			print "\n - The following descriptor pools will be uploaded:\n  -" + ( '\n  - ' ).join( modifiedlist )
 			answer = raw_input( "\n > Do you want to do it? (y/n)  " ) 
 			if answer.strip() == 'y':
-				if tasker.uploadChanges( modifiedlist ) == -1:
+				if tasker.uploadChanges( taskfile, projectname, path, modifiedlist ) == -1:
 					print "\n - Error uploading descriptors\n"
 				else:
 					print "\n - Descriptors uploaded OK\n"
@@ -78,35 +77,38 @@ def TaskerProcesstask( argv ):
 	tasker.processTask( argv[2], argv[3], argv[4] )
 
 def TaskerRunannotator( argv ):
-	if len( argv ) != 2:
+	if len( argv ) != 5:
 		usage()
 	
 	tasker=Tasker()
-	tasker.runAnnotator()
+	tasker.runAnnotator( argv[2], argv[3], argv[4] )
 
 def TaskerUpload( argv ):
-	poollist = argv[2:]
-	if len( poollist ) == 0:
+	if len( argv ) < 6:
+		usage()
+	filelist = argv[5:]
+	if len( filelist ) == 0:
 		usage()
 	
 	tasker=Tasker()
-	tasker.uploadChanges( poollist )
+	tasker.uploadChanges( argv[2], argv[3], argv[4], filelist )
 
 def TaskerClean( argv ):
 	if len( argv ) != 2:
 		usage()
 	
 	tasker=Tasker()
-	tasker.clean()
+	tasker.clean( argv[2], argv[3], argv[4] )
 
 if __name__ == "__main__" :
 	if len( sys.argv ) == 1:
 		usage()
+	#################################### important compte amb el path que passen per parametre!
 
 	try:
 		if sys.argv[1] == "do":
 			TaskerDo( sys.argv )
-		elif sys.argv[1] == "processtask":
+		elif sys.argv[1] == "download":
 			TaskerProcesstask( sys.argv )
 		elif sys.argv[1] == "runannotator":
 			TaskerRunannotator( sys.argv )
