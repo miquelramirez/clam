@@ -145,7 +145,7 @@ class Tasker:
 		except KeyError:
 			raise TaskerError( "Workflow error\nCould not restore configuration, make sure you follow the usage process." )
 
-		modifiedlist = listModified( taskfile, projectname, path ).split('\n')
+		modifiedlist = self.listModified( taskfile, projectname, path ).split('\n')
 
 		try:
 			uploadfile='uploadfile.xml.gz'
