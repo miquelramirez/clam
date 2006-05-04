@@ -158,6 +158,7 @@ class Tasker:
 
 			if count==0:
 				self.printfunction( u" - No valid song descriptor has been found. Not doing any upload\n" )
+				os.remove('uploadfile.xml.gz')
 				return
 
 			self.printfunction( u" - Uploading the modified descriptor file to the server\n" )
