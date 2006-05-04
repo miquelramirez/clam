@@ -40,7 +40,7 @@ class PcpTorusPlugin : public InstantViewPlugin
 {
 	virtual const char * id() const { return "PcpTorus"; }
 	virtual QString name() const { return QObject::tr("Tonnezt"); }
-	CLAM::VM::PcpTorus * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
+	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
 		CLAM::VM::PcpTorus * view =  new CLAM::VM::PcpTorus(parent);
 		view->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
@@ -81,7 +81,7 @@ class KeySpacePlugin : public InstantViewPlugin
 {
 	virtual const char * id() const { return "KeySpace"; }
 	virtual QString name() const { return QObject::tr("Key Space"); }
-	CLAM::VM::PcpTorus * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
+	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
 		CLAM::VM::KeySpace * view = new CLAM::VM::KeySpace(parent);
 		view->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
