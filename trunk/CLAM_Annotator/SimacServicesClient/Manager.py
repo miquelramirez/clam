@@ -16,11 +16,10 @@ def usage():
 
   -To do all the process in a single step:
     python Manager.py do <taskfile> <projectname> [ <path> ]
-	  NOTE: it will perform an automatic clean
+	  NOTE: it will not perform an automatic clean
    
   -To do every step individually (in this order):
-    python Manager.py setparameters <taskfile> <projectname> <path>
-    python Manager.py processtask
+    python Manager.py processtask <taskfile> <projectname> <path>
     python Manager.py runannotator
     python Manager.py upload <audiofiles>
 
@@ -68,21 +67,15 @@ def TaskerDo( argv ):
 				print "\n - No descriptor uploaded\n"
 		#tasker.clean()
 	except TaskerError, err:
-		print err
+		print >> sys.stderr, err
+		sys.exit(-1)
 
-def TaskerSetparameters( argv ):
+def TaskerProcesstask( argv ):
 	if len( argv ) != 5:
 		usage()
 	
 	tasker=Tasker()
-	tasker.setParameters( argv[2], argv[3], argv[4] )
-
-def TaskerProcesstask( argv ):
-	if len( argv ) != 2:
-		usage()
-	
-	tasker=Tasker()
-	tasker.processTask()
+	tasker.processTask( argv[2], argv[3], argv[4] )
 
 def TaskerRunannotator( argv ):
 	if len( argv ) != 2:
@@ -113,8 +106,6 @@ if __name__ == "__main__" :
 	try:
 		if sys.argv[1] == "do":
 			TaskerDo( sys.argv )
-		elif sys.argv[1] == "setparameters":
-			TaskerSetparameters( sys.argv )
 		elif sys.argv[1] == "processtask":
 			TaskerProcesstask( sys.argv )
 		elif sys.argv[1] == "runannotator":
