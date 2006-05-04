@@ -86,12 +86,12 @@ public slots:
 			case 0:
 			{
 				ui.logEdit->run("python", QStringList() 
-						<< "Manager.py"
+						<< "SimacServicesClient/Manager.py"
 						<< "download"
 						<< task
 						<< project
-						<< path,
-						"SimacServicesClient");
+						<< path
+						, ".");
 			} break;
 			case 1:
 			{
@@ -103,17 +103,40 @@ public slots:
 				command += "\"";
 				std::system(command.toStdString().c_str());
 				show();
-				ui.logEdit->run("python", QStringList() 
-						<< "Manager.py"
-						<< "upload"
+
+				QProcess lister;
+				lister.start("python", QStringList() 
+						<< "SimacServicesClient/Manager.py"
+						<< "listmodified"
 						<< task
 						<< project
 						<< path
-						<< "modifiedaudio",
-						"SimacServicesClient");
+						);
+				lister.waitForFinished();
+				QString files = lister.readAll();
+				show();
+				update();
+
+				int response = QMessageBox::question(this, tr("Uploading changes"),
+						tr("The following files have been updated.\n\n")
+						+files
+						+tr("\nDo you want to upload then back to the BOCA server?"),
+						tr("Upload"), tr("Don't upload")
+						);
+				if (response==0)
+				{
+					ui.logEdit->run("python", QStringList() 
+							<< "SimacServicesClient/Manager.py"
+							<< "upload"
+							<< task
+							<< project
+							<< path
+							,".");
+				}
 			} break;
 			case 2:
 			{
+				currentStep=0;
 			} break;
 			default:
 			std::cerr << "Step no esperat " << previousStep;
