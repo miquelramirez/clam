@@ -15,17 +15,17 @@ def usage():
  Usage:
 
   -To do all the process in a single step:
-    python Tasker.py do <taskfile> <projectname> [ <path> ]
+    python Manager.py do <taskfile> <projectname> [ <path> ]
 	  NOTE: it will perform an automatic clean
    
   -To do every step individually (in this order):
-    python Tasker.py setparameters <taskfile> <projectname> <path>
-    python Tasker.py processtask
-    python Tasker.py runannotator
-    python Tasker.py upload <audiofiles>
+    python Manager.py setparameters <taskfile> <projectname> <path>
+    python Manager.py processtask
+    python Manager.py runannotator
+    python Manager.py upload <audiofiles>
 
   -To clean all the task-related files:
-    python Tasker.py clean
+    python Manager.py clean
 """ )
 	sys.exit( 0 )
 
