@@ -39,7 +39,6 @@
 #include <vmAudioPlot.hxx>
 #include <vmBPFPlayer.hxx>
 #include "PcpTorus.hxx"
-#include "KeySpace.hxx"
 #include "InstantViewPlugin.hxx"
 
 #define VERSION "2.1"
@@ -372,7 +371,7 @@ void Annotator::adaptInstantViewsToSchema()
 	for (unsigned i=0; i<instantViews.size(); i++)
 	{
 		InstantViewPlugin * plugin = InstantViewPlugin::getPlugin(instantViews[i].GetType());
-		CLAM::VM::PcpTorus * view = plugin->createView(mVSplit, mProject, instantViews[i]);
+		CLAM::VM::InstantView * view = plugin->createView(mVSplit, mProject, instantViews[i]);
 		mInstantViews.push_back(view);
 	}
 }
@@ -678,7 +677,7 @@ void Annotator::addInstantView()
 	CLAM_Annotator::InstantView config;
 	config.SetType(viewType);
 	if (!plugin->configureDialog(mProject, config)) return;
-	CLAM::VM::PcpTorus * view = plugin->createView(mVSplit, mProject, config);
+	CLAM::VM::InstantView * view = plugin->createView(mVSplit, mProject, config);
 	mInstantViews.push_back(view);
 	mProject.GetViews().push_back(config);
 	markProjectChanged(true);
