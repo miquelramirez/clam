@@ -76,6 +76,10 @@ public slots:
 	}
 	void completedStep(int previousStepErrorCode)
 	{
+		QString task = ui.taskEdit->text();
+		QString project = ui.projectEdit->text();
+		QString path = ui.pathEdit->text();
+
 		unsigned previousStep = currentStep++;
 		switch (previousStep)
 		{
@@ -84,9 +88,9 @@ public slots:
 				ui.logEdit->run("python", QStringList() 
 						<< "Manager.py"
 						<< "download"
-						<< "sample.task"
-						<< "project"
-						<< "/home/vokimon/borrame",
+						<< task
+						<< project
+						<< path,
 						"SimacServicesClient");
 			} break;
 			case 1:
@@ -95,17 +99,17 @@ public slots:
 				update();
 				QString command;
 				command += "Annotator \"";
-				command += "/home/vokimon/borrame/project.pro";
+				command += path + "/" + project + ".pro";
 				command += "\"";
 				std::system(command.toStdString().c_str());
 				show();
 				ui.logEdit->run("python", QStringList() 
 						<< "Manager.py"
 						<< "upload"
-						<< "sample.task"
-						<< "project"
-						<< "/home/vokimon/borrame"
-						<< "modifiedList",
+						<< task
+						<< project
+						<< path
+						<< "modifiedaudio",
 						"SimacServicesClient");
 			} break;
 			case 2:
