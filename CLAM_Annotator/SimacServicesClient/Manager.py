@@ -21,10 +21,13 @@ def usage():
   -To do every step individually (in this order):
     python Manager.py download <taskfile> <projectname> <path>
     python Manager.py runannotator <taskfile> <projectname> <path>
-    python Manager.py upload <taskfile> <projectname> <path> <audiofiles>
+    python Manager.py upload <taskfile> <projectname> <path>
 
   -To clean all the task-related files:
     python Manager.py clean <taskfile> <projectname> <path>
+
+  -To get a list of all the modified descriptor files:
+    python Manager.py listmodified <taskfile> <projectname> <path>
 """ )
 	sys.exit( 0 )
 
@@ -58,7 +61,7 @@ def TaskerDo( argv ):
 			print "\n - The following descriptor pools will be uploaded:\n  -" + ( '\n  - ' ).join( modifiedlist )
 			answer = raw_input( "\n > Do you want to do it? (y/n)  " ) 
 			if answer.strip() == 'y':
-				if tasker.uploadChanges( taskfile, projectname, path, modifiedlist ) == -1:
+				if tasker.uploadChanges( taskfile, projectname, path ) == -1:
 					print "\n - Error uploading descriptors\n"
 				else:
 					print "\n - Descriptors uploaded OK\n"
@@ -83,15 +86,19 @@ def TaskerRunannotator( argv ):
 	tasker=Tasker()
 	tasker.runAnnotator( argv[2], argv[3], argv[4] )
 
-def TaskerUpload( argv ):
-	if len( argv ) < 6:
-		usage()
-	filelist = argv[5:]
-	if len( filelist ) == 0:
+def TaskerListmodified( argv ):
+	if len( argv ) != 5:
 		usage()
 	
 	tasker=Tasker()
-	tasker.uploadChanges( argv[2], argv[3], argv[4], filelist )
+	print tasker.listModified( argv[2], argv[3], argv[4] )
+
+def TaskerUpload( argv ):
+	if len( argv ) != 5:
+		usage()
+	
+	tasker=Tasker()
+	tasker.uploadChanges( argv[2], argv[3], argv[4] )
 
 def TaskerClean( argv ):
 	if len( argv ) != 2:
@@ -112,6 +119,8 @@ if __name__ == "__main__" :
 			TaskerProcesstask( sys.argv )
 		elif sys.argv[1] == "runannotator":
 			TaskerRunannotator( sys.argv )
+		elif sys.argv[1] == "listmodified":
+			TaskerListmodified( sys.argv )
 		elif sys.argv[1] == "upload":
 			TaskerUpload( sys.argv )
 		elif sys.argv[1] == "clean":
