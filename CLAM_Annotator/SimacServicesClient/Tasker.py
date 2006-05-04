@@ -34,22 +34,20 @@ class TaskerError( Exception ):
 class Tasker:
 	def __init__( self, printfunction=sys.stdout.write ):
 		self.printfunction = printfunction
+		self.config = shelve.open( 'config.dict', writeback=True)
 
-	def setParameters( self, taskfile, projectname, path=os.getcwd() ):
-		self.config = shelve.open( path+os.sep+'config.dict', writeback=True)
+	def __del__( self ):
+		self.config.close()
+
+	def processTask( self, taskfile, projectname, path=os.getcwd() ):
+		path += os.sep
 		self.config['taskfile'] = taskfile
 		self.config['projectname'] = projectname
-		self.config['path'] = path + os.sep
+		self.config['path'] = path 
 		self.config['songlisting'] = {}
 		self.config['modifydescriptors'] = []
 
-	def processTask( self ):
-		try:
-			task = self._retrieveTask( self.config['taskfile'] )
-			projectname = self.config['projectname']
-			path = self.config['path']
-		except KeyError:
-			raise TaskerError( "Workflow error\nCould not restore configuration, make sure you follow the usage process." )
+		task = self._retrieveTask( taskfile )
 
 		ids, descriptors, contentlocatoruri, metadataprovideruri, description = self._extractParameters( task )
 		self.config['metadataprovideruri']=metadataprovideruri
@@ -108,7 +106,7 @@ class Tasker:
 		self.printfunction( u" - Created files %s and %s\n" % ( projectname+".pro", projectname+".sc" ) )
 		self.printfunction( u" - Downloaded %d audio file(s) and generated the corresponding pools\n" % len( self.config['songlisting'] ) )
 
-		os.utime( self.config['taskfile'], None )
+		os.utime( taskfile, None )
 
 
 	def runAnnotator( self ):
@@ -129,6 +127,7 @@ class Tasker:
 
 
 	def uploadChanges( self, modifiedlist ):
+			
 		try:
 			path = self.config['path']
 			metadataprovider = ServiceStub.MetadataProvider( self.config['metadataprovideruri'] )
@@ -146,9 +145,12 @@ class Tasker:
 
 			uf.write( "<?xml version='1.0' encoding='UTF-8'?>\n" )
 			uf.write( "<UploadPools>\n" )
+			count=0
 			for song in songlisting.keys():
 				#if it has been modified
 				if song in modifiedlist:
+					count += 1
+					self.printfunction( u"\n - Packing descriptors of: %s\n" % song )
 					uf.write( "<Song id='%s'>" % songlisting[song] )
 					poolfile=path+song+".pool"
 					pool=Pool( poolfile )
@@ -163,6 +165,9 @@ class Tasker:
 			uf.write( "</UploadPools>\n" )
 			uf.close()
 
+			if count==0:
+				self.printfunction( u" - No valid song descriptor has been found. Not doing any upload\n" )
+				return
 			self.printfunction( u" - Uploading the modified descriptor file to the server\n" )
 			
 			result=metadataprovider.UploadPackedDescriptors( uploadfile )

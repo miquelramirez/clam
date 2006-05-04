@@ -82,8 +82,6 @@ def createConnections():
 	app.connect( form.taskButton, QtCore.SIGNAL( "clicked()" ), selectFile )
 	app.connect( form.pathButton, QtCore.SIGNAL( "clicked()" ), selectDirectory )
 	app.connect( form.goButton, QtCore.SIGNAL( "clicked()" ), startProcess )
-	app.connect( form.exitButton, QtCore.SIGNAL( "clicked()" ), quit )
-	app.connect( app, QtCore.SIGNAL( "lastWindowClosed()" ), quit )
 
 def initWidgets():
 	global outputfunction
