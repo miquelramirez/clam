@@ -84,6 +84,10 @@ extraPaths += [
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 #	'/usr/include/qt4/', # quick KLUDGE for ubuntu
 ]
+extraPaths += [
+	os.path.join('SimacServicesClient'),
+	os.path.join('SimacServicesClient','generated'),
+	]
 includePaths = sourcePaths + extraPaths
 
 sources = scanFiles('*.cxx', sourcePaths)
@@ -115,7 +119,7 @@ if sys.platform=='linux2' :
 		env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
 	else :
 		env.Append( CCFLAGS=['-g', '-Wall'] )
-	#env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
+#	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
 
 
 programs = []
@@ -131,6 +135,15 @@ chordSources = scanFiles("*.cxx", ["src/ChordExtractor"])
 chordSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  chordSources )
 chordSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  chordSources )
 programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
+
+env.Uic4(source="SimacServicesClient/GUI.ui")
+bocaClientSources = [
+#	"SimacServicesClient/BocaClientGui.cxx",
+	"SimacServicesClient/BocaClientMain.cxx",
+	env.Moc4("SimacServicesClient/BocaClientGui.hxx"),
+	"SimacServicesClient/BocaTaskRunner.cxx",
+]
+programs += [ env.Program(target="BocaClient", source = bocaClientSources) ]
 
 
 # Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
