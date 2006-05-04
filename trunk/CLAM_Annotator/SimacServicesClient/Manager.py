@@ -66,7 +66,7 @@ def TaskerDo( argv ):
 					print "\n - Descriptors uploaded OK\n"
 			else:
 				print "\n - No descriptor uploaded\n"
-		tasker.clean()
+		#tasker.clean()
 	except TaskerError, err:
 		print err
 
