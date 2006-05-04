@@ -1,7 +1,8 @@
 This file explains how to compile and install the CLAM applications 
 from the source tarballs.
 
- 1. Compile CLAM libraries and their dependencies
+ 1. Compile CLAM libraries and their dependencies. Note that Annotator need
+ Qt4.1 or above.
  
  Please refer to the INSTALL file in the CLAM (library) tarball.
 
@@ -26,7 +27,29 @@ from the source tarballs.
  Notice that if you are using a non-standard clam_prefix, you might 
  need to make the LD_LIBRARY_PATH to point to the CLAM lib directory.
 
- On windows platform you could also build a package by typing on a shell:
+
+ Windows specific:
+ -----------------
+
+ 1. Before starting the compilation you might need to set up the Visual Studio environment
+ vars by executing 
+   
+    vcvars32.bat
+
+ 2. Before compiling CLAM, you'll need the QTDIR variable pointing to the Qt3 dir.
+ But before compiling Annotator, you'll have to change QTDIR so it points to Qt4.1 dir
+
+ 3. Our build-system based on Scons uses Visual Studio as a compiler back end.
+ So you'll need you'll need Qt4.1 for Visual Studio.
+ This web explains how to patch Qt4.1.2 open source (prepared to work on MinGW) so that it  
+ works on Visual Studio:
+
+ http://qtnode.net/wiki/Qt4_with_Visual_Studio
+
+ 4. In the windows platform you could also build a package (the XXX-setup.exe file) 
+ by typing on a shell:
+
     $ scons package
+
 
 
