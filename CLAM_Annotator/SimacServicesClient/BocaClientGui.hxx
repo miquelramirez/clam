@@ -83,7 +83,7 @@ public slots:
 			{
 				ui.logEdit->run("python", QStringList() 
 						<< "Manager.py"
-						<< "processtask"
+						<< "download"
 						<< "sample.task"
 						<< "project"
 						<< "/home/vokimon/borrame",
@@ -91,19 +91,24 @@ public slots:
 			} break;
 			case 1:
 			{
-				ui.logEdit->run("Annotator", QStringList() 
-						<< "/home/vokimon/borrame/project.pro",
-						".");
-			} break;
-			case 2:
-			{
+				hide();
+				update();
+				QString command;
+				command += "Annotator \"";
+				command += "/home/vokimon/borrame/project.pro";
+				command += "\"";
+				std::system(command.toStdString().c_str());
+				show();
 				ui.logEdit->run("python", QStringList() 
 						<< "Manager.py"
 						<< "upload"
+						<< "sample.task"
+						<< "project"
+						<< "/home/vokimon/borrame"
 						<< "modifiedList",
 						"SimacServicesClient");
 			} break;
-			case 3:
+			case 2:
 			{
 			} break;
 			default:
