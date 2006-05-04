@@ -117,15 +117,35 @@ class Tasker:
 		self.printfunction( u" - Finalized\n" )
 
 
-	def uploadChanges( self, taskfile, projectname, path, modifiedlist ):
-			
+	def listModified( self, taskfile, projectname, path ):
 		task = self._retrieveTask( taskfile )
 		ids, descriptors, modifydescriptors, contentlocatoruri, metadataprovideruri, description = self._extractParameters( task )
-		metadataprovider = ServiceStub.MetadataProvider( metadataprovideruri )
+
 		try:
 			songlisting=shelve.open( path+os.sep+projectname+'.info.dict',writeback=True)
 		except KeyError:
 			raise TaskerError( "Workflow error\nCould not restore configuration, make sure you follow the usage process." )
+
+		tasktime = os.path.getmtime( taskfile )
+		modifiedlist = []
+		for song in songlisting.keys():
+			songpool = path + os.sep + song + ".pool"
+			if os.path.getmtime( songpool ) > tasktime:
+				modifiedlist.append( song )
+
+		return "\n".join( modifiedlist )
+
+	def uploadChanges( self, taskfile, projectname, path ):
+		task = self._retrieveTask( taskfile )
+		ids, descriptors, modifydescriptors, contentlocatoruri, metadataprovideruri, description = self._extractParameters( task )
+		metadataprovider = ServiceStub.MetadataProvider( metadataprovideruri )
+		
+		try:
+			songlisting=shelve.open( path+os.sep+projectname+'.info.dict',writeback=True)
+		except KeyError:
+			raise TaskerError( "Workflow error\nCould not restore configuration, make sure you follow the usage process." )
+
+		modifiedlist = listModified( taskfile, projectname, path ).split('\n')
 
 		try:
 			uploadfile='uploadfile.xml.gz'
@@ -172,8 +192,10 @@ class Tasker:
 			#Clean!
 			os.remove( 'uploadfile.xml.gz' )
 			songlisting.close()
+			return 0
 		except:
 			songlisting.close()
+			return -1
 
 
 	def clean( self, taskfile, projectname, path ):
