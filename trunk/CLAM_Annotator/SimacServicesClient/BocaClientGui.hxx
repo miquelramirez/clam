@@ -116,11 +116,10 @@ public slots:
 				QString files = lister.readAll();
 				show();
 				update();
-
 				int response = QMessageBox::question(this, tr("Uploading changes"),
 						tr("The following files have been updated.\n\n")
 						+files
-						+tr("\nDo you want to upload then back to the BOCA server?"),
+						+tr("\nDo you want to upload them back to the BOCA server?"),
 						tr("Upload"), tr("Don't upload")
 						);
 				if (response==0)
