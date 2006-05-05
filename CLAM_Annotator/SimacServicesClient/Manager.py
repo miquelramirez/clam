@@ -107,6 +107,7 @@ def TaskerClean( argv ):
 	tasker=Tasker()
 	tasker.clean( argv[2], argv[3], argv[4] )
 
+
 if __name__ == "__main__" :
 	if len( sys.argv ) == 1:
 		usage()
@@ -128,6 +129,6 @@ if __name__ == "__main__" :
 		else:
 			usage()
 	except TaskerError, err:
-		print err
-		return -1
-	return 0
+		print >> sys.stderr, err
+		sys.exit(-1)
+	sys.exit(0)
