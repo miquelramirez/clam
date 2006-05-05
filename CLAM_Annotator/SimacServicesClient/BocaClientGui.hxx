@@ -95,15 +95,12 @@ public slots:
 			} break;
 			case 1:
 			{
-				hide();
-				update();
-				QString command;
-				command += "Annotator \"";
-				command += path + "/" + project + ".pro";
-				command += "\"";
-				std::system(command.toStdString().c_str());
-				show();
-
+				if (previousStepErrorCode!=0)
+				{
+					currentStep=0;
+					return;
+				}
+				runAnnotator(path + "/" + project + ".pro");
 				QProcess lister;
 				lister.start("python", QStringList() 
 						<< "SimacServicesClient/Manager.py"
@@ -114,8 +111,14 @@ public slots:
 						);
 				lister.waitForFinished();
 				QString files = lister.readAll();
-				show();
-				update();
+				if (files.trimmed().isEmpty())
+				{
+					QMessageBox::warning(this, tr("No descriptors downloaded"),
+							tr("No modification has been detected. No upload needed.")
+							);
+					currentStep=0;
+					return;
+				}
 				int response = QMessageBox::question(this, tr("Uploading changes"),
 						tr("The following files have been updated.\n\n")
 						+files
@@ -140,6 +143,18 @@ public slots:
 			default:
 			std::cerr << "Step no esperat " << previousStep;
 		}
+	}
+	void runAnnotator(QString project)
+	{
+			hide();
+			update();
+			QString command;
+			command += "Annotator \"";
+			command += project;
+			command += "\"";
+			std::system(command.toStdString().c_str());
+			show();
+			update();
 	}
 private:
 	void updateButtonsEnabling()
