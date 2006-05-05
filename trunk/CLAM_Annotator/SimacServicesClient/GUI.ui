@@ -104,7 +104,7 @@
      <property name="font" >
       <font>
        <family>FreeMono</family>
-       <pointsize>11</pointsize>
+       <pointsize>10</pointsize>
        <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
@@ -113,10 +113,10 @@
       </font>
      </property>
      <property name="readOnly" >
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="html" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:FreeMono; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;">Press Go! when ready&lt;/p>&lt;/body>&lt;/html></string>
+      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:FreeMono; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;">Press Go! when ready&lt;/p>&lt;/body>&lt;/html></string>
      </property>
     </widget>
    </item>
@@ -169,6 +169,16 @@
    <pixmap></pixmap>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>projectEdit</tabstop>
+  <tabstop>taskEdit</tabstop>
+  <tabstop>taskButton</tabstop>
+  <tabstop>pathEdit</tabstop>
+  <tabstop>pathButton</tabstop>
+  <tabstop>exitButton</tabstop>
+  <tabstop>goButton</tabstop>
+  <tabstop>logEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

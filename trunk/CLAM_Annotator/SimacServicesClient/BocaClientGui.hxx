@@ -3,6 +3,7 @@
 #include <QtCore/QTranslator>
 #include <QtCore/QLocale>
 #include <QtGui/QMessageBox>
+#include <QtCore/QFileInfo>
 #include "ui_GUI.hxx"
 #include "BocaTaskRunner.hxx"
 
@@ -23,12 +24,17 @@ public:
 	BocaClientGui(QString taskFile, QString projectFile, QString path)
 	{
 		ui.setupUi(this);
-		if (!taskFile.isEmpty() && projectFile.isEmpty())
+		if (!taskFile.isEmpty())
 		{
-			// TODO: The project was a name not a file!!
-			projectFile = taskFile;
-			projectFile.replace(".task","");
-			projectFile += ".pro";
+			QFileInfo fileInfo(taskFile);
+			if (projectFile.isEmpty())
+			{
+				projectFile = fileInfo.completeBaseName();
+			}
+			if (path.isEmpty())
+			{
+				path = fileInfo.path();
+			}
 		}
 		ui.taskEdit->setText(taskFile);
 		ui.projectEdit->setText(projectFile);
