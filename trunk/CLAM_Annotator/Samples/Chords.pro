@@ -20,16 +20,16 @@ TODO: Explain what the descriptors mean and how this should be reviewed.
 
   <Songs>
     <Song>
-      <SoundFile>SongsTest/LisaRein-SomethingBetter.mp3</SoundFile>
-    </Song>
-    <Song>
-      <SoundFile>SongsTest/LisaRein-spunkyfunk.mp3</SoundFile>
-    </Song>
-    <Song>
       <SoundFile>SongsTest/Debaser-WoodenHouse.mp3</SoundFile>
     </Song>
     <Song>
       <SoundFile>SongsTest/Debaser-CoffeeSmell.mp3</SoundFile>
+    </Song>
+    <Song>
+      <SoundFile>SongsTest/LisaRein-SomethingBetter.mp3</SoundFile>
+    </Song>
+    <Song>
+      <SoundFile>SongsTest/LisaRein-spunkyfunk.mp3</SoundFile>
     </Song>
   </Songs>
 
