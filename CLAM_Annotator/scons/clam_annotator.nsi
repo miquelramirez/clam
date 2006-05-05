@@ -54,6 +54,7 @@ InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
+
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
    StrCpy $INSTDIR "$PROGRAMFILES\CLAM\Annotator"
@@ -68,6 +69,7 @@ Section "Principal" SEC01
   CreateShortCut "$SMPROGRAMS\CLAM\Annotator\Annotator.lnk" "$INSTDIR\bin\Annotator.exe"
   File "..\ClamExtractorExample.exe"
   File "..\ChordExtractor.exe"
+  File "..\BocaClient.exe"
   File '${QTDIR}\lib\QtCore4.dll'
   File '${QTDIR}\lib\QtGui4.dll'
   File '${QTDIR}\lib\QtOpenGL4.dll'
@@ -104,6 +106,28 @@ Section "Principal" SEC01
   SetOutPath "$INSTDIR\share\annotator\i18n"
   File "..\src\i18n\Annotator_ca.qm"
   File "..\src\i18n\Annotator_es.qm"
+
+!define Index "Line${__LINE__}"
+  ReadRegStr $1 HKCR ".task" ""
+  StrCmp $1 "" "${Index}-NoBackup"
+    StrCmp $1 "MusicAnnotator.BocaTask" "${Index}-NoBackup"
+    WriteRegStr HKCR ".task" "backup_val" $1
+"${Index}-NoBackup:"
+  WriteRegStr HKCR ".task" "" "MusicAnnotator.BocaTask"
+  ReadRegStr $0 HKCR "MusicAnnotator.BocaTask" ""
+  StrCmp $0 "" 0 "${Index}-Skip"
+	WriteRegStr HKCR "MusicAnnotator.BocaTask" "" "Barebone of Collective Annotations task"
+	WriteRegStr HKCR "MusicAnnotator.BocaTask\shell" "" "open"
+	WriteRegStr HKCR "MusicAnnotator.BocaTask\DefaultIcon" "" "$INSTDIR\bin\Annotator.exe,0"
+"${Index}-Skip:"
+  WriteRegStr HKCR "MusicAnnotator.BocaTask\shell\open\command" "" '$INSTDIR\bin\BocaClient.exe "%1"'
+  WriteRegStr HKCR "MusicAnnotator.BocaTask\shell\edit" "" "Open task"
+  WriteRegStr HKCR "MusicAnnotator.BocaTask\shell\edit\command" "" '$INSTDIR\bin\BocaClient.exe "%1"'
+ 
+  System::Call 'Shell32::SHChangeNotify(i 0x8000000, i 0, i 0, i 0)'
+!undef Index
+
+
 
 SectionEnd
 
@@ -173,8 +197,9 @@ Section Uninstall
   Delete "$INSTDIR\bin\msvcp71.dll"
   Delete "$INSTDIR\bin\msvcr71.dll"
   Delete "$INSTDIR\bin\Annotator.exe"
-  Delete "$INSTDIR\bin\ChordExtractor.exe"
   Delete "$INSTDIR\bin\ClamExtractorExample.exe"
+  Delete "$INSTDIR\bin\ChordExtractor.exe"
+  Delete "$INSTDIR\bin\BocaClient.exe"
 
   Delete "$INSTDIR\share\annotator\i18n\Annotator_ca.qm"
   Delete "$INSTDIR\share\annotator\i18n\Annotator_es.qm"
@@ -191,6 +216,23 @@ Section Uninstall
   RMDir "$INSTDIR\share\annotator\i18n"
   RMDir "$INSTDIR\share\annotator"
   RMDir "$INSTDIR\share"
+
+!define Index "Line${__LINE__}"
+  ReadRegStr $1 HKCR ".task" ""
+  StrCmp $1 "MusicAnnotator.BocaTask" 0 "${Index}-NoOwn" ; only do this if we own it
+    ReadRegStr $1 HKCR ".task" "backup_val"
+    StrCmp $1 "" 0 "${Index}-Restore" ; if backup="" then delete the whole key
+      DeleteRegKey HKCR ".task"
+    Goto "${Index}-NoOwn"
+"${Index}-Restore:"
+      WriteRegStr HKCR ".task" "" $1
+      DeleteRegValue HKCR ".task" "backup_val"
+   
+    DeleteRegKey HKCR "MusicAnnotator.BocaTask" ;Delete key with association settings
+ 
+    System::Call 'Shell32::SHChangeNotify(i 0x8000000, i 0, i 0, i 0)'
+"${Index}-NoOwn:"
+!undef Index
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
