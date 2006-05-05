@@ -49,11 +49,11 @@ def TaskerDo( argv ):
 		tasker.runAnnotator( taskfile, projectname, path )
 		
 		tasktime = os.path.getmtime( taskfile )
-		modifiedlist = []
-		for song in tasker.config['songlisting'].keys():
-			songpool = path + os.sep + song + ".pool"
-			if os.path.getmtime( songpool ) > tasktime:
-				modifiedlist.append( song )
+		modifiedlist = tasker.listModified( taskfile, projectname, path ).strip()
+		if modifiedlist == '':
+			modifiedlist = []
+		else:
+			modifiedlist = modifiedlist.split('\n')
 
 		if len( modifiedlist )==0:
 			print "\n - No descriptor pool modified. Exiting without uploading anything.\n"
