@@ -15,6 +15,13 @@
 #endif
 #endif
 
+#ifdef WIN32
+#define BocaTaskManager "BocaTaskManager"
+#else
+#define BocaTaskManager "SimacServicesClient/Manager.py"
+#endif
+
+
 class BocaClientGui : public QDialog
 {
 	Q_OBJECT
@@ -91,8 +98,7 @@ public slots:
 		{
 			case 0:
 			{
-				ui.logEdit->run("python", QStringList() 
-						<< "SimacServicesClient/Manager.py"
+				ui.logEdit->run(BocaTaskManager, QStringList() 
 						<< "download"
 						<< task
 						<< project
@@ -108,8 +114,7 @@ public slots:
 				}
 				runAnnotator(path + "/" + project + ".pro");
 				QProcess lister;
-				lister.start("python", QStringList() 
-						<< "SimacServicesClient/Manager.py"
+				lister.start(BocaTaskManager, QStringList() 
 						<< "listmodified"
 						<< task
 						<< project
@@ -133,8 +138,7 @@ public slots:
 						);
 				if (response==0)
 				{
-					ui.logEdit->run("python", QStringList() 
-							<< "SimacServicesClient/Manager.py"
+					ui.logEdit->run(BocaTaskManager, QStringList() 
 							<< "upload"
 							<< task
 							<< project
