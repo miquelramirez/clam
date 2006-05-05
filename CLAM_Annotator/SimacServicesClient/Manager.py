@@ -91,7 +91,7 @@ def TaskerListmodified( argv ):
 		usage()
 	
 	tasker=Tasker()
-	print tasker.listModified( argv[2], argv[3], argv[4] )
+	sys.stdout.write(tasker.listModified( argv[2], argv[3], argv[4] ))
 
 def TaskerUpload( argv ):
 	if len( argv ) != 5:
