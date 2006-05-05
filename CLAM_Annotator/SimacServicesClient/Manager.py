@@ -129,3 +129,5 @@ if __name__ == "__main__" :
 			usage()
 	except TaskerError, err:
 		print err
+		return -1
+	return 0
