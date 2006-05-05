@@ -209,6 +209,7 @@ class Tasker:
 
 		tryremove( path+os.sep+projectname+".sc" )
 		tryremove( path+os.sep+projectname+".pro" )
+		tryremove( path+os.sep+projectname+".info.dict" )
 		tryremove( taskfile )
 		for song in songlisting.keys():
 			tryremove( path+os.sep+song )
