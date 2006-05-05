@@ -107,28 +107,30 @@ def TaskerClean( argv ):
 	tasker=Tasker()
 	tasker.clean( argv[2], argv[3], argv[4] )
 
-
-if __name__ == "__main__" :
+def main( argv ):
 	if len( sys.argv ) == 1:
 		usage()
 	#################################### important compte amb el path que passen per parametre!
 
 	try:
-		if sys.argv[1] == "do":
-			TaskerDo( sys.argv )
-		elif sys.argv[1] == "download":
-			TaskerProcesstask( sys.argv )
-		elif sys.argv[1] == "runannotator":
-			TaskerRunannotator( sys.argv )
-		elif sys.argv[1] == "listmodified":
-			TaskerListmodified( sys.argv )
-		elif sys.argv[1] == "upload":
-			TaskerUpload( sys.argv )
-		elif sys.argv[1] == "clean":
-			TaskerClean( sys.argv )
+		if argv[1] == "do":
+			TaskerDo( argv )
+		elif argv[1] == "download":
+			TaskerProcesstask( argv )
+		elif argv[1] == "runannotator":
+			TaskerRunannotator( argv )
+		elif argv[1] == "listmodified":
+			TaskerListmodified( argv )
+		elif argv[1] == "upload":
+			TaskerUpload( argv )
+		elif argv[1] == "clean":
+			TaskerClean( argv )
 		else:
 			usage()
 	except TaskerError, err:
 		print >> sys.stderr, err
 		sys.exit(-1)
 	sys.exit(0)
+
+if __name__ == "__main__" :
+	main( sys.argv )
