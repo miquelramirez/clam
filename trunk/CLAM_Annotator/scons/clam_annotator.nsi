@@ -70,6 +70,9 @@ Section "Principal" SEC01
   File "..\ClamExtractorExample.exe"
   File "..\ChordExtractor.exe"
   File "..\BocaClient.exe"
+  File "..\SimacServicesClient\dist\BocaTaskManager.exe"
+  File "..\SimacServicesClient\dist\library.zip"
+  File "..\SimacServicesClient\dist\w9xpopen.exe"
   File '${QTDIR}\lib\QtCore4.dll'
   File '${QTDIR}\lib\QtGui4.dll'
   File '${QTDIR}\lib\QtOpenGL4.dll'
@@ -196,6 +199,9 @@ Section Uninstall
   Delete "$INSTDIR\bin\xerces-c_2_3_0.dll"
   Delete "$INSTDIR\bin\msvcp71.dll"
   Delete "$INSTDIR\bin\msvcr71.dll"
+  Delete "$INSTDIR\bin\BocaTaskManager.exe"
+  Delete "$INSTDIR\bin\library.zip"
+  Delete "$INSTDIR\bin\w9xpopen.exe"
   Delete "$INSTDIR\bin\Annotator.exe"
   Delete "$INSTDIR\bin\ClamExtractorExample.exe"
   Delete "$INSTDIR\bin\ChordExtractor.exe"
