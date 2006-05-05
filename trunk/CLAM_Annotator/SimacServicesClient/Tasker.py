@@ -198,6 +198,7 @@ class Tasker:
 		except:
 			songlisting.close()
 			return -1
+			raise TaskerError("Upload Error\nError preparing files to upload. Maybe the files no longer exist?")
 
 
 	def clean( self, taskfile, projectname, path ):
