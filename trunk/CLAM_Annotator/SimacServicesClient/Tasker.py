@@ -245,7 +245,7 @@ class Tasker:
 					self.printfunction( u"     Already Downloaded ( OK )\n" )
 					return audiofilename
 				
-				file = open( savetopath+audiofilename, 'w' )
+				file = open( savetopath+audiofilename, 'wb' )
 				file.write( stream.read() )
 				file.close()
 				self.printfunction( u"     ( OK )\n" )
