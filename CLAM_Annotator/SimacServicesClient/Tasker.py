@@ -10,6 +10,8 @@ from Pool import Pool
 import ServiceStub
 import shelve
 
+tryremove = lambda name : os.path.exists( name ) and os.remove( name )
+
 clamAnnotatorProjectSkeleton = """<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Project>
   <Description>%s</Description>
@@ -36,10 +38,11 @@ class Tasker:
 		self.printfunction = printfunction
 
 	def processTask( self, taskfile, projectname, path ):
-		path += os.sep
+		path += "/"
 
 		############################ EP EP EP
-		songlisting = shelve.open( path+os.sep+projectname+".info.dict", writeback=True)
+		tryremove( path+"/"+projectname+".info.dict" )
+		songlisting = shelve.open( path+"/"+projectname+".info.dict", writeback=True)
 
 		task = self._retrieveTask( taskfile )
 
@@ -104,13 +107,13 @@ class Tasker:
 
 
 	def runAnnotator( self, taskfile, projectname, path ):
-		if not os.path.exists( path + os.sep + projectname + ".pro" ):
+		if not os.path.exists( path + "/" + projectname + ".pro" ):
 			raise TaskerError( "Workflow error\nThe corresponding Annotator project is not created, make sure you follow the usage process." )
 			
 		self.printfunction( u"\n  == CLAM-Annotator ==\n" )
 		self.printfunction( u" - Launching...\n" )
 		if sys.platform != 'win32':
-			result = os.system( "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/lib Annotator %s.pro &> /dev/null" % ( path+os.sep+projectname ) )
+			result = os.system( "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/lib Annotator %s.pro &> /dev/null" % ( path+"/"+projectname ) )
 		else:
 			raise TaskError( "Run Annotator error\nWindows execution of the Annotator is still not managed." )
 		self.printfunction( "RESULT = %d" % result )
@@ -122,17 +125,16 @@ class Tasker:
 		ids, descriptors, modifydescriptors, contentlocatoruri, metadataprovideruri, description = self._extractParameters( task )
 
 		try:
-			songlisting=shelve.open( path+os.sep+projectname+'.info.dict',writeback=True)
+			songlisting=shelve.open( path+"/"+projectname+'.info.dict',writeback=True)
 		except KeyError:
 			raise TaskerError( "Workflow error\nCould not restore configuration, make sure you follow the usage process." )
 
 		tasktime = os.path.getmtime( taskfile )
 		modifiedlist = []
 		for song in songlisting.keys():
-			songpool = path + os.sep + song + ".pool"
+			songpool = path + "/" + song + ".pool"
 			if os.path.getmtime( songpool ) > tasktime:
 				modifiedlist.append( song )
-
 		return "\n".join( modifiedlist )
 
 	def uploadChanges( self, taskfile, projectname, path ):
@@ -141,7 +143,7 @@ class Tasker:
 		metadataprovider = ServiceStub.MetadataProvider( metadataprovideruri )
 		
 		try:
-			songlisting=shelve.open( path+os.sep+projectname+'.info.dict',writeback=True)
+			songlisting=shelve.open( path+"/"+projectname+'.info.dict',writeback=True)
 		except KeyError:
 			raise TaskerError( "Workflow error\nCould not restore configuration, make sure you follow the usage process." )
 
@@ -163,7 +165,7 @@ class Tasker:
 					count += 1
 					self.printfunction( u"\n - Packing descriptors of: %s\n" % song )
 					uf.write( "<Song id='%s'>" % songlisting[song] )
-					poolfile=path+os.sep+song+".pool"
+					poolfile=path+"/"+song+".pool"
 					pool=Pool( poolfile )
 					temppool=Pool()
 
@@ -205,15 +207,14 @@ class Tasker:
 		except KeyError:
 			raise TaskerError( "Workflow error\nCould not restore configuration, make sure you follow the usage process." )
 
-		tryremove = lambda name : os.path.exists( name ) and os.remove( name )
 
-		tryremove( path+os.sep+projectname+".sc" )
-		tryremove( path+os.sep+projectname+".pro" )
-		tryremove( path+os.sep+projectname+".info.dict" )
+		tryremove( path+"/"+projectname+".sc" )
+		tryremove( path+"/"+projectname+".pro" )
+		tryremove( path+"/"+projectname+".info.dict" )
 		tryremove( taskfile )
 		for song in songlisting.keys():
-			tryremove( path+os.sep+song )
-			tryremove( path+os.sep+song+".pool" )
+			tryremove( path+"/"+song )
+			tryremove( path+"/"+song+".pool" )
 
 
 	def _retrieveTask( self, location ):
