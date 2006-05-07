@@ -15,10 +15,10 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 	_font.setPointSize(11);
 	_updatePending=0;
 	_currentFrame=0;
-	_data = 0;
 	_frameData = 0;
 	_currentFrame = 0;
 	_nBins=0;
+	_nFrames=0;
 	_frameDivision=0;
 	_samplingRate=44100;
 	_maxValue=1;
@@ -49,8 +49,9 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 
 void CLAM::VM::PcpTorus::clearData()
 {
-	_data = 0;
+	_data.resize(0);
 	_frameData = 0;
+	_nFrames=0;
 	_currentFrame = 0;
 	_frameDivision=0;
 	_maxValue=1;
@@ -94,13 +95,12 @@ void CLAM::VM::PcpTorus::Draw()
 {
 	if (!_nBins) return;
 	_maxValue*=0.95;
-	if (_maxValue<1e-10) _maxValue=1;
+	if (_maxValue<1e-5) _maxValue=1;
 	if (_frameData)
 		for (unsigned i = 0; i < _nBins; i++)
 			if (_frameData[i]>=_maxValue) _maxValue=_frameData[i];
-
-	for (int x = -10; x<10; x++)
-		for (int y = 0-x; y<10-x; y++)
+	for (int y = 0; y<4; y++)
+		for (int x = 0-y/2; x<10; x++)
 			DrawTile(x,y);
 }
 
@@ -113,7 +113,7 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 	unsigned bin=0;
 	if (_nBins==12)
 		bin = (x*7+y*4+_nBins*1000)%_nBins; // For pitches
-	else if (_nBins==24)
+	else if (_nBins==24) // For tonality
 	{
 		bool isMinor = y&1;
 		bin =  ((x*7)%(_nBins/2) + 11*(y/2) + (isMinor?4:0)  + _nBins*1000)%(_nBins/2) + (isMinor?_nBins/2:0);
@@ -169,9 +169,10 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 
 void CLAM::VM::PcpTorus::setCurrentTime(double timeMiliseconds)
 {
-	unsigned newFrame = _data? _frameDivision->GetItem(timeMiliseconds*_samplingRate): 0;
-	if (newFrame>=_nFrames) newFrame=_nFrames-1;
-	_frameData = _data? _data + _nBins * newFrame: 0;
+	unsigned newFrame = _frameDivision ? _frameDivision->GetItem(timeMiliseconds*_samplingRate): 0;
+	if (_nFrames==0) _frameData = 0;
+	else if (newFrame>=_nFrames) newFrame=_nFrames-1;
+	_frameData = _data.size()? &_data[_nBins * newFrame] : 0;
 	if (newFrame == _currentFrame) return;
 	_currentFrame = newFrame;
 	if (!_updatePending++) update();
@@ -206,16 +207,16 @@ void CLAM::VM::PcpTorus::initData(const CLAM_Annotator::FrameDivision & frameDiv
 {
 	_frameDivision = & frameDivision;
 	_samplingRate = samplingRate;
-	if (_data) delete[] _data;
 	_nFrames = nFrames;
-	_data = new double[_nFrames*_nBins];
-	_frameData=_data;
+	_data.resize(_nFrames*_nBins);
+	_frameData=0;
 	for (unsigned frame =0; frame < _nFrames; frame++)
 		for (unsigned i=0; i<_nBins; i++)
 		{
 			double value = arrays[frame][i]*_nBins;
 			_data[frame*_nBins+i] = value;
 		}
+	_frameData=&_data[0];
 }
 
 
