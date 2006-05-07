@@ -3,6 +3,7 @@
 
 #include "Array.hxx"
 #include "vmRenderer2D.hxx"
+#include <vector>
 
 namespace CLAM
 {
@@ -27,10 +28,10 @@ namespace CLAM
 			void SetViewport(const GLViewport& v);
 			
 		private:
-			DataArray mCachedData;
-			DataArray mProcessedData;
-			DataArray mMinArray;
-			DataArray mMaxArray;
+			std::vector<CLAM::TData> mCachedData;
+			std::vector<CLAM::TData> mProcessedData;
+			std::vector<CLAM::TData> mMinArray;
+			std::vector<CLAM::TData> mMaxArray;
 
 			bool mHugeMode;
 			bool mHugeModeEnabled;
