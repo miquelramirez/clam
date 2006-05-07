@@ -21,7 +21,7 @@ namespace CLAM
 	
 		void DataArrayRenderer::SetData(const DataArray& data)
 		{
-			mCachedData = data;
+			mCachedData.assign(&data[0], &data[0]+data.Size());
 			mMustProcessData = true;
 			emit requestUpdate();
 		}
@@ -39,7 +39,7 @@ namespace CLAM
 
 		void DataArrayRenderer::Render()
 		{
-			if(!mEnabled || !mCachedData.Size()) return;
+			if(!mEnabled || !mCachedData.size()) return;
 			if(mMustProcessData) {ProcessData(); mMustProcessData=false;}
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
@@ -48,9 +48,7 @@ namespace CLAM
 			glMatrixMode(GL_MODELVIEW);
 			glLineWidth(1);
 			glColor3ub(mDataColor.r,mDataColor.g,mDataColor.b);
-			glBegin(GL_LINE_STRIP);
 			(mHugeMode) ? DrawHugeMode() : DrawNormalMode();
-			glEnd();
 			glMatrixMode(GL_PROJECTION);
 			glPopMatrix();
 			glMatrixMode(GL_MODELVIEW);
@@ -58,10 +56,10 @@ namespace CLAM
 
 		void DataArrayRenderer::SetHBounds(double left, double right)
 		{
-			if(!mCachedData.Size()) return;
+			if(!mCachedData.size()) return;
 		  
-			mView.left = (left-mXRange.min)*double(mCachedData.Size())/mXRange.Span();
-			mView.right = (right-mXRange.min)*double(mCachedData.Size())/mXRange.Span();
+			mView.left = (left-mXRange.min)*double(mCachedData.size())/mXRange.Span();
+			mView.right = (right-mXRange.min)*double(mCachedData.size())/mXRange.Span();
 			mMustProcessData = true;
 		}
 
@@ -92,10 +90,8 @@ namespace CLAM
 					mHugeMode = true;
 					unsigned start_search, end_search, search_interval_len, search_rem_interval_len;
 					unsigned max_size = (unsigned)mViewport.w;
-					mMaxArray.Resize(max_size);
-					mMinArray.Resize(max_size);
-					mMaxArray.SetSize(max_size);
-					mMinArray.SetSize(max_size);
+					mMaxArray.resize(max_size);
+					mMinArray.resize(max_size);
 
 					search_interval_len = length / max_size;
 					search_rem_interval_len = length % max_size;
@@ -104,50 +100,54 @@ namespace CLAM
 					start_search = offset;
 					end_search = start_search + search_interval_len;				
 			
+					CLAM::TData * dataPtr = &mCachedData[0];
 					for(unsigned i=0; i < first_pass_iterations; i++)
 					{
-						mMaxArray[i] = *std::max_element(mCachedData.GetPtr()+start_search, 
-														 mCachedData.GetPtr()+end_search);
-						mMinArray[i] = *std::min_element(mCachedData.GetPtr()+start_search, 
-														 mCachedData.GetPtr()+end_search);
+						mMaxArray[i] = *std::max_element(dataPtr+start_search, 
+														 dataPtr+end_search);
+						mMinArray[i] = *std::min_element(dataPtr+start_search, 
+														 dataPtr+end_search);
 						start_search = end_search;
 						end_search += search_interval_len;	
 					}
 					if(!search_rem_interval_len) return;
-					mMaxArray[max_size-1] = *std::max_element(mCachedData.GetPtr()+start_search, 
-															  mCachedData.GetPtr()+start_search+search_rem_interval_len);
-					mMinArray[max_size-1] = *std::min_element(mCachedData.GetPtr()+start_search, 
-															  mCachedData.GetPtr()+start_search+search_rem_interval_len);
-					mLocalView.right = double(mMaxArray.Size())-1;
+					mMaxArray[max_size-1] = *std::max_element(dataPtr+start_search, 
+															  dataPtr+start_search+search_rem_interval_len);
+					mMinArray[max_size-1] = *std::min_element(dataPtr+start_search, 
+															  dataPtr+start_search+search_rem_interval_len);
+					mLocalView.right = double(mMaxArray.size())-1;
 					return;
 				}
 			}
 	
 			mHugeMode = false;
 
-			mProcessedData.Resize(length+1);
-			mProcessedData.SetSize(length+1);
-			std::copy(mCachedData.GetPtr()+offset, 
-					  mCachedData.GetPtr()+offset+length+1, 
-					  mProcessedData.GetPtr());
-			mLocalView.right = double(mProcessedData.Size())-1;
+			mProcessedData.resize(length+1);
+			std::copy(&mCachedData[0]+offset, 
+					  &mCachedData[0]+offset+length+1, 
+					  &mProcessedData[0]);
+			mLocalView.right = double(mProcessedData.size())-1;
 		}
 
 		void DataArrayRenderer::DrawHugeMode()
 		{
-			for(TSize i=0; i < mMaxArray.Size(); i++)
+			glBegin(GL_TRIANGLE_STRIP);
+			for(TSize i=0; i < mMaxArray.size(); i++)
 			{
 				glVertex2d(double(i),mMaxArray[i]);
 				glVertex2d(double(i),mMinArray[i]);
 			}
+			glEnd();
 		}
 
 		void DataArrayRenderer::DrawNormalMode()
 		{
-			for(TSize i=0; i < mProcessedData.Size(); i++)
+			glBegin(GL_LINE_STRIP);
+			for(TSize i=0; i < mProcessedData.size(); i++)
 			{
 				glVertex2d(double(i),mProcessedData[i]);
 			}
+			glEnd();
 		}
 	}
 }
