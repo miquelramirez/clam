@@ -131,7 +131,6 @@ void CLAM::VM::KeySpace::paintGL()
 	if (_frameData) DrawTiles();
 	DrawLabels();
 
-	swapBuffers();
 	_updatePending=0;
 }
 

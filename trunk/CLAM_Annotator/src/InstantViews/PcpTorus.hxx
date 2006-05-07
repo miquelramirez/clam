@@ -5,6 +5,7 @@
 #undef GetClassName
 #include <CLAM/Array.hxx>
 #include "Project.hxx"
+#include <vector>
 
 namespace CLAM_Annotator { class FrameDivision; }
 
@@ -57,7 +58,7 @@ namespace VM
 		private:
 			unsigned _nFrames;
 			unsigned _currentFrame;
-			double *_data;
+			std::vector<double> _data;
 			QFont _font;
 			const CLAM_Annotator::FrameDivision * _frameDivision;
 			CLAM::TData _samplingRate;
