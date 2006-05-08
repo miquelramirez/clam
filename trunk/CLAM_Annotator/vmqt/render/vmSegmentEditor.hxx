@@ -67,8 +67,6 @@ namespace CLAM
 				   SELECTED=2, 
 				   HIGHLIGHTED=3,
 				   STIPPLED=4, 
-				   NLINEWIDTH=2, 
-				   CLINEWIDTH=2, 
 				   FACTOR=4, 
 				   PATTERN=0x5555 };
 
