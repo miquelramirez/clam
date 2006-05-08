@@ -1,0 +1,59 @@
+
+ * Instant views optimizations to avoid KeySpace flickering
+
+2006-05-08 v0.3.1
+'Review feedback release'
+ * Using CLAM 0.91 (CVS)
+ * Instant views are managed as plugins and can be usable in any suited attribute
+   which can be selected from the user interface. (Views/Add instant view)
+ * Fix: The extractor console now keeps the aspect of the output
+ * Fix: Crash when a descriptor load failed and the audio is longer
+ * BocaClient:
+   ** The BocaClient GUI is now a binary frontend to the python script 
+      (to avoid using PyQt3 with qt3 licensing problems in windows)
+   ** Errors when downloading avoid the Annotator to be launched
+ * Windows distribution:
+   ** Icons for the applications
+   ** Binary distribution of some python scripts by using Py2exe
+   ** Dynamic libraries are bundled with the installer to avoid problems 
+   ** BOCA task are binded with the BOCA client
+ * Credits and acknoledgements updated on the About dialog.
+
+2006-04-30 v0.3.0
+'Final SIMAC meeting release'
+ * Using CLAM 0.91 (CVS)
+ * Ported to QT4 using the new vmqt widgets
+ * Build system moved to scons
+ * Workflow reworked: Projects from scratch are not only possible but the convenient way.
+ * Error conditions on load failures are better managed
+ * The project documentation now allows to give some annotation guidelines to the BOCA users.
+ * Configurable extractor, schema and project documentation
+ * Instant Views: Tonnetz and KeySpace
+ * New types:
+   ** FloatArray type to represent spectrums, pcp's, histograms...
+   ** FrameDivision: it may be the parent of a 'frame level' scope
+ * Extractors:
+   ** New extractor: Chord extractor
+   ** All provided extractors follow the same commandline conventions
+ * Minor adaptations to the BOCA client to the new services
+
+2006-02-07  v0.2
+ * using CLAM 0.90.0
+ * New segment editor:
+   ** Different annotation restrictions depending on the schema. 
+	   Right now:
+	   *** Continuous segmentation (no gap)
+	   *** Discontinous segmentation (gaps but not overlaps)
+   ** Consistent dragging
+   ** Tooltips are faster to appear
+   ** Tooltips say just the position of the hovered element instead 
+	   the cursor position.
+   ** Hovering highlights the limit
+ * Optimizations on the song switching and on the display
+ * Inserting and removing segments now has its reflexion on the pool
+ * Playing the wav and the auralization on different channels.
+ * Description schema browser
+ * Now, viable projects can be built from the interface
+ * A Boca task manager in python is provided
+
+
