@@ -20,9 +20,7 @@ REQUIREMENTS:
 
 To run those scripts you'll need to install python 2.3 and the following modules
   python-xml
-
-If you want to run the tests, you should also install
-  python-unit (to run the tests)
+  python-unit (just if you want to run the tests)
 
 
 
