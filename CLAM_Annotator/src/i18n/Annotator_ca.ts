@@ -125,7 +125,7 @@
     </message>
     <message>
         <source>Adapting Interface to Song level descriptors...</source>
-        <translation>Adaptant la interfície als descriptors a nivell de cançò...</translation>
+        <translation>Adaptant la interfície als descriptors a nivell de cancò...</translation>
     </message>
     <message>
         <source>Adapting Interface to Frame level descriptors...</source>
@@ -203,7 +203,7 @@
     </message>
     <message>
         <source>Loading descriptors...</source>
-        <translation>S&apos;està carregant la descripció de la cançò...</translation>
+        <translation>S&apos;està carregant la descripció de la cançó...</translation>
     </message>
     <message>
         <source>Error opening audio file</source>
@@ -233,7 +233,7 @@
     </message>
     <message>
         <source>Song Descriptors</source>
-        <translation>Descriptors de cançò</translation>
+        <translation>Descriptors de cançó</translation>
     </message>
     <message>
         <source>File</source>
@@ -241,7 +241,7 @@
     </message>
     <message>
         <source>Intrasong Descriptors</source>
-        <translation>Descriptors interns de cançò</translation>
+        <translation>Descriptors interns de cançó</translation>
     </message>
     <message>
         <source>&lt;p&gt;The &lt;b&gt;segmentation level descriptors table&lt;/b&gt;
@@ -276,7 +276,7 @@ Depenent de l&apos;esquema de descripció.
     </message>
     <message>
         <source>&amp;Song</source>
-        <translation>&amp;Cançò</translation>
+        <translation>&amp;Cançó</translation>
     </message>
     <message>
         <source>&amp;Project</source>
@@ -489,7 +489,7 @@ Depenent de l&apos;esquema de descripció.
     <message>
         <source>Current song descriptors have been changed.
 Do you want to save them?</source>
-        <translation>Els descriptors de la cançò actual han canviat.
+        <translation>Els descriptors de la cançó actual han canviat.
 Voleu desar-los?</translation>
     </message>
     <message>
@@ -509,8 +509,8 @@ by clicking the &lt;tt&gt;Compute Descriptors&lt;/tt&gt; button and, once the co
 the &lt;tt&gt;Reload Descriptors&lt;/tt&gt; one.&lt;/p&gt;</source>
         <translation>&lt;p&gt;La &lt;b&gt;llista de cançons&lt;/b&gt; permet veure les cançons de treball que conté el projecte.
 Podeu afegir cançons a la opció de menú &lt;tt&gt;Projecte/Afegir cançons al projecte&lt;/tt&gt;
-Per carregar la descripció d&apos;una cançò simplement fent clic al damunt.&lt;/p&gt;
-&lt;p&gt;Si no existeix una descripció ja calculada, podeu generarla per la cançò seleccionada,
+Per carregar la descripció d&apos;una cançó simplement fent clic al damunt.&lt;/p&gt;
+&lt;p&gt;Si no existeix una descripció ja calculada, podeu generarla per la cançó seleccionada,
 escollint la opció de menú &lt;tt&gt;Calcula descripció&lt;/tt&gt;.
 Un cop el càlcul estigui hagi finalitzat, haureu de seleccionar &lt;tt&gt;Recarregar la descripció&lt;/tt&gt;.&lt;/p&gt;</translation>
     </message>
@@ -520,8 +520,8 @@ contains descriptors values for song level descriptors.
 Song level descriptors are those that has a single occurrence for each song.
 As constrast, &apos;note level descriptors&apos; would have an occurrence for each note.&lt;/p&gt;
 &lt;p&gt;You can edit the values by clicking to the proper cell.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;La &lt;b&gt;taula de descriptors a nivell de cançò&lt;/b&gt;
-conté els valors dels descriptors que s&apos;apliquen a tota la cançò.
+        <translation>&lt;p&gt;La &lt;b&gt;taula de descriptors a nivell de cançó&lt;/b&gt;
+conté els valors dels descriptors que s&apos;apliquen a tota la cançó.
 En contrast als descriptor que s&apos;apliquen a elements mes petits
 com ara una nota.&lt;/p&gt;
 &lt;p&gt;Podeu editar els valors fent clic a la cel·la adient.&lt;/p&gt;</translation>
@@ -611,11 +611,11 @@ descriptors de tipus real (decimals) que tenen un valor diferent a intervals reg
     </message>
     <message>
         <source>Saving previous song descriptors...</source>
-        <translation>S&apos;estan desant la descripció de la cançò...</translation>
+        <translation>S&apos;estan desant la descripció de la cançó...</translation>
     </message>
     <message>
         <source>Filling global descriptors...</source>
-        <translation type="unfinished">S&apos;estan omplint els descriptors a nivell de cançò...</translation>
+        <translation type="unfinished">S&apos;estan omplint els descriptors a nivell de cançó...</translation>
     </message>
     <message>
         <source>Drawing audio...</source>
