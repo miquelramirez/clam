@@ -8,7 +8,6 @@ namespace VM {
 class KeySpace : public PcpTorus
 {
 protected:
-	int x, y, w, h;
 	float x_res, y_res;
 
 public:
