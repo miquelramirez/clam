@@ -4,6 +4,7 @@
 #include <iostream>
 #include "FrameDivision.hxx"
 #include <CLAM/Pool.hxx>
+#include <CLAM/Array.hxx>
 
 CLAM::VM::PcpTorus::~PcpTorus()
 {
@@ -199,13 +200,7 @@ void CLAM::VM::PcpTorus::updateData(const CLAM::DescriptionDataPool & data, CLAM
 	const CLAM::DataArray * arrays = data.GetReadPool<CLAM::DataArray>(_scope,_name);
 	const CLAM_Annotator::SchemaAttribute & parent = _project->GetParentAttribute(_scope);
 	const CLAM_Annotator::FrameDivision & division = data.GetReadPool<CLAM_Annotator::FrameDivision>(parent.GetScope(),parent.GetName())[0];
-	std::list<std::string> binLabels(_binLabels.begin(), _binLabels.end());
-	initData(division, arrays, nFrames, binLabels, samplingRate);
-}
-
-void CLAM::VM::PcpTorus::initData(const CLAM_Annotator::FrameDivision & frameDivision, const CLAM::DataArray * arrays, unsigned nFrames, const std::list<std::string> & binLabels, CLAM::TData samplingRate)
-{
-	_frameDivision = & frameDivision;
+	_frameDivision = & division;
 	_samplingRate = samplingRate;
 	_nFrames = nFrames;
 	_data.resize(_nFrames*_nBins);
